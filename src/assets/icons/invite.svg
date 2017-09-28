@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="_x31_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+	<title>Invite</title>
+	<circle cx="50" cy="50" r="49"/>
+	<g fill="currentColor">
+		<path d="M50,5c24.8,0,45,20.2,45,45S74.8,95,50,95C25.2,95,5,74.8,5,50S25.2,5,50,5 M50,0C22.4,0,0,22.4,0,50
+			s22.4,50,50,50c27.6,0,50-22.4,50-50S77.6,0,50,0L50,0z"/>
+		<circle cx="18.5" cy="47.8" r="4"/>
+		<circle cx="81.9" cy="47.8" r="4"/>
+	</g>
+	<g fill="none" stroke="currentColor" stroke-miterlimit="10">
+		<g stroke-width="2" stroke-linecap="round">
+			<path class="st3" d="M32.6,65.6c-2.2,3.8-10,3.4-17.5-1"/>
+			<path class="st3" d="M66.8,65.6c2.2,3.8,10,3.4,17.5-1"/>
+			<g stroke-linejoin="round">
+				<line class="st5" x1="59.7" y1="76.4" x2="49.8" y2="83.7"/>
+				<line class="st5" x1="58.7" y1="69" x2="44.8" y2="72.5"/>
+				<line class="st5" x1="58.9" y1="63.9" x2="47.9" y2="61"/>
+			</g>
+		</g>
+		<g stroke-width="4">
+			<path d="M14.3,19.2h14.4c1.8,0,3.2,1.4,3.2,3.2l14.2,27c0,1.8-1.4,3.2-3.2,3.2h-11v24.9c0,1.8-1.4,3.2-3.2,3.2H14.8"/>
+			<path stroke-linejoin="round" d="M86,19.2H70.7c-1.8,0-3.2,1.4-3.2,3.2v17.6H58v12.4h9.4v25c0,1.8,1.4,3.2,3.2,3.2h15.5"/>
+		</g>
+	</g>
+</svg>

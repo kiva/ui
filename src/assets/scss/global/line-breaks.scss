@@ -1,0 +1,57 @@
+@import 'settings';
+
+// screen-width-specific line breaks
+br.so,
+br.mo,
+br.lo,
+br.xlo,
+br.xxlo,
+br.smo,
+br.lu {
+	display: none;
+}
+
+br.so {
+	@media #{$small-only} {
+		display: inline;
+	}
+}
+
+br.mo {
+	@media #{$medium-only} {
+		display: inline;
+	}
+}
+
+br.lo {
+	@media #{$large-only} {
+		display: inline;
+	}
+}
+
+br.xlo {
+	@media #{$xlarge-only} {
+		display: inline;
+	}
+}
+
+br.xxlo {
+	@media #{$xxlarge-only} {
+		display: inline;
+	}
+}
+
+br.smo {
+	@media #{$small-only} {
+		display: inline;
+	}
+	@media #{$medium-only} {
+		display: inline;
+	}
+}
+
+br.lu {
+	@media #{$large-up} {
+		display: inline;
+	}
+}

@@ -1,0 +1,99 @@
+@import 'settings';
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-Bold.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-Bold.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-Bold.svg') format('svg');
+	font-weight: 700;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-BoldItalic.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-BoldItalic.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-BoldItalic.svg') format('svg');
+	font-weight: 700;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-Medium.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-Medium.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-Medium.svg') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-MediumItalic.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-MediumItalic.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-MediumItalic.svg') format('svg');
+	font-weight: 400;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-Book.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-Book.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-Book.svg') format('svg');
+	font-weight: 300;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-BookItalic.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-BookItalic.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-BookItalic.svg') format('svg');
+	font-weight: 300;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-Light.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-Light.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-Light.svg') format('svg');
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'PostGrotesk';
+	src:
+		url('~@/assets/fonts/PostGrotesk-LightItalic.eot') format('eot'),
+		url('~@/assets/fonts/PostGrotesk-LightItalic.woff') format('woff'),
+		url('~@/assets/fonts/PostGrotesk-LightItalic.svg') format('svg');
+	font-weight: 100;
+	font-style: italic;
+}
+
+.light {
+	font-weight: 100;
+}
+
+.book {
+	font-weight: 300;
+}
+
+::selection {
+	background-color: $divider-green;
+	color: $white;
+}
+
+::-moz-selection {
+	background-color: $divider-green;
+	color: $white;
+}

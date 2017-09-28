@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+	<title>Lock icon</title>
+	<g fill-rule="evenodd" transform="translate(3 3)">
+		<circle cx="22" cy="22" r="22" stroke="currentColor"/>
+		<path fill="currentColor" d="M28,17 C28,13.688 25.312,11 22,11 C18.688,11 16,13.688 16,17 L16,21 L14,21 L14,33 L30,33 L30,21 L28,21 L28,17 Z M26,21 L18,21 L18,17 C18,14.796 19.794,13 22,13 C24.204,13 26,14.796 26,17 L26,21 Z"/>
+	</g>
+</svg>
