@@ -6,9 +6,9 @@ var baseWebpackConfig = require('./webpack.base.conf')
 
 
 module.exports = merge(baseWebpackConfig, {
-	entry: './src/server-entry.js',
+	entry: './src/server-entry-promise.js',
 	target: 'node',
-	devtool: '#source-map',
+	devtool: 'source-map',
 	output: {
 		libraryTarget: 'commonjs2'
 	}

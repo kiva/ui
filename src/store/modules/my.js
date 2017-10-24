@@ -1,4 +1,6 @@
-import find from 'lodash-es/find';
+// import find from 'lodash-es/find';
+// var find = require('lodash-es/find');
+import find from 'lodash/find';
 
 import apollo from '@/api/apollo';
 import myKivaInfoQuery from '@/graphql/query/myKivaInfo.gql';

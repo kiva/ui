@@ -5,13 +5,25 @@
 </template>
 
 <script>
-import 'modernizr';
-import 'foundation/foundation';
+// We know if we're in the browser or not...
+// console.log(process);
+// - BUT the imports must be at the top level
 
-window.Foundation.global.namespace = '';
+// - Tried to use browser-env but which mostly works for Modernizr (one fail for HTMLCanvas....)
+// - - Foundation is seeking even more info out of Modernizr and Window which causes cascading failures across the header resulting in failed server render
+
+// import 'modernizr';
+// import 'foundation/foundation';
 
 export default {
 	name: 'app',
+	beforeCreate() {
+		// Vue instance is only available attached this within the export block
+		// console.log(this);
+	},
+	beforeMount() {
+		window.Foundation = window.Foundation || { global: { namespace: '' } };
+	},
 };
 </script>
 

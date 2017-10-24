@@ -11,11 +11,12 @@
 </template>
 
 <script>
-import WwwHeader from '@/components/WwwHeader';
+// import WwwHeader from '@/components/WwwHeader';
 import WwwFooter from '@/components/WwwFooter';
 
 export default {
-	components: { WwwHeader, WwwFooter },
+	// components: { WwwHeader, WwwFooter },
+	components: { WwwFooter },
 };
 </script>
 

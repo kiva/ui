@@ -9,6 +9,7 @@ export default function createStore() {
 	return new Vuex.Store({
 		modules: {
 			my,
+			env: process && process.browser ? process.browser : 'node',
 		},
 	});
 }
