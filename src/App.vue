@@ -10,7 +10,8 @@
 // - BUT the imports must be at the top level
 
 // - Tried to use browser-env but which mostly works for Modernizr (one fail for HTMLCanvas....)
-// - - Foundation is seeking even more info out of Modernizr and Window which causes cascading failures across the header resulting in failed server render
+// - - Foundation is seeking even more info out of Modernizr and Window which causes cascading
+// - - failures across the header resulting in failed server render
 
 // import 'modernizr';
 // import 'foundation/foundation';

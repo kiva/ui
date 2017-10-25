@@ -1,6 +1,6 @@
 <template>
 	<div class="www-page">
-		<www-header />
+		<!-- <www-header /> -->
 		<slot name="secondary"></slot>
 		<main>
 			<slot name="tertiary"></slot>
