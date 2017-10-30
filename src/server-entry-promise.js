@@ -1,7 +1,3 @@
-// import { createRenderer } from 'vue-server-renderer';
-// const { createBundleRenderer } = require('vue-server-renderer');
-// import isArray from 'lodash-es/isArray';
-// const isArray = require('lodash/isArray');
 import createApp from './main';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -11,8 +7,8 @@ const isDev = process.env.NODE_ENV !== 'production';
 // state of our application before actually rendering it.
 // Since data fetching is async, this function is expected to
 // return a Promise that resolves to the app instance.
-export default (context) => {
-	return new Promise((resolve, reject) => {
+export default (context) => { // eslint-disable-line
+	return new Promise((resolve, reject) => { // eslint-disable-line
 		const s = isDev && Date.now();
 		const { app, router, store } = createApp();
 
@@ -23,14 +19,16 @@ export default (context) => {
 			return reject({ url: fullPath });
 		}
 
+		console.log(url); // eslint-disable-line
 		// set router's location
 		router.push(url);
 
 		// wait until router has resolved possible async hooks
-		router.onReady(() => {
+		router.onReady(() => { // eslint-disable-line
 			const matchedComponents = router.getMatchedComponents();
 			// no matched routes
 			if (!matchedComponents.length) {
+				// TODO: Check for + redirect to kiva php app external route
 				return reject({ code: 404 });
 			}
 			// Call fetchData hooks on components matched by the route.
@@ -48,55 +46,9 @@ export default (context) => {
 				// inline the state in the HTML response. This allows the client-side
 				// store to pick-up the server-side state without having to duplicate
 				// the initial data fetching on the client.
-				context.state = store.state;
+				context.state = store.state; // eslint-disable-line
 				resolve(app);
 			}).catch(reject);
 		}, reject);
 	});
 };
-
-// export default function serverRenderer(options) {
-// module.exports = function serverRenderer(options) {
-// 	console.log(options.clientStats.assetsByChunkName.app); // eslint-disable-line
-
-// 	let assets = options.clientStats.assetsByChunkName.app;
-// 	if (!isArray(assets)) {
-// 		assets = [assets];
-// 	}
-
-// 	const renderer = createRenderer({
-// 		runInNewContext: false,
-// 		template: `
-// 			<!DOCTYPE html>
-// 			<html lang="en">
-// 				<head></head>
-// 				<body>
-// 					<!--vue-ssr-outlet-->
-// 					${assets.map(asset => `<script src="${asset}"></script>`)}
-// 				</body>
-// 			</html>
-// 		`,
-// 	});
-
-// 	// return custom rendering middleware
-// 	return (req, res) => {
-// 		const { app, router } = createApp();
-
-// 		// trigger async data loading and component fetching
-// 		router.push(req.url);
-
-// 		router.onReady(() => {
-// 			if (!router.getMatchedComponents().length) {
-// 				res.status(404).end('Page not found'); // @todo: 302 to kiva/main instead
-// 			}
-
-// 			renderer.renderToString(app, {}, (err, html) => {
-// 				if (err) {
-// 					res.status(500).end('Internal Server Error');
-// 				} else {
-// 					res.end(html);
-// 				}
-// 			});
-// 		});
-// 	};
-// }

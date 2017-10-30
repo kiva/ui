@@ -14,7 +14,8 @@ var webpackServerConfig = require('./webpack.server.prod.conf')
 var spinner = ora('building for production...')
 spinner.start()
 
-rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => { // , config.build.assetsSubDirectory
+//path.join(config.build.assetsRoot, config.build.assetsSubDirectory)
+rm(config.build.assetsRoot, err => {
 	if (err) throw err
 	webpack([webpackClientConfig, webpackServerConfig], function (err, stats) {
 		spinner.stop()

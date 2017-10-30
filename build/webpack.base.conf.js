@@ -1,16 +1,20 @@
-var path = require('path')
-var utils = require('./utils')
-var config = require('../config')
-var vueLoaderConfig = require('./vue-loader.conf')
+var path = require('path');
+var webpack = require('webpack');
+var utils = require('./utils');
+var config = require('../config');
+var vueLoaderConfig = require('./vue-loader.conf');
+
+const isProd = process.env.NODE_ENV === 'production';
 
 function resolve (dir) {
-	return path.join(__dirname, '..', dir)
+	return path.join(__dirname, '..', dir);
 }
 
-module.exports = {
+let webpackConfig = {
 	output: {
 		path: config.build.assetsRoot,
-		filename: '[name].js',
+		filename: '[name].[chunkhash].js',
+		// filename: '[name].js',
 		publicPath: process.env.NODE_ENV === 'production'
 			? config.build.assetsPublicPath
 			: config.dev.assetsPublicPath
@@ -88,5 +92,44 @@ module.exports = {
 				}
 			}
 		]
-	}
+	},
+	plugins: [
+		// TODO: Consider profiding $ + Foundation globally
+		// - meaning it's always available within a component with no need to import
+		// new webpack.ProvidePlugin({
+		// 	$: 'jquery',
+		// 	jQuery: 'jquery',
+		// 	Foundation: 'foundation'
+		// })
+	]
 }
+
+if (isProd) {
+	const ExtractTextPlugin = require('extract-text-webpack-plugin');
+	const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+
+	webpackConfig.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+			compress: { warnings: false }
+			, sourceMap: true
+		}),
+		new webpack.optimize.ModuleConcatenationPlugin(),
+		new ExtractTextPlugin({
+			// filename: 'static/css/common.[chunkhash].css'
+			filename: 'static/css/[name].[chunkhash].css'
+		}),
+		new OptimizeCSSPlugin({
+			cssProcessorOptions: {
+				safe: true
+			}
+		})
+	);
+} else {
+	const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+
+	webpackConfig.plugins.push(
+		new FriendlyErrorsPlugin()
+	);
+}
+
+module.exports = webpackConfig;

@@ -10,9 +10,11 @@ Vue.config.productionTip = false;
 
 Vue.filter('numeral', (value, format = '0') => numeral(value).format(format));
 
+// App Instance Factory
+// - Allows us to create new instance of app, store + router on each render
 export default function createApp() {
-	const router = createRouter();
 	const store = createStore();
+	const router = createRouter();
 
 	sync(store, router);
 

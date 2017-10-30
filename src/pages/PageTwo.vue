@@ -20,5 +20,4 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-
 </style>
