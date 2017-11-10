@@ -3,6 +3,9 @@ const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
 
+// Import Middleware for Exposing server routes
+const serverRoutes = require('./serverRoutes.js');
+
 const resolve = file => path.resolve(__dirname, file);
 const { createBundleRenderer } = require('vue-server-renderer');
 
@@ -86,6 +89,9 @@ function render (req, res) {
 		}
 	});
 }
+
+// Apply serverRoutes middleware to expose available routes
+app.use('/available-routes', serverRoutes);
 
 app.get('*', isProd ? render : (req, res) => {
 	readyPromise.then(() => render(req, res));
