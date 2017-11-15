@@ -38,6 +38,12 @@ module.exports = {
 			'optionalDependencies': ['test/unit/index.js']
 		}],
 		// allow debugger during development
-		'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+		// allow curly brackets around arrow function bodies
+		'arrow-body-style': 'off',
+		// allow no parens for single-argument arrow functions
+		'arrow-parens': ['error','as-needed'],
+		// allow no return statement
+		'consistent-return': 'off',
 	}
 }
