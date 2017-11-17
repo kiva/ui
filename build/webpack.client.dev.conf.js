@@ -8,4 +8,10 @@ var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 module.exports = merge(baseWebpackConfig, {
 	name: 'client',
+	entry: {
+		app: ['webpack-hot-middleware/client', baseWebpackConfig.entry.app]
+	},
+	plugins: [
+		new webpack.HotModuleReplacementPlugin()
+	]
 })

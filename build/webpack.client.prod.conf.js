@@ -4,7 +4,6 @@ var webpack = require('webpack')
 var config = require('../config')
 var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.client.base.conf')
-// var HtmlWebpackPlugin = require('html-webpack-plugin')
 // var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
 var env = process.env.NODE_ENV === 'testing'
@@ -32,21 +31,6 @@ var webpackConfig = merge(baseWebpackConfig, {
 		// 	cssProcessorOptions: {
 		// 		safe: true
 		// 	}
-		// }),
-
-		// Why?
-		// new HtmlWebpackPlugin({
-		// 	filename: process.env.NODE_ENV === 'testing'
-		// 		? 'index.html'
-		// 		: config.build.index,
-		// 	template: './src/index.template.html',
-		// 	inject: true,
-		// 	minify: {
-		// 		removeComments: true,
-		// 		collapseWhitespace: true,
-		// 		removeAttributeQuotes: true
-		// 	},
-		// 	chunksSortMode: 'dependency'
 		// }),
 	]
 });

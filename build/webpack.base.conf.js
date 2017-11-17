@@ -13,8 +13,8 @@ function resolve (dir) {
 let webpackConfig = {
 	output: {
 		path: config.build.assetsRoot,
-		filename: '[name].[chunkhash].js',
-		// filename: '[name].js',
+		filename: '[name].[hash].js',
+		chunkFilename: '[id].[chunkhash].js',
 		publicPath: process.env.NODE_ENV === 'production'
 			? config.build.assetsPublicPath
 			: config.dev.assetsPublicPath

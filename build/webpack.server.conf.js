@@ -8,7 +8,7 @@ var nodeExternals = require('webpack-node-externals')
 var VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 
 module.exports = merge(baseWebpackConfig, {
-	entry: './src/server-entry-promise.js',
+	entry: './src/server-entry.js',
 	target: 'node',
 	devtool: '#source-map',
 	output: {
