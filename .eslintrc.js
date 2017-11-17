@@ -1,4 +1,5 @@
 // http://eslint.org/docs/user-guide/configuring
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
 	root: true,
@@ -38,12 +39,16 @@ module.exports = {
 			'optionalDependencies': ['test/unit/index.js']
 		}],
 		// allow debugger during development
-		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+		'no-debugger': isProd ? 'error' : 'off',
+		// allow console during development
+		'no-console': isProd ? 'warn' : 'off',
 		// allow curly brackets around arrow function bodies
 		'arrow-body-style': 'off',
 		// allow no parens for single-argument arrow functions
 		'arrow-parens': ['error','as-needed'],
 		// allow no return statement
 		'consistent-return': 'off',
+		// allow (but do not require) dangling commas
+		'comma-dangle': ['error', 'only-multiline'],
 	}
 }
