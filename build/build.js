@@ -8,14 +8,16 @@ var path = require('path')
 var chalk = require('chalk')
 var webpack = require('webpack')
 var config = require('../config')
-var webpackConfig = require('./webpack.client.prod.conf')
+var webpackClientConfig = require('./webpack.client.prod.conf')
+var webpackServerConfig = require('./webpack.server.conf')
 
 var spinner = ora('building for production...')
 spinner.start()
 
-rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
+//path.join(config.build.assetsRoot, config.build.assetsSubDirectory)
+rm(config.build.assetsRoot, err => {
 	if (err) throw err
-	webpack(webpackConfig, function (err, stats) {
+	webpack([webpackClientConfig, webpackServerConfig], function (err, stats) {
 		spinner.stop()
 		if (err) throw err
 		process.stdout.write(stats.toString({

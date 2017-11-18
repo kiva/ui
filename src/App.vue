@@ -8,10 +8,15 @@
 import 'modernizr';
 import 'foundation/foundation';
 
-window.Foundation.global.namespace = '';
-
 export default {
 	name: 'app',
+	beforeCreate() {
+		// Vue instance is only available attached this within the export block
+		// console.log(this);
+	},
+	beforeMount() {
+		window.Foundation = window.Foundation || { global: { namespace: '' } };
+	},
 };
 </script>
 
