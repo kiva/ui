@@ -5,16 +5,8 @@
 </template>
 
 <script>
-// We know if we're in the browser or not...
-// console.log(process);
-// - BUT the imports must be at the top level
-
-// - Tried to use browser-env but which mostly works for Modernizr (one fail for HTMLCanvas....)
-// - - Foundation is seeking even more info out of Modernizr and Window which causes cascading
-// - - failures across the header resulting in failed server render
-
-// import 'modernizr';
-// import 'foundation/foundation';
+import 'modernizr';
+import 'foundation/foundation';
 
 export default {
 	name: 'app',

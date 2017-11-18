@@ -19,7 +19,6 @@ export default context => {
 			return reject({ url: fullPath });
 		}
 
-		console.log(url);
 		// set router's location
 		router.push(url);
 

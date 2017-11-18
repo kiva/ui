@@ -1,11 +1,12 @@
-var utils = require('./utils')
 var webpack = require('webpack')
-var config = require('../config')
 var merge = require('webpack-merge')
+var path = require('path')
 var baseWebpackConfig = require('./webpack.base.conf')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var nodeExternals = require('webpack-node-externals')
 var VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
+
+var noop = path.resolve(__dirname, 'no-op.js');
 
 module.exports = merge(baseWebpackConfig, {
 	entry: './src/server-entry.js',
@@ -26,6 +27,8 @@ module.exports = merge(baseWebpackConfig, {
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
 			'process.env.VUE_ENV': '"server"'
 		}),
+		// suppress client-side-only modules
+		new webpack.NormalModuleReplacementPlugin(/(modernizr|foundation)/, noop),
 		// extract css into its own file
 		// new ExtractTextPlugin({
 		// 	filename: utils.assetsPath('css/[name].[contenthash].css')
