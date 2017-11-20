@@ -25,7 +25,6 @@ let webpackConfig = {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js/foundation',
 			'modernizr': 'npm-modernizr',
-			'moment': 'moment/src/moment',
 		}
 	},
 	module: {

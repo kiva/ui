@@ -86,12 +86,12 @@
 </template>
 
 <script>
-import moment from 'moment';
+import { getYear } from 'date-fns';
 
 export default {
 	data() {
 		return {
-			year: moment().format('Y'),
+			year: getYear(new Date()),
 		};
 	},
 };
