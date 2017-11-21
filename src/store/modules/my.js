@@ -24,17 +24,17 @@ export default apollo => {
 		actions: {
 			getMyKivaInfo({ commit }) {
 				apollo.query({ query: myKivaInfoQuery })
-				.then(result => {
-					commit(types.RECEIVE_MY_KIVA_INFO, {
-						userAccount: result.data.my.userAccount,
-						lender: result.data.my.lender,
+					.then(result => {
+						commit(types.RECEIVE_MY_KIVA_INFO, {
+							userAccount: result.data.my.userAccount,
+							lender: result.data.my.lender,
+						});
+					})
+					.catch(error => {
+						if (find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
+							commit(types.SIGN_OUT);
+						}
 					});
-				})
-				.catch(error => {
-					if (find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
-						commit(types.SIGN_OUT);
-					}
-				});
 			},
 		},
 		mutations: {
