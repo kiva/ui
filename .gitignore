@@ -3,6 +3,7 @@ node_modules/
 dist/
 npm-debug.log*
 test/unit/coverage
+server/available-routes.json
 
 # Editor directories and files
 .idea
