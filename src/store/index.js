@@ -7,7 +7,7 @@ import createMyModule from './modules/my';
 Vue.use(Vuex);
 
 export default function createStore() {
-	const apolloClient = createApolloClient();
+	const apolloClient = createApolloClient({});
 
 	return new Vuex.Store({
 		modules: {
