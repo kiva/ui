@@ -9,8 +9,8 @@
 </template>
 
 <script>
-// import $ from 'jquery';
-// import 'foundation/foundation.dropdown';
+import $ from 'jquery';
+import 'foundation/foundation.dropdown';
 
 export default {
 	props: ['name', 'to', 'linkClass'],
@@ -20,7 +20,7 @@ export default {
 		};
 	},
 	mounted() {
-		// $(document).foundation('dropdown', {});
+		$(document).foundation('dropdown', {});
 	},
 };
 </script>

@@ -9,7 +9,7 @@ var chalk = require('chalk')
 var webpack = require('webpack')
 var config = require('../config')
 var webpackClientConfig = require('./webpack.client.prod.conf')
-var webpackServerConfig = require('./webpack.server.prod.conf')
+var webpackServerConfig = require('./webpack.server.conf')
 
 var spinner = ora('building for production...')
 spinner.start()

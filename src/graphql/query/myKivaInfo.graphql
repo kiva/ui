@@ -3,7 +3,7 @@ query {
 		userAccount {
 			id,
 			balance
-		},
+		}
 		lender {
 			image {
 				url( presetSize:lender_default )

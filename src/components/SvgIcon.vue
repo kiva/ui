@@ -18,7 +18,7 @@ export default {
 		},
 	},
 	created() {
-		import(`@/assets/icons/${this.name}.svg`).then((icon) => {
+		import(`@/assets/icons/${this.name}.svg`).then(icon => {
 			this.iconId = `#${icon.default.id}`;
 		});
 	},
