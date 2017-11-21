@@ -4,7 +4,7 @@ const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
 // Import Middleware for Exposing server routes
-const serverRoutes = require('./serverRoutes.js');
+const serverRoutes = require('./available-routes-middleware');
 
 const app = express();
 const port = process.env.PORT || conf.build.port;

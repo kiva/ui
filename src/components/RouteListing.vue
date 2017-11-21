@@ -25,7 +25,7 @@ export default {
 		};
 	},
 	created() {
-		this.$router.options.routes.forEach((route) => {
+		this.$router.options.routes.forEach(route => {
 			if (route.status === 'dev') {
 				this.devRoutes.push({
 					name: route.name ? route.name : 'no-name',
