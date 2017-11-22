@@ -17,7 +17,7 @@ module.exports = {
 		'html'
 	],
 	// check if imports actually resolve
-	'settings': {
+	settings: {
 		'import/resolver': {
 			'webpack': {
 				'config': 'build/webpack.base.conf.js'
@@ -25,7 +25,7 @@ module.exports = {
 		}
 	},
 	// add your custom rules here
-	'rules': {
+	rules: {
 		// tabs not spaces
 		'indent': ['error', 'tab'],
 		'no-tabs': 'off',
