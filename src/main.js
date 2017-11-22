@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import numeral from 'numeral';
 import { sync } from 'vuex-router-sync';
 
 import App from './App';
 import createRouter from './router';
 import createStore from './store';
+import kivaPlugins from './plugins';
 
 Vue.config.productionTip = false;
 
-Vue.filter('numeral', (value, format = '0') => numeral(value).format(format));
+Vue.use(kivaPlugins);
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render

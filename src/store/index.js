@@ -8,10 +8,11 @@ Vue.use(Vuex);
 
 export default function createStore() {
 	const apolloClient = createApolloClient({});
-
-	return new Vuex.Store({
+	const store = new Vuex.Store({
 		modules: {
 			my: createMyModule(apolloClient),
 		},
 	});
+	store.apolloClient = apolloClient;
+	return store;
 }
