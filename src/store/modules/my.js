@@ -1,7 +1,7 @@
 import _find from 'lodash/find';
 
 import myKivaInfoQuery from '@/graphql/query/myKivaInfo.graphql';
-import * as types from '../mutation-types';
+import * as types from '@/store/mutation-types';
 
 export default apollo => {
 	const initialState = {
