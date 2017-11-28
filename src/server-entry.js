@@ -12,7 +12,12 @@ const isDev = process.env.NODE_ENV !== 'production';
 export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
-		const { app, router, store } = createApp();
+		const {
+			app,
+			router,
+			store,
+			apolloClient,
+		} = createApp();
 
 		const { url } = context;
 		const { fullPath } = router.resolve(url).route;
@@ -41,7 +46,7 @@ export default context => {
 			function callAsyncData({ asyncData, components }) {
 				return Promise.all([
 					asyncData && asyncData({ store, route: router.currentRoute }),
-					components && _values(components).map(callAsyncData)
+					components && Promise.all(_values(components).map(callAsyncData))
 				]);
 			}
 			return Promise.all(matchedComponents.map(callAsyncData)).then(() => {
@@ -53,7 +58,7 @@ export default context => {
 				// store to pick-up the server-side state without having to duplicate
 				// the initial data fetching on the client.
 				context.state = store.state;
-				context.apolloState = JSON.stringify(store.apolloClient.cache.extract());
+				context.apolloState = JSON.stringify(apolloClient.cache.extract());
 				resolve(app);
 			}).catch(reject);
 		}, reject);

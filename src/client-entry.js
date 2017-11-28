@@ -3,14 +3,19 @@ import _dropWhile from 'lodash/dropWhile';
 import _values from 'lodash/values';
 import createApp from '@/main';
 
-const { app, router, store } = createApp();
+const {
+	app,
+	router,
+	store,
+	apolloClient,
+} = createApp();
 
 // Apply Server state to Client Store
 if (window.__INITIAL_STATE__) {
 	store.replaceState(window.__INITIAL_STATE__);
 }
 if (window.__APOLLO_STATE__) {
-	store.apolloClient.cache.restore(window.__APOLLO_STATE__);
+	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
 // Wait until router has resolved all async before hooks and async components
