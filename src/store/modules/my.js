@@ -1,9 +1,7 @@
-// import find from 'lodash-es/find';
-// var find = require('lodash-es/find');
-import find from 'lodash/find';
+import _find from 'lodash/find';
 
 import myKivaInfoQuery from '@/graphql/query/myKivaInfo.graphql';
-import * as types from '../mutation-types';
+import * as types from '@/store/mutation-types';
 
 export default apollo => {
 	const initialState = {
@@ -23,7 +21,7 @@ export default apollo => {
 		getters: {},
 		actions: {
 			getMyKivaInfo({ commit }) {
-				apollo.query({ query: myKivaInfoQuery })
+				return apollo.query({ query: myKivaInfoQuery })
 					.then(result => {
 						commit(types.RECEIVE_MY_KIVA_INFO, {
 							userAccount: result.data.my.userAccount,
@@ -31,7 +29,8 @@ export default apollo => {
 						});
 					})
 					.catch(error => {
-						if (find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
+						console.error(error);
+						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
 							commit(types.SIGN_OUT);
 						}
 					});

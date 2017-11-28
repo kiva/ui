@@ -111,8 +111,8 @@ export default {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
 	},
-	created() {
-		// this.$store.dispatch('getMyKivaInfo');
+	asyncData({ store }) {
+		return store.dispatch('getMyKivaInfo');
 	},
 };
 </script>
