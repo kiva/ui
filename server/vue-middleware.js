@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const config = require('../config/dev-vm');
 
@@ -32,10 +33,13 @@ module.exports = function createMiddleware({ serverBundle, clientManifest }) {
 			runInNewContext: false,
 		});
 
+		const cookies = cookie.parse(req.headers.cookie);
+
 		const context = {
 			title: 'Kiva.org', // default title
 			url: req.url,
-			graphqlUri
+			graphqlUri,
+			cookies,
 		};
 
 		res.setHeader('Content-Type', 'text/html');
