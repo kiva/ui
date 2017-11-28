@@ -41,7 +41,7 @@ module.exports = {
 		// allow debugger during development
 		'no-debugger': isProd ? 'error' : 'off',
 		// allow console during development
-		'no-console': isProd ? 'warn' : 'off',
+		'no-console': isProd ? ['warn', { allow: ['error'] }] : 'off',
 		// allow curly brackets around arrow function bodies
 		'arrow-body-style': 'off',
 		// allow no parens for single-argument arrow functions
