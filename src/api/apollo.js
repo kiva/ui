@@ -24,9 +24,7 @@ export default function createApolloClient({
 	const linkOpts = {
 		uri,
 		fetch,
-		headers: {
-			'x-crumb': csrfToken,
-		},
+		headers: {},
 		fetchOptions: {
 			agent: new Agent({
 				// fix request blocked b/c of self-signed certificate on dev-vm. maybe do a prod check?
@@ -34,6 +32,11 @@ export default function createApolloClient({
 			})
 		}
 	};
+
+	// only add the csrf token if we have one
+	if (csrfToken.length > 0) {
+		linkOpts.headers['x-crumb'] = csrfToken;
+	}
 
 	// setup authorization
 	if (cookie) {
