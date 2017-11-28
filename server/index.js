@@ -7,7 +7,7 @@ const clientManifest = require('../dist/vue-ssr-client-manifest.json');
 const serverRoutes = require('./available-routes-middleware');
 
 const app = express();
-const port = process.env.PORT || conf.build.port;
+const port = process.env.PORT || conf.server.port;
 
 app.use(express.static('dist'));
 
