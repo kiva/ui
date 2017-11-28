@@ -3,12 +3,18 @@ import _dropWhile from 'lodash/dropWhile';
 import _values from 'lodash/values';
 import createApp from '@/main';
 
+const config = window.__KV_CONFIG__ || {};
+
 const {
 	app,
 	router,
 	store,
 	apolloClient,
-} = createApp();
+} = createApp({
+	apollo: {
+		uri: config.graphqlUri
+	}
+});
 
 // Apply Server state to Client Store
 if (window.__INITIAL_STATE__) {

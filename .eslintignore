@@ -1,3 +1,4 @@
 build/*.js
 config/*.js
+server/index.template.html
 test/unit/karma.conf.js

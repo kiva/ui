@@ -12,14 +12,18 @@ const isDev = process.env.NODE_ENV !== 'production';
 export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
+		const { url, graphqlUri } = context;
 		const {
 			app,
 			router,
 			store,
 			apolloClient,
-		} = createApp();
+		} = createApp({
+			apollo: {
+				uri: graphqlUri
+			}
+		});
 
-		const { url } = context;
 		const { fullPath } = router.resolve(url).route;
 
 		if (fullPath !== url) {

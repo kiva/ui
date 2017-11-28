@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { createBundleRenderer } = require('vue-server-renderer');
+const config = require('../config/dev-vm');
 
+const { graphqlUri } = config.server;
 const isProd = process.env.NODE_ENV === 'production';
 
 function handleError(err, req, res) {
@@ -33,6 +35,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest }) {
 		const context = {
 			title: 'Kiva.org', // default title
 			url: req.url,
+			graphqlUri
 		};
 
 		res.setHeader('Content-Type', 'text/html');

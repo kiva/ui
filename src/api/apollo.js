@@ -9,7 +9,7 @@ export default function createApolloClient({
 	cookie,
 	csrfToken = '',
 	types = [],
-	uri = 'https://api-vm.kiva.org/graphql?app_id=org.kiva.www&scopes=access&user_id=1017419',
+	uri = 'https://www.kiva.org/ajax/graphql',
 }) {
 	// default cache options
 	const cacheOpts = {
