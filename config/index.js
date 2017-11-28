@@ -3,12 +3,12 @@ var path = require('path')
 
 module.exports = {
 	server: {
-		env: require('./prod.env'),
+		env: require('./env/prod.env'),
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
 		port: 8888,
 	},
 	build: {
-		env: require('./prod.env'),
+		env: require('./env/prod.env'),
 		// index: path.resolve(__dirname, '../dist/index.html'),
 		assetsRoot: path.resolve(__dirname, '../dist'),
 		assetsSubDirectory: 'static',
@@ -27,7 +27,7 @@ module.exports = {
 		bundleAnalyzerReport: process.env.npm_config_report
 	},
 	dev: {
-		env: require('./dev.env'),
+		env: require('./env/dev.env'),
 		port: 8888,
 		autoOpenBrowser: false,
 		assetsSubDirectory: 'static',
