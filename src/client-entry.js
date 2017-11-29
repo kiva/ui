@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import _dropWhile from 'lodash/dropWhile';
 import _values from 'lodash/values';
+import cookie from 'js-cookie';
 import createApp from '@/main';
 
 const config = window.__KV_CONFIG__ || {};
@@ -12,7 +13,8 @@ const {
 	apolloClient,
 } = createApp({
 	apollo: {
-		uri: config.graphqlUri
+		uri: config.graphqlUri,
+		csrfToken: cookie.get('kvis') && cookie.get('kvis').substr(6),
 	}
 });
 
