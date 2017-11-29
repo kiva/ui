@@ -40,7 +40,7 @@ router.onReady(() => {
 		function callAsyncData({ asyncData, components }) {
 			return Promise.all([
 				asyncData && asyncData({ store, route: to }),
-				components && _values(components).map(callAsyncData)
+				components && Promise.all(_values(components).map(callAsyncData))
 			]);
 		}
 		Promise.all(activated.map(callAsyncData)).then(next).catch(next);
