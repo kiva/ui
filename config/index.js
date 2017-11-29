@@ -6,6 +6,7 @@ module.exports = {
 		env: require('./env/prod.env'),
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
 		port: 8888,
+		sslPort: 4433,
 	},
 	build: {
 		env: require('./env/prod.env'),
