@@ -1,5 +1,6 @@
 import _find from 'lodash/find';
 
+import helloQuery from '@/graphql/query/hello.graphql';
 import myKivaInfoQuery from '@/graphql/query/myKivaInfo.graphql';
 import * as types from '@/store/mutation-types';
 
@@ -20,6 +21,9 @@ export default apollo => {
 		state: initialState,
 		getters: {},
 		actions: {
+			hello() {
+				return apollo.query({ query: helloQuery });
+			},
 			getMyKivaInfo({ commit }) {
 				return apollo.query({ query: myKivaInfoQuery })
 					.then(result => {
