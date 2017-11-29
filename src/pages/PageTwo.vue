@@ -15,6 +15,9 @@ import WwwPage from '@/pages/WwwPage';
 
 export default {
 	components: { WwwPage },
+	asyncData({ store }) {
+		return store.dispatch('hello');
+	}
 };
 </script>
 
