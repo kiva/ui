@@ -41,6 +41,15 @@ router.onReady(() => {
 		Promise.all(activated.map(callAsyncData)).then(next).catch(next);
 	});
 
+	router.beforeEach((to, from, next) => {
+		app.$Progress.start(6500);
+		next();
+	});
+
+	router.afterEach(() => app.$Progress.finish());
+
+	router.onError(() => app.$Progress.fail());
+
 	// Mount app in DOM
 	app.$mount('#app');
 });
