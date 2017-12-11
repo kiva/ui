@@ -1,4 +1,5 @@
 var config = require('../config')
+var utils = require('./utils')
 var webpack = require('webpack')
 var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
@@ -11,6 +12,11 @@ var env = process.env.NODE_ENV === 'testing'
 module.exports = merge(baseWebpackConfig, {
 	entry: {
 		app: './src/client-entry.js'
+	},
+	// This Pushes JS Files to the /js sub-folder inside /static
+	output: {
+		filename: utils.assetsPath('js/[name].[hash].js'),
+		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
 	},
 	devtool: config.build.productionSourceMap ? '#source-map' : false,
 	plugins: [
