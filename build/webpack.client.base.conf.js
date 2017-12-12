@@ -14,10 +14,10 @@ module.exports = merge(baseWebpackConfig, {
 		app: './src/client-entry.js'
 	},
 	// This Pushes JS Files to the /js sub-folder inside /static
-	output: {
-		filename: utils.assetsPath('js/[name].[hash].js'),
-		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
-	},
+	// output: {
+	// 	filename: utils.assetsPath('js/[name].[hash].js'),
+	// 	chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+	// },
 	devtool: config.build.productionSourceMap ? '#source-map' : false,
 	plugins: [
 		// http://vuejs.github.io/vue-loader/en/workflow/production.html
