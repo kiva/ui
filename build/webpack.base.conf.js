@@ -15,8 +15,6 @@ let webpackConfig = {
 		path: config.build.assetsRoot,
 		filename: utils.assetsPath('js/[name].[hash].js'),
 		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
-		// filename: '[name].[hash].js',
-		// chunkFilename: '[id].[chunkhash].js',
 		publicPath: process.env.NODE_ENV === 'production'
 			? config.build.assetsPublicPath
 			: config.dev.assetsPublicPath
