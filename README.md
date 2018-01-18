@@ -1,6 +1,6 @@
 # Kiva UI
 
-> a.k.a. Ooey Lewis and the Views
+> a.k.a. Uue Lewis and the Views
 
 ## Build Setup
 
