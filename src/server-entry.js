@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors, no-console, no-param-reassign */
 import _map from 'lodash/map';
-import _values from 'lodash/values';
 import cookie from 'cookie';
+import createAsyncCaller from '@/util/callAsyncData';
 import createApp from '@/main';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -51,12 +51,7 @@ export default context => {
 			// An asyncData hook dispatches a store action and returns a Promise,
 			// which is resolved when the action is complete and store state has been
 			// updated.
-			function callAsyncData({ asyncData, components }) {
-				return Promise.all([
-					asyncData && asyncData({ store, route: router.currentRoute }),
-					components && Promise.all(_values(components).map(callAsyncData))
-				]);
-			}
+			const callAsyncData = createAsyncCaller({ store, route: router.currentRoute });
 			return Promise.all(matchedComponents.map(callAsyncData)).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now

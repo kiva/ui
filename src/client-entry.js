@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import _dropWhile from 'lodash/dropWhile';
-import _values from 'lodash/values';
 import cookie from 'js-cookie';
+import createAsyncCaller from '@/util/callAsyncData';
 import createApp from '@/main';
 
 const config = window.__KV_CONFIG__ || {};
@@ -39,14 +39,18 @@ router.onReady(() => {
 		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
 
 		// recursively call asyncData on activated components and their child components
-		function callAsyncData({ asyncData, components }) {
-			return Promise.all([
-				asyncData && asyncData({ store, route: to }),
-				components && _values(components).map(callAsyncData)
-			]);
-		}
+		const callAsyncData = createAsyncCaller({ store, route: to });
 		Promise.all(activated.map(callAsyncData)).then(next).catch(next);
 	});
+
+	router.beforeEach((to, from, next) => {
+		app.$Progress.start(6500);
+		next();
+	});
+
+	router.afterEach(() => app.$Progress.finish());
+
+	router.onError(() => app.$Progress.fail());
 
 	// Mount app in DOM
 	app.$mount('#app');

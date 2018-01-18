@@ -13,8 +13,9 @@ function resolve (dir) {
 let webpackConfig = {
 	output: {
 		path: config.build.assetsRoot,
-		filename: '[name].[hash].js',
-		chunkFilename: '[id].[chunkhash].js',
+		// This Pushes JS Files to the /js sub-folder inside /static
+		filename: utils.assetsPath('js/[name].[hash].js'),
+		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
 		publicPath: process.env.NODE_ENV === 'production'
 			? config.build.assetsPublicPath
 			: config.dev.assetsPublicPath
@@ -122,12 +123,6 @@ if (isProd) {
 				safe: true
 			}
 		})
-	);
-} else {
-	const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-
-	webpackConfig.plugins.push(
-		new FriendlyErrorsPlugin()
 	);
 }
 

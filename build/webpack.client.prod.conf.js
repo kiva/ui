@@ -18,12 +18,6 @@ var webpackConfig = merge(baseWebpackConfig, {
 		// })
 	// },
 
-	// This Pushes JS Files to the /js sub-folder inside /static
-	output: {
-		filename: utils.assetsPath('js/[name].[chunkhash].js'),
-		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
-	},
-
 	plugins: [
 		// Compress extracted CSS. We are using this plugin so that possible
 		// duplicated CSS from different components can be deduped.
