@@ -33,7 +33,6 @@ export default apollo => {
 						});
 					})
 					.catch(error => {
-						console.error(error);
 						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
 							commit(types.SIGN_OUT);
 						}
