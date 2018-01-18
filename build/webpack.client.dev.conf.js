@@ -2,12 +2,13 @@ var webpack = require('webpack')
 var merge = require('webpack-merge')
 var config = require('../config')
 var utils = require('./utils')
+var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 var baseWebpackConfig = require('./webpack.client.base.conf')
 
 module.exports = merge(baseWebpackConfig, {
 	name: 'client',
 	entry: {
-		app: ['webpack-hot-middleware/client', baseWebpackConfig.entry.app]
+		app: ['webpack-hot-middleware/client?path=/__ui_hmr', baseWebpackConfig.entry.app]
 	},
 	output: {
 		path: config.build.assetsRoot,
@@ -21,6 +22,12 @@ module.exports = merge(baseWebpackConfig, {
 		hotUpdateMainFilename: utils.assetsPath('hot-update.json')
 	},
 	plugins: [
-		new webpack.HotModuleReplacementPlugin()
+		new webpack.HotModuleReplacementPlugin(),
+		new FriendlyErrorsPlugin({
+			clearConsole: false,
+			compilationSuccessInfo: {
+				messages: ['Client bundle compiled.\n']
+			}
+		})
 	]
 })
