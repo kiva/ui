@@ -28,7 +28,9 @@ const devMiddleware = webpackDevMiddleware(clientCompiler, {
 	publicPath: clientConfig.output.publicPath,
 	// serverSideRender: true,
 });
-const hotMiddleware = webpackHotMiddleware(clientCompiler);
+const hotMiddleware = webpackHotMiddleware(clientCompiler, {
+	path: '/__ui_hmr'
+});
 
 // file reader helper
 const readFile = (fs, file) => {

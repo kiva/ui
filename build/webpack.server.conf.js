@@ -5,6 +5,7 @@ var baseWebpackConfig = require('./webpack.base.conf')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var nodeExternals = require('webpack-node-externals')
 var VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
+var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 var noop = path.resolve(__dirname, 'no-op.js');
 
@@ -33,6 +34,12 @@ module.exports = merge(baseWebpackConfig, {
 		// new ExtractTextPlugin({
 		// 	filename: utils.assetsPath('css/[name].[contenthash].css')
 		// }),
-		new VueSSRServerPlugin()
+		new VueSSRServerPlugin(),
+		new FriendlyErrorsPlugin({
+			clearConsole: false,
+			compilationSuccessInfo: {
+				messages: ['Server bundle compiled.\n']
+			}
+		})
 	]
 })

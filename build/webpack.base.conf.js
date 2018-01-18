@@ -124,12 +124,6 @@ if (isProd) {
 			}
 		})
 	);
-} else {
-	const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-
-	webpackConfig.plugins.push(
-		new FriendlyErrorsPlugin()
-	);
 }
 
 module.exports = webpackConfig;
