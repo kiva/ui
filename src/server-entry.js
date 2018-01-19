@@ -1,4 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors, no-console, no-param-reassign */
+import _map from 'lodash/map';
+import cookie from 'cookie';
 import createAsyncCaller from '@/util/callAsyncData';
 import createApp from '@/main';
 
@@ -12,7 +14,8 @@ const isDev = process.env.NODE_ENV !== 'production';
 export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
-		const { url, graphqlUri } = context;
+		const { url, graphqlUri, cookies } = context;
+
 		const {
 			app,
 			router,
@@ -20,12 +23,13 @@ export default context => {
 			apolloClient,
 		} = createApp({
 			apollo: {
-				uri: graphqlUri
+				cookie: _map(cookies, (val, name) => cookie.serialize(name, val)).join('; '),
+				csrfToken: cookies.kvis && cookies.kvis.substr(6),
+				uri: graphqlUri,
 			}
 		});
 
 		const { fullPath } = router.resolve(url).route;
-
 		if (fullPath !== url) {
 			return reject({ url: fullPath });
 		}

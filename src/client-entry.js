@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import _dropWhile from 'lodash/dropWhile';
+import cookie from 'js-cookie';
 import createAsyncCaller from '@/util/callAsyncData';
 import createApp from '@/main';
 
@@ -12,7 +13,8 @@ const {
 	apolloClient,
 } = createApp({
 	apollo: {
-		uri: config.graphqlUri
+		uri: config.graphqlUri,
+		csrfToken: cookie.get('kvis') && cookie.get('kvis').substr(6),
 	}
 });
 
