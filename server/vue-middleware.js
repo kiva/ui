@@ -33,7 +33,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest }) {
 			runInNewContext: false,
 		});
 
-		const cookies = cookie.parse(req.headers.cookie);
+		const cookies = cookie.parse(req.headers.cookie || '');
 
 		const context = {
 			title: 'Kiva.org', // default title
