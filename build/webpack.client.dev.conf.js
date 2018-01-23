@@ -18,7 +18,7 @@ module.exports = merge(baseWebpackConfig, {
 		*/
 		filename: utils.assetsPath('js/[name].js'),
 		chunkFilename: utils.assetsPath('js/[id].js'),
-		hotUpdateChunkFilename: utils.assetsPath('hot-update.js'),
+		hotUpdateChunkFilename: utils.assetsPath('[id].hot-update.js'),
 		hotUpdateMainFilename: utils.assetsPath('hot-update.json')
 	},
 	plugins: [
