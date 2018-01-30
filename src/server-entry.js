@@ -2,6 +2,7 @@
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import createAsyncCaller from '@/util/callAsyncData';
+import renderState from '@/util/renderState';
 import createApp from '@/main';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -14,7 +15,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
-		const { url, graphqlUri, cookies } = context;
+		const { url, config, cookies } = context;
 
 		const {
 			app,
@@ -25,7 +26,7 @@ export default context => {
 			apollo: {
 				cookie: _map(cookies, (val, name) => cookie.serialize(name, val)).join('; '),
 				csrfToken: cookies.kvis && cookies.kvis.substr(6),
-				uri: graphqlUri,
+				uri: config.graphqlUri,
 			}
 		});
 
@@ -60,9 +61,12 @@ export default context => {
 				// inline the state in the HTML response. This allows the client-side
 				// store to pick-up the server-side state without having to duplicate
 				// the initial data fetching on the client.
-				context.state = store.state;
-				context.apolloState = JSON.stringify(apolloClient.cache.extract());
 				context.meta = app.$meta();
+				context.renderedState = renderState({
+					__KV_CONFIG__: config,
+					__APOLLO_STATE__: apolloClient.cache.extract(),
+					__INITIAL_STATE__: store.state,
+				});
 				resolve(app);
 			}).catch(reject);
 		}, reject);

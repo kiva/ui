@@ -4,7 +4,6 @@ const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const config = require('../config/dev-vm');
 
-const { graphqlUri } = config.server;
 const isProd = process.env.NODE_ENV === 'production';
 
 function handleError(err, req, res) {
@@ -31,14 +30,16 @@ module.exports = function createMiddleware({ serverBundle, clientManifest }) {
 			template,
 			clientManifest,
 			runInNewContext: false,
+			inject: false,
 		});
 
 		const cookies = cookie.parse(req.headers.cookie || '');
 
 		const context = {
-			title: 'Kiva.org', // default title
 			url: req.url,
-			graphqlUri,
+			config: {
+				graphqlUri: config.server.graphqlUri
+			},
 			cookies,
 		};
 

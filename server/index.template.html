@@ -6,16 +6,14 @@
 		{{{ meta.inject().meta.text() }}}
 		{{{ meta.inject().link.text() }}}
 		{{{ meta.inject().title.text() }}}
+		{{{ renderStyles() }}}
+		{{{ renderResourceHints() }}}
 		{{{ meta.inject().style.text() }}}
 		{{{ meta.inject().script.text() }}}
-		<script>
-			window.__KV_CONFIG__ = {
-				graphqlUri: "{{{ graphqlUri }}}"
-			};
-			window.__APOLLO_STATE__ = {{{ apolloState }}};
-		</script>
 	</head>
 	<body>
 		<!--vue-ssr-outlet-->
+		{{{ renderedState }}}
+		{{{ renderScripts() }}}
 	</body>
 </html>
