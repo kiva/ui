@@ -62,6 +62,7 @@ export default context => {
 				// the initial data fetching on the client.
 				context.state = store.state;
 				context.apolloState = JSON.stringify(apolloClient.cache.extract());
+				context.meta = app.$meta();
 				resolve(app);
 			}).catch(reject);
 		}, reject);

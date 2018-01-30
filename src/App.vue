@@ -11,6 +11,10 @@ import 'foundation/foundation';
 
 export default {
 	name: 'app',
+	metaInfo: {
+		title: 'Loans that change lives',
+		titleTemplate: '%s | Kiva',
+	},
 	beforeCreate() {
 		// Vue instance is only available attached this within the export block
 		// console.log(this);

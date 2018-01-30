@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
+import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
 
 import App from '@/App';
@@ -10,6 +11,7 @@ import kivaPlugins from '@/plugins';
 
 Vue.config.productionTip = false;
 
+Vue.use(Meta);
 Vue.use(kivaPlugins);
 Vue.use(VueProgressBar, {
 	color: '#26b6e8',
