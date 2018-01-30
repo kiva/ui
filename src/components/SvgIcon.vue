@@ -7,20 +7,13 @@
 <script>
 export default {
 	props: ['name'],
-	data() {
-		return {
-			iconId: '',
-		};
-	},
 	computed: {
 		iconClass() {
 			return `icon-${this.name}`;
 		},
-	},
-	created() {
-		import(`@/assets/icons/${this.name}.svg`).then(icon => {
-			this.iconId = `#${icon.default.id}`;
-		});
+		iconId() {
+			return `#icon-${this.name}`;
+		},
 	},
 };
 </script>
