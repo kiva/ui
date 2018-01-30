@@ -3,6 +3,7 @@ import _dropWhile from 'lodash/dropWhile';
 import cookie from 'js-cookie';
 import createAsyncCaller from '@/util/callAsyncData';
 import createApp from '@/main';
+import '@/assets/iconLoader';
 
 const config = window.__KV_CONFIG__ || {};
 

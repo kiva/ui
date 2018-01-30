@@ -2,6 +2,7 @@ var config = require('../config')
 var webpack = require('webpack')
 var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
+var SvgStorePlugin = require('webpack-svgstore-plugin')
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 var env = process.env.NODE_ENV === 'testing'
@@ -19,6 +20,19 @@ module.exports = merge(baseWebpackConfig, {
 			'process.env': env,
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
 			'process.env.VUE_ENV': '"client"'
+		}),
+		// minify and combine svg icons
+		new SvgStorePlugin({
+			svg: {
+				'xmlns': 'http://www.w3.org/2000/svg',
+				'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+				'style': 'display:none;',
+			},
+			svgoOptions: {
+				plugins: [],
+				floatPrecision: 2,
+			},
+			prefix: 'icon-',
 		}),
 		// extract vendor chunks for better caching
 		new webpack.optimize.CommonsChunkPlugin({

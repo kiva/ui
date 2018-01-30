@@ -63,10 +63,6 @@ let webpackConfig = {
 				loader: 'graphql-tag/loader'
 			},
 			{
-				test: /icons\/[a-zA-Z0-9\-]+\.svg$/,
-				use: ['svg-sprite-loader', 'svgo-loader']
-			},
-			{
 				test: /fonts\/.+\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
@@ -109,7 +105,7 @@ if (isProd) {
 	const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 
 	webpackConfig.plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
+		new webpack.optimize.UglifyJsPlugin({
 			compress: { warnings: false }
 			, sourceMap: true
 		}),
