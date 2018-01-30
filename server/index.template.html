@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-vue-meta-server-rendered lang="en">
 	<head>
-		<title>{{ title }}</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+		{{{ meta.inject().meta.text() }}}
+		{{{ meta.inject().link.text() }}}
+		{{{ meta.inject().title.text() }}}
+		{{{ meta.inject().style.text() }}}
+		{{{ meta.inject().script.text() }}}
 		<script>
 			window.__KV_CONFIG__ = {
 				graphqlUri: "{{{ graphqlUri }}}"

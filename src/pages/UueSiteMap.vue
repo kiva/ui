@@ -16,6 +16,9 @@ import RouteListing from '@/components/RouteListing';
 
 export default {
 	components: { WwwPage, RouteListing },
+	metaInfo: {
+		title: 'Sitemap'
+	}
 };
 </script>
 
