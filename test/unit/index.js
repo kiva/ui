@@ -6,8 +6,6 @@ Vue.config.productionTip = false;
 const testsContext = require.context('./specs', true, /\.spec$/);
 testsContext.keys().forEach(testsContext);
 
-// require all src files except main.js for coverage.
-// you can also change this to match only the subset of files that
-// you want coverage for.
-// const srcContext = require.context('../../src', true, /^\.\/(?!(main(\.js)|App(\.vue))?$)/);
-// srcContext.keys().forEach(srcContext);
+// require all src files except anything in assets/ or graphql/ for coverage.
+const srcContext = require.context('../../src', true, /^\.\/(?!(assets\/|graphql\/))/);
+srcContext.keys().forEach(srcContext);

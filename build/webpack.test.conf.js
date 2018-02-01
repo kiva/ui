@@ -1,9 +1,12 @@
 // This is the webpack config used for unit tests.
 
 var utils = require('./utils')
+var path = require('path')
 var webpack = require('webpack')
 var merge = require('webpack-merge')
 var baseConfig = require('./webpack.base.conf')
+
+var noop = path.resolve(__dirname, 'no-op.js');
 
 var webpackConfig = merge(baseConfig, {
 	// use inline sourcemap for karma-sourcemap-loader
@@ -21,7 +24,9 @@ var webpackConfig = merge(baseConfig, {
 	plugins: [
 		new webpack.DefinePlugin({
 			'process.env': require('../config/env/test.env')
-		})
+		}),
+		// suppress client-side-only modules
+		new webpack.NormalModuleReplacementPlugin(/(modernizr|foundation)/, noop),
 	]
 })
 
