@@ -27,7 +27,8 @@ ul.dropdown-list {
 	}
 
 	li {
-		&:hover, &:focus {
+		&:hover,
+		&:focus {
 			background: none;
 		}
 
@@ -53,7 +54,7 @@ ul.dropdown-list {
 			@media #{$large-up} {
 				border: none;
 
-				&.end-section:after {
+				&.end-section::after {
 					content: "";
 					display: block;
 					background-color: $kiva-stroke-gray;
