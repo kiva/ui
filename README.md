@@ -2,6 +2,8 @@
 
 > a.k.a. Uue Lewis and the Views
 
+[![Build Status](https://travis-ci.org/kiva/ui.svg?branch=master)](https://travis-ci.org/kiva/ui)
+
 ## Build Setup
 
 ``` bash
