@@ -145,8 +145,8 @@ export default {
 		font-size: $small-font-size;
 		line-height: $small-line-height;
 
-		&:visited
-		, &:active {
+		&:visited,
+		&:active {
 			color: $light-green;
 		}
 
@@ -168,7 +168,7 @@ export default {
 		ul {
 			display: flex;
 			justify-content: space-between;
-			margin: 0 0 1rem 0;
+			margin: 0 0 1rem;
 			border-bottom: 1px solid $kiva-stroke-gray;
 		}
 	}
@@ -192,8 +192,10 @@ export default {
 	.work-with-us {
 		a {
 			@include left-line;
+
 			white-space: nowrap;
 		}
+
 		li {
 			display: inline-block;
 			float: left;
@@ -261,7 +263,7 @@ export default {
 		clear: none;
 
 		a {
-			@include left-line
+			@include left-line;
 		}
 	}
 }

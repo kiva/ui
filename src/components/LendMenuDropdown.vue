@@ -22,7 +22,8 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.lend-list-menu, .lend-mega-menu {
+.lend-list-menu,
+.lend-mega-menu {
 	& *[aria-hidden="true"] {
 		display: none;
 	}
@@ -33,7 +34,8 @@ export default {
 	}
 
 	li {
-		&:hover, &:focus {
+		&:hover,
+		&:focus {
 			background: none;
 		}
 
@@ -52,9 +54,10 @@ export default {
 				margin-right: 0.25rem;
 			}
 
-			&.disabled{
+			&.disabled {
 				text-decoration: none;
 				color: $gray;
+
 				&:hover {
 					color: $gray;
 					cursor: text;

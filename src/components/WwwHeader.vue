@@ -131,8 +131,8 @@ $search-centering-margin-small: 0.32rem;
 $search-button-size-small: 2.5rem;
 $search-icon-size: $top-nav-font-size - $top-nav-font-reduction;
 
-$search-input-width-small: calc(100% - #{$search-margin-small} );
-$search-input-width: calc(100% - #{$search-margin} );
+$search-input-width-small: calc(100% - #{$search-margin-small});
+$search-input-width: calc(100% - #{$search-margin});
 $search-input-padding: $search-margin;
 $search-input-padding-small: $search-margin-small;
 
@@ -141,11 +141,11 @@ $search-input-padding-small: $search-margin-small;
 	position: relative;
 
 	.columns {
-		padding:0;
+		padding: 0;
 
 		@media #{$large-up} {
-			padding:0;
-			width:auto;
+			padding: 0;
+			width: auto;
 		}
 
 		.kv-dropdown {
@@ -162,7 +162,7 @@ $search-input-padding-small: $search-margin-small;
 	}
 
 	.header-column:last-child > a {
-		border-right:none;
+		border-right: none;
 	}
 
 	.logo-area .header-button {
@@ -208,7 +208,6 @@ $search-input-padding-small: $search-margin-small;
 		margin-top: rem-calc(11);
 		color: $kiva-darkgreen;
 
-
 		.amount {
 			background-color: $kiva-darkgreen;
 		}
@@ -236,7 +235,7 @@ $search-input-padding-small: $search-margin-small;
 		border-top: none;
 		z-index: 1112;
 
-		&:after {
+		&::after {
 			display: none;
 		}
 
@@ -263,19 +262,22 @@ $search-input-padding-small: $search-margin-small;
 }
 
 .header-button {
-	display:block;
-	padding:0;
+	display: block;
+	padding: 0;
 	line-height: $header-height-small;
 	background-color: $kiva-green;
 	white-space: nowrap;
 	text-align: center;
 
 	@media #{$large-up} {
-		padding:0 $header-height/4;
+		padding: 0 $header-height/4;
 		line-height: $header-height;
 	}
 
-	&:link, &:visited, &:hover, &:active {
+	&:link,
+	&:visited,
+	&:hover,
+	&:active {
 		color: $white;
 		text-decoration: none;
 
@@ -296,7 +298,7 @@ $search-input-padding-small: $search-margin-small;
 		}
 	}
 
-	&[aria-expanded="true"]{
+	&[aria-expanded="true"] {
 		color: $kiva-darkgreen;
 
 		.icon {
@@ -315,7 +317,8 @@ $search-input-padding-small: $search-margin-small;
 		}
 	}
 
-	img, .circle-avatar {
+	img,
+	.circle-avatar {
 		margin-top: -$header-height-small/16;
 
 		@media #{$large-up} {
@@ -437,6 +440,7 @@ $search-input-padding-small: $search-margin-small;
 
 	input {
 		$search-input-padding: 0.6rem;
+
 		width: $search-input-width-small;
 		padding: $search-input-padding-small $search-input-padding-small $search-input-padding-small ($top-nav-font-size * 1.5);
 		margin: $search-centering-margin-small 0;
@@ -464,7 +468,7 @@ $search-input-padding-small: $search-margin-small;
 	.close-icon {
 		width: $top-nav-font-size - $top-nav-font-reduction;
 		height: $search-button-size-small;
-		fill:none;
+		fill: none;
 		stroke: $kiva-darkgreen;
 	}
 }
@@ -472,7 +476,6 @@ $search-input-padding-small: $search-margin-small;
 .top-nav-search-menu {
 	padding: $search-margin-small;
 }
-
 
 @media #{$large-up} {
 	.search-button-container {
@@ -485,17 +488,18 @@ $search-input-padding-small: $search-margin-small;
 	bottom: 0;
 	height: rem-calc(66);
 	width: 100%;
-	z-index:1111;
-	box-shadow: 0px -1px 3px 0px rgba(51,51,51,0.3);
+	z-index: 1111;
+	box-shadow: 0 -1px 3px 0 rgba(51, 51, 51, 0.3);
 	transition: bottom 500ms ease;
 
 	a {
 		font-size: 1.1666666667rem !important;
 		width: 100%;
 		display: block;
+
 		&.button {
-		   height: rem-calc(66);
-		   line-height: rem-calc(66);
+			height: rem-calc(66);
+			line-height: rem-calc(66);
 		}
 	}
 }
@@ -506,7 +510,6 @@ $search-input-padding-small: $search-margin-small;
 
 @media #{$small-only}, #{$medium-only} {
 	.top-nav {
-
 		.small-1-8th {
 			width: grid-calc(1, 8);
 		}
@@ -516,14 +519,14 @@ $search-input-padding-small: $search-margin-small;
 		}
 
 		.columns {
-			padding:0;
+			padding: 0;
 		}
 
 		.right-side {
 			padding: 0;
 
 			.columns:first-child a {
-				border-left:none;
+				border-left: none;
 			}
 		}
 
@@ -534,7 +537,8 @@ $search-input-padding-small: $search-margin-small;
 			left: 0 !important;
 			width: 100% !important;
 
-			&:before, &:after {
+			&::before,
+			&::after {
 				display: none;
 			}
 		}
@@ -551,7 +555,7 @@ $search-input-padding-small: $search-margin-small;
 	margin-left: 0.3rem;
 	margin-right: 0.3rem;
 	display: inline-block;
-	border-radius:50%;
+	border-radius: 50%;
 	background-position-y: center;
 	background-position-x: center;
 	background-repeat: no-repeat;

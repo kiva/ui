@@ -13,6 +13,7 @@ export default {
 
 .lend-list-menu {
 	$row-height: $header-height-small - 1rem;
+
 	list-style: none;
 	margin: 0;
 	background-color: $level-one-background;
@@ -34,9 +35,10 @@ export default {
 			text-decoration: none;
 		}
 
-		&.disabled{
+		&.disabled {
 			text-decoration: none;
 			color: $gray;
+
 			&:hover {
 				color: $gray;
 			}
@@ -45,6 +47,7 @@ export default {
 		&[aria-expanded="false"] .open {
 			display: none;
 		}
+
 		&[aria-expanded="true"] {
 			color: $dropdown-selected-color;
 
