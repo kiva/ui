@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var utils = require('./utils');
 var config = require('../config');
 var vueLoaderConfig = require('./vue-loader.conf');
+var StylelintPlugin = require('stylelint-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -97,6 +98,10 @@ let webpackConfig = {
 		// 	jQuery: 'jquery',
 		// 	Foundation: 'foundation'
 		// })
+		new StylelintPlugin({
+			files: ['src/**/*.vue', 'src/**/*.scss'],
+			syntax: 'scss'
+		}),
 	]
 }
 

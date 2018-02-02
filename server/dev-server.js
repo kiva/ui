@@ -25,11 +25,14 @@ const clientCompiler = webpack(clientConfig);
 const serverCompiler = webpack(serverConfig);
 const devMiddleware = webpackDevMiddleware(clientCompiler, {
 	noInfo: true,
+	quiet: true,
+	stats: false,
 	publicPath: clientConfig.output.publicPath,
 	// serverSideRender: true,
 });
 const hotMiddleware = webpackHotMiddleware(clientCompiler, {
-	path: '/__ui_hmr'
+	path: '/__ui_hmr',
+	log: () => {}
 });
 
 // file reader helper
@@ -66,11 +69,8 @@ chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () =
 
 // update when the client manifest changes
 clientCompiler.plugin('done', rawStats => {
-	// display any errors/warnings
-	const stats = rawStats.toJson();
-	stats.errors.forEach(err => console.error(err));
-	stats.warnings.forEach(err => console.warn(err));
 	// abort if there were errors
+	const stats = rawStats.toJson();
 	if (stats.errors.length) return;
 
 	// read client manifest from dev-middleware filesystem
