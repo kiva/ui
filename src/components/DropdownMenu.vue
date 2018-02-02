@@ -16,7 +16,8 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-@import 'foundation/components/dropdown';
+@import 'foundation';
+@include foundation-dropdown-menu;
 
 ul.dropdown-list {
 	background-color: $level-two-background;

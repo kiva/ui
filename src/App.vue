@@ -7,7 +7,9 @@
 
 <script>
 import 'modernizr';
-import 'foundation/foundation';
+// import 'foundation/foundation';
+import 'foundation/foundation.core';
+import 'foundation/foundation.util.mediaQuery';
 
 export default {
 	name: 'app',
@@ -28,9 +30,7 @@ export default {
 <style lang="scss">
 // import all the variables
 @import 'settings';
-
-// reset the browser styles
-@import 'normalize';
+@import 'foundation';
 
 // import global styles
 @import 'global/page-layout';
@@ -39,9 +39,9 @@ export default {
 @import 'global/line-breaks';
 
 // import global foundation components
-@import 'foundation/components/grid';
-@import 'foundation/components/type';
-@import 'foundation/components/visibility';
+@include foundation-global-styles;
+@include foundation-grid;
+@include foundation-visibility;
 
 // import overrides
 @import 'vendor_override/foundation/type';

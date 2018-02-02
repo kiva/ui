@@ -27,5 +27,5 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-@import 'foundation/components/dropdown-buttons';
+// @import 'foundation/components/dropdown-buttons';
 </style>
