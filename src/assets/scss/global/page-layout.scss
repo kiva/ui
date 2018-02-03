@@ -1,12 +1,12 @@
-@import 'settings';
+// @import 'settings';
 
-* {
-	margin: 0;
-}
+// * {
+// 	margin: 0;
+// }
 
 html,
 body {
 	height: 100%;
-	-webkit-font-smoothing: antialiased; /* fix font issues in webkit browsers on osx/ios */
+	// -webkit-font-smoothing: antialiased; /* fix font issues in webkit browsers on osx/ios */
 	-moz-osx-font-smoothing: grayscale; /* fix font issues in firefox on osx */
 }

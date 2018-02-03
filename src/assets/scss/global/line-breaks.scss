@@ -12,46 +12,46 @@ br.lu {
 }
 
 br.so {
-	@media #{$small-only} {
+	@include breakpoint(small only) {
 		display: inline;
 	}
 }
 
 br.mo {
-	@media #{$medium-only} {
+	@include breakpoint(medium only) {
 		display: inline;
 	}
 }
 
 br.lo {
-	@media #{$large-only} {
+	@include breakpoint(large only) {
 		display: inline;
 	}
 }
 
 br.xlo {
-	@media #{$xlarge-only} {
+	@include breakpoint(xlarge only) {
 		display: inline;
 	}
 }
 
 br.xxlo {
-	@media #{$xxlarge-only} {
+	@include breakpoint(xxlarge only) {
 		display: inline;
 	}
 }
 
 br.smo {
-	@media #{$small-only} {
+	@include breakpoint(small only) {
 		display: inline;
 	}
-	@media #{$medium-only} {
+	@include breakpoint(medium only) {
 		display: inline;
 	}
 }
 
 br.lu {
-	@media #{$large-up} {
+	@include breakpoint(large) {
 		display: inline;
 	}
 }

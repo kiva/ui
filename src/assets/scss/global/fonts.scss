@@ -1,4 +1,4 @@
-@import 'settings';
+// @import 'settings';
 
 @font-face {
 	font-family: 'PostGrotesk';
@@ -80,20 +80,20 @@
 	font-style: italic;
 }
 
-.light {
-	font-weight: 100;
-}
-
-.book {
-	font-weight: 300;
-}
-
-::selection {
-	background-color: $divider-green;
-	color: $white;
-}
-
-::-moz-selection {
-	background-color: $divider-green;
-	color: $white;
-}
+// .light {
+// 	font-weight: 100;
+// }
+//
+// .book {
+// 	font-weight: 300;
+// }
+//
+// ::selection {
+// 	background-color: $divider-green;
+// 	color: $white;
+// }
+//
+// ::-moz-selection {
+// 	background-color: $divider-green;
+// 	color: $white;
+// }
