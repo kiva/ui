@@ -20,8 +20,15 @@ Recommended packages:
 - [minimap](https://atom.io/packages/minimap) to show a preview of the full source code.
 
 ## VSCode
-[Vetur Vue Tools](https://github.com/vuejs/vetur)
-[SCSS Style Linting](https://stylelint.io/) (Requires some additional setup)
+
+Command Shift P - to install extensions
+
+- [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur) Vuejs syntax + linting
+- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) for enforcing code styles.
+- [ESlint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for Javascript linting.
+
+- [Vue VSCode Snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets) VueJS code snippets
+- [SCSS Style Linting](https://stylelint.io/) (Requires some additional setup)
 
 ## PHPStorm
 
