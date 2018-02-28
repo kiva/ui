@@ -3,18 +3,17 @@ const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
 	root: true,
-	parser: 'babel-eslint',
 	parserOptions: {
-		sourceType: 'module'
+		parser: 'babel-eslint'
 	},
 	env: {
 		browser: true,
 	},
-	extends: 'airbnb-base',
+	extends: ['plugin:vue/essential', 'airbnb-base'],
 	// required to lint *.vue files
 	plugins: [
 		'import',
-		'html'
+		'vue'
 	],
 	// check if imports actually resolve
 	settings: {
