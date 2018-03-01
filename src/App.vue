@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
-		<router-view></router-view>
-		<vue-progress-bar></vue-progress-bar>
+		<router-view/>
+		<vue-progress-bar/>
 	</div>
 </template>
 
@@ -10,7 +10,7 @@ import 'modernizr';
 import 'foundation/foundation';
 
 export default {
-	name: 'app',
+	name: 'App',
 	metaInfo: {
 		title: 'Loans that change lives',
 		titleTemplate: '%s | Kiva',

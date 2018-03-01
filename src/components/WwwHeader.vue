@@ -12,23 +12,31 @@
 				</dropdown-link>
 			</div>
 			<div class="small-1-8th large-1 xxlarge-1 columns" :class="{ 'show-for-large-up': isVisitor }">
-				<search-toggle controls="header-search-form" @toggle="open => searchOpen = open" class="header-button" />
+				<search-toggle controls="header-search-form"
+					@toggle="open => searchOpen = open"
+					class="header-button" />
 			</div>
-			<div class="columns header-column right-side" :class="[ isVisitor ? 'small-6 xx-large-3' : 'small-3-8ths xx-large-2' ]" >
+			<div class="columns header-column right-side"
+				:class="[ isVisitor ? 'small-6 xx-large-3' : 'small-3-8ths xx-large-2' ]"
+			>
 				<div v-if="isVisitor" class="small-6 large-4 columns">
 					<dropdown-link name="about-dropdown" :to="aboutUrl" class="header-button">
 						About <svg-icon name="triangle" />
 					</dropdown-link>
 				</div>
-				<div v-if="showBasket" id="top-basket-button" class="show-for-large-up" :class="[ isVisitor ? 'large-4' : 'large-6' ]">
+				<div v-if="showBasket"
+					id="top-basket-button"
+					class="show-for-large-up"
+					:class="[ isVisitor ? 'large-4' : 'large-6' ]"
+				>
 					<router-link class="header-button" :to="basketUrl">
-						<span class="amount">{{basketCount}}</span> Basket
+						<span class="amount">{{ basketCount }}</span> Basket
 					</router-link>
 				</div>
 				<div class="columns" :class="[ isVisitor ? 'small-6 large-4' : 'small-12 large-6' ]">
 					<router-link v-if="isVisitor" :to="loginUrl" class="header-button">Sign in</router-link>
 					<dropdown-link v-else name="my-kiva-dropdown" :to="portfolioUrl" class="header-button my-kiva">
-						<span class="amount">{{balance | numeral('$0')}}</span>
+						<span class="amount">{{ balance | numeral('$0') }}</span>
 						<span class="circle-avatar" :style="profileStyle"></span>
 					</dropdown-link>
 				</div>
@@ -39,13 +47,13 @@
 		</div>
 		<lend-menu-dropdown />
 		<dropdown-menu name="about-dropdown">
-			<li v-for="item in aboutItems">
-				<router-link :to="item.url">{{item.label}}</router-link>
+			<li v-for="item in aboutItems" :key="item.label">
+				<router-link :to="item.url">{{ item.label }}</router-link>
 			</li>
 		</dropdown-menu>
 		<dropdown-menu name="my-kiva-dropdown">
-			<li v-for="item in myKivaItems">
-				<router-link :to="item.url">{{item.label}}</router-link>
+			<li v-for="item in myKivaItems" :key="item.label">
+				<router-link :to="item.url">{{ item.label }}</router-link>
 			</li>
 		</dropdown-menu>
 	</header>
@@ -134,7 +142,7 @@ $search-icon-size: $top-nav-font-size - $top-nav-font-reduction;
 $search-input-width-small: calc(100% - #{$search-margin-small});
 $search-input-width: calc(100% - #{$search-margin});
 $search-input-padding: $search-margin;
-$search-input-padding-small: $search-margin-small;
+$search-input-padding-s: $search-margin-small;
 
 .top-nav {
 	background-color: $kiva-green;
@@ -442,7 +450,7 @@ $search-input-padding-small: $search-margin-small;
 		$search-input-padding: 0.6rem;
 
 		width: $search-input-width-small;
-		padding: $search-input-padding-small $search-input-padding-small $search-input-padding-small ($top-nav-font-size * 1.5);
+		padding: $search-input-padding-s $search-input-padding-s $search-input-padding-s ($top-nav-font-size * 1.5);
 		margin: $search-centering-margin-small 0;
 		display: inline-block;
 		height: auto;

@@ -1,7 +1,11 @@
 <template>
 	<form :id="name" :aria-hidden="closedAttr" action=".">
 		<div>
-			<button id="close-search" aria-controls="search-form" aria-hidden="true" :aria-expanded="openAttr" class="hide-for-large-up">
+			<button id="close-search" class="hide-for-large-up"
+				aria-controls="search-form"
+				aria-hidden="true"
+				:aria-expanded="openAttr"
+			>
 				<svg-icon class="close-icon" name="x" />
 			</button>
 			<svg-icon class="search-icon" name="magnify-glass" />
@@ -15,7 +19,10 @@
 import SvgIcon from '@/components/SvgIcon';
 
 export default {
-	props: ['name', 'open'],
+	props: {
+		name: { type: String, required: true },
+		open: { type: Boolean, default: false },
+	},
 	components: { SvgIcon },
 	computed: {
 		openAttr() {

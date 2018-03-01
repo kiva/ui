@@ -12,9 +12,10 @@
 				<router-link to="">Privacy policy</router-link> | <router-link to="">Terms of use</router-link>
 			</div>
 			<p>
-				Lending through Kiva involves risk of principal loss. Kiva does not guarantee repayment or offer a financial return on your loan.
-				<br/>
-				&copy; {{year}} Kiva. All rights reserved.
+				Lending through Kiva involves risk of principal loss.
+				Kiva does not guarantee repayment or offer a financial return on your loan.
+				<br>
+				&copy; {{ year }} Kiva. All rights reserved.
 			</p>
 		</nav>
 		<nav class="large-footer row show-for-large-up">
@@ -59,7 +60,8 @@
 				</div>
 				<div class="small-6 columns">
 					<p>
-						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people. Founded in 2005, and based in San Francisco, with offices in Nairobi and staff around the globe.
+						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
+						Founded in 2005, and based in San Francisco, with offices in Nairobi and staff around the globe.
 						<router-link to="">Donate to our operating expenses.</router-link>
 					</p>
 				</div>
@@ -75,9 +77,10 @@
 				</div>
 				<div class="small-6 columns">
 					<p>
-						Lending through Kiva involves risk of principal loss. Kiva does not guarantee repayment or offer a financial return on your loan.
-						<br/><br/>
-						&copy; {{year}} Kiva. All rights reserved.
+						Lending through Kiva involves risk of principal loss.
+						Kiva does not guarantee repayment or offer a financial return on your loan.
+						<br><br>
+						&copy; {{ year }} Kiva. All rights reserved.
 					</p>
 				</div>
 			</div>
