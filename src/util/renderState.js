@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import _map from 'lodash/map';
 import serialize from 'serialize-javascript';
 
