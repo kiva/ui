@@ -13,7 +13,10 @@
 import 'foundation/foundation.dropdown';
 
 export default {
-	props: ['name', 'to', 'linkClass'],
+	props: {
+		name: { type: String, required: true },
+		to: { type: String, required: true }
+	},
 	data() {
 		return {
 			options: 'is_hover:true;hover_timeout:200;',

@@ -2,13 +2,15 @@
 	<div>
 		<label>Prod Routes</label>
 		<ul>
-			<li v-for="route in prodRoutes">Name: {{ route.name }}, Path: {{ route.path }}, Status: {{ route.status }}
+			<li v-for="route in prodRoutes" :key="route.path">
+				Name: {{ route.name }}, Path: {{ route.path }}, Status: {{ route.status }}
 				<p><router-link :to="route.path">go to {{ route.name }}</router-link></p>
 			</li>
 		</ul>
 		<label>Dev Routes</label>
 		<ul>
-			<li v-for="route in devRoutes">Name: {{ route.name }}, Path: {{ route.path }}, Status: {{ route.status }}
+			<li v-for="route in devRoutes" :key="route.path">
+				Name: {{ route.name }}, Path: {{ route.path }}, Status: {{ route.status }}
 				<p><router-link :to="route.path">go to {{ route.name }}</router-link></p>
 			</li>
 		</ul>

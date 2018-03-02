@@ -13,7 +13,9 @@
 import SvgIcon from '@/components/SvgIcon';
 
 export default {
-	props: ['controls'],
+	props: {
+		controls: { type: String, required: true }
+	},
 	components: { SvgIcon },
 	data() {
 		return {
