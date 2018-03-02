@@ -9,7 +9,7 @@ These packages can all be added from within Atom in the Settings -> Install sect
 Essential packages:
 - [editorconfig](https://atom.io/packages/editorconfig) for enforcing code styles.
 - [language-vue](https://atom.io/packages/language-vue) for Vuejs single file component support.
-- [linter-eslint](https://atom.io/packages/linter-eslint) for Javascript linting.
+- [linter-eslint](https://atom.io/packages/linter-eslint) for Javascript linting. (Add `text.html.vue` to the linter-eslint scopes setting)
 - [linter-stylelint](https://atom.io/packages/linter-stylelint) for SCSS linting. (Currently doesn't work for .vue files)
 
 Recommended packages:
