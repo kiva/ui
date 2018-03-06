@@ -67,62 +67,56 @@
 
 $global-font-size: 100%;
 $global-width: rem-calc(990);
-$global-lineheight: 1.5;
-$foundation-palette: (
-  primary: #1779ba,
-  secondary: #767676,
-  success: #3adb76,
-  warning: #ffae00,
-  alert: #cc4b37,
-  green: #63a541,
-  dark-green: #236133,
-  graphic-green: #488443,
-  divider-green: #49953f,
-  light-green: #a9d14c,
-  blue: #26b6e8,
-  sky-blue: #22a9d8,
-  faded-blue: #6698a9,
-  pale-blue: #d2f0f8,
-  highlight-blue: #0d8ebb,
-  light-blue-gray: #DBE3E5,
-  red: #9C021A,
-  vivid-yellow: #FEF37B,
-  ghost: #FAFAFA,
-  platinum: #efefef,
-  light-gray: #d8d8d8,
-  charcoal: #333,
-  dark-gray: #666,
-  gray: #999,
-);
+$global-lineheight: 1.75rem;
 
-$light-gray: get-color(light-gray);
-$medium-gray: get-color(gray);
-$gray: get-color(gray);
-$dark-gray: get-color(dark-gray);
-$light-blue-gray: get-color(light-blue-gray);
-$black: #000;
+// Colors
+$green: #4faf4e;
+$dark-green: #247037;
+$graphic-green: #488443;
+$divider-green: #49953f;
+$light-green: #aee15c;
+$blue: #118aec;
+$sky-blue: $blue;
+$faded-blue: #0066a9;
+$pale-blue: #d2f0f8;
+$dark-blue: #006ed3;
+$highlight-blue: #006ed3;
+$shadow-blue: #1f92ba;
+$shadow-lightblue: #6badc2;
+$red: #d74937;
+$purple: #6859c0;
+$vivid-yellow: #fee259;
 $white: #fff;
+$ghost: #fafafa;
+$platinum: #efefef;
+$light-gray: #d8d8d8;
+$gray: #999;
+$medium-gray: $gray;
+$dark-gray: #666;
+$charcoal: #333;
+$black: #000;
 
 // Kiva functional color names
-$kiva-green: get-color(green);
-$kiva-darkgreen: get-color(dark-green);
-$kiva-accent-green: get-color(light-green);
-$kiva-accent-blue: get-color(blue);
-$kiva-accent-red: get-color(red);
-$kiva-alert-yellow: get-color(vivid-yellow);
-$kiva-icon-green: get-color(graphic-green);
-$kiva-navdivider-green: get-color(divider-green);
-$kiva-bg-lightgray: get-color(ghost);
-$kiva-bg-darkgray: get-color(platinum);
-$kiva-stroke-gray: get-color(light-gray);
-$kiva-text-dark: get-color(charcoal);
-$kiva-text-medium: get-color(dark-gray);
-$kiva-text-light: get-color(gray);
-$kiva-textlink: get-color(sky-blue);
-$kiva-textlink-visited: get-color(faded-blue);
-$kiva-textlink-hover: get-color(highlight-blue);
-$kiva-filter-indicator: get-color(blue);
-$kiva-filter-indicator-bg: get-color(pale-blue);
+$kiva-green: $green;
+$kiva-darkgreen: $dark-green;
+$kiva-accent-green: $light-green;
+$kiva-accent-blue: $blue;
+$kiva-accent-darkblue: $dark-blue;
+$kiva-accent-red: $red;
+$kiva-accent-purple: $purple;
+$kiva-alert-yellow: $vivid-yellow;
+$kiva-icon-green: $graphic-green;
+$kiva-navdivider-green: $divider-green;
+$kiva-bg-lightgray: $ghost;
+$kiva-bg-darkgray: $platinum;
+$kiva-stroke-gray: $light-gray;
+$kiva-text-dark: $charcoal;
+$kiva-text-medium: $dark-gray;
+$kiva-text-light: $gray;
+$kiva-textlink: $blue;
+$kiva-textlink-hover: $highlight-blue;
+$kiva-filter-indicator: $blue;
+$kiva-filter-indicator-bg: $pale-blue;
 
 // social media icon colors
 $facebook-hover-color:	#3b5998;
@@ -132,6 +126,15 @@ $yelp-hover-color:		#bd081c;
 $youtube-hover-color:	#cd201f;
 $linkedin-hover-color:	#0077b5;
 $instagram-hover-color:	#0a0b09;
+
+$foundation-palette: (
+  primary: $blue,
+  secondary: $white,
+  success: $green,
+  warning: $vivid-yellow,
+  alert: $red,
+);
+@include add-foundation-colors;
 
 $body-background: $white;
 $body-font-color: $kiva-text-dark;
@@ -151,8 +154,6 @@ $global-prototype-breakpoints: false;
 $global-button-cursor: pointer;
 $global-color-pick-contrast-tolerance: 0;
 $print-transparent-backgrounds: true;
-
-@include add-foundation-colors;
 
 // 2. Breakpoints
 // --------------
@@ -222,10 +223,10 @@ $code-font-weight: $global-weight-normal;
 $code-background: $light-gray;
 $code-border: 1px solid $medium-gray;
 $code-padding: rem-calc(2 5 1);
-$anchor-color: $primary-color;
-$anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
+$anchor-color: $kiva-textlink;
+$anchor-color-hover: $kiva-textlink-hover;
 $anchor-text-decoration: none;
-$anchor-text-decoration-hover: none;
+$anchor-text-decoration-hover: underline;
 $hr-width: $global-width;
 $hr-border: 1px solid $medium-gray;
 $hr-margin: rem-calc(20) auto;
