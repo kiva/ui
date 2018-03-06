@@ -18,6 +18,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
-@import 'foundation/components/dropdown';
+// @import 'settings';
+// @import 'foundation';
+// @include foundation-dropdown;
 </style>

@@ -25,7 +25,7 @@ let webpackConfig = {
 		extensions: ['.js', '.vue', '.json'],
 		alias: {
 			'@': resolve('src'),
-			'foundation': 'foundation-sites/js/foundation',
+			'foundation': 'foundation-sites/js',
 			'modernizr': 'npm-modernizr',
 		}
 	},

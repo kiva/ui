@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import $ from 'jquery';
+// import $ from 'jquery';
 import 'foundation/foundation.dropdown';
 
 export default {
@@ -23,12 +23,12 @@ export default {
 		};
 	},
 	mounted() {
-		$(document).foundation('dropdown', {});
+		// $(document).foundation('dropdown', {});
 	},
 };
 </script>
 
 <style lang="scss">
 @import 'settings';
-@import 'foundation/components/dropdown-buttons';
+// @import 'foundation/components/dropdown-buttons';
 </style>

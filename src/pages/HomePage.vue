@@ -21,23 +21,23 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.menu {
-	ul {
-		list-style: none;
-		margin: 0;
-		display: flex;
-		flex-flow: column wrap;
-		align-items: flex-start;
-		align-content: flex-start;
-		height: 11rem;
-	}
-
-	li {
-		margin-right: 1rem;
-	}
-
-	li.last {
-		flex-grow: 1;
-	}
-}
+// .menu {
+// 	ul {
+// 		list-style: none;
+// 		margin: 0;
+// 		display: flex;
+// 		flex-flow: column wrap;
+// 		align-items: flex-start;
+// 		align-content: flex-start;
+// 		height: 11rem;
+// 	}
+//
+// 	li {
+// 		margin-right: 1rem;
+// 	}
+//
+// 	li.last {
+// 		flex-grow: 1;
+// 	}
+// }
 </style>

@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import 'modernizr';
-import 'foundation/foundation';
+import 'foundation/foundation.core';
+import 'foundation/foundation.util.mediaQuery';
 
 export default {
 	name: 'App',
@@ -19,32 +19,23 @@ export default {
 		// Vue instance is only available attached this within the export block
 		// console.log(this);
 	},
-	beforeMount() {
-		window.Foundation = window.Foundation || { global: { namespace: '' } };
-	},
 };
 </script>
 
 <style lang="scss">
 // import all the variables
 @import 'settings';
-
-// reset the browser styles
-@import 'normalize';
+@import 'foundation';
 
 // import global styles
 @import 'global/page-layout';
 @import 'global/fonts';
-@import 'global/colors';
 @import 'global/line-breaks';
 
 // import global foundation components
-@import 'foundation/components/grid';
-@import 'foundation/components/type';
-@import 'foundation/components/visibility';
-
-// import overrides
-@import 'vendor_override/foundation/type';
+@include foundation-global-styles;
+@include foundation-flex-grid;
+@include foundation-visibility-classes;
 
 #app {
 	height: 100%;
