@@ -139,7 +139,7 @@ svg.icon {
 	&.icon-high-five,
 	&.icon-megaphone,
 	&.icon-money-muscle {
-		fill: $light-blue-gray;
+		fill: #dbe3e5;
 		color: $kiva-green;
 	}
 
