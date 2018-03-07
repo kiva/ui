@@ -4,6 +4,8 @@ var utils = require('./utils');
 var config = require('../config');
 var vueLoaderConfig = require('./vue-loader.conf');
 var StylelintPlugin = require('stylelint-webpack-plugin');
+// Can be removed once we update to Webpack 4
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -110,8 +112,10 @@ if (isProd) {
 	const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 
 	webpackConfig.plugins.push(
-		new webpack.optimize.UglifyJsPlugin({
-			compress: { warnings: false }
+		new UglifyJsPlugin({
+			uglifyOptions: {
+				compress: { warnings: false }
+			}
 			, sourceMap: true
 		}),
 		new webpack.optimize.ModuleConcatenationPlugin(),
