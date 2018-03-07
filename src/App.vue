@@ -36,6 +36,7 @@ export default {
 @include foundation-global-styles;
 @include foundation-flex-grid;
 @include foundation-visibility-classes;
+@include foundation-typography;
 
 #app {
 	height: 100%;
