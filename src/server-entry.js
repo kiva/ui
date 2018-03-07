@@ -27,6 +27,7 @@ export default context => {
 				cookie: _map(cookies, (val, name) => cookie.serialize(name, val)).join('; '),
 				csrfToken: cookies.kvis && cookies.kvis.substr(6),
 				uri: config.graphqlUri,
+				types: config.graphqlFragmentTypes
 			}
 		});
 

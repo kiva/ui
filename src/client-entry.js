@@ -16,6 +16,7 @@ const {
 	apollo: {
 		uri: config.graphqlUri,
 		csrfToken: cookie.get('kvis') && cookie.get('kvis').substr(6),
+		types: config.graphqlFragmentTypes,
 	}
 });
 

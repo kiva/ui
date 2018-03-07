@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
+const getGqlFragmentTypes = require('./getGqlFragmentTypes');
 const config = require('../config/dev-vm');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -45,11 +46,20 @@ module.exports = function createMiddleware({ serverBundle, clientManifest }) {
 
 		res.setHeader('Content-Type', 'text/html');
 
-		renderer.renderToString(context).then(html => {
-			res.send(html);
-			if (!isProd) {
-				console.log(`whole request: ${Date.now() - s}ms`);
-			}
-		}).catch(err => handleError(err, req, res));
+		getGqlFragmentTypes(config.server.graphqlUri)
+			.then(types => {
+				if (!isProd) {
+					console.log(`fragment fetch: ${Date.now() - s}ms`);
+				}
+				context.config.graphqlFragmentTypes = types;
+				return renderer.renderToString(context);
+			})
+			.then(html => {
+				res.send(html);
+				if (!isProd) {
+					console.log(`whole request: ${Date.now() - s}ms`);
+				}
+			})
+			.catch(err => handleError(err, req, res));
 	};
 };
