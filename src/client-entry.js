@@ -47,7 +47,14 @@ router.onReady(() => {
 
 	router.beforeEach((to, from, next) => {
 		app.$Progress.start(6500);
-		next();
+
+		// if no routes match our path, force a page refresh to that path
+		const matched = router.getMatchedComponents(to);
+		if (!matched.length) {
+			window.location = to.fullPath;
+		} else {
+			next();
+		}
 	});
 
 	router.afterEach(() => app.$Progress.finish());
