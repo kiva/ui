@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:6-alpine'
+            image 'kiva:node6'
             args '-p 8888:8888'
         }
     }
