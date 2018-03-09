@@ -1,8 +1,10 @@
 pipeline {
     agent {
-        label 'xenial-jenkins-docker'
-        image 'kiva:node6'
-        // args '-p 8888:8888'
+        docker {
+            label 'xenial-jenkins-docker'
+            image 'kiva:node6'
+            // args '-p 8888:8888'
+        }
     }
     environment {
         CI = 'true'
