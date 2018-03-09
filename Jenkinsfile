@@ -1,10 +1,10 @@
 pipeline {
-/*    agent {
-        docker {
-            image 'kiva:node6'
-            args '-p 8888:8888'
-        }
-    } */
+    agent any 
+//        docker {
+//            image 'kiva:node6'
+//            args '-p 8888:8888'
+//        }
+//    }
     environment {
         CI = 'true'
     }
