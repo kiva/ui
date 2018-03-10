@@ -1,5 +1,7 @@
 # Kiva UI
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/kiva/ui.svg)](https://greenkeeper.io/)
+
 > a.k.a. Uue Lewis and the Views
 
 [![Build Status](https://travis-ci.org/kiva/ui.svg?branch=master)](https://travis-ci.org/kiva/ui)
