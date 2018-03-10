@@ -1,14 +1,15 @@
 const express = require('express');
-const conf = require('../config');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
+const argv = require('minimist')(process.argv.slice(2));
+const config = require('../config/selectConfig')(argv.config);
 
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
 
 const app = express();
-const port = process.env.PORT || conf.server.port;
+const port = argv.port || config.server.port;
 
 app.use(express.static('dist'));
 
@@ -18,6 +19,7 @@ app.use('/available-routes', serverRoutes);
 app.use(vueMiddleware({
 	serverBundle,
 	clientManifest,
+	config,
 }));
 
 app.listen(port, () => console.log(`server started at localhost:${port}`));

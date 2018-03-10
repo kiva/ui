@@ -3,6 +3,7 @@ var path = require('path')
 
 module.exports = {
 	server: {
+		cdnDomain: 'www-kiva-org.global.ssl.fastly.net',
 		env: require('./env/prod.env'),
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
 		port: 8888,
