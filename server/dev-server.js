@@ -12,12 +12,13 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
-const conf = require('../config');
+const argv = require('minimist')(process.argv.slice(2));
+const config = require('../config/selectConfig')(argv.config || 'dev-vm');
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
 
 // app init
-const port = process.env.PORT || conf.dev.port;
+const port = argv.port || config.server.port;
 const app = express();
 
 // webpack setup
@@ -55,7 +56,8 @@ const updateHandler = () => {
 	if (clientManifest && serverBundle) {
 		handler = vueMiddleware({
 			clientManifest,
-			serverBundle
+			serverBundle,
+			config,
 		});
 		resolveHandlerReady();
 	}
