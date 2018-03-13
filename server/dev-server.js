@@ -24,8 +24,7 @@ const app = express();
 const clientCompiler = webpack(clientConfig);
 const serverCompiler = webpack(serverConfig);
 const devMiddleware = webpackDevMiddleware(clientCompiler, {
-	noInfo: true,
-	quiet: true,
+	logLevel: 'silent',
 	stats: false,
 	publicPath: clientConfig.output.publicPath,
 	// serverSideRender: true,
