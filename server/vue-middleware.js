@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
-const getGqlFragmentTypes = require('./getGqlFragmentTypes');
-const config = require('../config/dev-vm');
+const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -22,8 +21,12 @@ function handleError(err, req, res) {
 	}
 }
 
-module.exports = function createMiddleware({ serverBundle, clientManifest }) {
+module.exports = function createMiddleware({ serverBundle, clientManifest, config }) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
+
+	if (typeof config === 'undefined' || typeof config.server === 'undefined') {
+		throw new TypeError('Missing configuration');
+	}
 
 	return function middleware(req, res) {
 		console.log('---------> rendering server');
