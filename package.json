@@ -104,7 +104,7 @@
 		"shelljs": "^0.8.1",
 		"sinon": "^4.4.2",
 		"sinon-chai": "^2.14.0",
-		"stylelint": "^8.4.0",
+		"stylelint": "^9.1.2",
 		"stylelint-config-standard": "^18.2.0",
 		"stylelint-processor-arbitrary-tags": "^0.1.0",
 		"stylelint-scss": "^2.1.0",
