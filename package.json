@@ -46,6 +46,7 @@
 		"webpack-merge": "^4.1.2"
 	},
 	"devDependencies": {
+		"@mapbox/stylelint-processor-arbitrary-tags": "^0.2.0",
 		"autoprefixer": "^8.1.0",
 		"babel-core": "^6.26.0",
 		"babel-eslint": "^8.2.2",
@@ -95,10 +96,9 @@
 		"shelljs": "^0.8.1",
 		"sinon": "^4.4.2",
 		"sinon-chai": "^2.14.0",
-		"stylelint": "^8.4.0",
+		"stylelint": "^9.1.2",
 		"stylelint-config-standard": "^18.2.0",
-		"stylelint-processor-arbitrary-tags": "^0.1.0",
-		"stylelint-scss": "^2.1.0",
+		"stylelint-scss": "^2.5.0",
 		"stylelint-webpack-plugin": "^0.10.1",
 		"uglifyjs-webpack-plugin": "^1.2.2",
 		"url-loader": "^1.0.1",

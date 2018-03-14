@@ -1,5 +1,5 @@
 {
-  "processors": [ "stylelint-processor-arbitrary-tags" ],
+  "processors": [ "@mapbox/stylelint-processor-arbitrary-tags" ],
   "plugins": [ "stylelint-scss" ],
   "extends": "stylelint-config-standard",
   "rules": {
