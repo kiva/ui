@@ -28,7 +28,6 @@ let webpackConfig = {
 		alias: {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
-			'modernizr': 'npm-modernizr',
 		}
 	},
 	module: {
@@ -55,10 +54,6 @@ let webpackConfig = {
 			{
 				test: /js\/foundation/,
 				use: 'imports-loader?jQuery=jquery'
-			},
-			{
-				test: /npm-modernizr/,
-				use: 'imports-loader?this=>window'
 			},
 			{
 				test: /\.(graphql|gql)$/,

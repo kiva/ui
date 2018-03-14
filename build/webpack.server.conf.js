@@ -29,7 +29,7 @@ module.exports = merge(baseWebpackConfig, {
 			'process.env.VUE_ENV': '"server"'
 		}),
 		// suppress client-side-only modules
-		new webpack.NormalModuleReplacementPlugin(/(modernizr|foundation)/, noop),
+		new webpack.NormalModuleReplacementPlugin(/foundation/, noop),
 		// extract css into its own file
 		// new ExtractTextPlugin({
 		// 	filename: utils.assetsPath('css/[name].[contenthash].css')
