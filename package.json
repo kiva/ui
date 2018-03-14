@@ -30,6 +30,7 @@
 		"graphql-tag": "^2.5.0",
 		"isomorphic-fetch": "^2.2.1",
 		"jquery": "^3.3.1",
+		"js-cookie": "^2.2.0",
 		"lodash": "^4.17.4",
 		"lodash-es": "^4.17.4",
 		"minimist": "^1.2.0",
@@ -42,7 +43,8 @@
 		"vue-router": "^3.0.1",
 		"vue-server-renderer": "^2.5.7",
 		"vuex": "^3.0.1",
-		"vuex-router-sync": "^5.0.0"
+		"vuex-router-sync": "^5.0.0",
+		"webpack-merge": "^4.1.2"
 	},
 	"devDependencies": {
 		"autoprefixer": "^8.1.0",
@@ -80,7 +82,6 @@
 		"http-proxy-middleware": "^0.17.3",
 		"imports-loader": "^0.8.0",
 		"inject-loader": "^3.0.0",
-		"js-cookie": "^2.2.0",
 		"karma": "^1.7.1",
 		"karma-coverage": "^1.1.1",
 		"karma-es6-shim": "^1.0.0",
@@ -119,7 +120,6 @@
 		"webpack-bundle-analyzer": "^2.9.1",
 		"webpack-dev-middleware": "^2.0.6",
 		"webpack-hot-middleware": "^2.20.0",
-		"webpack-merge": "^4.1.1",
 		"webpack-node-externals": "^1.6.0",
 		"webpack-svgstore-plugin": "^4.0.1"
 	},
