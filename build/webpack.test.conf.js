@@ -26,7 +26,7 @@ var webpackConfig = merge(baseConfig, {
 			'process.env': require('../config/env/test.env')
 		}),
 		// suppress client-side-only modules
-		new webpack.NormalModuleReplacementPlugin(/(modernizr|foundation)/, noop),
+		new webpack.NormalModuleReplacementPlugin(/foundation/, noop),
 	]
 })
 
