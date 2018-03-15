@@ -12,17 +12,17 @@ describe('my.js', () => {
 				lender: { image: { url: 'http://www.kiva.org' } }
 			};
 			myModule.mutations[types.RECEIVE_MY_KIVA_INFO](state, updates);
-			expect(state.userAccount.id).to.equal(updates.userAccount.id);
-			expect(state.userAccount.balance).to.equal(updates.userAccount.balance);
-			expect(state.lender.image.url).to.equal(updates.lender.image.url);
+			expect(state.userAccount.id).toEqual(updates.userAccount.id);
+			expect(state.userAccount.balance).toEqual(updates.userAccount.balance);
+			expect(state.lender.image.url).toEqual(updates.lender.image.url);
 		});
 
 		it('SIGN_OUT should reset to initial state', () => {
 			const state = {};
 			myModule.mutations[types.SIGN_OUT](state);
-			expect(state.userAccount.id).to.equal(null);
-			expect(state.userAccount.balance).to.equal(0);
-			expect(state.lender.image.url).to.equal('');
+			expect(state.userAccount.id).toEqual(null);
+			expect(state.userAccount.balance).toEqual(0);
+			expect(state.lender.image.url).toEqual('');
 		});
 	});
 });

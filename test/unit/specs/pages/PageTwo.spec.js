@@ -3,9 +3,9 @@ import PageTwo from '@/pages/PageTwo';
 describe('PageTwo.vue', () => {
 	it('asyncData() should dispatch the \'hello\' action', () => {
 		const store = {
-			dispatch: sinon.spy()
+			dispatch: jest.fn()
 		};
 		PageTwo.asyncData({ store });
-		expect(store.dispatch).to.have.been.calledWith('hello');
+		expect(store.dispatch.mock.calls[0][0]).toBe('hello');
 	});
 });

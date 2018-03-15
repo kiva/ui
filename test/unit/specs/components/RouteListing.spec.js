@@ -8,7 +8,6 @@ describe('RouteListing.vue', () => {
 		const router = createRouter();
 		const Constructor = Vue.extend(RouteListing);
 		const vm = new Constructor({ router }).$mount();
-		expect(vm.$el.querySelectorAll('label').length)
-			.to.equal(2);
+		expect(vm.$el.querySelectorAll('label').length).toEqual(2);
 	});
 });
