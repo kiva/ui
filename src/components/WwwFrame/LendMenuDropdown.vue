@@ -1,18 +1,18 @@
 <template>
-	<dropdown-content name="lend-dropdown">
+	<kv-dropdown-content name="lend-dropdown">
 		<lend-list-menu />
 		<lend-mega-menu />
-	</dropdown-content>
+	</kv-dropdown-content>
 </template>
 
 <script>
-import DropdownContent from '@/components/DropdownContent';
-import LendListMenu from '@/components/LendListMenu';
-import LendMegaMenu from '@/components/LendMegaMenu';
+import KvDropdownContent from '@/components/Kv/Dropdown/KvDropdownContent';
+import LendListMenu from './LendListMenu';
+import LendMegaMenu from './LendMegaMenu';
 
 export default {
 	components: {
-		DropdownContent,
+		KvDropdownContent,
 		LendListMenu,
 		LendMegaMenu,
 	},

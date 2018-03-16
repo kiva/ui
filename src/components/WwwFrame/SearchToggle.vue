@@ -4,19 +4,19 @@
 		:aria-expanded="openAttr"
 		:aria-pressed="openAttr"
 		@click.prevent="toggle">
-		<svg-icon class="search-icon" name="magnify-glass" />
-		<svg-icon class="close-icon" name="x" />
+		<kv-icon class="search-icon" name="magnify-glass" />
+		<kv-icon class="close-icon" name="x" />
 	</button>
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	props: {
 		controls: { type: String, required: true }
 	},
-	components: { SvgIcon },
+	components: { KvIcon },
 	data() {
 		return {
 			open: false,

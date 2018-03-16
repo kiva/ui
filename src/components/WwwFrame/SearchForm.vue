@@ -8,7 +8,7 @@
 			>
 				<svg-icon class="close-icon" name="x" />
 			</button>
-			<svg-icon class="search-icon" name="magnify-glass" />
+			<kv-icon class="search-icon" name="magnify-glass" />
 			<input type="search" id="search-box" placeholder="Search all loans">
 			<input type="submit" class="hidden-submit">
 		</div>
@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	props: {
 		name: { type: String, required: true },
 		open: { type: Boolean, default: false },
 	},
-	components: { SvgIcon },
+	components: { KvIcon },
 	computed: {
 		openAttr() {
 			return this.open ? 'true' : 'false';

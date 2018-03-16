@@ -1,21 +1,21 @@
 <template>
 	<div class="www-page">
-		<www-header />
+		<the-header />
 		<slot name="secondary"></slot>
 		<main>
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
-		<www-footer />
+		<the-footer />
 	</div>
 </template>
 
 <script>
-import WwwHeader from '@/components/WwwHeader';
-import WwwFooter from '@/components/WwwFooter';
+import TheHeader from './TheHeader';
+import TheFooter from './TheFooter';
 
 export default {
-	components: { WwwHeader, WwwFooter },
+	components: { TheHeader, TheFooter },
 };
 </script>
 

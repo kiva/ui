@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import WwwPage from '@/pages/WwwPage';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: { WwwPage },

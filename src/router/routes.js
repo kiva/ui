@@ -1,11 +1,4 @@
-module.exports = [
-	{
-		path: '/two', name: 'page-two', component: () => import('@/pages/PageTwo'), status: 'prod'
-	},
-	{
-		path: '/uue-site-map', name: 'uue-site-map', component: () => import('@/pages/UueSiteMap'), status: 'dev'
-	},
-	{
-		path: '/', name: 'uue-root', component: () => import('@/pages/HomePage'), status: 'dev'
-	},
+export default [
+	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
+	{ path: '/uue-site-map', component: () => import('@/pages/UueSiteMap/UueSiteMapPage') },
 ];
