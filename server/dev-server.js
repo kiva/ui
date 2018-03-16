@@ -14,8 +14,6 @@ const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config || 'dev-vm');
-// Import Middleware for Exposing server routes
-const serverRoutes = require('./available-routes-middleware');
 
 // app init
 const port = argv.port || config.server.port;
@@ -92,9 +90,6 @@ serverCompiler.watch({}, (err, rawStats) => {
 	serverBundle = JSON.parse(readFile(mfs, 'vue-ssr-server-bundle.json'));
 	updateHandler();
 });
-
-// Apply serverRoutes middleware to expose available routes
-app.use('/available-routes', serverRoutes);
 
 // install dev/hot middleware
 app.use(devMiddleware);

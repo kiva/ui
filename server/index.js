@@ -5,16 +5,10 @@ const clientManifest = require('../dist/vue-ssr-client-manifest.json');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config);
 
-// Import Middleware for Exposing server routes
-const serverRoutes = require('./available-routes-middleware');
-
 const app = express();
 const port = argv.port || config.server.port;
 
 app.use(express.static('dist'));
-
-// Apply serverRoutes middleware to expose available routes
-app.use('/available-routes', serverRoutes);
 
 app.use(vueMiddleware({
 	serverBundle,
