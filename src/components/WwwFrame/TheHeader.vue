@@ -3,13 +3,13 @@
 		<div class="row header-row">
 			<div class="small-3 large-2 xxlarge-2 columns header-column logo-area">
 				<router-link class="header-button" :to="logoUrl">
-					<svg-icon name="new-kiva-logo" />
+					<kv-icon name="new-kiva-logo" />
 				</router-link>
 			</div>
 			<div class="small-3 large-2 xxlarge-1 columns header-column">
-				<dropdown-link name="lend-dropdown" :to="lendUrl" class="header-button">
-					Lend <svg-icon name="triangle" />
-				</dropdown-link>
+				<kv-dropdown-link name="lend-dropdown" :to="lendUrl" class="header-button">
+					Lend <kv-icon name="triangle" />
+				</kv-dropdown-link>
 			</div>
 			<div class="small-1-8th large-1 xxlarge-1 columns" :class="{ 'show-for-large-up': isVisitor }">
 				<search-toggle controls="header-search-form"
@@ -20,9 +20,9 @@
 				:class="[ isVisitor ? 'small-6 xx-large-3' : 'small-3-8ths xx-large-2' ]"
 			>
 				<div v-if="isVisitor" class="small-6 large-4 columns">
-					<dropdown-link name="about-dropdown" :to="aboutUrl" class="header-button">
-						About <svg-icon name="triangle" />
-					</dropdown-link>
+					<kv-dropdown-link name="about-dropdown" :to="aboutUrl" class="header-button">
+						About <kv-icon name="triangle" />
+					</kv-dropdown-link>
 				</div>
 				<div v-if="showBasket"
 					id="top-basket-button"
@@ -35,10 +35,10 @@
 				</div>
 				<div class="columns" :class="[ isVisitor ? 'small-6 large-4' : 'small-12 large-6' ]">
 					<router-link v-if="isVisitor" :to="loginUrl" class="header-button">Sign in</router-link>
-					<dropdown-link v-else name="my-kiva-dropdown" :to="portfolioUrl" class="header-button my-kiva">
+					<kv-dropdown-link v-else name="my-kiva-dropdown" :to="portfolioUrl" class="header-button my-kiva">
 						<span class="amount">{{ balance | numeral('$0') }}</span>
 						<span class="circle-avatar" :style="profileStyle"></span>
-					</dropdown-link>
+					</kv-dropdown-link>
 				</div>
 			</div>
 			<div class="search-container" :class="{ 'show-for-large-up': isVisitor }">
@@ -46,16 +46,16 @@
 			</div>
 		</div>
 		<lend-menu-dropdown />
-		<dropdown-menu name="about-dropdown">
+		<kv-dropdown-menu name="about-dropdown">
 			<li v-for="item in aboutItems" :key="item.label">
 				<router-link :to="item.url">{{ item.label }}</router-link>
 			</li>
-		</dropdown-menu>
-		<dropdown-menu name="my-kiva-dropdown">
+		</kv-dropdown-menu>
+		<kv-dropdown-menu name="my-kiva-dropdown">
 			<li v-for="item in myKivaItems" :key="item.label">
 				<router-link :to="item.url">{{ item.label }}</router-link>
 			</li>
-		</dropdown-menu>
+		</kv-dropdown-menu>
 	</header>
 </template>
 
@@ -63,21 +63,21 @@
 // import numeral from 'numeral';
 import { mapState } from 'vuex';
 
-import DropdownLink from '@/components/DropdownLink';
-import DropdownMenu from '@/components/DropdownMenu';
-import LendMenuDropdown from '@/components/LendMenuDropdown';
-import SearchForm from '@/components/SearchForm';
-import SearchToggle from '@/components/SearchToggle';
-import SvgIcon from '@/components/SvgIcon';
+import KvDropdownLink from '@/components/Kv/Dropdown/KvDropdownLink';
+import KvDropdownMenu from '@/components/Kv/Dropdown/KvDropdownMenu';
+import KvIcon from '@/components/Kv/KvIcon';
+import LendMenuDropdown from './LendMenuDropdown';
+import SearchForm from './SearchForm';
+import SearchToggle from './SearchToggle';
 
 export default {
 	components: {
-		DropdownLink,
-		DropdownMenu,
+		KvDropdownLink,
+		KvDropdownMenu,
+		KvIcon,
 		LendMenuDropdown,
 		SearchForm,
 		SearchToggle,
-		SvgIcon,
 	},
 	data() {
 		return {

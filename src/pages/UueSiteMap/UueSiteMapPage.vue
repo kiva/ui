@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import WwwPage from '@/pages/WwwPage';
-import RouteListing from '@/components/RouteListing';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import RouteListing from './RouteListing';
 
 export default {
 	components: { WwwPage, RouteListing },
