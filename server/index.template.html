@@ -11,8 +11,11 @@
 		{{{ renderedConfig }}}
 		{{{ meta.inject().style.text() }}}
 		{{{ meta.inject().script.text() }}}
+		{{{ renderedExternals }}}
 	</head>
 	<body>
+		{{{ renderedNoscript }}}
+		{{{ meta.inject().noscript.text() }}}
 		<!--vue-ssr-outlet-->
 		{{{ renderedState }}}
 		{{{ renderScripts() }}}

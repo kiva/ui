@@ -1,9 +1,12 @@
 /* eslint-disable prefer-promise-reject-errors, no-console, no-param-reassign */
 import _map from 'lodash/map';
 import cookie from 'cookie';
+import serialize from 'serialize-javascript';
 import createAsyncCaller from '@/util/callAsyncData';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
+import headScript from '@/head/script';
+import noscriptTemplate from '@/head/noscript.html';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -38,9 +41,9 @@ export default context => {
 		}
 
 		// render content for template
-		context.renderedConfig = renderGlobals({
-			__KV_CONFIG__: config,
-		});
+		context.renderedConfig = renderGlobals({ __KV_CONFIG__: config });
+		context.renderedNoscript = noscriptTemplate(config);
+		context.renderedExternals = `<script>(${serialize(headScript)})(window.__KV_CONFIG__);</script>`;
 
 		// set router's location
 		router.push(url);
