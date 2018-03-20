@@ -24,7 +24,7 @@ function handleError(err, req, res) {
 module.exports = function createMiddleware({ serverBundle, clientManifest, config }) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
 
-	if (typeof config === 'undefined' || typeof config.server === 'undefined') {
+	if (typeof config === 'undefined' || typeof config.app === 'undefined') {
 		throw new TypeError('Missing configuration');
 	}
 
@@ -43,15 +43,13 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 
 		const context = {
 			url: req.url,
-			config: {
-				graphqlUri: config.server.graphqlUri
-			},
+			config: config.app,
 			cookies,
 		};
 
 		res.setHeader('Content-Type', 'text/html');
 
-		getGqlFragmentTypes(config.server.graphqlUri)
+		getGqlFragmentTypes(config.app.graphqlUri)
 			.then(types => {
 				if (!isProd) {
 					console.log(`fragment fetch: ${Date.now() - s}ms`);
