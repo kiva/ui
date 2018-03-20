@@ -2,7 +2,7 @@
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import createAsyncCaller from '@/util/callAsyncData';
-import renderState from '@/util/renderState';
+import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -31,10 +31,16 @@ export default context => {
 			}
 		});
 
+		// redirect to the resolved url if it does not match the requested url
 		const { fullPath } = router.resolve(url).route;
 		if (fullPath !== url) {
 			return reject({ url: fullPath });
 		}
+
+		// render content for template
+		context.renderedConfig = renderGlobals({
+			__KV_CONFIG__: config,
+		});
 
 		// set router's location
 		router.push(url);
@@ -63,8 +69,7 @@ export default context => {
 				// store to pick-up the server-side state without having to duplicate
 				// the initial data fetching on the client.
 				context.meta = app.$meta();
-				context.renderedState = renderState({
-					__KV_CONFIG__: config,
+				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
 					__INITIAL_STATE__: store.state,
 				});
