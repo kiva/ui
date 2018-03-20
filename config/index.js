@@ -5,6 +5,7 @@ module.exports = {
 	app: {
 		cdnDomain: 'www-kiva-org.global.ssl.fastly.net',
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
+		googleTagmanagerId: 'GTM-PX6FDG',
 	},
 	server: {
 		env: require('./env/prod.env'),

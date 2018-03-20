@@ -5,6 +5,7 @@ module.exports = merge(base, {
 	app: {
 		cdnDomain: 'dev-vm-01.kiva.org',
 		graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
+		googleTagmanagerId: 'GTM-PXFRMT',
 	},
 	server: {
 		memcachedServers: ['localhost'],
