@@ -9,7 +9,7 @@ const autoRemove = '(function(){var s;(s=document.currentScript||document.script
  * Based on the Vue Server Template Renderer context.renderState()
  * https://github.com/vuejs/vue/blob/master/src/server/template-renderer/index.js
  */
-export default function renderState(states) {
+export default function renderGlobals(states) {
 	const stateStrings = _map(states, (value, key) => `window.${key} = ${serialize(value, { isJSON: true })};`);
 	return `<script>${stateStrings.join('')}${isProd ? autoRemove : ''}</script>`;
 }
