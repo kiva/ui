@@ -6,5 +6,6 @@ module.exports = merge(base, {
 		cdnDomain: 'www-dev-kiva-org.global.ssl.fastly.net',
 		graphqlUri: 'https://www.dev.kiva.org/ajax/graphql',
 		googleTagmanagerId: 'GTM-PXFRMT',
+		perimeterxAppId: 'PX5u4Lz98O',
 	}
 })
