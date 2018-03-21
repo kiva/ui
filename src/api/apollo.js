@@ -1,6 +1,6 @@
 import ApolloClient from 'apollo-client';
 import { IntrospectionFragmentMatcher, InMemoryCache } from 'apollo-cache-inmemory';
-import { BatchHttpLink } from 'apollo-link-batch-http';
+import { HttpLink } from 'apollo-link-http';
 import fetch from 'isomorphic-fetch';
 
 import { Agent } from 'https';
@@ -47,7 +47,7 @@ export default function createApolloClient({
 
 	// construct client
 	return new ApolloClient({
-		link: new BatchHttpLink(linkOpts),
+		link: new HttpLink(linkOpts),
 		cache: new InMemoryCache(cacheOpts),
 	});
 }
