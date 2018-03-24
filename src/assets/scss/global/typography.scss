@@ -1,0 +1,25 @@
+@import 'settings';
+
+h1 {
+	font-weight: bold;
+}
+
+h1.huge {
+	@include huge-headline();
+}
+
+.small-text {
+	@include small-text();
+}
+
+.featured-text {
+	@include featured-text();
+}
+
+.overlay-text {
+	@include overlay-text();
+}
+
+.impact-text {
+	@include impact-text();
+}
