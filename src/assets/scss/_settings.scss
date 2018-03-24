@@ -143,7 +143,7 @@ $body-antialiased: true;
 $global-margin: 1rem;
 $global-padding: 1rem;
 $global-position: 1rem;
-$global-weight-normal: normal;
+$global-weight-normal: 300;
 $global-weight-bold: bold;
 $global-radius: 0;
 $global-menu-padding: 0.7rem 1rem;
@@ -189,17 +189,17 @@ $block-grid-max: 8;
 $header-font-family: $body-font-family;
 $header-font-weight: $global-weight-normal;
 $header-font-style: normal;
-$font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
 $header-color: inherit;
 $header-lineheight: 1.4;
 $header-margin-bottom: 0.5rem;
 $header-styles: (
   small: (
-    'h1': ('font-size': 2rem, 'line-height': 2.5rem/2rem, 'font-weight': bold),
-    'h2': ('font-size': 1.75rem, 'line-height': 2.25rem/1.75rem, 'font-weight': bolder),
+    'h1': ('font-size': 1.75rem, 'line-height': 2.25rem/1.75rem),
+    'h2': ('font-size': rem-calc(22), 'line-height': rem-calc(30)/rem-calc(22)),
   ),
   medium: (
-    'h1': ('font-size': 2.75rem, 'line-height': 3.125rem/2.75rem),
+    'h1': ('font-size': 2.25rem, 'line-height': 2.75rem/2.25rem),
+    'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36)/rem-calc(28))
   ),
 );
 $header-text-rendering: optimizeLegibility;
@@ -208,12 +208,6 @@ $header-small-font-color: $medium-gray;
 $paragraph-lineheight: 1.75rem;
 $paragraph-margin-bottom: 1rem;
 $paragraph-text-rendering: optimizeLegibility;
-$code-color: $black;
-$code-font-family: $font-family-monospace;
-$code-font-weight: $global-weight-normal;
-$code-background: $light-gray;
-$code-border: 1px solid $medium-gray;
-$code-padding: rem-calc(2 5 1);
 $anchor-color: $kiva-textlink;
 $anchor-color-hover: $kiva-textlink-hover;
 $anchor-text-decoration: none;
@@ -227,21 +221,94 @@ $list-style-type: disc;
 $list-style-position: outside;
 $list-side-margin: 1.25rem;
 $list-nested-side-margin: 1.25rem;
-$defnlist-margin-bottom: 1rem;
-$defnlist-term-weight: $global-weight-bold;
-$defnlist-term-margin-bottom: 0.3rem;
 $blockquote-color: $dark-gray;
 $blockquote-padding: rem-calc(9 20 0 19);
 $blockquote-border: 1px solid $medium-gray;
-$cite-font-size: rem-calc(13);
-$cite-color: $dark-gray;
-$cite-pseudo-content: '\2014 \0020';
+
+// 4.1 Base Typography - vars added by Kiva
+// ------------------
+
+$small-text-font-size: 0.875rem;
+$small-text-line-height: 1.357rem;
+
+$featured-text-font-size: 1.5rem;
+$featured-text-line-height: 2.25rem;
+
+$impact-text-font-size: rem-calc(32);
+$impact-text-line-height: rem-calc(40);
+$impact-text-font-size-medium: rem-calc(44);
+$impact-text-line-height-medium: rem-calc(50);
+
+$huge-headline-font-size: rem-calc(52);
+$huge-headline-line-height: rem-calc(58);
+$huge-headline-font-size-medium: rem-calc(64);
+$huge-headline-line-height-medium: rem-calc(70);
+
+@mixin text-shadow() {
+	text-shadow: 1px 1px 3px $kiva-text-dark;
+}
+
+@mixin small-text() {
+	font-size: $small-text-font-size;
+	line-height: $small-text-line-height;
+}
+
+@mixin featured-text() {
+	font-size: $featured-text-font-size;
+	line-height: $featured-text-line-height;
+}
+
+@mixin overlay-text() {
+	@include featured-text();
+	@include text-shadow();
+	color: $white;
+}
+
+@mixin impact-text() {
+	font-size: $impact-text-font-size;
+	line-height: $impact-text-line-height;
+	font-weight: bold;
+
+	@include breakpoint(medium) {
+		font-size: $impact-text-font-size-medium;
+		line-height: $impact-text-line-height-medium;
+	}
+}
+
+@mixin huge-headline() {
+	font-size: $huge-headline-font-size;
+	line-height: $huge-headline-line-height;
+
+	@include breakpoint(medium) {
+		font-size: $huge-headline-font-size-medium;
+		line-height: $huge-headline-line-height-medium;
+	}
+}
+
+// 4.2 Base Typography - Foundation vars not currently used by Kiva
+// ------------------
+$font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
+$code-color: $black;
+$code-font-family: $font-family-monospace;
+$code-font-weight: $global-weight-normal;
+$code-background: $light-gray;
+$code-border: 1px solid $medium-gray;
+$code-padding: rem-calc(2 5 1);
+$defnlist-margin-bottom: 1rem;
+$defnlist-term-weight: $global-weight-bold;
+$defnlist-term-margin-bottom: 0.3rem;
 $keystroke-font: $font-family-monospace;
 $keystroke-color: $black;
 $keystroke-background: $light-gray;
 $keystroke-padding: rem-calc(2 4 0);
 $keystroke-radius: $global-radius;
 $abbr-underline: 1px dotted $black;
+$cite-font-size: rem-calc(13);
+$cite-color: $dark-gray;
+$cite-pseudo-content: '\2014 \0020';
+$blockquote-color: $dark-gray;
+$blockquote-padding: rem-calc(9 20 0 19);
+$blockquote-border: 1px solid $medium-gray;
 
 // 5. Typography Helpers
 // ---------------------
