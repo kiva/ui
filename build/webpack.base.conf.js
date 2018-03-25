@@ -19,9 +19,7 @@ let webpackConfig = {
 		// This Pushes JS Files to the /js sub-folder inside /static
 		filename: utils.assetsPath('js/[name].[hash].js'),
 		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js'),
-		publicPath: process.env.NODE_ENV === 'production'
-			? config.build.assetsPublicPath
-			: config.dev.assetsPublicPath
+		publicPath: '/',
 	},
 	resolve: {
 		extensions: ['.js', '.vue', '.json'],
