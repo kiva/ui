@@ -5,6 +5,7 @@ var baseWebpackConfig = require('./webpack.base.conf')
 var SvgStorePlugin = require('webpack-svgstore-plugin')
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
+// TODO: Eliminate this extra setting of NODE_ENV conf process
 var env = process.env.NODE_ENV === 'testing'
 ? require('../config/test.env')
 : config.build.env
@@ -17,7 +18,6 @@ module.exports = merge(baseWebpackConfig, {
 	plugins: [
 		// http://vuejs.github.io/vue-loader/en/workflow/production.html
 		new webpack.DefinePlugin({
-			'process.env': env,
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
 			'process.env.VUE_ENV': '"client"'
 		}),
