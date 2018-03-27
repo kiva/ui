@@ -3,7 +3,7 @@ var base = require('./index.js')
 
 module.exports = merge(base, {
 	app: {
-		cdnDomain: 'dev-vm-01.kiva.org',
+		publicPath: 'https://dev-vm-01.kiva.org/ui/',
 		graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
 		googleTagmanagerId: 'GTM-PXFRMT',
 	},

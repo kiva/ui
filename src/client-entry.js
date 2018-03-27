@@ -7,6 +7,10 @@ import '@/assets/iconLoader';
 
 const config = window.__KV_CONFIG__ || {};
 
+// Set webpack public asset path based on configuration
+__webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
+
+// Create the App instance
 const {
 	app,
 	router,

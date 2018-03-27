@@ -27,16 +27,19 @@ export default {
 @import 'settings';
 @import 'foundation';
 
-// import global styles
-@import 'global/page-layout';
+// import fonts first to start loading them
 @import 'global/fonts';
-@import 'global/line-breaks';
 
 // import global foundation components
 @include foundation-global-styles;
 @include foundation-flex-grid;
 @include foundation-visibility-classes;
 @include foundation-typography;
+
+// import global styles
+@import 'global/page-layout';
+@import 'global/line-breaks';
+@import 'global/typography';
 
 #app {
 	height: 100%;

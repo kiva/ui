@@ -32,6 +32,9 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		console.log('---------> rendering server');
 		const s = Date.now();
 
+		// Set webpack public asset path based on configuration
+		clientManifest.publicPath = config.app.publicPath || '/';
+
 		const renderer = createBundleRenderer(serverBundle, {
 			template,
 			clientManifest,
