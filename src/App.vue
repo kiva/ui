@@ -35,11 +35,13 @@ export default {
 @include foundation-flex-grid;
 @include foundation-visibility-classes;
 @include foundation-typography;
+@include foundation-forms;
 
 // import global styles
 @import 'global/page-layout';
 @import 'global/line-breaks';
 @import 'global/typography';
+@import 'global/forms';
 
 #app {
 	height: 100%;
