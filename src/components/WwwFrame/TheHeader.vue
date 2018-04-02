@@ -27,7 +27,7 @@
 					>
 						<kv-icon class="close-icon" name="x" />
 					</button>
-					<search-bar/>
+					<search-bar ref="search" />
 				</div>
 			</div>
 			<router-link :to="borrowUrl" class="header-button show-for-xlarge">
@@ -92,6 +92,9 @@ export default {
 	methods: {
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
+			if (this.searchOpen) {
+				this.$refs.search.focus();
+			}
 		}
 	},
 	asyncData({ store }) {

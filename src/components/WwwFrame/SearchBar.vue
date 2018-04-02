@@ -1,7 +1,12 @@
 <template>
-	<form action="." autocomplete="off">
+	<form class="search-form" action="." autocomplete="off">
 		<kv-icon class="search-icon" name="magnify-glass" />
-		<input type="search" placeholder="Search all loans" v-model="term" @focus="onFocus">
+		<input type="search"
+			ref="input"
+			v-model="term"
+			@focus="onFocus"
+			placeholder="Search all loans"
+		>
 		<ol v-show="sections.length > 0" class="search-results">
 			<li v-for="section in sections" :key="section.name" class="section">
 				<h2>{{ section.name }}</h2>
@@ -37,7 +42,10 @@ export default {
 	methods: {
 		...mapActions({
 			onFocus: 'getLoanSearchSuggestions'
-		})
+		}),
+		focus() {
+			this.$refs.input.focus();
+		}
 	},
 	watch: {
 		term(term) {
@@ -47,10 +55,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'settings';
 
-form {
+form.search-form {
 	position: relative;
 	height: 100%;
 	width: 100%;
