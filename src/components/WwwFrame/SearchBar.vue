@@ -22,8 +22,14 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import _groupBy from 'lodash/groupBy';
+import _map from 'lodash/map';
+import _omit from 'lodash/omit';
+import _take from 'lodash/take';
 import KvIcon from '@/components/Kv/KvIcon';
+import SearchEngine from '@/util/searchEngine';
+
+const engine = new SearchEngine();
 
 export default {
 	components: {
@@ -32,25 +38,42 @@ export default {
 	data() {
 		return {
 			term: '',
+			sections: [],
 		};
 	},
-	computed: {
-		...mapState({
-			sections: state => state.loan.filteredSuggestions,
-		})
-	},
 	methods: {
-		...mapActions({
-			onFocus: 'getLoanSearchSuggestions'
-		}),
 		focus() {
 			this.$refs.input.focus();
+		},
+		onFocus() {
+			this.$store.dispatch('getLoanSearchSuggestions').then(suggestions => {
+				engine.reset(suggestions);
+			});
 		}
 	},
 	watch: {
 		term(term) {
-			this.$store.dispatch('enterLoanSearchTerm', term);
-		}
+			if (term.length > 0) {
+				engine.search(term).then(results => {
+					// Group the results by their group name
+					const groups = _groupBy(results, 'group');
+
+					// From the groups, build the sections of suggestions to display
+					this.sections = _map(groups, (groupResults, name) => {
+						// Limit the displayed results to the first 5
+						const limited = _take(groupResults, 5);
+
+						// Remove the 'group' property from each result to save on some space
+						const suggestions = _map(limited, result => _omit(result, 'group'));
+
+						// Construct the section, using the group name and sorted results
+						return { name, suggestions };
+					});
+				});
+			} else {
+				this.sections = [];
+			}
+		},
 	},
 };
 </script>
@@ -86,6 +109,7 @@ form.search-form {
 
 	h2 {
 		font-size: $small-text-font-size;
+		font-weight: normal;
 	}
 
 	&,
