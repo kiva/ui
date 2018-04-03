@@ -1,20 +1,29 @@
 <template>
-	<form class="search-form" action="." autocomplete="off">
+	<form class="search-form"
+		action="/lend"
+		method="get"
+		autocomplete="off"
+		@submit.prevent="onSubmit"
+	>
 		<kv-icon class="search-icon" name="magnify-glass" />
 		<input type="search"
 			ref="input"
-			v-model="term"
+			name="queryString"
+			:value="displayTerm"
+			@input="term = $event.target.value"
 			@focus="onFocus"
+			@blur="onBlur"
 			@keydown.up.prevent="listUp"
 			@keydown.down.prevent="listDown"
 			placeholder="Search all loans"
 		>
-		<ol v-show="sections.length > 0" class="search-results">
+		<ol v-show="showResults" class="search-results">
 			<li v-for="section in sections" :key="section.name" class="section">
 				<h2>{{ section.name }}</h2>
 				<ol class="section-results">
 					<li v-for="suggestion in section.suggestions"
 						:key="suggestion.label"
+						@click="runSearch(suggestion)"
 						class="result"
 						:class="{highlighted: suggestion.label === highlighted.label}"
 					>
@@ -45,9 +54,14 @@ export default {
 			term: '',
 			sections: [],
 			listIndex: -1,
+			hasFocus: false,
+			searching: false,
 		};
 	},
 	computed: {
+		displayTerm() {
+			return this.highlighted.label ? this.highlighted.label : this.term;
+		},
 		highlighted() {
 			if (this.listIndex > -1) {
 				let wanted = this.listIndex;
@@ -63,31 +77,66 @@ export default {
 		resultLength() {
 			return this.sections.reduce((total, section) => total + section.suggestions.length, 0);
 		},
+		showResults() {
+			return this.sections.length > 0 && this.hasFocus && !this.searching;
+		}
 	},
 	methods: {
 		focus() {
 			this.$refs.input.focus();
 		},
 		onFocus() {
+			this.hasFocus = true;
 			this.$store.dispatch('getLoanSearchSuggestions').then(suggestions => {
 				engine.reset(suggestions);
 			});
 		},
+		onBlur() {
+			this.hasFocus = false;
+			this.listIndex = -1;
+		},
 		listDown() {
+			// Highlight the next item down in the result list.
 			this.listIndex += 1;
+			// Loop back to nothing (-1) if there are no items left in the list.
 			if (this.listIndex === this.resultLength) {
 				this.listIndex = -1;
 			}
 		},
 		listUp() {
-			this.listIndex -= 1;
-			if (this.listIndex === -2) {
-				this.listIndex = this.resultLength - 1;
+			// Jump to the end to the list if nothing was highlighted previously.
+			if (this.listIndex === -1) {
+				this.listIndex = this.resultLength;
 			}
+			// Highlight the previous item up in the result list.
+			this.listIndex -= 1;
+		},
+		onSubmit() {
+			if (this.listIndex > -1) {
+				this.runSearch(this.highlighted);
+			} else {
+				this.runSearch(this.term);
+			}
+		},
+		runSearch(suggestion) {
+			let query;
+			if (suggestion.query) {
+				const [key, value] = suggestion.query.split('=');
+				query = { [key]: value };
+			} else {
+				query = { queryString: suggestion };
+			}
+			this.searching = true;
+			this.$router.push({ path: 'lend', query });
 		},
 		formatResult(label) {
 			// Find the part of the label that matches the searched term
 			const match = label.match(new RegExp(`(^|\\s|\\()${this.term}`, 'i'));
+
+			// If no match is found, just return the label, unmarked
+			if (!match) {
+				return label;
+			}
 
 			// Identify the beginning and ending indices of the term in the label
 			const begin = match.index + match[1].length;
@@ -98,11 +147,16 @@ export default {
 			const matchingText = label.slice(begin, end);
 			const suffix = label.slice(end);
 
+			// Return the label with the matching portion marked
 			return `${prefix}<mark>${matchingText}</mark>${suffix}`;
-		}
+		},
 	},
 	watch: {
 		term(term) {
+			// Reset the result list index, since the list is about to change
+			this.listIndex = -1;
+
+			// Only search if there actually is a term entered
 			if (term.length > 0) {
 				engine.search(term).then(results => {
 					// Group the results by their group name
@@ -118,6 +172,7 @@ export default {
 					});
 				});
 			} else {
+				// No search term entered, so reset the result list
 				this.sections = [];
 			}
 		},
@@ -157,6 +212,7 @@ form.search-form {
 	h2 {
 		font-size: $small-text-font-size;
 		font-weight: normal;
+		margin: 0.3rem 0 0.4rem;
 	}
 
 	&,
