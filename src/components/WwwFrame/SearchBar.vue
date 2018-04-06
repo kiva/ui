@@ -43,6 +43,7 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchEngine from '@/util/searchEngine';
+import { indexIn } from '@/util/comparators';
 
 const engine = new SearchEngine();
 
@@ -83,13 +84,28 @@ export default {
 			const groups = _groupBy(this.rawResults, 'group');
 
 			// From the groups, build the sections of suggestions to display
-			return _map(groups, (groupResults, name) => {
+			const unsortedSections = _map(groups, (groupResults, name) => {
 				// Limit the displayed results to the first 5
 				const suggestions = _take(groupResults, 5);
 
 				// Construct the section, using the group name and sorted results
 				return { name, suggestions };
 			});
+
+			// Hard-coded display-order for the sections.
+			const sectionOrder = [
+				'Gender',
+				'Regions',
+				'Countries and Territories',
+				'United States',
+				'U.S. cities',
+				'Sectors',
+				'Group or Individual',
+				'Attributes',
+				'User tags',
+				'Partners'
+			];
+			return unsortedSections.sort(indexIn(sectionOrder, 'name'));
 		}
 	},
 	methods: {
