@@ -211,7 +211,7 @@ form.search-form {
 		margin: 0;
 	}
 
-	.icon {
+	.search-icon {
 		position: absolute;
 		left: 0.4rem;
 		width: 1rem;
