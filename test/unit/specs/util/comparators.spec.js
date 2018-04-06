@@ -13,6 +13,38 @@ describe('comparators.js', () => {
 		});
 	});
 
+	describe('indexIn', () => {
+		it('returns a function', () => {
+			expect(comparators.indexIn([])).toBeInstanceOf(Function);
+		});
+
+		it('throws an error if not called with an array', () => {
+			expect(() => comparators.indexIn()).toThrow();
+		});
+
+		it('sorts elements into same order as they appear in another array', () => {
+			const list = ['blair', 'alex', 'drew', 'cameron'];
+			const initial = ['alex', 'cameron', 'drew'];
+			const expected = ['alex', 'drew', 'cameron'];
+			expect(initial.sort(comparators.indexIn(list))).toEqual(expected);
+		});
+
+		it('uses a property of each element to sort, instead of the element, if given a property name', () => {
+			const list = ['blair', 'alex', 'drew', 'cameron'];
+			const initial = [
+				{ label: 'alex' },
+				{ label: 'cameron' },
+				{ label: 'drew' },
+			];
+			const expected = [
+				{ label: 'alex' },
+				{ label: 'drew' },
+				{ label: 'cameron' },
+			];
+			expect(initial.sort(comparators.indexIn(list, 'label'))).toEqual(expected);
+		});
+	});
+
 	describe('startsWith', () => {
 		it('returns a function', () => {
 			expect(comparators.startsWith('')).toBeInstanceOf(Function);
