@@ -23,6 +23,7 @@
 				<ol class="section-results">
 					<li v-for="suggestion in section.suggestions"
 						:key="suggestion.label"
+						@mousedown.prevent
 						@click="runSearch(suggestion)"
 						class="result"
 						:class="{highlighted: suggestion.label === highlighted.label}"
@@ -52,10 +53,10 @@ export default {
 	data() {
 		return {
 			term: '',
-			sections: [],
 			listIndex: -1,
 			hasFocus: false,
 			searching: false,
+			rawResults: [],
 		};
 	},
 	computed: {
@@ -74,11 +75,21 @@ export default {
 			}
 			return {};
 		},
-		resultLength() {
-			return this.sections.reduce((total, section) => total + section.suggestions.length, 0);
-		},
 		showResults() {
 			return this.sections.length > 0 && this.hasFocus && !this.searching;
+		},
+		sections() {
+			// Group the results by their group name
+			const groups = _groupBy(this.rawResults, 'group');
+
+			// From the groups, build the sections of suggestions to display
+			return _map(groups, (groupResults, name) => {
+				// Limit the displayed results to the first 5
+				const suggestions = _take(groupResults, 5);
+
+				// Construct the section, using the group name and sorted results
+				return { name, suggestions };
+			});
 		}
 	},
 	methods: {
@@ -99,14 +110,14 @@ export default {
 			// Highlight the next item down in the result list.
 			this.listIndex += 1;
 			// Loop back to nothing (-1) if there are no items left in the list.
-			if (this.listIndex === this.resultLength) {
+			if (this.listIndex === this.rawResults.length) {
 				this.listIndex = -1;
 			}
 		},
 		listUp() {
 			// Jump to the end to the list if nothing was highlighted previously.
 			if (this.listIndex === -1) {
-				this.listIndex = this.resultLength;
+				this.listIndex = this.rawResults.length;
 			}
 			// Highlight the previous item up in the result list.
 			this.listIndex -= 1;
@@ -159,21 +170,11 @@ export default {
 			// Only search if there actually is a term entered
 			if (term.length > 0) {
 				engine.search(term).then(results => {
-					// Group the results by their group name
-					const groups = _groupBy(results, 'group');
-
-					// From the groups, build the sections of suggestions to display
-					this.sections = _map(groups, (groupResults, name) => {
-						// Limit the displayed results to the first 5
-						const suggestions = _take(groupResults, 5);
-
-						// Construct the section, using the group name and sorted results
-						return { name, suggestions };
-					});
+					this.rawResults = results;
 				});
 			} else {
 				// No search term entered, so reset the result list
-				this.sections = [];
+				this.rawResults = [];
 			}
 		},
 	},
