@@ -27,11 +27,7 @@
 					>
 						<kv-icon class="close-icon" name="x" />
 					</button>
-					<form action=".">
-						<kv-icon class="search-icon" name="magnify-glass" />
-						<input type="search" id="top-nav-search-box" placeholder="Search all loans">
-						<input type="submit" class="hidden-submit">
-					</form>
+					<search-bar ref="search" />
 				</div>
 			</div>
 			<router-link :to="borrowUrl" class="header-button show-for-xlarge">
@@ -61,11 +57,13 @@ import { mapState } from 'vuex';
 
 import KvDropdownLink from '@/components/Kv/Dropdown/KvDropdownLink';
 import KvIcon from '@/components/Kv/KvIcon';
+import SearchBar from './SearchBar';
 
 export default {
 	components: {
 		KvDropdownLink,
 		KvIcon,
+		SearchBar,
 	},
 	data() {
 		return {
@@ -94,6 +92,9 @@ export default {
 	methods: {
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
+			if (this.searchOpen) {
+				this.$refs.search.focus();
+			}
 		}
 	},
 	asyncData({ store }) {
@@ -240,11 +241,11 @@ $close-search-button-size: 2.5rem;
 	width: calc(100% + 1px);
 	background-color: $header-color;
 	border-right: solid 1px $divider-color;
-	overflow: hidden;
 	transition: width 0.5s ease;
 
 	&[aria-hidden="true"] {
 		width: 0;
+		overflow: hidden;
 	}
 
 	@include breakpoint(large) {
@@ -253,8 +254,6 @@ $close-search-button-size: 2.5rem;
 }
 
 #top-nav-search-area form {
-	position: relative;
-	height: 100%;
 	width: calc(100% - #{$close-search-button-size});
 	float: left;
 	padding: $form-padding $form-padding $form-padding 0;
@@ -265,14 +264,10 @@ $close-search-button-size: 2.5rem;
 	}
 
 	input[type="search"] {
-		height: 100%;
-		width: 100%;
 		padding-left: $top-nav-font-size * 1.5;
 	}
 
 	.icon {
-		position: absolute;
-		left: 0.4rem;
 		width: $top-nav-font-size;
 		height: $header-height - (2 * $form-padding);
 
