@@ -14,7 +14,7 @@
 			<p>
 				Lending through Kiva involves risk of principal loss.
 				Kiva does not guarantee repayment or offer a financial return on your loan.
-				<br>
+				<br><br>
 				&copy; {{ year }} Kiva. All rights reserved.
 			</p>
 		</nav>
@@ -103,6 +103,8 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+$footer-link-separator-color: $light-green;
+
 @mixin left-line {
 	padding-left: 0.5rem;
 	border-left: 1px solid $white;
@@ -116,10 +118,10 @@ export default {
 }
 
 .www-footer {
-	background-color: $kiva-darkgreen;
+	background-color: $kiva-green;
 	color: $white;
-	// font-size: $small-font-size;
-	// line-height: $small-line-height;
+	font-size: rem-calc(14);
+	font-weight: 400;
 	text-align: center;
 	padding: 1rem;
 
@@ -138,25 +140,24 @@ export default {
 
 	p {
 		margin-bottom: 0;
-		// font-size: $small-font-size;
-		// line-height: $small-line-height;
 		font-weight: normal;
+		line-height: $small-text-line-height;
 	}
 
 	a {
-		color: $kiva-accent-green;
+		color: $dark-green;
 		// font-size: $small-font-size;
-		// line-height: $small-line-height;
+		line-height: $small-text-line-height;
 
 		&:visited,
 		&:active {
-			color: $kiva-accent-green;
+			color: $dark-green;
 		}
 
-		@include breakpoint(medium only) {
-			// font-size: $body-font-size;
-			// line-height: $body-line-height;
-		}
+		// @include breakpoint(medium only) {
+		// 	font-size: rem-calc(16);
+		// 	// line-height: $body-line-height;
+		// }
 	}
 
 	h1 {
@@ -168,11 +169,30 @@ export default {
 	}
 
 	.small-footer {
+		padding-bottom: 2.25rem;
+
 		ul {
-			// display: flex;
-			// justify-content: space-between;
-			margin: 0 0 1rem;
-			border-bottom: 1px solid $kiva-stroke-gray;
+			display: flex;
+			justify-content: space-between;
+			margin: 0 0 0.8rem;
+			border-bottom: 1px solid $footer-link-separator-color;
+
+			@include breakpoint(medium only) {
+				font-size: rem-calc(16);
+			}
+
+			li {
+				margin: 0 0 0.8rem;
+			}
+		}
+
+		div {
+			margin-bottom: 0.5rem;
+			color: $footer-link-separator-color;
+
+			a {
+				margin: 0 0.75rem;
+			}
 		}
 	}
 
@@ -198,6 +218,28 @@ export default {
 		// p a {
 		// 	line-height: $small-line-height;
 		// }
+	}
+
+	.work-with-us {
+		$spacing: 0.5rem;
+
+		ul {
+			overflow: hidden;
+			width: calc(100% + #{$spacing * 2} + 1px);
+
+			li {
+				display: inline-block;
+				float: left;
+				transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0);
+
+				a {
+					padding-left: $spacing;
+					border-left: 1px solid $footer-link-separator-color;
+					margin-left: $spacing;
+					white-space: nowrap;
+				}
+			}
+		}
 	}
 }
 //
