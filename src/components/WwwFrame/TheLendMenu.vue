@@ -12,20 +12,20 @@
 			</expandable-list-item>
 			<expandable-list-item title="Regions" name="lend-menu-region-panel">
 				<ul>
-					<li v-for="region in regions" :key="region.name">
-						<expandable-list-item
-							:title="region.name"
-							:name="`lend-menu-${region.name}-panel` | kebabCase"
-						>
-							<ul>
-								<li v-for="country in region.countries" :key="country.name">
-									<router-link :to="{ path: 'lend', query: { country: country.isoCode }}">
-										{{ country.name }} ({{ country.count }})
-									</router-link>
-								</li>
-							</ul>
-						</expandable-list-item>
-					</li>
+					<expandable-list-item
+						v-for="region in regions"
+						:key="region.name"
+						:title="region.name"
+						:name="`lend-menu-${region.name}-panel` | kebabCase"
+					>
+						<ul>
+							<li v-for="country in region.countries" :key="country.name">
+								<router-link :to="{ path: 'lend', query: { country: country.isoCode }}">
+									{{ country.name }} ({{ country.count }})
+								</router-link>
+							</li>
+						</ul>
+					</expandable-list-item>
 				</ul>
 			</expandable-list-item>
 			<router-link to="/lend">All loans</router-link>
