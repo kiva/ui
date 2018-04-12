@@ -1,94 +1,92 @@
 <template>
 	<footer class="www-footer">
-		<div class="footer-row row">
-			<nav class="small-footer hide-for-large">
-				<ul>
-					<li><router-link :to="applyUrl">Borrow</router-link></li>
-					<li><router-link :to="aboutUrl">About</router-link></li>
-					<li><router-link :to="helpUrl">Help</router-link></li>
-					<li><router-link :to="careersUrl">Careers</router-link></li>
-					<li><router-link :to="sitemapUrl">Site map</router-link></li>
-				</ul>
-				<div>
-					<router-link :to="privacyUrl">Privacy policy</router-link> |
-					<router-link :to="termsUrl">Terms of use</router-link>
+		<nav class="small-footer hide-for-large">
+			<ul>
+				<li><router-link :to="applyUrl">Borrow</router-link></li>
+				<li><router-link :to="aboutUrl">About</router-link></li>
+				<li><router-link :to="helpUrl">Help</router-link></li>
+				<li><router-link :to="careersUrl">Careers</router-link></li>
+				<li><router-link :to="sitemapUrl">Site map</router-link></li>
+			</ul>
+			<div>
+				<router-link :to="privacyUrl">Privacy policy</router-link> |
+				<router-link :to="termsUrl">Terms of use</router-link>
+			</div>
+			<p>
+				Lending through Kiva involves risk of principal loss.
+				Kiva does not guarantee repayment or offer a financial return on your loan.
+				<br><br>
+				&copy; {{ year }} Kiva. All rights reserved.
+			</p>
+		</nav>
+		<nav class="large-footer show-for-large row">
+			<div class="groups">
+				<div class="narrow">
+					<h1>Borrow</h1>
+					<p>Loans for entrepreneurs doing amazing things.</p>
+					<ul>
+						<li><router-link :to="applyUrl">Apply now</router-link></li>
+					</ul>
 				</div>
-				<p>
-					Lending through Kiva involves risk of principal loss.
-					Kiva does not guarantee repayment or offer a financial return on your loan.
-					<br><br>
-					&copy; {{ year }} Kiva. All rights reserved.
-				</p>
-			</nav>
-			<nav class="large-footer show-for-large">
-				<div class="groups">
-					<div class="narrow">
-						<h1>Borrow</h1>
-						<p>Loans for entrepreneurs doing amazing things.</p>
-						<ul>
-							<li><router-link :to="applyUrl">Apply now</router-link></li>
-						</ul>
-					</div>
-					<div class="narrow">
-						<h1>Explore</h1>
-						<ul>
-							<li><router-link :to="giftsUrl">Gifts</router-link></li>
-							<li><router-link :to="happeningNowUrl">Happening now</router-link></li>
-							<li><router-link :to="sitemapUrl">Site map</router-link></li>
-							<li><router-link :to="developerUrl">Developer API</router-link></li>
-							<li><router-link :to="privacyUrl">Privacy policy</router-link></li>
-							<li><router-link :to="termsUrl">Terms of use</router-link></li>
-						</ul>
-					</div>
-					<div class="narrow">
-						<h1>Get to know us</h1>
-						<ul>
-							<li><router-link :to="aboutUrl">About us</router-link></li>
-							<li><router-link :to="howKivaUrl">How Kiva works</router-link></li>
-							<li><router-link :to="faqUrl">FAQs</router-link></li>
-							<li><router-link :to="whereUrl">Where Kiva works</router-link></li>
-							<li><router-link :to="blogUrl">Blog</router-link></li>
-							<li><router-link :to="partnerWithUrl">Partner with us</router-link></li>
-							<li><router-link :to="contactUrl">Contact us</router-link></li>
-							<li><router-link :to="helpUrl">Help</router-link></li>
-						</ul>
-					</div>
-					<div class="narrow">
-						<h1>Community</h1>
-						<ul>
-							<li><router-link :to="teamsUrl">Teams</router-link></li>
-							<li><router-link :to="studentsUrl">Students and educators</router-link></li>
-						</ul>
-					</div>
-					<div class="wide">
-						<p>
-							Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
-							Founded in 2005, and based in San Francisco,
-							with offices in Nairobi and staff around the globe.
-							<router-link :to="donateUrl">Donate to our operating expenses.</router-link>
-						</p>
-					</div>
-					<div class="work-with-us wide">
-						<h1>Work with us</h1>
-						<ul>
-							<li><router-link :to="careersUrl">Careers</router-link></li>
-							<li><router-link :to="volunteerInternUrl">Volunteer internships</router-link></li>
-							<li><router-link :to="fellowsUrl">Kiva fellows</router-link></li>
-							<li><router-link :to="reviewTranslateUrl">Review and translation</router-link></li>
-							<li><router-link :to="trusteesUrl">Trustees</router-link></li>
-						</ul>
-					</div>
-					<div class="wide">
-						<p>
-							Lending through Kiva involves risk of principal loss.
-							Kiva does not guarantee repayment or offer a financial return on your loan.
-							<br><br>
-							&copy; {{ year }} Kiva. All rights reserved.
-						</p>
-					</div>
+				<div class="narrow">
+					<h1>Explore</h1>
+					<ul>
+						<li><router-link :to="giftsUrl">Gifts</router-link></li>
+						<li><router-link :to="happeningNowUrl">Happening now</router-link></li>
+						<li><router-link :to="sitemapUrl">Site map</router-link></li>
+						<li><router-link :to="developerUrl">Developer API</router-link></li>
+						<li><router-link :to="privacyUrl">Privacy policy</router-link></li>
+						<li><router-link :to="termsUrl">Terms of use</router-link></li>
+					</ul>
 				</div>
-			</nav>
-		</div>
+				<div class="narrow">
+					<h1>Get to know us</h1>
+					<ul>
+						<li><router-link :to="aboutUrl">About us</router-link></li>
+						<li><router-link :to="howKivaUrl">How Kiva works</router-link></li>
+						<li><router-link :to="faqUrl">FAQs</router-link></li>
+						<li><router-link :to="whereUrl">Where Kiva works</router-link></li>
+						<li><router-link :to="blogUrl">Blog</router-link></li>
+						<li><router-link :to="partnerWithUrl">Partner with us</router-link></li>
+						<li><router-link :to="contactUrl">Contact us</router-link></li>
+						<li><router-link :to="helpUrl">Help</router-link></li>
+					</ul>
+				</div>
+				<div class="narrow">
+					<h1>Community</h1>
+					<ul>
+						<li><router-link :to="teamsUrl">Teams</router-link></li>
+						<li><router-link :to="studentsUrl">Students and educators</router-link></li>
+					</ul>
+				</div>
+				<div class="wide">
+					<p>
+						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
+						Founded in 2005, and based in San Francisco,
+						with offices in Nairobi and staff around the globe.
+						<router-link :to="donateUrl">Donate to our operating expenses.</router-link>
+					</p>
+				</div>
+				<div class="work-with-us wide">
+					<h1>Work with us</h1>
+					<ul>
+						<li><router-link :to="careersUrl">Careers</router-link></li>
+						<li><router-link :to="volunteerInternUrl">Volunteer internships</router-link></li>
+						<li><router-link :to="fellowsUrl">Kiva fellows</router-link></li>
+						<li><router-link :to="reviewTranslateUrl">Review and translation</router-link></li>
+						<li><router-link :to="trusteesUrl">Trustees</router-link></li>
+					</ul>
+				</div>
+				<div class="wide">
+					<p>
+						Lending through Kiva involves risk of principal loss.
+						Kiva does not guarantee repayment or offer a financial return on your loan.
+						<br><br>
+						&copy; {{ year }} Kiva. All rights reserved.
+					</p>
+				</div>
+			</div>
+		</nav>
 	</footer>
 </template>
 
