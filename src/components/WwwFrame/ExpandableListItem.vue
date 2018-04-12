@@ -1,11 +1,28 @@
 <template>
 	<li>
-		<button @click="toggle" :aria-controls="name" :aria-expanded="open ? 'true' : 'false'">
+		<button
+			@click="toggle"
+			:aria-controls="name"
+			:aria-expanded="open ? 'true' : 'false'"
+		>
 			{{ title }}
 		</button>
-		<div :id="name" :aria-hidden="open ? 'false' : 'true'">
-			<slot></slot>
-		</div>
+		<transition
+			name="expandable"
+			@enter="enter"
+			@after-enter="finish"
+			@leave="leave"
+			@after-leave="finish"
+		>
+			<div
+				:id="name"
+				v-show="open"
+				class="kv-expandable-pane"
+				:aria-hidden="open ? 'false' : 'true'"
+			>
+				<slot></slot>
+			</div>
+		</transition>
 	</li>
 </template>
 
@@ -15,9 +32,9 @@ export default {
 		name: {
 			type: String,
 			required: true,
-			validator: v => v.length > 0 && !/\s/g.test(v),
+			validator: v => v.length > 0 && !/\s/g.test(v), // must be a valid html5 id
 		},
-		open: {
+		startOpen: {
 			type: Boolean,
 			required: false,
 			default: false,
@@ -26,6 +43,11 @@ export default {
 			type: String,
 			required: true,
 		},
+	},
+	data() {
+		return {
+			open: this.startOpen,
+		};
 	},
 	methods: {
 		toggle() {
@@ -37,9 +59,51 @@ export default {
 		collapse() {
 			this.open = false;
 		},
+		/* eslint-disable no-param-reassign */
+		enter(el, done) {
+			// temporarily reset the styling
+			el.style.height = 'auto';
+			el.style.display = null;
+
+			// measure the height
+			const height = window.getComputedStyle(el).getPropertyValue('height');
+
+			// show with no height...
+			el.style.height = 0;
+
+			// ...and set the height immediately after so it animates w/ css
+			window.setTimeout(() => {
+				el.style.height = height;
+			}, 1);
+
+			// finally, finish the animation after 0.5s
+			window.setTimeout(done, 500);
+		},
+		leave(el, done) {
+			// explicitly set the height...
+			el.style.height = window.getComputedStyle(el).getPropertyValue('height');
+
+			// ...and set the height to 0 immediately after so it animates w/ css
+			window.setTimeout(() => {
+				el.style.height = 0;
+			}, 1);
+
+			// finally, finish the animation after 0.5s
+			window.setTimeout(done, 500);
+		},
+		finish(el) {
+			// unset the applied height style
+			el.style.height = null;
+		},
+		/* eslint-enable */
 	}
 };
 </script>
 
-<style>
+<style lang="scss">
+.expandable-enter-active,
+.expandable-leave-active {
+	transition: height 500ms ease-in-out;
+	overflow: hidden;
+}
 </style>
