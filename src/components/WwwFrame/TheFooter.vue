@@ -31,10 +31,10 @@
 				<div class="narrow">
 					<h1>Explore</h1>
 					<ul>
-						<li><router-link :to="giftsUrl">Gifts</router-link></li>
-						<li><router-link :to="happeningNowUrl">Happening now</router-link></li>
+						<li><router-link to="/gifts">Gifts</router-link></li>
+						<li><router-link to="/live">Happening now</router-link></li>
 						<li><router-link :to="sitemapUrl">Site map</router-link></li>
-						<li><router-link :to="developerUrl">Developer API</router-link></li>
+						<li><a href="https://build.kiva.org" title="Developer API">Developer API</a></li>
 						<li><router-link :to="privacyUrl">Privacy policy</router-link></li>
 						<li><router-link :to="termsUrl">Terms of use</router-link></li>
 					</ul>
@@ -43,20 +43,20 @@
 					<h1>Get to know us</h1>
 					<ul>
 						<li><router-link :to="aboutUrl">About us</router-link></li>
-						<li><router-link :to="howKivaUrl">How Kiva works</router-link></li>
-						<li><router-link :to="faqUrl">FAQs</router-link></li>
-						<li><router-link :to="whereUrl">Where Kiva works</router-link></li>
-						<li><router-link :to="blogUrl">Blog</router-link></li>
-						<li><router-link :to="partnerWithUrl">Partner with us</router-link></li>
-						<li><router-link :to="contactUrl">Contact us</router-link></li>
+						<li><router-link to="/about/how">How Kiva works</router-link></li>
+						<li><router-link to="/about/how#faq-hkw-section">FAQs</router-link></li>
+						<li><router-link to="/about/where-kiva-works">Where Kiva works</router-link></li>
+						<li><router-link to="/blog">Blog</router-link></li>
+						<li><router-link to="/partner-with-us">Partner with us</router-link></li>
+						<li><router-link to="/help/contact-us">Contact us</router-link></li>
 						<li><router-link :to="helpUrl">Help</router-link></li>
 					</ul>
 				</div>
 				<div class="narrow">
 					<h1>Community</h1>
 					<ul>
-						<li><router-link :to="teamsUrl">Teams</router-link></li>
-						<li><router-link :to="studentsUrl">Students and educators</router-link></li>
+						<li><router-link to="/teams">Teams</router-link></li>
+						<li><router-link to="/kivau/intro">Students and educators</router-link></li>
 					</ul>
 				</div>
 				<div class="wide">
@@ -64,17 +64,17 @@
 						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 						Founded in 2005, and based in San Francisco,
 						with offices in Nairobi and staff around the globe.
-						<router-link :to="donateUrl">Donate to our operating expenses.</router-link>
+						<router-link to="/donate/supportus">Donate to our operating expenses.</router-link>
 					</p>
 				</div>
 				<div class="work-with-us wide">
 					<h1>Work with us</h1>
 					<ul>
 						<li><router-link :to="careersUrl">Careers</router-link></li>
-						<li><router-link :to="volunteerInternUrl">Volunteer internships</router-link></li>
-						<li><router-link :to="fellowsUrl">Kiva fellows</router-link></li>
-						<li><router-link :to="reviewTranslateUrl">Review and translation</router-link></li>
-						<li><router-link :to="trusteesUrl">Trustees</router-link></li>
+						<li><router-link to="/work-with-us/internvolunteers">Volunteer internships</router-link></li>
+						<li><router-link to="/work-with-us/fellows">Kiva fellows</router-link></li>
+						<li><router-link to="/work-with-us/reviewers">Review and translation</router-link></li>
+						<li><router-link to="/trustees">Trustees</router-link></li>
 					</ul>
 				</div>
 				<div class="wide">
@@ -98,28 +98,12 @@ export default {
 		return {
 			year: getYear(new Date()),
 			applyUrl: '/borrow',
-			giftsUrl: '/gifts',
-			happeningNowUrl: '/live',
-			sitemapUrl: '/sitemap',
-			developerUrl: 'https://build.kiva.org',
-			privacyUrl: '/legal/privacy',
-			termsUrl: '/legal/terms',
 			aboutUrl: '/about',
-			howKivaUrl: '/about/how',
-			faqUrl: '/about/how#faq-hkw-section',
-			whereUrl: '/about/where-kiva-works',
-			blogUrl: '/blog',
-			partnerWithUrl: '/partner-with-us',
-			contactUrl: '/help/contact-us',
 			helpUrl: '/help',
-			teamsUrl: '/teams',
-			studentsUrl: '/kivau/intro',
-			donateUrl: '/donate/supportus',
 			careersUrl: '/work-with-us/careers',
-			volunteerInternUrl: '/work-with-us/internvolunteers',
-			fellowsUrl: '/work-with-us/fellows',
-			reviewTranslateUrl: '/work-with-us/reviewers',
-			trusteesUrl: '/trustees'
+			sitemapUrl: '/sitemap',
+			privacyUrl: '/legal/privacy',
+			termsUrl: '/legal/terms'
 		};
 	},
 };
@@ -134,7 +118,7 @@ $footer-link-separator-color: $light-green;
 	background-color: $kiva-green;
 	color: $white;
 	font-size: rem-calc(14);
-	font-weight: 400;
+	font-weight: normal;
 	text-align: center;
 	padding: 1rem;
 	min-height: 17.5rem;
@@ -154,7 +138,6 @@ $footer-link-separator-color: $light-green;
 
 	p {
 		margin-bottom: 0;
-		font-weight: normal;
 		line-height: $small-text-line-height;
 	}
 
