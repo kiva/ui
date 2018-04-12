@@ -3,14 +3,15 @@
 		<div class="footer-row row">
 			<nav class="small-footer hide-for-large">
 				<ul>
-					<li><router-link to="">Borrow</router-link></li>
-					<li><router-link to="">About</router-link></li>
-					<li><router-link to="">Help</router-link></li>
-					<li><router-link to="">Careers</router-link></li>
-					<li><router-link to="">Site map</router-link></li>
+					<li><router-link :to="applyUrl">Borrow</router-link></li>
+					<li><router-link :to="aboutUrl">About</router-link></li>
+					<li><router-link :to="helpUrl">Help</router-link></li>
+					<li><router-link :to="careersUrl">Careers</router-link></li>
+					<li><router-link :to="sitemapUrl">Site map</router-link></li>
 				</ul>
 				<div>
-					<router-link to="">Privacy policy</router-link> | <router-link to="">Terms of use</router-link>
+					<router-link :to="privacyUrl">Privacy policy</router-link> |
+					<router-link :to="termsUrl">Terms of use</router-link>
 				</div>
 				<p>
 					Lending through Kiva involves risk of principal loss.
@@ -25,38 +26,38 @@
 						<h1>Borrow</h1>
 						<p>Loans for entrepreneurs doing amazing things.</p>
 						<ul>
-							<li><router-link to="">Apply now</router-link></li>
+							<li><router-link :to="applyUrl">Apply now</router-link></li>
 						</ul>
 					</div>
 					<div class="narrow">
 						<h1>Explore</h1>
 						<ul>
-							<li><router-link to="">Gifts</router-link></li>
-							<li><router-link to="">Happening now</router-link></li>
-							<li><router-link to="">Site map</router-link></li>
-							<li><router-link to="">Developer API</router-link></li>
-							<li><router-link to="">Privacy policy</router-link></li>
-							<li><router-link to="">Terms of use</router-link></li>
+							<li><router-link :to="giftsUrl">Gifts</router-link></li>
+							<li><router-link :to="happeningNowUrl">Happening now</router-link></li>
+							<li><router-link :to="sitemapUrl">Site map</router-link></li>
+							<li><router-link :to="developerUrl">Developer API</router-link></li>
+							<li><router-link :to="privacyUrl">Privacy policy</router-link></li>
+							<li><router-link :to="termsUrl">Terms of use</router-link></li>
 						</ul>
 					</div>
 					<div class="narrow">
 						<h1>Get to know us</h1>
 						<ul>
-							<li><router-link to="">About us</router-link></li>
-							<li><router-link to="">How Kiva works</router-link></li>
-							<li><router-link to="">FAQs</router-link></li>
-							<li><router-link to="">Where Kiva works</router-link></li>
-							<li><router-link to="">Blog</router-link></li>
-							<li><router-link to="">Partner with us</router-link></li>
-							<li><router-link to="">Contact us</router-link></li>
-							<li><router-link to="">Help</router-link></li>
+							<li><router-link :to="aboutUrl">About us</router-link></li>
+							<li><router-link :to="howKivaUrl">How Kiva works</router-link></li>
+							<li><router-link :to="faqUrl">FAQs</router-link></li>
+							<li><router-link :to="whereUrl">Where Kiva works</router-link></li>
+							<li><router-link :to="blogUrl">Blog</router-link></li>
+							<li><router-link :to="partnerWithUrl">Partner with us</router-link></li>
+							<li><router-link :to="contactUrl">Contact us</router-link></li>
+							<li><router-link :to="helpUrl">Help</router-link></li>
 						</ul>
 					</div>
 					<div class="narrow">
 						<h1>Community</h1>
 						<ul>
-							<li><router-link to="">Teams</router-link></li>
-							<li><router-link to="">Students and educators</router-link></li>
+							<li><router-link :to="teamsUrl">Teams</router-link></li>
+							<li><router-link :to="studentsUrl">Students and educators</router-link></li>
 						</ul>
 					</div>
 					<div class="wide">
@@ -64,17 +65,17 @@
 							Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 							Founded in 2005, and based in San Francisco,
 							with offices in Nairobi and staff around the globe.
-							<router-link to="">Donate to our operating expenses.</router-link>
+							<router-link :to="donateUrl">Donate to our operating expenses.</router-link>
 						</p>
 					</div>
 					<div class="work-with-us wide">
 						<h1>Work with us</h1>
 						<ul>
-							<li><router-link to="">Careers</router-link></li>
-							<li><router-link to="">Volunteer internships</router-link></li>
-							<li><router-link to="">Kiva fellows</router-link></li>
-							<li><router-link to="">Review and translation</router-link></li>
-							<li><router-link to="">Trustees</router-link></li>
+							<li><router-link :to="careersUrl">Careers</router-link></li>
+							<li><router-link :to="volunteerInternUrl">Volunteer internships</router-link></li>
+							<li><router-link :to="fellowsUrl">Kiva fellows</router-link></li>
+							<li><router-link :to="reviewTranslateUrl">Review and translation</router-link></li>
+							<li><router-link :to="trusteesUrl">Trustees</router-link></li>
 						</ul>
 					</div>
 					<div class="wide">
@@ -98,6 +99,29 @@ export default {
 	data() {
 		return {
 			year: getYear(new Date()),
+			applyUrl: '/borrow',
+			giftsUrl: '/gifts',
+			happeningNowUrl: '/live',
+			sitemapUrl: '/sitemap',
+			developerUrl: 'https://build.kiva.org',
+			privacyUrl: '/legal/privacy',
+			termsUrl: '/legal/terms',
+			aboutUrl: '/about',
+			howKivaUrl: '/about/how',
+			faqUrl: '/about/how#faq-hkw-section',
+			whereUrl: '/about/where-kiva-works',
+			blogUrl: '/blog',
+			partnerWithUrl: '/partner-with-us',
+			contactUrl: '/help/contact-us',
+			helpUrl: '/help',
+			teamsUrl: '/teams',
+			studentsUrl: '/kivau/intro',
+			donateUrl: '/donate/supportus',
+			careersUrl: '/work-with-us/careers',
+			volunteerInternUrl: '/work-with-us/internvolunteers',
+			fellowsUrl: '/work-with-us/fellows',
+			reviewTranslateUrl: '/work-with-us/reviewers',
+			trusteesUrl: '/trustees'
 		};
 	},
 };
