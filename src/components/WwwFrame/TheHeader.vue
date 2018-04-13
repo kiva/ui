@@ -154,9 +154,11 @@ $close-search-button-size: 2.5rem;
 	border-right: 1px solid $divider-color;
 	text-align: center;
 	white-space: nowrap;
-	display: table;
 	flex-grow: 2;
 	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 
 	& > * {
 		display: table-cell;
@@ -175,6 +177,9 @@ $close-search-button-size: 2.5rem;
 	}
 
 	@include breakpoint(large) {
+		display: table;
+		flex-direction: unset;
+		justify-content: unset;
 		flex-grow: 0;
 		padding: 0 1rem;
 	}
