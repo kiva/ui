@@ -137,10 +137,16 @@ $close-search-button-size: 2.5rem;
 
 .header-logo {
 	.icon {
+		display: unset;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
 		fill: $text-color;
+		max-height: $header-height;
+
+		@include breakpoint(large) {
+			max-height: $header-height-large;
+		}
 	}
 }
 
