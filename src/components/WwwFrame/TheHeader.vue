@@ -4,12 +4,7 @@
 			<router-link class="header-logo header-button" :to="logoUrl">
 				<kv-icon name="new-kiva-logo" />
 			</router-link>
-			<router-link
-				:to="lendUrl"
-				:data-toggle="lendMenuId"
-				@mouseover.native.once="openLendMenu"
-				class="header-button"
-			>
+			<router-link :to="lendUrl" :data-toggle="lendMenuId" class="header-button">
 				<span>Lend <kv-icon name="triangle" /></span>
 			</router-link>
 			<button class="search-toggler header-button"
@@ -54,8 +49,8 @@
 				</span>
 			</router-link>
 		</div>
-		<kv-dropdown :name="lendMenuId" @show="onLendMenuShow" @hide="onLendMenuHide">
-			<the-lend-menu v-if="lendMenuOpened" ref="lendMenu" />
+		<kv-dropdown :name="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
+			<the-lend-menu ref="lendMenu" />
 		</kv-dropdown>
 	</header>
 </template>
@@ -86,7 +81,6 @@ export default {
 			loginUrl: '/login',
 			portfolioUrl: '/portfolio',
 			lendMenuId: 'lend-header-dropdown',
-			lendMenuOpened: false,
 			searchOpen: false,
 		};
 	},
@@ -101,14 +95,14 @@ export default {
 		},
 	},
 	methods: {
-		openLendMenu() {
-			this.lendMenuOpened = true;
-		},
 		onLendMenuShow() {
 			this.$refs.lendMenu.onOpen();
 		},
 		onLendMenuHide() {
 			this.$refs.lendMenu.onClose();
+		},
+		loadLendInfo() {
+			this.$refs.lendMenu.onLoad();
 		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
@@ -141,6 +135,15 @@ $close-search-button-size: 2.5rem;
 	background-color: $header-color;
 	font-size: $top-nav-font-size;
 	font-weight: 400;
+
+	.dropdown-pane {
+		border-top: none;
+
+		@include breakpoint(medium down) {
+			width: 100%;
+			left: 0 !important;
+		}
+	}
 }
 
 .header-row {

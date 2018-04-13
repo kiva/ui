@@ -119,6 +119,9 @@ export default {
 			this.openedSection = '';
 		},
 	},
+	mounted() {
+		this.checkCategoryWidth();
+	},
 };
 </script>
 
@@ -132,6 +135,7 @@ export default {
 	display: flex;
 	padding: 1rem 0;
 	white-space: nowrap;
+	overflow: hidden;
 
 	h2 {
 		font-size: $section-header-font-size;
