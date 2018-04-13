@@ -1,6 +1,6 @@
 <template>
 	<div class="lend-mega-menu">
-		<div class="categories-section" v-show="!sectionOpen">
+		<div class="categories-section" :style="{ marginLeft: categoriesMargin }">
 			<h2>Categories</h2>
 			<ul :style="categoriesStyle" ref="categoryList">
 				<li
@@ -19,7 +19,7 @@
 				<kv-icon class="close-icon" name="medium-chevron" />
 			</button>
 		</div>
-		<div>
+		<div class="middle-section">
 			<h2>Regions</h2>
 			<ul>
 				<li v-for="region in regions" :key="region.name">
@@ -32,7 +32,12 @@
 				</li>
 			</ul>
 		</div>
-		<div v-for="region in regions" :key="region.name" v-show="isOpenSection(region.name)">
+		<div
+			v-for="region in regions"
+			:key="region.name"
+			v-show="isOpenSection(region.name)"
+			class="right-section"
+		>
 			<h2>{{ region.name }}</h2>
 			<country-list :countries="region.countries" />
 		</div>
@@ -71,6 +76,9 @@ export default {
 				height: `${Math.ceil((this.categories.length + 3) / 2) * 1.5}rem`,
 				width: this.categoriesWidth,
 			};
+		},
+		categoriesMargin() {
+			return this.categoriesWidth && this.sectionOpen ? `-${this.categoriesWidth}` : '1rem';
 		},
 		sectionOpen() {
 			return this.openedSection !== '';
@@ -119,9 +127,11 @@ export default {
 
 .lend-mega-menu {
 	$section-header-font-size: rem-calc(21);
+	$section-padding: 1.5rem;
 
 	display: flex;
 	padding: 1rem 0;
+	white-space: nowrap;
 
 	h2 {
 		font-size: $section-header-font-size;
@@ -138,15 +148,23 @@ export default {
 		line-height: 1.5rem;
 	}
 
+	button:focus {
+		outline: none;
+	}
+
 	& > * + * {
 		border-left: solid 1px $kiva-stroke-gray;
 	}
 
-	.categories-section ul {
-		display: flex;
-		flex-flow: column wrap;
-		justify-content: space-between;
-		margin-left: 1rem;
+	.categories-section {
+		overflow: hidden;
+		transition: margin 500ms ease;
+
+		ul {
+			display: flex;
+			flex-flow: column wrap;
+			justify-content: space-between;
+		}
 
 		li {
 			padding-right: 1rem;
@@ -158,10 +176,40 @@ export default {
 	}
 
 	.close-section {
+		border-left: none;
+
 		.close-icon {
 			width: 3.25rem;
 			height: 8rem;
 			transform: rotate(90deg);
+		}
+	}
+
+	.middle-section h2,
+	.middle-section button,
+	.right-section h2,
+	.right-section a {
+		padding: 0 $section-padding;
+	}
+
+	.middle-section {
+		button {
+			color: $kiva-textlink;
+			padding: 0 $section-padding;
+			width: 100%;
+			line-height: inherit;
+			text-align: left;
+
+			&:hover {
+				color: $kiva-textlink-hover;
+				text-decoration: underline;
+			}
+
+			&[aria-pressed="true"] {
+				color: $kiva-text-light;
+				text-decoration: none;
+				background-color: $kiva-bg-darkgray;
+			}
 		}
 	}
 }
