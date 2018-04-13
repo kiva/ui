@@ -54,8 +54,8 @@
 				</span>
 			</router-link>
 		</div>
-		<kv-dropdown :name="lendMenuId">
-			<the-lend-menu v-if="lendMenuOpened"/>
+		<kv-dropdown :name="lendMenuId" @show="onLendMenuShow" @hide="onLendMenuHide">
+			<the-lend-menu v-if="lendMenuOpened" ref="lendMenu" />
 		</kv-dropdown>
 	</header>
 </template>
@@ -72,7 +72,7 @@ export default {
 		KvDropdown,
 		KvIcon,
 		SearchBar,
-		TheLendMenu: () => import('./TheLendMenu'),
+		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
 	data() {
 		return {
@@ -103,6 +103,12 @@ export default {
 	methods: {
 		openLendMenu() {
 			this.lendMenuOpened = true;
+		},
+		onLendMenuShow() {
+			this.$refs.lendMenu.onOpen();
+		},
+		onLendMenuHide() {
+			this.$refs.lendMenu.onClose();
 		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
