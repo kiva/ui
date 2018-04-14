@@ -1,11 +1,11 @@
 <template>
-	<li>
+	<li class="expandable-list-item">
 		<button
 			@click="toggle"
-			:aria-controls="name"
+			:aria-controls="id"
 			:aria-expanded="open ? 'true' : 'false'"
 		>
-			{{ title }}
+			<slot name="title"></slot>
 		</button>
 		<transition
 			name="expandable"
@@ -15,7 +15,7 @@
 			@after-leave="finish"
 		>
 			<div
-				:id="name"
+				:id="id"
 				v-show="open"
 				class="kv-expandable-pane"
 				:aria-hidden="open ? 'false' : 'true'"
@@ -29,7 +29,7 @@
 <script>
 export default {
 	props: {
-		name: {
+		id: {
 			type: String,
 			required: true,
 			validator: v => v.length > 0 && !/\s/g.test(v), // must be a valid html5 id
@@ -38,10 +38,6 @@ export default {
 			type: Boolean,
 			required: false,
 			default: false,
-		},
-		title: {
-			type: String,
-			required: true,
 		},
 	},
 	data() {

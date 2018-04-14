@@ -7,6 +7,9 @@
 			v-show="!isLoading"
 			:categories="categories"
 			:regions="regions"
+			:searches="savedSearches"
+			:favorites="favoritesCount"
+			:user-id="userId"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -14,6 +17,9 @@
 			v-show="!isLoading"
 			:categories="categories"
 			:regions="regions"
+			:searches="savedSearches"
+			:favorites="favoritesCount"
+			:user-id="userId"
 		/>
 	</div>
 </template>
@@ -36,7 +42,9 @@ export default {
 	},
 	computed: {
 		...mapState({
+			userId: state => state.my.userAccount.id,
 			categories: state => state.loan.headerCategories,
+			favoritesCount: state => state.my.favoritesCount,
 			regions: state => {
 				const facets = _map(state.loan.countryFacets, facet => {
 					return {
@@ -54,10 +62,14 @@ export default {
 					};
 				});
 				return regions.sort(indexIn(state.loan.regionDisplayOrder, 'name'));
-			}
+			},
+			savedSearches: state => state.my.savedSearches
 		}),
 		isLoading() {
 			return this.regions.length === 0;
+		},
+		hasUserId() {
+			return !!this.userId;
 		},
 	},
 	methods: {
@@ -65,12 +77,19 @@ export default {
 			this.$refs.mega.onOpen();
 		},
 		onClose() {
+			this.$refs.list.onClose();
 			this.$refs.mega.onClose();
 		},
 		onLoad() {
 			this.$store.dispatch('getLendMenuInfo');
+			this.$store.dispatch('getMyLendMenuInfo');
 		},
 	},
+	watch: {
+		hasUserId() {
+			this.$store.dispatch('getMyLendMenuInfo');
+		}
+	}
 };
 </script>
 
