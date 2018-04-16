@@ -48,14 +48,7 @@
 						<span>Saved searches</span>
 						<kv-icon name="small-chevron-mobile" />
 					</template>
-					<ul>
-						<li v-for="search in searches" :key="search.id">
-							<a :href="search.url">{{ search.name }}</a>
-						</li>
-						<li>
-							<router-link to="/lend/saved-search">Manage saved searches</router-link>
-						</li>
-					</ul>
+					<search-list :searches="searches" />
 				</expandable-list-item>
 				<li>
 					<router-link to="/lend/countries-not-lent">
@@ -71,12 +64,14 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import CountryList from './CountryList';
 import ExpandableListItem from './ExpandableListItem';
+import SearchList from './SearchList';
 
 export default {
 	components: {
 		CountryList,
 		ExpandableListItem,
 		KvIcon,
+		SearchList,
 	},
 	props: {
 		categories: {

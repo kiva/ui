@@ -31,6 +31,27 @@
 					</button>
 				</li>
 			</ul>
+			<h2 v-if="userId" class="my-kiva-title">My Kiva</h2>
+			<ul v-if="userId">
+				<li v-show="favorites > 0">
+					<router-link :to="{ path: 'lend', query: { lenderFavorite: userId } }">
+						Starred loans
+					</router-link>
+				</li>
+				<li>
+					<button
+						@click="openSection(savedSearchesTitle)"
+						:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
+					>
+						{{ savedSearchesTitle }}
+					</button>
+				</li>
+				<li>
+					<router-link to="/lend/countries-not-lent">
+						Countries I haven't lent to
+					</router-link>
+				</li>
+			</ul>
 		</div>
 		<div
 			v-for="region in regions"
@@ -41,6 +62,10 @@
 			<h2>{{ region.name }}</h2>
 			<country-list :countries="region.countries" />
 		</div>
+		<div v-show="isOpenSection(savedSearchesTitle)" class="right-section">
+			<h2>{{ savedSearchesTitle }}</h2>
+			<search-list :searches="searches" />
+		</div>
 	</div>
 </template>
 
@@ -48,18 +73,32 @@
 import numeral from 'numeral';
 import KvIcon from '@/components/Kv/KvIcon';
 import CountryList from './CountryList';
+import SearchList from './SearchList';
 
 export default {
 	components: {
 		CountryList,
 		KvIcon,
+		SearchList,
 	},
 	props: {
 		categories: {
 			type: Array,
 			default: () => [],
 		},
+		favorites: {
+			type: Number,
+			default: 0,
+		},
+		userId: {
+			type: Number,
+			default: null,
+		},
 		regions: {
+			type: Array,
+			default: () => [],
+		},
+		searches: {
 			type: Array,
 			default: () => [],
 		},
@@ -68,6 +107,7 @@ export default {
 		return {
 			categoriesWidth: null,
 			openedSection: '',
+			savedSearchesTitle: 'Saved searches',
 		};
 	},
 	computed: {
@@ -191,6 +231,7 @@ export default {
 
 	.middle-section h2,
 	.middle-section button,
+	.middle-section a,
 	.right-section h2,
 	.right-section a {
 		padding: 0 $section-padding;
@@ -214,6 +255,10 @@ export default {
 				text-decoration: none;
 				background-color: $kiva-bg-darkgray;
 			}
+		}
+
+		.my-kiva-title {
+			margin-top: 1.5rem;
 		}
 	}
 }
