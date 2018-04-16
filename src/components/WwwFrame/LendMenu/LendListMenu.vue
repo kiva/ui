@@ -120,7 +120,8 @@ export default {
 	font-size: 1rem;
 
 	button,
-	a {
+	a,
+	li > span {
 		display: block;
 		width: 100%;
 		padding: 0.5rem 1rem;
@@ -139,12 +140,22 @@ export default {
 		}
 	}
 
+	a {
+		color: $kiva-text-dark;
+		text-decoration: none;
+	}
+
+	li > span {
+		color: $kiva-text-light;
+	}
+
 	ul {
 		margin: 0;
 		background-color: $kiva-bg-lightgray;
 
 		button,
-		a {
+		a,
+		li > span {
 			padding-left: 2rem;
 		}
 	}
@@ -153,7 +164,8 @@ export default {
 		background-color: $kiva-bg-darkgray;
 
 		button,
-		a {
+		a,
+		li > span {
 			padding-left: 3rem;
 			border-bottom: none;
 		}

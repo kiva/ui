@@ -233,7 +233,8 @@ export default {
 	.middle-section button,
 	.middle-section a,
 	.right-section h2,
-	.right-section a {
+	.right-section a,
+	.right-section span {
 		padding: 0 $section-padding;
 	}
 
@@ -260,6 +261,10 @@ export default {
 		.my-kiva-title {
 			margin-top: 1.5rem;
 		}
+	}
+
+	.right-section span {
+		color: $kiva-text-light;
 	}
 }
 </style>
