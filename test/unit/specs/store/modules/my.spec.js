@@ -23,6 +23,19 @@ describe('my.js', () => {
 			expect(state.userAccount.id).toEqual(null);
 			expect(state.userAccount.balance).toEqual(0);
 			expect(state.lender.image.url).toEqual('');
+			expect(state.favoritesCount).toEqual(0);
+			expect(state.savedSearches).toEqual([]);
+		});
+
+		it('SET_PRIVATE_LEND_MENU_DATA should update favoritesCount and savedSearches', () => {
+			const state = { favoritesCount: 0, savedSearches: [] };
+			const updates = {
+				count: 2,
+				savedSearches: [1, 2, 3],
+			};
+			myModule.mutations[types.SET_PRIVATE_LEND_MENU_DATA](state, updates);
+			expect(state.favoritesCount).toEqual(updates.count);
+			expect(state.savedSearches).toEqual(updates.savedSearches);
 		});
 	});
 });
