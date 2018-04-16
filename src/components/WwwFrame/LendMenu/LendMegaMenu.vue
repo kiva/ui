@@ -182,12 +182,7 @@ export default {
 		font-weight: normal;
 	}
 
-	ul {
-		margin: 0;
-	}
-
 	li {
-		list-style: none;
 		font-size: $small-text-font-size;
 		line-height: 1.5rem;
 	}

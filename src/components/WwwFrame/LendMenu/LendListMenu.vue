@@ -102,11 +102,17 @@ export default {
 	},
 	methods: {
 		onClose() {
-			this.$refs.categories.collapse();
-			this.$refs.regions.collapse();
-			this.$refs.regionCountries.forEach(region => region.collapse());
-			this.$refs.myKiva.collapse();
-			this.$refs.searches.collapse();
+			if (this.categories.length) {
+				this.$refs.categories.collapse();
+			}
+			if (this.regions.length) {
+				this.$refs.regions.collapse();
+				this.$refs.regionCountries.forEach(region => region.collapse());
+			}
+			if (this.userId) {
+				this.$refs.myKiva.collapse();
+				this.$refs.searches.collapse();
+			}
 		}
 	},
 };
@@ -117,20 +123,11 @@ export default {
 
 .lend-list-menu {
 	margin: 0;
-	font-size: 1rem;
-
-	button,
-	a,
-	li > span {
-		display: block;
-		width: 100%;
-		padding: 0.5rem 1rem;
-		border-bottom: 1px solid $kiva-stroke-gray;
-	}
 
 	button {
 		text-align: left;
 		line-height: inherit;
+		color: $kiva-text-dark;
 
 		.icon {
 			float: right;
@@ -150,7 +147,6 @@ export default {
 	}
 
 	ul {
-		margin: 0;
 		background-color: $kiva-bg-lightgray;
 
 		button,
@@ -183,10 +179,6 @@ export default {
 		.icon {
 			transform: rotate(-180deg);
 		}
-	}
-
-	li {
-		list-style: none;
 	}
 }
 </style>
