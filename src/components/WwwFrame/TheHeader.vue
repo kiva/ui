@@ -220,11 +220,6 @@ $close-search-button-size: 2.5rem;
 	flex-direction: column;
 	justify-content: center;
 
-	& > * {
-		display: table-cell;
-		vertical-align: middle;
-	}
-
 	&:last-child {
 		border-right: none;
 	}
@@ -237,9 +232,6 @@ $close-search-button-size: 2.5rem;
 	}
 
 	@include breakpoint(large) {
-		display: table;
-		flex-direction: unset;
-		justify-content: unset;
 		flex-grow: 0;
 		padding: 0 1rem;
 	}
@@ -270,6 +262,7 @@ $close-search-button-size: 2.5rem;
 .search-toggler {
 	flex-grow: 1;
 	height: 100%;
+	flex-direction: unset;
 
 	&:focus {
 		outline: none;
