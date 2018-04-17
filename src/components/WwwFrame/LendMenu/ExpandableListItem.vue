@@ -7,13 +7,7 @@
 		>
 			<slot name="title"></slot>
 		</button>
-		<transition
-			name="expandable"
-			@enter="enter"
-			@after-enter="finish"
-			@leave="leave"
-			@after-leave="finish"
-		>
+		<kv-expandable easing="ease-in-out">
 			<div
 				:id="id"
 				v-show="open"
@@ -22,12 +16,17 @@
 			>
 				<slot></slot>
 			</div>
-		</transition>
+		</kv-expandable>
 	</li>
 </template>
 
 <script>
+import KvExpandable from '@/components/Kv/KvExpandable';
+
 export default {
+	components: {
+		KvExpandable
+	},
 	props: {
 		id: {
 			type: String,
@@ -55,51 +54,6 @@ export default {
 		collapse() {
 			this.open = false;
 		},
-		/* eslint-disable no-param-reassign */
-		enter(el, done) {
-			// temporarily reset the styling
-			el.style.height = 'auto';
-			el.style.display = null;
-
-			// measure the height
-			const height = window.getComputedStyle(el).getPropertyValue('height');
-
-			// show with no height...
-			el.style.height = 0;
-
-			// ...and set the height immediately after so it animates w/ css
-			window.setTimeout(() => {
-				el.style.height = height;
-			}, 1);
-
-			// finally, finish the animation after 0.5s
-			window.setTimeout(done, 500);
-		},
-		leave(el, done) {
-			// explicitly set the height...
-			el.style.height = window.getComputedStyle(el).getPropertyValue('height');
-
-			// ...and set the height to 0 immediately after so it animates w/ css
-			window.setTimeout(() => {
-				el.style.height = 0;
-			}, 1);
-
-			// finally, finish the animation after 0.5s
-			window.setTimeout(done, 500);
-		},
-		finish(el) {
-			// unset the applied height style
-			el.style.height = null;
-		},
-		/* eslint-enable */
 	}
 };
 </script>
-
-<style lang="scss">
-.expandable-enter-active,
-.expandable-leave-active {
-	transition: height 500ms ease-in-out;
-	overflow: hidden;
-}
-</style>
