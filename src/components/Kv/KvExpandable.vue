@@ -75,8 +75,8 @@ export default {
 				el.style[this.property] = 0;
 			}, 1);
 
-			// finally, finish the animation after 0.5s
-			window.setTimeout(done, 500);
+			// finally, finish the animation after the delay
+			window.setTimeout(done, this.delay);
 		},
 		finish(el) {
 			// unset the applied styles
