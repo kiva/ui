@@ -1,19 +1,21 @@
 <template>
 	<div>
-		<label>Prod Routes</label>
-		<ul>
-			<li v-for="route in prodRoutes" :key="route.path">
-				Name: {{ route.name }}, Path: {{ route.path }}, Status: {{ route.status }}
-				<p><router-link :to="route.path">go to {{ route.name }}</router-link></p>
-			</li>
-		</ul>
-		<label>Dev Routes</label>
-		<ul>
-			<li v-for="route in devRoutes" :key="route.path">
-				Name: {{ route.name }}, Path: {{ route.path }}, Status: {{ route.status }}
-				<p><router-link :to="route.path">go to {{ route.name }}</router-link></p>
-			</li>
-		</ul>
+		<div v-if="prodRoutes.length">
+			<h3>Prod Routes</h3>
+			<ul>
+				<li v-for="route in prodRoutes" :key="route.path">
+					<p><router-link :to="route.path">{{ route.path.replace('/','') }}</router-link></p>
+				</li>
+			</ul>
+		</div>
+		<div v-if="devRoutes.length">
+			<h3>Dev Routes</h3>
+			<ul>
+				<li v-for="route in devRoutes" :key="route.path">
+					<p><router-link :to="route.path">{{ route.path.replace('/','') }}</router-link></p>
+				</li>
+			</ul>
+		</div>
 	</div>
 </template>
 
