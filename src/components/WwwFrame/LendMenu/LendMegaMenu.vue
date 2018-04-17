@@ -14,11 +14,13 @@
 				<li><router-link to="/lend">All loans</router-link></li>
 			</ul>
 		</div>
-		<div class="close-section" v-show="sectionOpen">
-			<button @click="closeSection">
-				<kv-icon class="close-icon" name="medium-chevron" />
-			</button>
-		</div>
+		<kv-expandable property="width">
+			<div class="close-section" v-show="sectionOpen">
+				<button @click="closeSection">
+					<kv-icon class="close-icon" name="medium-chevron" />
+				</button>
+			</div>
+		</kv-expandable>
 		<div class="middle-section">
 			<h2>Regions</h2>
 			<ul>
@@ -53,24 +55,27 @@
 				</li>
 			</ul>
 		</div>
-		<div
-			v-for="region in regions"
-			:key="region.name"
-			v-show="isOpenSection(region.name)"
-			class="right-section"
-		>
-			<h2>{{ region.name }}</h2>
-			<country-list :countries="region.countries" />
-		</div>
-		<div v-show="isOpenSection(savedSearchesTitle)" class="right-section">
-			<h2>{{ savedSearchesTitle }}</h2>
-			<search-list :searches="searches" />
-		</div>
+		<kv-expandable property="width" :skip-leave="true">
+			<div
+				v-for="region in regions"
+				:key="region.name"
+				v-if="isOpenSection(region.name)"
+				class="right-section"
+			>
+				<h2>{{ region.name }}</h2>
+				<country-list :countries="region.countries" />
+			</div>
+			<div v-if="isOpenSection(savedSearchesTitle)" class="right-section">
+				<h2>{{ savedSearchesTitle }}</h2>
+				<search-list :searches="searches" />
+			</div>
+		</kv-expandable>
 	</div>
 </template>
 
 <script>
 import numeral from 'numeral';
+import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
@@ -78,6 +83,7 @@ import SearchList from './SearchList';
 export default {
 	components: {
 		CountryList,
+		KvExpandable,
 		KvIcon,
 		SearchList,
 	},
@@ -217,9 +223,13 @@ export default {
 	.close-section {
 		border-left: none;
 
+		button {
+			padding: 0 1rem;
+		}
+
 		.close-icon {
 			width: 3.25rem;
-			height: 8rem;
+			height: 6rem;
 			transform: rotate(90deg);
 		}
 	}
