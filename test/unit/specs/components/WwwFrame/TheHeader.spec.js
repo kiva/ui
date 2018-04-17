@@ -24,7 +24,7 @@ describe('TheHeader', () => {
 
 		expect(area.attributes()['aria-hidden']).toBe('true');
 		toggle.trigger('click');
-		expect(area.attributes()['aria-hidden']).not.toBeDefined();
+		expect(area.attributes()['aria-hidden']).toBe('false');
 		toggle.trigger('click');
 		expect(area.attributes()['aria-hidden']).toBe('true');
 	});

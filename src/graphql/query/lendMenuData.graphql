@@ -1,0 +1,17 @@
+query {
+	loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
+		values {
+			index
+			name
+			url
+		}
+	}
+	countryFacets {
+		count
+		country {
+			name
+			region
+			isoCode
+		}
+	}
+}

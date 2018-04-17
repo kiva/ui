@@ -1,16 +1,16 @@
 <template>
 	<header class="top-nav">
 		<div class="header-row row">
-			<router-link class="header-logo header-button" :to="logoUrl">
+			<router-link class="header-logo header-button" to="/">
 				<kv-icon name="new-kiva-logo" />
 			</router-link>
-			<kv-dropdown-link name="lend-dropdown" :to="lendUrl" class="header-button">
+			<router-link to="/lend" :data-toggle="lendMenuId" class="header-button">
 				<span>Lend <kv-icon name="triangle" /></span>
-			</kv-dropdown-link>
+			</router-link>
 			<button class="search-toggler header-button"
 				:class="{'show-for-large': isVisitor}"
-				:aria-expanded="searchOpen"
-				:aria-pressed="searchOpen"
+				:aria-expanded="searchOpen ? 'true' : 'false'"
+				:aria-pressed="searchOpen ? 'true' : 'false'"
 				aria-controls="top-nav-search-area"
 				@click="toggleSearch"
 			>
@@ -18,10 +18,10 @@
 				<kv-icon v-show="searchOpen" class="close-icon" name="x" />
 			</button>
 			<div class="flexible-center-area">
-				<div id="top-nav-search-area" :aria-hidden="!searchOpen">
+				<div id="top-nav-search-area" :aria-hidden="searchOpen ? 'false' : 'true'">
 					<button class="close-search hide-for-large"
-						:aria-expanded="searchOpen"
-						:aria-pressed="searchOpen"
+						:aria-expanded="searchOpen ? 'true' : 'false'"
+						:aria-pressed="searchOpen ? 'true' : 'false'"
 						aria-controls="top-nav-search-area"
 						@click="toggleSearch"
 					>
@@ -30,52 +30,63 @@
 					<search-bar ref="search" />
 				</div>
 			</div>
-			<router-link :to="borrowUrl" class="header-button show-for-xlarge">
+			<router-link to="/borrow" class="header-button show-for-xlarge">
 				<span>Borrow</span>
 			</router-link>
-			<kv-dropdown-link v-if="isVisitor" name="about-dropdown" :to="aboutUrl" class="header-button">
+			<router-link v-if="isVisitor" :data-toggle="aboutMenuId" to="/about" class="header-button">
 				<span>About <kv-icon name="triangle" /></span>
-			</kv-dropdown-link>
-			<router-link v-if="showBasket" :to="basketUrl" class="header-button show-for-large">
+			</router-link>
+			<router-link v-if="showBasket" to="/basket" class="header-button show-for-large">
 				<span class="amount">{{ basketCount }}</span> Basket
 			</router-link>
-			<router-link v-if="isVisitor" :to="loginUrl" class="header-button">
+			<router-link v-if="isVisitor" to="/login" class="header-button">
 				<span>Sign in</span>
 			</router-link>
-			<kv-dropdown-link v-else name="my-kiva-dropdown" :to="portfolioUrl" class="header-button my-kiva">
+			<router-link v-else to="/portfolio" class="header-button my-kiva">
 				<span>
 					<span class="amount">{{ balance | numeral('$0') }}</span>
 					<img :src="profilePic">
 				</span>
-			</kv-dropdown-link>
+			</router-link>
 		</div>
+		<kv-dropdown :name="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
+			<the-lend-menu ref="lendMenu" />
+		</kv-dropdown>
+		<kv-dropdown :name="aboutMenuId" class="dropdown-list">
+			<ul>
+				<li><router-link to="/about">About us</router-link></li>
+				<li><router-link to="/about/how">How Kiva works</router-link></li>
+				<li><router-link to="/about/where-kiva-works">Where Kiva works</router-link></li>
+				<li><router-link to="/about/impact">Impact</router-link></li>
+				<li><router-link to="/about/leadership">Leadership</router-link></li>
+				<li><router-link to="/about/finances">Finances</router-link></li>
+				<li><router-link to="/about/press-center">Press</router-link></li>
+				<li><router-link to="/about/due-diligence">Due diligence</router-link></li>
+			</ul>
+		</kv-dropdown>
 	</header>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
-import KvDropdownLink from '@/components/Kv/Dropdown/KvDropdownLink';
+import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchBar from './SearchBar';
 
 export default {
 	components: {
-		KvDropdownLink,
+		KvDropdown,
 		KvIcon,
 		SearchBar,
+		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
 	data() {
 		return {
 			isFreeTrial: false,
 			basketCount: 0,
-			logoUrl: '/',
-			lendUrl: '/lend',
-			borrowUrl: '/borrow',
-			aboutUrl: '/about',
-			basketUrl: '/basket',
-			loginUrl: '/login',
-			portfolioUrl: '/portfolio',
+			aboutMenuId: 'about-header-dropdown',
+			lendMenuId: 'lend-header-dropdown',
 			searchOpen: false,
 		};
 	},
@@ -90,6 +101,15 @@ export default {
 		},
 	},
 	methods: {
+		onLendMenuShow() {
+			this.$refs.lendMenu.onOpen();
+		},
+		onLendMenuHide() {
+			this.$refs.lendMenu.onClose();
+		},
+		loadLendInfo() {
+			this.$refs.lendMenu.onLoad();
+		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
 			if (this.searchOpen) {
@@ -121,6 +141,46 @@ $close-search-button-size: 2.5rem;
 	background-color: $header-color;
 	font-size: $top-nav-font-size;
 	font-weight: 400;
+
+	.dropdown-pane {
+		border-top: none;
+		font-size: 1rem;
+
+		ul {
+			margin: 0;
+		}
+
+		li {
+			list-style: none;
+		}
+
+		@include breakpoint(medium down) {
+			width: 100%;
+			left: 0 !important;
+
+			button,
+			a,
+			li > span {
+				display: block;
+				width: 100%;
+				padding: 0.5rem 1rem;
+				border-bottom: 1px solid $kiva-stroke-gray;
+			}
+		}
+	}
+
+	.dropdown-list {
+		a {
+			display: block;
+			width: 100%;
+			padding: 0.5rem 1rem;
+			border-bottom: 1px solid $kiva-stroke-gray;
+
+			@include breakpoint(large) {
+				border-bottom: none;
+			}
+		}
+	}
 }
 
 .header-row {
@@ -201,6 +261,10 @@ $close-search-button-size: 2.5rem;
 .header-button:hover {
 	background-color: $hover-color;
 	color: $text-color;
+}
+
+.header-button[aria-expanded="true"] .icon-triangle {
+	transform: rotate(0);
 }
 
 .search-toggler {
