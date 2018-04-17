@@ -197,10 +197,16 @@ $close-search-button-size: 2.5rem;
 
 .header-logo {
 	.icon {
+		display: unset;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
 		fill: $text-color;
+		max-height: $header-height;
+
+		@include breakpoint(large) {
+			max-height: $header-height-large;
+		}
 	}
 }
 
@@ -208,14 +214,11 @@ $close-search-button-size: 2.5rem;
 	border-right: 1px solid $divider-color;
 	text-align: center;
 	white-space: nowrap;
-	display: table;
 	flex-grow: 2;
 	height: 100%;
-
-	& > * {
-		display: table-cell;
-		vertical-align: middle;
-	}
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 
 	&:last-child {
 		border-right: none;
@@ -259,6 +262,7 @@ $close-search-button-size: 2.5rem;
 .search-toggler {
 	flex-grow: 1;
 	height: 100%;
+	flex-direction: unset;
 
 	&:focus {
 		outline: none;
