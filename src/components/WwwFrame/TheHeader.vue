@@ -66,6 +66,21 @@
 		</kv-dropdown>
 		<kv-dropdown :name="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
 			<ul>
+				<template v-if="isBorrower">
+					<li><router-link to="/my/borrower">My borrower dashboard</router-link></li>
+					<template v-if="loanId !== null">
+						<li><router-link :to="`/lend/${loanId}`">My loan page</router-link></li>
+						<li><router-link :to="`/lend/${loanId}#loanComments`">My conversations</router-link></li>
+					</template>
+				</template>
+				<template v-if="isTrustee">
+					<template v-if="!isBorrower">
+						<li><router-link :to="trusteeLoansUrl">My Trustee loans</router-link></li>
+						<li><router-link :to="`/trustees/${trusteeId}`">My public Trustee page</router-link></li>
+					</template>
+					<li><router-link to="/my/trustee">My Trustee dashboard</router-link></li>
+					<hr>
+				</template>
 				<li><router-link to="/portfolio">Portfolio</router-link></li>
 				<li><router-link to="/teams/my-teams">My teams</router-link></li>
 				<li><router-link to="/portfolio/donations">Donations</router-link></li>
@@ -78,7 +93,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -104,9 +119,25 @@ export default {
 	computed: {
 		...mapState({
 			isVisitor: state => state.my.userAccount.id === null,
+			isBorrower: state => state.my.isBorrower,
 			balance: state => Math.floor(state.my.userAccount.balance),
 			profilePic: state => state.my.lender.image.url,
+			loanId: state => state.my.mostRecentBorrowedLoan.id,
+			trusteeId: state => state.my.trustee.id,
 		}),
+		...mapGetters([
+			'isTrustee'
+		]),
+		trusteeLoansUrl() {
+			return {
+				path: '/lend',
+				query: {
+					trustee: this.trusteeId,
+					status: 'fundRaising',
+					sortBy: 'newest',
+				}
+			};
+		},
 		showBasket() {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
@@ -185,6 +216,7 @@ $close-search-button-size: 2.5rem;
 			display: block;
 			width: 100%;
 			padding: 0.5rem 1rem;
+			white-space: nowrap;
 			border-bottom: 1px solid $kiva-stroke-gray;
 
 			@include breakpoint(large) {
