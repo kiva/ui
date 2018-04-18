@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import RouteListing from '@/pages/UueSiteMap/RouteListing';
+import routes from '@/router/routes';
 import createRouter from '@/router';
 
 
@@ -8,6 +9,6 @@ describe('RouteListing.vue', () => {
 		const router = createRouter();
 		const Constructor = Vue.extend(RouteListing);
 		const vm = new Constructor({ router }).$mount();
-		expect(vm.$el.querySelectorAll('label').length).toEqual(2);
+		expect(vm.$el.querySelectorAll('li').length).toEqual(routes.length);
 	});
 });
