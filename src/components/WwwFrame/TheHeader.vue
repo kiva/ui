@@ -30,7 +30,7 @@
 					<search-bar ref="search" />
 				</div>
 			</div>
-			<router-link to="/borrow" class="header-button show-for-xlarge">
+			<router-link v-if="isVisitor" to="/borrow" class="header-button show-for-xlarge">
 				<span>Borrow</span>
 			</router-link>
 			<router-link v-if="isVisitor" :data-toggle="aboutMenuId" to="/about" class="header-button">
@@ -42,7 +42,7 @@
 			<router-link v-if="isVisitor" to="/login" class="header-button">
 				<span>Sign in</span>
 			</router-link>
-			<router-link v-else to="/portfolio" class="header-button my-kiva">
+			<router-link v-else :data-toggle="myKivaMenuId" to="/portfolio" class="header-button my-kiva">
 				<span>
 					<span class="amount">{{ balance | numeral('$0') }}</span>
 					<img :src="profilePic">
@@ -52,7 +52,7 @@
 		<kv-dropdown :name="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
 			<the-lend-menu ref="lendMenu" />
 		</kv-dropdown>
-		<kv-dropdown :name="aboutMenuId" class="dropdown-list">
+		<kv-dropdown :name="aboutMenuId" v-if="isVisitor" class="dropdown-list">
 			<ul>
 				<li><router-link to="/about">About us</router-link></li>
 				<li><router-link to="/about/how">How Kiva works</router-link></li>
@@ -62,6 +62,16 @@
 				<li><router-link to="/about/finances">Finances</router-link></li>
 				<li><router-link to="/about/press-center">Press</router-link></li>
 				<li><router-link to="/about/due-diligence">Due diligence</router-link></li>
+			</ul>
+		</kv-dropdown>
+		<kv-dropdown :name="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
+			<ul>
+				<li><router-link to="/portfolio">Portfolio</router-link></li>
+				<li><router-link to="/teams/my-teams">My teams</router-link></li>
+				<li><router-link to="/portfolio/donations">Donations</router-link></li>
+				<li><router-link to="/settings">Settings</router-link></li>
+				<hr>
+				<li><router-link to="/logout">Sign out</router-link></li>
 			</ul>
 		</kv-dropdown>
 	</header>
@@ -87,6 +97,7 @@ export default {
 			basketCount: 0,
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
+			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
 		};
 	},
@@ -178,6 +189,15 @@ $close-search-button-size: 2.5rem;
 
 			@include breakpoint(large) {
 				border-bottom: none;
+			}
+		}
+
+		hr {
+			display: none;
+			margin: 0 1rem;
+
+			@include breakpoint(large) {
+				display: block;
 			}
 		}
 	}
