@@ -37,7 +37,10 @@
 				<span>About <kv-icon name="triangle" /></span>
 			</router-link>
 			<router-link v-if="showBasket" to="/basket" class="header-button show-for-large">
-				<span class="amount">{{ basketCount }}</span> Basket
+				<span>
+					<span class="amount">{{ basketCount }}</span>
+					Basket
+				</span>
 			</router-link>
 			<router-link v-if="isVisitor" to="/login" class="header-button">
 				<span>Sign in</span>
@@ -84,7 +87,6 @@ export default {
 	data() {
 		return {
 			isFreeTrial: false,
-			basketCount: 0,
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
 			searchOpen: false,
@@ -93,6 +95,7 @@ export default {
 	computed: {
 		...mapState({
 			isVisitor: state => state.my.userAccount.id === null,
+			basketCount: state => state.shop.headerItemCount,
 			balance: state => Math.floor(state.my.userAccount.balance),
 			profilePic: state => state.my.lender.image.url,
 		}),
@@ -141,6 +144,14 @@ $close-search-button-size: 2.5rem;
 	background-color: $header-color;
 	font-size: $top-nav-font-size;
 	font-weight: 400;
+
+	.amount {
+		@include breakpoint(large) {
+			color: $header-color;
+			background-color: $text-color;
+			padding: rem-calc(1) rem-calc(7);
+		}
+	}
 
 	.dropdown-pane {
 		border-top: none;
@@ -361,16 +372,20 @@ $close-search-button-size: 2.5rem;
 	text-align: right;
 	flex-grow: 3;
 
-	@include breakpoint(large) {
-		flex-grow: 0;
-	}
-
 	img {
 		border-radius: 50%;
 		height: $header-height * 0.8;
 		margin: 0 0.25rem;
+	}
 
-		@include breakpoint(large) {
+	@include breakpoint(large) {
+		flex-grow: 0;
+
+		.amount {
+			margin-right: 0.25rem;
+		}
+
+		img {
 			height: $header-height-large * 0.8;
 		}
 	}
