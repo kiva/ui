@@ -7,15 +7,17 @@
 			<slot></slot>
 		</main>
 		<the-footer />
+		<the-basket-bar />
 	</div>
 </template>
 
 <script>
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
+import TheBasketBar from './TheBasketBar';
 
 export default {
-	components: { TheHeader, TheFooter },
+	components: { TheHeader, TheFooter, TheBasketBar },
 };
 </script>
 
