@@ -2,6 +2,7 @@ import { shallow, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import Vuex from 'vuex';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import createMyModule from '@/store/modules/my';
+import createShopModule from '@/store/modules/shop';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -10,7 +11,12 @@ describe('TheHeader', () => {
 	it('should hide/show the search area when the search toggle button is clicked', () => {
 		const wrapper = shallow(TheHeader, {
 			localVue,
-			store: new Vuex.Store({ modules: { my: createMyModule() } }),
+			store: new Vuex.Store({
+				modules: {
+					my: createMyModule(),
+					shop: createShopModule(),
+				}
+			}),
 			stubs: {
 				RouterLink: RouterLinkStub,
 				SearchBar: {
