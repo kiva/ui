@@ -13,7 +13,8 @@ export default apollo => {
 			getHeaderBasketCount({ commit }) {
 				return apollo.query({ query: basketCountQuery })
 					.then(result => result.data.shop.headerItemCount)
-					.then(count => commit(types.SET_HEADER_BASKET_COUNT, { count }));
+					.then(count => commit(types.SET_HEADER_BASKET_COUNT, { count }))
+					.catch(() => commit(types.SET_HEADER_BASKET_COUNT, { count: 0 }));
 			},
 		},
 		mutations: {
