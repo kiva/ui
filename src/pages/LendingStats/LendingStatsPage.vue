@@ -1,8 +1,8 @@
 <template>
 	<www-page>
-		<the-my-kiva-secondary-menu />
+		<the-my-kiva-secondary-menu slot="secondary" :istrustee="isTrustee" :isborrower="isBorrower" />
 		<div class="row page-content">
-			<the-portfolio-tertiary-menu />
+			<the-portfolio-tertiary-menu slot="tertiary" />
 			<div class="small-12 large-9 columns">
 				<h1>Lending stats</h1>
 				<p>This is a snapshot of your lending activity on Kiva.
@@ -14,7 +14,7 @@
 						<span class="lent-count">0/78</span>
 					</h2>
 					<div class="lend-link-btn">
-						<router-link :to="{ path: 'lend', query: { country: countrySAMPLEQuery } }">
+						<router-link :to="{ path: 'lend', query: { country: 'AF,AL,AM' } }">
 							Lend to a new country
 						</router-link>
 					</div>
@@ -31,20 +31,13 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
 
 export default {
-	data() {
-		return {
-			countrySAMPLEQuery: `AF,AL,AM,BD,BZ,BJ,BT,BO,BR,BF,KH,CM,CA,CO,CD,
-				CR,CI,DO,EC,EG,SV,FJ,GE,GH,GU,GT,HT,HN,IN,ID,IL,JO,KE,XK,
-				KG,LA,LB,LS,LR,MG,MW,ML,MR,MX,MD,MZ,MM,NA,NP,NI,NG,PK,PS,PA,
-				PY,PE,PH,PR,RW,WS,SN,SL,SB,ZA,SS,TJ,TZ,TH,TL,TG,TO,
-				TR,UG,UA,US,UY,VN,VI,YE,ZM,ZW`
-		};
-	},
 	components: {
 		WwwPage,
 		TheMyKivaSecondaryMenu,
@@ -52,7 +45,18 @@ export default {
 	},
 	metaInfo: {
 		title: 'Lending Stats'
-	}
+	},
+	computed: {
+		...mapState({
+			isBorrower: state => state.my.isBorrower
+		}),
+		...mapGetters([
+			'isTrustee'
+		]),
+	},
+	asyncData({ store }) {
+		return store.dispatch('getMyKivaInfo');
+	},
 };
 </script>
 
