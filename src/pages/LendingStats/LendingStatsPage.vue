@@ -2,7 +2,7 @@
 	<www-page>
 		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="row page-content">
-			<the-portfolio-tertiary-menu slot="tertiary" />
+			<the-portfolio-tertiary-menu slot="tertiary" class="show-for-large" />
 			<div class="small-12 large-9 columns">
 				<h1>Lending stats</h1>
 				<p>This is a snapshot of your lending activity on Kiva.

@@ -1,5 +1,5 @@
 <template>
-	<div name="tertiary" class="tertiary-nav show-for-large large-3 columns">
+	<div name="tertiary" class="tertiary-nav large-3 columns">
 		<slot></slot>
 	</div>
 </template>
