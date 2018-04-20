@@ -8,7 +8,7 @@
 			<li><router-link to="/portfolio/credit/deposit">Add credit</router-link></li>
 			<li><router-link to="/withdraw">Withdraw</router-link></li>
 			<li><router-link :to="donateCreditUrl">Donate credit</router-link></li>
-			<li v-if="publicLenderName">
+			<li v-if="publicId">
 				<router-link :to="publicLenderUrl">Public lender profile</router-link>
 			</li>
 			<li><router-link to="/portfolio/transactions">Transaction history</router-link></li>
@@ -21,34 +21,33 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 
 export default {
 	components: { TertiaryMenu },
-	data() {
-		return {
-			publicLenderName: 'myName'
-		};
-	},
 	computed: {
-		// donateCreditAmount() {
-		// 	return 0;
-		// },
+		...mapState({
+			userBalance: state => state.my.userAccount.balance,
+			publicId: state => state.my.userAccount.publicId
+		}),
 		donateCreditUrl() {
 			return {
 				path: '/donate/supportusprocess',
 				query: {
-					// donationAmount: context.donateCreditAmount
-					donationAmount: '21.12'
+					donationAmount: this.userBalance
 				}
 			};
 		},
 		publicLenderUrl() {
 			return {
-				path: `/lender/${this.publicLenderName}`
-				// path: '/lender/myName'
+				path: `/lender/${this.publicId}`
 			};
 		}
+	},
+	asyncData({ store }) {
+		return store.dispatch('getPortfolioTertiaryMenu');
 	}
 };
 </script>
