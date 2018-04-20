@@ -16,23 +16,36 @@ export default apollo => {
 				url: '',
 			},
 		},
+		isBorrower: false,
+		mostRecentBorrowedLoan: {
+			id: null,
+		},
+		trustee: {
+			id: null,
+		},
 		favoritesCount: 0,
 		savedSearches: [],
 	};
 
 	return {
 		state: initialState,
-		getters: {},
+		getters: {
+			isTrustee: state => state.trustee.id !== null
+		},
 		actions: {
 			hello() {
 				return apollo.query({ query: helloQuery });
 			},
 			getMyKivaInfo({ commit }) {
 				return apollo.query({ query: myKivaInfoQuery })
-					.then(result => {
+					.then(result => result.data.my)
+					.then(my => {
 						commit(types.RECEIVE_MY_KIVA_INFO, {
-							userAccount: result.data.my.userAccount,
-							lender: result.data.my.lender,
+							userAccount: my.userAccount,
+							lender: my.lender,
+							isBorrower: my.isBorrower,
+							borrowedLoan: my.mostRecentBorrowedLoan,
+							trustee: my.trustee,
 						});
 					})
 					.catch(error => {
@@ -72,9 +85,12 @@ export default apollo => {
 			},
 		},
 		mutations: {
-			[types.RECEIVE_MY_KIVA_INFO](state, { userAccount, lender }) {
-				Object.assign(state.userAccount, userAccount);
-				Object.assign(state.lender, lender);
+			[types.RECEIVE_MY_KIVA_INFO](state, data) {
+				Object.assign(state.userAccount, data.userAccount);
+				Object.assign(state.lender, data.lender);
+				Object.assign(state.mostRecentBorrowedLoan, data.borrowedLoan);
+				Object.assign(state.trustee, data.trustee);
+				state.isBorrower = data.isBorrower;
 			},
 			[types.SIGN_OUT](state) {
 				Object.assign(state, initialState);

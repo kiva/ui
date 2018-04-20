@@ -30,7 +30,7 @@
 					<search-bar ref="search" />
 				</div>
 			</div>
-			<router-link to="/borrow" class="header-button show-for-xlarge">
+			<router-link v-if="isVisitor" to="/borrow" class="header-button show-for-xlarge">
 				<span>Borrow</span>
 			</router-link>
 			<router-link v-if="isVisitor" :data-toggle="aboutMenuId" to="/about" class="header-button">
@@ -45,7 +45,7 @@
 			<router-link v-if="isVisitor" to="/login" class="header-button">
 				<span>Sign in</span>
 			</router-link>
-			<router-link v-else to="/portfolio" class="header-button my-kiva">
+			<router-link v-else :data-toggle="myKivaMenuId" to="/portfolio" class="header-button my-kiva">
 				<span>
 					<span class="amount">{{ balance | numeral('$0') }}</span>
 					<img :src="profilePic">
@@ -55,7 +55,7 @@
 		<kv-dropdown :name="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
 			<the-lend-menu ref="lendMenu" />
 		</kv-dropdown>
-		<kv-dropdown :name="aboutMenuId" class="dropdown-list">
+		<kv-dropdown :name="aboutMenuId" v-if="isVisitor" class="dropdown-list">
 			<ul>
 				<li><router-link to="/about">About us</router-link></li>
 				<li><router-link to="/about/how">How Kiva works</router-link></li>
@@ -67,11 +67,36 @@
 				<li><router-link to="/about/due-diligence">Due diligence</router-link></li>
 			</ul>
 		</kv-dropdown>
+		<kv-dropdown :name="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
+			<ul>
+				<template v-if="isBorrower">
+					<li><router-link to="/my/borrower">My borrower dashboard</router-link></li>
+					<template v-if="loanId !== null">
+						<li><router-link :to="`/lend/${loanId}`">My loan page</router-link></li>
+						<li><router-link :to="`/lend/${loanId}#loanComments`">My conversations</router-link></li>
+					</template>
+				</template>
+				<template v-if="isTrustee">
+					<template v-if="!isBorrower">
+						<li><router-link :to="trusteeLoansUrl">My Trustee loans</router-link></li>
+						<li><router-link :to="`/trustees/${trusteeId}`">My public Trustee page</router-link></li>
+					</template>
+					<li><router-link to="/my/trustee">My Trustee dashboard</router-link></li>
+					<hr>
+				</template>
+				<li><router-link to="/portfolio">Portfolio</router-link></li>
+				<li><router-link to="/teams/my-teams">My teams</router-link></li>
+				<li><router-link to="/portfolio/donations">Donations</router-link></li>
+				<li><router-link to="/settings">Settings</router-link></li>
+				<hr>
+				<li><router-link to="/logout">Sign out</router-link></li>
+			</ul>
+		</kv-dropdown>
 	</header>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -89,16 +114,33 @@ export default {
 			isFreeTrial: false,
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
+			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
 		};
 	},
 	computed: {
 		...mapState({
 			isVisitor: state => state.my.userAccount.id === null,
+			isBorrower: state => state.my.isBorrower,
 			basketCount: state => state.shop.headerItemCount,
 			balance: state => Math.floor(state.my.userAccount.balance),
 			profilePic: state => state.my.lender.image.url,
+			loanId: state => state.my.mostRecentBorrowedLoan.id,
+			trusteeId: state => state.my.trustee.id,
 		}),
+		...mapGetters([
+			'isTrustee'
+		]),
+		trusteeLoansUrl() {
+			return {
+				path: '/lend',
+				query: {
+					trustee: this.trusteeId,
+					status: 'fundRaising',
+					sortBy: 'newest',
+				}
+			};
+		},
 		showBasket() {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
@@ -185,10 +227,20 @@ $close-search-button-size: 2.5rem;
 			display: block;
 			width: 100%;
 			padding: 0.5rem 1rem;
+			white-space: nowrap;
 			border-bottom: 1px solid $kiva-stroke-gray;
 
 			@include breakpoint(large) {
 				border-bottom: none;
+			}
+		}
+
+		hr {
+			display: none;
+			margin: 0 1rem;
+
+			@include breakpoint(large) {
+				display: block;
 			}
 		}
 	}

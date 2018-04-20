@@ -9,5 +9,12 @@ query {
 				url( presetSize:lender_default )
 			}
 		}
+		isBorrower
+		mostRecentBorrowedLoan {
+			id
+		}
+		trustee {
+			id
+		}
 	}
 }
