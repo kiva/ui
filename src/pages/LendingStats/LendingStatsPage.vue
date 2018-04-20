@@ -1,6 +1,6 @@
 <template>
 	<www-page>
-		<the-my-kiva-secondary-menu slot="secondary" :istrustee="isTrustee" :isborrower="isBorrower" />
+		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="row page-content">
 			<the-portfolio-tertiary-menu slot="tertiary" />
 			<div class="small-12 large-9 columns">
@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -45,18 +43,7 @@ export default {
 	},
 	metaInfo: {
 		title: 'Lending Stats'
-	},
-	computed: {
-		...mapState({
-			isBorrower: state => state.my.isBorrower
-		}),
-		...mapGetters([
-			'isTrustee'
-		]),
-	},
-	asyncData({ store }) {
-		return store.dispatch('getMyKivaInfo');
-	},
+	}
 };
 </script>
 

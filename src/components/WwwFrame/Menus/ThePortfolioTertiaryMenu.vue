@@ -39,7 +39,7 @@ export default {
 				path: '/donate/supportusprocess',
 				query: {
 					// donationAmount: context.donateCreditAmount
-					donationAmount: 10
+					donationAmount: '21.12'
 				}
 			};
 		},
