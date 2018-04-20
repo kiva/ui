@@ -31,17 +31,36 @@
 				<p>This is a snapshot of your lending activity on Kiva.
 				Use this page to collect loans and hit milestones along the way.</p>
 				<hr>
-				<div class="loan-stats lending-stats-section">
-					<h2 class="section-header">
-						<span class="section-title country-title">Countries*</span>
-						<span class="lent-count">0/78</span>
-					</h2>
-					<div class="lend-link-btn">
-						<router-link :to="{ path: 'lend', query: { country: countrySAMPLEQuery } }">
-							Lend to a new country
-						</router-link>
-					</div>
-				</div>
+				<stats-section
+					title="Countries*"
+					noun="country"
+					:items="[]"
+					:lent-to="[]"
+					item-key="isoCode"
+				/>
+				<hr>
+				<stats-section
+					title="Sectors"
+					noun="sector"
+					:items="sectorItems"
+					:lent-to="sectorLentTo"
+					:icon-key="iconForSector"
+				/>
+				<hr>
+				<stats-section
+					title="Activities"
+					noun="activity"
+					:items="[]"
+					:lent-to="[]"
+				/>
+				<hr>
+				<stats-section
+					title="Field Partners*"
+					noun="Field Partner"
+					:items="[]"
+					:lent-to="[]"
+					query="partner"
+				/>
 				<hr>
 				<p>* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
 				This means, you may end up supporting a loan in a country or through a Field Partner that
@@ -55,20 +74,47 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import StatsSection from './StatsSection';
 
 export default {
 	data() {
 		return {
-			countrySAMPLEQuery: `AF,AL,AM,BD,BZ,BJ,BT,BO,BR,BF,KH,CM,CA,CO,CD,
-				CR,CI,DO,EC,EG,SV,FJ,GE,GH,GU,GT,HT,HN,IN,ID,IL,JO,KE,XK,
-				KG,LA,LB,LS,LR,MG,MW,ML,MR,MX,MD,MZ,MM,NA,NP,NI,NG,PK,PS,PA,
-				PY,PE,PH,PR,RW,WS,SN,SL,SB,ZA,SS,TJ,TZ,TH,TL,TG,TO,
-				TR,UG,UA,US,UY,VN,VI,YE,ZM,ZW`
+			sectorItems: [
+				{ id: 1, name: 'Agriculture' },
+				{ id: 9, name: 'Arts' },
+				{ id: 5, name: 'Clothing' },
+				{ id: 14, name: 'Construction' },
+				{ id: 15, name: 'Education' },
+				{ id: 17, name: 'Entertainment' },
+				{ id: 12, name: 'Food' },
+				{ id: 6, name: 'Health' },
+				{ id: 10, name: 'Housing' },
+				{ id: 8, name: 'Manufacturing' },
+				{ id: 16, name: 'Personal Use' },
+				{ id: 7, name: 'Retail' },
+				{ id: 4, name: 'Services' },
+				{ id: 3, name: 'Transportation' },
+				{ id: 13, name: 'Wholesale' },
+			],
+			sectorLentTo: [
+				{ id: 9, name: 'Arts' },
+				{ id: 15, name: 'Education' },
+				{ id: 17, name: 'Entertainment' },
+				{ id: 12, name: 'Food' },
+				{ id: 6, name: 'Health' },
+				{ id: 3, name: 'Transportation' },
+				{ id: 13, name: 'Wholesale' },
+			],
 		};
 	},
-	components: { WwwPage },
+	components: { WwwPage, StatsSection },
 	metaInfo: {
 		title: 'Lending Stats'
+	},
+	methods: {
+		iconForSector(sector) {
+			return `sector-${sector.name.toLowerCase().replace(' ', '-')}`;
+		}
 	}
 };
 </script>
