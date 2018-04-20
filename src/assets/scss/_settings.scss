@@ -395,26 +395,77 @@ $breadcrumbs-item-separator-color: $medium-gray;
 // ----------
 
 $button-font-family: inherit;
-$button-padding: 0.85em 1em;
+$button-padding: (
+	small: rem-calc(12) rem-calc(24),
+	medium: rem-calc(18) rem-calc(36),
+);
 $button-margin: 0 0 $global-margin 0;
-$button-fill: solid;
 $button-background: $kiva-accent-blue;
 $button-background-hover: $kiva-accent-darkblue;
 $button-color: $white;
-$button-color-alt: $black;
-$button-radius: $global-radius;
+$button-radius: rem-calc(2);
 $button-hollow-border-width: 1px;
 $button-sizes: (
-  tiny: 0.6rem,
-  small: 0.75rem,
-  default: 0.9rem,
-  large: 1.25rem,
+  default: rem-calc(20),
 );
+$button-transition: background-color 0.25s ease-out, color 0.25s ease-out, border-color 0.25s ease-out;
+
+// 11.1 Button - vars added by Kiva
+// -----------
+
+$button-font-weight: 400;
+$button-primary-shadow: 0 2px $button-background-hover;
+$button-secondary-shadow: 0 1px;
+$button-secondary-background: $white;
+$button-secondary-color: $charcoal;
+$button-secondary-border-color: $dark-charcoal;
+$button-secondary-hover: $kiva-accent-blue;
+$button-smaller-medium-shadow: 0 1px $button-background-hover;
+
+@mixin button-primary-styles() {
+	@include breakpoint(medium) {
+		font-size: rem-calc(24);
+	}
+}
+
+@mixin button-secondary-styles() {
+	font-size: rem-calc(16);
+	padding: rem-calc(16) rem-calc(32);
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(20);
+		padding: rem-calc(18) rem-calc(36);
+	}
+}
+
+@mixin button-smaller-styles() {
+	padding: rem-calc(12) rem-calc(24);
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(20);
+		padding: rem-calc(16) rem-calc(32);
+	}
+}
+
+@mixin button-setting-styles() {
+	font-size: rem-calc(14);
+	padding: rem-calc(12) rem-calc(24);
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(16);
+		padding: rem-calc(12) rem-calc(26);
+	}
+}
+
+// 11.2 Button - Foundation vars not currently used by Kiva
+// -----------
+
+$button-fill: solid;
+$button-color-alt: $black;
 $button-palette: $foundation-palette;
 $button-opacity-disabled: 0.25;
 $button-background-hover-lightness: -20%;
 $button-hollow-hover-lightness: -50%;
-$button-transition: background-color 0.25s ease-out, color 0.25s ease-out;
 
 // 12. Button Group
 // ----------------
