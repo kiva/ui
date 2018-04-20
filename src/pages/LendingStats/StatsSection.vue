@@ -30,17 +30,19 @@
 				</div>
 			</div>
 		</div>
-		<button
-			v-if="canExpand"
-			@click="toggle"
-			class="show-more-button"
-			:aria-pressed="showingMore ? 'true' : 'false'"
-		>
-			{{ showingMore ? 'Hide' : 'Show more' }}
-		</button>
-		<router-link v-if="hasUnlent" :to="unlentUrl">
-			Lend to a new {{ noun }}
-		</router-link>
+		<div class="button-area">
+			<button
+				v-if="canExpand"
+				@click="toggle"
+				class="show-more-button"
+				:aria-pressed="showingMore ? 'true' : 'false'"
+			>
+				{{ showingMore ? 'Hide' : 'Show more' }}
+			</button>
+			<kv-button v-if="hasUnlent" :to="unlentUrl" class="secondary">
+				Lend to a new {{ noun }}
+			</kv-button>
+		</div>
 	</section>
 </template>
 
@@ -49,6 +51,7 @@ import _differenceBy from 'lodash/differenceBy';
 import _map from 'lodash/map';
 import numeral from 'numeral';
 import { expand, collapse } from '@/util/expander';
+import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import ItemList from './ItemList';
 
@@ -85,6 +88,7 @@ export default {
 	},
 	components: {
 		ItemList,
+		KvButton,
 		KvIcon,
 	},
 	data() {
@@ -210,9 +214,16 @@ export default {
 		}
 	}
 
-	.show-more-button {
+	.button-area {
 		width: 100%;
-		padding: 0.5rem;
+		display: flex;
+		flex-flow: column nowrap;
+		align-items: center;
+	}
+
+	.show-more-button {
+		padding: 0.75rem;
+		margin-bottom: 1rem;
 		font-weight: $global-weight-normal;
 		text-decoration: underline;
 
