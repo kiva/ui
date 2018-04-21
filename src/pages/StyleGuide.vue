@@ -28,19 +28,38 @@
 			<label class="elem-desc">Huge level 1 header (h1.huge)</label>
 			<h1 class="huge">{{ shortLorem }}</h1>
 		</section>
+		<section>
+			<h2>Buttons</h2>
+
+			<label class="elem-desc">Primary button</label>
+			<kv-button>Primary</kv-button>
+
+			<label class="elem-desc">Smaller button (.smaller)</label>
+			<kv-button class="smaller">Smaller</kv-button>
+
+			<label class="elem-desc">Secondary button (.secondary)</label>
+			<kv-button class="secondary">Secondary</kv-button>
+
+			<label class="elem-desc">Setting button (.setting)</label>
+			<kv-button class="setting">Setting</kv-button>
+		</section>
 	</div>
 </template>
 
 <script>
 /* eslint-disable max-len */
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
+	components: {
+		KvButton,
+	},
 	data() {
 		return {
 			lorem: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 			shortLorem: 'Lorem ipsum dolor sit amet',
 		};
-	}
+	},
 };
 </script>
 
