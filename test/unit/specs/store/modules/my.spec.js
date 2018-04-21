@@ -52,5 +52,19 @@ describe('my.js', () => {
 			expect(state.favoritesCount).toEqual(updates.count);
 			expect(state.savedSearches).toEqual(updates.savedSearches);
 		});
+
+		it('RECEIVE_MY_KIVA_SECONDARY_MENU should update isBorrower and trustee', () => {
+			const state = {
+				isBorrower: false,
+				trustee: {},
+			};
+			const updates = {
+				isBorrower: true,
+				trustee: { id: 280 }
+			};
+			myModule.mutations[types.RECEIVE_MY_KIVA_SECONDARY_MENU](state, updates);
+			expect(state.isBorrower).toEqual(updates.isBorrower);
+			expect(state.trustee.id).toEqual(updates.trustee.id);
+		});
 	});
 });

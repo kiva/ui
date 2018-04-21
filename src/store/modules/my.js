@@ -2,6 +2,7 @@ import _find from 'lodash/find';
 
 import helloQuery from '@/graphql/query/hello.graphql';
 import myKivaInfoQuery from '@/graphql/query/myKivaInfo.graphql';
+import myKivaSecondaryMenuQuery from '@/graphql/query/myKivaSecondaryMenu.graphql';
 import lendMenuPrivateData from '@/graphql/query/lendMenuPrivateData.graphql';
 import * as types from '@/store/mutation-types';
 
@@ -84,6 +85,21 @@ export default apollo => {
 				});
 			},
 		},
+		getMyKivaSecondaryMenu({ commit }) {
+			return apollo.query({ query: myKivaSecondaryMenuQuery })
+				.then(result => result.data.my)
+				.then(my => {
+					commit(types.RECEIVE_MY_KIVA_SECONDARY_MENU, {
+						isBorrower: my.isBorrower,
+						trustee: my.trustee,
+					});
+				})
+				.catch(error => {
+					if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
+						commit(types.SIGN_OUT);
+					}
+				});
+		},
 		mutations: {
 			[types.RECEIVE_MY_KIVA_INFO](state, data) {
 				Object.assign(state.userAccount, data.userAccount);
@@ -98,6 +114,10 @@ export default apollo => {
 			[types.SET_PRIVATE_LEND_MENU_DATA](state, { count, savedSearches }) {
 				state.favoritesCount = count;
 				state.savedSearches = savedSearches;
+			},
+			[types.RECEIVE_MY_KIVA_SECONDARY_MENU](state, data) {
+				Object.assign(state.trustee, data.trustee);
+				state.isBorrower = data.isBorrower;
 			},
 		},
 	};

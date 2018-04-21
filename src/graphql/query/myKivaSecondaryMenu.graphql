@@ -1,0 +1,8 @@
+query {
+	my {
+		isBorrower
+		trustee {
+			id
+		}
+	}
+}
