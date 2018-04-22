@@ -66,5 +66,17 @@ describe('my.js', () => {
 			expect(state.isBorrower).toEqual(updates.isBorrower);
 			expect(state.trustee.id).toEqual(updates.trustee.id);
 		});
+
+		it('RECEIVE_PORTFOLIO_TERTIARY_MENU should update userAccount with balance and publicId', () => {
+			const state = {
+				userAccount: {},
+			};
+			const updates = {
+				userAccount: { publicId: 'sayMyName12345', balance: 25 },
+			};
+			myModule.mutations[types.RECEIVE_PORTFOLIO_TERTIARY_MENU](state, updates);
+			expect(state.userAccount.balance).toEqual(updates.userAccount.balance);
+			expect(state.userAccount.publicId).toEqual(updates.userAccount.publicId);
+		});
 	});
 });

@@ -1,0 +1,8 @@
+{
+	my {
+		userAccount {
+			publicId
+			balance
+		}
+	}
+}
