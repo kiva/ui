@@ -8,6 +8,7 @@ module.exports = merge(base, {
 		googleTagmanagerId: 'GTM-PXFRMT',
 	},
 	server: {
+		graphqlUri: 'https://api-vm.kiva.org/graphql',
 		memcachedServers: ['localhost'],
 	}
 })

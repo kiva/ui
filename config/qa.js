@@ -6,5 +6,8 @@ module.exports = merge(base, {
 		publicPath: 'https://www-qa-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.qa.kiva.org/ajax/graphql',
 		googleTagmanagerId: 'GTM-WXLS9B',
+	},
+	server: {
+		graphqlUri: 'https://api.qa.kivaws.org/graphql',
 	}
 })
