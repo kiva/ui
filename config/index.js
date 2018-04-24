@@ -11,6 +11,7 @@ module.exports = {
 	},
 	server: {
 		port: 8888,
+		graphqlUri: 'https://api.kivaws.org/graphql',
 	},
 	build: {
 		env: require('./env/prod.env'),

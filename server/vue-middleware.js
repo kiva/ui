@@ -52,7 +52,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 
 		res.setHeader('Content-Type', 'text/html');
 
-		getGqlFragmentTypes(config.app.graphqlUri)
+		getGqlFragmentTypes(config.server.graphqlUri)
 			.then(types => {
 				if (!isProd) {
 					console.log(`fragment fetch: ${Date.now() - s}ms`);
