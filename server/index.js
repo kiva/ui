@@ -10,7 +10,7 @@ const port = argv.port || config.server.port;
 
 // Set headers for fonts
 function setHeaders(res, path) {
-	if (path.indexOf('fonts') > -1) {
+	if (path.indexOf('/fonts/') > -1) {
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	}
