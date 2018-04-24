@@ -8,7 +8,18 @@ const config = require('../config/selectConfig')(argv.config);
 const app = express();
 const port = argv.port || config.server.port;
 
-app.use(express.static('dist'));
+// Set headers for fonts
+function setHeaders(res, path) {
+	if (path.indexOf('/fonts/') > -1) {
+		res.header('Access-Control-Allow-Origin', '*');
+		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	}
+}
+
+app.use(express.static('dist', {
+	setHeaders
+}));
+// app.use(express.static('dist/static/fonts'));
 
 app.use(vueMiddleware({
 	serverBundle,
