@@ -5,6 +5,14 @@ query {
 				isoCode
 				name
 			}
+			sectorsLentTo {
+				id
+				name
+			}
+			activitiesLentTo {
+				id
+				name
+			}
 		}
 	}
 	countryFacets {
@@ -13,6 +21,16 @@ query {
 			name
 			region
 			isoCode
+		}
+	}
+	kivaStats {
+		sectors {
+			id
+			name
+		}
+		activities {
+			id
+			name
 		}
 	}
 }

@@ -27,6 +27,10 @@ export default apollo => {
 			countriesLentTo: [],
 			countriesNotLentTo: [],
 			totalCountries: 0,
+			sectorsLentTo: [],
+			sectorsNotLentTo: [],
+			activitiesLentTo: [],
+			activitiesNotLentTo: [],
 		},
 		isBorrower: false,
 		mostRecentBorrowedLoan: {
@@ -102,6 +106,10 @@ export default apollo => {
 						commit(types.SET_MY_LENDING_STATS, {
 							allCountries: _sortBy(_map(data.countryFacets, 'country'), 'name'),
 							countriesLentTo: _sortBy(data.my.lendingStats.countriesLentTo, 'name'),
+							allSectors: _sortBy(data.kivaStats.sectors, 'name'),
+							sectorsLentTo: _sortBy(data.my.lendingStats.sectorsLentTo, 'name'),
+							allActivities: _sortBy(data.kivaStats.activities, 'name'),
+							activitiesLentTo: _sortBy(data.my.lendingStats.activitiesLentTo, 'name'),
 						});
 					})
 					.catch(error => {
@@ -155,11 +163,22 @@ export default apollo => {
 				state.favoritesCount = count;
 				state.savedSearches = savedSearches;
 			},
-			[types.SET_MY_LENDING_STATS](state, { allCountries, countriesLentTo }) {
+			[types.SET_MY_LENDING_STATS](state, {
+				allCountries,
+				countriesLentTo,
+				allSectors,
+				sectorsLentTo,
+				allActivities,
+				activitiesLentTo,
+			}) {
 				Object.assign(state.lendingStats, {
 					countriesLentTo,
 					countriesNotLentTo: _differenceBy(allCountries, countriesLentTo, 'isoCode'),
 					totalCountries: allCountries.length,
+					sectorsLentTo,
+					sectorsNotLentTo: _differenceBy(allSectors, sectorsLentTo, 'id'),
+					activitiesLentTo,
+					activitiesNotLentTo: _differenceBy(allActivities, activitiesLentTo, 'id'),
 				});
 			},
 			[types.RECEIVE_MY_KIVA_SECONDARY_MENU](state, data) {

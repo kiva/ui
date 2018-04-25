@@ -48,6 +48,10 @@ describe('my.js', () => {
 					countriesLentTo: [],
 					countriesNotLentTo: [],
 					totalCountries: 0,
+					sectorsLentTo: [],
+					sectorsNotLentTo: [],
+					activitiesLentTo: [],
+					activitiesNotLentTo: [],
 				}
 			};
 			const updates = {
@@ -61,6 +65,26 @@ describe('my.js', () => {
 					{ isoCode: 'TZ', name: 'Tanzania' },
 					{ isoCode: 'UG', name: 'Uganda' },
 				],
+				sectorsLentTo: [
+					{ id: 1, name: 'Agriculture' },
+					{ id: 3, name: 'Transportation' },
+				],
+				allSectors: [
+					{ id: 1, name: 'Agriculture' },
+					{ id: 3, name: 'Transportation' },
+					{ id: 4, name: 'Services' },
+					{ id: 5, name: 'Clothing' },
+				],
+				activitiesLentTo: [
+					{ id: 15, name: 'Grocery Store' },
+					{ id: 17, name: 'Musical Performance' },
+				],
+				allActivities: [
+					{ id: 15, name: 'Grocery Store' },
+					{ id: 17, name: 'Musical Performance' },
+					{ id: 18, name: 'Water Distribution' },
+					{ id: 19, name: 'Cosmetics Sales' },
+				],
 			};
 			const expected = {
 				lendingStats: {
@@ -73,6 +97,22 @@ describe('my.js', () => {
 						{ isoCode: 'UG', name: 'Uganda' },
 					],
 					totalCountries: updates.allCountries.length,
+					sectorsLentTo: [
+						{ id: 1, name: 'Agriculture' },
+						{ id: 3, name: 'Transportation' },
+					],
+					sectorsNotLentTo: [
+						{ id: 4, name: 'Services' },
+						{ id: 5, name: 'Clothing' },
+					],
+					activitiesLentTo: [
+						{ id: 15, name: 'Grocery Store' },
+						{ id: 17, name: 'Musical Performance' },
+					],
+					activitiesNotLentTo: [
+						{ id: 18, name: 'Water Distribution' },
+						{ id: 19, name: 'Cosmetics Sales' },
+					],
 				}
 			};
 			myModule.mutations[types.SET_MY_LENDING_STATS](state, updates);

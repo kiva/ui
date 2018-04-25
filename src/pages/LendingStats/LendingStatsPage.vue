@@ -28,8 +28,8 @@
 				<stats-section
 					title="Activities"
 					noun="activity"
-					:not-lent-to="[]"
-					:lent-to="[]"
+					:not-lent-to="activitiesNotLentTo"
+					:lent-to="activitiesLentTo"
 				/>
 				<hr>
 				<stats-section
@@ -58,29 +58,6 @@ import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTe
 import StatsSection from './StatsSection';
 
 export default {
-	data() {
-		return {
-			sectorsNotLentTo: [
-				{ id: 1, name: 'Agriculture' },
-				{ id: 5, name: 'Clothing' },
-				{ id: 14, name: 'Construction' },
-				{ id: 10, name: 'Housing' },
-				{ id: 8, name: 'Manufacturing' },
-				{ id: 16, name: 'Personal Use' },
-				{ id: 7, name: 'Retail' },
-				{ id: 4, name: 'Services' },
-			],
-			sectorsLentTo: [
-				{ id: 9, name: 'Arts' },
-				{ id: 15, name: 'Education' },
-				{ id: 17, name: 'Entertainment' },
-				{ id: 12, name: 'Food' },
-				{ id: 6, name: 'Health' },
-				{ id: 3, name: 'Transportation' },
-				{ id: 13, name: 'Wholesale' },
-			],
-		};
-	},
 	components: {
 		WwwPage,
 		TheMyKivaSecondaryMenu,
@@ -95,6 +72,10 @@ export default {
 			countriesLentTo: state => state.my.lendingStats.countriesLentTo,
 			countriesNotLentTo: state => state.my.lendingStats.countriesNotLentTo,
 			totalCountries: state => state.my.lendingStats.totalCountries,
+			sectorsLentTo: state => state.my.lendingStats.sectorsLentTo,
+			sectorsNotLentTo: state => state.my.lendingStats.sectorsNotLentTo,
+			activitiesLentTo: state => state.my.lendingStats.activitiesLentTo,
+			activitiesNotLentTo: state => state.my.lendingStats.activitiesNotLentTo,
 		}),
 	},
 	asyncData({ store }) {
