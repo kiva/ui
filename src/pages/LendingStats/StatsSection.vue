@@ -39,7 +39,7 @@
 			>
 				{{ showingMore ? 'Hide' : 'Show more' }}
 			</button>
-			<kv-button v-if="hasUnlent" :to="unlentUrl" class="secondary">
+			<kv-button v-if="hasUnlent" :to="unlentUrl" class="secondary lend-to-new-button">
 				Lend to a new {{ noun }}
 			</kv-button>
 		</div>
@@ -202,7 +202,6 @@ export default {
 
 	.show-more-button {
 		padding: 0.75rem;
-		margin-bottom: 1rem;
 		font-weight: $global-weight-normal;
 		text-decoration: underline;
 
@@ -213,6 +212,10 @@ export default {
 		&:focus {
 			outline: none;
 		}
+	}
+
+	.lend-to-new-button {
+		margin-top: 1rem;
 	}
 }
 </style>
