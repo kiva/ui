@@ -1,0 +1,18 @@
+query {
+	my {
+		lendingStats {
+			countriesLentTo {
+				isoCode
+				name
+			}
+		}
+	}
+	countryFacets {
+		count
+		country {
+			name
+			region
+			isoCode
+		}
+	}
+}
