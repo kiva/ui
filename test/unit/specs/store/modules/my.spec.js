@@ -42,6 +42,43 @@ describe('my.js', () => {
 			expect(state.trustee.id).toEqual(null);
 		});
 
+		it('SET_MY_LENDING_STATS should update lending stats', () => {
+			const state = {
+				lendingStats: {
+					countriesLentTo: [],
+					countriesNotLentTo: [],
+					totalCountries: 0,
+				}
+			};
+			const updates = {
+				countriesLentTo: [
+					{ isoCode: 'BI', name: 'Burundi' },
+					{ isoCode: 'TZ', name: 'Tanzania' },
+				],
+				allCountries: [
+					{ isoCode: 'BJ', name: 'Benin' },
+					{ isoCode: 'BI', name: 'Burundi' },
+					{ isoCode: 'TZ', name: 'Tanzania' },
+					{ isoCode: 'UG', name: 'Uganda' },
+				],
+			};
+			const expected = {
+				lendingStats: {
+					countriesLentTo: [
+						{ isoCode: 'BI', name: 'Burundi' },
+						{ isoCode: 'TZ', name: 'Tanzania' },
+					],
+					countriesNotLentTo: [
+						{ isoCode: 'BJ', name: 'Benin' },
+						{ isoCode: 'UG', name: 'Uganda' },
+					],
+					totalCountries: updates.allCountries.length,
+				}
+			};
+			myModule.mutations[types.SET_MY_LENDING_STATS](state, updates);
+			expect(state.lendingStats).toEqual(expected.lendingStats);
+		});
+
 		it('SET_PRIVATE_LEND_MENU_DATA should update favoritesCount and savedSearches', () => {
 			const state = { favoritesCount: 0, savedSearches: [] };
 			const updates = {

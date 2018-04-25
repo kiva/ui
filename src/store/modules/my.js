@@ -1,8 +1,12 @@
+import _differenceBy from 'lodash/differenceBy';
 import _find from 'lodash/find';
+import _map from 'lodash/map';
+import _sortBy from 'lodash/sortBy';
 
 import helloQuery from '@/graphql/query/hello.graphql';
 import myKivaInfoQuery from '@/graphql/query/myKivaInfo.graphql';
 import myKivaSecondaryMenuQuery from '@/graphql/query/myKivaSecondaryMenu.graphql';
+import myLendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import portfolioTertiaryMenu from '@/graphql/query/portfolioTertiaryMenu.graphql';
 import lendMenuPrivateData from '@/graphql/query/lendMenuPrivateData.graphql';
 import * as types from '@/store/mutation-types';
@@ -18,6 +22,11 @@ export default apollo => {
 			image: {
 				url: '',
 			},
+		},
+		lendingStats: {
+			countriesLentTo: [],
+			countriesNotLentTo: [],
+			totalCountries: 0,
 		},
 		isBorrower: false,
 		mostRecentBorrowedLoan: {
@@ -86,6 +95,21 @@ export default apollo => {
 					savedSearches: [],
 				});
 			},
+			getMyLendingStats({ commit }) {
+				return apollo.query({ query: myLendingStatsQuery })
+					.then(result => result.data)
+					.then(data => {
+						commit(types.SET_MY_LENDING_STATS, {
+							allCountries: _sortBy(_map(data.countryFacets, 'country'), 'name'),
+							countriesLentTo: _sortBy(data.my.lendingStats.countriesLentTo, 'name'),
+						});
+					})
+					.catch(error => {
+						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
+							// redirect to login
+						}
+					});
+			},
 			getMyKivaSecondaryMenu({ commit }) {
 				return apollo.query({ query: myKivaSecondaryMenuQuery })
 					.then(result => result.data.my)
@@ -130,6 +154,13 @@ export default apollo => {
 			[types.SET_PRIVATE_LEND_MENU_DATA](state, { count, savedSearches }) {
 				state.favoritesCount = count;
 				state.savedSearches = savedSearches;
+			},
+			[types.SET_MY_LENDING_STATS](state, { allCountries, countriesLentTo }) {
+				Object.assign(state.lendingStats, {
+					countriesLentTo,
+					countriesNotLentTo: _differenceBy(allCountries, countriesLentTo, 'isoCode'),
+					totalCountries: allCountries.length,
+				});
 			},
 			[types.RECEIVE_MY_KIVA_SECONDARY_MENU](state, data) {
 				Object.assign(state.trustee, data.trustee);

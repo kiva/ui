@@ -2,21 +2,18 @@
 /* eslint-disable vue/require-prop-types */
 export default {
 	render(createElement) {
-		return createElement(
-			this.tag,
-			{
-				class: {
-					button: true
-				},
-				attrs: {
-					href: this.href,
-				},
-				props: {
-					to: this.to,
-				},
-			},
-			this.$slots.default
-		);
+		const options = {
+			class: { button: true },
+			props: {},
+			attrs: {},
+		};
+		if (this.to) {
+			options.props.to = this.to;
+		}
+		if (this.href) {
+			options.attrs.href = this.href;
+		}
+		return createElement(this.tag, options, this.$slots.default);
 	},
 	props: {
 		to: { default: null },
