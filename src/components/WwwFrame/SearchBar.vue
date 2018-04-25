@@ -154,7 +154,7 @@ export default {
 				query = { queryString: suggestion };
 			}
 			this.searching = true;
-			this.$router.push({ path: 'lend', query });
+			this.$router.push({ path: '/lend', query });
 		},
 		formatResult(label) {
 			// Find the part of the label that matches the searched term

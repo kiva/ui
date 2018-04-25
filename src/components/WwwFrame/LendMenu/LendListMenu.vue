@@ -38,18 +38,22 @@
 				<kv-icon name="small-chevron-mobile" />
 			</template>
 			<ul>
-				<li v-show="favorites > 0">
-					<router-link :to="{ path: 'lend', query: { lenderFavorite: userId } }">
+				<li>
+					<router-link v-if="favorites > 0" :to="{ path: '/lend', query: { lenderFavorite: userId } }">
 						Starred loans
 					</router-link>
+					<span v-else>Starred loans</span>
 				</li>
-				<expandable-list-item id="lend-menu-saved-searches-panel" ref="searches" v-show="hasSearches">
+				<expandable-list-item id="lend-menu-saved-searches-panel" ref="searches" v-if="hasSearches">
 					<template slot="title">
 						<span>Saved searches</span>
 						<kv-icon name="small-chevron-mobile" />
 					</template>
 					<search-list :searches="searches" />
 				</expandable-list-item>
+				<li v-else>
+					<span>Saved searches</span>
+				</li>
 				<li>
 					<router-link to="/lend/countries-not-lent">
 						Countries I haven't lent to
@@ -111,6 +115,8 @@ export default {
 			}
 			if (this.userId) {
 				this.$refs.myKiva.collapse();
+			}
+			if (this.hasSearches) {
 				this.$refs.searches.collapse();
 			}
 		}

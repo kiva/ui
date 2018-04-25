@@ -35,18 +35,21 @@
 			</ul>
 			<h2 v-if="userId" class="my-kiva-title">My Kiva</h2>
 			<ul v-if="userId">
-				<li v-show="favorites > 0">
-					<router-link :to="{ path: 'lend', query: { lenderFavorite: userId } }">
+				<li>
+					<router-link v-if="favorites > 0" :to="{ path: '/lend', query: { lenderFavorite: userId } }">
 						Starred loans
 					</router-link>
+					<span v-else>Starred loans</span>
 				</li>
 				<li>
 					<button
+						v-if="hasSearches"
 						@click="openSection(savedSearchesTitle)"
 						:aria-pressed="isOpenSection(savedSearchesTitle) ? 'true' : 'false'"
 					>
 						{{ savedSearchesTitle }}
 					</button>
+					<span v-else>Saved searches</span>
 				</li>
 				<li>
 					<router-link to="/lend/countries-not-lent">
@@ -125,6 +128,9 @@ export default {
 		},
 		categoriesMargin() {
 			return this.categoriesWidth && this.sectionOpen ? `-${this.categoriesWidth}` : '1rem';
+		},
+		hasSearches() {
+			return this.searches.length > 0;
 		},
 		sectionOpen() {
 			return this.openedSection !== '';
@@ -237,6 +243,7 @@ export default {
 	.middle-section h2,
 	.middle-section button,
 	.middle-section a,
+	.middle-section span,
 	.right-section h2,
 	.right-section a,
 	.right-section span {
@@ -261,6 +268,10 @@ export default {
 				text-decoration: none;
 				background-color: $kiva-bg-darkgray;
 			}
+		}
+
+		span {
+			color: $kiva-text-light;
 		}
 
 		.my-kiva-title {
