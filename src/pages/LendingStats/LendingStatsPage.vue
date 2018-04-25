@@ -11,30 +11,31 @@
 				<stats-section
 					title="Countries*"
 					noun="country"
-					:items="[]"
-					:lent-to="[]"
+					:not-lent-to="countriesNotLentTo"
+					:lent-to="countriesLentTo"
+					:total="totalCountries"
 					item-key="isoCode"
 				/>
 				<hr>
 				<stats-section
 					title="Sectors"
 					noun="sector"
-					:items="sectorItems"
-					:lent-to="sectorLentTo"
+					:not-lent-to="sectorsNotLentTo"
+					:lent-to="sectorsLentTo"
 					:icon-key="iconForSector"
 				/>
 				<hr>
 				<stats-section
 					title="Activities"
 					noun="activity"
-					:items="[]"
+					:not-lent-to="[]"
 					:lent-to="[]"
 				/>
 				<hr>
 				<stats-section
 					title="Field Partners*"
 					noun="Field Partner"
-					:items="[]"
+					:not-lent-to="[]"
 					:lent-to="[]"
 					query="partner"
 				/>
@@ -50,6 +51,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -58,24 +60,17 @@ import StatsSection from './StatsSection';
 export default {
 	data() {
 		return {
-			sectorItems: [
+			sectorsNotLentTo: [
 				{ id: 1, name: 'Agriculture' },
-				{ id: 9, name: 'Arts' },
 				{ id: 5, name: 'Clothing' },
 				{ id: 14, name: 'Construction' },
-				{ id: 15, name: 'Education' },
-				{ id: 17, name: 'Entertainment' },
-				{ id: 12, name: 'Food' },
-				{ id: 6, name: 'Health' },
 				{ id: 10, name: 'Housing' },
 				{ id: 8, name: 'Manufacturing' },
 				{ id: 16, name: 'Personal Use' },
 				{ id: 7, name: 'Retail' },
 				{ id: 4, name: 'Services' },
-				{ id: 3, name: 'Transportation' },
-				{ id: 13, name: 'Wholesale' },
 			],
-			sectorLentTo: [
+			sectorsLentTo: [
 				{ id: 9, name: 'Arts' },
 				{ id: 15, name: 'Education' },
 				{ id: 17, name: 'Entertainment' },
@@ -94,6 +89,16 @@ export default {
 	},
 	metaInfo: {
 		title: 'Lending Stats'
+	},
+	computed: {
+		...mapState({
+			countriesLentTo: state => state.my.lendingStats.countriesLentTo,
+			countriesNotLentTo: state => state.my.lendingStats.countriesNotLentTo,
+			totalCountries: state => state.my.lendingStats.totalCountries,
+		}),
+	},
+	asyncData({ store }) {
+		return store.dispatch('getMyLendingStats');
 	},
 	methods: {
 		iconForSector(sector) {

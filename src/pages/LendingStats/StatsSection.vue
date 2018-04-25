@@ -2,7 +2,7 @@
 	<section class="stats-section">
 		<h2>
 			<span>{{ title }}</span>
-			<span class="lent-count">{{ lentTo.length }}/{{ items.length }}</span>
+			<span class="lent-count">{{ lentTo.length }}/{{ itemCount }}</span>
 		</h2>
 		<div class="row stats-list" ref="list">
 			<div class="columns small-6">
@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import _differenceBy from 'lodash/differenceBy';
 import _map from 'lodash/map';
 import numeral from 'numeral';
 import { expand, collapse } from '@/util/expander';
@@ -57,34 +56,14 @@ import ItemList from './ItemList';
 
 export default {
 	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-		noun: {
-			type: String,
-			required: true,
-		},
-		items: {
-			type: Array,
-			required: true,
-		},
-		lentTo: {
-			type: Array,
-			required: true,
-		},
-		query: {
-			type: String,
-			default: null,
-		},
-		itemKey: {
-			type: String,
-			default: 'id',
-		},
-		iconKey: {
-			type: Function,
-			default: () => 'leaf'
-		}
+		title: { type: String, required: true },
+		noun: { type: String, required: true },
+		notLentTo: { type: Array, required: true },
+		lentTo: { type: Array, required: true },
+		total: { type: Number, default: 0 },
+		query: { type: String, default: null },
+		itemKey: { type: String, default: 'id' },
+		iconKey: { type: Function, default: () => 'leaf' }
 	},
 	components: {
 		ItemList,
@@ -99,14 +78,14 @@ export default {
 		};
 	},
 	computed: {
-		notLentTo() {
-			return _differenceBy(this.items, this.lentTo, this.itemKey);
-		},
 		canExpand() {
 			return this.lentTo.length > this.numShowing || this.notLentTo.length > this.numShowing;
 		},
 		hasUnlent() {
 			return this.notLentTo.length > 0;
+		},
+		itemCount() {
+			return this.total ? this.total : this.lentTo.length + this.notLentTo.length;
 		},
 		queryParam() {
 			return this.query ? this.query : this.noun;
