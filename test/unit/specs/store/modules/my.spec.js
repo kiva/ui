@@ -48,6 +48,8 @@ describe('my.js', () => {
 					countriesLentTo: [],
 					countriesNotLentTo: [],
 					totalCountries: 0,
+					sectorsLentTo: [],
+					sectorsNotLentTo: [],
 				}
 			};
 			const updates = {
@@ -61,6 +63,16 @@ describe('my.js', () => {
 					{ isoCode: 'TZ', name: 'Tanzania' },
 					{ isoCode: 'UG', name: 'Uganda' },
 				],
+				sectorsLentTo: [
+					{ id: 1, name: 'Agriculture' },
+					{ id: 3, name: 'Transportation' },
+				],
+				allSectors: [
+					{ id: 1, name: 'Agriculture' },
+					{ id: 3, name: 'Transportation' },
+					{ id: 4, name: 'Services' },
+					{ id: 5, name: 'Clothing' },
+				]
 			};
 			const expected = {
 				lendingStats: {
@@ -73,6 +85,14 @@ describe('my.js', () => {
 						{ isoCode: 'UG', name: 'Uganda' },
 					],
 					totalCountries: updates.allCountries.length,
+					sectorsLentTo: [
+						{ id: 1, name: 'Agriculture' },
+						{ id: 3, name: 'Transportation' },
+					],
+					sectorsNotLentTo: [
+						{ id: 4, name: 'Services' },
+						{ id: 5, name: 'Clothing' },
+					]
 				}
 			};
 			myModule.mutations[types.SET_MY_LENDING_STATS](state, updates);
