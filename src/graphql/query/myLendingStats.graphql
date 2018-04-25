@@ -9,6 +9,10 @@ query {
 				id
 				name
 			}
+			activitiesLentTo {
+				id
+				name
+			}
 		}
 	}
 	countryFacets {
@@ -21,6 +25,10 @@ query {
 	}
 	kivaStats {
 		sectors {
+			id
+			name
+		}
+		activities {
 			id
 			name
 		}

@@ -28,8 +28,8 @@
 				<stats-section
 					title="Activities"
 					noun="activity"
-					:not-lent-to="[]"
-					:lent-to="[]"
+					:not-lent-to="activitiesNotLentTo"
+					:lent-to="activitiesLentTo"
 				/>
 				<hr>
 				<stats-section
@@ -74,6 +74,8 @@ export default {
 			totalCountries: state => state.my.lendingStats.totalCountries,
 			sectorsLentTo: state => state.my.lendingStats.sectorsLentTo,
 			sectorsNotLentTo: state => state.my.lendingStats.sectorsNotLentTo,
+			activitiesLentTo: state => state.my.lendingStats.activitiesLentTo,
+			activitiesNotLentTo: state => state.my.lendingStats.activitiesNotLentTo,
 		}),
 	},
 	asyncData({ store }) {
