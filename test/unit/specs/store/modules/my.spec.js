@@ -52,6 +52,9 @@ describe('my.js', () => {
 					sectorsNotLentTo: [],
 					activitiesLentTo: [],
 					activitiesNotLentTo: [],
+					partnersLentTo: [],
+					partnersNotLentTo: [],
+					totalPartners: 0,
 				}
 			};
 			const updates = {
@@ -85,6 +88,17 @@ describe('my.js', () => {
 					{ id: 18, name: 'Water Distribution' },
 					{ id: 19, name: 'Cosmetics Sales' },
 				],
+				partnersLentTo: [
+					{ id: 162, name: 'Turame Community Finance' },
+					{ id: 179, name: 'Finadev Benin' },
+				],
+				allPartners: [
+					{ id: 87, name: 'Tujijenge Tanzania' },
+					{ id: 162, name: 'Turame Community Finance' },
+					{ id: 179, name: 'Finadev Benin' },
+					{ id: 163, name: 'HOFOKAM' },
+				],
+				totalPartners: 4
 			};
 			const expected = {
 				lendingStats: {
@@ -113,6 +127,15 @@ describe('my.js', () => {
 						{ id: 18, name: 'Water Distribution' },
 						{ id: 19, name: 'Cosmetics Sales' },
 					],
+					partnersLentTo: [
+						{ id: 162, name: 'Turame Community Finance' },
+						{ id: 179, name: 'Finadev Benin' },
+					],
+					partnersNotLentTo: [
+						{ id: 87, name: 'Tujijenge Tanzania' },
+						{ id: 163, name: 'HOFOKAM' },
+					],
+					totalPartners: 4,
 				}
 			};
 			myModule.mutations[types.SET_MY_LENDING_STATS](state, updates);
