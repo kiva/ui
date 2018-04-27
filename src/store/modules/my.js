@@ -31,6 +31,9 @@ export default apollo => {
 			sectorsNotLentTo: [],
 			activitiesLentTo: [],
 			activitiesNotLentTo: [],
+			partnersLentTo: [],
+			partnersNotLentTo: [],
+			totalPartners: 0,
 		},
 		isBorrower: false,
 		mostRecentBorrowedLoan: {
@@ -110,6 +113,9 @@ export default apollo => {
 							sectorsLentTo: _sortBy(data.my.lendingStats.sectorsLentTo, 'name'),
 							allActivities: _sortBy(data.kivaStats.activities, 'name'),
 							activitiesLentTo: _sortBy(data.my.lendingStats.activitiesLentTo, 'name'),
+							allPartners: _sortBy(data.partners.values, 'name'),
+							partnersLentTo: _sortBy(data.my.lendingStats.partnersLentTo, 'name'),
+							totalPartners: data.partners.totalCount,
 						});
 					})
 					.catch(error => {
@@ -170,6 +176,9 @@ export default apollo => {
 				sectorsLentTo,
 				allActivities,
 				activitiesLentTo,
+				allPartners,
+				partnersLentTo,
+				totalPartners,
 			}) {
 				Object.assign(state.lendingStats, {
 					countriesLentTo,
@@ -179,6 +188,9 @@ export default apollo => {
 					sectorsNotLentTo: _differenceBy(allSectors, sectorsLentTo, 'id'),
 					activitiesLentTo,
 					activitiesNotLentTo: _differenceBy(allActivities, activitiesLentTo, 'id'),
+					partnersLentTo,
+					partnersNotLentTo: _differenceBy(allPartners, partnersLentTo, 'id'),
+					totalPartners,
 				});
 			},
 			[types.RECEIVE_MY_KIVA_SECONDARY_MENU](state, data) {

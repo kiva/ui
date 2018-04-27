@@ -38,6 +38,7 @@
 		"lodash-es": "^4.17.4",
 		"minimist": "^1.2.0",
 		"numeral": "^2.0.6",
+		"popper.js": "^1.14.3",
 		"serialize-javascript": "^1.4.0",
 		"vue": "^2.5.7",
 		"vue-meta": "^1.4.2",

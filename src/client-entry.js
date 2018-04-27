@@ -36,6 +36,8 @@ if (window.__APOLLO_STATE__) {
 app.$setKvAnalyticsData(app);
 // fire server rendered pageview
 app.$fireServerPageView();
+// Add browser info to the store
+store.dispatch('detectBrowserAbility');
 
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {
