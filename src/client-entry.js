@@ -32,6 +32,9 @@ if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
+// Add browser info to the store
+store.dispatch('detectBrowserAbility');
+
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {
 	// Add router hook for handling asyncData.

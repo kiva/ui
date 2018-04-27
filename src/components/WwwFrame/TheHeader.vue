@@ -4,7 +4,7 @@
 			<router-link class="header-logo header-button" to="/">
 				<kv-icon name="new-kiva-logo" />
 			</router-link>
-			<router-link to="/lend" :data-toggle="lendMenuId" class="header-button">
+			<router-link :id="lendMenuId" to="/lend" class="header-button">
 				<span>Lend <kv-icon name="triangle" /></span>
 			</router-link>
 			<button class="search-toggler header-button"
@@ -33,7 +33,7 @@
 			<router-link v-if="isVisitor" to="/borrow" class="header-button show-for-xlarge">
 				<span>Borrow</span>
 			</router-link>
-			<router-link v-if="isVisitor" :data-toggle="aboutMenuId" to="/about" class="header-button">
+			<router-link :id="aboutMenuId" v-if="isVisitor" to="/about" class="header-button">
 				<span>About <kv-icon name="triangle" /></span>
 			</router-link>
 			<router-link v-if="showBasket" to="/basket" class="header-button show-for-large">
@@ -45,17 +45,17 @@
 			<router-link v-if="isVisitor" to="/login" class="header-button">
 				<span>Sign in</span>
 			</router-link>
-			<router-link v-else :data-toggle="myKivaMenuId" to="/portfolio" class="header-button my-kiva">
+			<router-link v-else :id="myKivaMenuId" to="/portfolio" class="header-button my-kiva">
 				<span>
 					<span class="amount">{{ balance | numeral('$0') }}</span>
 					<img :src="profilePic">
 				</span>
 			</router-link>
 		</div>
-		<kv-dropdown :name="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
+		<kv-dropdown :controller="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
 			<the-lend-menu ref="lendMenu" />
 		</kv-dropdown>
-		<kv-dropdown :name="aboutMenuId" v-if="isVisitor" class="dropdown-list">
+		<kv-dropdown :controller="aboutMenuId" v-if="isVisitor" class="dropdown-list">
 			<ul>
 				<li><router-link to="/about">About us</router-link></li>
 				<li><router-link to="/about/how">How Kiva works</router-link></li>
@@ -67,7 +67,7 @@
 				<li><router-link to="/about/due-diligence">Due diligence</router-link></li>
 			</ul>
 		</kv-dropdown>
-		<kv-dropdown :name="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
+		<kv-dropdown :controller="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
 			<ul>
 				<template v-if="isBorrower">
 					<li><router-link to="/my/borrower">My borrower dashboard</router-link></li>
