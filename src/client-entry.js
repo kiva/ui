@@ -32,6 +32,11 @@ if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
+// setup global analytics data
+app.$setKvAnalyticsData(window.__INITIAL_STATE__);
+// fire server rendered pageview
+app.$fireServerPageView();
+
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {
 	// Add router hook for handling asyncData.
@@ -61,7 +66,12 @@ router.onReady(() => {
 		}
 	});
 
-	router.afterEach(() => app.$Progress.finish());
+	router.afterEach((to, from) => {
+		// finish loading
+		app.$Progress.finish();
+		// fire pageview
+		app.$fireAsyncPageView(to, from);
+	});
 
 	router.onError(() => app.$Progress.fail());
 
