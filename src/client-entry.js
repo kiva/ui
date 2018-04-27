@@ -33,7 +33,7 @@ if (window.__APOLLO_STATE__) {
 }
 
 // setup global analytics data
-app.$setKvAnalyticsData(window.__INITIAL_STATE__);
+app.$setKvAnalyticsData(app);
 // fire server rendered pageview
 app.$fireServerPageView();
 
