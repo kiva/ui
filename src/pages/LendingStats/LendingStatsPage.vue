@@ -35,8 +35,9 @@
 				<stats-section
 					title="Field Partners*"
 					noun="Field Partner"
-					:not-lent-to="[]"
-					:lent-to="[]"
+					:not-lent-to="partnersNotLentTo"
+					:lent-to="partnersLentTo"
+					:total="totalPartners"
 					query="partner"
 				/>
 				<hr>
@@ -76,6 +77,9 @@ export default {
 			sectorsNotLentTo: state => state.my.lendingStats.sectorsNotLentTo,
 			activitiesLentTo: state => state.my.lendingStats.activitiesLentTo,
 			activitiesNotLentTo: state => state.my.lendingStats.activitiesNotLentTo,
+			partnersLentTo: state => state.my.lendingStats.partnersLentTo,
+			partnersNotLentTo: state => state.my.lendingStats.partnersNotLentTo,
+			totalPartners: state => state.my.lendingStats.totalPartners,
 		}),
 	},
 	asyncData({ store }) {

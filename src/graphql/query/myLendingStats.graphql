@@ -13,6 +13,10 @@ query {
 				id
 				name
 			}
+			partnersLentTo {
+				id
+				name
+			}
 		}
 	}
 	countryFacets {
@@ -29,6 +33,13 @@ query {
 			name
 		}
 		activities {
+			id
+			name
+		}
+	}
+	partners (filters: { status: active }, limit: null) {
+		totalCount
+		values {
 			id
 			name
 		}
