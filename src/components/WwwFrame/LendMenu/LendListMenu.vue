@@ -7,7 +7,11 @@
 			</template>
 			<ul>
 				<li v-for="category in categories" :key="category.index">
-					<a :href="category.url">{{ category.name }}</a>
+					<a
+						:href="category.url"
+						v-kv-track-event="`TopNav|click-Lend-Category|${ category.name }|${ category.index }`">
+						{{ category.name }}
+					</a>
 				</li>
 			</ul>
 		</expandable-list-item>
@@ -39,7 +43,10 @@
 			</template>
 			<ul>
 				<li>
-					<router-link v-if="favorites > 0" :to="{ path: '/lend', query: { lenderFavorite: userId } }">
+					<router-link
+						v-if="favorites > 0"
+						:to="{ path: '/lend', query: { lenderFavorite: userId } }"
+						v-kv-track-event="'TopNav|click-Lend-Favorites'">
 						Starred loans
 					</router-link>
 					<span v-else>Starred loans</span>
@@ -55,7 +62,9 @@
 					<span>Saved searches</span>
 				</li>
 				<li>
-					<router-link to="/lend/countries-not-lent">
+					<router-link
+						to="/lend/countries-not-lent"
+						v-kv-track-event="'TopNav|click-Lend-Countries_Not_Lent'">
 						Countries I haven't lent to
 					</router-link>
 				</li>
