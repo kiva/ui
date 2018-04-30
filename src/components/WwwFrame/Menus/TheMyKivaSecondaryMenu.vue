@@ -2,12 +2,48 @@
 	<div>
 		<secondary-menu class="show-for-large">
 			<ul class="row">
-				<li><router-link to="/portfolio">Portfolio</router-link></li>
-				<li><router-link to="/teams/my-teams">My teams</router-link></li>
-				<li><router-link to="/account/messages">Messages</router-link></li>
-				<li><router-link to="/settings">Settings</router-link></li>
-				<li v-if="isBorrower"><router-link to="/my/borrower">Borrower Dashboard</router-link></li>
-				<li v-if="isTrustee"><router-link to="/my/trustee">Trustee Dashboard</router-link></li>
+				<li>
+					<router-link
+						to="/portfolio"
+						v-kv-track-event="'SecondaryNav|click-MyKiva-Portfolio'">
+						Portfolio
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/teams/my-teams"
+						v-kv-track-event="'SecondaryNav|click-MyKiva-My-teams'">
+						My teams
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/account/messages"
+						v-kv-track-event="'SecondaryNav|click-MyKiva-Messages'">
+						Messages
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/settings"
+						v-kv-track-event="'SecondaryNav|click-MyKiva-Settings'">
+						Settings
+					</router-link>
+				</li>
+				<li v-if="isBorrower">
+					<router-link
+						to="/my/borrower"
+						v-kv-track-event="'SecondaryNav|click-MyKiva-Borrower-dashboard'">
+						Borrower Dashboard
+					</router-link>
+				</li>
+				<li v-if="isTrustee">
+					<router-link
+						to="/my/trustee"
+						v-kv-track-event="'SecondaryNav|click-MyKiva-Trustee-dashboard'">
+						Trustee Dashboard
+					</router-link>
+				</li>
 			</ul>
 		</secondary-menu>
 		<div class="mobile-nav hide-for-large">
@@ -28,11 +64,41 @@
 				>
 					<the-portfolio-tertiary-menu />
 					<ul>
-						<li><router-link to="/teams/my-teams">My teams</router-link></li>
-						<li><router-link to="/account/messages">Messages</router-link></li>
-						<li><router-link to="/settings">Settings</router-link></li>
-						<li v-if="isBorrower"><router-link to="/my/borrower">Borrower Dashboard</router-link></li>
-						<li v-if="isTrustee"><router-link to="/my/trustee">Trustee Dashboard</router-link></li>
+						<li>
+							<router-link
+								to="/teams/my-teams"
+								v-kv-track-event="'SecondaryNav|click-MyKiva-My-teams'">
+								My teams
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/account/messages"
+								v-kv-track-event="'SecondaryNav|click-MyKiva-Messages'">
+								Messages
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								to="/settings"
+								v-kv-track-event="'SecondaryNav|click-MyKiva-Settings'">
+								Settings
+							</router-link>
+						</li>
+						<li v-if="isBorrower">
+							<router-link
+								to="/my/borrower"
+								v-kv-track-event="'SecondaryNav|click-MyKiva-Borrower-dashboard'">
+								Borrower Dashboard
+							</router-link>
+						</li>
+						<li v-if="isTrustee">
+							<router-link
+								to="/my/trustee"
+								v-kv-track-event="'SecondaryNav|click-MyKiva-Trustee-dashboard'">
+								Trustee Dashboard
+							</router-link>
+						</li>
 					</ul>
 				</div>
 			</kv-expandable>
