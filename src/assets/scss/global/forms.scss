@@ -8,13 +8,18 @@ $placeholder-font-style: italic;
 	font-style: $placeholder-font-style;
 }
 
-:-moz-placeholder { /* Firefox <18 */
+::-moz-placeholder { /* Firefox >=19 */
 	color: $placeholder-color;
 	font-style: $placeholder-font-style;
 	opacity: 1 !important;
 }
 
-::-moz-placeholder { /* Firefox >=19 */
+::-ms-input-placeholder { /* Edge */
+	color: $placeholder-color;
+	font-style: $placeholder-font-style;
+}
+
+:-moz-placeholder { /* Firefox <18 */
 	color: $placeholder-color;
 	font-style: $placeholder-font-style;
 	opacity: 1 !important;
@@ -23,11 +28,6 @@ $placeholder-font-style: italic;
 :-ms-input-placeholder { /* IE10-11 */
 	color: $placeholder-color !important;
 	font-style: $placeholder-font-style !important;
-}
-
-::-ms-input-placeholder { /* Edge */
-	color: $placeholder-color;
-	font-style: $placeholder-font-style;
 }
 
 ::placeholder { /* CSS Working Draft */

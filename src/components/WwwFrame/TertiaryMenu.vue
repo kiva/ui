@@ -16,7 +16,6 @@
 			margin-bottom: 0.875rem;
 			line-height: $small-text-line-height;
 
-			/* stylelint-disable-next-line no-descending-specificity */
 			a {
 				font-weight: normal;
 				color: $kiva-accent-blue;
