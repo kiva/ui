@@ -216,7 +216,6 @@ $footer-link-separator-color: $light-green;
 
 				li {
 					display: inline-block;
-					float: left;
 					transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0);
 
 					a {

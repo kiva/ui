@@ -8,10 +8,26 @@
 					:key="category.index"
 					:class="{ 'last-category': category == categories[categories.length - 1] }"
 				>
-					<a :href="category.url">{{ category.name }}</a>
+					<a
+						:href="category.url"
+						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, category.index]">
+						{{ category.name }}
+					</a>
 				</li>
-				<li><router-link to="/categories">All categories</router-link></li>
-				<li><router-link to="/lend">All loans</router-link></li>
+				<li>
+					<router-link
+						to="/categories"
+						v-kv-track-event="'TopNav|click-Lend-All_Categories'">
+						All categories
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/lend"
+						v-kv-track-event="'TopNav|click-Lend-All_Loans'">
+						All loans
+					</router-link>
+				</li>
 			</ul>
 		</div>
 		<kv-expandable property="width">
@@ -36,7 +52,10 @@
 			<h2 v-if="userId" class="my-kiva-title">My Kiva</h2>
 			<ul v-if="userId">
 				<li>
-					<router-link v-if="favorites > 0" :to="{ path: '/lend', query: { lenderFavorite: userId } }">
+					<router-link
+						v-if="favorites > 0"
+						:to="{ path: '/lend', query: { lenderFavorite: userId } }"
+						v-kv-track-event="'TopNav|click-Lend-Favorites'">
 						Starred loans
 					</router-link>
 					<span v-else>Starred loans</span>
@@ -52,7 +71,9 @@
 					<span v-else>Saved searches</span>
 				</li>
 				<li>
-					<router-link to="/lend/countries-not-lent">
+					<router-link
+						to="/lend/countries-not-lent"
+						v-kv-track-event="'TopNav|click-Lend-Countries_Not_Lent'">
 						Countries I haven't lent to
 					</router-link>
 				</li>
