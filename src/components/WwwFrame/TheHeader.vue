@@ -1,10 +1,15 @@
 <template>
 	<header class="top-nav">
 		<div class="header-row row">
-			<router-link class="header-logo header-button" to="/">
+			<router-link class="header-logo header-button" to="/" v-kv-track-event="'TopNav|click-Logo|frame'">
 				<kv-icon name="new-kiva-logo" />
 			</router-link>
-			<router-link :id="lendMenuId" to="/lend" class="header-button">
+			<router-link
+				:id="lendMenuId"
+				to="/lend"
+				class="header-button"
+				v-kv-track-event="'TopNav|click-Lend|frame'"
+			>
 				<span>Lend <kv-icon name="triangle" /></span>
 			</router-link>
 			<button class="search-toggler header-button"
@@ -13,6 +18,7 @@
 				:aria-pressed="searchOpen ? 'true' : 'false'"
 				aria-controls="top-nav-search-area"
 				@click="toggleSearch"
+				v-kv-track-event="'TopNav|click-search-toggle|frame'"
 			>
 				<kv-icon v-show="!searchOpen" class="search-icon" name="magnify-glass" />
 				<kv-icon v-show="searchOpen" class="close-icon" name="x" />
@@ -30,22 +36,49 @@
 					<search-bar ref="search" />
 				</div>
 			</div>
-			<router-link v-if="isVisitor" to="/borrow" class="header-button show-for-xlarge">
+			<router-link
+				v-if="isVisitor"
+				to="/borrow"
+				class="header-button show-for-xlarge"
+				v-kv-track-event="'TopNav|click-Borrow|frame'"
+			>
 				<span>Borrow</span>
 			</router-link>
-			<router-link :id="aboutMenuId" v-if="isVisitor" to="/about" class="header-button">
+			<router-link
+				:id="aboutMenuId"
+				v-if="isVisitor"
+				to="/about"
+				class="header-button"
+				v-kv-track-event="'TopNav|click-About|frame'"
+			>
 				<span>About <kv-icon name="triangle" /></span>
 			</router-link>
-			<router-link v-if="showBasket" to="/basket" class="header-button show-for-large">
+			<router-link
+				v-if="showBasket"
+				to="/basket"
+				class="header-button show-for-large"
+				v-kv-track-event="'TopNav|click-Basket|frame'"
+			>
 				<span>
 					<span class="amount">{{ basketCount }}</span>
 					Basket
 				</span>
 			</router-link>
-			<router-link v-if="isVisitor" to="/login" class="header-button">
+			<router-link
+				v-if="isVisitor"
+				to="/login"
+				class="header-button"
+				v-kv-track-event="'TopNav|click-Sign-in|frame'"
+			>
 				<span>Sign in</span>
 			</router-link>
-			<router-link v-else :id="myKivaMenuId" to="/portfolio" class="header-button my-kiva">
+			<router-link
+				v-else
+				:id="myKivaMenuId"
+				to="/portfolio"
+				class="header-button my-kiva"
+				v-kv-track-event="'TopNav|click-Portfolio|frame'"
+			>
 				<span>
 					<span class="amount">{{ balance | numeral('$0') }}</span>
 					<img :src="profilePic">
@@ -84,12 +117,42 @@
 					<li><router-link to="/my/trustee">My Trustee dashboard</router-link></li>
 					<hr>
 				</template>
-				<li><router-link to="/portfolio">Portfolio</router-link></li>
-				<li><router-link to="/teams/my-teams">My teams</router-link></li>
-				<li><router-link to="/portfolio/donations">Donations</router-link></li>
-				<li><router-link to="/settings">Settings</router-link></li>
+				<li>
+					<router-link
+						to="/portfolio"
+						v-kv-track-event="'TopNav|click-Portfolio-Portfolio|frame'">
+						Portfolio
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/teams/my-teams"
+						v-kv-track-event="'TopNav|click-Portfolio-My teams|frame'">
+						My teams
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/portfolio/donations"
+						v-kv-track-event="'TopNav|click-Portfolio-Donations|frame'">
+						Donations
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/settings"
+						v-kv-track-event="'TopNav|click-Portfolio-Settings|frame'">
+						Settings
+					</router-link>
+				</li>
 				<hr>
-				<li><router-link to="/logout">Sign out</router-link></li>
+				<li>
+					<router-link
+						to="/logout"
+						v-kv-track-event="'TopNav|click-Portfolio-Sign out|frame'">
+						Sign out
+					</router-link>
+				</li>
 			</ul>
 		</kv-dropdown>
 	</header>

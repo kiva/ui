@@ -28,11 +28,53 @@ export default Vue => {
 			if (gaLoaded) {
 				window.ga('set', 'page', toUrl);
 				window.ga('set', 'location', toUrl);
-				window.ga('set', 'referrer', asyncFromUrl);
+				if (asyncFromUrl) {
+					window.ga('set', 'referrer', asyncFromUrl);
+				}
 				window.ga('send', 'pageview');
 			}
+		},
+		trackEvent: (category, action, label, value) => {
+			/* eslint-disable no-param-reassign */
+			label = (label !== undefined && label !== null) ? `ui-${String(label)}` : undefined;
+			/* eslint-disable no-param-reassign */
+			value = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
+
+			// Attempt GA event
+			try {
+				window.ga('send', 'event', {
+					eventCategory: String(category),
+					eventAction: String(action),
+					eventLabel: label,
+					eventValue: value
+				});
+			} catch (error) {
+				console.log(error);
+				console.log('kvAnalytics: Failed to track ga event');
+			}
+
+			// Attempt Snowplow event
+			try {
+				window.snowplow('trackStructEvent', category, action, label, value);
+			} catch (error) {
+				console.log(error);
+				console.log('kvAnalytics: Failed to track sp event');
+			}
+
+			return true;
+		},
+		parseEventProperties: eventString => {
+			const params = eventString.split('|');
+			kvActions.trackEvent.apply(this, params);
 		}
 	};
+
+	Vue.directive('kv-track-event', (el, binding) => {
+		// TODO: add arg for once, submit + change events
+		el.addEventListener('click', () => {
+			kvActions.parseEventProperties(binding.value);
+		});
+	});
 
 	/* eslint-disable no-param-reassign */
 	Vue.prototype.$setKvAnalyticsData = app => {
