@@ -8,10 +8,26 @@
 					:key="category.index"
 					:class="{ 'last-category': category == categories[categories.length - 1] }"
 				>
-					<a :href="category.url">{{ category.name }}</a>
+					<a
+						:href="category.url"
+						v-kv-track-event="`TopNav|click-Lend-Category|${ category.name }|${ category.index }`">
+						{{ category.name }}
+					</a>
 				</li>
-				<li><router-link to="/categories">All categories</router-link></li>
-				<li><router-link to="/lend">All loans</router-link></li>
+				<li>
+					<router-link
+						to="/categories"
+						v-kv-track-event="'TopNav|click-Lend-All_Categories|frame'">
+						All categories
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/lend"
+						v-kv-track-event="'TopNav|click-Lend-All_Loans|frame'">
+						All loans
+					</router-link>
+				</li>
 			</ul>
 		</div>
 		<kv-expandable property="width">

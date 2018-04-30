@@ -36,7 +36,7 @@ export default Vue => {
 		},
 		trackEvent: (category, action, label, value) => {
 			/* eslint-disable no-param-reassign */
-			label = (label !== undefined && label !== null) ? `ui-${String(label)}` : undefined;
+			label = (label !== undefined && label !== null) ? String(label) : undefined;
 			/* eslint-disable no-param-reassign */
 			value = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
 
@@ -69,11 +69,16 @@ export default Vue => {
 		}
 	};
 
-	Vue.directive('kv-track-event', (el, binding) => {
-		// TODO: add arg for once, submit + change events
-		el.addEventListener('click', () => {
-			kvActions.parseEventProperties(binding.value);
-		});
+	Vue.directive('kv-track-event', {
+		bind: (el, binding) => {
+			// TODO: add arg for once, submit + change events
+			el.addEventListener('click', () => {
+				kvActions.parseEventProperties(binding.value);
+			});
+		},
+		unbind: el => {
+			el.removeEventListener('click', () => {});
+		}
 	});
 
 	/* eslint-disable no-param-reassign */

@@ -30,6 +30,7 @@
 						:aria-pressed="searchOpen ? 'true' : 'false'"
 						aria-controls="top-nav-search-area"
 						@click="toggleSearch"
+						v-kv-track-event="'TopNav|click-search-close-mobile|frame'"
 					>
 						<kv-icon class="close-icon" name="x" />
 					</button>
@@ -90,31 +91,115 @@
 		</kv-dropdown>
 		<kv-dropdown :controller="aboutMenuId" v-if="isVisitor" class="dropdown-list">
 			<ul>
-				<li><router-link to="/about">About us</router-link></li>
-				<li><router-link to="/about/how">How Kiva works</router-link></li>
-				<li><router-link to="/about/where-kiva-works">Where Kiva works</router-link></li>
-				<li><router-link to="/about/impact">Impact</router-link></li>
-				<li><router-link to="/about/leadership">Leadership</router-link></li>
-				<li><router-link to="/about/finances">Finances</router-link></li>
-				<li><router-link to="/about/press-center">Press</router-link></li>
-				<li><router-link to="/about/due-diligence">Due diligence</router-link></li>
+				<li>
+					<router-link
+						to="/about"
+						v-kv-track-event="'TopNav|click-About-About us|frame'">
+						About us
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/how"
+						v-kv-track-event="'TopNav|click-About-How Kiva works|frame'">
+						How Kiva works
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/where-kiva-works"
+						v-kv-track-event="'TopNav|click-About-Where Kiva works|frame'">
+						Where Kiva works
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/impact"
+						v-kv-track-event="'TopNav|click-About-Impact|frame'">
+						Impact
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/leadership"
+						v-kv-track-event="'TopNav|click-About-Leadership|frame'">
+						Leadership
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/finances"
+						v-kv-track-event="'TopNav|click-About-Finances|frame'">
+						Finances
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/press-center"
+						v-kv-track-event="'TopNav|click-About-Press|frame'">
+						Press
+					</router-link>
+				</li>
+				<li>
+					<router-link
+						to="/about/due-diligence"
+						v-kv-track-event="'TopNav|click-About-Due diligence|frame'">
+						Due diligence
+					</router-link>
+				</li>
 			</ul>
 		</kv-dropdown>
 		<kv-dropdown :controller="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
 			<ul>
 				<template v-if="isBorrower">
-					<li><router-link to="/my/borrower">My borrower dashboard</router-link></li>
+					<li>
+						<router-link
+							to="/my/borrower"
+							v-kv-track-event="'TopNav|click-Portfolio-My borrower dashboard|frame'">
+							My borrower dashboard
+						</router-link>
+					</li>
 					<template v-if="loanId !== null">
-						<li><router-link :to="`/lend/${loanId}`">My loan page</router-link></li>
-						<li><router-link :to="`/lend/${loanId}#loanComments`">My conversations</router-link></li>
+						<li>
+							<router-link
+								:to="`/lend/${loanId}`"
+								v-kv-track-event="'TopNav|click-Portfolio-My loan page|frame'">
+								My loan page
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								:to="`/lend/${loanId}#loanComments`"
+								v-kv-track-event="'TopNav|click-Portfolio-My Conversations|frame'">
+								My conversations
+							</router-link>
+						</li>
 					</template>
 				</template>
 				<template v-if="isTrustee">
 					<template v-if="!isBorrower">
-						<li><router-link :to="trusteeLoansUrl">My Trustee loans</router-link></li>
-						<li><router-link :to="`/trustees/${trusteeId}`">My public Trustee page</router-link></li>
+						<li>
+							<router-link
+								:to="trusteeLoansUrl"
+								v-kv-track-event="'TopNav|click-Portfolio-My Trustee loans|frame'">
+								My Trustee loans
+							</router-link>
+						</li>
+						<li>
+							<router-link
+								:to="`/trustees/${trusteeId}`"
+								v-kv-track-event="'TopNav|click-Portfolio-My public Trustee page|frame'">
+								My public Trustee page
+							</router-link>
+						</li>
 					</template>
-					<li><router-link to="/my/trustee">My Trustee dashboard</router-link></li>
+					<li>
+						<router-link
+							to="/my/trustee"
+							v-kv-track-event="'TopNav|click-Portfolio-My Trustee dashboard|frame'">
+							My Trustee dashboard
+						</router-link>
+					</li>
 					<hr>
 				</template>
 				<li>
