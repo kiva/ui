@@ -89,12 +89,15 @@ export default {
 		},
 		initPopper() {
 			this.popper = new Popper(this.reference, this.$el, {
-				placement: 'bottom',
+				placement: 'bottom-start',
 				modifiers: {
 					applyStyle: data => {
 						this.styles = data.styles;
 						this.setAttributes(data.attributes);
-					}
+					},
+					preventOverflow: {
+						padding: 0,
+					},
 				}
 			});
 		},
