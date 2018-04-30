@@ -64,7 +64,13 @@ export default Vue => {
 			return true;
 		},
 		parseEventProperties: eventString => {
-			const params = eventString.split('|');
+			let params;
+			// TODO: consider deprecating the string format category|action|etc
+			if (typeof eventString === 'object' && eventString.length) {
+				params = eventString;
+			} else if (typeof eventString === 'string') {
+				params = eventString.split('|');
+			}
 			kvActions.trackEvent.apply(this, params);
 		}
 	};
@@ -75,9 +81,6 @@ export default Vue => {
 			el.addEventListener('click', () => {
 				kvActions.parseEventProperties(binding.value);
 			});
-		},
-		unbind: el => {
-			el.removeEventListener('click', () => {});
 		}
 	});
 

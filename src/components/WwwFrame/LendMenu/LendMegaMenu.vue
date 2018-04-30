@@ -10,7 +10,7 @@
 				>
 					<a
 						:href="category.url"
-						v-kv-track-event="`TopNav|click-Lend-Category|${ category.name }|${ category.index }`">
+						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, category.index]">
 						{{ category.name }}
 					</a>
 				</li>

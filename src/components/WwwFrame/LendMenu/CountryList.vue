@@ -4,7 +4,7 @@
 			<router-link
 				v-if="country.count > 0"
 				:to="{ path: '/lend', query: { country: country.isoCode }}"
-				v-kv-track-event="`TopNav|click-Lend-Country|${ country.name }`">
+				v-kv-track-event="['TopNav', 'click-Lend-Country', country.name]">
 				{{ country.name }} ({{ country.count }})
 			</router-link>
 			<span v-else>
