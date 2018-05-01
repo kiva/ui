@@ -27,10 +27,6 @@ export default Vue => {
 			// Google Analytics Pageview
 			if (gaLoaded) {
 				window.ga('set', 'page', toUrl);
-				window.ga('set', 'location', toUrl);
-				if (asyncFromUrl) {
-					window.ga('set', 'referrer', asyncFromUrl);
-				}
 				window.ga('send', 'pageview');
 			}
 		},
