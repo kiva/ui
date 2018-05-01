@@ -45,16 +45,16 @@ export default Vue => {
 					eventValue: value
 				});
 			} catch (error) {
-				console.log(error);
-				console.log('kvAnalytics: Failed to track ga event');
+				console.error(error);
+				console.error('kvAnalytics: Failed to track ga event');
 			}
 
 			// Attempt Snowplow event
 			try {
 				window.snowplow('trackStructEvent', category, action, label, value);
 			} catch (error) {
-				console.log(error);
-				console.log('kvAnalytics: Failed to track sp event');
+				console.error(error);
+				console.error('kvAnalytics: Failed to track sp event');
 			}
 
 			return true;
