@@ -5,6 +5,9 @@ Some helpful info on editor plugins that will make working on this repo easier.
 ## Atom
 
 These packages can all be added from within Atom in the Settings -> Install section, or by using `apm install <package_name>`.
+-OR-
+If you want to install all packages (Essential & Recommended) run this in your mac: 
+apm install editorconfig language-vue linter-eslint linter-stylelint language-graphql linter-alex file-icons pigments minimap
 
 Essential packages:
 - [editorconfig](https://atom.io/packages/editorconfig) for enforcing code styles.
