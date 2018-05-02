@@ -1,12 +1,13 @@
-var webpack = require('webpack')
-var merge = require('webpack-merge')
-var config = require('../config')
-var utils = require('./utils')
-var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-var baseWebpackConfig = require('./webpack.client.base.conf')
+var webpack = require('webpack');
+var merge = require('webpack-merge');
+var config = require('../config');
+var assetsPath = require('./assets-path.js');
+var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+var baseWebpackConfig = require('./webpack.client.base.conf');
 
-module.exports = merge(baseWebpackConfig, {
+module.exports = merge.smart(baseWebpackConfig, {
 	name: 'client',
+	mode: 'development',
 	entry: {
 		app: ['webpack-hot-middleware/client?path=/__ui_hmr', baseWebpackConfig.entry.app]
 	},
@@ -16,10 +17,10 @@ module.exports = merge(baseWebpackConfig, {
 			We tell webpack to address them in the /static directory as if they were built.
 			This makes running alongside apache in the vm possible.
 		*/
-		filename: utils.assetsPath('js/[name].js'),
-		chunkFilename: utils.assetsPath('js/[id].js'),
-		hotUpdateChunkFilename: utils.assetsPath('[id].hot-update.js'),
-		hotUpdateMainFilename: utils.assetsPath('hot-update.json')
+		filename: assetsPath('js/[name].js'),
+		chunkFilename: assetsPath('js/[id].js'),
+		hotUpdateChunkFilename: assetsPath('[id].hot-update.js'),
+		hotUpdateMainFilename: assetsPath('hot-update.json')
 	},
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
@@ -30,4 +31,4 @@ module.exports = merge(baseWebpackConfig, {
 			}
 		})
 	]
-})
+});
