@@ -9,7 +9,7 @@
 				Use this page to collect loans and hit milestones along the way.</p>
 				<hr>
 				<stats-section
-					title="Countries & Territories"
+					title="Countries & Territories*"
 					noun="country"
 					:not-lent-to="countriesNotLentTo"
 					:lent-to="countriesLentTo"
