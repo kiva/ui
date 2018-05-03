@@ -101,7 +101,7 @@ module.exports = {
 	plugins: [
 		new VueLoaderPlugin(),
 		new StylelintPlugin({
-			files: ['src/**/*.vue', 'src/**/*.scss'],
+			files: ['src/**/*.scss'],
 			syntax: 'scss'
 		})
 	]
