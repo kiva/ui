@@ -37,25 +37,29 @@ export default Vue => {
 			value = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
 
 			// Attempt GA event
-			try {
+			// try {
+			if (gaLoaded) {
 				window.ga('send', 'event', {
 					eventCategory: String(category),
 					eventAction: String(action),
 					eventLabel: label,
 					eventValue: value
 				});
-			} catch (error) {
-				console.error(error);
-				console.error('kvAnalytics: Failed to track ga event');
 			}
+			// } catch (error) {
+			// 	console.error(error);
+			// 	console.error('kvAnalytics: Failed to track ga event');
+			// }
 
 			// Attempt Snowplow event
-			try {
+			// try {
+			if (snowplowLoaded) {
 				window.snowplow('trackStructEvent', category, action, label, value);
-			} catch (error) {
-				console.error(error);
-				console.error('kvAnalytics: Failed to track sp event');
 			}
+			// } catch (error) {
+			// 	console.error(error);
+			// 	console.error('kvAnalytics: Failed to track sp event');
+			// }
 
 			return true;
 		},
