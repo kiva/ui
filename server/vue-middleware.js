@@ -33,6 +33,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		const s = Date.now();
 
 		// Set webpack public asset path based on configuration
+		// eslint-disable-next-line no-param-reassign
 		clientManifest.publicPath = config.app.publicPath || '/';
 
 		const renderer = createBundleRenderer(serverBundle, {
