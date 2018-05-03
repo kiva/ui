@@ -7,5 +7,8 @@ module.exports = merge(base, {
 		graphqlUri: 'https://api.kivaws.org/graphql',
 		enableAnalytics: false,
 		enablePerimeterx: false,
-	}
+	},
+	server: {
+		graphqlUri: 'https://api.kivaws.org/graphql',
+	},
 })

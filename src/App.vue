@@ -6,9 +6,6 @@
 </template>
 
 <script>
-import 'foundation/foundation.core';
-import 'foundation/foundation.util.mediaQuery';
-
 export default {
 	name: 'App',
 	props: {

@@ -151,10 +151,7 @@ export default {
 		},
 		setTimeout(fn, delay) {
 			window.clearTimeout(this.timeout);
-			this.timeout = window.setTimeout(() => {
-				fn();
-				window.clearTimeout(this.timeout);
-			}, delay);
+			this.timeout = window.setTimeout(fn, delay);
 		}
 	},
 };

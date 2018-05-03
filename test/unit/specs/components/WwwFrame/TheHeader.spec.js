@@ -3,9 +3,11 @@ import Vuex from 'vuex';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import createMyModule from '@/store/modules/my';
 import createShopModule from '@/store/modules/shop';
+import kvAnalytics from '@/plugins/kv-analytics-plugin';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+localVue.use(kvAnalytics);
 
 describe('TheHeader', () => {
 	it('should hide/show the search area when the search toggle button is clicked', () => {

@@ -25,7 +25,7 @@ export default {
 @import 'settings';
 
 .www-page {
-	min-height: 100%;
+	height: 100%;
 	display: flex;
 	flex-flow: column nowrap;
 
