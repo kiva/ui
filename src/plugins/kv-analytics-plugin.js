@@ -31,35 +31,23 @@ export default Vue => {
 			}
 		},
 		trackEvent: (category, action, label, value) => {
-			/* eslint-disable no-param-reassign */
-			label = (label !== undefined && label !== null) ? String(label) : undefined;
-			/* eslint-disable no-param-reassign */
-			value = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
+			const eventLabel = (label !== undefined && label !== null) ? String(label) : undefined;
+			const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
 
 			// Attempt GA event
-			// try {
 			if (gaLoaded) {
 				window.ga('send', 'event', {
 					eventCategory: String(category),
 					eventAction: String(action),
-					eventLabel: label,
-					eventValue: value
+					eventLabel,
+					eventValue
 				});
 			}
-			// } catch (error) {
-			// 	console.error(error);
-			// 	console.error('kvAnalytics: Failed to track ga event');
-			// }
 
 			// Attempt Snowplow event
-			// try {
 			if (snowplowLoaded) {
-				window.snowplow('trackStructEvent', category, action, label, value);
+				window.snowplow('trackStructEvent', category, action, eventLabel, eventValue);
 			}
-			// } catch (error) {
-			// 	console.error(error);
-			// 	console.error('kvAnalytics: Failed to track sp event');
-			// }
 
 			return true;
 		},
@@ -84,7 +72,7 @@ export default Vue => {
 		}
 	});
 
-	/* eslint-disable no-param-reassign */
+	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$setKvAnalyticsData = app => {
 		// establish loaded libs
 		kvActions.checkLibs();
@@ -103,12 +91,12 @@ export default Vue => {
 		}
 	};
 
-	/* eslint-disable no-param-reassign */
+	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$fireAsyncPageView = (to, from) => {
 		kvActions.pageview(to, from);
 	};
 
-	/* eslint-disable no-param-reassign */
+	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$fireServerPageView = () => {
 		const to = { path: window.location.pathname };
 		const from = { path: document.referrer };
