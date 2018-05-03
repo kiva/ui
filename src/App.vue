@@ -6,18 +6,11 @@
 </template>
 
 <script>
-import 'foundation/foundation.core';
-import 'foundation/foundation.util.mediaQuery';
-
 export default {
 	name: 'App',
 	metaInfo: {
 		title: 'Loans that change lives',
 		titleTemplate: '%s | Kiva',
-	},
-	beforeCreate() {
-		// Vue instance is only available attached this within the export block
-		// console.log(this);
 	},
 };
 </script>

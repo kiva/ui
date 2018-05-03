@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import cookie from 'js-cookie';
 import createAsyncCaller from '@/util/callAsyncData';
