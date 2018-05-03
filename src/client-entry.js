@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import cookie from 'js-cookie';
 import createAsyncCaller from '@/util/callAsyncData';
@@ -32,6 +33,10 @@ if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
+// setup global analytics data
+app.$setKvAnalyticsData(app);
+// fire server rendered pageview
+app.$fireServerPageView();
 // Add browser info to the store
 store.dispatch('detectBrowserAbility');
 
@@ -64,7 +69,12 @@ router.onReady(() => {
 		}
 	});
 
-	router.afterEach(() => app.$Progress.finish());
+	router.afterEach((to, from) => {
+		// finish loading
+		app.$Progress.finish();
+		// fire pageview
+		app.$fireAsyncPageView(to, from);
+	});
 
 	router.onError(() => app.$Progress.fail());
 

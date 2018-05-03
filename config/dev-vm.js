@@ -6,6 +6,10 @@ module.exports = merge(base, {
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
 		graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
 		googleTagmanagerId: 'GTM-PXFRMT',
+		enableGA: true,
+		gaId: 'UA-11686022-7',
+		enableSnowplow: true,
+		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
 	},
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',

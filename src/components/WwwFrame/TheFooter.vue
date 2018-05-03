@@ -187,6 +187,7 @@ $footer-link-separator-color: $light-green;
 			flex-flow: column wrap;
 			justify-content: space-between;
 			height: rem-calc(330);
+			width: 100%;
 			text-align: left;
 			font-size: 0.875rem;
 
@@ -216,7 +217,6 @@ $footer-link-separator-color: $light-green;
 
 				li {
 					display: inline-block;
-					float: left;
 					transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0);
 
 					a {

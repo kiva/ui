@@ -1,33 +1,42 @@
-var path = require('path')
-var utils = require('./utils')
-var webpack = require('webpack')
-var config = require('../config')
-var merge = require('webpack-merge')
-var baseWebpackConfig = require('./webpack.client.base.conf')
-// var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+var merge = require('webpack-merge');
+var assetsPath = require('./assets-path');
+var styleLoaders = require('./style-loaders');
+var baseWebpackConfig = require('./webpack.client.base.conf');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-var webpackConfig = merge(baseWebpackConfig, {
+module.exports = merge.smart(baseWebpackConfig, {
+	mode: 'production',
+	optimization: {
+		splitChunks: {
+			chunks: 'all',
+		},
+	},
 	// module: {
-		// rules: utils.styleLoaders({
-		// 	sourceMap: config.build.productionSourceMap,
-		// 	extract: true
-		// })
+	// 	rules: [
+	// 		{
+	// 			test: /\.scss$/,
+	// 			use: ExtractTextPlugin.extract({
+	// 				use: styleLoaders,
+	// 				fallback: 'vue-style-loader'
+	// 			})
+	// 		},
+	// 	]
 	// },
-
 	plugins: [
-		// Compress extracted CSS. We are using this plugin so that possible
-		// duplicated CSS from different components can be deduped.
+		// new ExtractTextPlugin({
+		// 	filename: assetsPath('css/[name].[chunkhash].css')
+		// }),
 		// new OptimizeCSSPlugin({
 		// 	cssProcessorOptions: {
 		// 		safe: true
 		// 	}
 		// }),
+		new BundleAnalyzerPlugin({
+			analyzerMode: 'disabled',
+			generateStatsFile: true,
+			statsFilename: 'client-bundle-stats.json'
+		})
 	]
 });
-
-if (config.build.bundleAnalyzerReport) {
-	var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-	webpackConfig.plugins.push(new BundleAnalyzerPlugin());
-}
-
-module.exports = webpackConfig;
