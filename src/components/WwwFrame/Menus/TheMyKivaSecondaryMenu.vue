@@ -162,7 +162,7 @@ export default {
 		position: absolute;
 		top: rem-calc(90);
 		width: 100%;
-		z-index:10;
+		z-index: 10;
 	}
 
 	ul {
