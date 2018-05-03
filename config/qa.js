@@ -5,7 +5,18 @@ module.exports = merge(base, {
 	app: {
 		publicPath: 'https://www-qa-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.qa.kiva.org/ajax/graphql',
+		enablePerimeterx: false,
+		perimeterxAppId: '####',
+		enableAnalytics: true,
+		enableGTM: false,
 		googleTagmanagerId: 'GTM-WXLS9B',
+		enableGA: true,
+		gaId: 'UA-11686022-4',
+		enableSnowplow: true,
+		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
+		enableFB: true,
+		fbApplicationId: '370252743225',
+		fbPixelId: '108245819986414',
 	},
 	server: {
 		graphqlUri: 'https://api.qa.kivaws.org/graphql',

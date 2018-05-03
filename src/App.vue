@@ -11,14 +11,40 @@ import 'foundation/foundation.util.mediaQuery';
 
 export default {
 	name: 'App',
-	metaInfo: {
-		title: 'Loans that change lives',
-		titleTemplate: '%s | Kiva',
+	props: {
+		appConfig: { type: Object, default: () => {} }
 	},
-	beforeCreate() {
-		// Vue instance is only available attached this within the export block
-		// console.log(this);
-	},
+	metaInfo() {
+		return {
+			title: 'Loans that change lives',
+			titleTemplate: '%s | Kiva',
+			meta: [
+				{
+					vmid: 'keywords',
+					name: 'keywords',
+					// eslint-disable-next-line max-len
+					content: 'kiva, microfinance, microcredit, microloan, microlending, loan, africa, business, philanthropy, international development, projects, corporate giving, corporate philanthropy, donors, donating, donation, charity, social development, economic development, grassroots development, employee giving, poverty alleviation, economic investments, social investment, entrepreneur, entrepreneurs, social entrepreneurship, innovation, giving, give, gift, gifts'
+				},
+				{
+					vmid: 'description',
+					name: 'description',
+					// eslint-disable-next-line max-len
+					content: 'Make a loan to an entrepreneur across the globe for as little as $25. Kiva is the world\'s first online lending platform connecting online lenders to entrepreneurs across the globe.'
+				}
+			].concat(this.appConfig.enableFB ? [
+				{
+					vmid: 'facebook_label',
+					name: 'facebook_label',
+					content: 'Kiva - Loans that change lives'
+				},
+				{
+					vmid: 'fb:app_id',
+					property: 'fb:app_id',
+					content: this.appConfig.fbApplicationId
+				}
+			] : [])
+		};
+	}
 };
 </script>
 

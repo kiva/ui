@@ -26,6 +26,7 @@ export default context => {
 			store,
 			apolloClient,
 		} = createApp({
+			appConfig: config,
 			apollo: {
 				cookie: _map(cookies, (val, name) => cookie.serialize(name, val)).join('; '),
 				csrfToken: cookies.kvis && cookies.kvis.substr(6),
@@ -71,6 +72,7 @@ export default context => {
 				// inline the state in the HTML response. This allows the client-side
 				// store to pick-up the server-side state without having to duplicate
 				// the initial data fetching on the client.
+				context.templateConfig = config;
 				context.meta = app.$meta();
 				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
