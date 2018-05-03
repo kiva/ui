@@ -1,9 +1,7 @@
 {
-  "processors": [ "@mapbox/stylelint-processor-arbitrary-tags" ],
   "plugins": [ "stylelint-scss" ],
   "extends": "stylelint-config-standard",
   "rules": {
-    "no-empty-source": null,
     "color-hex-case": null,
     "indentation": "tab",
     "at-rule-no-unknown": null,
