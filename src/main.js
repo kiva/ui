@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 import { sync } from 'vuex-router-sync';
 import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
@@ -32,6 +34,11 @@ export default function createApp({ apollo = {} } = {}) {
 	const router = createRouter();
 
 	sync(store, router);
+
+	// This will have to be refactored once objects are available from appConfig/apollo
+	Raven.config('https://845904672b2a40048c8340268928b614@sentry.io/1201289');
+	Raven.addPlugin(RavenVue, Vue);
+	Raven.install();
 
 	const app = new Vue({
 		router,

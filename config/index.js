@@ -8,6 +8,8 @@ module.exports = {
 		perimeterxAppId: 'PXr3pNVz1F',
 		enableAnalytics: false,
 		enablePerimeterx: false,
+		enableSentry: true,
+		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
 	},
 	server: {
 		port: 8888,
