@@ -22,6 +22,8 @@ export default () => {
 			console.error(networkError);
 		}
 		// prevent the errors from traveling further down the chain
-		response.errors = null;
+		if (response) {
+			response.errors = null;
+		}
 	});
 };
