@@ -1,5 +1,4 @@
 import _differenceBy from 'lodash/differenceBy';
-import _find from 'lodash/find';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 
@@ -56,7 +55,14 @@ export default apollo => {
 				return apollo.query({ query: helloQuery });
 			},
 			getMyKivaInfo({ commit }) {
-				return apollo.query({ query: myKivaInfoQuery })
+				return apollo.query({
+					query: myKivaInfoQuery,
+					context: {
+						errorHandlers: {
+							'api.authenticationRequired': () => commit(types.SIGN_OUT)
+						}
+					}
+				})
 					.then(result => result.data.my)
 					.then(my => {
 						commit(types.RECEIVE_MY_KIVA_INFO, {
@@ -66,11 +72,6 @@ export default apollo => {
 							borrowedLoan: my.mostRecentBorrowedLoan,
 							trustee: my.trustee,
 						});
-					})
-					.catch(error => {
-						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
-							commit(types.SIGN_OUT);
-						}
 					});
 			},
 			getMyLendMenuInfo({ state, commit }) {
@@ -79,6 +80,14 @@ export default apollo => {
 						query: lendMenuPrivateData,
 						variables: {
 							userId: state.userAccount.id
+						},
+						context: {
+							errorHandlers: {
+								'api.authenticationRequired': () => commit(types.SET_PRIVATE_LEND_MENU_DATA, {
+									count: 0,
+									savedSearches: [],
+								})
+							}
 						}
 					})
 						.then(result => result.data)
@@ -87,14 +96,6 @@ export default apollo => {
 								count: data.loans.totalCount,
 								savedSearches: data.my.savedSearches.values,
 							});
-						})
-						.catch(error => {
-							if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
-								commit(types.SET_PRIVATE_LEND_MENU_DATA, {
-									count: 0,
-									savedSearches: [],
-								});
-							}
 						});
 				}
 				commit(types.SET_PRIVATE_LEND_MENU_DATA, {
@@ -103,54 +104,63 @@ export default apollo => {
 				});
 			},
 			getMyLendingStats({ commit }) {
-				return apollo.query({ query: myLendingStatsQuery })
-					.then(result => result.data)
-					.then(data => {
-						commit(types.SET_MY_LENDING_STATS, {
-							allCountries: _sortBy(_map(data.countryFacets, 'country'), 'name'),
-							countriesLentTo: _sortBy(data.my.lendingStats.countriesLentTo, 'name'),
-							allSectors: _sortBy(data.kivaStats.sectors, 'name'),
-							sectorsLentTo: _sortBy(data.my.lendingStats.sectorsLentTo, 'name'),
-							allActivities: _sortBy(data.kivaStats.activities, 'name'),
-							activitiesLentTo: _sortBy(data.my.lendingStats.activitiesLentTo, 'name'),
-							allPartners: _sortBy(data.partners.values, 'name'),
-							partnersLentTo: _sortBy(data.my.lendingStats.partnersLentTo, 'name'),
-							totalPartners: data.partners.totalCount,
-						});
-					})
-					.catch(error => {
-						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
-							// redirect to login
+				return new Promise((resolve, reject) => {
+					apollo.query({
+						query: myLendingStatsQuery,
+						context: {
+							errorHandlers: {
+								'api.authenticationRequired': () => reject()
+							}
 						}
-					});
+					})
+						.then(result => result.data)
+						.then(data => {
+							commit(types.SET_MY_LENDING_STATS, {
+								allCountries: _sortBy(_map(data.countryFacets, 'country'), 'name'),
+								countriesLentTo: _sortBy(data.my.lendingStats.countriesLentTo, 'name'),
+								allSectors: _sortBy(data.kivaStats.sectors, 'name'),
+								sectorsLentTo: _sortBy(data.my.lendingStats.sectorsLentTo, 'name'),
+								allActivities: _sortBy(data.kivaStats.activities, 'name'),
+								activitiesLentTo: _sortBy(data.my.lendingStats.activitiesLentTo, 'name'),
+								allPartners: _sortBy(data.partners.values, 'name'),
+								partnersLentTo: _sortBy(data.my.lendingStats.partnersLentTo, 'name'),
+								totalPartners: data.partners.totalCount,
+							});
+							resolve();
+						});
+				});
 			},
 			getMyKivaSecondaryMenu({ commit }) {
-				return apollo.query({ query: myKivaSecondaryMenuQuery })
+				return apollo.query({
+					query: myKivaSecondaryMenuQuery,
+					context: {
+						errorHandlers: {
+							'api.authenticationRequired': () => commit(types.SIGN_OUT)
+						}
+					}
+				})
 					.then(result => result.data.my)
 					.then(my => {
 						commit(types.RECEIVE_MY_KIVA_SECONDARY_MENU, {
 							isBorrower: my.isBorrower,
 							trustee: my.trustee,
 						});
-					})
-					.catch(error => {
-						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
-							commit(types.SIGN_OUT);
-						}
 					});
 			},
 			getPortfolioTertiaryMenu({ commit }) {
-				return apollo.query({ query: portfolioTertiaryMenu })
+				return apollo.query({
+					query: portfolioTertiaryMenu,
+					context: {
+						errorHandlers: {
+							'api.authenticationRequired': () => commit(types.SIGN_OUT)
+						}
+					}
+				})
 					.then(result => result.data.my)
 					.then(my => {
 						commit(types.RECEIVE_PORTFOLIO_TERTIARY_MENU, {
 							userAccount: my.userAccount
 						});
-					})
-					.catch(error => {
-						if (_find(error.graphQLErrors, { code: 'api.authenticationRequired' })) {
-							commit(types.SIGN_OUT);
-						}
 					});
 			},
 		},

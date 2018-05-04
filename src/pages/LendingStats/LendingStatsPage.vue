@@ -82,8 +82,15 @@ export default {
 			totalPartners: state => state.my.lendingStats.totalPartners,
 		}),
 	},
-	asyncData({ store }) {
-		return store.dispatch('getMyLendingStats');
+	asyncData({ store, route }) {
+		return new Promise((resolve, reject) => {
+			store.dispatch('getMyLendingStats')
+				.then(resolve)
+				.catch(() => reject({
+					path: '/login',
+					query: { doneUrl: route.fullPath.slice(1) }
+				}));
+		});
 	},
 	methods: {
 		iconForSector(sector) {
