@@ -16,6 +16,7 @@ export default {
 			title: 'Loans that change lives',
 			titleTemplate: '%s | Kiva',
 			meta: [
+				// General Meta Tags
 				{
 					vmid: 'keywords',
 					name: 'keywords',
@@ -29,6 +30,8 @@ export default {
 					content: 'Make a loan to an entrepreneur across the globe for as little as $25. Kiva is the world\'s first online lending platform connecting online lenders to entrepreneurs across the globe.'
 				}
 			].concat(this.appConfig.enableFB ? [
+				// Facebook Specific Tags
+				// TODO: We should consider omitting these on protected pages
 				{
 					vmid: 'facebook_label',
 					name: 'facebook_label',
@@ -39,7 +42,91 @@ export default {
 					property: 'fb:app_id',
 					content: this.appConfig.fbApplicationId
 				}
-			] : [])
+			] : []).concat([
+				// Open Graph Tags
+				{ property: 'og:site_name', content: 'Kiva' },
+				{ property: 'theme-color', content: '#4faf4e' },
+				// eslint-disable-next-line global-require
+				{ property: 'og:image', content: require('@/assets/images/kiva_k_cutout_new.jpg') },
+				{ property: 'og:image:width', content: '196' },
+				{ property: 'og:image:height', content: '106' },
+			]).concat([
+				// Microsoft Tile Tags
+				{ name: 'application-name', content: 'Kiva' },
+				{ name: 'msapplication-TileColor', content: '#4faf4e' },
+				{
+					name: 'msapplication-TileImage',
+					// eslint-disable-next-line global-require
+					content: require('@/assets/images/favicons/mstile-144x144.png')
+				},
+				{
+					name: 'msapplication-square70x70logo',
+					// eslint-disable-next-line global-require
+					content: require('@/assets/images/favicons/mstile-70x70.png')
+				},
+				{
+					name: 'msapplication-square150x150logo',
+					// eslint-disable-next-line global-require
+					content: require('@/assets/images/favicons/mstile-150x150.png')
+				},
+			]),
+			link: [
+				// apple icons
+				{
+					link: 'apple-touch-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/apple-touch-icon-120x120.png')
+				},
+				{
+					link: 'apple-touch-icon',
+					sizes: '152x152',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/apple-touch-icon-152x152.png')
+				},
+			].concat([
+				// Standard Favicons + Android favicons
+				{
+					rel: 'icon',
+					type: 'image/x-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/favicon.ico'),
+				},
+				{
+					rel: 'icon',
+					type: 'image/x-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/favicon-16x16.png'),
+					sizes: '16x16'
+				},
+				{
+					rel: 'icon',
+					type: 'image/x-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/favicon-32x32.png'),
+					sizes: '32x32'
+				},
+				{
+					rel: 'icon',
+					type: 'image/x-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/favicon-96x96.png'),
+					sizes: '96x96'
+				},
+				{
+					rel: 'icon',
+					type: 'image/x-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/favicon-128.png'),
+					sizes: '128x128'
+				},
+				{
+					rel: 'icon',
+					type: 'image/x-icon',
+					// eslint-disable-next-line global-require
+					href: require('@/assets/images/favicons/favicon-196x196.png'),
+					sizes: '196x196'
+				},
+			])
 		};
 	}
 };
