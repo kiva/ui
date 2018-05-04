@@ -19,7 +19,6 @@ function setHeaders(res, path) {
 app.use(express.static('dist', {
 	setHeaders
 }));
-// app.use(express.static('dist/static/fonts'));
 
 app.use(vueMiddleware({
 	serverBundle,

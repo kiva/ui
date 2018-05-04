@@ -15,6 +15,7 @@ export default {
 		return {
 			title: 'Loans that change lives',
 			titleTemplate: '%s | Kiva',
+			/* eslint-disable global-require */
 			meta: [
 				// General Meta Tags
 				{
@@ -46,7 +47,6 @@ export default {
 				// Open Graph Tags
 				{ property: 'og:site_name', content: 'Kiva' },
 				{ property: 'theme-color', content: '#4faf4e' },
-				// eslint-disable-next-line global-require
 				{ property: 'og:image', content: require('@/assets/images/kiva_k_cutout_new.jpg') },
 				{ property: 'og:image:width', content: '196' },
 				{ property: 'og:image:height', content: '106' },
@@ -56,17 +56,14 @@ export default {
 				{ name: 'msapplication-TileColor', content: '#4faf4e' },
 				{
 					name: 'msapplication-TileImage',
-					// eslint-disable-next-line global-require
 					content: require('@/assets/images/favicons/mstile-144x144.png')
 				},
 				{
 					name: 'msapplication-square70x70logo',
-					// eslint-disable-next-line global-require
 					content: require('@/assets/images/favicons/mstile-70x70.png')
 				},
 				{
 					name: 'msapplication-square150x150logo',
-					// eslint-disable-next-line global-require
 					content: require('@/assets/images/favicons/mstile-150x150.png')
 				},
 			]),
@@ -74,13 +71,11 @@ export default {
 				// apple icons
 				{
 					link: 'apple-touch-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/apple-touch-icon-120x120.png')
 				},
 				{
 					link: 'apple-touch-icon',
 					sizes: '152x152',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/apple-touch-icon-152x152.png')
 				},
 			].concat([
@@ -88,41 +83,35 @@ export default {
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/favicon.ico'),
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/favicon-16x16.png'),
 					sizes: '16x16'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/favicon-32x32.png'),
 					sizes: '32x32'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/favicon-96x96.png'),
 					sizes: '96x96'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/favicon-128.png'),
 					sizes: '128x128'
 				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
-					// eslint-disable-next-line global-require
 					href: require('@/assets/images/favicons/favicon-196x196.png'),
 					sizes: '196x196'
 				},
