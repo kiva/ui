@@ -28,7 +28,7 @@ Vue.use(VueProgressBar, {
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render
-export default function createApp({ apollo = {} } = {}) {
+export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 	const apolloClient = createApolloClient(apollo);
 	const store = createStore({ apolloClient });
 	const router = createRouter();
@@ -43,7 +43,7 @@ export default function createApp({ apollo = {} } = {}) {
 	const app = new Vue({
 		router,
 		store,
-		render: h => h(App),
+		render: h => h(App, { props: { appConfig } }),
 	});
 
 	return {

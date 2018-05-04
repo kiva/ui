@@ -1,4 +1,4 @@
-/* eslint-disable prefer-promise-reject-errors, no-console, no-param-reassign */
+/* eslint-disable no-console, no-param-reassign */
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
@@ -26,6 +26,7 @@ export default context => {
 			store,
 			apolloClient,
 		} = createApp({
+			appConfig: config,
 			apollo: {
 				cookie: _map(cookies, (val, name) => cookie.serialize(name, val)).join('; '),
 				csrfToken: cookies.kvis && cookies.kvis.substr(6),
@@ -71,13 +72,22 @@ export default context => {
 				// inline the state in the HTML response. This allows the client-side
 				// store to pick-up the server-side state without having to duplicate
 				// the initial data fetching on the client.
+				context.templateConfig = config;
 				context.meta = app.$meta();
 				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
 					__INITIAL_STATE__: store.state,
 				});
 				resolve(app);
-			}).catch(reject);
+			}).catch(error => {
+				if (error instanceof Error) {
+					reject(error);
+				} else {
+					reject({
+						url: router.resolve(error).href
+					});
+				}
+			});
 		}, reject);
 	});
 };

@@ -1,53 +1,26 @@
 import ApolloClient from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
 import { IntrospectionFragmentMatcher, InMemoryCache } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
-import fetch from 'isomorphic-fetch';
-
-import { Agent } from 'https';
+import ErrorLinkCreator from './ErrorLink';
+import HttpLinkCreator from './HttpLink';
 
 export default function createApolloClient({
 	cookie,
-	csrfToken = '',
+	csrfToken,
 	types = [],
-	uri = 'https://www.kiva.org/ajax/graphql',
+	uri,
 }) {
-	// default cache options
-	const cacheOpts = {
-		fragmentMatcher: new IntrospectionFragmentMatcher({
-			introspectionQueryResultData: {
-				__schema: { types }
-			}
-		})
-	};
-
-	// default link options
-	const linkOpts = {
-		uri,
-		fetch,
-		headers: {},
-		fetchOptions: {
-			agent: new Agent({
-				// fix request blocked b/c of self-signed certificate on dev-vm. maybe do a prod check?
-				rejectUnauthorized: false
-			})
-		}
-	};
-
-	// only add the csrf token if we have one
-	if (csrfToken.length > 0) {
-		linkOpts.headers['x-crumb'] = csrfToken;
-	}
-
-	// setup authorization
-	if (cookie) {
-		linkOpts.headers.cookie = cookie;
-	} else {
-		linkOpts.credentials = 'same-origin';
-	}
-
-	// construct client
 	return new ApolloClient({
-		link: new HttpLink(linkOpts),
-		cache: new InMemoryCache(cacheOpts),
+		link: ApolloLink.from([
+			ErrorLinkCreator(),
+			HttpLinkCreator({ cookie, csrfToken, uri }),
+		]),
+		cache: new InMemoryCache({
+			fragmentMatcher: new IntrospectionFragmentMatcher({
+				introspectionQueryResultData: {
+					__schema: { types }
+				}
+			})
+		}),
 	});
 }

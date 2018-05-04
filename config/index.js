@@ -4,12 +4,25 @@ module.exports = {
 	app: {
 		publicPath: 'https://www-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
-		googleTagmanagerId: 'GTM-PX6FDG',
+		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
+<<<<<<< HEAD
 		enableAnalytics: false,
 		enablePerimeterx: false,
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
+=======
+		enableAnalytics: true,
+		enableGTM: false,
+		googleTagmanagerId: 'GTM-PX6FDG',
+		enableGA: true,
+		gaId: 'UA-175897-4',
+		enableSnowplow: true,
+		snowplowUri: 'events.fivetran.com/snowplow/kiva_rules',
+		enableFB: true,
+		fbApplicationId: '123230061223',
+		fbPixelId: '1531213600467139',
+>>>>>>> master
 	},
 	server: {
 		port: 8888,
