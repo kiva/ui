@@ -52,31 +52,36 @@ export default apollo => {
 		},
 		actions: {
 			hello() {
-				return apollo.query({ query: helloQuery });
+				return new Promise(resolve => {
+					apollo.query({ query: helloQuery }).then(resolve);
+				});
 			},
 			getMyKivaInfo({ commit }) {
-				return apollo.query({
-					query: myKivaInfoQuery,
-					context: {
-						errorHandlers: {
-							'api.authenticationRequired': () => commit(types.SIGN_OUT)
+				return new Promise(resolve => {
+					apollo.query({
+						query: myKivaInfoQuery,
+						context: {
+							errorHandlers: {
+								'api.authenticationRequired': () => commit(types.SIGN_OUT) && resolve()
+							}
 						}
-					}
-				})
-					.then(result => result.data.my)
-					.then(my => {
-						commit(types.RECEIVE_MY_KIVA_INFO, {
-							userAccount: my.userAccount,
-							lender: my.lender,
-							isBorrower: my.isBorrower,
-							borrowedLoan: my.mostRecentBorrowedLoan,
-							trustee: my.trustee,
+					})
+						.then(result => result.data.my)
+						.then(my => {
+							commit(types.RECEIVE_MY_KIVA_INFO, {
+								userAccount: my.userAccount,
+								lender: my.lender,
+								isBorrower: my.isBorrower,
+								borrowedLoan: my.mostRecentBorrowedLoan,
+								trustee: my.trustee,
+							});
+							resolve();
 						});
-					});
+				});
 			},
 			getMyLendMenuInfo({ state, commit }) {
 				if (state.userAccount.id) {
-					return apollo.query({
+					apollo.query({
 						query: lendMenuPrivateData,
 						variables: {
 							userId: state.userAccount.id
@@ -131,37 +136,43 @@ export default apollo => {
 				});
 			},
 			getMyKivaSecondaryMenu({ commit }) {
-				return apollo.query({
-					query: myKivaSecondaryMenuQuery,
-					context: {
-						errorHandlers: {
-							'api.authenticationRequired': () => commit(types.SIGN_OUT)
+				return new Promise(resolve => {
+					apollo.query({
+						query: myKivaSecondaryMenuQuery,
+						context: {
+							errorHandlers: {
+								'api.authenticationRequired': () => commit(types.SIGN_OUT) && resolve()
+							}
 						}
-					}
-				})
-					.then(result => result.data.my)
-					.then(my => {
-						commit(types.RECEIVE_MY_KIVA_SECONDARY_MENU, {
-							isBorrower: my.isBorrower,
-							trustee: my.trustee,
+					})
+						.then(result => result.data.my)
+						.then(my => {
+							commit(types.RECEIVE_MY_KIVA_SECONDARY_MENU, {
+								isBorrower: my.isBorrower,
+								trustee: my.trustee,
+							});
+							resolve();
 						});
-					});
+				});
 			},
 			getPortfolioTertiaryMenu({ commit }) {
-				return apollo.query({
-					query: portfolioTertiaryMenu,
-					context: {
-						errorHandlers: {
-							'api.authenticationRequired': () => commit(types.SIGN_OUT)
+				return new Promise(resolve => {
+					apollo.query({
+						query: portfolioTertiaryMenu,
+						context: {
+							errorHandlers: {
+								'api.authenticationRequired': () => commit(types.SIGN_OUT) && resolve()
+							}
 						}
-					}
-				})
-					.then(result => result.data.my)
-					.then(my => {
-						commit(types.RECEIVE_PORTFOLIO_TERTIARY_MENU, {
-							userAccount: my.userAccount
+					})
+						.then(result => result.data.my)
+						.then(my => {
+							commit(types.RECEIVE_PORTFOLIO_TERTIARY_MENU, {
+								userAccount: my.userAccount
+							});
+							resolve();
 						});
-					});
+				});
 			},
 		},
 		mutations: {

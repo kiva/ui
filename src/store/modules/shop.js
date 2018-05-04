@@ -11,9 +11,14 @@ export default apollo => {
 		getters: {},
 		actions: {
 			getHeaderBasketCount({ commit }) {
-				return apollo.query({ query: basketCountQuery })
-					.then(result => result.data.shop.headerItemCount)
-					.then(count => commit(types.SET_HEADER_BASKET_COUNT, { count }));
+				return new Promise(resolve => {
+					apollo.query({ query: basketCountQuery })
+						.then(result => result.data.shop.headerItemCount)
+						.then(count => {
+							commit(types.SET_HEADER_BASKET_COUNT, { count });
+							resolve();
+						}).catch(() => resolve());
+				});
 			},
 		},
 		mutations: {

@@ -24,23 +24,28 @@ export default apollo => {
 		actions: {
 			// Fetch all the filter suggestions via apollo
 			getLoanSearchSuggestions({ commit }) {
-				return apollo.query({ query: loanSearchSuggestionsQuery })
-					.then(result => result.data.loanSearchSuggestions)
-					.then(suggestions => {
-						commit(types.RECEIVE_LOAN_SEARCH_SUGGESTIONS, { suggestions });
-						return suggestions;
-					});
+				return new Promise(resolve => {
+					apollo.query({ query: loanSearchSuggestionsQuery })
+						.then(result => result.data.loanSearchSuggestions)
+						.then(suggestions => {
+							commit(types.RECEIVE_LOAN_SEARCH_SUGGESTIONS, { suggestions });
+							resolve(suggestions);
+						});
+				});
 			},
 
 			getLendMenuInfo({ commit }) {
-				return apollo.query({ query: lendMenuDataQuery })
-					.then(result => result.data)
-					.then(data => {
-						commit(types.SET_PUBLIC_LEND_MENU_DATA, {
-							categories: data.loanChannels.values,
-							countryFacets: data.countryFacets
+				return new Promise(resolve => {
+					apollo.query({ query: lendMenuDataQuery })
+						.then(result => result.data)
+						.then(data => {
+							commit(types.SET_PUBLIC_LEND_MENU_DATA, {
+								categories: data.loanChannels.values,
+								countryFacets: data.countryFacets
+							});
+							resolve();
 						});
-					});
+				});
 			},
 		},
 		mutations: {
