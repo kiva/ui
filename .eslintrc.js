@@ -53,6 +53,8 @@ module.exports = {
 		'consistent-return': 'off',
 		// allow (but do not require) dangling commas
 		'comma-dangle': ['error', 'only-multiline'],
+		// allow promises to be rejected with non-errors
+		'prefer-promise-reject-errors': 'off',
 		// allow multiple attributes per line in vue templates
 		'vue/max-attributes-per-line': 'off',
 		// disallow non-void html elements to be self-closing

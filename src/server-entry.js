@@ -1,4 +1,4 @@
-/* eslint-disable prefer-promise-reject-errors, no-console, no-param-reassign */
+/* eslint-disable no-console, no-param-reassign */
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
@@ -79,7 +79,15 @@ export default context => {
 					__INITIAL_STATE__: store.state,
 				});
 				resolve(app);
-			}).catch(reject);
+			}).catch(error => {
+				if (error instanceof Error) {
+					reject(error);
+				} else {
+					reject({
+						url: router.resolve(error).href
+					});
+				}
+			});
 		}, reject);
 	});
 };
