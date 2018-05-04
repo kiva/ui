@@ -18,7 +18,7 @@ export default () => {
 				}
 			});
 		}
-		if (networkError) {
+		if (networkError && !graphQLErrors) {
 			console.error(networkError);
 		}
 		// prevent the errors from traveling further down the chain
