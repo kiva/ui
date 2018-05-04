@@ -81,7 +81,7 @@ module.exports = {
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
-				exclude: [path.resolve(__dirname, '../src/assets/icons')],
+				exclude: [resolve('src/assets/icons')],
 				loader: 'url-loader',
 				options: {
 					limit: 1, // 10000 is default but we'd need to exclude apple-touch-icons,
