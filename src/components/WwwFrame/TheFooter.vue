@@ -129,6 +129,7 @@ $footer-link-separator-color: $light-green;
 
 	@include breakpoint(large) {
 		padding: rem-calc(40) 1rem;
+		min-height: 25rem;
 	}
 
 	ul {
