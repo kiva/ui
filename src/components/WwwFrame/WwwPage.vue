@@ -30,7 +30,7 @@ export default {
 	flex-flow: column nowrap;
 
 	& > * {
-		flex-shrink: 0;
+		flex-shrink: 0; // Handle IE defaulting flex-shrink to 1
 	}
 
 	main {
