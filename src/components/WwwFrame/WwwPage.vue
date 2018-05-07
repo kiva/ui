@@ -29,6 +29,10 @@ export default {
 	display: flex;
 	flex-flow: column nowrap;
 
+	& > * {
+		flex-shrink: 0;
+	}
+
 	main {
 		flex-grow: 1;
 	}
