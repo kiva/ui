@@ -8,18 +8,21 @@ const Raven = require('raven');
 const isProd = process.env.NODE_ENV === 'production';
 
 function handleError(err, req, res) {
-	// Passing the error over to Raven/Sentry
-	Raven.captureException(err);
-
 	if (err.url) {
 		res.redirect(err.url);
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
+		// Passing the error over to Raven.
+		Raven.captureException(err);
+
 		// TOOO: consider sending to Kiva 404
 		// res.redirect('/error.html?url='+ req.url.replace('/', '') +&status=404');
 	} else {
 		// Render Error Page or Redirect
 		res.status(500).send('500 | Internal Server Error');
+		// Passing the error over to Raven.
+		Raven.captureException(err);
+
 		console.error(`Error during render : ${req.url}`);
 		console.error(err);
 	}

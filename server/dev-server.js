@@ -14,10 +14,19 @@ const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config || 'dev-vm');
+const Raven = require('raven');
 
 // app init
 const port = argv.port || config.server.port;
 const app = express();
+
+// Configuring Sentry for use
+if (config.app.enableSentry) {
+	Raven.config(config.app.sentryURI).install();
+	app.use(Raven.requestHandler());
+	// Tested this out further down in the file, before the app.listen line, but couldn't get it to work
+	app.use(Raven.errorHandler());
+}
 
 // webpack setup
 const clientCompiler = webpack(clientConfig);

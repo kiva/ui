@@ -11,6 +11,7 @@ const port = argv.port || config.server.port;
 
 if (config.app.enableSentry) {
 	Raven.config(config.app.sentryURI).install();
+	app.use(Raven.requestHandler());
 }
 
 // Set headers for fonts
@@ -31,9 +32,9 @@ app.use(vueMiddleware({
 	config,
 }));
 
-if (config.app.enableSentry) {
-	app.use(Raven.requestHandler());
-	app.use(Raven.errorHandler());
-}
+// Tested this, but was unable to get automatatic error catching to work properly
+// if (config.app.enableSentry) {
+// 	app.use(Raven.errorHandler());
+// }
 
 app.listen(port, () => console.log(`server started at localhost:${port}`));
