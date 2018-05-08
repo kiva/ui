@@ -6,12 +6,6 @@ module.exports = {
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
-<<<<<<< HEAD
-		enableAnalytics: false,
-		enablePerimeterx: false,
-		enableSentry: true,
-		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
-=======
 		enableAnalytics: true,
 		enableGTM: false,
 		googleTagmanagerId: 'GTM-PX6FDG',
@@ -22,7 +16,8 @@ module.exports = {
 		enableFB: true,
 		fbApplicationId: '123230061223',
 		fbPixelId: '1531213600467139',
->>>>>>> master
+		enableSentry: true,
+		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
 	},
 	server: {
 		port: 8888,

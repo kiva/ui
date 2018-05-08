@@ -3,10 +3,14 @@ const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
+const Raven = require('raven');
 
 const isProd = process.env.NODE_ENV === 'production';
 
 function handleError(err, req, res) {
+	// Passing the error over to Raven/Sentry
+	Raven.captureException(err);
+
 	if (err.url) {
 		res.redirect(err.url);
 	} else if (err.code === 404) {

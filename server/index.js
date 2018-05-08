@@ -4,9 +4,16 @@ const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config);
+const Raven = require('raven');
 
 const app = express();
 const port = argv.port || config.server.port;
+
+if (config.app.enableSentry) {
+	Raven.config(config.app.sentryURI).install();
+	app.use(Raven.requestHandler());
+	app.use(Raven.errorHandler());
+}
 
 // Set headers for fonts
 function setHeaders(res, path) {
