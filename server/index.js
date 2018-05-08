@@ -11,8 +11,6 @@ const port = argv.port || config.server.port;
 
 if (config.app.enableSentry) {
 	Raven.config(config.app.sentryURI).install();
-	app.use(Raven.requestHandler());
-	app.use(Raven.errorHandler());
 }
 
 // Set headers for fonts
@@ -32,5 +30,10 @@ app.use(vueMiddleware({
 	clientManifest,
 	config,
 }));
+
+if (config.app.enableSentry) {
+	app.use(Raven.requestHandler());
+	app.use(Raven.errorHandler());
+}
 
 app.listen(port, () => console.log(`server started at localhost:${port}`));
