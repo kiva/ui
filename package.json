@@ -44,6 +44,7 @@
 		"numeral": "^2.0.6",
 		"popper.js": "^1.14.3",
 		"serialize-javascript": "^1.4.0",
+		"set-cookie-parser": "^2.1.1",
 		"vue": "^2.5.7",
 		"vue-meta": "^1.4.2",
 		"vue-progressbar": "^0.7.3",
