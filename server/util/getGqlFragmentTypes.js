@@ -1,5 +1,4 @@
-const fetch = require('isomorphic-fetch');
-const https = require('https');
+const fetch = require('./fetch');
 
 let fragmentTypes = []; // store in local memory for now. TODO: use memcached
 
@@ -14,10 +13,6 @@ module.exports = function getGqlFragmentTypes(url) {
 				body: JSON.stringify({
 					query: '{ __schema { types { kind name possibleTypes { name } } } }'
 				}),
-				agent: new https.Agent({
-					// fix request blocked b/c of self-signed certificate on dev-vm. TODO: maybe do a prod check?
-					rejectUnauthorized: false
-				})
 			})
 				.then(result => result.json())
 				.then(result => {
