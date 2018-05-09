@@ -7,19 +7,20 @@ module.exports = merge(base, {
 		graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
 		enablePerimeterx: false,
 		perimeterxAppId: '###',
-		enableAnalytics: true,
+		enableAnalytics: false,
 		enableGTM: false,
 		googleTagmanagerId: 'GTM-PXFRMT',
 		enableGA: true,
 		gaId: 'UA-11686022-7',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
-		enableFB: true,
+		enableFB: false,
 		fbApplicationId: '263964058630',
 		fbPixelId: '108245819986414',
 	},
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
-		memcachedServers: ['localhost'],
+		memcachedEnabled: true,
+		memcachedServers: 'localhost:11211',
 	}
 })

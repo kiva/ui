@@ -4,6 +4,10 @@ const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config);
+const { initMemcached } = require('./util/initMemcached');
+
+// Initialize a Cache instance, Should Only be called once!
+initMemcached(config.server.memcachedServers.split(','), { retries: 1, retry: 200 });
 
 const app = express();
 const port = argv.port || config.server.port;

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
+const { getCache } = require('./util/initMemcached');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -28,6 +29,31 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		throw new TypeError('Missing configuration');
 	}
 
+	// Initialize a Cache instance, Should Only be called once!
+	// initMemcached(config.server.memcachedServers.split(','), { retries: 10, retry: 10000 });
+	// Get the cache, import the lib and call this to get the instance
+	const cache = getCache();
+	// console.log(cache);
+
+	function handleCacheData(err, data) {
+		if (err) {
+			console.error('error : ');
+			console.log(typeof err);
+			console.log(String(err));
+		}
+		console.log(typeof data);
+		console.log(String(data));
+		// console.log(`data : ${data}`);
+	}
+	// c4ddd97054305e792c5ec7242799fc83
+	// 9ed1963a4bc632d0b84f9f58b74b145a
+	// cache.get('c4ddd97054305e792c5ec7242799fc83', handleCacheData);
+
+	cache.set('ui-test-1', 'test content', 20000, handleCacheData);
+	cache.get('ui-test-1', handleCacheData);
+	cache.get('ui-gql-fragment-types', handleCacheData);
+	cache.get('Kc-LoanChannel-object-11731_44', handleCacheData);
+
 	return function middleware(req, res) {
 		console.log('---------> rendering server');
 		const s = Date.now();
@@ -37,6 +63,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		clientManifest.publicPath = config.app.publicPath || '/';
 
 		const renderer = createBundleRenderer(serverBundle, {
+			cache,
 			template,
 			clientManifest,
 			runInNewContext: false,

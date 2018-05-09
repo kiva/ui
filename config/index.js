@@ -20,6 +20,8 @@ module.exports = {
 	server: {
 		port: 8888,
 		graphqlUri: 'https://api.kivaws.org/graphql',
+		memcachedEnabled: true,
+		memcachedServers: 'memcache-01:11211, memcache-02:11211',
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),
