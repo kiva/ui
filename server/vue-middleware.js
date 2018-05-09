@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
-const { getCache } = require('./util/initMemcached');
 const Raven = require('raven');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
@@ -30,15 +29,17 @@ function handleError(err, req, res) {
 	}
 }
 
-module.exports = function createMiddleware({ serverBundle, clientManifest, config }) {
+module.exports = function createMiddleware({
+	serverBundle,
+	clientManifest,
+	config,
+	cache
+}) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
 
 	if (typeof config === 'undefined' || typeof config.app === 'undefined') {
 		throw new TypeError('Missing configuration');
 	}
-
-	// Get the cache instance
-	const cache = getCache();
 
 	return function middleware(req, res) {
 		console.log('---------> rendering server');
@@ -67,7 +68,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		res.setHeader('Content-Type', 'text/html');
 
 		// get graphql api fragment types for the graphql client
-		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri);
+		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
 
 		// fetch initial session cookies in case starting session with this request
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);

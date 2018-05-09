@@ -8,7 +8,7 @@ const Raven = require('raven');
 const { initMemcached } = require('./util/initMemcached');
 
 // Initialize a Cache instance, Should Only be called once!
-initMemcached(config.server.memcachedServers.split(','), { retries: 1, retry: 200 });
+const cache = initMemcached(config.server.memcachedServers.split(','), { retries: 1, retry: 200 });
 
 const app = express();
 const port = argv.port || config.server.port;
@@ -34,6 +34,7 @@ app.use(vueMiddleware({
 	serverBundle,
 	clientManifest,
 	config,
+	cache,
 }));
 
 // Tested this, but was unable to get automatatic error catching to work properly
