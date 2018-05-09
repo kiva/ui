@@ -16,10 +16,13 @@ module.exports = {
 		enableFB: true,
 		fbApplicationId: '123230061223',
 		fbPixelId: '1531213600467139',
+		enableSentry: true,
+		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
 	},
 	server: {
 		port: 8888,
 		graphqlUri: 'https://api.kivaws.org/graphql',
+		sessionUri: 'https://www.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'memcache-01:11211, memcache-02:11211',
 	},
