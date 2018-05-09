@@ -20,6 +20,7 @@ module.exports = {
 	server: {
 		port: 8888,
 		graphqlUri: 'https://api.kivaws.org/graphql',
+		sessionUri: 'https://www.kiva.org/start-ui-session',
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),

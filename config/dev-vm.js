@@ -21,5 +21,6 @@ module.exports = merge(base, {
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
 		memcachedServers: ['localhost'],
+		sessionUri: 'https://dev-vm-01.kiva.org/start-ui-session',
 	}
 })

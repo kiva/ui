@@ -20,5 +20,6 @@ module.exports = merge(base, {
 	},
 	server: {
 		graphqlUri: 'https://api.dev.kivaws.org/graphql',
+		sessionUri: 'https://www.dev.kiva.org/start-ui-session',
 	}
 })
