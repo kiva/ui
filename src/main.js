@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 import { sync } from 'vuex-router-sync';
 import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
@@ -32,6 +34,14 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 	const router = createRouter();
 
 	sync(store, router);
+
+	// TODO: Try to get this working without duplicates for server entry.
+	// Checking that sentry is enabled & is not server side
+	if (appConfig.enableSentry && typeof window !== 'undefined') {
+		Raven.config(appConfig.sentryURI);
+		Raven.addPlugin(RavenVue, Vue);
+		Raven.install();
+	}
 
 	const app = new Vue({
 		router,

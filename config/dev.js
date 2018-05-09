@@ -17,6 +17,8 @@ module.exports = merge(base, {
 		enableFB: true,
 		fbApplicationId: '364044572460',
 		fbPixelId: '108245819986414',
+		enableSentry: true,
+		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287'
 	},
 	server: {
 		graphqlUri: 'https://api.dev.kivaws.org/graphql',
