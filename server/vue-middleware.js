@@ -29,7 +29,12 @@ function handleError(err, req, res) {
 	}
 }
 
-module.exports = function createMiddleware({ serverBundle, clientManifest, config }) {
+module.exports = function createMiddleware({
+	serverBundle,
+	clientManifest,
+	config,
+	cache
+}) {
 	const template = fs.readFileSync(path.resolve(__dirname, 'index.template.html'), 'utf-8');
 
 	if (typeof config === 'undefined' || typeof config.app === 'undefined') {
@@ -45,6 +50,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		clientManifest.publicPath = config.app.publicPath || '/';
 
 		const renderer = createBundleRenderer(serverBundle, {
+			cache,
 			template,
 			clientManifest,
 			runInNewContext: false,
@@ -62,7 +68,7 @@ module.exports = function createMiddleware({ serverBundle, clientManifest, confi
 		res.setHeader('Content-Type', 'text/html');
 
 		// get graphql api fragment types for the graphql client
-		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri);
+		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
 
 		// fetch initial session cookies in case starting session with this request
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);

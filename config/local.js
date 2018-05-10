@@ -13,5 +13,7 @@ module.exports = merge(base, {
 	server: {
 		graphqlUri: 'https://api.kivaws.org/graphql',
 		sessionUri: '',
+		memcachedEnabled: true,
+		memcachedServers: '',
 	},
 })

@@ -15,6 +15,10 @@ const clientConfig = require('../build/webpack.client.dev.conf');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config || 'dev-vm');
 const Raven = require('raven');
+const { initMemcached } = require('./util/initMemcached');
+
+// Initialize a Cache instance, Should Only be called once!
+const cache = initMemcached(config.server.memcachedServers.split(','), { retries: 1, retry: 200 });
 
 // app init
 const port = argv.port || config.server.port;
@@ -64,6 +68,7 @@ const updateHandler = () => {
 			clientManifest,
 			serverBundle,
 			config,
+			cache,
 		});
 		resolveHandlerReady();
 	}
