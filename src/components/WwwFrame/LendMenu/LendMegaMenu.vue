@@ -21,7 +21,7 @@
 						All categories
 					</router-link>
 				</li>
-				<li>
+				<li ref="allLoans">
 					<router-link
 						to="/lend"
 						v-kv-track-event="'TopNav|click-Lend-All_Loans'">
@@ -164,12 +164,20 @@ export default {
 	},
 	methods: {
 		// js workaround for flex column wrap bug (https://github.com/philipwalton/flexbugs#flexbug-14)
+		// We expect the categories section to be 2 columns wide. This will force the section to be
+		// that wide if it isn't, due to the flexbox bug mentioned above.
 		checkCategoryWidth() {
 			this.categoriesWidth = null;
 			this.$nextTick(() => {
 				const listStyle = window.getComputedStyle(this.$refs.categoryList);
-				const columnWidth = Math.ceil(numeral(listStyle.getPropertyValue('width')).value());
-				this.categoriesWidth = `${columnWidth * 2}px`;
+				const listWidth = Math.ceil(numeral(listStyle.getPropertyValue('width')).value());
+				const columnStyle = window.getComputedStyle(this.$refs.allLoans);
+				const columnWidth = Math.ceil(numeral(columnStyle.getPropertyValue('width')).value());
+				if (listWidth <= columnWidth) {
+					this.categoriesWidth = `${columnWidth * 2}px`;
+				} else {
+					this.categoriesWidth = `${listWidth}px`;
+				}
 			});
 		},
 		onOpen() {
