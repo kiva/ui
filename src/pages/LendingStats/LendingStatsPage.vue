@@ -9,12 +9,13 @@
 				Use this page to collect loans and hit milestones along the way.</p>
 				<hr>
 				<stats-section
-					title="Countries & Territories*"
+					title="Countries &amp; Territories*"
 					noun="country"
 					:not-lent-to="countriesNotLentTo"
 					:lent-to="countriesLentTo"
 					:total="totalCountries"
 					item-key="isoCode"
+					unlent-url="/lend/countries-not-lent"
 				/>
 				<hr>
 				<stats-section

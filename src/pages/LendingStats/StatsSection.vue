@@ -39,7 +39,7 @@
 			>
 				{{ showingMore ? 'Hide' : 'Show more' }}
 			</button>
-			<kv-button v-if="hasUnlent" :to="unlentUrl" class="secondary lend-to-new-button">
+			<kv-button v-if="hasUnlent" :to="unlentUrlRoute" class="secondary lend-to-new-button">
 				Lend to a new {{ noun }}
 			</kv-button>
 		</div>
@@ -63,7 +63,8 @@ export default {
 		total: { type: Number, default: 0 },
 		query: { type: String, default: null },
 		itemKey: { type: String, default: 'id' },
-		iconKey: { type: Function, default: () => 'leaf' }
+		iconKey: { type: Function, default: () => 'leaf' },
+		unlentUrl: { default: null }, // eslint-disable-line vue/require-prop-types
 	},
 	components: {
 		ItemList,
@@ -90,8 +91,8 @@ export default {
 		queryParam() {
 			return this.query ? this.query : this.noun;
 		},
-		unlentUrl() {
-			return {
+		unlentUrlRoute() {
+			return this.unlentUrl ? this.unlentUrl : {
 				path: '/lend',
 				query: {
 					[this.queryParam]: _map(this.notLentTo, this.itemKey).join(',')
