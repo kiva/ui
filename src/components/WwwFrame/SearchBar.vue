@@ -159,7 +159,7 @@ export default {
 		},
 		formatResult({ label, matches }) {
 			// If no match is found, just return the label, unmarked
-			if (!matches.length) {
+			if (!matches || !matches.length) {
 				return label;
 			}
 

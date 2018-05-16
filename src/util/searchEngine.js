@@ -30,7 +30,6 @@ export default class SearchEngine {
 		this.fuse = new Fuse(data, {
 			threshold: 0.25,
 			distance: 100000,
-			minMatchCharLength: 2,
 			includeMatches: true,
 			keys: ['label'],
 		});
