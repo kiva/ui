@@ -5,10 +5,10 @@ const clientManifest = require('../dist/vue-ssr-client-manifest.json');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config);
 const Raven = require('raven');
-const { initMemcached } = require('./util/initMemcached');
+const initCache = require('./util/initCache');
 
 // Initialize a Cache instance, Should Only be called once!
-const cache = initMemcached(config.server.memcachedServers.split(','), { retries: 1, retry: 200 });
+const cache = initCache(config.server);
 
 const app = express();
 const port = argv.port || config.server.port;
