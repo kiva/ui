@@ -28,7 +28,7 @@
 						class="result"
 						:class="{highlighted: suggestion.label === highlighted.label}"
 					>
-						<span v-html="formatResult(suggestion.label)"></span>
+						<span v-html="formatResult(suggestion)"></span>
 					</li>
 				</ol>
 			</li>
@@ -41,6 +41,7 @@
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _take from 'lodash/take';
+import _zip from 'lodash/zip';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchEngine from '@/util/searchEngine';
 import { indexIn } from '@/util/comparators';
@@ -156,26 +157,29 @@ export default {
 			this.searching = true;
 			this.$router.push({ path: '/lend', query });
 		},
-		formatResult(label) {
-			// Find the part of the label that matches the searched term
-			const match = label.match(new RegExp(`(^|\\s|\\()${this.term}`, 'i'));
-
+		formatResult({ label, matches }) {
 			// If no match is found, just return the label, unmarked
-			if (!match) {
+			if (!matches || !matches.length) {
 				return label;
 			}
 
-			// Identify the beginning and ending indices of the term in the label
-			const begin = match.index + match[1].length;
-			const end = begin + this.term.length;
+			// Take array like [[2, 3], [6, 9], [11, 14]] and turn it into two separate arrays,
+			// [2, 6, 11] and [3, 9, 14], named 'starts' and 'ends', respectively.
+			// 'starts' is the indices of the label where a match starts, and thus should
+			// have a '<mark>' tag inserted.
+			// 'ends' is the indices of the label where a match ends, and thus should
+			// have a '</mark>' tag inserted.
+			const [starts, ends] = _zip(...matches);
 
-			// Split the label into the three parts
-			const prefix = label.slice(0, begin);
-			const matchingText = label.slice(begin, end);
-			const suffix = label.slice(end);
+			// Build an array of strings, inserting the <mark> tags at the appropriate indices
+			const charArray = _map(label, (character, index) => {
+				const prefix = starts.indexOf(index) > -1 ? '<mark>' : '';
+				const suffix = ends.indexOf(index) > -1 ? '</mark>' : '';
+				return `${prefix}${character}${suffix}`;
+			});
 
-			// Return the label with the matching portion marked
-			return `${prefix}<mark>${matchingText}</mark>${suffix}`;
+			// Return all the the strings in the array concatenated together
+			return charArray.join('');
 		},
 	},
 	watch: {
@@ -222,6 +226,8 @@ form.search-form {
 .search-results {
 	$spacing: 0.4rem;
 
+	position: relative;
+	z-index: 10;
 	background-color: $white;
 	border: 1px solid $gray;
 	padding: $spacing;

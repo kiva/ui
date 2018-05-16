@@ -1,41 +1,60 @@
-import Bloodhound from 'bloodhound-js';
+import _filter from 'lodash/filter';
+import _flatten from 'lodash/flatten';
+import _map from 'lodash/map';
+import Fuse from 'fuse.js';
 import { startsWith } from '@/util/comparators';
 
 /*
- * Simple wrapper class around Bloodhound
+ * Simple wrapper class around Fuse
  */
 export default class SearchEngine {
-	constructor() {
-		this.bloodhound = new Bloodhound({
-			datumTokenizer: datum => {
-				// Split the datum label by words, where words can include accented characters
-				const label = datum && datum.label ? datum.label.toString() : '';
-				return label ? label.split(/[^a-zA-ZÀ-Ÿ0-9]+/) : [];
-			},
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			identify: datum => `${datum.group}${datum.label}`.replace(/[^a-zA-Z]/g, ''),
-			initialize: false,
-		});
-
+	constructor(data = []) {
 		this.ready = new Promise(resolve => {
 			this.resolveReady = resolve;
-		}).then(() => this.bloodhound.initialize());
+		});
+
+		if (data.length) {
+			this.init(data);
+		}
+	}
+
+	reset(data) {
+		if (this.fuse) {
+			this.fuse.setCollection(data);
+		} else {
+			this.init(data);
+		}
+	}
+
+	init(data) {
+		this.fuse = new Fuse(data, {
+			threshold: 0.25,
+			distance: 100000,
+			includeMatches: true,
+			keys: ['label'],
+		});
+		this.resolveReady();
 	}
 
 	search(query) {
 		return this.ready.then(() => {
 			return new Promise(resolve => {
-				this.bloodhound.search(query, results => {
-					// Sort the results alphabetically, putting results start with the query first
-					resolve(results.sort(startsWith(query, 'label')));
+				const results = this.fuse.search(query);
+
+				// filter out results that don't have any matches
+				const filtered = _filter(results, result => result.matches.length);
+
+				// flatten the results back to the original item + simple array of matches
+				const flattened = _map(filtered, ({ item, matches }) => {
+					return {
+						...item,
+						matches: _flatten(_map(matches, 'indices'))
+					};
 				});
+
+				// Sort the results alphabetically, putting results start with the query first
+				resolve(flattened.sort(startsWith(query, 'label')));
 			});
 		});
-	}
-
-	reset(data) {
-		this.bloodhound.local = data;
-		this.bloodhound.initialize(true);
-		this.resolveReady();
 	}
 }

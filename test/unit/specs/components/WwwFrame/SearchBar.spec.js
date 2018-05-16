@@ -38,15 +38,15 @@ describe('SearchBar', () => {
 	it('should show filtered results when a serch term is entered', done => {
 		const input = wrapper.find({ ref: 'input' });
 		input.trigger('focus');
-		input.element.value = 'a';
+		input.element.value = 'ak';
 		input.trigger('input');
 
 		// $nextTick, setImmediate, and timeouts <2ms all execute too early to test these assertions
 		setTimeout(() => {
-			expect(wrapper.vm.term).toBe('a');
+			expect(wrapper.vm.term).toBe('ak');
 			expect(wrapper.vm.showResults).toBe(true);
-			expect(wrapper.vm.rawResults.length).toBe(4);
-			expect(wrapper.vm.sections.length).toBe(3);
+			expect(wrapper.vm.rawResults.length).toBe(3);
+			expect(wrapper.vm.sections.length).toBe(2);
 			done();
 		}, 2);
 	});
