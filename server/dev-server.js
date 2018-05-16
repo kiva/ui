@@ -13,7 +13,7 @@ const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
 const argv = require('minimist')(process.argv.slice(2));
-const config = require('../config/selectConfig')(argv.config || 'dev-vm');
+const config = require('../config/selectConfig')(argv.config || 'local');
 const Raven = require('raven');
 const initCache = require('./util/initCache');
 
