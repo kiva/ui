@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
@@ -12,6 +13,9 @@ const cache = initCache(config.server);
 
 const app = express();
 const port = argv.port || config.server.port;
+
+// Set sensible security headers for express
+app.use(helmet());
 
 if (config.app.enableSentry) {
 	Raven.config(config.app.sentryURI).install();
