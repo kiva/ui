@@ -8,7 +8,8 @@ function AsyncLRU(options) {
 	// replace 'get' with an async wrapper
 	const oldGet = lru.get;
 	lru.get = (key, cb) => {
-		cb(oldGet.call(lru, key));
+		const result = oldGet.call(lru, key);
+		return cb ? cb(result) : result;
 	};
 
 	// return patched LRU-cache instance
