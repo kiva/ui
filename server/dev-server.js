@@ -4,6 +4,7 @@ require('../build/check-versions')();
 // dependencies
 const chokidar = require('chokidar');
 const express = require('express');
+const helmet = require('helmet');
 const MFS = require('memory-fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -23,6 +24,9 @@ const cache = initCache(config.server);
 // app init
 const port = argv.port || config.server.port;
 const app = express();
+
+// Set sensible security headers for express
+app.use(helmet());
 
 // Configuring Sentry for use
 if (config.app.enableSentry) {
