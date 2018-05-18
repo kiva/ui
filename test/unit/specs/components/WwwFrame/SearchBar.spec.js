@@ -1,4 +1,4 @@
-import { shallow } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import SearchBar from '@/components/WwwFrame/SearchBar';
 
 const suggestions = [
@@ -22,7 +22,7 @@ describe('SearchBar', () => {
 		mocks = {
 			$store: { dispatch }
 		};
-		wrapper = shallow(SearchBar, { mocks });
+		wrapper = shallowMount(SearchBar, { mocks });
 	});
 
 	it('should fetch suggestions when it gains focus', () => {

@@ -1,4 +1,4 @@
-import { shallow, createLocalVue, RouterLinkStub } from '@vue/test-utils';
+import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import Vuex from 'vuex';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import createMyModule from '@/store/modules/my';
@@ -11,7 +11,7 @@ localVue.use(kvAnalytics);
 
 describe('TheHeader', () => {
 	it('should hide/show the search area when the search toggle button is clicked', () => {
-		const wrapper = shallow(TheHeader, {
+		const wrapper = shallowMount(TheHeader, {
 			localVue,
 			store: new Vuex.Store({
 				modules: {
