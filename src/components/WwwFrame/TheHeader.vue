@@ -36,6 +36,16 @@
 					</button>
 					<search-bar ref="search" />
 				</div>
+				<!-- Large promo banner -->
+				<div class="show-for-xxlarge header-promo-large">
+					<a id="header-promo-content" href="#" >
+						<kv-icon name="kiva-card" class="kiva-card-icon show-for-xxlarge"/>
+						<div class="content">
+							<div>Make spirits bright this holiday season.</div>
+							<div class="call-to-action-text">Give a Kiva gift.</div>
+						</div>
+					</a>
+				</div>
 			</div>
 			<router-link
 				v-if="isVisitor"
@@ -240,6 +250,15 @@
 				</li>
 			</ul>
 		</kv-dropdown>
+		<div class="hide-for-xxlarge header-promo-small">
+			<a id="header-promo-content" href="#" >
+				<kv-icon name="kiva-card" class="kiva-card-icon show-for-xxlarge"/>
+				<div class="content">
+					<span>Make spirits bright this holiday season.</span>
+					<span class="call-to-action-text">Give a Kiva gift.</span>
+				</div>
+			</a>
+		</div>
 	</header>
 </template>
 
@@ -509,6 +528,44 @@ $close-search-button-size: 2.5rem;
 	@include breakpoint(large) {
 		flex-grow: 1;
 		order: 0;
+	}
+
+	.header-promo-large {
+		position: relative;
+		top: rem-calc(-66);
+		margin-top: .6875rem;
+
+		a {
+			text-decoration: none;
+			color: $light-green;
+		}
+
+		.kiva-card-icon {
+			height: rem-calc(45);
+			width: rem-calc(45);
+			transform: rotate(-10deg);
+			float: left;
+			margin-left: rem-calc(50);
+		}
+
+		.content {
+			font-size: $small-font-size;
+			font-weight: bold;
+			color: $dark-green;
+			text-align: center;
+			line-height: 1.357rem; // I want to use $small-line-height here
+			max-width: 95%;
+		}
+	}
+}
+// These are good
+.header-promo-small {
+	text-align: center;
+	background: $dark-green;
+	font-size: $small-font-size;
+
+	a {
+		color: $kiva-accent-green;
 	}
 }
 
