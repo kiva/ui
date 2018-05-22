@@ -12,6 +12,11 @@
 import Popper from 'popper.js';
 import { mapState } from 'vuex';
 import _map from 'lodash/map';
+import {
+	onBodyTouchstart,
+	offBodyTouchstart,
+	isTargetElement,
+} from '@/util/touchEvents';
 
 export default {
 	props: {
@@ -101,16 +106,11 @@ export default {
 				}
 			});
 		},
-		bodyTapHandler(e) {
-			if (e.target === this.reference ||
-				e.target === this.$el ||
-				this.reference.contains(e.target) ||
-				this.$el.contains(e.target)
-			) {
-				return;
+		bodyTouchHandler(e) {
+			if (!isTargetElement(e, [this.reference, this.$el])) {
+				this.show = false;
+				this.removeBodyEvents();
 			}
-			this.show = false;
-			this.removeBodyEvents();
 		},
 		referenceTapHandler(e) {
 			e.preventDefault();
@@ -124,7 +124,7 @@ export default {
 			this.reference.addEventListener('touchstart', this.referenceTapHandler);
 		},
 		attachBodyEvents() {
-			[...document.body.children].forEach(child => child.addEventListener('touchstart', this.bodyTapHandler));
+			onBodyTouchstart(this.bodyTouchHandler);
 		},
 		removeEvents() {
 			this.removeMouseEvents();
@@ -138,7 +138,7 @@ export default {
 			this.$el.removeEventListener('mouseout', this.close);
 		},
 		removeBodyEvents() {
-			[...document.body.children].forEach(child => child.removeEventListener('touchstart', this.bodyTapHandler));
+			offBodyTouchstart(this.bodyTouchHandler);
 		},
 		setAttributes(attrs) {
 			_map(attrs, (value, attr) => {
