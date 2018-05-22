@@ -208,6 +208,7 @@ form.search-form {
 	position: relative;
 	height: 100%;
 	width: 100%;
+	z-index: 20;
 
 	input[type="search"] {
 		height: 100%;

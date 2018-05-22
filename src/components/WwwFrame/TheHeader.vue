@@ -36,6 +36,10 @@
 					</button>
 					<search-bar ref="search" />
 				</div>
+<<<<<<< d277f6b18f9af4cf9f7f4d8ccb77f5d397aa94c0
+=======
+				<promoBanner />
+>>>>>>> ENG-1662 promo banner components.
 			</div>
 			<router-link
 				v-if="isVisitor"
@@ -240,6 +244,10 @@
 				</li>
 			</ul>
 		</kv-dropdown>
+<<<<<<< d277f6b18f9af4cf9f7f4d8ccb77f5d397aa94c0
+=======
+		<promoBannerSmall />
+>>>>>>> ENG-1662 promo banner components.
 	</header>
 </template>
 
@@ -249,12 +257,16 @@ import { mapState, mapGetters } from 'vuex';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchBar from './SearchBar';
+import PromoBanner from './PromoBanner';
+import PromoBannerSmall from './PromoBannerSmall';
 
 export default {
 	components: {
 		KvDropdown,
 		KvIcon,
 		SearchBar,
+		PromoBanner,
+		PromoBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
 	data() {
