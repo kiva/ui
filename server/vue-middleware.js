@@ -5,6 +5,7 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const Raven = require('raven');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
+const vueSsrCache = require('./util/vueSsrCache');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -50,7 +51,7 @@ module.exports = function createMiddleware({
 		clientManifest.publicPath = config.app.publicPath || '/';
 
 		const renderer = createBundleRenderer(serverBundle, {
-			cache,
+			cache: vueSsrCache(cache),
 			template,
 			clientManifest,
 			runInNewContext: false,
