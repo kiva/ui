@@ -94,6 +94,8 @@
 import { getYear } from 'date-fns';
 
 export default {
+	name: 'TheFooter',
+	serverCacheKey: () => 'footer',
 	data() {
 		return {
 			year: getYear(new Date()),
