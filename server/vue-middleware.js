@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
-const Raven = require('raven');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
@@ -14,16 +13,12 @@ function handleError(err, req, res) {
 		res.redirect(err.url);
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
-		// Passing the error over to Raven.
-		Raven.captureException(err);
 
 		// TOOO: consider sending to Kiva 404
 		// res.redirect('/error.html?url='+ req.url.replace('/', '') +&status=404');
 	} else {
 		// Render Error Page or Redirect
 		res.status(500).send('500 | Internal Server Error');
-		// Passing the error over to Raven.
-		Raven.captureException(err);
 
 		console.error(`Error during render : ${req.url}`);
 		console.error(err);
