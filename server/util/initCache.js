@@ -1,18 +1,30 @@
 const LRU = require('lru-cache');
 const Memcached = require('memcached');
 
-function AsyncLRU(options) {
-	// create LRU-cache instance
+function FakeMemcached(options) {
+	// Create LRU-cache instance
 	const lru = LRU(options);
 
-	// replace 'get' with an async wrapper
+	// Replace 'get' with an async wrapper
 	const oldGet = lru.get;
-	lru.get = (key, cb) => {
+	lru.get = (key, callback) => {
 		const result = oldGet.call(lru, key);
-		return cb ? cb(result) : result;
+		return callback ? callback(result) : result;
 	};
 
-	// return patched LRU-cache instance
+	// Replace 'set' with a memcached-compatible wrapper
+	const oldSet = lru.set;
+	lru.set = (key, value, age, callback) => {
+		try {
+			oldSet.call(lru, key, value, age * 1000);
+		} catch (error) {
+			if (callback) {
+				callback(error);
+			}
+		}
+	};
+
+	// Return patched LRU-cache instance
 	return lru;
 }
 
@@ -23,14 +35,14 @@ module.exports = function initCache(config) {
 			servers = servers.split(',');
 		}
 
-		// create a memcached connection
+		// Create a memcached connection
 		return new Memcached(servers, {
 			retries: 1,
 			retry: 200,
 		});
 	}
-	// create a simple local-memory cache
-	return AsyncLRU({
+	// Create a simple local-memory cache
+	return FakeMemcached({
 		max: 1000
 	});
 };
