@@ -108,6 +108,11 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import {
+	onBodyTouchstart,
+	offBodyTouchstart,
+	isTargetElement,
+} from '@/util/touchEvents';
 
 import KvIcon from '@/components/Kv/KvIcon';
 import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
@@ -128,7 +133,8 @@ export default {
 	},
 	computed: {
 		...mapState({
-			isBorrower: state => state.my.isBorrower
+			isBorrower: state => state.my.isBorrower,
+			usingTouch: state => state.browser.usingTouch,
 		}),
 		...mapGetters([
 			'isTrustee'
@@ -136,13 +142,28 @@ export default {
 	},
 	methods: {
 		toggle() {
-			this.open = !this.open;
+			if (this.open) {
+				this.collapse();
+			} else {
+				this.expand();
+			}
 		},
 		expand() {
 			this.open = true;
+			if (this.usingTouch) {
+				onBodyTouchstart(this.touchHandler);
+			}
 		},
 		collapse() {
 			this.open = false;
+			if (this.usingTouch) {
+				offBodyTouchstart(this.touchHandler);
+			}
+		},
+		touchHandler(e) {
+			if (!isTargetElement(e, this.$el)) {
+				this.collapse();
+			}
 		},
 	},
 	asyncData({ store }) {
