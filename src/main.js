@@ -35,8 +35,8 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 
 	sync(store, router);
 
-	// TODO: Try to get this working without duplicates for server entry.
 	// Checking that sentry is enabled & is not server side
+	// TODO: Enable custom errorHandler for server side to log server errors
 	if (appConfig.enableSentry && typeof window !== 'undefined') {
 		Raven.config(appConfig.sentryURI);
 		Raven.addPlugin(RavenVue, Vue);
