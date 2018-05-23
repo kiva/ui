@@ -16,6 +16,16 @@ module.exports = merge.smart(baseWebpackConfig, {
 		libraryTarget: 'commonjs2'
 		, filename: 'server-bundle.js'
 	},
+	module: {
+		rules: [
+			{
+				// Ignore styles not from the /pages/ directory, since it's extracted in the client
+				test: /\.scss$/,
+				exclude: /\pages\//,
+				loader: 'null-loader'
+			},
+		]
+	},
 	// https://webpack.js.org/configuration/externals/#externals
 	// https://github.com/liady/webpack-node-externals
 	externals: nodeExternals({

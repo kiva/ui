@@ -49,7 +49,8 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.scss$/,
+				// Inject styles from the /pages/ directory as <style> tags
+				test: /\/pages\/.+\.scss$/,
 				use: ['vue-style-loader'].concat(styleLoaders)
 			},
 			{
