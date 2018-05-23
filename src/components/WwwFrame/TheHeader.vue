@@ -36,10 +36,9 @@
 					</button>
 					<search-bar ref="search" />
 				</div>
-<<<<<<< d277f6b18f9af4cf9f7f4d8ccb77f5d397aa94c0
-=======
+				<!-- <lendingRewardsBanner /> -->
+				<!-- <bonusBanner /> -->
 				<promoBanner />
->>>>>>> ENG-1662 promo banner components.
 			</div>
 			<router-link
 				v-if="isVisitor"
@@ -244,10 +243,9 @@
 				</li>
 			</ul>
 		</kv-dropdown>
-<<<<<<< d277f6b18f9af4cf9f7f4d8ccb77f5d397aa94c0
-=======
+		<!-- <lendingRewardsBannerSmall /> -->
+		<!-- <bonusBannerSmall /> -->
 		<promoBannerSmall />
->>>>>>> ENG-1662 promo banner components.
 	</header>
 </template>
 
@@ -259,6 +257,10 @@ import KvIcon from '@/components/Kv/KvIcon';
 import SearchBar from './SearchBar';
 import PromoBanner from './PromoBanner';
 import PromoBannerSmall from './PromoBannerSmall';
+import BonusBanner from './BonusBanner';
+import BonusBannerSmall from './BonusBannerSmall';
+import LendingRewardsBanner from './LendingRewardsBanner';
+import LendingRewardsBannerSmall from './LendingRewardsBannerSmall';
 
 export default {
 	components: {
@@ -267,6 +269,10 @@ export default {
 		SearchBar,
 		PromoBanner,
 		PromoBannerSmall,
+		BonusBanner,
+		BonusBannerSmall,
+		LendingRewardsBanner,
+		LendingRewardsBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
 	data() {

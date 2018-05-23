@@ -1,9 +1,9 @@
 <template>
-	<div class="hide-for-xxlarge header-promo-small">
-		<a id="header-promo-content" href="#" >
+	<div class="hide-for-xxlarge header-lending-reward-small">
+		<a href="#">
 			<div class="content">
-				<span>Make spirits bright this holiday season.</span>
-				<span class="call-to-action-text">Give a Kiva gift.</span>
+				<span>Make a Kiva loan</span>
+				<span class="call-to-action-text">and receive a $25 free credit to lend again.</span>
 			</div>
 		</a>
 	</div>
@@ -12,26 +12,21 @@
 
 export default {
 	components: {
-
 	},
 	data() {
 		return {
 			// Need to hook this up to settings Manager
-			isPromoBannerActive: true
+			isLendingRewardActive: true
 		};
 	},
 	methods: {
-		onPageShow() {
-
-		}
 	}
 };
 </script>
-
 <style lang='scss'>
 @import 'settings';
 
-.header-promo-small {
+.header-lending-reward-small {
 	text-align: center;
 	background: $dark-green;
 	font-size: $small-font-size;

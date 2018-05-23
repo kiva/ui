@@ -1,39 +1,33 @@
 <template>
-	<!-- Large promo banner -->
-	<div class="show-for-xxlarge header-promo-large">
-		<a id="header-promo-content" href="#" >
-			<kv-icon name="kiva-card" class="kiva-card-icon show-for-xxlarge"/>
+	<div class="show-for-xxlarge header-lending-reward-large">
+		<a href="#">
 			<div class="content">
-				<div>Make spirits bright this holiday season.</div>
-				<div class="call-to-action-text">Give a Kiva gift.</div>
+				<div>Make a Kiva loan</div>
+				<div class="call-to-action-text">and receive a $25 free credit to lend again.</div>
 			</div>
 		</a>
 	</div>
 </template>
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
-		KvIcon
 	},
 	data() {
 		return {
 			// Need to hook this up to settings Manager
-			isPromoBannerActive: true
+			isLendingRewardActive: true
 		};
 	},
 	methods: {
-		onPageShow() {
-
-		}
 	}
 };
 </script>
 <style lang='scss'>
 @import 'settings';
 
-.header-promo-large {
+
+.header-lending-reward-large {
 	position: relative;
 	top: rem-calc(-66);
 	margin-top: .6875rem;
@@ -41,14 +35,6 @@ export default {
 	a {
 		text-decoration: none;
 		color: $light-green;
-	}
-
-	.kiva-card-icon {
-		height: rem-calc(45);
-		width: rem-calc(45);
-		transform: rotate(-10deg);
-		float: left;
-		margin-left: rem-calc(50);
 	}
 
 	.content {

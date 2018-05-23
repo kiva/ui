@@ -1,9 +1,9 @@
 <template>
-	<div class="hide-for-xxlarge header-promo-small">
-		<a id="header-promo-content" href="#" >
+	<div class="hide-for-xxlarge header-bonus-small">
+		<a href="#">
 			<div class="content">
-				<span>Make spirits bright this holiday season.</span>
-				<span class="call-to-action-text">Give a Kiva gift.</span>
+				<span>Select a borrower to</span>
+				<span class="call-to-action-text" href="#">lend your</span>
 			</div>
 		</a>
 	</div>
@@ -17,7 +17,7 @@ export default {
 	data() {
 		return {
 			// Need to hook this up to settings Manager
-			isPromoBannerActive: true
+			isBonusActive: true
 		};
 	},
 	methods: {
@@ -31,7 +31,7 @@ export default {
 <style lang='scss'>
 @import 'settings';
 
-.header-promo-small {
+.header-bonus-small {
 	text-align: center;
 	background: $dark-green;
 	font-size: $small-font-size;
