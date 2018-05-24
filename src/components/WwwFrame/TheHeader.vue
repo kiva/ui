@@ -521,8 +521,7 @@ $close-search-button-size: 2.5rem;
 	background-color: $header-color;
 	border-right: solid 1px $divider-color;
 	transition: width 0.5s ease;
-	overflow: hidden;
-	white-space: nowrap;
+	display: flex;
 
 	&[aria-hidden="true"] {
 		width: 0;
@@ -538,7 +537,6 @@ $close-search-button-size: 2.5rem;
 	width: calc(100% - #{$close-search-button-size});
 	float: left;
 	padding: $form-padding $form-padding $form-padding 0;
-	transform: translateY(rem-calc(31));
 
 	@include breakpoint(large) {
 		padding: $form-padding-large $form-padding-large $form-padding-large 0;
@@ -563,7 +561,6 @@ $close-search-button-size: 2.5rem;
 	float: left;
 	width: $close-search-button-size;
 	height: 100%;
-	transform: translateY(rem-calc(27));
 
 	.icon {
 		width: $top-nav-font-size;
