@@ -18,7 +18,7 @@ export default {
 .promo-banner-large {
 	position: relative;
 	top: rem-calc(-66);
-	margin-top: .6875rem;
+	margin-top: 0.6875rem;
 
 	a {
 		text-decoration: none;
