@@ -1,33 +1,31 @@
 <template>
-	<div class="show-for-xxlarge header-bonus-large">
-		<a href="#">
-			<div class="content">
-				<div>Select a borrower to</div>
-				<div class="call-to-action-text" href="#">lend your</div>
-			</div>
-		</a>
-	</div>
+	<a href="#">
+		<div class="content">
+			<span>Make a Kiva loan</span>
+			<span class="call-to-action-text">and receive a $25 free credit to lend again.</span>
+		</div>
+	</a>
 </template>
-
 <script>
+
 export default {
 	components: {
 	},
 	data() {
 		return {
 			// Need to hook this up to settings Manager
-			isBonusActive: true
+			isLendingRewardActive: true
 		};
 	},
 	methods: {
 	}
 };
 </script>
-
 <style lang='scss'>
 @import 'settings';
 
-.header-bonus-large {
+
+.header-lending-reward-large {
 	position: relative;
 	top: rem-calc(-66);
 	margin-top: .6875rem;
@@ -49,6 +47,20 @@ export default {
 		.call-to-action-text {
 			text-decoration: underline;
 		}
+	}
+}
+
+.header-lending-reward-small {
+	text-align: center;
+	background: $dark-green;
+	font-size: $small-font-size;
+
+	a {
+		color: $kiva-accent-green;
+	}
+
+	.call-to-action-text {
+		text-decoration: underline;
 	}
 }
 </style>

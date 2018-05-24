@@ -1,0 +1,14 @@
+query {
+	enabled: setting(setting: "promo.topnav_promo.enabled") {
+		value
+		data_type
+	}
+	start_time: setting(setting: "promo.topnav_promo.start_time") {
+		value
+		data_type
+	}
+	end_time: setting(setting: "promo.topnav_promo.end_time") {
+		value
+		data_type
+	}
+}

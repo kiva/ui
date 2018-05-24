@@ -1,33 +1,21 @@
 <template>
-	<div class="show-for-xxlarge header-lending-reward-large">
-		<a href="#">
-			<div class="content">
-				<div>Make a Kiva loan</div>
-				<div class="call-to-action-text">and receive a $25 free credit to lend again.</div>
-			</div>
-		</a>
+	<div class="show-for-xxlarge promo-banner-large">
+		<promotional-banner />
 	</div>
 </template>
 <script>
+import PromotionalBanner from './PromotionalBanner';
 
 export default {
 	components: {
-	},
-	data() {
-		return {
-			// Need to hook this up to settings Manager
-			isLendingRewardActive: true
-		};
-	},
-	methods: {
+		PromotionalBanner,
 	}
 };
 </script>
 <style lang='scss'>
 @import 'settings';
 
-
-.header-lending-reward-large {
+.promo-banner-large {
 	position: relative;
 	top: rem-calc(-66);
 	margin-top: .6875rem;
@@ -48,6 +36,10 @@ export default {
 
 		.call-to-action-text {
 			text-decoration: underline;
+		}
+
+		span {
+			display: block;
 		}
 	}
 }

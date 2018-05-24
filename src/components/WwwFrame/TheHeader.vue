@@ -36,9 +36,7 @@
 					</button>
 					<search-bar ref="search" />
 				</div>
-				<!-- <lendingRewardsBanner /> -->
-				<!-- <bonusBanner /> -->
-				<promoBanner />
+				<promo-banner-large />
 			</div>
 			<router-link
 				v-if="isVisitor"
@@ -243,9 +241,7 @@
 				</li>
 			</ul>
 		</kv-dropdown>
-		<!-- <lendingRewardsBannerSmall /> -->
-		<!-- <bonusBannerSmall /> -->
-		<promoBannerSmall />
+		<promo-banner-small />
 	</header>
 </template>
 
@@ -255,24 +251,16 @@ import { mapState, mapGetters } from 'vuex';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchBar from './SearchBar';
-import PromoBanner from './PromoBanner';
-import PromoBannerSmall from './PromoBannerSmall';
-import BonusBanner from './BonusBanner';
-import BonusBannerSmall from './BonusBannerSmall';
-import LendingRewardsBanner from './LendingRewardsBanner';
-import LendingRewardsBannerSmall from './LendingRewardsBannerSmall';
+import PromoBannerLarge from './PromotionalBanners/PromoBannerLarge';
+import PromoBannerSmall from './PromotionalBanners/PromoBannerSmall';
 
 export default {
 	components: {
 		KvDropdown,
 		KvIcon,
 		SearchBar,
-		PromoBanner,
+		PromoBannerLarge,
 		PromoBannerSmall,
-		BonusBanner,
-		BonusBannerSmall,
-		LendingRewardsBanner,
-		LendingRewardsBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
 	data() {
