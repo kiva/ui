@@ -4,6 +4,11 @@ var styleLoaders = require('./style-loaders');
 var config = require('../config');
 var VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
 var StylelintPlugin = require('stylelint-webpack-plugin');
+var webpack = require('webpack');
+var GitRevisionPlugin = require('git-revision-webpack-plugin');
+var gitRevisionPlugin = new GitRevisionPlugin({
+	branch: true
+});
 
 function resolve (dir) {
 	return path.join(__dirname, '..', dir);
@@ -104,6 +109,10 @@ module.exports = {
 		new StylelintPlugin({
 			files: ['src/**/*.scss'],
 			syntax: 'scss'
+		}),
+		new webpack.DefinePlugin({
+			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
+			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
 		})
 	]
 };
