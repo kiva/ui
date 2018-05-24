@@ -521,6 +521,7 @@ $close-search-button-size: 2.5rem;
 	background-color: $header-color;
 	border-right: solid 1px $divider-color;
 	transition: width 0.5s ease;
+	display: flex;
 
 	&[aria-hidden="true"] {
 		width: 0;
@@ -564,7 +565,7 @@ $close-search-button-size: 2.5rem;
 	.icon {
 		width: $top-nav-font-size;
 		height: $header-height;
-		stroke: $text-color;
+		stroke: $kiva-darkgreen;
 	}
 }
 
