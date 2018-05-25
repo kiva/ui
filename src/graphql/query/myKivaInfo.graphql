@@ -1,8 +1,9 @@
 query {
 	my {
 		userAccount {
-			id,
+			id
 			balance
+			promoBalance
 		}
 		lender {
 			image {

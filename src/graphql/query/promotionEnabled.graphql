@@ -1,14 +1,20 @@
 query {
-	enabled: setting(setting: "promo.topnav_promo.enabled") {
+	holiday_enabled: setting(setting: "feature.holiday_mode.enabled") {
 		value
-		data_type
 	}
-	start_time: setting(setting: "promo.topnav_promo.start_time") {
+	holiday_start_time: setting(setting: "feature.holiday_mode.start_time") {
 		value
-		data_type
 	}
-	end_time: setting(setting: "promo.topnav_promo.end_time") {
+	holiday_end_time: setting(setting: "feature.holiday_mode.end_time") {
 		value
-		data_type
+	}
+	promo_enabled: setting(setting: "promo.topnav_promo.enabled") {
+		value
+	}
+	promo_start_time: setting(setting: "promo.topnav_promo.start_time") {
+		value
+	}
+	promo_end_time: setting(setting: "promo.topnav_promo.end_time") {
+		value
 	}
 }

@@ -4,7 +4,8 @@ import { isWithinRange } from 'date-fns';
 
 export default apollo => {
 	const initialState = {
-		promotionalBannerEnabled: false
+		holidayModeEnabled: false,
+		promotionalBannerEnabled: false,
 	};
 
 	return {
@@ -16,10 +17,16 @@ export default apollo => {
 					apollo.query({ query: promotionEnabledQuery })
 						.then(result => result.data)
 						.then(data => {
-							const enabled = data.enabled.value === 'true';
-							const startTime = new Date(data.start_time.value);
-							const endTime = new Date(data.end_time.value);
-							commit(types.DETERMINE_PROMOTION_ENABLED, { enabled, startTime, endTime });
+							commit(types.DETERMINE_HOLIDAY_MODE_ENABLED, {
+								enabled: data.holiday_enabled.value === 'true',
+								startTime: new Date(data.holiday_start_time.value),
+								endTime: new Date(data.holiday_end_time.value)
+							});
+							commit(types.DETERMINE_PROMOTION_ENABLED, {
+								enabled: data.promo_enabled.value === 'true',
+								startTime: new Date(data.promo_start_time.value),
+								endTime: new Date(data.promo_end_time.value)
+							});
 							resolve();
 						}).catch(() => resolve());
 				});
@@ -28,6 +35,9 @@ export default apollo => {
 		mutations: {
 			[types.DETERMINE_PROMOTION_ENABLED](state, { enabled, startTime, endTime }) {
 				state.promotionalBannerEnabled = enabled && isWithinRange(new Date(), startTime, endTime);
+			},
+			[types.DETERMINE_HOLIDAY_MODE_ENABLED](state, { enabled, startTime, endTime }) {
+				state.holidayModeEnabled = enabled && isWithinRange(new Date(), startTime, endTime);
 			},
 		}
 	};
