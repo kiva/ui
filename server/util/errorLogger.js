@@ -10,10 +10,8 @@ module.exports = {
 			})
 		],
 		meta: false,
-		// requestWhitelist: ['url', 'responseTime', 'level', 'message', 'headers.host', 'headers.method'],
+		requestWhitelist: ['url', 'responseTime', 'level', 'message', 'headers.host', 'headers.method'],
 		msg: 'HTTP {{res.statusCode}} {{req.method}} {{req.url}} {{res.responseTime}}ms',
-		// Use the default Express/morgan request formatting.
-		// expressFormat: true,
 		ignoreRoute: req => {
 			if (req.url.indexOf('/static/') > -1) {
 				return true;

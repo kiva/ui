@@ -5,7 +5,6 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
-// const logger = require('./util/winstonLogger');
 
 const isProd = process.env.NODE_ENV === 'production';
 
