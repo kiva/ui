@@ -436,6 +436,7 @@ $close-search-button-size: 2.5rem;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
 
 	&:last-child {
 		border-right: none;
