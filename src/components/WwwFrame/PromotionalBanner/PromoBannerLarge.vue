@@ -19,7 +19,9 @@ export default {
 	position: relative;
 	margin-top: 0.6875rem;
 
-	a {
+	a,
+	a:hover,
+	a:focus {
 		text-decoration: none;
 	}
 
