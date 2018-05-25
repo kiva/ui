@@ -16,6 +16,7 @@ const clientConfig = require('../build/webpack.client.dev.conf');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config || 'local');
 const initCache = require('./util/initCache');
+const logger = require('./util/errorLogger');
 
 // Initialize a Cache instance, Should Only be called once!
 const cache = initCache(config.server);
@@ -26,6 +27,9 @@ const app = express();
 
 // Set sensible security headers for express
 app.use(helmet());
+
+// Setup Request Logger
+app.use(logger.requestLogger);
 
 // webpack setup
 const clientCompiler = webpack(clientConfig);
@@ -105,9 +109,14 @@ app.use(devMiddleware);
 app.use(hotMiddleware);
 
 // install handler
-app.use((req, res) => {
-	handlerReady.then(() => handler(req, res));
+app.use((req, res, next) => {
+	handlerReady.then(() => handler(req, res, next));
 });
+
+// Setup Request Logger
+app.use(logger.errorLogger);
+// Final Error Handler
+app.use(logger.fallbackErrorHandler);
 
 // start server
 app.listen(port, () => console.log(`dev-server started at localhost:${port}`));
