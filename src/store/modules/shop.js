@@ -6,7 +6,8 @@ export default apollo => {
 		headerItemCount: 0,
 		totals: {
 			redemptionCodeAvailableTotal: 0,
-		}
+		},
+		lendingRewardOffered: false,
 	};
 
 	return {
@@ -20,6 +21,7 @@ export default apollo => {
 						.then(shop => {
 							commit(types.SET_HEADER_BASKET_COUNT, { count: shop.headerItemCount });
 							commit(types.SET_BASKET_TOTALS, { totals: shop.basket.totals });
+							commit(types.SET_LENDING_REWARD, { offered: shop.lendingRewardOffered });
 							resolve();
 						}).catch(() => resolve());
 				});
@@ -31,6 +33,9 @@ export default apollo => {
 			},
 			[types.SET_BASKET_TOTALS](state, { totals }) {
 				Object.assign(state.totals, totals);
+			},
+			[types.SET_LENDING_REWARD](state, { offered }) {
+				state.lendingRewardOffered = offered;
 			}
 		}
 	};
