@@ -18,10 +18,11 @@ export default {
 
 .promo-banner-small {
 	text-align: center;
-	background: $dark-green;
-	font-size: $small-font-size;
+	background: $kiva-darkgreen;
+	font-size: $small-text-font-size;
 
 	a {
+		text-decoration: none;
 		color: $kiva-accent-green;
 	}
 

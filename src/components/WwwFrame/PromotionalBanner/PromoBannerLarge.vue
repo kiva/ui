@@ -17,29 +17,21 @@ export default {
 
 .promo-banner-large {
 	position: relative;
-	top: rem-calc(-66);
 	margin-top: 0.6875rem;
 
 	a {
 		text-decoration: none;
-		color: $light-green;
 	}
 
 	.content {
-		font-size: $small-font-size;
+		@include small-text();
+
 		font-weight: bold;
-		color: $dark-green;
+		color: $kiva-darkgreen;
 		text-align: center;
-		line-height: 1.357rem; // I want to use $small-line-height here
-		max-width: 95%;
-		z-index: 10;
 
 		.call-to-action-text {
 			text-decoration: underline;
-		}
-
-		span {
-			display: block;
 		}
 	}
 }

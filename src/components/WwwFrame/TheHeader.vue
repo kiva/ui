@@ -87,6 +87,7 @@
 				</span>
 			</router-link>
 		</div>
+		<promo-banner-small />
 		<kv-dropdown :controller="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
 			<the-lend-menu ref="lendMenu" />
 		</kv-dropdown>
@@ -241,7 +242,6 @@
 				</li>
 			</ul>
 		</kv-dropdown>
-		<promo-banner-small />
 	</header>
 </template>
 
@@ -251,8 +251,8 @@ import { mapState, mapGetters } from 'vuex';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchBar from './SearchBar';
-import PromoBannerLarge from './PromotionalBanners/PromoBannerLarge';
-import PromoBannerSmall from './PromotionalBanners/PromoBannerSmall';
+import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
+import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
 
 export default {
 	components: {
@@ -516,6 +516,10 @@ $close-search-button-size: 2.5rem;
 		flex-grow: 1;
 		order: 0;
 	}
+
+	.promo-banner-large {
+		top: -$header-height-large;
+	}
 }
 
 #top-nav-search-area {
@@ -542,6 +546,7 @@ $close-search-button-size: 2.5rem;
 	width: calc(100% - #{$close-search-button-size});
 	float: left;
 	padding: $form-padding $form-padding $form-padding 0;
+	z-index: 1;
 
 	@include breakpoint(large) {
 		padding: $form-padding-large $form-padding-large $form-padding-large 0;
