@@ -18,11 +18,12 @@ export default {
 				const basketPromoBalance = numeral(state.shop.totals.redemptionCodeAvailableTotal).value();
 				return promoBalance + basketPromoBalance;
 			},
+			lendingRewardOffered: state => state.shop.lendingRewardOffered,
 			holidayModeEnabled: state => state.setting.holidayModeEnabled,
 			promoEnabled: state => state.setting.promotionalBannerEnabled,
 		}),
 		currentActivePromo() {
-			if (this.hasLendingReward) {
+			if (this.lendingRewardOffered) {
 				return LendingRewardsBanner;
 			} else if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
 				return BonusBanner;
