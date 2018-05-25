@@ -1,4 +1,4 @@
-var merge = require('webpack-merge');;
+var merge = require('webpack-merge');
 var baseWebpackConfig = require('./webpack.client.base.conf');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 

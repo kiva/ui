@@ -1,5 +1,11 @@
 query {
 	shop {
 		headerItemCount
+		basket {
+			totals {
+				redemptionCodeAvailableTotal
+			}
+		}
+		lendingRewardOffered
 	}
 }

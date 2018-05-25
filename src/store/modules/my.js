@@ -15,6 +15,7 @@ export default apollo => {
 		userAccount: {
 			id: null,
 			balance: 0,
+			promoBalance: 0,
 			publicId: null
 		},
 		lender: {
