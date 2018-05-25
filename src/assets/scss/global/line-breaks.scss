@@ -7,7 +7,8 @@ br.lo,
 br.xlo,
 br.xxlo,
 br.smo,
-br.lu {
+br.lu,
+br.xxlu {
 	display: none;
 }
 
@@ -52,6 +53,12 @@ br.smo {
 
 br.lu {
 	@include breakpoint(large) {
+		display: inline;
+	}
+}
+
+br.xxlu {
+	@include breakpoint(xxlarge) {
 		display: inline;
 	}
 }
