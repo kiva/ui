@@ -26,6 +26,14 @@ export default {
 		color: $kiva-accent-green;
 	}
 
+	.content {
+		line-height: 1.5;
+		padding: 0.25rem 0;
+		border: 1px solid $kiva-navdivider-green;
+		border-left: none;
+		border-right: none;
+	}
+
 	.call-to-action-text {
 		text-decoration: underline;
 	}
