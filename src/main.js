@@ -41,6 +41,8 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 		Raven.config(appConfig.sentryURI);
 		Raven.addPlugin(RavenVue, Vue);
 		Raven.install();
+	} else {
+		// configure winston
 	}
 
 	const app = new Vue({

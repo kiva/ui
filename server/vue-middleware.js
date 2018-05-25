@@ -5,23 +5,25 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
+// const logger = require('./util/winstonLogger');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-function handleError(err, req, res) {
+// vue-middleware specific error handling
+function handleError(err, req, res, next) {
+	// redirect to url if provided in the error
+	// -> this is how we handle vue-router links to external kiva pages
 	if (err.url) {
 		res.redirect(err.url);
+	// respond with 404 specifically set
 	} else if (err.code === 404) {
 		res.status(404).send('404 | Page Not Found');
 
 		// TOOO: consider sending to Kiva 404
 		// res.redirect('/error.html?url='+ req.url.replace('/', '') +&status=404');
 	} else {
-		// Render Error Page or Redirect
-		res.status(500).send('500 | Internal Server Error');
-
-		console.error(`Error during render : ${req.url}`);
-		console.error(err);
+		// Pass all other errors out to generalized handlers
+		next(err, req, res, next);
 	}
 }
 
@@ -37,8 +39,7 @@ module.exports = function createMiddleware({
 		throw new TypeError('Missing configuration');
 	}
 
-	return function middleware(req, res) {
-		console.log('---------> rendering server');
+	return function middleware(req, res, next) {
 		const s = Date.now();
 
 		// Set webpack public asset path based on configuration
@@ -89,6 +90,6 @@ module.exports = function createMiddleware({
 				if (!isProd) {
 					console.log(`whole request: ${Date.now() - s}ms`);
 				}
-			}).catch(err => handleError(err, req, res));
+			}).catch(err => handleError(err, req, res, next));
 	};
 };

@@ -20,7 +20,9 @@ module.exports = function wrapper(cache) {
 			});
 		},
 		set(key, value) {
-			cache.set(key, value.html, 1 * 60 * 60, error => console.error(error));
+			cache.set(key, value.html, 1 * 60 * 60, error => {
+				console.error(`Error Setting Cache for: ${key}, Error: ${error}`);
+			});
 		},
 	};
 };
