@@ -1,9 +1,11 @@
 <template>
 	<router-link to="/gifts" class="gift-banner">
-		<kv-icon name="kiva-card" class="kiva-card-icon show-for-xxlarge"/>
-		<div class="content">
-			Light up a life this holiday season.<br class="so xxlu">
-			<span class="call-to-action-text">Give a Kiva gift.</span>
+		<div class="message-wrapper">
+			<kv-icon name="kiva-card" class="kiva-card-icon"/>
+			<div class="content">
+				Light up a life this holiday season.<br>
+				<span class="call-to-action-text">Give a Kiva gift.</span>
+			</div>
 		</div>
 	</router-link>
 </template>
@@ -23,10 +25,15 @@ export default {
 
 .gift-banner {
 	display: block;
-	margin: 0 auto;
 
-	@include breakpoint(xxlarge) {
+	border: 1px solid $kiva-navdivider-green;
+	border-left: none;
+	border-right: none;
+
+	.message-wrapper {
+		margin: 0 auto;
 		max-width: 18rem;
+		text-align: left;
 	}
 
 	.kiva-card-icon {
@@ -34,7 +41,25 @@ export default {
 		width: rem-calc(45);
 		transform: rotate(-10deg);
 		float: left;
-		fill: $kiva-darkgreen;
+		margin-right: 0.75rem;
+		fill: $kiva-accent-green;
+	}
+
+	.promo-banner-small & .content {
+		border: none;
+	}
+
+	@include breakpoint(xxlarge) {
+		border: none;
+
+		.message-wrapper {
+			text-align: center;
+		}
+
+		.kiva-card-icon {
+			fill: $kiva-darkgreen;
+			margin-right: 0;
+		}
 	}
 }
 </style>

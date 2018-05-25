@@ -28,7 +28,7 @@ export default {
 	.content {
 		@include small-text();
 
-		font-weight: bold;
+		padding: 0;
 		color: $kiva-darkgreen;
 		text-align: center;
 
