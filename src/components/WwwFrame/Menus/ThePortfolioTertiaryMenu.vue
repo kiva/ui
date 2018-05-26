@@ -10,7 +10,7 @@
 			</li>
 			<li>
 				<router-link
-					to="/portfolio/lending-stats-vue"
+					to="/portfolio/lending-stats"
 					v-kv-track-event="'TertiaryNav|click-MyKiva-Lending-stats'">
 					Lending stats
 				</router-link>
@@ -127,4 +127,3 @@ export default {
 	}
 };
 </script>
-
