@@ -25,7 +25,6 @@ export default {
 
 .gift-banner {
 	display: block;
-
 	border: 1px solid $kiva-navdivider-green;
 	border-left: none;
 	border-right: none;
