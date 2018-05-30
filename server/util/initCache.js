@@ -37,8 +37,7 @@ module.exports = function initCache(config) {
 
 		// Create a memcached connection
 		return new Memcached(servers, {
-			retries: 1,
-			retry: 200,
+			retries: 1
 		});
 	}
 	// Create a simple local-memory cache
