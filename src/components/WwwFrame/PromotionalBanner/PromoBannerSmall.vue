@@ -34,6 +34,11 @@ export default {
 		border-right: none;
 	}
 
+	.leading-text:hover,
+	.leading-text:active {
+		color: $kiva-accent-green;
+	}
+
 	.call-to-action-text {
 		text-decoration: underline;
 	}
