@@ -23,7 +23,6 @@ export default {
 
 	a {
 		text-decoration: none;
-		color: $kiva-accent-green;
 	}
 
 	.content {
@@ -32,11 +31,6 @@ export default {
 		border: 1px solid $kiva-navdivider-green;
 		border-left: none;
 		border-right: none;
-	}
-
-	.leading-text:hover,
-	.leading-text:active {
-		color: $kiva-accent-green;
 	}
 
 	.call-to-action-text {

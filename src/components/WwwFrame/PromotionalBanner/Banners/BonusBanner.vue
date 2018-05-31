@@ -16,6 +16,11 @@
 	background-color: $kiva-green;
 	color: $kiva-darkgreen;
 
+	&:hover,
+	&:active {
+		color:$kiva-darkgreen;
+	}
+
 	@include breakpoint(medium) {
 		.promo-banner-small & .content {
 			padding: 0.75rem;
