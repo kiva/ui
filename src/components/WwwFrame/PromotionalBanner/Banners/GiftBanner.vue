@@ -25,9 +25,8 @@ export default {
 
 .gift-banner {
 	display: block;
-	border: 1px solid $kiva-navdivider-green;
-	border-left: none;
-	border-right: none;
+	color: $kiva-accent-green;
+	background-color: $kiva-darkgreen;
 
 	.message-wrapper {
 		margin: 0 auto;
@@ -44,10 +43,6 @@ export default {
 		fill: $kiva-accent-green;
 	}
 
-	.promo-banner-small & .content {
-		border: none;
-	}
-
 	@include breakpoint(xxlarge) {
 		border: none;
 
@@ -59,6 +54,12 @@ export default {
 			fill: $kiva-darkgreen;
 			margin-right: 0;
 		}
+	}
+}
+
+@include breakpoint(xxlarge) {
+	.gifts-banner {
+		background-color: $kiva-green;
 	}
 }
 </style>
