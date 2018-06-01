@@ -13,12 +13,12 @@
 @import 'settings';
 
 .bonus-banner {
-	background-color: $kiva-green;
-	color: $kiva-darkgreen;
+	background-color: $kiva-darkgreen;
+	color: $kiva-accent-green;
 
 	&:hover,
 	&:active {
-		color:$kiva-darkgreen;
+		color: $kiva-darkgreen;
 	}
 
 	@include breakpoint(medium) {
