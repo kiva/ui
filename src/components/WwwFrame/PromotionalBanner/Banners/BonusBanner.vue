@@ -3,7 +3,7 @@
 		<div class="content">
 			<span class="leading-text">Select a borrower to</span> <br class="so xxlu">
 			<span class="call-to-action-text">
-				lend your {{ props.bonusBalance | numeral('$0') }} free credit
+				lend your {{ props.bonusBalance | numeral('$0.00') }} free credit
 			</span>
 		</div>
 	</router-link>
