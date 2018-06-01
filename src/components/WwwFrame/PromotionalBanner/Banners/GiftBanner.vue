@@ -27,6 +27,7 @@ export default {
 	display: block;
 	color: $kiva-accent-green;
 	background-color: $kiva-darkgreen;
+	font-weight: bold;
 
 	&:hover,
 	&:active {
