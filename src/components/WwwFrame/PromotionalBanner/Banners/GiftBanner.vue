@@ -28,6 +28,11 @@ export default {
 	color: $kiva-accent-green;
 	background-color: $kiva-darkgreen;
 
+	&:hover,
+	&:active {
+		color: $kiva-accent-green;
+	}
+
 	.message-wrapper {
 		margin: 0 auto;
 		max-width: 18rem;
@@ -58,8 +63,9 @@ export default {
 }
 
 @include breakpoint(xxlarge) {
-	.gifts-banner {
+	.gift-banner {
 		background-color: $kiva-green;
+		margin-left: 1px;
 	}
 }
 </style>
