@@ -6,7 +6,7 @@ Some helpful info on editor plugins that will make working on this repo easier.
 
 These packages can all be added from within Atom in the Settings -> Install section, or by using `apm install <package_name>`.
 -OR-
-If you want to install all packages (Essential & Recommended) run this in your mac: 
+If you want to install all packages (Essential & Recommended) run this in your mac:
 apm install editorconfig language-vue linter-eslint linter-stylelint language-graphql linter-alex file-icons pigments minimap
 
 Essential packages:
@@ -26,12 +26,13 @@ Recommended packages:
 
 Command Shift P - to install extensions
 
-- [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur) Vuejs syntax + linting
-- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) for enforcing code styles.
-- [ESlint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for Javascript linting.
+- [Vetur - octref.vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur) Vuejs syntax + linting
+- [EditorConfig for VS Code - EditorConfig.EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) for enforcing code styles.
+- [ESlint - dbaeumer.vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for Javascript linting.
+- [Stylelint - shinnn.stylelint](https://marketplace.visualstudio.com/items?itemName=shinnn.stylelint) for scss linting.
+- [Vue VSCode Snippets - sdras.vue-vscode-snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets) VueJS code snippets
 
-- [Vue VSCode Snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets) VueJS code snippets
-- [SCSS Style Linting](https://stylelint.io/) (Requires some additional setup)
+> Search the name (ex. octref.vetur or shinn.stylelint) into the Extensions area to install within VSCode
 
 ## PHPStorm
 
