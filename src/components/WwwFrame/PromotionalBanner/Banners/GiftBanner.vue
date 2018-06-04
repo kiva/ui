@@ -28,6 +28,7 @@ export default {
 	color: $kiva-accent-green;
 	background-color: $kiva-darkgreen;
 	font-weight: bold;
+	border-bottom: 1px solid $kiva-navdivider-green;
 
 	&:hover,
 	&:active {
