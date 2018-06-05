@@ -9,7 +9,7 @@ function FakeMemcached(options) {
 	const oldGet = lru.get;
 	lru.get = (key, callback) => {
 		const result = oldGet.call(lru, key);
-		return callback ? callback(result) : result;
+		return callback ? callback((result === undefined ? undefined : null), result) : result;
 	};
 
 	// Replace 'set' with a memcached-compatible wrapper
