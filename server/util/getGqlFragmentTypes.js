@@ -13,8 +13,9 @@ function fetchGqlFragments(url, cache) {
 			// eslint-disable-next-line no-underscore-dangle
 			const fragmentTypes = result.data.__schema.types.filter(t => t.possibleTypes !== null);
 
-			cache.set('ui-gql-fragment-types', fragmentTypes, 24 * 60 * 60, err => {
-				if (err) console.error(`gql fragment cache error : ${err}`);
+			cache.set('ui-gql-fragment-types', JSON.stringify(fragmentTypes), 24 * 60 * 60, (error, success) => {
+				if (error) console.error(`MemJS Error Setting Cache for ui-gql-fragment-types, Error: ${error}`);
+				if (success) console.info(`MemJS Success Setting Cache for ui-gql-fragment-types, Success: ${success}`);
 			});
 
 			return fragmentTypes;
@@ -23,8 +24,11 @@ function fetchGqlFragments(url, cache) {
 
 function getGqlFragmentsFromCache(cache) {
 	return new Promise(resolve => {
-		cache.get('ui-gql-fragment-types', data => {
-			resolve(data || []);
+		cache.get('ui-gql-fragment-types', (error, data) => {
+			let parsedData = [];
+			if (error) console.error(`MemJS Error Getting ui-gql-fragment-types, Error: ${error}`);
+			if (data) parsedData = JSON.parse(data);
+			resolve(parsedData);
 		});
 	});
 }

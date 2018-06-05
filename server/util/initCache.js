@@ -1,5 +1,5 @@
 const LRU = require('lru-cache');
-const Memcached = require('memcached');
+const memjs = require('memjs');
 
 function FakeMemcached(options) {
 	// Create LRU-cache instance
@@ -30,13 +30,10 @@ function FakeMemcached(options) {
 
 module.exports = function initCache(config) {
 	if (config.memcachedEnabled && config.memcachedServers.length) {
-		let servers = config.memcachedServers;
-		if (typeof servers === 'string') {
-			servers = servers.split(',');
-		}
 
 		// Create a memcached connection
-		return new Memcached(servers, {
+		// eslint-disable-next-line new-cap
+		return new memjs.Client.create(config.memcachedServers, {
 			retries: 1
 		});
 	}
