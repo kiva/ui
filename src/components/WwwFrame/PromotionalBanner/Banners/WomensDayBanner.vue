@@ -11,9 +11,12 @@
 @import 'settings';
 
 .iwd-banner {
-	.content {
+	.content,
+	.content:hover,
+	.content:active {
 		color: $kiva-darkgreen;
 	}
+
 	@include breakpoint(large) {
 		.promo-banner-small & .content {
 			padding: 0.75rem 0;
