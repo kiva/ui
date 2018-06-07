@@ -20,6 +20,7 @@ export default {
 	text-align: center;
 	font-size: $small-text-font-size;
 	border-top: 1px solid $kiva-navdivider-green;
+	border-bottom: 1px solid $divider-green;
 
 	a {
 		text-decoration: none;
@@ -28,6 +29,7 @@ export default {
 	.content {
 		line-height: 1.5;
 		padding: rem-calc(3) 0;
+		background: $kiva-darkgreen;
 	}
 
 	.call-to-action-text {
