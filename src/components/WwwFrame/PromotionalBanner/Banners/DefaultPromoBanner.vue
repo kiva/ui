@@ -22,6 +22,7 @@
 
 	@include breakpoint(xlarge down) {
 		border-bottom: 1px solid $divider-green;
+
 		.content {
 			background: $kiva-darkgreen;
 		}
