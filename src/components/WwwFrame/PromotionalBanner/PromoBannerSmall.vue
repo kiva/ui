@@ -27,7 +27,7 @@ export default {
 
 	.content {
 		line-height: 1.5;
-		padding: 0.25rem 0;
+		padding: rem-calc(3) 0;
 	}
 
 	.call-to-action-text {
