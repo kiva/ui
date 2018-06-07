@@ -8,7 +8,8 @@ import { mapState } from 'vuex';
 import BonusBanner from './Banners/BonusBanner';
 import GiftBanner from './Banners/GiftBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
-import WomensDayBanner from './Banners/WomensDayBanner';
+// import WomensDayBanner from './Banners/WomensDayBanner';
+import GenericPromoBanner from './Banners/GenericPromoBanner';
 
 export default {
 	computed: {
@@ -30,7 +31,8 @@ export default {
 			} else if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
 				return GiftBanner;
 			} else if (this.promoEnabled) {
-				return WomensDayBanner;
+				// return WomensDayBanner;
+				return GenericPromoBanner;
 			}
 		}
 	},
