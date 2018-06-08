@@ -1,5 +1,6 @@
 /* eslint-disable no-console, no-param-reassign */
 import _map from 'lodash/map';
+// import _forEach from 'lodash/forEach';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
 import createAsyncCaller from '@/util/callAsyncData';
@@ -9,6 +10,14 @@ import headScript from '@/head/script';
 import noscriptTemplate from '@/head/noscript.html';
 
 const isDev = process.env.NODE_ENV !== 'production';
+
+// function getAllComponents(components, set = new Set()) {
+// 	_forEach(components, definition => {
+// 		set.add(definition);
+// 		getAllComponents(definition.components, set);
+// 	});
+// 	return Array.from(set);
+// }
 
 // This exported function will be called by `bundleRenderer`.
 // This is where we perform data-prefetching to determine the
@@ -24,7 +33,7 @@ export default context => {
 			app,
 			router,
 			store,
-			apolloClient,
+			apolloProvider,
 		} = createApp({
 			appConfig: config,
 			apollo: {
@@ -64,7 +73,10 @@ export default context => {
 			// which is resolved when the action is complete and store state has been
 			// updated.
 			const callAsyncData = createAsyncCaller({ store, route: router.currentRoute });
-			return Promise.all(matchedComponents.map(callAsyncData)).then(() => {
+			return Promise.all([
+				matchedComponents.map(callAsyncData),
+				// apolloProvider.prefetchAll({}, getAllComponents(matchedComponents)),
+			]).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
 				// filled with the state needed to render the app.
@@ -75,7 +87,7 @@ export default context => {
 				context.templateConfig = config;
 				context.meta = app.$meta();
 				context.renderedState = renderGlobals({
-					__APOLLO_STATE__: apolloClient.cache.extract(),
+					__APOLLO_STATE__: apolloProvider.getStates().defaultClient,
 					__INITIAL_STATE__: store.state,
 				});
 				resolve(app);
