@@ -5,6 +5,7 @@
 <script>
 import numeral from 'numeral';
 import { isWithinRange } from 'date-fns';
+import _get from 'lodash/get';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
 import GiftBanner from './Banners/GiftBanner';
@@ -39,22 +40,22 @@ export default {
 			manual: true,
 			prefetch: true,
 			result({ data }) {
-				const promoBalance = numeral(data.my.userAccount.promoBalance).value();
-				const basketPromoBalance = numeral(data.shop.totals.redemptionCodeAvailableTotal).value();
+				const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
+				const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
 				this.bonusBalance = promoBalance + basketPromoBalance;
 
-				this.lendingRewardOffered = data.shop.lendingRewardOffered;
+				this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 
 				this.holidayModeEnabled = this.settingEnabled(
-					data.holiday_enabled.value,
-					data.holiday_start_time.value,
-					data.holiday_end_time.value
+					_get(data, 'holiday_enabled.value'),
+					_get(data, 'holiday_start_time.value'),
+					_get(data, 'holiday_end_time.value')
 				);
 
 				this.promoEnabled = this.settingEnabled(
-					data.promo_enabled,
-					data.promo_start_time,
-					data.promo_end_time
+					_get(data, 'promo_enabled.value'),
+					_get(data, 'promo_start_time.value'),
+					_get(data, 'promo_end_time.value')
 				);
 			}
 		}

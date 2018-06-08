@@ -34,7 +34,9 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 	const apolloClient = createApolloClient(apollo);
 	const store = createStore({ apolloClient });
 	const apolloProvider = new VueApollo({
-		defaultClient: apolloClient
+		defaultClient: apolloClient,
+		// Errors are handled in @/api/ErrorLink, so return true here to skip vue-apollo default error handling
+		errorHandler: () => true,
 	});
 	const router = createRouter();
 
