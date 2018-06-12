@@ -37,13 +37,13 @@ export default {
 		height: rem-calc(30);
 		width: rem-calc(40);
 		transform: rotate(-10deg);
-		margin-top: .1875rem;
+		margin-top: 0.1875rem;
 		fill: $kiva-accent-green;
 	}
 
 	.content {
 		display: inline-block;
-		margin-left: .3125rem;
+		margin-left: 0.3125rem;
 
 		@include breakpoint(medium) {
 			transform: translateY(-26%);
