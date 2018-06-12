@@ -1,11 +1,9 @@
 <template>
 	<router-link to="/gifts" class="gift-banner">
-		<div class="message-wrapper">
-			<kv-icon name="kiva-card" class="kiva-card-icon"/>
-			<div class="content">
-				Light up a life this holiday season.<br>
-				<span class="call-to-action-text">Give a Kiva gift.</span>
-			</div>
+		<kv-icon name="kiva-card" class="kiva-card-icon"/>
+		<div class="content">
+			Light up a life this holiday season.<br class="so xxlu">
+			<span class="call-to-action-text">Give a Kiva gift.</span>
 		</div>
 	</router-link>
 </template>
@@ -35,19 +33,25 @@ export default {
 		color: $kiva-accent-green;
 	}
 
-	.message-wrapper {
-		margin: 0 auto;
-		max-width: 18rem;
-		text-align: left;
+	.kiva-card-icon {
+		height: rem-calc(30);
+		width: rem-calc(40);
+		transform: rotate(-10deg);
+		margin-top: 0.1875rem;
+		fill: $kiva-accent-green;
 	}
 
-	.kiva-card-icon {
-		height: rem-calc(45);
-		width: rem-calc(45);
-		transform: rotate(-10deg);
-		float: left;
-		margin-right: 0.75rem;
-		fill: $kiva-accent-green;
+	.content {
+		display: inline-block;
+		margin-left: 0.3125rem;
+
+		@include breakpoint(medium) {
+			transform: translateY(-26%);
+		}
+
+		@include breakpoint(xxlarge) {
+			transform: inherit;
+		}
 	}
 
 	@include breakpoint(xxlarge) {
