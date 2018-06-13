@@ -13,10 +13,8 @@
 @import 'settings';
 
 a.bonus-banner .content {
-	background-color: $kiva-green;
 	color: $kiva-darkgreen;
 	height: rem-calc(45);
-	margin-left: 1px;
 
 	&:hover,
 	&:active {
