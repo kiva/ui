@@ -14,6 +14,7 @@
 	display: block;
 	color: $kiva-accent-green;
 	font-weight: 700;
+	background-color: $kiva-darkgreen;
 
 	&:hover,
 	&:active {
