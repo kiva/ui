@@ -27,9 +27,8 @@ export default {
 	}
 
 	.content {
-		line-height: 1.5;
+		line-height: 1.25;
 		padding: rem-calc(3) 0;
-		background: $kiva-darkgreen;
 	}
 
 	.call-to-action-text {

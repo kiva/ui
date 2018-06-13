@@ -12,13 +12,21 @@
 <style lang="scss">
 @import 'settings';
 
-.bonus-banner {
-	background-color: $kiva-darkgreen;
-	color: $kiva-accent-green;
+a.bonus-banner .content {
+	color: $kiva-darkgreen;
+	height: rem-calc(45);
 
 	&:hover,
 	&:active {
 		color: $kiva-darkgreen;
+	}
+
+	@include breakpoint(medium) {
+		line-height: 2.5rem;
+	}
+
+	@include breakpoint(xxlarge) {
+		line-height: 1.25rem;
 	}
 
 	@include breakpoint(medium) {
