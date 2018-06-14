@@ -1,0 +1,30 @@
+query {
+	loans {
+		values {
+			id
+			image {
+				default: url(customSize: "w480h360")
+				retina: url(customSize: "w960h720")
+			}
+			name
+			geocode {
+				country {
+					name
+				}
+			}
+			use
+			lenderRepaymentTerm
+			loanAmount
+			loanFundraisingInfo {
+				fundedAmount
+			}
+			matchingText
+			... on LoanPartner {
+				partnerName
+			}
+			...on LoanDirect {
+				trusteeName
+			}
+		}
+	}
+}
