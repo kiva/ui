@@ -6,12 +6,15 @@
 				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
-			<GridLoanCard />
+			<div class="loanCardGroup row small-up-1 large-up-2 xxlarge-up-3">
+				<GridLoanCard :loan="loan" v-for="loan in loans" :key="loan.id" />
+			</div>
 		</div>
 	</www-page>
 </template>
 
 <script>
+import LoanData from '@/pages/Lend/Loans.json';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
@@ -22,6 +25,12 @@ export default {
 	},
 	metaInfo: {
 		title: 'Lend page'
+	},
+	props: {
+		loans: {
+			type: Array,
+			default: () => LoanData.data.loans.values
+		}
 	}
 };
 </script>
@@ -30,6 +39,7 @@ export default {
 @import 'settings';
 
 .heading-region {
-	margin-top: 1.25rem;
+    margin-top: 1.25rem;
 }
+
 </style>
