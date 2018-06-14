@@ -6,19 +6,19 @@
 				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
-			<BorrowerInfo />
+			<GridLoanCard />
 		</div>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
+import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
 export default {
 	components: {
 		WwwPage,
-		BorrowerInfo,
+		GridLoanCard,
 	},
 	metaInfo: {
 		title: 'Lend page'
