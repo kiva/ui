@@ -2,9 +2,9 @@
 	<div class="borrower-info-wrapper small-12">
 		<a class="name">Bobert { name }</a>
 		<div class="country">U.S.A. { country }</div>
-		<div class="loan-use">This dude is gonna use your money to buy hotdogs
+		<div class="loan-use">A loan of { loanAmount } helps this dude to buy hotdogs
 		and redsox tickets. { loanUse }
-			<a class="borrower-page-link">Read more</a>
+			<a class="borrower-page-link" href="">Read more</a>
 		</div>
 	</div>
 </template>
