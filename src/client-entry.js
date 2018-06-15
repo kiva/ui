@@ -3,7 +3,8 @@ import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import _filter from 'lodash/filter';
 import cookie from 'js-cookie';
-import { preFetchAll } from '@/util/apolloPreFetch';
+import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
+import preFetchAll from '@/util/apolloPreFetch';
 import getDeepComponents from '@/util/getDeepComponents';
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -38,10 +39,18 @@ if (window.__APOLLO_STATE__) {
 
 // setup global analytics data
 app.$setKvAnalyticsData(app);
+
 // fire server rendered pageview
 app.$fireServerPageView();
-// Add browser info to the store
-store.dispatch('detectBrowserAbility');
+
+// Setup adding touch info to the state
+window.addEventListener('touchstart', function onFirstTouch() {
+	apolloClient.mutate({
+		mutation: usingTouchMutation,
+		variables: { usingTouch: true }
+	});
+	window.removeEventListener('touchstart', onFirstTouch);
+});
 
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {

@@ -281,7 +281,7 @@ export default {
 		};
 	},
 	computed: {
-		isTrusee() {
+		isTrustee() {
 			return !!this.trusteeId;
 		},
 		trusteeLoansUrl() {

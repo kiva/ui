@@ -3,7 +3,7 @@ import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
-import { preFetchAll } from '@/util/apolloPreFetch';
+import preFetchAll from '@/util/apolloPreFetch';
 import getDeepComponents from '@/util/getDeepComponents';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
