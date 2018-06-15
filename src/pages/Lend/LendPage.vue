@@ -39,7 +39,6 @@ export default {
 @import 'settings';
 
 .heading-region {
-    margin-top: 1.25rem;
+	margin-top: 1.25rem;
 }
-
 </style>
