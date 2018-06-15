@@ -1,23 +1,16 @@
 /* eslint-disable no-console, no-param-reassign */
+import _filter from 'lodash/filter';
 import _map from 'lodash/map';
-// import _forEach from 'lodash/forEach';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
-import createAsyncCaller from '@/util/callAsyncData';
+import { preFetchAll } from '@/util/apolloPreFetch';
+import getDeepComponents from '@/util/getDeepComponents';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';
 import noscriptTemplate from '@/head/noscript.html';
 
 const isDev = process.env.NODE_ENV !== 'production';
-
-// function getAllComponents(components, set = new Set()) {
-// 	_forEach(components, definition => {
-// 		set.add(definition);
-// 		getAllComponents(definition.components, set);
-// 	});
-// 	return Array.from(set);
-// }
 
 // This exported function will be called by `bundleRenderer`.
 // This is where we perform data-prefetching to determine the
@@ -33,7 +26,7 @@ export default context => {
 			app,
 			router,
 			store,
-			apolloProvider,
+			apolloClient,
 		} = createApp({
 			appConfig: config,
 			apollo: {
@@ -60,22 +53,27 @@ export default context => {
 
 		// wait until router has resolved possible async hooks
 		return router.onReady(() => {
+			// get the components matched by the route
 			const matchedComponents = router.getMatchedComponents();
+
 			// no matched routes
 			if (!matchedComponents.length) {
 				// TODO: Check for + redirect to kiva php app external route
 				return reject({ code: 404 });
 			}
 
-			// Call asyncData hooks on components matched by the route, and recursively
-			// call asyncData hooks on their child components.
+			// Call asyncData hooks on the components (and all of their child components) matched by the route
 			// An asyncData hook dispatches a store action and returns a Promise,
-			// which is resolved when the action is complete and store state has been
-			// updated.
-			const callAsyncData = createAsyncCaller({ store, route: router.currentRoute });
+			// which is resolved when the action is complete and store state has been updated.
+			const asyncDataComponents = _filter(getDeepComponents(matchedComponents), 'asyncData');
 			return Promise.all([
-				matchedComponents.map(callAsyncData),
-				// apolloProvider.prefetchAll({}, getAllComponents(matchedComponents)),
+				Promise.all(asyncDataComponents.map(c => c.asyncData({
+					route: router.currentRoute,
+					store,
+				}))),
+				preFetchAll(matchedComponents, apolloClient, {
+					route: router.currentRoute,
+				}),
 			]).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
@@ -87,7 +85,7 @@ export default context => {
 				context.templateConfig = config;
 				context.meta = app.$meta();
 				context.renderedState = renderGlobals({
-					__APOLLO_STATE__: apolloProvider.getStates().defaultClient,
+					__APOLLO_STATE__: apolloClient.cache.extract(),
 					__INITIAL_STATE__: store.state,
 				});
 				resolve(app);

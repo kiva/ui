@@ -3,7 +3,6 @@ import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 import { sync } from 'vuex-router-sync';
 import Meta from 'vue-meta';
-import VueApollo from 'vue-apollo';
 import VueProgressBar from 'vue-progressbar';
 
 import App from '@/App';
@@ -16,7 +15,6 @@ Vue.config.productionTip = false;
 
 Vue.use(Meta);
 Vue.use(kivaPlugins);
-Vue.use(VueApollo);
 Vue.use(VueProgressBar, {
 	color: '#26b6e8',
 	failedColor: '#9c021a',
@@ -33,11 +31,6 @@ Vue.use(VueProgressBar, {
 export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 	const apolloClient = createApolloClient(apollo);
 	const store = createStore({ apolloClient });
-	const apolloProvider = new VueApollo({
-		defaultClient: apolloClient,
-		// Errors are handled in @/api/ErrorLink, so return true here to skip vue-apollo default error handling
-		errorHandler: () => true,
-	});
 	const router = createRouter();
 
 	sync(store, router);
@@ -52,14 +45,16 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 	const app = new Vue({
 		router,
 		store,
-		provide: apolloProvider.provide(),
 		render: h => h(App, { props: { appConfig } }),
+		provide: {
+			apollo: apolloClient
+		}
 	});
 
 	return {
 		app,
 		router,
 		store,
-		apolloProvider,
+		apolloClient,
 	};
 }

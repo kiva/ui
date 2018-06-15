@@ -1,8 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
+import _filter from 'lodash/filter';
 import cookie from 'js-cookie';
-import createAsyncCaller from '@/util/callAsyncData';
+import { preFetchAll } from '@/util/apolloPreFetch';
+import getDeepComponents from '@/util/getDeepComponents';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
@@ -52,10 +54,19 @@ router.onReady(() => {
 		const matched = router.getMatchedComponents(to);
 		const prevMatched = router.getMatchedComponents(from);
 		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
+		const allComponents = getDeepComponents(activated);
+		const asyncDataComponents = _filter(allComponents, 'asyncData');
 
-		// recursively call asyncData on activated components and their child components
-		const callAsyncData = createAsyncCaller({ store, route: to });
-		Promise.all(activated.map(callAsyncData)).then(next).catch(next);
+		// call asyncData on activated components
+		Promise.all([
+			Promise.all(asyncDataComponents.map(c => c.asyncData({
+				route: to,
+				store,
+			}))),
+			preFetchAll(activated, apolloClient, {
+				route: to,
+			}),
+		]).then(next).catch(next);
 	});
 
 	router.beforeEach((to, from, next) => {
