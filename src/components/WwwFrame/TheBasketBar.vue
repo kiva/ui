@@ -5,16 +5,22 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import _get from 'lodash/get';
+import countQuery from '@/graphql/query/basketCount.graphql';
 
 export default {
-	computed: {
-		...mapState({
-			count: state => state.shop.headerItemCount,
-		}),
+	inject: ['apollo'],
+	data() {
+		return {
+			count: 0
+		};
 	},
-	asyncData({ store }) {
-		return store.dispatch('getHeaderBasketCount');
+	apollo: {
+		query: countQuery,
+		preFetch: true,
+		result({ data }) {
+			this.count = _get(data, 'shop.headerItemCount');
+		}
 	},
 };
 </script>

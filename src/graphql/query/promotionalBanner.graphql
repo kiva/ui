@@ -1,6 +1,7 @@
 query {
 	my {
 		userAccount {
+			id
 			promoBalance
 		}
 	}
@@ -10,6 +11,7 @@ query {
 				redemptionCodeAvailableTotal
 			}
 		}
+		lendingRewardOffered
 	}
 	holiday_enabled: setting(setting: "feature.holiday_mode.enabled") {
 		value

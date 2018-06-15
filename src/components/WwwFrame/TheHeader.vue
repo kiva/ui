@@ -246,8 +246,8 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
-
+import _get from 'lodash/get';
+import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchBar from './SearchBar';
@@ -263,9 +263,17 @@ export default {
 		PromoBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
+	inject: ['apollo'],
 	data() {
 		return {
+			isVisitor: true,
+			isBorrower: false,
+			loanId: null,
+			trusteeId: null,
 			isFreeTrial: false,
+			basketCount: 0,
+			balance: 0,
+			profilePic: '',
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
@@ -273,18 +281,9 @@ export default {
 		};
 	},
 	computed: {
-		...mapState({
-			isVisitor: state => state.my.userAccount.id === null,
-			isBorrower: state => state.my.isBorrower,
-			basketCount: state => state.shop.headerItemCount,
-			balance: state => Math.floor(state.my.userAccount.balance),
-			profilePic: state => state.my.lender.image.url,
-			loanId: state => state.my.mostRecentBorrowedLoan.id,
-			trusteeId: state => state.my.trustee.id,
-		}),
-		...mapGetters([
-			'isTrustee'
-		]),
+		isTrusee() {
+			return !!this.trusteeId;
+		},
 		trusteeLoansUrl() {
 			return {
 				path: '/lend',
@@ -297,6 +296,19 @@ export default {
 		},
 		showBasket() {
 			return this.basketCount > 0 && !this.isFreeTrial;
+		},
+	},
+	apollo: {
+		query: headerQuery,
+		preFetch: true,
+		result({ data }) {
+			this.isVisitor = !_get(data, 'my.userAccount.id');
+			this.isBorrower = _get(data, 'my.isBorrower');
+			this.loanId = _get(data, 'my.mostRecentBorrowedLoan.id');
+			this.trusteeId = _get(data, 'my.trustee.id');
+			this.basketCount = _get(data, 'shop.headerItemCount');
+			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
+			this.profilePic = _get(data, 'my.lender.image.url');
 		},
 	},
 	methods: {
@@ -315,9 +327,6 @@ export default {
 				this.$refs.search.focus();
 			}
 		}
-	},
-	asyncData({ store }) {
-		return store.dispatch('getMyKivaInfo');
 	},
 };
 </script>

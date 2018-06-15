@@ -13,6 +13,7 @@ import LendingRewardsBanner from './Banners/LendingRewardsBanner';
 import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 
 export default {
+	inject: ['apollo'],
 	data() {
 		return {
 			bonusBalance: 0,
@@ -35,29 +36,26 @@ export default {
 		}
 	},
 	apollo: {
-		initial: {
-			query: promoQuery,
-			manual: true,
-			prefetch: true,
-			result({ data }) {
-				const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
-				const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
-				this.bonusBalance = promoBalance + basketPromoBalance;
+		query: promoQuery,
+		preFetch: true,
+		result({ data }) {
+			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
+			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
+			this.bonusBalance = promoBalance + basketPromoBalance;
 
-				this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 
-				this.holidayModeEnabled = this.settingEnabled(
-					_get(data, 'holiday_enabled.value'),
-					_get(data, 'holiday_start_time.value'),
-					_get(data, 'holiday_end_time.value')
-				);
+			this.holidayModeEnabled = this.settingEnabled(
+				_get(data, 'holiday_enabled.value'),
+				_get(data, 'holiday_start_time.value'),
+				_get(data, 'holiday_end_time.value')
+			);
 
-				this.promoEnabled = this.settingEnabled(
-					_get(data, 'promo_enabled.value'),
-					_get(data, 'promo_start_time.value'),
-					_get(data, 'promo_end_time.value')
-				);
-			}
+			this.promoEnabled = this.settingEnabled(
+				_get(data, 'promo_enabled.value'),
+				_get(data, 'promo_start_time.value'),
+				_get(data, 'promo_end_time.value')
+			);
 		}
 	},
 	methods: {

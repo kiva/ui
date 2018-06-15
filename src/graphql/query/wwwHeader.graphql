@@ -1,0 +1,24 @@
+query {
+	my {
+		userAccount {
+			id
+			balance
+			promoBalance
+		}
+		lender {
+			image {
+				url( presetSize:lender_default )
+			}
+		}
+		isBorrower
+		mostRecentBorrowedLoan {
+			id
+		}
+		trustee {
+			id
+		}
+	}
+	shop {
+		headerItemCount
+	}
+}
