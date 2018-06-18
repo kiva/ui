@@ -10,8 +10,8 @@
 
 <script>
 import Popper from 'popper.js';
-import { mapState } from 'vuex';
 import _map from 'lodash/map';
+import dropdownQuery from '@/graphql/query/dropdown.graphql';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
@@ -19,6 +19,7 @@ import {
 } from '@/util/touchEvents';
 
 export default {
+	inject: ['apollo'],
 	props: {
 		controller: { type: String, required: true },
 		openDelay: { type: Number, default: 0 },
@@ -30,15 +31,19 @@ export default {
 			styles: {},
 			show: false,
 			timeout: null,
+			usingTouch: false,
 		};
 	},
 	computed: {
 		reference() {
 			return document.getElementById(this.controller);
 		},
-		...mapState({
-			usingTouch: state => state.browser.usingTouch
-		}),
+	},
+	apollo: {
+		query: dropdownQuery,
+		result({ data }) {
+			this.usingTouch = data.usingTouch;
+		}
 	},
 	watch: {
 		usingTouch() {
