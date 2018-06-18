@@ -9,5 +9,7 @@
 
 .matching-text-wrapper {
 	text-align: center;
+	font-size: .875rem;
+	color: $kiva-text-light;
 }
 </style>
