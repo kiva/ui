@@ -19,7 +19,7 @@
           "loanAmount": "1625.00",
           "loanFundraisingInfo": {
             "fundedAmount": "825.00",
-            "isExpiringSoon": false
+            "isExpiringSoon": true
           },
           "plannedExpirationDate": "2018-07-14T20:10:05Z",
           "matchingText": "a Kiva supporter",
