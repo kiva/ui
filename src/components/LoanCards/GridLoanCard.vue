@@ -7,7 +7,7 @@
 			:use="loan.use"
 			:country="loan.geocode.country.name" />
 
-		<MatchingText />
+		<MatchingText :matching-text="loan.matchingText" />
 	</div>
 </template>
 
