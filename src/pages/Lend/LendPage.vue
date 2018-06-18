@@ -1,12 +1,12 @@
 <template>
-	<www-page>
+	<www-page class="lend-page">
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
 				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
-			<div class="loanCardGroup row small-up-1 large-up-2 xxlarge-up-3">
+			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 				<GridLoanCard :loan="loan" v-for="loan in loans" :key="loan.id" />
 			</div>
 		</div>
@@ -24,7 +24,7 @@ export default {
 		GridLoanCard,
 	},
 	metaInfo: {
-		title: 'Lend page'
+		title: 'Fundraising loans | Kiva'
 	},
 	props: {
 		loans: {
@@ -36,9 +36,13 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+	@import 'settings';
 
-.heading-region {
-	margin-top: 1.25rem;
-}
+	.lend-page {
+		background-color: $kiva-bg-lightgray;
+	}
+
+	.heading-region {
+		margin-top: 1.25rem;
+	}
 </style>
