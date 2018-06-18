@@ -1,10 +1,8 @@
 /* eslint-disable no-console, no-param-reassign */
-import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
 import preFetchAll from '@/util/apolloPreFetch';
-import getDeepComponents from '@/util/getDeepComponents';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';
@@ -25,7 +23,6 @@ export default context => {
 		const {
 			app,
 			router,
-			store,
 			apolloClient,
 		} = createApp({
 			appConfig: config,
@@ -62,19 +59,12 @@ export default context => {
 				return reject({ code: 404 });
 			}
 
-			// Call asyncData hooks on the components (and all of their child components) matched by the route
-			// An asyncData hook dispatches a store action and returns a Promise,
-			// which is resolved when the action is complete and store state has been updated.
-			const asyncDataComponents = _filter(getDeepComponents(matchedComponents), 'asyncData');
-			return Promise.all([
-				Promise.all(asyncDataComponents.map(c => c.asyncData({
-					route: router.currentRoute,
-					store,
-				}))),
-				preFetchAll(matchedComponents, apolloClient, {
-					route: router.currentRoute,
-				}),
-			]).then(() => {
+			// Pre-fetch graphql queries from the components (and all of their child components) matched by the route
+			// preFetchAll dispatches the queries with Apollo and returns a Promise,
+			// which is resolved when the action is complete and apollo cache has been updated.
+			return preFetchAll(matchedComponents, apolloClient, {
+				route: router.currentRoute,
+			}).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
 				// filled with the state needed to render the app.
@@ -86,7 +76,6 @@ export default context => {
 				context.meta = app.$meta();
 				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
-					__INITIAL_STATE__: store.state,
 				});
 				resolve(app);
 			}).catch(error => {

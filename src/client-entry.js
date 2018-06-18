@@ -1,11 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
-import _filter from 'lodash/filter';
 import cookie from 'js-cookie';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import preFetchAll from '@/util/apolloPreFetch';
-import getDeepComponents from '@/util/getDeepComponents';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
@@ -18,7 +16,6 @@ __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 const {
 	app,
 	router,
-	store,
 	apolloClient,
 } = createApp({
 	appConfig: config,
@@ -30,15 +27,12 @@ const {
 });
 
 // Apply Server state to Client Store
-if (window.__INITIAL_STATE__) {
-	store.replaceState(window.__INITIAL_STATE__);
-}
 if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
 // setup global analytics data
-app.$setKvAnalyticsData(app);
+app.$setKvAnalyticsData(apolloClient);
 
 // fire server rendered pageview
 app.$fireServerPageView();
@@ -63,19 +57,11 @@ router.onReady(() => {
 		const matched = router.getMatchedComponents(to);
 		const prevMatched = router.getMatchedComponents(from);
 		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
-		const allComponents = getDeepComponents(activated);
-		const asyncDataComponents = _filter(allComponents, 'asyncData');
 
-		// call asyncData on activated components
-		Promise.all([
-			Promise.all(asyncDataComponents.map(c => c.asyncData({
-				route: to,
-				store,
-			}))),
-			preFetchAll(activated, apolloClient, {
-				route: to,
-			}),
-		]).then(next).catch(next);
+		// Pre-fetch graphql queries from activated components
+		preFetchAll(activated, apolloClient, {
+			route: to,
+		}).then(next).catch(next);
 	});
 
 	router.beforeEach((to, from, next) => {
