@@ -1,13 +1,13 @@
 <template>
 	<div class="column column-block">
-		<BorrowerInfo
+		<borrower-info
 			:id="loan.id"
 			:name="loan.name"
 			:amount="loan.loanAmount"
 			:use="loan.use"
 			:country="loan.geocode.country.name" />
 
-		<MatchingText :matching-text="loan.matchingText" />
+		<matching-text :matching-text="loan.matchingText" />
 	</div>
 </template>
 
