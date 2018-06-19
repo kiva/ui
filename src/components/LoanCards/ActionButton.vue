@@ -7,9 +7,13 @@
 
 .button {
 	margin-top: rem-calc(30);
-	height: 2.9375rem;
-	line-height: 0.9375rem;
-	font-size: 1.125rem;
+	height: rem-calc(46);
+	line-height: 1;
+	font-size: rem-calc(20);
 	width: 100%;
+
+	@include breakpoint(medium) {
+		line-height: rem-calc(15);
+	}
 }
 </style>
