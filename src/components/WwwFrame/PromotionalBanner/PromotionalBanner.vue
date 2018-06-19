@@ -4,24 +4,25 @@
 
 <script>
 import numeral from 'numeral';
-import { mapState } from 'vuex';
+import { isWithinRange } from 'date-fns';
+import _get from 'lodash/get';
+import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
 import GiftBanner from './Banners/GiftBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
 import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 
 export default {
+	inject: ['apollo'],
+	data() {
+		return {
+			bonusBalance: 0,
+			lendingRewardOffered: false,
+			holidayModeEnabled: false,
+			promoEnabled: false,
+		};
+	},
 	computed: {
-		...mapState({
-			bonusBalance: state => {
-				const promoBalance = numeral(state.my.userAccount.promoBalance).value();
-				const basketPromoBalance = numeral(state.shop.totals.redemptionCodeAvailableTotal).value();
-				return promoBalance + basketPromoBalance;
-			},
-			lendingRewardOffered: state => state.shop.lendingRewardOffered,
-			holidayModeEnabled: state => state.setting.holidayModeEnabled,
-			promoEnabled: state => state.setting.promotionalBannerEnabled,
-		}),
 		currentActivePromo() {
 			if (this.lendingRewardOffered) {
 				return LendingRewardsBanner;
@@ -34,9 +35,33 @@ export default {
 			}
 		}
 	},
-	asyncData({ store }) {
-		return store.dispatch('getPromotionEnabled');
-	},
+	apollo: {
+		query: promoQuery,
+		preFetch: true,
+		result({ data }) {
+			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
+			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
+			this.bonusBalance = promoBalance + basketPromoBalance;
 
+			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+
+			this.holidayModeEnabled = this.settingEnabled(
+				_get(data, 'holiday_enabled.value'),
+				_get(data, 'holiday_start_time.value'),
+				_get(data, 'holiday_end_time.value')
+			);
+
+			this.promoEnabled = this.settingEnabled(
+				_get(data, 'promo_enabled.value'),
+				_get(data, 'promo_start_time.value'),
+				_get(data, 'promo_end_time.value')
+			);
+		}
+	},
+	methods: {
+		settingEnabled(enabled, startTime, endTime) {
+			return enabled === 'true' && isWithinRange(new Date(), new Date(startTime), new Date(endTime));
+		}
+	},
 };
 </script>

@@ -42,6 +42,7 @@ import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _zip from 'lodash/zip';
+import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import SearchEngine from '@/util/searchEngine';
 import { indexIn } from '@/util/comparators';
@@ -52,6 +53,7 @@ export default {
 	components: {
 		KvIcon
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			term: '',
@@ -115,8 +117,10 @@ export default {
 		},
 		onFocus() {
 			this.hasFocus = true;
-			this.$store.dispatch('getLoanSearchSuggestions').then(suggestions => {
-				engine.reset(suggestions);
+			this.apollo.query({ query: suggestionsQuery }).then(({ data }) => {
+				if (data) {
+					engine.reset(data.loanSearchSuggestions);
+				}
 			});
 		},
 		onBlur() {

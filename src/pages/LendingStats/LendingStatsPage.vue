@@ -53,7 +53,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import _differenceBy from 'lodash/differenceBy';
+import _get from 'lodash/get';
+import _map from 'lodash/map';
+import _sortBy from 'lodash/sortBy';
+import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
@@ -66,32 +70,52 @@ export default {
 		ThePortfolioTertiaryMenu,
 		StatsSection
 	},
+	inject: ['apollo'],
 	metaInfo: {
 		title: 'Lending Stats'
 	},
-	computed: {
-		...mapState({
-			countriesLentTo: state => state.my.lendingStats.countriesLentTo,
-			countriesNotLentTo: state => state.my.lendingStats.countriesNotLentTo,
-			totalCountries: state => state.my.lendingStats.totalCountries,
-			sectorsLentTo: state => state.my.lendingStats.sectorsLentTo,
-			sectorsNotLentTo: state => state.my.lendingStats.sectorsNotLentTo,
-			activitiesLentTo: state => state.my.lendingStats.activitiesLentTo,
-			activitiesNotLentTo: state => state.my.lendingStats.activitiesNotLentTo,
-			partnersLentTo: state => state.my.lendingStats.partnersLentTo,
-			partnersNotLentTo: state => state.my.lendingStats.partnersNotLentTo,
-			totalPartners: state => state.my.lendingStats.totalPartners,
-		}),
+	data() {
+		return {
+			countriesLentTo: [],
+			countriesNotLentTo: [],
+			totalCountries: 0,
+			sectorsLentTo: [],
+			sectorsNotLentTo: [],
+			activitiesLentTo: [],
+			activitiesNotLentTo: [],
+			partnersLentTo: [],
+			partnersNotLentTo: [],
+			totalPartners: 0,
+		};
 	},
-	asyncData({ store, route }) {
-		return new Promise((resolve, reject) => {
-			store.dispatch('getMyLendingStats')
-				.then(resolve)
-				.catch(() => reject({
-					path: '/login',
-					query: { doneUrl: route.fullPath.slice(1) }
-				}));
-		});
+	apollo: {
+		query: lendingStatsQuery,
+		preFetch: true,
+		result({ data }) {
+			const allCountries = _sortBy(_map(_get(data, 'countryFacets'), 'country'), 'name');
+			this.countriesLentTo = _sortBy(_get(data, 'my.lendingStats.countriesLentTo'), 'name');
+			this.countriesNotLentTo = _differenceBy(allCountries, this.countriesLentTo, 'isoCode');
+			this.totalCountries = allCountries.length;
+
+			const allSectors = _sortBy(_get(data, 'kivaStats.sectors'), 'name');
+			this.sectorsLentTo = _sortBy(_get(data, 'my.lendingStats.sectorsLentTo'), 'name');
+			this.sectorsNotLentTo = _differenceBy(allSectors, this.sectorsLentTo, 'id');
+
+			const allActivities = _sortBy(_get(data, 'kivaStats.activities'), 'name');
+			this.activitiesLentTo = _sortBy(_get(data, 'my.lendingStats.activitiesLentTo'), 'name');
+			this.activitiesNotLentTo = _differenceBy(allActivities, this.activitiesLentTo, 'id');
+
+			const allPartners = _sortBy(_get(data, 'partners.values'), 'name');
+			this.partnersLentTo = _sortBy(_get(data, 'my.lendingStats.partnersLentTo'), 'name');
+			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
+			this.totalPartners = _get(data, 'partners.totalCount');
+		},
+		errorHandlers: {
+			'api.authenticationRequired': ({ route, reject }) => reject({
+				path: '/login',
+				query: { doneUrl: route.fullPath.slice(1) }
+			})
+		}
 	},
 	methods: {
 		iconForSector(sector) {

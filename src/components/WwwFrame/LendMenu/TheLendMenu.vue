@@ -25,11 +25,13 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import { mapState } from 'vuex';
 import { indexIn } from '@/util/comparators';
+import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
+import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
@@ -40,33 +42,48 @@ export default {
 		LendListMenu,
 		LendMegaMenu,
 	},
+	inject: ['apollo'],
+	data() {
+		return {
+			userId: null,
+			categories: [],
+			countryFacets: [],
+			favoritesCount: 0,
+			savedSearches: [],
+			regionDisplayOrder: [
+				'North America',
+				'Central America',
+				'South America',
+				'Africa',
+				'Eastern Europe',
+				'Middle East',
+				'Asia',
+				'Oceania'
+			],
+			loadingSemaphore: 0,
+		};
+	},
 	computed: {
-		...mapState({
-			userId: state => state.my.userAccount.id,
-			categories: state => state.loan.headerCategories,
-			favoritesCount: state => state.my.favoritesCount,
-			regions: state => {
-				const facets = _map(state.loan.countryFacets, facet => {
-					return {
-						name: facet.country.name,
-						region: facet.country.region,
-						isoCode: facet.country.isoCode.toLowerCase(),
-						count: facet.count || 0,
-					};
-				});
-				const groups = _groupBy(facets, 'region');
-				const regions = _map(groups, (countries, name) => {
-					return {
-						name,
-						countries: _sortBy(countries, 'name'),
-					};
-				});
-				return regions.sort(indexIn(state.loan.regionDisplayOrder, 'name'));
-			},
-			savedSearches: state => state.my.savedSearches
-		}),
+		regions() {
+			const facets = _map(this.countryFacets, facet => {
+				return {
+					name: facet.country.name,
+					region: facet.country.region,
+					isoCode: facet.country.isoCode.toLowerCase(),
+					count: facet.count || 0,
+				};
+			});
+			const groups = _groupBy(facets, 'region');
+			const regions = _map(groups, (countries, name) => {
+				return {
+					name,
+					countries: _sortBy(countries, 'name'),
+				};
+			});
+			return regions.sort(indexIn(this.regionDisplayOrder, 'name'));
+		},
 		isLoading() {
-			return this.regions.length === 0;
+			return this.loadingSemaphore > 0 || this.categories.length === 0;
 		},
 		hasUserId() {
 			return !!this.userId;
@@ -81,13 +98,49 @@ export default {
 			this.$refs.mega.onClose();
 		},
 		onLoad() {
-			this.$store.dispatch('getLendMenuInfo');
-			this.$store.dispatch('getMyLendMenuInfo');
+			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
+				next: ({ data }) => {
+					this.userId = _get(data, 'my.userAccount.id');
+					this.categories = _sortBy(_get(data, 'loanChannels.values'), 'index');
+					this.countryFacets = _get(data, 'countryFacets');
+				}
+			});
+		},
+		startLoading() {
+			this.loadingSemaphore += 1;
+		},
+		stopLoading() {
+			if (this.loadingSemaphore > 0) {
+				this.loadingSemaphore -= 1;
+			} else {
+				this.loadingSemaphore = 0;
+			}
 		},
 	},
 	watch: {
-		hasUserId() {
-			this.$store.dispatch('getMyLendMenuInfo');
+		hasUserId(hasUserId) {
+			if (hasUserId) {
+				this.startLoading();
+				this.apollo.query({
+					query: privateLendMenuQuery,
+					variables: {
+						userId: this.userId,
+					}
+				}).then(({ data, errors }) => {
+					if (!errors) {
+						this.favoritesCount = _get(data, 'loans.totalCount');
+						this.savedSearches = _get(data, 'my.savedSearches.values');
+					} else {
+						this.favoritesCount = 0;
+						this.savedSearches = [];
+					}
+				}).finally(() => {
+					this.stopLoading();
+
+					// data might have changed since the initial render, so trigger any needed updates
+					this.onOpen();
+				});
+			}
 		}
 	}
 };

@@ -5,4 +5,5 @@ query {
 			id
 		}
 	}
+	usingTouch @client
 }

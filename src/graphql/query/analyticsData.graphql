@@ -2,8 +2,6 @@ query {
 	my {
 		userAccount {
 			id
-			publicId
-			balance
 		}
 	}
 }

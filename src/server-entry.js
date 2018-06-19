@@ -2,7 +2,7 @@
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
-import createAsyncCaller from '@/util/callAsyncData';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';
@@ -23,7 +23,6 @@ export default context => {
 		const {
 			app,
 			router,
-			store,
 			apolloClient,
 		} = createApp({
 			appConfig: config,
@@ -51,20 +50,21 @@ export default context => {
 
 		// wait until router has resolved possible async hooks
 		return router.onReady(() => {
+			// get the components matched by the route
 			const matchedComponents = router.getMatchedComponents();
+
 			// no matched routes
 			if (!matchedComponents.length) {
 				// TODO: Check for + redirect to kiva php app external route
 				return reject({ code: 404 });
 			}
 
-			// Call asyncData hooks on components matched by the route, and recursively
-			// call asyncData hooks on their child components.
-			// An asyncData hook dispatches a store action and returns a Promise,
-			// which is resolved when the action is complete and store state has been
-			// updated.
-			const callAsyncData = createAsyncCaller({ store, route: router.currentRoute });
-			return Promise.all(matchedComponents.map(callAsyncData)).then(() => {
+			// Pre-fetch graphql queries from the components (and all of their child components) matched by the route
+			// preFetchAll dispatches the queries with Apollo and returns a Promise,
+			// which is resolved when the action is complete and apollo cache has been updated.
+			return preFetchAll(matchedComponents, apolloClient, {
+				route: router.currentRoute,
+			}).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
 				// filled with the state needed to render the app.
@@ -76,7 +76,6 @@ export default context => {
 				context.meta = app.$meta();
 				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
-					__INITIAL_STATE__: store.state,
 				});
 				resolve(app);
 			}).catch(error => {

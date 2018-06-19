@@ -12,15 +12,18 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import helloQuery from '@/graphql/query/hello.graphql';
 
 export default {
 	components: { WwwPage },
+	inject: ['apollo'],
 	metaInfo: {
 		title: 'Page two'
 	},
-	asyncData({ store }) {
-		return store.dispatch('hello');
-	}
+	apollo: {
+		query: helloQuery,
+		preFetch: true,
+	},
 };
 </script>
 
