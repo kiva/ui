@@ -1,8 +1,8 @@
 import ApolloClient from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { IntrospectionFragmentMatcher, InMemoryCache } from 'apollo-cache-inmemory';
-import ErrorLinkCreator from './ErrorLink';
 import HttpLinkCreator from './HttpLink';
+import StateLinkCreator from './StateLink';
 
 export default function createApolloClient({
 	cookie,
@@ -10,17 +10,30 @@ export default function createApolloClient({
 	types = [],
 	uri,
 }) {
+	const cache = new InMemoryCache({
+		fragmentMatcher: new IntrospectionFragmentMatcher({
+			introspectionQueryResultData: {
+				__schema: { types }
+			}
+		})
+	});
+
 	return new ApolloClient({
 		link: ApolloLink.from([
-			ErrorLinkCreator(),
+			StateLinkCreator({ cache }),
 			HttpLinkCreator({ cookie, csrfToken, uri }),
 		]),
-		cache: new InMemoryCache({
-			fragmentMatcher: new IntrospectionFragmentMatcher({
-				introspectionQueryResultData: {
-					__schema: { types }
-				}
-			})
-		}),
+		cache,
+		defaultOptions: {
+			watchQuery: {
+				errorPolicy: 'all',
+			},
+			query: {
+				errorPolicy: 'all',
+			},
+			mutate: {
+				errorPolicy: 'all',
+			},
+		}
 	});
 }

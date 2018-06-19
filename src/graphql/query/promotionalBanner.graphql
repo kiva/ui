@@ -1,4 +1,18 @@
 query {
+	my {
+		userAccount {
+			id
+			promoBalance
+		}
+	}
+	shop {
+		basket {
+			totals {
+				redemptionCodeAvailableTotal
+			}
+		}
+		lendingRewardOffered
+	}
 	holiday_enabled: setting(setting: "feature.holiday_mode.enabled") {
 		value
 	}

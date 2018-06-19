@@ -107,13 +107,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import _get from 'lodash/get';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
 	isTargetElement,
 } from '@/util/touchEvents';
-
+import myKivaMenuQuery from '@/graphql/query/myKivaSecondaryMenu.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
 import KvExpandable from '@/components/Kv/KvExpandable';
@@ -126,19 +126,23 @@ export default {
 		KvExpandable,
 		ThePortfolioTertiaryMenu
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			open: false,
+			isBorrower: false,
+			isTrustee: false,
+			usingTouch: false,
 		};
 	},
-	computed: {
-		...mapState({
-			isBorrower: state => state.my.isBorrower,
-			usingTouch: state => state.browser.usingTouch,
-		}),
-		...mapGetters([
-			'isTrustee'
-		]),
+	apollo: {
+		query: myKivaMenuQuery,
+		preFetch: true,
+		result({ data }) {
+			this.isBorrower = _get(data, 'my.isBorrower');
+			this.isTrustee = !!_get(data, 'my.trustee.id');
+			this.usingTouch = _get(data, 'usingTouch');
+		},
 	},
 	methods: {
 		toggle() {
@@ -165,9 +169,6 @@ export default {
 				this.collapse();
 			}
 		},
-	},
-	asyncData({ store }) {
-		return store.dispatch('getMyKivaSecondaryMenu');
 	}
 };
 </script>

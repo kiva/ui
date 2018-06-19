@@ -2,7 +2,8 @@
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import cookie from 'js-cookie';
-import createAsyncCaller from '@/util/callAsyncData';
+import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
@@ -15,7 +16,6 @@ __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 const {
 	app,
 	router,
-	store,
 	apolloClient,
 } = createApp({
 	appConfig: config,
@@ -27,19 +27,24 @@ const {
 });
 
 // Apply Server state to Client Store
-if (window.__INITIAL_STATE__) {
-	store.replaceState(window.__INITIAL_STATE__);
-}
 if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
 // setup global analytics data
-app.$setKvAnalyticsData(app);
+app.$setKvAnalyticsData(apolloClient);
+
 // fire server rendered pageview
 app.$fireServerPageView();
-// Add browser info to the store
-store.dispatch('detectBrowserAbility');
+
+// Setup adding touch info to the state
+window.addEventListener('touchstart', function onFirstTouch() {
+	apolloClient.mutate({
+		mutation: usingTouchMutation,
+		variables: { usingTouch: true }
+	});
+	window.removeEventListener('touchstart', onFirstTouch);
+});
 
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {
@@ -53,9 +58,10 @@ router.onReady(() => {
 		const prevMatched = router.getMatchedComponents(from);
 		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
 
-		// recursively call asyncData on activated components and their child components
-		const callAsyncData = createAsyncCaller({ store, route: to });
-		Promise.all(activated.map(callAsyncData)).then(next).catch(next);
+		// Pre-fetch graphql queries from activated components
+		preFetchAll(activated, apolloClient, {
+			route: to,
+		}).then(next).catch(next);
 	});
 
 	router.beforeEach((to, from, next) => {

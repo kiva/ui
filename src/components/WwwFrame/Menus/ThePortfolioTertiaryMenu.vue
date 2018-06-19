@@ -97,17 +97,20 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
+import _get from 'lodash/get';
+import portfolioTertiaryMenuQuery from '@/graphql/query/portfolioTertiaryMenu.graphql';
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 
 export default {
 	components: { TertiaryMenu },
+	inject: ['apollo'],
+	data() {
+		return {
+			userBalance: 0,
+			publicId: '',
+		};
+	},
 	computed: {
-		...mapState({
-			userBalance: state => state.my.userAccount.balance,
-			publicId: state => state.my.userAccount.publicId
-		}),
 		donateCreditUrl() {
 			return {
 				path: '/donate/supportusprocess',
@@ -122,8 +125,13 @@ export default {
 			};
 		}
 	},
-	asyncData({ store }) {
-		return store.dispatch('getPortfolioTertiaryMenu');
-	}
+	apollo: {
+		query: portfolioTertiaryMenuQuery,
+		preFetch: true,
+		result({ data }) {
+			this.userBalance = _get(data, 'my.userAccount.balance');
+			this.publicId = _get(data, 'my.userAccount.publicId');
+		}
+	},
 };
 </script>
