@@ -4,16 +4,16 @@ import _map from 'lodash/map';
 import getDeepComponents from './getDeepComponents';
 
 // A function to pre-fetch a graphql query from a component's apollo options
-export function preFetchApolloQuery(component, client, args) {
+export function preFetchApolloQuery(config, client, args) {
 	return new Promise((resolve, reject) => {
 		// Fetch the query from the component's apollo options
 		client.query({
-			query: component.apollo.query
+			query: config.query
 		}).then(({ errors }) => {
 			let handled = false;
 			// Pass any errors to the error handlers from the component's apollo options
 			if (errors) {
-				_forEach(component.apollo.errorHandlers, (handler, code) => {
+				_forEach(config.errorHandlers, (handler, code) => {
 					const graphQLErrors = _filter(errors, { code });
 					if (graphQLErrors.length) {
 						// Call the error handler with the errors, resolve/reject for finishing
@@ -36,8 +36,8 @@ export function preFetchApolloQuery(component, client, args) {
 	});
 }
 
-export default function preFetchAll(components, apolloClient, { ...args }) {
+export function preFetchAll(components, apolloClient, { ...args }) {
 	const allComponents = getDeepComponents(components);
 	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
-	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c, apolloClient, args)));
+	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));
 }

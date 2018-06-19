@@ -2,7 +2,7 @@
 import _map from 'lodash/map';
 import cookie from 'cookie';
 import serialize from 'serialize-javascript';
-import preFetchAll from '@/util/apolloPreFetch';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';

@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import cookie from 'js-cookie';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
-import preFetchAll from '@/util/apolloPreFetch';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
