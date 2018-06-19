@@ -15,10 +15,11 @@
 	text-align: center;
 	margin-top: rem-calc(20);
 	padding: 0 rem-calc(20);
-	line-height: 1.375rem;
+	line-height: rem-calc(22);
+	flex-grow: 1;
 
 	.name {
-		font-size: 1.375rem;
+		font-size: rem-calc(22);
 		font-weight: 400;
 	}
 
@@ -26,6 +27,10 @@
 		color: $kiva-text-light;
 		font-weight: 400;
 		margin-bottom: rem-calc(20);
+	}
+
+	.loan-use {
+		height: rem-calc(88);
 	}
 }
 </style>
