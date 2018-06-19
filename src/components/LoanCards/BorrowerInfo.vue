@@ -2,7 +2,13 @@
 	<div class="borrower-info-wrapper">
 		<a class="name">{{ props.name }}</a>
 		<div class="country">{{ props.country }}</div>
-		<div class="loan-use">A loan of {{ props.amount | numeral('$0.00') }} helps {{ props.name }} {{ props.use }}
+		<div class="loan-use">
+			<span v-if="props.use.length">
+				A loan of {{ props.amount | numeral('$0.00') }} helps {{ props.name }} {{ props.use }}
+			</span>
+			<span v-else>
+				For the borrower's privacy, this loan has been made anonymous.
+			</span>
 			<a class="borrower-page-link" href="">Read more</a>
 		</div>
 	</div>
