@@ -13,6 +13,9 @@
 
 .borrower-info-wrapper {
 	text-align: center;
+	margin-top: rem-calc(20);
+	padding: 0 rem-calc(20);
+	line-height: 1.375rem;
 
 	.name {
 		font-size: 1.375rem;
@@ -22,6 +25,7 @@
 	.country {
 		color: $kiva-text-light;
 		font-weight: 400;
+		margin-bottom: rem-calc(20);
 	}
 }
 </style>

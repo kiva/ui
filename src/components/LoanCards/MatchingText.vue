@@ -1,6 +1,6 @@
 <template functional>
 	<div class="matching-text-wrapper" v-if="props.matchingText">
-		<span>2x matching by {{ props.matchingText }}</span>
+		<span class="small-text">2x matching by {{ props.matchingText }}</span>
 	</div>
 </template>
 
@@ -9,7 +9,7 @@
 
 .matching-text-wrapper {
 	text-align: center;
-	font-size: .875rem;
 	color: $kiva-text-light;
+	margin-bottom: rem-calc(20);
 }
 </style>

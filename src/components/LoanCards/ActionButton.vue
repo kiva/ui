@@ -8,8 +8,14 @@
 @import 'settings';
 
 .action-button-wrapper {
-	margin: 0 rem-calc(20);
 	text-align: center;
+	margin-top: rem-calc(30);
 
+	.button {
+		height: 2.9375rem;
+		line-height: 0.9375rem;
+		font-size: 1.125rem;
+		width: 100%;
+	}
 }
 </style>
