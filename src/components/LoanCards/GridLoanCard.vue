@@ -16,17 +16,17 @@
 		/>
 
 		<div class="loan-card-footer-wrap">
+			<fundraising-status
+				:amount-left="amountLeft"
+				:percent-raised="percentRaised"
+				:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
+				:expiring-soon-message="expiringSoonMessage"
+			/>
 
+			<action-button />
+
+			<matching-text v-if="props.matchingText" :matching-text="loan.matchingText" />
 		</div>
-
-		<fundraising-status
-			:amount-left="amountLeft"
-			:percent-raised="percentRaised"
-			:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
-			:expiring-soon-message="expiringSoonMessage"
-		/>
-
-		<matching-text :matching-text="loan.matchingText" />
 	</div>
 </template>
 
@@ -35,13 +35,15 @@ import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
+import ActionButton from '@/components/LoanCards/ActionButton';
 
 export default {
 	components: {
 		LoanCardImage,
 		BorrowerInfo,
 		FundraisingStatus,
-		MatchingText
+		MatchingText,
+		ActionButton,
 	},
 	props: {
 		loan: {
@@ -79,14 +81,24 @@ export default {
 <style lang="scss" scoped>
 	@import 'settings';
 
+	.column {
+		padding: 0;
+	}
+
 	.grid-loan-card {
 		background-color: $white;
 		border: 1px solid $kiva-stroke-gray;
+		position: relative;
+		//This height will probably have to change
+		height: rem-calc(640);
 	}
 
 	.loan-card-footer-wrap {
-		height: rem-calc(145);
-		padding: rem-calc(10) rem-calc(20)rem-calc(20);
+		width: 100%;
+		height: rem-calc(176);
+		padding: rem-calc(10) rem-calc(20) rem-calc(20);
 		text-align: center;
+		bottom: 0;
+		position: absolute;
 	}
 </style>
