@@ -25,7 +25,7 @@
 
 			<action-button />
 
-			<matching-text :matching-text="loan.matchingText" />
+			<matching-text v-if="props.matchingText" :matching-text="loan.matchingText" />
 		</div>
 	</div>
 </template>
@@ -96,7 +96,7 @@ export default {
 	.loan-card-footer-wrap {
 		width: 100%;
 		height: rem-calc(176);
-		padding: rem-calc(10) rem-calc(20)rem-calc(20);
+		padding: rem-calc(10) rem-calc(20) rem-calc(20);
 		text-align: center;
 		bottom: 0;
 		position: absolute;

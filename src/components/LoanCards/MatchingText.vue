@@ -1,15 +1,11 @@
 <template functional>
-	<div class="matching-text-wrapper" v-if="props.matchingText">
-		<span class="small-text">2x matching by {{ props.matchingText }}</span>
-	</div>
+	<span class="small-text matching-text">2x matching by {{ props.matchingText }}</span>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
-.matching-text-wrapper {
-	text-align: center;
+.matching-text {
 	color: $kiva-text-light;
-	margin-bottom: rem-calc(20);
 }
 </style>
