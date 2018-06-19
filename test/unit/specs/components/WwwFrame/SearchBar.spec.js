@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import SearchBar from '@/components/WwwFrame/SearchBar';
+import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
 
 const suggestions = [
 	{ group: 'U.S. cities', label: 'Akron, OH', query: 'city_state=Akron,OH' },
@@ -14,15 +15,19 @@ const suggestions = [
 
 describe('SearchBar', () => {
 	let wrapper;
-	let mocks = {};
+	let apollo = {};
 
 	beforeEach(() => {
-		const dispatch = jest.fn();
-		dispatch.mockReturnValue(Promise.resolve(suggestions));
-		mocks = {
-			$store: { dispatch }
-		};
-		wrapper = shallowMount(SearchBar, { mocks });
+		const query = jest.fn();
+		query.mockReturnValue(Promise.resolve({
+			data: {
+				loanSearchSuggestions: suggestions
+			}
+		}));
+		apollo = { query };
+		wrapper = shallowMount(SearchBar, {
+			provide: { apollo }
+		});
 	});
 
 	it('should fetch suggestions when it gains focus', () => {
@@ -30,9 +35,9 @@ describe('SearchBar', () => {
 		input.trigger('focus');
 		input.trigger('blur');
 		wrapper.vm.focus();
-		expect(mocks.$store.dispatch.mock.calls.length).toBe(2);
-		expect(mocks.$store.dispatch.mock.calls[0][0]).toBe('getLoanSearchSuggestions');
-		expect(mocks.$store.dispatch.mock.calls[1][0]).toBe('getLoanSearchSuggestions');
+		expect(apollo.query.mock.calls.length).toBe(2);
+		expect(apollo.query.mock.calls[0][0]).toEqual({ query: suggestionsQuery });
+		expect(apollo.query.mock.calls[1][0]).toEqual({ query: suggestionsQuery });
 	});
 
 	it('should show filtered results when a serch term is entered', done => {
