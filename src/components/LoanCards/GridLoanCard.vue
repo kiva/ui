@@ -25,7 +25,7 @@
 
 			<action-button />
 
-			<matching-text :matching-text="loan.matchingText" v-if="loan.matchingText" />
+			<matching-text :matching-text="loan.matchingText" />
 		</div>
 	</div>
 </template>
@@ -90,14 +90,12 @@ export default {
 		border: 1px solid $kiva-stroke-gray;
 		display: flex;
 		flex-direction: column;
-		flex-grow: 1;
 	}
 
 	.loan-card-footer-wrap {
 		width: 100%;
-		height: rem-calc(176);
 		padding: rem-calc(10) rem-calc(20) rem-calc(20);
 		text-align: center;
-		flex-grow: 1;
+		flex-grow: 0;
 	}
 </style>

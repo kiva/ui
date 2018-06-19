@@ -28,9 +28,5 @@
 		font-weight: 400;
 		margin-bottom: rem-calc(20);
 	}
-
-	.loan-use {
-		height: rem-calc(88);
-	}
 }
 </style>
