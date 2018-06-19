@@ -25,7 +25,7 @@
 
 			<action-button />
 
-			<matching-text v-if="props.matchingText" :matching-text="loan.matchingText" />
+			<matching-text :matching-text="loan.matchingText" v-if="loan.matchingText" />
 		</div>
 	</div>
 </template>
