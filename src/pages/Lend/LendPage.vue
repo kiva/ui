@@ -1,10 +1,16 @@
 <template>
-	<www-page>
+	<www-page class="lend-page">
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
-				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
+				<p>Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
+			</div>
+
+			<div class="columns small-12">
+				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+					<GridLoanCard :loan="loan" v-for="loan in loans" :key="loan.id" />
+				</div>
 			</div>
 		</div>
 	</www-page>
@@ -12,21 +18,50 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 
 export default {
 	components: {
-		WwwPage
+		WwwPage,
+		GridLoanCard,
 	},
+	inject: ['apollo'],
 	metaInfo: {
-		title: 'Lend page'
+		title: 'Fundraising loans | Kiva'
+	},
+	data() {
+		return {
+			totalCount: 0,
+			loans: [],
+		};
+	},
+	apollo: {
+		query: loanCardQuery,
+		preFetch: true,
+		result({ data }) {
+			this.totalCount = data.loans.totalCount;
+			this.loans = data.loans.values;
+		}
 	}
 };
 </script>
 
 <style lang="scss">
-@import 'settings';
+	@import 'settings';
 
-.heading-region {
-	margin-top: 1.25rem;
-}
+	.lend-page {
+		background-color: $kiva-bg-lightgray;
+	}
+
+	.heading-region {
+		margin-top: rem-calc(20);
+		padding: rem-calc(10);
+
+		@include breakpoint(large) {
+			p {
+				max-width: 75%;
+			}
+		}
+	}
 </style>
