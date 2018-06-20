@@ -90,6 +90,8 @@ export default {
 		border: 1px solid $kiva-stroke-gray;
 		display: flex;
 		flex-direction: column;
+		max-width: rem-calc(480);
+		margin: auto;
 	}
 
 	.loan-card-footer-wrap {

@@ -1,7 +1,7 @@
 <template>
 	<www-page class="lend-page">
-		<div class="row">
-			<div class="small-12 columns heading-region">
+		<div class="row columns">
+			<div class="small-12 row heading-region">
 				<h1>Make a loan, change a life</h1>
 				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
@@ -43,6 +43,7 @@ export default {
 	}
 
 	.heading-region {
-		margin-top: 1.25rem;
+		margin-top: rem-calc(20);
+		padding: rem-calc(10);
 	}
 </style>
