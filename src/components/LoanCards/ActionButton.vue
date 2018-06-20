@@ -7,6 +7,7 @@
 
 .button {
 	margin-top: rem-calc(30);
+	margin-bottom:rem-calc(10);
 	height: rem-calc(46);
 	line-height: 1;
 	font-size: rem-calc(20);
