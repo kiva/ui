@@ -4,7 +4,7 @@
 		<div class="country">{{ props.country }}</div>
 		<div class="loan-use">
 			<span v-if="props.use.length">
-				A loan of {{ props.amount | numeral('$0.00') }} helps {{ props.name }} {{ props.use }}
+				A loan of {{ props.amount | numeral('$0,0') }} helps {{ props.name }} {{ props.use }}
 			</span>
 			<span v-else>
 				For the borrower's privacy, this loan has been made anonymous.

@@ -17,22 +17,31 @@
 </template>
 
 <script>
-import LoanData from '@/pages/Lend/Loans.json';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 
 export default {
 	components: {
 		WwwPage,
 		GridLoanCard,
 	},
+	inject: ['apollo'],
 	metaInfo: {
 		title: 'Fundraising loans | Kiva'
 	},
-	props: {
-		loans: {
-			type: Array,
-			default: () => LoanData.data.loans.values
+	data() {
+		return {
+			totalCount: 0,
+			loans: [],
+		};
+	},
+	apollo: {
+		query: loanCardQuery,
+		preFetch: true,
+		result({ data }) {
+			this.totalCount = data.loans.totalCount;
+			this.loans = data.loans.values;
 		}
 	}
 };
