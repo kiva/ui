@@ -31,11 +31,16 @@
 	}
 
 	.left-and-to-go-line {
-		height: $small-font-size;
-		font-size: $small-font-size;
-		line-height: $small-font-size;
+		height: $small-text-font-size;
+		font-size: $small-text-font-size;
+		line-height: $small-text-font-size;
 		font-style: italic;
+		font-weight: $button-font-weight;
 		color: $kiva-green;
 		margin-bottom: rem-calc(10);
+	}
+
+	.loan-message {
+		color: $kiva-text-dark;
 	}
 </style>

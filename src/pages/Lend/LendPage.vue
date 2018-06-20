@@ -6,8 +6,11 @@
 				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
-			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-				<GridLoanCard :loan="loan" v-for="loan in loans" :key="loan.id" />
+
+			<div class="columns small-12">
+				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+					<GridLoanCard :loan="loan" v-for="loan in loans" :key="loan.id" />
+				</div>
 			</div>
 		</div>
 	</www-page>
@@ -43,6 +46,7 @@ export default {
 	}
 
 	.heading-region {
-		margin-top: 1.25rem;
+		margin-top: rem-calc(20);
+		padding: rem-calc(10);
 	}
 </style>

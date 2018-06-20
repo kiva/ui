@@ -1,36 +1,39 @@
 <template>
-	<div class="column column-block grid-loan-card">
-		<loan-card-image
-			:id="loan.id"
-			:name="loan.name"
-			:retina-image-url="loan.image.retina"
-			:standard-image-url="loan.image.default"
-		/>
-
-		<borrower-info
-			:id="loan.id"
-			:name="loan.name"
-			:amount="loan.loanAmount"
-			:use="loan.use"
-			:country="loan.geocode.country.name"
-		/>
-
-		<div class="loan-card-footer-wrap">
-			<fundraising-status
-				:amount-left="amountLeft"
-				:percent-raised="percentRaised"
-				:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
-				:expiring-soon-message="expiringSoonMessage"
+	<div class="column column-block">
+		<div class="grid-loan-card">
+			<loan-card-image
+				:id="loan.id"
+				:name="loan.name"
+				:retina-image-url="loan.image.retina"
+				:standard-image-url="loan.image.default"
 			/>
 
-			<action-button />
+			<borrower-info
+				:id="loan.id"
+				:name="loan.name"
+				:amount="loan.loanAmount"
+				:use="loan.use"
+				:country="loan.geocode.country.name"
+			/>
 
-			<matching-text :matching-text="loan.matchingText" />
+			<div class="loan-card-footer-wrap">
+				<fundraising-status
+					:amount-left="amountLeft"
+					:percent-raised="percentRaised"
+					:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
+					:expiring-soon-message="expiringSoonMessage"
+				/>
+
+				<action-button />
+
+				<matching-text :matching-text="loan.matchingText" />
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import { differenceInMinutes, differenceInHours, differenceInDays } from 'date-fns';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
@@ -59,20 +62,22 @@ export default {
 			return this.loan.loanFundraisingInfo.fundedAmount / this.loan.loanAmount;
 		},
 		expiringSoonMessage() {
-			// let expiringSoonMessage = '';
-			// if(loan.status === 'fundRaising') {
-			// 	var expires = moment(loan.plannedExpirationDate);
-			// 	var left = expires.diff(moment());
-			//
-			// 	if (left < moment.duration(1, 'minute').as('ms')) {
-			// 		expiring_soon_message = 'Expiring now!';
-			// 	}
-			// 	else if (left < moment.duration(5.5, 'days').as('ms')) {
-			// 		expiring_soon_message = 'Only ' + expires.fromNow(true) + ' left!';
-			// 	}
-			// }
-			// placeholder for now
-			return 'Only 19 minutes left!';
+			if (!this.loan.loanFundraisingInfo.isExpiringSoon) {
+				return '';
+			}
+			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			if (days >= 2) {
+				return `Only ${days} days left! `;
+			}
+			const hours = differenceInHours(this.loan.plannedExpirationDate, Date.now());
+			if (hours >= 2) {
+				return `Only ${hours} hours left! `;
+			}
+			const mins = differenceInMinutes(this.loan.plannedExpirationDate, Date.now());
+			if (mins >= 2) {
+				return `Only ${mins} minutes left! `;
+			}
+			return 'Expiring now!';
 		}
 	}
 };
@@ -81,15 +86,18 @@ export default {
 <style lang="scss" scoped>
 	@import 'settings';
 
-	.column {
-		padding: 0;
-	}
-
 	.grid-loan-card {
 		background-color: $white;
 		border: 1px solid $kiva-stroke-gray;
 		display: flex;
 		flex-direction: column;
+		height: 100%;
+		max-width: rem-calc(480);
+		margin: auto;
+
+		&:hover {
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0,0,0,0.1);
+		}
 	}
 
 	.loan-card-footer-wrap {
