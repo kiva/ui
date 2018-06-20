@@ -3,11 +3,13 @@ query {
 		totalCount
 		values {
 			id
+			status
 			image {
 				default: url(customSize: "w480h360")
 				retina: url(customSize: "w960h720")
 			}
 			name
+			borrowerCount
 			geocode {
 				country {
 					name
@@ -18,7 +20,10 @@ query {
 			loanAmount
 			loanFundraisingInfo {
 				fundedAmount
+				reservedAmount
+				isExpiringSoon
 			}
+			plannedExpirationDate
 			matchingText
 			... on LoanPartner {
 				partnerName
