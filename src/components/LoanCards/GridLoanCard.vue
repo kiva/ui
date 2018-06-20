@@ -56,12 +56,7 @@ export default {
 	},
 	computed: {
 		amountLeft() {
-<<<<<<< Updated upstream
-			const fundedAmount = this.loan.loanFundraisingInfo.fundedAmount;
-			const reservedAmount = this.loan.loanFundraisingInfo.reservedAmount;
-=======
-			const {fundedAmount, reservedAmount} = this.loan.loanFundraisingInfo;
->>>>>>> Stashed changes
+			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
 			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		percentRaised() {
