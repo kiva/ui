@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
-				<p class="small-12 xlarge-9">Each Kiva loan helps people build a better
+				<p>Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
 
@@ -48,5 +48,11 @@ export default {
 	.heading-region {
 		margin-top: rem-calc(20);
 		padding: rem-calc(10);
+
+		@include breakpoint(large) {
+			p {
+				max-width: 75%;
+			}
+		}
 	}
 </style>
