@@ -96,7 +96,7 @@ export default {
 		margin: auto;
 
 		&:hover {
-			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0,0,0,0.1);
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
 		}
 	}
 
