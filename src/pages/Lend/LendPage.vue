@@ -43,6 +43,7 @@ export default {
 	}
 
 	.heading-region {
-		margin-top: 1.25rem;
+		margin-top: rem-calc(20);
+		padding: rem-calc(10);
 	}
 </style>
