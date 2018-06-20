@@ -56,7 +56,9 @@ export default {
 	},
 	computed: {
 		amountLeft() {
-			return this.loan.loanAmount - this.loan.loanFundraisingInfo.fundedAmount;
+			const fundedAmount = this.loan.loanFundraisingInfo.fundedAmount;
+			const reservedAmount = this.loan.loanFundraisingInfo.reservedAmount;
+			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		percentRaised() {
 			return this.loan.loanFundraisingInfo.fundedAmount / this.loan.loanAmount;
