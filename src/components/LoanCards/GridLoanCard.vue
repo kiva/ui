@@ -101,9 +101,9 @@ export default {
 	}
 
 	.loan-card-footer-wrap {
-		width: 100%;
-		padding: rem-calc(10) rem-calc(20) rem-calc(20);
-		text-align: center;
 		flex-grow: 0;
+		padding: rem-calc(20) rem-calc(20) rem-calc(16);
+		text-align: center;
+		width: 100%;
 	}
 </style>

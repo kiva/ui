@@ -32,7 +32,7 @@
 	.country {
 		color: $kiva-text-light;
 		font-weight: 400;
-		margin-bottom: rem-calc(20);
+		margin-bottom: rem-calc(10);
 	}
 }
 </style>

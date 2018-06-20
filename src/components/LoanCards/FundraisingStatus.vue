@@ -37,7 +37,6 @@
 		font-style: italic;
 		font-weight: $button-font-weight;
 		color: $kiva-green;
-		margin-bottom: rem-calc(10);
 	}
 
 	.loan-message {
