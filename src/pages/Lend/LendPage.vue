@@ -40,8 +40,8 @@ export default {
 		query: loanCardQuery,
 		preFetch: true,
 		result({ data }) {
-			this.totalCount = data.loans.totalCount;
-			this.loans = data.loans.values;
+			this.totalCount = data.lend.loans.totalCount;
+			this.loans = data.lend.loans.values;
 		}
 	}
 };
