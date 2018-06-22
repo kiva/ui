@@ -4,7 +4,7 @@
 		<div class="country">{{ country }}</div>
 		<div class="loan-use">
 			<span>
-				A loan of {{ amount | numeral('$0,0') }} helps {{ name }} {{ shortenedLoanUse }}
+				A loan of {{ amount | numeral('$0,0') }} {{ helpedLanguage }} {{ name }} {{ shortenedLoanUse }}
 			</span>
 			<a class="borrower-page-link" href="">Read more</a>
 		</div>
@@ -29,9 +29,18 @@ export default {
 		amount: {
 			type: String,
 			default: ''
+		},
+		status: {
+			type: String,
+			default: ''
 		}
 	},
 	computed: {
+		helpedLanguage() {
+			if (this.status === 'fundRaising' || this.status === 'inactive' || this.status === 'reviewed') {
+				return 'helps';
+			} return 'helped';
+		},
 		shortenedLoanUse() {
 			const maxLength = 100;
 			const nameLength = this.name.length;
