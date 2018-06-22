@@ -34,12 +34,16 @@ export default {
 	computed: {
 		shortenedLoanUse() {
 			const maxLength = 100;
+			const nameLength = this.name.length;
+			const lowerCaseUse = this.use.toString().charAt(0).toLowerCase() + this.use.toString().slice(1);
+			const convertedUse = (this.use.substring(0, nameLength) === this.name) ? this.use : lowerCaseUse;
+
 			if (this.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			} else if (this.use.length > maxLength) {
-				return `${this.use.substring(0, maxLength)}...`;
 			} else if (this.use.length < maxLength) {
-				return this.use;
+				return convertedUse;
+			} else if (this.use.length > maxLength) {
+				return `${convertedUse.substring(0, maxLength)}...`;
 			}
 		},
 	}
