@@ -2,7 +2,7 @@
 	<a class="button lend-button">Lend $25</a>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .button {
