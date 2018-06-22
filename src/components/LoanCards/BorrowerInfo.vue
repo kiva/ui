@@ -5,7 +5,7 @@
 		<div class="loan-use">
 			<span>
 				A loan of {{ amount | numeral('$0,0') }} {{ helpedLanguage }}
-				{{ borrowerCountLanguage }} {{ name }} {{ shortenedLoanUse }}
+				{{ borrowerCountLanguage }} {{ shortenedLoanUse }}
 			</span>
 			<a class="borrower-page-link" href="">Read more</a>
 		</div>
