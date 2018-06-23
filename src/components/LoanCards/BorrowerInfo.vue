@@ -4,7 +4,8 @@
 		<div class="country">{{ country }}</div>
 		<div class="loan-use">
 			<span>
-				A loan of {{ amount | numeral('$0,0') }} helps {{ name }} {{ shortenedLoanUse }}
+				A loan of {{ amount | numeral('$0,0') }} {{ helpedLanguage }}
+				{{ borrowerCountLanguage }} {{ shortenedLoanUse }}
 			</span>
 			<a class="borrower-page-link" href="">Read more</a>
 		</div>
@@ -29,18 +30,42 @@ export default {
 		amount: {
 			type: String,
 			default: ''
+		},
+		status: {
+			type: String,
+			default: ''
+		},
+		borrowerCount: {
+			type: Number,
+			default: 1
 		}
 	},
 	computed: {
+		helpedLanguage() {
+			if (this.status === 'fundRaising'
+			|| this.status === 'inactive'
+			|| this.status === 'reviewed') {
+				return 'helps';
+			}
+			return 'helped';
+		},
+		borrowerCountLanguage() {
+			if (this.borrowerCount > 1) {
+				return ' a member ';
+			}
+			return ' ';
+		},
 		shortenedLoanUse() {
 			const maxLength = 100;
+			const lowerCaseUse = this.use.toString().charAt(0).toLowerCase() + this.use.toString().slice(1);
+			const convertedUse = (this.use.substring(0, this.name.length) === this.name) ? this.use : lowerCaseUse;
+
 			if (this.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
 			} else if (this.use.length > maxLength) {
-				return `${this.use.substring(0, maxLength)}...`;
-			} else if (this.use.length < maxLength) {
-				return this.use;
+				return `${convertedUse.substring(0, maxLength)}...`;
 			}
+			return convertedUse;
 		},
 	}
 };

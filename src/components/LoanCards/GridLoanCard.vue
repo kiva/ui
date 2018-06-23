@@ -14,6 +14,8 @@
 				:amount="loan.loanAmount"
 				:use="loan.use"
 				:country="loan.geocode.country.name"
+				:status="loan.status"
+				:borrower-count="loan.borrowerCount"
 			/>
 
 			<div class="loan-card-footer-wrap">
