@@ -20,5 +20,9 @@
 	&:active {
 		color: $kiva-accent-green;
 	}
+
+	@include breakpoint(xxlarge) {
+		background: transparent;
+	}
 }
 </style>
