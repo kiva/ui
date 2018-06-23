@@ -118,7 +118,7 @@ export default {
 		onFocus() {
 			this.hasFocus = true;
 			this.apollo.query({ query: suggestionsQuery }).then(({ data }) => {
-				if (data) {
+				if (data && data.lend) {
 					engine.reset(data.lend.loanSearchSuggestions);
 				}
 			});

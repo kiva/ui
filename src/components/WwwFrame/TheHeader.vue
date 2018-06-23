@@ -306,7 +306,7 @@ export default {
 			this.isBorrower = _get(data, 'my.isBorrower');
 			this.loanId = _get(data, 'my.mostRecentBorrowedLoan.id');
 			this.trusteeId = _get(data, 'my.trustee.id');
-			this.basketCount = _get(data, 'shop.headerItemCount');
+			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
 			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
 			this.profilePic = _get(data, 'my.lender.image.url');
 		},
