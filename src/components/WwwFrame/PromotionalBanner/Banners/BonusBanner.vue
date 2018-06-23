@@ -21,6 +21,10 @@ a.bonus-banner .content {
 		color: $kiva-darkgreen;
 	}
 
+	.leading-text &:hover {
+		text-decoration: none;
+	}
+
 	@include breakpoint(medium) {
 		line-height: 2.5rem;
 	}
