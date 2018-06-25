@@ -92,23 +92,23 @@ export default {
 		query: lendingStatsQuery,
 		preFetch: true,
 		result({ data }) {
-			const allCountries = _sortBy(_map(_get(data, 'countryFacets'), 'country'), 'name');
+			const allCountries = _sortBy(_map(_get(data, 'lend.countryFacets'), 'country'), 'name');
 			this.countriesLentTo = _sortBy(_get(data, 'my.lendingStats.countriesLentTo'), 'name');
 			this.countriesNotLentTo = _differenceBy(allCountries, this.countriesLentTo, 'isoCode');
 			this.totalCountries = allCountries.length;
 
-			const allSectors = _sortBy(_get(data, 'kivaStats.sectors'), 'name');
+			const allSectors = _sortBy(_get(data, 'general.kivaStats.sectors'), 'name');
 			this.sectorsLentTo = _sortBy(_get(data, 'my.lendingStats.sectorsLentTo'), 'name');
 			this.sectorsNotLentTo = _differenceBy(allSectors, this.sectorsLentTo, 'id');
 
-			const allActivities = _sortBy(_get(data, 'kivaStats.activities'), 'name');
+			const allActivities = _sortBy(_get(data, 'general.kivaStats.activities'), 'name');
 			this.activitiesLentTo = _sortBy(_get(data, 'my.lendingStats.activitiesLentTo'), 'name');
 			this.activitiesNotLentTo = _differenceBy(allActivities, this.activitiesLentTo, 'id');
 
-			const allPartners = _sortBy(_get(data, 'partners.values'), 'name');
+			const allPartners = _sortBy(_get(data, 'general.partners.values'), 'name');
 			this.partnersLentTo = _sortBy(_get(data, 'my.lendingStats.partnersLentTo'), 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
-			this.totalPartners = _get(data, 'partners.totalCount');
+			this.totalPartners = _get(data, 'general.partners.totalCount');
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, reject }) => reject({

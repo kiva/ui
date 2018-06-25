@@ -21,7 +21,9 @@ describe('SearchBar', () => {
 		const query = jest.fn();
 		query.mockReturnValue(Promise.resolve({
 			data: {
-				loanSearchSuggestions: suggestions
+				lend: {
+					loanSearchSuggestions: suggestions
+				}
 			}
 		}));
 		apollo = { query };

@@ -19,29 +19,33 @@ query {
 			}
 		}
 	}
-	countryFacets {
-		count
-		country {
-			name
-			region
-			isoCode
+	lend {
+		countryFacets {
+			count
+			country {
+				name
+				region
+				isoCode
+			}
 		}
 	}
-	kivaStats {
-		sectors {
-			id
-			name
+	general {
+		kivaStats {
+			sectors {
+				id
+				name
+			}
+			activities {
+				id
+				name
+			}
 		}
-		activities {
-			id
-			name
-		}
-	}
-	partners (filters: { status: active }, limit: null) {
-		totalCount
-		values {
-			id
-			name
+		partners (filters: { status: active }, limit: null) {
+			totalCount
+			values {
+				id
+				name
+			}
 		}
 	}
 }

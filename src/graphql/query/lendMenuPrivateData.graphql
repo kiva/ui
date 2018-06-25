@@ -1,8 +1,10 @@
 query ($userId: Int){
-	loans(limit: 0, filters: {
-		lenderFavorite: $userId
-	}) {
-		totalCount
+	lend {
+		loans(limit: 0, filters: {
+			lenderFavorite: $userId
+		}) {
+			totalCount
+		}
 	}
 	my {
 		savedSearches(limit: 10) {

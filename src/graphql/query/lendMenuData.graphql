@@ -4,19 +4,21 @@ query {
 			id
 		}
 	}
-	loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
-		values {
-			index
-			name
-			url
+	lend {
+		loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
+			values {
+				index
+				name
+				url
+			}
 		}
-	}
-	countryFacets {
-		count
-		country {
-			name
-			region
-			isoCode
+		countryFacets {
+			count
+			country {
+				name
+				region
+				isoCode
+			}
 		}
 	}
 }

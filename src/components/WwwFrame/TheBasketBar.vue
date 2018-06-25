@@ -19,7 +19,7 @@ export default {
 		query: countQuery,
 		preFetch: true,
 		result({ data }) {
-			this.count = _get(data, 'shop.headerItemCount');
+			this.count = _get(data, 'shop.nonTrivialItemCount');
 		}
 	},
 };

@@ -118,8 +118,8 @@ export default {
 		onFocus() {
 			this.hasFocus = true;
 			this.apollo.query({ query: suggestionsQuery }).then(({ data }) => {
-				if (data) {
-					engine.reset(data.loanSearchSuggestions);
+				if (data && data.lend) {
+					engine.reset(data.lend.loanSearchSuggestions);
 				}
 			});
 		},

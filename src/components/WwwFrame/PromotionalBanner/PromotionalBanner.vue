@@ -46,15 +46,15 @@ export default {
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 
 			this.holidayModeEnabled = this.settingEnabled(
-				_get(data, 'holiday_enabled.value'),
-				_get(data, 'holiday_start_time.value'),
-				_get(data, 'holiday_end_time.value')
+				_get(data, 'general.holiday_enabled.value'),
+				_get(data, 'general.holiday_start_time.value'),
+				_get(data, 'general.holiday_end_time.value')
 			);
 
 			this.promoEnabled = this.settingEnabled(
-				_get(data, 'promo_enabled.value'),
-				_get(data, 'promo_start_time.value'),
-				_get(data, 'promo_end_time.value')
+				_get(data, 'general.promo_enabled.value'),
+				_get(data, 'general.promo_start_time.value'),
+				_get(data, 'general.promo_end_time.value')
 			);
 		}
 	},
