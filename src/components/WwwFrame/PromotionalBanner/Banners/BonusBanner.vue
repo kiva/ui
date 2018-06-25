@@ -12,7 +12,7 @@
 <style lang="scss">
 @import 'settings';
 
-a:hover {
+a.bonus-banner:hover {
 	text-decoration: none;
 }
 
