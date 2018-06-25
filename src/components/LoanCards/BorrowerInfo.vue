@@ -9,6 +9,31 @@
 			</span>
 			<router-link :to="`/lend/${ id }`">Read more</router-link>
 		</div>
+
+		<div style="border: 2px solid red;">
+			<p style="color:red; font-weight: bold;">
+				Delete this temporary div
+			</p>
+			<p v-if="isFavorite">
+				it's a favorite
+			</p>
+			<p v-else>
+				sorry, not a favorite
+			</p>
+			<p v-if="isLentTo">
+				you lent to this
+			</p>
+			<p v-else>
+				you haven't lent to this yet
+			</p>
+			<p v-if="isVisitor">
+				you're not logged in
+			</p>
+			<p v-else>
+				you are logged in
+			</p>
+
+		</div>
 	</div>
 </template>
 
@@ -20,8 +45,8 @@ export default {
 			default: ''
 		},
 		id: {
-			type: String,
-			default: ''
+			type: Number,
+			default: null
 		},
 		name: {
 			type: String,
@@ -42,7 +67,20 @@ export default {
 		borrowerCount: {
 			type: Number,
 			default: 1
+		},
+		isFavorite: {
+			type: Boolean,
+			default: false
+		},
+		isLentTo: {
+			type: Boolean,
+			default: false
+		},
+		isVisitor: {
+			type: Boolean,
+			default: true
 		}
+
 	},
 	computed: {
 		helpedLanguage() {

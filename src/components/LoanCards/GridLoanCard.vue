@@ -16,6 +16,9 @@
 				:country="loan.geocode.country.name"
 				:status="loan.status"
 				:borrower-count="loan.borrowerCount"
+				:is-favorite="loan.userProperties.favorited"
+				:is-lent-to="loan.userProperties.lentTo"
+				:is-visitor="isVisitor"
 			/>
 
 			<div class="loan-card-footer-wrap">
@@ -54,6 +57,10 @@ export default {
 		loan: {
 			type: Object,
 			default: () => {}
+		},
+		isVisitor: {
+			type: Boolean,
+			default: true
 		}
 	},
 	computed: {
