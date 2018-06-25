@@ -1,13 +1,13 @@
 <template>
 	<div class="borrower-info-wrapper">
-		<a class="name">{{ name }}</a>
+		<router-link :to="`/lend/${ id }`" class="name">{{ name }}</router-link>
 		<div class="country">{{ country }}</div>
 		<div class="loan-use">
 			<span>
 				A loan of {{ amount | numeral('$0,0') }} {{ helpedLanguage }}
 				{{ borrowerCountLanguage }} {{ shortenedLoanUse }}
 			</span>
-			<a class="borrower-page-link" href="">Read more</a>
+			<router-link :to="`/lend/${ id }`">Read more</router-link>
 		</div>
 	</div>
 </template>
@@ -16,6 +16,10 @@
 export default {
 	props: {
 		use: {
+			type: String,
+			default: ''
+		},
+		id: {
 			type: String,
 			default: ''
 		},
