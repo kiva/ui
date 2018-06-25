@@ -12,6 +12,10 @@
 <style lang="scss">
 @import 'settings';
 
+a:hover {
+	text-decoration: none;
+}
+
 a.bonus-banner .content {
 	color: $kiva-darkgreen;
 	height: rem-calc(45);
@@ -19,10 +23,6 @@ a.bonus-banner .content {
 	&:hover,
 	&:active {
 		color: $kiva-darkgreen;
-	}
-
-	.leading-text &:hover {
-		text-decoration: none;
 	}
 
 	@include breakpoint(medium) {
