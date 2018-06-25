@@ -20,8 +20,8 @@ export default {
 			default: ''
 		},
 		id: {
-			type: String,
-			default: ''
+			type: Number,
+			default: null
 		},
 		name: {
 			type: String,
