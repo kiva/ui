@@ -19,6 +19,6 @@ query {
 		}
 	}
 	shop {
-		headerItemCount
+		nonTrivialItemCount
 	}
 }

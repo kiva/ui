@@ -1,7 +1,9 @@
 query {
-	loanSearchSuggestions {
-		group
-		label
-		query
+	lend {
+		loanSearchSuggestions {
+			group
+			label
+			query
+		}
 	}
 }

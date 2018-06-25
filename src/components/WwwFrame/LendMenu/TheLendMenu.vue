@@ -101,8 +101,8 @@ export default {
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
 					this.userId = _get(data, 'my.userAccount.id');
-					this.categories = _sortBy(_get(data, 'loanChannels.values'), 'index');
-					this.countryFacets = _get(data, 'countryFacets');
+					this.categories = _sortBy(_get(data, 'lend.loanChannels.values'), 'index');
+					this.countryFacets = _get(data, 'lend.countryFacets');
 				}
 			});
 		},
@@ -128,7 +128,7 @@ export default {
 					}
 				}).then(({ data, errors }) => {
 					if (!errors) {
-						this.favoritesCount = _get(data, 'loans.totalCount');
+						this.favoritesCount = _get(data, 'lend.loans.totalCount');
 						this.savedSearches = _get(data, 'my.savedSearches.values');
 					} else {
 						this.favoritesCount = 0;

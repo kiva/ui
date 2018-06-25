@@ -4,41 +4,43 @@ query {
 			id
 		}
 	}
-	loans {
-		totalCount
-		values {
-			id
-			status
-			image {
-				default: url(customSize: "w480h360")
-				retina: url(customSize: "w960h720")
-			}
-			name
-			borrowerCount
-			geocode {
-				country {
-					name
+	lend {
+		loans {
+			totalCount
+			values {
+				id
+				status
+				image {
+					default: url(customSize: "w480h360")
+					retina: url(customSize: "w960h720")
 				}
-			}
-			use
-			lenderRepaymentTerm
-			loanAmount
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-				isExpiringSoon
-			}
-			plannedExpirationDate
-			matchingText
-			userProperties {
-				favorited
-				lentTo
-		    }
-			... on LoanPartner {
-				partnerName
-			}
-			...on LoanDirect {
-				trusteeName
+				name
+				borrowerCount
+				geocode {
+					country {
+						name
+					}
+				}
+				use
+				lenderRepaymentTerm
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+					reservedAmount
+					isExpiringSoon
+				}
+				plannedExpirationDate
+				matchingText
+				userProperties {
+					favorited
+					lentTo
+			    }
+				... on LoanPartner {
+					partnerName
+				}
+				...on LoanDirect {
+					trusteeName
+				}
 			}
 		}
 	}

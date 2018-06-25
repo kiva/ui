@@ -13,22 +13,24 @@ query {
 		}
 		lendingRewardOffered
 	}
-	holiday_enabled: setting(setting: "feature.holiday_mode.enabled") {
-		value
-	}
-	holiday_start_time: setting(setting: "feature.holiday_mode.start_time") {
-		value
-	}
-	holiday_end_time: setting(setting: "feature.holiday_mode.end_time") {
-		value
-	}
-	promo_enabled: setting(setting: "promo.topnav_promo.enabled") {
-		value
-	}
-	promo_start_time: setting(setting: "promo.topnav_promo.start_time") {
-		value
-	}
-	promo_end_time: setting(setting: "promo.topnav_promo.end_time") {
-		value
+	general {
+		holiday_enabled: setting(setting: "feature.holiday_mode.enabled") {
+			value
+		}
+		holiday_start_time: setting(setting: "feature.holiday_mode.start_time") {
+			value
+		}
+		holiday_end_time: setting(setting: "feature.holiday_mode.end_time") {
+			value
+		}
+		promo_enabled: setting(setting: "promo.topnav_promo.enabled") {
+			value
+		}
+		promo_start_time: setting(setting: "promo.topnav_promo.start_time") {
+			value
+		}
+		promo_end_time: setting(setting: "promo.topnav_promo.end_time") {
+			value
+		}
 	}
 }
