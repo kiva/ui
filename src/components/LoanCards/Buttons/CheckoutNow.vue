@@ -38,8 +38,12 @@ export default {
 	box-shadow: 0 rem-calc(2) $charcoal;
 	padding: rem-calc(13) 0;
 
+	&:hover {
+		color: $blue;
+		border: 1px solid $blue;
+	}
+
 	.icon-check-in-circle {
-		color: $charcoal;
 		width: rem-calc(30);
 		height: rem-calc(30);
 		vertical-align: middle;
