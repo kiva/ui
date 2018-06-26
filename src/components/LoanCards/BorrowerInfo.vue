@@ -1,13 +1,22 @@
 <template>
 	<div class="borrower-info-wrapper">
-		<router-link :to="`/lend/${ id }`" class="name">{{ name }}</router-link>
+		<router-link
+			:to="`/lend/${ id }`"
+			class="name"
+			v-kv-track-event="['Lending', 'click-Read more', 'Name', id, 'true']">
+			{{ name }}
+		</router-link>
 		<div class="country">{{ country }}</div>
 		<div class="loan-use">
 			<span>
 				A loan of {{ amount | numeral('$0,0') }} {{ helpedLanguage }}
 				{{ borrowerCountLanguage }} {{ shortenedLoanUse }}
 			</span>
-			<router-link :to="`/lend/${ id }`">Read more</router-link>
+			<router-link
+				:to="`/lend/${ id }`"
+				v-kv-track-event="['Lending', 'click-Read more', 'Read more', id, 'true']">
+				Read more
+			</router-link>
 		</div>
 	</div>
 </template>
