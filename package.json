@@ -68,7 +68,7 @@
 		"babel-helper-vue-jsx-merge-props": "^2.0.3",
 		"babel-jest": "^23.0.0-alpha.0",
 		"babel-loader": "^7.1.2",
-		"babel-plugin-dynamic-import-node": "^1.2.0",
+		"babel-plugin-dynamic-import-node": "^2.0.0",
 		"babel-plugin-syntax-jsx": "^6.18.0",
 		"babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
 		"babel-plugin-transform-vue-jsx": "^3.5.1",
