@@ -3,7 +3,7 @@
 		<router-link
 			:to="`/lend/${ id }`"
 			class="name"
-			v-kv-track-event="`['Lending', 'click-Read more', 'Name', ${ id }, 'true']`">
+			v-kv-track-event="['Lending', 'click-Read more', 'Name', id, 'true']">
 			{{ name }}
 		</router-link>
 		<div class="country">{{ country }}</div>
@@ -14,7 +14,7 @@
 			</span>
 			<router-link
 				:to="`/lend/${ id }`"
-				v-kv-track-event="`['Lending', 'click-Read more', 'Read more', ${ id }, 'true']`">
+				v-kv-track-event="['Lending', 'click-Read more', 'Read more', id, 'true']">
 				Read more
 			</router-link>
 		</div>
