@@ -74,7 +74,8 @@ export default {
 	stroke: $kiva-text-dark;
 }
 
-.icon-distribution {
+.icon-distribution,
+.icon-check-in-circle {
 	color: $kiva-text-dark;
 }
 
