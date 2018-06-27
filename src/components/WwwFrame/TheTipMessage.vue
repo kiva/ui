@@ -1,12 +1,12 @@
 <template>
-	<div class="message-text message-text-confirmation text-center small-12">
+	<div v-if="tipVisible" class="message-text message-text-confirmation text-center small-12">
 		<span class="message-content">
 			<div class="icon-wrapper">
 				<kv-icon name="info" />
 			</div>
 			<p class="message">{{ tipMsg }} {{ tipMsgType }}</p>
 		</span>
-		<a class="close-tip-message" aria-label="Close">
+		<a @click="close" class="close-tip-message" aria-label="Close">
 			<kv-icon name="x" />
 		</a>
 	</div>
@@ -15,6 +15,7 @@
 <script>
 import _get from 'lodash/get';
 import tipMessageData from '@/graphql/query/tipMessageData.graphql';
+import updateTipMessage from '@/graphql/mutation/updateTipMessage.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -24,33 +25,48 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
+			tipVisible: false,
 			tipMsg: '',
-			tipMsgType: 'info',
-			showTipOnLoad: false,
+			tipMsgType: 'info'
 		};
 	},
 	methods: {
-		showTipMsg() {
-			console.log('show tip message');
-		},
-		clostTipMsg() {
+		close() {
 			console.log('close tip message');
+			this.apollo.mutate({
+				mutation: updateTipMessage,
+				variables: {
+					tipMsg: this.tipMsg,
+					tipMsgType: this.tipMsgType,
+					tipVisible: false
+				}
+			});
 		}
 	},
-	apollo: {
-		query: tipMessageData,
-		// preFetch: true,
-		result({ data }) {
-			// eslint-disable-next-line no-console
-			console.log(`tip message queried: ${JSON.stringify(data)}`);
-			this.showTipOnLoad = _get(data, 'showTipOnLoad');
-			this.tipMsg = _get(data, 'tipMsg');
-			this.tipMsgType = _get(data, 'tipMsgType');
-		},
-	},
-	updated() {
-		// eslint-disable-next-line no-console
-		console.log('tip message updated');
+	// apollo: {
+	// 	query: tipMessageData,
+	// 	// preFetch: true,
+	// 	result({ data }) {
+	// 		// eslint-disable-next-line no-console
+	// 		console.log(`tip message queried: ${JSON.stringify(data)}`);
+	// 		this.tipMsg = _get(data, 'tipMsg');
+	// 		this.tipMsgType = _get(data, 'tipMsgType');
+	// 		this.showTipOnLoad = _get(data, 'showTipOnLoad');
+
+	// 		this.show();
+	// 	},
+	// },
+	mounted() {
+		this.apollo.watchQuery({ query: tipMessageData }).subscribe({
+			next: ({ data }) => {
+				// eslint-disable-next-line no-console
+				console.log(`tip message queried: ${JSON.stringify(data)}`);
+
+				this.tipMsg = _get(data, 'tipMsg');
+				this.tipMsgType = _get(data, 'tipMsgType');
+				this.tipVisible = _get(data, 'tipVisible');
+			}
+		});
 	}
 };
 </script>

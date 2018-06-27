@@ -5,9 +5,9 @@ export default ({ cache }) => {
 		cache,
 		defaults: {
 			usingTouch: false,
-			tipMsg: '',
+			tipMsg: null,
 			tipMsgType: 'info',
-			showTipOnLoad: false
+			tipVisible: false
 		},
 		resolvers: {
 			Mutation: {
@@ -17,9 +17,9 @@ export default ({ cache }) => {
 					});
 					return null;
 				},
-				updateTipMessage(_, { tipMsg, tipMsgType, showTipOnLoad }, context) {
+				updateTipMessage(_, { tipMsg, tipMsgType, tipVisible }, context) {
 					context.cache.writeData({
-						data: { tipMsg, tipMsgType, showTipOnLoad }
+						data: { tipMsg, tipMsgType, tipVisible }
 					});
 					return null;
 				}

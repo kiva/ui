@@ -1,5 +1,5 @@
 query {
 	tipMsg @client,
 	tipMsgType @client,
-	showTipOnLoad @client
+	tipVisible @client
 }

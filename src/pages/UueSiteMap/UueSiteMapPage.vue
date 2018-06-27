@@ -2,7 +2,7 @@
 	<www-page>
 		<div class="row">
 			<div class="small-12 columns">
-				<h1>Available Routes</h1>
+				<h1 @click="showCustomMessage()">Available Routes</h1>
 				<route-listing/>
 			</div>
 		</div>
@@ -19,20 +19,10 @@ export default {
 	metaInfo: {
 		title: 'Sitemap'
 	},
-	mounted() {
-		// console.log(this);
-		// console.log(typeof this.$tipMsg);
-		// this.$ti	pMsg('some message', 'some type');
-		// console.log(this.$root);
-		// console.log(typeof this.$root.$tipMsg);
-		// console.log(typeof this.uiTipMsg);
-		// console.log(typeof this.$root.uiTipMsg);
-		this.$tipMsg({
-			apolloClient: this.apollo,
-			tipMsg: 'global message',
-			tipMsgType: 'global type',
-			showTipOnLoad: true
-		});
+	methods: {
+		showCustomMessage() {
+			this.$showTipMsg('global message', 'warning');
+		}
 	}
 };
 </script>

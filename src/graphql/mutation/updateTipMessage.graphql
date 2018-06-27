@@ -1,3 +1,3 @@
-mutation updateTipMessage($tipMsg: String, $tipMsgType: String, $showTipOnLoad: Boolean) {
-	updateTipMessage(tipMsg: $tipMsg, tipMsgType: $tipMsgType, showTipOnLoad: $showTipOnLoad) @client
+mutation updateTipMessage($tipMsg: String, $tipMsgType: String, $tipVisible: Boolean) {
+	updateTipMessage(tipMsg: $tipMsg, tipMsgType: $tipMsgType, tipVisible: $tipVisible) @client
 }

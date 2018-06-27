@@ -10,6 +10,7 @@ export default {
 		Vue.filter('kebabCase', kebabCaseFilter);
 		Vue.filter('numeral', numeralFilter);
 		kvAnayltics(Vue);
-		tipMessage(Vue);
+		// tipMessage(Vue);
+		Vue.mixin(tipMessage);
 	}
 };
