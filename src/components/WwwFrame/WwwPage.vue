@@ -8,6 +8,7 @@
 		</main>
 		<the-footer />
 		<the-basket-bar />
+		<the-tip-message />
 	</div>
 </template>
 
@@ -15,9 +16,15 @@
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
+import TheTipMessage from './TheTipMessage';
 
 export default {
-	components: { TheHeader, TheFooter, TheBasketBar },
+	components: {
+		TheHeader,
+		TheFooter,
+		TheBasketBar,
+		TheTipMessage
+	}
 };
 </script>
 

@@ -1,0 +1,5 @@
+query {
+	tipMsg @client,
+	tipMsgType @client,
+	showTipOnLoad @client
+}
