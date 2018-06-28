@@ -117,7 +117,6 @@ export default {
 			// optimistically toggle it locally first
 			this.isFavorite = !this.isFavorite;
 
-			// @todo - does this need a .catch? if so, do we log error?
 			this.apollo.mutate({
 				mutation: loanFavoriteMutation,
 				variables: {
@@ -143,23 +142,23 @@ export default {
 @import 'settings';
 
 .grid-loan-card {
-    background-color: $white;
-    border: 1px solid $kiva-stroke-gray;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-width: rem-calc(480);
-    margin: auto;
+	background-color: $white;
+	border: 1px solid $kiva-stroke-gray;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	max-width: rem-calc(480);
+	margin: auto;
 
-    &:hover {
-        box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
-    }
+	&:hover {
+		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+	}
 }
 
 .loan-card-footer-wrap {
-    flex-grow: 0;
-    padding: rem-calc(20) rem-calc(20) rem-calc(16);
-    text-align: center;
-    width: 100%;
+	flex-grow: 0;
+	padding: rem-calc(20) rem-calc(20) rem-calc(16);
+	text-align: center;
+	width: 100%;
 }
 </style>

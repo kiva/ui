@@ -43,7 +43,7 @@ export default {
 		color: $white;
 		opacity: 0.5;
 		background-color: $kiva-text-dark;
-		padding: .5rem;
+		padding: 0.5rem;
 		vertical-align: bottom;
 	}
 
