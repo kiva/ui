@@ -2,7 +2,7 @@
 	<component
 		:is="currentButtonState"
 		class="button lend-button"
-		@click="addToBasketClick"
+		@click.native="addToBasketClick"
 		:id="id" />
 </template>
 
