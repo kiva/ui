@@ -30,7 +30,9 @@
 					:expiring-soon-message="expiringSoonMessage"
 				/>
 
-				<action-button />
+				<action-button
+					:id="loan.id"
+					:items-in-basket="itemsInBasket" />
 
 				<matching-text :matching-text="loan.matchingText" />
 			</div>
@@ -48,7 +50,7 @@ import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
-import ActionButton from '@/components/LoanCards/ActionButton';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import _get from 'lodash/get';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
@@ -65,6 +67,10 @@ export default {
 		loan: {
 			type: Object,
 			default: () => {}
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
 		},
 		isVisitor: {
 			type: Boolean,
