@@ -1,16 +1,26 @@
 <template>
-	<a class="success button">
+	<kv-button
+		class="success"
+		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-click', id, 'true']">
 		<kv-icon name="check-in-circle" />
 		Checkout now
-	</a>
+	</kv-button>
 </template>
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		KvIcon,
+		KvButton,
+	},
+	props: {
+		id: {
+			type: Number,
+			default: null
+		},
 	},
 };
 

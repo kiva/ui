@@ -35,4 +35,13 @@ query {
 			}
 		}
 	}
+	shop {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
 }

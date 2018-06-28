@@ -9,7 +9,11 @@
 
 			<div class="columns small-12">
 				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<GridLoanCard :loan="loan" v-for="loan in loans" :key="loan.id" />
+					<GridLoanCard
+						:loan="loan"
+						v-for="loan in loans"
+						:key="loan.id"
+						:items-in-basket="itemsInBasket" />
 				</div>
 			</div>
 		</div>
@@ -20,6 +24,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import loanCardQuery from '@/graphql/query/loanCardData.graphql';
+import _map from 'lodash/map';
 
 export default {
 	components: {
@@ -34,6 +39,7 @@ export default {
 		return {
 			totalCount: 0,
 			loans: [],
+			itemsInBasket: [],
 		};
 	},
 	apollo: {
@@ -42,6 +48,7 @@ export default {
 		result({ data }) {
 			this.totalCount = data.lend.loans.totalCount;
 			this.loans = data.lend.loans.values;
+			this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
 		}
 	}
 };

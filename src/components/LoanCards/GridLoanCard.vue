@@ -26,7 +26,9 @@
 					:expiring-soon-message="expiringSoonMessage"
 				/>
 
-				<action-button :id="loan.id" />
+				<action-button
+					:id="loan.id"
+					:items-in-basket="itemsInBasket" />
 
 				<matching-text :matching-text="loan.matchingText" />
 			</div>
@@ -54,6 +56,10 @@ export default {
 		loan: {
 			type: Object,
 			default: () => {}
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
 		}
 	},
 	computed: {
