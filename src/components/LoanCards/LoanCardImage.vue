@@ -1,17 +1,59 @@
-<template functional>
+<template>
 	<div class="borrower-image-wrapper">
 		<router-link
-			:to="`/lend/${props.id}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Photo', props.id, 'true']">
+			:to="`/lend/${id}`"
+			v-kv-track-event="['Lending', 'click-Read more', 'Photo', id, 'true']">
 
 			<img class="borrower-image"
-				:srcset = "props.retinaImageUrl + ' 2x'"
-				:src = "props.standardImageUrl"
-				:alt = "'photo of ' + props.name"
+				:srcset = "retinaImageUrl + ' 2x'"
+				:src = "standardImageUrl"
+				:alt = "'photo of ' + name"
 			>
+
+			<favorite-star class="favorite-star"
+				v-if="!isVisitor"
+				:is-favorite="isFavorite"
+				@favorite-toggled="$emit('favorite-toggled')"
+			/>
 		</router-link>
 	</div>
 </template>
+
+<script>
+import FavoriteStar from '@/components/LoanCards/FavoriteStar';
+
+export default {
+	components: {
+		FavoriteStar,
+	},
+	props: {
+		id: {
+			type: Number,
+			default: null
+		},
+		retinaImageUrl: {
+			type: String,
+			default: ''
+		},
+		standardImageUrl: {
+			type: String,
+			default: ''
+		},
+		name: {
+			type: String,
+			default: ''
+		},
+		isVisitor: {
+			type: Boolean,
+			default: false
+		},
+		isFavorite: {
+			type: Boolean,
+			default: false
+		}
+	}
+};
+</script>
 
 <style lang="scss" scoped>
 	@import 'settings';
@@ -30,5 +72,11 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
+	}
+
+	.favorite-star {
+		position: absolute;
+		bottom: 0;
+		right: 0;
 	}
 </style>

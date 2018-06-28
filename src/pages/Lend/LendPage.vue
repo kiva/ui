@@ -34,7 +34,7 @@ export default {
 	},
 	inject: ['apollo'],
 	metaInfo: {
-		title: 'Fundraising loans | Kiva'
+		title: 'Fundraising loans'
 	},
 	data() {
 		return {
