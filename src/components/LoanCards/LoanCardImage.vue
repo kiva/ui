@@ -13,6 +13,7 @@
 			<favorite-star class="favorite-star"
 				v-if="!isVisitor"
 				:is-favorite="isFavorite"
+				:id="id"
 				@favorite-toggled="$emit('favorite-toggled')"
 			/>
 		</router-link>

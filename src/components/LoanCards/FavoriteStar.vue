@@ -1,6 +1,6 @@
 <template>
 	<button
-		v-kv-track-event="['Lending','click-Favorite star','Favorite',undefined,true]"
+		v-kv-track-event="['Lending','click-Favorite star','Favorite',id,true]"
 		@click.prevent.stop='toggleFavorite'
 	>
 		<kv-icon name="star" :class="{ 'is-favorite': isFavorite }" />
@@ -18,7 +18,11 @@ export default {
 		isFavorite: {
 			type: Boolean,
 			default: false
-		}
+		},
+		id: {
+			type: Number,
+			default: null
+		},
 	},
 	methods: {
 		toggleFavorite() {
