@@ -1,0 +1,13 @@
+# This will get folded into loanCardData.graphql
+
+query {
+	shop {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}

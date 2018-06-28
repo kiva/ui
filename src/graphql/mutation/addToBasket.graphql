@@ -1,0 +1,12 @@
+mutation addToBasket($id: Int!, $price: Money!) {
+	shop {
+		updateLoanReservation (loanReservation: {
+			id: $id
+			price: $price
+		})
+		{
+			id
+			price
+		}
+	}
+}
