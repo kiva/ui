@@ -1,6 +1,6 @@
 <template>
 	<kv-button
-		class="success"
+		class="secondary"
 		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-click', id, 'true']">
 		<kv-icon name="check-in-circle" />
 		Checkout now
@@ -29,11 +29,7 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.success.button {
-	color: $charcoal;
-	background-color: $white;
-	border: 1px solid $charcoal;
-	box-shadow: 0 rem-calc(2) $charcoal;
+.secondary.button {
 	padding: rem-calc(13) 0;
 
 	.icon-check-in-circle {
