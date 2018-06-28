@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+	<title>Check-in-circle icon</title>
+	<g fill-rule="evenodd" transform="translate(3 3)">
+		<circle cx="22" cy="22" r="22" stroke="currentColor"/>
+		<polyline transform="translate(1.5,10) scale(1.5 1.5)" id="checkmark" fill="currentColor" fill-rule="nonzero" points="5.58323414 9.359 3 11.943 9.25856726 18.199 25.0599995 2.583 22.4757652 0 9.25856726 13.033 5.58323414 9.359"></polyline>
+	</g>
+</svg>

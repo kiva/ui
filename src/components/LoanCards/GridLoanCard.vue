@@ -26,7 +26,9 @@
 					:expiring-soon-message="expiringSoonMessage"
 				/>
 
-				<action-button />
+				<action-button
+					:id="loan.id"
+					:items-in-basket="itemsInBasket" />
 
 				<matching-text :matching-text="loan.matchingText" />
 			</div>
@@ -40,7 +42,7 @@ import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
-import ActionButton from '@/components/LoanCards/ActionButton';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 
 export default {
 	components: {
@@ -54,6 +56,10 @@ export default {
 		loan: {
 			type: Object,
 			default: () => {}
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
 		}
 	},
 	computed: {
