@@ -45,9 +45,8 @@ export default {
 		currentButtonState() {
 			if (_includes(this.itemsInBasket, this.id)) {
 				return CheckoutNowButton;
-			} else if (this.isLentTo) {
-				// eslint-disable-next-line
-				console.log('isLent TO hit.');
+			}
+			if (this.isLentTo) {
 				return LendAgainButton;
 			}
 			return LendButton;
