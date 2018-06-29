@@ -19,6 +19,5 @@ export default {
 .placeholder {
 	padding: rem-calc(13) 0;
 	visibility: hidden;
-
 }
 </style>
