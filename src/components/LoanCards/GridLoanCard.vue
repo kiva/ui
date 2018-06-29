@@ -28,7 +28,8 @@
 
 				<action-button
 					:id="loan.id"
-					:items-in-basket="itemsInBasket" />
+					:items-in-basket="itemsInBasket"
+					:is-lent-to="loan.userProperties.lentTo" />
 
 				<matching-text :matching-text="loan.matchingText" />
 			</div>
@@ -60,7 +61,11 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => []
-		}
+		},
+		isVisitor: {
+			type: Boolean,
+			default: true
+		},
 	},
 	computed: {
 		amountLeft() {
