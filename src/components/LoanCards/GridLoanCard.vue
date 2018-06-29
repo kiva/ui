@@ -76,7 +76,7 @@ export default {
 		isVisitor: {
 			type: Boolean,
 			default: true
-     },
+		},
 	},
 	data() {
 		return {
