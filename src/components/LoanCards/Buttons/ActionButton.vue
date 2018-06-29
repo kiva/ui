@@ -13,6 +13,7 @@ import addToBasket from '@/graphql/mutation/addToBasket.graphql';
 import _includes from 'lodash/includes';
 import LendButton from './LendButton';
 import CheckoutNow from './CheckoutNow';
+import PlaceholderButton from './PlaceholderButton';
 
 export default {
 	components: {
@@ -34,11 +35,18 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		isFunded: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		currentButtonState() {
 			if (_includes(this.itemsInBasket, this.id)) {
 				return CheckoutNow;
+			}
+			if (this.isFunded) {
+				return PlaceholderButton;
 			}
 			return LendButton;
 		}
