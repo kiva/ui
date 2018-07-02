@@ -34,6 +34,7 @@
 				<action-button
 					:id="loan.id"
 					:items-in-basket="itemsInBasket"
+					:is-lent-to="loan.userProperties.lentTo"
 					:is-funded="loan.status==='funded'"/>
 
 				<matching-text
@@ -79,7 +80,7 @@ export default {
 		isVisitor: {
 			type: Boolean,
 			default: true
-		}
+		},
 	},
 	data() {
 		return {

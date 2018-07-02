@@ -34,7 +34,7 @@ query {
 				userProperties {
 					favorited
 					lentTo
-			    }
+				}
 				... on LoanPartner {
 					partnerName
 				}
