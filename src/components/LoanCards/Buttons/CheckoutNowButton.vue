@@ -2,7 +2,7 @@
 	<kv-button
 		class="secondary"
 		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', id, 'true']"
-		:to="`/basket`">
+		to="/basket">
 		<kv-icon name="check-in-circle" />
 		Checkout now
 	</kv-button>
