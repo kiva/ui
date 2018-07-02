@@ -14,6 +14,7 @@ import _includes from 'lodash/includes';
 import LendButton from './LendButton';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
+import PlaceholderButton from './PlaceholderButton';
 
 export default {
 	components: {
@@ -39,7 +40,11 @@ export default {
 		isLentTo: {
 			type: Boolean,
 			default: false
-		}
+		},
+		isFunded: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		currentButtonState() {
@@ -48,6 +53,9 @@ export default {
 			}
 			if (this.isLentTo) {
 				return LendAgainButton;
+			}
+			if (this.isFunded) {
+				return PlaceholderButton;
 			}
 			return LendButton;
 		}

@@ -28,14 +28,18 @@
 					:percent-raised="percentRaised"
 					:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
 					:expiring-soon-message="expiringSoonMessage"
+					:is-funded="loan.status==='funded'"
 				/>
 
 				<action-button
 					:id="loan.id"
 					:items-in-basket="itemsInBasket"
-					:is-lent-to="loan.userProperties.lentTo" />
+					:is-lent-to="loan.userProperties.lentTo"
+					:is-funded="loan.status==='funded'"/>
 
-				<matching-text :matching-text="loan.matchingText" />
+				<matching-text
+					:matching-text="loan.matchingText"
+					:is-funded="loan.status==='funded'"/>
 			</div>
 		</div>
 	</div>
