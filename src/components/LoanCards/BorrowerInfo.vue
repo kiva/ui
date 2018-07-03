@@ -17,6 +17,7 @@
 				v-kv-track-event="['Lending', 'click-Read more', 'Read more', id, 'true']">
 				Read more
 			</router-link>
+			<div>{{ loanLength }} months</div>
 		</div>
 	</div>
 </template>
@@ -51,6 +52,10 @@ export default {
 		borrowerCount: {
 			type: Number,
 			default: 1
+		},
+		loanLength: {
+			type: Number,
+			default: null
 		}
 	},
 	computed: {
