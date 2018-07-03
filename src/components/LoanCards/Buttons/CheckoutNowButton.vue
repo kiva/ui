@@ -30,7 +30,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.secondary.button {
+a.secondary.button {
 	padding: rem-calc(13) 0;
 
 	.icon-check-in-circle {
@@ -48,7 +48,7 @@ export default {
 		border: 1px solid $blue;
 		box-shadow: 0 rem-calc(2) $blue;
 
-		.icon-check-in-circle {
+		svg.icon-check-in-circle {
 			color: $blue;
 		}
 	}
