@@ -12,12 +12,15 @@ import basketCount from '@/graphql/query/basketCount.graphql';
 import addToBasket from '@/graphql/mutation/addToBasket.graphql';
 import _includes from 'lodash/includes';
 import LendButton from './LendButton';
-import CheckoutNow from './CheckoutNow';
+import CheckoutNowButton from './CheckoutNowButton';
+import LendAgainButton from './LendAgainButton';
+import PlaceholderButton from './PlaceholderButton';
 
 export default {
 	components: {
 		LendButton,
-		CheckoutNow,
+		CheckoutNowButton,
+		LendAgainButton,
 	},
 	inject: ['apollo'],
 	data() {
@@ -34,11 +37,25 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		isLentTo: {
+			type: Boolean,
+			default: false
+		},
+		isFunded: {
+			type: Boolean,
+			default: false
+		},
 	},
 	computed: {
 		currentButtonState() {
 			if (_includes(this.itemsInBasket, this.id)) {
-				return CheckoutNow;
+				return CheckoutNowButton;
+			}
+			if (this.isLentTo) {
+				return LendAgainButton;
+			}
+			if (this.isFunded) {
+				return PlaceholderButton;
 			}
 			return LendButton;
 		}
@@ -63,6 +80,7 @@ export default {
 		}
 	}
 };
+
 </script>
 
 <style lang="scss" scoped>

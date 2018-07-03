@@ -1,4 +1,9 @@
 query {
+	my {
+		userAccount {
+			id
+		}
+	}
 	lend {
 		loans {
 			totalCount
@@ -26,6 +31,10 @@ query {
 				}
 				plannedExpirationDate
 				matchingText
+				userProperties {
+					favorited
+					lentTo
+				}
 				... on LoanPartner {
 					partnerName
 				}
