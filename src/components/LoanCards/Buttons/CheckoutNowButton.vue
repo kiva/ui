@@ -43,7 +43,8 @@ a.secondary.button {
 	}
 
 	&:hover,
-	&:active {
+	&:active,
+	&:focus {
 		color: $blue;
 		border: 1px solid $blue;
 		box-shadow: 0 rem-calc(2) $blue;
