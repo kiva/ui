@@ -17,7 +17,7 @@
 				v-kv-track-event="['Lending', 'click-Read more', 'Read more', id, 'true']">
 				Read more
 			</router-link>
-			<div>{{ loanLength }} months</div>
+			<div><p class="strong loan-length">Loan length: </p> {{ loanLength }} months</div>
 		</div>
 	</div>
 </template>
@@ -108,6 +108,11 @@ export default {
 		color: $kiva-text-light;
 		font-weight: 400;
 		margin-bottom: rem-calc(10);
+	}
+
+	.loan-length {
+		display: inline-block;
+		margin-top: rem-calc(15);
 	}
 }
 </style>
