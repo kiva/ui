@@ -11,7 +11,7 @@ export default {
 				mutation: updateTipMessage,
 				variables: {
 					tipMsg,
-					tipMsgType,
+					tipMsgType: tipMsgType || '',
 					tipVisible: true
 				}
 			});

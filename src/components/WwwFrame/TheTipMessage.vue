@@ -144,12 +144,10 @@ export default {
 		}
 	}
 
-	&.message-text-warning,
-	&.message-text-info {
+	&.message-text-warning {
 		background-color: $kiva-alert-yellow;
 
-		.icon.icon-warning,
-		.icon.icon-info {
+		.icon.icon-warning {
 			fill: $kiva-text-dark;
 		}
 	}
