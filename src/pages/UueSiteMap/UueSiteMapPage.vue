@@ -2,8 +2,12 @@
 	<www-page>
 		<div class="row">
 			<div class="small-12 columns">
-				<h1 @click="showCustomMessage()">Available Routes</h1>
+				<h1>Available Routes</h1>
 				<route-listing/>
+				<hr>
+				<a @click.prevent="$showTipMsg('global message')">Default Tip Message</a> -
+				<a @click.prevent="$showTipMsg('global message', 'warning')">Warning Tip Message</a> -
+				<a @click.prevent="$showTipMsg('global message', 'error')">Error Tip Message</a>
 			</div>
 		</div>
 	</www-page>
@@ -18,11 +22,6 @@ export default {
 	inject: ['apollo'],
 	metaInfo: {
 		title: 'Sitemap'
-	},
-	methods: {
-		showCustomMessage() {
-			this.$showTipMsg('global message', 'blah');
-		}
 	}
 };
 </script>
