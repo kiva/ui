@@ -21,7 +21,7 @@ export default {
 	},
 	methods: {
 		showCustomMessage() {
-			this.$showTipMsg('global message', 'warning');
+			this.$showTipMsg('global message', 'blah');
 		}
 	}
 };

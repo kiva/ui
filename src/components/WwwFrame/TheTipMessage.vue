@@ -1,15 +1,17 @@
 <template>
-	<div v-if="tipVisible" class="message-text message-text-confirmation text-center small-12">
-		<span class="message-content">
-			<div class="icon-wrapper">
-				<kv-icon name="info" />
-			</div>
-			<p class="message">{{ tipMsg }} {{ tipMsgType }}</p>
-		</span>
-		<a @click="close" class="close-tip-message" aria-label="Close">
-			<kv-icon name="x" />
-		</a>
-	</div>
+	<transition name="fade">
+		<div v-if="tipVisible" class="message-text text-center small-12" :class="typeClass">
+			<span class="message-content">
+				<div class="icon-wrapper">
+					<kv-icon :name="iconName" />
+				</div>
+				<p class="message">{{ tipMsg }}</p>
+			</span>
+			<a @click="close" class="close-tip-message" aria-label="Close">
+				<kv-icon name="x" />
+			</a>
+		</div>
+	</transition>
 </template>
 
 <script>
@@ -27,12 +29,30 @@ export default {
 		return {
 			tipVisible: false,
 			tipMsg: '',
-			tipMsgType: 'info'
+			tipMsgType: ''
 		};
+	},
+	computed: {
+		typeClass() {
+			// Valid options are 'warning' + 'error' otherwise use confirmation as default
+			if (this.tipMsgType === 'warning' || this.tipMsgType === 'error') {
+				return `message-text-${this.tipMsgType}`;
+			}
+			return 'message-text-confirmation';
+		},
+		iconName() {
+			// warning icon-info, error icon-error
+			if (this.tipMsgType === 'warning') {
+				return 'info';
+			} else if (this.tipMsgType === 'error') {
+				return 'error';
+			}
+			// default icon-confirmation
+			return 'confirmation';
+		}
 	},
 	methods: {
 		close() {
-			console.log('close tip message');
 			this.apollo.mutate({
 				mutation: updateTipMessage,
 				variables: {
@@ -43,25 +63,9 @@ export default {
 			});
 		}
 	},
-	// apollo: {
-	// 	query: tipMessageData,
-	// 	// preFetch: true,
-	// 	result({ data }) {
-	// 		// eslint-disable-next-line no-console
-	// 		console.log(`tip message queried: ${JSON.stringify(data)}`);
-	// 		this.tipMsg = _get(data, 'tipMsg');
-	// 		this.tipMsgType = _get(data, 'tipMsgType');
-	// 		this.showTipOnLoad = _get(data, 'showTipOnLoad');
-
-	// 		this.show();
-	// 	},
-	// },
 	mounted() {
 		this.apollo.watchQuery({ query: tipMessageData }).subscribe({
 			next: ({ data }) => {
-				// eslint-disable-next-line no-console
-				console.log(`tip message queried: ${JSON.stringify(data)}`);
-
 				this.tipMsg = _get(data, 'tipMsg');
 				this.tipMsgType = _get(data, 'tipMsgType');
 				this.tipVisible = _get(data, 'tipVisible');
@@ -73,6 +77,13 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+	opacity: 0;
+}
 
 .message-text {
 	display: block;
@@ -88,6 +99,7 @@ export default {
 		margin-left: rem-calc(-40);
 		padding-top: rem-calc(9);
 		padding-bottom: rem-calc(9);
+		line-height: $small-text-line-height;
 
 		.icon {
 			margin-right: rem-calc(10);
@@ -108,8 +120,8 @@ export default {
 
 	.close-tip-message {
 		position: absolute;
-		top: rem-calc(2);
-		right: rem-calc(2);
+		top: rem-calc(9);
+		right: rem-calc(6);
 
 		.icon.icon-x {
 			stroke: $kiva-text-dark;
@@ -119,7 +131,7 @@ export default {
 		}
 	}
 
-	//Custom styles for the 3 types of messages (Confirmation, Warning & Error messages)
+	//Custom styles for the 3 types of messages (default/Confirmation, Warning & Error messages)
 	&.message-text-confirmation {
 		background-color: $kiva-bg-lightgray;
 		border-bottom: 1px solid $kiva-text-dark;
