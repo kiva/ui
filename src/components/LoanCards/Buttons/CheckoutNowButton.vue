@@ -1,7 +1,8 @@
 <template>
 	<kv-button
 		class="secondary"
-		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-click', id, 'true']">
+		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', id, 'true']"
+		to="/basket">
 		<kv-icon name="check-in-circle" />
 		Checkout now
 	</kv-button>
@@ -26,10 +27,10 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
-.secondary.button {
+a.secondary.button {
 	padding: rem-calc(13) 0;
 
 	.icon-check-in-circle {
@@ -41,12 +42,14 @@ export default {
 		margin-right: rem-calc(5);
 	}
 
-	&:hover {
+	&:hover,
+	&:active,
+	&:focus {
 		color: $blue;
 		border: 1px solid $blue;
 		box-shadow: 0 rem-calc(2) $blue;
 
-		.icon-check-in-circle {
+		svg.icon-check-in-circle {
 			color: $blue;
 		}
 	}
