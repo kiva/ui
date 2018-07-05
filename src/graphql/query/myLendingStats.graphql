@@ -47,5 +47,9 @@ query {
 				name
 			}
 		}
+		setting (setting: "uiexp.test") {
+			key
+			value
+		}
 	}
 }

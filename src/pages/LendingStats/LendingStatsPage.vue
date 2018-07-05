@@ -86,6 +86,7 @@ export default {
 			partnersLentTo: [],
 			partnersNotLentTo: [],
 			totalPartners: 0,
+			experimentTest: {}
 		};
 	},
 	apollo: {
@@ -109,6 +110,10 @@ export default {
 			this.partnersLentTo = _sortBy(_get(data, 'my.lendingStats.partnersLentTo'), 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
 			this.totalPartners = _get(data, 'general.partners.totalCount');
+
+			// console.log(JSON.stringify(_get(data, 'general.setting')));
+			// Interesting that this fires so many times. 2 times on the client and 6+ times on the server
+			this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, reject }) => reject({
@@ -121,6 +126,28 @@ export default {
 		iconForSector(sector) {
 			return `sector-${sector.name.toLowerCase().replace(' ', '-')}`;
 		}
+	},
+	created() {
+		// eslint-disable
+		console.log('Created:');
+		// Attempt to get an existing uiab cookie
+		if (this.$isServer) {
+			console.log('server created');
+			// check for existing cookies here
+			if (this.$ssrContext.cookies && this.$ssrContext.cookies.uiab) {
+				// if we find uiab check for the current experiment within
+				console.log(this.$ssrContext.cookies.uiab);
+			}
+		} else {
+			// we should set or update the cookie with the exp version
+			console.log(this);
+		}
+	},
+	mounted() {
+		// eslint-disable
+		console.log('Client ONLY Mounted:');
+		// console.log(this);
+		// May have to check cookies here
 	}
 };
 </script>
