@@ -42,7 +42,7 @@ a.secondary.button {
 		margin-right: rem-calc(5);
 	}
 
-	&:focus  {
+	&:focus {
 		color: $charcoal;
 		border: 1px solid $charcoal;
 		box-shadow: 0 rem-calc(2) $charcoal;
