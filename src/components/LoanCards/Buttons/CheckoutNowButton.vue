@@ -30,8 +30,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-a.secondary.button,
-&:focus  {
+a.secondary.button {
 	padding: rem-calc(13) 0;
 
 	.icon-check-in-circle {
@@ -41,6 +40,16 @@ a.secondary.button,
 		position: relative;
 		margin-top: rem-calc(-5);
 		margin-right: rem-calc(5);
+	}
+
+	&:focus  {
+		color: $charcoal;
+		border: 1px solid $charcoal;
+		box-shadow: 0 rem-calc(2) $charcoal;
+
+		svg.icon-check-in-circle {
+			color: $charcoal;
+		}
 	}
 
 	&:hover,
