@@ -61,6 +61,7 @@ import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import UiExpMixin from '@/plugins/ui-exp-mixin';
 import StatsSection from './StatsSection';
 
 export default {
@@ -71,6 +72,7 @@ export default {
 		StatsSection
 	},
 	inject: ['apollo'],
+	mixins: [UiExpMixin],
 	metaInfo: {
 		title: 'Lending Stats'
 	},
@@ -86,7 +88,8 @@ export default {
 			partnersLentTo: [],
 			partnersNotLentTo: [],
 			totalPartners: 0,
-			experimentTest: {}
+			experimentTest: {},
+			experimentData: () => {}
 		};
 	},
 	apollo: {
@@ -113,7 +116,10 @@ export default {
 
 			// console.log(JSON.stringify(_get(data, 'general.setting')));
 			// Interesting that this fires so many times. 2 times on the client and 6+ times on the server
-			this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
+			// this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
+			// this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
+			this.experimentData = this.$parseExperimentData(_get(data, 'general.setting.value'));
+			// this.experimentVersion = this.$getUiExpVersion(_get(data, 'general.setting.value'));
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, reject }) => reject({
@@ -125,30 +131,47 @@ export default {
 	methods: {
 		iconForSector(sector) {
 			return `sector-${sector.name.toLowerCase().replace(' ', '-')}`;
-		}
+		},
+
 	},
+	computed: {
+		// experimentVersion() {
+		// 	// eslint-disable-next-line
+		// 	console.log('computing exp version');
+		// 	return this.$getUiExpVersion(this.experimentData);
+		// }
+	},
+	// watch: {
+	// 	experimentVersion() {
+	// 		// eslint-disable-next-line
+	// 		console.log('computing exp version');
+	// 		return this.$getUiExpVersion(this.experimentData);
+	// 	}
+	// },
 	created() {
-		// eslint-disable
-		console.log('Created:');
-		// Attempt to get an existing uiab cookie
-		if (this.$isServer) {
-			console.log('server created');
-			// check for existing cookies here
-			if (this.$ssrContext.cookies && this.$ssrContext.cookies.uiab) {
-				// if we find uiab check for the current experiment within
-				console.log(this.$ssrContext.cookies.uiab);
-			}
-		} else {
-			// we should set or update the cookie with the exp version
-			console.log(this);
-		}
+		// console.log(this.experimentVersion);
+		// this.experimentVersion = this.$getUiExpVersion(this.experimentData);
+		// // eslint-disable
+		// console.log('Created:');
+		// // Attempt to get an existing uiab cookie
+		// if (this.$isServer) {
+		// 	console.log('server created');
+		// 	// check for existing cookies here
+		// 	if (this.$ssrContext.cookies && this.$ssrContext.cookies.uiab) {
+		// 		// if we find uiab check for the current experiment within
+		// 		console.log(this.$ssrContext.cookies.uiab);
+		// 	}
+		// } else {
+		// 	// we should set or update the cookie with the exp version
+		// 	console.log(this);
+		// }
 	},
-	mounted() {
-		// eslint-disable
-		console.log('Client ONLY Mounted:');
-		// console.log(this);
-		// May have to check cookies here
-	}
+	// mounted() {
+	// 	// eslint-disable
+	// 	console.log('Client ONLY Mounted:');
+	// 	// console.log(this);
+	// 	// May have to check cookies here
+	// }
 };
 </script>
 
