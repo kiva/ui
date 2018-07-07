@@ -1,5 +1,6 @@
 query {
 	tipMsg @client,
 	tipMsgType @client,
-	tipVisible @client
+	tipVisible @client,
+	tipPersist @client
 }

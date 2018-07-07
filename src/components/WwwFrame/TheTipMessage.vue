@@ -7,7 +7,7 @@
 				</div>
 				<p class="message">{{ tipMsg }}</p>
 			</span>
-			<a @click="close" class="close-tip-message" aria-label="Close">
+			<a @click="closeTip" class="close-tip-message" aria-label="Close">
 				<kv-icon name="x" />
 			</a>
 		</div>
@@ -28,6 +28,7 @@ export default {
 	data() {
 		return {
 			tipVisible: false,
+			tipPersist: false,
 			tipMsg: '',
 			tipMsgType: ''
 		};
@@ -52,26 +53,40 @@ export default {
 		}
 	},
 	methods: {
-		close() {
+		/*
+			Close tip message
+			- tipMsg + tipMsgType are retained when closed by clicking 'X'
+		*/
+		closeTip() {
 			this.apollo.mutate({
 				mutation: updateTipMessage,
 				variables: {
 					tipMsg: this.tipMsg,
 					tipMsgType: this.tipMsgType,
-					tipVisible: false
+					tipVisible: false,
+					tipPersist: false
 				}
 			});
 		}
 	},
-	mounted() {
+	created() {
+		// attach to and watch for updates to the query
 		this.apollo.watchQuery({ query: tipMessageData }).subscribe({
 			next: ({ data }) => {
+				// set/update our local data
 				this.tipMsg = _get(data, 'tipMsg');
 				this.tipMsgType = _get(data, 'tipMsgType');
 				this.tipVisible = _get(data, 'tipVisible');
+				this.tipPersist = _get(data, 'tipPersist');
 			}
 		});
-	}
+	},
+	// mounted() {
+	// 	//  && !this.tipVisible
+	// 	if (!this.tipPersist) {
+	// 		this.closeTip();
+	// 	}
+	// }
 };
 </script>
 

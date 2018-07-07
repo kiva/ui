@@ -24,6 +24,9 @@ export default {
 		query: helloQuery,
 		preFetch: true,
 	},
+	mounted() {
+		this.$showTipMsg('Show Message on Page Load', 'warning');
+	}
 };
 </script>
 

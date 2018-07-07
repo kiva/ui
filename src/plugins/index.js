@@ -2,7 +2,7 @@ import apolloMixin from './apollo-mixin';
 import kebabCaseFilter from './kebab-case-filter';
 import numeralFilter from './numeral-filter';
 import kvAnayltics from './kv-analytics-plugin';
-import tipMessage from './tip-message-plugin';
+import tipMessage from './tip-message-mixin';
 
 export default {
 	install: Vue => {

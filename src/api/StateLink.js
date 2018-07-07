@@ -7,7 +7,8 @@ export default ({ cache }) => {
 			usingTouch: false,
 			tipMsg: null,
 			tipMsgType: 'info',
-			tipVisible: false
+			tipVisible: false,
+			tipPersist: false
 		},
 		resolvers: {
 			Mutation: {
@@ -17,9 +18,19 @@ export default ({ cache }) => {
 					});
 					return null;
 				},
-				updateTipMessage(_, { tipMsg, tipMsgType, tipVisible }, context) {
+				updateTipMessage(_, {
+					tipMsg,
+					tipMsgType,
+					tipVisible,
+					tipPersist
+				}, context) {
 					context.cache.writeData({
-						data: { tipMsg, tipMsgType, tipVisible }
+						data: {
+							tipMsg,
+							tipMsgType,
+							tipVisible,
+							tipPersist
+						}
 					});
 					return null;
 				}
