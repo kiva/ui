@@ -1,3 +1,4 @@
+import KvLightbox from '@/components/Kv/KvLightbox';
 import apolloMixin from './apollo-mixin';
 import kebabCaseFilter from './kebab-case-filter';
 import numeralFilter from './numeral-filter';
@@ -9,5 +10,6 @@ export default {
 		Vue.filter('kebabCase', kebabCaseFilter);
 		Vue.filter('numeral', numeralFilter);
 		kvAnayltics(Vue);
+		Vue.component('kv-lightbox', KvLightbox);
 	}
 };
