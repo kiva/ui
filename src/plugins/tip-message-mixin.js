@@ -24,9 +24,10 @@ export default {
 				mutation: updateTipMessage,
 				variables: {
 					tipMsg,
-					tipMsgType: tipMsgType || '',
+					tipMsgType,
 					tipVisible: true,
-					tipPersist
+					tipPersist,
+					tipInitUrl: this.$route.path || ''
 				}
 			});
 		},
@@ -45,7 +46,8 @@ export default {
 					tipMsg: '',
 					tipMsgType: '',
 					tipVisible: false,
-					tipPersist: false
+					tipPersist: false,
+					tipInitUrl: ''
 				}
 			});
 		}

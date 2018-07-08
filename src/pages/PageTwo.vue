@@ -24,7 +24,8 @@ export default {
 		query: helloQuery,
 		preFetch: true,
 	},
-	mounted() {
+	// TODO: Remove after testing VUE-37
+	created() {
 		this.$showTipMsg('Show Message on Page Load', 'warning');
 	}
 };

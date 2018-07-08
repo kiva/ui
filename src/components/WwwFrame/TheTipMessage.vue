@@ -29,6 +29,7 @@ export default {
 		return {
 			tipVisible: false,
 			tipPersist: false,
+			tipInitUrl: '',
 			tipMsg: '',
 			tipMsgType: ''
 		};
@@ -64,7 +65,8 @@ export default {
 					tipMsg: this.tipMsg,
 					tipMsgType: this.tipMsgType,
 					tipVisible: false,
-					tipPersist: false
+					tipPersist: false,
+					tipInitUrl: ''
 				}
 			});
 		}
@@ -78,15 +80,26 @@ export default {
 				this.tipMsgType = _get(data, 'tipMsgType');
 				this.tipVisible = _get(data, 'tipVisible');
 				this.tipPersist = _get(data, 'tipPersist');
+				this.tipInitUrl = _get(data, 'tipInitUrl');
 			}
 		});
 	},
-	// mounted() {
-	// 	//  && !this.tipVisible
-	// 	if (!this.tipPersist) {
-	// 		this.closeTip();
-	// 	}
-	// }
+	watch: {
+		/*
+			Observe $route.path for changes
+			- This enables us to hide the tip message when you navigate to another ui server page
+			- Unless you pass the tipPersist parameter in which case the tip message remains on ui server pages
+			- The else if statement allows the message to show on subsequent visits rendering tip messages on a route
+		*/
+		// eslint-disable-next-line object-shorthand
+		'$route.path'(to) {
+			if (to !== this.tipInitUrl && this.tipPersist !== true) {
+				this.tipVisible = false;
+			} else if (to === this.tipInitUrl) {
+				this.tipVisible = true;
+			}
+		}
+	},
 };
 </script>
 

@@ -8,7 +8,8 @@ export default ({ cache }) => {
 			tipMsg: null,
 			tipMsgType: 'info',
 			tipVisible: false,
-			tipPersist: false
+			tipPersist: false,
+			tipInitUrl: null
 		},
 		resolvers: {
 			Mutation: {
@@ -22,14 +23,16 @@ export default ({ cache }) => {
 					tipMsg,
 					tipMsgType,
 					tipVisible,
-					tipPersist
+					tipPersist,
+					tipInitUrl
 				}, context) {
 					context.cache.writeData({
 						data: {
 							tipMsg,
 							tipMsgType,
 							tipVisible,
-							tipPersist
+							tipPersist,
+							tipInitUrl
 						}
 					});
 					return null;

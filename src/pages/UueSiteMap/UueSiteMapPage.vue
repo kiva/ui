@@ -4,10 +4,12 @@
 			<div class="small-12 columns">
 				<h1>Available Routes</h1>
 				<route-listing/>
-				<br><hr><br>
-				<a @click.prevent="$showTipMsg('global message')">Default Tip Message</a> -
-				<a @click.prevent="$showTipMsg('global message', 'warning')">Warning Tip Message</a> -
-				<a @click.prevent="$showTipMsg('global message', 'error', true)">Error Tip Message</a> -
+				<br>
+				<!-- TODO: Remove after testing VUE-37 -->
+				<hr><br>
+				<a @click.prevent="$showTipMsg('Default Tip Message')">Default Tip Message</a> -
+				<a @click.prevent="$showTipMsg('Warning Tip Message', 'warning')">Warning Tip Message</a> -
+				<a @click.prevent="$showTipMsg('Persisted Error Tip Message', 'error', true)">Error Tip Message</a> -
 				<a @click.prevent="$closeTipMsg()">Close Tip Message</a>
 				<br><br>
 			</div>
@@ -21,7 +23,7 @@ import RouteListing from './RouteListing';
 
 export default {
 	components: { WwwPage, RouteListing },
-	inject: ['apollo'],
+	inject: ['apollo'], // TODO: Remove after testing VUE-37
 	metaInfo: {
 		title: 'Sitemap'
 	}
