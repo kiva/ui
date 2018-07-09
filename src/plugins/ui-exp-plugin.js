@@ -26,7 +26,13 @@ export default Vue => {
 				console.log('operating in window');
 				const allCookies = document.cookie;
 				let cookiesSub = allCookies.substr(allCookies.indexOf('uiab=') + 5);
-				cookiesSub = cookiesSub.substring(0, cookiesSub.indexOf(';'));
+				console.log(cookiesSub);
+				// only trim if this is not the last cookie
+				let cutoff = cookiesSub.indexOf(';');
+				if (cutoff !== -1) {
+					cookiesSub = cookiesSub.substring(0, cutoff);
+				}
+				console.log(cookiesSub);
 				return cookiesSub;
 			}
 		},
@@ -77,7 +83,9 @@ export default Vue => {
 		setExperimentCookie: (expKey, version)  => {
 			console.log('Setting Experiment Cookie');
 			if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-				document.cookie = `uiab=${expKey}|${version}`;
+				// TODO: Add build cookie step here to ensure persistence of other experiments!!!
+				// kvActions.addExpToCookie
+				document.cookie = `uiab=${expKey}|${version};path=/;max-age=31536000`;
 			}
 		},
 		assignExperimentVersion: experiment => {
@@ -96,7 +104,28 @@ export default Vue => {
 				}
 			}
 			*/
+			const rando = Math.random();
 			let assignedVersion = 0;
+			let cutoff = 0;
+
+			let expDist = experiment.distribution ? experiment.distribution.split(',') : null;
+
+			// Return 0 if distribution is not an array
+			if (typeof expDist !== 'object') {
+				return assignedVersion;
+			} else {
+				for (let i=0; i < expDist.length; i++) {
+					console.log(expDist[i], i, Math.round(rando * 100));
+					cutoff = cutoff + (expDist[i] * 100);
+					console.log(cutoff);
+					if (Math.round(rando * 100) <= cutoff) {
+						console.log('exp version : ' + i);
+						assignedVersion++;
+						break;
+					}
+				};
+			}
+
 			console.log('Establish cookie for newly assigned version');
 			expActions.setExperimentCookie(experiment.key, assignedVersion);
 			return assignedVersion;
