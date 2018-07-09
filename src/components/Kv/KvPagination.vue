@@ -150,14 +150,10 @@ $spacing: 0.75rem;
 	width: 1rem;
 	height: 1rem;
 	vertical-align: text-top;
+}
 
-	a & {
-		fill: $kiva-textlink;
-	}
-
-	a:hover & {
-		fill: $kiva-textlink-hover;
-	}
+a .icon {
+	fill: $kiva-textlink;
 }
 
 .pagination-previous .icon {
@@ -168,12 +164,17 @@ $spacing: 0.75rem;
 	transform: rotate(90deg);
 }
 
-.disabled, .current {
+.disabled,
+.current {
 	color: $kiva-text-light;
 
 	.icon {
 		fill: $kiva-text-light;
 	}
+}
+
+a:hover .icon {
+	fill: $kiva-textlink-hover;
 }
 
 .ellipsis::after {
