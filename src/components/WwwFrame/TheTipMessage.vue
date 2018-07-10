@@ -1,13 +1,13 @@
 <template>
 	<transition name="fade">
-		<div v-show="tipVisible" class="message-text text-center small-12" :class="typeClass">
+		<div v-if="tipVisible" class="message-text text-center small-12" :class="typeClass">
 			<span class="message-content">
 				<div class="icon-wrapper">
 					<kv-icon :name="iconName" />
 				</div>
 				<p class="message">{{ tipMsg }}</p>
 			</span>
-			<a @click="$closeTipMsg" class="close-tip-message" aria-label="Close">
+			<a @click.stop.prevent="$closeTipMsg" class="close-tip-message" aria-label="Close">
 				<kv-icon name="x" />
 			</a>
 		</div>
