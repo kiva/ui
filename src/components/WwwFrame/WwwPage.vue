@@ -17,7 +17,11 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 
 export default {
-	components: { TheHeader, TheFooter, TheBasketBar },
+	components: {
+		TheHeader,
+		TheFooter,
+		TheBasketBar,
+	}
 };
 </script>
 
