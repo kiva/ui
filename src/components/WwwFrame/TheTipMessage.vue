@@ -1,6 +1,6 @@
 <template>
 	<transition name="fade">
-		<div v-if="tipVisible" class="message-text text-center small-12" :class="typeClass">
+		<div v-show="tipVisible" class="message-text text-center small-12" :class="typeClass">
 			<span class="message-content">
 				<div class="icon-wrapper">
 					<kv-icon :name="iconName" />
