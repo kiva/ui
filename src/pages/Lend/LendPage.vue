@@ -16,11 +16,9 @@
 						:is-visitor="isVisitor"
 						:items-in-basket="itemsInBasket"
 					/>
-					<div v-if="loading" class="loading-overlay">
-						<kv-loading-spinner />
-					</div>
+					<loading-overlay v-if="loading" />
 				</div>
-				<kv-pagination :total="totalCount" :limit="limit" />
+				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange"/>
 				<div v-if="totalCount > 0" class="loan-count">
 					{{ totalCount }} loans
 				</div>
@@ -30,17 +28,17 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvPagination from '@/components/Kv/KvPagination';
-import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 import _get from 'lodash/get';
 import _invokeMap from 'lodash/invokeMap';
 import _map from 'lodash/map';
-// import _mapValues from 'lodash/mapValues';
+import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
+import loanCardQuery from '@/graphql/query/loanCardData.graphql';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import KvPagination from '@/components/Kv/KvPagination';
+import LoadingOverlay from './LoadingOverlay';
 
 const loansPerPage = 12;
 
@@ -48,7 +46,7 @@ const urlParamTransform = {
 	page: {
 		to({ offset }) {
 			const page = Math.floor(offset / loansPerPage) + 1;
-			return page > 1 ? page : null;
+			return page > 1 ? page : undefined;
 		},
 		from({ page }) {
 			const pagenum = numeral(page).value() - 1;
@@ -57,9 +55,9 @@ const urlParamTransform = {
 	},
 };
 
-// function toUrlParams(variables) {
-// 	return _mapValues(urlParamTransform, ({ to }) => to(variables));
-// }
+function toUrlParams(variables) {
+	return _mapValues(urlParamTransform, ({ to }) => to(variables));
+}
 
 function fromUrlParams(params) {
 	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
@@ -69,8 +67,8 @@ export default {
 	components: {
 		WwwPage,
 		GridLoanCard,
-		KvLoadingSpinner,
 		KvPagination,
+		LoadingOverlay,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -87,6 +85,13 @@ export default {
 			loading: false,
 		};
 	},
+	computed: {
+		urlParams() {
+			return toUrlParams({
+				offset: this.offset,
+			});
+		}
+	},
 	apollo: {
 		query: loanCardQuery,
 		preFetch: true,
@@ -99,22 +104,27 @@ export default {
 				limit: this.limit,
 			};
 		},
-		result({ data }) {
-			this.totalCount = data.lend.loans.totalCount;
-			this.loans = data.lend.loans.values;
-			this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
-			this.isVisitor = !_get(data, 'my.userAccount.id');
-			this.loading = false;
+		result({ data, loading }) {
+			if (!loading) {
+				this.totalCount = data.lend.loans.totalCount;
+				this.loans = data.lend.loans.values;
+				this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
+				this.isVisitor = !_get(data, 'my.userAccount.id');
+				this.loading = false;
+			}
+		}
+	},
+	methods: {
+		pageChange(number) {
+			const offset = loansPerPage * (number - 1);
+			this.offset = offset;
 		}
 	},
 	watch: {
-		$route(to) {
-			const { offset } = fromUrlParams(to.query);
-			if (this.offset !== offset) {
-				this.loading = true;
-			}
-			this.offset = offset;
-		}
+		urlParams(params) {
+			this.loading = true;
+			this.$router.push({ query: params });
+		},
 	}
 };
 </script>
@@ -123,18 +133,12 @@ export default {
 @import 'settings';
 
 .lend-page {
-	background-color: $kiva-bg-lightgray;
+	main {
+		background-color: $kiva-bg-lightgray;
+	}
 
 	.loan-card-group {
 		position: relative;
-	}
-
-	.loading-overlay {
-		position: absolute;
-		background-color: rgba($kiva-bg-lightgray, 0.7);
-		width: 100%;
-		height: 100%;
-		text-align: center;
 	}
 
 	.loan-count {
