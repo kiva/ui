@@ -20,6 +20,7 @@
 				:country="loan.geocode.country.name"
 				:status="loan.status"
 				:borrower-count="loan.borrowerCount"
+				:loan-length="loan.lenderRepaymentTerm"
 			/>
 
 			<div class="loan-card-footer-wrap">
