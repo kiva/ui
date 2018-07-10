@@ -123,6 +123,10 @@ export default {
 		pageChange(number) {
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
+		},
+		updateFromParams(query) {
+			const { offset } = fromUrlParams(query);
+			this.offset = offset;
 		}
 	},
 	watch: {
@@ -130,13 +134,16 @@ export default {
 			this.loading = true;
 			this.$router.push({ query: params });
 		},
-		// Update the component data if the route changes (likely from browser back/forward buttons)
-		// eslint-disable-next-line object-shorthand
-		'$route.query'(query) {
-			const { offset } = fromUrlParams(query);
-			this.offset = offset;
-		}
-	}
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.updateFromParams(to.query);
+		});
+	},
+	beforeRouteUpdate(to, from, next) {
+		this.updateFromParams(to.query);
+		next();
+	},
 };
 </script>
 
