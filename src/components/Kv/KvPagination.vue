@@ -2,7 +2,11 @@
 	<nav aria-label="Pagination">
 		<ul class="pagination">
 			<li v-if="current !== 1" class="pagination-previous">
-				<router-link :to="routeForPage(current - 1)" aria-label="Previous page">
+				<router-link :to="routeForPage(current - 1)"
+					:event="linkEventName"
+					@click.native="pageChange(current - 1, $event)"
+					aria-label="Previous page"
+				>
 					<kv-icon name="triangle" />
 					<span class="show-for-sr">Previous page</span>
 				</router-link>
@@ -18,6 +22,8 @@
 			>
 				<router-link v-if="number > 0 && number !== current"
 					:to="routeForPage(number)"
+					:event="linkEventName"
+					@click.native="pageChange(number, $event)"
 					:aria-label="`Page ${number}`"
 				>
 					{{ number }}
@@ -28,7 +34,11 @@
 				</span>
 			</li>
 			<li v-if="current !== totalPages" class="pagination-next">
-				<router-link :to="routeForPage(current + 1)" aria-label="Next page">
+				<router-link :to="routeForPage(current + 1)"
+					:event="linkEventName"
+					@click.native="pageChange(current + 1, $event)"
+					aria-label="Next page"
+				>
 					<span class="show-for-sr">Next page</span>
 					<kv-icon name="triangle" />
 				</router-link>
@@ -54,11 +64,13 @@ export default {
 	props: {
 		limit: {
 			type: Number,
-			default: 20,
+			required: true,
+			validator: value => value > 0,
 		},
 		total: {
 			type: Number,
-			default: 1000,
+			required: true,
+			validator: value => value >= 0,
 		},
 	},
 	data() {
@@ -72,6 +84,13 @@ export default {
 		},
 		totalPages() {
 			return Math.ceil(this.total / this.limit);
+		},
+		linkEventName() {
+			if (this.$listeners && this.$listeners['page-change']) {
+				// Use a non-event to prevent router-link from doing anything.
+				return 'not-an-event';
+			}
+			return 'click';
 		},
 		numbers() {
 			// if less than the max, there will be no ellipsis, so just return the numbers
@@ -120,6 +139,13 @@ export default {
 				delete query.page;
 			}
 			return { query };
+		},
+		pageChange(number, event) {
+			if (this.$listeners && this.$listeners['page-change']) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+				this.$emit('page-change', number);
+			}
 		}
 	}
 };
