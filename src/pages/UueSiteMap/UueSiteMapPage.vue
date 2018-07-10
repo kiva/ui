@@ -4,6 +4,17 @@
 			<div class="small-12 columns">
 				<h1 @click.prevent="triggerLightbox">Available Routes</h1>
 				<route-listing/>
+
+				<br>
+				<!-- TODO: Remove after testing VUE-37 -->
+				<hr><br>
+				<a @click.prevent="$showTipMsg('Default Tip Message')">Default Tip Message</a> -
+				<a @click.prevent="$showTipMsg('Warning Tip Message', 'warning')">Warning Tip Message</a> -
+				<a @click.prevent="$showTipMsg('Persisted Error Tip Message', 'error', true)">Error Tip Message</a> -
+				<a @click.prevent="$closeTipMsg()">Close Tip Message</a>
+				<br><br>
+
+				<!-- TODO: Remove after testing VUE-38 -->
 				<kv-lightbox :visible="lightboxvisible" :inverted="false" @lightboxClosed="lightboxClosed">
 					<h2 slot="title">What is an Experimental Field Partner?</h2>
 					<p>If a Field Partner is labeled as Experimental, this means that Kiva has required
@@ -20,6 +31,8 @@
 					<p>Lenders should always assume that these partners represent the highest level
 					of repayment risk on Kiva.</p>
 				</kv-lightbox>
+
+
 			</div>
 		</div>
 	</www-page>
@@ -27,10 +40,16 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvLightbox from '@/components/Kv/KvLightbox';
 import RouteListing from './RouteListing';
 
 export default {
-	components: { WwwPage, RouteListing },
+	components: {
+		WwwPage,
+		RouteListing,
+		KvLightbox
+	},
+	inject: ['apollo'], // TODO: Remove after testing VUE-37
 	metaInfo: {
 		title: 'Sitemap'
 	},

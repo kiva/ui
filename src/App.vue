@@ -2,14 +2,20 @@
 	<div id="app">
 		<router-view/>
 		<vue-progress-bar/>
+		<the-tip-message/>
 	</div>
 </template>
 
 <script>
+import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
+
 export default {
 	name: 'App',
 	props: {
 		appConfig: { type: Object, default: () => {} }
+	},
+	components: {
+		TheTipMessage
 	},
 	metaInfo() {
 		return {
