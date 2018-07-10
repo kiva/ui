@@ -85,11 +85,17 @@ export default {
 		totalPages() {
 			return Math.ceil(this.total / this.limit);
 		},
+		// The event that router-link will listen for on the <a> element (normally 'click')
 		linkEventName() {
 			if (this.$listeners && this.$listeners['page-change']) {
-				// Use a non-event to prevent router-link from doing anything.
+				// There is a listener for the 'page-change' event on this component, so navigation
+				// needs to be prevented.
+				// Making router-link listen for the non-existent 'not-an-event' event on
+				// the <a> element, instead of the 'click' event, will prevent the navigation handler
+				// from ever being called.
 				return 'not-an-event';
 			}
+			// By default, allow normal navigation to happen.
 			return 'click';
 		},
 		numbers() {
@@ -140,6 +146,11 @@ export default {
 			}
 			return { query };
 		},
+		// This handler gets called when a page number is clicked.
+		// By default it will do nothing, which will let router-link handle the navigation.
+		// However, if there is a listener to the page-change event on this component
+		// (i.e. @page-change="listener"), it will instead prevent any navigation from happening
+		// and emit a 'page-change' event with the page number.
 		pageChange(number, event) {
 			if (this.$listeners && this.$listeners['page-change']) {
 				event.preventDefault();

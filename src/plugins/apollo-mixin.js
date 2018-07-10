@@ -23,14 +23,17 @@ export default {
 					result.call(this, { data });
 				}
 
+				// Setup an observer to watch for changes to the query result
 				const observer = this.apollo.watchQuery({
 					query,
 					variables: variables.call(this)
 				});
 
+				// Use Vue's $watch to reactively update the query variables when the component data changes
+				// This will cause a new query result to be fetched if it is not available in the cache
 				this.$watch(variables, vars => observer.setVariables(vars), { deep: true });
 
-				// Watch for changes in the query results
+				// Subscribe to the observer to see each result
 				observer.subscribe({
 					next: apolloResult => result.call(this, apolloResult)
 				});

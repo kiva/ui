@@ -42,6 +42,9 @@ import LoadingOverlay from './LoadingOverlay';
 
 const loansPerPage = 12;
 
+// A map of functions to transform url query parameters to/from graphql variables.
+// Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
+// Each value is then an object with the to/from functions to write/read the url parameter.
 const urlParamTransform = {
 	page: {
 		to({ offset }) {
@@ -55,10 +58,12 @@ const urlParamTransform = {
 	},
 };
 
+// Turn an object of graphql variables into an object of url query parameters
 function toUrlParams(variables) {
 	return _mapValues(urlParamTransform, ({ to }) => to(variables));
 }
 
+// Turn an object of url query parameters into an object of graphql variables
 function fromUrlParams(params) {
 	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
 }

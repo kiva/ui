@@ -21,11 +21,13 @@ export default {
 	},
 	computed: {
 		throttledScroll() {
+			// prevent onScroll from being called more than once every 100ms
 			return _throttle(this.onScroll, 100);
 		}
 	},
 	methods: {
 		onScroll() {
+			// Keep the loading spinner centered on the part of this overlay that is visible within the viewport
 			const bounds = this.$el.getBoundingClientRect();
 			if (bounds.top < 0 && bounds.bottom > window.innerHeight) {
 				this.top = '50%';
