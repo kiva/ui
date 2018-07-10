@@ -7,7 +7,7 @@
 				</div>
 				<p class="message">{{ tipMsg }}</p>
 			</span>
-			<a @click="closeTip" class="close-tip-message" aria-label="Close">
+			<a @click="$closeTipMsg" class="close-tip-message" aria-label="Close">
 				<kv-icon name="x" />
 			</a>
 		</div>
@@ -17,7 +17,6 @@
 <script>
 import _get from 'lodash/get';
 import tipMessageData from '@/graphql/query/tipMessageData.graphql';
-import updateTipMessage from '@/graphql/mutation/updateTipMessage.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -53,36 +52,17 @@ export default {
 			return 'confirmation';
 		}
 	},
-	methods: {
-		/*
-			Close tip message
-			- tipMsg + tipMsgType are retained when closed by clicking 'X'
-		*/
-		closeTip() {
-			this.apollo.mutate({
-				mutation: updateTipMessage,
-				variables: {
-					tipMsg: this.tipMsg,
-					tipMsgType: this.tipMsgType,
-					tipVisible: false,
-					tipPersist: false,
-					tipInitUrl: ''
-				}
-			});
+	apollo: {
+		query: tipMessageData,
+		preFetch: true,
+		result({ data }) {
+			// set/update our local data
+			this.tipMsg = _get(data, 'tipMsg');
+			this.tipMsgType = _get(data, 'tipMsgType');
+			this.tipVisible = _get(data, 'tipVisible');
+			this.tipPersist = _get(data, 'tipPersist');
+			this.tipInitUrl = _get(data, 'tipInitUrl');
 		}
-	},
-	created() {
-		// attach to and watch for updates to the query
-		this.apollo.watchQuery({ query: tipMessageData }).subscribe({
-			next: ({ data }) => {
-				// set/update our local data
-				this.tipMsg = _get(data, 'tipMsg');
-				this.tipMsgType = _get(data, 'tipMsgType');
-				this.tipVisible = _get(data, 'tipVisible');
-				this.tipPersist = _get(data, 'tipPersist');
-				this.tipInitUrl = _get(data, 'tipInitUrl');
-			}
-		});
 	},
 	watch: {
 		/*

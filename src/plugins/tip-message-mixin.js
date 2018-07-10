@@ -6,6 +6,7 @@
 	- See TheTipMessage.vue for internal implementation
 */
 import updateTipMessage from '@/graphql/mutation/updateTipMessage.graphql';
+import checkApolloInject from '@/util/apolloInjectCheck';
 
 export default {
 	methods: {
@@ -16,16 +17,13 @@ export default {
 			@param Optional Boolean tipPersist
 		*/
 		$showTipMsg(tipMsg, tipMsgType = '', tipPersist = false) {
-			if (!this.$options.inject || !this.$options.inject.apollo) {
-				throw new Error('No apollo client provided! Add "inject: [\'apollo\']" to this component definition.');
-			}
+			checkApolloInject(this);
 
 			this.apollo.mutate({
 				mutation: updateTipMessage,
 				variables: {
 					tipMsg,
 					tipMsgType,
-					tipVisible: true,
 					tipPersist,
 					tipInitUrl: this.$route.path || ''
 				}
@@ -36,18 +34,12 @@ export default {
 			- Calling from component clears tip message contents and type, sets tipPersist to false
 		*/
 		$closeTipMsg() {
-			if (!this.$options.inject || !this.$options.inject.apollo) {
-				throw new Error('No apollo client provided! Add "inject: [\'apollo\']" to this component definition.');
-			}
+			checkApolloInject(this);
 
 			this.apollo.mutate({
 				mutation: updateTipMessage,
 				variables: {
-					tipMsg: '',
-					tipMsgType: '',
-					tipVisible: false,
-					tipPersist: false,
-					tipInitUrl: ''
+					tipVisible: false
 				}
 			});
 		}

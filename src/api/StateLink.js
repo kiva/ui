@@ -5,11 +5,11 @@ export default ({ cache }) => {
 		cache,
 		defaults: {
 			usingTouch: false,
-			tipMsg: null,
+			tipMsg: '',
 			tipMsgType: 'info',
 			tipVisible: false,
 			tipPersist: false,
-			tipInitUrl: null
+			tipInitUrl: ''
 		},
 		resolvers: {
 			Mutation: {
