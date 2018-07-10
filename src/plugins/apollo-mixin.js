@@ -1,9 +1,9 @@
+import checkApolloInject from '@/util/apolloInjectCheck';
+
 export default {
 	created() {
 		if (this.$options.apollo) {
-			if (!this.$options.inject || !this.$options.inject.apollo) {
-				throw new Error('No apollo client provided! Add "inject: [\'apollo\']" to this component definition.');
-			}
+			checkApolloInject(this);
 
 			const {
 				query,
