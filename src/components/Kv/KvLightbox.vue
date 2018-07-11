@@ -10,7 +10,7 @@
 						<slot name="title"></slot>
 						<slot>Lightbox content</slot>
 						<br>
-						<slot name="confirm">
+						<slot name="controls">
 							<kv-button v-if="showCloseButton" @click.native="closeLightbox">
 								Close
 							</kv-button>
