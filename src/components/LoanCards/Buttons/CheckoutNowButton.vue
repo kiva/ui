@@ -1,7 +1,7 @@
 <template>
 	<kv-button
 		class="secondary"
-		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', id, 'true']"
+		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, 'true']"
 		to="/basket">
 		<kv-icon name="check-in-circle" />
 		Checkout now
@@ -18,7 +18,7 @@ export default {
 		KvButton,
 	},
 	props: {
-		id: {
+		loanId: {
 			type: Number,
 			default: null
 		},
