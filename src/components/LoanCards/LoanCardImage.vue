@@ -1,8 +1,8 @@
 <template>
 	<div class="borrower-image-wrapper">
 		<router-link
-			:to="`/lend/${id}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Photo', id, 'true']">
+			:to="`/lend/${loanId}`"
+			:v-kv-track-event="`['Lending', 'click-Read more', 'Photo', ${loanId}, 'true']`">
 
 			<img class="borrower-image"
 				:srcset = "retinaImageUrl + ' 2x'"
@@ -13,7 +13,7 @@
 			<favorite-star class="favorite-star"
 				v-if="!isVisitor"
 				:is-favorite="isFavorite"
-				:id="id"
+				:loan-id="loanId"
 				@favorite-toggled="$emit('favorite-toggled')"
 			/>
 		</router-link>
@@ -28,7 +28,7 @@ export default {
 		FavoriteStar,
 	},
 	props: {
-		id: {
+		loanId: {
 			type: Number,
 			default: null
 		},

@@ -1,15 +1,15 @@
 <template>
-	<lend-button price="25" :loan-id="loanId">
-		Lend again
-	</lend-button>
+	<kv-button :to="`/lend/${loanId}`">
+		Read more
+	</kv-button>
 </template>
 
 <script>
-import LendButton from './LendButton';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
-		LendButton,
+		KvButton,
 	},
 	props: {
 		loanId: {

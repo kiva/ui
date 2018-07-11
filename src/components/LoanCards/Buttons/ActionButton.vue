@@ -1,35 +1,20 @@
 <template>
 	<component
 		:is="currentButtonState"
-		class="button lend-button"
-		@click.native="addToBasketClick"
-		:id="id" />
+		class="action-button"
+		:loan-id="loanId" />
 </template>
 
 <script>
-import basketItems from '@/graphql/query/basketItems.graphql';
-import basketCount from '@/graphql/query/basketCount.graphql';
-import addToBasket from '@/graphql/mutation/addToBasket.graphql';
 import _includes from 'lodash/includes';
-import LendButton from './LendButton';
+import Lend25Button from './Lend25Button';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
-import PlaceholderButton from './PlaceholderButton';
+import ReadMoreButton from './ReadMoreButton';
 
 export default {
-	components: {
-		LendButton,
-		CheckoutNowButton,
-		LendAgainButton,
-	},
-	inject: ['apollo'],
-	data() {
-		return {
-			itemArray: []
-		};
-	},
 	props: {
-		id: {
+		loanId: {
 			type: Number,
 			default: null
 		},
@@ -48,37 +33,18 @@ export default {
 	},
 	computed: {
 		currentButtonState() {
-			if (_includes(this.itemsInBasket, this.id)) {
+			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
 			if (this.isLentTo) {
 				return LendAgainButton;
 			}
 			if (this.isFunded) {
-				return PlaceholderButton;
+				return ReadMoreButton;
 			}
-			return LendButton;
+			return Lend25Button;
 		}
 	},
-	methods: {
-		addToBasketClick() {
-			this.apollo.mutate({
-				mutation: addToBasket,
-				variables: {
-					id: this.id,
-					price: '25.00'
-				},
-				refetchQueries: [{
-					query: basketCount,
-				},
-				{
-					query: basketItems
-				}]
-			}).catch(() => {
-				// TODO: add raven exceptions if an error is found.
-			});
-		}
-	}
 };
 
 </script>
@@ -86,7 +52,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.button {
+.action-button {
 	margin-top: rem-calc(30);
 	margin-bottom: rem-calc(10);
 	height: rem-calc(46);
