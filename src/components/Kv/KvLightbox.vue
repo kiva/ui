@@ -3,12 +3,18 @@
 		<div v-show="isShown" class="kv-lightbox">
 			<div class="row">
 				<div class="columns small=12">
-					<a @click="closeLightbox" class="close-lightbox" aria-label="Close" :class="whiteContentBg">
-						<kv-icon name="x" />
-					</a>
-					<div class="lightbox-content" :class="whiteContentBg">
+					<div class="lightbox-content" :class="removeContentBg">
+						<a @click.stop.prevent="closeLightbox" class="close-lightbox" aria-label="Close">
+							<kv-icon name="x" />
+						</a>
 						<slot name="title"></slot>
 						<slot>Lightbox content</slot>
+						<br>
+						<slot name="confirm">
+							<kv-button v-if="showCloseButton" @click.native="closeLightbox">
+								Close
+							</kv-button>
+						</slot>
 					</div>
 				</div>
 			</div>
@@ -18,10 +24,12 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
-		KvIcon
+		KvIcon,
+		KvButton
 	},
 	data() {
 		return {
@@ -36,10 +44,14 @@ export default {
 		inverted: {
 			type: Boolean,
 			default: false
+		},
+		showCloseButton: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
-		whiteContentBg() {
+		removeContentBg() {
 			return this.inverted ? 'inverted' : '';
 		}
 	},
@@ -91,28 +103,52 @@ export default {
 	}
 
 	.row {
-		padding: 1.875rem;
+		padding: 1.875rem 1rem;
+
+		@include breakpoint(large) {
+			padding: 1.875rem;
+		}
 
 		.columns {
 			position: relative;
 		}
 	}
 
+	/* Content Styles */
+	.lightbox-content {
+		display: block;
+		position: relative;
+		padding: 2rem 1.5rem;
+		max-width: 61rem;
+		margin: 0 auto;
+		background: $white;
+
+		@include breakpoint(large) {
+			padding: 2.8125rem;
+		}
+
+		&.inverted {
+			background: transparent;
+			color: $white;
+			font-weight: normal;
+		}
+	}
+
 	.close-lightbox {
 		position: fixed;
-		top: rem-calc(10);
-		right: rem-calc(10);
+		top: rem-calc(14);
+		right: rem-calc(14);
 
 		@include breakpoint(large) {
 			position: absolute;
-			top: 0;
-			right: 0;
+			top: rem-calc(10);
+			right: rem-calc(10);
+		}
 
-			&.inverted {
-				position: fixed;
-				top: rem-calc(10);
-				right: rem-calc(10);
-			}
+		&.inverted {
+			position: fixed;
+			top: rem-calc(14);
+			right: rem-calc(14);
 		}
 
 		.icon.icon-x {
@@ -127,23 +163,6 @@ export default {
 				stroke: $kiva-accent-green;
 			}
 		}
-	}
-}
-
-/* @include breakpoint(large) { */
-
-/* Content Styles */
-.lightbox-content {
-	display: block;
-	padding-top: 2.8125rem;
-	max-width: 61rem;
-	margin: 0 auto;
-	color: $white;
-
-	&.inverted {
-		background: $white;
-		padding: 2.8125rem 1.5rem;
-		color: $kiva-text-dark;
 	}
 }
 </style>
