@@ -7,7 +7,7 @@
 				</div>
 				<p class="message">{{ tipMsg }}</p>
 			</span>
-			<a @click="$closeTipMsg" class="close-tip-message" aria-label="Close">
+			<a @click.stop.prevent="$closeTipMsg" class="close-tip-message" aria-label="Close">
 				<kv-icon name="x" />
 			</a>
 		</div>

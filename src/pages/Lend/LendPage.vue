@@ -16,6 +16,11 @@
 						:is-visitor="isVisitor"
 						:items-in-basket="itemsInBasket"
 					/>
+					<loading-overlay v-if="loading" />
+				</div>
+				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange"/>
+				<div v-if="totalCount > 0" class="loan-count">
+					{{ totalCount }} loans
 				</div>
 			</div>
 		</div>
@@ -23,16 +28,52 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import _invokeMap from 'lodash/invokeMap';
+import _map from 'lodash/map';
+import _mapValues from 'lodash/mapValues';
+import _merge from 'lodash/merge';
+import numeral from 'numeral';
+import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
-import loanCardQuery from '@/graphql/query/loanCardData.graphql';
-import _get from 'lodash/get';
-import _map from 'lodash/map';
+import KvPagination from '@/components/Kv/KvPagination';
+import LoadingOverlay from './LoadingOverlay';
+
+const loansPerPage = 12;
+
+// A map of functions to transform url query parameters to/from graphql variables.
+// Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
+// Each value is then an object with the to/from functions to write/read the url parameter.
+const urlParamTransform = {
+	page: {
+		to({ offset }) {
+			const page = Math.floor(offset / loansPerPage) + 1;
+			return page > 1 ? page : undefined;
+		},
+		from({ page }) {
+			const pagenum = numeral(page).value() - 1;
+			return { offset: pagenum > 0 ? loansPerPage * pagenum : 0 };
+		}
+	},
+};
+
+// Turn an object of graphql variables into an object of url query parameters
+function toUrlParams(variables) {
+	return _mapValues(urlParamTransform, ({ to }) => to(variables));
+}
+
+// Turn an object of url query parameters into an object of graphql variables
+function fromUrlParams(params) {
+	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
+}
 
 export default {
 	components: {
 		WwwPage,
 		GridLoanCard,
+		KvPagination,
+		LoadingOverlay,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -40,40 +81,99 @@ export default {
 	},
 	data() {
 		return {
+			offset: 0,
+			limit: loansPerPage,
 			totalCount: 0,
 			loans: [],
 			isVisitor: true,
 			itemsInBasket: [],
+			loading: false,
 		};
+	},
+	computed: {
+		urlParams() {
+			return toUrlParams({
+				offset: this.offset,
+			});
+		}
 	},
 	apollo: {
 		query: loanCardQuery,
 		preFetch: true,
-		result({ data }) {
-			this.totalCount = data.lend.loans.totalCount;
-			this.loans = data.lend.loans.values;
-			this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
-			this.isVisitor = !_get(data, 'my.userAccount.id');
+		preFetchVariables({ route }) {
+			return _merge({ limit: loansPerPage }, fromUrlParams(route.query));
+		},
+		variables() {
+			return {
+				offset: this.offset,
+				limit: this.limit,
+			};
+		},
+		result({ data, loading }) {
+			if (!loading) {
+				this.totalCount = data.lend.loans.totalCount;
+				this.loans = data.lend.loans.values;
+				this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
+				this.isVisitor = !_get(data, 'my.userAccount.id');
+				this.loading = false;
+			}
 		}
-	}
+	},
+	methods: {
+		pageChange(number) {
+			const offset = loansPerPage * (number - 1);
+			this.offset = offset;
+		},
+		updateFromParams(query) {
+			const { offset } = fromUrlParams(query);
+			this.offset = offset;
+		}
+	},
+	watch: {
+		urlParams(params) {
+			this.loading = true;
+			this.$router.push({ query: params });
+		},
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.updateFromParams(to.query);
+		});
+	},
+	beforeRouteUpdate(to, from, next) {
+		this.updateFromParams(to.query);
+		next();
+	},
 };
 </script>
 
 <style lang="scss">
-	@import 'settings';
+@import 'settings';
 
-	.lend-page {
+.lend-page {
+	main {
 		background-color: $kiva-bg-lightgray;
 	}
 
-	.heading-region {
-		margin-top: rem-calc(20);
-		padding: rem-calc(10);
+	.loan-card-group {
+		position: relative;
+	}
 
-		@include breakpoint(large) {
-			p {
-				max-width: 75%;
-			}
+	.loan-count {
+		text-align: center;
+		margin: 0 0 2rem;
+		color: $kiva-text-light;
+	}
+}
+
+.heading-region {
+	margin-top: rem-calc(20);
+	padding: rem-calc(10);
+
+	@include breakpoint(large) {
+		p {
+			max-width: 75%;
 		}
 	}
+}
 </style>
