@@ -167,7 +167,7 @@ export default {
 
 .pagination {
 	text-align: center;
-	margin: 0.75rem 0;
+	margin: 0.75rem auto;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
