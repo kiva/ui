@@ -111,7 +111,9 @@ export default {
 			};
 		},
 		result({ data, loading }) {
-			if (!loading) {
+			if (loading) {
+				this.loading = true;
+			} else {
 				this.totalCount = data.lend.loans.totalCount;
 				this.loans = data.lend.loans.values;
 				this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
@@ -124,7 +126,6 @@ export default {
 		pageChange(number) {
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
-			this.loading = true;
 			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {
@@ -143,7 +144,6 @@ export default {
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
-		this.loading = true;
 		this.updateFromParams(to.query);
 		next();
 	},
