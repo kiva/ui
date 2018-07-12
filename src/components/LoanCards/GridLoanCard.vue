@@ -100,7 +100,7 @@ export default {
 			return this.loan.status === 'funded' || this.amountLeft <= 0;
 		},
 		percentRaised() {
-			return this.loan.loanFundraisingInfo.fundedAmount / this.loan.loanAmount;
+			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
 		expiringSoonMessage() {
 			if (!this.loan.loanFundraisingInfo.isExpiringSoon) {
