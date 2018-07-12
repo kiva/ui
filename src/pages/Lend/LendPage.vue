@@ -30,6 +30,7 @@
 <script>
 import _get from 'lodash/get';
 import _invokeMap from 'lodash/invokeMap';
+import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
@@ -49,7 +50,7 @@ const urlParamTransform = {
 	page: {
 		to({ offset }) {
 			const page = Math.floor(offset / loansPerPage) + 1;
-			return page > 1 ? page : undefined;
+			return page > 1 ? String(page) : undefined;
 		},
 		from({ page }) {
 			const pagenum = numeral(page).value() - 1;
@@ -110,7 +111,9 @@ export default {
 			};
 		},
 		result({ data, loading }) {
-			if (!loading) {
+			if (loading) {
+				this.loading = true;
+			} else {
 				this.totalCount = data.lend.loans.totalCount;
 				this.loans = data.lend.loans.values;
 				this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
@@ -123,17 +126,17 @@ export default {
 		pageChange(number) {
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
+			this.pushChangesToUrl();
 		},
 		updateFromParams(query) {
 			const { offset } = fromUrlParams(query);
 			this.offset = offset;
-		}
-	},
-	watch: {
-		urlParams(params) {
-			this.loading = true;
-			this.$router.push({ query: params });
 		},
+		pushChangesToUrl() {
+			if (!_isEqual(this.$route.query, this.urlParams)) {
+				this.$router.push({ query: this.urlParams });
+			}
+		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
