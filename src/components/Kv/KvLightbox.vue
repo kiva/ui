@@ -71,6 +71,7 @@ export default {
 			if (this.isShown) {
 				this.$nextTick(() => {
 					this.$refs.kvlightbox.focus();
+					this.lockScroll();
 				});
 			}
 		}
@@ -81,6 +82,18 @@ export default {
 			// listen for this event in parent components
 			// it gives notice of the lightbox being closed internally
 			this.$emit('lightbox-closed');
+			// remove scroll lock class from body
+			this.unlockScroll();
+		},
+		lockScroll() {
+			if (typeof window !== 'undefined') {
+				document.body.classList.add('scroll-locked');
+			}
+		},
+		unlockScroll() {
+			if (typeof window !== 'undefined') {
+				document.body.classList.remove('scroll-locked');
+			}
 		}
 	}
 };
@@ -99,14 +112,20 @@ export default {
 	opacity: 0;
 }
 
+body.scroll-locked {
+	overflow: hidden;
+}
+
 /* Background, Structure + Close Button Styles */
 .kv-lightbox-wrap {
 	display: block;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	right: 0;
 	left: 0;
+	bottom: 0;
 	padding: 4.5rem 0;
+	overflow-y: scroll;
 }
 
 .kv-lightbox-bg {
