@@ -4,7 +4,7 @@
 			<div class="small-12 large-9 columns">
 				<!-- <h1>Checkout</h1> -->
 				<!-- checkout-steps -->
-				<checkout-steps />
+				<checkout-steps current-step="currentStep" @navigate-to-step="navigateToStep" />
 				<!-- basket-page -->
 				<!-- payment-page -->
 				<!-- thanks-page -->
@@ -28,11 +28,20 @@ export default {
 	},
 	data() {
 		return {
+			currentStep: 'basket'
 		};
 	},
 	methods: {
-
-	}
+		navigateToStep(step) {
+			console.log(step);
+			this.currentStep = step;
+		}
+	},
+	// computed: {
+	// 	currentStep() {
+	// 		return 'basket';
+	// 	}
+	// }
 };
 </script>
 
