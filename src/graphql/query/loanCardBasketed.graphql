@@ -1,0 +1,12 @@
+query {
+	shop {
+		nonTrivialItemCount
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}
