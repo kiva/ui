@@ -1,5 +1,5 @@
 <template>
-	<transition name="fade">
+	<transition name="kvfade">
 		<div v-show="isShown"
 			class="kv-lightbox-wrap"
 			ref="kvlightbox"
@@ -101,20 +101,7 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to {
-	opacity: 0;
-}
-
-body.scroll-locked {
-	overflow: hidden;
-}
+@import 'global/transitions';
 
 /* Background, Structure + Close Button Styles */
 .kv-lightbox-wrap {
