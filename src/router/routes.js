@@ -5,4 +5,5 @@ export default [
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
+	{ path: '/login-vue', component: () => import('@/pages/LoginAndRegister/LoginAndRegister') },
 ];
