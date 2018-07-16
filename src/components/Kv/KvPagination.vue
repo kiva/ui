@@ -165,21 +165,17 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-$spacing: 0.75rem;
-
 .pagination {
 	text-align: center;
-	margin: $spacing 0;
+	margin: 0.75rem auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 17rem;
 
 	li {
 		text-decoration: none;
-		display: inline-block;
-		margin: 0 $spacing;
-
-		&.pagination-previous,
-		&.pagination-next {
-			margin: 0;
-		}
+		list-style: none;
 	}
 }
 

@@ -26,14 +26,22 @@ export default {
 		}
 	},
 	methods: {
+		// Keep the loading spinner centered on the part of this overlay that is visible within the viewport
 		onScroll() {
-			// Keep the loading spinner centered on the part of this overlay that is visible within the viewport
-			const bounds = this.$el.getBoundingClientRect();
-			if (bounds.top < 0 && bounds.bottom > window.innerHeight) {
+			// get the bounds of the entire overlay
+			let { top, bottom } = this.$el.getBoundingClientRect();
+
+			// adjust the top and bottom with the height of the spinner itself
+			top += this.$el.firstChild.offsetHeight;
+			bottom -= this.$el.firstChild.offsetHeight;
+
+			if (top < 0 && bottom > window.innerHeight) {
+				// in this case, it just needs to be centered in the screen
 				this.top = '50%';
 			} else {
-				const topBound = Math.max(bounds.top, 0);
-				const bottomBound = Math.min(bounds.bottom, window.innerHeight);
+				// calculate the position needed to remain centered in the visible portion of the overlay
+				const topBound = Math.max(top, 0);
+				const bottomBound = Math.min(bottom, window.innerHeight);
 				this.top = `${((bottomBound - topBound) / 2) + topBound}px`;
 			}
 		}
@@ -56,6 +64,8 @@ export default {
 	background-color: rgba($kiva-bg-lightgray, 0.7);
 	width: 100%;
 	height: 100%;
+	left: 0;
+	top: 0;
 
 	.spinner-wrapper {
 		position: fixed;
