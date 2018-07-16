@@ -8,7 +8,8 @@ export function preFetchApolloQuery(config, client, args) {
 	return new Promise((resolve, reject) => {
 		// Fetch the query from the component's apollo options
 		client.query({
-			query: config.query
+			query: config.query,
+			variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
 		}).then(({ errors }) => {
 			let handled = false;
 			// Pass any errors to the error handlers from the component's apollo options
