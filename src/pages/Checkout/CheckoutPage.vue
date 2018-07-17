@@ -1,22 +1,21 @@
 <template>
 	<www-page>
+		<checkout-steps current-step="currentStep" @navigate-to-step="navigateToStep" />
 		<div class="row page-content">
-			<div class="small-12 large-9 columns">
-				<!-- <h1>Checkout</h1> -->
-				<!-- checkout-steps -->
-				<checkout-steps current-step="currentStep" @navigate-to-step="navigateToStep" />
-				<!-- basket-page -->
-				<!-- payment-page -->
-				<!-- thanks-page -->
+			<div class="columns">
+				<!-- basket-page / payment-page / thanks-page -->
+				<component :is="checkoutComponent" />
 			</div>
 		</div>
 	</www-page>
 </template>
 
 <script>
-// import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CheckoutSteps from '@/pages/Checkout/CheckoutSteps';
+import BasketSummary from '@/pages/Checkout/BasketSummary';
+import PaymentSummary from '@/pages/Checkout/PaymentSummary';
+import ThanksSummary from '@/pages/Checkout/ThanksSummary';
 
 export default {
 	components: {
@@ -33,15 +32,20 @@ export default {
 	},
 	methods: {
 		navigateToStep(step) {
-			console.log(step);
 			this.currentStep = step;
 		}
 	},
-	// computed: {
-	// 	currentStep() {
-	// 		return 'basket';
-	// 	}
-	// }
+	computed: {
+		checkoutComponent() {
+			if (this.currentStep === 'payment') {
+				return PaymentSummary;
+			}
+			if (this.currentStep === 'thanks') {
+				return ThanksSummary;
+			}
+			return BasketSummary;
+		}
+	}
 };
 </script>
 
