@@ -1,11 +1,11 @@
 <template>
-    <div>
-        <ul>
-            <li class=""></li>
-            <li class=""></li>
-            <li class=""></li>
-        </ul>
-    </div>
+	<div>
+		<ul>
+			<li class=""></li>
+			<li class=""></li>
+			<li class=""></li>
+		</ul>
+	</div>
 </template>
 
 <script>
