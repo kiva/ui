@@ -1,0 +1,22 @@
+query($id: Int!) {
+	shop {
+		nonTrivialItemCount
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+	lend {
+		loan(id: $id) {
+			id
+			loanFundraisingInfo {
+				fundedAmount
+				reservedAmount
+				isExpiringSoon
+			}
+		}
+	}
+}

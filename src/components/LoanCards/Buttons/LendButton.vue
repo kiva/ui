@@ -14,8 +14,7 @@
 <script>
 import numeral from 'numeral';
 import addToBasketMutation from '@/graphql/mutation/addToBasket.graphql';
-import basketCountQuery from '@/graphql/query/basketCount.graphql';
-import basketItemsQuery from '@/graphql/query/basketItems.graphql';
+import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
@@ -49,11 +48,13 @@ export default {
 					id: this.loanId,
 					price: numeral(this.price).format('0.00'),
 				},
-				refetchQueries: [
-					{ query: basketCountQuery },
-					{ query: basketItemsQuery },
-				]
-			}).finally(() => {
+			}).then(() => this.apollo.query({
+				query: loanCardBasketed,
+				variables: {
+					id: this.loanId,
+				},
+				fetchPolicy: 'network-only',
+			})).finally(() => {
 				this.loading = false;
 			});
 		}

@@ -113,6 +113,7 @@ export default {
 	bottom: 0;
 	padding: 4.5rem 0;
 	overflow-y: scroll;
+	z-index: 1500;
 }
 
 .kv-lightbox-bg {
@@ -123,7 +124,7 @@ export default {
 	bottom: 0;
 	left: 0;
 	background: rgba(0, 0, 0, 0.9);
-	z-index: 1000;
+	z-index: 1501;
 	overflow-y: scroll;
 
 	@include breakpoint(large) {
@@ -132,16 +133,15 @@ export default {
 }
 
 .kv-lightbox {
-	display: flex;
 	position: relative;
-	align-content: center;
-	justify-content: center;
 	margin: 0 auto;
-	z-index: 1000;
+	z-index: 1502;
 	padding: 0;
 
 	.row {
 		padding: 0;
+		align-items: center;
+		flex-direction: column;
 
 		.columns {
 			position: relative;
