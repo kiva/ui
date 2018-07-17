@@ -145,16 +145,15 @@ body.scroll-locked {
 }
 
 .kv-lightbox {
-	display: flex;
 	position: relative;
-	align-content: center;
-	justify-content: center;
 	margin: 0 auto;
 	z-index: 1000;
 	padding: 0;
 
 	.row {
 		padding: 0;
+		align-items: center;
+		flex-direction: column;
 
 		.columns {
 			position: relative;
