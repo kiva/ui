@@ -2,7 +2,7 @@
 	Global Tip Message Mixin
 	- REQUIRES: inject: ['apollo'] to manage global tip message state
 	- Exposes the following two methods for use on any component instance
-	- Call from component javascript using this.$showTipMsg or template using $showTipMessage
+	- Call from component javascript using this.$showTipMsg or template using $showTipMsg
 	- See TheTipMessage.vue for internal implementation
 */
 import updateTipMessage from '@/graphql/mutation/updateTipMessage.graphql';
