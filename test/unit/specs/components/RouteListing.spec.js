@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import RouteListing from '@/pages/UueSiteMap/RouteListing';
+import RouteListing from '@/pages/UiSiteMap/RouteListing';
 import routes from '@/router/routes';
 import createRouter from '@/router';
 

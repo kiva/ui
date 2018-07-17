@@ -1,21 +1,40 @@
+import checkApolloInject from '@/util/apolloInjectCheck';
+
 export default {
 	created() {
 		if (this.$options.apollo) {
-			if (!this.$options.inject || !this.$options.inject.apollo) {
-				throw new Error('No apollo client provided! Add "inject: [\'apollo\']" to this component definition.');
-			}
+			checkApolloInject(this);
 
-			const { query, preFetch, result = () => {} } = this.$options.apollo;
+			const {
+				query,
+				preFetch,
+				preFetchVariables = () => {},
+				variables = () => {},
+				result = () => {},
+			} = this.$options.apollo;
 
 			if (query) {
 				// if the query was prefetched, read the data from the cache
 				if (preFetch) {
-					const data = this.apollo.readQuery({ query });
+					const data = this.apollo.readQuery({
+						query,
+						variables: preFetchVariables({ route: this.$route }),
+					});
 					result.call(this, { data });
 				}
 
-				// Watch for changes in the query results
-				this.apollo.watchQuery({ query }).subscribe({
+				// Setup an observer to watch for changes to the query result
+				const observer = this.apollo.watchQuery({
+					query,
+					variables: variables.call(this)
+				});
+
+				// Use Vue's $watch to reactively update the query variables when the component data changes
+				// This will cause a new query result to be fetched if it is not available in the cache
+				this.$watch(variables, vars => observer.setVariables(vars), { deep: true });
+
+				// Subscribe to the observer to see each result
+				observer.subscribe({
 					next: apolloResult => result.call(this, apolloResult)
 				});
 			}

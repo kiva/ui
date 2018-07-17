@@ -1,11 +1,11 @@
-query {
+query($offset: Int, $limit: Int) {
 	my {
 		userAccount {
 			id
 		}
 	}
 	lend {
-		loans {
+		loans(offset: $offset, limit: $limit) {
 			totalCount
 			values {
 				id

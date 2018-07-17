@@ -2,7 +2,7 @@
 	<div class="column column-block">
 		<div class="grid-loan-card">
 			<loan-card-image
-				:id="loan.id"
+				:loan-id="loan.id"
 				:name="loan.name"
 				:retina-image-url="loan.image.retina"
 				:standard-image-url="loan.image.default"
@@ -13,13 +13,14 @@
 			/>
 
 			<borrower-info
-				:id="loan.id"
+				:loan-id="loan.id"
 				:name="loan.name"
 				:amount="loan.loanAmount"
 				:use="loan.use"
 				:country="loan.geocode.country.name"
 				:status="loan.status"
 				:borrower-count="loan.borrowerCount"
+				:loan-length="loan.lenderRepaymentTerm"
 			/>
 
 			<div class="loan-card-footer-wrap">
@@ -32,14 +33,14 @@
 				/>
 
 				<action-button
-					:id="loan.id"
+					:loan-id="loan.id"
 					:items-in-basket="itemsInBasket"
 					:is-lent-to="loan.userProperties.lentTo"
-					:is-funded="loan.status==='funded'"/>
+					:is-funded="isFunded"/>
 
 				<matching-text
 					:matching-text="loan.matchingText"
-					:is-funded="loan.status==='funded'"/>
+					:is-funded="isFunded"/>
 			</div>
 		</div>
 	</div>
@@ -95,8 +96,11 @@ export default {
 			} = this.loan.loanFundraisingInfo;
 			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
+		isFunded() {
+			return this.loan.status === 'funded' || this.amountLeft <= 0;
+		},
 		percentRaised() {
-			return this.loan.loanFundraisingInfo.fundedAmount / this.loan.loanAmount;
+			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
 		expiringSoonMessage() {
 			if (!this.loan.loanFundraisingInfo.isExpiringSoon) {

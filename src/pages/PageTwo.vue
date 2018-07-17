@@ -23,7 +23,7 @@ export default {
 	apollo: {
 		query: helloQuery,
 		preFetch: true,
-	},
+	}
 };
 </script>
 
