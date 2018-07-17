@@ -50,6 +50,9 @@ export default {
 				},
 			}).then(() => this.apollo.query({
 				query: loanCardBasketed,
+				variables: {
+					id: this.loanId,
+				},
 				fetchPolicy: 'network-only',
 			})).finally(() => {
 				this.loading = false;
