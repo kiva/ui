@@ -126,6 +126,7 @@ body.scroll-locked {
 	bottom: 0;
 	padding: 4.5rem 0;
 	overflow-y: scroll;
+	z-index: 1500;
 }
 
 .kv-lightbox-bg {
@@ -136,7 +137,7 @@ body.scroll-locked {
 	bottom: 0;
 	left: 0;
 	background: rgba(0, 0, 0, 0.9);
-	z-index: 1000;
+	z-index: 1501;
 	overflow-y: scroll;
 
 	@include breakpoint(large) {
@@ -147,7 +148,7 @@ body.scroll-locked {
 .kv-lightbox {
 	position: relative;
 	margin: 0 auto;
-	z-index: 1000;
+	z-index: 1502;
 	padding: 0;
 
 	.row {
