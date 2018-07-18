@@ -1,8 +1,13 @@
+import updateExpCookieData from '@/graphql/mutation/updateExpCookieData.graphql';
+import checkApolloInject from '@/util/apolloInjectCheck';
+
 /* eslint-disable */
+
 export default {
 	data() {
 		return {
-			experimentVersion: ''
+			experimentVersion: '',
+			activeUserExperiments: []
 		};
 	},
 	created() {
@@ -15,8 +20,14 @@ export default {
 				console.log('server: uiab cookie already exist');
 				console.log(this.$ssrContext.cookies.uiab);
 				console.log(JSON.stringify(this.experimentData));
+				// extract experiments array from the cookie
+				this.activeUserExperiments = this.$setActiveExperiments(this.$ssrContext.cookies.uiab);
+				console.log(`activeUserExperiments set: ${this.activeUserExperiments}`);
+				// if apollo is instantiated set activeExperiments in the client store
+				this.storeUserCookieData();
 				// extract the version from the cookie
 				this.experimentVersion = this.$extractAssignedVersion(this.$ssrContext.cookies.uiab, this.experimentData.key);
+				console.log(`Server Extracted Exp Version: ${this.experimentVersion}`);
 				// this.experimentVersion = this.$getUiExpVersion(this.experimentData);
 			} else {
 				console.log('server: no uiab cookie found');
@@ -30,10 +41,12 @@ export default {
 				if (this.$expCookieExists()) {
 					console.log('client: uiab cookie already exist');
 					this.experimentVersion = this.$getUiExpVersion(this.experimentData);
+					console.log(`Client Extracted Exp Version: ${this.experimentVersion}`);
 				} else {
 					console.log('client: uiab cookie does not exist');
 					// return experimentVersion from newly initialized experiment session
 					this.experimentVersion = this.$assignExperimentVersion(this.experimentData);
+					console.log(`Client Set Exp Version: ${this.experimentVersion}`);
 				}
 			} else {
 				console.log('client: experiment version is set');
@@ -44,6 +57,28 @@ export default {
 					console.log('client: experimentVersion is set, cookie is not');
 				}
 			}
+		}
+	},
+	methods: {
+		storeUserCookieData() {
+			checkApolloInject(this);
+			console.log('Storing active user exps in client state');
+			console.log(this.activeUserExperiments);
+
+			for (let i = 0; i < this.activeUserExperiments.length; i++) {
+				this.apollo.mutate({
+					mutation: updateExpCookieData,
+					variables: {
+						userExperiment: this.activeUserExperiments[i]
+					}
+				});
+			}
+			// this.apollo.mutate({
+			// 	mutation: updateExpCookieData,
+			// 	variables: {
+			// 		userExperiments: this.activeUserExperiments || []
+			// 	}
+			// });
 		}
 	}
 };

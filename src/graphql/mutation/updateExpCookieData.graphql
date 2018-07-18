@@ -1,0 +1,3 @@
+mutation updateExpCookieData($userExperiment: Object) {
+	updateExpCookieData(userExperiment: $userExperiment) @client
+}

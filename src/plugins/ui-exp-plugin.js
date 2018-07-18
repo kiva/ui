@@ -60,6 +60,29 @@ export default Vue => {
 				return false;
 			}
 		},
+		setActiveExperiments: cookie => {
+			console.log('Extract Experiments from Cookie');
+			console.log(cookie);
+			// expects a string similar to uiexp.test_name|0,uiexp.name_two|1
+			if (typeof cookie === 'string') {
+				// split on , to get all experiment segments
+				const experiments = cookie.split(',');
+				// for each entry split on | using name to match and then returning version
+				let expArray = [];
+				experiments.forEach(expString => {
+					const expData = expString.split('|');
+					let expObj = {
+						key: expData[0],
+						version: expData[1]
+					};
+					expArray.push(expObj);
+				});
+				console.log('Experiment Object extracted from cookie:');
+				console.log(JSON.stringify(expArray));
+				return expArray;
+			}
+			return null;
+		},
 		extractAssignedVersion: (cookie, expKey) => {
 			console.log('Extracting existing cookie value');
 			// expects a string similar to uiexp.test_name|0,uiexp.name_two|1
@@ -154,6 +177,11 @@ export default Vue => {
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$expCookieExists = () => {
 		return expActions.expCookieExists();
+	};
+
+	// eslint-disable-next-line no-param-reassign
+	Vue.prototype.$setActiveExperiments = uiabCookieString => {
+		return expActions.setActiveExperiments(uiabCookieString);
 	};
 
 	// eslint-disable-next-line no-param-reassign
