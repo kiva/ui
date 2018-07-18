@@ -1,15 +1,22 @@
 <template>
 	<www-page>
-		<div id="loginForm" class="small-12 large-3 login-form">
+		<form id="loginForm"
+			@submit="loginForm"
+			action=""
+			method="post"
+			class="small-12 large-3 login-form">
+
 			<KvButton>FACEBOOK BUTTON HERE</KvButton>
 			<hr>
 			<div class="featured-text">Or use your email</div>
 
-			<h3 class="input-label">Email</h3>
-			<input type="email" name="email" class="input-spacing bottom-spacing">
+			<label for="email">
+				Email <input type="email" name="email" class="input-spacing bottom-spacing" autofocus>
+			</label>
 
-			<h3 class="input-label">Password</h3>
-			<input type="password" name="password" class="input-spacing bottom-spacing">
+			<label for="password">
+				Password <input type="password" name="password" maxlength="31" class="input-spacing bottom-spacing">
+			</label>
 
 			<div class="bottom-spacing">
 				<input type="checkbox" name="persist_login" id="loginForm_persist_login">
@@ -27,25 +34,36 @@
 
 			<a href="/help/forgot-password" class="forgot-password-link">Forgot your password?</a>
 			<a href="/register" class="register-link">Sign up for Kiva</a>
-		</div>
+		</form>
 
 		<hr class="spacer">
 
-		<div id="registerForm" class="small-12 large-3 register-form">
+		<form id="registerForm"
+			@submit="registerForm"
+			action=""
+			method="post"
+			class="small-12 large-3 register-form">
+
 			<KvButton>FACEBOOK BUTTON HERE</KvButton>
 			<hr>
 			<div class="featured-text">Or</div>
-			<h3 class="input-label">First name</h3>
-			<input type="text" name="firstname" maxlength="40" class="input-spacing bottom-spacing">
 
-			<h3 class="input-label">Last name</h3>
-			<input type="text" name="lastname" class="input-spacing bottom-spacing">
+			<label for="firstname">
+				First name
+				<input type="text" name="firstname" maxlength="40" class="input-spacing bottom-spacing" autofocus>
+			</label>
 
-			<h3 class="input-label">Email</h3>
-			<input type="email" name="email" class="input-spacing bottom-spacing">
+			<label for="lastname">
+				Last name <input type="text" name="lastname" maxlength="40" class="input-spacing bottom-spacing">
+			</label>
 
-			<h3 class="input-label">Password</h3>
-			<input type="password" name="password" class="input-spacing bottom-spacing">
+			<label for="email">
+				Email <input type="email" name="email" maxlength="100" class="input-spacing bottom-spacing">
+			</label>
+
+			<label for="password">
+				Password <input type="password" name="password" maxlength="31" class="input-spacing bottom-spacing">
+			</label>
 
 			<div class="bottom-spacing terms-and-policy">
 				<input type="checkbox" name="persist_login" id="registerForm_terms_of_use_privacy_poicy">
@@ -60,7 +78,7 @@
 				</a>.
 			</div>
 			<KvButton class="register-button bottom-spacing" type="submit">Continue</KvButton>
-		</div>
+		</form>
 	</www-page>
 </template>
 
@@ -87,6 +105,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+// This spacer will need be deleted
 .spacer {
 	margin: 150px 0;
 }
@@ -104,8 +123,9 @@ export default {
 		color: $dark-gray;
 	}
 
-	.input-label {
-		font-weight: 500;
+	label {
+		font-weight: 400;
+		font-size: rem-calc(18);
 	}
 
 	.input-spacing {
