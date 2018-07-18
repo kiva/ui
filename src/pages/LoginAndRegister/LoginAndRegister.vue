@@ -36,6 +36,7 @@
 			<a href="/register" class="register-link">Sign up for Kiva</a>
 		</form>
 
+		<!-- This spacer will be deleted -->
 		<hr class="spacer">
 
 		<form id="registerForm"
@@ -68,11 +69,13 @@
 			<div class="bottom-spacing terms-and-policy">
 				<input type="checkbox" name="persist_login" id="registerForm_terms_of_use_privacy_poicy">
 				I have read and agree to the
-				<a href="legal/terms" target="_blank"
+				<a href="legal/terms"
+					target="_blank"
 					title="Open Terms of Use in a new window"
 					class="">Terms of Use
 				</a> and
-				<a href="legal/privacy" target="_blank"
+				<a href="legal/privacy"
+					target="_blank"
 					title="Open Privacy Policy in a new window"
 					class="">Privacy Policy
 				</a>.
@@ -85,7 +88,6 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
-// import Popper from 'popper.js';
 
 export default {
 	components: {
@@ -94,18 +96,14 @@ export default {
 	},
 	data() {
 		return {
-			popper: null,
 		};
-	},
-	mounted: {
-		// https://matwrites.com/create-beautiful-tooltips-with-popper-js-tooltip-js/
 	},
 };
 </script>
 <style lang="scss" scoped>
 @import 'settings';
 
-// This spacer will need be deleted
+// This spacer will be deleted
 .spacer {
 	margin: 150px 0;
 }
