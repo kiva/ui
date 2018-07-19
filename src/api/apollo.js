@@ -20,7 +20,7 @@ export default function createApolloClient({
 
 	return new ApolloClient({
 		link: ApolloLink.from([
-			StateLinkCreator({ cache }),
+			StateLinkCreator({ cache, cookie }),
 			HttpLinkCreator({ cookie, csrfToken, uri }),
 		]),
 		cache,

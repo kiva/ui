@@ -1,3 +1,7 @@
 query {
-	userExperiments @client
+	userExperiments @client {
+		id
+		key
+		version
+	}
 }
