@@ -1,6 +1,5 @@
 <template>
 	<form id="registerForm"
-		@submit="registerForm"
 		action=""
 		method="post"
 		class="small-12 large-3 register-form">
@@ -62,6 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
 .register-form {
 	margin: 0 rem-calc(10);
 

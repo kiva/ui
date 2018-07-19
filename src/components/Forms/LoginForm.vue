@@ -1,6 +1,5 @@
 <template>
 	<form id="loginForm"
-		@submit="loginForm"
 		action=""
 		method="post"
 		class="small-12 large-3 login-form">
