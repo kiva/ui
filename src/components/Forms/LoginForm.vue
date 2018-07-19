@@ -9,15 +9,19 @@
 		<hr>
 		<div class="featured-text">Or use your email</div>
 
-		<label for="email">
-			Email <input type="email" name="email" class="input-spacing bottom-spacing" autofocus>
-		</label>
+		<div class="input-set">
+			<label for="email">
+				Email <input type="email" name="email" autofocus>
+			</label>
+		</div>
 
-		<label for="password">
-			Password <input type="password" name="password" maxlength="31" class="input-spacing bottom-spacing">
-		</label>
+		<div class="input-set">
+			<label for="password">
+				Password <input type="password" name="password" maxlength="31">
+			</label>
+		</div>
 
-		<div class="bottom-spacing">
+		<div class="persist-login-wrap">
 			<input type="checkbox" name="persist_login" id="loginForm_persist_login">
 			<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
 			<a class="helpTip sfHelpTip_old "
@@ -37,12 +41,10 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
-		WwwPage,
 		KvButton,
 	},
 };
@@ -63,35 +65,25 @@ export default {
 		color: $dark-gray;
 	}
 
-	label {
-		font-weight: 400;
-		font-size: rem-calc(18);
-	}
-
-	.input-spacing {
-		padding: rem-calc(5) rem-calc(7);
-	}
-
-	.bottom-spacing {
+	.persist-login-wrap {
 		margin-bottom: rem-calc(20);
-	}
-
-	.sign-in-button {
-		width: 100%;
-	}
-
-	.forgot-password-link {
-		display: block;
-		text-align: center;
-		margin-bottom: rem-calc(15);
-	}
-
-	.terms-and-policy {
 		line-height: rem-calc(20);
 
 		input {
 			margin: 0;
 		}
+	}
+
+	.sign-in-button {
+		width: 100%;
+		margin-bottom: rem-calc(20);
+	}
+
+	.forgot-password-link,
+	.register-link {
+		display: block;
+		text-align: center;
+		margin-bottom: rem-calc(15);
 	}
 }
 </style>

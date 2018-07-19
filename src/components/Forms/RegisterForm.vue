@@ -9,48 +9,52 @@
 		<hr>
 		<div class="featured-text">Or</div>
 
-		<label for="firstname">
-			First name
-			<input type="text" name="firstname" maxlength="40" class="input-spacing bottom-spacing" autofocus>
-		</label>
+		<div class="input-set">
+			<label for="firstname">
+				First name
+				<input type="text" name="firstname" maxlength="40" autofocus>
+			</label>
+		</div>
 
-		<label for="lastname">
-			Last name <input type="text" name="lastname" maxlength="40" class="input-spacing bottom-spacing">
-		</label>
+		<div class="input-set">
+			<label for="lastname">
+				Last name <input type="text" name="lastname" maxlength="40">
+			</label>
+		</div>
 
-		<label for="email">
-			Email <input type="email" name="email" maxlength="100" class="input-spacing bottom-spacing">
-		</label>
+		<div class="input-set">
+			<label for="email">
+				Email <input type="email" name="email" maxlength="100">
+			</label>
+		</div>
 
-		<label for="password">
-			Password <input type="password" name="password" maxlength="31" class="input-spacing bottom-spacing">
-		</label>
+		<div class="input-set">
+			<label for="password">
+				Password <input type="password" name="password" maxlength="31">
+			</label>
+		</div>
 
-		<div class="bottom-spacing terms-and-policy">
+		<div class="terms-and-policy">
 			<input type="checkbox" name="persist_login" id="registerForm_terms_of_use_privacy_poicy">
 			I have read and agree to the
 			<a href="legal/terms"
 				target="_blank"
-				title="Open Terms of Use in a new window"
-				class="">Terms of Use
+				title="Open Terms of Use in a new window">Terms of Use
 			</a> and
 			<a href="legal/privacy"
 				target="_blank"
-				title="Open Privacy Policy in a new window"
-				class="">Privacy Policy
+				title="Open Privacy Policy in a new window">Privacy Policy
 			</a>.
 		</div>
-		<KvButton class="register-button bottom-spacing" type="submit">Continue</KvButton>
+		<KvButton class="register-button" type="submit">Continue</KvButton>
 	</form>
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
-		WwwPage,
 		KvButton,
 	},
 };
@@ -70,31 +74,14 @@ export default {
 		color: $dark-gray;
 	}
 
-	label {
-		font-weight: 400;
-		font-size: rem-calc(18);
-	}
-
-	.input-spacing {
-		padding: rem-calc(5) rem-calc(7);
-	}
-
-	.bottom-spacing {
-		margin-bottom: rem-calc(20);
-	}
-
 	.register-button {
 		width: 100%;
-	}
-
-	.register-link {
-		display: block;
-		text-align: center;
-		margin-bottom: rem-calc(15);
+		margin-bottom: rem-calc(20);
 	}
 
 	.terms-and-policy {
 		line-height: rem-calc(20);
+		margin-bottom: rem-calc(20);
 
 		input {
 			margin: 0;

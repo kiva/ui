@@ -41,3 +41,15 @@ input[type="submit"].hidden-submit {
 	width: 1px;
 	height: 1px;
 }
+
+.input-set {
+	label {
+		font-weight: 400;
+		font-size: rem-calc(18);
+	}
+
+	input {
+		padding: rem-calc(5) rem-calc(7);
+		margin-bottom: rem-calc(20);
+	}
+}

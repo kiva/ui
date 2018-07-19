@@ -4,6 +4,7 @@
 
 		<!-- This spacer will be deleted -->
 		<hr class="spacer">
+
 		<register-form />
 
 	</www-page>
@@ -13,19 +14,13 @@
 import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		WwwPage,
-		KvButton,
 		LoginForm,
 		RegisterForm
-	},
-	data() {
-		return {
-		};
-	},
+	}
 };
 </script>
 <style lang="scss" scoped>
@@ -33,7 +28,7 @@ export default {
 
 // This spacer will be deleted
 .spacer {
-	margin: 150px 0;
+	margin: rem-calc(150) 0;
 }
 
 </style>
