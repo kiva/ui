@@ -1,6 +1,8 @@
 /*
 	Utility methods for extracting cooking information and formatting experiment data
 */
+import jscookie from 'js-cookie';
+
 const expActions = {
 	parseExperimentData: experiment => {
 		if (typeof experiment === 'string') {
@@ -14,7 +16,8 @@ const expActions = {
 		console.log('checking experiment state');
 		if (expActions.expCookieExists()) {
 			console.log('cookie exists');
-			const cookie = expActions.getExperimentCookie();
+			// const cookie = expActions.getExperimentCookie();
+			const cookie = jscookie.get('uiab');
 			return expActions.extractAssignedVersion(cookie, experiment.key);
 		}
 		console.log('cookie absent');
@@ -23,7 +26,8 @@ const expActions = {
 	getExperimentCookie: () => {
 		if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 			console.log('operating in window');
-			return expActions.getExpCookieFromAllCookies(document.cookie);
+			// return expActions.getExpCookieFromAllCookies(document.cookie);
+			return jscookie.get('uiab');
 		}
 	},
 	getExpCookieFromAllCookies: allCookies => {
@@ -50,16 +54,15 @@ const expActions = {
 			// eslint-disable-next-line
 			experiments[i].__typename = 'UserExperiment';
 		}
+		// eslint-disable-next-line
+		// experiments.__typename = "UserExperiments";
 		console.log(`Experiments formatted for client state: ${JSON.stringify(experiments)}`);
 		return experiments;
 	},
 	expCookieExists: () => {
 		console.log('checking for cookie');
-		console.log(typeof window);
-		console.log(typeof document);
 		if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-			console.log(document.cookie);
-			if (document.cookie.indexOf('uiab') !== -1) {
+			if (jscookie('uiab')) {
 				return true;
 			}
 			return false;
@@ -129,7 +132,8 @@ const expActions = {
 		if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 			// TODO: Add build cookie step here to ensure persistence of other experiments!!!
 			// kvActions.addExpToCookie
-			document.cookie = `uiab=${expKey}|${version};path=/;max-age=31536000`;
+			// document.cookie = `uiab=${expKey}|${version};path=/;max-age=31536000`;
+			jscookie.set('uiab', `${expKey}|${version}`, { expires: 365, path: '/' });
 		}
 	},
 	assignExperimentVersion: experiment => {
@@ -166,7 +170,8 @@ const expActions = {
 			if (Math.round(rando * 100) <= cutoff) {
 				console.log(`exp version : ${i}`);
 				// eslint-disable-next-line no-plusplus
-				assignedVersion++;
+				// assignedVersion++;
+				assignedVersion = i;
 				break;
 			}
 		}

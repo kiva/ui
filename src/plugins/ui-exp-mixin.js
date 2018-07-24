@@ -33,6 +33,53 @@ export default {
 				// this.experimentVersion = this.$getUiExpVersion(this.experimentData);
 			} else {
 				console.log('server: no uiab cookie found');
+				console.log(JSON.stringify(this.experimentData));
+
+				this.experimentVersion = this.$assignExperimentVersion(this.experimentData);
+				console.log(`Server Set Exp Version: ${this.experimentVersion}`);
+				console.log(`Active Exps Length: ${this.activeUserExperiments.length}`);
+
+				if (checkApolloInject(this)) {
+					console.log('Adding new experiment version to client state');
+					console.log(this.apollo.writeData);
+					console.log(this.apollo.cache.writeData);
+					console.log(this.apollo.cache.writeQuery);
+
+					// Persist Experiment data/version in state so client can set in cookie
+
+					// Tried to do a mutation (async so it's not done in time)
+					// -> Mutation Resolver has formatting in place
+					// this.apollo.mutate({
+					// 	mutation: updateExpCookieData,
+					// 	variables: {
+					// 		userExperiment: this.experimentData,
+					// 		assignedVersion: this.experimentVersion
+					// 	}
+					// }).then(({ data }) => {
+					// 	console.log(`testing stored return data: ${JSON.stringify(data)}`);
+					// });
+
+
+					// Try to write directly to the cache
+					// Format our New Experiment for the Client Store
+					const newExp = {
+						id: this.experimentData.key,
+						key: this.experimentData.key,
+						version: parseInt(this.experimentVersion, 10),
+						__typename: 'UserExperiment'
+					};
+					// The following throws and error:
+					// -> Error in created hook: "TypeError: Cannot read property 'selections' of null"
+					this.apollo.writeData({ userExperiments: [newExp], id: 'UserExperiments' });
+
+					// Attempt to update server side state for server rendering NEW experiment setting
+					this.activeUserExperiments.push(newExp);
+				}
+
+				// Signify absense of assigned experiment
+				// Determine if experiment running in context
+				// Assign Experiment data/version if so
+
 			}
 		} else {
 			// On the client, if the experimentVersion is not set,
@@ -88,8 +135,10 @@ export default {
 	methods: {
 		getExperimentsFromCookie() {
 			this.apollo.query({ query: expCookieData }).then(({ data }) => {
+				console.log(JSON.stringify(data));
 				console.log(`testing stored query data: ${JSON.stringify(data.userExperiments)}`);
-				return data.userExperiments;
+				// return data.userExperiments;
+				this.activeUserExperiments = data.userExperiments;
 			});
 		},
 		storeUserCookieData() {

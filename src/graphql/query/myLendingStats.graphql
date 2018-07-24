@@ -52,4 +52,9 @@ query {
 			value
 		}
 	}
+	userExperiments @client {
+		id
+		key
+		version
+	}
 }

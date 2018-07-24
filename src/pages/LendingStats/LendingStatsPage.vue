@@ -1,5 +1,10 @@
 <template>
 	<www-page>
+		<h1>{{ myExpVersion }}</h1>
+		<h2 v-if="myExpVersion == 0">Version 0</h2>
+		<h2 v-if="myExpVersion == 1">Version 1</h2>
+		<h2 v-if="myExpVersion == 2">Version 2</h2>
+
 		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="row page-content">
 			<the-portfolio-tertiary-menu slot="tertiary" class="show-for-large" />
@@ -57,6 +62,7 @@ import _differenceBy from 'lodash/differenceBy';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
+import _find from 'lodash/find';
 import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
@@ -89,7 +95,9 @@ export default {
 			partnersNotLentTo: [],
 			totalPartners: 0,
 			experimentTest: {},
-			experimentData: () => {}
+			experimentData: () => {},
+			activeUserExperiments: () => []
+			// myExp: () => {}
 		};
 	},
 	apollo: {
@@ -120,6 +128,7 @@ export default {
 			// this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
 			this.experimentData = this.$parseExperimentData(_get(data, 'general.setting.value'));
 			// this.experimentVersion = this.$getUiExpVersion(_get(data, 'general.setting.value'));
+			this.activeUserExperiments = _get(data, 'userExperiments');
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, reject }) => reject({
@@ -135,6 +144,26 @@ export default {
 
 	},
 	computed: {
+		// myExp() {
+		// 	return _find(this.activeUserExperiments, { key: 'uiexp.test' }) || null;
+		// },
+		myExpVersion() {
+			// get() => {
+			console.log('updating myExpVersion');
+			const myExp = _find(this.activeUserExperiments, { key: 'uiexp.test' });
+			if (myExp) {
+				return myExp.version;
+			}
+			return null;
+			// const version = _find(activeExps, { key: 'uiexp.test' });
+			// console.log(_find(activeExps, { key: 'uiexp.test' }));
+			// console.log(_find(activeExps, { key: 'uiexp.test' }).version);
+			// return _find(activeExps, { key: 'uiexp.test' }).version || 0;
+			// },
+			// set: () => {
+			// 	this.activeUserExperiments = [];
+			// }
+		}
 		// experimentVersion() {
 		// 	// eslint-disable-next-line
 		// 	console.log('computing exp version');
@@ -148,30 +177,6 @@ export default {
 	// 		return this.$getUiExpVersion(this.experimentData);
 	// 	}
 	// },
-	created() {
-		// console.log(this.experimentVersion);
-		// this.experimentVersion = this.$getUiExpVersion(this.experimentData);
-		// // eslint-disable
-		// console.log('Created:');
-		// // Attempt to get an existing uiab cookie
-		// if (this.$isServer) {
-		// 	console.log('server created');
-		// 	// check for existing cookies here
-		// 	if (this.$ssrContext.cookies && this.$ssrContext.cookies.uiab) {
-		// 		// if we find uiab check for the current experiment within
-		// 		console.log(this.$ssrContext.cookies.uiab);
-		// 	}
-		// } else {
-		// 	// we should set or update the cookie with the exp version
-		// 	console.log(this);
-		// }
-	},
-	// mounted() {
-	// 	// eslint-disable
-	// 	console.log('Client ONLY Mounted:');
-	// 	// console.log(this);
-	// 	// May have to check cookies here
-	// }
 };
 </script>
 
