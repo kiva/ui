@@ -2,9 +2,9 @@
 	<form id="registerForm"
 		action=""
 		method="post"
-		class="small-12 large-3 register-form">
+		class="register-form">
 
-		<KvButton>FACEBOOK BUTTON HERE</KvButton>
+		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
 		<hr>
 		<div class="featured-text">Or</div>
 
@@ -45,7 +45,7 @@
 				title="Open Privacy Policy in a new window">Privacy Policy
 			</a>.
 		</div>
-		<KvButton class="register-button" type="submit">Continue</KvButton>
+		<KvButton class="register-button smaller" type="submit">Continue</KvButton>
 	</form>
 </template>
 
@@ -63,12 +63,6 @@ export default {
 @import 'settings';
 
 .register-form {
-	margin: 0 rem-calc(10);
-
-	@include breakpoint(large) {
-		margin: 0 auto;
-	}
-
 	.featured-text {
 		text-align: center;
 		color: $dark-gray;
