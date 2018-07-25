@@ -132,7 +132,6 @@ export default {
 					// TODO: on failed login this breaks due to the server trying to redirect to
 					// eslint-disable-next-line
 					// -> "https://dev-vm-01.kiva.org/login?doneUrl=https%3A%2F%2Fdev-vm-01.kiva.org%2Flend-vue%3Fpage%3D2&email=matthews%40kiva.org"
-
 					if (this.doneUrl !== '') {
 						this.$router.push(this.doneUrl);
 						return;

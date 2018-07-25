@@ -40,7 +40,7 @@ export default {
 // Control form layouts from parent to allow independence in other layouts
 .login-form,
 .register-form {
-	max-width: 280px;
+	max-width: rem-calc(280);
 	margin: 0 auto;
 }
 
