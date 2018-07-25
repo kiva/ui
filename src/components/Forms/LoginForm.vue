@@ -159,7 +159,7 @@ export default {
 			// Parent component code should show the form if user isn't yet logged in
 			// - A failed attempt to login will still refresh the page
 			// refresh the page if true
-			if (this.refresh) {
+			if (this.refresh && !this.loginFailed) {
 				window.location = window.location;
 			}
 		}
