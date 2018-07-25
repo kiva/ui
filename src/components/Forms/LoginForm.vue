@@ -65,6 +65,7 @@ export default {
 			default: ''
 		},
 		// Bind the :refresh="true" parameter when adding this component to force refresh on successful login
+		// -> This mode is meant for an embedded login form scenario, form exists if the user isn't logged in
 		refresh: {
 			type: Boolean,
 			default: false
@@ -75,6 +76,7 @@ export default {
 			loginActionUrl: '/login/process',
 			currUrl: this.$route.path,
 			crumb: '',
+			loginFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
 		};
 	},
@@ -123,24 +125,7 @@ export default {
 			})
 				.then(response => {
 					// The response will be the doneUrl if passed or the current url page loaded
-					console.log(response);
-
-					// $emit login-successful event once completed to allow parent to respond
-					this.$emit('login-successful');
-
-					// Goto doneUrl if present
-					// TODO: on failed login this breaks due to the server trying to redirect to
-					// eslint-disable-next-line
-					// -> "https://dev-vm-01.kiva.org/login?doneUrl=https%3A%2F%2Fdev-vm-01.kiva.org%2Flend-vue%3Fpage%3D2&email=matthews%40kiva.org"
-					if (this.doneUrl !== '') {
-						this.$router.push(this.doneUrl);
-						return;
-					}
-
-					// refresh the page if true
-					if (this.refresh) {
-						window.location = window.location;
-					}
+					this.handleLoginResponse(response);
 				})
 				.catch(error => {
 					console.error('Fetch Error =\n', error);
@@ -153,6 +138,31 @@ export default {
 			const formData = new FormData(this.$refs.loginForm);
 			this.postForm(this.loginActionUrl, formData);
 		},
+		handleLoginResponse(response) {
+			// TODO: Make this better
+			if (response.url && response.url.indexOf('/login?') !== -1) {
+				// we are in a failed login state, signified by the presense of the kiva app login url
+				// ex. "https://dev-vm-01.kiva.org/login?doneUrl=lend-vue%3Fpage%3D2&email=matthews%40kiva.org"
+				// $emit login-failed event on error to allow parent to respond
+				this.$emit('login-failed');
+				this.loginFailed = true;
+			} else {
+				// $emit login-successful event once completed to allow parent to respond
+				this.$emit('login-successful');
+			}
+
+			// Goto doneUrl if present + successful login
+			if (this.doneUrl !== '' && !this.loginFailed) {
+				this.$router.push(this.doneUrl);
+			}
+
+			// Parent component code should show the form if user isn't yet logged in
+			// - A failed attempt to login will still refresh the page
+			// refresh the page if true
+			if (this.refresh) {
+				window.location = window.location;
+			}
+		}
 	}
 };
 </script>
