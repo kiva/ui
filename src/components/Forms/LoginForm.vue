@@ -60,9 +60,6 @@ export default {
 	components: {
 		KvButton,
 	},
-	metaInfo: {
-		title: 'Sign in'
-	},
 	mixins: [loginRegUtils],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful login

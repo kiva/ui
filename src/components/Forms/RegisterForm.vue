@@ -74,9 +74,6 @@ export default {
 	components: {
 		KvButton,
 	},
-	metaInfo: {
-		title: 'Register'
-	},
 	mixins: [loginRegUtils],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful registration
