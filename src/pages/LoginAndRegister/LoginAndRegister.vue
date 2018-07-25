@@ -2,12 +2,12 @@
 	<www-page>
 		<div class="row page-content">
 			<div class="columns">
-				<login-form done-url="lend-vue?page=2" />
+				<login-form done-url="https://dev-vm-01.kiva.org/lend-vue?page=2" />
 
 				<!-- This spacer will be deleted -->
 				<hr class="spacer">
 
-				<register-form />
+				<register-form :refresh="true" />
 			</div>
 		</div>
 	</www-page>
