@@ -32,14 +32,24 @@
 		<div class="persist-login-wrap">
 			<input type="checkbox" name="persist_login" id="loginForm_persist_login">
 			<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
-			<a class="helpTip sfHelpTip_old "
-				data-tooltip="http://na3.salesforce.com/_ui/selfservice/pkb/
-				PublicKnowledgeSolution/d?orgId=00D500000006svl&amp;id=50150000000TCyi"
-				href="http://na3.salesforce.com/_ui/selfservice/pkb/
-				PublicKnowledgeSolution/d?orgId=00D500000006svl&amp;id=50150000000TCyi"
-				id="persist_login_details">Details
+			<a class="helpTip sfHelpTip_old"
+				id="persist_login_details"
+				@click.prevent="triggerDefaultLightbox">
+				Details
 			</a>
 		</div>
+
+		<kv-lightbox
+			:visible="defaultLbVisible"
+			@lightbox-closed="lightboxClosed">
+			<h2 slot="title">{{ salesforceHelpText.name }}</h2>
+			<p>{{ salesforceHelpText.note }}</p>
+		</kv-lightbox>
+
+		<!-- data-tooltip="http://na3.salesforce.com/_ui/selfservice/pkb/
+		PublicKnowledgeSolution/d?orgId=00D500000006svl&amp;id=50150000000TCyi"
+		href="http://na3.salesforce.com/_ui/selfservice/pkb/
+		PublicKnowledgeSolution/d?orgId=00D500000006svl&amp;id=50150000000TCyi" -->
 
 		<KvButton class="sign-in-button smaller" type="submit">Sign in</KvButton>
 
@@ -55,10 +65,14 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import SalesforceHelpText from '@/graphql/query/salesforceHelpText.graphql';
 
 export default {
 	components: {
 		KvButton,
+		KvLightbox,
+		SalesforceHelpText,
 	},
 	mixins: [loginRegUtils],
 	props: {
@@ -81,7 +95,9 @@ export default {
 			crumb: '',
 			loginFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
-			serverErrors: []
+			serverErrors: [],
+			defaultLbVisible: false,
+			salesforceHelpText: ''
 		};
 	},
 	created() {
@@ -95,6 +111,12 @@ export default {
 		this.currUrl = window.location.href;
 	},
 	methods: {
+		triggerDefaultLightbox() {
+			this.defaultLbVisible = !this.defaultLbVisible;
+		},
+		lightboxClosed() {
+			this.defaultLbVisible = false;
+		},
 		doLogin() {
 			// this.loading = true;
 			const formData = new FormData(this.$refs.loginForm);

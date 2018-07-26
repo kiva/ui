@@ -1,0 +1,8 @@
+query {
+	general {
+    salesforceSolution(id: "50150000000TCyi") {
+        name
+        note
+    }
+}
+}
