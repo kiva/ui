@@ -46,11 +46,6 @@
 			<p>{{ salesforceHelpText.note }}</p>
 		</kv-lightbox>
 
-		<!-- data-tooltip="http://na3.salesforce.com/_ui/selfservice/pkb/
-		PublicKnowledgeSolution/d?orgId=00D500000006svl&amp;id=50150000000TCyi"
-		href="http://na3.salesforce.com/_ui/selfservice/pkb/
-		PublicKnowledgeSolution/d?orgId=00D500000006svl&amp;id=50150000000TCyi" -->
-
 		<KvButton class="sign-in-button smaller" type="submit">Sign in</KvButton>
 
 		<input type="hidden" name="currURL" :value="currUrl">
@@ -66,14 +61,16 @@
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import SalesforceHelpText from '@/graphql/query/salesforceHelpText.graphql';
+import SalesforceHelpTextQuery from '@/graphql/query/salesforceHelpText.graphql';
+import _get from 'lodash/get';
 
 export default {
 	components: {
 		KvButton,
 		KvLightbox,
-		SalesforceHelpText,
+		SalesforceHelpTextQuery,
 	},
+	inject: ['apollo'],
 	mixins: [loginRegUtils],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful login
@@ -97,7 +94,7 @@ export default {
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
 			serverErrors: [],
 			defaultLbVisible: false,
-			salesforceHelpText: ''
+			salesforceHelpText: {},
 		};
 	},
 	created() {
@@ -109,6 +106,14 @@ export default {
 	},
 	mounted() {
 		this.currUrl = window.location.href;
+	},
+	apollo: {
+		query: SalesforceHelpTextQuery,
+		preFetch: true,
+		result({ data }) {
+			this.salesforceHelpText.name = _get(data, 'general.salesforceSolution.name');
+			this.salesforceHelpText.note = _get(data, 'general.salesforceSolution.note');
+		},
 	},
 	methods: {
 		triggerDefaultLightbox() {
