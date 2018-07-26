@@ -111,8 +111,7 @@ export default {
 		query: SalesforceHelpTextQuery,
 		preFetch: true,
 		result({ data }) {
-			this.salesforceHelpText.name = _get(data, 'general.salesforceSolution.name');
-			this.salesforceHelpText.note = _get(data, 'general.salesforceSolution.note');
+			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
 		},
 	},
 	methods: {
