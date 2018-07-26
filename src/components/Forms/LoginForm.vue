@@ -61,7 +61,7 @@
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import SalesforceHelpTextQuery from '@/graphql/query/salesforceHelpText.graphql';
+import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
 
 export default {
