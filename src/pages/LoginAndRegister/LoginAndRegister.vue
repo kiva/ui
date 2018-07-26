@@ -7,7 +7,7 @@
 				<!-- This spacer will be deleted -->
 				<hr class="spacer">
 
-				<register-form />
+				<register-form :refresh="true" />
 			</div>
 		</div>
 	</www-page>

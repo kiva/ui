@@ -11,6 +11,12 @@
 		<hr>
 		<div class="featured-text">Or use your email</div>
 
+		<ul v-show="serverErrors" class="server-errors">
+			<li v-for="(errorText, index) in serverErrors" :key="index">
+				{{ errorText }}
+			</li>
+		</ul>
+
 		<div class="input-set">
 			<label for="email">
 				Email <input type="email" name="email" autofocus>
@@ -47,19 +53,16 @@
 </template>
 
 <script>
-import cookie from 'js-cookie';
+import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		KvButton,
 	},
-	metaInfo: {
-		title: 'Sign in'
-	},
-	inject: ['apollo'],
+	mixins: [loginRegUtils],
 	props: {
-		// Add the done-url="https://dev-vm-01.kiva.org/lend-vue?page=2" parameter to redirect on successful login
+		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful login
 		doneUrl: {
 			type: String,
 			default: ''
@@ -78,6 +81,7 @@ export default {
 			crumb: '',
 			loginFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
+			serverErrors: []
 		};
 	},
 	created() {
@@ -91,56 +95,17 @@ export default {
 		this.currUrl = window.location.href;
 	},
 	methods: {
-		getCookieCrumb() {
-			let crumb = '';
-			let kvisCookie = '';
-
-			if (this.$ssrContext) {
-				kvisCookie = this.$ssrContext.cookies.kvis || '';
-			} else {
-				kvisCookie = cookie.get('kvis');
-			}
-
-			crumb = kvisCookie.replace('crumb=', '') || '';
-			return crumb;
-		},
-		postForm(actionUrl, formData) {
-			// expand the elements from the .entries() iterator into an actual array
-			const parameters = [...formData.entries()]
-				// transform the elements into encoded key-value-pairs
-				.map(e => `${encodeURIComponent(e[0])}=${encodeURIComponent(e[1])}`);
-
-			fetch(actionUrl, {
-				method: 'POST',
-				mode: 'cors',
-				cache: 'no-cache',
-				credentials: 'same-origin',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-				redirect: 'follow', // manual, *follow, error
-				referrer: 'no-referrer', // no-referrer, *client
-				// convert parameters into string ie. key=value&key=value...
-				body: parameters.join('&')
-			})
-				.then(response => {
-					// The response will be the doneUrl if passed or the current url page loaded
-					this.handleLoginResponse(response);
-				})
-				.catch(error => {
-					console.error('Fetch Error =\n', error);
-					// $emit login-failed event on error to allow parent to respond
-					this.$emit('login-failed');
-				});
-		},
 		doLogin() {
 			// this.loading = true;
 			const formData = new FormData(this.$refs.loginForm);
 			this.postForm(this.loginActionUrl, formData);
 		},
-		handleLoginResponse(response) {
+		handlePostResponse(response) {
 			// TODO: Make this better
 			if (response.url && response.url.indexOf('/login?') !== -1) {
+				// Show simple error
+				this.serverErrors = ['Login failed. Please try again.'];
+
 				// we are in a failed login state, signified by the presense of the kiva app login url
 				// ex. "https://dev-vm-01.kiva.org/login?doneUrl=lend-vue%3Fpage%3D2&email=matthews%40kiva.org"
 				// $emit login-failed event on error to allow parent to respond
@@ -149,6 +114,7 @@ export default {
 			} else {
 				// $emit login-successful event once completed to allow parent to respond
 				this.$emit('login-successful');
+				this.loginFailed = false;
 			}
 
 			// Goto doneUrl if present + successful login
@@ -171,6 +137,17 @@ export default {
 @import 'settings';
 
 .login-form {
+	.server-errors {
+		margin: 1rem 0;
+
+		li {
+			list-style: none;
+			color: $kiva-accent-red;
+			font-weight: 400;
+			font-size: $small-text-font-size;
+		}
+	}
+
 	.featured-text {
 		text-align: center;
 		color: $dark-gray;
