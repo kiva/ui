@@ -1,16 +1,16 @@
-query($offset: Int, $limit: Int, $filters: LoanSearchFiltersInput) {
-	my {
-		userAccount {
-			id
-		}
-	}
+query ($offset: Int, $filters: LoanSearchFiltersInput) {
 	lend {
+		loanChannels(limit: 1, offset: $offset) {
+			values {
+				id
+				name
+				description
+			}
+		}
 		loans(
-			offset: $offset,
-			limit: $limit,
+			limit: 3,
 			filters: $filters
 			) {
-			totalCount
 			values {
 				id
 				status
@@ -44,15 +44,6 @@ query($offset: Int, $limit: Int, $filters: LoanSearchFiltersInput) {
 				}
 				...on LoanDirect {
 					trusteeName
-				}
-			}
-		}
-	}
-	shop {
-		basket {
-			items {
-				values {
-					id
 				}
 			}
 		}

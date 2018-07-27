@@ -9,9 +9,11 @@
 
 			<div class="columns small-12">
 				<div class="loan-category-row row small-up-1">
-					<p>
-						placeholder - category rows to come
-					</p>
+					<category-row
+						v-for="category in categories"
+						:key="category.id"
+						:category="category"
+					/>
 
 					<loading-overlay v-if="loading" />
 				</div>
@@ -34,7 +36,7 @@
 // import _merge from 'lodash/merge';
 // import numeral from 'numeral';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvPagination from '@/components/Kv/KvPagination';
+import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import LoadingOverlay from './LoadingOverlay';
 
 
@@ -67,7 +69,7 @@ import LoadingOverlay from './LoadingOverlay';
 export default {
 	components: {
 		WwwPage,
-		KvPagination,
+		CategoryRow,
 		LoadingOverlay,
 	},
 	inject: ['apollo'],
@@ -79,6 +81,11 @@ export default {
 			totalCount: 0,
 			isVisitor: true,
 			itemsInBasket: [],
+			categories: [
+				{ id: 1, filter: { gender: 'female' } },
+				{ id: 2, filter: { sector: [1] } },
+				{ id: 3, filter: { sector: [15] } },
+			],
 			loading: false,
 		};
 	},
