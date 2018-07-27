@@ -1,0 +1,18 @@
+query {
+	my {
+		userAccount {
+			id
+		}
+	}
+	general {
+		setting (setting: "uiexp.test") {
+			key
+			value
+		}
+	}
+	userExperiments @client {
+		id
+		key
+		version
+	}
+}

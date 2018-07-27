@@ -1,10 +1,5 @@
 <template>
 	<www-page>
-		<h1>{{ myExpVersion }}</h1>
-		<h2 v-if="myExpVersion == 0">Version 0</h2>
-		<h2 v-if="myExpVersion == 1">Version 1</h2>
-		<h2 v-if="myExpVersion == 2">Version 2</h2>
-
 		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="row page-content">
 			<the-portfolio-tertiary-menu slot="tertiary" class="show-for-large" />
@@ -62,12 +57,10 @@ import _differenceBy from 'lodash/differenceBy';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import _find from 'lodash/find';
 import lendingStatsQuery from '@/graphql/query/myLendingStats.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
-import UiExpMixin from '@/plugins/ui-exp-mixin';
 import StatsSection from './StatsSection';
 
 export default {
@@ -78,7 +71,6 @@ export default {
 		StatsSection
 	},
 	inject: ['apollo'],
-	mixins: [UiExpMixin],
 	metaInfo: {
 		title: 'Lending Stats'
 	},
@@ -94,10 +86,6 @@ export default {
 			partnersLentTo: [],
 			partnersNotLentTo: [],
 			totalPartners: 0,
-			experimentTest: {},
-			experimentData: () => {},
-			activeUserExperiments: () => []
-			// myExp: () => {}
 		};
 	},
 	apollo: {
@@ -121,14 +109,6 @@ export default {
 			this.partnersLentTo = _sortBy(_get(data, 'my.lendingStats.partnersLentTo'), 'name');
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
 			this.totalPartners = _get(data, 'general.partners.totalCount');
-
-			// console.log(JSON.stringify(_get(data, 'general.setting')));
-			// Interesting that this fires so many times. 2 times on the client and 6+ times on the server
-			// this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
-			// this.experimentTest = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
-			this.experimentData = this.$parseExperimentData(_get(data, 'general.setting.value'));
-			// this.experimentVersion = this.$getUiExpVersion(_get(data, 'general.setting.value'));
-			this.activeUserExperiments = _get(data, 'userExperiments');
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, reject }) => reject({
@@ -143,40 +123,6 @@ export default {
 		},
 
 	},
-	computed: {
-		// myExp() {
-		// 	return _find(this.activeUserExperiments, { key: 'uiexp.test' }) || null;
-		// },
-		myExpVersion() {
-			// get() => {
-			console.log('updating myExpVersion');
-			const myExp = _find(this.activeUserExperiments, { key: 'uiexp.test' });
-			if (myExp) {
-				return myExp.version;
-			}
-			return null;
-			// const version = _find(activeExps, { key: 'uiexp.test' });
-			// console.log(_find(activeExps, { key: 'uiexp.test' }));
-			// console.log(_find(activeExps, { key: 'uiexp.test' }).version);
-			// return _find(activeExps, { key: 'uiexp.test' }).version || 0;
-			// },
-			// set: () => {
-			// 	this.activeUserExperiments = [];
-			// }
-		}
-		// experimentVersion() {
-		// 	// eslint-disable-next-line
-		// 	console.log('computing exp version');
-		// 	return this.$getUiExpVersion(this.experimentData);
-		// }
-	},
-	// watch: {
-	// 	experimentVersion() {
-	// 		// eslint-disable-next-line
-	// 		console.log('computing exp version');
-	// 		return this.$getUiExpVersion(this.experimentData);
-	// 	}
-	// },
 };
 </script>
 

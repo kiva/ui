@@ -61,14 +61,28 @@
 					<p>Lenders should always assume that these partners represent the highest level
 					of repayment risk on Kiva.</p>
 				</kv-lightbox>
+
+				<!-- TODO: Cleanup after VUE-97 work is complete -->
+				<br>
+				<hr>
+				<br>
+				<h1>{{ myExpVersion }}</h1>
+				<h2 v-if="myExpVersion == 0">Version 0</h2>
+				<h2 v-if="myExpVersion == 1">Version 1</h2>
+				<h2 v-if="myExpVersion == 2">Version 2</h2>
+				<br>
 			</div>
 		</div>
 	</www-page>
 </template>
 
 <script>
+import _get from 'lodash/get';
+import _find from 'lodash/find';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import testUiExpSettings from '@/graphql/query/testUiExpSettings.graphql';
+import UiExpMixin from '@/plugins/ui-exp-mixin';
 import RouteListing from './RouteListing';
 
 export default {
@@ -77,15 +91,28 @@ export default {
 		RouteListing,
 		KvLightbox
 	},
-	inject: ['apollo'], // TODO: Remove after testing VUE-37
+	inject: ['apollo'], // Required by UiExpMixin
+	mixins: [UiExpMixin],
 	metaInfo: {
 		title: 'Sitemap'
 	},
 	data() {
 		return {
 			defaultLbVisible: false,
-			invertedLbVisible: false
+			invertedLbVisible: false,
+			experimentTest: {},
+			experimentData: () => {},
+			activeUserExperiments: () => []
+			// myExp: () => {}
 		};
+	},
+	apollo: {
+		query: testUiExpSettings,
+		preFetch: true,
+		result({ data }) {
+			this.experimentData = this.$parseExperimentData(_get(data, 'general.setting.value'));
+			this.activeUserExperiments = _get(data, 'userExperiments');
+		},
 	},
 	methods: {
 		triggerDefaultLightbox() {
@@ -98,7 +125,41 @@ export default {
 			this.defaultLbVisible = false;
 			this.invertedLbVisible = false;
 		}
-	}
+	},
+	computed: {
+		// myExp() {
+		// 	return _find(this.activeUserExperiments, { key: 'uiexp.test' }) || null;
+		// },
+		myExpVersion() {
+			// get() => {
+			console.log('updating myExpVersion');
+			const myExp = _find(this.activeUserExperiments, { key: 'uiexp.test' });
+			if (myExp) {
+				return myExp.version;
+			}
+			return null;
+			// const version = _find(activeExps, { key: 'uiexp.test' });
+			// console.log(_find(activeExps, { key: 'uiexp.test' }));
+			// console.log(_find(activeExps, { key: 'uiexp.test' }).version);
+			// return _find(activeExps, { key: 'uiexp.test' }).version || 0;
+			// },
+			// set: () => {
+			// 	this.activeUserExperiments = [];
+			// }
+		},
+		// experimentVersion() {
+		// 	// eslint-disable-next-line
+		// 	console.log('computing exp version');
+		// 	return this.$getUiExpVersion(this.experimentData);
+		// }
+	},
+	// watch: {
+	// 	experimentVersion() {
+	// 		// eslint-disable-next-line
+	// 		console.log('computing exp version');
+	// 		return this.$getUiExpVersion(this.experimentData);
+	// 	}
+	// },
 };
 </script>
 

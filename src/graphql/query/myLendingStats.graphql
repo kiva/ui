@@ -47,14 +47,5 @@ query {
 				name
 			}
 		}
-		setting (setting: "uiexp.test") {
-			key
-			value
-		}
-	}
-	userExperiments @client {
-		id
-		key
-		version
 	}
 }

@@ -22,8 +22,8 @@ export default {
 				// console.log(this.$ssrContext.cookies.uiab);
 				console.log(JSON.stringify(this.experimentData));
 				// extract experiments array from the cookie
-				// this.activeUserExperiments = this.$setActiveExperiments(this.$ssrContext.cookies.uiab);
-				this.activeUserExperiments = this.getExperimentsFromCookie();
+				this.activeUserExperiments = this.$setActiveExperiments(this.$ssrContext.cookies.uiab);
+				// this.activeUserExperiments = this.getExperimentsFromCookie();
 				console.log(`server activeUserExperiments set: ${JSON.stringify(this.activeUserExperiments)}`);
 				// if apollo is instantiated set activeExperiments in the client store
 				// this.storeUserCookieData();
@@ -134,6 +134,7 @@ export default {
 	},
 	methods: {
 		getExperimentsFromCookie() {
+			// Querying apollo would be async if not in prefetch
 			this.apollo.query({ query: expCookieData }).then(({ data }) => {
 				console.log(JSON.stringify(data));
 				console.log(`testing stored query data: ${JSON.stringify(data.userExperiments)}`);
