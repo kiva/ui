@@ -49,7 +49,7 @@
 		<KvButton
 			class="sign-in-button smaller"
 			type="submit"
-			v-kv-track-event="'Login|click-Login-submit|LoginButtonClick|null|true'">
+			v-kv-track-event="'Login|click-Login-submit|LoginButtonClick'">
 			Sign in
 		</KvButton>
 
@@ -59,12 +59,12 @@
 
 		<a href="/help/forgot-password"
 			class="forgot-password-link"
-			v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick|null|true'">
+			v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick'">
 			Forgot your password?
 		</a>
 		<a href="/register"
 			class="register-link"
-			v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick|null|true'">
+			v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'">
 			Sign up for Kiva
 		</a>
 	</form>
@@ -150,10 +150,12 @@ export default {
 				// $emit login-failed event on error to allow parent to respond
 				this.$emit('login-failed');
 				this.loginFailed = true;
+				this.$kvTrackEvent('Login|failed-login');
 			} else {
 				// $emit login-successful event once completed to allow parent to respond
 				this.$emit('login-successful');
 				this.loginFailed = false;
+				this.$kvTrackEvent('Login|successful-login');
 			}
 
 			// Goto doneUrl if present + successful login
