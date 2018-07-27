@@ -49,7 +49,7 @@
 		<KvButton
 			class="sign-in-button smaller"
 			type="submit"
-			:v-kv-track-event="`['Login', 'click-Login-submit', 'LoginButtonClick', null, 'true']`">
+			v-kv-track-event="'Login|click-Login-submit|LoginButtonClick|null|true'">
 			Sign in
 		</KvButton>
 
@@ -59,12 +59,12 @@
 
 		<a href="/help/forgot-password"
 			class="forgot-password-link"
-			:v-kv-track-event="`['Login', 'click-forgot-password', 'ForgotPasswordClick', null, 'true']`">
+			v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick|null|true'">
 			Forgot your password?
 		</a>
 		<a href="/register"
 			class="register-link"
-			:v-kv-track-event="`['Login', 'click-Sign-up-register', 'SignupForKivaClick', null, 'true']`">
+			v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick|null|true'">
 			Sign up for Kiva
 		</a>
 	</form>
