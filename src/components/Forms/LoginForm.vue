@@ -46,14 +46,27 @@
 			<p>{{ salesforceHelpText.note }}</p>
 		</kv-lightbox>
 
-		<KvButton class="sign-in-button smaller" type="submit">Sign in</KvButton>
+		<KvButton
+			class="sign-in-button smaller"
+			type="submit"
+			:v-kv-track-event="`['Login', 'click-Login-submit', 'LoginButtonClick', null, 'true']`">
+			Sign in
+		</KvButton>
 
 		<input type="hidden" name="currURL" :value="currUrl">
 		<!-- Have to pass this crumb in the Header and in the Request -->
 		<input type="hidden" id="crumb" name="crumb" :value="crumb">
 
-		<a href="/help/forgot-password" class="forgot-password-link">Forgot your password?</a>
-		<a href="/register" class="register-link">Sign up for Kiva</a>
+		<a href="/help/forgot-password"
+			class="forgot-password-link"
+			:v-kv-track-event="`['Login', 'click-forgot-password', 'ForgotPasswordClick', null, 'true']`">
+			Forgot your password?
+		</a>
+		<a href="/register"
+			class="register-link"
+			:v-kv-track-event="`['Login', 'click-Sign-up-register', 'SignupForKivaClick', null, 'true']`">
+			Sign up for Kiva
+		</a>
 	</form>
 </template>
 
