@@ -84,6 +84,7 @@ export default {
 		return {
 			offset: 0,
 			limit: loansPerPage,
+			filters: { },
 			totalCount: 0,
 			loans: [],
 			isVisitor: true,
@@ -108,6 +109,7 @@ export default {
 			return {
 				offset: this.offset,
 				limit: this.limit,
+				filters: this.filters
 			};
 		},
 		result({ data, loading }) {

@@ -8,13 +8,13 @@
 			</div>
 
 			<div class="columns small-12">
-				<div
-					v-for="category in rows"
-					:key="category.id"
-					class="loan-category-row row small-up-1"
-				>
-					<h2>{{ category.name }}</h2>
-					<p>{{ category.description }}</p>
+				<div class="loan-category-row row small-up-1">
+					<category-row
+						v-for="category in categoryIdSet"
+						:key="category.id"
+						:category="category.id"
+					/>
+
 					<loading-overlay v-if="loading" />
 				</div>
 			</div>
@@ -40,6 +40,7 @@ import _map from 'lodash/map';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
 import categoriesByIdQuery from '@/graphql/query/categoriesById.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryAdminControls from './CategoryAdminControls';
 import LoadingOverlay from './LoadingOverlay';
 
@@ -73,6 +74,7 @@ import LoadingOverlay from './LoadingOverlay';
 export default {
 	components: {
 		CategoryAdminControls,
+		CategoryRow,
 		LoadingOverlay,
 		WwwPage,
 	},
