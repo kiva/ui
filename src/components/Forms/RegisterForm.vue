@@ -5,6 +5,7 @@
 		name="regForm"
 		method="post"
 		:action="regActionUrl"
+		@submit="validateForm"
 		@submit.prevent.stop="register">
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
@@ -22,24 +23,44 @@
 				First name
 				<input type="text" name="firstName" maxlength="40" autofocus>
 			</label>
+			<p v-if="firstNameErrors.length">
+				<ul class="validation-errors">
+					<li v-for="firstNameError in firstNameErrors" :key="firstNameError">{{ firstNameError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="lastName">
 				Last name <input type="text" name="lastName" maxlength="40">
 			</label>
+			<p v-if="lastNameErrors.length">
+				<ul class="validation-errors">
+					<li v-for="lastNameError in lastNameErrors" :key="lastNameError">{{ lastNameError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="email">
 				Email <input type="email" name="email" maxlength="100">
 			</label>
+			<p v-if="emailErrors.length">
+				<ul class="validation-errors">
+					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="password">
 				Password <input type="password" name="password" maxlength="31">
 			</label>
+			<p v-if="passwordErrors.length">
+				<ul class="validation-errors">
+					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="terms-and-policy">
@@ -102,7 +123,15 @@ export default {
 			crumb: '',
 			regFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
-			serverErrors: []
+			serverErrors: [],
+			firstNameErrors: [],
+			lastNameErrors: [],
+			emailErrors: [],
+			passwordErrors: [],
+			firstName: null,
+			lastName: null,
+			email: null,
+			password: null
 		};
 	},
 	created() {
@@ -116,6 +145,30 @@ export default {
 		this.currUrl = window.location.href;
 	},
 	methods: {
+		validateForm(e) {
+			if (this.firstName && this.lastName && this.email && this.password) {
+				return true;
+			}
+
+			this.firstNameErrors = [];
+			this.lastNameErrors = [];
+			this.emailErrors = [];
+			this.passwordErrors = [];
+
+			if (!this.firstName) {
+				this.firstNameErrors.push('First name required');
+			}
+			if (!this.lastName) {
+				this.lastNameErrors.push('Last name required');
+			}
+			if (!this.email) {
+				this.emailErrors.push('Email required');
+			}
+			if (!this.password) {
+				this.passwordErrors.push('Password required');
+			}
+			e.preventDefault();
+		},
 		register() {
 			// this.loading = true;
 			const formData = new FormData(this.$refs.regForm);
@@ -181,7 +234,8 @@ export default {
 @import 'settings';
 
 .register-form {
-	.server-errors {
+	.server-errors,
+	.validation-errors {
 		margin: 1rem 0;
 
 		li {

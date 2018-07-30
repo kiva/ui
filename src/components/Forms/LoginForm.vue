@@ -89,22 +89,6 @@ import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.gra
 import _get from 'lodash/get';
 
 export default {
-	data() {
-		return {
-			loginActionUrl: '/login/process',
-			currUrl: this.$route.path,
-			crumb: '',
-			loginFailed: false,
-			loading: false, // TODO: Add loading state v-show="!loading && !userId"
-			serverErrors: [],
-			defaultLbVisible: false,
-			salesforceHelpText: {},
-			emailErrors: [],
-			passwordErrors: [],
-			email: null,
-			password: null
-		};
-	},
 	components: {
 		KvButton,
 		KvLightbox,
@@ -124,6 +108,22 @@ export default {
 			type: Boolean,
 			default: false
 		}
+	},
+	data() {
+		return {
+			loginActionUrl: '/login/process',
+			currUrl: this.$route.path,
+			crumb: '',
+			loginFailed: false,
+			loading: false, // TODO: Add loading state v-show="!loading && !userId"
+			serverErrors: [],
+			defaultLbVisible: false,
+			salesforceHelpText: {},
+			emailErrors: [],
+			passwordErrors: [],
+			email: null,
+			password: null
+		};
 	},
 	created() {
 		this.crumb = this.getCookieCrumb();
