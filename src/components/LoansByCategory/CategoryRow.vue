@@ -43,7 +43,7 @@ export default {
 		variables() {
 			return {
 				offset: this.category.id,
-				filters: this.category.filters,
+				filters: this.category.filter,
 			};
 		},
 		result({ data, loading }) {
