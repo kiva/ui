@@ -1,0 +1,13 @@
+/*
+	global transitions
+*/
+
+.kvfade-enter-active,
+.kvfade-leave-active {
+	transition: opacity 0.5s;
+}
+
+.kvfade-enter,
+.kvfade-leave-to {
+	opacity: 0;
+}

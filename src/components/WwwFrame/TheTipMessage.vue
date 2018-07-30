@@ -1,5 +1,5 @@
 <template>
-	<transition name="fade">
+	<transition name="kvfade">
 		<div v-if="tipVisible" class="message-text text-center small-12" :class="typeClass">
 			<span class="message-content">
 				<div class="icon-wrapper">
@@ -85,16 +85,7 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to {
-	opacity: 0;
-}
+@import 'global/transitions';
 
 .message-text {
 	display: block;

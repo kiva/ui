@@ -4,3 +4,8 @@ body {
 	-webkit-font-smoothing: antialiased; /* fix font issues in webkit browsers on osx/ios */
 	-moz-osx-font-smoothing: grayscale; /* fix font issues in firefox on osx */
 }
+
+/* global modifiers */
+body.scroll-locked {
+	overflow: hidden;
+}

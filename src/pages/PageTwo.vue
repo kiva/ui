@@ -23,10 +23,6 @@ export default {
 	apollo: {
 		query: helloQuery,
 		preFetch: true,
-	},
-	// TODO: Remove after testing VUE-37
-	created() {
-		this.$showTipMsg('Show Message on Page Load', 'warning');
 	}
 };
 </script>
