@@ -5,6 +5,7 @@
 		name="loginForm"
 		method="post"
 		:action="loginActionUrl"
+		@submit="validateForm"
 		@submit.prevent.stop="doLogin">
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
@@ -19,14 +20,24 @@
 
 		<div class="input-set">
 			<label for="email">
-				Email <input type="email" name="email" autofocus>
+				Email <input type="email" name="email" v-model="email" autofocus>
 			</label>
+			<p v-if="emailErrors.length">
+				<ul class="validation-errors">
+					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="password">
-				Password <input type="password" name="password" maxlength="31">
+				Password <input type="password" name="password" v-model="password" maxlength="31">
 			</label>
+			<p v-if="passwordErrors.length">
+				<ul class="validation-errors">
+					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="persist-login-wrap">
@@ -78,6 +89,22 @@ import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.gra
 import _get from 'lodash/get';
 
 export default {
+	data() {
+		return {
+			loginActionUrl: '/login/process',
+			currUrl: this.$route.path,
+			crumb: '',
+			loginFailed: false,
+			loading: false, // TODO: Add loading state v-show="!loading && !userId"
+			serverErrors: [],
+			defaultLbVisible: false,
+			salesforceHelpText: {},
+			emailErrors: [],
+			passwordErrors: [],
+			email: null,
+			password: null
+		};
+	},
 	components: {
 		KvButton,
 		KvLightbox,
@@ -98,18 +125,6 @@ export default {
 			default: false
 		}
 	},
-	data() {
-		return {
-			loginActionUrl: '/login/process',
-			currUrl: this.$route.path,
-			crumb: '',
-			loginFailed: false,
-			loading: false, // TODO: Add loading state v-show="!loading && !userId"
-			serverErrors: [],
-			defaultLbVisible: false,
-			salesforceHelpText: {},
-		};
-	},
 	created() {
 		this.crumb = this.getCookieCrumb();
 		if (this.doneUrl !== '') {
@@ -128,6 +143,22 @@ export default {
 		},
 	},
 	methods: {
+		validateForm(e) {
+			if (this.email && this.password) {
+				return true;
+			}
+
+			this.emailErrors = [];
+			this.passwordErrors = [];
+
+			if (!this.email) {
+				this.emailErrors.push('Email required');
+			}
+			if (!this.password) {
+				this.passwordErrors.push('Password required');
+			}
+			e.preventDefault();
+		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
@@ -178,7 +209,8 @@ export default {
 @import 'settings';
 
 .login-form {
-	.server-errors {
+	.server-errors,
+	.validation-errors {
 		margin: 1rem 0;
 
 		li {
