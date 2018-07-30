@@ -108,4 +108,9 @@ export default Vue => {
 		const from = { path: document.referrer };
 		kvActions.pageview(to, from);
 	};
+
+	// eslint-disable-next-line no-param-reassign
+	Vue.prototype.$kvTrackEvent = (category, action, label, value) => {
+		kvActions.trackEvent(category, action, label, value);
+	};
 };
