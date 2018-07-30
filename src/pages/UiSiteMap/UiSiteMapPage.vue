@@ -66,10 +66,7 @@
 				<br>
 				<hr>
 				<br>
-				<h1>{{ myExpVersion }}</h1>
-				<h2 v-if="myExpVersion == 0">Version 0</h2>
-				<h2 v-if="myExpVersion == 1">Version 1</h2>
-				<h2 v-if="myExpVersion == 2">Version 2</h2>
+				<h4>Assigned Experiment Version: {{ myExpVersion }}</h4>
 				<br>
 			</div>
 		</div>
@@ -100,18 +97,20 @@ export default {
 		return {
 			defaultLbVisible: false,
 			invertedLbVisible: false,
-			experimentTest: {},
-			experimentData: () => {},
-			activeUserExperiments: () => []
-			// myExp: () => {}
 		};
 	},
 	apollo: {
 		query: testUiExpSettings,
 		preFetch: true,
 		result({ data }) {
-			this.experimentData = this.$parseExperimentData(_get(data, 'general.setting.value'));
-			this.activeUserExperiments = _get(data, 'userExperiments');
+			// Add your targeted experiment Setting Data to experimentData array
+			this.experimentSettings = [this.parseExperimentData(_get(data, 'general.setting.value'))];
+			// Experiments Stored in State
+			// - Only if empty, else the fetch from client state will overwrite values written when setting cookie
+			if (this.activeUserExperiments.length === 0) {
+				this.activeUserExperiments = _get(data, 'userExperiments');
+				console.log(`Active User Experiments, set from State: ${JSON.stringify(this.activeUserExperiments)}`);
+			}
 		},
 	},
 	methods: {
@@ -127,39 +126,14 @@ export default {
 		}
 	},
 	computed: {
-		// myExp() {
-		// 	return _find(this.activeUserExperiments, { key: 'uiexp.test' }) || null;
-		// },
 		myExpVersion() {
-			// get() => {
-			console.log('updating myExpVersion');
 			const myExp = _find(this.activeUserExperiments, { key: 'uiexp.test' });
 			if (myExp) {
 				return myExp.version;
 			}
 			return null;
-			// const version = _find(activeExps, { key: 'uiexp.test' });
-			// console.log(_find(activeExps, { key: 'uiexp.test' }));
-			// console.log(_find(activeExps, { key: 'uiexp.test' }).version);
-			// return _find(activeExps, { key: 'uiexp.test' }).version || 0;
-			// },
-			// set: () => {
-			// 	this.activeUserExperiments = [];
-			// }
 		},
-		// experimentVersion() {
-		// 	// eslint-disable-next-line
-		// 	console.log('computing exp version');
-		// 	return this.$getUiExpVersion(this.experimentData);
-		// }
 	},
-	// watch: {
-	// 	experimentVersion() {
-	// 		// eslint-disable-next-line
-	// 		console.log('computing exp version');
-	// 		return this.$getUiExpVersion(this.experimentData);
-	// 	}
-	// },
 };
 </script>
 

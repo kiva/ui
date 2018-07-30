@@ -1,19 +1,10 @@
-/* eslint-disable */
-import expActions from '@/util/experimentActions.js';
+/* CURRENTLY UNUSED - Alias expAction methods and Inject into ALL components  */
+import expActions from '@/util/experimentActions';
 
 export default Vue => {
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$getUiExpVersion = experiment => {
-		console.log(typeof experiment);
-		// extract experiment information
-		if (typeof experiment !== 'object') {
-			const expData = expActions.parseExperimentData(experiment);
-			return expActions.getExperimentState(expData);
-			// return expData.route;
-		} else {
-			return expActions.getExperimentState(experiment);
-			// return experiment.route;
-		}
+		return expActions.getUiExpVersion(experiment);
 	};
 
 	// eslint-disable-next-line no-param-reassign

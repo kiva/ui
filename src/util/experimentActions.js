@@ -4,6 +4,9 @@
 import jscookie from 'js-cookie';
 
 const expActions = {
+	/*
+		Setting Data returned from Graphql requires double parsing !?!?
+	*/
 	parseExperimentData: experiment => {
 		if (typeof experiment === 'string') {
 			return JSON.parse(JSON.parse(experiment));
@@ -12,24 +15,34 @@ const expActions = {
 		}
 		return null;
 	},
+	/*
+		Combo function - Extracts Cookie Version if exists, Assigns new version if cookie is absent
+		@param object - experiment object with key value
+		@returns int - version number
+	*/
 	getExperimentState: experiment => {
 		console.log('checking experiment state');
 		if (expActions.expCookieExists()) {
 			console.log('cookie exists');
-			// const cookie = expActions.getExperimentCookie();
 			const cookie = jscookie.get('uiab');
 			return expActions.extractAssignedVersion(cookie, experiment.key);
 		}
 		console.log('cookie absent');
 		return expActions.assignExperimentVersion(experiment);
 	},
-	getExperimentCookie: () => {
+	/*
+		Client Util for getting the uiab cookie from document
+	*/
+	getClientExperimentCookie: () => {
 		if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-			console.log('operating in window');
-			// return expActions.getExpCookieFromAllCookies(document.cookie);
 			return jscookie.get('uiab');
 		}
 	},
+	/*
+		Extract a single cookie from the full cookie string
+		@param String - allCookies are passed into StateLink when on the server
+		@returns String - @returns String - uiab cookie value
+	*/
 	getExpCookieFromAllCookies: allCookies => {
 		let cookiesSub = allCookies.substr(allCookies.indexOf('uiab=') + 5);
 		// only trim if this is not the last cookie
@@ -37,28 +50,34 @@ const expActions = {
 		if (cutoff !== -1) {
 			cookiesSub = cookiesSub.substring(0, cutoff);
 		}
-		console.log(cookiesSub);
 		return cookiesSub;
 	},
+	/*
+		Called from formatUserExperimentDefaults
+		@param String - allCookies are passed into StateLink when on the server
+		@returns String - uiab cookie value
+	*/
 	getExpCookieForClientState: allCookies => {
 		if (allCookies) {
 			return expActions.getExpCookieFromAllCookies(allCookies);
 		}
-		return expActions.getExperimentCookie();
+		return expActions.getClientExperimentCookie();
 	},
+	/*
+		Add __typename before storing in Client State
+		@params Array - experiments array of objects
+		@returns Array - experiments array of objects with __typename added
+	*/
 	formatExpDefaultClientState: experiments => {
-		// eslint-disable-next-line no-plusplus
-		for (let i = 0; i < experiments.length; i++) {
-			// eslint-disable-next-line
-			// experiments[i].id = experiments[i].key;
-			// eslint-disable-next-line
-			experiments[i].__typename = 'UserExperiment';
+		for (let i = 0; i < experiments.length; i += 1) {
+			experiments[i].__typename = 'UserExperiment'; // eslint-disable-line
 		}
-		// eslint-disable-next-line
-		// experiments.__typename = "UserExperiments";
-		console.log(`Experiments formatted for client state: ${JSON.stringify(experiments)}`);
 		return experiments;
 	},
+	/*
+		Clientside check for cookie presence
+		@returns Boolean
+	*/
 	expCookieExists: () => {
 		console.log('checking for cookie');
 		if (typeof window !== 'undefined' && typeof document !== 'undefined') {
@@ -67,49 +86,41 @@ const expActions = {
 			}
 			return false;
 		}
-		// console.log('operating on server - THIS SHOULD NO LONGER BE HIT');
-		// if (Vue.$isServer) {
-		// 	console.log(`isServer: ${Vue.$isServer}`);
-		// 	// check for existing cookies here
-		// 	if (Vue.$ssrContext.cookies && Vue.$ssrContext.cookies.uiab) {
-		// 		// if we find uiab check for the current experiment within
-		// 		console.log(Vue.$ssrContext.cookies.uiab);
-		// 		return true;
-		// 	}
-		// }
 		return false;
 	},
-	setActiveExperiments: cookie => {
-		console.log('Extract Experiments from Cookie');
-		console.log(cookie);
-		// expects a string similar to uiexp.test_name|0,uiexp.name_two|1
+	/*
+		Extract stored experiment data from cookie
+		@param String cookie - cleaned cookie string without the key uiexp.test_name|0,uiexp.name_two|1
+		@returns Array contains an object for each exp with key, id + assigned version
+	*/
+	setActiveExperimentsFromCookie: cookie => {
+		console.log(`Extract Experiments from Cookie ${cookie}`);
 		if (typeof cookie === 'string') {
 			// split on , to get all experiment segments
 			const experiments = cookie.split(',');
-			// for each entry split on | using name to match and then returning version
-			// eslint-disable-next-line
-			let expArray = [];
+			// for each entry split on | build an object for the experiment
+			const expArray = [];
 			experiments.forEach(expString => {
 				const expData = expString.split('|');
 				const expObj = {
-					// eslint-disable-next-line
-					'key': expData[0],
-					// eslint-disable-next-line
-					'id': expData[0],
-					// eslint-disable-next-line
-					'version': expData[1]
+					key: expData[0],
+					id: expData[0],
+					version: expData[1]
 				};
 				expArray.push(expObj);
 			});
-			console.log('Experiment Object extracted from cookie:');
-			console.log(JSON.stringify(expArray));
+			console.log(`Experiment Object extracted from cookie: ${JSON.stringify(expArray)}`);
 			return expArray;
 		}
 		return null;
 	},
+	/*
+		Compare stored cookie data to targed experiment key
+		@param String cookie - cleaned cookie string without the key uiexp.test_name|0,uiexp.name_two|1
+		@param String expKey - ex. uiexp.some_name
+	*/
 	extractAssignedVersion: (cookie, expKey) => {
 		console.log('Extracting existing cookie value');
-		// expects a string similar to uiexp.test_name|0,uiexp.name_two|1
 		if (typeof cookie === 'string') {
 			console.log(cookie);
 			console.log(expKey);
@@ -127,58 +138,72 @@ const expActions = {
 		}
 		return null;
 	},
+	/*
+		Client method for setting uiab cookie
+		@param string - expKey from experiment object ex. uiexp.my_experiment
+		@param int - version
+	*/
 	setExperimentCookie: (expKey, version) => {
 		console.log('Setting Experiment Cookie');
 		if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 			// TODO: Add build cookie step here to ensure persistence of other experiments!!!
 			// kvActions.addExpToCookie
-			// document.cookie = `uiab=${expKey}|${version};path=/;max-age=31536000`;
 			jscookie.set('uiab', `${expKey}|${version}`, { expires: 365, path: '/' });
 		}
 	},
+	/*
+		Experiment Assignment Algorithm
+		@param object - experiment object with distribution and key properties
+		@returns int - assigned version
+	*/
 	assignExperimentVersion: experiment => {
 		console.log('Assigning Experiment Version');
-		/* Algo from Manager.php
-		// first, get us a random int between 1 and 100
-		$random_num = mt_rand(1, 100);
-
-		// now loop through and see which element of the distribution that num falls into
-		$cutoff = 0;
-		foreach ($this->_distribution as $experiment_num => $d) {
-			// add the current distribution to our cutoff (normalizing to an integer)
-			$cutoff += round($d*100);
-			if ($random_num <= $cutoff) {
-				break; // exit the loop, leaving $experiment_num set
-			}
-		}
-		*/
+		// Based on Algo from Manager.php
 		const rando = Math.random();
 		let assignedVersion = 0;
 		let cutoff = 0;
 
+		// get distribution array from experiment data
 		const expDist = experiment.distribution ? experiment.distribution.split(',') : null;
 
 		// Return 0 if distribution is not an array
 		if (typeof expDist !== 'object') {
 			return assignedVersion;
 		}
-		// eslint-disable-next-line no-plusplus
-		for (let i = 0; i < expDist.length; i++) {
+
+		// now loop through and see which element of the distribution that num falls into
+		for (let i = 0; i < expDist.length; i += 1) {
 			console.log(expDist[i], i, Math.round(rando * 100));
+			// add the current distribution to our cutoff (normalizing to an integer)
 			cutoff += (expDist[i] * 100);
 			console.log(cutoff);
 			if (Math.round(rando * 100) <= cutoff) {
 				console.log(`exp version : ${i}`);
-				// eslint-disable-next-line no-plusplus
-				// assignedVersion++;
 				assignedVersion = i;
-				break;
+				break; // exit the loop, leaving $experiment_num set
 			}
 		}
 
-		console.log('Establish cookie for newly assigned version');
 		expActions.setExperimentCookie(experiment.key, assignedVersion);
 		return assignedVersion;
+	},
+	/*
+		Used by StateLink.js to set default userExperiments data from existing cookie
+		@param String cookie - full cookie string from server request
+	*/
+	formatUserExperimentDefaults: cookie => {
+		console.log('StateLink: formatUserExperimentDefaults');
+		// Return empty array if no cookie present
+		if (!cookie || cookie.indexOf('uiab') === -1) {
+			return [];
+		}
+
+		const uiabCookie = decodeURI(expActions.getExpCookieForClientState(cookie));
+		const expArray = expActions.setActiveExperimentsFromCookie(uiabCookie);
+		const formattedExps = expActions.formatExpDefaultClientState(expArray);
+
+		console.log(`END StateLink: Exps Formatted for Client State: ${JSON.stringify(formattedExps)}`);
+		return formattedExps;
 	}
 };
 

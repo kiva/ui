@@ -14,5 +14,6 @@ query {
 		id
 		key
 		version
+		__typename
 	}
 }

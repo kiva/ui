@@ -2,23 +2,6 @@ import { withClientState } from 'apollo-link-state';
 // import expCookieData from '@/graphql/query/expCookieData.graphql';
 import expActions from '@/util/experimentActions';
 
-function formatUserExperimentDefaults(cookie) {
-	console.log('StateLink: formatUserExperimentDefaults');
-	if (!cookie || cookie.indexOf('uiab') === -1) {
-		return [];
-	}
-	console.log('- - - - - - Test cookie');
-	console.log(cookie);
-	const uiabCookie = decodeURI(expActions.getExpCookieForClientState(cookie));
-	console.log(uiabCookie);
-	const expArray = expActions.setActiveExperiments(uiabCookie);
-	console.log(expArray);
-	const formattedExps = expActions.formatExpDefaultClientState(expArray);
-	console.log(formattedExps);
-	console.log('- - - - - - Test cookie END');
-	return formattedExps;
-}
-
 export default ({ cache, cookie }) => {
 	return withClientState({
 		cache,
@@ -30,7 +13,7 @@ export default ({ cache, cookie }) => {
 			tipPersist: false,
 			tipInitUrl: '',
 			// userExperiments: [],
-			userExperiments: formatUserExperimentDefaults(cookie)
+			userExperiments: expActions.formatUserExperimentDefaults(cookie)
 			// {
 			// 	id: 'test.it',
 			// 	key: 'test.it',
@@ -112,7 +95,7 @@ export default ({ cache, cookie }) => {
 			// 	userExperiments: () => {
 			// 		try {
 			// 			return {
-			// 				userExperiments: formatUserExperimentDefaults(cookie),
+			// 				userExperiments: expActions.formatUserExperimentDefaults(cookie),
 			// 				id: 'UserExperiments',
 			// 				__typename: 'UserExperiments'
 			// 			};
