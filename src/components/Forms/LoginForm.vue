@@ -5,7 +5,6 @@
 		name="loginForm"
 		method="post"
 		:action="loginActionUrl"
-		@submit="validateForm"
 		@submit.prevent.stop="doLogin">
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
@@ -143,7 +142,22 @@ export default {
 		},
 	},
 	methods: {
-		validateForm(e) {
+		triggerDefaultLightbox() {
+			this.defaultLbVisible = !this.defaultLbVisible;
+		},
+		lightboxClosed() {
+			this.defaultLbVisible = false;
+		},
+		doLogin() {
+			// this.loading = true;
+			if (this.validateForm() === true) {
+				const formData = new FormData(this.$refs.loginForm);
+				this.postForm(this.loginActionUrl, formData);
+			} else {
+				console.log('Logging you in failed. Check doLogin() in LoginForm.vue');
+			}
+		},
+		validateForm() {
 			if (this.email && this.password) {
 				return true;
 			}
@@ -153,22 +167,13 @@ export default {
 
 			if (!this.email) {
 				this.emailErrors.push('Email required');
+				return false;
 			}
 			if (!this.password) {
 				this.passwordErrors.push('Password required');
+				return false;
 			}
-			e.preventDefault();
-		},
-		triggerDefaultLightbox() {
-			this.defaultLbVisible = !this.defaultLbVisible;
-		},
-		lightboxClosed() {
-			this.defaultLbVisible = false;
-		},
-		doLogin() {
-			// this.loading = true;
-			const formData = new FormData(this.$refs.loginForm);
-			this.postForm(this.loginActionUrl, formData);
+			return true;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better

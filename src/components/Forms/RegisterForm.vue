@@ -5,7 +5,6 @@
 		name="regForm"
 		method="post"
 		:action="regActionUrl"
-		@submit="validateForm"
 		@submit.prevent.stop="register">
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
@@ -145,7 +144,16 @@ export default {
 		this.currUrl = window.location.href;
 	},
 	methods: {
-		validateForm(e) {
+		register() {
+			// this.loading = true;
+			if (this.validateForm() === true) {
+				const formData = new FormData(this.$refs.regForm);
+				this.postForm(this.regActionUrl, formData);
+			} else {
+				console.log('Registering you in failed. Check register() in RegisterForm.vue');
+			}
+		},
+		validateForm() {
 			if (this.firstName && this.lastName && this.email && this.password) {
 				return true;
 			}
@@ -167,12 +175,7 @@ export default {
 			if (!this.password) {
 				this.passwordErrors.push('Password required');
 			}
-			e.preventDefault();
-		},
-		register() {
-			// this.loading = true;
-			const formData = new FormData(this.$refs.regForm);
-			this.postForm(this.regActionUrl, formData);
+			return true;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
