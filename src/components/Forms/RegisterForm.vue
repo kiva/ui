@@ -20,7 +20,7 @@
 		<div class="input-set">
 			<label for="firstName">
 				First name
-				<input type="text" name="firstName" maxlength="40" autofocus>
+				<input type="text" name="firstName" maxlength="40" autofocus v-model="firstName">
 			</label>
 			<p v-if="firstNameErrors.length">
 				<ul class="validation-errors">
@@ -31,7 +31,7 @@
 
 		<div class="input-set">
 			<label for="lastName">
-				Last name <input type="text" name="lastName" maxlength="40">
+				Last name <input type="text" name="lastName" maxlength="40" v-model="lastName">
 			</label>
 			<p v-if="lastNameErrors.length">
 				<ul class="validation-errors">
@@ -42,7 +42,7 @@
 
 		<div class="input-set">
 			<label for="email">
-				Email <input type="email" name="email" maxlength="100">
+				Email <input type="email" name="email" maxlength="100" v-model="email">
 			</label>
 			<p v-if="emailErrors.length">
 				<ul class="validation-errors">
@@ -53,7 +53,7 @@
 
 		<div class="input-set">
 			<label for="password">
-				Password <input type="password" name="password" maxlength="31">
+				Password <input type="password" name="password" maxlength="31" v-model="password">
 			</label>
 			<p v-if="passwordErrors.length">
 				<ul class="validation-errors">
@@ -63,7 +63,7 @@
 		</div>
 
 		<div class="terms-and-policy">
-			<input type="checkbox" name="terms_agreement" id="registerForm_terms_of_use_privacy_poicy">
+			<input type="checkbox" name="terms" id="registerForm_terms_of_use_privacy_poicy" v-model="terms">
 			I have read and agree to the
 			<a href="legal/terms"
 				target="_blank"
@@ -77,6 +77,11 @@
 				v-kv-track-event="'Register|click-privacy-policy|PrivacyPolicyClick'">
 				Privacy Policy
 			</a>.
+			<p v-if="termsErrors.length">
+				<ul class="validation-errors">
+					<li v-for="termsError in termsErrors" :key="termsError">{{ termsError }}</li>
+				</ul>
+			</p>
 		</div>
 		<KvButton
 			class="register-button smaller"
@@ -126,11 +131,13 @@ export default {
 			firstNameErrors: [],
 			lastNameErrors: [],
 			emailErrors: [],
+			termsErrors: [],
 			passwordErrors: [],
-			firstName: null,
-			lastName: null,
-			email: null,
-			password: null
+			firstName: '',
+			lastName: '',
+			email: '',
+			password: '',
+			terms: ''
 		};
 	},
 	created() {
@@ -154,7 +161,8 @@ export default {
 			}
 		},
 		validateForm() {
-			if (this.firstName && this.lastName && this.email && this.password) {
+			if (this.firstName && this.lastName && this.email && this.password &&
+				this.terms) {
 				return true;
 			}
 
@@ -162,24 +170,30 @@ export default {
 			this.lastNameErrors = [];
 			this.emailErrors = [];
 			this.passwordErrors = [];
+			this.termsErrors = [];
 
-			if (!this.firstName) {
+			if (!this.validateName(this.firstName)) {
+			// if (this.firstName === '') {
 				this.firstNameErrors.push('First name required');
-				return false;
 			}
-			if (!this.lastName) {
+			// validateName(this.lastName);
+			if (this.lastName === '') {
 				this.lastNameErrors.push('Last name required');
-				return false;
 			}
-			if (!this.email) {
+			// validateEmail(this.email);
+			if (this.email === '') {
 				this.emailErrors.push('Email required');
-				return false;
 			}
-			if (!this.password) {
+			if (this.password === '') {
 				this.passwordErrors.push('Password required');
-				return false;
 			}
-			return true;
+			if (!this.terms) {
+				this.termsErrors.push('You must agree to the Kiva Terms of service & Privacy policy');
+			}
+			return false;
+		},
+		validateName(name) {
+			return name !== '';
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
