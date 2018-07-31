@@ -165,15 +165,19 @@ export default {
 
 			if (!this.firstName) {
 				this.firstNameErrors.push('First name required');
+				return false;
 			}
 			if (!this.lastName) {
 				this.lastNameErrors.push('Last name required');
+				return false;
 			}
 			if (!this.email) {
 				this.emailErrors.push('Email required');
+				return false;
 			}
 			if (!this.password) {
 				this.passwordErrors.push('Password required');
+				return false;
 			}
 			return true;
 		},
