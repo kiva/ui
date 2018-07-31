@@ -1,6 +1,5 @@
 pipeline {
     agent {
-#        label 'xenial-jenkins-docker'
         dockerfile true
     }
     environment {
