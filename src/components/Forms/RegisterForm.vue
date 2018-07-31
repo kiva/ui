@@ -101,12 +101,16 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import formValidate from '@/plugins/formValidate';
 
 export default {
 	components: {
 		KvButton,
 	},
-	mixins: [loginRegUtils],
+	mixins: [
+		loginRegUtils,
+		formValidate
+	],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful registration
 		doneUrl: {
@@ -156,8 +160,6 @@ export default {
 			if (this.validateForm() === true) {
 				const formData = new FormData(this.$refs.regForm);
 				this.postForm(this.regActionUrl, formData);
-			} else {
-				console.log('Registering you in failed. Check register() in RegisterForm.vue');
 			}
 		},
 		validateForm() {
@@ -188,15 +190,6 @@ export default {
 				this.termsErrors.push('You must agree to the Kiva Terms of service & Privacy policy');
 			}
 			return false;
-		},
-		validateName(name) {
-			return name !== '';
-		},
-		validateEmail(email) {
-			return email !== '';
-		},
-		validatePassword(password) {
-			return password !== '';
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better

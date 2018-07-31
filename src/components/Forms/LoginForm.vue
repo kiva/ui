@@ -86,6 +86,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
+import formValidate from '@/plugins/formValidate';
 
 export default {
 	components: {
@@ -94,7 +95,10 @@ export default {
 		SalesforceHelpTextQuery,
 	},
 	inject: ['apollo'],
-	mixins: [loginRegUtils],
+	mixins: [
+		loginRegUtils,
+		formValidate
+	],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful login
 		doneUrl: {
@@ -153,8 +157,6 @@ export default {
 			if (this.validateForm() === true) {
 				const formData = new FormData(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
-			} else {
-				console.log('Logging you in failed. Check doLogin() in LoginForm.vue');
 			}
 		},
 		validateForm() {
@@ -165,15 +167,13 @@ export default {
 			this.emailErrors = [];
 			this.passwordErrors = [];
 
-			if (!this.email) {
+			if (!this.validateEmail(this.email)) {
 				this.emailErrors.push('Email required');
-				return false;
 			}
-			if (!this.password) {
+			if (!this.validatePassword(this.password)) {
 				this.passwordErrors.push('Password required');
-				return false;
 			}
-			return true;
+			return false;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
