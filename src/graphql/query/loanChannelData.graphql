@@ -8,7 +8,7 @@ query ($offset: Int, $filters: LoanSearchFiltersInput) {
 			}
 		}
 		loans(
-			limit: 3,
+			limit: 6,
 			filters: $filters
 			) {
 			values {

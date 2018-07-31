@@ -150,12 +150,25 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.is-in-category-row {
+	flex: 0 0 auto;
+
+	&.column-block:first-of-type {
+		padding-left: 0;
+	}
+
+	.grid-loan-card {
+		width: rem-calc(280);
+	}
+}
+
 .grid-loan-card {
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	min-width: 280px;
 	max-width: rem-calc(480);
 	margin: auto;
 
