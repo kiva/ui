@@ -173,18 +173,15 @@ export default {
 			this.termsErrors = [];
 
 			if (!this.validateName(this.firstName)) {
-			// if (this.firstName === '') {
 				this.firstNameErrors.push('First name required');
 			}
-			// validateName(this.lastName);
-			if (this.lastName === '') {
+			if (!this.validateName(this.lastName)) {
 				this.lastNameErrors.push('Last name required');
 			}
-			// validateEmail(this.email);
-			if (this.email === '') {
+			if (!this.validateEmail(this.email)) {
 				this.emailErrors.push('Email required');
 			}
-			if (this.password === '') {
+			if (!this.validatePassword(this.password)) {
 				this.passwordErrors.push('Password required');
 			}
 			if (!this.terms) {
@@ -194,6 +191,12 @@ export default {
 		},
 		validateName(name) {
 			return name !== '';
+		},
+		validateEmail(email) {
+			return email !== '';
+		},
+		validatePassword(password) {
+			return password !== '';
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
