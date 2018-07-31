@@ -6,20 +6,20 @@
 				<p>Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
+		</div>
 
+		<div>
+			<category-row
+				class="loan-category-row"
+				v-for="category in categoryIdSet"
+				:key="category.id"
+				:category="category"
+			/>
+			<loading-overlay v-if="loading" />
+		</div>
+
+		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
-				<div class="loan-category-row row small-up-1">
-					<category-row
-						v-for="category in categoryIdSet"
-						:key="category.id"
-						:category="category.id"
-					/>
-
-					<loading-overlay v-if="loading" />
-				</div>
-			</div>
-
-			<div class="columns small-12" v-if="isAdmin">
 				<category-admin-controls
 					:categories="categoryIdSet"
 					:possible-categories="possibleCategories"
@@ -165,33 +165,28 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 @import 'settings';
 
-.lend-page {
+.lend-by-category-page {
 	main {
 		background-color: $kiva-bg-lightgray;
 	}
 
-	.loan-card-group {
-		position: relative;
-	}
 
-	.loan-count {
-		text-align: center;
-		margin: 0 0 2rem;
-		color: $kiva-text-light;
-	}
-}
+	.heading-region {
+		margin-top: rem-calc(20);
+		padding: rem-calc(10);
 
-.heading-region {
-	margin-top: rem-calc(20);
-	padding: rem-calc(10);
-
-	@include breakpoint(large) {
-		p {
-			max-width: 75%;
+		@include breakpoint(large) {
+			p {
+				max-width: 75%;
+			}
 		}
+	}
+
+	.loan-category-row {
+		margin: 0 2rem rem-calc(20);
 	}
 }
 </style>
