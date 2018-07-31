@@ -47,18 +47,25 @@
 			I have read and agree to the
 			<a href="legal/terms"
 				target="_blank"
-				title="Open Terms of Use in a new window">Terms of Use
+				title="Open Terms of Use in a new window"
+				v-kv-track-event="'Register|click-terms-of-use|TermsOfUseClick'">
+				Terms of Use
 			</a> and
 			<a href="legal/privacy"
 				target="_blank"
-				title="Open Privacy Policy in a new window">Privacy Policy
+				title="Open Privacy Policy in a new window"
+				v-kv-track-event="'Register|click-privacy-policy|PrivacyPolicyClick'">
+				Privacy Policy
 			</a>.
 		</div>
 		<KvButton
 			class="register-button smaller"
 			type="submit"
 			name="regForm_submit"
-			id="regForm_submit">Continue</KvButton>
+			id="regForm_submit"
+			v-kv-track-event="'Register|click-register-submit|RegisterButtonClick'">
+			Continue
+		</KvButton>
 
 		<input type="hidden" name="currURL" :value="currUrl">
 		<!-- Have to pass this crumb in the Header and in the Request -->
@@ -126,10 +133,12 @@ export default {
 				// $emit registration-failed event on error to allow parent to respond
 				this.$emit('register-failed');
 				this.regFailed = true;
+				this.$kvTrackEvent('Register|failed-register');
 			} else {
 				// $emit registration-successful event once completed to allow parent to respond
 				this.$emit('register-successful');
 				this.regFailed = false;
+				this.$kvTrackEvent('Register|successful-register');
 			}
 
 			// Goto doneUrl if present + successful registration
