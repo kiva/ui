@@ -1,6 +1,6 @@
 <template>
 	<www-page>
-		<checkout-steps current-step="currentStep" @navigate-to-step="navigateToStep" />
+		<checkout-steps :current-step="currentStep" @navigate-to-step="navigateToStep" />
 		<div class="row page-content">
 			<div class="columns">
 				<!-- basket-page / payment-page / thanks-page -->
