@@ -5,7 +5,8 @@
 		name="loginForm"
 		method="post"
 		:action="loginActionUrl"
-		@submit.prevent.stop="doLogin">
+		@submit.prevent.stop="doLogin"
+		novalidate>
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
 		<hr>

@@ -5,7 +5,8 @@
 		name="regForm"
 		method="post"
 		:action="regActionUrl"
-		@submit.prevent.stop="register">
+		@submit.prevent.stop="register"
+		novalidate>
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
 		<hr>
