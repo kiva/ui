@@ -401,6 +401,7 @@ $button-padding: (
 	medium: rem-calc(18) rem-calc(36),
 );
 $button-margin: 0 0 $global-margin 0;
+$button-opacity-disabled: 0.25;
 $button-background: $kiva-accent-blue;
 $button-background-hover: $kiva-accent-darkblue;
 $button-color: $white;
@@ -464,7 +465,6 @@ $button-smaller-medium-shadow: 0 1px $button-background-hover;
 $button-fill: solid;
 $button-color-alt: $black;
 $button-palette: $foundation-palette;
-$button-opacity-disabled: 0.25;
 $button-background-hover-lightness: -20%;
 $button-hollow-hover-lightness: -50%;
 
