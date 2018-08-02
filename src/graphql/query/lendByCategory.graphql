@@ -9,7 +9,7 @@ query {
 		}
 	}
 	general {
-		setting(setting: "uicats") {
+		setting(setting: "ui.category_rows") {
 			value
 		}
 	}

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import _filter from 'lodash/filter';
 import draggable from 'vuedraggable';
@@ -77,7 +77,7 @@ export default {
 			handler(categories) {
 				if (categories.length) {
 					if (!_isEqual(this.filtered, categories)) {
-						this.list = _clone(categories);
+						this.list = _cloneDeep(categories);
 					}
 				} else {
 					this.list = [{ id: '' }];

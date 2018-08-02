@@ -99,7 +99,6 @@ export default {
 				client.query({
 					query: lendByCategoryQuery
 				}).then(({ data }) => {
-					console.log('almost');
 					let result;
 					try {
 						result = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
@@ -110,10 +109,7 @@ export default {
 					client.query({
 						query: categoriesByIdQuery,
 						variables: { ids },
-					}).then(() => {
-						console.log('made it');
-						resolve();
-					}).catch(reject);
+					}).then(resolve).catch(reject);
 				}).catch(reject);
 			});
 		}

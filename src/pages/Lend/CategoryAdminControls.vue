@@ -27,8 +27,9 @@
 </template>
 
 <script>
-import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
+import setRowsMutation from '@/graphql/mutation/setCategoryRows.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import ExperimentControlSlide from './ExperimentControlSlide';
 import ExperimentVariantSlide from './ExperimentVariantSlide';
@@ -70,11 +71,16 @@ export default {
 	},
 	methods: {
 		save() {
-			console.log(this.defaultCategories);
-		}
+			this.apollo.mutate({
+				mutation: setRowsMutation,
+				variables: {
+					categories: JSON.stringify(this.defaultCategories)
+				},
+			}).then(result => console.log(result));
+		},
 	},
 	created() {
-		this.defaultCategories = _clone(this.categories);
+		this.defaultCategories = _cloneDeep(this.categories);
 	},
 };
 </script>

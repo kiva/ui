@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
 import CategorySet from './CategorySet';
 
@@ -40,7 +40,7 @@ export default {
 		categories: {
 			handler(categories) {
 				if (!_isEqual(this.list, categories)) {
-					this.list = _clone(categories);
+					this.list = _cloneDeep(categories);
 				}
 			},
 			immediate: true,
