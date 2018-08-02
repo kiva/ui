@@ -20,7 +20,13 @@
 
 		<div class="input-set">
 			<label for="email">
-				Email <input type="email" name="email" v-model="email" autofocus>
+				Email
+				<input
+					type="email"
+					name="email"
+					v-model="email"
+					autofocus
+					@blur="validateEmail(email)">
 			</label>
 			<p v-if="emailErrors.length">
 				<ul class="validation-errors">
@@ -31,7 +37,12 @@
 
 		<div class="input-set">
 			<label for="password">
-				Password <input type="password" name="password" v-model="password" maxlength="31">
+				Password <input
+					type="password"
+					name="password"
+					v-model="password"
+					maxlength="31"
+					@blur="validatePassword(password)">
 			</label>
 			<p v-if="passwordErrors.length">
 				<ul class="validation-errors">
@@ -88,6 +99,9 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
 import formValidate from '@/plugins/formValidate';
+import SimpleVueValidator from 'simple-vue-validator';
+
+const Validator = SimpleVueValidator.validator;
 
 export default {
 	components: {
@@ -100,6 +114,13 @@ export default {
 		loginRegUtils,
 		formValidate
 	],
+	apollo: {
+		query: SalesforceHelpTextQuery,
+		preFetch: true,
+		result({ data }) {
+			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
+		},
+	},
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful login
 		doneUrl: {
@@ -123,10 +144,9 @@ export default {
 			serverErrors: [],
 			defaultLbVisible: false,
 			salesforceHelpText: {},
-			emailErrors: [],
 			passwordErrors: [],
-			email: null,
-			password: null
+			email: '',
+			password: ''
 		};
 	},
 	created() {
@@ -138,13 +158,6 @@ export default {
 	},
 	mounted() {
 		this.currUrl = window.location.href;
-	},
-	apollo: {
-		query: SalesforceHelpTextQuery,
-		preFetch: true,
-		result({ data }) {
-			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
-		},
 	},
 	methods: {
 		triggerDefaultLightbox() {
@@ -161,20 +174,13 @@ export default {
 			}
 		},
 		validateForm() {
-			if (this.email && this.password) {
-				return true;
-			}
+			this.validateEmail(this.email);
+			this.validatePassword(this.password);
 
-			this.emailErrors = [];
-			this.passwordErrors = [];
-
-			if (!this.validateEmail(this.email)) {
-				this.emailErrors.push('Email required');
+			if (this.emailErrors.length > 0 && this.passwordErrors.length > 0) {
+				return false;
 			}
-			if (!this.validatePassword(this.password)) {
-				this.passwordErrors.push('Password required');
-			}
-			return false;
+			return true;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
@@ -207,7 +213,13 @@ export default {
 				window.location = window.location;
 			}
 		}
-	}
+	},
+	validators: {
+		// I don't think this is doing anything
+		email(value) {
+			return Validator.value(value).required().email();
+		}
+	},
 };
 </script>
 

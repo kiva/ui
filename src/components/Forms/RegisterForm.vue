@@ -21,7 +21,13 @@
 		<div class="input-set">
 			<label for="firstName">
 				First name
-				<input type="text" name="firstName" maxlength="40" autofocus v-model="firstName">
+				<input
+					type="text"
+					name="firstName"
+					maxlength="40"
+					v-model="firstName"
+					autofocus
+					@blur="validateName(firstName)">
 			</label>
 			<p v-if="firstNameErrors.length">
 				<ul class="validation-errors">
@@ -32,7 +38,12 @@
 
 		<div class="input-set">
 			<label for="lastName">
-				Last name <input type="text" name="lastName" maxlength="40" v-model="lastName">
+				Last name <input
+					type="text"
+					name="lastName"
+					maxlength="40"
+					v-model="lastName"
+					@blur="validateName(lastName)">
 			</label>
 			<p v-if="lastNameErrors.length">
 				<ul class="validation-errors">
@@ -43,7 +54,12 @@
 
 		<div class="input-set">
 			<label for="email">
-				Email <input type="email" name="email" maxlength="100" v-model="email">
+				Email <input
+					type="email"
+					name="email"
+					maxlength="100"
+					v-model="email"
+					@blur="validateEmail(email)">
 			</label>
 			<p v-if="emailErrors.length">
 				<ul class="validation-errors">
@@ -54,7 +70,12 @@
 
 		<div class="input-set">
 			<label for="password">
-				Password <input type="password" name="password" maxlength="31" v-model="password">
+				Password <input
+					type="password"
+					name="password"
+					maxlength="31"
+					v-model="password"
+					@blur="validatePassword(password)">
 			</label>
 			<p v-if="passwordErrors.length">
 				<ul class="validation-errors">
@@ -64,7 +85,12 @@
 		</div>
 
 		<div class="terms-and-policy">
-			<input type="checkbox" name="terms" id="registerForm_terms_of_use_privacy_poicy" v-model="terms">
+			<input
+				type="checkbox"
+				name="terms"
+				id="registerForm_terms_of_use_privacy_poicy"
+				v-model="terms"
+				@blur="validateTerms(terms)">
 			I have read and agree to the
 			<a href="legal/terms"
 				target="_blank"
