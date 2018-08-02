@@ -141,7 +141,6 @@ export default {
 			serverErrors: [],
 			defaultLbVisible: false,
 			salesforceHelpText: {},
-			passwordErrors: [],
 			email: '',
 			password: ''
 		};

@@ -1,8 +1,10 @@
 export default {
 	data() {
 		return {
+			nameErrors: [],
 			emailErrors: [],
 			passwordErrors: [],
+			termsErrors: [],
 		};
 	},
 	methods: {

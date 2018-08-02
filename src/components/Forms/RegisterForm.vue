@@ -159,10 +159,6 @@ export default {
 			regFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
 			serverErrors: [],
-			nameErrors: [],
-			emailErrors: [],
-			termsErrors: [],
-			passwordErrors: [],
 			firstName: '',
 			lastName: '',
 			email: '',
