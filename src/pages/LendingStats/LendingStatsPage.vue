@@ -111,7 +111,7 @@ export default {
 			this.totalPartners = _get(data, 'general.partners.totalCount');
 		},
 		errorHandlers: {
-			'api.authenticationRequired': ({ route, reject }) => reject({
+			'api.authenticationRequired': ({ route }) => Promise.reject({
 				path: '/login',
 				query: { doneUrl: route.fullPath.slice(1) }
 			})
