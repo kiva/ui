@@ -29,9 +29,9 @@
 					autofocus
 					@blur="validateName(firstName)">
 			</label>
-			<p v-if="firstNameErrors.length">
+			<p v-if="nameErrors.length">
 				<ul class="validation-errors">
-					<li v-for="firstNameError in firstNameErrors" :key="firstNameError">{{ firstNameError }}</li>
+					<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
 				</ul>
 			</p>
 		</div>
@@ -45,9 +45,9 @@
 					v-model="lastName"
 					@blur="validateName(lastName)">
 			</label>
-			<p v-if="lastNameErrors.length">
+			<p v-if="nameErrors.length">
 				<ul class="validation-errors">
-					<li v-for="lastNameError in lastNameErrors" :key="lastNameError">{{ lastNameError }}</li>
+					<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
 				</ul>
 			</p>
 		</div>
@@ -159,8 +159,7 @@ export default {
 			regFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
 			serverErrors: [],
-			firstNameErrors: [],
-			lastNameErrors: [],
+			nameErrors: [],
 			emailErrors: [],
 			termsErrors: [],
 			passwordErrors: [],
@@ -190,33 +189,17 @@ export default {
 			}
 		},
 		validateForm() {
-			if (this.firstName && this.lastName && this.email && this.password &&
-				this.terms) {
-				return true;
-			}
+			this.validateName(this.firstName);
+			this.validateName(this.lastName);
+			this.validateEmail(this.email);
+			this.validatePassword(this.password);
+			this.validateTerms(this.terms);
 
-			this.firstNameErrors = [];
-			this.lastNameErrors = [];
-			this.emailErrors = [];
-			this.passwordErrors = [];
-			this.termsErrors = [];
-
-			if (!this.validateName(this.firstName)) {
-				this.firstNameErrors.push('First name required');
+			// eslint-disable-next-line
+			if (this.nameErrors.length > 0 && this.emailErrors.length > 0 && this.passwordErrors.length > 0 && this.termsErrors.length > 0) {
+				return false;
 			}
-			if (!this.validateName(this.lastName)) {
-				this.lastNameErrors.push('Last name required');
-			}
-			if (!this.validateEmail(this.email)) {
-				this.emailErrors.push('Email required');
-			}
-			if (!this.validatePassword(this.password)) {
-				this.passwordErrors.push('Password required');
-			}
-			if (!this.terms) {
-				this.termsErrors.push('You must agree to the Kiva Terms of service & Privacy policy');
-			}
-			return false;
+			return true;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better

@@ -10,14 +10,12 @@ export default {
 			return value === '';
 		},
 		validateName(name) {
-			console.log('validateName function entered');
-			this.firstNameErrors = [];
+			this.nameErrors = [];
 			if (this.checkEmpty(name)) {
-				this.firstNameErrors.push('Name required');
+				this.nameErrors.push('Name required');
 			}
 		},
 		validatePassword(password) {
-			console.log('validatePassword function entered');
 			this.passwordErrors = [];
 			if (this.checkEmpty(password)) {
 				this.passwordErrors.push('Password required');
@@ -25,7 +23,6 @@ export default {
 			return this.passwordErrors;
 		},
 		validateEmail(email) {
-			console.log('validateEmail function entered.');
 			this.emailErrors = [];
 			// regex taken from: http://emailregex.com/
 			// eslint-disable-next-line
@@ -35,9 +32,15 @@ export default {
 				this.emailErrors.push('Email required');
 			}
 			if (!re.test(email)) {
-				this.emailErrors.push('Valid email required');
+				this.emailErrors.push('Valid email required.');
 			}
 			return this.emailErrors;
 		},
+		validateTerms() {
+			this.termsErrors = [];
+			if (!this.terms) {
+				this.termsErrors.push('You must agree to the Kiva Terms of service & Privacy policy');
+			}
+		}
 	}
 };
