@@ -5,7 +5,8 @@
 		name="loginForm"
 		method="post"
 		:action="loginActionUrl"
-		@submit.prevent.stop="doLogin">
+		@submit.prevent.stop="doLogin"
+		novalidate>
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
 		<hr>
@@ -19,14 +20,35 @@
 
 		<div class="input-set">
 			<label for="email">
-				Email <input type="email" name="email" autofocus>
+				Email
+				<input
+					type="email"
+					name="email"
+					v-model="email"
+					autofocus
+					@blur="validateEmail(email)">
 			</label>
+			<p v-if="emailErrors.length">
+				<ul class="validation-errors">
+					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="password">
-				Password <input type="password" name="password" maxlength="31">
+				Password <input
+					type="password"
+					name="password"
+					v-model="password"
+					maxlength="31"
+					@blur="validatePassword(password)">
 			</label>
+			<p v-if="passwordErrors.length">
+				<ul class="validation-errors">
+					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="persist-login-wrap">
@@ -76,6 +98,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
+import formValidate from '@/plugins/formValidate';
 
 export default {
 	components: {
@@ -84,7 +107,17 @@ export default {
 		SalesforceHelpTextQuery,
 	},
 	inject: ['apollo'],
-	mixins: [loginRegUtils],
+	mixins: [
+		loginRegUtils,
+		formValidate
+	],
+	apollo: {
+		query: SalesforceHelpTextQuery,
+		preFetch: true,
+		result({ data }) {
+			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
+		},
+	},
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful login
 		doneUrl: {
@@ -108,6 +141,8 @@ export default {
 			serverErrors: [],
 			defaultLbVisible: false,
 			salesforceHelpText: {},
+			email: '',
+			password: ''
 		};
 	},
 	created() {
@@ -120,13 +155,6 @@ export default {
 	mounted() {
 		this.currUrl = window.location.href;
 	},
-	apollo: {
-		query: SalesforceHelpTextQuery,
-		preFetch: true,
-		result({ data }) {
-			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
-		},
-	},
 	methods: {
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
@@ -136,8 +164,19 @@ export default {
 		},
 		doLogin() {
 			// this.loading = true;
-			const formData = new FormData(this.$refs.loginForm);
-			this.postForm(this.loginActionUrl, formData);
+			if (this.validateForm() === true) {
+				const formData = new FormData(this.$refs.loginForm);
+				this.postForm(this.loginActionUrl, formData);
+			}
+		},
+		validateForm() {
+			this.validateEmail(this.email);
+			this.validatePassword(this.password);
+
+			if (this.emailErrors.length > 0 && this.passwordErrors.length > 0) {
+				return false;
+			}
+			return true;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
@@ -170,7 +209,7 @@ export default {
 				window.location = window.location;
 			}
 		}
-	}
+	},
 };
 </script>
 
@@ -178,7 +217,8 @@ export default {
 @import 'settings';
 
 .login-form {
-	.server-errors {
+	.server-errors,
+	.validation-errors {
 		margin: 1rem 0;
 
 		li {
