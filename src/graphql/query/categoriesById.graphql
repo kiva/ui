@@ -1,0 +1,10 @@
+query($ids: [Int]) {
+	lend {
+		loanChannelsById(ids: $ids) {
+			id
+			name
+			description
+			url
+		}
+	}
+}
