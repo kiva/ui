@@ -99,9 +99,6 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
 import formValidate from '@/plugins/formValidate';
-// import SimpleVueValidator from 'simple-vue-validator';
-
-// const Validator = SimpleVueValidator.validator;
 
 export default {
 	components: {
@@ -214,12 +211,6 @@ export default {
 			}
 		}
 	},
-	// validators: {
-	// 	// I don't think this is doing anything
-	// 	email(value) {
-	// 		return Validator.value(value).required().email();
-	// 	}
-	// },
 };
 </script>
 
