@@ -1,0 +1,63 @@
+query {
+	shop {
+		basket {
+			items {
+				totalCount
+				values {
+					id
+					price
+					... on LoanReservation {
+						expiryTime
+						isEndingSoon
+						loan {
+							id
+							name
+							use
+							status
+							sector {
+								name
+							}
+							geocode {
+								country {
+									name
+								}
+							}
+							loanFundraisingInfo {
+								isExpiringSoon
+							}
+							image {
+								id
+								url: url (presetSize: loan_thumbnail)
+								url_2x: url (presetSize: loan_thumbnail_retina)
+							}
+							... on LoanDirect {
+								sponsor_name: trusteeName
+							}
+							... on LoanPartner {
+								sponsor_name: partnerName
+							}
+						}
+						team {
+							id
+							name
+						}
+					}
+					... on Donation {
+						isTip
+						isUserEdited
+					}
+				}
+			}
+			totals {
+				creditAmountNeeded
+				creditAppliedTotal
+				creditAvailableTotal
+				donationTotal
+				itemTotal
+				kivaCreditAvailableTotal
+				kivaCreditAppliedTotal
+				loanReservationTotal
+			}
+		}
+	}
+}
