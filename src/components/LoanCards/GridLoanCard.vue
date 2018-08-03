@@ -159,6 +159,9 @@ export default {
 
 	.grid-loan-card {
 		width: rem-calc(280);
+		@include breakpoint(340px down) {
+			width: rem-calc(240);
+		}
 	}
 }
 
