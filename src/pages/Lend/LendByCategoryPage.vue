@@ -11,31 +11,37 @@
 		<div>
 			<category-row
 				class="loan-category-row"
-				v-for="loanChannel in loanChannels"
-				:key="loanChannel"
-				:loan-channel="loanChannel"
+				v-for="category in categoryIdSet"
+				:key="category.id"
+				:loan-channel="category.id"
 			/>
-
 			<loading-overlay v-if="loading" />
+		</div>
 
-			<!-- @todo - do we need this here? -->
-			<div v-if="totalCount > 0" class="loan-count">
-				{{ totalCount }} loans
+		<div class="row" v-if="isAdmin">
+			<div class="columns small-12">
+				<category-admin-controls
+					:categories="categoryIdSet"
+					:possible-categories="possibleCategories"
+				/>
 			</div>
 		</div>
 	</www-page>
 </template>
 
 <script>
-// import _get from 'lodash/get';
+import _get from 'lodash/get';
 // import _invokeMap from 'lodash/invokeMap';
 // import _isEqual from 'lodash/isEqual';
-// import _map from 'lodash/map';
+import _map from 'lodash/map';
 // import _mapValues from 'lodash/mapValues';
 // import _merge from 'lodash/merge';
 // import numeral from 'numeral';
+import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
+import categoriesByIdQuery from '@/graphql/query/categoriesById.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
+import CategoryAdminControls from './CategoryAdminControls';
 import LoadingOverlay from './LoadingOverlay';
 
 
@@ -67,9 +73,10 @@ import LoadingOverlay from './LoadingOverlay';
 
 export default {
 	components: {
-		WwwPage,
+		CategoryAdminControls,
 		CategoryRow,
 		LoadingOverlay,
+		WwwPage,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -77,39 +84,58 @@ export default {
 	},
 	data() {
 		return {
-			totalCount: 0,
+			isAdmin: true,
 			isVisitor: true,
 			itemsInBasket: [],
-			loanChannels: [5, 8, 1, 24],
 			loading: false,
+			rows: [],
+			categoryIdSet: [],
+			possibleCategories: [],
+			experimentEnabled: false,
+			variants: [],
 		};
 	},
-	computed: {
-
-	},
 	apollo: {
-		// query: loanCardQuery,
-		// preFetch: true,
-		// preFetchVariables({ route }) {
-		// 	return _merge({ limit: loansPerPage }, fromUrlParams(route.query));
-		// },
-		// variables() {
-		// 	return {
-		// 		offset: this.offset,
-		// 		limit: this.limit,
-		// 	};
-		// },
-		// result({ data, loading }) {
-		// 	if (loading) {
-		// 		this.loading = true;
-		// 	} else {
-		// 		this.totalCount = data.lend.loans.totalCount;
-		// 		this.loans = data.lend.loans.values;
-		// 		this.itemsInBasket = _map(data.shop.basket.items.values, 'id');
-		// 		this.isVisitor = !_get(data, 'my.userAccount.id');
-		// 		this.loading = false;
-		// 	}
-		// }
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				client.query({
+					query: lendByCategoryQuery
+				}).then(({ data }) => {
+					let result;
+					try {
+						result = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
+					} catch (e) {
+						result = [];
+					}
+					const ids = _map(result, 'id');
+					client.query({
+						query: categoriesByIdQuery,
+						variables: { ids },
+					}).then(resolve).catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
+	created() {
+		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
+		this.possibleCategories = _map(_get(baseData, 'lend.loanChannels.values'), category => {
+			return {
+				label: category.name,
+				value: category.id,
+			};
+		});
+
+		try {
+			this.categoryIdSet = JSON.parse(JSON.parse(_get(baseData, 'general.setting.value')));
+		} catch (e) {
+			// console.log(e);
+		}
+
+		const categoryData = this.apollo.readQuery({
+			query: categoriesByIdQuery,
+			variables: { ids: _map(this.categoryIdSet, 'id') },
+		});
+		this.rows = _get(categoryData, 'lend.loanChannelsById');
 	},
 	methods: {
 		// pageChange(number) {
@@ -146,7 +172,6 @@ export default {
 	main {
 		background-color: $kiva-bg-lightgray;
 	}
-
 
 	.heading-region {
 		margin-top: rem-calc(20);

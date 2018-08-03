@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 import _range from 'lodash/range';
 import _uniq from 'lodash/uniq';
 import KvIcon from './KvIcon';
@@ -138,7 +138,7 @@ export default {
 	},
 	methods: {
 		routeForPage(number) {
-			const query = _clone(this.$route.query);
+			const query = _cloneDeep(this.$route.query);
 			if (number > 1) {
 				query.page = number;
 			} else {
