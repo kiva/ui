@@ -1,51 +1,50 @@
-query ($offset: Int, $filters: LoanSearchFiltersInput) {
-	lend {
-		loanChannels(limit: 1, offset: $offset) {
-			values {
-				id
-				name
-				description
-			}
-		}
-		loans(
-			limit: 6,
-			filters: $filters
-			) {
-			values {
-				id
-				status
-				image {
-					default: url(customSize: "w480h360")
-					retina: url(customSize: "w960h720")
-				}
-				name
-				borrowerCount
-				geocode {
-					country {
-						name
-					}
-				}
-				use
-				lenderRepaymentTerm
-				loanAmount
-				loanFundraisingInfo {
-					fundedAmount
-					reservedAmount
-					isExpiringSoon
-				}
-				plannedExpirationDate
-				matchingText
-				userProperties {
-					favorited
-					lentTo
-				}
-				... on LoanPartner {
-					partnerName
-				}
-				...on LoanDirect {
-					trusteeName
-				}
-			}
-		}
-	}
+query ($ids: Int) {
+  lend {
+    loanChannelsById(ids: [$ids]) {
+      id
+      name
+      description
+      url
+      loans(limit: 8) {
+        values {
+          id
+          status
+          sector {
+            id
+          }
+          image {
+            default: url(customSize: "w480h360")
+            retina: url(customSize: "w960h720")
+          }
+          name
+          borrowerCount
+          geocode {
+            country {
+              name
+            }
+          }
+          use
+          lenderRepaymentTerm
+          loanAmount
+          loanFundraisingInfo {
+            fundedAmount
+            reservedAmount
+            isExpiringSoon
+          }
+          plannedExpirationDate
+          matchingText
+          userProperties {
+            favorited
+            lentTo
+          }
+          ... on LoanPartner {
+            partnerName
+          }
+          ... on LoanDirect {
+            trusteeName
+          }
+        }
+      }
+    }
+  }
 }

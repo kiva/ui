@@ -11,9 +11,9 @@
 		<div>
 			<category-row
 				class="loan-category-row"
-				v-for="category in categories"
-				:key="category.id"
-				:category="category"
+				v-for="loanChannel in loanChannels"
+				:key="loanChannel"
+				:loan-channel="loanChannel"
 			/>
 
 			<loading-overlay v-if="loading" />
@@ -80,11 +80,7 @@ export default {
 			totalCount: 0,
 			isVisitor: true,
 			itemsInBasket: [],
-			categories: [
-				{ id: 1, filter: { gender: 'female' } },
-				{ id: 2, filter: { sector: [1] } },
-				{ id: 3, filter: { sector: [15] } },
-			],
+			loanChannels: [5, 8, 1, 24],
 			loading: false,
 		};
 	},
