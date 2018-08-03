@@ -1,11 +1,15 @@
-query($offset: Int, $limit: Int) {
+query($offset: Int, $limit: Int, $filters: LoanSearchFiltersInput) {
 	my {
 		userAccount {
 			id
 		}
 	}
 	lend {
-		loans(offset: $offset, limit: $limit) {
+		loans(
+			offset: $offset,
+			limit: $limit,
+			filters: $filters
+			) {
 			totalCount
 			values {
 				id

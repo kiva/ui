@@ -6,20 +6,20 @@
 				<p>Each Kiva loan helps people build a better
 				future for themselves and their families.</p>
 			</div>
+		</div>
 
+		<div>
+			<category-row
+				class="loan-category-row"
+				v-for="category in categoryIdSet"
+				:key="category.id"
+				:loan-channel="category.id"
+			/>
+			<loading-overlay v-if="loading" />
+		</div>
+
+		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
-				<div
-					v-for="category in rows"
-					:key="category.id"
-					class="loan-category-row row small-up-1"
-				>
-					<h2>{{ category.name }}</h2>
-					<p>{{ category.description }}</p>
-					<loading-overlay v-if="loading" />
-				</div>
-			</div>
-
-			<div class="columns small-12" v-if="isAdmin">
 				<category-admin-controls
 					:categories="categoryIdSet"
 					:possible-categories="possibleCategories"
@@ -40,6 +40,7 @@ import _map from 'lodash/map';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
 import categoriesByIdQuery from '@/graphql/query/categoriesById.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryAdminControls from './CategoryAdminControls';
 import LoadingOverlay from './LoadingOverlay';
 
@@ -73,6 +74,7 @@ import LoadingOverlay from './LoadingOverlay';
 export default {
 	components: {
 		CategoryAdminControls,
+		CategoryRow,
 		LoadingOverlay,
 		WwwPage,
 	},
@@ -163,33 +165,27 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 @import 'settings';
 
-.lend-page {
+.lend-by-category-page {
 	main {
 		background-color: $kiva-bg-lightgray;
 	}
 
-	.loan-card-group {
-		position: relative;
-	}
+	.heading-region {
+		margin-top: rem-calc(20);
+		padding: rem-calc(10);
 
-	.loan-count {
-		text-align: center;
-		margin: 0 0 2rem;
-		color: $kiva-text-light;
-	}
-}
-
-.heading-region {
-	margin-top: rem-calc(20);
-	padding: rem-calc(10);
-
-	@include breakpoint(large) {
-		p {
-			max-width: 75%;
+		@include breakpoint(large) {
+			p {
+				max-width: 75%;
+			}
 		}
+	}
+
+	.loan-category-row {
+		margin: 0 2rem rem-calc(20);
 	}
 }
 </style>
