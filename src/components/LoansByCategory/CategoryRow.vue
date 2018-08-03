@@ -5,22 +5,28 @@
 			{{ description }}
 		</p>
 
-		<div class="cards-outer-wrapper" ref="outerWrapper">
+		<div class="cards-and-arrows-wrapper" ref="outerWrapper">
 			<span
-				class="left-arrow inactive"
-				:class="{inactive: this.scrollPos === 0}"
+				class="arrow left-arrow"
+				:class="{inactive: scrollPos === 0}"
 				@click="scrollRowLeft"
 			>&lsaquo;</span>
-			<div class="cards-inner-wrapper" ref="innerWrapper">
-				<GridLoanCard
-					class="is-in-category-row"
-					v-for="loan in loans"
-					:key="loan.id"
-					:loan="loan"
-				/>
+			<div class="cards-display-window" ref="innerWrapper">
+				<div
+					class="cards-holder"
+					:style="{ marginLeft: scrollPos + 'px' }"
+				>
+					<GridLoanCard
+						class="is-in-category-row"
+						v-for="loan in loans"
+						:key="loan.id"
+						:loan="loan"
+					/>
+				</div>
 			</div>
 			<span
-				class="right-arrow"
+				class="arrow right-arrow"
+				:class="{inactive: scrollPos === minLeftMargin}"
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
@@ -45,32 +51,47 @@ export default {
 	data() {
 		return {
 			cardWidth: 310,
+			cardsInWindow: 1,
 			description: '',
 			loans: {},
 			loading: false,
+			minLeftMargin: -960,
 			name: '',
 			offset: null,
 			scrollPos: 0,
+			shiftIncrement: 960,
 		};
 	},
+	mounted() {
+		this.setupScrollingVars();
+		window.addEventListener('resize', this.setupScrollingVars);
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.setupScrollingVars);
+	},
 	methods: {
+		setupScrollingVars() {
+			this.cardWidth = window.innerWidth > 340 ? 310 : 270; // card width + padding
+			this.cardsInWindow = Math.floor(this.$refs.innerWrapper.clientWidth / this.cardWidth);
+			this.shiftIncrement = this.cardsInWindow * this.cardWidth;
+			if (this.loans.length) {
+				this.setMinLeftMargin();
+			}
+		},
+		setMinLeftMargin() {
+			this.minLeftMargin = (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+		},
 		scrollRowLeft() {
-			const wrapper = this.$refs.innerWrapper;
-			const width = wrapper.clientWidth;
-			const cardsInWindow = Math.floor(width / this.cardWidth);
-			const scrollIncrement = cardsInWindow * this.cardWidth;
-			const newScroll = this.scrollPos - scrollIncrement;
-			wrapper.scrollLeft = newScroll;
-			this.scrollPos = newScroll;
+			if (this.scrollPos < 0) {
+				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
+				this.scrollPos = newLeftMargin;
+			}
 		},
 		scrollRowRight() {
-			const wrapper = this.$refs.innerWrapper;
-			const width = wrapper.clientWidth;
-			const cardsInWindow = Math.floor(width / this.cardWidth);
-			const scrollIncrement = cardsInWindow * this.cardWidth;
-			const newScroll = this.scrollPos + scrollIncrement;
-			wrapper.scrollLeft = newScroll;
-			this.scrollPos = newScroll;
+			if (this.scrollPos > this.minLeftMargin) {
+				const newLeftMargin = this.scrollPos - this.shiftIncrement;
+				this.scrollPos = newLeftMargin;
+			}
 		},
 	},
 	inject: ['apollo'],
@@ -89,6 +110,7 @@ export default {
 				this.name = data.lend.loanChannels.values[0].name;
 				this.description = data.lend.loanChannels.values[0].description;
 				this.loans = data.lend.loans.values;
+				this.setMinLeftMargin();
 				this.loading = false;
 			}
 		}
@@ -99,13 +121,12 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-	.cards-outer-wrapper {
+	.cards-and-arrows-wrapper {
 		align-items: center;
 		display: flex;
 	}
 
-	.left-arrow,
-	.right-arrow {
+	.arrow {
 		color: $kiva-text-light;
 		cursor: pointer;
 		font-size: rem-calc(70);
@@ -125,18 +146,20 @@ export default {
 	}
 
 	@media (hover: none) {
-		.left-arrow,
-		.right-arrow {
+		.arrow {
 			display: none;
 		}
 	}
 
-	.cards-inner-wrapper {
+	.cards-display-window {
+		overflow-x: hidden;
+		width: 100%;
+	}
+
+	.cards-holder {
 		display: flex;
 		flex-wrap: nowrap;
-		overflow-x: auto;
-		-webkit-overflow-scrolling: touch;
-
+		transition: margin 0.5s;
 	}
 
 	.category-description {
