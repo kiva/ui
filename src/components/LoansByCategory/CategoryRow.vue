@@ -122,48 +122,48 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-	.cards-and-arrows-wrapper {
-		align-items: center;
-		display: flex;
-	}
+.cards-and-arrows-wrapper {
+	align-items: center;
+	display: flex;
+}
 
+.arrow {
+	color: $kiva-text-light;
+	cursor: pointer;
+	font-size: rem-calc(70);
+
+	&.inactive {
+		color: $kiva-stroke-gray;
+		cursor: not-allowed;
+	}
+}
+
+.left-arrow {
+	margin-right: rem-calc(10);
+}
+
+.right-arrow {
+	margin-left: rem-calc(10);
+}
+
+@media (hover: none) {
 	.arrow {
-		color: $kiva-text-light;
-		cursor: pointer;
-		font-size: rem-calc(70);
-
-		&.inactive {
-			color: $kiva-stroke-gray;
-			cursor: not-allowed;
-		}
+		display: none;
 	}
+}
 
-	.left-arrow {
-		margin-right: rem-calc(10);
-	}
+.cards-display-window {
+	overflow-x: hidden;
+	width: 100%;
+}
 
-	.right-arrow {
-		margin-left: rem-calc(10);
-	}
+.cards-holder {
+	display: flex;
+	flex-wrap: nowrap;
+	transition: margin 0.5s;
+}
 
-	@media (hover: none) {
-		.arrow {
-			display: none;
-		}
-	}
-
-	.cards-display-window {
-		overflow-x: hidden;
-		width: 100%;
-	}
-
-	.cards-holder {
-		display: flex;
-		flex-wrap: nowrap;
-		transition: margin 0.5s;
-	}
-
-	.category-description {
-		max-width: rem-calc(600);
-	}
+.category-description {
+	max-width: rem-calc(600);
+}
 </style>
