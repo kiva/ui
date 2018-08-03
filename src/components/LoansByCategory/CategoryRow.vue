@@ -26,7 +26,7 @@
 			</div>
 			<span
 				class="arrow right-arrow"
-				:class="{inactive: scrollPos === minLeftMargin}"
+				:class="{inactive: scrollPos <= minLeftMargin}"
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
@@ -43,9 +43,9 @@ export default {
 		GridLoanCard,
 	},
 	props: {
-		category: {
-			type: Object,
-			default: () => ({ id: 1, filter: { gender: 'female' } }),
+		loanChannel: {
+			type: Number,
+			default: 1,
 		}
 	},
 	data() {
@@ -60,6 +60,7 @@ export default {
 			offset: null,
 			scrollPos: 0,
 			shiftIncrement: 960,
+			url: ''
 		};
 	},
 	mounted() {
@@ -99,17 +100,17 @@ export default {
 		query: loanChannelQuery,
 		variables() {
 			return {
-				offset: this.category.id,
-				filters: this.category.filter,
+				ids: this.loanChannel,
 			};
 		},
 		result({ data, loading }) {
 			if (loading) {
 				this.loading = true;
 			} else {
-				this.name = data.lend.loanChannels.values[0].name;
-				this.description = data.lend.loanChannels.values[0].description;
-				this.loans = data.lend.loans.values;
+				this.name = data.lend.loanChannelsById[0].name;
+				this.description = data.lend.loanChannelsById[0].description;
+				this.url = data.lend.loanChannelsById[0].url;
+				this.loans = data.lend.loanChannelsById[0].loans.values;
 				this.setMinLeftMargin();
 				this.loading = false;
 			}

@@ -13,7 +13,7 @@
 				class="loan-category-row"
 				v-for="category in categoryIdSet"
 				:key="category.id"
-				:category="category"
+				:category="category.id"
 			/>
 			<loading-overlay v-if="loading" />
 		</div>
@@ -87,6 +87,10 @@ export default {
 			isAdmin: true,
 			isVisitor: true,
 			itemsInBasket: [],
+<<<<<<< 81cef3821dce750519931ff22c0b5f2e4cd89b66
+=======
+			loanChannels: [5, 8, 1, 24],
+>>>>>>> LC-4 - use LoanChannelsById for query
 			loading: false,
 			rows: [],
 			categoryIdSet: [],
