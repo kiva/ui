@@ -20,17 +20,29 @@
 		<kv-button v-show="experimentEnabled" class="setting">
 			+ Add variant
 		</kv-button>
-		<kv-button @click.native="save" :disabled="!changed">
-			Save
-		</kv-button>
+		<div class="bottom-button-row">
+			<kv-button @click.native="reset" v-if="changed" class="secondary">
+				Reset
+			</kv-button>
+			<kv-button @click.native="save" :disabled="!changed">
+				<span v-if="!saving">
+					Save
+				</span>
+				<span v-else>
+					<kv-loading-spinner /> Saving
+				</span>
+			</kv-button>
+		</div>
 	</div>
 </template>
 
 <script>
 import _cloneDeep from 'lodash/cloneDeep';
 import _isEqual from 'lodash/isEqual';
+import categoryAdminQuery from '@/graphql/query/categoryAdminControl.graphql';
 import setRowsMutation from '@/graphql/mutation/setCategoryRows.graphql';
 import KvButton from '@/components/Kv/KvButton';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import ExperimentControlSlide from './ExperimentControlSlide';
 import ExperimentVariantSlide from './ExperimentVariantSlide';
 
@@ -39,6 +51,7 @@ export default {
 		ExperimentControlSlide,
 		ExperimentVariantSlide,
 		KvButton,
+		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	props: {
@@ -56,6 +69,7 @@ export default {
 			defaultCategories: [],
 			experimentEnabled: false,
 			variants: [],
+			saving: false,
 		};
 	},
 	computed: {
@@ -69,18 +83,38 @@ export default {
 			return !_isEqual(this.categories, this.defaultCategories);
 		},
 	},
+	watch: {
+		categories: {
+			handler() {
+				this.reset();
+			},
+			immediate: true,
+		}
+	},
 	methods: {
+		reset() {
+			this.defaultCategories = _cloneDeep(this.categories);
+		},
 		save() {
+			this.saving = true;
 			this.apollo.mutate({
 				mutation: setRowsMutation,
 				variables: {
 					categories: JSON.stringify(this.defaultCategories)
 				},
-			}).then(result => console.log(result));
+			}).then(({ errors }) => {
+				if (errors) {
+					errors.forEach(({ message }) => this.$showTipMsg(message, 'warning'));
+				} else {
+					return this.apollo.query({
+						query: categoryAdminQuery,
+						fetchPolicy: 'network-only',
+					});
+				}
+			}).finally(() => {
+				this.saving = false;
+			});
 		},
-	},
-	created() {
-		this.defaultCategories = _cloneDeep(this.categories);
 	},
 };
 </script>
@@ -90,6 +124,16 @@ export default {
 
 .admin-controls {
 	margin-bottom: 1rem;
+
+	.button .loading-spinner {
+		width: 1.5rem;
+		height: 1.5rem;
+		vertical-align: bottom;
+
+		& /deep/ .line {
+			background-color: $white;
+		}
+	}
 }
 
 .experiment-controls {
@@ -106,6 +150,17 @@ export default {
 		input {
 			margin: 0 0 0 0.25rem;
 		}
+	}
+}
+
+.bottom-button-row {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-top: 1rem;
+
+	.button {
+		margin-left: 1rem;
 	}
 }
 </style>
