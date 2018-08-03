@@ -72,6 +72,11 @@ export default {
 		@include secondary-styles();
 		@include button-setting-styles();
 	}
+
+	&.disabled,
+	&[disabled] {
+		@include button-disabled();
+	}
 }
 
 a.button {

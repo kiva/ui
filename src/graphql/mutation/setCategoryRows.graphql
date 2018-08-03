@@ -1,0 +1,10 @@
+mutation($categories: String) {
+	general {
+		setSetting(
+			key: "ui.category_rows",
+			value: $categories,
+			description: "JSON string of an array of category ids to display on the lend-by-category page.",
+			data_type: string
+		)
+	}
+}

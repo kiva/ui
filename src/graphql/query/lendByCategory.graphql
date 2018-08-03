@@ -1,0 +1,16 @@
+query {
+	lend {
+		loanChannels(offset:0, limit:1000, popular: false, applyMinLoanCount: false) {
+			totalCount
+			values {
+				id
+				name
+			}
+		}
+	}
+	general {
+		setting(setting: "ui.category_rows") {
+			value
+		}
+	}
+}
