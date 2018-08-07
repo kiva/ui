@@ -69,13 +69,12 @@
 		</div>
 
 		<div class="input-set">
-			<label for="password">
-				Password <input
-					type="password"
+			<label for="password">Password
+				<password
 					name="password"
-					maxlength="31"
 					v-model="password"
-					@blur="validatePassword(password)">
+					class="reg-password"
+					:secure-length="8" />
 			</label>
 			<p v-if="passwordErrors.length">
 				<ul class="validation-errors">
@@ -129,10 +128,12 @@
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
+import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
+		Password,
 	},
 	mixins: [
 		loginRegUtils,
@@ -149,7 +150,7 @@ export default {
 		refresh: {
 			type: Boolean,
 			default: false
-		}
+		},
 	},
 	data() {
 		return {
@@ -163,7 +164,7 @@ export default {
 			lastName: '',
 			email: '',
 			password: '',
-			terms: ''
+			terms: '',
 		};
 	},
 	created() {
@@ -175,6 +176,13 @@ export default {
 	},
 	mounted() {
 		this.currUrl = window.location.href;
+
+		// Hooked directly into DOM events because the library we're using
+		// (vue-password-strength-meter) doesn't allow us access to the blur event we needed.
+		const passwordInput = document.getElementById('password');
+		passwordInput.addEventListener('blur', e => {
+			this.validatePassword(e.target.value);
+		});
 	},
 	methods: {
 		register() {
@@ -248,6 +256,10 @@ export default {
 				}
 			}
 			return errorArray;
+		},
+		testEvent(e) {
+			console.log(e);
+			console.log('test event fired');
 		}
 	}
 };
@@ -272,6 +284,11 @@ export default {
 	.featured-text {
 		text-align: center;
 		color: $dark-gray;
+	}
+
+	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
+	.reg-password /deep/ .Password__badge {
+		height: rem-calc(19) !important;
 	}
 
 	.register-button {
