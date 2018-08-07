@@ -15,6 +15,8 @@
 				<div
 					class="cards-holder"
 					:style="{ marginLeft: scrollPos + 'px' }"
+					v-touch:swipe.left="scrollRowRight"
+					v-touch:swipe.right="scrollRowLeft"
 				>
 					<GridLoanCard
 						class="is-in-category-row"
@@ -72,7 +74,7 @@ export default {
 	},
 	methods: {
 		setupScrollingVars() {
-			this.cardWidth = window.innerWidth > 340 ? 310 : 270; // card width + padding
+			this.cardWidth = window.innerWidth > 340 ? 300 : 276; // card width + padding
 			this.cardsInWindow = Math.floor(this.$refs.innerWrapper.clientWidth / this.cardWidth);
 			this.shiftIncrement = this.cardsInWindow * this.cardWidth;
 			if (this.loans.length) {
@@ -165,5 +167,8 @@ export default {
 
 .category-description {
 	max-width: rem-calc(600);
+	@include breakpoint(medium down) {
+		display: none;
+	}
 }
 </style>
