@@ -68,11 +68,14 @@
 			</p>
 		</div>
 
+		<!-- default-class="password-badge" -->
+
 		<div class="input-set">
 			<label for="password">Password
 				<password
 					name="password"
 					v-model="password"
+					class="reg-password"
 					:secure-length="8"
 					@blur="validatePassword(password)" />
 			</label>
@@ -254,7 +257,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .register-form {
@@ -275,9 +278,8 @@ export default {
 		color: $dark-gray;
 	}
 
-	// This is overriding the height: 15px; that's coming from the
-	// vue-password-strength-meter code
-	.Password__badge {
+	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
+	.reg-password /deep/ .Password__badge {
 		height: rem-calc(19) !important;
 	}
 
