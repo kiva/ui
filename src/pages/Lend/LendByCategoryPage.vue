@@ -31,45 +31,13 @@
 
 <script>
 import _get from 'lodash/get';
-// import _invokeMap from 'lodash/invokeMap';
-// import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
-// import _mapValues from 'lodash/mapValues';
-// import _merge from 'lodash/merge';
-// import numeral from 'numeral';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
 import categoriesByIdQuery from '@/graphql/query/categoriesById.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryAdminControls from './CategoryAdminControls';
 import LoadingOverlay from './LoadingOverlay';
-
-
-// // A map of functions to transform url query parameters to/from graphql variables.
-// // Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
-// // Each value is then an object with the to/from functions to write/read the url parameter.
-// const urlParamTransform = {
-// 	page: {
-// 		to({ offset }) {
-// 			const page = Math.floor(offset / loansPerPage) + 1;
-// 			return page > 1 ? String(page) : undefined;
-// 		},
-// 		from({ page }) {
-// 			const pagenum = numeral(page).value() - 1;
-// 			return { offset: pagenum > 0 ? loansPerPage * pagenum : 0 };
-// 		}
-// 	},
-// };
-
-// // Turn an object of graphql variables into an object of url query parameters
-// function toUrlParams(variables) {
-// 	return _mapValues(urlParamTransform, ({ to }) => to(variables));
-// }
-//
-// // Turn an object of url query parameters into an object of graphql variables
-// function fromUrlParams(params) {
-// 	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
-// }
 
 export default {
 	components: {
@@ -128,6 +96,7 @@ export default {
 		try {
 			this.categoryIdSet = JSON.parse(JSON.parse(_get(baseData, 'general.setting.value')));
 		} catch (e) {
+			// @todo - do we need an actual arror handler here?
 			// console.log(e);
 		}
 
@@ -137,31 +106,6 @@ export default {
 		});
 		this.rows = _get(categoryData, 'lend.loanChannelsById');
 	},
-	methods: {
-		// pageChange(number) {
-		// 	const offset = loansPerPage * (number - 1);
-		// 	this.offset = offset;
-		// 	this.pushChangesToUrl();
-		// },
-		// updateFromParams(query) {
-		// 	const { offset } = fromUrlParams(query);
-		// 	this.offset = offset;
-		// },
-		// pushChangesToUrl() {
-		// 	if (!_isEqual(this.$route.query, this.urlParams)) {
-		// 		this.$router.push({ query: this.urlParams });
-		// 	}
-		// }
-	},
-	// beforeRouteEnter(to, from, next) {
-	// 	next(vm => {
-	// 		vm.updateFromParams(to.query);
-	// 	});
-	// },
-	// beforeRouteUpdate(to, from, next) {
-	// 	this.updateFromParams(to.query);
-	// 	next();
-	// },
 };
 </script>
 
