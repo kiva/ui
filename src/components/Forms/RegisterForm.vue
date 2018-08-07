@@ -74,8 +74,7 @@
 					name="password"
 					v-model="password"
 					class="reg-password"
-					:secure-length="8"
-					@blur="validatePassword(password)" />
+					:secure-length="8" />
 			</label>
 			<p v-if="passwordErrors.length">
 				<ul class="validation-errors">
@@ -177,6 +176,13 @@ export default {
 	},
 	mounted() {
 		this.currUrl = window.location.href;
+
+		// Hooked directly into DOM events because the library we're using
+		// (vue-password-strength-meter) doesn't allow us access to the blur event we needed.
+		const passwordInput = document.getElementById('password');
+		passwordInput.addEventListener('blur', e => {
+			this.validatePassword(e.target.value);
+		});
 	},
 	methods: {
 		register() {
@@ -250,6 +256,10 @@ export default {
 				}
 			}
 			return errorArray;
+		},
+		testEvent(e) {
+			console.log(e);
+			console.log('test event fired');
 		}
 	}
 };
