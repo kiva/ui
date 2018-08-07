@@ -5,7 +5,8 @@
 		name="regForm"
 		method="post"
 		:action="regActionUrl"
-		@submit.prevent.stop="register">
+		@submit.prevent.stop="register"
+		novalidate>
 
 		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
 		<hr>
@@ -20,30 +21,76 @@
 		<div class="input-set">
 			<label for="firstName">
 				First name
-				<input type="text" name="firstName" maxlength="40" autofocus>
+				<input
+					type="text"
+					name="firstName"
+					maxlength="40"
+					v-model="firstName"
+					autofocus
+					@blur="validateName(firstName)">
 			</label>
+			<p v-if="nameErrors.length">
+				<ul class="validation-errors">
+					<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="lastName">
-				Last name <input type="text" name="lastName" maxlength="40">
+				Last name <input
+					type="text"
+					name="lastName"
+					maxlength="40"
+					v-model="lastName"
+					@blur="validateName(lastName)">
 			</label>
+			<p v-if="nameErrors.length">
+				<ul class="validation-errors">
+					<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="email">
-				Email <input type="email" name="email" maxlength="100">
+				Email <input
+					type="email"
+					name="email"
+					maxlength="100"
+					v-model="email"
+					@blur="validateEmail(email)">
 			</label>
+			<p v-if="emailErrors.length">
+				<ul class="validation-errors">
+					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="input-set">
 			<label for="password">
-				Password <input type="password" name="password" maxlength="31">
+				Password <input
+					type="password"
+					name="password"
+					maxlength="31"
+					v-model="password"
+					@blur="validatePassword(password)">
 			</label>
+			<p v-if="passwordErrors.length">
+				<ul class="validation-errors">
+					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+				</ul>
+			</p>
 		</div>
 
 		<div class="terms-and-policy">
-			<input type="checkbox" name="terms_agreement" id="registerForm_terms_of_use_privacy_poicy">
+			<input
+				type="checkbox"
+				name="terms"
+				id="registerForm_terms_of_use_privacy_poicy"
+				v-model="terms"
+				@blur="validateTerms(terms)">
 			I have read and agree to the
 			<a href="legal/terms"
 				target="_blank"
@@ -57,6 +104,11 @@
 				v-kv-track-event="'Register|click-privacy-policy|PrivacyPolicyClick'">
 				Privacy Policy
 			</a>.
+			<p v-if="termsErrors.length">
+				<ul class="validation-errors">
+					<li v-for="termsError in termsErrors" :key="termsError">{{ termsError }}</li>
+				</ul>
+			</p>
 		</div>
 		<KvButton
 			class="register-button smaller"
@@ -76,12 +128,16 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import formValidate from '@/plugins/formValidate';
 
 export default {
 	components: {
 		KvButton,
 	},
-	mixins: [loginRegUtils],
+	mixins: [
+		loginRegUtils,
+		formValidate
+	],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful registration
 		doneUrl: {
@@ -102,7 +158,12 @@ export default {
 			crumb: '',
 			regFailed: false,
 			loading: false, // TODO: Add loading state v-show="!loading && !userId"
-			serverErrors: []
+			serverErrors: [],
+			firstName: '',
+			lastName: '',
+			email: '',
+			password: '',
+			terms: ''
 		};
 	},
 	created() {
@@ -118,8 +179,23 @@ export default {
 	methods: {
 		register() {
 			// this.loading = true;
-			const formData = new FormData(this.$refs.regForm);
-			this.postForm(this.regActionUrl, formData);
+			if (this.validateForm() === true) {
+				const formData = new FormData(this.$refs.regForm);
+				this.postForm(this.regActionUrl, formData);
+			}
+		},
+		validateForm() {
+			this.validateName(this.firstName);
+			this.validateName(this.lastName);
+			this.validateEmail(this.email);
+			this.validatePassword(this.password);
+			this.validateTerms(this.terms);
+
+			// eslint-disable-next-line
+			if (this.nameErrors.length > 0 && this.emailErrors.length > 0 && this.passwordErrors.length > 0 && this.termsErrors.length > 0) {
+				return false;
+			}
+			return true;
 		},
 		handlePostResponse(response) {
 			// TODO: Make this better
@@ -181,7 +257,8 @@ export default {
 @import 'settings';
 
 .register-form {
-	.server-errors {
+	.server-errors,
+	.validation-errors {
 		margin: 1rem 0;
 
 		li {
