@@ -3,8 +3,10 @@
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
-				<p>Each Kiva loan helps people build a better
-				future for themselves and their families.</p>
+				<p>Each Kiva loan helps people build a better future for
+				themselves and their families. Browse loans by category below, or
+					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
+				</p>
 			</div>
 		</div>
 
