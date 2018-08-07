@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2>{{ name }}</h2>
+		<h2 class="category-name">{{ name }}</h2>
 		<p class="category-description">
 			{{ description }}
 		</p>
@@ -155,12 +155,6 @@ export default {
 	margin-left: rem-calc(10);
 }
 
-@media (hover: none) {
-	.arrow {
-		display: none;
-	}
-}
-
 .cards-display-window {
 	overflow-x: hidden;
 	width: 100%;
@@ -172,10 +166,30 @@ export default {
 	transition: margin 0.5s;
 }
 
+.category-name {
+	font-weight: $global-weight-bold;
+	margin-left: rem-calc(31);
+}
+
 .category-description {
+	line-height: 1.5rem;
+	margin-left: rem-calc(31);
 	max-width: rem-calc(600);
+
 	@include breakpoint(medium down) {
 		display: none;
 	}
+}
+
+@media (hover: none) {
+	.arrow {
+		display: none;
+	}
+
+	.category-name,
+	.category-description {
+		margin-left: 0;
+	}
+
 }
 </style>

@@ -1,13 +1,11 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<div class="row">
-			<div class="small-12 columns heading-region">
-				<h1>Make a loan, change a life</h1>
-				<p>Each Kiva loan helps people build a better future for
-				themselves and their families. Browse loans by category below, or
-					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
-				</p>
-			</div>
+		<div class="heading-region">
+			<h1>Make a loan, change a life</h1>
+			<p>Each Kiva loan helps people build a better future for
+			themselves and their families. Browse loans by category below, or
+				<router-link :to="{ path: '/lend'}">view all loans</router-link>.
+			</p>
 		</div>
 
 		<div>
@@ -121,11 +119,31 @@ export default {
 
 	.heading-region {
 		margin-top: rem-calc(20);
-		padding: rem-calc(10);
+		margin-left: rem-calc(45);
+
+		@media (hover: none) {
+			margin-left: rem-calc(8);
+		}
+
+		p {
+			font-size: 1.2rem;
+			line-height: $global-lineheight;
+		}
+
+		@include breakpoint(small only) {
+			h1 {
+				font-size: 1.5rem;
+			}
+
+			p {
+				font-size: 1rem;
+				line-height: 1.5rem;
+			}
+		}
 
 		@include breakpoint(large) {
 			p {
-				max-width: 75%;
+				max-width: rem-calc(600);
 			}
 		}
 	}
