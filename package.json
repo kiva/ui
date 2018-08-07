@@ -54,11 +54,13 @@
 		"set-cookie-parser": "^2.1.1",
 		"vue": "^2.5.7",
 		"vue-meta": "^1.4.2",
+		"vue-password-strength-meter": "^1.3.0",
 		"vue-progressbar": "^0.7.3",
 		"vue-router": "^3.0.1",
 		"vue-server-renderer": "^2.5.7",
 		"webpack-merge": "^4.1.2",
-		"winston": "^2.4.2"
+		"winston": "^2.4.2",
+		"zxcvbn": "^4.4.2"
 	},
 	"devDependencies": {
 		"@vue/test-utils": "^1.0.0-beta.13",

@@ -69,13 +69,13 @@
 		</div>
 
 		<div class="input-set">
-			<label for="password">
-				Password <input
-					type="password"
+			<label for="password">Password
+				<password
 					name="password"
-					maxlength="31"
+					default-class="password-input"
 					v-model="password"
-					@blur="validatePassword(password)">
+					secure-length="8"
+					@blur="validatePassword(password)" />
 			</label>
 			<p v-if="passwordErrors.length">
 				<ul class="validation-errors">
@@ -129,10 +129,12 @@
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
+import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
+		Password,
 	},
 	mixins: [
 		loginRegUtils,
@@ -149,7 +151,7 @@ export default {
 		refresh: {
 			type: Boolean,
 			default: false
-		}
+		},
 	},
 	data() {
 		return {
@@ -163,7 +165,7 @@ export default {
 			lastName: '',
 			email: '',
 			password: '',
-			terms: ''
+			terms: '',
 		};
 	},
 	created() {
@@ -272,6 +274,10 @@ export default {
 	.featured-text {
 		text-align: center;
 		color: $dark-gray;
+	}
+
+	form.register-form div.input-set div.Password div.Password__group div.Password__icons div.Password__badge {
+		height: 19px !important;
 	}
 
 	.register-button {
