@@ -1,0 +1,5 @@
+{
+	shop {
+		getPaymentToken(amount: 23.24)
+	}
+}

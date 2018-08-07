@@ -11,6 +11,7 @@
 						{{ donation.price }}
 					</li>
 				</ul>
+				<pay-pal-exp :amount="totals.creditAmountNeeded" />
 				<hr>
 				<router-link to="/ui-site-map">Site Map</router-link>
 			</div>
@@ -24,14 +25,19 @@ import _filter from 'lodash/filter';
 // import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
+import PayPalExp from '@/components/Checkout/PayPalExpress';
 
 export default {
 	components: {
 		WwwPage,
+		PayPalExp
 	},
 	inject: ['apollo'],
 	metaInfo: {
-		title: 'Checkout'
+		title: 'Checkout',
+		// script: [
+		// 	{ type: 'text/javascript', src: 'https://www.paypalobjects.com/api/checkout.js' }
+		// ]
 	},
 	data() {
 		return {
