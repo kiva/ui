@@ -134,7 +134,14 @@ export default {
 	cursor: pointer;
 	font-size: rem-calc(70);
 
-	&.inactive {
+	&:hover,
+	&:active {
+		color: $kiva-text-medium;
+	}
+
+	&.inactive,
+	&.inactive:hover,
+	&.inactive:active {
 		color: $kiva-stroke-gray;
 		cursor: not-allowed;
 	}
