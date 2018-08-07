@@ -22,6 +22,9 @@ export default {
 			if (this.checkEmpty(password)) {
 				this.passwordErrors.push('Password required');
 			}
+			if (this.password.length > 30) {
+				this.passwordErrors.push('Password must be 8 - 30 characters.');
+			}
 			return this.passwordErrors;
 		},
 		validateEmail(email) {

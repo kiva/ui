@@ -68,8 +68,6 @@
 			</p>
 		</div>
 
-		<!-- default-class="password-badge" -->
-
 		<div class="input-set">
 			<label for="password">Password
 				<password
