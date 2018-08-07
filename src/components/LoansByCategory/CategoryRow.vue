@@ -1,8 +1,11 @@
 <template>
 	<div>
-		<h2 class="category-name">{{ name }}</h2>
+		<h2 class="category-name">{{ name }}
+			<span class="small-view-all-link">&nbsp;<a :href="url">View all</a></span>
+		</h2>
+
 		<p class="category-description">
-			{{ description }}
+			{{ description }} <a :href="url">View all</a>
 		</p>
 
 		<div class="cards-and-arrows-wrapper" ref="outerWrapper">
@@ -177,6 +180,15 @@ export default {
 	max-width: rem-calc(600);
 
 	@include breakpoint(medium down) {
+		display: none;
+	}
+}
+
+.small-view-all-link {
+	font-size: $pagination-font-size;
+	font-weight: $global-weight-normal;
+
+	@include breakpoint(large) {
 		display: none;
 	}
 }
