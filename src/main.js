@@ -3,6 +3,7 @@ import Raven from 'raven-js';
 import RavenVue from 'raven-js/plugins/vue';
 import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
+import Vue2TouchEvents from 'vue2-touch-events';
 
 import App from '@/App';
 import createRouter from '@/router';
@@ -13,6 +14,7 @@ Vue.config.productionTip = false;
 
 Vue.use(Meta);
 Vue.use(kivaPlugins);
+Vue.use(Vue2TouchEvents);
 Vue.use(VueProgressBar, {
 	color: '#26b6e8',
 	failedColor: '#9c021a',

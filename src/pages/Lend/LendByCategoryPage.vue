@@ -185,7 +185,10 @@ export default {
 	}
 
 	.loan-category-row {
-		margin: 0 2rem rem-calc(20);
+		margin: 0 1rem rem-calc(20);
+		@include breakpoint(medium down) {
+			margin: 0 0.5rem rem-calc(20);
+		}
 	}
 }
 </style>

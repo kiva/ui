@@ -34,7 +34,6 @@ module.exports = merge.smart(baseWebpackConfig, {
 	}),
 	plugins: [
 		// suppress client-side-only modules
-		new webpack.NormalModuleReplacementPlugin(/foundation/, noop),
 		new VueSSRServerPlugin(),
 		new FriendlyErrorsPlugin({
 			clearConsole: false,
