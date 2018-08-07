@@ -57,7 +57,6 @@
 		"vue-progressbar": "^0.7.3",
 		"vue-router": "^3.0.1",
 		"vue-server-renderer": "^2.5.7",
-		"vue-touch": "^2.0.0-beta.4",
 		"vue2-touch-events": "^1.0.0",
 		"vuedraggable": "^2.16.0",
 		"webpack-merge": "^4.1.2",
