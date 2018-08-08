@@ -1,0 +1,11 @@
+{
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "prod": "https://api.kivaws.org/graphql",
+      "qa": "https://api.qa.kivaws.org/graphql",
+      "dev": "https://api.dev.kivaws.org/graphql",
+      "dev-vm": "https://api-vm.kiva.org/graphql"
+    }
+  }
+}
