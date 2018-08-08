@@ -17,6 +17,7 @@ module.exports = merge(base, {
 		enableFB: true,
 		fbApplicationId: '370252743225',
 		fbPixelId: '108245819986414',
+		fbOgNameSpace: 'qa-kiva',
 		enableSentry: false,
 		sentryURI: ''
 	},
