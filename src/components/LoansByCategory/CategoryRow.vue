@@ -40,13 +40,16 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
+import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
 export default {
 	components: {
 		GridLoanCard,
 	},
+	inject: ['apollo'],
 	props: {
 		loanChannel: {
 			type: Number,
@@ -68,6 +71,31 @@ export default {
 			url: ''
 		};
 	},
+	apollo: {
+		query: loanChannelQuery,
+		variables() {
+			return {
+				ids: [this.loanChannel],
+			};
+		},
+		result({ data, loading }) {
+			if (loading) {
+				this.loading = true;
+			} else {
+				this.setChannelData(_get(data, 'lend.loanChannelsById[0]'));
+				this.loading = false;
+			}
+		}
+	},
+	created() {
+		// Read the data from the cache for this loan channel (for ssr)
+		const data = this.apollo.readFragment({
+			id: `LoanChannel:${this.loanChannel}`,
+			fragment: loanChannelFragment,
+			fragmentName: 'loanChannelFields',
+		});
+		this.setChannelData(data);
+	},
 	mounted() {
 		this.setupScrollingVars();
 		window.addEventListener('resize', this.setupScrollingVars);
@@ -76,6 +104,13 @@ export default {
 		window.removeEventListener('resize', this.setupScrollingVars);
 	},
 	methods: {
+		setChannelData(channel) {
+			this.name = _get(channel, 'name');
+			this.description = _get(channel, 'description');
+			this.url = _get(channel, 'url');
+			this.loans = _get(channel, 'loans.values');
+			this.setMinLeftMargin();
+		},
 		setupScrollingVars() {
 			this.cardWidth = window.innerWidth > 340 ? 300 : 276; // card width + padding
 			this.cardsInWindow = Math.floor(this.$refs.innerWrapper.clientWidth / this.cardWidth);
@@ -99,27 +134,6 @@ export default {
 				this.scrollPos = newLeftMargin;
 			}
 		},
-	},
-	inject: ['apollo'],
-	apollo: {
-		query: loanChannelQuery,
-		variables() {
-			return {
-				ids: this.loanChannel,
-			};
-		},
-		result({ data, loading }) {
-			if (loading) {
-				this.loading = true;
-			} else {
-				this.name = data.lend.loanChannelsById[0].name;
-				this.description = data.lend.loanChannelsById[0].description;
-				this.url = data.lend.loanChannelsById[0].url;
-				this.loans = data.lend.loanChannelsById[0].loans.values;
-				this.setMinLeftMargin();
-				this.loading = false;
-			}
-		}
 	},
 };
 </script>
