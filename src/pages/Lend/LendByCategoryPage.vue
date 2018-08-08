@@ -1,7 +1,7 @@
 <template>
 	<www-page class="lend-by-category-page">
 		<div class="heading-region">
-			<h1>Make a loan, change a life</h1>
+			<h1 @click="isAdmin=!isAdmin">Make a loan, change a life</h1>
 			<p>Each Kiva loan helps people build a better future for
 			themselves and their families. Browse loans by category below, or
 				<router-link :to="{ path: '/lend'}">view all loans</router-link>.
@@ -21,7 +21,6 @@
 			<div class="columns small-12">
 				<category-admin-controls
 					:categories="categoryIdSet"
-					:possible-categories="possibleCategories"
 				/>
 			</div>
 		</div>
@@ -35,7 +34,6 @@ import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
-import CategoryAdminControls from './CategoryAdminControls';
 
 // Parse a SettingsManager value
 function readSetting(data, key) {
@@ -48,7 +46,7 @@ function readSetting(data, key) {
 
 export default {
 	components: {
-		CategoryAdminControls,
+		CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
 		WwwPage,
 	},
@@ -58,9 +56,8 @@ export default {
 	},
 	data() {
 		return {
-			isAdmin: true,
+			isAdmin: false,
 			categoryIdSet: [],
-			possibleCategories: [],
 			experimentEnabled: false,
 			variants: [],
 		};
@@ -87,13 +84,6 @@ export default {
 	created() {
 		// Read the array of channel objects from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.possibleCategories = _map(_get(baseData, 'lend.loanChannels.values'), category => {
-			return {
-				label: category.name,
-				value: category.id,
-			};
-		});
-
 		this.categoryIdSet = readSetting(baseData, 'general.setting.value') || [];
 
 		// Watch for changes to the setting value

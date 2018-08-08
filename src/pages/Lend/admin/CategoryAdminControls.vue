@@ -38,7 +38,9 @@
 
 <script>
 import _cloneDeep from 'lodash/cloneDeep';
+import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
+import _map from 'lodash/map';
 import categoryAdminQuery from '@/graphql/query/categoryAdminControl.graphql';
 import setRowsMutation from '@/graphql/mutation/setCategoryRows.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -59,14 +61,11 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		possibleCategories: {
-			type: Array,
-			default: () => [],
-		}
 	},
 	data() {
 		return {
 			defaultCategories: [],
+			possibleCategories: [],
 			experimentEnabled: false,
 			variants: [],
 			saving: false,
@@ -81,6 +80,17 @@ export default {
 		},
 		changed() {
 			return !_isEqual(this.categories, this.defaultCategories);
+		},
+	},
+	apollo: {
+		query: categoryAdminQuery,
+		result({ data }) {
+			this.possibleCategories = _map(_get(data, 'lend.loanChannels.values'), category => {
+				return {
+					label: category.name,
+					value: category.id,
+				};
+			});
 		},
 	},
 	watch: {
