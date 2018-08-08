@@ -7,4 +7,5 @@ export default [
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/login-vue', component: () => import('@/pages/LoginAndRegister/LoginAndRegister') },
 	{ path: '/checkout-vue', component: () => import('@/pages/Checkout/CheckoutPage') },
+	{ path: '/checkout-beta', component: () => import('@/pages/Checkout/CheckoutBetaPage') },
 ];
