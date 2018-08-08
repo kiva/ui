@@ -216,6 +216,5 @@ export default {
 	.category-description {
 		margin-left: 0;
 	}
-
 }
 </style>
