@@ -15,7 +15,6 @@
 				:key="category.id"
 				:loan-channel="category.id"
 			/>
-			<loading-overlay v-if="loading" />
 		</div>
 
 		<div class="row" v-if="isAdmin">
@@ -33,17 +32,24 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
-import categoriesByIdQuery from '@/graphql/query/categoriesById.graphql';
+import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryAdminControls from './CategoryAdminControls';
-import LoadingOverlay from './LoadingOverlay';
+
+// Parse a SettingsManager value
+function readSetting(data, key) {
+	try {
+		return JSON.parse(JSON.parse(_get(data, key)));
+	} catch (e) {
+		return null;
+	}
+}
 
 export default {
 	components: {
 		CategoryAdminControls,
 		CategoryRow,
-		LoadingOverlay,
 		WwwPage,
 	},
 	inject: ['apollo'],
@@ -53,10 +59,6 @@ export default {
 	data() {
 		return {
 			isAdmin: true,
-			isVisitor: true,
-			itemsInBasket: [],
-			loading: false,
-			rows: [],
 			categoryIdSet: [],
 			possibleCategories: [],
 			experimentEnabled: false,
@@ -69,15 +71,13 @@ export default {
 				client.query({
 					query: lendByCategoryQuery
 				}).then(({ data }) => {
-					let result;
-					try {
-						result = JSON.parse(JSON.parse(_get(data, 'general.setting.value')));
-					} catch (e) {
-						result = [];
-					}
+					// Get the array of channel objects from settings
+					const result = readSetting(data, 'general.setting.value') || [];
 					const ids = _map(result, 'id');
+
+					// Pre-fetch all the data for those channels
 					client.query({
-						query: categoriesByIdQuery,
+						query: loanChannelQuery,
 						variables: { ids },
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -85,6 +85,7 @@ export default {
 		}
 	},
 	created() {
+		// Read the array of channel objects from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
 		this.possibleCategories = _map(_get(baseData, 'lend.loanChannels.values'), category => {
 			return {
@@ -93,18 +94,14 @@ export default {
 			};
 		});
 
-		try {
-			this.categoryIdSet = JSON.parse(JSON.parse(_get(baseData, 'general.setting.value')));
-		} catch (e) {
-			// @todo - do we need an actual arror handler here?
-			// console.log(e);
-		}
+		this.categoryIdSet = readSetting(baseData, 'general.setting.value') || [];
 
-		const categoryData = this.apollo.readQuery({
-			query: categoriesByIdQuery,
-			variables: { ids: _map(this.categoryIdSet, 'id') },
+		// Watch for changes to the setting value
+		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
+			next: ({ data }) => {
+				this.categoryIdSet = readSetting(data, 'general.setting.value') || [];
+			},
 		});
-		this.rows = _get(categoryData, 'lend.loanChannelsById');
 	},
 };
 </script>
