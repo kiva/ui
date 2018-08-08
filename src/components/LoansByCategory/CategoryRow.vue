@@ -1,8 +1,11 @@
 <template>
 	<div>
-		<h2>{{ name }}</h2>
+		<h2 class="category-name">{{ name }}
+			<span class="small-view-all-link">&nbsp;<a :href="url">View all</a></span>
+		</h2>
+
 		<p class="category-description">
-			{{ description }}
+			{{ description }} <a :href="url">View all</a>
 		</p>
 
 		<div class="cards-and-arrows-wrapper" ref="outerWrapper">
@@ -134,7 +137,14 @@ export default {
 	cursor: pointer;
 	font-size: rem-calc(70);
 
-	&.inactive {
+	&:hover,
+	&:active {
+		color: $kiva-text-medium;
+	}
+
+	&.inactive,
+	&.inactive:hover,
+	&.inactive:active {
 		color: $kiva-stroke-gray;
 		cursor: not-allowed;
 	}
@@ -148,12 +158,6 @@ export default {
 	margin-left: rem-calc(10);
 }
 
-@media (hover: none) {
-	.arrow {
-		display: none;
-	}
-}
-
 .cards-display-window {
 	overflow-x: hidden;
 	width: 100%;
@@ -165,10 +169,38 @@ export default {
 	transition: margin 0.5s;
 }
 
+.category-name {
+	font-weight: $global-weight-bold;
+	margin-left: rem-calc(31);
+}
+
 .category-description {
+	line-height: 1.5rem;
+	margin-left: rem-calc(31);
 	max-width: rem-calc(600);
+
 	@include breakpoint(medium down) {
 		display: none;
+	}
+}
+
+.small-view-all-link {
+	font-size: $pagination-font-size;
+	font-weight: $global-weight-normal;
+
+	@include breakpoint(large) {
+		display: none;
+	}
+}
+
+@media (hover: none) {
+	.arrow {
+		display: none;
+	}
+
+	.category-name,
+	.category-description {
+		margin-left: 0;
 	}
 }
 </style>
