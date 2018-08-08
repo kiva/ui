@@ -1,46 +1,20 @@
-query($offset: Int, $limit: Int) {
+#import '../fragments/loanCardFields.graphql'
+
+query($offset: Int, $limit: Int, $filters: LoanSearchFiltersInput) {
 	my {
 		userAccount {
 			id
 		}
 	}
 	lend {
-		loans(offset: $offset, limit: $limit) {
+		loans(
+			offset: $offset,
+			limit: $limit,
+			filters: $filters
+			) {
 			totalCount
 			values {
-				id
-				status
-				image {
-					default: url(customSize: "w480h360")
-					retina: url(customSize: "w960h720")
-				}
-				name
-				borrowerCount
-				geocode {
-					country {
-						name
-					}
-				}
-				use
-				lenderRepaymentTerm
-				loanAmount
-				loanFundraisingInfo {
-					fundedAmount
-					reservedAmount
-					isExpiringSoon
-				}
-				plannedExpirationDate
-				matchingText
-				userProperties {
-					favorited
-					lentTo
-				}
-				... on LoanPartner {
-					partnerName
-				}
-				...on LoanDirect {
-					trusteeName
-				}
+				...loanCardFields
 			}
 		}
 	}

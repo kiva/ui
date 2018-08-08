@@ -156,6 +156,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	min-width: rem-calc(280);
 	max-width: rem-calc(480);
 	margin: auto;
 
@@ -170,4 +171,21 @@ export default {
 	text-align: center;
 	width: 100%;
 }
+
+.is-in-category-row {
+	flex: 0 0 auto;
+
+	&.column-block:first-of-type {
+		padding-left: 0;
+	}
+
+	.grid-loan-card {
+		width: rem-calc(280);
+		@include breakpoint(340px down) {
+			min-width: rem-calc(256);
+			width: rem-calc(256);
+		}
+	}
+}
+
 </style>

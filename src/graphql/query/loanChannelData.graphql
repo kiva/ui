@@ -1,0 +1,9 @@
+#import '../fragments/loanChannelFields.graphql'
+
+query ($ids: [Int]) {
+	lend {
+		loanChannelsById(ids: $ids) {
+			...loanChannelFields
+		}
+	}
+}
