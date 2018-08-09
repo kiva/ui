@@ -1,127 +1,129 @@
 <template>
-	<form id="registerForm"
-		class="register-form"
-		ref="regForm"
-		name="regForm"
-		method="post"
-		:action="regActionUrl"
-		@submit.prevent.stop="register"
-		novalidate>
-
-		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
+	<div class="register-form">
+		<KvButton class="smaller" @click.native.prevent.stop="localCheckFbLoginStatus">FACEBOOK BUTTON HERE</KvButton>
 		<hr>
 		<div class="featured-text">Or</div>
 
-		<ul v-show="serverErrors" class="server-errors">
-			<li v-for="(errorText, index) in serverErrors" :key="index">
-				{{ errorText }}
-			</li>
-		</ul>
+		<form id="registerForm"
+			class="register-form"
+			ref="regForm"
+			name="regForm"
+			method="post"
+			:action="regActionUrl"
+			@submit.prevent.stop="register"
+			novalidate>
 
-		<div class="input-set">
-			<label for="firstName">
-				First name
+			<ul v-show="serverErrors" class="server-errors">
+				<li v-for="(errorText, index) in serverErrors" :key="index">
+					{{ errorText }}
+				</li>
+			</ul>
+
+			<div class="input-set">
+				<label for="firstName">
+					First name
+					<input
+						type="text"
+						name="firstName"
+						maxlength="40"
+						v-model="firstName"
+						autofocus
+						@blur="validateName(firstName)">
+				</label>
+				<p v-if="nameErrors.length">
+					<ul class="validation-errors">
+						<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
+					</ul>
+				</p>
+			</div>
+
+			<div class="input-set">
+				<label for="lastName">
+					Last name <input
+						type="text"
+						name="lastName"
+						maxlength="40"
+						v-model="lastName"
+						@blur="validateName(lastName)">
+				</label>
+				<p v-if="nameErrors.length">
+					<ul class="validation-errors">
+						<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
+					</ul>
+				</p>
+			</div>
+
+			<div class="input-set">
+				<label for="email">
+					Email <input
+						type="email"
+						name="email"
+						maxlength="100"
+						v-model="email"
+						@blur="validateEmail(email)">
+				</label>
+				<p v-if="emailErrors.length">
+					<ul class="validation-errors">
+						<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+					</ul>
+				</p>
+			</div>
+
+			<div class="input-set">
+				<label for="password">Password
+					<password
+						name="password"
+						v-model="password"
+						class="reg-password"
+						:secure-length="8" />
+				</label>
+				<p v-if="passwordErrors.length">
+					<ul class="validation-errors">
+						<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+					</ul>
+				</p>
+			</div>
+
+			<div class="terms-and-policy">
 				<input
-					type="text"
-					name="firstName"
-					maxlength="40"
-					v-model="firstName"
-					autofocus
-					@blur="validateName(firstName)">
-			</label>
-			<p v-if="nameErrors.length">
-				<ul class="validation-errors">
-					<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
-				</ul>
-			</p>
-		</div>
+					type="checkbox"
+					name="terms"
+					id="registerForm_terms_of_use_privacy_poicy"
+					v-model="terms"
+					@blur="validateTerms(terms)">
+				I have read and agree to the
+				<a href="legal/terms"
+					target="_blank"
+					title="Open Terms of Use in a new window"
+					v-kv-track-event="'Register|click-terms-of-use|TermsOfUseClick'">
+					Terms of Use
+				</a> and
+				<a href="legal/privacy"
+					target="_blank"
+					title="Open Privacy Policy in a new window"
+					v-kv-track-event="'Register|click-privacy-policy|PrivacyPolicyClick'">
+					Privacy Policy
+				</a>.
+				<p v-if="termsErrors.length">
+					<ul class="validation-errors">
+						<li v-for="termsError in termsErrors" :key="termsError">{{ termsError }}</li>
+					</ul>
+				</p>
+			</div>
+			<KvButton
+				class="register-button smaller"
+				type="submit"
+				name="regForm_submit"
+				id="regForm_submit"
+				v-kv-track-event="'Register|click-register-submit|RegisterButtonClick'">
+				Continue
+			</KvButton>
 
-		<div class="input-set">
-			<label for="lastName">
-				Last name <input
-					type="text"
-					name="lastName"
-					maxlength="40"
-					v-model="lastName"
-					@blur="validateName(lastName)">
-			</label>
-			<p v-if="nameErrors.length">
-				<ul class="validation-errors">
-					<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
-				</ul>
-			</p>
-		</div>
-
-		<div class="input-set">
-			<label for="email">
-				Email <input
-					type="email"
-					name="email"
-					maxlength="100"
-					v-model="email"
-					@blur="validateEmail(email)">
-			</label>
-			<p v-if="emailErrors.length">
-				<ul class="validation-errors">
-					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
-				</ul>
-			</p>
-		</div>
-
-		<div class="input-set">
-			<label for="password">Password
-				<password
-					name="password"
-					v-model="password"
-					class="reg-password"
-					:secure-length="8" />
-			</label>
-			<p v-if="passwordErrors.length">
-				<ul class="validation-errors">
-					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
-				</ul>
-			</p>
-		</div>
-
-		<div class="terms-and-policy">
-			<input
-				type="checkbox"
-				name="terms"
-				id="registerForm_terms_of_use_privacy_poicy"
-				v-model="terms"
-				@blur="validateTerms(terms)">
-			I have read and agree to the
-			<a href="legal/terms"
-				target="_blank"
-				title="Open Terms of Use in a new window"
-				v-kv-track-event="'Register|click-terms-of-use|TermsOfUseClick'">
-				Terms of Use
-			</a> and
-			<a href="legal/privacy"
-				target="_blank"
-				title="Open Privacy Policy in a new window"
-				v-kv-track-event="'Register|click-privacy-policy|PrivacyPolicyClick'">
-				Privacy Policy
-			</a>.
-			<p v-if="termsErrors.length">
-				<ul class="validation-errors">
-					<li v-for="termsError in termsErrors" :key="termsError">{{ termsError }}</li>
-				</ul>
-			</p>
-		</div>
-		<KvButton
-			class="register-button smaller"
-			type="submit"
-			name="regForm_submit"
-			id="regForm_submit"
-			v-kv-track-event="'Register|click-register-submit|RegisterButtonClick'">
-			Continue
-		</KvButton>
-
-		<input type="hidden" name="currURL" :value="currUrl">
-		<!-- Have to pass this crumb in the Header and in the Request -->
-		<input type="hidden" id="regcrumb" name="crumb" :value="crumb">
-	</form>
+			<input type="hidden" name="currURL" :value="currUrl">
+			<!-- Have to pass this crumb in the Header and in the Request -->
+			<input type="hidden" id="regcrumb" name="crumb" :value="crumb">
+		</form>
+	</div>
 </template>
 
 <script>
@@ -129,6 +131,8 @@ import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
+import checkFbLoginStatus from '@/util/fbUtils';
+import FBMixin from '@/plugins/fb-mixin';
 
 export default {
 	components: {
@@ -137,7 +141,8 @@ export default {
 	},
 	mixins: [
 		loginRegUtils,
-		formValidate
+		formValidate,
+		FBMixin
 	],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful registration
@@ -165,6 +170,7 @@ export default {
 			email: '',
 			password: '',
 			terms: '',
+			fbLoginStatus: () => {}
 		};
 	},
 	created() {
@@ -183,6 +189,10 @@ export default {
 		passwordInput.addEventListener('blur', e => {
 			this.validatePassword(e.target.value);
 		});
+
+		// Check Facebook Login State
+		// this.fbLoginStatus = this.checkFbLoginState();
+		// console.log(this.checkFbLoginStatus());
 	},
 	methods: {
 		register() {
@@ -257,9 +267,9 @@ export default {
 			}
 			return errorArray;
 		},
-		testEvent(e) {
-			console.log(e);
-			console.log('test event fired');
+		localCheckFbLoginStatus() {
+			console.log('Component: checking FB State');
+			checkFbLoginStatus();
 		}
 	}
 };

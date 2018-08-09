@@ -38,6 +38,16 @@ export default config => {
 	// Facebook JSSDK
 	if (config.enableFB) {
 		/* eslint-disable */
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: config.fbApplicationId,
+				autoLogAppEvents: true,
+				cookie: true, // sets a cookie for the session
+				status: false, // set to true to check login status automatically on each page load
+				xfbml: false, // set to true to have fb parse the dom looking for social plugins
+				version: 'v3.1'
+			});
+		};
 		(function(d, s, id) {
 			var js, fjs = d.getElementsByTagName(s)[0];
 			if (d.getElementById(id)) return;
