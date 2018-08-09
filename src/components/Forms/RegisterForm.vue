@@ -8,7 +8,7 @@
 		@submit.prevent.stop="register"
 		novalidate>
 
-		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
+		<kv-facebook-button />
 		<hr>
 		<div class="featured-text">Or</div>
 
@@ -127,12 +127,14 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
+		KvFacebookButton,
 		Password,
 	},
 	mixins: [
