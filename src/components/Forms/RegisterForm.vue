@@ -1,6 +1,7 @@
 <template>
+
 	<div class="register-form">
-		<KvButton class="smaller" @click.native.prevent.stop="localCheckFbLoginStatus">FACEBOOK BUTTON HERE</KvButton>
+		<kv-facebook-button @click.native.prevent.stop="localCheckFbLoginStatus" />
 		<hr>
 		<div class="featured-text">Or</div>
 
@@ -129,6 +130,7 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
 import checkFbLoginStatus from '@/util/fbUtils';
@@ -137,6 +139,7 @@ import FBMixin from '@/plugins/fb-mixin';
 export default {
 	components: {
 		KvButton,
+		KvFacebookButton,
 		Password,
 	},
 	mixins: [

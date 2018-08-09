@@ -1,3 +1,5 @@
+#import '../fragments/loanCardFields.graphql'
+
 query($id: Int!) {
 	shop {
 		nonTrivialItemCount
@@ -11,12 +13,7 @@ query($id: Int!) {
 	}
 	lend {
 		loan(id: $id) {
-			id
-			loanFundraisingInfo {
-				fundedAmount
-				reservedAmount
-				isExpiringSoon
-			}
+			...loanCardFields
 		}
 	}
 }

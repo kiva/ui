@@ -8,7 +8,7 @@
 		@submit.prevent.stop="doLogin"
 		novalidate>
 
-		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
+		<kv-facebook-button />
 		<hr>
 		<div class="featured-text">Or use your email</div>
 
@@ -95,6 +95,7 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
@@ -103,6 +104,7 @@ import formValidate from '@/plugins/formValidate';
 export default {
 	components: {
 		KvButton,
+		KvFacebookButton,
 		KvLightbox,
 		SalesforceHelpTextQuery,
 	},

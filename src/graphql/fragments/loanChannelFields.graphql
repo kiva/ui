@@ -1,0 +1,13 @@
+#import './loanCardFields.graphql'
+
+fragment loanChannelFields on LoanChannel {
+	id
+	name
+	description
+	url
+	loans(limit: 8) {
+		values {
+			...loanCardFields
+		}
+	}
+}

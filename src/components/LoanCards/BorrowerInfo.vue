@@ -17,7 +17,9 @@
 				:v-kv-track-event="`['Lending', 'click-Read more', 'Read more', ${loanId}, 'true']`">
 				Read more
 			</router-link>
-			<div><p class="strong loan-length">Loan length: </p> {{ loanLength }} months</div>
+			<div v-if="activeSort === 'loanLength'" class="loan-length">
+				<strong>Loan length:</strong> {{ loanLength }} months
+			</div>
 		</div>
 	</div>
 </template>
@@ -56,6 +58,10 @@ export default {
 		loanLength: {
 			type: Number,
 			default: null
+		},
+		activeSort: {
+			type: String,
+			default: 'Popularity'
 		}
 	},
 	computed: {
