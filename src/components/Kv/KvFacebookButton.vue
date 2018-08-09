@@ -1,13 +1,18 @@
 <template>
-	<kv-button class="smaller facebook">Continue with Facebook</kv-button>
+	<kv-button class="smaller facebook">
+		<kv-icon class="facebook-box-logo" name="facebook-box-logo" />
+		Continue with Facebook
+	</kv-button>
 </template>
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		KvButton,
+		KvIcon,
 	}
 };
 </script>
@@ -15,18 +20,25 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.facebook {
+.facebook.button {
 	width: 100%;
 	box-shadow: 0 2px #2e5193;
-	padding: 1.1rem 0.5rem 1rem 2rem !important;
-	background: #4267B2 url(/img/icon/facebook-logo-2018.svg) rem-calc(12) rem-calc(16) no-repeat;
-	background-size: rem-calc(22) rem-calc(22);
+	white-space: nowrap;
+	background: #4267B2;
+	padding-left: 0;
+	padding-right: 0;
+
+	.facebook-box-logo {
+		height: rem-calc(22);
+		width: rem-calc(22);
+		vertical-align: bottom;
+		margin-right: 0.25rem;
+	}
 
 	&:hover,
 	&:focus {
 		text-decoration: none;
-		background: #2e5193 url(/img/icon/facebook-logo-2018.svg) rem-calc(12) rem-calc(16) no-repeat;
-		background-size: rem-calc(22) rem-calc(22);
+		background: #2e5193;
 	}
 }
 
