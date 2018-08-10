@@ -4,8 +4,8 @@
 
 <script>
 import numeral from 'numeral';
-import { isWithinRange } from 'date-fns';
 import _get from 'lodash/get';
+import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
 import GiftBanner from './Banners/GiftBanner';
@@ -45,22 +45,19 @@ export default {
 
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 
-			this.holidayModeEnabled = this.settingEnabled(
-				_get(data, 'general.holiday_enabled.value'),
-				_get(data, 'general.holiday_start_time.value'),
-				_get(data, 'general.holiday_end_time.value')
+			this.holidayModeEnabled = settingEnabled(
+				data,
+				'general.holiday_enabled.value',
+				'general.holiday_start_time.value',
+				'general.holiday_end_time.value'
 			);
 
-			this.promoEnabled = this.settingEnabled(
-				_get(data, 'general.promo_enabled.value'),
-				_get(data, 'general.promo_start_time.value'),
-				_get(data, 'general.promo_end_time.value')
+			this.promoEnabled = settingEnabled(
+				data,
+				'general.promo_enabled.value',
+				'general.promo_start_time.value',
+				'general.promo_end_time.value'
 			);
-		}
-	},
-	methods: {
-		settingEnabled(enabled, startTime, endTime) {
-			return enabled === 'true' && isWithinRange(new Date(), new Date(startTime), new Date(endTime));
 		}
 	},
 };
