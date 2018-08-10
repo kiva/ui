@@ -1,4 +1,5 @@
 import _map from 'lodash/map';
+import _values from 'lodash/values';
 import { subYears } from 'date-fns';
 import serverCookie from 'cookie';
 import clientCookie from 'js-cookie';
@@ -12,12 +13,7 @@ export default class CookieStore {
 	 */
 	constructor(cookies) {
 		this.cookies = cookies;
-
-		// Provide the request cookies as a serialized string
-		this.cookieString = _map(cookies, (val, name) => serverCookie.serialize(name, val)).join('; ');
-
-		// Provide Set-Cookie header strings for any cookies set during render
-		this.setCookies = [];
+		this.setCookies = {};
 	}
 
 	/**
@@ -28,6 +24,22 @@ export default class CookieStore {
 	 */
 	get(name) {
 		return this.cookies ? this.cookies[name] : clientCookie.get(name);
+	}
+
+	/**
+	 * Get the request cookies as a serialized string
+	 *
+	 * @returns {string}
+	 */
+	getCookieString() {
+		return _map(this.cookies, (val, name) => serverCookie.serialize(name, val)).join('; ');
+	}
+
+	/**
+	 * Get Set-Cookie header strings for any cookies set during render
+	 */
+	getSetCookies() {
+		return _values(this.setCookies);
 	}
 
 	/**
@@ -49,7 +61,7 @@ export default class CookieStore {
 	 */
 	set(name, value, options) {
 		clientCookie.set(name, value, options);
-		this.setCookies.push(serverCookie.serialize(name, value, options));
+		this.setCookies[name] = serverCookie.serialize(name, value, options);
 	}
 
 	/**
@@ -60,9 +72,9 @@ export default class CookieStore {
 	 */
 	remove(name, options) {
 		clientCookie.remove(name, options);
-		this.setCookies.push(serverCookie.serialize(name, 'deleted', {
+		this.setCookies[name] = serverCookie.serialize(name, 'deleted', {
 			...options,
 			expires: subYears(new Date(), 1),
-		}));
+		});
 	}
 }

@@ -77,7 +77,7 @@ export default context => {
 				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
 				});
-				context.setCookies = cookieStore.setCookies;
+				context.setCookies = cookieStore.getSetCookies();
 				resolve(app);
 			}).catch(error => {
 				if (error instanceof Error) {

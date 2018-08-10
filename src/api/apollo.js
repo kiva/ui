@@ -21,7 +21,7 @@ export default function createApolloClient({
 	return new ApolloClient({
 		link: ApolloLink.from([
 			StateLinkCreator({ cache }),
-			HttpLinkCreator({ cookie: cookieStore.cookieString, csrfToken, uri }),
+			HttpLinkCreator({ cookie: cookieStore.getCookieString(), csrfToken, uri }),
 		]),
 		cache,
 		defaultOptions: {
