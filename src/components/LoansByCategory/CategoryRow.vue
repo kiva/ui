@@ -42,7 +42,7 @@
 <script>
 import _get from 'lodash/get';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
-import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
+// import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
 export default {
@@ -54,12 +54,17 @@ export default {
 		loanChannel: {
 			type: Number,
 			default: 1,
-		}
+		},
+		windowWidth: {
+			type: Number,
+			default: 0,
+		},
 	},
 	data() {
 		return {
 			cardWidth: 310,
 			cardsInWindow: 1,
+			cardsInRow: 12,
 			description: '',
 			loans: {},
 			loading: false,
@@ -68,7 +73,7 @@ export default {
 			offset: null,
 			scrollPos: 0,
 			shiftIncrement: 960,
-			url: ''
+			url: '',
 		};
 	},
 	apollo: {
@@ -76,6 +81,12 @@ export default {
 		variables() {
 			return {
 				ids: [this.loanChannel],
+				numberOfLoans: this.cardsInRow,
+				// @todo - decide if we want to request images sized for the
+				// smaller loan cards on category-row pages - if we do, then
+				// we'd need to adjust cloudinary allowed sizes in settings mgr.
+				// imgDefaultSize: 'w280h210',
+				// $imgRetinaSize: 'w560h420',
 			};
 		},
 		result({ data, loading }) {
@@ -89,14 +100,16 @@ export default {
 	},
 	created() {
 		// Read the data from the cache for this loan channel (for ssr)
-		const data = this.apollo.readFragment({
-			id: `LoanChannel:${this.loanChannel}`,
-			fragment: loanChannelFragment,
-			fragmentName: 'loanChannelFields',
-		});
-		this.setChannelData(data);
+		// const data = this.apollo.readFragment({
+		// 	id: `LoanChannel:${this.loanChannel}`,
+		// 	numberOfLoans: this.cardsInRow,
+		// 	fragment: loanChannelFragment,
+		// 	fragmentName: 'loanChannelFields',
+		// });
+		// this.setChannelData(data);
 	},
 	mounted() {
+		this.setCardWidthAndNumber();
 		this.setupScrollingVars();
 		window.addEventListener('resize', this.setupScrollingVars);
 	},
@@ -111,8 +124,23 @@ export default {
 			this.loans = _get(channel, 'loans.values');
 			this.setMinLeftMargin();
 		},
+		setCardWidthAndNumber() {
+			const minNumberOfCards = 12;
+			const minNumberOfScrolls = 3;
+			const minWidthToShowLargeCards = 340;
+			const smallCardWidthPlusPadding = 276;
+			const largeCardWidthPlusPadding = 310;
+
+			this.cardWidth = this.windowWidth > minWidthToShowLargeCards
+				? largeCardWidthPlusPadding
+				: smallCardWidthPlusPadding;
+
+			this.cardsInRow = Math.max(
+				minNumberOfCards,
+				(Math.floor(this.windowWidth / this.cardWidth)) * minNumberOfScrolls
+			);
+		},
 		setupScrollingVars() {
-			this.cardWidth = window.innerWidth > 340 ? 300 : 276; // card width + padding
 			this.cardsInWindow = Math.floor(this.$refs.innerWrapper.clientWidth / this.cardWidth);
 			this.shiftIncrement = this.cardsInWindow * this.cardWidth;
 			if (this.loans.length) {

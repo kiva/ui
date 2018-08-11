@@ -14,6 +14,7 @@
 				v-for="category in categoryIdSet"
 				:key="category.id"
 				:loan-channel="category.id"
+				:window-width="windowWidth"
 			/>
 		</div>
 
@@ -60,6 +61,7 @@ export default {
 			categoryIdSet: [],
 			experimentEnabled: false,
 			variants: [],
+			windowWidth: 0,
 		};
 	},
 	apollo: {
@@ -93,6 +95,9 @@ export default {
 			},
 		});
 	},
+	mounted() {
+		this.windowWidth = window.innerWidth;
+	}
 };
 </script>
 
