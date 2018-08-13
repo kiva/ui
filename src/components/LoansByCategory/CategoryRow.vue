@@ -41,9 +41,14 @@
 
 <script>
 import _get from 'lodash/get';
+import _throttle from 'lodash/throttle';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
-// import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
+import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+
+const minWidthToShowLargeCards = 340;
+const smallCardWidthPlusPadding = 276;
+const largeCardWidthPlusPadding = 310;
 
 export default {
 	components: {
@@ -55,26 +60,39 @@ export default {
 			type: Number,
 			default: 1,
 		},
-		windowWidth: {
-			type: Number,
-			default: 0,
-		},
 	},
 	data() {
 		return {
-			cardWidth: 310,
-			cardsInWindow: 1,
 			cardsInRow: 12,
 			description: '',
-			loans: {},
+			loans: [],
 			loading: false,
-			minLeftMargin: -960,
 			name: '',
 			offset: null,
 			scrollPos: 0,
-			shiftIncrement: 960,
 			url: '',
+			windowWidth: 0,
+			wrapperWidth: 0,
 		};
+	},
+	computed: {
+		cardsInWindow() {
+			return Math.floor(this.wrapperWidth / this.cardWidth);
+		},
+		cardWidth() {
+			return this.windowWidth > minWidthToShowLargeCards
+				? largeCardWidthPlusPadding
+				: smallCardWidthPlusPadding;
+		},
+		minLeftMargin() {
+			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+		},
+		throttledResize() {
+			return _throttle(this.saveWindowWidth, 100);
+		},
+		shiftIncrement() {
+			return this.cardsInWindow * this.cardWidth;
+		},
 	},
 	apollo: {
 		query: loanChannelQuery,
@@ -86,7 +104,7 @@ export default {
 				// smaller loan cards on category-row pages - if we do, then
 				// we'd need to adjust cloudinary allowed sizes in settings mgr.
 				// imgDefaultSize: 'w280h210',
-				// $imgRetinaSize: 'w560h420',
+				// imgRetinaSize: 'w560h420',
 			};
 		},
 		result({ data, loading }) {
@@ -100,21 +118,24 @@ export default {
 	},
 	created() {
 		// Read the data from the cache for this loan channel (for ssr)
-		// const data = this.apollo.readFragment({
-		// 	id: `LoanChannel:${this.loanChannel}`,
-		// 	numberOfLoans: this.cardsInRow,
-		// 	fragment: loanChannelFragment,
-		// 	fragmentName: 'loanChannelFields',
-		// });
-		// this.setChannelData(data);
+		const data = this.apollo.readFragment({
+			id: `LoanChannel:${this.loanChannel}`,
+			fragment: loanChannelFragment,
+			fragmentName: 'loanChannelFields',
+			variables: {
+				numberOfLoans: this.cardsInRow,
+				imgDefaultSize: 'w480h360',
+				imgRetinaSize: 'w960h720',
+			},
+		});
+		this.setChannelData(data);
 	},
 	mounted() {
-		this.setCardWidthAndNumber();
-		this.setupScrollingVars();
-		window.addEventListener('resize', this.setupScrollingVars);
+		this.saveWindowWidth();
+		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', this.setupScrollingVars);
+		window.removeEventListener('resize', this.throttledResize);
 	},
 	methods: {
 		setChannelData(channel) {
@@ -122,33 +143,10 @@ export default {
 			this.description = _get(channel, 'description');
 			this.url = _get(channel, 'url');
 			this.loans = _get(channel, 'loans.values');
-			this.setMinLeftMargin();
 		},
-		setCardWidthAndNumber() {
-			const minNumberOfCards = 12;
-			const minNumberOfScrolls = 3;
-			const minWidthToShowLargeCards = 340;
-			const smallCardWidthPlusPadding = 276;
-			const largeCardWidthPlusPadding = 310;
-
-			this.cardWidth = this.windowWidth > minWidthToShowLargeCards
-				? largeCardWidthPlusPadding
-				: smallCardWidthPlusPadding;
-
-			this.cardsInRow = Math.max(
-				minNumberOfCards,
-				(Math.floor(this.windowWidth / this.cardWidth)) * minNumberOfScrolls
-			);
-		},
-		setupScrollingVars() {
-			this.cardsInWindow = Math.floor(this.$refs.innerWrapper.clientWidth / this.cardWidth);
-			this.shiftIncrement = this.cardsInWindow * this.cardWidth;
-			if (this.loans.length) {
-				this.setMinLeftMargin();
-			}
-		},
-		setMinLeftMargin() {
-			this.minLeftMargin = (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+		saveWindowWidth() {
+			this.windowWidth = window.innerWidth;
+			this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
 		},
 		scrollRowLeft() {
 			if (this.scrollPos < 0) {
