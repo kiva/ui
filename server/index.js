@@ -26,7 +26,8 @@ function setHeaders(res, path) {
 }
 
 app.use(express.static('dist', {
-	setHeaders
+	setHeaders,
+	maxAge: '1d'
 }));
 
 // Setup Request Logger
