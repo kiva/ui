@@ -52,54 +52,89 @@ export function fbFetchUser() {
 	});
 }
 
+function buildPostData(fbResponse, specialFbParams) {
+	const defaultFbParams = {
+		fbuid: fbResponse.id,
+		displayName: fbResponse.first_name,
+		firstName: fbResponse.first_name,
+		lastName: fbResponse.last_name,
+		email: fbResponse.email,
+		locale: fbResponse.locale,
+		pic: fbResponse.picture.data.url,
+		doneUrl: '/checkout-beta'
+	};
+
+	const fbParams = Object.assign(defaultFbParams, specialFbParams);
+
+	console.log(fbParams);
+	return fbParams;
+}
+
+export function doFbKivaLogin(fbResponse, specialFbParams) {
+	console.log(fbResponse);
+	const postData = buildPostData(fbResponse, specialFbParams);
+
+	const parameters = Object.keys(postData).map(key => {
+		return [key, postData[key]];
+	});
+	console.log(parameters);
+	// expand the elements from the .entries() iterator into an actual array
+	const encodedParameters = parameters
+		// transform the elements into encoded key-value-pairs
+		.map(e => `${encodeURIComponent(e[0])}=${encodeURIComponent(e[1])}`);
+	console.log(encodedParameters);
+
+	return fetch('/ajax/fbLogin', {
+		method: 'POST',
+		mode: 'cors',
+		cache: 'no-cache',
+		credentials: 'same-origin',
+		headers: {
+			// 'Content-Type': 'application/json; charset=utf-8',
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		redirect: 'follow', // manual, *follow, error
+		referrer: 'no-referrer', // no-referrer, *client
+		// convert parameters into string ie. key=value&key=value...
+		body: encodedParameters.join('&')
+	});
+}
+
+export function handleKivaResponse(kivaFbResponse) {
+	console.log(kivaFbResponse);
+	if (kivaFbResponse.ok) {
+		return kivaFbResponse.json();
+	}
+}
+
 /*
 	Initiate Login by checking status first, responding based on status
 */
 export function initiateFbLogin() {
-	return new Promise((resolve, reject) => {
-		checkFbLoginStatus()
-			.then(fbStatusObj => {
-				console.log(fbStatusObj);
-				if (fbStatusObj.status === 'connected') {
-					// user is logged in to facebook + your app
-					// let uid = response.authResponse.userID;
-					// let accessToken = response.authResponse.accessToken;
-					// Next Fetch the User and load the user
-					console.log(`fb status: ${fbStatusObj.status}`);
-				} else if (fbStatusObj.status === 'authorization_expired' || fbStatusObj.status === 'not_authorized') {
-					// user may be logged into Fb but hasn't authorized your app
-					// call login then fetch and load the user
-					console.log(`fb status: ${fbStatusObj.status}`);
-				}
-				fbLogin()
-					.then(result => {
-						console.log(result);
-						// resolve(result);
-						fbFetchUser()
-							.then(fbUserObject => {
-								console.log(fbUserObject);
-								resolve(fbUserObject);
-							});
-					})
-					.catch(error => {
-						reject(error);
-					});
-			})
-			// .then(fbLoginObject => {
-			// 	console.log(fbLoginObject);
-			// 	// if (fbLoginObject.status === 'connected') {
-			// 	fbFetchUser()
-			// 		.then(fbUserObject => {
-			// 			console(fbUserObject);
-			// 			resolve(fbUserObject);
-			// 		});
-			// 	// }
-			// })
-			.catch(response => {
-				console.log(response);
-				reject(response);
-			});
-	});
+	return checkFbLoginStatus()
+		.then(fbStatusObj => {
+			console.log(fbStatusObj);
+			if (fbStatusObj.status === 'connected') {
+				// user is logged in to facebook + your app
+				// let uid = response.authResponse.userID;
+				// let accessToken = response.authResponse.accessToken;
+				// Next Fetch the User and load the user
+				console.log(`Already Logged In: ${fbStatusObj.status}`);
+				return fbStatusObj;
+			}
+			// user may be logged into Fb but hasn't authorized your app
+			// fbStatusObj.status 'authorization_expired' 'not_authorized' or 'unknown'
+			// call login then fetch and load the user
+			console.log(`NOT Connected: ${fbStatusObj.status}`);
+			return fbLogin();
+		})
+		.then(() => fbFetchUser())
+		.then(fbResponse => doFbKivaLogin(fbResponse))
+		.then(kivaFbResponse => handleKivaResponse(kivaFbResponse))
+		.catch(response => {
+			console.log(response);
+			Promise.reject(response);
+		});
 }
 
 /*

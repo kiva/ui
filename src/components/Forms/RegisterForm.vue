@@ -1,7 +1,7 @@
 <template>
 
 	<div class="register-form">
-		<kv-facebook-button @click.native.prevent.stop="initiateFbLogin" />
+		<facebook-register type="register" />
 		<hr>
 		<div class="featured-text">Or</div>
 
@@ -130,21 +130,19 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
-import KvFacebookButton from '@/components/Kv/KvFacebookButton';
+import FacebookRegister from '@/components/Forms/FacebookRegister';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
-import FBMixin from '@/plugins/fb-mixin';
 
 export default {
 	components: {
 		KvButton,
-		KvFacebookButton,
+		FacebookRegister,
 		Password,
 	},
 	mixins: [
 		loginRegUtils,
 		formValidate,
-		FBMixin
 	],
 	props: {
 		// Add the done-url="lend-vue?page=2" (Path Only) parameter to redirect on successful registration
@@ -172,7 +170,6 @@ export default {
 			email: '',
 			password: '',
 			terms: '',
-			fbLoginStatus: () => {}
 		};
 	},
 	created() {

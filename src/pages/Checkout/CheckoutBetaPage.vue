@@ -43,9 +43,6 @@ export default {
 	inject: ['apollo'],
 	metaInfo: {
 		title: 'Checkout',
-		// script: [
-		// 	{ type: 'text/javascript', src: 'https://www.paypalobjects.com/api/checkout.js' }
-		// ]
 	},
 	data() {
 		return {

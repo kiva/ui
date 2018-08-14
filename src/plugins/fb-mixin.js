@@ -37,8 +37,38 @@ export default {
 			return fbUtils.initiateFbLogin()
 				.then(response => {
 					console.log(response);
-					this.fbUserInfo = response;
+					if (response.prompt === true) {
+						this.handleKivaFbPrompt(response);
+					}
 				});
+		},
+		handleKivaFbPrompt(response) {
+			console.log(response);
+			// Show new lightbox
+
+
+			// May not need the following...
+			// fetch('/ajax/fbPrompt', {
+			// 	method: 'POST',
+			// 	mode: 'cors',
+			// 	cache: 'no-cache',
+			// 	credentials: 'same-origin',
+			// 	headers: {
+			// 		// 'Content-Type': 'application/json; charset=utf-8',
+			// 		// 'Content-Type': 'application/x-www-form-urlencoded',
+			// 	},
+			// 	redirect: 'follow', // manual, *follow, error
+			// 	referrer: 'no-referrer', // no-referrer, *client
+			// 	// convert parameters into string ie. key=value&key=value...
+			// 	// body: encodedParameters.join('&')
+			// })
+			// 	.then(promptResponse => promptResponse.json())
+			// 	.then(json => {
+			// 		console.log(json);
+			// 	})
+			// 	.catch(promptResponse => {
+			// 		console.log(promptResponse);
+			// 	});
 		}
 	}
 };
