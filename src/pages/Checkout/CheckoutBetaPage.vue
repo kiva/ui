@@ -11,7 +11,13 @@
 						{{ donation.price }}
 					</li>
 				</ul>
+				<br>
+				<hr>
 				<pay-pal-exp :amount="totals.creditAmountNeeded" />
+				<br>
+				<hr>
+				<register-form :refresh="true" />
+				<br>
 				<hr>
 				<router-link to="/ui-site-map">Site Map</router-link>
 			</div>
@@ -26,11 +32,13 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import RegisterForm from '@/components/Forms/RegisterForm';
 
 export default {
 	components: {
 		WwwPage,
-		PayPalExp
+		PayPalExp,
+		RegisterForm
 	},
 	inject: ['apollo'],
 	metaInfo: {

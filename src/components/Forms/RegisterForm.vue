@@ -1,7 +1,7 @@
 <template>
 
 	<div class="register-form">
-		<kv-facebook-button @click.native.prevent.stop="localCheckFbLoginStatus" />
+		<kv-facebook-button @click.native.prevent.stop="initiateFbLogin" />
 		<hr>
 		<div class="featured-text">Or</div>
 
@@ -133,7 +133,6 @@ import KvButton from '@/components/Kv/KvButton';
 import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
-import checkFbLoginStatus from '@/util/fbUtils';
 import FBMixin from '@/plugins/fb-mixin';
 
 export default {
@@ -192,10 +191,6 @@ export default {
 		passwordInput.addEventListener('blur', e => {
 			this.validatePassword(e.target.value);
 		});
-
-		// Check Facebook Login State
-		// this.fbLoginStatus = this.checkFbLoginState();
-		// console.log(this.checkFbLoginStatus());
 	},
 	methods: {
 		register() {
@@ -269,10 +264,6 @@ export default {
 				}
 			}
 			return errorArray;
-		},
-		localCheckFbLoginStatus() {
-			console.log('Component: checking FB State');
-			checkFbLoginStatus();
 		}
 	}
 };
