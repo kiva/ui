@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<h2 class="category-name">{{ name }}
-			<span class="small-view-all-link">&nbsp;<a :href="url">View all</a></span>
-		</h2>
-
-		<p class="category-description">
-			{{ description }} <a :href="url">View all</a>
-		</p>
+		<div class="row">
+			<div class="column small-12">
+				<h2 class="category-name">{{ name }}
+					<span class="view-all-link">&nbsp;<a :href="url">View all</a></span>
+				</h2>
+			</div>
+		</div>
 
 		<div class="cards-and-arrows-wrapper" ref="outerWrapper">
 			<span
@@ -35,7 +35,6 @@
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
-
 	</div>
 </template>
 
@@ -185,26 +184,12 @@ export default {
 
 .category-name {
 	font-weight: $global-weight-bold;
-	margin-left: rem-calc(31);
+	margin-bottom: 1rem;
 }
 
-.category-description {
-	line-height: 1.5rem;
-	margin-left: rem-calc(31);
-	max-width: rem-calc(600);
-
-	@include breakpoint(medium down) {
-		display: none;
-	}
-}
-
-.small-view-all-link {
+.view-all-link {
 	font-size: $pagination-font-size;
 	font-weight: $global-weight-normal;
-
-	@include breakpoint(large) {
-		display: none;
-	}
 }
 
 @media (hover: none) {
@@ -212,9 +197,8 @@ export default {
 		display: none;
 	}
 
-	.category-name,
-	.category-description {
-		margin-left: 0;
+	.category-name {
+		margin-left: -0.5rem;
 	}
 }
 </style>

@@ -1,11 +1,13 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<div class="heading-region">
-			<h1 @click="isAdmin=!isAdmin">Make a loan, change a life</h1>
-			<p>Each Kiva loan helps people build a better future for
-			themselves and their families. Browse loans by category below, or
-				<router-link :to="{ path: '/lend'}">view all loans</router-link>.
-			</p>
+		<div class="row">
+			<div class="heading-region column small-12">
+				<h1 @click="isAdmin=!isAdmin">Make a loan, change a life</h1>
+				<p class="page-subhead">Each Kiva loan helps people build a better future for
+				themselves and their families. <br class="xxlu">Browse loans by category below, or
+					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
+				</p>
+			</div>
 		</div>
 
 		<div>
@@ -105,16 +107,26 @@ export default {
 	}
 
 	.heading-region {
+		margin-bottom: 2rem;
 		margin-top: rem-calc(20);
-		margin-left: rem-calc(45);
 
+		@include breakpoint(small only) {
+			margin-bottom: 1rem;
+		}
 		@media (hover: none) {
 			margin-left: rem-calc(8);
 		}
 
 		p {
-			font-size: 1.2rem;
+			border-bottom: 1px solid $light-gray;
+			font-size: rem-calc(21);
 			line-height: $global-lineheight;
+			margin-right: 0.75rem;
+			padding-bottom: 2rem;
+
+			@include breakpoint(xxlarge) {
+				margin-right: 0;
+			}
 		}
 
 		@include breakpoint(small only) {
@@ -125,12 +137,7 @@ export default {
 			p {
 				font-size: 1rem;
 				line-height: 1.5rem;
-			}
-		}
-
-		@include breakpoint(large) {
-			p {
-				max-width: rem-calc(600);
+				padding-bottom: 1rem;
 			}
 		}
 	}
