@@ -2,8 +2,8 @@ fragment loanCardFields on LoanBasic {
 	id
 	status
 	image {
-		default: url(customSize: "w480h360")
-		retina: url(customSize: "w960h720")
+		default: url(customSize: $imgDefaultSize)
+		retina: url(customSize: $imgRetinaSize)
 	}
 	name
 	borrowerCount
