@@ -1,0 +1,8 @@
+query($key: String) {
+	general {
+		setting(setting: $key) {
+			key
+			value
+		}
+	}
+}
