@@ -230,6 +230,8 @@ $blockquote-border: 1px solid $medium-gray;
 // 4.1 Base Typography - vars added by Kiva
 // ------------------
 
+$normal-text-font-size: 1rem;  // because the global "100% isn't useful for all needs
+
 $small-text-font-size: 0.875rem;
 $small-text-line-height: 1.357rem;
 
