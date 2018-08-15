@@ -30,21 +30,12 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import _map from 'lodash/map';
+import { readJSONSetting } from '@/util/settingsUtils';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
-
-// Parse a SettingsManager value
-function readSetting(data, key) {
-	try {
-		return JSON.parse(JSON.parse(_get(data, key)));
-	} catch (e) {
-		return null;
-	}
-}
 
 export default {
 	components: {
@@ -71,7 +62,7 @@ export default {
 					query: lendByCategoryQuery
 				}).then(({ data }) => {
 					// Get the array of channel objects from settings
-					const result = readSetting(data, 'general.setting.value') || [];
+					const result = readJSONSetting(data, 'general.setting.value') || [];
 					const ids = _map(result, 'id');
 
 					// Pre-fetch all the data for those channels
@@ -86,12 +77,12 @@ export default {
 	created() {
 		// Read the array of channel objects from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.categoryIdSet = readSetting(baseData, 'general.setting.value') || [];
+		this.categoryIdSet = readJSONSetting(baseData, 'general.setting.value') || [];
 
 		// Watch for changes to the setting value
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
-				this.categoryIdSet = readSetting(data, 'general.setting.value') || [];
+				this.categoryIdSet = readJSONSetting(data, 'general.setting.value') || [];
 			},
 		});
 	},

@@ -1,0 +1,6 @@
+query($id: String) {
+	experiment(id: $id) @client {
+		id
+		version
+	}
+}

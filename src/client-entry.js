@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
-import cookie from 'js-cookie';
+import CookieStore from '@/util/CookieStore';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
@@ -12,6 +12,9 @@ const config = window.__KV_CONFIG__ || {};
 // Set webpack public asset path based on configuration
 __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
+// Create cookie store
+const cookieStore = new CookieStore();
+
 // Create the App instance
 const {
 	app,
@@ -20,8 +23,9 @@ const {
 } = createApp({
 	appConfig: config,
 	apollo: {
+		cookieStore,
 		uri: config.graphqlUri,
-		csrfToken: cookie.get('kvis') && cookie.get('kvis').substr(6),
+		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 		types: config.graphqlFragmentTypes,
 	}
 });
