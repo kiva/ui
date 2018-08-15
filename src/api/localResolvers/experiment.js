@@ -32,6 +32,20 @@ function serializeExpCookie(assignments) {
 /*
  * Experiment assignment algorithm
  *
+ * An example json value for the experiment data stored in SettingsManager:
+ * {
+ *     "id":"test",
+ *     "name": "TestUiExp",
+ *     "enabled": true,
+ *     "startTime": "2018-01-01",
+ *     "endTime": "2019-01-01",
+ *     "distribution": {
+ *         "control": 0.5,
+ *         "a": 0.2,
+ *         "b": 0.3
+ *     }
+ * }
+ *
  * @param {object} experiment - The experiment data
  * @param {boolean} experiment.enabled - Is the experiment enabled
  * @param {string} experiment.startTime - A date string for the starting time of the experiment
