@@ -2,6 +2,8 @@ import { isWithinRange } from 'date-fns';
 import _get from 'lodash/get';
 
 /**
+ * Read a boolean setting from SettingsManager
+ *
  * @param {object} data
  * @param {string} key
  * @returns {boolean|null}
@@ -14,6 +16,8 @@ export function readBoolSetting(data, key) {
 }
 
 /**
+ * Read a date setting from SettingsManager
+ *
  * @param {object} data
  * @param {string} key
  * @returns {date|null}
@@ -24,6 +28,10 @@ export function readDateSetting(data, key) {
 }
 
 /**
+ * Read a json setting from SettingsManager
+ *
+ * TODO: figure out why these values are double-serialized
+ *
  * @param {object} data
  * @param {string} key
  * @returns {object|null}
@@ -37,6 +45,8 @@ export function readJSONSetting(data, key) {
 }
 
 /**
+ * Determine if a feature or setting is enabled and currently active.
+ *
  * @param {object} data
  * @param {string} enabledKey
  * @param {string} startTimeKey

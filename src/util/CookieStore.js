@@ -4,11 +4,10 @@ import { subYears } from 'date-fns';
 import serverCookie from 'cookie';
 import clientCookie from 'js-cookie';
 
-/**
- * CookieStore - isomorphic cookie reading/writing
- */
 export default class CookieStore {
 	/**
+	 * CookieStore - isomorphic cookie reading/writing
+	 *
 	 * @param {object} cookies - the parsed cookie object from the request (if on the server)
 	 */
 	constructor(cookies) {
@@ -37,6 +36,8 @@ export default class CookieStore {
 
 	/**
 	 * Get Set-Cookie header strings for any cookies set during render
+	 *
+	 * @returns {string[]}
 	 */
 	getSetCookies() {
 		return _values(this.setCookies);

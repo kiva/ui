@@ -4,7 +4,7 @@ import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
 import { readJSONSetting } from '@/util/settingsUtils';
 
-/*
+/**
  * Parse the experiment cookie value into a plain object
  *
  * @param {string} cookie
@@ -17,7 +17,7 @@ function parseExpCookie(cookie) {
 	return _fromPairs(pairs);
 }
 
-/*
+/**
  * Serialize an object into a string for the experiment cookie value
  *
  * @param {object} assignments
@@ -29,7 +29,7 @@ function serializeExpCookie(assignments) {
 	return expStrings.join('|');
 }
 
-/*
+/**
  * Experiment assignment algorithm
  *
  * An example json value for the experiment data stored in SettingsManager:
@@ -81,7 +81,7 @@ function assignVersion({
 	// doing nothing here returns undefined, indicating that the experiment is not active
 }
 
-/*
+/**
  * Experiment resolvers
  */
 export default ({ cookieStore }) => {
