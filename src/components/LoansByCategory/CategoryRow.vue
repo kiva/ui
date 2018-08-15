@@ -214,7 +214,7 @@ export default {
 }
 
 .view-all-link {
-	font-size: $pagination-font-size;
+	font-size: $normal-text-font-size;
 	font-weight: $global-weight-normal;
 }
 
