@@ -61,7 +61,12 @@ export default class CookieStore {
 	 */
 	set(name, value, options) {
 		clientCookie.set(name, value, options);
-		this.setCookies[name] = serverCookie.serialize(name, value, options);
+		this.setCookies[name] = serverCookie.serialize(name, value, {
+			// use encode function from js-cookie, since js-cookie can't be customized
+			encode: val => encodeURIComponent(String(val))
+				.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent),
+			...options,
+		});
 	}
 
 	/**
@@ -73,8 +78,8 @@ export default class CookieStore {
 	remove(name, options) {
 		clientCookie.remove(name, options);
 		this.setCookies[name] = serverCookie.serialize(name, 'deleted', {
-			...options,
 			expires: subYears(new Date(), 1),
+			...options,
 		});
 	}
 }
