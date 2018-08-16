@@ -23,9 +23,10 @@
 				>
 					<GridLoanCard
 						class="is-in-category-row"
-						v-for="loan in loans"
+						v-for="(loan, index) in loans"
 						:key="loan.id"
 						:loan="loan"
+						:card-number="index + 1"
 					/>
 				</div>
 			</div>
@@ -58,6 +59,10 @@ export default {
 		loanChannel: {
 			type: Number,
 			default: 1,
+		},
+		rowNumber: {
+			type: Number,
+			default: null
 		},
 	},
 	data() {

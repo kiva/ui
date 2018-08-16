@@ -13,9 +13,10 @@
 		<div>
 			<category-row
 				class="loan-category-row"
-				v-for="category in categoryIdSet"
+				v-for="(category, index) in categoryIdSet"
 				:key="category.id"
 				:loan-channel="category.id"
+				:row-number="index + 1"
 			/>
 		</div>
 
