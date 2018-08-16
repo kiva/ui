@@ -1,43 +1,16 @@
+import _merge from 'lodash/merge';
 import { withClientState } from 'apollo-link-state';
+import experiment from './localResolvers/experiment';
+import tipMessage from './localResolvers/tipMessage';
+import usingTouch from './localResolvers/usingTouch';
 
-export default ({ cache }) => {
+export default ({ cache, ...options }) => {
 	return withClientState({
 		cache,
-		defaults: {
-			usingTouch: false,
-			tipMsg: '',
-			tipMsgType: 'info',
-			tipVisible: false,
-			tipPersist: false,
-			tipInitUrl: ''
-		},
-		resolvers: {
-			Mutation: {
-				updateUsingTouch(_, { usingTouch }, context) {
-					context.cache.writeData({
-						data: { usingTouch }
-					});
-					return null;
-				},
-				updateTipMessage(_, {
-					tipMsg,
-					tipMsgType,
-					tipVisible,
-					tipPersist,
-					tipInitUrl
-				}, context) {
-					context.cache.writeData({
-						data: {
-							tipMsg,
-							tipMsgType,
-							tipVisible,
-							tipPersist,
-							tipInitUrl
-						}
-					});
-					return null;
-				}
-			}
-		},
+		..._merge(
+			experiment(options),
+			tipMessage(options),
+			usingTouch(options)
+		),
 	});
 };
