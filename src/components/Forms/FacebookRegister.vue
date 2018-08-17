@@ -49,13 +49,17 @@
 				</div>
 
 				<div class="terms">
-					<div id="terms_agreement_error"></div>
+					<div v-show="showNewAcctTermsError" class="new-acct-terms-error">
+						In order to use this service you must agree to the Kiva Terms of Use and Privacy Policy.
+					</div>
 					<label>
 						<input
 							type="checkbox"
 							id="terms_agreement_popup"
 							name="terms_agreement_popup"
-							ref="termsAgreementPopup"> I have read and agree to the Kiva
+							v-model="newAcctTerms"
+							@click="showNewAcctTermsError = validateTerms()">
+						I have read and agree to the Kiva
 						<a href="https://dev-vm-01.kiva.org/legal/terms" target="_blank">Terms of Use</a>
 						and
 						<a href="https://dev-vm-01.kiva.org/legal/privacy" target="_blank">Privacy Policy</a>
@@ -88,6 +92,7 @@
 							type="email"
 							name="kiva_email"
 							id="kiva_email"
+							v-model="linkedKivaEmail"
 							autocomplete="off">
 					</label>
 				</div>
@@ -98,6 +103,7 @@
 							type="password"
 							name="kiva_password"
 							id="kiva_password"
+							v-model="linkedKivaPW"
 							maxlength="31"
 							autocomplete="off">
 					</label>
@@ -140,7 +146,11 @@ export default {
 			specialFbParams: () => {},
 			newAcctLbVisible: false,
 			newAcctAnon: false,
+			newAcctTerms: false,
+			showNewAcctTermsError: false,
 			existingAcctLbVisible: false,
+			linkedKivaEmail: '',
+			linkedKivaPW: ''
 		};
 	},
 	computed: {
@@ -156,17 +166,6 @@ export default {
 			}
 			return 'Lender';
 		}
-	},
-	mounted() {
-		console.log('mounted fb register');
-		fbUtils.checkFbLoginStatus()
-			.then(response => {
-				console.log(response);
-				this.fbLoginStatus = response;
-			}).catch(response => {
-				console.log(response);
-				this.fbLoginStatus = response;
-			});
 	},
 	methods: {
 		initiateFbLogin() {
@@ -238,29 +237,37 @@ export default {
 			console.log('existing account lightbox closed');
 			this.existingAcctLbVisible = false;
 		},
+		validateTerms() {
+			return this.newAcctTerms;
+		},
 		postKivaFbNewAcctForm() {
+			console.log('posting new account fomr');
 			// Validate the termsAgreementPopup is checked
-			console.log(this.$refs.termsAgreementPopup.value);
-			console.log(this.$refs.termsAgreementPopup.checked);
-			// Set special params
-			this.specialFbParams = {
-				visibility: this.newAcctAnon ? 'anonymous' : 'public',
-				newAccount: 1,
-				auto_join_default_team: false
-			};
-			// retry login sequence
-			this.initiateFbLogin();
+			if (!this.validateTerms()) {
+				// show error here
+				this.showNewAcctTermsError = true;
+			} else {
+				// Set special params
+				this.specialFbParams = {
+					visibility: this.newAcctAnon ? 'anonymous' : 'public',
+					newAccount: 1,
+					auto_join_default_team: false
+				};
+				// retry login sequence
+				this.initiateFbLogin();
+			}
 		},
 		postKivaFbExistingAcctForm() {
 			console.log('submit existing account form');
 			// Set special params
-			// this.specialFbParams = {
-			// 	visibility: this.newAcctAnon ? 'anonymous' : 'public',
-			// 	newAccount: 1,
-			// 	auto_join_default_team: false
-			// };
+			this.specialFbParams = {
+				kiva_email: this.linkedKivaEmail || '',
+				kiva_password: this.linkedKivaPW || '',
+				linkAccount: 1,
+				auto_join_default_team: false
+			};
 			// retry login sequence
-			// this.initiateFbLogin();
+			this.initiateFbLogin();
 		},
 		// handlePostResponse(response) {
 		// 	console.log(response);
@@ -302,6 +309,14 @@ export default {
 					float: left;
 					margin: 0.2rem 0.5rem 1.4rem 0;
 				}
+			}
+
+			.new-acct-terms-error {
+				margin: 0 0 0.3rem;
+				color: $kiva-accent-red;
+				font-weight: 400;
+				font-size: $small-text-font-size;
+				line-height: 1.2;
 			}
 		}
 
