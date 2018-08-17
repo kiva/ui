@@ -1,4 +1,10 @@
 query {
+	my {
+		userAccount {
+			id
+			balance
+		}
+	}
 	shop {
 		basket {
 			items {
