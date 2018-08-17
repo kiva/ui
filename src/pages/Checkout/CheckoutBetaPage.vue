@@ -2,6 +2,13 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
+				<register-form v-if="!isLoggedIn" :refresh="true" />
+				<br>
+				<hr>
+				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
+				<br>
+				<hr>
+				<br>
 				<ul>
 					<li v-for="loan in loans" :key="loan.id">
 						<img :src="loan.loan.image.url" :alt="loan.loan.name">
@@ -11,8 +18,9 @@
 						{{ donation.price }}
 					</li>
 				</ul>
-				<pay-pal-exp :amount="totals.creditAmountNeeded" />
+				<br>
 				<hr>
+				<br>
 				<router-link to="/ui-site-map">Site Map</router-link>
 			</div>
 		</div>
@@ -41,6 +49,8 @@ export default {
 	},
 	data() {
 		return {
+			myBalance: undefined,
+			myId: undefined,
 			currentStep: 'basket',
 			loans: () => {},
 			totals: () => {},
@@ -52,6 +62,8 @@ export default {
 		prefetch: true,
 		result({ data }) {
 			console.log(data);
+			this.myBalance = _get(data, 'my.userAccount.balance');
+			this.myId = _get(data, 'my.userAccount.id');
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
@@ -61,6 +73,9 @@ export default {
 
 	},
 	computed: {
+		isLoggedIn() {
+			return this.myId !== undefined;
+		}
 	}
 };
 </script>
