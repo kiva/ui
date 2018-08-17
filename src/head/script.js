@@ -35,6 +35,30 @@ export default config => {
 		}
 	}
 
+	// Facebook JSSDK
+	if (config.enableFB) {
+		/* eslint-disable */
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: config.fbApplicationId,
+				autoLogAppEvents: true,
+				cookie: true, // sets a cookie for the session
+				status: true, // set to true to check login status automatically on each page load
+				xfbml: false, // set to true to have fb parse the dom looking for social plugins
+				version: 'v2.2' // current 'v3.1'
+			});
+		};
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			// js.src = "https://connect.facebook.net/en_US/sdk.js";
+			js.src = "https://connect.facebook.net/en_US/sdk/debug.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+		/* eslint-enable */
+	}
+
 	// PerimeterX snippet
 	if (config.enablePerimeterx) {
 		/* eslint-disable */

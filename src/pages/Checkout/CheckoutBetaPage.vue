@@ -5,9 +5,6 @@
 				<register-form v-if="!isLoggedIn" :refresh="true" />
 				<br>
 				<hr>
-				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
-				<br>
-				<hr>
 				<br>
 				<ul>
 					<li v-for="loan in loans" :key="loan.id">
@@ -18,6 +15,10 @@
 						{{ donation.price }}
 					</li>
 				</ul>
+				<br>
+				<hr>
+				<br>
+				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
 				<br>
 				<hr>
 				<br>
@@ -34,18 +35,17 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import RegisterForm from '@/components/Forms/RegisterForm';
 
 export default {
 	components: {
 		WwwPage,
-		PayPalExp
+		PayPalExp,
+		RegisterForm
 	},
 	inject: ['apollo'],
 	metaInfo: {
 		title: 'Checkout',
-		// script: [
-		// 	{ type: 'text/javascript', src: 'https://www.paypalobjects.com/api/checkout.js' }
-		// ]
 	},
 	data() {
 		return {
