@@ -104,9 +104,6 @@ export default {
 		@include breakpoint(small only) {
 			margin-bottom: 1rem;
 		}
-		@media (hover: none) {
-			margin-left: rem-calc(8);
-		}
 
 		p {
 			border-bottom: 1px solid $light-gray;

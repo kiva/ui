@@ -175,8 +175,12 @@ export default {
 .is-in-category-row {
 	flex: 0 0 auto;
 
-	&.column-block:first-of-type {
-		padding-left: 0;
+	&.column-block {
+		padding: 0 rem-calc(15);
+
+		&:first-of-type {
+			padding-left: 0;
+		}
 	}
 
 	.grid-loan-card {
