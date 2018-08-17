@@ -1,6 +1,6 @@
 <template>
 	<div id="facebook-register">
-		<kv-facebook-button @click.native.prevent.stop="showFbNewAcctLightbox" />
+		<kv-facebook-button @click.native.prevent.stop="initiateFbLogin" />
 
 		<!-- New Account Lightbox -->
 		<kv-lightbox
@@ -49,9 +49,9 @@
 				</div>
 
 				<div class="terms">
-					<div v-show="showNewAcctTermsError" class="new-acct-terms-error">
+					<!-- <div v-show="showNewAcctTermsError" class="new-acct-terms-error">
 						In order to use this service you must agree to the Kiva Terms of Use and Privacy Policy.
-					</div>
+					</div> -->
 					<label>
 						<input
 							type="checkbox"
@@ -64,6 +64,11 @@
 						and
 						<a href="https://dev-vm-01.kiva.org/legal/privacy" target="_blank">Privacy Policy</a>
 					</label>
+					<ul v-show="showNewAcctTermsError" class="validation-errors">
+						<li>
+							You must agree to the Kiva Terms of service &amp; Privacy policy
+						</li>
+					</ul>
 				</div>
 
 				<kv-button type="submit" name="register" class="smaller" value="Register">Register</kv-button>
@@ -93,8 +98,14 @@
 							name="kiva_email"
 							id="kiva_email"
 							v-model="linkedKivaEmail"
-							autocomplete="off">
+							autocomplete="off"
+							@blur="validateEmail(linkedKivaEmail)">
 					</label>
+					<p v-if="emailErrors.length">
+						<ul class="validation-errors">
+							<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+						</ul>
+					</p>
 				</div>
 
 				<div class="input-set">
@@ -105,8 +116,14 @@
 							id="kiva_password"
 							v-model="linkedKivaPW"
 							maxlength="31"
-							autocomplete="off">
+							autocomplete="off"
+							@blur="validatePassword(linkedKivaPW)">
 					</label>
+					<p v-if="passwordErrors.length">
+						<ul class="validation-errors">
+							<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+						</ul>
+					</p>
 				</div>
 
 				<kv-button type="submit" name="connect" class="smaller" value="continue">Connect</kv-button>
@@ -123,6 +140,7 @@ import * as fbUtils from '@/util/fbUtils';
 import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import formValidate from '@/plugins/formValidate';
 
 export default {
 	components: {
@@ -130,9 +148,9 @@ export default {
 		KvLightbox,
 		KvButton
 	},
-	// mixins: [
-	// 	loginRegUtils,
-	// ],
+	mixins: [
+		formValidate
+	],
 	props: {
 		crumb: {
 			type: String,
@@ -171,7 +189,7 @@ export default {
 		initiateFbLogin() {
 			const vm = this;
 			// Start by verifying the FB auth status
-			fbUtils.checkFbLoginStatus()
+			return fbUtils.checkFbLoginStatus()
 				.then(fbStatusObj => {
 					console.log(fbStatusObj);
 					vm.fbLoginStatus = fbStatusObj;
@@ -188,13 +206,11 @@ export default {
 				})
 				// Once logged into FB get user info
 				.then(loginStatus => {
-					console.log(loginStatus);
 					vm.fbLoginStatus = loginStatus;
 					return fbUtils.fbFetchUser(loginStatus);
 				})
 				// Attempt Login / Register to Kiva
 				.then(fbResponse => {
-					console.log(fbResponse);
 					vm.fbUserInfo = fbResponse;
 					return fbUtils.doFbKivaLogin(fbResponse, vm.specialFbParams);
 				})
@@ -202,7 +218,7 @@ export default {
 				.then(kivaFbResponse => fbUtils.handleKivaResponse(kivaFbResponse))
 				// Act on Response from Kiva
 				.then(response => {
-					console.log(response);
+					console.log(`Parsed Kiva Response: ${JSON.stringify(response)}`);
 					// - Success
 					// Prompt (show new account lightbox)
 					if (response.prompt !== undefined && response.prompt === true) {
@@ -210,15 +226,14 @@ export default {
 					}
 					// - Error
 					// Finish the promise regardless
-					Promise.resolve(response);
+					return response;
 				})
 				.catch(response => {
 					console.log(response);
 					Promise.reject(response);
 				});
 		},
-		handleKivaFbPrompt(response) {
-			console.log(response);
+		handleKivaFbPrompt() {
 			this.showFbNewAcctLightbox();
 		},
 		showFbNewAcctLightbox() {
@@ -226,7 +241,6 @@ export default {
 			this.existingAcctLbVisible = false;
 		},
 		newAcctLbClosed() {
-			console.log('new account lightbox closed');
 			this.newAcctLbVisible = false;
 		},
 		showFbExistingAcctLightbox() {
@@ -234,14 +248,12 @@ export default {
 			this.existingAcctLbVisible = true;
 		},
 		existingAcctLbClosed() {
-			console.log('existing account lightbox closed');
 			this.existingAcctLbVisible = false;
 		},
 		validateTerms() {
 			return this.newAcctTerms;
 		},
 		postKivaFbNewAcctForm() {
-			console.log('posting new account fomr');
 			// Validate the termsAgreementPopup is checked
 			if (!this.validateTerms()) {
 				// show error here
@@ -254,24 +266,39 @@ export default {
 					auto_join_default_team: false
 				};
 				// retry login sequence
-				this.initiateFbLogin();
+				this.initiateFbLogin()
+					.then(response => this.handlePostResponse(response));
 			}
 		},
-		postKivaFbExistingAcctForm() {
-			console.log('submit existing account form');
-			// Set special params
-			this.specialFbParams = {
-				kiva_email: this.linkedKivaEmail || '',
-				kiva_password: this.linkedKivaPW || '',
-				linkAccount: 1,
-				auto_join_default_team: false
-			};
-			// retry login sequence
-			this.initiateFbLogin();
+		validateFbExistingAcctForm() {
+			this.validateEmail(this.linkedKivaEmail);
+			this.validatePassword(this.linkedKivaPW);
+
+			if (this.emailErrors.length > 0 && this.passwordErrors.length > 0) {
+				return false;
+			}
+			return true;
 		},
-		// handlePostResponse(response) {
-		// 	console.log(response);
-		// },
+		postKivaFbExistingAcctForm() {
+			if (this.validateFbExistingAcctForm() === true) {
+				// Set special params
+				this.specialFbParams = {
+					kiva_email: this.linkedKivaEmail || '',
+					kiva_password: this.linkedKivaPW || '',
+					linkAccount: 1,
+					auto_join_default_team: false
+				};
+				// retry login sequence
+				this.initiateFbLogin()
+					.then(response => this.handlePostResponse(response));
+			}
+		},
+		handlePostResponse(response) {
+			console.log(`Handle post response: ${JSON.stringify(response)}`);
+			// if (response.success) {
+			// 	window.location = window.location;
+			// }
+		},
 	}
 };
 </script>
@@ -291,6 +318,19 @@ export default {
 		h3 {
 			margin-bottom: 1.25rem;
 			font-weight: 400;
+		}
+	}
+
+	form {
+		.validation-errors {
+			margin: 1rem 0;
+
+			li {
+				list-style: none;
+				color: $kiva-accent-red;
+				font-weight: 400;
+				font-size: $small-text-font-size;
+			}
 		}
 	}
 }

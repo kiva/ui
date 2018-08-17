@@ -16,9 +16,9 @@ export function checkFbLoginStatus() {
 	});
 }
 
-export function handleLoginStatus(response) {
-	console.log(response);
-}
+// export function handleLoginStatus(response) {
+// 	console.log(response);
+// }
 
 /*
 	Initiate Login by checking status first, responding based on status
@@ -32,7 +32,6 @@ export function fbLogin() {
 		};
 
 		FB.login(response => {
-			console.log(response);
 			resolve(response);
 		}, loginOptions);
 	});
@@ -45,7 +44,6 @@ export function fbFetchUser() {
 			{ fields: ['id', 'email', 'first_name', 'last_name', 'locale', 'permissions', 'picture'] },
 			response => {
 				if (response.error) reject(response);
-				console.log(response);
 				resolve(response);
 			}
 		);
@@ -66,23 +64,19 @@ function buildPostData(fbResponse, specialFbParams) {
 
 	const fbParams = Object.assign(defaultFbParams, specialFbParams);
 
-	console.log(fbParams);
 	return fbParams;
 }
 
 export function doFbKivaLogin(fbResponse, specialFbParams) {
-	console.log(fbResponse);
 	const postData = buildPostData(fbResponse, specialFbParams);
 
 	const parameters = Object.keys(postData).map(key => {
 		return [key, postData[key]];
 	});
-	console.log(parameters);
 	// expand the elements from the .entries() iterator into an actual array
 	const encodedParameters = parameters
 		// transform the elements into encoded key-value-pairs
 		.map(e => `${encodeURIComponent(e[0])}=${encodeURIComponent(e[1])}`);
-	console.log(encodedParameters);
 
 	return fetch('/ajax/fbLogin', {
 		method: 'POST',
@@ -101,7 +95,6 @@ export function doFbKivaLogin(fbResponse, specialFbParams) {
 }
 
 export function handleKivaResponse(kivaFbResponse) {
-	console.log(kivaFbResponse);
 	if (kivaFbResponse.ok) {
 		return kivaFbResponse.json();
 	}
@@ -121,7 +114,6 @@ export function handleKivaResponse(kivaFbResponse) {
 export function initiateFbLogin() {
 	return checkFbLoginStatus()
 		.then(fbStatusObj => {
-			console.log(fbStatusObj);
 			if (fbStatusObj.status === 'connected') {
 				// user is logged in to facebook + your app
 				// let uid = response.authResponse.userID;
