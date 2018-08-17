@@ -1,7 +1,7 @@
 <template>
 
 	<div class="register-form">
-		<facebook-register type="register" />
+		<facebook-register type="register" :crumb="crumb" />
 		<hr>
 		<div class="featured-text">Or</div>
 

@@ -1,19 +1,21 @@
 <template>
 	<div id="facebook-register">
-		<kv-facebook-button @click.native.prevent.stop="initiateFbLogin" />
+		<kv-facebook-button @click.native.prevent.stop="showFbNewAcctLightbox" />
 
+		<!-- New Account Lightbox -->
 		<kv-lightbox
 			id="new-account-lightbox"
 			:visible="newAcctLbVisible"
 			@lightbox-closed="newAcctLbClosed">
 			<h2 slot="title">Create a new account</h2>
+			<hr>
 			<form
 				id="fbLegalPromptForm"
 				ref="fbLegalPromptForm"
 				class="promptForm"
 				@submit.prevent.stop="postKivaFbNewAcctForm">
 				<div class="account-visibility">
-					<p>Create my lender page as</p>
+					<h3>Set my lender page as:</h3>
 					<img
 						v-if="!newAcctAnon"
 						id="fb-pic"
@@ -27,21 +29,21 @@
 						height="50">
 					<ul>
 						<li>
-							<input
-								type="radio"
-								name="visibility"
-								value="public"
-								checked="true"
-								@click="newAcctAnon = false">
-							<label>{{ fbName }}</label>
+							<label>
+								<input
+									type="radio"
+									name="visibility"
+									value="public"
+									checked="true"
+									@click="newAcctAnon = false"> {{ fbName }}</label>
 						</li>
 						<li>
-							<input
-								type="radio"
-								name="visibility"
-								value="anonymous"
-								@click="newAcctAnon = true">
-							<label>Anonymous</label>
+							<label>
+								<input
+									type="radio"
+									name="visibility"
+									value="anonymous"
+									@click="newAcctAnon = true"> Anonymous</label>
 						</li>
 					</ul>
 				</div>
@@ -53,19 +55,57 @@
 							type="checkbox"
 							id="terms_agreement_popup"
 							name="terms_agreement_popup"
-							ref="termsAgreementPopup">
-						I have read and agree to the Kiva
+							ref="termsAgreementPopup"> I have read and agree to the Kiva
 						<a href="https://dev-vm-01.kiva.org/legal/terms" target="_blank">Terms of Use</a>
 						and
 						<a href="https://dev-vm-01.kiva.org/legal/privacy" target="_blank">Privacy Policy</a>
 					</label>
 				</div>
 
-				<div class="">
-					<kv-button type="submit" name="register" class="smaller" value="Register">Register</kv-button>
-					<br>
-					<a class="existing_user">Already have an account?</a>
+				<kv-button type="submit" name="register" class="smaller" value="Register">Register</kv-button>
+				<hr>
+				<a class="existing-user"
+					@click.stop.prevent="showFbExistingAcctLightbox">Already have an account?</a>
+			</form>
+		</kv-lightbox>
+
+		<!-- Convert Existing Account -->
+		<kv-lightbox
+			id="existing-account-lightbox"
+			:visible="existingAcctLbVisible"
+			@lightbox-closed="existingAcctLbClosed">
+			<h2 slot="title">Facebook Connect to an existing Kiva account</h2>
+			<hr>
+			<form
+				id="fbExistingPromptForm"
+				ref="fbExistingPromptForm"
+				class="existingPromptForm"
+				@submit.prevent.stop="postKivaFbExistingAcctForm">
+
+				<div class="input-set">
+					<label for="email">
+						Kiva Email <input
+							type="email"
+							name="kiva_email"
+							id="kiva_email"
+							autocomplete="off">
+					</label>
 				</div>
+
+				<div class="input-set">
+					<label for="password">
+						Kiva Password <input
+							type="password"
+							name="kiva_password"
+							id="kiva_password"
+							maxlength="31"
+							autocomplete="off">
+					</label>
+				</div>
+
+				<kv-button type="submit" name="connect" class="smaller" value="continue">Connect</kv-button>
+				<hr>
+				<a class="new-user" @click.prevent.stop="showFbNewAcctLightbox">New to Kiva?</a>
 			</form>
 		</kv-lightbox>
 	</div>
@@ -87,6 +127,12 @@ export default {
 	// mixins: [
 	// 	loginRegUtils,
 	// ],
+	props: {
+		crumb: {
+			type: String,
+			default: ''
+		}
+	},
 	data() {
 		return {
 			fbLoginStatus: () => {},
@@ -94,6 +140,7 @@ export default {
 			specialFbParams: () => {},
 			newAcctLbVisible: false,
 			newAcctAnon: false,
+			existingAcctLbVisible: false,
 		};
 	},
 	computed: {
@@ -101,13 +148,13 @@ export default {
 			if (this.fbUserInfo && this.fbUserInfo.picture && this.fbUserInfo.picture.data) {
 				return this.fbUserInfo.picture.data.url;
 			}
-			return null;
+			return '/images/characters/1.jpg';
 		},
 		fbName() {
 			if (this.fbUserInfo && this.fbUserInfo.first_name) {
 				return this.fbUserInfo.first_name;
 			}
-			return null;
+			return 'Lender';
 		}
 	},
 	mounted() {
@@ -122,11 +169,9 @@ export default {
 			});
 	},
 	methods: {
-		newAcctLbClosed() {
-			console.log('new account lightbox closed');
-		},
 		initiateFbLogin() {
 			const vm = this;
+			// Start by verifying the FB auth status
 			fbUtils.checkFbLoginStatus()
 				.then(fbStatusObj => {
 					console.log(fbStatusObj);
@@ -142,49 +187,80 @@ export default {
 					console.log(`NOT Connected: ${fbStatusObj.status}`);
 					return fbUtils.fbLogin();
 				})
+				// Once logged into FB get user info
 				.then(loginStatus => {
 					console.log(loginStatus);
 					vm.fbLoginStatus = loginStatus;
 					return fbUtils.fbFetchUser(loginStatus);
 				})
+				// Attempt Login / Register to Kiva
 				.then(fbResponse => {
 					console.log(fbResponse);
 					vm.fbUserInfo = fbResponse;
 					return fbUtils.doFbKivaLogin(fbResponse, vm.specialFbParams);
 				})
+				// Get JSON from Kiva response
 				.then(kivaFbResponse => fbUtils.handleKivaResponse(kivaFbResponse))
+				// Act on Response from Kiva
 				.then(response => {
 					console.log(response);
+					// - Success
+					// Prompt (show new account lightbox)
 					if (response.prompt !== undefined && response.prompt === true) {
 						this.handleKivaFbPrompt(response);
 					}
+					// - Error
+					// Finish the promise regardless
+					Promise.resolve(response);
 				})
 				.catch(response => {
 					console.log(response);
 					Promise.reject(response);
 				});
-			// return fbUtils.initiateFbLogin()
-			// 	.then(response => {
-			// 		console.log(response);
-			// 		if (response.prompt !== undefined && response.prompt === true) {
-			// 			this.handleKivaFbPrompt(response);
-			// 		}
-			// 	});
 		},
 		handleKivaFbPrompt(response) {
 			console.log(response);
+			this.showFbNewAcctLightbox();
+		},
+		showFbNewAcctLightbox() {
 			this.newAcctLbVisible = true;
+			this.existingAcctLbVisible = false;
+		},
+		newAcctLbClosed() {
+			console.log('new account lightbox closed');
+			this.newAcctLbVisible = false;
+		},
+		showFbExistingAcctLightbox() {
+			this.newAcctLbVisible = false;
+			this.existingAcctLbVisible = true;
+		},
+		existingAcctLbClosed() {
+			console.log('existing account lightbox closed');
+			this.existingAcctLbVisible = false;
 		},
 		postKivaFbNewAcctForm() {
 			// Validate the termsAgreementPopup is checked
-			console.log(this.$refs.termsAgreementPopup);
+			console.log(this.$refs.termsAgreementPopup.value);
+			console.log(this.$refs.termsAgreementPopup.checked);
 			// Set special params
 			this.specialFbParams = {
 				visibility: this.newAcctAnon ? 'anonymous' : 'public',
-				newAccount: 1
+				newAccount: 1,
+				auto_join_default_team: false
 			};
 			// retry login sequence
 			this.initiateFbLogin();
+		},
+		postKivaFbExistingAcctForm() {
+			console.log('submit existing account form');
+			// Set special params
+			// this.specialFbParams = {
+			// 	visibility: this.newAcctAnon ? 'anonymous' : 'public',
+			// 	newAccount: 1,
+			// 	auto_join_default_team: false
+			// };
+			// retry login sequence
+			// this.initiateFbLogin();
 		},
 		// handlePostResponse(response) {
 		// 	console.log(response);
@@ -194,7 +270,71 @@ export default {
 </script>
 
 <style lang="scss">
-#new-account-lightbox form {
-	max-width: rem-calc(300);
+@import 'settings';
+
+#new-account-lightbox,
+#existing-account-lightbox {
+	.lightbox-content {
+		max-width: 22rem;
+
+		h2 {
+			font-weight: 700;
+		}
+
+		h3 {
+			margin-bottom: 1.25rem;
+			font-weight: 400;
+		}
+	}
+}
+
+#new-account-lightbox {
+	form {
+		.terms {
+			margin: 0 0 1.5rem;
+
+			label {
+				line-height: 1.5;
+				font-size: initial;
+
+				input {
+					display: block;
+					float: left;
+					margin: 0.2rem 0.5rem 1.4rem 0;
+				}
+			}
+		}
+
+		.account-visibility {
+			margin: 0 0 1.5rem;
+
+			img {
+				display: block;
+				float: left;
+			}
+
+			ul {
+				list-style: none;
+				margin: 0 0 0 4rem;
+
+				li {
+					line-height: 1rem;
+
+					label {
+						font-size: initial;
+						line-height: 1.4;
+
+						input {
+							margin: 0 0.25rem 0.5rem 0;
+						}
+
+						a {
+							font-weight: normal;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 </style>

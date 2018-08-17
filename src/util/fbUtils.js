@@ -60,7 +60,7 @@ function buildPostData(fbResponse, specialFbParams) {
 		lastName: fbResponse.last_name,
 		email: fbResponse.email,
 		locale: fbResponse.locale,
-		pic: fbResponse.picture.data.url,
+		pic: fbResponse.picture, // .data.url,
 		doneUrl: '/checkout-beta'
 	};
 
@@ -88,13 +88,13 @@ export function doFbKivaLogin(fbResponse, specialFbParams) {
 		method: 'POST',
 		mode: 'cors',
 		cache: 'no-cache',
-		credentials: 'same-origin',
+		credentials: 'include',
 		headers: {
 			// 'Content-Type': 'application/json; charset=utf-8',
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
-		redirect: 'follow', // manual, *follow, error
-		referrer: 'no-referrer', // no-referrer, *client
+		// redirect: 'follow', // manual, *follow, error
+		referrer: '/register', // no-referrer, *client
 		// convert parameters into string ie. key=value&key=value...
 		body: encodedParameters.join('&')
 	});
@@ -105,6 +105,14 @@ export function handleKivaResponse(kivaFbResponse) {
 	if (kivaFbResponse.ok) {
 		return kivaFbResponse.json();
 	}
+	// build json to resturn if .ok is false
+	return {
+		ok: kivaFbResponse.ok,
+		status: kivaFbResponse.status,
+		statusText: kivaFbResponse.statusText,
+		redirected: kivaFbResponse.redirected,
+		url: kivaFbResponse.url
+	};
 }
 
 /*
