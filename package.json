@@ -98,7 +98,7 @@
 		"jest": "^22.4.2",
 		"jest-serializer-vue": "^2.0.2",
 		"jest-transform-graphql": "^2.1.0",
-		"jsdom": "^11.6.2",
+		"jsdom": "^12.0.0",
 		"memory-fs": "^0.4.1",
 		"mini-css-extract-plugin": "^0.4.0",
 		"node-sass": "^4.7.2",
