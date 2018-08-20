@@ -4,4 +4,7 @@ query {
 			value
 		}
 	}
+	my {
+		isAdmin
+	}
 }

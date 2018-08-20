@@ -2,7 +2,7 @@
 	<www-page class="lend-by-category-page">
 		<div class="row">
 			<div class="heading-region column small-12">
-				<h1 @click="isAdmin=!isAdmin">Make a loan, change a life</h1>
+				<h1>Make a loan, change a life</h1>
 				<p class="page-subhead">Each Kiva loan helps people build a better future for
 				themselves and their families. <br class="xxlu">Browse loans by category below, or
 					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import _map from 'lodash/map';
 import { readJSONSetting } from '@/util/settingsUtils';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
@@ -78,11 +79,13 @@ export default {
 		// Read the array of channel objects from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
 		this.categoryIdSet = readJSONSetting(baseData, 'general.setting.value') || [];
+		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 
-		// Watch for changes to the setting value
+		// Watch for changes to the query
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
 				this.categoryIdSet = readJSONSetting(data, 'general.setting.value') || [];
+				this.isAdmin = !!_get(data, 'my.isAdmin');
 			},
 		});
 	},
