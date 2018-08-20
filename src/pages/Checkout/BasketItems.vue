@@ -1,42 +1,34 @@
 <template>
-	<www-page>
-		<div id="checkout-slim" class="row page-content">
-			<div class="columns">
-				<register-form v-if="!isLoggedIn" :refresh="true" />
-				<br>
-				<hr>
-				<br>
-				<basket-items />
-				<br>
-				<hr>
-				<br>
-				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
-				<br>
-				<hr>
-				<br>
-				<router-link to="/ui-site-map">Site Map</router-link>
-			</div>
-		</div>
-	</www-page>
+	<div class="basket-items-list">
+		<ul>
+			<li v-for="loan in loans" :key="loan.id">
+				<div class="loan-info-wrapper">
+					<img class="small-2 loan-img" :src="loan.loan.image.url" :alt="loan.loan.name">
+					<span class="small-10 loan-info">
+						<div class="borrower-info featured-text">
+							{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
+						</div>
+						<div class="matching-info small-text">Matched by MATCHERSNAME</div>
+						<div class="reservation-info small-text">Reserved for ## more minutes</div>
+						<input class="loan-price" type="select">{{ loan.price }}
+					</span>
+				</div>
+			</li>
+			<li v-for="donation in donations" :key="donation.id">
+				<label for="donation">Help Kiva reach more borrowers around the world:</label>
+				<input type="input" name="donation" id="donation" value="">{{ donation.price }}
+			</li>
+		</ul>
+	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-// import _map from 'lodash/map';
-import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
-import PayPalExp from '@/components/Checkout/PayPalExpress';
-import RegisterForm from '@/components/Forms/RegisterForm';
-import BasketItems from '@/pages/Checkout/BasketItems';
+
 
 export default {
-	components: {
-		WwwPage,
-		PayPalExp,
-		RegisterForm,
-		BasketItems
-	},
 	inject: ['apollo'],
 	metaInfo: {
 		title: 'Checkout',
@@ -77,7 +69,17 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.page-content {
-	padding: 1.625rem 0;
+.basket-items-list ul {
+	list-style-type: none;
 }
+
+.loan-img,
+.loan-info {
+	display: inline-block;
+}
+
+.reservation-info {
+	color: $kiva-text-light;
+}
+
 </style>
