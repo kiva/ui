@@ -295,9 +295,10 @@ export default {
 		},
 		handlePostResponse(response) {
 			console.log(`Handle post response: ${JSON.stringify(response)}`);
-			// if (response.success) {
-			// 	window.location = window.location;
-			// }
+			// If we've successfully logged in with the new FB Account refresh the page
+			if (response.success === true) {
+				window.location = window.location;
+			}
 		},
 	}
 };
