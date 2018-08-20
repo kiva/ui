@@ -220,6 +220,9 @@ export default {
 				.then(response => {
 					console.log(`Parsed Kiva Response: ${JSON.stringify(response)}`);
 					// - Success
+					if (response.success === true) {
+						this.handlePostResponse(response);
+					}
 					// Prompt (show new account lightbox)
 					if (response.prompt !== undefined && response.prompt === true) {
 						this.handleKivaFbPrompt(response);
