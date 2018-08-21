@@ -80,25 +80,8 @@ export default {
 	list-style-type: none;
 }
 
-// .loan-img {
-// 	display: inline-block;
-// 	margin-right: 20px;
-// }
-
-// .borrower-info {
-// 	float: left;
-// }
-
-// .loan-info {
-// 	display: inline-block;
-// }
-
 .reservation-info {
 	color: $kiva-text-light;
 }
-
-// .right {
-// 	float: right;
-// }
 
 </style>
