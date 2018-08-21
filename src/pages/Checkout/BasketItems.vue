@@ -3,14 +3,20 @@
 		<ul>
 			<li v-for="loan in loans" :key="loan.id">
 				<div class="loan-info-wrapper">
-					<img class="small-2 loan-img" :src="loan.loan.image.url" :alt="loan.loan.name">
+					<router-link
+						:to="`/lend/${loan.id}`"
+						:v-kv-track-event="`['Lending', 'click-Read more', 'Photo', ${loan.id}, 'true']`">
+						<img class="small-2 loan-img" :src="loan.loan.image.url" :alt="loan.loan.name">
+					</router-link>
 					<span class="small-10 loan-info">
 						<div class="borrower-info featured-text">
 							{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
+							<div class="matching-info small-text">Matched by MATCHERSNAME</div>
 						</div>
-						<div class="matching-info small-text">Matched by MATCHERSNAME</div>
-						<div class="reservation-info small-text">Reserved for ## more minutes</div>
-						<input class="loan-price" type="select">{{ loan.price }}
+						<span class="">
+							<div class="reservation-info small-text">Reserved for ## more minutes</div>
+							<input class="loan-price" type="select">{{ loan.price }}
+						</span>
 					</span>
 				</div>
 			</li>
@@ -19,6 +25,7 @@
 				<input type="input" name="donation" id="donation" value="">{{ donation.price }}
 			</li>
 		</ul>
+		<hr>
 	</div>
 </template>
 
@@ -73,13 +80,25 @@ export default {
 	list-style-type: none;
 }
 
-.loan-img,
-.loan-info {
-	display: inline-block;
-}
+// .loan-img {
+// 	display: inline-block;
+// 	margin-right: 20px;
+// }
+
+// .borrower-info {
+// 	float: left;
+// }
+
+// .loan-info {
+// 	display: inline-block;
+// }
 
 .reservation-info {
 	color: $kiva-text-light;
 }
+
+// .right {
+// 	float: right;
+// }
 
 </style>
