@@ -67,7 +67,7 @@
 
 $global-font-size: 100%;
 $global-width: rem-calc(990);
-$global-lineheight: 1.75rem;
+$global-lineheight: 1.75; // 1.75rem;
 
 // Colors
 $green: #4faf4e;
@@ -207,7 +207,7 @@ $header-styles: (
 $header-text-rendering: optimizeLegibility;
 $small-font-size: 80%;
 $header-small-font-color: $medium-gray;
-$paragraph-lineheight: 1.75rem;
+$paragraph-lineheight: 1.75; // 1.75rem;
 $paragraph-margin-bottom: 1rem;
 $paragraph-text-rendering: optimizeLegibility;
 $anchor-color: $kiva-textlink;
