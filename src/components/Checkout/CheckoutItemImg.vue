@@ -3,7 +3,7 @@
 		:to="`/lend/${loanId}`"
 		v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']">
 
-		<img class="small-2 loan-img"
+		<img class="loan-img"
 			:src="imageUrl"
 			:alt="'photo of ' + name"
 		>

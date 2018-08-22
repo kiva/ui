@@ -1,22 +1,25 @@
 <template>
-	<div class="basket-item-wrapper">
-		<checkout-item-img
-			:loan-id="loan.id"
-			:name="loan.loan.name"
-			:image-url="loan.loan.image.url"
-		/>
+	<div class="basket-item-wrapper row">
+		<span class="small-2">
+			<checkout-item-img
+				:loan-id="loan.id"
+				:name="loan.loan.name"
+				:image-url="loan.loan.image.url"
+			/>
+		</span>
 
-		<span class="small-10 loan-info">
+		<span class="small-10 medium-6">
 			<div class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 				<div class="matching-info small-text">Matched by MATCHERSNAME</div>
 			</div>
-			<span class="">
-				<!-- Make this a component -->
-				<div class="reservation-info small-text">Reserved for ## more minutes</div>
-				<!-- Make this a component -->
-				<input class="loan-price" type="select">{{ loan.price }}
-			</span>
+		</span>
+
+		<span class="small-12 medium-4 columns">
+			<!-- Making this a component -->
+			<div class="reservation-info small-text">Reserved for ## more minutes</div>
+			<!-- Making this a component -->
+			<input class="loan-price" type="select">{{ loan.price }}
 		</span>
 	</div>
 </template>
@@ -27,7 +30,22 @@ import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 export default {
 	components: {
 		CheckoutItemImg
-	}
+	},
+	props: {
+		loan: {
+			type: Object,
+			default: () => {}
+		},
+	},
 };
 
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.reservation-info {
+	color: $kiva-text-light;
+}
+
+</style>

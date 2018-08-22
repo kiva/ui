@@ -2,9 +2,9 @@
 	<div class="basket-items-list">
 		<ul>
 			<li v-for="loan in loans" :key="loan.id">
-				<!-- Move basket-item-wrapper into a new component
-				move entire div into new component -->
-				<basket-item />
+				<basket-item
+					:loan="loan"
+				/>
 			</li>
 			<li v-for="donation in donations" :key="donation.id">
 				<label for="donation">Help Kiva reach more borrowers around the world:</label>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
+import BasketItem from '@/components/Checkout/BasketItem';
 
 export default {
 	props: {
@@ -30,7 +30,7 @@ export default {
 		}
 	},
 	components: {
-		CheckoutItemImg
+		BasketItem
 	}
 };
 </script>
@@ -40,10 +40,6 @@ export default {
 
 .basket-items-list ul {
 	list-style-type: none;
-}
-
-.reservation-info {
-	color: $kiva-text-light;
 }
 
 </style>
