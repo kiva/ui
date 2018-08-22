@@ -6,7 +6,9 @@
 				<br>
 				<hr>
 				<br>
-				<basket-items />
+				<basket-items-list
+					:loans="loans"
+					:donations="donations" />
 				<br>
 				<hr>
 				<br>
@@ -28,14 +30,14 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import RegisterForm from '@/components/Forms/RegisterForm';
-import BasketItems from '@/pages/Checkout/BasketItems';
+import BasketItemsList from '@/components/Checkout/BasketItemsList';
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
 		RegisterForm,
-		BasketItems
+		BasketItemsList
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -46,9 +48,9 @@ export default {
 			myBalance: undefined,
 			myId: undefined,
 			currentStep: 'basket',
-			loans: () => {},
+			loans: [],
 			totals: () => {},
-			donations: () => {}
+			donations: []
 		};
 	},
 	apollo: {
@@ -62,9 +64,6 @@ export default {
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 		}
-	},
-	methods: {
-
 	},
 	computed: {
 		isLoggedIn() {
