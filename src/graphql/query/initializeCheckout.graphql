@@ -20,6 +20,8 @@ query {
 							name
 							use
 							status
+							isMatchable
+              				matcherName
 							sector {
 								name
 							}

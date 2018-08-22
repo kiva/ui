@@ -11,7 +11,10 @@
 		<span class="small-10 medium-6">
 			<div class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
-				<div class="matching-info small-text">Matched by MATCHERSNAME</div>
+				<loan-matcher
+					v-if="loan.loan.matcherName"
+					:matcher-name="loan.loan.matcherName"
+				/>
 			</div>
 		</span>
 
@@ -26,10 +29,12 @@
 
 <script>
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
+import LoanMatcher from '@/components/Checkout/LoanMatcher';
 
 export default {
 	components: {
-		CheckoutItemImg
+		CheckoutItemImg,
+		LoanMatcher
 	},
 	props: {
 		loan: {
