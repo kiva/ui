@@ -15,7 +15,7 @@
 			</div>
 		</span>
 
-		<span class="small-12 medium-4 columns">
+		<span class="small-12 medium-4">
 			<!-- Making this a component -->
 			<div class="reservation-info small-text">Reserved for ## more minutes</div>
 			<!-- Making this a component -->
