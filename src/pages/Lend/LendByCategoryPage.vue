@@ -13,17 +13,23 @@
 		<div>
 			<category-row
 				class="loan-category-row"
+<<<<<<< HEAD
 				v-for="(category, index) in categoryIdSet"
 				:key="category.id"
 				:loan-channel="category.id"
 				:row-number="index + 1"
+=======
+				v-for="category in categories"
+				:key="category.id"
+				:loan-channel="category"
+>>>>>>> LC-8
 			/>
 		</div>
 
 		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
 				<category-admin-controls
-					:categories="categoryIdSet"
+					:categories="categorySetting"
 				/>
 			</div>
 		</div>
@@ -31,6 +37,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import _map from 'lodash/map';
 import { readJSONSetting } from '@/util/settingsUtils';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
@@ -51,10 +58,16 @@ export default {
 	data() {
 		return {
 			isAdmin: false,
-			categoryIdSet: [],
+			categorySetting: [],
+			categories: [],
 			experimentEnabled: false,
 			variants: [],
 		};
+	},
+	computed: {
+		categoryIds() {
+			return _map(this.categorySetting, 'id');
+		}
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -76,14 +89,36 @@ export default {
 		}
 	},
 	created() {
-		// Read the array of channel objects from the cache
-		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.categoryIdSet = readJSONSetting(baseData, 'general.setting.value') || [];
+		// Read the array of channel ids from the cache
+		const settingData = this.apollo.readQuery({ query: lendByCategoryQuery });
+		this.categorySetting = readJSONSetting(settingData, 'general.setting.value') || [];
 
-		// Watch for changes to the setting value
+		// Read the loan channels from the cache
+		const categoryData = this.apollo.readQuery({
+			query: loanChannelQuery,
+			variables: { ids: this.categoryIds },
+		});
+		this.categories = _get(categoryData, 'lend.loanChannelsById') || [];
+
+		// Create an observer for changes to the categories (and their loans)
+		const categoryObserver = this.apollo.watchQuery({
+			query: loanChannelQuery,
+			variables: { ids: this.categoryIds },
+		});
+
+		// Watch for and react to changes to the setting value
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
-				this.categoryIdSet = readJSONSetting(data, 'general.setting.value') || [];
+				this.categorySetting = readJSONSetting(data, 'general.setting.value') || [];
+				// Update the categories observer with the new setting, triggering updates
+				categoryObserver.setVariables({ ids: this.categoryIds });
+			},
+		});
+
+		// React to changes to the category data
+		categoryObserver.subscribe({
+			next: ({ data }) => {
+				this.categories = _get(data, 'lend.loanChannelsById') || [];
 			},
 		});
 	},
@@ -104,9 +139,6 @@ export default {
 
 		@include breakpoint(small only) {
 			margin-bottom: 1rem;
-		}
-		@media (hover: none) {
-			margin-left: rem-calc(8);
 		}
 
 		p {
@@ -137,7 +169,7 @@ export default {
 	.loan-category-row {
 		margin: 0 1rem rem-calc(20);
 		@include breakpoint(medium down) {
-			margin: 0 0.5rem rem-calc(20);
+			margin: 0 0 rem-calc(20) 0.5rem;
 		}
 	}
 }

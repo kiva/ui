@@ -7,7 +7,6 @@ query {
 	lend {
 		loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
 			values {
-				index
 				name
 				url
 			}
