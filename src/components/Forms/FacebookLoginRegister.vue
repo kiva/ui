@@ -1,6 +1,6 @@
 <template>
 	<div id="facebook-register">
-		<kv-facebook-button @click.native.prevent.stop="initiateFbLogin" />
+		<kv-facebook-button class="fb-button-parent" @click.native.prevent.stop="initiateFbLogin" />
 
 		<!-- New Account Lightbox -->
 		<kv-lightbox
@@ -152,10 +152,14 @@ export default {
 		formValidate
 	],
 	props: {
-		crumb: {
+		// crumb: {
+		// 	type: String,
+		// 	default: ''
+		// },
+		doneUrl: {
 			type: String,
 			default: ''
-		}
+		},
 	},
 	data() {
 		return {
@@ -212,7 +216,7 @@ export default {
 				// Attempt Login / Register to Kiva
 				.then(fbResponse => {
 					vm.fbUserInfo = fbResponse;
-					return fbUtils.doFbKivaLogin(fbResponse, vm.specialFbParams);
+					return fbUtils.doFbKivaLogin(fbResponse, vm.specialFbParams, vm.doneUrl);
 				})
 				// Get JSON from Kiva response
 				.then(kivaFbResponse => fbUtils.handleKivaResponse(kivaFbResponse))
@@ -300,7 +304,11 @@ export default {
 			console.log(`Handle post response: ${JSON.stringify(response)}`);
 			// If we've successfully logged in with the new FB Account refresh the page
 			if (response.success === true) {
-				window.location = window.location;
+				if (this.doneUrl !== '') {
+					window.location = `${document.location.origin}/${this.doneUrl}`;
+				} else {
+					window.location = window.location;
+				}
 			}
 		},
 	}
@@ -309,6 +317,10 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.fb-button-parent {
+	margin-bottom: 0.25rem;
+}
 
 #new-account-lightbox,
 #existing-account-lightbox {

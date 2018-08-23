@@ -16,19 +16,18 @@ export function checkFbLoginStatus() {
 	});
 }
 
-// export function handleLoginStatus(response) {
-// 	console.log(response);
-// }
-
 /*
-	Initiate Login by checking status first, responding based on status
+	Wrap FB method for login in a promise
+	- always checkFbLoginStatus before calling this as you may not need to...
+	- loginOptions are currently hardcoded for both reg and login attempts
+	@returns Promise
 */
 export function fbLogin() {
 	return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
 		const loginOptions = {
 			scope: ['public_profile', 'email'].join(','),
 			return_scopes: true,
-			auth_type: 'rerequest'
+			auth_type: 'rerequest' // always re-request so it hits the server
 		};
 
 		FB.login(response => {
@@ -37,6 +36,10 @@ export function fbLogin() {
 	});
 }
 
+/*
+	Wrap FB method for fetching user via api in a promise
+	@returns Promise
+*/
 export function fbFetchUser() {
 	return new Promise((resolve, reject) => {
 		FB.api(
@@ -50,7 +53,10 @@ export function fbFetchUser() {
 	});
 }
 
-function buildPostData(fbResponse, specialFbParams) {
+/*
+	Utility method to build and return parameter object used in doFbKivaLogin
+*/
+function buildPostData(fbResponse, specialFbParams, doneUrl) {
 	const defaultFbParams = {
 		fbuid: fbResponse.id,
 		displayName: fbResponse.first_name,
@@ -58,8 +64,8 @@ function buildPostData(fbResponse, specialFbParams) {
 		lastName: fbResponse.last_name,
 		email: fbResponse.email,
 		locale: fbResponse.locale,
-		pic: fbResponse.picture, // .data.url,
-		doneUrl: '/checkout-beta'
+		pic: fbResponse.picture, // .data.url, // we may need to serialize this value
+		doneUrl: (doneUrl !== '') ? doneUrl : document.location.pathname
 	};
 
 	const fbParams = Object.assign(defaultFbParams, specialFbParams);
@@ -67,8 +73,8 @@ function buildPostData(fbResponse, specialFbParams) {
 	return fbParams;
 }
 
-export function doFbKivaLogin(fbResponse, specialFbParams) {
-	const postData = buildPostData(fbResponse, specialFbParams);
+export function doFbKivaLogin(fbResponse, specialFbParams, doneUrl) {
+	const postData = buildPostData(fbResponse, specialFbParams, doneUrl);
 
 	const parameters = Object.keys(postData).map(key => {
 		return [key, postData[key]];
@@ -84,16 +90,20 @@ export function doFbKivaLogin(fbResponse, specialFbParams) {
 		cache: 'no-cache',
 		credentials: 'include',
 		headers: {
-			// 'Content-Type': 'application/json; charset=utf-8',
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
 		// redirect: 'follow', // manual, *follow, error
-		referrer: '/register', // no-referrer, *client
+		// referrer: '/register', // no-referrer, *client
 		// convert parameters into string ie. key=value&key=value...
 		body: encodedParameters.join('&')
 	});
 }
 
+/*
+	Extract json from /ajax/fbLogin fetch post
+	- alternatively builds and object of data off the response if json isn't available
+	@returns object
+*/
 export function handleKivaResponse(kivaFbResponse) {
 	if (kivaFbResponse.ok) {
 		return kivaFbResponse.json();
@@ -106,35 +116,6 @@ export function handleKivaResponse(kivaFbResponse) {
 		redirected: kivaFbResponse.redirected,
 		url: kivaFbResponse.url
 	};
-}
-
-/*
-	Initiate Login by checking status first, responding based on status
-*/
-export function initiateFbLogin() {
-	return checkFbLoginStatus()
-		.then(fbStatusObj => {
-			if (fbStatusObj.status === 'connected') {
-				// user is logged in to facebook + your app
-				// let uid = response.authResponse.userID;
-				// let accessToken = response.authResponse.accessToken;
-				// Next Fetch the User and load the user
-				console.log(`Already Logged In: ${fbStatusObj.status}`);
-				return fbStatusObj;
-			}
-			// user may be logged into Fb but hasn't authorized your app
-			// fbStatusObj.status 'authorization_expired' 'not_authorized' or 'unknown'
-			// call login then fetch and load the user
-			console.log(`NOT Connected: ${fbStatusObj.status}`);
-			return fbLogin();
-		})
-		.then(() => fbFetchUser())
-		.then(fbResponse => doFbKivaLogin(fbResponse))
-		.then(kivaFbResponse => handleKivaResponse(kivaFbResponse))
-		.catch(response => {
-			console.log(response);
-			Promise.reject(response);
-		});
 }
 
 /*

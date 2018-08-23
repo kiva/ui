@@ -1,10 +1,5 @@
 <template>
-
 	<div id="register-form">
-		<facebook-register type="register" :crumb="crumb" />
-		<hr>
-		<div class="featured-text">Or</div>
-
 		<form id="registerForm"
 			class="register-form"
 			ref="regForm"
@@ -130,14 +125,12 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
-import FacebookRegister from '@/components/Forms/FacebookRegister';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
-		FacebookRegister,
 		Password,
 	},
 	mixins: [
