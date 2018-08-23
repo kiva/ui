@@ -1,13 +1,13 @@
-<template>
+<template functional>
 	<div class="small-text">
-		Matched by {{ matcherName }}
+		Matched by {{ props.matchingText }}
 	</div>
 </template>
 
 <script>
 export default {
 	props: {
-		matcherName: {
+		matchingText: {
 			type: String,
 			default: ''
 		}
