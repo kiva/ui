@@ -31,22 +31,16 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import RegisterForm from '@/components/Forms/RegisterForm';
-<<<<<<< HEAD
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
-=======
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
->>>>>>> master
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
 		RegisterForm,
-<<<<<<< HEAD
-		FacebookLoginRegister
-=======
+		FacebookLoginRegister,
 		BasketItemsList
->>>>>>> master
 	},
 	inject: ['apollo'],
 	metaInfo: {
