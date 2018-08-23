@@ -15,6 +15,9 @@
 					v-if="loan.loan.matcherName"
 					:matcher-name="loan.loan.matcherName"
 				/>
+				<!-- :is-anonymous="isAnonymous"
+					:is-kiva-birthday="isKivaBirthday" -->
+
 			</div>
 		</span>
 
@@ -42,6 +45,20 @@ export default {
 			default: () => {}
 		},
 	},
+	data() {
+		return {
+			// matcherName: 'Anonymous'
+		};
+	},
+	computed: {
+		isAnonymous() {
+			console.log('isAnonymous');
+			return (this.matcherName === 'a Kiva supporter' || this.matcherName === 'Anonymous');
+		},
+		isKivaBirthday() {
+			return this.matcherName === 'Kiva to celebrate our birthday!' || this.matcherName === 'Kiva birthday';
+		}
+	}
 };
 
 </script>

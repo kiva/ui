@@ -1,5 +1,7 @@
 <template>
-	<div class="small-text">Matched by {{ matcherName }}</div>
+	<div class="small-text">
+		Matched by {{ matcherName }}
+	</div>
 </template>
 
 <script>
@@ -9,6 +11,6 @@ export default {
 			type: String,
 			default: ''
 		}
-	}
+	},
 };
 </script>
