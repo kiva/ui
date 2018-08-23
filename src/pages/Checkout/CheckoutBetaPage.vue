@@ -7,15 +7,9 @@
 				<br>
 				<hr>
 				<br>
-				<ul>
-					<li v-for="loan in loans" :key="loan.id">
-						<img :src="loan.loan.image.url" :alt="loan.loan.name">
-						{{ loan.loan.name }} {{ loan.price }}
-					</li>
-					<li v-for="donation in donations" :key="donation.id">
-						{{ donation.price }}
-					</li>
-				</ul>
+				<basket-items-list
+					:loans="loans"
+					:donations="donations" />
 				<br>
 				<hr>
 				<br>
@@ -37,14 +31,22 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import RegisterForm from '@/components/Forms/RegisterForm';
+<<<<<<< HEAD
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
+=======
+import BasketItemsList from '@/components/Checkout/BasketItemsList';
+>>>>>>> master
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
 		RegisterForm,
+<<<<<<< HEAD
 		FacebookLoginRegister
+=======
+		BasketItemsList
+>>>>>>> master
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -55,9 +57,9 @@ export default {
 			myBalance: undefined,
 			myId: undefined,
 			currentStep: 'basket',
-			loans: () => {},
+			loans: [],
 			totals: () => {},
-			donations: () => {}
+			donations: []
 		};
 	},
 	apollo: {
@@ -71,9 +73,6 @@ export default {
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 		}
-	},
-	methods: {
-
 	},
 	computed: {
 		isLoggedIn() {
