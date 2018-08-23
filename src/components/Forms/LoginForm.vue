@@ -1,10 +1,5 @@
 <template>
 	<div id="login-form">
-		<!-- <facebook-login-register :crumb="crumb" :done-url="doneUrl" />
-		<p class="fb-help text-center">We won't post to Facebook without asking.</p>
-		<hr>
-		<div class="featured-text text-center">Or use your email</div> -->
-
 		<form id="loginForm"
 			class="login-form"
 			ref="loginForm"
@@ -86,18 +81,12 @@
 				v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick'">
 				Forgot your password?
 			</a>
-			<!-- <a class="register-link"
-				v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'"
-				@click.prevent.stop="switchToRegister">
-				Sign up for Kiva
-			</a> -->
 		</form>
 	</div>
 </template>
 
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
-import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import KvButton from '@/components/Kv/KvButton';
 import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -107,7 +96,6 @@ import formValidate from '@/plugins/formValidate';
 
 export default {
 	components: {
-		FacebookLoginRegister,
 		KvButton,
 		KvFacebookButton,
 		KvLightbox,

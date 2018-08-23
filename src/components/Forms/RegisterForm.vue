@@ -1,18 +1,5 @@
 <template>
-
 	<div id="register-form">
-		<!-- <div class="switch-to-login text-center">
-			Already have an account? <a
-				@click.prevent.stop="switchToLogin"
-				v-kv-track-event="['register', 'alreadyMemberLnk']"
-				id="loginLink">Sign in</a>
-		</div>
-		<hr>
-		<facebook-login-register :crumb="crumb" />
-		<p class="fb-help text-center">We won't post to Facebook without asking.</p>
-		<br>
-		<div class="featured-text text-center">Or</div> -->
-
 		<form id="registerForm"
 			class="register-form"
 			ref="regForm"
@@ -138,14 +125,12 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
-import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
-		FacebookLoginRegister,
 		Password,
 	},
 	mixins: [
