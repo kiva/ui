@@ -20,6 +20,7 @@ query {
 							name
 							use
 							status
+							matchingText
 							sector {
 								name
 							}
