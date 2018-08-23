@@ -2,6 +2,7 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
+				<facebook-login-register />
 				<register-form v-if="!isLoggedIn" :refresh="true" />
 				<br>
 				<hr>
@@ -36,12 +37,14 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import RegisterForm from '@/components/Forms/RegisterForm';
+import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
-		RegisterForm
+		RegisterForm,
+		FacebookLoginRegister
 	},
 	inject: ['apollo'],
 	metaInfo: {

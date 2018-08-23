@@ -1,9 +1,17 @@
 <template>
 
 	<div id="register-form">
-		<facebook-register type="register" :crumb="crumb" />
+		<!-- <div class="switch-to-login text-center">
+			Already have an account? <a
+				@click.prevent.stop="switchToLogin"
+				v-kv-track-event="['register', 'alreadyMemberLnk']"
+				id="loginLink">Sign in</a>
+		</div>
 		<hr>
-		<div class="featured-text">Or</div>
+		<facebook-login-register :crumb="crumb" />
+		<p class="fb-help text-center">We won't post to Facebook without asking.</p>
+		<br>
+		<div class="featured-text text-center">Or</div> -->
 
 		<form id="registerForm"
 			class="register-form"
@@ -130,14 +138,14 @@
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
-import FacebookRegister from '@/components/Forms/FacebookRegister';
+import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import formValidate from '@/plugins/formValidate';
 import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
-		FacebookRegister,
+		FacebookLoginRegister,
 		Password,
 	},
 	mixins: [
@@ -190,6 +198,9 @@ export default {
 		});
 	},
 	methods: {
+		switchToLogin() {
+			this.$emit('switchtologin');
+		},
 		register() {
 			// this.loading = true;
 			if (this.validateForm() === true) {
@@ -268,6 +279,16 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.fb-help {
+	color: $kiva-text-light;
+	font-weight: 400;
+}
+
+.switch-to-login {
+	font-weight: 400;
+	font-size: 1.2rem;
+}
 
 .register-form {
 	.server-errors,
