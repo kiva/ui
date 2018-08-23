@@ -183,9 +183,6 @@ export default {
 		});
 	},
 	methods: {
-		switchToLogin() {
-			this.$emit('switchtologin');
-		},
 		register() {
 			// this.loading = true;
 			if (this.validateForm() === true) {
@@ -264,16 +261,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-
-.fb-help {
-	color: $kiva-text-light;
-	font-weight: 400;
-}
-
-.switch-to-login {
-	font-weight: 400;
-	font-size: 1.2rem;
-}
 
 .register-form {
 	.server-errors,

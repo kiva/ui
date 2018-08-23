@@ -151,9 +151,6 @@ export default {
 		this.currUrl = window.location.href;
 	},
 	methods: {
-		switchToRegister() {
-			this.$emit('switchtoregister');
-		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
@@ -213,11 +210,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-
-.fb-help {
-	color: $kiva-text-light;
-	font-weight: 400;
-}
 
 .login-form {
 	.server-errors,
