@@ -286,7 +286,7 @@ export default {
 	}
 
 	.reg-password /deep/ .Password__strength-meter {
-		height: rem-calc(8);
+		height: 0.4375rem;
 		border-radius: rem-calc(8);
 	}
 
