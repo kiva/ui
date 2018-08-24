@@ -19,8 +19,10 @@
 		</span>
 
 		<span class="small-12 medium-4">
-			<!-- Making this a component -->
-			<div class="reservation-info small-text">Reserved for ## more minutes</div>
+			<loan-reservation
+				:expiry-time="loan.expiryTime"
+				:is-ending-soon="loan.isEndingSoon"
+			/>
 			<!-- Making this a component -->
 			<input class="loan-price" type="select">{{ loan.price }}
 		</span>
@@ -30,11 +32,13 @@
 <script>
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
+import LoanReservation from '@/components/Checkout/LoanReservation';
 
 export default {
 	components: {
 		CheckoutItemImg,
-		LoanMatcher
+		LoanMatcher,
+		LoanReservation
 	},
 	props: {
 		loan: {
@@ -48,9 +52,5 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-
-.reservation-info {
-	color: $kiva-text-light;
-}
 
 </style>
