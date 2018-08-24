@@ -76,6 +76,7 @@
 					</div>
 					<div v-else>
 						<input
+							id="password"
 							type="password"
 							name="password"
 							v-model="password"
