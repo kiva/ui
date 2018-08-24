@@ -2,7 +2,7 @@
 	<experiment-slide v-bind="$attrs" v-on="$listeners">
 		<h2>Control <small>(default categories)</small></h2>
 		<label>
-			Weight: {{ weight }}%
+			Weight: {{ weight | numeral('0.[00000000]%') }}
 		</label>
 	</experiment-slide>
 </template>

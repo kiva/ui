@@ -58,7 +58,7 @@ export default {
 	margin: 0.5rem 0;
 	padding: 0.5rem;
 	border: 1px solid $kiva-stroke-gray;
-	background-color: $kiva-bg-lightgray;
+	background-color: $white;
 
 	label {
 		display: flex;

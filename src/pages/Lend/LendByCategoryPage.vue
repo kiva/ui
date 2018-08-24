@@ -13,7 +13,7 @@
 		<div>
 			<category-row
 				class="loan-category-row"
-				v-for="category in categoryIdSet"
+				v-for="category in categories"
 				:key="category.id"
 				:loan-channel="category.id"
 			/>
@@ -21,9 +21,7 @@
 
 		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
-				<category-admin-controls
-					:categories="categoryIdSet"
-				/>
+				<category-admin-controls />
 			</div>
 		</div>
 	</www-page>
@@ -51,7 +49,7 @@ export default {
 	data() {
 		return {
 			isAdmin: false,
-			categoryIdSet: [],
+			categories: [],
 			experimentEnabled: false,
 			variants: [],
 		};
@@ -78,13 +76,13 @@ export default {
 	created() {
 		// Read the array of channel objects from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.categoryIdSet = readJSONSetting(baseData, 'general.setting.value') || [];
+		this.categories = readJSONSetting(baseData, 'general.setting.value') || [];
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 
 		// Watch for changes to the query
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
-				this.categoryIdSet = readJSONSetting(data, 'general.setting.value') || [];
+				this.categories = readJSONSetting(data, 'general.setting.value') || [];
 				this.isAdmin = !!_get(data, 'my.isAdmin');
 			},
 		});

@@ -16,10 +16,12 @@
 				End time: <input type="datetime-local">
 			</label>
 		</div>
-		<experiment-variant-slide v-show="experimentEnabled" :options="possibleCategories" />
-		<kv-button v-show="experimentEnabled" class="setting">
-			+ Add variant
-		</kv-button>
+		<div class="variant-panel" v-show="experimentEnabled">
+			<experiment-variant-slide v-for="(variant, index) in variants" :key="index" :options="possibleCategories" />
+			<kv-button @click.native="addVariant" class="setting">
+				+ Add variant
+			</kv-button>
+		</div>
 		<div class="bottom-button-row">
 			<kv-button @click.native="reset" v-if="changed" class="secondary">
 				Reset
@@ -38,9 +40,13 @@
 
 <script>
 import _cloneDeep from 'lodash/cloneDeep';
+import _fromPairs from 'lodash/fromPairs';
 import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
+import _sum from 'lodash/sum';
+import _values from 'lodash/values';
+import { readJSONSetting } from '@/util/settingsUtils';
 import categoryAdminQuery from '@/graphql/query/categoryAdminControl.graphql';
 import setRowsMutation from '@/graphql/mutation/setCategoryRows.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -56,30 +62,54 @@ export default {
 		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
-	props: {
-		categories: {
-			type: Array,
-			default: () => [],
-		},
-	},
 	data() {
 		return {
+			setCategories: [],
 			defaultCategories: [],
 			possibleCategories: [],
+			controlName: 'control',
 			experimentEnabled: false,
-			variants: [],
+			experimentData: {},
+			variants: [{
+				name: 'thing',
+				weight: 0.5,
+				categories: []
+			}],
 			saving: false,
 		};
 	},
 	computed: {
+		categoriesByVariantId() {
+			const pairs = _map(this.variants, ({ name, categories }) => [name, categories]);
+			return _fromPairs(pairs);
+		},
 		controlWeight() {
 			if (this.experimentEnabled) {
-				return 0; // TODO: calc based on all variants weight
+				return 1 - _sum(_values(this.variantWeights));
 			}
-			return 100;
+			return 1;
 		},
 		changed() {
-			return !_isEqual(this.categories, this.defaultCategories);
+			const categoriesChanged = !_isEqual(this.setCategories, this.defaultCategories);
+			const experimentChanged = !_isEqual(this.experimentData, this.localExperimentObject);
+			return categoriesChanged || experimentChanged;
+		},
+		localExperimentObject() {
+			return {
+				name: 'CategoryRows',
+				enabled: this.experimentEnabled,
+				// start_time:
+				// end_time:
+				variants: this.categoriesByVariantId,
+				distribution: {
+					[this.controlName]: this.controlWeight,
+					...this.variantWeights,
+				},
+			};
+		},
+		variantWeights() {
+			const pairs = _map(this.variants, ({ name, weight }) => [name, weight]);
+			return _fromPairs(pairs);
 		},
 	},
 	apollo: {
@@ -91,10 +121,12 @@ export default {
 					value: category.id,
 				};
 			});
+			this.setCategories = readJSONSetting(data, 'general.rows.value');
+			this.experimentData = readJSONSetting(data, 'general.experiment.value');
 		},
 	},
 	watch: {
-		categories: {
+		setCategories: {
 			handler() {
 				this.reset();
 			},
@@ -102,8 +134,11 @@ export default {
 		}
 	},
 	methods: {
+		addVariant() {
+			this.variants.push({});
+		},
 		reset() {
-			this.defaultCategories = _cloneDeep(this.categories);
+			this.defaultCategories = _cloneDeep(this.setCategories);
 		},
 		save() {
 			this.saving = true;

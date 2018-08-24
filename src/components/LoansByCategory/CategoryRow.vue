@@ -63,7 +63,6 @@ export default {
 	data() {
 		return {
 			cardsInRow: 12,
-			description: '',
 			loans: [],
 			loading: false,
 			name: '',
@@ -139,7 +138,6 @@ export default {
 	methods: {
 		setChannelData(channel) {
 			this.name = _get(channel, 'name');
-			this.description = _get(channel, 'description');
 			this.url = _get(channel, 'url');
 			this.loans = _get(channel, 'loans.values');
 		},

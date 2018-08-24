@@ -101,7 +101,7 @@ export default {
 @import 'settings';
 
 .category-list {
-	background-color: $white;
+	background-color: $kiva-bg-lightgray;
 	margin: 0.5rem;
 	padding: 0.5rem;
 }
