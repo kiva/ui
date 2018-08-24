@@ -22,7 +22,7 @@ export default {
 			if (this.checkEmpty(password)) {
 				this.passwordErrors.push('Password required');
 			}
-			if (this.password.length < 8 || this.password.length > 30) {
+			if (password.length < 8 || password.length > 30) {
 				this.passwordErrors.push('Password must be 8 - 30 characters.');
 			}
 			return this.passwordErrors;
@@ -42,6 +42,7 @@ export default {
 			return this.emailErrors;
 		},
 		validateTerms() {
+			// TODO: pass terms into this method, then remove this. from the reference to terms below
 			this.termsErrors = [];
 			if (!this.terms) {
 				this.termsErrors.push('You must agree to the Kiva Terms of service & Privacy policy');

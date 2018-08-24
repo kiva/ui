@@ -16,6 +16,7 @@ module.exports = {
 		enableFB: true,
 		fbApplicationId: '123230061223',
 		fbPixelId: '1531213600467139',
+		fbOgNameSpace: 'kivadotorg',
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
 	},

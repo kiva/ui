@@ -1,4 +1,10 @@
 query {
+	my {
+		userAccount {
+			id
+			balance
+		}
+	}
 	shop {
 		basket {
 			items {
@@ -14,6 +20,7 @@ query {
 							name
 							use
 							status
+							matchingText
 							sector {
 								name
 							}

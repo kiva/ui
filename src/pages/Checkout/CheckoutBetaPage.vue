@@ -2,17 +2,21 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<ul>
-					<li v-for="loan in loans" :key="loan.id">
-						<img :src="loan.loan.image.url" :alt="loan.loan.name">
-						{{ loan.loan.name }} {{ loan.price }}
-					</li>
-					<li v-for="donation in donations" :key="donation.id">
-						{{ donation.price }}
-					</li>
-				</ul>
-				<pay-pal-exp :amount="totals.creditAmountNeeded" />
+				<facebook-login-register />
+				<register-form v-if="!isLoggedIn" :refresh="true" />
+				<br>
 				<hr>
+				<br>
+				<basket-items-list
+					:loans="loans"
+					:donations="donations" />
+				<br>
+				<hr>
+				<br>
+				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
+				<br>
+				<hr>
+				<br>
 				<router-link to="/ui-site-map">Site Map</router-link>
 			</div>
 		</div>
@@ -26,25 +30,30 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import RegisterForm from '@/components/Forms/RegisterForm';
+import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
+import BasketItemsList from '@/components/Checkout/BasketItemsList';
 
 export default {
 	components: {
 		WwwPage,
-		PayPalExp
+		PayPalExp,
+		RegisterForm,
+		FacebookLoginRegister,
+		BasketItemsList
 	},
 	inject: ['apollo'],
 	metaInfo: {
 		title: 'Checkout',
-		// script: [
-		// 	{ type: 'text/javascript', src: 'https://www.paypalobjects.com/api/checkout.js' }
-		// ]
 	},
 	data() {
 		return {
+			myBalance: undefined,
+			myId: undefined,
 			currentStep: 'basket',
-			loans: () => {},
+			loans: [],
 			totals: () => {},
-			donations: () => {}
+			donations: []
 		};
 	},
 	apollo: {
@@ -52,15 +61,17 @@ export default {
 		prefetch: true,
 		result({ data }) {
 			console.log(data);
+			this.myBalance = _get(data, 'my.userAccount.balance');
+			this.myId = _get(data, 'my.userAccount.id');
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 		}
 	},
-	methods: {
-
-	},
 	computed: {
+		isLoggedIn() {
+			return this.myId !== undefined;
+		}
 	}
 };
 </script>

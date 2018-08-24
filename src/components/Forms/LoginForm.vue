@@ -1,95 +1,88 @@
 <template>
-	<form id="loginForm"
-		class="login-form"
-		ref="loginForm"
-		name="loginForm"
-		method="post"
-		:action="loginActionUrl"
-		@submit.prevent.stop="doLogin"
-		novalidate>
+	<div id="login-form">
+		<form id="loginForm"
+			class="login-form"
+			ref="loginForm"
+			name="loginForm"
+			method="post"
+			:action="loginActionUrl"
+			@submit.prevent.stop="doLogin"
+			novalidate>
 
-		<kv-facebook-button />
-		<hr>
-		<div class="featured-text">Or use your email</div>
+			<ul v-show="serverErrors" class="server-errors">
+				<li v-for="(errorText, index) in serverErrors" :key="index">
+					{{ errorText }}
+				</li>
+			</ul>
 
-		<ul v-show="serverErrors" class="server-errors">
-			<li v-for="(errorText, index) in serverErrors" :key="index">
-				{{ errorText }}
-			</li>
-		</ul>
+			<div class="input-set">
+				<label for="email">
+					Email
+					<input
+						type="email"
+						name="email"
+						v-model="email"
+						autofocus
+						@blur="validateEmail(email)">
+				</label>
+				<p v-if="emailErrors.length">
+					<ul class="validation-errors">
+						<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+					</ul>
+				</p>
+			</div>
 
-		<div class="input-set">
-			<label for="email">
-				Email
-				<input
-					type="email"
-					name="email"
-					v-model="email"
-					autofocus
-					@blur="validateEmail(email)">
-			</label>
-			<p v-if="emailErrors.length">
-				<ul class="validation-errors">
-					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
-				</ul>
-			</p>
-		</div>
+			<div class="input-set">
+				<label for="password">
+					Password <input
+						type="password"
+						name="password"
+						v-model="password"
+						maxlength="31"
+						@blur="validatePassword(password)">
+				</label>
+				<p v-if="passwordErrors.length">
+					<ul class="validation-errors">
+						<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+					</ul>
+				</p>
+			</div>
 
-		<div class="input-set">
-			<label for="password">
-				Password <input
-					type="password"
-					name="password"
-					v-model="password"
-					maxlength="31"
-					@blur="validatePassword(password)">
-			</label>
-			<p v-if="passwordErrors.length">
-				<ul class="validation-errors">
-					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
-				</ul>
-			</p>
-		</div>
+			<div class="persist-login-wrap">
+				<input type="checkbox" name="persist_login" id="loginForm_persist_login">
+				<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
+				<a class="helpTip sfHelpTip_old"
+					id="persist_login_details"
+					@click.prevent="triggerDefaultLightbox">
+					Details
+				</a>
+			</div>
 
-		<div class="persist-login-wrap">
-			<input type="checkbox" name="persist_login" id="loginForm_persist_login">
-			<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
-			<a class="helpTip sfHelpTip_old"
-				id="persist_login_details"
-				@click.prevent="triggerDefaultLightbox">
-				Details
+			<kv-lightbox
+				:visible="defaultLbVisible"
+				@lightbox-closed="lightboxClosed">
+				<h2 slot="title">{{ salesforceHelpText.name }}</h2>
+				<p>{{ salesforceHelpText.note }}</p>
+			</kv-lightbox>
+
+			<KvButton
+				class="sign-in-button smaller"
+				type="submit"
+				v-kv-track-event="'Login|click-Login-submit|LoginButtonClick'">
+				Sign in
+			</KvButton>
+
+			<input type="hidden" name="currURL" :value="currUrl">
+			<!-- Have to pass this crumb in the Header and in the Request -->
+			<input type="hidden" id="crumb" name="crumb" :value="crumb">
+
+			<a href="/help/forgot-password"
+				class="forgot-password-link"
+				v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick'">
+				Forgot your password?
 			</a>
-		</div>
-
-		<kv-lightbox
-			:visible="defaultLbVisible"
-			@lightbox-closed="lightboxClosed">
-			<h2 slot="title">{{ salesforceHelpText.name }}</h2>
-			<p>{{ salesforceHelpText.note }}</p>
-		</kv-lightbox>
-
-		<KvButton
-			class="sign-in-button smaller"
-			type="submit"
-			v-kv-track-event="'Login|click-Login-submit|LoginButtonClick'">
-			Sign in
-		</KvButton>
-
-		<input type="hidden" name="currURL" :value="currUrl">
-		<!-- Have to pass this crumb in the Header and in the Request -->
-		<input type="hidden" id="crumb" name="crumb" :value="crumb">
-
-		<a href="/help/forgot-password"
-			class="forgot-password-link"
-			v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick'">
-			Forgot your password?
-		</a>
-		<a href="/register"
-			class="register-link"
-			v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'">
-			Sign up for Kiva
-		</a>
-	</form>
+		</form>
+	</div>
 </template>
 
 <script>

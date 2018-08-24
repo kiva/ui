@@ -16,7 +16,7 @@ export default config => {
 			(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
 				p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
 				};p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
-				n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,'script','//d1fc8wv8zag5ca.cloudfront.net/2.5.3/sp.js','snowplow'));
+				n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,'script','//d1fc8wv8zag5ca.cloudfront.net/2.9.0/sp.js','snowplow'));
 			window.snowplow('newTracker', 'cf', config.snowplowUri, { // Initialize a tracker
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org'
@@ -33,6 +33,30 @@ export default config => {
 			ga('create', config.gaId, 'auto');
 			/* eslint-enable */
 		}
+	}
+
+	// Facebook JSSDK
+	if (config.enableFB) {
+		/* eslint-disable */
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: config.fbApplicationId,
+				autoLogAppEvents: true,
+				cookie: true, // sets a cookie for the session
+				status: true, // set to true to check login status automatically on each page load
+				xfbml: false, // set to true to have fb parse the dom looking for social plugins
+				version: 'v2.2' // current 'v3.1'
+			});
+		};
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "https://connect.facebook.net/en_US/sdk.js";
+			// js.src = "https://connect.facebook.net/en_US/sdk/debug.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+		/* eslint-enable */
 	}
 
 	// PerimeterX snippet

@@ -2,7 +2,7 @@
 	<www-page class="lend-by-category-page">
 		<div class="row">
 			<div class="heading-region column small-12">
-				<h1 @click="isAdmin=!isAdmin">Make a loan, change a life</h1>
+				<h1>Make a loan, change a life</h1>
 				<p class="page-subhead">Each Kiva loan helps people build a better future for
 				themselves and their families. <br class="xxlu">Browse loans by category below, or
 					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
@@ -106,6 +106,7 @@ export default {
 		}
 	},
 	created() {
+<<<<<<< HEAD
 		// Read the array of channel ids from the cache
 		const settingData = this.apollo.readQuery({ query: lendByCategoryQuery });
 		this.categorySetting = readJSONSetting(settingData, 'general.setting.value') || [];
@@ -136,6 +137,18 @@ export default {
 		categoryObserver.subscribe({
 			next: ({ data }) => {
 				this.categories = _get(data, 'lend.loanChannelsById') || [];
+=======
+		// Read the array of channel objects from the cache
+		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
+		this.categoryIdSet = readJSONSetting(baseData, 'general.setting.value') || [];
+		this.isAdmin = !!_get(baseData, 'my.isAdmin');
+
+		// Watch for changes to the query
+		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
+			next: ({ data }) => {
+				this.categoryIdSet = readJSONSetting(data, 'general.setting.value') || [];
+				this.isAdmin = !!_get(data, 'my.isAdmin');
+>>>>>>> master
 			},
 		});
 	},
@@ -189,7 +202,8 @@ export default {
 
 	.loan-category-row {
 		margin: 0 1rem rem-calc(20);
-		@include breakpoint(medium down) {
+
+		@media (hover: none) {
 			margin: 0 0 rem-calc(20) 0.5rem;
 		}
 	}

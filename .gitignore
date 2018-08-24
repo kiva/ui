@@ -11,3 +11,4 @@ server/available-routes.json
 *.ntvs*
 *.njsproj
 *.sln
+.vscode
