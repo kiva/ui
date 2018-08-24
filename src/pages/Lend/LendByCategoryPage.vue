@@ -13,16 +13,10 @@
 		<div>
 			<category-row
 				class="loan-category-row"
-<<<<<<< HEAD
-				v-for="(category, index) in categoryIdSet"
-				:key="category.id"
-				:loan-channel="category.id"
-				:row-number="index + 1"
-=======
-				v-for="category in categories"
+				v-for="(category, index) in categories"
 				:key="category.id"
 				:loan-channel="category"
->>>>>>> LC-8
+				:row-number="index + 1"
 			/>
 		</div>
 
@@ -39,6 +33,9 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+// @TODO following 2 imports unnecessary once category sort data available
+import _size from 'lodash/size';
+import _times from 'lodash/times';
 import { readJSONSetting } from '@/util/settingsUtils';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
@@ -67,6 +64,26 @@ export default {
 	computed: {
 		categoryIds() {
 			return _map(this.categorySetting, 'id');
+		}
+	},
+	methods: {
+		assemblePageViewData(categories) {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_0.json#';
+			const loans = _map(categories, 'loans');
+			const pageViewTrackData = { schema, data: {} };
+
+			// @TODO - make following dynamic when identifier data available
+			pageViewTrackData.data.categorySetIdentifier = 'default';
+
+			pageViewTrackData.data.categoriesDisplayed = _map(categories, 'id');
+
+			// @TODO - when sorts available, replace below with ~ _map(this.categories, 'sort')
+			pageViewTrackData.data.sortsDisplayed = [];
+			_times(_size(categories), () => pageViewTrackData.data.sortsDisplayed.push('default'));
+
+			pageViewTrackData.data.loansDisplayed = _map(loans, ({ values }) => _map(values, 'id'));
+			return pageViewTrackData;
 		}
 	},
 	apollo: {
@@ -121,6 +138,10 @@ export default {
 				this.categories = _get(data, 'lend.loanChannelsById') || [];
 			},
 		});
+	},
+	mounted() {
+		const pageViewTrackData = this.assemblePageViewData(this.categories);
+		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 	},
 };
 </script>
