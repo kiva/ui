@@ -285,6 +285,31 @@ export default {
 		height: rem-calc(19) !important;
 	}
 
+	.reg-password /deep/ .Password__strength-meter {
+		height: rem-calc(8);
+		border-radius: rem-calc(8);
+	}
+
+	.reg-password /deep/ .Password__badge--success {
+		background: $green;
+	}
+
+	.reg-password /deep/ .Password__strength-meter::before,
+	.reg-password /deep/ .Password__strength-meter::after {
+		display: none;
+	}
+
+	.reg-password /deep/ .Password__strength-meter--fill[data-score="0"],
+	.reg-password /deep/ .Password__strength-meter--fill[data-score="1"],
+	.reg-password /deep/ .Password__strength-meter--fill[data-score="2"] {
+		background: $kiva-accent-red;
+	}
+
+	.reg-password /deep/ .Password__strength-meter--fill[data-score="3"],
+	.reg-password /deep/ .Password__strength-meter--fill[data-score="4"] {
+		background: $green;
+	}
+
 	.register-button {
 		width: 100%;
 		margin-bottom: rem-calc(20);
