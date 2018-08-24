@@ -28,6 +28,8 @@ module.exports = {
 		alias: {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
+			// ensure we import and use the minified version (import name matches what is used in component)
+			'MeteredPassword': 'vue-password-strength-meter/dist/vue-password-strength-meter.min.js',
 		}
 	},
 	module: {

@@ -2,7 +2,7 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<facebook-login-register />
+				<facebook-login-register v-if="!isLoggedIn" />
 				<register-form v-if="!isLoggedIn" :refresh="true" />
 				<br>
 				<hr>

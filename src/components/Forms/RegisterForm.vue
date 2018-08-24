@@ -67,7 +67,7 @@
 
 			<div class="input-set">
 				<label for="password">Password
-					<password
+					<metered-password
 						name="password"
 						v-model="password"
 						class="reg-password"
@@ -126,12 +126,13 @@
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
-import Password from 'vue-password-strength-meter';
+import MeteredPassword from 'vue-password-strength-meter'; // eslint-disable-line
+// import Password from 'vue-password-strength-meter/dist/vue-password-strength-meter.min.js'; // eslint-disable-line
 
 export default {
 	components: {
 		KvButton,
-		Password,
+		MeteredPassword,
 	},
 	mixins: [
 		loginRegUtils,
