@@ -55,8 +55,8 @@ export default {
 .experiment-slide {
 	display: flex;
 	justify-content: space-between;
-	margin: 0.5rem 0;
-	padding: 0.5rem;
+	margin: 1rem 0;
+	padding: 1rem;
 	border: 1px solid $kiva-stroke-gray;
 	background-color: $white;
 
@@ -68,6 +68,7 @@ export default {
 		input {
 			width: auto;
 			margin: 0 0.25rem;
+			min-width: 5rem;
 		}
 	}
 }

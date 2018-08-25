@@ -102,7 +102,7 @@ export default {
 
 .category-list {
 	background-color: $kiva-bg-lightgray;
-	margin: 0.5rem;
+	margin: 0.5rem 0;
 	padding: 0.5rem;
 }
 
