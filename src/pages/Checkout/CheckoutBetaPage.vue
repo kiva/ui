@@ -33,6 +33,7 @@ import PayPalExp from '@/components/Checkout/PayPalExpress';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 
 export default {
 	components: {
@@ -40,7 +41,8 @@ export default {
 		PayPalExp,
 		RegisterForm,
 		FacebookLoginRegister,
-		BasketItemsList
+		BasketItemsList,
+		loanCardQuery
 	},
 	inject: ['apollo'],
 	metaInfo: {
