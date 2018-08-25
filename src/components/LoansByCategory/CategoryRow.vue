@@ -23,9 +23,10 @@
 				>
 					<GridLoanCard
 						class="is-in-category-row"
-						v-for="loan in loans"
+						v-for="(loan, index) in loans"
 						:key="loan.id"
 						:loan="loan"
+						:card-number="index + 1"
 					/>
 				</div>
 			</div>
@@ -41,8 +42,6 @@
 <script>
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
-import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
-import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
 const minWidthToShowLargeCards = 340;
@@ -56,15 +55,18 @@ export default {
 	inject: ['apollo'],
 	props: {
 		loanChannel: {
+			type: Object,
+			default: () => {},
+		},
+		rowNumber: {
 			type: Number,
-			default: 1,
+			default: null
 		},
 	},
 	data() {
 		return {
-			cardsInRow: 12,
+			description: '',
 			loans: [],
-			loading: false,
 			name: '',
 			offset: null,
 			scrollPos: 0,
@@ -92,41 +94,17 @@ export default {
 			return this.cardsInWindow * this.cardWidth;
 		},
 	},
-	apollo: {
-		query: loanChannelQuery,
-		variables() {
-			return {
-				ids: [this.loanChannel],
-				numberOfLoans: this.cardsInRow,
-				// @todo - decide if we want to request images sized for the
-				// smaller loan cards on category-row pages - if we do, then
-				// we'd need to adjust cloudinary allowed sizes in settings mgr.
-				// imgDefaultSize: 'w280h210',
-				// imgRetinaSize: 'w560h420',
-			};
-		},
-		result({ data, loading }) {
-			if (loading) {
-				this.loading = true;
-			} else {
-				this.setChannelData(_get(data, 'lend.loanChannelsById[0]'));
-				this.loading = false;
-			}
-		}
-	},
-	created() {
-		// Read the data from the cache for this loan channel (for ssr)
-		const data = this.apollo.readFragment({
-			id: `LoanChannel:${this.loanChannel}`,
-			fragment: loanChannelFragment,
-			fragmentName: 'loanChannelFields',
-			variables: {
-				numberOfLoans: this.cardsInRow,
-				imgDefaultSize: 'w480h360',
-				imgRetinaSize: 'w960h720',
+	watch: {
+		loanChannel: {
+			handler(channel) {
+				this.name = _get(channel, 'name');
+				this.description = _get(channel, 'description');
+				this.url = _get(channel, 'url');
+				this.loans = _get(channel, 'loans.values');
 			},
-		});
-		this.setChannelData(data);
+			immediate: true,
+			deep: true,
+		}
 	},
 	mounted() {
 		this.saveWindowWidth();
@@ -136,11 +114,6 @@ export default {
 		window.removeEventListener('resize', this.throttledResize);
 	},
 	methods: {
-		setChannelData(channel) {
-			this.name = _get(channel, 'name');
-			this.url = _get(channel, 'url');
-			this.loans = _get(channel, 'loans.values');
-		},
 		saveWindowWidth() {
 			this.windowWidth = window.innerWidth;
 			this.wrapperWidth = this.$refs.innerWrapper.clientWidth;

@@ -6,10 +6,10 @@
 				<kv-icon name="small-chevron-mobile" />
 			</template>
 			<ul>
-				<li v-for="category in categories" :key="category.index">
+				<li v-for="(category, index) in categories" :key="index">
 					<a
 						:href="category.url"
-						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, category.index]">
+						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]">
 						{{ category.name }}
 					</a>
 				</li>
