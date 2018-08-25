@@ -1,5 +1,5 @@
-{
+query ($amount: Money!) {
 	shop {
-		getPaymentToken(amount: 23.24)
+		getPaymentToken(amount: $amount)
 	}
 }

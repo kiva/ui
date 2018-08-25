@@ -2,8 +2,10 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<facebook-login-register v-if="!isLoggedIn" />
-				<register-form v-if="!isLoggedIn" :refresh="true" />
+				<div v-if="!isLoggedIn" class="login-reg-holder">
+					<facebook-login-register />
+					<register-form :refresh="true" />
+				</div>
 				<br>
 				<hr>
 				<br>
@@ -44,7 +46,7 @@ export default {
 	},
 	inject: ['apollo'],
 	metaInfo: {
-		title: 'Checkout',
+		title: 'Checkout'
 	},
 	data() {
 		return {
@@ -53,14 +55,17 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			totals: () => {},
-			donations: []
+			donations: [],
+			loading: false,
 		};
 	},
 	apollo: {
 		query: initializeCheckout,
-		prefetch: true,
-		result({ data }) {
-			console.log(data);
+		preFetch: true,
+		result({ data, loading }) {
+			if (loading) {
+				this.loading = true;
+			}
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.totals = _get(data, 'shop.basket.totals');
@@ -81,5 +86,10 @@ export default {
 
 .page-content {
 	padding: 1.625rem 0;
+}
+
+// Hide Basket Bar
+.basket-bar {
+	display: none;
 }
 </style>
