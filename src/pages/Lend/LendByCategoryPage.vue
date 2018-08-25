@@ -105,8 +105,9 @@ export default {
 	},
 	created() {
 		// Read the array of channel ids from the cache
-		const settingData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.categorySetting = readJSONSetting(settingData, 'general.setting.value') || [];
+		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
+		this.categorySetting = readJSONSetting(baseData, 'general.setting.value') || [];
+		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 
 		// Read the loan channels from the cache
 		const categoryData = this.apollo.readQuery({
@@ -121,10 +122,11 @@ export default {
 			variables: { ids: this.categoryIds },
 		});
 
-		// Watch for and react to changes to the setting value
+		// Watch for and react to changes to the query
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
 				this.categorySetting = readJSONSetting(data, 'general.setting.value') || [];
+				this.isAdmin = !!_get(data, 'my.isAdmin');
 				// Update the categories observer with the new setting, triggering updates
 				categoryObserver.setVariables({ ids: this.categoryIds });
 			},
