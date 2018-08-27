@@ -6,6 +6,7 @@
 
 <script>
 /* global paypal */
+import _get from 'lodash/get';
 import numeral from 'numeral';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
@@ -102,12 +103,13 @@ export default {
 										// Transaction is complete
 										// Currently returns error from findAccountForIpn
 										// "Can not process without account id"
+										const transactionId = _get(ppResponse, 'data.doPaymentDepositAndCheckout');
 										console.log(ppResponse);
 
 										// redirect to thanks with KIVA transaction id
-										// if () {
-										// window.location = `/thanks?kiva_transaction_id=${}`;
-										// }
+										if (transactionId) {
+											window.location = `/thanks?kiva_transaction_id=${transactionId}`;
+										}
 									}
 									resolve(ppResponse);
 								})
