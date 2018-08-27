@@ -2,9 +2,28 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<div v-if="!isLoggedIn" class="login-reg-holder">
-					<facebook-login-register />
-					<register-form :refresh="true" />
+				<div v-if="!isLoggedIn" class="login-reg-holder row">
+					<div class="columns medium-6">
+						<login-form v-if="showLogin" :refresh="true" />
+						<register-form v-if="showReg" :refresh="true" />
+					</div>
+					<div class="columns medium-6">
+						<facebook-login-register />
+						<div v-if="showReg" class="switch-to-login text-center">
+							Already have an account? <a
+								@click.prevent.stop="switchToLogin"
+								v-kv-track-event="['register', 'alreadyMemberLnk']"
+								id="loginLink">Sign in</a>
+							<hr>
+						</div>
+						<p class="text-center">
+							<a v-if="showLogin" class="register-link text-center"
+								v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'"
+								@click.prevent.stop="switchToRegister">
+								Sign up for Kiva
+							</a>
+						</p>
+					</div>
 				</div>
 				<br>
 				<hr>
@@ -32,6 +51,7 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
@@ -40,6 +60,7 @@ export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		LoginForm,
 		RegisterForm,
 		FacebookLoginRegister,
 		BasketItemsList
@@ -57,6 +78,8 @@ export default {
 			totals: () => {},
 			donations: [],
 			loading: false,
+			showReg: false,
+			showLogin: true,
 		};
 	},
 	apollo: {
@@ -76,6 +99,16 @@ export default {
 	computed: {
 		isLoggedIn() {
 			return this.myId !== undefined;
+		}
+	},
+	methods: {
+		switchToRegister() {
+			this.showReg = true;
+			this.showLogin = false;
+		},
+		switchToLogin() {
+			this.showReg = false;
+			this.showLogin = true;
 		}
 	}
 };
