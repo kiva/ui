@@ -1,0 +1,6 @@
+query {
+	experiment(id: "category_rows") @client {
+		id
+		version
+	}
+}

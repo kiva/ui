@@ -1,21 +1,14 @@
 query {
-	lend {
-		loanChannels(offset:0, limit:1000, popular: false, applyMinLoanCount: false) {
-			totalCount
-			values {
-				id
-				name
-			}
-		}
-	}
 	general {
 		rows: setting(setting: "ui.category_rows") {
-			key
 			value
 		}
 		experiment: setting(setting: "uiexp.category_rows") {
 			key
 			value
 		}
+	}
+	my {
+		isAdmin
 	}
 }
