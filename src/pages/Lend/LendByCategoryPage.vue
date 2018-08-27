@@ -35,7 +35,8 @@ import _map from 'lodash/map';
 import _size from 'lodash/size';
 import _times from 'lodash/times';
 import { readJSONSetting } from '@/util/settingsUtils';
-import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
@@ -54,9 +55,8 @@ export default {
 		return {
 			isAdmin: false,
 			categorySetting: [],
+			categorySetId: '',
 			categories: [],
-			experimentEnabled: false,
-			variants: [],
 		};
 	},
 	computed: {
@@ -71,8 +71,7 @@ export default {
 			const loans = _map(categories, 'loans');
 			const pageViewTrackData = { schema, data: {} };
 
-			// @TODO - make following dynamic when identifier data available
-			pageViewTrackData.data.categorySetIdentifier = 'default';
+			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
 
 			pageViewTrackData.data.categoriesDisplayed = _map(categories, 'id');
 
@@ -82,7 +81,20 @@ export default {
 
 			pageViewTrackData.data.loansDisplayed = _map(loans, ({ values }) => _map(values, 'id'));
 			return pageViewTrackData;
-		}
+		},
+		setRows(data) {
+			const rowData = readJSONSetting(data, 'general.rows.value') || [];
+			const expData = readJSONSetting(data, 'general.experiment.value') || {};
+
+			// Read the assigned experiment version from the cache
+			const versionData = this.apollo.readQuery({ query: experimentQuery });
+			const version = _get(versionData, 'experiment.version');
+			const variantRows = _get(expData, `variants.${version}.categories`);
+
+			// Set from the ids for the variant, or the default if that is undefined
+			this.categorySetting = variantRows || rowData;
+			this.categorySetId = version;
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -91,22 +103,31 @@ export default {
 					query: lendByCategoryQuery
 				}).then(({ data }) => {
 					// Get the array of channel objects from settings
-					const result = readJSONSetting(data, 'general.setting.value') || [];
-					const ids = _map(result, 'id');
+					const rowData = readJSONSetting(data, 'general.rows.value') || [];
+					// Get the experiment object from settings
+					const expData = readJSONSetting(data, 'general.experiment.value') || {};
 
-					// Pre-fetch all the data for those channels
-					client.query({
-						query: loanChannelQuery,
-						variables: { ids },
-					}).then(resolve).catch(reject);
+					// Get the assigned experiment version
+					client.query({ query: experimentQuery }).then(expResult => {
+						const version = _get(expResult, 'data.experiment.version');
+						const variantRows = _get(expData, `variants.${version}.categories`);
+						// get the ids for the variant, or the default if that is undefined
+						const ids = _map(variantRows || rowData, 'id');
+
+						// Pre-fetch all the data for those channels
+						client.query({
+							query: loanChannelQuery,
+							variables: { ids },
+						}).then(resolve).catch(reject);
+					});
 				}).catch(reject);
 			});
 		}
 	},
 	created() {
-		// Read the array of channel ids from the cache
+		// Read the page data from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.categorySetting = readJSONSetting(baseData, 'general.setting.value') || [];
+		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 
 		// Read the loan channels from the cache
@@ -125,7 +146,7 @@ export default {
 		// Watch for and react to changes to the query
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
-				this.categorySetting = readJSONSetting(data, 'general.setting.value') || [];
+				this.setRows(data);
 				this.isAdmin = !!_get(data, 'my.isAdmin');
 				// Update the categories observer with the new setting, triggering updates
 				categoryObserver.setVariables({ ids: this.categoryIds });
