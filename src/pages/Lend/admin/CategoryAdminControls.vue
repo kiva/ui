@@ -1,7 +1,9 @@
 <template>
 	<div class="admin-controls">
+		<h2>Admin controls</h2>
 		<experiment-control-slide
 			:categories.sync="defaultCategories"
+			:name.sync="controlName"
 			:weight="controlWeight"
 			:options="possibleCategories"
 		/>
@@ -10,16 +12,26 @@
 				Enable experiment: <input type="checkbox" v-model="experimentEnabled">
 			</label>
 			<label>
-				Start time: <input type="datetime-local">
+				Start time: <input type="datetime-local" v-model="experimentStart">
 			</label>
 			<label>
-				End time: <input type="datetime-local">
+				End time: <input type="datetime-local" v-model="experimentEnd">
 			</label>
 		</div>
-		<experiment-variant-slide v-show="experimentEnabled" :options="possibleCategories" />
-		<kv-button v-show="experimentEnabled" class="setting">
-			+ Add variant
-		</kv-button>
+		<div class="variant-panel" v-show="experimentEnabled">
+			<experiment-variant-slide
+				v-for="(variant, index) in variants"
+				:key="index"
+				:options="possibleCategories"
+				:categories.sync="variant.categories"
+				:name.sync="variant.name"
+				:weight.sync="variant.weight"
+				@remove="removeVariant(variant)"
+			/>
+			<kv-button @click.native="addVariant" class="setting">
+				+ Add variant
+			</kv-button>
+		</div>
 		<div class="bottom-button-row">
 			<kv-button @click.native="reset" v-if="changed" class="secondary">
 				Reset
@@ -38,9 +50,15 @@
 
 <script>
 import _cloneDeep from 'lodash/cloneDeep';
+import _filter from 'lodash/filter';
+import _fromPairs from 'lodash/fromPairs';
 import _get from 'lodash/get';
 import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
+import _sum from 'lodash/sum';
+import _values from 'lodash/values';
+import kebabCase from '@/util/kebabCase';
+import { readJSONSetting } from '@/util/settingsUtils';
 import categoryAdminQuery from '@/graphql/query/categoryAdminControl.graphql';
 import setRowsMutation from '@/graphql/mutation/setCategoryRows.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -56,30 +74,64 @@ export default {
 		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
-	props: {
-		categories: {
-			type: Array,
-			default: () => [],
-		},
-	},
 	data() {
 		return {
+			setCategories: [],
 			defaultCategories: [],
 			possibleCategories: [],
+			controlName: 'Control',
 			experimentEnabled: false,
+			experimentStart: '',
+			experimentEnd: '',
+			experimentData: {},
 			variants: [],
 			saving: false,
 		};
 	},
 	computed: {
+		// calc the wieght of the control based on the weights assigned to the variants
 		controlWeight() {
 			if (this.experimentEnabled) {
-				return 0; // TODO: calc based on all variants weight
+				return 1 - _sum(_values(this.variantWeights));
 			}
-			return 100;
+			return 1;
 		},
+		// Determine if the user has made changes
 		changed() {
-			return !_isEqual(this.categories, this.defaultCategories);
+			const categoriesChanged = !_isEqual(this.setCategories, this.defaultCategories);
+			const experimentChanged = !_isEqual(this.experimentData, this.localExperimentObject);
+			return categoriesChanged || experimentChanged;
+		},
+		filteredVariants() {
+			return this.experimentEnabled ? _filter(this.variants, ({ name }) => !!name) : [];
+		},
+		localExperimentObject() {
+			const controlKey = kebabCase(this.controlName);
+			return {
+				name: 'CategoryRows',
+				enabled: this.experimentEnabled,
+				startTime: this.experimentStart,
+				endTime: this.experimentEnd,
+				control: {
+					key: controlKey,
+					name: this.controlName,
+				},
+				variants: this.variantData,
+				distribution: {
+					[controlKey]: this.controlWeight,
+					...this.variantWeights,
+				},
+			};
+		},
+		variantData() {
+			const pairs = _map(this.filteredVariants, ({ name, categories }) => {
+				return [kebabCase(name), { name, categories }];
+			});
+			return _fromPairs(pairs);
+		},
+		variantWeights() {
+			const pairs = _map(this.filteredVariants, ({ name, weight }) => [kebabCase(name), weight]);
+			return _fromPairs(pairs);
 		},
 	},
 	apollo: {
@@ -91,26 +143,36 @@ export default {
 					value: category.id,
 				};
 			});
+			this.setCategories = readJSONSetting(data, 'general.rows.value');
+			this.experimentData = readJSONSetting(data, 'general.experiment.value');
 		},
 	},
 	watch: {
-		categories: {
-			handler() {
-				this.reset();
-			},
-			immediate: true,
-		}
+		setCategories(categories) {
+			this.setFromCategoriesData(categories);
+		},
+		experimentData(data) {
+			this.setFromExperimentData(data);
+		},
 	},
 	methods: {
+		addVariant() {
+			this.variants.push({});
+		},
+		removeVariant(variant) {
+			this.variants.splice(this.variants.indexOf(variant), 1);
+		},
 		reset() {
-			this.defaultCategories = _cloneDeep(this.categories);
+			this.setFromCategoriesData(this.setCategories);
+			this.setFromExperimentData(this.experimentData);
 		},
 		save() {
 			this.saving = true;
 			this.apollo.mutate({
 				mutation: setRowsMutation,
 				variables: {
-					categories: JSON.stringify(this.defaultCategories)
+					categories: JSON.stringify(this.defaultCategories),
+					experiment: JSON.stringify(this.localExperimentObject),
 				},
 			}).then(({ errors }) => {
 				if (errors) {
@@ -125,6 +187,22 @@ export default {
 				this.saving = false;
 			});
 		},
+		setFromCategoriesData(categories) {
+			this.defaultCategories = _cloneDeep(categories);
+		},
+		setFromExperimentData(data) {
+			this.controlName = _get(data, 'control.name') || 'Control';
+			this.experimentEnabled = _get(data, 'enabled') || false;
+			this.experimentStart = _get(data, 'startTime') || '';
+			this.experimentEnd = _get(data, 'endTime') || '';
+			this.variants = _map(_get(data, 'variants'), ({ categories, name }, key) => {
+				return {
+					name,
+					categories,
+					weight: _get(data, `distribution.${key}`),
+				};
+			});
+		}
 	},
 };
 </script>
@@ -161,6 +239,10 @@ export default {
 			margin: 0 0 0 0.25rem;
 		}
 	}
+}
+
+.variant-panel {
+	margin-top: 1rem;
 }
 
 .bottom-button-row {
