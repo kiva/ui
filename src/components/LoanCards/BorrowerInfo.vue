@@ -4,7 +4,12 @@
 			:to="`/lend/${loanId}`"
 			class="name"
 			:v-kv-track-event="`['Lending', 'click-Read more', 'Name', ${loanId}, 'true']`">
-			{{ name }}
+			<span
+				@click="$emit('trackLoanCardInteraction', {
+					interactionType: 'viewBorrowerPage',
+					interactionElement: 'borrowerName'
+				})"
+			>{{ name }}</span>
 		</router-link>
 		<div class="country">{{ country }}</div>
 		<div class="loan-use">
@@ -15,7 +20,12 @@
 			<router-link
 				:to="`/lend/${loanId}`"
 				:v-kv-track-event="`['Lending', 'click-Read more', 'Read more', ${loanId}, 'true']`">
-				Read more
+				<span
+					@click="$emit('trackLoanCardInteraction', {
+						interactionType: 'viewBorrowerPage',
+						interactionElement: 'readMore'
+					})"
+				>Read more</span>
 			</router-link>
 			<div v-if="activeSort === 'loanLength'" class="loan-length">
 				<strong>Loan length:</strong> {{ loanLength }} months
