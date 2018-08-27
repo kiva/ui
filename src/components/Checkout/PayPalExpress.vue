@@ -99,17 +99,16 @@ export default {
 							})
 								.then(ppResponse => {
 									console.log(ppResponse);
+									// Check for errors
 									if (ppResponse.errors) {
-										// Transaction is complete
-										// Currently returns error from findAccountForIpn
-										// "Can not process without account id"
-										const transactionId = _get(ppResponse, 'data.doPaymentDepositAndCheckout');
-										console.log(ppResponse);
+										console.log(`Error completing transactions: ${ppResponse.errors}`);
+									}
 
-										// redirect to thanks with KIVA transaction id
-										if (transactionId) {
-											window.location = `/thanks?kiva_transaction_id=${transactionId}`;
-										}
+									// Transaction is complete
+									const transactionId = _get(ppResponse, 'data.doPaymentDepositAndCheckout');
+									// redirect to thanks with KIVA transaction id
+									if (transactionId) {
+										window.location = `/thanks?kiva_transaction_id=${transactionId}`;
 									}
 									resolve(ppResponse);
 								})
