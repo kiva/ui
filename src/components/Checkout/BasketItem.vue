@@ -21,8 +21,8 @@
 		<span class="small-12 medium-4">
 			<loan-reservation
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
-				:planned-expiration-date="loan.loan.plannedExpirationDate"
 				:is-funded="loan.isFunded"
+				:expiry-time="loan.expiryTime"
 			/>
 			<!-- Making this a component -->
 			<input class="loan-price" type="select">{{ loan.price }}
