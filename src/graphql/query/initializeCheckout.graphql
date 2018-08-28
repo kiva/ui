@@ -63,6 +63,8 @@ query {
 				itemTotal
 				kivaCreditAvailableTotal
 				kivaCreditAppliedTotal
+				kivaCreditRemaining
+				kivaCreditToReapply
 				loanReservationTotal
 			}
 		}

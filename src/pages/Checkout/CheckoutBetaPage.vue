@@ -33,10 +33,10 @@
 					:donations="donations" />
 				<br>
 				<hr>
-				<order-totals :totals="totals" />
+				<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 				<hr>
 				<br>
-				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
+				<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
 				<br>
 
 				<br>
@@ -52,6 +52,7 @@ import _filter from 'lodash/filter';
 // import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
+import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
@@ -103,9 +104,25 @@ export default {
 	computed: {
 		isLoggedIn() {
 			return this.myId !== undefined;
+		},
+		creditNeeded() {
+			return this.totals.creditAmountNeeded || '0.00';
 		}
 	},
 	methods: {
+		refreshTotals() {
+			console.log('refreshing totals');
+			this.apollo.query({
+				query: shopTotals,
+				fetchPolicy: 'network-only'
+			}).then(data => {
+				console.log(data);
+				this.totals = _get(data, 'data.shop.basket.totals');
+				console.log(this.totals);
+			}).catch(response => {
+				console.log(`failed to update totals: ${response}`);
+			});
+		},
 		switchToRegister() {
 			this.showReg = true;
 			this.showLogin = false;

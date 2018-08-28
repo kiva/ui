@@ -1,6 +1,7 @@
 <template>
 	<div class="paypal-holder">
 		<div id="paypal-button" ref="paypalbutton"></div>
+		<p class="pp-tagline small-text">Thanks to PayPal, Kiva receives free payment processing.</p>
 	</div>
 </template>
 
@@ -21,7 +22,8 @@ export default {
 	},
 	data() {
 		return {
-			ensurePaypal: null
+			ensurePaypalScript: null,
+			paypalRendered: false
 		};
 	},
 	metaInfo() {
@@ -49,15 +51,17 @@ export default {
 	methods: {
 		initializePaypal() {
 			// ensure paypal is loaded before calling
-			this.ensurePaypal = window.setInterval(() => {
-				if (typeof paypal !== 'undefined') {
+			this.ensurePaypalScript = window.setInterval(() => {
+				if (typeof paypal !== 'undefined' && !this.paypalRendered) {
 					this.renderPaypalButton();
 				}
 			}, 200);
 		},
 		renderPaypalButton() {
 			// clear ensurePaypal interval
-			window.clearInterval(this.ensurePaypal);
+			window.clearInterval(this.ensurePaypalScript);
+			// signify we've already rendered
+			this.paypalRendered = true;
 			// render paypal button
 			paypal.Button.render(
 				{

@@ -1,0 +1,5 @@
+mutation removeCreditByType($creditType: CreditTypeEnum!, $creditId: Int) {
+	shop {
+		removeCreditByType	(creditType: $creditType, creditId: $creditId)
+	}
+}
