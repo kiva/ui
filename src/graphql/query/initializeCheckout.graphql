@@ -21,6 +21,7 @@ query {
 							use
 							status
 							matchingText
+							plannedExpirationDate
 							sector {
 								name
 							}
