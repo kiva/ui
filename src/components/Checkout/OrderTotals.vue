@@ -15,23 +15,10 @@
 				<span v-if="showRemoveKivaCredit">
 					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 				</span>
-				<del v-if="showApplyKivaCredit">
-					Kiva credit: <span class="total-value"><del>({{ kivaCredit }})</del></span>
-				</del>
+				<span v-if="showApplyKivaCredit">
+					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
+				</span>
 			</p>
-			<!-- <p :class="{ 'strike-text': showApplyKivaCredit }">
-				<a
-					v-if="showRemoveKivaCredit"
-					class="remove-credit"
-					@click.prevent.stop="removeCredit('kiva_credit')">
-					<kv-icon name="small-x" />
-				</a>
-				<a
-					v-if="showApplyKivaCredit"
-					class="apply-credit"
-					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
-				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
-			</p> -->
 		</div>
 		<div class="order-total">
 			<p><strong>Total: <span class="total-value">{{ orderTotal }}</span></strong></p>

@@ -154,6 +154,11 @@ export default {
 	.pp-tagline {
 		font-weight: 400;
 		color: $kiva-text-light;
+		text-align: center;
+
+		@include breakpoint(medium) {
+			text-align: right;
+		}
 	}
 }
 </style>
