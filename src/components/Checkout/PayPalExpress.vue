@@ -1,6 +1,7 @@
 <template>
 	<div class="paypal-holder">
 		<div id="paypal-button" ref="paypalbutton"></div>
+		<p class="pp-tagline small-text">Thanks to PayPal, Kiva receives free payment processing.</p>
 	</div>
 </template>
 
@@ -21,7 +22,8 @@ export default {
 	},
 	data() {
 		return {
-			ensurePaypal: null
+			ensurePaypalScript: null,
+			paypalRendered: false
 		};
 	},
 	metaInfo() {
@@ -49,15 +51,17 @@ export default {
 	methods: {
 		initializePaypal() {
 			// ensure paypal is loaded before calling
-			this.ensurePaypal = window.setInterval(() => {
-				if (typeof paypal !== 'undefined') {
+			this.ensurePaypalScript = window.setInterval(() => {
+				if (typeof paypal !== 'undefined' && !this.paypalRendered) {
 					this.renderPaypalButton();
 				}
 			}, 200);
 		},
 		renderPaypalButton() {
 			// clear ensurePaypal interval
-			window.clearInterval(this.ensurePaypal);
+			window.clearInterval(this.ensurePaypalScript);
+			// signify we've already rendered
+			this.paypalRendered = true;
 			// render paypal button
 			paypal.Button.render(
 				{
@@ -101,7 +105,7 @@ export default {
 									console.log(ppResponse);
 									// Check for errors
 									if (ppResponse.errors) {
-										console.log(`Error completing transactions: ${ppResponse.errors}`);
+										console.error(`Error completing transactions: ${ppResponse.errors}`);
 									}
 
 									// Transaction is complete
@@ -113,7 +117,7 @@ export default {
 									resolve(ppResponse);
 								})
 								.catch(catchError => {
-									console.log(catchError);
+									console.error(catchError);
 									reject(catchError);
 								})
 								.finally(() => {
@@ -122,7 +126,7 @@ export default {
 						});
 					},
 					onError: data => {
-						console.log(data);
+						console.error(data);
 					},
 					style: {
 						color: 'blue',
@@ -138,7 +142,23 @@ export default {
 </script>
 
 <style lang="scss">
-	.paypal-holder {
-		display: block;
+@import 'settings';
+
+.paypal-holder {
+	display: block;
+
+	@include breakpoint(medium) {
+		float: right;
 	}
+
+	.pp-tagline {
+		font-weight: 400;
+		color: $kiva-text-light;
+		text-align: center;
+
+		@include breakpoint(medium) {
+			text-align: right;
+		}
+	}
+}
 </style>
