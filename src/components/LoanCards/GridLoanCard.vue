@@ -11,7 +11,6 @@
 
 				@favorite-toggled="toggleFavorite"
 			/>
-
 			<borrower-info
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -70,17 +69,21 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
-		loan: {
-			type: Object,
-			default: () => {}
+		cardNumber: {
+			type: Number,
+			default: null
+		},
+		isVisitor: {
+			type: Boolean,
+			default: true
 		},
 		itemsInBasket: {
 			type: Array,
 			default: () => []
 		},
-		isVisitor: {
-			type: Boolean,
-			default: true
+		loan: {
+			type: Object,
+			default: () => {}
 		},
 	},
 	data() {

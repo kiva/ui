@@ -2,8 +2,29 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<facebook-login-register />
-				<register-form v-if="!isLoggedIn" :refresh="true" />
+				<div v-if="!isLoggedIn" class="login-reg-holder row">
+					<div class="columns medium-6">
+						<login-form v-if="showLogin" :refresh="true" />
+						<register-form v-if="showReg" :refresh="true" />
+					</div>
+					<div class="columns medium-6">
+						<facebook-login-register />
+						<div v-if="showReg" class="switch-to-login text-center">
+							Already have an account? <a
+								@click.prevent.stop="switchToLogin"
+								v-kv-track-event="['register', 'alreadyMemberLnk']"
+								id="loginLink">Sign in</a>
+							<hr>
+						</div>
+						<p class="text-center">
+							<a v-if="showLogin" class="register-link text-center"
+								v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'"
+								@click.prevent.stop="switchToRegister">
+								Sign up for Kiva
+							</a>
+						</p>
+					</div>
+				</div>
 				<br>
 				<hr>
 				<br>
@@ -30,6 +51,7 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
@@ -39,6 +61,7 @@ export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		LoginForm,
 		RegisterForm,
 		FacebookLoginRegister,
 		BasketItemsList,
@@ -46,7 +69,7 @@ export default {
 	},
 	inject: ['apollo'],
 	metaInfo: {
-		title: 'Checkout',
+		title: 'Checkout'
 	},
 	data() {
 		return {
@@ -55,14 +78,19 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			totals: () => {},
-			donations: []
+			donations: [],
+			loading: false,
+			showReg: false,
+			showLogin: true,
 		};
 	},
 	apollo: {
 		query: initializeCheckout,
-		prefetch: true,
-		result({ data }) {
-			console.log(data);
+		preFetch: true,
+		result({ data, loading }) {
+			if (loading) {
+				this.loading = true;
+			}
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.totals = _get(data, 'shop.basket.totals');
@@ -74,6 +102,16 @@ export default {
 		isLoggedIn() {
 			return this.myId !== undefined;
 		}
+	},
+	methods: {
+		switchToRegister() {
+			this.showReg = true;
+			this.showLogin = false;
+		},
+		switchToLogin() {
+			this.showReg = false;
+			this.showLogin = true;
+		}
 	}
 };
 </script>
@@ -83,5 +121,10 @@ export default {
 
 .page-content {
 	padding: 1.625rem 0;
+}
+
+// Hide Basket Bar
+.basket-bar {
+	display: none;
 }
 </style>

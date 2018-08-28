@@ -13,17 +13,16 @@
 		<div>
 			<category-row
 				class="loan-category-row"
-				v-for="category in categoryIdSet"
+				v-for="(category, index) in categories"
 				:key="category.id"
-				:loan-channel="category.id"
+				:loan-channel="category"
+				:row-number="index + 1"
 			/>
 		</div>
 
 		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
-				<category-admin-controls
-					:categories="categoryIdSet"
-				/>
+				<category-admin-controls />
 			</div>
 		</div>
 	</www-page>
@@ -32,8 +31,12 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+// @TODO following 2 imports unnecessary once category sort data available
+import _size from 'lodash/size';
+import _times from 'lodash/times';
 import { readJSONSetting } from '@/util/settingsUtils';
-import lendByCategoryQuery from '@/graphql/query/lendByCategory.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
@@ -51,10 +54,47 @@ export default {
 	data() {
 		return {
 			isAdmin: false,
-			categoryIdSet: [],
-			experimentEnabled: false,
-			variants: [],
+			categorySetting: [],
+			categorySetId: '',
+			categories: [],
 		};
+	},
+	computed: {
+		categoryIds() {
+			return _map(this.categorySetting, 'id');
+		}
+	},
+	methods: {
+		assemblePageViewData(categories) {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_0.json#';
+			const loans = _map(categories, 'loans');
+			const pageViewTrackData = { schema, data: {} };
+
+			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
+
+			pageViewTrackData.data.categoriesDisplayed = _map(categories, 'id');
+
+			// @TODO - when sorts available, replace below with ~ _map(this.categories, 'sort')
+			pageViewTrackData.data.sortsDisplayed = [];
+			_times(_size(categories), () => pageViewTrackData.data.sortsDisplayed.push('default'));
+
+			pageViewTrackData.data.loansDisplayed = _map(loans, ({ values }) => _map(values, 'id'));
+			return pageViewTrackData;
+		},
+		setRows(data) {
+			const rowData = readJSONSetting(data, 'general.rows.value') || [];
+			const expData = readJSONSetting(data, 'general.experiment.value') || {};
+
+			// Read the assigned experiment version from the cache
+			const versionData = this.apollo.readQuery({ query: experimentQuery });
+			const version = _get(versionData, 'experiment.version');
+			const variantRows = _get(expData, `variants.${version}.categories`);
+
+			// Set from the ids for the variant, or the default if that is undefined
+			this.categorySetting = variantRows || rowData;
+			this.categorySetId = version;
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -63,31 +103,66 @@ export default {
 					query: lendByCategoryQuery
 				}).then(({ data }) => {
 					// Get the array of channel objects from settings
-					const result = readJSONSetting(data, 'general.setting.value') || [];
-					const ids = _map(result, 'id');
+					const rowData = readJSONSetting(data, 'general.rows.value') || [];
+					// Get the experiment object from settings
+					const expData = readJSONSetting(data, 'general.experiment.value') || {};
 
-					// Pre-fetch all the data for those channels
-					client.query({
-						query: loanChannelQuery,
-						variables: { ids },
-					}).then(resolve).catch(reject);
+					// Get the assigned experiment version
+					client.query({ query: experimentQuery }).then(expResult => {
+						const version = _get(expResult, 'data.experiment.version');
+						const variantRows = _get(expData, `variants.${version}.categories`);
+						// get the ids for the variant, or the default if that is undefined
+						const ids = _map(variantRows || rowData, 'id');
+
+						// Pre-fetch all the data for those channels
+						client.query({
+							query: loanChannelQuery,
+							variables: { ids },
+						}).then(resolve).catch(reject);
+					}).catch(reject);
 				}).catch(reject);
 			});
 		}
 	},
 	created() {
-		// Read the array of channel objects from the cache
+		// Read the page data from the cache
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
-		this.categoryIdSet = readJSONSetting(baseData, 'general.setting.value') || [];
+		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 
-		// Watch for changes to the query
+		// Read the loan channels from the cache
+		const categoryData = this.apollo.readQuery({
+			query: loanChannelQuery,
+			variables: { ids: this.categoryIds },
+		});
+		this.categories = _get(categoryData, 'lend.loanChannelsById') || [];
+
+		// Create an observer for changes to the categories (and their loans)
+		const categoryObserver = this.apollo.watchQuery({
+			query: loanChannelQuery,
+			variables: { ids: this.categoryIds },
+		});
+
+		// Watch for and react to changes to the query
 		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 			next: ({ data }) => {
-				this.categoryIdSet = readJSONSetting(data, 'general.setting.value') || [];
+				this.setRows(data);
 				this.isAdmin = !!_get(data, 'my.isAdmin');
+				// Update the categories observer with the new setting, triggering updates
+				categoryObserver.setVariables({ ids: this.categoryIds });
 			},
 		});
+
+		// React to changes to the category data
+		categoryObserver.subscribe({
+			next: ({ data }) => {
+				this.categories = _get(data, 'lend.loanChannelsById') || [];
+			},
+		});
+	},
+	mounted() {
+		const pageViewTrackData = this.assemblePageViewData(this.categories);
+		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 	},
 };
 </script>

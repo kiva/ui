@@ -6,7 +6,10 @@
 
 <script>
 /* global paypal */
+import _get from 'lodash/get';
+import numeral from 'numeral';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
+import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
 
 export default {
 	inject: ['apollo'],
@@ -16,58 +19,119 @@ export default {
 			default: ''
 		}
 	},
-	metaInfo: {
-		title: 'Checkout',
-		script: [
-			{ type: 'text/javascript', src: 'https://www.paypalobjects.com/api/checkout.js', async: true }
-		]
+	data() {
+		return {
+			ensurePaypal: null
+		};
+	},
+	metaInfo() {
+		// ensure paypal script is loaded
+		const paypalScript = {};
+		// check for paypal incase script is already loaded
+		if (typeof paypal === 'undefined') {
+			paypalScript.type = 'text/javascript';
+			paypalScript.src = 'https://www.paypalobjects.com/api/checkout.js';
+		}
+		return {
+			script: [
+				paypalScript
+			]
+		};
 	},
 	mounted() {
-		console.log('paypal express component mounted');
-		// this.initializePaypal();
+		this.initializePaypal();
+	},
+	watch: {
+		amount() {
+			this.initializePaypal();
+		}
 	},
 	methods: {
 		initializePaypal() {
 			// ensure paypal is loaded before calling
-			// Server render is fine
-			// Init from Mounted Hook when navigating from Ui Page fails as paypal checkout.js is still loading...
-			const vm = this;
-			console.log('mounted');
-			console.log(window.paypal);
-			if (typeof paypal !== 'undefined') {
-				paypal.Button.render(
-					{
-						env: 'sandbox',
-						commit: true,
-						payment: () => {
-							console.log('payment stage');
-							return new paypal.Promise((resolve, reject) => {
-								vm.apollo.query({
-									query: getPaymentToken
-								}).then(({ data }) => {
-									if (data) {
-										console.log(data);
-										if (data.errors) {
-											reject(data);
-										}
-										resolve(data.shop.getPaymentToken);
+			this.ensurePaypal = window.setInterval(() => {
+				if (typeof paypal !== 'undefined') {
+					this.renderPaypalButton();
+				}
+			}, 200);
+		},
+		renderPaypalButton() {
+			// clear ensurePaypal interval
+			window.clearInterval(this.ensurePaypal);
+			// render paypal button
+			paypal.Button.render(
+				{
+					// TODO: Wire up switch for Prod
+					env: 'sandbox',
+					commit: true,
+					payment: () => {
+						console.log('payment stage');
+						return new paypal.Promise((resolve, reject) => {
+							// Use updated vars on render
+							this.apollo.query({
+								query: getPaymentToken,
+								variables: {
+									amount: numeral(this.amount).format('0.00'),
+								}
+							}).then(({ data }) => {
+								if (data) {
+									console.log(data);
+									if (data.errors) {
+										reject(data);
 									}
-								});
+									resolve(data.shop.getPaymentToken);
+								}
 							});
-						},
-						onAuthorize: data => {
-							console.log('authorized stage');
-							console.log(data);
-						},
-						style: {
-							color: 'blue',
-							shape: 'rect',
-							size: 'large'
-						}
+						});
 					},
-					'#paypal-button'
-				);
-			}
+					onAuthorize: data => {
+						console.log('authorized stage');
+						console.log(data);
+
+						return new paypal.Promise((resolve, reject) => {
+							this.apollo.mutate({
+								mutation: depositAndCheckout,
+								variables: {
+									amount: numeral(this.amount).format('0.00'),
+									token: data.paymentToken,
+									payerId: data.payerID
+								},
+							})
+								.then(ppResponse => {
+									console.log(ppResponse);
+									// Check for errors
+									if (ppResponse.errors) {
+										console.log(`Error completing transactions: ${ppResponse.errors}`);
+									}
+
+									// Transaction is complete
+									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
+									// redirect to thanks with KIVA transaction id
+									if (transactionId) {
+										window.location = `/thanks?kiva_transaction_id=${transactionId}`;
+									}
+									resolve(ppResponse);
+								})
+								.catch(catchError => {
+									console.log(catchError);
+									reject(catchError);
+								})
+								.finally(() => {
+									this.loading = false;
+								});
+						});
+					},
+					onError: data => {
+						console.log(data);
+					},
+					style: {
+						color: 'blue',
+						shape: 'rect',
+						size: 'large'
+					}
+				},
+				'#paypal-button'
+			);
 		}
 	}
 };

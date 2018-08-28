@@ -4,13 +4,13 @@
 			<h2>Categories</h2>
 			<ul :style="categoriesStyle" ref="categoryList">
 				<li
-					v-for="category in categories"
-					:key="category.index"
+					v-for="(category, index) in categories"
+					:key="index"
 					:class="{ 'last-category': category == categories[categories.length - 1] }"
 				>
 					<a
 						:href="category.url"
-						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, category.index]">
+						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]">
 						{{ category.name }}
 					</a>
 				</li>

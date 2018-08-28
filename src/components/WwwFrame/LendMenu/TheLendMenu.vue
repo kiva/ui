@@ -101,7 +101,7 @@ export default {
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
 					this.userId = _get(data, 'my.userAccount.id');
-					this.categories = _sortBy(_get(data, 'lend.loanChannels.values'), 'index');
+					this.categories = _get(data, 'lend.loanChannels.values');
 					this.countryFacets = _get(data, 'lend.countryFacets');
 				}
 			});

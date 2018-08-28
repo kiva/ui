@@ -67,11 +67,21 @@
 
 			<div class="input-set">
 				<label for="password">Password
-					<password
-						name="password"
-						v-model="password"
-						class="reg-password"
-						:secure-length="8" />
+					<div v-if="showMeteredPassword">
+						<metered-password
+							name="password"
+							v-model="password"
+							class="reg-password"
+							:secure-length="8" />
+					</div>
+					<div v-else>
+						<input
+							id="password"
+							type="password"
+							name="password"
+							v-model="password"
+							class="reg-password">
+					</div>
 				</label>
 				<p v-if="passwordErrors.length">
 					<ul class="validation-errors">
@@ -83,7 +93,7 @@
 			<div class="terms-and-policy">
 				<input
 					type="checkbox"
-					name="terms"
+					name="terms_agreement"
 					id="registerForm_terms_of_use_privacy_poicy"
 					v-model="terms"
 					@blur="validateTerms(terms)">
@@ -126,12 +136,11 @@
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
-import Password from 'vue-password-strength-meter';
 
 export default {
 	components: {
 		KvButton,
-		Password,
+		MeteredPassword: () => import('vue-password-strength-meter/dist/vue-password-strength-meter.min'),
 	},
 	mixins: [
 		loginRegUtils,
@@ -163,6 +172,7 @@ export default {
 			email: '',
 			password: '',
 			terms: '',
+			showMeteredPassword: false,
 		};
 	},
 	created() {
@@ -174,13 +184,19 @@ export default {
 	},
 	mounted() {
 		this.currUrl = window.location.href;
-
-		// Hooked directly into DOM events because the library we're using
-		// (vue-password-strength-meter) doesn't allow us access to the blur event we needed.
-		const passwordInput = document.getElementById('password');
-		passwordInput.addEventListener('blur', e => {
-			this.validatePassword(e.target.value);
-		});
+		// activate metered password component
+		this.showMeteredPassword = true;
+	},
+	updated() {
+		// when the dom updates, check that showMeteredPassword is true
+		if (this.showMeteredPassword) {
+			// if so on next tick bind the blur events
+			this.$nextTick(() => {
+				if (document.getElementById('password')) {
+					this.bindMeteredPasswordEvents();
+				}
+			});
+		}
 	},
 	methods: {
 		register() {
@@ -254,6 +270,14 @@ export default {
 				}
 			}
 			return errorArray;
+		},
+		bindMeteredPasswordEvents() {
+			// Hooked directly into DOM events because the library we're using
+			// (vue-password-strength-meter) doesn't allow us access to the blur event we needed.
+			const passwordInput = document.getElementById('password');
+			passwordInput.addEventListener('blur', e => {
+				this.validatePassword(e.target.value);
+			});
 		}
 	}
 };

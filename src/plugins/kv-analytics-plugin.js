@@ -56,6 +56,23 @@ export default Vue => {
 
 			return true;
 		},
+		trackSelfDescribingEvent: eventData => {
+			// the data passed into this should be a JSON object similar to the following
+			// and should be defined by a schema in github.com/kiva/snowplow/tree/master/conf
+			// {
+			//     schema: 'https://raw.githubusercontent.com/kiva/...',
+			//     data: {
+			//         "loanId": 654321,
+			//         "amount": 500,
+			//			...
+			//     }
+			// });
+			if (snowplowLoaded) {
+				window.snowplow('trackSelfDescribingEvent', eventData);
+			}
+
+			return true;
+		},
 		parseEventProperties: eventString => {
 			let params;
 			// TODO: consider deprecating the string format category|action|etc
@@ -112,5 +129,10 @@ export default Vue => {
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$kvTrackEvent = (category, action, label, value) => {
 		kvActions.trackEvent(category, action, label, value);
+	};
+
+	// eslint-disable-next-line no-param-reassign
+	Vue.prototype.$kvTrackSelfDescribingEvent = data => {
+		kvActions.trackSelfDescribingEvent(data);
 	};
 };
