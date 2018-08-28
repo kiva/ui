@@ -119,7 +119,7 @@ export default {
 							query: loanChannelQuery,
 							variables: { ids },
 						}).then(resolve).catch(reject);
-					});
+					}).catch(reject);
 				}).catch(reject);
 			});
 		}
