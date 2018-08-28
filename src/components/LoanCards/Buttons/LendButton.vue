@@ -5,7 +5,7 @@
 	>
 		<slot>Lend now</slot>
 	</kv-button>
-	<kv-button v-else>
+	<kv-button v-else class="adding-to-basket">
 		<kv-loading-spinner />
 		Adding to basket
 	</kv-button>
@@ -71,10 +71,18 @@ export default {
 	height: 1.5rem;
 	vertical-align: middle;
 	margin-right: 3px;
-
-	.line {
-		background: $white;
-	}
 }
 
+.lend-by-category-page .loading-spinner {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+.loading-spinner /deep/ .line {
+	background-color: $white;
+}
+
+.lend-by-category-page .adding-to-basket.button.smaller {
+	font-size: 1rem;
+}
 </style>

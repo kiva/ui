@@ -26,7 +26,10 @@
 						v-for="(loan, index) in loans"
 						:key="loan.id"
 						:loan="loan"
+						:category-id="loanChannel.id"
+						:row-number="rowNumber"
 						:card-number="index + 1"
+						:is-in-category-row=true
 					/>
 				</div>
 			</div>
