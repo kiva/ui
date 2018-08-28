@@ -21,7 +21,7 @@
 
 				<p class="text-center">
 					<a v-if="showLogin" class="register-link text-center"
-						v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'"
+						v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
 						@click.prevent.stop="switchToRegister">
 						Sign up for Kiva
 					</a>

@@ -101,13 +101,13 @@
 				<a href="legal/terms"
 					target="_blank"
 					title="Open Terms of Use in a new window"
-					v-kv-track-event="'Register|click-terms-of-use|TermsOfUseClick'">
+					v-kv-track-event="['Register','click-terms-of-use','TermsOfUseClick']">
 					Terms of Use
 				</a> and
 				<a href="legal/privacy"
 					target="_blank"
 					title="Open Privacy Policy in a new window"
-					v-kv-track-event="'Register|click-privacy-policy|PrivacyPolicyClick'">
+					v-kv-track-event="['Register','click-privacy-policy','PrivacyPolicyClick']">
 					Privacy Policy
 				</a>.
 				<p v-if="termsErrors.length">
@@ -121,7 +121,7 @@
 				type="submit"
 				name="regForm_submit"
 				id="regForm_submit"
-				v-kv-track-event="'Register|click-register-submit|RegisterButtonClick'">
+				v-kv-track-event="['Register','click-register-submit','RegisterButtonClick']">
 				Continue
 			</KvButton>
 

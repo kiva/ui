@@ -68,7 +68,7 @@
 			<KvButton
 				class="sign-in-button smaller"
 				type="submit"
-				v-kv-track-event="'Login|click-Login-submit|LoginButtonClick'">
+				v-kv-track-event="['Login','click-Login-submit','LoginButtonClick']">
 				Sign in
 			</KvButton>
 
@@ -78,7 +78,7 @@
 
 			<a href="/help/forgot-password"
 				class="forgot-password-link"
-				v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick'">
+				v-kv-track-event="['Login','click-forgot-password','ForgotPasswordClick']">
 				Forgot your password?
 			</a>
 		</form>
