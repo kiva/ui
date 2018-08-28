@@ -231,12 +231,12 @@ export default {
 				// $emit registration-failed event on error to allow parent to respond
 				this.$emit('register-failed');
 				this.regFailed = true;
-				this.$kvTrackEvent('Register|failed-register');
+				this.$kvTrackEvent('Register', 'failed-register');
 			} else {
 				// $emit registration-successful event once completed to allow parent to respond
 				this.$emit('register-successful');
 				this.regFailed = false;
-				this.$kvTrackEvent('Register|successful-register');
+				this.$kvTrackEvent('Register', 'successful-register');
 			}
 
 			// Goto doneUrl if present + successful registration

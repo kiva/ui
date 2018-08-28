@@ -184,12 +184,12 @@ export default {
 				// $emit login-failed event on error to allow parent to respond
 				this.$emit('login-failed');
 				this.loginFailed = true;
-				this.$kvTrackEvent('Login|failed-login');
+				this.$kvTrackEvent('Login', 'failed-login');
 			} else {
 				// $emit login-successful event once completed to allow parent to respond
 				this.$emit('login-successful');
 				this.loginFailed = false;
-				this.$kvTrackEvent('Login|successful-login');
+				this.$kvTrackEvent('Login', 'successful-login');
 			}
 
 			// Goto doneUrl if present + successful login
