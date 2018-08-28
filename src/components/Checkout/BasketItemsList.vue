@@ -7,9 +7,11 @@
 				/>
 			</li>
 			<li v-for="donation in donations" :key="donation.id">
-				<label for="donation">Help Kiva reach more borrowers around the world:</label>
-				<input type="input" name="donation" id="donation" value="">{{ donation.price }}
+				<donation-item
+					:donation="donation"
+				/>
 			</li>
+
 		</ul>
 		<hr>
 	</div>
@@ -17,6 +19,7 @@
 
 <script>
 import BasketItem from '@/components/Checkout/BasketItem';
+import DonationItem from '@/components/Checkout/DonationItem';
 
 export default {
 	props: {
@@ -30,7 +33,8 @@ export default {
 		}
 	},
 	components: {
-		BasketItem
+		BasketItem,
+		DonationItem
 	}
 };
 </script>
