@@ -93,7 +93,7 @@ export default {
 
 			// Set from the ids for the variant, or the default if that is undefined
 			this.categorySetting = variantRows || rowData;
-			this.categorySetId = version;
+			this.categorySetId = version || _get(expData, 'control.key');
 		},
 	},
 	apollo: {
