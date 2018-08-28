@@ -101,7 +101,7 @@ export default ({ cookieStore }) => {
 						const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
 
 						// assign the version using the experiment data (undefined if experiment disabled)
-						assignments[id] = assignVersion(experiment);
+						assignments[id] = assignVersion(experiment || {});
 
 						// save the new assignments to the experiment cookie
 						cookieStore.set('uiab', serializeExpCookie(assignments));
