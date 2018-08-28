@@ -25,7 +25,7 @@
 				:expiry-time="loan.expiryTime"
 			/>
 			<!-- Making this a component -->
-			<input class="loan-price" type="select">{{ loan.price }}
+			<input class="loan-price" type="select" :value="loan.price">
 		</span>
 	</div>
 </template>
