@@ -105,7 +105,7 @@ export default {
 									console.log(ppResponse);
 									// Check for errors
 									if (ppResponse.errors) {
-										console.log(`Error completing transactions: ${ppResponse.errors}`);
+										console.error(`Error completing transactions: ${ppResponse.errors}`);
 									}
 
 									// Transaction is complete
@@ -117,7 +117,7 @@ export default {
 									resolve(ppResponse);
 								})
 								.catch(catchError => {
-									console.log(catchError);
+									console.error(catchError);
 									reject(catchError);
 								})
 								.finally(() => {
@@ -126,7 +126,7 @@ export default {
 						});
 					},
 					onError: data => {
-						console.log(data);
+						console.error(data);
 					},
 					style: {
 						color: 'blue',
@@ -142,7 +142,18 @@ export default {
 </script>
 
 <style lang="scss">
-	.paypal-holder {
-		display: block;
+@import 'settings';
+
+.paypal-holder {
+	display: block;
+
+	@include breakpoint(medium) {
+		float: right;
 	}
+
+	.pp-tagline {
+		font-weight: 400;
+		color: $kiva-text-light;
+	}
+}
 </style>

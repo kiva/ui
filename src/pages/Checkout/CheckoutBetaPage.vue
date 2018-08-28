@@ -31,16 +31,8 @@
 				<basket-items-list
 					:loans="loans"
 					:donations="donations" />
-				<br>
-				<hr>
 				<order-totals :totals="totals" @refreshtotals="refreshTotals" />
-				<hr>
-				<br>
 				<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
-				<br>
-
-				<br>
-				<router-link to="/ui-site-map">Site Map</router-link>
 			</div>
 		</div>
 	</www-page>
@@ -111,16 +103,13 @@ export default {
 	},
 	methods: {
 		refreshTotals() {
-			console.log('refreshing totals');
 			this.apollo.query({
 				query: shopTotals,
 				fetchPolicy: 'network-only'
 			}).then(data => {
-				console.log(data);
 				this.totals = _get(data, 'data.shop.basket.totals');
-				console.log(this.totals);
 			}).catch(response => {
-				console.log(`failed to update totals: ${response}`);
+				console.error(`failed to update totals: ${response}`);
 			});
 		},
 		switchToRegister() {
