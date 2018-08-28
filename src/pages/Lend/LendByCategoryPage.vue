@@ -212,7 +212,7 @@ export default {
 		margin: 0 1rem rem-calc(20);
 
 		@media (hover: none) {
-			margin: 0 0 rem-calc(20) 0.5rem;
+			margin: 0 0 rem-calc(20) rem-calc(20);
 		}
 	}
 }

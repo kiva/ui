@@ -48,8 +48,8 @@ import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
 const minWidthToShowLargeCards = 340;
-const smallCardWidthPlusPadding = 286;
-const largeCardWidthPlusPadding = 310;
+const smallCardWidthPlusPadding = 276;
+const largeCardWidthPlusPadding = 300;
 
 export default {
 	components: {

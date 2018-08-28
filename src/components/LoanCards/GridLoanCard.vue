@@ -222,7 +222,7 @@ export default {
 	flex: 0 0 auto;
 
 	&.column-block {
-		padding: 0 rem-calc(15);
+		padding: 0 rem-calc(10);
 
 		&:first-of-type {
 			padding-left: 0;
