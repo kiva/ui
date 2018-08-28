@@ -1,0 +1,5 @@
+mutation addCreditByType($creditType: CreditTypeEnum!, $redemptionCode: String) {
+	shop {
+		addCreditByType	(creditType: $creditType, redemptionCode: $redemptionCode)
+	}
+}
