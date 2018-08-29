@@ -17,6 +17,7 @@
 				:key="category.id"
 				:loan-channel="category"
 				:row-number="index + 1"
+				:set-id="categorySetId"
 			/>
 		</div>
 
@@ -72,7 +73,6 @@ export default {
 			const pageViewTrackData = { schema, data: {} };
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-
 			pageViewTrackData.data.categoriesDisplayed = _map(categories, 'id');
 
 			// @TODO - when sorts available, replace below with ~ _map(this.categories, 'sort')
@@ -212,7 +212,7 @@ export default {
 		margin: 0 1rem rem-calc(20);
 
 		@media (hover: none) {
-			margin: 0 0 rem-calc(20) 0.5rem;
+			margin: 0 0 rem-calc(20) rem-calc(20);
 		}
 	}
 }
