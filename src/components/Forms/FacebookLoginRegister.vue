@@ -1,6 +1,6 @@
 <template>
 	<div id="facebook-register">
-		<kv-facebook-button class="fb-button-parent" @click.native.prevent.stop="initiateFbLogin" />
+		<kv-facebook-button class="fb-button-parent" @click.native.prevent.stop="clickFbLogin" />
 
 		<!-- New Account Lightbox -->
 		<kv-lightbox
@@ -49,9 +49,6 @@
 				</div>
 
 				<div class="terms">
-					<!-- <div v-show="showNewAcctTermsError" class="new-acct-terms-error">
-						In order to use this service you must agree to the Kiva Terms of Use and Privacy Policy.
-					</div> -->
 					<label>
 						<input
 							type="checkbox"
@@ -152,10 +149,10 @@ export default {
 		formValidate
 	],
 	props: {
-		// crumb: {
-		// 	type: String,
-		// 	default: ''
-		// },
+		processType: {
+			type: String,
+			default: 'login'
+		},
 		doneUrl: {
 			type: String,
 			default: ''
@@ -190,13 +187,20 @@ export default {
 		}
 	},
 	methods: {
+		clickFbLogin() {
+			this.initiateFbLogin();
+
+			if (this.processType === 'register') {
+				this.$kvTrackEvent('Register', 'click-facebook-register', 'FacebookRegisterButtonClick');
+			} else {
+				this.$kvTrackEvent('Login', 'click-facebook-login', 'FacebookLoginButtonClick');
+			}
+		},
 		initiateFbLogin() {
 			const vm = this;
 			// Start by verifying the FB auth status
 			return fbUtils.checkFbLoginStatus()
 				.then(fbStatusObj => {
-					console.log(fbStatusObj);
-					vm.fbLoginStatus = fbStatusObj;
 					if (fbStatusObj.status === 'connected') {
 						// user is logged in to facebook + your app
 						console.log(`Already Logged In: ${fbStatusObj.status}`);
@@ -208,14 +212,17 @@ export default {
 					console.log(`NOT Connected: ${fbStatusObj.status}`);
 					return fbUtils.fbLogin();
 				})
-				// Once logged into FB get user info
 				.then(loginStatus => {
+					console.log(loginStatus);
+					// Save the fb status
 					vm.fbLoginStatus = loginStatus;
+					// Once logged into FB get user info
 					return fbUtils.fbFetchUser(loginStatus);
 				})
-				// Attempt Login / Register to Kiva
 				.then(fbResponse => {
+					// Save the fb user info
 					vm.fbUserInfo = fbResponse;
+					// Attempt Login to Kiva
 					return fbUtils.doFbKivaLogin(fbResponse, vm.specialFbParams, vm.doneUrl);
 				})
 				// Get JSON from Kiva response
@@ -231,12 +238,12 @@ export default {
 					if (response.prompt !== undefined && response.prompt === true) {
 						this.handleKivaFbPrompt(response);
 					}
-					// - Error
+					// TODO: Error Cases
 					// Finish the promise regardless
 					return response;
 				})
 				.catch(response => {
-					console.log(response);
+					console.error(response);
 					Promise.reject(response);
 				});
 		},
@@ -261,6 +268,8 @@ export default {
 			return this.newAcctTerms;
 		},
 		postKivaFbNewAcctForm() {
+			this.$kvTrackEvent('Register', 'click-new-fb-register-submit');
+
 			// Validate the termsAgreementPopup is checked
 			if (!this.validateTerms()) {
 				// show error here
@@ -274,7 +283,9 @@ export default {
 				};
 				// retry login sequence
 				this.initiateFbLogin()
-					.then(response => this.handlePostResponse(response));
+					.then(() => {
+						this.$kvTrackEvent('Register', 'successful-fb-register', 'new-account');
+					});
 			}
 		},
 		validateFbExistingAcctForm() {
@@ -287,6 +298,8 @@ export default {
 			return true;
 		},
 		postKivaFbExistingAcctForm() {
+			this.$kvTrackEvent('Register', 'click-existing-fb-register-submit');
+
 			if (this.validateFbExistingAcctForm() === true) {
 				// Set special params
 				this.specialFbParams = {
@@ -297,7 +310,9 @@ export default {
 				};
 				// retry login sequence
 				this.initiateFbLogin()
-					.then(response => this.handlePostResponse(response));
+					.then(() => {
+						this.$kvTrackEvent('Register', 'successful-fb-register', 'existing-account');
+					});
 			}
 		},
 		handlePostResponse(response) {
@@ -310,7 +325,7 @@ export default {
 					window.location = window.location;
 				}
 			}
-		},
+		}
 	}
 };
 </script>

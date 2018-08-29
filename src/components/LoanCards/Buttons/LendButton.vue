@@ -1,6 +1,6 @@
 <template>
 	<kv-button @click.native="addToBasket"
-		:v-kv-track-event="`['Lending', 'Add to basket', 'lend-button-click', ${loanId}, 'true']`"
+		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, 'true']"
 		v-if="!loading"
 	>
 		<slot>Lend now</slot>

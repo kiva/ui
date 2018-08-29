@@ -10,7 +10,7 @@
 					<hr>
 				</div>
 
-				<facebook-login-register />
+				<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
 				<p class="fb-help text-center">We won't post to Facebook without asking.</p>
 				<hr>
 				<div class="featured-text text-center">Or use your email</div>
@@ -21,7 +21,7 @@
 
 				<p class="text-center">
 					<a v-if="showLogin" class="register-link text-center"
-						v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'"
+						v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
 						@click.prevent.stop="switchToRegister">
 						Sign up for Kiva
 					</a>

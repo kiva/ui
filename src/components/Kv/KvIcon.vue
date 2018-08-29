@@ -59,7 +59,8 @@ export default {
 .icon-sector-retail,
 .icon-sector-services,
 .icon-sector-transportation,
-.icon-sector-wholesale {
+.icon-sector-wholesale,
+.icon-small-x {
 	fill: $kiva-text-dark;
 }
 

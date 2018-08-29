@@ -60,14 +60,14 @@
 //  55. Top Bar
 //  56. Xy Grid
 
-@import 'util/util';
+@import 'node_modules/foundation-sites/scss/util/util.scss';
 
 // 1. Global
 // ---------
 
 $global-font-size: 100%;
 $global-width: rem-calc(990);
-$global-lineheight: 1.75rem;
+$global-lineheight: 1.75; // 1.75rem;
 
 // Colors
 $green: #4faf4e;
@@ -90,6 +90,7 @@ $white: #fff;
 $ghost: #fafafa;
 $platinum: #efefef;
 $light-gray: #d8d8d8;
+$subtle-gray: #CCC;
 $gray: #999;
 $medium-gray: $gray;
 $dark-gray: #666;
@@ -207,7 +208,7 @@ $header-styles: (
 $header-text-rendering: optimizeLegibility;
 $small-font-size: 80%;
 $header-small-font-color: $medium-gray;
-$paragraph-lineheight: 1.75rem;
+$paragraph-lineheight: 1.75; // 1.75rem;
 $paragraph-margin-bottom: 1rem;
 $paragraph-text-rendering: optimizeLegibility;
 $anchor-color: $kiva-textlink;

@@ -8,7 +8,7 @@
 						<register-form v-if="showReg" :refresh="true" />
 					</div>
 					<div class="columns medium-6">
-						<facebook-login-register />
+						<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
 						<div v-if="showReg" class="switch-to-login text-center">
 							Already have an account? <a
 								@click.prevent.stop="switchToLogin"
@@ -18,7 +18,7 @@
 						</div>
 						<p class="text-center">
 							<a v-if="showLogin" class="register-link text-center"
-								v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'"
+								v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
 								@click.prevent.stop="switchToRegister">
 								Sign up for Kiva
 							</a>
@@ -31,14 +31,8 @@
 				<basket-items-list
 					:loans="loans"
 					:donations="donations" />
-				<br>
-				<hr>
-				<br>
-				<pay-pal-exp v-if="isLoggedIn" :amount="totals.creditAmountNeeded" />
-				<br>
-				<hr>
-				<br>
-				<router-link to="/ui-site-map">Site Map</router-link>
+				<order-totals :totals="totals" @refreshtotals="refreshTotals" />
+				<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
 			</div>
 		</div>
 	</www-page>
@@ -50,7 +44,9 @@ import _filter from 'lodash/filter';
 // import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
+import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
@@ -60,6 +56,7 @@ export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		OrderTotals,
 		LoginForm,
 		RegisterForm,
 		FacebookLoginRegister,
@@ -99,9 +96,22 @@ export default {
 	computed: {
 		isLoggedIn() {
 			return this.myId !== undefined;
+		},
+		creditNeeded() {
+			return this.totals.creditAmountNeeded || '0.00';
 		}
 	},
 	methods: {
+		refreshTotals() {
+			this.apollo.query({
+				query: shopTotals,
+				fetchPolicy: 'network-only'
+			}).then(data => {
+				this.totals = _get(data, 'data.shop.basket.totals');
+			}).catch(response => {
+				console.error(`failed to update totals: ${response}`);
+			});
+		},
 		switchToRegister() {
 			this.showReg = true;
 			this.showLogin = false;
