@@ -31,7 +31,9 @@
 				<div v-if="!emptyBasket" class="basket-wrap">
 					<basket-items-list
 						:loans="loans"
-						:donations="donations" />
+						:donations="donations"
+						@refreshtotals="refreshTotals"
+					/>
 					<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 					<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
 				</div>

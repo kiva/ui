@@ -28,3 +28,13 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.loan-img {
+	height: 85px;
+	width: 85px;
+}
+
+</style>

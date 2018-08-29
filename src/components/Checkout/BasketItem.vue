@@ -1,6 +1,6 @@
 <template>
 	<div class="basket-item-wrapper row">
-		<span class="small-2">
+		<span class="small-3">
 			<checkout-item-img
 				:loan-id="loan.id"
 				:name="loan.loan.name"
@@ -8,7 +8,7 @@
 			/>
 		</span>
 
-		<span class="small-10 medium-6">
+		<span class="small-9 medium-6">
 			<div class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 				<loan-matcher
@@ -25,7 +25,7 @@
 				:expiry-time="loan.expiryTime"
 			/>
 			<!-- Making this a component -->
-			<input class="loan-price" type="select">{{ loan.price }}
+			<input class="loan-price" type="select" :value="loan.price">
 		</span>
 	</div>
 </template>
@@ -53,5 +53,9 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.basket-item-wrapper {
+	margin-bottom: rem-calc(30);
+}
 
 </style>

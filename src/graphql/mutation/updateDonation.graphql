@@ -1,0 +1,13 @@
+mutation updateDonation($price: Money!, $isTip: Boolean! ) {
+	shop {
+		updateDonation (donation: {
+			price: $price,
+			isTip: $isTip
+		})
+		{
+			id
+			price
+			isTip
+		}
+	}
+}
