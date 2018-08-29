@@ -28,13 +28,22 @@
 				<br>
 				<hr>
 				<br>
-				<basket-items-list
-					:loans="loans"
-					:donations="donations"
-					@refreshtotals="refreshTotals"
-				/>
-				<order-totals :totals="totals" @refreshtotals="refreshTotals" />
-				<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
+				<div v-if="!emptyBasket" class="basket-wrap">
+					<basket-items-list
+						:loans="loans"
+						:donations="donations"
+						@refreshtotals="refreshTotals"
+					/>
+					<order-totals :totals="totals" @refreshtotals="refreshTotals" />
+					<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
+				</div>
+				<div v-else class="empty-basket">
+					<p class="featured-text">Oops — Your basket is empty!</p>
+					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
+						<a href="https://www.dev.kiva.org/lend-by-category">Browse by category</a> or
+						<a href="https://www.dev.kiva.org/lend">see all loans.</a>
+					</p>
+				</div>
 			</div>
 		</div>
 	</www-page>
@@ -101,6 +110,12 @@ export default {
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
+		},
+		emptyBasket() {
+			if (this.loans.length === 0 && parseFloat(_get(this.donations, '[0].price')) === 0) {
+				return true;
+			}
+			return false;
 		}
 	},
 	methods: {
@@ -126,7 +141,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .page-content {
@@ -136,5 +151,9 @@ export default {
 // Hide Basket Bar
 .basket-bar {
 	display: none;
+}
+
+.empty-basket {
+	text-align: center;
 }
 </style>
