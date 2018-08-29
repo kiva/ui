@@ -9,6 +9,7 @@
 			<li v-for="donation in donations" :key="donation.id">
 				<donation-item
 					:donation="donation"
+					@refreshtotals="$emit('refreshtotals')"
 				/>
 			</li>
 

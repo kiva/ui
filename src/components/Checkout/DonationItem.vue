@@ -1,17 +1,17 @@
 <template>
 	<div class="basket-donation-item row">
-		<span class="small-2">
+		<span class="small-3 columns">
 			<span class="donation-icon">
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-10 medium-6">
+		<span class="small-9 medium-6 columns">
 			<div class="donation-info featured-text">
 				Donation to Kiva
 			</div>
 			<div>
 				<a
-					class="small-text"
+					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox">
 					Help Kiva reach more borrowers around the world
 				</a>
@@ -37,9 +37,21 @@
 				</kv-lightbox>
 			</div>
 		</span>
-		<span class="small-12 medium-4">
-			<input type="input" name="donation" id="donation" :value="donation.price">
-			<kv-button class="setting small-text">Update</kv-button>
+		<span class="small-12 medium-4 columns featured-text">
+			<div class="small-12 medium-6 align-center">$
+				<input
+					type="input"
+					class="donation-amount-input"
+					name="donation"
+					id="donation"
+					v-model="amount">
+			</div>
+			<div class="small-12 medium-6 align-center">
+				<kv-button
+					class="secondary"
+					@click.native.prevent.stop="updateDonation()"
+				>Update</kv-button>
+			</div>
 		</span>
 	</div>
 
@@ -49,6 +61,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 export default {
 	components: {
@@ -56,6 +69,7 @@ export default {
 		KvButton,
 		KvLightbox
 	},
+	inject: ['apollo'],
 	props: {
 		donation: {
 			type: Object,
@@ -65,6 +79,7 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
+			amount: this.donation.price
 		};
 	},
 	methods: {
@@ -73,6 +88,19 @@ export default {
 		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
+		},
+		updateDonation() {
+			this.apollo.mutate({
+				mutation: updateDonation,
+				variables: {
+					price: this.amount,
+					isTip: this.donation.isTip
+				}
+			}).then(() => {
+				this.$emit('refreshtotals');
+			}).catch(error => {
+				console.error(error);
+			});
 		}
 	}
 };
@@ -81,6 +109,10 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.donation-icon {
+	padding: 0;
+}
+
 .dedicate-heart {
 	border: 1px solid $light-gray;
 	height: rem-calc(85);
@@ -88,22 +120,39 @@ export default {
 }
 
 .disc-list {
-    list-style-type: disc;
+	list-style-type: disc;
+}
+
+.donation-help-text {
+	display: block;
+}
+
+.align-center {
+	text-align: center;
 }
 
 input {
 	width: rem-calc(100);
-	height: rem-calc(32);
-    text-align: right;
-    padding-right: rem-calc(5);
+	text-align: right;
+	padding-right: rem-calc(5);
+	height: rem-calc(50);
+	margin-bottom: rem-calc(20);
+
+	@include breakpoint(medium) {
+		height: rem-calc(32);
+	}
 }
 
-.basket-donation-item .setting {
+.basket-donation-item .secondary {
 	color: $kiva-accent-blue;
 	border: 1px solid $kiva-accent-blue;
 	box-shadow: 0 1px $kiva-accent-blue;
-	padding: rem-calc(6) rem-calc(20);
-	margin-bottom: rem-calc(5);
+
+	@include breakpoint(medium) {
+		padding: rem-calc(6) rem-calc(20);
+		margin-bottom: rem-calc(5);
+		margin-left: rem-calc(10);
+	}
 }
 
 </style>

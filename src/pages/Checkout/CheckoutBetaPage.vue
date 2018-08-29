@@ -30,7 +30,9 @@
 				<br>
 				<basket-items-list
 					:loans="loans"
-					:donations="donations" />
+					:donations="donations"
+					@refreshtotals="refreshTotals"
+				/>
 				<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 				<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
 			</div>
