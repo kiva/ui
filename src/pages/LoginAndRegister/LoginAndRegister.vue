@@ -10,7 +10,7 @@
 					<hr>
 				</div>
 
-				<facebook-login-register />
+				<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
 				<p class="fb-help text-center">We won't post to Facebook without asking.</p>
 				<hr>
 				<div class="featured-text text-center">Or use your email</div>
