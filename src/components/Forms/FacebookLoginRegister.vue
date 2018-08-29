@@ -68,11 +68,7 @@
 					</ul>
 				</div>
 
-				<kv-button
-					type="submit"
-					name="register"
-					class="smaller"
-					value="Register">Register</kv-button>
+				<kv-button type="submit" name="register" class="smaller" value="Register">Register</kv-button>
 				<hr>
 				<a class="existing-user"
 					@click.stop.prevent="showFbExistingAcctLightbox">Already have an account?</a>
@@ -127,11 +123,7 @@
 					</p>
 				</div>
 
-				<kv-button
-					type="submit"
-					name="connect"
-					class="smaller"
-					value="continue">Connect</kv-button>
+				<kv-button type="submit" name="connect" class="smaller" value="continue">Connect</kv-button>
 				<hr>
 				<a class="new-user" @click.prevent.stop="showFbNewAcctLightbox">New to Kiva?</a>
 			</form>
@@ -209,8 +201,6 @@ export default {
 			// Start by verifying the FB auth status
 			return fbUtils.checkFbLoginStatus()
 				.then(fbStatusObj => {
-					console.log(fbStatusObj);
-					// vm.fbLoginStatus = fbStatusObj;
 					if (fbStatusObj.status === 'connected') {
 						// user is logged in to facebook + your app
 						console.log(`Already Logged In: ${fbStatusObj.status}`);
@@ -223,6 +213,7 @@ export default {
 					return fbUtils.fbLogin();
 				})
 				.then(loginStatus => {
+					console.log(loginStatus);
 					// Save the fb status
 					vm.fbLoginStatus = loginStatus;
 					// Once logged into FB get user info
@@ -247,7 +238,7 @@ export default {
 					if (response.prompt !== undefined && response.prompt === true) {
 						this.handleKivaFbPrompt(response);
 					}
-					// - Error
+					// TODO: Error Cases
 					// Finish the promise regardless
 					return response;
 				})
