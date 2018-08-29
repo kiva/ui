@@ -75,7 +75,7 @@ export default {
 		},
 		categories: {
 			handler(categories) {
-				if (categories.length) {
+				if (categories && categories.length) {
 					if (!_isEqual(this.filtered, categories)) {
 						this.list = _cloneDeep(categories);
 					}
