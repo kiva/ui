@@ -26,6 +26,7 @@
 						v-for="(loan, index) in loans"
 						:key="loan.id"
 						:loan="loan"
+						:items-in-basket="itemsInBasket"
 						:category-id="loanChannel.id"
 						:category-set-id="setId"
 						:row-number="rowNumber"
@@ -61,6 +62,10 @@ export default {
 		loanChannel: {
 			type: Object,
 			default: () => {},
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
 		},
 		rowNumber: {
 			type: Number,
