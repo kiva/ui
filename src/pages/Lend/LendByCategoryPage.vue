@@ -21,6 +21,12 @@
 			/>
 		</div>
 
+		<div class="row pre-footer">
+			<div class="column small-12">
+				<router-link :to="{ path: '/categories'}"><h2>View all categories</h2></router-link>
+			</div>
+		</div>
+
 		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
 				<category-admin-controls />
@@ -211,9 +217,21 @@ export default {
 	.loan-category-row {
 		margin: 0 1rem rem-calc(20);
 
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+
 		@media (hover: none) {
 			margin: 0 0 rem-calc(20) rem-calc(20);
+
+			&:last-of-type {
+				margin-bottom: 0;
+			}
 		}
+	}
+
+	.pre-footer {
+		margin-bottom: 2rem;
 	}
 }
 </style>
