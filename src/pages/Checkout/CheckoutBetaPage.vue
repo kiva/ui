@@ -8,7 +8,7 @@
 						<register-form v-if="showReg" :refresh="true" />
 					</div>
 					<div class="columns medium-6">
-						<facebook-login-register />
+						<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
 						<div v-if="showReg" class="switch-to-login text-center">
 							Already have an account? <a
 								@click.prevent.stop="switchToLogin"
