@@ -1,5 +1,8 @@
 <template>
-	<div class="column column-block">
+	<div
+		class="column column-block"
+		@track-loan-card-interaction="trackInteraction($event)"
+	>
 		<div class="grid-loan-card">
 			<loan-card-image
 				:loan-id="loan.id"
@@ -10,7 +13,6 @@
 				:is-favorite="isFavorite"
 
 				@favorite-toggled="toggleFavorite"
-				@trackLoanCardInteraction="trackInteraction($event)"
 			/>
 			<borrower-info
 				:loan-id="loan.id"
@@ -83,6 +85,10 @@ export default {
 		categoryId: {
 			type: Number,
 			default: null
+		},
+		categorySetId: {
+			type: String,
+			default: ''
 		},
 		isVisitor: {
 			type: Boolean,
@@ -179,11 +185,8 @@ export default {
 			loanInteractionTrackData.data.interactionType = interactionType;
 			loanInteractionTrackData.data.interactionElement = interactionElement;
 			loanInteractionTrackData.data.loanId = this.loan.id;
-
-			// @TODO - make this dynamic when data is available
-			loanInteractionTrackData.data.categorySetIdentifier = 'default';
+			loanInteractionTrackData.data.categorySetIdentifier = this.categorySetId;
 			loanInteractionTrackData.data.categoryId = this.categoryId;
-
 			loanInteractionTrackData.data.row = this.rowNumber;
 			loanInteractionTrackData.data.position = this.cardNumber;
 

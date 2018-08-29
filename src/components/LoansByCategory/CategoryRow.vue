@@ -27,6 +27,7 @@
 						:key="loan.id"
 						:loan="loan"
 						:category-id="loanChannel.id"
+						:category-set-id="setId"
 						:row-number="rowNumber"
 						:card-number="index + 1"
 						:is-in-category-row=true
@@ -65,10 +66,13 @@ export default {
 			type: Number,
 			default: null
 		},
+		setId: {
+			type: String,
+			default: 'Control'
+		},
 	},
 	data() {
 		return {
-			description: '',
 			loans: [],
 			name: '',
 			offset: null,
@@ -101,7 +105,6 @@ export default {
 		loanChannel: {
 			handler(channel) {
 				this.name = _get(channel, 'name');
-				this.description = _get(channel, 'description');
 				this.url = _get(channel, 'url');
 				this.loans = _get(channel, 'loans.values');
 			},
