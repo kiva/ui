@@ -4,31 +4,40 @@
 export default () => {
 	return {
 		defaults: {
-			tipMsg: '',
-			tipMsgType: 'info',
-			tipVisible: false,
-			tipPersist: false,
-			tipInitUrl: '',
+			tip: {
+				message: '',
+				persist: false,
+				type: '',
+				visible: false,
+				__typename: 'TipMessage',
+			},
 		},
 		resolvers: {
 			Mutation: {
-				updateTipMessage(_, {
-					tipMsg,
-					tipMsgType,
-					tipVisible,
-					tipPersist,
-					tipInitUrl
-				}, context) {
+				showTipMessage(_, { message = '', persist = false, type = '' }, context) {
 					context.cache.writeData({
 						data: {
-							tipMsg,
-							tipMsgType,
-							tipVisible,
-							tipPersist,
-							tipInitUrl
-						}
+							tip: {
+								message,
+								persist,
+								type,
+								visible: true,
+								__typename: 'TipMessage',
+							},
+						},
 					});
-					return null;
+					return true;
+				},
+				closeTipMessage(_, data, context) {
+					context.cache.writeData({
+						data: {
+							tip: {
+								visible: false,
+								__typename: 'TipMessage',
+							},
+						},
+					});
+					return true;
 				},
 			},
 		},

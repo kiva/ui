@@ -1,7 +1,0 @@
-query {
-	tipMsg @client,
-	tipMsgType @client,
-	tipVisible @client,
-	tipPersist @client,
-	tipInitUrl @client
-}

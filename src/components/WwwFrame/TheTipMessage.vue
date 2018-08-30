@@ -4,7 +4,7 @@
 
 <script>
 import _get from 'lodash/get';
-import tipMessageData from '@/graphql/query/tipMessageData.graphql';
+import tipMessageData from '@/graphql/query/tipMessage/tipMessageData.graphql';
 import KvTipMessage from '@/components/Kv/KvTipMessage';
 
 export default {
@@ -17,12 +17,12 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			if (this.$refs.tip) {
-				const showing = _get(data, 'tipVisible');
+				const showing = _get(data, 'tip.visible');
 
 				if (showing) {
-					const message = _get(data, 'tipMsg');
-					const messageType = _get(data, 'tipMsgType');
-					const persist = _get(data, 'tipPersist');
+					const message = _get(data, 'tip.message');
+					const messageType = _get(data, 'tip.type');
+					const persist = _get(data, 'tip.persist');
 
 					this.$refs.tip.show(message, messageType, persist);
 				} else {
