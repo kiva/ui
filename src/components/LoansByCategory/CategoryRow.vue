@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<h2 class="category-name">{{ name }}
-			<span class="small-view-all-link">&nbsp;<a :href="url">View all</a></span>
-		</h2>
-
-		<p class="category-description">
-			{{ description }} <a :href="url">View all</a>
-		</p>
+		<div class="row">
+			<div class="column small-12">
+				<h2 class="category-name">{{ name }}
+					<span class="view-all-link">&nbsp;<a :href="url">View all</a></span>
+				</h2>
+			</div>
+		</div>
 
 		<div class="cards-and-arrows-wrapper" ref="outerWrapper">
 			<span
@@ -23,9 +23,15 @@
 				>
 					<GridLoanCard
 						class="is-in-category-row"
-						v-for="loan in loans"
+						v-for="(loan, index) in loans"
 						:key="loan.id"
 						:loan="loan"
+						:items-in-basket="itemsInBasket"
+						:category-id="loanChannel.id"
+						:category-set-id="setId"
+						:row-number="rowNumber"
+						:card-number="index + 1"
+						:is-in-category-row=true
 					/>
 				</div>
 			</div>
@@ -35,15 +41,17 @@
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
-
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
-import loanChannelFragment from '@/graphql/fragments/loanChannelFields.graphql';
+import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+
+const minWidthToShowLargeCards = 340;
+const smallCardWidthPlusPadding = 276;
+const largeCardWidthPlusPadding = 300;
 
 export default {
 	components: {
@@ -52,75 +60,74 @@ export default {
 	inject: ['apollo'],
 	props: {
 		loanChannel: {
+			type: Object,
+			default: () => {},
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
+		},
+		rowNumber: {
 			type: Number,
-			default: 1,
-		}
+			default: null
+		},
+		setId: {
+			type: String,
+			default: 'Control'
+		},
 	},
 	data() {
 		return {
-			cardWidth: 310,
-			cardsInWindow: 1,
-			description: '',
-			loans: {},
-			loading: false,
-			minLeftMargin: -960,
+			loans: [],
 			name: '',
 			offset: null,
 			scrollPos: 0,
-			shiftIncrement: 960,
-			url: ''
+			url: '',
+			windowWidth: 0,
+			wrapperWidth: 0,
 		};
 	},
-	apollo: {
-		query: loanChannelQuery,
-		variables() {
-			return {
-				ids: [this.loanChannel],
-			};
+	computed: {
+		cardsInWindow() {
+			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
-		result({ data, loading }) {
-			if (loading) {
-				this.loading = true;
-			} else {
-				this.setChannelData(_get(data, 'lend.loanChannelsById[0]'));
-				this.loading = false;
-			}
+		cardWidth() {
+			return this.windowWidth > minWidthToShowLargeCards
+				? largeCardWidthPlusPadding
+				: smallCardWidthPlusPadding;
+		},
+		minLeftMargin() {
+			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+		},
+		throttledResize() {
+			return _throttle(this.saveWindowWidth, 100);
+		},
+		shiftIncrement() {
+			return this.cardsInWindow * this.cardWidth;
+		},
+	},
+	watch: {
+		loanChannel: {
+			handler(channel) {
+				this.name = _get(channel, 'name');
+				this.url = _get(channel, 'url');
+				this.loans = _get(channel, 'loans.values');
+			},
+			immediate: true,
+			deep: true,
 		}
 	},
-	created() {
-		// Read the data from the cache for this loan channel (for ssr)
-		const data = this.apollo.readFragment({
-			id: `LoanChannel:${this.loanChannel}`,
-			fragment: loanChannelFragment,
-			fragmentName: 'loanChannelFields',
-		});
-		this.setChannelData(data);
-	},
 	mounted() {
-		this.setupScrollingVars();
-		window.addEventListener('resize', this.setupScrollingVars);
+		this.saveWindowWidth();
+		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', this.setupScrollingVars);
+		window.removeEventListener('resize', this.throttledResize);
 	},
 	methods: {
-		setChannelData(channel) {
-			this.name = _get(channel, 'name');
-			this.description = _get(channel, 'description');
-			this.url = _get(channel, 'url');
-			this.loans = _get(channel, 'loans.values');
-			this.setMinLeftMargin();
-		},
-		setupScrollingVars() {
-			this.cardWidth = window.innerWidth > 340 ? 300 : 276; // card width + padding
-			this.cardsInWindow = Math.floor(this.$refs.innerWrapper.clientWidth / this.cardWidth);
-			this.shiftIncrement = this.cardsInWindow * this.cardWidth;
-			if (this.loans.length) {
-				this.setMinLeftMargin();
-			}
-		},
-		setMinLeftMargin() {
-			this.minLeftMargin = (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+		saveWindowWidth() {
+			this.windowWidth = window.innerWidth;
+			this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
 		},
 		scrollRowLeft() {
 			if (this.scrollPos < 0) {
@@ -185,26 +192,12 @@ export default {
 
 .category-name {
 	font-weight: $global-weight-bold;
-	margin-left: rem-calc(31);
+	margin-bottom: 1rem;
 }
 
-.category-description {
-	line-height: 1.5rem;
-	margin-left: rem-calc(31);
-	max-width: rem-calc(600);
-
-	@include breakpoint(medium down) {
-		display: none;
-	}
-}
-
-.small-view-all-link {
-	font-size: $pagination-font-size;
+.view-all-link {
+	font-size: $normal-text-font-size;
 	font-weight: $global-weight-normal;
-
-	@include breakpoint(large) {
-		display: none;
-	}
 }
 
 @media (hover: none) {
@@ -212,9 +205,8 @@ export default {
 		display: none;
 	}
 
-	.category-name,
-	.category-description {
-		margin-left: 0;
+	.category-name {
+		margin-left: -0.5rem;
 	}
 }
 </style>

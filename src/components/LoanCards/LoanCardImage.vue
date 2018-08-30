@@ -2,12 +2,18 @@
 	<div class="borrower-image-wrapper">
 		<router-link
 			:to="`/lend/${loanId}`"
-			:v-kv-track-event="`['Lending', 'click-Read more', 'Photo', ${loanId}, 'true']`">
+			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']"
+		>
 
 			<img class="borrower-image"
 				:srcset = "retinaImageUrl + ' 2x'"
 				:src = "standardImageUrl"
 				:alt = "'photo of ' + name"
+
+				@click="$emit('track-loan-card-interaction', {
+					interactionType: 'viewBorrowerPage',
+					interactionElement: 'photo'
+				})"
 			>
 
 			<favorite-star class="favorite-star"

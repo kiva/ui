@@ -1,17 +1,18 @@
 <template>
 	<kv-button @click.native="addToBasket"
-		:v-kv-track-event="`['Lending', 'Add to basket', 'lend-button-click', ${loanId}, 'true']`"
+		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, 'true']"
 		v-if="!loading"
 	>
 		<slot>Lend now</slot>
 	</kv-button>
-	<kv-button v-else>
+	<kv-button v-else class="adding-to-basket">
 		<kv-loading-spinner />
 		Adding to basket
 	</kv-button>
 </template>
 
 <script>
+import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
 import addToBasketMutation from '@/graphql/mutation/addToBasket.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
@@ -48,13 +49,25 @@ export default {
 					id: this.loanId,
 					price: numeral(this.price).format('0.00'),
 				},
-			}).then(() => this.apollo.query({
-				query: loanCardBasketed,
-				variables: {
-					id: this.loanId,
-				},
-				fetchPolicy: 'network-only',
-			})).finally(() => {
+			}).then(({ errors }) => {
+				if (errors) {
+					// Handle errors from adding to basket
+					_forEach(errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				} else {
+					// If no errors, update the loan fundraising info
+					return this.apollo.query({
+						query: loanCardBasketed,
+						variables: {
+							id: this.loanId,
+						},
+						fetchPolicy: 'network-only',
+					});
+				}
+			}).catch(() => {
+				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+			}).finally(() => {
 				this.loading = false;
 			});
 		}
@@ -71,10 +84,18 @@ export default {
 	height: 1.5rem;
 	vertical-align: middle;
 	margin-right: 3px;
-
-	.line {
-		background: $white;
-	}
 }
 
+.lend-by-category-page .loading-spinner {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+.loading-spinner /deep/ .line {
+	background-color: $white;
+}
+
+.lend-by-category-page .adding-to-basket.button.smaller {
+	font-size: 1rem;
+}
 </style>

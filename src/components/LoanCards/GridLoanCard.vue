@@ -1,5 +1,8 @@
 <template>
-	<div class="column column-block">
+	<div
+		class="column column-block"
+		@track-loan-card-interaction="trackInteraction($event)"
+	>
 		<div class="grid-loan-card">
 			<loan-card-image
 				:loan-id="loan.id"
@@ -11,7 +14,6 @@
 
 				@favorite-toggled="toggleFavorite"
 			/>
-
 			<borrower-info
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -36,7 +38,13 @@
 					:loan-id="loan.id"
 					:items-in-basket="itemsInBasket"
 					:is-lent-to="loan.userProperties.lentTo"
-					:is-funded="isFunded"/>
+					:is-funded="isFunded"
+
+					@click.native="trackInteraction({
+						interactionType: 'addToBasket',
+						interactionElement: 'Lend25'
+					})"
+				/>
 
 				<matching-text
 					:matching-text="loan.matchingText"
@@ -70,22 +78,42 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
-		loan: {
-			type: Object,
-			default: () => {}
+		cardNumber: {
+			type: Number,
+			default: null
 		},
-		itemsInBasket: {
-			type: Array,
-			default: () => []
+		categoryId: {
+			type: Number,
+			default: null
+		},
+		categorySetId: {
+			type: String,
+			default: ''
 		},
 		isVisitor: {
 			type: Boolean,
 			default: true
 		},
+		isInCategoryRow: {
+			type: Boolean,
+			default: false
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => []
+		},
+		loan: {
+			type: Object,
+			default: () => {}
+		},
+		rowNumber: {
+			type: Number,
+			default: null
+		},
 	},
 	data() {
 		return {
-			isFavorite: this.loan.userProperties.favorited
+			isFavorite: this.loan.userProperties.favorited,
 		};
 	},
 	computed: {
@@ -142,7 +170,28 @@ export default {
 					}
 				}
 			});
-		}
+		},
+		trackInteraction(args) {
+			if (!this.isInCategoryRow) {
+				return;
+			}
+
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_loan_interaction_event_schema_1_0_0.json#';
+			const interactionType = args.interactionType || 'unspecified';
+			const interactionElement = args.interactionElement || 'unspecified';
+			const loanInteractionTrackData = { schema, data: {} };
+
+			loanInteractionTrackData.data.interactionType = interactionType;
+			loanInteractionTrackData.data.interactionElement = interactionElement;
+			loanInteractionTrackData.data.loanId = this.loan.id;
+			loanInteractionTrackData.data.categorySetIdentifier = this.categorySetId;
+			loanInteractionTrackData.data.categoryId = this.categoryId;
+			loanInteractionTrackData.data.row = this.rowNumber;
+			loanInteractionTrackData.data.position = this.cardNumber;
+
+			this.$kvTrackSelfDescribingEvent(loanInteractionTrackData);
+		},
 	}
 };
 </script>
@@ -175,8 +224,12 @@ export default {
 .is-in-category-row {
 	flex: 0 0 auto;
 
-	&.column-block:first-of-type {
-		padding-left: 0;
+	&.column-block {
+		padding: 0 rem-calc(10);
+
+		&:first-of-type {
+			padding-left: 0;
+		}
 	}
 
 	.grid-loan-card {
@@ -187,5 +240,4 @@ export default {
 		}
 	}
 }
-
 </style>

@@ -1,7 +1,6 @@
 /* eslint-disable no-console, no-param-reassign */
-import _map from 'lodash/map';
-import cookie from 'cookie';
 import serialize from 'serialize-javascript';
+import CookieStore from '@/util/CookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
@@ -19,6 +18,7 @@ export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
 		const { url, config, cookies } = context;
+		const cookieStore = new CookieStore(cookies);
 
 		const {
 			app,
@@ -27,8 +27,8 @@ export default context => {
 		} = createApp({
 			appConfig: config,
 			apollo: {
-				cookie: _map(cookies, (val, name) => cookie.serialize(name, val)).join('; '),
-				csrfToken: cookies.kvis && cookies.kvis.substr(6),
+				cookieStore,
+				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 				uri: config.graphqlUri,
 				types: config.graphqlFragmentTypes
 			}
@@ -77,6 +77,7 @@ export default context => {
 				context.renderedState = renderGlobals({
 					__APOLLO_STATE__: apolloClient.cache.extract(),
 				});
+				context.setCookies = cookieStore.getSetCookies();
 				resolve(app);
 			}).catch(error => {
 				if (error instanceof Error) {

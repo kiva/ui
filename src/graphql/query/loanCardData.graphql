@@ -1,6 +1,12 @@
 #import '../fragments/loanCardFields.graphql'
 
-query($offset: Int, $limit: Int, $filters: LoanSearchFiltersInput) {
+query(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+    $imgRetinaSize: String = "w960h720",
+) {
 	my {
 		userAccount {
 			id

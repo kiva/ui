@@ -12,3 +12,4 @@ schema.graphql
 *.ntvs*
 *.njsproj
 *.sln
+.vscode

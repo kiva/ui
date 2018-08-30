@@ -85,6 +85,9 @@ module.exports = function createMiddleware({
 				// render the app
 				return renderer.renderToString(context);
 			}).then(html => {
+				// set any cookies created during the app render
+				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+				// send the final rendered html
 				res.send(html);
 				if (!isProd) {
 					console.log(`whole request: ${Date.now() - s}ms`);

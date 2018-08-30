@@ -1,100 +1,94 @@
 <template>
-	<form id="loginForm"
-		class="login-form"
-		ref="loginForm"
-		name="loginForm"
-		method="post"
-		:action="loginActionUrl"
-		@submit.prevent.stop="doLogin"
-		novalidate>
+	<div id="login-form">
+		<form id="loginForm"
+			class="login-form"
+			ref="loginForm"
+			name="loginForm"
+			method="post"
+			:action="loginActionUrl"
+			@submit.prevent.stop="doLogin"
+			novalidate>
 
-		<KvButton class="smaller">FACEBOOK BUTTON HERE</KvButton>
-		<hr>
-		<div class="featured-text">Or use your email</div>
+			<ul v-show="serverErrors" class="server-errors">
+				<li v-for="(errorText, index) in serverErrors" :key="index">
+					{{ errorText }}
+				</li>
+			</ul>
 
-		<ul v-show="serverErrors" class="server-errors">
-			<li v-for="(errorText, index) in serverErrors" :key="index">
-				{{ errorText }}
-			</li>
-		</ul>
+			<div class="input-set">
+				<label for="email">
+					Email
+					<input
+						type="email"
+						name="email"
+						v-model="email"
+						autofocus
+						@blur="validateEmail(email)">
+				</label>
+				<p v-if="emailErrors.length">
+					<ul class="validation-errors">
+						<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+					</ul>
+				</p>
+			</div>
 
-		<div class="input-set">
-			<label for="email">
-				Email
-				<input
-					type="email"
-					name="email"
-					v-model="email"
-					autofocus
-					@blur="validateEmail(email)">
-			</label>
-			<p v-if="emailErrors.length">
-				<ul class="validation-errors">
-					<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
-				</ul>
-			</p>
-		</div>
+			<div class="input-set">
+				<label for="password">
+					Password <input
+						type="password"
+						name="password"
+						v-model="password"
+						maxlength="31"
+						@blur="validatePassword(password)">
+				</label>
+				<p v-if="passwordErrors.length">
+					<ul class="validation-errors">
+						<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+					</ul>
+				</p>
+			</div>
 
-		<div class="input-set">
-			<label for="password">
-				Password <input
-					type="password"
-					name="password"
-					v-model="password"
-					maxlength="31"
-					@blur="validatePassword(password)">
-			</label>
-			<p v-if="passwordErrors.length">
-				<ul class="validation-errors">
-					<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
-				</ul>
-			</p>
-		</div>
+			<div class="persist-login-wrap">
+				<input type="checkbox" name="persist_login" id="loginForm_persist_login">
+				<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
+				<a class="helpTip sfHelpTip_old"
+					id="persist_login_details"
+					@click.prevent="triggerDefaultLightbox">
+					Details
+				</a>
+			</div>
 
-		<div class="persist-login-wrap">
-			<input type="checkbox" name="persist_login" id="loginForm_persist_login">
-			<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
-			<a class="helpTip sfHelpTip_old"
-				id="persist_login_details"
-				@click.prevent="triggerDefaultLightbox">
-				Details
+			<kv-lightbox
+				:visible="defaultLbVisible"
+				@lightbox-closed="lightboxClosed">
+				<h2 slot="title">{{ salesforceHelpText.name }}</h2>
+				<p>{{ salesforceHelpText.note }}</p>
+			</kv-lightbox>
+
+			<KvButton
+				class="sign-in-button smaller"
+				type="submit"
+				v-kv-track-event="['Login','click-Login-submit','LoginButtonClick']">
+				Sign in
+			</KvButton>
+
+			<input type="hidden" name="currURL" :value="currUrl">
+			<!-- Have to pass this crumb in the Header and in the Request -->
+			<input type="hidden" id="crumb" name="crumb" :value="crumb">
+
+			<a href="/help/forgot-password"
+				class="forgot-password-link"
+				v-kv-track-event="['Login','click-forgot-password','ForgotPasswordClick']">
+				Forgot your password?
 			</a>
-		</div>
-
-		<kv-lightbox
-			:visible="defaultLbVisible"
-			@lightbox-closed="lightboxClosed">
-			<h2 slot="title">{{ salesforceHelpText.name }}</h2>
-			<p>{{ salesforceHelpText.note }}</p>
-		</kv-lightbox>
-
-		<KvButton
-			class="sign-in-button smaller"
-			type="submit"
-			v-kv-track-event="'Login|click-Login-submit|LoginButtonClick'">
-			Sign in
-		</KvButton>
-
-		<input type="hidden" name="currURL" :value="currUrl">
-		<!-- Have to pass this crumb in the Header and in the Request -->
-		<input type="hidden" id="crumb" name="crumb" :value="crumb">
-
-		<a href="/help/forgot-password"
-			class="forgot-password-link"
-			v-kv-track-event="'Login|click-forgot-password|ForgotPasswordClick'">
-			Forgot your password?
-		</a>
-		<a href="/register"
-			class="register-link"
-			v-kv-track-event="'Login|click-Sign-up-register|SignupForKivaClick'">
-			Sign up for Kiva
-		</a>
-	</form>
+		</form>
+	</div>
 </template>
 
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
+import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
 import _get from 'lodash/get';
@@ -103,6 +97,7 @@ import formValidate from '@/plugins/formValidate';
 export default {
 	components: {
 		KvButton,
+		KvFacebookButton,
 		KvLightbox,
 		SalesforceHelpTextQuery,
 	},
@@ -163,8 +158,8 @@ export default {
 			this.defaultLbVisible = false;
 		},
 		doLogin() {
-			// this.loading = true;
 			if (this.validateForm() === true) {
+				this.setLoading(true);
 				const formData = new FormData(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
 			}
@@ -179,6 +174,7 @@ export default {
 			return true;
 		},
 		handlePostResponse(response) {
+			this.setLoading(false);
 			// TODO: Make this better
 			if (response.url && response.url.indexOf('/login?') !== -1) {
 				// Show simple error
@@ -189,12 +185,12 @@ export default {
 				// $emit login-failed event on error to allow parent to respond
 				this.$emit('login-failed');
 				this.loginFailed = true;
-				this.$kvTrackEvent('Login|failed-login');
+				this.$kvTrackEvent('Login', 'failed-login');
 			} else {
 				// $emit login-successful event once completed to allow parent to respond
 				this.$emit('login-successful');
 				this.loginFailed = false;
-				this.$kvTrackEvent('Login|successful-login');
+				this.$kvTrackEvent('Login', 'successful-login');
 			}
 
 			// Goto doneUrl if present + successful login
@@ -208,6 +204,10 @@ export default {
 			if (this.refresh && !this.loginFailed) {
 				window.location = window.location;
 			}
+		},
+		setLoading(state) {
+			this.loading = state;
+			this.$emit('login-loading', state);
 		}
 	},
 };

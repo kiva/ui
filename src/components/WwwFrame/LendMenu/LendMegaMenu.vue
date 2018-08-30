@@ -4,27 +4,27 @@
 			<h2>Categories</h2>
 			<ul :style="categoriesStyle" ref="categoryList">
 				<li
-					v-for="category in categories"
-					:key="category.index"
+					v-for="(category, index) in categories"
+					:key="index"
 					:class="{ 'last-category': category == categories[categories.length - 1] }"
 				>
 					<a
 						:href="category.url"
-						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, category.index]">
+						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]">
 						{{ category.name }}
 					</a>
 				</li>
 				<li>
 					<router-link
 						to="/categories"
-						v-kv-track-event="'TopNav|click-Lend-All_Categories'">
+						v-kv-track-event="['TopNav','click-Lend-All_Categories']">
 						All categories
 					</router-link>
 				</li>
 				<li ref="allLoans">
 					<router-link
 						to="/lend"
-						v-kv-track-event="'TopNav|click-Lend-All_Loans'">
+						v-kv-track-event="['TopNav','click-Lend-All_Loans']">
 						All loans
 					</router-link>
 				</li>
@@ -55,7 +55,7 @@
 					<router-link
 						v-if="favorites > 0"
 						:to="{ path: '/lend', query: { lenderFavorite: userId } }"
-						v-kv-track-event="'TopNav|click-Lend-Favorites'">
+						v-kv-track-event="['TopNav','click-Lend-Favorites']">
 						Starred loans
 					</router-link>
 					<span v-else>Starred loans</span>
@@ -73,7 +73,7 @@
 				<li>
 					<router-link
 						to="/lend/countries-not-lent"
-						v-kv-track-event="'TopNav|click-Lend-Countries_Not_Lent'">
+						v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']">
 						Countries I haven't lent to
 					</router-link>
 				</li>

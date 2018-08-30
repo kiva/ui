@@ -5,8 +5,9 @@
 	- Call from component javascript using this.$showTipMsg or template using $showTipMsg
 	- See TheTipMessage.vue for internal implementation
 */
-import updateTipMessage from '@/graphql/mutation/updateTipMessage.graphql';
 import checkApolloInject from '@/util/apolloInjectCheck';
+import closeTipMessage from '@/graphql/mutation/tipMessage/closeTipMessage.graphql';
+import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
 
 export default {
 	methods: {
@@ -20,13 +21,12 @@ export default {
 			checkApolloInject(this);
 
 			this.apollo.mutate({
-				mutation: updateTipMessage,
+				mutation: showTipMessage,
 				variables: {
-					tipMsg,
-					tipMsgType,
-					tipPersist,
-					tipInitUrl: this.$route.path || ''
-				}
+					message: tipMsg,
+					type: tipMsgType,
+					persist: tipPersist,
+				},
 			});
 		},
 		/*
@@ -37,10 +37,7 @@ export default {
 			checkApolloInject(this);
 
 			this.apollo.mutate({
-				mutation: updateTipMessage,
-				variables: {
-					tipVisible: false
-				}
+				mutation: closeTipMessage,
 			});
 		}
 	}

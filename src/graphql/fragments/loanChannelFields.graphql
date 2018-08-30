@@ -3,9 +3,8 @@
 fragment loanChannelFields on LoanChannel {
 	id
 	name
-	description
 	url
-	loans(limit: 8) {
+	loans(limit: $numberOfLoans, unique: true) {
 		values {
 			...loanCardFields
 		}

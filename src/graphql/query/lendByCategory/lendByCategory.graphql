@@ -1,0 +1,23 @@
+query {
+	general {
+		rows: setting(setting: "ui.category_rows") {
+			value
+		}
+		experiment: setting(setting: "uiexp.category_rows") {
+			key
+			value
+		}
+	}
+	my {
+		isAdmin
+	}
+	shop {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}

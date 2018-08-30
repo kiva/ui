@@ -1,0 +1,8 @@
+query {
+	tip @client {
+		message
+		persist
+		type
+		visible
+	}
+}

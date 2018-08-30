@@ -1,7 +1,0 @@
-query {
-	general {
-		setting(setting: "ui.category_rows") {
-			value
-		}
-	}
-}
