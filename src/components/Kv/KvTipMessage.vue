@@ -5,9 +5,7 @@
 				<div class="icon-wrapper">
 					<kv-icon :name="iconName" />
 				</div>
-				<p class="message">
-					<slot>{{ message }}</slot>
-				</p>
+				<p class="message" v-html="safeMessage"></p>
 			</span>
 			<button @click="close" class="close-tip-message" aria-label="Close">
 				<kv-icon name="x" />
@@ -17,6 +15,7 @@
 </template>
 
 <script>
+import sanitize from 'sanitize-html';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -49,6 +48,14 @@ export default {
 			}
 			// default icon-confirmation
 			return 'confirmation';
+		},
+		safeMessage() {
+			return sanitize(this.message, {
+				allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+				allowedAttributes: {
+					a: ['href'],
+				},
+			});
 		}
 	},
 	methods: {
