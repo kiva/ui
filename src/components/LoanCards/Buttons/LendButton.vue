@@ -52,15 +52,8 @@ export default {
 			}).then(({ errors }) => {
 				if (errors) {
 					// Handle errors from adding to basket
-					_forEach(errors, ({ code, message }) => {
-						/* eslint-disable max-len */
-						if (code === 'no_shares_added_regular_xb') {
-							// TODO: add "<a class='find-another-loan' href='/categories'>Find another loan here</a>.<br/>"
-							this.$showTipMsg('We couldn\'t complete your purchase. Another lender may have fully funded the loan or it may have expired.', 'error');
-						} else {
-							this.$showTipMsg(message, 'error');
-						}
-						/* eslint-enable max-len */
+					_forEach(errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
 					});
 				} else {
 					// If no errors, update the loan fundraising info
