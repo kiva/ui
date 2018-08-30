@@ -2,28 +2,48 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<div v-if="!isLoggedIn" class="login-reg-holder row">
-					<div class="columns medium-6">
-						<login-form v-if="showLogin" :refresh="true" />
+				<br>
+				<hr>
+				<br>
+				<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
+					<div class="columns small-12 large-9 login-reg-header">
+						<h2 v-if="showLogin">Login to Checkout</h2>
+						<h2 v-else>Register to Checkout</h2>
+					</div>
+					<div class="columns small-12 large-4">
+						<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
 						<register-form v-if="showReg" :refresh="true" />
 					</div>
-					<div class="columns medium-6">
+					<div class="columns large-up large-1">
+						<div class="v-divider"></div>
+					</div>
+					<div class="columns small-12 large-4">
+						<div class="or-callout">
+							<hr>
+							<span>Or</span>
+						</div>
+						<p class="social-callout">Connect using a social network.<br>
+							We won’t ever post without asking.</p>
 						<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
-						<div v-if="showReg" class="switch-to-login text-center">
-							Already have an account? <a
+						<div v-if="showReg" class="login-reg-switch">
+							<p class="featured-text">Already have an account? <a
 								@click.prevent.stop="switchToLogin"
 								v-kv-track-event="['register', 'alreadyMemberLnk']"
-								id="loginLink">Sign in</a>
-							<hr>
+								id="loginLink">Sign in</a></p>
 						</div>
-						<p class="text-center">
-							<a v-if="showLogin" class="register-link text-center"
+						<div class="login-reg-switch">
+							<p class="featured-text"><a v-if="showLogin" class="register-link text-center"
 								v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
 								@click.prevent.stop="switchToRegister">
 								Sign up for Kiva
-							</a>
-						</p>
+							</a></p>
+						</div>
 					</div>
+					<loading-overlay v-if="loginLoading" />
+				</div>
+				<div v-else class="login-reg-complete">
+					<p class="featured-text">Thanks for registering!<br>
+						Please continue below to complete your purchase.</p>
 				</div>
 				<br>
 				<hr>
@@ -62,6 +82,7 @@ import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 export default {
 	components: {
@@ -71,7 +92,8 @@ export default {
 		LoginForm,
 		RegisterForm,
 		FacebookLoginRegister,
-		BasketItemsList
+		BasketItemsList,
+		LoadingOverlay
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -88,6 +110,7 @@ export default {
 			loading: false,
 			showReg: false,
 			showLogin: true,
+			loginLoading: false,
 		};
 	},
 	apollo: {
@@ -136,24 +159,83 @@ export default {
 		switchToLogin() {
 			this.showReg = false;
 			this.showLogin = true;
+		},
+		setLoginLoading(state) {
+			this.loginLoading = state;
 		}
 	}
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'settings';
 
 .page-content {
 	padding: 1.625rem 0;
+
+	.login-reg-holder {
+		position: relative;
+
+		.login-reg-header {
+			font-weight: 400;
+		}
+
+		.v-divider {
+			width: 1px;
+			height: 100%;
+			background: $subtle-gray;
+			margin: 0 auto;
+		}
+
+		.or-callout {
+			position: relative;
+			text-align: center;
+
+			hr {
+				border-bottom: 2px solid $kiva-text-dark;
+				margin-right: 2rem;
+				margin-left: 2rem;
+			}
+
+			span {
+				margin: -3.125rem auto 0;
+				background: $white;
+				padding: 1rem;
+				display: block;
+				width: fit-content;
+				text-transform: uppercase;
+				font-style: italic;
+				font-weight: 400;
+			}
+		}
+
+		.social-callout {
+			text-align: center;
+			line-height: 1.3;
+			margin-bottom: 2rem;
+		}
+
+		.login-reg-switch {
+			position: absolute;
+			bottom: 0;
+			font-weight: 400;
+		}
+	}
+
+	.login-reg-complete {
+		p {
+			text-align: center;
+			color: $kiva-text-light;
+		}
+	}
+
+	.empty-basket {
+		text-align: center;
+	}
 }
 
-// Hide Basket Bar
+// Hide Basket Bar (this won't work with scoped)
 .basket-bar {
 	display: none;
-}
-
-.empty-basket {
-	text-align: center;
 }
 </style>

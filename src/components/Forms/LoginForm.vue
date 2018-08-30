@@ -158,8 +158,8 @@ export default {
 			this.defaultLbVisible = false;
 		},
 		doLogin() {
-			// this.loading = true;
 			if (this.validateForm() === true) {
+				this.setLoading(true);
 				const formData = new FormData(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
 			}
@@ -174,6 +174,7 @@ export default {
 			return true;
 		},
 		handlePostResponse(response) {
+			this.setLoading(false);
 			// TODO: Make this better
 			if (response.url && response.url.indexOf('/login?') !== -1) {
 				// Show simple error
@@ -203,6 +204,10 @@ export default {
 			if (this.refresh && !this.loginFailed) {
 				window.location = window.location;
 			}
+		},
+		setLoading(state) {
+			this.loading = state;
+			this.$emit('login-loading', state);
 		}
 	},
 };
