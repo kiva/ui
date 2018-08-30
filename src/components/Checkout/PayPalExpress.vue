@@ -1,7 +1,8 @@
 <template>
 	<div class="paypal-holder">
 		<div id="paypal-button" ref="paypalbutton"></div>
-		<p class="pp-tagline small-text">Thanks to PayPal, Kiva receives free payment processing.</p>
+		<p class="pp-tagline small-text">Thanks to PayPal, Kiva receives
+		<br class="hide-for-large"> free payment processing.</p>
 	</div>
 </template>
 
@@ -131,7 +132,8 @@ export default {
 					style: {
 						color: 'blue',
 						shape: 'rect',
-						size: 'large'
+						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
+						fundingicons: true
 					}
 				},
 				'#paypal-button'
@@ -146,9 +148,15 @@ export default {
 
 .paypal-holder {
 	display: block;
+	text-align: center;
+	margin: 0 $list-side-margin;
 
 	@include breakpoint(medium) {
-		float: right;
+		text-align: right;
+	}
+
+	#paypal-button {
+		margin-bottom: $list-side-margin;
 	}
 
 	.pp-tagline {
