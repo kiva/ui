@@ -4,6 +4,7 @@
 			<li v-for="loan in loans" :key="loan.id">
 				<basket-item
 					:loan="loan"
+					@refreshtotals="$emit('refreshtotals', $event)"
 				/>
 			</li>
 			<li v-for="donation in donations" :key="donation.id">

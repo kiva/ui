@@ -52,7 +52,7 @@
 					<basket-items-list
 						:loans="loans"
 						:donations="donations"
-						@refreshtotals="refreshTotals"
+						@refreshtotals="refreshTotals($event)"
 					/>
 					<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 					<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
@@ -142,7 +142,8 @@ export default {
 		}
 	},
 	methods: {
-		refreshTotals() {
+		refreshTotals(payload) {
+			console.log(payload);
 			this.apollo.query({
 				query: shopTotals,
 				fetchPolicy: 'network-only'

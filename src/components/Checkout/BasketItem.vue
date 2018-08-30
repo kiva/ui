@@ -1,5 +1,5 @@
 <template>
-	<div class="basket-item-wrapper row">
+	<div v-show="loanVisible" class="basket-item-wrapper row">
 		<span class="small-3">
 			<checkout-item-img
 				:loan-id="loan.id"
@@ -18,14 +18,18 @@
 			</div>
 		</span>
 
-		<span class="small-12 medium-4">
+		<span class="small-12 medium-3">
 			<loan-reservation
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.isFunded"
 				:expiry-time="loan.expiryTime"
 			/>
-			<!-- Making this a component -->
-			<input class="loan-price" type="select" :value="loan.price">
+			<loan-price
+				class="loan-price"
+				:price="loan.price"
+				:loan-id="loan.id"
+				@refreshtotals="onLoanUpdate($event)"
+			/>
 		</span>
 	</div>
 </template>
@@ -34,12 +38,14 @@
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
+import LoanPrice from '@/components/Checkout/LoanPrice';
 
 export default {
 	components: {
 		CheckoutItemImg,
 		LoanMatcher,
-		LoanReservation
+		LoanReservation,
+		LoanPrice
 	},
 	props: {
 		loan: {
@@ -47,6 +53,17 @@ export default {
 			default: () => {}
 		},
 	},
+	data() {
+		return {
+			loanVisible: true
+		};
+	},
+	methods: {
+		onLoanUpdate($event) {
+			this.$emit('refreshtotals', $event);
+			this.loanVisible = false;
+		}
+	}
 };
 
 </script>
