@@ -99,7 +99,7 @@ export default {
 @import 'settings';
 
 .order-totals {
-	margin: $featured-text-line-height $global-margin;
+	margin: $featured-text-line-height $list-side-margin;
 	text-align: center;
 
 	@include breakpoint(medium) {
