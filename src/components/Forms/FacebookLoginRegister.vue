@@ -283,8 +283,13 @@ export default {
 				};
 				// retry login sequence
 				this.initiateFbLogin()
-					.then(() => {
-						this.$kvTrackEvent('Register', 'successful-fb-register', 'new-account');
+					.then(response => {
+						// check for success status before firing success event
+						if (response.success) {
+							this.$kvTrackEvent('Register', 'successful-fb-register', 'new-account');
+						} else {
+							console.error(`initiateFebLogin response: ${response}`);
+						}
 					});
 			}
 		},
@@ -310,15 +315,25 @@ export default {
 				};
 				// retry login sequence
 				this.initiateFbLogin()
-					.then(() => {
-						this.$kvTrackEvent('Register', 'successful-fb-register', 'existing-account');
+					.then(response => {
+						// check for success status before firing success event
+						if (response.success) {
+							this.$kvTrackEvent('Register', 'successful-fb-register', 'existing-account');
+						} else {
+							console.error(`initiateFebLogin response: ${response}`);
+						}
 					});
 			}
 		},
 		handlePostResponse(response) {
 			console.log(`Handle post response: ${JSON.stringify(response)}`);
-			// If we've successfully logged in with the new FB Account refresh the page
+			// If we've successfully logged in with the FB Account refresh the page
 			if (response.success === true) {
+				// if this is a login processType fire an event (register events are handled elsewhere)
+				if (this.processType === 'login') {
+					this.$kvTrackEvent('Login', 'successful-fb-login');
+				}
+				// refresh or redirect actions
 				if (this.doneUrl !== '') {
 					window.location = `${document.location.origin}/${this.doneUrl}`;
 				} else {
