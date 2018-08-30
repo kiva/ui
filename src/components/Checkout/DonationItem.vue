@@ -37,7 +37,7 @@
 				</kv-lightbox>
 			</div>
 		</span>
-		<span class="small-12 medium-4 columns featured-text">
+		<span class="small-12 medium-3 columns featured-text">
 			<div class="small-12 medium-6 align-center">$
 				<input
 					type="input"
