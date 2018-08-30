@@ -61,7 +61,9 @@ export default {
 	methods: {
 		onLoanUpdate($event) {
 			this.$emit('refreshtotals', $event);
-			this.loanVisible = false;
+			if ($event === 'removeLoan') {
+				this.loanVisible = false;
+			}
 		}
 	}
 };

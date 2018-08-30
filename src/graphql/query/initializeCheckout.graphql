@@ -21,6 +21,7 @@ query {
 							use
 							status
 							matchingText
+							loanAmount
 							plannedExpirationDate
 							sector {
 								name
@@ -32,6 +33,8 @@ query {
 							}
 							loanFundraisingInfo {
 								isExpiringSoon
+								fundedAmount
+								reservedAmount
 							}
 							image {
 								id
