@@ -50,6 +50,7 @@
 		"popper.js": "^1.14.3",
 		"raven": "^2.6.0",
 		"raven-js": "^3.24.2",
+		"sanitize-html": "^1.18.4",
 		"serialize-javascript": "^1.4.0",
 		"set-cookie-parser": "^2.1.1",
 		"vue": "^2.5.7",

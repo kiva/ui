@@ -16,6 +16,7 @@
 				v-for="(category, index) in categories"
 				:key="category.id"
 				:loan-channel="category"
+				:items-in-basket="itemsInBasket"
 				:row-number="index + 1"
 				:set-id="categorySetId"
 			/>
@@ -64,6 +65,7 @@ export default {
 			categorySetting: [],
 			categorySetId: '',
 			categories: [],
+			itemsInBasket: [],
 		};
 	},
 	computed: {
@@ -135,6 +137,7 @@ export default {
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
+		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Read the loan channels from the cache
 		const categoryData = this.apollo.readQuery({
@@ -154,6 +157,7 @@ export default {
 			next: ({ data }) => {
 				this.setRows(data);
 				this.isAdmin = !!_get(data, 'my.isAdmin');
+				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				// Update the categories observer with the new setting, triggering updates
 				categoryObserver.setVariables({ ids: this.categoryIds });
 			},

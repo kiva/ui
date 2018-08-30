@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
 import addToBasketMutation from '@/graphql/mutation/addToBasket.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
@@ -48,13 +49,25 @@ export default {
 					id: this.loanId,
 					price: numeral(this.price).format('0.00'),
 				},
-			}).then(() => this.apollo.query({
-				query: loanCardBasketed,
-				variables: {
-					id: this.loanId,
-				},
-				fetchPolicy: 'network-only',
-			})).finally(() => {
+			}).then(({ errors }) => {
+				if (errors) {
+					// Handle errors from adding to basket
+					_forEach(errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				} else {
+					// If no errors, update the loan fundraising info
+					return this.apollo.query({
+						query: loanCardBasketed,
+						variables: {
+							id: this.loanId,
+						},
+						fetchPolicy: 'network-only',
+					});
+				}
+			}).catch(() => {
+				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+			}).finally(() => {
 				this.loading = false;
 			});
 		}
