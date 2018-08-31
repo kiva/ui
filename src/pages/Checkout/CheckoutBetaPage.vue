@@ -178,7 +178,7 @@ export default {
 
 	// loading overlay overrides
 	.loading-overlay {
-		background-color: rgba(255, 255, 255, .7);
+		background-color: rgba(255, 255, 255, 0.7);
 	}
 
 	.login-reg-holder {
