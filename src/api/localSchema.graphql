@@ -1,0 +1,26 @@
+ # declare the @client directive to appease KnownDirectives rule
+directive @client on FIELD
+
+type Experiment {
+	id: String
+	version: String
+}
+
+type Mutation {
+	closeTipMessage: Boolean
+	showTipMessage(message: String, persist: Boolean, type: String): Boolean
+	updateUsingTouch(usingTouch: Boolean): Boolean
+}
+
+type Query {
+	experiment(id: String): Experiment
+	tip: TipMessage
+	usingTouch: Boolean
+}
+
+type TipMessage {
+	message: String
+	persist: Boolean
+	type: String
+	visible: Boolean
+}
