@@ -19,7 +19,7 @@ export default {
 @import 'settings';
 
 .matching-text {
-	line-height: 2rem;
+	line-height: 1rem;
 }
 
 </style>
