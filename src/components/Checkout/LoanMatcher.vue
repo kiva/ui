@@ -1,5 +1,5 @@
 <template functional>
-	<div class="small-text">
+	<div class="small-text matching-text">
 		Matched by {{ props.matchingText }}
 	</div>
 </template>
@@ -14,3 +14,12 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.matching-text {
+	line-height: 2rem;
+}
+
+</style>

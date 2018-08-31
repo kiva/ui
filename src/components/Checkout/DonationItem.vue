@@ -1,11 +1,11 @@
 <template>
 	<div class="basket-donation-item row">
-		<span class="small-3 columns">
+		<span class="small-3 medium-1">
 			<span class="donation-icon">
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-6 columns">
+		<span class="small-9 medium-8">
 			<div class="donation-info featured-text">
 				Donation to Kiva
 			</div>
@@ -25,7 +25,7 @@
 						We rely on small optional donations from you and others to keep Kiva running.
 						Every $1 donated to Kiva makes $8 in loans possible around the world.
 						Your donation will enable us to:
-						<ul class="disc-list">
+						<ul style="list-style-type: disc;">
 							<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
 							<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
 							<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
@@ -37,21 +37,22 @@
 				</kv-lightbox>
 			</div>
 		</span>
-		<span class="small-12 medium-3 columns featured-text">
-			<div class="small-12 medium-6 align-center">$
+		<span class="small-3 show-for-small-only"></span>
+		<span class="small-9 medium-3 featured-text">
+			<span class="small-12 medium-6">
 				<input
 					type="input"
 					class="donation-amount-input"
 					name="donation"
 					id="donation"
 					v-model="amount">
-			</div>
-			<div class="small-12 medium-6 align-center">
+			</span>
+			<span class="small-12 medium-6">
 				<kv-button
 					class="secondary"
 					@click.native.prevent.stop="updateDonation()"
 				>Update</kv-button>
-			</div>
+			</span>
 		</span>
 	</div>
 
@@ -109,26 +110,33 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.basket-donation-item {
+	padding-right: rem-calc(20);
+}
+
 .donation-icon {
 	padding: 0;
 }
 
 .dedicate-heart {
 	border: 1px solid $light-gray;
-	height: rem-calc(85);
-	width: rem-calc(85);
-}
-
-.disc-list {
-	list-style-type: disc;
+	height: rem-calc(55);
+	width: rem-calc(55);
 }
 
 .donation-help-text {
 	display: block;
+	margin-bottom: rem-calc(15);
 }
 
-.align-center {
+.donation-amount-input {
+	border: 1px solid $light-gray;
+	width: 100%;
 	text-align: center;
+
+	@include breakpoint(medium) {
+		width: rem-calc(110);
+	}
 }
 
 input {
@@ -147,11 +155,13 @@ input {
 	color: $kiva-accent-blue;
 	border: 1px solid $kiva-accent-blue;
 	box-shadow: 0 1px $kiva-accent-blue;
+	width: 100%;
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
 		margin-bottom: rem-calc(5);
 		margin-left: rem-calc(10);
+		width: inherit;
 	}
 }
 

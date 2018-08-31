@@ -1,6 +1,6 @@
 <template>
 	<div v-show="loanVisible" class="basket-item-wrapper row">
-		<span class="small-3">
+		<span class="small-3 medium-1">
 			<checkout-item-img
 				:loan-id="loan.id"
 				:name="loan.loan.name"
@@ -8,7 +8,7 @@
 			/>
 		</span>
 
-		<span class="small-9 medium-6">
+		<span class="small-9 medium-8">
 			<div class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 				<loan-matcher
@@ -17,15 +17,14 @@
 				/>
 			</div>
 		</span>
-
-		<span class="small-12 medium-3">
+		<span class="small-3 show-for-small-only"></span>
+		<span class="small-9 medium-3">
 			<loan-reservation
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.isFunded"
 				:expiry-time="loan.expiryTime"
 			/>
 			<loan-price
-				class="loan-price"
 				:price="loan.price"
 				:loan-id="loan.id"
 				:loan-amount="loan.loan.loanAmount"
@@ -78,6 +77,11 @@ export default {
 
 .basket-item-wrapper {
 	margin-bottom: rem-calc(30);
+	padding-right: rem-calc(20);
+}
+
+.borrower-info {
+	line-height: 1.75rem;
 }
 
 </style>

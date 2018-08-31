@@ -33,8 +33,8 @@ export default {
 @import 'settings';
 
 .loan-img {
-	height: 85px;
-	width: 85px;
+	height: rem-calc(55);
+	width: rem-calc(55);
 }
 
 </style>
