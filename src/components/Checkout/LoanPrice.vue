@@ -46,7 +46,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedOption: numeral(this.price).format('0,0.00'),
+			selectedOption: numeral(this.price).format('0,0'),
 			selectLimit: 150
 		};
 	},
@@ -95,14 +95,14 @@ export default {
 			if (this.selectedOption === 'remove') {
 				return 0;
 			}
-			return this.selectedOption;
+			return numeral(this.selectedOption).format('0,0.00');
 		},
 		buildShareArray(shares) {
 			// loop and build formatted array
 			const priceArray = [];
 			// ex. priceArray = ['25.00', '50.00', '75.00']
 			for (let i = 0; i < shares; i++) { // eslint-disable-line
-				priceArray.push(numeral(25 * (i + 1)).format('0,0.00'));
+				priceArray.push(numeral(25 * (i + 1)).format('0,0'));
 			}
 
 			return priceArray;
