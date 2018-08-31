@@ -13,7 +13,6 @@ module.exports = {
 	extends: ['plugin:vue/strongly-recommended', 'airbnb-base'],
 	// required to lint *.vue files
 	plugins: [
-		'graphql',
 		'import',
 		'vue'
 	],
@@ -64,7 +63,5 @@ module.exports = {
 				normal: 'never'
 			}
 		}],
-		// configure graphql schema checking
-		'graphql/template-strings': ['error', { env: 'literal' }],
 	}
 }
