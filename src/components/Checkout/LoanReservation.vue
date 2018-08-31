@@ -51,6 +51,8 @@ export default {
 
 .reservation-info {
 	color: $kiva-text-light;
+	line-height: 2rem;
+	float: right;
 
 	.loan-message /deep/ .red {
 		color: $kiva-accent-red;

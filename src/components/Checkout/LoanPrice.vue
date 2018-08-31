@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<select
+			dir="rtl"
 			v-model="selectedOption"
 			class="loan-price"
 			@change="updateLoanAmount()">
@@ -111,3 +112,12 @@ export default {
 };
 
 </script>
+
+<style lang="scss">
+@import 'settings';
+
+.loan-price {
+	border: 1.5px solid black;
+}
+
+</style>
