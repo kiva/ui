@@ -6,18 +6,18 @@
 				<hr>
 				<br>
 				<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
-					<div class="columns small-12 large-9 login-reg-header">
+					<div class="columns small-12 large-11 xxlarge-9 login-reg-header">
 						<h2 v-if="showLogin">Login to Checkout</h2>
 						<h2 v-else>Register to Checkout</h2>
 					</div>
-					<div class="columns small-12 large-4">
+					<div class="columns small-12 large-5 xxlarge-4">
 						<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
 						<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
 					</div>
 					<div class="columns large-up large-1">
 						<div class="v-divider"></div>
 					</div>
-					<div class="columns small-12 large-4">
+					<div class="columns small-12 large-5 xxlarge-4">
 						<div class="or-callout">
 							<hr>
 							<span>Or</span>
@@ -223,10 +223,19 @@ export default {
 			margin-bottom: 2rem;
 		}
 
+		#facebook-register {
+			margin-bottom: 2rem;
+		}
+
 		.login-reg-switch {
-			position: absolute;
-			bottom: 0;
-			font-weight: 400;
+			text-align: center;
+
+			@include breakpoint(large) {
+				text-align: left;
+				position: absolute;
+				bottom: 0;
+				font-weight: 400;
+			}
 		}
 	}
 
