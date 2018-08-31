@@ -12,7 +12,7 @@
 					</div>
 					<div class="columns small-12 large-4">
 						<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
-						<register-form v-if="showReg" :refresh="true" />
+						<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
 					</div>
 					<div class="columns large-up large-1">
 						<div class="v-divider"></div>
@@ -24,7 +24,9 @@
 						</div>
 						<p class="social-callout">Connect using a social network.<br>
 							We won’t ever post without asking.</p>
-						<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
+						<facebook-login-register
+							:process-type="showLogin ? 'login' : 'register'"
+							@fb-loading="setLoginLoading" />
 						<div v-if="showReg" class="login-reg-switch">
 							<p class="featured-text">Already have an account? <a
 								@click.prevent.stop="switchToLogin"
@@ -173,6 +175,11 @@ export default {
 
 .page-content {
 	padding: 1.625rem 0;
+
+	// loading overlay overrides
+	.loading-overlay {
+		background-color: rgba(255, 255, 255, .7);
+	}
 
 	.login-reg-holder {
 		position: relative;

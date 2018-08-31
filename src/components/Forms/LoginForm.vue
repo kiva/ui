@@ -132,7 +132,7 @@ export default {
 			currUrl: this.$route.path,
 			crumb: '',
 			loginFailed: false,
-			loading: false, // TODO: Add loading state v-show="!loading && !userId"
+			loading: false,
 			serverErrors: [],
 			defaultLbVisible: false,
 			salesforceHelpText: {},

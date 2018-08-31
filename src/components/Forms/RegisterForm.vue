@@ -165,7 +165,7 @@ export default {
 			currUrl: this.$route.path,
 			crumb: '',
 			regFailed: false,
-			loading: false, // TODO: Add loading state v-show="!loading && !userId"
+			loading: false,
 			serverErrors: [],
 			firstName: '',
 			lastName: '',
@@ -200,8 +200,8 @@ export default {
 	},
 	methods: {
 		register() {
-			// this.loading = true;
 			if (this.validateForm() === true) {
+				this.setLoading(true);
 				const formData = new FormData(this.$refs.regForm);
 				this.postForm(this.regActionUrl, formData);
 			}
@@ -220,6 +220,8 @@ export default {
 			return true;
 		},
 		handlePostResponse(response) {
+			this.setLoading(false);
+
 			// TODO: Make this better
 			if (response.url && response.url.indexOf('/register?') !== -1) {
 				// Extract Server Errors from weird url in response
@@ -278,6 +280,10 @@ export default {
 			passwordInput.addEventListener('blur', e => {
 				this.validatePassword(e.target.value);
 			});
+		},
+		setLoading(state) {
+			this.loading = state;
+			this.$emit('reg-loading', state);
 		}
 	}
 };

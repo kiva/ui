@@ -197,6 +197,7 @@ export default {
 			}
 		},
 		initiateFbLogin() {
+			this.setLoading(true);
 			const vm = this;
 			// Start by verifying the FB auth status
 			return fbUtils.checkFbLoginStatus()
@@ -214,6 +215,10 @@ export default {
 				})
 				.then(loginStatus => {
 					console.log(loginStatus);
+					// Turn off loading if user exits FB Login Dialog
+					if (loginStatus.status === 'unknown') {
+						this.setLoading(false);
+					}
 					// Save the fb status
 					vm.fbLoginStatus = loginStatus;
 					// Once logged into FB get user info
@@ -240,6 +245,9 @@ export default {
 					}
 					// TODO: Error Cases
 					// Finish the promise regardless
+
+					this.setLoading(false);
+
 					return response;
 				})
 				.catch(response => {
@@ -340,6 +348,10 @@ export default {
 					window.location = window.location;
 				}
 			}
+		},
+		setLoading(state) {
+			this.loading = state;
+			this.$emit('fb-loading', state);
 		}
 	}
 };
