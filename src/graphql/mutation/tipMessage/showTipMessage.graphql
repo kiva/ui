@@ -1,13 +1,11 @@
 mutation showTipMessage(
 	$message: String = "",
 	$type: String = "",
-	$visible: Boolean = true,
 	$persist: Boolean = false
 ) {
 	showTipMessage(
 		message: $message,
 		type: $type,
-		visible: $visible,
 		persist: $persist,
 	) @client
 }
