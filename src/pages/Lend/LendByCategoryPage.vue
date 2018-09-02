@@ -76,7 +76,7 @@ export default {
 	methods: {
 		assemblePageViewData(categories) {
 			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_0.json#';
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_1.json#';
 			const loans = _map(categories, 'loans');
 			const pageViewTrackData = { schema, data: {} };
 
