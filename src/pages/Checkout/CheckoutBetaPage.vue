@@ -56,6 +56,7 @@
 						:donations="donations"
 						@refreshtotals="refreshTotals($event)"
 					/>
+					<kiva-card-redemption/>
 					<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 					<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
 				</div>
@@ -84,6 +85,7 @@ import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 export default {
@@ -95,6 +97,7 @@ export default {
 		RegisterForm,
 		FacebookLoginRegister,
 		BasketItemsList,
+		KivaCardRedemption,
 		LoadingOverlay
 	},
 	inject: ['apollo'],
