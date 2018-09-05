@@ -23,7 +23,8 @@
 						name="email"
 						v-model="email"
 						autofocus
-						@blur="validateEmail(email)">
+						@blur="validateEmail(email)"
+						@keyup.enter="doLogin">
 				</label>
 				<p v-if="emailErrors.length">
 					<ul class="validation-errors">
@@ -39,7 +40,8 @@
 						name="password"
 						v-model="password"
 						maxlength="31"
-						@blur="validatePassword(password)">
+						@blur="validatePassword(password)"
+						@keyup.enter="doLogin">
 				</label>
 				<p v-if="passwordErrors.length">
 					<ul class="validation-errors">
@@ -68,6 +70,7 @@
 			<KvButton
 				class="sign-in-button smaller"
 				type="submit"
+				name="loginForm_submit"
 				v-kv-track-event="['Login','click-Login-submit','LoginButtonClick']">
 				Sign in
 			</KvButton>

@@ -173,6 +173,7 @@ export default {
 			password: '',
 			terms: '',
 			showMeteredPassword: false,
+			pwEventsBound: false
 		};
 	},
 	created() {
@@ -192,7 +193,10 @@ export default {
 		if (this.showMeteredPassword) {
 			// if so on next tick bind the blur events
 			this.$nextTick(() => {
-				if (document.getElementById('password')) {
+				if (document.getElementById('password') && !this.pwEventsBound) {
+					// flipping this switch will ensure events aren't repeatedly bound
+					// TODO: find a better way to detect this element and apply events
+					this.pwEventsBound = true;
 					this.bindMeteredPasswordEvents();
 				}
 			});
@@ -274,9 +278,9 @@ export default {
 			return errorArray;
 		},
 		bindMeteredPasswordEvents() {
+			const passwordInput = document.getElementById('password');
 			// Hooked directly into DOM events because the library we're using
 			// (vue-password-strength-meter) doesn't allow us access to the blur event we needed.
-			const passwordInput = document.getElementById('password');
 			passwordInput.addEventListener('blur', e => {
 				this.validatePassword(e.target.value);
 			});

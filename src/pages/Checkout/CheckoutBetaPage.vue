@@ -29,14 +29,14 @@
 							@fb-loading="setLoginLoading" />
 						<div v-if="showReg" class="login-reg-switch">
 							<p class="featured-text">Already have an account? <a
-								@click.prevent.stop="switchToLogin"
+								@click.prevent="switchToLogin"
 								v-kv-track-event="['register', 'alreadyMemberLnk']"
 								id="loginLink">Sign in</a></p>
 						</div>
 						<div class="login-reg-switch">
 							<p class="featured-text"><a v-if="showLogin" class="register-link text-center"
 								v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
-								@click.prevent.stop="switchToRegister">
+								@click.prevent="switchToRegister">
 								Sign up for Kiva
 							</a></p>
 						</div>
