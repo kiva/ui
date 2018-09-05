@@ -1,0 +1,14 @@
+#import '../fragments/loanChannelFields.graphql'
+
+query (
+	$ids: [Int],
+	$numberOfLoans: Int = 1,
+	$imgDefaultSize: String = "w480h360",
+    $imgRetinaSize: String = "w960h720",
+) {
+	lend {
+		loanChannelsById(ids: $ids) {
+			...loanChannelFields
+		}
+	}
+}

@@ -10,6 +10,9 @@
 			</div>
 		</div>
 
+		<!-- @TODO - wrap in conditional for experiment -->
+		<FeaturedLoans />
+
 		<div>
 			<category-row
 				class="loan-category-row"
@@ -49,10 +52,15 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 
+// @TODO - should this be wrapped in a conditional re. the experiment being active
+import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+
+
 export default {
 	components: {
 		CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
+		FeaturedLoans,
 		WwwPage,
 	},
 	inject: ['apollo'],

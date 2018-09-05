@@ -104,7 +104,16 @@ export default {
 		},
 		loan: {
 			type: Object,
-			default: () => {}
+			default: () => {
+				return {
+					userProperties: {},
+					loanFundraisingInfo: {},
+					geocode: {
+						country: {},
+					},
+					image: {},
+				};
+			}
 		},
 		rowNumber: {
 			type: Number,
