@@ -20,17 +20,17 @@
 			</kv-lightbox>
 
 			<div
-				v-if="loanReservationMsg2">Reserved for ${this.mins} more minutes
+				v-if="loanReservationMsg2">Reserved for ${mins} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg3"
-				class="red">Reserved for ${this.mins} more minutes
+				class="red">Reserved for ${mins} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg4"
-				class="red">Reserved for ${this.mins} more minute
+				class="red">Reserved for ${mins} more minute
 			</div>
 		</span>
 	</div>
@@ -47,10 +47,11 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			ReservationMsg1: true,
+			ReservationMsg1: false,
 			ReservationMsg2: false,
 			ReservationMsg3: false,
-			ReservationMsg4: false
+			ReservationMsg4: false,
+			mins: ''
 		};
 	},
 	props: {
@@ -78,32 +79,37 @@ export default {
 			const timeLeft = reservedDate.getTime() - Date.now();
 
 			if (timeLeft <= 0 || this.isExpiringSoon) {
-				return this.ReservationMsg1 === true;
+				return true;
 			}
+			return false;
 		},
 		loanReservationMsg2() {
 			const reservedDate = new Date(this.expiryTime);
 			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
 
 			if (mins > 6) {
-				return this.ReservationMsg2 === true;
+				this.mins = mins;
+				return true;
 			}
+			return false;
 		},
 		loanReservationMsg3() {
 			const reservedDate = new Date(this.expiryTime);
 			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
 
 			if (mins <= 6) {
-				return this.ReservationMsg2 === true;
+				return true;
 			}
+			return false;
 		},
 		loanReservationMsg4() {
 			const reservedDate = new Date(this.expiryTime);
 			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
 
 			if (mins <= 1) {
-				return this.ReservationMsg4 === true;
+				return true;
 			}
+			return false;
 		},
 
 	},
