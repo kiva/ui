@@ -12,7 +12,9 @@ export default {
 				kvisCookie = cookie.get('kvis');
 			}
 
-			crumb = kvisCookie.replace('crumb=', '') || '';
+			if (kvisCookie) {
+				crumb = kvisCookie.replace('crumb=', '') || '';
+			}
 			return crumb;
 		},
 		postForm(actionUrl, formData) {

@@ -15,7 +15,7 @@
 				</li>
 			</ul>
 
-			<div class="input-set">
+			<div class="input-set" v-show="showFirstName">
 				<label for="firstName">
 					First name
 					<input
@@ -33,7 +33,7 @@
 				</p>
 			</div>
 
-			<div class="input-set">
+			<div class="input-set" v-show="showLastName">
 				<label for="lastName">
 					Last name <input
 						type="text"
@@ -91,25 +91,27 @@
 			</div>
 
 			<div class="terms-and-policy">
-				<input
-					type="checkbox"
-					name="terms_agreement"
-					id="registerForm_terms_of_use_privacy_poicy"
-					v-model="terms"
-					@blur="validateTerms(terms)">
-				I have read and agree to the
-				<a href="legal/terms"
-					target="_blank"
-					title="Open Terms of Use in a new window"
-					v-kv-track-event="['Register','click-terms-of-use','TermsOfUseClick']">
-					Terms of Use
-				</a> and
-				<a href="legal/privacy"
-					target="_blank"
-					title="Open Privacy Policy in a new window"
-					v-kv-track-event="['Register','click-privacy-policy','PrivacyPolicyClick']">
-					Privacy Policy
-				</a>.
+				<label for="registerForm_terms_of_use_privacy_poicy">
+					<input
+						type="checkbox"
+						name="terms_agreement"
+						id="registerForm_terms_of_use_privacy_poicy"
+						v-model="terms"
+						@change="validateTerms(terms)">
+					I have read and agree to the
+					<a href="legal/terms"
+						target="_blank"
+						title="Open Terms of Use in a new window"
+						v-kv-track-event="['Register','click-terms-of-use','TermsOfUseClick']">
+						Terms of Use
+					</a> and
+					<a href="legal/privacy"
+						target="_blank"
+						title="Open Privacy Policy in a new window"
+						v-kv-track-event="['Register','click-privacy-policy','PrivacyPolicyClick']">
+						Privacy Policy
+					</a>.
+				</label>
 				<p v-if="termsErrors.length">
 					<ul class="validation-errors">
 						<li v-for="termsError in termsErrors" :key="termsError">{{ termsError }}</li>
@@ -134,6 +136,9 @@
 
 <script>
 import loginRegUtils from '@/plugins/login-reg-mixin';
+import { readJSONSetting } from '@/util/settingsUtils';
+import regExpQuery from '@/graphql/query/register/registerExpAssignment.graphql';
+import regExpDataQuery from '@/graphql/query/register/registerExpData.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
 
@@ -142,6 +147,7 @@ export default {
 		KvButton,
 		MeteredPassword: () => import('vue-password-strength-meter/dist/vue-password-strength-meter.min'),
 	},
+	inject: ['apollo'],
 	mixins: [
 		loginRegUtils,
 		formValidate,
@@ -171,12 +177,31 @@ export default {
 			lastName: '',
 			email: '',
 			password: '',
-			terms: '',
+			terms: false,
 			showMeteredPassword: false,
-			pwEventsBound: false
+			pwEventsBound: false,
+			expVersion: '',
+			expName: '',
+			showFirstName: true,
+			showLastName: true
 		};
 	},
+	apollo: {
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				// Get the experiment object from settings
+				client.query({
+					query: regExpDataQuery
+				}).then(() => {
+					// Get the assigned experiment version
+					client.query({ query: regExpQuery }).then(resolve).catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
 	created() {
+		this.setupExperimentState();
+
 		this.crumb = this.getCookieCrumb();
 		if (this.doneUrl !== '') {
 			const doneUrlEncoded = encodeURIComponent(this.doneUrl);
@@ -288,6 +313,42 @@ export default {
 		setLoading(state) {
 			this.loading = state;
 			this.$emit('reg-loading', state);
+		},
+		setupExperimentState() {
+			// get assigned exp version from apollo cache
+			const regExpVersion = this.apollo.readQuery({ query: regExpQuery });
+			this.expVersion = regExpVersion.experiment.version;
+
+			// get experiment data from apollo cache
+			// - only required at this point for the variant name or other associated data
+			const regExpSetting = this.apollo.readQuery({ query: regExpDataQuery });
+			const expData = readJSONSetting(regExpSetting, 'general.experiment.value') || {};
+			if (this.expVersion !== 'control') {
+				this.expName = expData.variants[this.expVersion].name;
+			}
+
+			// Set up + track our First Name Only State
+			if (this.expVersion === 'variant-a') {
+				this.lastName = 'Kiva Love';
+				this.showLastName = false;
+
+				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+			}
+
+			// Set up + track our No Names State
+			if (this.expVersion === 'variant-b') {
+				this.firstName = 'Lender';
+				this.lastName = 'Kiva';
+				this.showFirstName = false;
+				this.showLastName = false;
+
+				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+			}
+
+			// No Set up for control, just track
+			if (this.expVersion === 'control') {
+				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expVersion);
+			}
 		}
 	}
 };
@@ -350,11 +411,16 @@ export default {
 	}
 
 	.terms-and-policy {
-		line-height: rem-calc(20);
 		margin-bottom: rem-calc(20);
 
-		input {
-			margin: 0;
+		label {
+			line-height: $small-text-line-height;
+
+			input {
+				line-height: $small-text-line-height;
+				float: left;
+				margin: 0.4rem 0.4rem 1rem 0;
+			}
 		}
 	}
 }
