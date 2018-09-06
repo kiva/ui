@@ -67,7 +67,7 @@ export default config => {
 			var p = document.getElementsByTagName('script')[0],
 				s = document.createElement('script');
 			s.async = 1;
-			s.src = `//client.perimeterx.net/${config.perimeterxAppId}/main.min.js`;
+			s.src = `/${config.perimeterxAppId.substring(2)}/init.js`;
 			p.parentNode.insertBefore(s,p);
 		}());
 		/* eslint-enable */
