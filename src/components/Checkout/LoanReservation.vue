@@ -2,7 +2,6 @@
 	<div class="reservation-info small-text">
 		<span v-if="expiryTime"
 			class="loan-message">
-			<!-- v-html="reservedMessage -->
 			<div
 				v-if="loanReservationMsg1"
 				class="red">Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
@@ -20,17 +19,19 @@
 			</kv-lightbox>
 
 			<div
-				v-if="loanReservationMsg2">Reserved for ${mins} more minutes
+				v-if="loanReservationMsg2"
+				minutes>Reserved for { minutes } more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg3"
-				class="red">Reserved for ${mins} more minutes
+				minutes
+				class="red">Reserved for ${ minutes } more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg4"
-				class="red">Reserved for ${mins} more minute
+				class="red">Reserved for 1 more minute
 			</div>
 		</span>
 	</div>
@@ -47,11 +48,7 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			ReservationMsg1: false,
-			ReservationMsg2: false,
-			ReservationMsg3: false,
-			ReservationMsg4: false,
-			mins: ''
+			minutes: this.mins
 		};
 	},
 	props: {
@@ -66,7 +63,6 @@ export default {
 	},
 	methods: {
 		triggerDefaultLightbox() {
-			console.log('triggerDefaultLightbox');
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
 		lightboxClosed() {
@@ -88,7 +84,9 @@ export default {
 			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
 
 			if (mins > 6) {
-				this.mins = mins;
+				const minutes = this.mins;
+				console.log(minutes);
+				console.log(mins);
 				return true;
 			}
 			return false;
@@ -98,6 +96,8 @@ export default {
 			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
 
 			if (mins <= 6) {
+				const minutes = this.mins;
+				console.log(minutes);
 				return true;
 			}
 			return false;
