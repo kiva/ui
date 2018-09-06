@@ -1,0 +1,8 @@
+query {
+	general {
+		experiment: setting(setting: "uiexp.register_fields") {
+			key
+			value
+		}
+	}
+}
