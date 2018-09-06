@@ -6,8 +6,9 @@
 				v-if="loanReservationMsg1"
 				class="red">Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
 			</div>
-			<!-- This lightbox will be replaced with a Popper tip message. -->
+			<!-- TODO: Replace this lightbox with a Popper tip message. -->
 			<kv-lightbox
+				class="loanNotReservedLightbox"
 				:visible="defaultLbVisible"
 				@lightbox-closed="lightboxClosed">
 				<h2 slot="title">What does it mean that my loan is not reserved?</h2>
@@ -19,14 +20,12 @@
 			</kv-lightbox>
 
 			<div
-				v-if="loanReservationMsg2"
-				minutes>Reserved for { minutes } more minutes
+				v-if="loanReservationMsg2">Reserved for {{ mins }} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg3"
-				minutes
-				class="red">Reserved for ${ minutes } more minutes
+				class="red">Reserved for {{ mins }} more minutes
 			</div>
 
 			<div
@@ -48,7 +47,11 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			minutes: this.mins
+			mins: '',
+			loanReservationMsg1: false,
+			loanReservationMsg2: false,
+			loanReservationMsg3: false,
+			loanReservationMsg4: false,
 		};
 	},
 	props: {
@@ -68,50 +71,31 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
+		setMins(mins) {
+			this.mins = mins;
+		},
+		reservationMessage() {
+			const reservedDate = new Date(this.expiryTime);
+			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
+
+			if (this.expiryTime !== null) {
+				const timeLeft = reservedDate.getTime() - Date.now();
+				if (timeLeft <= 0 || this.isExpiringSoon) {
+					this.loanReservationMsg1 = true;
+				} else if (mins > 6) {
+					this.setMins(mins);
+					this.loanReservationMsg2 = true;
+				} else if (mins <= 6) {
+					this.setMins(mins);
+					this.loanReservationMsg3 = true;
+				} else if (mins <= 1) {
+					this.loanReservationMsg4 = true;
+				}
+			}
+		}
 	},
-	computed: {
-		loanReservationMsg1() {
-			const reservedDate = new Date(this.expiryTime);
-			const timeLeft = reservedDate.getTime() - Date.now();
-
-			if (timeLeft <= 0 || this.isExpiringSoon) {
-				return true;
-			}
-			return false;
-		},
-		loanReservationMsg2() {
-			const reservedDate = new Date(this.expiryTime);
-			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
-
-			if (mins > 6) {
-				const minutes = this.mins;
-				console.log(minutes);
-				console.log(mins);
-				return true;
-			}
-			return false;
-		},
-		loanReservationMsg3() {
-			const reservedDate = new Date(this.expiryTime);
-			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
-
-			if (mins <= 6) {
-				const minutes = this.mins;
-				console.log(minutes);
-				return true;
-			}
-			return false;
-		},
-		loanReservationMsg4() {
-			const reservedDate = new Date(this.expiryTime);
-			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
-
-			if (mins <= 1) {
-				return true;
-			}
-			return false;
-		},
-
+	created() {
+		this.reservationMessage();
 	},
 };
 
@@ -124,6 +108,10 @@ export default {
 	color: $kiva-text-light;
 	line-height: 2rem;
 	float: right;
+
+	.loanNotReservedLightbox {
+		color: $charcoal;
+	}
 
 	.loan-message /deep/ .red {
 		color: $kiva-accent-red;
