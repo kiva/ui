@@ -10,29 +10,36 @@
 						<h2 v-if="showLogin">Login to Checkout</h2>
 						<h2 v-else>Register to Checkout</h2>
 					</div>
+
 					<div class="columns small-12 medium-8 large-5 xxlarge-4">
 						<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
 						<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
 					</div>
+
 					<div class="columns show-for-large large-1">
 						<div class="v-divider"></div>
 					</div>
+
 					<div class="columns small-12 medium-8 large-5 xxlarge-4">
 						<div class="or-callout">
 							<hr>
 							<span>Or</span>
 						</div>
+
 						<p class="social-callout">Connect using a social network.<br>
 							We won’t ever post without asking.</p>
+
 						<facebook-login-register
 							:process-type="showLogin ? 'login' : 'register'"
 							@fb-loading="setLoginLoading" />
+
 						<div v-if="showReg" class="login-reg-switch">
 							<p class="featured-text">Already have an account? <br><a
 								@click.prevent="switchToLogin"
 								v-kv-track-event="['register', 'alreadyMemberLnk']"
 								id="loginLink">Sign in</a></p>
 						</div>
+
 						<div class="login-reg-switch">
 							<p class="featured-text"><a v-if="showLogin" class="register-link text-center"
 								v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
@@ -43,13 +50,16 @@
 					</div>
 					<loading-overlay v-if="loginLoading" />
 				</div>
+
 				<div v-else class="login-reg-complete">
 					<p class="featured-text">Thanks for registering!<br>
 						Please continue below to complete your purchase.</p>
 				</div>
+
 				<br>
 				<hr>
 				<br>
+
 				<div v-if="!emptyBasket" class="basket-wrap">
 					<basket-items-list
 						:loans="loans"
@@ -59,6 +69,7 @@
 					<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 					<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
 				</div>
+
 				<div v-else class="empty-basket">
 					<p class="featured-text">Oops — Your basket is empty!</p>
 					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
@@ -74,7 +85,6 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-// import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
