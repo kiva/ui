@@ -47,10 +47,10 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			// ReservationMsg1: false,
-			// ReservationMsg2: false,
-			// ReservationMsg3: false,
-			// ReservationMsg4: false
+			ReservationMsg1: true,
+			ReservationMsg2: false,
+			ReservationMsg3: false,
+			ReservationMsg4: false
 		};
 	},
 	props: {
@@ -65,6 +65,7 @@ export default {
 	},
 	methods: {
 		triggerDefaultLightbox() {
+			console.log('triggerDefaultLightbox');
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
 		lightboxClosed() {
