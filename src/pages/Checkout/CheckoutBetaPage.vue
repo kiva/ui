@@ -6,18 +6,18 @@
 				<hr>
 				<br>
 				<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
-					<div class="columns small-12 large-11 xxlarge-9 login-reg-header">
+					<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
 						<h2 v-if="showLogin">Login to Checkout</h2>
 						<h2 v-else>Register to Checkout</h2>
 					</div>
-					<div class="columns small-12 large-5 xxlarge-4">
+					<div class="columns small-12 medium-8 large-5 xxlarge-4">
 						<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
 						<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
 					</div>
-					<div class="columns large-up large-1">
+					<div class="columns show-for-large large-1">
 						<div class="v-divider"></div>
 					</div>
-					<div class="columns small-12 large-5 xxlarge-4">
+					<div class="columns small-12 medium-8 large-5 xxlarge-4">
 						<div class="or-callout">
 							<hr>
 							<span>Or</span>
@@ -28,7 +28,7 @@
 							:process-type="showLogin ? 'login' : 'register'"
 							@fb-loading="setLoginLoading" />
 						<div v-if="showReg" class="login-reg-switch">
-							<p class="featured-text">Already have an account? <a
+							<p class="featured-text">Already have an account? <br><a
 								@click.prevent="switchToLogin"
 								v-kv-track-event="['register', 'alreadyMemberLnk']"
 								id="loginLink">Sign in</a></p>
@@ -110,8 +110,8 @@ export default {
 			totals: () => {},
 			donations: [],
 			loading: false,
-			showReg: false,
-			showLogin: true,
+			showReg: true,
+			showLogin: false,
 			loginLoading: false,
 		};
 	},
@@ -230,12 +230,13 @@ export default {
 		.login-reg-switch {
 			text-align: center;
 
-			@include breakpoint(large) {
-				text-align: left;
-				position: absolute;
-				bottom: 0;
-				font-weight: 400;
-			}
+			/* turned off for now */
+			// @include breakpoint(large) {
+			// 	text-align: left;
+			// 	position: absolute;
+			// 	bottom: 0;
+			// 	font-weight: 400;
+			// }
 		}
 	}
 
