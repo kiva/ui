@@ -41,10 +41,9 @@ export default {
 			}
 			return this.emailErrors;
 		},
-		validateTerms() {
-			// TODO: pass terms into this method, then remove this. from the reference to terms below
+		validateTerms(terms) {
 			this.termsErrors = [];
-			if (!this.terms) {
+			if (!terms) {
 				this.termsErrors.push('You must agree to the Kiva Terms of service & Privacy policy');
 			}
 		}
