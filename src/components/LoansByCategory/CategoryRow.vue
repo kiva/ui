@@ -2,7 +2,7 @@
 	<div>
 		<div class="row">
 			<div class="column small-12">
-				<h2 class="category-name">{{ name }}
+				<h2 class="category-name">{{ cleanName }}
 					<span class="view-all-link">&nbsp;<a :href="url">View all</a></span>
 				</h2>
 			</div>
@@ -95,6 +95,10 @@ export default {
 			return this.windowWidth > minWidthToShowLargeCards
 				? largeCardWidthPlusPadding
 				: smallCardWidthPlusPadding;
+		},
+		cleanName() {
+			// remove any text contained within square brackets, including the brackets
+			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		minLeftMargin() {
 			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
