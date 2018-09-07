@@ -181,8 +181,8 @@ export default {
 			this.apollo.mutate({
 				mutation: shopValidateBasket
 			}).then(data => {
-				console.log(data);
-				if (data.data.shop.validatePreCheckout === true) {
+				const validationStatus = _get(data, 'data.shop.validatePreCheckout');
+				if (validationStatus === true) {
 					this.checkoutBasket();
 				}
 			}).catch(errorResponse => {
@@ -193,21 +193,21 @@ export default {
 			this.apollo.mutate({
 				mutation: shopCheckout
 			}).then(data => {
-				console.log(data);
-				if (data.data.shop.checkout) {
-					this.redirectToThanks(data.data.shop.checkout);
+				const transactionId = _get(data, 'data.shop.checkout');
+				if (transactionId) {
+					this.redirectToThanks(transactionId);
 				}
 			}).catch(errorResponse => {
 				console.error(errorResponse);
 			});
 		},
 		redirectToThanks(payload) {
-			console.log(payload);
 			if (payload) {
 				window.location = `/thanks?kiva_transaction_id=${payload}`;
 			}
 		},
 		refreshTotals(payload) {
+			// We may use payload in managing/refreshing basket state
 			console.log(payload);
 			this.apollo.query({
 				query: shopTotals,

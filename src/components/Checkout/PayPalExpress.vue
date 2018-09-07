@@ -113,7 +113,6 @@ export default {
 									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
 									// redirect to thanks with KIVA transaction id
 									if (transactionId) {
-										// window.location = `/thanks?kiva_transaction_id=${transactionId}`;
 										this.$emit('successful-transaction', transactionId);
 									}
 									resolve(ppResponse);
