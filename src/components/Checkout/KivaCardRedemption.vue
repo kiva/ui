@@ -1,29 +1,27 @@
 <template>
 	<div>
 		<hr>
-		<ul class="row accordion" data-accordion>
-			<li class="accordion-item" data-accordion-item>
+		<div class="row accordion" data-accordion>
+			<div class="accordion-item" data-accordion-item>
 				<span class="small-3 medium-1">
-					<kv-accordion
-						class="accordion-arrow" />
+					<kv-accordion />
 				</span>
-				<a class="featured-text small-9 medium-8 accordion-title">Have a Kiva Card?</a>
-				<div class="accordion-content" data-tab-content>Check this shit out.</div>
-			</li>
-		</ul>
+				<span class="featured-text small-9 medium-8 accordion-title">Have a Kiva Card?</span>
+				<div class="accordion-content" data-tab-content>
+					<a href="/basket">Check this shit out.</a>
+				</div>
+			</div>
+		</div>
 		<hr>
 	</div>
 </template>
 
 <script>
 import KvAccordion from '@/components/Kv/KvAccordion';
-import { Accordion } from 'foundation-sites';
-
 
 export default {
 	components: {
 		KvAccordion,
-		Accordion
 	},
 	data() {
 		return {
@@ -35,10 +33,6 @@ export default {
 			console.log('accordion toggled');
 			const arrow = document.getElementByClassName('.accordion-arrow');
 			arrow.setAttribute('style', 'transform: rotate(180deg)');
-		},
-		initAccordion() {
-			const $accordion = new Accordion('.accordion');
-			console.log($accordion);
 		}
 	}
 };

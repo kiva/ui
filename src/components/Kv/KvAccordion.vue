@@ -1,6 +1,9 @@
 <template>
 	<span>
-		<kv-icon class="medium-chevron" name="medium-chevron"/>
+		<kv-icon
+			class="medium-chevron"
+			name="medium-chevron"
+			@click.prevent.stop="flipShit()"/>
 	</span>
 </template>
 
@@ -11,13 +14,18 @@ export default {
 	components: {
 		KvIcon
 	},
+	methods: {
+		flipShit() {
+			const arrow = document.getElementByClassName('.medium-chevron');
+			arrow.setAttribute('style', 'transform: rotate(180deg)');
+			console.log('shit has been flipped');
+		}
+	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'foundation';
-@include foundation-accordion;
 
 .medium-chevron {
 	height: rem-calc(18);
