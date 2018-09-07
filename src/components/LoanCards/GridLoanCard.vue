@@ -3,6 +3,9 @@
 		class="column column-block"
 		@track-loan-card-interaction="trackInteraction($event)"
 	>
+
+		<h3 v-if="title">{{ title }}</h3>
+
 		<div class="grid-loan-card">
 			<loan-card-image
 				:loan-id="loan.id"
@@ -119,6 +122,10 @@ export default {
 			type: Number,
 			default: null
 		},
+		title: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
@@ -230,7 +237,8 @@ export default {
 	width: 100%;
 }
 
-.is-in-category-row {
+.is-in-category-row,
+.is-in-featured {
 	flex: 0 0 auto;
 
 	&.column-block {
