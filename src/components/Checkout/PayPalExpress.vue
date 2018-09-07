@@ -113,7 +113,8 @@ export default {
 									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
 									// redirect to thanks with KIVA transaction id
 									if (transactionId) {
-										window.location = `/thanks?kiva_transaction_id=${transactionId}`;
+										// window.location = `/thanks?kiva_transaction_id=${transactionId}`;
+										this.$emit('successful-transaction', transactionId);
 									}
 									resolve(ppResponse);
 								})
@@ -149,7 +150,6 @@ export default {
 .paypal-holder {
 	display: block;
 	text-align: center;
-	margin: 0 $list-side-margin;
 
 	@include breakpoint(medium) {
 		text-align: right;
