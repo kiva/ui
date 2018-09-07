@@ -69,6 +69,9 @@
 							:donations="donations"
 							@refreshtotals="refreshTotals($event)"
 						/>
+
+						<kiva-card-redemption />
+
 						<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 
 						<div v-if="isLoggedIn" class="checkout-actions">

@@ -24,18 +24,7 @@ export default {
 	methods: {
 		toggleAccordion() {
 			console.log('toggle accordion triggered');
-			if (this.isFlipped === true) {
-				return false;
-			} if (this.isFlipped === false) {
-				return true;
-			}
-
-			// const arrow = document.getElementsByClassName('.medium-chevron');
-
-			// This does not work
-			// arrow.style = 'transform: rotate(180deg)';
-			// This does not work either
-			// arrow.setAttribute('style', 'transform: rotate(180deg)');
+			this.isFlipped = !this.isFlipped;
 		},
 	}
 };
