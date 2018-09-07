@@ -205,7 +205,7 @@ export default {
 						errors.forEach(({ message, code }) => {
 							this.$showTipMsg(message, 'error');
 							// TODO: handle session timeout...graphql says we're not authenticated...
-							// console.log(code);
+							console.log(code);
 							// if (code === 'api.authenticationRequired') {
 							// 	this.myId = null;
 							// 	this.switchToLogin();
