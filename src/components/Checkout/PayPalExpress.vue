@@ -10,8 +10,10 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
+import { redirectToThanks } from '@/util/checkoutUtilities';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
+
 
 export default {
 	inject: ['apollo'],
@@ -24,7 +26,7 @@ export default {
 	data() {
 		return {
 			ensurePaypalScript: null,
-			paypalRendered: false
+			paypalRendered: false,
 		};
 	},
 	metaInfo() {
@@ -89,7 +91,7 @@ export default {
 							});
 						});
 					},
-					onAuthorize: data => {
+					onAuthorize: (data, actions) => {
 						console.log('authorized stage');
 						console.log(data);
 
@@ -104,16 +106,21 @@ export default {
 							})
 								.then(ppResponse => {
 									console.log(ppResponse);
+									// check for ERROR CODE=INSTRUMENT_DECLINED and restart
+									if (ppResponse.error === 'INSTRUMENT_DECLINED') {
+										return actions.restart();
+									}
+
 									// Check for errors
-									if (ppResponse.errors) {
-										console.error(`Error completing transactions: ${ppResponse.errors}`);
+									if (ppResponse.error) {
+										console.error(`Error completing transactions: ${ppResponse.error}`);
 									}
 
 									// Transaction is complete
 									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
 									// redirect to thanks with KIVA transaction id
 									if (transactionId) {
-										this.$emit('successful-transaction', transactionId);
+										redirectToThanks(transactionId);
 									}
 									resolve(ppResponse);
 								})

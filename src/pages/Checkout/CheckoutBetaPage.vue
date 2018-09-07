@@ -106,8 +106,7 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
-import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
-import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
+import { validateBasket, checkoutBasket, redirectToThanks } from '@/util/checkoutUtilities';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
@@ -133,8 +132,8 @@ export default {
 	},
 	data() {
 		return {
-			myBalance: undefined,
-			myId: undefined,
+			myBalance: null,
+			myId: null,
 			currentStep: 'basket',
 			loans: [],
 			totals: () => {},
@@ -161,7 +160,7 @@ export default {
 	},
 	computed: {
 		isLoggedIn() {
-			return this.myId !== undefined;
+			return this.myId !== null;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
@@ -178,33 +177,44 @@ export default {
 	},
 	methods: {
 		validateBasket() {
-			this.apollo.mutate({
-				mutation: shopValidateBasket
-			}).then(data => {
-				const validationStatus = _get(data, 'data.shop.validatePreCheckout');
-				if (validationStatus === true) {
-					this.checkoutBasket();
-				}
-			}).catch(errorResponse => {
-				console.error(errorResponse);
-			});
+			validateBasket(this.apollo)
+				.then(validationStatus => {
+					if (validationStatus === true) {
+						// succesful validation
+						this.checkoutBasket();
+					} else {
+						// validation failed
+						const errors = _get(validationStatus, 'errors');
+						// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
+						// - these have instructions to hit the back button which do not work in this context
+						errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
+					}
+				}).catch(errorResponse => {
+					console.error(errorResponse);
+				});
 		},
 		checkoutBasket() {
-			this.apollo.mutate({
-				mutation: shopCheckout
-			}).then(data => {
-				const transactionId = _get(data, 'data.shop.checkout');
-				if (transactionId) {
-					this.redirectToThanks(transactionId);
-				}
-			}).catch(errorResponse => {
-				console.error(errorResponse);
-			});
-		},
-		redirectToThanks(transactionId) {
-			if (transactionId) {
-				window.location = `/thanks?kiva_transaction_id=${transactionId}`;
-			}
+			checkoutBasket(this.apollo)
+				.then(transactionResult => {
+					if (typeof transactionResult !== 'object') {
+						// succesful validation
+						redirectToThanks(transactionResult);
+					} else {
+						// checkout failed
+						const errors = _get(transactionResult, 'errors');
+						errors.forEach(({ message, code }) => {
+							this.$showTipMsg(message, 'error');
+							// TODO: handle session timeout...graphql says we're not authenticated...
+							// console.log(code);
+							// if (code === 'api.authenticationRequired') {
+							// 	this.myId = null;
+							// 	this.switchToLogin();
+							// }
+						});
+					}
+				}).catch(errorResponse => {
+					console.error(errorResponse);
+				});
 		},
 		refreshTotals(payload) {
 			// We may use payload in managing/refreshing basket state
