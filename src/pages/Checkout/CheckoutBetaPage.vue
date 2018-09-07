@@ -201,9 +201,9 @@ export default {
 				console.error(errorResponse);
 			});
 		},
-		redirectToThanks(payload) {
-			if (payload) {
-				window.location = `/thanks?kiva_transaction_id=${payload}`;
+		redirectToThanks(transactionId) {
+			if (transactionId) {
+				window.location = `/thanks?kiva_transaction_id=${transactionId}`;
 			}
 		},
 		refreshTotals(payload) {
