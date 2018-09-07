@@ -1,9 +1,11 @@
 <template>
 	<span>
-		<kv-icon
-			class="medium-chevron"
-			name="medium-chevron"
-			@click.prevent.stop="flipShit()"/>
+		<a @click="toggleAccordion"
+			:class="{ flipped: isFlipped }">
+			<kv-icon
+				class="medium-chevron"
+				name="medium-chevron" />
+		</a>
 	</span>
 </template>
 
@@ -14,12 +16,27 @@ export default {
 	components: {
 		KvIcon
 	},
+	data() {
+		return {
+			isFlipped: false
+		};
+	},
 	methods: {
-		flipShit() {
-			const arrow = document.getElementByClassName('.medium-chevron');
-			arrow.setAttribute('style', 'transform: rotate(180deg)');
-			console.log('shit has been flipped');
-		}
+		toggleAccordion() {
+			console.log('toggle accordion triggered');
+			if (this.isFlipped === true) {
+				return false;
+			} if (this.isFlipped === false) {
+				return true;
+			}
+
+			// const arrow = document.getElementsByClassName('.medium-chevron');
+
+			// This does not work
+			// arrow.style = 'transform: rotate(180deg)';
+			// This does not work either
+			// arrow.setAttribute('style', 'transform: rotate(180deg)');
+		},
 	}
 };
 </script>
@@ -35,6 +52,10 @@ export default {
 .accordion-title {
 	line-height: rem-calc(36);
 	border: none;
+}
+
+.flipped {
+	transform: rotate(180deg);
 }
 
 </style>
