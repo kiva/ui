@@ -10,7 +10,7 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import { redirectToThanks } from '@/util/checkoutUtilities';
+import { validateBasket, redirectToThanks } from '@/util/checkoutUtilities';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
 
@@ -74,21 +74,32 @@ export default {
 					payment: () => {
 						console.log('payment stage');
 						return new paypal.Promise((resolve, reject) => {
-							// Use updated vars on render
-							this.apollo.query({
-								query: getPaymentToken,
-								variables: {
-									amount: numeral(this.amount).format('0.00'),
-								}
-							}).then(({ data }) => {
-								if (data) {
-									console.log(data);
-									if (data.errors) {
-										reject(data);
+							validateBasket(this.apollo)
+								.then(validationStatus => {
+									if (validationStatus === true) {
+										// Use updated vars on render
+										this.apollo.query({
+											query: getPaymentToken,
+											variables: {
+												amount: numeral(this.amount).format('0.00'),
+											}
+										}).then(({ data }) => {
+											if (data) {
+												console.log(data);
+												if (data.errors) {
+													reject(data);
+												}
+												resolve(data.shop.getPaymentToken);
+											}
+										});
+									} else {
+										this.$emit('checkout-error', validationStatus);
+										reject(validationStatus);
 									}
-									resolve(data.shop.getPaymentToken);
-								}
-							});
+								})
+								.catch(error => {
+									console.error(error);
+								});
 						});
 					},
 					onAuthorize: (data, actions) => {

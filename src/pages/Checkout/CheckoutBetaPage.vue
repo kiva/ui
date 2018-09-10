@@ -75,7 +75,8 @@
 							<pay-pal-exp
 								v-if="showPayPal"
 								:amount="creditNeeded"
-								@successful-transaction="redirectToThanks" />
+								@successful-transaction="redirectToThanksAlias"
+								@checkout-error="showCheckoutError" />
 
 							<button
 								v-else
@@ -184,14 +185,21 @@ export default {
 						this.checkoutBasket();
 					} else {
 						// validation failed
-						const errors = _get(validationStatus, 'errors');
+						this.showCheckoutError(validationStatus);
+						// const errors = _get(validationStatus, 'errors');
 						// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
 						// - these have instructions to hit the back button which do not work in this context
-						errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
+						// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
 					}
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 				});
+		},
+		showCheckoutError(errorResponse) {
+			const errors = _get(errorResponse, 'errors');
+			// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
+			// - these have instructions to hit the back button which do not work in this context
+			errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
 		},
 		checkoutBasket() {
 			checkoutBasket(this.apollo)
@@ -238,6 +246,9 @@ export default {
 		},
 		setLoginLoading(state) {
 			this.loginLoading = state;
+		},
+		redirectToThanksAlias() {
+			redirectToThanks();
 		}
 	}
 };
