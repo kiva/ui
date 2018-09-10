@@ -1,25 +1,30 @@
 <template>
-	<div>
-		<hr>
-		<div class="row accordion">
-			<div class="accordion-item">
-				<a >
-					<span class="small-3 medium-1">
-						<a @click="toggleAccordion">
-							<kv-icon
-								:class="{ flipped: isFlipped }"
-								class="medium-chevron"
-								name="medium-chevron" />
-						</a>
-					</span>
-					<span class="featured-text small-9 medium-8 accordion-title">Have a Kiva Card?</span>
+	<div class="kiva-card-entry-wrapper">
+		<div class="row">
+			<span class="small-3 medium-1">
+				<a>
+					<a @click="toggleAccordion">
+						<kv-icon
+							:class="{ flipped: isFlipped }"
+							class="medium-chevron"
+							name="medium-chevron" />
+					</a>
 				</a>
-				<div class="accordion-content">
-					<a href="/basket">Check this shit out.</a>
-				</div>
+			</span>
+			<span class="small-9 medium-8 featured-text accordion-title">Have a Kiva Card?</span>
+			<span class="small-3 show-for-small-only"></span>
+		</div>
+		<div class="small-9 medium-3 featured-text">
+			<div :class="{ shown: isShown }">
+				<span class="small-3 medium-1"></span>
+				<a
+					class="row columns small-9 medium-8"
+					href="/basket">
+					<div>Check this shit out.</div>
+				</a>
+				<span class="small-3 show-for-small-only"></span>
 			</div>
 		</div>
-		<hr>
 	</div>
 </template>
 
@@ -32,13 +37,14 @@ export default {
 	},
 	data() {
 		return {
-			isFlipped: false
+			isFlipped: false,
+			isShown: true
 		};
 	},
 	methods: {
 		toggleAccordion() {
-			console.log('toggle accordion triggered');
 			this.isFlipped = !this.isFlipped;
+			this.isShown = !this.isShown;
 		},
 	}
 };
@@ -48,16 +54,25 @@ export default {
 @import 'settings';
 
 .medium-chevron {
-	height: rem-calc(18);
+	height: rem-calc(40);
 	width: rem-calc(40);
 }
 
-.accordion-title {
+.kiva-card-entry-wrapper .accordion-title {
 	line-height: rem-calc(36);
 	border: none;
+	color: $charcoal;
+
+	:hover {
+		text-decoration: none;
+	}
 }
 
 .flipped {
 	transform: rotate(180deg);
+}
+
+.shown {
+	visibility: hidden;
 }
 </style>
