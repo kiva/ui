@@ -1,29 +1,24 @@
 <template>
-	<div class="kiva-card-entry-wrapper">
+	<div class="kiva-card-entry-wrapper columns">
 		<div class="row">
 			<span class="small-3 medium-1">
-				<a>
-					<a @click="toggleAccordion">
-						<kv-icon
-							:class="{ flipped: isFlipped }"
-							class="medium-chevron"
-							name="medium-chevron" />
-					</a>
+				<a @click="toggleAccordion">
+					<kv-icon
+						:class="{ flipped: isFlipped }"
+						class="medium-chevron"
+						name="medium-chevron" />
 				</a>
 			</span>
-			<span class="small-9 medium-8 featured-text accordion-title">Have a Kiva Card?</span>
-			<span class="small-3 show-for-small-only"></span>
+			<span class="small-9 medium-11 featured-text accordion-title">Have a Kiva Card?</span>
 		</div>
-		<div class="small-9 medium-3 featured-text">
-			<div :class="{ shown: isShown }">
-				<span class="small-3 medium-1"></span>
-				<a
-					class="row columns small-9 medium-8"
-					href="/basket">
-					<div>Check this shit out.</div>
-				</a>
-				<span class="small-3 show-for-small-only"></span>
-			</div>
+		<div
+			class="row"
+			:class="{ hidden: isHidden }">
+			<!-- This empty <span> is to keep the spacing correct with the basket items shown above on this page. -->
+			<span class="small-3 medium-1"></span>
+			<a class="small-9 medium-11" href="/basket">
+				<div>Enter a Kiva card</div>
+			</a>
 		</div>
 	</div>
 </template>
@@ -38,13 +33,13 @@ export default {
 	data() {
 		return {
 			isFlipped: false,
-			isShown: true
+			isHidden: true
 		};
 	},
 	methods: {
 		toggleAccordion() {
 			this.isFlipped = !this.isFlipped;
-			this.isShown = !this.isShown;
+			this.isHidden = !this.isHidden;
 		},
 	}
 };
@@ -72,7 +67,7 @@ export default {
 	transform: rotate(180deg);
 }
 
-.shown {
+.hidden {
 	visibility: hidden;
 }
 </style>
