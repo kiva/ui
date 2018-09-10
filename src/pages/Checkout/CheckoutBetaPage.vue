@@ -78,16 +78,15 @@
 						<div v-if="isLoggedIn" class="checkout-actions">
 							<pay-pal-exp
 								v-if="showPayPal"
-								:amount="creditNeeded"
-								@successful-transaction="redirectToThanks" />
+								:amount="creditNeeded" />
 
-							<button
+							<kv-button
 								v-else
 								type="submit"
-								class="button smaller checkout-button"
+								class="smaller checkout-button"
 								v-kv-track-event="['payment.continueBtn']"
 								title="Checkout using your Kiva credit"
-								@click.prevent="validateBasket">Complete order</button>
+								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
 						</div>
 					</div>
 
@@ -110,9 +109,9 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
-import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
-import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
+import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
@@ -125,6 +124,7 @@ export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		KvButton,
 		OrderTotals,
 		LoginForm,
 		RegisterForm,
@@ -134,13 +134,16 @@ export default {
 		LoadingOverlay
 	},
 	inject: ['apollo'],
+	mixins: [
+		checkoutUtils
+	],
 	metaInfo: {
 		title: 'Checkout'
 	},
 	data() {
 		return {
-			myBalance: undefined,
-			myId: undefined,
+			myBalance: null,
+			myId: null,
 			currentStep: 'basket',
 			loans: [],
 			totals: () => {},
@@ -167,7 +170,7 @@ export default {
 	},
 	computed: {
 		isLoggedIn() {
-			return this.myId !== undefined;
+			return (this.myId !== null && this.myId !== undefined);
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
@@ -183,34 +186,33 @@ export default {
 		}
 	},
 	methods: {
-		validateBasket() {
-			this.apollo.mutate({
-				mutation: shopValidateBasket
-			}).then(data => {
-				const validationStatus = _get(data, 'data.shop.validatePreCheckout');
-				if (validationStatus === true) {
-					this.checkoutBasket();
-				}
-			}).catch(errorResponse => {
-				console.error(errorResponse);
-			});
+		validateCreditBasket() {
+			this.validateBasket()
+				.then(validationStatus => {
+					if (validationStatus === true) {
+						// succesful validation
+						this.checkoutCreditBasket();
+					} else {
+						// validation failed
+						this.showCheckoutError(validationStatus);
+					}
+				}).catch(errorResponse => {
+					console.error(errorResponse);
+				});
 		},
-		checkoutBasket() {
-			this.apollo.mutate({
-				mutation: shopCheckout
-			}).then(data => {
-				const transactionId = _get(data, 'data.shop.checkout');
-				if (transactionId) {
-					this.redirectToThanks(transactionId);
-				}
-			}).catch(errorResponse => {
-				console.error(errorResponse);
-			});
-		},
-		redirectToThanks(transactionId) {
-			if (transactionId) {
-				window.location = `/thanks?kiva_transaction_id=${transactionId}`;
-			}
+		checkoutCreditBasket() {
+			this.checkoutBasket()
+				.then(transactionResult => {
+					if (typeof transactionResult !== 'object') {
+						// succesful validation
+						this.redirectToThanks(transactionResult);
+					} else {
+						// checkout failed
+						this.showCheckoutError(transactionResult);
+					}
+				}).catch(errorResponse => {
+					console.error(errorResponse);
+				});
 		},
 		refreshTotals(payload) {
 			// We may use payload in managing/refreshing basket state
