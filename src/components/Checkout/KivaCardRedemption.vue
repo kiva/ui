@@ -9,15 +9,17 @@
 						name="medium-chevron" />
 				</a>
 			</span>
-			<span class="small-9 medium-11 featured-text accordion-title">Have a Kiva Card?</span>
+			<span
+				class="small-9 medium-11 featured-text accordion-title"
+				@click="toggleAccordion">Have a Kiva Card?</span>
 		</div>
 		<div
-			class="row"
-			:class="{ hidden: isHidden }">
+			:class="{ hidden: isHidden }"
+			class="row accordion-info">
 			<!-- This empty <span> is to keep the spacing correct with the basket items shown above on this page. -->
 			<span class="small-3 medium-1"></span>
 			<a class="small-9 medium-11" href="/basket">
-				<div>Enter a Kiva card</div>
+				<div>Click here to enter a Kiva Card</div>
 			</a>
 		</div>
 	</div>
@@ -48,19 +50,13 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.accordion-title:hover {
+	cursor: pointer;
+}
+
 .medium-chevron {
 	height: rem-calc(40);
 	width: rem-calc(40);
-}
-
-.kiva-card-entry-wrapper .accordion-title {
-	line-height: rem-calc(36);
-	border: none;
-	color: $charcoal;
-
-	:hover {
-		text-decoration: none;
-	}
 }
 
 .flipped {
