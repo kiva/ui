@@ -189,10 +189,6 @@ export default {
 					} else {
 						// validation failed
 						this.showCheckoutError(validationStatus);
-						// const errors = _get(validationStatus, 'errors');
-						// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
-						// - these have instructions to hit the back button which do not work in this context
-						// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
 					}
 				}).catch(errorResponse => {
 					console.error(errorResponse);
