@@ -48,8 +48,7 @@ export default {
 	data() {
 		return {
 			selectedOption: numeral(this.price).format('0,0'),
-			selectLimit: 150,
-			additionalSharesLimit: 6
+			selectLimit: 150
 		};
 	},
 	computed: {
