@@ -48,7 +48,8 @@ export default {
 	data() {
 		return {
 			selectedOption: numeral(this.price).format('0,0'),
-			selectLimit: 150
+			selectLimit: 150,
+			additionalSharesLimit: 6
 		};
 	},
 	computed: {
@@ -61,10 +62,16 @@ export default {
 			// determine how many (if any) overall additional shares are remaining
 			let remainingShares = parseFloat(this.loanAmount) -
 				(parseFloat(this.fundedAmount) + parseFloat(this.reservedAmount));
+
 			// if we've met reserve ensure atleast this loan share is set
 			if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
-			// Arbitrary limit on shares in select box
-			if (remainingShares > this.selectLimit) remainingShares = this.selectLimit;
+
+			// Limit to this.selectLimit on shares in select box
+			// if (remainingShares > this.selectLimit) remainingShares = this.selectLimit;
+			// Limit to this.selectLimit in addition to current price
+			if (remainingShares > (parseInt(this.price, 10) + this.selectLimit)) {
+				remainingShares = parseInt(this.price, 10) + this.selectLimit;
+			}
 
 			// add to available shares based on available remaining shares
 			const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
