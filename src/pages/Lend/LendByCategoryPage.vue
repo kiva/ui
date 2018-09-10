@@ -37,11 +37,10 @@
 </template>
 
 <script>
+import _each from 'lodash/each';
 import _get from 'lodash/get';
+// import _keys from 'lodash/keys';
 import _map from 'lodash/map';
-// @TODO following 2 imports unnecessary once category sort data available
-import _size from 'lodash/size';
-import _times from 'lodash/times';
 import { readJSONSetting } from '@/util/settingsUtils';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
@@ -76,18 +75,17 @@ export default {
 	methods: {
 		assemblePageViewData(categories) {
 			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_0.json#';
-			const loans = _map(categories, 'loans');
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_3.json#';
+			const loanIds = [];
 			const pageViewTrackData = { schema, data: {} };
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-			pageViewTrackData.data.categoriesDisplayed = _map(categories, 'id');
-
-			// @TODO - when sorts available, replace below with ~ _map(this.categories, 'sort')
-			pageViewTrackData.data.sortsDisplayed = [];
-			_times(_size(categories), () => pageViewTrackData.data.sortsDisplayed.push('default'));
-
-			pageViewTrackData.data.loansDisplayed = _map(loans, ({ values }) => _map(values, 'id'));
+			_each(categories, category => {
+				_each(category.loans.values, loan => {
+					loanIds.push({ c: category.id, id: loan.id });
+				});
+			});
+			pageViewTrackData.data.loansDisplayed = loanIds;
 			return pageViewTrackData;
 		},
 		setRows(data) {
