@@ -10,7 +10,6 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
-// import { validateBasket, redirectToThanks } from '@/util/checkoutUtilities';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';

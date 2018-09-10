@@ -58,9 +58,11 @@ export default {
 		 */
 		showCheckoutError(errorResponse) {
 			const errors = _get(errorResponse, 'errors');
+			// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
+
+			// When validation or checkout fails and errors object is returned along with the data
 			// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
 			// - these have instructions to hit the back button which do not work in this context
-			// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
 			errors.forEach(({ message, code }) => {
 				// TODO: Revisit as this will just pop multiple tip messages if multiple issues are found
 				this.$showTipMsg(message, 'error');

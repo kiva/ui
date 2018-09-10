@@ -74,8 +74,7 @@
 						<div v-if="isLoggedIn" class="checkout-actions">
 							<pay-pal-exp
 								v-if="showPayPal"
-								:amount="creditNeeded"
-								@checkout-error="showCheckoutError" />
+								:amount="creditNeeded" />
 
 							<kv-button
 								v-else
@@ -198,21 +197,6 @@ export default {
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 				});
-		},
-		showCheckoutError(errorResponse) {
-			const errors = _get(errorResponse, 'errors');
-			// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
-			// - these have instructions to hit the back button which do not work in this context
-			// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
-			errors.forEach(({ message, code }) => {
-				this.$showTipMsg(message, 'error');
-				// TODO: handle session timeout...graphql says we're not authenticated...
-				console.error(code);
-				// if (code === 'api.authenticationRequired') {
-				// 	this.myId = null;
-				// 	this.switchToLogin();
-				// }
-			});
 		},
 		checkoutCreditBasket() {
 			this.checkoutBasket()
