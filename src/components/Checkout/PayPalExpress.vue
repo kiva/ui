@@ -10,13 +10,17 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import { validateBasket, redirectToThanks } from '@/util/checkoutUtilities';
+// import { validateBasket, redirectToThanks } from '@/util/checkoutUtilities';
+import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
 
 
 export default {
 	inject: ['apollo'],
+	mixins: [
+		checkoutUtils
+	],
 	props: {
 		amount: {
 			type: String,
@@ -74,7 +78,7 @@ export default {
 					payment: () => {
 						console.log('payment stage');
 						return new paypal.Promise((resolve, reject) => {
-							validateBasket(this.apollo)
+							this.validateBasket()
 								.then(validationStatus => {
 									if (validationStatus === true) {
 										// Use updated vars on render
@@ -93,7 +97,7 @@ export default {
 											}
 										});
 									} else {
-										this.$emit('checkout-error', validationStatus);
+										this.showCheckoutError(validationStatus);
 										reject(validationStatus);
 									}
 								})
@@ -131,7 +135,7 @@ export default {
 									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
 									// redirect to thanks with KIVA transaction id
 									if (transactionId) {
-										redirectToThanks(transactionId);
+										this.redirectToThanks(transactionId);
 									}
 									resolve(ppResponse);
 								})

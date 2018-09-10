@@ -75,16 +75,15 @@
 							<pay-pal-exp
 								v-if="showPayPal"
 								:amount="creditNeeded"
-								@successful-transaction="redirectToThanksAlias"
 								@checkout-error="showCheckoutError" />
 
-							<button
+							<kv-button
 								v-else
 								type="submit"
-								class="button smaller checkout-button"
+								class="smaller checkout-button"
 								v-kv-track-event="['payment.continueBtn']"
 								title="Checkout using your Kiva credit"
-								@click.prevent="validateBasket">Complete order</button>
+								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
 						</div>
 					</div>
 
@@ -107,8 +106,9 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
 import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
-import { validateBasket, checkoutBasket, redirectToThanks } from '@/util/checkoutUtilities';
+import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
@@ -120,6 +120,7 @@ export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		KvButton,
 		OrderTotals,
 		LoginForm,
 		RegisterForm,
@@ -128,6 +129,9 @@ export default {
 		LoadingOverlay
 	},
 	inject: ['apollo'],
+	mixins: [
+		checkoutUtils
+	],
 	metaInfo: {
 		title: 'Checkout'
 	},
@@ -161,7 +165,7 @@ export default {
 	},
 	computed: {
 		isLoggedIn() {
-			return this.myId !== null;
+			return (this.myId !== null && this.myId !== undefined);
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
@@ -177,12 +181,12 @@ export default {
 		}
 	},
 	methods: {
-		validateBasket() {
-			validateBasket(this.apollo)
+		validateCreditBasket() {
+			this.validateBasket()
 				.then(validationStatus => {
 					if (validationStatus === true) {
 						// succesful validation
-						this.checkoutBasket();
+						this.checkoutCreditBasket();
 					} else {
 						// validation failed
 						this.showCheckoutError(validationStatus);
@@ -199,26 +203,26 @@ export default {
 			const errors = _get(errorResponse, 'errors');
 			// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
 			// - these have instructions to hit the back button which do not work in this context
-			errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
+			// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
+			errors.forEach(({ message, code }) => {
+				this.$showTipMsg(message, 'error');
+				// TODO: handle session timeout...graphql says we're not authenticated...
+				console.error(code);
+				// if (code === 'api.authenticationRequired') {
+				// 	this.myId = null;
+				// 	this.switchToLogin();
+				// }
+			});
 		},
-		checkoutBasket() {
-			checkoutBasket(this.apollo)
+		checkoutCreditBasket() {
+			this.checkoutBasket()
 				.then(transactionResult => {
 					if (typeof transactionResult !== 'object') {
 						// succesful validation
-						redirectToThanks(transactionResult);
+						this.redirectToThanks(transactionResult);
 					} else {
 						// checkout failed
-						const errors = _get(transactionResult, 'errors');
-						errors.forEach(({ message, code }) => {
-							this.$showTipMsg(message, 'error');
-							// TODO: handle session timeout...graphql says we're not authenticated...
-							console.log(code);
-							// if (code === 'api.authenticationRequired') {
-							// 	this.myId = null;
-							// 	this.switchToLogin();
-							// }
-						});
+						this.showCheckoutError(transactionResult);
 					}
 				}).catch(errorResponse => {
 					console.error(errorResponse);
@@ -246,9 +250,6 @@ export default {
 		},
 		setLoginLoading(state) {
 			this.loginLoading = state;
-		},
-		redirectToThanksAlias() {
-			redirectToThanks();
 		}
 	}
 };
