@@ -377,6 +377,13 @@ export default {
 		color: $dark-gray;
 	}
 
+	.input-set {
+		label {
+			font-weight: normal;
+			font-size: 1rem;
+		}
+	}
+
 	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
 	.reg-password /deep/ .Password__badge {
 		height: rem-calc(19) !important;

@@ -239,6 +239,13 @@ export default {
 		color: $dark-gray;
 	}
 
+	.input-set {
+		label {
+			font-weight: normal;
+			font-size: 1rem;
+		}
+	}
+
 	.persist-login-wrap {
 		margin-bottom: rem-calc(20);
 		line-height: rem-calc(20);
