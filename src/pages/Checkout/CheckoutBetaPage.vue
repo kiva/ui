@@ -3,9 +3,11 @@
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
 				<div v-if="!emptyBasket" class="login-wrap">
-					<br>
-					<hr>
-					<br>
+					<div class="checkout-step">
+						<hr>
+						<span class="number-icon number-1">1</span>
+					</div>
+
 					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
 						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
 							<h2 v-if="showLogin">Login to Checkout</h2>
@@ -59,11 +61,12 @@
 				</div>
 
 				<div class="basket-wrap">
-					<div v-if="!emptyBasket">
-						<br>
+					<div class="checkout-step">
 						<hr>
-						<br>
+						<span class="number-icon number-2">2</span>
+					</div>
 
+					<div v-if="!emptyBasket">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -250,6 +253,40 @@ export default {
 	// loading overlay overrides
 	.loading-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
+	}
+
+	.checkout-step {
+		position: relative;
+		text-align: center;
+		height: 2rem;
+		display: block;
+		margin: 1rem 0 1.5rem;
+
+		hr {
+			border-bottom: 1px solid $kiva-text-light;
+			margin: 2.5rem 0;
+		}
+
+		span {
+			display: block;
+			margin: -4.2rem auto 0;
+			width: 3.4rem;
+			height: 3.4rem;
+
+			&.number-icon {
+				background: $white;
+				color: $kiva-text-light;
+				border: 1px solid $kiva-text-light;
+				border-radius: 1.7rem;
+				font-size: 1.7rem;
+				text-align: center;
+				line-height: 3.3rem;
+			}
+		}
+	}
+
+	.login-wrap {
+		padding-bottom: 2.5rem;
 	}
 
 	.login-reg-holder {
