@@ -10,8 +10,8 @@
 
 					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
 						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
-							<h2 v-if="showLogin">Login to Checkout</h2>
-							<h2 v-else>Register to Checkout</h2>
+							<h3 v-if="showLogin">Login to Checkout</h3>
+							<h3 v-else>Register to Checkout</h3>
 						</div>
 
 						<div class="columns small-12 medium-8 large-5 xxlarge-4">
@@ -307,7 +307,10 @@ export default {
 		position: relative;
 
 		.login-reg-header {
-			font-weight: 400;
+			h3 {
+				font-size: $featured-text-font-size;
+				font-weight: 400;
+			}
 		}
 
 		.v-divider {
