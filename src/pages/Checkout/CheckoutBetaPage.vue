@@ -37,14 +37,14 @@
 								@fb-loading="setLoginLoading" />
 
 							<div v-if="showReg" class="login-reg-switch">
-								<p class="featured-text">Already have an account? <br><a
+								<p>Already have an account? <br><a
 									@click.prevent="switchToLogin"
 									v-kv-track-event="['register', 'alreadyMemberLnk']"
 									id="loginLink">Sign in</a></p>
 							</div>
 
 							<div class="login-reg-switch">
-								<p class="featured-text"><a v-if="showLogin" class="register-link text-center"
+								<p><a v-if="showLogin" class="register-link text-center"
 									v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
 									@click.prevent="switchToRegister">
 									Sign up for Kiva
@@ -354,6 +354,8 @@ export default {
 
 		.login-reg-switch {
 			text-align: center;
+			font-size: 1.3rem;
+			font-weight: 400;
 
 			/* turned off for now */
 			// @include breakpoint(large) {
