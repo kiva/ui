@@ -279,6 +279,8 @@ export default {
 			// - A failed attempt to register will still refresh the page
 			// refresh the page if true
 			if (this.refresh && !this.regFailed) {
+				// set loading state while page refreshes
+				this.setLoading(true);
 				window.location = window.location;
 			}
 		},
@@ -373,6 +375,13 @@ export default {
 	.featured-text {
 		text-align: center;
 		color: $dark-gray;
+	}
+
+	.input-set {
+		label {
+			font-weight: normal;
+			font-size: 1rem;
+		}
 	}
 
 	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors

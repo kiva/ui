@@ -3,13 +3,15 @@
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
 				<div v-if="!emptyBasket" class="login-wrap">
-					<br>
-					<hr>
-					<br>
+					<div class="checkout-step">
+						<hr>
+						<span class="number-icon number-1">1</span>
+					</div>
+
 					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
 						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
-							<h2 v-if="showLogin">Login to Checkout</h2>
-							<h2 v-else>Register to Checkout</h2>
+							<h3 v-if="showLogin">Login to Checkout</h3>
+							<h3 v-else>Register to Checkout</h3>
 						</div>
 
 						<div class="columns small-12 medium-8 large-5 xxlarge-4">
@@ -35,14 +37,14 @@
 								@fb-loading="setLoginLoading" />
 
 							<div v-if="showReg" class="login-reg-switch">
-								<p class="featured-text">Already have an account? <br><a
+								<p>Already have an account? <br><a
 									@click.prevent="switchToLogin"
 									v-kv-track-event="['register', 'alreadyMemberLnk']"
 									id="loginLink">Sign in</a></p>
 							</div>
 
 							<div class="login-reg-switch">
-								<p class="featured-text"><a v-if="showLogin" class="register-link text-center"
+								<p><a v-if="showLogin" class="register-link text-center"
 									v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
 									@click.prevent="switchToRegister">
 									Sign up for Kiva
@@ -59,34 +61,43 @@
 				</div>
 
 				<div class="basket-wrap">
-					<div v-if="!emptyBasket">
-						<br>
+					<div v-if="!emptyBasket" class="checkout-step">
 						<hr>
-						<br>
+						<span class="number-icon number-2">2</span>
+					</div>
 
+					<div v-if="!emptyBasket">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
 							@refreshtotals="refreshTotals($event)"
+							@updating-totals="setUpdatingTotals"
 						/>
 
 						<kiva-card-redemption />
 						<hr>
 
-						<order-totals :totals="totals" @refreshtotals="refreshTotals" />
+						<div class="totals-and-actions">
+							<order-totals
+								:totals="totals"
+								@refreshtotals="refreshTotals"
+								@updating-totals="setUpdatingTotals" />
 
-						<div v-if="isLoggedIn" class="checkout-actions">
-							<pay-pal-exp
-								v-if="showPayPal"
-								:amount="creditNeeded" />
+							<div v-if="isLoggedIn" class="checkout-actions">
+								<pay-pal-exp
+									v-if="showPayPal"
+									:amount="creditNeeded" />
 
-							<kv-button
-								v-else
-								type="submit"
-								class="smaller checkout-button"
-								v-kv-track-event="['payment.continueBtn']"
-								title="Checkout using your Kiva credit"
-								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								<kv-button
+									v-else
+									type="submit"
+									class="smaller checkout-button"
+									v-kv-track-event="['payment.continueBtn']"
+									title="Checkout using your Kiva credit"
+									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+							</div>
+
+							<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
 						</div>
 					</div>
 
@@ -146,8 +157,9 @@ export default {
 			myId: null,
 			currentStep: 'basket',
 			loans: [],
-			totals: () => {},
 			donations: [],
+			totals: () => {},
+			updatingTotals: false,
 			loading: false,
 			showReg: true,
 			showLogin: false,
@@ -214,17 +226,22 @@ export default {
 					console.error(errorResponse);
 				});
 		},
-		refreshTotals(payload) {
-			// We may use payload in managing/refreshing basket state
-			console.log(payload);
+		refreshTotals() {
+			this.setUpdatingTotals(true);
+
 			this.apollo.query({
 				query: shopTotals,
 				fetchPolicy: 'network-only'
 			}).then(data => {
 				this.totals = _get(data, 'data.shop.basket.totals');
+				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
+				this.setUpdatingTotals(false);
 			});
+		},
+		setUpdatingTotals(state) {
+			this.updatingTotals = state;
 		},
 		switchToRegister() {
 			this.showReg = true;
@@ -252,11 +269,48 @@ export default {
 		background-color: rgba(255, 255, 255, 0.7);
 	}
 
+	.checkout-step {
+		position: relative;
+		text-align: center;
+		height: 2rem;
+		display: block;
+		margin: 1rem 0 1.5rem;
+
+		hr {
+			border-bottom: 1px solid $kiva-text-light;
+			margin: 2.5rem 0;
+		}
+
+		span {
+			display: block;
+			margin: -4.2rem auto 0;
+			width: 3.4rem;
+			height: 3.4rem;
+
+			&.number-icon {
+				background: $white;
+				color: $kiva-text-light;
+				border: 1px solid $kiva-text-light;
+				border-radius: 1.7rem;
+				font-size: 1.7rem;
+				text-align: center;
+				line-height: 3.3rem;
+			}
+		}
+	}
+
+	.login-wrap {
+		padding-bottom: 2.5rem;
+	}
+
 	.login-reg-holder {
 		position: relative;
 
 		.login-reg-header {
-			font-weight: 400;
+			h3 {
+				font-size: $featured-text-font-size;
+				font-weight: 400;
+			}
 		}
 
 		.v-divider {
@@ -300,6 +354,8 @@ export default {
 
 		.login-reg-switch {
 			text-align: center;
+			font-size: 1.3rem;
+			font-weight: 400;
 
 			/* turned off for now */
 			// @include breakpoint(large) {
@@ -319,6 +375,15 @@ export default {
 	}
 
 	.basket-wrap {
+		.totals-and-actions {
+			display: block;
+			position: relative;
+
+			.updating-totals-overlay {
+				z-index: 1000;
+			}
+		}
+
 		.checkout-actions {
 			margin: $list-side-margin;
 

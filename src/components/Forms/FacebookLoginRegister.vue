@@ -345,6 +345,8 @@ export default {
 				if (this.doneUrl !== '') {
 					window.location = `${document.location.origin}/${this.doneUrl}`;
 				} else {
+					// set loading state while page refreshes
+					this.setLoading(true);
 					window.location = window.location;
 				}
 			}
