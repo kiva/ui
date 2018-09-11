@@ -60,7 +60,15 @@
 
 				<div class="basket-wrap">
 					<div v-if="!emptyBasket">
-						<div class="basket-overlay" v-if="!isLoggedIn">
+						<div
+							@click="overlayMouseover"
+							class="basket-overlay"
+							v-if="!isLoggedIn">
+							<div
+								:class="{ hovered: isHovered }"
+								class="featured-text">
+								Please register or sign in above
+								to complete your purchase.</div>
 							<br>
 							<hr>
 							<br>
@@ -154,6 +162,7 @@ export default {
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
+			isHovered: false
 		};
 	},
 	apollo: {
@@ -238,8 +247,12 @@ export default {
 		},
 		setLoginLoading(state) {
 			this.loginLoading = state;
+		},
+		overlayMouseover() {
+			this.isHovered = !this.isHovered;
+			console.log('overlayMouseover triggered.');
 		}
-	}
+	},
 };
 </script>
 
@@ -321,6 +334,8 @@ export default {
 	}
 
 	.basket-wrap {
+		z-index: 10;
+
 		.checkout-actions {
 			margin: $list-side-margin;
 
@@ -342,10 +357,22 @@ export default {
 			bottom: 0;
 			left: 0;
 			right: 0;
-			opacity: 0.5;
+			opacity: 0.6;
+			// pointer-events: none;
 			z-index: 100;
 			background-image: url('../../assets/images/backgrounds/lines.png');
 			background-repeat: repeat;
+
+			.hovered {
+				height: 200px;
+				width: 400px;
+				border-radius: 2px;
+				margin: auto auto;
+				border: 2px solid $light-gray;
+				background-color: white;
+				z-index: 200;
+				text-align: center;
+			}
 		}
 	}
 
