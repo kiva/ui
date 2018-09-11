@@ -61,7 +61,7 @@
 				</div>
 
 				<div class="basket-wrap">
-					<div class="checkout-step">
+					<div v-if="!emptyBasket" class="checkout-step">
 						<hr>
 						<span class="number-icon number-2">2</span>
 					</div>
@@ -71,25 +71,33 @@
 							:loans="loans"
 							:donations="donations"
 							@refreshtotals="refreshTotals($event)"
+							@updating-totals="setUpdatingTotals"
 						/>
 
 						<kiva-card-redemption />
 						<hr>
 
-						<order-totals :totals="totals" @refreshtotals="refreshTotals" />
+						<div class="totals-and-actions">
+							<order-totals
+								:totals="totals"
+								@refreshtotals="refreshTotals"
+								@updating-totals="setUpdatingTotals" />
 
-						<div v-if="isLoggedIn" class="checkout-actions">
-							<pay-pal-exp
-								v-if="showPayPal"
-								:amount="creditNeeded" />
+							<div v-if="isLoggedIn" class="checkout-actions">
+								<pay-pal-exp
+									v-if="showPayPal"
+									:amount="creditNeeded" />
 
-							<kv-button
-								v-else
-								type="submit"
-								class="smaller checkout-button"
-								v-kv-track-event="['payment.continueBtn']"
-								title="Checkout using your Kiva credit"
-								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								<kv-button
+									v-else
+									type="submit"
+									class="smaller checkout-button"
+									v-kv-track-event="['payment.continueBtn']"
+									title="Checkout using your Kiva credit"
+									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+							</div>
+
+							<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
 						</div>
 					</div>
 
@@ -149,8 +157,9 @@ export default {
 			myId: null,
 			currentStep: 'basket',
 			loans: [],
-			totals: () => {},
 			donations: [],
+			totals: () => {},
+			updatingTotals: false,
 			loading: false,
 			showReg: true,
 			showLogin: false,
@@ -217,17 +226,22 @@ export default {
 					console.error(errorResponse);
 				});
 		},
-		refreshTotals(payload) {
-			// We may use payload in managing/refreshing basket state
-			console.log(payload);
+		refreshTotals() {
+			this.setUpdatingTotals(true);
+
 			this.apollo.query({
 				query: shopTotals,
 				fetchPolicy: 'network-only'
 			}).then(data => {
 				this.totals = _get(data, 'data.shop.basket.totals');
+				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
+				this.setUpdatingTotals(false);
 			});
+		},
+		setUpdatingTotals(state) {
+			this.updatingTotals = state;
 		},
 		switchToRegister() {
 			this.showReg = true;
@@ -356,6 +370,15 @@ export default {
 	}
 
 	.basket-wrap {
+		.totals-and-actions {
+			display: block;
+			position: relative;
+
+			.updating-totals-overlay {
+				z-index: 1000;
+			}
+		}
+
 		.checkout-actions {
 			margin: $list-side-margin;
 

@@ -84,6 +84,7 @@ export default {
 	methods: {
 		updateLoanAmount() {
 			if (this.selectedOption !== this.price) {
+				this.$emit('updating-totals', true);
 				const updatedPrice = this.getUpdatedPrice();
 				this.apollo.mutate({
 					mutation: updateLoanAmount,
@@ -92,9 +93,11 @@ export default {
 						price: updatedPrice
 					}
 				}).then(() => {
+					this.$emit('updating-totals', false);
 					this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
 				}).catch(error => {
 					console.error(error);
+					this.$emit('updating-totals', false);
 				});
 			}
 		},

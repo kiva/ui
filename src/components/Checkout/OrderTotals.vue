@@ -43,6 +43,11 @@ export default {
 			default: () => {}
 		}
 	},
+	data() {
+		return {
+			loading: false
+		};
+	},
 	computed: {
 		showRemoveKivaCredit() {
 			return parseFloat(this.totals.kivaCreditAppliedTotal) > 0;
@@ -66,6 +71,7 @@ export default {
 	},
 	methods: {
 		addCredit(type) {
+			this.setUpdating(true);
 			this.apollo.mutate({
 				mutation: addCreditByType,
 				variables: {
@@ -73,24 +79,32 @@ export default {
 				}
 			}).then(() => {
 				// What type of loading sequence should go here?
+				this.setUpdating(false);
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
+				this.setUpdating(false);
 			});
 		},
 		removeCredit(type) {
+			this.setUpdating(true);
 			this.apollo.mutate({
 				mutation: removeCreditByType,
 				variables: {
 					creditType: type
 				}
 			}).then(() => {
-				// loading sequence?
+				this.setUpdating(false);
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
+				this.setUpdating(false);
 			});
-		}
+		},
+		setUpdating(state) {
+			this.loading = state;
+			this.$emit('updating-totals', state);
+		},
 	}
 };
 </script>
