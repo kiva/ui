@@ -1,5 +1,5 @@
-query {
-	experiment(id: "category_rows") @client {
+query($id: String) {
+	experiment(id: $id) @client {
 		id
 		version
 	}

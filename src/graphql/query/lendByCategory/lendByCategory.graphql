@@ -3,7 +3,11 @@ query {
 		rows: setting(setting: "ui.category_rows") {
 			value
 		}
-		experiment: setting(setting: "uiexp.category_rows") {
+		rowsExp: setting(setting: "uiexp.category_rows") {
+			key
+			value
+		}
+		featuredExp: setting(setting: "uiexp.featured_loans") {
 			key
 			value
 		}
