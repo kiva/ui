@@ -75,14 +75,19 @@ export default {
 	methods: {
 		assemblePageViewData(categories) {
 			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_3.json#';
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
 			const loanIds = [];
 			const pageViewTrackData = { schema, data: {} };
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-			_each(categories, category => {
-				_each(category.loans.values, loan => {
-					loanIds.push({ c: category.id, id: loan.id });
+			_each(categories, (category, catIndex) => {
+				_each(category.loans.values, (loan, loanIndex) => {
+					loanIds.push({
+						r: catIndex + 1,
+						p: loanIndex + 1,
+						c: category.id,
+						l: loan.id
+					});
 				});
 			});
 			pageViewTrackData.data.loansDisplayed = loanIds;
