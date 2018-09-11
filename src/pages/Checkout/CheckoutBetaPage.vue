@@ -337,14 +337,15 @@ export default {
 			}
 		}
 
-		.basket-overlap {
+		.basket-overlay {
 			top: 0;
 			bottom: 0;
 			left: 0;
 			right: 0;
-			background-color: red;
 			opacity: 0.5;
 			z-index: 100;
+			background-image: url('../../assets/images/backgrounds/lines.png');
+			background-repeat: repeat;
 		}
 	}
 
