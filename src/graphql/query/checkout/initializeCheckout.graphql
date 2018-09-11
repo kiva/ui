@@ -4,6 +4,16 @@ query {
 			id
 			balance
 		}
+		lastActiveLogin: userSessionData(sessionKey: LastActiveLogin) {
+			sessionKey
+			data
+		}
+	}
+	general {
+		activeLoginDuration: setting(setting: "config.login_timeouts.www.active_login") {
+			value
+			key
+		}
 	}
 	shop {
 		basket {
