@@ -60,33 +60,35 @@
 
 				<div class="basket-wrap">
 					<div v-if="!emptyBasket">
-						<br>
-						<hr>
-						<br>
+						<div class="basket-overlay" v-if="!isLoggedIn">
+							<br>
+							<hr>
+							<br>
 
-						<basket-items-list
-							:loans="loans"
-							:donations="donations"
-							@refreshtotals="refreshTotals($event)"
-						/>
+							<basket-items-list
+								:loans="loans"
+								:donations="donations"
+								@refreshtotals="refreshTotals($event)"
+							/>
 
-						<kiva-card-redemption />
-						<hr>
+							<kiva-card-redemption />
+							<hr>
 
-						<order-totals :totals="totals" @refreshtotals="refreshTotals" />
+							<order-totals :totals="totals" @refreshtotals="refreshTotals" />
 
-						<div v-if="isLoggedIn" class="checkout-actions">
-							<pay-pal-exp
-								v-if="showPayPal"
-								:amount="creditNeeded" />
+							<div v-if="isLoggedIn" class="checkout-actions">
+								<pay-pal-exp
+									v-if="showPayPal"
+									:amount="creditNeeded" />
 
-							<kv-button
-								v-else
-								type="submit"
-								class="smaller checkout-button"
-								v-kv-track-event="['payment.continueBtn']"
-								title="Checkout using your Kiva credit"
-								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								<kv-button
+									v-else
+									type="submit"
+									class="smaller checkout-button"
+									v-kv-track-event="['payment.continueBtn']"
+									title="Checkout using your Kiva credit"
+									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+							</div>
 						</div>
 					</div>
 
@@ -241,7 +243,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .page-content {
@@ -333,6 +335,16 @@ export default {
 					width: auto;
 				}
 			}
+		}
+
+		.basket-overlap {
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-color: red;
+			opacity: 0.5;
+			z-index: 100;
 		}
 	}
 
