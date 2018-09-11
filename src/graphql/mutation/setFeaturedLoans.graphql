@@ -1,0 +1,10 @@
+mutation($experiment: String) {
+	general {
+		setSetting(
+			key: "uiexp.featured_loans",
+			value: $experiment,
+			description: "Ui Featured Loans Experiment settings",
+			data_type: string
+		)
+	}
+}
