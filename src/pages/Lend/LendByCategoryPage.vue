@@ -39,7 +39,6 @@
 <script>
 import _each from 'lodash/each';
 import _get from 'lodash/get';
-// import _keys from 'lodash/keys';
 import _map from 'lodash/map';
 import { readJSONSetting } from '@/util/settingsUtils';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
