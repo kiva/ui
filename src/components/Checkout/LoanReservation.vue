@@ -107,15 +107,21 @@ export default {
 .reservation-info {
 	color: $kiva-text-light;
 	line-height: 2rem;
-	float: right;
+	width: 100%;
+	text-align: left;
 
 	.loanNotReservedLightbox {
 		color: $charcoal;
 	}
 
+	.loan-message {
+		line-height: 1.4;
+	}
+
 	.loan-message /deep/ .red {
 		color: $kiva-accent-red;
 		font-weight: 400;
+		margin-bottom: rem-calc(10);
 	}
 }
 </style>

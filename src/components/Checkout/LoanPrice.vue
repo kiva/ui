@@ -127,6 +127,7 @@ export default {
 
 .loan-price {
 	border: 1.5px solid black;
+	max-width: rem-calc(200);
 }
 
 </style>
