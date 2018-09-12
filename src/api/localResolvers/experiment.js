@@ -1,4 +1,5 @@
 import _isUndefined from 'lodash/isUndefined';
+import _filter from 'lodash/filter';
 import _fromPairs from 'lodash/fromPairs';
 import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
@@ -14,7 +15,9 @@ function parseExpCookie(cookie) {
 	if (!cookie) return {};
 	const expStrings = cookie.split('|');
 	const pairs = expStrings.map(exp => exp.split(':'));
-	return _fromPairs(pairs);
+	// filter out pairs that have a non-truthy value (index 1)
+	const filteredPairs = _filter(pairs, 1);
+	return _fromPairs(filteredPairs);
 }
 
 /**
@@ -26,7 +29,9 @@ function parseExpCookie(cookie) {
 function serializeExpCookie(assignments) {
 	const pairs = _toPairs(assignments);
 	const expStrings = pairs.map(pair => pair.join(':'));
-	return expStrings.join('|');
+	// filter out strings that end with a ':', as they have no assignment
+	const filteredStrings = _filter(expStrings, s => s.slice(-1) !== ':');
+	return filteredStrings.join('|');
 }
 
 /**
