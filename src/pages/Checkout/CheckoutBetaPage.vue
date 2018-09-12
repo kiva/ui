@@ -61,58 +61,60 @@
 				</div>
 
 				<div class="basket-wrap">
-					<div v-if="!emptyBasket" class="checkout-step">
-						<hr>
-						<span class="number-icon number-2">2</span>
-					</div>
-					<div v-if="!emptyBasket">
-						@click="overlayMouseover"
-						class="basket-overlay"
-						v-if="!isLoggedIn">
-						<div
-							:class="{ hovered: isHovered, unhovered: !isHovered }"
-							class="featured-text">
-							Please register or sign in above
-							to complete your purchase.
+					<div class="container">
+						<div v-if="!emptyBasket"
+							@click="overlayMouseover"
+							class="basket-overlay">
+							<div v-if="!isLoggedIn">
+								<div
+									:class="{ hovered: isHovered, unhovered: !isHovered }"
+									class="featured-text hovered">
+									Please register or sign in above
+									to complete your purchase.
+								</div>
+								<div v-if="!emptyBasket" class="checkout-step">
+									<hr>
+									<span class="number-icon number-2">2</span>
+								</div>
+								<br>
+								<br>
+
+								<basket-items-list
+									:loans="loans"
+									:donations="donations"
+									@refreshtotals="refreshTotals($event)"
+									@updating-totals="setUpdatingTotals"
+								/>
+
+								<kiva-card-redemption />
+								<hr>
+
+								<order-totals
+									:totals="totals"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals" />
+
+								<div v-if="isLoggedIn" class="checkout-actions">
+									<pay-pal-exp
+										v-if="showPayPal"
+										:amount="creditNeeded" />
+
+									<kv-button
+										v-else
+										type="submit"
+										class="smaller checkout-button"
+										v-kv-track-event="['payment.continueBtn']"
+										title="Checkout using your Kiva credit"
+										@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								</div>
+
+								<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
+							</div>
 						</div>
-						<br>
-						<hr>
-						<br>
-
-						<basket-items-list
-							:loans="loans"
-							:donations="donations"
-							@refreshtotals="refreshTotals($event)"
-							@updating-totals="setUpdatingTotals"
-						/>
-
-						<kiva-card-redemption />
-						<hr>
-
-						<order-totals
-							:totals="totals"
-							@refreshtotals="refreshTotals"
-							@updating-totals="setUpdatingTotals" />
-
-						<div v-if="isLoggedIn" class="checkout-actions">
-							<pay-pal-exp
-								v-if="showPayPal"
-								:amount="creditNeeded" />
-
-							<kv-button
-								v-else
-								type="submit"
-								class="smaller checkout-button"
-								v-kv-track-event="['payment.continueBtn']"
-								title="Checkout using your Kiva credit"
-								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
-						</div>
-
-						<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
 					</div>
 				</div>
 
-				<div v-else class="empty-basket">
+				<div v-if="emptyBasket" class="empty-basket">
 					<p class="featured-text">Oops — Your basket is empty!</p>
 					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
 						<a href="/lend-by-category">Browse by category</a> or
@@ -413,7 +415,7 @@ export default {
 
 	.basket-wrap {
 		z-index: 10;
-		pointer-events: none;
+		// pointer-events: none;
 
 		.totals-and-actions {
 			display: block;
@@ -440,9 +442,23 @@ export default {
 			}
 		}
 
+		.container {
+			display: block;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			padding: 4.5rem 0;
+			z-index: 20;
+		}
+
 		.basket-overlay {
+			display: block;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
 			opacity: 0.6;
-			pointer-events: auto;
 			z-index: 100;
 			background-image: url('../../assets/images/backgrounds/lines.png');
 
@@ -451,6 +467,7 @@ export default {
 			}
 
 			.hovered {
+				position: relative;
 				height: 200px;
 				width: 400px;
 				border-radius: 2px;
@@ -460,7 +477,6 @@ export default {
 				z-index: 200;
 				color: black;
 				text-align: center;
-				position: relative;
 			}
 		}
 	}
