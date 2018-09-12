@@ -65,6 +65,9 @@ const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
 const largeCardWidthPlusPadding = 300;
 
+// Hard-coded categories for now: research-backed=impact, almost-funded, trending-now
+const featuredCategoryIds = [56, 60, 54];
+
 export default {
 	components: {
 		GridLoanCard,
@@ -72,8 +75,7 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			// Hard-coded categories for now: research-backed=impact, almost-funded, trending-now
-			featuredCategoryIds: [56, 60, 54],
+			featuredCategoryIds,
 			featuredCategoryTitles: ['Research-backed impact', 'Almost funded', 'Trending now'],
 			loan1: null,
 			loan2: null,
@@ -131,6 +133,11 @@ export default {
 	apollo: {
 		query: featuredLoansQuery,
 		preFetch: true,
+		preFetchVariables() {
+			return {
+				ids: featuredCategoryIds
+			};
+		},
 		variables() {
 			return {
 				ids: this.featuredCategoryIds,
