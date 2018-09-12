@@ -181,7 +181,7 @@ export default {
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.lastActiveLogin = _get(data, 'my.lastActiveLogin.data');
+			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
 	},
 	computed: {
@@ -194,7 +194,7 @@ export default {
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10) * 1000) || 0;
 
-			if (lastLogin + this.activeLoginDuration > Date.now()) {
+			if (lastLogin + (this.activeLoginDuration * 1000) > Date.now()) {
 				return true;
 			}
 			return false;
@@ -212,7 +212,8 @@ export default {
 			return false;
 		}
 	},
-	mounted() {
+	created() {
+		// if we have a user id but are not actively logged in
 		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
 			this.switchToLogin();
 		}
