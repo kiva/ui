@@ -373,6 +373,7 @@ export default {
 				border: 2px solid $light-gray;
 				background-color: white;
 				z-index: 200;
+				color: black;
 				text-align: center;
 				position: relative;
 			}
