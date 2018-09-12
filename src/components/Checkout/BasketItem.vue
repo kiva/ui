@@ -31,6 +31,7 @@
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
 				@refreshtotals="onLoanUpdate($event)"
+				@updating-totals="$emit('updating-totals', $event)"
 			/>
 		</span>
 	</div>

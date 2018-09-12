@@ -5,12 +5,14 @@
 				<basket-item
 					:loan="loan"
 					@refreshtotals="$emit('refreshtotals', $event)"
+					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
 			<li v-for="donation in donations" :key="donation.id">
 				<donation-item
 					:donation="donation"
 					@refreshtotals="$emit('refreshtotals')"
+					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
 

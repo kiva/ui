@@ -205,6 +205,8 @@ export default {
 			// - A failed attempt to login will still refresh the page
 			// refresh the page if true
 			if (this.refresh && !this.loginFailed) {
+				// set loading state while page refreshes
+				this.setLoading(true);
 				window.location = window.location;
 			}
 		},
@@ -235,6 +237,13 @@ export default {
 	.featured-text {
 		text-align: center;
 		color: $dark-gray;
+	}
+
+	.input-set {
+		label {
+			font-weight: normal;
+			font-size: 1rem;
+		}
 	}
 
 	.persist-login-wrap {
