@@ -38,8 +38,8 @@
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 featured-text">
-			<span class="small-12 medium-6">
+		<span class="small-9 medium-3 featured-text text-align-right">
+			<span class="small-12 medium-6 donation-input-wrapper">$
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -47,7 +47,8 @@
 					id="donation"
 					v-model="amount">
 			</span>
-			<span class="small-12 medium-6">
+			<!-- Adding the $ below to make the spacing work with the input field above this button -->
+			<span class="small-12 medium-6 update-donation-button-wrapper">$
 				<kv-button
 					class="secondary"
 					@click.native.prevent.stop="updateDonation()"
@@ -132,9 +133,22 @@ export default {
 	margin-bottom: rem-calc(15);
 }
 
+.text-align-right {
+	text-align: right;
+}
+
+.update-donation-button-wrapper {
+	white-space: nowrap;
+	visibility: hidden;
+}
+
+.donation-input-wrapper {
+	white-space: nowrap;
+}
+
 .donation-amount-input {
 	border: 1px solid $light-gray;
-	width: 100%;
+	width: 90%;
 	text-align: center;
 
 	@include breakpoint(medium) {
@@ -158,12 +172,12 @@ input {
 	color: $kiva-accent-blue;
 	border: 1px solid $kiva-accent-blue;
 	box-shadow: 0 1px $kiva-accent-blue;
-	width: 100%;
+	width: 90%;
+	visibility: visible;
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
 		margin-bottom: rem-calc(5);
-		margin-left: rem-calc(10);
 		width: inherit;
 	}
 }
