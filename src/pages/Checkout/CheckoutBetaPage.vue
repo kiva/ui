@@ -118,7 +118,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
+import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
@@ -164,6 +164,8 @@ export default {
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
+			activeLoginDuration: 3600,
+			lastActiveLogin: 0
 		};
 	},
 	apollo: {
@@ -178,11 +180,24 @@ export default {
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+			this.lastActiveLogin = _get(data, 'my.lastActiveLogin.data');
 		}
 	},
 	computed: {
 		isLoggedIn() {
-			return (this.myId !== null && this.myId !== undefined);
+			if (this.myId !== null && this.myId !== undefined && this.isActivelyLoggedIn) {
+				return true;
+			}
+			return false;
+		},
+		isActivelyLoggedIn() {
+			const lastLogin = (parseInt(this.lastActiveLogin, 10) * 1000) || 0;
+
+			if (lastLogin + this.activeLoginDuration > Date.now()) {
+				return true;
+			}
+			return false;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
@@ -195,6 +210,11 @@ export default {
 				return true;
 			}
 			return false;
+		}
+	},
+	mounted() {
+		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+			this.switchToLogin();
 		}
 	},
 	methods: {
