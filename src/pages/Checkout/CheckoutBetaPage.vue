@@ -61,7 +61,7 @@
 				</div>
 
 				<div v-if="!emptyBasket" class="basket-wrap">
-					<div v-if="!isLoggedIn">
+					<div>
 						<!-- <div
 							:class="{ hovered: isHovered, unhovered: !isHovered }"
 							class="featured-text hovered">
@@ -107,8 +107,8 @@
 						<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
 					</div>
 
-					<div class="container basket-overlay-bg"></div>
-					<div @click="overlayMouseover"
+					<div v-if="!isLoggedIn" class="container basket-overlay-bg"></div>
+					<div v-if="!isLoggedIn" @click="overlayMouseover"
 						class="basket-overlay-fg">
 						<div class="basket-overlay row align-center align-middle"
 							:class="{ unhovered: !isHovered }">
