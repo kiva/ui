@@ -66,8 +66,6 @@
 							<hr>
 							<span class="number-icon number-2">2</span>
 						</div>
-						<br>
-						<br>
 
 						<basket-items-list
 							:loans="loans"
