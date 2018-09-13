@@ -419,7 +419,7 @@ export default {
 
 	.basket-wrap {
 		position: relative;
-		padding-bottom: .5rem;
+		padding-bottom: 0.5rem;
 
 		.totals-and-actions {
 			display: block;
