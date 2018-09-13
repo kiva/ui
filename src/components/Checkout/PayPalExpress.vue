@@ -10,11 +10,16 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
+import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
 
+
 export default {
 	inject: ['apollo'],
+	mixins: [
+		checkoutUtils
+	],
 	props: {
 		amount: {
 			type: String,
@@ -24,7 +29,7 @@ export default {
 	data() {
 		return {
 			ensurePaypalScript: null,
-			paypalRendered: false
+			paypalRendered: false,
 		};
 	},
 	metaInfo() {
@@ -72,24 +77,35 @@ export default {
 					payment: () => {
 						console.log('payment stage');
 						return new paypal.Promise((resolve, reject) => {
-							// Use updated vars on render
-							this.apollo.query({
-								query: getPaymentToken,
-								variables: {
-									amount: numeral(this.amount).format('0.00'),
-								}
-							}).then(({ data }) => {
-								if (data) {
-									console.log(data);
-									if (data.errors) {
-										reject(data);
+							this.validateBasket()
+								.then(validationStatus => {
+									if (validationStatus === true) {
+										// Use updated vars on render
+										this.apollo.query({
+											query: getPaymentToken,
+											variables: {
+												amount: numeral(this.amount).format('0.00'),
+											}
+										}).then(({ data }) => {
+											if (data) {
+												console.log(data);
+												if (data.errors) {
+													reject(data);
+												}
+												resolve(data.shop.getPaymentToken);
+											}
+										});
+									} else {
+										this.showCheckoutError(validationStatus);
+										reject(validationStatus);
 									}
-									resolve(data.shop.getPaymentToken);
-								}
-							});
+								})
+								.catch(error => {
+									console.error(error);
+								});
 						});
 					},
-					onAuthorize: data => {
+					onAuthorize: (data, actions) => {
 						console.log('authorized stage');
 						console.log(data);
 
@@ -104,16 +120,21 @@ export default {
 							})
 								.then(ppResponse => {
 									console.log(ppResponse);
+									// check for ERROR CODE=INSTRUMENT_DECLINED and restart
+									if (ppResponse.error === 'INSTRUMENT_DECLINED') {
+										return actions.restart();
+									}
+
 									// Check for errors
-									if (ppResponse.errors) {
-										console.error(`Error completing transactions: ${ppResponse.errors}`);
+									if (ppResponse.error) {
+										console.error(`Error completing transactions: ${ppResponse.error}`);
 									}
 
 									// Transaction is complete
 									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
 									// redirect to thanks with KIVA transaction id
 									if (transactionId) {
-										window.location = `/thanks?kiva_transaction_id=${transactionId}`;
+										this.redirectToThanks(transactionId);
 									}
 									resolve(ppResponse);
 								})
@@ -149,7 +170,6 @@ export default {
 .paypal-holder {
 	display: block;
 	text-align: center;
-	margin: 0 $list-side-margin;
 
 	@include breakpoint(medium) {
 		text-align: right;

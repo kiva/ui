@@ -91,6 +91,7 @@ export default {
 			this.defaultLbVisible = false;
 		},
 		updateDonation() {
+			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
@@ -98,9 +99,11 @@ export default {
 					isTip: this.donation.isTip
 				}
 			}).then(() => {
+				this.$emit('updating-totals', false);
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
+				this.$emit('updating-totals', false);
 			});
 		}
 	}

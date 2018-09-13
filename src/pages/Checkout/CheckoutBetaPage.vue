@@ -2,80 +2,112 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<br>
-				<hr>
-				<br>
-				<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
-					<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
-						<h2 v-if="showLogin">Login to Checkout</h2>
-						<h2 v-else>Register to Checkout</h2>
+				<div v-if="!emptyBasket" class="login-wrap">
+					<div class="checkout-step">
+						<hr>
+						<span class="number-icon number-1">1</span>
 					</div>
 
-					<div class="columns small-12 medium-8 large-5 xxlarge-4">
-						<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
-						<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
-					</div>
-
-					<div class="columns show-for-large large-1">
-						<div class="v-divider"></div>
-					</div>
-
-					<div class="columns small-12 medium-8 large-5 xxlarge-4">
-						<div class="or-callout">
-							<hr>
-							<span>Or</span>
+					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
+						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
+							<h3 v-if="showLogin">Login to Checkout</h3>
+							<h3 v-else>Register to Checkout</h3>
 						</div>
 
-						<p class="social-callout">Connect using a social network.<br>
-							We won’t ever post without asking.</p>
-
-						<facebook-login-register
-							:process-type="showLogin ? 'login' : 'register'"
-							@fb-loading="setLoginLoading" />
-
-						<div v-if="showReg" class="login-reg-switch">
-							<p class="featured-text">Already have an account? <br><a
-								@click.prevent="switchToLogin"
-								v-kv-track-event="['register', 'alreadyMemberLnk']"
-								id="loginLink">Sign in</a></p>
+						<div class="columns small-12 medium-8 large-5 xxlarge-4">
+							<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
+							<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
 						</div>
 
-						<div class="login-reg-switch">
-							<p class="featured-text"><a v-if="showLogin" class="register-link text-center"
-								v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
-								@click.prevent="switchToRegister">
-								Sign up for Kiva
-							</a></p>
+						<div class="columns show-for-large large-1">
+							<div class="v-divider"></div>
+						</div>
+
+						<div class="columns small-12 medium-8 large-5 xxlarge-4">
+							<div class="or-callout">
+								<hr>
+								<span>Or</span>
+							</div>
+
+							<p class="social-callout">Connect using a social network.<br>
+								We won’t ever post without asking.</p>
+
+							<facebook-login-register
+								:process-type="showLogin ? 'login' : 'register'"
+								@fb-loading="setLoginLoading" />
+
+							<div v-if="showReg" class="login-reg-switch">
+								<p>Already have an account? <br><a
+									@click.prevent="switchToLogin"
+									v-kv-track-event="['register', 'alreadyMemberLnk']"
+									id="loginLink">Sign in</a></p>
+							</div>
+
+							<div class="login-reg-switch">
+								<p><a v-if="showLogin" class="register-link text-center"
+									v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
+									@click.prevent="switchToRegister">
+									Sign up for Kiva
+								</a></p>
+							</div>
+						</div>
+						<loading-overlay v-if="loginLoading" />
+					</div>
+
+					<div v-else class="login-reg-complete">
+						<p class="featured-text">Thanks for registering!<br>
+							Please continue below to complete your purchase.</p>
+					</div>
+				</div>
+
+				<div class="basket-wrap">
+					<div v-if="!emptyBasket" class="checkout-step">
+						<hr>
+						<span class="number-icon number-2">2</span>
+					</div>
+
+					<div v-if="!emptyBasket">
+						<basket-items-list
+							:loans="loans"
+							:donations="donations"
+							@refreshtotals="refreshTotals($event)"
+							@updating-totals="setUpdatingTotals"
+						/>
+
+						<kiva-card-redemption />
+						<hr>
+
+						<div class="totals-and-actions">
+							<order-totals
+								:totals="totals"
+								@refreshtotals="refreshTotals"
+								@updating-totals="setUpdatingTotals" />
+
+							<div v-if="isLoggedIn" class="checkout-actions">
+								<pay-pal-exp
+									v-if="showPayPal"
+									:amount="creditNeeded" />
+
+								<kv-button
+									v-else
+									type="submit"
+									class="smaller checkout-button"
+									v-kv-track-event="['payment.continueBtn']"
+									title="Checkout using your Kiva credit"
+									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+							</div>
+
+							<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
 						</div>
 					</div>
-					<loading-overlay v-if="loginLoading" />
-				</div>
 
-				<div v-else class="login-reg-complete">
-					<p class="featured-text">Thanks for registering!<br>
-						Please continue below to complete your purchase.</p>
-				</div>
-
-				<br>
-				<hr>
-				<br>
-
-				<div v-if="!emptyBasket" class="basket-wrap">
-					<basket-items-list
-						:loans="loans"
-						:donations="donations"
-						@refreshtotals="refreshTotals($event)"
-					/>
-					<order-totals :totals="totals" @refreshtotals="refreshTotals" />
-					<pay-pal-exp v-if="isLoggedIn" :amount="creditNeeded" />
-				</div>
-
-				<div v-else class="empty-basket">
-					<p class="featured-text">Oops — Your basket is empty!</p>
-					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
-						<a href="https://www.dev.kiva.org/lend-by-category">Browse by category</a> or
-						<a href="https://www.dev.kiva.org/lend">see all loans.</a>
-					</p>
+					<div v-else class="empty-basket">
+						<p class="featured-text">Oops — Your basket is empty!</p>
+						<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
+							<a href="/lend-by-category">Browse by category</a> or
+							<a href="/lend">see all loans.</a>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -86,43 +118,54 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import initializeCheckout from '@/graphql/query/initializeCheckout.graphql';
+import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
+import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
 import RegisterForm from '@/components/Forms/RegisterForm';
 import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		KvButton,
 		OrderTotals,
 		LoginForm,
 		RegisterForm,
 		FacebookLoginRegister,
 		BasketItemsList,
+		KivaCardRedemption,
 		LoadingOverlay
 	},
 	inject: ['apollo'],
+	mixins: [
+		checkoutUtils
+	],
 	metaInfo: {
 		title: 'Checkout'
 	},
 	data() {
 		return {
-			myBalance: undefined,
-			myId: undefined,
+			myBalance: null,
+			myId: null,
 			currentStep: 'basket',
 			loans: [],
-			totals: () => {},
 			donations: [],
+			totals: () => {},
+			updatingTotals: false,
 			loading: false,
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
+			activeLoginDuration: 3600,
+			lastActiveLogin: 0
 		};
 	},
 	apollo: {
@@ -137,14 +180,30 @@ export default {
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
 	},
 	computed: {
 		isLoggedIn() {
-			return this.myId !== undefined;
+			if (this.myId !== null && this.myId !== undefined && this.isActivelyLoggedIn) {
+				return true;
+			}
+			return false;
+		},
+		isActivelyLoggedIn() {
+			const lastLogin = (parseInt(this.lastActiveLogin, 10) * 1000) || 0;
+
+			if (lastLogin + (this.activeLoginDuration * 1000) > Date.now()) {
+				return true;
+			}
+			return false;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
+		},
+		showPayPal() {
+			return parseFloat(this.creditNeeded) > 0;
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && parseFloat(_get(this.donations, '[0].price')) === 0) {
@@ -153,17 +212,57 @@ export default {
 			return false;
 		}
 	},
+	created() {
+		// if we have a user id but are not actively logged in
+		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+			this.switchToLogin();
+		}
+	},
 	methods: {
-		refreshTotals(payload) {
-			console.log(payload);
+		validateCreditBasket() {
+			this.validateBasket()
+				.then(validationStatus => {
+					if (validationStatus === true) {
+						// succesful validation
+						this.checkoutCreditBasket();
+					} else {
+						// validation failed
+						this.showCheckoutError(validationStatus);
+					}
+				}).catch(errorResponse => {
+					console.error(errorResponse);
+				});
+		},
+		checkoutCreditBasket() {
+			this.checkoutBasket()
+				.then(transactionResult => {
+					if (typeof transactionResult !== 'object') {
+						// succesful validation
+						this.redirectToThanks(transactionResult);
+					} else {
+						// checkout failed
+						this.showCheckoutError(transactionResult);
+					}
+				}).catch(errorResponse => {
+					console.error(errorResponse);
+				});
+		},
+		refreshTotals() {
+			this.setUpdatingTotals(true);
+
 			this.apollo.query({
 				query: shopTotals,
 				fetchPolicy: 'network-only'
 			}).then(data => {
 				this.totals = _get(data, 'data.shop.basket.totals');
+				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
+				this.setUpdatingTotals(false);
 			});
+		},
+		setUpdatingTotals(state) {
+			this.updatingTotals = state;
 		},
 		switchToRegister() {
 			this.showReg = true;
@@ -191,11 +290,48 @@ export default {
 		background-color: rgba(255, 255, 255, 0.7);
 	}
 
+	.checkout-step {
+		position: relative;
+		text-align: center;
+		height: 2rem;
+		display: block;
+		margin: 1rem 0 1.5rem;
+
+		hr {
+			border-bottom: 1px solid $kiva-text-light;
+			margin: 2.5rem 0;
+		}
+
+		span {
+			display: block;
+			margin: -4.2rem auto 0;
+			width: 3.4rem;
+			height: 3.4rem;
+
+			&.number-icon {
+				background: $white;
+				color: $kiva-text-light;
+				border: 1px solid $kiva-text-light;
+				border-radius: 1.7rem;
+				font-size: 1.7rem;
+				text-align: center;
+				line-height: 3.3rem;
+			}
+		}
+	}
+
+	.login-wrap {
+		padding-bottom: 2.5rem;
+	}
+
 	.login-reg-holder {
 		position: relative;
 
 		.login-reg-header {
-			font-weight: 400;
+			h3 {
+				font-size: $featured-text-font-size;
+				font-weight: 400;
+			}
 		}
 
 		.v-divider {
@@ -239,6 +375,8 @@ export default {
 
 		.login-reg-switch {
 			text-align: center;
+			font-size: 1.3rem;
+			font-weight: 400;
 
 			/* turned off for now */
 			// @include breakpoint(large) {
@@ -254,6 +392,33 @@ export default {
 		p {
 			text-align: center;
 			color: $kiva-text-light;
+		}
+	}
+
+	.basket-wrap {
+		.totals-and-actions {
+			display: block;
+			position: relative;
+
+			.updating-totals-overlay {
+				z-index: 1000;
+			}
+		}
+
+		.checkout-actions {
+			margin: $list-side-margin;
+
+			.checkout-button {
+				width: 100%;
+			}
+
+			@include breakpoint(medium) {
+				text-align: right;
+
+				.checkout-button {
+					width: auto;
+				}
+			}
 		}
 	}
 

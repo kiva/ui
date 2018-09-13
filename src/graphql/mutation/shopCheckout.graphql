@@ -1,0 +1,5 @@
+mutation checkout {
+	shop {
+		checkout
+	}
+}
