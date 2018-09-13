@@ -131,6 +131,7 @@ export default {
 
 									// Check for errors
 									if (ppResponse.error) {
+										this.setUpdating(false);
 										console.error(`Error completing transactions: ${ppResponse.error}`);
 									}
 
