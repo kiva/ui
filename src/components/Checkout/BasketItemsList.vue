@@ -15,9 +15,7 @@
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
-
 		</ul>
-		<hr>
 	</div>
 </template>
 
