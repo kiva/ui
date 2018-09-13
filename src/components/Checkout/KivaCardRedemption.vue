@@ -50,6 +50,14 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.kiva-card-entry-wrapper {
+	margin: $list-side-margin;
+}
+
+.kiva-card-entry-wrapper .row {
+	padding-left: rem-calc(8);
+}
+
 .accordion-title:hover {
 	cursor: pointer;
 }
