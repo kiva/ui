@@ -73,6 +73,7 @@
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
+						<hr>
 
 						<kiva-card-redemption />
 						<hr>

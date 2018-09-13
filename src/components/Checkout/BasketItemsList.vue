@@ -15,9 +15,7 @@
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
-
 		</ul>
-		<hr>
 	</div>
 </template>
 
@@ -45,6 +43,10 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.basket-items-list {
+	margin: $list-side-margin;
+}
 
 .basket-items-list ul {
 	list-style-type: none;
