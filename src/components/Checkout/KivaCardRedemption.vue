@@ -1,5 +1,6 @@
 <template>
-	<div class="kiva-card-entry-wrapper columns">
+	<div :class="{ expanded: isExpanded }"
+		class="kiva-card-entry-wrapper columns">
 		<div class="row">
 			<span class="small-3 medium-1">
 				<a @click="toggleAccordion">
@@ -35,13 +36,15 @@ export default {
 	data() {
 		return {
 			isFlipped: false,
-			isHidden: true
+			isHidden: true,
+			isExpanded: false
 		};
 	},
 	methods: {
 		toggleAccordion() {
 			this.isFlipped = !this.isFlipped;
 			this.isHidden = !this.isHidden;
+			this.isExpanded = !this.isExpanded;
 		},
 	}
 };
@@ -52,6 +55,7 @@ export default {
 
 .kiva-card-entry-wrapper {
 	margin: $list-side-margin;
+	height: rem-calc(36);
 }
 
 .kiva-card-entry-wrapper .row {
@@ -73,5 +77,9 @@ export default {
 
 .hidden {
 	visibility: hidden;
+}
+
+.expanded {
+	height: rem-calc(75);
 }
 </style>
