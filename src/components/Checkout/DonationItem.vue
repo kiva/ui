@@ -138,18 +138,13 @@ export default {
 	text-align: right;
 }
 
-.update-donation-button-wrapper {
-	white-space: nowrap;
-	visibility: hidden;
-}
-
 .donation-input-wrapper {
 	white-space: nowrap;
 }
 
 .donation-amount-input {
 	border: 1px solid $charcoal;
-	border-radius: rem-calc(2);
+	border-radius: $button-radius;
 	width: 90%;
 	text-align: center;
 	font-weight: 300;
@@ -157,6 +152,11 @@ export default {
 	@include breakpoint(medium) {
 		width: rem-calc(110);
 	}
+}
+
+.update-donation-button-wrapper {
+	white-space: nowrap;
+	visibility: hidden;
 }
 
 input {

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="loan-price-wrapper">
 		<select
 			dir="rtl"
 			v-model="selectedOption"
@@ -125,11 +125,23 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.loan-price-wrapper {
+
+	@include breakpoint(medium) {
+		float: right;
+	}
+}
+
 .loan-price {
 	border: 1px solid $charcoal;
 	width: inherit;
-	border-radius: rem-calc(2);
+	border-radius: $button-radius;
 	height: rem-calc(50);
+
+	@include breakpoint(medium) {
+		height: rem-calc(32);
+		line-height: $closebutton-lineheight;
+	}
 }
 
 </style>
