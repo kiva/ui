@@ -3,7 +3,7 @@
 		<select
 			dir="rtl"
 			v-model="selectedOption"
-			class="loan-price"
+			class="loan-price medium-text-font-size"
 			@change="updateLoanAmount()">
 			<option v-for="price in prices"
 				:key="price"
@@ -126,8 +126,10 @@ export default {
 @import 'settings';
 
 .loan-price {
-	border: 1.5px solid black;
-	max-width: rem-calc(200);
+	border: 1px solid $charcoal;
+	width: inherit;
+	border-radius: rem-calc(2);
+	height: rem-calc(50);
 }
 
 </style>

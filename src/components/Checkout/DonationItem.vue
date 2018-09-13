@@ -38,7 +38,7 @@
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 large-2 featured-text text-align-right">
+		<span class="small-9 medium-3 large-2 medium-text-font-size text-align-right">
 			<span class="small-12 medium-6 donation-input-wrapper">$
 				<input
 					type="input"
@@ -126,6 +126,7 @@ export default {
 	border: 1px solid $light-gray;
 	height: rem-calc(55);
 	width: rem-calc(55);
+	padding: rem-calc(4);
 }
 
 .donation-help-text {
@@ -147,9 +148,11 @@ export default {
 }
 
 .donation-amount-input {
-	border: 1px solid $light-gray;
+	border: 1px solid $charcoal;
+	border-radius: rem-calc(2);
 	width: 90%;
 	text-align: center;
+	font-weight: 300;
 
 	@include breakpoint(medium) {
 		width: rem-calc(110);

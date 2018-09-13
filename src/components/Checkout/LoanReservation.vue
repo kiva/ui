@@ -1,10 +1,10 @@
 <template>
 	<div class="reservation-info small-text">
-		<span v-if="expiryTime"
-			class="loan-message">
+		<span v-if="expiryTime">
 			<div
-				v-if="loanReservationMsg1"
-				class="red">Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
+				class="loan-message"
+				v-if="loanReservationMsg1">
+				Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
 			</div>
 			<!-- TODO: Replace this lightbox with a Popper tip message. -->
 			<kv-lightbox
@@ -116,12 +116,12 @@ export default {
 
 	.loan-message {
 		line-height: 1.4;
+		margin-bottom: rem-calc(10);
 	}
 
 	.loan-message /deep/ .red {
 		color: $kiva-accent-red;
 		font-weight: 400;
-		margin-bottom: rem-calc(10);
 	}
 }
 </style>
