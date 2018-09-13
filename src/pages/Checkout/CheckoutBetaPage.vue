@@ -60,56 +60,60 @@
 					</div>
 				</div>
 
-				<div class="basket-wrap">
-					<div class="container">
-						<div v-if="!emptyBasket"
-							@click="overlayMouseover"
-							class="basket-overlay">
-							<div v-if="!isLoggedIn">
-								<div
-									:class="{ hovered: isHovered, unhovered: !isHovered }"
-									class="featured-text hovered">
-									Please register or sign in above
-									to complete your purchase.
-								</div>
-								<div v-if="!emptyBasket" class="checkout-step">
-									<hr>
-									<span class="number-icon number-2">2</span>
-								</div>
-								<br>
-								<br>
+				<div v-if="!emptyBasket" class="basket-wrap">
+					<div v-if="!isLoggedIn">
+						<!-- <div
+							:class="{ hovered: isHovered, unhovered: !isHovered }"
+							class="featured-text hovered">
+							Please register or sign in above
+							to complete your purchase.
+						</div> -->
+						<div v-if="!emptyBasket" class="checkout-step">
+							<hr>
+							<span class="number-icon number-2">2</span>
+						</div>
+						<br>
+						<br>
 
-								<basket-items-list
-									:loans="loans"
-									:donations="donations"
-									@refreshtotals="refreshTotals($event)"
-									@updating-totals="setUpdatingTotals"
-								/>
+						<basket-items-list
+							:loans="loans"
+							:donations="donations"
+							@refreshtotals="refreshTotals($event)"
+							@updating-totals="setUpdatingTotals"
+						/>
 
-								<kiva-card-redemption />
-								<hr>
+						<kiva-card-redemption />
+						<hr>
 
-								<order-totals
-									:totals="totals"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals" />
+						<order-totals
+							:totals="totals"
+							@refreshtotals="refreshTotals"
+							@updating-totals="setUpdatingTotals" />
 
-								<div v-if="isLoggedIn" class="checkout-actions">
-									<pay-pal-exp
-										v-if="showPayPal"
-										:amount="creditNeeded" />
+						<div v-if="isLoggedIn" class="checkout-actions">
+							<pay-pal-exp
+								v-if="showPayPal"
+								:amount="creditNeeded" />
 
-									<kv-button
-										v-else
-										type="submit"
-										class="smaller checkout-button"
-										v-kv-track-event="['payment.continueBtn']"
-										title="Checkout using your Kiva credit"
-										@click.prevent.native="validateCreditBasket">Complete order</kv-button>
-								</div>
+							<kv-button
+								v-else
+								type="submit"
+								class="smaller checkout-button"
+								v-kv-track-event="['payment.continueBtn']"
+								title="Checkout using your Kiva credit"
+								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+						</div>
 
-								<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
-							</div>
+						<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
+					</div>
+
+					<div class="container basket-overlay-bg"></div>
+					<div @click="overlayMouseover"
+						class="basket-overlay-fg">
+						<div class="basket-overlay row align-center align-middle"
+							:class="{ unhovered: !isHovered }">
+							<p class="columns small-11 medium-6 xlarge-5 text-center">
+								Please register or sign in above to complete your purchase.</p>
 						</div>
 					</div>
 				</div>
@@ -290,8 +294,8 @@ export default {
 		},
 		overlayMouseover() {
 			this.isHovered = !this.isHovered;
-			this.unhovered = !this.unhovered;
-			console.log('overlayMouseover triggered.');
+			// this.unhovered = !this.unhovered;
+			// console.log('overlayMouseover triggered.');
 		}
 	},
 };
@@ -414,8 +418,8 @@ export default {
 	}
 
 	.basket-wrap {
-		z-index: 10;
-		// pointer-events: none;
+		position: relative;
+		padding-bottom: .5rem;
 
 		.totals-and-actions {
 			display: block;
@@ -442,42 +446,66 @@ export default {
 			}
 		}
 
-		.container {
+		.basket-overlay-bg {
 			display: block;
-			top: 0;
+			position: absolute;
+			top: 3rem;
 			right: 0;
 			left: 0;
 			bottom: 0;
-			padding: 4.5rem 0;
-			z-index: 20;
+			z-index: 100;
+			opacity: 0.7;
+			background-image: url('../../assets/images/backgrounds/lines.png');
+			background-color: $white;
 		}
 
-		.basket-overlay {
+		.basket-overlay-fg {
 			display: block;
-			top: 0;
+			position: absolute;
+			top: 3rem;
 			right: 0;
-			bottom: 0;
 			left: 0;
-			opacity: 0.6;
-			z-index: 100;
-			background-image: url('../../assets/images/backgrounds/lines.png');
+			bottom: 0;
+			z-index: 110;
+
+			.basket-overlay {
+				position: relative;
+				top: 10%;
+
+				@include breakpoint(medium) {
+					top: 20%;
+				}
+
+				@include breakpoint(large) {
+					top: 30%;
+				}
+
+				p {
+					font-size: 1.25rem;
+					line-height: 1.5;
+					color: $kiva-text-medium;
+					padding: 1.6rem;
+					border: 1px solid $kiva-text-light;
+					background: $white;
+				}
+			}
 
 			.unhovered {
 				display: none;
 			}
 
-			.hovered {
-				position: relative;
-				height: 200px;
-				width: 400px;
-				border-radius: 2px;
-				margin: auto auto;
-				border: 2px solid $light-gray;
-				background-color: white;
-				z-index: 200;
-				color: black;
-				text-align: center;
-			}
+			// .hovered {
+			// 	position: relative;
+			// 	height: 200px;
+			// 	width: 400px;
+			// 	border-radius: 2px;
+			// 	margin: auto auto;
+			// 	border: 2px solid $light-gray;
+			// 	background-color: white;
+			// 	z-index: 200;
+			// 	color: black;
+			// 	text-align: center;
+			// }
 		}
 	}
 
