@@ -140,7 +140,7 @@ export default {
 
 	@include breakpoint(medium) {
 		height: rem-calc(32);
-		line-height: $closebutton-lineheight;
+		line-height: $medium-text-line-height;
 	}
 }
 
