@@ -60,13 +60,13 @@
 					</div>
 				</div>
 
-				<div class="basket-wrap">
-					<div v-if="!emptyBasket" class="checkout-step">
-						<hr>
-						<span class="number-icon number-2">2</span>
-					</div>
+				<div v-if="!emptyBasket" class="basket-wrap">
+					<div>
+						<div v-if="!emptyBasket" class="checkout-step">
+							<hr>
+							<span class="number-icon number-2">2</span>
+						</div>
 
-					<div v-if="!emptyBasket">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -77,37 +77,45 @@
 						<kiva-card-redemption />
 						<hr>
 
-						<div class="totals-and-actions">
-							<order-totals
-								:totals="totals"
-								@refreshtotals="refreshTotals"
-								@updating-totals="setUpdatingTotals" />
+						<order-totals
+							:totals="totals"
+							@refreshtotals="refreshTotals"
+							@updating-totals="setUpdatingTotals" />
 
-							<div v-if="isLoggedIn" class="checkout-actions">
-								<pay-pal-exp
-									v-if="showPayPal"
-									:amount="creditNeeded" />
+						<div v-if="isLoggedIn" class="checkout-actions">
+							<pay-pal-exp
+								v-if="showPayPal"
+								:amount="creditNeeded" />
 
-								<kv-button
-									v-else
-									type="submit"
-									class="smaller checkout-button"
-									v-kv-track-event="['payment.continueBtn']"
-									title="Checkout using your Kiva credit"
-									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
-							</div>
+							<kv-button
+								v-else
+								type="submit"
+								class="smaller checkout-button"
+								v-kv-track-event="['payment.continueBtn']"
+								title="Checkout using your Kiva credit"
+								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+						</div>
 
-							<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
+						<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
+					</div>
+
+					<div v-if="!isLoggedIn" class="container basket-overlay-bg"></div>
+					<div v-if="!isLoggedIn" @click="overlayMouseover"
+						class="basket-overlay-fg">
+						<div class="basket-overlay row align-center align-middle"
+							:class="{ unhovered: !isHovered }">
+							<p class="columns small-11 medium-6 xlarge-5 text-center">
+								Please register or sign in above to complete your purchase.</p>
 						</div>
 					</div>
+				</div>
 
-					<div v-else class="empty-basket">
-						<p class="featured-text">Oops — Your basket is empty!</p>
-						<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
-							<a href="/lend-by-category">Browse by category</a> or
-							<a href="/lend">see all loans.</a>
-						</p>
-					</div>
+				<div v-if="emptyBasket" class="empty-basket">
+					<p class="featured-text">Oops — Your basket is empty!</p>
+					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
+						<a href="/lend-by-category">Browse by category</a> or
+						<a href="/lend">see all loans.</a>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -164,6 +172,7 @@ export default {
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
+			isHovered: false,
 			activeLoginDuration: 3600,
 			lastActiveLogin: 0
 		};
@@ -274,8 +283,11 @@ export default {
 		},
 		setLoginLoading(state) {
 			this.loginLoading = state;
+		},
+		overlayMouseover() {
+			this.isHovered = !this.isHovered;
 		}
-	}
+	},
 };
 </script>
 
@@ -396,6 +408,9 @@ export default {
 	}
 
 	.basket-wrap {
+		position: relative;
+		padding-bottom: 0.5rem;
+
 		.totals-and-actions {
 			display: block;
 			position: relative;
@@ -418,6 +433,55 @@ export default {
 				.checkout-button {
 					width: auto;
 				}
+			}
+		}
+
+		.basket-overlay-bg {
+			display: block;
+			position: absolute;
+			top: 3rem;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			z-index: 100;
+			opacity: 0.7;
+			background-image: url('../../assets/images/backgrounds/lines.png');
+			background-color: $white;
+		}
+
+		.basket-overlay-fg {
+			display: block;
+			position: absolute;
+			top: 3rem;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			z-index: 110;
+
+			.basket-overlay {
+				position: relative;
+				top: 10%;
+
+				@include breakpoint(medium) {
+					top: 20%;
+				}
+
+				@include breakpoint(large) {
+					top: 30%;
+				}
+
+				p {
+					font-size: 1.25rem;
+					line-height: 1.5;
+					color: $kiva-text-medium;
+					padding: 1.6rem;
+					border: 1px solid $kiva-text-light;
+					background: $white;
+				}
+			}
+
+			.unhovered {
+				display: none;
 			}
 		}
 	}
