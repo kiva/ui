@@ -86,8 +86,22 @@ export default {
 			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
 			const loanIds = [];
 			const pageViewTrackData = { schema, data: {} };
+			const featuredCategoryIds = [56, 60, 54];
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
+
+			if (this.showFeaturedLoans) {
+				loanIds.push({
+					r: 0, p: 1, c: featuredCategoryIds[0], l: 0
+				});
+				loanIds.push({
+					r: 0, p: 2, c: featuredCategoryIds[1], l: 0
+				});
+				loanIds.push({
+					r: 0, p: 2, c: featuredCategoryIds[2], l: 0
+				});
+			}
+
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({

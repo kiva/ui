@@ -24,6 +24,7 @@
 							:loan="loan1"
 							:category-id="featuredCategoryIds[0]"
 							:title="featuredCategoryTitles[0]"
+							:is-in_featured=true
 						/>
 
 						<GridLoanCard
@@ -31,6 +32,7 @@
 							:loan="loan2"
 							:category-id="featuredCategoryIds[1]"
 							:title="featuredCategoryTitles[1]"
+							:is-in_featured=true
 						/>
 
 						<GridLoanCard
@@ -38,6 +40,7 @@
 							:loan="loan3"
 							:category-id="featuredCategoryIds[2]"
 							:title="featuredCategoryTitles[2]"
+							:is-in_featured=true
 						/>
 					</div>
 				</div>

@@ -101,6 +101,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isInFeatured: {
+			type: Boolean,
+			default: false
+		},
 		itemsInBasket: {
 			type: Array,
 			default: () => []
@@ -188,7 +192,7 @@ export default {
 			});
 		},
 		trackInteraction(args) {
-			if (!this.isInCategoryRow) {
+			if (!this.isInCategoryRow || this.isInFeatured) {
 				return;
 			}
 
