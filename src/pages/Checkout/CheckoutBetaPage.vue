@@ -51,7 +51,7 @@
 								</a></p>
 							</div>
 						</div>
-						<loading-overlay v-if="loginLoading" />
+						<loading-overlay v-if="loginLoading" id="loading-overlay" />
 					</div>
 
 					<div v-else class="login-reg-complete">
@@ -86,7 +86,8 @@
 						<div v-if="isLoggedIn" class="checkout-actions">
 							<pay-pal-exp
 								v-if="showPayPal"
-								:amount="creditNeeded" />
+								:amount="creditNeeded"
+								@updating-totals="setUpdatingTotals" />
 
 							<kv-button
 								v-else
@@ -97,7 +98,7 @@
 								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
 						</div>
 
-						<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
+						<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 					</div>
 
 					<div v-if="!isLoggedIn" class="container basket-overlay-bg"></div>
@@ -230,6 +231,7 @@ export default {
 	},
 	methods: {
 		validateCreditBasket() {
+			this.setUpdatingTotals(true);
 			this.validateBasket()
 				.then(validationStatus => {
 					if (validationStatus === true) {
@@ -237,9 +239,11 @@ export default {
 						this.checkoutCreditBasket();
 					} else {
 						// validation failed
+						this.setUpdatingTotals(false);
 						this.showCheckoutError(validationStatus);
 					}
 				}).catch(errorResponse => {
+					this.setUpdatingTotals(false);
 					console.error(errorResponse);
 				});
 		},
@@ -251,9 +255,11 @@ export default {
 						this.redirectToThanks(transactionResult);
 					} else {
 						// checkout failed
+						this.setUpdatingTotals(false);
 						this.showCheckoutError(transactionResult);
 					}
 				}).catch(errorResponse => {
+					this.setUpdatingTotals(false);
 					console.error(errorResponse);
 				});
 		},
@@ -299,8 +305,16 @@ export default {
 	padding: 1.625rem 0;
 
 	// loading overlay overrides
-	.loading-overlay {
+	#loading-overlay,
+	#updating-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
+		z-index: 500;
+	}
+
+	#updating-overlay {
+		margin-top: 2rem;
+		height: auto;
+		bottom: 0;
 	}
 
 	.checkout-step {
