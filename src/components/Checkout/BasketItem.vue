@@ -1,6 +1,6 @@
 <template>
 	<div v-show="loanVisible" class="basket-item-wrapper row">
-		<span class="small-3 medium-1">
+		<span class="small-3 medium-2 large-1">
 			<checkout-item-img
 				:loan-id="loan.id"
 				:name="loan.loan.name"
@@ -8,7 +8,7 @@
 			/>
 		</span>
 
-		<span class="small-9 medium-8">
+		<span class="small-9 medium-7 large-9">
 			<div class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 				<loan-matcher
@@ -18,7 +18,7 @@
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3">
+		<span class="small-9 medium-3 large-2">
 			<loan-reservation
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.isFunded"

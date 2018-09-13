@@ -1,11 +1,11 @@
 <template>
 	<div class="basket-donation-item row">
-		<span class="small-3 medium-1">
+		<span class="small-3 medium-2 large-1">
 			<span class="donation-icon">
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-8">
+		<span class="small-9 medium-7 large-9">
 			<div class="donation-info featured-text">
 				Donation to Kiva
 			</div>
@@ -38,8 +38,8 @@
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 featured-text">
-			<span class="small-12 medium-6">
+		<span class="small-9 medium-3 large-2 medium-text-font-size text-align-right">
+			<span class="small-12 medium-6 donation-input-wrapper">$
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -47,7 +47,8 @@
 					id="donation"
 					v-model="amount">
 			</span>
-			<span class="small-12 medium-6">
+			<!-- Adding the $ below to make the spacing work with the input field above this button -->
+			<span class="small-12 medium-6 update-donation-button-wrapper">$
 				<kv-button
 					class="secondary"
 					@click.native.prevent.stop="updateDonation()"
@@ -125,6 +126,7 @@ export default {
 	border: 1px solid $light-gray;
 	height: rem-calc(55);
 	width: rem-calc(55);
+	padding: rem-calc(4);
 }
 
 .donation-help-text {
@@ -132,14 +134,29 @@ export default {
 	margin-bottom: rem-calc(15);
 }
 
+.text-align-right {
+	text-align: right;
+}
+
+.donation-input-wrapper {
+	white-space: nowrap;
+}
+
 .donation-amount-input {
-	border: 1px solid $light-gray;
-	width: 100%;
+	border: 1px solid $charcoal;
+	border-radius: $button-radius;
+	width: 90%;
 	text-align: center;
+	font-weight: 300;
 
 	@include breakpoint(medium) {
 		width: rem-calc(110);
 	}
+}
+
+.update-donation-button-wrapper {
+	white-space: nowrap;
+	visibility: hidden;
 }
 
 input {
@@ -158,12 +175,12 @@ input {
 	color: $kiva-accent-blue;
 	border: 1px solid $kiva-accent-blue;
 	box-shadow: 0 1px $kiva-accent-blue;
-	width: 100%;
+	width: 90%;
+	visibility: visible;
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
 		margin-bottom: rem-calc(5);
-		margin-left: rem-calc(10);
 		width: inherit;
 	}
 }

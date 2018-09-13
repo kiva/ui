@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<div class="loan-price-wrapper">
 		<select
 			dir="rtl"
 			v-model="selectedOption"
-			class="loan-price"
+			class="loan-price medium-text-font-size"
 			@change="updateLoanAmount()">
 			<option v-for="price in prices"
 				:key="price"
@@ -125,8 +125,23 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.loan-price-wrapper {
+
+	@include breakpoint(medium) {
+		float: right;
+	}
+}
+
 .loan-price {
-	border: 1.5px solid black;
+	border: 1px solid $charcoal;
+	width: inherit;
+	border-radius: $button-radius;
+	height: rem-calc(50);
+
+	@include breakpoint(medium) {
+		height: rem-calc(32);
+		line-height: $medium-text-line-height;
+	}
 }
 
 </style>
