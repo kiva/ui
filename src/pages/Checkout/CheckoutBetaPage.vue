@@ -62,12 +62,6 @@
 
 				<div v-if="!emptyBasket" class="basket-wrap">
 					<div>
-						<!-- <div
-							:class="{ hovered: isHovered, unhovered: !isHovered }"
-							class="featured-text hovered">
-							Please register or sign in above
-							to complete your purchase.
-						</div> -->
 						<div v-if="!emptyBasket" class="checkout-step">
 							<hr>
 							<span class="number-icon number-2">2</span>
@@ -294,8 +288,6 @@ export default {
 		},
 		overlayMouseover() {
 			this.isHovered = !this.isHovered;
-			// this.unhovered = !this.unhovered;
-			// console.log('overlayMouseover triggered.');
 		}
 	},
 };
@@ -493,19 +485,6 @@ export default {
 			.unhovered {
 				display: none;
 			}
-
-			// .hovered {
-			// 	position: relative;
-			// 	height: 200px;
-			// 	width: 400px;
-			// 	border-radius: 2px;
-			// 	margin: auto auto;
-			// 	border: 2px solid $light-gray;
-			// 	background-color: white;
-			// 	z-index: 200;
-			// 	color: black;
-			// 	text-align: center;
-			// }
 		}
 	}
 
