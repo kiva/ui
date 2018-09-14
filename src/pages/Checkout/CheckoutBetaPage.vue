@@ -129,7 +129,8 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
-import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
+// import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
+import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvButton from '@/components/Kv/KvButton';
@@ -267,10 +268,10 @@ export default {
 			this.setUpdatingTotals(true);
 
 			this.apollo.query({
-				query: shopTotals,
+				query: shopBasketUpdate,
 				fetchPolicy: 'network-only'
-			}).then(data => {
-				this.totals = _get(data, 'data.shop.basket.totals');
+			}).then(() => {
+				// this.totals = _get(data, 'data.shop.basket.totals');
 				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);

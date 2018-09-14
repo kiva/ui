@@ -1,0 +1,46 @@
+query {
+	shop {
+		basket {
+			items {
+				totalCount
+				values {
+					id
+					price
+					... on LoanReservation {
+						expiryTime
+						isEndingSoon
+						loan {
+							id
+							status
+							loanFundraisingInfo {
+								isExpiringSoon
+								fundedAmount
+								reservedAmount
+							}
+						}
+						team {
+							id
+							name
+						}
+					}
+					... on Donation {
+						isTip
+						isUserEdited
+					}
+				}
+			}
+			totals {
+				creditAmountNeeded
+				creditAppliedTotal
+				creditAvailableTotal
+				donationTotal
+				itemTotal
+				kivaCreditAvailableTotal
+				kivaCreditAppliedTotal
+				kivaCreditRemaining
+				kivaCreditToReapply
+				loanReservationTotal
+			}
+		}
+	}
+}
