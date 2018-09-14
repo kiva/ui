@@ -3,6 +3,9 @@
 		class="column column-block"
 		@track-loan-card-interaction="trackInteraction($event)"
 	>
+
+		<h3 v-if="title">{{ title }}</h3>
+
 		<div class="grid-loan-card">
 			<loan-card-image
 				:loan-id="loan.id"
@@ -94,9 +97,9 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		isInCategoryRow: {
+		enableTracking: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		itemsInBasket: {
 			type: Array,
@@ -104,11 +107,24 @@ export default {
 		},
 		loan: {
 			type: Object,
-			default: () => {}
+			default: () => {
+				return {
+					userProperties: {},
+					loanFundraisingInfo: {},
+					geocode: {
+						country: {},
+					},
+					image: {},
+				};
+			}
 		},
 		rowNumber: {
 			type: Number,
 			default: null
+		},
+		title: {
+			type: String,
+			default: ''
 		},
 	},
 	data() {
@@ -172,7 +188,7 @@ export default {
 			});
 		},
 		trackInteraction(args) {
-			if (!this.isInCategoryRow) {
+			if (!this.enableTracking) {
 				return;
 			}
 
@@ -221,7 +237,8 @@ export default {
 	width: 100%;
 }
 
-.is-in-category-row {
+.is-in-category-row,
+.is-in-featured {
 	flex: 0 0 auto;
 
 	&.column-block {
