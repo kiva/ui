@@ -207,6 +207,14 @@ export default {
 			const doneUrlEncoded = encodeURIComponent(this.doneUrl);
 			this.regActionUrl = `${this.regActionUrl}?doneUrl=${doneUrlEncoded}`;
 		}
+
+		// When logging in via ajax, process/register calls alreadyLoggedIn,
+		// The response from alreadyLoggedIn executes a background request to the current or doneUrl url
+		// This attempts to call a "fast" page rather than the current page (checkout-beta)
+		if (typeof window !== 'undefined' && this.doneUrl === '') {
+			const doneUrlEncoded = encodeURIComponent(`${window.location.origin}/ui-site-map`);
+			this.loginActionUrl = `${this.loginActionUrl}?doneUrl=${doneUrlEncoded}`;
+		}
 	},
 	mounted() {
 		this.currUrl = window.location.href;

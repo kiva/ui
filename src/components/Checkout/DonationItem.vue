@@ -81,8 +81,12 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			amount: this.donation.price
 		};
+	},
+	computed: {
+		amount() {
+			return this.donation.price;
+		}
 	},
 	methods: {
 		triggerDefaultLightbox() {
