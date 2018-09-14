@@ -1,47 +1,49 @@
 <template>
-	<div class="kiva-card-entry-wrapper columns">
-		<div class="row">
-			<span class="small-3 medium-1">
+	<div
+		class="kiva-card-entry-wrapper columns">
+		<div class="kiva-card-toggle-wrapper">
+			<span>
 				<a @click="toggleAccordion">
 					<kv-icon
-						:class="{ flipped: isFlipped }"
-						class="medium-chevron"
+						:class="{ flipped: open }"
+						class="toggle-arrow"
 						name="medium-chevron" />
 				</a>
 			</span>
 			<span
-				class="small-9 medium-11 featured-text accordion-title"
+				class="featured-text accordion-title"
 				@click="toggleAccordion">Have a Kiva Card?</span>
 		</div>
-		<div
-			:class="{ hidden: isHidden }"
-			class="row accordion-info">
-			<!-- This empty <span> is to keep the spacing correct with the basket items shown above on this page. -->
-			<span class="small-3 medium-1"></span>
-			<a class="small-9 medium-11" href="/basket">
-				<div>Click here to enter a Kiva Card</div>
-			</a>
-		</div>
+		<kv-expandable easing="ease-in-out">
+			<div
+				v-show="open"
+				class="row accordion-info">
+				<span class="small-3 medium-1"></span>
+				<a class="small-9 medium-11" href="/basket">
+					<div>Click here to enter a Kiva Card</div>
+				</a>
+			</div>
+		</kv-expandable>
 	</div>
 </template>
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import KvExpandable from '@/components/Kv/KvExpandable';
 
 export default {
 	components: {
 		KvIcon,
+		KvExpandable
 	},
 	data() {
 		return {
-			isFlipped: false,
-			isHidden: true
+			open: false
 		};
 	},
 	methods: {
 		toggleAccordion() {
-			this.isFlipped = !this.isFlipped;
-			this.isHidden = !this.isHidden;
+			this.open = !this.open;
 		},
 	}
 };
@@ -49,21 +51,30 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import 'global/transitions';
+
+.kiva-card-entry-wrapper {
+	margin: $list-side-margin;
+}
+
+.kiva-card-toggle-wrapper {
+	display: flex;
+    align-items: center;
+}
+
+.toggle-arrow {
+	transition: transform 300ms ease;
+	display: block;
+	height: rem-calc(40);
+	width: rem-calc(40);
+	margin-right: rem-calc(22);
+}
 
 .accordion-title:hover {
 	cursor: pointer;
 }
 
-.medium-chevron {
-	height: rem-calc(40);
-	width: rem-calc(40);
-}
-
 .flipped {
 	transform: rotate(180deg);
-}
-
-.hidden {
-	visibility: hidden;
 }
 </style>
