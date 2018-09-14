@@ -10,7 +10,11 @@
 			</div>
 		</div>
 
-		<FeaturedLoans v-if="showFeaturedLoans" />
+		<FeaturedLoans
+			v-if="showFeaturedLoans"
+			ref="featured"
+			:items-in-basket="itemsInBasket"
+		/>
 
 		<div>
 			<category-row
@@ -86,19 +90,19 @@ export default {
 			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
 			const loanIds = [];
 			const pageViewTrackData = { schema, data: {} };
-			const featuredCategoryIds = [56, 60, 54];
+			const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
 
 			if (this.showFeaturedLoans) {
 				loanIds.push({
-					r: 0, p: 1, c: featuredCategoryIds[0], l: 0
+					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan1.id')
 				});
 				loanIds.push({
-					r: 0, p: 2, c: featuredCategoryIds[1], l: 0
+					r: 0, p: 2, c: featuredCategoryIds[1], l: _get(this, '$refs.featured.loan2.id')
 				});
 				loanIds.push({
-					r: 0, p: 2, c: featuredCategoryIds[2], l: 0
+					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
 				});
 			}
 

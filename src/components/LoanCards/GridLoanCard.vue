@@ -97,13 +97,9 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		isInCategoryRow: {
+		enableTracking: {
 			type: Boolean,
-			default: false
-		},
-		isInFeatured: {
-			type: Boolean,
-			default: false
+			default: false,
 		},
 		itemsInBasket: {
 			type: Array,
@@ -192,7 +188,7 @@ export default {
 			});
 		},
 		trackInteraction(args) {
-			if (!this.isInCategoryRow || this.isInFeatured) {
+			if (!this.enableTracking) {
 				return;
 			}
 

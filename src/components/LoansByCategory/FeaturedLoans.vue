@@ -24,7 +24,11 @@
 							:loan="loan1"
 							:category-id="featuredCategoryIds[0]"
 							:title="featuredCategoryTitles[0]"
-							:is-in_featured=true
+							category-set-id="featured-loans"
+							:row-number="0"
+							:card-number="1"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
 						/>
 
 						<GridLoanCard
@@ -32,7 +36,11 @@
 							:loan="loan2"
 							:category-id="featuredCategoryIds[1]"
 							:title="featuredCategoryTitles[1]"
-							:is-in_featured=true
+							category-set-id="featured-loans"
+							:row-number="0"
+							:card-number="2"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
 						/>
 
 						<GridLoanCard
@@ -40,7 +48,11 @@
 							:loan="loan3"
 							:category-id="featuredCategoryIds[2]"
 							:title="featuredCategoryTitles[2]"
-							:is-in_featured=true
+							category-set-id="featured-loans"
+							:row-number="0"
+							:card-number="3"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
 						/>
 					</div>
 				</div>
@@ -76,6 +88,12 @@ export default {
 		GridLoanCard,
 	},
 	inject: ['apollo'],
+	props: {
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
+		},
+	},
 	data() {
 		return {
 			featuredCategoryIds,
