@@ -7,7 +7,7 @@
 			@change="updateLoanAmount()">
 			<option v-for="price in prices"
 				:key="price"
-				:value="price">${{ price }}
+				:value="price">| ${{ price }}
 			</option>
 			<option :key="0" value="remove">Remove</option>
 		</select>
