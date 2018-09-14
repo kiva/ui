@@ -5,10 +5,10 @@
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-7 large-9">
-			<div class="donation-info featured-text">
+		<span class="small-9 medium-7 large-9 donation-info-wrapper">
+			<span class="donation-info featured-text">
 				Donation to Kiva
-			</div>
+			</span>
 			<div>
 				<a
 					class="small-text donation-help-text"
@@ -127,6 +127,14 @@ export default {
 	height: rem-calc(55);
 	width: rem-calc(55);
 	padding: rem-calc(4);
+}
+
+.donation-info-wrapper {
+	padding-left: rem-calc(10);
+}
+
+.donation-info {
+	line-height: 0.8;
 }
 
 .donation-help-text {
