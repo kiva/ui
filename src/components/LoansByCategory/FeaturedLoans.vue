@@ -201,10 +201,6 @@ export default {
 	margin-bottom: 1rem;
 }
 
-.column.is-in-featured {
-	padding: 0;
-}
-
 .arrow {
 	color: $kiva-text-light;
 	cursor: pointer;
