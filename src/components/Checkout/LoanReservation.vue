@@ -106,7 +106,6 @@ export default {
 
 .reservation-info {
 	color: $kiva-text-light;
-	line-height: 2rem;
 	width: 100%;
 	text-align: left;
 
@@ -115,7 +114,6 @@ export default {
 	}
 
 	.loan-message {
-		line-height: 1.4;
 		margin-bottom: rem-calc(10);
 	}
 

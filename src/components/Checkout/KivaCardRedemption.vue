@@ -59,7 +59,7 @@ export default {
 
 .kiva-card-toggle-wrapper {
 	display: flex;
-    align-items: center;
+	align-items: center;
 }
 
 .toggle-arrow {
@@ -70,8 +70,12 @@ export default {
 	margin-right: rem-calc(22);
 }
 
-.accordion-title:hover {
-	cursor: pointer;
+.accordion-title {
+	padding-left: rem-calc(12);
+
+	&:hover {
+		cursor: pointer;
+	}
 }
 
 .flipped {
