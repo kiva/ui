@@ -59,7 +59,7 @@ export default {
 
 .kiva-card-toggle-wrapper {
 	display: flex;
-    align-items: center;
+	align-items: center;
 }
 
 .toggle-arrow {
