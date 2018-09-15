@@ -81,10 +81,18 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
+			amount: this.donation.price
 		};
 	},
+	watch: {
+		serverAmount() {
+			if (!this.donation.isUserEdited) {
+				this.amount = this.donation.price;
+			}
+		}
+	},
 	computed: {
-		amount() {
+		serverAmount() {
 			return this.donation.price;
 		}
 	},
