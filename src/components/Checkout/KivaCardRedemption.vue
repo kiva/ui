@@ -18,7 +18,6 @@
 			<div
 				v-show="open"
 				class="row accordion-info">
-				<span class="small-3 medium-1"></span>
 				<a class="small-9 medium-11" href="/basket">
 					<div>Click here to enter a Kiva Card</div>
 				</a>
@@ -76,6 +75,10 @@ export default {
 	&:hover {
 		cursor: pointer;
 	}
+}
+
+.accordion-info {
+	margin-left: 4.625rem;
 }
 
 .flipped {
