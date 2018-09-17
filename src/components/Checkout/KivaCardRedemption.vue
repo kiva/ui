@@ -17,7 +17,7 @@
 		<kv-expandable easing="ease-in-out">
 			<div
 				v-show="open"
-				class="row accordion-info">
+				class="accordion-info">
 				<a class="small-9 medium-11" href="/basket">
 					<div>Click here to enter a Kiva Card</div>
 				</a>
