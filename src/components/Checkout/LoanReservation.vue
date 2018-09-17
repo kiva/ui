@@ -1,6 +1,7 @@
 <template>
 	<div class="reservation-info small-text">
 		<span v-if="expiryTime">
+			<!-- The loan-message class is on all possible loan-message return types so they used for testing -->
 			<div
 				class="loan-message"
 				v-if="loanReservationMsg1">
@@ -20,17 +21,18 @@
 			</kv-lightbox>
 
 			<div
-				v-if="loanReservationMsg2">Reserved for {{ mins }} more minutes
+				class="loan-message"
+				v-if="loanReservationMsg2" >Reserved for {{ mins }} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg3"
-				class="red">Reserved for {{ mins }} more minutes
+				class="red loan-message">Reserved for {{ mins }} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg4"
-				class="red">Reserved for 1 more minute
+				class="red loan-message">Reserved for 1 more minute
 			</div>
 		</span>
 	</div>
