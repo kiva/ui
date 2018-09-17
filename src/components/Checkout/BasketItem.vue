@@ -15,6 +15,9 @@
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
 				/>
+				<loan-length-warning
+					v-if="loan.loan.length"
+				/>
 			</span>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
@@ -42,13 +45,15 @@ import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
+import LoanLengthWarning from '@/components/Checkout/LoanLengthWarning';
 
 export default {
 	components: {
 		CheckoutItemImg,
 		LoanMatcher,
 		LoanReservation,
-		LoanPrice
+		LoanPrice,
+		LoanLengthWarning
 	},
 	props: {
 		loan: {
@@ -58,7 +63,8 @@ export default {
 	},
 	data() {
 		return {
-			loanVisible: true
+			loanVisible: true,
+			LoanLengthWarning: true
 		};
 	},
 	methods: {
@@ -67,6 +73,12 @@ export default {
 			if ($event === 'removeLoan') {
 				this.loanVisible = false;
 			}
+		},
+		assessLoanLength() {
+			// If the loan length is longer than 36 months, set component to true to be shown
+			// if (this.loan.loan.lenderRepaymentTerm > 36) {
+			// 	this.LoanLengthWarning = !LoanLengthWarning;
+			// }
 		}
 	}
 };

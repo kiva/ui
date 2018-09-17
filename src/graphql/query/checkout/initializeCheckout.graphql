@@ -41,6 +41,7 @@ query {
 									name
 								}
 							}
+							lenderRepaymentTerm
 							loanFundraisingInfo {
 								isExpiringSoon
 								fundedAmount
