@@ -229,6 +229,15 @@ export default {
 			this.switchToLogin();
 		}
 	},
+	mounted() {
+		// fire tracking event when the page loads
+		// - this event will be duplicated when the page reloads with a newly registered/logged in user
+		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+		if (this.isActivelyLoggedIn) {
+			userStatus = 'Actively Logged-In';
+		}
+		this.$kvTrackEvent('Checkout', 'Checkout-Beta Loaded', userStatus);
+	},
 	methods: {
 		validateCreditBasket() {
 			this.setUpdatingTotals(true);
