@@ -228,6 +228,13 @@ export default {
 		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
 			this.switchToLogin();
 		}
+		// redirect to standard basket if bonus credit is available
+
+		if (typeof window !== 'undefined') {
+			if (parseFloat(this.totals.bonusAvailableTotal) > 0 && parseFloat(this.totals.bonusAppliedTotal) > 0) {
+				window.location = '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a';
+			}
+		}
 	},
 	methods: {
 		validateCreditBasket() {
