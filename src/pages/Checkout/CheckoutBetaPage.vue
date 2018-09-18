@@ -229,7 +229,6 @@ export default {
 			this.switchToLogin();
 		}
 		// redirect to standard basket if bonus credit is available
-
 		if (typeof window !== 'undefined') {
 			if (parseFloat(this.totals.bonusAvailableTotal) > 0 && parseFloat(this.totals.bonusAppliedTotal) > 0) {
 				window.location = '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a';
