@@ -57,9 +57,9 @@
 							v-model="newAcctTerms"
 							@click="showNewAcctTermsError = validateTerms()">
 						I have read and agree to the Kiva
-						<a href="https://www.kiva.org/legal/terms" target="_blank">Terms of Use</a>
+						<a href="/legal/terms" target="_blank">Terms of Use</a>
 						and
-						<a href="https://www.kiva.org/legal/privacy" target="_blank">Privacy Policy</a>
+						<a href="/legal/privacy" target="_blank">Privacy Policy</a>
 					</label>
 					<ul v-show="showNewAcctTermsError" class="validation-errors">
 						<li>
