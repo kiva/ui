@@ -1,7 +1,8 @@
 <template>
 	<div class="reservation-info small-text">
 		<span v-if="expiryTime">
-			<!-- The loan-message class is on all possible loan-message return types so they used for testing -->
+			<!-- The loan-message class is on all possible loan-message return types for use in automated tests
+			that QA/David configured -->
 			<div
 				class="loan-message"
 				v-if="loanReservationMsg1">
