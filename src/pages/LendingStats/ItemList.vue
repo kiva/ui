@@ -1,7 +1,8 @@
 <template>
 	<ul class="lending-stats-item-list">
 		<li v-for="item in items" :key="item[itemKey]">
-			<kv-icon :name="iconKey(item)" class="item-icon" />
+			<kv-flag v-if="isCountry" :country="item.isoCode" />
+			<kv-icon v-else :name="iconKey(item)" class="item-icon" />
 			<router-link :to="{ path: '/lend', query: { [param]: item[itemKey] }}">
 				{{ item.name }}
 			</router-link>
@@ -11,6 +12,7 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import KvFlag from '@/components/Kv/KvFlag';
 
 export default {
 	props: {
@@ -31,7 +33,12 @@ export default {
 			required: true,
 		},
 	},
-	components: { KvIcon },
+	computed: {
+		isCountry() {
+			return this.param === 'country';
+		},
+	},
+	components: { KvIcon, KvFlag },
 };
 </script>
 
