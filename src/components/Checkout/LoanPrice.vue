@@ -139,6 +139,7 @@ export default {
 	width: inherit;
 	border-radius: $button-radius;
 	height: rem-calc(50);
+	background-image: url('../../assets/images/customDropdown.png');
 
 	@include breakpoint(medium) {
 		height: rem-calc(32);
