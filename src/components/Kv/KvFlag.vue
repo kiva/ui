@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.flag-icon {
 		background: url('../../assets/images/flags.png') no-repeat;
 		background-size: 16px;
