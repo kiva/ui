@@ -10,7 +10,7 @@
 				:src = "standardImageUrl"
 				:alt = "'photo of ' + name"
 
-				@click="$emit('trackLoanCardInteraction', {
+				@click="$emit('track-loan-card-interaction', {
 					interactionType: 'viewBorrowerPage',
 					interactionElement: 'photo'
 				})"
