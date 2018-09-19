@@ -80,6 +80,8 @@ query {
 				kivaCreditRemaining
 				kivaCreditToReapply
 				loanReservationTotal
+				bonusAvailableTotal
+				bonusAppliedTotal
 			}
 		}
 	}
