@@ -15,15 +15,20 @@
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
 				/>
+				<loan-reservation
+					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
+					:is-funded="loan.isFunded"
+					:expiry-time="loan.expiryTime"
+				/>
 			</span>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
 		<span class="small-9 medium-3 large-2 loan-res-price-wrapper">
-			<loan-reservation
+			<!-- <loan-reservation
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.isFunded"
 				:expiry-time="loan.expiryTime"
-			/>
+			/> -->
 			<loan-price
 				:price="loan.price"
 				:loan-id="loan.id"
