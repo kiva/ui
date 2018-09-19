@@ -18,6 +18,7 @@
 import _union from 'lodash/union';
 import numeral from 'numeral';
 import updateLoanAmount from '@/graphql/mutation/updateLoanAmount.graphql';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -48,6 +49,7 @@ export default {
 	data() {
 		return {
 			selectedOption: numeral(this.price).format('0,0'),
+			cachedSelection: numeral(this.price).format('0,0'),
 			additionalSelctionLimit: 150, // how many addition loan shares to show above the selected amount
 			overallSelectLimit: 500 // cap on highest loan share amount in select box
 		};
@@ -94,9 +96,18 @@ export default {
 						loanid: this.loanId,
 						price: updatedPrice
 					}
-				}).then(() => {
+				}).then(data => {
+					console.log(data);
+					if (data.errors) {
+						_forEach(data.errors, ({ message }) => {
+							this.$showTipMsg(message, 'error');
+						});
+						this.selectedOption = this.cachedSelection;
+					} else {
+						this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
+						this.cachedSelection = this.selectedOption;
+					}
 					this.$emit('updating-totals', false);
-					this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
 				}).catch(error => {
 					console.error(error);
 					this.$emit('updating-totals', false);
