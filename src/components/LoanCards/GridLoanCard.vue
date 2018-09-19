@@ -1,7 +1,6 @@
 <template>
 	<div
 		class="column column-block"
-		@track-loan-card-interaction="trackInteraction($event)"
 	>
 
 		<h3 v-if="title">{{ title }}</h3>
@@ -15,6 +14,7 @@
 				:is-visitor="isVisitor"
 				:is-favorite="isFavorite"
 
+				@track-loan-card-interaction="trackInteraction($event)"
 				@favorite-toggled="toggleFavorite"
 			/>
 			<borrower-info
@@ -26,6 +26,8 @@
 				:status="loan.status"
 				:borrower-count="loan.borrowerCount"
 				:loan-length="loan.lenderRepaymentTerm"
+
+				@track-loan-card-interaction="trackInteraction($event)"
 			/>
 
 			<div class="loan-card-footer-wrap">
