@@ -97,7 +97,6 @@ export default {
 						price: updatedPrice
 					}
 				}).then(data => {
-					console.log(data);
 					if (data.errors) {
 						_forEach(data.errors, ({ message }) => {
 							this.$showTipMsg(message, 'error');
