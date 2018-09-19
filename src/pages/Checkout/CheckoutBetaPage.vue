@@ -168,9 +168,8 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
-			totals: () => {},
+			totals: {},
 			updatingTotals: false,
-			loading: false,
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
@@ -181,11 +180,22 @@ export default {
 	},
 	apollo: {
 		query: initializeCheckout,
-		preFetch: true,
-		result({ data, loading }) {
-			if (loading) {
-				this.loading = true;
-			}
+		// using the prefetch function form allows us to act on data before the page loads
+		preFetch(config, client) {
+			return client.query({
+				query: initializeCheckout
+			}).then(({ data }) => {
+				const totals = _get(data, 'shop.basket.totals');
+				// check for bonus credit and redirect if present
+				// TODO: remove once bonus credit functionality is added
+				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
+				if (parseFloat(totals.bonusAvailableTotal) > 0) {
+					return Promise.reject({ path: '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a', query: {} });
+				}
+				return data;
+			});
+		},
+		result({ data }) {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.totals = _get(data, 'shop.basket.totals');
@@ -193,12 +203,6 @@ export default {
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
-
-			// redirect to standard basket if bonus credit is available
-			// TODO: Figure out how to make this redirect occur in Nodejs OR Implement Bonus Credit Handling!!!
-			if (typeof window !== 'undefined' && parseFloat(this.totals.bonusAvailableTotal) > 0) {
-				window.location = '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a';
-			}
 		}
 	},
 	computed: {
