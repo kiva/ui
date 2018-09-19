@@ -193,6 +193,12 @@ export default {
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
+
+			// redirect to standard basket if bonus credit is available
+			// TODO: Figure out how to make this redirect occur in Nodejs OR Implement Bonus Credit Handling!!!
+			if (typeof window !== 'undefined' && parseFloat(this.totals.bonusAvailableTotal) > 0) {
+				window.location = '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a';
+			}
 		}
 	},
 	computed: {
@@ -227,12 +233,6 @@ export default {
 		// if we have a user id but are not actively logged in
 		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
 			this.switchToLogin();
-		}
-		// redirect to standard basket if bonus credit is available
-		if (typeof window !== 'undefined') {
-			if (parseFloat(this.totals.bonusAvailableTotal) > 0 && parseFloat(this.totals.bonusAppliedTotal) > 0) {
-				window.location = '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a';
-			}
 		}
 	},
 	mounted() {
