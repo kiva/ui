@@ -14,7 +14,7 @@
 				:is-visitor="isVisitor"
 				:is-favorite="isFavorite"
 
-				@track-loan-card-interaction="trackInteraction($event)"
+				@track-loan-card-interaction="trackInteraction"
 				@favorite-toggled="toggleFavorite"
 			/>
 			<borrower-info
@@ -27,7 +27,7 @@
 				:borrower-count="loan.borrowerCount"
 				:loan-length="loan.lenderRepaymentTerm"
 
-				@track-loan-card-interaction="trackInteraction($event)"
+				@track-loan-card-interaction="trackInteraction"
 			/>
 
 			<div class="loan-card-footer-wrap">
