@@ -187,10 +187,17 @@ export default {
 			}).then(({ data }) => {
 				const totals = _get(data, 'shop.basket.totals');
 				// check for bonus credit and redirect if present
+				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
 				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
 				if (parseFloat(totals.bonusAvailableTotal) > 0) {
-					return Promise.reject({ path: '/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a', query: {} });
+					return Promise.reject({
+						path: '/basket',
+						query: {
+							kexpn: 'checkout_beta.minimal_checkout',
+							kexpv: 'a'
+						}
+					});
 				}
 				return data;
 			});
