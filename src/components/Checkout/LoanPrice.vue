@@ -1,16 +1,21 @@
 <template>
 	<div class="loan-price-wrapper">
-		<select
-			dir="rtl"
-			v-model="selectedOption"
-			class="loan-price medium-text-font-size"
-			@change="updateLoanAmount()">
-			<option v-for="price in prices"
-				:key="price"
-				:value="price">${{ price }}
-			</option>
-			<option :key="0" value="remove">Remove</option>
-		</select>
+		<div class="loan-price-select">
+			<select
+				dir="rtl"
+				v-model="selectedOption"
+				class="loan-price medium-text-font-size"
+				@change="updateLoanAmount()">
+				<option v-for="price in prices"
+					:key="price"
+					:value="price">${{ price }}
+				</option>
+				<!-- <option :key="0" value="remove">Remove</option> -->
+			</select>
+		</div>
+		<div class="remove-wrapper" @click="removeLoan">
+			<kv-icon class="remove-x" name="small-x" />
+		</div>
 	</div>
 </template>
 
@@ -19,9 +24,11 @@ import _union from 'lodash/union';
 import numeral from 'numeral';
 import updateLoanAmount from '@/graphql/mutation/updateLoanAmount.graphql';
 import _forEach from 'lodash/forEach';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
+		KvIcon
 	},
 	inject: ['apollo'],
 	props: {
@@ -103,6 +110,7 @@ export default {
 						});
 						this.selectedOption = this.cachedSelection;
 					} else {
+						// After I set up a click handler, the second part of this call can be removed
 						this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
 						this.cachedSelection = this.selectedOption;
 					}
@@ -111,6 +119,14 @@ export default {
 					console.error(error);
 					this.$emit('updating-totals', false);
 				});
+			}
+		},
+		// THIS IS NOT WORKING YET
+		removeLoan($event) {
+			console.log('Remove loan triggered');
+			this.$emit('removeLoan', $event);
+			if ($event === 'removeLoan') {
+				this.loanVisible = false;
 			}
 		},
 		getUpdatedPrice() {
@@ -138,15 +154,22 @@ export default {
 @import 'settings';
 
 .loan-price-wrapper {
+	display: inline-block;
+	float: right;
+}
 
-	@include breakpoint(medium) {
-		float: right;
-	}
+.remove-wrapper {
+	display: inline-block;
+    padding-left: 10px;
+}
+
+.loan-price-select {
+	float: left;
 }
 
 .loan-price {
 	border: 1px solid $charcoal;
-	width: inherit;
+	min-width: rem-calc(90);
 	border-radius: $button-radius;
 	height: rem-calc(50);
 	background-image: url('../../assets/images/customDropdown.png');
@@ -156,6 +179,17 @@ export default {
 	@include breakpoint(medium) {
 		height: rem-calc(32);
 		line-height: $medium-text-line-height;
+	}
+}
+
+.remove-x {
+	fill: $subtle-gray;
+	display: inline-block;
+	width: 1.1rem;
+	height: rem-calc(50);
+
+	@include breakpoint(medium) {
+		height: rem-calc(36);
 	}
 }
 
