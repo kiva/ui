@@ -21,4 +21,9 @@ query {
 	shop {
 		nonTrivialItemCount
 	}
+	general {
+       setting(setting:"feature.endofyear_appeal.enabled") {
+         value
+       }
+     }
 }
