@@ -10,10 +10,12 @@
 					:key="price"
 					:value="price">${{ price }}
 				</option>
-				<!-- <option :key="0" value="remove">Remove</option> -->
 			</select>
 		</div>
-		<div class="remove-wrapper" @click="removeLoan">
+		<div
+			class="remove-wrapper"
+			@click="updateLoanAmount('remove')"
+		>
 			<kv-icon class="remove-x" name="small-x" />
 		</div>
 	</div>
@@ -58,7 +60,7 @@ export default {
 			selectedOption: numeral(this.price).format('0,0'),
 			cachedSelection: numeral(this.price).format('0,0'),
 			additionalSelctionLimit: 150, // how many addition loan shares to show above the selected amount
-			overallSelectLimit: 500 // cap on highest loan share amount in select box
+			overallSelectLimit: 500, // cap on highest loan share amount in select box
 		};
 	},
 	computed: {
@@ -93,10 +95,17 @@ export default {
 		}
 	},
 	methods: {
-		updateLoanAmount() {
+		updateLoanAmount(changeType) {
 			if (this.selectedOption !== this.price) {
 				this.$emit('updating-totals', true);
-				const updatedPrice = this.getUpdatedPrice();
+				let updatedPrice;
+				// If the loan remove X is clicked: set updatedPrice to 0
+				// else pull the value out of the loanPrice select and keep moving through method
+				if (changeType === 'remove') {
+					updatedPrice = 0;
+				} else {
+					updatedPrice = numeral(this.selectedOption).format('0,0.00');
+				}
 				this.apollo.mutate({
 					mutation: updateLoanAmount,
 					variables: {
@@ -110,8 +119,7 @@ export default {
 						});
 						this.selectedOption = this.cachedSelection;
 					} else {
-						// After I set up a click handler, the second part of this call can be removed
-						this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
+						this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
 						this.cachedSelection = this.selectedOption;
 					}
 					this.$emit('updating-totals', false);
@@ -120,20 +128,6 @@ export default {
 					this.$emit('updating-totals', false);
 				});
 			}
-		},
-		// THIS IS NOT WORKING YET
-		removeLoan($event) {
-			console.log('Remove loan triggered');
-			this.$emit('removeLoan', $event);
-			if ($event === 'removeLoan') {
-				this.loanVisible = false;
-			}
-		},
-		getUpdatedPrice() {
-			if (this.selectedOption === 'remove') {
-				return 0;
-			}
-			return numeral(this.selectedOption).format('0,0.00');
 		},
 		buildShareArray(shares) {
 			// loop and build formatted array
@@ -154,13 +148,17 @@ export default {
 @import 'settings';
 
 .loan-price-wrapper {
-	display: inline-block;
-	float: right;
+	white-space: nowrap;
+	float: none;
+
+	@include breakpoint(medium) {
+		float: right;
+	}
 }
 
 .remove-wrapper {
 	display: inline-block;
-    padding-left: 10px;
+	padding-left: rem-calc(10);
 }
 
 .loan-price-select {
