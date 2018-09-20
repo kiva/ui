@@ -1,10 +1,12 @@
 <template>
 	<div class="reservation-info small-text">
-		<span v-if="expiryTime"
-			class="loan-message">
+		<span v-if="expiryTime">
+			<!-- The loan-message class is on all possible loan-message return types for use in automated tests
+			that QA/David configured -->
 			<div
-				v-if="loanReservationMsg1"
-				class="red">Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
+				class="loan-message"
+				v-if="loanReservationMsg1">
+				Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
 			</div>
 			<!-- TODO: Replace this lightbox with a Popper tip message. -->
 			<kv-lightbox
@@ -20,17 +22,18 @@
 			</kv-lightbox>
 
 			<div
-				v-if="loanReservationMsg2">Reserved for {{ mins }} more minutes
+				class="loan-message"
+				v-if="loanReservationMsg2" >Reserved for {{ mins }} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg3"
-				class="red">Reserved for {{ mins }} more minutes
+				class="red loan-message">Reserved for {{ mins }} more minutes
 			</div>
 
 			<div
 				v-if="loanReservationMsg4"
-				class="red">Reserved for 1 more minute
+				class="red loan-message">Reserved for 1 more minute
 			</div>
 		</span>
 	</div>
@@ -106,11 +109,15 @@ export default {
 
 .reservation-info {
 	color: $kiva-text-light;
-	line-height: 2rem;
-	float: right;
+	width: 100%;
+	text-align: left;
 
 	.loanNotReservedLightbox {
 		color: $charcoal;
+	}
+
+	.loan-message {
+		margin-bottom: rem-calc(10);
 	}
 
 	.loan-message /deep/ .red {

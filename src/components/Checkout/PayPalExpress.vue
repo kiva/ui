@@ -77,6 +77,7 @@ export default {
 					payment: () => {
 						console.log('payment stage');
 						return new paypal.Promise((resolve, reject) => {
+							this.setUpdating(true);
 							this.validateBasket()
 								.then(validationStatus => {
 									if (validationStatus === true) {
@@ -90,17 +91,20 @@ export default {
 											if (data) {
 												console.log(data);
 												if (data.errors) {
+													this.setUpdating(false);
 													reject(data);
 												}
 												resolve(data.shop.getPaymentToken);
 											}
 										});
 									} else {
+										this.setUpdating(false);
 										this.showCheckoutError(validationStatus);
 										reject(validationStatus);
 									}
 								})
 								.catch(error => {
+									this.setUpdating(false);
 									console.error(error);
 								});
 						});
@@ -127,6 +131,7 @@ export default {
 
 									// Check for errors
 									if (ppResponse.error) {
+										this.setUpdating(false);
 										console.error(`Error completing transactions: ${ppResponse.error}`);
 									}
 
@@ -139,6 +144,7 @@ export default {
 									resolve(ppResponse);
 								})
 								.catch(catchError => {
+									this.setUpdating(false);
 									console.error(catchError);
 									reject(catchError);
 								})
@@ -148,7 +154,11 @@ export default {
 						});
 					},
 					onError: data => {
+						this.setUpdating(false);
 						console.error(data);
+					},
+					onCancel: () => {
+						this.setUpdating(false);
 					},
 					style: {
 						color: 'blue',
@@ -159,7 +169,11 @@ export default {
 				},
 				'#paypal-button'
 			);
-		}
+		},
+		setUpdating(state) {
+			this.loading = state;
+			this.$emit('updating-totals', state);
+		},
 	}
 };
 </script>

@@ -10,6 +10,12 @@
 			</div>
 		</div>
 
+		<FeaturedLoans
+			v-if="showFeaturedLoans"
+			ref="featured"
+			:items-in-basket="itemsInBasket"
+		/>
+
 		<div>
 			<category-row
 				class="loan-category-row"
@@ -27,6 +33,8 @@
 				<router-link :to="{ path: '/categories'}"><h2>View all categories</h2></router-link>
 			</div>
 		</div>
+
+		<featured-admin-controls v-if="isAdmin" />
 
 		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
@@ -46,11 +54,15 @@ import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.g
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
+import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+
 
 export default {
 	components: {
 		CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
+		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
+		FeaturedLoans,
 		WwwPage,
 	},
 	inject: ['apollo'],
@@ -64,6 +76,7 @@ export default {
 			categorySetId: '',
 			categories: [],
 			itemsInBasket: [],
+			showFeaturedLoans: true,
 		};
 	},
 	computed: {
@@ -77,8 +90,22 @@ export default {
 			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
 			const loanIds = [];
 			const pageViewTrackData = { schema, data: {} };
+			const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
+
+			if (this.showFeaturedLoans) {
+				loanIds.push({
+					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan1.id')
+				});
+				loanIds.push({
+					r: 0, p: 2, c: featuredCategoryIds[1], l: _get(this, '$refs.featured.loan2.id')
+				});
+				loanIds.push({
+					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
+				});
+			}
+
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({
@@ -94,10 +121,10 @@ export default {
 		},
 		setRows(data) {
 			const rowData = readJSONSetting(data, 'general.rows.value') || [];
-			const expData = readJSONSetting(data, 'general.experiment.value') || {};
+			const expData = readJSONSetting(data, 'general.rowsExp.value') || {};
 
-			// Read the assigned experiment version from the cache
-			const versionData = this.apollo.readQuery({ query: experimentQuery });
+			// Read the assigned category rows experiment version from the cache
+			const versionData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'category_rows' } });
 			const version = _get(versionData, 'experiment.version');
 			const variantRows = _get(expData, `variants.${version}.categories`);
 
@@ -108,29 +135,34 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client) {
-			return new Promise((resolve, reject) => {
-				client.query({
-					query: lendByCategoryQuery
-				}).then(({ data }) => {
-					// Get the array of channel objects from settings
-					const rowData = readJSONSetting(data, 'general.rows.value') || [];
-					// Get the experiment object from settings
-					const expData = readJSONSetting(data, 'general.experiment.value') || {};
+			let rowData;
+			let expData;
 
-					// Get the assigned experiment version
-					client.query({ query: experimentQuery }).then(expResult => {
-						const version = _get(expResult, 'data.experiment.version');
-						const variantRows = _get(expData, `variants.${version}.categories`);
-						// get the ids for the variant, or the default if that is undefined
-						const ids = _map(variantRows || rowData, 'id');
+			return client.query({
+				query: lendByCategoryQuery
+			}).then(({ data }) => {
+				// Get the array of channel objects from settings
+				rowData = readJSONSetting(data, 'general.rows.value') || [];
+				// Get the category rows experiment object from settings
+				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
 
-						// Pre-fetch all the data for those channels
-						client.query({
-							query: loanChannelQuery,
-							variables: { ids },
-						}).then(resolve).catch(reject);
-					}).catch(reject);
-				}).catch(reject);
+				return Promise.all([
+					// Get the assigned category rows experiment version
+					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
+					// Get the assigned featured loans experiment version
+					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
+				]);
+			}).then(rowsExpResult => {
+				const version = _get(rowsExpResult, 'data.experiment.version');
+				const variantRows = _get(expData, `variants.${version}.categories`);
+				// get the ids for the variant, or the default if that is undefined
+				const ids = _map(variantRows || rowData, 'id');
+
+				// Pre-fetch all the data for those channels
+				return client.query({
+					query: loanChannelQuery,
+					variables: { ids },
+				});
 			});
 		}
 	},
@@ -140,6 +172,10 @@ export default {
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
+
+		// Read the assigned feateured loan experiment version from the cache
+		const versionData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'featured_loans' } });
+		this.showFeaturedLoans = _get(versionData, 'experiment.version') === 'shown';
 
 		// Read the loan channels from the cache
 		const categoryData = this.apollo.readQuery({
@@ -179,7 +215,7 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 @import 'settings';
 
 .lend-by-category-page {

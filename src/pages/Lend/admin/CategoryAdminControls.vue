@@ -1,6 +1,6 @@
 <template>
 	<div class="admin-controls">
-		<h2>Admin controls</h2>
+		<h2>Category Rows admin controls</h2>
 		<experiment-control-slide
 			:categories.sync="defaultCategories"
 			:name.sync="controlName"

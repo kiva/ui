@@ -51,7 +51,7 @@
 								</a></p>
 							</div>
 						</div>
-						<loading-overlay v-if="loginLoading" />
+						<loading-overlay v-if="loginLoading" id="loading-overlay" />
 					</div>
 
 					<div v-else class="login-reg-complete">
@@ -60,54 +60,64 @@
 					</div>
 				</div>
 
-				<div class="basket-wrap">
-					<div v-if="!emptyBasket" class="checkout-step">
-						<hr>
-						<span class="number-icon number-2">2</span>
-					</div>
+				<div v-if="!emptyBasket" class="basket-wrap">
+					<div>
+						<div v-if="!emptyBasket" class="checkout-step">
+							<hr>
+							<span class="number-icon number-2">2</span>
+						</div>
 
-					<div v-if="!emptyBasket">
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
+						<hr>
 
 						<kiva-card-redemption />
 						<hr>
 
-						<div class="totals-and-actions">
-							<order-totals
-								:totals="totals"
-								@refreshtotals="refreshTotals"
+						<order-totals
+							:totals="totals"
+							@refreshtotals="refreshTotals"
+							@updating-totals="setUpdatingTotals" />
+
+						<div v-if="isLoggedIn" class="checkout-actions">
+							<pay-pal-exp
+								v-if="showPayPal"
+								:amount="creditNeeded"
 								@updating-totals="setUpdatingTotals" />
 
-							<div v-if="isLoggedIn" class="checkout-actions">
-								<pay-pal-exp
-									v-if="showPayPal"
-									:amount="creditNeeded" />
+							<kv-button
+								v-else
+								type="submit"
+								class="smaller checkout-button"
+								v-kv-track-event="['payment.continueBtn']"
+								title="Checkout using your Kiva credit"
+								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+						</div>
 
-								<kv-button
-									v-else
-									type="submit"
-									class="smaller checkout-button"
-									v-kv-track-event="['payment.continueBtn']"
-									title="Checkout using your Kiva credit"
-									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
-							</div>
+						<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+					</div>
 
-							<loading-overlay v-if="updatingTotals" class="updating-totals-overlay" />
+					<div v-if="!isLoggedIn" class="container basket-overlay-bg"></div>
+					<div v-if="!isLoggedIn" @click="overlayMouseover"
+						class="basket-overlay-fg">
+						<div class="basket-overlay row align-center align-middle"
+							:class="{ unhovered: !isHovered }">
+							<p class="columns small-11 medium-6 xlarge-5 text-center">
+								Please register or sign in above to complete your purchase.</p>
 						</div>
 					</div>
+				</div>
 
-					<div v-else class="empty-basket">
-						<p class="featured-text">Oops — Your basket is empty!</p>
-						<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
-							<a href="/lend-by-category">Browse by category</a> or
-							<a href="/lend">see all loans.</a>
-						</p>
-					</div>
+				<div v-if="emptyBasket" class="empty-basket">
+					<p class="featured-text">Oops — Your basket is empty!</p>
+					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
+						<a href="/lend-by-category">Browse by category</a> or
+						<a href="/lend">see all loans.</a>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -119,7 +129,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
-import shopTotals from '@/graphql/query/checkout/shopTotals.graphql';
+import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvButton from '@/components/Kv/KvButton';
@@ -158,23 +168,41 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
-			totals: () => {},
+			totals: {},
 			updatingTotals: false,
-			loading: false,
 			showReg: true,
 			showLogin: false,
 			loginLoading: false,
+			isHovered: false,
 			activeLoginDuration: 3600,
 			lastActiveLogin: 0
 		};
 	},
 	apollo: {
 		query: initializeCheckout,
-		preFetch: true,
-		result({ data, loading }) {
-			if (loading) {
-				this.loading = true;
-			}
+		// using the prefetch function form allows us to act on data before the page loads
+		preFetch(config, client) {
+			return client.query({
+				query: initializeCheckout
+			}).then(({ data }) => {
+				const totals = _get(data, 'shop.basket.totals');
+				// check for bonus credit and redirect if present
+				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
+				// TODO: remove once bonus credit functionality is added
+				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
+				if (parseFloat(totals.bonusAvailableTotal) > 0) {
+					return Promise.reject({
+						path: '/basket',
+						query: {
+							kexpn: 'checkout_beta.minimal_checkout',
+							kexpv: 'a'
+						}
+					});
+				}
+				return data;
+			});
+		},
+		result({ data }) {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.totals = _get(data, 'shop.basket.totals');
@@ -218,8 +246,18 @@ export default {
 			this.switchToLogin();
 		}
 	},
+	mounted() {
+		// fire tracking event when the page loads
+		// - this event will be duplicated when the page reloads with a newly registered/logged in user
+		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+		if (this.isActivelyLoggedIn) {
+			userStatus = 'Actively Logged-In';
+		}
+		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Beta-Loaded', userStatus);
+	},
 	methods: {
 		validateCreditBasket() {
+			this.setUpdatingTotals(true);
 			this.validateBasket()
 				.then(validationStatus => {
 					if (validationStatus === true) {
@@ -227,9 +265,11 @@ export default {
 						this.checkoutCreditBasket();
 					} else {
 						// validation failed
+						this.setUpdatingTotals(false);
 						this.showCheckoutError(validationStatus);
 					}
 				}).catch(errorResponse => {
+					this.setUpdatingTotals(false);
 					console.error(errorResponse);
 				});
 		},
@@ -241,9 +281,11 @@ export default {
 						this.redirectToThanks(transactionResult);
 					} else {
 						// checkout failed
+						this.setUpdatingTotals(false);
 						this.showCheckoutError(transactionResult);
 					}
 				}).catch(errorResponse => {
+					this.setUpdatingTotals(false);
 					console.error(errorResponse);
 				});
 		},
@@ -251,10 +293,9 @@ export default {
 			this.setUpdatingTotals(true);
 
 			this.apollo.query({
-				query: shopTotals,
+				query: shopBasketUpdate,
 				fetchPolicy: 'network-only'
-			}).then(data => {
-				this.totals = _get(data, 'data.shop.basket.totals');
+			}).then(() => {
 				this.setUpdatingTotals(false);
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
@@ -274,8 +315,11 @@ export default {
 		},
 		setLoginLoading(state) {
 			this.loginLoading = state;
+		},
+		overlayMouseover() {
+			this.isHovered = !this.isHovered;
 		}
-	}
+	},
 };
 </script>
 
@@ -286,8 +330,16 @@ export default {
 	padding: 1.625rem 0;
 
 	// loading overlay overrides
-	.loading-overlay {
+	#loading-overlay,
+	#updating-overlay {
 		background-color: rgba(255, 255, 255, 0.7);
+		z-index: 500;
+	}
+
+	#updating-overlay {
+		margin-top: 2rem;
+		height: auto;
+		bottom: 0;
 	}
 
 	.checkout-step {
@@ -396,6 +448,9 @@ export default {
 	}
 
 	.basket-wrap {
+		position: relative;
+		padding-bottom: 0.5rem;
+
 		.totals-and-actions {
 			display: block;
 			position: relative;
@@ -418,6 +473,55 @@ export default {
 				.checkout-button {
 					width: auto;
 				}
+			}
+		}
+
+		.basket-overlay-bg {
+			display: block;
+			position: absolute;
+			top: 3rem;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			z-index: 100;
+			opacity: 0.7;
+			background-image: url('../../assets/images/backgrounds/lines.png');
+			background-color: $white;
+		}
+
+		.basket-overlay-fg {
+			display: block;
+			position: absolute;
+			top: 3rem;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			z-index: 110;
+
+			.basket-overlay {
+				position: relative;
+				top: 10%;
+
+				@include breakpoint(medium) {
+					top: 20%;
+				}
+
+				@include breakpoint(large) {
+					top: 30%;
+				}
+
+				p {
+					font-size: 1.25rem;
+					line-height: 1.5;
+					color: $kiva-text-medium;
+					padding: 1.6rem;
+					border: 1px solid $kiva-text-light;
+					background: $white;
+				}
+			}
+
+			.unhovered {
+				display: none;
 			}
 		}
 	}

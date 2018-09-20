@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<div class="loan-price-wrapper">
 		<select
 			dir="rtl"
 			v-model="selectedOption"
-			class="loan-price"
+			class="loan-price medium-text-font-size"
 			@change="updateLoanAmount()">
 			<option v-for="price in prices"
 				:key="price"
@@ -18,6 +18,7 @@
 import _union from 'lodash/union';
 import numeral from 'numeral';
 import updateLoanAmount from '@/graphql/mutation/updateLoanAmount.graphql';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -48,7 +49,9 @@ export default {
 	data() {
 		return {
 			selectedOption: numeral(this.price).format('0,0'),
-			selectLimit: 150
+			cachedSelection: numeral(this.price).format('0,0'),
+			additionalSelctionLimit: 150, // how many addition loan shares to show above the selected amount
+			overallSelectLimit: 500 // cap on highest loan share amount in select box
 		};
 	},
 	computed: {
@@ -65,12 +68,13 @@ export default {
 			// if we've met reserve ensure atleast this loan share is set
 			if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
 
-			// Limit to this.selectLimit on shares in select box
-			// if (remainingShares > this.selectLimit) remainingShares = this.selectLimit;
 			// Limit to this.selectLimit in addition to current price
-			if (remainingShares > (parseInt(this.price, 10) + this.selectLimit)) {
-				remainingShares = parseInt(this.price, 10) + this.selectLimit;
+			if (remainingShares > (parseInt(this.price, 10) + this.additionalSelctionLimit)) {
+				remainingShares = parseInt(this.price, 10) + this.additionalSelctionLimit;
 			}
+
+			// Institute an overall selection cap
+			if (remainingShares > this.overallSelectLimit) remainingShares = this.overallSelectLimit;
 
 			// add to available shares based on available remaining shares
 			const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
@@ -92,9 +96,17 @@ export default {
 						loanid: this.loanId,
 						price: updatedPrice
 					}
-				}).then(() => {
+				}).then(data => {
+					if (data.errors) {
+						_forEach(data.errors, ({ message }) => {
+							this.$showTipMsg(message, 'error');
+						});
+						this.selectedOption = this.cachedSelection;
+					} else {
+						this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
+						this.cachedSelection = this.selectedOption;
+					}
 					this.$emit('updating-totals', false);
-					this.$emit('refreshtotals', this.selectedOption === 'remove' ? 'removeLoan' : '');
 				}).catch(error => {
 					console.error(error);
 					this.$emit('updating-totals', false);
@@ -125,8 +137,26 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.loan-price-wrapper {
+
+	@include breakpoint(medium) {
+		float: right;
+	}
+}
+
 .loan-price {
-	border: 1.5px solid black;
+	border: 1px solid $charcoal;
+	width: inherit;
+	border-radius: $button-radius;
+	height: rem-calc(50);
+	background-image: url('../../assets/images/customDropdown.png');
+	background-size: rem-calc(20) rem-calc(20);
+	text-indent: rem-calc(8);
+
+	@include breakpoint(medium) {
+		height: rem-calc(32);
+		line-height: $medium-text-line-height;
+	}
 }
 
 </style>

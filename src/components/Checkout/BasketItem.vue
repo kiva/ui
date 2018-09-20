@@ -1,6 +1,6 @@
 <template>
 	<div v-show="loanVisible" class="basket-item-wrapper row">
-		<span class="small-3 medium-1">
+		<span class="small-3 medium-2 large-1">
 			<checkout-item-img
 				:loan-id="loan.id"
 				:name="loan.loan.name"
@@ -8,17 +8,17 @@
 			/>
 		</span>
 
-		<span class="small-9 medium-8">
-			<div class="borrower-info featured-text">
+		<span class="small-9 medium-7 large-9 borrower-info-wrapper">
+			<span class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 				<loan-matcher
 					v-if="loan.loan.matchingText"
 					:matching-text="loan.loan.matchingText"
 				/>
-			</div>
+			</span>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3">
+		<span class="small-9 medium-3 large-2 loan-res-price-wrapper">
 			<loan-reservation
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.isFunded"
@@ -81,8 +81,13 @@ export default {
 	padding-right: rem-calc(20);
 }
 
+.borrower-info-wrapper,
+.loan-res-price-wrapper {
+	padding-left: rem-calc(10);
+}
+
 .borrower-info {
-	line-height: 1.75rem;
+	line-height: 0.8;
 }
 
 </style>

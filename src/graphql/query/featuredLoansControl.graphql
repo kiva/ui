@@ -1,0 +1,8 @@
+query {
+	general {
+		experiment: setting(setting: "uiexp.featured_loans") {
+			key
+			value
+		}
+	}
+}

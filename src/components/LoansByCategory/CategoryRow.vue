@@ -31,7 +31,7 @@
 						:category-set-id="setId"
 						:row-number="rowNumber"
 						:card-number="index + 1"
-						:is-in-category-row=true
+						:enable-tracking="true"
 					/>
 				</div>
 			</div>
