@@ -12,7 +12,7 @@ export default {
 
 <style lang="scss" scoped>
 	.flag-icon {
-		background: url('../../assets/images/flags.png') no-repeat;
+		background: url('~@/assets/images/flags.png') no-repeat;
 		background-size: 16px;
 		display: inline-block;
 		margin-right: 0.25rem;
