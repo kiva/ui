@@ -389,6 +389,7 @@ export default {
 		label {
 			font-weight: normal;
 			font-size: 1rem;
+			color: $charcoal;
 		}
 	}
 
