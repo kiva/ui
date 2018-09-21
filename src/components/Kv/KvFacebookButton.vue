@@ -1,5 +1,5 @@
 <template>
-	<kv-button class="smaller facebook">
+	<kv-button class="facebook">
 		<kv-icon class="facebook-box-logo" name="facebook-box-logo" />
 		Continue with Facebook
 	</kv-button>
@@ -27,6 +27,7 @@ export default {
 	background: #4267B2;
 	padding-left: 0;
 	padding-right: 0;
+	font-size: $medium-text-font-size;
 
 	.facebook-box-logo {
 		height: rem-calc(22);

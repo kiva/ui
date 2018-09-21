@@ -428,7 +428,7 @@ $button-secondary-background: $white;
 $button-secondary-color: $charcoal;
 $button-secondary-border-color: $dark-charcoal;
 $button-secondary-hover: $kiva-accent-blue;
-$button-smaller-medium-shadow: 0 2px $button-background-hover;
+$button-smaller-medium-shadow: 0 1px $button-background-hover;
 
 @mixin button-primary-styles() {
 	@include breakpoint(medium) {

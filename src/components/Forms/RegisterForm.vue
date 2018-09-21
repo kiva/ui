@@ -119,7 +119,7 @@
 				</p>
 			</div>
 			<KvButton
-				class="register-button smaller"
+				class="register-button"
 				type="submit"
 				name="regForm_submit"
 				id="regForm_submit"
