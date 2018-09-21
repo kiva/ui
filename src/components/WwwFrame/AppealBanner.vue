@@ -135,7 +135,7 @@ export default {
 
 		.close-icon {
 			transform: scaleY(-1);
-			height:35px;
+			height: 35px;
 		}
 
 		.icon {
