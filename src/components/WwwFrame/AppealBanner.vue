@@ -8,15 +8,9 @@
 				<div class="info rows column">
 					<div class="header columns">
 						<h2 class="rows">Fighting for a better future? We need your help.</h2>
-						<span v-show="!isOpen"
-							class="rows dropdown-icon"
+						<span class="rows open-icon"
 							@click="toggleBanner">
 							<kv-icon name="small-chevron-mobile"/>
-						</span>
-						<span v-show="isOpen"
-							class="rows updown-icon"
-							@click="toggleBanner">
-							<kv-icon name="small-chevron-mobile" class="upside"/>
 						</span>
 					</div>
 				</div>
@@ -32,15 +26,9 @@
 				<div class="info rows column">
 					<div class="header columns">
 						<h2 class="rows">Fighting for a better future? We need your help.</h2>
-						<span v-show="!isOpen"
-							class="rows dropdown-icon"
+						<span class="rows close-icon"
 							@click="toggleBanner">
 							<kv-icon name="small-chevron-mobile"/>
-						</span>
-						<span v-show="isOpen"
-							class="rows updown-icon"
-							@click="toggleBanner">
-							<kv-icon name="small-chevron-mobile" class="upside"/>
 						</span>
 					</div>
 					<div class="columns column">
@@ -107,7 +95,6 @@ export default {
 		max-width: 61.875rem;
 		margin: 0 auto;
 		height: 300px;
-		transition: all 0.4s ease;
 
 		&.close {
 			height: 50px;
@@ -144,6 +131,11 @@ export default {
 			width: 10rem;
 			height: 10rem;
 			border-radius: 5rem;
+		}
+
+		.close-icon {
+			transform: scaleY(-1);
+			height:35px;
 		}
 
 		.icon {
