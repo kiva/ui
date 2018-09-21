@@ -433,6 +433,7 @@ export default {
 
 		label {
 			line-height: $small-text-line-height;
+			color: $charcoal;
 
 			input {
 				line-height: $small-text-line-height;
