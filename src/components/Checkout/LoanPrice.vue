@@ -144,7 +144,7 @@ export default {
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .loan-price-wrapper {
@@ -173,6 +173,7 @@ export default {
 	background-image: url('../../assets/images/customDropdown.png');
 	background-size: rem-calc(20) rem-calc(20);
 	text-indent: rem-calc(8);
+	color: $charcoal;
 
 	@include breakpoint(medium) {
 		height: rem-calc(32);
