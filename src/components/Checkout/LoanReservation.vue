@@ -117,7 +117,7 @@ export default {
 	}
 
 	.loan-message {
-		margin-bottom: rem-calc(10);
+		margin-bottom: rem-calc(5);
 	}
 
 	.loan-message /deep/ .red {

@@ -20,7 +20,7 @@ export default {
 
 .matching-text {
 	line-height: 1rem;
-	margin: rem-calc(10) 0;
+	margin: rem-calc(5) 0;
 }
 
 </style>
