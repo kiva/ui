@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<appeal-banner v-show="showAppealBanner" />
+		<appeal-banner v-if="showAppealBanner" />
 		<header class="top-nav">
 			<div class="header-row row">
 				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
