@@ -60,12 +60,14 @@
 					</ul>
 				</div>
 				<div class="wide">
-					<p>
+					<div>
 						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 						Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
 						Portland and staff around the globe.
-						<router-link to="/donate/supportus">Donate to Kiva here.</router-link>
-					</p>
+					</div>
+					<ul class="siteFooter-links">
+						<li><router-link to="/donate/supportus">Donate to Kiva here.</router-link></li>
+					</ul>
 				</div>
 				<div class="work-with-us wide">
 					<h1>Work with us</h1>
