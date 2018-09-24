@@ -19,7 +19,7 @@
 				<h1>About Kiva</h1>
 				<p>{{ aboutText }}</p>
 			</div>
-			<div id="charity-navigator-container" class="small-12 medium-4 columms">
+			<div id="charity-navigator-container" class="small-12 medium-4 columns">
 				<kv-charity-navigator />
 			</div>
 		</div>
@@ -57,6 +57,7 @@ export default {
 <style lang="scss" scoped>
 	@import 'settings';
 
+	/* Banner */
 	#banner-container {
 		background: darkblue;
 	}
@@ -69,6 +70,12 @@ export default {
 		@include impact-text();
 
 		color: #3361A0;
+	}
+
+	/* Headers */
+	h1,
+	h2 {
+		color: $kiva-green;
 	}
 
 	#charity-navigator-container {
