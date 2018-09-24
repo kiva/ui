@@ -56,13 +56,11 @@
 	</div>
 </template>
 <script>
-
 /* eslint-disable max-len */
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
-
 	components: {
 		KvButton,
 		KvIcon,
@@ -78,14 +76,9 @@ export default {
 		},
 	},
 };
-
 </script>
 <style lang='scss'>
-	@import 'settings';
-	@import 'foundation';
-
-	@include foundation-flex-classes;
-	@include foundation-flex-grid;
+	@import "settings";
 
 	.appeal-banner {
 		background: $kiva-alert-yellow;
@@ -146,5 +139,4 @@ export default {
 			margin-top: 5px;
 		}
 	}
-
 </style>
