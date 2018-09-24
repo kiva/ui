@@ -140,6 +140,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import formValidate from '@/plugins/formValidate';
 
 export default {
+	inject: ['apollo'],
 	components: {
 		KvFacebookButton,
 		KvLightbox,
@@ -190,6 +191,9 @@ export default {
 		clickFbLogin() {
 			this.initiateFbLogin();
 
+			// close any open tip message
+			this.$closeTipMsg();
+
 			if (this.processType === 'register') {
 				this.$kvTrackEvent('Register', 'click-facebook-register', 'FacebookRegisterButtonClick');
 			} else {
@@ -215,12 +219,17 @@ export default {
 				})
 				.then(loginStatus => {
 					console.log(loginStatus);
-					// Turn off loading if user exits FB Login Dialog
-					if (loginStatus.status === 'unknown') {
-						this.setLoading(false);
-					}
 					// Save the fb status
 					vm.fbLoginStatus = loginStatus;
+					// Handle failed Login scenario
+					if (loginStatus.status !== 'connected') {
+						// Turn off loading if user exits FB Login Dialog
+						if (loginStatus.status === 'unknown') {
+							this.setLoading(false);
+						}
+
+						return Promise.reject(loginStatus);
+					}
 					// Once logged into FB get user info
 					return fbUtils.fbFetchUser(loginStatus);
 				})
@@ -243,15 +252,17 @@ export default {
 					if (response.prompt !== undefined && response.prompt === true) {
 						this.handleKivaFbPrompt(response);
 					}
-					// TODO: Error Cases
-					// Finish the promise regardless
 
 					this.setLoading(false);
 
+					// Ensure Error Cases are handled, push them to the .catch
+					if (response.ok === false) return Promise.reject(response);
+
+					// Finish the promise regardless
 					return response;
 				})
 				.catch(response => {
-					console.error(response);
+					this.showFBError(response);
 					Promise.reject(response);
 				});
 		},
@@ -354,6 +365,25 @@ export default {
 		setLoading(state) {
 			this.loading = state;
 			this.$emit('fb-loading', state);
+		},
+		showFBError(errorResponse) {
+			let errorMessage;
+			if (errorResponse.authResponse === null) {
+				errorMessage = 'Please complete the Facebook login dialog to continue.';
+			} else if (errorResponse.error) {
+				errorMessage = errorResponse.error.message;
+			} else if (errorResponse.ok === false) {
+				if (errorResponse.status === 404 || errorResponse.status === 500) {
+					// Kiva fbLogin ajax fails with 404 or 500 due to bad header signature in FBSDK?
+					// errorResponse.status = 404 & errorResponse.statusText = 'Not Found'
+					// errorResponse.status = 500 & errorResponse.statusText = 'Internal Server Error'
+					errorMessage = `We could not log you into Facebook.
+						Please clear your browser cookies and try again.`;
+				} else {
+					errorMessage = 'We could not log you into Facebook. Please try again.';
+				}
+			}
+			this.$showTipMsg(errorMessage, 'error');
 		}
 	}
 };
