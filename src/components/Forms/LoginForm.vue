@@ -172,7 +172,7 @@ export default {
 		doLogin() {
 			if (this.validateForm() === true) {
 				this.setLoading(true);
-				const formData = formDataEntries(this.$refs.regForm);
+				const formData = formDataEntries(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
 			}
 		},
