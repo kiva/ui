@@ -79,7 +79,6 @@ export function doFbKivaLogin(fbResponse, specialFbParams, doneUrl) {
 	const parameters = Object.keys(postData).map(key => {
 		return [key, postData[key]];
 	});
-	// expand the elements from the .entries() iterator into an actual array
 	const encodedParameters = parameters
 		// transform the elements into encoded key-value-pairs
 		.map(e => `${encodeURIComponent(e[0])}=${encodeURIComponent(e[1])}`);

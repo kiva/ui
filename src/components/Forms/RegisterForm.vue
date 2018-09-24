@@ -135,6 +135,7 @@
 </template>
 
 <script>
+import formDataEntries from 'form-data-entries';
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import { readJSONSetting } from '@/util/settingsUtils';
 import regExpQuery from '@/graphql/query/register/registerExpAssignment.graphql';
@@ -239,7 +240,7 @@ export default {
 		register() {
 			if (this.validateForm() === true) {
 				this.setLoading(true);
-				const formData = new FormData(this.$refs.regForm);
+				const formData = formDataEntries(this.$refs.regForm);
 				this.postForm(this.regActionUrl, formData);
 			}
 		},

@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import formDataEntries from 'form-data-entries';
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import KvFacebookButton from '@/components/Kv/KvFacebookButton';
@@ -171,7 +172,7 @@ export default {
 		doLogin() {
 			if (this.validateForm() === true) {
 				this.setLoading(true);
-				const formData = new FormData(this.$refs.loginForm);
+				const formData = formDataEntries(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
 			}
 		},
