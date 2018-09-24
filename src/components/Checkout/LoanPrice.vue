@@ -174,10 +174,12 @@ export default {
 	background-size: rem-calc(20) rem-calc(20);
 	text-indent: rem-calc(8);
 	color: $charcoal;
+	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
 		height: inherit;
 		line-height: $medium-text-line-height;
+		font-size: inherit;
 	}
 }
 
