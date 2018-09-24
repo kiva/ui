@@ -29,12 +29,13 @@
 								<span>Or</span>
 							</div>
 
-							<p class="social-callout">Connect using a social network.<br>
-								We won’t ever post without asking.</p>
+							<!-- <p class="social-callout">We won’t ever post without asking.</p> -->
 
 							<facebook-login-register
 								:process-type="showLogin ? 'login' : 'register'"
 								@fb-loading="setLoginLoading" />
+
+							<p class="social-callout">We won’t ever post without asking.</p>
 
 							<div v-if="showReg" class="login-reg-switch">
 								<p>Already have an account? <br><a
@@ -418,10 +419,6 @@ export default {
 		.social-callout {
 			text-align: center;
 			line-height: 1.3;
-			margin-bottom: 2rem;
-		}
-
-		#facebook-register {
 			margin-bottom: 2rem;
 		}
 
