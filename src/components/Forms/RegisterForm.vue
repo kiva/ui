@@ -391,6 +391,10 @@ export default {
 			font-size: 1rem;
 			color: $charcoal;
 		}
+
+		input {
+			color: $charcoal;
+		}
 	}
 
 	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors

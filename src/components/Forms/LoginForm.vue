@@ -253,6 +253,10 @@ export default {
 			font-size: 1rem;
 			color: $charcoal;
 		}
+
+		input {
+			color: $charcoal;
+		}
 	}
 
 	.persist-login-wrap {
