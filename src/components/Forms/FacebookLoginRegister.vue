@@ -369,15 +369,19 @@ export default {
 		showFBError(errorResponse) {
 			let errorMessage;
 			if (errorResponse.authResponse === null) {
-				errorMessage = 'If using Facebook, please complete the Facebook login dialog to continue.';
+				errorMessage = 'Please complete the Facebook login dialog to continue.';
 			} else if (errorResponse.error) {
 				errorMessage = errorResponse.error.message;
 			} else if (errorResponse.ok === false) {
-				// TODO: What should we do if there is a system failure? Clearing Cookies usually fixes this.
-				// Kiva fbLogin ajax fails with 404 or 500 due to bad header signature in FBSDK?
-				// errorResponse.status = 404 & errorResponse.statusText = 'Not Found'
-				// errorResponse.status = 500 & errorResponse.statusText = 'Internal Server Error'
-				errorMessage = 'We could not log you into Facebook. Please clear your browser cookies and try again.';
+				if (errorResponse.status === 404 || errorResponse.status === 500) {
+					// Kiva fbLogin ajax fails with 404 or 500 due to bad header signature in FBSDK?
+					// errorResponse.status = 404 & errorResponse.statusText = 'Not Found'
+					// errorResponse.status = 500 & errorResponse.statusText = 'Internal Server Error'
+					errorMessage = `We could not log you into Facebook.
+						Please clear your browser cookies and try again.`;
+				} else {
+					errorMessage = 'We could not log you into Facebook. Please try again.';
+				}
 			}
 			this.$showTipMsg(errorMessage, 'error');
 		}
