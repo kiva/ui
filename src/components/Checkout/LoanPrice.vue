@@ -173,10 +173,13 @@ export default {
 	background-image: url('../../assets/images/customDropdown.png');
 	background-size: rem-calc(20) rem-calc(20);
 	text-indent: rem-calc(8);
+	color: $charcoal;
+	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
-		height: rem-calc(32);
+		height: inherit;
 		line-height: $medium-text-line-height;
+		font-size: inherit;
 	}
 }
 

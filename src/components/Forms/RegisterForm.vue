@@ -389,6 +389,11 @@ export default {
 		label {
 			font-weight: normal;
 			font-size: 1rem;
+			color: $charcoal;
+		}
+
+		input {
+			color: $charcoal;
 		}
 	}
 
@@ -432,6 +437,7 @@ export default {
 
 		label {
 			line-height: $small-text-line-height;
+			color: $charcoal;
 
 			input {
 				line-height: $small-text-line-height;

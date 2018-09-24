@@ -10,8 +10,8 @@
 
 					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
 						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
-							<h3 v-if="showLogin">Login to Checkout</h3>
-							<h3 v-else>Register to Checkout</h3>
+							<h3 v-if="showLogin">Login to checkout</h3>
+							<h3 v-else>Register to checkout</h3>
 						</div>
 
 						<div class="columns small-12 medium-8 large-5 xxlarge-4">
@@ -29,12 +29,13 @@
 								<span>Or</span>
 							</div>
 
-							<p class="social-callout">Connect using a social network.<br>
-								We won’t ever post without asking.</p>
+							<!-- <p class="social-callout">We won’t ever post without asking.</p> -->
 
 							<facebook-login-register
 								:process-type="showLogin ? 'login' : 'register'"
 								@fb-loading="setLoginLoading" />
+
+							<p class="social-callout">We won’t ever post without asking.</p>
 
 							<div v-if="showReg" class="login-reg-switch">
 								<p>Already have an account? <br><a
@@ -418,10 +419,6 @@ export default {
 		.social-callout {
 			text-align: center;
 			line-height: 1.3;
-			margin-bottom: 2rem;
-		}
-
-		#facebook-register {
 			margin-bottom: 2rem;
 		}
 

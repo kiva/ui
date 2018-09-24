@@ -27,6 +27,7 @@ export default {
 	background: #4267B2;
 	padding-left: 0;
 	padding-right: 0;
+	font-size: $medium-text-font-size;
 
 	.facebook-box-logo {
 		height: rem-calc(22);

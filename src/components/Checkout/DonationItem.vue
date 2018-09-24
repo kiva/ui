@@ -38,15 +38,15 @@
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 large-2 medium-text-font-size text-align-right">
-			<span class="small-12 medium-6 donation-input-wrapper">$
+		<span class="small-9 medium-3 large-2 medium-text-font-size">
+			<div class="small-12 medium-6 donation-input-wrapper">$
 				<input
 					type="input"
 					class="donation-amount-input"
 					name="donation"
 					id="donation"
 					v-model="amount">
-			</span>
+			</div>
 			<!-- Adding the $ below to make the spacing work with the input field above this button -->
 			<span class="small-12 medium-6 update-donation-button-wrapper">$
 				<kv-button
@@ -154,10 +154,6 @@ export default {
 	margin-bottom: rem-calc(15);
 }
 
-.text-align-right {
-	text-align: right;
-}
-
 .donation-input-wrapper {
 	white-space: nowrap;
 }
@@ -165,9 +161,10 @@ export default {
 .donation-amount-input {
 	border: 1px solid $charcoal;
 	border-radius: $button-radius;
-	width: 90%;
+	width: 132px;
 	text-align: center;
 	font-weight: 300;
+	color: $charcoal;
 
 	@include breakpoint(medium) {
 		width: rem-calc(110);
@@ -185,6 +182,7 @@ input {
 	padding-right: rem-calc(5);
 	height: rem-calc(50);
 	margin-bottom: rem-calc(20);
+	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
 		height: rem-calc(32);
@@ -195,8 +193,8 @@ input {
 	color: $kiva-accent-blue;
 	border: 1px solid $kiva-accent-blue;
 	box-shadow: 0 1px $kiva-accent-blue;
-	width: 90%;
 	visibility: visible;
+	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
