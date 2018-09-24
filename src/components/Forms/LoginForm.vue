@@ -68,7 +68,7 @@
 			</kv-lightbox>
 
 			<KvButton
-				class="sign-in-button"
+				class="sign-in-button smaller"
 				type="submit"
 				name="loginForm_submit"
 				v-kv-track-event="['Login','click-Login-submit','LoginButtonClick']">

@@ -93,7 +93,7 @@
 							<kv-button
 								v-else
 								type="submit"
-								class="checkout-button"
+								class="smaller checkout-button"
 								v-kv-track-event="['payment.continueBtn']"
 								title="Checkout using your Kiva credit"
 								@click.prevent.native="validateCreditBasket">Complete order</kv-button>

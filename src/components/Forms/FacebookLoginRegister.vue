@@ -68,7 +68,7 @@
 					</ul>
 				</div>
 
-				<kv-button type="submit" name="register" value="Register">Register</kv-button>
+				<kv-button type="submit" name="register" class="smaller" value="Register">Register</kv-button>
 				<hr>
 				<a class="existing-user"
 					@click.stop.prevent="showFbExistingAcctLightbox">Already have an account?</a>
@@ -123,7 +123,7 @@
 					</p>
 				</div>
 
-				<kv-button type="submit" name="connect" value="continue">Connect</kv-button>
+				<kv-button type="submit" name="connect" class="smaller" value="continue">Connect</kv-button>
 				<hr>
 				<a class="new-user" @click.prevent.stop="showFbNewAcctLightbox">New to Kiva?</a>
 			</form>
