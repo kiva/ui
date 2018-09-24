@@ -367,9 +367,6 @@ export default {
 			this.$emit('fb-loading', state);
 		},
 		showFBError(errorResponse) {
-			// Raven will pick this up
-			// console.error(errorResponse);
-
 			let errorMessage;
 			if (errorResponse.authResponse === null) {
 				errorMessage = 'If using Facebook, please complete the Facebook login dialog to continue.';
