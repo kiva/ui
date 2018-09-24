@@ -18,10 +18,8 @@ export default {
 			return crumb;
 		},
 		postForm(actionUrl, formData) {
-			// expand the elements from the .entries() iterator into an actual array
-			const parameters = [...formData.entries()]
-				// transform the elements into encoded key-value-pairs
-				.map(e => `${encodeURIComponent(e[0])}=${encodeURIComponent(e[1])}`);
+			// transform the elements into encoded key-value-pairs
+			const parameters = formData.map(e => `${encodeURIComponent(e[0])}=${encodeURIComponent(e[1])}`);
 
 			fetch(actionUrl, {
 				method: 'POST',
