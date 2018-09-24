@@ -176,7 +176,7 @@ export default {
 	color: $charcoal;
 
 	@include breakpoint(medium) {
-		height: rem-calc(32);
+		height: inherit;
 		line-height: $medium-text-line-height;
 	}
 }
