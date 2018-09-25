@@ -35,6 +35,7 @@
 				<div class="small-12 large-6 columns">
 					<h2 id="donate-title">Support Kiva innovation</h2>
 					{{ supportText }}
+					<kv-custom-donation default-value="100" />
 				</div>
 				<div class="small-10 small-offset-1 medium-8 medium-offset-2 large-5 large-offset-1 columns">
 					<img src="~@/assets/images/10-years-billion-impact.jpg">
@@ -47,11 +48,13 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
+import KvCustomDonation from '@/components/Kv/KvCustomDonation';
 
 export default {
 	components: {
 		WwwPage,
 		KvCharityNavigator,
+		KvCustomDonation,
 	},
 	data() {
 		return {
