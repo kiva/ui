@@ -10,6 +10,7 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
+import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
@@ -71,12 +72,11 @@ export default {
 			// render paypal button
 			paypal.Button.render(
 				{
-					// TODO: Wire up switch for Prod
-					env: 'sandbox',
+					// TODO: Should we have a global key/switch for Prod
+					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
 					commit: true,
 					payment: () => {
-						console.log('payment stage');
-						return new paypal.Promise((resolve, reject) => {
+						return new paypal.Promise(resolve => {
 							this.setUpdating(true);
 							this.validateBasket()
 								.then(validationStatus => {
@@ -87,32 +87,45 @@ export default {
 											variables: {
 												amount: numeral(this.amount).format('0.00'),
 											}
-										}).then(({ data }) => {
-											if (data) {
-												console.log(data);
-												if (data.errors) {
+										}).then(response => {
+											if (response) {
+												if (response.errors) {
 													this.setUpdating(false);
-													reject(data);
+													return Promise.reject(response);
 												}
-												resolve(data.shop.getPaymentToken);
+
+												resolve(response.shop.getPaymentToken);
 											}
-										});
+										})
+											.catch(error => {
+												console.error(error);
+												// Fire specific exception to Sentry/Raven
+												Raven.captureException(error.errors ? error.errors : error, {
+													tags: {
+														pp_stage: 'onPaymentGetPaymentTokenCatch'
+													}
+												});
+											});
 									} else {
 										this.setUpdating(false);
 										this.showCheckoutError(validationStatus);
-										reject(validationStatus);
+										return Promise.reject(validationStatus);
 									}
 								})
 								.catch(error => {
 									this.setUpdating(false);
 									console.error(error);
+
+									// Fire specific exception to Sentry/Raven
+									Raven.captureException(error, {
+										tags: {
+											pp_stage: 'onPaymentCatch'
+										}
+									});
 								});
 						});
 					},
 					onAuthorize: (data, actions) => {
-						console.log('authorized stage');
-						console.log(data);
-
 						return new paypal.Promise((resolve, reject) => {
 							this.apollo.mutate({
 								mutation: depositAndCheckout,
@@ -123,27 +136,36 @@ export default {
 								},
 							})
 								.then(ppResponse => {
-									console.log(ppResponse);
 									// Check for errors
 									if (ppResponse.errors) {
 										this.setUpdating(false);
 										const errorCode = _get(ppResponse, 'errors[0].code');
-										const serverErrorMessage = _get(ppResponse, 'errors[0].message');
+										// -> server supplied language is not geared for lenders
+										// const serverErrorMessage = _get(ppResponse, 'errors[0].message');
 										const standardErrorCode = `(PayPal error: ${errorCode})`;
 										const standardError = `There was an error processing your payment.
 											Please try again. ${standardErrorCode}`;
 
-										console.log(errorCode, serverErrorMessage);
-										// check for ERROR CODE=INSTRUMENT_DECLINED and restart
-										// 10539 'INSTRUMENT_DECLINED' error
-										if (errorCode === '10539') {
+										// Restart the Exp Checkout interface to allow payment changes
+										// 10539 'payment declined' error
+										// 10486 transaction could not be completed
+										if (errorCode === '10539' || errorCode === '10486') {
 											return actions.restart();
 										}
-										// TODO: How should we handle 10486
 										// TODO: Are there other specific errors we should handle?
 
 										this.$showTipMsg(standardError, 'error');
-										console.error(`Transaction Error: ${ppResponse.errors}`);
+
+										// Fire specific exception to Sentry/Raven
+										Raven.captureException(ppResponse.errors, {
+											tags: {
+												pp_stage: 'onAuthorize',
+												pp_token: data.paymentToken
+											}
+										});
+
+										// exit
+										reject(data);
 									}
 
 									// Transaction is complete
@@ -156,7 +178,14 @@ export default {
 								})
 								.catch(catchError => {
 									this.setUpdating(false);
-									console.error(catchError);
+
+									// Fire specific exception to Sentry/Raven
+									Raven.captureException(catchError, {
+										tags: {
+											pp_stage: 'onAuthorizeCatch'
+										}
+									});
+
 									reject(catchError);
 								})
 								.finally(() => {
