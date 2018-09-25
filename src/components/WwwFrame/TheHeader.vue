@@ -340,284 +340,284 @@ export default {
 </script>
 
 <style lang="scss">
-	@import "settings";
+@import "settings";
 
-	$top-nav-font-size: 1.125rem;
-	$header-height: rem-calc(45);
-	$header-height-large: rem-calc(64);
-	$header-color: $kiva-green;
-	$text-color: $white;
-	$hover-color: $kiva-navdivider-green;
-	$divider-color: $kiva-navdivider-green;
-	$form-padding: 0.32rem;
-	$form-padding-large: 0.6rem;
-	$close-search-button-size: 2.5rem;
+$top-nav-font-size: 1.125 _rem;
+$header-height: rem-calc(45);
+$header-height-large: rem-calc(64);
+$header-color: $kiva-green;
+$text-color: $white;
+$hover-color: $kiva-navdivider-green;
+$divider-color: $kiva-navdivider-green;
+$form-padding: 0.32rem;
+$form-padding-large: 0.6rem;
+$close-search-button-size: 2.5rem;
 
-	.top-nav {
-		background-color: $header-color;
-		font-size: $top-nav-font-size;
-		font-weight: 400;
+.top-nav {
+	background-color: $header-color;
+	font-size: $top-nav-font-size;
+	font-weight: 400;
 
-		.amount {
-			@include breakpoint(large) {
-				color: $header-color;
-				background-color: $text-color;
-				padding: rem-calc(1) rem-calc(7);
-			}
+	.amount {
+		@include breakpoint(large) {
+			color: $header-color;
+			background-color: $text-color;
+			padding: rem-calc(1) rem-calc(7);
+		}
+	}
+
+	.dropdown-pane {
+		border-top: none;
+		font-size: 1rem;
+
+		ul {
+			margin: 0;
 		}
 
-		.dropdown-pane {
-			border-top: none;
-			font-size: 1rem;
-
-			ul {
-				margin: 0;
-			}
-
-			li {
-				list-style: none;
-			}
-
-			@include breakpoint(medium down) {
-				width: 100%;
-				left: 0 !important;
-
-				button,
-				a,
-				li > span {
-					display: block;
-					width: 100%;
-					padding: 0.5rem 1rem;
-					border-bottom: 1px solid $kiva-stroke-gray;
-				}
-			}
+		li {
+			list-style: none;
 		}
 
-		.dropdown-list {
-			a {
+		@include breakpoint(medium down) {
+			width: 100%;
+			left: 0 !important;
+
+			button,
+			a,
+			li > span {
 				display: block;
 				width: 100%;
 				padding: 0.5rem 1rem;
-				white-space: nowrap;
 				border-bottom: 1px solid $kiva-stroke-gray;
-
-				@include breakpoint(large) {
-					border-bottom: none;
-				}
-			}
-
-			hr {
-				display: none;
-				margin: 0 1rem;
-
-				@include breakpoint(large) {
-					display: block;
-				}
 			}
 		}
 	}
 
-	.header-row {
-		position: relative;
-		display: flex;
-		align-items: stretch;
-		flex-wrap: nowrap;
-		height: $header-height;
-
-		@include breakpoint(large) {
-			height: $header-height-large;
-		}
-	}
-
-	.header-logo {
-		.icon {
-			display: unset;
-			width: rem-calc(57);
-			height: 100%;
-			margin: rem-calc(-3) auto 0;
-			fill: $text-color;
-			max-height: $header-height;
-
-			@include breakpoint(large) {
-				max-height: $header-height-large;
-			}
-		}
-	}
-
-	.header-button {
-		border-right: 1px solid $divider-color;
-		text-align: center;
-		white-space: nowrap;
-		flex-grow: 2;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-
-		&:last-child {
-			border-right: none;
-		}
-
-		&:link,
-		&:visited,
-		&:active {
-			color: white;
-			text-decoration: none;
-		}
-
-		@include breakpoint(large) {
-			flex-grow: 0;
-			padding: 0 1rem;
-		}
-
-		.icon-triangle {
-			fill: $text-color;
-			width: 0.5rem;
-			height: 0.5rem;
-			transition: transform 400ms ease;
-			transform: rotate(180deg);
-
-			@include breakpoint(medium) {
-				width: 0.75rem;
-				height: 0.75rem;
-			}
-		}
-	}
-
-	.header-button:hover {
-		background-color: $hover-color;
-		color: $text-color;
-	}
-
-	.header-button[aria-expanded="true"] .icon-triangle {
-		transform: rotate(0);
-	}
-
-	.search-toggler {
-		flex-grow: 1;
-		height: 100%;
-		flex-direction: unset;
-
-		&:focus {
-			outline: none;
-		}
-
-		@include breakpoint(large) {
-			flex-grow: 0;
-			border-right: none;
-		}
-
-		.icon {
-			height: 1.125rem;
-			width: 1.125rem;
-			margin: 0 auto;
-		}
-
-		.search-icon {
-			fill: $text-color;
-		}
-
-		.close-icon {
-			stroke: $text-color;
-		}
-	}
-
-	.flexible-center-area {
-		flex-grow: 0;
-		order: -1;
-		height: 100%;
-		border-right: 1px solid $divider-color;
-		text-align: center;
-
-		@include breakpoint(large) {
-			flex-grow: 1;
-			order: 0;
-		}
-
-		.promo-banner-large {
-			top: -$header-height-large;
-		}
-	}
-
-	#top-nav-search-area {
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: calc(100% + 1px);
-		background-color: $header-color;
-		border-right: solid 1px $divider-color;
-		transition: width 0.5s ease;
-		display: flex;
-
-		&[aria-hidden="true"] {
-			width: 0;
-			overflow: hidden;
-		}
-
-		@include breakpoint(large) {
-			position: static;
-		}
-	}
-
-	#top-nav-search-area form {
-		width: calc(100% - #{$close-search-button-size});
-		float: left;
-		padding: $form-padding $form-padding $form-padding 0;
-		z-index: 1;
-
-		@include breakpoint(large) {
-			padding: $form-padding-large $form-padding-large $form-padding-large 0;
+	.dropdown-list {
+		a {
+			display: block;
 			width: 100%;
-		}
-
-		input[type="search"] {
-			padding-left: $top-nav-font-size * 1.5;
-		}
-
-		.icon {
-			width: $top-nav-font-size;
-			height: $header-height - (2 * $form-padding);
+			padding: 0.5rem 1rem;
+			white-space: nowrap;
+			border-bottom: 1px solid $kiva-stroke-gray;
 
 			@include breakpoint(large) {
-				height: $header-height-large - (2 * $form-padding-large);
+				border-bottom: none;
+			}
+		}
+
+		hr {
+			display: none;
+			margin: 0 1rem;
+
+			@include breakpoint(large) {
+				display: block;
 			}
 		}
 	}
+}
 
-	#top-nav-search-area .close-search {
-		float: left;
-		width: $close-search-button-size;
+.header-row {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	flex-wrap: nowrap;
+	height: $header-height;
+
+	@include breakpoint(large) {
+		height: $header-height-large;
+	}
+}
+
+.header-logo {
+	.icon {
+		display: unset;
+		width: rem-calc(57);
 		height: 100%;
+		margin: rem-calc(-3) auto 0;
+		fill: $text-color;
+		max-height: $header-height;
 
-		.icon {
-			width: $top-nav-font-size;
-			height: $header-height;
-			stroke: $kiva-darkgreen;
+		@include breakpoint(large) {
+			max-height: $header-height-large;
 		}
 	}
+}
 
-	.my-kiva {
-		text-align: right;
-		flex-grow: 3;
+.header-button {
+	border-right: 1px solid $divider-color;
+	text-align: center;
+	white-space: nowrap;
+	flex-grow: 2;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	&:last-child {
+		border-right: none;
+	}
+
+	&:link,
+	&:visited,
+	&:active {
+		color: white;
+		text-decoration: none;
+	}
+
+	@include breakpoint(large) {
+		flex-grow: 0;
+		padding: 0 1rem;
+	}
+
+	.icon-triangle {
+		fill: $text-color;
+		width: 0.5rem;
+		height: 0.5rem;
+		transition: transform 400ms ease;
+		transform: rotate(180deg);
+
+		@include breakpoint(medium) {
+			width: 0.75rem;
+			height: 0.75rem;
+		}
+	}
+}
+
+.header-button:hover {
+	background-color: $hover-color;
+	color: $text-color;
+}
+
+.header-button[aria-expanded="true"] .icon-triangle {
+	transform: rotate(0);
+}
+
+.search-toggler {
+	flex-grow: 1;
+	height: 100%;
+	flex-direction: unset;
+
+	&:focus {
+		outline: none;
+	}
+
+	@include breakpoint(large) {
+		flex-grow: 0;
+		border-right: none;
+	}
+
+	.icon {
+		height: 1.125rem;
+		width: 1.125rem;
+		margin: 0 auto;
+	}
+
+	.search-icon {
+		fill: $text-color;
+	}
+
+	.close-icon {
+		stroke: $text-color;
+	}
+}
+
+.flexible-center-area {
+	flex-grow: 0;
+	order: -1;
+	height: 100%;
+	border-right: 1px solid $divider-color;
+	text-align: center;
+
+	@include breakpoint(large) {
+		flex-grow: 1;
+		order: 0;
+	}
+
+	.promo-banner-large {
+		top: -$header-height-large;
+	}
+}
+
+#top-nav-search-area {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: calc(100% + 1px);
+	background-color: $header-color;
+	border-right: solid 1px $divider-color;
+	transition: width 0.5s ease;
+	display: flex;
+
+	&[aria-hidden="true"] {
+		width: 0;
+		overflow: hidden;
+	}
+
+	@include breakpoint(large) {
+		position: static;
+	}
+}
+
+#top-nav-search-area form {
+	width: calc(100% - #{$close-search-button-size});
+	float: left;
+	padding: $form-padding $form-padding $form-padding 0;
+	z-index: 1;
+
+	@include breakpoint(large) {
+		padding: $form-padding-large $form-padding-large $form-padding-large 0;
+		width: 100%;
+	}
+
+	input[type="search"] {
+		padding-left: $top-nav-font-size * 1.5;
+	}
+
+	.icon {
+		width: $top-nav-font-size;
+		height: $header-height - (2 * $form-padding);
+
+		@include breakpoint(large) {
+			height: $header-height-large - (2 * $form-padding-large);
+		}
+	}
+}
+
+#top-nav-search-area .close-search {
+	float: left;
+	width: $close-search-button-size;
+	height: 100%;
+
+	.icon {
+		width: $top-nav-font-size;
+		height: $header-height;
+		stroke: $kiva-darkgreen;
+	}
+}
+
+.my-kiva {
+	text-align: right;
+	flex-grow: 3;
+
+	img {
+		border-radius: 50%;
+		height: $header-height * 0.8;
+		margin: 0 0.25rem;
+	}
+
+	@include breakpoint(large) {
+		flex-grow: 0;
+
+		.amount {
+			margin-right: 0.25rem;
+		}
 
 		img {
-			border-radius: 50%;
-			height: $header-height * 0.8;
-			margin: 0 0.25rem;
-		}
-
-		@include breakpoint(large) {
-			flex-grow: 0;
-
-			.amount {
-				margin-right: 0.25rem;
-			}
-
-			img {
-				height: $header-height-large * 0.8;
-			}
+			height: $header-height-large * 0.8;
 		}
 	}
+}
 </style>
