@@ -39,7 +39,7 @@
 		</span>
 		<span class="small-3 show-for-small-only"></span>
 		<span class="small-9 medium-3 large-2 medium-text-font-size">
-			<div class="small-12 medium-6 donation-input-wrapper">$
+			<div class="small-12 donation-amount-input-wrapper">
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -47,14 +47,16 @@
 					id="donation"
 					v-model="amount"
 					@blur="validateInput">
+				<kv-button
+					class="secondary"
+					@click.native.prevent.stop="updateDonation()"
+				>Update</kv-button>
+				<div
+					class="show-for-medium remove-wrapper"
+					@click="updateLoanAmount('remove')">
+					<kv-icon class="remove-x" name="small-x" />
+				</div>
 			</div>
-		</span>
-		<!-- Adding the $ below to make the spacing work with the input field above this button -->
-		<span class="small-12 medium-6 update-donation-button-wrapper">$
-			<kv-button
-				class="secondary"
-				@click.native.prevent.stop="updateDonation()"
-			>Update</kv-button>
 		</span>
 	</div>
 
@@ -170,26 +172,44 @@ export default {
 	margin-bottom: rem-calc(15);
 }
 
-.donation-input-wrapper {
-	white-space: nowrap;
+.donation-amount-input-wrapper {
+	padding-left: rem-calc(10);
+
+	@include breakpoint(medium) {
+		float: right;
+		white-space: nowrap;
+	}
 }
 
 .donation-amount-input {
+	display: block;
 	border: 1px solid $charcoal;
 	border-radius: $button-radius;
 	width: 132px;
 	text-align: center;
 	font-weight: 300;
 	color: $charcoal;
+	margin-bottom: 0;
 
 	@include breakpoint(medium) {
 		width: rem-calc(110);
+		font-size: $normal-text-font-size;
 	}
 }
 
-.update-donation-button-wrapper {
-	white-space: nowrap;
-	visibility: hidden;
+.show-for-medium {
+	&.remove-wrapper {
+		display: inline;
+		padding-left: rem-calc(10);
+		visibility: hidden;
+	}
+
+	.remove-x {
+		fill: $subtle-gray;
+		display: inline-block;
+		width: 1.1rem;
+		height: rem-calc(36);
+	}
 }
 
 input {
