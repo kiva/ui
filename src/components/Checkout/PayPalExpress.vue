@@ -76,7 +76,7 @@ export default {
 					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
 					commit: true,
 					payment: () => {
-						return new paypal.Promise(resolve => {
+						return new paypal.Promise((resolve, reject) => {
 							this.setUpdating(true);
 							this.validateBasket()
 								.then(validationStatus => {
@@ -85,16 +85,16 @@ export default {
 										this.apollo.query({
 											query: getPaymentToken,
 											variables: {
-												amount: numeral(this.amount).format('0.00'),
+												amount: null // numeral(this.amount).format('0.00'),
 											}
 										}).then(response => {
 											if (response) {
 												if (response.errors) {
 													this.setUpdating(false);
-													return Promise.reject(response);
+													reject(response);
+												} else {
+													resolve(response.shop.getPaymentToken);
 												}
-
-												resolve(response.shop.getPaymentToken);
 											}
 										})
 											.catch(error => {
@@ -105,11 +105,13 @@ export default {
 														pp_stage: 'onPaymentGetPaymentTokenCatch'
 													}
 												});
+
+												reject(error);
 											});
 									} else {
 										this.setUpdating(false);
 										this.showCheckoutError(validationStatus);
-										return Promise.reject(validationStatus);
+										reject(validationStatus);
 									}
 								})
 								.catch(error => {
