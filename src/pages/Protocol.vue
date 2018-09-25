@@ -15,11 +15,14 @@
 				<p v-for="(paragraph, index) in infoText" :key="index">{{ paragraph }}</p>
 				<p><a href="#">How the Protocol works</a></p>
 			</div>
-			<div class="small-12 medium-8 columns">
+			<div class="small-12 large-7 columns">
 				<h1>About Kiva</h1>
 				<p>{{ aboutText }}</p>
 			</div>
-			<div id="charity-navigator-container" class="small-12 medium-4 columns">
+			<div
+				id="charity-navigator-container"
+				class="small-12 medium-8 medium-offset-2 large-4 large-offset-1 columns"
+			>
 				<kv-charity-navigator />
 			</div>
 		</div>
@@ -57,13 +60,28 @@ export default {
 <style lang="scss" scoped>
 	@import 'settings';
 
-	/* Banner */
+	/* Banner/Header */
 	#banner-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		background: darkblue;
+		padding: 0.625rem;
+		box-sizing: border-box;
+
+		* {
+			box-sizing: border-box;
+		}
+	}
+
+	@media print, screen and (min-width: 30em) {
 	}
 
 	#banner-content {
-		background: #ffffff;
+		background: #fff;
+		padding: 40px 80px;
+		max-height: 500px;
+		max-width: 650px;
 	}
 
 	#banner-text {
@@ -72,7 +90,11 @@ export default {
 		color: #3361A0;
 	}
 
-	/* Headers */
+	/* Intro */
+
+	/* Partners */
+
+	/* About */
 	h1,
 	h2 {
 		color: $kiva-green;
@@ -83,4 +105,6 @@ export default {
 		justify-content: center;
 		flex-direction: column;
 	}
+
+	/* Donate */
 </style>
