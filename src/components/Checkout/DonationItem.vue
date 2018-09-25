@@ -85,19 +85,21 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			amount: this.donation.price
+			// setting donation with $ on page load
+			amount: numeral(this.donation.price).format('$0,0.00')
 		};
 	},
 	watch: {
 		serverAmount() {
 			if (!this.donation.isUserEdited) {
-				this.amount = this.donation.price;
+				// setting this.amount to the donation price without $
+				this.amount = numeral(this.donation.price).format('0,0.00');
 			}
 		}
 	},
 	computed: {
 		serverAmount() {
-			return this.donation.price;
+			return numeral(this.donation.price).format('$0,0.00');
 		}
 	},
 	methods: {
@@ -107,12 +109,15 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
+		// TODO: after adding in the numeral changes that I made,
+		// this donation field doesn't work properly with values in
+		// the thousands. ie. $999.99 works, $1,000.00 does not work
 		updateDonation() {
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
-					price: this.amount,
+					price: numeral(this.amount).format('0,0.00'),
 					isTip: this.donation.isTip
 				}
 			}).then(() => {
@@ -126,15 +131,13 @@ export default {
 		validateInput() {
 			// get donation value from input, store it as donationValue
 			const donationValue = document.getElementById('donation').value;
-			console.log(donationValue);
 
 			// format the value taken from the donation input
-			// need if condition here
-			// if donationValue IS NOT numeral return $0.00
 			const verifiedInput = numeral(donationValue).format('$0,0.00');
-			console.log(verifiedInput);
-			// else return the verifiedInput value
+
 			// inject the verfied input back into the donation input field
+			// numeral takes care of non-numerical inputs, does it's best guess
+			// formed value. If input can't be deciphered then $0.00 is returned
 			document.getElementById('donation').value = verifiedInput;
 		}
 	}
