@@ -7,7 +7,7 @@ query {
 		}
 		lender {
 			image {
-				url( presetSize:lender_default )
+				url(presetSize: lender_default)
 			}
 		}
 		isBorrower
@@ -22,8 +22,8 @@ query {
 		nonTrivialItemCount
 	}
 	general {
-       setting(setting:"feature.endofyear_appeal.enabled") {
-         value
-       }
-     }
+		setting(setting: "feature.endofyear_appeal.enabled") {
+			value
+		}
+	}
 }

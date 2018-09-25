@@ -250,375 +250,374 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-import headerQuery from '@/graphql/query/wwwHeader.graphql';
-import KvDropdown from '@/components/Kv/KvDropdown';
-import KvIcon from '@/components/Kv/KvIcon';
-import SearchBar from './SearchBar';
-import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
-import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
-import AppealBanner from './AppealBanner';
+import _get from "lodash/get";
+import headerQuery from "@/graphql/query/wwwHeader.graphql";
+import KvDropdown from "@/components/Kv/KvDropdown";
+import KvIcon from "@/components/Kv/KvIcon";
+import SearchBar from "./SearchBar";
+import PromoBannerLarge from "./PromotionalBanner/PromoBannerLarge";
+import PromoBannerSmall from "./PromotionalBanner/PromoBannerSmall";
+import AppealBanner from "./AppealBanner";
 
 export default {
-	components: {
-		KvDropdown,
-		KvIcon,
-		SearchBar,
-		PromoBannerLarge,
-		PromoBannerSmall,
-		AppealBanner,
-		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
-	},
-	inject: ['apollo'],
-	data() {
-		return {
-			isVisitor: true,
-			isBorrower: false,
-			loanId: null,
-			trusteeId: null,
-			isFreeTrial: false,
-			basketCount: 0,
-			balance: 0,
-			profilePic: '',
-			aboutMenuId: 'about-header-dropdown',
-			lendMenuId: 'lend-header-dropdown',
-			myKivaMenuId: 'my-kiva-header-dropdown',
-			searchOpen: false,
-			showAppealBanner: false,
-		};
-	},
-	computed: {
-		isTrustee() {
-			return !!this.trusteeId;
-		},
-		trusteeLoansUrl() {
-			return {
-				path: '/lend',
-				query: {
-					trustee: this.trusteeId,
-					status: 'fundRaising',
-					sortBy: 'newest',
-				},
-			};
-		},
-		showBasket() {
-			return this.basketCount > 0 && !this.isFreeTrial;
-		},
-	},
-	apollo: {
-		query: headerQuery,
-		preFetch: true,
-		result({ data }) {
-			this.isVisitor = !_get(data, 'my.userAccount.id');
-			this.isBorrower = _get(data, 'my.isBorrower');
-			this.loanId = _get(data, 'my.mostRecentBorrowedLoan.id');
-			this.trusteeId = _get(data, 'my.trustee.id');
-			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
-			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
-			this.profilePic = _get(data, 'my.lender.image.url');
-			this.showAppealBanner = _get(data, 'general.setting.value');
-		},
-	},
-	methods: {
-		onLendMenuShow() {
-			this.$refs.lendMenu.onOpen();
-		},
-		onLendMenuHide() {
-			this.$refs.lendMenu.onClose();
-		},
-		loadLendInfo() {
-			this.$refs.lendMenu.onLoad();
-		},
-		toggleSearch() {
-			this.searchOpen = !this.searchOpen;
-			if (this.searchOpen) {
-				this.$refs.search.focus();
-			}
-		},
-	},
+  components: {
+    KvDropdown,
+    KvIcon,
+    SearchBar,
+    PromoBannerLarge,
+    PromoBannerSmall,
+    AppealBanner,
+    TheLendMenu: () => import("./LendMenu/TheLendMenu")
+  },
+  inject: ["apollo"],
+  data() {
+    return {
+      isVisitor: true,
+      isBorrower: false,
+      loanId: null,
+      trusteeId: null,
+      isFreeTrial: false,
+      basketCount: 0,
+      balance: 0,
+      profilePic: "",
+      aboutMenuId: "about-header-dropdown",
+      lendMenuId: "lend-header-dropdown",
+      myKivaMenuId: "my-kiva-header-dropdown",
+      searchOpen: false,
+      showAppealBanner: false
+    };
+  },
+  computed: {
+    isTrustee() {
+      return !!this.trusteeId;
+    },
+    trusteeLoansUrl() {
+      return {
+        path: "/lend",
+        query: {
+          trustee: this.trusteeId,
+          status: "fundRaising",
+          sortBy: "newest"
+        }
+      };
+    },
+    showBasket() {
+      return this.basketCount > 0 && !this.isFreeTrial;
+    }
+  },
+  apollo: {
+    query: headerQuery,
+    preFetch: true,
+    result({ data }) {
+      this.isVisitor = !_get(data, "my.userAccount.id");
+      this.isBorrower = _get(data, "my.isBorrower");
+      this.loanId = _get(data, "my.mostRecentBorrowedLoan.id");
+      this.trusteeId = _get(data, "my.trustee.id");
+      this.basketCount = _get(data, "shop.nonTrivialItemCount");
+      this.balance = Math.floor(_get(data, "my.userAccount.balance"));
+      this.profilePic = _get(data, "my.lender.image.url");
+      this.showAppealBanner = _get(data, "general.setting.value");
+    }
+  },
+  methods: {
+    onLendMenuShow() {
+      this.$refs.lendMenu.onOpen();
+    },
+    onLendMenuHide() {
+      this.$refs.lendMenu.onClose();
+    },
+    loadLendInfo() {
+      this.$refs.lendMenu.onLoad();
+    },
+    toggleSearch() {
+      this.searchOpen = !this.searchOpen;
+      if (this.searchOpen) {
+        this.$refs.search.focus();
+      }
+    }
+  }
 };
 </script>
 
 <style lang="scss">
-	@import "settings";
+@import "settings";
 
-	$top-nav-font-size: 1.125rem;
-	$header-height: rem-calc(45);
-	$header-height-large: rem-calc(64);
-	$header-color: $kiva-green;
-	$text-color: $white;
-	$hover-color: $kiva-navdivider-green;
-	$divider-color: $kiva-navdivider-green;
-	$form-padding: 0.32rem;
-	$form-padding-large: 0.6rem;
-	$close-search-button-size: 2.5rem;
+$top-nav-font-size: 1.125rem;
+$header-height: rem-calc(45);
+$header-height-large: rem-calc(64);
+$header-color: $kiva-green;
+$text-color: $white;
+$hover-color: $kiva-navdivider-green;
+$divider-color: $kiva-navdivider-green;
+$form-padding: 0.32rem;
+$form-padding-large: 0.6rem;
+$close-search-button-size: 2.5rem;
 
-	.top-nav {
-		background-color: $header-color;
-		font-size: $top-nav-font-size;
-		font-weight: 400;
+.top-nav {
+  background-color: $header-color;
+  font-size: $top-nav-font-size;
+  font-weight: 400;
 
-		.amount {
-			@include breakpoint(large) {
-				color: $header-color;
-				background-color: $text-color;
-				padding: rem-calc(1) rem-calc(7);
-			}
-		}
+  .amount {
+    @include breakpoint(large) {
+      color: $header-color;
+      background-color: $text-color;
+      padding: rem-calc(1) rem-calc(7);
+    }
+  }
 
-		.dropdown-pane {
-			border-top: none;
-			font-size: 1rem;
+  .dropdown-pane {
+    border-top: none;
+    font-size: 1rem;
 
-			ul {
-				margin: 0;
-			}
+    ul {
+      margin: 0;
+    }
 
-			li {
-				list-style: none;
-			}
+    li {
+      list-style: none;
+    }
 
-			@include breakpoint(medium down) {
-				width: 100%;
-				left: 0 !important;
+    @include breakpoint(medium down) {
+      width: 100%;
+      left: 0 !important;
 
-				button,
-				a,
-				li > span {
-					display: block;
-					width: 100%;
-					padding: 0.5rem 1rem;
-					border-bottom: 1px solid $kiva-stroke-gray;
-				}
-			}
-		}
+      button,
+      a,
+      li > span {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        border-bottom: 1px solid $kiva-stroke-gray;
+      }
+    }
+  }
 
-		.dropdown-list {
-			a {
-				display: block;
-				width: 100%;
-				padding: 0.5rem 1rem;
-				white-space: nowrap;
-				border-bottom: 1px solid $kiva-stroke-gray;
+  .dropdown-list {
+    a {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      white-space: nowrap;
+      border-bottom: 1px solid $kiva-stroke-gray;
 
-				@include breakpoint(large) {
-					border-bottom: none;
-				}
-			}
+      @include breakpoint(large) {
+        border-bottom: none;
+      }
+    }
 
-			hr {
-				display: none;
-				margin: 0 1rem;
+    hr {
+      display: none;
+      margin: 0 1rem;
 
-				@include breakpoint(large) {
-					display: block;
-				}
-			}
-		}
-	}
+      @include breakpoint(large) {
+        display: block;
+      }
+    }
+  }
+}
 
-	.header-row {
-		position: relative;
-		display: flex;
-		align-items: stretch;
-		flex-wrap: nowrap;
-		height: $header-height;
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  height: $header-height;
 
-		@include breakpoint(large) {
-			height: $header-height-large;
-		}
-	}
+  @include breakpoint(large) {
+    height: $header-height-large;
+  }
+}
 
-	.header-logo {
-		.icon {
-			display: unset;
-			width: rem-calc(57);
-			height: 100%;
-			margin: rem-calc(-3) auto 0;
-			fill: $text-color;
-			max-height: $header-height;
+.header-logo {
+  .icon {
+    display: unset;
+    width: rem-calc(57);
+    height: 100%;
+    margin: rem-calc(-3) auto 0;
+    fill: $text-color;
+    max-height: $header-height;
 
-			@include breakpoint(large) {
-				max-height: $header-height-large;
-			}
-		}
-	}
+    @include breakpoint(large) {
+      max-height: $header-height-large;
+    }
+  }
+}
 
-	.header-button {
-		border-right: 1px solid $divider-color;
-		text-align: center;
-		white-space: nowrap;
-		flex-grow: 2;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
+.header-button {
+  border-right: 1px solid $divider-color;
+  text-align: center;
+  white-space: nowrap;
+  flex-grow: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-		&:last-child {
-			border-right: none;
-		}
+  &:last-child {
+    border-right: none;
+  }
 
-		&:link,
-		&:visited,
-		&:active {
-			color: white;
-			text-decoration: none;
-		}
+  &:link,
+  &:visited,
+  &:active {
+    color: white;
+    text-decoration: none;
+  }
 
-		@include breakpoint(large) {
-			flex-grow: 0;
-			padding: 0 1rem;
-		}
+  @include breakpoint(large) {
+    flex-grow: 0;
+    padding: 0 1rem;
+  }
 
-		.icon-triangle {
-			fill: $text-color;
-			width: 0.5rem;
-			height: 0.5rem;
-			transition: transform 400ms ease;
-			transform: rotate(180deg);
+  .icon-triangle {
+    fill: $text-color;
+    width: 0.5rem;
+    height: 0.5rem;
+    transition: transform 400ms ease;
+    transform: rotate(180deg);
 
-			@include breakpoint(medium) {
-				width: 0.75rem;
-				height: 0.75rem;
-			}
-		}
-	}
+    @include breakpoint(medium) {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+  }
+}
 
-	.header-button:hover {
-		background-color: $hover-color;
-		color: $text-color;
-	}
+.header-button:hover {
+  background-color: $hover-color;
+  color: $text-color;
+}
 
-	.header-button[aria-expanded="true"] .icon-triangle {
-		transform: rotate(0);
-	}
+.header-button[aria-expanded="true"] .icon-triangle {
+  transform: rotate(0);
+}
 
-	.search-toggler {
-		flex-grow: 1;
-		height: 100%;
-		flex-direction: unset;
+.search-toggler {
+  flex-grow: 1;
+  height: 100%;
+  flex-direction: unset;
 
-		&:focus {
-			outline: none;
-		}
+  &:focus {
+    outline: none;
+  }
 
-		@include breakpoint(large) {
-			flex-grow: 0;
-			border-right: none;
-		}
+  @include breakpoint(large) {
+    flex-grow: 0;
+    border-right: none;
+  }
 
-		.icon {
-			height: 1.125rem;
-			width: 1.125rem;
-			margin: 0 auto;
-		}
+  .icon {
+    height: 1.125rem;
+    width: 1.125rem;
+    margin: 0 auto;
+  }
 
-		.search-icon {
-			fill: $text-color;
-		}
+  .search-icon {
+    fill: $text-color;
+  }
 
-		.close-icon {
-			stroke: $text-color;
-		}
-	}
+  .close-icon {
+    stroke: $text-color;
+  }
+}
 
-	.flexible-center-area {
-		flex-grow: 0;
-		order: -1;
-		height: 100%;
-		border-right: 1px solid $divider-color;
-		text-align: center;
+.flexible-center-area {
+  flex-grow: 0;
+  order: -1;
+  height: 100%;
+  border-right: 1px solid $divider-color;
+  text-align: center;
 
-		@include breakpoint(large) {
-			flex-grow: 1;
-			order: 0;
-		}
+  @include breakpoint(large) {
+    flex-grow: 1;
+    order: 0;
+  }
 
-		.promo-banner-large {
-			top: -$header-height-large;
-		}
-	}
+  .promo-banner-large {
+    top: -$header-height-large;
+  }
+}
 
-	#top-nav-search-area {
-		position: absolute;
-		left: 0;
-		top: 0;
-		height: 100%;
-		width: calc(100% + 1px);
-		background-color: $header-color;
-		border-right: solid 1px $divider-color;
-		transition: width 0.5s ease;
-		display: flex;
+#top-nav-search-area {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: calc(100% + 1px);
+  background-color: $header-color;
+  border-right: solid 1px $divider-color;
+  transition: width 0.5s ease;
+  display: flex;
 
-		&[aria-hidden="true"] {
-			width: 0;
-			overflow: hidden;
-		}
+  &[aria-hidden="true"] {
+    width: 0;
+    overflow: hidden;
+  }
 
-		@include breakpoint(large) {
-			position: static;
-		}
-	}
+  @include breakpoint(large) {
+    position: static;
+  }
+}
 
-	#top-nav-search-area form {
-		width: calc(100% - #{$close-search-button-size});
-		float: left;
-		padding: $form-padding $form-padding $form-padding 0;
-		z-index: 1;
+#top-nav-search-area form {
+  width: calc(100% - #{$close-search-button-size});
+  float: left;
+  padding: $form-padding $form-padding $form-padding 0;
+  z-index: 1;
 
-		@include breakpoint(large) {
-			padding: $form-padding-large $form-padding-large $form-padding-large 0;
-			width: 100%;
-		}
+  @include breakpoint(large) {
+    padding: $form-padding-large $form-padding-large $form-padding-large 0;
+    width: 100%;
+  }
 
-		input[type="search"] {
-			padding-left: $top-nav-font-size * 1.5;
-		}
+  input[type="search"] {
+    padding-left: $top-nav-font-size * 1.5;
+  }
 
-		.icon {
-			width: $top-nav-font-size;
-			height: $header-height - (2 * $form-padding);
+  .icon {
+    width: $top-nav-font-size;
+    height: $header-height - (2 * $form-padding);
 
-			@include breakpoint(large) {
-				height: $header-height-large - (2 * $form-padding-large);
-			}
-		}
-	}
+    @include breakpoint(large) {
+      height: $header-height-large - (2 * $form-padding-large);
+    }
+  }
+}
 
-	#top-nav-search-area .close-search {
-		float: left;
-		width: $close-search-button-size;
-		height: 100%;
+#top-nav-search-area .close-search {
+  float: left;
+  width: $close-search-button-size;
+  height: 100%;
 
-		.icon {
-			width: $top-nav-font-size;
-			height: $header-height;
-			stroke: $kiva-darkgreen;
-		}
-	}
+  .icon {
+    width: $top-nav-font-size;
+    height: $header-height;
+    stroke: $kiva-darkgreen;
+  }
+}
 
-	.my-kiva {
-		text-align: right;
-		flex-grow: 3;
+.my-kiva {
+  text-align: right;
+  flex-grow: 3;
 
-		img {
-			border-radius: 50%;
-			height: $header-height * 0.8;
-			margin: 0 0.25rem;
-		}
+  img {
+    border-radius: 50%;
+    height: $header-height * 0.8;
+    margin: 0 0.25rem;
+  }
 
-		@include breakpoint(large) {
-			flex-grow: 0;
+  @include breakpoint(large) {
+    flex-grow: 0;
 
-			.amount {
-				margin-right: 0.25rem;
-			}
+    .amount {
+      margin-right: 0.25rem;
+    }
 
-			img {
-				height: $header-height-large * 0.8;
-			}
-		}
-	}
-
+    img {
+      height: $header-height-large * 0.8;
+    }
+  }
+}
 </style>
