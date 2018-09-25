@@ -4,7 +4,7 @@
 			<input id="donation-amount" v-model="donationAmount" type="number">
 		</div>
 		<div>
-			<kv-button @click.native.prevent.stop="updateDonation()">Support Kiva</kv-button>
+			<kv-button class="smaller" @click.native.prevent.stop="updateDonation()">Support Kiva</kv-button>
 		</div>
 	</div>
 </template>
@@ -51,11 +51,12 @@ export default {
 	#container {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: flex-start;
 	}
 
 	#donation-amount {
-		height: 64px;
+		margin-right: 20px;
+		height: 56px;
 		width: 80px;
 	}
 </style>
