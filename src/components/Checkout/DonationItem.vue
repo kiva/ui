@@ -68,6 +68,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -85,8 +86,8 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			// setting donation with $ on page load
-			amount: numeral(this.donation.price).format('$0,0.00')
+			amount: numeral(this.donation.price).format('$0,0.00'),
+			cachedAmount: numeral(this.donation.price).format('$0,0.00')
 		};
 	},
 	watch: {
@@ -109,20 +110,25 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
-		// TODO: after adding in the numeral changes that I made,
-		// this donation field doesn't work properly with values in
-		// the thousands. ie. $999.99 works, $1,000.00 does not work
 		updateDonation() {
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
-					price: numeral(this.amount).format('0,0.00'),
+					price: numeral(this.amount).format('0.00'),
 					isTip: this.donation.isTip
 				}
-			}).then(() => {
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+					this.amount = this.cachedAmount;
+				} else {
+					this.$emit('refreshtotals');
+					this.cachedAmount = numeral(this.amount).format('$0,0.00');
+				}
 				this.$emit('updating-totals', false);
-				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
 				this.$emit('updating-totals', false);
