@@ -45,15 +45,16 @@
 					class="donation-amount-input"
 					name="donation"
 					id="donation"
-					v-model="amount">
+					v-model="amount"
+					@blur="validateInput">
 			</div>
-			<!-- Adding the $ below to make the spacing work with the input field above this button -->
-			<span class="small-12 medium-6 update-donation-button-wrapper">$
-				<kv-button
-					class="secondary"
-					@click.native.prevent.stop="updateDonation()"
-				>Update</kv-button>
-			</span>
+		</span>
+		<!-- Adding the $ below to make the spacing work with the input field above this button -->
+		<span class="small-12 medium-6 update-donation-button-wrapper">$
+			<kv-button
+				class="secondary"
+				@click.native.prevent.stop="updateDonation()"
+			>Update</kv-button>
 		</span>
 	</div>
 
@@ -64,6 +65,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import numeral from 'numeral';
 
 export default {
 	components: {
@@ -118,6 +120,20 @@ export default {
 				console.error(error);
 				this.$emit('updating-totals', false);
 			});
+		},
+		validateInput() {
+			// get donation value from input, store it as donationValue
+			const donationValue = document.getElementById('donation').value;
+			console.log(donationValue);
+
+			// format the value taken from the donation input
+			// need if condition here
+			// if donationValue IS NOT numeral return $0.00
+			const verifiedInput = numeral(donationValue).format('$0,0.00');
+			console.log(verifiedInput);
+			// else return the verifiedInput value
+			// inject the verfied input back into the donation input field
+			document.getElementById('donation').value = verifiedInput;
 		}
 	}
 };
