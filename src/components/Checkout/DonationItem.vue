@@ -39,21 +39,24 @@
 		</span>
 		<span class="small-3 show-for-small-only"></span>
 		<span class="small-9 medium-3 large-2 medium-text-font-size">
-			<div class="small-12 medium-6 donation-input-wrapper">$
+			<div class="small-12 donation-amount-input-wrapper">
 				<input
 					type="input"
 					class="donation-amount-input"
 					name="donation"
 					id="donation"
-					v-model="amount">
-			</div>
-			<!-- Adding the $ below to make the spacing work with the input field above this button -->
-			<span class="small-12 medium-6 update-donation-button-wrapper">$
+					v-model="amount"
+					@blur="validateInput">
 				<kv-button
 					class="secondary"
 					@click.native.prevent.stop="updateDonation()"
 				>Update</kv-button>
-			</span>
+				<div
+					class="show-for-medium remove-wrapper"
+					@click="updateLoanAmount('remove')">
+					<kv-icon class="remove-x" name="small-x" />
+				</div>
+			</div>
 		</span>
 	</div>
 
@@ -64,6 +67,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -81,19 +86,21 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			amount: this.donation.price
+			amount: numeral(this.donation.price).format('$0,0.00'),
+			cachedAmount: numeral(this.donation.price).format('$0,0.00')
 		};
 	},
 	watch: {
 		serverAmount() {
 			if (!this.donation.isUserEdited) {
-				this.amount = this.donation.price;
+				// setting this.amount to the donation price without $
+				this.amount = numeral(this.donation.price).format('0,0.00');
 			}
 		}
 	},
 	computed: {
 		serverAmount() {
-			return this.donation.price;
+			return numeral(this.donation.price).format('$0,0.00');
 		}
 	},
 	methods: {
@@ -108,16 +115,36 @@ export default {
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
-					price: this.amount,
+					price: numeral(this.amount).format('0.00'),
 					isTip: this.donation.isTip
 				}
-			}).then(() => {
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+					this.amount = this.cachedAmount;
+				} else {
+					this.$emit('refreshtotals');
+					this.cachedAmount = numeral(this.amount).format('$0,0.00');
+				}
 				this.$emit('updating-totals', false);
-				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
 				this.$emit('updating-totals', false);
 			});
+		},
+		validateInput() {
+			// get donation value from input, store it as donationValue
+			const donationValue = document.getElementById('donation').value;
+
+			// format the value taken from the donation input
+			const verifiedInput = numeral(donationValue).format('$0,0.00');
+
+			// inject the verfied input back into the donation input field
+			// numeral takes care of non-numerical inputs, does it's best guess
+			// formed value. If input can't be deciphered then $0.00 is returned
+			document.getElementById('donation').value = verifiedInput;
 		}
 	}
 };
@@ -154,26 +181,44 @@ export default {
 	margin-bottom: rem-calc(15);
 }
 
-.donation-input-wrapper {
-	white-space: nowrap;
+.donation-amount-input-wrapper {
+	padding-left: rem-calc(10);
+
+	@include breakpoint(medium) {
+		float: right;
+		white-space: nowrap;
+	}
 }
 
 .donation-amount-input {
+	display: block;
 	border: 1px solid $charcoal;
 	border-radius: $button-radius;
 	width: 132px;
 	text-align: center;
 	font-weight: 300;
 	color: $charcoal;
+	margin-bottom: 0;
 
 	@include breakpoint(medium) {
 		width: rem-calc(110);
+		font-size: $normal-text-font-size;
 	}
 }
 
-.update-donation-button-wrapper {
-	white-space: nowrap;
-	visibility: hidden;
+.show-for-medium {
+	&.remove-wrapper {
+		display: inline;
+		padding-left: rem-calc(10);
+		visibility: hidden;
+	}
+
+	.remove-x {
+		fill: $subtle-gray;
+		display: inline-block;
+		width: 1.1rem;
+		height: rem-calc(36);
+	}
 }
 
 input {
