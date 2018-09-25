@@ -55,6 +55,7 @@ export default {
 	}
 
 	#donation-amount {
-		height: 63px;
+		height: 64px;
+		width: 80px;
 	}
 </style>

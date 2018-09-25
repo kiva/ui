@@ -25,6 +25,7 @@
 	}
 
 	#image {
+		margin: 10px 0 5px 0;
 		max-width: 75%;
 	}
 
