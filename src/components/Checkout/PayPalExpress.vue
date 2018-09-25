@@ -85,7 +85,7 @@ export default {
 										this.apollo.query({
 											query: getPaymentToken,
 											variables: {
-												amount: null // numeral(this.amount).format('0.00'),
+												amount: numeral(this.amount).format('0.00'),
 											}
 										}).then(response => {
 											if (response) {
