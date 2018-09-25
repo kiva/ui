@@ -16,6 +16,18 @@
 				<p><a href="#">How the Protocol works</a></p>
 			</div>
 		</div>
+		<div id="support-container">
+			<div class="row">
+				<div class="small-12 large-6 columns">
+					<h2 id="donate-title">Support Kiva innovation</h2>
+					{{ supportText }}
+					<kv-custom-donation :default-value="100" />
+				</div>
+				<div class="small-10 small-offset-1 medium-8 medium-offset-2 large-5 large-offset-1 columns">
+					<img src="~@/assets/images/10-years-billion-impact.jpg">
+				</div>
+			</div>
+		</div>
 		<div id="about-container">
 			<div class="row" id="about">
 				<div class="small-12 large-7 columns">
@@ -27,18 +39,6 @@
 					class="small-12 medium-8 medium-offset-2 large-4 large-offset-1 columns"
 				>
 					<kv-charity-navigator />
-				</div>
-			</div>
-		</div>
-		<div id="support-container">
-			<div class="row">
-				<div class="small-12 large-6 columns">
-					<h2 id="donate-title">Support Kiva innovation</h2>
-					{{ supportText }}
-					<kv-custom-donation default-value="100" />
-				</div>
-				<div class="small-10 small-offset-1 medium-8 medium-offset-2 large-5 large-offset-1 columns">
-					<img src="~@/assets/images/10-years-billion-impact.jpg">
 				</div>
 			</div>
 		</div>
@@ -84,7 +84,7 @@ export default {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: url('~@/assets/images/protocol/protocol-hero.jpg') no-repeat;
+		background: url('~@/assets/images/protocol/protocol-header-default.jpg') no-repeat;
 		background-size: cover;
 		padding: 0.625rem;
 		box-sizing: border-box;
@@ -126,10 +126,11 @@ export default {
 
 	/* Partners */
 
-	/* About, Support */
+	/* Support */
 
-	#about-container,
-	#support-container {
+	/* About */
+
+	#about-container {
 		background: #FAFAFA;
 	}
 
