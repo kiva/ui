@@ -88,13 +88,12 @@ export default {
 												amount: numeral(this.amount).format('0.00'),
 											}
 										}).then(response => {
-											if (response) {
-												if (response.errors) {
-													this.setUpdating(false);
-													reject(response);
-												} else {
-													resolve(response.shop.getPaymentToken);
-												}
+											if (response.errors) {
+												this.setUpdating(false);
+												reject(response);
+											} else {
+												const paymentToken = _get(response, 'data.shop.getPaymentToken');
+												resolve(paymentToken || response);
 											}
 										})
 											.catch(error => {
