@@ -21,8 +21,7 @@ export default {
 			this.passwordErrors = [];
 			if (this.checkEmpty(password)) {
 				this.passwordErrors.push('Password required');
-			}
-			if (password.length < 8 || password.length > 30) {
+			} else if (password.length < 8 || password.length > 30) {
 				this.passwordErrors.push('Password must be 8 - 30 characters.');
 			}
 			return this.passwordErrors;
@@ -35,8 +34,7 @@ export default {
 
 			if (this.checkEmpty(email)) {
 				this.emailErrors.push('Email required');
-			}
-			if (!re.test(email)) {
+			} else if (!re.test(email)) {
 				this.emailErrors.push('Valid email required.');
 			}
 			return this.emailErrors;
