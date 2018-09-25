@@ -15,7 +15,7 @@
 				</li>
 			</ul>
 
-			<div class="input-set" v-show="showFirstName">
+			<div class="input-set" v-if="showFirstName">
 				<label for="firstName">
 					First name
 					<input
@@ -32,8 +32,10 @@
 					</ul>
 				</p>
 			</div>
+			<!-- If first name is hidden use a hidden field -->
+			<input v-else type="hidden" name="firstName" v-model="firstName">
 
-			<div class="input-set" v-show="showLastName">
+			<div class="input-set" v-if="showLastName">
 				<label for="lastName">
 					Last name <input
 						type="text"
@@ -48,6 +50,8 @@
 					</ul>
 				</p>
 			</div>
+			<!-- If last name is hidden use a hidden field -->
+			<input v-else type="hidden" name="lastName" v-model="lastName">
 
 			<div class="input-set">
 				<label for="email">
