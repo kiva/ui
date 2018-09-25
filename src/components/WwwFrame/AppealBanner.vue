@@ -57,86 +57,86 @@
 </template>
 <script>
 /* eslint-disable max-len */
-import KvButton from "@/components/Kv/KvButton";
-import KvIcon from "@/components/Kv/KvIcon";
+import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
-  components: {
-    KvButton,
-    KvIcon
-  },
-  data() {
-    return {
-      isOpen: true
-    };
-  },
-  methods: {
-    toggleBanner() {
-      this.isOpen = !this.isOpen;
-    }
-  }
+	components: {
+		KvButton,
+		KvIcon,
+	},
+	data() {
+		return {
+			isOpen: true,
+		};
+	},
+	methods: {
+		toggleBanner() {
+			this.isOpen = !this.isOpen;
+		},
+	},
 };
 </script>
 <style lang='scss'>
-@import "settings";
+	@import "settings";
 
-.appeal-banner {
-  background: $kiva-alert-yellow;
-}
+	.appeal-banner {
+		background: $kiva-alert-yellow;
+	}
 
-.appeal-banner-layout {
-  max-width: 61.875rem;
-  margin: 0 auto;
-  height: 300px;
+	.appeal-banner-layout {
+		max-width: 61.875rem;
+		margin: 0 auto;
+		height: 300px;
 
-  &.close {
-    height: 50px;
-  }
+		&.close {
+			height: 50px;
+		}
 
-  & > .row {
-    height: 100%;
-    align-items: center;
-  }
+		& > .row {
+			height: 100%;
+			align-items: center;
+		}
 
-  .avatar {
-    width: 13rem;
-    align-items: center;
-  }
+		.avatar {
+			width: 13rem;
+			align-items: center;
+		}
 
-  .info {
-    max-width: 45rem;
-  }
+		.info {
+			max-width: 45rem;
+		}
 
-  .header {
-    flex-direction: row;
-    display: flex;
-  }
+		.header {
+			flex-direction: row;
+			display: flex;
+		}
 
-  .quote {
-    max-width: 40rem;
-  }
+		.quote {
+			max-width: 40rem;
+		}
 
-  .column {
-    padding: 0;
-  }
+		.column {
+			padding: 0;
+		}
 
-  .avatar-icon {
-    width: 10rem;
-    height: 10rem;
-    border-radius: 5rem;
-  }
+		.avatar-icon {
+			width: 10rem;
+			height: 10rem;
+			border-radius: 5rem;
+		}
 
-  .close-icon {
-    transform: scaleY(-1);
-    height: 35px;
-  }
+		.close-icon {
+			transform: scaleY(-1);
+			height: 35px;
+		}
 
-  .icon {
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-    margin-left: 50px;
-    margin-top: 5px;
-  }
-}
+		.icon {
+			width: 25px;
+			height: 25px;
+			cursor: pointer;
+			margin-left: 50px;
+			margin-top: 5px;
+		}
+	}
 </style>
