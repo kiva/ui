@@ -124,15 +124,26 @@ export default {
 							})
 								.then(ppResponse => {
 									console.log(ppResponse);
-									// check for ERROR CODE=INSTRUMENT_DECLINED and restart
-									if (ppResponse.error === 'INSTRUMENT_DECLINED') {
-										return actions.restart();
-									}
-
 									// Check for errors
-									if (ppResponse.error) {
+									if (ppResponse.errors) {
 										this.setUpdating(false);
-										console.error(`Error completing transactions: ${ppResponse.error}`);
+										const errorCode = _get(ppResponse, 'errors[0].code');
+										const serverErrorMessage = _get(ppResponse, 'errors[0].message');
+										const standardErrorCode = `(PayPal error: ${errorCode})`;
+										const standardError = `There was an error processing your payment.
+											Please try again. ${standardErrorCode}`;
+
+										console.log(errorCode, serverErrorMessage);
+										// check for ERROR CODE=INSTRUMENT_DECLINED and restart
+										// 10539 'INSTRUMENT_DECLINED' error
+										if (errorCode === '10539') {
+											return actions.restart();
+										}
+										// TODO: How should we handle 10486
+										// TODO: Are there other specific errors we should handle?
+
+										this.$showTipMsg(standardError, 'error');
+										console.error(`Transaction Error: ${ppResponse.errors}`);
 									}
 
 									// Transaction is complete
