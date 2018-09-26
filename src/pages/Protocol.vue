@@ -38,7 +38,7 @@
 					<div class="partners-block">
 						<img
 							class="partners-image"
-							src="~@/assets/images/protocol/partner-UNCDF.svg"
+							src="~@/assets/images/protocol/partner-uncdf.svg"
 							alt="UNCDF"
 						>
 					</div>
