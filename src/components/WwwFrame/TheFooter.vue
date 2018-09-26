@@ -31,7 +31,7 @@
 				<div class="narrow">
 					<h1>Explore</h1>
 					<ul>
-						<li><router-link to="/protocol">Protocol</router-link></li>
+						<li v-if="isProtocolLive"><router-link to="/protocol">Protocol</router-link></li>
 						<li><router-link to="/gifts">Gifts</router-link></li>
 						<li><router-link to="/live">Happening now</router-link></li>
 						<li><router-link :to="sitemapUrl">Site map</router-link></li>
@@ -95,6 +95,7 @@
 
 <script>
 import { getYear } from 'date-fns';
+import _get from 'lodash/get';
 import protocolUiPageQuery from '@/graphql/query/protocolUiPage.graphql';
 
 export default {
