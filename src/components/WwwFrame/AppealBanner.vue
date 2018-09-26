@@ -1,6 +1,5 @@
 <template>
-	<div class="appeal-banner">
-
+	<div class="appeal-banner" v-if="isVisible">
 		<div class="appeal-banner-layout close" v-show="!isOpen">
 			<div class="row">
 				<div class="avatar rows">
@@ -16,7 +15,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="appeal-banner-layout" v-show="isOpen">
 			<div class="row">
 				<div class="avatar rows">
@@ -55,20 +53,32 @@
 		</div>
 	</div>
 </template>
+
 <script>
 /* eslint-disable max-len */
+import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
+import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			isOpen: true,
+			isVisible: false,
 		};
+	},
+	apollo: {
+		query: appealBannerQuery,
+		preFetch: true,
+		result({ data }) {
+			this.isVisible = _get(data, 'general.setting.value');
+		},
 	},
 	methods: {
 		toggleBanner() {
@@ -77,66 +87,67 @@ export default {
 	},
 };
 </script>
+
 <style lang='scss'>
-	@import "settings";
+@import "settings";
 
-	.appeal-banner {
-		background: $kiva-alert-yellow;
+.appeal-banner {
+	background: $kiva-alert-yellow;
+}
+
+.appeal-banner-layout {
+	max-width: 61.875rem;
+	margin: 0 auto;
+	height: 300px;
+
+	&.close {
+		height: 50px;
 	}
 
-	.appeal-banner-layout {
-		max-width: 61.875rem;
-		margin: 0 auto;
-		height: 300px;
-
-		&.close {
-			height: 50px;
-		}
-
-		& > .row {
-			height: 100%;
-			align-items: center;
-		}
-
-		.avatar {
-			width: 13rem;
-			align-items: center;
-		}
-
-		.info {
-			max-width: 45rem;
-		}
-
-		.header {
-			flex-direction: row;
-			display: flex;
-		}
-
-		.quote {
-			max-width: 40rem;
-		}
-
-		.column {
-			padding: 0;
-		}
-
-		.avatar-icon {
-			width: 10rem;
-			height: 10rem;
-			border-radius: 5rem;
-		}
-
-		.close-icon {
-			transform: scaleY(-1);
-			height: 35px;
-		}
-
-		.icon {
-			width: 25px;
-			height: 25px;
-			cursor: pointer;
-			margin-left: 50px;
-			margin-top: 5px;
-		}
+	& > .row {
+		height: 100%;
+		align-items: center;
 	}
+
+	.avatar {
+		width: 13rem;
+		align-items: center;
+	}
+
+	.info {
+		max-width: 45rem;
+	}
+
+	.header {
+		flex-direction: row;
+		display: flex;
+	}
+
+	.quote {
+		max-width: 40rem;
+	}
+
+	.column {
+		padding: 0;
+	}
+
+	.avatar-icon {
+		width: 10rem;
+		height: 10rem;
+		border-radius: 5rem;
+	}
+
+	.close-icon {
+		transform: scaleY(-1);
+		height: 35px;
+	}
+
+	.icon {
+		width: 25px;
+		height: 25px;
+		cursor: pointer;
+		margin-left: 50px;
+		margin-top: 5px;
+	}
+}
 </style>

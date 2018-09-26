@@ -1,0 +1,7 @@
+query {
+	general {
+		setting(setting: "feature.endofyear_appeal.enabled") {
+			value
+		}
+	}
+}

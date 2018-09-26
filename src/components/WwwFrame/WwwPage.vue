@@ -1,5 +1,6 @@
 <template>
 	<div class="www-page">
+		<appeal-banner />
 		<the-header />
 		<slot name="secondary"></slot>
 		<main>
@@ -15,12 +16,14 @@
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
+import AppealBanner from './AppealBanner';
 
 export default {
 	components: {
 		TheHeader,
 		TheFooter,
 		TheBasketBar,
+		AppealBanner,
 	}
 };
 </script>
