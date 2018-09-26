@@ -89,7 +89,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import "settings";
+@import 'settings';
 
 .appeal-banner {
 	background: $kiva-alert-yellow;

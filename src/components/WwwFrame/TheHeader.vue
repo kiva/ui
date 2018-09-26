@@ -2,7 +2,7 @@
 	<header class="top-nav">
 		<div class="header-row row">
 			<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
-				<kv-icon name="new-kiva-logo"/>
+				<kv-icon name="new-kiva-logo" />
 			</router-link>
 			<router-link
 				:id="lendMenuId"
@@ -10,7 +10,7 @@
 				class="header-button"
 				v-kv-track-event="['TopNav','click-Lend']"
 			>
-				<span>Lend <kv-icon name="triangle"/></span>
+				<span>Lend <kv-icon name="triangle" /></span>
 			</router-link>
 			<button class="search-toggler header-button"
 				:class="{'show-for-large': isVisitor}"
@@ -20,8 +20,8 @@
 				@click="toggleSearch"
 				v-kv-track-event="['TopNav','click-search-toggle']"
 			>
-				<kv-icon v-show="!searchOpen" class="search-icon" name="magnify-glass"/>
-				<kv-icon v-show="searchOpen" class="close-icon" name="x"/>
+				<kv-icon v-show="!searchOpen" class="search-icon" name="magnify-glass" />
+				<kv-icon v-show="searchOpen" class="close-icon" name="x" />
 			</button>
 			<div class="flexible-center-area">
 				<div id="top-nav-search-area" :aria-hidden="searchOpen ? 'false' : 'true'">
@@ -32,11 +32,11 @@
 						@click="toggleSearch"
 						v-kv-track-event="['TopNav','click-search-close-mobile']"
 					>
-						<kv-icon class="close-icon" name="x"/>
+						<kv-icon class="close-icon" name="x" />
 					</button>
-					<search-bar ref="search"/>
+					<search-bar ref="search" />
 				</div>
-				<promo-banner-large/>
+				<promo-banner-large />
 			</div>
 			<router-link
 				v-if="isVisitor"
@@ -53,7 +53,7 @@
 				class="header-button"
 				v-kv-track-event="['TopNav','click-About']"
 			>
-				<span>About <kv-icon name="triangle"/></span>
+				<span>About <kv-icon name="triangle" /></span>
 			</router-link>
 			<router-link
 				v-if="showBasket"
@@ -87,10 +87,9 @@
 				</span>
 			</router-link>
 		</div>
-		<promo-banner-small/>
-		<kv-dropdown :controller="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow"
-			@hide="onLendMenuHide">
-			<the-lend-menu ref="lendMenu"/>
+		<promo-banner-small />
+		<kv-dropdown :controller="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
+			<the-lend-menu ref="lendMenu" />
 		</kv-dropdown>
 		<kv-dropdown :controller="aboutMenuId" v-if="isVisitor" class="dropdown-list">
 			<ul>
@@ -292,7 +291,7 @@ export default {
 					trustee: this.trusteeId,
 					status: 'fundRaising',
 					sortBy: 'newest',
-				},
+				}
 			};
 		},
 		showBasket() {
@@ -327,13 +326,13 @@ export default {
 			if (this.searchOpen) {
 				this.$refs.search.focus();
 			}
-		},
+		}
 	},
 };
 </script>
 
 <style lang="scss">
-@import "settings";
+@import 'settings';
 
 $top-nav-font-size: 1.125rem;
 $header-height: rem-calc(45);
