@@ -45,6 +45,7 @@
 				</div>
 			</div>
 		</div>
+		<!--
 		<div id="press-container">
 			<div class="row" id="press">
 				<div class="press-block">
@@ -79,15 +80,16 @@
 				</div>
 			</div>
 		</div>
+		-->
 		<div id="support-container">
 			<div class="row">
-				<div class="small-12 large-6 columns">
+				<div id="support-donate-container" class="small-12 large-6 columns">
 					<h2 id="donate-title">Support Kiva innovation</h2>
 					<div id="support-text">{{ supportText }}</div>
 					<kv-custom-donation :default-value="100" />
 				</div>
-				<div class="small-10 small-offset-1 medium-8 medium-offset-2 large-5 large-offset-1 columns">
-					<img src="~@/assets/images/10-years-billion-impact.jpg">
+				<div class="hide-for-small-only medium-8 medium-offset-2 large-5 large-offset-1 columns">
+					<img src="~@/assets/images/10-years-billion-impact.png">
 				</div>
 			</div>
 		</div>
@@ -251,7 +253,13 @@ export default {
 
 	/* Support */
 	#support-container {
-		padding: 80px 0 40px 0;
+		padding: 0 0 40px 0;
+	}
+
+	#support-donate-container {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
 	}
 
 	#support-text {
@@ -262,6 +270,7 @@ export default {
 
 	#about-container {
 		background: #FAFAFA;
+		padding: 40px 0 80px 0;
 	}
 
 	h1,
