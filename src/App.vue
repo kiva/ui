@@ -55,7 +55,7 @@ export default {
 				// eslint-disable-next-line max-len
 				{ property: 'og:description', content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loans go to support borrowers.' },
 				{ property: 'theme-color', content: '#4faf4e' },
-				{ property: 'og:image', content: require('@/assets/images/kiva_k_cutout_new.jpg') },
+				{ property: 'og:image', content: 'https://www-kiva-org.global.ssl.fastly.net/cms/kiva-og-image.jpg' },
 				{ property: 'og:image:width', content: '196' },
 				{ property: 'og:image:height', content: '106' },
 			]).concat([

@@ -137,8 +137,27 @@ export default {
 		};
 	},
 	metaInfo: {
-		title: 'Introducing Protocol',
-		description: 'My description',
+		title: 'Kiva Protocol - Building the credit bureau of the future',
+		meta: [
+			{
+				vmid: 'description',
+				name: 'description',
+				// eslint-disable-next-line max-len
+				content: 'Introducing Kiva Protocol, an exciting new initiative to give unbanked people formal identity and secure control over their own credit information'
+			},
+			{ property: 'og:title', content: 'Kiva Protocol' },
+			{
+				property: 'og:description',
+				// eslint-disable-next-line max-len
+				content: 'An exciting new initiative to give unbanked people formal identity and secure control over their own credit.'
+			},
+			{ name: 'twitter:title', content: 'Kiva Protocol' },
+			{
+				name: 'twitter:description',
+				// eslint-disable-next-line max-len
+				content: 'An exciting new initiative to give unbanked people formal identity and secure control over their own credit.'
+			},
+		],
 	}
 };
 </script>
