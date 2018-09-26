@@ -147,6 +147,8 @@ export default {
 										const standardError = `There was an error processing your payment.
 											Please try again. ${standardErrorCode}`;
 
+										this.$showTipMsg(standardError, 'error');
+
 										// Restart the Exp Checkout interface to allow payment changes
 										// 10539 'payment declined' error
 										// 10486 transaction could not be completed
@@ -154,8 +156,6 @@ export default {
 											return actions.restart();
 										}
 										// TODO: Are there other specific errors we should handle?
-
-										this.$showTipMsg(standardError, 'error');
 
 										// Fire specific exception to Sentry/Raven
 										Raven.captureException(ppResponse.errors, {
