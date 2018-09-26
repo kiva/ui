@@ -14,6 +14,7 @@ module.exports = [
 	{
 		loader: 'sass-loader',
 		options: {
+			implementation: require('dart-sass'),
 			includePaths: [
 				'src/assets/fonts',
 				'src/assets/scss',
