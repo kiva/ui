@@ -77,7 +77,7 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isVisible = _get(data, 'general.setting.value');
+			this.isVisible = _get(data, 'general.setting.value') === 'true' || false;
 		},
 	},
 	methods: {
