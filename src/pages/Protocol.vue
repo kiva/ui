@@ -1,5 +1,5 @@
 <template>
-	<www-page>
+	<www-page v-if="isProtocolLive">
 		<div id="banner-container">
 			<div id="banner-content">
 				<div id="banner-text">
@@ -14,7 +14,7 @@
 			<div class="small-12 columns">
 				<div id="intro-title">{{ introTitle }}</div>
 				<p v-for="(paragraph, index) in introText" :key="index">{{ paragraph }}</p>
-				<p><a href="#">{{ introLinkTitle }}</a></p>
+				<p><a href="https://pages.kiva.org/kiva-protocol-faq">{{ introLinkTitle }}</a></p>
 			</div>
 		</div>
 		<div class="row" id="partners">
@@ -111,11 +111,22 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import KvCustomDonation from '@/components/Kv/KvCustomDonation';
+import protocolUiPageQuery from '@/graphql/query/protocolUiPage.graphql';
 
 export default {
+	inject: ['apollo'],
+	apollo: {
+		query: protocolUiPageQuery,
+		preFetch: true,
+		result({ data }) {
+			console.log(data);
+			this.isProtocolLive = _get(data, 'general.protocol.value') === 'true' || false;
+		},
+	},
 	components: {
 		WwwPage,
 		KvCharityNavigator,
@@ -123,6 +134,7 @@ export default {
 	},
 	data() {
 		return {
+			isProtocolLive: false,
 			/* eslint-disable max-len */
 			aboutText: 'Kiva is a nonprofit focused on expanding financial access for underserved people around the world. Since 2005, Kiva’s global community of 1.7 million lenders has crowdfunded more than $1.2 billion in microloans to 3 million borrowers in more than 80 countries. On Kiva’s lending platform, anyone can help a borrower start or grow a business, go to school and realize their potential. Kiva also works to address the systemic issues that keep communities from accessing the financial services they need, through projects like Kiva Protocol.',
 			introText: [
