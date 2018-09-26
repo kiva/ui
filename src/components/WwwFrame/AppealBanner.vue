@@ -98,10 +98,10 @@ export default {
 .appeal-banner-layout {
 	max-width: 61.875rem;
 	margin: 0 auto;
-	height: 300px;
+	height: rem-calc(300);
 
 	&.close {
-		height: 50px;
+		height: rem-cacl(50);
 	}
 
 	& > .row {
@@ -139,15 +139,15 @@ export default {
 
 	.close-icon {
 		transform: scaleY(-1);
-		height: 35px;
+		height: rem-calc(35);
 	}
 
 	.icon {
-		width: 25px;
-		height: 25px;
+		width: rem-calc(25);
+		height: rem-calc(25);
 		cursor: pointer;
-		margin-left: 50px;
-		margin-top: 5px;
+		margin-left: rem-calc(50);
+		margin-top: rem-calc(5);
 	}
 }
 </style>
