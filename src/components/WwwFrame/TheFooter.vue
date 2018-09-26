@@ -31,6 +31,7 @@
 				<div class="narrow">
 					<h1>Explore</h1>
 					<ul>
+						<li><router-link to="/protocol">Protocol</router-link></li>
 						<li><router-link to="/gifts">Gifts</router-link></li>
 						<li><router-link to="/live">Happening now</router-link></li>
 						<li><router-link :to="sitemapUrl">Site map</router-link></li>
@@ -94,12 +95,23 @@
 
 <script>
 import { getYear } from 'date-fns';
+import protocolUiPageQuery from '@/graphql/query/protocolUiPage.graphql';
 
 export default {
+	inject: ['apollo'],
+	apollo: {
+		query: protocolUiPageQuery,
+		preFetch: true,
+		result({ data }) {
+			console.log(data);
+			this.isProtocolLive = _get(data, 'general.protocol.value') === 'true' || false;
+		},
+	},
 	name: 'TheFooter',
 	serverCacheKey: () => 'footer',
 	data() {
 		return {
+			isProtocolLive: false,
 			year: getYear(new Date()),
 			applyUrl: '/borrow',
 			aboutUrl: '/about',
