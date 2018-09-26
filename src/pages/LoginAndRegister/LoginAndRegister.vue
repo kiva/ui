@@ -69,9 +69,10 @@ export default {
 .page-content {
 	padding: 1.625rem rem-calc(10);
 	max-width: 340px;
-}
-@include breakpoint(medium) {
-	padding: 1.625rem 0;
+
+	@include breakpoint(medium) {
+		padding: 1.625rem 0;
+	}
 }
 
 .switch-to-login {

@@ -120,7 +120,7 @@ export default {
 		margin-bottom: rem-calc(5);
 	}
 
-	.loan-message /deep/ .red {
+	.loan-message >>> .red {
 		color: $kiva-accent-red;
 		font-weight: 400;
 	}

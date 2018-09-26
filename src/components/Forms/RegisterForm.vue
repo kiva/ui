@@ -403,32 +403,32 @@ export default {
 	}
 
 	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
-	.reg-password /deep/ .Password__badge {
+	.reg-password >>> .Password__badge {
 		height: rem-calc(19) !important;
 	}
 
-	.reg-password /deep/ .Password__strength-meter {
+	.reg-password >>> .Password__strength-meter {
 		height: 0.4375rem;
 		border-radius: rem-calc(8);
 	}
 
-	.reg-password /deep/ .Password__badge--success {
+	.reg-password >>> .Password__badge--success {
 		background: $green;
 	}
 
-	.reg-password /deep/ .Password__strength-meter::before,
-	.reg-password /deep/ .Password__strength-meter::after {
+	.reg-password >>> .Password__strength-meter::before,
+	.reg-password >>> .Password__strength-meter::after {
 		display: none;
 	}
 
-	.reg-password /deep/ .Password__strength-meter--fill[data-score="0"],
-	.reg-password /deep/ .Password__strength-meter--fill[data-score="1"],
-	.reg-password /deep/ .Password__strength-meter--fill[data-score="2"] {
+	.reg-password >>> .Password__strength-meter--fill[data-score="0"],
+	.reg-password >>> .Password__strength-meter--fill[data-score="1"],
+	.reg-password >>> .Password__strength-meter--fill[data-score="2"] {
 		background: $kiva-accent-red;
 	}
 
-	.reg-password /deep/ .Password__strength-meter--fill[data-score="3"],
-	.reg-password /deep/ .Password__strength-meter--fill[data-score="4"] {
+	.reg-password >>> .Password__strength-meter--fill[data-score="3"],
+	.reg-password >>> .Password__strength-meter--fill[data-score="4"] {
 		background: $green;
 	}
 
