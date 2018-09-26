@@ -123,7 +123,6 @@ export default {
 		query: protocolUiPageQuery,
 		preFetch: true,
 		result({ data }) {
-			console.log(data);
 			this.isProtocolLive = _get(data, 'general.protocol.value') === 'true' || false;
 		},
 	},
