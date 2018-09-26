@@ -74,6 +74,20 @@ export default {
 					name: 'msapplication-square150x150logo',
 					content: require('@/assets/images/favicons/mstile-150x150.png')
 				},
+			]).concat([
+				// Twitter Tags
+				{ name: 'twitter:card', content: 'summary_large_image' },
+				{ name: 'twitter:site', content: '@kiva' },
+				{ name: 'twitter:title', content: 'Kiva' },
+				{
+					name: 'twitter:description',
+					// eslint-disable-next-line max-len
+					content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loan go to support borrowers.'
+				},
+				{
+					name: 'twitter:image',
+					content: 'https://www-kiva-org.global.ssl.fastly.net/cms/kiva-ogtwitter-image.jpg'
+				},
 			]),
 			link: [
 				// apple icons
