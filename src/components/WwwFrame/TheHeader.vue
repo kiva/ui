@@ -342,7 +342,7 @@ export default {
 <style lang="scss">
 @import "settings";
 
-$top-nav-font-size: 1.125 _rem;
+$top-nav-font-size: 1.125rem;
 $header-height: rem-calc(45);
 $header-height-large: rem-calc(64);
 $header-color: $kiva-green;
