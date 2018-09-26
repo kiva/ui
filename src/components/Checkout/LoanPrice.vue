@@ -183,6 +183,14 @@ export default {
 	}
 }
 
+// Media query targeting IE 10+ only
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	.loan-price {
+		width: 100%;
+		background-position: left 2.7rem center;
+	}
+}
+
 .remove-x {
 	fill: $subtle-gray;
 	display: inline-block;
