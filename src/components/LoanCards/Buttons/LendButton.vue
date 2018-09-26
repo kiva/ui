@@ -91,7 +91,7 @@ export default {
 	height: 1.25rem;
 }
 
-.loading-spinner /deep/ .line {
+.loading-spinner >>> .line {
 	background-color: $white;
 }
 

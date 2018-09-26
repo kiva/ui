@@ -218,7 +218,7 @@ export default {
 		height: 1.5rem;
 		vertical-align: bottom;
 
-		& /deep/ .line {
+		& >>> .line {
 			background-color: $white;
 		}
 	}
