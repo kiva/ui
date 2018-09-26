@@ -14,7 +14,7 @@
 			<div class="small-12 columns">
 				<div id="intro-title">{{ introTitle }}</div>
 				<p v-for="(paragraph, index) in introText" :key="index">{{ paragraph }}</p>
-				<p><a href="#">Learn more about how the Protocol works</a></p>
+				<p><a href="#">{{ introLinkTitle }}</a></p>
 			</div>
 		</div>
 		<div class="row" id="partners">
@@ -126,11 +126,12 @@ export default {
 			/* eslint-disable max-len */
 			aboutText: 'Kiva is a nonprofit focused on expanding financial access for underserved people around the world. Since 2005, Kiva’s global community of 1.7 million lenders has crowdfunded more than $1.2 billion in microloans to 3 million borrowers in more than 80 countries. On Kiva’s lending platform, anyone can help a borrower start or grow a business, go to school and realize their potential. Kiva also works to address the systemic issues that keep communities from accessing the financial services they need, through projects like Kiva Protocol.',
 			introText: [
-				'Kiva, Sierra Leone and U.N. agencies announced the first implementation of Kiva Protocol on Sept. 27 at the U.N. General Assembly.  The Protocol will be used to create a nationwide digital identification system designed to help the country’s 7 million citizens access the services they need to improve their lives.',
-				'Globally, 1.7 billion adults are unbanked and can’t access critical services like loans and savings accounts. In Sierra Leone, only 20% of the population is financially included. Two of the major barriers to accessing financial services are a lack of formal identification and a lack of verifiable credit history.',
-				'The new Kiva Protocol™ is designed to address these barriers by issuing digital identification to all citizens and enabling formal and informal financial institutions to contribute to a person’s verifiable credit history.',
+				'Kiva, Sierra Leone and U.N. agencies announced the first implementation of the Kiva Protocol on Sept. 27, 2018, at the U.N. General Assembly.  The Kiva Protocol will be used to create a nationwide digital identification system designed to help the country’s 7 million citizens access the financial services they need to improve their lives.',
+				'Globally, 1.7 billion adults are unbanked, including 80% of the citizens of Sierra Leone. Two of the major barriers to accessing financial services are a lack of formal identification and a lack of verifiable credit history.',
+				'The new Kiva Protocol is designed to address these barriers by using distributed ledger technology to issue digital identification to all citizens. Through the Kiva Protocol, both formal and informal financial institutions (from banks to shopkeepers giving credit) can help contribute to a person’s credit history.',
 			],
-			introTitle: 'Introducing Kiva Protocol™, an exciting new initiative to give unbanked people formal identity and secure control over their own credit information.',
+			introLinkTitle: 'Learn more about the Kiva Protocol.',
+			introTitle: 'Introducing Kiva Protocol, an exciting new initiative to give unbanked people digital identity and secure control over their own credit information.',
 			supportText: 'Donate to Kiva to help us create innovative solutions to the global challenge of financial inclusion.',
 			/* eslint-enable max-len */
 		};
