@@ -191,6 +191,13 @@ export default {
 	}
 }
 
+// Media query targeting IE EDGE
+@supports (-ms-ime-align:auto) {
+	.loan-price {
+		background-position: right -1.2rem center;
+	}
+}
+
 .remove-x {
 	fill: $subtle-gray;
 	display: inline-block;
