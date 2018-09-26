@@ -146,7 +146,6 @@ export default {
 				content: 'Introducing Kiva Protocol, an exciting new initiative to give unbanked people formal identity and secure control over their own credit information'
 			},
 			{ property: 'og:title', content: 'Kiva Protocol' },
-			{ property: 'og:image', content: 'https://www-kiva-org.global.ssl.fastly.net/cms/kiva-og-image.jpg' },
 			{
 				property: 'og:description',
 				// eslint-disable-next-line max-len
