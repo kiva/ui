@@ -147,14 +147,6 @@ export default {
 										const standardError = `There was an error processing your payment.
 											Please try again. ${standardErrorCode}`;
 
-										// Restart the Exp Checkout interface to allow payment changes
-										// 10539 'payment declined' error
-										// 10486 transaction could not be completed
-										if (errorCode === '10539' || errorCode === '10486') {
-											return actions.restart();
-										}
-										// TODO: Are there other specific errors we should handle?
-
 										this.$showTipMsg(standardError, 'error');
 
 										// Fire specific exception to Sentry/Raven
@@ -164,6 +156,14 @@ export default {
 												pp_token: data.paymentToken
 											}
 										});
+
+										// Restart the Exp Checkout interface to allow payment changes
+										// 10539 'payment declined' error
+										// 10486 transaction could not be completed
+										if (errorCode === '10539' || errorCode === '10486') {
+											return actions.restart();
+										}
+										// TODO: Are there other specific errors we should handle?
 
 										// exit
 										reject(data);
