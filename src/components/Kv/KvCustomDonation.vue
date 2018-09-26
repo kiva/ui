@@ -51,7 +51,11 @@ export default {
 	#container {
 		display: flex;
 		align-items: center;
-		justify-content: flex-start;
+		justify-content: space-around;
+
+		@media print, screen and (min-width: 30em) {
+			justify-content: flex-start;
+		}
 	}
 
 	#donation-amount {

@@ -84,7 +84,7 @@
 		<div id="support-container">
 			<div class="row">
 				<div id="support-donate-container" class="small-12 large-6 columns">
-					<h2 id="donate-title">Support Kiva innovation</h2>
+					<h1 id="support-title">Support Kiva innovation</h1>
 					<div id="support-text">{{ supportText }}</div>
 					<kv-custom-donation :default-value="100" />
 				</div>
@@ -101,7 +101,7 @@
 				</div>
 				<div
 					id="charity-navigator-container"
-					class="small-12 medium-8 medium-offset-2 large-4 large-offset-1 columns"
+					class="small-8 small-offset-2 large-4 large-offset-1 columns"
 				>
 					<kv-charity-navigator />
 				</div>
@@ -177,9 +177,13 @@ export default {
 
 	#banner-content {
 		background: #fff;
-		padding: 60px 80px 40px 80px;
+		padding: 40px 60px 20px 60px;
 		max-height: 500px;
 		max-width: 650px;
+
+		@media print, screen and (min-width: 30em) {
+			padding: 60px 80px 40px 80px;
+		}
 	}
 
 	#banner-text {
@@ -218,7 +222,16 @@ export default {
 	}
 
 	.partners-image {
-		height: 120px;
+		height: 80px;
+
+		@media print, screen and (min-width: 30em) {
+			height: 100px;
+		}
+
+		@media print, screen and (min-width: 42.5em) {
+			height: 120px;
+		}
+
 	}
 
 	/* Press */
@@ -262,6 +275,14 @@ export default {
 		flex-direction: column;
 	}
 
+	#support-title, #support-text {
+		text-align: center;
+
+		@media print, screen and (min-width: 30em) {
+			text-align: left;
+		}
+	}
+
 	#support-text {
 		margin: 40px 0 30px 0;
 	}
@@ -284,8 +305,4 @@ export default {
 		flex-direction: column;
 	}
 
-	/* Donate */
-	#donate-title {
-		font-weight: 400;
-	}
 </style>
