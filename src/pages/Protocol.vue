@@ -277,7 +277,7 @@ export default {
 	#support-title, #support-text {
 		text-align: center;
 
-		@include breakpoint(medium) {
+		@include breakpoint(large) {
 			text-align: left;
 		}
 	}

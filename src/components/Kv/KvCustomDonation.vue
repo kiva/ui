@@ -53,7 +53,7 @@ export default {
 		align-items: center;
 		justify-content: space-around;
 
-		@include breakpoint(medium) {
+		@include breakpoint(large) {
 			justify-content: flex-start;
 		}
 	}
