@@ -49,6 +49,7 @@ export default {
 	@import 'settings';
 
 	#container {
+		margin: 0 auto;
 		display: flex;
 		align-items: center;
 		justify-content: space-around;
