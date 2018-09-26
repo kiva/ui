@@ -159,11 +159,11 @@ export default {
 			box-sizing: border-box;
 		}
 
-		@media print, screen and (min-width: 30em) {
+		@include breakpoint(medium) {
 			padding: 2rem;
 		}
 
-		@media print, screen and (min-width: 42.5em) {
+		@include breakpoint(large) {
 			padding-top: 3.8rem;
 			padding-bottom: 3.8rem;
 		}
@@ -171,33 +171,33 @@ export default {
 
 	#banner-logo-image {
 		display: block;
-		max-width: 200px;
+		max-width: rem-calc(200);
 		margin: 0 auto;
 	}
 
 	#banner-content {
 		background: #fff;
-		padding: 40px 60px 20px 60px;
-		max-height: 500px;
-		max-width: 650px;
+		padding: rem-calc(40) rem-calc(60) rem-calc(20) rem-calc(60);
+		max-height: rem-calc(500);
+		max-width: rem-calc(650);
 
-		@media print, screen and (min-width: 30em) {
-			padding: 60px 80px 40px 80px;
+		@include breakpoint(medium) {
+			padding: rem-calc(60) rem-calc(80) rem-calc(40) rem-calc(80);
 		}
 	}
 
 	#banner-text {
 		@include impact-text();
 
-		margin-bottom: 20px;
+		margin-bottom: rem-calc(20);
 		color: #43657D;
 		text-align: center;
 	}
 
 	/* Intro */
 	#intro {
-		margin-top: 80px;
-		margin-bottom: 80px;
+		margin-top: rem-calc(80);
+		margin-bottom: rem-calc(80);
 	}
 
 	#intro-title {
@@ -206,11 +206,11 @@ export default {
 
 	/* Partners */
 	#partners {
-		margin-bottom: 80px;
+		margin-bottom: rem-calc(80);
 	}
 
 	#partners-title {
-		padding-bottom: 40px;
+		padding-bottom: rem-calc(40);
 		text-align: center;
 		font-size: 0.9rem;
 	}
@@ -222,21 +222,20 @@ export default {
 	}
 
 	.partners-image {
-		height: 80px;
+		height: rem-calc(80);
 
-		@media print, screen and (min-width: 30em) {
-			height: 100px;
+		@include breakpoint(medium) {
+			height: rem-calc(100);
 		}
 
-		@media print, screen and (min-width: 42.5em) {
-			height: 120px;
+		@include breakpoint(large) {
+			height: rem-calc(120);
 		}
-
 	}
 
 	/* Press */
 	#press-container {
-		padding: 80px 0;
+		padding: rem-calc(80) 0;
 		background: #EFEFEF;
 	}
 
@@ -252,21 +251,21 @@ export default {
 		align-items: center;
 		justify-content: flex-start;
 		width: 30%;
-		height: 110px;
+		height: rem-calc(110);
 	}
 
 	.press-image {
-		height: 34px;
+		height: rem-calc(34);
 	}
 
 	.press-text {
-		margin-top: 20px;
+		margin-top: rem-calc(20);
 		text-align: center;
 	}
 
 	/* Support */
 	#support-container {
-		padding: 0 0 40px 0;
+		padding: 0 0 rem-calc(40) 0;
 	}
 
 	#support-donate-container {
@@ -278,20 +277,20 @@ export default {
 	#support-title, #support-text {
 		text-align: center;
 
-		@media print, screen and (min-width: 30em) {
+		@include breakpoint(medium) {
 			text-align: left;
 		}
 	}
 
 	#support-text {
-		margin: 40px 0 30px 0;
+		margin: rem-calc(40) 0 rem-calc(30) 0;
 	}
 
 	/* About */
 
 	#about-container {
 		background: #FAFAFA;
-		padding: 40px 0 80px 0;
+		padding: rem-calc(40) 0 rem-calc(80) 0;
 	}
 
 	h1,

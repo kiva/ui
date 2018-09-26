@@ -25,7 +25,7 @@
 	}
 
 	#image {
-		margin: 10px 0 5px 0;
+		margin: rem-calc(10) 0 rem-calc(5) 0;
 		max-width: 75%;
 	}
 

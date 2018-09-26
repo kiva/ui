@@ -53,14 +53,14 @@ export default {
 		align-items: center;
 		justify-content: space-around;
 
-		@media print, screen and (min-width: 30em) {
+		@include breakpoint(medium) {
 			justify-content: flex-start;
 		}
 	}
 
 	#donation-amount {
-		margin-right: 20px;
-		height: 56px;
-		width: 80px;
+		margin-right: rem-calc(20);
+		height: rem-calc(56);
+		width: rem-calc(80);
 	}
 </style>
