@@ -55,6 +55,7 @@ export default {
 		justify-content: space-around;
 
 		@include breakpoint(large) {
+			margin: 0;
 			justify-content: flex-start;
 		}
 	}

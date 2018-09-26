@@ -12,7 +12,7 @@
 		</div>
 		<div class="row" id="intro">
 			<div class="small-12 columns">
-				<h3 id="intro-title">{{ introTitle }}</h3>
+				<div id="intro-title">{{ introTitle }}</div>
 				<p v-for="(paragraph, index) in introText" :key="index">{{ paragraph }}</p>
 				<p><a href="#">Learn more about how the Protocol works</a></p>
 			</div>
@@ -88,7 +88,7 @@
 					<div id="support-text">{{ supportText }}</div>
 					<kv-custom-donation :default-value="100" />
 				</div>
-				<div class="hide-for-small-only medium-8 medium-offset-2 large-5 large-offset-1 columns">
+				<div class="show-for-large medium-8 medium-offset-2 large-5 large-offset-1 columns">
 					<img src="~@/assets/images/10-years-billion-impact.png">
 				</div>
 			</div>
@@ -97,7 +97,7 @@
 			<div class="row" id="about">
 				<div class="small-12 large-7 columns">
 					<h1>About Kiva</h1>
-					<p>{{ aboutText }}</p>
+					<p id="about-text">{{ aboutText }}</p>
 				</div>
 				<div
 					id="charity-navigator-container"
@@ -197,10 +197,12 @@ export default {
 	/* Intro */
 	#intro {
 		margin-top: rem-calc(80);
-		margin-bottom: rem-calc(80);
+		margin-bottom: 3rem;
 	}
 
 	#intro-title {
+		@include featured-text();
+
 		margin-bottom: 1rem;
 	}
 
@@ -225,11 +227,11 @@ export default {
 		height: rem-calc(80);
 
 		@include breakpoint(medium) {
-			height: rem-calc(100);
+			height: rem-calc(120);
 		}
 
 		@include breakpoint(large) {
-			height: rem-calc(120);
+			height: rem-calc(140);
 		}
 	}
 
@@ -274,7 +276,9 @@ export default {
 		flex-direction: column;
 	}
 
-	#support-title, #support-text {
+	#support-title,
+	#support-text {
+		margin-bottom: 0;
 		text-align: center;
 
 		@include breakpoint(large) {
@@ -283,7 +287,7 @@ export default {
 	}
 
 	#support-text {
-		margin: rem-calc(40) 0 rem-calc(30) 0;
+		margin: 1rem 0 1.2rem 0;
 	}
 
 	/* About */
@@ -291,6 +295,10 @@ export default {
 	#about-container {
 		background: #FAFAFA;
 		padding: rem-calc(40) 0 rem-calc(80) 0;
+	}
+
+	#about-text {
+		margin: 1rem 0;
 	}
 
 	h1,
