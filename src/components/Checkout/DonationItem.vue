@@ -198,7 +198,7 @@ export default {
 	text-align: center;
 	font-weight: 300;
 	color: $charcoal;
-	margin-bottom: 0;
+	margin-bottom: rem-calc(15);
 
 	@include breakpoint(medium) {
 		width: rem-calc(110);
