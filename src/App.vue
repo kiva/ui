@@ -51,16 +51,21 @@ export default {
 				}
 			] : []).concat([
 				// Open Graph Tags
-				{ property: 'og:site_name', content: 'Kiva' },
+				{ property: 'og:site_name', vmid: 'og:site_name', content: 'Kiva' },
+				{ property: 'og:title', vmid: 'og:title', content: 'Kiva - Loans that change lives' },
 				// eslint-disable-next-line max-len
-				{ property: 'og:description', content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loans go to support borrowers.' },
+				{ property: 'og:description', vmid: 'og:description', content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loans go to support borrowers.' },
 				{ property: 'theme-color', content: '#4faf4e' },
 				{ property: 'og:image', content: 'https://www-kiva-org.global.ssl.fastly.net/cms/kiva-og-image.jpg' },
 				{ property: 'og:image:width', content: '196' },
 				{ property: 'og:image:height', content: '106' },
 			]).concat([
 				// Microsoft Tile Tags
-				{ name: 'application-name', content: 'Kiva' },
+				{
+					name: 'application-name',
+					vmid: 'application-name',
+					content: 'Kiva'
+				},
 				{ name: 'msapplication-TileColor', content: '#4faf4e' },
 				{
 					name: 'msapplication-TileImage',
@@ -78,9 +83,10 @@ export default {
 				// Twitter Tags
 				{ name: 'twitter:card', content: 'summary_large_image' },
 				{ name: 'twitter:site', content: '@kiva' },
-				{ name: 'twitter:title', content: 'Kiva' },
+				{ name: 'twitter:title', vmid: 'twitter:title', content: 'Kiva' },
 				{
 					name: 'twitter:description',
+					vmid: 'twitter:description',
 					// eslint-disable-next-line max-len
 					content: 'Support women, entrepreneurs, students and refugees around the world with as little as $25 on Kiva. 100% of your loan go to support borrowers.'
 				},
