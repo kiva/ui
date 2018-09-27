@@ -108,7 +108,7 @@ export default {
 		},
 	},
 	name: 'TheFooter',
-	serverCacheKey: () => 'footer',
+	// serverCacheKey: () => 'footer',
 	data() {
 		return {
 			isProtocolLive: false,
