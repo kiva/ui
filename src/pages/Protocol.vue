@@ -20,29 +20,42 @@
 		<div class="row" id="partners">
 			<div class="small-12 columns">
 				<div id="partners-title">In partnership with</div>
-				<div id="partners-row">
-					<div class="partners-block">
-						<img
-							class="partners-image"
-							src="~@/assets/images/protocol/partner-sierra-leone.svg"
-							alt="Sierra Leone"
-						>
+				<div id="partners-row" class="row">
+					<div class="partners-block small-4 columns">
+						<div>
+							<img
+								class="partners-image"
+								src="~@/assets/images/protocol/partner-sierra-leone.svg"
+								alt="Sierra Leone"
+							>
+						</div>
+						<div class="partner-name">Government of Sierra Leone</div>
 					</div>
-					<div class="partners-block">
-						<img
-							class="partners-image"
-							src="~@/assets/images/protocol/partner-undp.svg"
-							alt="UNDP"
-						>
+					<div class="partners-block small-4 columns">
+						<div>
+							<img
+								class="partners-image"
+								src="~@/assets/images/protocol/partner-undp.svg"
+								alt="UNDP"
+							>
+						</div>
+						<div class="partner-name">United Nations Development Programme</div>
 					</div>
-					<div class="partners-block">
-						<img
-							class="partners-image"
-							src="~@/assets/images/protocol/partner-uncdf.svg"
-							alt="UNCDF"
-						>
+					<div class="partners-block small-4 columns">
+						<div>
+							<img
+								class="partners-image"
+								src="~@/assets/images/protocol/partner-uncdf.svg"
+								alt="UNCDF"
+							>
+						</div>
+						<div class="partner-name">United Nations Capital Development Fund</div>
 					</div>
 				</div>
+			</div>
+			<div id="partner-become" class="small-12 columns">
+				<!-- eslint-disable-next-line max-len -->
+				Interested in becoming a partner? Email us at <a href="mailto:contactus@kiva.org?subject=Kiva Protocol partner">contactus@kiva.org</a>
 			</div>
 		</div>
 		<!--
@@ -89,7 +102,7 @@
 					<kv-custom-donation :default-value="100" />
 				</div>
 				<div class="show-for-large medium-8 medium-offset-2 large-5 large-offset-1 columns">
-					<img src="~@/assets/images/10-years-billion-impact.png">
+					<img src="~@/assets/images/10-years-billion-impact.jpg">
 				</div>
 			</div>
 		</div>
@@ -256,13 +269,15 @@ export default {
 	#partners-title {
 		padding-bottom: rem-calc(40);
 		text-align: center;
-		font-size: 0.9rem;
+		font-size: 1rem;
+		font-weight: 400;
 	}
 
-	#partners-row {
+	.partners-block {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		justify-content: space-around;
+		justify-content: flex-start;
 	}
 
 	.partners-image {
@@ -275,6 +290,25 @@ export default {
 		@include breakpoint(large) {
 			height: rem-calc(140);
 		}
+	}
+
+	.partner-small {
+		text-align: center;
+		line-height: 1.1rem;
+	}
+
+	.partner-name {
+		@extend .partner-small;
+
+		font-size: 0.8rem;
+		padding-top: 0.6rem;
+	}
+
+	#partner-become {
+		@extend .partner-small;
+
+		font-size: 1rem;
+		padding-top: 3rem;
 	}
 
 	/* Press */
