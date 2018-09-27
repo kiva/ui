@@ -8,7 +8,7 @@ module.exports = merge(base, {
 		enablePerimeterx: false,
 		perimeterxAppId: '####',
 		enableAnalytics: true,
-		enableGTM: false,
+		enableGTM: true,
 		googleTagmanagerId: 'GTM-WXLS9B',
 		enableGA: true,
 		gaId: 'UA-11686022-4',
