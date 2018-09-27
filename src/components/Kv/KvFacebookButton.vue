@@ -28,7 +28,11 @@ export default {
 	padding-left: 0;
 	padding-right: 0;
 	font-size: $medium-text-font-size;
-	height: rem-calc(54);
+	height: rem-calc(46);
+
+	@include breakpoint(medium) {
+		height: rem-calc(54);
+	}
 
 	.facebook-box-logo {
 		height: rem-calc(22);
