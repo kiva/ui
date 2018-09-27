@@ -76,6 +76,8 @@ export default {
 					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
 					commit: true,
 					payment: () => {
+						this.$kvTrackEvent('basket', 'Paypal Payment', 'Button Click');
+
 						return new paypal.Promise((resolve, reject) => {
 							this.setUpdating(true);
 							this.validateBasket()
@@ -127,6 +129,8 @@ export default {
 						});
 					},
 					onAuthorize: (data, actions) => {
+						this.$kvTrackEvent('basket', 'Paypal Payment', 'ECK Dialog Pay Now Click');
+
 						return new paypal.Promise((resolve, reject) => {
 							this.apollo.mutate({
 								mutation: depositAndCheckout,
@@ -173,6 +177,7 @@ export default {
 									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
 									// redirect to thanks with KIVA transaction id
 									if (transactionId) {
+										this.$kvTrackEvent('basket', 'Paypal Payment', 'Success', transactionId);
 										this.redirectToThanks(transactionId);
 									}
 									resolve(ppResponse);

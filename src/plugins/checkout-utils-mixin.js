@@ -17,8 +17,10 @@ export default {
 				}).then(data => {
 					const validationStatus = _get(data, 'data.shop.validatePreCheckout');
 					if (validationStatus === true) {
+						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Success');
 						resolve(validationStatus);
 					} else if (validationStatus === null) {
+						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Failure');
 						resolve(data);
 					}
 				}).catch(errorResponse => {
