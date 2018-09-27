@@ -7,7 +7,7 @@ module.exports = {
 		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
 		enableAnalytics: true,
-		enableGTM: false,
+		enableGTM: true,
 		googleTagmanagerId: 'GTM-PX6FDG',
 		enableGA: true,
 		gaId: 'UA-175897-4',
