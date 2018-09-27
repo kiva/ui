@@ -119,6 +119,13 @@ export default {
 						});
 						this.selectedOption = this.cachedSelection;
 					} else {
+						this.$kvTrackEvent(
+							'basket',
+							'Update Loan Amount',
+							'Update Success',
+							// pass updated loan amount as whole number
+							numeral(updatedPrice).value()
+						);
 						this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
 						this.cachedSelection = this.selectedOption;
 					}

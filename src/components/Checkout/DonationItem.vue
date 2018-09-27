@@ -126,6 +126,13 @@ export default {
 					this.amount = this.cachedAmount;
 				} else {
 					this.$emit('refreshtotals');
+					this.$kvTrackEvent(
+						'basket',
+						'Update Donation',
+						'Update Success',
+						// pass donation amount as whole number
+						numeral(this.amount).value() * 100
+					);
 					this.cachedAmount = numeral(this.amount).format('$0,0.00');
 				}
 				this.$emit('updating-totals', false);

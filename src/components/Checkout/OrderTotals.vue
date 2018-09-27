@@ -78,8 +78,8 @@ export default {
 					creditType: type
 				}
 			}).then(() => {
-				// What type of loading sequence should go here?
 				this.setUpdating(false);
+				this.$kvTrackEvent('basket', 'Kiva Credit', 'Apply Credit Success');
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
@@ -95,6 +95,7 @@ export default {
 				}
 			}).then(() => {
 				this.setUpdating(false);
+				this.$kvTrackEvent('basket', 'Kiva Credit', 'Remove Credit Success');
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);

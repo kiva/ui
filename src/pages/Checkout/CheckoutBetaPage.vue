@@ -258,6 +258,7 @@ export default {
 	},
 	methods: {
 		validateCreditBasket() {
+			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.setUpdatingTotals(true);
 			this.validateBasket()
 				.then(validationStatus => {
@@ -279,6 +280,7 @@ export default {
 				.then(transactionResult => {
 					if (typeof transactionResult !== 'object') {
 						// succesful validation
+						this.$kvTrackEvent('basket', 'Kiva Checkout', 'Success', transactionResult);
 						this.redirectToThanks(transactionResult);
 					} else {
 						// checkout failed
