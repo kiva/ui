@@ -201,8 +201,9 @@ export default {
 	margin-bottom: rem-calc(15);
 
 	@include breakpoint(medium) {
-		width: rem-calc(110);
+		width: rem-calc(95);
 		font-size: $normal-text-font-size;
+		height: rem-calc(36);
 	}
 }
 
@@ -245,6 +246,8 @@ input {
 		padding: rem-calc(6) rem-calc(20);
 		margin-bottom: rem-calc(5);
 		width: inherit;
+		font-size: $normal-text-font-size;
+		height: rem-calc(36);
 	}
 }
 
