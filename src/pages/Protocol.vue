@@ -17,7 +17,7 @@
 				<p><a href="https://pages.kiva.org/kiva-protocol-faq">{{ introLinkTitle }}</a></p>
 			</div>
 		</div>
-		<div class="row" id="partners">
+		<div v-if="showPartners" class="row" id="partners">
 			<div class="small-12 columns">
 				<div id="partners-title">In partnership with</div>
 				<div id="partners-row" class="row">
@@ -58,8 +58,7 @@
 				Interested in becoming a partner? Email us at <a href="mailto:contactus@kiva.org?subject=Kiva Protocol partner">contactus@kiva.org</a>
 			</div>
 		</div>
-		<!--
-		<div id="press-container">
+		<div v-if="showPress" id="press-container">
 			<div class="row" id="press">
 				<div class="press-block">
 					<div>
@@ -93,7 +92,6 @@
 				</div>
 			</div>
 		</div>
-		-->
 		<div id="support-container">
 			<div class="row">
 				<div id="support-donate-container" class="small-12 large-6 columns">
@@ -158,6 +156,8 @@ export default {
 			introTitle: 'Introducing Kiva Protocol, an exciting new initiative to give unbanked people digital identity and secure control over their own credit information.',
 			supportText: 'Donate to Kiva to help us create innovative solutions to the global challenge of financial inclusion.',
 			/* eslint-enable max-len */
+			showPress: false,
+			showPartners: false,
 		};
 	},
 	metaInfo: {
