@@ -7,6 +7,6 @@
     "at-rule-no-unknown": null,
     "scss/at-rule-no-unknown": true,
     "at-rule-empty-line-before": null,
-    "unit-whitelist": ["em", "rem", "%", "px", "deg", "ms", "s"]
+    "unit-whitelist": ["em", "rem", "%", "px", "deg", "vh", "vw", "ms", "s"]
   }
 }
