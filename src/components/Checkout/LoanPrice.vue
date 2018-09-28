@@ -122,7 +122,7 @@ export default {
 						this.$kvTrackEvent(
 							'basket',
 							'Update Loan Amount',
-							'Update Success',
+							updatedPrice === 0 ? 'Loan Removed' : 'Update Success',
 							// pass updated loan amount as whole number
 							numeral(updatedPrice).value()
 						);
