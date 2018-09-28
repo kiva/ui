@@ -254,7 +254,7 @@ export default {
 		if (this.isActivelyLoggedIn) {
 			userStatus = 'Actively Logged-In';
 		}
-		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Beta-Loaded', userStatus);
+		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 	},
 	methods: {
 		validateCreditBasket() {
