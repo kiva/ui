@@ -176,7 +176,8 @@ export default {
 			loginLoading: false,
 			isHovered: false,
 			activeLoginDuration: 3600,
-			lastActiveLogin: 0
+			lastActiveLogin: 0,
+			preCheckoutStep: ''
 		};
 	},
 	apollo: {
@@ -239,7 +240,7 @@ export default {
 				return true;
 			}
 			return false;
-		}
+		},
 	},
 	created() {
 		// if we have a user id but are not actively logged in
@@ -321,7 +322,24 @@ export default {
 		},
 		overlayMouseover() {
 			this.isHovered = !this.isHovered;
+		},
+		// Called from beforeRouteEnter with query param object
+		updatePreCheckoutStep(query) {
+			// Force showing either Login or Reg Form
+			if (query && query.login === 'true') {
+				this.preCheckoutStep = 'login';
+				this.switchToLogin();
+			} else if (query && query.register === 'true') {
+				this.preCheckoutStep = 'register';
+				this.switchToRegister();
+			}
+			// TODO: FUTURE hide Reg or Login form if user is already logged in
 		}
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.updatePreCheckoutStep(to.query);
+		});
 	},
 };
 </script>
