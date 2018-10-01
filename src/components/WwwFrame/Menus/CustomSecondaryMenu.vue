@@ -20,7 +20,7 @@
 				aria-controls="secondary-menus-combo-nav"
 				:aria-expanded="open ? 'true' : 'false'"
 			>
-				<span>Menu</span>
+				<span>{{ getSelectedTabName() }}</span>
 				<kv-icon name="small-chevron-mobile" />
 			</button>
 			<kv-expandable easing="ease-in-out">
@@ -110,6 +110,15 @@ export default {
 			if (!isTargetElement(e, this.$el)) {
 				this.collapse();
 			}
+		},
+		getSelectedTabName() {
+			let selectedTabName = 'Menu';
+			this.menuItems.forEach(({ routerLink, name }) => {
+				if (this.$route.path === routerLink) {
+					selectedTabName = name;
+				}
+			});
+			return selectedTabName;
 		},
 	}
 };
