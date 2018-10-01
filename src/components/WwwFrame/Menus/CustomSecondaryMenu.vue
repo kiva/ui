@@ -147,7 +147,7 @@ export default {
 			}
 
 			a.router-link-exact-active {
-				color: #999;
+				color: $kiva-text-light;
 			}
 		}
 	}
