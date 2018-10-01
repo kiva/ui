@@ -165,10 +165,10 @@ export default {
 
 .remove-wrapper {
 	display: inline-block;
-	padding-left: rem-calc(56);
+	margin-left: rem-calc(56);
 
 	@include breakpoint(medium) {
-		padding-left: rem-calc(10);
+		margin-left: rem-calc(10);
 	}
 }
 

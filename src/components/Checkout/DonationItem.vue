@@ -170,9 +170,14 @@ export default {
 
 .dedicate-heart {
 	border: 1px solid $light-gray;
-	height: rem-calc(55);
-	width: rem-calc(55);
+	height: rem-calc(71);
+	width: rem-calc(71);
 	padding: rem-calc(4);
+
+	@include breakpoint(medium) {
+		height: rem-calc(55);
+		width: rem-calc(55);
+	}
 }
 
 .donation-info-wrapper {
