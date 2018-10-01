@@ -6,6 +6,7 @@
     "indentation": "tab",
     "at-rule-no-unknown": null,
     "scss/at-rule-no-unknown": true,
-    "at-rule-empty-line-before": null
+    "at-rule-empty-line-before": null,
+    "unit-whitelist": ["em", "rem", "%", "px", "deg", "vh", "vw", "ms", "s"]
   }
 }

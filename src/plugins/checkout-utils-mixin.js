@@ -17,8 +17,10 @@ export default {
 				}).then(data => {
 					const validationStatus = _get(data, 'data.shop.validatePreCheckout');
 					if (validationStatus === true) {
+						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Success');
 						resolve(validationStatus);
 					} else if (validationStatus === null) {
+						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Failure');
 						resolve(data);
 					}
 				}).catch(errorResponse => {
@@ -58,21 +60,36 @@ export default {
 		 */
 		showCheckoutError(errorResponse) {
 			const errors = _get(errorResponse, 'errors');
-			// errors.forEach(({ message }) => this.$showTipMsg(message, 'error'));
-
+			let errorMessages = '';
 			// When validation or checkout fails and errors object is returned along with the data
-			// TODO: Consider alternate messages for ERROR_OWN_LOAN + ERROR_OVER_DAILY_LIMIT
-			// - these have instructions to hit the back button which do not work in this context
 			errors.forEach(({ message, code }) => {
-				// TODO: Revisit as this will just pop multiple tip messages if multiple issues are found
-				this.$showTipMsg(message, 'error');
-				// TODO: handle session timeout...graphql says we're not authenticated...
-				console.error(code);
-				// if (code === 'api.authenticationRequired') {
-				// 	this.myId = null;
-				// 	this.switchToLogin();
-				// }
+				let errorMessage = message;
+
+				/* eslint-disable max-len */
+				// update error messages for new checkout context (Original messages reference a different user flow)
+				if (code === 'ERROR_OWN_LOAN') {
+					// Original Message: As a Kiva borrower, you cannot support your own fundraising loan on Kiva.  Please go back to the basket to remove your loan.
+					errorMessage = 'As a Kiva borrower, you cannot support your own fundraising loan on Kiva. Please remove your loan before completing checkout.';
+				}
+				if (code === 'ERROR_OVER_DAILY_LIMIT') {
+					// Original Message: You can not purchase more than $2,000 of Kiva Codes per day. Please click the back button amd remove Kiva Card(s)
+					errorMessage = 'You can not purchase more than $2,000 of Kiva Codes per day. Please remove the Kiva Card(s) from your basket.';
+				}
+				/* eslint-enable max-len */
+
+				// Refresh the page if they have timed out
+				if (code === 'api.authenticationRequired') {
+					window.location = window.location;
+				}
+
+				// Handle multiple errors
+				if (errorMessages !== '') {
+					errorMessages = `${errorMessages} | ${errorMessage}`;
+				} else {
+					errorMessages = errorMessage;
+				}
 			});
+			this.$showTipMsg(errorMessages, 'error');
 		},
 
 		/* Redirect to the thanks

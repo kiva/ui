@@ -4,6 +4,7 @@ var styleLoaders = require('./style-loaders');
 var config = require('../config');
 var VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
 var StylelintPlugin = require('stylelint-webpack-plugin');
+var FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 var webpack = require('webpack');
 var GitRevisionPlugin = require('git-revision-webpack-plugin');
 var gitRevisionPlugin = new GitRevisionPlugin({
@@ -24,7 +25,7 @@ module.exports = {
 		publicPath: '/',
 	},
 	resolve: {
-		extensions: ['.js', '.vue', '.json'],
+		extensions: ['.mjs', '.js', '.vue', '.json'],
 		alias: {
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
@@ -78,6 +79,14 @@ module.exports = {
 				loader: 'graphql-tag/loader'
 			},
 			{
+				// Modules who define their `browser` or `module` key as `mjs` force
+				// the use of this extension, so we need to tell webpack to fall back
+				// to auto mode (ES Module interop, allows ESM to import CommonJS).
+				test: /\.mjs$/,
+				include: /node_modules/,
+				type: 'javascript/auto'
+			},
+			{
 				test: /fonts\/.+\.(woff2?|eot|ttf|otf|svg)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
@@ -105,6 +114,9 @@ module.exports = {
 		]
 	},
 	plugins: [
+		new FilterWarningsPlugin({
+			exclude: /vue-loader.*type=style/
+		}),
 		new VueLoaderPlugin(),
 		new StylelintPlugin({
 			files: ['src/**/*.scss'],

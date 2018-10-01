@@ -28,5 +28,6 @@ module.exports = {
 		'<rootDir>/src/router/',
 		'<rootDir>/src/store/index.js',
 		'<rootDir>/node_modules/'
-	]
+	],
+	testURL: 'http://localhost'
 };
