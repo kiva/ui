@@ -165,11 +165,12 @@ export default {
 
 .remove-wrapper {
 	display: inline-block;
-	padding-left: rem-calc(10);
+	padding-left: rem-calc(15);
 }
 
 .loan-price-select {
 	float: left;
+	width: rem-calc(95);
 }
 
 .loan-price {
