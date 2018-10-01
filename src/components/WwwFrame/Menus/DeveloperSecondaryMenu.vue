@@ -14,21 +14,19 @@ export default {
 			menuItems: [
 				{
 					name: 'Developer Home',
-					url: '/build-vue',
+					routerLink: '/build-vue',
 				},
 				{
 					name: 'Docs',
-					url: '/build-vue/docs',
+					routerLink: '/build-vue/docs',
 				},
 				{
 					name: 'API',
 					url: 'https://api.kivaws.org/graphql',
-					externalLink: true,
 				},
 				{
 					name: 'Blog',
 					url: 'https://blog.build.kiva.org/',
-					externalLink: true,
 				},
 				{
 					name: 'My Apps',

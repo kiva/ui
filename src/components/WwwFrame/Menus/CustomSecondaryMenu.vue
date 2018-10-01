@@ -2,41 +2,44 @@
 	<div>
 		<secondary-menu class="show-for-large">
 			<ul class="row">
-				<li v-for="{name, url, eventTracking} in menuItems" :key="name">
+				<li v-for="{name, routerLink, url, eventTracking} in menuItems" :key="name">
 					<router-link
-						:to="url"
+						:to="routerLink"
 						v-kv-track-event="eventTracking"
+						v-if="routerLink"
 					>
 						{{ name }}
 					</router-link>
+					<a v-else :href="url" v-kv-track-event="eventTracking">{{ name }}</a>
 				</li>
 			</ul>
 		</secondary-menu>
 		<div class="mobile-nav hide-for-large">
 			<button
 				@click="toggle"
-				aria-controls="portfolio-combo-nav"
+				aria-controls="secondary-menus-combo-nav"
 				:aria-expanded="open ? 'true' : 'false'"
 			>
-				<span>Portfolio</span>
+				<span>Menu</span>
 				<kv-icon name="small-chevron-mobile" />
 			</button>
 			<kv-expandable easing="ease-in-out">
 				<div
-					id="portfolio-combo-nav"
+					id="secondary-menu-combo-nav"
 					v-show="open"
 					class="kv-expandable-pane sec-ter-combo-nav"
 					:aria-hidden="open ? 'false' : 'true'"
 				>
 					<ul>
-						<li v-for="menuItem in menuItems" :key="menuItem.name">
+						<li v-for="{name, routerLink, url, eventTracking} in menuItems" :key="name">
 							<router-link
-								:to="menuItem.url"
-								v-if="menuItem.eventTracking"
-								v-kv-track-event="menuItem.eventTracking"
+								:to="routerLink"
+								v-kv-track-event="eventTracking"
+								v-if="routerLink"
 							>
-								{{ menuItem.name }}
+								{{ name }}
 							</router-link>
+							<a v-else :href="url" v-kv-track-event="eventTracking">{{ name }}</a>
 						</li>
 					</ul>
 				</div>
@@ -141,6 +144,10 @@ export default {
 				padding: 0 1rem;
 				font-weight: normal;
 				line-height: rem-calc(45);
+			}
+
+			a.router-link-exact-active {
+				color: #999;
 			}
 		}
 	}
