@@ -83,7 +83,7 @@ export default {
 		query: customSecondaryMenuQuery,
 		preFetch: true,
 		result({ data }) {
-			this.usingTouch = _get(data, 'usingTouch');
+			this.usingTouch = !!_get(data, 'usingTouch');
 		},
 	},
 	methods: {
