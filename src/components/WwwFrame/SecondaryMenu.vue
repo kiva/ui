@@ -29,12 +29,12 @@
 				text-decoration: none;
 
 				&:hover,
-				&.router-link-active {
+				&.router-link-exact-active {
 					color: $kiva-accent-green;
 					border-bottom: 2px solid $kiva-accent-green;
 				}
 
-				&.router-link-active {
+				&.router-link-exact-active {
 					font-weight: bold;
 				}
 			}
