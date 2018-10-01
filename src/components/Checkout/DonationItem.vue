@@ -251,7 +251,7 @@ input {
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
-		margin-bottom: rem-calc(5);
+		margin-bottom: rem-calc(19);
 		width: inherit;
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
