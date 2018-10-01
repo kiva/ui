@@ -10,6 +10,6 @@ export default [
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
 	{ path: '/login-vue', component: () => import('@/pages/LoginAndRegister/LoginAndRegister') },
 	{ path: '/checkout-vue', component: () => import('@/pages/Checkout/CheckoutPage') },
-	{ path: '/checkout-beta', component: () => import('@/pages/Checkout/CheckoutBetaPage') },
+	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutBetaPage') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 ];
