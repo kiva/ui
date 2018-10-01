@@ -165,7 +165,11 @@ export default {
 
 .remove-wrapper {
 	display: inline-block;
-	padding-left: rem-calc(15);
+	padding-left: rem-calc(56);
+
+	@include breakpoint(medium) {
+		padding-left: rem-calc(10);
+	}
 }
 
 .loan-price-select {
@@ -176,11 +180,12 @@ export default {
 .loan-price {
 	border: 1px solid $charcoal;
 	min-width: rem-calc(90);
+	width: rem-calc(132);
 	border-radius: $button-radius;
 	height: rem-calc(50);
 	background-image: url('../../assets/images/customDropdown.png');
-	background-size: rem-calc(20) rem-calc(20);
-	text-indent: rem-calc(8);
+	background-size: 2rem 2rem;
+	text-indent: 1.6rem;
 	color: $charcoal;
 	font-size: $medium-text-font-size;
 
@@ -188,6 +193,9 @@ export default {
 		height: inherit;
 		line-height: $medium-text-line-height;
 		font-size: inherit;
+		width: rem-calc(90);
+		background-size: rem-calc(20) rem-calc(20);
+		text-indent: 0.5rem;
 	}
 }
 
