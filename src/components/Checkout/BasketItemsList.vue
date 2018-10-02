@@ -45,7 +45,9 @@ export default {
 @import 'settings';
 
 .basket-items-list {
-	margin: $list-side-margin;
+	@include breakpoint(medium) {
+		margin: $list-side-margin;
+	}
 }
 
 .basket-items-list ul {

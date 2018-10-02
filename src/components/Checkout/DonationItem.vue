@@ -170,9 +170,14 @@ export default {
 
 .dedicate-heart {
 	border: 1px solid $light-gray;
-	height: rem-calc(55);
-	width: rem-calc(55);
+	height: rem-calc(71);
+	width: rem-calc(71);
 	padding: rem-calc(4);
+
+	@include breakpoint(medium) {
+		height: rem-calc(55);
+		width: rem-calc(55);
+	}
 }
 
 .donation-info-wrapper {
@@ -208,8 +213,9 @@ export default {
 	margin-bottom: rem-calc(15);
 
 	@include breakpoint(medium) {
-		width: rem-calc(110);
+		width: rem-calc(95);
 		font-size: $normal-text-font-size;
+		height: rem-calc(36);
 	}
 }
 
@@ -250,8 +256,10 @@ input {
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
-		margin-bottom: rem-calc(5);
+		margin-bottom: rem-calc(19);
 		width: inherit;
+		font-size: $normal-text-font-size;
+		height: rem-calc(36);
 	}
 }
 

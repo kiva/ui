@@ -49,7 +49,8 @@ export default {
 	}
 }
 
-.button {
+.button,
+button.button {
 	@include button();
 	@include button-primary-styles();
 
