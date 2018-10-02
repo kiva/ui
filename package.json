@@ -69,7 +69,7 @@
 	},
 	"devDependencies": {
 		"@vue/test-utils": "^1.0.0-beta.25",
-		"autoprefixer": "^8.6.5",
+		"autoprefixer": "^9.1.5",
 		"babel-core": "^6.26.0",
 		"babel-eslint": "^8.2.6",
 		"babel-helper-vue-jsx-merge-props": "^2.0.3",
