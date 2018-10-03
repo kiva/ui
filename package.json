@@ -31,7 +31,7 @@
 		"cross-env": "^5.2.0",
 		"date-fns": "^1.29.0",
 		"express": "^4.16.2",
-		"express-winston": "^2.6.0",
+		"express-winston": "^3.0.0",
 		"form-data-entries": "^1.0.2",
 		"foundation-sites": "^6.4.3",
 		"fuse.js": "^3.2.1",
@@ -64,7 +64,7 @@
 		"vue2-touch-events": "^1.0.0",
 		"vuedraggable": "^2.16.0",
 		"webpack-merge": "^4.1.4",
-		"winston": "^2.4.4",
+		"winston": "^3.1.0",
 		"zxcvbn": "^4.4.2"
 	},
 	"devDependencies": {
