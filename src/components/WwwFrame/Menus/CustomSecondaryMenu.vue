@@ -55,7 +55,7 @@ import {
 	offBodyTouchstart,
 	isTargetElement,
 } from '@/util/touchEvents';
-import customSecondaryMenuQuery from '@/graphql/query/customSecondaryMenuQuery.graphql';
+import usingTouchClient from '@/graphql/query/shared/usingTouchClient.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
 import KvExpandable from '@/components/Kv/KvExpandable';
