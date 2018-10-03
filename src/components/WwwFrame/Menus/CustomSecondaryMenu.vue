@@ -80,7 +80,7 @@ export default {
 		}
 	},
 	apollo: {
-		query: customSecondaryMenuQuery,
+		query: usingTouchClient,
 		preFetch: true,
 		result({ data }) {
 			this.usingTouch = !!_get(data, 'usingTouch');
