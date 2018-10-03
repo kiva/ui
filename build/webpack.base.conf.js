@@ -70,10 +70,6 @@ module.exports = {
 				include: [resolve('src'), resolve('test')]
 			},
 			{
-				test: /js\/foundation/,
-				use: 'imports-loader?jQuery=jquery'
-			},
-			{
 				test: /\.(graphql|gql)$/,
 				exclude: /node_modules/,
 				loader: 'graphql-tag/loader'
