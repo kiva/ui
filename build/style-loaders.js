@@ -1,16 +1,14 @@
 module.exports = [
+	'css-loader',
 	{
-		loader: 'css-loader',
+		loader: 'postcss-loader',
 		options: {
-			minimize: {
-				safe: true,
-				discardComments: {
-					removeAll: true
-				},
-			}
+			ident: 'postcss',
+			plugins: (loader) => [
+				require('cssnano')()
+			]
 		}
 	},
-	'postcss-loader',
 	{
 		loader: 'sass-loader',
 		options: {
