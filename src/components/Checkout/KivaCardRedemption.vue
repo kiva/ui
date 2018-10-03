@@ -17,24 +17,19 @@
 		<kv-expandable easing="ease-in-out">
 			<div
 				v-show="open"
-				class="accordion-info">
-				<a class="small-9 medium-11">
+				class="accordion-info row">
+				<a class="small-12 medium-9">
 					<input placeholder="ABCD-1234-EFGH-5678">
 					<button class="button secondary">Apply</button>
 					<a>Need help?</a>
 				</a>
-				<div class="small-3 medium-1">
-					<p class="">Kiva Card value:</p>
-					<p class="kiva-card-amount"> $0.00</p>
-					<div>
-						<kv-icon class="remove-x" name="small-x" />
-					</div>
-
-
-					<!-- <div class="remove-wrapper"
+				<div class="small-12 medium-3">
+					<span class="">Kiva Card value:</span>
+					<span class="kiva-card-amount"> $0.00</span>
+					<span class="remove-wrapper"
 						@click="updateLoanAmount('remove')">
 						<kv-icon class="remove-x" name="small-x" />
-					</div> -->
+					</span>
 				</div>
 			</div>
 		</kv-expandable>
@@ -68,35 +63,49 @@ export default {
 @import "global/transitions";
 
 .kiva-card-entry-wrapper {
-  margin: $list-side-margin;
+	@include breakpoint(medium) {
+		margin: $list-side-margin;
+	}
 }
 
 .kiva-card-toggle-wrapper {
-  display: flex;
-  align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .toggle-arrow {
-  transition: transform 300ms ease;
-  display: block;
-  height: rem-calc(40);
-  width: rem-calc(40);
-  margin-right: rem-calc(22);
+	transition: transform 300ms ease;
+	display: block;
+	height: rem-calc(40);
+	width: rem-calc(40);
+	margin-right: rem-calc(22);
 }
 
 .accordion-title {
-  padding-left: rem-calc(12);
+	padding-left: rem-calc(12);
 
-  &:hover {
-    cursor: pointer;
-  }
+	&:hover {
+		cursor: pointer;
+	}
 }
 
 .accordion-info {
-  margin-left: 4.625rem;
+	margin-left: 4.625rem;
 }
 
 .flipped {
-  transform: rotate(180deg);
+	transform: rotate(180deg);
 }
+
+.remove-x {
+	fill: $subtle-gray;
+	display: inline-block;
+	width: 1.1rem;
+	height: rem-calc(50);
+
+	@include breakpoint(medium) {
+		height: rem-calc(36);
+	}
+}
+
 </style>
