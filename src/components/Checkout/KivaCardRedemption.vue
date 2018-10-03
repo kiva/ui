@@ -18,8 +18,10 @@
 			<div
 				v-show="open"
 				class="accordion-info">
-				<a class="small-9 medium-11" href="/basket">
-					<div>Click here to enter a Kiva Card</div>
+				<a class="small-9 medium-11" href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a">
+					<div v-kv-track-event="['checkout', 'kiva card', 'exit to legacy']">
+						Click here to enter a Kiva Card
+					</div>
 				</a>
 			</div>
 		</kv-expandable>
