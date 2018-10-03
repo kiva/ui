@@ -18,9 +18,24 @@
 			<div
 				v-show="open"
 				class="accordion-info">
-				<a class="small-9 medium-11" href="/basket">
-					<div>Click here to enter a Kiva Card</div>
+				<a class="small-9 medium-11">
+					<input placeholder="ABCD-1234-EFGH-5678">
+					<button class="button secondary">Apply</button>
+					<a>Need help?</a>
 				</a>
+				<div class="small-3 medium-1">
+					<p class="">Kiva Card value:</p>
+					<p class="kiva-card-amount"> $0.00</p>
+					<div>
+						<kv-icon class="remove-x" name="small-x" />
+					</div>
+
+
+					<!-- <div class="remove-wrapper"
+						@click="updateLoanAmount('remove')">
+						<kv-icon class="remove-x" name="small-x" />
+					</div> -->
+				</div>
 			</div>
 		</kv-expandable>
 	</div>
@@ -43,45 +58,45 @@ export default {
 	methods: {
 		toggleAccordion() {
 			this.open = !this.open;
-		},
+		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'global/transitions';
+@import "settings";
+@import "global/transitions";
 
 .kiva-card-entry-wrapper {
-	margin: $list-side-margin;
+  margin: $list-side-margin;
 }
 
 .kiva-card-toggle-wrapper {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .toggle-arrow {
-	transition: transform 300ms ease;
-	display: block;
-	height: rem-calc(40);
-	width: rem-calc(40);
-	margin-right: rem-calc(22);
+  transition: transform 300ms ease;
+  display: block;
+  height: rem-calc(40);
+  width: rem-calc(40);
+  margin-right: rem-calc(22);
 }
 
 .accordion-title {
-	padding-left: rem-calc(12);
+  padding-left: rem-calc(12);
 
-	&:hover {
-		cursor: pointer;
-	}
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .accordion-info {
-	margin-left: 4.625rem;
+  margin-left: 4.625rem;
 }
 
 .flipped {
-	transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 </style>
