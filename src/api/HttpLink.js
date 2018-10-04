@@ -1,4 +1,4 @@
-import { HttpLink } from 'apollo-link-http';
+import { BatchHttpLink } from 'apollo-link-batch-http';
 import fetch from 'isomorphic-fetch';
 import { Agent } from 'https';
 
@@ -29,5 +29,5 @@ export default ({ cookie, csrfToken = '', uri = '' }) => {
 		options.credentials = 'same-origin';
 	}
 
-	return new HttpLink(options);
+	return new BatchHttpLink(options);
 };
