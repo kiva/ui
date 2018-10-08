@@ -5,6 +5,7 @@ module.exports = [
 		options: {
 			ident: 'postcss',
 			plugins: (loader) => [
+				require('autoprefixer')(),
 				require('cssnano')()
 			]
 		}
