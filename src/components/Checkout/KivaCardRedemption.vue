@@ -17,11 +17,19 @@
 		<kv-expandable easing="ease-in-out">
 			<div
 				v-show="open"
+<<<<<<< HEAD
 				class="accordion-info row">
 				<a class="small-12 medium-9">
 					<input placeholder="ABCD-1234-EFGH-5678">
 					<button class="button secondary">Apply</button>
 					<a>Need help?</a>
+=======
+				class="accordion-info">
+				<a class="small-9 medium-11" href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a">
+					<div v-kv-track-event="['checkout', 'kiva card', 'exit to legacy']">
+						Click here to enter a Kiva Card
+					</div>
+>>>>>>> master
 				</a>
 				<div class="small-12 medium-3">
 					<span class="">Kiva Card value:</span>
