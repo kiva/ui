@@ -407,6 +407,10 @@ export default {
 			h3 {
 				font-size: $featured-text-font-size;
 				font-weight: 400;
+
+				@include breakpoint(large only) {
+					max-width: 47%;
+				}
 			}
 		}
 
