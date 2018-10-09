@@ -1,8 +1,20 @@
 <template>
-	<div name="secondary" class="secondary-nav">
+	<div name="secondary" :class="`secondary-nav ${usesExactPaths ? 'exact-path' : 'non-exact-path'}`">
 		<slot></slot>
 	</div>
 </template>
+
+<script>
+export default {
+	props: {
+		usesExactPaths: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+	},
+};
+</script>
 
 <style lang="scss">
 @import 'settings';
@@ -28,17 +40,36 @@
 				border-bottom: 2px solid $kiva-darkgreen;
 				text-decoration: none;
 
-				&:hover,
-				&.router-link-active {
-					color: $kiva-accent-green;
-					border-bottom: 2px solid $kiva-accent-green;
-				}
-
-				&.router-link-active {
-					font-weight: bold;
+				&:hover {
+					@extend .basic-secondary-menu-active;
 				}
 			}
 		}
 	}
+
+	&.non-exact-path {
+		ul li a {
+			&.router-link-active {
+				@extend .basic-secondary-menu-active;
+
+				text-shadow: 0.5px 0 $kiva-accent-green;
+			}
+		}
+	}
+
+	&.exact-path {
+		ul li a {
+			&.router-link-exact-active {
+				@extend .basic-secondary-menu-active;
+
+				text-shadow: 0.5px 0 $kiva-accent-green;
+			}
+		}
+	}
+}
+
+.basic-secondary-menu-active {
+	color: $kiva-accent-green;
+	border-bottom: 2px solid $kiva-accent-green;
 }
 </style>
