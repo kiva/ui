@@ -1,5 +1,5 @@
 <template>
-	<custom-secondary-menu :menu-items="menuItems" />
+	<custom-secondary-menu :menu-items="menuItems" :uses-exact-paths="true" />
 </template>
 
 <script>

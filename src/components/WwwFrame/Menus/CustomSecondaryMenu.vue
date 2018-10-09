@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<secondary-menu class="show-for-large">
+		<secondary-menu class="show-for-large" :uses-exact-paths="usesExactPaths">
 			<ul class="row">
 				<li v-for="{name, routerLink, url, eventTracking} in menuItems" :key="name">
 					<router-link
@@ -14,7 +14,7 @@
 				</li>
 			</ul>
 		</secondary-menu>
-		<div class="mobile-nav hide-for-large">
+		<div :class="`mobile-nav hide-for-large ${usesExactPaths ? 'exact-path' : 'non-exact-path'}`">
 			<button
 				@click="toggle"
 				aria-controls="secondary-menus-combo-nav"
@@ -77,7 +77,12 @@ export default {
 		menuItems: {
 			type: Array,
 			required: true,
-		}
+		},
+		usesExactPaths: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 	apollo: {
 		query: usingTouchClient,
@@ -148,16 +153,25 @@ export default {
 
 			a,
 			a:active,
-			a:visited,
-			a.router-link-exact-active {
-				padding: 0 1rem;
-				font-weight: normal;
-				line-height: rem-calc(45);
+			a:visited {
+				@extend .basic-secondary-menu-active-mobile;
 			}
+		}
+	}
 
-			a.router-link-exact-active {
-				color: $kiva-text-light;
-			}
+	&.exact-path {
+		ul li a.router-link-exact-active {
+			@extend .basic-secondary-menu-active-mobile;
+
+			color: $kiva-text-light;
+		}
+	}
+
+	&.non-exact-path {
+		ul li a.router-link-active {
+			@extend .basic-secondary-menu-active-mobile;
+
+			color: $kiva-text-light;
 		}
 	}
 
@@ -196,30 +210,11 @@ export default {
 			transform: rotate(-180deg);
 		}
 	}
+}
 
-	.tertiary-nav {
-		padding: 0;
-
-		ul {
-			background-color: $kiva-bg-darkgray;
-
-			li {
-				margin: 0;
-				border: none;
-
-				a,
-				a:active,
-				a:visited,
-				a:hover,
-				a.router-link-exact-active {
-					padding: 0 1rem 0 1.75rem;
-				}
-
-				a.router-link-exact-active {
-					color: $kiva-text-light;
-				}
-			}
-		}
-	}
+.basic-secondary-menu-active-mobile {
+	padding: 0 1rem;
+	font-weight: normal;
+	line-height: rem-calc(45);
 }
 </style>
