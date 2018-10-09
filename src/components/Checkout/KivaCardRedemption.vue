@@ -30,7 +30,9 @@
 						class="card-value-wrap"
 						v-if="showKivaCardTotal">
 						<p>Kiva Card value:</p>
-						<input class="kiva-card-amount">
+						<input
+							class="kiva-card-amount"
+							:value="totals.redemptionCodeAppliedTotal">
 						<span class="remove-wrapper"
 							@click="updateKivaCard('remove')">
 							<kv-icon class="remove-x" name="small-x" />
