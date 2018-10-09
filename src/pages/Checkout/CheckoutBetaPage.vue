@@ -191,8 +191,7 @@ export default {
 			// prefetch mutation
 			return client.mutate({
 				mutation: validateItemsAndCredits
-			}).then(result => {
-				console.log(result);
+			}).then(() => {
 				// cache checkout init query
 				return client.query({ query: initializeCheckout });
 			});
@@ -207,6 +206,7 @@ export default {
 			if (result.error) {
 				// store these
 				console.error(result.error);
+				// TODO: Trigger and Present these
 				this.preValidationErrors = result.error;
 			}
 		});
