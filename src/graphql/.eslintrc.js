@@ -23,5 +23,9 @@ module.exports = {
 			env: 'literal',
 			schemaString: schema,
 		}],
+		'graphql/no-deprecated-fields': ['warn', {
+			env: 'literal',
+			schemaString: schema,
+		}]
 	}
 }
