@@ -189,9 +189,11 @@ export default {
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
 			// prefetch mutation
+			// when we prefetch this mutation, any errors are listed as an array of objects
+			// HOWEVER, this doesnot go into the apollo cache so is not available on subsequent calls
+			// TODO: if errors exist in the result, mutate them into @client state so they are available
 			return client.mutate({
-				mutation: validateItemsAndCredits,
-				fetchPolicy: 'no-cache'
+				mutation: validateItemsAndCredits
 			}).then(result => {
 				console.log(result);
 				// cache checkout init query
@@ -201,16 +203,32 @@ export default {
 	},
 	created() {
 		// call mutation to validateItemsAndCredits
+		// TODO: Remove and call client state instead
 		this.apollo.mutate({
 			mutation: validateItemsAndCredits,
 		}).then(result => {
 			console.log(result);
 			// retrieve any errors from the cache
-			if (result.error) {
+			const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
+			if (errorArray !== 'undefined' && errorArray.length > 0) {
 				// store these
-				console.error(result.error);
+				console.error(errorArray);
 				// TODO: Trigger and Present these
 				this.preValidationErrors = result.error;
+
+				let errorMessages = '';
+				// When validation or checkout fails and errors object is returned along with the data
+				errorArray.forEach(({ value }) => {
+					const errorMessage = value;
+
+					// Handle multiple errors
+					if (errorMessages !== '') {
+						errorMessages = `${errorMessages} | ${errorMessage}`;
+					} else {
+						errorMessages = errorMessage;
+					}
+				});
+				this.$showTipMsg(errorMessages, 'error');
 			}
 		});
 
