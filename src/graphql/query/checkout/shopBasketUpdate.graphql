@@ -43,6 +43,8 @@ query {
 				loanReservationTotal
 				bonusAvailableTotal
 				bonusAppliedTotal
+				redemptionCodeAppliedTotal
+				redemptionCodeAvailableTotal
 			}
 		}
 	}

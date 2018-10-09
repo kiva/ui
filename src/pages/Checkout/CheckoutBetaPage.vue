@@ -79,7 +79,11 @@
 						/>
 						<hr>
 
-						<kiva-card-redemption />
+						<kiva-card-redemption
+							:totals="totals"
+							@refreshtotals="refreshTotals"
+							@updating-totals="setUpdatingTotals" />
+
 						<hr>
 
 						<order-totals

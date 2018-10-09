@@ -17,26 +17,24 @@
 		<kv-expandable easing="ease-in-out">
 			<div
 				v-show="open"
-<<<<<<< HEAD
 				class="accordion-info row">
-				<a class="small-12 medium-9">
-					<input placeholder="ABCD-1234-EFGH-5678">
-					<button class="button secondary">Apply</button>
+				<div class="small-12">
+					<input
+						placeholder="ABCD-1234-EFGH-5678"
+						class="kiva-card-input"
+						v-model="kivaCardCode">
+					<button class="button secondary"
+						@click="updateKivaCard('redemption_code')">Apply</button>
 					<a>Need help?</a>
-=======
-				class="accordion-info">
-				<a class="small-9 medium-11" href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a">
-					<div v-kv-track-event="['checkout', 'kiva card', 'exit to legacy']">
-						Click here to enter a Kiva Card
-					</div>
->>>>>>> master
-				</a>
-				<div class="small-12 medium-3">
-					<span class="">Kiva Card value:</span>
-					<span class="kiva-card-amount"> $0.00</span>
-					<span class="remove-wrapper"
-						@click="updateLoanAmount('remove')">
-						<kv-icon class="remove-x" name="small-x" />
+					<span
+						class="card-value-wrap"
+						v-if="showKivaCardTotal">
+						<p>Kiva Card value:</p>
+						<input class="kiva-card-amount">
+						<span class="remove-wrapper"
+							@click="updateKivaCard('remove')">
+							<kv-icon class="remove-x" name="small-x" />
+						</span>
 					</span>
 				</div>
 			</div>
@@ -47,21 +45,59 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
 		KvIcon,
 		KvExpandable
 	},
+	inject: ['apollo'],
+	props: {
+		totals: {
+			type: Object,
+			default: () => {}
+		}
+	},
 	data() {
 		return {
-			open: false
+			open: false,
+			kivaCardCode: ''
 		};
 	},
 	methods: {
 		toggleAccordion() {
 			this.open = !this.open;
+		},
+		updateKivaCard(type) {
+			this.$emit('updating-totals', true);
+			this.apollo.mutate({
+				mutation: addCreditByType,
+				variables: {
+					creditType: type,
+					redemptionCode: this.kivaCardCode
+				}
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				} else {
+					this.$emit('refreshtotals');
+					this.$kvTrackEvent('Checkout', 'Apply Kiva Card', 'Kiva Card successfully applied');
+				}
+				this.$emit('updating-totals', false);
+			}).catch(error => {
+				console.error(error);
+				this.$emit('updating-totals', false);
+			});
 		}
+	},
+	computed: {
+		showKivaCardTotal() {
+			return parseFloat(this.totals.redemptionCodeAppliedTotal) > 0;
+		},
 	}
 };
 </script>
@@ -105,6 +141,66 @@ export default {
 	transform: rotate(180deg);
 }
 
+.accordion-info button.secondary {
+	color: $kiva-accent-blue;
+	border: 1px solid $kiva-accent-blue;
+	box-shadow: 0 1px $kiva-accent-blue;
+	visibility: visible;
+	font-size: $medium-text-font-size;
+	margin: 0;
+
+	@include breakpoint(medium) {
+		padding: rem-calc(6) rem-calc(20);
+		margin-right: rem-calc(15);
+		width: inherit;
+		font-size: $normal-text-font-size;
+		height: rem-calc(36);
+	}
+}
+
+.card-value-wrap {
+	@include breakpoint(medium) {
+		float: right;
+	}
+}
+
+.kiva-card-amount {
+	display: block;
+	border: 1px solid $charcoal;
+	border-radius: $button-radius;
+	width: 132px;
+	text-align: center;
+	font-weight: 300;
+	color: $charcoal;
+	margin-bottom: rem-calc(15);
+	height: rem-calc(50);
+	font-size: $medium-text-font-size;
+
+	@include breakpoint(medium) {
+		width: rem-calc(95);
+		font-size: $normal-text-font-size;
+		height: rem-calc(36);
+	}
+}
+
+.kiva-card-input {
+	width: rem-calc(250);
+	border: 1px solid $charcoal;
+	color: $charcoal;
+	border-radius: $button-radius;
+	font-weight: 300;
+	text-align: center;
+	margin-right: rem-calc(15);
+	margin-bottom: rem-calc(15);
+	height: rem-calc(50);
+	font-size: $medium-text-font-size;
+
+	@include breakpoint(medium) {
+		font-size: $normal-text-font-size;
+		height: rem-calc(36);
+	}
+}
+
 .remove-x {
 	fill: $subtle-gray;
 	display: inline-block;
@@ -115,5 +211,4 @@ export default {
 		height: rem-calc(36);
 	}
 }
-
 </style>
