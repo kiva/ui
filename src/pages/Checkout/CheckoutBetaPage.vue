@@ -190,8 +190,10 @@ export default {
 		preFetch(config, client) {
 			// prefetch mutation
 			return client.mutate({
-				mutation: validateItemsAndCredits
-			}).then(() => {
+				mutation: validateItemsAndCredits,
+				fetchPolicy: 'no-cache'
+			}).then(result => {
+				console.log(result);
 				// cache checkout init query
 				return client.query({ query: initializeCheckout });
 			});
@@ -200,8 +202,9 @@ export default {
 	created() {
 		// call mutation to validateItemsAndCredits
 		this.apollo.mutate({
-			mutation: validateItemsAndCredits
+			mutation: validateItemsAndCredits,
 		}).then(result => {
+			console.log(result);
 			// retrieve any errors from the cache
 			if (result.error) {
 				// store these
