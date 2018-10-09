@@ -1,19 +1,10 @@
+#import '../../fragments/shopTotals.graphql'
+
 query {
 	shop {
 		basket {
 			totals {
-				creditAmountNeeded
-				creditAppliedTotal
-				creditAvailableTotal
-				donationTotal
-				itemTotal
-				kivaCreditAvailableTotal
-				kivaCreditAppliedTotal
-				kivaCreditRemaining
-				kivaCreditToReapply
-				loanReservationTotal
-				bonusAvailableTotal
-				bonusAppliedTotal
+				...shopTotals
 			}
 		}
 	}

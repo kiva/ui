@@ -1,0 +1,14 @@
+fragment shopTotals on ShopTotals {
+	creditAmountNeeded
+	creditAppliedTotal
+	creditAvailableTotal
+	donationTotal
+	itemTotal
+	kivaCreditAvailableTotal
+	kivaCreditAppliedTotal
+	kivaCreditRemaining
+	kivaCreditToReapply
+	loanReservationTotal
+	bonusAvailableTotal
+	bonusAppliedTotal
+}

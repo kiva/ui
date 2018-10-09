@@ -132,6 +132,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import validateItemsAndCredits from '@/graphql/mutation/shopValidateItemsAndCredits.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -180,42 +181,60 @@ export default {
 			isHovered: false,
 			activeLoginDuration: 3600,
 			lastActiveLogin: 0,
-			preCheckoutStep: ''
+			preCheckoutStep: '',
+			preValidationErrors: []
 		};
 	},
 	apollo: {
-		query: initializeCheckout,
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
-			return client.query({
-				query: initializeCheckout
-			}).then(({ data }) => {
-				const totals = _get(data, 'shop.basket.totals');
-				// check for bonus credit and redirect if present
-				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
-				// TODO: remove once bonus credit functionality is added
-				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
-				if (parseFloat(totals.bonusAvailableTotal) > 0) {
-					return Promise.reject({
-						path: '/basket',
-						query: {
-							kexpn: 'checkout_beta.minimal_checkout',
-							kexpv: 'a'
-						}
-					});
-				}
-				return data;
+			// prefetch mutation
+			return client.mutate({
+				mutation: validateItemsAndCredits
+			}).then(result => {
+				console.log(result);
+				// cache checkout init query
+				return client.query({ query: initializeCheckout });
 			});
-		},
-		result({ data }) {
-			this.myBalance = _get(data, 'my.userAccount.balance');
-			this.myId = _get(data, 'my.userAccount.id');
-			this.totals = _get(data, 'shop.basket.totals');
-			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
-			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
-			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
+	},
+	created() {
+		// call mutation to validateItemsAndCredits
+		this.apollo.mutate({
+			mutation: validateItemsAndCredits
+		}).then(result => {
+			// retrieve any errors from the cache
+			if (result.error) {
+				// store these
+				console.error(result.error);
+				this.preValidationErrors = result.error;
+			}
+		});
+
+		// retrieve our initialization query from cache
+		const initData = this.apollo.readQuery({ query: initializeCheckout });
+		// set checkout data
+		this.setCheckoutInitialization(initData);
+		// watch query for changes
+		this.apollo.watchQuery({ query: initializeCheckout }).subscribe({
+			next: ({ data }) => {
+				this.setCheckoutInitialization(data);
+			}
+		});
+
+		// if we have a user id but are not actively logged in
+		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+			this.switchToLogin();
+		}
+	},
+	mounted() {
+		// fire tracking event when the page loads
+		// - this event will be duplicated when the page reloads with a newly registered/logged in user
+		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+		if (this.isActivelyLoggedIn) {
+			userStatus = 'Actively Logged-In';
+		}
+		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 	},
 	computed: {
 		isLoggedIn() {
@@ -245,22 +264,33 @@ export default {
 			return false;
 		},
 	},
-	created() {
-		// if we have a user id but are not actively logged in
-		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-			this.switchToLogin();
-		}
-	},
-	mounted() {
-		// fire tracking event when the page loads
-		// - this event will be duplicated when the page reloads with a newly registered/logged in user
-		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-		if (this.isActivelyLoggedIn) {
-			userStatus = 'Actively Logged-In';
-		}
-		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
-	},
 	methods: {
+		setCheckoutInitialization(data) {
+			const totals = _get(data, 'shop.basket.totals');
+			// check for bonus credit and redirect if present
+			// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
+			// TODO: remove once bonus credit functionality is added
+			// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
+			if (parseFloat(totals.bonusAvailableTotal) > 0) {
+				return Promise.reject({
+					path: '/basket',
+					query: {
+						kexpn: 'checkout_beta.minimal_checkout',
+						kexpv: 'a'
+					}
+				});
+			}
+
+			this.myBalance = _get(data, 'my.userAccount.balance');
+			this.myId = _get(data, 'my.userAccount.id');
+			this.totals = totals;
+			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
+			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
+
+			return data;
+		},
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.setUpdatingTotals(true);
