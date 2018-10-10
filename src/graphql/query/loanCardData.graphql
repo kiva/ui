@@ -21,6 +21,10 @@ query(
 			totalCount
 			values {
 				...loanCardFields
+				image {
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+				}
 			}
 		}
 	}

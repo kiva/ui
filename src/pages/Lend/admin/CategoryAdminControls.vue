@@ -57,7 +57,7 @@ import _isEqual from 'lodash/isEqual';
 import _map from 'lodash/map';
 import _sum from 'lodash/sum';
 import _values from 'lodash/values';
-import kebabCase from '@/util/kebabCase';
+import { paramCase } from 'change-case';
 import { readJSONSetting } from '@/util/settingsUtils';
 import categoryAdminQuery from '@/graphql/query/categoryAdminControl.graphql';
 import setRowsMutation from '@/graphql/mutation/setCategoryRows.graphql';
@@ -106,7 +106,7 @@ export default {
 			return this.experimentEnabled ? _filter(this.variants, ({ name }) => !!name) : [];
 		},
 		localExperimentObject() {
-			const controlKey = kebabCase(this.controlName);
+			const controlKey = paramCase(this.controlName);
 			return {
 				name: 'CategoryRows',
 				enabled: this.experimentEnabled,
@@ -125,12 +125,12 @@ export default {
 		},
 		variantData() {
 			const pairs = _map(this.filteredVariants, ({ name, categories }) => {
-				return [kebabCase(name), { name, categories }];
+				return [paramCase(name), { name, categories }];
 			});
 			return _fromPairs(pairs);
 		},
 		variantWeights() {
-			const pairs = _map(this.filteredVariants, ({ name, weight }) => [kebabCase(name), weight]);
+			const pairs = _map(this.filteredVariants, ({ name, weight }) => [paramCase(name), weight]);
 			return _fromPairs(pairs);
 		},
 	},

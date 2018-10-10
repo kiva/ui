@@ -4,7 +4,9 @@ const { concat, map, uniqBy } = require('lodash');
 const { buildSchema, printSchema } = require('graphql');
 const { introspectSchema, mergeSchemas } = require('graphql-tools');
 const { HttpLink } = require('apollo-link-http');
-const fetch = require('isomorphic-fetch');
+const fetch = require('../server/util/fetch');
+const argv = require('minimist')(process.argv.slice(2));
+const config = require('../config/selectConfig')(argv.config);
 
 // Return a GraphQLSchema made from a file
 function readLocalSchema(schemaPath) {
@@ -61,7 +63,7 @@ function writeSchemaFile(schema, filePath) {
 // Fetch the schemas, merge them, and write them out a file
 Promise.all([
 	readLocalSchema(join(__dirname, '../src/api/localSchema.graphql')),
-	fetchRemoteSchema('https://api.dev.kivaws.org/graphql')
+	fetchRemoteSchema(config.server.graphqlUri)
 ]).then(schemas => {
 	const schema = mergeClientSchemas(...schemas);
 	return writeSchemaFile(schema, join(__dirname, 'schema.graphql'));

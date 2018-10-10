@@ -2,7 +2,7 @@
 	<experiment-slide v-bind="$attrs" v-on="$listeners">
 		<h3>{{ variantName }}</h3>
 		<label>
-			Key: {{ variantName | kebabCase }}
+			Key: {{ variantName | changeCase('param') }}
 		</label>
 		<label>
 			Variant name: <input type="text" v-model="variantName">

@@ -1,4 +1,4 @@
-#import '../fragments/loanChannelFields.graphql'
+#import '../fragments/loanCardFields.graphql'
 
 query (
 	$ids: [Int],
@@ -8,7 +8,18 @@ query (
 ) {
 	lend {
 		loanChannelsById(ids: $ids) {
-			...loanChannelFields
+			id
+			name
+			url
+			loans(limit: $numberOfLoans, unique: true) {
+				values {
+					...loanCardFields
+					image {
+						default: url(customSize: $imgDefaultSize)
+						retina: url(customSize: $imgRetinaSize)
+					}
+				}
+			}
 		}
 	}
 }
