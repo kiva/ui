@@ -19,7 +19,7 @@ module.exports = {
 	],
 	rules: {
 		// configure graphql schema checking
-		'graphql/template-strings': ['error', {
+		'graphql/template-strings': ['warn', {
 			env: 'literal',
 			schemaString: schema,
 		}],
