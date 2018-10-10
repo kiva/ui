@@ -96,6 +96,8 @@ export default {
 				this.$emit('updating-totals', false);
 			});
 		},
+
+		// This is not yet working, Kiva card not actually removed from basket
 		removeKivaCard(type) {
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
