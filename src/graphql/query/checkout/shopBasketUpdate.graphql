@@ -3,6 +3,7 @@ query {
 		userAccount {
 			promoBalance
 		}
+	}
 	shop {
 		nonTrivialItemCount
 		basket {
