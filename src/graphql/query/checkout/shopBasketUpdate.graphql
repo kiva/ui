@@ -1,4 +1,8 @@
 query {
+	my {
+		userAccount {
+			promoBalance
+		}
 	shop {
 		nonTrivialItemCount
 		basket {
