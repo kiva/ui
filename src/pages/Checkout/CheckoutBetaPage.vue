@@ -10,8 +10,8 @@
 
 					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
 						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
-							<h3 v-if="showLogin">Login to checkout</h3>
-							<h3 v-else>Register to checkout</h3>
+							<h3 v-if="showLogin">Login to complete your loan</h3>
+							<h3 v-else>Register to complete your loan</h3>
 						</div>
 
 						<div class="columns small-12 medium-8 large-5 xxlarge-4">
@@ -411,6 +411,10 @@ export default {
 			h3 {
 				font-size: $featured-text-font-size;
 				font-weight: 400;
+
+				@include breakpoint(large only) {
+					max-width: 47%;
+				}
 			}
 		}
 
