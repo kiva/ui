@@ -11,4 +11,6 @@ fragment shopTotals on ShopTotals {
 	loanReservationTotal
 	bonusAvailableTotal
 	bonusAppliedTotal
+	redemptionCodeAppliedTotal
+	redemptionCodeAvailableTotal
 }
