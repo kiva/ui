@@ -1,3 +1,5 @@
+#import '../../fragments/shopTotals.graphql'
+
 query {
 	shop {
 		nonTrivialItemCount
@@ -31,18 +33,7 @@ query {
 				}
 			}
 			totals {
-				creditAmountNeeded
-				creditAppliedTotal
-				creditAvailableTotal
-				donationTotal
-				itemTotal
-				kivaCreditAvailableTotal
-				kivaCreditAppliedTotal
-				kivaCreditRemaining
-				kivaCreditToReapply
-				loanReservationTotal
-				bonusAvailableTotal
-				bonusAppliedTotal
+				...shopTotals
 			}
 		}
 	}
