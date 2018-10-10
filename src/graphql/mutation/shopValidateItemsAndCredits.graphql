@@ -1,0 +1,9 @@
+mutation {
+	shop {
+		validateItemsAndCredits {
+			success
+			error
+			value
+		}
+	}
+}

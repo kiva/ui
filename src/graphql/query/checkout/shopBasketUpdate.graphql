@@ -1,3 +1,5 @@
+#import '../../fragments/shopTotals.graphql'
+
 query {
 	my {
 		userAccount {
@@ -36,20 +38,7 @@ query {
 				}
 			}
 			totals {
-				creditAmountNeeded
-				creditAppliedTotal
-				creditAvailableTotal
-				donationTotal
-				itemTotal
-				kivaCreditAvailableTotal
-				kivaCreditAppliedTotal
-				kivaCreditRemaining
-				kivaCreditToReapply
-				loanReservationTotal
-				bonusAvailableTotal
-				bonusAppliedTotal
-				redemptionCodeAppliedTotal
-				redemptionCodeAvailableTotal
+				...shopTotals
 			}
 		}
 	}

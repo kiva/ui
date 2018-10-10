@@ -136,6 +136,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import validateItemsAndCredits from '@/graphql/mutation/shopValidateItemsAndCredits.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -184,7 +185,8 @@ export default {
 			isHovered: false,
 			activeLoginDuration: 3600,
 			lastActiveLogin: 0,
-			preCheckoutStep: ''
+			preCheckoutStep: '',
+			preValidationErrors: []
 		};
 	},
 	apollo: {
@@ -221,6 +223,21 @@ export default {
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
 	},
+	created() {
+		// if we have a user id but are not actively logged in
+		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+			this.switchToLogin();
+		}
+	},
+	mounted() {
+		// fire tracking event when the page loads
+		// - this event will be duplicated when the page reloads with a newly registered/logged in user
+		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+		if (this.isActivelyLoggedIn) {
+			userStatus = 'Actively Logged-In';
+		}
+		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+	},
 	computed: {
 		isLoggedIn() {
 			if (this.myId !== null && this.myId !== undefined && this.isActivelyLoggedIn) {
@@ -249,22 +266,36 @@ export default {
 			return false;
 		},
 	},
-	created() {
-		// if we have a user id but are not actively logged in
-		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-			this.switchToLogin();
-		}
-	},
-	mounted() {
-		// fire tracking event when the page loads
-		// - this event will be duplicated when the page reloads with a newly registered/logged in user
-		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-		if (this.isActivelyLoggedIn) {
-			userStatus = 'Actively Logged-In';
-		}
-		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
-	},
 	methods: {
+		validateItems() {
+			this.apollo.mutate({
+				mutation: validateItemsAndCredits,
+			}).then(result => {
+				// retrieve any errors from the cache
+				const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
+				if (errorArray !== 'undefined' && errorArray.length > 0) {
+					console.error(errorArray);
+					// store these
+					this.preValidationErrors = errorArray;
+					// refresh the basket to remove items
+					this.refreshTotals();
+
+					let errorMessages = '';
+					// When validation or checkout fails and errors object is returned along with the data
+					errorArray.forEach(({ value }) => {
+						const errorMessage = value;
+
+						// Handle multiple errors
+						if (errorMessages !== '') {
+							errorMessages = `${errorMessages} | ${errorMessage}`;
+						} else {
+							errorMessages = errorMessage;
+						}
+					});
+					this.$showTipMsg(errorMessages, 'warning');
+				}
+			});
+		},
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
 			this.setUpdatingTotals(true);
@@ -340,6 +371,8 @@ export default {
 				this.preCheckoutStep = 'register';
 				this.switchToRegister();
 			}
+			// Validate Items and Credits
+			this.validateItems();
 			// TODO: FUTURE hide Reg or Login form if user is already logged in
 		}
 	},
