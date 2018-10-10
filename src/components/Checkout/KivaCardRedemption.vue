@@ -34,7 +34,7 @@
 							class="kiva-card-amount"
 							:value="totals.redemptionCodeAppliedTotal">
 						<span class="remove-wrapper"
-							@click="updateKivaCard('remove')">
+							@click="removeKivaCard">
 							<kv-icon class="remove-x" name="small-x" />
 						</span>
 					</span>
@@ -48,6 +48,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
+import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
 import _forEach from 'lodash/forEach';
 
 export default {
@@ -90,6 +91,22 @@ export default {
 					this.$kvTrackEvent('Checkout', 'Apply Kiva Card', 'Kiva Card successfully applied');
 				}
 				this.$emit('updating-totals', false);
+			}).catch(error => {
+				console.error(error);
+				this.$emit('updating-totals', false);
+			});
+		},
+		removeKivaCard(type) {
+			this.$emit('updating-totals', true);
+			this.apollo.mutate({
+				mutation: removeCreditByType,
+				variables: {
+					creditType: type
+				}
+			}).then(() => {
+				this.$emit('updating-totals', false);
+				this.$kvTrackEvent('Checkout', 'Kiva Card', 'Remove Kiva Card Success');
+				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
 				this.$emit('updating-totals', false);
