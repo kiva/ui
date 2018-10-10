@@ -186,63 +186,40 @@ export default {
 		};
 	},
 	apollo: {
+		query: initializeCheckout,
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
-			// prefetch mutation
-			// when we prefetch this mutation, any errors are listed as an array of objects
-			// HOWEVER, this doesnot go into the apollo cache so is not available on subsequent calls
-			// TODO: if errors exist in the result, mutate them into @client state so they are available
-			return client.mutate({
-				mutation: validateItemsAndCredits
-			}).then(result => {
-				console.log(result);
-				// cache checkout init query
-				return client.query({ query: initializeCheckout });
+			return client.query({
+				query: initializeCheckout
+			}).then(({ data }) => {
+				const totals = _get(data, 'shop.basket.totals');
+				// check for bonus credit and redirect if present
+				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
+				// TODO: remove once bonus credit functionality is added
+				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
+				if (parseFloat(totals.bonusAvailableTotal) > 0) {
+					return Promise.reject({
+						path: '/basket',
+						query: {
+							kexpn: 'checkout_beta.minimal_checkout',
+							kexpv: 'a'
+						}
+					});
+				}
+				return data;
 			});
+		},
+		result({ data }) {
+			this.myBalance = _get(data, 'my.userAccount.balance');
+			this.myId = _get(data, 'my.userAccount.id');
+			this.totals = _get(data, 'shop.basket.totals');
+			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
+			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
 	},
 	created() {
-		// call mutation to validateItemsAndCredits
-		// TODO: Remove and call client state instead
-		this.apollo.mutate({
-			mutation: validateItemsAndCredits,
-		}).then(result => {
-			console.log(result);
-			// retrieve any errors from the cache
-			const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
-			if (errorArray !== 'undefined' && errorArray.length > 0) {
-				// store these
-				console.error(errorArray);
-				// TODO: Trigger and Present these
-				this.preValidationErrors = result.error;
-
-				let errorMessages = '';
-				// When validation or checkout fails and errors object is returned along with the data
-				errorArray.forEach(({ value }) => {
-					const errorMessage = value;
-
-					// Handle multiple errors
-					if (errorMessages !== '') {
-						errorMessages = `${errorMessages} | ${errorMessage}`;
-					} else {
-						errorMessages = errorMessage;
-					}
-				});
-				this.$showTipMsg(errorMessages, 'error');
-			}
-		});
-
-		// retrieve our initialization query from cache
-		const initData = this.apollo.readQuery({ query: initializeCheckout });
-		// set checkout data
-		this.setCheckoutInitialization(initData);
-		// watch query for changes
-		this.apollo.watchQuery({ query: initializeCheckout }).subscribe({
-			next: ({ data }) => {
-				this.setCheckoutInitialization(data);
-			}
-		});
-
 		// if we have a user id but are not actively logged in
 		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
 			this.switchToLogin();
@@ -286,31 +263,34 @@ export default {
 		},
 	},
 	methods: {
-		setCheckoutInitialization(data) {
-			const totals = _get(data, 'shop.basket.totals');
-			// check for bonus credit and redirect if present
-			// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
-			// TODO: remove once bonus credit functionality is added
-			// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
-			if (parseFloat(totals.bonusAvailableTotal) > 0) {
-				return Promise.reject({
-					path: '/basket',
-					query: {
-						kexpn: 'checkout_beta.minimal_checkout',
-						kexpv: 'a'
-					}
-				});
-			}
+		validateItems() {
+			this.apollo.mutate({
+				mutation: validateItemsAndCredits,
+			}).then(result => {
+				// retrieve any errors from the cache
+				const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
+				if (errorArray !== 'undefined' && errorArray.length > 0) {
+					console.error(errorArray);
+					// store these
+					this.preValidationErrors = errorArray;
+					// refresh the basket to remove items
+					this.refreshTotals();
 
-			this.myBalance = _get(data, 'my.userAccount.balance');
-			this.myId = _get(data, 'my.userAccount.id');
-			this.totals = totals;
-			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
-			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
-			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
+					let errorMessages = '';
+					// When validation or checkout fails and errors object is returned along with the data
+					errorArray.forEach(({ value }) => {
+						const errorMessage = value;
 
-			return data;
+						// Handle multiple errors
+						if (errorMessages !== '') {
+							errorMessages = `${errorMessages} | ${errorMessage}`;
+						} else {
+							errorMessages = errorMessage;
+						}
+					});
+					this.$showTipMsg(errorMessages, 'warning');
+				}
+			});
 		},
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
@@ -387,6 +367,8 @@ export default {
 				this.preCheckoutStep = 'register';
 				this.switchToRegister();
 			}
+			// Validate Items and Credits
+			this.validateItems();
 			// TODO: FUTURE hide Reg or Login form if user is already logged in
 		}
 	},
