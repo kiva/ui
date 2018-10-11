@@ -36,6 +36,24 @@
 							Kiva issues three types of Kiva Cards: print-it-yourself cards,
 							email delivery and postal delivery.
 						</p>
+						<p>Print-it-yourself:</p>
+						<img alt="print-kiva-card"
+							class="card-spacing"
+							height="116"
+							src="../../assets/images/checkout/printcard_codelocation.jpg"
+							width="450">
+						<p>Email delivery:</p>
+						<img alt="email-kiva-card"
+							class="card-spacing"
+							height="199"
+							src="../../assets/images/checkout/emailcard_codelocation.jpg"
+							width="450">
+						<p>Postal delivery:</p>
+						<img alt="postal-kiva-card"
+							class="postal-card"
+							height="158"
+							src="../../assets/images/checkout/physicalcard_codelocation.jpg"
+							width="430">
 					</kv-lightbox>
 
 					<span
@@ -203,14 +221,21 @@ export default {
 	}
 }
 
+.card-spacing {
+	border: 1px solid black;
+	margin-bottom: 50px;
+}
+
 .card-value-wrap {
 	@include breakpoint(medium) {
 		float: right;
 	}
 }
 
-// .kiva-card-amount {
-// }
+.card-value-wrap p {
+	float: left;
+	padding-right: 10px;
+}
 
 .kiva-card-input {
 	width: rem-calc(250);
