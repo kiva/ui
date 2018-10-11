@@ -39,7 +39,19 @@
 		</span>
 		<span class="small-3 show-for-small-only"></span>
 		<span class="small-9 medium-3 large-2 medium-text-font-size">
-			<div class="small-12 donation-amount-input-wrapper">
+			<div
+				v-if="!editDonation"
+				class="small-12 donation-amount-wrapper">
+				<span
+					v-if="!editDonation"
+					class="donation-amount">{{ amount }}
+					<kv-icon
+						class="edit-donation"
+						name="pencil"
+						@click.prevent.stop.native="editDonation = true" />
+				</span>
+			</div>
+			<div v-else class="small-12 donation-amount-input-wrapper">
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -87,7 +99,8 @@ export default {
 		return {
 			defaultLbVisible: false,
 			amount: numeral(this.donation.price).format('$0,0.00'),
-			cachedAmount: numeral(this.donation.price).format('$0,0.00')
+			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
+			editDonation: false
 		};
 	},
 	watch: {
@@ -111,6 +124,7 @@ export default {
 			this.defaultLbVisible = false;
 		},
 		updateDonation() {
+			this.editDonation = false;
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
@@ -191,6 +205,20 @@ export default {
 .donation-help-text {
 	display: block;
 	margin-bottom: rem-calc(15);
+}
+
+.donation-amount-wrapper {
+	text-align: right;
+
+	.donation-amount {
+		font-weight: 400;
+
+		.edit-donation {
+			width: 1.2rem;
+			height: 1.2rem;
+			margin: 0 0.2rem 0 0.8rem;
+		}
+	}
 }
 
 .donation-amount-input-wrapper {
