@@ -230,6 +230,7 @@ export default {
 	font-weight: 400;
 	margin-bottom: 1rem;
 	font-size: rem-calc(18);
+	white-space: nowrap;
 
 	@include breakpoint(medium) {
 		float: right;
