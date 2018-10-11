@@ -33,7 +33,8 @@
 						@lightbox-closed="lightboxClosed">
 						<h2 slot="title">Where can I find my Kiva Card code?</h2>
 						<p>
-							Kiva issues three types of Kiva Cards: print-it-yourself cards, email delivery and postal delivery.
+							Kiva issues three types of Kiva Cards: print-it-yourself cards,
+							email delivery and postal delivery.
 						</p>
 					</kv-lightbox>
 
