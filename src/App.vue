@@ -25,12 +25,6 @@ export default {
 			meta: [
 				// General Meta Tags
 				{
-					vmid: 'keywords',
-					name: 'keywords',
-					// eslint-disable-next-line max-len
-					content: 'kiva, microfinance, microcredit, microloan, microlending, loan, africa, business, philanthropy, international development, projects, corporate giving, corporate philanthropy, donors, donating, donation, charity, social development, economic development, grassroots development, employee giving, poverty alleviation, economic investments, social investment, entrepreneur, entrepreneurs, social entrepreneurship, innovation, giving, give, gift, gifts'
-				},
-				{
 					vmid: 'description',
 					name: 'description',
 					// eslint-disable-next-line max-len
