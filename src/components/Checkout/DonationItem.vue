@@ -255,8 +255,11 @@ export default {
 			width: 1rem;
 			height: 1rem;
 			margin: 0 0.4rem 0 0.6rem;
+			cursor: pointer;
 
 			@include breakpoint(medium) {
+				width: 0.8rem;
+				height: 0.8rem;
 				margin: 0 0.2rem 0 0.8rem;
 			}
 		}
