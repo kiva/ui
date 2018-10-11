@@ -10,10 +10,11 @@
 				Donation to Kiva
 			</span>
 			<div>
+				<span class="small-text">{{ donationTagLine }}</span>
 				<a
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox">
-					Help Kiva reach more borrowers around the world
+					How Kiva uses donations
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -41,14 +42,14 @@
 		<span class="small-9 medium-3 large-2 medium-text-font-size">
 			<div
 				v-if="!editDonation"
-				class="small-12 donation-amount-wrapper">
+				class="donation-amount-wrapper">
 				<span
 					v-if="!editDonation"
-					class="donation-amount">{{ amount }}
+					class="donation-amount"
+					@click.prevent.stop="editDonation = true">{{ formattedAmount }}
 					<kv-icon
 						class="edit-donation"
-						name="pencil"
-						@click.prevent.stop.native="editDonation = true" />
+						name="pencil"/>
 				</span>
 			</div>
 			<div v-else class="small-12 donation-amount-input-wrapper">
@@ -93,6 +94,10 @@ export default {
 		donation: {
 			type: Object,
 			default: () => {}
+		},
+		loanCount: {
+			type: Number,
+			default: 0
 		}
 	},
 	data() {
@@ -114,6 +119,16 @@ export default {
 	computed: {
 		serverAmount() {
 			return numeral(this.donation.price).format('$0,0.00');
+		},
+		formattedAmount() {
+			return numeral(this.amount).format('$0,0.00');
+		},
+		donationTagLine() {
+			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
+			if (this.loanCount > 1) {
+				return `${tagline} these loans`;
+			}
+			return `${tagline} this loan`;
 		}
 	},
 	methods: {
@@ -176,6 +191,10 @@ export default {
 
 .basket-donation-item {
 	padding-right: rem-calc(20);
+
+	// @include breakpoint(medium) {
+	// 	padding-right: 0;
+	// }
 }
 
 .donation-icon {
@@ -208,15 +227,32 @@ export default {
 }
 
 .donation-amount-wrapper {
+	margin-left: 0.6rem;
+	width: 10.8rem;
 	text-align: right;
+
+	@include breakpoint(medium) {
+		margin: 0;
+		width: auto;
+		text-align: right;
+	}
 
 	.donation-amount {
 		font-weight: 400;
+		font-size: $medium-text-font-size;
+
+		@include breakpoint(medium) {
+			font-size: inherit;
+		}
 
 		.edit-donation {
-			width: 1.2rem;
-			height: 1.2rem;
-			margin: 0 0.2rem 0 0.8rem;
+			width: 1rem;
+			height: 1rem;
+			margin: 0 0.4rem 0 0.6rem;
+
+			@include breakpoint(medium) {
+				margin: 0 0.2rem 0 0.8rem;
+			}
 		}
 	}
 }
