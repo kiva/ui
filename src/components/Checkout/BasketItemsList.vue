@@ -31,7 +31,15 @@ export default {
 		},
 		donations: {
 			type: Array,
-			default: () => []
+			default: () => [
+				{
+					__typename: 'Donation',
+					id: 0,
+					isTip: false,
+					isUserEdited: false,
+					price: '0.00'
+				}
+			]
 		}
 	},
 	components: {
