@@ -10,7 +10,7 @@
 				Donation to Kiva
 			</span>
 			<div>
-				<span class="small-text">{{ donationTagLine }}</span>
+				<p class="donation-tagline small-text">{{ donationTagLine }}</p>
 				<a
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
@@ -221,6 +221,10 @@ export default {
 
 .donation-info {
 	line-height: 0.8;
+}
+
+.dontation-tagline {
+	margin-bottom: 0.3rem;
 }
 
 .donation-help-text {
