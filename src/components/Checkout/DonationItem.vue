@@ -13,7 +13,8 @@
 				<span class="small-text">{{ donationTagLine }}</span>
 				<a
 					class="small-text donation-help-text"
-					@click.prevent="triggerDefaultLightbox">
+					@click.prevent="triggerDefaultLightbox"
+					v-kv-track-event="['Checkout', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
@@ -46,7 +47,8 @@
 				<span
 					v-if="!editDonation"
 					class="donation-amount"
-					@click.prevent.stop="editDonation = true">{{ formattedAmount }}
+					v-kv-track-event="['basket', 'Edit Donation']"
+					@click.prevent="editDonation = true">{{ formattedAmount }}
 					<kv-icon
 						class="edit-donation"
 						name="pencil"/>
