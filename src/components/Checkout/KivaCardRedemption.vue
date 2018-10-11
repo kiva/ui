@@ -227,6 +227,10 @@ export default {
 }
 
 .card-value-wrap {
+	font-weight: 400;
+	margin-bottom: 1rem;
+	font-size: rem-calc(18);
+
 	@include breakpoint(medium) {
 		float: right;
 	}
@@ -260,6 +264,7 @@ export default {
 	display: inline-block;
 	width: 1.1rem;
 	height: rem-calc(50);
+	cursor: pointer;
 
 	@include breakpoint(medium) {
 		height: rem-calc(36);
