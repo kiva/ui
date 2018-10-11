@@ -24,17 +24,26 @@
 						class="kiva-card-input"
 						v-model="kivaCardCode">
 					<button class="button secondary"
-						@click="updateKivaCard('redemption_code')">Apply</button>
-					<a>Need help?</a>
+						@click.prevent="updateKivaCard('redemption_code')">Apply</button>
+
+					<!-- This lightbox will be replaced with a Popper tip message. -->
+					<a @click.prevent="triggerDefaultLightbox">Need help?</a>
+					<kv-lightbox
+						:visible="defaultLbVisible"
+						@lightbox-closed="lightboxClosed">
+						<h2 slot="title">Where can I find my Kiva Card code?</h2>
+						<p>
+							Kiva issues three types of Kiva Cards: print-it-yourself cards, email delivery and postal delivery.
+						</p>
+					</kv-lightbox>
+
 					<span
 						class="card-value-wrap"
 						v-if="showKivaCardTotal">
 						<p>Kiva Card value:</p>
-						<input
-							class="kiva-card-amount"
-							:value="totals.redemptionCodeAppliedTotal">
+						<p class="kiva-card-amount">{{ formatedKivaCardTotal }}</p>
 						<span class="remove-wrapper"
-							@click="removeKivaCard">
+							@click.prevent.stop="removeCredit('redemption_code')">
 							<kv-icon class="remove-x" name="small-x" />
 						</span>
 					</span>
@@ -50,11 +59,14 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
 import _forEach from 'lodash/forEach';
+import numeral from 'numeral';
+import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		KvIcon,
-		KvExpandable
+		KvExpandable,
+		KvLightbox
 	},
 	inject: ['apollo'],
 	props: {
@@ -66,10 +78,26 @@ export default {
 	data() {
 		return {
 			open: false,
-			kivaCardCode: ''
+			kivaCardCode: '',
+			id: '',
+			defaultLbVisible: false,
 		};
 	},
+	computed: {
+		showKivaCardTotal() {
+			return parseFloat(this.totals.redemptionCodeAppliedTotal) > 0;
+		},
+		formatedKivaCardTotal() {
+			return numeral(this.totals.redemptionCodeAppliedTotal).format('$0,0.00');
+		}
+	},
 	methods: {
+		triggerDefaultLightbox() {
+			this.defaultLbVisible = !this.defaultLbVisible;
+		},
+		lightboxClosed() {
+			this.defaultLbVisible = false;
+		},
 		toggleAccordion() {
 			this.open = !this.open;
 		},
@@ -98,7 +126,7 @@ export default {
 		},
 
 		// This is not yet working, Kiva card not actually removed from basket
-		removeKivaCard(type) {
+		removeCredit(type) {
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: removeCreditByType,
@@ -114,11 +142,6 @@ export default {
 				this.$emit('updating-totals', false);
 			});
 		}
-	},
-	computed: {
-		showKivaCardTotal() {
-			return parseFloat(this.totals.redemptionCodeAppliedTotal) > 0;
-		},
 	}
 };
 </script>
@@ -185,24 +208,8 @@ export default {
 	}
 }
 
-.kiva-card-amount {
-	display: block;
-	border: 1px solid $charcoal;
-	border-radius: $button-radius;
-	width: 132px;
-	text-align: center;
-	font-weight: 300;
-	color: $charcoal;
-	margin-bottom: rem-calc(15);
-	height: rem-calc(50);
-	font-size: $medium-text-font-size;
-
-	@include breakpoint(medium) {
-		width: rem-calc(95);
-		font-size: $normal-text-font-size;
-		height: rem-calc(36);
-	}
-}
+// .kiva-card-amount {
+// }
 
 .kiva-card-input {
 	width: rem-calc(250);

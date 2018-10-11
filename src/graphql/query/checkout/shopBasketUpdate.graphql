@@ -4,6 +4,7 @@ query {
 	my {
 		userAccount {
 			promoBalance
+			id
 		}
 	}
 	shop {
@@ -38,7 +39,7 @@ query {
 				}
 			}
 			totals {
-				...shopTotals
+				... shopTotals
 			}
 		}
 	}
