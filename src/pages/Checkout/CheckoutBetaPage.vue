@@ -137,6 +137,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import validateItemsAndCredits from '@/graphql/mutation/shopValidateItemsAndCredits.graphql';
+import showTipMutation from '@graphql/mutation/tipMessage/showTipMessage.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -215,18 +216,37 @@ export default {
 			}).then(() => {
 				return this.apollo.mutate({
 					mutation: validateItemsAndCredits,
-				}).then(result => {
-					// retrieve any errors from the cache
-					const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
-					if (errorArray !== 'undefined' && errorArray.length > 0) {
-						console.error(errorArray);
-						// refresh the basket to remove items
-						return client.query({
-							query: initializeCheckout,
-							fetchPolicy: 'network-only'
-						});
-					}
 				});
+			}).then(result => {
+				// retrieve any errors from the cache
+				const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
+				if (errorArray !== 'undefined' && errorArray.length > 0) {
+					console.error(errorArray);
+					let errorMessages = '';
+					// When validation or checkout fails and errors object is returned along with the data
+					errorArray.forEach(({ value }) => {
+						const errorMessage = value;
+						// Handle multiple errors
+						if (errorMessages !== '') {
+							errorMessages = `${errorMessages} | ${errorMessage}`;
+						} else {
+							errorMessages = errorMessage;
+						}
+					});
+					// show tip message
+					client.mutate({
+						mutation: showTipMutation,
+						variables: {
+							message: errorMessages,
+							type: 'warning'
+						}
+					});
+					// refresh the basket to remove items
+					return client.query({
+						query: initializeCheckout,
+						fetchPolicy: 'network-only'
+					});
+				}
 			});
 		},
 		result({ data }) {
