@@ -19,54 +19,61 @@
 				v-show="open"
 				class="accordion-info row">
 				<div class="small-12">
-					<input
-						placeholder="ABCD-1234-EFGH-5678"
-						class="kiva-card-input"
-						v-model="kivaCardCode">
-					<button class="button secondary"
-						@click.prevent="updateKivaCard('redemption_code')">Apply</button>
-
-					<!-- This lightbox will be replaced with a Popper tip message. -->
-					<a @click.prevent="triggerDefaultLightbox"
-						class="help-lightbox">Need help?
+					<a class="small-9 medium-11" href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a">
+						<div v-kv-track-event="['checkout', 'kiva card', 'exit to legacy']">
+							Click here to enter a Kiva Card
+						</div>
 					</a>
-					<kv-lightbox
-						:visible="defaultLbVisible"
-						@lightbox-closed="lightboxClosed">
-						<h2 slot="title">Where can I find my Kiva Card code?</h2>
-						<p>
-							Kiva issues three types of Kiva Cards: print-it-yourself cards,
-							email delivery and postal delivery.
-						</p>
-						<p>Print-it-yourself:</p>
-						<img alt="print-kiva-card"
-							class="card-spacing"
-							height="116"
-							src="../../assets/images/checkout/printcard_codelocation.jpg"
-							width="450">
-						<p>Email delivery:</p>
-						<img alt="email-kiva-card"
-							class="card-spacing"
-							height="199"
-							src="../../assets/images/checkout/emailcard_codelocation.jpg"
-							width="450">
-						<p>Postal delivery:</p>
-						<img alt="postal-kiva-card"
-							class="postal-card"
-							height="158"
-							src="../../assets/images/checkout/physicalcard_codelocation.jpg"
-							width="430">
-					</kv-lightbox>
+					<div v-if="false">
+						<input
+							placeholder="ABCD-1234-EFGH-5678"
+							class="kiva-card-input"
+							v-model="kivaCardCode">
+						<button class="button secondary"
+							@click.prevent="updateKivaCard('redemption_code')">Apply</button>
 
-					<div
-						class="card-value-wrap"
-						v-if="showKivaCardTotal">
-						<span>Kiva Card value:</span>
-						<span class="kiva-card-amount">{{ formatedKivaCardTotal }}</span>
-						<span class="remove-wrapper"
-							@click.prevent.stop="removeCredit('redemption_code')">
-							<kv-icon class="remove-x" name="small-x" />
-						</span>
+						<!-- This lightbox will be replaced with a Popper tip message. -->
+						<a @click.prevent="triggerDefaultLightbox"
+							class="help-lightbox">Need help?
+						</a>
+						<kv-lightbox
+							:visible="defaultLbVisible"
+							@lightbox-closed="lightboxClosed">
+							<h2 slot="title">Where can I find my Kiva Card code?</h2>
+							<p>
+								Kiva issues three types of Kiva Cards: print-it-yourself cards,
+								email delivery and postal delivery.
+							</p>
+							<p>Print-it-yourself:</p>
+							<img alt="print-kiva-card"
+								class="card-spacing"
+								height="116"
+								src="../../assets/images/checkout/printcard_codelocation.jpg"
+								width="450">
+							<p>Email delivery:</p>
+							<img alt="email-kiva-card"
+								class="card-spacing"
+								height="199"
+								src="../../assets/images/checkout/emailcard_codelocation.jpg"
+								width="450">
+							<p>Postal delivery:</p>
+							<img alt="postal-kiva-card"
+								class="postal-card"
+								height="158"
+								src="../../assets/images/checkout/physicalcard_codelocation.jpg"
+								width="430">
+						</kv-lightbox>
+
+						<div
+							class="card-value-wrap"
+							v-if="showKivaCardTotal">
+							<span>Kiva Card value:</span>
+							<span class="kiva-card-amount">{{ formatedKivaCardTotal }}</span>
+							<span class="remove-wrapper"
+								@click.prevent.stop="removeCredit('redemption_code')">
+								<kv-icon class="remove-x" name="small-x" />
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>
