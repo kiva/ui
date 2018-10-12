@@ -10,10 +10,12 @@
 				Donation to Kiva
 			</span>
 			<div>
+				<p class="donation-tagline small-text">{{ donationTagLine }}</p>
 				<a
 					class="small-text donation-help-text"
-					@click.prevent="triggerDefaultLightbox">
-					Help Kiva reach more borrowers around the world
+					@click.prevent="triggerDefaultLightbox"
+					v-kv-track-event="['Checkout', 'Donation Info Lightbox', 'Open Lightbox']">
+					How Kiva uses donations
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -39,7 +41,20 @@
 		</span>
 		<span class="small-3 show-for-small-only"></span>
 		<span class="small-9 medium-3 large-2 medium-text-font-size">
-			<div class="small-12 donation-amount-input-wrapper">
+			<div
+				v-if="!editDonation"
+				class="donation-amount-wrapper">
+				<span
+					v-if="!editDonation"
+					class="donation-amount"
+					v-kv-track-event="['basket', 'Edit Donation']"
+					@click.prevent="editDonation = true">{{ formattedAmount }}
+					<kv-icon
+						class="edit-donation"
+						name="pencil"/>
+				</span>
+			</div>
+			<div v-else class="small-12 donation-amount-input-wrapper">
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -81,13 +96,18 @@ export default {
 		donation: {
 			type: Object,
 			default: () => {}
+		},
+		loanCount: {
+			type: Number,
+			default: 0
 		}
 	},
 	data() {
 		return {
 			defaultLbVisible: false,
 			amount: numeral(this.donation.price).format('$0,0.00'),
-			cachedAmount: numeral(this.donation.price).format('$0,0.00')
+			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
+			editDonation: false
 		};
 	},
 	watch: {
@@ -101,6 +121,16 @@ export default {
 	computed: {
 		serverAmount() {
 			return numeral(this.donation.price).format('$0,0.00');
+		},
+		formattedAmount() {
+			return numeral(this.amount).format('$0,0.00');
+		},
+		donationTagLine() {
+			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
+			if (this.loanCount > 1) {
+				return `${tagline} these loans`;
+			}
+			return `${tagline} this loan`;
 		}
 	},
 	methods: {
@@ -111,6 +141,7 @@ export default {
 			this.defaultLbVisible = false;
 		},
 		updateDonation() {
+			this.editDonation = false;
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
@@ -188,9 +219,47 @@ export default {
 	line-height: 0.8;
 }
 
+.dontation-tagline {
+	margin-bottom: 0.3rem;
+}
+
 .donation-help-text {
 	display: block;
 	margin-bottom: rem-calc(15);
+}
+
+.donation-amount-wrapper {
+	margin-left: 0.6rem;
+	width: 10.8rem;
+	text-align: right;
+
+	@include breakpoint(medium) {
+		margin: 0;
+		width: auto;
+		text-align: right;
+	}
+
+	.donation-amount {
+		font-weight: 400;
+		font-size: $medium-text-font-size;
+
+		@include breakpoint(medium) {
+			font-size: inherit;
+		}
+
+		.edit-donation {
+			width: 1rem;
+			height: 1rem;
+			margin: 0 0.4rem 0 0.6rem;
+			cursor: pointer;
+
+			@include breakpoint(medium) {
+				width: 0.8rem;
+				height: 0.8rem;
+				margin: 0 0.2rem 0 0.8rem;
+			}
+		}
+	}
 }
 
 .donation-amount-input-wrapper {

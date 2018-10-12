@@ -11,6 +11,7 @@
 			<li v-for="donation in donations" :key="donation.id">
 				<donation-item
 					:donation="donation"
+					:loan-count="loans.length"
 					@refreshtotals="$emit('refreshtotals')"
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
