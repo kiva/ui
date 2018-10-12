@@ -202,6 +202,7 @@ export default {
 				// TODO: remove once bonus credit functionality is added
 				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
 				if (parseFloat(totals.bonusAvailableTotal) > 0) {
+					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
 						query: {
@@ -237,6 +238,9 @@ export default {
 			userStatus = 'Actively Logged-In';
 		}
 		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+
+		// Run our validate items method once in the client
+		this.validateItems();
 	},
 	computed: {
 		isLoggedIn() {
@@ -371,8 +375,6 @@ export default {
 				this.preCheckoutStep = 'register';
 				this.switchToRegister();
 			}
-			// Validate Items and Credits
-			this.validateItems();
 			// TODO: FUTURE hide Reg or Login form if user is already logged in
 		}
 	},
