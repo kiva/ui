@@ -51,6 +51,7 @@ module.exports = function createMiddleware({
 			clientManifest,
 			runInNewContext: false,
 			inject: false,
+			shouldPrefetch: () => false,
 		});
 
 		const cookies = cookie.parse(req.headers.cookie || '');
