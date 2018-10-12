@@ -39,7 +39,7 @@ query {
 				}
 			}
 			totals {
-				... shopTotals
+				...shopTotals
 			}
 		}
 	}
