@@ -193,10 +193,6 @@ export default {
 
 .basket-donation-item {
 	padding-right: rem-calc(20);
-
-	// @include breakpoint(medium) {
-	// 	padding-right: 0;
-	// }
 }
 
 .donation-icon {
