@@ -206,7 +206,7 @@ export default {
 	}
 
 	@include breakpoint(large) {
-		margin-left: 14%
+		margin-left: 14%;
 	}
 
 	@include breakpoint(xlarge) {
