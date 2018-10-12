@@ -259,7 +259,7 @@ export default {
 		float: right;
 	}
 
-	@include breakpoint(x-large) {
+	@include breakpoint(xlarge) {
 		margin-top: rem-calc(15);
 	}
 }
