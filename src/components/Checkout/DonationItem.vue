@@ -165,6 +165,7 @@ export default {
 						// pass donation amount as whole number
 						numeral(this.amount).value() * 100
 					);
+					this.amount = numeral(this.amount).format('$0,0.00');
 					this.cachedAmount = numeral(this.amount).format('$0,0.00');
 				}
 				this.$emit('updating-totals', false);
