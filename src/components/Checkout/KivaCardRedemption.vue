@@ -27,7 +27,9 @@
 						@click.prevent="updateKivaCard('redemption_code')">Apply</button>
 
 					<!-- This lightbox will be replaced with a Popper tip message. -->
-					<a @click.prevent="triggerDefaultLightbox">Need help?</a>
+					<a @click.prevent="triggerDefaultLightbox"
+						class="help-lightbox">Need help?
+					</a>
 					<kv-lightbox
 						:visible="defaultLbVisible"
 						@lightbox-closed="lightboxClosed">
@@ -56,16 +58,16 @@
 							width="430">
 					</kv-lightbox>
 
-					<span
+					<div
 						class="card-value-wrap"
 						v-if="showKivaCardTotal">
-						<p>Kiva Card value:</p>
-						<p class="kiva-card-amount">{{ formatedKivaCardTotal }}</p>
+						<span>Kiva Card value:</span>
+						<span class="kiva-card-amount">{{ formatedKivaCardTotal }}</span>
 						<span class="remove-wrapper"
 							@click.prevent.stop="removeCredit('redemption_code')">
 							<kv-icon class="remove-x" name="small-x" />
 						</span>
-					</span>
+					</div>
 				</div>
 			</div>
 		</kv-expandable>
@@ -197,7 +199,24 @@ export default {
 }
 
 .accordion-info {
-	margin-left: 4.625rem;
+	text-align: center;
+
+	@include breakpoint(medium) {
+		margin-left: 16%;
+		text-align: unset;
+	}
+
+	@include breakpoint(large) {
+		margin-left: 14%
+	}
+
+	@include breakpoint(xlarge) {
+		margin-left: 12%;
+	}
+
+	@include breakpoint(xxlarge) {
+		margin-left: 8%;
+	}
 }
 
 .flipped {
@@ -219,11 +238,16 @@ export default {
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
+
+	@include breakpoint(large) {
+		float: left;
+		margin: rem-calc(15) rem-calc(15) 0 0;
+	}
 }
 
 .card-spacing {
 	border: 1px solid black;
-	margin-bottom: 50px;
+	margin-bottom: rem-calc(50);
 }
 
 .card-value-wrap {
@@ -235,11 +259,15 @@ export default {
 	@include breakpoint(medium) {
 		float: right;
 	}
+
+	@include breakpoint(x-large) {
+		margin-top: rem-calc(15);
+	}
 }
 
 .card-value-wrap p {
 	float: left;
-	padding-right: 10px;
+	padding-right: rem-calc(15);
 }
 
 .kiva-card-input {
@@ -249,14 +277,28 @@ export default {
 	border-radius: $button-radius;
 	font-weight: 300;
 	text-align: center;
-	margin-right: rem-calc(15);
-	margin-bottom: rem-calc(15);
+	margin: rem-calc(15) auto;
+	display: block;
 	height: rem-calc(50);
 	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
+		margin: rem-calc(15) 0;
+	}
+
+	@include breakpoint(large) {
 		font-size: $normal-text-font-size;
+		float: left;
 		height: rem-calc(36);
+		margin: rem-calc(15) rem-calc(15) rem-calc(15) 0;
+	}
+}
+
+.help-lightbox {
+	margin: rem-calc(15) 0;
+
+	@include breakpoint(large) {
+		float: left;
 	}
 }
 
@@ -264,11 +306,7 @@ export default {
 	fill: $subtle-gray;
 	display: inline-block;
 	width: 1.1rem;
-	height: rem-calc(50);
+	height: 1rem;
 	cursor: pointer;
-
-	@include breakpoint(medium) {
-		height: rem-calc(36);
-	}
 }
 </style>
