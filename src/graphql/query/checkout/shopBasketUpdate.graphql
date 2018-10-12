@@ -1,6 +1,12 @@
 #import '../../fragments/shopTotals.graphql'
 
 query {
+	my {
+		userAccount {
+			promoBalance
+			id
+		}
+	}
 	shop {
 		nonTrivialItemCount
 		basket {

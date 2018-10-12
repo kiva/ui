@@ -5,6 +5,7 @@ query {
 		userAccount {
 			id
 			balance
+			promoBalance
 		}
 		lastActiveLogin: userSessionData(sessionKey: LastActiveLogin) {
 			sessionKey
