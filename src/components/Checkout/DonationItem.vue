@@ -277,14 +277,14 @@ export default {
 	display: block;
 	border: 1px solid $charcoal;
 	border-radius: $button-radius;
-	width: 132px;
+	width: rem-calc(132);
 	text-align: center;
 	font-weight: 300;
 	color: $charcoal;
 	margin-bottom: rem-calc(15);
 
 	@include breakpoint(medium) {
-		width: rem-calc(95);
+		width: rem-calc(90);
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
@@ -326,7 +326,7 @@ input {
 	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
-		padding: rem-calc(6) rem-calc(20);
+		padding: rem-calc(6) 1.1rem;
 		margin-bottom: rem-calc(19);
 		width: inherit;
 		font-size: $normal-text-font-size;
