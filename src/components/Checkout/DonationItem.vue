@@ -61,7 +61,8 @@
 					name="donation"
 					id="donation"
 					v-model="amount"
-					@blur="validateInput">
+					@blur="validateInput"
+					@keyup.enter.prevent="updateDonation()">
 				<kv-button
 					class="secondary"
 					@click.native.prevent.stop="updateDonation()"

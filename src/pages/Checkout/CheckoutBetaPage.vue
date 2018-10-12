@@ -202,6 +202,7 @@ export default {
 				// TODO: remove once bonus credit functionality is added
 				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
 				if (parseFloat(totals.bonusAvailableTotal) > 0) {
+					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
 						query: {
@@ -211,6 +212,21 @@ export default {
 					});
 				}
 				return data;
+			}).then(() => {
+				return this.apollo.mutate({
+					mutation: validateItemsAndCredits,
+				}).then(result => {
+					// retrieve any errors from the cache
+					const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
+					if (errorArray !== 'undefined' && errorArray.length > 0) {
+						console.error(errorArray);
+						// refresh the basket to remove items
+						return client.query({
+							query: initializeCheckout,
+							fetchPolicy: 'network-only'
+						});
+					}
+				});
 			});
 		},
 		result({ data }) {
