@@ -137,7 +137,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import validateItemsAndCredits from '@/graphql/mutation/shopValidateItemsAndCredits.graphql';
-import showTipMutation from '@graphql/mutation/tipMessage/showTipMessage.graphql';
+import showTipMutation from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
