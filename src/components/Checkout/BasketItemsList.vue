@@ -55,7 +55,7 @@ export default {
 
 .basket-items-list {
 	@include breakpoint(medium) {
-		margin: $list-side-margin;
+		margin: $list-side-margin $list-side-margin 2rem;
 	}
 }
 
