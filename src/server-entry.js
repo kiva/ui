@@ -3,7 +3,6 @@ import serialize from 'serialize-javascript';
 import CookieStore from '@/util/CookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
-import createApp from '@/main';
 import headScript from '@/head/script';
 import noscriptTemplate from '@/head/noscript.html';
 
@@ -15,8 +14,13 @@ const isDev = process.env.NODE_ENV !== 'production';
 // Since data fetching is async, this function is expected to
 // return a Promise that resolves to the app instance.
 export default context => {
-	return new Promise((resolve, reject) => {
-		const s = isDev && Date.now();
+	const s = isDev && Date.now();
+
+	// Set the webpack public path at runtime
+	global.publicPath = context.config.publicPath;
+
+	// async import of the app creator method to ensure use of publicPath from config
+	return import('@/main').then(({ default: createApp }) => new Promise((resolve, reject) => {
 		const { url, config, cookies } = context;
 		const cookieStore = new CookieStore(cookies);
 
@@ -89,5 +93,5 @@ export default context => {
 				}
 			});
 		}, reject);
-	});
+	}));
 };

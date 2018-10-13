@@ -33,6 +33,10 @@ module.exports = merge.smart(baseWebpackConfig, {
 		whitelist: [/\.css$/, /\?vue&type=style/]
 	}),
 	plugins: [
+		// allow publicPath to be defined at runtime
+		new webpack.DefinePlugin({
+			__webpack_public_path__: 'global.publicPath'
+		}),
 		// suppress client-side-only modules
 		new VueSSRServerPlugin(),
 		new FriendlyErrorsPlugin({
