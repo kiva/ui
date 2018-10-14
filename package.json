@@ -122,7 +122,7 @@
 		"stylelint-scss": "^3.3.1",
 		"stylelint-webpack-plugin": "^0.10.4",
 		"url-loader": "^1.1.1",
-		"vue-jest": "^2.3.0",
+		"vue-jest": "^3.0.0",
 		"vue-loader": "^15.4.2",
 		"vue-style-loader": "^4.1.2",
 		"vue-template-compiler": "^2.5.17",
