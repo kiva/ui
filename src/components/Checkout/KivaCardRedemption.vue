@@ -19,12 +19,7 @@
 				v-show="open"
 				class="accordion-info row">
 				<div class="small-12">
-					<a class="small-9 medium-11" href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a">
-						<div v-kv-track-event="['checkout', 'kiva card', 'exit to legacy']">
-							Click here to enter a Kiva Card
-						</div>
-					</a>
-					<div v-if="false">
+					<div>
 						<input
 							placeholder="ABCD-1234-EFGH-5678"
 							class="kiva-card-input"
