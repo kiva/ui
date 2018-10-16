@@ -20,6 +20,8 @@ export default context => {
 		const { url, config, cookies } = context;
 		const cookieStore = new CookieStore(cookies);
 
+		__webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
+
 		const {
 			app,
 			router,
