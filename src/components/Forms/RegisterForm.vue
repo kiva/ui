@@ -338,8 +338,8 @@ export default {
 			// - only required at this point for the variant name or other associated data
 			const regExpSetting = this.apollo.readQuery({ query: regExpDataQuery });
 			const expData = readJSONSetting(regExpSetting, 'general.experiment.value') || {};
-			if (this.expVersion !== 'control') {
-				this.expName = expData.variants[this.expVersion].name;
+			if (this.expVersion !== 'control' && expData.variants[this.expVersion]) {
+				this.expName = expData.variants[this.expVersion].name || null;
 			}
 
 			// Set up + track our First Name Only State
