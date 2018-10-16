@@ -413,7 +413,7 @@ export default {
 		margin: 1rem 0 1.5rem;
 
 		hr {
-			border-bottom: 1px solid $kiva-text-light;
+			border-bottom: 1px solid $light-gray;
 			margin: 2.5rem 0;
 		}
 
@@ -425,8 +425,8 @@ export default {
 
 			&.number-icon {
 				background: $white;
-				color: $kiva-text-light;
-				border: 1px solid $kiva-text-light;
+				color: $light-gray;
+				border: 1px solid $light-gray;
 				border-radius: 1.7rem;
 				font-size: 1.7rem;
 				text-align: center;
@@ -456,7 +456,7 @@ export default {
 		.v-divider {
 			width: 1px;
 			height: 100%;
-			background: $subtle-gray;
+			background: $light-gray;
 			margin: 0 auto;
 		}
 

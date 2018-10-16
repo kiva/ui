@@ -2,6 +2,12 @@
 	<div class="order-totals">
 		<div v-if="showKivaCredit" class="kiva-credit">
 			<p>
+				<span v-if="showRemoveKivaCredit">
+					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
+				</span>
+				<span v-if="showApplyKivaCredit">
+					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
+				</span>
 				<a
 					v-if="showRemoveKivaCredit"
 					class="remove-credit"
@@ -12,12 +18,6 @@
 					v-if="showApplyKivaCredit"
 					class="apply-credit"
 					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
-				<span v-if="showRemoveKivaCredit">
-					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
-				</span>
-				<span v-if="showApplyKivaCredit">
-					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
-				</span>
 			</p>
 		</div>
 		<div class="order-total">
@@ -136,7 +136,6 @@ export default {
 
 		.apply-credit {
 			font-size: 0.9rem;
-			margin-right: 0.5rem;
 		}
 	}
 
@@ -149,5 +148,4 @@ export default {
 		width: rem-calc(100);
 	}
 }
-
 </style>
