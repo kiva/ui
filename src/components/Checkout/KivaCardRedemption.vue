@@ -309,5 +309,6 @@ export default {
 	width: 1.1rem;
 	height: 1rem;
 	cursor: pointer;
+	vertical-align: middle;
 }
 </style>
