@@ -139,6 +139,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import formDataEntries from 'form-data-entries';
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import { readJSONSetting } from '@/util/settingsUtils';
@@ -332,14 +333,14 @@ export default {
 		setupExperimentState() {
 			// get assigned exp version from apollo cache
 			const regExpVersion = this.apollo.readQuery({ query: regExpQuery });
-			this.expVersion = regExpVersion.experiment.version;
+			this.expVersion = _get(regExpVersion, 'experiment.version') || null;
 
 			// get experiment data from apollo cache
 			// - only required at this point for the variant name or other associated data
 			const regExpSetting = this.apollo.readQuery({ query: regExpDataQuery });
 			const expData = readJSONSetting(regExpSetting, 'general.experiment.value') || {};
-			if (this.expVersion !== 'control') {
-				this.expName = expData.variants[this.expVersion].name;
+			if (this.expVersion && this.expVersion !== 'control') {
+				this.expName = _get(expData, `variants[${this.expVersion}].name`) || null;
 			}
 
 			// Set up + track our First Name Only State
