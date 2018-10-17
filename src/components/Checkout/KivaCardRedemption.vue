@@ -137,11 +137,11 @@ export default {
 					_forEach(data.errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
+					this.$emit('updating-totals', false);
 				} else {
-					this.$emit('refreshtotals');
+					this.$emit('refreshtotals', 'kiva-card-applied');
 					this.$kvTrackEvent('Checkout', 'Apply Kiva Card', 'Kiva Card successfully applied');
 				}
-				this.$emit('updating-totals', false);
 			}).catch(error => {
 				console.error(error);
 				this.$emit('updating-totals', false);
@@ -156,7 +156,6 @@ export default {
 					creditType: type
 				}
 			}).then(() => {
-				this.$emit('updating-totals', false);
 				this.$kvTrackEvent('Checkout', 'Kiva Card', 'Remove Kiva Card Success');
 				this.$emit('refreshtotals');
 			}).catch(error => {

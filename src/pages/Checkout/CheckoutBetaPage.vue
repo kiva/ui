@@ -196,12 +196,11 @@ export default {
 			return client.query({
 				query: initializeCheckout
 			}).then(({ data }) => {
-				const totals = _get(data, 'shop.basket.totals');
-				// check for bonus credit and redirect if present
+				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+				// check for free credit, bonus credit or lending rewards and redirect if present
 				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
-				// TODO: bonusAvailableTotal is reporting 0 once the credit has been removed in legacy basket
-				if (parseFloat(totals.bonusAvailableTotal) > 0) {
+				if (hasFreeCredits) {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
@@ -335,14 +334,29 @@ export default {
 					console.error(errorResponse);
 				});
 		},
-		refreshTotals() {
+		refreshTotals(refreshEvent) {
 			this.setUpdatingTotals(true);
 
 			this.apollo.query({
 				query: shopBasketUpdate,
 				fetchPolicy: 'network-only'
-			}).then(() => {
-				this.setUpdatingTotals(false);
+			}).then(({ data }) => {
+				// when updating basket state, check for free credits and redirect if present
+				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+				if (hasFreeCredits) {
+					if (refreshEvent === 'kiva-card-applied') {
+						this.$kvTrackEvent('checkout', 'free credits applied', 'exit to legacy');
+					}
+					this.$router.push({
+						path: '/basket',
+						query: {
+							kexpn: 'checkout_beta.minimal_checkout',
+							kexpv: 'a'
+						}
+					});
+				} else {
+					this.setUpdatingTotals(false);
+				}
 			}).catch(response => {
 				console.error(`failed to update totals: ${response}`);
 				this.setUpdatingTotals(false);
