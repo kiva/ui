@@ -208,17 +208,14 @@ export default {
 				.then(fbStatusObj => {
 					if (fbStatusObj.status === 'connected') {
 						// user is logged in to facebook + your app
-						console.log(`Already Logged In: ${fbStatusObj.status}`);
 						return fbStatusObj;
 					}
 					// user may be logged into Fb but hasn't authorized your app
 					// fbStatusObj.status 'authorization_expired' 'not_authorized' or 'unknown'
 					// call login then fetch and load the user
-					console.log(`NOT Connected: ${fbStatusObj.status}`);
 					return fbUtils.fbLogin();
 				})
 				.then(loginStatus => {
-					console.log(loginStatus);
 					// Save the fb status
 					vm.fbLoginStatus = loginStatus;
 					// Handle failed Login scenario
@@ -243,7 +240,6 @@ export default {
 				.then(kivaFbResponse => fbUtils.handleKivaResponse(kivaFbResponse))
 				// Act on Response from Kiva
 				.then(response => {
-					console.log(`Parsed Kiva Response: ${JSON.stringify(response)}`);
 					// - Success
 					if (response.success === true) {
 						this.handlePostResponse(response);
@@ -345,7 +341,6 @@ export default {
 			}
 		},
 		handlePostResponse(response) {
-			console.log(`Handle post response: ${JSON.stringify(response)}`);
 			// If we've successfully logged in with the FB Account refresh the page
 			if (response.success === true) {
 				// if this is a login processType fire an event (register events are handled elsewhere)
