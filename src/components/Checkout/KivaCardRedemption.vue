@@ -296,7 +296,7 @@ export default {
 }
 
 .help-lightbox {
-	margin: rem-calc(15) 0;
+	margin: 1.2rem 0;
 
 	@include breakpoint(large) {
 		float: left;
