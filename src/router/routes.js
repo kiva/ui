@@ -5,7 +5,7 @@ export default [
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
-	{ path: '/style-guide', component: () => import('@/pages/StyleGuide') },
+	{ path: '/styleguide', component: () => import('@/pages/StyleGuide') },
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
 	{ path: '/login-vue', component: () => import('@/pages/LoginAndRegister/LoginAndRegister') },
