@@ -12,6 +12,6 @@ export default [
 	{ path: '/checkout-vue', component: () => import('@/pages/Checkout/CheckoutPage') },
 	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutBetaPage') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
-	{ path: '/build-vue', component: () => import('@/pages/Build/BuildPage') },
-	{ path: '/build-vue/docs', component: () => import('@/pages/Build/DocsPage') },
+	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
+	{ path: '/build/docs', component: () => import('@/pages/Build/DocsPage') },
 ];
