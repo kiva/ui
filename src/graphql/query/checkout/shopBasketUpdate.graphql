@@ -11,6 +11,17 @@ query {
 	shop {
 		nonTrivialItemCount
 		basket {
+			hasFreeCredits
+			credits {
+				totalCount
+				values {
+					amount
+					applied
+					available
+					creditType
+					id
+				}
+			}
 			items {
 				totalCount
 				values {

@@ -20,6 +20,17 @@ query {
 	}
 	shop {
 		basket {
+			hasFreeCredits
+			credits {
+				totalCount
+				values {
+					amount
+					applied
+					available
+					creditType
+					id
+				}
+			}
 			items {
 				totalCount
 				values {
