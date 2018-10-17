@@ -88,6 +88,7 @@ export default {
 
 .borrower-info {
 	line-height: 0.8;
+	font-weight: $global-weight-highlight;
 }
 
 </style>

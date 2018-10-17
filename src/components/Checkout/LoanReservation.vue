@@ -122,7 +122,7 @@ export default {
 
 	.loan-message >>> .red {
 		color: $kiva-accent-red;
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 	}
 }
 </style>

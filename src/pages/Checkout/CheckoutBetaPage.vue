@@ -445,7 +445,7 @@ export default {
 		.login-reg-header {
 			h3 {
 				font-size: $featured-text-font-size;
-				font-weight: 400;
+				font-weight: $global-weight-highlight;
 
 				@include breakpoint(large only) {
 					max-width: 47%;
@@ -478,7 +478,7 @@ export default {
 				width: fit-content;
 				text-transform: uppercase;
 				font-style: italic;
-				font-weight: 400;
+				font-weight: $global-weight-highlight;
 			}
 		}
 
@@ -491,14 +491,14 @@ export default {
 		.login-reg-switch {
 			text-align: center;
 			font-size: 1.3rem;
-			font-weight: 400;
+			font-weight: $global-weight-highlight;
 
 			/* turned off for now */
 			// @include breakpoint(large) {
 			// 	text-align: left;
 			// 	position: absolute;
 			// 	bottom: 0;
-			// 	font-weight: 400;
+			// 	font-weight: $global-weight-highlight;
 			// }
 		}
 	}

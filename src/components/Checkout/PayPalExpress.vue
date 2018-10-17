@@ -240,7 +240,7 @@ export default {
 	}
 
 	.pp-tagline {
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 		color: $kiva-text-light;
 		text-align: center;
 

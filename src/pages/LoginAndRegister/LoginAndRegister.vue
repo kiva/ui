@@ -76,7 +76,7 @@ export default {
 }
 
 .switch-to-login {
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 	font-size: 1.1rem;
 }
 
@@ -84,7 +84,7 @@ export default {
 	font-size: 0.9rem;
 	line-height: 1rem;
 	color: $kiva-text-light;
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 }
 
 // Control form layouts from parent to allow independence in other layouts

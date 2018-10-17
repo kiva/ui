@@ -193,6 +193,7 @@ export default {
 
 .accordion-title {
 	padding-left: rem-calc(12);
+	font-weight: $global-weight-highlight;
 
 	&:hover {
 		cursor: pointer;
@@ -252,7 +253,7 @@ export default {
 }
 
 .card-value-wrap {
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 	margin-bottom: 1rem;
 	font-size: rem-calc(18);
 	white-space: nowrap;

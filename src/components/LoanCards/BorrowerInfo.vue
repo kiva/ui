@@ -117,12 +117,12 @@ export default {
 
 	.name {
 		font-size: rem-calc(22);
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 	}
 
 	.country {
 		color: $kiva-text-light;
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 		margin-bottom: rem-calc(10);
 	}
 

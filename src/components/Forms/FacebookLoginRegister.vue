@@ -407,7 +407,7 @@ export default {
 
 		h3 {
 			margin-bottom: 1.25rem;
-			font-weight: 400;
+			font-weight: $global-weight-highlight;
 		}
 	}
 
@@ -418,7 +418,7 @@ export default {
 			li {
 				list-style: none;
 				color: $kiva-accent-red;
-				font-weight: 400;
+				font-weight: $global-weight-highlight;
 				font-size: $small-text-font-size;
 			}
 		}
@@ -444,7 +444,7 @@ export default {
 			.new-acct-terms-error {
 				margin: 0 0 0.3rem;
 				color: $kiva-accent-red;
-				font-weight: 400;
+				font-weight: $global-weight-highlight;
 				font-size: $small-text-font-size;
 				line-height: 1.2;
 			}

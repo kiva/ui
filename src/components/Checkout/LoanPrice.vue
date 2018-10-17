@@ -188,6 +188,7 @@ export default {
 	text-indent: 1.6rem;
 	color: $charcoal;
 	font-size: $medium-text-font-size;
+	font-weight: $global-weight-highlight;
 
 	@include breakpoint(medium) {
 		height: inherit;
