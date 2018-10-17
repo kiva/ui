@@ -219,6 +219,7 @@ export default {
 
 .donation-info {
 	line-height: 0.8;
+	font-weight: 400;
 }
 
 .dontation-tagline {
@@ -279,7 +280,7 @@ export default {
 	border-radius: $button-radius;
 	width: rem-calc(132);
 	text-align: center;
-	font-weight: 300;
+	font-weight: 400;
 	color: $charcoal;
 	margin-bottom: rem-calc(15);
 

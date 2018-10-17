@@ -193,6 +193,7 @@ export default {
 
 .accordion-title {
 	padding-left: rem-calc(12);
+	font-weight: 400;
 
 	&:hover {
 		cursor: pointer;
