@@ -14,11 +14,11 @@ export default {
 			menuItems: [
 				{
 					name: 'Developer Home',
-					routerLink: '/build-vue',
+					routerLink: '/build',
 				},
 				{
 					name: 'Docs',
-					routerLink: '/build-vue/docs',
+					routerLink: '/build/docs',
 				},
 				{
 					name: 'API',
