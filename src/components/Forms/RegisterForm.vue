@@ -381,7 +381,7 @@ export default {
 		li {
 			list-style: none;
 			color: $kiva-accent-red;
-			font-weight: 400;
+			font-weight: $global-weight-highlight;
 			font-size: $small-text-font-size;
 		}
 	}

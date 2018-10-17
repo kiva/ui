@@ -270,7 +270,7 @@ export default {
 		padding-bottom: rem-calc(40);
 		text-align: center;
 		font-size: 1rem;
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 	}
 
 	.partners-block {

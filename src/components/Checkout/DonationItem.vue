@@ -219,7 +219,7 @@ export default {
 
 .donation-info {
 	line-height: 0.8;
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 }
 
 .dontation-tagline {
@@ -243,7 +243,7 @@ export default {
 	}
 
 	.donation-amount {
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 		font-size: $medium-text-font-size;
 
 		@include breakpoint(medium) {
@@ -280,7 +280,7 @@ export default {
 	border-radius: $button-radius;
 	width: rem-calc(132);
 	text-align: center;
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 	color: $charcoal;
 	margin-bottom: rem-calc(15);
 

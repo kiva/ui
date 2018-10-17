@@ -348,7 +348,7 @@ $close-search-button-size: 2.5rem;
 .top-nav {
 	background-color: $header-color;
 	font-size: $top-nav-font-size;
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 
 	.amount {
 		@include breakpoint(large) {

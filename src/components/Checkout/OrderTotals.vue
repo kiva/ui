@@ -122,7 +122,7 @@ export default {
 	}
 
 	.kiva-credit {
-		font-weight: 400;
+		font-weight: $global-weight-highlight;
 		margin-bottom: 1rem;
 		font-size: rem-calc(18);
 
