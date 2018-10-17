@@ -25,10 +25,6 @@ export default {
 					url: 'https://api.kivaws.org/graphql',
 				},
 				{
-					name: 'Blog',
-					url: 'https://blog.build.kiva.org/',
-				},
-				{
 					name: 'My Apps',
 					url: '/build/apps',
 				},
