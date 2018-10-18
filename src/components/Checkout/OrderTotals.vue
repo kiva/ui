@@ -16,7 +16,7 @@
 				</a>
 				<a
 					v-if="showApplyKivaCredit"
-					class="apply-credit"
+					class="apply-credit small-text"
 					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
 			</p>
 		</div>
@@ -135,7 +135,7 @@ export default {
 		}
 
 		.apply-credit {
-			font-size: 0.9rem;
+			font-weight: 300;
 		}
 	}
 
