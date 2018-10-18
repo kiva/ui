@@ -145,7 +145,7 @@ export default {
 
 	.total-value {
 		display: inline-block;
-		width: rem-calc(100);
+		margin-left: 5px;
 	}
 }
 </style>
