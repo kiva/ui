@@ -59,15 +59,15 @@
 								width="430">
 						</kv-lightbox>
 
-						<div
-							class="card-value-wrap"
-							v-if="showKivaCardTotal">
-							<span>Kiva Card value:</span>
-							<span class="kiva-card-amount">{{ formatedKivaCardTotal }}</span>
-							<span class="remove-wrapper"
-								@click.prevent.stop="removeCredit('redemption_code')">
-								<kv-icon class="remove-x" name="small-x" />
-							</span>
+						<div class="redemption-items card-value-wrap">
+							<li v-for="(credit, index) in credits" :key="index">
+								<span class="heading">Kiva Card value: </span>
+								<span class="value">${{ credit.applied }}</span>
+								<span class="remove-wrapper"
+									@click.prevent.stop="removeCredit('redemption_code', credit.id)">
+									<kv-icon class="remove-x" name="small-x" />
+								</span>
+							</li>
 						</div>
 					</div>
 				</div>
@@ -82,7 +82,6 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
 import _forEach from 'lodash/forEach';
-import numeral from 'numeral';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -93,6 +92,10 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
+		credits: {
+			type: Array,
+			default: () => []
+		},
 		totals: {
 			type: Object,
 			default: () => {}
@@ -106,12 +109,14 @@ export default {
 			defaultLbVisible: false,
 		};
 	},
+	mounted() {
+		if (this.showKivaCardTotal) {
+			this.toggleAccordion();
+		}
+	},
 	computed: {
 		showKivaCardTotal() {
 			return parseFloat(this.totals.redemptionCodeAppliedTotal) > 0;
-		},
-		formatedKivaCardTotal() {
-			return numeral(this.totals.redemptionCodeAppliedTotal).format('$0,0.00');
 		}
 	},
 	methods: {
@@ -148,12 +153,13 @@ export default {
 			});
 		},
 
-		removeCredit(type) {
+		removeCredit(type, id) {
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: removeCreditByType,
 				variables: {
-					creditType: type
+					creditType: type,
+					creditId: id || null
 				}
 			}).then(() => {
 				this.$kvTrackEvent('Checkout', 'Kiva Card', 'Remove Kiva Card Success');
@@ -253,16 +259,23 @@ export default {
 
 .card-value-wrap {
 	font-weight: $global-weight-highlight;
+	margin-top: rem-calc(15);
 	margin-bottom: 1rem;
 	font-size: rem-calc(18);
 	white-space: nowrap;
 
 	@include breakpoint(medium) {
 		float: right;
+		margin-top: 0;
 	}
 
-	@include breakpoint(xlarge) {
+	@include breakpoint(large) {
 		margin-top: rem-calc(15);
+	}
+
+	li {
+		list-style: none;
+		padding: 0.1rem 0;
 	}
 }
 
@@ -305,10 +318,10 @@ export default {
 
 .remove-x {
 	fill: $subtle-gray;
-	display: inline-block;
 	width: 1.1rem;
-	height: 1rem;
+	height: 1.1rem;
 	cursor: pointer;
 	vertical-align: middle;
+	margin-top: -0.1rem;
 }
 </style>
