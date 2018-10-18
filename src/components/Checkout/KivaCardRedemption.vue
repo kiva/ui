@@ -59,7 +59,7 @@
 								width="430">
 						</kv-lightbox>
 
-						<div class="redemption-items card-value-wrap">
+						<ul class="redemption-items">
 							<li v-for="(credit, index) in credits" :key="index">
 								<span class="heading">Kiva Card value: </span>
 								<span class="value">${{ credit.applied }}</span>
@@ -68,7 +68,7 @@
 									<kv-icon class="remove-x" name="small-x" />
 								</span>
 							</li>
-						</div>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -257,31 +257,25 @@ export default {
 	margin-bottom: rem-calc(50);
 }
 
-.card-value-wrap {
+.redemption-items {
 	font-weight: $global-weight-highlight;
-	margin-top: rem-calc(15);
-	margin-bottom: 1rem;
+	margin: rem-calc(15) 0;
 	font-size: rem-calc(18);
 	white-space: nowrap;
 
 	@include breakpoint(medium) {
 		float: right;
-		margin-top: 0;
+		margin: 0 0 rem-calc(15) rem-calc(15);
 	}
 
 	@include breakpoint(large) {
-		margin-top: rem-calc(15);
+		margin: rem-calc(15) 0 rem-calc(15) rem-calc(15);
 	}
 
 	li {
 		list-style: none;
 		padding: 0.1rem 0;
 	}
-}
-
-.card-value-wrap p {
-	float: left;
-	padding-right: rem-calc(15);
 }
 
 .kiva-card-input {
