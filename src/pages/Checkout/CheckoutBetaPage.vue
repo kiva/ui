@@ -80,6 +80,7 @@
 						<hr>
 
 						<kiva-card-redemption
+							:credits="redemption_credits"
 							:totals="totals"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals" />
@@ -177,6 +178,7 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
+			redemption_credits: [],
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
@@ -219,6 +221,10 @@ export default {
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.redemption_credits = _filter(
+				_get(data, 'shop.basket.credits.values'),
+				{ __typename: 'Credit', creditType: 'redemption_code' }
+			);
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
