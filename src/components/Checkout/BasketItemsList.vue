@@ -6,6 +6,12 @@
 					:loan="loan"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+
+				/>
+			</li>
+			<li v-for="kivaCard in KivaCards" :key="kivaCard.id">
+				<kiva-card
+					:kiva-card="kivaCard"
 				/>
 			</li>
 			<li v-for="donation in donations" :key="donation.id">
@@ -41,6 +47,10 @@ export default {
 					price: '0.00'
 				}
 			]
+		},
+		kivaCard: {
+			type: Array,
+			default: () => []
 		}
 	},
 	components: {
@@ -62,5 +72,4 @@ export default {
 .basket-items-list ul {
 	list-style-type: none;
 }
-
 </style>

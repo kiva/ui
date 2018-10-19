@@ -48,6 +48,10 @@ query {
 						isTip
 						isUserEdited
 					}
+
+					... on KivaCard {
+						price
+					}
 				}
 			}
 			totals {

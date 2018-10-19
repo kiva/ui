@@ -74,6 +74,7 @@
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
+							:kiva-cards="kivaCard"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
@@ -177,6 +178,7 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
+			kivaCards: [],
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
@@ -219,6 +221,7 @@ export default {
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.kivaCards = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'kivaCard' });
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}

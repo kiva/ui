@@ -81,6 +81,28 @@ query {
 						isTip
 						isUserEdited
 					}
+
+					... on KivaCard {
+						id
+						price
+						KivaCardObject {
+							KivaCardRecipient {
+								name
+								email
+								scheduledDeliveryDate
+							}
+							KivaCardMailing {
+								firstName
+								lastName
+								address
+								city
+								state
+								zip
+							}
+
+						}
+
+					}
 				}
 			}
 			totals {
