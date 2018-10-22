@@ -81,17 +81,16 @@ query {
 						isTip
 						isUserEdited
 					}
-
 					... on KivaCard {
 						id
 						price
-						KivaCardObject {
-							KivaCardRecipient {
+						kivaCardObject {
+							recipient {
 								name
 								email
 								scheduledDeliveryDate
 							}
-							KivaCardMailing {
+							mailingInfo {
 								firstName
 								lastName
 								address
@@ -99,9 +98,7 @@ query {
 								state
 								zip
 							}
-
 						}
-
 					}
 				}
 			}
