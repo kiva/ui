@@ -16,9 +16,14 @@ export default {
 					mutation: shopValidateBasket
 				}).then(data => {
 					const validationStatus = _get(data, 'data.shop.validatePreCheckout');
-					if (validationStatus === true) {
+					// console.log(validationStatus);
+
+					// currently the success node is never populated
+					// If the validation passed an empty array is returned
+					if (typeof validationStatus !== 'undefined' && validationStatus.length === 0) {
 						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Success');
-						resolve(validationStatus);
+						// previously the api returned true if validation succeeded so we pass true
+						resolve(true);
 					} else if (validationStatus === null) {
 						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Failure');
 						resolve(data);

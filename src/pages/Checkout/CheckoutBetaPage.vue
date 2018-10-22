@@ -244,7 +244,7 @@ export default {
 		}
 		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 
-		// Run our validate items method once in the client
+		// Run our validate items method once in the client on page load
 		this.validateItems();
 	},
 	computed: {
