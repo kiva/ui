@@ -9,7 +9,7 @@
 
 				/>
 			</li>
-			<li v-for="kivaCard in KivaCards" :key="kivaCard.id">
+			<li v-for="kivaCard in kivaCards" :key="kivaCard.id">
 				<kiva-card
 					:kiva-card="kivaCard"
 				/>
@@ -48,7 +48,7 @@ export default {
 				}
 			]
 		},
-		kivaCard: {
+		kivaCards: {
 			type: Array,
 			default: () => []
 		}

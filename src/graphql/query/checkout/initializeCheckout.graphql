@@ -84,6 +84,7 @@ query {
 					... on KivaCard {
 						id
 						price
+						quantity
 						kivaCardObject {
 							recipient {
 								name
