@@ -86,6 +86,7 @@ query {
 						price
 						quantity
 						kivaCardObject {
+							deliveryType
 							recipient {
 								name
 								email

@@ -10,7 +10,7 @@
 				/>
 			</li>
 			<li v-for="kivaCard in kivaCards" :key="kivaCard.id">
-				<kiva-card
+				<kiva-card-item
 					:kiva-card="kivaCard"
 				/>
 			</li>
@@ -29,6 +29,7 @@
 <script>
 import BasketItem from '@/components/Checkout/BasketItem';
 import DonationItem from '@/components/Checkout/DonationItem';
+import KivaCardItem from '@/components/Checkout/KivaCardItem';
 
 export default {
 	props: {
@@ -55,7 +56,8 @@ export default {
 	},
 	components: {
 		BasketItem,
-		DonationItem
+		DonationItem,
+		KivaCardItem
 	}
 };
 </script>
