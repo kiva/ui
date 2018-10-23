@@ -11,6 +11,10 @@ query {
 			key
 			value
 		}
+		lbcMessageExp: setting(setting: "uiexp.lbc_message") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin

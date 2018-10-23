@@ -35,6 +35,39 @@ function serializeExpCookie(assignments) {
 }
 
 /**
+ * Cycle through targets object and determine matches
+ *
+ * @param {object} targets
+ * @param {object} cookieStore
+ * @returns {boolean}
+ */
+function matchTargets(targets, cookieStore) {
+	// return true if no targets are set, aka everyone matches!!!
+	if (_isUndefined(targets)) return true;
+
+	// re-start if targets are present
+	let matched = false;
+
+	// User Segment Targets
+	if (!_isUndefined(targets) && !_isUndefined(targets.users)) {
+		// target cookied users only - kvu cookie is present
+		if (targets.users.indexOf('cookied') > -1) {
+			if (cookieStore.get('kvu')) {
+				matched = true;
+			}
+		}
+		// target new or existing users without kvu cookie
+		if (targets.users.indexOf('uncookied') > -1) {
+			if (!cookieStore.get('kvu')) {
+				matched = true;
+			}
+		}
+	}
+
+	return matched;
+}
+
+/**
  * Experiment assignment algorithm
  *
  * An example json value for the experiment data stored in SettingsManager:
@@ -48,6 +81,9 @@ function serializeExpCookie(assignments) {
  *         "control": 0.5,
  *         "a": 0.2,
  *         "b": 0.3
+ *     },
+ *     "targets": {
+ * 			"users": ["cookied"]
  *     }
  * }
  *
@@ -57,16 +93,22 @@ function serializeExpCookie(assignments) {
  * @param {string} experiment.endTime - A date string for the ending time of the experiment
  * @param {object} experiment.distribution - An object of the variant weights, where each key is the
  *     variant id and the value is the weight of the variant. The weight must be a number between 0 and 1.
+ * @param {object} cookieStore - passed through for inspection during targeting
  * @returns {string|number|undefined} Returns a variant id or undefined if the experiment is not enabled
  */
 function assignVersion({
 	enabled,
 	startTime,
 	endTime,
-	distribution
-}) {
+	distribution,
+	targets
+}, cookieStore) {
+	// only try to assign a version if the experiment is enabled
+	if (!enabled) return undefined;
+	// only try to assign a version if the experiment targets match
+	if (!matchTargets(targets, cookieStore)) return undefined;
 	// only try to assign a version if the experiment is enabled, started, and not ended
-	if (enabled && isWithinRange(new Date(), new Date(startTime), new Date(endTime))) {
+	if (isWithinRange(new Date(), new Date(startTime), new Date(endTime))) {
 		// Based on Algo from Manager.php
 		const marker = Math.random();
 		let cutoff = 0;
@@ -106,7 +148,7 @@ export default ({ cookieStore }) => {
 						const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
 
 						// assign the version using the experiment data (undefined if experiment disabled)
-						assignments[id] = assignVersion(experiment || {});
+						assignments[id] = assignVersion(experiment || {}, cookieStore);
 
 						// save the new assignments to the experiment cookie
 						cookieStore.set('uiab', serializeExpCookie(assignments));
