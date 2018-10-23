@@ -4,19 +4,27 @@
 			<!-- IMAGE -->
 			<span class="donation-icon">
 				<!-- This will have if condions for images based on kiva card type -->
+
+				<!-- Print Kiva Card -->
+				<span v-if="cardType == 'print'"><img></span>
+				<!-- Postal Kiva Card -->
+				<span v-if="cardType == 'postal'"><img></span>
+				<!-- Email Kiva Card -->
+				<span v-if="cardType == 'email'"><img></span>
+
+
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
 		<span class="small-9 medium-7 large-9 kiva-card-info-wrapper">
 			<!-- Main line text -->
 			<span class="kiva-card-info featured-text">
-				<!-- Postal Kiva Card -->
-				<span v-if="postal">Print-it-yourself </span>
 				<!-- Print Kiva Card -->
-				<span v-if="print">Postal delivery </span>
-				<!-- Donation to Kiva -->
+				<span v-if="cardType == 'print'">Print-it-yourself </span>
+				<!-- Postal Kiva Card -->
+				<span v-if="cardType == 'postal'">Postal delivery </span>
 				<!-- Email Kiva Card -->
-				<span v-if="email">Email delivery </span>
+				<span v-if="cardType == 'email'">Email delivery </span>
 				<span>Kiva Card</span>
 				<kv-icon
 					class="edit-pencil-icon"
@@ -45,7 +53,22 @@ export default {
 		LoanPrice
 	},
 	props: {
+		kivaCard: {
+			type: Object,
+			default: () => {}
+		},
 	},
+	data() {
+		return {
+			cardType: this.kivaCard.kivaCardObject.deliveryType,
+		};
+	},
+	methods: {
+		// loaded() {
+		// console.log(this.cardType);
+		// }
+
+	}
 };
 
 </script>
@@ -60,6 +83,10 @@ export default {
 
 .kiva-card-info-wrapper {
 	padding-left: rem-calc(10);
+}
+
+.kiva-card-info {
+	font-weight: $global-weight-highlight;
 }
 
 .edit-pencil-icon {
