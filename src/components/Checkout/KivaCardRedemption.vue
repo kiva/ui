@@ -145,7 +145,7 @@ export default {
 					this.$emit('updating-totals', false);
 				} else {
 					this.$emit('refreshtotals', 'kiva-card-applied');
-					this.$kvTrackEvent('Checkout', 'Apply Kiva Card', 'Kiva Card successfully applied');
+					this.$kvTrackEvent('basket', 'Apply Kiva Card', 'Kiva Card successfully applied');
 				}
 			}).catch(error => {
 				console.error(error);
@@ -162,7 +162,7 @@ export default {
 					creditId: id || null
 				}
 			}).then(() => {
-				this.$kvTrackEvent('Checkout', 'Kiva Card', 'Remove Kiva Card Success');
+				this.$kvTrackEvent('basket', 'Kiva Card', 'Remove Kiva Card Success');
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
