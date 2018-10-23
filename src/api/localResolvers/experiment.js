@@ -49,18 +49,15 @@ function matchTargets(targets, cookieStore) {
 	let matched = false;
 
 	// User Segment Targets
-	if (!_isUndefined(targets) && !_isUndefined(targets.users)) {
+	if (!_isUndefined(targets.users)) {
+		const kvu = cookieStore.get('kvu');
 		// target cookied users only - kvu cookie is present
-		if (targets.users.indexOf('cookied') > -1) {
-			if (cookieStore.get('kvu')) {
-				matched = true;
-			}
+		if (kvu && targets.users.indexOf('cookied') > -1) {
+			matched = true;
 		}
 		// target new or existing users without kvu cookie
-		if (targets.users.indexOf('uncookied') > -1) {
-			if (!cookieStore.get('kvu')) {
-				matched = true;
-			}
+		if (!kvu && targets.users.indexOf('uncookied') > -1) {
+			matched = true;
 		}
 	}
 
