@@ -90,5 +90,4 @@ export default {
 	line-height: 0.8;
 	font-weight: $global-weight-highlight;
 }
-
 </style>

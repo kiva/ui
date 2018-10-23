@@ -1,13 +1,13 @@
 <template>
-	<div class="basket-donation-item row">
+	<div class="basket-item-wrapper row">
 		<span class="small-3 medium-2 large-1">
 			<!-- IMAGE -->
 			<span class="donation-icon">
 				<!-- This will have if condions for images based on kiva card type -->
-				<!-- <kv-icon class="dedicate-heart" name="dedicate-heart" /> -->
+				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-7 large-9 donation-info-wrapper">
+		<span class="small-9 medium-7 large-9 kiva-card-info-wrapper">
 			<!-- Main line text -->
 			<span class="kiva-card-info featured-text">
 				<!-- Postal Kiva Card -->
@@ -24,37 +24,12 @@
 			</span>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 large-2 medium-text-font-size">
+		<span class="small-9 medium-3 large-2 price-wrapper medium-text-font-size">
 			<!-- Kiva card amount dropdown section -->
-			<div
-				v-if="!editDonation"
-				class="donation-amount-wrapper">
-				<span
-					v-if="!editDonation"
-					class="donation-amount"
-					v-kv-track-event="['basket', 'Edit Donation']"
-					@click.prevent="editDonation = true">{{ formattedAmount }}
-				</span>
-			</div>
-			<div v-else class="small-12 donation-amount-input-wrapper">
-				<input
-					type="input"
-					class="donation-amount-input"
-					name="donation"
-					id="donation"
-					v-model="amount"
-					@blur="validateInput"
-					@keyup.enter.prevent="updateDonation()">
-				<kv-button
-					class="secondary"
-					@click.native.prevent.stop="updateDonation()"
-				>Update</kv-button>
-				<div
-					class="show-for-medium remove-wrapper"
-					@click="updateLoanAmount('remove')">
-					<kv-icon class="remove-x" name="small-x" />
-				</div>
-			</div>
+			<loan-price
+				@refreshtotals="onLoanUpdate($event)"
+				@updating-totals="$emit('updating-totals', $event)"
+			/>
 		</span>
 	</div>
 
@@ -62,10 +37,12 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import LoanPrice from '@/components/Checkout/LoanPrice';
 
 export default {
 	components: {
-		KvIcon
+		KvIcon,
+		LoanPrice
 	},
 	props: {
 	},
@@ -75,6 +52,15 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.basket-item-wrapper {
+	margin-bottom: rem-calc(30);
+	padding-right: rem-calc(20);
+}
+
+.kiva-card-info-wrapper {
+	padding-left: rem-calc(10);
+}
 
 .edit-pencil-icon {
 	width: 1rem;
@@ -89,4 +75,19 @@ export default {
 	}
 }
 
+.price-wrapper {
+	padding-left: rem-calc(10);
+}
+
+.dedicate-heart {
+	border: 1px solid $light-gray;
+	height: rem-calc(71);
+	width: rem-calc(71);
+	padding: rem-calc(4);
+
+	@include breakpoint(medium) {
+		height: rem-calc(55);
+		width: rem-calc(55);
+	}
+}
 </style>
