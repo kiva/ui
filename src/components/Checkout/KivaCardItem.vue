@@ -35,6 +35,32 @@
 				<kv-icon
 					class="edit-pencil-icon"
 					name="pencil"/>
+				<div>
+					<!-- Print Kiva Card -->
+					<span v-if="cardType == 'print'">
+						<p class="small-text">Available after checkout</p>
+						<p class="small-text">For {{ recipent }}</p>
+					</span>
+					<!-- Postal Kiva Card -->
+					<span v-if="cardType == 'postal'">
+						<p class="small-text">
+							{{ this.kivaCard.kivaCardObject.mailingInfo.firstName }}
+							{{ this.kivaCard.kivaCardObject.mailingInfo.lastName }}
+							{{ this.kivaCard.kivaCardObject.mailingInfo.address }}
+							{{ this.kivaCard.kivaCardObject.mailingInfo.city }}
+							{{ this.kivaCard.kivaCardObject.mailingInfo.state }}
+							{{ this.kivaCard.kivaCardObject.mailingInfo.zip }}
+						</p>
+					</span>
+					<!-- Email Kiva Card -->
+					<span v-if="cardType == 'email'">
+						<p class="small-text">Scheduled to be sent
+							{{ this.kivaCard.kivaCardObject.recipent.scheduledDeliveryDate }}</p>
+						<p class="small-text">
+							For {{ this.kivaCard.kivaCardObject.recipent.name }}
+							{{ this.kivaCard.kivaCardObject.recipent.email }}</p>
+					</span>
+				</div>
 			</span>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
