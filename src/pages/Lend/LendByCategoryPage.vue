@@ -77,6 +77,7 @@ export default {
 			categories: [],
 			itemsInBasket: [],
 			showFeaturedLoans: true,
+			showLBCMessage: false
 		};
 	},
 	computed: {
@@ -145,12 +146,16 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				// Get the category rows experiment object from settings
 				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
+				// Get the lbc message experiment object from settings
+				expData = readJSONSetting(data, 'general.lbcMessageExp.value') || {};
 
 				return Promise.all([
 					// Get the assigned category rows experiment version
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
 					// Get the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
+					// Get the assigned version for lbc message
+					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
 				]);
 			}).then(rowsExpResult => {
 				const version = _get(rowsExpResult, 'data.experiment.version');
@@ -207,6 +212,10 @@ export default {
 				this.categories = _get(data, 'lend.loanChannelsById') || [];
 			},
 		});
+
+		// Read assigned version of lbc message exp
+		const lbcMessageData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'lbc_message' } });
+		this.showLBCMessage = _get(lbcMessageData, 'experiment.version') === 'shown';
 	},
 	mounted() {
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
