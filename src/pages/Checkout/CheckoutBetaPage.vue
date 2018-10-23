@@ -128,6 +128,27 @@
 						<a href="/lend">see all loans.</a>
 					</p>
 				</div>
+
+				<kv-lightbox
+					:visible="redirectLbVisible"
+					@lightbox-closed="redirectLbClosed">
+					<section>
+						<h1>
+							This checkout is being tested right now, but doesn't support some functions yet.
+						</h1>
+
+						<p>We'll redirect you so you can get back to changing lives, or click here if you aren't
+						automatically redirected.</p>
+
+						<p>Thank you for minding our dust.</p>
+					</section>
+
+					<kv-button slot="controls"
+						class="smaller checkout-button"
+						v-kv-track-event="['Checkout','Redirect Continue Button','exit to legacy']"
+						title="Continue"
+						@click.prevent.native="redirectToLegacy">Continue</kv-button>
+				</kv-lightbox>
 			</div>
 		</div>
 	</www-page>
@@ -150,12 +171,14 @@ import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
 		KvButton,
+		KvLightbox,
 		OrderTotals,
 		LoginForm,
 		RegisterForm,
@@ -188,7 +211,8 @@ export default {
 			activeLoginDuration: 3600,
 			lastActiveLogin: 0,
 			preCheckoutStep: '',
-			preValidationErrors: []
+			preValidationErrors: [],
+			redirectLbVisible: false,
 		};
 	},
 	apollo: {
@@ -353,13 +377,9 @@ export default {
 					if (refreshEvent === 'kiva-card-applied') {
 						this.$kvTrackEvent('checkout', 'free credits applied', 'exit to legacy');
 					}
-					this.$router.push({
-						path: '/basket',
-						query: {
-							kexpn: 'checkout_beta.minimal_checkout',
-							kexpv: 'a'
-						}
-					});
+					this.redirectLbVisible = true;
+					// automatically redirect to legacy after 7 seconds
+					window.setTimeout(this.redirectToLegacy(), 7000);
 				} else {
 					this.setUpdatingTotals(false);
 				}
@@ -396,6 +416,18 @@ export default {
 				this.switchToRegister();
 			}
 			// TODO: FUTURE hide Reg or Login form if user is already logged in
+		},
+		redirectToLegacy() {
+			this.$router.push({
+				path: '/basket',
+				query: {
+					kexpn: 'checkout_beta.minimal_checkout',
+					kexpv: 'a'
+				}
+			});
+		},
+		redirectLbClosed() {
+			this.redirectLbVisible = false;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
