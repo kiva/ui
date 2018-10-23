@@ -1,19 +1,25 @@
 <template>
 	<div class="basket-item-wrapper row">
 		<span class="small-3 medium-2 large-1">
-			<!-- IMAGE -->
-			<span class="donation-icon">
-				<!-- This will have if condions for images based on kiva card type -->
-
+			<span class="kiva-card-icon">
 				<!-- Print Kiva Card -->
-				<span v-if="cardType == 'print'"><img></span>
+				<span v-if="cardType == 'print'">
+					<img alt="print-kiva-card"
+						class="card-preview"
+						src="../../assets/images/checkout/kiva_card_print_preview.jpg">
+				</span>
 				<!-- Postal Kiva Card -->
-				<span v-if="cardType == 'postal'"><img></span>
+				<span v-if="cardType == 'postal'">
+					<img alt="postal-kiva-card"
+						class="card-preview"
+						src="../../assets/images/checkout/kiva_card_postal_preview.jpg">
+				</span>
 				<!-- Email Kiva Card -->
-				<span v-if="cardType == 'email'"><img></span>
-
-
-				<kv-icon class="dedicate-heart" name="dedicate-heart" />
+				<span v-if="cardType == 'email'">
+					<img alt="email-kiva-card"
+						class="card-preview"
+						src="../../assets/images/checkout/kiva_card_email_preview.jpg">
+				</span>
 			</span>
 		</span>
 		<span class="small-9 medium-7 large-9 kiva-card-info-wrapper">
@@ -64,9 +70,6 @@ export default {
 		};
 	},
 	methods: {
-		// loaded() {
-		// console.log(this.cardType);
-		// }
 
 	}
 };
@@ -106,8 +109,7 @@ export default {
 	padding-left: rem-calc(10);
 }
 
-.dedicate-heart {
-	border: 1px solid $light-gray;
+.card-preview {
 	height: rem-calc(71);
 	width: rem-calc(71);
 	padding: rem-calc(4);
