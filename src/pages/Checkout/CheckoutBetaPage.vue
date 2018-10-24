@@ -74,6 +74,7 @@
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
+							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
@@ -310,6 +311,7 @@ export default {
 					if (validationStatus !== true) {
 						// validation failed
 						this.showCheckoutError(validationStatus);
+						this.refreshTotals();
 					}
 					this.setUpdatingTotals(false);
 				}).catch(errorResponse => {
