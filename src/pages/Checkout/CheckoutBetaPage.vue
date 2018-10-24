@@ -43,7 +43,7 @@
 								<!-- TODO: revert event to v-kv-track-event="['register', 'alreadyMemberLnk']" -->
 								<p>Already have an account? <br><a
 									href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a"
-									v-kv-track-event="['checkout', 'sign in click', 'exit to legacy']"
+									v-kv-track-event="['basket', 'sign in click', 'exit to legacy']"
 									id="loginLink">Sign in</a></p>
 							</div>
 
@@ -75,12 +75,14 @@
 							:loans="loans"
 							:donations="donations"
 							:kiva-cards="kivaCards"
+							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
 						/>
 						<hr>
 
 						<kiva-card-redemption
+							:credits="redemption_credits"
 							:totals="totals"
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals" />
@@ -96,6 +98,7 @@
 							<pay-pal-exp
 								v-if="showPayPal"
 								:amount="creditNeeded"
+								@refreshtotals="refreshTotals"
 								@updating-totals="setUpdatingTotals" />
 
 							<kv-button
@@ -128,6 +131,27 @@
 						<a href="/lend">see all loans.</a>
 					</p>
 				</div>
+
+				<kv-lightbox
+					:visible="redirectLbVisible"
+					@lightbox-closed="redirectLbClosed">
+					<section>
+						<h1>
+							This checkout is being tested right now, but doesn't support some functions yet.
+						</h1>
+
+						<p>We'll redirect you so you can get back to changing lives, or click here if you aren't
+						automatically redirected.</p>
+
+						<p>Thank you for minding our dust.</p>
+					</section>
+
+					<kv-button slot="controls"
+						class="smaller checkout-button"
+						v-kv-track-event="['basket','Redirect Continue Button','exit to legacy']"
+						title="Continue"
+						@click.prevent.native="redirectToLegacy">Continue</kv-button>
+				</kv-lightbox>
 			</div>
 		</div>
 	</www-page>
@@ -137,7 +161,6 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import validateItemsAndCredits from '@/graphql/mutation/shopValidateItemsAndCredits.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -150,12 +173,14 @@ import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
 		KvButton,
+		KvLightbox,
 		OrderTotals,
 		LoginForm,
 		RegisterForm,
@@ -179,6 +204,7 @@ export default {
 			loans: [],
 			donations: [],
 			kivaCards: [],
+			redemption_credits: [],
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
@@ -188,7 +214,8 @@ export default {
 			activeLoginDuration: 3600,
 			lastActiveLogin: 0,
 			preCheckoutStep: '',
-			preValidationErrors: []
+			preValidationErrors: [],
+			redirectLbVisible: false,
 		};
 	},
 	apollo: {
@@ -222,6 +249,10 @@ export default {
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 			this.kivaCards = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'KivaCard' });
+			this.redemption_credits = _filter(
+				_get(data, 'shop.basket.credits.values'),
+				{ __typename: 'Credit', creditType: 'redemption_code' }
+			);
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
@@ -241,8 +272,10 @@ export default {
 		}
 		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 
-		// Run our validate items method once in the client
-		this.validateItems();
+		// Run our validate items method once in the client on page load
+		if (this.isLoggedIn) {
+			this.validatePreCheckout();
+		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -273,34 +306,21 @@ export default {
 		},
 	},
 	methods: {
-		validateItems() {
-			this.apollo.mutate({
-				mutation: validateItemsAndCredits,
-			}).then(result => {
-				// retrieve any errors from the cache
-				const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
-				if (errorArray !== 'undefined' && errorArray.length > 0) {
-					console.error(errorArray);
-					// store these
-					this.preValidationErrors = errorArray;
-					// refresh the basket to remove items
-					this.refreshTotals();
-
-					let errorMessages = '';
-					// When validation or checkout fails and errors object is returned along with the data
-					errorArray.forEach(({ value }) => {
-						const errorMessage = value;
-
-						// Handle multiple errors
-						if (errorMessages !== '') {
-							errorMessages = `${errorMessages} | ${errorMessage}`;
-						} else {
-							errorMessages = errorMessage;
-						}
-					});
-					this.$showTipMsg(errorMessages, 'warning');
-				}
-			});
+		/* Validate the Entire Basket on mounted */
+		validatePreCheckout() {
+			this.setUpdatingTotals(true);
+			this.validateBasket()
+				.then(validationStatus => {
+					if (validationStatus !== true) {
+						// validation failed
+						this.showCheckoutError(validationStatus);
+						this.refreshTotals();
+					}
+					this.setUpdatingTotals(false);
+				}).catch(errorResponse => {
+					this.setUpdatingTotals(false);
+					console.error(errorResponse);
+				});
 		},
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
@@ -314,6 +334,7 @@ export default {
 						// validation failed
 						this.setUpdatingTotals(false);
 						this.showCheckoutError(validationStatus);
+						this.refreshTotals();
 					}
 				}).catch(errorResponse => {
 					this.setUpdatingTotals(false);
@@ -348,15 +369,11 @@ export default {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				if (hasFreeCredits) {
 					if (refreshEvent === 'kiva-card-applied') {
-						this.$kvTrackEvent('checkout', 'free credits applied', 'exit to legacy');
+						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
 					}
-					this.$router.push({
-						path: '/basket',
-						query: {
-							kexpn: 'checkout_beta.minimal_checkout',
-							kexpv: 'a'
-						}
-					});
+					this.redirectLbVisible = true;
+					// automatically redirect to legacy after 7 seconds
+					window.setTimeout(this.redirectToLegacy(), 7000);
 				} else {
 					this.setUpdatingTotals(false);
 				}
@@ -393,6 +410,18 @@ export default {
 				this.switchToRegister();
 			}
 			// TODO: FUTURE hide Reg or Login form if user is already logged in
+		},
+		redirectToLegacy() {
+			this.$router.push({
+				path: '/basket',
+				query: {
+					kexpn: 'checkout_beta.minimal_checkout',
+					kexpv: 'a'
+				}
+			});
+		},
+		redirectLbClosed() {
+			this.redirectLbVisible = false;
 		}
 	},
 	beforeRouteEnter(to, from, next) {

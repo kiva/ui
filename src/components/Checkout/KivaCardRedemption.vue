@@ -59,16 +59,16 @@
 								width="430">
 						</kv-lightbox>
 
-						<div
-							class="card-value-wrap"
-							v-if="showKivaCardTotal">
-							<span>Kiva Card value:</span>
-							<span class="kiva-card-amount">{{ formatedKivaCardTotal }}</span>
-							<span class="remove-wrapper"
-								@click.prevent.stop="removeCredit('redemption_code')">
-								<kv-icon class="remove-x" name="small-x" />
-							</span>
-						</div>
+						<ul class="redemption-items">
+							<li v-for="(credit, index) in credits" :key="index">
+								<span class="heading">Kiva Card value: </span>
+								<span class="value">${{ credit.applied }}</span>
+								<span class="remove-wrapper"
+									@click.prevent.stop="removeCredit('redemption_code', credit.id)">
+									<kv-icon class="remove-x" name="small-x" />
+								</span>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -82,7 +82,6 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
 import _forEach from 'lodash/forEach';
-import numeral from 'numeral';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -93,6 +92,10 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
+		credits: {
+			type: Array,
+			default: () => []
+		},
 		totals: {
 			type: Object,
 			default: () => {}
@@ -106,12 +109,14 @@ export default {
 			defaultLbVisible: false,
 		};
 	},
+	mounted() {
+		if (this.showKivaCardTotal) {
+			this.toggleAccordion();
+		}
+	},
 	computed: {
 		showKivaCardTotal() {
 			return parseFloat(this.totals.redemptionCodeAppliedTotal) > 0;
-		},
-		formatedKivaCardTotal() {
-			return numeral(this.totals.redemptionCodeAppliedTotal).format('$0,0.00');
 		}
 	},
 	methods: {
@@ -140,7 +145,7 @@ export default {
 					this.$emit('updating-totals', false);
 				} else {
 					this.$emit('refreshtotals', 'kiva-card-applied');
-					this.$kvTrackEvent('Checkout', 'Apply Kiva Card', 'Kiva Card successfully applied');
+					this.$kvTrackEvent('basket', 'Apply Kiva Card', 'Kiva Card successfully applied');
 				}
 			}).catch(error => {
 				console.error(error);
@@ -148,15 +153,16 @@ export default {
 			});
 		},
 
-		removeCredit(type) {
+		removeCredit(type, id) {
 			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: removeCreditByType,
 				variables: {
-					creditType: type
+					creditType: type,
+					creditId: id || null
 				}
 			}).then(() => {
-				this.$kvTrackEvent('Checkout', 'Kiva Card', 'Remove Kiva Card Success');
+				this.$kvTrackEvent('basket', 'Kiva Card', 'Remove Kiva Card Success');
 				this.$emit('refreshtotals');
 			}).catch(error => {
 				console.error(error);
@@ -251,24 +257,25 @@ export default {
 	margin-bottom: rem-calc(50);
 }
 
-.card-value-wrap {
+.redemption-items {
 	font-weight: $global-weight-highlight;
-	margin-bottom: 1rem;
+	margin: rem-calc(15) 0;
 	font-size: rem-calc(18);
 	white-space: nowrap;
 
 	@include breakpoint(medium) {
 		float: right;
+		margin: 0 0 rem-calc(15) rem-calc(15);
 	}
 
-	@include breakpoint(xlarge) {
-		margin-top: rem-calc(15);
+	@include breakpoint(large) {
+		margin: rem-calc(15) 0 rem-calc(15) rem-calc(15);
 	}
-}
 
-.card-value-wrap p {
-	float: left;
-	padding-right: rem-calc(15);
+	li {
+		list-style: none;
+		padding: 0.1rem 0;
+	}
 }
 
 .kiva-card-input {
@@ -305,10 +312,10 @@ export default {
 
 .remove-x {
 	fill: $subtle-gray;
-	display: inline-block;
 	width: 1.1rem;
-	height: 1rem;
+	height: 1.1rem;
 	cursor: pointer;
 	vertical-align: middle;
+	margin-top: -0.1rem;
 }
 </style>

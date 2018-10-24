@@ -70,8 +70,7 @@
 			<KvButton
 				class="sign-in-button smaller"
 				type="submit"
-				name="loginForm_submit"
-				v-kv-track-event="['Login','click-Login-submit','LoginButtonClick']">
+				name="loginForm_submit">
 				Sign in
 			</KvButton>
 
@@ -170,6 +169,8 @@ export default {
 			this.defaultLbVisible = false;
 		},
 		doLogin() {
+			this.$kvTrackEvent('Login', 'click-Login-submit', 'LoginButtonClick');
+
 			if (this.validateForm() === true) {
 				this.setLoading(true);
 				const formData = formDataEntries(this.$refs.loginForm);

@@ -1,6 +1,32 @@
 <template>
 	<www-page class="lend-by-category-page">
 		<div class="row">
+			<div class="message-text text-center message-text-confirmation" v-if="showLendByCategoryMessage">
+				<div class="row hide-for-large">
+					<div class="column text-right small-2 medium-2"
+						style="position: relative;">
+						<img class="beta" src="~@/assets/images/beta-icon.svg">
+					</div>
+					<div class="column text-left small-10 medium-10">
+						<p class="message">
+							Welcome to Kiva’s new category view!
+							Take it for a spin below, or
+							<router-link to="/lend">view all loans</router-link> at any time.
+						</p>
+					</div>
+				</div>
+				<div class="row show-for-large">
+					<div class="column large-12">
+						<p class="message">
+							<img class="beta" src="~@/assets/images/beta-icon.svg">
+							Welcome to Kiva’s new category view!
+							Take it for a spin below, or
+							<router-link to="/lend">view all loans</router-link> at any time.
+						</p>
+					</div>
+				</div>
+			</div>
+
 			<div class="heading-region column small-12">
 				<h1>Make a loan, change a life</h1>
 				<p class="page-subhead">Each Kiva loan helps people build a better future for
@@ -77,6 +103,7 @@ export default {
 			categories: [],
 			itemsInBasket: [],
 			showFeaturedLoans: true,
+			showLendByCategoryMessage: false
 		};
 	},
 	computed: {
@@ -145,12 +172,16 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				// Get the category rows experiment object from settings
 				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
+				// Get the lend-by-categeory (lbc) message experiment object from settings
+				expData = readJSONSetting(data, 'general.lbcMessageExp.value') || {};
 
 				return Promise.all([
 					// Get the assigned category rows experiment version
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
 					// Get the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
+					// Get the assigned version for lbc message
+					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
 				]);
 			}).then(rowsExpResult => {
 				const version = _get(rowsExpResult, 'data.experiment.version');
@@ -207,6 +238,11 @@ export default {
 				this.categories = _get(data, 'lend.loanChannelsById') || [];
 			},
 		});
+
+		// Read assigned version of lend-by-category message experiment
+		// eslint-disable-next-line max-len
+		const lendByCategoryMessageData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'lbc_message' } });
+		this.showLendByCategoryMessage = _get(lendByCategoryMessageData, 'experiment.version') === 'shown';
 	},
 	mounted() {
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
@@ -274,6 +310,27 @@ export default {
 
 	.pre-footer {
 		margin-bottom: 2rem;
+	}
+
+	.message-text {
+		top: auto;
+		z-index: 1;
+		position: relative;
+
+		img.beta {
+			@include breakpoint(medium down) {
+				top: 35%;
+				position: relative;
+			}
+
+			vertical-align: middle;
+			margin-left: rem-calc(10);
+			margin-right: rem-calc(10);
+		}
+
+		p.message {
+			max-width: 100%;
+		}
 	}
 }
 </style>

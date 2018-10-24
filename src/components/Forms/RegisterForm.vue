@@ -126,8 +126,7 @@
 				class="register-button smaller"
 				type="submit"
 				name="regForm_submit"
-				id="regForm_submit"
-				v-kv-track-event="['Register','click-register-submit','RegisterButtonClick']">
+				id="regForm_submit">
 				Continue
 			</KvButton>
 
@@ -243,6 +242,8 @@ export default {
 	},
 	methods: {
 		register() {
+			this.$kvTrackEvent('Register', 'click-register-submit', 'RegisterButtonClick');
+
 			if (this.validateForm() === true) {
 				this.setLoading(true);
 				const formData = formDataEntries(this.$refs.regForm);

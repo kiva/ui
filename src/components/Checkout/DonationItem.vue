@@ -14,7 +14,7 @@
 				<a
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
-					v-kv-track-event="['Checkout', 'Donation Info Lightbox', 'Open Lightbox']">
+					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->

@@ -4,6 +4,7 @@
 			<li v-for="loan in loans" :key="loan.id">
 				<basket-item
 					:loan="loan"
+					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
