@@ -47,7 +47,7 @@
 							{{ mailingFirstName }}
 							{{ mailingLastName }}
 							{{ mailingStreet }}
-							{{ mailingCity }}
+							{{ mailingCity }},
 							{{ mailingState }}
 							{{ mailingZip }}
 						</div>
@@ -64,6 +64,8 @@
 		<span class="small-9 medium-3 large-2 price-wrapper medium-text-font-size">
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
+				:price="kivaCard.price"
+				:loan-amount="kivaCard.amount"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
@@ -129,6 +131,7 @@ export default {
 
 .sub-text-container {
 	color: $gray;
+	font-weight: $global-weight-normal;
 }
 
 .edit-pencil-icon {

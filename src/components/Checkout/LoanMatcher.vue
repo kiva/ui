@@ -21,6 +21,7 @@ export default {
 .matching-text {
 	line-height: 1rem;
 	margin: rem-calc(5) 0;
+	font-weight: $global-weight-normal;
+	color: $gray;
 }
-
 </style>
