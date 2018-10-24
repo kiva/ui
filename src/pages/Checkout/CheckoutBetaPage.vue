@@ -96,6 +96,7 @@
 							<pay-pal-exp
 								v-if="showPayPal"
 								:amount="creditNeeded"
+								@refreshtotals="refreshTotals"
 								@updating-totals="setUpdatingTotals" />
 
 							<kv-button
@@ -158,7 +159,6 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import validateItemsAndCredits from '@/graphql/mutation/shopValidateItemsAndCredits.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -268,8 +268,10 @@ export default {
 		}
 		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 
-		// Run our validate items method once in the client
-		this.validateItems();
+		// Run our validate items method once in the client on page load
+		if (this.isLoggedIn) {
+			this.validatePreCheckout();
+		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -300,34 +302,20 @@ export default {
 		},
 	},
 	methods: {
-		validateItems() {
-			this.apollo.mutate({
-				mutation: validateItemsAndCredits,
-			}).then(result => {
-				// retrieve any errors from the cache
-				const errorArray = _get(result, 'data.shop.validateItemsAndCredits');
-				if (errorArray !== 'undefined' && errorArray.length > 0) {
-					console.error(errorArray);
-					// store these
-					this.preValidationErrors = errorArray;
-					// refresh the basket to remove items
-					this.refreshTotals();
-
-					let errorMessages = '';
-					// When validation or checkout fails and errors object is returned along with the data
-					errorArray.forEach(({ value }) => {
-						const errorMessage = value;
-
-						// Handle multiple errors
-						if (errorMessages !== '') {
-							errorMessages = `${errorMessages} | ${errorMessage}`;
-						} else {
-							errorMessages = errorMessage;
-						}
-					});
-					this.$showTipMsg(errorMessages, 'warning');
-				}
-			});
+		/* Validate the Entire Basket on mounted */
+		validatePreCheckout() {
+			this.setUpdatingTotals(true);
+			this.validateBasket()
+				.then(validationStatus => {
+					if (validationStatus !== true) {
+						// validation failed
+						this.showCheckoutError(validationStatus);
+					}
+					this.setUpdatingTotals(false);
+				}).catch(errorResponse => {
+					this.setUpdatingTotals(false);
+					console.error(errorResponse);
+				});
 		},
 		validateCreditBasket() {
 			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
@@ -341,6 +329,7 @@ export default {
 						// validation failed
 						this.setUpdatingTotals(false);
 						this.showCheckoutError(validationStatus);
+						this.refreshTotals();
 					}
 				}).catch(errorResponse => {
 					this.setUpdatingTotals(false);

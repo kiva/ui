@@ -15,13 +15,18 @@ export default {
 				this.apollo.mutate({
 					mutation: shopValidateBasket
 				}).then(data => {
-					const validationStatus = _get(data, 'data.shop.validatePreCheckout');
-					if (validationStatus === true) {
+					const validationResult = _get(data, 'data.shop.validatePreCheckout');
+
+					// currently the success node is never populated
+					// If the validation passed an empty array is returned
+					if (typeof validationResult !== 'undefined' && validationResult.length === 0) {
 						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Success');
-						resolve(validationStatus);
-					} else if (validationStatus === null) {
+						// previously the api returned true if validation succeeded so we pass true
+						resolve(true);
+					} else {
+						// validation failed resolve with array of errors
 						this.$kvTrackEvent('basket', 'Validate Basket', 'Validation Failure');
-						resolve(data);
+						resolve(validationResult);
 					}
 				}).catch(errorResponse => {
 					console.error(errorResponse);
@@ -59,26 +64,26 @@ export default {
 		 * @param {Object} errorResponse contains errors node with array of errors
 		 */
 		showCheckoutError(errorResponse) {
-			const errors = _get(errorResponse, 'errors');
+			// const errors = _get(errorResponse, 'errors');
 			let errorMessages = '';
 			// When validation or checkout fails and errors object is returned along with the data
-			errors.forEach(({ message, code }) => {
-				let errorMessage = message;
+			errorResponse.forEach(({ error, value }) => {
+				let errorMessage = value;
 
 				/* eslint-disable max-len */
 				// update error messages for new checkout context (Original messages reference a different user flow)
-				if (code === 'ERROR_OWN_LOAN') {
+				if (error === 'ERROR_OWN_LOAN') {
 					// Original Message: As a Kiva borrower, you cannot support your own fundraising loan on Kiva.  Please go back to the basket to remove your loan.
 					errorMessage = 'As a Kiva borrower, you cannot support your own fundraising loan on Kiva. Please remove your loan before completing checkout.';
 				}
-				if (code === 'ERROR_OVER_DAILY_LIMIT') {
+				if (error === 'ERROR_OVER_DAILY_LIMIT') {
 					// Original Message: You can not purchase more than $2,000 of Kiva Codes per day. Please click the back button amd remove Kiva Card(s)
 					errorMessage = 'You can not purchase more than $2,000 of Kiva Codes per day. Please remove the Kiva Card(s) from your basket.';
 				}
 				/* eslint-enable max-len */
 
 				// Refresh the page if they have timed out
-				if (code === 'api.authenticationRequired') {
+				if (error === 'api.authenticationRequired') {
 					window.location = window.location;
 				}
 
