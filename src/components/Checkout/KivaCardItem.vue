@@ -35,30 +35,27 @@
 				<kv-icon
 					class="edit-pencil-icon"
 					name="pencil"/>
-				<div>
+				<div class="sub-text-container">
 					<!-- Print Kiva Card -->
 					<span v-if="cardType == 'print'">
-						<p class="small-text">Available after checkout</p>
-						<p class="small-text">For {{ recipent }}</p>
+						<div class="small-text">Available after checkout</div>
+						<div class="small-text">For {{ recipientName }}</div>
 					</span>
 					<!-- Postal Kiva Card -->
 					<span v-if="cardType == 'postal'">
-						<p class="small-text">
-							{{ this.kivaCard.kivaCardObject.mailingInfo.firstName }}
-							{{ this.kivaCard.kivaCardObject.mailingInfo.lastName }}
-							{{ this.kivaCard.kivaCardObject.mailingInfo.address }}
-							{{ this.kivaCard.kivaCardObject.mailingInfo.city }}
-							{{ this.kivaCard.kivaCardObject.mailingInfo.state }}
-							{{ this.kivaCard.kivaCardObject.mailingInfo.zip }}
-						</p>
+						<div class="small-text">
+							{{ mailingFirstName }}
+							{{ mailingLastName }}
+							{{ mailingStreet }}
+							{{ mailingCity }}
+							{{ mailingState }}
+							{{ mailingZip }}
+						</div>
 					</span>
 					<!-- Email Kiva Card -->
 					<span v-if="cardType == 'email'">
-						<p class="small-text">Scheduled to be sent
-							{{ this.kivaCard.kivaCardObject.recipent.scheduledDeliveryDate }}</p>
-						<p class="small-text">
-							For {{ this.kivaCard.kivaCardObject.recipent.name }}
-							{{ this.kivaCard.kivaCardObject.recipent.email }}</p>
+						<div class="small-text">Scheduled to be sent  {{ deliveryDate }}</div>
+						<div class="small-text">For {{ recipientName }} {{ recipientEmail }}</div>
 					</span>
 				</div>
 			</span>
@@ -78,6 +75,7 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanPrice from '@/components/Checkout/LoanPrice';
+import { format } from 'date-fns';
 
 export default {
 	components: {
@@ -93,9 +91,20 @@ export default {
 	data() {
 		return {
 			cardType: this.kivaCard.kivaCardObject.deliveryType,
+			recipientName: this.kivaCard.kivaCardObject.recipient.name,
+			recipientEmail: this.kivaCard.kivaCardObject.recipient.email,
+			mailingFirstName: this.kivaCard.kivaCardObject.mailingInfo.firstName,
+			mailingLastName: this.kivaCard.kivaCardObject.mailingInfo.lastName,
+			mailingStreet: this.kivaCard.kivaCardObject.mailingInfo.address,
+			mailingCity: this.kivaCard.kivaCardObject.mailingInfo.city,
+			mailingState: this.kivaCard.kivaCardObject.mailingInfo.state,
+			mailingZip: this.kivaCard.kivaCardObject.mailingInfo.zip,
 		};
 	},
-	methods: {
+	computed: {
+		deliveryDate() {
+			return format(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate, 'MM/DD/YYYY');
+		}
 
 	}
 };
@@ -116,6 +125,10 @@ export default {
 
 .kiva-card-info {
 	font-weight: $global-weight-highlight;
+}
+
+.sub-text-container {
+	color: $gray;
 }
 
 .edit-pencil-icon {
