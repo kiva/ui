@@ -70,7 +70,7 @@ export default {
 		}
 	},
 	updated() {
-		// check for zerod out loan validate + refresh if present
+		// check for zeroed out loan validate + refresh if present
 		if (typeof this.loan.price !== 'undefined' && this.loan.price === '0.00') {
 			this.$emit('validateprecheckout');
 		}
