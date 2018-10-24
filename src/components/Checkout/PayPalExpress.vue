@@ -31,6 +31,7 @@ export default {
 		return {
 			ensurePaypalScript: null,
 			paypalRendered: false,
+			loading: false
 		};
 	},
 	metaInfo() {
@@ -80,7 +81,8 @@ export default {
 
 						return new paypal.Promise((resolve, reject) => {
 							this.setUpdating(true);
-							this.validateBasket()
+							// validate our basket before getting the payment token
+							return this.validateBasket()
 								.then(validationStatus => {
 									if (validationStatus === true) {
 										// Use updated vars on render
@@ -110,8 +112,10 @@ export default {
 												reject(error);
 											});
 									} else {
+										// validation failed
 										this.setUpdating(false);
 										this.showCheckoutError(validationStatus);
+										this.$emit('refreshtotals');
 										reject(validationStatus);
 									}
 								})
@@ -132,70 +136,98 @@ export default {
 						this.$kvTrackEvent('basket', 'Paypal Payment', 'ECK Dialog Pay Now Click');
 
 						return new paypal.Promise((resolve, reject) => {
-							this.apollo.mutate({
-								mutation: depositAndCheckout,
-								variables: {
-									amount: numeral(this.amount).format('0.00'),
-									token: data.paymentToken,
-									payerId: data.payerID
-								},
-							})
-								.then(ppResponse => {
-									// Check for errors
-									if (ppResponse.errors) {
+							// validate our basket before deposit and Checkout
+							return this.validateBasket()
+								.then(validationStatus => {
+									if (validationStatus === true) {
+										this.apollo.mutate({
+											mutation: depositAndCheckout,
+											variables: {
+												amount: numeral(this.amount).format('0.00'),
+												token: data.paymentToken,
+												payerId: data.payerID
+											},
+										})
+											.then(ppResponse => {
+												// Check for errors
+												if (ppResponse.errors) {
+													this.setUpdating(false);
+													const errorCode = _get(ppResponse, 'errors[0].code');
+													// -> server supplied language is not geared for lenders
+													// const serverErrorMessage = _get(ppResponse, 'errors[0].message');
+													const standardErrorCode = `(PayPal error: ${errorCode})`;
+													const standardError = `There was an error processing your payment.
+														Please try again. ${standardErrorCode}`;
+
+													this.$showTipMsg(standardError, 'error');
+
+													// Fire specific exception to Sentry/Raven
+													Raven.captureException(ppResponse.errors, {
+														tags: {
+															pp_stage: 'onAuthorize',
+															pp_token: data.paymentToken
+														}
+													});
+
+													// Restart the Exp Checkout interface to allow payment changes
+													// 10539 'payment declined' error
+													// 10486 transaction could not be completed
+													if (errorCode === '10539' || errorCode === '10486') {
+														return actions.restart();
+													}
+													// TODO: Are there other specific errors we should handle?
+
+													// exit
+													reject(data);
+												}
+
+												// Transaction is complete
+												const transactionId = _get(
+													ppResponse,
+													'data.shop.doPaymentDepositAndCheckout'
+												);
+												// redirect to thanks with KIVA transaction id
+												if (transactionId) {
+													this.$kvTrackEvent(
+														'basket',
+														'Paypal Payment',
+														'Success',
+														transactionId
+													);
+													this.redirectToThanks(transactionId);
+												}
+												resolve(ppResponse);
+											})
+											.catch(catchError => {
+												this.setUpdating(false);
+
+												// Fire specific exception to Sentry/Raven
+												Raven.captureException(catchError, {
+													tags: {
+														pp_stage: 'onAuthorizeCatch'
+													}
+												});
+
+												reject(catchError);
+											});
+									} else {
+										// validation failed
 										this.setUpdating(false);
-										const errorCode = _get(ppResponse, 'errors[0].code');
-										// -> server supplied language is not geared for lenders
-										// const serverErrorMessage = _get(ppResponse, 'errors[0].message');
-										const standardErrorCode = `(PayPal error: ${errorCode})`;
-										const standardError = `There was an error processing your payment.
-											Please try again. ${standardErrorCode}`;
-
-										this.$showTipMsg(standardError, 'error');
-
-										// Fire specific exception to Sentry/Raven
-										Raven.captureException(ppResponse.errors, {
-											tags: {
-												pp_stage: 'onAuthorize',
-												pp_token: data.paymentToken
-											}
-										});
-
-										// Restart the Exp Checkout interface to allow payment changes
-										// 10539 'payment declined' error
-										// 10486 transaction could not be completed
-										if (errorCode === '10539' || errorCode === '10486') {
-											return actions.restart();
-										}
-										// TODO: Are there other specific errors we should handle?
-
-										// exit
-										reject(data);
+										this.showCheckoutError(validationStatus);
+										this.$emit('refreshtotals');
+										reject(validationStatus);
 									}
-
-									// Transaction is complete
-									const transactionId = _get(ppResponse, 'data.shop.doPaymentDepositAndCheckout');
-									// redirect to thanks with KIVA transaction id
-									if (transactionId) {
-										this.$kvTrackEvent('basket', 'Paypal Payment', 'Success', transactionId);
-										this.redirectToThanks(transactionId);
-									}
-									resolve(ppResponse);
 								})
-								.catch(catchError => {
+								.catch(error => {
 									this.setUpdating(false);
+									console.error(error);
 
 									// Fire specific exception to Sentry/Raven
-									Raven.captureException(catchError, {
+									Raven.captureException(error, {
 										tags: {
-											pp_stage: 'onAuthorizeCatch'
+											pp_stage: 'onPaymentCatch'
 										}
 									});
-
-									reject(catchError);
-								})
-								.finally(() => {
-									this.loading = false;
 								});
 						});
 					},
