@@ -43,7 +43,7 @@
 								<!-- TODO: revert event to v-kv-track-event="['register', 'alreadyMemberLnk']" -->
 								<p>Already have an account? <br><a
 									href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a"
-									v-kv-track-event="['checkout', 'sign in click', 'exit to legacy']"
+									v-kv-track-event="['basket', 'sign in click', 'exit to legacy']"
 									id="loginLink">Sign in</a></p>
 							</div>
 
@@ -145,7 +145,7 @@
 
 					<kv-button slot="controls"
 						class="smaller checkout-button"
-						v-kv-track-event="['Checkout','Redirect Continue Button','exit to legacy']"
+						v-kv-track-event="['basket','Redirect Continue Button','exit to legacy']"
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
@@ -375,7 +375,7 @@ export default {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				if (hasFreeCredits) {
 					if (refreshEvent === 'kiva-card-applied') {
-						this.$kvTrackEvent('checkout', 'free credits applied', 'exit to legacy');
+						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
 					}
 					this.redirectLbVisible = true;
 					// automatically redirect to legacy after 7 seconds
