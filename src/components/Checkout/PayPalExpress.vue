@@ -126,7 +126,7 @@ export default {
 									// Fire specific exception to Sentry/Raven
 									Raven.captureException(error, {
 										tags: {
-											pp_stage: 'onPaymentCatch'
+											pp_stage: 'onPaymentValidationCatch'
 										}
 									});
 								});
@@ -225,7 +225,7 @@ export default {
 									// Fire specific exception to Sentry/Raven
 									Raven.captureException(error, {
 										tags: {
-											pp_stage: 'onPaymentCatch'
+											pp_stage: 'onAuthorizeValidationCatch'
 										}
 									});
 								});
