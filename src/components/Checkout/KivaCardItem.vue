@@ -64,8 +64,10 @@
 		<span class="small-9 medium-3 large-2 price-wrapper medium-text-font-size">
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
+				:kiva-card-id="kivaCard.id"
 				:price="kivaCard.price"
 				:loan-amount="kivaCard.amount"
+				type="kivaCard"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
@@ -107,7 +109,14 @@ export default {
 		deliveryDate() {
 			return format(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate, 'MM/DD/YYYY');
 		}
-
+	},
+	methods: {
+		onLoanUpdate($event) {
+			this.$emit('refreshtotals', $event);
+			if ($event === 'removeLoan') {
+				this.loanVisible = false;
+			}
+		}
 	}
 };
 

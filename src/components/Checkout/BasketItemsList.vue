@@ -6,12 +6,13 @@
 					:loan="loan"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
-
 				/>
 			</li>
 			<li v-for="kivaCard in kivaCards" :key="kivaCard.id">
 				<kiva-card-item
 					:kiva-card="kivaCard"
+					@refreshtotals="$emit('refreshtotals', $event)"
+					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
 			<li v-for="donation in donations" :key="donation.id">

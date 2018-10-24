@@ -25,6 +25,7 @@
 import _union from 'lodash/union';
 import numeral from 'numeral';
 import updateLoanAmount from '@/graphql/mutation/updateLoanAmount.graphql';
+import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
 import _forEach from 'lodash/forEach';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -54,6 +55,14 @@ export default {
 			type: Number,
 			default: null
 		},
+		type: {
+			type: String,
+			default: 'loan'
+		},
+		kivaCardId: {
+			type: Number,
+			default: null
+		}
 	},
 	data() {
 		return {
@@ -65,75 +74,124 @@ export default {
 	},
 	computed: {
 		prices() {
-			// Build availble shares starting with what this lender has resereved
-			const sharesBelowAmountLent = parseInt(this.price, 10) / 25;
-			// convert this to formatted array for our select element
-			const priceArray = this.buildShareArray(sharesBelowAmountLent);
+			if (this.type === 'loan') {
+				// Build availble shares starting with what this lender has resereved
+				const sharesBelowAmountLent = parseInt(this.price, 10) / 25;
+				// convert this to formatted array for our select element
+				const priceArray = this.buildShareArray(sharesBelowAmountLent);
 
-			// determine how many (if any) overall additional shares are remaining
-			let remainingShares = parseFloat(this.loanAmount) -
-				(parseFloat(this.fundedAmount) + parseFloat(this.reservedAmount));
+				// determine how many (if any) overall additional shares are remaining
+				let remainingShares = parseFloat(this.loanAmount) -
+					(parseFloat(this.fundedAmount) + parseFloat(this.reservedAmount));
 
-			// if we've met reserve ensure atleast this loan share is set
-			if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
+				// if we've met reserve ensure atleast this loan share is set
+				if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
 
-			// Limit to this.selectLimit in addition to current price
-			if (remainingShares > (parseInt(this.price, 10) + this.additionalSelctionLimit)) {
-				remainingShares = parseInt(this.price, 10) + this.additionalSelctionLimit;
+				// Limit to this.selectLimit in addition to current price
+				if (remainingShares > (parseInt(this.price, 10) + this.additionalSelctionLimit)) {
+					remainingShares = parseInt(this.price, 10) + this.additionalSelctionLimit;
+				}
+
+				// Institute an overall selection cap
+				if (remainingShares > this.overallSelectLimit) remainingShares = this.overallSelectLimit;
+
+				// add to available shares based on available remaining shares
+				const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
+				// convert this to formatted array for our select element
+				const reservePriceArray = this.buildShareArray(sharesBelowReserve);
+
+				// return the combined and de-duped arrays
+				return _union(priceArray, reservePriceArray);
+			} else if (this.type === 'kivaCard') {
+				// convert this to formatted array for our select element
+				const priceArray = ['25', '30', '50', '75', '100', '150', '200', '250', '300', '400',
+					'500', '750', '1000', '2000'];
+				return priceArray;
 			}
-
-			// Institute an overall selection cap
-			if (remainingShares > this.overallSelectLimit) remainingShares = this.overallSelectLimit;
-
-			// add to available shares based on available remaining shares
-			const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
-			// convert this to formatted array for our select element
-			const reservePriceArray = this.buildShareArray(sharesBelowReserve);
-
-			// return the combined and de-duped arrays
-			return _union(priceArray, reservePriceArray);
 		}
 	},
 	methods: {
 		updateLoanAmount(changeType) {
-			if (this.selectedOption !== this.price) {
-				this.$emit('updating-totals', true);
-				let updatedPrice;
-				// If the loan remove X is clicked: set updatedPrice to 0
-				// else pull the value out of the loanPrice select and keep moving through method
-				if (changeType === 'remove') {
-					updatedPrice = 0;
-				} else {
-					updatedPrice = numeral(this.selectedOption).format('0,0.00');
-				}
-				this.apollo.mutate({
-					mutation: updateLoanAmount,
-					variables: {
-						loanid: this.loanId,
-						price: updatedPrice
-					}
-				}).then(data => {
-					if (data.errors) {
-						_forEach(data.errors, ({ message }) => {
-							this.$showTipMsg(message, 'error');
-						});
-						this.selectedOption = this.cachedSelection;
+			if (this.type === 'loan') {
+				if (this.selectedOption !== this.price) {
+					this.$emit('updating-totals', true);
+					let updatedPrice;
+					// If the loan remove X is clicked: set updatedPrice to 0
+					// else pull the value out of the loanPrice select and keep moving through method
+					if (changeType === 'remove') {
+						updatedPrice = 0;
 					} else {
-						this.$kvTrackEvent(
-							'basket',
-							'Update Loan Amount',
-							updatedPrice === 0 ? 'Loan Removed' : 'Update Success',
-							// pass updated loan amount as whole number
-							numeral(updatedPrice).value()
-						);
-						this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
-						this.cachedSelection = this.selectedOption;
+						updatedPrice = numeral(this.selectedOption).format('0,0.00');
 					}
-					this.$emit('updating-totals', false);
-				}).catch(error => {
-					console.error(error);
-					this.$emit('updating-totals', false);
-				});
+					this.apollo.mutate({
+						mutation: updateLoanAmount,
+						variables: {
+							loanid: this.loanId,
+							price: updatedPrice
+						}
+					}).then(data => {
+						if (data.errors) {
+							_forEach(data.errors, ({ message }) => {
+								this.$showTipMsg(message, 'error');
+							});
+							this.selectedOption = this.cachedSelection;
+						} else {
+							this.$kvTrackEvent(
+								'basket',
+								'Update Loan Amount',
+								updatedPrice === 0 ? 'Loan Removed' : 'Update Success',
+								// pass updated loan amount as whole number
+								numeral(updatedPrice).value()
+							);
+							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
+							this.cachedSelection = this.selectedOption;
+						}
+						this.$emit('updating-totals', false);
+					}).catch(error => {
+						console.error(error);
+						this.$emit('updating-totals', false);
+					});
+				}
+			} else if (this.type === 'kivaCard') {
+				if (this.selectedOption !== this.price) {
+					this.$emit('updating-totals', true);
+					let updatedPrice;
+					// If the loan remove X is clicked: set updatedPrice to 0
+					// else pull the value out of the loanPrice select and keep moving through method
+					if (changeType === 'remove') {
+						updatedPrice = 0;
+					} else {
+						updatedPrice = numeral(this.selectedOption).format('0,0.00');
+					}
+					this.apollo.mutate({
+						mutation: updateKivaCardAmount,
+						variables: {
+							idsInGroup: [this.kivaCardId],
+							individualPrice: updatedPrice
+						}
+					}).then(data => {
+						if (data.errors) {
+							_forEach(data.errors, ({ message }) => {
+								this.$showTipMsg(message, 'error');
+							});
+							this.selectedOption = this.cachedSelection;
+						} else {
+							this.$kvTrackEvent(
+								'basket',
+								'Update Kiva Card Amount',
+								updatedPrice === 0 ? 'Kiva Card Removed' : 'Update Success',
+								// pass updated Kiva Card amount as whole number
+								numeral(updatedPrice).value()
+							);
+							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
+							this.cachedSelection = this.selectedOption;
+						}
+						this.$emit('updating-totals', false);
+					}).catch(error => {
+						console.error(error);
+						this.$emit('updating-totals', false);
+					});
+				}
 			}
 		},
 		buildShareArray(shares) {
@@ -225,5 +283,4 @@ export default {
 		height: rem-calc(36);
 	}
 }
-
 </style>

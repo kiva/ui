@@ -28,6 +28,7 @@
 				:price="loan.price"
 				:loan-id="loan.id"
 				:loan-amount="loan.loan.loanAmount"
+				type="loan"
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
 				@refreshtotals="onLoanUpdate($event)"
