@@ -27,25 +27,20 @@
 			<span class="kiva-card-info featured-text">
 				<!-- Print Kiva Card -->
 				<span v-if="cardType == 'print'">Print-it-yourself Kiva Card
-					<span v-if="quantity < 1">({{ quantity }})</span>
+					<span v-if="quantity > 1">({{ quantity }})</span>
 				</span>
 				<!-- Postal Kiva Card -->
 				<span v-if="cardType == 'postal'">Postal delivery Kiva Card
-					<span v-if="quantity < 1">({{ quantity }})</span>
+					<span v-if="quantity > 1">({{ quantity }})</span>
 				</span>
 				<!-- Email Kiva Card -->
 				<span v-if="cardType == 'email'">Email delivery Kiva Card</span>
 
-				<!-- current link in kiva/main -->
-				<!-- <a class="editGift small" href="{kvurl page=gift action=kivaCards
-				gift_ids=$kiva_card.display_details.ids_in_group}#/{$kiva_card.kc_object->deliveryType}"
-				>Edit</a> -->
-
-				<kv-icon
-					class="edit-pencil-icon"
-					name="pencil"/>
-
-				<!-- href="gifts/kiva-cards?{{gift_ids}} /cardType" -->
+				<a :href="formedEditUrl">
+					<kv-icon
+						class="edit-pencil-icon"
+						name="pencil"/>
+				</a>
 
 				<div class="sub-text-container">
 					<!-- Print Kiva Card -->
@@ -115,12 +110,23 @@ export default {
 			mailingCity: this.kivaCard.kivaCardObject.mailingInfo.city,
 			mailingState: this.kivaCard.kivaCardObject.mailingInfo.state,
 			mailingZip: this.kivaCard.kivaCardObject.mailingInfo.zip,
-			quantity: this.kivaCard.quantity
+			quantity: this.kivaCard.quantity,
+			idsInGroup: this.kivaCard.idsInGroup
 		};
 	},
 	computed: {
 		deliveryDate() {
 			return format(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate, 'MM/DD/YYYY');
+		},
+		formedEditUrl() {
+			let giftId = '';
+
+			for (let i = 0; i < this.idsInGroup.length; i += 1) {
+				giftId += `gift_ids[${i}]=${this.idsInGroup[i]}&`;
+			}
+
+			const formedEditURL = `/gifts/kiva-cards/?${giftId}#/${this.cardType}`;
+			return formedEditURL;
 		}
 	},
 	methods: {
