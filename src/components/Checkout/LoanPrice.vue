@@ -62,6 +62,10 @@ export default {
 		kivaCardId: {
 			type: Number,
 			default: null
+		},
+		idsInGroup: {
+			type: Array,
+			default: () => []
 		}
 	},
 	data() {
@@ -166,7 +170,7 @@ export default {
 					this.apollo.mutate({
 						mutation: updateKivaCardAmount,
 						variables: {
-							idsInGroup: [this.kivaCardId],
+							idsInGroup: this.idsInGroup,
 							individualPrice: updatedPrice
 						}
 					}).then(data => {

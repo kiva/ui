@@ -26,9 +26,13 @@
 			<!-- Main line text -->
 			<span class="kiva-card-info featured-text">
 				<!-- Print Kiva Card -->
-				<span v-if="cardType == 'print'">Print-it-yourself Kiva Card ({{ quantity }})</span>
+				<span v-if="cardType == 'print'">Print-it-yourself Kiva Card
+					<span v-if="quantity < 1">({{ quantity }})</span>
+				</span>
 				<!-- Postal Kiva Card -->
-				<span v-if="cardType == 'postal'">Postal delivery Kiva Card ({{ quantity }})</span>
+				<span v-if="cardType == 'postal'">Postal delivery Kiva Card
+					<span v-if="quantity < 1">({{ quantity }})</span>
+				</span>
 				<!-- Email Kiva Card -->
 				<span v-if="cardType == 'email'">Email delivery Kiva Card</span>
 
@@ -73,7 +77,8 @@
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
 				:kiva-card-id="kivaCard.id"
-				:price="individualPrice"
+				:ids-in-group="kivaCard.idsInGroup"
+				:price="kivaCard.individualPrice"
 				type="kivaCard"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
@@ -116,15 +121,6 @@ export default {
 	computed: {
 		deliveryDate() {
 			return format(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate, 'MM/DD/YYYY');
-		},
-		individualPrice() {
-			const convertedQuantity = parseInt(this.kivaCard.quantity, 10);
-			const convertedPrice = parseFloat(this.kivaCard.price);
-			// Not yet working
-			if (convertedQuantity < 1) {
-				return String(convertedPrice / convertedQuantity);
-			}
-			return this.kivaCard.price;
 		}
 	},
 	methods: {
