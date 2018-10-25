@@ -103,11 +103,12 @@ export default {
 											.catch(error => {
 												console.error(error);
 												// Fire specific exception to Sentry/Raven
-												Raven.captureException(error.errors ? error.errors : error, {
-													tags: {
-														pp_stage: 'onPaymentGetPaymentTokenCatch'
-													}
-												});
+												Raven.captureException(
+													JSON.stringify(error.errors ? error.errors : error), {
+														tags: {
+															pp_stage: 'onPaymentGetPaymentTokenCatch'
+														}
+													});
 
 												reject(error);
 											});
@@ -124,7 +125,7 @@ export default {
 									console.error(error);
 
 									// Fire specific exception to Sentry/Raven
-									Raven.captureException(error, {
+									Raven.captureException(JSON.stringify(error), {
 										tags: {
 											pp_stage: 'onPaymentValidationCatch'
 										}
@@ -154,7 +155,6 @@ export default {
 													this.setUpdating(false);
 													const errorCode = _get(ppResponse, 'errors[0].code');
 													// -> server supplied language is not geared for lenders
-													// const serverErrorMessage = _get(ppResponse, 'errors[0].message');
 													const standardErrorCode = `(PayPal error: ${errorCode})`;
 													const standardError = `There was an error processing your payment.
 														Please try again. ${standardErrorCode}`;
@@ -162,7 +162,7 @@ export default {
 													this.$showTipMsg(standardError, 'error');
 
 													// Fire specific exception to Sentry/Raven
-													Raven.captureException(ppResponse.errors, {
+													Raven.captureException(JSON.stringify(ppResponse.errors), {
 														tags: {
 															pp_stage: 'onAuthorize',
 															pp_token: data.paymentToken
@@ -202,7 +202,7 @@ export default {
 												this.setUpdating(false);
 
 												// Fire specific exception to Sentry/Raven
-												Raven.captureException(catchError, {
+												Raven.captureException(JSON.stringify(catchError), {
 													tags: {
 														pp_stage: 'onAuthorizeCatch'
 													}
@@ -223,7 +223,7 @@ export default {
 									console.error(error);
 
 									// Fire specific exception to Sentry/Raven
-									Raven.captureException(error, {
+									Raven.captureException(JSON.stringify(error), {
 										tags: {
 											pp_stage: 'onAuthorizeValidationCatch'
 										}
