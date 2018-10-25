@@ -84,7 +84,9 @@ query {
 					... on KivaCard {
 						id
 						price
+						idsInGroup
 						quantity
+						individualPrice
 						kivaCardObject {
 							deliveryType
 							recipient {

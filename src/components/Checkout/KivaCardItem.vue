@@ -31,9 +31,18 @@
 				<span v-if="cardType == 'postal'">Postal delivery Kiva Card ({{ quantity }})</span>
 				<!-- Email Kiva Card -->
 				<span v-if="cardType == 'email'">Email delivery Kiva Card</span>
+
+				<!-- current link in kiva/main -->
+				<!-- <a class="editGift small" href="{kvurl page=gift action=kivaCards
+				gift_ids=$kiva_card.display_details.ids_in_group}#/{$kiva_card.kc_object->deliveryType}"
+				>Edit</a> -->
+
 				<kv-icon
 					class="edit-pencil-icon"
 					name="pencil"/>
+
+				<!-- href="gifts/kiva-cards?{{gift_ids}} /cardType" -->
+
 				<div class="sub-text-container">
 					<!-- Print Kiva Card -->
 					<span v-if="cardType == 'print'">
@@ -65,7 +74,6 @@
 			<loan-price
 				:kiva-card-id="kivaCard.id"
 				:price="individualPrice"
-				:loan-amount="kivaCard.amount"
 				type="kivaCard"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
@@ -110,13 +118,13 @@ export default {
 			return format(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate, 'MM/DD/YYYY');
 		},
 		individualPrice() {
-			const convertedQuantity = parseInt(this.quantity, 10);
-			const convertedPrice = parseFloat(this.price);
-
+			const convertedQuantity = parseInt(this.kivaCard.quantity, 10);
+			const convertedPrice = parseFloat(this.kivaCard.price);
+			// Not yet working
 			if (convertedQuantity < 1) {
 				return String(convertedPrice / convertedQuantity);
 			}
-			return this.price;
+			return this.kivaCard.price;
 		}
 	},
 	methods: {
