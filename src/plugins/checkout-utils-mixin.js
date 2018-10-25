@@ -1,5 +1,4 @@
 import _get from 'lodash/get';
-import Raven from 'raven-js';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 
@@ -96,13 +95,6 @@ export default {
 				}
 			});
 			this.$showTipMsg(errorMessages, 'error');
-
-			// Fire specific exception to Sentry/Raven
-			Raven.captureException(errorMessages, {
-				tags: {
-					checkout: 'showCheckoutError'
-				}
-			});
 		},
 
 		/* Redirect to the thanks
