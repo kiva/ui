@@ -103,12 +103,12 @@ export default {
 											.catch(error => {
 												console.error(error);
 												// Fire specific exception to Sentry/Raven
-												Raven.captureException(
-													JSON.stringify(error.errors ? error.errors : error), {
-														tags: {
-															pp_stage: 'onPaymentGetPaymentTokenCatch'
-														}
-													});
+												// eslint-disable-next-line
+												Raven.captureException(JSON.stringify(error.errors ? error.errors : error), {
+													tags: {
+														pp_stage: 'onPaymentGetPaymentTokenCatch'
+													}
+												});
 
 												reject(error);
 											});
