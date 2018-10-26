@@ -6,19 +6,19 @@
 				<span v-if="cardType == 'print'">
 					<img alt="print-kiva-card"
 						class="card-preview"
-						src="../../assets/images/checkout/kiva_card_print_preview.jpg">
+						src="~@/assets/images/checkout/kiva_card_print_preview.jpg">
 				</span>
 				<!-- Postal Kiva Card -->
 				<span v-if="cardType == 'postal'">
 					<img alt="postal-kiva-card"
 						class="card-preview"
-						src="../../assets/images/checkout/kiva_card_postal_preview.jpg">
+						src="~@/assets/images/checkout/kiva_card_postal_preview.jpg">
 				</span>
 				<!-- Email Kiva Card -->
 				<span v-if="cardType == 'email'">
 					<img alt="email-kiva-card"
 						class="card-preview"
-						src="../../assets/images/checkout/kiva_card_email_preview.jpg">
+						src="~@/assets/images/checkout/kiva_card_email_preview.jpg">
 				</span>
 			</span>
 		</span>
@@ -36,7 +36,9 @@
 				<!-- Email Kiva Card -->
 				<span v-if="cardType == 'email'">Email delivery Kiva Card</span>
 
-				<a :href="formedEditUrl">
+				<a :href="formedEditUrl"
+					v-kv-track-event="['basket', 'Edit Kiva Card', cardType]"
+				>
 					<kv-icon
 						class="edit-pencil-icon"
 						name="pencil"/>
@@ -71,7 +73,6 @@
 		<span class="small-9 medium-3 large-2 price-wrapper medium-text-font-size">
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
-				:kiva-card-id="kivaCard.id"
 				:ids-in-group="kivaCard.idsInGroup"
 				:price="kivaCard.individualPrice"
 				type="kivaCard"

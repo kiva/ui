@@ -59,10 +59,6 @@ export default {
 			type: String,
 			default: 'loan'
 		},
-		kivaCardId: {
-			type: Number,
-			default: null
-		},
 		idsInGroup: {
 			type: Array,
 			default: () => []
