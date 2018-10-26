@@ -118,6 +118,7 @@ export default {
 
 	.loan-message {
 		margin-bottom: rem-calc(5);
+		font-weight: $global-weight-normal;
 	}
 
 	.loan-message >>> .red {

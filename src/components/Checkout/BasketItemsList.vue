@@ -9,6 +9,13 @@
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
 			</li>
+			<li v-for="kivaCard in kivaCards" :key="kivaCard.id">
+				<kiva-card-item
+					:kiva-card="kivaCard"
+					@refreshtotals="$emit('refreshtotals', $event)"
+					@updating-totals="$emit('updating-totals', $event)"
+				/>
+			</li>
 			<li v-for="donation in donations" :key="donation.id">
 				<donation-item
 					:donation="donation"
@@ -24,6 +31,7 @@
 <script>
 import BasketItem from '@/components/Checkout/BasketItem';
 import DonationItem from '@/components/Checkout/DonationItem';
+import KivaCardItem from '@/components/Checkout/KivaCardItem';
 
 export default {
 	props: {
@@ -42,11 +50,16 @@ export default {
 					price: '0.00'
 				}
 			]
+		},
+		kivaCards: {
+			type: Array,
+			default: () => []
 		}
 	},
 	components: {
 		BasketItem,
-		DonationItem
+		DonationItem,
+		KivaCardItem
 	}
 };
 </script>
@@ -63,5 +76,4 @@ export default {
 .basket-items-list ul {
 	list-style-type: none;
 }
-
 </style>

@@ -74,6 +74,7 @@
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
+							:kiva-cards="kivaCards"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -202,6 +203,7 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
+			kivaCards: [],
 			redemption_credits: [],
 			totals: {},
 			updatingTotals: false,
@@ -246,6 +248,7 @@ export default {
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
+			this.kivaCards = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'KivaCard' });
 			this.redemption_credits = _filter(
 				_get(data, 'shop.basket.credits.values'),
 				{ __typename: 'Credit', creditType: 'redemption_code' }
@@ -296,7 +299,8 @@ export default {
 			return parseFloat(this.creditNeeded) > 0;
 		},
 		emptyBasket() {
-			if (this.loans.length === 0 && parseFloat(_get(this.donations, '[0].price')) === 0) {
+			if (this.loans.length === 0 && this.kivaCards.length === 0
+				&& parseFloat(_get(this.donations, '[0].price')) === 0) {
 				return true;
 			}
 			return false;
