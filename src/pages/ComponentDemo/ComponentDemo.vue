@@ -61,9 +61,24 @@
 					of repayment risk on Kiva.</p>
 				</kv-lightbox>
 
+				<br>
+
+				<hr>
+				<h4>Sample ToolTips</h4>
+				<p>What is an Experimental Field <span
+					class="tooltip"
+					id="tooltip-demo-1">Partner?</span></p>
+				<kv-tooltip controller="tooltip-demo-1">
+					<h2 slot="title">What is an Experimental Field Partner?</h2>
+					<p>If a Field Partner is labeled as Experimental, this means that Kiva has
+					required only a comparatively light level of due diligence and
+					monitoring, in exchange for only allowing this Field Partner access to a
+					small amount of funding through Kiva at any given time.</p>
+				</kv-tooltip>
+				<br>
+
 				<hr>
 				<br>
-				<a href="/ui-site-map">Return to Ui Site Map</a>
 				<router-link to="/ui-site-map">Return to Ui Site Map</router-link>
 				<br>
 			</div>
@@ -74,11 +89,13 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvTooltip from '@/components/Kv/KvTooltip';
 
 export default {
 	components: {
 		WwwPage,
-		KvLightbox
+		KvLightbox,
+		KvTooltip
 	},
 	inject: ['apollo'], // TipMsg Global Mixin requires apollo
 	metaInfo: {
@@ -110,6 +127,11 @@ export default {
 
 .page-content {
 	padding: 1.625rem 0;
+}
+
+
+.tooltip {
+	border-bottom: 2px solid palevioletred;
 }
 </style>
 
