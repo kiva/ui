@@ -205,6 +205,7 @@ export default {
 			donations: [],
 			kivaCards: [],
 			redemption_credits: [],
+			hasFreeCredits: false,
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
@@ -229,7 +230,7 @@ export default {
 				// check for free credit, bonus credit or lending rewards and redirect if present
 				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
-				if (hasFreeCredits) {
+				if (hasFreeCredits && typeof window === 'undefined') {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
@@ -253,6 +254,7 @@ export default {
 				_get(data, 'shop.basket.credits.values'),
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
+			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
 		}
@@ -275,6 +277,11 @@ export default {
 		// Run our validate items method once in the client on page load
 		if (this.isLoggedIn) {
 			this.validatePreCheckout();
+		}
+
+		// check for free credits
+		if (this.hasFreeCredits) {
+			this.refreshTotals('kiva-card-applied');
 		}
 	},
 	computed: {
@@ -374,7 +381,7 @@ export default {
 					}
 					this.redirectLbVisible = true;
 					// automatically redirect to legacy after 7 seconds
-					window.setTimeout(this.redirectToLegacy(), 7000);
+					window.setTimeout(this.redirectToLegacy, 7000);
 				} else {
 					this.setUpdatingTotals(false);
 				}
