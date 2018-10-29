@@ -224,6 +224,7 @@ export default {
 
 .donation-tagline {
 	color: $gray;
+	margin-bottom: 5px;
 }
 
 .donation-help-text {
