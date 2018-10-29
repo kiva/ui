@@ -1,19 +1,26 @@
 <template>
-	<div class="tooltip-pane"
-		:class="{'is-open': show}"
-		:style="styles"
-		:aria-hidden="show ? 'false' : 'true'">
-		<slot name="title"></slot>
-		<slot></slot>
-	</div>
+	<transition name="fade">
+		<div class="tooltip-pane popper"
+			:style="styles"
+			:aria-hidden="show ? 'false' : 'true'"
+			v-show="show">
+			<div class="tooltip-content">
+				<div class="title-slot">
+					<slot name="title"></slot>
+				</div>
+				<div class="default-slot">
+					<slot></slot>
+				</div>
+			</div>
+			<div class="tooltip-arrow" x-arrow=""></div>
+		</div>
+	</transition>
 </template>
 
 <script>
 import Popper from 'popper.js';
 import _map from 'lodash/map';
-// may be able to pass down a query as a prop if needed
-// - If dynamic data is required it would be good to wrap this component
-// import dropdownQuery from '@/graphql/query/dropdown.graphql';
+import dropdownQuery from '@/graphql/query/shared/usingTouchClient.graphql';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
@@ -21,7 +28,7 @@ import {
 } from '@/util/touchEvents';
 
 export default {
-	// inject: ['apollo'],
+	inject: ['apollo'],
 	props: {
 		controller: { type: String, required: true },
 		openDelay: { type: Number, default: 0 },
@@ -41,12 +48,12 @@ export default {
 			return document.getElementById(this.controller);
 		},
 	},
-	// apollo: {
-	// 	query: dropdownQuery,
-	// 	result({ data }) {
-	// 		this.usingTouch = data.usingTouch;
-	// 	}
-	// },
+	apollo: {
+		query: dropdownQuery,
+		result({ data }) {
+			this.usingTouch = data.usingTouch;
+		}
+	},
 	watch: {
 		usingTouch() {
 			if (this.usingTouch && this.popper) {
@@ -103,14 +110,13 @@ export default {
 			this.popper = new Popper(this.reference, this.$el, {
 				placement: 'top',
 				modifiers: {
-					// applyStyle: data => {
-					// 	this.styles = data.styles;
-					// 	this.setAttributes(data.attributes);
-					// },
-					preventOverflow: {
-						padding: 0,
+					applyStyle: data => {
+						this.styles = data.styles;
+						this.setAttributes(data.attributes);
 					},
-					offset: 15
+					preventOverflow: {
+						padding: 10,
+					}
 				}
 			});
 		},
@@ -165,20 +171,103 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
-@import 'foundation';
-/* @include foundation-dropdown; */
 
-.tooltip-pane {
-	display: none;
-	padding: 0.8rem 1rem;
-	background: lightblue;
-	max-width: 20rem;
-	border-radius: 0.25rem;
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.3s;
 }
 
-.tooltip-pane.is-open {
-	display: block;
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
+}
+
+.tooltip-pane {
+	position: absolute;
+	background: lightblue;
+	border-radius: rem-calc(3);
+	box-shadow: 0 0 1px rgba(25, 81, 130, 0.5);
+}
+
+.tooltip-content {
+	padding: 0.8rem 1rem;
+	max-width: rem-calc(250);
+	line-height: $small-text-line-height;
+}
+
+.tooltip-content .title-slot {
+	font-weight: 800;
+	margin-bottom: 0.5rem;
+}
+
+.tooltip-arrow {
+	width: 0;
+	height: 0;
+	border-style: solid;
+	position: absolute;
+	margin: 8px;
+	border-color: lightblue;
+}
+
+.tooltip-pane[x-placement^="top"] {
+	margin-bottom: 8px;
+}
+
+.tooltip-pane[x-placement^="top"] .tooltip-arrow {
+	border-width: 8px 8px 0 8px;
+	border-left-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+	bottom: -8px;
+	left: calc(50% - 8px);
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.tooltip-pane[x-placement^="bottom"] {
+	margin-top: 8px;
+}
+
+.tooltip-pane[x-placement^="bottom"] .tooltip-arrow {
+	border-width: 0 8px 8px 8px;
+	border-left-color: transparent;
+	border-right-color: transparent;
+	border-top-color: transparent;
+	top: -8px;
+	left: calc(50% - 8px);
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.tooltip-pane[x-placement^="right"] {
+	margin-left: 8px;
+}
+
+.tooltip-pane[x-placement^="right"] .tooltip-arrow {
+	border-width: 8px 8px 8px 0;
+	border-left-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+	left: -8px;
+	top: calc(50% - 8px);
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.tooltip-pane[x-placement^="left"] {
+	margin-right: 8px;
+}
+
+.tooltip-pane[x-placement^="left"] .tooltip-arrow {
+	border-width: 8px 0 8px 8px;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+	right: -8px;
+	top: calc(50% - 8px);
+	margin-left: 0;
+	margin-right: 0;
 }
 </style>

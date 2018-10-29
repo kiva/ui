@@ -67,13 +67,13 @@
 				<h4>Sample ToolTips</h4>
 				<p>What is an Experimental Field <span
 					class="tooltip"
-					id="tooltip-demo-1">Partner?</span></p>
+					id="tooltip-demo-1">Partner</span>?</p>
 				<kv-tooltip controller="tooltip-demo-1">
-					<h2 slot="title">What is an Experimental Field Partner?</h2>
-					<p>If a Field Partner is labeled as Experimental, this means that Kiva has
+					<template slot="title">What is an Experimental Field Partner?</template>
+					If a Field Partner is labeled as Experimental, this means that Kiva has
 					required only a comparatively light level of due diligence and
 					monitoring, in exchange for only allowing this Field Partner access to a
-					small amount of funding through Kiva at any given time.</p>
+					small amount of funding through Kiva at any given time.
 				</kv-tooltip>
 				<br>
 
@@ -129,9 +129,8 @@ export default {
 	padding: 1.625rem 0;
 }
 
-
 .tooltip {
-	border-bottom: 2px solid palevioletred;
+	border-bottom: 2px solid lightblue;
 }
 </style>
 
