@@ -38,12 +38,9 @@
 							<p class="social-callout">We won’t ever post without asking.</p>
 
 							<div v-if="showReg" class="login-reg-switch">
-								<!-- FECK 196 redirect existing users to legacy basket -->
-								<!-- TODO: replace href with @click.prevent="switchToLogin" for existing users -->
-								<!-- TODO: revert event to v-kv-track-event="['register', 'alreadyMemberLnk']" -->
 								<p>Already have an account? <br><a
-									href="/basket?kexpn=checkout_beta.minimal_checkout&kexpv=a"
-									v-kv-track-event="['basket', 'sign in click', 'exit to legacy']"
+									@click.prevent="switchToLogin"
+									v-kv-track-event="['Register', 'alreadyMemberLnk']"
 									id="loginLink">Sign in</a></p>
 							</div>
 
