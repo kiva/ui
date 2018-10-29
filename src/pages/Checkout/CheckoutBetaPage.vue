@@ -40,7 +40,7 @@
 							<div v-if="showReg" class="login-reg-switch">
 								<p>Already have an account? <br><a
 									@click.prevent="switchToLogin"
-									to v-kv-track-event="['Register', 'alreadyMemberLnk']"
+									v-kv-track-event="['Register', 'alreadyMemberLnk']"
 									id="loginLink">Sign in</a></p>
 							</div>
 
