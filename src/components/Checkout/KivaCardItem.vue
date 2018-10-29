@@ -155,12 +155,17 @@ export default {
 }
 
 .kiva-card-info {
+	line-height: 0.8;
 	font-weight: $global-weight-highlight;
 }
 
 .sub-text-container {
 	color: $gray;
 	font-weight: $global-weight-normal;
+}
+
+.sub-text-container div.small-text {
+	margin: 5px 0;
 }
 
 .edit-pencil-icon {
