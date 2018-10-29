@@ -224,6 +224,7 @@ export default {
 .remove-wrapper {
 	display: inline-block;
 	margin-left: rem-calc(56);
+	cursor: pointer;
 
 	@include breakpoint(medium) {
 		margin-left: rem-calc(10);
@@ -247,6 +248,7 @@ export default {
 	color: $charcoal;
 	font-size: $medium-text-font-size;
 	font-weight: $global-weight-highlight;
+	cursor: pointer;
 
 	@include breakpoint(medium) {
 		height: inherit;
