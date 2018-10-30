@@ -174,6 +174,8 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$arrow-border-width: rem-calc(14);
+
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity 0.3s;
@@ -208,66 +210,66 @@ export default {
 	height: 0;
 	border-style: solid;
 	position: absolute;
-	margin: 14px;
+	margin: $arrow-border-width;
 	border-color: $aqua-medium-green;
 }
 
 .tooltip-pane[x-placement^="top"] {
-	margin-bottom: 14px;
+	margin-bottom: $arrow-border-width;
 }
 
 .tooltip-pane[x-placement^="top"] .tooltip-arrow {
-	border-width: 14px 14px 0 14px;
+	border-width: $arrow-border-width $arrow-border-width 0 $arrow-border-width;
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	bottom: -14px;
-	left: calc(50% - 14px);
+	bottom: -$arrow-border-width;
+	left: calc(50% - #{$arrow-border-width});
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
 .tooltip-pane[x-placement^="bottom"] {
-	margin-top: 14px;
+	margin-top: $arrow-border-width;
 }
 
 .tooltip-pane[x-placement^="bottom"] .tooltip-arrow {
-	border-width: 0 14px 14px 14px;
+	border-width: 0 $arrow-border-width $arrow-border-width $arrow-border-width;
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-top-color: transparent;
-	top: -14px;
-	left: calc(50% - 14px);
+	top: -$arrow-border-width;
+	left: calc(50% - #{$arrow-border-width});
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
 .tooltip-pane[x-placement^="right"] {
-	margin-left: 14px;
+	margin-left: $arrow-border-width;
 }
 
 .tooltip-pane[x-placement^="right"] .tooltip-arrow {
-	border-width: 14px 14px 14px 0;
+	border-width: $arrow-border-width $arrow-border-width $arrow-border-width 0;
 	border-left-color: transparent;
 	border-top-color: transparent;
 	border-bottom-color: transparent;
-	left: -14px;
-	top: calc(50% - 14px);
+	left: -$arrow-border-width;
+	top: calc(50% - #{$arrow-border-width});
 	margin-left: 0;
 	margin-right: 0;
 }
 
 .tooltip-pane[x-placement^="left"] {
-	margin-right: 14px;
+	margin-right: $arrow-border-width;
 }
 
 .tooltip-pane[x-placement^="left"] .tooltip-arrow {
-	border-width: 14px 0 14px 14px;
+	border-width: $arrow-border-width 0 $arrow-border-width $arrow-border-width;
 	border-top-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	right: -14px;
-	top: calc(50% - 14px);
+	right: -$arrow-border-width;
+	top: calc(50% - #{$arrow-border-width});
 	margin-left: 0;
 	margin-right: 0;
 }
