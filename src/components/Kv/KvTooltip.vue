@@ -186,20 +186,21 @@ export default {
 
 .tooltip-pane {
 	position: absolute;
-	background: lightblue;
+	background: $aqua-light-green;
 	border-radius: rem-calc(3);
-	box-shadow: 0 0 1px rgba(25, 81, 130, 0.5);
+	box-shadow: 0 2px 0 rgba(196, 231, 219, 0.8);
+	border: 1px solid $aqua-medium-green;
 }
 
 .tooltip-content {
-	padding: 0.8rem 1rem;
+	padding: 1rem;
 	max-width: rem-calc(250);
-	line-height: $small-text-line-height;
+	line-height: 1.4;
 }
 
 .tooltip-content .title-slot {
 	font-weight: 800;
-	margin-bottom: 0.5rem;
+	margin-bottom: 0.75rem;
 }
 
 .tooltip-arrow {
@@ -207,66 +208,66 @@ export default {
 	height: 0;
 	border-style: solid;
 	position: absolute;
-	margin: 8px;
-	border-color: lightblue;
+	margin: 14px;
+	border-color: $aqua-medium-green;
 }
 
 .tooltip-pane[x-placement^="top"] {
-	margin-bottom: 8px;
+	margin-bottom: 14px;
 }
 
 .tooltip-pane[x-placement^="top"] .tooltip-arrow {
-	border-width: 8px 8px 0 8px;
+	border-width: 14px 14px 0 14px;
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	bottom: -8px;
-	left: calc(50% - 8px);
+	bottom: -14px;
+	left: calc(50% - 14px);
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
 .tooltip-pane[x-placement^="bottom"] {
-	margin-top: 8px;
+	margin-top: 14px;
 }
 
 .tooltip-pane[x-placement^="bottom"] .tooltip-arrow {
-	border-width: 0 8px 8px 8px;
+	border-width: 0 14px 14px 14px;
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-top-color: transparent;
-	top: -8px;
-	left: calc(50% - 8px);
+	top: -14px;
+	left: calc(50% - 14px);
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
 .tooltip-pane[x-placement^="right"] {
-	margin-left: 8px;
+	margin-left: 14px;
 }
 
 .tooltip-pane[x-placement^="right"] .tooltip-arrow {
-	border-width: 8px 8px 8px 0;
+	border-width: 14px 14px 14px 0;
 	border-left-color: transparent;
 	border-top-color: transparent;
 	border-bottom-color: transparent;
-	left: -8px;
-	top: calc(50% - 8px);
+	left: -14px;
+	top: calc(50% - 14px);
 	margin-left: 0;
 	margin-right: 0;
 }
 
 .tooltip-pane[x-placement^="left"] {
-	margin-right: 8px;
+	margin-right: 14px;
 }
 
 .tooltip-pane[x-placement^="left"] .tooltip-arrow {
-	border-width: 8px 0 8px 8px;
+	border-width: 14px 0 14px 14px;
 	border-top-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	right: -8px;
-	top: calc(50% - 8px);
+	right: -14px;
+	top: calc(50% - 14px);
 	margin-left: 0;
 	margin-right: 0;
 }
