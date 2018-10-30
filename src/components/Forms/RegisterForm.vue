@@ -290,13 +290,12 @@ export default {
 				this.$router.push(this.doneUrl);
 			}
 
-			// Parent component code should show the form if user isn't yet registered
-			// - A failed attempt to register will still refresh the page
-			// refresh the page if true
+			// refresh the page if true + reg did not fail
 			if (this.refresh && !this.regFailed) {
 				// set loading state while page refreshes
 				this.setLoading(true);
-				window.location = window.location;
+				const connector = window.location.search === '' ? '?' : '&';
+				window.location = `${window.location}${connector}register=success`;
 			}
 		},
 		extractError(url) {
