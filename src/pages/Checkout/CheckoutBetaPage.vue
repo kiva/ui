@@ -267,16 +267,16 @@ export default {
 
 		// Check for some page content customizations based on query
 		if (this.$route.query
-			// force login form with ?login=true
+			// use when arriving directly to force showing the login form for with ?login=true
 			&& (this.$route.query.login === 'true'
-			// show login welcome message with ?login=success
+			// The login form refreshes the page with ?login=success, used to show login welcome message
 			|| this.$route.query.login === 'success')) {
 			this.preCheckoutStep = 'login';
 			this.switchToLogin();
 		} else if (this.$route.query
-			// force register form with ?register=true
+			// use when arriving directly to force register form with ?register=true
 			&& (this.$route.query.register === 'true'
-			// show register welcome message with ?register=success
+			// The register form refreshes the page with ?register=success, used to show register welcome message
 			|| this.$route.query.register === 'success')) {
 			this.preCheckoutStep = 'register';
 			this.switchToRegister();
