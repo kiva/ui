@@ -61,7 +61,7 @@
 							<span v-else>Welcome back!</span><br>
 							Please continue below to complete your purchase.</p>
 					</div>
-					<div v-if="!preCheckoutStep" class="pre-login-rule"><hr></div>
+					<div v-if="isLoggedIn && !preCheckoutStep" class="pre-login-rule"><hr></div>
 				</div>
 
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
