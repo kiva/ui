@@ -3,7 +3,7 @@
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
 				<div v-if="!emptyBasket" class="login-wrap">
-					<div v-if="preCheckoutStep" class="checkout-step">
+					<div v-if="!isLoggedIn || preCheckoutStep" class="checkout-step">
 						<hr>
 						<span class="number-icon number-1">1</span>
 					</div>
@@ -66,7 +66,7 @@
 
 				<div v-if="!emptyBasket" class="basket-wrap">
 					<div>
-						<div v-if="!emptyBasket && preCheckoutStep" class="checkout-step">
+						<div v-if="!emptyBasket && !isLoggedIn || preCheckoutStep" class="checkout-step">
 							<hr>
 							<span class="number-icon number-2">2</span>
 						</div>
