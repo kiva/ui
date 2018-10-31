@@ -151,7 +151,7 @@
 				</li>
 			</ul>
 		</kv-dropdown>
-		<kv-dropdown :controller="myKivaMenuId" v-if="!isVisitor" class="dropdown-list">
+		<kv-dropdown :controller="myKivaMenuId" v-if="!isVisitor" class="dropdown-list" id="my-kiva-dropdown">
 			<ul>
 				<template v-if="isBorrower">
 					<li>
