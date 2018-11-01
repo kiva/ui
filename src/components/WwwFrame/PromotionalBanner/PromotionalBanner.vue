@@ -1,5 +1,5 @@
 <template>
-	<component :is="currentActivePromo" :bonus-balance="bonusBalance" />
+	<component :is="currentActivePromo" :bonus-balance="bonusBalance" class="legacy-promo" />
 </template>
 
 <script>
@@ -10,7 +10,7 @@ import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
 import GiftBanner from './Banners/GiftBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
-import DefaultPromoBanner from './Banners/DefaultPromoBanner';
+// import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 
 export default {
 	inject: ['apollo'],
@@ -19,7 +19,7 @@ export default {
 			bonusBalance: 0,
 			lendingRewardOffered: false,
 			holidayModeEnabled: false,
-			promoEnabled: false,
+			// promoEnabled: false,
 		};
 	},
 	computed: {
@@ -30,9 +30,10 @@ export default {
 				return BonusBanner;
 			} else if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
 				return GiftBanner;
-			} else if (this.promoEnabled) {
-				return DefaultPromoBanner;
 			}
+			//  else if (this.promoEnabled) {
+			// 	return DefaultPromoBanner;
+			// }
 		}
 	},
 	apollo: {
@@ -52,12 +53,12 @@ export default {
 				'general.holiday_end_time.value'
 			);
 
-			this.promoEnabled = settingEnabled(
-				data,
-				'general.promo_enabled.value',
-				'general.promo_start_time.value',
-				'general.promo_end_time.value'
-			);
+			// this.promoEnabled = settingEnabled(
+			// 	data,
+			// 	'general.promo_enabled.value',
+			// 	'general.promo_start_time.value',
+			// 	'general.promo_end_time.value'
+			// );
 		}
 	},
 };

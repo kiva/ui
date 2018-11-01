@@ -10,7 +10,15 @@
 <style lang="scss">
 @import 'settings';
 
-.default-promo-banner {
+.global-promo.default-promo-banner {
+	@include breakpoint(xxlarge) {
+		br.xxlu {
+			display: none;
+		}
+	}
+}
+
+.legacy-promo.default-promo-banner {
 	display: block;
 	color: $kiva-accent-green;
 	font-weight: 700;

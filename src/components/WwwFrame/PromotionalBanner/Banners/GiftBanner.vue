@@ -21,7 +21,62 @@ export default {
 <style lang='scss'>
 @import 'settings';
 
-.gift-banner {
+.global-promo.gift-banner {
+	display: flex;
+	align-items: center;
+	padding: 0.4rem;
+
+	.kiva-card-icon {
+		display: inherit;
+		height: rem-calc(30);
+		width: rem-calc(40);
+		transform: rotate(-10deg);
+		fill: $kiva-green;
+
+		@include breakpoint(small) {
+			margin-right: 0.5rem;
+		}
+	}
+
+	.content {
+		display: inherit;
+		padding: 0;
+
+		// @include breakpoint(medium) {
+		// 	transform: translateY(-38%);
+		// 	padding: 0;
+		// }
+	}
+
+	// non flex styles
+
+	// .kiva-card-icon {
+	// 	height: rem-calc(30);
+	// 	width: rem-calc(40);
+	// 	transform: rotate(-10deg);
+	// 	margin-top: 0.325rem;
+	// 	fill: $kiva-green;
+
+	// 	@include breakpoint(small) {
+	// 		margin-right: 0.3125rem;
+	// 	}
+	// }
+
+	// .content {
+	// 	@include breakpoint(medium) {
+	// 		transform: translateY(-38%);
+	// 		padding: 0;
+	// 	}
+	// }
+
+	@include breakpoint(xxlarge) {
+		br.xxlu {
+			display: none;
+		}
+	}
+}
+
+.legacy-promo.gift-banner {
 	display: block;
 	color: $kiva-accent-green;
 	background-color: $kiva-darkgreen;
@@ -69,7 +124,7 @@ export default {
 }
 
 @include breakpoint(xxlarge) {
-	.gift-banner {
+	.legacy-promo.gift-banner {
 		background-color: $kiva-green;
 		margin-left: 1px;
 	}
