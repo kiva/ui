@@ -78,11 +78,12 @@
 							name="password"
 							v-model="password"
 							class="reg-password"
-							@blur="validatePassword(password)"
-							@keyup="passwordStrength(password)">
+							@blur="validatePassword(password)">
 						<div id="password-strength-meter">
 							<span class="strength-meter"
-								:style="{width: passwordStrength + '%'}"></span>
+								:style="passwordStrength"
+								:class="passwordClass">
+							</span>
 						</div>
 					</div>
 				</label>
@@ -185,8 +186,7 @@ export default {
 			expVersion: '',
 			expName: '',
 			showFirstName: true,
-			showLastName: true,
-			passwordLength: 0
+			showLastName: true
 		};
 	},
 	apollo: {
@@ -345,12 +345,28 @@ export default {
 	computed: {
 		passwordStrength() {
 			const passwordLength = this.password.length;
-			let passwordStrength = (passwordLength / 8) * 100;
-			if (passwordLength >= 8) {
-				passwordStrength = 100;
-			}
+			const passwordStrength = (passwordLength / 8) * 100;
+			const styleObject = { width: 0 };
+			styleObject.width = `${passwordStrength}%`;
 
-			return passwordStrength;
+			// if paswordLength is 8 character or longer, color the password strength meter green
+			if (passwordLength >= 8) {
+				styleObject.width = '100%';
+			}
+			return styleObject;
+		},
+		passwordClass() {
+			const passwordLength = this.password.length;
+
+			// if paswordLength is 8 character or longer, color the password strength meter green
+			if (passwordLength >= 8) {
+				return 'pw-meter-green';
+			}
+			// if passwordLength is greater than 5 color password strength meter yellow
+			if (passwordLength > 5) {
+				return 'pw-meter-yellow';
+			}
+			return 'pw-meter-red';
 		}
 	},
 };
@@ -399,9 +415,20 @@ $loan-card-meter-height: rem-calc(8);
 
 		.strength-meter {
 			border-radius: $loan-card-meter-height;
-			background-color: $kiva-green;
 			display: block;
 			height: 100%;
+		}
+
+		.pw-meter-red {
+			background-color: $red;
+		}
+
+		.pw-meter-yellow {
+			background-color: $vivid-yellow;
+		}
+
+		.pw-meter-green {
+			background-color: $green;
 		}
 	}
 
