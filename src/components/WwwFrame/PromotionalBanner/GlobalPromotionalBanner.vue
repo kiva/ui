@@ -1,9 +1,7 @@
 <template>
 	<div class="global-promo-bar">
-		<div class="row align-center">
-			<!-- <component :is="currentActivePromo" :bonus-balance="bonusBalance" /> -->
-			<component :is="currentActivePromo" class="global-promo" />
-		</div>
+		<!-- <component :is="currentActivePromo" :bonus-balance="bonusBalance" /> -->
+		<component :is="currentActivePromo" />
 	</div>
 </template>
 
@@ -25,6 +23,7 @@ export default {
 			// lendingRewardOffered: false,
 			holidayModeEnabled: false,
 			promoEnabled: false,
+			someVar: 'sayit'
 		};
 	},
 	computed: {
@@ -39,6 +38,9 @@ export default {
 			} else if (this.promoEnabled) {
 				return DefaultPromoBanner;
 			}
+		},
+		textlength() {
+			return this.someVar.length;
 		}
 	},
 	apollo: {
@@ -75,17 +77,19 @@ export default {
 .global-promo-bar {
 	background: white;
 	font-weight: 300;
-	color: $kiva-green;
+	color: $kiva-icon-green;
 
 	.row {
 		margin: 0;
 		max-width: 100%;
 	}
 
-	a {
-		color: $kiva-green;
+	.banner-link {
+		color: $kiva-icon-green;
 		text-decoration: none;
 		text-align: center;
+		padding: 0.625rem;
+		line-height: 1.25;
 
 		&:hover,
 		&:active {
@@ -95,13 +99,7 @@ export default {
 
 	.content {
 		text-align: center;
-		display: inline-block;
-		line-height: 1.25;
-		padding: 0.4rem 0;
-
-		@include breakpoint(medium) {
-			padding: 0.2rem 0;
-		}
+		display: block;
 	}
 
 	.call-to-action-text {

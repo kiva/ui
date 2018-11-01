@@ -1,5 +1,7 @@
 <template functional>
-	<div class="content lending-rewards-banner">
+	<div
+		class="content lending-rewards-banner"
+		v-kv-track-event="['TopNav','click-Promo','Lending Reward Banner']">
 		Make a Kiva loan <br class="so xxlu">and receive a $25 free credit to lend again.
 	</div>
 </template>

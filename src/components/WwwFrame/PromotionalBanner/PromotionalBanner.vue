@@ -5,10 +5,10 @@
 <script>
 import numeral from 'numeral';
 import _get from 'lodash/get';
-import { settingEnabled } from '@/util/settingsUtils';
+// import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
-import GiftBanner from './Banners/GiftBanner';
+// import GiftBanner from './Banners/GiftBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
 // import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 
@@ -18,7 +18,7 @@ export default {
 		return {
 			bonusBalance: 0,
 			lendingRewardOffered: false,
-			holidayModeEnabled: false,
+			// holidayModeEnabled: false,
 			// promoEnabled: false,
 		};
 	},
@@ -28,9 +28,10 @@ export default {
 				return LendingRewardsBanner;
 			} else if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
 				return BonusBanner;
-			} else if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
-				return GiftBanner;
 			}
+			//  else if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
+			// 	return GiftBanner;
+			// }
 			//  else if (this.promoEnabled) {
 			// 	return DefaultPromoBanner;
 			// }
@@ -46,12 +47,12 @@ export default {
 
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 
-			this.holidayModeEnabled = settingEnabled(
-				data,
-				'general.holiday_enabled.value',
-				'general.holiday_start_time.value',
-				'general.holiday_end_time.value'
-			);
+			// this.holidayModeEnabled = settingEnabled(
+			// 	data,
+			// 	'general.holiday_enabled.value',
+			// 	'general.holiday_start_time.value',
+			// 	'general.holiday_end_time.value'
+			// );
 
 			// this.promoEnabled = settingEnabled(
 			// 	data,
