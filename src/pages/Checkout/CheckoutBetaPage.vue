@@ -665,4 +665,8 @@ export default {
 .basket-bar {
 	display: none;
 }
+
+.global-promo-bar {
+	display: none;
+}
 </style>
