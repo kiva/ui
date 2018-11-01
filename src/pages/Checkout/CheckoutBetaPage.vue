@@ -89,6 +89,8 @@
 
 						<hr>
 
+						<div v-if="holidayModeEnabled">Holiday Placeholder</div>
+
 						<order-totals
 							:totals="totals"
 							@refreshtotals="refreshTotals"
@@ -174,6 +176,8 @@ import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import { settingEnabled } from '@/util/settingsUtils';
+import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 
 export default {
 	components: {
@@ -217,6 +221,7 @@ export default {
 			preCheckoutStep: '',
 			preValidationErrors: [],
 			redirectLbVisible: false,
+			holidayModeEnabled: false,
 		};
 	},
 	apollo: {
@@ -300,6 +305,13 @@ export default {
 		if (this.hasFreeCredits) {
 			this.refreshTotals('kiva-card-applied');
 		}
+
+		this.holidayModeEnabled = settingEnabled(
+			this.apollo.readQuery({ query: promoQuery }),
+			'general.holiday_enabled.value',
+			'general.holiday_start_time.value',
+			'general.holiday_end_time.value'
+		);
 	},
 	computed: {
 		isLoggedIn() {
@@ -436,7 +448,7 @@ export default {
 		redirectLbClosed() {
 			this.redirectLbVisible = false;
 		}
-	}
+	},
 };
 </script>
 
