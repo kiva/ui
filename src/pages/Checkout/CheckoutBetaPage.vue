@@ -89,7 +89,10 @@
 
 						<hr>
 
-						<div v-if="holidayModeEnabled">Holiday Placeholder</div>
+						<div class="checkout-holiday-promo" v-if="holidayModeEnabled">
+							<kv-icon name="present" class="holiday-present-icon"/>
+							<div>Give hope this holiday season. <a href="#">Add a $25 Kiva card to your cart.</a></div>
+						</div>
 
 						<order-totals
 							:totals="totals"
@@ -178,6 +181,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
@@ -191,7 +195,8 @@ export default {
 		FacebookLoginRegister,
 		BasketItemsList,
 		KivaCardRedemption,
-		LoadingOverlay
+		LoadingOverlay,
+		KvIcon,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -664,6 +669,24 @@ export default {
 
 			.unhovered {
 				display: none;
+			}
+		}
+
+		// Holiday Promo
+		.checkout-holiday-promo {
+			@include breakpoint(medium) {
+				margin: $list-side-margin $list-side-margin 2rem;
+			}
+
+			display: flex;
+			align-items: center;
+			padding: 0 rem-calc(90);
+
+			.holiday-present-icon {
+				height: 1.25rem;
+				width: 1.25rem;
+				stroke-width: rem-calc(0.5);
+				margin-right: 0.75rem;
 			}
 		}
 	}
