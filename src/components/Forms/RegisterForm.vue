@@ -71,20 +71,19 @@
 
 			<div class="input-set">
 				<label for="password">Password
-					<div v-if="showMeteredPassword">
-						<metered-password
-							name="password"
-							v-model="password"
-							class="reg-password"
-							:secure-length="8" />
-					</div>
-					<div v-else>
+					<div>
 						<input
 							id="password"
 							type="password"
 							name="password"
 							v-model="password"
-							class="reg-password">
+							class="reg-password"
+							@blur="validatePassword(password)"
+							@keyup="passwordStrength(password)">
+						<div id="password-strength-meter">
+							<span class="strength-meter"
+								:style="{width: passwordStrength + '%'}"></span>
+						</div>
 					</div>
 				</label>
 				<p v-if="passwordErrors.length">
@@ -150,7 +149,6 @@ import formValidate from '@/plugins/formValidate';
 export default {
 	components: {
 		KvButton,
-		MeteredPassword: () => import('vue-password-strength-meter/dist/vue-password-strength-meter.min'),
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -168,7 +166,7 @@ export default {
 		refresh: {
 			type: Boolean,
 			default: false
-		},
+		}
 	},
 	data() {
 		return {
@@ -183,12 +181,12 @@ export default {
 			email: '',
 			password: '',
 			terms: false,
-			showMeteredPassword: false,
 			pwEventsBound: false,
 			expVersion: '',
 			expName: '',
 			showFirstName: true,
-			showLastName: true
+			showLastName: true,
+			passwordLength: 0
 		};
 	},
 	apollo: {
@@ -223,22 +221,6 @@ export default {
 	},
 	mounted() {
 		this.currUrl = window.location.href;
-		// activate metered password component
-		this.showMeteredPassword = true;
-	},
-	updated() {
-		// when the dom updates, check that showMeteredPassword is true
-		if (this.showMeteredPassword) {
-			// if so on next tick bind the blur events
-			this.$nextTick(() => {
-				if (document.getElementById('password') && !this.pwEventsBound) {
-					// flipping this switch will ensure events aren't repeatedly bound
-					// TODO: find a better way to detect this element and apply events
-					this.pwEventsBound = true;
-					this.bindMeteredPasswordEvents();
-				}
-			});
-		}
 	},
 	methods: {
 		register() {
@@ -319,14 +301,6 @@ export default {
 			}
 			return errorArray;
 		},
-		bindMeteredPasswordEvents() {
-			const passwordInput = document.getElementById('password');
-			// Hooked directly into DOM events because the library we're using
-			// (vue-password-strength-meter) doesn't allow us access to the blur event we needed.
-			passwordInput.addEventListener('blur', e => {
-				this.validatePassword(e.target.value);
-			});
-		},
 		setLoading(state) {
 			this.loading = state;
 			this.$emit('reg-loading', state);
@@ -367,12 +341,24 @@ export default {
 				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expVersion);
 			}
 		}
-	}
+	},
+	computed: {
+		passwordStrength() {
+			const passwordLength = this.password.length;
+			let passwordStrength = (passwordLength / 8) * 100;
+			if (passwordLength >= 8) {
+				passwordStrength = 100;
+			}
+
+			return passwordStrength;
+		}
+	},
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
+$loan-card-meter-height: rem-calc(8);
 
 .register-form {
 	.server-errors,
@@ -404,34 +390,19 @@ export default {
 		}
 	}
 
-	// https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors
-	.reg-password >>> .Password__badge {
-		height: rem-calc(19) !important;
-	}
+	#password-strength-meter {
+		height: $loan-card-meter-height;
+		width: 100%;
+		margin: 0 0 rem-calc(8);
+		border-radius: $loan-card-meter-height;
+		background-color: $kiva-stroke-gray;
 
-	.reg-password >>> .Password__strength-meter {
-		height: 0.4375rem;
-		border-radius: rem-calc(8);
-	}
-
-	.reg-password >>> .Password__badge--success {
-		background: $green;
-	}
-
-	.reg-password >>> .Password__strength-meter::before,
-	.reg-password >>> .Password__strength-meter::after {
-		display: none;
-	}
-
-	.reg-password >>> .Password__strength-meter--fill[data-score="0"],
-	.reg-password >>> .Password__strength-meter--fill[data-score="1"],
-	.reg-password >>> .Password__strength-meter--fill[data-score="2"] {
-		background: $kiva-accent-red;
-	}
-
-	.reg-password >>> .Password__strength-meter--fill[data-score="3"],
-	.reg-password >>> .Password__strength-meter--fill[data-score="4"] {
-		background: $green;
+		.strength-meter {
+			border-radius: $loan-card-meter-height;
+			background-color: $kiva-green;
+			display: block;
+			height: 100%;
+		}
 	}
 
 	.register-button {
