@@ -680,11 +680,13 @@ export default {
 
 			display: flex;
 			align-items: center;
-			padding: 0 rem-calc(90);
+			padding-left: rem-calc(90);
+			padding-right: 1.25rem;
 
 			.holiday-present-icon {
 				height: 1.25rem;
 				width: 1.25rem;
+				flex-shrink: 0;
 				stroke-width: rem-calc(0.5);
 				margin-right: 0.75rem;
 			}
