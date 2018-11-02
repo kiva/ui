@@ -4,7 +4,7 @@
 			<kv-icon name="present" class="present-icon"/>
 			<div class="content">
 				Give hope this holiday season.<br class="so">
-				<span class="call-to-action-text">Give a Kiva gift</span>
+				<span class="call-to-action-text">Give a Kiva Card</span>
 			</div>
 		</router-link>
 	</div>
