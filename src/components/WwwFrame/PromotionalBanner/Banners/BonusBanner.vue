@@ -1,5 +1,8 @@
 <template functional>
-	<router-link to="/lend/freeCreditEligible" class="bonus-banner">
+	<router-link
+		to="/lend/freeCreditEligible"
+		class="bonus-banner"
+		v-kv-track-event="['TopNav','click-Promo','Bonus Banner']">
 		<div class="content">
 			<span class="leading-text">Select a borrower to</span> <br class="so xxlu">
 			<span class="call-to-action-text">

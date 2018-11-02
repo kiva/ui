@@ -1,28 +1,13 @@
 <template functional>
-	<router-link to="/lend/refugees-and-i-d-ps" class="default-promo-banner">
-		<div class="content">
-			World Refugee Day is June 20 <br class="smo xxlu">
-			<span class="call-to-action-text">Help refugees find hope beyond crisis.</span>
-		</div>
-	</router-link>
+	<div class="row align-center default-banner">
+		<router-link
+			to="/lend/refugees-and-i-d-ps"
+			class="banner-link"
+			v-kv-track-event="['TopNav','click-Promo','Default Banner']">
+			<div class="content">
+				World Refugee Day is June 20 <br class="smo">
+				<span class="call-to-action-text">Help refugees find hope beyond crisis.</span>
+			</div>
+		</router-link>
+	</div>
 </template>
-
-<style lang="scss">
-@import 'settings';
-
-.default-promo-banner {
-	display: block;
-	color: $kiva-accent-green;
-	font-weight: 700;
-	background-color: $kiva-darkgreen;
-
-	&:hover,
-	&:active {
-		color: $kiva-accent-green;
-	}
-
-	@include breakpoint(xxlarge) {
-		background: transparent;
-	}
-}
-</style>

@@ -1,16 +1,13 @@
 <template>
-	<component :is="currentActivePromo" :bonus-balance="bonusBalance" />
+	<component :is="currentActivePromo" :bonus-balance="bonusBalance" class="legacy-promo" />
 </template>
 
 <script>
 import numeral from 'numeral';
 import _get from 'lodash/get';
-import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
-import GiftBanner from './Banners/GiftBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
-import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 
 export default {
 	inject: ['apollo'],
@@ -18,8 +15,6 @@ export default {
 		return {
 			bonusBalance: 0,
 			lendingRewardOffered: false,
-			holidayModeEnabled: false,
-			promoEnabled: false,
 		};
 	},
 	computed: {
@@ -28,10 +23,6 @@ export default {
 				return LendingRewardsBanner;
 			} else if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
 				return BonusBanner;
-			} else if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
-				return GiftBanner;
-			} else if (this.promoEnabled) {
-				return DefaultPromoBanner;
 			}
 		}
 	},
@@ -44,20 +35,6 @@ export default {
 			this.bonusBalance = promoBalance + basketPromoBalance;
 
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
-
-			this.holidayModeEnabled = settingEnabled(
-				data,
-				'general.holiday_enabled.value',
-				'general.holiday_start_time.value',
-				'general.holiday_end_time.value'
-			);
-
-			this.promoEnabled = settingEnabled(
-				data,
-				'general.promo_enabled.value',
-				'general.promo_start_time.value',
-				'general.promo_end_time.value'
-			);
 		}
 	},
 };
