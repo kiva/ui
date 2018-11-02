@@ -24,7 +24,7 @@ export default {
 @import 'settings';
 
 .gift-banner {
-	background-image: url('../../../../assets/images/backgrounds/tipbar-bg-small.jpg');
+	background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
 	background-position: bottom;
 
 	.banner-link {
