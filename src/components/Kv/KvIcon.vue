@@ -191,7 +191,8 @@ export default {
 	fill: $kiva-icon-green;
 }
 
-.icon-woman {
+.icon-woman,
+.icon-present {
 	stroke: $kiva-icon-green;
 }
 

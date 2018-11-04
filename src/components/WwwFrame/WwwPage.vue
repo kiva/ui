@@ -1,6 +1,7 @@
 <template>
 	<div class="www-page">
 		<appeal-banner />
+		<global-promo />
 		<the-header />
 		<slot name="secondary"></slot>
 		<main>
@@ -17,6 +18,7 @@ import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import AppealBanner from './AppealBanner';
+import GlobalPromo from './PromotionalBanner/GlobalPromotionalBanner';
 
 export default {
 	components: {
@@ -24,6 +26,7 @@ export default {
 		TheFooter,
 		TheBasketBar,
 		AppealBanner,
+		GlobalPromo
 	}
 };
 </script>

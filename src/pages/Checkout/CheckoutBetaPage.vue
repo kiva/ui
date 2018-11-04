@@ -3,7 +3,7 @@
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
 				<div v-if="!emptyBasket" class="login-wrap">
-					<div class="checkout-step">
+					<div v-if="!isLoggedIn || preCheckoutStep" class="checkout-step">
 						<hr>
 						<span class="number-icon number-1">1</span>
 					</div>
@@ -55,15 +55,18 @@
 						<loading-overlay v-if="loginLoading" id="loading-overlay" />
 					</div>
 
-					<div v-else class="login-reg-complete">
-						<p class="featured-text">Thanks for registering!<br>
+					<div v-else class="login-reg-complete" :class="{'pre-login': !preCheckoutStep}">
+						<p class="featured-text">
+							<span v-if="preCheckoutStep === 'register'">Thanks for registering!</span>
+							<span v-else>Welcome back!</span><br>
 							Please continue below to complete your purchase.</p>
 					</div>
+					<div v-if="isLoggedIn && !preCheckoutStep" class="pre-login-rule"><hr></div>
 				</div>
 
-				<div v-if="!emptyBasket" class="basket-wrap">
+				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
-						<div v-if="!emptyBasket" class="checkout-step">
+						<div v-if="!emptyBasket && !isLoggedIn || preCheckoutStep" class="checkout-step">
 							<hr>
 							<span class="number-icon number-2">2</span>
 						</div>
@@ -261,6 +264,23 @@ export default {
 		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
 			this.switchToLogin();
 		}
+
+		// Check for some page content customizations based on query
+		if (this.$route.query
+			// use when arriving directly to force showing the login form for with ?login=true
+			&& (this.$route.query.login === 'true'
+			// The login form refreshes the page with ?login=success, used to show login welcome message
+			|| this.$route.query.login === 'success')) {
+			this.preCheckoutStep = 'login';
+			this.switchToLogin();
+		} else if (this.$route.query
+			// use when arriving directly to force register form with ?register=true
+			&& (this.$route.query.register === 'true'
+			// The register form refreshes the page with ?register=success, used to show register welcome message
+			|| this.$route.query.register === 'success')) {
+			this.preCheckoutStep = 'register';
+			this.switchToRegister();
+		}
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -404,18 +424,6 @@ export default {
 		overlayMouseover() {
 			this.isHovered = !this.isHovered;
 		},
-		// Called from beforeRouteEnter with query param object
-		updatePreCheckoutStep(query) {
-			// Force showing either Login or Reg Form
-			if (query && query.login === 'true') {
-				this.preCheckoutStep = 'login';
-				this.switchToLogin();
-			} else if (query && query.register === 'true') {
-				this.preCheckoutStep = 'register';
-				this.switchToRegister();
-			}
-			// TODO: FUTURE hide Reg or Login form if user is already logged in
-		},
 		redirectToLegacy() {
 			this.$router.push({
 				path: '/basket',
@@ -428,12 +436,7 @@ export default {
 		redirectLbClosed() {
 			this.redirectLbVisible = false;
 		}
-	},
-	beforeRouteEnter(to, from, next) {
-		next(vm => {
-			vm.updatePreCheckoutStep(to.query);
-		});
-	},
+	}
 };
 </script>
 
@@ -456,12 +459,16 @@ export default {
 		bottom: 0;
 	}
 
+	.pre-login #updating-overlay {
+		margin-top: 0;
+	}
+
 	.checkout-step {
 		position: relative;
 		text-align: center;
 		height: 2rem;
 		display: block;
-		margin: 1rem 0 1.5rem;
+		margin: 1rem 0 2rem;
 
 		hr {
 			border-bottom: 1px solid $light-gray;
@@ -488,6 +495,10 @@ export default {
 
 	.login-wrap {
 		padding-bottom: 2.5rem;
+
+		.pre-login-rule hr {
+			margin-bottom: 0;
+		}
 	}
 
 	.login-reg-holder {
@@ -558,6 +569,11 @@ export default {
 		p {
 			text-align: center;
 			color: $kiva-text-light;
+			margin: 0;
+		}
+
+		&.pre-login {
+			padding: 2rem 0;
 		}
 	}
 
@@ -647,6 +663,10 @@ export default {
 
 // Hide Basket Bar (this won't work with scoped)
 .basket-bar {
+	display: none;
+}
+
+.global-promo-bar {
 	display: none;
 }
 </style>

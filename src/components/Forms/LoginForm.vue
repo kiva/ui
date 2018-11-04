@@ -211,13 +211,12 @@ export default {
 				this.$router.push(this.doneUrl);
 			}
 
-			// Parent component code should show the form if user isn't yet logged in
-			// - A failed attempt to login will still refresh the page
-			// refresh the page if true
+			// refresh the page if true + login didn't fail
 			if (this.refresh && !this.loginFailed) {
 				// set loading state while page refreshes
 				this.setLoading(true);
-				window.location = window.location;
+				const connector = window.location.search === '' ? '?' : '&';
+				window.location = `${window.location}${connector}login=success`;
 			}
 		},
 		setLoading(state) {
