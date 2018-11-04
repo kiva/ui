@@ -1,172 +1,40 @@
 <template>
-	<transition name="fade">
-		<div class="tooltip-pane popper"
-			:style="styles"
-			:aria-hidden="show ? 'false' : 'true'"
-			v-show="show">
-			<div class="tooltip-content">
-				<div class="title-slot">
-					<slot name="title"></slot>
-				</div>
-				<div class="default-slot">
-					<slot></slot>
-				</div>
+	<kv-popper
+		:controller="controller"
+		:popper-modifiers="popperModifiers"
+		popper-placement="top"
+		transition-type="kvfastfade"
+		class="tooltip-pane">
+		<div class="tooltip-content">
+			<div class="title-slot">
+				<slot name="title"></slot>
 			</div>
-			<div class="tooltip-arrow" x-arrow=""></div>
+			<div class="default-slot">
+				<slot></slot>
+			</div>
 		</div>
-	</transition>
+		<div class="tooltip-arrow" x-arrow=""></div>
+	</kv-popper>
 </template>
 
 <script>
-import Popper from 'popper.js';
-import _map from 'lodash/map';
-import dropdownQuery from '@/graphql/query/shared/usingTouchClient.graphql';
-import {
-	onBodyTouchstart,
-	offBodyTouchstart,
-	isTargetElement,
-} from '@/util/touchEvents';
+import KvPopper from '@/components/Kv/KvPopper';
 
 export default {
-	inject: ['apollo'],
+	components: {
+		KvPopper
+	},
 	props: {
 		controller: { type: String, required: true },
-		openDelay: { type: Number, default: 0 },
-		closeDelay: { type: Number, default: 200 },
 	},
 	data() {
 		return {
-			popper: null,
-			styles: {},
-			show: false,
-			timeout: null,
-			usingTouch: false,
+			popperModifiers: {
+				preventOverflow: {
+					padding: 10,
+				}
+			}
 		};
-	},
-	computed: {
-		reference() {
-			return document.getElementById(this.controller);
-		},
-	},
-	apollo: {
-		query: dropdownQuery,
-		result({ data }) {
-			this.usingTouch = data.usingTouch;
-		}
-	},
-	watch: {
-		usingTouch() {
-			if (this.usingTouch && this.popper) {
-				this.removeMouseEvents();
-			}
-		},
-		show(showing) {
-			if (this.reference) {
-				this.reference.setAttribute('aria-expanded', showing ? 'true' : 'false');
-			}
-			this.$emit(showing ? 'show' : 'hide');
-		},
-	},
-	mounted() {
-		this.initPopper();
-		this.attachEvents();
-	},
-	updated() {
-		if (this.popper) {
-			this.popper.scheduleUpdate();
-		}
-	},
-	beforeDestroy() {
-		this.removeEvents();
-		if (this.popper) {
-			this.popper.destroy();
-		}
-	},
-	methods: {
-		open() {
-			this.setTimeout(() => {
-				this.show = true;
-				if (this.usingTouch) {
-					this.attachBodyEvents();
-				}
-			}, this.openDelay);
-		},
-		close() {
-			this.setTimeout(() => {
-				this.show = false;
-				if (this.usingTouch) {
-					this.removeBodyEvents();
-				}
-			}, this.closeDelay);
-		},
-		toggle() {
-			if (this.show) {
-				this.close();
-			} else {
-				this.open();
-			}
-		},
-		initPopper() {
-			this.popper = new Popper(this.reference, this.$el, {
-				placement: 'top',
-				modifiers: {
-					applyStyle: data => {
-						this.styles = data.styles;
-						this.setAttributes(data.attributes);
-					},
-					preventOverflow: {
-						padding: 10,
-					}
-				}
-			});
-		},
-		bodyTouchHandler(e) {
-			if (!isTargetElement(e, [this.reference, this.$el])) {
-				this.show = false;
-				this.removeBodyEvents();
-			}
-		},
-		referenceTapHandler(e) {
-			e.preventDefault();
-			this.toggle();
-		},
-		attachEvents() {
-			this.reference.addEventListener('mouseover', this.open);
-			this.reference.addEventListener('mouseout', this.close);
-			this.$el.addEventListener('mouseover', this.open);
-			this.$el.addEventListener('mouseout', this.close);
-			this.reference.addEventListener('touchstart', this.referenceTapHandler);
-		},
-		attachBodyEvents() {
-			onBodyTouchstart(this.bodyTouchHandler);
-		},
-		removeEvents() {
-			this.removeMouseEvents();
-			this.removeBodyEvents();
-			this.reference.removeEventListener('touchstart', this.referenceTapHandler);
-		},
-		removeMouseEvents() {
-			this.reference.removeEventListener('mouseover', this.open);
-			this.reference.removeEventListener('mouseover', this.close);
-			this.$el.removeEventListener('mouseover', this.open);
-			this.$el.removeEventListener('mouseout', this.close);
-		},
-		removeBodyEvents() {
-			offBodyTouchstart(this.bodyTouchHandler);
-		},
-		setAttributes(attrs) {
-			_map(attrs, (value, attr) => {
-				if (value === false) {
-					this.$el.removeAttribute(attr);
-				} else {
-					this.$el.setAttribute(attr, value);
-				}
-			});
-		},
-		setTimeout(fn, delay) {
-			window.clearTimeout(this.timeout);
-			this.timeout = window.setTimeout(fn, delay);
-		}
 	},
 };
 </script>
@@ -175,16 +43,6 @@ export default {
 @import 'settings';
 
 $arrow-border-width: rem-calc(14);
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
-	opacity: 0;
-}
 
 .tooltip-pane {
 	position: absolute;

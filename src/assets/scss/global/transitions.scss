@@ -11,3 +11,13 @@
 .kvfade-leave-to {
 	opacity: 0;
 }
+
+.kvfastfade-enter-active,
+.kvfastfade-leave-active {
+	transition: opacity 0.5s;
+}
+
+.kvfastfade-enter,
+.kvfastfade-leave-to {
+	opacity: 0;
+}
