@@ -121,7 +121,7 @@ export default {
 					if (changeType === 'remove') {
 						updatedPrice = 0;
 					} else {
-						updatedPrice = numeral(this.selectedOption).format('0,0.00');
+						updatedPrice = numeral(this.selectedOption).format('0.00');
 					}
 					this.apollo.mutate({
 						mutation: updateLoanAmount,
