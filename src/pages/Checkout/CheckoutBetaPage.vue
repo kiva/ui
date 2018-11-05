@@ -89,7 +89,7 @@
 
 						<hr>
 
-						<div class="checkout-holiday-promo" v-if="holidayModeEnabled">
+						<div class="checkout-holiday-promo" v-if="holidayModeEnabled && !hasKivaCardInBasket">
 							<kv-icon name="present" class="holiday-present-icon"/>
 							<div>Give hope this holiday season.
 								<a
@@ -353,6 +353,9 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		hasKivaCardInBasket() {
+			return this.kivaCards.length > 0;
 		},
 	},
 	methods: {
