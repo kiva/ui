@@ -48,7 +48,7 @@
 					<!-- Print Kiva Card -->
 					<span v-if="cardType == 'print'">
 						<div class="small-text">Available after checkout</div>
-						<div class="small-text">For {{ recipientName }}</div>
+						<div class="small-text" v-if="recipientName">For {{ recipientName }}</div>
 					</span>
 					<!-- Postal Kiva Card -->
 					<span v-if="cardType == 'postal'">

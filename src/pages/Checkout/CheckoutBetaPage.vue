@@ -89,7 +89,7 @@
 
 						<hr>
 
-						<div class="checkout-holiday-promo" v-if="holidayModeEnabled && !hasKivaCardInBasket">
+						<div class="checkout-holiday-promo" v-if="holidayModeEnabled">
 							<kv-icon name="present" class="holiday-present-icon"/>
 							<div>Give hope this holiday season.
 								<a
@@ -220,7 +220,7 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
-			kivaCards: [],
+			kivaCards: () => [],
 			redemption_credits: [],
 			hasFreeCredits: false,
 			totals: {},
@@ -469,13 +469,13 @@ export default {
 			this.apollo.mutate({
 				mutation: shopAddOnePrintKivaCard,
 			}).then(({ data }) => {
-				this.setUpdatingTotals(false);
 				if (!data.shop || !data.shop.addOnePrintKivaCard) {
 					console.error(data);
+					this.setUpdatingTotals(false);
 					return;
 				}
 				this.$kvTrackEvent('promo', 'click', 'BasketKCUpsell');
-				this.refreshTotals();
+				window.location.reload();
 			}).catch(error => {
 				console.error(error);
 				this.setUpdating(false);
