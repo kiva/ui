@@ -91,7 +91,14 @@
 
 						<div class="checkout-holiday-promo" v-if="holidayModeEnabled">
 							<kv-icon name="present" class="holiday-present-icon"/>
-							<div>Give hope this holiday season. <a href="#">Add a $25 Kiva card to your cart.</a></div>
+							<div>Give hope this holiday season.
+								<a
+									href="#"
+									@click.prevent.stop="addOnePrintKivaCard()"
+								>
+									Add a $25 Kiva card to your cart.
+								</a>
+							</div>
 						</div>
 
 						<order-totals
@@ -182,6 +189,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
+import shopAddOnePrintKivaCard from '@/graphql/mutation/shopAddOnePrintKivaCard.graphql';
 
 export default {
 	components: {
@@ -452,7 +460,24 @@ export default {
 		},
 		redirectLbClosed() {
 			this.redirectLbVisible = false;
-		}
+		},
+		addOnePrintKivaCard() {
+			this.setUpdatingTotals(true);
+			this.apollo.mutate({
+				mutation: shopAddOnePrintKivaCard,
+			}).then(({ data }) => {
+				this.setUpdatingTotals(false);
+				if (!data.shop || !data.shop.addOnePrintKivaCard) {
+					console.error(data);
+					return;
+				}
+				this.$kvTrackEvent('promo', 'click', 'BasketKCUpsell');
+				this.refreshTotals();
+			}).catch(error => {
+				console.error(error);
+				this.setUpdating(false);
+			});
+		},
 	},
 };
 </script>
