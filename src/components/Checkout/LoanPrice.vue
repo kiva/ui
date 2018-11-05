@@ -105,7 +105,7 @@ export default {
 			} else if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element
 				const priceArray = ['25', '30', '50', '75', '100', '150', '200', '250', '300', '400',
-					'500', '750', '1000', '2000'];
+					'500', '750', '1,000', '2,000'];
 				return priceArray;
 			}
 		}
