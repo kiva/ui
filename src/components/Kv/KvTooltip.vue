@@ -13,7 +13,7 @@
 				<slot></slot>
 			</div>
 		</div>
-		<div class="tooltip-arrow" x-arrow=""></div>
+		<div class="tooltip-arrow" x-arrow=""><div class="tooltip-inner-arrow"></div></div>
 	</kv-popper>
 </template>
 
@@ -24,6 +24,7 @@ export default {
 	components: {
 		KvPopper
 	},
+	// TODO: Add prop for tooltip placement, Currently defaults to 'top' but will flip to bottom when constrained
 	props: {
 		controller: { type: String, required: true },
 	},
@@ -42,14 +43,18 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-$arrow-border-width: rem-calc(14);
+$tooltip-border-width: 1;
+$arrow-width: 14;
+$outer-arrow-width: rem-calc($arrow-width);
+$inner-arrow-width: rem-calc($arrow-width - 2);
+$inner-arrow-offset: rem-calc($arrow-width - 1);
 
 .tooltip-pane {
 	position: absolute;
 	background: $aqua-light-green;
 	border-radius: rem-calc(3);
 	box-shadow: 0 2px 0 rgba(196, 231, 219, 0.8);
-	border: 1px solid $aqua-medium-green;
+	border: #{$tooltip-border-width}px solid $aqua-medium-green;
 }
 
 .tooltip-content {
@@ -68,66 +73,103 @@ $arrow-border-width: rem-calc(14);
 	height: 0;
 	border-style: solid;
 	position: absolute;
-	margin: $arrow-border-width;
+	margin: $outer-arrow-width;
 	border-color: $aqua-medium-green;
 }
 
+.tooltip-inner-arrow {
+	width: 0;
+	height: 0;
+	border-style: solid;
+	position: absolute;
+	margin: $outer-arrow-width;
+	border-color: $aqua-light-green;
+}
+
+/* Top Tooltip Arrow appears on Bottom */
 .tooltip-pane[x-placement^="top"] {
-	margin-bottom: $arrow-border-width;
+	margin-bottom: $outer-arrow-width;
 }
 
 .tooltip-pane[x-placement^="top"] .tooltip-arrow {
-	border-width: $arrow-border-width $arrow-border-width 0 $arrow-border-width;
+	border-width: $outer-arrow-width $outer-arrow-width 0 $outer-arrow-width;
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	bottom: -$arrow-border-width;
-	left: calc(50% - #{$arrow-border-width});
+	bottom: -$outer-arrow-width;
+	left: calc(50% - #{$outer-arrow-width});
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
+.tooltip-pane[x-placement^="top"] .tooltip-inner-arrow {
+	border-width: $inner-arrow-width $inner-arrow-width 0 $inner-arrow-width;
+	border-left-color: transparent;
+	border-right-color: transparent;
+	border-bottom-color: transparent;
+	bottom: calc(#{$tooltip-border-width} * 2px);
+	left: calc(-#{$inner-arrow-offset} * 2);
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* Bottom Tooltip Arrow appears on Top */
 .tooltip-pane[x-placement^="bottom"] {
-	margin-top: $arrow-border-width;
+	margin-top: $outer-arrow-width;
 }
 
 .tooltip-pane[x-placement^="bottom"] .tooltip-arrow {
-	border-width: 0 $arrow-border-width $arrow-border-width $arrow-border-width;
+	border-width: 0 $outer-arrow-width $outer-arrow-width $outer-arrow-width;
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-top-color: transparent;
-	top: -$arrow-border-width;
-	left: calc(50% - #{$arrow-border-width});
+	top: -$outer-arrow-width;
+	left: calc(50% - #{$outer-arrow-width});
 	margin-top: 0;
 	margin-bottom: 0;
 }
 
+.tooltip-pane[x-placement^="bottom"] .tooltip-inner-arrow {
+	border-width: 0 $inner-arrow-width $inner-arrow-width $inner-arrow-width;
+	border-left-color: transparent;
+	border-right-color: transparent;
+	border-top-color: transparent;
+	top: calc(#{$tooltip-border-width} * 2px);
+	left: calc(-#{$inner-arrow-offset} * 2);
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* TODO: TWEAK Inner Arrow Styles for Left + Right Orientations */
+
+/* Right Side Tooltip, Arrow appears on Left */
 .tooltip-pane[x-placement^="right"] {
-	margin-left: $arrow-border-width;
+	margin-left: $outer-arrow-width;
 }
 
 .tooltip-pane[x-placement^="right"] .tooltip-arrow {
-	border-width: $arrow-border-width $arrow-border-width $arrow-border-width 0;
+	border-width: $outer-arrow-width $outer-arrow-width $outer-arrow-width 0;
 	border-left-color: transparent;
 	border-top-color: transparent;
 	border-bottom-color: transparent;
-	left: -$arrow-border-width;
-	top: calc(50% - #{$arrow-border-width});
+	left: -$outer-arrow-width;
+	top: calc(50% - #{$outer-arrow-width});
 	margin-left: 0;
 	margin-right: 0;
 }
 
+/* Left Side Tooltip, Arrow appears on Right */
 .tooltip-pane[x-placement^="left"] {
-	margin-right: $arrow-border-width;
+	margin-right: $outer-arrow-width;
 }
 
 .tooltip-pane[x-placement^="left"] .tooltip-arrow {
-	border-width: $arrow-border-width 0 $arrow-border-width $arrow-border-width;
+	border-width: $outer-arrow-width 0 $outer-arrow-width $outer-arrow-width;
 	border-top-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	right: -$arrow-border-width;
-	top: calc(50% - #{$arrow-border-width});
+	right: -$outer-arrow-width;
+	top: calc(50% - #{$outer-arrow-width});
 	margin-left: 0;
 	margin-right: 0;
 }
