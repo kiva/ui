@@ -9,5 +9,15 @@ mutation updateLoanReservation($loanid: Int!, $price: Money!) {
 			price
 		}
 	}
+	my {
+		lender {
+			teams{
+				values {
+					name
+					id
+				}
+			}
+		}
+	}
 }
 
