@@ -220,7 +220,7 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
-			kivaCards: () => [],
+			kivaCards: [],
 			redemption_credits: [],
 			hasFreeCredits: false,
 			totals: {},
