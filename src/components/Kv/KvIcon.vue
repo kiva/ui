@@ -203,4 +203,10 @@ export default {
 .icon-screen {
 	fill: black;
 }
+
+.icon-present {
+	stroke: $kiva-icon-green;
+	fill: $kiva-icon-green;
+	color: $kiva-icon-green;
+}
 </style>

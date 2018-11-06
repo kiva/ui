@@ -1,0 +1,5 @@
+mutation shopAddOnePrintKivaCard {
+	shop {
+		addOnePrintKivaCard
+	}
+}
