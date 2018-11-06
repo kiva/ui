@@ -299,6 +299,13 @@ export default {
 			this.preCheckoutStep = 'register';
 			this.switchToRegister();
 		}
+
+		this.holidayModeEnabled = settingEnabled(
+			this.apollo.readQuery({ query: promoQuery }),
+			'general.holiday_enabled.value',
+			'general.holiday_start_time.value',
+			'general.holiday_end_time.value'
+		);
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -318,13 +325,6 @@ export default {
 		if (this.hasFreeCredits) {
 			this.refreshTotals('kiva-card-applied');
 		}
-
-		this.holidayModeEnabled = settingEnabled(
-			this.apollo.readQuery({ query: promoQuery }),
-			'general.holiday_enabled.value',
-			'general.holiday_start_time.value',
-			'general.holiday_end_time.value'
-		);
 	},
 	computed: {
 		isLoggedIn() {
