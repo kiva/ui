@@ -2,8 +2,7 @@
 	<div class="team-select-wrapper">
 		<div class="team-select">
 			<select
-				dir="rtl"
-				:v-model="team"
+				:v-model="selectedId"
 				class="team-select-dd medium-text-font-size"
 				@change="updateLoanAmount()">
 				<option v-for="team in teams"
@@ -29,6 +28,8 @@ export default {
 	},
 	data() {
 		return {
+			selectedId: null,
+			teamMember: false
 		};
 	},
 	methods: {
@@ -62,12 +63,12 @@ export default {
 
 .team-select {
 	float: left;
+	max-width: 250px;
 }
 
 .team-select-dd {
 	border: 1px solid $charcoal;
 	min-width: rem-calc(90);
-	// width: rem-calc(132);
 	border-radius: $button-radius;
 	height: rem-calc(50);
 	background-image: url('../../assets/images/customDropdown.png');

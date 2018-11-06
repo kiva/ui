@@ -21,6 +21,7 @@
 					:expiry-time="loan.expiryTime"
 				/>
 				<team-attribution
+					v-if="teams.length"
 					:teams="teams"
 				/>
 			</span>
