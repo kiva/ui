@@ -3,7 +3,7 @@
 		<div class="team-select">
 			<select
 				:v-model="selectedId"
-				class="team-select-dd medium-text-font-size"
+				class="team-select-dd small-text"
 				@change="updateLoanAmount()">
 				<option v-for="team in teams"
 					:key="team.id"
@@ -51,41 +51,29 @@ export default {
 	white-space: nowrap;
 }
 
-.remove-wrapper {
-	display: inline-block;
-	margin-left: rem-calc(56);
-	cursor: pointer;
-
-	@include breakpoint(medium) {
-		margin-left: rem-calc(10);
-	}
-}
-
 .team-select {
 	float: left;
 	max-width: 250px;
 }
 
 .team-select-dd {
-	border: 1px solid $charcoal;
-	min-width: rem-calc(90);
+	border: 1px solid $gray;
 	border-radius: $button-radius;
-	height: rem-calc(50);
+	// I'm a little aprehensive to set this lower than 45px as
+	// that's the smallest standard height for an interactive element
+	height: rem-calc(40);
 	background-image: url('../../assets/images/customDropdown.png');
 	background-size: 2rem 2rem;
-	text-indent: 1.6rem;
-	color: $charcoal;
-	font-size: $medium-text-font-size;
+	text-indent: 0.02rem;
+	color: $dark-gray;
 	font-weight: $global-weight-highlight;
 	cursor: pointer;
 
 	@include breakpoint(medium) {
-		height: inherit;
-		line-height: $medium-text-line-height;
-		font-size: inherit;
-		// width: rem-calc(90);
+		height: 24px;
+		padding: 0 1.5rem 0 0.5rem;
+		// line-height: $medium-text-line-height;
 		background-size: rem-calc(20) rem-calc(20);
-		text-indent: 0.5rem;
 	}
 }
 
@@ -101,17 +89,6 @@ export default {
 @supports (-ms-ime-align:auto) {
 	.team-select-dd {
 		background-position: right -1.2rem center;
-	}
-}
-
-.remove-x {
-	fill: $subtle-gray;
-	display: inline-block;
-	width: 1.1rem;
-	height: rem-calc(50);
-
-	@include breakpoint(medium) {
-		height: rem-calc(36);
 	}
 }
 </style>
