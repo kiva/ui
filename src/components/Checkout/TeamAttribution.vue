@@ -112,7 +112,7 @@ export default {
 	border: 1px solid $gray;
 	border-radius: $button-radius;
 	height: rem-calc(40);
-	background-image: url('../../assets/images/customDropdown.png');
+	background-image: url('../../assets/images/customDropdown999.png');
 	background-size: 2rem 2rem;
 	text-indent: 0.02rem;
 	color: $dark-gray;
