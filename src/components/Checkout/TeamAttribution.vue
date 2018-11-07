@@ -5,7 +5,7 @@
 				v-model="selectedId"
 				class="team-select-dd small-text"
 				@change="updateLoanReservation()">
-				<option value="0">Select team</option>
+				<option value="0">None</option>
 				<option v-for="team in teams"
 					:key="team.id"
 					:value="team.id">{{ team.name }}
@@ -54,7 +54,7 @@ export default {
 				this.$emit('updating-totals', true);
 				let updatedTeamId = numeral(this.selectedId).value();
 
-				if (this.selectedId === 0) {
+				if (updatedTeamId === 0) {
 					updatedTeamId = null;
 				}
 
@@ -105,14 +105,12 @@ export default {
 
 .team-select {
 	float: left;
-	max-width: 250px;
+	max-width: rem-calc(250);
 }
 
 .team-select-dd {
 	border: 1px solid $gray;
 	border-radius: $button-radius;
-	// I'm a little aprehensive to set this lower than 45px as
-	// that's the smallest standard height for an interactive element
 	height: rem-calc(40);
 	background-image: url('../../assets/images/customDropdown.png');
 	background-size: 2rem 2rem;
@@ -122,7 +120,7 @@ export default {
 	cursor: pointer;
 
 	@include breakpoint(medium) {
-		height: 24px;
+		height: rem-calc(24);
 		padding: 0 1.5rem 0 0.5rem;
 		background-size: rem-calc(20) rem-calc(20);
 	}
