@@ -5,7 +5,7 @@
 				dir="rtl"
 				v-model="selectedOption"
 				class="loan-price medium-text-font-size"
-				@change="updateLoanAmount()">
+				@change="updateLoanReservation()">
 				<option v-for="price in prices"
 					:key="price"
 					:value="price">${{ price }}
@@ -14,7 +14,7 @@
 		</div>
 		<div
 			class="remove-wrapper"
-			@click="updateLoanAmount('remove')"
+			@click="updateLoanReservation('remove')"
 		>
 			<kv-icon class="remove-x" name="small-x" />
 		</div>
@@ -24,7 +24,7 @@
 <script>
 import _union from 'lodash/union';
 import numeral from 'numeral';
-import updateLoanAmount from '@/graphql/mutation/updateLoanAmount.graphql';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
 import _forEach from 'lodash/forEach';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -111,7 +111,7 @@ export default {
 		}
 	},
 	methods: {
-		updateLoanAmount(changeType) {
+		updateLoanReservation(changeType) {
 			if (this.type === 'loan') {
 				if (this.selectedOption !== this.price) {
 					this.$emit('updating-totals', true);
@@ -124,7 +124,7 @@ export default {
 						updatedPrice = numeral(this.selectedOption).format('0,0.00');
 					}
 					this.apollo.mutate({
-						mutation: updateLoanAmount,
+						mutation: updateLoanReservation,
 						variables: {
 							loanid: this.loanId,
 							price: updatedPrice

@@ -2,9 +2,10 @@
 	<div class="team-select-wrapper">
 		<div class="team-select">
 			<select
-				:v-model="selectedId"
+				v-model="selectedId"
 				class="team-select-dd small-text"
-				@change="updateLoanAmount()">
+				@change="updateLoanReservation()">
+				<option value="0">Select team</option>
 				<option v-for="team in teams"
 					:key="team.id"
 					:value="team.id">{{ team.name }}
@@ -15,28 +16,79 @@
 </template>
 
 <script>
-// import updateLoanAmount from '@/graphql/mutation/updateLoanAmount.graphql';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import _forEach from 'lodash/forEach';
+import numeral from 'numeral';
 
 export default {
 	props: {
 		teams: {
 			type: Array,
 			default: () => []
-		}
+		},
+		teamId: {
+			type: Number,
+			default: null
+		},
+		price: {
+			type: String,
+			default: ''
+		},
+		loanId: {
+			type: Number,
+			default: null
+		},
 	},
 	components: {
 	},
+	inject: ['apollo'],
 	data() {
 		return {
-			selectedId: null,
-			teamMember: false
+			selectedId: this.teamId,
+			cachedId: null,
 		};
 	},
 	methods: {
-		updateLoanAmount() {
-			// if (this.team !== team) {
+		updateLoanReservation() {
+			if (this.selectedId !== this.loanId) {
+				this.$emit('updating-totals', true);
+				let updatedTeamId = numeral(this.selectedId).value();
 
-			// }
+				if (this.selectedId === 0) {
+					updatedTeamId = null;
+				}
+
+				this.apollo.mutate({
+					mutation: updateLoanReservation,
+					variables: {
+						teamId: updatedTeamId,
+						loanid: this.loanId,
+						price: this.price
+					}
+				}).then(data => {
+					console.log(`'right after then' ${updatedTeamId}`);
+					if (data.errors) {
+						_forEach(data.errors, ({ message }) => {
+							this.$showTipMsg(message, 'error');
+						});
+						this.$emit('updating-totals', false);
+						this.selectedId = this.cachedId;
+					} else {
+						console.log('update success');
+						this.$kvTrackEvent(
+							'basket',
+							'Update Team Loan Attribution',
+							this.selectedId === null ? 'Team Attribution Removed'
+								: 'Team Attribution Removal Success', this.selectedId.value()
+						);
+						this.$emit('refresh-totals', 'team-update');
+						this.cachedId = this.selectedId;
+					}
+				}).catch(error => {
+					console.error(error);
+					this.$emit('updating-totals', false);
+				});
+			}
 		}
 	}
 };
@@ -72,7 +124,6 @@ export default {
 	@include breakpoint(medium) {
 		height: 24px;
 		padding: 0 1.5rem 0 0.5rem;
-		// line-height: $medium-text-line-height;
 		background-size: rem-calc(20) rem-calc(20);
 	}
 }

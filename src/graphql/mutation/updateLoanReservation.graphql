@@ -10,7 +10,10 @@ mutation updateLoanReservation($loanid: Int!, $price: Money!, $donateRepayments:
 			id
 			price
 			donateRepayments
-			teamId
+			team {
+				id
+				name
+			}
 		}
 	}
 }
