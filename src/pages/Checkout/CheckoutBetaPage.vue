@@ -89,6 +89,18 @@
 
 						<hr>
 
+						<div class="checkout-holiday-promo" v-if="holidayModeEnabled">
+							<kv-icon name="present" class="holiday-present-icon"/>
+							<div>Give hope this holiday season.
+								<a
+									href="#"
+									@click.prevent.stop="addOnePrintKivaCard()"
+								>
+									Add a $25 Kiva card to your cart.
+								</a>
+							</div>
+						</div>
+
 						<order-totals
 							:totals="totals"
 							@refreshtotals="refreshTotals"
@@ -174,6 +186,10 @@ import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import { settingEnabled } from '@/util/settingsUtils';
+import promoQuery from '@/graphql/query/promotionalBanner.graphql';
+import KvIcon from '@/components/Kv/KvIcon';
+import shopAddOnePrintKivaCard from '@/graphql/mutation/shopAddOnePrintKivaCard.graphql';
 
 export default {
 	components: {
@@ -187,7 +203,8 @@ export default {
 		FacebookLoginRegister,
 		BasketItemsList,
 		KivaCardRedemption,
-		LoadingOverlay
+		LoadingOverlay,
+		KvIcon,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -217,6 +234,7 @@ export default {
 			preCheckoutStep: '',
 			preValidationErrors: [],
 			redirectLbVisible: false,
+			holidayModeEnabled: false,
 		};
 	},
 	apollo: {
@@ -281,6 +299,13 @@ export default {
 			this.preCheckoutStep = 'register';
 			this.switchToRegister();
 		}
+
+		this.holidayModeEnabled = settingEnabled(
+			this.apollo.readQuery({ query: promoQuery }),
+			'general.holiday_enabled.value',
+			'general.holiday_start_time.value',
+			'general.holiday_end_time.value'
+		);
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -328,6 +353,9 @@ export default {
 				return true;
 			}
 			return false;
+		},
+		hasKivaCardInBasket() {
+			return this.kivaCards.length > 0;
 		},
 	},
 	methods: {
@@ -435,8 +463,25 @@ export default {
 		},
 		redirectLbClosed() {
 			this.redirectLbVisible = false;
-		}
-	}
+		},
+		addOnePrintKivaCard() {
+			this.setUpdatingTotals(true);
+			this.apollo.mutate({
+				mutation: shopAddOnePrintKivaCard,
+			}).then(({ data }) => {
+				if (!data.shop || !data.shop.addOnePrintKivaCard) {
+					console.error(data);
+					this.setUpdatingTotals(false);
+					return;
+				}
+				this.$kvTrackEvent('promo', 'click', 'BasketKCUpsell');
+				window.location.reload();
+			}).catch(error => {
+				console.error(error);
+				this.setUpdating(false);
+			});
+		},
+	},
 };
 </script>
 
@@ -652,6 +697,26 @@ export default {
 
 			.unhovered {
 				display: none;
+			}
+		}
+
+		// Holiday Promo
+		.checkout-holiday-promo {
+			@include breakpoint(medium) {
+				margin: $list-side-margin $list-side-margin 2rem;
+			}
+
+			display: flex;
+			align-items: center;
+			padding-left: rem-calc(90);
+			padding-right: 1.25rem;
+
+			.holiday-present-icon {
+				height: 1.25rem;
+				width: 1.25rem;
+				flex-shrink: 0;
+				stroke-width: rem-calc(0.5);
+				margin-right: 0.75rem;
 			}
 		}
 	}
