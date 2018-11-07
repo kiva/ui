@@ -1,0 +1,18 @@
+query {
+	general {
+		salesforceSolution(id: "50150000000TCyi") {
+			name
+			note
+		}
+	}
+	my {
+		inviteCode: userSessionData(sessionKey: InviteSecurityCode) {
+			sessionKey
+			data
+		}
+		inviteParams: userSessionData(sessionKey: SocialInvitationParams) {
+			sessionKey
+			data
+		}
+	}
+}

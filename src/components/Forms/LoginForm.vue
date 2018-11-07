@@ -93,7 +93,7 @@ import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
+import LoginQuery from '@/graphql/query/loginQuery.graphql';
 import _get from 'lodash/get';
 import formValidate from '@/plugins/formValidate';
 
@@ -102,7 +102,7 @@ export default {
 		KvButton,
 		KvFacebookButton,
 		KvLightbox,
-		SalesforceHelpTextQuery,
+		LoginQuery,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -110,9 +110,10 @@ export default {
 		formValidate
 	],
 	apollo: {
-		query: SalesforceHelpTextQuery,
+		query: LoginQuery,
 		preFetch: true,
 		result({ data }) {
+			console.log(data);
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
 		},
 	},
