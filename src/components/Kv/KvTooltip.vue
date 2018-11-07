@@ -107,7 +107,7 @@ $inner-arrow-offset: rem-calc($arrow-width - 1);
 	border-left-color: transparent;
 	border-right-color: transparent;
 	border-bottom-color: transparent;
-	bottom: calc(#{$tooltip-border-width} * 2px);
+	bottom: calc(#{$tooltip-border-width} * 4px);
 	left: calc(-#{$inner-arrow-offset} * 2);
 	margin-top: 0;
 	margin-bottom: 0;
