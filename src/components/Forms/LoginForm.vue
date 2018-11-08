@@ -60,7 +60,6 @@
 						name="team"
 						v-model="selectedTeamId"
 						class="medium-text-font-size"
-						@change="updateLoanAmount()"
 					>
 						<option :value="teamId">{{ teamName }}</option>
 						<option value="">Not now</option>
@@ -147,7 +146,8 @@ export default {
 			const inviteParamsData = _get(data, 'general.inviteParams.data');
 			if (inviteParamsData) {
 				this.teamName = JSON.parse(inviteParamsData).team_name;
-				this.selectedTeamId = this.teamId = JSON.parse(inviteParamsData).team_id;
+				this.teamId = JSON.parse(inviteParamsData).team_id;
+				this.selectedTeamId = JSON.parse(inviteParamsData).team_id;
 			}
 		},
 	},
@@ -216,15 +216,19 @@ export default {
 		doLogin() {
 			this.$kvTrackEvent('Login', 'click-Login-submit', 'LoginButtonClick');
 
-			this.runTeamAnalytics();
 			if (this.validateForm() === true) {
 				this.setLoading(true);
+				this.runTeamAnalytics();
 				const formData = formDataEntries(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
 			}
 		},
 		runTeamAnalytics() {
-			console.log('analytics');
+			if (this.teamId && this.selectedTeamId) {
+				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'Yes');
+			} else {
+				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'No');
+			}
 		},
 		validateForm() {
 			this.validateEmail(this.email);
@@ -271,7 +275,7 @@ export default {
 		setLoading(state) {
 			this.loading = state;
 			this.$emit('login-loading', state);
-		}
+		},
 	},
 };
 </script>
