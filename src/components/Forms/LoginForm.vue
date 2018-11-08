@@ -57,11 +57,11 @@
 						What is this?
 					</a>
 					<select
-						name="team"
+						name="auto_join_default_team"
 						v-model="selectedTeamId"
 						class="medium-text-font-size"
 					>
-						<option :value="teamId">{{ teamName }}</option>
+						<option value="auto_join">{{ teamName }}</option>
 						<option value="">Not now</option>
 					</select>
 				</label>
