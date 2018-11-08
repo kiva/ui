@@ -25,7 +25,7 @@
 					:teams="teams"
 					:price="loan.price"
 					:loan-id="loan.id"
-					:team-id="loan.team.id"
+					:team-id="loan.team ? loan.team.id : null"
 				/>
 			</span>
 		</span>

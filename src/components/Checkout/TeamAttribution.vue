@@ -5,7 +5,7 @@
 				v-model="selectedId"
 				class="team-select-dd small-text"
 				@change="updateLoanReservation()">
-				<option value="0">None</option>
+				<option value="null">None</option>
 				<option v-for="team in teams"
 					:key="team.id"
 					:value="team.id">{{ team.name }}
@@ -52,11 +52,7 @@ export default {
 		updateLoanReservation() {
 			if (this.selectedId !== this.loanId) {
 				this.$emit('updating-totals', true);
-				let updatedTeamId = numeral(this.selectedId).value();
-
-				if (updatedTeamId === 0) {
-					updatedTeamId = null;
-				}
+				const updatedTeamId = numeral(this.selectedId).value();
 
 				this.apollo.mutate({
 					mutation: updateLoanReservation,
@@ -79,7 +75,7 @@ export default {
 							'basket',
 							'Update Team Loan Attribution',
 							this.selectedId === null ? 'Team Attribution Removed'
-								: 'Team Attribution Removal Success', this.selectedId.value()
+								: 'Team Attribution Removal Success', numeral(this.selectedId).value()
 						);
 						this.$emit('refresh-totals', 'team-update');
 						this.cachedId = this.selectedId;
@@ -125,6 +121,7 @@ export default {
 		height: rem-calc(24);
 		padding: 0 1.75rem 0 0.5rem;
 		background-size: rem-calc(20) rem-calc(20);
+		background-position: right -1.5rem center;
 	}
 }
 
