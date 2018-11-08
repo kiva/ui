@@ -81,19 +81,10 @@ export default {
 				const priceArray = this.buildShareArray(sharesBelowAmountLent);
 
 				// determine how many (if any) overall additional shares are remaining
-				let remainingShares = parseFloat(this.loanAmount) -
-					(parseFloat(this.fundedAmount) + parseFloat(this.reservedAmount));
+				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
 
 				// if we've met reserve ensure atleast this loan share is set
 				if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
-
-				// Limit to this.selectLimit in addition to current price
-				if (remainingShares > (parseInt(this.price, 10) + this.additionalSelctionLimit)) {
-					remainingShares = parseInt(this.price, 10) + this.additionalSelctionLimit;
-				}
-
-				// Institute an overall selection cap
-				if (remainingShares > this.overallSelectLimit) remainingShares = this.overallSelectLimit;
 
 				// add to available shares based on available remaining shares
 				const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
