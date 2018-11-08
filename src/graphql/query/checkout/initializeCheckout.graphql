@@ -7,15 +7,23 @@ query {
 			balance
 			promoBalance
 		}
-		lastActiveLogin: userSessionData(sessionKey: LastActiveLogin) {
-			sessionKey
-			data
+		lender {
+			teams{
+				values {
+					name
+					id
+				}
+			}
 		}
 	}
 	general {
 		activeLoginDuration: setting(setting: "config.login_timeouts.www.active_login") {
 			value
 			key
+		}
+		lastActiveLogin: userSessionData(sessionKey: LastActiveLogin) {
+			sessionKey
+			data
 		}
 	}
 	shop {

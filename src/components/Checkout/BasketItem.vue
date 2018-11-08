@@ -20,6 +20,13 @@
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
 				/>
+				<team-attribution
+					v-if="teams.length"
+					:teams="teams"
+					:price="loan.price"
+					:loan-id="loan.id"
+					:team-id="loan.team ? loan.team.id : null"
+				/>
 			</span>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
@@ -43,19 +50,25 @@ import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LoanPrice from '@/components/Checkout/LoanPrice';
+import TeamAttribution from '@/components/Checkout/TeamAttribution';
 
 export default {
 	components: {
 		CheckoutItemImg,
 		LoanMatcher,
 		LoanReservation,
-		LoanPrice
+		LoanPrice,
+		TeamAttribution
 	},
 	props: {
 		loan: {
 			type: Object,
 			default: () => {}
 		},
+		teams: {
+			type: Array,
+			default: () => []
+		}
 	},
 	data() {
 		return {

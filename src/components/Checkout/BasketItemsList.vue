@@ -4,6 +4,7 @@
 			<li v-for="loan in loans" :key="loan.id">
 				<basket-item
 					:loan="loan"
+					:teams="teams"
 					@validateprecheckout="$emit('validateprecheckout')"
 					@refreshtotals="$emit('refreshtotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -52,6 +53,10 @@ export default {
 			]
 		},
 		kivaCards: {
+			type: Array,
+			default: () => []
+		},
+		teams: {
 			type: Array,
 			default: () => []
 		}
