@@ -255,7 +255,7 @@ export default {
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 	.loan-price {
 		width: 100%;
-		background-position: left 3.5rem center;
+		background-position: left 3.8rem center;
 	}
 }
 
