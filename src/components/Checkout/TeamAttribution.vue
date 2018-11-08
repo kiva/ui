@@ -112,8 +112,10 @@ export default {
 	border: 1px solid $gray;
 	border-radius: $button-radius;
 	height: rem-calc(40);
-	background-image: url('../../assets/images/customDropdown999.png');
+	background-image: url('~@/assets/images/customDropdown999.png');
+	background-position: right -2.1rem center;
 	background-size: 2rem 2rem;
+	padding: 0 2.6rem 0 0.5rem;
 	text-indent: 0.02rem;
 	color: $dark-gray;
 	font-weight: $global-weight-highlight;
@@ -121,7 +123,7 @@ export default {
 
 	@include breakpoint(medium) {
 		height: rem-calc(24);
-		padding: 0 1.5rem 0 0.5rem;
+		padding: 0 1.75rem 0 0.5rem;
 		background-size: rem-calc(20) rem-calc(20);
 	}
 }
@@ -137,7 +139,7 @@ export default {
 // Media query targeting IE EDGE
 @supports (-ms-ime-align:auto) {
 	.team-select-dd {
-		background-position: right -1.2rem center;
+		background-position: right -1.75rem center;
 	}
 }
 </style>
