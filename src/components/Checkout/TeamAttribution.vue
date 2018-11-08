@@ -122,19 +122,4 @@ export default {
 		background-position: right -1.5rem center;
 	}
 }
-
-// Media query targeting IE 10+ only
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-	.team-select-dd {
-		width: 100%;
-		background-position: left 3.5rem center;
-	}
-}
-
-// Media query targeting IE EDGE
-@supports (-ms-ime-align:auto) {
-	.team-select-dd {
-		background-position: right -1.75rem center;
-	}
-}
 </style>
