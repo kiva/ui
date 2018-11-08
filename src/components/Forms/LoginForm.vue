@@ -90,8 +90,16 @@
 				<h2 slot="title">Join the team!</h2>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
-					By joining the {{ '~NAME~' }} team you can see your impact, interact with colleagues, and get more out of Kiva. What do you say?
+					By joining the {{ teamName }} team you can see your impact, interact with colleagues, and get more out of Kiva.
 				</p>
+				<div class="join-team-button-container">
+					<kv-button class="smaller secondary" @click.native.prevent="setJoinTeamButton(false)">
+						No Thanks
+					</kv-button>
+					<kv-button class="smaller" @click.native.prevent="setJoinTeamButton(true)">
+						Join Team
+					</kv-button>
+				</div>
 			</kv-lightbox>
 
 
@@ -144,7 +152,7 @@ export default {
 			console.log(data);
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
 			const inviteParamsData = _get(data, 'general.inviteParams.data');
-			if (inviteParamsData) {
+			if (inviteParamsData && inviteParamsData !== 'null') {
 				this.teamName = JSON.parse(inviteParamsData).team_name;
 				this.teamId = JSON.parse(inviteParamsData).team_id;
 				this.selectedTeamId = JSON.parse(inviteParamsData).team_id;
@@ -229,6 +237,14 @@ export default {
 			} else {
 				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'No');
 			}
+		},
+		setJoinTeamButton(joinTeam) {
+			if (joinTeam) {
+				this.selectedTeamId = this.teamId;
+			} else {
+				this.selectedTeamId = '';
+			}
+			this.teamLbVisible = false;
 		},
 		validateForm() {
 			this.validateEmail(this.email);
@@ -336,6 +352,17 @@ export default {
 
 	#team-info {
 		font-weight: 300;
+	}
+
+	.join-team-button-container {
+		margin: 0 auto;
+		max-width: 22rem;
+		display: flex;
+		justify-content: space-between;
+		flex-direction: column;
+		@include breakpoint(medium) {
+			flex-direction: row;
+		}
 	}
 }
 </style>
