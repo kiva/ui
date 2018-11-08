@@ -50,6 +50,25 @@
 				</p>
 			</div>
 
+			<div class="input-set" v-if="teamName">
+				<label for="team">
+					Request to join team.
+					<a class="helpTip sfHelpTip_old" id="team-info" @click.prevent="triggerTeamLightbox">
+						What is this?
+					</a>
+					<select
+						dir="rtl"
+						name="team"
+						v-model="selectedTeamId"
+						class="medium-text-font-size"
+						@change="updateLoanAmount()"
+					>
+						<option :value="teamId">{{ teamName }}</option>
+						<option value="">Not now</option>
+					</select>
+				</label>
+			</div>
+
 			<div class="persist-login-wrap">
 				<input type="checkbox" name="persist_login" id="loginForm_persist_login">
 				<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
@@ -66,6 +85,17 @@
 				<h2 slot="title">{{ salesforceHelpText.name }}</h2>
 				<p>{{ salesforceHelpText.note }}</p>
 			</kv-lightbox>
+
+			<kv-lightbox
+				:visible="teamLbVisible"
+				@lightbox-closed="teamLightboxClosed">
+				<h2 slot="title">Join the team!</h2>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					By joining the {{ '~NAME~' }} team you can see your impact, interact with colleagues, and get more out of Kiva. What do you say?
+				</p>
+			</kv-lightbox>
+
 
 			<KvButton
 				class="sign-in-button smaller"
@@ -115,6 +145,9 @@ export default {
 		result({ data }) {
 			console.log(data);
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
+			const inviteParamsData = _get(data, 'general.inviteParams.data');
+			this.teamName = inviteParamsData && JSON.parse(inviteParamsData).team_name;
+			this.teamId = inviteParamsData && JSON.parse(inviteParamsData).team_id;
 		},
 	},
 	props: {
@@ -139,9 +172,13 @@ export default {
 			loading: false,
 			serverErrors: [],
 			defaultLbVisible: false,
+			teamLbVisible: false,
 			salesforceHelpText: {},
 			email: '',
-			password: ''
+			password: '',
+			teamName: '',
+			teamId: '',
+			selectedTeamId: '',
 		};
 	},
 	created() {
@@ -166,17 +203,27 @@ export default {
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
+		triggerTeamLightbox() {
+			this.teamLbVisible = !this.teamLbVisible;
+		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
+		},
+		teamLightboxClosed() {
+			this.teamLbVisible = false;
 		},
 		doLogin() {
 			this.$kvTrackEvent('Login', 'click-Login-submit', 'LoginButtonClick');
 
+			this.runTeamAnalytics();
 			if (this.validateForm() === true) {
 				this.setLoading(true);
 				const formData = formDataEntries(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
 			}
+		},
+		runTeamAnalytics() {
+			console.log('analytics');
 		},
 		validateForm() {
 			this.validateEmail(this.email);
@@ -280,6 +327,10 @@ export default {
 		display: block;
 		text-align: center;
 		margin-bottom: rem-calc(15);
+	}
+
+	#team-info {
+		font-weight: 300;
 	}
 }
 </style>
