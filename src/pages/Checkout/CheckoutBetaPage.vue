@@ -276,7 +276,7 @@ export default {
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.lastActiveLogin = parseInt(_get(data, 'my.lastActiveLogin.data'), 10) || 0;
+			this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
 			this.teams = _get(data, 'my.lender.teams.values');
 		}
 	},
