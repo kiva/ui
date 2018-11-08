@@ -149,7 +149,6 @@ export default {
 		query: LoginQuery,
 		preFetch: true,
 		result({ data }) {
-			console.log(data);
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
 			const inviteParamsData = _get(data, 'general.inviteParams.data');
 			if (inviteParamsData && inviteParamsData !== 'null') {
