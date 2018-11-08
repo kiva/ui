@@ -4,8 +4,6 @@ query {
 			name
 			note
 		}
-	}
-	my {
 		inviteCode: userSessionData(sessionKey: InviteSecurityCode) {
 			sessionKey
 			data
