@@ -62,7 +62,6 @@ export default {
 						price: this.price
 					}
 				}).then(data => {
-					console.log(`'right after then' ${updatedTeamId}`);
 					if (data.errors) {
 						_forEach(data.errors, ({ message }) => {
 							this.$showTipMsg(message, 'error');
@@ -70,7 +69,6 @@ export default {
 						this.$emit('updating-totals', false);
 						this.selectedId = this.cachedId;
 					} else {
-						console.log('update success');
 						this.$kvTrackEvent(
 							'basket',
 							'Update Team Loan Attribution',
