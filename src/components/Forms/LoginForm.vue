@@ -57,7 +57,6 @@
 						What is this?
 					</a>
 					<select
-						dir="rtl"
 						name="team"
 						v-model="selectedTeamId"
 						class="medium-text-font-size"
@@ -146,8 +145,10 @@ export default {
 			console.log(data);
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
 			const inviteParamsData = _get(data, 'general.inviteParams.data');
-			this.teamName = inviteParamsData && JSON.parse(inviteParamsData).team_name;
-			this.teamId = inviteParamsData && JSON.parse(inviteParamsData).team_id;
+			if (inviteParamsData) {
+				this.teamName = JSON.parse(inviteParamsData).team_name;
+				this.selectedTeamId = this.teamId = JSON.parse(inviteParamsData).team_id;
+			}
 		},
 	},
 	props: {
