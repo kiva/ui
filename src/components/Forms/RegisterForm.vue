@@ -94,6 +94,12 @@
 				</p>
 			</div>
 
+			<login-register-team-chooser
+				v-if="teamId"
+				:team-id="teamId"
+				:set-default-team-selected="setDefaultTeamSelected"
+			/>
+
 			<div class="terms-and-policy">
 				<label for="registerForm_terms_of_use_privacy_poicy">
 					<input
@@ -146,10 +152,12 @@ import regExpQuery from '@/graphql/query/register/registerExpAssignment.graphql'
 import regDataQuery from '@/graphql/query/register/registerData.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
+import LoginRegisterTeamChooser from '@/components/Forms/LoginRegisterTeamChooser';
 
 export default {
 	components: {
 		KvButton,
+		LoginRegisterTeamChooser,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -188,7 +196,8 @@ export default {
 			showFirstName: true,
 			showLastName: true,
 			inviteParamsData: {},
-			inviterName: ''
+			inviterName: '',
+			teamId: 0,
 		};
 	},
 	apollo: {
@@ -231,6 +240,7 @@ export default {
 
 			if (this.validateForm() === true) {
 				this.setLoading(true);
+				this.runTeamAnalytics();
 				const formData = formDataEntries(this.$refs.regForm);
 				this.postForm(this.regActionUrl, formData);
 			}
@@ -318,6 +328,7 @@ export default {
 				this.inviteParamsData = JSON.parse(inviteParamsData);
 				// Pull the inviter's name off the inviteParamsData object, saving in variable inviterName
 				this.inviterName = this.inviteParamsData.inviter_display_name;
+				this.teamId = this.inviteParamsData.team_id;
 			}
 		},
 		setupExperimentState() {
@@ -355,7 +366,14 @@ export default {
 			if (this.expVersion === 'control') {
 				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expVersion);
 			}
-		}
+		},
+		runTeamAnalytics() {
+			if (this.teamId && this.defaultTeamSelected) {
+				this.$kvTrackEvent('Ui-Register', 'nudgeIfNotJoinTeamLightbox', 'Yes');
+			} else {
+				this.$kvTrackEvent('Ui-Register', 'nudgeIfNotJoinTeamLightbox', 'No');
+			}
+		},
 	},
 	computed: {
 		passwordStrength() {
