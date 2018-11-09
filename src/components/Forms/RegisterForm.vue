@@ -97,7 +97,6 @@
 			<login-register-team-chooser
 				v-if="teamId"
 				:team-id="teamId"
-				:set-default-team-selected="setDefaultTeamSelected"
 			/>
 
 			<!-- If user comes from an individual's invite url, we show the
