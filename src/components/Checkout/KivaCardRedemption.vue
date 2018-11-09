@@ -23,7 +23,8 @@
 						<input
 							placeholder="ABCD-1234-EFGH-5678"
 							class="kiva-card-input"
-							v-model="kivaCardCode">
+							v-model="kivaCardCode"
+							@keyup.enter.prevent="updateKivaCard('redemption_code')">
 						<button class="button secondary"
 							@click.prevent="updateKivaCard('redemption_code')">Apply</button>
 
