@@ -126,6 +126,7 @@ export default {
 								this.$showTipMsg(message, 'error');
 							});
 							this.selectedOption = this.cachedSelection;
+							this.$emit('updating-totals', false);
 						} else {
 							this.$kvTrackEvent(
 								'basket',
@@ -137,7 +138,6 @@ export default {
 							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
 							this.cachedSelection = this.selectedOption;
 						}
-						this.$emit('updating-totals', false);
 					}).catch(error => {
 						console.error(error);
 						this.$emit('updating-totals', false);
@@ -166,6 +166,7 @@ export default {
 								this.$showTipMsg(message, 'error');
 							});
 							this.selectedOption = this.cachedSelection;
+							this.$emit('updating-totals', false);
 						} else {
 							this.$kvTrackEvent(
 								'basket',
@@ -177,7 +178,6 @@ export default {
 							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');
 							this.cachedSelection = this.selectedOption;
 						}
-						this.$emit('updating-totals', false);
 					}).catch(error => {
 						console.error(error);
 						this.$emit('updating-totals', false);
