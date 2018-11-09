@@ -153,7 +153,7 @@ export default {
 			salesforceHelpText: {},
 			email: '',
 			password: '',
-			teamId: '',
+			teamId: 0,
 			defaultTeamSelected: false,
 		};
 	},
