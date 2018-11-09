@@ -73,6 +73,8 @@ export default {
 					this.$refs.kvlightbox.focus();
 					this.lockScroll();
 				});
+			} else {
+				this.unlockScroll();
 			}
 		}
 	},
