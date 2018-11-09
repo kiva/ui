@@ -11,6 +11,7 @@
 					id="auto_join_default_team"
 					v-model="selectedTeamId"
 					class="medium-text-font-size"
+					@change="onChange"
 				>
 					<option value="auto_join">{{ teamName }}</option>
 					<option value="">Not now</option>
@@ -94,6 +95,11 @@ export default {
 			}
 			this.teamLbVisible = false;
 		},
+		onChange(event) {
+			if (event.target.value === '') {
+				this.teamLbVisible = true;
+			}
+		}
 	}
 };
 </script>
