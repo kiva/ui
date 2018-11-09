@@ -90,17 +90,9 @@
 
 						<hr>
 
-						<div class="checkout-holiday-promo" v-if="holidayModeEnabled">
-							<kv-icon name="present" class="holiday-present-icon"/>
-							<div>Give hope this holiday season.
-								<a
-									href="#"
-									@click.prevent.stop="addOnePrintKivaCard()"
-								>
-									Add a $25 Kiva card to your cart.
-								</a>
-							</div>
-						</div>
+						<checkout-holiday-promo
+							v-if="holidayModeEnabled"
+							@updating-totals="setUpdatingTotals" />
 
 						<order-totals
 							:totals="totals"
@@ -190,7 +182,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
-import shopAddOnePrintKivaCard from '@/graphql/mutation/shopAddOnePrintKivaCard.graphql';
+import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 
 export default {
 	components: {
@@ -206,6 +198,7 @@ export default {
 		KivaCardRedemption,
 		LoadingOverlay,
 		KvIcon,
+		CheckoutHolidayPromo,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -357,9 +350,6 @@ export default {
 			}
 			return false;
 		},
-		hasKivaCardInBasket() {
-			return this.kivaCards.length > 0;
-		},
 	},
 	methods: {
 		/* Validate the Entire Basket on mounted */
@@ -466,23 +456,6 @@ export default {
 		},
 		redirectLbClosed() {
 			this.redirectLbVisible = false;
-		},
-		addOnePrintKivaCard() {
-			this.setUpdatingTotals(true);
-			this.apollo.mutate({
-				mutation: shopAddOnePrintKivaCard,
-			}).then(({ data }) => {
-				if (!data.shop || !data.shop.addOnePrintKivaCard) {
-					console.error(data);
-					this.setUpdatingTotals(false);
-					return;
-				}
-				this.$kvTrackEvent('promo', 'click', 'BasketKCUpsell');
-				window.location.reload();
-			}).catch(error => {
-				console.error(error);
-				this.setUpdating(false);
-			});
 		},
 	},
 };
@@ -700,26 +673,6 @@ export default {
 
 			.unhovered {
 				display: none;
-			}
-		}
-
-		// Holiday Promo
-		.checkout-holiday-promo {
-			@include breakpoint(medium) {
-				margin: $list-side-margin $list-side-margin 2rem;
-			}
-
-			display: flex;
-			align-items: center;
-			padding-left: rem-calc(90);
-			padding-right: 1.25rem;
-
-			.holiday-present-icon {
-				height: 1.25rem;
-				width: 1.25rem;
-				flex-shrink: 0;
-				stroke-width: rem-calc(0.5);
-				margin-right: 0.75rem;
 			}
 		}
 	}

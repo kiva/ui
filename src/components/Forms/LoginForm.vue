@@ -50,6 +50,11 @@
 				</p>
 			</div>
 
+			<login-register-team-chooser
+				v-if="teamId"
+				:team-id="teamId"
+			/>
+
 			<div class="persist-login-wrap">
 				<input type="checkbox" name="persist_login" id="loginForm_persist_login">
 				<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
@@ -93,16 +98,18 @@ import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
 import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import SalesforceHelpTextQuery from '@/graphql/query/salesforceLoginHelpText.graphql';
+import LoginQuery from '@/graphql/query/loginQuery.graphql';
 import _get from 'lodash/get';
 import formValidate from '@/plugins/formValidate';
+import LoginRegisterTeamChooser from '@/components/Forms/LoginRegisterTeamChooser';
 
 export default {
 	components: {
 		KvButton,
 		KvFacebookButton,
 		KvLightbox,
-		SalesforceHelpTextQuery,
+		LoginQuery,
+		LoginRegisterTeamChooser,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -110,10 +117,14 @@ export default {
 		formValidate
 	],
 	apollo: {
-		query: SalesforceHelpTextQuery,
+		query: LoginQuery,
 		preFetch: true,
 		result({ data }) {
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
+			const inviteParamsData = _get(data, 'general.inviteParams.data');
+			if (inviteParamsData && inviteParamsData !== 'null') {
+				this.teamId = JSON.parse(inviteParamsData).team_id;
+			}
 		},
 	},
 	props: {
@@ -138,9 +149,12 @@ export default {
 			loading: false,
 			serverErrors: [],
 			defaultLbVisible: false,
+			teamLbVisible: false,
 			salesforceHelpText: {},
 			email: '',
-			password: ''
+			password: '',
+			teamId: 0,
+			defaultTeamSelected: false,
 		};
 	},
 	created() {
@@ -165,8 +179,14 @@ export default {
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
+		triggerTeamLightbox() {
+			this.teamLbVisible = !this.teamLbVisible;
+		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
+		},
+		teamLightboxClosed() {
+			this.teamLbVisible = false;
 		},
 		doLogin() {
 			this.$kvTrackEvent('Login', 'click-Login-submit', 'LoginButtonClick');
@@ -222,7 +242,7 @@ export default {
 		setLoading(state) {
 			this.loading = state;
 			this.$emit('login-loading', state);
-		}
+		},
 	},
 };
 </script>

@@ -94,6 +94,29 @@
 				</p>
 			</div>
 
+			<login-register-team-chooser
+				v-if="teamId"
+				:team-id="teamId"
+			/>
+
+			<!-- If user comes from an individual's invite url, we show the
+			inviter's name during invitees registration:
+			ex: https://www.kiva.org/invitedby/joshuastarkey -->
+			<div
+				v-if="inviterName.length"
+				class="input-set">
+				<label for="inviter">
+					Referred by
+					<div>
+						<input
+							type="text"
+							name="inviter"
+							v-model="inviterName"
+							disabled>
+					</div>
+				</label>
+			</div>
+
 			<div class="terms-and-policy">
 				<label for="registerForm_terms_of_use_privacy_poicy">
 					<input
@@ -122,6 +145,7 @@
 					</ul>
 				</p>
 			</div>
+
 			<KvButton
 				class="register-button smaller"
 				type="submit"
@@ -146,10 +170,12 @@ import regExpQuery from '@/graphql/query/register/registerExpAssignment.graphql'
 import regDataQuery from '@/graphql/query/register/registerData.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
+import LoginRegisterTeamChooser from '@/components/Forms/LoginRegisterTeamChooser';
 
 export default {
 	components: {
 		KvButton,
+		LoginRegisterTeamChooser,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -188,7 +214,8 @@ export default {
 			showFirstName: true,
 			showLastName: true,
 			inviteParamsData: {},
-			inviterName: ''
+			inviterName: '',
+			teamId: 0,
 		};
 	},
 	apollo: {
@@ -318,6 +345,7 @@ export default {
 				this.inviteParamsData = JSON.parse(inviteParamsData);
 				// Pull the inviter's name off the inviteParamsData object, saving in variable inviterName
 				this.inviterName = this.inviteParamsData.inviter_display_name;
+				this.teamId = this.inviteParamsData.team_id;
 			}
 		},
 		setupExperimentState() {
@@ -355,7 +383,7 @@ export default {
 			if (this.expVersion === 'control') {
 				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expVersion);
 			}
-		}
+		},
 	},
 	computed: {
 		passwordStrength() {
@@ -424,7 +452,7 @@ $loan-card-meter-height: rem-calc(8);
 	#password-strength-meter {
 		height: $loan-card-meter-height;
 		width: 100%;
-		margin: 0 0 rem-calc(8);
+		margin: 0 0 rem-calc(15);
 		border-radius: $loan-card-meter-height;
 		background-color: $kiva-stroke-gray;
 
