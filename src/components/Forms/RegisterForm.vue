@@ -143,7 +143,7 @@ import formDataEntries from 'form-data-entries';
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import { readJSONSetting } from '@/util/settingsUtils';
 import regExpQuery from '@/graphql/query/register/registerExpAssignment.graphql';
-import regExpDataQuery from '@/graphql/query/register/registerExpData.graphql';
+import regDataQuery from '@/graphql/query/register/registerData.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import formValidate from '@/plugins/formValidate';
 
@@ -186,7 +186,9 @@ export default {
 			expVersion: '',
 			expName: '',
 			showFirstName: true,
-			showLastName: true
+			showLastName: true,
+			inviteParamsData: {},
+			inviterName: ''
 		};
 	},
 	apollo: {
@@ -194,7 +196,7 @@ export default {
 			return new Promise((resolve, reject) => {
 				// Get the experiment object from settings
 				client.query({
-					query: regExpDataQuery
+					query: regDataQuery
 				}).then(() => {
 					// Get the assigned experiment version
 					client.query({ query: regExpQuery }).then(resolve).catch(reject);
@@ -203,6 +205,7 @@ export default {
 		}
 	},
 	created() {
+		this.setupInviteParams();
 		this.setupExperimentState();
 
 		this.crumb = this.getCookieCrumb();
@@ -304,6 +307,19 @@ export default {
 			this.loading = state;
 			this.$emit('reg-loading', state);
 		},
+		setupInviteParams() {
+			// hitting the regDataQuery to get invitee information out of graphql
+			const invitationDataCall = this.apollo.readQuery({ query: regDataQuery });
+			// Pull out all invite data from the invitation data
+			const inviteParamsData = _get(invitationDataCall, 'general.inviationParam.data');
+
+			if (inviteParamsData && inviteParamsData !== 'null') {
+				// If inviteParamsData is present and is not null, parse the returned object
+				this.inviteParamsData = JSON.parse(inviteParamsData);
+				// Pull the inviter's name off the inviteParamsData object, saving in variable inviterName
+				this.inviterName = this.inviteParamsData.inviter_display_name;
+			}
+		},
 		setupExperimentState() {
 			// get assigned exp version from apollo cache
 			const regExpVersion = this.apollo.readQuery({ query: regExpQuery });
@@ -311,7 +327,7 @@ export default {
 
 			// get experiment data from apollo cache
 			// - only required at this point for the variant name or other associated data
-			const regExpSetting = this.apollo.readQuery({ query: regExpDataQuery });
+			const regExpSetting = this.apollo.readQuery({ query: regDataQuery });
 			const expData = readJSONSetting(regExpSetting, 'general.experiment.value') || {};
 			if (this.expVersion && this.expVersion !== 'control') {
 				this.expName = _get(expData, `variants[${this.expVersion}].name`) || null;
