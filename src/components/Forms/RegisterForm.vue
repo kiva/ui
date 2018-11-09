@@ -100,6 +100,24 @@
 				:set-default-team-selected="setDefaultTeamSelected"
 			/>
 
+			<!-- If user comes from an individual's invite url, we show the
+			inviter's name during invitees registration:
+			ex: https://www.kiva.org/invitedby/joshuastarkey -->
+			<div
+				v-if="inviterName.length"
+				class="input-set">
+				<label for="inviter">
+					Referred by
+					<div>
+						<input
+							type="text"
+							name="inviter"
+							v-model="inviterName"
+							disabled>
+					</div>
+				</label>
+			</div>
+
 			<div class="terms-and-policy">
 				<label for="registerForm_terms_of_use_privacy_poicy">
 					<input
@@ -136,24 +154,6 @@
 				id="regForm_submit">
 				Continue
 			</KvButton>
-
-			<!-- If user comes from an individual's invite url, we show the
-			inviter's name during invitees registration:
-			ex: https://www.kiva.org/invitedby/joshuastarkey -->
-			<div
-				v-if="inviterName.length"
-				class="input-set">
-				<label for="inviter">
-					Inviter
-					<div>
-						<input
-							type="text"
-							name="inviter"
-							v-model="inviterName"
-							disabled>
-					</div>
-				</label>
-			</div>
 
 			<input type="hidden" name="currURL" :value="currUrl">
 			<!-- Have to pass this crumb in the Header and in the Request -->
@@ -453,7 +453,7 @@ $loan-card-meter-height: rem-calc(8);
 	#password-strength-meter {
 		height: $loan-card-meter-height;
 		width: 100%;
-		margin: 0 0 rem-calc(8);
+		margin: 0 0 rem-calc(15);
 		border-radius: $loan-card-meter-height;
 		background-color: $kiva-stroke-gray;
 
