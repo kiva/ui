@@ -156,6 +156,7 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 					this.amount = this.cachedAmount;
+					this.$emit('updating-totals', false);
 				} else {
 					this.$emit('refreshtotals');
 					this.$kvTrackEvent(
@@ -168,7 +169,6 @@ export default {
 					this.amount = numeral(this.amount).format('$0,0.00');
 					this.cachedAmount = numeral(this.amount).format('$0,0.00');
 				}
-				this.$emit('updating-totals', false);
 			}).catch(error => {
 				console.error(error);
 				this.$emit('updating-totals', false);
