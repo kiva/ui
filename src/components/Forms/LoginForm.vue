@@ -53,6 +53,7 @@
 			<login-register-team-chooser
 				v-if="teamId"
 				:team-id="teamId"
+				:set-default-team-selected="setDefaultTeamSelected"
 			/>
 
 			<div class="persist-login-wrap">
@@ -153,8 +154,8 @@ export default {
 			salesforceHelpText: {},
 			email: '',
 			password: '',
-			teamName: '',
 			teamId: '',
+			defaultTeamSelected: false,
 		};
 	},
 	created() {
@@ -251,6 +252,9 @@ export default {
 			this.loading = state;
 			this.$emit('login-loading', state);
 		},
+		setDefaultTeamSelected(isSelected) {
+			this.defaultTeamSelected = isSelected;
+		}
 	},
 };
 </script>
