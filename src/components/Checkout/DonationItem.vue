@@ -112,12 +112,10 @@ export default {
 		};
 	},
 	watch: {
+		// watching the computed serverAmount property allows us to get set updates based on nested data props
 		serverAmount() {
-			if (!this.donation.isUserEdited) {
-				// setting this.amount to the donation price without $
-				this.amount = numeral(this.donation.price).format('0,0.00');
-			}
-		}
+			this.amount = numeral(this.donation.price).format('0,0.00');
+		},
 	},
 	computed: {
 		serverAmount() {
