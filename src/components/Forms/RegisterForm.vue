@@ -240,7 +240,6 @@ export default {
 
 			if (this.validateForm() === true) {
 				this.setLoading(true);
-				this.runTeamAnalytics();
 				const formData = formDataEntries(this.$refs.regForm);
 				this.postForm(this.regActionUrl, formData);
 			}
@@ -365,13 +364,6 @@ export default {
 			// No Set up for control, just track
 			if (this.expVersion === 'control') {
 				this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expVersion);
-			}
-		},
-		runTeamAnalytics() {
-			if (this.teamId && this.defaultTeamSelected) {
-				this.$kvTrackEvent('Ui-Register', 'nudgeIfNotJoinTeamLightbox', 'Yes');
-			} else {
-				this.$kvTrackEvent('Ui-Register', 'nudgeIfNotJoinTeamLightbox', 'No');
 			}
 		},
 	},
