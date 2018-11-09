@@ -50,22 +50,10 @@
 				</p>
 			</div>
 
-			<div class="input-set" v-if="teamName">
-				<label for="team">
-					Request to join team.
-					<a class="helpTip sfHelpTip_old" id="team-info" @click.prevent="triggerTeamLightbox">
-						What is this?
-					</a>
-					<select
-						name="auto_join_default_team"
-						v-model="selectedTeamId"
-						class="medium-text-font-size"
-					>
-						<option value="auto_join">{{ teamName }}</option>
-						<option value="">Not now</option>
-					</select>
-				</label>
-			</div>
+			<login-register-team-chooser
+				v-if="teamId"
+				:team-id="teamId"
+			/>
 
 			<div class="persist-login-wrap">
 				<input type="checkbox" name="persist_login" id="loginForm_persist_login">
@@ -83,25 +71,6 @@
 				<h2 slot="title">{{ salesforceHelpText.name }}</h2>
 				<p>{{ salesforceHelpText.note }}</p>
 			</kv-lightbox>
-
-			<kv-lightbox
-				:visible="teamLbVisible"
-				@lightbox-closed="teamLightboxClosed">
-				<h2 slot="title">Join the team!</h2>
-				<p>
-					<!-- eslint-disable-next-line max-len -->
-					By joining the {{ teamName }} team you can see your impact, interact with colleagues, and get more out of Kiva.
-				</p>
-				<div class="join-team-button-container">
-					<kv-button class="smaller secondary" @click.native.prevent="setJoinTeamButton(false)">
-						No Thanks
-					</kv-button>
-					<kv-button class="smaller" @click.native.prevent="setJoinTeamButton(true)">
-						Join Team
-					</kv-button>
-				</div>
-			</kv-lightbox>
-
 
 			<KvButton
 				class="sign-in-button smaller"
@@ -132,6 +101,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import LoginQuery from '@/graphql/query/loginQuery.graphql';
 import _get from 'lodash/get';
 import formValidate from '@/plugins/formValidate';
+import LoginRegisterTeamChooser from '@/components/Forms/LoginRegisterTeamChooser';
 
 export default {
 	components: {
@@ -139,6 +109,7 @@ export default {
 		KvFacebookButton,
 		KvLightbox,
 		LoginQuery,
+		LoginRegisterTeamChooser,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -152,9 +123,7 @@ export default {
 			this.salesforceHelpText = _get(data, 'general.salesforceSolution');
 			const inviteParamsData = _get(data, 'general.inviteParams.data');
 			if (inviteParamsData && inviteParamsData !== 'null') {
-				this.teamName = JSON.parse(inviteParamsData).team_name;
 				this.teamId = JSON.parse(inviteParamsData).team_id;
-				this.selectedTeamId = JSON.parse(inviteParamsData).team_id;
 			}
 		},
 	},
@@ -186,7 +155,6 @@ export default {
 			password: '',
 			teamName: '',
 			teamId: '',
-			selectedTeamId: '',
 		};
 	},
 	created() {
@@ -231,19 +199,11 @@ export default {
 			}
 		},
 		runTeamAnalytics() {
-			if (this.teamId && this.selectedTeamId) {
+			if (this.teamId && this.defaultTeamSelected) {
 				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'Yes');
 			} else {
 				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'No');
 			}
-		},
-		setJoinTeamButton(joinTeam) {
-			if (joinTeam) {
-				this.selectedTeamId = this.teamId;
-			} else {
-				this.selectedTeamId = '';
-			}
-			this.teamLbVisible = false;
 		},
 		validateForm() {
 			this.validateEmail(this.email);
@@ -347,21 +307,6 @@ export default {
 		display: block;
 		text-align: center;
 		margin-bottom: rem-calc(15);
-	}
-
-	#team-info {
-		font-weight: 300;
-	}
-
-	.join-team-button-container {
-		margin: 0 auto;
-		max-width: 22rem;
-		display: flex;
-		justify-content: space-between;
-		flex-direction: column;
-		@include breakpoint(medium) {
-			flex-direction: row;
-		}
 	}
 }
 </style>
