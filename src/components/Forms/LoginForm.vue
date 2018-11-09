@@ -53,7 +53,6 @@
 			<login-register-team-chooser
 				v-if="teamId"
 				:team-id="teamId"
-				:set-default-team-selected="setDefaultTeamSelected"
 			/>
 
 			<div class="persist-login-wrap">
@@ -194,16 +193,8 @@ export default {
 
 			if (this.validateForm() === true) {
 				this.setLoading(true);
-				this.runTeamAnalytics();
 				const formData = formDataEntries(this.$refs.loginForm);
 				this.postForm(this.loginActionUrl, formData);
-			}
-		},
-		runTeamAnalytics() {
-			if (this.teamId && this.defaultTeamSelected) {
-				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'Yes');
-			} else {
-				this.$kvTrackEvent('Login', 'nudgeIfNotJoinTeamLightbox', 'No');
 			}
 		},
 		validateForm() {
@@ -252,9 +243,6 @@ export default {
 			this.loading = state;
 			this.$emit('login-loading', state);
 		},
-		setDefaultTeamSelected(isSelected) {
-			this.defaultTeamSelected = isSelected;
-		}
 	},
 };
 </script>

@@ -11,7 +11,6 @@
 					id="auto_join_default_team"
 					v-model="selectedTeamId"
 					class="medium-text-font-size"
-					@change="handleChangeSelect"
 				>
 					<option value="auto_join">{{ teamName }}</option>
 					<option value="">Not now</option>
@@ -57,10 +56,6 @@ export default {
 			type: Number,
 			required: true,
 		},
-		setDefaultTeamSelected: {
-			type: Function,
-			required: true,
-		}
 	},
 	apollo: {
 		query: TeamInfoFromId,
@@ -72,7 +67,6 @@ export default {
 		},
 		result({ data }) {
 			this.teamName = _get(data, 'community.team.name');
-			this.setDefaultTeamSelected(true);
 		},
 	},
 	data() {
@@ -93,20 +87,13 @@ export default {
 		setJoinTeamButton(joinTeam) {
 			if (joinTeam) {
 				this.selectedTeamId = 'auto_join';
-				this.setDefaultTeamSelected(true);
+				this.$kvTrackEvent('nudgeIfNotJoinTeamLightbox', 'Yes');
 			} else {
 				this.selectedTeamId = '';
-				this.setDefaultTeamSelected(false);
+				this.$kvTrackEvent('nudgeIfNotJoinTeamLightbox', 'No');
 			}
 			this.teamLbVisible = false;
 		},
-		handleChangeSelect(event) {
-			if (event.target.value === 'auto_join') {
-				this.setDefaultTeamSelected(true);
-			} else {
-				this.setDefaultTeamSelected(false);
-			}
-		}
 	}
 };
 </script>
