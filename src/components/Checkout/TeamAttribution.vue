@@ -5,7 +5,7 @@
 				v-model="selectedId"
 				class="team-select-dd small-text"
 				@change="updateLoanReservation()">
-				<option value="null">None</option>
+				<option value="0">None</option>
 				<option v-for="team in teams"
 					:key="team.id"
 					:value="team.id">{{ team.name }}
@@ -28,7 +28,7 @@ export default {
 		},
 		teamId: {
 			type: Number,
-			default: null
+			default: 0
 		},
 		price: {
 			type: String,
@@ -44,7 +44,7 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			selectedId: this.teamId,
+			selectedId: this.teamId || 0,
 			cachedId: null,
 		};
 	},
@@ -72,7 +72,7 @@ export default {
 						this.$kvTrackEvent(
 							'basket',
 							'Update Team Loan Attribution',
-							this.selectedId === null ? 'Team Attribution Removed'
+							this.selectedId === 0 ? 'Team Attribution Removed'
 								: 'Team Attribution Removal Success', numeral(this.selectedId).value()
 						);
 						this.$emit('refresh-totals', 'team-update');
