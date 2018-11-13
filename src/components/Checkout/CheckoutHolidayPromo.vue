@@ -6,7 +6,7 @@
 				href="#"
 				@click.prevent.stop="addOnePrintKivaCard"
 			>
-				Add a $25 Kiva card to your cart.
+				Add a $25 Kiva Card to your cart.
 			</a>
 		</div>
 	</div>
