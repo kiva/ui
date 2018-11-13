@@ -137,7 +137,7 @@ export default {
 							// for not all shares added, the loan amount is updated by not reported to the client
 							// - we need to refresh the page to get back into updated state
 							if (typeof window !== 'undefined' && notAllSharesAdded) {
-								window.setTimeout(window.location.reload(), 3500);
+								window.setTimeout(window.location.reload(), 8000);
 							} else {
 								this.selectedOption = this.cachedSelection;
 								this.$emit('updating-totals', false);
