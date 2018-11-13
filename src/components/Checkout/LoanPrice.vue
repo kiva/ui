@@ -128,6 +128,7 @@ export default {
 							this.selectedOption = this.cachedSelection;
 							this.$emit('updating-totals', false);
 						} else {
+							this.$closeTipMsg();
 							this.$kvTrackEvent(
 								'basket',
 								'Update Loan Amount',
