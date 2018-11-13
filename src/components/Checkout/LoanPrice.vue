@@ -54,6 +54,10 @@ export default {
 			type: Number,
 			default: null
 		},
+		isExpiringSoon: {
+			type: Boolean,
+			default: false
+		},
 		type: {
 			type: String,
 			default: 'loan'
@@ -78,7 +82,11 @@ export default {
 				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
 
 				// subtract reservedAmount shares (minus our own reserved shares)
-				remainingShares -= (parseFloat(this.reservedAmount) - parseInt(this.price, 10));
+				// - only do this for loans that are not expiring soon
+				// - for loans expiring soon we just show remaining shares which are all un-reserved
+				if (!this.isExpiringSoon) {
+					remainingShares -= (parseFloat(this.reservedAmount) - parseInt(this.price, 10));
+				}
 
 				// if we've met reserve ensure atleast this loan share is set
 				if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
