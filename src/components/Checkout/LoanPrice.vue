@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import _union from 'lodash/union';
 import numeral from 'numeral';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
@@ -75,24 +74,21 @@ export default {
 	computed: {
 		prices() {
 			if (this.type === 'loan') {
-				// Build availble shares starting with what this lender has resereved
-				const sharesBelowAmountLent = parseInt(this.price, 10) / 25;
-				// convert this to formatted array for our select element
-				const priceArray = this.buildShareArray(sharesBelowAmountLent);
-
 				// determine how many (if any) overall additional shares are remaining
 				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
+
+				// subtract reservedAmount shares (minus our own reserved shares)
+				remainingShares -= (parseFloat(this.reservedAmount) - parseInt(this.price, 10));
 
 				// if we've met reserve ensure atleast this loan share is set
 				if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
 
-				// add to available shares based on available remaining shares
+				// get count of shares based on available remaining shares
 				const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
 				// convert this to formatted array for our select element
 				const reservePriceArray = this.buildShareArray(sharesBelowReserve);
 
-				// return the combined and de-duped arrays
-				return _union(priceArray, reservePriceArray);
+				return reservePriceArray;
 			} else if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element
 				const priceArray = ['25', '30', '50', '75', '100', '150', '200', '250', '300', '400',
