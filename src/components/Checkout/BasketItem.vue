@@ -38,6 +38,7 @@
 				type="loan"
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
+				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
