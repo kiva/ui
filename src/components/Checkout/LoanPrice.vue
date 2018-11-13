@@ -122,11 +122,22 @@ export default {
 						}
 					}).then(data => {
 						if (data.errors) {
-							_forEach(data.errors, ({ message }) => {
+							let notAllSharesAdded = false;
+							_forEach(data.errors, ({ message, code }) => {
 								this.$showTipMsg(message, 'error');
+								// update flag if this error is present
+								if (code === 'not_all_shared_added') {
+									notAllSharesAdded = true;
+								}
 							});
-							this.selectedOption = this.cachedSelection;
-							this.$emit('updating-totals', false);
+							// for not all shares added, the loan amount is updated by not reported to the client
+							// - we need to refresh the page to get back into updated state
+							if (typeof window !== 'undefined' && notAllSharesAdded) {
+								window.setTimeout(window.location.reload(), 3500);
+							} else {
+								this.selectedOption = this.cachedSelection;
+								this.$emit('updating-totals', false);
+							}
 						} else {
 							this.$closeTipMsg();
 							this.$kvTrackEvent(
