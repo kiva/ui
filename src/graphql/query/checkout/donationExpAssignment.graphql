@@ -1,0 +1,6 @@
+query {
+	experiment(id: "donation_fields") @client {
+		id
+		version
+	}
+}

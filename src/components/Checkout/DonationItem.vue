@@ -83,7 +83,9 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import donationExpQuery from '@/graphql/query/checkout/donationExpAssignment.graphql';
 import numeral from 'numeral';
+import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 
 export default {
@@ -108,8 +110,26 @@ export default {
 			defaultLbVisible: false,
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
-			editDonation: false
+			editDonation: false,
+			expVersion: '',
+			expName: ''
 		};
+	},
+	apollo: {
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				// Get the experiment object from settings
+				client.query({
+					query: updateDonation
+				}).then(() => {
+					// Get the assigned experiment version
+					client.query({ query: donationExpQuery }).then(resolve).catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
+	created() {
+
 	},
 	watch: {
 		// watching the computed serverAmount property allows us to get set updates based on nested data props
@@ -138,6 +158,43 @@ export default {
 		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
+		},
+		setupExperimentState() {
+			// get experiment data from apollo cache
+			const donationExpVersion = this.apollo.readQuery({ query: donationExpQuery });
+			this.expVersion = _get(donationExpVersion, 'experiment_version') || null;
+
+			// get experiment data from apollo cache
+			const donationExpSetting = this.apollo.readQuery({ query: donationExpQuery });
+			const expData = readJSONSetting(donationExpSetting, 'general.experiment.value') || {};
+
+			if (this.expVersion && this.expVersion !== 'control') {
+				this.expName = _get(expData, `variants[${this.expVersion}].name`) || null;
+			}
+
+			// if exp version a
+			// return Control
+			if (this.expVersion === 'control') {
+
+				// tracking info
+				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+			}
+
+			// if exp version b
+			// return 15$ match case
+			if (this.expVersion === 'variant-b') {
+
+				// tracking info
+				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+			}
+
+			// if exp version c
+			// return 10$ match case
+			if (this.expVersion === 'variant-c') {
+
+				// tracking info
+				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+			}
 		},
 		updateDonation() {
 			this.editDonation = false;
