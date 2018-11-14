@@ -147,7 +147,13 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
+			if (this.expVersion === 'variant-a' || this.expVersion === 'variant-b') {
+				const tagline = 'Donations of $15 or more are matched by generous donors for a limited time!';
+
+				return tagline;
+			}
 			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
+
 			if (this.loanCount > 1) {
 				return `${tagline} these loans`;
 			}
