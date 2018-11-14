@@ -84,6 +84,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import donationExpQuery from '@/graphql/query/checkout/donationExpAssignment.graphql';
+import { readJSONSetting } from '@/util/settingsUtils';
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
