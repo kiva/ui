@@ -1,0 +1,8 @@
+query {
+	general {
+		experiment: setting(setting: "uiexp.donation_boost") {
+			key
+			value
+		}
+	}
+}

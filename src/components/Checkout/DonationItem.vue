@@ -82,8 +82,9 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import donationExpQuery from '@/graphql/query/checkout/donationExpAssignment.graphql';
+import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import { readJSONSetting } from '@/util/settingsUtils';
 import numeral from 'numeral';
 import _get from 'lodash/get';
@@ -121,7 +122,7 @@ export default {
 			return new Promise((resolve, reject) => {
 				// Get the experiment object from settings
 				client.query({
-					query: updateDonation
+					query: donationDataQuery
 				}).then(() => {
 					// Get the assigned experiment version
 					client.query({ query: donationExpQuery }).then(resolve).catch(reject);
@@ -130,7 +131,7 @@ export default {
 		}
 	},
 	created() {
-
+		this.setupExperimentState();
 	},
 	watch: {
 		// watching the computed serverAmount property allows us to get set updates based on nested data props
@@ -163,10 +164,10 @@ export default {
 		setupExperimentState() {
 			// get experiment data from apollo cache
 			const donationExpVersion = this.apollo.readQuery({ query: donationExpQuery });
-			this.expVersion = _get(donationExpVersion, 'experiment_version') || null;
+			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
 
 			// get experiment data from apollo cache
-			const donationExpSetting = this.apollo.readQuery({ query: donationExpQuery });
+			const donationExpSetting = this.apollo.readQuery({ query: donationDataQuery });
 			const expData = readJSONSetting(donationExpSetting, 'general.experiment.value') || {};
 
 			if (this.expVersion && this.expVersion !== 'control') {
@@ -174,16 +175,8 @@ export default {
 			}
 
 			// if exp version a
-			// return Control
-			if (this.expVersion === 'control') {
-
-				// tracking info
-				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
-			}
-
-			// if exp version b
 			// return 15$ match case
-			if (this.expVersion === 'variant-b') {
+			if (this.expVersion === 'variant-a') {
 
 				// tracking info
 				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
@@ -191,7 +184,7 @@ export default {
 
 			// if exp version c
 			// return 10$ match case
-			if (this.expVersion === 'variant-c') {
+			if (this.expVersion === 'variant-b') {
 
 				// tracking info
 				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);

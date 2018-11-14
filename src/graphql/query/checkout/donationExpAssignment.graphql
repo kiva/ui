@@ -1,5 +1,5 @@
 query {
-	experiment(id: "donation_fields") @client {
+	experiment(id: "donation_boost") @client {
 		id
 		version
 	}
