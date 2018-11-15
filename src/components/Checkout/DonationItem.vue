@@ -22,15 +22,15 @@
 					v-if="this.expVersion === 'variant-a'"
 					class="small-text"
 					price="15"
-					v-kv-track-event="['Basket', 'EXP-CASH-173-Nov2018', '15']"
-					@click.prevent="updateDonation('15')">{{ donationUpsellText }}
+					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
+					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
 				<a
 					v-if="this.expVersion === 'variant-b'"
 					class="small-text"
 					price="10"
-					v-kv-track-event="['Basket', 'EXP-CASH-173-Nov2018', '10']"
-					@click.prevent="updateDonation('10')">{{ donationUpsellText }}
+					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
+					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -181,16 +181,34 @@ export default {
 			return `${tagline} this loan`;
 		},
 		donationUpsellText() {
-			if (numeral(this.serverAmount).value() < 15 && this.expVersion === 'variant-a') {
-				// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your imapct';
-				return 'Boost your donation to $15 and double your impact.';
-			} else if (numeral(this.serverAmount).value() < 10 && this.expVersion === 'variant-b') {
-				// on click of this text, updateDonation(10) replace text with 'Thanks for doubling your imapct';
-				return 'Boost your donation to $10 and double your impact.';
+			if (this.expVersion === 'variant-a') {
+				if (numeral(this.serverAmount).value() < 15) {
+					// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your imapct';
+					return 'Boost your donation to $15 and double your impact.';
+				} else if (numeral(this.serverAmount).value() >= 15) {
+					return 'Thanks for doubling your impact.';
+				}
+			} else if (this.expVersion === 'variant-b') {
+				if (numeral(this.serverAmount).value() < 10) {
+					// on click of this text, updateDonation(10) replace text with 'Thanks for doubling your imapct';
+					return 'Boost your donation to $10 and double your impact.';
+				} else if (numeral(this.serverAmount).value() >= 10) {
+					return 'Thanks for doubling your impact.';
+				}
 			}
 		}
 	},
 	methods: {
+		updateDonationExp() {
+			if (this.expVersion === 'variant-a') {
+				this.amount = numeral(15).format('0.00');
+				this.updateDonation();
+			}
+			if (this.expVersion === 'variant-b') {
+				this.amount = numeral(10).format('0.00');
+				this.updateDonation();
+			}
+		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
@@ -213,13 +231,13 @@ export default {
 			// if exp version a
 			// return 15$ match case
 			if (this.expVersion === 'variant-a') {
-				this.$kvTrackEvent('Basket', 'EXP-CASH-173-Nov2018', 'a');
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'a');
 			}
 
 			// if exp version b
 			// return 10$ match case
 			if (this.expVersion === 'variant-b') {
-				this.$kvTrackEvent('Basket', 'EXP-CASH-173-Nov2018', 'b');
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'b');
 			}
 		},
 		updateDonation() {
