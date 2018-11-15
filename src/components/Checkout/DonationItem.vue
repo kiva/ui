@@ -183,14 +183,14 @@ export default {
 		donationUpsellText() {
 			if (this.expVersion === 'variant-a') {
 				if (numeral(this.serverAmount).value() < 15) {
-					// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your imapct';
+					// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your imapact';
 					return 'Boost your donation to $15 and double your impact.';
 				} else if (numeral(this.serverAmount).value() >= 15) {
 					return 'Thanks for doubling your impact.';
 				}
 			} else if (this.expVersion === 'variant-b') {
 				if (numeral(this.serverAmount).value() < 10) {
-					// on click of this text, updateDonation(10) replace text with 'Thanks for doubling your imapct';
+					// on click of this text, updateDonation(10) replace text with 'Thanks for doubling your imapact';
 					return 'Boost your donation to $10 and double your impact.';
 				} else if (numeral(this.serverAmount).value() >= 10) {
 					return 'Thanks for doubling your impact.';
