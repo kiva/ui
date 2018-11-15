@@ -21,6 +21,7 @@
 				<a
 					v-if="this.expVersion === 'variant-a'"
 					class="small-text"
+					:class="boostApplied"
 					price="15"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
@@ -28,8 +29,9 @@
 				<a
 					v-if="this.expVersion === 'variant-b'"
 					class="small-text"
+					:class="boostApplied"
 					price="10"
-					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
+					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
@@ -196,6 +198,22 @@ export default {
 					return 'Thanks for doubling your impact.';
 				}
 			}
+		},
+		boostApplied() {
+			if (this.expVersion === 'variant-a') {
+				if (numeral(this.serverAmount).value() < 15) {
+					return '';
+				} else if (numeral(this.serverAmount).value() >= 15) {
+					return 'boost-applied';
+				}
+				// update this to turnariy operations
+			} else if (this.expVersion === 'variant-b') {
+				if (numeral(this.serverAmount).value() < 10) {
+					return '';
+				} else if (numeral(this.serverAmount).value() >= 10) {
+					return 'boost-applied';
+				}
+			}
 		}
 	},
 	methods: {
@@ -208,6 +226,7 @@ export default {
 				this.amount = numeral(10).format('0.00');
 				this.updateDonation();
 			}
+			// this.boostApplied = 'boost-applied';
 		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
@@ -433,6 +452,12 @@ input {
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
+}
+
+.boost-applied {
+	color: #333;
+	text-decoration: none;
+	cursor: inherit;
 }
 
 </style>
