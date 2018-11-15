@@ -86,5 +86,29 @@ export default {
 	.call-to-action-text {
 		text-decoration: underline;
 	}
+
+	.gift-banner {
+		background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
+		background-position: bottom;
+
+		.banner-link {
+			display: flex;
+			align-items: center;
+
+			.present-icon {
+				display: block;
+				height: rem-calc(22);
+				width: rem-calc(22);
+				margin-right: rem-calc(10);
+				margin-top: -0.2rem;
+			}
+
+			&:hover {
+				.present-icon {
+					stroke: $kiva-darkgreen;
+				}
+			}
+		}
+	}
 }
 </style>
