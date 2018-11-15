@@ -12,10 +12,16 @@
 			<div>
 				<div class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
+					v-if="this.expVersion === 'control'"
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
+				</a>
+				<a
+					v-if="this.expVersion !== 'control'"
+					class="small-text"
+					@click.prevent="changeDonationAmount">{{ changeDonationAmount }}
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -147,17 +153,30 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
-			if (this.expVersion === 'variant-a' || this.expVersion === 'variant-b') {
+			// Donation exp configuration lines 150-155
+			if (this.expVersion === 'variant-a') {
 				const tagline = 'Donations of $15 or more are matched by generous donors for a limited time!';
 
 				return tagline;
+			} else if (this.expVersion === 'variant-b') {
+				const tagline = 'Donations of $10 or more are matched by generous donors for a limited time!';
+
+				return tagline;
 			}
+			// Control for donation boost experiment
 			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
 
 			if (this.loanCount > 1) {
 				return `${tagline} these loans`;
 			}
 			return `${tagline} this loan`;
+		},
+		changeDonationAmount() {
+			if (numeral(this.serverAmount).value() < 15 && this.expVersion === 'variant-a') {
+				return 'Boost your donation to $15 and double your impact.';
+			} else if (numeral(this.serverAmount).value() < 10 && this.expVersion === 'variant-b') {
+				return 'Boost your donation to $10 and double your impact.';
+			}
 		}
 	},
 	methods: {
