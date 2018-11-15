@@ -22,13 +22,15 @@
 					v-if="this.expVersion === 'variant-a'"
 					class="small-text"
 					price="15"
-					@click.prevent="updateDonation()">{{ donationUpsellText }}
+					v-kv-track-event="['Basket', 'EXP-CASH-173-Nov2018', '15']"
+					@click.prevent="updateDonation('15')">{{ donationUpsellText }}
 				</a>
 				<a
 					v-if="this.expVersion === 'variant-b'"
 					class="small-text"
 					price="10"
-					@click.prevent="updateDonation()">{{ donationUpsellText }}
+					v-kv-track-event="['Basket', 'EXP-CASH-173-Nov2018', '10']"
+					@click.prevent="updateDonation('10')">{{ donationUpsellText }}
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -211,13 +213,13 @@ export default {
 			// if exp version a
 			// return 15$ match case
 			if (this.expVersion === 'variant-a') {
-				this.$kvTrackEvent('Ui-Donation', 'EXP-DonationBump', this.expName);
+				this.$kvTrackEvent('Basket', 'EXP-CASH-173-Nov2018', 'a');
 			}
 
 			// if exp version b
 			// return 10$ match case
 			if (this.expVersion === 'variant-b') {
-				this.$kvTrackEvent('Ui-Donation', 'EXP-DonationBump', this.expName);
+				this.$kvTrackEvent('Basket', 'EXP-CASH-173-Nov2018', 'b');
 			}
 		},
 		updateDonation() {
