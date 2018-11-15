@@ -20,6 +20,7 @@
 			<li v-for="donation in donations" :key="donation.id">
 				<donation-item
 					:donation="donation"
+					:my-donate-repayments="myDonateRepayments"
 					:loan-count="loans.length"
 					@refreshtotals="$emit('refreshtotals')"
 					@updating-totals="$emit('updating-totals', $event)"
@@ -51,6 +52,10 @@ export default {
 					price: '0.00'
 				}
 			]
+		},
+		myDonateRepayments: {
+			type: Boolean,
+			default: false
 		},
 		kivaCards: {
 			type: Array,

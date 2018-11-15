@@ -73,6 +73,23 @@
 					<kv-icon class="remove-x" name="small-x" />
 				</div>
 			</div>
+			<div class="donate-repayments-toggle">
+				<label v-if="!myDonateRepayments" class="donate-repayments-label">
+					<input class="donate-repayments-checkbox" type="checkbox" v-model="donateRepayments">
+					<span class="donate-repayments-icon">
+						<kv-icon v-if="!donateRepayments" name="checkbox-rounded-unchecked" />
+						<kv-icon v-else name="checkbox-rounded-checked" />
+					</span>
+					<span id="donate-repayments-tooltip">Donate loan repayments instead?</span>
+				</label>
+				<kv-tooltip controller="donate-repayments-tooltip">
+					<template slot="title">Thanks for your support!</template>
+					When you check this box, repayments go back to Kiva in the form of donations,
+					helping us cover operating costs and reach even more borrowers worldwide.
+					<br>
+					Repayments from selected loans will not be added back to your account as Kiva credit.
+				</kv-tooltip>
+			</div>
 		</span>
 	</div>
 
@@ -82,6 +99,7 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvTooltip from '@/components/Kv/KvTooltip';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
@@ -90,13 +108,18 @@ export default {
 	components: {
 		KvIcon,
 		KvButton,
-		KvLightbox
+		KvLightbox,
+		KvTooltip
 	},
 	inject: ['apollo'],
 	props: {
 		donation: {
 			type: Object,
 			default: () => {}
+		},
+		myDonateRepayments: {
+			type: Boolean,
+			default: false
 		},
 		loanCount: {
 			type: Number,
@@ -108,7 +131,8 @@ export default {
 			defaultLbVisible: false,
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
-			editDonation: false
+			editDonation: false,
+			donateRepayments: false
 		};
 	},
 	watch: {
@@ -331,6 +355,39 @@ input {
 		width: inherit;
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
+	}
+}
+
+.donate-repayments-toggle {
+	.donate-repayments-label {
+		display: block;
+		position: relative;
+	}
+
+	.donate-repayments-checkbox {
+		position: relative;
+		left: -1000rem;
+	}
+
+	.donate-repayments-icon {
+		position: absolute;
+		top: .5rem;
+		right: 0;
+
+		svg {
+			height: 1.2rem;
+			width: 1.2rem;
+		}
+	}
+
+	#donate-repayments-tooltip {
+		text-align: right;
+		display: inherit;
+		position: absolute;
+		top: .5rem;
+		right: 2rem;
+		font-weight: $global-weight-highlight;
+		color: $kiva-accent-blue;
 	}
 }
 

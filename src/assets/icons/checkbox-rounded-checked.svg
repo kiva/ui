@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.3 (67297) - http://www.bohemiancoding.com/sketch -->
+    <title>checkbox</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Rd4---donate-repayments" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop" transform="translate(-972.000000, -698.000000)" stroke="#484848">
+            <g id="loans" transform="translate(115.000000, 279.000000)">
+                <g id="line-items" transform="translate(0.000000, 70.000000)">
+                    <g id="donation" transform="translate(76.000000, 313.000000)">
+                        <g id="checkbox" transform="translate(781.000000, 36.000000)">
+                            <rect id="Rectangle-44-Copy" x="0.5" y="0.5" width="14" height="14" rx="2"></rect>
+                            <polyline id="Path-2" stroke-width="2" points="3.71923828 6.86230469 6.40649414 9.54956055 11.3869629 4.5690918"></polyline>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
