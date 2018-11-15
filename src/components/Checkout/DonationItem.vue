@@ -19,9 +19,16 @@
 					How Kiva uses donations
 				</a>
 				<a
-					v-if="this.expVersion !== 'control'"
+					v-if="this.expVersion === 'variant-a'"
 					class="small-text"
-					@click.prevent="changeDonationAmount">{{ changeDonationAmount }}
+					price="15"
+					@click.prevent="updateDonation()">{{ donationUpsellText }}
+				</a>
+				<a
+					v-if="this.expVersion === 'variant-b'"
+					class="small-text"
+					price="10"
+					@click.prevent="updateDonation()">{{ donationUpsellText }}
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -171,10 +178,12 @@ export default {
 			}
 			return `${tagline} this loan`;
 		},
-		changeDonationAmount() {
+		donationUpsellText() {
 			if (numeral(this.serverAmount).value() < 15 && this.expVersion === 'variant-a') {
+				// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your imapct';
 				return 'Boost your donation to $15 and double your impact.';
 			} else if (numeral(this.serverAmount).value() < 10 && this.expVersion === 'variant-b') {
+				// on click of this text, updateDonation(10) replace text with 'Thanks for doubling your imapct';
 				return 'Boost your donation to $10 and double your impact.';
 			}
 		}
@@ -202,17 +211,13 @@ export default {
 			// if exp version a
 			// return 15$ match case
 			if (this.expVersion === 'variant-a') {
-
-				// tracking info
-				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+				this.$kvTrackEvent('Ui-Donation', 'EXP-DonationBump', this.expName);
 			}
 
-			// if exp version c
+			// if exp version b
 			// return 10$ match case
 			if (this.expVersion === 'variant-b') {
-
-				// tracking info
-				// ie: this.$kvTrackEvent('Ui-Register', 'EXP-RegFormFields', this.expName);
+				this.$kvTrackEvent('Ui-Donation', 'EXP-DonationBump', this.expName);
 			}
 		},
 		updateDonation() {
