@@ -7,7 +7,7 @@ module.exports = merge(base, {
 		graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
 		enablePerimeterx: false,
 		perimeterxAppId: '###',
-		enableAnalytics: true,
+		enableAnalytics: false,
 		enableGTM: true,
 		googleTagmanagerId: 'GTM-PXFRMT',
 		enableGA: true,
