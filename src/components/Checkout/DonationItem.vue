@@ -203,6 +203,10 @@ export default {
 	},
 	methods: {
 		updateDonationExp() {
+			// if the server amount is greater than the donationBoostAmount return false
+			if (numeral(this.serverAmount).value() >= numeral(this.donationBoostExpAmount).value()) {
+				return false;
+			}
 			if (this.expVersion === 'variant-a') {
 				this.amount = numeral(15).format('0.00');
 				this.updateDonation();
