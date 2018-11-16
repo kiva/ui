@@ -7,7 +7,6 @@ query {
 	}
 	shop {
 		basket {
-			hasFreeCredits
 			totals {
 				redemptionCodeAvailableTotal
 			}

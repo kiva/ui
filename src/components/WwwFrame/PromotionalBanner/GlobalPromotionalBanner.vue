@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
@@ -18,14 +19,15 @@ export default {
 			holidayModeEnabled: false,
 			promoEnabled: false,
 			lendingRewardOffered: false,
-			hasFreeCredits: false,
+			bonusBalance: 0,
 		};
 	},
 	computed: {
 		currentActivePromo() {
 			// Temporarily remove holiday or default banner if either of these are true.
 			// Each of these will render their own banners in the near future.
-			if (this.lendingRewardOffered || this.hasFreeCredits) {
+			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
+			if (this.lendingRewardOffered || this.bonusBalance > 0) {
 				return '';
 			}
 			if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
@@ -56,8 +58,11 @@ export default {
 				'general.promo_end_time.value'
 			);
 
+			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
+			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
+			this.bonusBalance = promoBalance + basketPromoBalance;
+
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
-			this.lendingRewardOffered = _get(data, 'shop.basket.hasFreeCredits');
 		}
 	},
 };
