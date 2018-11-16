@@ -20,6 +20,7 @@ export default {
 			promoEnabled: false,
 			lendingRewardOffered: false,
 			bonusBalance: 0,
+			hasFreeCredits: false
 		};
 	},
 	computed: {
@@ -27,7 +28,7 @@ export default {
 			// Temporarily remove holiday or default banner if either of these are true.
 			// Each of these will render their own banners in the near future.
 			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
-			if (this.lendingRewardOffered || this.bonusBalance > 0) {
+			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
 				return '';
 			}
 			if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
@@ -63,6 +64,7 @@ export default {
 			this.bonusBalance = promoBalance + basketPromoBalance;
 
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 		}
 	},
 };
