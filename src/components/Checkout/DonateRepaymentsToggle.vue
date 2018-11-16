@@ -1,7 +1,11 @@
 <template>
-	<div class="donate-repayments-toggle">
+	<div v-if="showToggle" class="donate-repayments-toggle">
 		<label v-if="!myDonateRepayments" class="donate-repayments-label">
-			<input class="donate-repayments-checkbox" type="checkbox" v-model="donateRepayments">
+			<input
+				class="donate-repayments-checkbox"
+				type="checkbox"
+				v-model="donateRepayments"
+				@change="toggleDonateRepayments">
 			<span class="donate-repayments-icon">
 				<kv-icon v-if="!donateRepayments" name="checkbox-rounded-unchecked" />
 				<kv-icon v-else name="checkbox-rounded-checked" />
@@ -19,16 +23,14 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import _filter from 'lodash/filter';
+import _forEach from 'lodash/forEach';
+import numeral from 'numeral';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
-// import numeral from 'numeral';
-
-/*
-Data needs
-- high level loan data: ids, price, donateRepayment setting, count
-- my donateRepyaments status
-- currentDonation Total
-*/
+import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 
 export default {
 	components: {
@@ -37,23 +39,108 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
-		donation: {
-			type: Object,
-			default: () => {}
-		},
-		myDonateRepayments: {
-			type: Boolean,
-			default: false
-		},
-		loanCount: {
-			type: Number,
-			default: 0
+		serverDonationAmount: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
 		return {
-			donateRepayments: false
+			donateRepayments: false,
+			myDonateRepayments: false,
+			totals: {},
+			loans: [],
 		};
+	},
+	created() {
+		// Watch for and react to changes to the query
+		this.apollo.watchQuery({ query: initializeCheckout }).subscribe({
+			next: ({ data }) => {
+				this.myDonateRepayments = _get(data, 'my.userAccount.donateRepayments');
+				this.totals = _get(data, 'shop.basket.totals');
+				this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
+
+				_forEach(this.loans, loan => {
+					if (loan.donateRepayments) {
+						this.donateRepayments = true;
+					}
+				});
+			},
+		});
+	},
+	computed: {
+		showToggle() {
+			// not already donating
+			if (numeral(this.totals.donationTotal).value() > 0
+				// no redemption codes applied #shop to be more exact we should use hasPromoRedemptionCode()
+				|| numeral(this.totals.redemptionCodeAppliedTotal).value() > 0
+				// no reward credits
+				|| numeral(this.totals.bonusAppliedTotal).value() > 0
+				// acct not already set to donate on repayment
+				|| this.myDonateRepayments
+				// should have loans to dedicate repayments
+				|| numeral(this.totals.loanReservationTotal).value() === 0) {
+				return false;
+			}
+
+			return true;
+		}
+	},
+	methods: {
+		toggleDonateRepayments() {
+			if (this.donateRepayments) {
+				this.setDonateRepayments(true);
+			} else {
+				this.setDonateRepayments(false);
+			}
+		},
+		setDonateRepayments(donateRepayments) {
+			const errors = [];
+			let completions = 0;
+			_forEach(this.loans, loan => {
+				this.mutateDonateRepayments(loan, donateRepayments).then(data => {
+					if (data.errors) {
+						errors.push(data.errors);
+					} else {
+						completions += 1;
+						this.$kvTrackEvent(
+							'basket',
+							'Donate Repayments',
+							donateRepayments ? 'Applied' : 'Removed',
+							loan.id
+						);
+					}
+				});
+			});
+
+			// Check for and process errors (only 1 per type)
+			if (errors.length > 0) {
+				_forEach(errors, ({ message }) => {
+					this.$showTipMsg(message, 'error');
+				});
+				this.$emit('updating-totals', false);
+			}
+
+			// check for completions
+			if (completions === this.loans.length) {
+				this.$emit('refreshtotals', 'donate-repayments');
+			}
+		},
+		mutateDonateRepayments(loan, donateRepayments) {
+			return this.apollo.mutate({
+				mutation: updateLoanReservation,
+				variables: {
+					loanid: loan.id,
+					price: loan.price,
+					donateRepayments
+				}
+			}).then(data => {
+				return data;
+			}).catch(error => {
+				console.error(error);
+				return error;
+			});
+		}
 	}
 };
 </script>

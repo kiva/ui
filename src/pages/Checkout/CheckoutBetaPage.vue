@@ -74,7 +74,6 @@
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
-							:my-donate-repayments="myDonateRepayments"
 							:kiva-cards="kivaCards"
 							:teams="teams"
 							@validateprecheckout="validatePreCheckout"
@@ -215,7 +214,6 @@ export default {
 			currentStep: 'basket',
 			loans: [],
 			donations: [],
-			myDonateRepayments: false,
 			kivaCards: [],
 			redemption_credits: [],
 			hasFreeCredits: false,
@@ -261,7 +259,6 @@ export default {
 		result({ data }) {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
-			this.myDonateRepayments = _get(data, 'my.userAccount.donateRepayments');
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });

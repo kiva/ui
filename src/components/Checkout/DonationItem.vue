@@ -74,8 +74,9 @@
 				</div>
 			</div>
 			<donate-repayments
-				:donation-amount="serverAmount"
-				:my-donate-repayments="myDonateRepayments" />
+				:server-donation-amount="serverAmount"
+				@updating-totals="$emit('updating-totals', $event)"
+				@refreshtotals="$emit('refreshtotals')" />
 		</span>
 	</div>
 
@@ -102,10 +103,6 @@ export default {
 		donation: {
 			type: Object,
 			default: () => {}
-		},
-		myDonateRepayments: {
-			type: Boolean,
-			default: false
 		},
 		loanCount: {
 			type: Number,

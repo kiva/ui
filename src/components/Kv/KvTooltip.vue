@@ -55,6 +55,7 @@ $inner-arrow-offset: rem-calc($arrow-width - 1);
 	border-radius: rem-calc(3);
 	box-shadow: 0 2px 0 rgba(196, 231, 219, 0.8);
 	border: #{$tooltip-border-width}px solid $aqua-medium-green;
+	z-index: 1234;
 }
 
 .tooltip-content {
