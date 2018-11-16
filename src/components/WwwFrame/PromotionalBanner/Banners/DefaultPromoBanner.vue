@@ -6,7 +6,8 @@
 			v-kv-track-event="['TopNav','click-Promo','Default Banner']">
 			<kv-icon name="present" class="present-icon"/>
 			<div class="content">
-				<span class="call-to-action-text">Buy $50 in Kiva Cards</span>, get a $25 bonus to lend!
+				Give hope this holiday season.<br class="so">
+				<span class="call-to-action-text">Give a Kiva Card</span>
 			</div>
 		</router-link>
 	</div>

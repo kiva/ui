@@ -3,8 +3,7 @@
 		<router-link to="/gifts" class="banner-link" v-kv-track-event="['TopNav','click-Promo','Holiday Banner']">
 			<kv-icon name="present" class="present-icon"/>
 			<div class="content">
-				Give hope this holiday season.<br class="so">
-				<span class="call-to-action-text">Give a Kiva Card</span>
+				<span class="call-to-action-text">Buy $50 in Kiva Cards</span>, get a $25 bonus to lend!
 			</div>
 		</router-link>
 	</div>
