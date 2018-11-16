@@ -181,22 +181,19 @@ export default {
 			}
 			return `${tagline} this loan`;
 		},
-		donationUpsellText() {
+		donationBoostExpAmount() {
 			if (this.expVersion === 'variant-a') {
-				if (numeral(this.serverAmount).value() < 15) {
-					// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your imapact';
-					return 'Boost your donation to $15 and double your impact.';
-				} else if (numeral(this.serverAmount).value() >= 15) {
-					return 'Thanks for doubling your impact.';
-				}
+				return numeral(15).format('$0');
 			} else if (this.expVersion === 'variant-b') {
-				if (numeral(this.serverAmount).value() < 10) {
-					// on click of this text, updateDonation(10) replace text with 'Thanks for doubling your imapact';
-					return 'Boost your donation to $10 and double your impact.';
-				} else if (numeral(this.serverAmount).value() >= 10) {
-					return 'Thanks for doubling your impact.';
-				}
+				return numeral(10).format('$0');
 			}
+		},
+		donationUpsellText() {
+			if (numeral(this.serverAmount).value() < numeral(this.donationBoostExpAmount).value()) {
+				// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your impact';
+				return `Boost your donation to ${this.donationBoostExpAmount} and double your impact.`;
+			}
+			return 'Thanks for doubling your impact.';
 		},
 		boostApplied() {
 			if (this.expVersion === 'variant-a' || this.expVersion === 'variant-b') {
