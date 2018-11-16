@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
