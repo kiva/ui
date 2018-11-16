@@ -15,7 +15,6 @@
 					v-if="this.expVersion === 'variant-a'"
 					class="small-text"
 					:class="boostApplied"
-					price="15"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
@@ -23,7 +22,6 @@
 					v-else-if="this.expVersion === 'variant-b'"
 					class="small-text"
 					:class="boostApplied"
-					price="10"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
@@ -129,8 +127,7 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			expVersion: '',
-			expName: ''
+			expVersion: ''
 		};
 	},
 	apollo: {
