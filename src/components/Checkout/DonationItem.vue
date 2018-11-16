@@ -12,6 +12,21 @@
 			<div>
 				<div class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
+					v-if="this.expVersion === 'variant-a'"
+					class="small-text"
+					:class="boostApplied"
+					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
+					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
+				</a>
+				<a
+					v-else-if="this.expVersion === 'variant-b'"
+					class="small-text"
+					:class="boostApplied"
+					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
+					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
+				</a>
+				<a
+					v-else
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
@@ -82,8 +97,11 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import donationExpQuery from '@/graphql/query/checkout/donationExpAssignment.graphql';
+import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import numeral from 'numeral';
+import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 
 export default {
@@ -108,8 +126,25 @@ export default {
 			defaultLbVisible: false,
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
-			editDonation: false
+			editDonation: false,
+			expVersion: ''
 		};
+	},
+	apollo: {
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				// Get the experiment object from settings
+				client.query({
+					query: donationDataQuery
+				}).then(() => {
+					// Get the assigned experiment version
+					client.query({ query: donationExpQuery }).then(resolve).catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
+	created() {
+		this.setupExperimentState();
 	},
 	watch: {
 		// watching the computed serverAmount property allows us to get set updates based on nested data props
@@ -125,19 +160,79 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
+			// Donation exp configuration lines 150-155
+			if (this.expVersion === 'variant-a') {
+				const tagline = 'Donations of $15 or more are matched by generous donors for a limited time!';
+
+				return tagline;
+			} else if (this.expVersion === 'variant-b') {
+				const tagline = 'Donations of $10 or more are matched by generous donors for a limited time!';
+
+				return tagline;
+			}
+			// Control for donation boost experiment
 			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
+
 			if (this.loanCount > 1) {
 				return `${tagline} these loans`;
 			}
 			return `${tagline} this loan`;
+		},
+		donationBoostExpAmount() {
+			if (this.expVersion === 'variant-a') {
+				return numeral(15).format('$0');
+			} else if (this.expVersion === 'variant-b') {
+				return numeral(10).format('$0');
+			}
+		},
+		donationUpsellText() {
+			if (numeral(this.serverAmount).value() < numeral(this.donationBoostExpAmount).value()) {
+				// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your impact';
+				return `Boost your donation to ${this.donationBoostExpAmount} and double your impact.`;
+			}
+			return 'Thanks for doubling your impact.';
+		},
+		boostApplied() {
+			if (this.expVersion === 'variant-a' || this.expVersion === 'variant-b') {
+				return numeral(this.serverAmount).value() < 15 ? '' : 'boost-applied';
+			}
 		}
 	},
 	methods: {
+		updateDonationExp() {
+			// if the server amount is greater than the donationBoostAmount return false
+			if (numeral(this.serverAmount).value() >= numeral(this.donationBoostExpAmount).value()) {
+				return false;
+			}
+			if (this.expVersion === 'variant-a') {
+				this.amount = numeral(15).format('0.00');
+				this.updateDonation();
+			}
+			if (this.expVersion === 'variant-b') {
+				this.amount = numeral(10).format('0.00');
+				this.updateDonation();
+			}
+		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
+		},
+		setupExperimentState() {
+			// get experiment data from apollo cache
+			const donationExpVersion = this.apollo.readQuery({ query: donationExpQuery });
+			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
+
+			if (this.expVersion && this.expVersion === 'control') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'control');
+			}
+			if (this.expVersion === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'a');
+			}
+			if (this.expVersion === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'b');
+			}
 		},
 		updateDonation() {
 			this.editDonation = false;
@@ -332,6 +427,12 @@ input {
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
+}
+
+.boost-applied {
+	color: #333;
+	text-decoration: none;
+	cursor: inherit;
 }
 
 </style>
