@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import GiftBanner from './Banners/GiftBanner';
@@ -16,10 +17,17 @@ export default {
 		return {
 			holidayModeEnabled: false,
 			promoEnabled: false,
+			lendingRewardOffered: false,
+			hasFreeCredits: false,
 		};
 	},
 	computed: {
 		currentActivePromo() {
+			// Temporarily remove holiday or default banner if either of these are true.
+			// Each of these will render their own banners in the near future.
+			if (this.lendingRewardOffered || this.hasFreeCredits) {
+				return '';
+			}
 			if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
 				return GiftBanner;
 			} else if (this.promoEnabled) {
@@ -47,6 +55,9 @@ export default {
 				'general.promo_start_time.value',
 				'general.promo_end_time.value'
 			);
+
+			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+			this.lendingRewardOffered = _get(data, 'shop.basket.hasFreeCredits');
 		}
 	},
 };
