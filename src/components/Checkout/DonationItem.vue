@@ -12,13 +12,6 @@
 			<div>
 				<div class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
-					v-if="this.expVersion === 'control'"
-					class="small-text donation-help-text"
-					@click.prevent="triggerDefaultLightbox"
-					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
-					How Kiva uses donations
-				</a>
-				<a
 					v-if="this.expVersion === 'variant-a'"
 					class="small-text"
 					:class="boostApplied"
@@ -27,12 +20,19 @@
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
 				<a
-					v-if="this.expVersion === 'variant-b'"
+					v-else-if="this.expVersion === 'variant-b'"
 					class="small-text"
 					:class="boostApplied"
 					price="10"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
+				</a>
+				<a
+					v-else
+					class="small-text donation-help-text"
+					@click.prevent="triggerDefaultLightbox"
+					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
+					How Kiva uses donations
 				</a>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
@@ -102,7 +102,6 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import donationExpQuery from '@/graphql/query/checkout/donationExpAssignment.graphql';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import { readJSONSetting } from '@/util/settingsUtils';
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
@@ -200,19 +199,8 @@ export default {
 			}
 		},
 		boostApplied() {
-			if (this.expVersion === 'variant-a') {
-				if (numeral(this.serverAmount).value() < 15) {
-					return '';
-				} else if (numeral(this.serverAmount).value() >= 15) {
-					return 'boost-applied';
-				}
-				// update this to turnariy operations
-			} else if (this.expVersion === 'variant-b') {
-				if (numeral(this.serverAmount).value() < 10) {
-					return '';
-				} else if (numeral(this.serverAmount).value() >= 10) {
-					return 'boost-applied';
-				}
+			if (this.expVersion === 'variant-a' || this.expVersion === 'variant-b') {
+				return numeral(this.serverAmount).value() < 15 ? '' : 'boost-applied';
 			}
 		}
 	},
@@ -226,7 +214,6 @@ export default {
 				this.amount = numeral(10).format('0.00');
 				this.updateDonation();
 			}
-			// this.boostApplied = 'boost-applied';
 		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
@@ -239,22 +226,12 @@ export default {
 			const donationExpVersion = this.apollo.readQuery({ query: donationExpQuery });
 			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
 
-			// get experiment data from apollo cache
-			const donationExpSetting = this.apollo.readQuery({ query: donationDataQuery });
-			const expData = readJSONSetting(donationExpSetting, 'general.experiment.value') || {};
-
-			if (this.expVersion && this.expVersion !== 'control') {
-				this.expName = _get(expData, `variants[${this.expVersion}].name`) || null;
+			if (this.expVersion && this.expVersion === 'control') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'control');
 			}
-
-			// if exp version a
-			// return 15$ match case
 			if (this.expVersion === 'variant-a') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'a');
 			}
-
-			// if exp version b
-			// return 10$ match case
 			if (this.expVersion === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'b');
 			}
