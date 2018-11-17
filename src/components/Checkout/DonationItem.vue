@@ -89,7 +89,6 @@
 				</div>
 			</div>
 			<donate-repayments
-				:server-donation-amount="serverAmount"
 				@updating-totals="$emit('updating-totals', $event)"
 				@refreshtotals="$emit('refreshtotals')" />
 		</span>

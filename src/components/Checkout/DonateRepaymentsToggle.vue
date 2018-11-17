@@ -38,12 +38,6 @@ export default {
 		KvTooltip
 	},
 	inject: ['apollo'],
-	props: {
-		serverDonationAmount: {
-			type: String,
-			default: ''
-		}
-	},
 	data() {
 		return {
 			donateRepayments: false,
@@ -95,25 +89,18 @@ export default {
 			}
 		},
 		setDonateRepayments(donateRepayments) {
+			this.$emit('updating-totals', true);
 			const errors = [];
-			let completions = 0;
 			_forEach(this.loans, loan => {
 				this.mutateDonateRepayments(loan, donateRepayments).then(data => {
 					if (data.errors) {
 						errors.push(data.errors);
-					} else {
-						completions += 1;
-						this.$kvTrackEvent(
-							'basket',
-							'Donate Repayments',
-							donateRepayments ? 'Applied' : 'Removed',
-							loan.id
-						);
 					}
 				});
 			});
 
-			// Check for and process errors (only 1 per type)
+			// Check for and process errors
+			// TODO: This could be better so as to prevent multiple tip messages
 			if (errors.length > 0) {
 				_forEach(errors, ({ message }) => {
 					this.$showTipMsg(message, 'error');
@@ -121,10 +108,15 @@ export default {
 				this.$emit('updating-totals', false);
 			}
 
-			// check for completions
-			if (completions === this.loans.length) {
-				this.$emit('refreshtotals', 'donate-repayments');
-			}
+			// Refresh server totals (this will also clear the spinner)
+			this.$emit('refreshtotals', 'donate-repayments');
+
+			// Fire event to siginify intended operation
+			this.$kvTrackEvent(
+				'basket',
+				'Donate Repayments',
+				donateRepayments ? 'Applied' : 'Removed'
+			);
 		},
 		mutateDonateRepayments(loan, donateRepayments) {
 			return this.apollo.mutate({
