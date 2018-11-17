@@ -59,6 +59,7 @@
 		"serialize-javascript": "^1.4.0",
 		"set-cookie-parser": "^2.2.1",
 		"vue": "^2.5.17",
+		"vue-instantsearch": "^1.7.0",
 		"vue-meta": "^1.5.4",
 		"vue-progressbar": "^0.7.3",
 		"vue-router": "^3.0.1",

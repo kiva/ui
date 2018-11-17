@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import numeral from 'numeral';
+import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import GiftBanner from './Banners/GiftBanner';
@@ -16,10 +18,19 @@ export default {
 		return {
 			holidayModeEnabled: false,
 			promoEnabled: false,
+			lendingRewardOffered: false,
+			bonusBalance: 0,
+			hasFreeCredits: false
 		};
 	},
 	computed: {
 		currentActivePromo() {
+			// Temporarily remove holiday or default banner if either of these are true.
+			// Each of these will render their own banners in the near future.
+			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
+			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
+				return '';
+			}
 			if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
 				return GiftBanner;
 			} else if (this.promoEnabled) {
@@ -47,6 +58,13 @@ export default {
 				'general.promo_start_time.value',
 				'general.promo_end_time.value'
 			);
+
+			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
+			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
+			this.bonusBalance = promoBalance + basketPromoBalance;
+
+			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 		}
 	},
 };
@@ -85,6 +103,30 @@ export default {
 
 	.call-to-action-text {
 		text-decoration: underline;
+	}
+
+	.gift-banner {
+		background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
+		background-position: bottom;
+
+		.banner-link {
+			display: flex;
+			align-items: center;
+
+			.present-icon {
+				display: block;
+				height: rem-calc(22);
+				width: rem-calc(22);
+				margin-right: rem-calc(10);
+				margin-top: -0.2rem;
+			}
+
+			&:hover {
+				.present-icon {
+					stroke: $kiva-darkgreen;
+				}
+			}
+		}
 	}
 }
 </style>
