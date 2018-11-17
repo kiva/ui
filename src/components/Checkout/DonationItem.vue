@@ -5,7 +5,7 @@
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-7 large-9 donation-info-wrapper">
+		<span class="small-9 medium-6 large-7 donation-info-wrapper">
 			<span class="donation-info featured-text">
 				Donation to Kiva
 			</span>
@@ -40,7 +40,7 @@
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 large-2 medium-text-font-size">
+		<span class="small-9 medium-4 large-4 medium-text-font-size">
 			<div
 				v-if="!editDonation"
 				class="donation-amount-wrapper">
@@ -239,7 +239,7 @@ export default {
 .donation-amount-wrapper {
 	margin-left: 0.6rem;
 	width: 10.8rem;
-	text-align: right;
+	text-align: left;
 
 	@include breakpoint(medium) {
 		margin: 0;

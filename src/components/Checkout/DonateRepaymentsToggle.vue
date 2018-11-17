@@ -1,16 +1,16 @@
 <template>
 	<div v-if="showToggle" class="donate-repayments-toggle">
 		<label v-if="!myDonateRepayments" class="donate-repayments-label">
-			<input
-				class="donate-repayments-checkbox"
-				type="checkbox"
-				v-model="donateRepayments"
-				@change="toggleDonateRepayments">
 			<span class="donate-repayments-icon">
 				<kv-icon v-if="!donateRepayments" name="checkbox-rounded-unchecked" />
 				<kv-icon v-else name="checkbox-rounded-checked" />
 			</span>
 			<span id="donate-repayments-tooltip">Donate loan repayments instead?</span>
+			<input
+				class="donate-repayments-checkbox"
+				type="checkbox"
+				v-model="donateRepayments"
+				@change="toggleDonateRepayments">
 		</label>
 		<kv-tooltip controller="donate-repayments-tooltip">
 			<template slot="title">Thanks for your support!</template>
@@ -150,19 +150,32 @@ export default {
 
 .donate-repayments-toggle {
 	.donate-repayments-label {
-		display: block;
+		display: flex;
 		position: relative;
+		padding: 0.5rem 0 0 0.5rem;
+		align-items: flex-start;
+		line-height: 1.5rem;
+		cursor: pointer;
+
+		@include breakpoint(medium) {
+			flex-direction: row-reverse;
+			padding: 0.05rem 0 0 0.5rem;
+		}
 	}
 
 	.donate-repayments-checkbox {
 		position: relative;
 		left: -1000rem;
+		margin: 0;
 	}
 
 	.donate-repayments-icon {
-		position: absolute;
-		top: 0.5rem;
-		right: 0;
+		margin: 0 0.5rem 0 0;
+		display: inline-block;
+
+		@include breakpoint(medium) {
+			margin: 0 0 0 0.5rem;
+		}
 
 		svg {
 			height: 1.2rem;
@@ -171,13 +184,13 @@ export default {
 	}
 
 	#donate-repayments-tooltip {
-		text-align: right;
-		display: inherit;
-		position: absolute;
-		top: 0.5rem;
-		right: 2rem;
-		font-weight: $global-weight-highlight;
+		font-weight: $global-weight-normal;
 		color: $kiva-accent-blue;
+		line-height: $small-text-line-height;
+
+		@include breakpoint(medium) {
+			text-align: right;
+		}
 	}
 }
 </style>
