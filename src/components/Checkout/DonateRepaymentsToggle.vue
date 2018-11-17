@@ -152,7 +152,7 @@ export default {
 	.donate-repayments-label {
 		display: flex;
 		position: relative;
-		padding: 0.5rem 0 0 0.5rem;
+		padding: 0.5rem 0 0 0.55rem;
 		align-items: flex-start;
 		line-height: 1.5rem;
 		cursor: pointer;
