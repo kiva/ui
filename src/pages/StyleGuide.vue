@@ -35,6 +35,8 @@
 			<p>
 				Example &lt;p&gt; paragraph text.
 				{{ lorem }}
+			</p>
+			<p>
 				<a>Example &lt;a&gt; Link</a>.
 				{{ lorem }}
 			</p>
@@ -55,13 +57,18 @@
 
 			<label class="elem-desc">&lt;i&gt; Tag, &lt;b&gt; Tag, &lt;strong&gt; Tag, &lt;em&gt; Tag</label>
 			<p>
-				{{ lorem }}
 				<i>Example &lt;i&gt; italicized text</i>.
 				{{ lorem }}
+			</p>
+			<p>
 				<b>Example &lt;b&gt; bolded text</b>.
 				{{ lorem }}
+			</p>
+			<p>
 				<strong>Example &lt;strong&gt; strong text</strong>.
 				{{ lorem }}
+			</p>
+			<p>
 				<em>Example &lt;em&gt; emphasized text</em>.
 				{{ lorem }}
 			</p>
