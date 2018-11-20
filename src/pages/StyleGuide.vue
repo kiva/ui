@@ -43,6 +43,28 @@
 			<label class="elem-desc">Setting button (.setting)</label>
 			<kv-button class="setting">Setting</kv-button>
 		</section>
+
+		<section>
+			<h2>Colors</h2>
+			<span>
+				<div class="color-box green" style="height: 100px; width: 100px;"></div>
+				<div class="color-name">$green</div>
+				<div class="color-hex">#4fafe</div>
+			</span>
+
+			<span>
+				<div class="color-box dark-green" style="height: 100px; width: 100px;"></div>
+				<div class="color-name">$dark-green</div>
+				<div class="color-hex">#247037</div>
+			</span>
+
+			<span>
+				<div class="color-box graphic-green" style="height: 100px; width: 100px;"></div>
+				<div class="color-name">$graphic-green</div>
+				<div class="color-hex">#49953f</div>
+			</span>
+
+		</section>
 	</div>
 </template>
 
@@ -64,9 +86,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'settings';
+
 .elem-desc {
 	border-bottom: 1px solid #eee;
 	color: #888;
 	font-size: 80%;
 }
+
+.green {
+	background: $green;
+}
+
+.dark-green {
+	background: $dark-green;
+}
+
+.graphic-green {
+	background: $graphic-green;
+}
+
 </style>
