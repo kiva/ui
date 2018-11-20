@@ -198,8 +198,11 @@ export default {
 			return 'Thanks for doubling your impact.';
 		},
 		boostApplied() {
-			if (this.expVersion === 'variant-a' || this.expVersion === 'variant-b') {
+			if (this.expVersion === 'variant-a') {
 				return numeral(this.serverAmount).value() < 15 ? '' : 'boost-applied';
+			}
+			if (this.expVersion === 'variant-b') {
+				return numeral(this.serverAmount).value() < 10 ? '' : 'boost-applied';
 			}
 		}
 	},
