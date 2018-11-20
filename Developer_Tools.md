@@ -37,3 +37,8 @@ Command Shift P - to install extensions
 ## PHPStorm
 
 [SCSS Style Linting](https://github.com/Jardinero/stylelint-plugin)
+
+## Chrome : Extensions
+
+- [Apollo Client Developer Tools](https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm)
+- [Vue.js Devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
