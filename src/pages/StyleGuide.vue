@@ -83,7 +83,7 @@
 			<form>
 				<label class="elem-desc">Legend above radio buttons with labels</label>
 				<fieldset>
-					<legend>Example Legend for Radio Buttons</legend>
+					<legend>Example Legend for Radio Buttons and Checkbox</legend>
 					<label>
 						<input
 							type="radio"
@@ -99,6 +99,12 @@
 							value="off"
 						>
 						Off
+					</label>
+					<label v-for="option in options" :key="option">
+						{{ option }}
+						<input
+							type="checkbox"
+						>
 					</label>
 				</fieldset>
 				<label class="elem-desc">Select and Multiple Select</label>
@@ -119,11 +125,10 @@
 						</select>
 					</label>
 					<label for="example-multiple-select">
-						Multiple Select with Medium Font Size
+						Multiple Select
 						<select
 							name="example-multiple-select"
 							id="example-multiple-select"
-							class="medium-text-font-size"
 							multiple
 						>
 							<option
@@ -134,6 +139,26 @@
 								{{ singleOption }}
 							</option>
 						</select>
+					</label>
+				</fieldset>
+				<label class="elem-desc">Input Text and Textarea</label>
+				<fieldset class="small-width">
+					<label for="inputText">
+						Input Text
+						<input
+							type="text"
+							name="inputText"
+							id="inputText"
+							maxlength="40"
+						>
+					</label>
+					<label for="inputTextarea">
+						Input Text Area
+						<textarea
+							name="inputTextarea"
+							id="inputTextarea"
+							rows="4"
+						></textarea>
 					</label>
 				</fieldset>
 			</form>
