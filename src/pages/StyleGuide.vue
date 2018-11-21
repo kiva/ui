@@ -78,26 +78,64 @@
 			<label class="elem-desc">&lt;blockquote&gt; Tag</label>
 			<blockquote>Example &lt;blockquote&gt; blockquote text. {{ lorem }}</blockquote>
 		</section>
-		<section>
+		<section id="section-form">
 			<h2>Forms</h2>
 			<form>
-				<label class="elem-desc">Radio buttons with labels</label>
-				<label>
-					<input
-						type="radio"
-						name="radio-example"
-						value="on"
-					>
-					On
-				</label>
-				<label>
-					<input
-						type="radio"
-						name="radio-example"
-						value="off"
-					>
-					Off
-				</label>
+				<label class="elem-desc">Legend above radio buttons with labels</label>
+				<fieldset>
+					<legend>Example Legend for Radio Buttons</legend>
+					<label>
+						<input
+							type="radio"
+							name="radio-example"
+							value="on"
+						>
+						On
+					</label>
+					<label>
+						<input
+							type="radio"
+							name="radio-example"
+							value="off"
+						>
+						Off
+					</label>
+				</fieldset>
+				<label class="elem-desc">Select and Multiple Select</label>
+				<fieldset class="small-width">
+					<label for="example-select">
+						Select
+						<select
+							name="example-select"
+							id="example-select"
+						>
+							<option
+								v-for="singleOption in options"
+								:key="singleOption"
+								:value="singleOption"
+							>
+								{{ singleOption }}
+							</option>
+						</select>
+					</label>
+					<label for="example-multiple-select">
+						Multiple Select with Medium Font Size
+						<select
+							name="example-multiple-select"
+							id="example-multiple-select"
+							class="medium-text-font-size"
+							multiple
+						>
+							<option
+								v-for="singleOption in options"
+								:key="singleOption"
+								:value="singleOption"
+							>
+								{{ singleOption }}
+							</option>
+						</select>
+					</label>
+				</fieldset>
 			</form>
 		</section>
 		<section>
@@ -130,6 +168,12 @@ export default {
 		return {
 			lorem: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 			shortLorem: 'Lorem ipsum dolor sit amet',
+			options: [
+				'Option A',
+				'Option B',
+				'Option C',
+				'Option D',
+			],
 		};
 	},
 };
@@ -140,5 +184,11 @@ export default {
 	border-bottom: 1px solid #eee;
 	color: #888;
 	font-size: 80%;
+}
+
+#section-form {
+	.small-width {
+		width: 300px;
+	}
 }
 </style>
