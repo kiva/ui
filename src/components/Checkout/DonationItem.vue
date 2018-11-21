@@ -12,14 +12,14 @@
 			<div>
 				<div class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
-					v-if="this.expVersion === 'variant-a'"
+					v-if="this.expVersion === 'variant-b'"
 					class="small-text"
 					:class="boostApplied"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
 				<a
-					v-else-if="this.expVersion === 'variant-b'"
+					v-else-if="this.expVersion === 'variant-c'"
 					class="small-text"
 					:class="boostApplied"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
@@ -166,11 +166,11 @@ export default {
 		},
 		donationTagLine() {
 			// Donation exp configuration lines 150-155
-			if (this.expVersion === 'variant-a') {
+			if (this.expVersion === 'variant-b') {
 				const tagline = 'Donations of $15 or more are matched by generous donors for a limited time!';
 
 				return tagline;
-			} else if (this.expVersion === 'variant-b') {
+			} else if (this.expVersion === 'variant-c') {
 				const tagline = 'Donations of $10 or more are matched by generous donors for a limited time!';
 
 				return tagline;
@@ -184,9 +184,9 @@ export default {
 			return `${tagline} this loan`;
 		},
 		donationBoostExpAmount() {
-			if (this.expVersion === 'variant-a') {
+			if (this.expVersion === 'variant-b') {
 				return numeral(15).format('$0');
-			} else if (this.expVersion === 'variant-b') {
+			} else if (this.expVersion === 'variant-c') {
 				return numeral(10).format('$0');
 			}
 		},
@@ -198,10 +198,10 @@ export default {
 			return 'Thanks for doubling your impact.';
 		},
 		boostApplied() {
-			if (this.expVersion === 'variant-a') {
+			if (this.expVersion === 'variant-b') {
 				return numeral(this.serverAmount).value() < 15 ? '' : 'boost-applied';
 			}
-			if (this.expVersion === 'variant-b') {
+			if (this.expVersion === 'variant-c') {
 				return numeral(this.serverAmount).value() < 10 ? '' : 'boost-applied';
 			}
 		}
@@ -212,11 +212,11 @@ export default {
 			if (numeral(this.serverAmount).value() >= numeral(this.donationBoostExpAmount).value()) {
 				return false;
 			}
-			if (this.expVersion === 'variant-a') {
+			if (this.expVersion === 'variant-b') {
 				this.amount = numeral(15).format('0.00');
 				this.updateDonation();
 			}
-			if (this.expVersion === 'variant-b') {
+			if (this.expVersion === 'variant-c') {
 				this.amount = numeral(10).format('0.00');
 				this.updateDonation();
 			}
@@ -232,14 +232,14 @@ export default {
 			const donationExpVersion = this.apollo.readQuery({ query: donationExpQuery });
 			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
 
-			if (this.expVersion && this.expVersion === 'control') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'control');
-			}
-			if (this.expVersion === 'variant-a') {
+			if (this.expVersion && this.expVersion === 'variant-a') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'a');
 			}
 			if (this.expVersion === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'b');
+			}
+			if (this.expVersion === 'variant-c') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'c');
 			}
 		},
 		updateDonation() {
