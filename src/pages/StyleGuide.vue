@@ -79,6 +79,28 @@
 			<blockquote>Example &lt;blockquote&gt; blockquote text. {{ lorem }}</blockquote>
 		</section>
 		<section>
+			<h2>Forms</h2>
+			<form>
+				<label class="elem-desc">Radio buttons with labels</label>
+				<label>
+					<input
+						type="radio"
+						name="radio-example"
+						value="on"
+					>
+					On
+				</label>
+				<label>
+					<input
+						type="radio"
+						name="radio-example"
+						value="off"
+					>
+					Off
+				</label>
+			</form>
+		</section>
+		<section>
 			<h2>Buttons</h2>
 
 			<label class="elem-desc">Primary button</label>
