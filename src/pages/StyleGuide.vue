@@ -96,23 +96,35 @@
 
 		<section>
 			<h2>Colors</h2>
-			<span>
-				<div class="color-box green" style="height: 100px; width: 100px;"></div>
-				<div class="color-name">$green</div>
-				<div class="color-hex">#4fafe</div>
-			</span>
 
-			<span>
-				<div class="color-box dark-green" style="height: 100px; width: 100px;"></div>
-				<div class="color-name">$dark-green</div>
-				<div class="color-hex">#247037</div>
-			</span>
+			<h4>Primary</h4>
+			<hr>
+			<div class="row">
+				<div class="columns small-1">
+					<div class="color-box green"></div>
+					<div class="color-name">$green</div>
+					<div class="color-hex">#4fafe</div>
+				</div>
+				<div class="columns small-1">
+					<div class="color-box dark-green"></div>
+					<div class="color-name">$dark-green</div>
+					<div class="color-hex">#247037</div>
+				</div>
 
-			<span>
-				<div class="color-box graphic-green" style="height: 100px; width: 100px;"></div>
-				<div class="color-name">$graphic-green</div>
-				<div class="color-hex">#49953f</div>
-			</span>
+				<div class="columns small-1">
+					<div class="color-box graphic-green"></div>
+					<div class="color-name">$graphic-green</div>
+					<div class="color-hex">#49953f</div>
+				</div>
+			</div>
+
+			<h4>Secondary</h4>
+
+			<h4>Background</h4>
+
+			<h4>Text and links</h4>
+
+			<h4>Graph & Chart elements</h4>
 
 		</section>
 	</div>
@@ -137,11 +149,17 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import 'foundation';
 
 .elem-desc {
 	border-bottom: 1px solid #eee;
 	color: #888;
 	font-size: 80%;
+}
+
+.color-box {
+	height: 50px;
+	width: 50px;
 }
 
 .green {
