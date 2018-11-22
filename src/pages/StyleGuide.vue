@@ -185,31 +185,35 @@
 			<h4>Primary</h4>
 			<hr>
 			<div class="row">
-				<div class="columns small-1">
+				<div class="columns small-2 color-card">
 					<div class="color-box green"></div>
+					<div class="color-hex small-text">#4fafe</div>
 					<div class="color-name">$green</div>
-					<div class="color-hex">#4fafe</div>
 				</div>
-				<div class="columns small-1">
+				<div class="columns small-2 color-card">
 					<div class="color-box dark-green"></div>
+					<div class="color-hex small-text">#247037</div>
 					<div class="color-name">$dark-green</div>
-					<div class="color-hex">#247037</div>
 				</div>
 
-				<div class="columns small-1">
+				<div class="columns small-2 color-card">
 					<div class="color-box graphic-green"></div>
+					<div class="color-hex small-text">#49953f</div>
 					<div class="color-name">$graphic-green</div>
-					<div class="color-hex">#49953f</div>
 				</div>
 			</div>
 
 			<h4>Secondary</h4>
+			<hr>
 
 			<h4>Background</h4>
+			<hr>
 
 			<h4>Text and links</h4>
+			<hr>
 
 			<h4>Graph & Chart elements</h4>
+			<hr>
 
 		</section>
 	</div>
@@ -235,6 +239,22 @@ export default {
 			],
 		};
 	},
+	methods: {
+		// work in progress
+		// copyToClipboard() {
+		// 	const copiedText = document.querySelector(this.element.value());
+		// 	copiedText.setAttribute('type', 'text');
+		// 	copiedText.select();
+
+		// 	try {
+		// 		var successful = document.execCommand('copy');
+		// 		var msg = successful ? 'successful' : 'unsuccessful';
+		// 		alert('Code was copied' + copiedText);
+		// 	} catch (err) {
+		// 		alert('something went wrong');
+		// 	}
+		// }
+	}
 };
 </script>
 
@@ -248,9 +268,24 @@ export default {
 	font-size: 80%;
 }
 
+.color-card {
+	text-align: center;
+	padding: 5px;
+	border: 1px solid black;
+}
+
 .color-box {
-	height: 50px;
-	width: 50px;
+	height: 75px;
+	width: 75px;
+	margin: 0 auto;
+}
+
+.color-hex {
+	color: $dark-gray;
+}
+
+.color-name {
+	font-weight: bold;
 }
 
 .green {
