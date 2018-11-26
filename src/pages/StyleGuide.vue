@@ -10,6 +10,18 @@
 			<label class="elem-desc">Level 2 header</label>
 			<h2>{{ shortLorem }}</h2>
 
+			<label class="elem-desc">Level 3 header</label>
+			<h3>{{ shortLorem }}</h3>
+
+			<label class="elem-desc">Level 4 header</label>
+			<h4>{{ shortLorem }}</h4>
+
+			<label class="elem-desc">Level 5 header</label>
+			<h5>{{ shortLorem }}</h5>
+
+			<label class="elem-desc">Level 6 header</label>
+			<h6>{{ shortLorem }}</h6>
+
 			<label class="elem-desc">Body text</label>
 			<p>{{ lorem }}</p>
 
