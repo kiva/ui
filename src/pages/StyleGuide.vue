@@ -190,16 +190,23 @@
 			<label class="elem-desc">Setting button (.setting)</label>
 			<kv-button class="setting">Setting</kv-button>
 		</section>
+
+		<!-- Colors Section -->
+		<section>
+			<styleguide-colors />
+		</section>
 	</div>
 </template>
 
 <script>
 /* eslint-disable max-len */
 import KvButton from '@/components/Kv/KvButton';
+import StyleguideColors from '@/components/Styleguide/StyleguideColors';
 
 export default {
 	components: {
 		KvButton,
+		StyleguideColors,
 	},
 	data() {
 		return {
@@ -217,6 +224,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'settings';
+
 .elem-desc {
 	border-bottom: 1px solid #eee;
 	color: #888;
@@ -225,7 +234,7 @@ export default {
 
 #section-form {
 	.small-width {
-		width: 300px;
+		width: rem-calc(300);
 	}
 }
 </style>
