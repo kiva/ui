@@ -194,7 +194,7 @@ import StyleguideColors from '@/components/Styleguide/StyleguideColors';
 export default {
 	components: {
 		KvButton,
-		StyleguideColors
+		StyleguideColors,
 	},
 	data() {
 		return {
@@ -207,7 +207,7 @@ export default {
 				'Option D',
 			],
 		};
-	}
+	},
 };
 </script>
 
