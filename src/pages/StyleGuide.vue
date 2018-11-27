@@ -179,8 +179,8 @@
 			<kv-button class="setting">Setting</kv-button>
 		</section>
 
+		<!-- Colors Section -->
 		<section>
-			<!-- Colors Section -->
 			<styleguide-colors />
 		</section>
 	</div>
@@ -207,29 +207,12 @@ export default {
 				'Option D',
 			],
 		};
-	},
-	methods: {
-		// work in progress
-		// copyToClipboard() {
-		// 	const copiedText = document.querySelector(this.element.value());
-		// 	copiedText.setAttribute('type', 'text');
-		// 	copiedText.select();
-
-		// 	try {
-		// 		var successful = document.execCommand('copy');
-		// 		var msg = successful ? 'successful' : 'unsuccessful';
-		// 		alert('Code was copied' + copiedText);
-		// 	} catch (err) {
-		// 		alert('something went wrong');
-		// 	}
-		// }
 	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'foundation';
 
 .elem-desc {
 	border-bottom: 1px solid #eee;
@@ -239,7 +222,7 @@ export default {
 
 #section-form {
 	.small-width {
-		width: 300px;
+		width: rem-calc(300);
 	}
 }
 </style>

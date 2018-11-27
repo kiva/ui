@@ -1,4 +1,4 @@
-<template>
+<template functional>
 	<span>
 		<h2>Colors</h2>
 		<hr>
@@ -145,28 +145,6 @@
 </template>
 
 <script>
-export default {
-	components: {
-	},
-	data() {
-	},
-	methods: {
-		// work in progress
-		// copyToClipboard() {
-		// 	const copiedText = document.querySelector(this.element.value());
-		// 	copiedText.setAttribute('type', 'text');
-		// 	copiedText.select();
-
-		// 	try {
-		// 		var successful = document.execCommand('copy');
-		// 		var msg = successful ? 'successful' : 'unsuccessful';
-		// 		alert('Code was copied' + copiedText);
-		// 	} catch (err) {
-		// 		alert('something went wrong');
-		// 	}
-		// }
-	}
-};
 </script>
 
 <style lang="scss" scoped>
