@@ -1,7 +1,13 @@
 @import 'settings';
 
-h1 {
-	font-weight: bold;
+h1,
+h5,
+h6 {
+	font-weight: 700;
+}
+
+h4 {
+	font-weight: 400;
 }
 
 h1.huge {
