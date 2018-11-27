@@ -10,7 +10,13 @@
 					<p class="message">
 						Welcome to Kiva’s new category view!
 						Take it for a spin below, or
-						<router-link to="/lend">view all loans</router-link> at any time.
+						<router-link
+							to="/lend"
+							v-kv-track-event="['Lending', 'click-Lend tab tip promo', 'View all loans']"
+						>
+							view all loans
+						</router-link>
+						at any time.
 					</p>
 				</div>
 			</div>
@@ -20,7 +26,13 @@
 						<img class="beta" src="~@/assets/images/beta-icon.svg">
 						Welcome to Kiva’s new category view!
 						Take it for a spin below, or
-						<router-link to="/lend">view all loans</router-link> at any time.
+						<router-link
+							to="/lend"
+							v-kv-track-event="['Lending', 'click-Lend tab tip promo', 'View all loans']"
+						>
+							view all loans
+						</router-link>
+						at any time.
 					</p>
 				</div>
 			</div>
@@ -243,6 +255,13 @@ export default {
 		// eslint-disable-next-line max-len
 		const lendByCategoryMessageData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'lbc_message' } });
 		this.showLendByCategoryMessage = _get(lendByCategoryMessageData, 'experiment.version') === 'shown';
+		if (this.showLendByCategoryMessage) {
+			this.$kvTrackEvent(
+				'Lending',
+				'view-Lend tab tip promo',
+				'View all loans',
+			);
+		}
 	},
 	mounted() {
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
