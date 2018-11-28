@@ -63,6 +63,7 @@
 				:items-in-basket="itemsInBasket"
 				:row-number="index + 1"
 				:set-id="categorySetId"
+				:is-logged-in="isLoggedIn"
 			/>
 		</div>
 
@@ -110,6 +111,7 @@ export default {
 	data() {
 		return {
 			isAdmin: false,
+			isLoggedIn: false,
 			categorySetting: [],
 			categorySetId: '',
 			categories: [],
@@ -214,6 +216,8 @@ export default {
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
+		this.isLoggedIn = !!_get(baseData, 'my');
+
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Read the assigned feateured loan experiment version from the cache
