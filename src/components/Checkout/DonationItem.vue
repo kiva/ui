@@ -57,19 +57,18 @@
 		<span class="small-3 show-for-small-only"></span>
 		<span class="small-9 medium-4 large-4 medium-text-font-size">
 			<div
-				v-if="!editDonation"
+				v-show="!editDonation"
 				class="donation-amount-wrapper">
 				<span
-					v-if="!editDonation"
 					class="donation-amount"
 					v-kv-track-event="['basket', 'Edit Donation']"
-					@click.prevent="editDonation = true">{{ formattedAmount }}
+					@click.prevent="enterEditDonation">{{ formattedAmount }}
 					<kv-icon
 						class="edit-donation"
 						name="pencil"/>
 				</span>
 			</div>
-			<div v-else class="small-12 donation-amount-input-wrapper">
+			<div v-show="editDonation" class="small-12 donation-amount-input-wrapper">
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -207,6 +206,9 @@ export default {
 		}
 	},
 	methods: {
+		enterEditDonation() {
+			this.editDonation = true;
+		},
 		updateDonationExp() {
 			// if the server amount is greater than the donationBoostAmount return false
 			if (numeral(this.serverAmount).value() >= numeral(this.donationBoostExpAmount).value()) {
