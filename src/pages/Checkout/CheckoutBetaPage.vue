@@ -127,6 +127,9 @@
 								Please register or sign in above to complete your purchase.</p>
 						</div>
 					</div>
+
+					<!-- Loans you might like section -->
+					<l-y-m-l />
 				</div>
 
 				<div v-if="emptyBasket" class="empty-basket">
@@ -183,6 +186,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
+import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
 export default {
 	components: {
@@ -199,6 +203,7 @@ export default {
 		LoadingOverlay,
 		KvIcon,
 		CheckoutHolidayPromo,
+		LYML,
 	},
 	inject: ['apollo'],
 	mixins: [
