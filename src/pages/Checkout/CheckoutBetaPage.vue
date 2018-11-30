@@ -129,7 +129,10 @@
 					</div>
 
 					<!-- Loans you might like section -->
-					<l-y-m-l />
+					<l-y-m-l
+						:loans="loans"
+					/>
+
 				</div>
 
 				<div v-if="emptyBasket" class="empty-basket">
