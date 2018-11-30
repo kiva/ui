@@ -5,6 +5,10 @@ matrix:
     - node_js: '8'
     - node_js: 'node'
       if: branch = master
+branches:
+  only:
+    - master
+    - /^release-.*$/
 before_install:
   - npm install -g npm@5.7
   - npm install -g greenkeeper-lockfile@1
