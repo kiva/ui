@@ -1,0 +1,78 @@
+query {
+	lend {
+		sameCountry: loans (filters: {country: ["US"]}, limit: 1, sortBy: random) {
+			values {
+				id
+				name
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					url: url(presetSize: loan_default)
+					url_2x: url(presetSize: loan_retina)
+				}
+				activity {
+					id
+					name
+				}
+				geocode {
+					country {
+						isoCode
+						name
+					}
+				}
+			}
+		}
+
+		sameActivity: loans (filters: {activity: [120]}, limit: 1, sortBy: random) {
+			values {
+				id
+				name
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					url: url(presetSize: loan_default)
+					url_2x: url(presetSize: loan_retina)
+				}
+				activity {
+					id
+					name
+				}
+				geocode {
+					country {
+						isoCode
+						name
+					}
+				}
+			}
+		}
+
+		randomLoan: loans (limit: 1, sortBy: random) {
+			values {
+				id
+				name
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				image {
+					url: url(presetSize: loan_default)
+					url_2x: url(presetSize: loan_retina)
+				}
+				activity {
+					id
+					name
+				}
+				geocode {
+					country {
+						isoCode
+						name
+					}
+				}
+			}
+		}
+	}
+}
