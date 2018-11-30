@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<div v-if="showCategory">
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="category-name">{{ cleanName }}
-					<span class="view-all-link">&nbsp;<a :href="url">View all</a></span>
+					<span class="view-all-link">&nbsp;<a :href="cleanUrl">View all</a></span>
 				</h2>
 			</div>
 		</div>
@@ -59,6 +59,10 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
+		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
 		loanChannel: {
 			type: Object,
 			default: () => {},
@@ -100,6 +104,9 @@ export default {
 			// remove any text contained within square brackets, including the brackets
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
+		cleanUrl() {
+			return String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
+		},
 		minLeftMargin() {
 			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
 		},
@@ -108,6 +115,15 @@ export default {
 		},
 		shiftIncrement() {
 			return this.cardsInWindow * this.cardWidth;
+		},
+		showCategory() {
+			let isVisible = true;
+
+			if (this.isLoggedIn === false && this.url.includes('new-countries-for-you') === true) {
+				isVisible = false;
+			}
+
+			return isVisible;
 		},
 	},
 	watch: {

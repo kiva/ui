@@ -63,6 +63,7 @@
 				:items-in-basket="itemsInBasket"
 				:row-number="index + 1"
 				:set-id="categorySetId"
+				:is-logged-in="isLoggedIn"
 			/>
 		</div>
 
@@ -110,6 +111,7 @@ export default {
 	data() {
 		return {
 			isAdmin: false,
+			isLoggedIn: false,
 			categorySetting: [],
 			categorySetId: '',
 			categories: [],
@@ -184,19 +186,17 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				// Get the category rows experiment object from settings
 				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
-				// Get the lend-by-categeory (lbc) message experiment object from settings
-				expData = readJSONSetting(data, 'general.lbcMessageExp.value') || {};
 
 				return Promise.all([
 					// Get the assigned category rows experiment version
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
-					// Get the assigned featured loans experiment version
+					// Pre-fetch the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
-					// Get the assigned version for lbc message
+					// Pre-fetch the assigned version for lbc message
 					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
 				]);
-			}).then(rowsExpResult => {
-				const version = _get(rowsExpResult, 'data.experiment.version');
+			}).then(expResults => {
+				const version = _get(expResults, '[0].data.experiment.version');
 				const variantRows = _get(expData, `variants.${version}.categories`);
 				// get the ids for the variant, or the default if that is undefined
 				const ids = _map(variantRows || rowData, 'id');
@@ -214,6 +214,8 @@ export default {
 		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
+		this.isLoggedIn = !!_get(baseData, 'my');
+
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Read the assigned feateured loan experiment version from the cache
