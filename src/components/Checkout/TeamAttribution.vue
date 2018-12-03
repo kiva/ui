@@ -6,7 +6,7 @@
 				class="team-select-dd small-text"
 				@change="updateLoanReservation()">
 				<option value="0">None</option>
-				<option v-for="team in teams"
+				<option v-for="team in sortTeams"
 					:key="team.id"
 					:value="team.id">{{ team.name }}
 				</option>
@@ -18,6 +18,7 @@
 <script>
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import _forEach from 'lodash/forEach';
+import _orderBy from 'lodash/orderBy';
 import numeral from 'numeral';
 
 export default {
@@ -47,6 +48,11 @@ export default {
 			selectedId: this.teamId || 0,
 			cachedId: null,
 		};
+	},
+	computed: {
+		sortTeams() {
+			return _orderBy(this.teams, 'name');
+		}
 	},
 	methods: {
 		updateLoanReservation() {
