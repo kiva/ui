@@ -9,7 +9,6 @@
 					lend to the working poor via microfinance and the Kiva API.
 					This is the home for all the information and tools you need to join us!
 				</p>
-				<p>test</p>
 			</div>
 		</div>
 	</www-page>
