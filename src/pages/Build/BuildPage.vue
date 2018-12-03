@@ -4,7 +4,12 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>Developer Home</h1>
-				<p>{{ developerDescription }}</p>
+				<p>
+					Developers worldwide are helping us make it easy and transparent to
+					lend to the working poor via microfinance and the Kiva API.
+					This is the home for all the information and tools you need to join us!
+				</p>
+				<p>test</p>
 			</div>
 		</div>
 	</www-page>
@@ -21,12 +26,6 @@ export default {
 	},
 	metaInfo: {
 		title: 'Developer Home'
-	},
-	data() {
-		return {
-			// eslint-disable-next-line max-len
-			developerDescription: 'Developers worldwide are helping us make it easy and transparent to lend to the working poor via microfinance and the Kiva API. This is the home for all the information and tools you need to join us!',
-		};
 	},
 };
 </script>
