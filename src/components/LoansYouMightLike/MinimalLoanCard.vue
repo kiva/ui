@@ -13,25 +13,25 @@
 			<div class="small-text name"
 				name="{ loan.name }"></div>
 
-			<!-- loan meter	 -->
-			<fundrasing-status
+		<!-- loan meter	 -->
+		<!-- <fundrasing-status
 				:amount-left="amountLeft"
 				:percent-raised="percentRaised"
 				:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.status==='funded'"
-			/>
+			/> -->
 
-			<!-- Need to add loan activity to borrower info -->
-			<borrower-info
+		<!-- Need to add loan activity to borrower info -->
+		<!-- <borrower-info
 				:loan-id="loan.id"
 				:name="loan.name"
 				:country="loan.geocode.country.name"
-			/>
-			<!-- Country -->
+			/> -->
+		<!-- Country -->
 
-			<!-- Sector -->
+		<!-- Sector -->
 
-			<!-- Add to basket text -->
+		<!-- Add to basket text -->
 
 		</div>
 	</div>
@@ -62,6 +62,21 @@ export default {
 			}
 		},
 	},
+	computed: {
+		amountLeft() {
+			const {
+				fundedAmount,
+				reservedAmount
+			} = this.loan.loanFundraisingInfo;
+			return this.loan.loanAmount - fundedAmount - reservedAmount;
+		},
+		isFunded() {
+			return this.loan.status === 'funded' || this.amountLeft <= 0;
+		},
+		percentRaised() {
+			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
+		},
+	}
 };
 
 </script>

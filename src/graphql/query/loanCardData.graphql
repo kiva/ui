@@ -22,6 +22,7 @@ query(
 			values {
 				...loanCardFields
 				image {
+					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
 				}

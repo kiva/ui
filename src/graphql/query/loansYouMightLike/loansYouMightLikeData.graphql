@@ -1,6 +1,11 @@
-query {
+query (
+	$country: [String] = ["US"],
+	$activity: [Int] = [120],
+	$imgDefaultSize: String = "w180h120",
+	$imgRetinaSize: String = "w360h240"
+) {
 	lend {
-		sameCountry: loans (filters: {country: ["US"]}, limit: 1, sortBy: random) {
+		sameCountry: loans(filters: {country: $country}, limit: 1, sortBy: random) {
 			values {
 				id
 				name
@@ -9,8 +14,9 @@ query {
 					fundedAmount
 				}
 				image {
-					url: url(presetSize: loan_default)
-					url_2x: url(presetSize: loan_retina)
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
 				}
 				activity {
 					id
@@ -25,7 +31,7 @@ query {
 			}
 		}
 
-		sameActivity: loans (filters: {activity: [120]}, limit: 1, sortBy: random) {
+		sameActivity: loans (filters: {activity: $activity}, limit: 1, sortBy: random) {
 			values {
 				id
 				name
@@ -34,8 +40,9 @@ query {
 					fundedAmount
 				}
 				image {
-					url: url(presetSize: loan_default)
-					url_2x: url(presetSize: loan_retina)
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
 				}
 				activity {
 					id
@@ -50,7 +57,7 @@ query {
 			}
 		}
 
-		randomLoan: loans (limit: 1, sortBy: random) {
+		randomLoan: loans (limit: 3, sortBy: random) {
 			values {
 				id
 				name
@@ -59,8 +66,9 @@ query {
 					fundedAmount
 				}
 				image {
-					url: url(presetSize: loan_default)
-					url_2x: url(presetSize: loan_retina)
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
 				}
 				activity {
 					id

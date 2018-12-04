@@ -7,6 +7,7 @@ query {
 		}
 		lender {
 			image {
+				id
 				url( presetSize:lender_default )
 			}
 		}

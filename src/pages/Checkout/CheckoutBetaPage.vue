@@ -129,9 +129,7 @@
 					</div>
 
 					<!-- Loans you might like section -->
-					<l-y-m-l
-						:loans="loans"
-					/>
+					<l-y-m-l />
 
 				</div>
 
