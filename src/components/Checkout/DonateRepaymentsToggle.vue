@@ -30,7 +30,7 @@ import numeral from 'numeral';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
 
 export default {
 	components: {
@@ -120,10 +120,9 @@ export default {
 		},
 		mutateDonateRepayments(loan, donateRepayments) {
 			return this.apollo.mutate({
-				mutation: updateLoanReservation,
+				mutation: updateLoanReservationDonateRepayments,
 				variables: {
 					loanid: loan.id,
-					price: loan.price,
 					donateRepayments
 				}
 			}).then(data => {

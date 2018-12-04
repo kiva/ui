@@ -30,6 +30,7 @@ query {
 					... on LoanReservation {
 						expiryTime
 						isEndingSoon
+						donateRepayments
 						loan {
 							id
 							status

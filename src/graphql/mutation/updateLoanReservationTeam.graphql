@@ -1,0 +1,15 @@
+mutation updateLoanReservationTeam($loanid: Int!, $teamId: Int) {
+	shop {
+		updateLoanReservationTeam (loanReservation: {
+        	id: $loanid
+			teamId: $teamId
+		})
+		{
+			id
+			team {
+				id
+				name
+			}
+		}
+	}
+}
