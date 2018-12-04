@@ -1,5 +1,5 @@
 <template>
-	<div class="wrapper">
+	<div class="minimal-loan-card">
 		<!-- Image -->
 		<loan-card-image
 			:loan-id="loan.id"
@@ -9,43 +9,37 @@
 		/>
 
 		<div>
-			<!-- Name in small-text -->
-			<div class="small-text name"
-				name="{ loan.name }"></div>
+			<!-- Need to add loan activity to borrower info -->
+			<borrower-info
+				:loan-id="loan.id"
+				:name="loan.name"
+			/>
 
-		<!-- loan meter	 -->
-		<!-- <fundrasing-status
+			<!-- loan meter	 -->
+			<!-- <fundrasing-status
 				:amount-left="amountLeft"
 				:percent-raised="percentRaised"
 				:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
 				:is-funded="loan.status==='funded'"
 			/> -->
-
-		<!-- Need to add loan activity to borrower info -->
-		<!-- <borrower-info
-				:loan-id="loan.id"
-				:name="loan.name"
-				:country="loan.geocode.country.name"
-			/> -->
-		<!-- Country -->
-
-		<!-- Sector -->
-
-		<!-- Add to basket text -->
-
+			<!-- Country -->
+			<!-- Sector -->
+			<!-- Add to basket text -->
 		</div>
 	</div>
 </template>
 <script>
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
+// import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 
 export default {
 	components: {
 		LoanCardImage,
-		FundraisingStatus,
-		shopBasketUpdate,
+		BorrowerInfo,
+		// FundraisingStatus,
+		shopBasketUpdate
 	},
 	props: {
 		loan: {
@@ -55,19 +49,16 @@ export default {
 					userProperties: {},
 					loanFundraisingInfo: {},
 					geocode: {
-						country: {},
+						country: {}
 					},
-					image: {},
+					image: {}
 				};
 			}
-		},
+		}
 	},
 	computed: {
 		amountLeft() {
-			const {
-				fundedAmount,
-				reservedAmount
-			} = this.loan.loanFundraisingInfo;
+			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
 			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		isFunded() {
@@ -75,25 +66,23 @@ export default {
 		},
 		percentRaised() {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
-		},
+		}
 	}
 };
-
 </script>
 <style lang="scss" scoped>
-@import 'settings';
+@import "settings";
 
-.wrapper {
-	width: rem-calc(180);
-	height: rem-calc(280);
-	border: 1px solid $kiva-stroke-gray;
-	display: inline-block;
-	margin: rem-calc(10);
+.minimal-loan-card {
+  width: rem-calc(180);
+  height: rem-calc(280);
+  border: 1px solid $kiva-stroke-gray;
+  display: inline-block;
+  margin: rem-calc(10);
 }
 
 .name {
-	font-weight: 400;
-	color: $kiva-text-dark;
+  font-weight: 400;
+  color: $kiva-text-dark;
 }
-
 </style>

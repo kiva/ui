@@ -4,7 +4,7 @@
 			<div class="column small-12">
 				<h2 class="section-title featured-text">Similar loans you might like</h2>
 				<!-- row for loan cards -->
-				<!-- <minimal-loan-card
+				<minimal-loan-card
 					class="minimal-loan-card"
 					:loan="loan1"
 					category-set-id="loans-you-might-like"
@@ -12,7 +12,7 @@
 					:items-in-basket="itemsInBasket"
 					:enable-tracking="true"
 				/>
-				<minimal-loan-card
+				<!-- <minimal-loan-card
 					class="minimal-loan-card"
 					:loan="loan2"
 					category-set-id="loans-you-might-like"
@@ -36,16 +36,17 @@
 <script>
 import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
+import _get from 'lodash/get';
 
 export default {
 	components: {
 		MinimalLoanCard,
 	},
 	props: {
-		// itemsInBasket: {
-		// 	type: Array,
-		// 	default: () => [],
-		// },
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	data() {
 		return {
@@ -78,10 +79,13 @@ export default {
 				console.log('Loading is true');
 			} else {
 				// const { randomLoan, sameCountry, sameActivity } = data.lend;
-				// this.loan1 = sameCountry.values;
-				// this.loan2 = sameActivity.values;
-				// this.loan3 = randomLoan.values;
-				this.loading = false;
+				if (data.lend.sameCountry) {
+					this.loan1 = _get(data.lend, 'sameCountry.values[0]');
+					this.loading = false;
+				} else {
+					this.loan1 = _get(data.lend, 'randomLoan.values[1]');
+					this.loading = false;
+				}
 				console.log('Loading is false');
 				console.log(data.lend);
 			}
