@@ -11,7 +11,7 @@
 					<div class="columns">
 						<div class="lightbox-content" :class="removeContentBg">
 							<button @click.stop.prevent="closeLightbox" class="close-lightbox" aria-label="Close">
-								<kv-icon name="x" />
+								<kv-icon name="small-x" />
 							</button>
 							<slot name="title"></slot>
 							<slot>Lightbox content</slot>
@@ -113,9 +113,14 @@ export default {
 	right: 0;
 	left: 0;
 	bottom: 0;
-	padding: 4.5rem 0;
-	overflow-y: scroll;
+	padding: rem-calc(1);
+	overflow-y: auto;
 	z-index: 1500;
+	max-height: 100vh;
+
+	@include breakpoint(medium) {
+		padding: 4.5rem 1rem;
+	}
 }
 
 .kv-lightbox-bg {
@@ -125,9 +130,8 @@ export default {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: rgba(0, 0, 0, 0.9);
+	background: rgba(72, 72, 72, 0.6);
 	z-index: 1501;
-	overflow-y: scroll;
 
 	@include breakpoint(large) {
 		padding: rem-calc(32) 2rem;
@@ -155,13 +159,17 @@ export default {
 	.lightbox-content {
 		display: block;
 		position: relative;
-		padding: 2rem 1.5rem;
+		padding: 2.5rem 1.5rem 1.5rem 1.5rem;
 		max-width: 61rem;
-		margin: 0 1rem;
-		background: $white;
+		background: rgba(255, 255, 255, 0.95);
+		border-radius: rem-calc(4);
+
+		@include breakpoint(medium) {
+			padding: 4rem 2.8125rem 2.8125rem 2.8125rem;
+		}
 
 		@include breakpoint(large) {
-			padding: 2.8125rem;
+			padding: 4.75rem 2.8125rem 2.8125rem 2.8125rem;
 		}
 
 		&.inverted {
@@ -173,32 +181,51 @@ export default {
 	}
 
 	.close-lightbox {
-		position: fixed;
-		top: rem-calc(14);
-		right: rem-calc(14);
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+
+		.icon.icon-small-x {
+			height: 1rem;
+			width: 1rem;
+			fill: $subtle-gray;
+			transition: fill 0.165s linear;
+		}
+
+		&:hover {
+			.icon.icon-small-x {
+				fill: $charcoal;
+			}
+		}
+
+		@include breakpoint(medium) {
+			top: 1.5rem;
+			right: 1.5rem;
+
+			.icon.icon-small-x {
+				height: 1.25rem;
+				width: 1.25rem;
+			}
+		}
 
 		@include breakpoint(large) {
-			position: absolute;
-			top: rem-calc(10);
-			right: rem-calc(10);
+			top: 2rem;
+			right: 2rem;
 		}
 
 		&.inverted {
 			position: fixed;
 			top: rem-calc(14);
 			right: rem-calc(14);
-		}
 
-		.icon.icon-x {
-			stroke: $kiva-green;
-			height: 2.5rem;
-			width: 2.5rem;
-			margin-top: rem-calc(2);
-		}
+			.icon.icon-small-x {
+				fill: $kiva-green;
+			}
 
-		&:hover {
-			.icon-x {
-				stroke: $kiva-accent-green;
+			&:hover {
+				.icon-small-x {
+					fill: $kiva-accent-green;
+				}
 			}
 		}
 	}
