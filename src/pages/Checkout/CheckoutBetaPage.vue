@@ -129,7 +129,7 @@
 					</div>
 
 					<!-- Loans you might like section -->
-					<l-y-m-l />
+					<l-y-m-l v-if="showLYML" />
 
 				</div>
 
@@ -188,6 +188,8 @@ import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import expSettingQuery from '@/graphql/query/experimentSetting.graphql';
+import expAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 export default {
 	components: {
@@ -235,7 +237,10 @@ export default {
 			preValidationErrors: [],
 			redirectLbVisible: false,
 			teams: [],
-			holidayModeEnabled: false
+			holidayModeEnabled: false,
+			// CASH-101 EXP Loans you might like - aka. "lyml"
+			showLYML: false,
+			lymlVariant: null
 		};
 	},
 	apollo: {
@@ -308,6 +313,9 @@ export default {
 			'general.holiday_start_time.value',
 			'general.holiday_end_time.value'
 		);
+
+		// CASH-101 EXP for Loans you might like
+		this.activateLoansYouMightLike();
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -326,6 +334,11 @@ export default {
 		// check for free credits
 		if (this.hasFreeCredits) {
 			this.refreshTotals('kiva-card-applied');
+		}
+
+		// CASH-101 EXP track loans you might like visibilty
+		if (this.lymlVariant !== null) {
+			this.$kvTrackEvent('basket', 'EXP-CASH-101-Dec2018', this.showLYML ? 'b' : 'a');
 		}
 	},
 	computed: {
@@ -463,6 +476,24 @@ export default {
 		redirectLbClosed() {
 			this.redirectLbVisible = false;
 		},
+		// CASH-101 EXP track loans you might like visibilty
+		activateLoansYouMightLike() {
+			// query to get experiment setting
+			this.apollo.query({
+				query: expSettingQuery,
+				variables: { key: 'uiexp.checkout_lyml' },
+			}).then(() => {
+				// query to assign experiment version
+				this.apollo.query({
+					query: expAssignmentQuery,
+					variables: { id: 'checkout_lyml' },
+				}).then(expAssignment => {
+					// update our values
+					this.lymlVariant = _get(expAssignment, 'data.experiment.version');
+					this.showLYML = this.lymlVariant !== 'control';
+				}).catch(Promise.reject);
+			}).catch(Promise.reject);
+		}
 	},
 };
 </script>
