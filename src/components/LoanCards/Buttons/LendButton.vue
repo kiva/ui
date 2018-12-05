@@ -2,10 +2,11 @@
 	<kv-button @click.native="addToBasket"
 		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, 'true']"
 		v-if="!loading"
+		class="lend-button"
 	>
 		<slot>Lend now</slot>
 	</kv-button>
-	<kv-button v-else class="adding-to-basket">
+	<kv-button v-else class="lend-button adding-to-basket">
 		<kv-loading-spinner />
 		Adding to basket
 	</kv-button>
