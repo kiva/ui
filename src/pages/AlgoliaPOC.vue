@@ -6,9 +6,10 @@
 
 				<div class="algolia-wrap">
 					<ais-index
-						app-id="latency"
-						api-key="3d9875e51fbd20c7754e65422f7ce5e1"
-						index-name="bestbuy">
+						v-if="algoliaAppId"
+						:app-id="algoliaAppId"
+						:api-key="algoliaApiKey"
+						:index-name="algoliaDefaultIndex">
 						<ais-search-box />
 						<ais-results>
 							<template slot-scope="{ result }">
@@ -46,6 +47,18 @@ export default {
 	metaInfo: {
 		title: 'Algolia Search'
 	},
+	data() {
+		return {
+			algoliaAppId: null, // eslint-disable-line
+			algoliaApiKey: null, // eslint-disable-line
+			algoliaDefaultIndex: null, // eslint-disable-line
+		};
+	},
+	mounted() {
+		this.algoliaAppId = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaAppId : null; // eslint-disable-line
+		this.algoliaApiKey = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaApiKey : null; // eslint-disable-line
+		this.algoliaDefaultIndex = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaDefaultIndex : null; // eslint-disable-line
+	}
 };
 </script>
 
