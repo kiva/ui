@@ -15,7 +15,7 @@
 <script>
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
-import addToBasketMutation from '@/graphql/mutation/addToBasket.graphql';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -45,9 +45,9 @@ export default {
 		addToBasket() {
 			this.loading = true;
 			this.apollo.mutate({
-				mutation: addToBasketMutation,
+				mutation: updateLoanReservation,
 				variables: {
-					id: this.loanId,
+					loanid: this.loanId,
 					price: numeral(this.price).format('0.00'),
 				},
 			}).then(({ errors }) => {
