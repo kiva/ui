@@ -4,30 +4,32 @@
 			<div class="column small-12">
 				<h2 class="section-title featured-text">Similar loans you might like</h2>
 				<!-- row for loan cards -->
-				<minimal-loan-card
-					class="minimal-loan-card"
-					:loan="loan1"
-					category-set-id="loans-you-might-like"
-					:card-number="1"
-					:items-in-basket="itemsInBasket"
-					:enable-tracking="true"
-				/>
-				<!-- <minimal-loan-card
-					class="minimal-loan-card"
-					:loan="loan2"
-					category-set-id="loans-you-might-like"
-					:card-number="2"
-					:items-in-basket="itemsInBasket"
-					:enable-tracking="true"
-				/>
-				<minimal-loan-card
-					class="minimal-loan-card"
-					:loan="loan3"
-					category-set-id="loans-you-might-like"
-					:card-number="3"
-					:items-in-basket="itemsInBasket"
-					:enable-tracking="true"
-				/> -->
+				<div class="row">
+					<minimal-loan-card
+						class="minimal-loan-card"
+						:loan="loan1"
+						category-set-id="loans-you-might-like"
+						:card-number="1"
+						:items-in-basket="itemsInBasket"
+						:enable-tracking="true"
+					/>
+					<minimal-loan-card
+						class="minimal-loan-card"
+						:loan="loan2"
+						category-set-id="loans-you-might-like"
+						:card-number="2"
+						:items-in-basket="itemsInBasket"
+						:enable-tracking="true"
+					/>
+					<minimal-loan-card
+						class="minimal-loan-card"
+						:loan="loan3"
+						category-set-id="loans-you-might-like"
+						:card-number="3"
+						:items-in-basket="itemsInBasket"
+						:enable-tracking="true"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -54,6 +56,8 @@ export default {
 			sameActivity: [120],
 			randomLoan: [],
 			loan1: null,
+			loan2: null,
+			loan3: null,
 			loading: false,
 		};
 	},
@@ -78,16 +82,25 @@ export default {
 				this.loading = true;
 				console.log('Loading is true');
 			} else {
-				// const { randomLoan, sameCountry, sameActivity } = data.lend;
+				const randomLoans = _get(data.lend, 'randomLoan.values');
+				this.loan3 = randomLoans[0]; // eslint-disable-line
+
+				// same Country loans
 				if (data.lend.sameCountry) {
 					this.loan1 = _get(data.lend, 'sameCountry.values[0]');
-					this.loading = false;
 				} else {
-					this.loan1 = _get(data.lend, 'randomLoan.values[1]');
-					this.loading = false;
+					this.loan1 = randomLoans[1]; // eslint-disable-line
 				}
-				console.log('Loading is false');
+
+				// same Activity loans
+				if (data.lend.sameActivity) {
+					this.loan2 = _get(data.lend, 'sameActivity.values[0]');
+				} else {
+					this.loan2 = randomLoans[2]; // eslint-disable-line
+				}
+
 				console.log(data.lend);
+				this.loading = false;
 			}
 		},
 	},
