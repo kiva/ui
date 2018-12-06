@@ -1,7 +1,6 @@
 <template>
 	<div class="minimal-loan-card">
 		<!-- Image -->
-
 		<!-- is-visitor set to false is hiding the loan favorite star on borrower images -->
 		<loan-card-image
 			:loan-id="loan.id"
