@@ -98,7 +98,7 @@ import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 
 // Insert Loan Channel Ids here
-// They should also be added to the ui.category_rows setting
+// They should also be added to the possibleCategories in CategoryAdminControls
 // You'll need use the same id when you push data into customCategories
 const customCategoryIds = [];
 
