@@ -87,6 +87,7 @@
 import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _findIndex from 'lodash/findIndex';
 import { readJSONSetting } from '@/util/settingsUtils';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
@@ -94,6 +95,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 
 
 export default {
@@ -117,7 +119,8 @@ export default {
 			categories: [],
 			itemsInBasket: [],
 			showFeaturedLoans: true,
-			showLendByCategoryMessage: false
+			showLendByCategoryMessage: false,
+			customCategories: [62] // Currently in my VM only create on in your vm and use that id to test
 		};
 	},
 	computed: {
@@ -173,6 +176,29 @@ export default {
 			this.categorySetting = variantRows || rowData;
 			this.categorySetId = version || _get(expData, 'control.key');
 		},
+		// Method to augment generated loan content from the default loanChannelQuery
+		processCustomRows() {
+			if (this.customCategories.length) {
+				// get recently viewed loans id 62 in my VM
+				const customLoanQuery = this.apollo.readQuery({
+					query: loanCardQuery,
+					variables: {
+						limit: 3
+					}
+				});
+				const customLoans = _get(customLoanQuery, 'lend.loans') || [];
+				// if we have recently viewed loans update them in this.categories
+				if (customLoans.values.length) {
+					const recentLCIndex = _findIndex(this.categories, lc => {
+						return lc.id === 62;
+					});
+					this.categories[recentLCIndex].loans = customLoans;
+				}
+
+				// get more countries loans
+				// if we have more countries loans update them in this.categories
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -206,6 +232,14 @@ export default {
 					query: loanChannelQuery,
 					variables: { ids },
 				});
+			}).then(() => {
+				// chain our other custom queries here so they are cached with the prefetch
+				return client.query({
+					query: loanCardQuery,
+					variables: {
+						limit: 3
+					}
+				});
 			});
 		}
 	},
@@ -228,6 +262,10 @@ export default {
 			variables: { ids: this.categoryIds },
 		});
 		this.categories = _get(categoryData, 'lend.loanChannelsById') || [];
+		// update the categories data with custom category queries if present
+		if (this.customCategories.length) {
+			this.processCustomRows();
+		}
 
 		// Create an observer for changes to the categories (and their loans)
 		const categoryObserver = this.apollo.watchQuery({
@@ -250,6 +288,10 @@ export default {
 		categoryObserver.subscribe({
 			next: ({ data }) => {
 				this.categories = _get(data, 'lend.loanChannelsById') || [];
+				// update the categories data with custom category queries if present
+				if (this.customCategories.length) {
+					this.processCustomRows();
+				}
 			},
 		});
 
