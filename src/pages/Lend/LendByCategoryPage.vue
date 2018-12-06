@@ -87,16 +87,17 @@
 import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
-import _findIndex from 'lodash/findIndex';
+import _without from 'lodash/without';
 import { readJSONSetting } from '@/util/settingsUtils';
+import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
-import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 
+const customCategoryIds = [62];
 
 export default {
 	components: {
@@ -116,17 +117,25 @@ export default {
 			isLoggedIn: false,
 			categorySetting: [],
 			categorySetId: '',
-			categories: [],
 			itemsInBasket: [],
 			showFeaturedLoans: true,
 			showLendByCategoryMessage: false,
-			customCategories: [62] // Currently in my VM only create on in your vm and use that id to test
+			realCategories: [],
+			customCategories: [],
 		};
 	},
 	computed: {
 		categoryIds() {
 			return _map(this.categorySetting, 'id');
-		}
+		},
+		categories() {
+			// merge realCategories & customCategories and re-order to match the setting
+			const categories = this.realCategories.concat(this.customCategories);
+			return categories.sort(indexIn(this.categorySetting, 'id'));
+		},
+		realCategoryIds() {
+			return _without(this.categoryIds, ...customCategoryIds);
+		},
 	},
 	methods: {
 		assemblePageViewData(categories) {
@@ -176,29 +185,6 @@ export default {
 			this.categorySetting = variantRows || rowData;
 			this.categorySetId = version || _get(expData, 'control.key');
 		},
-		// Method to augment generated loan content from the default loanChannelQuery
-		processCustomRows() {
-			if (this.customCategories.length) {
-				// get recently viewed loans id 62 in my VM
-				const customLoanQuery = this.apollo.readQuery({
-					query: loanCardQuery,
-					variables: {
-						limit: 3
-					}
-				});
-				const customLoans = _get(customLoanQuery, 'lend.loans') || [];
-				// if we have recently viewed loans update them in this.categories
-				if (customLoans.values.length) {
-					const recentLCIndex = _findIndex(this.categories, lc => {
-						return lc.id === 62;
-					});
-					this.categories[recentLCIndex].loans = customLoans;
-				}
-
-				// get more countries loans
-				// if we have more countries loans update them in this.categories
-			}
-		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -230,15 +216,10 @@ export default {
 				// Pre-fetch all the data for those channels
 				return client.query({
 					query: loanChannelQuery,
-					variables: { ids },
-				});
-			}).then(() => {
-				// chain our other custom queries here so they are cached with the prefetch
-				return client.query({
-					query: loanCardQuery,
 					variables: {
-						limit: 3
-					}
+						ids: _without(ids, ...customCategoryIds),
+						// @todo variables for fetching data for custom channels
+					},
 				});
 			});
 		}
@@ -259,18 +240,20 @@ export default {
 		// Read the loan channels from the cache
 		const categoryData = this.apollo.readQuery({
 			query: loanChannelQuery,
-			variables: { ids: this.categoryIds },
+			variables: {
+				ids: this.realCategoryIds,
+				// @todo variables for fetching data for custom channels
+			},
 		});
-		this.categories = _get(categoryData, 'lend.loanChannelsById') || [];
-		// update the categories data with custom category queries if present
-		if (this.customCategories.length) {
-			this.processCustomRows();
-		}
+		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
 
 		// Create an observer for changes to the categories (and their loans)
 		const categoryObserver = this.apollo.watchQuery({
 			query: loanChannelQuery,
-			variables: { ids: this.categoryIds },
+			variables: {
+				ids: this.realCategoryIds,
+				// @todo variables for fetching data for custom channels
+			},
 		});
 
 		// Watch for and react to changes to the query
@@ -280,18 +263,25 @@ export default {
 				this.isAdmin = !!_get(data, 'my.isAdmin');
 				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				// Update the categories observer with the new setting, triggering updates
-				categoryObserver.setVariables({ ids: this.categoryIds });
+				categoryObserver.setVariables({
+					ids: this.realCategoryIds,
+					// @todo variables for fetching data for custom channels
+				});
 			},
 		});
 
 		// React to changes to the category data
 		categoryObserver.subscribe({
 			next: ({ data }) => {
-				this.categories = _get(data, 'lend.loanChannelsById') || [];
-				// update the categories data with custom category queries if present
-				if (this.customCategories.length) {
-					this.processCustomRows();
-				}
+				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
+				this.customCategories = [];
+				this.customCategories.push({
+					id: 62,
+					name: 'Custom category',
+					loans: {
+						values: _get(data, 'lend.loans.values') || [],
+					},
+				});
 			},
 		});
 

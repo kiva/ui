@@ -21,5 +21,15 @@ query (
 				}
 			}
 		}
+		# example call to loans; place whatever query is necessary here
+		loans(offset: 0, limit: $numberOfLoans) {
+			values {
+				...loanCardFields
+				image {
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+				}
+			}
+		}
 	}
 }
