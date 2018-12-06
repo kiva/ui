@@ -64,6 +64,13 @@ button.button {
 		}
 	}
 
+	&.smallest {
+		@include button-smallest-styles();
+		@include breakpoint(medium) {
+			box-shadow: $button-smaller-medium-shadow;
+		}
+	}
+
 	&.secondary {
 		@include secondary-styles();
 		@include button-secondary-styles();

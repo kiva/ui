@@ -458,6 +458,16 @@ $button-smaller-medium-shadow: 0 2px $button-background-hover;
 	}
 }
 
+@mixin button-smallest-styles() {
+	font-size: rem-calc(14);
+	padding: 0.5rem 1rem;
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(20);
+		padding: 0.75rem 1.5rem;
+	}
+}
+
 @mixin button-setting-styles() {
 	font-size: rem-calc(14);
 	padding: rem-calc(12) rem-calc(24);
