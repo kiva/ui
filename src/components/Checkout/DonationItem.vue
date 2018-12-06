@@ -32,6 +32,18 @@
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
 				</a>
+				<a
+					@click="openNudgeLightbox"
+				>
+					Learn more
+				</a>
+				<donation-nudge-lightbox
+					:loan-count="loanCount"
+					:loan-reservation-total="loanReservationTotal"
+					:nudge-lightbox-visible="nudgeLightboxVisible"
+					:close-nudge-lightbox="closeNudgeLightbox"
+					:update-donation-to="updateDonationTo"
+				/>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
 					:visible="defaultLbVisible"
@@ -106,13 +118,15 @@ import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
+import DonationNudgeLightbox from '@/components/Checkout/DonationNudgeLightbox';
 
 export default {
 	components: {
 		KvIcon,
 		KvButton,
 		KvLightbox,
-		DonateRepayments
+		DonateRepayments,
+		DonationNudgeLightbox,
 	},
 	inject: ['apollo'],
 	props: {
@@ -123,7 +137,11 @@ export default {
 		loanCount: {
 			type: Number,
 			default: 0
-		}
+		},
+		loanReservationTotal: {
+			type: Number,
+			default: 0,
+		},
 	},
 	data() {
 		return {
@@ -131,7 +149,8 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			expVersion: ''
+			expVersion: '',
+			nudgeLightboxVisible: false,
 		};
 	},
 	apollo: {
@@ -206,6 +225,13 @@ export default {
 		}
 	},
 	methods: {
+		updateDonationTo(amount) {
+			if (typeof amount !== 'number') {
+				return;
+			}
+			this.amount = numeral(amount).format('0.00');
+			this.updateDonation();
+		},
 		enterEditDonation() {
 			this.editDonation = true;
 		},
@@ -288,6 +314,12 @@ export default {
 			// numeral takes care of non-numerical inputs, does it's best guess
 			// formed value. If input can't be deciphered then $0.00 is returned
 			document.getElementById('donation').value = verifiedInput;
+		},
+		closeNudgeLightbox() {
+			this.nudgeLightboxVisible = false;
+		},
+		openNudgeLightbox() {
+			this.nudgeLightboxVisible = true;
 		}
 	}
 };

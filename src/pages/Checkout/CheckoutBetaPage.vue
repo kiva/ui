@@ -76,6 +76,7 @@
 							:donations="donations"
 							:kiva-cards="kivaCards"
 							:teams="teams"
+							:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 							@validateprecheckout="validatePreCheckout"
 							@refreshtotals="refreshTotals($event)"
 							@updating-totals="setUpdatingTotals"
@@ -138,8 +139,8 @@
 				</div>
 
 				<kv-lightbox
-					:visible="redirectLbVisible"
-					@lightbox-closed="redirectLbClosed">
+					:visible="redirectLightboxVisible"
+					@lightbox-closed="redirectLightboxClosed">
 					<section>
 						<h1>
 							This checkout is being tested right now, but doesn't support some functions yet.
@@ -227,9 +228,9 @@ export default {
 			lastActiveLogin: 0,
 			preCheckoutStep: '',
 			preValidationErrors: [],
-			redirectLbVisible: false,
+			redirectLightboxVisible: false,
 			teams: [],
-			holidayModeEnabled: false
+			holidayModeEnabled: false,
 		};
 	},
 	apollo: {
@@ -417,7 +418,7 @@ export default {
 					if (refreshEvent === 'kiva-card-applied') {
 						this.$kvTrackEvent('basket', 'free credits applied', 'exit to legacy');
 					}
-					this.redirectLbVisible = true;
+					this.redirectLightboxVisible = true;
 					// automatically redirect to legacy after 7 seconds
 					window.setTimeout(this.redirectToLegacy, 7000);
 				} else {
@@ -454,8 +455,8 @@ export default {
 				}
 			});
 		},
-		redirectLbClosed() {
-			this.redirectLbVisible = false;
+		redirectLightboxClosed() {
+			this.redirectLightboxVisible = false;
 		},
 	},
 };

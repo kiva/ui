@@ -21,6 +21,7 @@
 				<donation-item
 					:donation="donation"
 					:loan-count="loans.length"
+					:loan-reservation-total="loanReservationTotal"
 					@refreshtotals="$emit('refreshtotals')"
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
@@ -59,7 +60,11 @@ export default {
 		teams: {
 			type: Array,
 			default: () => []
-		}
+		},
+		loanReservationTotal: {
+			type: Number,
+			default: 0,
+		},
 	},
 	components: {
 		BasketItem,
