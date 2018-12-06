@@ -145,110 +145,113 @@ export default {
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
 	}
-}
 
-.kv-lightbox {
-	position: relative;
-	margin: 0 auto;
-	z-index: 1502;
-	padding: 0;
-
-	#lightbox-row {
-		padding: 0;
-		align-items: center;
-		flex-direction: column;
-
-		#lightbox-columns {
-			position: relative;
-			max-width: 900px;
-		}
-	}
-
-	/* Content Styles */
-	.lightbox-content {
-		display: block;
+	.kv-lightbox {
 		position: relative;
-		padding: 2.5rem 1.5rem 1.5rem 1.5rem;
-		max-width: 61rem;
-		background: rgba(255, 255, 255, 0.95);
-		border-radius: rem-calc(4);
+		margin: 0 auto;
+		z-index: 1502;
+		padding: 0;
 
-		@include breakpoint(medium) {
-			padding: 4rem 2.8125rem 2.8125rem 2.8125rem;
+		#lightbox-row {
+			padding: 0;
+			align-items: center;
+			flex-direction: column;
+
+			#lightbox-columns {
+				position: relative;
+				max-width: 900px;
+			}
 		}
 
-		@include breakpoint(large) {
-			padding: 4.75rem 2.8125rem 2.8125rem 2.8125rem;
-		}
-
-		.close-lightbox {
-			position: absolute;
-			top: 1rem;
-			right: 1rem;
-
-			.icon.icon-small-x {
-				height: 1rem;
-				width: 1rem;
-				fill: $subtle-gray;
-				transition: fill 0.16s linear;
-			}
-
-			&:hover {
-				.icon.icon-small-x {
-					fill: $charcoal;
-				}
-			}
+		/* Content Styles */
+		.lightbox-content {
+			display: block;
+			position: relative;
+			padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+			max-width: 61rem;
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: rem-calc(4);
 
 			@include breakpoint(medium) {
-				top: 1.5rem;
-				right: 1.5rem;
-
-				.icon.icon-small-x {
-					height: 1.25rem;
-					width: 1.25rem;
-				}
+				padding: 4rem 2.8125rem 2.8125rem 2.8125rem;
 			}
 
 			@include breakpoint(large) {
-				top: 2rem;
-				right: 2rem;
+				padding: 4.75rem 2.8125rem 2.8125rem 2.8125rem;
 			}
-		}
 
-		&.no-padding-top {
-			padding-top: 0;
-		}
+			.close-lightbox {
+				position: absolute;
+				top: 1rem;
+				right: 1rem;
 
-		&.no-padding-right {
-			padding-right: 0;
-		}
+				.icon.icon-small-x {
+					height: 1rem;
+					width: 1rem;
+					fill: $subtle-gray;
+					transition: fill 0.16s linear;
+				}
 
-		&.no-padding-bottom {
-			padding-bottom: 0;
-		}
+				&:hover {
+					.icon.icon-small-x {
+						fill: $charcoal;
+					}
+				}
 
-		&.no-padding-left {
-			padding-left: 0;
+				@include breakpoint(medium) {
+					top: 1.5rem;
+					right: 1.5rem;
+
+					.icon.icon-small-x {
+						height: 1.25rem;
+						width: 1.25rem;
+					}
+				}
+
+				@include breakpoint(large) {
+					top: 2rem;
+					right: 2rem;
+				}
+			}
+
+			&.no-padding-top {
+				padding-top: 0;
+			}
+
+			&.no-padding-right {
+				padding-right: 0;
+			}
+
+			&.no-padding-bottom {
+				padding-bottom: 0;
+			}
+
+			&.no-padding-left {
+				padding-left: 0;
+			}
 		}
 	}
-}
 
-.kv-lightbox-wrap.inverted {
-	background: rgba(0, 0, 0, 0.9);
-	color: $white;
-	font-weight: normal;
+	&.inverted {
+		background: rgba(0, 0, 0, 0.9);
 
-	.lightbox-content {
-		background: transparent;
+		.kv-lightbox {
+			color: $white;
+			font-weight: normal;
 
-		.close-lightbox {
-			.icon.icon-small-x {
-				fill: $kiva-green;
-			}
+			.lightbox-content {
+				background: transparent;
 
-			&:hover {
-				.icon-small-x {
-					fill: $kiva-accent-green;
+				.close-lightbox {
+					.icon.icon-small-x {
+						fill: $kiva-green;
+					}
+
+					&:hover {
+						.icon-small-x {
+							fill: $kiva-accent-green;
+						}
+					}
 				}
 			}
 		}
