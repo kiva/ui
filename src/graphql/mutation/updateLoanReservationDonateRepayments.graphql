@@ -1,0 +1,12 @@
+mutation updateLoanReservationDonateRepayments($loanid: Int!, $donateRepayments: Boolean) {
+	shop {
+		updateLoanReservationDonateRepayments (loanReservation: {
+        	id: $loanid
+			donateRepayments: $donateRepayments
+		})
+		{
+			id
+			donateRepayments
+		}
+	}
+}

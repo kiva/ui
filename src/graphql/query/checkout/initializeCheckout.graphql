@@ -9,7 +9,7 @@ query {
 			donateRepayments
 		}
 		lender {
-			teams{
+			teams(limit: 100){
 				values {
 					name
 					id

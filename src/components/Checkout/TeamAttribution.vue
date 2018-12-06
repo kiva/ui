@@ -6,7 +6,7 @@
 				class="team-select-dd small-text"
 				@change="updateLoanReservation()">
 				<option value="0">None</option>
-				<option v-for="team in teams"
+				<option v-for="team in sortTeams"
 					:key="team.id"
 					:value="team.id">{{ team.name }}
 				</option>
@@ -16,8 +16,9 @@
 </template>
 
 <script>
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import _forEach from 'lodash/forEach';
+import _orderBy from 'lodash/orderBy';
 import numeral from 'numeral';
 
 export default {
@@ -29,10 +30,6 @@ export default {
 		teamId: {
 			type: Number,
 			default: 0
-		},
-		price: {
-			type: String,
-			default: ''
 		},
 		loanId: {
 			type: Number,
@@ -48,6 +45,11 @@ export default {
 			cachedId: null,
 		};
 	},
+	computed: {
+		sortTeams() {
+			return _orderBy(this.teams, 'name');
+		}
+	},
 	methods: {
 		updateLoanReservation() {
 			if (this.selectedId !== this.loanId) {
@@ -55,11 +57,10 @@ export default {
 				const updatedTeamId = numeral(this.selectedId).value();
 
 				this.apollo.mutate({
-					mutation: updateLoanReservation,
+					mutation: updateLoanReservationTeam,
 					variables: {
 						teamId: updatedTeamId,
-						loanid: this.loanId,
-						price: this.price
+						loanid: this.loanId
 					}
 				}).then(data => {
 					if (data.errors) {
