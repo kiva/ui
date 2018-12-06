@@ -1,46 +1,71 @@
 <template>
 	<div class="donation-nudge-boxes-container">
-		<div class="row nudge-box-row">
-			<div
-				v-for="{percentage, appeal, appealIsHorizontallyPadded} in percentageRows"
-				:key="percentage"
-				class="medium-4 columns nudge-box-top-container nudge-box-container"
-			>
+		<div class="show-for-large nudge-boxes-desktop">
+			<div class="row nudge-box-row">
 				<div
-					:class="`nudge-box-top ${appealIsHorizontallyPadded ? 'nudge-box-padded' : ''}`"
-					@click="setDonationAndClose(getDonationByPercent(percentage))"
+					v-for="{percentage, appeal, appealIsHorizontallyPadded} in percentageRows"
+					:key="percentage"
+					class="medium-4 columns nudge-box-top-container nudge-box-container"
 				>
-					{{ appeal }}
+					<div
+						:class="`nudge-box-top ${appealIsHorizontallyPadded ? 'nudge-box-padded' : ''}`"
+						@click="setDonationAndClose(getDonationByPercent(percentage))"
+					>
+						{{ appeal }}
+					</div>
+				</div>
+			</div>
+			<div class="row nudge-box-row">
+				<div
+					v-for="{percentage} in percentageRows"
+					:key="percentage"
+					class="medium-4 columns nudge-box-middle-container nudge-box-container"
+				>
+					<div
+						class="nudge-box-middle"
+						@click="setDonationAndClose(getDonationByPercent(percentage))"
+					>
+						${{ getDonationByPercent(percentage) }}
+					</div>
+				</div>
+			</div>
+			<div class="row nudge-box-row">
+				<div
+					v-for="{percentage} in percentageRows"
+					:key="percentage"
+					class="medium-4 columns nudge-box-bottom-container nudge-box-container"
+				>
+					<div
+						class="nudge-box-bottom"
+						@click="setDonationAndClose(getDonationByPercent(percentage))"
+					>
+						<kv-button class="smallest nudge-box-button">
+							Select
+						</kv-button>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row nudge-box-row">
+		<div class="hide-for-large nudge-boxes-mobile">
 			<div
-				v-for="{percentage} in percentageRows"
+				v-for="{percentage, appeal} in percentageRows"
 				:key="percentage"
-				class="medium-4 columns nudge-box-middle-container nudge-box-container"
+				class="nudge-box-wrapper"
+				@click="setDonationAndClose(getDonationByPercent(percentage))"
 			>
-				<div
-					class="nudge-box-middle"
-					@click="setDonationAndClose(getDonationByPercent(percentage))"
-				>
-					${{ getDonationByPercent(percentage) }}
-				</div>
-			</div>
-		</div>
-		<div class="row nudge-box-row">
-			<div
-				v-for="{percentage} in percentageRows"
-				:key="percentage"
-				class="medium-4 columns nudge-box-bottom-container nudge-box-container"
-			>
-				<div
-					class="nudge-box-bottom"
-					@click="setDonationAndClose(getDonationByPercent(percentage))"
-				>
-					<kv-button class="smaller nudge-box-button">
-						Select
-					</kv-button>
+				<div class="row nudge-box-row">
+					<!-- eslint-disable max-len -->
+					<div class="small-7 columns nudge-box-column">
+						<!-- eslint-enablemax-len -->
+						{{ appeal }}
+					</div>
+					<div class="small-4 small-offset-1 columns nudge-box-column">
+						<kv-button
+							class="smallest nudge-box-button"
+						>
+							${{ getDonationByPercent(percentage) }}
+						</kv-button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -81,50 +106,74 @@ export default {
 @import 'settings';
 
 .donation-nudge-boxes-container {
-	.nudge-box-row {
-		$nudge-box-border: 1px solid #eee;
+	$nudge-box-border: 1px solid #eee;
 
-		.nudge-box-shared {
-			background: $white;
-			border-left: $nudge-box-border;
-			border-right: $nudge-box-border;
-			padding: 0 0.5rem;
-			height: 100%;
-			cursor: pointer;
-			user-select: none;
-		}
+	.nudge-box-shared {
+		background: $white;
+		cursor: pointer;
+		user-select: none;
+	}
 
-		.nudge-box-container {
-			.nudge-box-top {
-				@extend .nudge-box-shared;
+	.nudge-boxes-desktop {
+		.nudge-box-row {
+			.nudge-box-shared {
+				border-left: $nudge-box-border;
+				border-right: $nudge-box-border;
+				padding: 0 0.5rem;
+				height: 100%;
+			}
 
-				display: flex;
-				align-items: center;
-				padding-top: 1rem;
-				border-top: $nudge-box-border;
+			.nudge-box-container {
+				.nudge-box-top {
+					@extend .nudge-box-shared;
 
-				&.nudge-box-padded {
-					padding-left: 2rem;
-					padding-right: 2rem;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					padding-top: 1rem;
+					border-top: $nudge-box-border;
+
+					&.nudge-box-padded {
+						padding-left: 2rem;
+						padding-right: 2rem;
+					}
+				}
+
+				.nudge-box-middle {
+					@extend .nudge-box-shared;
+
+					padding: 1.5rem 0;
+					font-size: 1.5rem;
+				}
+
+				.nudge-box-bottom {
+					@extend .nudge-box-shared;
+
+					padding-bottom: 1rem;
+					border-bottom: $nudge-box-border;
 				}
 			}
+		}
+	}
 
-			.nudge-box-middle {
-				@extend .nudge-box-shared;
+	.nudge-boxes-mobile {
+		text-align: left;
 
-				padding: 1.5rem 0;
-				font-size: 1.5rem;
-			}
+		.nudge-box-wrapper {
+			@extend .nudge-box-shared;
 
-			.nudge-box-bottom {
-				@extend .nudge-box-shared;
+			margin-bottom: 1rem;
+			padding: 1rem rem-calc(14);
+			border: $nudge-box-border;
 
-				padding-bottom: 1rem;
-				border-bottom: $nudge-box-border;
+			.nudge-box-row {
+				.nudge-box-column {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
 
-				@include breakpoint(large only) {
-					button.button.smaller.nudge-box-button {
-						padding: 0.75rem 1.5rem;
+					.nudge-box-button {
+						margin-bottom: 0;
 					}
 				}
 			}

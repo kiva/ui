@@ -28,7 +28,7 @@
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
 				<div class="row">
-					<div class="small-8 medium-6 small-offset-2 medium-offset-3 columns">
+					<div class="large-8 xlarge-6 large-offset-2 xlarge-offset-3 columns">
 						<kv-charity-navigator
 							title="Kiva has been awarded Charity Navigator's highest rating for operational efficiency."
 							:wide-icon="true"
@@ -91,7 +91,7 @@ export default {
 				},
 				{
 					percentage: 20,
-					appeal: 'Cover some of Kiva\'s costs',
+					appeal: 'Reach more people around the world!',
 					appealIsHorizontallyPadded: false,
 				},
 			],
