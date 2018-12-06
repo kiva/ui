@@ -85,52 +85,6 @@
 						</div>
 					</div>
 				</div>
-				<div id="nudgeDonationButtonWrapper">
-					<div id="nudgeDonationButtonContainer">
-						<div id="nudgeDonationButton10" class="nudgeDonationButtonBox">
-							<div class="nudgeDonationButtonBoxContent nudgeDonationBoxDescription smallDescription">
-								Cover some of Kiva's costs
-							</div>
-							<div class="nudgeDonationButtonBoxContent nudgeDonationButtonAmount">
-								${{ getDonationByPercent(10) }}
-							</div>
-							<kv-button
-								@click.native="updateDonationTo(getDonationByPercent(10))"
-								class="smaller nudgeDonationButtonBoxContent"
-							>
-								Select
-							</kv-button>
-						</div>
-						<div id="nudgeDonationButton15" class="nudgeDonationButtonBox">
-							<div class="nudgeDonationButtonBoxContent nudgeDonationBoxDescription">
-								Cover the cost to facilitate {{ this.loanCount > 1 ? 'these loans' : 'this loan' }}
-							</div>
-							<div class="nudgeDonationButtonBoxContent nudgeDonationButtonAmount">
-								${{ getDonationByPercent(15) }}
-							</div>
-							<kv-button
-								@click.native="updateDonationTo(getDonationByPercent(15))"
-								class="smaller nudgeDonationButtonBoxContent"
-							>
-								Select
-							</kv-button>
-						</div>
-						<div id="nudgeDonationButton20" class="nudgeDonationButtonBox">
-							<div class="nudgeDonationButtonBoxContent nudgeDonationBoxDescription">
-								Reach more people around the world!
-							</div>
-							<div class="nudgeDonationButtonBoxContent nudgeDonationButtonAmount">
-								${{ getDonationByPercent(20) }}
-							</div>
-							<kv-button
-								@click.native="updateDonationTo(getDonationByPercent(20))"
-								class="smaller nudgeDonationButtonBoxContent"
-							>
-								Select
-							</kv-button>
-						</div>
-					</div>
-				</div>
 				<div><a id="no-donation-link" @click="setDonationAndClose(0)">No donation to Kiva</a></div>
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
@@ -275,52 +229,6 @@ export default {
 					}
 				}
 			}
-		}
-
-		#nudgeDonationButtonWrapper {
-			display: flex;
-			justify-content: center;
-		}
-
-		#nudgeDonationButtonContainer {
-			display: inline-flex;
-			justify-content: flex-start;
-			align-items: stretch;
-			margin-bottom: 2rem;
-			text-align: center;
-		}
-
-		.nudgeDonationButtonAmount {
-			margin: 1.5rem 0;
-			font-size: 1.5rem;
-		}
-
-		.nudgeDonationButtonBox {
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			flex: 1;
-			padding: 1rem 2rem;
-			background: #fff;
-			border: 1px solid #eee;
-			border-radius: 0.1rem;
-			align-items: center;
-			cursor: pointer;
-			user-select: none;
-			max-width: 207px;
-			margin-right: 1rem;
-		}
-
-		.nudgeDonationButtonBox:last-child {
-			margin-right: 0;
-		}
-
-		.nudgeDonationButtonBoxContent {
-			flex: 1;
-		}
-
-		.nudgeDonationBoxDescription.smallDescription {
-			padding: 0 10px;
 		}
 
 		#no-donation-link {
