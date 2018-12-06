@@ -199,6 +199,8 @@ export default {
 					.nudge-box-top {
 						@extend .nudge-box-shared;
 
+						display: flex;
+						align-items: center;
 						padding-top: 1rem;
 						border-top: $nudge-box-border;
 
