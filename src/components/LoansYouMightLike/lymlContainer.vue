@@ -12,6 +12,8 @@
 						:card-number="1"
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
+						@refreshtotals="$emit('refreshtotals')"
+						@updating-totals="$emit('updating-totals', $event)"
 					/>
 					<minimal-loan-card
 						class="minimal-loan-card"
@@ -20,6 +22,8 @@
 						:card-number="2"
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
+						@refreshtotals="$emit('refreshtotals')"
+						@updating-totals="$emit('updating-totals', $event)"
 					/>
 					<minimal-loan-card
 						class="minimal-loan-card"
@@ -28,6 +32,8 @@
 						:card-number="3"
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
+						@refreshtotals="$emit('refreshtotals')"
+						@updating-totals="$emit('updating-totals', $event)"
 					/>
 				</div>
 			</div>

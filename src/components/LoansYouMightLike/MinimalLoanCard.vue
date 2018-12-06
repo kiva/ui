@@ -22,6 +22,7 @@
 			<minimal-fundraising-meter
 				:amount-left="amountLeft"
 				:percent-raised="percentRaised"
+				reserved-amount="reservedAmount"
 				:is-funded="loan.status==='funded'"
 			/>
 			<!-- Country -->
@@ -32,8 +33,16 @@
 				{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
 			</p>
 			<!-- Add to basket text -->
-			<a v-if="!isFunded" class="card-action">Add to basket</a>
-			<p v-if="isFunded" class="card-action">Fully funded</p>
+			<a
+				:loan-id="loan.id"
+				v-if="!inBasket"
+				@click.prevent="addToBasket()"
+				class="card-action">Add to basket
+			</a>
+			<p
+				v-else>In your basket
+			</p>
+
 		</div>
 	</div>
 </template>
@@ -41,13 +50,23 @@
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
+import addToBasketMutation from '@/graphql/mutation/addToBasket.graphql';
+import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
 		LoanCardImage,
 		MinimalFundraisingMeter,
-		shopBasketUpdate
+		shopBasketUpdate,
+		addToBasketMutation,
 	},
+	data() {
+		return {
+			inBasket: false,
+		};
+	},
+	inject: ['apollo'],
 	props: {
 		loan: {
 			type: Object,
@@ -78,15 +97,46 @@ export default {
 	computed: {
 		amountLeft() {
 			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
-			return this.loan.loanAmount - fundedAmount - reservedAmount;
+			console.log('amount left');
+			console.log(this.loan.loanAmount);
+			console.log('funded amount');
+			console.log(fundedAmount);
+			console.log('reserved Amount');
+			console.log(reservedAmount);
+			console.log(this.loan);
+			return numeral(this.loan.loanAmount) - numeral(fundedAmount) - numeral(reservedAmount);
 		},
 		isFunded() {
 			return this.loan.status === 'funded' || this.amountLeft <= 0;
 		},
 		percentRaised() {
-			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
+			return (numeral(this.loan.loanAmount) - numeral(this.amountLeft)) / numeral(this.loan.loanAmount);
 		}
-	}
+	},
+	methods: {
+		addToBasket() {
+			this.$emit('setUpdatingTotals', true);
+			this.apollo.mutate({
+				mutation: addToBasketMutation,
+				variables: {
+					id: this.loan.id,
+					price: numeral(25).format('0.00'),
+				},
+			}).then(({ errors }) => {
+				if (errors) {
+					// Handle errors from adding to basket
+					_forEach(errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				}
+			}).catch(() => {
+				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+			}).finally(() => {
+				this.$emit('refreshtotals');
+				this.inBasket = true;
+			});
+		}
+	},
 };
 </script>
 <style lang="scss" scoped>

@@ -129,7 +129,10 @@
 					</div>
 
 					<!-- Loans you might like section -->
-					<l-y-m-l v-if="showLYML" />
+					<l-y-m-l
+						v-if="showLYML"
+						@refreshtotals="refreshTotals($event)"
+						@updating-totals="setUpdatingTotals" />
 
 				</div>
 

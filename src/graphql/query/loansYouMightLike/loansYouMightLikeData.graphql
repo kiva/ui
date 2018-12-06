@@ -5,13 +5,14 @@ query (
 	$imgRetinaSize: String = "w360h240"
 ) {
 	lend {
-		sameCountry: loans(filters: {country: $country}, limit: 1, sortBy: random) {
+		sameCountry: loans(filters: {country: $country, status: fundRaising}, limit: 1, sortBy: random) {
 			values {
 				id
 				name
 				loanAmount
 				loanFundraisingInfo {
 					fundedAmount
+					reservedAmount
 				}
 				image {
 					id
@@ -31,13 +32,14 @@ query (
 			}
 		}
 
-		sameActivity: loans (filters: {activity: $activity}, limit: 1, sortBy: random) {
+		sameActivity: loans (filters: {activity: $activity, status: fundRaising}, limit: 1, sortBy: random) {
 			values {
 				id
 				name
 				loanAmount
 				loanFundraisingInfo {
 					fundedAmount
+					reservedAmount
 				}
 				image {
 					id
@@ -57,13 +59,14 @@ query (
 			}
 		}
 
-		randomLoan: loans (limit: 3, sortBy: random) {
+		randomLoan: loans (filters: {status: fundRaising}, limit: 3, sortBy: random) {
 			values {
 				id
 				name
 				loanAmount
 				loanFundraisingInfo {
 					fundedAmount
+					reservedAmount
 				}
 				image {
 					id

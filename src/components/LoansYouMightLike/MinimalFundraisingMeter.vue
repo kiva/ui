@@ -18,7 +18,6 @@
 	.fundraising-meter {
 		height: $loan-card-meter-height;
 		width: 100%;
-		// margin: 0 0 rem-calc(8);
 		border-radius: $loan-card-meter-height;
 		background-color: $kiva-stroke-gray;
 
