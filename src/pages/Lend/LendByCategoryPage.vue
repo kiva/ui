@@ -97,7 +97,10 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 
-const customCategoryIds = [62];
+// Insert Loan Channel Ids here
+// They should also be added to the ui.category_rows setting
+// You'll need use the same id when you push data into customCategories
+const customCategoryIds = [];
 
 export default {
 	components: {
@@ -276,17 +279,17 @@ export default {
 				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
 				this.customCategories = [];
 				// check for loans before pushing this as we won't want to show an empty row
-				const someLoans = _get(data, 'lend.someLoans.values') || [];
-				if (someLoans.length) {
-					this.customCategories.push({
-						id: 62,
-						name: 'Custom category',
-						url: '', // required field
-						loans: {
-							values: someLoans,
-						},
-					});
-				}
+				// const someLoans = _get(data, 'lend.someLoans.values') || [];
+				// if (someLoans.length) {
+				// 	this.customCategories.push({
+				// 		id: 62,
+				// 		name: 'Custom category',
+				// 		url: '', // required field
+				// 		loans: {
+				// 			values: someLoans,
+				// 		},
+				// 	});
+				// }
 
 				// check for loans before pushing this as we won't want to show an empty row
 				// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
