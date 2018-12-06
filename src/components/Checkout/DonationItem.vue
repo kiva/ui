@@ -226,7 +226,7 @@ export default {
 	},
 	methods: {
 		updateDonationTo(amount) {
-			if (typeof amount !== 'number') {
+			if (amount === undefined) {
 				return;
 			}
 			this.amount = numeral(amount).format('0.00');

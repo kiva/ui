@@ -17,74 +17,13 @@
 						Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.
 					</div>
 				</div>
-				<div class="nudge-box-row-container">
-					<div class="row nudge-box-row">
-						<div class="medium-4 columns nudge-box-top-container nudge-box-container">
-							<div class="nudge-box-top nudge-box-padded">
-								Cover some of Kiva's costs
-							</div>
-						</div>
-						<div class="medium-4 columns nudge-box-top-container nudge-box-container">
-							<div class="nudge-box-top">
-								Cover the cost to facilitate {{ this.loanCount > 1 ? 'these loans' : 'this loan' }}
-							</div>
-						</div>
-						<div class="medium-4 columns nudge-box-top-container nudge-box-container">
-							<div class="nudge-box-top">
-								Reach more people around the world!
-							</div>
-						</div>
-					</div>
-					<div class="row nudge-box-row">
-						<div class="medium-4 columns nudge-box-middle-container nudge-box-container">
-							<div class="nudge-box-middle">
-								${{ getDonationByPercent(10) }}
-							</div>
-						</div>
-						<div class="medium-4 columns nudge-box-middle-container nudge-box-container">
-							<div class="nudge-box-middle">
-								${{ getDonationByPercent(15) }}
-							</div>
-						</div>
-						<div class="medium-4 columns nudge-box-middle-container nudge-box-container">
-							<div class="nudge-box-middle">
-								${{ getDonationByPercent(20) }}
-							</div>
-						</div>
-					</div>
-					<div class="row nudge-box-row">
-						<div class="medium-4 columns nudge-box-bottom-container nudge-box-container">
-							<div class="nudge-box-bottom">
-								<kv-button
-									@click.native="updateDonationTo(getDonationByPercent(10))"
-									class="smaller nudge-box-button"
-								>
-									Select
-								</kv-button>
-							</div>
-						</div>
-						<div class="medium-4 columns nudge-box-bottom-container nudge-box-container">
-							<div class="nudge-box-bottom">
-								<kv-button
-									@click.native="updateDonationTo(getDonationByPercent(10))"
-									class="smaller nudge-box-button"
-								>
-									Select
-								</kv-button>
-							</div>
-						</div>
-						<div class="medium-4 columns nudge-box-bottom-container nudge-box-container">
-							<div class="nudge-box-bottom">
-								<kv-button
-									@click.native="updateDonationTo(getDonationByPercent(10))"
-									class="smaller nudge-box-button"
-								>
-									Select
-								</kv-button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<kv-donation-nudge-boxes
+					id="nudge-donation-top-boxes-wrapper"
+					:percentage-rows= "percentageRows"
+					:has-custom-donation="true"
+					:loan-reservation-total="loanReservationTotal"
+					:set-donation-and-close="setDonationAndClose"
+				/>
 				<div><a id="no-donation-link" @click="setDonationAndClose(0)">No donation to Kiva</a></div>
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
@@ -103,9 +42,9 @@
 </template>
 
 <script>
-import numeral from 'numeral';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvDonationNudgeBoxes from '@/components/Checkout/KvDonationNudgeBoxes';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 
 export default {
@@ -113,6 +52,7 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
+		KvDonationNudgeBoxes,
 	},
 	props: {
 		nudgeLightboxVisible: {
@@ -136,10 +76,28 @@ export default {
 			default: 0,
 		},
 	},
+	data() {
+		return {
+			percentageRows: [
+				{
+					percentage: 10,
+					appeal: 'Cover some of Kiva\'s costs',
+					appealIsHorizontallyPadded: true,
+				},
+				{
+					percentage: 15,
+					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
+					appealIsHorizontallyPadded: false,
+				},
+				{
+					percentage: 20,
+					appeal: 'Cover some of Kiva\'s costs',
+					appealIsHorizontallyPadded: false,
+				},
+			],
+		};
+	},
 	methods: {
-		getDonationByPercent(percent) {
-			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
-		},
 		setDonationAndClose(amount) {
 			this.updateDonationTo(amount);
 			this.closeNudgeLightbox();
@@ -175,62 +133,14 @@ export default {
 		#nudge-donation-top-content-row {
 			@extend .nudge-lightbox-row-padding;
 
-			margin: 2rem 0;
+			margin: 2rem auto;
+			max-width: 47rem;
 		}
 
-		.nudge-box-row-container {
+		#nudge-donation-top-boxes-wrapper {
 			@extend .nudge-lightbox-row-padding;
 
-			max-width: 47rem;
-			margin: 0 auto;
-
-			.nudge-box-row {
-				$nudge-box-border: 1px solid #eee;
-
-				.nudge-box-shared {
-					background: $white;
-					border-left: $nudge-box-border;
-					border-right: $nudge-box-border;
-					padding: 0 0.5rem;
-					height: 100%;
-				}
-
-				.nudge-box-container {
-					.nudge-box-top {
-						@extend .nudge-box-shared;
-
-						display: flex;
-						align-items: center;
-						padding-top: 1rem;
-						border-top: $nudge-box-border;
-
-						&.nudge-box-padded {
-							padding-left: 2rem;
-							padding-right: 2rem;
-						}
-					}
-
-					.nudge-box-middle {
-						@extend .nudge-box-shared;
-
-						padding: 1.5rem 0;
-						font-size: 1.5rem;
-					}
-
-					.nudge-box-bottom {
-						@extend .nudge-box-shared;
-
-						padding-bottom: 1rem;
-						border-bottom: $nudge-box-border;
-
-						@include breakpoint(large only) {
-							button.button.smaller.nudge-box-button {
-								padding: 0.75rem 1.5rem;
-							}
-						}
-					}
-				}
-			}
+			margin-bottom: 2rem;
 		}
 
 		#no-donation-link {
