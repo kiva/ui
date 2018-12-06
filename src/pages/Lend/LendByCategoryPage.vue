@@ -134,7 +134,7 @@ export default {
 		categories() {
 			// merge realCategories & customCategories and re-order to match the setting
 			const categories = this.realCategories.concat(this.customCategories);
-			return categories.sort(indexIn(this.categorySetting, 'id'));
+			return categories.sort(indexIn(this.categoryIds, 'id'));
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
@@ -188,6 +188,34 @@ export default {
 			this.categorySetting = variantRows || rowData;
 			this.categorySetId = version || _get(expData, 'control.key');
 		},
+		setCustomRowData(data) { // eslint-disable-line
+			this.customCategories = [];
+			// check for loans before pushing this as we won't want to show an empty row
+			// const someCustomLoans = _get(data, 'lend.someLoans.values') || [];
+			// if (someCustomLoans.length) {
+			// 	this.customCategories.push({
+			// 		id: 62,
+			// 		name: 'Custom category',
+			// 		url: '', // required field
+			// 		loans: {
+			// 			values: someCustomLoans,
+			// 		},
+			// 	});
+			// }
+
+			// check for loans before pushing this as we won't want to show an empty row
+			// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
+			// if (otherLoans.length) {
+			// 	this.customCategories.push({
+			// 		id: 65,
+			// 		name: 'Other Custom category',
+			// 		url: '', // required field
+			// 		loans: {
+			// 			values: otherLoans,
+			// 		},
+			// 	});
+			// }
+		}
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -249,6 +277,8 @@ export default {
 			},
 		});
 		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
+		// update our custom categories prior to render
+		this.setCustomRowData(categoryData);
 
 		// Create an observer for changes to the categories (and their loans)
 		const categoryObserver = this.apollo.watchQuery({
@@ -277,32 +307,8 @@ export default {
 		categoryObserver.subscribe({
 			next: ({ data }) => {
 				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
-				this.customCategories = [];
-				// check for loans before pushing this as we won't want to show an empty row
-				// const someLoans = _get(data, 'lend.someLoans.values') || [];
-				// if (someLoans.length) {
-				// 	this.customCategories.push({
-				// 		id: 62,
-				// 		name: 'Custom category',
-				// 		url: '', // required field
-				// 		loans: {
-				// 			values: someLoans,
-				// 		},
-				// 	});
-				// }
-
-				// check for loans before pushing this as we won't want to show an empty row
-				// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
-				// if (otherLoans.length) {
-				// 	this.customCategories.push({
-				// 		id: 65,
-				// 		name: 'Other Custom category',
-				// 		url: '', // required field
-				// 		loans: {
-				// 			values: otherLoans,
-				// 		},
-				// 	});
-				// }
+				// update our custom categories on any query change
+				this.setCustomRowData(data);
 			},
 		});
 
