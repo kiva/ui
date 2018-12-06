@@ -156,10 +156,14 @@ export default {
 			padding: 0;
 			align-items: center;
 			flex-direction: column;
+			margin-right: -0.0625rem;
+			margin-left: -0.0625rem;
 
 			#lightbox-columns {
 				position: relative;
 				max-width: 900px;
+				padding-right: 0.0625rem;
+				padding-left: 0.0625rem;
 			}
 		}
 
