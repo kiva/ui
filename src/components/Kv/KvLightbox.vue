@@ -1,21 +1,28 @@
 <template>
 	<transition name="kvfade">
-		<div v-show="isShown"
-			class="kv-lightbox-wrap"
+		<div
+			v-show="isShown"
+			:class="`kv-lightbox-wrap ${removeContentBg}`"
 			ref="kvlightbox"
 			@keyup.esc="closeLightbox"
-			tabindex="500">
-			<div class="kv-lightbox-bg" @click.stop.prevent="closeLightbox"></div>
+			@click.stop.prevent="closeLightbox"
+			tabindex="500"
+		>
 			<div class="kv-lightbox">
-				<div class="row">
-					<div class="columns">
-						<div class="lightbox-content" :class="removeContentBg">
+				<div class="row" id="lightbox-row">
+					<div class="columns" id="lightbox-columns">
+						<!-- eslint-disable max-len -->
+						<div
+							:class="`lightbox-content ${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingRight ? 'no-padding-right': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingLeft ? 'no-padding-left': ''}`"
+							@click.stop
+						>
+							<!-- eslint-enable max-len -->
 							<button @click.stop.prevent="closeLightbox" class="close-lightbox" aria-label="Close">
 								<kv-icon name="small-x" />
 							</button>
 							<slot name="title"></slot>
 							<slot>Lightbox content</slot>
-							<br>
+							<br v-if="!noPaddingBottom">
 							<slot name="controls">
 								<kv-button v-if="showCloseButton" @click.native="closeLightbox">
 									Close
@@ -55,7 +62,23 @@ export default {
 		showCloseButton: {
 			type: Boolean,
 			default: false
-		}
+		},
+		noPaddingTop: {
+			type: Boolean,
+			default: false,
+		},
+		noPaddingRight: {
+			type: Boolean,
+			default: false,
+		},
+		noPaddingBottom: {
+			type: Boolean,
+			default: false,
+		},
+		noPaddingLeft: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		removeContentBg() {
@@ -117,24 +140,10 @@ export default {
 	overflow-y: auto;
 	z-index: 1500;
 	max-height: 100vh;
+	background: rgba(72, 72, 72, 0.6);
 
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
-	}
-}
-
-.kv-lightbox-bg {
-	display: block;
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(72, 72, 72, 0.6);
-	z-index: 1501;
-
-	@include breakpoint(large) {
-		padding: rem-calc(32) 2rem;
 	}
 }
 
@@ -144,12 +153,12 @@ export default {
 	z-index: 1502;
 	padding: 0;
 
-	.row {
+	#lightbox-row {
 		padding: 0;
 		align-items: center;
 		flex-direction: column;
 
-		.columns {
+		#lightbox-columns {
 			position: relative;
 			max-width: 900px;
 		}
@@ -172,52 +181,67 @@ export default {
 			padding: 4.75rem 2.8125rem 2.8125rem 2.8125rem;
 		}
 
-		&.inverted {
-			background: transparent;
-			color: $white;
-			font-weight: normal;
-			margin: 0;
+		.close-lightbox {
+			position: absolute;
+			top: 1rem;
+			right: 1rem;
+
+			.icon.icon-small-x {
+				height: 1rem;
+				width: 1rem;
+				fill: $subtle-gray;
+				transition: fill 0.16s linear;
+			}
+
+			&:hover {
+				.icon.icon-small-x {
+					fill: $charcoal;
+				}
+			}
+
+			@include breakpoint(medium) {
+				top: 1.5rem;
+				right: 1.5rem;
+
+				.icon.icon-small-x {
+					height: 1.25rem;
+					width: 1.25rem;
+				}
+			}
+
+			@include breakpoint(large) {
+				top: 2rem;
+				right: 2rem;
+			}
+		}
+
+		&.no-padding-top {
+			padding-top: 0;
+		}
+
+		&.no-padding-right {
+			padding-right: 0;
+		}
+
+		&.no-padding-bottom {
+			padding-bottom: 0;
+		}
+
+		&.no-padding-left {
+			padding-left: 0;
 		}
 	}
+}
 
-	.close-lightbox {
-		position: absolute;
-		top: 1rem;
-		right: 1rem;
+.kv-lightbox-wrap.inverted {
+	background: rgba(0, 0, 0, 0.9);
+	color: $white;
+	font-weight: normal;
 
-		.icon.icon-small-x {
-			height: 1rem;
-			width: 1rem;
-			fill: $subtle-gray;
-			transition: fill 0.165s linear;
-		}
+	.lightbox-content {
+		background: transparent;
 
-		&:hover {
-			.icon.icon-small-x {
-				fill: $charcoal;
-			}
-		}
-
-		@include breakpoint(medium) {
-			top: 1.5rem;
-			right: 1.5rem;
-
-			.icon.icon-small-x {
-				height: 1.25rem;
-				width: 1.25rem;
-			}
-		}
-
-		@include breakpoint(large) {
-			top: 2rem;
-			right: 2rem;
-		}
-
-		&.inverted {
-			position: fixed;
-			top: rem-calc(14);
-			right: rem-calc(14);
-
+		.close-lightbox {
 			.icon.icon-small-x {
 				fill: $kiva-green;
 			}
