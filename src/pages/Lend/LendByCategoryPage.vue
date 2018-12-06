@@ -275,13 +275,31 @@ export default {
 			next: ({ data }) => {
 				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
 				this.customCategories = [];
-				this.customCategories.push({
-					id: 62,
-					name: 'Custom category',
-					loans: {
-						values: _get(data, 'lend.loans.values') || [],
-					},
-				});
+				// check for loans before pushing this as we won't want to show an empty row
+				const someLoans = _get(data, 'lend.someLoans.values') || [];
+				if (someLoans.length) {
+					this.customCategories.push({
+						id: 62,
+						name: 'Custom category',
+						url: '', // required field
+						loans: {
+							values: someLoans,
+						},
+					});
+				}
+
+				// check for loans before pushing this as we won't want to show an empty row
+				// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
+				// if (otherLoans.length) {
+				// 	this.customCategories.push({
+				// 		id: 65,
+				// 		name: 'Other Custom category',
+				// 		url: '', // required field
+				// 		loans: {
+				// 			values: otherLoans,
+				// 		},
+				// 	});
+				// }
 			},
 		});
 

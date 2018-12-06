@@ -21,8 +21,8 @@ query (
 				}
 			}
 		}
-		# example call to loans; place whatever query is necessary here
-		loans(offset: 0, limit: $numberOfLoans) {
+		# example aliased call to loans; place whatever query is necessary here
+		someLoans: loans(offset: 20, limit: 3) {
 			values {
 				...loanCardFields
 				image {
@@ -31,5 +31,15 @@ query (
 				}
 			}
 		}
+		# example 2nd aliased call to loans; place whatever query is necessary here
+		# otherLoans: loans(offset: 10, limit: 3) {
+		# 	values {
+		# 		...loanCardFields
+		# 		image {
+		# 			default: url(customSize: $imgDefaultSize)
+		# 			retina: url(customSize: $imgRetinaSize)
+		# 		}
+		# 	}
+		# }
 	}
 }
