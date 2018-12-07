@@ -160,7 +160,7 @@
 			</div>
 		</div>
 		<l-y-m-l
-			v-if="showLYML"
+			v-if="isLoggedIn && showLYML"
 			:loans="loans"
 			@refreshtotals="refreshTotals($event)"
 			@updating-totals="setUpdatingTotals"
