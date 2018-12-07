@@ -132,7 +132,7 @@ export default {
 	},
 	inject: ['apollo'],
 	watch: {
-		'this.showLYML': () => {
+		showLYML() {
 			if (this.showLYML === true) {
 				this.$nextTick(() => {
 					this.saveWindowWidth();
@@ -144,8 +144,6 @@ export default {
 	mounted() {
 		// CASH-101 EXP for Loans you might like
 		this.activateLoansYouMightLike();
-		this.saveWindowWidth();
-		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
