@@ -51,12 +51,12 @@
 								@updating-totals="$emit('updating-totals', $event)"
 							/>
 						</div>
-						<span
-							class="arrow lyml-right-arrow"
-							:class="{inactive: scrollPos <= minLeftMargin}"
-							@click="scrollRowRight"
-						>&rsaquo;</span>
 					</div>
+					<span
+						class="arrow lyml-right-arrow"
+						:class="{inactive: scrollPos <= minLeftMargin}"
+						@click="scrollRowRight"
+					>&rsaquo;</span>
 				</div>
 			</div>
 		</div>
