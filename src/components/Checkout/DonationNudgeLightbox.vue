@@ -1,9 +1,8 @@
 <template>
 	<kv-lightbox
 		:visible="nudgeLightboxVisible"
-		:no-padding-right="true"
+		:no-padding-sides="true"
 		:no-padding-bottom="true"
-		:no-padding-left="true"
 		@lightbox-closed="closeNudgeLightbox"
 	>
 		<div id="nudge-donation-container">
