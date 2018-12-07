@@ -42,6 +42,7 @@
 			>Add to basket
 			</a>
 			<p
+				class="card-action"
 				v-else>In your basket
 			</p>
 
@@ -165,10 +166,10 @@ export default {
 	color: $kiva-text-light;
 	padding: 13px 0;
 	margin-bottom: 0;
+	line-height: 1.3
 }
 
 .card-action {
-	margin-bottom: 15px;
 	font-weight: 400;
 }
 </style>
