@@ -24,7 +24,7 @@
 							:loan="loan1"
 							category-set-id="loans-you-might-like"
 							card-number="1"
-							:loans="loans"
+							:items-in-basket="itemsInBasket"
 							:enable-tracking="true"
 							@refreshtotals="$emit('refreshtotals')"
 							@updating-totals="$emit('updating-totals', $event)"
@@ -34,7 +34,7 @@
 							:loan="loan2"
 							category-set-id="loans-you-might-like"
 							card-number="2"
-							:loans="loans"
+							:items-in-basket="itemsInBasket"
 							:enable-tracking="true"
 							@refreshtotals="$emit('refreshtotals')"
 							@updating-totals="$emit('updating-totals', $event)"
@@ -44,7 +44,7 @@
 							:loan="loan3"
 							category-set-id="loans-you-might-like"
 							card-number="3"
-							:loans="loans"
+							:items-in-basket="itemsInBasket"
 							:enable-tracking="true"
 							@refreshtotals="$emit('refreshtotals')"
 							@updating-totals="$emit('updating-totals', $event)"
@@ -64,6 +64,7 @@
 <script>
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
+import _map from 'lodash/map';
 import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
 import expSettingQuery from '@/graphql/query/experimentSetting.graphql';
@@ -84,6 +85,9 @@ export default {
 		},
 	},
 	computed: {
+		itemsInBasket() {
+			return _map(this.loans, 'id');
+		},
 		hasLoansInBasket() {
 			return this.loans || this.loans.length > 0;
 		},
@@ -130,8 +134,10 @@ export default {
 	watch: {
 		'this.showLYML': () => {
 			if (this.showLYML === true) {
-				this.saveWindowWidth();
-				window.addEventListener('resize', this.throttledResize);
+				this.$nextTick(() => {
+					this.saveWindowWidth();
+					window.addEventListener('resize', this.throttledResize);
+				});
 			}
 		}
 	},
