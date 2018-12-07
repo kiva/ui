@@ -4,10 +4,29 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>Developer Home</h1>
+
+				<h2>Hello! We're Open!</h2>
 				<p>
 					Developers worldwide are helping us make it easy and transparent to
 					lend to the working poor via microfinance and the Kiva API.
 					This is the home for all the information and tools you need to join us!
+				</p>
+
+				<h2>Ready to Explore?</h2>
+				<p>
+					Check out our <a href="https://api.kivaws.org/graphql"> GraphQL API methods</a>.
+				</p>
+				<h2>Share your app </h2>
+				<p>
+					Let the world experience microlending through
+					<a href="http://pages.kiva.org/apps">the applications you've built</a>!
+
+				</p>
+				<h2>Discussion</h2>
+				<p>
+					Here are recent topics from our developer forum.
+					Join our <a href="http://groups.google.com/group/build-kiva">Google Group</a>
+					and take part in the discussion.
 				</p>
 			</div>
 		</div>
