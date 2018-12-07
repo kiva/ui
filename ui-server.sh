@@ -1,3 +1,5 @@
+# Note: Kiva server only tool
+#
 #!/bin/bash
 GREEN='\e[0;32m'
 WHITE='\e[97m'
