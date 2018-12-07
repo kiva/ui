@@ -8,6 +8,7 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="isVisitor"
+			v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
 		/>
 
 		<div class="minimal-loan-card-data-wrap">
@@ -21,9 +22,9 @@
 			<minimal-fundraising-meter
 				:amount-left="amountLeft"
 				:percent-raised="percentRaised"
-				reserved-amount="reservedAmount"
 				:is-funded="loan.status==='funded'"
 			/>
+			<!-- reserved-amount="reservedAmount" -->
 			<!-- Country -->
 			<p
 				class="small-text loan-data"
@@ -36,7 +37,9 @@
 				:loan-id="loan.id"
 				v-if="!inBasket"
 				@click.prevent="addToBasket()"
-				class="card-action">Add to basket
+				class="card-action"
+				v-kv-track-event="['basket', 'basket-loan-upsell', 'loan-type', cardNumber]"
+			>Add to basket
 			</a>
 			<p
 				v-else>In your basket
@@ -49,7 +52,7 @@
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
-import addToBasketMutation from '@/graphql/mutation/addToBasket.graphql';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 
@@ -58,7 +61,7 @@ export default {
 		LoanCardImage,
 		MinimalFundraisingMeter,
 		shopBasketUpdate,
-		addToBasketMutation,
+		updateLoanReservation,
 	},
 	data() {
 		return {
@@ -79,6 +82,10 @@ export default {
 					image: {}
 				};
 			}
+		},
+		cardNumber: {
+			type: String,
+			default: ''
 		},
 		isVisitor: {
 			type: Boolean,
@@ -116,9 +123,9 @@ export default {
 		addToBasket() {
 			this.$emit('setUpdatingTotals', true);
 			this.apollo.mutate({
-				mutation: addToBasketMutation,
+				mutation: updateLoanReservation,
 				variables: {
-					id: this.loan.id,
+					loanid: this.loan.id,
 					price: numeral(25).format('0.00'),
 				},
 			}).then(({ errors }) => {
