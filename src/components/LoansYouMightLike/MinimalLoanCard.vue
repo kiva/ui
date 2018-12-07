@@ -35,7 +35,7 @@
 			<!-- Add to basket text -->
 			<a
 				:loan-id="loan.id"
-				v-if="!inBasket"
+				v-if="!itemInBasket"
 				@click.prevent="addToBasket()"
 				class="card-action"
 				v-kv-track-event="['basket', 'basket-loan-upsell', 'loan-type', parseInt(cardNumber)]"
@@ -49,27 +49,25 @@
 	</div>
 </template>
 <script>
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
-import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
+import _includes from 'lodash/includes';
+import LoanCardImage from '@/components/LoanCards/LoanCardImage';
+import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
+import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 
 export default {
 	components: {
 		LoanCardImage,
 		MinimalFundraisingMeter,
-		shopBasketUpdate,
 		updateLoanReservation,
-	},
-	data() {
-		return {
-			inBasket: false,
-		};
 	},
 	inject: ['apollo'],
 	props: {
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
+		},
 		loan: {
 			type: Object,
 			default: () => {
@@ -101,6 +99,9 @@ export default {
 		},
 	},
 	computed: {
+		itemInBasket() {
+			return _includes(this.itemsInBasket, this.loan.id);
+		},
 		amountLeft() {
 			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
 			return numeral(this.loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
@@ -128,12 +129,12 @@ export default {
 					_forEach(errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
+				} else {
+					// If no errors, update the basket + loan info
+					this.$emit('refreshtotals');
 				}
 			}).catch(() => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
-			}).finally(() => {
-				this.$emit('refreshtotals');
-				this.inBasket = true;
 			});
 		}
 	},
