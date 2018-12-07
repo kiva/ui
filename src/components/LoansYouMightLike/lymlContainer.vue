@@ -132,12 +132,6 @@ export default {
 	},
 	inject: ['apollo'],
 	watch: {
-		// showLYML() {
-		// 	if (this.showLYML === true) {
-		// 		setTimeout(this.saveWindowWidth());
-		// 		window.addEventListener('resize', this.throttledResize);
-		// 	}
-		// },
 		'this.showLYML': () => {
 			if (this.showLYML === true) {
 				this.$nextTick(() => {
