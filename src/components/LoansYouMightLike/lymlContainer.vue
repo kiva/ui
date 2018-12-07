@@ -1,40 +1,60 @@
 <template>
-	<div>
+	<div class="lyml-section-wrapper">
 		<div class="row">
 			<div class="column small-12">
-				<h2 class="section-title featured-text">Similar loans you might like</h2>
-				<!-- row for loan cards -->
-				<div class="row">
-					<minimal-loan-card
-						class="minimal-loan-card"
-						:loan="loan1"
-						category-set-id="loans-you-might-like"
-						card-number="1"
-						:items-in-basket="itemsInBasket"
-						:enable-tracking="true"
-						@refreshtotals="$emit('refreshtotals')"
-						@updating-totals="$emit('updating-totals', $event)"
-					/>
-					<minimal-loan-card
-						class="minimal-loan-card"
-						:loan="loan2"
-						category-set-id="loans-you-might-like"
-						card-number="2"
-						:items-in-basket="itemsInBasket"
-						:enable-tracking="true"
-						@refreshtotals="$emit('refreshtotals')"
-						@updating-totals="$emit('updating-totals', $event)"
-					/>
-					<minimal-loan-card
-						class="minimal-loan-card"
-						:loan="loan3"
-						category-set-id="loans-you-might-like"
-						card-number="3"
-						:items-in-basket="itemsInBasket"
-						:enable-tracking="true"
-						@refreshtotals="$emit('refreshtotals')"
-						@updating-totals="$emit('updating-totals', $event)"
-					/>
+				<h2 class="section-name featured-text">Similar loans you might like</h2>
+			</div>
+			<!-- row for loan cards -->
+			<div class="column lyml-row-wrapper">
+				<span
+					class="arrow lyml-left-arrow"
+					:class="{inactive: scrollPos === 0}"
+					@click="scrollRowLeft"
+				>&lsaquo;</span>
+				<div class="lyml-display-window">
+					<div
+						class="lyml-card-holder"
+						ref="innerWrapper"
+						:style="{ marginLeft: scrollPos + 'px' }"
+						v-touch:swipe.left="scrollRowRight"
+						v-touch:swipe.right="scrollRowLeft"
+					>
+						<minimal-loan-card
+							class="minimal-loan-card"
+							:loan="loan1"
+							category-set-id="loans-you-might-like"
+							card-number="1"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
+							@refreshtotals="$emit('refreshtotals')"
+							@updating-totals="$emit('updating-totals', $event)"
+						/>
+						<minimal-loan-card
+							class="minimal-loan-card"
+							:loan="loan2"
+							category-set-id="loans-you-might-like"
+							card-number="2"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
+							@refreshtotals="$emit('refreshtotals')"
+							@updating-totals="$emit('updating-totals', $event)"
+						/>
+						<minimal-loan-card
+							class="minimal-loan-card"
+							:loan="loan3"
+							category-set-id="loans-you-might-like"
+							card-number="3"
+							:items-in-basket="itemsInBasket"
+							:enable-tracking="true"
+							@refreshtotals="$emit('refreshtotals')"
+							@updating-totals="$emit('updating-totals', $event)"
+						/>
+						<span
+							class="arrow lyml-right-arrow"
+							:class="{inactive: scrollPos <= minLeftMargin}"
+							@click="scrollRowRight"
+						>&rsaquo;</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -117,9 +137,69 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.section-title {
-	margin-left: -0.5rem;
-	font-weight: 400;
+.lyml-section-wrapper {
+	background-color: $kiva-bg-darkgray;
+	margin-bottom: 2rem;
+	padding: 2rem 0;
+}
+
+.section-name {
+	font-weight: $global-weight-bold;
+	margin-bottom: 1rem;
+}
+
+.arrow {
+	color: $kiva-text-light;
+	cursor: pointer;
+	font-size: rem-calc(70);
+
+	&:hover,
+	&:active {
+		color: $kiva-text-medium;
+	}
+
+	&.inactive,
+	&.inactive:hover,
+	&.inactive:active {
+		color: $kiva-stroke-gray;
+		cursor: not-allowed;
+	}
+}
+
+.lyml-left-arrow {
+	margin-right: rem-calc(10);
+}
+
+.lyml-right-arrow {
+	margin-left: rem-calc(10);
+}
+
+.lyml-row-wrapper {
+	align-items: center;
+	display: flex;
+}
+
+.lyml-card-display-window {
+	overflow: hidden;
+	width: 100%;
+}
+
+.lyml-cards-holder {
+	display: flex;
+	flex-wrap: nowrap;
+	transition: margin 0.5s;
+}
+
+@media (hover: none) {
+	.arrow {
+		display: none;
+	}
+}
+
+@include breakpoint(xxlarge) {
+	.arrow {
+		display: none;
+	}
 }
 
 </style>
