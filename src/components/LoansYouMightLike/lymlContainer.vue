@@ -235,14 +235,14 @@ export default {
 @import 'global/transitions';
 
 .lyml-section-wrapper {
-	background-color: $kiva-bg-darkgray;
-	margin-bottom: 2rem;
+	background-color: $kiva-bg-lightgray;
 	padding: 2rem 0;
 }
 
 .section-name {
-	font-weight: $global-weight-bold;
+	font-weight: 400;
 	margin-bottom: 1rem;
+	line-height: 0.8;
 }
 
 .arrow {

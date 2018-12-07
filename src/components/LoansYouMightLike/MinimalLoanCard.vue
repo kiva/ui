@@ -20,6 +20,7 @@
 
 			<!-- loan meter	 -->
 			<minimal-fundraising-meter
+				class="minimal-fundraising-meter-margins"
 				:amount-left="amountLeft"
 				:percent-raised="percentRaised"
 				:is-funded="loan.status==='funded'"
@@ -42,6 +43,7 @@
 			>Add to basket
 			</a>
 			<p
+				class="card-action"
 				v-else>In your basket
 			</p>
 
@@ -145,30 +147,34 @@ export default {
 
 .minimal-loan-card {
 	width: rem-calc(180);
-	height: rem-calc(296);
+	height: rem-calc(280);
 	border: 1px solid $kiva-stroke-gray;
 	display: inline-block;
 	margin: rem-calc(10);
 }
 
 .minimal-loan-card-data-wrap {
-	padding: 15px;
+	padding: rem-calc(15);
+}
+
+.minimal-fundraising-meter-margins {
+	margin: rem-calc(9) 0;
 }
 
 .name {
 	font-weight: 400;
 	color: $kiva-text-dark;
-	margin-bottom: 10px;
+	margin-bottom: 0;
 }
 
 .loan-data {
 	color: $kiva-text-light;
-	padding: 13px 0;
-	margin-bottom: 0;
+	margin-top: rem-calc(12);
+	margin-bottom: rem-calc(9);
+	line-height: 1.3;
 }
 
 .card-action {
-	margin-bottom: 15px;
 	font-weight: 400;
 }
 </style>

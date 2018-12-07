@@ -68,7 +68,7 @@ export default {
 	.borrower-image-wrapper {
 		height: 0;
 		overflow: hidden;
-		padding-top: 75%;
+		padding-top: rem-calc(135);
 		background: $kiva-stroke-gray;
 		position: relative;
 	}
@@ -78,7 +78,8 @@ export default {
 		top: 0;
 		left: 0;
 		width: 100%;
-		height: 100%;
+		height: auto;
+		object-fit: cover;
 	}
 
 	.favorite-star {
