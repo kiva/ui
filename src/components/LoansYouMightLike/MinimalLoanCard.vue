@@ -38,7 +38,7 @@
 				v-if="!inBasket"
 				@click.prevent="addToBasket()"
 				class="card-action"
-				v-kv-track-event="['basket', 'basket-loan-upsell', 'loan-type', cardNumber]"
+				v-kv-track-event="['basket', 'basket-loan-upsell', 'loan-type', parseInt(cardNumber)]"
 			>Add to basket
 			</a>
 			<p
