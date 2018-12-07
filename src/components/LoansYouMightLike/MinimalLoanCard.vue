@@ -169,7 +169,6 @@ export default {
 
 .loan-data {
 	color: $kiva-text-light;
-	padding: 13px 0;
 	margin-top: rem-calc(12);
 	margin-bottom: rem-calc(9);
 	line-height: 1.3;
