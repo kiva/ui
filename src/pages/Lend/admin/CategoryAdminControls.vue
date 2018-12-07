@@ -143,6 +143,8 @@ export default {
 					value: category.id,
 				};
 			});
+			// Add the custom categories (name & id)
+			// this.possibleCategories.push({ label: 'Custom category', value: 62 });
 			this.setCategories = readJSONSetting(data, 'general.rows.value');
 			this.experimentData = readJSONSetting(data, 'general.experiment.value');
 		},
