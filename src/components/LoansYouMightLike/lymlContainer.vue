@@ -4,14 +4,14 @@
 			<div class="column small-12">
 				<h2 class="section-name featured-text">Similar loans you might like</h2>
 			</div>
-			<!-- row for loan cards -->
+
 			<div class="column lyml-row-wrapper">
 				<span
 					class="arrow lyml-left-arrow"
 					:class="{inactive: scrollPos === 0}"
 					@click="scrollRowLeft"
 				>&lsaquo;</span>
-				<div class="lyml-display-window">
+				<div class="lyml-card-display-window">
 					<div
 						class="lyml-card-holder"
 						ref="innerWrapper"
@@ -20,7 +20,7 @@
 						v-touch:swipe.right="scrollRowLeft"
 					>
 						<minimal-loan-card
-							class="minimal-loan-card"
+							class="inside-scrolling-wrapper"
 							:loan="loan1"
 							category-set-id="loans-you-might-like"
 							card-number="1"
@@ -30,7 +30,7 @@
 							@updating-totals="$emit('updating-totals', $event)"
 						/>
 						<minimal-loan-card
-							class="minimal-loan-card"
+							class="inside-scrolling-wrapper"
 							:loan="loan2"
 							category-set-id="loans-you-might-like"
 							card-number="2"
@@ -40,7 +40,7 @@
 							@updating-totals="$emit('updating-totals', $event)"
 						/>
 						<minimal-loan-card
-							class="minimal-loan-card"
+							class="inside-scrolling-wrapper"
 							:loan="loan3"
 							category-set-id="loans-you-might-like"
 							card-number="3"
@@ -128,16 +128,26 @@ export default {
 	},
 	inject: ['apollo'],
 	watch: {
+		// showLYML() {
+		// 	if (this.showLYML === true) {
+		// 		setTimeout(this.saveWindowWidth());
+		// 		window.addEventListener('resize', this.throttledResize);
+		// 	}
+		// },
 		'this.showLYML': () => {
 			if (this.showLYML === true) {
-				this.saveWindowWidth();
-				window.addEventListener('resize', this.throttledResize);
+				this.$nextTick(() => {
+					this.saveWindowWidth();
+					window.addEventListener('resize', this.throttledResize);
+				});
 			}
 		}
 	},
 	mounted() {
 		// CASH-101 EXP for Loans you might like
 		this.activateLoansYouMightLike();
+		this.saveWindowWidth();
+		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
@@ -201,7 +211,9 @@ export default {
 		},
 		saveWindowWidth() {
 			this.windowWidth = window.innerWidth;
-			this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
+			if (this.$refs.innerWrapper) {
+				this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
+			}
 		},
 		scrollRowLeft() {
 			if (this.scrollPos < 0) {
@@ -270,10 +282,14 @@ export default {
 	width: 100%;
 }
 
-.lyml-cards-holder {
+.lyml-card-holder {
 	display: flex;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
+}
+
+.inside-scrolling-wrapper {
+	flex: 0 0 auto;
 }
 
 @media (hover: none) {
