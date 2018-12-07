@@ -1,64 +1,66 @@
 <template>
-	<div class="lyml-section-wrapper" v-if="showLYML">
-		<div class="row">
-			<div class="column small-12">
-				<h2 class="section-name featured-text">Similar loans you might like</h2>
-			</div>
+	<transition name="kvfade">
+		<div class="lyml-section-wrapper" v-if="showLYML">
+			<div class="row">
+				<div class="column small-12">
+					<h2 class="section-name featured-text">Similar loans you might like</h2>
+				</div>
 
-			<div class="column lyml-row-wrapper">
-				<span
-					class="arrow lyml-left-arrow"
-					:class="{inactive: scrollPos === 0}"
-					@click="scrollRowLeft"
-				>&lsaquo;</span>
-				<div class="lyml-card-display-window">
-					<div
-						class="lyml-card-holder"
-						ref="innerWrapper"
-						:style="{ marginLeft: scrollPos + 'px' }"
-						v-touch:swipe.left="scrollRowRight"
-						v-touch:swipe.right="scrollRowLeft"
-					>
-						<minimal-loan-card
-							class="inside-scrolling-wrapper"
-							:loan="loan1"
-							category-set-id="loans-you-might-like"
-							card-number="1"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							@refreshtotals="$emit('refreshtotals')"
-							@updating-totals="$emit('updating-totals', $event)"
-						/>
-						<minimal-loan-card
-							class="inside-scrolling-wrapper"
-							:loan="loan2"
-							category-set-id="loans-you-might-like"
-							card-number="2"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							@refreshtotals="$emit('refreshtotals')"
-							@updating-totals="$emit('updating-totals', $event)"
-						/>
-						<minimal-loan-card
-							class="inside-scrolling-wrapper"
-							:loan="loan3"
-							category-set-id="loans-you-might-like"
-							card-number="3"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							@refreshtotals="$emit('refreshtotals')"
-							@updating-totals="$emit('updating-totals', $event)"
-						/>
+				<div class="column lyml-row-wrapper">
+					<span
+						class="arrow lyml-left-arrow"
+						:class="{inactive: scrollPos === 0}"
+						@click="scrollRowLeft"
+					>&lsaquo;</span>
+					<div class="lyml-card-display-window">
+						<div
+							class="lyml-card-holder"
+							ref="innerWrapper"
+							:style="{ marginLeft: scrollPos + 'px' }"
+							v-touch:swipe.left="scrollRowRight"
+							v-touch:swipe.right="scrollRowLeft"
+						>
+							<minimal-loan-card
+								class="inside-scrolling-wrapper"
+								:loan="loan1"
+								category-set-id="loans-you-might-like"
+								card-number="1"
+								:items-in-basket="itemsInBasket"
+								:enable-tracking="true"
+								@refreshtotals="$emit('refreshtotals')"
+								@updating-totals="$emit('updating-totals', $event)"
+							/>
+							<minimal-loan-card
+								class="inside-scrolling-wrapper"
+								:loan="loan2"
+								category-set-id="loans-you-might-like"
+								card-number="2"
+								:items-in-basket="itemsInBasket"
+								:enable-tracking="true"
+								@refreshtotals="$emit('refreshtotals')"
+								@updating-totals="$emit('updating-totals', $event)"
+							/>
+							<minimal-loan-card
+								class="inside-scrolling-wrapper"
+								:loan="loan3"
+								category-set-id="loans-you-might-like"
+								card-number="3"
+								:items-in-basket="itemsInBasket"
+								:enable-tracking="true"
+								@refreshtotals="$emit('refreshtotals')"
+								@updating-totals="$emit('updating-totals', $event)"
+							/>
+						</div>
+						<span
+							class="arrow lyml-right-arrow"
+							:class="{inactive: scrollPos <= minLeftMargin}"
+							@click="scrollRowRight"
+						>&rsaquo;</span>
 					</div>
 				</div>
-				<span
-					class="arrow lyml-right-arrow"
-					:class="{inactive: scrollPos <= minLeftMargin}"
-					@click="scrollRowRight"
-				>&rsaquo;</span>
 			</div>
 		</div>
-	</div>
+	</transition>
 </template>
 
 <script>
@@ -230,6 +232,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import 'global/transitions';
 
 .lyml-section-wrapper {
 	background-color: $kiva-bg-darkgray;
