@@ -87,7 +87,7 @@
 		"chalk": "^2.3.0",
 		"chokidar": "^2.0.4",
 		"coveralls": "^3.0.2",
-		"css-loader": "^1.0.0",
+		"css-loader": "^2.0.0",
 		"cssnano": "^4.1.4",
 		"dart-sass": "^1.14.1",
 		"eslint": "^4.18.1",
