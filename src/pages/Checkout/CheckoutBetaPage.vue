@@ -131,6 +131,7 @@
 					<!-- Loans you might like section -->
 					<l-y-m-l
 						v-if="showLYML"
+						:loans="loans"
 						@refreshtotals="refreshTotals($event)"
 						@updating-totals="setUpdatingTotals" />
 

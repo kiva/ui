@@ -1,6 +1,6 @@
 query (
-	$country: [String] = ["US"],
-	$activity: [Int] = [120],
+	$country: [String],
+	$activity: [Int],
 	$imgDefaultSize: String = "w180h120",
 	$imgRetinaSize: String = "w360h240"
 ) {

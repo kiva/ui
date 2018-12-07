@@ -10,7 +10,7 @@
 						:loan="loan1"
 						category-set-id="loans-you-might-like"
 						card-number="1"
-						:items-in-basket="itemsInBasket"
+						:loans="loans"
 						:enable-tracking="true"
 						@refreshtotals="$emit('refreshtotals')"
 						@updating-totals="$emit('updating-totals', $event)"
@@ -20,7 +20,7 @@
 						:loan="loan2"
 						category-set-id="loans-you-might-like"
 						card-number="2"
-						:items-in-basket="itemsInBasket"
+						:loans="loans"
 						:enable-tracking="true"
 						@refreshtotals="$emit('refreshtotals')"
 						@updating-totals="$emit('updating-totals', $event)"
@@ -30,7 +30,7 @@
 						:loan="loan3"
 						category-set-id="loans-you-might-like"
 						card-number="3"
-						:items-in-basket="itemsInBasket"
+						:loans="loans"
 						:enable-tracking="true"
 						@refreshtotals="$emit('refreshtotals')"
 						@updating-totals="$emit('updating-totals', $event)"
@@ -51,15 +51,24 @@ export default {
 		MinimalLoanCard,
 	},
 	props: {
-		itemsInBasket: {
+		loans: {
 			type: Array,
 			default: () => [],
 		},
 	},
+	computed: {
+		hasLoansInBasket() {
+			return this.loans || this.loans.length > 0;
+		},
+		sameCountry() {
+			return this.hasLoansInBasket ? [this.loans[0].loan.geocode.country.isoCode] : ['US'];
+		},
+		sameActivity() {
+			return this.hasLoansInBasket ? [this.loans[0].loan.activity.id] : [120];
+		},
+	},
 	data() {
 		return {
-			sameCountry: ['US'],
-			sameActivity: [120],
 			randomLoan: [],
 			loan1: null,
 			loan2: null,
@@ -70,13 +79,13 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: loansYouMightLikeData,
-		preFetch: true,
-		preFetchVariable() {
-			return {
-				country: this.sameCountry,
-				activity: this.sameActivity
-			};
-		},
+		// preFetch: true,
+		// preFetchVariable() {
+		// 	return {
+		// 		country: this.sameCountry,
+		// 		activity: this.sameActivity
+		// 	};
+		// },
 		variables() {
 			return {
 				country: this.sameCountry,
@@ -92,14 +101,14 @@ export default {
 				this.loan3 = randomLoans[0]; // eslint-disable-line
 
 				// same Country loans
-				if (data.lend.sameCountry) {
+				if (this.hasLoansInBasket && data.lend.sameCountry) {
 					this.loan1 = _get(data.lend, 'sameCountry.values[0]');
 				} else {
 					this.loan1 = randomLoans[1]; // eslint-disable-line
 				}
 
 				// same Activity loans
-				if (data.lend.sameActivity) {
+				if (this.hasLoansInBasket && data.lend.sameActivity) {
 					this.loan2 = _get(data.lend, 'sameActivity.values[0]');
 				} else {
 					this.loan2 = randomLoans[2]; // eslint-disable-line
