@@ -1,21 +1,30 @@
 <template>
 	<transition name="kvfade">
-		<div v-show="isShown"
+		<div
+			v-show="isShown"
 			class="kv-lightbox-wrap"
+			:class="removeContentBg"
 			ref="kvlightbox"
 			@keyup.esc="closeLightbox"
-			tabindex="500">
-			<div class="kv-lightbox-bg" @click.stop.prevent="closeLightbox"></div>
+			@click.stop.prevent="closeLightbox"
+			tabindex="500"
+		>
 			<div class="kv-lightbox">
-				<div class="row">
-					<div class="columns">
-						<div class="lightbox-content" :class="removeContentBg">
+				<div class="row" id="lightbox-row">
+					<div class="columns" id="lightbox-columns">
+						<!-- eslint-disable max-len -->
+						<div
+							class="lightbox-content"
+							:class="`${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingSides ? 'no-padding-sides': ''}`"
+							@click.stop
+						>
+							<!-- eslint-enable max-len -->
 							<button @click.stop.prevent="closeLightbox" class="close-lightbox" aria-label="Close">
-								<kv-icon name="x" />
+								<kv-icon name="small-x" />
 							</button>
 							<slot name="title"></slot>
 							<slot>Lightbox content</slot>
-							<br>
+							<br v-if="!noPaddingBottom">
 							<slot name="controls">
 								<kv-button v-if="showCloseButton" @click.native="closeLightbox">
 									Close
@@ -55,7 +64,19 @@ export default {
 		showCloseButton: {
 			type: Boolean,
 			default: false
-		}
+		},
+		noPaddingTop: {
+			type: Boolean,
+			default: false,
+		},
+		noPaddingBottom: {
+			type: Boolean,
+			default: false,
+		},
+		noPaddingSides: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		removeContentBg() {
@@ -113,92 +134,124 @@ export default {
 	right: 0;
 	left: 0;
 	bottom: 0;
-	padding: 4.5rem 0;
-	overflow-y: scroll;
+	padding: rem-calc(1);
+	overflow-y: auto;
 	z-index: 1500;
-}
+	max-height: 100vh;
+	background: rgba(72, 72, 72, 0.6);
 
-.kv-lightbox-bg {
-	display: block;
-	position: fixed;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	background: rgba(0, 0, 0, 0.9);
-	z-index: 1501;
-	overflow-y: scroll;
-
-	@include breakpoint(large) {
-		padding: rem-calc(32) 2rem;
-	}
-}
-
-.kv-lightbox {
-	position: relative;
-	margin: 0 auto;
-	z-index: 1502;
-	padding: 0;
-
-	.row {
-		padding: 0;
-		align-items: center;
-		flex-direction: column;
-
-		.columns {
-			position: relative;
-			max-width: 900px;
-		}
+	@include breakpoint(medium) {
+		padding: 4.5rem 1rem;
 	}
 
-	/* Content Styles */
-	.lightbox-content {
-		display: block;
+	.kv-lightbox {
 		position: relative;
-		padding: 2rem 1.5rem;
-		max-width: 61rem;
-		margin: 0 1rem;
-		background: $white;
+		margin: 0 auto;
+		z-index: 1502;
+		padding: 0;
 
-		@include breakpoint(large) {
-			padding: 2.8125rem;
+		#lightbox-row {
+			padding: 0;
+			align-items: center;
+			flex-direction: column;
+			margin-right: -0.0625rem;
+			margin-left: -0.0625rem;
+
+			#lightbox-columns {
+				position: relative;
+				max-width: 900px;
+				padding-right: 0.0625rem;
+				padding-left: 0.0625rem;
+			}
 		}
 
-		&.inverted {
-			background: transparent;
+		/* Content Styles */
+		.lightbox-content {
+			display: block;
+			position: relative;
+			padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+			max-width: 61rem;
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: rem-calc(4);
+
+			@include breakpoint(medium) {
+				padding: 4rem 2.8125rem 2.8125rem 2.8125rem;
+			}
+
+			@include breakpoint(large) {
+				padding: 4.75rem 2.8125rem 2.8125rem 2.8125rem;
+			}
+
+			.close-lightbox {
+				position: absolute;
+				top: 1rem;
+				right: 1rem;
+
+				.icon.icon-small-x {
+					height: 1rem;
+					width: 1rem;
+					fill: $subtle-gray;
+					transition: fill 0.16s linear;
+				}
+
+				&:hover {
+					.icon.icon-small-x {
+						fill: $charcoal;
+					}
+				}
+
+				@include breakpoint(medium) {
+					top: 1.5rem;
+					right: 1.5rem;
+
+					.icon.icon-small-x {
+						height: 1.25rem;
+						width: 1.25rem;
+					}
+				}
+
+				@include breakpoint(large) {
+					top: 2rem;
+					right: 2rem;
+				}
+			}
+
+			&.no-padding-top {
+				padding-top: 0;
+			}
+
+			&.no-padding-bottom {
+				padding-bottom: 0;
+			}
+
+			&.no-padding-sides {
+				padding-left: 0;
+				padding-right: 0;
+			}
+		}
+	}
+
+	&.inverted {
+		background: rgba(0, 0, 0, 0.9);
+
+		.kv-lightbox {
 			color: $white;
 			font-weight: normal;
-			margin: 0;
-		}
-	}
 
-	.close-lightbox {
-		position: fixed;
-		top: rem-calc(14);
-		right: rem-calc(14);
+			.lightbox-content {
+				background: transparent;
 
-		@include breakpoint(large) {
-			position: absolute;
-			top: rem-calc(10);
-			right: rem-calc(10);
-		}
+				.close-lightbox {
+					.icon.icon-small-x {
+						fill: $kiva-green;
+					}
 
-		&.inverted {
-			position: fixed;
-			top: rem-calc(14);
-			right: rem-calc(14);
-		}
-
-		.icon.icon-x {
-			stroke: $kiva-green;
-			height: 2.5rem;
-			width: 2.5rem;
-			margin-top: rem-calc(2);
-		}
-
-		&:hover {
-			.icon-x {
-				stroke: $kiva-accent-green;
+					&:hover {
+						.icon-small-x {
+							fill: $kiva-accent-green;
+						}
+					}
+				}
 			}
 		}
 	}

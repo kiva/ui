@@ -128,7 +128,7 @@ export default {
 		showViewAllLink() {
 			let isVisible = true;
 
-			if (this.url.includes('loans-with-research-backed-impact') === true) {
+			if (this.url.includes('loans-with-research-backed-impact') === true || this.url === '') {
 				isVisible = false;
 			}
 
