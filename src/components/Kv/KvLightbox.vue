@@ -2,7 +2,8 @@
 	<transition name="kvfade">
 		<div
 			v-show="isShown"
-			:class="`kv-lightbox-wrap ${removeContentBg}`"
+			class="kv-lightbox-wrap"
+			:class="removeContentBg"
 			ref="kvlightbox"
 			@keyup.esc="closeLightbox"
 			@click.stop.prevent="closeLightbox"
@@ -13,7 +14,8 @@
 					<div class="columns" id="lightbox-columns">
 						<!-- eslint-disable max-len -->
 						<div
-							:class="`lightbox-content ${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingRight ? 'no-padding-right': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingLeft ? 'no-padding-left': ''}`"
+							class="lightbox-content"
+							:class="`${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingSides ? 'no-padding-sides': ''}`"
 							@click.stop
 						>
 							<!-- eslint-enable max-len -->
@@ -67,15 +69,11 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		noPaddingRight: {
-			type: Boolean,
-			default: false,
-		},
 		noPaddingBottom: {
 			type: Boolean,
 			default: false,
 		},
-		noPaddingLeft: {
+		noPaddingSides: {
 			type: Boolean,
 			default: false,
 		},
@@ -222,16 +220,13 @@ export default {
 				padding-top: 0;
 			}
 
-			&.no-padding-right {
-				padding-right: 0;
-			}
-
 			&.no-padding-bottom {
 				padding-bottom: 0;
 			}
 
-			&.no-padding-left {
+			&.no-padding-sides {
 				padding-left: 0;
+				padding-right: 0;
 			}
 		}
 	}
