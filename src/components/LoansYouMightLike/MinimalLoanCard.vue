@@ -103,20 +103,14 @@ export default {
 	computed: {
 		amountLeft() {
 			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
-			console.log('amount left');
-			console.log(this.loan.loanAmount);
-			console.log('funded amount');
-			console.log(fundedAmount);
-			console.log('reserved Amount');
-			console.log(reservedAmount);
-			console.log(this.loan);
-			return numeral(this.loan.loanAmount) - numeral(fundedAmount) - numeral(reservedAmount);
+			return numeral(this.loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
 		},
 		isFunded() {
 			return this.loan.status === 'funded' || this.amountLeft <= 0;
 		},
 		percentRaised() {
-			return (numeral(this.loan.loanAmount) - numeral(this.amountLeft)) / numeral(this.loan.loanAmount);
+			return numeral(numeral(this.loan.loanAmount).subtract(this.amountLeft))
+				.divide(this.loan.loanAmount).value();
 		}
 	},
 	methods: {

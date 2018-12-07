@@ -127,13 +127,6 @@
 								Please register or sign in above to complete your purchase.</p>
 						</div>
 					</div>
-
-					<!-- Loans you might like section -->
-					<l-y-m-l
-						v-if="showLYML"
-						@refreshtotals="refreshTotals($event)"
-						@updating-totals="setUpdatingTotals" />
-
 				</div>
 
 				<div v-if="emptyBasket" class="empty-basket">
@@ -164,6 +157,13 @@
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
+
+				<!-- Loans you might like section -->
+				<l-y-m-l
+					v-if="showLYML"
+					:loans="loans"
+					@refreshtotals="refreshTotals($event)"
+					@updating-totals="setUpdatingTotals" />
 			</div>
 		</div>
 	</www-page>
@@ -242,7 +242,7 @@ export default {
 			teams: [],
 			holidayModeEnabled: false,
 			// CASH-101 EXP Loans you might like - aka. "lyml"
-			showLYML: false,
+			showLYML: true,
 			lymlVariant: null
 		};
 	},
@@ -318,7 +318,7 @@ export default {
 		);
 
 		// CASH-101 EXP for Loans you might like
-		this.activateLoansYouMightLike();
+		// this.activateLoansYouMightLike();
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -343,6 +343,9 @@ export default {
 		if (this.lymlVariant !== null) {
 			this.$kvTrackEvent('basket', 'EXP-CASH-101-Dec2018', this.showLYML ? 'b' : 'a');
 		}
+
+		// // CASH-101 EXP for Loans you might like
+		// this.activateLoansYouMightLike();
 	},
 	computed: {
 		isLoggedIn() {
