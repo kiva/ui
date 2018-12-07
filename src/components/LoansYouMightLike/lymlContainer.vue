@@ -79,13 +79,6 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: loansYouMightLikeData,
-		// preFetch: true,
-		// preFetchVariable() {
-		// 	return {
-		// 		country: this.sameCountry,
-		// 		activity: this.sameActivity
-		// 	};
-		// },
 		variables() {
 			return {
 				country: this.sameCountry,
