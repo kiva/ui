@@ -55,7 +55,6 @@ import _includes from 'lodash/includes';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
-import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 
 export default {
 	components: {
@@ -131,16 +130,8 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 				} else {
-					// If no errors, update the loan fundraising info
-					return this.apollo.query({
-						query: loanCardBasketed,
-						variables: {
-							id: this.loan.id,
-						},
-						fetchPolicy: 'network-only',
-					}).then(() => {
-						this.$emit('refreshtotals');
-					});
+					// If no errors, update the basket + loan info
+					this.$emit('refreshtotals');
 				}
 			}).catch(() => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
