@@ -42,9 +42,14 @@ query {
 							sector {
 								name
 							}
+							activity {
+								id
+								name
+							}
 							geocode {
 								country {
 									name
+									isoCode
 								}
 							}
 							loanFundraisingInfo {
