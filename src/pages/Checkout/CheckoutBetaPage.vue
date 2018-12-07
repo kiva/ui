@@ -157,15 +157,14 @@
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
-
-				<!-- Loans you might like section -->
-				<l-y-m-l
-					v-if="showLYML"
-					:loans="loans"
-					@refreshtotals="refreshTotals($event)"
-					@updating-totals="setUpdatingTotals" />
 			</div>
 		</div>
+		<l-y-m-l
+			v-if="showLYML"
+			:loans="loans"
+			@refreshtotals="refreshTotals($event)"
+			@updating-totals="setUpdatingTotals"
+		/>
 	</www-page>
 </template>
 

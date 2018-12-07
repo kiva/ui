@@ -233,7 +233,6 @@ export default {
 
 .lyml-section-wrapper {
 	background-color: $kiva-bg-darkgray;
-	margin-bottom: 2rem;
 	padding: 2rem 0;
 }
 
