@@ -1,62 +1,65 @@
 <template>
 	<transition name="kvfade">
 		<div class="lyml-section-wrapper" v-if="showLYML">
-			<div class="row">
-				<div class="column small-12">
-					<h2 class="section-name featured-text">Similar loans you might like</h2>
-				</div>
-
-				<div class="column lyml-row-wrapper">
-					<span
-						class="arrow lyml-left-arrow"
-						:class="{inactive: scrollPos === 0}"
-						@click="scrollRowLeft"
-					>&lsaquo;</span>
-					<div class="lyml-card-display-window">
-						<div
-							class="lyml-card-holder"
-							ref="innerWrapper"
-							:style="{ marginLeft: scrollPos + 'px' }"
-							v-touch:swipe.left="scrollRowRight"
-							v-touch:swipe.right="scrollRowLeft"
-						>
-							<minimal-loan-card
-								class="inside-scrolling-wrapper"
-								:loan="loan1"
-								category-set-id="loans-you-might-like"
-								card-number="1"
-								:items-in-basket="itemsInBasket"
-								:enable-tracking="true"
-								@refreshtotals="$emit('refreshtotals')"
-								@updating-totals="$emit('updating-totals', $event)"
-							/>
-							<minimal-loan-card
-								class="inside-scrolling-wrapper"
-								:loan="loan2"
-								category-set-id="loans-you-might-like"
-								card-number="2"
-								:items-in-basket="itemsInBasket"
-								:enable-tracking="true"
-								@refreshtotals="$emit('refreshtotals')"
-								@updating-totals="$emit('updating-totals', $event)"
-							/>
-							<minimal-loan-card
-								class="inside-scrolling-wrapper"
-								:loan="loan3"
-								category-set-id="loans-you-might-like"
-								card-number="3"
-								:items-in-basket="itemsInBasket"
-								:enable-tracking="true"
-								@refreshtotals="$emit('refreshtotals')"
-								@updating-totals="$emit('updating-totals', $event)"
-							/>
-						</div>
+			<div class="lyml-section-container">
+				<div id="lyml-row-title" class="row">
+					<div class="column">
+						<h2 class="section-name featured-text">Similar loans you might like</h2>
 					</div>
-					<span
-						class="arrow lyml-right-arrow"
-						:class="{inactive: scrollPos <= minLeftMargin}"
-						@click="scrollRowRight"
-					>&rsaquo;</span>
+				</div>
+				<div id="lyml-row-cards" class="row">
+					<div class="column lyml-row-wrapper">
+						<span
+							class="arrow lyml-left-arrow"
+							:class="{inactive: scrollPos === 0}"
+							@click="scrollRowLeft"
+						>&lsaquo;</span>
+						<div class="lyml-card-display-window">
+							<div
+								class="lyml-card-holder"
+								ref="innerWrapper"
+								:style="{ marginLeft: scrollPos + 'px' }"
+								v-touch:swipe.left="scrollRowRight"
+								v-touch:swipe.right="scrollRowLeft"
+							>
+								<minimal-loan-card
+									class="inside-scrolling-wrapper"
+									:loan="loan1"
+									category-set-id="loans-you-might-like"
+									card-number="1"
+									:items-in-basket="itemsInBasket"
+									:enable-tracking="true"
+									@refreshtotals="$emit('refreshtotals')"
+									@updating-totals="$emit('updating-totals', $event)"
+								/>
+								<minimal-loan-card
+									class="inside-scrolling-wrapper"
+									:loan="loan2"
+									category-set-id="loans-you-might-like"
+									card-number="2"
+									:items-in-basket="itemsInBasket"
+									:enable-tracking="true"
+									@refreshtotals="$emit('refreshtotals')"
+									@updating-totals="$emit('updating-totals', $event)"
+								/>
+								<minimal-loan-card
+									class="inside-scrolling-wrapper"
+									:loan="loan3"
+									category-set-id="loans-you-might-like"
+									card-number="3"
+									:items-in-basket="itemsInBasket"
+									:enable-tracking="true"
+									@refreshtotals="$emit('refreshtotals')"
+									@updating-totals="$emit('updating-totals', $event)"
+								/>
+							</div>
+						</div>
+						<span
+							class="arrow lyml-right-arrow"
+							:class="{inactive: scrollPos <= minLeftMargin}"
+							@click="scrollRowRight"
+						>&rsaquo;</span>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -239,6 +242,11 @@ export default {
 	padding: 2rem 0;
 }
 
+.lyml-section-container {
+	max-width: rem-calc(672);
+	margin: 0 auto;
+}
+
 .section-name {
 	font-weight: 400;
 	margin-bottom: 1rem;
@@ -274,6 +282,8 @@ export default {
 .lyml-row-wrapper {
 	align-items: center;
 	display: flex;
+	flex-grow: 0;
+	flex-basis: initial;
 }
 
 .lyml-card-display-window {
@@ -297,10 +307,15 @@ export default {
 	}
 }
 
-@include breakpoint(xxlarge) {
+@include breakpoint(xlarge) {
 	.arrow {
 		display: none;
 	}
+}
+
+#lyml-row-title,
+#lyml-row-cards {
+	max-width: rem-calc(672);
 }
 
 </style>

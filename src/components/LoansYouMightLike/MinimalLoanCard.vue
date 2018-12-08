@@ -151,6 +151,11 @@ export default {
 	border: 1px solid $kiva-stroke-gray;
 	display: inline-block;
 	margin: rem-calc(10);
+
+	&:first-child,
+	&:last-child {
+		margin-left: 0;
+	}
 }
 
 .minimal-loan-card-data-wrap {
