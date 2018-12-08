@@ -293,6 +293,7 @@ export default {
 
 .lyml-card-holder {
 	display: flex;
+	align-items: stretch;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 }
