@@ -1,8 +1,8 @@
 query (
 	$country: [String],
 	$activity: [Int],
-	$imgDefaultSize: String = "w180h120",
-	$imgRetinaSize: String = "w360h240"
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w480h360",
 ) {
 	lend {
 		sameCountry: loans(filters: {country: $country, status: fundRaising}, limit: 1, sortBy: random) {

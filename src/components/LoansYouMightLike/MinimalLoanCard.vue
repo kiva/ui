@@ -2,37 +2,40 @@
 	<div class="minimal-loan-card">
 		<!-- Image -->
 		<!-- is-visitor set to false is hiding the loan favorite star on borrower images -->
-		<loan-card-image
-			:loan-id="loan.id"
-			:name="loan.name"
-			:retina-image-url="loan.image.retina"
-			:standard-image-url="loan.image.default"
-			:is-visitor="isVisitor"
-			v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
-		/>
-
-		<div class="minimal-loan-card-data-wrap">
-			<p
+		<div>
+			<loan-card-image
 				:loan-id="loan.id"
 				:name="loan.name"
-				class="small-text name"
-			>{{ loan.name }}</p>
-
-			<!-- loan meter	 -->
-			<minimal-fundraising-meter
-				:amount-left="amountLeft"
-				:percent-raised="percentRaised"
-				:is-funded="loan.status==='funded'"
+				:retina-image-url="loan.image.retina"
+				:standard-image-url="loan.image.default"
+				:is-visitor="isVisitor"
+				v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
 			/>
-			<!-- reserved-amount="reservedAmount" -->
-			<!-- Country -->
-			<p
-				class="small-text loan-data"
-				:country="loan.geocode.country.name"
-				:sector="loan.activity.name">
-				{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
-			</p>
-			<!-- Add to basket text -->
+			<div class="minimal-loan-card-data-wrap">
+				<p
+					:loan-id="loan.id"
+					:name="loan.name"
+					class="small-text name"
+				>{{ loan.name }}</p>
+				<!-- loan meter	 -->
+				<minimal-fundraising-meter
+					class="minimal-fundraising-meter-margins"
+					:amount-left="amountLeft"
+					:percent-raised="percentRaised"
+					:is-funded="loan.status==='funded'"
+				/>
+				<!-- reserved-amount="reservedAmount" -->
+				<!-- Country -->
+				<p
+					class="small-text loan-data"
+					:country="loan.geocode.country.name"
+					:sector="loan.activity.name">
+					{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
+				</p>
+				<!-- Add to basket text -->
+			</div>
+		</div>
+		<div class="minimal-loan-card-action-wrap">
 			<a
 				:loan-id="loan.id"
 				v-if="!itemInBasket"
@@ -42,9 +45,9 @@
 			>Add to basket
 			</a>
 			<p
+				class="card-action"
 				v-else>In your basket
 			</p>
-
 		</div>
 	</div>
 </template>
@@ -145,30 +148,49 @@ export default {
 
 .minimal-loan-card {
 	width: rem-calc(180);
-	height: rem-calc(296);
 	border: 1px solid $kiva-stroke-gray;
-	display: inline-block;
 	margin: rem-calc(10);
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	&:first-child,
+	&:last-child {
+		margin-left: 0;
+	}
 }
 
 .minimal-loan-card-data-wrap {
-	padding: 15px;
+	padding-left: rem-calc(15);
+	padding-right: rem-calc(15);
+	padding-top: rem-calc(15);
+}
+
+.minimal-loan-card-action-wrap {
+	padding-left: rem-calc(15);
+	padding-right: rem-calc(15);
+	padding-bottom: rem-calc(15);
+}
+
+.minimal-fundraising-meter-margins {
+	margin: rem-calc(9) 0;
 }
 
 .name {
 	font-weight: 400;
 	color: $kiva-text-dark;
-	margin-bottom: 10px;
+	margin-bottom: 0;
 }
 
 .loan-data {
 	color: $kiva-text-light;
-	padding: 13px 0;
-	margin-bottom: 0;
+	margin-top: rem-calc(12);
+	margin-bottom: rem-calc(9);
+	line-height: 1.3;
 }
 
 .card-action {
-	margin-bottom: 15px;
 	font-weight: 400;
+	margin-bottom: 0;
 }
 </style>
