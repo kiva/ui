@@ -193,13 +193,4 @@ export default {
 	font-weight: 400;
 	margin-bottom: 0;
 }
-
-.minimal-loan-card >>> .borrower-image-wrapper .borrower-image {
-	height: auto;
-	object-fit: cover;
-}
-
-.minimal-loan-card >>> .borrower-image-wrapper {
-	padding-top: rem-calc(135);
-}
 </style>

@@ -122,7 +122,6 @@ export default {
 	},
 	data() {
 		return {
-			// CASH-101 EXP Loans you might like - aka. "lyml"
 			showLYML: false,
 			lymlVariant: null,
 			randomLoan: [],
@@ -137,6 +136,7 @@ export default {
 	},
 	inject: ['apollo'],
 	watch: {
+		// this watch lets us respond once we have loans and the proper DOM elements
 		showLYML() {
 			if (this.showLYML === true) {
 				this.$nextTick(() => {
@@ -147,14 +147,13 @@ export default {
 		}
 	},
 	mounted() {
-		// CASH-101 EXP for Loans you might like
+		// we're doing this all client side
 		this.activateLoansYouMightLike();
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
 	},
 	methods: {
-		// CASH-101 EXP track loans you might like visibilty
 		activateLoansYouMightLike() {
 			// query to get experiment setting
 			this.apollo.query({
@@ -205,8 +204,7 @@ export default {
 					this.loan2 = randomLoans[2]; // eslint-disable-line
 				}
 
-				console.log(data.data.lend);
-
+				// once we have loans flip the switch to show them
 				this.showLYML = this.lymlVariant !== 'control';
 			});
 		},
@@ -318,5 +316,4 @@ export default {
 #lyml-row-cards {
 	max-width: rem-calc(672);
 }
-
 </style>
