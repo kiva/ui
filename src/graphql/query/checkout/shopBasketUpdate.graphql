@@ -33,11 +33,40 @@ query {
 						donateRepayments
 						loan {
 							id
+							name
+							use
 							status
+							matchingText
+							loanAmount
+							plannedExpirationDate
+							sector {
+								name
+							}
+							activity {
+								id
+								name
+							}
+							geocode {
+								country {
+									name
+									isoCode
+								}
+							}
 							loanFundraisingInfo {
 								isExpiringSoon
 								fundedAmount
 								reservedAmount
+							}
+							image {
+								id
+								url: url (presetSize: loan_thumbnail)
+								url_2x: url (presetSize: loan_thumbnail_retina)
+							}
+							... on LoanDirect {
+								sponsor_name: trusteeName
+							}
+							... on LoanPartner {
+								sponsor_name: partnerName
 							}
 						}
 						team {
