@@ -24,7 +24,6 @@
 					:percent-raised="percentRaised"
 					:is-funded="loan.status==='funded'"
 				/>
-				<!-- reserved-amount="reservedAmount" -->
 				<!-- Country -->
 				<p
 					class="small-text loan-data"
@@ -32,9 +31,9 @@
 					:sector="loan.activity.name">
 					{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
 				</p>
-				<!-- Add to basket text -->
 			</div>
 		</div>
+		<!-- Add to basket text -->
 		<div class="minimal-loan-card-action-wrap">
 			<a
 				:loan-id="loan.id"
