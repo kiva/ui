@@ -10,16 +10,16 @@
 				Donation to Kiva
 			</span>
 			<div>
-				<div class="donation-tagline small-text">{{ donationTagLine }}</div>
+				<div v-if="hasLoans" class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
-					v-if="this.expVersion === 'variant-b'"
+					v-if="this.expVersion === 'variant-b' && hasLoans"
 					class="small-text"
 					:class="boostApplied"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
 					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
 				</a>
 				<a
-					v-else-if="this.expVersion === 'variant-c'"
+					v-else-if="this.expVersion === 'variant-c' && hasLoans"
 					class="small-text"
 					:class="boostApplied"
 					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
@@ -100,6 +100,7 @@
 				</div>
 			</div>
 			<donate-repayments
+				v-if="hasLoans"
 				@updating-totals="$emit('updating-totals', $event)"
 				@refreshtotals="$emit('refreshtotals')" />
 		</span>
@@ -176,6 +177,9 @@ export default {
 		},
 	},
 	computed: {
+		hasLoans() {
+			return this.loanCount > 0;
+		},
 		serverAmount() {
 			return numeral(this.donation.price).format('$0,0.00');
 		},

@@ -1,5 +1,5 @@
 <template functional>
-	<span>
+	<section>
 		<h2>Colors</h2>
 		<hr>
 		<!-- Greens -->
@@ -141,7 +141,7 @@
 				<div class="color-name">$kiva-alert-yellow</div>
 			</div>
 		</div>
-	</span>
+	</section>
 </template>
 
 <script>

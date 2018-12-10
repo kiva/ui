@@ -160,6 +160,12 @@
 				</kv-lightbox>
 			</div>
 		</div>
+		<l-y-m-l
+			v-if="isLoggedIn && showLYML"
+			:loans="loans"
+			@refreshtotals="refreshTotals($event)"
+			@updating-totals="setUpdatingTotals"
+		/>
 	</www-page>
 </template>
 
@@ -184,6 +190,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
+import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
 export default {
 	components: {
@@ -200,6 +207,7 @@ export default {
 		LoadingOverlay,
 		KvIcon,
 		CheckoutHolidayPromo,
+		LYML,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -231,6 +239,7 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
+			showLYML: true,
 		};
 	},
 	apollo: {

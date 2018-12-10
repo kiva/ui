@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import _forEach from 'lodash/forEach';
 import _orderBy from 'lodash/orderBy';
 import numeral from 'numeral';
@@ -30,10 +30,6 @@ export default {
 		teamId: {
 			type: Number,
 			default: 0
-		},
-		price: {
-			type: String,
-			default: ''
 		},
 		loanId: {
 			type: Number,
@@ -61,11 +57,10 @@ export default {
 				const updatedTeamId = numeral(this.selectedId).value();
 
 				this.apollo.mutate({
-					mutation: updateLoanReservation,
+					mutation: updateLoanReservationTeam,
 					variables: {
 						teamId: updatedTeamId,
-						loanid: this.loanId,
-						price: this.price
+						loanid: this.loanId
 					}
 				}).then(data => {
 					if (data.errors) {

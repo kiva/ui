@@ -1,5 +1,5 @@
 <template>
-	<lend-button price="25" :loan-id="loanId">
+	<lend-button price="25" :loan-id="loanId" class="lend-25-button">
 		Lend $25
 	</lend-button>
 </template>
