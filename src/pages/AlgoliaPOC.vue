@@ -6,19 +6,25 @@
 
 				<div class="algolia-wrap">
 					<ais-index
-						app-id="latency"
-						api-key="3d9875e51fbd20c7754e65422f7ce5e1"
-						index-name="bestbuy">
-						<ais-search-box />
-						<ais-results>
+						v-if="algoliaAppId"
+						:app-id="algoliaAppId"
+						:api-key="algoliaApiKey"
+						:index-name="algoliaDefaultIndex"
+						:query="defaultSearch"
+						:query-parameters="algoliaQueryParams">
+						<ais-input
+							placeholder="Find loans..."
+							autofocus />
+						<ais-results
+							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
+							:results-per-page="12">
 							<template slot-scope="{ result }">
-								<h2>
-									<ais-highlight
-										:result="result"
-										attribute-name="name" />
-								</h2>
+								<algolia-adapter
+									:loan="result"
+									:items-in-basket="itemsInBasket" />
 							</template>
 						</ais-results>
+						<ais-pagination :padding="2" />
 					</ais-index>
 				</div>
 			</div>
@@ -27,10 +33,15 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 // Import your specific Algolia Components here
 // V1 components are here: https://community.algolia.com/vue-instantsearch/getting-started/using-components.html
-import { Index, SearchBox, Results, Highlight, Pagination } from 'vue-instantsearch';
+import { Index, SearchBox, Input, Results, Highlight, Pagination } from 'vue-instantsearch';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 
 export default {
 	components: {
@@ -39,12 +50,41 @@ export default {
 		// -> To match their example code we add Ais before each component name
 		AisIndex: Index,
 		AisSearchBox: SearchBox,
+		AisInput: Input,
 		AisResults: Results,
 		AisHighlight: Highlight,
-		AisPagination: Pagination
+		AisPagination: Pagination,
+		ActionButton,
+		AlgoliaAdapter
 	},
 	metaInfo: {
 		title: 'Algolia Search'
+	},
+	data() {
+		return {
+			// These are required in each instance of the plugin
+			algoliaAppId: this.algoliaConfig.algoliaAppId,
+			algoliaApiKey: this.algoliaConfig.algoliaApiKey,
+			// The index will likey be different based on context
+			algoliaDefaultIndex: this.algoliaConfig.algoliaDefaultIndex,
+			defaultSearch: 'Energy',
+			// Focus in on fundRaising Loans
+			algoliaQueryParams: {
+				filters: 'status:fundRaising'
+			},
+			itemsInBasket: null
+		};
+	},
+	inject: [
+		'apollo',
+		'algoliaConfig'
+	],
+	apollo: {
+		query: itemsInBasketQuery,
+		prefetch: true,
+		result({ data }) {
+			this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+		}
 	},
 };
 </script>
@@ -56,20 +96,39 @@ export default {
 	padding: 1.625rem 0;
 }
 
-.algolia-wrap {
-	.ais-index {
-		.ais-results {
-			h2 {
-				font-size: 1.2rem;
-			}
+.loan-card-group {
+	position: relative;
+}
 
-			.ais-highlight {
-				em {
-					color: $kiva-green;
-					text-decoration: underline;
-					font-weight: 400;
-				}
-			}
+.ais-pagination {
+	list-style: none;
+	text-align: center;
+	display: flex;
+	margin: 0.75rem auto;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 17rem;
+
+	.ais-pagination__item {
+		color: $kiva-text-light;
+	}
+
+	.ais-pagination__item--active,
+	.ais-pagination__item--disabled {
+		a {
+			color: $kiva-text-light;
+		}
+	}
+
+	.ais-pagination__item--first,
+	.ais-pagination__item--previous,
+	.ais-pagination__item--next,
+	.ais-pagination__item--last {
+		font-weight: bold;
+
+		a:hover,
+		a:visited {
+			text-decoration: none;
 		}
 	}
 }

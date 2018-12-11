@@ -19,7 +19,10 @@ module.exports = merge(base, {
 		fbPixelId: '108245819986414',
 		fbOgNameSpace: 'dev-kiva',
 		enableSentry: true,
-		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287'
+		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',
+		algoliaAppId: 'H4ONVZQ2C6',
+		algoliaApiKey: 'a373a52c000e929706c9e02a5862a327',
+		algoliaDefaultIndex: 'dev_all_loans'
 	},
 	server: {
 		graphqlUri: 'https://api.dev.kivaws.org/graphql',
