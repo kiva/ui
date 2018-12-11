@@ -43,7 +43,12 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 		router,
 		render: h => h(App, { props: { appConfig } }),
 		provide: {
-			apollo: apolloClient
+			apollo: apolloClient,
+			algoliaConfig: {
+				algoliaAppId: appConfig.algoliaAppId,
+				algoliaApiKey: appConfig.algoliaApiKey,
+				algoliaDefaultIndex: appConfig.algoliaDefaultIndex
+			}
 		}
 	});
 

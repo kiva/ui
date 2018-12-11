@@ -52,22 +52,21 @@ export default {
 	},
 	data() {
 		return {
-			algoliaAppId: null, // eslint-disable-line
-			algoliaApiKey: null, // eslint-disable-line
-			algoliaDefaultIndex: null, // eslint-disable-line
+			algoliaAppId: this.algoliaConfig.algoliaAppId,
+			algoliaApiKey: this.algoliaConfig.algoliaApiKey,
+			algoliaDefaultIndex: 'dev_all_loans',
 		};
 	},
+	inject: ['algoliaConfig'],
+	// created() {
+	// 	console.log(this.algoliaConfig);
+	// },
 	// mixins: [Component],
 	// computed: {
 	// 	query() {
 	// 		return this.searchStore.query;
 	// 	},
 	// },
-	mounted() {
-		this.algoliaAppId = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaAppId : null; // eslint-disable-line
-		this.algoliaApiKey = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaApiKey : null; // eslint-disable-line
-		this.algoliaDefaultIndex = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaDefaultIndex : null; // eslint-disable-line
-	}
 };
 </script>
 
