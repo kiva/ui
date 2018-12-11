@@ -43,7 +43,7 @@
 						</p>
 					</div>
 					<div class="row columns">
-						<kv-button class="smaller rows">$25</kv-button>
+						<kv-button class="smaller rows">$20</kv-button>
 						<kv-button class="smaller rows">$35</kv-button>
 						<kv-button class="smaller rows">$50</kv-button>
 						<kv-button class="smaller rows secondary">Submit</kv-button>
