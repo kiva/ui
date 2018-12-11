@@ -21,13 +21,13 @@
 					loans fundRaising on the website:
 				</p>
 				<p>
-				<!-- eslint-disable-next-line max-len -->
-				<a href="https://api.kivaws.org/graphql?query=query{lend{loans%20(filters:{status:fundRaising}%20sortBy:newest){values{id%20name%20loanAmount}}}}">
-					Query for newest fundraising loans
-				</a>
+					<!-- eslint-disable-next-line max-len -->
+					<a href="https://api.kivaws.org/graphql?query=query{lend{loans%20(filters:{status:fundRaising}%20sortBy:newest){values{id%20name%20loanAmount}}}}">
+						Query for newest fundraising loans
+					</a>
 				</p>
 				<p>Try changing up some of the parameters and see how the search results
-					change.
+				change.
 					<br>
 					Press the "Play" button on the top left hand corner to see the new results.
 					<br>
@@ -40,7 +40,7 @@
 					Think about the experience you'd like to create for Kiva users.
 					Maybe you want to create a notification system for a particular type of
 					loan; perhaps you let your users specify the kind of loan about which
-					to be notified. Maybe you have an idea for a creative way to show off 
+					to be notified. Maybe you have an idea for a creative way to show off
 					Kiva's statistics or activity on the site. The application might be as
 					simple as a widget for a blog that shows off loans you've recently
 					made on Kiva.
@@ -62,6 +62,7 @@ export default {
 	metaInfo: {
 		title: 'Getting Started'
 	}
+};
 </script>
 
 <style lang="scss">
