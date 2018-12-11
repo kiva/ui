@@ -18,7 +18,7 @@
 				<p>Our GraphQL API methods can be tested easily with most any browser</p>
 				<p>
 					As an example, try out this GraphQL that will return the newest
-					loans fundRaising on the website:
+					loans fundraising on the website:
 				</p>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
