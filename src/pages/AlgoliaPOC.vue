@@ -13,14 +13,27 @@
 						<ais-search-box />
 						<ais-results>
 							<template slot-scope="{ result }">
-								<h2>
-									<ais-highlight
-										:result="result"
-										attribute-name="name" />
-									<span>{{ result.id }}</span>
-								</h2>
-								<h4>{{ result.loanAmount.amount }}</h4>
-								<p>{{ result.description.en }}</p>
+								<!-- <GridLoanCard
+									:key="result.id"
+									:loan="result"
+									:is-visitor="true"
+									:items-in-basket="itemsInBasket"
+								/> -->
+								<div class="loan-card">
+									<h2>
+										<ais-highlight
+											:result="result"
+											attribute-name="name" />
+										<small>({{ result.id }})</small>
+									</h2>
+									<h4>{{ amountLeft(result) }}</h4>
+									<action-button
+										class="smallest"
+										:loan-id="result.id"
+										:items-in-basket="itemsInBasket"
+										:is-lent-to="false"
+										:is-funded="result.status === 'funded' || amountLeft(result) <= 0" />
+								</div>
 							</template>
 						</ais-results>
 					</ais-index>
@@ -31,10 +44,16 @@
 </template>
 
 <script>
+// import _get from 'lodash/get';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 // Import your specific Algolia Components here
 // V1 components are here: https://community.algolia.com/vue-instantsearch/getting-started/using-components.html
 import { Index, SearchBox, Results, Highlight, Pagination } from 'vue-instantsearch';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+// We'll need to make an adapter/wrapper around our loan card components,
+// this due to differences in the algolia loan object (kiva core loan) + loan as returned by graphql
+// import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+// import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 
 export default {
 	components: {
@@ -45,19 +64,44 @@ export default {
 		AisSearchBox: SearchBox,
 		AisResults: Results,
 		AisHighlight: Highlight,
-		AisPagination: Pagination
+		AisPagination: Pagination,
+		ActionButton,
+		// GridLoanCard,
 	},
 	metaInfo: {
 		title: 'Algolia Search'
 	},
 	data() {
 		return {
+			// These are required in each instance of the plugin
 			algoliaAppId: this.algoliaConfig.algoliaAppId,
 			algoliaApiKey: this.algoliaConfig.algoliaApiKey,
-			algoliaDefaultIndex: 'dev_all_loans',
+			// The index will likey be different based on context
+			algoliaDefaultIndex: this.algoliaConfig.algoliaDefaultIndex,
+			itemsInBasket: null
 		};
 	},
-	inject: ['algoliaConfig'],
+	inject: [
+		'apollo',
+		'algoliaConfig'
+	],
+	// apollo: {
+	// 	query: itemsInBasketQuery,
+	// 	prefetch: true,
+	// 	result({ data }) {
+	// 		console.log(data);
+	// 	}
+	// },
+	methods: {
+		amountLeft(loan) {
+			const {
+				fundedAmount,
+				reservedAmount
+			} = loan.loanFundraisingInfo;
+
+			return loan.loanAmount.amount - fundedAmount.amount - reservedAmount.amount;
+		}
+	}
 	// created() {
 	// 	console.log(this.algoliaConfig);
 	// },
