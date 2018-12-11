@@ -17,7 +17,10 @@
 									<ais-highlight
 										:result="result"
 										attribute-name="name" />
+									<span>{{ result.id }}</span>
 								</h2>
+								<h4>{{ result.loanAmount.amount }}</h4>
+								<p>{{ result.description.en }}</p>
 							</template>
 						</ais-results>
 					</ais-index>
@@ -54,6 +57,12 @@ export default {
 			algoliaDefaultIndex: null, // eslint-disable-line
 		};
 	},
+	// mixins: [Component],
+	// computed: {
+	// 	query() {
+	// 		return this.searchStore.query;
+	// 	},
+	// },
 	mounted() {
 		this.algoliaAppId = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaAppId : null; // eslint-disable-line
 		this.algoliaApiKey = typeof window !== 'undefined' ? window.__KV_CONFIG__.algoliaApiKey : null; // eslint-disable-line
