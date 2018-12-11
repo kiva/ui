@@ -9,12 +9,13 @@
 						v-if="algoliaAppId"
 						:app-id="algoliaAppId"
 						:api-key="algoliaApiKey"
-						:index-name="algoliaDefaultIndex">
-						<!-- <ais-search-box
-							placeholder="Find loans..." /> -->
+						:index-name="algoliaDefaultIndex"
+						:query="defaultSearch"
+						:query-parameters="{
+							filters: 'status:fundRaising'
+					}">
 						<ais-input
 							placeholder="Find loans..."
-							:value="defaultSearch"
 							autofocus />
 						<ais-results
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
