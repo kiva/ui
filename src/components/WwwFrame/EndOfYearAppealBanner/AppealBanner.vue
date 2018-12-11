@@ -19,7 +19,9 @@
 			<div class="row">
 				<div class="avatar rows">
 					<!-- TODO: Make component -->
-					<img class="avatar-icon" src="http://styleguide.kiva.org/images/leadership/premal-shah-std.jpg">
+					<!-- <img class="avatar-icon" src="http://styleguide.kiva.org/
+					images/leadership/premal-shah-std.jpg"> -->
+					<appeal-image />
 				</div>
 				<div class="info rows column">
 					<div class="header columns">
@@ -59,12 +61,14 @@
 import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
+import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 
 export default {
 	components: {
 		KvButton,
 		KvIcon,
+		AppealImage,
 	},
 	inject: ['apollo'],
 	data() {
@@ -131,11 +135,11 @@ export default {
 		padding: 0;
 	}
 
-	.avatar-icon {
-		width: 10rem;
-		height: 10rem;
-		border-radius: 5rem;
-	}
+	// .avatar-icon {
+	// 	width: 10rem;
+	// 	height: 10rem;
+	// 	border-radius: 5rem;
+	// }
 
 	.close-icon {
 		transform: scaleY(-1);
