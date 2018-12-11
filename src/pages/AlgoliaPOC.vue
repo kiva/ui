@@ -11,9 +11,7 @@
 						:api-key="algoliaApiKey"
 						:index-name="algoliaDefaultIndex"
 						:query="defaultSearch"
-						:query-parameters="{
-							filters: 'status:fundRaising'
-					}">
+						:query-parameters="algoliaQueryParams">
 						<ais-input
 							placeholder="Find loans..."
 							autofocus />
@@ -68,8 +66,12 @@ export default {
 			algoliaAppId: this.algoliaConfig.algoliaAppId,
 			algoliaApiKey: this.algoliaConfig.algoliaApiKey,
 			// The index will likey be different based on context
-			algoliaDefaultIndex: 'dev_funding',
+			algoliaDefaultIndex: this.algoliaConfig.algoliaDefaultIndex,
 			defaultSearch: 'Energy',
+			// Focus in on fundRaising Loans
+			algoliaQueryParams: {
+				filters: 'status:fundRaising'
+			},
 			itemsInBasket: null
 		};
 	},
