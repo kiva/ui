@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="category-name">{{ cleanName }}
-					<span class="view-all-link">&nbsp;<a :href="cleanUrl">View all</a></span>
+					<span class="view-all-link" v-if="showViewAllLink">&nbsp;<a :href="cleanUrl">View all</a></span>
 				</h2>
 			</div>
 		</div>
@@ -120,6 +120,15 @@ export default {
 			let isVisible = true;
 
 			if (this.isLoggedIn === false && this.url.includes('new-countries-for-you') === true) {
+				isVisible = false;
+			}
+
+			return isVisible;
+		},
+		showViewAllLink() {
+			let isVisible = true;
+
+			if (this.url.includes('loans-with-research-backed-impact') === true || this.url === '') {
 				isVisible = false;
 			}
 

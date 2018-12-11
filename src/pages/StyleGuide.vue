@@ -175,37 +175,21 @@
 				</fieldset>
 			</form>
 		</section>
-		<section>
-			<h2>Buttons</h2>
 
-			<label class="elem-desc">Primary button</label>
-			<kv-button>Primary</kv-button>
+		<styleguide-buttons />
 
-			<label class="elem-desc">Smaller button (.smaller)</label>
-			<kv-button class="smaller">Smaller</kv-button>
-
-			<label class="elem-desc">Secondary button (.secondary)</label>
-			<kv-button class="secondary">Secondary</kv-button>
-
-			<label class="elem-desc">Setting button (.setting)</label>
-			<kv-button class="setting">Setting</kv-button>
-		</section>
-
-		<!-- Colors Section -->
-		<section>
-			<styleguide-colors />
-		</section>
+		<styleguide-colors />
 	</div>
 </template>
 
 <script>
 /* eslint-disable max-len */
-import KvButton from '@/components/Kv/KvButton';
 import StyleguideColors from '@/components/Styleguide/StyleguideColors';
+import StyleguideButtons from '@/components/Styleguide/StyleguideButtons';
 
 export default {
 	components: {
-		KvButton,
+		StyleguideButtons,
 		StyleguideColors,
 	},
 	data() {
@@ -223,7 +207,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'settings';
 
 .elem-desc {

@@ -87,7 +87,9 @@
 import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _without from 'lodash/without';
 import { readJSONSetting } from '@/util/settingsUtils';
+import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
@@ -95,6 +97,10 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 
+// Insert Loan Channel Ids here
+// They should also be added to the possibleCategories in CategoryAdminControls
+// You'll need use the same id when you push data into customCategories
+const customCategoryIds = [];
 
 export default {
 	components: {
@@ -114,16 +120,25 @@ export default {
 			isLoggedIn: false,
 			categorySetting: [],
 			categorySetId: '',
-			categories: [],
 			itemsInBasket: [],
 			showFeaturedLoans: true,
-			showLendByCategoryMessage: false
+			showLendByCategoryMessage: false,
+			realCategories: [],
+			customCategories: [],
 		};
 	},
 	computed: {
 		categoryIds() {
 			return _map(this.categorySetting, 'id');
-		}
+		},
+		categories() {
+			// merge realCategories & customCategories and re-order to match the setting
+			const categories = this.realCategories.concat(this.customCategories);
+			return categories.sort(indexIn(this.categoryIds, 'id'));
+		},
+		realCategoryIds() {
+			return _without(this.categoryIds, ...customCategoryIds);
+		},
 	},
 	methods: {
 		assemblePageViewData(categories) {
@@ -173,6 +188,34 @@ export default {
 			this.categorySetting = variantRows || rowData;
 			this.categorySetId = version || _get(expData, 'control.key');
 		},
+		setCustomRowData(data) { // eslint-disable-line
+			this.customCategories = [];
+			// check for loans before pushing this as we won't want to show an empty row
+			// const someCustomLoans = _get(data, 'lend.someLoans.values') || [];
+			// if (someCustomLoans.length) {
+			// 	this.customCategories.push({
+			// 		id: 62,
+			// 		name: 'Custom category',
+			// 		url: '', // required field
+			// 		loans: {
+			// 			values: someCustomLoans,
+			// 		},
+			// 	});
+			// }
+
+			// check for loans before pushing this as we won't want to show an empty row
+			// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
+			// if (otherLoans.length) {
+			// 	this.customCategories.push({
+			// 		id: 65,
+			// 		name: 'Other Custom category',
+			// 		url: '', // required field
+			// 		loans: {
+			// 			values: otherLoans,
+			// 		},
+			// 	});
+			// }
+		}
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -204,7 +247,10 @@ export default {
 				// Pre-fetch all the data for those channels
 				return client.query({
 					query: loanChannelQuery,
-					variables: { ids },
+					variables: {
+						ids: _without(ids, ...customCategoryIds),
+						// @todo variables for fetching data for custom channels
+					},
 				});
 			});
 		}
@@ -225,14 +271,22 @@ export default {
 		// Read the loan channels from the cache
 		const categoryData = this.apollo.readQuery({
 			query: loanChannelQuery,
-			variables: { ids: this.categoryIds },
+			variables: {
+				ids: this.realCategoryIds,
+				// @todo variables for fetching data for custom channels
+			},
 		});
-		this.categories = _get(categoryData, 'lend.loanChannelsById') || [];
+		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
+		// update our custom categories prior to render
+		this.setCustomRowData(categoryData);
 
 		// Create an observer for changes to the categories (and their loans)
 		const categoryObserver = this.apollo.watchQuery({
 			query: loanChannelQuery,
-			variables: { ids: this.categoryIds },
+			variables: {
+				ids: this.realCategoryIds,
+				// @todo variables for fetching data for custom channels
+			},
 		});
 
 		// Watch for and react to changes to the query
@@ -242,14 +296,19 @@ export default {
 				this.isAdmin = !!_get(data, 'my.isAdmin');
 				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				// Update the categories observer with the new setting, triggering updates
-				categoryObserver.setVariables({ ids: this.categoryIds });
+				categoryObserver.setVariables({
+					ids: this.realCategoryIds,
+					// @todo variables for fetching data for custom channels
+				});
 			},
 		});
 
 		// React to changes to the category data
 		categoryObserver.subscribe({
 			next: ({ data }) => {
-				this.categories = _get(data, 'lend.loanChannelsById') || [];
+				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
+				// update our custom categories on any query change
+				this.setCustomRowData(data);
 			},
 		});
 

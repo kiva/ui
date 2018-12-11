@@ -23,7 +23,6 @@
 				<team-attribution
 					v-if="teams.length"
 					:teams="teams"
-					:price="loan.price"
 					:loan-id="loan.id"
 					:team-id="loan.team ? loan.team.id : null"
 				/>

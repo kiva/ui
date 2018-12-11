@@ -1,5 +1,5 @@
 <template>
-	<kv-button :to="`/lend/${loanId}`">
+	<kv-button :to="`/lend/${loanId}`" class="read-more-button">
 		Read more
 	</kv-button>
 </template>
