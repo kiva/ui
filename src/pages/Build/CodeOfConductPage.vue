@@ -82,6 +82,31 @@
 					data on Kiva somewhere in the application flow. This helps you communicate
 					copyright of the data back to Kiva.
 				</p>
+				<h2>8. Use app_id in your requests</h2>
+				<p>
+					When making API calls or linking back to Kiva, please pass an App ID
+					in your request. Currently, this isn't required by the Terms Of Service,
+					but consider it a polite way of saying hello and letting us know who's
+					using the API. In the future we hope to return the favor by giving you
+					stats on how your app is doing.
+				</p>
+				<h2>9. Offer your users the ability to donate to Kiva</h2>
+				<p>
+					Kiva relies on the donations we ask for at checkout. Either ask your
+					users for a donation and set it in the request to the basket, or
+					leave it blank so we can set it to our suggested default amount.
+				</p>
+				<h2>10. Keep your data in sync with the API</h2>
+				<p>
+					We understand the need to download Kiva's data and store it locally.
+					However, for regulatory and policy reasons, such data can only be stored
+					for a limited time.
+				</p>
+				<p>
+					If Kiva's data changes, this will be reflected in the API. You must
+					keep local copies of Kiva's data in-sync with the current data available
+					through the API.
+				</p>
 			</div>
 		</div>
 	</www-page>
