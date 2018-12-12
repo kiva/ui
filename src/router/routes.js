@@ -14,5 +14,6 @@ export default [
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
 	{ path: '/build/docs', component: () => import('@/pages/Build/DocsPage') },
+	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
 	{ path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
 ];
