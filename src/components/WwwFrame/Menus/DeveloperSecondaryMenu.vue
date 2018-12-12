@@ -21,6 +21,10 @@ export default {
 					routerLink: '/build/docs',
 				},
 				{
+					name: 'Code of Conduct',
+					routerLink: '/build/code-of-conduct',
+				},
+				{
 					name: 'API',
 					url: 'https://api.kivaws.org/graphql',
 				},
