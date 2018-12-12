@@ -32,11 +32,6 @@
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
 				</a>
-				<a
-					@click="openNudgeLightbox"
-				>
-					Learn more
-				</a>
 				<donation-nudge-lightbox
 					:loan-count="loanCount"
 					:loan-reservation-total="loanReservationTotal"
@@ -251,7 +246,11 @@ export default {
 			this.updateDonation();
 		},
 		enterEditDonation() {
-			this.editDonation = true;
+			if (this.hasLoans) {
+				this.openNudgeLightbox();
+			} else {
+				this.editDonation = true;
+			}
 		},
 		updateDonationExp() {
 			// if the server amount is greater than the donationBoostAmount return false
@@ -296,9 +295,9 @@ export default {
 				variables: { id: 'donation_nudge_lightbox_custom_tip' },
 			});
 			this.donationNudgeLightboxExpVersion = _get(nudgeExperimentVersion, 'experiment.version') || null;
-			if (this.donationNudgeLightboxExpVersion === 'variant-a') {
+			if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-a') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'a');
-			} else if (this.donationNudgeLightboxExpVersion === 'variant-b') {
+			} else if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'b');
 				this.hasCustomDonation = true;
 			}
@@ -352,6 +351,7 @@ export default {
 			this.nudgeLightboxVisible = false;
 		},
 		openNudgeLightbox() {
+			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
 		}
 	}
