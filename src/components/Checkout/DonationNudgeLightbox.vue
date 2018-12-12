@@ -104,6 +104,7 @@ export default {
 	methods: {
 		setDonationAndClose(amount) {
 			this.updateDonationTo(amount);
+			this.$kvTrackEvent('basket', 'Update Loan Amount', 'Update Success', amount * 100);
 			this.closeNudgeLightbox();
 		}
 	},
