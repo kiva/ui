@@ -14,6 +14,18 @@
 						{{ appeal }}
 					</div>
 				</div>
+				<!-- eslint-disable max-len -->
+				<div
+					v-if="hasCustomDonation"
+					class="medium-4 columns nudge-box-top-container nudge-box-container nudge-box-custom-donation-container"
+				>
+					<!-- eslint-enable max-len -->
+					<div
+						class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
+					>
+						Enter custom amount
+					</div>
+				</div>
 			</div>
 			<div class="row nudge-box-row">
 				<div
@@ -26,6 +38,25 @@
 						@click="setDonationAndClose(getDonationByPercent(percentage))"
 					>
 						${{ getDonationByPercent(percentage) }}
+					</div>
+				</div>
+				<!-- eslint-disable max-len -->
+				<div
+					v-if="hasCustomDonation"
+					class="medium-4 columns nudge-box-middle-container nudge-box-container nudge-box-custom-donation-container"
+				>
+					<!-- eslint-disable max-len -->
+					<div
+						class="nudge-box-middle nudge-box-custom-donation"
+					>
+						<input
+							type="text"
+							name="inputText"
+							id="inputText"
+							maxlength="10"
+							class="nudge-box-input"
+							@v-on:keyup.enter="setDonationAndClose(0)"
+						>
 					</div>
 				</div>
 			</div>
@@ -44,6 +75,19 @@
 						</kv-button>
 					</div>
 				</div>
+				<div
+					v-if="hasCustomDonation"
+					class="medium-4 columns nudge-box-bottom-container nudge-box-container nudge-box-custom-donation-container"
+				>
+					<div
+						class="nudge-box-bottom nudge-box-custom-donation"
+						@click="setDonationAndClose(0)"
+					>
+						<kv-button class="smallest nudge-box-button">
+							Submit
+						</kv-button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="hide-for-large nudge-boxes-mobile">
@@ -55,11 +99,11 @@
 			>
 				<div class="row nudge-box-row">
 					<!-- eslint-disable max-len -->
-					<div class="small-7 columns nudge-box-column">
+					<div class="small-7 columns nudge-box-column nudge-box-column-appeal">
 						<!-- eslint-enablemax-len -->
 						{{ appeal }}
 					</div>
-					<div class="small-4 small-offset-1 columns nudge-box-column">
+					<div class="small-4 small-offset-1 columns nudge-box-column nudge-box-column-button">
 						<kv-button
 							class="smallest nudge-box-button"
 						>
@@ -93,6 +137,10 @@ export default {
 			type: Function,
 			required: true,
 		},
+		hasCustomDonation: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	methods: {
 		getDonationByPercent(percent) {
@@ -121,6 +169,18 @@ export default {
 				border-right: $nudge-box-border;
 				padding: 0 0.5rem;
 				height: 100%;
+
+				&.nudge-box-padded {
+					padding-left: 2rem;
+					padding-right: 2rem;
+				}
+
+				&.nudge-box-custom-donation {
+					border-left: none;
+					border-right: none;
+					background: initial;
+					cursor: initial;
+				}
 			}
 
 			.nudge-box-container {
@@ -133,9 +193,8 @@ export default {
 					padding-top: 1rem;
 					border-top: $nudge-box-border;
 
-					&.nudge-box-padded {
-						padding-left: 2rem;
-						padding-right: 2rem;
+					&.nudge-box-custom-donation {
+						border-top: none;
 					}
 				}
 
@@ -144,6 +203,11 @@ export default {
 
 					padding: 1.5rem 0;
 					font-size: 1.5rem;
+
+					.nudge-box-input {
+						max-width: rem-calc(115);
+						margin: 0 auto;
+					}
 				}
 
 				.nudge-box-bottom {
@@ -151,6 +215,10 @@ export default {
 
 					padding-bottom: 1rem;
 					border-bottom: $nudge-box-border;
+
+					&.nudge-box-custom-donation {
+						border-bottom: none;
+					}
 				}
 			}
 		}
@@ -170,7 +238,14 @@ export default {
 				.nudge-box-column {
 					display: flex;
 					align-items: center;
-					justify-content: flex-end;
+
+					&.nudge-box-column-appeal {
+						justify-content: flex-start;
+					}
+
+					&.nudge-box-column-button {
+						justify-content: flex-end;
+					}
 
 					.nudge-box-button {
 						margin-bottom: 0;

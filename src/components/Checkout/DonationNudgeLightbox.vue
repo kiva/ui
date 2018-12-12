@@ -19,7 +19,7 @@
 				<kv-donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
 					:percentage-rows= "percentageRows"
-					:has-custom-donation="true"
+					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
 				/>
@@ -74,15 +74,14 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		hasCustomDonation: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	data() {
-		return {
-			percentageRows: [
-				{
-					percentage: 10,
-					appeal: 'Cover some of Kiva\'s costs',
-					appealIsHorizontallyPadded: true,
-				},
+	computed: {
+		percentageRows() {
+			const basePercentageRows = [
 				{
 					percentage: 15,
 					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
@@ -93,8 +92,14 @@ export default {
 					appeal: 'Reach more people around the world!',
 					appealIsHorizontallyPadded: false,
 				},
-			],
-		};
+			];
+			const lowPercentage = {
+				percentage: 10,
+				appeal: 'Cover some of Kiva\'s costs',
+				appealIsHorizontallyPadded: true,
+			};
+			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
+		},
 	},
 	methods: {
 		setDonationAndClose(amount) {

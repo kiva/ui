@@ -4,5 +4,9 @@ query {
 			key
 			value
 		}
+		donationNudgeExperiment: setting(setting: "uiexp.donation_nudge_lightbox_custom_tip") {
+			key
+			value
+		}
 	}
 }
