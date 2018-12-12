@@ -51,11 +51,11 @@
 					>
 						<input
 							type="text"
-							name="inputText"
-							id="inputText"
+							ref="customDonationInput"
+							name="customDonationInputText"
 							maxlength="10"
 							class="nudge-box-input"
-							@v-on:keyup.enter="setDonationAndClose(0)"
+							@blur="validateInputDesktop"
 						>
 					</div>
 				</div>
@@ -81,7 +81,7 @@
 				>
 					<div
 						class="nudge-box-bottom nudge-box-custom-donation"
-						@click="setDonationAndClose(0)"
+						@click="setCustomDonationAndClose"
 					>
 						<kv-button class="smallest nudge-box-button">
 							Submit
@@ -146,6 +146,12 @@ export default {
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
+		setCustomDonationAndClose() {
+			this.setDonationAndClose(this.$refs.customDonationInput.value);
+		},
+		validateInputDesktop() {
+			this.$refs.customDonationInput.value = numeral(this.$refs.customDonationInput.value).format('$0,0.00');
+		},
 	},
 };
 </script>
@@ -205,6 +211,7 @@ export default {
 					font-size: 1.5rem;
 
 					.nudge-box-input {
+						text-align: center;
 						max-width: rem-calc(115);
 						margin: 0 auto;
 					}
