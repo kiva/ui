@@ -8,7 +8,7 @@
 					<div class="header columns">
 						<h2 class="rows">Fighting for a better future? We need your help.</h2>
 						<span class="rows open-icon"
-							@click="toggleBanner">
+							@click="toggleAccordion">
 							<kv-icon name="small-chevron-mobile"/>
 						</span>
 					</div>
@@ -18,17 +18,19 @@
 		<div class="appeal-banner-layout" v-show="isOpen">
 			<div class="row">
 				<div class="avatar rows">
-					<!-- TODO: Make component -->
-					<!-- <img class="avatar-icon" src="http://styleguide.kiva.org/
-					images/leadership/premal-shah-std.jpg"> -->
 					<appeal-image />
 				</div>
 				<div class="info rows column">
 					<div class="header columns">
 						<h2 class="rows">Fighting for a better future? We need your help.</h2>
-						<span class="rows close-icon"
-							@click="toggleBanner">
-							<kv-icon name="small-chevron-mobile"/>
+						<span class="rows close-icon">
+							<a @click="toggleAccordion">
+								<kv-icon
+									:class="{ flipped: open }"
+									class="toggle-arrow"
+									name="medium-chevron"
+								/>
+							</a>
 						</span>
 					</div>
 					<div class="columns column">
@@ -85,7 +87,7 @@ export default {
 		},
 	},
 	methods: {
-		toggleBanner() {
+		toggleAccordion() {
 			this.isOpen = !this.isOpen;
 		},
 	},
@@ -102,14 +104,13 @@ export default {
 .appeal-banner-layout {
 	max-width: 61.875rem;
 	margin: 0 auto;
-	height: rem-calc(300);
 
-	&.close {
+	& .close {
 		height: rem-cacl(50);
 	}
 
 	& > .row {
-		height: 100%;
+		// height: 100%;
 		align-items: center;
 	}
 
