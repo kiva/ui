@@ -93,11 +93,11 @@ export default {
 					appealIsHorizontallyPadded: false,
 				},
 			];
-			const lowPercentage = {
+			const lowPercentage = [{
 				percentage: 10,
 				appeal: 'Cover some of Kiva\'s costs',
 				appealIsHorizontallyPadded: true,
-			};
+			}];
 			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
 		},
 	},
