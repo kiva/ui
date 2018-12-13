@@ -147,6 +147,7 @@ export default {
 			editDonation: false,
 			expVersion: '',
 			nudgeLightboxVisible: false,
+			isCash80Running: false,
 			hasCustomDonation: false,
 		};
 	},
@@ -245,7 +246,7 @@ export default {
 			this.updateDonation();
 		},
 		enterEditDonation() {
-			if (this.hasLoans) {
+			if (this.hasLoans && this.isCash80Running) {
 				this.openNudgeLightbox();
 			} else {
 				this.editDonation = true;
@@ -295,9 +296,11 @@ export default {
 			});
 			this.donationNudgeLightboxExpVersion = _get(nudgeExperimentVersion, 'experiment.version') || null;
 			if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-a') {
+				this.isCash80Running = true;
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'a');
 			} else if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'b');
+				this.isCash80Running = true;
 				this.hasCustomDonation = true;
 			}
 		},
