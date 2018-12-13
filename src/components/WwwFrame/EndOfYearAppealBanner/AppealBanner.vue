@@ -19,6 +19,7 @@
 
 					<a @click="toggleAccordion">
 						<kv-icon
+							@click="toggleAccordion"
 							:class="{ flipped: open }"
 							class="toggle-arrow"
 							name="medium-chevron" />
@@ -29,7 +30,7 @@
 			<kv-expandable easing="ease-in-out">
 				<div class="row"
 					v-show="open">
-					<div class="small-2">
+					<div class="small-2 hide-for-small">
 						<appeal-image />
 					</div>
 					<div class="small-10">
@@ -66,13 +67,13 @@
 							</p>
 						</div>
 						<div>
-							<kv-button class="smallest">$20</kv-button>
-							<kv-button class="smallest">$35</kv-button>
-							<kv-button class="smallest">$50</kv-button>
+							<kv-button class="smallest custom-width">$20</kv-button>
+							<kv-button class="smallest custom-width">$35</kv-button>
+							<kv-button class="smallest custom-width">$50</kv-button>
 							<input
 								class="dollar-amount-input"
 								placeholder="other">
-							<kv-button class="smallest setting">Submit</kv-button>
+							<kv-button class="smallest setting submit-button">Submit</kv-button>
 						</div>
 					</div>
 				</div>
@@ -142,20 +143,31 @@ export default {
 		display: inline-block;
 	}
 
-	.small-text {
-		font-weight: $global-weight-highlight;
-	}
-
-	.dollar-amount-input {
-		font-size: 1.25rem;
-		padding: 0.75rem 1.5rem;
-		width: rem-calc(120);
-	}
-
 	.icon {
 		width: rem-calc(25);
 		height: rem-calc(40);
 		cursor: pointer;
+	}
+
+	.small-text {
+		font-weight: $global-weight-highlight;
+	}
+
+	.submit-button {
+		vertical-align: super;
+	}
+
+	.dollar-amount-input {
+		font-size: 1.25rem;
+		padding: 0.7rem 1.5rem;
+		width: rem-calc(120);
+		margin-right: rem-calc(10);
+		vertical-align: top;
+	}
+
+	.custom-width {
+		padding: 0.75rem 3.5rem !important;
+		margin-right: rem-calc(10);
 	}
 }
 </style>
