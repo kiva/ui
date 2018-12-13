@@ -3,34 +3,35 @@
 		<div class="appeal-banner">
 			<div class="row"
 				@click="toggleAccordion">
-				<div class="small-2"></div>
+				<div class="small-2 show-for-large"></div>
 				<div class="small-10">
 					<!-- IF REGULAR APPEAL BANNER -->
 					<!-- PUT CONDITIONAL HERE -->
-					<h2>Your donation will power impact and hope in 2019</h2>
+					<h2>Your donation will power impact and hope in 2019
 
-					<!-- IF MATCHED APPEAL BANNER -->
-					<!-- PUT CONDITIONAL HERE -->
-					<!-- <h2>Double or triple the impact of your donation!</h2> -->
+						<!-- IF MATCHED APPEAL BANNER -->
+						<!-- PUT CONDITIONAL HERE -->
+						<!-- <h2>Double or triple the impact of your donation!</h2> -->
 
-					<!-- IF BONUS APPEAL BANNER -->
-					<!-- PUT CONDITIONAL HERE -->
-					<!-- <h2>Donate today and receive a bonus to lend!</h2> -->
+						<!-- IF BONUS APPEAL BANNER -->
+						<!-- PUT CONDITIONAL HERE -->
+						<!-- <h2>Donate today and receive a bonus to lend!</h2> -->
 
-					<a @click="toggleAccordion">
-						<kv-icon
-							@click="toggleAccordion"
-							:class="{ flipped: open }"
-							class="toggle-arrow"
-							name="medium-chevron" />
-					</a>
+						<a @click="toggleAccordion">
+							<kv-icon
+								@click="toggleAccordion"
+								:class="{ flipped: open }"
+								class="toggle-arrow"
+								name="medium-chevron" />
+						</a>
+					</h2>
 				</div>
 			</div>
 
 			<kv-expandable easing="ease-in-out">
 				<div class="row"
 					v-show="open">
-					<div class="small-2 hide-for-small">
+					<div class="small-2 show-for-large text-center">
 						<appeal-image />
 					</div>
 					<div class="small-10">
@@ -71,7 +72,7 @@
 							<kv-button class="smallest custom-width">$35</kv-button>
 							<kv-button class="smallest custom-width">$50</kv-button>
 							<input
-								class="dollar-amount-input"
+								class="dollar-amount-input show-for-large"
 								placeholder="other">
 							<kv-button class="smallest setting submit-button">Submit</kv-button>
 						</div>
@@ -125,6 +126,10 @@ export default {
 .appeal-banner-wrapper {
 	background: $kiva-alert-yellow;
 
+	.appeal-banner {
+		padding-left: 0.625rem;
+	}
+
 	.toggle-arrow {
 		transition: transform 300ms ease;
 		display: block;
@@ -140,7 +145,6 @@ export default {
 
 	h2 {
 		font-weight: $global-weight-highlight;
-		display: inline-block;
 	}
 
 	.icon {
