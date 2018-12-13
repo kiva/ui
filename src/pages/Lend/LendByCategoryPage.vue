@@ -52,6 +52,7 @@
 			v-if="showFeaturedLoans"
 			ref="featured"
 			:items-in-basket="itemsInBasket"
+			:is-logged-in="isLoggedIn"
 		/>
 
 		<div>

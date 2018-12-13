@@ -32,6 +32,7 @@
 						:row-number="rowNumber"
 						:card-number="index + 1"
 						:enable-tracking="true"
+						:is-visitor="!isLoggedIn"
 					/>
 				</div>
 			</div>

@@ -96,6 +96,14 @@ export default {
 	background-color: $white;
 }
 
+.secondary .loading-spinner >>> .line {
+	background-color: $charcoal;
+}
+
+.secondary:hover .loading-spinner >>> .line {
+	background-color: $kiva-accent-blue;
+}
+
 .lend-by-category-page .adding-to-basket.button.smaller {
 	font-size: 1rem;
 }

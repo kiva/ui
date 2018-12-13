@@ -29,6 +29,7 @@
 							:card-number="1"
 							:items-in-basket="itemsInBasket"
 							:enable-tracking="true"
+							:is-visitor="!isLoggedIn"
 						/>
 
 						<GridLoanCard
@@ -41,6 +42,7 @@
 							:card-number="2"
 							:items-in-basket="itemsInBasket"
 							:enable-tracking="true"
+							:is-visitor="!isLoggedIn"
 						/>
 
 						<GridLoanCard
@@ -53,6 +55,7 @@
 							:card-number="3"
 							:items-in-basket="itemsInBasket"
 							:enable-tracking="true"
+							:is-visitor="!isLoggedIn"
 						/>
 					</div>
 				</div>
@@ -92,6 +95,10 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
