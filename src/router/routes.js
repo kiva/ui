@@ -17,4 +17,5 @@ export default [
 	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
 	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
 	{ path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
+	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 ];

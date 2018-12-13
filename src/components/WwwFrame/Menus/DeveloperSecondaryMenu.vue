@@ -36,6 +36,10 @@ export default {
 					name: 'My Apps',
 					url: '/build/apps',
 				},
+				{
+					name: 'Terms of Service',
+					url: '/build/terms-of-service',
+				},
 			],
 		};
 	},
