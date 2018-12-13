@@ -1,13 +1,22 @@
 <template>
 	<div class="appeal-banner-wrapper">
 		<div class="appeal-banner">
-			<!-- REGULAR DONATION APPEAL BANNER -->
-			<!-- TOP ROW -->
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="small-2"></div>
 				<div class="small-10">
+					<!-- IF REGULAR APPEAL BANNER -->
+					<!-- PUT CONDITIONAL HERE -->
 					<h2>Your donation will power impact and hope in 2019</h2>
+
+					<!-- IF MATCHED APPEAL BANNER -->
+					<!-- PUT CONDITIONAL HERE -->
+					<!-- <h2>Double or triple the impact of your donation!</h2> -->
+
+					<!-- IF BONUS APPEAL BANNER -->
+					<!-- PUT CONDITIONAL HERE -->
+					<!-- <h2>Donate today and receive a bonus to lend!</h2> -->
+
 					<a @click="toggleAccordion">
 						<kv-icon
 							:class="{ flipped: open }"
@@ -18,8 +27,6 @@
 			</div>
 
 			<kv-expandable easing="ease-in-out">
-
-				<!-- MIDDLE ROW IMG, TEXT & Buttons -->
 				<div class="row"
 					v-show="open">
 					<div class="small-2">
@@ -27,12 +34,33 @@
 					</div>
 					<div class="small-10">
 						<div>
+							<!-- IF REGULAR APPEAL BANNER -->
+							<!-- PUT CONDITIONAL HERE -->
 							<p class="small-text">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
 								from people like you to operate and grow. Donate to Kiva to help us reach more
 								communities in 2019 - your donation of any size makes a difference. Thank you
 								for investing in a better world.
 							</p>
+							<!-- IF MATCHED APPEAL BANNER -->
+							<!-- PUT CONDITIONAL HERE -->
+							<!-- <p class="small-text quote">
+								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
+								from people like you to operate and grow. For a limited time,
+								<strong>donations to Kiva of $20 or more are matched, and donations of $50
+								or more are triple matched by generous donors!</strong>
+								Thank you for investing in a better world.
+							</p> -->
+
+							<!-- IF BONUS APPEAL BANNER -->
+							<!-- PUT CONDITIONAL HERE -->
+							<!-- <p class="small-text quote">
+								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
+								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
+								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
+								Thank you for investing in a better world.
+							</p> -->
+
 							<p class="small-text">
 								Premal Shah, President & Co-Founder, Kiva
 							</p>
@@ -111,6 +139,11 @@ export default {
 
 	h2 {
 		font-weight: $global-weight-highlight;
+		display: inline-block;
+	}
+
+	.small-text {
+		font-weight: $global-weight-highlight;
 	}
 
 	.dollar-amount-input {
@@ -121,60 +154,8 @@ export default {
 
 	.icon {
 		width: rem-calc(25);
-		height: rem-calc(25);
+		height: rem-calc(40);
 		cursor: pointer;
 	}
 }
 </style>
-
-<!-- MATCHED DONATION APPEAL BANNER -->
-					<!-- <div class="header columns">
-						<h2>Double or triple the impact of your donation!</h2>
-						<span class="close-icon">
-							<a @click="toggleAccordion">
-								<kv-icon
-									:class="{ flipped: open }"
-									class="toggle-arrow"
-									name="medium-chevron"
-								/>
-							</a>
-						</span>
-					</div>
-					<div class="columns ">
-						<p class="small-text quote">
-							100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-							from people like you to operate and grow. For a limited time,
-							<strong>donations to Kiva of $20 or more are matched, and donations of $50
-							or more are triple matched by generous donors!</strong>
-							Thank you for investing in a better world.
-						</p>
-						<p class="small-text quote">
-							Premal Shah, President & Co-Founder, Kiva
-						</p>
-					</div> -->
-
-
-					<!-- BONUS DONATION APPEAL BANNER -->
-					<!-- <div class="header columns">
-						<h2>Donate today and receive a bonus to lend!</h2>
-						<span class="close-icon">
-							<a @click="toggleAccordion">
-								<kv-icon
-									:class="{ flipped: open }"
-									class="toggle-arrow"
-									name="medium-chevron"
-								/>
-							</a>
-						</span>
-					</div>
-					<div class="columns ">
-						<p class="small-text quote">
-							100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-							from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
-							more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
-							Thank you for investing in a better world.
-						</p>
-						<p class="small-text quote">
-							Premal Shah, President & Co-Founder, Kiva
-						</p>
-					</div> -->
