@@ -5,7 +5,7 @@
 			<div class="small-12 columns">
 				<h1>Terms Of Service</h1>
 				<p>Last updated: February 19, 2013</p>
-				<h1 style="text-align:center">KIVA DEVELOPER TERMS OF SERVICE</h1>
+				<h1 style="text-align:center;">KIVA DEVELOPER TERMS OF SERVICE</h1>
 				<p>
 					By using the Kiva API provided by Kiva Microfunds (“Kiva”), you (the “Licensee”)
 					agree to this Developer Terms of Service (“Agreement”). The following
@@ -146,11 +146,11 @@
 					Licensee shall comply with all relevant export laws and restrictions and regulations of the United States including but not limited to those of the Department of Commerce, the United States Department of Treasury Office of Foreign Assets Control, as well as those of foreign agencies or authorities, and Licensee shall not export, or allow the export or re-export of the Licensed API or any Developed Application in violation of any such restrictions, laws or regulations. Licensee will also not use the Licensed API for any purpose prohibited by such laws, restrictions or regulations (including but not limited to nuclear, chemical or biological weapons proliferation). By using the Licensed API, Licensee agrees to the foregoing and represents and warrants that Licensee is not located in, under the control of, or a national or resident of any restricted country.
 				</p>
 				<h2>14. Governing Law; Resolution of Disputes; Arbitration and Waivers</h2>
-				<p style="font-weight: bold">
+				<p style="font-weight: bold;">
 					<!-- eslint-disable-next-line max-len -->
 					This Agreement is governed by the laws of the State of California, USA, without regard to its choice of law or conflict of law provisions. If any dispute arises between Licensee and Kiva, including, without limitation, any dispute arising from or relating to the Kiva API, Licensed API and any Developed Application, Licensee agrees that all such disputes will be determined exclusively by final and binding arbitration, in accordance with the then existing commercial rules of the American Arbitration Association in San Francisco if the amount claimed is greater than $100 and otherwise over the telephone or in another city in which Kiva is located. The arbitration shall be heard and adjudicated by one arbitrator to be selected by Licensee and Kiva. Any award will be final, binding and conclusive upon the parties, subject only to judicial review provided by California statute, and a judgment rendered on the arbitration award can be entered in any court having jurisdiction thereof. Notwithstanding the foregoing, either Licensee or Kiva may seek any injunctive relief in a state or federal court in San Francisco, California, as may be necessary to preserve rights pending the completion of arbitration and Kiva may seek any injunctive relief in a state or federal court in San Francisco, California, or another court of competent jurisdiction, at any time against any violations of Sections 2 through 6.
 				</p>
-				<p style="font-weight: bold">
+				<p style="font-weight: bold;">
 					<!-- eslint-disable-next-line max-len -->
 					TO THE EXTENT PERMITTED BY APPLICABLE LAW, BY AGREEING TO SUBMIT ALL DISPUTES TO BINDING ARBITRATION, LICENSEE AND KIVA HEREBY WAIVE THEIR RIGHTS TO A JURY OR COURT TRIAL OF ANY CLAIM OR CAUSE OF ACTION ARISING OUT OF OR BASED UPON THIS AGREEMENT OR ANY CONTEMPLATED USE HEREIN, INCLUDING CONTRACT, TORT, BREACH OF DUTY AND ALL OTHER CLAIMS, EXCEPT AS SPECIFICALLY PROVIDED ABOVE.
 				</p>
