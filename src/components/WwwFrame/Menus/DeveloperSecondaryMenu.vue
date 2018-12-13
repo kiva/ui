@@ -21,7 +21,7 @@ export default {
 					routerLink: '/build/docs',
 				},
 				{
-        			name: 'Getting Started',
+					name: 'Getting Started',
 					routerLink: '/build/getting-started',
 				},
 				{
