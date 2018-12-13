@@ -21,12 +21,13 @@ export default {
 					routerLink: '/build/docs',
 				},
 				{
-        	name: 'Getting Started',
+        			name: 'Getting Started',
 					routerLink: '/build/getting-started',
-        },
+        		},
+				{
 					name: 'Code of Conduct',
 					routerLink: '/build/code-of-conduct',
-        },
+        		},
 				{
 					name: 'API',
 					url: 'https://api.kivaws.org/graphql',
