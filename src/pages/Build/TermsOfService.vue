@@ -5,7 +5,7 @@
 			<div class="small-12 columns">
 				<h1>Terms Of Service</h1>
 				<p>Last updated: February 19, 2013</p>
-				<h1 class="text-right">KIVA DEVELOPER TERMS OF SERVICE</h1>
+				<h1 class="text-center">KIVA DEVELOPER TERMS OF SERVICE</h1>
 				<p>
 					By using the Kiva API provided by Kiva Microfunds (“Kiva”), you (the “Licensee”)
 					agree to this Developer Terms of Service (“Agreement”). The following
@@ -180,9 +180,6 @@ export default {
 </script>
 
 <style lang="scss">
-.text-right {
-	text-align: center;
-}
 
 .legal-bold {
 	font-weight: bold;
