@@ -21,6 +21,10 @@ export default {
 					routerLink: '/build/docs',
 				},
 				{
+					name: 'Getting Started',
+					routerLink: '/build/getting-started',
+				},
+				{
 					name: 'API',
 					url: 'https://api.kivaws.org/graphql',
 				},
