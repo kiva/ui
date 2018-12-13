@@ -16,14 +16,15 @@
 			</div>
 		</div>
 
-		<!-- REGULAR DONATION APPEAL BANNER -->
 		<div class="appeal-banner-layout" v-show="isOpen">
 			<div class="row">
 				<div class="avatar">
 					<appeal-image />
 				</div>
 				<div class="info column">
-					<div class="header columns">
+
+					<!-- REGULAR DONATION APPEAL BANNER -->
+					<!-- <div class="header columns">
 						<h2>Your donation will power impact and hope in 2019</h2>
 						<span class="close-icon">
 							<a @click="toggleAccordion">
@@ -37,7 +38,7 @@
 					</div>
 					<div class="columns ">
 						<p class="small-text quote">
-							100% of money lent on Kiva goes to funding loans, so Kiva relies on doanations
+							100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
 							from people like you to operate and grow. Donate to Kiva to help us reach more
 							communities in 2019 - your donation of any size makes a difference. Thank you
 							for investing in a better world.
@@ -45,7 +46,61 @@
 						<p class="small-text quote">
 							Premal Shah, President & Co-Founder, Kiva
 						</p>
+					</div> -->
+
+
+					<!-- MATCHED DONATION APPEAL BANNER -->
+					<!-- <div class="header columns">
+						<h2>Double or triple the impact of your donation!</h2>
+						<span class="close-icon">
+							<a @click="toggleAccordion">
+								<kv-icon
+									:class="{ flipped: open }"
+									class="toggle-arrow"
+									name="medium-chevron"
+								/>
+							</a>
+						</span>
 					</div>
+					<div class="columns ">
+						<p class="small-text quote">
+							100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
+							from people like you to operate and grow. For a limited time,
+							<strong>donations to Kiva of $20 or more are matched, and donations of $50
+							or more are triple matched by generous donors!</strong>
+							Thank you for investing in a better world.
+						</p>
+						<p class="small-text quote">
+							Premal Shah, President & Co-Founder, Kiva
+						</p>
+					</div> -->
+
+
+					<!-- BONUS DONATION APPEAL BANNER -->
+					<div class="header columns">
+						<h2>Donate today and receive a bonus to lend!</h2>
+						<span class="close-icon">
+							<a @click="toggleAccordion">
+								<kv-icon
+									:class="{ flipped: open }"
+									class="toggle-arrow"
+									name="medium-chevron"
+								/>
+							</a>
+						</span>
+					</div>
+					<div class="columns ">
+						<p class="small-text quote">
+							100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
+							from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
+							more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
+							Thank you for investing in a better world.
+						</p>
+						<p class="small-text quote">
+							Premal Shah, President & Co-Founder, Kiva
+						</p>
+					</div>
+
 					<div class="row columns">
 						<kv-button class="smallest">$20</kv-button>
 						<kv-button class="smallest">$35</kv-button>
@@ -130,18 +185,18 @@ export default {
 		width: rem-calc(120);
 	}
 
-	.info {
-		max-width: 45rem;
-	}
+	// .info {
+	// 	max-width: 45rem;
+	// }
 
 	.header {
 		flex-direction: row;
 		display: flex;
 	}
 
-	.quote {
-		max-width: 40rem;
-	}
+	// .quote {
+	// 	max-width: 40rem;
+	// }
 
 	.column {
 		padding: 0;
