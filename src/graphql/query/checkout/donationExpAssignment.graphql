@@ -1,6 +1,0 @@
-query {
-	experiment(id: "donation_boost") @client {
-		id
-		version
-	}
-}
