@@ -136,6 +136,7 @@ export default {
 	bottom: 0;
 	padding: rem-calc(1);
 	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 	z-index: 1500;
 	max-height: 100vh;
 	background: rgba(72, 72, 72, 0.6);

@@ -32,34 +32,6 @@
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
 				</a>
-				<donation-nudge-lightbox
-					:loan-count="loanCount"
-					:loan-reservation-total="loanReservationTotal"
-					:nudge-lightbox-visible="nudgeLightboxVisible"
-					:close-nudge-lightbox="closeNudgeLightbox"
-					:update-donation-to="updateDonationTo"
-					:has-custom-donation="hasCustomDonation"
-				/>
-				<!-- This lightbox will be replaced with a Popper tip message. -->
-				<kv-lightbox
-					:visible="defaultLbVisible"
-					@lightbox-closed="lightboxClosed">
-					<h2 slot="title">How does Kiva use donations?</h2>
-					<div>
-						100% of every dollar you lend on Kiva goes directly to funding loans.
-						We rely on small optional donations from you and others to keep Kiva running.
-						Every $1 donated to Kiva makes $8 in loans possible around the world.
-						Your donation will enable us to:
-						<ul style="list-style-type: disc;">
-							<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
-							<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
-							<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
-							<li>Train and support hundreds of volunteers -- 4 for every 1 staff member at Kiva.</li>
-						</ul>
-						If you live in the United States, your donation is tax-deductible.
-						Thank you for considering a donation to Kiva.
-					</div>
-				</kv-lightbox>
 			</div>
 		</span>
 		<span class="small-3 show-for-small-only"></span>
@@ -100,6 +72,33 @@
 				@updating-totals="$emit('updating-totals', $event)"
 				@refreshtotals="$emit('refreshtotals')" />
 		</span>
+		<donation-nudge-lightbox
+			:loan-count="loanCount"
+			:loan-reservation-total="loanReservationTotal"
+			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:close-nudge-lightbox="closeNudgeLightbox"
+			:update-donation-to="updateDonationTo"
+			:has-custom-donation="hasCustomDonation"
+		/>
+		<kv-lightbox
+			:visible="defaultLbVisible"
+			@lightbox-closed="lightboxClosed">
+			<h2 slot="title">How does Kiva use donations?</h2>
+			<div>
+				100% of every dollar you lend on Kiva goes directly to funding loans.
+				We rely on small optional donations from you and others to keep Kiva running.
+				Every $1 donated to Kiva makes $8 in loans possible around the world.
+				Your donation will enable us to:
+				<ul style="list-style-type: disc;">
+					<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
+					<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
+					<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
+					<li>Train and support hundreds of volunteers -- 4 for every 1 staff member at Kiva.</li>
+				</ul>
+				If you live in the United States, your donation is tax-deductible.
+				Thank you for considering a donation to Kiva.
+			</div>
+		</kv-lightbox>
 	</div>
 
 </template>
@@ -148,6 +147,7 @@ export default {
 			editDonation: false,
 			expVersion: '',
 			nudgeLightboxVisible: false,
+			isCash80Running: false,
 			hasCustomDonation: false,
 		};
 	},
@@ -246,7 +246,7 @@ export default {
 			this.updateDonation();
 		},
 		enterEditDonation() {
-			if (this.hasLoans) {
+			if (this.hasLoans && this.isCash80Running) {
 				this.openNudgeLightbox();
 			} else {
 				this.editDonation = true;
@@ -296,9 +296,11 @@ export default {
 			});
 			this.donationNudgeLightboxExpVersion = _get(nudgeExperimentVersion, 'experiment.version') || null;
 			if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-a') {
+				this.isCash80Running = true;
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'a');
 			} else if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'b');
+				this.isCash80Running = true;
 				this.hasCustomDonation = true;
 			}
 		},
