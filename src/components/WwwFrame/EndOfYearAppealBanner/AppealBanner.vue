@@ -2,12 +2,12 @@
 	<div class="appeal-banner" v-if="isVisible">
 		<div class="appeal-banner-layout close" v-show="!isOpen">
 			<div class="row">
-				<div class="avatar rows">
+				<div class="avatarSpacer">
 				</div>
-				<div class="info rows column">
+				<div class="info column">
 					<div class="header columns">
-						<h2 class="rows">Fighting for a better future? We need your help.</h2>
-						<span class="rows open-icon"
+						<h2>Fighting for a better future? We need your help.</h2>
+						<span class="open-icon"
 							@click="toggleAccordion">
 							<kv-icon name="small-chevron-mobile"/>
 						</span>
@@ -15,15 +15,17 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- REGULAR DONATION APPEAL BANNER -->
 		<div class="appeal-banner-layout" v-show="isOpen">
 			<div class="row">
-				<div class="avatar rows">
+				<div class="avatar">
 					<appeal-image />
 				</div>
-				<div class="info rows column">
+				<div class="info column">
 					<div class="header columns">
-						<h2 class="rows">Fighting for a better future? We need your help.</h2>
-						<span class="rows close-icon">
+						<h2>Your donation will power impact and hope in 2019</h2>
+						<span class="close-icon">
 							<a @click="toggleAccordion">
 								<kv-icon
 									:class="{ flipped: open }"
@@ -33,24 +35,25 @@
 							</a>
 						</span>
 					</div>
-					<div class="columns column">
-						<p class="small-text quote columns">
-							Creating a more equitable world takes a lot of time and energy, but at Kiva we’re in it for
-							the
-							long haul. 100% of money lent on Kiva goes to funding loans. That means we rely on donations
-							from people like you to make this work possible. For a limited time, if you donate $35 or
-							more,
-							a $25 bonus will be added to your account (you’ll get an email once it’s there).
+					<div class="columns ">
+						<p class="small-text quote">
+							100% of money lent on Kiva goes to funding loans, so Kiva relies on doanations
+							from people like you to operate and grow. Donate to Kiva to help us reach more
+							communities in 2019 - your donation of any size makes a difference. Thank you
+							for investing in a better world.
 						</p>
-						<p class="small-text quote columns">
+						<p class="small-text quote">
 							Premal Shah, President & Co-Founder, Kiva
 						</p>
 					</div>
 					<div class="row columns">
-						<kv-button class="smaller rows">$20</kv-button>
-						<kv-button class="smaller rows">$35</kv-button>
-						<kv-button class="smaller rows">$50</kv-button>
-						<kv-button class="smaller rows secondary">Submit</kv-button>
+						<kv-button class="smallest">$20</kv-button>
+						<kv-button class="smallest">$35</kv-button>
+						<kv-button class="smallest">$50</kv-button>
+						<input
+							class="dollar-amount-input"
+							placeholder="other">
+						<kv-button class="smallest setting">Submit</kv-button>
 					</div>
 				</div>
 			</div>
@@ -102,7 +105,6 @@ export default {
 }
 
 .appeal-banner-layout {
-	max-width: 61.875rem;
 	margin: 0 auto;
 
 	& .close {
@@ -110,13 +112,22 @@ export default {
 	}
 
 	& > .row {
-		// height: 100%;
 		align-items: center;
 	}
 
 	.avatar {
-		width: 13rem;
+		//width: 13rem;
 		align-items: center;
+	}
+
+	.avatarSpacer {
+		width: 7.5rem;
+	}
+
+	.dollar-amount-input {
+		font-size: 1.25rem;
+		padding: 0.75rem 1.5rem;
+		width: rem-calc(120);
 	}
 
 	.info {
@@ -135,12 +146,6 @@ export default {
 	.column {
 		padding: 0;
 	}
-
-	// .avatar-icon {
-	// 	width: 10rem;
-	// 	height: 10rem;
-	// 	border-radius: 5rem;
-	// }
 
 	.close-icon {
 		transform: scaleY(-1);

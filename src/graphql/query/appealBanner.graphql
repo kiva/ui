@@ -3,5 +3,8 @@ query {
 		setting(setting: "feature.endofyear_appeal.enabled") {
 			value
 		}
+		# setting(setting: "feature.endofyear_appeal_match.enabled") {
+		# 	value
+		# }
 	}
 }
