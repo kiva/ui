@@ -51,10 +51,10 @@
 					>
 						<input
 							type="text"
-							ref="customDonationInput"
-							name="customDonationInputText"
+							ref="customDonationInputDesktop"
+							name="customDonationInputTextDesktop"
 							maxlength="10"
-							class="nudge-box-input"
+							class="nudge-box-input nudge-box-input-desktop"
 							@blur="validateInputDesktop"
 						>
 					</div>
@@ -94,7 +94,7 @@
 			<div
 				v-for="{percentage, appeal} in percentageRows"
 				:key="percentage"
-				class="nudge-box-wrapper"
+				class="nudge-box-wrapper nudge-box-wrapper-mobile"
 				@click="setDonationAndClose(getDonationByPercent(percentage))"
 			>
 				<div class="row nudge-box-row">
@@ -111,6 +111,26 @@
 						</kv-button>
 					</div>
 				</div>
+			</div>
+			<div
+				v-if="hasCustomDonation"
+				class="nudge-box-wrapper nudge-box-wrapper-mobile nudge-box-wrapper-mobile-custom-donation"
+			>
+				<div>You decide — enter custom amount</div>
+				<input
+					type="text"
+					ref="customDonationInputMobile"
+					name="customDonationInputTextMobile"
+					maxlength="10"
+					class="nudge-box-input nudge-box-input-desktop"
+					@blur="validateInputMobile"
+				>
+				<kv-button
+					class="smallest nudge-box-button"
+					@click="setCustomDonationAndClose"
+				>
+					Update Donation
+				</kv-button>
 			</div>
 		</div>
 	</div>
@@ -147,10 +167,17 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(this.$refs.customDonationInput.value);
+			this.setDonationAndClose(this.$refs.customDonationInputDesktop.value);
+		},
+		setInputs(value) {
+			this.$refs.customDonationInputDesktop.value = value;
+			this.$refs.customDonationInputMobile.value = value;
 		},
 		validateInputDesktop() {
-			this.$refs.customDonationInput.value = numeral(this.$refs.customDonationInput.value).format('$0,0.00');
+			this.setInputs(numeral(this.$refs.customDonationInputDesktop.value).format('$0,0.00'));
+		},
+		validateInputMobile() {
+			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
 		},
 	},
 };
@@ -212,8 +239,11 @@ export default {
 
 					.nudge-box-input {
 						text-align: center;
-						max-width: rem-calc(115);
 						margin: 0 auto;
+
+						&.nudge-box-input-desktop {
+							max-width: rem-calc(115);
+						}
 					}
 				}
 
@@ -240,6 +270,18 @@ export default {
 			margin-bottom: 1rem;
 			padding: 1rem rem-calc(14);
 			border: $nudge-box-border;
+
+			&.nudge-box-wrapper-mobile-custom-donation {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				cursor: initial;
+
+				input {
+					text-align: center;
+				}
+			}
 
 			.nudge-box-row {
 				.nudge-box-column {
