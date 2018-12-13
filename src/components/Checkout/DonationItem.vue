@@ -32,6 +32,14 @@
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
 					How Kiva uses donations
 				</a>
+				<donation-nudge-lightbox
+					:loan-count="loanCount"
+					:loan-reservation-total="loanReservationTotal"
+					:nudge-lightbox-visible="nudgeLightboxVisible"
+					:close-nudge-lightbox="closeNudgeLightbox"
+					:update-donation-to="updateDonationTo"
+					:has-custom-donation="hasCustomDonation"
+				/>
 				<!-- This lightbox will be replaced with a Popper tip message. -->
 				<kv-lightbox
 					:visible="defaultLbVisible"
@@ -101,19 +109,21 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
-import donationExpQuery from '@/graphql/query/checkout/donationExpAssignment.graphql';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
+import DonationNudgeLightbox from '@/components/Checkout/DonationNudgeLightbox';
 
 export default {
 	components: {
 		KvIcon,
 		KvButton,
 		KvLightbox,
-		DonateRepayments
+		DonateRepayments,
+		DonationNudgeLightbox,
 	},
 	inject: ['apollo'],
 	props: {
@@ -124,7 +134,11 @@ export default {
 		loanCount: {
 			type: Number,
 			default: 0
-		}
+		},
+		loanReservationTotal: {
+			type: Number,
+			default: 0,
+		},
 	},
 	data() {
 		return {
@@ -132,7 +146,9 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			expVersion: ''
+			expVersion: '',
+			nudgeLightboxVisible: false,
+			hasCustomDonation: false,
 		};
 	},
 	apollo: {
@@ -142,8 +158,20 @@ export default {
 				client.query({
 					query: donationDataQuery
 				}).then(() => {
-					// Get the assigned experiment version
-					client.query({ query: donationExpQuery }).then(resolve).catch(reject);
+					// Get the assigned experiment version for Donation Boost
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'donation_boost',
+						},
+					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Donation Nudge Lightbox
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'donation_nudge_lightbox_custom_tip',
+						},
+					}).then(resolve).catch(reject);
 				}).catch(reject);
 			});
 		}
@@ -210,8 +238,19 @@ export default {
 		}
 	},
 	methods: {
+		updateDonationTo(amount) {
+			if (amount === undefined) {
+				return;
+			}
+			this.amount = numeral(amount).format('0.00');
+			this.updateDonation();
+		},
 		enterEditDonation() {
-			this.editDonation = true;
+			if (this.hasLoans) {
+				this.openNudgeLightbox();
+			} else {
+				this.editDonation = true;
+			}
 		},
 		updateDonationExp() {
 			// if the server amount is greater than the donationBoostAmount return false
@@ -235,7 +274,10 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
-			const donationExpVersion = this.apollo.readQuery({ query: donationExpQuery });
+			const donationExpVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'donation_boost' },
+			});
 			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
 
 			if (this.expVersion && this.expVersion === 'variant-a') {
@@ -246,6 +288,18 @@ export default {
 			}
 			if (this.expVersion === 'variant-c') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'c');
+			}
+
+			const nudgeExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'donation_nudge_lightbox_custom_tip' },
+			});
+			this.donationNudgeLightboxExpVersion = _get(nudgeExperimentVersion, 'experiment.version') || null;
+			if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'a');
+			} else if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'b');
+				this.hasCustomDonation = true;
 			}
 		},
 		updateDonation() {
@@ -292,6 +346,13 @@ export default {
 			// numeral takes care of non-numerical inputs, does it's best guess
 			// formed value. If input can't be deciphered then $0.00 is returned
 			document.getElementById('donation').value = verifiedInput;
+		},
+		closeNudgeLightbox() {
+			this.nudgeLightboxVisible = false;
+		},
+		openNudgeLightbox() {
+			this.$kvTrackEvent('basket', 'click-open nudge');
+			this.nudgeLightboxVisible = true;
 		}
 	}
 };
