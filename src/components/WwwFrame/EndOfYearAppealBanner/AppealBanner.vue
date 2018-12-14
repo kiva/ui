@@ -57,14 +57,32 @@
 							</p>
 						</div>
 						<div>
-							<kv-button class="smallest custom-width">$20</kv-button>
-							<kv-button class="smallest custom-width">$35</kv-button>
-							<kv-button class="smallest custom-width">$50</kv-button>
-							<kv-button class="smallest other-button-width hide-for-large">Other</kv-button>
+							<kv-button
+								class='smallest custom-width'
+								@click.native.prevent.stop="updateDonationTo(20)"
+							>$20</kv-button>
+							<kv-button
+								class="smallest custom-width"
+								@click.native.prevent.stop="updateDonationTo(35)"
+							>$35</kv-button>
+							<kv-button
+								class="smallest custom-width"
+								@click.native.prevent.stop="updateDonationTo(50)"
+							>$50</kv-button>
+							<kv-button
+								class="smallest other-button-width hide-for-large"
+								to="/donate/supportus"
+								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
+							>Other</kv-button>
 							<input
 								class="dollar-amount-input show-for-large"
-								placeholder="other">
-							<kv-button class="smallest setting submit-button show-for-large">Submit</kv-button>
+								placeholder="other"
+								v-model="donationAmount">
+							<kv-button
+								class="smallest setting submit-button show-for-large"
+								id="appeal-donation-button"
+								@click.native.prevent.stop="updateDonationTo(undefined, true)"
+							>Submit</kv-button>
 						</div>
 					</div>
 				</div>
@@ -81,6 +99,9 @@ import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import appealIsShrunkMutation from '@/graphql/mutation/setUserSession.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -97,6 +118,8 @@ export default {
 			appealMatchEnabled: false,
 			appealBonusEnabled: false,
 			isAppealShrunk: false,
+			amount: 0,
+			donationAmount: null,
 		};
 	},
 	apollo: {
@@ -154,7 +177,38 @@ export default {
 			}).catch(error => {
 				console.error(error);
 			});
-		}
+		},
+		updateDonationTo(amount, isCustom) {
+			if (isCustom) {
+				this.amount = this.donationAmount;
+				this.$kvTrackEvent('promo', 'clickOther', 'EOYBanner', this.amount);
+			} else {
+				this.amount = amount;
+				this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
+			}
+			this.updateDonation();
+		},
+		updateDonation() {
+			this.apollo.mutate({
+				mutation: updateDonation,
+				variables: {
+					price: numeral(this.amount).format('0.00'),
+					isTip: false,
+				}
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				} else {
+					this.donationAmount = numeral(this.amount).format('$0,0.00');
+					// direct user to /basket page
+					window.location.href = '/basket';
+				}
+			}).catch(error => {
+				console.error(error);
+			});
+		},
 	},
 };
 </script>
