@@ -79,6 +79,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
+import appealIsShrunkMutation from '@/graphql/mutation/setUserSession.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 
 export default {
@@ -119,6 +120,7 @@ export default {
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
 			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
 
+			// the IsAppealBannerShrunk session value returns either false or '"1"'
 			this.isAppealShrunk = readJSONSetting(data, 'general.appeal_banner_shrunk.data') === 1;
 		},
 	},
@@ -137,8 +139,22 @@ export default {
 	},
 	methods: {
 		toggleAccordion() {
+			// if state when clicked is open/true we are closing the accordian so pass '"1"' as the php expects
+			// otherwise if state when clicked is closed/false, we are opening so false is the expected value
+			this.setIsShrunkSession(this.open ? '"1"' : false);
 			this.open = !this.open;
 		},
+		setIsShrunkSession(isShrunk) {
+			this.apollo.mutate({
+				mutation: appealIsShrunkMutation,
+				variables: {
+					sessionKey: 'IsAppealBannerShrunk',
+					data: isShrunk // "1" or false
+				}
+			}).then(data => {
+				console.log(data);
+			});
+		}
 	},
 };
 </script>
