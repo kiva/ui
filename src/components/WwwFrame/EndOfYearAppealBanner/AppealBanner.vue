@@ -70,7 +70,7 @@
 								@click.native.prevent.stop="updateDonationTo(50)"
 							>$50</kv-button>
 							<kv-button
-								class="smallest other-button-width hide-for-large"
+								class="smallest custom-width hide-for-large"
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
 							>Other</kv-button>
