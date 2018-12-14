@@ -4,7 +4,7 @@
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="small-2 show-for-large"></div>
-				<div class="appeal-header small-12 large-10">
+				<div class="appeal-header small-12 large-10 padding">
 					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
 						<span v-if="appealBonusEnabled">Donate today and receive a bonus to lend!</span>
@@ -27,7 +27,7 @@
 					<div class="small-2 show-for-large text-center">
 						<appeal-image />
 					</div>
-					<div class="small-12 large-10">
+					<div class="small-12 large-10 padding">
 						<div class="appeal-copy">
 							<!-- IF BONUS APPEAL BANNER -->
 							<p v-if="appealBonusEnabled" class="small-text quote">
@@ -226,6 +226,10 @@ export default {
 
 	.appeal-banner {
 		padding-left: 0.625rem;
+
+		.padding {
+			padding: 0 rem-calc(10);
+		}
 
 		.appeal-copy {
 			padding-right: 0.25rem;
