@@ -17,13 +17,11 @@
 						<!-- PUT CONDITIONAL HERE -->
 						<!-- <h2>Donate today and receive a bonus to lend!</h2> -->
 
-						<a @click="toggleAccordion">
-							<kv-icon
-								@click="toggleAccordion"
-								:class="{ flipped: open }"
-								class="toggle-arrow"
-								name="medium-chevron" />
-						</a>
+						<kv-icon
+							@click="toggleAccordion"
+							:class="{ flipped: open }"
+							class="toggle-arrow"
+							name="medium-chevron" />
 					</h2>
 				</div>
 			</div>
