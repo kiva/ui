@@ -71,10 +71,11 @@
 							<kv-button class="smallest custom-width">$20</kv-button>
 							<kv-button class="smallest custom-width">$35</kv-button>
 							<kv-button class="smallest custom-width">$50</kv-button>
+							<kv-button class="smallest other-button-width hide-for-large">Other</kv-button>
 							<input
 								class="dollar-amount-input show-for-large"
 								placeholder="other">
-							<kv-button class="smallest setting submit-button">Submit</kv-button>
+							<kv-button class="smallest setting submit-button show-for-large">Submit</kv-button>
 						</div>
 					</div>
 				</div>
@@ -132,6 +133,10 @@ export default {
 		.custom-width {
 			padding: 0.75rem 3.5rem;
 			margin-right: rem-calc(10);
+		}
+
+		.other-button-width {
+			padding: 0.75rem 3.15rem;
 		}
 	}
 
