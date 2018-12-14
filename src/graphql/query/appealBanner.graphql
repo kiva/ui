@@ -18,6 +18,9 @@ query {
 		appeal_match_end_time: setting(setting: "feature.endofyear_appeal_match.end_time") {
 			value
 		}
+		appeal_bonus_active: setting(setting: "ui.endofyear_appeal_bonus") {
+			value
+		}
 		appeal_banner_shrunk: userSessionData(sessionKey: IsAppealBannerShrunk) {
 			sessionKey
 			data

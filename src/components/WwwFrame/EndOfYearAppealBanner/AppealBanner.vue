@@ -7,7 +7,7 @@
 				<div class="small-10">
 					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
-						<span v-if="showBonusAppeal">Donate today and receive a bonus to lend!</span>
+						<span v-if="appealBonusEnabled">Donate today and receive a bonus to lend!</span>
 						<!-- IF MATCHED APPEAL BANNER -->
 						<span v-else-if="appealMatchEnabled">Double or triple the impact of your donation!</span>
 						<!-- ELSE STANDARD APPEAL BANNER -->
@@ -29,32 +29,28 @@
 					</div>
 					<div class="small-10">
 						<div>
-							<!-- IF REGULAR APPEAL BANNER -->
-							<!-- PUT CONDITIONAL HERE -->
-							<p class="small-text">
+							<!-- IF BONUS APPEAL BANNER -->
+							<p v-if="appealBonusEnabled" class="small-text quote">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. Donate to Kiva to help us reach more
-								communities in 2019 - your donation of any size makes a difference. Thank you
-								for investing in a better world.
+								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
+								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
+								Thank you for investing in a better world.
 							</p>
 							<!-- IF MATCHED APPEAL BANNER -->
-							<!-- PUT CONDITIONAL HERE -->
-							<!-- <p class="small-text quote">
+							<p v-else-if="appealMatchEnabled" class="small-text quote">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
 								from people like you to operate and grow. For a limited time,
 								<strong>donations to Kiva of $20 or more are matched, and donations of $50
 								or more are triple matched by generous donors!</strong>
 								Thank you for investing in a better world.
-							</p> -->
-
-							<!-- IF BONUS APPEAL BANNER -->
-							<!-- PUT CONDITIONAL HERE -->
-							<!-- <p class="small-text quote">
+							</p>
+							<!-- IF REGULAR APPEAL BANNER -->
+							<p v-else class="small-text">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
-								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
-								Thank you for investing in a better world.
-							</p> -->
+								from people like you to operate and grow. Donate to Kiva to help us reach more
+								communities in 2019 - your donation of any size makes a difference. Thank you
+								for investing in a better world.
+							</p>
 
 							<p class="small-text">
 								Premal Shah, President & Co-Founder, Kiva
@@ -78,7 +74,7 @@
 </template>
 
 <script>
-import { settingEnabled, readJSONSetting } from '@/util/settingsUtils';
+import { settingEnabled, readJSONSetting, readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
@@ -98,16 +94,14 @@ export default {
 			open: true,
 			appealEnabled: false,
 			appealMatchEnabled: false,
+			appealBonusEnabled: false,
 			isAppealShrunk: false,
-			showBonusAppeal: false
 		};
 	},
 	apollo: {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			console.log(data);
-
 			this.appealEnabled = settingEnabled(
 				data,
 				'general.appeal_enabled.value',
@@ -122,13 +116,16 @@ export default {
 				'general.appeal_match_end_time.value'
 			);
 
+			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
+			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
+
 			this.isAppealShrunk = readJSONSetting(data, 'general.appeal_banner_shrunk.data') === 1;
 		},
 	},
 	computed: {
 		showAppeal() {
-			// TODO: Add exclusion for checkout route
-			return this.appealEnabled || this.appealMatchEnabled;
+			// make sure the appeal is enable + we're not on checkout
+			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
 		}
 	},
 	watch: {
