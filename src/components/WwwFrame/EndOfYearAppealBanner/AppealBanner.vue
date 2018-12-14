@@ -77,6 +77,7 @@
 							<input
 								class="dollar-amount-input show-for-large"
 								placeholder="other"
+								@blur="validateInput"
 								v-model="donationAmount">
 							<kv-button
 								class="smallest setting submit-button show-for-large"
@@ -201,13 +202,16 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 				} else {
-					this.donationAmount = numeral(this.amount).format('$0,0.00');
 					// direct user to /basket page
 					window.location.href = '/basket';
 				}
 			}).catch(error => {
 				console.error(error);
 			});
+		},
+		validateInput() {
+			// format the value taken from the donation input
+			this.donationAmount = numeral(this.donationAmount).format('$0,0.00');
 		},
 	},
 };
