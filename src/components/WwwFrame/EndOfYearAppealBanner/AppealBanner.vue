@@ -178,11 +178,6 @@ export default {
 				console.error(error);
 			});
 		},
-		// updateDonationTo(amount) {
-		// 	this.amount = amount;
-		// 	this.updateDonation();
-		// 	this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
-		// },
 		updateDonationTo(amount, isCustom) {
 			if (isCustom) {
 				this.amount = this.donationAmount;
