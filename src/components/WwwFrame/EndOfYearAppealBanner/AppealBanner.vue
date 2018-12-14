@@ -4,7 +4,7 @@
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="small-2 show-for-large"></div>
-				<div class="small-10">
+				<div class="appeal-header small-12 large-10">
 					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
 						<span v-if="appealBonusEnabled">Donate today and receive a bonus to lend!</span>
@@ -27,8 +27,8 @@
 					<div class="small-2 show-for-large text-center">
 						<appeal-image />
 					</div>
-					<div class="small-10">
-						<div>
+					<div class="small-12 large-10">
+						<div class="appeal-copy">
 							<!-- IF BONUS APPEAL BANNER -->
 							<p v-if="appealBonusEnabled" class="small-text quote">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
@@ -57,6 +57,7 @@
 							</p>
 						</div>
 						<div>
+<<<<<<< 0db1ba14831828b7f873cab87d37a51a40673a4d
 							<kv-button
 								class='smallest custom-width'
 								@click.native.prevent.stop="updateDonationTo(20)"
@@ -74,6 +75,12 @@
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
 							>Other</kv-button>
+=======
+							<kv-button class="smallest custom-width">$20</kv-button>
+							<kv-button class="smallest custom-width">$35</kv-button>
+							<kv-button class="smallest custom-width">$50</kv-button>
+							<kv-button class="smallest custom-width hide-for-large">Other</kv-button>
+>>>>>>> Syncing styles and layout, making some things better than legacy.
 							<input
 								class="dollar-amount-input show-for-large"
 								placeholder="other"
@@ -223,13 +230,57 @@ export default {
 	.appeal-banner {
 		padding-left: 0.625rem;
 
-		.custom-width {
-			padding: 0.75rem 3.5rem;
-			margin-right: rem-calc(10);
+		.appeal-copy {
+			padding-right: 0.25rem;
 		}
 
-		.other-button-width {
-			padding: 0.75rem 3.15rem;
+		.custom-width {
+			padding: 0.75rem 0;
+			margin-right: rem-calc(10);
+			text-align: center;
+			width: 46%;
+
+			@include breakpoint(large) {
+				width: 18%;
+			}
+		}
+
+		h2 {
+			font-weight: $global-weight-highlight;
+			margin-top: 0.3rem;
+			padding-right: 2.5rem;
+		}
+
+		.icon {
+			width: rem-calc(25);
+			height: rem-calc(40);
+			cursor: pointer;
+		}
+
+		.small-text {
+			font-weight: $global-weight-highlight;
+		}
+
+		button.submit-button {
+			vertical-align: super;
+			padding: 0.9rem 0;
+			width: 46%;
+
+			@include breakpoint(large) {
+				width: 17%;
+			}
+		}
+
+		input.dollar-amount-input {
+			font-size: 1.25rem;
+			padding: 0.7rem 0.5rem;
+			margin-right: rem-calc(10);
+			vertical-align: top;
+			width: 46%;
+
+			@include breakpoint(large) {
+				width: 17%;
+			}
 		}
 	}
 
@@ -238,38 +289,14 @@ export default {
 		display: block;
 		height: rem-calc(40);
 		width: rem-calc(40);
-		margin-right: rem-calc(22);
-		float: right;
+		position: absolute;
+		top: 0.25rem;
+		right: 0.6rem;
+		margin: 0;
 	}
 
 	.flipped {
 		transform: rotate(180deg);
-	}
-
-	h2 {
-		font-weight: $global-weight-highlight;
-	}
-
-	.icon {
-		width: rem-calc(25);
-		height: rem-calc(40);
-		cursor: pointer;
-	}
-
-	.small-text {
-		font-weight: $global-weight-highlight;
-	}
-
-	.submit-button {
-		vertical-align: super;
-	}
-
-	.dollar-amount-input {
-		font-size: 1.25rem;
-		padding: 0.7rem 1.5rem;
-		width: rem-calc(120);
-		margin-right: rem-calc(10);
-		vertical-align: top;
 	}
 }
 </style>
