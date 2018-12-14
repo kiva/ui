@@ -81,7 +81,7 @@
 							<kv-button
 								class="smallest setting submit-button show-for-large"
 								id="appeal-donation-button"
-								@click.native.prevent.stop="updateDonationTo(donationAmount)"
+								@click.native.prevent.stop="updateDonationTo(undefined, true)"
 							>Submit</kv-button>
 						</div>
 					</div>
@@ -119,7 +119,7 @@ export default {
 			appealBonusEnabled: false,
 			isAppealShrunk: false,
 			amount: 0,
-			donationAmount: numeral(this.amount).format('$0,0.00'),
+			donationAmount: null,
 		};
 	},
 	apollo: {
@@ -178,10 +178,20 @@ export default {
 				console.error(error);
 			});
 		},
-		updateDonationTo(amount) {
-			this.amount = amount;
+		// updateDonationTo(amount) {
+		// 	this.amount = amount;
+		// 	this.updateDonation();
+		// 	this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
+		// },
+		updateDonationTo(amount, isCustom) {
+			if (isCustom) {
+				this.amount = this.donationAmount;
+				this.$kvTrackEvent('promo', 'clickOther', 'EOYBanner', this.amount);
+			} else {
+				this.amount = amount;
+				this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
+			}
 			this.updateDonation();
-			this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
 		},
 		updateDonation() {
 			this.apollo.mutate({
@@ -195,10 +205,8 @@ export default {
 					_forEach(data.errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
-					this.donationAmount = this.cachedAmount;
 				} else {
 					this.donationAmount = numeral(this.amount).format('$0,0.00');
-					this.cachedAmount = numeral(this.amount).format('$0,0.00');
 					// direct user to /basket page
 					window.location.href = '/basket';
 				}
