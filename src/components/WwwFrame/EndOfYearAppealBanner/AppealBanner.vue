@@ -1,22 +1,17 @@
 <template>
-	<div class="appeal-banner-wrapper">
+	<div class="appeal-banner-wrapper" v-if="showAppeal">
 		<div class="appeal-banner">
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="small-2 show-for-large"></div>
 				<div class="small-10">
-					<!-- IF REGULAR APPEAL BANNER -->
-					<!-- PUT CONDITIONAL HERE -->
-					<h2>Your donation will power impact and hope in 2019
-
-						<!-- IF MATCHED APPEAL BANNER -->
-						<!-- PUT CONDITIONAL HERE -->
-						<!-- <h2>Double or triple the impact of your donation!</h2> -->
-
+					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
-						<!-- PUT CONDITIONAL HERE -->
-						<!-- <h2>Donate today and receive a bonus to lend!</h2> -->
-
+						<span v-if="showBonusAppeal">Donate today and receive a bonus to lend!</span>
+						<!-- IF MATCHED APPEAL BANNER -->
+						<span v-else-if="appealMatchEnabled">Double or triple the impact of your donation!</span>
+						<!-- ELSE STANDARD APPEAL BANNER -->
+						<span v-else>Your donation will power impact and hope in 2019</span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
@@ -83,7 +78,7 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
+import { settingEnabled, readJSONSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
@@ -101,14 +96,47 @@ export default {
 	data() {
 		return {
 			open: true,
+			appealEnabled: false,
+			appealMatchEnabled: false,
+			isAppealShrunk: false,
+			showBonusAppeal: false
 		};
 	},
 	apollo: {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isVisible = _get(data, 'general.setting.value') === 'true' || false;
+			console.log(data);
+
+			this.appealEnabled = settingEnabled(
+				data,
+				'general.appeal_enabled.value',
+				'general.appeal_start_time.value',
+				'general.appeal_end_time.value'
+			);
+
+			this.appealMatchEnabled = settingEnabled(
+				data,
+				'general.appeal_match_enabled.value',
+				'general.appeal_match_start_time.value',
+				'general.appeal_match_end_time.value'
+			);
+
+			this.isAppealShrunk = readJSONSetting(data, 'general.appeal_banner_shrunk.data') === 1;
 		},
+	},
+	computed: {
+		showAppeal() {
+			// TODO: Add exclusion for checkout route
+			return this.appealEnabled || this.appealMatchEnabled;
+		}
+	},
+	watch: {
+		isAppealShrunk(isShrunk) {
+			if (isShrunk) {
+				this.open = false;
+			}
+		}
 	},
 	methods: {
 		toggleAccordion() {

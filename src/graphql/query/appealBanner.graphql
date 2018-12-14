@@ -1,10 +1,26 @@
 query {
 	general {
-		setting(setting: "feature.endofyear_appeal.enabled") {
+		appeal_enabled: setting(setting: "feature.endofyear_appeal.enabled") {
 			value
 		}
-		# setting(setting: "feature.endofyear_appeal_match.enabled") {
-		# 	value
-		# }
+		appeal_start_time: setting(setting: "feature.endofyear_appeal.start_time") {
+			value
+		}
+		appeal_end_time: setting(setting: "feature.endofyear_appeal.end_time") {
+			value
+		}
+		appeal_match_enabled: setting(setting: "feature.endofyear_appeal_match.enabled") {
+			value
+		}
+		appeal_match_start_time: setting(setting: "feature.endofyear_appeal_match.start_time") {
+			value
+		}
+		appeal_match_end_time: setting(setting: "feature.endofyear_appeal_match.end_time") {
+			value
+		}
+		appeal_banner_shrunk: userSessionData(sessionKey: IsAppealBannerShrunk) {
+			sessionKey
+			data
+		}
 	}
 }
