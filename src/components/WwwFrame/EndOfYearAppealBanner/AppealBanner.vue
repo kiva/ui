@@ -1,22 +1,17 @@
 <template>
-	<div class="appeal-banner-wrapper">
+	<div class="appeal-banner-wrapper" v-if="showAppeal">
 		<div class="appeal-banner">
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="small-2 show-for-large"></div>
 				<div class="small-10">
-					<!-- IF REGULAR APPEAL BANNER -->
-					<!-- PUT CONDITIONAL HERE -->
-					<h2>Your donation will power impact and hope in 2019
-
-						<!-- IF MATCHED APPEAL BANNER -->
-						<!-- PUT CONDITIONAL HERE -->
-						<!-- <h2>Double or triple the impact of your donation!</h2> -->
-
+					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
-						<!-- PUT CONDITIONAL HERE -->
-						<!-- <h2>Donate today and receive a bonus to lend!</h2> -->
-
+						<span v-if="appealBonusEnabled">Donate today and receive a bonus to lend!</span>
+						<!-- IF MATCHED APPEAL BANNER -->
+						<span v-else-if="appealMatchEnabled">Double or triple the impact of your donation!</span>
+						<!-- ELSE STANDARD APPEAL BANNER -->
+						<span v-else>Your donation will power impact and hope in 2019</span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
@@ -34,32 +29,28 @@
 					</div>
 					<div class="small-10">
 						<div>
-							<!-- IF REGULAR APPEAL BANNER -->
-							<!-- PUT CONDITIONAL HERE -->
-							<p class="small-text">
+							<!-- IF BONUS APPEAL BANNER -->
+							<p v-if="appealBonusEnabled" class="small-text quote">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. Donate to Kiva to help us reach more
-								communities in 2019 - your donation of any size makes a difference. Thank you
-								for investing in a better world.
+								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
+								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
+								Thank you for investing in a better world.
 							</p>
 							<!-- IF MATCHED APPEAL BANNER -->
-							<!-- PUT CONDITIONAL HERE -->
-							<!-- <p class="small-text quote">
+							<p v-else-if="appealMatchEnabled" class="small-text quote">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
 								from people like you to operate and grow. For a limited time,
 								<strong>donations to Kiva of $20 or more are matched, and donations of $50
 								or more are triple matched by generous donors!</strong>
 								Thank you for investing in a better world.
-							</p> -->
-
-							<!-- IF BONUS APPEAL BANNER -->
-							<!-- PUT CONDITIONAL HERE -->
-							<!-- <p class="small-text quote">
+							</p>
+							<!-- IF REGULAR APPEAL BANNER -->
+							<p v-else class="small-text">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
-								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
-								Thank you for investing in a better world.
-							</p> -->
+								from people like you to operate and grow. Donate to Kiva to help us reach more
+								communities in 2019 - your donation of any size makes a difference. Thank you
+								for investing in a better world.
+							</p>
 
 							<p class="small-text">
 								Premal Shah, President & Co-Founder, Kiva
@@ -83,11 +74,12 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
+import { settingEnabled, readJSONSetting, readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
+import appealIsShrunkMutation from '@/graphql/mutation/setUserSession.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 
 export default {
@@ -101,19 +93,68 @@ export default {
 	data() {
 		return {
 			open: true,
+			appealEnabled: false,
+			appealMatchEnabled: false,
+			appealBonusEnabled: false,
+			isAppealShrunk: false,
 		};
 	},
 	apollo: {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isVisible = _get(data, 'general.setting.value') === 'true' || false;
+			this.appealEnabled = settingEnabled(
+				data,
+				'general.appeal_enabled.value',
+				'general.appeal_start_time.value',
+				'general.appeal_end_time.value'
+			);
+
+			this.appealMatchEnabled = settingEnabled(
+				data,
+				'general.appeal_match_enabled.value',
+				'general.appeal_match_start_time.value',
+				'general.appeal_match_end_time.value'
+			);
+
+			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
+			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
+
+			// the IsAppealBannerShrunk session value returns either false or '"1"'
+			this.isAppealShrunk = readJSONSetting(data, 'general.appeal_banner_shrunk.data') === 1;
 		},
+	},
+	computed: {
+		showAppeal() {
+			// make sure the appeal is enable + we're not on checkout
+			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
+		}
+	},
+	watch: {
+		isAppealShrunk(isShrunk) {
+			if (isShrunk) {
+				this.open = false;
+			}
+		}
 	},
 	methods: {
 		toggleAccordion() {
+			// if state when clicked is open/true we are closing the accordian so pass '"1"' as the php expects
+			// otherwise if state when clicked is closed/false, we are opening so false is the expected value
+			this.setIsShrunkSession(this.open ? '"1"' : false);
 			this.open = !this.open;
 		},
+		setIsShrunkSession(isShrunk) {
+			this.apollo.mutate({
+				mutation: appealIsShrunkMutation,
+				variables: {
+					sessionKey: 'IsAppealBannerShrunk',
+					data: isShrunk // "1" or false
+				}
+			}).catch(error => {
+				console.error(error);
+			});
+		}
 	},
 };
 </script>
