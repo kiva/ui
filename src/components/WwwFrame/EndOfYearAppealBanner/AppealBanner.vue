@@ -57,7 +57,6 @@
 							</p>
 						</div>
 						<div>
-<<<<<<< 0db1ba14831828b7f873cab87d37a51a40673a4d
 							<kv-button
 								class='smallest custom-width'
 								@click.native.prevent.stop="updateDonationTo(20)"
@@ -75,12 +74,6 @@
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
 							>Other</kv-button>
-=======
-							<kv-button class="smallest custom-width">$20</kv-button>
-							<kv-button class="smallest custom-width">$35</kv-button>
-							<kv-button class="smallest custom-width">$50</kv-button>
-							<kv-button class="smallest custom-width hide-for-large">Other</kv-button>
->>>>>>> Syncing styles and layout, making some things better than legacy.
 							<input
 								class="dollar-amount-input show-for-large"
 								placeholder="other"
