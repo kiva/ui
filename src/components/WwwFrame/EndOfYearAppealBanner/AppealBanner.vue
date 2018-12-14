@@ -128,6 +128,11 @@ export default {
 
 	.appeal-banner {
 		padding-left: 0.625rem;
+
+		.custom-width {
+			padding: 0.75rem 3.5rem;
+			margin-right: rem-calc(10);
+		}
 	}
 
 	.toggle-arrow {
@@ -167,11 +172,6 @@ export default {
 		width: rem-calc(120);
 		margin-right: rem-calc(10);
 		vertical-align: top;
-	}
-
-	.custom-width {
-		padding: 0.75rem 3.5rem !important;
-		margin-right: rem-calc(10);
 	}
 }
 </style>
