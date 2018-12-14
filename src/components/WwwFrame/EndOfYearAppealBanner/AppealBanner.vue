@@ -151,8 +151,8 @@ export default {
 					sessionKey: 'IsAppealBannerShrunk',
 					data: isShrunk // "1" or false
 				}
-			}).then(data => {
-				console.log(data);
+			}).catch(error => {
+				console.error(error);
 			});
 		}
 	},
