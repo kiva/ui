@@ -27,7 +27,7 @@
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
 				<div class="row">
-					<div class="large-8 xlarge-6 large-offset-2 xlarge-offset-3 columns">
+					<div class="large-10 large-offset-1 columns">
 						<kv-charity-navigator
 							title="Kiva has been awarded Charity Navigator's highest rating for operational efficiency."
 							:wide-icon="true"
@@ -116,8 +116,8 @@ export default {
 
 #nudge-donation-container {
 	.nudge-lightbox-row-padding {
-		padding-left: 3rem;
-		padding-right: 3rem;
+		padding-left: 2.5rem;
+		padding-right: 2.5rem;
 	}
 
 	text-align: center;
@@ -129,23 +129,33 @@ export default {
 		#nudge-donation-top-header {
 			@extend .nudge-lightbox-row-padding;
 
-			font-size: 1.6rem;
+			font-size: rem-calc(20);
 			font-weight: 500;
 			color: #64B365;
 			line-height: 1.9rem;
+
+			@include breakpoint(medium) {
+				font-size: 1.6rem;
+			}
 		}
 
 		#nudge-donation-top-content-row {
 			@extend .nudge-lightbox-row-padding;
 
-			margin: 2rem auto;
+			margin: 1.4rem auto;
 			max-width: 47rem;
+			font-size: rem-calc(14);
+			line-height: rem-calc(24);
+
+			@include breakpoint(medium) {
+				font-size: 1rem;
+			}
 		}
 
 		#nudge-donation-top-boxes-wrapper {
 			@extend .nudge-lightbox-row-padding;
 
-			margin-bottom: 2rem;
+			margin-bottom: 1.6rem;
 		}
 
 		#no-donation-link {
@@ -155,7 +165,7 @@ export default {
 	}
 
 	#nudge-donation-bottom {
-		padding: 2rem 3rem;
+		padding: 1rem 3rem 2rem 3rem;
 		background: #F1F1F0;
 
 		#charity-navigator-text {
