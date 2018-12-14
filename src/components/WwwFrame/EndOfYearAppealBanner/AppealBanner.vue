@@ -57,14 +57,34 @@
 							</p>
 						</div>
 						<div>
-							<kv-button class="smallest custom-width">$20</kv-button>
-							<kv-button class="smallest custom-width">$35</kv-button>
-							<kv-button class="smallest custom-width">$50</kv-button>
-							<kv-button class="smallest other-button-width hide-for-large">Other</kv-button>
+							<kv-button
+								class="smallest custom-width"
+								value="20"
+								v-kv-track-event="['promo', 'click', 'EOYBanner', this.value]"
+								@click.native.prevent.stop="updateDonation()"
+							>$20</kv-button>
+							<kv-button
+								class="smallest custom-width"
+								value="35"
+								v-kv-track-event="['promo', 'click', 'EOYBanner', this.value]"
+							>$35</kv-button>
+							<kv-button
+								class="smallest custom-width"
+								value="50"
+								v-kv-track-event="['promo', 'click', 'EOYBanner', this.value]"
+							>$50</kv-button>
+							<kv-button
+								class="smallest other-button-width hide-for-large"
+								value="Variable"
+								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
+							>Other</kv-button>
 							<input
 								class="dollar-amount-input show-for-large"
 								placeholder="other">
-							<kv-button class="smallest setting submit-button show-for-large">Submit</kv-button>
+							<kv-button
+								class="smallest setting submit-button show-for-large"
+								v-kv-track-event="['promo', 'click', 'EOYBanner', 'custom-donation-amount']"
+							>Submit</kv-button>
 						</div>
 					</div>
 				</div>
@@ -81,6 +101,9 @@ import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import appealIsShrunkMutation from '@/graphql/mutation/setUserSession.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -90,6 +113,12 @@ export default {
 		KvExpandable,
 	},
 	inject: ['apollo'],
+	props: {
+		donation: {
+			type: Object,
+			default: () => {}
+		}
+	},
 	data() {
 		return {
 			open: true,
@@ -154,7 +183,44 @@ export default {
 			}).catch(error => {
 				console.error(error);
 			});
-		}
+		},
+		updateDonation() {
+			console.log('update donation function entered');
+			// Add clicked value to basket as a donation
+			// this.$emit('updating-totals', true);
+			this.apollo.mutate({
+				mutation: updateDonation,
+				variables: {
+					price: numeral(this.amount).format('0.00'),
+					isTip: this.donation.isTip
+				}
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+					this.amount = this.cachedAmount;
+					this.$emit('updating-totals', false);
+				} else {
+					// Redirect user to /checkout page if user
+					// is not already on the checkout page.
+					this.$emit('refreshtotals');
+					// KARAN: This will have to be the new tracking events
+					// this.$kvTrackEvent(
+					// 	'basket',
+					// 	'Update Donation',
+					// 	'Update Success',
+					// 	// pass donation amount as whole number
+					// 	numeral(this.amount).value() * 100
+					// );
+					this.amount = numeral(this.amount).format('$0,0.00');
+					this.cachedAmount = numeral(this.amount).format('$0,0.00');
+				}
+			}).catch(error => {
+				console.error(error);
+				this.$emit('updating-totals', false);
+			});
+		},
 	},
 };
 </script>
