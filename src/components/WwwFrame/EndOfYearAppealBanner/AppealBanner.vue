@@ -58,32 +58,30 @@
 						</div>
 						<div>
 							<kv-button
-								class="smallest custom-width"
-								value="20"
-								v-kv-track-event="['promo', 'click', 'EOYBanner', this.value]"
-								@click.native.prevent.stop="updateDonation()"
+								class='smallest custom-width'
+								@click.native.prevent.stop="updateDonationTo(20)"
 							>$20</kv-button>
 							<kv-button
 								class="smallest custom-width"
-								value="35"
-								v-kv-track-event="['promo', 'click', 'EOYBanner', this.value]"
+								@click.native.prevent.stop="updateDonationTo(35)"
 							>$35</kv-button>
 							<kv-button
 								class="smallest custom-width"
-								value="50"
-								v-kv-track-event="['promo', 'click', 'EOYBanner', this.value]"
+								@click.native.prevent.stop="updateDonationTo(50)"
 							>$50</kv-button>
 							<kv-button
 								class="smallest other-button-width hide-for-large"
-								value="Variable"
+								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
 							>Other</kv-button>
 							<input
 								class="dollar-amount-input show-for-large"
-								placeholder="other">
+								placeholder="other"
+								v-model="donationAmount">
 							<kv-button
 								class="smallest setting submit-button show-for-large"
-								v-kv-track-event="['promo', 'click', 'EOYBanner', 'custom-donation-amount']"
+								id="appeal-donation-button"
+								@click.native.prevent.stop="updateDonationTo(donationAmount)"
 							>Submit</kv-button>
 						</div>
 					</div>
@@ -113,12 +111,6 @@ export default {
 		KvExpandable,
 	},
 	inject: ['apollo'],
-	props: {
-		donation: {
-			type: Object,
-			default: () => {}
-		}
-	},
 	data() {
 		return {
 			open: true,
@@ -126,6 +118,8 @@ export default {
 			appealMatchEnabled: false,
 			appealBonusEnabled: false,
 			isAppealShrunk: false,
+			amount: 0,
+			donationAmount: numeral(this.amount).format('$0,0.00'),
 		};
 	},
 	apollo: {
@@ -184,41 +178,32 @@ export default {
 				console.error(error);
 			});
 		},
+		updateDonationTo(amount) {
+			this.amount = amount;
+			this.updateDonation();
+			this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
+		},
 		updateDonation() {
-			console.log('update donation function entered');
-			// Add clicked value to basket as a donation
-			// this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
 					price: numeral(this.amount).format('0.00'),
-					isTip: this.donation.isTip
+					isTip: false,
 				}
 			}).then(data => {
 				if (data.errors) {
 					_forEach(data.errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
-					this.amount = this.cachedAmount;
-					this.$emit('updating-totals', false);
+					this.donationAmount = this.cachedAmount;
 				} else {
-					// Redirect user to /checkout page if user
-					// is not already on the checkout page.
-					this.$emit('refreshtotals');
-					// KARAN: This will have to be the new tracking events
-					// this.$kvTrackEvent(
-					// 	'basket',
-					// 	'Update Donation',
-					// 	'Update Success',
-					// 	// pass donation amount as whole number
-					// 	numeral(this.amount).value() * 100
-					// );
-					this.amount = numeral(this.amount).format('$0,0.00');
+					this.donationAmount = numeral(this.amount).format('$0,0.00');
 					this.cachedAmount = numeral(this.amount).format('$0,0.00');
+					// direct user to /basket page
+					window.location.href = '/basket';
 				}
 			}).catch(error => {
 				console.error(error);
-				this.$emit('updating-totals', false);
 			});
 		},
 	},
