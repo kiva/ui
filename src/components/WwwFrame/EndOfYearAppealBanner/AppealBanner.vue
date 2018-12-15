@@ -190,6 +190,10 @@ export default {
 			this.updateDonation();
 		},
 		updateDonation() {
+			if (numeral(this.amount).value() <= 0) {
+				window.location = '/donate/supportus';
+				return;
+			}
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
