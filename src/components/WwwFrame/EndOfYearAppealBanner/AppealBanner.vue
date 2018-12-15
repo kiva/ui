@@ -93,7 +93,6 @@
 </template>
 
 <script>
-// settingEnabled,
 import { readJSONSetting, readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -129,9 +128,9 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.appealEnabled = _get(data, 'general.appeal_enabled.value');
+			this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value'));
 
-			this.appealMatchEnabled = _get(data, 'general.appeal_match_enabled.value');
+			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value'));
 
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
 			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
