@@ -17,7 +17,7 @@
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
-import AppealBanner from './AppealBanner';
+import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
 import GlobalPromo from './PromotionalBanner/GlobalPromotionalBanner';
 
 export default {

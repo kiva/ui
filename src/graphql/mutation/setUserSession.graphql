@@ -1,0 +1,8 @@
+mutation setUserSessionData($sessionKey: UserSessionKeyEnum!, $data: String! ) {
+	general {
+		setUserSessionData (userSessionData: {
+			sessionKey: $sessionKey,
+			data: $data
+		})
+	}
+}
