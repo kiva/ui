@@ -93,7 +93,8 @@
 </template>
 
 <script>
-import { settingEnabled, readJSONSetting, readBoolSetting } from '@/util/settingsUtils';
+// settingEnabled,
+import { readJSONSetting, readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
@@ -103,6 +104,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
+import _get from 'lodash/get';
 
 export default {
 	components: {
@@ -127,19 +129,9 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.appealEnabled = settingEnabled(
-				data,
-				'general.appeal_enabled.value',
-				'general.appeal_start_time.value',
-				'general.appeal_end_time.value'
-			);
+			this.appealEnabled = _get(data, 'general.appeal_enabled.value');
 
-			this.appealMatchEnabled = settingEnabled(
-				data,
-				'general.appeal_match_enabled.value',
-				'general.appeal_match_start_time.value',
-				'general.appeal_match_end_time.value'
-			);
+			this.appealMatchEnabled = _get(data, 'general.appeal_match_enabled.value');
 
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
 			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
