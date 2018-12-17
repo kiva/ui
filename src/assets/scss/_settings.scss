@@ -140,6 +140,7 @@ $foundation-palette: (
 	alert: $red,
 );
 @include add-foundation-colors;
+$print-hrefs: true;
 
 $body-background: $white;
 $body-font-color: $kiva-text-dark;
@@ -157,7 +158,7 @@ $global-menu-nested-margin: 1rem;
 $global-text-direction: ltr;
 $global-flexbox: true;
 $global-prototype-breakpoints: false;
-$global-button-cursor: pointer;
+$global-button-cursor: pointer; // set to auto by default in v6.5
 $global-color-pick-contrast-tolerance: 0;
 $print-transparent-backgrounds: true;
 
@@ -399,6 +400,9 @@ $breadcrumbs-item-uppercase: true;
 $breadcrumbs-item-separator: true;
 $breadcrumbs-item-separator-item: '\002F';
 $breadcrumbs-item-separator-item-rtl: '\005C';
+// The following values are from the 6.5.1 release of foundation-sites we may want a different divider...
+// $breadcrumbs-item-separator-item: '/';
+// $breadcrumbs-item-separator-item-rtl: '\\';
 $breadcrumbs-item-separator-color: $medium-gray;
 
 // 11. Button
@@ -420,6 +424,7 @@ $button-sizes: (
 	default: rem-calc(20),
 );
 $button-transition: background-color 0.25s ease-out, color 0.25s ease-out, border-color 0.25s ease-out;
+$button-responsive-expanded: false;
 
 // 11.1 Button - vars added by Kiva
 // -----------
@@ -983,7 +988,7 @@ $tab-active-color: $primary-color;
 $tab-item-font-size: rem-calc(12);
 $tab-item-background-hover: $white;
 $tab-item-padding: 1.25rem 1.5rem;
-$tab-expand-max: 6;
+$tab-expand-max: 6; // this was removed in 6.5
 $tab-content-background: $white;
 $tab-content-border: $light-gray;
 $tab-content-color: $body-font-color;
@@ -992,7 +997,7 @@ $tab-content-padding: 1rem;
 // 52. Thumbnail
 // -------------
 
-$thumbnail-border: solid 4px $white;
+$thumbnail-border: 4px solid $white;
 $thumbnail-margin-bottom: $global-margin;
 $thumbnail-shadow: 0 0 0 1px rgba($black, 0.2);
 $thumbnail-shadow-hover: 0 0 6px 1px rgba($primary-color, 0.5);

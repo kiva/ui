@@ -36,7 +36,7 @@
 		"express": "^4.16.2",
 		"express-winston": "^3.0.0",
 		"form-data-entries": "^1.0.2",
-		"foundation-sites": "^6.4.3",
+		"foundation-sites": "6.5.1",
 		"fuse.js": "^3.2.1",
 		"graphql": "^0.13.2",
 		"graphql-tag": "^2.5.0",
