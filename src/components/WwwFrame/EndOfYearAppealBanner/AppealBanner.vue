@@ -128,9 +128,9 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value'));
+			this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
 
-			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value'));
+			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
 
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
 			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
