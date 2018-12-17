@@ -4,6 +4,7 @@ import { Agent } from 'https';
 
 export default ({ cookie, csrfToken = '', uri = '' }) => {
 	const onVm = uri.indexOf('vm') > -1;
+	const viaAjax = uri.indexOf('ajax') > -1;
 
 	const options = {
 		uri,
@@ -18,12 +19,12 @@ export default ({ cookie, csrfToken = '', uri = '' }) => {
 	};
 
 	// only add the csrf token if we have one
-	if (csrfToken.length > 0) {
+	if (csrfToken.length > 0 && viaAjax) {
 		options.headers['x-crumb'] = csrfToken;
 	}
 
 	// setup authorization
-	if (cookie) {
+	if (cookie && viaAjax) {
 		options.headers.cookie = cookie;
 	} else {
 		options.credentials = 'same-origin';
