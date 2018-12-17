@@ -193,6 +193,7 @@ export default {
 		background: $white;
 		cursor: pointer;
 		user-select: none;
+		line-height: rem-calc(26);
 	}
 
 	.nudge-boxes-desktop {
@@ -225,6 +226,7 @@ export default {
 					justify-content: center;
 					padding-top: 1rem;
 					border-top: $nudge-box-border;
+					font-size: rem-calc(18);
 
 					&.nudge-box-custom-donation {
 						border-top: none;
@@ -236,6 +238,7 @@ export default {
 
 					padding: 1.5rem 0;
 					font-size: 1.5rem;
+					font-weight: 500;
 
 					.nudge-box-input {
 						text-align: center;

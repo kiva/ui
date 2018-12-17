@@ -1,6 +1,6 @@
 <template>
 	<div id="container">
-		<div id="title">{{ title }}</div>
+		<div id="title" :class="`${wideIcon ? 'wide-icon' : ''}`">{{ title }}</div>
 		<div id="image" :class="`${wideIcon ? 'wide-icon' : ''}`">
 			<img v-if="!wideIcon" src="~@/assets/images/charity-navigator.png">
 			<img v-else src="~@/assets/images/charity-navigator-wide.png">
@@ -44,6 +44,11 @@ export default {
 
 #title {
 	font-weight: 500;
+
+	&.wide-icon {
+		font-weight: 300;
+		line-height: rem-calc(24);
+	}
 }
 
 #image {
