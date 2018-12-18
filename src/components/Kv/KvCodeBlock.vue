@@ -1,8 +1,8 @@
 <template>
-	<div class="code" :class="`${nowrap ? 'nowrap' : ''}`">
+	<code class="code" :class="`${nowrap ? 'nowrap' : ''}`">
 		<pre v-if="code">{{ code }}</pre>
 		<slot v-else></slot>
-	</div>
+	</code>
 </template>
 
 <script>
@@ -24,14 +24,6 @@ export default {
 @import 'settings';
 
 .code {
-	font-family: $font-family-monospace;
-	background-color: $light-gray;
-	color: $black;
-	padding: 1rem;
-	overflow: auto;
-	border: 1px solid $gray;
-	border-radius: 3px;
-
 	&.nowrap {
 		white-space: nowrap;
 	}
