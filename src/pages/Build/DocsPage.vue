@@ -28,10 +28,7 @@
 				<h3>GraphQL Sample</h3>
 				<p>Find loans raising funds right now at Kiva, newest first.</p>
 				<p>
-					<code>
-						<!-- eslint-disable-next-line max-len -->
-						curl -X GET -H "Content-Type: application/json" --data '{"query": "{lend{loans(filters:{status:fundRaising}sortBy:newest){values{id}}}}"}' https://api.kivaws.org/graphql
-					</code>
+					<kv-code-block nowrap :code="code" />
 				</p>
 				<p>
 					For more information on GraphQL itself, and how to write queries,
@@ -45,15 +42,26 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 
 export default {
 	components: {
 		WwwPage,
 		DeveloperSecondaryMenu,
+		KvCodeBlock,
 	},
 	metaInfo: {
 		title: 'Developer Docs'
 	},
+	data() {
+		return {
+			code:
+`curl -X GET -H "Content-Type: application/json"\\
+    --data '{"query": "{lend{loans(filters:{status:fundRaising}sortBy:newest){values{id}}}}"}'\\
+    https://api.kivaws.org/graphql
+`
+		};
+	}
 };
 </script>
 
