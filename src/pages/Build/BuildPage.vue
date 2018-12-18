@@ -11,6 +11,10 @@
 					lend to the working poor via microfinance and the Kiva API.
 					This is the home for all the information and tools you need to join us!
 				</p>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					We created the Kiva API so that anyone with a good idea and some software savvy can help us expand the reach of Kiva, taking it into new environments and to new audiences, and creating new features for the Kiva community to experience our content in new ways. True to the name of our developer destination, we want you to help us build Kiva.org.
+				</p>
 
 				<h2>Ready to Explore?</h2>
 				<p>
