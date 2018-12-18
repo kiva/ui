@@ -18,6 +18,7 @@
 
 				<h2>Ready to Explore?</h2>
 				<p>
+					<!-- eslint-disable-next-line max-len -->
 					The documentation section of the site is a manual of sorts for working with the API. We talk about conventions and best practices, and introduce you to some of the various data objects and how to work with them. We recommend that you read through most of the sections before embarking on your first application.
 				</p>
 				<p>
