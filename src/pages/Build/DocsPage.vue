@@ -28,7 +28,7 @@
 				<h3>GraphQL Sample</h3>
 				<p>Find loans raising funds right now at Kiva, newest first.</p>
 				<p>
-					<kv-code-block nowrap :code="code" />
+					<kv-multi-code-block nowrap :code="code" />
 				</p>
 				<p>
 					For more information on GraphQL itself, and how to write queries,
@@ -42,24 +42,47 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
-import KvCodeBlock from '@/components/Kv/KvCodeBlock';
+import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
 
 export default {
 	components: {
 		WwwPage,
 		DeveloperSecondaryMenu,
-		KvCodeBlock,
+		KvMultiCodeBlock,
 	},
 	metaInfo: {
 		title: 'Developer Docs'
 	},
 	data() {
 		return {
-			code:
-`curl -X GET -H "Content-Type: application/json"\\
-    --data '{"query": "{lend{loans(filters:{status:fundRaising}sortBy:newest){values{id}}}}"}'\\
-    https://api.kivaws.org/graphql
-`
+			code: [
+				{
+					// eslint-disable-next-line no-script-url
+					title: 'Javascript: POST Method',
+					snippet:
+`fetch('https://api.kivaws.org/graphql', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ query: "{lend {loan (id: 1568001){id name}}}" }),
+})
+  .then(res => res.json())
+  .then(res => console.log(res.data));`,
+				},
+				{
+					title: 'Python 3: GET request',
+					snippet:
+`# this snippet requires the requests library which can be installed
+# via pip with the command: pip install requests
+import requests
+
+base_url = 'https://api.kivaws.org/graphql?query='
+
+graphql_query = "{lend {loan (id: 1568001){id name}}}"
+
+r = requests.get(base_url+ graphql_query )
+r.json()`,
+				},
+			],
 		};
 	}
 };
