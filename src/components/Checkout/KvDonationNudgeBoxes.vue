@@ -127,7 +127,7 @@
 				>
 				<kv-button
 					class="smallest nudge-box-button"
-					@click="setCustomDonationAndClose"
+					@click.native="setCustomDonationAndClose"
 				>
 					Update Donation
 				</kv-button>

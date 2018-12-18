@@ -7,5 +7,11 @@ body {
 
 /* global modifiers */
 body.scroll-locked {
+	-webkit-overflow-scrolling: auto;
 	overflow: hidden;
+
+	.www-page {
+		-webkit-overflow-scrolling: auto;
+		overflow: hidden;
+	}
 }
