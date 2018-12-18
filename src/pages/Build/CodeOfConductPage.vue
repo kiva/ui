@@ -85,7 +85,8 @@
 				<h2>8. Use app_id in your requests</h2>
 				<p>
 					When making API calls or linking back to Kiva, please pass an App ID
-					in your request. Currently, this isn't required by the Terms Of Service,
+					in your request. Currently, this isn't required by the
+					<router-link to="/build/terms-of-service">Terms Of Service</router-link>,
 					but consider it a polite way of saying hello and letting us know who's
 					using the API. In the future we hope to return the favor by giving you
 					stats on how your app is doing.
