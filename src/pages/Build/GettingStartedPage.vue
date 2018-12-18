@@ -9,7 +9,9 @@
 				<h2>Step 1: Read the developer Terms Of Service and Code Of Conduct</h2>
 				<p>
 					We know you are eager to start working with code, but it is important
-					that you read and understand the Terms of Service and Code of Conduct.
+					that you read and understand the
+					<router-link to="/build/terms-of-service">Terms of Service</router-link> and
+					<router-link to="/build/code-of-conduct">Code of Conduct</router-link>.
 					Start with these to make sure the application you have in mind is in
 					the spirit of our terms for use of the API.
 				</p>
