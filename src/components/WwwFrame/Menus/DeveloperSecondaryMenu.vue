@@ -25,6 +25,10 @@ export default {
 					routerLink: '/build/getting-started',
 				},
 				{
+					name: 'Data Snaphots',
+					routerLink: '/build/data-snapshots',
+				},
+				{
 					name: 'Code of Conduct',
 					routerLink: '/build/code-of-conduct',
 				},
