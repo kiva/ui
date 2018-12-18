@@ -11,8 +11,11 @@
 				</p>
 				<h2>1. Abide by the developer Terms of Service</h2>
 				<p>
+					<!-- eslint-disable-next-line max-len -->
 					Before you develop an application on the Kiva API we must insist you
-					read the Terms of Service. Our staff and some pretty smart lawyers
+					read the
+					<!-- eslint-disable-next-line max-len -->
+					<router-link to="/build/terms-of-service">Terms of Service</router-link>. Our staff and some pretty smart lawyers
 					worked really hard on these to protect you, Kiva, and our lenders.
 					You must understand and abide by these terms
 				</p>
