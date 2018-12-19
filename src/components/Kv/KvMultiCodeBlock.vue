@@ -2,7 +2,7 @@
 	<div>
 		<div
 			class="tab-container"
-			:class="`${open ? 'open' : ''}`"
+			:class="{open}"
 			@click="handleClickContainer"
 			ref="tabContainer"
 		>

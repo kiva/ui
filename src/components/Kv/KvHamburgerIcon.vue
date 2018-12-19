@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="hamburger-menu"
-		:class="{open: open}"
+		:class="{open}"
 		:style="containerStyle"
 	>
 		<div class="layer top" :style="layerStyle"></div>

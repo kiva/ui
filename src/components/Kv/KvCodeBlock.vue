@@ -1,5 +1,5 @@
 <template>
-	<code class="code" :class="`${nowrap ? 'nowrap' : ''}`">
+	<code class="code" :class="{nowrap}">
 		<pre v-if="code">{{ code }}</pre>
 		<slot v-else></slot>
 	</code>
