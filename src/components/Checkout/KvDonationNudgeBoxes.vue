@@ -23,7 +23,7 @@
 					<div
 						class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
 					>
-						Enter custom amount
+						You decide — enter custom amount
 					</div>
 				</div>
 			</div>
