@@ -15,6 +15,7 @@
 				<p
 					:loan-id="loan.id"
 					:name="loan.name"
+					:title="loan.name"
 					class="small-text name"
 				>{{ loan.name }}</p>
 				<!-- loan meter	 -->
@@ -179,6 +180,10 @@ export default {
 	font-weight: 400;
 	color: $kiva-text-dark;
 	margin-bottom: 0;
+	padding-bottom: rem-calc(6);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .loan-data {
@@ -191,5 +196,6 @@ export default {
 .card-action {
 	font-weight: 400;
 	margin-bottom: 0;
+	padding-bottom: 0.75rem;
 }
 </style>
