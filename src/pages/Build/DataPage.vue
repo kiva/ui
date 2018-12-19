@@ -24,14 +24,18 @@
 				</p>
 				<p>
 					<strong class="show-for-medium-up">JSON:</strong>
-					http://s3.kiva.org/snapshots/kiva_ds_json.zip<br>
+					<a href="http://s3.kiva.org/snapshots/kiva_ds_json.zip">
+						http://s3.kiva.org/snapshots/kiva_ds_json.zip</a>
+					<br>
 					<strong class="show-for-medium-up">CSV:</strong>
-					http://s3.kiva.org/snapshots/kiva_ds_csv.zip
+					<a href="http://s3.kiva.org/snapshots/kiva_ds_csv.zip">
+						http://s3.kiva.org/snapshots/kiva_ds_csv.zip
+					</a>
 				</p>
 				<h2>Archive Structure</h2>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
-					When you decompress and extract a data snapshot you'll have a collection of documents with the following structure:
+					When you decompress and extract a data snapshot you'll have a collection of documents with the following structure (CSV files will have the .csv file format):
 					<kv-code-block :code='fileStructure' />
 				</p>
 			</div>
@@ -75,5 +79,6 @@ export default {
 .callout {
 	background-color: $kiva-alert-yellow;
 	padding: 1.625rem;
+	margin: .5rem 0;
 }
 </style>
