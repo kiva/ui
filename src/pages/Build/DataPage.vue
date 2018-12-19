@@ -25,7 +25,8 @@
 				<p>
 					<strong class="show-for-medium-up">JSON:</strong>
 					<a href="http://s3.kiva.org/snapshots/kiva_ds_json.zip">
-						http://s3.kiva.org/snapshots/kiva_ds_json.zip</a>
+						http://s3.kiva.org/snapshots/kiva_ds_json.zip
+					</a>
 					<br>
 					<strong class="show-for-medium-up">CSV:</strong>
 					<a href="http://s3.kiva.org/snapshots/kiva_ds_csv.zip">
@@ -79,6 +80,6 @@ export default {
 .callout {
 	background-color: $kiva-alert-yellow;
 	padding: 1.625rem;
-	margin: .5rem 0;
+	margin: 0.5rem 0;
 }
 </style>
