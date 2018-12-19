@@ -6,8 +6,8 @@
 	"private": true,
 	"licencse": "UNLICENCSED",
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development node server/dev-server.js",
-		"start": "cross-env NODE_ENV=production node server/index.js",
+		"dev": "cross-env NODE_ENV=development node --max-old-space-size=4096 server/dev-server.js",
+		"start": "cross-env NODE_ENV=production node --max-old-space-size=4096 server/index.js",
 		"build": "rimraf dist && node build/build.js",
 		"build:trace": "rimraf dist && node --trace-deprecation build/build.js",
 		"build:all": "rimraf dist && npm run build:client && npm run build:server",
