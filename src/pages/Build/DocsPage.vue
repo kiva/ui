@@ -82,6 +82,38 @@ graphql_query = "{lend {loan (id: 1568001){id name}}}"
 r = requests.get(base_url+ graphql_query )
 r.json()`,
 				},
+				{
+					title: 'Python 3: POST request',
+					snippet:
+`# this snippet requires the requests library which can be installed
+# via pip with the command: pip install requests
+import requests
+
+base_url = 'https://api.kivaws.org/graphql?query='
+
+graphql_query = "{lend {loan (id: 1568001){id name}}}"
+
+r = requests.post(base_url+ graphql_query )
+r.json()`,
+				},
+				{
+					title: 'CURL: GET method',
+					snippet:
+`curl \\
+  -X GET \\
+  -H "Content-Type: application/json" \\
+  --data '{ "query": "{lend {loan (id: 1568001){id name}}}"}' \\
+  'https://api.kivaws.org/graphql'`,
+				},
+				{
+					title: 'CURL: POST method',
+					snippet:
+`curl \\
+  -X POST \\
+  -H "Content-Type: application/json" \\
+  --data '{ "query": "{lend {loan (id: 1568001){id name}}}"}' \\
+  'https://api.kivaws.org/graphql'`,
+				},
 			],
 		};
 	}

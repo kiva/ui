@@ -7,7 +7,7 @@
 			ref="tabContainer"
 		>
 			<div
-				v-for="{title, index} in code"
+				v-for="{title, index} in codeArray"
 				:key="index"
 				class="tab"
 				:class="`${isTabSelected(index) ? 'active' : ''}`"
@@ -33,81 +33,15 @@ export default {
 	data() {
 		return {
 			open: false,
-			code: [
-				{
-					// eslint-disable-next-line no-script-url
-					title: 'Javascript: POST Method',
-					snippet:
-`fetch('https://api.kivaws.org/graphql', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ query: "{lend {loan (id: 1568001){id name}}}" }),
-})
-  .then(res => res.json())
-  .then(res => console.log(res.data));
-`,
-				},
-				{
-					title: 'Python 3: GET request',
-					snippet:
-`# this snippet requires the requests library which can be installed
-# via pip with the command: pip install requests
-import requests
-
-base_url = 'https://api.kivaws.org/graphql?query='
-
-graphql_query = "{lend {loan (id: 1568001){id name}}}"
-
-r = requests.get(base_url+ graphql_query )
-r.json()
-`,
-				},
-				{
-					title: 'Python 3: POST request',
-					snippet:
-`# this snippet requires the requests library which can be installed
-# via pip with the command: pip install requests
-import requests
-
-base_url = 'https://api.kivaws.org/graphql?query='
-
-graphql_query = "{lend {loan (id: 1568001){id name}}}"
-
-r = requests.post(base_url+ graphql_query )
-r.json()
-`,
-				},
-				{
-					title: 'CURL: GET method',
-					snippet:
-`curl \\
-  -X GET \\
-  -H "Content-Type: application/json" \\
-  --data '{ "query": "{lend {loan (id: 1568001){id name}}}"}' \\
-  'https://api.kivaws.org/graphql'
-`,
-				},
-				{
-					title: 'CURL: POST method',
-					snippet:
-`curl \\
-  -X POST \\
-  -H "Content-Type: application/json" \\
-  --data '{ "query": "{lend {loan (id: 1568001){id name}}}"}' \\
-  'https://api.kivaws.org/graphql'
-`,
-				},
-			].map((codeObject, index) => ({ ...codeObject, index })),
+			codeArray: this.code.map((codeObject, index) => ({ ...codeObject, index })),
 			selectedIndex: 0,
 		};
 	},
 	props: {
-		/*
 		code: {
 			type: Array,
 			default: () => [],
 		},
-		*/
 		nowrap: {
 			type: Boolean,
 			default: false,
