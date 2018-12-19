@@ -4,6 +4,11 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>Data Snapshots</h1>
+				<div class="callout secondary">
+					<strong class="show-for-medium-up">Important Note:</strong>
+					<!-- eslint-disable-next-line max-len -->
+					For now, snapshots are generated intermittently. We'll update this message when the snapshots are back on a regular schedule.
+				</div>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
 					If you want to work with a lot of Kiva's data, making hundreds or thousands of requests to the Kiva API can be overbearing — both for you and your network. As such, we make much of our data available through snapshots which are compressed into a simple singular download. The data is archived nightly so it is most useful for apps that don't require live data, such as data analyses and visuals. However, some applications might find these handy as a way to seed local data sources, supplementing the snapshots with calls to the Kiva API for the most recent data.
@@ -61,8 +66,14 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'settings';
 
 .page-content {
 	padding: 1.625rem 0;
+}
+
+.callout {
+	background-color: $kiva-alert-yellow;
+	padding: 1.625rem;
 }
 </style>
