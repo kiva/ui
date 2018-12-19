@@ -14,13 +14,20 @@
 				</p>
 				<h2>Downloading Snapshots</h2>
 				<p>
+					<!-- eslint-disable-next-line max-len -->
 					The latest data snapshots are available in the format of your choice at the following URLs:
-					<p>
-						<strong class="show-for-medium-up">JSON:</strong>
-						http://s3.kiva.org/snapshots/kiva_ds_json.zip
-						<strong class="show-for-medium-up">CSV:</strong>
-						http://s3.kiva.org/snapshots/kiva_ds_csv.zip
-					</p>
+				</p>
+				<p>
+					<strong class="show-for-medium-up">JSON:</strong>
+					http://s3.kiva.org/snapshots/kiva_ds_json.zip<br>
+					<strong class="show-for-medium-up">CSV:</strong>
+					http://s3.kiva.org/snapshots/kiva_ds_csv.zip
+				</p>
+				<h2>Archive Structure</h2>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					When you decompress and extract a data snapshot you'll have a collection of documents with the following structure:
+					<kv-code-block :code='fileStructure' />
 				</p>
 			</div>
 		</div>
@@ -30,14 +37,25 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
+import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 
 export default {
 	components: {
 		WwwPage,
 		DeveloperSecondaryMenu,
+		KvCodeBlock,
 	},
 	metaInfo: {
 		title: 'Data Snapshots'
+	},
+	data() {
+		return {
+			fileStructure:
+`kiva_ds_json/
+	lenders.json
+	loans.json
+	loans_lenders.json`
+		};
 	}
 };
 </script>
