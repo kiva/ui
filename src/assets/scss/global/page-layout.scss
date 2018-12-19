@@ -15,3 +15,10 @@ body.scroll-locked {
 		overflow: hidden;
 	}
 }
+
+code {
+	display: block;
+	overflow: auto;
+	padding: 1rem;
+	border-radius: 3px;
+}
