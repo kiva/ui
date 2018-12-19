@@ -298,15 +298,17 @@ $huge-headline-line-height-medium: rem-calc(70);
 	}
 }
 
-// 4.2 Base Typography - Foundation vars not currently used by Kiva
-// ------------------
 $font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
 $code-color: $black;
 $code-font-family: $font-family-monospace;
 $code-font-weight: $global-weight-normal;
 $code-background: $light-gray;
-$code-border: 1px solid $medium-gray;
+$code-border: 1px solid $gray;
 $code-padding: rem-calc(2 5 1);
+
+// 4.2 Base Typography - Foundation vars not currently used by Kiva
+// ------------------
+
 $defnlist-margin-bottom: 1rem;
 $defnlist-term-weight: $global-weight-bold;
 $defnlist-term-margin-bottom: 0.3rem;
