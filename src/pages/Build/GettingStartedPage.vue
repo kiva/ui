@@ -68,7 +68,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
 
 .page-content {
 	padding: 1.625rem 0;
