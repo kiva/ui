@@ -52,9 +52,9 @@ export default {
 	},
 	mounted() {
 		this.cookieStore = new CookieStore();
-		this.cookieStore.set('kvgdpr_closed', 'true');
 		this.showBanner = this.cookieStore.get('kvgdpr_closed') !== 'true';
 		this.$kvTrackEvent('global', 'gdpr-notice', this.showBanner ? 'visible' : 'hidden');
+		this.cookieStore.set('kvgdpr_closed', 'true');
 	},
 };
 </script>
