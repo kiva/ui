@@ -25,10 +25,18 @@
 					The GraphiQL Explorer allows you to practice writing queries
 					and viewing the returned results. Try it out!
 				</p>
-				<h3>GraphQL Sample</h3>
-				<p>Find loans raising funds right now at Kiva, newest first.</p>
+				<h3>GraphQL Samples</h3>
 				<p>
 					<kv-multi-code-block nowrap :code="code" />
+				</p>
+				<p>
+					<strong class="show-for-medium-up">NOTE: </strong>
+					QraphQL's limit for a GET request query is 2500 characters.
+					A POST request is recommended for longer queries
+				</p>
+				<!-- eslint-disable-next-line max-len -->
+				<p>With all the methods above the successfully returned JSON information should look like:<br>
+					<kv-code-block :code='sampleJson' />
 				</p>
 				<p>
 					For more information on GraphQL itself, and how to write queries,
@@ -48,6 +56,7 @@ export default {
 	components: {
 		WwwPage,
 		DeveloperSecondaryMenu,
+		KvCodeBlock,
 		KvMultiCodeBlock,
 	},
 	metaInfo: {
@@ -55,6 +64,9 @@ export default {
 	},
 	data() {
 		return {
+			sampleJson:
+`{'data': {'lend': {'loan': {'id': 1568001,
+						'name': 'Leydi'} } } }`,
 			code: [
 				{
 					// eslint-disable-next-line no-script-url
