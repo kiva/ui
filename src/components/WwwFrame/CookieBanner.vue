@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import CookieStore from '@/util/CookieStore';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -39,13 +40,21 @@ export default {
 	},
 	data() {
 		return {
-			showBanner: true,
+			cookieStore: null,
+			showBanner: false,
 		};
 	},
 	methods: {
 		handleClickClose() {
 			this.showBanner = false;
+			this.$kvTrackEvent('global', 'gdpr-notice', 'click-close');
 		},
+	},
+	mounted() {
+		this.cookieStore = new CookieStore();
+		this.cookieStore.set('kvgdpr_closed', 'true');
+		this.showBanner = this.cookieStore.get('kvgdpr_closed') !== 'true';
+		this.$kvTrackEvent('global', 'gdpr-notice', this.showBanner ? 'visible' : 'hidden');
 	},
 };
 </script>
