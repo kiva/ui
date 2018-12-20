@@ -35,7 +35,7 @@
 					A POST request is recommended for longer queries
 				</p>
 				<!-- eslint-disable-next-line max-len -->
-				<p>With all the methods above the successfully returned JSON information should look like:<br>
+				<p>With all the methods above the successfully returned JSON data should look something like:<br>
 					<kv-code-block :code='sampleJson' />
 				</p>
 				<p>
@@ -51,6 +51,7 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DeveloperSecondaryMenu from '@/components/WwwFrame/Menus/DeveloperSecondaryMenu';
 import KvMultiCodeBlock from '@/components/Kv/KvMultiCodeBlock';
+import KvCodeBlock from '@/components/Kv/KvCodeBlock';
 
 export default {
 	components: {
@@ -66,7 +67,7 @@ export default {
 		return {
 			sampleJson:
 `{'data': {'lend': {'loan': {'id': 1568001,
-						'name': 'Leydi'} } } }`,
+			   'name': 'Leydi'} } } }`,
 			code: [
 				{
 					// eslint-disable-next-line no-script-url
