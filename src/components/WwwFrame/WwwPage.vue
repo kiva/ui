@@ -10,10 +10,12 @@
 		</main>
 		<the-footer />
 		<the-basket-bar />
+		<cookie-banner />
 	</div>
 </template>
 
 <script>
+import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
@@ -26,7 +28,8 @@ export default {
 		TheFooter,
 		TheBasketBar,
 		AppealBanner,
-		GlobalPromo
+		GlobalPromo,
+		CookieBanner,
 	}
 };
 </script>
