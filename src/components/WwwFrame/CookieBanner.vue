@@ -40,7 +40,6 @@ export default {
 	},
 	data() {
 		return {
-			cookieStore: null,
 			showBanner: false,
 		};
 	},
@@ -51,10 +50,12 @@ export default {
 		},
 	},
 	mounted() {
-		this.cookieStore = new CookieStore();
-		this.showBanner = this.cookieStore.get('kvgdpr_closed') !== 'true';
-		this.$kvTrackEvent('global', 'gdpr-notice', this.showBanner ? 'visible' : 'hidden');
-		this.cookieStore.set('kvgdpr_closed', 'true');
+		const cookieStore = new CookieStore();
+		if (cookieStore.get('kvgdpr_closed') !== 'true') {
+			this.showBanner = true;
+			this.$kvTrackEvent('global', 'gdpr-notice', 'visible');
+		}
+		cookieStore.set('kvgdpr_closed', 'true');
 	},
 };
 </script>
