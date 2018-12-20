@@ -39,6 +39,28 @@
 					When you decompress and extract a data snapshot you'll have a collection of documents with the following structure (CSV files will have the .csv file format):
 					<kv-code-block :code='fileStructure' />
 				</p>
+				<h2>File Format</h2>
+				<h3>JSON snapshot</h3>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					As mentioned, the format of the JSON snapshot is very similar to the API format. The main difference is the loans_lenders mapping file, which maps between the loans and lenders files. The format of the loans_lenders.json might look like this:
+					<kv-code-block :code='loanLenders' />
+				</p>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					Where the loan_id field references the id of the loan and the lender_ids are the ids of the lenders to that loan.
+				</p>
+				<h3>CSV snapshot</h3>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					The CSV snapshot is a direct translation of the JSON snapshot. Fields that are reprented as arrays in the JSON snapshot are translated to comma separated lists. For instance, consider the following record in loans.json:
+					<kv-code-block :code='jsonSchema' />
+				</p>
+				<p>
+					<!-- eslint-disable-next-line max-len -->
+					In the loans.csv snapshot, this would be split into three separate fields, each having its data separated by a comma and a space:
+					<kv-code-block :code='csvSchema' />
+				</p>
 			</div>
 		</div>
 	</www-page>
@@ -64,7 +86,19 @@ export default {
 `kiva_ds_json/
 	lenders.json
 	loans.json
-	loans_lenders.json`
+	loans_lenders.json`,
+			loanLenders:
+`{ "loan_id": "558112",
+  "lender_ids: ["muc888", "tristan7990", "shivaun4955", "sam44598568", "mike4896",
+	"catherine7003", "summer7416", "jim8842", "brett5260", "roger2252", "jolanda1942",
+	"anila7468", "elizabeth31676552"] }`,
+			jsonSchema:
+`{ "borrowers": [ {"name": "Bunsuor", "gender": "male", "pictured": true},
+		{"name": "Chamroen", "gender": "male", "pictured": true}]
+ }`,
+			csvSchema:
+`borrower_names,borrower_genders,borrower_pictured
+"Bunsuor, Chamroen","male, male","true, true"`
 		};
 	}
 };
