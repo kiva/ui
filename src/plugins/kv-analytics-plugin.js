@@ -99,8 +99,14 @@ export default Vue => {
 		// establish loaded libs
 		kvActions.checkLibs();
 		// extract userid from apollo cache
-		const analyticsData = apolloClient.readQuery({ query: analyticsDataQuery });
-		const userId = _get(analyticsData, 'my.userAccount.id');
+		let userId = null;
+		try {
+			const analyticsData = apolloClient.readQuery({ query: analyticsDataQuery });
+			userId = _get(analyticsData, 'my.userAccount.id');
+		} catch (e) {
+			// do nothing
+		}
+
 		// Setup Global Snowplow
 		if (snowplowLoaded) {
 			window.snowplow('setUserId', userId);
