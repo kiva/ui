@@ -169,7 +169,7 @@ export default {
 .minimal-loan-card-action-wrap {
 	padding-left: rem-calc(15);
 	padding-right: rem-calc(15);
-	padding-bottom: rem-calc(15);
+	padding-bottom: rem-calc(12);
 }
 
 .minimal-fundraising-meter-margins {
@@ -196,6 +196,5 @@ export default {
 .card-action {
 	font-weight: 400;
 	margin-bottom: 0;
-	padding-bottom: 0.75rem;
 }
 </style>
