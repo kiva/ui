@@ -30,6 +30,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-@import 'foundation';
+// @import 'settings';
+// @import 'foundation';
 </style>
