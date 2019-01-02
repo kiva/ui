@@ -28,3 +28,10 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+
+.button {
+	margin-top: rem-calc(5);
+}
+</style>
