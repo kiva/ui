@@ -23,6 +23,8 @@
 								v-touch:swipe.right="scrollRowLeft"
 							>
 								<minimal-loan-card
+									v-for="(item, index) in items"
+									:key="index"
 									class="inside-scrolling-wrapper"
 									:loan="loan1"
 									category-set-id="loans-you-might-like"
@@ -47,6 +49,16 @@
 									:loan="loan3"
 									category-set-id="loans-you-might-like"
 									card-number="3"
+									:items-in-basket="itemsInBasket"
+									:enable-tracking="true"
+									@refreshtotals="$emit('refreshtotals')"
+									@updating-totals="$emit('updating-totals', $event)"
+								/>
+								<minimal-loan-card
+									class="inside-scrolling-wrapper"
+									:loan="loan4"
+									category-set-id="loans-you-might-like"
+									card-number="4"
 									:items-in-basket="itemsInBasket"
 									:enable-tracking="true"
 									@refreshtotals="$emit('refreshtotals')"
@@ -88,6 +100,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		items: {
+			type: Array,
+			default: () => []
+		},
 	},
 	computed: {
 		itemsInBasket() {
@@ -128,6 +144,7 @@ export default {
 			loan1: null,
 			loan2: null,
 			loan3: null,
+			loan4: null,
 			loading: false,
 			scrollPos: 0,
 			windowWidth: 0,
@@ -184,11 +201,16 @@ export default {
 				query: loansYouMightLikeData,
 				variables: {
 					country: this.sameCountry,
-					activity: this.sameActivity
+					activity: this.sameActivity,
+					sector: this.sameSector
 				}
 			}).then(data => {
 				const randomLoans = _get(data.data.lend, 'randomLoan.values');
 				this.loan3 = randomLoans[0]; // eslint-disable-line
+
+				// new data item that's an array, then push loans into it.
+				// run shuffle on it.
+				// const lymlLoans = [];
 
 				// same Country loans
 				if (this.hasLoansInBasket && data.data.lend.sameCountry) {
@@ -202,6 +224,13 @@ export default {
 					this.loan2 = _get(data.data.lend, 'sameActivity.values[0]');
 				} else {
 					this.loan2 = randomLoans[2]; // eslint-disable-line
+				}
+
+				// same Sector loans
+				if (this.hasLoansInBasket && data.data.lend.sameSector) {
+					this.loan4 = _get(data.data.lend, 'sameSector.values[0]');
+				} else {
+					this.loan4 = randomLoans[3]; // eslint-disable-line
 				}
 
 				// once we have loans flip the switch to show them
