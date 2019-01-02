@@ -102,8 +102,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import 'settings';
-
 #section-form {
 	.small-width {
 		width: rem-calc(300);

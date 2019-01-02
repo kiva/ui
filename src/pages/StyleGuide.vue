@@ -18,25 +18,25 @@
 				<div class="columns small-12 large-3">
 					<ul>
 						<li>
-							<a href="/styleguide">Intro</a>
+							<router-link to="/styleguide">Intro</router-link>
 						</li>
 						<li>
-							<a href="/styleguide/typography">Typography</a>
+							<router-link to="/styleguide/typography">Typography</router-link>
 						</li>
 						<li>
-							<a href="/styleguide/copy">Copy</a>
+							<router-link to="/styleguide/copy">Copy</router-link>
 						</li>
 						<li>
-							<a href="/styleguide/buttons">Buttons</a>
+							<router-link to="/styleguide/buttons">Buttons</router-link>
 						</li>
 						<li>
-							<a href="/styleguide/colors">Colors</a>
+							<router-link to="/styleguide/colors">Colors</router-link>
 						</li>
 						<li>
-							<a href="/styleguide/forms">Forms</a>
+							<router-link to="/styleguide/forms">Forms</router-link>
 						</li>
 						<li>
-							<a href="/styleguide/images">Images</a>
+							<router-link to="/styleguide/images">Images</router-link>
 						</li>
 					</ul>
 				</div>

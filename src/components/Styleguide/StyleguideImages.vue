@@ -17,15 +17,3 @@
 		<code>["w_480,h_300","w_480,h_360","w_960,h_600","w_960,h_720","w_1200,h_630"]</code>
 	</section>
 </template>
-
-<script>
-// export default {
-// 	data() {
-// 		return {};
-// 	}
-// };
-</script>
-
-<style lang="scss" scoped>
-// @import 'settings';
-</style>

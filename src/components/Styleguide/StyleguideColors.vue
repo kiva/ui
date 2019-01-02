@@ -146,7 +146,6 @@
 
 <style lang="scss" scoped>
 @import 'settings';
-// @import 'foundation';
 
 .color-card {
 	text-align: center;

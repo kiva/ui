@@ -19,15 +19,3 @@
 		javascript or any components that depend on that inclusion.</i></p>
 	</section>
 </template>
-
-<script>
-// export default {
-// 	data() {
-// 		return {};
-// 	}
-// };
-</script>
-
-<style lang="scss" scoped>
-// @import 'settings';
-</style>
