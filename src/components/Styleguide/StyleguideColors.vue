@@ -1,4 +1,4 @@
-<template functional>
+<template>
 	<section>
 		<h2>Colors</h2>
 		<hr>
@@ -144,12 +144,8 @@
 	</section>
 </template>
 
-<script>
-</script>
-
 <style lang="scss" scoped>
 @import 'settings';
-@import 'foundation';
 
 .color-card {
 	text-align: center;
