@@ -79,4 +79,9 @@ $header-color: $kiva-green;
 	color: #888;
 	font-size: 80%;
 }
+
+// spacing for button on /styleguide/buttons
+.styleguide-wrap .button {
+	margin-top: rem-calc(5);
+}
 </style>
