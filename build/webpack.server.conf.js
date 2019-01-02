@@ -30,7 +30,14 @@ module.exports = merge.smart(baseWebpackConfig, {
 	// https://github.com/liady/webpack-node-externals
 	externals: nodeExternals({
 		// do not externalize style files in case we need to import it from a dep
-		whitelist: [/\.css$/, /\?vue&type=style/]
+		whitelist: [
+			/\.css$/,
+			/\?vue&type=style/,
+			// whitelist algolia deps https://github.com/algolia/vue-instantsearch/issues/588
+			// TODO: remove once they have SSR enabled
+			/vue-instantsearch/,
+			/instantsearch.js/
+		]
 	}),
 	plugins: [
 		// suppress client-side-only modules

@@ -1,5 +1,5 @@
 <template>
-	<div class="algolia-loan-card-adapterm column column-block">
+	<div class="algolia-loan-card-adapter column column-block">
 		<GridLoanCard
 			:key="loan.id"
 			:loan="adaptedLoan"
@@ -67,3 +67,8 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.algolia-loan-card-adapter {
+	padding: 0;
+}
+</style>

@@ -5,27 +5,29 @@
 				<h1>Algolia Search!</h1>
 
 				<div class="algolia-wrap">
-					<ais-index
-						v-if="algoliaAppId"
-						:app-id="algoliaAppId"
-						:api-key="algoliaApiKey"
-						:index-name="algoliaDefaultIndex"
-						:query="defaultSearch"
-						:query-parameters="algoliaQueryParams">
-						<ais-input
-							placeholder="Find loans..."
-							autofocus />
-						<ais-results
+					<ais-instant-search
+						v-if="searchClient"
+						:search-client="searchClient"
+						:index-name="algoliaDefaultIndex">
+						<!-- eslint-disable vue/attribute-hyphenation -->
+						<!-- We could run a default query... :query="defaultSearch" -->
+						<ais-configure
+							:hitsPerPage="12"
+							:filters="defaultFilter" />
+						<ais-current-refinements />
+						<ais-refinement-list :attribute="'sector.name'" />
+						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">
-							<template slot-scope="{ result }">
+							<template slot="default" slot-scope="{ items }">
 								<algolia-adapter
-									:loan="result"
+									v-for="(item, itemIndex) in items" :key="itemIndex"
+									:loan="item"
 									:items-in-basket="itemsInBasket" />
 							</template>
-						</ais-results>
+						</ais-hits>
 						<ais-pagination :padding="2" />
-					</ais-index>
+					</ais-instant-search>
 				</div>
 			</div>
 		</div>
@@ -37,8 +39,17 @@ import _get from 'lodash/get';
 import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 // Import your specific Algolia Components here
-// V1 components are here: https://community.algolia.com/vue-instantsearch/getting-started/using-components.html
-import { Index, SearchBox, Input, Results, Highlight, Pagination } from 'vue-instantsearch';
+// V2 Beta
+// https://v2--vue-instantsearch.netlify.com/getting-started/using-components.html
+import algoliasearch from 'algoliasearch/lite';
+import {
+	AisConfigure,
+	AisInstantSearch,
+	AisHits,
+	AisPagination,
+	AisCurrentRefinements,
+	AisRefinementList,
+} from 'vue-instantsearch';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
@@ -46,14 +57,12 @@ import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 export default {
 	components: {
 		WwwPage,
-		// Declare them for use here, the key gets converted to lower kabab case for use in the html markup
-		// -> To match their example code we add Ais before each component name
-		AisIndex: Index,
-		AisSearchBox: SearchBox,
-		AisInput: Input,
-		AisResults: Results,
-		AisHighlight: Highlight,
-		AisPagination: Pagination,
+		AisConfigure,
+		AisInstantSearch,
+		AisHits,
+		AisPagination,
+		AisCurrentRefinements,
+		AisRefinementList,
 		ActionButton,
 		AlgoliaAdapter
 	},
@@ -65,13 +74,12 @@ export default {
 			// These are required in each instance of the plugin
 			algoliaAppId: this.algoliaConfig.algoliaAppId,
 			algoliaApiKey: this.algoliaConfig.algoliaApiKey,
+			searchClient: null,
 			// The index will likey be different based on context
 			algoliaDefaultIndex: this.algoliaConfig.algoliaDefaultIndex,
 			defaultSearch: 'Energy',
 			// Focus in on fundRaising Loans
-			algoliaQueryParams: {
-				filters: 'status:fundRaising'
-			},
+			defaultFilter: 'status:fundRaising',
 			itemsInBasket: null
 		};
 	},
@@ -86,6 +94,14 @@ export default {
 			this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 		}
 	},
+	mounted() {
+		// initialize searchClient + components on mount
+		// TODO: update initialization once vue-instantsearch V2 supports SSR
+		this.searchClient = algoliasearch(
+			this.algoliaConfig.algoliaAppId,
+			this.algoliaConfig.algoliaApiKey
+		);
+	}
 };
 </script>
 
@@ -100,7 +116,7 @@ export default {
 	position: relative;
 }
 
-.ais-pagination {
+.ais-Pagination-list {
 	list-style: none;
 	text-align: center;
 	display: flex;
@@ -109,21 +125,21 @@ export default {
 	align-items: center;
 	max-width: 17rem;
 
-	.ais-pagination__item {
+	.ais-Pagination-item {
 		color: $kiva-text-light;
 	}
 
-	.ais-pagination__item--active,
-	.ais-pagination__item--disabled {
+	.ais-Pagination-item--active,
+	.ais-Pagination-item--disabled {
 		a {
 			color: $kiva-text-light;
 		}
 	}
 
-	.ais-pagination__item--first,
-	.ais-pagination__item--previous,
-	.ais-pagination__item--next,
-	.ais-pagination__item--last {
+	.ais-Pagination-item--first,
+	.ais-Pagination-item--previous,
+	.ais-Pagination-item--next,
+	.ais-Pagination-item--last {
 		font-weight: bold;
 
 		a:hover,
