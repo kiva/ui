@@ -38,21 +38,22 @@ module.exports = function createMiddleware({
 		throw new TypeError('Missing configuration');
 	}
 
+	// Set webpack public asset path based on configuration
+	// eslint-disable-next-line no-param-reassign
+	clientManifest.publicPath = config.app.publicPath || '/';
+
+	// Create single renderer to be used be all requests
+	const renderer = createBundleRenderer(serverBundle, {
+		cache: vueSsrCache(cache),
+		template,
+		clientManifest,
+		runInNewContext: false,
+		inject: false,
+		shouldPrefetch: () => false,
+	});
+
 	return function middleware(req, res, next) {
 		const s = Date.now();
-
-		// Set webpack public asset path based on configuration
-		// eslint-disable-next-line no-param-reassign
-		clientManifest.publicPath = config.app.publicPath || '/';
-
-		const renderer = createBundleRenderer(serverBundle, {
-			cache: vueSsrCache(cache),
-			template,
-			clientManifest,
-			runInNewContext: false,
-			inject: false,
-			shouldPrefetch: () => false,
-		});
 
 		const cookies = cookie.parse(req.headers.cookie || '');
 
