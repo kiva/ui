@@ -1,5 +1,6 @@
 <template>
 	<svg class="icon" :class="iconClass">
+		<title v-if="title">{{ title }}</title>
 		<use :xlink:href="iconId"/>
 	</svg>
 </template>
@@ -7,7 +8,8 @@
 <script>
 export default {
 	props: {
-		name: { type: String, required: true }
+		name: { type: String, required: true },
+		title: { type: String, default: '' }
 	},
 	computed: {
 		iconClass() {
