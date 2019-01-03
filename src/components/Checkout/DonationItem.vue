@@ -42,7 +42,8 @@
 				<span
 					class="donation-amount"
 					v-kv-track-event="['basket', 'Edit Donation']"
-					@click.prevent="enterEditDonation">{{ formattedAmount }}
+					@click.prevent="enterEditDonation"
+					title="Edit Donation">{{ formattedAmount }}
 					<kv-icon
 						class="edit-donation"
 						name="pencil"/>
@@ -413,6 +414,8 @@ export default {
 	}
 
 	.donation-amount {
+		display: inline-block;
+		cursor: pointer;
 		font-weight: $global-weight-highlight;
 		font-size: $medium-text-font-size;
 
