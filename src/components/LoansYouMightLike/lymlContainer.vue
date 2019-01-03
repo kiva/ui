@@ -207,6 +207,7 @@ export default {
 				}
 				// randomize array order
 				this.loansYouMightLike = _shuffle(loansYouMightLike);
+
 				// once we have loans flip the switch to show them
 				this.showLYML = this.lymlVariant !== 'control';
 			});
