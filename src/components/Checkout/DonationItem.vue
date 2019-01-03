@@ -45,6 +45,9 @@
 					@click.prevent="enterEditDonation"
 					title="Edit Donation">{{ formattedAmount }}
 					<kv-icon
+						role="img"
+						aria-label="Edit Donation"
+						title="Edit Donation"
 						class="edit-donation"
 						name="pencil"/>
 				</span>
