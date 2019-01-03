@@ -99,7 +99,7 @@ query (
 			}
 		}
 
-		randomLoan: loans (filters: {status: fundRaising}, limit: 3, sortBy: random) {
+		randomLoan: loans (filters: {status: fundRaising}, limit: 4, sortBy: random) {
 			values {
 				id
 				name

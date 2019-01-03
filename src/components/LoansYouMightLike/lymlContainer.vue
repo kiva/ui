@@ -23,42 +23,12 @@
 								v-touch:swipe.right="scrollRowLeft"
 							>
 								<minimal-loan-card
-									v-for="(item, index) in items"
+									v-for="(loan, index) in loansYouMightLike"
 									:key="index"
 									class="inside-scrolling-wrapper"
-									:loan="loan1"
+									:loan="loan"
 									category-set-id="loans-you-might-like"
-									card-number="1"
-									:items-in-basket="itemsInBasket"
-									:enable-tracking="true"
-									@refreshtotals="$emit('refreshtotals')"
-									@updating-totals="$emit('updating-totals', $event)"
-								/>
-								<minimal-loan-card
-									class="inside-scrolling-wrapper"
-									:loan="loan2"
-									category-set-id="loans-you-might-like"
-									card-number="2"
-									:items-in-basket="itemsInBasket"
-									:enable-tracking="true"
-									@refreshtotals="$emit('refreshtotals')"
-									@updating-totals="$emit('updating-totals', $event)"
-								/>
-								<minimal-loan-card
-									class="inside-scrolling-wrapper"
-									:loan="loan3"
-									category-set-id="loans-you-might-like"
-									card-number="3"
-									:items-in-basket="itemsInBasket"
-									:enable-tracking="true"
-									@refreshtotals="$emit('refreshtotals')"
-									@updating-totals="$emit('updating-totals', $event)"
-								/>
-								<minimal-loan-card
-									class="inside-scrolling-wrapper"
-									:loan="loan4"
-									category-set-id="loans-you-might-like"
-									card-number="4"
+									:card-number="index"
 									:items-in-basket="itemsInBasket"
 									:enable-tracking="true"
 									@refreshtotals="$emit('refreshtotals')"
@@ -80,6 +50,7 @@
 
 <script>
 import _get from 'lodash/get';
+import _shuffle from 'lodash/shuffle';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
 import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
@@ -118,6 +89,9 @@ export default {
 		sameActivity() {
 			return this.hasLoansInBasket ? [this.loans[0].loan.activity.id] : [120];
 		},
+		sameSector() {
+			return this.hasLoansInBasket ? [this.loans[0].loan.sector.id] : [1];
+		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
@@ -141,10 +115,7 @@ export default {
 			showLYML: false,
 			lymlVariant: null,
 			randomLoan: [],
-			loan1: null,
-			loan2: null,
-			loan3: null,
-			loan4: null,
+			loansYouMightLike: [],
 			loading: false,
 			scrollPos: 0,
 			windowWidth: 0,
@@ -205,34 +176,33 @@ export default {
 					sector: this.sameSector
 				}
 			}).then(data => {
+				const loansYouMightLike = [];
 				const randomLoans = _get(data.data.lend, 'randomLoan.values');
-				this.loan3 = randomLoans[0]; // eslint-disable-line
 
-				// new data item that's an array, then push loans into it.
-				// run shuffle on it.
-				// const lymlLoans = [];
+				loansYouMightLike.push(randomLoans[0]);
 
 				// same Country loans
 				if (this.hasLoansInBasket && data.data.lend.sameCountry) {
-					this.loan1 = _get(data.data.lend, 'sameCountry.values[0]');
+					loansYouMightLike.push(_get(data.data.lend, 'sameCountry.values[0]'));
 				} else {
-					this.loan1 = randomLoans[1]; // eslint-disable-line
+					loansYouMightLike.push(randomLoans[1]);
 				}
 
 				// same Activity loans
 				if (this.hasLoansInBasket && data.data.lend.sameActivity) {
-					this.loan2 = _get(data.data.lend, 'sameActivity.values[0]');
+					loansYouMightLike.push(_get(data.data.lend, 'sameActivity.values[0]'));
 				} else {
-					this.loan2 = randomLoans[2]; // eslint-disable-line
+					loansYouMightLike.push(randomLoans[2]);
 				}
 
 				// same Sector loans
 				if (this.hasLoansInBasket && data.data.lend.sameSector) {
-					this.loan4 = _get(data.data.lend, 'sameSector.values[0]');
+					loansYouMightLike.push(_get(data.data.lend, 'sameSector.values[0]'));
 				} else {
-					this.loan4 = randomLoans[3]; // eslint-disable-line
+					loansYouMightLike.push(randomLoans[3]);
 				}
-
+				// randomize array order
+				this.loansYouMightLike = _shuffle(loansYouMightLike);
 				// once we have loans flip the switch to show them
 				this.showLYML = this.lymlVariant !== 'control';
 			});

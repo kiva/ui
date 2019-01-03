@@ -85,8 +85,8 @@ export default {
 			}
 		},
 		cardNumber: {
-			type: String,
-			default: ''
+			type: Number,
+			default: 0
 		},
 		isVisitor: {
 			type: Boolean,
