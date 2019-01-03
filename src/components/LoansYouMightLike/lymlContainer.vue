@@ -161,7 +161,7 @@ export default {
 						this.$kvTrackEvent('basket', 'EXP-CASH-101-Dec2018', this.showLYML ? 'b' : 'a');
 					}
 
-					if (this.lymlVariant === 'variant-a') {
+					if (this.lymlVariant === 'variant-a' || this.lymlVariant === 'variant-b') {
 						this.getLoansYouMightLike();
 					}
 				}).catch(Promise.reject);
@@ -183,23 +183,27 @@ export default {
 
 				// same Country loans
 				if (this.hasLoansInBasket && data.data.lend.sameCountry) {
-					loansYouMightLike.push(_get(data.data.lend, 'sameCountry.values[0]'));
+					loansYouMightLike.push(_get(data.data.lend, 'sameCountry.values[1]'));
 				} else {
 					loansYouMightLike.push(randomLoans[1]);
 				}
 
 				// same Activity loans
 				if (this.hasLoansInBasket && data.data.lend.sameActivity) {
-					loansYouMightLike.push(_get(data.data.lend, 'sameActivity.values[0]'));
+					loansYouMightLike.push(_get(data.data.lend, 'sameActivity.values[1]'));
 				} else {
 					loansYouMightLike.push(randomLoans[2]);
 				}
 
 				// same Sector loans
-				if (this.hasLoansInBasket && data.data.lend.sameSector) {
-					loansYouMightLike.push(_get(data.data.lend, 'sameSector.values[0]'));
-				} else {
-					loansYouMightLike.push(randomLoans[3]);
+				// if user is in variant-b we add an additional loan card from the same sector
+				// as the first loan in the basket.
+				if (this.lymlVariant === 'variant-b') {
+					if (this.hasLoansInBasket && data.data.lend.sameSector) {
+						loansYouMightLike.push(_get(data.data.lend, 'sameSector.values[1]'));
+					} else {
+						loansYouMightLike.push(randomLoans[3]);
+					}
 				}
 				// randomize array order
 				this.loansYouMightLike = _shuffle(loansYouMightLike);
