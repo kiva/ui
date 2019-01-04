@@ -29,6 +29,12 @@ export default context => {
 		} = createApp({
 			appConfig: config,
 			apollo: {
+				auth0: {
+					clientID: config.auth0ClientID,
+					domain: config.auth0Domain,
+					user: { id: 1 },
+					token: 'fake-token',
+				},
 				cookieStore,
 				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 				uri: config.graphqlUri,

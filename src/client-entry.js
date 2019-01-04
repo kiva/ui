@@ -23,6 +23,10 @@ const {
 } = createApp({
 	appConfig: config,
 	apollo: {
+		auth0: {
+			clientID: config.auth0ClientID,
+			domain: config.auth0Domain,
+		},
 		cookieStore,
 		uri: config.graphqlUri,
 		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
