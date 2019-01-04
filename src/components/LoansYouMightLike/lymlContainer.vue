@@ -133,7 +133,6 @@ export default {
 			if (this.showLYML === true) {
 				this.$nextTick(() => {
 					this.saveWindowWidth();
-					// window.addEventListener('resize', this.throttledResize);
 				});
 			}
 		}
