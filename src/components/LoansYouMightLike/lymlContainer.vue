@@ -70,11 +70,7 @@ export default {
 		loans: {
 			type: Array,
 			default: () => [],
-		},
-		items: {
-			type: Array,
-			default: () => []
-		},
+		}
 	},
 	computed: {
 		itemsInBasket() {
@@ -164,7 +160,7 @@ export default {
 						} else if (this.lymlVariant === 'variant-b') {
 							version = 'c';
 						}
-						this.$kvTrackEvent('basket', 'lyml', version);
+						this.$kvTrackEvent('basket', 'EXP-lyml', version);
 					}
 
 					if (this.lymlVariant === 'variant-a' || this.lymlVariant === 'variant-b') {
