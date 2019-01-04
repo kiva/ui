@@ -66,14 +66,15 @@
 					Basket
 				</span>
 			</router-link>
-			<router-link
+			<a
 				v-if="isVisitor"
-				to="/login"
+				href="/login"
 				class="header-button"
+				@click.prevent="auth0Login"
 				v-kv-track-event="['TopNav','click-Sign-in']"
 			>
 				<span>Sign in</span>
-			</router-link>
+			</a>
 			<router-link
 				v-else
 				:id="myKivaMenuId"
@@ -246,6 +247,7 @@
 </template>
 
 <script>
+import { WebAuth } from 'auth0-js';
 import _get from 'lodash/get';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
@@ -263,7 +265,7 @@ export default {
 		PromoBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'auth0Config'],
 	data() {
 		return {
 			isVisitor: true,
@@ -312,6 +314,21 @@ export default {
 		},
 	},
 	methods: {
+		auth0Login() {
+			const webAuth = new WebAuth({
+				domain: this.auth0Config.domain,
+				clientID: this.auth0Config.clientID,
+			});
+			const path = this.$router.resolve('/process-browser-auth').href;
+			webAuth.popup.authorize({
+				redirectUri: `${window.location.origin}${path}`,
+				responseType: 'token id_token',
+			}, (err, authResult) => {
+				// do something
+				if (err) console.error(err);
+				console.log(authResult);
+			});
+		},
 		onLendMenuShow() {
 			this.$refs.lendMenu.onOpen();
 		},

@@ -48,7 +48,11 @@ export default function createApp({ apollo = {}, appConfig = {} } = {}) {
 				algoliaAppId: appConfig.algoliaAppId,
 				algoliaApiKey: appConfig.algoliaApiKey,
 				algoliaDefaultIndex: appConfig.algoliaDefaultIndex
-			}
+			},
+			auth0Config: {
+				clientID: appConfig.auth0ClientID,
+				domain: appConfig.auth0Domain,
+			},
 		}
 	});
 
