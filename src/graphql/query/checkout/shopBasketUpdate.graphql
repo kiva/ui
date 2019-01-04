@@ -40,6 +40,7 @@ query {
 							loanAmount
 							plannedExpirationDate
 							sector {
+								id
 								name
 							}
 							activity {

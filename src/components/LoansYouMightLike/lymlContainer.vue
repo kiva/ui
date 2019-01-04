@@ -1,6 +1,9 @@
 <template>
 	<transition name="kvfade">
-		<div class="lyml-section-wrapper" v-if="showLYML">
+		<div
+			class="lyml-section-wrapper"
+			:class="cardClass"
+			v-if="showLYML">
 			<div class="lyml-section-container">
 				<div id="lyml-row-title" class="row">
 					<div class="column">
@@ -59,8 +62,8 @@ import expSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import expAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const minWidthToShowLargeCards = 0;
-const smallCardWidthPlusPadding = 200;
-const largeCardWidthPlusPadding = 200;
+const smallCardWidthPlusPadding = 190;
+const largeCardWidthPlusPadding = 190;
 
 export default {
 	components: {
@@ -97,14 +100,19 @@ export default {
 				: smallCardWidthPlusPadding;
 		},
 		minLeftMargin() {
-			return (3 - this.cardsInWindow) * -this.cardWidth;
+			const cardCount = this.lymlVariant === 'variant-a' ? 3 : 4;
+			return (cardCount - this.cardsInWindow) * -this.cardWidth;
 		},
 		throttledResize() {
 			return _throttle(this.saveWindowWidth, 100);
 		},
 		shiftIncrement() {
-			return this.cardsInWindow * this.cardWidth;
+			// multiple number of cards by card width to shift a full set ie. this.cardsInWindow * this.cardWidth;
+			return this.cardWidth;
 		},
+		cardClass() {
+			return this.lymlVariant === 'variant-a' ? 'three-cards' : 'four-cards';
+		}
 	},
 	data() {
 		return {
@@ -125,7 +133,7 @@ export default {
 			if (this.showLYML === true) {
 				this.$nextTick(() => {
 					this.saveWindowWidth();
-					window.addEventListener('resize', this.throttledResize);
+					// window.addEventListener('resize', this.throttledResize);
 				});
 			}
 		}
@@ -133,6 +141,7 @@ export default {
 	mounted() {
 		// we're doing this all client side
 		this.activateLoansYouMightLike();
+		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
@@ -160,7 +169,7 @@ export default {
 						} else if (this.lymlVariant === 'variant-b') {
 							version = 'c';
 						}
-						this.$kvTrackEvent('basket', 'EXP-lyml', version);
+						this.$kvTrackEvent('basket', 'EXP-lyml-checkout', version);
 					}
 
 					if (this.lymlVariant === 'variant-a' || this.lymlVariant === 'variant-b') {
@@ -247,7 +256,6 @@ export default {
 }
 
 .lyml-section-container {
-	max-width: rem-calc(672);
 	margin: 0 auto;
 }
 
@@ -312,14 +320,19 @@ export default {
 	}
 }
 
-@include breakpoint(xlarge) {
-	.arrow {
-		display: none;
+/* 3 card 43rem */
+.three-cards {
+	#lyml-row-title,
+	#lyml-row-cards {
+		max-width: rem-calc(672);
 	}
 }
 
-#lyml-row-title,
-#lyml-row-cards {
-	max-width: rem-calc(672);
+/* 4 card 54rem */
+.four-cards {
+	#lyml-row-title,
+	#lyml-row-cards {
+		max-width: 54rem;
+	}
 }
 </style>
