@@ -18,7 +18,9 @@ module.exports = {
 		fbPixelId: '1531213600467139',
 		fbOgNameSpace: 'kivadotorg',
 		enableSentry: true,
-		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288'
+		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288',
+		auth0ClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
+		auth0Domain: 'login.dev.kiva.org',
 	},
 	server: {
 		port: 8888,
