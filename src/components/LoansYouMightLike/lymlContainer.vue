@@ -156,9 +156,15 @@ export default {
 					// update our values
 					this.lymlVariant = _get(expAssignment, 'data.experiment.version');
 
-					// CASH-101 EXP track loans you might like visibilty
+					// track loans you might like version visibility
 					if (this.lymlVariant !== null) {
-						this.$kvTrackEvent('basket', 'EXP-CASH-101-Dec2018', this.showLYML ? 'b' : 'a');
+						let version = 'a';
+						if (this.lymlVariant === 'variant-a') {
+							version = 'b';
+						} else if (this.lymlVariant === 'variant-b') {
+							version = 'c';
+						}
+						this.$kvTrackEvent('basket', 'lyml', version);
 					}
 
 					if (this.lymlVariant === 'variant-a' || this.lymlVariant === 'variant-b') {
