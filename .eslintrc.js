@@ -27,7 +27,7 @@ module.exports = {
 	// add your custom rules here
 	rules: {
 		// tabs not spaces
-		'indent': ['error', 'tab'],
+		'indent': ['error', 'tab', { SwitchCase: 1 }],
 		'no-tabs': 'off',
 		'vue/html-indent': ['error', 'tab'],
 		// max line length 120
