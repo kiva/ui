@@ -23,30 +23,12 @@
 								v-touch:swipe.right="scrollRowLeft"
 							>
 								<minimal-loan-card
+									v-for="(loan, index) in loansYouMightLike"
+									:key="index"
 									class="inside-scrolling-wrapper"
-									:loan="loan1"
+									:loan="loan"
 									category-set-id="loans-you-might-like"
-									card-number="1"
-									:items-in-basket="itemsInBasket"
-									:enable-tracking="true"
-									@refreshtotals="$emit('refreshtotals')"
-									@updating-totals="$emit('updating-totals', $event)"
-								/>
-								<minimal-loan-card
-									class="inside-scrolling-wrapper"
-									:loan="loan2"
-									category-set-id="loans-you-might-like"
-									card-number="2"
-									:items-in-basket="itemsInBasket"
-									:enable-tracking="true"
-									@refreshtotals="$emit('refreshtotals')"
-									@updating-totals="$emit('updating-totals', $event)"
-								/>
-								<minimal-loan-card
-									class="inside-scrolling-wrapper"
-									:loan="loan3"
-									category-set-id="loans-you-might-like"
-									card-number="3"
+									:card-number="index"
 									:items-in-basket="itemsInBasket"
 									:enable-tracking="true"
 									@refreshtotals="$emit('refreshtotals')"
@@ -68,6 +50,7 @@
 
 <script>
 import _get from 'lodash/get';
+import _shuffle from 'lodash/shuffle';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
 import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
@@ -87,7 +70,7 @@ export default {
 		loans: {
 			type: Array,
 			default: () => [],
-		},
+		}
 	},
 	computed: {
 		itemsInBasket() {
@@ -101,6 +84,9 @@ export default {
 		},
 		sameActivity() {
 			return this.hasLoansInBasket ? [this.loans[0].loan.activity.id] : [120];
+		},
+		sameSector() {
+			return this.hasLoansInBasket ? [this.loans[0].loan.sector.id] : [1];
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
@@ -125,9 +111,7 @@ export default {
 			showLYML: false,
 			lymlVariant: null,
 			randomLoan: [],
-			loan1: null,
-			loan2: null,
-			loan3: null,
+			loansYouMightLike: [],
 			loading: false,
 			scrollPos: 0,
 			windowWidth: 0,
@@ -168,12 +152,18 @@ export default {
 					// update our values
 					this.lymlVariant = _get(expAssignment, 'data.experiment.version');
 
-					// CASH-101 EXP track loans you might like visibilty
+					// track loans you might like version visibility
 					if (this.lymlVariant !== null) {
-						this.$kvTrackEvent('basket', 'EXP-CASH-101-Dec2018', this.showLYML ? 'b' : 'a');
+						let version = 'a';
+						if (this.lymlVariant === 'variant-a') {
+							version = 'b';
+						} else if (this.lymlVariant === 'variant-b') {
+							version = 'c';
+						}
+						this.$kvTrackEvent('basket', 'EXP-lyml', version);
 					}
 
-					if (this.lymlVariant === 'variant-a') {
+					if (this.lymlVariant === 'variant-a' || this.lymlVariant === 'variant-b') {
 						this.getLoansYouMightLike();
 					}
 				}).catch(Promise.reject);
@@ -184,25 +174,41 @@ export default {
 				query: loansYouMightLikeData,
 				variables: {
 					country: this.sameCountry,
-					activity: this.sameActivity
+					activity: this.sameActivity,
+					sector: this.sameSector
 				}
 			}).then(data => {
+				const loansYouMightLike = [];
 				const randomLoans = _get(data.data.lend, 'randomLoan.values');
-				this.loan3 = randomLoans[0]; // eslint-disable-line
+
+				loansYouMightLike.push(randomLoans[0]);
 
 				// same Country loans
 				if (this.hasLoansInBasket && data.data.lend.sameCountry) {
-					this.loan1 = _get(data.data.lend, 'sameCountry.values[0]');
+					loansYouMightLike.push(_get(data.data.lend, 'sameCountry.values[1]'));
 				} else {
-					this.loan1 = randomLoans[1]; // eslint-disable-line
+					loansYouMightLike.push(randomLoans[1]);
 				}
 
 				// same Activity loans
 				if (this.hasLoansInBasket && data.data.lend.sameActivity) {
-					this.loan2 = _get(data.data.lend, 'sameActivity.values[0]');
+					loansYouMightLike.push(_get(data.data.lend, 'sameActivity.values[1]'));
 				} else {
-					this.loan2 = randomLoans[2]; // eslint-disable-line
+					loansYouMightLike.push(randomLoans[2]);
 				}
+
+				// same Sector loans
+				// if user is in variant-b we add an additional loan card from the same sector
+				// as the first loan in the basket.
+				if (this.lymlVariant === 'variant-b') {
+					if (this.hasLoansInBasket && data.data.lend.sameSector) {
+						loansYouMightLike.push(_get(data.data.lend, 'sameSector.values[1]'));
+					} else {
+						loansYouMightLike.push(randomLoans[3]);
+					}
+				}
+				// randomize array order
+				this.loansYouMightLike = _shuffle(loansYouMightLike);
 
 				// once we have loans flip the switch to show them
 				this.showLYML = this.lymlVariant !== 'control';
