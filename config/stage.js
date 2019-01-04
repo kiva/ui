@@ -5,8 +5,8 @@ module.exports = merge(base, {
 	app: {
 		publicPath: 'https://www-stage-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.stage.kiva.org/ajax/graphql',
-		enablePerimeterx: true,
-		perimeterxAppId: 'PX5u4Lz98O',
+		enablePerimeterx: false,
+		perimeterxAppId: '####',
 		enableAnalytics: true,
 		enableGTM: true,
 		googleTagmanagerId: 'GTM-K6HR28',
