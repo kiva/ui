@@ -262,6 +262,7 @@ export default {
 	font-weight: 400;
 	margin-bottom: 1rem;
 	line-height: 0.8;
+	margin-left: 1.9rem;
 }
 
 .arrow {
