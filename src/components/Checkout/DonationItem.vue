@@ -379,7 +379,7 @@ export default {
 	border: 1px solid $light-gray;
 	height: rem-calc(71);
 	width: rem-calc(71);
-	padding: rem-calc(4);
+	padding: rem-calc(12);
 
 	@include breakpoint(medium) {
 		height: rem-calc(80);
