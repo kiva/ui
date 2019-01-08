@@ -33,10 +33,4 @@ query (
 		# 	}
 		# }
 	}
-	# example aliased call to loans; place whatever query is necessary here
-	# recentlyViewed: general {
-	# 	userSessionData(sessionKey: LastViewedLoans) {
-	# 		data
-	# 	}
-	# }
 }
