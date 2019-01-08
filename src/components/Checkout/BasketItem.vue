@@ -98,13 +98,13 @@ export default {
 
 .basket-item-wrapper {
 	margin-bottom: rem-calc(30);
-	padding-right: rem-calc(20);
+	// padding-right: rem-calc(20);
 }
 
-.borrower-info-wrapper,
-.loan-res-price-wrapper {
-	padding-left: rem-calc(10);
-}
+// .borrower-info-wrapper,
+// .loan-res-price-wrapper {
+// 	padding-left: rem-calc(10);
+// }
 
 .borrower-info {
 	line-height: 0.8;

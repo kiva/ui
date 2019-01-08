@@ -367,10 +367,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.basket-donation-item {
-	padding-right: rem-calc(20);
-}
-
 .donation-icon {
 	padding: 0;
 }
@@ -387,9 +383,9 @@ export default {
 	}
 }
 
-.donation-info-wrapper {
-	padding-left: rem-calc(10);
-}
+// .donation-info-wrapper {
+// 	padding-left: rem-calc(10);
+// }
 
 .donation-info {
 	line-height: 0.8;
@@ -503,7 +499,7 @@ input {
 	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
-		padding: rem-calc(6) 1.1rem;
+		padding: rem-calc(6) 0;
 		margin-bottom: rem-calc(19);
 		width: inherit;
 		font-size: $normal-text-font-size;
