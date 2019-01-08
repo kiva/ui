@@ -1,11 +1,11 @@
 <template>
 	<div class="basket-donation-item row">
-		<span class="small-3 large-2">
+		<span class="hide-for-small-only medium-3 large-2">
 			<span class="donation-icon">
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-5 large-7 donation-info-wrapper">
+		<span class="small-12 medium-5 large-7 donation-info-wrapper">
 			<span class="donation-info featured-text">
 				Donation to Kiva
 			</span>
@@ -34,8 +34,8 @@
 				</a>
 			</div>
 		</span>
-		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-4 large-3 medium-text-font-size">
+		<!-- <span class="small-3 show-for-small-only"></span> -->
+		<span class="small-12 medium-4 large-3 medium-text-font-size">
 			<div
 				v-show="!editDonation"
 				class="donation-amount-wrapper">
