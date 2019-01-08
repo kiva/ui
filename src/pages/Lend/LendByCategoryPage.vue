@@ -94,6 +94,7 @@ import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
+// import loansByIdQuery from '@/graphql/query/loansById.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
@@ -101,7 +102,7 @@ import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
 // You'll need use the same id when you push data into customCategories
-const customCategoryIds = [];
+const customCategoryIds = []; // 64
 
 export default {
 	components: {
@@ -133,9 +134,10 @@ export default {
 			return _map(this.categorySetting, 'id');
 		},
 		categories() {
-			// merge realCategories & customCategories and re-order to match the setting
+			// merge realCategories & customCategories
 			const categories = this.realCategories.concat(this.customCategories);
-			return categories.sort(indexIn(this.categoryIds, 'id'));
+			// fiter our any empty categories and re-order to match the setting
+			return categories.filter(channel => channel.loans !== null).sort(indexIn(this.categoryIds, 'id'));
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
@@ -192,15 +194,25 @@ export default {
 		setCustomRowData(data) { // eslint-disable-line
 			this.customCategories = [];
 			// check for loans before pushing this as we won't want to show an empty row
-			// const someCustomLoans = _get(data, 'lend.someLoans.values') || [];
-			// if (someCustomLoans.length) {
-			// 	this.customCategories.push({
-			// 		id: 62,
-			// 		name: 'Custom category',
-			// 		url: '', // required field
-			// 		loans: {
-			// 			values: someCustomLoans,
-			// 		},
+			// const recentlyViewedLoanIDs = JSON.parse(_get(data, 'recentlyViewed.userSessionData.data')) || [];
+			// if (recentlyViewedLoanIDs.length) {
+			// 	// fetch our recently viewed loans
+			// 	this.apollo.query({
+			// 		query: loansByIdQuery,
+			// 		variables: {
+			// 			ids: recentlyViewedLoanIDs
+			// 		}
+			// 	}).then(loanData => {
+			// 		console.log(loanData);
+			// 		// push loans into data set
+			// 		this.customCategories = {
+			// 			id: 64,
+			// 			name: 'Recently Viewed Loans',
+			// 			url: '', // required field
+			// 			loans: {
+			// 				values: _get(loanData, 'data.lend.loans.values')
+			// 			},
+			// 		};
 			// 	});
 			// }
 
@@ -279,7 +291,7 @@ export default {
 		});
 		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
 		// update our custom categories prior to render
-		this.setCustomRowData(categoryData);
+		// this.setCustomRowData(categoryData);
 
 		// Create an observer for changes to the categories (and their loans)
 		const categoryObserver = this.apollo.watchQuery({
@@ -309,7 +321,7 @@ export default {
 			next: ({ data }) => {
 				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
 				// update our custom categories on any query change
-				this.setCustomRowData(data);
+				// this.setCustomRowData(data);
 			},
 		});
 
