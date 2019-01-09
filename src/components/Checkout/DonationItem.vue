@@ -414,10 +414,6 @@ export default {
 		font-weight: $global-weight-highlight;
 		font-size: $medium-text-font-size;
 
-		@include breakpoint(medium) {
-			font-size: inherit;
-		}
-
 		.edit-donation {
 			width: 1rem;
 			height: 1rem;
@@ -454,7 +450,6 @@ export default {
 
 	@include breakpoint(medium) {
 		width: rem-calc(90);
-		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
 }

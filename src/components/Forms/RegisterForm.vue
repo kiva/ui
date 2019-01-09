@@ -88,7 +88,7 @@
 					</div>
 				</label>
 				<p v-if="passwordErrors.length">
-					<ul class="validation-errors">
+					<ul class="validation-errors password-validation-errors">
 						<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
 					</ul>
 				</p>
@@ -425,11 +425,18 @@ $loan-card-meter-height: rem-calc(8);
 		margin: 1rem 0;
 
 		li {
+			top: rem-calc(-20);
+			position: relative;
 			list-style: none;
 			color: $kiva-accent-red;
 			font-weight: $global-weight-highlight;
 			font-size: $small-text-font-size;
 		}
+	}
+	// this custom negative top spacing places the error msg above the validation bar
+	// closer to the input field
+	.password-validation-errors li {
+		top: rem-calc(-44);
 	}
 
 	.featured-text {
