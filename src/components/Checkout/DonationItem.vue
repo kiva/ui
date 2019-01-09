@@ -450,7 +450,6 @@ export default {
 
 	@include breakpoint(medium) {
 		width: rem-calc(90);
-		// font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
 }
