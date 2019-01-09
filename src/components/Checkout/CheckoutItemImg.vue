@@ -37,8 +37,8 @@ export default {
 	width: rem-calc(71);
 
 	@include breakpoint(medium) {
-		height: rem-calc(55);
-		width: rem-calc(55);
+		height: rem-calc(80);
+		width: rem-calc(80);
 	}
 }
 

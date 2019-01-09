@@ -1,7 +1,7 @@
 <template>
-	<div class="order-totals">
-		<div v-if="showKivaCredit" class="kiva-credit">
-			<p>
+	<div class="row">
+		<div class="order-totals small-12 text-right">
+			<div v-if="showKivaCredit" class="kiva-credit">
 				<span v-if="showRemoveKivaCredit">
 					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 				</span>
@@ -18,10 +18,10 @@
 					v-if="showApplyKivaCredit"
 					class="apply-credit small-text"
 					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
-			</p>
-		</div>
-		<div class="order-total">
-			<p><strong>Total: <span class="total-value">{{ orderTotal }}</span></strong></p>
+			</div>
+			<div class="order-total">
+				<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
+			</div>
 		</div>
 	</div>
 </template>
@@ -114,17 +114,17 @@ export default {
 @import 'settings';
 
 .order-totals {
-	margin: $featured-text-line-height $list-side-margin;
-	text-align: center;
-
-	@include breakpoint(medium) {
-		text-align: right;
-	}
+	max-width: rem-calc(800);
+	margin: 0 auto;
 
 	.kiva-credit {
 		font-weight: $global-weight-highlight;
 		margin-bottom: 1rem;
 		font-size: rem-calc(18);
+
+		.remove-credit {
+			margin-left: 0.625rem;
+		}
 
 		.icon-small-x {
 			display: inline-block;
@@ -141,11 +141,12 @@ export default {
 
 	.order-total {
 		font-size: $featured-text-font-size;
+		margin-bottom: 1rem;
 	}
 
 	.total-value {
 		display: inline-block;
-		margin-left: 5px;
+		margin-left: rem-calc(5);
 	}
 }
 </style>

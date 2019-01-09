@@ -100,20 +100,22 @@
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals" />
 
-						<div v-if="isLoggedIn" class="checkout-actions">
-							<pay-pal-exp
-								v-if="showPayPal"
-								:amount="creditNeeded"
-								@refreshtotals="refreshTotals"
-								@updating-totals="setUpdatingTotals" />
+						<div v-if="isLoggedIn" class="checkout-actions row">
+							<div class="small-12">
+								<pay-pal-exp
+									v-if="showPayPal"
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals" />
 
-							<kv-button
-								v-else
-								type="submit"
-								class="smaller checkout-button"
-								v-kv-track-event="['payment.continueBtn']"
-								title="Checkout using your Kiva credit"
-								@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								<kv-button
+									v-else
+									type="submit"
+									class="smaller checkout-button"
+									v-kv-track-event="['payment.continueBtn']"
+									title="Checkout using your Kiva credit"
+									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+							</div>
 						</div>
 
 						<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
@@ -502,7 +504,7 @@ export default {
 		margin: 1rem 0 2rem;
 
 		hr {
-			border-bottom: 1px solid $light-gray;
+			border-bottom: 1px solid $subtle-gray;
 			margin: 2.5rem 0;
 		}
 
@@ -514,8 +516,8 @@ export default {
 
 			&.number-icon {
 				background: $white;
-				color: $light-gray;
-				border: 1px solid $light-gray;
+				color: $subtle-gray;
+				border: 1px solid $subtle-gray;
 				border-radius: 1.7rem;
 				font-size: 1.7rem;
 				text-align: center;
@@ -549,7 +551,7 @@ export default {
 		.v-divider {
 			width: 1px;
 			height: 100%;
-			background: $light-gray;
+			background: $subtle-gray;
 			margin: 0 auto;
 		}
 
@@ -622,7 +624,8 @@ export default {
 		}
 
 		.checkout-actions {
-			margin: $list-side-margin;
+			max-width: rem-calc(800);
+			margin: 0 auto;
 
 			.checkout-button {
 				width: 100%;
