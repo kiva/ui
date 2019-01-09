@@ -383,10 +383,6 @@ export default {
 	}
 }
 
-// .donation-info-wrapper {
-// 	padding-left: rem-calc(10);
-// }
-
 .donation-info {
 	line-height: 0.8;
 	font-weight: $global-weight-highlight;

@@ -28,7 +28,6 @@
 				/>
 			</span>
 		</span>
-		<!-- <span class="small-3 show-for-small-only"></span> -->
 		<span class="small-12 medium-4 large-3 loan-res-price-wrapper">
 			<loan-price
 				:price="loan.price"
@@ -98,13 +97,7 @@ export default {
 
 .basket-item-wrapper {
 	margin-bottom: rem-calc(30);
-	// padding-right: rem-calc(20);
 }
-
-// .borrower-info-wrapper,
-// .loan-res-price-wrapper {
-// 	padding-left: rem-calc(10);
-// }
 
 .borrower-info {
 	line-height: 0.8;

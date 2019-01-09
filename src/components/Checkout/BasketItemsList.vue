@@ -80,10 +80,6 @@ export default {
 .basket-items-list {
 	max-width: 800px;
 	margin: 0 auto;
-
-	// @include breakpoint(medium) {
-		// margin: $list-side-margin $list-side-margin 2rem;
-	// }
 }
 
 .basket-items-list ul {

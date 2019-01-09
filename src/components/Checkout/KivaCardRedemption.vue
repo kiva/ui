@@ -179,54 +179,26 @@ export default {
 @import "settings";
 @import "global/transitions";
 
-// .kiva-card-entry-wrapper {
-// 	@include breakpoint(medium) {
-// 		margin: $list-side-margin;
-// 	}
-// }
-
-// .kiva-card-toggle-wrapper {
-// 	display: flex;
-// 	align-items: center;
-// }
+div.columns .kiva-card-entry-wrapper {
+	max-width: rem-calc(800);
+	margin: 0 auto;
+}
 
 .toggle-arrow {
 	transition: transform 300ms ease;
 	display: block;
 	height: rem-calc(40);
 	width: rem-calc(40);
-	// margin-right: rem-calc(22);
+	margin: 0 auto;
 }
 
 .accordion-title {
-	// padding-left: rem-calc(12);
 	font-weight: $global-weight-highlight;
 
 	&:hover {
 		cursor: pointer;
 	}
 }
-
-// .accordion-info {
-	// text-align: center;
-
-	// @include breakpoint(medium) {
-	// 	// margin-left: 16%;
-	// 	text-align: unset;
-	// }
-
-	// @include breakpoint(large) {
-	// 	margin-left: 14%;
-	// }
-
-	// @include breakpoint(xlarge) {
-	// 	margin-left: 12%;
-	// }
-
-	// @include breakpoint(xxlarge) {
-	// 	margin-left: 8%;
-	// }
-// }
 
 .flipped {
 	transform: rotate(180deg);
@@ -238,7 +210,7 @@ export default {
 	box-shadow: 0 1px $kiva-accent-blue;
 	visibility: visible;
 	font-size: $medium-text-font-size;
-	margin-top: 15px;
+	margin-top: rem-calc(15);
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
@@ -287,7 +259,6 @@ export default {
 	border-radius: $button-radius;
 	font-weight: 300;
 	text-align: center;
-	// margin: rem-calc(15) auto;
 	display: block;
 	height: rem-calc(50);
 	font-size: $medium-text-font-size;
@@ -299,8 +270,8 @@ export default {
 	@include breakpoint(large) {
 		font-size: $normal-text-font-size;
 		float: left;
-		height: rem-calc(36);
-		margin: rem-calc(15) rem-calc(15) rem-calc(15) 0;
+		height: rem-calc(37);
+		margin: rem-calc(15);
 	}
 }
 
