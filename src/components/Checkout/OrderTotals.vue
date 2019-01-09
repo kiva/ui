@@ -141,6 +141,7 @@ export default {
 
 	.order-total {
 		font-size: $featured-text-font-size;
+		margin-bottom: 1rem;
 	}
 
 	.total-value {
