@@ -115,7 +115,7 @@ export default {
 
 .order-totals {
 	max-width: rem-calc(800);
-    margin: 0 auto;
+	margin: 0 auto;
 
 	.kiva-credit {
 		font-weight: $global-weight-highlight;
@@ -123,7 +123,7 @@ export default {
 		font-size: rem-calc(18);
 
 		.remove-credit {
-			margin-left: .625rem;
+			margin-left: 0.625rem;
 		}
 
 		.icon-small-x {
