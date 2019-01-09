@@ -253,7 +253,7 @@ div.columns .kiva-card-entry-wrapper {
 }
 
 .kiva-card-input {
-	width: rem-calc(200);
+	width: rem-calc(240);
 	border: 1px solid $charcoal;
 	color: $charcoal;
 	border-radius: $button-radius;
@@ -268,9 +268,10 @@ div.columns .kiva-card-entry-wrapper {
 	}
 
 	@include breakpoint(large) {
+		width: rem-calc(200);
 		font-size: $normal-text-font-size;
 		float: left;
-		height: rem-calc(37);
+		height: rem-calc(38);
 		margin: rem-calc(15);
 	}
 }
