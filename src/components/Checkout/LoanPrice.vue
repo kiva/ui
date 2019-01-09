@@ -257,7 +257,6 @@ export default {
 	@include breakpoint(medium) {
 		height: inherit;
 		line-height: $medium-text-line-height;
-		font-size: inherit;
 		width: rem-calc(90);
 		background-size: rem-calc(23) rem-calc(20);
 	}

@@ -113,7 +113,7 @@ export default {
 	padding: 0 2.6rem 0 0.5rem;
 	text-indent: 0.02rem;
 	color: $dark-gray;
-	font-weight: $global-weight-highlight;
+	// font-weight: $global-weight-highlight;
 	cursor: pointer;
 
 	@include breakpoint(medium) {

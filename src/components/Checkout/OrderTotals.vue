@@ -1,27 +1,25 @@
 <template>
-	<div class="row">
-		<div class="order-totals small-12 text-right">
-			<div v-if="showKivaCredit" class="kiva-credit">
-				<span v-if="showRemoveKivaCredit">
-					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
-				</span>
-				<span v-if="showApplyKivaCredit">
-					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
-				</span>
-				<a
-					v-if="showRemoveKivaCredit"
-					class="remove-credit"
-					@click.prevent.stop="removeCredit('kiva_credit')">
-					<kv-icon name="small-x" />
-				</a>
-				<a
-					v-if="showApplyKivaCredit"
-					class="apply-credit small-text"
-					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
-			</div>
-			<div class="order-total">
-				<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
-			</div>
+	<div class="order-totals small-12 text-right">
+		<div v-if="showKivaCredit" class="kiva-credit">
+			<span v-if="showRemoveKivaCredit">
+				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
+			</span>
+			<span v-if="showApplyKivaCredit">
+				<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
+			</span>
+			<a
+				v-if="showRemoveKivaCredit"
+				class="remove-credit"
+				@click.prevent.stop="removeCredit('kiva_credit')">
+				<kv-icon name="small-x" />
+			</a>
+			<a
+				v-if="showApplyKivaCredit"
+				class="apply-credit small-text"
+				@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
+		</div>
+		<div class="order-total">
+			<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
 		</div>
 	</div>
 </template>
@@ -120,7 +118,7 @@ export default {
 	.kiva-credit {
 		font-weight: $global-weight-highlight;
 		margin-bottom: 1rem;
-		font-size: rem-calc(18);
+		font-size: $medium-text-font-size;
 
 		.remove-credit {
 			margin-left: 0.625rem;
