@@ -66,15 +66,15 @@
 					Basket
 				</span>
 			</router-link>
-			<a
+			<router-link
 				v-if="isVisitor"
-				href="/ui-login"
+				to="/ui-login"
 				class="header-button"
-				@click.prevent="auth0Login"
+				@click.native="auth0Login"
 				v-kv-track-event="['TopNav','click-Sign-in']"
 			>
 				<span>Sign in</span>
-			</a>
+			</router-link>
 			<router-link
 				v-else
 				:id="myKivaMenuId"
@@ -307,15 +307,18 @@ export default {
 		},
 	},
 	methods: {
-		auth0Login() {
-			this.kvAuth0.popupLogin().finally(() => {
-				this.apollo.query({
-					query: headerQuery,
-					fetchPolicy: 'network-only',
-				}).then(({ data }) => {
-					if (data) this.processResultData(data);
+		auth0Login(event) {
+			if (this.kvAuth0.enabled) {
+				event.preventDefault();
+				this.kvAuth0.popupLogin().finally(() => {
+					this.apollo.query({
+						query: headerQuery,
+						fetchPolicy: 'network-only',
+					}).then(({ data }) => {
+						if (data) this.processResultData(data);
+					});
 				});
-			});
+			}
 		},
 		processResultData(data) {
 			this.isVisitor = !_get(data, 'my.userAccount.id');

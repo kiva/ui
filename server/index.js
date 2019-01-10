@@ -38,10 +38,10 @@ app.use(express.static('dist', {
 app.use(logger.requestLogger);
 
 // Configure session
-app.use('/', sessionRouter(config));
+app.use('/', sessionRouter(config.server));
 
 // Configure auth
-app.use('/', authRouter(config));
+app.use('/', authRouter(config.app));
 
 // Setup Vue Request handler
 app.use(vueMiddleware({

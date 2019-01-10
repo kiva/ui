@@ -1,7 +1,7 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
 import CookieStore from '@/util/CookieStore';
-import KvAuth0 from '@/util/KvAuth0';
+import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
@@ -27,10 +27,15 @@ export default context => {
 		const { accessToken, ...profile } = user;
 		const cookieStore = new CookieStore(cookies);
 
-		const kvAuth0 = new KvAuth0({
-			user: profile,
-			accessToken,
-		});
+		let kvAuth0;
+		if (config.enableAuth0) {
+			kvAuth0 = new KvAuth0({
+				user: profile,
+				accessToken,
+			});
+		} else {
+			kvAuth0 = MockKvAuth0;
+		}
 
 		__webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 

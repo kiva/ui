@@ -19,8 +19,17 @@ module.exports = {
 		fbOgNameSpace: 'kivadotorg',
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288',
-		auth0ClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
+		enableAuth0: false,
+		auth0ApiAudience: 'https://api.dev.kivaws.org/graphql',
+		auth0BrowserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
+		auth0ServerClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
+		auth0BrowserCallbackUri: 'https://www.kiva.org/process-browser-auth',
+		auth0ServerCallbackUri: 'https://www.kiva.org/process-ssr-auth',
 		auth0Domain: 'login.dev.kiva.org',
+		auth0Scope: 'https://www.kiva.org/last_login ' +
+			'https://www.kiva.org/kiva_id ' +
+			'https://www.kiva.org/context.connectionStrategy ' +
+			'openid email profile',
 	},
 	server: {
 		port: 8888,

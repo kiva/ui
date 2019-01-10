@@ -20,9 +20,9 @@ module.exports = function sessionRouter(config = {}) {
 		saveUninitialized: false,
 	};
 
-	if (config.server.memcachedEnabled) {
+	if (config.memcachedEnabled) {
 		sessionOptions.store = new MemcachedStore({
-			servers: [config.server.memcachedServers]
+			servers: [config.memcachedServers]
 		});
 	}
 

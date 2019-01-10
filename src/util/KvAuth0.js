@@ -1,10 +1,14 @@
 export default class KvAuth0 {
 	constructor({
 		accessToken = '',
+		audience,
 		clientID,
 		domain,
-		user = {},
+		redirectUri,
+		scope,
+		user = null,
 	}) {
+		this.enabled = true;
 		this.user = user;
 		this.accessToken = accessToken;
 		this.isServer = typeof window === 'undefined';
@@ -12,15 +16,12 @@ export default class KvAuth0 {
 		if (!this.isServer) {
 			this.webAuth = import('auth0-js').then(({ WebAuth }) => {
 				return new WebAuth({
-					audience: 'https://api.dev.kivaws.org/graphql',
+					audience,
 					clientID,
 					domain,
-					redirectUri: `${window.location.origin}/process-browser-auth`,
+					redirectUri,
 					responseType: 'token id_token',
-					scope: 'https://www.kiva.org/last_login ' +
-						'https://www.kiva.org/kiva_id ' +
-						'https://www.kiva.org/context.connectionStrategy ' +
-						'openid email profile',
+					scope,
 				});
 			});
 		}
@@ -33,7 +34,7 @@ export default class KvAuth0 {
 					case 'login_required':
 					case 'consent_required':
 					case 'interaction_required':
-						this.user = {};
+						this.user = null;
 						this.accessToken = '';
 						console.log(`Auth session not started (${err.error_description})`);
 						resolve();
@@ -79,3 +80,12 @@ export default class KvAuth0 {
 		return this.webAuth.then(webAuth => webAuth.popup.callback());
 	}
 }
+
+export const MockKvAuth0 = {
+	enabled: false,
+	user: {},
+	accessToken: '',
+	checkSession: () => Promise.resolve({}),
+	popupLogin: () => Promise.resolve({}),
+	popupCallback: () => Promise.resolve({}),
+};

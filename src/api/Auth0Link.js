@@ -13,6 +13,8 @@ export default kvAuth0 => {
 	let fetching = 0;
 
 	return setContext((operation, previousContext) => {
+		if (!kvAuth0.enabled) return getAuthContext(previousContext);
+
 		if (kvAuth0.user || fetching > 0) {
 			return getAuthContext(previousContext, kvAuth0.user, kvAuth0.accessToken);
 		}

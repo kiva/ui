@@ -2,7 +2,7 @@
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import CookieStore from '@/util/CookieStore';
-import KvAuth0 from '@/util/KvAuth0';
+import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
@@ -17,10 +17,18 @@ __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 const cookieStore = new CookieStore();
 
 // Create auth instance
-const kvAuth0 = new KvAuth0({
-	clientID: config.auth0ClientID,
-	domain: config.auth0Domain,
-});
+let kvAuth0;
+if (config.enableAuth0) {
+	kvAuth0 = new KvAuth0({
+		audience: config.auth0ApiAudience,
+		clientID: config.auth0BrowserClientID,
+		domain: config.auth0Domain,
+		redirectUri: config.auth0BrowserCallbackUri,
+		scope: config.auth0Scope,
+	});
+} else {
+	kvAuth0 = MockKvAuth0;
+}
 
 // Create the App instance
 const {

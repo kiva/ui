@@ -2,14 +2,21 @@ const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 
-module.exports = function authRouter() {
+module.exports = function authRouter(config = {}) {
 	const router = express.Router();
 
+	if (!config.enableAuth0) {
+		// return routes that redirect to kiva/kiva login
+		router.get('/ui-login', (req, res) => res.redirect('/login'));
+		router.get('/ui-logout', (req, res) => res.redirect('/logout'));
+		return router;
+	}
+
 	passport.use(new Auth0Strategy({
-		domain: 'login.dev.kiva.org',
-		clientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
+		domain: config.auth0Domain,
+		clientID: config.auth0ServerClientID,
 		clientSecret: process.env.UI_AUTH0_CLIENT_SECRET,
-		callbackURL: 'https://dev-vm-01.kiva.org/process-ssr-auth',
+		callbackURL: config.auth0ServerCallbackUri,
 	}, (accessToken, refreshToken, extraParams, profile, done) => {
 		return done(null, { ...profile, accessToken });
 	}));
@@ -27,11 +34,8 @@ module.exports = function authRouter() {
 		}
 		next();
 	}, passport.authenticate('auth0', {
-		audience: 'https://api.dev.kivaws.org/graphql',
-		scope: 'https://www.kiva.org/last_login ' +
-			'https://www.kiva.org/kiva_id ' +
-			'https://www.kiva.org/context.connectionStrategy ' +
-			'openid email profile',
+		audience: config.auth0ApiAudience,
+		scope: config.auth0Scope,
 	}), (req, res) => res.redirect('/')); // not sure about this last bit
 
 	router.get('/ui-logout', (req, res) => {
