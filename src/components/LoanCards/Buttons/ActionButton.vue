@@ -11,6 +11,8 @@
 <script>
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
@@ -47,7 +49,7 @@ export default {
 	},
 	computed: {
 		currentButtonState() {
-			const experimentLendIncrement = true;
+			const experimentLendIncrement = this.lendIncrementExperimentVersion === 'variant-b';
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
@@ -66,6 +68,7 @@ export default {
 	data() {
 		return {
 			isLoading: false,
+			lendIncrementExperimentVersion: '',
 		};
 	},
 	methods: {
@@ -98,8 +101,18 @@ export default {
 			}).finally(() => {
 				this.isLoading = false;
 			});
-		}
-	}
+		},
+		setupExperimentState() {
+			const lendIncrementExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'lend_increment_button' },
+			});
+			this.lendIncrementExperimentVersion = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
+		},
+	},
+	created() {
+		this.setupExperimentState();
+	},
 };
 
 </script>

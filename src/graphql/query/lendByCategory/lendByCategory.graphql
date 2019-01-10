@@ -15,6 +15,10 @@ query {
 			key
 			value
 		}
+		lendIncrementExp: setting(setting: "uiexp.lend_increment_button") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin

@@ -238,6 +238,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
 					// Pre-fetch the assigned version for lbc message
 					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
+					// Pre-fetch the assigned version for lend increment button
+					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -324,6 +326,20 @@ export default {
 				'View all loans',
 			);
 		}
+
+		// Read assigned version of lend increment button experiment
+		/* Add tracking later
+		const lendIncrementExperimentVersion = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'lend_increment_button' },
+		});
+		const lendIncrementExperimentVersionString = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
+		if (lendIncrementExperimentVersionString === 'variant-a') {
+			this.$kvTrackEvent('basket', 'EXP-CASH-103-Jan2019', 'a');
+		} else if (lendIncrementExperimentVersionString === 'variant-b') {
+			this.$kvTrackEvent('basket', 'EXP-CASH-103-Jan2019', 'b');
+		}
+		*/
 	},
 	mounted() {
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
