@@ -39,6 +39,7 @@
 
 				<action-button
 					:loan-id="loan.id"
+					:loan="loan"
 					:items-in-basket="itemsInBasket"
 					:is-lent-to="loan.userProperties.lentTo"
 					:is-funded="isFunded"
