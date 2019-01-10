@@ -2,6 +2,7 @@
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import CookieStore from '@/util/CookieStore';
+import KvAuth0 from '@/util/KvAuth0';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
@@ -15,6 +16,12 @@ __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 // Create cookie store
 const cookieStore = new CookieStore();
 
+// Create auth instance
+const kvAuth0 = new KvAuth0({
+	clientID: config.auth0ClientID,
+	domain: config.auth0Domain,
+});
+
 // Create the App instance
 const {
 	app,
@@ -23,15 +30,12 @@ const {
 } = createApp({
 	appConfig: config,
 	apollo: {
-		auth0: {
-			clientID: config.auth0ClientID,
-			domain: config.auth0Domain,
-		},
 		cookieStore,
-		uri: config.graphqlUri,
 		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
+		uri: config.graphqlUri,
 		types: config.graphqlFragmentTypes,
-	}
+	},
+	kvAuth0,
 });
 
 // Apply Server state to Client Store

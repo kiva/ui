@@ -1,65 +1,31 @@
 import { setContext } from 'apollo-link-context';
-import { WebAuth } from 'auth0-js';
+import _set from 'lodash/set';
 
-function getAuthContext({ headers, ...context }, user, token) {
-	return {
-		...context,
-		user,
-		headers: {
-			...headers,
-			authorization: token ? `Bearer ${token}` : undefined,
-		}
-	};
+function getAuthContext(context, user, token) {
+	_set(context, 'user', user);
+	if (token) {
+		_set(context, 'headers.authorization', `Bearer ${token}`);
+	}
+	return context;
 }
 
-export default options => {
-	let token;
-	let user;
+export default kvAuth0 => {
 	let fetching = 0;
 
 	return setContext((operation, previousContext) => {
-		if (options.user || user || fetching > 0) {
-			user = options.user || user;
-			token = options.token || token;
-			console.log('Using cached auth info');
-			return getAuthContext(previousContext, user, token);
+		if (kvAuth0.user || fetching > 0) {
+			return getAuthContext(previousContext, kvAuth0.user, kvAuth0.accessToken);
 		}
 
 		return new Promise((resolve, reject) => {
-			try {
-				fetching += 1;
-				const webAuth = new WebAuth({
-					domain: options.domain,
-					clientID: options.clientID,
-				});
-				webAuth.checkSession({
-					redirectUri: `${window.location.origin}/process-browser-auth`,
-					responseType: 'token id_token',
-				}, (err, result) => {
-					fetching -= 1;
-					if (err) {
-						switch (err.error) {
-							case 'login_required':
-							case 'consent_required':
-							case 'interaction_required':
-								user = {};
-								console.log(`Auth session not started (${err.error_description})`);
-								resolve(getAuthContext(previousContext, user));
-								break;
-							default:
-								console.error(err);
-								reject(err);
-						}
-					} else {
-						console.log(result);
-						token = result.accessToken;
-						user = result.idTokenPayload;
-						resolve(getAuthContext(previousContext, user, token));
-					}
-				});
-			} catch (e) {
-				console.error(e);
-			}
+			fetching += 1;
+			kvAuth0.checkSession().then(() => {
+				fetching -= 1;
+				resolve(getAuthContext(previousContext, kvAuth0.user, kvAuth0.accessToken));
+			}).catch(e => {
+				fetching -= 1;
+				reject(e);
+			});
 		});
 	});
 };

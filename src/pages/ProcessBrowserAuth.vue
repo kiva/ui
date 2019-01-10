@@ -3,16 +3,10 @@
 </template>
 
 <script>
-import { WebAuth } from 'auth0-js';
-
 export default {
-	inject: ['auth0Config'],
+	inject: ['kvAuth0'],
 	mounted() {
-		const webAuth = new WebAuth({
-			domain: this.auth0Config.domain,
-			clientID: this.auth0Config.clientID,
-		});
-		webAuth.popup.callback();
+		this.kvAuth0.popupCallback();
 	},
 };
 </script>

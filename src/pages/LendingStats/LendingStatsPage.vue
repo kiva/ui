@@ -112,8 +112,8 @@ export default {
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route }) => Promise.reject({
-				path: '/login',
-				query: { doneUrl: route.fullPath.slice(1) }
+				path: '/ui-login',
+				query: { doneUrl: route.fullPath }
 			})
 		}
 	},

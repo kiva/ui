@@ -68,7 +68,7 @@
 			</router-link>
 			<a
 				v-if="isVisitor"
-				href="/login"
+				href="/ui-login"
 				class="header-button"
 				@click.prevent="auth0Login"
 				v-kv-track-event="['TopNav','click-Sign-in']"
@@ -236,7 +236,7 @@
 				<hr>
 				<li>
 					<router-link
-						to="/logout"
+						to="/ui-logout"
 						v-kv-track-event="['TopNav','click-Portfolio-Sign out']">
 						Sign out
 					</router-link>
@@ -247,7 +247,6 @@
 </template>
 
 <script>
-import { WebAuth } from 'auth0-js';
 import _get from 'lodash/get';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
@@ -265,7 +264,7 @@ export default {
 		PromoBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
-	inject: ['apollo', 'auth0Config'],
+	inject: ['apollo', 'kvAuth0'],
 	data() {
 		return {
 			isVisitor: true,
@@ -304,6 +303,21 @@ export default {
 		query: headerQuery,
 		preFetch: true,
 		result({ data }) {
+			this.processResultData(data);
+		},
+	},
+	methods: {
+		auth0Login() {
+			this.kvAuth0.popupLogin().finally(() => {
+				this.apollo.query({
+					query: headerQuery,
+					fetchPolicy: 'network-only',
+				}).then(({ data }) => {
+					if (data) this.processResultData(data);
+				});
+			});
+		},
+		processResultData(data) {
 			this.isVisitor = !_get(data, 'my.userAccount.id');
 			this.isBorrower = _get(data, 'my.isBorrower');
 			this.loanId = _get(data, 'my.mostRecentBorrowedLoan.id');
@@ -311,23 +325,6 @@ export default {
 			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
 			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
 			this.profilePic = _get(data, 'my.lender.image.url');
-		},
-	},
-	methods: {
-		auth0Login() {
-			const webAuth = new WebAuth({
-				domain: this.auth0Config.domain,
-				clientID: this.auth0Config.clientID,
-			});
-			const path = this.$router.resolve('/process-browser-auth').href;
-			webAuth.popup.authorize({
-				redirectUri: `${window.location.origin}${path}`,
-				responseType: 'token id_token',
-			}, (err, authResult) => {
-				// do something
-				if (err) console.error(err);
-				console.log(authResult);
-			});
 		},
 		onLendMenuShow() {
 			this.$refs.lendMenu.onOpen();

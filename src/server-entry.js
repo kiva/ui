@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
 import CookieStore from '@/util/CookieStore';
+import KvAuth0 from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
@@ -17,8 +18,19 @@ const isDev = process.env.NODE_ENV !== 'production';
 export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
-		const { url, config, cookies } = context;
+		const {
+			url,
+			config,
+			cookies,
+			user,
+		} = context;
+		const { accessToken, ...profile } = user;
 		const cookieStore = new CookieStore(cookies);
+
+		const kvAuth0 = new KvAuth0({
+			user: profile,
+			accessToken,
+		});
 
 		__webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
@@ -29,17 +41,12 @@ export default context => {
 		} = createApp({
 			appConfig: config,
 			apollo: {
-				auth0: {
-					clientID: config.auth0ClientID,
-					domain: config.auth0Domain,
-					user: { id: 1 },
-					token: 'fake-token',
-				},
 				cookieStore,
 				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 				uri: config.graphqlUri,
 				types: config.graphqlFragmentTypes
-			}
+			},
+			kvAuth0,
 		});
 
 		// redirect to the resolved url if it does not match the requested url
@@ -92,7 +99,7 @@ export default context => {
 					reject(error);
 				} else {
 					reject({
-						url: router.resolve(error).href
+						url: router.resolve(error).href,
 					});
 				}
 			});
