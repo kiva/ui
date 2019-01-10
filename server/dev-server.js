@@ -2,6 +2,7 @@
 require('../build/check-versions')();
 
 // dependencies
+require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const chokidar = require('chokidar');
 const express = require('express');
 const helmet = require('helmet');
@@ -10,6 +11,8 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const authRouter = require('./auth-router');
+const sessionRouter = require('./session-router');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
@@ -107,6 +110,12 @@ serverCompiler.watch({}, (err, rawStats) => {
 // install dev/hot middleware
 app.use(devMiddleware);
 app.use(hotMiddleware);
+
+// Configure session
+app.use('/', sessionRouter(config));
+
+// Configure auth
+app.use('/', authRouter(config));
 
 // install handler
 app.use((req, res, next) => {

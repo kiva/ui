@@ -1,5 +1,8 @@
+require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const express = require('express');
 const helmet = require('helmet');
+const authRouter = require('./auth-router');
+const sessionRouter = require('./session-router');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
@@ -34,6 +37,13 @@ app.use(express.static('dist', {
 // -> placed here to exclude static
 app.use(logger.requestLogger);
 
+// Configure session
+app.use('/', sessionRouter(config));
+
+// Configure auth
+app.use('/', authRouter(config));
+
+// Setup Vue Request handler
 app.use(vueMiddleware({
 	serverBundle,
 	clientManifest,
@@ -41,7 +51,7 @@ app.use(vueMiddleware({
 	cache,
 }));
 
-// Setup Request Logger
+// Setup Request Error Logger
 app.use(logger.errorLogger);
 // Final Error Handler
 app.use(logger.fallbackErrorHandler);

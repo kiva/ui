@@ -60,6 +60,7 @@ module.exports = function createMiddleware({
 			url: req.url,
 			config: config.app,
 			cookies,
+			user: req.user || {},
 		};
 
 		res.setHeader('Content-Type', 'text/html');
