@@ -70,7 +70,7 @@
 				v-if="isVisitor"
 				to="/ui-login"
 				class="header-button"
-				@click.native="auth0Login"
+				@click.native="auth0Login($event)"
 				v-kv-track-event="['TopNav','click-Sign-in']"
 			>
 				<span>Sign in</span>
