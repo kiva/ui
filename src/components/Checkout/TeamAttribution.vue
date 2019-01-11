@@ -113,13 +113,12 @@ export default {
 	padding: 0 2.6rem 0 0.5rem;
 	text-indent: 0.02rem;
 	color: $dark-gray;
-	font-weight: $global-weight-highlight;
 	cursor: pointer;
 
 	@include breakpoint(medium) {
 		height: rem-calc(24);
 		padding: 0 1.75rem 0 0.5rem;
-		background-size: rem-calc(20) rem-calc(20);
+		background-size: rem-calc(23) rem-calc(20);
 		background-position: right -1.5rem center;
 	}
 }

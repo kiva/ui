@@ -1,11 +1,11 @@
 <template>
 	<div class="basket-donation-item row">
-		<span class="small-3 medium-2 large-1">
+		<span class="hide-for-small-only medium-3 large-2">
 			<span class="donation-icon">
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
 			</span>
 		</span>
-		<span class="small-9 medium-6 large-7 donation-info-wrapper">
+		<span class="small-12 medium-5 large-7 donation-info-wrapper">
 			<span class="donation-info featured-text">
 				Donation to Kiva
 			</span>
@@ -34,16 +34,20 @@
 				</a>
 			</div>
 		</span>
-		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-4 large-4 medium-text-font-size">
+		<!-- <span class="small-3 show-for-small-only"></span> -->
+		<span class="small-12 medium-4 large-3 medium-text-font-size">
 			<div
 				v-show="!editDonation"
 				class="donation-amount-wrapper">
 				<span
 					class="donation-amount"
 					v-kv-track-event="['basket', 'Edit Donation']"
-					@click.prevent="enterEditDonation">{{ formattedAmount }}
+					@click.prevent="enterEditDonation"
+					title="Edit Donation">{{ formattedAmount }}
 					<kv-icon
+						role="img"
+						aria-label="Edit Donation"
+						title="Edit Donation"
 						class="edit-donation"
 						name="pencil"/>
 				</span>
@@ -363,10 +367,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.basket-donation-item {
-	padding-right: rem-calc(20);
-}
-
 .donation-icon {
 	padding: 0;
 }
@@ -375,16 +375,12 @@ export default {
 	border: 1px solid $light-gray;
 	height: rem-calc(71);
 	width: rem-calc(71);
-	padding: rem-calc(4);
+	padding: rem-calc(12);
 
 	@include breakpoint(medium) {
-		height: rem-calc(55);
-		width: rem-calc(55);
+		height: rem-calc(80);
+		width: rem-calc(80);
 	}
-}
-
-.donation-info-wrapper {
-	padding-left: rem-calc(10);
 }
 
 .donation-info {
@@ -413,12 +409,10 @@ export default {
 	}
 
 	.donation-amount {
+		display: inline-block;
+		cursor: pointer;
 		font-weight: $global-weight-highlight;
 		font-size: $medium-text-font-size;
-
-		@include breakpoint(medium) {
-			font-size: inherit;
-		}
 
 		.edit-donation {
 			width: 1rem;
@@ -456,7 +450,6 @@ export default {
 
 	@include breakpoint(medium) {
 		width: rem-calc(90);
-		font-size: $normal-text-font-size;
 		height: rem-calc(36);
 	}
 }
@@ -497,7 +490,7 @@ input {
 	font-size: $medium-text-font-size;
 
 	@include breakpoint(medium) {
-		padding: rem-calc(6) 1.1rem;
+		padding: rem-calc(6) 0;
 		margin-bottom: rem-calc(19);
 		width: inherit;
 		font-size: $normal-text-font-size;

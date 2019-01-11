@@ -1,11 +1,12 @@
 query (
 	$country: [String],
 	$activity: [Int],
+	$sector: [Int],
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w480h360",
 ) {
 	lend {
-		sameCountry: loans(filters: {country: $country, status: fundRaising}, limit: 1, sortBy: random) {
+		sameCountry: loans(filters: {country: $country, status: fundRaising}, limit: 2, sortBy: random) {
 			values {
 				id
 				name
@@ -29,10 +30,14 @@ query (
 						name
 					}
 				}
+				sector {
+          			id
+          			name
+        		}
 			}
 		}
 
-		sameActivity: loans (filters: {activity: $activity, status: fundRaising}, limit: 1, sortBy: random) {
+		sameActivity: loans (filters: {activity: $activity, status: fundRaising}, limit: 2, sortBy: random) {
 			values {
 				id
 				name
@@ -56,10 +61,14 @@ query (
 						name
 					}
 				}
+				sector {
+          			id
+          			name
+        		}
 			}
 		}
 
-		randomLoan: loans (filters: {status: fundRaising}, limit: 3, sortBy: random) {
+		sameSector: loans(filters: {sector: $sector, status: fundRaising}, limit: 2, sortBy: random) {
 			values {
 				id
 				name
@@ -83,6 +92,41 @@ query (
 						name
 					}
 				}
+				sector {
+          			id
+          			name
+        		}
+			}
+		}
+
+		randomLoan: loans (filters: {status: fundRaising}, limit: 4, sortBy: random) {
+			values {
+				id
+				name
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+					reservedAmount
+				}
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+				}
+				activity {
+					id
+					name
+				}
+				geocode {
+					country {
+						isoCode
+						name
+					}
+				}
+				sector {
+          			id
+          			name
+        		}
 			}
 		}
 	}
