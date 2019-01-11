@@ -112,10 +112,10 @@ app.use(devMiddleware);
 app.use(hotMiddleware);
 
 // Configure session
-app.use('/', sessionRouter(config));
+app.use('/', sessionRouter(config.server));
 
 // Configure auth
-app.use('/', authRouter(config));
+app.use('/', authRouter(config.app));
 
 // install handler
 app.use((req, res, next) => {
