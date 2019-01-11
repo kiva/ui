@@ -81,6 +81,7 @@ router.onReady(() => {
 		// Pre-fetch graphql queries from activated components
 		preFetchAll(activated, apolloClient, {
 			route: to,
+			kvAuth0,
 		}).then(next).catch(next);
 	});
 

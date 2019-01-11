@@ -84,6 +84,7 @@ export default context => {
 			// which is resolved when the action is complete and apollo cache has been updated.
 			return preFetchAll(matchedComponents, apolloClient, {
 				route: router.currentRoute,
+				kvAuth0,
 			}).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
