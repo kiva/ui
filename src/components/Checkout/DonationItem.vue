@@ -77,12 +77,15 @@
 				@refreshtotals="$emit('refreshtotals')" />
 		</span>
 		<donation-nudge-lightbox
-			:loan-count="loanCount"
+			:loan-in-basket-count="loanInBasketCount"
 			:loan-reservation-total="loanReservationTotal"
 			:nudge-lightbox-visible="nudgeLightboxVisible"
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
+			:experimental-header="donationNudgeExperimentalHeader"
+			:experimental-description="donationNudgeExperimentalDescription"
+			:loan-history-count="loanHistoryCount"
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
@@ -134,7 +137,7 @@ export default {
 			type: Object,
 			default: () => {}
 		},
-		loanCount: {
+		loanInBasketCount: {
 			type: Number,
 			default: 0
 		},
@@ -153,6 +156,9 @@ export default {
 			nudgeLightboxVisible: false,
 			isCash80Running: false,
 			hasCustomDonation: false,
+			donationNudgeExperimentalHeader: false,
+			donationNudgeExperimentalDescription: false,
+			loanHistoryCount: null,
 		};
 	},
 	apollo: {
@@ -176,6 +182,13 @@ export default {
 							id: 'donation_nudge_lightbox_custom_tip',
 						},
 					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Donation Nudge Lightbox
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'donation_nudge_lending_cost',
+						},
+					}).then(resolve).catch(reject);
 				}).catch(reject);
 			});
 		}
@@ -191,7 +204,7 @@ export default {
 	},
 	computed: {
 		hasLoans() {
-			return this.loanCount > 0;
+			return this.loanInBasketCount > 0;
 		},
 		serverAmount() {
 			return numeral(this.donation.price).format('$0,0.00');
@@ -213,7 +226,7 @@ export default {
 			// Control for donation boost experiment
 			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
 
-			if (this.loanCount > 1) {
+			if (this.loanInBasketCount > 1) {
 				return `${tagline} these loans`;
 			}
 			return `${tagline} this loan`;
@@ -307,6 +320,26 @@ export default {
 				this.isCash80Running = true;
 				this.hasCustomDonation = true;
 			}
+
+			const nudgeLendingCostExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'donation_nudge_lending_cost' },
+			});
+			// eslint-disable-next-line max-len
+			const nudgeLendingCostExperimentVersionString = _get(nudgeLendingCostExperimentVersion, 'experiment.version') || null;
+			if (this.hasLoans && nudgeLendingCostExperimentVersionString === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
+			} else if (this.hasLoans && nudgeLendingCostExperimentVersionString === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
+				this.donationNudgeExperimentalHeader = true;
+				this.donationNudgeExperimentalDescription = true;
+			}
+
+			// eslint-disable-next-line max-len
+			const totalLoansLentQuery = this.apollo.readQuery({
+				query: donationDataQuery,
+			});
+			this.loanHistoryCount = _get(totalLoansLentQuery, 'my.loans.totalCount') || null;
 		},
 		updateDonation() {
 			this.editDonation = false;

@@ -8,13 +8,10 @@
 		<div id="nudge-donation-container">
 			<div id="nudge-donation-top">
 				<div id="nudge-donation-top-header" class="impact-text">
-					We rely on donations to reach the people who need it the most
+					{{ header }}
 				</div>
 				<div class="row" id="nudge-donation-top-content-row">
-					<div class="small-10 small-offset-1 columns">
-						<!-- eslint-disable-next-line max-len -->
-						Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.
-					</div>
+					<div class="small-10 small-offset-1 columns" v-html="description"></div>
 				</div>
 				<kv-donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
@@ -66,7 +63,7 @@ export default {
 			type: Function,
 			required: true,
 		},
-		loanCount: {
+		loanInBasketCount: {
 			type: Number,
 			default: 0
 		},
@@ -78,13 +75,39 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		loanHistoryCount: {
+			type: Number,
+			default: 0,
+		},
+		experimentalHeader: {
+			type: Boolean,
+			default: false,
+		},
+		experimentalDescription: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
+		header() {
+			/* eslint-disable max-len */
+			return this.experimentalHeader
+				? `${this.loanInBasketCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva`
+				: 'We rely on donations to reach the people who need it the most';
+			/* eslint-enable max-len */
+		},
+		description() {
+			/* eslint-disable max-len */
+			return this.experimentalDescription
+				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?<br>We rely on donations to reach the people who need it the most'
+				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
+			/* eslint-enable max-len */
+		},
 		percentageRows() {
 			const basePercentageRows = [
 				{
 					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
+					appeal: `Cover the cost to facilitate ${this.loanInBasketCount > 1 ? 'these loans' : 'this loan'}`,
 					appealIsHorizontallyPadded: false,
 				},
 				{
