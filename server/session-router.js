@@ -14,10 +14,11 @@ module.exports = function sessionRouter(config = {}) {
 		name: 'ui',
 		cookie: {
 			httpOnly: true,
+			secure: false,
 			maxAge: 86400,
 		},
 		resave: false,
-		saveUninitialized: false,
+		saveUninitialized: true,
 	};
 
 	if (config.memcachedEnabled) {
@@ -27,6 +28,5 @@ module.exports = function sessionRouter(config = {}) {
 	}
 
 	router.use(session(sessionOptions));
-
 	return router;
 };
