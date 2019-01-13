@@ -60,6 +60,7 @@
 		"sanitize-html": "^1.19.1",
 		"serialize-javascript": "^1.4.0",
 		"set-cookie-parser": "^2.2.1",
+		"store2": "^2.7.1",
 		"vue": "^2.5.21",
 		"vue-instantsearch": "^2.0.0-beta.2",
 		"vue-meta": "^1.5.4",
