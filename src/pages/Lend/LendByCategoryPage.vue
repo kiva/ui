@@ -55,11 +55,9 @@
 			:is-logged-in="isLoggedIn"
 		/>
 
-		<transition name="kvfade">
-			<div v-if="recentlyViewedLoans.length > 0">
-				<i v-for="(id, index) in recentlyViewedLoans" :key="index">{{ id }}</i>
-			</div>
-		</transition>
+		<recently-viewed-loans
+			:items-in-basket="itemsInBasket"
+			:is-logged-in="isLoggedIn" />
 
 		<div>
 			<category-row
@@ -95,7 +93,6 @@ import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _without from 'lodash/without';
-import WebStorage from 'store2';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -104,6 +101,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -116,6 +114,7 @@ export default {
 		CategoryRow,
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
+		RecentlyViewedLoans,
 		WwwPage,
 	},
 	inject: ['apollo'],
@@ -133,7 +132,6 @@ export default {
 			showLendByCategoryMessage: false,
 			realCategories: [],
 			customCategories: [],
-			recentlyViewedLoans: []
 		};
 	},
 	computed: {
@@ -324,11 +322,6 @@ export default {
 	mounted() {
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
 		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-
-		// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
-		const recentlyViewed = WebStorage('recentlyViewedLoans');
-		// decode, parse then set recently viewed loan data
-		this.recentlyViewedLoans = JSON.parse(atob(recentlyViewed));
 	},
 };
 </script>
