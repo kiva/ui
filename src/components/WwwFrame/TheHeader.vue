@@ -70,7 +70,8 @@
 				v-if="isVisitor"
 				to="/ui-login"
 				class="header-button"
-				@click.native="auth0Login($event)"
+				:event="kvAuth0.enabled ? '' : 'click'"
+				@click.native="auth0Login"
 				v-kv-track-event="['TopNav','click-Sign-in']"
 			>
 				<span>Sign in</span>
@@ -251,6 +252,7 @@ import _get from 'lodash/get';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
@@ -303,24 +305,6 @@ export default {
 		query: headerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.processResultData(data);
-		},
-	},
-	methods: {
-		auth0Login(event) {
-			if (this.kvAuth0.enabled) {
-				event.preventDefault();
-				this.kvAuth0.popupLogin().finally(() => {
-					this.apollo.query({
-						query: headerQuery,
-						fetchPolicy: 'network-only',
-					}).then(({ data }) => {
-						if (data) this.processResultData(data);
-					});
-				});
-			}
-		},
-		processResultData(data) {
 			this.isVisitor = !_get(data, 'my.userAccount.id');
 			this.isBorrower = _get(data, 'my.isBorrower');
 			this.loanId = _get(data, 'my.mostRecentBorrowedLoan.id');
@@ -328,6 +312,25 @@ export default {
 			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
 			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
 			this.profilePic = _get(data, 'my.lender.image.url');
+		},
+	},
+	methods: {
+		auth0Login() {
+			if (this.kvAuth0.enabled) {
+				this.kvAuth0.popupLogin().then(result => {
+					// Only refetch data if login was successful
+					if (result) {
+						// Refetch the queries for all the components in this route. All the components that use
+						// the default options for the apollo plugin or that setup their own query observer will update
+						// @todo maybe show a loding state until this completes?
+						const matched = this.$router.getMatchedComponents(this.$route);
+						return preFetchAll(matched, this.apollo, {
+							route: this.$route,
+							kvAuth0: this.kvAuth0,
+						});
+					}
+				});
+			}
 		},
 		onLendMenuShow() {
 			this.$refs.lendMenu.onOpen();
