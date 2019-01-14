@@ -321,25 +321,27 @@ export default {
 				this.hasCustomDonation = true;
 			}
 
+			// Experiment: CASH-386
+			// eslint-disable-next-line max-len
+			const totalLoansLentQuery = this.apollo.readQuery({
+				query: donationDataQuery,
+			});
+			this.loanHistoryCount = _get(totalLoansLentQuery, 'my.loans.totalCount') || null;
+
 			const nudgeLendingCostExperimentVersion = this.apollo.readQuery({
 				query: experimentAssignmentQuery,
 				variables: { id: 'donation_nudge_lending_cost' },
 			});
 			// eslint-disable-next-line max-len
 			const nudgeLendingCostExperimentVersionString = _get(nudgeLendingCostExperimentVersion, 'experiment.version') || null;
-			if (this.hasLoans && nudgeLendingCostExperimentVersionString === 'variant-a') {
+			if (this.hasLoans && this.loanHistoryCount > 0 && nudgeLendingCostExperimentVersionString === 'variant-a') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
-			} else if (this.hasLoans && nudgeLendingCostExperimentVersionString === 'variant-b') {
+				// eslint-disable-next-line max-len
+			} else if (this.hasLoans && this.loanHistoryCount > 0 && nudgeLendingCostExperimentVersionString === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
 				this.donationNudgeExperimentalHeader = true;
 				this.donationNudgeExperimentalDescription = true;
 			}
-
-			// eslint-disable-next-line max-len
-			const totalLoansLentQuery = this.apollo.readQuery({
-				query: donationDataQuery,
-			});
-			this.loanHistoryCount = _get(totalLoansLentQuery, 'my.loans.totalCount') || null;
 		},
 		updateDonation() {
 			this.editDonation = false;
