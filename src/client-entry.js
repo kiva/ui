@@ -1,8 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
+import _get from 'lodash/get';
 import CookieStore from '@/util/CookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
+import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
@@ -51,8 +53,17 @@ if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
+// Extract user id from apollo cache
+let userId = null;
+try {
+	const data = apolloClient.readQuery({ query: userIdQuery });
+	userId = _get(data, 'my.userAccount.id');
+} catch (e) {
+	// do nothing (leave user id as null)
+}
+
 // setup global analytics data
-app.$setKvAnalyticsData(apolloClient);
+app.$setKvAnalyticsData(userId);
 
 // fire server rendered pageview
 app.$fireServerPageView();
