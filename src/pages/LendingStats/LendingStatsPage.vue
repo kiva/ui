@@ -112,7 +112,6 @@ export default {
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, kvAuth0 }) => {
-				console.log('handling error');
 				if (kvAuth0.enabled) {
 					return Promise.reject({
 						path: '/ui-login',
