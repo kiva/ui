@@ -112,10 +112,8 @@ export default {
 		},
 		errorHandlers: {
 			'api.authenticationRequired': ({ route, kvAuth0 }) => {
+				console.log('handling error');
 				if (kvAuth0.enabled) {
-					if (!kvAuth0.isServer) {
-						return kvAuth0.popupLogin().then(() => Promise.reject('retry'));
-					}
 					return Promise.reject({
 						path: '/ui-login',
 						query: { doneUrl: route.fullPath }

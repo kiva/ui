@@ -19,23 +19,6 @@ export function handleApolloErrors(handlers, errors, args) {
 	}));
 }
 
-// A wrap around the apollo client query function that returns a Promise
-function query(config, client, args) {
-	return new Promise((resolve, reject) => {
-		client.query({
-			query: config.query,
-			variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
-			fetchPolicy: 'network-only', // This was used to force re-fetch of queries after new auth. Better way?
-		}).then(result => {
-			if (result.errors) {
-				reject(result.errors);
-			} else {
-				resolve(result);
-			}
-		}).catch(reject);
-	});
-}
-
 // A function to pre-fetch a graphql query from a component's apollo options
 export function preFetchApolloQuery(config, client, args) {
 	if (typeof config.preFetch === 'function') {
@@ -46,23 +29,21 @@ export function preFetchApolloQuery(config, client, args) {
 		}
 		return preFetchPromise;
 	}
+
 	// Fetch the query from the component's apollo options
-	return query(config, client, args).catch(errors => {
-		// Handle Apollo errors with custom code
-		if (Array.isArray(errors)) {
-			// Pass any errors to the error handlers from the component's apollo options
-			return handleApolloErrors(config.errorHandlers, errors, args);
-		}
-		// Pass other types of errors down the chain
-		throw errors;
-	}).catch(err => {
-		// Attempt one retry without custom error handling if requested by a previous error handler
-		// This is to handle the case of authenticating using a popup while prefetching
-		if (err === 'retry') {
-			return query(config, client, args);
-		}
-		// Reject everything else
-		throw err;
+	return new Promise((resolve, reject) => {
+		client.query({
+			query: config.query,
+			variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
+			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
+		}).then(result => {
+			if (result.errors) {
+				// Handle Apollo errors with custom code
+				handleApolloErrors(config.errorHandlers, result.errors, args).then(resolve).catch(reject);
+			} else {
+				resolve(result);
+			}
+		}).catch(reject);
 	});
 }
 
