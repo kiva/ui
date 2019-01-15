@@ -38,6 +38,7 @@ export default {
 	background-color: $button-secondary-background;
 	box-shadow: $button-secondary-shadow $button-secondary-border-color;
 	border: $button-hollow-border-width solid $button-secondary-border-color;
+	border-bottom: none;
 	color: $button-secondary-color;
 
 	&:hover,
