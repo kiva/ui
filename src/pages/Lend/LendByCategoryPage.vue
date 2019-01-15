@@ -55,6 +55,11 @@
 			:is-logged-in="isLoggedIn"
 		/>
 
+		<recently-viewed-loans
+			:is-micro="true"
+			:items-in-basket="itemsInBasket"
+			:is-logged-in="isLoggedIn" />
+
 		<div>
 			<category-row
 				class="loan-category-row"
@@ -97,6 +102,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -109,6 +115,7 @@ export default {
 		CategoryRow,
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
+		RecentlyViewedLoans,
 		WwwPage,
 	},
 	inject: ['apollo'],
@@ -133,9 +140,10 @@ export default {
 			return _map(this.categorySetting, 'id');
 		},
 		categories() {
-			// merge realCategories & customCategories and re-order to match the setting
+			// merge realCategories & customCategories
 			const categories = this.realCategories.concat(this.customCategories);
-			return categories.sort(indexIn(this.categoryIds, 'id'));
+			// fiter our any empty categories and re-order to match the setting
+			return categories.filter(channel => channel.loans !== null).sort(indexIn(this.categoryIds, 'id'));
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
@@ -192,19 +200,6 @@ export default {
 		setCustomRowData(data) { // eslint-disable-line
 			this.customCategories = [];
 			// check for loans before pushing this as we won't want to show an empty row
-			// const someCustomLoans = _get(data, 'lend.someLoans.values') || [];
-			// if (someCustomLoans.length) {
-			// 	this.customCategories.push({
-			// 		id: 62,
-			// 		name: 'Custom category',
-			// 		url: '', // required field
-			// 		loans: {
-			// 			values: someCustomLoans,
-			// 		},
-			// 	});
-			// }
-
-			// check for loans before pushing this as we won't want to show an empty row
 			// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
 			// if (otherLoans.length) {
 			// 	this.customCategories.push({
@@ -238,6 +233,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
 					// Pre-fetch the assigned version for lbc message
 					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
+					// Pre-fetch the assigned version for recently viewed loans
+					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loans' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -278,8 +275,8 @@ export default {
 			},
 		});
 		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
-		// update our custom categories prior to render
-		this.setCustomRowData(categoryData);
+		// If active, update our custom categories prior to render
+		// this.setCustomRowData(categoryData);
 
 		// Create an observer for changes to the categories (and their loans)
 		const categoryObserver = this.apollo.watchQuery({
@@ -308,8 +305,8 @@ export default {
 		categoryObserver.subscribe({
 			next: ({ data }) => {
 				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
-				// update our custom categories on any query change
-				this.setCustomRowData(data);
+				// If active, update our custom categories on any query change
+				// this.setCustomRowData(data);
 			},
 		});
 
@@ -334,6 +331,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import 'global/transitions';
 
 .lend-by-category-page {
 	main {

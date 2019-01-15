@@ -15,6 +15,10 @@ query {
 			key
 			value
 		}
+		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loans") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
