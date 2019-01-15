@@ -108,18 +108,18 @@ export default {
 	border-radius: $button-radius;
 	height: rem-calc(40);
 	background-image: url('~@/assets/images/customDropdown999.png');
-	background-position: right -2.1rem center;
+	background-position: right -2.5rem center;
 	background-size: 2rem 2rem;
-	padding: 0 2.6rem 0 0.5rem;
+	padding: 0 3rem 0 0.5rem;
 	text-indent: 0.02rem;
 	color: $dark-gray;
 	cursor: pointer;
 
 	@include breakpoint(medium) {
-		height: rem-calc(24);
-		padding: 0 1.75rem 0 0.5rem;
+		height: rem-calc(25);
+		padding: 0 2.15rem 0 0.5rem;
 		background-size: rem-calc(23) rem-calc(20);
-		background-position: right -1.5rem center;
+		background-position: right -1.9rem center;
 	}
 }
 </style>
