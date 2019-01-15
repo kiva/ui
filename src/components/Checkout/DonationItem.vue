@@ -77,7 +77,7 @@
 				@refreshtotals="$emit('refreshtotals')" />
 		</span>
 		<donation-nudge-lightbox
-			:loan-in-basket-count="loanInBasketCount"
+			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
 			:nudge-lightbox-visible="nudgeLightboxVisible"
 			:close-nudge-lightbox="closeNudgeLightbox"
@@ -137,7 +137,7 @@ export default {
 			type: Object,
 			default: () => {}
 		},
-		loanInBasketCount: {
+		loanCount: {
 			type: Number,
 			default: 0
 		},
@@ -204,7 +204,7 @@ export default {
 	},
 	computed: {
 		hasLoans() {
-			return this.loanInBasketCount > 0;
+			return this.loanCount > 0;
 		},
 		serverAmount() {
 			return numeral(this.donation.price).format('$0,0.00');
@@ -226,7 +226,7 @@ export default {
 			// Control for donation boost experiment
 			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
 
-			if (this.loanInBasketCount > 1) {
+			if (this.loanCount > 1) {
 				return `${tagline} these loans`;
 			}
 			return `${tagline} this loan`;
@@ -322,7 +322,6 @@ export default {
 			}
 
 			// Experiment: CASH-386
-			// eslint-disable-next-line max-len
 			const totalLoansLentQuery = this.apollo.readQuery({
 				query: donationDataQuery,
 			});

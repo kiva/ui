@@ -63,7 +63,7 @@ export default {
 			type: Function,
 			required: true,
 		},
-		loanInBasketCount: {
+		loanCount: {
 			type: Number,
 			default: 0
 		},
@@ -92,7 +92,7 @@ export default {
 		header() {
 			/* eslint-disable max-len */
 			return this.experimentalHeader
-				? `${this.loanInBasketCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva!`
+				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva!`
 				: 'We rely on donations to reach the people who need it the most';
 			/* eslint-enable max-len */
 		},
@@ -107,7 +107,7 @@ export default {
 			const basePercentageRows = [
 				{
 					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanInBasketCount > 1 ? 'these loans' : 'this loan'}`,
+					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
 					appealIsHorizontallyPadded: false,
 				},
 				{
