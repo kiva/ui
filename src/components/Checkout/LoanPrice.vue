@@ -239,11 +239,14 @@ export default {
 .loan-price-select {
 	float: left;
 	width: rem-calc(95);
+
+	@include breakpoint(medium) {
+		margin-right: rem-calc(20);
+	}
 }
 
 .loan-price {
 	border: 1px solid $charcoal;
-	min-width: rem-calc(90);
 	width: rem-calc(132);
 	border-radius: $button-radius;
 	height: rem-calc(50);
@@ -257,7 +260,7 @@ export default {
 	@include breakpoint(medium) {
 		height: inherit;
 		line-height: $medium-text-line-height;
-		width: rem-calc(90);
+		width: rem-calc(110);
 		background-size: rem-calc(23) rem-calc(20);
 	}
 }
