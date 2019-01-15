@@ -92,7 +92,7 @@ export default {
 		header() {
 			/* eslint-disable max-len */
 			return this.experimentalHeader
-				? `${this.loanInBasketCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva`
+				? `${this.loanInBasketCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva!`
 				: 'We rely on donations to reach the people who need it the most';
 			/* eslint-enable max-len */
 		},
