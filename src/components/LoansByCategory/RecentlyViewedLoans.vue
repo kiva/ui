@@ -128,7 +128,6 @@ export default {
 	-moz-transition: max-height 1s;
 	transition: max-height 1s;
 	overflow: hidden;
-
 	display: block;
 	position: relative;
 	// max-width: 1020px; // This will center the loan row in upcoming design changes
