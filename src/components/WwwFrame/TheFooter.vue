@@ -35,7 +35,7 @@
 						<li><router-link to="/gifts">Gifts</router-link></li>
 						<li><router-link to="/live">Happening now</router-link></li>
 						<li><router-link :to="sitemapUrl">Site map</router-link></li>
-						<li><a href="https://www.kiva.org/build" title="Developer API">Developer API</a></li>
+						<li><router-link :to="/build" title="Developer API">Developer API</a></li>
 						<li><router-link :to="privacyUrl">Privacy policy</router-link></li>
 						<li><router-link :to="termsUrl">Terms of use</router-link></li>
 					</ul>
