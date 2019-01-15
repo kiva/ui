@@ -56,6 +56,7 @@
 		/>
 
 		<recently-viewed-loans
+			:is-micro="true"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn" />
 
@@ -232,6 +233,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
 					// Pre-fetch the assigned version for lbc message
 					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
+					// Pre-fetch the assigned version for recently viewed loans
+					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loans' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');

@@ -3,7 +3,15 @@
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="category-name">{{ cleanName }}
-					<span class="view-all-link" v-if="showViewAllLink">&nbsp;<a :href="cleanUrl">View all</a></span>
+					<span class="view-all-link" v-if="showViewAllLink">
+						&nbsp;
+						<a :href="cleanUrl"
+							v-kv-track-event="[
+								'Lending',
+								'click-Category-View-All',
+								`View all ${cleanName} loans`]"
+						>View all</a>
+					</span>
 				</h2>
 			</div>
 		</div>
@@ -21,7 +29,8 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<GridLoanCard
+					<component
+						:is="loanCardType"
 						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
@@ -49,6 +58,7 @@
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 
 const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
@@ -57,6 +67,7 @@ const largeCardWidthPlusPadding = 300;
 export default {
 	components: {
 		GridLoanCard,
+		GridMicroLoanCard
 	},
 	inject: ['apollo'],
 	props: {
@@ -80,6 +91,10 @@ export default {
 			type: String,
 			default: 'Control'
 		},
+		isMicro: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -93,6 +108,9 @@ export default {
 		};
 	},
 	computed: {
+		loanCardType() {
+			return this.isMicro ? 'GridMicroLoanCard' : 'GridLoanCard';
+		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
