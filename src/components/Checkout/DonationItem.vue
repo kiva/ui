@@ -83,6 +83,9 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
+			:experimental-header="donationNudgeExperimentalHeader"
+			:experimental-description="donationNudgeExperimentalDescription"
+			:loan-history-count="loanHistoryCount"
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
@@ -153,6 +156,9 @@ export default {
 			nudgeLightboxVisible: false,
 			isCash80Running: false,
 			hasCustomDonation: false,
+			donationNudgeExperimentalHeader: false,
+			donationNudgeExperimentalDescription: false,
+			loanHistoryCount: null,
 		};
 	},
 	apollo: {
@@ -174,6 +180,13 @@ export default {
 						query: experimentAssignmentQuery,
 						variables: {
 							id: 'donation_nudge_lightbox_custom_tip',
+						},
+					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Donation Nudge Lightbox
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'donation_nudge_lending_cost',
 						},
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -306,6 +319,27 @@ export default {
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'b');
 				this.isCash80Running = true;
 				this.hasCustomDonation = true;
+			}
+
+			// Experiment: CASH-386
+			const totalLoansLentQuery = this.apollo.readQuery({
+				query: donationDataQuery,
+			});
+			this.loanHistoryCount = _get(totalLoansLentQuery, 'my.loans.totalCount') || null;
+
+			const nudgeLendingCostExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'donation_nudge_lending_cost' },
+			});
+			// eslint-disable-next-line max-len
+			const nudgeLendingCostExperimentVersionString = _get(nudgeLendingCostExperimentVersion, 'experiment.version') || null;
+			if (this.hasLoans && this.loanHistoryCount > 0 && nudgeLendingCostExperimentVersionString === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
+				// eslint-disable-next-line max-len
+			} else if (this.hasLoans && this.loanHistoryCount > 0 && nudgeLendingCostExperimentVersionString === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
+				this.donationNudgeExperimentalHeader = true;
+				this.donationNudgeExperimentalDescription = true;
 			}
 		},
 		updateDonation() {
