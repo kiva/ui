@@ -189,11 +189,16 @@ div.columns .kiva-card-entry-wrapper {
 	display: block;
 	height: rem-calc(40);
 	width: rem-calc(40);
-	margin: 0 auto;
+	margin-left: rem-calc(26);
 }
 
 .accordion-title {
 	font-weight: $global-weight-highlight;
+	padding-left: rem-calc(7);
+
+	@include breakpoint(medium) {
+		padding-left: 0;
+	}
 
 	&:hover {
 		cursor: pointer;
@@ -211,10 +216,12 @@ div.columns .kiva-card-entry-wrapper {
 	visibility: visible;
 	font-size: $medium-text-font-size;
 	margin-top: rem-calc(15);
+	margin-left: rem-calc(20);
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
 		margin-right: rem-calc(15);
+		margin-left: rem-calc(17);
 		width: inherit;
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
@@ -262,16 +269,16 @@ div.columns .kiva-card-entry-wrapper {
 	display: block;
 	height: rem-calc(50);
 	font-size: $medium-text-font-size;
+	margin-left: rem-calc(20);
 
 	@include breakpoint(medium) {
-		margin: rem-calc(15) 0;
+		margin: rem-calc(15) rem-calc(15) rem-calc(15) rem-calc(17);
 	}
 
 	@include breakpoint(large) {
 		font-size: $normal-text-font-size;
 		float: left;
 		height: rem-calc(37);
-		margin: rem-calc(15);
 	}
 }
 
