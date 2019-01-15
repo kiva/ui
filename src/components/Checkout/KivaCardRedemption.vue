@@ -30,7 +30,7 @@
 
 							<!-- This lightbox will be replaced with a Popper tip message. -->
 							<a @click.prevent="triggerDefaultLightbox"
-								class="help-lightbox">Need help?
+								class="help-lightbox-trigger">Need help?
 							</a>
 							<kv-lightbox
 								:visible="defaultLbVisible"
@@ -282,7 +282,7 @@ div.columns .kiva-card-entry-wrapper {
 	}
 }
 
-.help-lightbox {
+.help-lightbox-trigger {
 	margin: 1.2rem 0;
 
 	@include breakpoint(large) {
