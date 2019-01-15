@@ -15,6 +15,14 @@
 				_settings.scss</a>
 			file.</p>
 
+		<p>What this means for us is a head start across almost all default HTML element styles along with
+		a system to empower a grid + flexbox powered layout across the site.</p>
+
+		<h2>Grid System</h2>
+		<p>We are using the <a href="https://foundation.zurb.com/sites/docs/flex-grid.html" target="_blank">
+			Flex Grid</a> which works like a traditional grid system with some additional Flex Box functionality
+			added in.</p>
+
 		<div class="callout warning">
 			<h3><strong>No Foundation Javascript</strong></h3>
 			<p class="small-text">
@@ -23,9 +31,10 @@
 			<p class="small-text">
 				This decision was made primarily due to the additional filesize that including
 				jQuery and other associated scripts would add.</p>
+			<p class="small-text">
+				<strong>Look for Foundation Callouts in other sections for tips on how the framework is used.</strong>
+			</p>
 		</div>
-
-		<p><strong>Look for Foundation Callouts in other sections for tips on how the framework is used.</strong></p>
 	</section>
 </template>
 
