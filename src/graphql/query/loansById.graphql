@@ -1,0 +1,22 @@
+
+#import '../fragments/loanCardFields.graphql'
+
+query (
+	$ids: [Int],
+	$numberOfLoans: Int = 12,
+	$imgDefaultSize: String = "w480h360",
+    $imgRetinaSize: String = "w960h720",
+) {
+	lend {
+		loans(limit: $numberOfLoans, filters: {loanIds: $ids}) {
+			values {
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+				}
+			}
+		}
+	}
+}
