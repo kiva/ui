@@ -85,7 +85,7 @@ export default {
                 {"author(s)": "Choo, Jaegul et al",
                 "title": "Understanding and Promoting Micro-finance Activities in Kiva.org",
                 "publication": "7th ACM International Conference on Web Search and Data Mining",
-                "url": ""
+                "url":""
                 }]
 							},
 							{2013 :[
@@ -97,7 +97,7 @@ export default {
                 {"author(s)": "Schaff, Pim",
                 "title": "Effect of teams on lending behavior on Kiva.org",
                 "publication": "Thesis. Erasmus Univeresiteit Rotterdam, 2013",
-                "url": ""
+                "url":""
                 }]
 							},
 							{2012 :[
