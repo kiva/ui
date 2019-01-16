@@ -1,6 +1,6 @@
 <template>
 	<div class="lend-increment-container">
-		<div class="lend-increment-dropdown-container">
+		<div class="lend-increment-dropdown-container" v-if="!loading">
 			<select
 				class="lend-increment-dropdown"
 				v-model="selectedOption"
@@ -15,8 +15,10 @@
 		</div>
 		<lend-button
 			class="lend-increment-button smaller"
+			:class="{ 'is-loading': loading }"
 			:price="selectedOption"
 			:loan-id="loanId"
+			:loading.sync="loading"
 		/>
 	</div>
 </template>
@@ -32,6 +34,7 @@ export default {
 	data() {
 		return {
 			selectedOption: this.amountLeft ? Math.min(50, this.amountLeft) : 50,
+			loading: false,
 		};
 	},
 	props: {
@@ -96,8 +99,7 @@ export default {
 	justify-content: space-between;
 
 	.lend-increment-dropdown-container {
-		margin-right: 0.125rem;
-		width: 4.5rem;
+		width: 5rem;
 
 		.lend-increment-dropdown {
 			margin: 0;
@@ -110,8 +112,11 @@ export default {
 	}
 
 	.lend-increment-button {
-		margin-left: 0.125rem;
 		margin-bottom: 0;
+
+		&.is-loading {
+			width: 100%;
+		}
 	}
 }
 </style>
