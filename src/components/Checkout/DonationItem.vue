@@ -7,30 +7,15 @@
 		</span>
 		<span class="small-12 medium-5 large-7 donation-info-wrapper">
 			<span class="donation-info featured-text">
-				Donation to Kiva
+				{{ donationTitle }}
 			</span>
 			<div>
 				<div v-if="hasLoans" class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
-					v-if="this.expVersion === 'variant-b' && hasLoans"
-					class="small-text"
-					:class="boostApplied"
-					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
-					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
-				</a>
-				<a
-					v-else-if="this.expVersion === 'variant-c' && hasLoans"
-					class="small-text"
-					:class="boostApplied"
-					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
-					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
-				</a>
-				<a
-					v-else
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
-					How Kiva uses donations
+					{{ donationDetailsLink }}
 				</a>
 			</div>
 		</span>
@@ -152,7 +137,7 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			expVersion: '',
+			checkoutDonationLendingCostExperiment: '',
 			nudgeLightboxVisible: false,
 			isCash80Running: false,
 			hasCustomDonation: false,
@@ -168,13 +153,6 @@ export default {
 				client.query({
 					query: donationDataQuery
 				}).then(() => {
-					// Get the assigned experiment version for Donation Boost
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'donation_boost',
-						},
-					}).then(resolve).catch(reject);
 					// Get the assigned experiment version for Donation Nudge Lightbox
 					client.query({
 						query: experimentAssignmentQuery,
@@ -182,11 +160,18 @@ export default {
 							id: 'donation_nudge_lightbox_custom_tip',
 						},
 					}).then(resolve).catch(reject);
-					// Get the assigned experiment version for Donation Nudge Lightbox
+					// Get the assigned experiment version for Donation Nudge Lending Cost
 					client.query({
 						query: experimentAssignmentQuery,
 						variables: {
 							id: 'donation_nudge_lending_cost',
+						},
+					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Checkout Donation Lending Cost
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'checkout_donation_lending_cost',
 						},
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -212,47 +197,23 @@ export default {
 		formattedAmount() {
 			return numeral(this.amount).format('$0,0.00');
 		},
+		donationTitle() {
+			return this.checkoutDonationLendingCostExperiment === 'variant-b'
+				? 'Kiva love'
+				: 'Donation to Kiva';
+		},
 		donationTagLine() {
-			// Donation exp configuration lines 150-155
-			if (this.expVersion === 'variant-b') {
-				const tagline = 'Donations of $15 or more are matched by generous donors for a limited time!';
-
-				return tagline;
-			} else if (this.expVersion === 'variant-c') {
-				const tagline = 'Donations of $10 or more are matched by generous donors for a limited time!';
-
-				return tagline;
-			}
-			// Control for donation boost experiment
-			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
-
-			if (this.loanCount > 1) {
-				return `${tagline} these loans`;
-			}
-			return `${tagline} this loan`;
+			/* eslint-disable max-len */
+			return this.checkoutDonationLendingCostExperiment === 'variant-b'
+				? `An optional 15% donation covers Kiva's costs for ${this.loanCount > 1 ? 'these loans' : 'this loan'}`
+				: `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
+			/* eslint-enable max-len */
 		},
-		donationBoostExpAmount() {
-			if (this.expVersion === 'variant-b') {
-				return numeral(15).format('$0');
-			} else if (this.expVersion === 'variant-c') {
-				return numeral(10).format('$0');
-			}
+		donationDetailsLink() {
+			return this.checkoutDonationLendingCostExperiment === 'variant-b'
+				? 'How Kiva uses donations'
+				: 'Learn more';
 		},
-		donationUpsellText() {
-			if (numeral(this.serverAmount).value() < numeral(this.donationBoostExpAmount).value()) {
-				// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your impact';
-				return `Boost your donation to ${this.donationBoostExpAmount} and double your impact.`;
-			}
-			return 'Thanks for doubling your impact.';
-		},
-		boostApplied() {
-			if (this.expVersion === 'variant-b') {
-				return numeral(this.serverAmount).value() < 15 ? '' : 'boost-applied';
-			}
-			if (this.expVersion === 'variant-c') {
-				return numeral(this.serverAmount).value() < 10 ? '' : 'boost-applied';
-			}
-		}
 	},
 	methods: {
 		updateDonationTo(amount) {
@@ -269,20 +230,6 @@ export default {
 				this.editDonation = true;
 			}
 		},
-		updateDonationExp() {
-			// if the server amount is greater than the donationBoostAmount return false
-			if (numeral(this.serverAmount).value() >= numeral(this.donationBoostExpAmount).value()) {
-				return false;
-			}
-			if (this.expVersion === 'variant-b') {
-				this.amount = numeral(15).format('0.00');
-				this.updateDonation();
-			}
-			if (this.expVersion === 'variant-c') {
-				this.amount = numeral(10).format('0.00');
-				this.updateDonation();
-			}
-		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
@@ -291,20 +238,19 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
-			const donationExpVersion = this.apollo.readQuery({
+			const checkoutDonationLendingCostExpVersion = this.apollo.readQuery({
 				query: experimentAssignmentQuery,
-				variables: { id: 'donation_boost' },
+				variables: { id: 'checkout_donation_lending_cost' },
 			});
-			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
+			// eslint-disable-next-line max-len
+			this.checkoutDonationLendingCostExperiment = _get(checkoutDonationLendingCostExpVersion, 'experiment.version') || null;
 
-			if (this.expVersion && this.expVersion === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'a');
+			// eslint-disable-next-line max-len
+			if (this.checkoutDonationLendingCostExperiment === 'variant-a') {
+				this.$kvTrackEvent('lending', 'EXP-CASH-519-Jan2019', 'a');
 			}
-			if (this.expVersion === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'b');
-			}
-			if (this.expVersion === 'variant-c') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'c');
+			if (this.checkoutDonationLendingCostExperiment === 'variant-b') {
+				this.$kvTrackEvent('lending', 'EXP-CASH-519-Jan2019', 'b');
 			}
 
 			const nudgeExperimentVersion = this.apollo.readQuery({
