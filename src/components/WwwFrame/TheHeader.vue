@@ -68,8 +68,10 @@
 			</router-link>
 			<router-link
 				v-if="isVisitor"
-				to="/login"
+				to="/ui-login"
 				class="header-button"
+				:event="kvAuth0.enabled ? '' : 'click'"
+				@click.native="auth0Login"
 				v-kv-track-event="['TopNav','click-Sign-in']"
 			>
 				<span>Sign in</span>
@@ -235,7 +237,7 @@
 				<hr>
 				<li>
 					<router-link
-						to="/logout"
+						to="/ui-logout"
 						v-kv-track-event="['TopNav','click-Portfolio-Sign out']">
 						Sign out
 					</router-link>
@@ -250,6 +252,7 @@ import _get from 'lodash/get';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
@@ -263,7 +266,7 @@ export default {
 		PromoBannerSmall,
 		TheLendMenu: () => import('./LendMenu/TheLendMenu'),
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'kvAuth0'],
 	data() {
 		return {
 			isVisitor: true,
@@ -312,6 +315,23 @@ export default {
 		},
 	},
 	methods: {
+		auth0Login() {
+			if (this.kvAuth0.enabled) {
+				this.kvAuth0.popupLogin().then(result => {
+					// Only refetch data if login was successful
+					if (result) {
+						// Refetch the queries for all the components in this route. All the components that use
+						// the default options for the apollo plugin or that setup their own query observer will update
+						// @todo maybe show a loding state until this completes?
+						const matched = this.$router.getMatchedComponents(this.$route);
+						return preFetchAll(matched, this.apollo, {
+							route: this.$route,
+							kvAuth0: this.kvAuth0,
+						});
+					}
+				});
+			}
+		},
 		onLendMenuShow() {
 			this.$refs.lendMenu.onOpen();
 		},

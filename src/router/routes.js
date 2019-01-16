@@ -58,4 +58,5 @@ export default [
 			},
 		]
 	},
+	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 ];

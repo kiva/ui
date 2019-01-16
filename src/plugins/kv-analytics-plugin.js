@@ -1,6 +1,3 @@
-import _get from 'lodash/get';
-import analyticsDataQuery from '@/graphql/query/analyticsData.graphql';
-
 // install method for plugin
 export default Vue => {
 	const inBrowser = typeof window !== 'undefined';
@@ -95,17 +92,9 @@ export default Vue => {
 	});
 
 	// eslint-disable-next-line no-param-reassign
-	Vue.prototype.$setKvAnalyticsData = apolloClient => {
+	Vue.prototype.$setKvAnalyticsData = (userId = null) => {
 		// establish loaded libs
 		kvActions.checkLibs();
-		// extract userid from apollo cache
-		let userId = null;
-		try {
-			const analyticsData = apolloClient.readQuery({ query: analyticsDataQuery });
-			userId = _get(analyticsData, 'my.userAccount.id');
-		} catch (e) {
-			// do nothing
-		}
 
 		// Setup Global Snowplow
 		if (snowplowLoaded) {

@@ -1,7 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
+import _get from 'lodash/get';
 import CookieStore from '@/util/CookieStore';
+import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
+import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
@@ -15,6 +18,20 @@ __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 // Create cookie store
 const cookieStore = new CookieStore();
 
+// Create auth instance
+let kvAuth0;
+if (config.enableAuth0) {
+	kvAuth0 = new KvAuth0({
+		audience: config.auth0ApiAudience,
+		clientID: config.auth0BrowserClientID,
+		domain: config.auth0Domain,
+		redirectUri: config.auth0BrowserCallbackUri,
+		scope: config.auth0Scope,
+	});
+} else {
+	kvAuth0 = MockKvAuth0;
+}
+
 // Create the App instance
 const {
 	app,
@@ -25,10 +42,11 @@ const {
 	cookieStore,
 	apollo: {
 		cookieStore,
-		uri: config.graphqlUri,
 		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
+		uri: config.graphqlUri,
 		types: config.graphqlFragmentTypes,
-	}
+	},
+	kvAuth0,
 });
 
 // Apply Server state to Client Store
@@ -36,8 +54,17 @@ if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
 }
 
+// Extract user id from apollo cache
+let userId = null;
+try {
+	const data = apolloClient.readQuery({ query: userIdQuery });
+	userId = _get(data, 'my.userAccount.id');
+} catch (e) {
+	// do nothing (leave user id as null)
+}
+
 // setup global analytics data
-app.$setKvAnalyticsData(apolloClient);
+app.$setKvAnalyticsData(userId);
 
 // fire server rendered pageview
 app.$fireServerPageView();
@@ -66,6 +93,7 @@ router.onReady(() => {
 		// Pre-fetch graphql queries from activated components
 		preFetchAll(activated, apolloClient, {
 			route: to,
+			kvAuth0,
 		}).then(next).catch(next);
 	});
 

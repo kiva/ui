@@ -3,8 +3,10 @@ var base = require('./index.js')
 
 module.exports = merge(base, {
 	app: {
+		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
 		graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
+		// graphqlUri: 'https://api-vm.kiva.org/graphql', // when using auth0
 		enablePerimeterx: false,
 		perimeterxAppId: '###',
 		enableAnalytics: false,
@@ -22,7 +24,14 @@ module.exports = merge(base, {
 		sentryURI: '',
 		algoliaAppId: 'H4ONVZQ2C6',
 		algoliaApiKey: 'a373a52c000e929706c9e02a5862a327',
-		algoliaDefaultIndex: 'dev_all_loans'
+		algoliaDefaultIndex: 'dev_all_loans',
+		enableAuth0: false,
+		auth0ApiAudience: 'https://api.dev.kivaws.org/graphql',
+		auth0BrowserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
+		auth0ServerClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
+		auth0BrowserCallbackUri: 'https://dev-vm-01.kiva.org/process-browser-auth',
+		auth0ServerCallbackUri: 'https://dev-vm-01.kiva.org/process-ssr-auth',
+		auth0Domain: 'login.dev.kiva.org',
 	},
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
