@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
+import { MockKvAuth0 } from '@/util/KvAuth0';
 
 const localVue = createLocalVue();
 localVue.use(kvAnalytics);
@@ -15,6 +16,10 @@ describe('TheHeader', () => {
 					template: '<div></div>',
 					methods: { focus() {} }
 				},
+			},
+			provide: {
+				apollo: {},
+				kvAuth0: MockKvAuth0,
 			},
 		});
 		const toggle = wrapper.find('.search-toggler');
