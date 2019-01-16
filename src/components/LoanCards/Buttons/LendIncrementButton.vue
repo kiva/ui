@@ -17,7 +17,6 @@
 			class="lend-increment-button smaller"
 			:price="selectedOption"
 			:loan-id="loanId"
-			@lend="handleLend"
 		/>
 	</div>
 </template>
@@ -79,9 +78,6 @@ export default {
 			}
 
 			return priceArray;
-		},
-		handleLend(amount) {
-			this.$emit('lend', amount);
 		},
 	},
 	watch: {

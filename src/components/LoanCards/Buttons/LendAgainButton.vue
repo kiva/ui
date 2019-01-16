@@ -3,7 +3,6 @@
 		price="25"
 		:loan-id="loanId"
 		class="lend-again-button secondary"
-		@lend="handleLend"
 	>
 		Lend again
 	</lend-button>
@@ -21,9 +20,6 @@ export default {
 			type: Number,
 			default: null
 		},
-	},
-	handleLend(amount) {
-		this.$emit('lend', amount);
 	},
 };
 </script>
