@@ -56,6 +56,8 @@ export default class CookieStore {
 	/**
 	 * Set a cookie
 	 *
+	 * options.expires - client expects a number (int), server expects a Date object
+	 *
 	 * @param {string} name
 	 * @param {any} value
 	 * @param {object} options

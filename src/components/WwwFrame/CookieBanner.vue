@@ -57,7 +57,11 @@ export default {
 		setGdprCookie() {
 			const now = (new Date()).getTime();
 			const cookieValue = `viewed=true&viewed_date=${now}`;
-			this.cookieStore.set('kvgdpr', cookieValue, { expires: 365 });
+
+			try {
+				// eslint-disable-next-line max-len
+				this.cookieStore.set('kvgdpr', cookieValue, { expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) });
+			} catch (e) { /* intentionally empty */ }
 		}
 	},
 	mounted() {
