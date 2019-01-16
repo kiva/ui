@@ -1,26 +1,30 @@
 <template>
-	<div class="order-totals small-collapse text-right row">
-		<span v-if="showKivaCredit" class="kiva-credit columns small-12">
-			<span v-if="showRemoveKivaCredit">
-				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
-			</span>
-			<span v-if="showApplyKivaCredit">
-				<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
-			</span>
-			<a
-				v-if="showRemoveKivaCredit"
-				class="remove-credit"
-				@click.prevent.stop="removeCredit('kiva_credit')">
-				<kv-icon name="small-x" />
-			</a>
-			<a
-				v-if="showApplyKivaCredit"
-				class="apply-credit small-text"
-				@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
-		</span>
-		<span class="order-total columns small-12">
-			<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
-		</span>
+	<div class="order-totals small-collapse row">
+		<div v-if="showKivaCredit" class="kiva-credit columns small-12">
+			<div class="forced-width">
+				<span v-if="showRemoveKivaCredit">
+					Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
+				</span>
+				<span v-if="showApplyKivaCredit">
+					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
+				</span>
+				<a
+					v-if="showRemoveKivaCredit"
+					class="remove-credit"
+					@click.prevent.stop="removeCredit('kiva_credit')">
+					<kv-icon name="small-x" />
+				</a>
+				<a
+					v-if="showApplyKivaCredit"
+					class="apply-credit small-text"
+					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
+			</div>
+		</div>
+		<div class="order-total columns small-12">
+			<div class="forced-width">
+				<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -112,8 +116,18 @@ export default {
 @import 'settings';
 
 .order-totals {
-	max-width: rem-calc(800);
-	margin: 0 auto;
+	text-align: left;
+	padding-right: 0.625rem;
+	padding-left: rem-calc(21);
+
+	@include breakpoint(medium) {
+		text-align: right;
+	}
+
+	.forced-width {
+		max-width: rem-calc(779);
+		margin: 0 auto;
+	}
 
 	.kiva-credit {
 		font-weight: $global-weight-highlight;
@@ -145,6 +159,7 @@ export default {
 	.total-value {
 		display: inline-block;
 		margin-left: rem-calc(5);
+		margin-right: rem-calc(3);
 	}
 }
 </style>
