@@ -49,7 +49,7 @@ export default {
 			}
 			if (this.isLentTo) {
 				return LendAgainButton;
-			}:
+			}
 			if (this.isFunded) {
 				return ReadMoreButton;
 			}
