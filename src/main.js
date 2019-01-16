@@ -28,8 +28,13 @@ Vue.use(VueProgressBar, {
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render
-export default function createApp({ apollo = {}, appConfig = {}, kvAuth0 } = {}) {
-	const apolloClient = createApolloClient({ ...apollo, kvAuth0 });
+export default function createApp({
+	apollo = {},
+	appConfig = {},
+	cookieStore,
+	kvAuth0,
+} = {}) {
+	const apolloClient = createApolloClient(apollo);
 	const router = createRouter();
 
 	// Checking that sentry is enabled & is not server side
@@ -44,6 +49,7 @@ export default function createApp({ apollo = {}, appConfig = {}, kvAuth0 } = {})
 		render: h => h(App, { props: { appConfig } }),
 		provide: {
 			apollo: apolloClient,
+			cookieStore,
 			algoliaConfig: {
 				algoliaAppId: appConfig.algoliaAppId,
 				algoliaApiKey: appConfig.algoliaApiKey,

@@ -3,6 +3,7 @@
 		<router-link
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']"
+			class="borrower-image-link"
 		>
 
 			<img class="borrower-image"

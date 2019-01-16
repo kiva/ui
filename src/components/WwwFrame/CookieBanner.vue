@@ -31,13 +31,13 @@
 </template>
 
 <script>
-import CookieStore from '@/util/CookieStore';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		KvIcon,
 	},
+	inject: ['cookieStore'],
 	data() {
 		return {
 			showBanner: false,
@@ -48,14 +48,26 @@ export default {
 			this.showBanner = false;
 			this.$kvTrackEvent('global', 'gdpr-notice', 'click-close');
 		},
+		migrateCookie() {
+			if (this.cookieStore.get('kvgdpr_closed') === 'true') {
+				this.cookieStore.remove('kvgdpr_closed');
+				this.setGdprCookie();
+			}
+		},
+		setGdprCookie() {
+			const now = (new Date()).getTime();
+			const cookieValue = `viewed=true&viewed_date=${now}`;
+			this.cookieStore.set('kvgdpr', cookieValue, { expires: 365 });
+		}
 	},
 	mounted() {
-		const cookieStore = new CookieStore();
-		if (cookieStore.get('kvgdpr_closed') !== 'true') {
+		this.migrateCookie();
+
+		if (this.cookieStore.get('kvgdpr') === undefined) {
 			this.showBanner = true;
 			this.$kvTrackEvent('global', 'gdpr-notice', 'visible');
+			this.setGdprCookie();
 		}
-		cookieStore.set('kvgdpr_closed', 'true');
 	},
 };
 </script>

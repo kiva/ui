@@ -1,12 +1,21 @@
 query {
 	general {
-		experiment: setting(setting: "uiexp.donation_boost") {
-			key
-			value
-		}
 		donationNudgeExperiment: setting(setting: "uiexp.donation_nudge_lightbox_custom_tip") {
 			key
 			value
+		}
+		donationNudgeLendingCostExperiment: setting(setting: "uiexp.donation_nudge_lending_cost") {
+			key
+			value
+		}
+		checkoutDonationLendingCostExperiment: setting(setting: "uiexp.checkout_donation_lending_cost") {
+			key
+			value
+		}
+	}
+	my {
+		loans {
+			totalCount
 		}
 	}
 }

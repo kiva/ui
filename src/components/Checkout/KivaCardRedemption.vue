@@ -210,11 +210,10 @@ div.columns .kiva-card-entry-wrapper {
 	box-shadow: 0 1px $kiva-accent-blue;
 	visibility: visible;
 	font-size: $medium-text-font-size;
-	margin-top: rem-calc(15);
+	margin: rem-calc(15) rem-calc(15) 0 0;
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
-		margin-right: rem-calc(15);
 		width: inherit;
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
@@ -253,7 +252,7 @@ div.columns .kiva-card-entry-wrapper {
 }
 
 .kiva-card-input {
-	width: rem-calc(200);
+	width: rem-calc(240);
 	border: 1px solid $charcoal;
 	color: $charcoal;
 	border-radius: $button-radius;
@@ -265,21 +264,26 @@ div.columns .kiva-card-entry-wrapper {
 
 	@include breakpoint(medium) {
 		margin: rem-calc(15) 0;
+		height: rem-calc(38);
 	}
 
 	@include breakpoint(large) {
+		width: rem-calc(200);
 		font-size: $normal-text-font-size;
 		float: left;
-		height: rem-calc(37);
 		margin: rem-calc(15);
 	}
 }
 
 .help-lightbox {
 	margin: 1.2rem 0;
+	position: relative;
+	top: rem-calc(10);
 
 	@include breakpoint(large) {
 		float: left;
+		top: unset;
+		position: unset;
 	}
 }
 

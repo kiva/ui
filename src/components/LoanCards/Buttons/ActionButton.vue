@@ -2,18 +2,28 @@
 	<component
 		:is="currentButtonState"
 		class="action-button smaller"
-		:loan-id="loanId" />
+		:loan-id="loanId"
+		:loan="loan"
+	/>
 </template>
 
 <script>
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import Lend25Button from './Lend25Button';
+import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
 import ReadMoreButton from './ReadMoreButton';
 
 export default {
+	inject: ['apollo'],
 	props: {
+		loan: {
+			type: Object,
+			default: () => {}
+		},
 		loanId: {
 			type: Number,
 			default: null
@@ -33,6 +43,7 @@ export default {
 	},
 	computed: {
 		currentButtonState() {
+			const experimentLendIncrement = this.lendIncrementExperimentVersion === 'variant-b';
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
@@ -42,8 +53,25 @@ export default {
 			if (this.isFunded) {
 				return ReadMoreButton;
 			}
-			return Lend25Button;
-		}
+			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
+		},
+	},
+	data() {
+		return {
+			lendIncrementExperimentVersion: '',
+		};
+	},
+	methods: {
+		setupExperimentState() {
+			const lendIncrementExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'lend_increment_button' },
+			});
+			this.lendIncrementExperimentVersion = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
+		},
+	},
+	created() {
+		this.setupExperimentState();
 	},
 };
 

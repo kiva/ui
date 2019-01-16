@@ -14,7 +14,9 @@
 
 <script>
 import _forEach from 'lodash/forEach';
+import _get from 'lodash/get';
 import numeral from 'numeral';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -43,7 +45,7 @@ export default {
 	},
 	methods: {
 		addToBasket() {
-			this.loading = true;
+			this.setLoading(true);
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
 				variables: {
@@ -58,6 +60,7 @@ export default {
 					});
 				} else {
 					// If no errors, update the loan fundraising info
+					this.trackCash103();
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {
@@ -69,9 +72,24 @@ export default {
 			}).catch(() => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
 			}).finally(() => {
-				this.loading = false;
+				this.setLoading(false);
 			});
-		}
+		},
+		setLoading(isLoading) {
+			this.loading = isLoading;
+			this.$emit('update:loading', isLoading);
+		},
+		trackCash103() {
+			const lendIncrementExperimentVersion = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'lend_increment_button' },
+			});
+			// eslint-disable-next-line max-len
+			const lendIncrementExperimentVersionString = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
+			if (lendIncrementExperimentVersionString === 'variant-b') {
+				this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019-click-lendnow', this.price);
+			}
+		},
 	},
 };
 

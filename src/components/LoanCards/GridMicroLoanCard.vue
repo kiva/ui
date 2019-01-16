@@ -3,56 +3,58 @@
 
 		<h3 v-if="title">{{ title }}</h3>
 
-		<div class="grid-loan-card">
-			<loan-card-image
-				:loan-id="loan.id"
-				:name="loan.name"
-				:retina-image-url="loan.image.retina"
-				:standard-image-url="loan.image.default"
-				:is-visitor="isVisitor"
-				:is-favorite="isFavorite"
+		<div class="grid-micro-loan-card">
+			<div class="row small-collapse">
+				<div class="columns small-4">
+					<loan-card-image
+						:loan-id="loan.id"
+						:name="loan.name"
+						:retina-image-url="loan.image.retina"
+						:standard-image-url="loan.image.default"
+						:is-visitor="true"
 
-				@track-loan-card-interaction="trackInteraction"
-				@favorite-toggled="toggleFavorite"
-			/>
-			<borrower-info
-				:loan-id="loan.id"
-				:name="loan.name"
-				:amount="loan.loanAmount"
-				:use="loan.use"
-				:country="loan.geocode.country.name"
-				:status="loan.status"
-				:borrower-count="loan.borrowerCount"
-				:loan-length="loan.lenderRepaymentTerm"
+						@track-loan-card-interaction="trackInteraction"
+					/>
+				</div>
+				<div class="columns small-8">
+					<borrower-info
+						:loan-id="loan.id"
+						:name="loan.name"
+						:amount="loan.loanAmount"
+						:use="loan.use"
+						:hide-loan-use="true"
+						:country="loan.geocode.country.name"
+						:status="loan.status"
+						:borrower-count="loan.borrowerCount"
+						:loan-length="loan.lenderRepaymentTerm"
 
-				@track-loan-card-interaction="trackInteraction"
-			/>
+						@track-loan-card-interaction="trackInteraction"
+					/>
+				</div>
 
-			<div class="loan-card-footer-wrap">
-				<fundraising-status
-					:amount-left="amountLeft"
-					:percent-raised="percentRaised"
-					:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
-					:expiring-soon-message="expiringSoonMessage"
-					:is-funded="loan.status==='funded'"
-				/>
+				<div class="loan-card-footer-wrap">
+					<fundraising-status
+						:amount-left="amountLeft"
+						:percent-raised="percentRaised"
+						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
+						:expiring-soon-message="expiringSoonMessage"
+						:is-funded="loan.status==='funded'"
+						:hide-text="true"
+					/>
 
-				<action-button
-					:loan-id="loan.id"
-					:loan="loan"
-					:items-in-basket="itemsInBasket"
-					:is-lent-to="loan.userProperties.lentTo"
-					:is-funded="isFunded"
+					<action-button
+						:loan-id="loan.id"
+						:items-in-basket="itemsInBasket"
+						:is-lent-to="loan.userProperties.lentTo"
+						:is-funded="isFunded"
 
-					@click.native="trackInteraction({
-						interactionType: 'addToBasket',
-						interactionElement: 'Lend25'
-					})"
-				/>
+						@click.native="trackInteraction({
+							interactionType: 'addToBasket',
+							interactionElement: 'Lend25'
+						})"
+					/>
+				</div>
 
-				<matching-text
-					:matching-text="loan.matchingText"
-					:is-funded="isFunded"/>
 			</div>
 		</div>
 	</div>
@@ -69,8 +71,6 @@ import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import _get from 'lodash/get';
-import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
 export default {
 	components: {
@@ -129,9 +129,7 @@ export default {
 		},
 	},
 	data() {
-		return {
-			isFavorite: this.loan.userProperties.favorited,
-		};
+		return {};
 	},
 	computed: {
 		amountLeft() {
@@ -167,27 +165,6 @@ export default {
 		}
 	},
 	methods: {
-		toggleFavorite() {
-			// optimistically toggle it locally first
-			this.isFavorite = !this.isFavorite;
-
-			this.apollo.mutate({
-				mutation: loanFavoriteMutation,
-				variables: {
-					loan_id: this.loan.id,
-					is_favorite: this.isFavorite
-				}
-			}).then(({ data }) => {
-				if (data) {
-					// @todo - provide a better soft-landing if mutation failed
-					const favorite = _get(data, 'loan.favorite');
-
-					if (favorite === null) {
-						this.isFavorite = !this.isFavorite;
-					}
-				}
-			});
-		},
 		trackInteraction(args) {
 			if (!this.enableTracking) {
 				return;
@@ -213,10 +190,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'settings';
 
-.grid-loan-card {
+.grid-micro-loan-card {
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
 	display: flex;
@@ -231,15 +208,65 @@ export default {
 	}
 }
 
-.loan-card-footer-wrap {
+.grid-micro-loan-card div .borrower-image-wrapper {
+	background: transparent;
+	height: auto;
+	width: auto;
+	padding: 1.25rem 0 0 1.25rem;
+
+	a.borrower-image-link {
+		position: initial;
+		display: block;
+
+		img.borrower-image {
+			display: block;
+			position: relative;
+			top: auto;
+			left: auto;
+			width: auto;
+			height: auto;
+		}
+	}
+}
+
+.grid-micro-loan-card div .borrower-info-wrapper {
+	text-align: left;
+	margin-top: 0;
+	padding: 1.25rem 1.25rem 0 0.8rem;
+	max-height: 6rem;
+	overflow: hidden;
+
+	.name {
+		font-size: 1rem;
+	}
+
+	.country,
+	.loan-use {
+		display: none;
+	}
+}
+
+.grid-micro-loan-card div .loan-card-footer-wrap {
 	flex-grow: 0;
 	padding: rem-calc(20) rem-calc(20) rem-calc(16);
 	text-align: center;
 	width: 100%;
+
+	.left-and-to-go-line {
+		display: none;
+	}
+
+	a.action-button,
+	button.action-button {
+		margin: 0.5rem 0;
+	}
+
+	.matching-text {
+		display: none;
+	}
 }
 
-.is-in-category-row,
-.is-in-featured {
+.column.is-in-category-row {
 	flex: 0 0 auto;
 
 	&.column-block {
@@ -250,7 +277,7 @@ export default {
 		}
 	}
 
-	.grid-loan-card {
+	.grid-micro-loan-card {
 		width: rem-calc(280);
 		@include breakpoint(340px down) {
 			min-width: rem-calc(256);
