@@ -1,6 +1,5 @@
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
-const assertBrowser = Symbol('assertBrowser');
 const authCallback = Symbol('authCallback');
 const loginPromise = Symbol('loginPromise');
 const sessionPromise = Symbol('sessionPromise');
@@ -34,6 +33,8 @@ export default class KvAuth0 {
 					scope,
 				});
 			});
+		} else {
+			this.webAuth = Promise.reject(new Error('Client auth called in server mode'));
 		}
 	}
 
@@ -67,15 +68,8 @@ export default class KvAuth0 {
 		});
 	}
 
-	// Throw an error if this gets called while not in a browser
-	[assertBrowser]() {
-		if (this.isServer) return Promise.reject(new Error('Client auth called in server mode'));
-	}
-
 	// Silently check for a logged in session with auth0 using hidden iframes
 	checkSession() {
-		this[assertBrowser]();
-
 		// Ensure that we only check the session once at a time
 		if (this[sessionPromise]) return this[sessionPromise];
 
@@ -94,8 +88,6 @@ export default class KvAuth0 {
 
 	// Open a popup window to the login page
 	popupLogin() {
-		this[assertBrowser]();
-
 		// Ensure we only ask to login once at a time
 		if (this[loginPromise]) return this[loginPromise];
 
@@ -119,7 +111,6 @@ export default class KvAuth0 {
 
 	// Handle the auth0 callback in the popup frame
 	popupCallback() {
-		this[assertBrowser]();
 		return this.webAuth.then(webAuth => webAuth.popup.callback());
 	}
 }
