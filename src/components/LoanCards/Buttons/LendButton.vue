@@ -68,7 +68,6 @@ export default {
 						},
 						fetchPolicy: 'network-only',
 					});
-					// Read assigned version of lend increment button experiment
 				}
 			}).catch(() => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
