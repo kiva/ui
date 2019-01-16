@@ -189,7 +189,7 @@ div.columns .kiva-card-entry-wrapper {
 	display: block;
 	height: rem-calc(40);
 	width: rem-calc(40);
-	margin-left: rem-calc(26);
+	margin-left: 9%;
 }
 
 .accordion-title {

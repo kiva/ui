@@ -1,6 +1,6 @@
 <template>
-	<div class="order-totals small-12 text-right">
-		<div v-if="showKivaCredit" class="kiva-credit">
+	<div class="order-totals small-collapse text-right row">
+		<span v-if="showKivaCredit" class="kiva-credit columns small-12">
 			<span v-if="showRemoveKivaCredit">
 				Kiva credit: <span class="total-value">({{ kivaCredit }})</span>
 			</span>
@@ -17,10 +17,10 @@
 				v-if="showApplyKivaCredit"
 				class="apply-credit small-text"
 				@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
-		</div>
-		<div class="order-total">
+		</span>
+		<span class="order-total columns small-12">
 			<strong>Total: <span class="total-value">{{ orderTotal }}</span></strong>
-		</div>
+		</span>
 	</div>
 </template>
 
