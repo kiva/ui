@@ -8,5 +8,14 @@ query {
 			key
 			value
 		}
+		donationNudgeLendingCostExperiment: setting(setting: "uiexp.donation_nudge_lending_cost") {
+			key
+			value
+		}
+	}
+	my {
+		loans {
+			totalCount
+		}
 	}
 }

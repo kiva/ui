@@ -256,6 +256,8 @@ export default {
 		margin: 1rem 0;
 
 		li {
+			top: rem-calc(-20);
+			position: relative;
 			list-style: none;
 			color: $kiva-accent-red;
 			font-weight: $global-weight-highlight;

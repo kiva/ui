@@ -2,7 +2,6 @@
 	<div class="loan-price-wrapper">
 		<div class="loan-price-select">
 			<select
-				dir="rtl"
 				v-model="selectedOption"
 				class="loan-price medium-text-font-size"
 				@change="updateLoanReservation()">
@@ -208,7 +207,6 @@ export default {
 			for (let i = 0; i < shares; i++) { // eslint-disable-line
 				priceArray.push(numeral(25 * (i + 1)).format('0,0'));
 			}
-
 			return priceArray;
 		}
 	}
@@ -241,17 +239,19 @@ export default {
 .loan-price-select {
 	float: left;
 	width: rem-calc(95);
+
+	@include breakpoint(medium) {
+		margin-right: rem-calc(20);
+	}
 }
 
 .loan-price {
 	border: 1px solid $charcoal;
-	min-width: rem-calc(90);
 	width: rem-calc(132);
 	border-radius: $button-radius;
 	height: rem-calc(50);
 	background-image: url('../../assets/images/customDropdown.png');
 	background-size: 2rem 2rem;
-	text-indent: 1.6rem;
 	color: $charcoal;
 	font-size: $medium-text-font-size;
 	font-weight: $global-weight-highlight;
@@ -260,10 +260,8 @@ export default {
 	@include breakpoint(medium) {
 		height: inherit;
 		line-height: $medium-text-line-height;
-		font-size: inherit;
-		width: rem-calc(90);
-		background-size: rem-calc(20) rem-calc(20);
-		text-indent: 0.5rem;
+		width: rem-calc(110);
+		background-size: rem-calc(23) rem-calc(20);
 	}
 }
 
