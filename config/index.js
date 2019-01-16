@@ -2,6 +2,7 @@ var path = require('path')
 
 module.exports = {
 	app: {
+		host: 'www.kiva.org',
 		publicPath: 'https://www-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.kiva.org/ajax/graphql',
 		// graphqlUri: 'https://api.kivaws.org/graphql', // when using auth0

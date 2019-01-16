@@ -3,6 +3,7 @@ var base = require('./index.js')
 
 module.exports = merge(base, {
 	app: {
+		host: 'www.dev.kiva.org',
 		publicPath: 'https://www-dev-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.dev.kiva.org/ajax/graphql',
 		// graphqlUri: 'https://api.dev.kivaws.org/graphql', // when using auth0

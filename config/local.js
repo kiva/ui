@@ -3,6 +3,7 @@ var base = require('./dev-vm.js')
 
 module.exports = merge(base, {
 	app: {
+		host: 'localhost',
 		publicPath: '/',
 		graphqlUri: 'https://api.kivaws.org/graphql',
 	},
