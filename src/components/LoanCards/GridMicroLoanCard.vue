@@ -266,8 +266,7 @@ export default {
 	}
 }
 
-.is-in-category-row,
-.is-in-featured {
+.column.is-in-category-row {
 	flex: 0 0 auto;
 
 	&.column-block {
