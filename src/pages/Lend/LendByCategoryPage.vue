@@ -325,18 +325,16 @@ export default {
 		}
 
 		// Read assigned version of lend increment button experiment
-		/* Add tracking later
 		const lendIncrementExperimentVersion = this.apollo.readQuery({
 			query: experimentQuery,
 			variables: { id: 'lend_increment_button' },
 		});
 		const lendIncrementExperimentVersionString = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
 		if (lendIncrementExperimentVersionString === 'variant-a') {
-			this.$kvTrackEvent('basket', 'EXP-CASH-103-Jan2019', 'a');
+			this.$kvTrackEvent('lending', 'EXP-CASH-103-Jan2019', 'a');
 		} else if (lendIncrementExperimentVersionString === 'variant-b') {
-			this.$kvTrackEvent('basket', 'EXP-CASH-103-Jan2019', 'b');
+			this.$kvTrackEvent('lending', 'EXP-CASH-103-Jan2019', 'b');
 		}
-		*/
 	},
 	mounted() {
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
