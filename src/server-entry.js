@@ -28,6 +28,7 @@ export default context => {
 			apolloClient,
 		} = createApp({
 			appConfig: config,
+			cookieStore,
 			apollo: {
 				cookieStore,
 				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),

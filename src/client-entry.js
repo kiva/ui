@@ -22,6 +22,7 @@ const {
 	apolloClient,
 } = createApp({
 	appConfig: config,
+	cookieStore,
 	apollo: {
 		cookieStore,
 		uri: config.graphqlUri,
