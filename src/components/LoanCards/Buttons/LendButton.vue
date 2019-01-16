@@ -87,7 +87,7 @@ export default {
 			// eslint-disable-next-line max-len
 			const lendIncrementExperimentVersionString = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
 			if (lendIncrementExperimentVersionString === 'variant-b') {
-				this.$kvTrackEvent('lending', 'EXP-CASH-103-Jan2019-click-lendnow', this.price);
+				this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019-click-lendnow', this.price);
 			}
 		},
 	},

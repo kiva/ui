@@ -331,9 +331,9 @@ export default {
 		});
 		const lendIncrementExperimentVersionString = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
 		if (lendIncrementExperimentVersionString === 'variant-a') {
-			this.$kvTrackEvent('lending', 'EXP-CASH-103-Jan2019', 'a');
+			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'a');
 		} else if (lendIncrementExperimentVersionString === 'variant-b') {
-			this.$kvTrackEvent('lending', 'EXP-CASH-103-Jan2019', 'b');
+			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'b');
 		}
 	},
 	mounted() {
