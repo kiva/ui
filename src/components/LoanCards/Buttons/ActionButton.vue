@@ -47,11 +47,11 @@ export default {
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
-			if (this.isFunded) {
-				return ReadMoreButton;
-			}
 			if (this.isLentTo) {
 				return LendAgainButton;
+			}:
+			if (this.isFunded) {
+				return ReadMoreButton;
 			}
 			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
 		},

@@ -15,8 +15,8 @@ query {
 			key
 			value
 		}
-    lendIncrementExp: setting(setting: "uiexp.lend_increment_button") {
-      key
+		lendIncrementExp: setting(setting: "uiexp.lend_increment_button") {
+			key
 			value
 		}
 		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loans") {
