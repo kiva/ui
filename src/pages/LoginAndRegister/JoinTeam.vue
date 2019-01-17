@@ -17,6 +17,7 @@ export default {
 	},
 	data() {
 		return {
+			teamId: 0
 		};
 	},
 	methods: {

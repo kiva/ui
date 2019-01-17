@@ -41,7 +41,7 @@ export default {
 		prefetch: true,
 		variables() {
 			return {
-				team_id: this.teamId
+				id: this.teamId
 			};
 		},
 		result({ data }) {
@@ -63,6 +63,12 @@ export default {
 					variables: {
 						team_id: this.teamId
 					}
+				}).then(result => {
+					if (result.errors) {
+						console.log(result.errors);
+					} else {
+						window.location.href = this.doneUrl;
+					}
 				}).catch(error => {
 					console.error(error);
 				});
@@ -74,9 +80,9 @@ export default {
 	},
 	created() {
 		this.invitationId = this.$route.query.invitation_id;
-		this.teamId = Number(this.$route.query.team_id);
 		this.inviterId = this.$route.query.inviter_id;
 		this.inviterDisplayName = this.$route.query.inviter_display_name;
+		this.doneUrl = this.$route.query.doneUrl;
 	}
 };
 </script>
