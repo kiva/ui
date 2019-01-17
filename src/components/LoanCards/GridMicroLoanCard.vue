@@ -236,11 +236,13 @@ export default {
 	max-height: 6rem;
 	overflow: hidden;
 
-	.name {
+	a.name {
+		display: block;
 		font-size: 1rem;
+		max-height: 2.8rem;
+		overflow: hidden;
 	}
 
-	.country,
 	.loan-use {
 		display: none;
 	}

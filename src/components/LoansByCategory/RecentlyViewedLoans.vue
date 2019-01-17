@@ -7,8 +7,8 @@
 					:key="recentlyViewedCategory.id"
 					:loan-channel="recentlyViewedCategory"
 					:items-in-basket="itemsInBasket"
-					:row-number="999"
-					set-id="999"
+					:row-number="-1"
+					set-id="CASH-363-recently-viewed"
 					:is-logged-in="isLoggedIn"
 					:is-micro="isMicro"
 				/>
@@ -51,7 +51,7 @@ export default {
 			showRecentlyViewed: false,
 			recentlyViewedLoans: [],
 			recentlyViewedCategory: {
-				id: 999,
+				id: 64,
 				name: 'Recently viewed loans',
 				url: '/lend/recently-viewed-loans', // required field
 				loans: {
