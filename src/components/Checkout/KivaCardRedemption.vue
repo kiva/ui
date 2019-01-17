@@ -190,6 +190,10 @@ div.columns .kiva-card-entry-wrapper {
 	height: rem-calc(40);
 	width: rem-calc(40);
 	margin-left: 9%;
+
+	@media screen and (min-width: 851px) {
+		margin-left: 18%;
+	}
 }
 
 .accordion-title {
