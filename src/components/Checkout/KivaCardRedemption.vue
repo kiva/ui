@@ -30,7 +30,7 @@
 
 							<!-- This lightbox will be replaced with a Popper tip message. -->
 							<a @click.prevent="triggerDefaultLightbox"
-								class="help-lightbox">Need help?
+								class="help-lightbox-trigger">Need help?
 							</a>
 							<kv-lightbox
 								:visible="defaultLbVisible"
@@ -189,11 +189,20 @@ div.columns .kiva-card-entry-wrapper {
 	display: block;
 	height: rem-calc(40);
 	width: rem-calc(40);
-	margin: 0 auto;
+	margin-left: 9%;
+
+	@media screen and (min-width: 851px) {
+		margin-left: 18%;
+	}
 }
 
 .accordion-title {
 	font-weight: $global-weight-highlight;
+	padding-left: rem-calc(7);
+
+	@include breakpoint(medium) {
+		padding-left: 0;
+	}
 
 	&:hover {
 		cursor: pointer;
@@ -210,10 +219,13 @@ div.columns .kiva-card-entry-wrapper {
 	box-shadow: 0 1px $kiva-accent-blue;
 	visibility: visible;
 	font-size: $medium-text-font-size;
-	margin: rem-calc(15) rem-calc(15) 0 0;
+	margin-top: rem-calc(15);
+	margin-left: rem-calc(20);
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
+		margin-right: rem-calc(15);
+		margin-left: rem-calc(17);
 		width: inherit;
 		font-size: $normal-text-font-size;
 		height: rem-calc(36);
@@ -261,21 +273,21 @@ div.columns .kiva-card-entry-wrapper {
 	display: block;
 	height: rem-calc(50);
 	font-size: $medium-text-font-size;
+	margin-left: rem-calc(20);
 
 	@include breakpoint(medium) {
-		margin: rem-calc(15) 0;
-		height: rem-calc(38);
+		margin: rem-calc(15) rem-calc(15) rem-calc(15) rem-calc(17);
 	}
 
 	@include breakpoint(large) {
 		width: rem-calc(200);
 		font-size: $normal-text-font-size;
 		float: left;
-		margin: rem-calc(15);
+		height: rem-calc(37);
 	}
 }
 
-.help-lightbox {
+.help-lightbox-trigger {
 	margin: 1.2rem 0;
 	position: relative;
 	top: rem-calc(10);
