@@ -158,7 +158,7 @@ export default ({ cookieStore }) => {
 						id,
 						// if experiment exist & enabled = false return a null version
 						// > we don't want to render a disabled experiment even if a cookie version is present
-						version: (experiment !== null && !experiment.enabled) ? null : version,
+						version: (experiment === null || !experiment.enabled) ? null : version,
 						__typename: 'Experiment',
 					};
 				},
