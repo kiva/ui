@@ -94,6 +94,7 @@ import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _without from 'lodash/without';
+import WebStorage from 'store2';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -133,6 +134,8 @@ export default {
 			showLendByCategoryMessage: false,
 			realCategories: [],
 			customCategories: [],
+			showRecentlyViewed: false,
+			recentLoanIds: []
 		};
 	},
 	computed: {
@@ -169,6 +172,17 @@ export default {
 				loanIds.push({
 					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
 				});
+			}
+
+			// Inject Data for Recently viewed if present
+			if (this.showRecentlyViewed) {
+				if (this.recentLoanIds.length) {
+					_each(this.recentLoanIds, (loanId, index) => {
+						loanIds.push({
+							r: -1, p: index + 1, c: 64, l: loanId
+						});
+					});
+				}
 			}
 
 			_each(categories, (category, catIndex) => {
@@ -337,6 +351,25 @@ export default {
 		}
 	},
 	mounted() {
+		// Setup Recently Viewed Loans data for inclusion in page load loan row analytics
+		// Read assignment for Recently Viewed Loans EXP
+		const recentlyViewedEXP = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'recently_viewed_loans' }
+		});
+		this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
+		// if Recently Viewed Exp is active look for loans in local storage
+		if (this.showRecentlyViewed) {
+			// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
+			const recentlyViewed = WebStorage('recentlyViewedLoans');
+			// decode, parse then set recently viewed loan data
+			try {
+				this.recentLoanIds = JSON.parse(atob(recentlyViewed));
+			} catch (e) {
+				// no-op
+			}
+		}
+
 		const pageViewTrackData = this.assemblePageViewData(this.categories);
 		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 	},
