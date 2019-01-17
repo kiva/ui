@@ -47,6 +47,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
+						:loan="loan"
 
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',
@@ -261,6 +262,10 @@ export default {
 	a.action-button,
 	button.action-button {
 		margin: 0.5rem 0;
+	}
+
+	div.action-button {
+		margin: 1.25rem 0 0.5rem 0;
 	}
 
 	.matching-text {
