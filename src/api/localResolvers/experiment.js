@@ -139,11 +139,11 @@ export default ({ cookieStore }) => {
 					// get the existing assigned version for this experiment id
 					let version = assignments[id];
 
-					// assign an experiment version if it's currently undefined
-					if (_isUndefined(version)) {
-						// read the experiment data from the cache
-						const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
+					// read the experiment data from the cache
+					const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
 
+					// assign an experiment version if it's currently undefined
+					if (experiment && _isUndefined(version)) {
 						// assign the version using the experiment data (undefined if experiment disabled)
 						assignments[id] = assignVersion(experiment || {}, cookieStore);
 
@@ -156,7 +156,9 @@ export default ({ cookieStore }) => {
 
 					return {
 						id,
-						version,
+						// if experiment exist & enabled = false return a null version
+						// > we don't want to render a disabled experiment even if a cookie version is present
+						version: (experiment !== null && !experiment.enabled) ? null : version,
 						__typename: 'Experiment',
 					};
 				},
