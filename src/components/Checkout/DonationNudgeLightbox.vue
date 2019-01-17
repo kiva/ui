@@ -90,9 +90,10 @@ export default {
 	},
 	computed: {
 		header() {
+			const newLoanCount = this.loanHistoryCount + this.loanCount;
 			/* eslint-disable max-len */
 			return this.experimentalHeader
-				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva!`
+				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${newLoanCount} ${newLoanCount > 1 ? 'loans' : 'loan'} made on Kiva!`
 				: 'We rely on donations to reach the people who need it the most';
 			/* eslint-enable max-len */
 		},
