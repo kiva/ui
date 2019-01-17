@@ -100,6 +100,8 @@ export default {
 			} else {
 				this.zeroRecentLoans = true;
 			}
+		} else {
+			this.zeroRecentLoans = true;
 		}
 		// Track Assignment + Number of Loans
 		this.$kvTrackEvent(
