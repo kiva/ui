@@ -56,12 +56,11 @@ export default {
 	methods: {
 		handleJoinTeamButton(join) {
 			if (join) {
-				console.log('joining');
-				console.log(this.teamId);
 				this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
-						team_id: this.teamId
+						team_id: this.teamId,
+						team_recruitment_id: this.teamRecruitmentId
 					}
 				}).then(result => {
 					if (result.errors) {
@@ -73,13 +72,12 @@ export default {
 					console.error(error);
 				});
 			} else {
-				// don't join team
-				console.log('not joining');
+				window.location.href = this.doneUrl;
 			}
 		}
 	},
 	created() {
-		this.invitationId = this.$route.query.invitation_id;
+		this.teamRecruitmentId = this.$route.query.id;
 		this.inviterId = this.$route.query.inviter_id;
 		this.inviterDisplayName = this.$route.query.inviter_display_name;
 		this.doneUrl = this.$route.query.doneUrl;
