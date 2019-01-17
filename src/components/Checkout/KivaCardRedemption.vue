@@ -219,8 +219,7 @@ div.columns .kiva-card-entry-wrapper {
 	box-shadow: 0 1px $kiva-accent-blue;
 	visibility: visible;
 	font-size: $medium-text-font-size;
-	margin-top: rem-calc(15);
-	margin-left: rem-calc(20);
+	margin: rem-calc(15) rem-calc(15) 0 rem-calc(20);
 
 	@include breakpoint(medium) {
 		padding: rem-calc(6) rem-calc(20);
@@ -290,7 +289,7 @@ div.columns .kiva-card-entry-wrapper {
 .help-lightbox-trigger {
 	margin: 1.2rem 0;
 	position: relative;
-	top: rem-calc(10);
+	top: rem-calc(9);
 
 	@include breakpoint(large) {
 		float: left;
