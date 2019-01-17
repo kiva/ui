@@ -127,6 +127,20 @@ export default {
 	.forced-width {
 		max-width: rem-calc(779);
 		margin: 0 auto;
+
+		@include breakpoint(medium) {
+			margin-right: rem-calc(10);
+		}
+
+		// Needed these custom break points were needed to get the correct spacing
+		// for the kiva credit & order total rows
+		@media screen and (min-width: 760px) and (max-width: 850px) {
+			margin-right: rem-calc(13);
+		}
+
+		@media screen and (min-width: 851px) {
+			margin: 0 auto;
+		}
 	}
 
 	.kiva-credit {
