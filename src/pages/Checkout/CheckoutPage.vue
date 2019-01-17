@@ -636,6 +636,7 @@ export default {
 
 				.checkout-button {
 					width: auto;
+					margin-right: rem-calc(10);
 				}
 			}
 		}
