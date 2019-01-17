@@ -1,4 +1,4 @@
-mutation joinTeam($team_id: Int) {
+mutation joinTeam($team_id: Int!) {
 	my {
 		joinTeam (teamId: $team_id)
 	}
