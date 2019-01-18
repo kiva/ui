@@ -234,7 +234,7 @@ export default {
 	text-align: left;
 	margin-top: 0;
 	padding: 1.25rem 1.25rem 0 0.8rem;
-	max-height: 6rem;
+	max-height: 5.7rem;
 	overflow: hidden;
 
 	a.name {
@@ -261,7 +261,7 @@ export default {
 
 	a.action-button,
 	button.action-button {
-		margin: 0.5rem 0;
+		margin: 0.75rem 0;
 	}
 
 	div.action-button {
