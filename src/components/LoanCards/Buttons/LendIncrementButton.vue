@@ -84,8 +84,11 @@ export default {
 		},
 	},
 	watch: {
-		loan() {
-			this.selectedOption = Math.min(50, this.amountLeft);
+		loan: {
+			handler() {
+				this.selectedOption = Math.min(50, this.amountLeft);
+			},
+			immediate: true,
 		}
 	},
 };
