@@ -353,14 +353,9 @@ export default {
 
 .dedicate-heart {
 	border: 1px solid $light-gray;
-	height: rem-calc(71);
-	width: rem-calc(71);
 	padding: rem-calc(12);
-
-	@include breakpoint(medium) {
-		height: rem-calc(80);
-		width: rem-calc(80);
-	}
+	height: rem-calc(80);
+	width: rem-calc(80);
 }
 
 .donation-info {
