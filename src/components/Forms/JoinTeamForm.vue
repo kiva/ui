@@ -22,6 +22,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
+import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
 import _get from 'lodash/get';
 
 export default {
@@ -56,6 +57,22 @@ export default {
 	methods: {
 		handleJoinTeamButton(join) {
 			if (join) {
+				if (!this.teamRecruitmentId && this.recruiterId) {
+					this.apollo.mutate({
+						mutation: createTeamRecruitment,
+						variables: {
+							team_id: this.teamId,
+							user_id: this.userId,
+							recruiter_id: this.inviterId
+						}
+					}).then(result => {
+						if (result.errors) {
+							console.log(result.errors);
+						}
+					}).catch(error => {
+						console.error(error);
+					});
+				}
 				this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
@@ -77,10 +94,12 @@ export default {
 		}
 	},
 	created() {
+		this.doneUrl = this.$route.query.doneUrl;
 		this.teamRecruitmentId = this.$route.query.id;
 		this.inviterId = this.$route.query.inviter_id;
 		this.inviterDisplayName = this.$route.query.inviter_display_name;
-		this.doneUrl = this.$route.query.doneUrl;
+		this.teamId = this.$route.query.team_id;
+		this.userId = this.$route.query.user_id;
 	}
 };
 </script>
