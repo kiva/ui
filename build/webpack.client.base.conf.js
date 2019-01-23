@@ -37,7 +37,7 @@ module.exports = merge.smart(baseWebpackConfig, {
 			svgoOptions: {
 				plugins: [
 					{
-						convertPathData: false
+						convertPathData: false,
 					}
 				],
 				floatPrecision: 2,
