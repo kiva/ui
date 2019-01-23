@@ -40,6 +40,8 @@
 
 		<div class="row">
 			<div class="heading-region column small-12">
+				<view-toggle />
+
 				<h1>Make a loan, change a life</h1>
 				<p class="page-subhead">Each Kiva loan helps people build a better future for
 				themselves and their families. <br class="xxlu">Browse loans by category below, or
@@ -108,6 +110,8 @@ import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 
+import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
 // You'll need use the same id when you push data into customCategories
@@ -125,6 +129,7 @@ export default {
 		FeaturedLoans,
 		RecentlyViewedLoans,
 		WwwPage,
+		ViewToggle,
 	},
 	inject: ['apollo'],
 	metaInfo: {

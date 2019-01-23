@@ -4,7 +4,7 @@
     <title>Filters</title>
     <desc>Created with Sketch.</desc>
     <defs></defs>
-    <g id="Page-1" stroke-width="1" fill-rule="evenodd" sketch:type="MSPage">
+    <g id="Page-1" stroke="none" stroke-width="1" fill-rule="evenodd" sketch:type="MSPage">
         <g id="filters" sketch:type="MSLayerGroup">
             <path d="M15.5,3.5 L1.4375,3.5" id="Line" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
             <path d="M15.5,11.5 L1.4375,11.5" id="Line-2" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
