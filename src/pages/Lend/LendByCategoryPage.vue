@@ -257,7 +257,6 @@ export default {
 			}).then(({ data }) => {
 				// add our remaining loan channels
 				this.clientCategories = _get(data, 'lend.loanChannelsById') || [];
-				Promise.resolve();
 			});
 		},
 		fetchRecentlyViewed() {
@@ -303,18 +302,6 @@ export default {
 					});
 				},
 			});
-
-			// React to changes to the category data
-			// TODO: DO we really need this?
-			// > It triggeres an additional full network call to graphql for all loanChannels + their loans
-			// > This could have been part of the long ssr load times when this was in the created method.
-			// categoryObserver.subscribe({
-			// 	next: ({ data }) => {
-			// 		this.realCategories = _merge(this.realCategories, _get(data, 'lend.loanChannelsById')) || [];
-			// 		// If active, update our custom categories on any query change
-			// 		// this.setCustomRowData(data);
-			// 	},
-			// });
 		}
 	},
 	apollo: {
