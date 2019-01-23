@@ -280,25 +280,15 @@ export default {
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
-			const categoryObserver = this.apollo.watchQuery({
+			this.apollo.watchQuery({
 				query: loanChannelQuery,
 				variables: {
 					ids: this.realCategoryIds,
-					// @todo variables for fetching data for custom channels
 				},
 			});
-
-			// Watch for and react to changes to the query
 			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 				next: ({ data }) => {
-					this.setRows(data);
-					this.isAdmin = !!_get(data, 'my.isAdmin');
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-					// Update the categories observer with the new setting, triggering updates
-					categoryObserver.setVariables({
-						ids: this.realCategoryIds,
-						// @todo variables for fetching data for custom channels
-					});
 				},
 			});
 		}
