@@ -1,6 +1,6 @@
 <template>
 	<div class="basket-item-wrapper row">
-		<span class="small-3 medium-2 large-1">
+		<span class="hide-for-small-only medium-3 large-2">
 			<span class="kiva-card-icon">
 				<!-- Print Kiva Card -->
 				<span v-if="cardType == 'print'">
@@ -22,7 +22,7 @@
 				</span>
 			</span>
 		</span>
-		<span class="small-9 medium-7 large-9 kiva-card-info-wrapper">
+		<span class="small-12 medium-5 large-7 kiva-card-info-wrapper">
 			<!-- Main line text -->
 			<span class="kiva-card-info featured-text">
 				<!-- Print Kiva Card -->
@@ -69,8 +69,7 @@
 				</div>
 			</span>
 		</span>
-		<span class="small-3 show-for-small-only"></span>
-		<span class="small-9 medium-3 large-2 price-wrapper medium-text-font-size">
+		<span class="small-12 medium-4 large-3 price-wrapper medium-text-font-size">
 			<!-- Kiva card amount dropdown section -->
 			<loan-price
 				:ids-in-group="kivaCard.idsInGroup"
@@ -147,11 +146,6 @@ export default {
 
 .basket-item-wrapper {
 	margin-bottom: rem-calc(30);
-	padding-right: rem-calc(20);
-}
-
-.kiva-card-info-wrapper {
-	padding-left: rem-calc(10);
 }
 
 .kiva-card-info {
@@ -165,7 +159,7 @@ export default {
 }
 
 .sub-text-container div.small-text {
-	margin: 5px 0;
+	margin-bottom: rem-calc(5);
 }
 
 .edit-pencil-icon {
@@ -181,18 +175,8 @@ export default {
 	}
 }
 
-.price-wrapper {
-	padding-left: rem-calc(10);
-}
-
 .card-preview {
-	height: rem-calc(71);
-	width: rem-calc(71);
-	padding: rem-calc(4);
-
-	@include breakpoint(medium) {
-		height: rem-calc(55);
-		width: rem-calc(55);
-	}
+	height: rem-calc(80);
+	width: rem-calc(80);
 }
 </style>
