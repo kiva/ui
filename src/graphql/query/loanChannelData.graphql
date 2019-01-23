@@ -5,13 +5,14 @@ query (
 	$numberOfLoans: Int = 12,
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
+	$excludeIds: [Int],
 ) {
 	lend {
 		loanChannelsById(ids: $ids) {
 			id
 			name
 			url
-			loans(limit: $numberOfLoans, unique: true) {
+			loans(limit: $numberOfLoans, unique: true, exclude_ids: $excludeIds) {
 				values {
 					...loanCardFields
 					image {

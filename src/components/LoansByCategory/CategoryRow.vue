@@ -178,7 +178,8 @@ export default {
 	methods: {
 		saveWindowWidth() {
 			this.windowWidth = window.innerWidth;
-			this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
+			// TODO: New Countries for You code is getting executed even for NON Logged in lenders (no loans, no width)
+			this.wrapperWidth = this.$refs.innerWrapper ? this.$refs.innerWrapper.clientWidth : 0;
 		},
 		scrollRowLeft() {
 			if (this.scrollPos < 0) {

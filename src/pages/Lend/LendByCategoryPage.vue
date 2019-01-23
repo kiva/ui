@@ -90,9 +90,12 @@
 </template>
 
 <script>
+import _drop from 'lodash/drop';
 import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _take from 'lodash/take';
+import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
 import WebStorage from 'store2';
 import { readJSONSetting } from '@/util/settingsUtils';
@@ -109,6 +112,10 @@ import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoan
 // They should also be added to the possibleCategories in CategoryAdminControls
 // You'll need use the same id when you push data into customCategories
 const customCategoryIds = [];
+
+// Row Limiter
+// > This controls how may rows are loaded on the server
+const ssrRowLimiter = 7;
 
 export default {
 	components: {
@@ -134,17 +141,21 @@ export default {
 			showLendByCategoryMessage: false,
 			realCategories: [],
 			customCategories: [],
+			clientCategories: [],
 			showRecentlyViewed: false,
 			recentLoanIds: []
 		};
 	},
 	computed: {
+		ssrCategoryIds() {
+			return _take(this.realCategoryIds, ssrRowLimiter);
+		},
 		categoryIds() {
 			return _map(this.categorySetting, 'id');
 		},
 		categories() {
 			// merge realCategories & customCategories
-			const categories = this.realCategories.concat(this.customCategories);
+			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
 			// fiter our any empty categories and re-order to match the setting
 			return categories.filter(channel => channel.loans !== null).sort(indexIn(this.categoryIds, 'id'));
 		},
@@ -225,6 +236,61 @@ export default {
 			// 		},
 			// 	});
 			// }
+		},
+		fetchRemainingLoanChannels() {
+			const ssrLoanIds = [];
+			// pick loan ids from each
+			_each(this.categories, category => {
+				_each(category.loans.values, loan => {
+					ssrLoanIds.push(loan.id);
+				});
+			});
+			// Client Fetch the remaining category rows
+			return this.apollo.query({
+				query: loanChannelQuery,
+				variables: {
+					ids: _drop(this.realCategoryIds, ssrRowLimiter),
+					excludeIds: ssrLoanIds,
+					// @todo variables for fetching data for custom channels
+				},
+			}).then(({ data }) => {
+				// add our remaining loan channels
+				this.clientCategories = _get(data, 'lend.loanChannelsById') || [];
+			});
+		},
+		fetchRecentlyViewed() {
+			// Setup Recently Viewed Loans data for inclusion in page load loan row analytics
+			// Read assignment for Recently Viewed Loans EXP
+			const recentlyViewedEXP = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'recently_viewed_loans' }
+			});
+			this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
+			// if Recently Viewed Exp is active look for loans in local storage
+			if (this.showRecentlyViewed) {
+				// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
+				const recentlyViewed = WebStorage('recentlyViewedLoans');
+				// decode, parse then set recently viewed loan data
+				try {
+					this.recentLoanIds = JSON.parse(atob(recentlyViewed));
+				} catch (e) {
+					// no-op
+				}
+			}
+		},
+		activateWatchers() {
+			// Create an observer for changes to the categories (and their loans)
+			this.apollo.watchQuery({
+				query: loanChannelQuery,
+				variables: {
+					ids: this.realCategoryIds,
+				},
+			});
+			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
+				next: ({ data }) => {
+					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+				},
+			});
 		}
 	},
 	apollo: {
@@ -258,11 +324,12 @@ export default {
 				// get the ids for the variant, or the default if that is undefined
 				const ids = _map(variantRows || rowData, 'id');
 
-				// Pre-fetch all the data for those channels
+				// Pre-fetch all the data for SSR targeted channels
 				return client.query({
 					query: loanChannelQuery,
 					variables: {
-						ids: _without(ids, ...customCategoryIds),
+						// exclude custom rows + limit for ssr
+						ids: _take(_without(ids, ...customCategoryIds), ssrRowLimiter)
 						// @todo variables for fetching data for custom channels
 					},
 				});
@@ -282,49 +349,17 @@ export default {
 		const versionData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'featured_loans' } });
 		this.showFeaturedLoans = _get(versionData, 'experiment.version') === 'shown';
 
-		// Read the loan channels from the cache
+		// Read the SSR ready loan channels from the cache
 		const categoryData = this.apollo.readQuery({
 			query: loanChannelQuery,
 			variables: {
-				ids: this.realCategoryIds,
+				ids: _take(this.realCategoryIds, ssrRowLimiter)
 				// @todo variables for fetching data for custom channels
 			},
 		});
 		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
 		// If active, update our custom categories prior to render
 		// this.setCustomRowData(categoryData);
-
-		// Create an observer for changes to the categories (and their loans)
-		const categoryObserver = this.apollo.watchQuery({
-			query: loanChannelQuery,
-			variables: {
-				ids: this.realCategoryIds,
-				// @todo variables for fetching data for custom channels
-			},
-		});
-
-		// Watch for and react to changes to the query
-		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
-			next: ({ data }) => {
-				this.setRows(data);
-				this.isAdmin = !!_get(data, 'my.isAdmin');
-				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-				// Update the categories observer with the new setting, triggering updates
-				categoryObserver.setVariables({
-					ids: this.realCategoryIds,
-					// @todo variables for fetching data for custom channels
-				});
-			},
-		});
-
-		// React to changes to the category data
-		categoryObserver.subscribe({
-			next: ({ data }) => {
-				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
-				// If active, update our custom categories on any query change
-				// this.setCustomRowData(data);
-			},
-		});
 
 		// Read assigned version of lend-by-category message experiment
 		// eslint-disable-next-line max-len
@@ -351,27 +386,14 @@ export default {
 		}
 	},
 	mounted() {
-		// Setup Recently Viewed Loans data for inclusion in page load loan row analytics
-		// Read assignment for Recently Viewed Loans EXP
-		const recentlyViewedEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'recently_viewed_loans' }
-		});
-		this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
-		// if Recently Viewed Exp is active look for loans in local storage
-		if (this.showRecentlyViewed) {
-			// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
-			const recentlyViewed = WebStorage('recentlyViewedLoans');
-			// decode, parse then set recently viewed loan data
-			try {
-				this.recentLoanIds = JSON.parse(atob(recentlyViewed));
-			} catch (e) {
-				// no-op
-			}
-		}
+		this.fetchRecentlyViewed();
 
-		const pageViewTrackData = this.assemblePageViewData(this.categories);
-		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+		this.fetchRemainingLoanChannels().then(() => {
+			this.activateWatchers();
+
+			const pageViewTrackData = this.assemblePageViewData(this.categories);
+			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+		});
 	},
 };
 </script>
