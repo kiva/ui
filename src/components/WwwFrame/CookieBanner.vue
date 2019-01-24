@@ -23,7 +23,8 @@
 					</div>
 					We use cookies to improve your experience and enable the functionality and security of this site.
 					By continuing to use this site, you agree to the use of these cookies.
-					For more information please see our <a href="https://www.kiva.org/legal/cookie">cookie policy</a>.
+					For more information or to change your cookie
+					preferences please see our <a href="/legal/cookie" target="_blank">cookie policy</a>.
 				</div>
 			</div>
 		</div>
