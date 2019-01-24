@@ -27,14 +27,20 @@ export default {
 .view-toggle {
 	float: right;
 	display: flex;
-	margin-left: 1rem;
 	margin-right: 1rem;
+
+	@include breakpoint(medium) {
+		margin-right: 2rem;
+	}
+}
+
+.browse-box {
+	margin-right: 0.75rem;
 }
 
 .filter-box {
 	border-left: 1px solid black;
-	margin-left: 1rem;
-	padding-left: 1rem;
+	padding-left: 0.75rem;
 }
 
 .browse-icon,
@@ -43,6 +49,7 @@ export default {
 	height: 30px;
 	width: 30px;
 	margin: 0 auto;
+	fill: $kiva-text-light;
 }
 
 // Selected toggled color will be:
