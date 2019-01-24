@@ -1,49 +1,53 @@
 <template>
-	<div>
-		<h2 v-if="inviterDisplayName" slot="title">{{ inviterDisplayName }} invited you to the {{ teamName }} team!</h2>
-		<h2 v-else slot="title">You're invited to the {{ teamName }} team!</h2>
+	<div class="join-team-form">
+		<h2 v-if="inviterDisplayName">{{ inviterDisplayName }} invited you to the {{ teamName }} team!</h2>
+		<h2 v-else>You're invited to the {{ teamName }} team!</h2>
 		<p>
-			<!-- eslint-disable-next-line max-len -->
 			By joining the team, you can see your impact, interact with teammates, and get more out of Kiva.
 		</p>
 		<div class="join-team-button-container">
-			<kv-button class="smaller secondary" @click.native.prevent="handleJoinTeamButton(false)">
+			<kv-button class="smaller secondary" @click.native.prevent="handleRejectTeam">
 				No Thanks
 			</kv-button>
-			<kv-button class="smaller" @click.native.prevent="handleJoinTeamButton(true)">
+			<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
 				Join Team
 			</kv-button>
 		</div>
+		<p v-if="showError" class="error">
+			Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
+		</p>
+		<loading-overlay id="loading-overlay-teams" v-if="loading"/>
 	</div>
 </template>
 
 <script>
 
+import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
 import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
-import _get from 'lodash/get';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 export default {
 	components: {
 		KvButton,
-		TeamInfoFromId,
+		LoadingOverlay,
 	},
 	inject: ['apollo'],
-	props: {
-		teamId: {
-			type: Number,
-			required: true,
-		},
-	},
 	apollo: {
 		query: TeamInfoFromId,
-		prefetch: true,
+		preFetch: true,
 		variables() {
 			return {
 				team_id: this.teamId,
 				team_recruitment_id: this.teamRecruitmentId
+			};
+		},
+		preFetchVariables({ route }) {
+			return {
+				team_id: route.query.team_id,
+				team_recruitment_id: route.query.id,
 			};
 		},
 		result({ data }) {
@@ -55,12 +59,22 @@ export default {
 	},
 	data() {
 		return {
-			teamName: ''
+			teamName: '',
+			doneUrl: this.$route.query.doneUrl,
+			teamRecruitmentId: this.$route.query.id,
+			inviterId: this.$route.query.inviter_id,
+			inviterDisplayName: this.$route.query.inviter_display_name,
+			teamId: this.$route.query.team_id,
+			userId: this.$route.query.user_id,
+			showError: false,
+			loading: false,
 		};
 	},
 	methods: {
-		handleJoinTeamButton(join) {
-			if (join) {
+		handleJoinTeam() {
+			this.loading = true;
+			this.showError = false;
+			new Promise(resolve => {
 				if (!this.teamRecruitmentId && this.recruiterId) {
 					this.apollo.mutate({
 						mutation: createTeamRecruitment,
@@ -73,10 +87,15 @@ export default {
 						if (result.errors) {
 							console.log(result.errors);
 						}
+						resolve();
 					}).catch(error => {
 						console.error(error);
+						resolve();
 					});
+				} else {
+					resolve();
 				}
+			}).then(() => {
 				this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
@@ -86,31 +105,30 @@ export default {
 				}).then(result => {
 					if (result.errors) {
 						console.log(result.errors);
+						this.showError = true;
+						this.loading = false;
 					} else {
 						window.location.href = this.doneUrl;
 					}
 				}).catch(error => {
 					console.error(error);
+					this.loading = false;
+					this.showError = true;
 				});
-			} else {
-				window.location.href = this.doneUrl;
-			}
+			});
+		},
+		handleRejectTeam() {
+			this.showError = false;
+			window.location.href = this.doneUrl;
 		}
 	},
 	created() {
-		this.doneUrl = this.$route.query.doneUrl;
-		this.teamRecruitmentId = this.$route.query.id;
-		this.inviterId = this.$route.query.inviter_id;
-		this.inviterDisplayName = this.$route.query.inviter_display_name;
-		this.teamId = this.$route.query.team_id;
-		this.userId = this.$route.query.user_id;
 	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
-
 
 .join-team-button-container {
 	margin: 0 auto;
@@ -121,5 +139,18 @@ export default {
 	@include breakpoint(medium) {
 		flex-direction: row;
 	}
+}
+
+.error {
+	color: $kiva-accent-red;
+	font-weight: bold;
+}
+
+.join-team-form {
+	position: relative;
+}
+
+#loading-overlay-teams {
+	background-color: rgba($white, 0.7);
 }
 </style>
