@@ -115,7 +115,7 @@ const customCategoryIds = [];
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
-const ssrRowLimiter = 7;
+const ssrRowLimiter = 2;
 
 export default {
 	components: {
