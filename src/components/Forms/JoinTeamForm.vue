@@ -42,11 +42,15 @@ export default {
 		prefetch: true,
 		variables() {
 			return {
-				id: this.teamId
+				team_id: this.teamId,
+				team_recruitment_id: this.teamRecruitmentId
 			};
 		},
 		result({ data }) {
 			this.teamName = _get(data, 'community.team.name');
+			if (!this.inviterDisplayName) {
+				this.inviterDisplayName = _get(data, 'general.teamRecruitment.recruiterDisplayName');
+			}
 		},
 	},
 	data() {
