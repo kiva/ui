@@ -5,7 +5,7 @@
 			<span class="small-text hide-for-small-only">Explore</span>
 		</span>
 		<span class="filter-box">
-			<kv-icon name="filter-toggle" class="filter-toggle-icon"/>
+			<kv-icon name="filters-toggle" class="filter-toggle-icon"/>
 			<span class="small-text hide-for-small-only">Filter</span>
 		</span>
 	</div>
@@ -44,5 +44,9 @@ export default {
 	width: 30px;
 	margin: 0 auto;
 }
+
+// Selected toggled color will be:
+// stroke: $kiva-green;
+// opacity: 0.85;
 
 </style>

@@ -73,7 +73,7 @@ export default {
 .icon-small-chevron-mobile,
 .icon-x,
 .icon-list,
-.icon-filter {
+.icon-filter, {
 	stroke: $kiva-text-dark;
 }
 
