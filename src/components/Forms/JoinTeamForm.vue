@@ -53,7 +53,7 @@ export default {
 		result({ data }) {
 			this.teamName = _get(data, 'community.team.name');
 			if (!this.inviterDisplayName) {
-				this.inviterDisplayName = _get(data, 'general.teamRecruitment.recruiterDisplayName');
+				this.inviterDisplayName = _get(data, 'my.teamRecruitment.recruiterDisplayName');
 			}
 		},
 	},

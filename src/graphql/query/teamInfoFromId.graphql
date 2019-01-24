@@ -4,7 +4,7 @@ query($team_id: Int, $team_recruitment_id: Int) {
 			name
 		}
 	}
-	general {
+	my {
 		teamRecruitment(id: $team_recruitment_id) {
 			recruiterDisplayName
 		}
