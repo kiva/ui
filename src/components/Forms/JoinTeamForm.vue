@@ -55,6 +55,9 @@ export default {
 			if (!this.inviterDisplayName) {
 				this.inviterDisplayName = _get(data, 'my.teamRecruitment.recruiterDisplayName');
 			}
+			if (this.inviterDisplayName === 'Anonymous') {
+				this.inviterDisplayName = null;
+			}
 		},
 	},
 	data() {
