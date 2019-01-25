@@ -13,7 +13,7 @@
 		<router-link
 			to="/lend"
 			class="filter-box">
-			<span>
+			<span class="divider">
 				<kv-icon
 					name="filters-toggle"
 					class="filter-toggle-icon"/>
@@ -57,18 +57,24 @@ export default {
 
 .browse-box {
 	margin-right: 0.75rem;
+
+	&:hover {
+		text-decoration: none;
+	}
 }
 
-.filter-box {
+.divider {
 	border-left: 1px solid $kiva-stroke-gray;
+	float: left;
+	height: 90%;
 	padding-left: 0.75rem;
 }
 
 .browse-toggle-icon,
 .filter-toggle-icon {
 	display: block;
-	height: 30px;
-	width: 30px;
+	height: rem-calc(30);
+	width: rem-calc(30);
 	margin: 0 auto;
 	fill: $kiva-text-light;
 }
