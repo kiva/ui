@@ -62,7 +62,9 @@ export default {
 .icon-sector-services,
 .icon-sector-transportation,
 .icon-sector-wholesale,
-.icon-small-x {
+.icon-small-x,
+.icon-browse-toggle,
+.icon-filters-toggle, {
 	fill: $kiva-text-dark;
 }
 
