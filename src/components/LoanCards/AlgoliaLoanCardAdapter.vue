@@ -34,27 +34,23 @@ export default {
 			const exprirationDate = new Date(_get(this.loan, 'plannedExpirationDate') * 1000);
 
 			return {
-				id: _get(this.loan, 'id'),
+				id: parseInt(_get(this.loan, 'id'), 10),
 				borrowerCount: _get(this.loan, 'borrowerCount'),
-				geocode: {
-					country: {
-						name: _get(this.loan, 'geocode.country.name')
-					},
-				},
+				geocode: _get(this.loan, 'geocode'),
 				image: {
 					default: defaultImage,
 					retina: retinaImage
 				},
-				loanAmount: _get(this.loan, 'loanAmount.amount'),
+				loanAmount: _get(this.loan, 'loanAmount').toString(),
 				loanFundraisingInfo: {
-					fundedAmount: _get(this.loan, 'loanFundraisingInfo.fundedAmount.amount'),
-					isExpiringSoon: _get(this.loan, 'loanFundraisingInfo.isExpiringSoon'),
-					reservedAmount: _get(this.loan, 'loanFundraisingInfo.reservedAmount.amount'),
+					fundedAmount: _get(this.loan, 'fundedAmount'),
+					isExpiringSoon: _get(this.loan, 'expiringSoon'),
+					reservedAmount: _get(this.loan, 'reservedAmount'),
 				},
 				loanUse: _get(this.loan, 'use'),
 				matchingText: '',
 				name: _get(this.loan, 'name'),
-				partnerName: _get(this.loan, 'partnerName'),
+				partnerName: _get(this.loan, 'partner.name'),
 				plannedExpirationData: exprirationDate.toISOString(),
 				// TODO: figure out how to get these efficiently...maybe after page load?
 				userProperties: {
