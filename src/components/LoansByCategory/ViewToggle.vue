@@ -32,11 +32,6 @@ export default {
 	components: {
 		KvIcon,
 	},
-	data() {
-		return {
-			isSelected: false,
-		};
-	},
 };
 </script>
 
