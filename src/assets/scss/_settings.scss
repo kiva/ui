@@ -201,11 +201,15 @@ $header-lineheight: 1.4;
 $header-margin-bottom: 0.5rem;
 $header-styles: (
 	small: (
-		'h1': ('font-size': 1.75rem, 'line-height': 2.25rem/1.75rem),
+		'h1': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28)),
 		'h2': ('font-size': rem-calc(22), 'line-height': rem-calc(30) / rem-calc(22)),
 	),
 	medium: (
-		'h1': ('font-size': 2.25rem, 'line-height': 2.75rem/2.25rem),
+		'h1': ('font-size': rem-calc(30), 'line-height': rem-calc(38) / rem-calc(30)),
+		'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28))
+	),
+	large: (
+		'h1': ('font-size': rem-calc(36), 'line-height': rem-calc(44) / rem-calc(36)),
 		'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28))
 	),
 );
