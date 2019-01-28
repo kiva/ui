@@ -35,12 +35,7 @@ module.exports = merge.smart(baseWebpackConfig, {
 				'style': 'display:none;',
 			},
 			svgoOptions: {
-				plugins: [
-					{
-						convertPathData: false,
-					}
-				],
-				floatPrecision: 2,
+				floatPrecision: 3,
 			},
 			prefix: 'icon-',
 		}),
