@@ -53,7 +53,7 @@ export default {
 }
 
 .browse-box {
-	margin-right: 0.75rem;
+	margin-right: 1rem;
 
 	&:hover {
 		text-decoration: none;
@@ -63,8 +63,12 @@ export default {
 .divider {
 	border-left: 1px solid $kiva-stroke-gray;
 	float: left;
-	height: 90%;
-	padding-left: 0.75rem;
+	height: 99%;
+	padding-left: 1.25rem;
+
+	@include breakpoint(medium) {
+		height: 88%;
+	}
 }
 
 .browse-toggle-icon,
