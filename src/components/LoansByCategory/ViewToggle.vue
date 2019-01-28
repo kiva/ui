@@ -14,7 +14,7 @@
 		<router-link
 			to="/lend"
 			class="filter-box"
-			v-kv-track-event="['Lending', 'click-filter-toggle', 'Explore']">
+			v-kv-track-event="['Lending', 'click-filter-toggle', 'Filter']">
 			<span class="divider">
 				<kv-icon
 					name="filters-toggle"
