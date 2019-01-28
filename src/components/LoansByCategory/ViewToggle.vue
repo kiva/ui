@@ -2,7 +2,8 @@
 	<div class="view-toggle">
 		<router-link
 			to="/lend-by-category"
-			class="browse-box">
+			class="browse-box"
+			v-kv-track-event="['Lending', 'click-filter-toggle', 'Explore']">
 			<span>
 				<kv-icon
 					name="browse-toggle"
@@ -12,7 +13,8 @@
 		</router-link>
 		<router-link
 			to="/lend"
-			class="filter-box">
+			class="filter-box"
+			v-kv-track-event="['Lending', 'click-filter-toggle', 'Explore']">
 			<span class="divider">
 				<kv-icon
 					name="filters-toggle"
