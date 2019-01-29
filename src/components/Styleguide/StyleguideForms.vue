@@ -1,6 +1,6 @@
 <template>
 	<section id="section-form">
-		<h2>Forms</h2>
+		<h1>Forms</h1>
 		<form>
 			<label class="elem-desc">Legend above radio buttons with labels</label>
 			<fieldset>

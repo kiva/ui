@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2>Buttons</h2>
+		<h1>Buttons</h1>
 
 		<label class="elem-desc">Primary button</label>
 		<kv-button>Primary</kv-button>
