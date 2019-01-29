@@ -1,7 +1,0 @@
-query {
-	general {
-		braintree: setting(setting: "ui.feature.braintree_checkout") {
-			value
-		}
-	}
-}
