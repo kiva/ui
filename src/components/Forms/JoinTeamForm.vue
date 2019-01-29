@@ -67,8 +67,7 @@ export default {
 			teamRecruitmentId: this.$route.query.id,
 			inviterId: this.$route.query.inviter_id,
 			inviterDisplayName: this.$route.query.inviter_display_name,
-			teamId: this.$route.query.team_id,
-			userId: this.$route.query.user_id,
+			teamId: this.$route.query.team_id
 			showError: false,
 			loading: false,
 		};
@@ -83,7 +82,6 @@ export default {
 						mutation: createTeamRecruitment,
 						variables: {
 							team_id: this.teamId,
-							user_id: this.userId,
 							recruiter_id: this.inviterId
 						}
 					}).then(result => {

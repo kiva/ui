@@ -1,7 +1,7 @@
-mutation createTeamRecruitment($team_id: Int!, $user_id: Int!, $recruiter_id: Int!) {
+mutation createTeamRecruitment($team_id: Int!, $recruiter_id: Int!) {
 	general {
 		createTeamRecruitment (
-			teamRecruitment: {team_id: $team_id, user_id: $user_id, recruiter_id: $recruiter_id}
+			teamRecruitment: {teamId: $team_id, recruiterId: $recruiter_id}
 		) {
 			id
 		}
