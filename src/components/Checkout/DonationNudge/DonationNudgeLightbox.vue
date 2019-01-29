@@ -7,13 +7,11 @@
 	>
 		<div id="nudge-donation-container">
 			<div id="nudge-donation-top">
-				<div id="nudge-donation-top-header" class="impact-text">
-					{{ header }}
-				</div>
-				<div class="row" id="nudge-donation-top-content-row">
-					<div class="small-10 small-offset-1 columns" v-html="description"></div>
-				</div>
-				<kv-donation-nudge-boxes
+				<donation-nudge-intro
+					:header="header"
+					:description="description"
+				/>
+				<donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
 					:percentage-rows= "percentageRows"
 					:has-custom-donation="hasCustomDonation"
@@ -40,7 +38,8 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvDonationNudgeBoxes from '@/components/Checkout/KvDonationNudgeBoxes';
+import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
+import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 
 export default {
@@ -48,7 +47,8 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
-		KvDonationNudgeBoxes,
+		DonationNudgeBoxes,
+		DonationNudgeIntro,
 	},
 	props: {
 		nudgeLightboxVisible: {
@@ -149,32 +149,6 @@ export default {
 	#nudge-donation-top {
 		padding-bottom: 3rem;
 		background: #F8F8F8;
-
-		#nudge-donation-top-header {
-			@extend .nudge-lightbox-row-padding;
-
-			font-size: rem-calc(20);
-			font-weight: 500;
-			color: #64B365;
-			line-height: 1.9rem;
-
-			@include breakpoint(medium) {
-				font-size: 1.6rem;
-			}
-		}
-
-		#nudge-donation-top-content-row {
-			@extend .nudge-lightbox-row-padding;
-
-			margin: 1.4rem auto;
-			max-width: 47rem;
-			font-size: rem-calc(14);
-			line-height: rem-calc(24);
-
-			@include breakpoint(medium) {
-				font-size: 1rem;
-			}
-		}
 
 		#nudge-donation-top-boxes-wrapper {
 			@extend .nudge-lightbox-row-padding;
