@@ -11,10 +11,6 @@ query {
 			key
 			value
 		}
-		lbcMessageExp: setting(setting: "uiexp.lbc_message") {
-			key
-			value
-		}
 		lendIncrementExp: setting(setting: "uiexp.lend_increment_button") {
 			key
 			value
