@@ -242,6 +242,7 @@ export default {
 			teams: [],
 			holidayModeEnabled: false,
 			showLYML: true,
+			braintree: false,
 		};
 	},
 	apollo: {
@@ -283,6 +284,7 @@ export default {
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
 			this.teams = _get(data, 'my.lender.teams.values');
+			this.braintree = _get(data, 'ui.feature.braintree_checkout.value');
 		}
 	},
 	created() {
