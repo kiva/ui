@@ -26,6 +26,11 @@ query {
 			sessionKey
 			data
 		}
+		# Checking the setting for the Braintree intergration
+		rows: setting(setting: "uiexp.braintree") {
+			key
+			value
+		}
 	}
 	shop {
 		basket {
