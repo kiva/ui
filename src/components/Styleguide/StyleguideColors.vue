@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2>Colors</h2>
+		<h1>Colors</h1>
 		<hr>
 		<!-- Greens -->
 		<div class="row">
