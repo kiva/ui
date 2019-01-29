@@ -106,7 +106,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
-import DonationNudgeLightbox from '@/components/Checkout/DonationNudgeLightbox';
+import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
 
 export default {
 	components: {
