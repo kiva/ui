@@ -97,7 +97,7 @@
 					:key="percentage"
 					class="row nudge-box-row"
 				>
-					<div class="small-8 columns nudge-box-column nudge-box-column-appeal">
+					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
 						<label class="nudge-box-radio-label">
 							<input
 								type="radio"
@@ -109,7 +109,7 @@
 							{{ appeal }}
 						</label>
 					</div>
-					<div class="small-3 small-offset-1 columns nudge-box-column nudge-box-column-amount">
+					<div class="small-3 columns nudge-box-column nudge-box-column-amount">
 						${{ getDonationByPercent(percentage) }}
 					</div>
 				</div>
@@ -117,7 +117,7 @@
 					v-if="hasCustomDonation"
 					class="row nudge-box-row"
 				>
-					<div class="small-8 columns nudge-box-column nudge-box-column-appeal">
+					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
 						<label class="nudge-box-radio-label">
 							<input
 								type="radio"
@@ -129,7 +129,7 @@
 							You decide — enter custom amount
 						</label>
 					</div>
-					<div class="small-3 small-offset-1 columns nudge-box-column nudge-box-column-amount">
+					<div class="small-3 columns nudge-box-column nudge-box-column-amount">
 						<input
 							type="text"
 							ref="customDonationInputDesktopRadio"
@@ -137,13 +137,14 @@
 							maxlength="10"
 							class="nudge-box-input nudge-box-input-desktop-radio"
 							@blur="validateInputDesktopRadio"
+							@focus="selectRadioCustom"
 						>
 					</div>
 				</div>
 				<div
 					class="row nudge-box-row"
 				>
-					<div class="small-8 columns nudge-box-column nudge-box-column-appeal">
+					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
 						<label class="nudge-box-radio-label">
 							<input
 								type="radio"
@@ -267,6 +268,9 @@ export default {
 			}
 			this.$refs.customDonationInputMobile.value = value;
 		},
+		selectRadioCustom() {
+			this.selectedDonationRadio = 'custom';
+		},
 		validateInputDesktop() {
 			this.setInputs(numeral(this.$refs.customDonationInputDesktop.value).format('$0,0.00'));
 		},
@@ -366,18 +370,16 @@ export default {
 			.nudge-box-row {
 				align-items: center;
 				height: rem-calc(43);
+				margin-top: rem-calc(10);
+				margin-bottom: rem-calc(10);
 
 				.nudge-box-radio-button {
 					margin-bottom: rem-calc(2);
 				}
 
-				.nudge-box-radio-label {
-					font-size: inherit;
-				}
-
 				.nudge-box-column-amount {
 					font-weight: 500;
-					font-size: rem-calc(19);
+					font-size: rem-calc(17);
 					text-align: right;
 				}
 
@@ -386,9 +388,21 @@ export default {
 					margin-bottom: 0;
 				}
 
-				.nudge-box-button {
-					margin: 1.4rem 0;
+				@include breakpoint(xlarge) {
+					.nudge-box-radio-label {
+						font-size: inherit;
+					}
+
+					.nudge-box-column-amount {
+						font-size: rem-calc(19);
+					}
+
 				}
+			}
+
+			.nudge-box-button {
+				margin-top: rem-calc(14);
+				margin-bottom: rem-calc(30);
 			}
 		}
 	}
