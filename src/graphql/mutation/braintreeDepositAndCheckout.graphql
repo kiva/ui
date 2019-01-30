@@ -1,0 +1,5 @@
+mutation doNoncePaymentdepositAndCheckout($amount: Money!, nonce: String!) {
+	shop {
+		doNoncePaymentDepositAndCheckout	(amount: $amount, nonce: $nonce)
+	}
+}

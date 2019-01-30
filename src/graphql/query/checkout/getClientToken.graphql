@@ -1,0 +1,5 @@
+query ($amount: Money!) {
+	shop {
+		getClientToken(amount: $amount)
+	}
+}

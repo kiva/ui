@@ -6,17 +6,23 @@
 
 <script>
 /* global paypal */
-// import _get from 'lodash/get';
-// import numeral from 'numeral';
+import _get from 'lodash/get';
+import numeral from 'numeral';
 // import Raven from 'raven-js';
 // import checkoutUtils from '@/plugins/checkout-utils-mixin';
+
+import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
+// The following line was left over from the paypalExpress.vue
 // import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
+
+import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 // import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
 
 
 export default {
 	inject: ['apollo'],
 	mixins: [
+		braintreeDepositAndCheckout
 	],
 	props: {
 		amount: {
@@ -26,9 +32,9 @@ export default {
 	},
 	data() {
 		return {
-			// ensurePaypalScript: null,
-			// paypalRendered: false,
-			// loading: false
+			ensureBraintreeScript: null,
+			// braintreeRendered: false,
+			loading: false
 		};
 	},
 	metaInfo() {
@@ -37,7 +43,7 @@ export default {
 		// check for paypal incase script is already loaded
 		if (typeof braintree === 'undefined') {
 			braintreeScript.type = 'text/javascript';
-			// braintreeScript.src = 'https://www.paypalobjects.com/api/checkout.js';
+			braintreeScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/client.min.js';
 		}
 		return {
 			script: [
@@ -67,14 +73,13 @@ export default {
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
 			this.braintreeRendered = true;
-			// render paypal button
+			// render Braintree form
 			braintree.Button.render(
 				{
-					// TODO: Should we have a global key/switch for Prod
 					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
 					commit: true,
 					payment: () => {
-						this.$kvTrackEvent('basket', 'Paypal Payment', 'Button Click');
+						this.$kvTrackEvent('basket', 'Braintree Payment', 'Button Click');
 
 						return new paypal.Promise((resolve, reject) => {
 							this.setUpdating(true);
@@ -84,7 +89,7 @@ export default {
 									if (validationStatus === true) {
 										// Use updated vars on render
 										this.apollo.query({
-											query: getPaymentToken,
+											query: getClientToken,
 											variables: {
 												amount: numeral(this.amount).format('0.00'),
 											}
