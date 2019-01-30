@@ -3,7 +3,7 @@
 		<div id="nudge-donation-top-header" class="impact-text">
 			{{ props.header }}
 		</div>
-		<div class="row" id="nudge-donation-top-content-row">
+		<div class="row" id="nudge-donation-top-content-row" v-if="props.description">
 			<div class="small-10 small-offset-1 columns" v-html="props.description"></div>
 		</div>
 	</div>
@@ -28,6 +28,8 @@ export default {
 @import 'settings';
 
 #donation-nudge-intro {
+	margin-bottom: 1.4rem;
+
 	.nudge-lightbox-row-padding {
 		padding-left: 2.5rem;
 		padding-right: 2.5rem;
@@ -49,7 +51,7 @@ export default {
 	#nudge-donation-top-content-row {
 		@extend .nudge-lightbox-row-padding;
 
-		margin: 1.4rem auto;
+		margin: 1.4rem auto 0 auto;
 		max-width: 47rem;
 		font-size: rem-calc(14);
 		line-height: rem-calc(24);

@@ -1,93 +1,169 @@
 <template>
 	<div class="donation-nudge-boxes-container">
 		<div class="show-for-large nudge-boxes-desktop">
-			<div class="row nudge-box-row">
-				<div
-					v-for="{percentage, appeal, appealIsHorizontallyPadded} in percentageRows"
-					:key="percentage"
-					class="medium-4 columns nudge-box-top-container nudge-box-container"
-				>
+			<div v-if="!desktopUsingRadioButtons" class="nudge-box-button-container">
+				<div class="row nudge-box-row">
 					<div
-						:class="`nudge-box-top ${appealIsHorizontallyPadded ? 'nudge-box-padded' : ''}`"
-						@click="setDonationAndClose(getDonationByPercent(percentage))"
+						v-for="{percentage, appeal, appealIsHorizontallyPadded} in percentageRows"
+						:key="percentage"
+						class="medium-4 columns nudge-box-top-container nudge-box-container"
 					>
-						{{ appeal }}
+						<div
+							:class="`nudge-box-top ${appealIsHorizontallyPadded ? 'nudge-box-padded' : ''}`"
+							@click="setDonationAndClose(getDonationByPercent(percentage))"
+						>
+							{{ appeal }}
+						</div>
+					</div>
+					<!-- eslint-disable max-len -->
+					<div
+						v-if="hasCustomDonation"
+						class="medium-4 columns nudge-box-top-container nudge-box-container nudge-box-custom-donation-container"
+					>
+						<!-- eslint-enable max-len -->
+						<div
+							class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
+						>
+							You decide — enter custom amount
+						</div>
 					</div>
 				</div>
-				<!-- eslint-disable max-len -->
-				<div
-					v-if="hasCustomDonation"
-					class="medium-4 columns nudge-box-top-container nudge-box-container nudge-box-custom-donation-container"
-				>
-					<!-- eslint-enable max-len -->
+				<div class="row nudge-box-row">
 					<div
-						class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
+						v-for="{percentage} in percentageRows"
+						:key="percentage"
+						class="medium-4 columns nudge-box-middle-container nudge-box-container"
 					>
-						You decide — enter custom amount
+						<div
+							class="nudge-box-middle"
+							@click="setDonationAndClose(getDonationByPercent(percentage))"
+						>
+							${{ getDonationByPercent(percentage) }}
+						</div>
+					</div>
+					<!-- eslint-disable max-len -->
+					<div
+						v-if="hasCustomDonation"
+						class="medium-4 columns nudge-box-middle-container nudge-box-container nudge-box-custom-donation-container"
+					>
+						<!-- eslint-disable max-len -->
+						<div
+							class="nudge-box-middle nudge-box-custom-donation"
+						>
+							<input
+								type="text"
+								ref="customDonationInputDesktop"
+								name="customDonationInputTextDesktop"
+								maxlength="10"
+								class="nudge-box-input nudge-box-input-desktop"
+								@blur="validateInputDesktop"
+							>
+						</div>
+					</div>
+				</div>
+				<div class="row nudge-box-row">
+					<div
+						v-for="{percentage} in percentageRows"
+						:key="percentage"
+						class="medium-4 columns nudge-box-bottom-container nudge-box-container"
+					>
+						<div
+							class="nudge-box-bottom"
+							@click="setDonationAndClose(getDonationByPercent(percentage))"
+						>
+							<kv-button class="smallest nudge-box-button">
+								Select
+							</kv-button>
+						</div>
+					</div>
+					<div
+						v-if="hasCustomDonation"
+						class="medium-4 columns nudge-box-bottom-container nudge-box-container nudge-box-custom-donation-container"
+					>
+						<div
+							class="nudge-box-bottom nudge-box-custom-donation"
+							@click="setCustomDonationAndClose"
+						>
+							<kv-button class="smallest nudge-box-button">
+								Submit
+							</kv-button>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row nudge-box-row">
+			<div v-else class="nudge-box-radio-container">
 				<div
-					v-for="{percentage} in percentageRows"
+					v-for="{percentage, appeal} in percentageRows"
 					:key="percentage"
-					class="medium-4 columns nudge-box-middle-container nudge-box-container"
+					class="row nudge-box-row"
 				>
-					<div
-						class="nudge-box-middle"
-						@click="setDonationAndClose(getDonationByPercent(percentage))"
-					>
+					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
+						<label class="nudge-box-radio-label">
+							<input
+								type="radio"
+								class="nudge-box-radio-button"
+								name="selected-donation-radio"
+								:value="percentage"
+								v-model="selectedDonationRadio"
+							>
+							{{ appeal }}
+						</label>
+					</div>
+					<div class="small-3 columns nudge-box-column nudge-box-column-amount">
 						${{ getDonationByPercent(percentage) }}
 					</div>
 				</div>
-				<!-- eslint-disable max-len -->
 				<div
 					v-if="hasCustomDonation"
-					class="medium-4 columns nudge-box-middle-container nudge-box-container nudge-box-custom-donation-container"
+					class="row nudge-box-row"
 				>
-					<!-- eslint-disable max-len -->
-					<div
-						class="nudge-box-middle nudge-box-custom-donation"
-					>
+					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
+						<label class="nudge-box-radio-label">
+							<input
+								type="radio"
+								class="nudge-box-radio-button"
+								name="selected-donation-radio"
+								value="custom"
+								v-model="selectedDonationRadio"
+							>
+							You decide — enter custom amount
+						</label>
+					</div>
+					<div class="small-3 columns nudge-box-column nudge-box-column-amount">
 						<input
 							type="text"
-							ref="customDonationInputDesktop"
-							name="customDonationInputTextDesktop"
+							ref="customDonationInputDesktopRadio"
+							name="customDonationInputTextDesktopRadio"
 							maxlength="10"
-							class="nudge-box-input nudge-box-input-desktop"
-							@blur="validateInputDesktop"
+							class="nudge-box-input nudge-box-input-desktop-radio"
+							@blur="validateInputDesktopRadio"
+							@focus="selectRadioCustom"
 						>
 					</div>
 				</div>
-			</div>
-			<div class="row nudge-box-row">
 				<div
-					v-for="{percentage} in percentageRows"
-					:key="percentage"
-					class="medium-4 columns nudge-box-bottom-container nudge-box-container"
+					class="row nudge-box-row"
 				>
-					<div
-						class="nudge-box-bottom"
-						@click="setDonationAndClose(getDonationByPercent(percentage))"
-					>
-						<kv-button class="smallest nudge-box-button">
-							Select
-						</kv-button>
+					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
+						<label class="nudge-box-radio-label">
+							<input
+								type="radio"
+								class="nudge-box-radio-button"
+								name="selected-donation-radio"
+								:value="0"
+								v-model="selectedDonationRadio"
+							>
+							No donation to Kiva
+						</label>
 					</div>
 				</div>
-				<div
-					v-if="hasCustomDonation"
-					class="medium-4 columns nudge-box-bottom-container nudge-box-container nudge-box-custom-donation-container"
+				<kv-button
+					class="smallest nudge-box-button"
+					@click.native="setRadioDonationAndClose"
 				>
-					<div
-						class="nudge-box-bottom nudge-box-custom-donation"
-						@click="setCustomDonationAndClose"
-					>
-						<kv-button class="smallest nudge-box-button">
-							Submit
-						</kv-button>
-					</div>
-				</div>
+					Update Donation
+				</kv-button>
+				<div>Your Donation is eligible for a tax deduction if you live in the U.S.</div>
 			</div>
 		</div>
 		<div class="hide-for-large nudge-boxes-mobile">
@@ -98,9 +174,7 @@
 				@click="setDonationAndClose(getDonationByPercent(percentage))"
 			>
 				<div class="row nudge-box-row">
-					<!-- eslint-disable max-len -->
 					<div class="small-7 columns nudge-box-column nudge-box-column-appeal">
-						<!-- eslint-enablemax-len -->
 						{{ appeal }}
 					</div>
 					<div class="small-4 small-offset-1 columns nudge-box-column nudge-box-column-button">
@@ -122,7 +196,7 @@
 					ref="customDonationInputMobile"
 					name="customDonationInputTextMobile"
 					maxlength="10"
-					class="nudge-box-input nudge-box-input-desktop"
+					class="nudge-box-input nudge-box-input-mobile"
 					@blur="validateInputMobile"
 				>
 				<kv-button
@@ -161,20 +235,47 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		desktopUsingRadioButtons: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	data() {
+		return {
+			selectedDonationRadio: 15,
+		};
 	},
 	methods: {
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(this.$refs.customDonationInputDesktop.value);
+			this.setDonationAndClose(this.$refs.customDonationInputMobile.value);
+		},
+		setRadioDonationAndClose() {
+			// eslint-disable-next-line no-restricted-globals
+			if (this.selectedDonationRadio === 'custom') {
+				this.setCustomDonationAndClose();
+			} else {
+				this.setDonationAndClose(this.getDonationByPercent(this.selectedDonationRadio));
+			}
 		},
 		setInputs(value) {
-			this.$refs.customDonationInputDesktop.value = value;
+			if (this.desktopUsingRadioButtons) {
+				this.$refs.customDonationInputDesktopRadio.value = value;
+			} else {
+				this.$refs.customDonationInputDesktop.value = value;
+			}
 			this.$refs.customDonationInputMobile.value = value;
+		},
+		selectRadioCustom() {
+			this.selectedDonationRadio = 'custom';
 		},
 		validateInputDesktop() {
 			this.setInputs(numeral(this.$refs.customDonationInputDesktop.value).format('$0,0.00'));
+		},
+		validateInputDesktopRadio() {
+			this.setInputs(numeral(this.$refs.customDonationInputDesktopRadio.value).format('$0,0.00'));
 		},
 		validateInputMobile() {
 			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
@@ -197,69 +298,110 @@ export default {
 	}
 
 	.nudge-boxes-desktop {
-		.nudge-box-row {
-			.nudge-box-shared {
-				border-left: $nudge-box-border;
-				border-right: $nudge-box-border;
-				padding: 0 0.5rem;
-				height: 100%;
+		.nudge-box-button-container {
+			.nudge-box-row {
+				.nudge-box-shared {
+					border-left: $nudge-box-border;
+					border-right: $nudge-box-border;
+					padding: 0 0.5rem;
+					height: 100%;
 
-				&.nudge-box-padded {
-					padding-left: 2rem;
-					padding-right: 2rem;
-				}
-
-				&.nudge-box-custom-donation {
-					border-left: none;
-					border-right: none;
-					background: initial;
-					cursor: initial;
-				}
-			}
-
-			.nudge-box-container {
-				.nudge-box-top {
-					@extend .nudge-box-shared;
-
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					padding-top: 1rem;
-					border-top: $nudge-box-border;
-					font-size: rem-calc(18);
+					&.nudge-box-padded {
+						padding-left: 2rem;
+						padding-right: 2rem;
+					}
 
 					&.nudge-box-custom-donation {
-						border-top: none;
+						border-left: none;
+						border-right: none;
+						background: initial;
+						cursor: initial;
 					}
 				}
 
-				.nudge-box-middle {
-					@extend .nudge-box-shared;
+				.nudge-box-container {
+					.nudge-box-top {
+						@extend .nudge-box-shared;
 
-					padding: 1.5rem 0;
-					font-size: 1.5rem;
-					font-weight: 500;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						padding-top: 1rem;
+						border-top: $nudge-box-border;
+						font-size: rem-calc(18);
 
-					.nudge-box-input {
-						text-align: center;
-						margin: 0 auto;
+						&.nudge-box-custom-donation {
+							border-top: none;
+						}
+					}
 
-						&.nudge-box-input-desktop {
-							max-width: rem-calc(115);
+					.nudge-box-middle {
+						@extend .nudge-box-shared;
+
+						font-size: 1.5rem;
+						font-weight: 500;
+						padding: 1.5rem 0;
+
+						.nudge-box-input {
+							text-align: center;
+							margin: 0 auto;
+
+							&.nudge-box-input-desktop {
+								max-width: rem-calc(115);
+							}
+						}
+					}
+
+					.nudge-box-bottom {
+						@extend .nudge-box-shared;
+
+						padding-bottom: 1rem;
+						border-bottom: $nudge-box-border;
+
+						&.nudge-box-custom-donation {
+							border-bottom: none;
 						}
 					}
 				}
+			}
+		}
 
-				.nudge-box-bottom {
-					@extend .nudge-box-shared;
+		.nudge-box-radio-container {
+			.nudge-box-row {
+				align-items: center;
+				height: rem-calc(43);
+				margin-top: rem-calc(10);
+				margin-bottom: rem-calc(10);
 
-					padding-bottom: 1rem;
-					border-bottom: $nudge-box-border;
+				.nudge-box-radio-button {
+					margin-bottom: rem-calc(2);
+				}
 
-					&.nudge-box-custom-donation {
-						border-bottom: none;
+				.nudge-box-column-amount {
+					font-weight: 500;
+					font-size: rem-calc(17);
+					text-align: right;
+				}
+
+				.nudge-box-input-desktop-radio {
+					text-align: right;
+					margin-bottom: 0;
+				}
+
+				@include breakpoint(xlarge) {
+					.nudge-box-radio-label {
+						font-size: inherit;
+					}
+
+					.nudge-box-column-amount {
+						font-size: rem-calc(19);
 					}
 				}
+			}
+
+			.nudge-box-button {
+				margin-top: rem-calc(14);
+				margin-bottom: rem-calc(30);
 			}
 		}
 	}

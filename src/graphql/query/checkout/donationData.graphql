@@ -12,6 +12,10 @@ query {
 			key
 			value
 		}
+		donationNudgeBorrowerImageExperiment: setting(setting: "uiexp.donation_nudge_borrower_image") {
+			key
+			value
+		}
 	}
 	my {
 		loans {
