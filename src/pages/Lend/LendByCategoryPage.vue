@@ -384,7 +384,6 @@ export default {
 		}
 
 		p {
-			font-size: rem-calc(21);
 			margin-top: 0.75rem;
 		}
 
