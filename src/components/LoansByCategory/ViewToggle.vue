@@ -77,6 +77,18 @@ export default {
 		fill: $kiva-text-light;
 	}
 
+	.filter-box:hover {
+		.filter-toggle-icon {
+			fill: $kiva-text-medium;
+		}
+
+		.view-text {
+			text-decoration: underline;
+			text-decoration-color: $kiva-text-medium;
+			color: $kiva-text-medium;
+		}
+	}
+
 	// Changing the color of the selected toggle
 	.router-link-active .browse-toggle-icon, {
 		fill: $kiva-green;
