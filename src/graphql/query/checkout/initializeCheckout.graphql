@@ -26,6 +26,9 @@ query {
 			sessionKey
 			data
 		}
+		braintree_checkout: setting(setting: "ui.feature.braintree_checkout") {
+			value
+		}
 	}
 	shop {
 		basket {
