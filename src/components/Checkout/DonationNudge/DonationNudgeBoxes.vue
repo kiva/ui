@@ -396,7 +396,6 @@ export default {
 					.nudge-box-column-amount {
 						font-size: rem-calc(19);
 					}
-
 				}
 			}
 
