@@ -71,7 +71,7 @@
 			:experimental-header="donationNudgeExperimentalHeader"
 			:experimental-description="donationNudgeExperimentalDescription"
 			:loan-history-count="loanHistoryCount"
-			v-if="false"
+			v-if="!donationNudgeBorrowerImageExperiment"
 		/>
 		<donation-nudge-lightbox-borrower-image
 			:loan-count="loanCount"
@@ -83,7 +83,7 @@
 			:experimental-header="donationNudgeExperimentalHeader"
 			:experimental-description="donationNudgeExperimentalDescription"
 			:loan-history-count="loanHistoryCount"
-			v-if="true"
+			v-else
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
@@ -159,6 +159,7 @@ export default {
 			donationNudgeExperimentalHeader: false,
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
+			donationNudgeBorrowerImageExperiment: false,
 		};
 	},
 	apollo: {
@@ -187,6 +188,13 @@ export default {
 						query: experimentAssignmentQuery,
 						variables: {
 							id: 'checkout_donation_lending_cost',
+						},
+					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'donation_nudge_borrower_image',
 						},
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -301,6 +309,20 @@ export default {
 				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
 				this.donationNudgeExperimentalHeader = true;
 				this.donationNudgeExperimentalDescription = true;
+			}
+
+			// CASH-379: Donation Nudge Borrower Image Experiment
+			const nudgeBorrowerImageExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'donation_nudge_borrower_image' },
+			});
+			// eslint-disable-next-line max-len
+			const nudgeBorrowerImageExperimentVersionString = _get(nudgeBorrowerImageExperimentVersion, 'experiment.version') || null;
+			if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
+			} else if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
+				this.donationNudgeBorrowerImageExperiment = true;
 			}
 		},
 		updateDonation() {
