@@ -1,13 +1,12 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<div class="row">
+		<div class="row heading-region-row">
 			<div class="heading-region column small-12">
 				<view-toggle />
 
-				<h1>Make a loan, change a life</h1>
-				<p class="page-subhead">Each Kiva loan helps people build a better future for
-				themselves and their families. <br class="xxlu">Browse loans by category below, or
-					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
+				<h1>Make a loan, <br class="hide-for-medium">change a life</h1>
+				<p class="page-subhead show-for-large">Each Kiva loan helps people build a better future for
+				themselves and their families.
 				</p>
 			</div>
 		</div>
@@ -39,7 +38,11 @@
 
 		<div class="row pre-footer">
 			<div class="column small-12">
-				<router-link :to="{ path: '/categories'}"><h2>View all categories</h2></router-link>
+				<h2 class="category-name"><router-link
+					:to="{ path: '/categories'}"
+					class="view-all-link">
+					View all categories<span class="view-all-arrow">&rsaquo;</span>
+				</router-link></h2>
 			</div>
 		</div>
 
@@ -358,49 +361,48 @@ export default {
 		background-color: $kiva-bg-lightgray;
 	}
 
-	.heading-region {
-		margin-bottom: 2rem;
-		margin-top: rem-calc(20);
+	.heading-region-row {
+		max-width: 63.75rem;
+	}
 
-		@include breakpoint(small only) {
-			margin-bottom: 1rem;
+	.heading-region {
+		margin: 2rem 0;
+		padding: 0 2.5rem;
+
+		.view-toggle {
+			margin: 0.125rem 0 0 0.375rem;
+			float: right;
+			display: flex;
+
+			@include breakpoint(large) {
+				margin: 0.375rem 0 0.375rem 0.375rem;
+			}
+		}
+
+		h1 {
+			margin: 0;
 		}
 
 		p {
-			border-bottom: 1px solid $light-gray;
 			font-size: rem-calc(21);
-			line-height: $global-lineheight;
-			margin-right: 0.75rem;
-			padding-bottom: 2rem;
-
-			@include breakpoint(xxlarge) {
-				margin-right: 0;
-			}
+			margin-top: 0.75rem;
 		}
 
-		@include breakpoint(small only) {
-			h1 {
-				font-size: 1.5rem;
-			}
-
-			p {
-				font-size: 1rem;
-				line-height: 1.5rem;
-				padding-bottom: 1rem;
-			}
+		// Customize styles for touch screens ie. No Arrows
+		@media (hover: none) {
+			margin: 1rem 0;
+			padding: 0 1rem;
 		}
 	}
 
 	.loan-category-row {
-		margin: 0 1rem rem-calc(20);
+		margin: 0 0 rem-calc(20);
 
 		&:last-of-type {
 			margin-bottom: 0;
 		}
 
 		@media (hover: none) {
-			margin: 0 0 rem-calc(20) rem-calc(20);
-
 			&:last-of-type {
 				margin-bottom: 0;
 			}
@@ -408,7 +410,43 @@ export default {
 	}
 
 	.pre-footer {
-		margin-bottom: 2rem;
+		margin: 2rem 0;
+
+		h2 {
+			margin: 0 1.875rem;
+
+			@include breakpoint(medium) {
+				margin-left: 1.5625rem;
+			}
+
+			@media (hover: none) {
+				margin: 0;
+			}
+		}
+
+		a.view-all-link {
+			display: inline;
+			position: relative;
+
+			.view-all-arrow {
+				position: absolute;
+				top: -1rem;
+				right: -1.4rem;
+				padding: 0 0.3rem;
+				font-weight: $global-weight-normal;
+				font-size: 2.5rem;
+
+				@include breakpoint(medium) {
+					font-size: 3rem;
+					right: -1.6rem;
+				}
+			}
+
+			&:hover {
+				text-decoration: none;
+				cursor: pointer;
+			}
+		}
 	}
 }
 </style>
