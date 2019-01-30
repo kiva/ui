@@ -8,7 +8,7 @@
 				<kv-icon
 					name="browse-toggle"
 					class="browse-toggle-icon"/>
-				<span class="small-text show-for-large view-text">Explore</span>
+				<span class="small-text show-for-xlarge view-text">Explore</span>
 			</span>
 		</router-link>
 		<router-link
@@ -19,7 +19,7 @@
 				<kv-icon
 					name="filters-toggle"
 					class="filter-toggle-icon"/>
-				<span class="small-text show-for-large view-text">Filter</span>
+				<span class="small-text show-for-xlarge view-text">Filter</span>
 			</span>
 		</router-link>
 	</div>
@@ -46,7 +46,7 @@ export default {
 	.browse-box {
 		margin-right: 0.75rem;
 
-		@include breakpoint(large) {
+		@include breakpoint(xlarge) {
 			margin-right: 1rem;
 		}
 
@@ -61,7 +61,7 @@ export default {
 		height: 99%;
 		padding-left: 0.75rem;
 
-		@include breakpoint(large) {
+		@include breakpoint(xlarge) {
 			height: 88%;
 			// slightly larger to account for text
 			padding-left: 1.25rem;

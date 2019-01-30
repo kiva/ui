@@ -86,6 +86,7 @@ export default {
 	left: 0;
 	right: 0;
 	padding: 0.5rem;
+	z-index: 1000;
 
 	.cookie-banner {
 		$banner-padding-mobile: 1.125rem;

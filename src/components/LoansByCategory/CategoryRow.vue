@@ -4,14 +4,13 @@
 			<div class="column small-12">
 				<h2 class="category-name">
 					<a class="view-all-link"
-						v-if="showViewAllLink"
 						:href="cleanUrl"
 						:title="`View all ${cleanName} loans`"
 						v-kv-track-event="[
 							'Lending',
 							'click-Category-View-All',
 							`View all ${cleanName} loans`]"
-					>{{ cleanName }} <span class="view-all-arrow">&rsaquo;</span></a>
+					>{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span></a>
 				</h2>
 			</div>
 		</div>
@@ -124,7 +123,16 @@ export default {
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
-			return String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
+			let cleanUrl = String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
+
+			if (
+				this.url.includes('loans-with-research-backed-impact') === true ||
+				this.url.includes('recently-viewed-loans') === true ||
+				this.url === '') {
+				cleanUrl = '#';
+			}
+
+			return cleanUrl;
 		},
 		minLeftMargin() {
 			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
@@ -204,7 +212,7 @@ $row-max-width: 63.75rem;
 
 .cards-and-arrows-wrapper {
 	max-width: $row-max-width;
-	margin: 0 auto;
+	margin: 0 auto 2rem;
 	align-items: center;
 	display: flex;
 	position: relative;

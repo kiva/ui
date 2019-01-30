@@ -278,6 +278,7 @@ export default {
 
 	&.column-block {
 		padding: 0 rem-calc(10);
+		margin-bottom: 0;
 
 		&:first-of-type {
 			padding-left: 0;

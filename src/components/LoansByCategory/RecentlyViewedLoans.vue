@@ -132,12 +132,7 @@ export default {
 	overflow: hidden;
 	display: block;
 	position: relative;
-	// max-width: 1020px; // This will center the loan row in upcoming design changes
-	margin: 0 auto;
-
-	.loan-category-row {
-		margin: 0 1rem 1.25rem;
-	}
+	margin: 0 auto 2rem;
 }
 
 .recent-loans-loaded {
