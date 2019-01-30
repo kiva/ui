@@ -212,20 +212,19 @@ $row-max-width: 63.75rem;
 }
 
 .arrow {
-	display: block;
-    position: absolute;
-    background: rgba(255, 255, 255, 0.8);
-    width: 2.5rem;
-    margin: 0;
-    text-align: center;
-    line-height: 640px;
+	display: flex;
+	position: absolute;
+	background: rgba(255, 255, 255, 0.8);
+	width: 2.5rem;
+	margin: 0;
+	text-align: center;
+	height: 100%;
 	z-index: 200;
 	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
 	justify-content: center;
-    display: flex;
-    align-items: center;
+	align-items: center;
 
 	&:hover,
 	&:active {
@@ -260,7 +259,6 @@ $row-max-width: 63.75rem;
 	transition: margin 0.5s;
 	padding-left: 2.5rem;
 }
-
 
 .row.title-row {
 	max-width: $row-max-width;
