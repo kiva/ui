@@ -40,6 +40,7 @@
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
+					:desktop-using-radio-buttons="true"
 				/>
 				<div class="hide-for-large">
 					<a id="no-donation-link" @click="setDonationAndClose(0)">No donation to Kiva</a>
@@ -158,8 +159,6 @@ export default {
 		padding-right: 2.5rem;
 	}
 
-	text-align: center;
-
 	#nudge-donation-left {
 		display: flex;
 		flex-direction: column;
@@ -196,6 +195,7 @@ export default {
 		padding-bottom: 3rem;
 		background: #F8F8F8;
 		padding-top: 2.5rem;
+		text-align: center;
 
 		@include breakpoint(medium) {
 			padding-top: 4rem;
@@ -203,6 +203,7 @@ export default {
 
 		@include breakpoint(large) {
 			padding-top: 4.75rem;
+			text-align: left;
 		}
 
 		#borrower-image-mobile-container {
