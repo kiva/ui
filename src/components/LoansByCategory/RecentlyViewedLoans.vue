@@ -71,17 +71,16 @@ export default {
 		this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
 
 		let recentLoanIds = [];
+		// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
+		const recentlyViewed = WebStorage('recentlyViewedLoans');
+		// decode, parse then set recently viewed loan data
+		try {
+			recentLoanIds = JSON.parse(atob(recentlyViewed));
+		} catch (e) {
+			// no-op
+		}
 
 		if (this.showRecentlyViewed) {
-			// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
-			const recentlyViewed = WebStorage('recentlyViewedLoans');
-			// decode, parse then set recently viewed loan data
-			try {
-				recentLoanIds = JSON.parse(atob(recentlyViewed));
-			} catch (e) {
-				// no-op
-			}
-
 			if (recentLoanIds.length) {
 				// query our custom loan set
 				this.apollo.query({
