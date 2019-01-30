@@ -1,22 +1,39 @@
 <template>
 	<div class="join-team-form">
-		<h2 v-if="inviterDisplayName">{{ inviterDisplayName }} invited you to the {{ teamName }} team!</h2>
-		<h2 v-else>You're invited to the {{ teamName }} team!</h2>
-		<p>
-			By joining the team, you can see your impact, interact with teammates, and get more out of Kiva.
-		</p>
-		<div class="join-team-button-container">
-			<kv-button class="smaller secondary" @click.native.prevent="handleRejectTeam">
-				No Thanks
-			</kv-button>
-			<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
-				Join Team
-			</kv-button>
+		<div v-if="showForm">
+			<h2 v-if="inviterDisplayName">{{ inviterDisplayName }} invited you to the {{ teamName }} team!</h2>
+			<h2 v-else>You're invited to the {{ teamName }} team!</h2>
+			<p>
+				By joining the team, you can see your impact, interact with teammates, and get more out of Kiva.
+			</p>
+			<div class="join-team-button-container">
+				<kv-button class="smaller secondary" @click.native.prevent="handleRejectTeam">
+					No Thanks
+				</kv-button>
+				<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
+					Join Team
+				</kv-button>
+			</div>
+			<p v-if="showError" class="error">
+				Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
+			</p>
+			<loading-overlay id="loading-overlay-teams" v-if="loading"/>
 		</div>
-		<p v-if="showError" class="error">
-			Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
-		</p>
-		<loading-overlay id="loading-overlay-teams" v-if="loading"/>
+		<div v-if="showSuccess">
+			<div v-if="openTeam">
+				<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
+				<p>
+					When you make loans, you'll now have the option to count those loans towards this team.
+				</p>
+			</div>
+			<div v-else>
+				<h2>You've requested to join the {{ teamName }} Lending Team.</h2>
+				<p>
+					Once your request is approved, you'll have the option to count loans towards this team.
+				</p>
+			</div>
+			<p><a :href="doneUrl">Continue</a></p>
+		</div>
 	</div>
 </template>
 
@@ -52,6 +69,8 @@ export default {
 		},
 		result({ data }) {
 			this.teamName = _get(data, 'community.team.name');
+			this.membershipType = _get(data, 'community.team.membershipType');
+			this.openTeam = this.membershipType === 'open';
 			if (!this.inviterDisplayName) {
 				this.inviterDisplayName = _get(data, 'my.teamRecruitment.recruiterDisplayName');
 			}
@@ -63,13 +82,18 @@ export default {
 	data() {
 		return {
 			teamName: '',
+			openTeam: '',
+			membershipType: '',
 			doneUrl: this.$route.query.doneUrl,
 			teamRecruitmentId: this.$route.query.id,
 			inviterId: this.$route.query.inviter_id,
 			inviterDisplayName: this.$route.query.inviter_display_name,
-			teamId: this.$route.query.team_id
+			teamId: this.$route.query.team_id,
 			showError: false,
+			showForm: true,
+			showSuccess: false,
 			loading: false,
+			message: ''
 		};
 	},
 	methods: {
@@ -104,17 +128,18 @@ export default {
 						team_recruitment_id: this.teamRecruitmentId
 					}
 				}).then(result => {
+					this.loading = false;
 					if (result.errors) {
-						console.log(result.errors);
 						this.showError = true;
-						this.loading = false;
+						console.log(result.errors);
 					} else {
-						window.location.href = this.doneUrl;
+						this.showForm = false;
+						this.showSuccess = true;
 					}
 				}).catch(error => {
-					console.error(error);
 					this.loading = false;
 					this.showError = true;
+					console.log(error);
 				});
 			});
 		},
