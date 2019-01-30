@@ -71,6 +71,19 @@
 			:experimental-header="donationNudgeExperimentalHeader"
 			:experimental-description="donationNudgeExperimentalDescription"
 			:loan-history-count="loanHistoryCount"
+			v-if="false"
+		/>
+		<donation-nudge-lightbox-borrower-image
+			:loan-count="loanCount"
+			:loan-reservation-total="loanReservationTotal"
+			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:close-nudge-lightbox="closeNudgeLightbox"
+			:update-donation-to="updateDonationTo"
+			:has-custom-donation="hasCustomDonation"
+			:experimental-header="donationNudgeExperimentalHeader"
+			:experimental-description="donationNudgeExperimentalDescription"
+			:loan-history-count="loanHistoryCount"
+			v-if="true"
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
@@ -107,6 +120,7 @@ import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
+import DonationNudgeLightboxBorrowerImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxBorrowerImage';
 
 export default {
 	components: {
@@ -115,6 +129,7 @@ export default {
 		KvLightbox,
 		DonateRepayments,
 		DonationNudgeLightbox,
+		DonationNudgeLightboxBorrowerImage,
 	},
 	inject: ['apollo'],
 	props: {
