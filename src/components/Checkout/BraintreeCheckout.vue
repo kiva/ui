@@ -1,0 +1,280 @@
+<template>
+	<div class="braintree-holder">
+
+	</div>
+</template>
+
+<script>
+/* global paypal */
+// import _get from 'lodash/get';
+// import numeral from 'numeral';
+// import Raven from 'raven-js';
+// import checkoutUtils from '@/plugins/checkout-utils-mixin';
+// import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
+// import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
+
+
+export default {
+	inject: ['apollo'],
+	mixins: [
+	],
+	props: {
+		amount: {
+			type: String,
+			default: ''
+		}
+	},
+	data() {
+		return {
+			// ensurePaypalScript: null,
+			// paypalRendered: false,
+			// loading: false
+		};
+	},
+	metaInfo() {
+		// ensure Braintree script is loaded
+		const braintreeScript = {};
+		// check for paypal incase script is already loaded
+		if (typeof braintree === 'undefined') {
+			braintreeScript.type = 'text/javascript';
+			// braintreeScript.src = 'https://www.paypalobjects.com/api/checkout.js';
+		}
+		return {
+			script: [
+				braintreeScript
+			]
+		};
+	},
+	mounted() {
+		this.initializeBraintree();
+	},
+	watch: {
+		amount() {
+			this.initializeBraintree();
+		}
+	},
+	methods: {
+		initializeBraintree() {
+			// ensure Braintree is loaded before calling
+			this.ensureBraintreeScript = window.setInterval(() => {
+				if (typeof braintree !== 'undefined' && !this.braintreeRendered) {
+					this.renderBraintreeButton();
+				}
+			}, 200);
+		},
+		renderBraintreeButton() {
+			// clear ensureBraintree interval
+			window.clearInterval(this.ensureBraintreeScript);
+			// signify we've already rendered
+			this.braintreeRendered = true;
+			// render paypal button
+			braintree.Button.render(
+				{
+					// TODO: Should we have a global key/switch for Prod
+					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
+					commit: true,
+					payment: () => {
+						this.$kvTrackEvent('basket', 'Paypal Payment', 'Button Click');
+
+						return new paypal.Promise((resolve, reject) => {
+							this.setUpdating(true);
+							// validate our basket before getting the payment token
+							return this.validateBasket()
+								.then(validationStatus => {
+									if (validationStatus === true) {
+										// Use updated vars on render
+										this.apollo.query({
+											query: getPaymentToken,
+											variables: {
+												amount: numeral(this.amount).format('0.00'),
+											}
+										}).then(response => {
+											if (response.errors) {
+												this.setUpdating(false);
+												reject(response);
+											} else {
+												const paymentToken = _get(response, 'data.shop.getPaymentToken');
+												resolve(paymentToken || response);
+											}
+										})
+											.catch(error => {
+												console.error(error);
+												// Fire specific exception to Sentry/Raven
+												// eslint-disable-next-line
+												Raven.captureException(JSON.stringify(error.errors ? error.errors : error), {
+													tags: {
+														pp_stage: 'onPaymentGetPaymentTokenCatch'
+													}
+												});
+
+												reject(error);
+											});
+									} else {
+										// validation failed
+										this.setUpdating(false);
+										this.showCheckoutError(validationStatus);
+										this.$emit('refreshtotals');
+										reject(validationStatus);
+									}
+								})
+								.catch(error => {
+									this.setUpdating(false);
+									console.error(error);
+
+									// Fire specific exception to Sentry/Raven
+									Raven.captureException(JSON.stringify(error), {
+										tags: {
+											pp_stage: 'onPaymentValidationCatch'
+										}
+									});
+								});
+						});
+					},
+					onAuthorize: (data, actions) => {
+						this.$kvTrackEvent('basket', 'Paypal Payment', 'ECK Dialog Pay Now Click');
+
+						return new paypal.Promise((resolve, reject) => {
+							// validate our basket before deposit and Checkout
+							return this.validateBasket()
+								.then(validationStatus => {
+									if (validationStatus === true) {
+										this.apollo.mutate({
+											mutation: depositAndCheckout,
+											variables: {
+												amount: numeral(this.amount).format('0.00'),
+												token: data.paymentToken,
+												payerId: data.payerID
+											},
+										})
+											.then(ppResponse => {
+												// Check for errors
+												if (ppResponse.errors) {
+													this.setUpdating(false);
+													const errorCode = _get(ppResponse, 'errors[0].code');
+													// -> server supplied language is not geared for lenders
+													const standardErrorCode = `(PayPal error: ${errorCode})`;
+													const standardError = `There was an error processing your payment.
+														Please try again. ${standardErrorCode}`;
+
+													this.$showTipMsg(standardError, 'error');
+
+													// Fire specific exception to Sentry/Raven
+													Raven.captureException(JSON.stringify(ppResponse.errors), {
+														tags: {
+															pp_stage: 'onAuthorize',
+															pp_token: data.paymentToken
+														}
+													});
+
+													// Restart the Exp Checkout interface to allow payment changes
+													// 10539 'payment declined' error
+													// 10486 transaction could not be completed
+													if (errorCode === '10539' || errorCode === '10486') {
+														return actions.restart();
+													}
+													// TODO: Are there other specific errors we should handle?
+
+													// exit
+													reject(data);
+												}
+
+												// Transaction is complete
+												const transactionId = _get(
+													ppResponse,
+													'data.shop.doPaymentDepositAndCheckout'
+												);
+												// redirect to thanks with KIVA transaction id
+												if (transactionId) {
+													this.$kvTrackEvent(
+														'basket',
+														'Paypal Payment',
+														'Success',
+														transactionId
+													);
+													this.redirectToThanks(transactionId);
+												}
+												resolve(ppResponse);
+											})
+											.catch(catchError => {
+												this.setUpdating(false);
+
+												// Fire specific exception to Sentry/Raven
+												Raven.captureException(JSON.stringify(catchError), {
+													tags: {
+														pp_stage: 'onAuthorizeCatch'
+													}
+												});
+
+												reject(catchError);
+											});
+									} else {
+										// validation failed
+										this.setUpdating(false);
+										this.showCheckoutError(validationStatus);
+										this.$emit('refreshtotals');
+										reject(validationStatus);
+									}
+								})
+								.catch(error => {
+									this.setUpdating(false);
+									console.error(error);
+
+									// Fire specific exception to Sentry/Raven
+									Raven.captureException(JSON.stringify(error), {
+										tags: {
+											pp_stage: 'onAuthorizeValidationCatch'
+										}
+									});
+								});
+						});
+					},
+					onError: data => {
+						this.setUpdating(false);
+						console.error(data);
+					},
+					onCancel: () => {
+						this.setUpdating(false);
+					},
+					style: {
+						color: 'blue',
+						shape: 'rect',
+						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
+						fundingicons: true
+					}
+				},
+				'#paypal-button'
+			);
+		},
+		setUpdating(state) {
+			this.loading = state;
+			this.$emit('updating-totals', state);
+		},
+	}
+};
+</script>
+
+<style lang="scss">
+@import 'settings';
+
+.paypal-holder {
+	display: block;
+	text-align: center;
+
+	@include breakpoint(medium) {
+		text-align: right;
+	}
+
+	#paypal-button {
+		margin-bottom: $list-side-margin;
+	}
+
+	.pp-tagline {
+		color: $kiva-text-light;
+		text-align: center;
+
+		@include breakpoint(medium) {
+			text-align: right;
+		}
+	}
+}
+</style>
