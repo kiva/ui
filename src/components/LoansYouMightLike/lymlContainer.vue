@@ -80,7 +80,7 @@ export default {
 			return _map(this.loans, 'id');
 		},
 		hasLoansInBasket() {
-			return this.loans.length || 0;
+			return this.loans.length || false;
 		},
 		sameCountry() {
 			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.geocode.country.isoCode') : ['US'];
@@ -192,7 +192,7 @@ export default {
 				loansYouMightLike.push(randomLoans[0]);
 
 				// same Country loans
-				const sameCountryLoans = _get(data, 'data.lend.sameCountry') || false;
+				const sameCountryLoans = _get(data, 'data.lend.sameCountry') || 0;
 				if (sameCountryLoans.length > 1) {
 					loansYouMightLike.push(sameCountryLoans.values[1]);
 				} else {
@@ -200,7 +200,7 @@ export default {
 				}
 
 				// same Activity loans
-				const sameActivityLoans = _get(data, 'data.lend.sameActivity') || false;
+				const sameActivityLoans = _get(data, 'data.lend.sameActivity') || 0;
 				if (sameActivityLoans.length > 1) {
 					loansYouMightLike.push(sameActivityLoans.values[1]);
 				} else {
@@ -211,7 +211,7 @@ export default {
 				// if user is in variant-b we add an additional loan card from the same sector
 				// as the first loan in the basket.
 				if (this.lymlVariant === 'variant-b') {
-					const sameSectorLoans = _get(data, 'data.lend.sameSector') || false;
+					const sameSectorLoans = _get(data, 'data.lend.sameSector') || 0;
 					if (sameSectorLoans.length > 1) {
 						loansYouMightLike.push(sameSectorLoans.values[1]);
 					} else {
