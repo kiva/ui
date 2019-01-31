@@ -341,14 +341,14 @@ export default {
 
 /* 4 card 54rem */
 .four-cards {
-	$three-card-width: 864;
+	$four-card-width: 864;
 
 	#lyml-row-title,
 	#lyml-row-cards {
-		max-width: rem-calc(864);
+		max-width: rem-calc($four-card-width);
 	}
 	// hide arrows if screen is wide enough
-	@media only screen and (min-width: rem-calc(864)) {
+	@media only screen and (min-width: rem-calc($four-card-width)) {
 		.lyml-row-wrapper .arrow {
 			visibility: hidden;
 		}
