@@ -4,6 +4,7 @@
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']"
 			class="borrower-image-link"
+			:target="linkTarget"
 		>
 
 			<img class="borrower-image"
@@ -58,6 +59,15 @@ export default {
 		isFavorite: {
 			type: Boolean,
 			default: false
+		},
+		openInNewTab: {
+			type: Boolean,
+			default: false
+		}
+	},
+	computed: {
+		linkTarget() {
+			return this.openInNewTab ? '_blank' : '_self';
 		}
 	}
 };

@@ -41,6 +41,7 @@ export default {
 	background-color: $kiva-accent-blue;
 	font-size: rem-calc(20);
 	font-weight: normal;
+	z-index: 1000;
 
 	&:hover {
 		color: $white;
