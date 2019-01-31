@@ -75,54 +75,17 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		loanHistoryCount: {
-			type: Number,
-			default: 0,
+		header: {
+			type: String,
+			default: '',
 		},
-		experimentalHeader: {
-			type: Boolean,
-			default: false,
+		description: {
+			type: String,
+			default: '',
 		},
-		experimentalDescription: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	computed: {
-		header() {
-			const newLoanCount = this.loanHistoryCount + this.loanCount;
-			/* eslint-disable max-len */
-			return this.experimentalHeader
-				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${newLoanCount} ${newLoanCount > 1 ? 'loans' : 'loan'} made on Kiva!`
-				: 'We rely on donations to reach the people who need it the most';
-			/* eslint-enable max-len */
-		},
-		description() {
-			/* eslint-disable max-len */
-			return this.experimentalDescription
-				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?<br>We rely on donations to reach the people who need it the most'
-				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
-			/* eslint-enable max-len */
-		},
-		percentageRows() {
-			const basePercentageRows = [
-				{
-					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
-					appealIsHorizontallyPadded: false,
-				},
-				{
-					percentage: 20,
-					appeal: 'Reach more people around the world!',
-					appealIsHorizontallyPadded: false,
-				},
-			];
-			const lowPercentage = [{
-				percentage: 10,
-				appeal: 'Cover some of Kiva\'s costs',
-				appealIsHorizontallyPadded: true,
-			}];
-			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
+		percentageRows: {
+			type: Array,
+			default: () => [],
 		},
 	},
 	methods: {
