@@ -369,6 +369,7 @@ $close-search-button-size: 2.5rem;
 	background-color: $header-color;
 	font-size: $top-nav-font-size;
 	font-weight: $global-weight-highlight;
+	z-index: 1000;
 
 	.amount {
 		@include breakpoint(large) {

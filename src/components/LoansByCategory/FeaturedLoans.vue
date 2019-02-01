@@ -237,7 +237,7 @@ $row-max-width: 63.75rem;
 	margin: 0;
 	text-align: center;
 	height: 100%;
-	z-index: 200;
+	z-index: 20;
 	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
@@ -268,7 +268,7 @@ $row-max-width: 63.75rem;
 .featured-cards-display-window {
 	overflow: hidden;
 	width: 100%;
-	z-index: 100;
+	z-index: 10;
 }
 
 .featured-cards-holder {
