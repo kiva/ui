@@ -79,6 +79,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		experimentalHeader: {
+			type: Boolean,
+			default: false,
+		},
 		description: {
 			type: String,
 			default: '',
