@@ -143,6 +143,7 @@ export default {
 }
 
 .no-recent-loans {
+	margin: 0;
 	min-height: 0;
 	max-height: 0;
 }
