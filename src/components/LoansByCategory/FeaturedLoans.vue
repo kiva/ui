@@ -211,7 +211,7 @@ $row-max-width: 63.75rem;
 }
 
 .section-name {
-	font-weight: $global-weight-bold;
+	font-weight: $global-weight-highlight;
 	margin: 0 1.875rem;
 	margin-bottom: 1rem;
 

@@ -409,13 +409,18 @@ export default {
 	}
 
 	.pre-footer {
-		margin: 2rem 0;
+		margin-top: 2rem;
+		margin-bottom: 2rem;
 
 		h2 {
 			margin: 0 1.875rem;
 
 			@include breakpoint(medium) {
-				margin-left: 1.5625rem;
+				margin-left: 1.625rem;
+			}
+
+			@include breakpoint(xxlarge) {
+				margin-left: 0.625rem;
 			}
 
 			@media (hover: none) {
