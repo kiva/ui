@@ -38,6 +38,11 @@
 
 		<div class="row pre-footer">
 			<div class="column small-12">
+				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
+					<loading-overlay id="updating-overlay" />
+					<h3 class="text-center">Loading more rows...</h3>
+				</div>
+
 				<h2 class="category-name"><router-link
 					:to="{ path: '/categories'}"
 					class="view-all-link">
@@ -75,6 +80,7 @@ import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -94,6 +100,7 @@ export default {
 		RecentlyViewedLoans,
 		WwwPage,
 		ViewToggle,
+		LoadingOverlay,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -111,7 +118,8 @@ export default {
 			customCategories: [],
 			clientCategories: [],
 			showRecentlyViewed: false,
-			recentLoanIds: []
+			recentLoanIds: [],
+			rowLazyLoadComplete: false,
 		};
 	},
 	computed: {
@@ -343,6 +351,8 @@ export default {
 		this.fetchRecentlyViewed();
 
 		this.fetchRemainingLoanChannels().then(() => {
+			this.rowLazyLoadComplete = true;
+
 			this.activateWatchers();
 
 			const pageViewTrackData = this.assemblePageViewData(this.categories);
@@ -397,6 +407,10 @@ export default {
 	.loan-category-row {
 		margin: 0 0 rem-calc(20);
 
+		@include breakpoint(medium) {
+			margin: 0 0 rem-calc(40);
+		}
+
 		&:last-of-type {
 			margin-bottom: 0;
 		}
@@ -409,13 +423,38 @@ export default {
 	}
 
 	.pre-footer {
-		margin: 2rem 0;
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+
+		.cat-row-loader {
+			display: flex;
+			justify-content: center;
+			position: relative;
+			z-index: 5;
+			height: 9rem;
+			margin: 0 0 3rem;
+
+			// loading overlay overrides
+			#updating-overlay {
+				background: transparent;
+				z-index: 6;
+			}
+
+			h3 {
+				display: flex;
+				align-items: flex-end;
+			}
+		}
 
 		h2 {
 			margin: 0 1.875rem;
 
 			@include breakpoint(medium) {
-				margin-left: 1.5625rem;
+				margin-left: 1.625rem;
+			}
+
+			@include breakpoint(xxlarge) {
+				margin-left: 0.625rem;
 			}
 
 			@media (hover: none) {

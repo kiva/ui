@@ -273,7 +273,7 @@ $row-max-width: 63.75rem;
 }
 
 .category-name {
-	font-weight: $global-weight-bold;
+	font-weight: $global-weight-highlight;
 	margin: 0 1.875rem;
 	margin-bottom: 0.5rem;
 
