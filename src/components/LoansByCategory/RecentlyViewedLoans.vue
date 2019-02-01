@@ -134,7 +134,7 @@ export default {
 	overflow: hidden;
 	display: block;
 	position: relative;
-	margin: 0 auto 2rem;
+	margin: 0 auto 0;
 }
 
 .recent-loans-loaded {
