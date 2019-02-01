@@ -24,7 +24,7 @@
 				</p>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
-					<a href="https://api.kivaws.org/graphql?query=query{lend{loans%20(filters:{status:fundRaising}%20sortBy:newest){values{id%20name%20loanAmount}}}}">
+					<a href="https://api.kivaws.org/graphql?query=query{lend{loans%20(filters:{status:fundraising}%20sortBy:newest){values{id%20name%20loanAmount}}}}">
 						Query for newest fundraising loans
 					</a>
 				</p>

@@ -292,7 +292,7 @@ export default {
 				path: '/lend',
 				query: {
 					trustee: this.trusteeId,
-					status: 'fundRaising',
+					status: 'fundraising',
 					sortBy: 'newest',
 				}
 			};
