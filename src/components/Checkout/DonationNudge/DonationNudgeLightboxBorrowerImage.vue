@@ -11,7 +11,7 @@
 				<div id="borrower-image-desktop-container">
 					<img
 						id="nudge-donation-borrower-image-desktop"
-						src="~@/assets/images/checkout/donation-nudge/nudge-borrower-desktop.png"
+						src="~@/assets/images/checkout/donation-nudge/nudge-borrower-desktop.jpg"
 					>
 				</div>
 				<div id="nudge-donation-charity-navigator-wrapper">
@@ -26,13 +26,11 @@
 			<div id="nudge-donation-right" class="columns large-8">
 				<donation-nudge-intro
 					:header="header"
+					:hide-header-on-mobile="!experimentalHeader"
 					:description="''"
 				/>
 				<div id="borrower-image-mobile-container" class="hide-for-large">
-					<img
-						id="nudge-donation-borrower-image-mobile"
-						src="~@/assets/images/checkout/donation-nudge/nudge-borrower-mobile.png"
-					>
+					<img id="nudge-donation-borrower-image-mobile" :src="mobileImageUrl">
 				</div>
 				<donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
@@ -56,6 +54,10 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
+
+// eslint-disable-next-line max-len
+const experimentalMobileImage = require('@/assets/images/checkout/donation-nudge/nudge-borrower-mobile-experimental.jpg');
+const mobileImage = require('@/assets/images/checkout/donation-nudge/nudge-borrower-mobile.jpg');
 
 export default {
 	components: {
@@ -94,6 +96,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		experimentalHeader: {
+			type: Boolean,
+			default: false,
+		},
 		description: {
 			type: String,
 			default: '',
@@ -102,6 +108,11 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+	},
+	computed: {
+		mobileImageUrl() {
+			return this.experimentalHeader ? experimentalMobileImage : mobileImage;
+		}
 	},
 	methods: {
 		setDonationAndClose(amount) {

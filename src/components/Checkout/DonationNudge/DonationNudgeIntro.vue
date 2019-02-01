@@ -1,6 +1,10 @@
 <template functional>
 	<div id="donation-nudge-intro">
-		<div id="nudge-donation-top-header" class="impact-text">
+		<div
+			id="nudge-donation-top-header"
+			class="impact-text"
+			:class="{'hide-header-on-mobile': props.hideHeaderOnMobile}"
+		>
 			{{ props.header }}
 		</div>
 		<div class="row" id="nudge-donation-top-content-row" v-if="props.description">
@@ -19,6 +23,10 @@ export default {
 		description: {
 			type: String,
 			default: ''
+		},
+		hideHeaderOnMobile: {
+			type: Boolean,
+			default: false,
 		},
 	},
 };
@@ -43,8 +51,18 @@ export default {
 		color: #64B365;
 		line-height: 1.9rem;
 
+		&.hide-header-on-mobile {
+			display: none;
+		}
+
 		@include breakpoint(medium) {
 			font-size: 1.6rem;
+		}
+
+		@include breakpoint(large) {
+			&.hide-header-on-mobile {
+				display: block;
+			}
 		}
 	}
 

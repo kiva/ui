@@ -69,6 +69,7 @@
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
 			:header="donationNudgeHeader()"
+			:experimental-header="donationNudgeExperimentalHeader"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
 			v-if="!donationNudgeBorrowerImageExperiment"
@@ -81,6 +82,7 @@
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
 			:header="donationNudgeHeader()"
+			:experimental-header="donationNudgeExperimentalHeader"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
 			v-else
