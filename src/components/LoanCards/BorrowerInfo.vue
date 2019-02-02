@@ -76,7 +76,7 @@ export default {
 	},
 	computed: {
 		helpedLanguage() {
-			if (this.status === 'fundRaising'
+			if (this.status === 'fundraising'
 			|| this.status === 'inactive'
 			|| this.status === 'reviewed') {
 				return 'helps';

@@ -3,10 +3,10 @@ import SearchBar from '@/components/WwwFrame/SearchBar';
 import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
 
 const suggestions = [
-	{ group: 'U.S. cities', label: 'Akron, OH', query: 'city_state=Akron,OH' },
-	{ group: 'U.S. cities', label: 'Anchorage, AK', query: 'city_state=Anchorage,AK' },
-	{ group: 'U.S. cities', label: 'Islandia, NY', query: 'city_state=Islandia,NY' },
-	{ group: 'U.S. cities', label: 'Chincoteague Island, VA', query: 'city_state=Chincoteague+Island,VA' },
+	{ group: 'U.S. cities', label: 'Akron, OH', query: 'cityState=Akron,OH' },
+	{ group: 'U.S. cities', label: 'Anchorage, AK', query: 'cityState=Anchorage,AK' },
+	{ group: 'U.S. cities', label: 'Islandia, NY', query: 'cityState=Islandia,NY' },
+	{ group: 'U.S. cities', label: 'Chincoteague Island, VA', query: 'cityState=Chincoteague+Island,VA' },
 	{ group: 'United States', label: 'Alaska (AK)', query: 'state=AK' },
 	{ group: 'Countries and Territories', label: 'Albania', query: 'country=al' },
 	{ group: 'Partners', label: 'Fundación Sartawi', query: 'partner=527' },
