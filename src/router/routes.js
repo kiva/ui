@@ -4,6 +4,7 @@ export default [
 	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
+	{ path: '/lend/filter', component: () => import('@/pages/Lend/LendFilterPage') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
