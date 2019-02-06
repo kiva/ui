@@ -410,7 +410,7 @@ export default {
 		donationNudgeDescription() {
 			/* eslint-disable max-len */
 			return this.donationNudgeExperimentalDescription
-				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?<br>We rely on donations to reach the people who need it the most'
+				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?'
 				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
 			/* eslint-enable max-len */
 		},

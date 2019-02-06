@@ -7,7 +7,7 @@
 		@lightbox-closed="closeNudgeLightbox"
 	>
 		<div id="nudge-donation-container" class="row collapse">
-			<div id="nudge-donation-left" class="show-for-large columns large-4">
+			<div id="nudge-donation-left" class="show-for-large columns large-5">
 				<div id="borrower-image-desktop-container">
 					<img
 						id="nudge-donation-borrower-image-desktop"
@@ -23,11 +23,12 @@
 					/>
 				</div>
 			</div>
-			<div id="nudge-donation-right" class="columns large-8">
+			<div id="nudge-donation-right" class="columns large-7">
 				<donation-nudge-intro
 					:header="header"
 					:hide-header-on-mobile="!experimentalHeader"
-					:description="''"
+					:description="description"
+					:no-padding-description="true"
 				/>
 				<div id="borrower-image-mobile-container" class="hide-for-large">
 					<img id="nudge-donation-borrower-image-mobile" :src="mobileImageUrl">
@@ -167,7 +168,7 @@ export default {
 
 	#nudge-donation-right {
 		padding-bottom: 3rem;
-		background: #F8F8F8;
+		background: $white;
 		padding-top: 2.5rem;
 		text-align: center;
 
@@ -178,12 +179,13 @@ export default {
 		@include breakpoint(large) {
 			padding-top: 4.75rem;
 			text-align: left;
+			background: #F8F8F8;
 		}
 
 		#borrower-image-mobile-container {
 			@extend .nudge-lightbox-row-padding;
 
-			margin-bottom: 1.4rem;
+			margin-bottom: 0.5rem;
 		}
 
 		#nudge-donation-top-boxes-wrapper {
