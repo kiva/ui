@@ -3,14 +3,24 @@
 		<div class="row title-row">
 			<div class="column small-12">
 				<h2 class="category-name">
-					<a class="view-all-link"
+					<router-link
+						class="view-all-link"
+						:to="uiPageUrl"
+						:title="`View all ${cleanName} loans`"
+						v-kv-track-event="[
+							'Lending',
+							'click-Category-View-All',
+							`View all ${cleanName} loans`]">
+						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
+					</router-link>
+					<!-- <a class="view-all-link"
 						:href="cleanUrl"
 						:title="`View all ${cleanName} loans`"
 						v-kv-track-event="[
 							'Lending',
 							'click-Category-View-All',
 							`View all ${cleanName} loans`]"
-					>{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span></a>
+					>{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span></a> -->
 				</h2>
 			</div>
 		</div>
@@ -138,6 +148,20 @@ export default {
 			}
 
 			return cleanUrl;
+		},
+		uiPageUrl() {
+			const lastPathIndex = this.url.lastIndexOf('/');
+			const urlSegment = this.url.slice(lastPathIndex);
+			let cleanUrl = String(urlSegment).replace('new-countries-for-you', 'countries-not-lent');
+
+			if (
+				this.url.includes('loans-with-research-backed-impact') === true ||
+				this.url.includes('recently-viewed-loans') === true ||
+				this.url === '') {
+				cleanUrl = '';
+			}
+
+			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
 			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
