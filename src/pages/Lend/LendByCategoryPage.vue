@@ -16,12 +16,15 @@
 			ref="featured"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
 		<recently-viewed-loans
 			:is-micro="true"
 			:items-in-basket="itemsInBasket"
-			:is-logged-in="isLoggedIn" />
+			:is-logged-in="isLoggedIn"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		/>
 
 		<div>
 			<category-row
@@ -33,6 +36,7 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
+				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			/>
 		</div>
 
@@ -113,6 +117,7 @@ export default {
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
+			imageEnhancementExperimentVersion: '',
 			showFeaturedLoans: true,
 			realCategories: [],
 			customCategories: [],
@@ -137,7 +142,7 @@ export default {
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
-		},
+		}
 	},
 	methods: {
 		assemblePageViewData(categories) {
@@ -267,7 +272,7 @@ export default {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				},
 			});
-		}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -291,6 +296,9 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } }),
 					// Pre-fetch the assigned version for recently viewed loans
 					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loans' } }),
+
+					// experiment: image enhancement
+					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -345,6 +353,21 @@ export default {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'a');
 		} else if (lendIncrementExperimentVersionString === 'variant-b') {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'b');
+		}
+
+		// image enchancement experiment
+		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'image_enhancement' },
+		});
+
+		// eslint-disable-next-line max-len
+		this.imageEnhancementExperimentVersion = _get(imageEnchancementExperimentVersionArray, 'experiment.version') || null;
+
+		if (this.imageEnhancementExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
+		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
 		}
 	},
 	mounted() {

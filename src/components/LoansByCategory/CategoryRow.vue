@@ -41,6 +41,7 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 				</div>
 			</div>
@@ -93,7 +94,11 @@ export default {
 		isMicro: {
 			type: Boolean,
 			default: false
-		}
+		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {

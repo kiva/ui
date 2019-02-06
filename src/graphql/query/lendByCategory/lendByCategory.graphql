@@ -19,6 +19,10 @@ query {
 			key
 			value
 		}
+		imageEnhancementExperiment: setting(setting: "uiexp.image_enhancement") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin

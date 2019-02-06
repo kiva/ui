@@ -25,6 +25,7 @@ query(
 					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
+					hash
 				}
 			}
 		}
