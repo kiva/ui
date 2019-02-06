@@ -4,7 +4,6 @@
 			<select
 				class="lend-increment-dropdown"
 				v-model="selectedOption"
-				@change="updateLoanReservation()"
 			>
 				<option
 					v-for="price in prices"
