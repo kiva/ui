@@ -242,6 +242,16 @@ export default {
 .is-in-featured {
 	flex: 0 0 auto;
 
+	.grid-loan-card {
+		width: rem-calc(280);
+		@include breakpoint(340px down) {
+			min-width: rem-calc(256);
+			width: rem-calc(256);
+		}
+	}
+}
+
+.is-in-category-row {
 	&.column-block {
 		padding: 0 rem-calc(10);
 		margin-bottom: 0;
@@ -250,12 +260,15 @@ export default {
 			padding-left: 0;
 		}
 	}
+}
 
-	.grid-loan-card {
-		width: rem-calc(280);
-		@include breakpoint(340px down) {
-			min-width: rem-calc(256);
-			width: rem-calc(256);
+.is-in-featured {
+	&.column-block {
+		padding: 0 rem-calc(10);
+		margin-bottom: 2.5rem;
+
+		&:first-of-type {
+			padding-left: 0;
 		}
 	}
 }
