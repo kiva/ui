@@ -1,18 +1,18 @@
 <template>
-  <div class="braintree-holder">
-    <form action="/" id="braintree-form" method="post">
-      <label for="card-number">Card Number</label>
-      <div id="card-number"></div>
+	<div class="braintree-holder">
+		<form action="/" id="braintree-form" method="post">
+			<label for="card-number">Card Number</label>
+			<div id="card-number"></div>
 
-      <label for="cvv">CVV</label>
-      <div id="cvv"></div>
+			<label for="cvv">CVV</label>
+			<div id="cvv"></div>
 
-      <label for="expiration-date">Expiration Date</label>
-      <div id="expiration-date"></div>
+			<label for="expiration-date">Expiration Date</label>
+			<div id="expiration-date"></div>
 
-      <input type="submit" id="braintree-form-submit" value="Pay" disabled>
-    </form>
-  </div>
+			<input type="submit" id="braintree-form-submit" value="Pay" disabled>
+		</form>
+	</div>
 </template>
 
 <script>
@@ -20,15 +20,15 @@
 // import _get from 'lodash/get';
 // import numeral from 'numeral';
 // import Raven from 'raven-js';
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
+// import checkoutUtils from "@/plugins/checkout-utils-mixin";
 
 // import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 // import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
 export default {
-	inject: ['apollo'],
+	inject: ["apollo"],
 	mixins: [
-		checkoutUtils,
+		checkoutUtils
 		// braintreeDepositAndCheckout
 	],
 	props: {
@@ -53,9 +53,7 @@ export default {
 			braintreeScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/client.min.js';
 		}
 		return {
-			script: [
-				braintreeScript
-			]
+			script: [braintreeScript]
 		};
 	},
 	mounted() {
@@ -77,9 +75,9 @@ export default {
 		},
 		renderBraintreeForm() {
 			// clear ensurePaypal interval
-			// window.clearInterval(this.ensureBraintreeScript);
+			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
-			// this.braintreeRendered = true;
+			this.braintreeRendered = true;
 
 			// const form = document.querySelector('#braintree-form');
 			// const submit = document.querySelector('#braintree-form-submit');
@@ -95,9 +93,9 @@ export default {
 					const options = {
 						client: clientInstance,
 						styles: {
-							'input': { 'font-size': '14px' }, // eslint-disable-line
-							'input.invalid': { 'color': 'red' }, // eslint-disable-line
-							'input.valid': { 'color': 'green' } // eslint-disable-line
+							input: { "font-size": "14px" }, // eslint-disable-line
+							"input.invalid": { color: "red" }, // eslint-disable-line
+							"input.valid": { color: "green" } // eslint-disable-line
 						},
 						fields: {
 							number: {
@@ -115,16 +113,13 @@ export default {
 						}
 					};
 
-					braintree.hostedFields.create(
-						options,
-						(hostedFieldsErr, hostedFieldsInstance) => {
-							if (hostedFieldsErr) {
-								console.error(hostedFieldsErr);
-								console.error(hostedFieldsInstance);
-								return false;
-							}
+					braintree.hostedFields.create(options, (hostedFieldsErr, hostedFieldsInstance) => {
+						if (hostedFieldsErr) {
+							console.error(hostedFieldsErr);
+							console.error(hostedFieldsInstance);
+							return false;
 						}
-					);
+					});
 				}
 			);
 		}
