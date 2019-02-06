@@ -264,7 +264,8 @@ export default {
 					this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
 				});
 			},
-			deep: true
+			immediate: true,
+			deep: true,
 		}
 	},
 	methods: {
