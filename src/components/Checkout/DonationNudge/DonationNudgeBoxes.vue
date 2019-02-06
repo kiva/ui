@@ -400,11 +400,6 @@ export default {
 					margin-bottom: 0;
 				}
 
-				.nudge-box-tax-deduction {
-					font-size: rem-calc(14);
-					color: #808080;
-				}
-
 				@include breakpoint(xlarge) {
 					.nudge-box-radio-label {
 						font-size: inherit;
@@ -414,6 +409,11 @@ export default {
 						font-size: rem-calc(19);
 					}
 				}
+			}
+
+			.nudge-box-tax-deduction {
+				font-size: rem-calc(14);
+				color: #808080;
 			}
 
 			.nudge-box-button {
