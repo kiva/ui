@@ -11,6 +11,8 @@
 				:standard-image-url="loan.image.default"
 				:is-visitor="isVisitor"
 				:is-favorite="isFavorite"
+				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+				:loan-image-hash="loan.image.hash"
 
 				@track-loan-card-interaction="trackInteraction"
 				@favorite-toggled="toggleFavorite"
@@ -127,6 +129,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
@@ -164,7 +170,8 @@ export default {
 				return `Only ${mins} minutes left! `;
 			}
 			return 'Expiring now!';
-		}
+		},
+
 	},
 	methods: {
 		toggleFavorite() {
