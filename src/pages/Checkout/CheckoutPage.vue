@@ -102,6 +102,13 @@
 
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
+								<!-- Modeled after the paypal component below -->
+								<braintree-checkout
+									v-if="showBraintree"
+									:amount="creditNeeded"
+									@refreshtotals="refreshtotals"
+									@updating-totals="setUpdatingTotals" />
+
 								<pay-pal-exp
 									v-if="showPayPal"
 									:amount="creditNeeded"
@@ -355,6 +362,9 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showPayPal() {
+			return parseFloat(this.creditNeeded) > 0;
+		},
+		showBraintree() {
 			return parseFloat(this.creditNeeded) > 0;
 		},
 		emptyBasket() {

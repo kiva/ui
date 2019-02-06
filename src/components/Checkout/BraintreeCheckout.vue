@@ -1,28 +1,35 @@
 <template>
-	<div class="braintree-holder">
+  <div class="braintree-holder">
+    <form action="/" id="braintree-form" method="post">
+      <label for="card-number">Card Number</label>
+      <div id="card-number"></div>
 
-	</div>
+      <label for="cvv">CVV</label>
+      <div id="cvv"></div>
+
+      <label for="expiration-date">Expiration Date</label>
+      <div id="expiration-date"></div>
+
+      <input type="submit" id="braintree-form-submit" value="Pay" disabled>
+    </form>
+  </div>
 </template>
 
 <script>
-/* global paypal */
-import _get from 'lodash/get';
-import numeral from 'numeral';
+/* global braintree */
+// import _get from 'lodash/get';
+// import numeral from 'numeral';
 // import Raven from 'raven-js';
-// import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import checkoutUtils from '@/plugins/checkout-utils-mixin';
 
-import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
-// The following line was left over from the paypalExpress.vue
-// import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
-
-import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
-// import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
-
+// import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
+// import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
 export default {
 	inject: ['apollo'],
 	mixins: [
-		braintreeDepositAndCheckout
+		checkoutUtils,
+		// braintreeDepositAndCheckout
 	],
 	props: {
 		amount: {
@@ -33,14 +40,14 @@ export default {
 	data() {
 		return {
 			ensureBraintreeScript: null,
-			// braintreeRendered: false,
+			braintreeRendered: false,
 			loading: false
 		};
 	},
 	metaInfo() {
 		// ensure Braintree script is loaded
 		const braintreeScript = {};
-		// check for paypal incase script is already loaded
+		// check for braintree incase script is already loaded
 		if (typeof braintree === 'undefined') {
 			braintreeScript.type = 'text/javascript';
 			braintreeScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/client.min.js';
@@ -64,222 +71,76 @@ export default {
 			// ensure Braintree is loaded before calling
 			this.ensureBraintreeScript = window.setInterval(() => {
 				if (typeof braintree !== 'undefined' && !this.braintreeRendered) {
-					this.renderBraintreeButton();
+					this.renderBraintreeForm();
 				}
 			}, 200);
 		},
-		renderBraintreeButton() {
-			// clear ensureBraintree interval
-			window.clearInterval(this.ensureBraintreeScript);
+		renderBraintreeForm() {
+			// clear ensurePaypal interval
+			// window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
-			this.braintreeRendered = true;
-			// render Braintree form
-			braintree.Button.render(
-				{
-					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
-					commit: true,
-					payment: () => {
-						this.$kvTrackEvent('basket', 'Braintree Payment', 'Button Click');
+			// this.braintreeRendered = true;
 
-						return new paypal.Promise((resolve, reject) => {
-							this.setUpdating(true);
-							// validate our basket before getting the payment token
-							return this.validateBasket()
-								.then(validationStatus => {
-									if (validationStatus === true) {
-										// Use updated vars on render
-										this.apollo.query({
-											query: getClientToken,
-											variables: {
-												amount: numeral(this.amount).format('0.00'),
-											}
-										}).then(response => {
-											if (response.errors) {
-												this.setUpdating(false);
-												reject(response);
-											} else {
-												const paymentToken = _get(response, 'data.shop.getPaymentToken');
-												resolve(paymentToken || response);
-											}
-										})
-											.catch(error => {
-												console.error(error);
-												// Fire specific exception to Sentry/Raven
-												// eslint-disable-next-line
-												Raven.captureException(JSON.stringify(error.errors ? error.errors : error), {
-													tags: {
-														pp_stage: 'onPaymentGetPaymentTokenCatch'
-													}
-												});
+			// const form = document.querySelector('#braintree-form');
+			// const submit = document.querySelector('#braintree-form-submit');
 
-												reject(error);
-											});
-									} else {
-										// validation failed
-										this.setUpdating(false);
-										this.showCheckoutError(validationStatus);
-										this.$emit('refreshtotals');
-										reject(validationStatus);
-									}
-								})
-								.catch(error => {
-									this.setUpdating(false);
-									console.error(error);
-
-									// Fire specific exception to Sentry/Raven
-									Raven.captureException(JSON.stringify(error), {
-										tags: {
-											pp_stage: 'onPaymentValidationCatch'
-										}
-									});
-								});
-						});
-					},
-					onAuthorize: (data, actions) => {
-						this.$kvTrackEvent('basket', 'Paypal Payment', 'ECK Dialog Pay Now Click');
-
-						return new paypal.Promise((resolve, reject) => {
-							// validate our basket before deposit and Checkout
-							return this.validateBasket()
-								.then(validationStatus => {
-									if (validationStatus === true) {
-										this.apollo.mutate({
-											mutation: depositAndCheckout,
-											variables: {
-												amount: numeral(this.amount).format('0.00'),
-												token: data.paymentToken,
-												payerId: data.payerID
-											},
-										})
-											.then(ppResponse => {
-												// Check for errors
-												if (ppResponse.errors) {
-													this.setUpdating(false);
-													const errorCode = _get(ppResponse, 'errors[0].code');
-													// -> server supplied language is not geared for lenders
-													const standardErrorCode = `(PayPal error: ${errorCode})`;
-													const standardError = `There was an error processing your payment.
-														Please try again. ${standardErrorCode}`;
-
-													this.$showTipMsg(standardError, 'error');
-
-													// Fire specific exception to Sentry/Raven
-													Raven.captureException(JSON.stringify(ppResponse.errors), {
-														tags: {
-															pp_stage: 'onAuthorize',
-															pp_token: data.paymentToken
-														}
-													});
-
-													// Restart the Exp Checkout interface to allow payment changes
-													// 10539 'payment declined' error
-													// 10486 transaction could not be completed
-													if (errorCode === '10539' || errorCode === '10486') {
-														return actions.restart();
-													}
-													// TODO: Are there other specific errors we should handle?
-
-													// exit
-													reject(data);
-												}
-
-												// Transaction is complete
-												const transactionId = _get(
-													ppResponse,
-													'data.shop.doPaymentDepositAndCheckout'
-												);
-												// redirect to thanks with KIVA transaction id
-												if (transactionId) {
-													this.$kvTrackEvent(
-														'basket',
-														'Paypal Payment',
-														'Success',
-														transactionId
-													);
-													this.redirectToThanks(transactionId);
-												}
-												resolve(ppResponse);
-											})
-											.catch(catchError => {
-												this.setUpdating(false);
-
-												// Fire specific exception to Sentry/Raven
-												Raven.captureException(JSON.stringify(catchError), {
-													tags: {
-														pp_stage: 'onAuthorizeCatch'
-													}
-												});
-
-												reject(catchError);
-											});
-									} else {
-										// validation failed
-										this.setUpdating(false);
-										this.showCheckoutError(validationStatus);
-										this.$emit('refreshtotals');
-										reject(validationStatus);
-									}
-								})
-								.catch(error => {
-									this.setUpdating(false);
-									console.error(error);
-
-									// Fire specific exception to Sentry/Raven
-									Raven.captureException(JSON.stringify(error), {
-										tags: {
-											pp_stage: 'onAuthorizeValidationCatch'
-										}
-									});
-								});
-						});
-					},
-					onError: data => {
-						this.setUpdating(false);
-						console.error(data);
-					},
-					onCancel: () => {
-						this.setUpdating(false);
-					},
-					style: {
-						color: 'blue',
-						shape: 'rect',
-						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
-						fundingicons: true
+			braintree.client.create(
+				{ authorization: 'CLIENT_AUTHORIZATION' },
+				(clientErr, clientInstance) => {
+					if (clientErr) {
+						// Handle error in client creation
+						return;
 					}
-				},
-				'#paypal-button'
+
+					const options = {
+						client: clientInstance,
+						styles: {
+							'input': { 'font-size': '14px' }, // eslint-disable-line
+							'input.invalid': { 'color': 'red' }, // eslint-disable-line
+							'input.valid': { 'color': 'green' } // eslint-disable-line
+						},
+						fields: {
+							number: {
+								selector: '#card-number',
+								placeholder: '4111 1111 1111 1111'
+							},
+							cvv: {
+								selector: '#cvv',
+								placeholder: '123'
+							},
+							expirationDate: {
+								selector: '#expiration-date',
+								placeholder: '10/2019'
+							}
+						}
+					};
+
+					braintree.hostedFields.create(
+						options,
+						(hostedFieldsErr, hostedFieldsInstance) => {
+							if (hostedFieldsErr) {
+								console.error(hostedFieldsErr);
+								console.error(hostedFieldsInstance);
+								return false;
+							}
+						}
+					);
+				}
 			);
-		},
-		setUpdating(state) {
-			this.loading = state;
-			this.$emit('updating-totals', state);
-		},
+		}
 	}
 };
 </script>
 
 <style lang="scss">
-@import 'settings';
+@import "settings";
 
-.paypal-holder {
-	display: block;
-	text-align: center;
+.braintree-holder {
+  display: block;
+  text-align: center;
 
-	@include breakpoint(medium) {
-		text-align: right;
-	}
-
-	#paypal-button {
-		margin-bottom: $list-side-margin;
-	}
-
-	.pp-tagline {
-		color: $kiva-text-light;
-		text-align: center;
-
-		@include breakpoint(medium) {
-			text-align: right;
-		}
-	}
+  @include breakpoint(medium) {
+    text-align: right;
+  }
 }
 </style>
