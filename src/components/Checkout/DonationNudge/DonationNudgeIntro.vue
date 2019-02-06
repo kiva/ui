@@ -1,14 +1,17 @@
 <template functional>
-	<div id="donation-nudge-intro">
+	<div
+		id="donation-nudge-intro"
+		:class="{'hide-header-on-mobile': props.hideHeaderOnMobile, 'no-description': !props.description}"
+	>
 		<div
 			id="nudge-donation-top-header"
 			class="impact-text"
-			:class="{'hide-header-on-mobile': props.hideHeaderOnMobile}"
 		>
 			{{ props.header }}
 		</div>
 		<div class="row" id="nudge-donation-top-content-row" v-if="props.description">
-			<div class="small-10 small-offset-1 columns" v-html="props.description"></div>
+			<div v-if="props.noPaddingDescription" class="nudge-donation-top-content" v-html="props.description"></div>
+			<div v-else class="small-10 small-offset-1 columns" v-html="props.description"></div>
 		</div>
 	</div>
 </template>
@@ -28,6 +31,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		noPaddingDescription: {
+			type: Boolean,
+			default: false,
+		},
 	},
 };
 </script>
@@ -36,7 +43,7 @@ export default {
 @import 'settings';
 
 #donation-nudge-intro {
-	margin-bottom: 1.4rem;
+	margin-bottom: 0.5rem;
 
 	.nudge-lightbox-row-padding {
 		padding-left: 2.5rem;
@@ -50,10 +57,6 @@ export default {
 		font-weight: 500;
 		color: #64B365;
 		line-height: 1.9rem;
-
-		&.hide-header-on-mobile {
-			display: none;
-		}
 
 		@include breakpoint(medium) {
 			font-size: 1.6rem;
@@ -69,13 +72,37 @@ export default {
 	#nudge-donation-top-content-row {
 		@extend .nudge-lightbox-row-padding;
 
-		margin: 1.4rem auto 0 auto;
+		margin: 0.5rem auto 0 auto;
 		max-width: 47rem;
 		font-size: rem-calc(14);
 		line-height: rem-calc(24);
 
+		.nudge-donation-top-content {
+			width: 100%;
+		}
+
 		@include breakpoint(medium) {
 			font-size: 1rem;
+		}
+
+		@include breakpoint(large) {
+			margin: 1rem auto 0 auto;
+		}
+	}
+
+	&.hide-header-on-mobile {
+		#nudge-donation-top-header {
+			display: none;
+
+			@include breakpoint(large) {
+				display: block;
+			}
+		}
+
+		&.no-description {
+			@include breakpoint(medium down) {
+				margin-bottom: 0;
+			}
 		}
 	}
 }
