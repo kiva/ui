@@ -106,8 +106,9 @@
 								<braintree-checkout
 									v-if="showBraintree"
 									:amount="creditNeeded"
-									@refreshtotals="refreshtotals"
 									@updating-totals="setUpdatingTotals" />
+
+								<!-- @refreshtotals="refreshtotals" -->
 
 								<pay-pal-exp
 									v-if="showPayPal"
@@ -200,6 +201,7 @@ import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 
 export default {
 	components: {
@@ -217,6 +219,7 @@ export default {
 		KvIcon,
 		CheckoutHolidayPromo,
 		LYML,
+		BraintreeCheckout,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -249,7 +252,7 @@ export default {
 			teams: [],
 			holidayModeEnabled: false,
 			showLYML: true,
-			braintree: false,
+			// braintree: false,
 		};
 	},
 	apollo: {
