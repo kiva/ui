@@ -244,7 +244,7 @@ export default {
 			// Read assignment for Recently Viewed Loans EXP
 			const recentlyViewedEXP = this.apollo.readQuery({
 				query: experimentQuery,
-				variables: { id: 'recently_viewed_loans' }
+				variables: { id: 'recently_viewed_loan_row' }
 			});
 			this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
 			// if Recently Viewed Exp is active look for loans in local storage
@@ -295,8 +295,7 @@ export default {
 					// Pre-fetch the assigned version for lend increment button
 					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } }),
 					// Pre-fetch the assigned version for recently viewed loans
-					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loans' } }),
-
+					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
 					// experiment: image enhancement
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 				]);
