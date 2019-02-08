@@ -15,7 +15,7 @@ query {
 			key
 			value
 		}
-		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loans") {
+		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loan_row") {
 			key
 			value
 		}

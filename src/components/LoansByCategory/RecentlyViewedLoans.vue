@@ -8,7 +8,7 @@
 					:loan-channel="recentlyViewedCategory"
 					:items-in-basket="itemsInBasket"
 					:row-number="-1"
-					set-id="CASH-363-recently-viewed"
+					set-id="CASH-363-recently-viewed-update"
 					:is-logged-in="isLoggedIn"
 					:is-micro="isMicro"
 				/>
@@ -66,7 +66,7 @@ export default {
 		// Read assignment for Recently Viewed Loans EXP Setup Recently Viewed Loans
 		const recentlyViewedEXP = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'recently_viewed_loans' }
+			variables: { id: 'recently_viewed_loan_row' }
 		});
 		this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
 
@@ -107,7 +107,7 @@ export default {
 		if (recentLoanIds.length) {
 			this.$kvTrackEvent(
 				'Lending',
-				'EXP-CASH-348-Recently-Viewed-Loans',
+				'EXP-CASH-348-Recently-Viewed-Loans-Update',
 				this.showRecentlyViewed ? 'b' : 'a',
 				recentLoanIds.length
 			);
