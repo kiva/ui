@@ -29,10 +29,8 @@
 					:hide-header-on-mobile="!experimentalHeader"
 					:description="description"
 					:no-padding-description="true"
+					:mobile-image-url="mobileImageUrl"
 				/>
-				<div id="borrower-image-mobile-container" class="hide-for-large">
-					<img id="nudge-donation-borrower-image-mobile" :src="mobileImageUrl">
-				</div>
 				<donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
 					:percentage-rows= "percentageRows"
@@ -180,12 +178,6 @@ export default {
 			padding-top: 4.75rem;
 			text-align: left;
 			background: #F8F8F8;
-		}
-
-		#borrower-image-mobile-container {
-			@extend .nudge-lightbox-row-padding;
-
-			margin-bottom: 0.5rem;
 		}
 
 		#nudge-donation-top-boxes-wrapper {

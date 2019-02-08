@@ -9,6 +9,14 @@
 		>
 			{{ props.header }}
 		</div>
+		<div
+			v-if="props.mobileImageUrl"
+			id="borrower-image-mobile-container"
+			class="hide-for-large"
+			:class="{'has-description': props.description}"
+		>
+			<img id="nudge-donation-borrower-image-mobile" :src="props.mobileImageUrl">
+		</div>
 		<div class="row" id="nudge-donation-top-content-row" v-if="props.description">
 			<div v-if="props.noPaddingDescription" class="nudge-donation-top-content" v-html="props.description"></div>
 			<div v-else class="small-10 small-offset-1 columns" v-html="props.description"></div>
@@ -34,6 +42,10 @@ export default {
 		noPaddingDescription: {
 			type: Boolean,
 			default: false,
+		},
+		mobileImageUrl: {
+			type: String,
+			default: '',
 		},
 	},
 };
@@ -66,6 +78,16 @@ export default {
 			&.hide-header-on-mobile {
 				display: block;
 			}
+		}
+	}
+
+	#borrower-image-mobile-container {
+		@extend .nudge-lightbox-row-padding;
+
+		margin-bottom: 0.5rem;
+
+		.has-description {
+			margin-bottom: 1rem;
 		}
 	}
 
