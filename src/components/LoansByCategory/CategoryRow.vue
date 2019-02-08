@@ -5,7 +5,7 @@
 				<h2 class="category-name">
 					<router-link
 						class="view-all-link"
-						:to="uiPageUrl"
+						:to="cleanUrl"
 						:title="`View all ${cleanName} loans`"
 						v-kv-track-event="[
 							'Lending',
@@ -138,22 +138,13 @@ export default {
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
-			let cleanUrl = String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
-
-			if (
-				this.url.includes('loans-with-research-backed-impact') === true ||
-				this.url.includes('recently-viewed-loans') === true ||
-				this.url === '') {
-				cleanUrl = '#';
-			}
-
-			return cleanUrl;
-		},
-		uiPageUrl() {
+			// grab last segment of url
 			const lastPathIndex = this.url.lastIndexOf('/');
 			const urlSegment = this.url.slice(lastPathIndex);
-			let cleanUrl = String(urlSegment).replace('new-countries-for-you', 'countries-not-lent');
+			// ensure string type
+			let cleanUrl = String(urlSegment);
 
+			// empty url value for certain urls and if no url is passed in
 			if (
 				this.url.includes('loans-with-research-backed-impact') === true ||
 				this.url.includes('recently-viewed-loans') === true ||
@@ -161,6 +152,12 @@ export default {
 				cleanUrl = '';
 			}
 
+			// retain countries not lent to location in /lend
+			if (this.url.includes('new-countries-for-you')) {
+				return '/lend/countries-not-lent';
+			}
+
+			// otherwise transform to use /lend-by-category as root path
 			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
