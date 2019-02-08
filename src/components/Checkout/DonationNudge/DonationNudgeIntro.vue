@@ -86,7 +86,7 @@ export default {
 
 		margin-bottom: 0.5rem;
 
-		.has-description {
+		&.has-description {
 			margin-bottom: 1rem;
 		}
 	}
