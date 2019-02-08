@@ -1,7 +1,7 @@
 <template>
 	<div class="view-toggle">
 		<router-link
-			to="/lend-by-category"
+			:to="browseUrl"
 			class="browse-box"
 			v-kv-track-event="['Lending', 'click-filter-toggle', 'Explore']">
 			<span>
@@ -12,7 +12,7 @@
 			</span>
 		</router-link>
 		<router-link
-			to="/lend"
+			:to="filterUrl"
 			class="filter-box"
 			v-kv-track-event="['Lending', 'click-filter-toggle', 'Filter']">
 			<span class="divider">
@@ -32,6 +32,16 @@ export default {
 	components: {
 		KvIcon,
 	},
+	props: {
+		browseUrl: {
+			type: String,
+			default: '/lend-by-category'
+		},
+		filterUrl: {
+			type: String,
+			default: '/lend'
+		},
+	}
 };
 </script>
 

@@ -109,7 +109,7 @@ export default {
 			offset: 0,
 			limit: loansPerPage,
 			filters: { },
-			targedLoanChannelID: null,
+			targetedLoanChannelID: null,
 			loanChannel: () => {},
 			// loanChannel: () => [{
 			// 	name: '',
@@ -136,7 +136,7 @@ export default {
 		},
 		loanQueryVars() {
 			return {
-				ids: [this.targedLoanChannelID],
+				ids: [this.targetedLoanChannelID],
 				limit: this.limit,
 				offset: this.offset
 			};
@@ -148,9 +148,9 @@ export default {
 				query: loanChannelPageQuery
 			}).then(({ data }) => {
 				// filter routes on route.param.category to get current path
-				const targedLoanChannelURL = _get(args, 'route.params.category');
+				const targetedLoanChannelURL = _get(args, 'route.params.category');
 				// isolate targeted loan channel id
-				const targedLoanChannelID = getTargetedChannel(targedLoanChannelURL, data);
+				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
 				// extract query
 				const pageQuery = _get(args, 'route.query');
 				// query our targeted loan channel
@@ -158,7 +158,7 @@ export default {
 					query: loanChannelQuery,
 					variables: _merge(
 						{
-							ids: [targedLoanChannelID],
+							ids: [targetedLoanChannelID],
 							limit: loansPerPage
 						},
 						fromUrlParams(pageQuery)
@@ -192,9 +192,9 @@ export default {
 			query: loanChannelPageQuery
 		});
 		// filter routes on param.category to get current path
-		const targedLoanChannelURL = _get(this.$route, 'params.category');
+		const targetedLoanChannelURL = _get(this.$route, 'params.category');
 		// isolate targeted loan channel id
-		this.targedLoanChannelID = getTargetedChannel(targedLoanChannelURL, allChannelsData);
+		this.targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, allChannelsData);
 		// extract query
 		this.pageQuery = _get(this.$route, 'query');
 		// Read the page data from the cache
@@ -266,10 +266,11 @@ export default {
 			},
 			immediate: true,
 			deep: true,
-		}
+		},
 	},
 	methods: {
 		pageChange(number) {
+			console.log('pageChange method');
 			this.loading = true;
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
