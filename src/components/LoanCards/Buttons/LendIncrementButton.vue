@@ -4,7 +4,6 @@
 			<select
 				class="lend-increment-dropdown"
 				v-model="selectedOption"
-				@change="updateLoanReservation()"
 			>
 				<option
 					v-for="price in prices"
@@ -102,7 +101,7 @@ export default {
 	justify-content: space-between;
 
 	.lend-increment-dropdown-container {
-		width: 5rem;
+		width: 6rem;
 
 		.lend-increment-dropdown {
 			margin: 0;
@@ -111,6 +110,14 @@ export default {
 			border: 1px solid #333;
 			border-bottom: none;
 			color: #484848;
+		}
+
+		@include breakpoint(340px down) {
+			width: 4.75rem;
+		}
+
+		@include breakpoint(medium) {
+			width: 5rem;
 		}
 	}
 
