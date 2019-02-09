@@ -2,7 +2,7 @@
 	<www-page class="loan-channel-page category-page">
 		<div class="row">
 			<div class="small-12 columns heading-region">
-				<view-toggle />
+				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
 				<p class="small-text">
 					<router-link to="/lend-by-category">All Loans</router-link> >
 					<span class="show-for-large">{{ loanChannel.name }}</span>
@@ -35,14 +35,13 @@
 import _get from 'lodash/get';
 import _invokeMap from 'lodash/invokeMap';
 import _isEqual from 'lodash/isEqual';
-// import _map from 'lodash/map';
+import _map from 'lodash/map';
 import _filter from 'lodash/filter';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-// import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -111,11 +110,6 @@ export default {
 			filters: { },
 			targetedLoanChannelID: null,
 			loanChannel: () => {},
-			// loanChannel: () => [{
-			// 	name: '',
-			// 	description: '',
-			// 	loans: []
-			// }],
 			isVisitor: true,
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
@@ -140,6 +134,10 @@ export default {
 				limit: this.limit,
 				offset: this.offset
 			};
+		},
+		filterUrl() {
+			// initial release sends us back to /lend
+			return `/lend/${this.$route.params.category || ''}`;
 		}
 	},
 	apollo: {
@@ -164,19 +162,7 @@ export default {
 						fromUrlParams(pageQuery)
 					)
 				});
-				// return client.query({
-				// 	query: loanCardQuery,
-				// 	variables: {
-				// 		offset: this.offset,
-				// 		limit: this.loansPerPage,
-				// 		filters: this.filters
-				// 	},
-				// 	preFetchVariables({ route }) {
-				// 		return _merge({ limit: loansPerPage }, fromUrlParams(route.query));
-				// 	}
-				// });
-			}).then(channelData => {
-				console.log(channelData);
+			}).then(() => {
 				// TODO: REMOVE Once Lend Increment Button EXP ENDS
 				// Pre-fetch the setting for lend increment button
 				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
@@ -205,38 +191,11 @@ export default {
 				fromUrlParams(this.pageQuery)
 			)
 		});
-		// const baseData = this.apollo.readQuery({
-		// 	query: loanChannelQuery,
-		// 	variables: this.loanQueryVars
-		// });
 
-		console.log(baseData);
-
-		// this.isLoggedIn = !!_get(baseData, 'my');
-		// this.isVisitor = !_get(baseData, 'my.userAccount.id');
-		// this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
-
-		// if (loading) {
-		// 	this.loading = true;
-		// } else {
-		// this.totalCount = _get(baseData, 'lend.loans.totalCount');
-		// this.loans = _get(baseData, 'lend.loans.values');
+		this.isLoggedIn = !!_get(baseData, 'my');
+		this.isVisitor = !_get(baseData, 'my.userAccount.id');
+		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
-		// this.loans = _get(baseData, 'lend.loanChannelsById[0].loans.values');
-		// this.totalCount = this.loans.length;
-
-		this.loading = false;
-		// }
-
-		// Create an observer for changes to the categories (and their loans)
-		// this.apollo.watchQuery({
-		// 	query: loanCardQuery,
-		// 	variables: {
-		// 		offset: this.offset,
-		// 		limit: this.limit,
-		// 		filters: this.filters
-		// 	},
-		// });
 
 		// this.apollo.watchQuery({
 		// 	query: loanChannelQuery,
@@ -270,7 +229,6 @@ export default {
 	},
 	methods: {
 		pageChange(number) {
-			console.log('pageChange method');
 			this.loading = true;
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
@@ -302,12 +260,6 @@ export default {
 @import 'settings';
 
 .loan-channel-page {
-	// main {
-	// 	padding-top: 2rem;
-	// 	padding-bottom: 2rem;
-	// 	background-color: $kiva-bg-lightgray;
-	// }
-
 	.loan-card-group {
 		position: relative;
 	}
@@ -332,24 +284,10 @@ export default {
 		}
 	}
 
-	// h1 {
-	// 	margin: 0;
-	// }
-
-	// p {
-	// 	margin-top: 0.75rem;
-	// }
-
 	@include breakpoint(large) {
 		p {
 			max-width: 75%;
 		}
 	}
-
-	// // Customize styles for touch screens ie. No Arrows
-	// @media (hover: none) {
-	// 	margin: 1rem 0;
-	// 	padding: 0 1rem;
-	// }
 }
 </style>

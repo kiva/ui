@@ -4,7 +4,6 @@ query (
 	$ids: [Int],
 	$limit: Int = 12,
 	$offset: Int = 0,
-	$filters: LoanSearchFiltersInput,
 	$unique: Boolean = false,
 	$excludeIds: [Int],
 	$imgDefaultSize: String = "w480h360",
@@ -19,7 +18,6 @@ query (
 			loans(
 				limit: $limit,
 				offset: $offset,
-				filters: $filters,
 				unique: $unique,
 				exclude_ids: $excludeIds
 			) {
