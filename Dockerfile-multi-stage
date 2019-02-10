@@ -1,0 +1,20 @@
+# build stage
+FROM node:8-alpine as build-stage
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --no-save
+COPY . .
+RUN npm run build
+
+# run stage
+FROM node:8-alpine as run-stage
+# Change working directory
+WORKDIR /app
+# Bring over app files
+COPY --from=0 /app .
+# Install PROD dependencies only
+RUN npm install --production
+# Expose API port to the outside
+EXPOSE 8888
+# Launch application
+CMD ["npm","run","start","--","--config=local"]
