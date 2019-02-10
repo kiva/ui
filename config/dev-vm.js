@@ -16,7 +16,7 @@ module.exports = merge(base, {
 		gaId: 'UA-11686022-7',
 		enableSnowplow: true,
 		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
-		enableFB: true,
+		enableFB: false,
 		fbApplicationId: '263964058630',
 		fbPixelId: '108245819986414',
 		fbOgNameSpace: 'vm-kiva',
@@ -39,7 +39,7 @@ module.exports = merge(base, {
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
 		sessionUri: 'https://dev-vm-01.kiva.org/start-ui-session',
-		memcachedEnabled: true,
+		memcachedEnabled: false,
 		memcachedServers: 'localhost:11211',
 	}
 })
