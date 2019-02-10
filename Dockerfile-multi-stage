@@ -1,5 +1,6 @@
 # build stage
 FROM node:8-alpine as build-stage
+RUN apk add --no-cache git && git --version
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --no-save

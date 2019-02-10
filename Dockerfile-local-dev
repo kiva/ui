@@ -1,0 +1,14 @@
+# Run in dev mode
+FROM node:8.11 as ui-dev
+# FROM node:8-alpine as ui-dev
+RUN apk add --no-cache git && git --version
+# Copy source code to container
+COPY . /app
+# Change working directory
+WORKDIR /app
+# Install dependencies
+RUN npm install --no-save
+# Expose API port to the outside
+EXPOSE 8888
+# Launch application
+CMD ["npm","run","dev-docker","--","--config=dev-vm"]
