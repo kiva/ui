@@ -13,14 +13,6 @@
 							`View all ${cleanName} loans`]">
 						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
 					</router-link>
-					<!-- <a class="view-all-link"
-						:href="cleanUrl"
-						:title="`View all ${cleanName} loans`"
-						v-kv-track-event="[
-							'Lending',
-							'click-Category-View-All',
-							`View all ${cleanName} loans`]"
-					>{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span></a> -->
 				</h2>
 			</div>
 		</div>
@@ -138,6 +130,7 @@ export default {
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
+			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
 			// grab last segment of url
 			const lastPathIndex = this.url.lastIndexOf('/');
 			const urlSegment = this.url.slice(lastPathIndex);
