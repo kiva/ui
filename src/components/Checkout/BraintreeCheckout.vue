@@ -22,7 +22,7 @@ import numeral from 'numeral';
 import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
-// import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
 export default {
 	inject: ['apollo'],
@@ -86,6 +86,7 @@ export default {
 					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
 					commit: true,
 					payment: () => {
+						// eslint-disable-next-line
 						this.$kvTrackEvent('basket', 'Braintree Payment', 'Button Click');
 
 						return new braintree.Promise((resolve, reject) => {
@@ -106,7 +107,7 @@ export default {
 												reject(response);
 											} else {
 												const clientToken = _get(response, 'data.shop.getClientToken');
-												resolve(clentToken || response);
+												resolve(clientToken || response);
 											}
 										})
 											.catch(error => {
@@ -163,6 +164,7 @@ export default {
 													const errorCode = _get(braintreeResponse, 'errors[0].code');
 
 													const standardErrorCode = _get(`(Paypal error: ${errorCode})`);
+													// eslint-disable-next-line
 													const standardError = `There was an error processing your payment. Please try again. ${standardErrorCode}`;
 
 													this.$showTipMsg(standardError, 'error');
@@ -194,6 +196,7 @@ export default {
 												);
 												// redirect user to thanks with the Kiva transactionID
 												if (transactionId) {
+													// eslint-disable-next-line
 													this.$kvTrackEvent('basket', 'Braintree Payment', 'Success', transactionId);
 													this.redirectToThanks(transactionId);
 												}

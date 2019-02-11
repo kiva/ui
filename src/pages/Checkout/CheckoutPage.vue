@@ -164,7 +164,7 @@
 
 					<kv-button slot="controls"
 						class="smaller checkout-button"
-						v-kv-track-event="['basket','Redirect Continue Button','exit to legacy']"
+						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
