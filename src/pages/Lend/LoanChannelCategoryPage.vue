@@ -42,7 +42,7 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-import experimentSetting from '@/graphql/query/experimentSetting.graphql';
+// import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
@@ -164,9 +164,7 @@ export default {
 							fromUrlParams(pageQuery)
 						)
 					}),
-					// TODO: REMOVE Once Lend Increment Button EXP ENDS
-					// Pre-fetch the setting for lend increment button
-					client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } }),
+					// setting for lend increment button is prefetched in loanChannelPageQuery
 					// TODO: REMOVE Once Lend Increment Button EXP ENDS
 					// Pre-fetch the assigned version for lend increment button
 					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } })
@@ -192,24 +190,25 @@ export default {
 				fromUrlParams(this.pageQuery)
 			)
 		});
-
+		// Assign our initial view data
 		this.isLoggedIn = !!_get(baseData, 'my');
 		this.isVisitor = !_get(baseData, 'my.userAccount.id');
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
 
-		// this.apollo.watchQuery({
-		// 	query: loanChannelQuery,
-		// 	variables: _merge(
-		// 		this.loanQueryVars,
-		// 		fromUrlParams(this.pageQuery)
-		// 	),
-		// 	fetchPolicy: 'network-only',
-		// }).subscribe({
-		// 	next: ({ data }) => {
-		// 		this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
-		// 	},
-		// });
+		// Setup Reactivity for Loan Data + Basket Status
+		const observer = this.apollo.watchQuery({
+			query: loanChannelQuery,
+			variables: this.loanQueryVars,
+		});
+		this.$watch(this.loanQueryVars, vars => observer.setVariables(vars), { deep: true, immediate: true });
+		// Subscribe to the observer to see each result
+		observer.subscribe({
+			next: ({ data }) => {
+				this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
+				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			}
+		});
 	},
 	watch: {
 		loanQueryVars: {
@@ -230,7 +229,7 @@ export default {
 	},
 	methods: {
 		pageChange(number) {
-			this.loading = true;
+			// this.loading = true;
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
 			this.pushChangesToUrl();
