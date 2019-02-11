@@ -4,7 +4,7 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h3>2018</h3>
-				<div v-if="paper.year === 2018" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2018" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -12,7 +12,7 @@
 					</p>
 				</div>
 				<h3>2017</h3>
-				<div v-if="paper.year === 2017" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2017" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -20,7 +20,7 @@
 					</p>
 				</div>
 				<h3>2016</h3>
-				<div v-if="paper.year === 2016" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2016" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -28,7 +28,7 @@
 					</p>
 				</div>
 				<h3>2015</h3>
-				<div v-if="paper.year === 2015" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2015" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -36,7 +36,7 @@
 					</p>
 				</div>
 				<h3>2014</h3>
-				<div v-if="paper.year === 2014" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2014" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -44,7 +44,7 @@
 					</p>
 				</div>
 				<h3>2013</h3>
-				<div v-if="paper.year === 2013" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2013" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -52,7 +52,7 @@
 					</p>
 				</div>
 				<h3>2012</h3>
-				<div v-if="paper.year === 2012" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2012" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
@@ -60,7 +60,7 @@
 					</p>
 				</div>
 				<h3>2010</h3>
-				<div v-if="paper.year === 2010" v-for="paper in papers" :key="paper">
+				<div v-if="paper.year === 2010" v-for="(paper, index) in papers" :key="index">
 					<p>
 						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
 							<i>{{ paper.publication }}</i>
