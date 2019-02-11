@@ -18,6 +18,7 @@ export default [
 	{ path: '/build/data-snapshots', component: () => import('@/pages/Build/DataPage') },
 	{ path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
+	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
