@@ -1,0 +1,32 @@
+query {
+	my {
+		userAccount {
+			id
+		}
+	}
+	lend {
+		loanChannels(offset:0, limit:1000, popular: false, applyMinLoanCount: false) {
+			totalCount
+			values {
+				id
+        		url
+			}
+		}
+	}
+	shop {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+	general {
+		# TODO: REMOVE Once Lend Increment Button EXP ENDS
+		lendIncrementExp: setting(setting: "uiexp.lend_increment_button") {
+			key
+			value
+		}
+	}
+}

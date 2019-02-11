@@ -3,14 +3,16 @@
 		<div class="row title-row">
 			<div class="column small-12">
 				<h2 class="category-name">
-					<a class="view-all-link"
-						:href="cleanUrl"
+					<router-link
+						class="view-all-link"
+						:to="cleanUrl"
 						:title="`View all ${cleanName} loans`"
 						v-kv-track-event="[
 							'Lending',
 							'click-Category-View-All',
-							`View all ${cleanName} loans`]"
-					>{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span></a>
+							`View all ${cleanName} loans`]">
+						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
+					</router-link>
 				</h2>
 			</div>
 		</div>
@@ -128,16 +130,28 @@ export default {
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
-			let cleanUrl = String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
+			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
+			// grab last segment of url
+			const lastPathIndex = this.url.lastIndexOf('/');
+			const urlSegment = this.url.slice(lastPathIndex);
+			// ensure string type
+			let cleanUrl = String(urlSegment);
 
+			// empty url value for certain urls and if no url is passed in
 			if (
 				this.url.includes('loans-with-research-backed-impact') === true ||
 				this.url.includes('recently-viewed-loans') === true ||
 				this.url === '') {
-				cleanUrl = '#';
+				cleanUrl = '';
 			}
 
-			return cleanUrl;
+			// retain countries not lent to location in /lend
+			if (this.url.includes('new-countries-for-you')) {
+				return '/lend/countries-not-lent';
+			}
+
+			// otherwise transform to use /lend-by-category as root path
+			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
 			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
