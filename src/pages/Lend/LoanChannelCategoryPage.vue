@@ -201,35 +201,24 @@ export default {
 			query: loanChannelQuery,
 			variables: this.loanQueryVars,
 		});
-		this.$watch(this.loanQueryVars, vars => observer.setVariables(vars), { deep: true, immediate: true });
+		this.$watch(() => this.loanQueryVars, vars => {
+			observer.setVariables(vars);
+		}, { deep: true });
 		// Subscribe to the observer to see each result
 		observer.subscribe({
-			next: ({ data }) => {
-				this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
-				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			next: ({ data, loading }) => {
+				if (loading) {
+					this.loading = true;
+				} else {
+					this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
+					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+					this.loading = false;
+				}
 			}
 		});
 	},
-	watch: {
-		loanQueryVars: {
-			handler() {
-				this.loading = true;
-				this.apollo.query({
-					query: loanChannelQuery,
-					variables: this.loanQueryVars,
-					fetchPolicy: 'network-only',
-				}).then(({ data }) => {
-					this.loading = false;
-					this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
-				});
-			},
-			immediate: true,
-			deep: true,
-		},
-	},
 	methods: {
 		pageChange(number) {
-			// this.loading = true;
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
 			this.pushChangesToUrl();
