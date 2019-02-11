@@ -1,15 +1,6 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<div class="row heading-region-row">
-			<div class="heading-region column small-12">
-				<view-toggle />
-
-				<h1>Make a loan, <br class="hide-for-medium">change a life</h1>
-				<p class="page-subhead show-for-large">Each Kiva loan helps people build a better future for
-				themselves and their families.
-				</p>
-			</div>
-		</div>
+		<lend-header />
 
 		<FeaturedLoans
 			v-if="showFeaturedLoans"
@@ -85,6 +76,7 @@ import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import LendHeader from '@/pages/Lend/LendHeader';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -105,6 +97,7 @@ export default {
 		WwwPage,
 		ViewToggle,
 		LoadingOverlay,
+		LendHeader,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -391,39 +384,6 @@ export default {
 .lend-by-category-page {
 	main {
 		background-color: $kiva-bg-lightgray;
-	}
-
-	.heading-region-row {
-		max-width: 63.75rem;
-	}
-
-	.heading-region {
-		margin: 2rem 0;
-		padding: 0 2.5rem;
-
-		.view-toggle {
-			margin: 0.125rem 0 0 0.375rem;
-			float: right;
-			display: flex;
-
-			@include breakpoint(large) {
-				margin: 0.375rem 0 0.375rem 0.375rem;
-			}
-		}
-
-		h1 {
-			margin: 0;
-		}
-
-		p {
-			margin-top: 0.75rem;
-		}
-
-		// Customize styles for touch screens ie. No Arrows
-		@media (hover: none) {
-			margin: 1rem 0;
-			padding: 0 1rem;
-		}
 	}
 
 	.loan-category-row {
