@@ -151,25 +151,26 @@ export default {
 				const targetedLoanChannelID = getTargetedChannel(targetedLoanChannelURL, data);
 				// extract query
 				const pageQuery = _get(args, 'route.query');
-				// query our targeted loan channel
-				return client.query({
-					query: loanChannelQuery,
-					variables: _merge(
-						{
-							ids: [targetedLoanChannelID],
-							limit: loansPerPage
-						},
-						fromUrlParams(pageQuery)
-					)
-				});
-			}).then(() => {
-				// TODO: REMOVE Once Lend Increment Button EXP ENDS
-				// Pre-fetch the setting for lend increment button
-				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
-			}).then(() => {
-				// TODO: REMOVE Once Lend Increment Button EXP ENDS
-				// Pre-fetch the assigned version for lend increment button
-				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
+
+				return Promise.all([
+					// query our targeted loan channel
+					client.query({
+						query: loanChannelQuery,
+						variables: _merge(
+							{
+								ids: [targetedLoanChannelID],
+								limit: loansPerPage
+							},
+							fromUrlParams(pageQuery)
+						)
+					}),
+					// TODO: REMOVE Once Lend Increment Button EXP ENDS
+					// Pre-fetch the setting for lend increment button
+					client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } }),
+					// TODO: REMOVE Once Lend Increment Button EXP ENDS
+					// Pre-fetch the assigned version for lend increment button
+					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } })
+				]);
 			});
 		}
 	},
