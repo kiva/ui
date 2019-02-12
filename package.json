@@ -31,7 +31,7 @@
 		"apollo-link-batch-http": "^1.2.3",
 		"apollo-link-context": "^1.0.12",
 		"apollo-link-state": "^0.4.2",
-		"auth0-js": "^9.8.2",
+		"auth0-js": "^9.10.0",
 		"babel-polyfill": "^6.26.0",
 		"change-case": "^3.0.2",
 		"connect-memjs": "^0.2.1",
