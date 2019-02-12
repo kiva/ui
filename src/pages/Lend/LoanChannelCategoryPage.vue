@@ -42,7 +42,6 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-// import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
@@ -99,7 +98,7 @@ export default {
 		LoadingOverlay,
 		ViewToggle
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	metaInfo: {
 		title: 'Fundraising loans'
 	},
@@ -242,6 +241,13 @@ export default {
 		this.updateFromParams(to.query);
 		next();
 	},
+	beforeRouteLeave(to, from, next) {
+		if (typeof window !== 'undefined' && to.path.indexOf('/lend/') !== -1) {
+			// set cookie to signify redirect
+			this.cookieStore.set('redirectFromUi', true);
+		}
+		next();
+	}
 };
 </script>
 
