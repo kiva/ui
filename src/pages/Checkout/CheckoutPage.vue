@@ -108,13 +108,7 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<kv-button
-									v-else
-									type="submit"
-									class="smaller checkout-button"
-									v-kv-track-event="['payment.continueBtn']"
-									title="Checkout using your Kiva credit"
-									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								<kiva-credit-payment v-else class=" checkout-button" />
 							</div>
 						</div>
 
@@ -179,6 +173,7 @@ import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.grap
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
@@ -198,6 +193,7 @@ export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		KivaCreditPayment,
 		KvButton,
 		KvLightbox,
 		OrderTotals,
@@ -377,42 +373,6 @@ export default {
 						this.refreshTotals();
 					}
 					this.setUpdatingTotals(false);
-				}).catch(errorResponse => {
-					this.setUpdatingTotals(false);
-					console.error(errorResponse);
-				});
-		},
-		validateCreditBasket() {
-			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
-			this.setUpdatingTotals(true);
-			this.validateBasket()
-				.then(validationStatus => {
-					if (validationStatus === true) {
-						// succesful validation
-						this.checkoutCreditBasket();
-					} else {
-						// validation failed
-						this.setUpdatingTotals(false);
-						this.showCheckoutError(validationStatus);
-						this.refreshTotals();
-					}
-				}).catch(errorResponse => {
-					this.setUpdatingTotals(false);
-					console.error(errorResponse);
-				});
-		},
-		checkoutCreditBasket() {
-			this.checkoutBasket()
-				.then(transactionResult => {
-					if (typeof transactionResult !== 'object') {
-						// succesful validation
-						this.$kvTrackEvent('basket', 'Kiva Checkout', 'Success', transactionResult);
-						this.redirectToThanks(transactionResult);
-					} else {
-						// checkout failed
-						this.setUpdatingTotals(false);
-						this.showCheckoutError(transactionResult);
-					}
 				}).catch(errorResponse => {
 					this.setUpdatingTotals(false);
 					console.error(errorResponse);
