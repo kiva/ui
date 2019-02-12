@@ -73,6 +73,10 @@ export default {
 	metaInfo: {
 		title: 'Lend Filter'
 	},
+	created() {
+		const itemsInBasketResults = this.apollo.readQuery({ query: itemsInBasketQuery });
+		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
+	},
 	mounted() {
 		// initialize searchClient + components on mount
 		// TODO: update initialization once vue-instantsearch V2 supports SSR
@@ -103,18 +107,12 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: itemsInBasketQuery,
-			}).then(({ data }) => {
-				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 			}).then(() => {
 				// TODO: REMOVE Once CASH-103: Lend Increment Button EXP ENDS
-				const cash103 = [
-					// Pre-fetch the setting for lend increment button
-					client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } }),
-					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } }),
-				];
-
-				return Promise.all(cash103);
+				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
+			}).then(() => {
+				// TODO: REMOVE Once CASH-103: Lend Increment Button EXP ENDS
+				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
 			});
 		}
 	},
