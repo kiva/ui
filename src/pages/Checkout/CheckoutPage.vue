@@ -108,7 +108,7 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<kiva-credit-payment class=" checkout-button">Complete order</kiva-credit-payment>
+								<kiva-credit-payment v-else class=" checkout-button" />
 							</div>
 						</div>
 
