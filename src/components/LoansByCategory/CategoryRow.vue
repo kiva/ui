@@ -45,6 +45,24 @@
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
+
+					<div class="column column-block is-in-category-row view-all-loans-category">
+						<router-link
+							:to="cleanUrl"
+							:title="`${viewAllLoansCategoryTitle}`"
+							v-kv-track-event="[
+								'Lending',
+								'click-View all',
+								`Loan card`]">
+
+							<div :class="loanCardTypeKebabCase">
+								<div class="link">
+									{{ viewAllLoansCategoryTitle }}
+								</div>
+							</div>
+						</router-link>
+					</div>
+
 				</div>
 			</div>
 			<span
@@ -58,6 +76,7 @@
 
 <script>
 import _get from 'lodash/get';
+import _kebabCase from 'lodash/kebabCase';
 import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
@@ -117,6 +136,9 @@ export default {
 		loanCardType() {
 			return this.isMicro ? 'GridMicroLoanCard' : 'GridLoanCard';
 		},
+		loanCardTypeKebabCase() {
+			return _kebabCase(this.loanCardType);
+		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
@@ -154,7 +176,7 @@ export default {
 			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
-			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
 		},
 		throttledResize() {
 			return _throttle(this.saveWindowWidth, 100);
@@ -183,6 +205,9 @@ export default {
 
 			return isVisible;
 		},
+		viewAllLoansCategoryTitle() {
+			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
+		}
 	},
 	watch: {
 		loanChannel: {
@@ -344,6 +369,39 @@ a.view-all-link {
 
 	.cards-holder {
 		padding-left: 1rem;
+	}
+}
+
+// view all loans category card
+.view-all-loans-category {
+	.grid-loan-card {
+		background-color: $very-light-gray;
+		border: 1px solid $kiva-stroke-gray;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: auto;
+		padding: rem-calc(50);
+		width: rem-calc(280);
+
+		&:hover {
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.grid-micro-loan-card {
+		@extend .grid-loan-card;
+
+		padding: rem-calc(15);
+	}
+
+	.link {
+		align-items: center;
+		display: flex;
+		font-weight: 400;
+		height: 100%;
+		justify-content: center;
+		text-align: center;
 	}
 }
 </style>
