@@ -3,69 +3,15 @@
 		<developer-secondary-menu slot="secondary" />
 		<div class="row page-content">
 			<div class="small-12 columns">
-				<h3>2018</h3>
-				<div v-if="paper.year === 2018" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2017</h3>
-				<div v-if="paper.year === 2017" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2016</h3>
-				<div v-if="paper.year === 2016" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2015</h3>
-				<div v-if="paper.year === 2015" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2014</h3>
-				<div v-if="paper.year === 2014" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2013</h3>
-				<div v-if="paper.year === 2013" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2012</h3>
-				<div v-if="paper.year === 2012" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
-				</div>
-				<h3>2010</h3>
-				<div v-if="paper.year === 2010" v-for="(paper, index) in papers" :key="index">
-					<p>
-						<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
-							<i>{{ paper.publication }}</i>
-						</a>
-					</p>
+				<div v-for="year in years" :key="year">
+					<h3>{{ year }}</h3>
+					<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
+						<p>
+							<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
+								<i>{{ paper.publication }}</i>
+							</a>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -86,6 +32,7 @@ export default {
 	},
 	data() {
 		return {
+			years: [2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
 				{
 					year: 2018,
@@ -224,6 +171,13 @@ export default {
 					/* eslint-disable max-len */
 					url: 'https://deepblue.lib.umich.edu/bitstream/handle/2027.42/93941/roywchen_1.pdf?sequence=1'
 					/* eslint-enable max-len */
+				},
+				{
+					year: 2011,
+					author: 'Galak, Jeff et al',
+					title: 'Micro-Finance Decision Making: A Field Study of Prosocial Lending',
+					publication: 'Journal of Marketing Research',
+					url: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1634949'
 				},
 				{
 					year: 2010,
