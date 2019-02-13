@@ -12,6 +12,8 @@
 						:retina-image-url="loan.image.retina"
 						:standard-image-url="loan.image.default"
 						:is-visitor="true"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+						:loan-image-hash="loan.image.hash"
 
 						@track-loan-card-interaction="trackInteraction"
 					/>
@@ -128,6 +130,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {};
@@ -163,7 +169,7 @@ export default {
 				return `Only ${mins} minutes left! `;
 			}
 			return 'Expiring now!';
-		}
+		},
 	},
 	methods: {
 		trackInteraction(args) {

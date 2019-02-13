@@ -10,6 +10,7 @@
 				:standard-image-url="loan.image.default"
 				:is-visitor="isVisitor"
 				v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
+				:open-in-new-tab="true"
 			/>
 			<div class="minimal-loan-card-data-wrap">
 				<p

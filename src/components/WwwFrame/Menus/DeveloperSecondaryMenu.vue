@@ -29,8 +29,8 @@ export default {
 					routerLink: '/build/data-snapshots',
 				},
 				{
-					name: 'Code of Conduct',
-					routerLink: '/build/code-of-conduct',
+					name: 'Research',
+					routerLink: '/build/research',
 				},
 				{
 					name: 'API',
@@ -39,6 +39,10 @@ export default {
 				{
 					name: 'My Apps',
 					url: '/build/apps',
+				},
+				{
+					name: 'Code of Conduct',
+					routerLink: '/build/code-of-conduct',
 				},
 				{
 					name: 'Terms of Service',

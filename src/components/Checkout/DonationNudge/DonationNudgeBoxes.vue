@@ -97,7 +97,7 @@
 					:key="percentage"
 					class="row nudge-box-row"
 				>
-					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
+					<div class="small-12 columns nudge-box-column nudge-box-column-appeal">
 						<label class="nudge-box-radio-label">
 							<input
 								type="radio"
@@ -106,18 +106,16 @@
 								:value="percentage"
 								v-model="selectedDonationRadio"
 							>
-							{{ appeal }}
+							<!-- eslint-disable-next-line max-len -->
+							<span class="nudge-box-radio-label-amount">${{ getDonationByPercent(percentage) }}</span> — {{ appeal }}
 						</label>
-					</div>
-					<div class="small-3 columns nudge-box-column nudge-box-column-amount">
-						${{ getDonationByPercent(percentage) }}
 					</div>
 				</div>
 				<div
 					v-if="hasCustomDonation"
 					class="row nudge-box-row"
 				>
-					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
+					<div class="small-8 columns nudge-box-column nudge-box-column-appeal">
 						<label class="nudge-box-radio-label">
 							<input
 								type="radio"
@@ -129,7 +127,7 @@
 							You decide — enter custom amount
 						</label>
 					</div>
-					<div class="small-3 columns nudge-box-column nudge-box-column-amount">
+					<div class="small-4 columns nudge-box-column nudge-box-column-amount">
 						<input
 							type="text"
 							ref="customDonationInputDesktopRadio"
@@ -144,7 +142,7 @@
 				<div
 					class="row nudge-box-row"
 				>
-					<div class="small-9 columns nudge-box-column nudge-box-column-appeal">
+					<div class="small-12 columns nudge-box-column nudge-box-column-appeal">
 						<label class="nudge-box-radio-label">
 							<input
 								type="radio"
@@ -163,7 +161,7 @@
 				>
 					Update Donation
 				</kv-button>
-				<div>Your Donation is eligible for a tax deduction if you live in the U.S.</div>
+				<div class="nudge-box-tax-deduction">Your Donation is eligible for a tax deduction if you live in the U.S.</div>
 			</div>
 		</div>
 		<div class="hide-for-large nudge-boxes-mobile">
@@ -177,7 +175,7 @@
 					<div class="small-7 columns nudge-box-column nudge-box-column-appeal">
 						{{ appeal }}
 					</div>
-					<div class="small-4 small-offset-1 columns nudge-box-column nudge-box-column-button">
+					<div class="small-5 columns nudge-box-column nudge-box-column-button">
 						<kv-button
 							class="smallest nudge-box-button"
 						>
@@ -191,20 +189,26 @@
 				class="nudge-box-wrapper nudge-box-wrapper-mobile nudge-box-wrapper-mobile-custom-donation"
 			>
 				<div>You decide — enter custom amount</div>
-				<input
-					type="text"
-					ref="customDonationInputMobile"
-					name="customDonationInputTextMobile"
-					maxlength="10"
-					class="nudge-box-input nudge-box-input-mobile"
-					@blur="validateInputMobile"
-				>
-				<kv-button
-					class="smallest nudge-box-button"
-					@click.native="setCustomDonationAndClose"
-				>
-					Update Donation
-				</kv-button>
+				<div class="row nudge-box-row">
+					<div class="small-7 columns nudge-box-column nudge-box-column-appeal">
+						<input
+							type="text"
+							ref="customDonationInputMobile"
+							name="customDonationInputTextMobile"
+							maxlength="10"
+							class="nudge-box-input nudge-box-input-mobile"
+							@blur="validateInputMobile"
+						>
+					</div>
+					<div class="small-5 columns nudge-box-column nudge-box-column-button">
+						<kv-button
+							class="smallest nudge-box-button"
+							@click.native="setCustomDonationAndClose"
+						>
+							Apply
+						</kv-button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -377,6 +381,14 @@ export default {
 					margin-bottom: rem-calc(2);
 				}
 
+				.nudge-box-radio-label {
+					color: #484848;
+				}
+
+				.nudge-box-radio-label-amount {
+					font-weight: 500;
+				}
+
 				.nudge-box-column-amount {
 					font-weight: 500;
 					font-size: rem-calc(17);
@@ -399,6 +411,11 @@ export default {
 				}
 			}
 
+			.nudge-box-tax-deduction {
+				font-size: rem-calc(14);
+				color: #808080;
+			}
+
 			.nudge-box-button {
 				margin-top: rem-calc(14);
 				margin-bottom: rem-calc(30);
@@ -412,19 +429,21 @@ export default {
 		.nudge-box-wrapper {
 			@extend .nudge-box-shared;
 
-			margin-bottom: 1rem;
-			padding: 1rem rem-calc(14);
-			border: $nudge-box-border;
+			padding: 1.25rem rem-calc(14);
+			border-bottom: $nudge-box-border;
 
 			&.nudge-box-wrapper-mobile-custom-donation {
 				display: flex;
 				flex-direction: column;
-				align-items: center;
-				text-align: center;
 				cursor: initial;
 
 				input {
-					text-align: center;
+					height: rem-calc(34);
+					margin-bottom: rem-calc(-2);
+
+					@include breakpoint(medium) {
+						height: rem-calc(48);
+					}
 				}
 			}
 
@@ -443,6 +462,11 @@ export default {
 
 					.nudge-box-button {
 						margin-bottom: 0;
+						width: rem-calc(80);
+
+						@include breakpoint(medium) {
+							width: rem-calc(116);
+						}
 					}
 				}
 			}

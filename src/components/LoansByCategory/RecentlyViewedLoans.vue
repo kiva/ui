@@ -8,7 +8,7 @@
 					:loan-channel="recentlyViewedCategory"
 					:items-in-basket="itemsInBasket"
 					:row-number="-1"
-					set-id="CASH-363-recently-viewed"
+					set-id="CASH-363-recently-viewed-update"
 					:is-logged-in="isLoggedIn"
 					:is-micro="isMicro"
 				/>
@@ -66,22 +66,21 @@ export default {
 		// Read assignment for Recently Viewed Loans EXP Setup Recently Viewed Loans
 		const recentlyViewedEXP = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'recently_viewed_loans' }
+			variables: { id: 'recently_viewed_loan_row' }
 		});
 		this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
 
 		let recentLoanIds = [];
+		// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
+		const recentlyViewed = WebStorage('recentlyViewedLoans');
+		// decode, parse then set recently viewed loan data
+		try {
+			recentLoanIds = JSON.parse(atob(recentlyViewed));
+		} catch (e) {
+			// no-op
+		}
 
 		if (this.showRecentlyViewed) {
-			// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
-			const recentlyViewed = WebStorage('recentlyViewedLoans');
-			// decode, parse then set recently viewed loan data
-			try {
-				recentLoanIds = JSON.parse(atob(recentlyViewed));
-			} catch (e) {
-				// no-op
-			}
-
 			if (recentLoanIds.length) {
 				// query our custom loan set
 				this.apollo.query({
@@ -104,12 +103,15 @@ export default {
 			this.zeroRecentLoans = true;
 		}
 		// Track Assignment + Number of Loans
-		this.$kvTrackEvent(
-			'Lending',
-			'EXP-CASH-348-Recently-Viewed-Loans',
-			this.showRecentlyViewed ? 'b' : 'a',
-			recentLoanIds.length
-		);
+		// > Only fire if there are recent loans available to show.
+		if (recentLoanIds.length) {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-348-Recently-Viewed-Loans-Update',
+				this.showRecentlyViewed ? 'b' : 'a',
+				recentLoanIds.length
+			);
+		}
 	},
 };
 </script>
@@ -132,7 +134,7 @@ export default {
 	overflow: hidden;
 	display: block;
 	position: relative;
-	margin: 0 auto 2rem;
+	margin: 0 auto 0;
 }
 
 .recent-loans-loaded {
@@ -141,6 +143,7 @@ export default {
 }
 
 .no-recent-loans {
+	margin: 0;
 	min-height: 0;
 	max-height: 0;
 }

@@ -15,7 +15,7 @@ import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
-import ReadMoreButton from './ReadMoreButton';
+import LoanFundedText from './LoanFundedText';
 
 export default {
 	inject: ['apollo'],
@@ -51,7 +51,7 @@ export default {
 				return LendAgainButton;
 			}
 			if (this.isFunded) {
-				return ReadMoreButton;
+				return LoanFundedText;
 			}
 			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
 		},

@@ -31,6 +31,7 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
 					<GridLoanCard
@@ -44,6 +45,7 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
 					<GridLoanCard
@@ -57,6 +59,7 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 				</div>
 			</div>
@@ -100,6 +103,10 @@ export default {
 		isLoggedIn: {
 			type: Boolean,
 			default: false
+		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
 		},
 	},
 	data() {
@@ -211,7 +218,7 @@ $row-max-width: 63.75rem;
 }
 
 .section-name {
-	font-weight: $global-weight-bold;
+	font-weight: $global-weight-highlight;
 	margin: 0 1.875rem;
 	margin-bottom: 1rem;
 
@@ -237,7 +244,7 @@ $row-max-width: 63.75rem;
 	margin: 0;
 	text-align: center;
 	height: 100%;
-	z-index: 200;
+	z-index: 20;
 	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
@@ -268,7 +275,7 @@ $row-max-width: 63.75rem;
 .featured-cards-display-window {
 	overflow: hidden;
 	width: 100%;
-	z-index: 100;
+	z-index: 10;
 }
 
 .featured-cards-holder {

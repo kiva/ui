@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import _orderBy from 'lodash/orderBy';
 
 export default {
 	data() {
@@ -29,6 +30,8 @@ export default {
 		};
 	},
 	created() {
+		this.$router.options.routes = _orderBy(this.$router.options.routes, [route => route.path.toLowerCase()]);
+
 		this.$router.options.routes.forEach(route => {
 			if (route.status === 'dev') {
 				this.devRoutes.push({

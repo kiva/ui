@@ -3,14 +3,16 @@
 		<div class="row title-row">
 			<div class="column small-12">
 				<h2 class="category-name">
-					<a class="view-all-link"
-						:href="cleanUrl"
+					<router-link
+						class="view-all-link"
+						:to="cleanUrl"
 						:title="`View all ${cleanName} loans`"
 						v-kv-track-event="[
 							'Lending',
 							'click-Category-View-All',
-							`View all ${cleanName} loans`]"
-					>{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span></a>
+							`View all ${cleanName} loans`]">
+						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
+					</router-link>
 				</h2>
 			</div>
 		</div>
@@ -41,7 +43,26 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
+
+					<div class="column column-block is-in-category-row view-all-loans-category">
+						<router-link
+							:to="cleanUrl"
+							:title="`${viewAllLoansCategoryTitle}`"
+							v-kv-track-event="[
+								'Lending',
+								'click-View all',
+								`Loan card`]">
+
+							<div :class="loanCardTypeKebabCase">
+								<div class="link">
+									{{ viewAllLoansCategoryTitle }}
+								</div>
+							</div>
+						</router-link>
+					</div>
+
 				</div>
 			</div>
 			<span
@@ -55,6 +76,7 @@
 
 <script>
 import _get from 'lodash/get';
+import _kebabCase from 'lodash/kebabCase';
 import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
@@ -93,7 +115,11 @@ export default {
 		isMicro: {
 			type: Boolean,
 			default: false
-		}
+		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
@@ -110,6 +136,9 @@ export default {
 		loanCardType() {
 			return this.isMicro ? 'GridMicroLoanCard' : 'GridLoanCard';
 		},
+		loanCardTypeKebabCase() {
+			return _kebabCase(this.loanCardType);
+		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
@@ -123,19 +152,31 @@ export default {
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
-			let cleanUrl = String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
+			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
+			// grab last segment of url
+			const lastPathIndex = this.url.lastIndexOf('/');
+			const urlSegment = this.url.slice(lastPathIndex);
+			// ensure string type
+			let cleanUrl = String(urlSegment);
 
+			// empty url value for certain urls and if no url is passed in
 			if (
 				this.url.includes('loans-with-research-backed-impact') === true ||
 				this.url.includes('recently-viewed-loans') === true ||
 				this.url === '') {
-				cleanUrl = '#';
+				cleanUrl = '';
 			}
 
-			return cleanUrl;
+			// retain countries not lent to location in /lend
+			if (this.url.includes('new-countries-for-you')) {
+				return '/lend/countries-not-lent';
+			}
+
+			// otherwise transform to use /lend-by-category as root path
+			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
-			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
 		},
 		throttledResize() {
 			return _throttle(this.saveWindowWidth, 100);
@@ -164,6 +205,9 @@ export default {
 
 			return isVisible;
 		},
+		viewAllLoansCategoryTitle() {
+			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
+		}
 	},
 	watch: {
 		loanChannel: {
@@ -227,7 +271,7 @@ $row-max-width: 63.75rem;
 	margin: 0;
 	text-align: center;
 	height: 100%;
-	z-index: 200;
+	z-index: 20;
 	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
@@ -258,7 +302,7 @@ $row-max-width: 63.75rem;
 .cards-display-window {
 	overflow-x: hidden;
 	width: 100%;
-	z-index: 100;
+	z-index: 10;
 }
 
 .cards-holder {
@@ -273,7 +317,7 @@ $row-max-width: 63.75rem;
 }
 
 .category-name {
-	font-weight: $global-weight-bold;
+	font-weight: $global-weight-highlight;
 	margin: 0 1.875rem;
 	margin-bottom: 0.5rem;
 
@@ -325,6 +369,39 @@ a.view-all-link {
 
 	.cards-holder {
 		padding-left: 1rem;
+	}
+}
+
+// view all loans category card
+.view-all-loans-category {
+	.grid-loan-card {
+		background-color: $very-light-gray;
+		border: 1px solid $kiva-stroke-gray;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: auto;
+		padding: rem-calc(50);
+		width: rem-calc(280);
+
+		&:hover {
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.grid-micro-loan-card {
+		@extend .grid-loan-card;
+
+		padding: rem-calc(15);
+	}
+
+	.link {
+		align-items: center;
+		display: flex;
+		font-weight: 400;
+		height: 100%;
+		justify-content: center;
+		text-align: center;
 	}
 }
 </style>

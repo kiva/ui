@@ -68,9 +68,10 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
+			:header="donationNudgeHeader()"
 			:experimental-header="donationNudgeExperimentalHeader"
-			:experimental-description="donationNudgeExperimentalDescription"
-			:loan-history-count="loanHistoryCount"
+			:description="donationNudgeDescription()"
+			:percentage-rows="donationNudgePercentageRows"
 			v-if="!donationNudgeBorrowerImageExperiment"
 		/>
 		<donation-nudge-lightbox-borrower-image
@@ -80,9 +81,10 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
+			:header="donationNudgeHeader()"
 			:experimental-header="donationNudgeExperimentalHeader"
-			:experimental-description="donationNudgeExperimentalDescription"
-			:loan-history-count="loanHistoryCount"
+			:description="donationNudgeDescription()"
+			:percentage-rows="donationNudgePercentageRows"
 			v-else
 		/>
 		<kv-lightbox
@@ -237,6 +239,26 @@ export default {
 				? 'How Kiva uses donations'
 				: 'Learn more';
 		},
+		donationNudgePercentageRows() {
+			const basePercentageRows = [
+				{
+					percentage: 15,
+					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
+					appealIsHorizontallyPadded: false,
+				},
+				{
+					percentage: 20,
+					appeal: 'Reach more people around the world!',
+					appealIsHorizontallyPadded: false,
+				},
+			];
+			const lowPercentage = [{
+				percentage: 10,
+				appeal: 'Cover some of Kiva\'s costs',
+				appealIsHorizontallyPadded: true,
+			}];
+			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
+		},
 	},
 	methods: {
 		updateDonationTo(amount) {
@@ -376,7 +398,22 @@ export default {
 		openNudgeLightbox() {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
-		}
+		},
+		donationNudgeHeader() {
+			const newLoanCount = this.loanHistoryCount + this.loanCount;
+			/* eslint-disable max-len */
+			return this.donationNudgeExperimentalHeader
+				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${newLoanCount} ${newLoanCount > 1 ? 'loans' : 'loan'} made on Kiva!`
+				: 'We rely on donations to reach the people who need it the most';
+			/* eslint-enable max-len */
+		},
+		donationNudgeDescription() {
+			/* eslint-disable max-len */
+			return this.donationNudgeExperimentalDescription
+				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?'
+				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
+			/* eslint-enable max-len */
+		},
 	}
 };
 </script>

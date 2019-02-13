@@ -4,11 +4,12 @@
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']"
 			class="borrower-image-link"
+			:target="linkTarget"
 		>
 
 			<img class="borrower-image"
-				:srcset = "retinaImageUrl + ' 2x'"
-				:src = "standardImageUrl"
+				:srcset = "formattedImageRetinaUrl + ' 2x'"
+				:src = "formattedImageStandardUrl"
 				:alt = "'photo of ' + name"
 
 				@click="$emit('track-loan-card-interaction', {
@@ -58,8 +59,44 @@ export default {
 		isFavorite: {
 			type: Boolean,
 			default: false
+		},
+		openInNewTab: {
+			type: Boolean,
+			default: false
+		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
+		loanImageHash: {
+			type: String,
+			default: ''
 		}
-	}
+	},
+
+	computed: {
+		formattedImageRetinaUrl() {
+			return this.formatImageUrl(this.retinaImageUrl, 'w_960,h_720,c_fill,g_faces');
+		},
+
+		formattedImageStandardUrl() {
+			return this.formatImageUrl(this.standardImageUrl, 'w_480,h_360,c_fill,g_faces');
+		},
+
+		linkTarget() {
+			return this.openInNewTab ? '_blank' : '_self';
+		}
+	},
+
+	methods: {
+		formatImageUrl(imageUrl, transformations) {
+			return (this.imageEnhancementExperimentVersion === 'variant-b' ? this.formatCloudinaryUrl(transformations) : imageUrl);  // eslint-disable-line
+		},
+
+		formatCloudinaryUrl(transformations) {
+			return `https://res.cloudinary.com/kiva/${transformations}/e_viesus_correct/e_sharpen:150/a_ignore,fl_progressive,q_auto:best/remote/${this.loanImageHash}.jpg`; // eslint-disable-line
+		},
+	},
 };
 </script>
 

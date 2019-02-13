@@ -83,8 +83,8 @@ export default {
 			// The index will likey be different based on context
 			algoliaIndex: this.algoliaConfig.fundraisingIndex, // defaultIndex
 			defaultSearch: 'Energy',
-			// Focus in on fundRaising Loans
-			defaultFilter: '', // No Need with new fundraising index 'status:fundRaising',
+			// Focus in on fundraising Loans
+			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
 			itemsInBasket: null
 		};
 	},

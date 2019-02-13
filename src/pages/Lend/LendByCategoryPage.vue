@@ -1,27 +1,21 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<div class="row heading-region-row">
-			<div class="heading-region column small-12">
-				<view-toggle />
-
-				<h1>Make a loan, <br class="hide-for-medium">change a life</h1>
-				<p class="page-subhead show-for-large">Each Kiva loan helps people build a better future for
-				themselves and their families.
-				</p>
-			</div>
-		</div>
+		<lend-header />
 
 		<FeaturedLoans
 			v-if="showFeaturedLoans"
 			ref="featured"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
 		<recently-viewed-loans
 			:is-micro="true"
 			:items-in-basket="itemsInBasket"
-			:is-logged-in="isLoggedIn" />
+			:is-logged-in="isLoggedIn"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		/>
 
 		<div>
 			<category-row
@@ -33,11 +27,17 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
+				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			/>
 		</div>
 
 		<div class="row pre-footer">
 			<div class="column small-12">
+				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
+					<loading-overlay id="updating-overlay" />
+					<h3 class="text-center">Loading more rows...</h3>
+				</div>
+
 				<h2 class="category-name"><router-link
 					:to="{ path: '/categories'}"
 					class="view-all-link">
@@ -75,6 +75,8 @@ import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import LendHeader from '@/pages/Lend/LendHeader';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -94,6 +96,8 @@ export default {
 		RecentlyViewedLoans,
 		WwwPage,
 		ViewToggle,
+		LoadingOverlay,
+		LendHeader,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -106,12 +110,14 @@ export default {
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
+			imageEnhancementExperimentVersion: '',
 			showFeaturedLoans: true,
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
 			showRecentlyViewed: false,
-			recentLoanIds: []
+			recentLoanIds: [],
+			rowLazyLoadComplete: false,
 		};
 	},
 	computed: {
@@ -129,7 +135,7 @@ export default {
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
-		},
+		}
 	},
 	methods: {
 		assemblePageViewData(categories) {
@@ -231,7 +237,7 @@ export default {
 			// Read assignment for Recently Viewed Loans EXP
 			const recentlyViewedEXP = this.apollo.readQuery({
 				query: experimentQuery,
-				variables: { id: 'recently_viewed_loans' }
+				variables: { id: 'recently_viewed_loan_row' }
 			});
 			this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
 			// if Recently Viewed Exp is active look for loans in local storage
@@ -259,7 +265,7 @@ export default {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				},
 			});
-		}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -282,7 +288,9 @@ export default {
 					// Pre-fetch the assigned version for lend increment button
 					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } }),
 					// Pre-fetch the assigned version for recently viewed loans
-					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loans' } }),
+					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
+					// experiment: image enhancement
+					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -338,11 +346,28 @@ export default {
 		} else if (lendIncrementExperimentVersionString === 'variant-b') {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'b');
 		}
+
+		// image enchancement experiment
+		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'image_enhancement' },
+		});
+
+		// eslint-disable-next-line max-len
+		this.imageEnhancementExperimentVersion = _get(imageEnchancementExperimentVersionArray, 'experiment.version') || null;
+
+		if (this.imageEnhancementExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
+		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
+		}
 	},
 	mounted() {
 		this.fetchRecentlyViewed();
 
 		this.fetchRemainingLoanChannels().then(() => {
+			this.rowLazyLoadComplete = true;
+
 			this.activateWatchers();
 
 			const pageViewTrackData = this.assemblePageViewData(this.categories);
@@ -361,42 +386,12 @@ export default {
 		background-color: $kiva-bg-lightgray;
 	}
 
-	.heading-region-row {
-		max-width: 63.75rem;
-	}
-
-	.heading-region {
-		margin: 2rem 0;
-		padding: 0 2.5rem;
-
-		.view-toggle {
-			margin: 0.125rem 0 0 0.375rem;
-			float: right;
-			display: flex;
-
-			@include breakpoint(large) {
-				margin: 0.375rem 0 0.375rem 0.375rem;
-			}
-		}
-
-		h1 {
-			margin: 0;
-		}
-
-		p {
-			font-size: rem-calc(21);
-			margin-top: 0.75rem;
-		}
-
-		// Customize styles for touch screens ie. No Arrows
-		@media (hover: none) {
-			margin: 1rem 0;
-			padding: 0 1rem;
-		}
-	}
-
 	.loan-category-row {
 		margin: 0 0 rem-calc(20);
+
+		@include breakpoint(medium) {
+			margin: 0 0 rem-calc(40);
+		}
 
 		&:last-of-type {
 			margin-bottom: 0;
@@ -410,13 +405,38 @@ export default {
 	}
 
 	.pre-footer {
-		margin: 2rem 0;
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+
+		.cat-row-loader {
+			display: flex;
+			justify-content: center;
+			position: relative;
+			z-index: 5;
+			height: 9rem;
+			margin: 0 0 3rem;
+
+			// loading overlay overrides
+			#updating-overlay {
+				background: transparent;
+				z-index: 6;
+			}
+
+			h3 {
+				display: flex;
+				align-items: flex-end;
+			}
+		}
 
 		h2 {
 			margin: 0 1.875rem;
 
 			@include breakpoint(medium) {
-				margin-left: 1.5625rem;
+				margin-left: 1.625rem;
+			}
+
+			@include breakpoint(xxlarge) {
+				margin-left: 0.625rem;
 			}
 
 			@media (hover: none) {
