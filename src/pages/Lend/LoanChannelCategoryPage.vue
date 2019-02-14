@@ -19,6 +19,7 @@
 						:loan="loan"
 						:is-visitor="isVisitor"
 						:items-in-basket="itemsInBasket"
+						:lend-increment-button-version="lendIncrementExpVersion"
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
@@ -113,6 +114,7 @@ export default {
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
+			lendIncrementExpVersion: null,
 		};
 	},
 	computed: {
@@ -166,7 +168,7 @@ export default {
 					// setting for lend increment button is prefetched in loanChannelPageQuery
 					// TODO: REMOVE Once Lend Increment Button EXP ENDS
 					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } })
+					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } })
 				]);
 			});
 		}
@@ -215,6 +217,16 @@ export default {
 				}
 			}
 		});
+
+		// Read assigned version of lend increment button experiment
+		const lendIncrementExperimentAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'lend_increment_button_v2' },
+		});
+		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
+		if (this.lendIncrementExpVersion !== null) {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
+		}
 	},
 	methods: {
 		pageChange(number) {

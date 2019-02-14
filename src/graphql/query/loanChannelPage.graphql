@@ -24,7 +24,7 @@ query {
 	}
 	general {
 		# TODO: REMOVE Once Lend Increment Button EXP ENDS
-		lendIncrementExp: setting(setting: "uiexp.lend_increment_button") {
+		lendIncrementExp: setting(setting: "uiexp.lend_increment_button_v2") {
 			key
 			value
 		}

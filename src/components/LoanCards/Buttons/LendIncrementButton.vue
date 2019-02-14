@@ -45,6 +45,10 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	computed: {
 		amountLeft() {
