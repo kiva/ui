@@ -134,6 +134,9 @@ export default {
 		margin-bottom: 0;
 		flex-grow: 1;
 		margin-left: 0.8rem;
+		// override only left + right padding
+		padding-right: 1rem;
+		padding-left: 1rem;
 
 		&.is-loading {
 			width: 100%;
