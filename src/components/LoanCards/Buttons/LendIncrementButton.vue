@@ -32,7 +32,9 @@ export default {
 	},
 	data() {
 		return {
-			selectedOption: this.amountLeft ? Math.min(50, this.amountLeft) : 50,
+			selectedOption: this.amountLeft
+				? Math.min(this.defaultSelectorAmount, this.amountLeft)
+				: this.defaultSelectorAmount,
 			loading: false,
 		};
 	},
@@ -51,6 +53,9 @@ export default {
 		},
 	},
 	computed: {
+		defaultSelectorAmount() {
+			return this.lendIncrementButtonVersion === 'variant-b' ? 50 : 25;
+		},
 		amountLeft() {
 			const { loanAmount, loanFundraisingInfo } = this.loan;
 			const { isExpiringSoon, fundedAmount, reservedAmount } = loanFundraisingInfo;
@@ -89,7 +94,7 @@ export default {
 	watch: {
 		loan: {
 			handler() {
-				this.selectedOption = Math.min(50, this.amountLeft);
+				this.selectedOption = Math.min(this.defaultSelectorAmount, this.amountLeft);
 			},
 			immediate: true,
 		}
@@ -127,6 +132,8 @@ export default {
 
 	.lend-increment-button {
 		margin-bottom: 0;
+		flex-grow: 1;
+		margin-left: 0.8rem;
 
 		&.is-loading {
 			width: 100%;
