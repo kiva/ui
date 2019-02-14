@@ -103,12 +103,12 @@
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
 								<!-- Modeled after the paypal component below -->
+
 								<braintree-checkout
 									v-if="showBraintree"
 									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
-
-								<!-- @refreshtotals="refreshtotals" -->
 
 								<pay-pal-exp
 									v-if="showPayPal"
@@ -369,6 +369,7 @@ export default {
 		},
 		showBraintree() {
 			return parseFloat(this.creditNeeded) > 0;
+			// && Setting flag is true this.braintreeSETTING = true;
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0

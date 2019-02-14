@@ -1,48 +1,78 @@
 <template>
-	<!-- Taken from: https://codepen.io/braintree/pen/MyzXqG -->
-	<div class="panel panel-default bootstrap-basic">
-		<div class="panel-heading">
-			<h3 class="panel-title">Enter Card Details</h3>
-		</div>
-		<form class="panel-body">
-			<div class="row">
-				<div class="form-group small-8 columns">
-					<label class="control-label">Card Number</label>
-					<!--  Hosted Fields div container -->
-					<div class="form-control" id="card-number"></div>
-					<span class="helper-text"></span>
-				</div>
-				<div class="form-group small-4 columns">
+	<div class="braintree-holder">
+		<!-- <div class="card-header"> -->
+		<h3 class="card-title columns">Enter Card Details</h3>
+		<!-- </div> -->
+
+		<form id="braintree-payment-form">
+			<div class="grid-container small-12 columns">
+				<div class="grid-x grid-padding-x">
+
+					<!-- Card number input -->
 					<div class="row">
-						<label class="control-label small-12c">Expiration Date</label>
-						<div class="small-6">
-							<!--  Hosted Fields div container -->
-							<div class="form-control" id="expiration-month"></div>
-						</div>
-						<div class="small-6">
-							<!--  Hosted Fields div container -->
-							<div class="form-control" id="expiration-year"></div>
+						<div class="cell input-group">
+							<div class="small-12 columns">
+								<label>Card Number
+									<div id="card-number"></div>
+									<span class="helper-text"></span>
+								</label>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group small-6 columns">
-					<label class="control-label">Security Code</label>
-					<!--  Hosted Fields div container -->
-					<div class="form-control" id="cvv"></div>
-				</div>
-				<div class="form-group small-6 columns">
-					<label class="control-label">Zipcode</label>
-					<!--  Hosted Fields div container -->
-					<div class="form-control" id="postal-code"></div>
-				</div>
-			</div>
 
-			<button value="submit" id="submit" class="button center-block">
-				Pay with
-				<span id="card-type">Card</span>
-			</button>
+					<!-- Card expiration input -->
+					<div class="row">
+						<div class="cell input-group">
+							<div class="small-12 columns">
+								<label>Exp. Date
+									<div class="small-6">
+										<!--  Hosted Fields div container -->
+										<div id="expiration-month"></div>
+										<span class="helper-text"></span>
+									</div>
+									<div class="small-6">
+										<!--  Hosted Fields div container -->
+										<div id="expiration-year"></div>
+										<span class="helper-text"></span>
+									</div>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!-- Card security code input -->
+					<div class="row">
+						<div class="cell input-group">
+							<div class="small-12 columns">
+								<label class="control-label">Security Code</label>
+								<!--  Hosted Fields div container -->
+								<div id="cvv"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Zip code input -->
+					<div class="row">
+						<div class="cell input-group">
+							<div class="small-12 columns">
+								<label class="control-label">Zipcode</label>
+								<!--  Hosted Fields div container -->
+								<div id="postal-code"></div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Submit payment button -->
+					<div class="row">
+						<div class="small-12 columns">
+							<button value="submit" id="braintree-submit" class="button center-block">
+								Pay with <span id="card-type">Card</span>
+							</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
 		</form>
 	</div>
 </template>
@@ -54,7 +84,7 @@ import numeral from 'numeral';
 // import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
-// import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 
 export default {
 	inject: ['apollo'],
@@ -99,19 +129,19 @@ export default {
 		};
 	},
 	mounted() {
-		// this.initializeBraintree();
-
 		this.getClientToken();
 	},
 	watch: {
-		// amount() {
-		// 	this.initializeBraintree();
-		// },
+		amount() {
+			this.initializeBraintree();
+		},
 		clientToken() {
 			this.initializeBraintree();
 		}
 	},
 	methods: {
+		// Getting the client token from our server, this will be used to verify
+		// the transaction later on.
 		getClientToken() {
 			this.apollo.query({
 				query: getClientToken,
@@ -119,7 +149,7 @@ export default {
 					amount: numeral(this.amount).format('0.00'),
 				}
 			}).then(response => {
-				console.log(response);
+				// console.log(response);
 				// if (response.errors) {
 				// 	this.setUpdating(false);
 				// 	reject(response);
@@ -128,8 +158,6 @@ export default {
 				// 	resolve(paymentToken || response);
 				// }
 				this.clientToken = _get(response, 'data.shop.getClientToken');
-				// eslint-disable-next-line
-				console.log('this is the client token' + this.clientToken);
 			});
 		},
 		initializeBraintree() {
@@ -141,11 +169,12 @@ export default {
 			}, 200);
 		},
 		renderBraintreeForm() {
-			// clear ensurePaypal interval
+			// clear ensureBraintree interval
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
 			this.braintreeRendered = true;
 
+			const form = document.querySelector('#braintree-payment-form');
 
 			// render braintree form
 			braintree.client.create({
@@ -155,14 +184,16 @@ export default {
 					console.error(err);
 					return;
 				}
-				// eslint-disable-next-line
+
 				braintree.hostedFields.create({
 					client: clientInstance,
 					styles: {
+						// Have to put input related styles right here.
+						// braintree hosted fields changes the divs in the template
+						// into input fields
 						input: {
-							'font-size': '14px',
-							'font-family': 'helvetica, tahoma, calibri, sans-serif',
-							color: '#3a3a3a'
+							'font-size': '16px',
+							'font-family': 'helvetica, tahoma, calibri, sans-serif'
 						},
 						':focus': {
 							color: 'black'
@@ -183,7 +214,7 @@ export default {
 						},
 						expirationYear: {
 							selector: '#expiration-year',
-							placeholder: 'YY'
+							placeholder: 'YYYY'
 						},
 						postalCode: {
 							selector: '#postal-code',
@@ -192,68 +223,69 @@ export default {
 					}
 				}, (hostedFieldsErr, hostedFieldsInstance) => {
 					if (hostedFieldsErr) {
-						console.error(err);
+						console.error(hostedFieldsErr);
 						return;
 					}
-					// eslint-disable-next-line
-					// hostedFieldsInstance.on('validityChange', function (event) {
-					// 	const field = event.fields[event.emittedBy];
 
-					// 	if (field.isValid) {
-					// 		if (event.emittedBy === 'expirationMonth' || event.emittedBy === 'expirationYear') {
-					// 			eslint-disable-next-line
-					// if (!event.fields.expirationMonth.isValid || !event.fields.expirationYear.isValid) {
-					// 				return;
-					// 			}
-					// 		} else if (event.emittedBy === 'number') {
-					// 			$('#card-number').next('span').text('');
-					// 		}
+					form.addEventListener('submit', event => {
+						event.preventDefault();
+						this.$emit('updating-totals', true);
 
-					// 		// Remove any previously applied error or warning classes
-					// 		$(field.container).parents('.form-group').removeClass('has-warning');
-					// 		$(field.container).parents('.form-group').removeClass('has-success');
-					// 		// Apply styling for a valid field
-					// 		$(field.container).parents('.form-group').addClass('has-success');
-					// 	} else if (field.isPotentiallyValid) {
-					// 		// Remove styling  from potentially valid fields
-					// 		$(field.container).parents('.form-group').removeClass('has-warning');
-					// 		$(field.container).parents('.form-group').removeClass('has-success');
-					// 		if (event.emittedBy === 'number') {
-					// 			$('#card-number').next('span').text('');
-					// 		}
-					// 	} else {
-					// 		// Add styling to invalid fields
-					// 		$(field.container).parents('.form-group').addClass('has-warning');
-					// 		// Add helper text for an invalid card number
-					// 		if (event.emittedBy === 'number') {
-					// 			$('#card-number').next('span').text('Looks like
-					// this card number has an error.');
-					// 		}
-					// 	}
-					// });
-					// eslint-disable-next-line
-					hostedFieldsInstance.on('cardTypeChange', function (event) {
-						// Handle a field's change, such as a change in validity or credit card type
-						// if (event.cards.length === 1) {
-						// 	$('#card-type').text(event.cards[0].niceType);
-						// } else {
-						// 	$('#card-type').text('Card');
-						// }
+						hostedFieldsInstance.tokenize((tokenizeErr, payload) => {
+							if (tokenizeErr) {
+								console.error(tokenizeErr);
+								return;
+							}
+
+							// Apollo call to the query mutation
+							this.apollo.mutate({
+								mutation: braintreeDepositAndCheckout,
+								variables: {
+									amount: numeral(this.amount).format('0.00'),
+									nonce: payload.nonce
+								}
+							}).then(kivaBraintreeResponse => {
+								// Check for errors
+								if (kivaBraintreeResponse.errors) {
+									this.$emit('updating-totals', false);
+									const errorCode = _get(kivaBraintreeResponse, 'errors[0].code');
+									const standardErrorCode = `(Braintree error: ${errorCode})`;
+									const standardError = `There was an error processing your payment.
+										Please try again. ${standardErrorCode}`;
+
+									this.$showTipMsg(standardError, 'error');
+
+									// Fire specific exception to Sentry/Raven
+									// Raven.captureException(JSON.stringify(ppResponse.errors), {
+									// 	tags: {
+									// 		pp_stage: 'onAuthorize',
+									// 		pp_token: data.paymentToken
+									// 	}
+									// });
+
+									// exit
+									// reject(kivaBraintreeResponse);
+								}
+
+								// Transaction is complete
+								const transactionId = _get(
+									kivaBraintreeResponse,
+									'data.shop.doNoncePaymentDepositAndCheckout'
+								);
+								// redirect to thanks with KIVA transaction id
+								if (transactionId) {
+									this.$kvTrackEvent(
+										'basket',
+										'Braintree Payment',
+										'Success',
+										transactionId
+									);
+									this.redirectToThanks(transactionId);
+								}
+								return kivaBraintreeResponse;
+							});
+						});
 					});
-
-					// eslint-disable-next-line
-					// $('.panel-body').submit(function (event) {
-					// 	event.preventDefault();
-					// 	// eslint-disable-next-line
-					// 	hostedFieldsInstance.tokenize(function (err, payload) {
-					// 		if (err) {
-					// 			console.error(err);
-					// 			return;
-					// 		}
-					// 		// This is where you would submit payload.nonce to your server
-					// 		alert('Submit your nonce to your server here!');
-					// 	});
-					// });
 				});
 			});
 		}
@@ -267,9 +299,19 @@ export default {
 .braintree-holder {
 	display: block;
 	text-align: center;
+	text-align: left;
+	float: right;
 
-	@include breakpoint(medium) {
-		text-align: right;
+	#braintree-payment-form {
+		.input-group #card-number,
+		.input-group #expiration-month,
+		.input-group #expiration-year,
+		.input-group #cvv,
+		.input-group #postal-code {
+			height: 44px;
+			border: 1px solid #3a3a3a;
+			padding: 8px;
+		}
 	}
 }
 </style>
