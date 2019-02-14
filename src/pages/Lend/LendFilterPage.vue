@@ -24,7 +24,7 @@
 						</template>
 					</ais-hits>
 					<algolia-pagination :padding="2" />
-					<ais-stats />
+					<algolia-pagination-stats :padding="2" />
 				</ais-instant-search>
 			</div>
 		</div>
@@ -50,11 +50,10 @@ import {
 	AisHits,
 	AisCurrentRefinements,
 	AisRefinementList,
-	AisStats,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
-
+import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 
 export default {
 	components: {
@@ -66,9 +65,9 @@ export default {
 		AisHits,
 		AisCurrentRefinements,
 		AisRefinementList,
-		AisStats,
 		AlgoliaAdapter,
 		AlgoliaPagination,
+		AlgoliaPaginationStats,
 	},
 	metaInfo: {
 		title: 'Lend Filter'
