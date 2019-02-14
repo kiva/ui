@@ -1,6 +1,6 @@
 # Run in dev mode
-FROM node:8.11 as ui-dev
-# FROM node:8-alpine as ui-dev
+# FROM node:8.11 as ui-dev
+FROM node:8-alpine as ui-dev
 RUN apk add --no-cache git && git --version
 # Copy source code to container
 COPY . /app
