@@ -4,12 +4,13 @@
 		class="action-button smaller"
 		:loan-id="loanId"
 		:loan="loan"
+		:lend-increment-button-version="lendIncrementButtonVersion"
 	/>
 </template>
 
 <script>
-import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import _get from 'lodash/get';
+// import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+// import _get from 'lodash/get';
 import _includes from 'lodash/includes';
 import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';
@@ -40,10 +41,18 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	computed: {
 		currentButtonState() {
-			const experimentLendIncrement = this.lendIncrementExperimentVersion === 'variant-b';
+			// const experimentLendIncrement = this.lendIncrementExperimentVersion === 'variant-b';
+			const experimentLendIncrement = (
+				this.lendIncrementButtonVersion !== null ||
+				this.lendIncrementButtonVersion !== 'variant-a'
+			);
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
@@ -58,20 +67,20 @@ export default {
 	},
 	data() {
 		return {
-			lendIncrementExperimentVersion: '',
+			// lendIncrementExperimentVersion: '',
 		};
 	},
 	methods: {
-		setupExperimentState() {
-			const lendIncrementExperimentVersion = this.apollo.readQuery({
-				query: experimentAssignmentQuery,
-				variables: { id: 'lend_increment_button' },
-			});
-			this.lendIncrementExperimentVersion = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
-		},
+		// setupExperimentState() {
+		// 	const lendIncrementExperimentVersion = this.apollo.readQuery({
+		// 		query: experimentAssignmentQuery,
+		// 		variables: { id: 'lend_increment_button' },
+		// 	});
+		// 	this.lendIncrementExperimentVersion = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
+		// },
 	},
 	created() {
-		this.setupExperimentState();
+		// this.setupExperimentState();
 	},
 };
 

@@ -31,6 +31,7 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
@@ -45,6 +46,7 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
@@ -59,6 +61,7 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 				</div>
@@ -103,6 +106,10 @@ export default {
 		isLoggedIn: {
 			type: Boolean,
 			default: false
+		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,

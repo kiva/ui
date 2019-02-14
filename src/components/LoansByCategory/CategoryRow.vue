@@ -4,6 +4,7 @@
 			<div class="column small-12">
 				<h2 class="category-name">
 					<router-link
+						v-if="showViewAllLink"
 						class="view-all-link"
 						:to="cleanUrl"
 						:title="`View all ${cleanName} loans`"
@@ -13,6 +14,9 @@
 							`View all ${cleanName} loans`]">
 						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
 					</router-link>
+					<template v-else>
+						{{ cleanName }}
+					</template>
 				</h2>
 			</div>
 		</div>
@@ -43,10 +47,11 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
-					<div class="column column-block is-in-category-row view-all-loans-category">
+					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
 						<router-link
 							:to="cleanUrl"
 							:title="`${viewAllLoansCategoryTitle}`"
@@ -115,6 +120,10 @@ export default {
 		isMicro: {
 			type: Boolean,
 			default: false
+		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,
@@ -333,7 +342,7 @@ a.view-all-link {
 
 	.view-all-arrow {
 		position: absolute;
-		top: -0.85rem;
+		top: -0.95rem;
 		right: -1.4rem;
 		padding: 0 0.3rem;
 		font-weight: $global-weight-normal;
