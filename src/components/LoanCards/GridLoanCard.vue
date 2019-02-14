@@ -45,6 +45,7 @@
 					:items-in-basket="itemsInBasket"
 					:is-lent-to="loan.userProperties.lentTo"
 					:is-funded="isFunded"
+					:lend-increment-button-version="lendIncrementButtonVersion"
 
 					@click.native="trackInteraction({
 						interactionType: 'addToBasket',
@@ -126,6 +127,10 @@ export default {
 			default: null
 		},
 		title: {
+			type: String,
+			default: ''
+		},
+		lendIncrementButtonVersion: {
 			type: String,
 			default: ''
 		},
