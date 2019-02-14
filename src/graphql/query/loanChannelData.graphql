@@ -2,7 +2,7 @@
 
 query (
 	$ids: [Int],
-	$numberOfLoans: Int = 12,
+	$numberOfLoans: Int = 11,
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
 	$excludeIds: [Int],
