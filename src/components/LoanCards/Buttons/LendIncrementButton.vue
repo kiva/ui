@@ -18,6 +18,7 @@
 			:price="selectedOption"
 			:loan-id="loanId"
 			:loading.sync="loading"
+			:lend-increment-button-version="lendIncrementButtonVersion"
 		/>
 	</div>
 </template>
