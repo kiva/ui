@@ -91,7 +91,7 @@ export default {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-557-click-lendnow',
-					this.lendIncrementButtonVersion.replace('variant-', '')
+					this.price
 				);
 			}
 		},
