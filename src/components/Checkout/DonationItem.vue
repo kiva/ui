@@ -341,9 +341,9 @@ export default {
 			// eslint-disable-next-line max-len
 			const nudgeBorrowerImageExperimentVersionString = _get(nudgeBorrowerImageExperimentVersion, 'experiment.version') || null;
 			if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
+				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'a');
 			} else if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
+				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'b');
 				this.donationNudgeBorrowerImageExperiment = true;
 			}
 		},
