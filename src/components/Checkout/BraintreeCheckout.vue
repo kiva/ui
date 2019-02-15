@@ -149,7 +149,6 @@ export default {
 					amount: numeral(this.amount).format('0.00'),
 				}
 			}).then(response => {
-				// console.log(response);
 				// if (response.errors) {
 				// 	this.setUpdating(false);
 				// 	reject(response);
@@ -302,6 +301,7 @@ export default {
 	text-align: left;
 	float: right;
 
+	// forcing styles for now so form is digestable
 	#braintree-payment-form {
 		.input-group #card-number,
 		.input-group #expiration-month,
