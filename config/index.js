@@ -30,7 +30,6 @@ module.exports = {
 		auth0Domain: 'login.kiva.org',
 		auth0Scope: 'https://www.kiva.org/last_login ' +
 			'https://www.kiva.org/kiva_id ' +
-			'https://www.kiva.org/context.connectionStrategy ' +
 			'openid email profile',
 	},
 	server: {
