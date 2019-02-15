@@ -102,16 +102,14 @@
 
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
-								<!-- Modeled after the paypal component below -->
-
-								<braintree-checkout
-									v-if="showBraintree"
+								<pay-pal-exp
+									v-if="showPayPal"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<pay-pal-exp
-									v-if="showPayPal"
+								<braintree-checkout
+									v-if="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
@@ -252,7 +250,7 @@ export default {
 			teams: [],
 			holidayModeEnabled: false,
 			showLYML: true,
-			// braintree: false,
+			braintree: false,
 		};
 	},
 	apollo: {
@@ -294,7 +292,7 @@ export default {
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
 			this.teams = _get(data, 'my.lender.teams.values');
-			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true' || 'false';
+			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
@@ -368,8 +366,7 @@ export default {
 			return parseFloat(this.creditNeeded) > 0;
 		},
 		showBraintree() {
-			return parseFloat(this.creditNeeded) > 0;
-			// && Setting flag is true this.braintreeSETTING = true;
+			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
