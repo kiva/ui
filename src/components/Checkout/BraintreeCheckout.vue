@@ -6,71 +6,68 @@
 
 		<form id="braintree-payment-form">
 			<div class="grid-container small-12 columns">
-				<div class="grid-x grid-padding-x">
 
-					<!-- Card number input -->
-					<div class="row">
-						<div class="cell input-group">
-							<div class="small-12 columns">
-								<label>Card Number
-									<div id="card-number"></div>
-									<span class="helper-text"></span>
-								</label>
-							</div>
-						</div>
-					</div>
-
-					<!-- Card expiration input -->
-					<div class="row">
-						<div class="cell input-group">
-							<div class="small-12 columns">
-								<label>Exp. Date
-									<div class="small-6">
-										<!--  Hosted Fields div container -->
-										<div id="expiration-month"></div>
-										<span class="helper-text"></span>
-									</div>
-									<div class="small-6">
-										<!--  Hosted Fields div container -->
-										<div id="expiration-year"></div>
-										<span class="helper-text"></span>
-									</div>
-								</label>
-							</div>
-						</div>
-					</div>
-
-					<!-- Card security code input -->
-					<div class="row">
-						<div class="cell input-group">
-							<div class="small-12 columns">
-								<label class="control-label">Security Code</label>
-								<!--  Hosted Fields div container -->
-								<div id="cvv"></div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Zip code input -->
-					<div class="row">
-						<div class="cell input-group">
-							<div class="small-12 columns">
-								<label class="control-label">Zipcode</label>
-								<!--  Hosted Fields div container -->
-								<div id="postal-code"></div>
-							</div>
-						</div>
-					</div>
-
-					<!-- Submit payment button -->
-					<div class="row">
+				<!-- Card number input -->
+				<div class="row">
+					<div class="cell input-group">
 						<div class="small-12 columns">
-							<button value="submit" id="braintree-submit" class="button center-block">
-								Pay with <span id="card-type">Card</span>
-							</button>
+							<label>Card Number
+								<div id="card-number"></div>
+								<span class="helper-text"></span>
+							</label>
 						</div>
 					</div>
+				</div>
 
+				<!-- Card expiration input -->
+				<div class="row">
+					<div class="cell input-group">
+						<div class="small-12 columns">
+							<label>Exp. Date
+								<div class="small-6">
+									<!--  Hosted Fields div container -->
+									<div id="expiration-month"></div>
+									<span class="helper-text"></span>
+								</div>
+								<div class="small-6">
+									<!--  Hosted Fields div container -->
+									<div id="expiration-year"></div>
+									<span class="helper-text"></span>
+								</div>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<!-- Card security code input -->
+				<div class="row">
+					<div class="cell input-group">
+						<div class="small-12 columns">
+							<label class="control-label">Security Code</label>
+							<!--  Hosted Fields div container -->
+							<div id="cvv"></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Zip code input -->
+				<div class="row">
+					<div class="cell input-group">
+						<div class="small-12 columns">
+							<label class="control-label">Zipcode</label>
+							<!--  Hosted Fields div container -->
+							<div id="postal-code"></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Submit payment button -->
+				<div class="row">
+					<div class="small-12 columns">
+						<button value="submit" id="braintree-submit" class="button center-block">
+							Pay with <span id="card-type">Card</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		</form>
