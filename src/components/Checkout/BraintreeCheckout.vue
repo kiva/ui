@@ -43,7 +43,7 @@
 				<div class="row">
 					<div class="cell input-group">
 						<div class="small-12 columns">
-							<label class="control-label">Security Code</label>
+							<label>Security Code</label>
 							<!--  Hosted Fields div container -->
 							<div id="cvv"></div>
 						</div>
@@ -54,7 +54,7 @@
 				<div class="row">
 					<div class="cell input-group">
 						<div class="small-12 columns">
-							<label class="control-label">Zipcode</label>
+							<label>Zipcode</label>
 							<!--  Hosted Fields div container -->
 							<div id="postal-code"></div>
 						</div>
