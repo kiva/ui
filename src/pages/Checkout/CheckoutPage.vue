@@ -115,7 +115,7 @@
 									@updating-totals="setUpdatingTotals" />
 
 								<kiva-credit-payment
-									v-else
+									v-if="showKivaCreditButton"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									class=" checkout-button" />
@@ -367,6 +367,9 @@ export default {
 		},
 		showBraintree() {
 			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;
+		},
+		showKivaCreditButton() {
+			return parseFloat(this.creditNeeded) === 0;
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
