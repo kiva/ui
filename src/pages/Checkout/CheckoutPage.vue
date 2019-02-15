@@ -108,6 +108,12 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
+								<braintree-checkout
+									v-if="showBraintree"
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals" />
+
 								<kiva-credit-payment
 									v-else
 									@refreshtotals="refreshTotals"
@@ -154,7 +160,7 @@
 
 					<kv-button slot="controls"
 						class="smaller checkout-button"
-						v-kv-track-event="['basket','Redirect Continue Button','exit to legacy']"
+						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
@@ -192,6 +198,7 @@ import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 
 export default {
 	components: {
@@ -210,6 +217,7 @@ export default {
 		KvIcon,
 		CheckoutHolidayPromo,
 		LYML,
+		BraintreeCheckout,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -284,7 +292,7 @@ export default {
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
 			this.teams = _get(data, 'my.lender.teams.values');
-			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true' || 'false';
+			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
@@ -356,6 +364,9 @@ export default {
 		},
 		showPayPal() {
 			return parseFloat(this.creditNeeded) > 0;
+		},
+		showBraintree() {
+			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
