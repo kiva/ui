@@ -1,8 +1,8 @@
 <template>
-	<div class="braintree-holder small-12 medium-6 large-5 xlarge-4">
-		<!-- <div class="card-header"> -->
-		<h3 class="card-title columns">Enter Card Details</h3>
-		<!-- </div> -->
+	<div class="braintree-holder small-12 medium-7 large-6 xlarge-5">
+		<div class="card-header text-center">
+			<h3 class="card-title">Pay with card</h3>
+		</div>
 
 		<form id="braintree-payment-form">
 			<!-- Card number input -->
@@ -30,11 +30,11 @@
 			</div>
 
 			<!-- Submit payment button -->
-			<div class="row">
+			<div class="row small-collapse">
 				<div class="small-12 columns">
-					<button value="submit" id="braintree-submit" class="button smaller center-block">
-						Pay with <span id="card-type">Card</span>
-					</button>
+					<kv-button value="submit" id="braintree-submit" class="button smallest">
+						Pay with <span id="card-type">card</span>
+					</kv-button>
 				</div>
 			</div>
 		</form>
@@ -49,8 +49,12 @@ import numeral from 'numeral';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
+	components: {
+		KvButton
+	},
 	inject: ['apollo'],
 	mixins: [
 		checkoutUtils
@@ -154,22 +158,16 @@ export default {
 						// Have to put input related styles right here.
 						// braintree hosted fields changes the divs in the template
 						// into input fields
-						// input: 'form-reset'
+						// input: 'form-reset' // tried this but it didn't work well
 						input: {
 							margin: '0',
 							padding: '0',
-							'line-height': '1.5rem',
-							'font-size': '1.25rem',
-							// color: '#484848',
+							'line-height': '1.625rem',
+							'font-size': '1.125rem',
 						},
-						// {
-						// 	'font-size': '16px',
-						// 	'font-family': 'helvetica, tahoma, calibri, sans-serif'
-						// },
-						// ':focus': {
-						// 	color: 'black'
-						// 	background-color: 'white'
-						// }
+						':focus': {
+							'background-color': 'white'
+						}
 					},
 					fields: {
 						number: {
@@ -264,57 +262,40 @@ export default {
 <style lang="scss">
 @import "settings";
 
-// .form-reset {
-// 	margin: 0;
-// 	padding: 0 rem-calc(8);
-// 	line-height: 1.5rem;
-// 	height: rem-calc(40);
-// 	font-size: 1.25rem;
-// 	color: #484848;
-// 	background: #fafafa;
-// 	border-radius: 3px;
-// 	border: 1px solid #c3c3c3;
-
-// 	&:focus {
-// 		background: #FFF;
-// 	}
-// }
+$form-border-radius: rem-calc(3);
 
 .braintree-holder {
 	display: block;
 	text-align: left;
 	float: right;
+	border: 1px solid $subtle-gray; //#c3c3c3
+	padding: 0 2rem 1.5rem;
+	border-radius: $form-border-radius;
+	margin-top: 3rem;
+
+	.card-header {
+		position: relative;
+		top: -1.2rem;
+		background: $ghost;
+		border: 1px solid $subtle-gray;
+		border-radius: $form-border-radius;
+	}
 
 	// forcing styles for now so form is digestable
 	#braintree-payment-form {
-		// label {
-		// 	input {
-		// 		margin: 0;
-		// 		padding: 0 rem-calc(8);
-		// 		line-height: 1.5rem;
-		// 		max-height: rem-calc(40);
-		// 		font-size: 1.25rem;
-		// 		color: $kiva-text-dark;
-		// 		background: $very-light-gray;
-		// 		border-radius: 3px;
-		// 		border: 1px solid $subtle-gray;
+		padding: 0 1rem;
 
-		// 		&:focus {
-		// 			background: $white;
-		// 		}
-		// 	}
-		// }
-
+		// Hosted Field wrappers + input declarations
 		.kv-braintree-wrapper {
-			margin: 0;
+			margin: 0 0 1.25rem;
 			padding: 0 rem-calc(8);
 			// line-height: 1.5rem;
 			height: rem-calc(40);
 			// font-size: 1.25rem;
 			color: $kiva-text-dark;
-			background: #fafafa;
-			border-radius: 2px;
-			border: 1px solid #c3c3c3;
+			background: $ghost; //#fafafa
+			border-radius: $form-border-radius;
+			border: 1px solid $subtle-gray;
 			text-align: center;
 
 			&:focus {
@@ -331,6 +312,7 @@ export default {
 				box-shadow: none;
 				text-align: center;
 				padding: 0;
+				margin: 0;
 			}
 
 			[type=number]::placeholder,
@@ -339,12 +321,18 @@ export default {
 			}
 		}
 
+		// specific field wrapper overrides
 		// #kv-card-number,
 		// #kv-expiration-date,
 		// #kv-cvv,
 		// #kv-postal-code
 		#kv-cvv {
 			margin: 0 0.8rem;
+		}
+
+		#braintree-submit {
+			width: 100%;
+			margin-top: 0.8rem;
 		}
 	}
 }
