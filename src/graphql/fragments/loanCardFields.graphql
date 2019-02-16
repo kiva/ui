@@ -9,6 +9,10 @@ fragment loanCardFields on LoanBasic {
 		}
 	}
 	use
+	activity {
+		name
+	}
+	whySpecial
 	lenderRepaymentTerm
 	loanAmount
 	loanFundraisingInfo {
