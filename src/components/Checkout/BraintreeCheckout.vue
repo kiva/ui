@@ -1,73 +1,40 @@
 <template>
-	<div class="braintree-holder">
+	<div class="braintree-holder small-12 medium-6 large-5 xlarge-4">
 		<!-- <div class="card-header"> -->
 		<h3 class="card-title columns">Enter Card Details</h3>
 		<!-- </div> -->
 
 		<form id="braintree-payment-form">
-			<div class="grid-container small-12 columns">
-
-				<!-- Card number input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Card Number
-								<div id="card-number"></div>
-								<span class="helper-text"></span>
-							</label>
-						</div>
-					</div>
+			<!-- Card number input -->
+			<div class="row small-collapse">
+				<div class="small-12 columns">
+					<label for="kv-card-number">Card Number</label>
+					<div id="kv-card-number" class="kv-braintree-wrapper"></div>
 				</div>
+			</div>
 
-				<!-- Card expiration input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Exp. Date
-								<div class="small-6">
-									<!--  Hosted Fields div container -->
-									<div id="expiration-month"></div>
-									<span class="helper-text"></span>
-								</div>
-								<div class="small-6">
-									<!--  Hosted Fields div container -->
-									<div id="expiration-year"></div>
-									<span class="helper-text"></span>
-								</div>
-							</label>
-						</div>
-					</div>
+			<!-- Inline Inputs -->
+			<div class="row small-collapse">
+				<div class="small-4 columns">
+					<label for="kv-expiration-date">Expiration</label>
+					<div id="kv-expiration-date" class="kv-braintree-wrapper"></div>
 				</div>
-
-				<!-- Card security code input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Security Code</label>
-							<!--  Hosted Fields div container -->
-							<div id="cvv"></div>
-						</div>
-					</div>
+				<div class="small-4 columns">
+					<label>CVV</label>
+					<div id="kv-cvv" class="kv-braintree-wrapper"></div>
 				</div>
-
-				<!-- Zip code input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Zipcode</label>
-							<!--  Hosted Fields div container -->
-							<div id="postal-code"></div>
-						</div>
-					</div>
+				<div class="small-4 columns">
+					<label>Zip code</label>
+					<div id="kv-postal-code" class="kv-braintree-wrapper"></div>
 				</div>
+			</div>
 
-				<!-- Submit payment button -->
-				<div class="row">
-					<div class="small-12 columns">
-						<button value="submit" id="braintree-submit" class="button center-block">
-							Pay with <span id="card-type">Card</span>
-						</button>
-					</div>
+			<!-- Submit payment button -->
+			<div class="row">
+				<div class="small-12 columns">
+					<button value="submit" id="braintree-submit" class="button smaller center-block">
+						Pay with <span id="card-type">Card</span>
+					</button>
 				</div>
 			</div>
 		</form>
@@ -187,33 +154,38 @@ export default {
 						// Have to put input related styles right here.
 						// braintree hosted fields changes the divs in the template
 						// into input fields
+						// input: 'form-reset'
 						input: {
-							'font-size': '16px',
-							'font-family': 'helvetica, tahoma, calibri, sans-serif'
+							margin: '0',
+							padding: '0',
+							'line-height': '1.5rem',
+							'font-size': '1.25rem',
+							// color: '#484848',
 						},
-						':focus': {
-							color: 'black'
-						}
+						// {
+						// 	'font-size': '16px',
+						// 	'font-family': 'helvetica, tahoma, calibri, sans-serif'
+						// },
+						// ':focus': {
+						// 	color: 'black'
+						// 	background-color: 'white'
+						// }
 					},
 					fields: {
 						number: {
-							selector: '#card-number',
+							selector: '#kv-card-number',
 							placeholder: '4111 1111 1111 1111'
 						},
 						cvv: {
-							selector: '#cvv',
+							selector: '#kv-cvv',
 							placeholder: '123'
 						},
-						expirationMonth: {
-							selector: '#expiration-month',
-							placeholder: 'MM'
-						},
-						expirationYear: {
-							selector: '#expiration-year',
-							placeholder: 'YYYY'
+						expirationDate: {
+							selector: '#kv-expiration-date',
+							placeholder: 'MM/YY'
 						},
 						postalCode: {
-							selector: '#postal-code',
+							selector: '#kv-postal-code',
 							placeholder: '90210'
 						}
 					}
@@ -292,22 +264,87 @@ export default {
 <style lang="scss">
 @import "settings";
 
+// .form-reset {
+// 	margin: 0;
+// 	padding: 0 rem-calc(8);
+// 	line-height: 1.5rem;
+// 	height: rem-calc(40);
+// 	font-size: 1.25rem;
+// 	color: #484848;
+// 	background: #fafafa;
+// 	border-radius: 3px;
+// 	border: 1px solid #c3c3c3;
+
+// 	&:focus {
+// 		background: #FFF;
+// 	}
+// }
+
 .braintree-holder {
 	display: block;
-	text-align: center;
 	text-align: left;
 	float: right;
 
 	// forcing styles for now so form is digestable
 	#braintree-payment-form {
-		.input-group #card-number,
-		.input-group #expiration-month,
-		.input-group #expiration-year,
-		.input-group #cvv,
-		.input-group #postal-code {
-			height: 44px;
-			border: 1px solid #3a3a3a;
-			padding: 8px;
+		// label {
+		// 	input {
+		// 		margin: 0;
+		// 		padding: 0 rem-calc(8);
+		// 		line-height: 1.5rem;
+		// 		max-height: rem-calc(40);
+		// 		font-size: 1.25rem;
+		// 		color: $kiva-text-dark;
+		// 		background: $very-light-gray;
+		// 		border-radius: 3px;
+		// 		border: 1px solid $subtle-gray;
+
+		// 		&:focus {
+		// 			background: $white;
+		// 		}
+		// 	}
+		// }
+
+		.kv-braintree-wrapper {
+			margin: 0;
+			padding: 0 rem-calc(8);
+			// line-height: 1.5rem;
+			height: rem-calc(40);
+			// font-size: 1.25rem;
+			color: $kiva-text-dark;
+			background: #fafafa;
+			border-radius: 2px;
+			border: 1px solid #c3c3c3;
+			text-align: center;
+
+			&:focus {
+				background: $white;
+			}
+
+			&:-webkit-autofill {
+				background-color: #fefced;
+			}
+
+			[type=number],
+			[type=text] {
+				background: transparent;
+				box-shadow: none;
+				text-align: center;
+				padding: 0;
+			}
+
+			[type=number]::placeholder,
+			[type=text]::placeholder {
+				color: #ccc;
+			}
+		}
+
+		// #kv-card-number,
+		// #kv-expiration-date,
+		// #kv-cvv,
+		// #kv-postal-code
+		#kv-cvv {
+			margin: 0 0.8rem;
 		}
 	}
 }
