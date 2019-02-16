@@ -2,6 +2,15 @@
 	<www-page class="lend-by-category-page">
 		<lend-header />
 
+		<featured-hero-loan
+			v-if="showFeaturedHeroLoan"
+			ref="featured"
+			:items-in-basket="itemsInBasket"
+			:is-logged-in="isLoggedIn"
+			:lend-increment-button-version="lendIncrementExpVersion"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		/>
+
 		<FeaturedLoans
 			v-if="showFeaturedLoans"
 			ref="featured"
@@ -76,6 +85,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
@@ -96,6 +106,7 @@ export default {
 		CategoryRow,
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
+		FeaturedHeroLoan,
 		RecentlyViewedLoans,
 		WwwPage,
 		ViewToggle,
@@ -116,6 +127,7 @@ export default {
 			imageEnhancementExperimentVersion: '',
 			lendIncrementExpVersion: null,
 			showFeaturedLoans: true,
+			showFeaturedHeroLoan: false,
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
@@ -352,7 +364,7 @@ export default {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
 		}
 
-		// image enchancement experiment
+		// CASH-578 : Experiment : Cloudinary image enhancement
 		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
 			query: experimentQuery,
 			variables: { id: 'image_enhancement' },
@@ -365,6 +377,23 @@ export default {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
 		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
+		}
+
+		// CASH-350 : Experiment : Featured Hero Loan
+		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'featured_hero_loan' },
+		});
+
+		// eslint-disable-next-line max-len
+		this.featuredHeroLoanExperimentVersion = _get(featuredHeroLoanExperimentVersionArray, 'experiment.version') || null;
+
+		if (this.featuredHeroLoanExperimentVersion === 'variant-a') {
+			this.showFeaturedLoans = true;
+			this.showFeaturedHeroLoan = false;
+		} else if (this.featuredHeroLoanExperimentVersion === 'variant-b') {
+			this.showFeaturedLoans = false;
+			this.showFeaturedHeroLoan = true;
 		}
 	},
 	mounted() {
