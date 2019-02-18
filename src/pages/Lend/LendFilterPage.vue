@@ -125,7 +125,6 @@ export default {
 .lend-filter-page {
 	.page-content {
 		max-width: 63.75rem;
-		padding: 0 2.5rem;
 		padding: 0 1.5625rem;
 	}
 }
