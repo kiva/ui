@@ -158,16 +158,10 @@ export default {
 						// Have to put input related styles right here.
 						// braintree hosted fields changes the divs in the template
 						// into input fields
-						// input: 'form-reset' // tried this but it didn't work well
-						input: {
-							margin: '0',
-							padding: '0',
-							'line-height': '1.625rem',
-							'font-size': '1.125rem',
-						},
-						':focus': {
-							'background-color': 'white'
-						}
+						// > Our devs become wrappers which can be styled by our css
+						// Import our base class for inputs
+						// > These are applied directly to the input elements
+						input: 'braintree-form-inputs',
 					},
 					fields: {
 						number: {
@@ -264,6 +258,16 @@ export default {
 
 $form-border-radius: rem-calc(3);
 
+// Utility class passed to Braintree Config
+// > These styles are applied directly to the inputs
+.braintree-form-inputs {
+	margin: 0;
+	padding: 0;
+	line-height: rem-calc(40);
+	font-size: rem-calc(16);
+	color: $dark-gray;
+}
+
 .braintree-holder {
 	display: block;
 	text-align: left;
@@ -281,11 +285,12 @@ $form-border-radius: rem-calc(3);
 		border-radius: $form-border-radius;
 	}
 
-	// forcing styles for now so form is digestable
+	// We control wrapping form and input container styles
 	#braintree-payment-form {
 		padding: 0 1rem;
 
-		// Hosted Field wrappers + input declarations
+		// Hosted Field input wrappers + input customization declarations
+		// > Our divs become wrappers around injected iframes containing input fields
 		.kv-braintree-wrapper {
 			margin: 0 0 1.25rem;
 			padding: 0 rem-calc(8);
@@ -317,7 +322,12 @@ $form-border-radius: rem-calc(3);
 
 			[type=number]::placeholder,
 			[type=text]::placeholder {
-				color: #ccc;
+				color: $gray;
+			}
+
+			[type=number]:focus,
+			[type=text]:focus {
+				color: $charcoal;
 			}
 		}
 
@@ -327,7 +337,7 @@ $form-border-radius: rem-calc(3);
 		// #kv-cvv,
 		// #kv-postal-code
 		#kv-cvv {
-			margin: 0 0.8rem;
+			margin: 0 rem-calc(15);
 		}
 
 		#braintree-submit {
