@@ -1,5 +1,5 @@
 <template>
-	<www-page class="loan-channel-page category-page">
+	<www-page class="loan-channel-page category-page" :gray-background="true">
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
@@ -19,6 +19,7 @@
 						:loan="loan"
 						:is-visitor="isVisitor"
 						:items-in-basket="itemsInBasket"
+						:lend-increment-button-version="lendIncrementExpVersion"
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
@@ -42,7 +43,6 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
-// import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
@@ -99,7 +99,7 @@ export default {
 		LoadingOverlay,
 		ViewToggle
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'cookieStore'],
 	metaInfo: {
 		title: 'Fundraising loans'
 	},
@@ -114,6 +114,7 @@ export default {
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
+			lendIncrementExpVersion: null,
 		};
 	},
 	computed: {
@@ -167,7 +168,7 @@ export default {
 					// setting for lend increment button is prefetched in loanChannelPageQuery
 					// TODO: REMOVE Once Lend Increment Button EXP ENDS
 					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } })
+					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } })
 				]);
 			});
 		}
@@ -216,6 +217,16 @@ export default {
 				}
 			}
 		});
+
+		// Read assigned version of lend increment button experiment
+		const lendIncrementExperimentAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'lend_increment_button_v2' },
+		});
+		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
+		if (this.lendIncrementExpVersion !== null) {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
+		}
 	},
 	methods: {
 		pageChange(number) {
@@ -242,6 +253,13 @@ export default {
 		this.updateFromParams(to.query);
 		next();
 	},
+	beforeRouteLeave(to, from, next) {
+		if (typeof window !== 'undefined' && to.path.indexOf('/lend/') !== -1) {
+			// set cookie to signify redirect
+			this.cookieStore.set('redirectFromUi', true);
+		}
+		next();
+	}
 };
 </script>
 

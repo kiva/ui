@@ -24,7 +24,7 @@
 						</template>
 					</ais-hits>
 					<algolia-pagination :padding="2" />
-					<ais-stats />
+					<algolia-pagination-stats :padding="2" />
 				</div>
 				<!-- eslint-enable vue/attribute-hyphenation -->
 			</ais-instant-search>
@@ -50,10 +50,10 @@ import {
 	AisInstantSearch,
 	AisHits,
 	AisCurrentRefinements,
-	AisStats,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
+import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import LendFilterMenu from '@/pages/Lend/LendFilterMenu';
 
 export default {
@@ -66,9 +66,9 @@ export default {
 		AisInstantSearch,
 		AisHits,
 		AisCurrentRefinements,
-		AisStats,
 		AlgoliaAdapter,
 		AlgoliaPagination,
+		AlgoliaPaginationStats,
 	},
 	metaInfo: {
 		title: 'Lend Filter'

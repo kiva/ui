@@ -1,5 +1,5 @@
 <template>
-	<www-page class="lend-page">
+	<www-page class="lend-page" :gray-background="true">
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
@@ -156,10 +156,6 @@ export default {
 @import 'settings';
 
 .lend-page {
-	main {
-		background-color: $kiva-bg-lightgray;
-	}
-
 	.loan-card-group {
 		position: relative;
 	}

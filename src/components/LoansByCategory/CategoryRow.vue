@@ -4,6 +4,7 @@
 			<div class="column small-12">
 				<h2 class="category-name">
 					<router-link
+						v-if="showViewAllLink"
 						class="view-all-link"
 						:to="cleanUrl"
 						:title="`View all ${cleanName} loans`"
@@ -13,6 +14,9 @@
 							`View all ${cleanName} loans`]">
 						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
 					</router-link>
+					<template v-else>
+						{{ cleanName }}
+					</template>
 				</h2>
 			</div>
 		</div>
@@ -43,8 +47,27 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
+
+					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
+						<router-link
+							:to="cleanUrl"
+							:title="`${viewAllLoansCategoryTitle}`"
+							v-kv-track-event="[
+								'Lending',
+								'click-View all',
+								`Loan card`]">
+
+							<div :class="loanCardTypeKebabCase">
+								<div class="link">
+									{{ viewAllLoansCategoryTitle }}
+								</div>
+							</div>
+						</router-link>
+					</div>
+
 				</div>
 			</div>
 			<span
@@ -58,6 +81,7 @@
 
 <script>
 import _get from 'lodash/get';
+import _kebabCase from 'lodash/kebabCase';
 import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
@@ -97,6 +121,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
+		},
 		imageEnhancementExperimentVersion: {
 			type: String,
 			default: ''
@@ -116,6 +144,9 @@ export default {
 	computed: {
 		loanCardType() {
 			return this.isMicro ? 'GridMicroLoanCard' : 'GridLoanCard';
+		},
+		loanCardTypeKebabCase() {
+			return _kebabCase(this.loanCardType);
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
@@ -154,7 +185,7 @@ export default {
 			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
-			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
 		},
 		throttledResize() {
 			return _throttle(this.saveWindowWidth, 100);
@@ -183,6 +214,9 @@ export default {
 
 			return isVisible;
 		},
+		viewAllLoansCategoryTitle() {
+			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
+		}
 	},
 	watch: {
 		loanChannel: {
@@ -308,7 +342,7 @@ a.view-all-link {
 
 	.view-all-arrow {
 		position: absolute;
-		top: -0.85rem;
+		top: -0.95rem;
 		right: -1.4rem;
 		padding: 0 0.3rem;
 		font-weight: $global-weight-normal;
@@ -344,6 +378,39 @@ a.view-all-link {
 
 	.cards-holder {
 		padding-left: 1rem;
+	}
+}
+
+// view all loans category card
+.view-all-loans-category {
+	.grid-loan-card {
+		background-color: $very-light-gray;
+		border: 1px solid $kiva-stroke-gray;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: auto;
+		padding: rem-calc(50);
+		width: rem-calc(280);
+
+		&:hover {
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.grid-micro-loan-card {
+		@extend .grid-loan-card;
+
+		padding: rem-calc(15);
+	}
+
+	.link {
+		align-items: center;
+		display: flex;
+		font-weight: 400;
+		height: 100%;
+		justify-content: center;
+		text-align: center;
 	}
 }
 </style>

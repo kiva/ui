@@ -7,6 +7,7 @@
 			ref="featured"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
+			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
@@ -14,6 +15,7 @@
 			:is-micro="true"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
+			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
@@ -27,6 +29,7 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
+				:lend-increment-button-version="lendIncrementExpVersion"
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			/>
 		</div>
@@ -111,6 +114,7 @@ export default {
 			categorySetId: '',
 			itemsInBasket: [],
 			imageEnhancementExperimentVersion: '',
+			lendIncrementExpVersion: null,
 			showFeaturedLoans: true,
 			realCategories: [],
 			customCategories: [],
@@ -130,8 +134,11 @@ export default {
 		categories() {
 			// merge realCategories & customCategories
 			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
-			// fiter our any empty categories and re-order to match the setting
-			return categories.filter(channel => channel.loans !== null).sort(indexIn(this.categoryIds, 'id'));
+			// fiter our any empty categories and categories with 0 loans
+			return categories.filter(channel => {
+				return channel.loans !== null && channel.loans.values.length;
+				// and re-order to match the setting
+			}).sort(indexIn(this.categoryIds, 'id'));
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
@@ -286,7 +293,7 @@ export default {
 					// Pre-fetch the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
 					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } }),
+					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } }),
 					// Pre-fetch the assigned version for recently viewed loans
 					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
 					// experiment: image enhancement
@@ -336,15 +343,13 @@ export default {
 		// this.setCustomRowData(categoryData);
 
 		// Read assigned version of lend increment button experiment
-		const lendIncrementExperimentVersion = this.apollo.readQuery({
+		const lendIncrementExperimentAssignment = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'lend_increment_button' },
+			variables: { id: 'lend_increment_button_v2' },
 		});
-		const lendIncrementExperimentVersionString = _get(lendIncrementExperimentVersion, 'experiment.version') || null;
-		if (lendIncrementExperimentVersionString === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'a');
-		} else if (lendIncrementExperimentVersionString === 'variant-b') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-103-Jan2019', 'b');
+		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
+		if (this.lendIncrementExpVersion !== null) {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
 		}
 
 		// image enchancement experiment
