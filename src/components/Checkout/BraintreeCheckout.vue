@@ -162,6 +162,8 @@ export default {
 						// Import our base class for inputs
 						// > These are applied directly to the input elements
 						input: 'braintree-form-inputs',
+						'input:focus': '#484848',
+						'input::placehoder': '#CCC'
 					},
 					fields: {
 						number: {
@@ -265,7 +267,7 @@ $form-border-radius: rem-calc(3);
 	padding: 0;
 	line-height: rem-calc(40);
 	font-size: rem-calc(16);
-	color: $dark-gray;
+	color: #808080; // TODO: make scss var
 }
 
 .braintree-holder {
@@ -290,7 +292,7 @@ $form-border-radius: rem-calc(3);
 		padding: 0 1rem;
 
 		// Hosted Field input wrappers + input customization declarations
-		// > Our divs become wrappers around injected iframes containing input fields
+		// > Our divs become wrappers around injected iframes containing	 input fields
 		.kv-braintree-wrapper {
 			margin: 0 0 1.25rem;
 			padding: 0 rem-calc(8);
