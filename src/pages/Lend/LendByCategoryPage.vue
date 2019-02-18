@@ -1,5 +1,5 @@
 <template>
-	<www-page class="lend-by-category-page">
+	<www-page class="lend-by-category-page" :gray-background="true">
 		<lend-header />
 
 		<FeaturedLoans
@@ -382,10 +382,6 @@ export default {
 @import 'global/transitions';
 
 .lend-by-category-page {
-	main {
-		background-color: $kiva-bg-lightgray;
-	}
-
 	.loan-category-row {
 		margin: 0 0 rem-calc(20);
 

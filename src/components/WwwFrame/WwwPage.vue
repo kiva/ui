@@ -4,7 +4,7 @@
 		<global-promo />
 		<the-header />
 		<slot name="secondary"></slot>
-		<main>
+		<main :class="{'gray-background': grayBackground}">
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
@@ -30,7 +30,13 @@ export default {
 		AppealBanner,
 		GlobalPromo,
 		CookieBanner,
-	}
+	},
+	props: {
+		grayBackground: {
+			type: Boolean,
+			default: false,
+		},
+	},
 };
 </script>
 
@@ -48,6 +54,10 @@ export default {
 
 	main {
 		flex-grow: 1;
+
+		&.gray-background {
+			background: $kiva-bg-lightgray;
+		}
 	}
 }
 </style>
