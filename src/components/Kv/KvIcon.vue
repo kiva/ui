@@ -64,7 +64,7 @@ export default {
 .icon-sector-wholesale,
 .icon-small-x,
 .icon-browse-toggle,
-.icon-filters-toggle, {
+.icon-filters-toggle {
 	fill: $kiva-text-dark;
 }
 
