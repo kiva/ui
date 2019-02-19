@@ -1,18 +1,18 @@
 <template>
-	<www-page class="lend-filter-page">
+	<www-page class="lend-filter-page" :gray-background="true">
 		<lend-header />
 		<div class="row page-content">
-			<div class="small-12 columns">
-				<ais-instant-search
-					v-if="searchClient"
-					:search-client="searchClient"
-					:index-name="algoliaIndex">
-					<!-- eslint-disable vue/attribute-hyphenation -->
+			<ais-instant-search
+				v-if="searchClient"
+				:search-client="searchClient"
+				:index-name="algoliaIndex">
+				<lend-filter-menu />
+				<!-- eslint-disable vue/attribute-hyphenation -->
+				<div class="small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
 						:filters="defaultFilter" />
 					<ais-current-refinements />
-					<ais-refinement-list :attribute="'sector.name'" />
 					<ais-hits
 						class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 						:results-per-page="12">
@@ -25,8 +25,9 @@
 					</ais-hits>
 					<algolia-pagination :padding="2" />
 					<algolia-pagination-stats :padding="2" />
-				</ais-instant-search>
-			</div>
+				</div>
+				<!-- eslint-enable vue/attribute-hyphenation -->
+			</ais-instant-search>
 		</div>
 	</www-page>
 </template>
@@ -49,22 +50,22 @@ import {
 	AisInstantSearch,
 	AisHits,
 	AisCurrentRefinements,
-	AisRefinementList,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
+import LendFilterMenu from '@/pages/Lend/LendFilterMenu';
 
 export default {
 	components: {
 		LoadingOverlay,
 		WwwPage,
 		LendHeader,
+		LendFilterMenu,
 		AisConfigure,
 		AisInstantSearch,
 		AisHits,
 		AisCurrentRefinements,
-		AisRefinementList,
 		AlgoliaAdapter,
 		AlgoliaPagination,
 		AlgoliaPaginationStats,
@@ -95,7 +96,7 @@ export default {
 			defaultSearch: 'Energy',
 			// Focus in on fundraising Loans
 			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
-			itemsInBasket: null
+			itemsInBasket: null,
 		};
 	},
 	inject: [
@@ -122,8 +123,9 @@ export default {
 @import 'settings';
 
 .lend-filter-page {
-	main {
-		background-color: $kiva-bg-lightgray;
+	.page-content {
+		max-width: 63.75rem;
+		padding: 0 1.5625rem;
 	}
 }
 </style>
