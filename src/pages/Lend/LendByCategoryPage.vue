@@ -1,5 +1,5 @@
 <template>
-	<www-page class="lend-by-category-page" :gray-background="true">
+	<www-page class="lend-by-category-page">
 		<lend-header />
 
 		<FeaturedLoans
