@@ -1,73 +1,40 @@
 <template>
-	<div class="braintree-holder">
-		<!-- <div class="card-header"> -->
-		<h3 class="card-title columns">Enter Card Details</h3>
-		<!-- </div> -->
+	<div class="braintree-holder small-12 medium-7 large-6 xlarge-5">
+		<div class="card-header text-center">
+			<h3 class="card-title">Pay with card</h3>
+		</div>
 
 		<form id="braintree-payment-form">
-			<div class="grid-container small-12 columns">
-
-				<!-- Card number input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Card Number
-								<div id="card-number"></div>
-								<span class="helper-text"></span>
-							</label>
-						</div>
-					</div>
+			<!-- Card number input -->
+			<div class="row small-collapse">
+				<div class="small-12 columns">
+					<label for="kv-card-number">Card Number</label>
+					<div id="kv-card-number" class="kv-braintree-wrapper"></div>
 				</div>
+			</div>
 
-				<!-- Card expiration input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Exp. Date
-								<div class="small-6">
-									<!--  Hosted Fields div container -->
-									<div id="expiration-month"></div>
-									<span class="helper-text"></span>
-								</div>
-								<div class="small-6">
-									<!--  Hosted Fields div container -->
-									<div id="expiration-year"></div>
-									<span class="helper-text"></span>
-								</div>
-							</label>
-						</div>
-					</div>
+			<!-- Inline Inputs -->
+			<div class="row small-collapse">
+				<div class="small-4 columns">
+					<label for="kv-expiration-date">Expiration</label>
+					<div id="kv-expiration-date" class="kv-braintree-wrapper"></div>
 				</div>
-
-				<!-- Card security code input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Security Code</label>
-							<!--  Hosted Fields div container -->
-							<div id="cvv"></div>
-						</div>
-					</div>
+				<div class="small-4 columns">
+					<label>CVV</label>
+					<div id="kv-cvv" class="kv-braintree-wrapper"></div>
 				</div>
-
-				<!-- Zip code input -->
-				<div class="row">
-					<div class="cell input-group">
-						<div class="small-12 columns">
-							<label>Zipcode</label>
-							<!--  Hosted Fields div container -->
-							<div id="postal-code"></div>
-						</div>
-					</div>
+				<div class="small-4 columns">
+					<label>Zip code</label>
+					<div id="kv-postal-code" class="kv-braintree-wrapper"></div>
 				</div>
+			</div>
 
-				<!-- Submit payment button -->
-				<div class="row">
-					<div class="small-12 columns">
-						<button value="submit" id="braintree-submit" class="button center-block">
-							Pay with <span id="card-type">Card</span>
-						</button>
-					</div>
+			<!-- Submit payment button -->
+			<div class="row small-collapse">
+				<div class="small-12 columns">
+					<kv-button value="submit" id="braintree-submit" class="button smallest">
+						Pay with <span id="card-type">card</span>
+					</kv-button>
 				</div>
 			</div>
 		</form>
@@ -82,8 +49,12 @@ import numeral from 'numeral';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
+	components: {
+		KvButton
+	},
 	inject: ['apollo'],
 	mixins: [
 		checkoutUtils
@@ -187,33 +158,28 @@ export default {
 						// Have to put input related styles right here.
 						// braintree hosted fields changes the divs in the template
 						// into input fields
-						input: {
-							'font-size': '16px',
-							'font-family': 'helvetica, tahoma, calibri, sans-serif'
-						},
-						':focus': {
-							color: 'black'
-						}
+						// > Our devs become wrappers which can be styled by our css
+						// Import our base class for inputs
+						// > These are applied directly to the input elements
+						input: 'braintree-form-inputs',
+						'input:focus': '#484848',
+						'input::placehoder': '#CCC'
 					},
 					fields: {
 						number: {
-							selector: '#card-number',
+							selector: '#kv-card-number',
 							placeholder: '4111 1111 1111 1111'
 						},
 						cvv: {
-							selector: '#cvv',
+							selector: '#kv-cvv',
 							placeholder: '123'
 						},
-						expirationMonth: {
-							selector: '#expiration-month',
-							placeholder: 'MM'
-						},
-						expirationYear: {
-							selector: '#expiration-year',
-							placeholder: 'YYYY'
+						expirationDate: {
+							selector: '#kv-expiration-date',
+							placeholder: 'MM/YY'
 						},
 						postalCode: {
-							selector: '#postal-code',
+							selector: '#kv-postal-code',
 							placeholder: '90210'
 						}
 					}
@@ -292,22 +258,93 @@ export default {
 <style lang="scss">
 @import "settings";
 
+$form-border-radius: rem-calc(3);
+
+// Utility class passed to Braintree Config
+// > These styles are applied directly to the inputs
+.braintree-form-inputs {
+	margin: 0;
+	padding: 0;
+	line-height: rem-calc(40);
+	font-size: rem-calc(16);
+	color: #808080; // TODO: make scss var
+}
+
 .braintree-holder {
 	display: block;
-	text-align: center;
 	text-align: left;
 	float: right;
+	border: 1px solid $subtle-gray; //#c3c3c3
+	padding: 0 2rem 1.5rem;
+	border-radius: $form-border-radius;
+	margin-top: 3rem;
 
-	// forcing styles for now so form is digestable
+	.card-header {
+		position: relative;
+		top: -1.2rem;
+		background: $ghost;
+		border: 1px solid $subtle-gray;
+		border-radius: $form-border-radius;
+	}
+
+	// We control wrapping form and input container styles
 	#braintree-payment-form {
-		.input-group #card-number,
-		.input-group #expiration-month,
-		.input-group #expiration-year,
-		.input-group #cvv,
-		.input-group #postal-code {
-			height: 44px;
-			border: 1px solid #3a3a3a;
-			padding: 8px;
+		padding: 0 1rem;
+
+		// Hosted Field input wrappers + input customization declarations
+		// > Our divs become wrappers around injected iframes containing	 input fields
+		.kv-braintree-wrapper {
+			margin: 0 0 1.25rem;
+			padding: 0 rem-calc(8);
+			// line-height: 1.5rem;
+			height: rem-calc(40);
+			// font-size: 1.25rem;
+			color: $kiva-text-dark;
+			background: $ghost; //#fafafa
+			border-radius: $form-border-radius;
+			border: 1px solid $subtle-gray;
+			text-align: center;
+
+			&:focus {
+				background: $white;
+			}
+
+			&:-webkit-autofill {
+				background-color: #fefced;
+			}
+
+			[type=number],
+			[type=text] {
+				background: transparent;
+				box-shadow: none;
+				text-align: center;
+				padding: 0;
+				margin: 0;
+			}
+
+			[type=number]::placeholder,
+			[type=text]::placeholder {
+				color: $gray;
+			}
+
+			[type=number]:focus,
+			[type=text]:focus {
+				color: $charcoal;
+			}
+		}
+
+		// specific field wrapper overrides
+		// #kv-card-number,
+		// #kv-expiration-date,
+		// #kv-cvv,
+		// #kv-postal-code
+		#kv-cvv {
+			margin: 0 rem-calc(15);
+		}
+
+		#braintree-submit {
+			width: 100%;
+			margin-top: 0.8rem;
 		}
 	}
 }
