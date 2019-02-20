@@ -23,6 +23,10 @@ query {
 			key
 			value
 		}
+		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
