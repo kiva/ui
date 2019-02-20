@@ -1,10 +1,10 @@
 <template functional>
-	<div class="filter-menu-section" :class="{open}">
+	<div class="filter-menu-section" :class="{open: props.open}">
 		<div class="filter-summary">
 			<div class="filter-summary-title">
-				{{ title }} <span class="filter-result-count">({{ resultCount }})</span>
+				{{ props.title }} <span class="filter-result-count">({{ props.resultCount }})</span>
 			</div>
-			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
+			<div class="filter-summary-applied-filters">{{ props.appliedFilters }}</div>
 		</div>
 		<div class="filter-items-container">
 			<slot></slot>
