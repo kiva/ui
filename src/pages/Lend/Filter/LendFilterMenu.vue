@@ -26,7 +26,7 @@
 
 import KvIcon from '@/components/Kv/KvIcon';
 
-import FilterMenuSection from '@/pages/Lend/LendFilter/FilterMenuSection';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 
 import { AisRefinementList } from 'vue-instantsearch';
 
