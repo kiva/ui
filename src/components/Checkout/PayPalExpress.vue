@@ -248,7 +248,7 @@ export default {
 						color: 'blue',
 						shape: 'rect',
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
-						fundingicons: this.showHidePaypalIcons()
+						fundingicons: !this.showBraintree
 					}
 				},
 				'#paypal-button'
@@ -257,13 +257,6 @@ export default {
 		setUpdating(state) {
 			this.loading = state;
 			this.$emit('updating-totals', state);
-		},
-		showHidePaypalIcons() {
-			// Look at braintree feature flag and show or hide paypal card icons based on feature flag
-			if (!this.showBraintree) {
-				return true;
-			}
-			return false;
 		}
 	}
 };
