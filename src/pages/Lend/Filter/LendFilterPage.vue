@@ -54,7 +54,7 @@ import {
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
-import LendFilterMenu from '@/pages/Lend/LendFilterMenu';
+import LendFilterMenu from '@/pages/Lend/Filter/LendFilterMenu';
 
 export default {
 	components: {
