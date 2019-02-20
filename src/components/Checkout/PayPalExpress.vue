@@ -1,8 +1,10 @@
 <template>
 	<div class="paypal-holder">
 		<div id="paypal-button" ref="paypalbutton"></div>
-		<p class="pp-tagline small-text">Thanks to PayPal, Kiva receives
-		<br class="hide-for-large"> free payment processing.</p>
+		<p class="pp-tagline small-text"
+			v-if="!showBraintree">Thanks to PayPal, Kiva receives
+			<br class="hide-for-large"> free payment processing.
+		</p>
 	</div>
 </template>
 
@@ -25,6 +27,10 @@ export default {
 		amount: {
 			type: String,
 			default: ''
+		},
+		showBraintree: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -242,7 +248,7 @@ export default {
 						color: 'blue',
 						shape: 'rect',
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
-						fundingicons: true
+						fundingicons: false
 					}
 				},
 				'#paypal-button'

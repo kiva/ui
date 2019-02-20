@@ -104,6 +104,7 @@
 							<div class="small-12">
 								<pay-pal-exp
 									v-if="showPayPal"
+									:show-braintree="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
