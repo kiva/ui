@@ -49,13 +49,15 @@ export default {
 
 	.filter-items-container {
 		display: none;
-		background-color: #F6FBF6;
+
+		ul {
+			list-style-type: none;
+			margin-bottom: 0;
+		}
 	}
 
 	&.open {
-		.filter-summary {
-			display: none;
-		}
+		background-color: #F6FBF6;
 
 		.filter-items-container {
 			display: block;

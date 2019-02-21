@@ -8,7 +8,13 @@
 			</div>
 			<div id="filter-menu">
 				<filter-menu-section title="Categories" :open="true" :result-count="10">
-					<ais-refinement-list :attribute="'sector.name'" />
+					<ais-refinement-list :attribute="'sector.name'" :sort-by="['name:asc']" />
+				</filter-menu-section>
+				<filter-menu-section title="Location" :open="true" :result-count="10">
+					<ais-hierarchical-menu
+						:attributes="['location.region.name', 'location.region.country.name']"
+						:sort-by="['name:asc']"
+					/>
 				</filter-menu-section>
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
@@ -28,13 +34,14 @@ import KvIcon from '@/components/Kv/KvIcon';
 
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 
-import { AisRefinementList } from 'vue-instantsearch';
+import { AisRefinementList, AisHierarchicalMenu } from 'vue-instantsearch';
 
 export default {
 	components: {
 		KvIcon,
 		FilterMenuSection,
 		AisRefinementList,
+		AisHierarchicalMenu,
 	},
 	data() {
 		return {
