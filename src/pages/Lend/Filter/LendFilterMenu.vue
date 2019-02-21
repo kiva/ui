@@ -9,6 +9,61 @@
 			<div id="filter-menu">
 				<filter-section-categories :result-count="10" :open="true" />
 				<filter-section-location :result-count="10" :open="true" />
+
+				<filter-menu-section title="Loan details" :open="true" :result-count="4">
+					<filter-range-slider
+						id="lender-repyament-term"
+						:minimum="4"
+						:maximum="25"
+						:value="25"
+						query-attribute="lenderRepaymentTerm"
+						title="Loan length"
+						maximum-label="any"
+						minimum-label=" months or less"
+						inbetween-label=" months or less"
+					/>
+
+					<filter-range-slider
+						id="delinquency-rate"
+						:minimum="0"
+						:maximum="58"
+						:value="58"
+						query-attribute="partner.delinquencyRate"
+						title="Delinquency rate"
+						maximum-label="any"
+						minimum-label="Only 0%"
+						:minimum-value-label=false
+						inbetween-label="% or less"
+					/>
+
+					<filter-range-slider
+						id="default-rate"
+						:minimum="0"
+						:maximum="24"
+						:value="24"
+						query-attribute="partner.defaultRate"
+						title="Default rate"
+						maximum-label="any"
+						minimum-label="Only 0%"
+						:minimum-value-label=false
+						inbetween-label="% or less"
+					/>
+
+					<filter-range-slider
+						id="risk-rating"
+						:minimum="0"
+						:maximum="5"
+						:minimum-maximum-swap=true
+						:value="0"
+						query-attribute="partner.riskRating"
+						title="Risk rating"
+						maximum-label="Only 5 stars"
+						minimum-label="any"
+						:minimum-value-label=false
+						inbetween-label=" stars or more"
+					/>
+				</filter-menu-section>
+
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
 				</div>
@@ -23,15 +78,17 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
+import FilterRangeSlider from '@/pages/Lend/Filter/FilterRangeSlider';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
 
 export default {
 	components: {
+		FilterMenuSection,
+		FilterRangeSlider,
 		FilterSectionCategories,
 		FilterSectionLocation,
 		KvIcon,
-		FilterMenuSection,
 	},
 	data() {
 		return {
@@ -42,11 +99,11 @@ export default {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
 		},
-		toggleFilterMenu() {
-			this.filterMenuOpen = !this.filterMenuOpen;
-		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';
+		},
+		toggleFilterMenu() {
+			this.filterMenuOpen = !this.filterMenuOpen;
 		},
 	},
 };
@@ -147,6 +204,10 @@ export default {
 				pointer-events: initial;
 			}
 		}
+	}
+
+	.ais-RangeInput {
+		margin-bottom: rem-calc(15);
 	}
 }
 </style>
