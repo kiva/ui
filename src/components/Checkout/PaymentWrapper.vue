@@ -4,11 +4,9 @@
 			<kv-pill-toggle
 				:selected="selectedOption"
 				:options="options"
-				@pillToggled="pillToggled(key)"/>
+				@pillToggled="pillToggled"/>
 		</div>
 	</div>
-
-
 </template>
 
 <script>
@@ -41,6 +39,7 @@ export default {
 		// layer in error conditions, is there ever a situation where we wouldn't want to
 		// load the PayPal or Braintree forms?
 		pillToggled(key) {
+			console.log(key);
 			this.selectedOption = key;
 		}
 	}
@@ -65,7 +64,7 @@ $form-border-radius: rem-calc(3);
 		position: relative;
 		top: -1.2rem;
 		background: $ghost;
-		border: 1px solid $subtle-gray;
+		// border: 1px solid $subtle-gray;
 		display: inline-block;
 		border-radius: $form-border-radius;
 	}

@@ -115,6 +115,12 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
+								<payment-wrapper
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+								/>
+
 								<kiva-credit-payment
 									v-if="showKivaCreditButton"
 									@refreshtotals="refreshTotals"
@@ -200,6 +206,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
+import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 
 export default {
 	components: {
@@ -219,6 +226,7 @@ export default {
 		CheckoutHolidayPromo,
 		LYML,
 		BraintreeCheckout,
+		PaymentWrapper
 	},
 	inject: ['apollo'],
 	mixins: [
