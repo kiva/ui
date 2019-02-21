@@ -1,5 +1,5 @@
-query {
+query ($useCustomerId: Boolean = false) {
 	shop {
-		getClientToken
+		getClientToken(useCustomerId: $useCustomerId)
 	}
 }

@@ -29,6 +29,18 @@
 				</div>
 			</div>
 
+			<!-- Inline Inputs -->
+			<div class="row small-collapse">
+				<div class="small-12 columns vault-checkbox-wrapper">
+					<label for="vault-checkbox">
+						<input
+							v-model="storePaymentMethod"
+							type="checkbox"
+							id="vault-checkbox"> Store Payment method
+					</label>
+				</div>
+			</div>
+
 			<!-- Submit payment button -->
 			<div class="row small-collapse">
 				<div class="small-12 columns">
@@ -70,13 +82,15 @@ export default {
 			ensureBraintreeScript: null,
 			braintreeRendered: false,
 			loading: false,
-			clientToken: null
+			clientToken: null,
+			storePaymentMethod: false
 		};
 	},
 	metaInfo() {
 		// ensure Braintree script is loaded
 		const braintreeScript = {};
 		const braintreeHostedFieldsScript = {};
+		const braintreeVaultManagerScript = {};
 
 		// check for braintree incase script is already loaded
 		if (typeof braintree === 'undefined') {
@@ -87,12 +101,16 @@ export default {
 			// Trying to load in the hosted fields script
 			braintreeHostedFieldsScript.type = 'text/javascript';
 			braintreeHostedFieldsScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/hosted-fields.min.js';
+
+			braintreeVaultManagerScript.type = 'text/javascript';
+			braintreeVaultManagerScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/vault-manager.min.js';
 		}
 
 		return {
 			script: [
 				braintreeScript,
-				braintreeHostedFieldsScript
+				braintreeHostedFieldsScript,
+				braintreeVaultManagerScript
 			]
 		};
 	},
@@ -114,7 +132,8 @@ export default {
 			this.apollo.query({
 				query: getClientToken,
 				variables: {
-					amount: numeral(this.amount).format('0.00'),
+					// amount: numeral(this.amount).format('0.00'),
+					useCustomerId: true
 				}
 			}).then(response => {
 				// if (response.errors) {
@@ -151,6 +170,48 @@ export default {
 					console.error(err);
 					return;
 				}
+
+				// Fallback usage of clientInstance
+				// https://github.com/braintree/braintree-web/issues/269
+				// - https://codepen.io/lilaconlee/pen/PpbbOL
+				// clientInstance.request({
+				// 	endpoint: 'payment_methods',
+				// 	method: 'get',
+				// 	data: {
+				// 		defaultFirst: 1
+				// 	}
+				// }, (paymentMethodErr, payload) => {
+				// 	if (paymentMethodErr) {
+				// 		console.error(paymentMethodErr);
+				// 		return;
+				// 	}
+
+				// 	// const { paymentMethods } = payload;
+
+				// 	console.log(payload);
+				// });
+
+				let vaultInstance = null;
+				braintree.vaultManager.create({
+					// client: clientInstance,
+					authorization: this.clientToken
+				}, (vaultError, btVaultInstance) => {
+					vaultInstance = btVaultInstance;
+
+					console.error(vaultError);
+					console.log(vaultInstance);
+
+					vaultInstance.fetchPaymentMethods((fetchPaymentMethodError, paymentMethods) => {
+						console.error(fetchPaymentMethodError);
+						paymentMethods.forEach(paymentMethod => {
+							// add payment method to UI
+							console.log(paymentMethod);
+							// paymentMethod.nonce <- transactable nonce associated with payment method
+							// paymentMethod.details <- object with additional information about payment method
+							// paymentMethod.type <- a constant signifying the type
+						});
+					});
+				});
 
 				braintree.hostedFields.create({
 					client: clientInstance,
@@ -204,7 +265,8 @@ export default {
 								mutation: braintreeDepositAndCheckout,
 								variables: {
 									amount: numeral(this.amount).format('0.00'),
-									nonce: payload.nonce
+									nonce: payload.nonce,
+									savePaymentMethod: this.storePaymentMethod
 								}
 							}).then(kivaBraintreeResponse => {
 								// Check for errors
