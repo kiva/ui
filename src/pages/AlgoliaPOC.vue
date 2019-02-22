@@ -16,6 +16,7 @@
 							:filters="defaultFilter" />
 						<ais-current-refinements />
 						<ais-refinement-list :attribute="'sector.name'" />
+						<ais-sort-by :items="sortOptions"/>
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">
@@ -51,6 +52,7 @@ import {
 	AisCurrentRefinements,
 	AisRefinementList,
 	AisStats,
+	AisSortBy,
 } from 'vue-instantsearch';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
@@ -69,7 +71,8 @@ export default {
 		AisRefinementList,
 		AisStats,
 		ActionButton,
-		AlgoliaAdapter
+		AlgoliaAdapter,
+		AisSortBy
 	},
 	metaInfo: {
 		title: 'Algolia Search'
@@ -106,6 +109,19 @@ export default {
 				// Pre-fetch the assigned version for lend increment button
 				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
 			});
+		}
+	},
+	computed: {
+		sortOptions() {
+			return [
+				{ value: 'dev_fundraising_amount_asc', label: 'Amount: low to high' },
+				{ value: 'dev_fundraising_amount_desc', label: 'Amount: high to low' },
+				{ value: 'dev_fundraising_amount_remaining', label: 'Amount left' },
+				{ value: 'dev_fundraising_expiring_soon', label: 'Expiring soon' },
+				{ value: 'dev_fundraising_loan_length', label: 'Loan length' },
+				{ value: 'dev_fundraising_loans', label: 'Most Recent' },
+				{ value: 'dev_fundraising_popularity', label: 'Trending Now' },
+			];
 		}
 	},
 	mounted() {
