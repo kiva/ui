@@ -8,7 +8,7 @@
 			</div>
 			<div id="filter-menu">
 				<filter-menu-section title="Categories" :open="true" :result-count="10">
-					<ais-refinement-list :attribute="'sector.name'" />
+					<ais-refinement-list :attribute="'sector.name'" :sort-by="['name:asc']" />
 				</filter-menu-section>
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
