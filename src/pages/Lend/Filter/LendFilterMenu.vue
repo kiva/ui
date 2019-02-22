@@ -7,9 +7,7 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<filter-menu-section title="Categories" :open="true" :result-count="10">
-					<ais-refinement-list :attribute="'sector.name'" :sort-by="['name:asc']" />
-				</filter-menu-section>
+				<filter-section-categories result-count="10" />
 				<filter-menu-section title="Location" :open="true" :result-count="10">
 					<ais-hierarchical-menu
 						:attributes="['location.region.name', 'location.region.country.name']"
@@ -33,14 +31,14 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-
-import { AisRefinementList, AisHierarchicalMenu } from 'vue-instantsearch';
+import { AisHierarchicalMenu } from 'vue-instantsearch';
+import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
 
 export default {
 	components: {
+		FilterSectionCategories,
 		KvIcon,
 		FilterMenuSection,
-		AisRefinementList,
 		AisHierarchicalMenu,
 	},
 	data() {
