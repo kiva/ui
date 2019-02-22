@@ -1,5 +1,5 @@
 <template>
-	<div id="lend-filter-menu" class="small-12 columns open" :class="{testing: filterMenuOpen}">
+	<div id="lend-filter-menu" class="small-12 columns open" >
 		<div id="lend-filter-overlay" @click="hideFilterMenu"></div>
 		<div id="lend-filter-wrapper">
 			<div id="filter-toggle" @click="toggleFilterMenu">
