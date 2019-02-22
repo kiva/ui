@@ -1,5 +1,5 @@
 <template>
-	<div id="lend-filter-menu" class="small-12 columns" :class="{open: filterMenuOpen}">
+	<div id="lend-filter-menu" class="small-12 columns open" :class="{testing: filterMenuOpen}">
 		<div id="lend-filter-overlay" @click="hideFilterMenu"></div>
 		<div id="lend-filter-wrapper">
 			<div id="filter-toggle" @click="toggleFilterMenu">
@@ -103,7 +103,7 @@ export default {
 		#filter-menu {
 			position: absolute;
 			top: 2rem;
-			left: 0;
+			left: 200px;
 			opacity: 0;
 			z-index: 1;
 			user-select: none;
@@ -135,19 +135,24 @@ export default {
 
 	&.open {
 		#lend-filter-overlay {
-			background-color: rgba(0, 0, 0, 0.6);
-			pointer-events: initial;
+			background-color: rgba(0, 0, 0, 0.1);
 		}
 
 		#lend-filter-wrapper {
 			#filter-toggle {
-				background-color: rgba(255, 255, 255, 1);
+				background-color: rgba(255, 255, 255, 0.8);
 			}
 
 			#filter-menu {
 				opacity: 1;
 				pointer-events: initial;
 			}
+		}
+	}
+
+	&.testing {
+		#lend-filter-overlay {
+			background-color: rgba(0, 0, 0, 0.4);
 		}
 	}
 }
