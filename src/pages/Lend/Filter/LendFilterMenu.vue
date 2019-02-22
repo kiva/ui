@@ -8,12 +8,7 @@
 			</div>
 			<div id="filter-menu">
 				<filter-section-categories result-count="10" />
-				<filter-menu-section title="Location" :open="true" :result-count="10">
-					<ais-hierarchical-menu
-						:attributes="['location.region.name', 'location.region.country.name']"
-						:sort-by="['name:asc']"
-					/>
-				</filter-menu-section>
+				<filter-section-location result-count="10" />
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
 				</div>
@@ -31,15 +26,15 @@
 import KvIcon from '@/components/Kv/KvIcon';
 
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-import { AisHierarchicalMenu } from 'vue-instantsearch';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
+import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
 
 export default {
 	components: {
 		FilterSectionCategories,
+		FilterSectionLocation,
 		KvIcon,
 		FilterMenuSection,
-		AisHierarchicalMenu,
 	},
 	data() {
 		return {
