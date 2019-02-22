@@ -34,6 +34,16 @@ Command Shift P - to install extensions
 
 > Search the name (ex. octref.vetur or shinn.stylelint) into the Extensions area to install within VSCode
 
+### VSCode Setup for Eslint
+> Generate the .vscode folder with a settings.json inside and apply the following settings (.vscode is already in our .gitignore file)
+```
+"eslint.validate": [
+	"javascript",
+	"javascriptreact",
+	"vue"
+]
+```
+
 ## PHPStorm
 
 [SCSS Style Linting](https://github.com/Jardinero/stylelint-plugin)
