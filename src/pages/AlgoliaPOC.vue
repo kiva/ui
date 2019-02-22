@@ -16,6 +16,11 @@
 							:filters="defaultFilter" />
 						<ais-current-refinements />
 						<ais-refinement-list :attribute="'sector.name'" />
+						<ais-breadcrumb
+							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']" />
+						<ais-hierarchical-menu
+							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
+							:limit="100" />
 						<ais-sort-by :items="sortOptions"/>
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
@@ -51,6 +56,8 @@ import {
 	AisPagination,
 	AisCurrentRefinements,
 	AisRefinementList,
+	AisHierarchicalMenu,
+	AisBreadcrumb,
 	AisStats,
 	AisSortBy,
 } from 'vue-instantsearch';
@@ -69,6 +76,8 @@ export default {
 		AisPagination,
 		AisCurrentRefinements,
 		AisRefinementList,
+		AisHierarchicalMenu,
+		AisBreadcrumb,
 		AisStats,
 		ActionButton,
 		AlgoliaAdapter,
