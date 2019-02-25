@@ -82,7 +82,7 @@ export default {
 			position: absolute;
 			top: 0;
 			left: 0;
-			z-index: 1;
+			z-index: 1001;
 			padding: 0.25rem 0.25rem 0.25rem 0.5rem;
 			user-select: none;
 			height: 2rem;

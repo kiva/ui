@@ -9,6 +9,7 @@
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"
 			:limit="100"
+			:transform-items="transformItems"
 		/>
 	</filter-menu-section>
 </template>
@@ -34,6 +35,15 @@ export default {
 		resultCount: {
 			type: Number,
 			required: true,
+		},
+	},
+	methods: {
+		transformItems(items) {
+			return items.map(item => ({
+				...item,
+				count: `(${item.count})`,
+				data: item.data ? this.transformItems(item.data) : item.data,
+			}));
 		},
 	},
 };
