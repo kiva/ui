@@ -7,7 +7,7 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<filter-section-categories result-count="10" />
+				<filter-section-categories :result-count="10" />
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
 				</div>
