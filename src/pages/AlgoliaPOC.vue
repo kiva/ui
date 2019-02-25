@@ -17,11 +17,30 @@
 						<ais-current-refinements />
 						<ais-refinement-list :attribute="'sector.name'" />
 						<ais-breadcrumb
+							root-path=""
 							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']" />
 						<ais-hierarchical-menu
 							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 							:limit="100" />
 						<ais-sort-by :items="defaultSortIndices"/>
+						<!-- <ais-toggle-refinement
+							label="Agriculture"
+							:attribute="'sector.name' || 'themeData.themeTypeName'"
+							:on="'Agriculture' || 'Trees'" />
+						<ais-toggle-refinement
+							label="Technology"
+							:attribute="'tags.name' || 'themeData.themeTypeName'"
+							:on="'#Technology' || 'Mobile Technology'">
+							<a slot-scope="{ value, refine, createURL }"
+								:href="createURL(value)"
+								:style="{ fontWeight: value.isRefined ? 'bold' : '' }"
+								@click.prevent="refine(value)">
+								{{ value.name }}
+								({{ value.count }})
+								{{ value.isRefined }}
+								<i>{{ createURL(value) }}</i>
+							</a>
+						</ais-toggle-refinement> -->
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">
@@ -60,6 +79,7 @@ import {
 	AisCurrentRefinements,
 	AisRefinementList,
 	AisHierarchicalMenu,
+	AisToggleRefinement,
 	AisBreadcrumb,
 	AisStats,
 	AisSortBy,
@@ -81,6 +101,7 @@ export default {
 		AisCurrentRefinements,
 		AisRefinementList,
 		AisHierarchicalMenu,
+		AisToggleRefinement,
 		AisBreadcrumb,
 		AisStats,
 		ActionButton,
