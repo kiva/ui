@@ -21,6 +21,12 @@ module.exports = {
 		fbOgNameSpace: 'kivadotorg',
 		enableSentry: true,
 		sentryURI: 'https://3ab8031cd8bf45d48f79e2b77657e16e@sentry.io/1201288',
+		algoliaConfig: {
+			group: 'prod',
+			appId: 'H4ONVZQ2C6',
+			apiKey: '82ec72aa3177a6f4fc47b7103e6db786',
+			defaultIndex: 'prod_fundraising_loans',
+		},
 		enableAuth0: false,
 		auth0ApiAudience: 'https://api.kivaws.org/graphql',
 		auth0BrowserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF', // @todo update with prod app id

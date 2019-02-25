@@ -23,10 +23,10 @@ module.exports = merge(base, {
 		enableSentry: false,
 		sentryURI: '',
 		algoliaConfig: {
+			group: 'dev',
 			appId: 'testingZ9YK0WNQ85',
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
 			defaultIndex: 'dev_fundraising_loans',
-			fundraisingIndex: 'dev_fundraising_loans',
 		},
 		enableAuth0: false,
 		auth0ApiAudience: 'https://api.dev.kivaws.org/graphql',
