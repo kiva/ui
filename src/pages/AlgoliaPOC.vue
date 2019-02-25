@@ -8,7 +8,7 @@
 					<ais-instant-search
 						v-if="searchClient"
 						:search-client="searchClient"
-						:index-name="algoliaIndex">
+						:index-name="algoliaDefaultIndex">
 						<!-- eslint-disable vue/attribute-hyphenation -->
 						<!-- We could run a default query... :query="defaultSearch" -->
 						<ais-configure
@@ -21,7 +21,7 @@
 						<ais-hierarchical-menu
 							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 							:limit="100" />
-						<ais-sort-by :items="sortOptions"/>
+						<ais-sort-by :items="defaultSortIndicies"/>
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">
@@ -45,10 +45,12 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import algoliaConfig from '@/plugins/algolia-config-mixin';
 // Import your specific Algolia Components here
 // V2 Beta
 // https://v2--vue-instantsearch.netlify.com/getting-started/using-components.html
-import algoliasearch from 'algoliasearch/lite';
+// algolia search is always required, moved to mixin
+// import algoliasearch from 'algoliasearch/lite';
 import {
 	AisConfigure,
 	AisInstantSearch,
@@ -88,21 +90,18 @@ export default {
 	},
 	data() {
 		return {
-			// These are required in each instance of the plugin
-			algoliaAppId: this.algoliaConfig.appId,
-			algoliaApiKey: this.algoliaConfig.apiKey,
-			searchClient: null,
-			// The index will likey be different based on context
-			algoliaIndex: this.algoliaConfig.fundraisingIndex, // defaultIndex
+			// Optional default search
 			defaultSearch: 'Energy',
-			// Focus in on fundraising Loans
+			// Optional default filter
 			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
-			itemsInBasket: null
+			itemsInBasket: null,
 		};
 	},
 	inject: [
 		'apollo',
-		'algoliaConfig'
+	],
+	mixins: [
+		algoliaConfig
 	],
 	apollo: {
 		preFetch(config, client) {
@@ -120,27 +119,6 @@ export default {
 			});
 		}
 	},
-	computed: {
-		sortOptions() {
-			return [
-				{ value: 'dev_fundraising_amount_asc', label: 'Amount: low to high' },
-				{ value: 'dev_fundraising_amount_desc', label: 'Amount: high to low' },
-				{ value: 'dev_fundraising_amount_remaining', label: 'Amount left' },
-				{ value: 'dev_fundraising_expiring_soon', label: 'Expiring soon' },
-				{ value: 'dev_fundraising_loan_length', label: 'Loan length' },
-				{ value: 'dev_fundraising_loans', label: 'Most Recent' },
-				{ value: 'dev_fundraising_popularity', label: 'Trending Now' },
-			];
-		}
-	},
-	mounted() {
-		// initialize searchClient + components on mount
-		// TODO: update initialization once vue-instantsearch V2 supports SSR
-		this.searchClient = algoliasearch(
-			this.algoliaConfig.appId,
-			this.algoliaConfig.apiKey
-		);
-	}
 };
 </script>
 

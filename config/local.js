@@ -7,10 +7,10 @@ module.exports = merge(base, {
 		publicPath: '/',
 		graphqlUri: 'https://api.kivaws.org/graphql',
 		algoliaConfig: {
-			appId: 'H4ONVZQ2C6',
-			apiKey: 'a373a52c000e929706c9e02a5862a327',
-			defaultIndex: 'dev_all_loans',
-			fundraisingIndex: 'dev_fundraising_loans',
+			group: 'dev',
+			appId: 'testingZ9YK0WNQ85',
+			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
+			defaultIndex: 'dev_fundraising_loans',
 		},
 	},
 	server: {
