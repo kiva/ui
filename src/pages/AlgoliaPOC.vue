@@ -21,7 +21,7 @@
 						<ais-hierarchical-menu
 							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 							:limit="100" />
-						<ais-sort-by :items="defaultSortIndicies"/>
+						<ais-sort-by :items="defaultSortIndices"/>
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">

@@ -25,7 +25,7 @@ export default {
 		};
 	},
 	computed: {
-		defaultSortIndicies() {
+		defaultSortIndices() {
 			return this.fundraisingIndices.map(index => {
 				return {
 					value: this.algoliaApiKey !== 'dev' ? index.value.replace('dev', this.algoliaGroup) : index.value,
