@@ -22,6 +22,12 @@ module.exports = merge(base, {
 		fbOgNameSpace: 'qa-kiva',
 		enableSentry: false,
 		sentryURI: '',
+		algoliaConfig: {
+			appId: 'testingZ9YK0WNQ85',
+			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
+			defaultIndex: 'qa_fundraising_loans',
+			fundraisingIndex: 'qa_fundraising_loans',
+		},
 		enableAuth0: false,
 		auth0ApiAudience: 'https://api.dev.kivaws.org/graphql',
 		auth0BrowserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',

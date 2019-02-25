@@ -7,9 +7,7 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<filter-menu-section title="Categories" :open="true" :result-count="10">
-					<ais-refinement-list :attribute="'sector.name'" />
-				</filter-menu-section>
+				<filter-section-categories result-count="10" />
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
 				</div>
@@ -25,16 +23,12 @@
 // import _throttle from 'lodash/throttle';
 
 import KvIcon from '@/components/Kv/KvIcon';
-
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-
-import { AisRefinementList } from 'vue-instantsearch';
+import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
 
 export default {
 	components: {
+		FilterSectionCategories,
 		KvIcon,
-		FilterMenuSection,
-		AisRefinementList,
 	},
 	data() {
 		return {
