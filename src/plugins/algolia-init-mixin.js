@@ -1,4 +1,6 @@
 import algoliasearch from 'algoliasearch/lite';
+import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
+import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings';
 
 export default {
 	inject: [
@@ -6,6 +8,10 @@ export default {
 	],
 	data() {
 		return {
+			routing: {
+				router: historyRouter(),
+				stateMapping: simpleMapping(),
+			},
 			// Root searchClient Instance
 			searchClient: null,
 			// These are required in each instance of the plugin

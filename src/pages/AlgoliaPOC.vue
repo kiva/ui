@@ -8,7 +8,8 @@
 					<ais-instant-search
 						v-if="searchClient"
 						:search-client="searchClient"
-						:index-name="algoliaDefaultIndex">
+						:index-name="algoliaDefaultIndex"
+						:routing="routing">
 						<!-- eslint-disable vue/attribute-hyphenation -->
 						<!-- We could run a default query... :query="defaultSearch" -->
 						<!-- Apply multiple facets or global facets with :filters="filters" -->
@@ -206,8 +207,6 @@ export default {
 
 			itemsInBasket: null,
 			isLoggedIn: false,
-			configureRefine: null,
-			configureSearchParameters: null
 		};
 	},
 	apollo: {
