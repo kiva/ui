@@ -1,14 +1,14 @@
 <template>
-	<div>
-		<div
+	<div class="pill-toggle">
+		<span
 			v-for="option in options" :key="option.key"
 			@click="pillToggled(option.key)"
-			class="pill-option"
-			:class="{ active: selected === option.key }">
-			<h3>
+			:class="{ active: selected === option.key }
+			">
+			<div class="title">
 				{{ option.title }}
-			</h3>
-		</div>
+			</div>
+		</span>
 	</div>
 </template>
 
@@ -26,45 +26,61 @@ export default {
 	},
 	methods: {
 		pillToggled(key) {
-			this.$emit('pillToggled', key);
+			this.$emit('pill-toggled', key);
 		}
 	}
 };
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "settings";
 
 $form-border-radius: rem-calc(3);
 
-.pill-option {
-	display: inline-block;
-	border: 1px solid $subtle-gray;
-	cursor: pointer;
-}
+.pill-toggle {
+	font-size: rem-calc(14);
+	height: rem-calc(34);
+	width: 100%;
 
-.pill-option:first-child {
-	border-top-left-radius: $form-border-radius;
-	border-bottom-left-radius: $form-border-radius;
-}
+	span {
+		background: $tab-pill-background;
+		border: $tab-pill-border;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		color: $tab-pill-color;
+		cursor: pointer;
+		display: inline-block;
+		height: 100%;
+		min-width: rem-calc(85);
 
-.pill-option:nth-child(2) {
-	border-top-right-radius: $form-border-radius;
-	border-bottom-right-radius: $form-border-radius;
-}
+		.title {
+			align-items: center;
+			display: flex;
+			height: 100%;
+			justify-content: center;
+			text-align: center;
+			width: 100%;
+		}
 
-.pill-option.active {
-	border: 1px solid $kiva-darkgreen;
-	cursor: default;
-}
+		&:first-child {
+			border-bottom-left-radius: $form-border-radius;
+			border-top-left-radius: $form-border-radius;
+		}
 
-h3 {
-	padding: rem-calc(7) rem-calc(20);
-}
+		&:last-child {
+			border-bottom-right-radius: $form-border-radius;
+			border-top-right-radius: $form-border-radius;
+		}
+	}
 
-.pill-option.active h3 {
-	background-color: $kiva-green;
+	.active {
+		background: $tab-pill-active-background;
+		border: rem-calc(1) solid $kiva-green;
+		color: $white !important;
+		cursor: default;
+	}
 }
-
 </style>
