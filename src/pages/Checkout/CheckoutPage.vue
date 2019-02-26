@@ -103,19 +103,14 @@
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
 								<pay-pal-exp
-									v-if="showPayPal"
+									v-if="showPayPal && !showBraintree"
 									:show-braintree="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<braintree-checkout
-									v-if="showBraintree"
-									:amount="creditNeeded"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals" />
-
 								<payment-wrapper
+									v-if="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
@@ -372,7 +367,7 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0;
+			return parseFloat(this.creditNeeded) > 0 && this.braintree === false;
 		},
 		showBraintree() {
 			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;

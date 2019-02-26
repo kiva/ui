@@ -1,11 +1,29 @@
 <template>
-	<div class="payment-holder small-12 medium-7 large-6">
-		<div class="card-header text-center">
-			<kv-pill-toggle
-				:selected="selectedOption"
-				:options="options"
-				@pillToggled="pillToggled"/>
+	<div>
+		<div class="payment-holder small-12 medium-7 large-6">
+			<div class="card-header text-center">
+				<kv-pill-toggle
+					:selected="selectedOption"
+					:options="options"
+					@pillToggled="pillToggled"/>
+			</div>
+			<div>
+				<pay-pal-exp
+					v-show="selectedOption === 'pp'"
+					:amount="creditNeeded"
+					@refreshtotals="refreshTotals"
+					@updating-totals="setUpdatingTotals" />
+			</div>
+			<div>
+				<braintree-checkout
+					v-show="selectedOption === 'bt'"
+					:amount="creditNeeded"
+					@refreshtotals="refreshTotals"
+					@updating-totals="setUpdatingTotals" />
+			</div>
 		</div>
+		<div class="attribution-text small-12 medium-7 large-6">Thanks to PayPal powered by Braintree,
+		Kiva recieves free payment processing for all loans.</div>
 	</div>
 </template>
 
@@ -32,7 +50,7 @@ export default {
 					key: 'bt'
 				}
 			],
-			selectedOption: 'pp'
+			selectedOption: 'pp',
 		};
 	},
 	methods: {
@@ -41,8 +59,8 @@ export default {
 		pillToggled(key) {
 			console.log(key);
 			this.selectedOption = key;
-		}
-	}
+		},
+	},
 };
 </script>
 
@@ -64,13 +82,20 @@ $form-border-radius: rem-calc(3);
 		position: relative;
 		top: -1.2rem;
 		background: $ghost;
-		// border: 1px solid $subtle-gray;
 		display: inline-block;
 		border-radius: $form-border-radius;
 	}
 
 	.card-title {
-		padding: 5px 10px;
+		padding: rem-calc(5) rem-calc(10);
 	}
+}
+
+.attribution-text {
+	color: $gray;
+	float: right;
+	clear: both;
+	text-align: center;
+	margin-top: rem-calc(25);
 }
 </style>
