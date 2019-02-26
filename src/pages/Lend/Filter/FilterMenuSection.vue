@@ -73,7 +73,7 @@ export default {
 	}
 
 	&.open {
-		background-color: #F6FBF6;
+		background-color: rgba($green, 0.05);
 
 		.filter-items-container {
 			display: block;
