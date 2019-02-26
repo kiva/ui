@@ -7,7 +7,8 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<filter-section-categories :result-count="10" />
+				<filter-section-categories :result-count="10" :open="true" />
+				<filter-section-location :result-count="10" :open="true" />
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
 				</div>
@@ -20,15 +21,17 @@
 </template>
 
 <script>
-// import _throttle from 'lodash/throttle';
-
 import KvIcon from '@/components/Kv/KvIcon';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
+import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
 
 export default {
 	components: {
 		FilterSectionCategories,
+		FilterSectionLocation,
 		KvIcon,
+		FilterMenuSection,
 	},
 	data() {
 		return {
@@ -62,7 +65,7 @@ export default {
 		width: 100vw;
 		top: 0;
 		left: 0;
-		z-index: 1;
+		z-index: 1001;
 		pointer-events: none;
 		background-color: rgba(0, 0, 0, 0);
 		transition: background-color $filter-transition;
@@ -76,7 +79,7 @@ export default {
 			position: absolute;
 			top: 0;
 			left: 0;
-			z-index: 1;
+			z-index: 1001;
 			padding: 0.25rem 0.25rem 0.25rem 0.5rem;
 			user-select: none;
 			height: 2rem;
@@ -99,7 +102,8 @@ export default {
 			top: 2rem;
 			left: 0;
 			opacity: 0;
-			z-index: 1;
+			z-index: 1001;
+			overflow: hidden;
 			user-select: none;
 			pointer-events: none;
 			min-width: rem-calc(270);

@@ -36,6 +36,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'settings';
+
 .filter-menu-section {
 	font-size: 0.875rem;
 	font-weight: 300;
@@ -49,13 +51,29 @@ export default {
 
 	.filter-items-container {
 		display: none;
-		background-color: #F6FBF6;
+
+		ul {
+			list-style-type: none;
+			margin-bottom: 0;
+		}
+
+		.ais-HierarchicalMenu {
+			a {
+				color: $charcoal;
+				text-decoration: none;
+			}
+
+			.ais-HierarchicalMenu-item--selected {
+				> a {
+					font-weight: 600;
+					color: $green;
+				}
+			}
+		}
 	}
 
 	&.open {
-		.filter-summary {
-			display: none;
-		}
+		background-color: rgba($green, 0.05);
 
 		.filter-items-container {
 			display: block;
