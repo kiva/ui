@@ -113,14 +113,6 @@ export default {
 		.banner-link {
 			display: flex;
 			align-items: center;
-
-			.present-icon {
-				display: block;
-				height: rem-calc(22);
-				width: rem-calc(22);
-				margin-right: rem-calc(10);
-				margin-top: -0.2rem;
-			}
 		}
 	}
 
@@ -132,19 +124,16 @@ export default {
 			display: flex;
 			align-items: center;
 			color: #6e1947;
-
-			.iwd-flower-icon {
-				display: block;
-				height: rem-calc(22);
-				width: rem-calc(22);
-				margin-right: rem-calc(10);
-				margin-top: -0.2rem;
-				// Temporary Until we fix icon import
-				fill: orange;
-				stroke: #edf7ed;
-				stroke-width: 2px;
-			}
 		}
+	}
+
+	.gift-banner .present-icon,
+	.iwd-banner .iwd-flower-icon {
+		display: block;
+		height: rem-calc(22);
+		width: rem-calc(22);
+		margin-right: rem-calc(10);
+		margin-top: -0.2rem;
 	}
 
 	.gift-banner .banner-link:hover {
