@@ -10,7 +10,8 @@ import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import GiftBanner from './Banners/GiftBanner';
-import DefaultPromoBanner from './Banners/DefaultPromoBanner';
+// import DefaultPromoBanner from './Banners/DefaultPromoBanner';
+import IWDPromoBanner from './Banners/IWDPromoBanner';
 
 export default {
 	inject: ['apollo'],
@@ -34,7 +35,7 @@ export default {
 			if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
 				return GiftBanner;
 			} else if (this.promoEnabled) {
-				return DefaultPromoBanner;
+				return IWDPromoBanner;
 			}
 		},
 		textlength() {
@@ -120,12 +121,35 @@ export default {
 				margin-right: rem-calc(10);
 				margin-top: -0.2rem;
 			}
+		}
+	}
 
-			&:hover {
-				.present-icon {
-					stroke: $kiva-darkgreen;
-				}
+	.iwd-banner {
+		background-image: none;
+		background-color: #edf7ed;
+
+		.banner-link {
+			display: flex;
+			align-items: center;
+			color: #6e1947;
+
+			.iwd-flower-icon {
+				display: block;
+				height: rem-calc(22);
+				width: rem-calc(22);
+				margin-right: rem-calc(10);
+				margin-top: -0.2rem;
+				// Temporary Until we fix icon import
+				fill: orange;
+				stroke: #edf7ed;
+				stroke-width: 2px;
 			}
+		}
+	}
+
+	.gift-banner .banner-link:hover {
+		.present-icon {
+			stroke: $kiva-darkgreen;
 		}
 	}
 }
