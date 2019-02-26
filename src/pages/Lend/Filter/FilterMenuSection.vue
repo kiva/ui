@@ -59,7 +59,7 @@ export default {
 
 		.ais-HierarchicalMenu {
 			a {
-				color: #484848;
+				color: $charcoal;
 				text-decoration: none;
 			}
 
