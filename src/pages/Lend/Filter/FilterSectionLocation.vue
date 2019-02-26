@@ -10,18 +10,45 @@
 			:sort-by="['name:asc']"
 			:limit="100"
 			:transform-items="transformItems"
-		/>
+		>
+			<div
+				slot-scope="{
+					items,
+					canToggleShowMore,
+					isShowingMore,
+					refine,
+					toggleShowMore,
+					createURL,
+				}"
+			>
+				<!-- eslint-disable vue/attribute-hyphenation -->
+				<hierarchical-menu-list
+					:items="items"
+					:refine="refine"
+					:createURL="createURL"
+				/>
+				<!-- eslint-enable vue/attribute-hyphenation -->
+				<button
+					@click="toggleShowMore()"
+					:disabled="!canToggleShowMore"
+				>
+					{{ isShowingMore ? 'Show less' : 'Show more' }}
+				</button>
+			</div>
+		</ais-hierarchical-menu>
 	</filter-menu-section>
 </template>
 
 <script>
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
+import HierarchicalMenuList from '@/pages/Lend/Filter/HierarchicalMenuList';
 import { AisHierarchicalMenu } from 'vue-instantsearch';
 
 export default {
 	components: {
 		FilterMenuSection,
 		AisHierarchicalMenu,
+		HierarchicalMenuList,
 	},
 	props: {
 		title: {
@@ -38,11 +65,11 @@ export default {
 		},
 	},
 	methods: {
-		transformItems(items) {
+		transformItems(items, isChild) {
 			return items.map(item => ({
 				...item,
-				count: `(${item.count})`,
-				data: item.data ? this.transformItems(item.data) : item.data,
+				isChild,
+				data: item.data ? this.transformItems(item.data, true) : item.data,
 			}));
 		},
 	},
