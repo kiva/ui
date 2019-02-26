@@ -71,6 +71,9 @@ export default {
 .hierarchical-menu-list {
 	.hierarchical-menu-item {
 		.hierarchical-menu-item-label {
+			cursor: pointer;
+			user-select: none;
+
 			.hierarchical-menu-item-checkbox {
 				margin-bottom: 0;
 			}

@@ -65,7 +65,7 @@ export default {
 		width: 100vw;
 		top: 0;
 		left: 0;
-		z-index: 1;
+		z-index: 1001;
 		pointer-events: none;
 		background-color: rgba(0, 0, 0, 0);
 		transition: background-color $filter-transition;
@@ -102,7 +102,8 @@ export default {
 			top: 2rem;
 			left: 0;
 			opacity: 0;
-			z-index: 1;
+			z-index: 1001;
+			overflow: hidden;
 			user-select: none;
 			pointer-events: none;
 			min-width: rem-calc(270);

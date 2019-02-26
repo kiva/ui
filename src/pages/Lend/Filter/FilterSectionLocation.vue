@@ -30,7 +30,7 @@
 				<!-- eslint-enable vue/attribute-hyphenation -->
 				<button
 					@click="toggleShowMore()"
-					:disabled="!canToggleShowMore"
+					v-show="canToggleShowMore"
 				>
 					{{ isShowingMore ? 'Show less' : 'Show more' }}
 				</button>
