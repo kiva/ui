@@ -8,7 +8,7 @@ query {
 			key
 			value
 		}
-		checkoutDonationLendingCostExperiment: setting(setting: "uiexp.checkout_donation_lending_cost") {
+		checkoutDonation100TextExperiment: setting(setting: "uiexp.checkout_donation_100_text") {
 			key
 			value
 		}
