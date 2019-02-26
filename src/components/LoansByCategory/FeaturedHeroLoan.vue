@@ -9,7 +9,7 @@
 			<div class="featured-cards-display-window">
 				<div class="grid-loan-card">
 					<div class="row featured-hero-loan">
-						<div class="column small-12 medium-5">
+						<div class="column small-12 large-6">
 							<loan-card-image
 								:loan-id="loan.id"
 								:name="loan.name"
@@ -24,7 +24,7 @@
 								@favorite-toggled="toggleFavorite"
 							/>
 						</div>
-						<div class="column small-12 medium-7">
+						<div class="column small-12 large-6">
 							<div class="borrower-info-wrapper">
 								<div class="name">
 									<router-link
@@ -45,24 +45,19 @@
 								</div>
 
 								<div class="use">
-									<div class="hide-for-medium-only">
-										{{ loanUse }}
-									</div>
-									<div class="show-for-medium-only">
-										{{ loanUseTruncated }}
-									</div>
+									{{ loanUse }}
 
-									<router-link
-										:to="`/lend/${loan.id}`"
-										class="show-for-medium-only"
-										v-kv-track-event="['Lending', 'click-Read more', 'Read more', loan.id, 'true']">
-										<span
-											@click="$emit('track-loan-card-interaction', {
-												interactionType: 'viewBorrowerPage',
-												interactionElement: 'readMore'
-											})"
-										>Read more</span>
-									</router-link>
+									<div v-if="showReadMore">
+										<!-- eslint-disable-next-line max-len -->
+										<router-link :to="`/lend/${loan.id}`" v-kv-track-event="['Lending', 'click-Read more', 'Read more', loan.id, 'true']">
+											<div
+												@click="$emit('track-loan-card-interaction', {
+													interactionType: 'viewBorrowerPage',
+													interactionElement: 'readMore'
+												})"
+											>Read more</div>
+										</router-link>
+									</div>
 								</div>
 
 								<div class="why-special">
@@ -70,24 +65,26 @@
 									{{ loan.whySpecial }}
 								</div>
 
-								<action-button
-									:loan-id="loan.id"
-									:loan="loan"
-									:items-in-basket="itemsInBasket"
-									:is-lent-to="loan.userProperties.lentTo"
-									:is-funded="isFunded"
-									:lend-increment-button-version="lendIncrementButtonVersion"
+								<div class="action">
+									<action-button
+										:loan-id="loan.id"
+										:loan="loan"
+										:items-in-basket="itemsInBasket"
+										:is-lent-to="loan.userProperties.lentTo"
+										:is-funded="isFunded"
+										:lend-increment-button-version="lendIncrementButtonVersion"
 
-									@click.native="trackInteraction({
-										interactionType: 'addToBasket',
-										interactionElement: 'Lend25'
-									})"
-								/>
+										@click.native="trackInteraction({
+											interactionType: 'addToBasket',
+											interactionElement: 'Lend25'
+										})"
+									/>
 
-								<matching-text
-									:matching-text="loan.matchingText"
-									:is-funded="isFunded"
-								/>
+									<matching-text
+										:matching-text="loan.matchingText"
+										:is-funded="isFunded"
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -146,10 +143,10 @@ export default {
 	data() {
 		return {
 			featuredCategoryIds,
-			featuredCategoryTitles: ['Research-backed impact'],
 			isFavorite: null,
 			loading: false,
 			loan: null,
+			loanUseMaxLength: 100,
 		};
 	},
 	computed: {
@@ -179,30 +176,30 @@ export default {
 		},
 		loanUse() {
 			// eslint-disable-next-line max-len
-			return `A loan of ${numeral(this.loan.loanAmount).format('$0,0')} ${this.helpedLanguage} ${this.borrowerCountLanguage} ${this.shortenedLoanUse}`;
+			return `A loan of ${numeral(this.loan.loanAmount).format('$0,0')} ${this.helpedLanguage} ${this.borrowerCountLanguage} ${this.loanUseTruncated()}`;
 		},
-		loanUseTruncated() {
-			const maxLength = 75;
-			return `${this.loanUse.substring(0, maxLength)}...`;
-		},
-		shortenedLoanUse() {
-			const maxLength = 100;
-			const lowerCaseUse = this.loan.use.toString().charAt(0).toLowerCase() + this.loan.use.toString().slice(1);
-			// eslint-disable-next-line max-len
-			const convertedUse = (this.loan.use.substring(0, this.loan.name.length) === this.loan.name) ? this.loan.use : lowerCaseUse;
-
-			if (this.loan.use.length === 0) {
-				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			} else if (this.loan.use.length > maxLength) {
-				return `${convertedUse.substring(0, maxLength)}...`;
-			}
-			return convertedUse;
+		showReadMore() {
+			return !!(this.loanUse.length > this.loanUseMaxLength);
 		},
 	},
 	mounted() {
 		this.isFavorite = this.loan.userProperties.favorited;
 	},
 	methods: {
+		loanUseTruncated() {
+			const lowerCaseUse = this.loan.use.toString().charAt(0).toLowerCase() + this.loan.use.toString().slice(1);
+
+			// eslint-disable-next-line max-len
+			const convertedUse = (this.loan.use.substring(0, this.loan.name.length) === this.loan.name) ? this.loan.use : lowerCaseUse;
+
+			if (this.loan.use.length === 0) {
+				return 'For the borrower\'s privacy, this loan has been made anonymous.';
+			} else if (this.loan.use.length > this.loanUseMaxLength) {
+				return `${convertedUse.substring(0, this.loanUseMaxLength)}...`;
+			}
+
+			return convertedUse;
+		},
 		toggleFavorite() {
 			// optimistically toggle it locally first
 			this.isFavorite = !this.isFavorite;
@@ -267,6 +264,7 @@ export default {
 					_filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]),
 					'[0].loans.values[0]'
 				);
+
 				this.loading = false;
 			}
 		}
@@ -293,7 +291,7 @@ $row-max-width: 58.75rem;
 
 	.section-name {
 		font-weight: $global-weight-highlight;
-		margin-bottom: 1.5rem;
+		margin-bottom: rem-calc(8);
 	}
 
 	.featured-row-wrapper {
@@ -347,8 +345,10 @@ $row-max-width: 58.75rem;
 						.name {
 							font-size: rem-calc(22);
 							font-weight: $global-weight-highlight;
+							line-height: rem-calc(27);
 
-							@include breakpoint(small only) {
+							@include breakpoint(medium down) {
+								margin-top: rem-calc(10);
 								text-align: center;
 							}
 						}
@@ -356,10 +356,8 @@ $row-max-width: 58.75rem;
 						.country {
 							color: $kiva-text-light;
 							font-weight: $global-weight-highlight;
-							margin-bottom: rem-calc(10);
-							margin-top: rem-calc(10);
 
-							@include breakpoint(small only) {
+							@include breakpoint(medium down) {
 								text-align: center;
 							}
 						}
@@ -372,6 +370,18 @@ $row-max-width: 58.75rem;
 
 						.why-special .bold {
 							font-weight: $global-weight-bold;
+						}
+
+						.action {
+							text-align: center;
+
+							@include breakpoint(medium up) {
+								max-width: rem-calc(330);
+							}
+
+							@include breakpoint(large) {
+								text-align: left;
+							}
 						}
 					}
 				}

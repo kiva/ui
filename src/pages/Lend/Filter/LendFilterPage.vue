@@ -5,7 +5,7 @@
 			<ais-instant-search
 				v-if="searchClient"
 				:search-client="searchClient"
-				:index-name="algoliaIndex">
+				:index-name="algoliaDefaultIndex">
 				<lend-filter-menu />
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
@@ -44,7 +44,7 @@ import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
 // Algolia Imports
-import algoliasearch from 'algoliasearch/lite';
+import algoliaConfig from '@/plugins/algolia-config-mixin';
 import {
 	AisConfigure,
 	AisInstantSearch,
@@ -73,35 +73,22 @@ export default {
 	metaInfo: {
 		title: 'Lend Filter'
 	},
+	mixins: [
+		algoliaConfig
+	],
 	created() {
 		const itemsInBasketResults = this.apollo.readQuery({ query: itemsInBasketQuery });
 		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
 	},
-	mounted() {
-		// initialize searchClient + components on mount
-		// TODO: update initialization once vue-instantsearch V2 supports SSR
-		this.searchClient = algoliasearch(
-			this.algoliaConfig.appId,
-			this.algoliaConfig.apiKey
-		);
-	},
 	data() {
 		return {
-			// These are required in each instance of the plugin
-			algoliaAppId: this.algoliaConfig.appId,
-			algoliaApiKey: this.algoliaConfig.apiKey,
-			searchClient: null,
-			// The index will likey be different based on context
-			algoliaIndex: this.algoliaConfig.fundraisingIndex, // defaultIndex
-			defaultSearch: 'Energy',
 			// Focus in on fundraising Loans
-			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
+			defaultFilter: '', // Future to support loan channels, ex. 'status:fundraising',
 			itemsInBasket: null,
 		};
 	},
 	inject: [
 		'apollo',
-		'algoliaConfig'
 	],
 	apollo: {
 		preFetch(config, client) {

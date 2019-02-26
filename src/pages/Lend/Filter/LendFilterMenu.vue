@@ -21,10 +21,7 @@
 </template>
 
 <script>
-// import _throttle from 'lodash/throttle';
-
 import KvIcon from '@/components/Kv/KvIcon';
-
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
