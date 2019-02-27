@@ -150,7 +150,7 @@ export default {
 			// query to get experiment setting
 			this.apollo.query({
 				query: expSettingQuery,
-				variables: { key: 'uiexp.checkout_lyml' },
+				variables: { key: 'uiexp.checkout_lyml_4card' },
 			}).then(() => {
 				// query to assign experiment version
 				this.apollo.query({
