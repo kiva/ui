@@ -253,9 +253,7 @@ export default {
 @import "settings";
 
 $form-border-radius: rem-calc(3);
-$form-gray: #808080;
 $error-red: #fdeceb;
-$warning-yellow: #fefced;
 
 // Utility class passed to Braintree Config
 // > These styles are applied directly to the inputs
@@ -267,13 +265,16 @@ $warning-yellow: #fefced;
 }
 
 .braintree-holder {
+	margin-top: rem-calc(25);
+
 	// We control wrapping form and input container styles
 	#braintree-payment-form {
 		padding: 0 1rem;
 
 		label {
 			font-size: 1rem;
-			color: $form-gray;
+			color: $charcoal;
+			text-align: left;
 		}
 
 		// could not get this style to apply on focused state without the !important

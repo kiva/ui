@@ -5,21 +5,22 @@
 				<kv-pill-toggle
 					:selected="selectedOption"
 					:options="options"
-					@pillToggled="pillToggled"/>
+					@pill-toggled="pillToggled"/>
 			</div>
 			<div>
 				<pay-pal-exp
 					v-show="selectedOption === 'pp'"
-					:amount="creditNeeded"
-					@refreshtotals="refreshTotals"
-					@updating-totals="setUpdatingTotals" />
+					:amount="amount"
+					:show-braintree="showBraintree"
+					@refreshtotals="$emit('refreshTotals', $event)"
+					@updating-totals="$emit('setUpdatingTotals', $event)" />
 			</div>
 			<div>
 				<braintree-checkout
 					v-show="selectedOption === 'bt'"
-					:amount="creditNeeded"
-					@refreshtotals="refreshTotals"
-					@updating-totals="setUpdatingTotals" />
+					:amount="amount"
+					@refreshtotals="$emit('refreshTotals', $event)"
+					@updating-totals="$emit('setUpdatingTotals', $event)" />
 			</div>
 		</div>
 		<div class="attribution-text small-12 medium-7 large-6">Thanks to PayPal powered by Braintree,
@@ -37,6 +38,16 @@ export default {
 		BraintreeCheckout,
 		PayPalExp,
 		KvPillToggle
+	},
+	props: {
+		amount: {
+			type: String,
+			default: ''
+		},
+		showBraintree: {
+			type: Boolean,
+			default: true
+		}
 	},
 	data() {
 		return {
@@ -57,7 +68,6 @@ export default {
 		// layer in error conditions, is there ever a situation where we wouldn't want to
 		// load the PayPal or Braintree forms?
 		pillToggled(key) {
-			console.log(key);
 			this.selectedOption = key;
 		},
 	},
@@ -71,7 +81,7 @@ $form-border-radius: rem-calc(3);
 
 .payment-holder {
 	display: block;
-	text-align: left;
+	text-align: center;
 	float: right;
 	border: 1px solid $subtle-gray; //#c3c3c3
 	padding: 0 2rem 1.5rem;
@@ -88,6 +98,11 @@ $form-border-radius: rem-calc(3);
 
 	.card-title {
 		padding: rem-calc(5) rem-calc(10);
+	}
+
+	.paypal-button {
+		text-align: center;
+		margin-top: rem-calc(25);
 	}
 }
 
