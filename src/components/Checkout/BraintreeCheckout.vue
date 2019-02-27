@@ -157,10 +157,7 @@ export default {
 						// > Our devs become wrappers which can be styled by our css
 						// Import our base class for inputs
 						// > These are applied directly to the input elements
-						input: 'braintree-form-inputs',
-						// 'input::placeholder': {
-						// 	'text-align': 'center'
-						// }
+						input: 'braintree-form-inputs'
 					},
 					fields: {
 						number: {
@@ -267,9 +264,6 @@ $warning-yellow: #fefced;
 	padding: 0;
 	line-height: rem-calc(40);
 	font-size: 1rem;
-	// This text align doesn't work
-	// text-align: center;
-	// color: $form-gray;
 }
 
 .braintree-holder {
@@ -277,14 +271,12 @@ $warning-yellow: #fefced;
 	#braintree-payment-form {
 		padding: 0 1rem;
 
-		// WORKING
-		// ON Load STYLES
 		label {
 			font-size: 1rem;
 			color: $form-gray;
 		}
 
-		// I couldn't get this style to apply on focused state without the !important
+		// could not get this style to apply on focused state without the !important
 		.braintree-hosted-fields-focused {
 			border: 1px solid $charcoal !important;
 		}
@@ -293,13 +285,8 @@ $warning-yellow: #fefced;
 			background-color: $error-red !important;
 		}
 
-		// NOT YET WORKING
-		// :-webkit-autofill {
-		// 		background-color: $warning-yellow !important;
-		// }
-
 		// Hosted Field input wrappers + input customization declarations
-		// > Our divs become wrappers around injected iframes containing	 input fields
+		// > Our divs become wrappers around injected iframes containing input fields
 		.kv-braintree-wrapper {
 			height: rem-calc(40);
 			background: $ghost; //#fafafa
@@ -316,17 +303,6 @@ $warning-yellow: #fefced;
 				padding: 0;
 				margin: 0;
 			}
-
-			// THIS DOESN'T WORK
-			// [type=number]::placeholder,
-			// [type=text]::placeholder {
-			// 	text-align: center;
-			// }
-
-			// [type=number]:focus,
-			// [type=text]:focus {
-			// 	color: $charcoal;
-			// }
 		}
 
 		.cvv-label {
