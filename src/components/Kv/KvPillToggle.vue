@@ -64,6 +64,8 @@ $form-border-radius: rem-calc(3);
 			justify-content: center;
 			text-align: center;
 			width: 100%;
+			padding: 0 rem-calc(15);
+			font-size: 1rem;
 		}
 
 		&:first-child {

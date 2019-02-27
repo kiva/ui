@@ -1,9 +1,5 @@
 <template>
-	<div class="braintree-holder small-12 medium-7 large-6 xlarge-5">
-		<div class="card-header text-center">
-			<h3 class="card-title">Pay with card</h3>
-		</div>
-
+	<div class="braintree-holder">
 		<form id="braintree-payment-form">
 			<!-- Card number input -->
 			<div class="row small-collapse">
@@ -20,7 +16,7 @@
 					<div id="kv-expiration-date" class="kv-braintree-wrapper"></div>
 				</div>
 				<div class="small-4 columns">
-					<label>CVV</label>
+					<label class="cvv-label">CVV</label>
 					<div id="kv-cvv" class="kv-braintree-wrapper"></div>
 				</div>
 				<div class="small-4 columns">
@@ -33,6 +29,7 @@
 			<div class="row small-collapse">
 				<div class="small-12 columns">
 					<kv-button value="submit" id="braintree-submit" class="button smallest">
+						<kv-icon name="lock" />
 						Pay with <span id="card-type">card</span>
 					</kv-button>
 				</div>
@@ -50,10 +47,12 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
-		KvButton
+		KvButton,
+		KvIcon
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -155,15 +154,10 @@ export default {
 				braintree.hostedFields.create({
 					client: clientInstance,
 					styles: {
-						// Have to put input related styles right here.
-						// braintree hosted fields changes the divs in the template
-						// into input fields
 						// > Our devs become wrappers which can be styled by our css
 						// Import our base class for inputs
 						// > These are applied directly to the input elements
-						input: 'braintree-form-inputs',
-						'input:focus': '#484848',
-						'input::placehoder': '#CCC'
+						input: 'braintree-form-inputs'
 					},
 					fields: {
 						number: {
@@ -259,6 +253,7 @@ export default {
 @import "settings";
 
 $form-border-radius: rem-calc(3);
+$error-red: #fdeceb;
 
 // Utility class passed to Braintree Config
 // > These styles are applied directly to the inputs
@@ -266,71 +261,53 @@ $form-border-radius: rem-calc(3);
 	margin: 0;
 	padding: 0;
 	line-height: rem-calc(40);
-	font-size: rem-calc(16);
-	color: #808080; // TODO: make scss var
+	font-size: 1rem;
 }
 
 .braintree-holder {
-	display: block;
-	text-align: left;
-	float: right;
-	border: 1px solid $subtle-gray; //#c3c3c3
-	padding: 0 2rem 1.5rem;
-	border-radius: $form-border-radius;
-	margin-top: 3rem;
-
-	.card-header {
-		position: relative;
-		top: -1.2rem;
-		background: $ghost;
-		border: 1px solid $subtle-gray;
-		border-radius: $form-border-radius;
-	}
+	margin-top: rem-calc(25);
 
 	// We control wrapping form and input container styles
 	#braintree-payment-form {
 		padding: 0 1rem;
 
+		label {
+			font-size: 1rem;
+			color: $charcoal;
+			text-align: left;
+		}
+
+		// could not get this style to apply on focused state without the !important
+		.braintree-hosted-fields-focused {
+			border: 1px solid $charcoal !important;
+		}
+
+		.braintree-hosted-fields-invalid {
+			background-color: $error-red !important;
+		}
+
 		// Hosted Field input wrappers + input customization declarations
-		// > Our divs become wrappers around injected iframes containing	 input fields
+		// > Our divs become wrappers around injected iframes containing input fields
 		.kv-braintree-wrapper {
+			height: rem-calc(40);
+			background: $ghost; //#fafafa
+			border: 1px solid $subtle-gray;
+			color: $kiva-text-dark;
 			margin: 0 0 1.25rem;
 			padding: 0 rem-calc(8);
-			// line-height: 1.5rem;
-			height: rem-calc(40);
-			// font-size: 1.25rem;
-			color: $kiva-text-dark;
-			background: $ghost; //#fafafa
 			border-radius: $form-border-radius;
-			border: 1px solid $subtle-gray;
-			text-align: center;
-
-			&:focus {
-				background: $white;
-			}
-
-			&:-webkit-autofill {
-				background-color: #fefced;
-			}
 
 			[type=number],
 			[type=text] {
 				background: transparent;
 				box-shadow: none;
-				text-align: center;
 				padding: 0;
 				margin: 0;
 			}
+		}
 
-			[type=number]::placeholder,
-			[type=text]::placeholder {
-				color: $gray;
-			}
-
-			[type=number]:focus,
-			[type=text]:focus {
-				color: $charcoal;
-			}
+		.cvv-label {
+			margin: 0 0.9375rem;
 		}
 
 		// specific field wrapper overrides
@@ -345,6 +322,15 @@ $form-border-radius: rem-calc(3);
 		#braintree-submit {
 			width: 100%;
 			margin-top: 0.8rem;
+
+			.icon-lock {
+				height: rem-calc(20);
+				width: rem-calc(20);
+				fill: white;
+				top: rem-calc(3);
+				position: relative;
+				margin-right: rem-calc(8);
+			}
 		}
 	}
 }

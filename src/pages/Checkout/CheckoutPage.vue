@@ -103,17 +103,18 @@
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
 								<pay-pal-exp
-									v-if="showPayPal"
+									v-if="showPayPal && !showBraintree"
 									:show-braintree="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<braintree-checkout
+								<payment-wrapper
 									v-if="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals" />
+									@updating-totals="setUpdatingTotals"
+								/>
 
 								<kiva-credit-payment
 									v-if="showKivaCreditButton"
@@ -200,6 +201,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
+import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 
 export default {
 	components: {
@@ -219,6 +221,7 @@ export default {
 		CheckoutHolidayPromo,
 		LYML,
 		BraintreeCheckout,
+		PaymentWrapper
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -364,7 +367,7 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0;
+			return parseFloat(this.creditNeeded) > 0 && this.braintree === false;
 		},
 		showBraintree() {
 			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;
