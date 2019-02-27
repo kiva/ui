@@ -56,7 +56,7 @@ $form-border-radius: rem-calc(3);
 		height: 100%;
 		min-width: rem-calc(85);
 		margin-left: rem-calc(-1);
-
+    
 		.title {
 			align-items: center;
 			display: flex;
@@ -81,7 +81,7 @@ $form-border-radius: rem-calc(3);
 	.active {
 		background: $tab-pill-active-background;
 		border: rem-calc(1) solid $kiva-green;
-		color: $white !important;
+		color: $white;
 		cursor: default;
 		position: relative;
 	}
