@@ -1,5 +1,5 @@
 <template>
-	<ais-range-input :attribute="queryAttribute" :min="minimum" :max="maximum">
+	<ais-range-input :attribute="queryAttribute" :min="minimumValue" :max="maximumValue">
 		<div slot-scope="{ range, refine }">
 			<div class="header">
 				<span class="title">
@@ -12,8 +12,8 @@
 			<input
 				:id="id"
 				type="range"
-				:min="range.min"
-				:max="range.max"
+				:min="minimum"
+				:max="maximum"
 				:value="rangeValue"
 				:style="sliderStyle"
 				@input="onSliderChange(
@@ -38,6 +38,8 @@ export default {
 			rangeLabel: '',
 			rangeValue: null,
 			sliderStyle: '',
+			minimumValue: -1,
+			maximumValue: 1000,
 		};
 	},
 	props: {
@@ -107,8 +109,16 @@ export default {
 			// maximum value
 			if (selectedRangeValue === range.max) {
 				this.rangeLabel = this.maximumLabel;
-				minimumValue = null;
-				selectedRangeValue = null;
+
+				// set min/max to large values to allow for 'any' values
+				minimumValue = -1;
+				selectedRangeValue = 1000;
+
+				// eslint-disable-next-line no-param-reassign
+				range.min = -1;
+
+				// eslint-disable-next-line no-param-reassign
+				range.max = 1000;
 
 			// minimum value
 			} else if (selectedRangeValue === range.min) {
@@ -158,6 +168,10 @@ export default {
 
 		this.rangeValue = this.value;
 	},
+	mounted() {
+		this.minimumValue = this.minimum;
+		this.maximumValue = this.maximum;
+	}
 };
 </script>
 
