@@ -55,6 +55,7 @@ $form-border-radius: rem-calc(3);
 		display: inline-block;
 		height: 100%;
 		min-width: rem-calc(85);
+		margin-left: rem-calc(-1);
 
 		.title {
 			align-items: center;
@@ -66,6 +67,7 @@ $form-border-radius: rem-calc(3);
 		}
 
 		&:first-child {
+			margin-left: 0;
 			border-bottom-left-radius: $form-border-radius;
 			border-top-left-radius: $form-border-radius;
 		}
@@ -81,6 +83,7 @@ $form-border-radius: rem-calc(3);
 		border: rem-calc(1) solid $kiva-green;
 		color: $white !important;
 		cursor: default;
+		position: relative;
 	}
 }
 </style>
