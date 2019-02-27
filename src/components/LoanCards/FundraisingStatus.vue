@@ -34,6 +34,7 @@
 			background-color: $kiva-green;
 			display: block;
 			height: 100%;
+			transition: width 1s;
 		}
 	}
 

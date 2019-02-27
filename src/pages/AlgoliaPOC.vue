@@ -29,7 +29,8 @@
 								<algolia-adapter
 									v-for="(item, itemIndex) in items" :key="itemIndex"
 									:loan="item"
-									:items-in-basket="itemsInBasket" />
+									:items-in-basket="itemsInBasket"
+									:is-logged-in="isLoggedIn" />
 							</template>
 						</ais-hits>
 						<ais-pagination :padding="2" />
@@ -66,6 +67,7 @@ import {
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
 import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
@@ -95,6 +97,7 @@ export default {
 			// Optional default filter
 			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
 			itemsInBasket: null,
+			isLoggedIn: false
 		};
 	},
 	inject: [
@@ -107,8 +110,11 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: itemsInBasketQuery
-			}).then(({ data }) => {
-				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			}).then(() => {
+				// TODO: REMOVE Once Lend Increment Button EXP ENDS
+				// Pre-fetch the setting for lend increment button
+				return client.query({ query: userStatus });
+			}).then(() => {
 				// TODO: REMOVE Once Lend Increment Button EXP ENDS
 				// Pre-fetch the setting for lend increment button
 				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
@@ -119,6 +125,17 @@ export default {
 			});
 		}
 	},
+	created() {
+		const basketData = this.apollo.readQuery({
+			query: itemsInBasketQuery
+		});
+		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
+
+		const userData = this.apollo.readQuery({
+			query: userStatus
+		});
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+	}
 };
 </script>
 
