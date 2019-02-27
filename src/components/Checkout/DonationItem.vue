@@ -154,7 +154,7 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			checkoutDonationLendingCostExperiment: '',
+			checkoutDonation100TextExperiment: '',
 			nudgeLightboxVisible: false,
 			isCash80Running: false,
 			hasCustomDonation: false,
@@ -162,6 +162,8 @@ export default {
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
 			donationNudgeBorrowerImageExperiment: false,
+			donationDetailsLink: 'How Kiva uses donations',
+			donationTitle: 'Donation to Kiva',
 		};
 	},
 	apollo: {
@@ -189,7 +191,7 @@ export default {
 					client.query({
 						query: experimentAssignmentQuery,
 						variables: {
-							id: 'checkout_donation_lending_cost',
+							id: 'checkout_donation_100_text',
 						},
 					}).then(resolve).catch(reject);
 					// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
@@ -222,22 +224,13 @@ export default {
 		formattedAmount() {
 			return numeral(this.amount).format('$0,0.00');
 		},
-		donationTitle() {
-			return this.checkoutDonationLendingCostExperiment === 'variant-b'
-				? 'Kiva love'
-				: 'Donation to Kiva';
-		},
 		donationTagLine() {
 			/* eslint-disable max-len */
-			return this.checkoutDonationLendingCostExperiment === 'variant-b'
-				? `An optional 15% donation covers Kiva's costs for ${this.loanCount > 1 ? 'these loans' : 'this loan'}`
-				: `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
+			const coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
+			return this.checkoutDonation100TextExperiment === 'variant-b'
+				? `${coverOurCosts} 100% of every dollar lent goes to funding loans.`
+				: coverOurCosts;
 			/* eslint-enable max-len */
-		},
-		donationDetailsLink() {
-			return this.checkoutDonationLendingCostExperiment === 'variant-b'
-				? 'How Kiva uses donations'
-				: 'Learn more';
 		},
 		donationNudgePercentageRows() {
 			const basePercentageRows = [
@@ -283,19 +276,19 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
-			const checkoutDonationLendingCostExpVersion = this.apollo.readQuery({
+			const checkoutDonation100TextExpVersion = this.apollo.readQuery({
 				query: experimentAssignmentQuery,
-				variables: { id: 'checkout_donation_lending_cost' },
+				variables: { id: 'checkout_donation_100_text' },
 			});
 			// eslint-disable-next-line max-len
-			this.checkoutDonationLendingCostExperiment = _get(checkoutDonationLendingCostExpVersion, 'experiment.version') || null;
+			this.checkoutDonation100TextExperiment = _get(checkoutDonation100TextExpVersion, 'experiment.version') || null;
 
 			// eslint-disable-next-line max-len
-			if (this.checkoutDonationLendingCostExperiment === 'variant-a') {
-				this.$kvTrackEvent('lending', 'EXP-CASH-519-Jan2019', 'a');
+			if (this.checkoutDonation100TextExperiment === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'a');
 			}
-			if (this.checkoutDonationLendingCostExperiment === 'variant-b') {
-				this.$kvTrackEvent('lending', 'EXP-CASH-519-Jan2019', 'b');
+			if (this.checkoutDonation100TextExperiment === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'b');
 			}
 
 			const nudgeExperimentVersion = this.apollo.readQuery({
