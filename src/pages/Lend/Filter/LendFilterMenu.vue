@@ -7,6 +7,7 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
+				<filter-section-gender :result-count="1" :open="true" :filter-menu-open="filterMenuOpen" />
 				<filter-section-categories :result-count="10" :open="true" />
 				<filter-section-location :result-count="10" :open="true" />
 
@@ -76,16 +77,19 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 import FilterRangeSlider from '@/pages/Lend/Filter/FilterRangeSlider';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
+import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		FilterMenuSection,
 		FilterRangeSlider,
+		FilterSectionGender,
 		FilterSectionCategories,
 		FilterSectionLocation,
 		KvIcon,
