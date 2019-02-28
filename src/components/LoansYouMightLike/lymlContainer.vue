@@ -155,7 +155,7 @@ export default {
 				// query to assign experiment version
 				this.apollo.query({
 					query: expAssignmentQuery,
-					variables: { id: 'checkout_lyml' },
+					variables: { id: 'checkout_lyml_4card' },
 				}).then(expAssignment => {
 					// update our values
 					this.lymlVariant = _get(expAssignment, 'data.experiment.version');
