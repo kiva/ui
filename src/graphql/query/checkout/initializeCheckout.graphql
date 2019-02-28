@@ -29,6 +29,10 @@ query {
 		braintree_checkout: setting(setting: "ui.feature.braintree_checkout") {
 			value
 		}
+		braintreeExp: setting(setting: "uiexp.bt_test") {
+			key
+			value
+		}
 	}
 	shop {
 		basket {
