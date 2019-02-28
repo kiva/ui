@@ -25,7 +25,7 @@
 								:href="createURL(refinement)"
 								@click.prevent="item.refine(refinement)"
 							>
-								{{ item.label }} X
+								{{ item.label }} {{ refinement.value }} X
 							</a>
 						</li>
 					</ul>
