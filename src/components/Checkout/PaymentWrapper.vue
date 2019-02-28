@@ -87,6 +87,7 @@ $form-border-radius: rem-calc(3);
 	padding: 0 2rem 1.5rem;
 	border-radius: $form-border-radius;
 	margin-top: 3rem;
+	width: rem-calc(400);
 
 	.card-header {
 		position: relative;

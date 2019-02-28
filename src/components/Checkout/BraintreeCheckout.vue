@@ -20,7 +20,7 @@
 					<div id="kv-cvv" class="kv-braintree-wrapper"></div>
 				</div>
 				<div class="small-4 columns">
-					<label>Zip code</label>
+					<label>Postal code</label>
 					<div id="kv-postal-code" class="kv-braintree-wrapper"></div>
 				</div>
 			</div>
