@@ -322,6 +322,7 @@ $error-red: #fdeceb;
 		#braintree-submit {
 			width: 100%;
 			margin-top: 0.8rem;
+			font-size: 1.25rem;
 
 			.icon-lock {
 				height: rem-calc(20);
