@@ -1,66 +1,61 @@
 <template>
-	<ais-range-input :attribute="queryAttribute" :min="minimumValue" :max="maximumValue">
-		<div slot-scope="{ range, refine }">
-			<div class="header">
-				<span class="title">
-					{{ title }}
-				</span>
-				<span class="range-label">
-					({{ rangeLabel }})
-				</span>
-			</div>
+	<div>
+		<div class="header">
+			<span class="title">
+				{{ title }}
+			</span>
+			<span class="range-label">
+				({{ rangeLabel }})
+			</span>
+		</div>
+		<div class="slider">
 			<input
-				:id="id"
 				type="range"
 				:min="minimum"
 				:max="maximum"
-				:value="rangeValue"
+				:value="sliderValue"
 				:style="sliderStyle"
 				@input="onSliderChange(
 					refine,
 					range,
-					$event)"
-			>
+					$event)">
+
+			<div class="hide">
+				<!-- TODO: create new component to replace this hidden element computed property -->
+				{{ sliderPosition }}
+			</div>
 		</div>
-	</ais-range-input>
+	</div>
 </template>
 
 <script>
-import { AisRangeInput } from 'vue-instantsearch';
 import numeral from 'numeral';
 
 export default {
-	components: {
-		AisRangeInput,
-	},
 	data() {
 		return {
-			rangeLabel: '',
-			rangeValue: null,
-			sliderStyle: '',
-			minimumValue: -1,
-			maximumValue: 1000,
+			sliderValue: this.value,
 		};
 	},
 	props: {
-		id: {
-			type: String,
-			default: '',
+		currentRefinement: {
+			type: Object,
 			required: true
+		},
+		filterMenuOpen: {
+			type: Boolean,
+			default: false,
 		},
 		inbetweenLabel: {
 			type: String,
-			default: '',
 			required: true
 		},
 		maximum: {
 			type: Number,
-			default: null,
 			required: true
 		},
 		maximumLabel: {
 			type: String,
-			default: '',
 			required: true
 		},
 		maximumValueLabel: {
@@ -73,12 +68,10 @@ export default {
 		},
 		minimum: {
 			type: Number,
-			default: null,
 			required: true
 		},
 		minimumLabel: {
 			type: String,
-			default: '',
 			required: true
 		},
 		minimumValueLabel: {
@@ -87,144 +80,203 @@ export default {
 		},
 		queryAttribute: {
 			type: String,
-			default: '',
+			required: true
+		},
+		range: {
+			type: Object,
+			required: true
+		},
+		refine: {
+			type: Function,
 			required: true
 		},
 		title: {
 			type: String,
-			default: '',
 			required: true
 		},
 		value: {
 			type: Number,
-			default: null,
 			required: true
 		},
 	},
-	methods: {
-		onSliderChange(refine, range, event) {
-			let minimumValue = parseInt(range.min, 10);
-			let selectedRangeValue = parseInt(event.target.value, 10);
+	computed: {
+		// set label for slider
+		rangeLabel() {
+			let value = this.maximumLabel;
 
-			// maximum value
-			if (selectedRangeValue === range.max) {
-				this.rangeLabel = this.maximumLabel;
-
-				// set min/max to large values to allow for 'any' values
-				minimumValue = -1;
-				selectedRangeValue = 1000;
-
-				// eslint-disable-next-line no-param-reassign
-				range.min = -1;
-
-				// eslint-disable-next-line no-param-reassign
-				range.max = 1000;
+			if (this.sliderValue === this.maximum) {
+				value = this.maximumLabel;
 
 			// minimum value
-			} else if (selectedRangeValue === range.min) {
+			} else if (this.sliderValue === this.minimum) {
 				if (this.minimumValueLabel === false) {
-					this.rangeLabel = this.minimumLabel;
+					value = this.minimumLabel;
 				} else {
-					this.rangeLabel = `${event.target.value}${this.minimumLabel}`;
+					value = `${this.sliderValue}${this.minimumLabel}`;
 				}
 
 			// values in between min/max value
 			} else {
-				this.rangeLabel = `${event.target.value}${this.inbetweenLabel}`;
+				value = `${this.sliderValue}${this.inbetweenLabel}`;
 			}
 
-			this.rangeValue = selectedRangeValue;
-			let sliderPositionPercent = '100%';
+			return value;
+		},
 
-			if (this.minimumMaximumSwap === true) {
-				if (minimumValue === null && selectedRangeValue === null) {
-					minimumValue = range.max;
-					selectedRangeValue = range.max;
-				} else {
-					minimumValue = selectedRangeValue;
-					selectedRangeValue = range.max;
-				}
-
-				sliderPositionPercent = numeral(minimumValue / selectedRangeValue).format('0%');
-			} else if (selectedRangeValue !== null) {
-				// eslint-disable-next-line max-len
-				sliderPositionPercent = numeral(Math.abs(selectedRangeValue - minimumValue) / Math.abs(range.max - minimumValue)).format('0%');
+		// set slider position only when filter menu is closed
+		// eslint-disable-next-line max-len
+		// NOTE: The computed property, slidePosition(), exists solely to allow the setting of the position of the slider when a refinement is deleted
+		sliderPosition() {
+			//	eslint-disable-next-line max-len
+			if (this.filterMenuOpen === false && this.currentRefinement.min === null && this.currentRefinement.max === null) {
+				this.setSliderValue();
 			}
 
-			// set colors of upper/lower range slider
+			return '';
+		},
+
+		// set style for slider
+		sliderStyle() {
+			const sliderLeftColor = '#4faf4e';
+			const sliderRightColor = '#dbdbdb';
+
+			const selectedStop = this.minimumMaximumSwap === true
+				? (this.sliderValue / this.maximum)
+				: (Math.abs(this.sliderValue - this.minimum) / Math.abs(this.maximum - this.minimum));
+
+			const basicStyle = 'background-image: -webkit-linear-gradient(left,';
+			const stop1 = `${sliderLeftColor} 0%,`;
+			const stop2 = `${sliderLeftColor} ${numeral(selectedStop).format('0%')},`;
+			const stop3 = `${sliderRightColor} ${numeral(selectedStop).format('0%')},`;
+			const stop4 = `${sliderRightColor} 100%);`;
+
+			return `${basicStyle}${stop1}${stop2}${stop3}${stop4}`;
+		}
+	},
+	methods: {
+		onSliderChange(refine, range, event) {
+			const sliderValue = parseInt(event.target.value, 10);
+			let refineMinimum = this.minimumMaximumSwap === true ? sliderValue : parseInt(this.minimum, 10);
+			let refineMaximum = this.minimumMaximumSwap === true ? parseInt(this.maximum, 10) : sliderValue;
+
+			// maximum value
 			// eslint-disable-next-line max-len
-			this.sliderStyle = `background: linear-gradient(to right, #4faf4e 0%, #4faf4e ${sliderPositionPercent}, #dbdbdb ${sliderPositionPercent}, #dbdbdb 100%)`;
+			if ((this.minimumMaximumSwap === false && sliderValue === range.max) || (this.minimumMaximumSwap === true && sliderValue === range.min)) {
+				// set min/max to large values to allow for 'any' values beyond loan details min/max
+				refineMinimum = -1;
+				refineMaximum = 1000;
 
-			refine({ min: minimumValue, max: selectedRangeValue });
+				// eslint-disable-next-line no-param-reassign
+				range.min = refineMinimum;
+
+				// eslint-disable-next-line no-param-reassign
+				range.max = refineMaximum;
+			}
+
+			refine({ min: refineMinimum, max: refineMaximum });
+
+			// set label of slider based on current position
+			this.sliderValue = sliderValue;
+		},
+		setSliderValue() {
+			this.sliderValue = this.value;
 		},
 	},
-	created() {
-		if (this.minimumMaximumSwap === true) {
-			this.rangeLabel = this.minimumLabel;
-			this.sliderStyle = 'background: #dbdbdb';
-		} else {
-			this.rangeLabel = this.maximumLabel;
-		}
-
-		this.rangeValue = this.value;
-	},
-	mounted() {
-		this.minimumValue = this.minimum;
-		this.maximumValue = this.maximum;
-	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
 
-.range-label {
-	color: $kiva-text-light;
+$track-height: rem-calc(5);
+$thumb-radius: rem-calc(15);
+
+@mixin thumb {
+	-webkit-appearance: none !important;
+	background: $kiva-green;
+	border: rem-calc(1) solid $kiva-green;
+	border-radius: $thumb-radius;
+	cursor: pointer;
+	height: $thumb-radius;
+	transition: 100ms;
+	width: $thumb-radius;
 }
 
-input[type=range] {
+@mixin track {
 	-webkit-appearance: none;
 	-moz-apperance: none;
-	background-color: $kiva-green;
 	border-radius: rem-calc(6);
-	height: rem-calc(6);
+	margin: 0;
 	outline: none;
-	width: 75%;
-}
-
-input[type=range]::-webkit-slider-thumb {
-	-webkit-appearance: none !important;
-	background-color: $kiva-green;
-	border: rem-calc(1) solid $kiva-green;
-	border-radius: 50%;
+	padding: 0;
+	width: 100%;
 	cursor: pointer;
-	height: rem-calc(15);
-	transition: 100ms;
-	width: rem-calc(15);
+	transition: all 300ms;
 }
 
-input[type=range]::-moz-range-track {
-	border-color: #dbdbdb;
-	border-radius: rem-calc(6);
-	cursor: pointer;
-	height: rem-calc(6);
-	outline: none !important;
-}
+.range-input {
+	margin-bottom: rem-calc(3);
 
-input[type=range]::-moz-range-thumb {
-	background-color: $kiva-green;
-	border: 0;
-	cursor: pointer;
-	height: rem-calc(15);
-	width: rem-calc(15);
-}
+	.range-label {
+		color: $kiva-text-light;
+	}
 
-input[type=range]::-moz-focus-outer {
-	border: 0;
-}
+	.slider {
+		width: 75%;
 
-input[type=range]::-moz-range-progress {
-	background-color: $kiva-green;
-	border: rem-calc(1) solid $kiva-green;
+		input[type='range'] {
+			@include track;
+
+			@media screen and (-webkit-min-device-pixel-ratio: 0) {
+				background-color: $kiva-green;
+				height: $track-height;
+			}
+
+			@supports (-ms-ime-align:auto) {
+				background-color: transparent;
+				height: $track-height * 4;
+			}
+
+			&::-moz-focus-outer {
+				border: 0;
+			}
+
+			&::-webkit-slider-thumb {
+				@include thumb;
+			}
+
+			&::-moz-range-thumb {
+				@include thumb;
+			}
+
+			&::-ms-track {
+				background-color: transparent;
+				border-color: transparent;
+				border-width: (15px / 2) 0;
+				color: transparent;
+				height: $track-height;
+			}
+
+			&::-ms-thumb {
+				@include thumb;
+			}
+
+			&::-ms-fill-lower {
+				background-color: #4faf4e;
+			}
+
+			&::-ms-fill-upper {
+				background-color: #dbdbdb;
+			}
+
+			&::-ms-tooltip {
+				display: none;
+			}
+
+			&:focus {
+				outline: 0;
+			}
+		}
+	}
 }
 </style>
