@@ -80,13 +80,24 @@ export default {
 $form-border-radius: rem-calc(3);
 
 .payment-holder {
-	display: block;
+	display: inline-block;
+	white-space: nowrap;
 	text-align: center;
-	float: right;
 	border: 1px solid $subtle-gray; //#c3c3c3
-	padding: 0 2rem 1.5rem;
+	padding: 0 0.6rem 1.5rem;
 	border-radius: $form-border-radius;
-	margin-top: 3rem;
+	margin: 3rem auto 0 auto;
+	min-width: rem-calc(300);
+	width: 100%;
+
+	@include breakpoint(medium) {
+		float: right;
+		display: block;
+	}
+
+	@include breakpoint(large) {
+		padding: 0 2rem 1.5rem;
+	}
 
 	.card-header {
 		position: relative;
