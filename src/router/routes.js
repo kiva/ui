@@ -20,6 +20,7 @@ export default [
 	{ path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
+	{ path: '/error', component: () => import('@/pages/Error') },
 	{
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
