@@ -1,0 +1,23 @@
+query (
+	$ids: [Int],
+	$numberOfLoans: Int = 1,
+) {
+	lend {
+		loans(limit: $numberOfLoans, filters: {loanIds: $ids}) {
+			totalCount
+			values {
+				id
+				status
+				loanFundraisingInfo {
+					fundedAmount
+					reservedAmount
+					isExpiringSoon
+				}
+				userProperties {
+					favorited
+					lentTo
+				}
+			}
+		}
+	}
+}

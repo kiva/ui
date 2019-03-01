@@ -144,6 +144,15 @@ export default {
 			isFavorite: this.loan.userProperties.favorited,
 		};
 	},
+	watch: {
+		// watch for dynamic changes to the loan status to support algolia
+		'loan.userProperties.favorited': {
+			handler() {
+				this.isFavorite = this.loan.userProperties.favorited;
+			},
+			deep: true
+		}
+	},
 	computed: {
 		amountLeft() {
 			const {
