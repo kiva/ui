@@ -42,7 +42,7 @@
 /* global braintree */
 import _get from 'lodash/get';
 import numeral from 'numeral';
-// import Raven from 'raven-js';
+import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
@@ -187,9 +187,24 @@ export default {
 						event.preventDefault();
 						this.$emit('updating-totals', true);
 
+						// this is not working yet
+						// eslint-disable-next-line
+						hostedFieldsInstance.on('validityChange', function (event) {
+							const field = event.fields[event.emittedBy];
+
+							if (field.isValid) {
+								console.log(event.emittedBy, 'is fully valid');
+							} else if (field.isPotentiallyValid) {
+								console.log(event.emittedBy, 'is potentially valid');
+							} else {
+								console.log(event.emittedBy, 'is not valid');
+							}
+						});
+
 						hostedFieldsInstance.tokenize((tokenizeErr, payload) => {
 							if (tokenizeErr) {
 								console.error(tokenizeErr);
+								this.$showTipMsg(tokenizeErr.message, 'error');
 								return;
 							}
 
@@ -201,6 +216,7 @@ export default {
 									nonce: payload.nonce
 								}
 							}).then(kivaBraintreeResponse => {
+								// This is not working yet, but mainly brought over from paypalExpress.vue comp.
 								// Check for errors
 								if (kivaBraintreeResponse.errors) {
 									this.$emit('updating-totals', false);
@@ -212,12 +228,12 @@ export default {
 									this.$showTipMsg(standardError, 'error');
 
 									// Fire specific exception to Sentry/Raven
-									// Raven.captureException(JSON.stringify(ppResponse.errors), {
-									// 	tags: {
-									// 		pp_stage: 'onAuthorize',
-									// 		pp_token: data.paymentToken
-									// 	}
-									// });
+									Raven.captureException(JSON.stringify(kivaBraintreeResponse.errors), {
+										tags: {
+											pp_stage: 'onAuthorize',
+											pp_token: kivaBraintreeResponse.data
+										}
+									});
 
 									// exit
 									// reject(kivaBraintreeResponse);
