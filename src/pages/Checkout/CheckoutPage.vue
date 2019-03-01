@@ -342,7 +342,7 @@ export default {
 		this.braintreeExpVersion = _get(braintreeExpAssignment, 'experiment.version') || null;
 		// TODO: Update for actual launch
 		if (this.braintreeExpVersion !== null) {
-			this.$kvTrackEvent('Basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
+			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
 	},
 	mounted() {
