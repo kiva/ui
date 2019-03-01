@@ -7,12 +7,21 @@
 				<div v-else>Show Fewer</div>
 			</div>
 		</div>
-		<ais-current-refinements>
-			<ul slot-scope="{ items, createURL }">
-				<li v-for="item in items" :key="item.attribute">
-					{{ item.label }}:
-					<ul>
-						<li
+		<ais-current-refinements
+			:transform-items="transformRefinementList"
+		>
+			<div class="accordion-container" slot-scope="{ items, createURL }">
+				<div class="accordion-content">
+					<!--
+					<filter-chip
+						v-for="item in items"
+						:key="item.attribute"
+						:item="item"
+						:create-url="createUrl"
+					/>
+					-->
+					<div v-for="item in items" :key="item.attribute">
+						<filter-chip
 							v-for="refinement in item.refinements"
 							:key="[
 								refinement.attribute,
@@ -20,19 +29,13 @@
 								refinement.value,
 								refinement.operator
 							].join(':')"
-						>
-							<a
-								:href="createURL(refinement)"
-								@click.prevent="item.refine(refinement)"
-							>
-								{{ item.label }} {{ refinement.value }} X
-							</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
+							:title="`${refinement.attribute} ${refinement.value}`"
+							@click-chip="item.refine(refinement)"
+						/>
+					</div>
+				</div>
+			</div>
 		</ais-current-refinements>
-
 	</div>
 </template>
 
