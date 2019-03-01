@@ -76,8 +76,10 @@ export default {
 		this.queryLoanStatus();
 	},
 	watch: {
-		loan() {
-			this.queryLoanStatus();
+		'loan.id': {
+			handler() {
+				this.queryLoanStatus();
+			}
 		}
 	},
 	methods: {
@@ -86,9 +88,11 @@ export default {
 				query: algoliaLoanStatus,
 				variables: {
 					ids: [parseInt(_get(this.loan, 'id'), 10)]
-				}
+				},
+				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				if (data.lend.loans.totalCount) {
+					console.log(_get(data, 'lend.loans.values[0]'));
 					this.latestFundraisingInfo = {
 						fundedAmount: _get(data, 'lend.loans.values[0].loanFundraisingInfo.fundedAmount'),
 						isExpiringSoon: _get(data, 'lend.loans.values[0].loanFundraisingInfo.expiringSoon'),

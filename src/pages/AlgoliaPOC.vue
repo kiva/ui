@@ -27,7 +27,7 @@
 							:results-per-page="12">
 							<template slot="default" slot-scope="{ items }">
 								<algolia-adapter
-									v-for="(item, itemIndex) in items" :key="itemIndex"
+									v-for="item in items" :key="item.id"
 									:loan="item"
 									:items-in-basket="itemsInBasket"
 									:is-logged-in="isLoggedIn" />
@@ -111,8 +111,7 @@ export default {
 			return client.query({
 				query: itemsInBasketQuery
 			}).then(() => {
-				// TODO: REMOVE Once Lend Increment Button EXP ENDS
-				// Pre-fetch the setting for lend increment button
+				// Pre-fetch user Status
 				return client.query({ query: userStatus });
 			}).then(() => {
 				// TODO: REMOVE Once Lend Increment Button EXP ENDS

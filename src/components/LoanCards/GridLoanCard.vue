@@ -150,7 +150,7 @@ export default {
 			handler() {
 				this.isFavorite = this.loan.userProperties.favorited;
 			},
-			// deep: true,
+			deep: true
 		}
 	},
 	computed: {

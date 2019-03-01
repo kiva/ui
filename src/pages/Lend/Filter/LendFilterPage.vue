@@ -18,9 +18,10 @@
 						:results-per-page="12">
 						<template slot="default" slot-scope="{ items }">
 							<algolia-adapter
-								v-for="(item, itemIndex) in items" :key="itemIndex"
+								v-for="item in items" :key="item.id"
 								:loan="item"
-								:items-in-basket="itemsInBasket" />
+								:items-in-basket="itemsInBasket"
+								:is-logged-in="isLoggedIn" />
 						</template>
 					</ais-hits>
 					<algolia-pagination :padding="2" />
@@ -40,6 +41,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
 import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
@@ -77,14 +79,19 @@ export default {
 		algoliaConfig
 	],
 	created() {
+		// Set items in basket
 		const itemsInBasketResults = this.apollo.readQuery({ query: itemsInBasketQuery });
 		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
+		// Set user status
+		const userData = this.apollo.readQuery({ query: userStatus });
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
 	data() {
 		return {
 			// Focus in on fundraising Loans
 			defaultFilter: '', // Future to support loan channels, ex. 'status:fundraising',
 			itemsInBasket: null,
+			isLoggedIn: false
 		};
 	},
 	inject: [
@@ -94,6 +101,9 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: itemsInBasketQuery,
+			}).then(() => {
+				// Pre-fetch user Status
+				return client.query({ query: userStatus });
 			}).then(() => {
 				// TODO: REMOVE Once CASH-103: Lend Increment Button EXP ENDS
 				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
