@@ -183,6 +183,7 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -255,6 +256,7 @@ export default {
 			holidayModeEnabled: false,
 			showLYML: true,
 			braintree: false,
+			braintreeExpVersion: null
 		};
 	},
 	apollo: {
@@ -279,6 +281,9 @@ export default {
 					});
 				}
 				return data;
+			}).then(() => {
+				// initialize braintree exp assignment
+				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
 			});
 		},
 		result({ data }) {
@@ -328,6 +333,17 @@ export default {
 			'general.holiday_start_time.value',
 			'general.holiday_end_time.value'
 		);
+
+		// Read assigned version of braintree experiment
+		const braintreeExpAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'bt_test' },
+		});
+		this.braintreeExpVersion = _get(braintreeExpAssignment, 'experiment.version') || null;
+		// TODO: Update for actual launch
+		if (this.braintreeExpVersion !== null) {
+			this.$kvTrackEvent('Basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
+		}
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -367,10 +383,13 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0 && this.braintree === false;
+			return parseFloat(this.creditNeeded) > 0
+			&& (this.braintreeExpVersion === 'control' || this.braintree === false);
 		},
 		showBraintree() {
-			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;
+			return parseFloat(this.creditNeeded) > 0
+				&& this.braintree === true
+				&& this.braintreeExpVersion === 'shown';
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
