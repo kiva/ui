@@ -1,4 +1,9 @@
 <template>
+	<!--
+		This category page was added as a temporary workaround to a bug preventing DOM manipulation in the same Vue
+		file as Algolia filters.
+		https://github.com/algolia/vue-instantsearch/issues/618#issuecomment-466543784
+	-->
 	<filter-menu-section :title="title" :open="open" :result-count="10">
 		<ais-refinement-list :attribute="'sector.name'" :sort-by="['name:asc']"/>
 	</filter-menu-section>
