@@ -2,15 +2,18 @@
 	<div class="braintree-holder">
 		<form id="braintree-payment-form">
 			<!-- Card number input -->
-			<div class="row small-collapse">
+			<div class="row small-collapse braintree-form-row">
 				<div class="small-12 columns">
 					<label for="kv-card-number">Card Number</label>
 					<div id="kv-card-number" class="kv-braintree-wrapper"></div>
+					<p v-if="kvCardNumberError"
+						class="kv-card-number-error kv-bt-field-error"
+						ref="kv-card-number-error">{{ kvCardNumberError }}</p>
 				</div>
 			</div>
 
 			<!-- Inline Inputs -->
-			<div class="row small-collapse">
+			<div class="row small-collapse braintree-form-row">
 				<div class="small-4 columns">
 					<label for="kv-expiration-date">Expiration</label>
 					<div id="kv-expiration-date" class="kv-braintree-wrapper"></div>
@@ -23,6 +26,12 @@
 					<label>Postal code</label>
 					<div id="kv-postal-code" class="kv-braintree-wrapper"></div>
 				</div>
+				<ul class="kv-multi-field-error-list"
+					ref="kv-multi-field-error-list">
+					<li v-if="kvExpirationError" class="kv-bt-field-error">{{ kvExpirationError }}</li>
+					<li v-if="kvCVVError" class="kv-bt-field-error">{{ kvCVVError }}</li>
+					<li v-if="kvPostalCodeError" class="kv-bt-field-error">{{ kvPostalCodeError }}</li>
+				</ul>
 			</div>
 
 			<!-- Submit payment button -->
@@ -42,10 +51,11 @@
 /* global braintree */
 import _get from 'lodash/get';
 import numeral from 'numeral';
-// import Raven from 'raven-js';
+import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -69,29 +79,50 @@ export default {
 			ensureBraintreeScript: null,
 			braintreeRendered: false,
 			loading: false,
-			clientToken: null
+			clientToken: null,
+			btVaultActive: false,
+			kvCardNumberError: '',
+			kvMultiFieldError: '',
+			kvExpirationError: '',
+			kvCVVError: '',
+			kvPostalCodeError: '',
 		};
+	},
+	apollo: {
+		query: experimentSetting,
+		variables() {
+			return {
+				key: 'ui.feature.braintree_vault'
+			};
+		},
+		result({ data }) {
+			this.btVaultActive = _get(data, 'general.setting.value') === 'true' || false;
+		},
 	},
 	metaInfo() {
 		// ensure Braintree script is loaded
 		const braintreeScript = {};
 		const braintreeHostedFieldsScript = {};
+		// const braintreeVaultManagerScript = {};
 
 		// check for braintree incase script is already loaded
 		if (typeof braintree === 'undefined') {
 			braintreeScript.type = 'text/javascript';
 			// Loading in the Braintree SDK by hitting this URL
 			braintreeScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/client.min.js';
-
-			// Trying to load in the hosted fields script
+			// load in the hosted fields script
 			braintreeHostedFieldsScript.type = 'text/javascript';
 			braintreeHostedFieldsScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/hosted-fields.min.js';
+			// load in the hosted fields vault manager
+			// braintreeVaultManagerScript.type = 'text/javascript';
+			// braintreeVaultManagerScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/vault-manager.min.js';
 		}
 
 		return {
 			script: [
 				braintreeScript,
-				braintreeHostedFieldsScript
+				braintreeHostedFieldsScript,
+				// braintreeVaultManagerScript
 			]
 		};
 	},
@@ -114,16 +145,24 @@ export default {
 				query: getClientToken,
 				variables: {
 					amount: numeral(this.amount).format('0.00'),
+					// useCustomerId: true // TODO: Activate with bt vault
 				}
 			}).then(response => {
-				// if (response.errors) {
-				// 	this.setUpdating(false);
-				// 	reject(response);
-				// } else {
-				// 	const paymentToken = _get(response, 'data.shop.getPaymentToken');
-				// 	resolve(paymentToken || response);
-				// }
-				this.clientToken = _get(response, 'data.shop.getClientToken');
+				if (response.errors) {
+					this.setUpdating(false);
+					console.error(response.errors);
+					const errorCode = _get(response, 'errors[0].code');
+					const errorMessage = _get(response, 'errors[0].message');
+
+					Raven.captureException(errorCode, {
+						tags: {
+							bt_stage: 'btGetClientTokenError',
+							bt_get_client_token_error: errorMessage
+						}
+					});
+				} else {
+					this.clientToken = _get(response, 'data.shop.getClientToken');
+				}
 			});
 		},
 		initializeBraintree() {
@@ -145,18 +184,25 @@ export default {
 			// render braintree form
 			braintree.client.create({
 				authorization: this.clientToken
-			}, (err, clientInstance) => {
-				if (err) {
-					console.error(err);
+			}, (btCreateError, clientInstance) => {
+				if (btCreateError) {
+					console.error(btCreateError);
+
+					Raven.captureException(btCreateError.code, {
+						tags: {
+							bt_stage: 'btCreateError',
+							bt_client_create_error: btCreateError.message
+						}
+					});
+
 					return;
 				}
 
 				braintree.hostedFields.create({
 					client: clientInstance,
 					styles: {
-						// > Our devs become wrappers which can be styled by our css
-						// Import our base class for inputs
-						// > These are applied directly to the input elements
+						// Import class for inputs which apply directly to the input elements
+						// > Our divs become wrappers which can be styled by our css
 						input: 'braintree-form-inputs'
 					},
 					fields: {
@@ -180,70 +226,223 @@ export default {
 				}, (hostedFieldsErr, hostedFieldsInstance) => {
 					if (hostedFieldsErr) {
 						console.error(hostedFieldsErr);
+
+						Raven.captureException(hostedFieldsErr.code, {
+							tags: {
+								bt_stage: 'btHostedFieldsCreateError',
+								bt_hosted_fields_error: hostedFieldsErr.message
+							}
+						});
+
 						return;
 					}
 
+					// Activate Braintree Vault
+					// if (this.btVaultActive) {
+					// 	let vaultInstance = null;
+					// 	braintree.vaultManager.create({
+					// 		// client: clientInstance,
+					// 		authorization: this.clientToken
+					// 	}, (vaultError, btVaultInstance) => {
+					// 		vaultInstance = btVaultInstance;
+					// 		console.error(vaultError);
+					// 		console.log(vaultInstance);
+					// 		vaultInstance.fetchPaymentMethods((fetchPaymentMethodError, paymentMethods) => {
+					// 			console.error(fetchPaymentMethodError);
+					// 			paymentMethods.forEach(paymentMethod => {
+					// 				// add payment method to UI
+					// 				console.log(paymentMethod);
+					// 				// paymentMethod.nonce <- transactable nonce associated with payment method
+					// 				// paymentMethod.details <- object with additional information about payment method
+					// 				// paymentMethod.type <- a constant signifying the type
+					// 			});
+					// 		});
+					// 	});
+					// }
+
+					// Watch for validity change on hosted field inputs
+					hostedFieldsInstance.on('validityChange', event => {
+						const field = event.fields[event.emittedBy];
+
+						if (field.isValid) {
+							console.log(event.emittedBy, 'is fully valid');
+						} else if (field.isPotentiallyValid) {
+							console.log(event.emittedBy, 'is potentially valid');
+						} else {
+							console.log(event.emittedBy, 'is not valid');
+						}
+					});
+
 					form.addEventListener('submit', event => {
 						event.preventDefault();
-						this.$emit('updating-totals', true);
+						this.$kvTrackEvent('basket', 'Braintree Payment', 'Button Click');
+						this.setUpdating(true);
 
-						hostedFieldsInstance.tokenize((tokenizeErr, payload) => {
-							if (tokenizeErr) {
-								console.error(tokenizeErr);
-								return;
-							}
-
-							// Apollo call to the query mutation
-							this.apollo.mutate({
-								mutation: braintreeDepositAndCheckout,
-								variables: {
-									amount: numeral(this.amount).format('0.00'),
-									nonce: payload.nonce
+						// Validate Basket prior to starting
+						this.validateBasket()
+							.then(validationStatus => {
+								if (validationStatus === true) {
+									// Call tokenize
+									this.tokenizeFormFields(hostedFieldsInstance);
+									// Todo: Use Vault Payment Nonce
+								} else {
+									// validation failed
+									this.setUpdating(false);
+									this.showCheckoutError(validationStatus);
+									this.$emit('refreshtotals');
 								}
-							}).then(kivaBraintreeResponse => {
-								// Check for errors
-								if (kivaBraintreeResponse.errors) {
-									this.$emit('updating-totals', false);
-									const errorCode = _get(kivaBraintreeResponse, 'errors[0].code');
-									const standardErrorCode = `(Braintree error: ${errorCode})`;
-									const standardError = `There was an error processing your payment.
-										Please try again. ${standardErrorCode}`;
+								return validationStatus;
+							})
+							.catch(error => {
+								this.setUpdating(false);
+								const errorCode = _get(error, 'errors[0].code');
+								const errorMessage = _get(error, 'errors[0].message');
+								console.error(error);
 
-									this.$showTipMsg(standardError, 'error');
-
-									// Fire specific exception to Sentry/Raven
-									// Raven.captureException(JSON.stringify(ppResponse.errors), {
-									// 	tags: {
-									// 		pp_stage: 'onAuthorize',
-									// 		pp_token: data.paymentToken
-									// 	}
-									// });
-
-									// exit
-									// reject(kivaBraintreeResponse);
-								}
-
-								// Transaction is complete
-								const transactionId = _get(
-									kivaBraintreeResponse,
-									'data.shop.doNoncePaymentDepositAndCheckout'
-								);
-								// redirect to thanks with KIVA transaction id
-								if (transactionId) {
-									this.$kvTrackEvent(
-										'basket',
-										'Braintree Payment',
-										'Success',
-										transactionId
-									);
-									this.redirectToThanks(transactionId);
-								}
-								return kivaBraintreeResponse;
+								// Fire specific exception to Sentry/Raven
+								Raven.captureException(errorCode, {
+									tags: {
+										bt_stage: 'btSubmitValidationCatch',
+										bt_basket_validation_error: errorMessage
+									}
+								});
 							});
-						});
 					});
 				});
 			});
+		},
+		tokenizeFormFields(hostedFieldsInstance) {
+			hostedFieldsInstance.tokenize((tokenizeErr, payload) => {
+				if (tokenizeErr) {
+					this.setUpdating(false);
+					this.handleTokenizeErrors(tokenizeErr);
+					return;
+				}
+				// reset all errors
+				this.clearBtFieldErrors();
+				// call transaction method if no errors
+				this.doBraintreeCheckout(payload.nonce);
+			});
+		},
+		doBraintreeCheckout(nonce) {
+			// Apollo call to the query mutation
+			this.apollo.mutate({
+				mutation: braintreeDepositAndCheckout,
+				variables: {
+					amount: numeral(this.amount).format('0.00'),
+					nonce,
+					// savePaymentMethod: this.storePaymentMethod // TODO: Activate with bt vault
+				}
+			}).then(kivaBraintreeResponse => {
+				// Check for errors in transaction
+				if (kivaBraintreeResponse.errors) {
+					this.$emit('updating-totals', false);
+					const errorCode = _get(kivaBraintreeResponse, 'errors[0].code');
+					const errorMessage = _get(kivaBraintreeResponse, 'errors[0].message');
+					const standardErrorCode = `(Braintree error: ${errorCode})`;
+					const standardError = `There was an error processing your payment.
+						Please try again. ${standardErrorCode}`;
+
+					this.$showTipMsg(standardError, 'error');
+
+					// Fire specific exception to Sentry/Raven
+					Raven.captureException(errorCode, {
+						tags: {
+							bt_stage: 'btDepositAndCheckout',
+							bt_kv_transaction_error: errorMessage
+						}
+					});
+
+					// exit
+					return kivaBraintreeResponse;
+				}
+
+				// Transaction is complete
+				const transactionId = _get(
+					kivaBraintreeResponse,
+					'data.shop.doNoncePaymentDepositAndCheckout'
+				);
+				// redirect to thanks with KIVA transaction id
+				if (transactionId) {
+					this.$kvTrackEvent(
+						'basket',
+						'Braintree Payment',
+						'Success',
+						transactionId
+					);
+					this.redirectToThanks(transactionId);
+				}
+				return kivaBraintreeResponse;
+			});
+		},
+		handleTokenizeErrors(tokenizeErr) {
+			console.error(tokenizeErr);
+
+			if (tokenizeErr.code === 'HOSTED_FIELDS_FIELDS_EMPTY') {
+				this.setBtErrors([]);
+			}
+
+			if (tokenizeErr.code === 'HOSTED_FIELDS_FIELDS_INVALID') {
+				this.setBtErrors(tokenizeErr.details.invalidFieldKeys);
+			}
+
+			// Only show tip message + send to Raven for system failures
+			if (tokenizeErr.code !== 'HOSTED_FIELDS_FIELDS_INVALID'
+				&& tokenizeErr.code !== 'HOSTED_FIELDS_FIELDS_EMPTY') {
+				this.$showTipMsg(tokenizeErr.message, 'error');
+
+				Raven.captureException(tokenizeErr.code, {
+					tags: {
+						bt_stage: 'btTokenizeHostedFieldsError',
+						bt_tokenize_card_error: tokenizeErr.message
+					}
+				});
+			}
+		},
+		clearBtFieldErrors() {
+			// clear errors
+			this.kvCardNumberError = '';
+			this.kvExpirationError = '';
+			this.kvCVVError = '';
+			this.kvPostalCodeError = '';
+		},
+		setBtErrors(errorTypes) {
+			// All fields are empty. Cannot tokenize empty card fields.
+			if (errorTypes.length === 0) {
+				this.kvCardNumberError = 'Please enter card number';
+				this.kvExpirationError = 'Please enter an expiration date';
+				this.kvCVVError = 'Please enter cvv';
+				this.kvPostalCodeError = 'Please enter a postal code';
+				return false;
+			}
+			// Some payment input fields are invalid. Cannot tokenize invalid card fields.
+			if (errorTypes.indexOf('number') !== -1) {
+				this.kvCardNumberError = 'Invalid card number';
+			} else {
+				this.kvCardNumberError = '';
+			}
+			// extract expiration error
+			if (errorTypes.indexOf('expirationDate') !== -1) {
+				this.kvExpirationError = 'Invalid expiration date';
+			} else {
+				this.kvExpirationError = '';
+			}
+			// extract cvv error
+			if (errorTypes.indexOf('cvv') !== -1) {
+				this.kvCVVError = 'Invalid cvv';
+			} else {
+				this.kvCVVError = '';
+			}
+			// extract postal code error
+			if (errorTypes.indexOf('postalCode') !== -1) {
+				this.kvPostalCodeError = 'Invalid postal code';
+			} else {
+				this.kvPostalCodeError = '';
+			}
+		},
+		setUpdating(state) {
+			this.loading = state;
+			this.$emit('updating-totals', state);
 		}
 	}
 };
@@ -271,6 +470,10 @@ $error-red: #fdeceb;
 	#braintree-payment-form {
 		padding: 0 1rem;
 
+		.braintree-form-row {
+			margin: 0 0 1.25rem;
+		}
+
 		label {
 			font-size: 1rem;
 			color: $charcoal;
@@ -293,7 +496,7 @@ $error-red: #fdeceb;
 			background: $ghost; //#fafafa
 			border: 1px solid $subtle-gray;
 			color: $kiva-text-dark;
-			margin: 0 0 1.25rem;
+			margin: 0 0 0.25rem;
 			padding: 0 rem-calc(8);
 			border-radius: $form-border-radius;
 
@@ -318,6 +521,23 @@ $error-red: #fdeceb;
 		#kv-cvv {
 			margin: 0 rem-calc(15);
 		}
+
+		.kv-multi-field-error-list {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+
+		.kv-bt-field-error {
+			text-align: left;
+			font-weight: 300;
+			color: $kiva-accent-red;
+			margin: 0;
+			padding: 0;
+			line-height: 1.25rem;
+			font-size: 0.875rem;
+		}
+		// .kv-card-number-error {}
 
 		#braintree-submit {
 			width: 100%;

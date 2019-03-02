@@ -69,6 +69,7 @@ export default {
 		// load the PayPal or Braintree forms?
 		pillToggled(key) {
 			this.selectedOption = key;
+			this.$kvTrackEvent('basket', 'payment type toggled', key);
 		},
 	},
 };
