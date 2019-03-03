@@ -12,7 +12,7 @@
 					<ais-configure
 						:hitsPerPage="12"
 						:filters="defaultFilter" />
-					<ais-current-refinements />
+					<selected-refinements />
 					<ais-hits
 						class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 						:results-per-page="12">
@@ -51,15 +51,16 @@ import {
 	AisConfigure,
 	AisInstantSearch,
 	AisHits,
-	AisCurrentRefinements,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import LendFilterMenu from '@/pages/Lend/Filter/LendFilterMenu';
+import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
 
 export default {
 	components: {
+		SelectedRefinements,
 		LoadingOverlay,
 		WwwPage,
 		LendHeader,
@@ -67,7 +68,6 @@ export default {
 		AisConfigure,
 		AisInstantSearch,
 		AisHits,
-		AisCurrentRefinements,
 		AlgoliaAdapter,
 		AlgoliaPagination,
 		AlgoliaPaginationStats,
