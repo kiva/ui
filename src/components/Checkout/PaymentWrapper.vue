@@ -13,14 +13,14 @@
 					:amount="amount"
 					:show-braintree="showBraintree"
 					@refreshtotals="$emit('refreshTotals', $event)"
-					@updating-totals="$emit('setUpdatingTotals', $event)" />
+					@updating-totals="$emit('updating-totals', $event)" />
 			</div>
 			<div>
 				<braintree-checkout
 					v-show="selectedOption === 'bt'"
 					:amount="amount"
 					@refreshtotals="$emit('refreshTotals', $event)"
-					@updating-totals="$emit('setUpdatingTotals', $event)" />
+					@updating-totals="$emit('updating-totals', $event)" />
 			</div>
 		</div>
 		<div class="attribution-text small-12 medium-7 large-6">Thanks to PayPal powered by Braintree,
