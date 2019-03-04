@@ -7,7 +7,9 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
+				<!-- eslint-disable-next-line max-len -->
 				<filter-section-gender :result-count="1" :open="true" :filter-menu-open="filterMenuOpen" />
+				<filter-section-sort :default-sort-indices="defaultSortIndices" :result-count="1" :open="true" />
 				<filter-section-categories :result-count="10" :open="true" />
 				<filter-section-location :result-count="10" :open="true" />
 
@@ -83,6 +85,7 @@ import FilterRangeSlider from '@/pages/Lend/Filter/FilterRangeSlider';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
+import FilterSectionSort from '@/pages/Lend/Filter/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -92,12 +95,19 @@ export default {
 		FilterSectionGender,
 		FilterSectionCategories,
 		FilterSectionLocation,
+		FilterSectionSort,
 		KvIcon,
 	},
 	data() {
 		return {
 			filterMenuOpen: false,
 		};
+	},
+	props: {
+		defaultSortIndices: {
+			type: Array,
+			required: true,
+		},
 	},
 	methods: {
 		hideFilterMenu() {
