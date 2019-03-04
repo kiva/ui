@@ -6,7 +6,7 @@
 				v-if="searchClient"
 				:search-client="searchClient"
 				:index-name="algoliaDefaultIndex">
-				<lend-filter-menu />
+				<lend-filter-menu :default-sort-indices="defaultSortIndices" />
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
 					<ais-configure
