@@ -57,7 +57,7 @@ export default {
 					key: 'pp',
 				},
 				{
-					title: 'Pay with Card',
+					title: 'Pay with card',
 					key: 'bt'
 				}
 			],
