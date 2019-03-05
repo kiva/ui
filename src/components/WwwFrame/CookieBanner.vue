@@ -23,7 +23,8 @@
 					</div>
 					We use cookies to improve your experience and enable the functionality and security of this site.
 					By continuing to use this site, you agree to the use of these cookies.
-					For more information please see our <a href="https://www.kiva.org/legal/cookie">cookie policy</a>.
+					For more information or to change your cookie
+					preferences please see our <a href="/legal/cookie" target="_blank">cookie policy</a>.
 				</div>
 			</div>
 		</div>
@@ -31,13 +32,13 @@
 </template>
 
 <script>
-import CookieStore from '@/util/CookieStore';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		KvIcon,
 	},
+	inject: ['cookieStore'],
 	data() {
 		return {
 			showBanner: false,
@@ -48,14 +49,30 @@ export default {
 			this.showBanner = false;
 			this.$kvTrackEvent('global', 'gdpr-notice', 'click-close');
 		},
+		migrateCookie() {
+			if (this.cookieStore.get('kvgdpr_closed') === 'true') {
+				this.cookieStore.remove('kvgdpr_closed');
+				this.setGdprCookie();
+			}
+		},
+		setGdprCookie() {
+			const now = (new Date()).getTime();
+			const cookieValue = `viewed=true&viewed_date=${now}`;
+
+			try {
+				// eslint-disable-next-line max-len
+				this.cookieStore.set('kvgdpr', cookieValue, { expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1)) });
+			} catch (e) { /* intentionally empty */ }
+		}
 	},
 	mounted() {
-		const cookieStore = new CookieStore();
-		if (cookieStore.get('kvgdpr_closed') !== 'true') {
+		this.migrateCookie();
+
+		if (this.cookieStore.get('kvgdpr') === undefined) {
 			this.showBanner = true;
 			this.$kvTrackEvent('global', 'gdpr-notice', 'visible');
+			this.setGdprCookie();
 		}
-		cookieStore.set('kvgdpr_closed', 'true');
 	},
 };
 </script>
@@ -69,6 +86,7 @@ export default {
 	left: 0;
 	right: 0;
 	padding: 0.5rem;
+	z-index: 1000;
 
 	.cookie-banner {
 		$banner-padding-mobile: 1.125rem;

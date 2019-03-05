@@ -3,6 +3,7 @@ var base = require('./index.js')
 
 module.exports = merge(base, {
 	app: {
+		host: 'www.stage.kiva.org',
 		publicPath: 'https://www-stage-kiva-org.global.ssl.fastly.net/ui/',
 		graphqlUri: 'https://www.stage.kiva.org/ajax/graphql',
 		enablePerimeterx: false,
@@ -20,9 +21,12 @@ module.exports = merge(base, {
 		fbOgNameSpace: 'stage-kiva',
 		enableSentry: true,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',
-		algoliaAppId: 'H4ONVZQ2C6',
-		algoliaApiKey: 'a373a52c000e929706c9e02a5862a327',
-		algoliaDefaultIndex: 'dev_all_loans'
+		algoliaConfig: {
+			group: 'dev',
+			appId: 'testingZ9YK0WNQ85',
+			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
+			defaultIndex: 'dev_fundraising_loans',
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.stage.kivaws.org/graphql',

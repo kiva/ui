@@ -84,5 +84,6 @@ export default {
 
 .basket-items-list ul {
 	list-style-type: none;
+	margin-right: 1.25rem;
 }
 </style>

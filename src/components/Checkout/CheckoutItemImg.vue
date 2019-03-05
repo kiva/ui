@@ -33,13 +33,8 @@ export default {
 @import 'settings';
 
 .loan-img {
-	height: rem-calc(71);
-	width: rem-calc(71);
-
-	@include breakpoint(medium) {
-		height: rem-calc(80);
-		width: rem-calc(80);
-	}
+	height: rem-calc(80);
+	width: rem-calc(80);
 }
 
 </style>

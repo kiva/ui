@@ -1,7 +1,16 @@
 export default config => {
+	// check for opt out of 3rd party scripts + cookies
+	const cookies = typeof document !== 'undefined' ? document.cookie.split(';') : [];
+	let optout = false;
+	for (let i = 0; i < cookies.length; i++) { // eslint-disable-line
+		if (cookies[i].indexOf('kvgdpr') !== -1 && cookies[i].indexOf('opted_out=true') !== -1) {
+			optout = true;
+		}
+	}
+
 	// Google Tag Manager snippet
 	if (config.enableAnalytics) {
-		if (config.enableGTM) {
+		if (config.enableGTM && !optout) {
 			/* eslint-disable */
 			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -24,7 +33,7 @@ export default config => {
 			/* eslint-enable */
 		}
 
-		if (config.enableGA) {
+		if (config.enableGA && !optout) {
 			/* eslint-disable */
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -36,7 +45,7 @@ export default config => {
 	}
 
 	// Facebook JSSDK
-	if (config.enableFB) {
+	if (config.enableFB && !optout) {
 		/* eslint-disable */
 		window.fbAsyncInit = function() {
 			FB.init({
@@ -60,7 +69,7 @@ export default config => {
 	}
 
 	// PerimeterX snippet
-	if (config.enablePerimeterx) {
+	if (config.enablePerimeterx && !optout) {
 		/* eslint-disable */
 		(function(){
 			window._pxAppId = config.perimeterxAppId;

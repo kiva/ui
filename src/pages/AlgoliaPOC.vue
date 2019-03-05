@@ -16,17 +16,25 @@
 							:filters="defaultFilter" />
 						<ais-current-refinements />
 						<ais-refinement-list :attribute="'sector.name'" />
+						<ais-breadcrumb
+							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']" />
+						<ais-hierarchical-menu
+							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
+							:limit="100" />
+						<ais-sort-by :items="defaultSortIndices"/>
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">
 							<template slot="default" slot-scope="{ items }">
 								<algolia-adapter
-									v-for="(item, itemIndex) in items" :key="itemIndex"
+									v-for="item in items" :key="item.id"
 									:loan="item"
-									:items-in-basket="itemsInBasket" />
+									:items-in-basket="itemsInBasket"
+									:is-logged-in="isLoggedIn" />
 							</template>
 						</ais-hits>
 						<ais-pagination :padding="2" />
+						<ais-stats />
 					</ais-instant-search>
 				</div>
 			</div>
@@ -38,10 +46,12 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import algoliaConfig from '@/plugins/algolia-config-mixin';
 // Import your specific Algolia Components here
 // V2 Beta
 // https://v2--vue-instantsearch.netlify.com/getting-started/using-components.html
-import algoliasearch from 'algoliasearch/lite';
+// algolia search is always required, moved to mixin
+// import algoliasearch from 'algoliasearch/lite';
 import {
 	AisConfigure,
 	AisInstantSearch,
@@ -49,10 +59,17 @@ import {
 	AisPagination,
 	AisCurrentRefinements,
 	AisRefinementList,
+	AisHierarchicalMenu,
+	AisBreadcrumb,
+	AisStats,
+	AisSortBy,
 } from 'vue-instantsearch';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
+import experimentSetting from '@/graphql/query/experimentSetting.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
 export default {
 	components: {
@@ -63,44 +80,60 @@ export default {
 		AisPagination,
 		AisCurrentRefinements,
 		AisRefinementList,
+		AisHierarchicalMenu,
+		AisBreadcrumb,
+		AisStats,
 		ActionButton,
-		AlgoliaAdapter
+		AlgoliaAdapter,
+		AisSortBy
 	},
 	metaInfo: {
 		title: 'Algolia Search'
 	},
 	data() {
 		return {
-			// These are required in each instance of the plugin
-			algoliaAppId: this.algoliaConfig.algoliaAppId,
-			algoliaApiKey: this.algoliaConfig.algoliaApiKey,
-			searchClient: null,
-			// The index will likey be different based on context
-			algoliaDefaultIndex: this.algoliaConfig.algoliaDefaultIndex,
+			// Optional default search
 			defaultSearch: 'Energy',
-			// Focus in on fundRaising Loans
-			defaultFilter: 'status:fundRaising',
-			itemsInBasket: null
+			// Optional default filter
+			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
+			itemsInBasket: null,
+			isLoggedIn: false
 		};
 	},
 	inject: [
 		'apollo',
-		'algoliaConfig'
+	],
+	mixins: [
+		algoliaConfig
 	],
 	apollo: {
-		query: itemsInBasketQuery,
-		prefetch: true,
-		result({ data }) {
-			this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+		preFetch(config, client) {
+			return client.query({
+				query: itemsInBasketQuery
+			}).then(() => {
+				// Pre-fetch user Status
+				return client.query({ query: userStatus });
+			}).then(() => {
+				// TODO: REMOVE Once Lend Increment Button EXP ENDS
+				// Pre-fetch the setting for lend increment button
+				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
+			}).then(() => {
+				// TODO: REMOVE Once Lend Increment Button EXP ENDS
+				// Pre-fetch the assigned version for lend increment button
+				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
+			});
 		}
 	},
-	mounted() {
-		// initialize searchClient + components on mount
-		// TODO: update initialization once vue-instantsearch V2 supports SSR
-		this.searchClient = algoliasearch(
-			this.algoliaConfig.algoliaAppId,
-			this.algoliaConfig.algoliaApiKey
-		);
+	created() {
+		const basketData = this.apollo.readQuery({
+			query: itemsInBasketQuery
+		});
+		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
+
+		const userData = this.apollo.readQuery({
+			query: userStatus
+		});
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	}
 };
 </script>

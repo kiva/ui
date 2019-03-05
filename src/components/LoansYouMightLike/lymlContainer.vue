@@ -80,16 +80,16 @@ export default {
 			return _map(this.loans, 'id');
 		},
 		hasLoansInBasket() {
-			return this.loans || this.loans.length > 0;
+			return this.loans.length || false;
 		},
 		sameCountry() {
-			return this.hasLoansInBasket ? [this.loans[0].loan.geocode.country.isoCode] : ['US'];
+			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.geocode.country.isoCode') : ['US'];
 		},
 		sameActivity() {
-			return this.hasLoansInBasket ? [this.loans[0].loan.activity.id] : [120];
+			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.activity.id') : [120];
 		},
 		sameSector() {
-			return this.hasLoansInBasket ? [this.loans[0].loan.sector.id] : [1];
+			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.sector.id') : [1];
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
@@ -150,12 +150,12 @@ export default {
 			// query to get experiment setting
 			this.apollo.query({
 				query: expSettingQuery,
-				variables: { key: 'uiexp.checkout_lyml' },
+				variables: { key: 'uiexp.checkout_lyml_4card' },
 			}).then(() => {
 				// query to assign experiment version
 				this.apollo.query({
 					query: expAssignmentQuery,
-					variables: { id: 'checkout_lyml' },
+					variables: { id: 'checkout_lyml_4card' },
 				}).then(expAssignment => {
 					// update our values
 					this.lymlVariant = _get(expAssignment, 'data.experiment.version');
@@ -192,15 +192,17 @@ export default {
 				loansYouMightLike.push(randomLoans[0]);
 
 				// same Country loans
-				if (this.hasLoansInBasket && data.data.lend.sameCountry) {
-					loansYouMightLike.push(_get(data.data.lend, 'sameCountry.values[1]'));
+				const sameCountryLoans = _get(data, 'data.lend.sameCountry.values') || [];
+				if (sameCountryLoans.length > 1) {
+					loansYouMightLike.push(sameCountryLoans[1]);
 				} else {
 					loansYouMightLike.push(randomLoans[1]);
 				}
 
 				// same Activity loans
-				if (this.hasLoansInBasket && data.data.lend.sameActivity) {
-					loansYouMightLike.push(_get(data.data.lend, 'sameActivity.values[1]'));
+				const sameActivityLoans = _get(data, 'data.lend.sameActivity.values') || [];
+				if (sameActivityLoans.length > 1) {
+					loansYouMightLike.push(sameActivityLoans[1]);
 				} else {
 					loansYouMightLike.push(randomLoans[2]);
 				}
@@ -209,8 +211,9 @@ export default {
 				// if user is in variant-b we add an additional loan card from the same sector
 				// as the first loan in the basket.
 				if (this.lymlVariant === 'variant-b') {
-					if (this.hasLoansInBasket && data.data.lend.sameSector) {
-						loansYouMightLike.push(_get(data.data.lend, 'sameSector.values[1]'));
+					const sameSectorLoans = _get(data, 'data.lend.sameSector.values') || [];
+					if (sameSectorLoans.length > 1) {
+						loansYouMightLike.push(sameSectorLoans[1]);
 					} else {
 						loansYouMightLike.push(randomLoans[3]);
 					}
@@ -322,17 +325,40 @@ export default {
 
 /* 3 card 43rem */
 .three-cards {
+	$three-card-width: 672;
+
 	#lyml-row-title,
 	#lyml-row-cards {
-		max-width: rem-calc(672);
+		max-width: rem-calc($three-card-width);
+	}
+	// hide arrows if screen is wide enough
+	@media only screen and (min-width: rem-calc($three-card-width)) {
+		.lyml-row-wrapper .arrow {
+			visibility: hidden;
+		}
 	}
 }
 
 /* 4 card 54rem */
 .four-cards {
+	$four-card-width: 864;
+
 	#lyml-row-title,
 	#lyml-row-cards {
-		max-width: 54rem;
+		max-width: rem-calc($four-card-width);
+	}
+	// hide arrows if screen is wide enough
+	@media only screen and (min-width: rem-calc($four-card-width)) {
+		.lyml-row-wrapper .arrow {
+			visibility: hidden;
+		}
+	}
+}
+
+// hide arrows on mobile
+@media (hover: none) {
+	.lyml-row-wrapper .arrow {
+		visibility: hidden;
 	}
 }
 </style>

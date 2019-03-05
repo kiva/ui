@@ -103,18 +103,24 @@
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
 								<pay-pal-exp
-									v-if="showPayPal"
+									v-if="showPayPal && !showBraintree"
+									:show-braintree="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<kv-button
-									v-else
-									type="submit"
-									class="smaller checkout-button"
-									v-kv-track-event="['payment.continueBtn']"
-									title="Checkout using your Kiva credit"
-									@click.prevent.native="validateCreditBasket">Complete order</kv-button>
+								<payment-wrapper
+									v-if="showBraintree"
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+								/>
+
+								<kiva-credit-payment
+									v-if="showKivaCreditButton"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+									class=" checkout-button" />
 							</div>
 						</div>
 
@@ -156,7 +162,7 @@
 
 					<kv-button slot="controls"
 						class="smaller checkout-button"
-						v-kv-track-event="['basket','Redirect Continue Button','exit to legacy']"
+						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
@@ -177,8 +183,10 @@ import _filter from 'lodash/filter';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
+import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import LoginForm from '@/components/Forms/LoginForm';
@@ -193,11 +201,14 @@ import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
+import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 
 export default {
 	components: {
 		WwwPage,
 		PayPalExp,
+		KivaCreditPayment,
 		KvButton,
 		KvLightbox,
 		OrderTotals,
@@ -210,6 +221,8 @@ export default {
 		KvIcon,
 		CheckoutHolidayPromo,
 		LYML,
+		BraintreeCheckout,
+		PaymentWrapper
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -242,6 +255,8 @@ export default {
 			teams: [],
 			holidayModeEnabled: false,
 			showLYML: true,
+			braintree: false,
+			braintreeExpVersion: null
 		};
 	},
 	apollo: {
@@ -266,6 +281,9 @@ export default {
 					});
 				}
 				return data;
+			}).then(() => {
+				// initialize braintree exp assignment
+				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
 			});
 		},
 		result({ data }) {
@@ -283,6 +301,7 @@ export default {
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 			this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
 			this.teams = _get(data, 'my.lender.teams.values');
+			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
@@ -314,6 +333,17 @@ export default {
 			'general.holiday_start_time.value',
 			'general.holiday_end_time.value'
 		);
+
+		// Read assigned version of braintree experiment
+		const braintreeExpAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'bt_test' },
+		});
+		this.braintreeExpVersion = _get(braintreeExpAssignment, 'experiment.version') || null;
+		// TODO: Update for actual launch
+		if (this.braintreeExpVersion !== null) {
+			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
+		}
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -353,7 +383,16 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0;
+			return parseFloat(this.creditNeeded) > 0
+			&& (this.braintreeExpVersion === 'control' || this.braintree === false);
+		},
+		showBraintree() {
+			return parseFloat(this.creditNeeded) > 0
+				&& this.braintree === true
+				&& this.braintreeExpVersion === 'shown';
+		},
+		showKivaCreditButton() {
+			return parseFloat(this.creditNeeded) === 0;
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
@@ -375,42 +414,6 @@ export default {
 						this.refreshTotals();
 					}
 					this.setUpdatingTotals(false);
-				}).catch(errorResponse => {
-					this.setUpdatingTotals(false);
-					console.error(errorResponse);
-				});
-		},
-		validateCreditBasket() {
-			this.$kvTrackEvent('basket', 'Kiva Checkout', 'Button Click');
-			this.setUpdatingTotals(true);
-			this.validateBasket()
-				.then(validationStatus => {
-					if (validationStatus === true) {
-						// succesful validation
-						this.checkoutCreditBasket();
-					} else {
-						// validation failed
-						this.setUpdatingTotals(false);
-						this.showCheckoutError(validationStatus);
-						this.refreshTotals();
-					}
-				}).catch(errorResponse => {
-					this.setUpdatingTotals(false);
-					console.error(errorResponse);
-				});
-		},
-		checkoutCreditBasket() {
-			this.checkoutBasket()
-				.then(transactionResult => {
-					if (typeof transactionResult !== 'object') {
-						// succesful validation
-						this.$kvTrackEvent('basket', 'Kiva Checkout', 'Success', transactionResult);
-						this.redirectToThanks(transactionResult);
-					} else {
-						// checkout failed
-						this.setUpdatingTotals(false);
-						this.showCheckoutError(transactionResult);
-					}
 				}).catch(errorResponse => {
 					this.setUpdatingTotals(false);
 					console.error(errorResponse);
@@ -636,6 +639,7 @@ export default {
 
 				.checkout-button {
 					width: auto;
+					margin-right: rem-calc(10);
 				}
 			}
 		}

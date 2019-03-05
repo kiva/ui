@@ -21,29 +21,29 @@ export function handleApolloErrors(handlers, errors, args) {
 
 // A function to pre-fetch a graphql query from a component's apollo options
 export function preFetchApolloQuery(config, client, args) {
-	return new Promise((resolve, reject) => {
-		if (typeof config.preFetch === 'function') {
-			// Call the manual pre-fetch function
-			const preFetchPromise = config.preFetch(config, client, args);
-			if (!(preFetchPromise instanceof Promise)) {
-				throw new TypeError('Pre-fetch functions must return a Promise');
-			}
-			preFetchPromise.then(resolve).catch(reject);
-		} else {
-			// Fetch the query from the component's apollo options
-			client.query({
-				query: config.query,
-				variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
-			}).then(({ errors }) => {
-				if (errors) {
-					// Pass any errors to the error handlers from the component's apollo options
-					handleApolloErrors(config.errorHandlers, errors, args).then(resolve).catch(reject);
-				} else {
-					// Just resolve if there aren't any errors
-					resolve();
-				}
-			}).catch(reject);
+	if (typeof config.preFetch === 'function') {
+		// Call the manual pre-fetch function
+		const preFetchPromise = config.preFetch(config, client, args);
+		if (!(preFetchPromise instanceof Promise)) {
+			throw new TypeError('Pre-fetch functions must return a Promise');
 		}
+		return preFetchPromise;
+	}
+
+	// Fetch the query from the component's apollo options
+	return new Promise((resolve, reject) => {
+		client.query({
+			query: config.query,
+			variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
+			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
+		}).then(result => {
+			if (result.errors) {
+				// Handle Apollo errors with custom code
+				handleApolloErrors(config.errorHandlers, result.errors, args).then(resolve).catch(reject);
+			} else {
+				resolve(result);
+			}
+		}).catch(reject);
 	});
 }
 

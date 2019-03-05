@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
 import CookieStore from '@/util/CookieStore';
+import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
@@ -17,8 +18,24 @@ const isDev = process.env.NODE_ENV !== 'production';
 export default context => {
 	return new Promise((resolve, reject) => {
 		const s = isDev && Date.now();
-		const { url, config, cookies } = context;
+		const {
+			url,
+			config,
+			cookies,
+			user,
+		} = context;
+		const { accessToken, ...profile } = user;
 		const cookieStore = new CookieStore(cookies);
+
+		let kvAuth0;
+		if (config.enableAuth0) {
+			kvAuth0 = new KvAuth0({
+				user: profile,
+				accessToken,
+			});
+		} else {
+			kvAuth0 = MockKvAuth0;
+		}
 
 		__webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
@@ -28,12 +45,14 @@ export default context => {
 			apolloClient,
 		} = createApp({
 			appConfig: config,
+			cookieStore,
 			apollo: {
 				cookieStore,
 				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 				uri: config.graphqlUri,
 				types: config.graphqlFragmentTypes
-			}
+			},
+			kvAuth0,
 		});
 
 		// redirect to the resolved url if it does not match the requested url
@@ -66,6 +85,7 @@ export default context => {
 			// which is resolved when the action is complete and apollo cache has been updated.
 			return preFetchAll(matchedComponents, apolloClient, {
 				route: router.currentRoute,
+				kvAuth0,
 			}).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
@@ -86,7 +106,7 @@ export default context => {
 					reject(error);
 				} else {
 					reject({
-						url: router.resolve(error).href
+						url: router.resolve(error).href,
 					});
 				}
 			});

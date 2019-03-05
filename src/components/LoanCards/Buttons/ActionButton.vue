@@ -2,18 +2,27 @@
 	<component
 		:is="currentButtonState"
 		class="action-button smaller"
-		:loan-id="loanId" />
+		:loan-id="loanId"
+		:loan="loan"
+		:lend-increment-button-version="lendIncrementButtonVersion"
+	/>
 </template>
 
 <script>
 import _includes from 'lodash/includes';
 import Lend25Button from './Lend25Button';
+import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
-import ReadMoreButton from './ReadMoreButton';
+import LoanFundedText from './LoanFundedText';
 
 export default {
+	inject: ['apollo'],
 	props: {
+		loan: {
+			type: Object,
+			default: () => {}
+		},
 		loanId: {
 			type: Number,
 			default: null
@@ -30,9 +39,17 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	computed: {
 		currentButtonState() {
+			const experimentLendIncrement = (
+				this.lendIncrementButtonVersion !== null ||
+				this.lendIncrementButtonVersion !== 'variant-a'
+			);
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
@@ -40,10 +57,10 @@ export default {
 				return LendAgainButton;
 			}
 			if (this.isFunded) {
-				return ReadMoreButton;
+				return LoanFundedText;
 			}
-			return Lend25Button;
-		}
+			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
+		},
 	},
 };
 

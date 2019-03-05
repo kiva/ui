@@ -5,7 +5,7 @@
 			<img v-if="!wideIcon" src="~@/assets/images/charity-navigator.png">
 			<img v-else src="~@/assets/images/charity-navigator-wide.png">
 		</div>
-		<div id="subtitle">{{ subtitle }}</div>
+		<div id="subtitle" v-if="subtitle">{{ subtitle }}</div>
 	</div>
 </template>
 

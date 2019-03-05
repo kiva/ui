@@ -111,10 +111,18 @@ export default {
 			this.totalPartners = _get(data, 'general.partners.totalCount');
 		},
 		errorHandlers: {
-			'api.authenticationRequired': ({ route }) => Promise.reject({
-				path: '/login',
-				query: { doneUrl: route.fullPath.slice(1) }
-			})
+			'api.authenticationRequired': ({ route, kvAuth0 }) => {
+				if (kvAuth0.enabled) {
+					return Promise.reject({
+						path: '/ui-login',
+						query: { doneUrl: route.fullPath }
+					});
+				}
+				return Promise.reject({
+					path: '/login',
+					query: { doneUrl: route.fullPath.slice(1) }
+				});
+			}
 		}
 	},
 	methods: {

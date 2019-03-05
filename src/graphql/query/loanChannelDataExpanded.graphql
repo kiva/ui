@@ -1,0 +1,45 @@
+#import '../fragments/loanCardFields.graphql'
+
+query (
+	$ids: [Int],
+	$limit: Int = 12,
+	$offset: Int = 0,
+	$unique: Boolean = false,
+	$excludeIds: [Int],
+	$imgDefaultSize: String = "w480h360",
+    $imgRetinaSize: String = "w960h720",
+) {
+	lend {
+		loanChannelsById(ids: $ids) {
+			id
+			name
+			description
+			url
+			loans(
+				limit: $limit,
+				offset: $offset,
+				unique: $unique,
+				exclude_ids: $excludeIds
+			) {
+				totalCount
+				values {
+					...loanCardFields
+					image {
+						id
+						default: url(customSize: $imgDefaultSize)
+						retina: url(customSize: $imgRetinaSize)
+					}
+				}
+			}
+		}
+	}
+	shop {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}

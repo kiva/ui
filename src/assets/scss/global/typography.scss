@@ -1,13 +1,16 @@
 @import 'settings';
 
-h1,
-h5,
-h6 {
-	font-weight: 700;
+h1 {
+	font-weight: 500;
 }
 
 h4 {
 	font-weight: 400;
+}
+
+h5,
+h6 {
+	font-weight: 700;
 }
 
 h1.huge {

@@ -11,7 +11,19 @@ query {
 			key
 			value
 		}
-		lbcMessageExp: setting(setting: "uiexp.lbc_message") {
+		lendIncrementExp: setting(setting: "uiexp.lend_increment_button_v2") {
+			key
+			value
+		}
+		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loan_row") {
+			key
+			value
+		}
+		imageEnhancementExperiment: setting(setting: "uiexp.image_enhancement") {
+			key
+			value
+		}
+		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan") {
 			key
 			value
 		}

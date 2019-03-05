@@ -4,6 +4,8 @@ export default [
 	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
+	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
+	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
@@ -18,6 +20,7 @@ export default [
 	{ path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
+	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
@@ -59,4 +62,5 @@ export default [
 			},
 		]
 	},
+	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 ];

@@ -1,9 +1,22 @@
 <template>
 	<div v-if="showCategory">
-		<div class="row">
+		<div class="row title-row">
 			<div class="column small-12">
-				<h2 class="category-name">{{ cleanName }}
-					<span class="view-all-link" v-if="showViewAllLink">&nbsp;<a :href="cleanUrl">View all</a></span>
+				<h2 class="category-name">
+					<router-link
+						v-if="showViewAllLink"
+						class="view-all-link"
+						:to="cleanUrl"
+						:title="`View all ${cleanName} loans`"
+						v-kv-track-event="[
+							'Lending',
+							'click-Category-View-All',
+							`View all ${cleanName} loans`]">
+						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
+					</router-link>
+					<template v-else>
+						{{ cleanName }}
+					</template>
 				</h2>
 			</div>
 		</div>
@@ -21,7 +34,8 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<GridLoanCard
+					<component
+						:is="loanCardType"
 						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
@@ -33,7 +47,27 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
+
+					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
+						<router-link
+							:to="cleanUrl"
+							:title="`${viewAllLoansCategoryTitle}`"
+							v-kv-track-event="[
+								'Lending',
+								'click-View all',
+								`Loan card`]">
+
+							<div :class="loanCardTypeKebabCase">
+								<div class="link">
+									{{ viewAllLoansCategoryTitle }}
+								</div>
+							</div>
+						</router-link>
+					</div>
+
 				</div>
 			</div>
 			<span
@@ -47,8 +81,10 @@
 
 <script>
 import _get from 'lodash/get';
+import _kebabCase from 'lodash/kebabCase';
 import _throttle from 'lodash/throttle';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 
 const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
@@ -57,6 +93,7 @@ const largeCardWidthPlusPadding = 300;
 export default {
 	components: {
 		GridLoanCard,
+		GridMicroLoanCard
 	},
 	inject: ['apollo'],
 	props: {
@@ -80,6 +117,18 @@ export default {
 			type: String,
 			default: 'Control'
 		},
+		isMicro: {
+			type: Boolean,
+			default: false
+		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
+		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
@@ -93,6 +142,12 @@ export default {
 		};
 	},
 	computed: {
+		loanCardType() {
+			return this.isMicro ? 'GridMicroLoanCard' : 'GridLoanCard';
+		},
+		loanCardTypeKebabCase() {
+			return _kebabCase(this.loanCardType);
+		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
@@ -106,10 +161,31 @@ export default {
 			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
-			return String(this.url).replace(/\/new-countries-for-you/g, '/countries-not-lent');
+			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
+			// grab last segment of url
+			const lastPathIndex = this.url.lastIndexOf('/');
+			const urlSegment = this.url.slice(lastPathIndex);
+			// ensure string type
+			let cleanUrl = String(urlSegment);
+
+			// empty url value for certain urls and if no url is passed in
+			if (
+				this.url.includes('loans-with-research-backed-impact') === true ||
+				this.url.includes('recently-viewed-loans') === true ||
+				this.url === '') {
+				cleanUrl = '';
+			}
+
+			// retain countries not lent to location in /lend
+			if (this.url.includes('new-countries-for-you')) {
+				return '/lend/countries-not-lent';
+			}
+
+			// otherwise transform to use /lend-by-category as root path
+			return `/lend-by-category${cleanUrl}`;
 		},
 		minLeftMargin() {
-			return (this.loans.length - this.cardsInWindow) * -this.cardWidth;
+			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
 		},
 		throttledResize() {
 			return _throttle(this.saveWindowWidth, 100);
@@ -129,12 +205,18 @@ export default {
 		showViewAllLink() {
 			let isVisible = true;
 
-			if (this.url.includes('loans-with-research-backed-impact') === true || this.url === '') {
+			if (
+				this.url.includes('loans-with-research-backed-impact') === true ||
+				this.url.includes('recently-viewed-loans') === true ||
+				this.url === '') {
 				isVisible = false;
 			}
 
 			return isVisible;
 		},
+		viewAllLoansCategoryTitle() {
+			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
+		}
 	},
 	watch: {
 		loanChannel: {
@@ -157,7 +239,8 @@ export default {
 	methods: {
 		saveWindowWidth() {
 			this.windowWidth = window.innerWidth;
-			this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
+			// TODO: New Countries for You code is getting executed even for NON Logged in lenders (no loans, no width)
+			this.wrapperWidth = this.$refs.innerWrapper ? this.$refs.innerWrapper.clientWidth : 0;
 		},
 		scrollRowLeft() {
 			if (this.scrollPos < 0) {
@@ -178,15 +261,31 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$row-max-width: 63.75rem;
+
 .cards-and-arrows-wrapper {
+	max-width: $row-max-width;
+	margin: 0 auto 2rem;
 	align-items: center;
 	display: flex;
+	position: relative;
+	justify-content: center;
 }
 
 .arrow {
+	display: flex;
+	position: absolute;
+	background: rgba(255, 255, 255, 0.8);
+	width: 2.5rem;
+	margin: 0;
+	text-align: center;
+	height: 100%;
+	z-index: 20;
 	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
+	justify-content: center;
+	align-items: center;
 
 	&:hover,
 	&:active {
@@ -202,41 +301,116 @@ export default {
 }
 
 .left-arrow {
-	margin-right: rem-calc(10);
+	left: 0;
 }
 
 .right-arrow {
-	margin-left: rem-calc(10);
+	right: 0;
 }
 
 .cards-display-window {
 	overflow-x: hidden;
 	width: 100%;
+	z-index: 10;
 }
 
 .cards-holder {
 	display: flex;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
+	padding-left: 2.5rem;
+}
+
+.row.title-row {
+	max-width: $row-max-width;
 }
 
 .category-name {
-	font-weight: $global-weight-bold;
-	margin-bottom: 1rem;
+	font-weight: $global-weight-highlight;
+	margin: 0 1.875rem;
+	margin-bottom: 0.5rem;
+
+	@include breakpoint(medium) {
+		margin-left: 1.5625rem;
+	}
 }
 
-.view-all-link {
-	font-size: $normal-text-font-size;
-	font-weight: $global-weight-normal;
+a.view-all-link {
+	display: inline;
+	position: relative;
+	color: $kiva-text-dark;
+
+	.view-all-arrow {
+		position: absolute;
+		top: -0.95rem;
+		right: -1.4rem;
+		padding: 0 0.3rem;
+		font-weight: $global-weight-normal;
+		font-size: 2.5rem;
+
+		@include breakpoint(medium) {
+			font-size: 3rem;
+			top: -0.9rem;
+			right: -1.6rem;
+		}
+	}
+
+	&:hover {
+		text-decoration: none;
+		color: $kiva-text-dark;
+		cursor: pointer;
+	}
 }
 
+// Customize styles for touch screens ie. No Arrows
 @media (hover: none) {
 	.arrow {
 		display: none;
 	}
 
 	.category-name {
-		margin-left: -0.5rem;
+		margin-left: 0.375rem;
+
+		@include breakpoint(medium) {
+			margin-left: 0.175rem;
+		}
+	}
+
+	.cards-holder {
+		padding-left: 1rem;
+	}
+}
+
+// view all loans category card
+.view-all-loans-category {
+	.grid-loan-card {
+		background-color: $very-light-gray;
+		border: 1px solid $kiva-stroke-gray;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		margin: auto;
+		padding: rem-calc(50);
+		width: rem-calc(280);
+
+		&:hover {
+			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+		}
+	}
+
+	.grid-micro-loan-card {
+		@extend .grid-loan-card;
+
+		padding: rem-calc(15);
+	}
+
+	.link {
+		align-items: center;
+		display: flex;
+		font-weight: 400;
+		height: 100%;
+		justify-content: center;
+		text-align: center;
 	}
 }
 </style>

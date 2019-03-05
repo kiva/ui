@@ -2,9 +2,10 @@
 	<div class="lend-mega-menu">
 		<div class="categories-section" :style="{ marginLeft: categoriesMargin }">
 			<h2>Categories</h2>
-			<ul :style="categoriesStyle" ref="categoryList">
+			<ul :style="categoriesStyle">
 				<li
 					v-for="(category, index) in categories"
+					ref="categories"
 					:key="index"
 					:class="{ 'last-category': category == categories[categories.length - 1] }"
 				>
@@ -98,6 +99,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import numeral from 'numeral';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -169,16 +171,18 @@ export default {
 		checkCategoryWidth() {
 			this.categoriesWidth = null;
 			this.$nextTick(() => {
-				const listStyle = window.getComputedStyle(this.$refs.categoryList);
-				const listWidth = Math.ceil(numeral(listStyle.getPropertyValue('width')).value());
-				const columnStyle = window.getComputedStyle(this.$refs.allLoans);
-				const columnWidth = Math.ceil(numeral(columnStyle.getPropertyValue('width')).value());
-				if (listWidth <= columnWidth) {
-					this.categoriesWidth = `${columnWidth * 2}px`;
-				} else {
-					this.categoriesWidth = `${listWidth}px`;
-				}
+				const firstColumnWidth = this.getRefWidth('categories[0]');
+				const secondColumnWidth = this.getRefWidth('allLoans');
+				this.categoriesWidth = `${firstColumnWidth + secondColumnWidth}px`;
 			});
+		},
+		getRefWidth(refPath) {
+			const ref = _get(this.$refs, refPath);
+			if (ref) {
+				const widthValue = window.getComputedStyle(ref).getPropertyValue('width');
+				return Math.ceil(numeral(widthValue).value());
+			}
+			return 0;
 		},
 		onOpen() {
 			this.checkCategoryWidth();

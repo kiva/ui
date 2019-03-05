@@ -1,58 +1,31 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<div class="message-text text-center message-text-confirmation" v-if="showLendByCategoryMessage">
-			<div class="row hide-for-large">
-				<div class="column text-right small-2 medium-2"
-					style="position: relative;">
-					<img class="beta" src="~@/assets/images/beta-icon.svg">
-				</div>
-				<div class="column text-left small-10 medium-10">
-					<p class="message">
-						Welcome to Kiva’s new category view!
-						Take it for a spin below, or
-						<router-link
-							to="/lend"
-							v-kv-track-event="['Lending', 'click-Lend tab tip promo', 'View all loans']"
-						>
-							view all loans
-						</router-link>
-						at any time.
-					</p>
-				</div>
-			</div>
-			<div class="row show-for-large">
-				<div class="column large-12">
-					<p class="message">
-						<img class="beta" src="~@/assets/images/beta-icon.svg">
-						Welcome to Kiva’s new category view!
-						Take it for a spin below, or
-						<router-link
-							to="/lend"
-							v-kv-track-event="['Lending', 'click-Lend tab tip promo', 'View all loans']"
-						>
-							view all loans
-						</router-link>
-						at any time.
-					</p>
-				</div>
-			</div>
-		</div>
+		<lend-header />
 
-		<div class="row">
-			<div class="heading-region column small-12">
-				<h1>Make a loan, change a life</h1>
-				<p class="page-subhead">Each Kiva loan helps people build a better future for
-				themselves and their families. <br class="xxlu">Browse loans by category below, or
-					<router-link :to="{ path: '/lend'}">view all loans</router-link>.
-				</p>
-			</div>
-		</div>
+		<featured-hero-loan
+			v-if="showFeaturedHeroLoan"
+			ref="featured"
+			:items-in-basket="itemsInBasket"
+			:is-logged-in="isLoggedIn"
+			:lend-increment-button-version="lendIncrementExpVersion"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		/>
 
 		<FeaturedLoans
 			v-if="showFeaturedLoans"
 			ref="featured"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
+			:lend-increment-button-version="lendIncrementExpVersion"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		/>
+
+		<recently-viewed-loans
+			:is-micro="true"
+			:items-in-basket="itemsInBasket"
+			:is-logged-in="isLoggedIn"
+			:lend-increment-button-version="lendIncrementExpVersion"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
 		<div>
@@ -65,12 +38,23 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
+				:lend-increment-button-version="lendIncrementExpVersion"
+				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			/>
 		</div>
 
 		<div class="row pre-footer">
 			<div class="column small-12">
-				<router-link :to="{ path: '/categories'}"><h2>View all categories</h2></router-link>
+				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
+					<loading-overlay id="updating-overlay" />
+					<h3 class="text-center">Loading more rows...</h3>
+				</div>
+
+				<h2 class="category-name"><router-link
+					:to="{ path: '/categories'}"
+					class="view-all-link">
+					View all categories<span class="view-all-arrow">&rsaquo;</span>
+				</router-link></h2>
 			</div>
 		</div>
 
@@ -85,10 +69,14 @@
 </template>
 
 <script>
+import _drop from 'lodash/drop';
 import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _take from 'lodash/take';
+import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
+import WebStorage from 'store2';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -97,11 +85,20 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
+import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
+import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
+import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import LendHeader from '@/pages/Lend/LendHeader';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
 // You'll need use the same id when you push data into customCategories
 const customCategoryIds = [];
+
+// Row Limiter
+// > This controls how may rows are loaded on the server
+const ssrRowLimiter = 2;
 
 export default {
 	components: {
@@ -109,7 +106,12 @@ export default {
 		CategoryRow,
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
+		FeaturedHeroLoan,
+		RecentlyViewedLoans,
 		WwwPage,
+		ViewToggle,
+		LoadingOverlay,
+		LendHeader,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -122,24 +124,37 @@ export default {
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
+			imageEnhancementExperimentVersion: '',
+			lendIncrementExpVersion: null,
 			showFeaturedLoans: true,
-			showLendByCategoryMessage: false,
+			showFeaturedHeroLoan: false,
 			realCategories: [],
 			customCategories: [],
+			clientCategories: [],
+			showRecentlyViewed: false,
+			recentLoanIds: [],
+			rowLazyLoadComplete: false,
 		};
 	},
 	computed: {
+		ssrCategoryIds() {
+			return _take(this.realCategoryIds, ssrRowLimiter);
+		},
 		categoryIds() {
 			return _map(this.categorySetting, 'id');
 		},
 		categories() {
-			// merge realCategories & customCategories and re-order to match the setting
-			const categories = this.realCategories.concat(this.customCategories);
-			return categories.sort(indexIn(this.categoryIds, 'id'));
+			// merge realCategories & customCategories
+			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
+			// fiter our any empty categories and categories with 0 loans
+			return categories.filter(channel => {
+				return channel.loans !== null && channel.loans.values.length;
+				// and re-order to match the setting
+			}).sort(indexIn(this.categoryIds, 'id'));
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
-		},
+		}
 	},
 	methods: {
 		assemblePageViewData(categories) {
@@ -161,6 +176,17 @@ export default {
 				loanIds.push({
 					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
 				});
+			}
+
+			// Inject Data for Recently viewed if present
+			if (this.showRecentlyViewed) {
+				if (this.recentLoanIds.length) {
+					_each(this.recentLoanIds, (loanId, index) => {
+						loanIds.push({
+							r: -1, p: index + 1, c: 64, l: loanId
+						});
+					});
+				}
 			}
 
 			_each(categories, (category, catIndex) => {
@@ -192,19 +218,6 @@ export default {
 		setCustomRowData(data) { // eslint-disable-line
 			this.customCategories = [];
 			// check for loans before pushing this as we won't want to show an empty row
-			// const someCustomLoans = _get(data, 'lend.someLoans.values') || [];
-			// if (someCustomLoans.length) {
-			// 	this.customCategories.push({
-			// 		id: 62,
-			// 		name: 'Custom category',
-			// 		url: '', // required field
-			// 		loans: {
-			// 			values: someCustomLoans,
-			// 		},
-			// 	});
-			// }
-
-			// check for loans before pushing this as we won't want to show an empty row
 			// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
 			// if (otherLoans.length) {
 			// 	this.customCategories.push({
@@ -216,7 +229,62 @@ export default {
 			// 		},
 			// 	});
 			// }
-		}
+		},
+		fetchRemainingLoanChannels() {
+			const ssrLoanIds = [];
+			// pick loan ids from each
+			_each(this.categories, category => {
+				_each(category.loans.values, loan => {
+					ssrLoanIds.push(loan.id);
+				});
+			});
+			// Client Fetch the remaining category rows
+			return this.apollo.query({
+				query: loanChannelQuery,
+				variables: {
+					ids: _drop(this.realCategoryIds, ssrRowLimiter),
+					excludeIds: ssrLoanIds,
+					// @todo variables for fetching data for custom channels
+				},
+			}).then(({ data }) => {
+				// add our remaining loan channels
+				this.clientCategories = _get(data, 'lend.loanChannelsById') || [];
+			});
+		},
+		fetchRecentlyViewed() {
+			// Setup Recently Viewed Loans data for inclusion in page load loan row analytics
+			// Read assignment for Recently Viewed Loans EXP
+			const recentlyViewedEXP = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'recently_viewed_loan_row' }
+			});
+			this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
+			// if Recently Viewed Exp is active look for loans in local storage
+			if (this.showRecentlyViewed) {
+				// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
+				const recentlyViewed = WebStorage('recentlyViewedLoans');
+				// decode, parse then set recently viewed loan data
+				try {
+					this.recentLoanIds = JSON.parse(atob(recentlyViewed));
+				} catch (e) {
+					// no-op
+				}
+			}
+		},
+		activateWatchers() {
+			// Create an observer for changes to the categories (and their loans)
+			this.apollo.watchQuery({
+				query: loanChannelQuery,
+				variables: {
+					ids: this.realCategoryIds,
+				},
+			});
+			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
+				next: ({ data }) => {
+					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+				},
+			});
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -236,8 +304,14 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
 					// Pre-fetch the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
-					// Pre-fetch the assigned version for lbc message
-					client.query({ query: experimentQuery, variables: { id: 'lbc_message' } }),
+					// Pre-fetch the assigned version for lend increment button
+					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } }),
+					// Pre-fetch the assigned version for recently viewed loans
+					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
+					// experiment: image enhancement
+					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
+					// experiment: featured hero loan
+					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -245,11 +319,12 @@ export default {
 				// get the ids for the variant, or the default if that is undefined
 				const ids = _map(variantRows || rowData, 'id');
 
-				// Pre-fetch all the data for those channels
+				// Pre-fetch all the data for SSR targeted channels
 				return client.query({
 					query: loanChannelQuery,
 					variables: {
-						ids: _without(ids, ...customCategoryIds),
+						// exclude custom rows + limit for ssr
+						ids: _take(_without(ids, ...customCategoryIds), ssrRowLimiter)
 						// @todo variables for fetching data for custom channels
 					},
 				});
@@ -269,120 +344,92 @@ export default {
 		const versionData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'featured_loans' } });
 		this.showFeaturedLoans = _get(versionData, 'experiment.version') === 'shown';
 
-		// Read the loan channels from the cache
+		// Read the SSR ready loan channels from the cache
 		const categoryData = this.apollo.readQuery({
 			query: loanChannelQuery,
 			variables: {
-				ids: this.realCategoryIds,
+				ids: _take(this.realCategoryIds, ssrRowLimiter)
 				// @todo variables for fetching data for custom channels
 			},
 		});
 		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
-		// update our custom categories prior to render
-		this.setCustomRowData(categoryData);
+		// If active, update our custom categories prior to render
+		// this.setCustomRowData(categoryData);
 
-		// Create an observer for changes to the categories (and their loans)
-		const categoryObserver = this.apollo.watchQuery({
-			query: loanChannelQuery,
-			variables: {
-				ids: this.realCategoryIds,
-				// @todo variables for fetching data for custom channels
-			},
+		// Read assigned version of lend increment button experiment
+		const lendIncrementExperimentAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'lend_increment_button_v2' },
+		});
+		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
+		if (this.lendIncrementExpVersion !== null) {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
+		}
+
+		// CASH-578 : Experiment : Cloudinary image enhancement
+		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'image_enhancement' },
 		});
 
-		// Watch for and react to changes to the query
-		this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
-			next: ({ data }) => {
-				this.setRows(data);
-				this.isAdmin = !!_get(data, 'my.isAdmin');
-				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-				// Update the categories observer with the new setting, triggering updates
-				categoryObserver.setVariables({
-					ids: this.realCategoryIds,
-					// @todo variables for fetching data for custom channels
-				});
-			},
-		});
-
-		// React to changes to the category data
-		categoryObserver.subscribe({
-			next: ({ data }) => {
-				this.realCategories = _get(data, 'lend.loanChannelsById') || [];
-				// update our custom categories on any query change
-				this.setCustomRowData(data);
-			},
-		});
-
-		// Read assigned version of lend-by-category message experiment
 		// eslint-disable-next-line max-len
-		const lendByCategoryMessageData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'lbc_message' } });
-		this.showLendByCategoryMessage = _get(lendByCategoryMessageData, 'experiment.version') === 'shown';
-		if (this.showLendByCategoryMessage) {
-			this.$kvTrackEvent(
-				'Lending',
-				'view-Lend tab tip promo',
-				'View all loans',
-			);
+		this.imageEnhancementExperimentVersion = _get(imageEnchancementExperimentVersionArray, 'experiment.version') || null;
+
+		if (this.imageEnhancementExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
+		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
+		}
+
+		// CASH-350 : Experiment : Featured Hero Loan
+		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'featured_hero_loan' },
+		});
+
+		// eslint-disable-next-line max-len
+		this.featuredHeroLoanExperimentVersion = _get(featuredHeroLoanExperimentVersionArray, 'experiment.version') || null;
+
+		if (this.featuredHeroLoanExperimentVersion === 'variant-a') {
+			this.showFeaturedLoans = true;
+			this.showFeaturedHeroLoan = false;
+		} else if (this.featuredHeroLoanExperimentVersion === 'variant-b') {
+			this.showFeaturedLoans = false;
+			this.showFeaturedHeroLoan = true;
 		}
 	},
 	mounted() {
-		const pageViewTrackData = this.assemblePageViewData(this.categories);
-		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+		this.fetchRecentlyViewed();
+
+		this.fetchRemainingLoanChannels().then(() => {
+			this.rowLazyLoadComplete = true;
+
+			this.activateWatchers();
+
+			const pageViewTrackData = this.assemblePageViewData(this.categories);
+			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+		});
 	},
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
+@import 'global/transitions';
 
 .lend-by-category-page {
-	main {
-		background-color: $kiva-bg-lightgray;
-	}
-
-	.heading-region {
-		margin-bottom: 2rem;
-		margin-top: rem-calc(20);
-
-		@include breakpoint(small only) {
-			margin-bottom: 1rem;
-		}
-
-		p {
-			border-bottom: 1px solid $light-gray;
-			font-size: rem-calc(21);
-			line-height: $global-lineheight;
-			margin-right: 0.75rem;
-			padding-bottom: 2rem;
-
-			@include breakpoint(xxlarge) {
-				margin-right: 0;
-			}
-		}
-
-		@include breakpoint(small only) {
-			h1 {
-				font-size: 1.5rem;
-			}
-
-			p {
-				font-size: 1rem;
-				line-height: 1.5rem;
-				padding-bottom: 1rem;
-			}
-		}
-	}
-
 	.loan-category-row {
-		margin: 0 1rem rem-calc(20);
+		margin: 0 0 rem-calc(20);
+
+		@include breakpoint(medium) {
+			margin: 0 0 rem-calc(40);
+		}
 
 		&:last-of-type {
 			margin-bottom: 0;
 		}
 
 		@media (hover: none) {
-			margin: 0 0 rem-calc(20) rem-calc(20);
-
 			&:last-of-type {
 				margin-bottom: 0;
 			}
@@ -390,27 +437,67 @@ export default {
 	}
 
 	.pre-footer {
+		margin-top: 2rem;
 		margin-bottom: 2rem;
-	}
 
-	.message-text {
-		top: auto;
-		z-index: 1;
-		position: relative;
+		.cat-row-loader {
+			display: flex;
+			justify-content: center;
+			position: relative;
+			z-index: 5;
+			height: 9rem;
+			margin: 0 0 3rem;
 
-		img.beta {
-			@include breakpoint(medium down) {
-				top: 35%;
-				position: relative;
+			// loading overlay overrides
+			#updating-overlay {
+				background: transparent;
+				z-index: 6;
 			}
 
-			vertical-align: middle;
-			margin-left: rem-calc(10);
-			margin-right: rem-calc(10);
+			h3 {
+				display: flex;
+				align-items: flex-end;
+			}
 		}
 
-		p.message {
-			max-width: 100%;
+		h2 {
+			margin: 0 1.875rem;
+
+			@include breakpoint(medium) {
+				margin-left: 1.625rem;
+			}
+
+			@include breakpoint(xxlarge) {
+				margin-left: 0.625rem;
+			}
+
+			@media (hover: none) {
+				margin: 0;
+			}
+		}
+
+		a.view-all-link {
+			display: inline;
+			position: relative;
+
+			.view-all-arrow {
+				position: absolute;
+				top: -1rem;
+				right: -1.4rem;
+				padding: 0 0.3rem;
+				font-weight: $global-weight-normal;
+				font-size: 2.5rem;
+
+				@include breakpoint(medium) {
+					font-size: 3rem;
+					right: -1.6rem;
+				}
+			}
+
+			&:hover {
+				text-decoration: none;
+				cursor: pointer;
+			}
 		}
 	}
 }

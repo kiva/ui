@@ -4,68 +4,75 @@
 			<div class="column small-12">
 				<h2 class="section-name">Featured loans</h2>
 			</div>
-
-			<div class="column featured-row-wrapper">
-				<span
-					class="arrow featured-left-arrow"
-					:class="{inactive: scrollPos === 0}"
-					@click="scrollRowLeft"
-				>&lsaquo;</span>
-				<div class="featured-cards-display-window">
-					<div
-						class="featured-cards-holder"
-						ref="innerWrapper"
-						:style="{ marginLeft: scrollPos + 'px' }"
-						v-touch:swipe.left="scrollRowRight"
-						v-touch:swipe.right="scrollRowLeft"
-					>
-						<GridLoanCard
-							class="is-in-featured"
-							:loan="loan1"
-							:category-id="featuredCategoryIds[0]"
-							:title="featuredCategoryTitles[0]"
-							category-set-id="featured-loans"
-							:row-number="0"
-							:card-number="1"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							:is-visitor="!isLoggedIn"
-						/>
-
-						<GridLoanCard
-							class="is-in-featured"
-							:loan="loan2"
-							:category-id="featuredCategoryIds[1]"
-							:title="featuredCategoryTitles[1]"
-							category-set-id="featured-loans"
-							:row-number="0"
-							:card-number="2"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							:is-visitor="!isLoggedIn"
-						/>
-
-						<GridLoanCard
-							class="is-in-featured"
-							:loan="loan3"
-							:category-id="featuredCategoryIds[2]"
-							:title="featuredCategoryTitles[2]"
-							category-set-id="featured-loans"
-							:row-number="0"
-							:card-number="3"
-							:items-in-basket="itemsInBasket"
-							:enable-tracking="true"
-							:is-visitor="!isLoggedIn"
-						/>
-					</div>
-				</div>
-				<span
-					class="arrow featured-right-arrow"
-					:class="{inactive: scrollPos <= minLeftMargin}"
-					@click="scrollRowRight"
-				>&rsaquo;</span>
-			</div>
 		</div>
+
+		<div class="featured-row-wrapper">
+			<span
+				class="arrow featured-left-arrow"
+				:class="{inactive: scrollPos === 0}"
+				@click="scrollRowLeft"
+			>&lsaquo;</span>
+			<div class="featured-cards-display-window">
+				<div
+					class="featured-cards-holder"
+					ref="innerWrapper"
+					:style="{ marginLeft: scrollPos + 'px' }"
+					v-touch:swipe.left="scrollRowRight"
+					v-touch:swipe.right="scrollRowLeft"
+				>
+					<GridLoanCard
+						class="is-in-featured"
+						:loan="loan1"
+						:category-id="featuredCategoryIds[0]"
+						:title="featuredCategoryTitles[0]"
+						category-set-id="featured-loans"
+						:row-number="0"
+						:card-number="1"
+						:items-in-basket="itemsInBasket"
+						:enable-tracking="true"
+						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+					/>
+
+					<GridLoanCard
+						class="is-in-featured"
+						:loan="loan2"
+						:category-id="featuredCategoryIds[1]"
+						:title="featuredCategoryTitles[1]"
+						category-set-id="featured-loans"
+						:row-number="0"
+						:card-number="2"
+						:items-in-basket="itemsInBasket"
+						:enable-tracking="true"
+						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+					/>
+
+					<GridLoanCard
+						class="is-in-featured"
+						:loan="loan3"
+						:category-id="featuredCategoryIds[2]"
+						:title="featuredCategoryTitles[2]"
+						category-set-id="featured-loans"
+						:row-number="0"
+						:card-number="3"
+						:items-in-basket="itemsInBasket"
+						:enable-tracking="true"
+						:is-visitor="!isLoggedIn"
+						:lend-increment-button-version="lendIncrementButtonVersion"
+						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+					/>
+				</div>
+			</div>
+			<span
+				class="arrow featured-right-arrow"
+				:class="{inactive: scrollPos <= minLeftMargin}"
+				@click="scrollRowRight"
+			>&rsaquo;</span>
+		</div>
+
 	</div>
 </template>
 
@@ -99,6 +106,14 @@ export default {
 		isLoggedIn: {
 			type: Boolean,
 			default: false
+		},
+		lendIncrementButtonVersion: {
+			type: String,
+			default: ''
+		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
 		},
 	},
 	data() {
@@ -197,21 +212,51 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$row-max-width: 63.75rem;
+
 .featured-section-wrapper {
 	background-color: $kiva-bg-darkgray;
-	margin-bottom: 2rem;
+	margin: 0 auto 2rem;
 	padding: 2rem 0;
+
+	.row {
+		max-width: $row-max-width;
+	}
 }
 
 .section-name {
-	font-weight: $global-weight-bold;
+	font-weight: $global-weight-highlight;
+	margin: 0 1.875rem;
 	margin-bottom: 1rem;
+
+	@include breakpoint(medium) {
+		margin-left: 1.5625rem;
+	}
+}
+
+.featured-row-wrapper {
+	max-width: $row-max-width;
+	margin: 0 auto;
+	align-items: center;
+	display: flex;
+	position: relative;
+	justify-content: center;
 }
 
 .arrow {
+	display: flex;
+	position: absolute;
+	background: rgba(239, 239, 239, 0.8);
+	width: 2.5rem;
+	margin: 0;
+	text-align: center;
+	height: 100%;
+	z-index: 20;
 	color: $kiva-text-light;
 	cursor: pointer;
 	font-size: rem-calc(70);
+	justify-content: center;
+	align-items: center;
 
 	&:hover,
 	&:active {
@@ -227,35 +272,46 @@ export default {
 }
 
 .featured-left-arrow {
-	margin-right: rem-calc(10);
+	left: 0;
 }
 
 .featured-right-arrow {
-	margin-left: rem-calc(10);
-}
-
-.featured-row-wrapper {
-	align-items: center;
-	display: flex;
+	right: 0;
 }
 
 .featured-cards-display-window {
 	overflow: hidden;
 	width: 100%;
+	z-index: 10;
 }
 
 .featured-cards-holder {
 	display: flex;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
+	padding-left: 2.5rem;
 }
 
+// Customize styles for touch screens ie. No Arrows
 @media (hover: none) {
 	.arrow {
 		display: none;
 	}
+
+	.section-name {
+		margin-left: 0.375rem;
+
+		@include breakpoint(medium) {
+			margin-left: 0.175rem;
+		}
+	}
+
+	.featured-cards-holder {
+		padding-left: 1rem;
+	}
 }
 
+// hide arrows on large as we only have 3 cards, thus no carousel
 @include breakpoint(xxlarge) {
 	.arrow {
 		display: none;

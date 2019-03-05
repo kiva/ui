@@ -7,30 +7,15 @@
 		</span>
 		<span class="small-12 medium-5 large-7 donation-info-wrapper">
 			<span class="donation-info featured-text">
-				Donation to Kiva
+				{{ donationTitle }}
 			</span>
 			<div>
 				<div v-if="hasLoans" class="donation-tagline small-text">{{ donationTagLine }}</div>
 				<a
-					v-if="this.expVersion === 'variant-b' && hasLoans"
-					class="small-text"
-					:class="boostApplied"
-					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 15]"
-					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
-				</a>
-				<a
-					v-else-if="this.expVersion === 'variant-c' && hasLoans"
-					class="small-text"
-					:class="boostApplied"
-					v-kv-track-event="['basket', 'EXP-CASH-173-Nov2018', 'click-basket-edit-tip', 10]"
-					@click.prevent="updateDonationExp()">{{ donationUpsellText }}
-				</a>
-				<a
-					v-else
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
-					How Kiva uses donations
+					{{ donationDetailsLink }}
 				</a>
 			</div>
 		</span>
@@ -83,9 +68,24 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
+			:header="donationNudgeHeader()"
 			:experimental-header="donationNudgeExperimentalHeader"
-			:experimental-description="donationNudgeExperimentalDescription"
-			:loan-history-count="loanHistoryCount"
+			:description="donationNudgeDescription()"
+			:percentage-rows="donationNudgePercentageRows"
+			v-if="!donationNudgeBorrowerImageExperiment"
+		/>
+		<donation-nudge-lightbox-borrower-image
+			:loan-count="loanCount"
+			:loan-reservation-total="loanReservationTotal"
+			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:close-nudge-lightbox="closeNudgeLightbox"
+			:update-donation-to="updateDonationTo"
+			:has-custom-donation="hasCustomDonation"
+			:header="donationNudgeHeader()"
+			:experimental-header="donationNudgeExperimentalHeader"
+			:description="donationNudgeDescription()"
+			:percentage-rows="donationNudgePercentageRows"
+			v-else
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
@@ -121,7 +121,8 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
-import DonationNudgeLightbox from '@/components/Checkout/DonationNudgeLightbox';
+import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
+import DonationNudgeLightboxBorrowerImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxBorrowerImage';
 
 export default {
 	components: {
@@ -130,6 +131,7 @@ export default {
 		KvLightbox,
 		DonateRepayments,
 		DonationNudgeLightbox,
+		DonationNudgeLightboxBorrowerImage,
 	},
 	inject: ['apollo'],
 	props: {
@@ -152,13 +154,16 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			expVersion: '',
+			checkoutDonation100TextExperiment: '',
 			nudgeLightboxVisible: false,
 			isCash80Running: false,
 			hasCustomDonation: false,
 			donationNudgeExperimentalHeader: false,
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
+			donationNudgeBorrowerImageExperiment: false,
+			donationDetailsLink: 'How Kiva uses donations',
+			donationTitle: 'Donation to Kiva',
 		};
 	},
 	apollo: {
@@ -168,13 +173,6 @@ export default {
 				client.query({
 					query: donationDataQuery
 				}).then(() => {
-					// Get the assigned experiment version for Donation Boost
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'donation_boost',
-						},
-					}).then(resolve).catch(reject);
 					// Get the assigned experiment version for Donation Nudge Lightbox
 					client.query({
 						query: experimentAssignmentQuery,
@@ -182,11 +180,25 @@ export default {
 							id: 'donation_nudge_lightbox_custom_tip',
 						},
 					}).then(resolve).catch(reject);
-					// Get the assigned experiment version for Donation Nudge Lightbox
+					// Get the assigned experiment version for Donation Nudge Lending Cost
 					client.query({
 						query: experimentAssignmentQuery,
 						variables: {
 							id: 'donation_nudge_lending_cost',
+						},
+					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Checkout Donation Lending Cost
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'checkout_donation_100_text',
+						},
+					}).then(resolve).catch(reject);
+					// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'donation_nudge_borrower_image',
 						},
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -213,46 +225,33 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
-			// Donation exp configuration lines 150-155
-			if (this.expVersion === 'variant-b') {
-				const tagline = 'Donations of $15 or more are matched by generous donors for a limited time!';
-
-				return tagline;
-			} else if (this.expVersion === 'variant-c') {
-				const tagline = 'Donations of $10 or more are matched by generous donors for a limited time!';
-
-				return tagline;
-			}
-			// Control for donation boost experiment
-			const tagline = 'An optional 15% donation covers Kiva\'s costs for ';
-
-			if (this.loanCount > 1) {
-				return `${tagline} these loans`;
-			}
-			return `${tagline} this loan`;
+			/* eslint-disable max-len */
+			const coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
+			return this.checkoutDonation100TextExperiment === 'variant-b'
+				? `${coverOurCosts} 100% of every dollar lent goes to funding loans.`
+				: coverOurCosts;
+			/* eslint-enable max-len */
 		},
-		donationBoostExpAmount() {
-			if (this.expVersion === 'variant-b') {
-				return numeral(15).format('$0');
-			} else if (this.expVersion === 'variant-c') {
-				return numeral(10).format('$0');
-			}
+		donationNudgePercentageRows() {
+			const basePercentageRows = [
+				{
+					percentage: 15,
+					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
+					appealIsHorizontallyPadded: false,
+				},
+				{
+					percentage: 20,
+					appeal: 'Reach more people around the world!',
+					appealIsHorizontallyPadded: false,
+				},
+			];
+			const lowPercentage = [{
+				percentage: 10,
+				appeal: 'Cover some of Kiva\'s costs',
+				appealIsHorizontallyPadded: true,
+			}];
+			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
 		},
-		donationUpsellText() {
-			if (numeral(this.serverAmount).value() < numeral(this.donationBoostExpAmount).value()) {
-				// on click of this text, updateDonation(15) replace text with 'Thanks for doubling your impact';
-				return `Boost your donation to ${this.donationBoostExpAmount} and double your impact.`;
-			}
-			return 'Thanks for doubling your impact.';
-		},
-		boostApplied() {
-			if (this.expVersion === 'variant-b') {
-				return numeral(this.serverAmount).value() < 15 ? '' : 'boost-applied';
-			}
-			if (this.expVersion === 'variant-c') {
-				return numeral(this.serverAmount).value() < 10 ? '' : 'boost-applied';
-			}
-		}
 	},
 	methods: {
 		updateDonationTo(amount) {
@@ -269,20 +268,6 @@ export default {
 				this.editDonation = true;
 			}
 		},
-		updateDonationExp() {
-			// if the server amount is greater than the donationBoostAmount return false
-			if (numeral(this.serverAmount).value() >= numeral(this.donationBoostExpAmount).value()) {
-				return false;
-			}
-			if (this.expVersion === 'variant-b') {
-				this.amount = numeral(15).format('0.00');
-				this.updateDonation();
-			}
-			if (this.expVersion === 'variant-c') {
-				this.amount = numeral(10).format('0.00');
-				this.updateDonation();
-			}
-		},
 		triggerDefaultLightbox() {
 			this.defaultLbVisible = !this.defaultLbVisible;
 		},
@@ -291,20 +276,19 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
-			const donationExpVersion = this.apollo.readQuery({
+			const checkoutDonation100TextExpVersion = this.apollo.readQuery({
 				query: experimentAssignmentQuery,
-				variables: { id: 'donation_boost' },
+				variables: { id: 'checkout_donation_100_text' },
 			});
-			this.expVersion = _get(donationExpVersion, 'experiment.version') || null;
+			// eslint-disable-next-line max-len
+			this.checkoutDonation100TextExperiment = _get(checkoutDonation100TextExpVersion, 'experiment.version') || null;
 
-			if (this.expVersion && this.expVersion === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'a');
+			// eslint-disable-next-line max-len
+			if (this.checkoutDonation100TextExperiment === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'a');
 			}
-			if (this.expVersion === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'b');
-			}
-			if (this.expVersion === 'variant-c') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-173-Nov2018', 'c');
+			if (this.checkoutDonation100TextExperiment === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'b');
 			}
 
 			const nudgeExperimentVersion = this.apollo.readQuery({
@@ -340,6 +324,20 @@ export default {
 				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
 				this.donationNudgeExperimentalHeader = true;
 				this.donationNudgeExperimentalDescription = true;
+			}
+
+			// CASH-379: Donation Nudge Borrower Image Experiment
+			const nudgeBorrowerImageExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: { id: 'donation_nudge_borrower_image' },
+			});
+			// eslint-disable-next-line max-len
+			const nudgeBorrowerImageExperimentVersionString = _get(nudgeBorrowerImageExperimentVersion, 'experiment.version') || null;
+			if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'a');
+			} else if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-b') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'b');
+				this.donationNudgeBorrowerImageExperiment = true;
 			}
 		},
 		updateDonation() {
@@ -393,7 +391,22 @@ export default {
 		openNudgeLightbox() {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
-		}
+		},
+		donationNudgeHeader() {
+			const newLoanCount = this.loanHistoryCount + this.loanCount;
+			/* eslint-disable max-len */
+			return this.donationNudgeExperimentalHeader
+				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${newLoanCount} ${newLoanCount > 1 ? 'loans' : 'loan'} made on Kiva!`
+				: 'We rely on donations to reach the people who need it the most';
+			/* eslint-enable max-len */
+		},
+		donationNudgeDescription() {
+			/* eslint-disable max-len */
+			return this.donationNudgeExperimentalDescription
+				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?'
+				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
+			/* eslint-enable max-len */
+		},
 	}
 };
 </script>
@@ -407,14 +420,9 @@ export default {
 
 .dedicate-heart {
 	border: 1px solid $light-gray;
-	height: rem-calc(71);
-	width: rem-calc(71);
 	padding: rem-calc(12);
-
-	@include breakpoint(medium) {
-		height: rem-calc(80);
-		width: rem-calc(80);
-	}
+	height: rem-calc(80);
+	width: rem-calc(80);
 }
 
 .donation-info {

@@ -75,6 +75,7 @@ $dark-green: #247037;
 $graphic-green: #49953f;
 $divider-green: #49953f;
 $light-green: #aee15c;
+$very-light-green: #f0f8f0;
 $blue: #118aec;
 $sky-blue: $blue;
 $faded-blue: #0066a9;
@@ -91,6 +92,7 @@ $vivid-yellow: #fee259;
 $white: #fff;
 $ghost: #fafafa;
 $platinum: #efefef;
+$very-light-gray: #eee;
 $light-gray: #d8d8d8;
 $subtle-gray: #c3c3c3;
 $gray: #9d9c9e;
@@ -201,11 +203,15 @@ $header-lineheight: 1.4;
 $header-margin-bottom: 0.5rem;
 $header-styles: (
 	small: (
-		'h1': ('font-size': 1.75rem, 'line-height': 2.25rem/1.75rem),
+		'h1': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28)),
 		'h2': ('font-size': rem-calc(22), 'line-height': rem-calc(30) / rem-calc(22)),
 	),
 	medium: (
-		'h1': ('font-size': 2.25rem, 'line-height': 2.75rem/2.25rem),
+		'h1': ('font-size': rem-calc(30), 'line-height': rem-calc(38) / rem-calc(30)),
+		'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28))
+	),
+	large: (
+		'h1': ('font-size': rem-calc(36), 'line-height': rem-calc(44) / rem-calc(36)),
 		'h2': ('font-size': rem-calc(28), 'line-height': rem-calc(36) / rem-calc(28))
 	),
 );
@@ -995,6 +1001,13 @@ $tab-content-background: $white;
 $tab-content-border: $light-gray;
 $tab-content-color: $body-font-color;
 $tab-content-padding: 1rem;
+
+// 51.1 Tabs - Pill - vars added by Kiva
+// ------------------
+$tab-pill-border: rem-calc(1) solid #c4c1c6;
+$tab-pill-background: #f7f7f7;
+$tab-pill-color: #808080;
+$tab-pill-active-background: #8ccb8c;
 
 // 52. Thumbnail
 // -------------

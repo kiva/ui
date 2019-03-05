@@ -7,13 +7,11 @@
 	>
 		<div id="nudge-donation-container">
 			<div id="nudge-donation-top">
-				<div id="nudge-donation-top-header" class="impact-text">
-					{{ header }}
-				</div>
-				<div class="row" id="nudge-donation-top-content-row">
-					<div class="small-10 small-offset-1 columns" v-html="description"></div>
-				</div>
-				<kv-donation-nudge-boxes
+				<donation-nudge-intro
+					:header="header"
+					:description="description"
+				/>
+				<donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
 					:percentage-rows= "percentageRows"
 					:has-custom-donation="hasCustomDonation"
@@ -40,7 +38,8 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvDonationNudgeBoxes from '@/components/Checkout/KvDonationNudgeBoxes';
+import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
+import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 
 export default {
@@ -48,7 +47,8 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
-		KvDonationNudgeBoxes,
+		DonationNudgeBoxes,
+		DonationNudgeIntro,
 	},
 	props: {
 		nudgeLightboxVisible: {
@@ -75,53 +75,21 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		loanHistoryCount: {
-			type: Number,
-			default: 0,
+		header: {
+			type: String,
+			default: '',
 		},
 		experimentalHeader: {
 			type: Boolean,
 			default: false,
 		},
-		experimentalDescription: {
-			type: Boolean,
-			default: false,
+		description: {
+			type: String,
+			default: '',
 		},
-	},
-	computed: {
-		header() {
-			/* eslint-disable max-len */
-			return this.experimentalHeader
-				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${this.loanHistoryCount + 1} ${this.loanHistoryCount > 0 ? 'loans' : 'loan'} made on Kiva!`
-				: 'We rely on donations to reach the people who need it the most';
-			/* eslint-enable max-len */
-		},
-		description() {
-			/* eslint-disable max-len */
-			return this.experimentalDescription
-				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?<br>We rely on donations to reach the people who need it the most'
-				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
-			/* eslint-enable max-len */
-		},
-		percentageRows() {
-			const basePercentageRows = [
-				{
-					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
-					appealIsHorizontallyPadded: false,
-				},
-				{
-					percentage: 20,
-					appeal: 'Reach more people around the world!',
-					appealIsHorizontallyPadded: false,
-				},
-			];
-			const lowPercentage = [{
-				percentage: 10,
-				appeal: 'Cover some of Kiva\'s costs',
-				appealIsHorizontallyPadded: true,
-			}];
-			return this.hasCustomDonation ? basePercentageRows : lowPercentage.concat(basePercentageRows);
+		percentageRows: {
+			type: Array,
+			default: () => [],
 		},
 	},
 	methods: {
@@ -148,32 +116,6 @@ export default {
 	#nudge-donation-top {
 		padding-bottom: 3rem;
 		background: #F8F8F8;
-
-		#nudge-donation-top-header {
-			@extend .nudge-lightbox-row-padding;
-
-			font-size: rem-calc(20);
-			font-weight: 500;
-			color: #64B365;
-			line-height: 1.9rem;
-
-			@include breakpoint(medium) {
-				font-size: 1.6rem;
-			}
-		}
-
-		#nudge-donation-top-content-row {
-			@extend .nudge-lightbox-row-padding;
-
-			margin: 1.4rem auto;
-			max-width: 47rem;
-			font-size: rem-calc(14);
-			line-height: rem-calc(24);
-
-			@include breakpoint(medium) {
-				font-size: 1rem;
-			}
-		}
 
 		#nudge-donation-top-boxes-wrapper {
 			@extend .nudge-lightbox-row-padding;

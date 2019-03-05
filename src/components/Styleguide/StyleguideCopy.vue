@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2>Body Copy</h2>
+		<h1>Body Copy</h1>
 
 		<label class="elem-desc">&lt;p&gt; Tag, &lt;a&gt; Tag</label>
 		<p>

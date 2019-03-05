@@ -12,7 +12,7 @@
 		<div class="left-and-to-go-line">
 			<span v-if="props.isExpiringSoon"
 				class="loan-message">{{ props.expiringSoonMessage }}</span>
-			<span v-if="props.isFunded">Funded</span>
+			<span v-if="props.isFunded" class="funded">Funded</span>
 			<span v-else>${{ props.amountLeft | numeral('0,0') }} to go</span>
 		</div>
 	</div>
@@ -34,6 +34,7 @@
 			background-color: $kiva-green;
 			display: block;
 			height: 100%;
+			transition: width 1s;
 		}
 	}
 
@@ -44,6 +45,10 @@
 		font-style: italic;
 		font-weight: $button-font-weight;
 		color: $kiva-green;
+
+		.funded {
+			font-style: normal;
+		}
 	}
 
 	.loan-message {

@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2>Typography</h2>
+		<h1>Typography</h1>
 
 		<label class="elem-desc">Level 1 header</label>
 		<h1>{{ shortLorem }}</h1>

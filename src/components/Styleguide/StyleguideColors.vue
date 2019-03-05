@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<h2>Colors</h2>
+		<h1>Colors</h1>
 		<hr>
 		<!-- Greens -->
 		<div class="row">
@@ -22,7 +22,7 @@
 			<div class="columns small-2 color-card">
 				<div class="color-box kiva-dark-green"></div>
 				<div class="color-hex small-text">#247037</div>
-				<div class="color-name">$kiva-dark-green</div>
+				<div class="color-name">$kiva-darkgreen</div>
 			</div>
 			<div class="columns small-2 color-card">
 				<div class="color-box aqua-light-green"></div>
