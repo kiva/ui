@@ -4,7 +4,7 @@
 			<!-- Card number input -->
 			<div class="row small-collapse braintree-form-row">
 				<div class="small-12 columns">
-					<label for="kv-card-number">Card Number</label>
+					<label for="kv-card-number">Card number</label>
 					<div id="kv-card-number" class="kv-braintree-wrapper"></div>
 					<p v-if="kvCardNumberError"
 						class="kv-card-number-error kv-bt-field-error"
