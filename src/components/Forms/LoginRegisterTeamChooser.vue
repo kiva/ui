@@ -63,7 +63,7 @@ export default {
 		prefetch: true,
 		variables() {
 			return {
-				id: this.teamId,
+				team_id: this.teamId,
 			};
 		},
 		result({ data }) {

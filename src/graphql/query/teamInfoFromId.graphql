@@ -1,7 +1,13 @@
-query($id: Int) {
+query($team_id: Int, $team_recruitment_id: Int) {
 	community {
-		team(id: $id) {
+		team(id: $team_id) {
 			name
+			membershipType
+		}
+	}
+	my {
+		teamRecruitment(id: $team_recruitment_id) {
+			recruiterDisplayName
 		}
 	}
 }
