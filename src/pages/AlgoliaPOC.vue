@@ -11,36 +11,48 @@
 						:index-name="algoliaDefaultIndex">
 						<!-- eslint-disable vue/attribute-hyphenation -->
 						<!-- We could run a default query... :query="defaultSearch" -->
+						<!-- Apply multiple facets or global facets with :filters="filters" -->
+						<!-- Apply via array :facetFilters="facetFilters" -->
+						<!-- :sumOrFiltersScores="true" Show loans that meet all criteria first-->
 						<ais-configure
 							:hitsPerPage="12"
-							:filters="defaultFilter" />
+							ref="aisConfigure"
+							:disjunctiveFacetsRefinements="disjunctiveFacets"
+						>
+							<div slot-scope="{ searchParameters }">
+								Currently applied filters:
+								<p class="small-text"><pre>{{ searchParameters }}</pre></p>
+							</div>
+						</ais-configure>
+
 						<ais-current-refinements />
-						<ais-refinement-list :attribute="'sector.name'" />
-						<ais-breadcrumb
+
+						<!-- POC for Custom Categories Refinements -->
+						<!-- > does NOT currently support count -->
+						<div class="custom-refinement-list">
+							<div class="custom-refinement"
+								v-for="category in customCategories" :key="category.name">
+								<kv-checkbox
+									:label="category.name"
+									@checkbox-toggled="handleCheckboxToggle($event, category)" />
+							</div>
+						</div>
+
+						<!-- <ais-refinement-list
+							:attribute="'sector.name'" :limit="1000" />
+						<ais-refinement-list
+							:attribute="'themeData.loanThemeTypeName'" :limit="1000" />
+						<ais-refinement-list
+							:attribute="'tags.name'" :limit="1000" /> -->
+
+						<!-- <ais-breadcrumb
 							root-path=""
-							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']" />
+							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']" /> -->
 						<ais-hierarchical-menu
 							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 							:limit="100" />
 						<ais-sort-by :items="defaultSortIndices"/>
-						<!-- <ais-toggle-refinement
-							label="Agriculture"
-							:attribute="'sector.name' || 'themeData.themeTypeName'"
-							:on="'Agriculture' || 'Trees'" />
-						<ais-toggle-refinement
-							label="Technology"
-							:attribute="'tags.name' || 'themeData.themeTypeName'"
-							:on="'#Technology' || 'Mobile Technology'">
-							<a slot-scope="{ value, refine, createURL }"
-								:href="createURL(value)"
-								:style="{ fontWeight: value.isRefined ? 'bold' : '' }"
-								@click.prevent="refine(value)">
-								{{ value.name }}
-								({{ value.count }})
-								{{ value.isRefined }}
-								<i>{{ createURL(value) }}</i>
-							</a>
-						</ais-toggle-refinement> -->
+
 						<ais-hits
 							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 							:results-per-page="12">
@@ -52,6 +64,7 @@
 									:is-logged-in="isLoggedIn" />
 							</template>
 						</ais-hits>
+
 						<ais-pagination :padding="2" />
 						<ais-stats />
 					</ais-instant-search>
@@ -64,11 +77,18 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _forEach from 'lodash/forEach';
+import _union from 'lodash/union';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
+
+// This mixin provides some algolia search instance initialization on mounted
+import algoliaInit from '@/plugins/algolia-init-mixin';
+// This mixin provides config for our indices + loan channel categories
 import algoliaConfig from '@/plugins/algolia-config-mixin';
+
 // Import your specific Algolia Components here
-// V2 Beta
-// https://v2--vue-instantsearch.netlify.com/getting-started/using-components.html
+// https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
 // algolia search is always required, moved to mixin
 // import algoliasearch from 'algoliasearch/lite';
 import {
@@ -84,8 +104,11 @@ import {
 	AisStats,
 	AisSortBy,
 } from 'vue-instantsearch';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+
+import KvCheckbox from '@/components/Kv/KvCheckbox';
+
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
 import experimentSetting from '@/graphql/query/experimentSetting.graphql';
@@ -104,29 +127,72 @@ export default {
 		AisToggleRefinement,
 		AisBreadcrumb,
 		AisStats,
-		ActionButton,
+		KvCheckbox,
 		AlgoliaAdapter,
 		AisSortBy
-	},
-	metaInfo: {
-		title: 'Algolia Search'
-	},
-	data() {
-		return {
-			// Optional default search
-			defaultSearch: 'Energy',
-			// Optional default filter
-			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
-			itemsInBasket: null,
-			isLoggedIn: false
-		};
 	},
 	inject: [
 		'apollo',
 	],
 	mixins: [
-		algoliaConfig
+		algoliaConfig,
+		algoliaInit
 	],
+	metaInfo: {
+		title: 'Algolia Search'
+	},
+	data() {
+		return {
+			// aka. Loan Channel config
+			// PROVIDED BY: algolia-config-mixin
+			/* eslint-disable max-len */
+			// customCategories: [
+			// 	{
+			// 		name: 'Agriculture',
+			// 		//  OR tags.name:#Sustainable Ag (need to fix name to remove spaces)
+			// 		filter: 'sector.name:Agriculture OR themeData.loanThemeTypeName:Agriculture OR themeData.loanThemeTypeName:Trees',
+			// 		disjunctiveFacets: {
+			// 			'sector.name': ['Agriculture'],
+			// 			'themeData.loanThemeTypeName': ['Agriculture', 'Trees'],
+			// 			'tags.name': ['#Sustainable Ag']
+			// 		}
+			// 	}
+			// ],
+			// /* eslint-enable max-len */
+
+			// Optional default search state
+			// > Sets search state and reflects that state in ais-current-refinements component
+			// PROVIDED BY: algolia-config-mixin
+			// disjunctiveFacets: {
+			// 	'sector.name': [],
+			// 	'themeData.loanThemeTypeName': [],
+			// 	'tags.name': []
+			// },
+
+			// Optional default search
+			// defaultSearch: 'Energy',
+
+			// Optional default filter (uses OR / AND combinations)
+			// filters: 'themeData.loanThemeTypeName:General OR sector.name:Agriculture OR tags.name:#Schooling',
+			// filters: 'status:fundRaising',
+
+			// Optional facet filters (Not Recommended, prefer filters when needed)
+			// facetFilters: [
+			// 	// OR Combo
+			// 	[
+			// 		'sector.name:Agriculture',
+			// 		'themeData.loanThemeTypeName:General'
+			// 	],
+			// 	// AND
+			// 	'tags.name:#Vegan'
+			// ],
+
+			itemsInBasket: null,
+			isLoggedIn: false,
+			configureRefine: null,
+			configureSearchParameters: null
+		};
+	},
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
@@ -155,6 +221,55 @@ export default {
 			query: userStatus
 		});
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+	},
+	methods: {
+		// Our checkbox toggle provides category data on change
+		// > we decide what to do with it.
+		handleCheckboxToggle(checkboxStatus, category) {
+			if (checkboxStatus) {
+				// if the box is checked (true) add this category's selected facets
+				this.disjunctiveFacets = this.mergeDisjunctiveFacets(category.disjunctiveFacets);
+			} else {
+				// remove this category's selected facets
+				this.disjunctiveFacets = this.extractDisjunctiveFacets(category.disjunctiveFacets);
+			}
+		},
+		mergeDisjunctiveFacets(newFacets) {
+			// we can also get all properties of ais-configure through a $ref placed on that component
+			// console.log(this.$refs.aisConfigure);
+
+			// merge newFacets into existing facets
+			// > clone existing facets so we don't mutate our data directly (we want 1 batch update)
+			const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			// iterate over each facet type and merge array values for each facet
+			_forEach(newDisjunctiveFacets, (value, key) => {
+				newDisjunctiveFacets[key] = _union(value, newFacets[key]);
+			});
+
+			// return new set
+			// console.log(`New Search State: ${JSON.stringify(newDisjunctiveFacets)}`);
+			return newDisjunctiveFacets;
+		},
+		extractDisjunctiveFacets(removedFacets) {
+			// we can also get all properties of ais-configure through a $ref placed on that component
+			// console.log(this.$refs.aisConfigure);
+			// console.log(`Removed Facets: ${JSON.stringify(removedFacets)}`);
+
+			// > clone existing facets so we don't mutate our data directly (we want 1 batch update)
+			const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+
+			// remove facets from existing set
+			_forEach(newDisjunctiveFacets, (value, key) => {
+				// filter existing array by removed array
+				newDisjunctiveFacets[key] = value.filter(facet => {
+					return removedFacets[key].indexOf(facet) === -1;
+				});
+			});
+
+			// return new set
+			// console.log(`New Search State: ${JSON.stringify(newDisjunctiveFacets)}`);
+			return newDisjunctiveFacets;
+		},
 	}
 };
 </script>
