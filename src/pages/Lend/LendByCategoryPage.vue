@@ -9,6 +9,7 @@
 			:is-logged-in="isLoggedIn"
 			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+			:show-category-description="showCategoryDescription"
 		/>
 
 		<FeaturedLoans
@@ -18,6 +19,7 @@
 			:is-logged-in="isLoggedIn"
 			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+			:show-category-description="showCategoryDescription"
 		/>
 
 		<recently-viewed-loans
@@ -129,6 +131,7 @@ export default {
 			lendIncrementExpVersion: null,
 			showFeaturedLoans: true,
 			showFeaturedHeroLoan: false,
+			featuredHeroLoanExperimentVersion: null,
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
@@ -136,6 +139,7 @@ export default {
 			recentLoanIds: [],
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
+			categoryDescriptionExperimentVersion: null,
 		};
 	},
 	computed: {
@@ -314,8 +318,6 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 					// experiment: featured hero loan
 					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan' } }),
-					// experiment: category description
-					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -401,23 +403,6 @@ export default {
 			this.showFeaturedLoans = false;
 			this.showFeaturedHeroLoan = true;
 		}
-
-		// CASH-658 : Experiment : Category description
-		const categoryDescriptionExperimentVersionArray = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'category_description' },
-		});
-
-		// eslint-disable-next-line max-len
-		this.categoryDescriptionExperimentVersion = _get(categoryDescriptionExperimentVersionArray, 'experiment.version') || null;
-
-		if (this.categoryDescriptionExperimentVersion === 'variant-a') {
-			this.showCategoryDescription = false;
-			this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
-		} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
-			this.showCategoryDescription = true;
-			this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
-		}
 	},
 	mounted() {
 		this.fetchRecentlyViewed();
@@ -430,6 +415,26 @@ export default {
 			const pageViewTrackData = this.assemblePageViewData(this.categories);
 			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 		});
+
+		// Only allow experiment when in show-for-large (>= 1024px) screen size
+		if (window.innerWidth >= 1024) {
+			// CASH-658 : Experiment : Category description
+			const categoryDescriptionExperimentVersionArray = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'category_description' },
+			});
+
+			// eslint-disable-next-line max-len
+			this.categoryDescriptionExperimentVersion = _get(categoryDescriptionExperimentVersionArray, 'experiment.version') || null;
+
+			if (this.categoryDescriptionExperimentVersion === 'variant-a') {
+				this.showCategoryDescription = false;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
+			} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
+				this.showCategoryDescription = true;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
+			}
+		}
 	},
 };
 </script>
