@@ -278,8 +278,14 @@ export default {
 $row-max-width: 58.75rem;
 
 .featured-section-wrapper {
-	margin: 0 rem-calc(32) rem-calc(40) rem-calc(40);
-	padding: 0;
+	background-color: $kiva-bg-darkgray;
+	margin: 0 auto 2rem;
+	padding: 2rem 0;
+
+	@include breakpoint(xxlarge down) {
+		padding-left: rem-calc(40);
+		padding-right: rem-calc(40);
+	}
 
 	.row {
 		max-width: $row-max-width;
