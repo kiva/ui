@@ -364,7 +364,7 @@ export default {
 				this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'a');
 			} else if (this.hasLoans && nudge17PercentExperimentVersionString === 'variant-a') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'b');
-				this.expNudge17Percent = true;
+				this.nudge17PercentExperiment = true;
 			}
 		},
 		updateDonation() {
