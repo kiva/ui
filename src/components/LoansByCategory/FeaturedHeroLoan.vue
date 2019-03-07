@@ -3,6 +3,9 @@
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="section-name">Featured: Research-backed impact</h2>
+				<p v-if="showCategoryDescription" class="section-description show-for-large">
+					{{ loanChannel.description }}
+				</p>
 			</div>
 		</div>
 		<div class="featured-row-wrapper">
@@ -139,6 +142,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		showCategoryDescription: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -147,6 +154,7 @@ export default {
 			loading: false,
 			loan: null,
 			loanUseMaxLength: 100,
+			loanChannel: null
 		};
 	},
 	computed: {
@@ -265,6 +273,11 @@ export default {
 					'[0].loans.values[0]'
 				);
 
+				this.loanChannel = _get(
+					_filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]),
+					'[0]'
+				);
+
 				this.loading = false;
 			}
 		}
@@ -292,6 +305,14 @@ $row-max-width: 58.75rem;
 	.section-name {
 		font-weight: $global-weight-highlight;
 		margin-bottom: rem-calc(8);
+	}
+
+	.section-description {
+		@extend .section-name;
+
+		font-weight: $global-weight-normal;
+		margin-top: rem-calc(12);
+		margin-bottom: rem-calc(20);
 	}
 
 	.featured-row-wrapper {
