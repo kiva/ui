@@ -158,6 +158,7 @@ export default {
 			nudgeLightboxVisible: false,
 			isCash80Running: false,
 			hasCustomDonation: false,
+			nudge17PercentExperiment: false,
 			donationNudgeExperimentalHeader: false,
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
@@ -201,6 +202,13 @@ export default {
 							id: 'donation_nudge_borrower_image',
 						},
 					}).then(resolve).catch(reject);
+
+					client.query({
+						query: experimentAssignmentQuery,
+						variables: {
+							id: 'Nudge17Percent'
+						}
+					}).then(resolve).catch(reject);
 				}).catch(reject);
 			});
 		}
@@ -235,8 +243,8 @@ export default {
 		donationNudgePercentageRows() {
 			const basePercentageRows = [
 				{
-					percentage: 15,
-					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
+					percentage: !nudge17PercentExperiment ? 15: 17,
+					appeal: !nudge17PercentExperiment ? `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`: 'Help make Kiva sustainable',
 					appealIsHorizontallyPadded: false,
 				},
 				{
@@ -338,6 +346,25 @@ export default {
 			} else if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-b') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'b');
 				this.donationNudgeBorrowerImageExperiment = true;
+			}
+
+
+
+			// CASH-66: 17% donation nudge
+
+			// HERE I've build out a new const that reads the apollo query
+			const nudge17PercentExperimentVersion = this.apollo.readQuery({
+				query: experimentAssignmentQuery,
+				variables: {id: 'nudge_17_percent'},
+			});
+
+			const nudge17PercentExperimentVersionString = _get(nudge17PercentExperimentVersion, 'experiment.version') || null;
+			// Here I have an if/else condition based on the variant version to kick off tracking
+			if (this.hasLoans && nudge17PercentExperimentVersionString === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'a');
+			} else if (this.hasLoans && nudge17PercentExperimentVersionString === 'variant-a') {
+				this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'b');
+				this.expNudge17Percent = true;
 			}
 		},
 		updateDonation() {
