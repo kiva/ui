@@ -11,7 +11,6 @@
 				<div class="small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
-						:filters="defaultFilter"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
 						ref="aisConfigure" />
 					<selected-refinements />
@@ -92,10 +91,6 @@ export default {
 	},
 	data() {
 		return {
-			// Focus in on fundraising Loans
-			defaultFilter: '', // Future to support loan channels, ex. 'status:fundraising',
-			// disujunctive
-			disjunctiveFacets: () => {},
 			itemsInBasket: null,
 			isLoggedIn: false
 		};
