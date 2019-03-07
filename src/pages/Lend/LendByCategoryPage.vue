@@ -318,6 +318,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 					// experiment: featured hero loan
 					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan' } }),
+					// experiment: featured hero loan
+					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
