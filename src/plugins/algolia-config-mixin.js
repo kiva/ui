@@ -7,6 +7,11 @@ export default {
 			// environment + index config
 			algoliaDefaultIndex: this.algoliaConfig.defaultIndex,
 			algoliaGroup: this.algoliaConfig.group,
+			disjunctiveFacetsKeys: [
+				'sector.name',
+				'themeData.loanThemeTypeName',
+				'tags.name'
+			],
 			/* eslint-disable max-len */
 			// aka. Loan Channel config
 			// INFO: These properties provide an analogue to our loan channels

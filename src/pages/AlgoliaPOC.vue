@@ -18,6 +18,7 @@
 							:hitsPerPage="12"
 							ref="aisConfigure"
 							:disjunctiveFacetsRefinements="disjunctiveFacets"
+							:disjunctiveFacets="disjunctiveFacetsKeys"
 						>
 							<div slot-scope="{ searchParameters }">
 								Currently applied filters:
