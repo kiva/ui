@@ -11,7 +11,8 @@
 				<div class="small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
-						:filters="defaultFilter" />
+						:disjunctiveFacetsRefinements="disjunctiveFacets"
+						ref="aisConfigure" />
 					<selected-refinements />
 					<ais-hits
 						class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
@@ -46,6 +47,7 @@ import experimentSetting from '@/graphql/query/experimentSetting.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
 // Algolia Imports
+import algoliaInit from '@/plugins/algolia-init-mixin';
 import algoliaConfig from '@/plugins/algolia-config-mixin';
 import {
 	AisConfigure,
@@ -76,6 +78,7 @@ export default {
 		title: 'Lend Filter'
 	},
 	mixins: [
+		algoliaInit,
 		algoliaConfig
 	],
 	created() {
@@ -88,8 +91,6 @@ export default {
 	},
 	data() {
 		return {
-			// Focus in on fundraising Loans
-			defaultFilter: '', // Future to support loan channels, ex. 'status:fundraising',
 			itemsInBasket: null,
 			isLoggedIn: false
 		};
