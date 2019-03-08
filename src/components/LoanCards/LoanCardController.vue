@@ -13,6 +13,7 @@
 		:is-funded="isFunded"
 		:amount-left="amountLeft"
 		@track-interaction="trackInteraction"
+		@toggle-favorite="toggleFavorite"
 	/>
 </template>
 
