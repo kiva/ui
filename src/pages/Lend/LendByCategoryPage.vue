@@ -419,7 +419,7 @@ export default {
 		});
 
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
-		if (window.innerWidth >= 1024) {
+		if (window.innerWidth >= 680) {
 			// CASH-658 : Experiment : Category description
 			const categoryDescriptionExperimentVersionArray = this.apollo.readQuery({
 				query: experimentQuery,
