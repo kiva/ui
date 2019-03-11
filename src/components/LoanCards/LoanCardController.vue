@@ -20,6 +20,7 @@
 <script>
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
+import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import {
 	differenceInMinutes,
 	differenceInHours,
@@ -32,6 +33,7 @@ export default {
 	components: {
 		GridLoanCard,
 		GridMicroLoanCard,
+		ListLoanCard,
 	},
 	props: {
 		loanCardType: {

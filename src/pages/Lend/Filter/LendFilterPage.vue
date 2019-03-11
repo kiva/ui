@@ -22,7 +22,9 @@
 								v-for="item in items" :key="item.id"
 								:loan="item"
 								:items-in-basket="itemsInBasket"
-								:is-logged-in="isLoggedIn" />
+								:is-logged-in="isLoggedIn"
+								loan-card-type="ListLoanCard"
+							/>
 						</template>
 					</ais-hits>
 					<algolia-pagination :padding="2" />
