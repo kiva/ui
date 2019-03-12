@@ -46,9 +46,11 @@ export default {
 		font-size: 1.125rem;
 		font-weight: 400;
 	}
+
 	h1 {
 		margin: 1.5rem;
 	}
+
 	.contact {
 		margin-bottom: 1rem;
 	}
