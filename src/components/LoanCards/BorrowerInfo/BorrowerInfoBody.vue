@@ -86,6 +86,7 @@ export default {
 
 .borrower-info-body {
 	line-height: rem-calc(22);
+
 	/*
 	.loan-length {
 		display: inline-block;
