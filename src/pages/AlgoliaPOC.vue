@@ -62,7 +62,10 @@
 									v-for="item in items" :key="item.id"
 									:loan="item"
 									:items-in-basket="itemsInBasket"
-									:is-logged-in="isLoggedIn" />
+									:is-logged-in="isLoggedIn"
+									loan-card-type="GridLoanCard"
+									class="column-block columns"
+								/>
 							</template>
 						</ais-hits>
 
