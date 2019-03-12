@@ -15,7 +15,7 @@
 						ref="aisConfigure" />
 					<selected-refinements />
 					<ais-hits
-						class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
+						class="loan-card-group row"
 						:results-per-page="12">
 						<template slot="default" slot-scope="{ items }">
 							<algolia-adapter
@@ -24,6 +24,7 @@
 								:items-in-basket="itemsInBasket"
 								:is-logged-in="isLoggedIn"
 								loan-card-type="ListLoanCard"
+								class="small-12 columns"
 							/>
 						</template>
 					</ais-hits>
