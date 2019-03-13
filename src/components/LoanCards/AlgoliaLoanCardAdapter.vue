@@ -72,6 +72,7 @@ export default {
 					default: defaultImage,
 					retina: retinaImage
 				},
+				lenderRepaymentTerm: _get(this.loan, 'lenderRepaymentTerm').toString(),
 				loanAmount: _get(this.loan, 'loanAmount').toString(),
 				loanFundraisingInfo: this.latestFundraisingInfo || {
 					fundedAmount: _get(this.loan, 'fundedAmount'),
