@@ -22,7 +22,7 @@
 								item.operator
 							].join(':')"
 							:title="`${item.label}`"
-							@click-chip="item.refine(item)"
+							@click-chip="handleRemoveRefinement(item)"
 						/>
 						<ais-clear-refinements class="clear-all-container">
 							<div
@@ -84,6 +84,10 @@ export default {
 		};
 	},
 	methods: {
+		handleRemoveRefinement(item) {
+			item.refine(item);
+			this.$emit('facet-removed', item);
+		},
 		handleClickShowMore() {
 			this.isCollapsed = false;
 		},
