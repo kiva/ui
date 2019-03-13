@@ -1,21 +1,35 @@
 <template>
-	<div class="algolia-loan-card-adapter column column-block">
-		<GridLoanCard
+	<div class="algolia-loan-card-adapter">
+		<loan-card-controller
 			:key="loan.id"
 			:loan="adaptedLoan"
 			:is-visitor="!isLoggedIn"
-			:items-in-basket="itemsInBasket" />
+			:items-in-basket="itemsInBasket"
+			:loan-card-type="loanCardType"
+		/>
+		<!--
+			Add tracking later
+			:enable-tracking="true"
+			:category-id="loanChannel.id"
+			:category-set-id="setId"
+			:row-number="rowNumber"
+			:card-number="index + 1"
+
+			Add experiments later
+			:lend-increment-button-version="lendIncrementButtonVersion"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		-->
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import algoliaLoanStatus from '@/graphql/query/algoliaLoanStatus.graphql';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 export default {
 	components: {
-		GridLoanCard
+		LoanCardController,
 	},
 	inject: ['apollo'],
 	props: {
@@ -30,7 +44,11 @@ export default {
 		isLoggedIn: {
 			type: Boolean,
 			default: false
-		}
+		},
+		loanCardType: {
+			type: String,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -54,6 +72,7 @@ export default {
 					default: defaultImage,
 					retina: retinaImage
 				},
+				lenderRepaymentTerm: _get(this.loan, 'lenderRepaymentTerm').toString(),
 				loanAmount: _get(this.loan, 'loanAmount').toString(),
 				loanFundraisingInfo: this.latestFundraisingInfo || {
 					fundedAmount: _get(this.loan, 'fundedAmount'),
