@@ -53,13 +53,13 @@ export default {
 		return {
 			options: [
 				{
+					title: 'Pay with card',
+					key: 'bt'
+				},
+				{
 					title: 'Pay with PayPal',
 					key: 'pp',
 				},
-				{
-					title: 'Pay with card',
-					key: 'bt'
-				}
 			],
 			selectedOption: 'pp',
 		};
