@@ -106,7 +106,7 @@ import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
+import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 

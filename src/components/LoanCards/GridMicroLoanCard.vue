@@ -71,7 +71,7 @@ import {
 	differenceInDays
 } from 'date-fns';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import BorrowerInfo from '@/components/LoanCards/BorrowerInfo';
+import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
