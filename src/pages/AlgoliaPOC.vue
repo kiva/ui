@@ -14,11 +14,11 @@
 						<!-- Apply multiple facets or global facets with :filters="filters" -->
 						<!-- Apply via array :facetFilters="facetFilters" -->
 						<!-- :sumOrFiltersScores="true" Show loans that meet all criteria first-->
+						<!-- :disjunctiveFacets="disjunctiveFacetsKeys" -->
 						<ais-configure
 							:hitsPerPage="12"
 							ref="aisConfigure"
 							:disjunctiveFacetsRefinements="disjunctiveFacets"
-							:disjunctiveFacets="disjunctiveFacetsKeys"
 						>
 							<div slot-scope="{ searchParameters }">
 								Currently applied filters:
@@ -28,23 +28,33 @@
 
 						<ais-current-refinements />
 
+						<selected-refinements @facet-removed="handleFacetRemoved" />
+
 						<!-- POC for Custom Categories Refinements -->
 						<!-- > does NOT currently support count -->
 						<div class="custom-refinement-list">
 							<div class="custom-refinement"
 								v-for="category in customCategories" :key="category.name">
 								<kv-checkbox
-									:label="category.name"
-									@checkbox-toggled="handleCheckboxToggle($event, category)" />
+									@checkbox-toggled="handleCheckboxToggle($event, category)">
+									{{ category.name }} ({{ category.count }})
+								</kv-checkbox>
 							</div>
 						</div>
 
-						<!-- <ais-refinement-list
-							:attribute="'sector.name'" :limit="1000" />
+						<!-- These are hidden and used a data providers to create counts -->
 						<ais-refinement-list
-							:attribute="'themeData.loanThemeTypeName'" :limit="1000" />
+							v-show="false"
+							:attribute="'sector.name'" :limit="1000"
+							ref="sectorRefinements" />
 						<ais-refinement-list
-							:attribute="'tags.name'" :limit="1000" /> -->
+							v-show="false"
+							:attribute="'themeData.loanThemeTypeName'" :limit="1000"
+							ref="themeRefinements" />
+						<ais-refinement-list
+							v-show="false"
+							:attribute="'tags.name'" :limit="1000"
+							ref="tagRefinements" />
 
 						<!-- <ais-breadcrumb
 							root-path=""
@@ -113,6 +123,8 @@ import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
+import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
+
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
 import experimentSetting from '@/graphql/query/experimentSetting.graphql';
@@ -133,7 +145,8 @@ export default {
 		AisStats,
 		KvCheckbox,
 		AlgoliaAdapter,
-		AisSortBy
+		AisSortBy,
+		SelectedRefinements
 	},
 	inject: [
 		'apollo',
@@ -226,6 +239,11 @@ export default {
 		});
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
+	mounted() {
+		this.$nextTick(() => {
+			this.getRefinementCounts();
+		});
+	},
 	methods: {
 		// Our checkbox toggle provides category data on change
 		// > we decide what to do with it.
@@ -274,6 +292,62 @@ export default {
 			// console.log(`New Search State: ${JSON.stringify(newDisjunctiveFacets)}`);
 			return newDisjunctiveFacets;
 		},
+		getRefinementCounts() {
+			console.log(this.$refs.sectorRefinements);
+			console.log(this.$refs.sectorRefinements.$el);
+			// well it takes a moment for these to show up...
+			// > Whats the right way to wait and do this? To monitor it based on the component instance
+			// > May be able to watch these or some other property to detect state changes
+			setTimeout(() => {
+				console.log(this.$refs.sectorRefinements.items);
+			}, 1000);
+			// const sectorRefinements = this.$refs.sectorRefinements.items || null;
+			// const themeRefinements = _get(this.$refs.themeRefinements, 'items');
+			// const tagRefinements = _get(this.$refs.tagRefinements, 'items');
+
+			/* item signature
+				count: 1561
+				highlighted: "Agriculture"
+				isRefined: false
+				label: "Agriculture"
+				value: "Agriculture"
+			*/
+
+			// console.log(this.$refs.sectorRefinements.getAttribute('items'));
+			// console.log(themeRefinements);
+			// console.log(tagRefinements);
+
+			return 0;
+		},
+		handleFacetRemoved(payload) {
+			console.log(payload);
+			/* item signature
+				attribute: "sector.name"
+				count: 62
+				exhaustive: true
+				label: "Health"
+				refine: ƒ refine(refinement)
+				type: "disjunctive"
+				value: "Health"
+			*/
+			// Currently set global disjunctive facets
+			const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+
+			// remove facets from existing set
+			_forEach(newDisjunctiveFacets, (value, key) => {
+				console.log(value, key);
+				console.log(payload.value);
+				// filter existing array by removed array
+				if (key === payload.attribute) {
+					newDisjunctiveFacets[key] = value.filter(facet => {
+						console.log(facet);
+						return facet !== payload.value;
+					});
+				}
+			});
+			// update global facets
+			this.disjunctiveFacets = newDisjunctiveFacets;
+		}
 	}
 };
 </script>
