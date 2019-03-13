@@ -18,7 +18,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: { WwwPage },
-	inject: ['apollo'],
+	inject: ['auth0Config'],
 	metaInfo: {
 		title: 'Error'
 	},
@@ -27,8 +27,11 @@ export default {
 			errorCode: this.$route.query.error,
 			errorDescription: this.$route.query.error_description,
 			clientId: this.$route.query.client_id,
-			loginRedirectUrl: this.$route.query.login_redirect_url
+			loginRedirectUrl: ''
 		};
+	},
+	created() {
+		this.loginRedirectUrl = this.auth0Config.loginRedirectUrls[this.clientId];
 	},
 	mounted() {
 		console.log(`Auth0 error: ${this.errorCode}`);

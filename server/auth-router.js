@@ -6,25 +6,11 @@ const Auth0Strategy = require('passport-auth0');
 
 module.exports = function authRouter(config = {}) {
 	const router = express.Router();
-	const onVm = config.host.indexOf('vm') !== -1;
-
 	router.use('/error', (req, res, next) => {
-		const vmRedirectUrls = { // dev tenant/VM env only
-			cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin-vm.kiva.org/login',
-			e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners-vm.kiva.org/login',
-			xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'http://dev-vm-01.kiva.org/authenticate'
-		};
-		const redirectUrls = { // all other tenant/env combinations
-			cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin.dev.kiva.org/login',
-			e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners.dev.kiva.org/login',
-			xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'http://dev.kiva.org/authenticate'
-		};
-		const loginRedirectUrl = onVm ? vmRedirectUrls[req.query.client_id] : redirectUrls[req.query.client_id];
-
 		if (req.query.error === 'access_denied') {
+			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
 			res.redirect(loginRedirectUrl);
 		} else {
-			req.query.login_redirect_url = loginRedirectUrl;
 			next();
 		}
 	});

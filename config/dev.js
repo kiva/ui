@@ -35,6 +35,13 @@ module.exports = merge(base, {
 		auth0BrowserCallbackUri: 'https://www.dev.kiva.org/process-browser-auth',
 		auth0ServerCallbackUri: 'https://www.dev.kiva.org/process-ssr-auth',
 		auth0Domain: 'login.dev.kiva.org',
+		auth0: {
+			loginRedirectUrls: {
+				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin.dev.kiva.org/login',
+				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners.dev.kiva.org/login',
+				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'http://dev.kiva.org/authenticate',
+			},
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.dev.kivaws.org/graphql',

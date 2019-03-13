@@ -51,6 +51,7 @@ export default function createApp({
 			apollo: apolloClient,
 			cookieStore,
 			algoliaConfig: appConfig.algoliaConfig,
+			auth0Config: appConfig.auth0,
 			kvAuth0,
 		}
 	});
