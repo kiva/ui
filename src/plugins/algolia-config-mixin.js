@@ -7,11 +7,13 @@ export default {
 			// environment + index config
 			algoliaDefaultIndex: this.algoliaConfig.defaultIndex,
 			algoliaGroup: this.algoliaConfig.group,
-			disjunctiveFacetsKeys: [
-				'sector.name',
-				'themeData.loanThemeTypeName',
-				'tags.name'
-			],
+			// filters: '',
+			// disjunctiveFacetsKeys: [
+			// 	'sector.name',
+			// 	'themeData.loanThemeTypeName',
+			// 	'tags.name'
+			// ],
+			// disjunctiveFacetsKeys: [],
 			/* eslint-disable max-len */
 			// aka. Loan Channel config
 			// INFO: These properties provide an analogue to our loan channels
@@ -24,7 +26,8 @@ export default {
 						'sector.name': ['Agriculture'],
 						'themeData.loanThemeTypeName': ['Agriculture', 'Trees'],
 						'tags.name': ['#Sustainable Ag']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Animals',
 					filter: 'tags.name:#Animals',
@@ -32,7 +35,8 @@ export default {
 						'sector.name': [],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': ['#Animals']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Arts',
 					filter: 'sector:Arts OR tags.name:#Fabrics',
@@ -40,7 +44,8 @@ export default {
 						'sector.name': ['Arts'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': ['#Fabrics']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Clothing',
 					filter: 'sector:Clothing',
@@ -48,7 +53,8 @@ export default {
 						'sector.name': ['Clothing'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Eco-friendly',
 					filter: 'tags.name:#Eco-friendly',
@@ -56,7 +62,8 @@ export default {
 						'sector.name': [],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': ['#Eco-friendly']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Education',
 					//  OR tags.name:#Female Education (need to fix name to remove spaces)
@@ -66,7 +73,8 @@ export default {
 						'sector.name': ['Education'],
 						'themeData.loanThemeTypeName': ['Higher Education'],
 						'tags.name': ['#Schooling', '#Female Education']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Entertainment',
 					filter: 'sector:Entertainment',
@@ -74,7 +82,8 @@ export default {
 						'sector.name': ['Entertainment'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Food',
 					filter: 'sector:Food',
@@ -82,7 +91,8 @@ export default {
 						'sector.name': ['Food'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Health',
 					//  OR tags.name:#Health and Sanitation (need to fix name to remove spaces)
@@ -91,7 +101,8 @@ export default {
 						'sector.name': ['Health'],
 						'themeData.loanThemeTypeName': ['Health'],
 						'tags.name': ['#Health and Sanitation']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Manufacturing',
 					filter: 'sector:Manufacturing',
@@ -99,7 +110,8 @@ export default {
 						'sector.name': ['Manufacturing'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Refugees and IDPs',
 					// OR themeData.loanThemeTypeName:Vunerable Populations (Refugees) (need to fix name to remove spaces)
@@ -109,7 +121,8 @@ export default {
 						'sector.name': [],
 						'themeData.loanThemeTypeName': ['Displaced Populations', 'Vunerable Populations (Refugees)'],
 						'tags.name': ['#Refugee']
-					}
+					},
+					count: 0
 				}, {
 					name: 'Shelter',
 					filter: 'sector:Housing',
@@ -117,7 +130,8 @@ export default {
 						'sector.name': ['Housing'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Transportation',
 					filter: 'sector:Transportation',
@@ -125,7 +139,8 @@ export default {
 						'sector.name': ['Transportation'],
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Technology',
 					// OR themeData.loanThemeTypeName:Mobile Technology (need to fix name to remove spaces)
@@ -134,7 +149,8 @@ export default {
 						'sector.name': [],
 						'themeData.loanThemeTypeName': ['Mobile Technology'],
 						'tags.name': []
-					}
+					},
+					count: 0
 				}, {
 					name: 'Water and sanitation',
 					//  OR themeData.loanThemeTypeName:#Water and Sanitation (need to fix name to remove spaces)
@@ -143,7 +159,8 @@ export default {
 						'sector.name': [],
 						'themeData.loanThemeTypeName': ['Water and Sanitation'],
 						'tags.name': []
-					}
+					},
+					count: 0
 				},
 			],
 			/* eslint-enable max-len */

@@ -5,7 +5,8 @@
 				type="checkbox"
 				v-model="checkboxStatus"
 				@change="handleChange">
-			<span v-if="label">{{ label }}</span>
+			<slot v-if="hasDefaultSlot"></slot>
+			<span v-else-if="label">{{ label }}</span>
 		</label>
 	</div>
 </template>
@@ -15,13 +16,18 @@ export default {
 	props: {
 		label: {
 			type: String,
-			default: ''
+			default: null
 		}
 	},
 	data() {
 		return {
 			checkboxStatus: ''
 		};
+	},
+	computed: {
+		hasDefaultSlot() {
+			return !!this.$slots.default;
+		},
 	},
 	methods: {
 		handleChange() {
