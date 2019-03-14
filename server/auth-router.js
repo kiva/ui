@@ -6,7 +6,14 @@ const Auth0Strategy = require('passport-auth0');
 
 module.exports = function authRouter(config = {}) {
 	const router = express.Router();
-
+	router.use('/error', (req, res, next) => {
+		if (req.query.error === 'access_denied') {
+			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
+			res.redirect(loginRedirectUrl);
+		} else {
+			next();
+		}
+	});
 	if (!config.enableAuth0) {
 		// return routes that redirect to kiva/kiva login
 		router.get('/ui-login', (req, res) => res.redirect('/login'));

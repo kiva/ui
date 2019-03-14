@@ -27,6 +27,13 @@ module.exports = merge(base, {
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
 			defaultIndex: 'dev_fundraising_loans',
 		},
+		auth0: {
+			loginRedirectUrls: {
+				iHNp5rV3XxaozU7B50oXpNye6RCAE5OD: 'http://admin.stage.kiva.org/login',
+				fNYmJqpKX6mWiz1Evk8b1eqbM9KoeQ45: 'http://partners.stage.kiva.org/login',
+				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'http://stage.kiva.org/authenticate',
+			},
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.stage.kivaws.org/graphql',
