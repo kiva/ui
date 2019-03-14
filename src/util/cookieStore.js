@@ -74,6 +74,7 @@ function set(name, value, options) {
  * @param {object} options
  */
 function remove(name, options) {
+	if (cookies) delete cookies[name];
 	clientCookie.remove(name, options);
 	setCookies[name] = serverCookie.serialize(name, 'deleted', {
 		expires: subYears(new Date(), 1),
