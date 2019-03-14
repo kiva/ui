@@ -25,7 +25,7 @@ export default context => {
 			user,
 		} = context;
 		const { accessToken, ...profile } = user;
-		cookieStore.init(cookies);
+		cookieStore.reset(cookies);
 
 		let kvAuth0;
 		if (config.enableAuth0) {

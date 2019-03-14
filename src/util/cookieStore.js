@@ -7,18 +7,8 @@ import clientCookie from 'js-cookie';
 /**
  * CookieStore - isomorphic cookie reading/writing
  */
-
-const setCookies = {};
+let setCookies = {};
 let cookies;
-
-/**
- * Set which cookies to use (for server-side rendering and testing)
- *
- * @param {object} cookieObject - the parsed cookie object from the request (if on the server)
- */
-function init(cookieObject) {
-	cookies = cookieObject;
-}
 
 /**
  * Get the value of a cookie
@@ -91,12 +81,22 @@ function remove(name, options) {
 	});
 }
 
+/**
+ * Reset the store
+ *
+ * @param {object} requestCookies - the parsed cookie object from the request (if on the server)
+ */
+function reset(requestCookies) {
+	cookies = requestCookies;
+	setCookies = {};
+}
+
 export default {
-	init,
 	get,
 	getCookieString,
 	getSetCookies,
 	has,
 	set,
 	remove,
+	reset,
 };
