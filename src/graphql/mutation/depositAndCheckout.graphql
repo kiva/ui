@@ -1,5 +1,5 @@
-mutation depositAndCheckout($amount: Money!, $token: String!, $payerId: String!) {
-	shop {
+mutation depositAndCheckout($amount: Money!, $token: String!, $payerId: String!, $basketId: String) {
+	shop (basketId: $basketId) {
 		doPaymentDepositAndCheckout	(amount: $amount, token: $token, payerId: $payerId)
 	}
 }

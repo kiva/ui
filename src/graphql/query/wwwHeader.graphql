@@ -1,4 +1,7 @@
-query {
+query($basketId: String) {
+	shop (basketId: $basketId) {
+		nonTrivialItemCount
+	}
 	my {
 		userAccount {
 			id
@@ -18,8 +21,5 @@ query {
 		trustee {
 			id
 		}
-	}
-	shop {
-		nonTrivialItemCount
 	}
 }

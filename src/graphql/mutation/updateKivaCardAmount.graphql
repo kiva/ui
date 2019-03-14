@@ -1,7 +1,7 @@
-mutation updateKivaCardReservation($idsInGroup: [Int], $individualPrice: Money!) {
-	shop {
+mutation updateKivaCardReservation($idsInGroup: [Int], $individualPrice: Money!, $basketId: String) {
+	shop (basketId: $basketId) {
 		updateKivaCard (kivaCard: {
-        	idsInGroup: $idsInGroup
+			idsInGroup: $idsInGroup
 			individualPrice: $individualPrice
 		})
 	}

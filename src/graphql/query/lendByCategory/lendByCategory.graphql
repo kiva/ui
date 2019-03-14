@@ -1,4 +1,4 @@
-query {
+query($basketId: String) {
 	general {
 		rows: setting(setting: "ui.category_rows") {
 			value
@@ -27,7 +27,7 @@ query {
 	my {
 		isAdmin
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			items {
 				values {

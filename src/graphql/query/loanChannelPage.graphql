@@ -1,4 +1,4 @@
-query {
+query($basketId: String) {
 	my {
 		userAccount {
 			id
@@ -9,11 +9,11 @@ query {
 			totalCount
 			values {
 				id
-        		url
+				url
 			}
 		}
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			items {
 				values {

@@ -1,6 +1,6 @@
 #import '../../fragments/shopTotals.graphql'
 
-query {
+query($basketId: String) {
 	my {
 		userAccount {
 			id
@@ -30,7 +30,7 @@ query {
 			value
 		}
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			hasFreeCredits
 			credits {
