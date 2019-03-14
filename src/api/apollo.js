@@ -7,6 +7,7 @@ import {
 	defaultDataIdFromObject,
 } from 'apollo-cache-inmemory';
 import Auth0LinkCreator from './Auth0Link';
+import BasketLinkCreator from './BasketLink';
 import HttpLinkCreator from './HttpLink';
 import StateLinkCreator from './StateLink';
 
@@ -33,6 +34,7 @@ export default function createApolloClient({
 	return new ApolloClient({
 		link: ApolloLink.from([
 			Auth0LinkCreator(kvAuth0),
+			BasketLinkCreator(cookieStore),
 			StateLinkCreator({ cache, cookieStore }),
 			HttpLinkCreator({ cookie: cookieStore.getCookieString(), csrfToken, uri }),
 		]),
