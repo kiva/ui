@@ -31,7 +31,7 @@ module.exports = merge(base, {
 			loginRedirectUrls: {
 				iHNp5rV3XxaozU7B50oXpNye6RCAE5OD: 'http://admin.stage.kiva.org/login',
 				fNYmJqpKX6mWiz1Evk8b1eqbM9KoeQ45: 'http://partners.stage.kiva.org/login',
-				5NP78k662QLODpkk4VzMyKxP0QWTcVmB: 'http://stage.kiva.org/authenticate',
+				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'http://stage.kiva.org/authenticate',
 			},
 		},
 	},
