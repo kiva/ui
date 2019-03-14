@@ -28,7 +28,7 @@
 							/>
 						</template>
 					</ais-hits>
-					<algolia-pagination :padding="2" />
+					<algolia-pagination-wrapper :padding="2" />
 					<algolia-pagination-stats :padding="2" />
 				</div>
 				<!-- eslint-enable vue/attribute-hyphenation -->
@@ -58,7 +58,7 @@ import {
 	AisHits,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
-import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
+import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import LendFilterMenu from '@/pages/Lend/Filter/LendFilterMenu';
 import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
@@ -74,7 +74,7 @@ export default {
 		AisInstantSearch,
 		AisHits,
 		AlgoliaAdapter,
-		AlgoliaPagination,
+		AlgoliaPaginationWrapper,
 		AlgoliaPaginationStats,
 	},
 	metaInfo: {

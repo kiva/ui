@@ -1,103 +1,155 @@
 <template>
-	<ais-pagination :padding="padding">
-		<ul class="ais-Pagination-list"
-			slot-scope="{
-			currentRefinement,
-			nbPages,
-			pages,
-			isFirstPage,
-			isLastPage,
-			refine,
-			createURL
-			}"
+	<ul class="ais-Pagination-list">
+		<!-- previous page -->
+		<li
+			class="ais-Pagination-item ais-Pagination-item--previousPage"
+			:class="{ 'ais-Pagination-item--disabled' : isFirstPage }">
+			<span
+				v-if="isFirstPage"
+				aria-label="Previous (Inactive)"
+				class="ais-Pagination-link"
+			>
+				<kv-icon name="triangle" class="disabled" />
+			</span>
+			<a
+				v-else
+				:href="createUrl(currentRefinement - 1)"
+				@click.prevent="refine(currentRefinement - 1)"
+				aria-label="Previous"
+				class="ais-Pagination-link"
+			>
+				<kv-icon name="triangle" />
+			</a>
+		</li>
+
+		<li v-for="(number, index) in numbers"
+			:key="number || -index"
+			class="ais-Pagination-item"
+			:class="{ ellipsis: number === 0 }"
+			:aria-hidden="number === 0"
 		>
-			<!-- previous page -->
-			<li
-				class="ais-Pagination-item ais-Pagination-item--previousPage"
-				:class="isFirstPage ? 'ais-Pagination-item--disabled' : ''">
-				<span
-					v-if="isFirstPage"
-					aria-label="Previous (Inactive)"
-					class="ais-Pagination-link"
-				>
-					<kv-icon name="triangle" class="disabled" />
-				</span>
-				<a
-					v-if="!isFirstPage"
-					:href="createURL(currentRefinement - 1)"
-					@click.prevent="refine(currentRefinement - 1)"
-					aria-label="Previous"
-					class="ais-Pagination-link"
-				>
-					<kv-icon name="triangle" />
-				</a>
-			</li>
+			<span
+				v-if="number - 1 === currentRefinement"
+				class="ais-Pagination-link">
+				{{ number }}
+			</span>
 
-			<!-- pages -->
-			<li
-				v-for="page in pages"
-				:key="page"
-				class="ais-Pagination-item"
-				:class="page === currentRefinement ? 'ais-Pagination-item--selected' : ''"
+			<a v-else-if="number > 0"
+				:href="createUrl(number - 1)"
+				@click.prevent="refine(number - 1)"
+				class="ais-Pagination-link">
+				{{ number }}
+			</a>
+		</li>
+
+		<!-- next page -->
+		<li
+			class="ais-Pagination-item ais-Pagination-item--nextPage"
+			:class="{ 'ais-Pagination-item--disabled' : isLastPage }"
+		>
+			<span
+				v-if="isLastPage"
+				aria-label="Next (Inactive)"
+				class="ais-Pagination-link"
 			>
-				<span
-					v-if="page === currentRefinement"
-					class="ais-Pagination-link"
-				>
-					{{ page + 1 }}
-				</span>
+				<kv-icon name="triangle" class="disabled" />
+			</span>
 
-				<a
-					v-if="page !== currentRefinement"
-					:href="createURL(page)"
-					@click.prevent="refine(page)"
-					class="ais-Pagination-link"
-				>
-					{{ page + 1 }}
-				</a>
-			</li>
-
-			<!-- next page -->
-			<li
-				class="ais-Pagination-item ais-Pagination-item--nextPage"
-				:class="isLastPage ? 'ais-Pagination-item--disabled' : ''"
+			<a
+				v-else
+				:href="createUrl(currentRefinement + 1)"
+				@click.prevent="refine(currentRefinement + 1)"
+				aria-label="Next"
+				class="ais-Pagination-link"
 			>
-				<span
-					v-if="isLastPage"
-					aria-label="Next (Inactive)"
-					class="ais-Pagination-link"
-				>
-					<kv-icon name="triangle" class="disabled" />
-				</span>
-
-				<a
-					v-if="!isLastPage"
-					:href="createURL(currentRefinement + 1)"
-					@click.prevent="refine(currentRefinement + 1)"
-					aria-label="Next"
-					class="ais-Pagination-link"
-				>
-					<kv-icon name="triangle" />
-				</a>
-			</li>
-		</ul>
-	</ais-pagination>
+				<kv-icon name="triangle" />
+			</a>
+		</li>
+	</ul>
 </template>
 
 <script>
-import { AisPagination } from 'vue-instantsearch';
+import _range from 'lodash/range';
+import _uniq from 'lodash/uniq';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
-		AisPagination,
 		KvIcon,
 	},
 	props: {
-		padding: {
+		currentRefinement: {
 			type: Number,
-			default: 0,
-		}
+			required: true,
+		},
+		createUrl: {
+			type: Function,
+			required: true,
+		},
+		isFirstPage: {
+			type: Boolean,
+			required: true,
+		},
+		isLastPage: {
+			type: Boolean,
+			required: true,
+		},
+		nbPages: {
+			type: Number,
+			required: true,
+		},
+		pages: {
+			type: Array,
+			required: true,
+		},
+		refine: {
+			type: Function,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			maximumExtraPages: 3,
+		};
+	},
+	computed: {
+		numbers() {
+			// if less than the max, there will be no ellipsis, so just return the numbers
+			if (this.nbPages < (this.maximumExtraPages + 2)) {
+				return _range(1, this.nbPages + 1);
+			}
+
+			let numbers = [];
+
+			// add the 'middle' block of numbers based upon the current page
+			if (this.currentRefinement === 0 || this.currentRefinement === 1) {
+				numbers = _range(1, this.maximumExtraPages + 1);
+			} else if (this.currentRefinement === this.nbPages - 1 || this.currentRefinement === this.nbPages) {
+				numbers = _range(this.nbPages - (this.maximumExtraPages - 1), this.nbPages + 1);
+			} else {
+				const delta = Math.floor(this.maximumExtraPages / 2);
+				numbers = _range((this.currentRefinement + 1) - delta, this.currentRefinement + delta + 2);
+			}
+
+			// add the first and last page numbers
+			numbers = numbers.concat([1, this.nbPages]);
+
+			// sort by number & remove duplicates
+			numbers.sort((a, b) => a - b);
+			numbers = _uniq(numbers, true);
+
+			// add a placeholder for first ellipsis, if needed
+			if (numbers[1] !== 2) {
+				numbers.splice(1, 0, 0);
+			}
+
+			// add a placeholder for last ellipsis, if needed
+			if (numbers[numbers.length - 2] !== this.nbPages - 1) {
+				numbers.splice(numbers.length - 1, 0, 0);
+			}
+
+			return numbers;
+		},
 	},
 };
 </script>
@@ -152,6 +204,10 @@ export default {
 
 	.ais-Pagination-item--selected {
 		font-weight: 400;
+	}
+
+	.ellipsis::after {
+		content: '\2026';
 	}
 }
 </style>
