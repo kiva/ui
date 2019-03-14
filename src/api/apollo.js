@@ -12,7 +12,6 @@ import HttpLinkCreator from './HttpLink';
 import StateLinkCreator from './StateLink';
 
 export default function createApolloClient({
-	cookieStore,
 	csrfToken,
 	kvAuth0,
 	types = [],
@@ -34,9 +33,9 @@ export default function createApolloClient({
 	return new ApolloClient({
 		link: ApolloLink.from([
 			Auth0LinkCreator(kvAuth0),
-			BasketLinkCreator(cookieStore),
-			StateLinkCreator({ cache, cookieStore }),
-			HttpLinkCreator({ cookie: cookieStore.getCookieString(), csrfToken, uri }),
+			BasketLinkCreator(),
+			StateLinkCreator({ cache }),
+			HttpLinkCreator({ csrfToken, uri }),
 		]),
 		cache,
 		defaultOptions: {
