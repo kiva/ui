@@ -1,29 +1,37 @@
 <template>
 	<div class="list-loan-card row">
 		<div class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns">
-			<div class="list-loan-card-desktop-column-image-wrapper">
-				<loan-card-image
-					:loan-id="loan.id"
-					:name="loan.name"
-					:retina-image-url="loan.image.retina"
-					:standard-image-url="loan.image.default"
-					:is-visitor="isVisitor"
-					:is-favorite="isFavorite"
-					:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-					:loan-image-hash="loan.image.hash"
+			<div class="list-loan-card-desktop-column-container row">
+				<div class="small-12 columns">
+					<div class="list-loan-card-desktop-column-image-wrapper">
+						<loan-card-image
+							:loan-id="loan.id"
+							:name="loan.name"
+							:retina-image-url="loan.image.retina"
+							:standard-image-url="loan.image.default"
+							:is-visitor="isVisitor"
+							:is-favorite="isFavorite"
+							:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+							:loan-image-hash="loan.image.hash"
 
-					@track-loan-card-interaction="trackInteraction"
-					@favorite-toggled="toggleFavorite"
-				/>
-			</div>
-			<div class="list-loan-card-desktop-column-text-wrapper row">
-				<div class="large-12 xxlarge-7 columns">
-					<div class="list-loan-card-desktop-column-title">Field Partner</div>
-					<div class="list-loan-card-desktop-column-content">{{ loan.partnerName }}</div>
+							@track-loan-card-interaction="trackInteraction"
+							@favorite-toggled="toggleFavorite"
+						/>
+					</div>
 				</div>
-				<div class="large-12 xxlarge-5 columns">
-					<div class="list-loan-card-desktop-column-title">Loan Length</div>
-					<div class="list-loan-card-desktop-column-content">{{ loan.lenderRepaymentTerm }} months</div>
+				<div class="small-12 columns">
+					<div class="list-loan-card-desktop-column-text-wrapper row">
+						<div class="large-12 xxlarge-7 columns">
+							<div class="list-loan-card-desktop-column-title">Field Partner</div>
+							<div class="list-loan-card-desktop-column-content">{{ loan.partnerName }}</div>
+						</div>
+						<div class="large-12 xxlarge-5 columns">
+							<div class="list-loan-card-desktop-column-title">Loan Length</div>
+							<div class="list-loan-card-desktop-column-content">
+								{{ loan.lenderRepaymentTerm }} months
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -60,6 +68,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
+						:is-selected-by-another="isSelectedByAnother"
 						:lend-increment-button-version="lendIncrementButtonVersion"
 						class="list-loan-card-action-button"
 
@@ -84,6 +93,16 @@
 					:loan-id="loan.id"
 					class="small-12 columns"
 				/>
+				<!-- eslint-disable-next-line -->
+				<div class="fundraising-wrapper small-12 medium-10 medium-offset-1 large-8 large-offset-0 xlarge-6 xxlarge-7 columns">
+					<fundraising-status
+						:amount-left="amountLeft"
+						:percent-raised="percentRaised"
+						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
+						:expiring-soon-message="expiringSoonMessage"
+						:is-funded="isFunded"
+					/>
+				</div>
 			</div>
 			<div class="row hide-for-large">
 				<div class="small-12 medium-8 medium-offset-2 columns">
@@ -93,6 +112,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
+						:is-selected-by-another="isSelectedByAnother"
 						:lend-increment-button-version="lendIncrementButtonVersion"
 						class="list-loan-card-action-button"
 
@@ -110,16 +130,6 @@
 				</div>
 			</div>
 		</div>
-		<!--
-			Add fundraising status in a later ticket
-			<fundraising-status
-				:amount-left="amountLeft"
-				:percent-raised="percentRaised"
-				:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
-				:expiring-soon-message="expiringSoonMessage"
-				:is-funded="loan.status==='funded'"
-			/>
-		-->
 	</div>
 </template>
 
@@ -182,8 +192,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		/*
-		Add fundraising status in a later ticket
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false,
+		},
 		amountLeft: {
 			type: Number,
 			default: 0,
@@ -196,7 +208,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		*/
 	},
 	methods: {
 		toggleFavorite() {
@@ -221,23 +232,27 @@ export default {
 
 	.list-loan-card-desktop-column {
 		padding: 0;
+		background: $tab-pill-background;
 
-		.list-loan-card-desktop-column-text-wrapper {
-			background: $tab-pill-background;
-			margin: 0;
-			padding-top: 0.5rem;
-			padding-bottom: 0.5rem;
-			font-size: rem-calc(14);
+		.list-loan-card-desktop-column-container {
+			height: 100%;
 
-			.list-loan-card-desktop-column-title {
-				float: left;
-				font-weight: 500;
-				color: $gray;
-				margin-right: 0.25rem;
-			}
+			.list-loan-card-desktop-column-text-wrapper {
+				margin: 0;
+				padding-top: 0.5rem;
+				padding-bottom: 0.5rem;
+				font-size: rem-calc(14);
 
-			.list-loan-card-desktop-column-content {
-				float: left;
+				.list-loan-card-desktop-column-title {
+					float: left;
+					font-weight: 500;
+					color: $gray;
+					margin-right: 0.25rem;
+				}
+
+				.list-loan-card-desktop-column-content {
+					float: left;
+				}
 			}
 		}
 	}
@@ -266,6 +281,14 @@ export default {
 
 		.list-loan-card-body-info {
 			margin-top: 1rem;
+
+			.fundraising-wrapper {
+				margin-top: 1.5rem;
+
+				.left-and-to-go-line {
+					text-align: center;
+				}
+			}
 		}
 	}
 
