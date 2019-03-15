@@ -1,5 +1,5 @@
-mutation updateDonation($price: Money!, $isTip: Boolean! ) {
-	shop {
+mutation updateDonation($price: Money!, $isTip: Boolean!, $basketId: String) {
+	shop (basketId: $basketId) {
 		updateDonation (donation: {
 			price: $price,
 			isTip: $isTip

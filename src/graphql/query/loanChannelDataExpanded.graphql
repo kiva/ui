@@ -7,7 +7,8 @@ query (
 	$unique: Boolean = false,
 	$excludeIds: [Int],
 	$imgDefaultSize: String = "w480h360",
-    $imgRetinaSize: String = "w960h720",
+	$imgRetinaSize: String = "w960h720",
+	$basketId: String
 ) {
 	lend {
 		loanChannelsById(ids: $ids) {
@@ -33,7 +34,7 @@ query (
 			}
 		}
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			items {
 				values {

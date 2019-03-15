@@ -2,7 +2,7 @@
 import 'babel-polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import _get from 'lodash/get';
-import CookieStore from '@/util/CookieStore';
+import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
@@ -14,9 +14,6 @@ const config = window.__KV_CONFIG__ || {};
 
 // Set webpack public asset path based on configuration
 __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
-
-// Create cookie store
-const cookieStore = new CookieStore();
 
 // Create auth instance
 let kvAuth0;
@@ -39,9 +36,7 @@ const {
 	apolloClient,
 } = createApp({
 	appConfig: config,
-	cookieStore,
 	apollo: {
-		cookieStore,
 		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 		uri: config.graphqlUri,
 		types: config.graphqlFragmentTypes,

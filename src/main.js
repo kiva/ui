@@ -31,7 +31,6 @@ Vue.use(VueProgressBar, {
 export default function createApp({
 	apollo = {},
 	appConfig = {},
-	cookieStore,
 	kvAuth0,
 } = {}) {
 	const apolloClient = createApolloClient({ ...apollo, kvAuth0 });
@@ -49,7 +48,6 @@ export default function createApp({
 		render: h => h(App, { props: { appConfig } }),
 		provide: {
 			apollo: apolloClient,
-			cookieStore,
 			algoliaConfig: appConfig.algoliaConfig,
 			auth0Config: appConfig.auth0,
 			kvAuth0,

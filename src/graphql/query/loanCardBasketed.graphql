@@ -1,5 +1,5 @@
-query($id: Int!) {
-	shop {
+query($id: Int!, $basketId: String) {
+	shop (basketId: $basketId) {
 		nonTrivialItemCount
 		basket {
 			items {

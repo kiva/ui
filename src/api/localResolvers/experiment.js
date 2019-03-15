@@ -3,6 +3,7 @@ import _filter from 'lodash/filter';
 import _fromPairs from 'lodash/fromPairs';
 import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
+import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 
 /**
@@ -38,10 +39,9 @@ function serializeExpCookie(assignments) {
  * Cycle through targets object and determine matches
  *
  * @param {object} targets
- * @param {object} cookieStore
  * @returns {boolean}
  */
-function matchTargets(targets, cookieStore) {
+function matchTargets(targets) {
 	// return true if no targets are set, aka everyone matches!!!
 	if (_isUndefined(targets)) return true;
 
@@ -90,7 +90,6 @@ function matchTargets(targets, cookieStore) {
  * @param {string} experiment.endTime - A date string for the ending time of the experiment
  * @param {object} experiment.distribution - An object of the variant weights, where each key is the
  *     variant id and the value is the weight of the variant. The weight must be a number between 0 and 1.
- * @param {object} cookieStore - passed through for inspection during targeting
  * @returns {string|number|undefined} Returns a variant id or undefined if the experiment is not enabled
  */
 function assignVersion({
@@ -99,11 +98,11 @@ function assignVersion({
 	endTime,
 	distribution,
 	targets
-}, cookieStore) {
+}) {
 	// only try to assign a version if the experiment is enabled
 	if (!enabled) return undefined;
 	// only try to assign a version if the experiment targets match
-	if (!matchTargets(targets, cookieStore)) return undefined;
+	if (!matchTargets(targets)) return undefined;
 	// only try to assign a version if the experiment is enabled, started, and not ended
 	if (isWithinRange(new Date(), new Date(startTime), new Date(endTime))) {
 		// Based on Algo from Manager.php
@@ -128,7 +127,7 @@ function assignVersion({
 /**
  * Experiment resolvers
  */
-export default ({ cookieStore }) => {
+export default () => {
 	// initialize the assignments from the experiment cookie
 	const assignments = parseExpCookie(cookieStore.get('uiab'));
 
@@ -145,7 +144,7 @@ export default ({ cookieStore }) => {
 					// assign an experiment version if it's currently undefined
 					if (experiment && _isUndefined(version)) {
 						// assign the version using the experiment data (undefined if experiment disabled)
-						assignments[id] = assignVersion(experiment || {}, cookieStore);
+						assignments[id] = assignVersion(experiment || {});
 
 						// save the new assignments to the experiment cookie
 						cookieStore.set('uiab', serializeExpCookie(assignments));

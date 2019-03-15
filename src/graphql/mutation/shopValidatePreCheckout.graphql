@@ -1,5 +1,5 @@
-mutation validatePreCheckout {
-	shop {
+mutation validatePreCheckout($basketId: String) {
+	shop (basketId: $basketId) {
 		validatePreCheckout {
 			error
 			success

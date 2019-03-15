@@ -1,4 +1,5 @@
 import checkApolloInject from '@/util/apolloInjectCheck';
+import cookieStore from '@/util/cookieStore';
 
 // install method for plugin
 export default Vue => {
@@ -19,9 +20,13 @@ export default Vue => {
 				if (query) {
 					// if the query was prefetched, read the data from the cache
 					if (preFetch) {
+						const basketId = cookieStore.get('kvbskt');
 						const data = this.apollo.readQuery({
 							query,
-							variables: preFetchVariables({ route: this.$route }),
+							variables: {
+								basketId,
+								...preFetchVariables({ route: this.$route }),
+							}
 						});
 						result.call(this, { data });
 					}

@@ -1,7 +1,7 @@
-mutation updateLoanReservationDonateRepayments($loanid: Int!, $donateRepayments: Boolean) {
-	shop {
+mutation updateLoanReservationDonateRepayments($loanid: Int!, $donateRepayments: Boolean, $basketId: String) {
+	shop (basketId: $basketId) {
 		updateLoanReservationDonateRepayments (loanReservation: {
-        	id: $loanid
+			id: $loanid
 			donateRepayments: $donateRepayments
 		})
 		{

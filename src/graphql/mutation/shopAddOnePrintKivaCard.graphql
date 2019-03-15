@@ -1,5 +1,5 @@
-mutation shopAddOnePrintKivaCard {
-	shop {
+mutation shopAddOnePrintKivaCard($basketId: String) {
+	shop (basketId: $basketId) {
 		addOnePrintKivaCard
 	}
 }

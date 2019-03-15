@@ -1,8 +1,10 @@
 import { BatchHttpLink } from 'apollo-link-batch-http';
 import fetch from 'isomorphic-fetch';
 import { Agent } from 'https';
+import cookieStore from '@/util/cookieStore';
 
-export default ({ cookie, csrfToken = '', uri = '' }) => {
+export default ({ csrfToken = '', uri = '' }) => {
+	const cookie = cookieStore.getCookieString();
 	const onVm = uri.indexOf('vm') > -1;
 	const viaAjax = uri.indexOf('ajax') > -1;
 
