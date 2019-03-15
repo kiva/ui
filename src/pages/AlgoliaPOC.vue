@@ -240,7 +240,7 @@ export default {
 	},
 	mounted() {
 		this.$nextTick(() => {
-			this.getRefinementCounts();
+			// this.getRefinementCounts();
 		});
 	},
 	methods: {

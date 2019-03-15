@@ -5,8 +5,7 @@
 			<ais-instant-search
 				v-if="searchClient"
 				:search-client="searchClient"
-				:index-name="algoliaDefaultIndex"
-				:routing="routing">
+				:index-name="algoliaDefaultIndex">
 				<lend-filter-menu :default-sort-indices="defaultSortIndices" />
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
