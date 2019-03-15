@@ -75,6 +75,7 @@
 										:items-in-basket="itemsInBasket"
 										:is-lent-to="loan.userProperties.lentTo"
 										:is-funded="isFunded"
+										:is-selected-by-another="isSelectedByAnother"
 										:lend-increment-button-version="lendIncrementButtonVersion"
 
 										@click.native="trackInteraction({
