@@ -55,7 +55,9 @@
 
 				<matching-text
 					:matching-text="loan.matchingText"
-					:is-funded="isFunded"/>
+					:is-funded="isFunded"
+					:is-selected-by-another="isSelectedByAnother"
+				/>
 			</div>
 		</div>
 	</div>
@@ -162,7 +164,10 @@ export default {
 			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		isFunded() {
-			return this.loan.status === 'funded' || this.amountLeft <= 0;
+			return this.loan.status === 'funded';
+		},
+		isSelectedByAnother() {
+			return this.amountLeft <= 0 && !this.isFunded;
 		},
 		percentRaised() {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
