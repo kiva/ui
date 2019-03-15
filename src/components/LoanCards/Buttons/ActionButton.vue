@@ -15,6 +15,7 @@ import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
 import LoanFundedText from './LoanFundedText';
+import LoanSelectedText from './LoanSelectedText';
 
 export default {
 	inject: ['apollo'],
@@ -39,6 +40,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false
+		},
 		lendIncrementButtonVersion: {
 			type: String,
 			default: ''
@@ -58,6 +63,9 @@ export default {
 			}
 			if (this.isFunded) {
 				return LoanFundedText;
+			}
+			if (this.isSelectedByAnother) {
+				return LoanSelectedText;
 			}
 			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
 		},

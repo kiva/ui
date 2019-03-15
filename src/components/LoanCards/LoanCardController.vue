@@ -11,6 +11,7 @@
 		:expiring-soon-message="expiringSoonMessage"
 		:percent-raised="percentRaised"
 		:is-funded="isFunded"
+		:is-selected-by-another="isSelectedByAnother"
 		:amount-left="amountLeft"
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
@@ -100,7 +101,10 @@ export default {
 			return this.loan.loanAmount - fundedAmount - reservedAmount;
 		},
 		isFunded() {
-			return this.loan.status === 'funded' || this.amountLeft <= 0;
+			return this.loan.status === 'funded';
+		},
+		isSelectedByAnother() {
+			return this.amountLeft <= 0 && !this.isFunded;
 		},
 		percentRaised() {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
