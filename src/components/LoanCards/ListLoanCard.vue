@@ -80,6 +80,7 @@
 					<matching-text
 						:matching-text="loan.matchingText"
 						:is-funded="isFunded"
+						:is-selected-by-another="isSelectedByAnother"
 					/>
 				</div>
 			</div>
@@ -125,6 +126,7 @@
 						<matching-text
 							:matching-text="loan.matchingText"
 							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
 						/>
 					</div>
 				</div>

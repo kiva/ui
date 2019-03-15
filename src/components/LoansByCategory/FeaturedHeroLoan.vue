@@ -75,6 +75,7 @@
 										:items-in-basket="itemsInBasket"
 										:is-lent-to="loan.userProperties.lentTo"
 										:is-funded="isFunded"
+										:is-selected-by-another="isSelectedByAnother"
 										:lend-increment-button-version="lendIncrementButtonVersion"
 
 										@click.native="trackInteraction({
@@ -86,6 +87,7 @@
 									<matching-text
 										:matching-text="loan.matchingText"
 										:is-funded="isFunded"
+										:is-selected-by-another="isSelectedByAnother"
 									/>
 								</div>
 							</div>
@@ -180,7 +182,10 @@ export default {
 			return 'helped';
 		},
 		isFunded() {
-			return this.loan.status === 'funded' || this.loan.amountLeft <= 0;
+			return this.loan.status === 'funded';
+		},
+		isSelectedByAnother() {
+			return this.amountLeft <= 0 && !this.isFunded;
 		},
 		loanUse() {
 			// eslint-disable-next-line max-len
