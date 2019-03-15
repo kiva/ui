@@ -3,7 +3,7 @@ import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
 // import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings';
 
 function stateToRoute(uiState) {
-	console.log(`uiState: ${JSON.stringify(uiState)}`);
+	// console.log(`uiState: ${JSON.stringify(uiState)}`);
 	return {
 		query: uiState.query,
 		'sector.name':
@@ -23,7 +23,7 @@ function stateToRoute(uiState) {
 }
 
 function routeToState(routeState) {
-	console.log(`routeState: ${JSON.stringify(routeState)}`);
+	// console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
 		refinementList: {
@@ -56,8 +56,8 @@ function historyRouting() {
 			> For instance we could convert sector.name to sector
 		*/
 		createURL({ routeState, location }) {
-			console.log(`Create URL routeState: ${JSON.stringify(routeState)}`);
-			console.log(`Create URL location: ${JSON.stringify(location)}`);
+			// console.log(`Create URL routeState: ${JSON.stringify(routeState)}`);
+			// console.log(`Create URL location: ${JSON.stringify(location)}`);
 			// establish base url
 			let baseUrl = location.href.split('/search/')[0];
 			// preserve base url if no search is set
@@ -79,12 +79,6 @@ function historyRouting() {
 			if (routeState.page !== 'undefined') {
 				routeStateArray.push('page', routeState.page);
 			}
-			// const routeStateArray = [
-			// 	'q', encodeURIComponent(routeState.q),
-			// 	// facet values
-			// 	'sector', encodeURIComponent(routeState['sector.name']),
-			// 	'p', routeState.p
-			// ];
 
 			if (routeStateArray.length) {
 				return `${baseUrl}search/${routeStateArray.join('/')}`;
@@ -100,12 +94,12 @@ function historyRouting() {
 			> > This would require us to create a map of values to ids
 		*/
 		parseURL({ location }) {
-			console.log(`Parse URL location: ${JSON.stringify(location)}`);
+			// console.log(`Parse URL location: ${JSON.stringify(location)}`);
 			const routeStateString = location.href.split('/search/')[1];
 			if (routeStateString === undefined) return {};
-			console.log(`Parse URL routeStateString: ${JSON.stringify(routeStateString)}`);
-			const routeStateValues = routeStateString.match(/^q\/(.*?)\/sector\/(.*?)\/p\/(.*?)$/);
-			console.log(`Parse URL routeStateValues: ${JSON.stringify(routeStateValues)}`);
+			// console.log(`Parse URL routeStateString: ${JSON.stringify(routeStateString)}`);
+			// const routeStateValues = routeStateString.match(/^q\/(.*?)\/sector\/(.*?)\/p\/(.*?)$/);
+			// console.log(`Parse URL routeStateValues: ${JSON.stringify(routeStateValues)}`);
 
 			const urlState = {};
 			const queryRx = /q\/(.*?)((\/.*$)|$)/;
@@ -114,31 +108,26 @@ function historyRouting() {
 
 			if (routeStateString.indexOf('q/') !== -1) {
 				const queryMatch = routeStateString.match(queryRx);
-				console.log(queryMatch);
+				// console.log(queryMatch);
 				const query = queryMatch[1];
 				urlState.query = query;
 			}
 
 			if (routeStateString.indexOf('sector/') !== -1) {
 				const sectorMatch = routeStateString.match(sectorRx);
-				console.log(sectorMatch);
+				// console.log(sectorMatch);
 				const sectorFacets = sectorMatch[1];
 				urlState['sector.name'] = sectorFacets;
 			}
 
 			if (routeStateString.indexOf('page/') !== -1) {
 				const pageMatch = routeStateString.match(pageRx);
-				console.log(pageMatch);
+				// console.log(pageMatch);
 				const page = pageMatch[1];
 				urlState.page = page;
 			}
 
 			return urlState;
-			// return {
-			// 	q: routeStateValues[1] ? decodeURIComponent(routeStateValues[1]) : null,
-			// 	'sector.name': routeStateValues[2] ? decodeURIComponent(routeStateValues[2]) : null,
-			// 	p: routeStateValues[3] ? routeStateValues[3] : null
-			// };
 		},
 	});
 }
@@ -181,14 +170,4 @@ export default {
 			this.algoliaApiKey
 		);
 	},
-	// methods: {
-	// 	stateToRoute(uiState) {
-	// 		console.log(uiState);
-	// 		return uiState;
-	// 	},
-	// 	routeToState(uiState) {
-	// 		console.log(uiState);
-	// 		return uiState;
-	// 	}
-	// }
 };
