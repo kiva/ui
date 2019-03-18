@@ -1,4 +1,4 @@
-query($basketId: String) {
+query {
 	my {
 		userAccount {
 			id
@@ -10,15 +10,6 @@ query($basketId: String) {
 			values {
 				id
 				url
-			}
-		}
-	}
-	shop (basketId: $basketId) {
-		basket {
-			items {
-				values {
-					id
-				}
 			}
 		}
 	}

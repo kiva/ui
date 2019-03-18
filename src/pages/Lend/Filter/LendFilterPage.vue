@@ -40,6 +40,7 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import cookieStore from '@/util/cookieStore';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
@@ -86,7 +87,12 @@ export default {
 	],
 	created() {
 		// Set items in basket
-		const itemsInBasketResults = this.apollo.readQuery({ query: itemsInBasketQuery });
+		const itemsInBasketResults = this.apollo.readQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		});
 		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
 		// Set user status
 		const userData = this.apollo.readQuery({ query: userStatus });

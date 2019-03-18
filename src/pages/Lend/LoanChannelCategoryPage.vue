@@ -41,6 +41,7 @@ import _filter from 'lodash/filter';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
+import cookieStore from '@/util/cookieStore';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -99,7 +100,7 @@ export default {
 		LoadingOverlay,
 		ViewToggle
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: ['apollo'],
 	metaInfo: {
 		title: 'Fundraising loans'
 	},
@@ -188,8 +189,9 @@ export default {
 			query: loanChannelQuery,
 			variables: _merge(
 				this.loanQueryVars,
-				fromUrlParams(this.pageQuery)
-			)
+				fromUrlParams(this.pageQuery),
+				{ basketId: cookieStore.get('kvbskt') }
+			),
 		});
 		// Assign our initial view data
 		this.isLoggedIn = !!_get(baseData, 'my');
@@ -256,7 +258,7 @@ export default {
 	beforeRouteLeave(to, from, next) {
 		if (typeof window !== 'undefined' && to.path.indexOf('/lend/') !== -1) {
 			// set cookie to signify redirect
-			this.cookieStore.set('redirectFromUi', true);
+			cookieStore.set('redirectFromUi', true);
 		}
 		next();
 	}

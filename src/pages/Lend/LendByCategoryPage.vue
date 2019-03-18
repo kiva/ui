@@ -80,6 +80,7 @@ import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
 import WebStorage from 'store2';
+import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -341,7 +342,12 @@ export default {
 	},
 	created() {
 		// Read the page data from the cache
-		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
+		const baseData = this.apollo.readQuery({
+			query: lendByCategoryQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		});
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
