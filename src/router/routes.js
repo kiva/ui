@@ -17,7 +17,14 @@ export default [
 	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
 	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
 	{ path: '/build/data-snapshots', component: () => import('@/pages/Build/DataPage') },
-	{ path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
+	// { path: '/algolia-vue', component: () => import('@/pages/AlgoliaPOC') },
+	{
+		path: '/algolia-vue',
+		component: () => import('@/pages/AlgoliaPOC'),
+		children: [
+			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
+		]
+	},
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
