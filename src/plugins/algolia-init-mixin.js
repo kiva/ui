@@ -3,7 +3,7 @@ import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
 // import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings';
 
 function stateToRoute(uiState) {
-	// console.log(`uiState: ${JSON.stringify(uiState)}`);
+	console.log(`uiState: ${JSON.stringify(uiState)}`);
 	return {
 		query: uiState.query,
 		'sector.name':
@@ -18,12 +18,17 @@ function stateToRoute(uiState) {
 			uiState.refinementList &&
 			uiState.refinementList['tags.name'] &&
 			uiState.refinementList['tags.name'].join('~'),
+		'locationFacets.lvl0':
+			uiState.hierarchicalMenu &&
+			uiState.hierarchicalMenu['locationFacets.lvl0'] &&
+			uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
+		sortBy: uiState.sortBy,
 		page: uiState.page
 	};
 }
 
 function routeToState(routeState) {
-	// console.log(`routeState: ${JSON.stringify(routeState)}`);
+	console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
 		refinementList: {
@@ -37,6 +42,12 @@ function routeToState(routeState) {
 				routeState['tags.name']
 				&& routeState['tags.name'].split('~'),
 		},
+		hierarchicalMenu: {
+			'locationFacets.lvl0':
+				routeState['locationFacets.lvl0']
+				&& routeState['locationFacets.lvl0'].split('~'),
+		},
+		sortBy: routeState.sortBy,
 		page: routeState.page
 	};
 }
@@ -56,25 +67,44 @@ function historyRouting() {
 			> For instance we could convert sector.name to sector
 		*/
 		createURL({ routeState, location }) {
-			// console.log(`Create URL routeState: ${JSON.stringify(routeState)}`);
-			// console.log(`Create URL location: ${JSON.stringify(location)}`);
+			console.log(`Create URL routeState: ${JSON.stringify(routeState)}`);
+			console.log(`Create URL location: ${JSON.stringify(location)}`);
 			// establish base url
 			let baseUrl = location.href.split('/search/')[0];
 			// preserve base url if no search is set
-			// if (!routeState.q && routeState.brands === 'all' && routeState.p === 1) return baseUrl;
 			if (!routeState.q && routeState.p === 1) return baseUrl;
 			// end with a /
 			if (baseUrl[baseUrl.length - 1] !== '/') baseUrl += '/';
 			const routeStateArray = [];
+			// TODO: We should probably run these through an addition process to:
+			// > convert spaces to -
+			// > remove # marks from tags
+			// > We then have to reverse the process when parsing the url below
 			// search query
 			if (routeState.q) {
 				routeStateArray.push('q', encodeURIComponent(routeState.q));
 			}
-			// routeStateArray.push('q', encodeURIComponent(routeState.q) || null);
 			// facet values
 			if (routeState['sector.name']) {
 				routeStateArray.push('sector', encodeURIComponent(routeState['sector.name']));
 			}
+			if (routeState['themeData.loanThemeTypeName']) {
+				routeStateArray.push('theme', encodeURIComponent(routeState['themeData.loanThemeTypeName']));
+			}
+			if (routeState['tags.name']) {
+				routeStateArray.push('tags', encodeURIComponent(routeState['tags.name']));
+			}
+			// hierarchical values
+			if (routeState['locationFacets.lvl0']) {
+				routeStateArray.push('location', encodeURIComponent(routeState['locationFacets.lvl0']));
+			}
+
+			// sortBy
+			if (routeState.sortBy !== 'undefined') {
+				// TODO: create map of sort types with short names instead of index names
+				routeStateArray.push('sortBy', routeState.sortBy);
+			}
+
 			// page number
 			if (routeState.page !== 'undefined') {
 				routeStateArray.push('page', routeState.page);
@@ -94,30 +124,62 @@ function historyRouting() {
 			> > This would require us to create a map of values to ids
 		*/
 		parseURL({ location }) {
-			// console.log(`Parse URL location: ${JSON.stringify(location)}`);
+			console.log(`Parse URL location: ${JSON.stringify(location)}`);
 			const routeStateString = location.href.split('/search/')[1];
 			if (routeStateString === undefined) return {};
-			// console.log(`Parse URL routeStateString: ${JSON.stringify(routeStateString)}`);
+			console.log(`Parse URL routeStateString: ${JSON.stringify(routeStateString)}`);
 			// const routeStateValues = routeStateString.match(/^q\/(.*?)\/sector\/(.*?)\/p\/(.*?)$/);
 			// console.log(`Parse URL routeStateValues: ${JSON.stringify(routeStateValues)}`);
 
 			const urlState = {};
 			const queryRx = /q\/(.*?)((\/.*$)|$)/;
 			const sectorRx = /sector\/(.*?)((\/.*$)|$)/;
+			const themeRx = /theme\/(.*?)((\/.*$)|$)/;
+			const tagsRx = /tags\/(.*?)((\/.*$)|$)/;
+			const locRx = /location\/(.*?)((\/.*$)|$)/;
+			const sortRx = /sortBy\/(.*?)((\/.*$)|$)/;
 			const pageRx = /page\/(.*?)((\/.*$)|$)/;
 
 			if (routeStateString.indexOf('q/') !== -1) {
 				const queryMatch = routeStateString.match(queryRx);
 				// console.log(queryMatch);
 				const query = queryMatch[1];
-				urlState.query = query;
+				urlState.query = decodeURIComponent(query);
 			}
 
 			if (routeStateString.indexOf('sector/') !== -1) {
 				const sectorMatch = routeStateString.match(sectorRx);
 				// console.log(sectorMatch);
 				const sectorFacets = sectorMatch[1];
-				urlState['sector.name'] = sectorFacets;
+				urlState['sector.name'] = decodeURIComponent(sectorFacets);
+			}
+
+			if (routeStateString.indexOf('theme/') !== -1) {
+				const themeMatch = routeStateString.match(themeRx);
+				// console.log(sectorMatch);
+				const themeFacets = themeMatch[1];
+				urlState['themeData.loanThemeTypeName'] = decodeURIComponent(themeFacets);
+			}
+
+			if (routeStateString.indexOf('tags/') !== -1) {
+				const tagsMatch = routeStateString.match(tagsRx);
+				// console.log(sectorMatch);
+				const tagsFacets = tagsMatch[1];
+				urlState['tags.name'] = decodeURIComponent(tagsFacets);
+			}
+
+			if (routeStateString.indexOf('location/') !== -1) {
+				const locMatch = routeStateString.match(locRx);
+				// console.log(sectorMatch);
+				const locFacets = locMatch[1];
+				urlState['locationFacets.lvl0'] = decodeURIComponent(locFacets);
+			}
+
+			if (routeStateString.indexOf('sortBy/') !== -1) {
+				const sortMatch = routeStateString.match(sortRx);
+				// console.log(pageMatch);
+				const sort = sortMatch[1];
+				urlState.sortBy = sort;
 			}
 
 			if (routeStateString.indexOf('page/') !== -1) {
