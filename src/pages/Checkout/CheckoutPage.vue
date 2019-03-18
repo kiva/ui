@@ -180,6 +180,7 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
@@ -328,7 +329,12 @@ export default {
 		}
 
 		this.holidayModeEnabled = settingEnabled(
-			this.apollo.readQuery({ query: promoQuery }),
+			this.apollo.readQuery({
+				query: promoQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			}),
 			'general.holiday_enabled.value',
 			'general.holiday_start_time.value',
 			'general.holiday_end_time.value'
