@@ -3,7 +3,7 @@ import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
 // import { simple as simpleMapping } from 'instantsearch.js/es/lib/stateMappings';
 
 function stateToRoute(uiState) {
-	console.log(`uiState: ${JSON.stringify(uiState)}`);
+	// console.log(`uiState: ${JSON.stringify(uiState)}`);
 	return {
 		query: uiState.query,
 		'sector.name':
@@ -28,7 +28,7 @@ function stateToRoute(uiState) {
 }
 
 function routeToState(routeState) {
-	console.log(`routeState: ${JSON.stringify(routeState)}`);
+	// console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
 		refinementList: {
@@ -67,8 +67,8 @@ function historyRouting() {
 			> For instance we could convert sector.name to sector
 		*/
 		createURL({ routeState, location }) {
-			console.log(`Create URL routeState: ${JSON.stringify(routeState)}`);
-			console.log(`Create URL location: ${JSON.stringify(location)}`);
+			// console.log(`Create URL routeState: ${JSON.stringify(routeState)}`);
+			// console.log(`Create URL location: ${JSON.stringify(location)}`);
 			// establish base url
 			let baseUrl = location.href.split('/search/')[0];
 			// preserve base url if no search is set
@@ -98,13 +98,11 @@ function historyRouting() {
 			if (routeState['locationFacets.lvl0']) {
 				routeStateArray.push('location', encodeURIComponent(routeState['locationFacets.lvl0']));
 			}
-
 			// sortBy
 			if (routeState.sortBy !== 'undefined') {
 				// TODO: create map of sort types with short names instead of index names
 				routeStateArray.push('sortBy', routeState.sortBy);
 			}
-
 			// page number
 			if (routeState.page !== 'undefined') {
 				routeStateArray.push('page', routeState.page);
@@ -124,70 +122,67 @@ function historyRouting() {
 			> > This would require us to create a map of values to ids
 		*/
 		parseURL({ location }) {
-			console.log(`Parse URL location: ${JSON.stringify(location)}`);
+			// console.log(`Parse URL location: ${JSON.stringify(location)}`);
 			const routeStateString = location.href.split('/search/')[1];
 			if (routeStateString === undefined) return {};
-			console.log(`Parse URL routeStateString: ${JSON.stringify(routeStateString)}`);
-			// const routeStateValues = routeStateString.match(/^q\/(.*?)\/sector\/(.*?)\/p\/(.*?)$/);
-			// console.log(`Parse URL routeStateValues: ${JSON.stringify(routeStateValues)}`);
+			// console.log(`Parse URL routeStateString: ${JSON.stringify(routeStateString)}`);
 
 			const urlState = {};
-			const queryRx = /q\/(.*?)((\/.*$)|$)/;
-			const sectorRx = /sector\/(.*?)((\/.*$)|$)/;
-			const themeRx = /theme\/(.*?)((\/.*$)|$)/;
-			const tagsRx = /tags\/(.*?)((\/.*$)|$)/;
-			const locRx = /location\/(.*?)((\/.*$)|$)/;
-			const sortRx = /sortBy\/(.*?)((\/.*$)|$)/;
-			const pageRx = /page\/(.*?)((\/.*$)|$)/;
 
-			if (routeStateString.indexOf('q/') !== -1) {
-				const queryMatch = routeStateString.match(queryRx);
-				// console.log(queryMatch);
-				const query = queryMatch[1];
-				urlState.query = decodeURIComponent(query);
+			const facetTransformations = [
+				{
+					segment: 'q/',
+					rx: /q\/(.*?)((\/.*$)|$)/,
+					stateKey: 'query'
+				},
+				{
+					segment: 'sector/',
+					rx: /sector\/(.*?)((\/.*$)|$)/,
+					stateKey: 'sector.name'
+				},
+				{
+					segment: 'theme/',
+					rx: /theme\/(.*?)((\/.*$)|$)/,
+					stateKey: 'themeData.loanThemeTypeName'
+				},
+				{
+					segment: 'tags/',
+					rx: /tags\/(.*?)((\/.*$)|$)/,
+					stateKey: 'tags.name'
+				},
+				{
+					segment: 'location/',
+					rx: /location\/(.*?)((\/.*$)|$)/,
+					stateKey: 'locationFacets.lvl0'
+				},
+				{
+					segment: 'sortBy/',
+					rx: /sortBy\/(.*?)((\/.*$)|$)/,
+					stateKey: 'sortBy'
+				},
+				{
+					segment: 'page/',
+					rx: /page\/(.*?)((\/.*$)|$)/,
+					stateKey: 'page'
+				},
+			];
+
+			function setUrlState(facet) {
+				if (routeStateString.indexOf(facet.segment) !== -1) {
+					const facetMatch = routeStateString.match(facet.rx);
+					// console.log(facetMatch);
+					const segment = facetMatch[1];
+					// console.log(segment)
+					urlState[facet.stateKey] = decodeURIComponent(segment);
+					// console.log(`parsing urlState: ${JSON.stringify(urlState)}`);
+					return true;
+				}
+				return false;
 			}
 
-			if (routeStateString.indexOf('sector/') !== -1) {
-				const sectorMatch = routeStateString.match(sectorRx);
-				// console.log(sectorMatch);
-				const sectorFacets = sectorMatch[1];
-				urlState['sector.name'] = decodeURIComponent(sectorFacets);
-			}
-
-			if (routeStateString.indexOf('theme/') !== -1) {
-				const themeMatch = routeStateString.match(themeRx);
-				// console.log(sectorMatch);
-				const themeFacets = themeMatch[1];
-				urlState['themeData.loanThemeTypeName'] = decodeURIComponent(themeFacets);
-			}
-
-			if (routeStateString.indexOf('tags/') !== -1) {
-				const tagsMatch = routeStateString.match(tagsRx);
-				// console.log(sectorMatch);
-				const tagsFacets = tagsMatch[1];
-				urlState['tags.name'] = decodeURIComponent(tagsFacets);
-			}
-
-			if (routeStateString.indexOf('location/') !== -1) {
-				const locMatch = routeStateString.match(locRx);
-				// console.log(sectorMatch);
-				const locFacets = locMatch[1];
-				urlState['locationFacets.lvl0'] = decodeURIComponent(locFacets);
-			}
-
-			if (routeStateString.indexOf('sortBy/') !== -1) {
-				const sortMatch = routeStateString.match(sortRx);
-				// console.log(pageMatch);
-				const sort = sortMatch[1];
-				urlState.sortBy = sort;
-			}
-
-			if (routeStateString.indexOf('page/') !== -1) {
-				const pageMatch = routeStateString.match(pageRx);
-				// console.log(pageMatch);
-				const page = pageMatch[1];
-				urlState.page = page;
-			}
+			facetTransformations.forEach(facet => {
+				setUrlState(facet);
+			});
 
 			return urlState;
 		},
