@@ -33,6 +33,13 @@ module.exports = merge(base, {
 				fNYmJqpKX6mWiz1Evk8b1eqbM9KoeQ45: 'http://partners.stage.kiva.org/login',
 				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'http://stage.kiva.org/authenticate',
 			},
+			enableAuth0: false,
+			auth0ApiAudience: 'https://api.stage.kivaws.org/graphql',
+			auth0BrowserClientID: 'pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe',
+			auth0ServerClientID: 'Ch7rwGop9lctGpm5KfEl6VTVMrqKoWZ4',
+			auth0BrowserCallbackUri: 'https://www.stage.kiva.org/process-browser-auth',
+			auth0ServerCallbackUri: 'https://www.stage.kiva.org/process-ssr-auth',
+			auth0Domain: 'login.stage.kiva.org',
 		},
 	},
 	server: {
