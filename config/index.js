@@ -35,8 +35,8 @@ module.exports = {
 			},
 			enable: false,
 			apiAudience: 'https://api.kivaws.org/graphql',
-			browserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF', // @todo update with prod app id
-			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH', // @todo update with prod app id
+			browserClientID: 'AEnMbebwn6LBvxg1iMYczZKoAgdUt37K',
+			serverClientID: 'xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd',
 			browserCallbackUri: 'https://www.kiva.org/process-browser-auth',
 			serverCallbackUri: 'https://www.kiva.org/process-ssr-auth',
 			domain: 'login.kiva.org',
