@@ -27,22 +27,22 @@ module.exports = {
 			apiKey: '82ec72aa3177a6f4fc47b7103e6db786',
 			defaultIndex: 'prod_fundraising_loans',
 		},
-		enableAuth0: false,
-		auth0ApiAudience: 'https://api.kivaws.org/graphql',
-		auth0BrowserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF', // @todo update with prod app id
-		auth0ServerClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH', // @todo update with prod app id
-		auth0BrowserCallbackUri: 'https://www.kiva.org/process-browser-auth',
-		auth0ServerCallbackUri: 'https://www.kiva.org/process-ssr-auth',
-		auth0Domain: 'login.kiva.org',
-		auth0Scope: 'https://www.kiva.org/last_login ' +
-			'https://www.kiva.org/kiva_id ' +
-			'openid email profile',
 		auth0: {
 			loginRedirectUrls: {
 				X6gQsD1f3Y4dvCQK8LGxYPc84UZ9Svts: 'http://admin.kiva.org/login',
 				hIkkBL8POL6hCBp3uOI0bLMlz6nt2jW2: 'http://partners.kiva.org/login',
 				maWr24ubbIjM4aOnWsQ7XWYBdJG9AL8g: 'http://www.kiva.org/authenticate',
 			},
+			enable: false,
+			apiAudience: 'https://api.kivaws.org/graphql',
+			browserClientID: 'AEnMbebwn6LBvxg1iMYczZKoAgdUt37K',
+			serverClientID: 'xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd',
+			browserCallbackUri: 'https://www.kiva.org/process-browser-auth',
+			serverCallbackUri: 'https://www.kiva.org/process-ssr-auth',
+			domain: 'login.kiva.org',
+			scope: 'https://www.kiva.org/last_login ' +
+				'https://www.kiva.org/kiva_id ' +
+				'openid email profile',
 		},
 	},
 	server: {
