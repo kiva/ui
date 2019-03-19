@@ -9,11 +9,15 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import updateLoanFavorite from '@/graphql/mutation/updateLoanFavorite.graphql';
+import _forEach from 'lodash/forEach';
+// import numeral from 'numeral';
 
 export default {
 	components: {
 		KvIcon
 	},
+	inject: ['apollo'],
 	props: {
 		isFavorite: {
 			type: Boolean,
@@ -26,7 +30,37 @@ export default {
 	},
 	methods: {
 		toggleFavorite() {
-			this.$emit('favorite-toggled');
+			if (this.isFavorite === false) {
+				this.apollo.mutate({
+					mutation: updateLoanFavorite,
+					variables: {
+						loanId: this.loan_id,
+						favorite: this.isFavorite,
+					}
+				}).then(data => {
+					if (data.errors) {
+						_forEach(data.errors, ({ message }) => {
+							this.$showTipMsg(message, 'error');
+						});
+					} else {
+						this.$kvTrackEvent(
+							'favorited',
+							'Loan Favorite Toggled',
+							this.isFavorite === 0 ? 'Favorite Loan Removed'
+								: 'Loan Favorite Removed Success', this.isFavorite.value
+						);
+						// eslint-disable-next-line max-len
+						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
+					}
+				}).catch(error => {
+					console.error(error);
+				});
+				this.$emit('favorite-toggled');
+				console.log('favorite toggled complete');
+			} else {
+				this.$emit('favorite-toggled');
+				console.log('favorite untoggled');
+			}
 		}
 	}
 
