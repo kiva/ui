@@ -1,5 +1,5 @@
 <template>
-	<div class="featured-section-wrapper">
+	<div class="featured-section-wrapper" v-if="loan">
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="section-name">Featured: Research-backed impact</h2>
@@ -64,8 +64,19 @@
 								</div>
 
 								<div class="why-special">
-									<div class="bold">This loan is special because:</div>
-									{{ loan.whySpecial }}
+									<div v-if="showFundraisingThermometer" class="fundraising-thermometer">
+										<fundraising-status
+											:amount-left="amountLeft"
+											:is-expiring-soon="false"
+											:is-funded="false"
+											:percent-raised="percentRaised"
+											:single-line="true"
+										/>
+									</div>
+									<div v-else>
+										<div class="bold">This loan is special because:</div>
+										{{ loan.whySpecial }}
+									</div>
 								</div>
 
 								<div class="action">
@@ -104,11 +115,19 @@ import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 
+import {
+	differenceInMinutes,
+	differenceInHours,
+	differenceInDays
+} from 'date-fns';
+
+import experimentAssignmentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
+import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 
@@ -119,6 +138,7 @@ export default {
 	components: {
 		ActionButton,
 		BorrowerInfo,
+		FundraisingStatus,
 		LoanCardImage,
 		MatchingText,
 	},
@@ -146,8 +166,8 @@ export default {
 		},
 		showCategoryDescription: {
 			type: Boolean,
-			default: false
-		}
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -156,7 +176,8 @@ export default {
 			loading: false,
 			loan: null,
 			loanUseMaxLength: 100,
-			loanChannel: null
+			loanChannel: null,
+			showFundraisingThermometer: false,
 		};
 	},
 	computed: {
@@ -172,6 +193,24 @@ export default {
 				return ' a member ';
 			}
 			return ' ';
+		},
+		expiringSoonMessage() {
+			if (!this.loan.loanFundraisingInfo.isExpiringSoon) {
+				return '';
+			}
+			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			if (days >= 2) {
+				return `Only ${days} days left! `;
+			}
+			const hours = differenceInHours(this.loan.plannedExpirationDate, Date.now());
+			if (hours >= 2) {
+				return `Only ${hours} hours left! `;
+			}
+			const mins = differenceInMinutes(this.loan.plannedExpirationDate, Date.now());
+			if (mins >= 2) {
+				return `Only ${mins} minutes left! `;
+			}
+			return 'Expiring now!';
 		},
 		helpedLanguage() {
 			if (this.loan.status === 'fundraising'
@@ -190,6 +229,9 @@ export default {
 		loanUse() {
 			// eslint-disable-next-line max-len
 			return `A loan of ${numeral(this.loan.loanAmount).format('$0,0')} ${this.helpedLanguage} ${this.borrowerCountLanguage} ${this.loanUseTruncated()}`;
+		},
+		percentRaised() {
+			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);
@@ -258,7 +300,6 @@ export default {
 	},
 	apollo: {
 		query: featuredLoansQuery,
-		preFetch: true,
 		preFetchVariables() {
 			return {
 				ids: featuredCategoryIds
@@ -269,22 +310,45 @@ export default {
 				ids: this.featuredCategoryIds,
 			};
 		},
-		result({ data, loading }) {
-			if (loading) {
-				this.loading = true;
-			} else {
-				this.loan = _get(
-					_filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]),
-					'[0].loans.values[0]'
-				);
+		preFetch(config, client) {
+			return client.query({
+				query: featuredLoansQuery,
+				variables: {
+					ids: featuredCategoryIds
+				},
+			}).then(() => {
+				// eslint-disable-next-line max-len
+				return client.query({ query: experimentAssignmentQuery, variables: { id: 'featured_hero_loan_fundraising_thermometer' } });
+			});
+		},
+		result({ data }) {
+			this.loan = _get(
+				_filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]),
+				'[0].loans.values[0]'
+			);
+			this.loanChannel = _get(
+				_filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]),
+				'[0]'
+			);
+		}
+	},
+	created() {
+		// CASH-684 : Experiment : Featured hero loan fundraising thermometer
+		// eslint-disable-next-line max-len
+		const experimentQuery = this.apollo.readQuery({
+			query: experimentAssignmentQuery,
+			variables: { id: 'featured_hero_loan_fundraising_thermometer' },
+		});
 
-				this.loanChannel = _get(
-					_filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]),
-					'[0]'
-				);
+		// eslint-disable-next-line max-len
+		this.experimentVersion = _get(experimentQuery, 'experiment.version') || null;
 
-				this.loading = false;
-			}
+		if (this.experimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-684-Mar2019', 'a');
+			this.showFundraisingThermometer = false;
+		} else if (this.experimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-684-Mar2019', 'b');
+			this.showFundraisingThermometer = true;
 		}
 	},
 };
@@ -365,6 +429,7 @@ $row-max-width: 58.75rem;
 						line-height: rem-calc(22);
 						padding: 0 rem-calc(20);
 						text-align: left;
+						margin-top: 0;
 
 						@include breakpoint(medium down) {
 							padding: 0;
