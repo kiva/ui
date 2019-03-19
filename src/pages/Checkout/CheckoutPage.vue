@@ -168,12 +168,6 @@
 				</kv-lightbox>
 			</div>
 		</div>
-		<l-y-m-l
-			v-if="isLoggedIn && showLYML"
-			:loans="loans"
-			@refreshtotals="refreshTotals($event)"
-			@updating-totals="setUpdatingTotals"
-		/>
 	</www-page>
 </template>
 
@@ -201,7 +195,6 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
-import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 
@@ -221,7 +214,6 @@ export default {
 		LoadingOverlay,
 		KvIcon,
 		CheckoutHolidayPromo,
-		LYML,
 		BraintreeCheckout,
 		PaymentWrapper
 	},
@@ -255,7 +247,6 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
-			showLYML: true,
 			braintree: false,
 			braintreeExpVersion: null
 		};
