@@ -28,7 +28,7 @@ export default context => {
 		cookieStore.reset(cookies);
 
 		let kvAuth0;
-		if (config.auth0.enableAuth0) {
+		if (config.auth0.enable) {
 			kvAuth0 = new KvAuth0({
 				user: profile,
 				accessToken,

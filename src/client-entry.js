@@ -17,13 +17,13 @@ __webpack_public_path__ = config.publicPath || '/'; // eslint-disable-line
 
 // Create auth instance
 let kvAuth0;
-if (config.auth0.enableAuth0) {
+if (config.auth0.enable) {
 	kvAuth0 = new KvAuth0({
-		audience: config.auth0.auth0ApiAudience,
-		clientID: config.auth0.auth0BrowserClientID,
-		domain: config.auth0.auth0Domain,
-		redirectUri: config.auth0.auth0BrowserCallbackUri,
-		scope: config.auth0.auth0Scope,
+		audience: config.auth0.apiAudience,
+		clientID: config.auth0.browserClientID,
+		domain: config.auth0.domain,
+		redirectUri: config.auth0.browserCallbackUri,
+		scope: config.auth0.scope,
 	});
 } else {
 	kvAuth0 = MockKvAuth0;

@@ -33,14 +33,14 @@ module.exports = {
 				hIkkBL8POL6hCBp3uOI0bLMlz6nt2jW2: 'http://partners.kiva.org/login',
 				maWr24ubbIjM4aOnWsQ7XWYBdJG9AL8g: 'http://www.kiva.org/authenticate',
 			},
-			enableAuth0: false,
-			auth0ApiAudience: 'https://api.kivaws.org/graphql',
-			auth0BrowserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF', // @todo update with prod app id
-			auth0ServerClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH', // @todo update with prod app id
-			auth0BrowserCallbackUri: 'https://www.kiva.org/process-browser-auth',
-			auth0ServerCallbackUri: 'https://www.kiva.org/process-ssr-auth',
-			auth0Domain: 'login.kiva.org',
-			auth0Scope: 'https://www.kiva.org/last_login ' +
+			enable: false,
+			apiAudience: 'https://api.kivaws.org/graphql',
+			browserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF', // @todo update with prod app id
+			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH', // @todo update with prod app id
+			browserCallbackUri: 'https://www.kiva.org/process-browser-auth',
+			serverCallbackUri: 'https://www.kiva.org/process-ssr-auth',
+			domain: 'login.kiva.org',
+			scope: 'https://www.kiva.org/last_login ' +
 				'https://www.kiva.org/kiva_id ' +
 				'openid email profile',
 		},
