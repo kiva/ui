@@ -45,25 +45,43 @@ export default {
 					} else {
 						this.$kvTrackEvent(
 							'favorited',
-							'Loan Favorite Toggled',
-							this.isFavorite === 0 ? 'Favorite Loan Removed'
-								: 'Loan Favorite Removed Success', this.isFavorite.value
+							'Loan Favorite Toggled - Added',
+							'success', this.isFavorite.value
 						);
 						// eslint-disable-next-line max-len
 						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
+						this.$emit('favorite-toggled');
 					}
 				}).catch(error => {
 					console.error(error);
 				});
-				this.$emit('favorite-toggled');
-				console.log('favorite toggled complete');
 			} else {
-				this.$emit('favorite-toggled');
-				console.log('favorite untoggled');
+				this.apollo.mutate({
+					mutation: updateLoanFavorite,
+					variables: {
+						loanId: this.loan_id,
+						favorite: this.isFavorite,
+					}
+				}).then(data => {
+					if (data.errors) {
+						_forEach(data.errors, ({ message }) => {
+							this.$showTipMsg(message, 'error');
+						});
+					} else {
+						this.$kvTrackEvent(
+							'favorited',
+							'Loan Favorite Toggled - Removed',
+							'removal success',
+							this.isFavorite.value
+						);
+						this.$emit('favorite-toggled');
+					}
+				}).catch(error => {
+					console.error(error);
+				});
 			}
 		}
 	}
-
 };
 </script>
 
