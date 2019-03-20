@@ -11,7 +11,6 @@
 import KvIcon from '@/components/Kv/KvIcon';
 import updateLoanFavorite from '@/graphql/mutation/updateLoanFavorite.graphql';
 import _forEach from 'lodash/forEach';
-// import numeral from 'numeral';
 
 export default {
 	components: {
