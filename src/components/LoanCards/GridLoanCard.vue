@@ -197,7 +197,9 @@ export default {
 	methods: {
 		toggleFavorite() {
 			// optimistically toggle it locally first
-			// this.isFavorite = !this.isFavorite;
+			// Feels like this should happen in the else statement of the .then() block of code
+			// So the toggle only occurs if there are not errors.
+			this.isFavorite = !this.isFavorite;
 
 			this.apollo.mutate({
 				mutation: loanFavoriteMutation,
@@ -212,21 +214,20 @@ export default {
 					});
 				} else {
 					this.$kvTrackEvent(
-						'favorited',
+						'Lending',
 						'Loan Favorite Toggled',
 						this.isFavorite === true ? 'Favorite Loan Added'
-							: 'Loan Favorite Removed', this.isFavorite.value
+							: 'Loan Favorite Removed', this.isFavorite
 					);
 					if (this.isFavorite === true) {
 						// eslint-disable-next-line max-len
 						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
 					}
 				}
+				// Catch other errors
 			}).catch(error => {
 				console.error(error);
 			});
-			this.isFavorite = !this.isFavorite;
-			console.log('favorite toggled complete GRIDLOANCARD LEVEL');
 		},
 		trackInteraction(args) {
 			if (!this.enableTracking) {

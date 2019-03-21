@@ -27,7 +27,6 @@ export default {
 	methods: {
 		toggleFavorite() {
 			this.$emit('favorite-toggled');
-			console.log('favorite toggled from fav star component');
 		}
 	}
 };
