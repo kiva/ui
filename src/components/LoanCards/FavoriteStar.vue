@@ -9,14 +9,11 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
-import updateLoanFavorite from '@/graphql/mutation/updateLoanFavorite.graphql';
-import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
 		KvIcon
 	},
-	inject: ['apollo'],
 	props: {
 		isFavorite: {
 			type: Boolean,
@@ -29,56 +26,8 @@ export default {
 	},
 	methods: {
 		toggleFavorite() {
-			if (this.isFavorite === false) {
-				this.apollo.mutate({
-					mutation: updateLoanFavorite,
-					variables: {
-						loanId: this.loan_id,
-						favorite: this.isFavorite,
-					}
-				}).then(data => {
-					if (data.errors) {
-						_forEach(data.errors, ({ message }) => {
-							this.$showTipMsg(message, 'error');
-						});
-					} else {
-						this.$kvTrackEvent(
-							'favorited',
-							'Loan Favorite Toggled - Added',
-							'success', this.isFavorite.value
-						);
-						// eslint-disable-next-line max-len
-						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
-						this.$emit('favorite-toggled');
-					}
-				}).catch(error => {
-					console.error(error);
-				});
-			} else {
-				this.apollo.mutate({
-					mutation: updateLoanFavorite,
-					variables: {
-						loanId: this.loan_id,
-						favorite: this.isFavorite,
-					}
-				}).then(data => {
-					if (data.errors) {
-						_forEach(data.errors, ({ message }) => {
-							this.$showTipMsg(message, 'error');
-						});
-					} else {
-						this.$kvTrackEvent(
-							'favorited',
-							'Loan Favorite Toggled - Removed',
-							'removal success',
-							this.isFavorite.value
-						);
-						this.$emit('favorite-toggled');
-					}
-				}).catch(error => {
-					console.error(error);
-				});
-			}
+			this.$emit('favorite-toggled');
+			console.log('favorite toggled from fav star component');
 		}
 	}
 };
