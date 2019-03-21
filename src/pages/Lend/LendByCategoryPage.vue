@@ -2,13 +2,13 @@
 	<www-page class="lend-by-category-page">
 		<lend-header />
 
-		<featured-hero-loan
+		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
-			:items-in-basket="itemsInBasket"
-			:is-logged-in="isLoggedIn"
-			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+			:is-logged-in="isLoggedIn"
+			:items-in-basket="itemsInBasket"
+			:lend-increment-button-version="lendIncrementExpVersion"
 			:show-category-description="showCategoryDescription"
 		/>
 
@@ -89,7 +89,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
-import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
+import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
@@ -110,7 +110,7 @@ export default {
 		CategoryRow,
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
-		FeaturedHeroLoan,
+		FeaturedHeroLoanWrapper,
 		RecentlyViewedLoans,
 		WwwPage,
 		ViewToggle,

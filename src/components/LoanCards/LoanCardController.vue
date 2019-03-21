@@ -13,12 +13,14 @@
 		:is-funded="isFunded"
 		:is-selected-by-another="isSelectedByAnother"
 		:amount-left="amountLeft"
+		:experiment-data="experimentData"
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
 	/>
 </template>
 
 <script>
+import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
@@ -32,6 +34,7 @@ import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql'
 
 export default {
 	components: {
+		FeaturedHeroLoan,
 		GridLoanCard,
 		GridMicroLoanCard,
 		ListLoanCard,
@@ -90,6 +93,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		experimentData: {
+			type: Object,
+			default: () => {},
+		}
 	},
 	inject: ['apollo'],
 	computed: {
