@@ -55,6 +55,8 @@
 								ref="customDonationInputDesktop"
 								name="customDonationInputTextDesktop"
 								maxlength="10"
+								id="customDonationInput"
+								@click.capture="formatAndSubmitOnEnter"
 								class="nudge-box-input nudge-box-input-desktop"
 								@blur="validateInputDesktop"
 							>
@@ -71,7 +73,7 @@
 							class="nudge-box-bottom"
 							@click="setDonationAndClose(getDonationByPercent(percentage))"
 						>
-							<kv-button class="smallest nudge-box-button">
+							<kv-button id="custom-donation-submit" class="smallest nudge-box-button">
 								Select
 							</kv-button>
 						</div>
@@ -250,6 +252,22 @@ export default {
 		};
 	},
 	methods: {
+		formatAndSubmitOnEnter() {
+			const customInput = document.getElementById('customDonationInput');
+			const customInputButton = document.getElementById('custom-donation-submit');
+
+			customInput.addEventListener('keyup', event => {
+				if (event.keyCode === 13) {
+					// when a user presses the Enter button when focused on the
+					// custom input field, we trigger a blur() event which formats
+					// the entered dollar amount, then we click the "submit" button
+					// to close the donation lightbox.
+					customInput.blur();
+					customInputButton.click();
+					console.log('enter button pressed');
+				}
+			});
+		},
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
