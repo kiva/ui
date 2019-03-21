@@ -1,0 +1,37 @@
+query($basketId: String) {
+	shop (basketId: $basketId) {
+		basket {
+			items {
+				totalCount
+				values {
+					id
+					price
+					... on LoanReservation {
+						expiryTime
+						isEndingSoon
+						loan {
+							id
+							name
+							use
+							plannedExpirationDate
+							loanFundraisingInfo {
+								isExpiringSoon
+								fundedAmount
+								reservedAmount
+							}
+							image {
+								id
+								url: url (presetSize: loan_thumbnail)
+								url_2x: url (presetSize: loan_thumbnail_retina)
+							}
+						}
+					}
+				}
+			}
+			totals {
+				itemTotal
+				loanReservationTotal
+			}
+		}
+	}
+}

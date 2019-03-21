@@ -33,7 +33,12 @@ export default {
 		// determine if add to basket interstitial is active
 		this.apollo.watchQuery({ query: basketAddInterstitial }).subscribe({
 			next: ({ data }) => {
-				this.basketInterstitialState = _get(data, 'basketAddInterstitial');
+				const interstitialState = _get(data, 'basketAddInterstitial');
+				this.basketInterstitialState = Object.assign({}, this.basketInterstitialState, {
+					active: interstitialState.active,
+					visible: interstitialState.visible,
+					loanId: interstitialState.loanId,
+				});
 			},
 		});
 	},
