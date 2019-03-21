@@ -27,6 +27,10 @@ query($basketId: String) {
 			key
 			value
 		}
+		addToBasketPopup: setting(setting: "uiexp.add_to_basket_popup") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin

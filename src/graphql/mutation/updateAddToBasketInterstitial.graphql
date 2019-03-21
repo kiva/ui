@@ -1,0 +1,3 @@
+mutation updateAddToBasketInterstitial($active: Boolean, $visible: Boolean, $loanId: Number) {
+	updateAddToBasketInterstitial(active: $active, visible: $visible, loanId: $loanId ) @client
+}
