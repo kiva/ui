@@ -1,24 +1,36 @@
 <template>
-	<!--
-		This category page was added as a temporary workaround to a bug preventing DOM manipulation in the same Vue
-		file as Algolia filters.
-		https://github.com/algolia/vue-instantsearch/issues/618#issuecomment-466543784
-	-->
 	<filter-menu-section :title="title" :open="open" :result-count="10">
-		<ais-refinement-list :attribute="'sector.name'" :sort-by="['name:asc']"/>
+		<kv-checkbox
+			v-for="{name, categoryId, checkboxInput, isChecked} in customCategoryList"
+			:key="categoryId"
+			:label="name"
+			:is-checked="isChecked"
+			@checkbox-input="checkboxInput"
+		/>
 	</filter-menu-section>
 </template>
 
 <script>
+import _map from 'lodash/map';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 import { AisRefinementList } from 'vue-instantsearch';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
+		KvCheckbox,
 		FilterMenuSection,
 		AisRefinementList,
 	},
 	props: {
+		customCategories: {
+			type: Object,
+			required: true,
+		},
+		selectedCustomCategories: {
+			type: Object,
+			required: true,
+		},
 		title: {
 			type: String,
 			default: 'Categories',
@@ -30,6 +42,23 @@ export default {
 		resultCount: {
 			type: Number,
 			required: true,
+		},
+	},
+	methods: {
+		toggleCustomCategory(categoryId) {
+			this.$emit('toggle-custom-category', categoryId);
+		},
+	},
+	computed: {
+		customCategoryList() {
+			return _map(this.customCategories, (category, categoryId) => ({
+				...category,
+				categoryId,
+				checkboxInput: () => {
+					this.toggleCustomCategory(categoryId);
+				},
+				isChecked: !!this.selectedCustomCategories[categoryId],
+			}));
 		},
 	},
 };

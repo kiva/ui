@@ -10,7 +10,13 @@
 				<!-- eslint-disable-next-line max-len -->
 				<filter-section-gender :result-count="1" :open="true" :filter-menu-open="filterMenuOpen" />
 				<filter-section-sort :default-sort-indices="defaultSortIndices" :result-count="1" :open="true" />
-				<filter-section-categories :result-count="10" :open="true" />
+				<filter-section-categories
+					:result-count="10"
+					:open="true"
+					:custom-categories="customCategories"
+					:selected-custom-categories="selectedCustomCategories"
+					@toggle-custom-category="toggleCustomCategory"
+				/>
 				<filter-section-location :result-count="10" :open="true" />
 				<filter-section-range-slider :result-count="4" :open="true" :filter-menu-open="filterMenuOpen" />
 
@@ -49,8 +55,16 @@ export default {
 		};
 	},
 	props: {
+		customCategories: {
+			type: Object,
+			required: true,
+		},
 		defaultSortIndices: {
 			type: Array,
+			required: true,
+		},
+		selectedCustomCategories: {
+			type: Object,
 			required: true,
 		},
 	},
@@ -64,6 +78,9 @@ export default {
 		toggleFilterMenu() {
 			this.filterMenuOpen = !this.filterMenuOpen;
 		},
+		toggleCustomCategory(categoryId) {
+			this.$emit('toggle-custom-category', categoryId);
+		}
 	},
 };
 </script>

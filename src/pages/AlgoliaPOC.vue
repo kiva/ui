@@ -29,16 +29,16 @@
 
 						<ais-current-refinements />
 
-						<selected-refinements @facet-removed="handleFacetRemoved" />
+						<selected-refinements @facet-removed="handleFacetRemoved" :selected-custom-categories="{}"/>
 
 						<!-- POC for Custom Categories Refinements -->
 						<!-- > does NOT currently support count -->
 						<div class="custom-refinement-list">
 							<div class="custom-refinement"
-								v-for="category in customCategories" :key="category.name">
+								v-for="category in customCategoryList" :key="category.name">
 								<kv-checkbox
 									@checkbox-toggled="handleCheckboxToggle($event, category)">
-									{{ category.name }} ({{ category.count }})
+									{{ category.name }} ({{ 0 }})
 								</kv-checkbox>
 							</div>
 						</div>
@@ -206,9 +206,22 @@ export default {
 			// 	'tags.name:#Vegan'
 			// ],
 
+			// Optional default search state
+			// INFO: These properties alter the ais-configure component
+			// > Sets search state and reflects that state in ais-current-refinements component
+			disjunctiveFacets: {
+				'sector.name': [],
+				'themeData.loanThemeTypeName': [],
+				'tags.name': []
+			},
 			itemsInBasket: null,
 			isLoggedIn: false,
 		};
+	},
+	computed: {
+		customCategoryList() {
+			return _map(this.customCategories, (category, categoryId) => ({ ...category, categoryId }));
+		},
 	},
 	apollo: {
 		preFetch(config, client) {

@@ -6,14 +6,24 @@
 				v-if="searchClient"
 				:search-client="searchClient"
 				:index-name="algoliaDefaultIndex">
-				<lend-filter-menu :default-sort-indices="defaultSortIndices" />
+				<lend-filter-menu
+					:default-sort-indices="defaultSortIndices"
+					:custom-categories="customCategories"
+					:selected-custom-categories="selectedCustomCategories"
+					@toggle-custom-category="toggleCustomCategory"
+				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
-						ref="aisConfigure" />
-					<selected-refinements />
+						ref="aisConfigure"
+					/>
+					<selected-refinements
+						:custom-categories="customCategories"
+						:selected-custom-categories="selectedCustomCategories"
+						@remove-custom-category="removeCustomCategory"
+					/>
 					<ais-hits
 						class="loan-card-group row"
 						:results-per-page="12">
@@ -40,6 +50,7 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _forEach from 'lodash/forEach';
 import cookieStore from '@/util/cookieStore';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -101,8 +112,43 @@ export default {
 	data() {
 		return {
 			itemsInBasket: null,
-			isLoggedIn: false
+			isLoggedIn: false,
+			selectedCustomCategories: {},
 		};
+	},
+	computed: {
+		disjunctiveFacets() {
+			const sectorKey = 'sector.name';
+			const themeDataKey = 'themeData.loanThemeTypeName';
+			const tagsKey = 'tags.name';
+			let sectorSet = new Set();
+			let themeDataSet = new Set();
+			let tagsSet = new Set();
+
+			_forEach(this.selectedCustomCategories, (selected, customCategoryId) => {
+				if (!selected) {
+					return;
+				}
+
+				const customCategoryFacets = this.customCategories[customCategoryId].disjunctiveFacets;
+
+				sectorSet = customCategoryFacets[sectorKey] && customCategoryFacets[sectorKey].length
+					? new Set([...sectorSet, ...customCategoryFacets[sectorKey]])
+					: sectorSet;
+				themeDataSet = customCategoryFacets[themeDataKey] && customCategoryFacets[themeDataKey].length
+					? new Set([...themeDataSet, ...customCategoryFacets[themeDataKey]])
+					: themeDataSet;
+				tagsSet = customCategoryFacets[tagsKey] && customCategoryFacets[tagsKey].length
+					? new Set([...tagsSet, ...customCategoryFacets[tagsKey]])
+					: tagsSet;
+			});
+
+			return {
+				'sector.name': Array.from(sectorSet),
+				'themeData.loanThemeTypeName': Array.from(themeDataSet),
+				'tags.name': Array.from(tagsSet),
+			};
+		},
 	},
 	inject: [
 		'apollo',
@@ -121,6 +167,22 @@ export default {
 				// TODO: REMOVE Once CASH-103: Lend Increment Button EXP ENDS
 				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
 			});
+		}
+	},
+	methods: {
+		toggleCustomCategory(categoryId) {
+			this.$set(
+				this.selectedCustomCategories,
+				categoryId,
+				!this.selectedCustomCategories[categoryId],
+			);
+		},
+		removeCustomCategory(categoryId) {
+			this.$set(
+				this.selectedCustomCategories,
+				categoryId,
+				false,
+			);
 		}
 	},
 };

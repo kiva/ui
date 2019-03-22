@@ -17,8 +17,8 @@ export default {
 			/* eslint-disable max-len */
 			// aka. Loan Channel config
 			// INFO: These properties provide an analogue to our loan channels
-			customCategories: [
-				{
+			customCategories: Object.freeze({
+				agriculture: {
 					name: 'Agriculture',
 					//  OR tags.name:#Sustainable Ag (need to fix name to remove spaces)
 					filter: 'sector.name:Agriculture OR themeData.loanThemeTypeName:Agriculture OR themeData.loanThemeTypeName:Trees',
@@ -27,8 +27,8 @@ export default {
 						'themeData.loanThemeTypeName': ['Agriculture', 'Trees'],
 						'tags.name': ['#Sustainable Ag']
 					},
-					count: 0
-				}, {
+				},
+				animals: {
 					name: 'Animals',
 					filter: 'tags.name:#Animals',
 					disjunctiveFacets: {
@@ -36,8 +36,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': ['#Animals']
 					},
-					count: 0
-				}, {
+				},
+				arts: {
 					name: 'Arts',
 					filter: 'sector:Arts OR tags.name:#Fabrics',
 					disjunctiveFacets: {
@@ -45,8 +45,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': ['#Fabrics']
 					},
-					count: 0
-				}, {
+				},
+				clothing: {
 					name: 'Clothing',
 					filter: 'sector:Clothing',
 					disjunctiveFacets: {
@@ -54,8 +54,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				ecoFriendly: {
 					name: 'Eco-friendly',
 					filter: 'tags.name:#Eco-friendly',
 					disjunctiveFacets: {
@@ -63,8 +63,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': ['#Eco-friendly']
 					},
-					count: 0
-				}, {
+				},
+				education: {
 					name: 'Education',
 					//  OR tags.name:#Female Education (need to fix name to remove spaces)
 					//  OR themeData.loanThemeTypeName:Higher Education (need to fix name to remove spaces)
@@ -74,8 +74,8 @@ export default {
 						'themeData.loanThemeTypeName': ['Higher Education'],
 						'tags.name': ['#Schooling', '#Female Education']
 					},
-					count: 0
-				}, {
+				},
+				entertainment: {
 					name: 'Entertainment',
 					filter: 'sector:Entertainment',
 					disjunctiveFacets: {
@@ -83,8 +83,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				food: {
 					name: 'Food',
 					filter: 'sector:Food',
 					disjunctiveFacets: {
@@ -92,8 +92,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				health: {
 					name: 'Health',
 					//  OR tags.name:#Health and Sanitation (need to fix name to remove spaces)
 					filter: 'sector:Health OR themeData.loanThemeTypeName:Health',
@@ -102,8 +102,8 @@ export default {
 						'themeData.loanThemeTypeName': ['Health'],
 						'tags.name': ['#Health and Sanitation']
 					},
-					count: 0
-				}, {
+				},
+				manufacturing: {
 					name: 'Manufacturing',
 					filter: 'sector:Manufacturing',
 					disjunctiveFacets: {
@@ -111,8 +111,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				refugeesAndIdps: {
 					name: 'Refugees and IDPs',
 					// OR themeData.loanThemeTypeName:Vunerable Populations (Refugees) (need to fix name to remove spaces)
 					// OR themeData.loanThemeTypeName:Displaced Populations (need to fix name to remove spaces)
@@ -122,8 +122,8 @@ export default {
 						'themeData.loanThemeTypeName': ['Displaced Populations', 'Vunerable Populations (Refugees)'],
 						'tags.name': ['#Refugee']
 					},
-					count: 0
-				}, {
+				},
+				shelter: {
 					name: 'Shelter',
 					filter: 'sector:Housing',
 					disjunctiveFacets: {
@@ -131,8 +131,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				transportation: {
 					name: 'Transportation',
 					filter: 'sector:Transportation',
 					disjunctiveFacets: {
@@ -140,8 +140,8 @@ export default {
 						'themeData.loanThemeTypeName': [],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				technology: {
 					name: 'Technology',
 					// OR themeData.loanThemeTypeName:Mobile Technology (need to fix name to remove spaces)
 					filter: 'tags.name:#Technology',
@@ -150,8 +150,8 @@ export default {
 						'themeData.loanThemeTypeName': ['Mobile Technology'],
 						'tags.name': []
 					},
-					count: 0
-				}, {
+				},
+				waterAndSanitation: {
 					name: 'Water and sanitation',
 					//  OR themeData.loanThemeTypeName:#Water and Sanitation (need to fix name to remove spaces)
 					filter: '',
@@ -160,18 +160,9 @@ export default {
 						'themeData.loanThemeTypeName': ['Water and Sanitation'],
 						'tags.name': []
 					},
-					count: 0
 				},
-			],
+			}),
 			/* eslint-enable max-len */
-			// Optional default search state
-			// INFO: These properties alter the ais-configure component
-			// > Sets search state and reflects that state in ais-current-refinements component
-			disjunctiveFacets: {
-				'sector.name': [],
-				'themeData.loanThemeTypeName': [],
-				'tags.name': []
-			},
 			// dev_fundraising_loans is the base index, all others are replicas
 			// INFO: This list powers the sort order component
 			fundraisingIndices: [
@@ -194,6 +185,6 @@ export default {
 					label: index.label
 				};
 			});
-		}
+		},
 	},
 };

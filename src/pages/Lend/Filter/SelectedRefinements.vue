@@ -18,8 +18,8 @@
 							:key="[
 								item.attribute,
 								item.type,
-								item.value,
-								item.operator
+								item.label,
+								item.operator,
 							].join(':')"
 							:title="`${item.label}`"
 							@click-chip="handleRemoveRefinement(item)"
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import _forEach from 'lodash/forEach';
 import {
 	AisCurrentRefinements,
 	AisClearRefinements,
@@ -53,6 +54,16 @@ export default {
 		AisCurrentRefinements,
 		AisClearRefinements,
 		FilterChip,
+	},
+	props: {
+		customCategories: {
+			type: Object,
+			required: true,
+		},
+		selectedCustomCategories: {
+			type: Object,
+			required: true,
+		},
 	},
 	data() {
 		return {
@@ -81,6 +92,7 @@ export default {
 			fixedRowHeight: 40,
 			isCollapsible: false,
 			isCollapsed: true,
+			customCategoryAttributes: ['sector.name', 'themeData.loanThemeTypeName', 'tags.name'],
 		};
 	},
 	methods: {
@@ -98,6 +110,9 @@ export default {
 			this.isCollapsible = this.$refs.accordionContent
 				? this.$refs.accordionContent.clientHeight > this.fixedRowHeight
 				: false;
+		},
+		getCustomCategoryLabel(customCategoryId) {
+			return this.customCategories[customCategoryId].name;
 		},
 		generateLabel(item) {
 			const {
@@ -120,7 +135,8 @@ export default {
 		},
 		transformRefinementList(items) {
 			const newItems = [];
-			items.forEach(({ refinements, refine }) => {
+
+			items.forEach(({ refinements, refine, attribute }) => {
 				refinements.forEach(refinement => {
 					const { type, operator, value } = refinement;
 					if (type === 'numeric') {
@@ -131,6 +147,9 @@ export default {
 							return;
 						}
 					}
+					if (this.customCategoryAttributes.includes(attribute)) {
+						return;
+					}
 					newItems.push({
 						...refinement,
 						label: this.generateLabel(refinement),
@@ -138,8 +157,27 @@ export default {
 					});
 				});
 			});
+			_forEach(
+				this.selectedCustomCategories,
+				(customCategoryEnabled, selectedCustomCategoryId) => {
+					if (!customCategoryEnabled) {
+						return;
+					}
+					newItems.push({
+						attribute: selectedCustomCategoryId,
+						label: this.getCustomCategoryLabel(selectedCustomCategoryId),
+						refine: () => {
+							this.removeCustomCategory(selectedCustomCategoryId);
+						},
+						type: 'CustomCategory',
+					});
+				},
+			);
 			setTimeout(() => { this.setCollapsibleState(); }, 0);
 			return newItems;
+		},
+		removeCustomCategory(customCategoryId) {
+			this.$emit('remove-custom-category', customCategoryId);
 		},
 	},
 	mounted() {
