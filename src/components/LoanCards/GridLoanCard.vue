@@ -75,8 +75,8 @@ import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import _get from 'lodash/get';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
+import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
@@ -204,15 +204,28 @@ export default {
 					loan_id: this.loan.id,
 					is_favorite: this.isFavorite
 				}
-			}).then(({ data }) => {
-				if (data) {
-					// @todo - provide a better soft-landing if mutation failed
-					const favorite = _get(data, 'loan.favorite');
-
-					if (favorite === null) {
-						this.isFavorite = !this.isFavorite;
+			}).then(data => {
+				if (data.errors) {
+					this.isFavorite = !this.isFavorite;
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				} else {
+					this.$kvTrackEvent(
+						'Lending',
+						'Loan Favorite Toggled',
+						this.isFavorite === true ? 'Favorite Loan Added'
+							: 'Loan Favorite Removed', this.isFavorite
+					);
+					if (this.isFavorite === true) {
+						// eslint-disable-next-line max-len
+						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
 					}
 				}
+				// Catch other errors
+			}).catch(error => {
+				this.isFavorite = !this.isFavorite;
+				console.error(error);
 			});
 		},
 		trackInteraction(args) {

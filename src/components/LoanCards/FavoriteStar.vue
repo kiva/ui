@@ -29,7 +29,6 @@ export default {
 			this.$emit('favorite-toggled');
 		}
 	}
-
 };
 </script>
 
