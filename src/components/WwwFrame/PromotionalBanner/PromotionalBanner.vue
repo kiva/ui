@@ -5,6 +5,7 @@
 <script>
 import numeral from 'numeral';
 import _get from 'lodash/get';
+import cookieStore from '@/util/cookieStore';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import BonusBanner from './Banners/BonusBanner';
 import LendingRewardsBanner from './Banners/LendingRewardsBanner';
@@ -29,6 +30,16 @@ export default {
 	apollo: {
 		query: promoQuery,
 		preFetch: true,
+		variables() {
+			return {
+				basketId: cookieStore.get('kvbskt'),
+			};
+		},
+		preFetchVariables() {
+			return {
+				basketId: cookieStore.get('kvbskt'),
+			};
+		},
 		result({ data }) {
 			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
 			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
