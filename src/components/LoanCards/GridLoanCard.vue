@@ -75,7 +75,7 @@ import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import _get from 'lodash/get';
+// import _get from 'lodash/get';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 import _forEach from 'lodash/forEach';
 
@@ -213,14 +213,6 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 				} else {
-					const favorite = _get(data, 'loan.favorite');
-
-					if (favorite === null) {
-						this.isFavorite = !this.isFavorite;
-						return;
-					}
-					// const loan = _get(data, 'loan');
-					// this.$emit('loan-updated', loan);
 					this.$kvTrackEvent(
 						'Lending',
 						'Loan Favorite Toggled',
@@ -234,7 +226,6 @@ export default {
 				}
 				// Catch other errors
 			}).catch(error => {
-				this.isFavorite = !this.isFavorite;
 				console.error(error);
 			});
 		},
