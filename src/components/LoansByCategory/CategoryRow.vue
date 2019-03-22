@@ -53,6 +53,7 @@
 						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
+					<!-- @loan-updated="handleLoanUpdated" -->
 
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
 						<router-link
@@ -261,6 +262,14 @@ export default {
 				this.scrollPos = newLeftMargin;
 			}
 		},
+		// handleLoanUpdated(updatedLoan) {
+		// 	this.loan = this.loan.map(loan => {
+		// 		if (loan.id === updatedLoan.id) {
+		// 			return updatedLoan;
+		// 		}
+		// 		return loan;
+		// 	});
+		// }
 	},
 };
 </script>
