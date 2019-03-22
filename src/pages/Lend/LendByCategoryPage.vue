@@ -291,7 +291,6 @@ export default {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				},
 			});
-			// Need another apollo watch query to watch for the loanFavorite updating.
 		},
 	},
 	apollo: {
