@@ -75,7 +75,6 @@ import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-// import _get from 'lodash/get';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 import _forEach from 'lodash/forEach';
 
@@ -197,8 +196,6 @@ export default {
 	methods: {
 		toggleFavorite() {
 			// optimistically toggle it locally first
-			// Feels like this should happen in the else statement of the .then() block of code
-			// So the toggle only occurs if there are not errors.
 			this.isFavorite = !this.isFavorite;
 
 			this.apollo.mutate({
@@ -226,6 +223,7 @@ export default {
 				}
 				// Catch other errors
 			}).catch(error => {
+				this.isFavorite = !this.isFavorite;
 				console.error(error);
 			});
 		},

@@ -169,8 +169,6 @@ export default {
 		},
 		toggleFavorite() {
 			// optimistically toggle it locally first
-			// Feels like this should happen in the else statement of the .then() block of code
-			// So the toggle only occurs if there are not errors.
 			this.isFavorite = !this.isFavorite;
 
 			this.apollo.mutate({
@@ -198,6 +196,7 @@ export default {
 				}
 				// Catch other errors
 			}).catch(error => {
+				this.isFavorite = !this.isFavorite;
 				console.error(error);
 			});
 		},
