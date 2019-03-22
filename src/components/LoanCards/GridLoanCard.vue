@@ -78,6 +78,7 @@ import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import _get from 'lodash/get';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 import _forEach from 'lodash/forEach';
+import loansByIdQuery from '@/graphql/query/loansById.graphql';
 
 export default {
 	components: {
@@ -195,6 +196,18 @@ export default {
 
 	},
 	methods: {
+		updateLoan(loanId) {
+			this.apollo.query({
+				query: loansByIdQuery,
+				variables: {
+					ids: [loanId],
+				},
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				console.log(data);
+			});
+		},
+
 		toggleFavorite() {
 			// optimistically toggle it locally first
 			// Feels like this should happen in the else statement of the .then() block of code
@@ -212,6 +225,7 @@ export default {
 					_forEach(data.errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
+					this.isFavorite = !this.isFavorite;
 				} else {
 					const favorite = _get(data, 'loan.favorite');
 
@@ -231,6 +245,8 @@ export default {
 						// eslint-disable-next-line max-len
 						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
 					}
+
+					this.updateLoan(this.loan.id);
 				}
 				// Catch other errors
 			}).catch(error => {
