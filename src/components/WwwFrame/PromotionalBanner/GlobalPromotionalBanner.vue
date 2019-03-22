@@ -7,6 +7,7 @@
 <script>
 import numeral from 'numeral';
 import _get from 'lodash/get';
+import cookieStore from '@/util/cookieStore';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import GiftBanner from './Banners/GiftBanner';
@@ -45,6 +46,16 @@ export default {
 	apollo: {
 		query: promoQuery,
 		preFetch: true,
+		variables() {
+			return {
+				basketId: cookieStore.get('kvbskt'),
+			};
+		},
+		preFetchVariables() {
+			return {
+				basketId: cookieStore.get('kvbskt'),
+			};
+		},
 		result({ data }) {
 			this.holidayModeEnabled = settingEnabled(
 				data,

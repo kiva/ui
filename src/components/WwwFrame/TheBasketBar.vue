@@ -6,6 +6,7 @@
 
 <script>
 import _get from 'lodash/get';
+import cookieStore from '@/util/cookieStore';
 import countQuery from '@/graphql/query/basketCount.graphql';
 
 export default {
@@ -18,6 +19,16 @@ export default {
 	apollo: {
 		query: countQuery,
 		preFetch: true,
+		variables() {
+			return {
+				basketId: cookieStore.get('kvbskt'),
+			};
+		},
+		preFetchVariables() {
+			return {
+				basketId: cookieStore.get('kvbskt'),
+			};
+		},
 		result({ data }) {
 			this.count = _get(data, 'shop.nonTrivialItemCount');
 		}
