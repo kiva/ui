@@ -206,6 +206,7 @@ export default {
 				}
 			}).then(data => {
 				if (data.errors) {
+					this.isFavorite = !this.isFavorite;
 					_forEach(data.errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
