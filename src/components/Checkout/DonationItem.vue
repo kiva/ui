@@ -387,10 +387,15 @@ export default {
 		},
 		closeNudgeLightbox() {
 			this.nudgeLightboxVisible = false;
+			// Need to reenable all page level <a>s & <select>s on /checkout page
+			// Need to disable all <a> and buttons in donationNudge lightbox
 		},
 		openNudgeLightbox() {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
+
+			// Need to disable all page level <a>s & <select>s on /checkout page
+			// Might need to enable all <a>s and buttons in the donation nudge lightbox.
 		},
 		donationNudgeHeader() {
 			const newLoanCount = this.loanHistoryCount + this.loanCount;
