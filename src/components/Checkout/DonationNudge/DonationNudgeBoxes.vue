@@ -266,7 +266,7 @@ export default {
 					customInput.blur();
 					// this is happening too fast before the total updates,
 					// I tried a setTimeout(customInputButton.click(), 3000);
-					// but that doesn't work to slow down the click interaction
+					// but that doesn't
 					customInputButton.click();
 					console.log('enter button pressed');
 				}
@@ -305,10 +305,7 @@ export default {
 		},
 		validateInputMobile() {
 			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
-		},
-		// setFocus() {
-		// 	this.setFocus()
-		// }
+		}
 	},
 };
 </script>

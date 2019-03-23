@@ -391,8 +391,13 @@ export default {
 			// Need to disable all <a> and buttons in donationNudge lightbox
 		},
 		openNudgeLightbox() {
+			const firstButton = document.getElementById('custom-donation-submit');
+
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
+			console.log('OpenNudgeLightboxthrown');
+			// Not yet working
+			firstButton.focus();
 
 			// Need to disable all page level <a>s & <select>s on /checkout page
 			// Might need to enable all <a>s and buttons in the donation nudge lightbox.
