@@ -257,12 +257,16 @@ export default {
 			const customInputButton = document.getElementById('custom-donation-submit');
 
 			customInput.addEventListener('keyup', event => {
+				console.log('enter button pressed before if statement');
 				if (event.keyCode === 13) {
 					// when a user presses the Enter button when focused on the
 					// custom input field, we trigger a blur() event which formats
 					// the entered dollar amount, then we click the "submit" button
 					// to close the donation lightbox.
 					customInput.blur();
+					// this is happening too fast before the total updates,
+					// I tried a setTimeout(customInputButton.click(), 3000);
+					// but that doesn't work to slow down the click interaction
 					customInputButton.click();
 					console.log('enter button pressed');
 				}
@@ -302,6 +306,9 @@ export default {
 		validateInputMobile() {
 			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
 		},
+		// setFocus() {
+		// 	this.setFocus()
+		// }
 	},
 };
 </script>
