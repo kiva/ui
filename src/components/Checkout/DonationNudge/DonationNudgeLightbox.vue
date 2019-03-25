@@ -12,13 +12,16 @@
 					:description="description"
 				/>
 				<donation-nudge-boxes
+					ref="nudgeBoxes"
 					id="nudge-donation-top-boxes-wrapper"
 					:percentage-rows= "percentageRows"
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
 				/>
-				<div><a id="no-donation-link" @click="setDonationAndClose(0)">No donation to Kiva</a></div>
+				<div><a id="no-donation-link"
+					@click="setDonationAndClose(0)"
+					tabindex="12">No donation to Kiva</a></div>
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
 				<div class="row">
@@ -97,6 +100,9 @@ export default {
 			this.updateDonationTo(amount);
 			this.$kvTrackEvent('basket', 'Update Loan Amount', 'Update Success', amount * 100);
 			this.closeNudgeLightbox();
+		},
+		openNudgeLightbox() {
+			this.$refs.nudgeBoxes.openNudgeLightbox();
 		}
 	},
 };

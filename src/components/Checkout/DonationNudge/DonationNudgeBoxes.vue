@@ -22,8 +22,7 @@
 					>
 						<!-- eslint-enable max-len -->
 						<div
-							class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
-						>
+							class="nudge-box-top nudge-box-padded nudge-box-custom-donation">
 							You decide — enter custom amount
 						</div>
 					</div>
@@ -55,6 +54,7 @@
 								ref="customDonationInputDesktop"
 								name="customDonationInputTextDesktop"
 								maxlength="10"
+								tabindex="10"
 								id="customDonationInput"
 								@click.capture="formatAndSubmitOnEnter"
 								class="nudge-box-input nudge-box-input-desktop"
@@ -65,7 +65,7 @@
 				</div>
 				<div class="row nudge-box-row">
 					<div
-						v-for="{percentage} in percentageRows"
+						v-for="({percentage}, index) in percentageRows"
 						:key="percentage"
 						class="medium-4 columns nudge-box-bottom-container nudge-box-container"
 					>
@@ -73,7 +73,17 @@
 							class="nudge-box-bottom"
 							@click="setDonationAndClose(getDonationByPercent(percentage))"
 						>
-							<kv-button id="custom-donation-submit" class="smallest nudge-box-button">
+							<kv-button
+								v-if="index === 0"
+								id="first-button"
+								:tabindex="index + 1"
+								class="smallest nudge-box-button">
+								Select
+							</kv-button>
+							<kv-button
+								v-else
+								:tabindex="index + 1"
+								class="smallest nudge-box-button">
 								Select
 							</kv-button>
 						</div>
@@ -86,7 +96,9 @@
 							class="nudge-box-bottom nudge-box-custom-donation"
 							@click="setCustomDonationAndClose"
 						>
-							<kv-button class="smallest nudge-box-button">
+							<kv-button
+								class="smallest nudge-box-button custom-amount-submit"
+								tabindex="11">
 								Submit
 							</kv-button>
 						</div>
@@ -254,23 +266,18 @@ export default {
 	methods: {
 		formatAndSubmitOnEnter() {
 			const customInput = document.getElementById('customDonationInput');
-			const customInputButton = document.getElementById('custom-donation-submit');
+			const customInputButton = document.querySelector('.custom-amount-submit');
 
 			customInput.addEventListener('keyup', event => {
-				console.log('enter button pressed before if statement');
 				if (event.keyCode === 13) {
-					// when a user presses the Enter button when focused on the
-					// custom input field, we trigger a blur() event which formats
-					// the entered dollar amount, then we click the "submit" button
-					// to close the donation lightbox.
 					customInput.blur();
-					// this is happening too fast before the total updates,
-					// I tried a setTimeout(customInputButton.click(), 3000);
-					// but that doesn't
 					customInputButton.click();
 					console.log('enter button pressed');
 				}
 			});
+		},
+		openNudgeLightbox() {
+			setTimeout(() => { document.getElementById('first-button').focus(); }, 500);
 		},
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
