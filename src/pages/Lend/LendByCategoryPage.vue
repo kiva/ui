@@ -405,9 +405,11 @@ export default {
 		this.featuredHeroLoanExperimentVersion = _get(featuredHeroLoanExperimentVersionArray, 'experiment.version') || null;
 
 		if (this.featuredHeroLoanExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'a');
 			this.showFeaturedLoans = true;
 			this.showFeaturedHeroLoan = false;
 		} else if (this.featuredHeroLoanExperimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'b');
 			this.showFeaturedLoans = false;
 			this.showFeaturedHeroLoan = true;
 		}
