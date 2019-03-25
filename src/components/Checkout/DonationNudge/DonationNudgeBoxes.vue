@@ -272,7 +272,6 @@ export default {
 				if (event.keyCode === 13) {
 					customInput.blur();
 					customInputButton.click();
-					console.log('enter button pressed');
 				}
 			});
 		},
