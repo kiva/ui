@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" :open="open" :result-count="resultCount">
+	<filter-menu-section :title="title" :result-count="resultCount">
 		<ais-sort-by :items="defaultSortIndices">
 			<ul slot-scope="{ items, currentRefinement, refine }">
 				<li v-for="item in items" :key="item.value" :value="item.value" class="sort">
@@ -28,10 +28,6 @@ export default {
 		defaultSortIndices: {
 			type: Array,
 			required: true,
-		},
-		open: {
-			type: Boolean,
-			default: true,
 		},
 		title: {
 			type: String,

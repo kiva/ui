@@ -1,10 +1,10 @@
-<template functional>
-	<div class="filter-menu-section" :class="{open: props.open}">
-		<div class="filter-summary">
+<template>
+	<div class="filter-menu-section" :class="{open}">
+		<div class="filter-summary" @click="toggleMenu">
 			<div class="filter-summary-title">
-				{{ props.title }} <span class="filter-result-count">({{ props.resultCount }})</span>
+				{{ title }} <span class="filter-result-count">({{ resultCount }})</span>
 			</div>
-			<div class="filter-summary-applied-filters">{{ props.appliedFilters }}</div>
+			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
 		</div>
 		<div class="filter-items-container">
 			<slot></slot>
@@ -27,9 +27,15 @@ export default {
 			type: Number,
 			required: true,
 		},
-		open: {
-			type: Boolean,
-			default: true,
+	},
+	data() {
+		return {
+			open: false,
+		};
+	},
+	methods: {
+		toggleMenu() {
+			this.open = !this.open;
 		},
 	},
 };
@@ -43,6 +49,8 @@ export default {
 	font-weight: 300;
 
 	.filter-summary {
+		cursor: pointer;
+
 		.filter-summary-title {
 			font-size: 1rem;
 			font-weight: 400;
