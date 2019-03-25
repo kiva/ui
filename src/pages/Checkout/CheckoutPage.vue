@@ -139,10 +139,10 @@
 				</div>
 
 				<div v-if="emptyBasket" class="empty-basket">
-					<p class="featured-text">Oops — Your basket is empty!</p>
-					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
-						<a href="/lend-by-category">Browse by category</a> or
-						<a href="/lend">see all loans.</a>
+					<h2 class="empty-basket-heading">Your basket is empty!</h2>
+					<p>But we'd love to help you change that! Please consider
+					supporting one of the borrowers below, or
+						<a href="/lend-by-category">browse all loans</a>.
 					</p>
 				</div>
 
@@ -693,6 +693,10 @@ export default {
 
 	.empty-basket {
 		text-align: center;
+	}
+
+	.empty-basket-heading {
+		font-weight: 500;
 	}
 }
 
