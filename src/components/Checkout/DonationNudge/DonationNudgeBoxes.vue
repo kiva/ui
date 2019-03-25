@@ -312,7 +312,7 @@ export default {
 		},
 		validateInputMobile() {
 			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
-		}
+		},
 	},
 };
 </script>
