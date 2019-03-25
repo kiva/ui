@@ -19,7 +19,8 @@
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
 				/>
-				<div><a id="no-donation-link"
+				<div><a
+					id="no-donation-link"
 					@click="setDonationAndClose(0)"
 					tabindex="12">No donation to Kiva</a></div>
 			</div>
