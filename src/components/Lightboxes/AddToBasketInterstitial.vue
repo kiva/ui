@@ -6,30 +6,34 @@
 			:no-padding-sides="true"
 			:no-padding-bottom="true"
 			@lightbox-closed="closeLightbox">
-			<h1 class="lightbox-title" slot="title">Added to your basket</h1>
-			<div class="loan-preview" v-if="loan.loan">
-				<div class="loan-image">
-					<img :src="loan.loan.image.url" :title="loan.loan.name">
-				</div>
-				<div class="loan-title">
-					<h3>{{ loan.loan.name }} <span>${{ loan.price }}</span></h3>
-					<loan-reservation
-						:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
-						:is-funded="loan.isFunded"
-						:expiry-time="loan.expiryTime"
-					/>
-				</div>
-				<div class="basket-summary">
-					<span>{{ loanCount }} Loans in basket</span>
-					<span>Subtotal ${{ loanTotals }}</span>
-				</div>
-				<div class="actions">
-					<button>Keep Exploring</button>
-					<button>Checkout</button>
+			<h1 class="lightbox-title" slot="title">You're almost there!</h1>
+			<div class="lightbox-loan-wrapper" v-if="loan.loan">
+				<div class="loan-preview" v-if="loan.loan">
+					<div class="loan-image">
+						<img :src="loan.loan.image.url" :title="loan.loan.name">
+					</div>
+					<div class="loan-title">
+						<h3><span>${{ loan.price }}</span> to {{ loan.loan.name }}</h3>
+						<loan-reservation
+							:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
+							:is-funded="loan.isFunded"
+							:expiry-time="loan.expiryTime"
+						/>
+					</div>
+					<div class="basket-summary">
+						<span>{{ loanCount }} Loans in basket</span>
+						<span>Subtotal ${{ loanTotals }}</span>
+					</div>
+					<div class="actions">
+						<button>Keep Exploring</button>
+						<button>Checkout</button>
+					</div>
 				</div>
 			</div>
-			<div class="additional-loans">
-				<h2>Similar loans you might like</h2>
+			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
+				<div class="additional-loans">
+					<h2>Similar loans to {{ loan.loan.name }}</h2>
+				</div>
 			</div>
 		</kv-lightbox>
 	</div>
@@ -40,7 +44,6 @@ import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
-// import loansByIdQuery from '@/graphql/query/loansById.graphql';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
@@ -106,6 +109,7 @@ export default {
 					variables: {
 						basketId: cookieStore.get('kvbskt'),
 					},
+					fetchPolicy: 'network-only',
 				}).then(({ data }) => {
 					console.log(data);
 					const loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
@@ -124,8 +128,21 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.lightbox-title {
-	padding: 1rem 1rem 0.8rem;
-	border-bottom: 1px solid $subtle-gray;
+.basket-add-interstitial {
+	.lightbox-title {
+		padding: 1rem 2rem 0.8rem;
+		border-bottom: 1px solid $subtle-gray;
+	}
+
+	.lightbox-loan-wrapper {
+		padding: 1rem 2rem 2rem;
+	}
+
+	.lightbox-lyml-wrapper {
+		padding: 2rem;
+		background: $platinum;
+		border-radius: 0 0 rem-calc(4) rem-calc(4);
+	}
 }
+
 </style>
