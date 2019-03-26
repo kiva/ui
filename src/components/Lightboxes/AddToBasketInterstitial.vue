@@ -33,6 +33,10 @@
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
 				<div class="additional-loans">
 					<h2>Similar loans to {{ loan.loan.name }}</h2>
+					<l-y-m-l
+						v-if="loans"
+						:loans="loans"
+					/>
 				</div>
 			</div>
 		</kv-lightbox>
@@ -49,11 +53,13 @@ import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import LoanReservation from '@/components/Checkout/LoanReservation';
+import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
 export default {
 	components: {
 		KvLightbox,
-		LoanReservation
+		LoanReservation,
+		LYML
 	},
 	inject: ['apollo'],
 	data() {
@@ -61,6 +67,7 @@ export default {
 			showInterstitial: false,
 			basketInterstitialState: {},
 			loan: {},
+			loans: () => [],
 			loanCount: 0,
 			loanTotals: '0.00'
 		};
@@ -112,10 +119,10 @@ export default {
 					fetchPolicy: 'network-only',
 				}).then(({ data }) => {
 					console.log(data);
-					const loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
-					this.loanCount = loans.length;
+					this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
+					this.loanCount = this.loans.length;
 					this.loanTotals = _get(data, 'shop.basket.totals.loanReservationTotal');
-					const addedLoan = _find(loans, { id: this.basketInterstitialState.loanId });
+					const addedLoan = _find(this.loans, { id: this.basketInterstitialState.loanId });
 					console.log(addedLoan);
 					this.loan = addedLoan;
 				});
