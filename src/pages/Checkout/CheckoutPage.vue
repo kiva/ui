@@ -138,7 +138,7 @@
 					</div>
 				</div>
 
-				<div v-if="emptyBasket" class="empty-basket">
+				<!-- <div v-if="emptyBasket" class="empty-basket">
 					<h2 class="empty-basket-heading">Your basket is empty!</h2>
 					<p>But we'd love to help you change that! Please consider
 					supporting one of the borrowers below, or
@@ -150,7 +150,7 @@
 					:loans="loans"
 					@refreshtotals="refreshTotals($event)"
 					@updating-totals="setUpdatingTotals"
-					v-if="emptyBasket" />
+					v-if="emptyBasket" /> -->
 
 				<kv-lightbox
 					:visible="redirectLightboxVisible"
@@ -173,6 +173,23 @@
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
 			</div>
+		</div>
+		<div v-if="emptyBasket" class="empty-basket">
+			<div class="row display-align text-center">
+				<h2 class="empty-basket-heading">Your basket is empty!</h2>
+				<p>But we'd love to help you change that! Please consider
+				supporting one of the borrowers below, or
+					<a href="/lend-by-category">browse all loans</a>.
+				</p>
+			</div>
+
+			<random-loan-selector
+				:loans="loans"
+				@refreshtotals="refreshTotals($event)"
+				@updating-totals="setUpdatingTotals"
+				v-if="emptyBasket" />
+
+			<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 		</div>
 	</www-page>
 </template>
@@ -698,14 +715,19 @@ export default {
 			}
 		}
 	}
+}
 
-	.empty-basket {
-		text-align: center;
-	}
+.display-align {
+	display: inline;
+}
 
-	.empty-basket-heading {
-		font-weight: 500;
-	}
+.empty-basket {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.empty-basket-heading {
+	font-weight: 500;
 }
 
 // Hide Basket Bar (this won't work with scoped)
