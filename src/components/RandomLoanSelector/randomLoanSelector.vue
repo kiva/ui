@@ -23,7 +23,7 @@
 									:key="index"
 									class="inside-scrolling-wrapper"
 									:loan="loan"
-									category-set-id="loans-you-might-like"
+									category-set-id="random-loans"
 									:card-number="index"
 									:items-in-basket="itemsInBasket"
 									:enable-tracking="true"
@@ -46,7 +46,7 @@
 
 <script>
 import _get from 'lodash/get';
-import _shuffle from 'lodash/shuffle';
+// import _shuffle from 'lodash/shuffle';
 import _throttle from 'lodash/throttle';
 // import _map from 'lodash/map';
 import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
@@ -93,7 +93,6 @@ export default {
 		return {
 			randomLoans: [],
 			randomLoan: [],
-			// loansYouMightLike: [],
 			loading: false,
 			scrollPos: 0,
 			windowWidth: 0,
@@ -101,20 +100,22 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	// watch: {
-	// 	// this watch lets us respond once we have loans and the proper DOM elements
-	// 	showLYML() {
-	// 		if (this.showLYML === true) {
-	// 			this.$nextTick(() => {
-	// 				this.saveWindowWidth();
-	// 			});
-	// 		}
-	// 	}
-	// },
+	watch: {
+		// this watch lets us respond once we have loans and the proper DOM elements
+		showLYML() {
+			if (this.showLYML === true) {
+				this.$nextTick(() => {
+					this.saveWindowWidth();
+				});
+			}
+		}
+	},
 	mounted() {
 		// we're doing this all client side
 		this.loadLoans();
 		window.addEventListener('resize', this.throttledResize);
+		this.saveWindowWidth();
+		console.log('saveWindow just thrown');
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
@@ -123,21 +124,14 @@ export default {
 		loadLoans() {
 			this.apollo.query({
 				query: emptyBasketData,
-				// variables: {
-				// 	country: this.sameCountry,
-				// 	activity: this.sameActivity,
-				// 	sector: this.sameSector
-				// }
 			}).then(data => {
-				const randomLoans = _get(data.data.lend, 'randomLoan.values');
+				const randomLoans = _get(data.data.lend, 'randomLoans.values');
 				console.log(randomLoans);
-				// const loansYouMightLike = [];
-				// const randomLoan = _get(data.data.lend, 'randomLoan.values');
 
-				// loansYouMightLike.push(randomLoan[0]);
-
+				// Not sure we really need this since the loans are coming through
+				// sorted randomly from the Graphql query
 				// randomize array order
-				this.randomLoans = _shuffle(randomLoans);
+				// this.randomLoans = _shuffle(randomLoans);
 			});
 		},
 		saveWindowWidth() {

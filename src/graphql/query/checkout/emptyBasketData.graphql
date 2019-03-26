@@ -1,12 +1,9 @@
 query (
-	$country: [String],
-	$activity: [Int],
-	$sector: [Int],
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w480h360",
 ) {
 	lend {
-		randomLoans: loans (filters: {status: expiringSoon}, limit: 15, sortBy: random) {
+		randomLoans: loans (filters: {status: fundraising}, limit: 15, sortBy: random) {
 			values {
 				id
 				name
