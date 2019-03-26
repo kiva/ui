@@ -92,7 +92,7 @@ export default {
 	data() {
 		return {
 			randomLoans: [],
-			randomLoan: [],
+			// randomLoan: [],
 			loading: false,
 			scrollPos: 0,
 			windowWidth: 0,
@@ -100,22 +100,24 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	watch: {
-		// this watch lets us respond once we have loans and the proper DOM elements
-		showLYML() {
-			if (this.showLYML === true) {
-				this.$nextTick(() => {
-					this.saveWindowWidth();
-				});
-			}
-		}
-	},
+	// watch: {
+	// 	// this watch lets us respond once we have loans and the proper DOM elements
+	// 	showLYML() {
+	// 		if (this.showLYML === true) {
+	// 			this.$nextTick(() => {
+	// 				this.saveWindowWidth();
+	// 			});
+	// 		}
+	// 	}
+	// },
 	mounted() {
 		// we're doing this all client side
 		this.loadLoans();
 		window.addEventListener('resize', this.throttledResize);
+
+		// Pulled this in from the watch query if condition since this is always shown if the basket is empty
 		this.saveWindowWidth();
-		console.log('saveWindow just thrown');
+		console.log('saveWindowWidth just thrown in MOUNTED()');
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
@@ -127,6 +129,8 @@ export default {
 			}).then(data => {
 				const randomLoans = _get(data.data.lend, 'randomLoans.values');
 				console.log(randomLoans);
+				// It seems like my loans from the query are not getting passed or set
+				// to the component correctly
 
 				// Not sure we really need this since the loans are coming through
 				// sorted randomly from the Graphql query
