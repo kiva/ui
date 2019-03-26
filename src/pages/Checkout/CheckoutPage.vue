@@ -144,7 +144,12 @@
 					supporting one of the borrowers below, or
 						<a href="/lend-by-category">browse all loans</a>.
 					</p>
+
+					<!-- <random-loan-selector /> -->
+
 				</div>
+
+				<random-loan-selector v-if="emptyBasket" />
 
 				<kv-lightbox
 					:visible="redirectLightboxVisible"
@@ -197,6 +202,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
+import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
 export default {
 	components: {
@@ -215,7 +221,8 @@ export default {
 		KvIcon,
 		CheckoutHolidayPromo,
 		BraintreeCheckout,
-		PaymentWrapper
+		PaymentWrapper,
+		RandomLoanSelector,
 	},
 	inject: ['apollo'],
 	mixins: [
