@@ -62,6 +62,7 @@
 				@refreshtotals="$emit('refreshtotals')" />
 		</span>
 		<donation-nudge-lightbox
+			ref="nudgeLightbox"
 			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
 			:nudge-lightbox-visible="nudgeLightboxVisible"
@@ -391,6 +392,7 @@ export default {
 		openNudgeLightbox() {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
+			this.$refs.nudgeLightbox.openNudgeLightbox();
 		},
 		donationNudgeHeader() {
 			const newLoanCount = this.loanHistoryCount + this.loanCount;

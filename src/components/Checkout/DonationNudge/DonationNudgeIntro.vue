@@ -95,7 +95,7 @@ export default {
 		@extend .nudge-lightbox-row-padding;
 
 		margin: 0.5rem auto 0 auto;
-		max-width: 47rem;
+		max-width: 48rem;
 		font-size: rem-calc(14);
 		line-height: rem-calc(24);
 
