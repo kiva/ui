@@ -144,12 +144,13 @@
 					supporting one of the borrowers below, or
 						<a href="/lend-by-category">browse all loans</a>.
 					</p>
-
-					<!-- <random-loan-selector /> -->
-
 				</div>
 
-				<random-loan-selector v-if="emptyBasket" />
+				<random-loan-selector
+					:loans="loans"
+					@refreshtotals="refreshTotals($event)"
+					@updating-totals="setUpdatingTotals"
+					v-if="emptyBasket" />
 
 				<kv-lightbox
 					:visible="redirectLightboxVisible"

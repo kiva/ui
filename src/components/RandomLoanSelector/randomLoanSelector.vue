@@ -1,7 +1,7 @@
 <template>
 	<transition name="kvfade">
 		<div
-			class="section-wrapper four-cards">
+			class="section-wrapper random-loan-cards">
 			<div class="section-container">
 				<div id="row-cards" class="row">
 					<div class="column row-wrapper">
@@ -25,7 +25,6 @@
 									:loan="loan"
 									category-set-id="random-loans"
 									:card-number="index"
-									:items-in-basket="itemsInBasket"
 									:enable-tracking="true"
 									@refreshtotals="$emit('refreshtotals')"
 									@updating-totals="$emit('updating-totals', $event)"
@@ -46,13 +45,9 @@
 
 <script>
 import _get from 'lodash/get';
-// import _shuffle from 'lodash/shuffle';
 import _throttle from 'lodash/throttle';
-// import _map from 'lodash/map';
 import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
 import emptyBasketData from '@/graphql/query/checkout/emptyBasketData.graphql';
-// import expSettingQuery from '@/graphql/query/experimentSetting.graphql';
-// import expAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
@@ -78,7 +73,7 @@ export default {
 				: smallCardWidthPlusPadding;
 		},
 		minLeftMargin() {
-			const cardCount = 4;
+			const cardCount = 15;
 			return (cardCount - this.cardsInWindow) * -this.cardWidth;
 		},
 		throttledResize() {
@@ -92,7 +87,6 @@ export default {
 	data() {
 		return {
 			randomLoans: [],
-			// randomLoan: [],
 			loading: false,
 			scrollPos: 0,
 			windowWidth: 0,
@@ -100,24 +94,11 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	// watch: {
-	// 	// this watch lets us respond once we have loans and the proper DOM elements
-	// 	showLYML() {
-	// 		if (this.showLYML === true) {
-	// 			this.$nextTick(() => {
-	// 				this.saveWindowWidth();
-	// 			});
-	// 		}
-	// 	}
-	// },
 	mounted() {
 		// we're doing this all client side
 		this.loadLoans();
 		window.addEventListener('resize', this.throttledResize);
-
-		// Pulled this in from the watch query if condition since this is always shown if the basket is empty
 		this.saveWindowWidth();
-		console.log('saveWindowWidth just thrown in MOUNTED()');
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize);
@@ -127,15 +108,7 @@ export default {
 			this.apollo.query({
 				query: emptyBasketData,
 			}).then(data => {
-				const randomLoans = _get(data.data.lend, 'randomLoans.values');
-				console.log(randomLoans);
-				// It seems like my loans from the query are not getting passed or set
-				// to the component correctly
-
-				// Not sure we really need this since the loans are coming through
-				// sorted randomly from the Graphql query
-				// randomize array order
-				// this.randomLoans = _shuffle(randomLoans);
+				this.randomLoans = _get(data.data.lend, 'randomLoans.values');
 			});
 		},
 		saveWindowWidth() {
@@ -240,16 +213,15 @@ export default {
 	}
 }
 
-/* 4 card 54rem */
-.four-cards {
-	$four-card-width: 864;
+.random-loan-cards {
+	$random-loan-card-width: 980;
 
 	#row-title,
 	#row-cards {
-		max-width: rem-calc($four-card-width);
+		max-width: rem-calc($random-loan-card-width);
 	}
 	// hide arrows if screen is wide enough
-	@media only screen and (min-width: rem-calc($four-card-width)) {
+	@media only screen and (min-width: rem-calc($random-loan-card-width)) {
 		.row-wrapper .arrow {
 			visibility: hidden;
 		}
