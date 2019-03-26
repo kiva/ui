@@ -11,10 +11,6 @@ query($basketId: String) {
 			key
 			value
 		}
-		lendIncrementExp: setting(setting: "uiexp.lend_increment_button_v2") {
-			key
-			value
-		}
 		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loan_row") {
 			key
 			value

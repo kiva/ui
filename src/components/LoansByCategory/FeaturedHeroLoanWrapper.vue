@@ -17,7 +17,6 @@
 			:is-visitor="!isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:key="loan.id"
-			:lend-increment-button-version="lendIncrementButtonVersion"
 			:loan="loan"
 			loan-card-type="FeaturedHeroLoan"
 			:loan-channel="loanChannel"
@@ -56,10 +55,6 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
-		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
 		},
 		showCategoryDescription: {
 			type: Boolean,

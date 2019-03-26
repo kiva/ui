@@ -69,7 +69,6 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
-						:lend-increment-button-version="lendIncrementButtonVersion"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -114,7 +113,6 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
-						:lend-increment-button-version="lendIncrementButtonVersion"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -175,10 +173,6 @@ export default {
 			}
 		},
 		title: {
-			type: String,
-			default: ''
-		},
-		lendIncrementButtonVersion: {
 			type: String,
 			default: ''
 		},

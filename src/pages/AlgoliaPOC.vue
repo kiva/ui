@@ -129,8 +129,6 @@ import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
-import experimentSetting from '@/graphql/query/experimentSetting.graphql';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
 export default {
 	components: {
@@ -230,14 +228,6 @@ export default {
 			}).then(() => {
 				// Pre-fetch user Status
 				return client.query({ query: userStatus });
-			}).then(() => {
-				// TODO: REMOVE Once Lend Increment Button EXP ENDS
-				// Pre-fetch the setting for lend increment button
-				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
-			}).then(() => {
-				// TODO: REMOVE Once Lend Increment Button EXP ENDS
-				// Pre-fetch the assigned version for lend increment button
-				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
 			});
 		}
 	},

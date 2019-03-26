@@ -8,7 +8,6 @@
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
-			:lend-increment-button-version="lendIncrementExpVersion"
 			:show-category-description="showCategoryDescription"
 		/>
 
@@ -17,7 +16,6 @@
 			ref="featured"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
-			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			:show-category-description="showCategoryDescription"
 		/>
@@ -26,7 +24,6 @@
 			:is-micro="true"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
-			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
@@ -40,7 +37,6 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
-				:lend-increment-button-version="lendIncrementExpVersion"
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:show-category-description="showCategoryDescription"
 			/>
@@ -129,7 +125,6 @@ export default {
 			categorySetId: '',
 			itemsInBasket: [],
 			imageEnhancementExperimentVersion: '',
-			lendIncrementExpVersion: null,
 			showFeaturedLoans: true,
 			showFeaturedHeroLoan: false,
 			featuredHeroLoanExperimentVersion: null,
@@ -315,8 +310,6 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
 					// Pre-fetch the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
-					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } }),
 					// Pre-fetch the assigned version for recently viewed loans
 					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
 					// experiment: image enhancement
@@ -373,16 +366,6 @@ export default {
 		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
 		// If active, update our custom categories prior to render
 		// this.setCustomRowData(categoryData);
-
-		// Read assigned version of lend increment button experiment
-		const lendIncrementExperimentAssignment = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'lend_increment_button_v2' },
-		});
-		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
-		if (this.lendIncrementExpVersion !== null) {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
-		}
 
 		// CASH-578 : Experiment : Cloudinary image enhancement
 		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({

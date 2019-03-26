@@ -50,7 +50,6 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
@@ -123,10 +122,6 @@ export default {
 		isMicro: {
 			type: Boolean,
 			default: false
-		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,

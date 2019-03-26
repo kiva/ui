@@ -11,7 +11,6 @@
 					set-id="CASH-363-recently-viewed-update"
 					:is-logged-in="isLoggedIn"
 					:is-micro="isMicro"
-					:lend-increment-button-version="lendIncrementButtonVersion"
 				/>
 			</div>
 		</div>
@@ -45,10 +44,6 @@ export default {
 		isMicro: {
 			type: Boolean,
 			default: false
-		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
 		},
 	},
 	data() {
