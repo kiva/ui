@@ -77,9 +77,17 @@ button.button {
 		@include button-secondary-styles();
 	}
 
+	&.secondary.smallest {
+		@include button-smallest-styles();
+	}
+
 	&.setting {
 		@include secondary-styles();
 		@include button-setting-styles();
+	}
+
+	&.setting.smallest {
+		@include button-smallest-styles();
 	}
 
 	&.disabled,

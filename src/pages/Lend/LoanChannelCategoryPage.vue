@@ -28,6 +28,8 @@
 				</div>
 			</div>
 		</div>
+
+		<add-to-basket-interstitial />
 	</www-page>
 </template>
 
@@ -43,10 +45,13 @@ import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoadingOverlay from './LoadingOverlay';
 
 const loansPerPage = 12;
@@ -96,7 +101,8 @@ export default {
 		GridLoanCard,
 		KvPagination,
 		LoadingOverlay,
-		ViewToggle
+		ViewToggle,
+		AddToBasketInterstitial,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -163,6 +169,8 @@ export default {
 							fromUrlParams(pageQuery)
 						)
 					}),
+					// experiment: add to basket interstitial
+					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
 				]);
 			});
 		}
@@ -212,6 +220,21 @@ export default {
 				}
 			}
 		});
+
+		// get assignment for add to basket interstitial
+		const addToBasketPopupEXP = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'add_to_basket_popup' },
+		});
+		// Update @client state if interstitial exp is active
+		if (_get(addToBasketPopupEXP, 'experiment.version') === 'shown') {
+			this.apollo.mutate({
+				mutation: updateAddToBasketInterstitial,
+				variables: {
+					active: true,
+				}
+			});
+		}
 	},
 	methods: {
 		pageChange(number) {
