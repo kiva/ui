@@ -5,7 +5,6 @@
 		:loan="loan"
 		:items-in-basket="itemsInBasket"
 		:is-visitor="isVisitor"
-		:lend-increment-button-version="lendIncrementButtonVersion"
 		:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		:is-favorite="isFavorite"
 		:expiring-soon-message="expiringSoonMessage"
@@ -84,10 +83,6 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
-		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,

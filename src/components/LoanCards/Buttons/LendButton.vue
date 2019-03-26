@@ -35,10 +35,6 @@ export default {
 			type: [Number, String],
 			default: 25,
 		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
-		},
 	},
 	data() {
 		return {
@@ -61,13 +57,6 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 				} else {
-					// If no errors, update the loan fundraising info
-					try {
-						this.trackCash557();
-					} catch (e) {
-						console.error(e);
-					}
-
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {
@@ -85,15 +74,6 @@ export default {
 		setLoading(isLoading) {
 			this.loading = isLoading;
 			this.$emit('update:loading', isLoading);
-		},
-		trackCash557() {
-			if (this.lendIncrementButtonVersion !== null) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-557-click-lendnow',
-					this.price
-				);
-			}
 		},
 	},
 };

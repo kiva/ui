@@ -4,7 +4,6 @@
 		class="action-button smaller"
 		:loan-id="loanId"
 		:loan="loan"
-		:lend-increment-button-version="lendIncrementButtonVersion"
 	/>
 </template>
 
@@ -44,17 +43,13 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
+		isLend25Button: {
+			type: Boolean,
+			default: false
 		},
 	},
 	computed: {
 		currentButtonState() {
-			const experimentLendIncrement = (
-				this.lendIncrementButtonVersion !== null ||
-				this.lendIncrementButtonVersion !== 'variant-a'
-			);
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
@@ -67,7 +62,8 @@ export default {
 			if (this.isSelectedByAnother) {
 				return LoanSelectedText;
 			}
-			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
+
+			return this.isLend25Button ? Lend25Button : LendIncrementButton;
 		},
 	},
 };

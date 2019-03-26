@@ -16,7 +16,6 @@
 			:card-number="index + 1"
 
 			Add experiments later
-			:lend-increment-button-version="lendIncrementButtonVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		-->
 	</div>
