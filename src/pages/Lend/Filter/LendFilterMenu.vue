@@ -8,17 +8,16 @@
 			</div>
 			<div id="filter-menu">
 				<!-- eslint-disable-next-line max-len -->
-				<filter-section-gender :result-count="1" :open="true" :filter-menu-open="filterMenuOpen" />
-				<filter-section-sort :default-sort-indices="defaultSortIndices" :result-count="1" :open="true" />
+				<filter-section-gender :result-count="1" :filter-menu-open="filterMenuOpen" />
+				<filter-section-sort :default-sort-indices="defaultSortIndices" :result-count="1" />
 				<filter-section-categories
 					:result-count="10"
-					:open="true"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
 					@toggle-custom-category="toggleCustomCategory"
 				/>
-				<filter-section-location :result-count="10" :open="true" />
-				<filter-section-range-slider :result-count="4" :open="true" :filter-menu-open="filterMenuOpen" />
+				<filter-section-location :result-count="10" />
+				<filter-section-range-slider :result-count="4" :filter-menu-open="filterMenuOpen" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters

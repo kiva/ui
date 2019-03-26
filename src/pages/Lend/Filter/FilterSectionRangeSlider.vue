@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" :open="open" :result-count="resultCount">
+	<filter-menu-section :title="title" :result-count="resultCount">
 		<filter-section-wrapper-range-slider
 			:minimum="4"
 			:maximum="25"
@@ -71,10 +71,6 @@ export default {
 		title: {
 			type: String,
 			default: 'Loan details',
-		},
-		open: {
-			type: Boolean,
-			default: true,
 		},
 		resultCount: {
 			type: Number,
