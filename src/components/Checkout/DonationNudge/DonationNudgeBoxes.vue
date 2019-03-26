@@ -268,7 +268,9 @@ export default {
 			const customInput = document.getElementById('customDonationInput');
 			const customInputButton = document.querySelector('.custom-amount-submit');
 
+			// Setting up listener for customInput field
 			customInput.addEventListener('keyup', event => {
+				// When keyup event happens on the Enter key perform the following fuctions
 				if (event.keyCode === 13) {
 					customInput.blur();
 					customInputButton.click();
