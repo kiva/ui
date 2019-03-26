@@ -183,6 +183,10 @@ export default {
 				loanIds.push({
 					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
 				});
+			} else if (this.showFeaturedHeroLoan) {
+				loanIds.push({
+					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
+				});
 			}
 
 			// Inject Data for Recently viewed if present
