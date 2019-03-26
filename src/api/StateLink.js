@@ -12,7 +12,7 @@ export default ({ cache, ...options }) => {
 			experiment(options),
 			tipMessage(options),
 			usingTouch(options),
-			basketAddInterstitial(options)
+			basketAddInterstitial(options),
 		),
 	});
 };

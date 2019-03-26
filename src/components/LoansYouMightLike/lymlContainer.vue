@@ -5,13 +5,8 @@
 			:class="cardClass"
 			v-if="showLYML">
 			<div class="lyml-section-container">
-				<!-- <div id="lyml-row-title" class="row">
-					<div class="column">
-						<h2 class="section-name featured-text">Similar loans you might like</h2>
-					</div>
-				</div> -->
-				<div id="lyml-row-cards" class="row">
-					<div class="column lyml-row-wrapper">
+				<div id="lyml-row-cards" class="">
+					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span
 							class="arrow lyml-left-arrow"
 							:class="{inactive: scrollPos === 0}"
@@ -73,7 +68,11 @@ export default {
 		loans: {
 			type: Array,
 			default: () => [],
-		}
+		},
+		// wrapperRef: {
+		// 	type: String,
+		// 	default: 'window'
+		// }
 	},
 	computed: {
 		itemsInBasket() {
@@ -225,11 +224,17 @@ export default {
 				// once we have loans flip the switch to show them
 				// this.showLYML = this.lymlVariant !== 'control';
 				this.showLYML = true;
+
+				this.$nextTick(() => {
+					this.saveWindowWidth();
+				});
 			});
 		},
 		saveWindowWidth() {
+			// console.log(window.innerWidth);
 			this.windowWidth = window.innerWidth;
 			if (this.$refs.innerWrapper) {
+				// console.log(this.$refs.innerWrapper.clientWidth);
 				this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
 			}
 		},
@@ -255,7 +260,6 @@ export default {
 @import 'global/transitions';
 
 .lyml-section-wrapper {
-	// background-color: $kiva-bg-lightgray;
 	padding: 0;
 }
 

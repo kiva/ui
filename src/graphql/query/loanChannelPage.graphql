@@ -13,4 +13,10 @@ query {
 			}
 		}
 	}
+	general {
+		addToBasketPopup: setting(setting: "uiexp.add_to_basket_popup") {
+			key
+			value
+		}
+	}
 }
