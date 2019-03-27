@@ -138,14 +138,6 @@
 					</div>
 				</div>
 
-				<div v-if="emptyBasket" class="empty-basket">
-					<p class="featured-text">Oops — Your basket is empty!</p>
-					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
-						<a href="/lend-by-category">Browse by category</a> or
-						<a href="/lend">see all loans.</a>
-					</p>
-				</div>
-
 				<kv-lightbox
 					:visible="redirectLightboxVisible"
 					@lightbox-closed="redirectLightboxClosed">
@@ -167,6 +159,19 @@
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
 				</kv-lightbox>
 			</div>
+		</div>
+		<div v-if="emptyBasket" class="empty-basket">
+			<div class="row display-align text-center">
+				<h2 class="empty-basket-heading">Your basket is empty!</h2>
+				<p>But we'd love to help you change that! Please consider
+				supporting one of the borrowers below, or
+					<a href="/lend-by-category">browse all loans</a>.
+				</p>
+			</div>
+
+			<random-loan-selector />
+
+			<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 		</div>
 	</www-page>
 </template>
@@ -197,6 +202,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
+import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
 export default {
 	components: {
@@ -215,7 +221,8 @@ export default {
 		KvIcon,
 		CheckoutHolidayPromo,
 		BraintreeCheckout,
-		PaymentWrapper
+		PaymentWrapper,
+		RandomLoanSelector,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -690,10 +697,19 @@ export default {
 			}
 		}
 	}
+}
 
-	.empty-basket {
-		text-align: center;
-	}
+.display-align {
+	display: inline;
+}
+
+.empty-basket {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.empty-basket-heading {
+	font-weight: 500;
 }
 
 // Hide Basket Bar (this won't work with scoped)
