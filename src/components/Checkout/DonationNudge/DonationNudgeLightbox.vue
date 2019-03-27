@@ -121,7 +121,7 @@ export default {
 	text-align: center;
 
 	#nudge-donation-top {
-		padding-bottom: 3rem;
+		padding-bottom: 1.6rem;
 		background: #F8F8F8;
 
 		#nudge-donation-top-boxes-wrapper {
@@ -137,8 +137,12 @@ export default {
 	}
 
 	#nudge-donation-bottom {
-		padding: 1rem 3rem 2rem 3rem;
+		padding: 1.5rem 3rem 1.5rem 3rem;
 		background: #F1F1F0;
+
+		#title {
+			padding-bottom: 0.5rem;
+		}
 
 		#charity-navigator-text {
 			padding: 0 50px;
