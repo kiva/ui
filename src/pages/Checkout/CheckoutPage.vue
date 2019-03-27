@@ -138,20 +138,6 @@
 					</div>
 				</div>
 
-				<!-- <div v-if="emptyBasket" class="empty-basket">
-					<h2 class="empty-basket-heading">Your basket is empty!</h2>
-					<p>But we'd love to help you change that! Please consider
-					supporting one of the borrowers below, or
-						<a href="/lend-by-category">browse all loans</a>.
-					</p>
-				</div>
-
-				<random-loan-selector
-					:loans="loans"
-					@refreshtotals="refreshTotals($event)"
-					@updating-totals="setUpdatingTotals"
-					v-if="emptyBasket" /> -->
-
 				<kv-lightbox
 					:visible="redirectLightboxVisible"
 					@lightbox-closed="redirectLightboxClosed">
@@ -184,9 +170,6 @@
 			</div>
 
 			<random-loan-selector
-				:loans="loans"
-				@refreshtotals="refreshTotals($event)"
-				@updating-totals="setUpdatingTotals"
 				v-if="emptyBasket" />
 
 			<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
