@@ -220,12 +220,6 @@ export default {
 	#row-cards {
 		max-width: rem-calc($random-loan-card-width);
 	}
-	// hide arrows if screen is wide enough
-	@media only screen and (min-width: rem-calc($random-loan-card-width)) {
-		.row-wrapper .arrow {
-			visibility: hidden;
-		}
-	}
 }
 
 // hide arrows on mobile

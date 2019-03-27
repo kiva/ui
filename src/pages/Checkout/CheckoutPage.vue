@@ -169,8 +169,7 @@
 				</p>
 			</div>
 
-			<random-loan-selector
-				v-if="emptyBasket" />
+			<random-loan-selector />
 
 			<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 		</div>
