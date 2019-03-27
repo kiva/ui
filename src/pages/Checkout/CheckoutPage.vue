@@ -704,7 +704,6 @@ export default {
 }
 
 .empty-basket {
-	text-align: center;
 	margin: 0 auto;
 }
 
