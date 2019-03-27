@@ -18,6 +18,7 @@
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
+					:current-donation-amount="currentDonationAmount"
 				/>
 				<div><a
 					id="no-donation-link"
@@ -94,6 +95,10 @@ export default {
 		percentageRows: {
 			type: Array,
 			default: () => [],
+		},
+		currentDonationAmount: {
+			type: String,
+			default: ''
 		},
 	},
 	methods: {

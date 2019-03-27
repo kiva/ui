@@ -257,11 +257,22 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		currentDonationAmount: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
 			selectedDonationRadio: 15,
 		};
+	},
+	computed: {
+		customDonationSelected() {
+			const donationOptions = this.percentageRows
+				.map(({ percentage }) => numeral(this.getDonationByPercent(percentage)).format('$0.00'));
+			return !donationOptions.includes(this.currentDonationAmount);
+		},
 	},
 	methods: {
 		formatAndSubmitOnEnter() {
@@ -278,6 +289,9 @@ export default {
 			});
 		},
 		openNudgeLightbox() {
+			if (this.currentDonationAmount && this.customDonationSelected) {
+				this.setInputs(this.currentDonationAmount);
+			}
 			setTimeout(() => { document.getElementById('first-button').focus(); }, 500);
 		},
 		getDonationByPercent(percent) {
