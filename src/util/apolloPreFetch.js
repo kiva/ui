@@ -1,5 +1,6 @@
 import _filter from 'lodash/filter';
 import _map from 'lodash/map';
+import cookieStore from '@/util/cookieStore';
 import getDeepComponents from './getDeepComponents';
 
 export function handleApolloErrors(handlers, errors, args) {
@@ -21,6 +22,21 @@ export function handleApolloErrors(handlers, errors, args) {
 
 // A function to pre-fetch a graphql query from a component's apollo options
 export function preFetchApolloQuery(config, client, args) {
+	const basketId = cookieStore.get('kvbskt');
+	// Retrieve and assign preFetchVariables
+	let prefetchVariables;
+	if (typeof config.preFetchVariables === 'function') {
+		prefetchVariables = config.preFetchVariables ? config.preFetchVariables(args) : {};
+	} else {
+		prefetchVariables = config.preFetchVariables ? config.preFetchVariables : {};
+	}
+	// Always format variables to include basketId
+	// eslint-disable-next-line
+	config.variables = {
+		basketId,
+		...prefetchVariables,
+	};
+
 	if (typeof config.preFetch === 'function') {
 		// Call the manual pre-fetch function
 		const preFetchPromise = config.preFetch(config, client, args);
@@ -34,7 +50,7 @@ export function preFetchApolloQuery(config, client, args) {
 	return new Promise((resolve, reject) => {
 		client.query({
 			query: config.query,
-			variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
+			variables: config.variables,
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
