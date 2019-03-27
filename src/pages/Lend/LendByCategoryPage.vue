@@ -64,6 +64,8 @@
 				<category-admin-controls />
 			</div>
 		</div>
+
+		<add-to-basket-interstitial />
 	</www-page>
 </template>
 
@@ -82,6 +84,7 @@ import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
@@ -90,6 +93,7 @@ import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoan
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -112,6 +116,7 @@ export default {
 		ViewToggle,
 		LoadingOverlay,
 		LendHeader,
+		AddToBasketInterstitial,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -316,8 +321,10 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 					// experiment: featured hero loan
 					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan' } }),
-					// experiment: featured hero loan
+					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
+					// experiment: add to basket interstitial
+					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -399,6 +406,21 @@ export default {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'b');
 			this.showFeaturedLoans = false;
 			this.showFeaturedHeroLoan = true;
+		}
+
+		// get assignment for add to basket interstitial
+		const addToBasketPopupEXP = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'add_to_basket_popup' },
+		});
+		// Update @client state if interstitial exp is active
+		if (_get(addToBasketPopupEXP, 'experiment.version') === 'shown') {
+			this.apollo.mutate({
+				mutation: updateAddToBasketInterstitial,
+				variables: {
+					active: true,
+				}
+			});
 		}
 	},
 	mounted() {

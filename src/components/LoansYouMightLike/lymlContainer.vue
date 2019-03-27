@@ -5,13 +5,8 @@
 			:class="cardClass"
 			v-if="showLYML">
 			<div class="lyml-section-container">
-				<div id="lyml-row-title" class="row">
-					<div class="column">
-						<h2 class="section-name featured-text">Similar loans you might like</h2>
-					</div>
-				</div>
-				<div id="lyml-row-cards" class="row">
-					<div class="column lyml-row-wrapper">
+				<div id="lyml-row-cards" class="">
+					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span
 							class="arrow lyml-left-arrow"
 							:class="{inactive: scrollPos === 0}"
@@ -73,7 +68,11 @@ export default {
 		loans: {
 			type: Array,
 			default: () => [],
-		}
+		},
+		// wrapperRef: {
+		// 	type: String,
+		// 	default: 'window'
+		// }
 	},
 	computed: {
 		itemsInBasket() {
@@ -139,7 +138,8 @@ export default {
 	},
 	mounted() {
 		// we're doing this all client side
-		this.activateLoansYouMightLike();
+		// this.activateLoansYouMightLike();
+		this.getLoansYouMightLike();
 		window.addEventListener('resize', this.throttledResize);
 	},
 	beforeDestroy() {
@@ -210,24 +210,31 @@ export default {
 				// same Sector loans
 				// if user is in variant-b we add an additional loan card from the same sector
 				// as the first loan in the basket.
-				if (this.lymlVariant === 'variant-b') {
-					const sameSectorLoans = _get(data, 'data.lend.sameSector.values') || [];
-					if (sameSectorLoans.length > 1) {
-						loansYouMightLike.push(sameSectorLoans[1]);
-					} else {
-						loansYouMightLike.push(randomLoans[3]);
-					}
+				// if (this.lymlVariant === 'variant-b') {
+				const sameSectorLoans = _get(data, 'data.lend.sameSector.values') || [];
+				if (sameSectorLoans.length > 1) {
+					loansYouMightLike.push(sameSectorLoans[1]);
+				} else {
+					loansYouMightLike.push(randomLoans[3]);
 				}
+				// }
 				// randomize array order
 				this.loansYouMightLike = _shuffle(loansYouMightLike);
 
 				// once we have loans flip the switch to show them
-				this.showLYML = this.lymlVariant !== 'control';
+				// this.showLYML = this.lymlVariant !== 'control';
+				this.showLYML = true;
+
+				this.$nextTick(() => {
+					this.saveWindowWidth();
+				});
 			});
 		},
 		saveWindowWidth() {
+			// console.log(window.innerWidth);
 			this.windowWidth = window.innerWidth;
 			if (this.$refs.innerWrapper) {
+				// console.log(this.$refs.innerWrapper.clientWidth);
 				this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
 			}
 		},
@@ -253,8 +260,7 @@ export default {
 @import 'global/transitions';
 
 .lyml-section-wrapper {
-	background-color: $kiva-bg-lightgray;
-	padding: 2rem 0;
+	padding: 0;
 }
 
 .lyml-section-container {

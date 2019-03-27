@@ -10,12 +10,14 @@ type Mutation {
 	closeTipMessage: Boolean
 	showTipMessage(message: String, persist: Boolean, type: String): Boolean
 	updateUsingTouch(usingTouch: Boolean): Boolean
+	updateAddToBasketInterstitial(active: Boolean, visible: Boolean, loanId: Int): Boolean
 }
 
 type Query {
 	experiment(id: String): Experiment
 	tip: TipMessage
 	usingTouch: Boolean
+	basketAddInterstitial: BasketAddInterstitial
 }
 
 type TipMessage {
@@ -23,4 +25,10 @@ type TipMessage {
 	persist: Boolean
 	type: String
 	visible: Boolean
+}
+
+type BasketAddInterstitial {
+	active: Boolean
+	visible: Boolean
+	loanId: Int
 }

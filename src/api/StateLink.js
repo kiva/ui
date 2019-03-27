@@ -3,6 +3,7 @@ import { withClientState } from 'apollo-link-state';
 import experiment from './localResolvers/experiment';
 import tipMessage from './localResolvers/tipMessage';
 import usingTouch from './localResolvers/usingTouch';
+import basketAddInterstitial from './localResolvers/addToBasketInterstitial';
 
 export default ({ cache, ...options }) => {
 	return withClientState({
@@ -10,7 +11,8 @@ export default ({ cache, ...options }) => {
 		..._merge(
 			experiment(options),
 			tipMessage(options),
-			usingTouch(options)
+			usingTouch(options),
+			basketAddInterstitial(options),
 		),
 	});
 };
