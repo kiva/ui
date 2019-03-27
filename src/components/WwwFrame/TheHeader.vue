@@ -249,7 +249,6 @@
 
 <script>
 import _get from 'lodash/get';
-import cookieStore from '@/util/cookieStore';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -305,16 +304,6 @@ export default {
 	apollo: {
 		query: headerQuery,
 		preFetch: true,
-		variables() {
-			return {
-				basketId: cookieStore.get('kvbskt'),
-			};
-		},
-		preFetchVariables() {
-			return {
-				basketId: cookieStore.get('kvbskt'),
-			};
-		},
 		result({ data }) {
 			this.isVisitor = !_get(data, 'my.userAccount.id');
 			this.isBorrower = _get(data, 'my.isBorrower');
