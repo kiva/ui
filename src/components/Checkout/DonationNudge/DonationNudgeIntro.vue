@@ -55,7 +55,7 @@ export default {
 @import 'settings';
 
 #donation-nudge-intro {
-	margin-bottom: 1.2rem;
+	margin-bottom: 1.3rem;
 
 	.nudge-lightbox-row-padding {
 		padding-left: 2.5rem;

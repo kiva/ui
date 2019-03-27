@@ -56,7 +56,7 @@ export default {
 	max-width: 75%;
 
 	&.wide-icon {
-		margin: rem-calc(10) 0;
+		margin: rem-calc(18) 0 rem-calc(10) 0;
 	}
 }
 

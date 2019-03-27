@@ -140,10 +140,6 @@ export default {
 		padding: 1.5rem 3rem 1.5rem 3rem;
 		background: #F1F1F0;
 
-		#title {
-			padding-bottom: 0.5rem;
-		}
-
 		#charity-navigator-text {
 			padding: 0 50px;
 		}
