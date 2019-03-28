@@ -23,6 +23,7 @@
 						:custom-categories="customCategories"
 						:selected-custom-categories="selectedCustomCategories"
 						@remove-custom-category="removeCustomCategory"
+						@clear-custom-categories="clearCustomCategories"
 					/>
 					<ais-hits
 						class="loan-card-group row"
@@ -175,7 +176,16 @@ export default {
 				categoryId,
 				false,
 			);
-		}
+		},
+		clearCustomCategories() {
+			_forEach(this.selectedCustomCategories, (_, categoryId) => {
+				this.$set(
+					this.selectedCustomCategories,
+					categoryId,
+					false,
+				);
+			});
+		},
 	},
 };
 </script>
