@@ -320,7 +320,7 @@ export default {
 					// experiment: image enhancement
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 					// experiment: featured hero loan
-					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan' } }),
+					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan_v2' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -392,7 +392,7 @@ export default {
 		// CASH-350 : Experiment : Featured Hero Loan
 		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'featured_hero_loan' },
+			variables: { id: 'featured_hero_loan_v2' },
 		});
 
 		// eslint-disable-next-line max-len
