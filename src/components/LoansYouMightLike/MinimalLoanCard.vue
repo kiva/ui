@@ -120,7 +120,7 @@ export default {
 	},
 	methods: {
 		addToBasket() {
-			this.$emit('setUpdatingTotals', true);
+			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
 				variables: {

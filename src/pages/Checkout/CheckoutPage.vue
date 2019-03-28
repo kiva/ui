@@ -169,7 +169,10 @@
 				</p>
 			</div>
 
-			<random-loan-selector />
+			<random-loan-selector
+				@updating-totals="setUpdatingTotals"
+				@refreshtotals="refreshTotals"
+			/>
 
 			<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 		</div>
