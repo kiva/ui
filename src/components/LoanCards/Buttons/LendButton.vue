@@ -51,6 +51,11 @@ export default {
 					price: numeral(this.price).format('0.00'),
 				},
 			}).then(({ errors }) => {
+				this.$emit('add-to-basket', {
+					loanId: this.loanId,
+					success: !errors,
+				});
+
 				if (errors) {
 					// Handle errors from adding to basket
 					_forEach(errors, ({ message }) => {

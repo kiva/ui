@@ -4,11 +4,13 @@
 		class="action-button smaller"
 		:loan-id="loanId"
 		:loan="loan"
+		@add-to-basket="addToBasketEvent"
 	/>
 </template>
 
 <script>
 import _includes from 'lodash/includes';
+import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
 import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
@@ -17,6 +19,9 @@ import LoanFundedText from './LoanFundedText';
 import LoanSelectedText from './LoanSelectedText';
 
 export default {
+	mixins: [
+		addToBasketInsterstitial
+	],
 	inject: ['apollo'],
 	props: {
 		loan: {
@@ -66,6 +71,13 @@ export default {
 			return this.isLend25Button ? Lend25Button : LendIncrementButton;
 		},
 	},
+	methods: {
+		addToBasketEvent(payload) {
+			if (payload.success) {
+				this.triggerAddToBasketInterstitial(payload.loanId);
+			}
+		}
+	}
 };
 
 </script>

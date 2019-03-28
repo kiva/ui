@@ -12,7 +12,7 @@
 					<div class="row">
 						<div class="loan-image-wrapper columns small-4">
 							<div class="loan-image">
-								<img :src="loan.loan.image.url" :title="loan.loan.name">
+								<img :src="loan.loan.image.default" :title="loan.loan.name">
 							</div>
 						</div>
 						<div class="loan-title columns small-8">

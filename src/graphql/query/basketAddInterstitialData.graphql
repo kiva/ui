@@ -1,4 +1,8 @@
-query($basketId: String) {
+query(
+	$basketId: String,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+) {
 	shop (basketId: $basketId) {
 		basket {
 			items {
@@ -21,8 +25,9 @@ query($basketId: String) {
 							}
 							image {
 								id
-								url: url (presetSize: loan_thumbnail)
-								url_2x: url (presetSize: loan_thumbnail_retina)
+								hash
+								default: url(customSize: $imgDefaultSize)
+								retina: url(customSize: $imgRetinaSize)
 							}
 						}
 					}
