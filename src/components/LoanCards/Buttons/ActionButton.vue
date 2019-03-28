@@ -4,7 +4,7 @@
 		class="action-button smaller"
 		:loan-id="loanId"
 		:loan="loan"
-		@add-to-basket="addToBasketEvent"
+		@add-to-basket="handleAddToBasketEvent"
 	/>
 </template>
 
@@ -72,7 +72,7 @@ export default {
 		},
 	},
 	methods: {
-		addToBasketEvent(payload) {
+		handleAddToBasketEvent(payload) {
 			if (payload.success) {
 				this.triggerAddToBasketInterstitial(payload.loanId);
 			}
