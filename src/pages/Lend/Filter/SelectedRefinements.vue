@@ -25,14 +25,12 @@
 							@click-chip="handleRemoveRefinement(item)"
 						/>
 						<ais-clear-refinements class="clear-all-container">
-							<div
-								class="clear-all"
+							<clear-all-refinements
 								slot-scope="{ canRefine, refine }"
-								@click.prevent="refine"
+								@clear-all-refinements="refine"
+								@clear-custom-categories="clearCustomCategories"
 								v-if="canRefine && isCollapsible"
-							>
-								Clear all
-							</div>
+							/>
 						</ais-clear-refinements>
 					</div>
 				</div>
@@ -48,12 +46,14 @@ import {
 	AisClearRefinements,
 } from 'vue-instantsearch';
 import FilterChip from '@/pages/Lend/Filter/FilterChip';
+import ClearAllRefinements from '@/pages/Lend/Filter/ClearAllRefinements';
 
 export default {
 	components: {
 		AisCurrentRefinements,
 		AisClearRefinements,
 		FilterChip,
+		ClearAllRefinements,
 	},
 	props: {
 		customCategories: {
@@ -179,6 +179,9 @@ export default {
 		removeCustomCategory(customCategoryId) {
 			this.$emit('remove-custom-category', customCategoryId);
 		},
+		clearCustomCategories() {
+			this.$emit('clear-custom-categories');
+		}
 	},
 	mounted() {
 		this.setCollapsibleState();
@@ -222,12 +225,6 @@ export default {
 
 		.clear-all-container {
 			display: inline;
-
-			.clear-all {
-				@extend .link;
-
-				display: inline;
-			}
 		}
 
 		&.collapsed {
