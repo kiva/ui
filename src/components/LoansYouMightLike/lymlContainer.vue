@@ -293,12 +293,10 @@ export default {
 }
 
 .lyml-left-arrow {
-	// margin-right: rem-calc(10);
 	margin: 0 0.375rem;
 }
 
 .lyml-right-arrow {
-	// margin-left: rem-calc(10);
 	margin: 0 0.375rem;
 }
 
