@@ -7,9 +7,8 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<!-- eslint-disable-next-line max-len -->
-				<filter-section-gender :result-count="1" :filter-menu-open="filterMenuOpen" />
-				<filter-section-sort :default-sort-indices="defaultSortIndices" :result-count="1" />
+				<filter-section-gender :filter-menu-open="filterMenuOpen" />
+				<filter-section-sort :default-sort-indices="defaultSortIndices"/>
 				<filter-section-categories
 					:result-count="10"
 					:custom-categories="customCategories"
