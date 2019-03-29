@@ -34,10 +34,6 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		resultCount: {
-			type: Number,
-			required: true,
-		},
 	},
 };
 </script>
