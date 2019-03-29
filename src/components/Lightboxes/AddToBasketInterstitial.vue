@@ -1,5 +1,5 @@
 <template>
-	<div class="basket-add-interstitial">
+	<div class="basket-add-interstitial row small-collapse">
 		<kv-lightbox
 			:visible="showInterstitial"
 			:no-padding-top="true"
@@ -12,7 +12,7 @@
 					<div class="row">
 						<div class="loan-image-wrapper columns small-4">
 							<div class="loan-image">
-								<img :src="loan.loan.image.url" :title="loan.loan.name">
+								<img :src="loan.loan.image.default" :title="loan.loan.name">
 							</div>
 						</div>
 						<div class="loan-title columns small-8">
@@ -48,6 +48,8 @@
 						</div>
 					</div>
 				</div>
+
+				<loading-overlay v-show="loading" id="loading-preview-overlay" />
 			</div>
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
 				<div class="additional-loans">
@@ -72,6 +74,7 @@ import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
@@ -80,7 +83,8 @@ export default {
 		KvLightbox,
 		KvButton,
 		LoanReservation,
-		LYML
+		LYML,
+		LoadingOverlay
 	},
 	inject: ['apollo'],
 	data() {
@@ -90,7 +94,8 @@ export default {
 			loan: {},
 			loans: () => [],
 			loanCount: 0,
-			loanTotals: '0.00'
+			loanTotals: '0.00',
+			loading: true,
 		};
 	},
 	computed: {
@@ -119,6 +124,10 @@ export default {
 		closeLightbox() {
 			console.log('lightbox closed');
 			this.clearInterstitial();
+
+			this.loadingOnTimeout = window.setTimeout(() => {
+				this.loading = true;
+			}, 500);
 		},
 		clearInterstitial() {
 			this.apollo.mutate({
@@ -146,9 +155,17 @@ export default {
 					const addedLoan = _find(this.loans, { id: this.basketInterstitialState.loanId });
 					// console.log(addedLoan);
 					this.loan = addedLoan;
+
+					this.loadingOffTimeout = window.setTimeout(() => {
+						this.loading = false;
+					}, 500);
 				});
 			}
 		}
+	},
+	destroyed() {
+		clearTimeout(this.loadingOnTimeout);
+		clearTimeout(this.loadingOffTimeout);
 	}
 };
 </script>
@@ -167,23 +184,31 @@ export default {
 	}
 
 	.lightbox-loan-wrapper {
-		padding: 1rem 1rem 2rem;
+		padding: 1rem;
 		position: relative;
 
 		@include breakpoint(medium) {
-			padding: 1rem 2rem 2rem;
+			padding: 1rem 2rem;
+		}
+
+		.loan-preview {
+			min-height: 12rem;
 		}
 
 		.loan-image-wrapper {
 			@include breakpoint(large) {
 				position: absolute;
 				left: 2rem;
+
+				.loan-image {
+					padding-right: 0.8rem;
+				}
 			}
 		}
 
 		.basket-summary {
 			padding: 0.375rem 0;
-			margin: 0.5rem 0;
+			margin: 0.625rem 0 0.5rem;
 			border-top: 1px solid $subtle-gray;
 			font-weight: 400;
 
@@ -218,5 +243,29 @@ export default {
 		}
 	}
 }
-
 </style>
+
+<style lang="scss">
+#loading-preview-overlay {
+	width: auto;
+	height: auto;
+	left: 1rem;
+	right: 1rem;
+	bottom: 0;
+	top: 0;
+	background-color: rgba(white, 0.7);
+
+	.spinner-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		height: 100%;
+		top: auto;
+		left: auto;
+		transform: none;
+		transition: top 100ms linear;
+	}
+}
+</style>
+

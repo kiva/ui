@@ -18,7 +18,7 @@
 			:price="selectedOption"
 			:loan-id="loanId"
 			:loading.sync="loading"
-			@click.native="triggerAddToBasketInterstitial(loanId)"
+			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 	</div>
 </template>
@@ -26,12 +26,8 @@
 <script>
 import numeral from 'numeral';
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
-import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
 
 export default {
-	mixins: [
-		addToBasketInsterstitial
-	],
 	components: {
 		LendButton,
 	},

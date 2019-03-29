@@ -3,19 +3,15 @@
 		price="25"
 		:loan-id="loanId"
 		class="lend-again-button secondary"
-		@click.native="triggerAddToBasketInterstitial(loanId)">
+		@add-to-basket="$emit('add-to-basket', $event)">
 		Lend again
 	</lend-button>
 </template>
 
 <script>
-import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
 import LendButton from './LendButton';
 
 export default {
-	mixins: [
-		addToBasketInsterstitial
-	],
 	components: {
 		LendButton,
 	},
