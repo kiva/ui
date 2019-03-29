@@ -49,7 +49,7 @@
 					</div>
 				</div>
 
-				<loading-overlay v-if="loading" id="loading-preview-overlay" />
+				<loading-overlay v-show="loading" id="loading-preview-overlay" />
 			</div>
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
 				<div class="additional-loans">
@@ -227,15 +227,6 @@ export default {
 				padding-right: 1rem;
 			}
 		}
-
-		#loading-preview-overlay {
-			width: auto;
-			height: auto;
-			left: 1rem;
-			right: 1rem;
-			bottom: 0;
-			top: 0;
-		}
 	}
 
 	.lightbox-lyml-wrapper {
@@ -252,5 +243,29 @@ export default {
 		}
 	}
 }
-
 </style>
+
+<style lang="scss">
+#loading-preview-overlay {
+	width: auto;
+	height: auto;
+	left: 1rem;
+	right: 1rem;
+	bottom: 0;
+	top: 0;
+	background-color: rgba(white, 0.7);
+
+	.spinner-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		height: 100%;
+		top: auto;
+		left: auto;
+		transform: none;
+		transition: top 100ms linear;
+	}
+}
+</style>
+

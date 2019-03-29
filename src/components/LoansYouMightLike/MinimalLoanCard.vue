@@ -154,6 +154,7 @@ export default {
 	display: inline-flex;
 	flex-direction: column;
 	justify-content: space-between;
+	background: white;
 
 	&:first-child,
 	&:last-child {
