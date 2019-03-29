@@ -2,6 +2,7 @@
 
 query($basketId: String) {
 	my {
+		mostRecentPaymentType
 		userAccount {
 			id
 			balance

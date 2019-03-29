@@ -112,6 +112,7 @@
 								<payment-wrapper
 									v-if="showBraintree"
 									:amount="creditNeeded"
+									:last-payment-type="lastPaymentType"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 								/>
@@ -258,7 +259,8 @@ export default {
 			teams: [],
 			holidayModeEnabled: false,
 			braintree: false,
-			braintreeExpVersion: null
+			braintreeExpVersion: null,
+			lastPaymentType: null,
 		};
 	},
 	apollo: {
@@ -266,7 +268,7 @@ export default {
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
 			return client.query({
-				query: initializeCheckout
+				query: initializeCheckout,
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				// check for free credit, bonus credit or lending rewards and redirect if present
@@ -291,6 +293,7 @@ export default {
 		result({ data }) {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
+			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
@@ -431,7 +434,7 @@ export default {
 
 			this.apollo.query({
 				query: shopBasketUpdate,
-				fetchPolicy: 'network-only'
+				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				// when updating basket state, check for free credits and redirect if present
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');

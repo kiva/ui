@@ -47,6 +47,10 @@ export default {
 		showBraintree: {
 			type: Boolean,
 			default: true
+		},
+		lastPaymentType: {
+			type: String,
+			default: null
 		}
 	},
 	data() {
@@ -61,8 +65,11 @@ export default {
 					key: 'pp',
 				},
 			],
-			selectedOption: 'pp',
+			selectedOption: 'bt',
 		};
+	},
+	created() {
+		this.selectedOption = this.lastPaymentType === 'paypal' ? 'pp' : 'bt';
 	},
 	methods: {
 		// layer in error conditions, is there ever a situation where we wouldn't want to
