@@ -133,6 +133,7 @@ export default {
 					_forEach(errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
+					this.$emit('updating-totals', false);
 				} else {
 					// If no errors, update the basket + loan info
 					this.$emit('refreshtotals');

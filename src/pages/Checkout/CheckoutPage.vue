@@ -163,19 +163,22 @@
 		</div>
 		<div v-if="emptyBasket" class="empty-basket">
 			<div class="row display-align text-center">
-				<h2 class="empty-basket-heading">Your basket is empty!</h2>
-				<p>But we'd love to help you change that! Please consider
-				supporting one of the borrowers below, or
-					<a href="/lend-by-category">browse all loans</a>.
-				</p>
+				<div class="columns small-12">
+					<h2 class="empty-basket-heading">Your basket is empty!</h2>
+					<p>But we'd love to help you change that! Please consider
+					supporting one of the borrowers below, or
+						<a href="/lend-by-category">browse all loans</a>.
+					</p>
+				</div>
 			</div>
 
-			<random-loan-selector
-				@updating-totals="setUpdatingTotals"
-				@refreshtotals="refreshTotals"
-			/>
-
-			<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+			<div class="empty-basket-loans">
+				<random-loan-selector
+					@updating-totals="setUpdatingTotals"
+					@refreshtotals="refreshTotals"
+				/>
+				<loading-overlay v-show="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+			</div>
 		</div>
 	</www-page>
 </template>
@@ -489,9 +492,8 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.page-content {
-	padding: 1.625rem 0;
-
+.page-content,
+.empty-basket {
 	// loading overlay overrides
 	#loading-overlay,
 	#updating-overlay {
@@ -508,6 +510,10 @@ export default {
 	.pre-login #updating-overlay {
 		margin-top: 0;
 	}
+}
+
+.page-content {
+	padding: 1.625rem 0;
 
 	.checkout-step {
 		position: relative;
@@ -710,11 +716,39 @@ export default {
 }
 
 .empty-basket {
+	position: relative;
 	margin: 0 auto;
-}
 
-.empty-basket-heading {
-	font-weight: 500;
+	.empty-basket-heading {
+		font-weight: 500;
+	}
+
+	.empty-basket-loans {
+		position: relative;
+		min-height: 23rem;
+
+		#updating-overlay {
+			z-index: 1000;
+			width: auto;
+			height: auto;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			top: 0;
+			background-color: rgba($kiva-bg-lightgray, 0.7);
+
+			.spinner-wrapper {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				height: 100%;
+				top: auto;
+				left: auto;
+				transform: none;
+			}
+		}
+	}
 }
 
 // Hide Basket Bar (this won't work with scoped)

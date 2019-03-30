@@ -2,7 +2,7 @@
 	<transition name="kvfade">
 		<div
 			class="section-wrapper random-loan-cards">
-			<div class="section-container">
+			<div v-if="randomLoans.length" class="section-container">
 				<div id="row-cards" class="row">
 					<div class="column row-wrapper">
 						<span
@@ -25,7 +25,6 @@
 									:loan="loan"
 									category-set-id="random-loans"
 									:card-number="index"
-									:enable-tracking="true"
 									@refreshtotals="$emit('refreshtotals')"
 									@updating-totals="$emit('updating-totals', $event)"
 								/>
@@ -105,10 +104,12 @@ export default {
 	},
 	methods: {
 		loadLoans() {
+			this.$emit('updating-totals', true);
 			this.apollo.query({
 				query: emptyBasketData,
 			}).then(data => {
 				this.randomLoans = _get(data.data.lend, 'randomLoans.values');
+				this.$emit('updating-totals', false);
 			});
 		},
 		saveWindowWidth() {
@@ -215,6 +216,8 @@ export default {
 
 .random-loan-cards {
 	$random-loan-card-width: 980;
+
+	min-height: 23rem;
 
 	#row-title,
 	#row-cards {
