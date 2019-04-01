@@ -6,12 +6,6 @@ query (
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
 ) {
-	general {
-		fundraisingThermometerExperiment: setting(setting: "uiexp.featured_hero_loan_fundraising_thermometer") {
-			key
-			value
-		}
-	}
 	lend {
 		loanChannelsById(ids: $ids) {
 			id

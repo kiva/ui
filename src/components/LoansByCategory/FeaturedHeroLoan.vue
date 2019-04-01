@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import numeral from 'numeral';
 
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
@@ -168,7 +169,6 @@ export default {
 		return {
 			featuredCategoryIds: null,
 			loanUseMaxLength: 100,
-			showFundraisingThermometer: false,
 		};
 	},
 	computed: {
@@ -193,6 +193,9 @@ export default {
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);
 		},
+		showFundraisingThermometer() {
+			return _get(this.experimentData, 'featured_hero_loan_fundraising_thermometer') === 'variant-c';
+		}
 	},
 	methods: {
 		loanUseTruncated() {
@@ -215,18 +218,6 @@ export default {
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
 		},
-	},
-	created() {
-		// CASH-684 : Experiment : Featured hero loan fundraising thermometer
-		this.experimentVersion = this.experimentData.featured_hero_loan_fundraising_thermometer;
-
-		if (this.experimentVersion === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-684-Mar2019', 'a');
-			this.showFundraisingThermometer = false;
-		} else if (this.experimentVersion === 'variant-b') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-684-Mar2019', 'b');
-			this.showFundraisingThermometer = true;
-		}
 	},
 };
 </script>

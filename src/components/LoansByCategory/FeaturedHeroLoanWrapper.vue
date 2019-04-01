@@ -30,9 +30,7 @@
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 
-import experimentAssignmentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
-
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 // research-backed impact category
@@ -44,6 +42,10 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
+		featuredHeroLoanExperimentVersion: {
+			type: String,
+			default: ''
+		},
 		imageEnhancementExperimentVersion: {
 			type: String,
 			default: ''
@@ -87,9 +89,6 @@ export default {
 				variables: {
 					ids: featuredCategoryIds
 				},
-			}).then(() => {
-				// eslint-disable-next-line max-len
-				return client.query({ query: experimentAssignmentQuery, variables: { id: 'featured_hero_loan_fundraising_thermometer' } });
 			});
 		},
 		result({ data }) {
@@ -105,14 +104,7 @@ export default {
 		}
 	},
 	created() {
-		// CASH-684 : Experiment : Featured hero loan fundraising thermometer
-		const experimentQuery = this.apollo.readQuery({
-			query: experimentAssignmentQuery,
-			variables: { id: 'featured_hero_loan_fundraising_thermometer' },
-		});
-
-		// eslint-disable-next-line max-len
-		this.experimentData = { featured_hero_loan_fundraising_thermometer: _get(experimentQuery, 'experiment.version') };
+		this.experimentData = { featured_hero_loan_fundraising_thermometer: this.featuredHeroLoanExperimentVersion };
 	},
 };
 </script>
