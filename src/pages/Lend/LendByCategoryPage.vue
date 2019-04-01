@@ -5,6 +5,7 @@
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
+			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
@@ -132,7 +133,7 @@ export default {
 			imageEnhancementExperimentVersion: '',
 			showFeaturedLoans: true,
 			showFeaturedHeroLoan: false,
-			featuredHeroLoanExperimentVersion: null,
+			featuredHeroLoanExperimentVersion: '',
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
@@ -404,6 +405,10 @@ export default {
 			this.showFeaturedHeroLoan = false;
 		} else if (this.featuredHeroLoanExperimentVersion === 'variant-b') {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'b');
+			this.showFeaturedLoans = false;
+			this.showFeaturedHeroLoan = true;
+		} else if (this.featuredHeroLoanExperimentVersion === 'variant-c') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'c');
 			this.showFeaturedLoans = false;
 			this.showFeaturedHeroLoan = true;
 		}
