@@ -3,7 +3,7 @@ query (
 	$imgRetinaSize: String = "w480h360",
 ) {
 	lend {
-		randomLoans: loans (filters: {status: fundraising}, limit: 15, sortBy: expiringSoon) {
+		randomLoans: loans (filters: {status: fundraising}, limit: 15, sortBy: random) {
 			values {
 				id
 				name
