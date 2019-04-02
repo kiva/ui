@@ -99,8 +99,14 @@ export default {
 	margin-bottom: rem-calc(30);
 }
 
-.borrower-info {
-	line-height: 0.8;
-	font-weight: $global-weight-highlight;
+.borrower-info-wrapper {
+	text-align: left;
+	padding: 0;
+
+	.borrower-info {
+		text-align: left;
+		line-height: 0.8;
+		font-weight: $global-weight-highlight;
+	}
 }
 </style>
