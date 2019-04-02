@@ -48,21 +48,40 @@ export default {
 <style lang='scss' scoped>
 @import 'settings';
 
+@mixin toggle-hover($type) {
+	cursor: default;
+
+	:hover {
+		.#{$type}-toggle-icon {
+			fill: $kiva-text-medium;
+		}
+
+		.view-text {
+			color: $kiva-text-medium;
+			text-decoration: underline;
+			text-decoration-color: $kiva-text-medium;
+		}
+	}
+}
+
+@mixin filter-icon-and-text($fill-color) {
+	text-decoration: none;
+
+	.browse-toggle-icon {
+		fill: $fill-color;
+		opacity: 0.85;
+	}
+
+	.view-text {
+		color: $kiva-text-light;
+		text-decoration: none;
+	}
+}
+
 .view-toggle {
 	.view-text {
 		color: $kiva-text-light;
-	}
-
-	.browse-box {
-		margin-right: 0.75rem;
-
-		@include breakpoint(xlarge) {
-			margin-right: 1rem;
-		}
-
-		&:hover {
-			text-decoration: none;
-		}
+		cursor: default;
 	}
 
 	.divider {
@@ -80,6 +99,7 @@ export default {
 
 	.browse-toggle-icon,
 	.filter-toggle-icon {
+		cursor: default;
 		display: block;
 		height: rem-calc(30);
 		width: rem-calc(30);
@@ -87,22 +107,46 @@ export default {
 		fill: $kiva-text-light;
 	}
 
-	.filter-box:hover {
-		.filter-toggle-icon {
-			fill: $kiva-text-medium;
+	.browse-box {
+		margin-right: 0.75rem;
+
+		@include breakpoint(xlarge) {
+			margin-right: 1rem;
 		}
 
-		.view-text {
-			text-decoration: underline;
-			text-decoration-color: $kiva-text-medium;
-			color: $kiva-text-medium;
+		@include toggle-hover('browse');
+
+		// lend-by-category/<CATEGORY_ID>
+		&.router-link-active {
+			@include filter-icon-and-text($kiva-text-light);
+			@include toggle-hover('browse');
+		}
+
+		// lend-by-category
+		&.router-link-exact-active {
+			&.router-link-active {
+				@include filter-icon-and-text($kiva-green);
+			}
 		}
 	}
 
-	// Changing the color of the selected toggle
-	.router-link-active .browse-toggle-icon, {
-		fill: $kiva-green;
-		opacity: 0.85;
+	.filter-box {
+		@include toggle-hover('filter');
+
+		// lend/filter
+		&.router-link-active {
+			text-decoration: none;
+
+			.filter-toggle-icon {
+				fill: $kiva-green;
+				opacity: 0.85;
+			}
+
+			.view-text {
+				color: $kiva-text-light;
+				text-decoration: none;
+			}
+		}
 	}
 }
 </style>
