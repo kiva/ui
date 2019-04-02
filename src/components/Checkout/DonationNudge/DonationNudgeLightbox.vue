@@ -12,13 +12,18 @@
 					:description="description"
 				/>
 				<donation-nudge-boxes
+					ref="nudgeBoxes"
 					id="nudge-donation-top-boxes-wrapper"
 					:percentage-rows= "percentageRows"
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
+					:current-donation-amount="currentDonationAmount"
 				/>
-				<div><a id="no-donation-link" @click="setDonationAndClose(0)">No donation to Kiva</a></div>
+				<div><a
+					id="no-donation-link"
+					@click="setDonationAndClose(0)"
+					tabindex="12">No donation to Kiva</a></div>
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
 				<div class="row">
@@ -91,12 +96,19 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		currentDonationAmount: {
+			type: String,
+			default: ''
+		},
 	},
 	methods: {
 		setDonationAndClose(amount) {
 			this.updateDonationTo(amount);
 			this.$kvTrackEvent('basket', 'Update Loan Amount', 'Update Success', amount * 100);
 			this.closeNudgeLightbox();
+		},
+		openNudgeLightbox() {
+			this.$refs.nudgeBoxes.openNudgeLightbox();
 		}
 	},
 };
@@ -114,7 +126,7 @@ export default {
 	text-align: center;
 
 	#nudge-donation-top {
-		padding-bottom: 3rem;
+		padding-bottom: 1.6rem;
 		background: #F8F8F8;
 
 		#nudge-donation-top-boxes-wrapper {
@@ -130,7 +142,7 @@ export default {
 	}
 
 	#nudge-donation-bottom {
-		padding: 1rem 3rem 2rem 3rem;
+		padding: 1.5rem 3rem 1.5rem 3rem;
 		background: #F1F1F0;
 
 		#charity-navigator-text {

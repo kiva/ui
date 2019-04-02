@@ -1,21 +1,36 @@
 <template>
-	<div class="algolia-loan-card-adapter column column-block">
-		<GridLoanCard
+	<div class="algolia-loan-card-adapter">
+		<loan-card-controller
 			:key="loan.id"
 			:loan="adaptedLoan"
-			:is-visitor="true"
-			:items-in-basket="itemsInBasket" />
+			:is-visitor="!isLoggedIn"
+			:items-in-basket="itemsInBasket"
+			:loan-card-type="loanCardType"
+		/>
+		<!--
+			Add tracking later
+			:enable-tracking="true"
+			:category-id="loanChannel.id"
+			:category-set-id="setId"
+			:row-number="rowNumber"
+			:card-number="index + 1"
+
+			Add experiments later
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		-->
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import algoliaLoanStatus from '@/graphql/query/algoliaLoanStatus.graphql';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 export default {
 	components: {
-		GridLoanCard
+		LoanCardController,
 	},
+	inject: ['apollo'],
 	props: {
 		loan: {
 			type: Object,
@@ -25,6 +40,20 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
+		loanCardType: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			latestFundraisingInfo: null,
+			latestUserProperties: null,
+		};
 	},
 	computed: {
 		adaptedLoan() {
@@ -35,29 +64,64 @@ export default {
 
 			return {
 				id: parseInt(_get(this.loan, 'id'), 10),
+				status: this.latestStatus || _get(this.loan, 'status').toString().toLowerCase(),
 				borrowerCount: _get(this.loan, 'borrowerCount'),
 				geocode: _get(this.loan, 'geocode'),
 				image: {
 					default: defaultImage,
 					retina: retinaImage
 				},
+				lenderRepaymentTerm: parseInt(_get(this.loan, 'lenderRepaymentTerm'), 10),
 				loanAmount: _get(this.loan, 'loanAmount').toString(),
-				loanFundraisingInfo: {
+				loanFundraisingInfo: this.latestFundraisingInfo || {
 					fundedAmount: _get(this.loan, 'fundedAmount'),
 					isExpiringSoon: _get(this.loan, 'expiringSoon'),
 					reservedAmount: _get(this.loan, 'reservedAmount'),
 				},
-				loanUse: _get(this.loan, 'use'),
+				use: _get(this.loan, 'use'),
 				matchingText: '',
 				name: _get(this.loan, 'name'),
 				partnerName: _get(this.loan, 'partner.name'),
 				plannedExpirationData: exprirationDate.toISOString(),
-				// TODO: figure out how to get these efficiently...maybe after page load?
-				userProperties: {
+				userProperties: this.latestUserProperties || {
 					favorited: false,
 					lentTo: false
 				},
 			};
+		},
+	},
+	mounted() {
+		this.queryLoanStatus();
+	},
+	watch: {
+		'loan.id': {
+			handler() {
+				this.queryLoanStatus();
+			}
+		}
+	},
+	methods: {
+		queryLoanStatus() {
+			this.apollo.query({
+				query: algoliaLoanStatus,
+				variables: {
+					ids: [parseInt(_get(this.loan, 'id'), 10)]
+				},
+				fetchPolicy: 'network-only',
+			}).then(({ data }) => {
+				if (data.lend.loans.totalCount) {
+					this.latestFundraisingInfo = {
+						fundedAmount: _get(data, 'lend.loans.values[0].loanFundraisingInfo.fundedAmount'),
+						isExpiringSoon: _get(data, 'lend.loans.values[0].loanFundraisingInfo.expiringSoon'),
+						reservedAmount: _get(data, 'lend.loans.values[0].loanFundraisingInfo.reservedAmount'),
+					};
+					// update our local user props
+					this.latestUserProperties = {
+						favorited: _get(data, 'lend.loans.values[0].userProperties.favorited'),
+						lentTo: _get(data, 'lend.loans.values[0].userProperties.lentTo'),
+					};
+				}
+			});
 		}
 	}
 };

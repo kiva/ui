@@ -9,22 +9,12 @@ query {
 			totalCount
 			values {
 				id
-        		url
-			}
-		}
-	}
-	shop {
-		basket {
-			items {
-				values {
-					id
-				}
+				url
 			}
 		}
 	}
 	general {
-		# TODO: REMOVE Once Lend Increment Button EXP ENDS
-		lendIncrementExp: setting(setting: "uiexp.lend_increment_button_v2") {
+		addToBasketPopup: setting(setting: "uiexp.add_to_basket_popup") {
 			key
 			value
 		}

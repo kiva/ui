@@ -1,5 +1,5 @@
-mutation {
-	shop {
+mutation($basketId: String) {
+	shop (basketId: $basketId) {
 		validateItemsAndCredits {
 			success
 			error

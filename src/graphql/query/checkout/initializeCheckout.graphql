@@ -1,7 +1,8 @@
 #import '../../fragments/shopTotals.graphql'
 
-query {
+query($basketId: String) {
 	my {
+		mostRecentPaymentType
 		userAccount {
 			id
 			balance
@@ -29,8 +30,12 @@ query {
 		braintree_checkout: setting(setting: "ui.feature.braintree_checkout") {
 			value
 		}
+		braintreeExp: setting(setting: "uiexp.bt_test") {
+			key
+			value
+		}
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			hasFreeCredits
 			credits {

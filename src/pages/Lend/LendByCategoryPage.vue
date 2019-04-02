@@ -2,13 +2,14 @@
 	<www-page class="lend-by-category-page">
 		<lend-header />
 
-		<featured-hero-loan
+		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
-			:items-in-basket="itemsInBasket"
-			:is-logged-in="isLoggedIn"
-			:lend-increment-button-version="lendIncrementExpVersion"
+			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+			:is-logged-in="isLoggedIn"
+			:items-in-basket="itemsInBasket"
+			:show-category-description="showCategoryDescription"
 		/>
 
 		<FeaturedLoans
@@ -16,15 +17,14 @@
 			ref="featured"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
-			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+			:show-category-description="showCategoryDescription"
 		/>
 
 		<recently-viewed-loans
 			:is-micro="true"
 			:items-in-basket="itemsInBasket"
 			:is-logged-in="isLoggedIn"
-			:lend-increment-button-version="lendIncrementExpVersion"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
@@ -38,8 +38,8 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
-				:lend-increment-button-version="lendIncrementExpVersion"
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+				:show-category-description="showCategoryDescription"
 			/>
 		</div>
 
@@ -65,6 +65,8 @@
 				<category-admin-controls />
 			</div>
 		</div>
+
+		<add-to-basket-interstitial />
 	</www-page>
 </template>
 
@@ -77,19 +79,22 @@ import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
 import WebStorage from 'store2';
+import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
-import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
+import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
 import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -106,12 +111,13 @@ export default {
 		CategoryRow,
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
-		FeaturedHeroLoan,
+		FeaturedHeroLoanWrapper,
 		RecentlyViewedLoans,
 		WwwPage,
 		ViewToggle,
 		LoadingOverlay,
 		LendHeader,
+		AddToBasketInterstitial,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -125,15 +131,17 @@ export default {
 			categorySetId: '',
 			itemsInBasket: [],
 			imageEnhancementExperimentVersion: '',
-			lendIncrementExpVersion: null,
 			showFeaturedLoans: true,
 			showFeaturedHeroLoan: false,
+			featuredHeroLoanExperimentVersion: '',
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
 			showRecentlyViewed: false,
 			recentLoanIds: [],
 			rowLazyLoadComplete: false,
+			showCategoryDescription: false,
+			categoryDescriptionExperimentVersion: null,
 		};
 	},
 	computed: {
@@ -175,6 +183,10 @@ export default {
 				});
 				loanIds.push({
 					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
+				});
+			} else if (this.showFeaturedHeroLoan) {
+				loanIds.push({
+					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
 				});
 			}
 
@@ -304,14 +316,16 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
 					// Pre-fetch the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
-					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } }),
 					// Pre-fetch the assigned version for recently viewed loans
 					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
 					// experiment: image enhancement
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 					// experiment: featured hero loan
-					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan' } }),
+					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan_v2' } }),
+					// experiment: category description
+					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
+					// experiment: add to basket interstitial
+					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -333,7 +347,12 @@ export default {
 	},
 	created() {
 		// Read the page data from the cache
-		const baseData = this.apollo.readQuery({ query: lendByCategoryQuery });
+		const baseData = this.apollo.readQuery({
+			query: lendByCategoryQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		});
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
@@ -356,16 +375,6 @@ export default {
 		// If active, update our custom categories prior to render
 		// this.setCustomRowData(categoryData);
 
-		// Read assigned version of lend increment button experiment
-		const lendIncrementExperimentAssignment = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'lend_increment_button_v2' },
-		});
-		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
-		if (this.lendIncrementExpVersion !== null) {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
-		}
-
 		// CASH-578 : Experiment : Cloudinary image enhancement
 		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
 			query: experimentQuery,
@@ -384,18 +393,39 @@ export default {
 		// CASH-350 : Experiment : Featured Hero Loan
 		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'featured_hero_loan' },
+			variables: { id: 'featured_hero_loan_v2' },
 		});
 
 		// eslint-disable-next-line max-len
 		this.featuredHeroLoanExperimentVersion = _get(featuredHeroLoanExperimentVersionArray, 'experiment.version') || null;
 
 		if (this.featuredHeroLoanExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'a');
 			this.showFeaturedLoans = true;
 			this.showFeaturedHeroLoan = false;
 		} else if (this.featuredHeroLoanExperimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'b');
 			this.showFeaturedLoans = false;
 			this.showFeaturedHeroLoan = true;
+		} else if (this.featuredHeroLoanExperimentVersion === 'variant-c') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'c');
+			this.showFeaturedLoans = false;
+			this.showFeaturedHeroLoan = true;
+		}
+
+		// get assignment for add to basket interstitial
+		const addToBasketPopupEXP = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'add_to_basket_popup' },
+		});
+		// Update @client state if interstitial exp is active
+		if (_get(addToBasketPopupEXP, 'experiment.version') === 'shown') {
+			this.apollo.mutate({
+				mutation: updateAddToBasketInterstitial,
+				variables: {
+					active: true,
+				}
+			});
 		}
 	},
 	mounted() {
@@ -409,6 +439,26 @@ export default {
 			const pageViewTrackData = this.assemblePageViewData(this.categories);
 			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 		});
+
+		// Only allow experiment when in show-for-large (>= 1024px) screen size
+		if (window.innerWidth >= 680) {
+			// CASH-658 : Experiment : Category description
+			const categoryDescriptionExperimentVersionArray = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'category_description' },
+			});
+
+			// eslint-disable-next-line max-len
+			this.categoryDescriptionExperimentVersion = _get(categoryDescriptionExperimentVersionArray, 'experiment.version') || null;
+
+			if (this.categoryDescriptionExperimentVersion === 'variant-a') {
+				this.showCategoryDescription = false;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
+			} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
+				this.showCategoryDescription = true;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
+			}
+		}
 	},
 };
 </script>

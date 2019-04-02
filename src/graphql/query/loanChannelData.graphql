@@ -11,6 +11,7 @@ query (
 		loanChannelsById(ids: $ids) {
 			id
 			name
+			description
 			url
 			loans(limit: $numberOfLoans, unique: true, exclude_ids: $excludeIds) {
 				values {

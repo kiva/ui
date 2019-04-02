@@ -4,19 +4,24 @@
 		class="action-button smaller"
 		:loan-id="loanId"
 		:loan="loan"
-		:lend-increment-button-version="lendIncrementButtonVersion"
+		@add-to-basket="handleAddToBasketEvent"
 	/>
 </template>
 
 <script>
 import _includes from 'lodash/includes';
+import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
 import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
 import LoanFundedText from './LoanFundedText';
+import LoanSelectedText from './LoanSelectedText';
 
 export default {
+	mixins: [
+		addToBasketInsterstitial
+	],
 	inject: ['apollo'],
 	props: {
 		loan: {
@@ -39,17 +44,17 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false
+		},
+		isLend25Button: {
+			type: Boolean,
+			default: false
 		},
 	},
 	computed: {
 		currentButtonState() {
-			const experimentLendIncrement = (
-				this.lendIncrementButtonVersion !== null ||
-				this.lendIncrementButtonVersion !== 'variant-a'
-			);
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
@@ -59,9 +64,20 @@ export default {
 			if (this.isFunded) {
 				return LoanFundedText;
 			}
-			return experimentLendIncrement ? LendIncrementButton : Lend25Button;
+			if (this.isSelectedByAnother) {
+				return LoanSelectedText;
+			}
+
+			return this.isLend25Button ? Lend25Button : LendIncrementButton;
 		},
 	},
+	methods: {
+		handleAddToBasketEvent(payload) {
+			if (payload.success) {
+				this.triggerAddToBasketInterstitial(payload.loanId);
+			}
+		}
+	}
 };
 
 </script>

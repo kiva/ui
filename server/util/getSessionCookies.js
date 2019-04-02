@@ -3,7 +3,7 @@ const setCookieParser = require('set-cookie-parser');
 
 module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 	return new Promise((resolve, reject) => {
-		if (url.length && (!requestCookies.kv || !requestCookies.kvis)) {
+		if (url.length && (!requestCookies.kv || !requestCookies.kvis || !requestCookies.kvbskt)) {
 			fetch(url).then(res => {
 				const setCookies = res.headers.getAll('set-cookie');
 				const parsed = setCookieParser(setCookies);

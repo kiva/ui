@@ -120,7 +120,7 @@ export default {
 	},
 	methods: {
 		addToBasket() {
-			this.$emit('setUpdatingTotals', true);
+			this.$emit('updating-totals', true);
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
 				variables: {
@@ -133,6 +133,7 @@ export default {
 					_forEach(errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
+					this.$emit('updating-totals', false);
 				} else {
 					// If no errors, update the basket + loan info
 					this.$emit('refreshtotals');
@@ -154,6 +155,7 @@ export default {
 	display: inline-flex;
 	flex-direction: column;
 	justify-content: space-between;
+	background: white;
 
 	&:first-child,
 	&:last-child {

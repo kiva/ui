@@ -1,6 +1,6 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
-import CookieStore from '@/util/CookieStore';
+import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import renderGlobals from '@/util/renderGlobals';
@@ -25,10 +25,10 @@ export default context => {
 			user,
 		} = context;
 		const { accessToken, ...profile } = user;
-		const cookieStore = new CookieStore(cookies);
+		cookieStore.reset(cookies);
 
 		let kvAuth0;
-		if (config.enableAuth0) {
+		if (config.auth0.enable) {
 			kvAuth0 = new KvAuth0({
 				user: profile,
 				accessToken,
@@ -45,9 +45,7 @@ export default context => {
 			apolloClient,
 		} = createApp({
 			appConfig: config,
-			cookieStore,
 			apollo: {
-				cookieStore,
 				csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
 				uri: config.graphqlUri,
 				types: config.graphqlFragmentTypes

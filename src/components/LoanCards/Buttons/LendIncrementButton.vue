@@ -18,7 +18,7 @@
 			:price="selectedOption"
 			:loan-id="loanId"
 			:loading.sync="loading"
-			:lend-increment-button-version="lendIncrementButtonVersion"
+			@add-to-basket="$emit('add-to-basket', $event)"
 		/>
 	</div>
 </template>
@@ -33,6 +33,7 @@ export default {
 	},
 	data() {
 		return {
+			defaultSelectorAmount: 25,
 			selectedOption: this.amountLeft
 				? Math.min(this.defaultSelectorAmount, this.amountLeft)
 				: this.defaultSelectorAmount,
@@ -48,15 +49,8 @@ export default {
 			type: Object,
 			default: () => {}
 		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
-		},
 	},
 	computed: {
-		defaultSelectorAmount() {
-			return this.lendIncrementButtonVersion === 'variant-b' ? 50 : 25;
-		},
 		amountLeft() {
 			const { loanAmount, loanFundraisingInfo } = this.loan;
 			const { isExpiringSoon, fundedAmount, reservedAmount } = loanFundraisingInfo;

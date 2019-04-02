@@ -5,25 +5,41 @@
 			<ais-instant-search
 				v-if="searchClient"
 				:search-client="searchClient"
-				:index-name="algoliaIndex">
-				<lend-filter-menu />
+				:index-name="algoliaDefaultIndex">
+				<lend-filter-menu
+					:default-sort-indices="defaultSortIndices"
+					:custom-categories="customCategories"
+					:selected-custom-categories="selectedCustomCategories"
+					@toggle-custom-category="toggleCustomCategory"
+				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
-						:filters="defaultFilter" />
-					<ais-current-refinements />
+						:disjunctiveFacetsRefinements="disjunctiveFacets"
+						ref="aisConfigure"
+					/>
+					<selected-refinements
+						:custom-categories="customCategories"
+						:selected-custom-categories="selectedCustomCategories"
+						@remove-custom-category="removeCustomCategory"
+						@clear-custom-categories="clearCustomCategories"
+					/>
 					<ais-hits
-						class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
+						class="loan-card-group row"
 						:results-per-page="12">
 						<template slot="default" slot-scope="{ items }">
 							<algolia-adapter
-								v-for="(item, itemIndex) in items" :key="itemIndex"
+								v-for="item in items" :key="item.id"
 								:loan="item"
-								:items-in-basket="itemsInBasket" />
+								:items-in-basket="itemsInBasket"
+								:is-logged-in="isLoggedIn"
+								loan-card-type="ListLoanCard"
+								class="small-12 columns"
+							/>
 						</template>
 					</ais-hits>
-					<algolia-pagination :padding="2" />
+					<algolia-pagination-wrapper :padding="2" />
 					<algolia-pagination-stats :padding="2" />
 				</div>
 				<!-- eslint-enable vue/attribute-hyphenation -->
@@ -35,29 +51,32 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import _forEach from 'lodash/forEach';
+import cookieStore from '@/util/cookieStore';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
-import experimentSetting from '@/graphql/query/experimentSetting.graphql';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
 
 // Algolia Imports
-import algoliasearch from 'algoliasearch/lite';
+import algoliaInit from '@/plugins/algolia-init-mixin';
+import algoliaConfig from '@/plugins/algolia-config-mixin';
 import {
 	AisConfigure,
 	AisInstantSearch,
 	AisHits,
-	AisCurrentRefinements,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
-import AlgoliaPagination from '@/pages/Lend/AlgoliaPagination';
+import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import LendFilterMenu from '@/pages/Lend/Filter/LendFilterMenu';
+import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
 
 export default {
 	components: {
+		SelectedRefinements,
 		LoadingOverlay,
 		WwwPage,
 		LendHeader,
@@ -65,56 +84,108 @@ export default {
 		AisConfigure,
 		AisInstantSearch,
 		AisHits,
-		AisCurrentRefinements,
 		AlgoliaAdapter,
-		AlgoliaPagination,
+		AlgoliaPaginationWrapper,
 		AlgoliaPaginationStats,
 	},
 	metaInfo: {
 		title: 'Lend Filter'
 	},
+	mixins: [
+		algoliaInit,
+		algoliaConfig
+	],
 	created() {
-		const itemsInBasketResults = this.apollo.readQuery({ query: itemsInBasketQuery });
+		// Set items in basket
+		const itemsInBasketResults = this.apollo.readQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		});
 		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
-	},
-	mounted() {
-		// initialize searchClient + components on mount
-		// TODO: update initialization once vue-instantsearch V2 supports SSR
-		this.searchClient = algoliasearch(
-			this.algoliaConfig.appId,
-			this.algoliaConfig.apiKey
-		);
+		// Set user status
+		const userData = this.apollo.readQuery({ query: userStatus });
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
 	data() {
 		return {
-			// These are required in each instance of the plugin
-			algoliaAppId: this.algoliaConfig.appId,
-			algoliaApiKey: this.algoliaConfig.apiKey,
-			searchClient: null,
-			// The index will likey be different based on context
-			algoliaIndex: this.algoliaConfig.fundraisingIndex, // defaultIndex
-			defaultSearch: 'Energy',
-			// Focus in on fundraising Loans
-			defaultFilter: '', // No Need with new fundraising index 'status:fundraising',
 			itemsInBasket: null,
+			isLoggedIn: false,
+			selectedCustomCategories: {},
 		};
+	},
+	computed: {
+		disjunctiveFacets() {
+			const sectorKey = 'sector.name';
+			const themeDataKey = 'themeData.loanThemeTypeName';
+			const tagsKey = 'tags.name';
+			let sectorSet = new Set();
+			let themeDataSet = new Set();
+			let tagsSet = new Set();
+
+			_forEach(this.selectedCustomCategories, (selected, customCategoryId) => {
+				if (!selected) {
+					return;
+				}
+
+				const customCategoryFacets = this.customCategories[customCategoryId].disjunctiveFacets;
+
+				sectorSet = customCategoryFacets[sectorKey] && customCategoryFacets[sectorKey].length
+					? new Set([...sectorSet, ...customCategoryFacets[sectorKey]])
+					: sectorSet;
+				themeDataSet = customCategoryFacets[themeDataKey] && customCategoryFacets[themeDataKey].length
+					? new Set([...themeDataSet, ...customCategoryFacets[themeDataKey]])
+					: themeDataSet;
+				tagsSet = customCategoryFacets[tagsKey] && customCategoryFacets[tagsKey].length
+					? new Set([...tagsSet, ...customCategoryFacets[tagsKey]])
+					: tagsSet;
+			});
+
+			return {
+				'sector.name': Array.from(sectorSet),
+				'themeData.loanThemeTypeName': Array.from(themeDataSet),
+				'tags.name': Array.from(tagsSet),
+			};
+		},
 	},
 	inject: [
 		'apollo',
-		'algoliaConfig'
 	],
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
 				query: itemsInBasketQuery,
 			}).then(() => {
-				// TODO: REMOVE Once CASH-103: Lend Increment Button EXP ENDS
-				return client.query({ query: experimentSetting, variables: { key: 'uiexp.lend_increment_button' } });
-			}).then(() => {
-				// TODO: REMOVE Once CASH-103: Lend Increment Button EXP ENDS
-				return client.query({ query: experimentQuery, variables: { id: 'lend_increment_button' } });
+				// Pre-fetch user Status
+				return client.query({ query: userStatus });
 			});
 		}
+	},
+	methods: {
+		toggleCustomCategory(categoryId) {
+			this.$set(
+				this.selectedCustomCategories,
+				categoryId,
+				!this.selectedCustomCategories[categoryId],
+			);
+		},
+		removeCustomCategory(categoryId) {
+			this.$set(
+				this.selectedCustomCategories,
+				categoryId,
+				false,
+			);
+		},
+		clearCustomCategories() {
+			_forEach(this.selectedCustomCategories, (_, categoryId) => {
+				this.$set(
+					this.selectedCustomCategories,
+					categoryId,
+					false,
+				);
+			});
+		},
 	},
 };
 </script>

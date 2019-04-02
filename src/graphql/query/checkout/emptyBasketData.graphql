@@ -1,0 +1,37 @@
+query (
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w480h360",
+) {
+	lend {
+		randomLoans: loans (filters: {status: fundraising}, limit: 15, sortBy: random) {
+			values {
+				id
+				name
+				loanAmount
+				loanFundraisingInfo {
+					fundedAmount
+					reservedAmount
+				}
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+				}
+				activity {
+					id
+					name
+				}
+				geocode {
+					country {
+						isoCode
+						name
+					}
+				}
+				sector {
+          			id
+          			name
+        		}
+			}
+		}
+	}
+}

@@ -103,17 +103,19 @@
 						<div v-if="isLoggedIn" class="checkout-actions row">
 							<div class="small-12">
 								<pay-pal-exp
-									v-if="showPayPal"
+									v-if="showPayPal && !showBraintree"
 									:show-braintree="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals" />
 
-								<braintree-checkout
+								<payment-wrapper
 									v-if="showBraintree"
 									:amount="creditNeeded"
+									:last-payment-type="lastPaymentType"
 									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals" />
+									@updating-totals="setUpdatingTotals"
+								/>
 
 								<kiva-credit-payment
 									v-if="showKivaCreditButton"
@@ -135,14 +137,6 @@
 								Please register or sign in above to complete your purchase.</p>
 						</div>
 					</div>
-				</div>
-
-				<div v-if="emptyBasket" class="empty-basket">
-					<p class="featured-text">Oops — Your basket is empty!</p>
-					<p>Your basket is empty, but we'd love to help you find a borrower to support.<br><br>
-						<a href="/lend-by-category">Browse by category</a> or
-						<a href="/lend">see all loans.</a>
-					</p>
 				</div>
 
 				<kv-lightbox
@@ -167,21 +161,36 @@
 				</kv-lightbox>
 			</div>
 		</div>
-		<l-y-m-l
-			v-if="isLoggedIn && showLYML"
-			:loans="loans"
-			@refreshtotals="refreshTotals($event)"
-			@updating-totals="setUpdatingTotals"
-		/>
+		<div v-if="emptyBasket" class="empty-basket">
+			<div class="row display-align text-center">
+				<div class="columns small-12">
+					<h2 class="empty-basket-heading">Your basket is empty!</h2>
+					<p>But we'd love to help you change that! Please consider
+					supporting one of the borrowers below, or
+						<a href="/lend-by-category">browse all loans</a>.
+					</p>
+				</div>
+			</div>
+
+			<div class="empty-basket-loans">
+				<random-loan-selector
+					@updating-totals="setUpdatingTotals"
+					@refreshtotals="refreshTotals"
+				/>
+				<loading-overlay v-show="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+			</div>
+		</div>
 	</www-page>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -198,8 +207,9 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
-import LYML from '@/components/LoansYouMightLike/lymlContainer';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
+import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
+import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
 export default {
 	components: {
@@ -217,8 +227,9 @@ export default {
 		LoadingOverlay,
 		KvIcon,
 		CheckoutHolidayPromo,
-		LYML,
 		BraintreeCheckout,
+		PaymentWrapper,
+		RandomLoanSelector,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -250,8 +261,9 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
-			showLYML: true,
 			braintree: false,
+			braintreeExpVersion: null,
+			lastPaymentType: null,
 		};
 	},
 	apollo: {
@@ -259,7 +271,7 @@ export default {
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
 			return client.query({
-				query: initializeCheckout
+				query: initializeCheckout,
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				// check for free credit, bonus credit or lending rewards and redirect if present
@@ -276,11 +288,15 @@ export default {
 					});
 				}
 				return data;
+			}).then(() => {
+				// initialize braintree exp assignment
+				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
 			});
 		},
 		result({ data }) {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
+			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
@@ -320,11 +336,27 @@ export default {
 		}
 
 		this.holidayModeEnabled = settingEnabled(
-			this.apollo.readQuery({ query: promoQuery }),
+			this.apollo.readQuery({
+				query: promoQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			}),
 			'general.holiday_enabled.value',
 			'general.holiday_start_time.value',
 			'general.holiday_end_time.value'
 		);
+
+		// Read assigned version of braintree experiment
+		const braintreeExpAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'bt_test' },
+		});
+		this.braintreeExpVersion = _get(braintreeExpAssignment, 'experiment.version') || null;
+		// TODO: Update for actual launch
+		if (this.braintreeExpVersion !== null) {
+			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
+		}
 	},
 	mounted() {
 		// fire tracking event when the page loads
@@ -364,10 +396,13 @@ export default {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
 		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0;
+			return parseFloat(this.creditNeeded) > 0
+			&& (this.braintreeExpVersion === 'control' || this.braintree === false);
 		},
 		showBraintree() {
-			return parseFloat(this.creditNeeded) > 0 && this.braintree === true;
+			return parseFloat(this.creditNeeded) > 0
+				&& this.braintree === true
+				&& this.braintreeExpVersion === 'shown';
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
@@ -402,7 +437,7 @@ export default {
 
 			this.apollo.query({
 				query: shopBasketUpdate,
-				fetchPolicy: 'network-only'
+				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				// when updating basket state, check for free credits and redirect if present
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
@@ -457,9 +492,8 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.page-content {
-	padding: 1.625rem 0;
-
+.page-content,
+.empty-basket {
 	// loading overlay overrides
 	#loading-overlay,
 	#updating-overlay {
@@ -476,6 +510,10 @@ export default {
 	.pre-login #updating-overlay {
 		margin-top: 0;
 	}
+}
+
+.page-content {
+	padding: 1.625rem 0;
 
 	.checkout-step {
 		position: relative;
@@ -671,9 +709,45 @@ export default {
 			}
 		}
 	}
+}
 
-	.empty-basket {
-		text-align: center;
+.display-align {
+	display: inline;
+}
+
+.empty-basket {
+	position: relative;
+	margin: 0 auto;
+
+	.empty-basket-heading {
+		font-weight: 500;
+	}
+
+	.empty-basket-loans {
+		position: relative;
+		min-height: 23rem;
+
+		#updating-overlay {
+			z-index: 1000;
+			width: auto;
+			height: auto;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			top: 0;
+			background-color: rgba($kiva-bg-lightgray, 0.7);
+
+			.spinner-wrapper {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				height: 100%;
+				top: auto;
+				left: auto;
+				transform: none;
+			}
+		}
 	}
 }
 

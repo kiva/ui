@@ -18,6 +18,9 @@
 						{{ cleanName }}
 					</template>
 				</h2>
+				<p v-if="showCategoryDescription" class="category-description show-for-large">
+					{{ loanChannel.description }}
+				</p>
 			</div>
 		</div>
 
@@ -47,7 +50,6 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:lend-increment-button-version="lendIncrementButtonVersion"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
@@ -121,13 +123,13 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
-		},
 		imageEnhancementExperimentVersion: {
 			type: String,
 			default: ''
+		},
+		showCategoryDescription: {
+			type: Boolean,
+			default: false
 		},
 	},
 	data() {
@@ -333,6 +335,14 @@ $row-max-width: 63.75rem;
 	@include breakpoint(medium) {
 		margin-left: 1.5625rem;
 	}
+}
+
+.category-description {
+	@extend .category-name;
+
+	font-weight: $global-weight-normal;
+	margin-top: rem-calc(12);
+	margin-bottom: rem-calc(20);
 }
 
 a.view-all-link {

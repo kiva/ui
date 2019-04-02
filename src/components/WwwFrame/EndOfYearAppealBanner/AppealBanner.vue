@@ -93,17 +93,17 @@
 </template>
 
 <script>
-import { readJSONSetting, readBoolSetting } from '@/util/settingsUtils';
+import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
-import appealIsShrunkMutation from '@/graphql/mutation/setUserSession.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import _get from 'lodash/get';
+import store2 from 'store2';
 
 export default {
 	components: {
@@ -119,7 +119,6 @@ export default {
 			appealEnabled: false,
 			appealMatchEnabled: false,
 			appealBonusEnabled: false,
-			isAppealShrunk: false,
 			amount: 0,
 			donationAmount: null,
 		};
@@ -134,9 +133,6 @@ export default {
 
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
 			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
-
-			// the IsAppealBannerShrunk session value returns either false or '"1"'
-			this.isAppealShrunk = readJSONSetting(data, 'general.appeal_banner_shrunk.data') === 1;
 		},
 	},
 	computed: {
@@ -145,30 +141,24 @@ export default {
 			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
 		}
 	},
-	watch: {
-		isAppealShrunk(isShrunk) {
-			if (isShrunk) {
-				this.open = false;
-			}
+	mounted() {
+		if (store2.session.get('appeal_banner_shrunk')) {
+			this.open = false;
+		} else {
+			this.open = true;
 		}
 	},
 	methods: {
 		toggleAccordion() {
-			// if state when clicked is open/true we are closing the accordian so pass '"1"' as the php expects
-			// otherwise if state when clicked is closed/false, we are opening so false is the expected value
-			this.setIsShrunkSession(this.open ? '"1"' : false);
+			this.setIsShrunkSession(this.open);
 			this.open = !this.open;
 		},
 		setIsShrunkSession(isShrunk) {
-			this.apollo.mutate({
-				mutation: appealIsShrunkMutation,
-				variables: {
-					sessionKey: 'IsAppealBannerShrunk',
-					data: isShrunk // "1" or false
-				}
-			}).catch(error => {
-				console.error(error);
-			});
+			if (isShrunk) {
+				store2.session.set('appeal_banner_shrunk', true);
+			} else {
+				store2.session.remove('appeal_banner_shrunk');
+			}
 		},
 		updateDonationTo(amount, isCustom) {
 			if (isCustom) {

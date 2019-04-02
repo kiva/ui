@@ -22,8 +22,7 @@
 					>
 						<!-- eslint-enable max-len -->
 						<div
-							class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
-						>
+							class="nudge-box-top nudge-box-padded nudge-box-custom-donation">
 							You decide — enter custom amount
 						</div>
 					</div>
@@ -55,6 +54,9 @@
 								ref="customDonationInputDesktop"
 								name="customDonationInputTextDesktop"
 								maxlength="10"
+								tabindex="10"
+								id="customDonationInput"
+								@click.capture="formatAndSubmitOnEnter"
 								class="nudge-box-input nudge-box-input-desktop"
 								@blur="validateInputDesktop"
 							>
@@ -63,7 +65,7 @@
 				</div>
 				<div class="row nudge-box-row">
 					<div
-						v-for="{percentage} in percentageRows"
+						v-for="({percentage}, index) in percentageRows"
 						:key="percentage"
 						class="medium-4 columns nudge-box-bottom-container nudge-box-container"
 					>
@@ -71,7 +73,17 @@
 							class="nudge-box-bottom"
 							@click="setDonationAndClose(getDonationByPercent(percentage))"
 						>
-							<kv-button class="smallest nudge-box-button">
+							<kv-button
+								v-if="index === 0"
+								id="first-button"
+								:tabindex="index + 1"
+								class="smallest nudge-box-button">
+								Select
+							</kv-button>
+							<kv-button
+								v-else
+								:tabindex="index + 1"
+								class="smallest nudge-box-button">
 								Select
 							</kv-button>
 						</div>
@@ -84,7 +96,9 @@
 							class="nudge-box-bottom nudge-box-custom-donation"
 							@click="setCustomDonationAndClose"
 						>
-							<kv-button class="smallest nudge-box-button">
+							<kv-button
+								class="smallest nudge-box-button custom-amount-submit"
+								tabindex="11">
 								Submit
 							</kv-button>
 						</div>
@@ -243,13 +257,43 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		currentDonationAmount: {
+			type: String,
+			default: ''
+		},
 	},
 	data() {
 		return {
 			selectedDonationRadio: 15,
 		};
 	},
+	computed: {
+		customDonationSelected() {
+			const donationOptions = this.percentageRows
+				.map(({ percentage }) => numeral(this.getDonationByPercent(percentage)).format('$0.00'));
+			return !donationOptions.includes(this.currentDonationAmount);
+		},
+	},
 	methods: {
+		formatAndSubmitOnEnter() {
+			const customInput = document.getElementById('customDonationInput');
+			const customInputButton = document.querySelector('.custom-amount-submit');
+
+			// Setting up listener for customInput field
+			customInput.addEventListener('keyup', event => {
+				// When keyup event happens on the Enter key perform the following fuctions
+				if (event.keyCode === 13) {
+					customInput.blur();
+					customInputButton.click();
+				}
+			});
+		},
+		openNudgeLightbox() {
+			if (this.currentDonationAmount && this.customDonationSelected) {
+				this.setInputs(this.currentDonationAmount);
+			}
+			setTimeout(() => { document.getElementById('first-button').focus(); }, 500);
+		},
 		getDonationByPercent(percent) {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},

@@ -22,10 +22,24 @@ module.exports = merge(base, {
 		enableSentry: true,
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',
 		algoliaConfig: {
-			appId: 'H4ONVZQ2C6',
-			apiKey: 'a373a52c000e929706c9e02a5862a327',
-			defaultIndex: 'dev_all_loans',
-			fundraisingIndex: 'dev_fundraising_loans',
+			group: 'dev',
+			appId: 'testingZ9YK0WNQ85',
+			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
+			defaultIndex: 'dev_fundraising_loans',
+		},
+		auth0: {
+			loginRedirectUrls: {
+				iHNp5rV3XxaozU7B50oXpNye6RCAE5OD: 'http://admin.stage.kiva.org/login',
+				fNYmJqpKX6mWiz1Evk8b1eqbM9KoeQ45: 'http://partners.stage.kiva.org/login',
+				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'http://stage.kiva.org/authenticate',
+			},
+			enable: false,
+			apiAudience: 'https://api.stage.kivaws.org/graphql',
+			browserClientID: 'pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe',
+			serverClientID: 'Ch7rwGop9lctGpm5KfEl6VTVMrqKoWZ4',
+			browserCallbackUri: 'https://www.stage.kiva.org/process-browser-auth',
+			serverCallbackUri: 'https://www.stage.kiva.org/process-ssr-auth',
+			domain: 'login.stage.kiva.org',
 		},
 	},
 	server: {

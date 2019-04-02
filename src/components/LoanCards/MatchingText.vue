@@ -1,7 +1,7 @@
 <template functional>
 	<span
 		class="small-text matching-text"
-		:class="{'has-match': props.matchingText, 'is-funded': props.isFunded }"
+		:class="{'has-match': props.matchingText, 'hide-match': props.isFunded || props.isSelectedByAnother }"
 	>
 		2x matching by {{ props.matchingText }}
 	</span>
@@ -22,7 +22,7 @@
 		visibility: visible;
 	}
 
-	&.has-match.is-funded {
+	&.has-match.hide-match {
 		visibility: hidden;
 	}
 }

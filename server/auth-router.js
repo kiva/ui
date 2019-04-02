@@ -6,8 +6,15 @@ const Auth0Strategy = require('passport-auth0');
 
 module.exports = function authRouter(config = {}) {
 	const router = express.Router();
-
-	if (!config.enableAuth0) {
+	router.use('/error', (req, res, next) => {
+		if (req.query.error === 'access_denied') {
+			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
+			res.redirect(loginRedirectUrl);
+		} else {
+			next();
+		}
+	});
+	if (!config.auth0.enable) {
 		// return routes that redirect to kiva/kiva login
 		router.get('/ui-login', (req, res) => res.redirect('/login'));
 		router.get('/ui-logout', (req, res) => res.redirect('/logout'));
@@ -15,10 +22,10 @@ module.exports = function authRouter(config = {}) {
 	}
 
 	passport.use(new Auth0Strategy({
-		domain: config.auth0Domain,
-		clientID: config.auth0ServerClientID,
+		domain: config.auth0.domain,
+		clientID: config.auth0.serverClientID,
 		clientSecret: process.env.UI_AUTH0_CLIENT_SECRET,
-		callbackURL: config.auth0ServerCallbackUri,
+		callbackURL: config.auth0.serverCallbackUri,
 	}, (accessToken, refreshToken, extraParams, profile, done) => {
 		return done(null, { ...profile, accessToken });
 	}));
@@ -36,13 +43,13 @@ module.exports = function authRouter(config = {}) {
 		}
 		next();
 	}, passport.authenticate('auth0', {
-		audience: config.auth0ApiAudience,
-		scope: config.auth0Scope,
+		audience: config.auth0.apiAudience,
+		scope: config.auth0.scope,
 	}), (req, res) => res.redirect('/'));
 
 	router.get('/ui-logout', (req, res) => {
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
-		const logoutUrl = `https://${config.auth0Domain}/v2/logout?returnTo=${returnUrl}`;
+		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
 		req.logout();
 		res.redirect(logoutUrl);
 	});

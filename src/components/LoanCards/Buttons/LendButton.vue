@@ -35,10 +35,6 @@ export default {
 			type: [Number, String],
 			default: 25,
 		},
-		lendIncrementButtonVersion: {
-			type: String,
-			default: ''
-		},
 	},
 	data() {
 		return {
@@ -55,19 +51,17 @@ export default {
 					price: numeral(this.price).format('0.00'),
 				},
 			}).then(({ errors }) => {
+				this.$emit('add-to-basket', {
+					loanId: this.loanId,
+					success: !errors,
+				});
+
 				if (errors) {
 					// Handle errors from adding to basket
 					_forEach(errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
 				} else {
-					// If no errors, update the loan fundraising info
-					try {
-						this.trackCash557();
-					} catch (e) {
-						console.error(e);
-					}
-
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {
@@ -85,15 +79,6 @@ export default {
 		setLoading(isLoading) {
 			this.loading = isLoading;
 			this.$emit('update:loading', isLoading);
-		},
-		trackCash557() {
-			if (this.lendIncrementButtonVersion !== null) {
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-557-click-lendnow',
-					this.price
-				);
-			}
 		},
 	},
 };

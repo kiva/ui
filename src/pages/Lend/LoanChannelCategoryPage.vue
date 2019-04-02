@@ -19,7 +19,6 @@
 						:loan="loan"
 						:is-visitor="isVisitor"
 						:items-in-basket="itemsInBasket"
-						:lend-increment-button-version="lendIncrementExpVersion"
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
@@ -29,6 +28,8 @@
 				</div>
 			</div>
 		</div>
+
+		<add-to-basket-interstitial />
 	</www-page>
 </template>
 
@@ -41,13 +42,16 @@ import _filter from 'lodash/filter';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
+import cookieStore from '@/util/cookieStore';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
+import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoadingOverlay from './LoadingOverlay';
 
 const loansPerPage = 12;
@@ -97,9 +101,10 @@ export default {
 		GridLoanCard,
 		KvPagination,
 		LoadingOverlay,
-		ViewToggle
+		ViewToggle,
+		AddToBasketInterstitial,
 	},
-	inject: ['apollo', 'cookieStore'],
+	inject: ['apollo'],
 	metaInfo: {
 		title: 'Fundraising loans'
 	},
@@ -114,7 +119,6 @@ export default {
 			itemsInBasket: [],
 			pageQuery: { page: '1' },
 			loading: false,
-			lendIncrementExpVersion: null,
 		};
 	},
 	computed: {
@@ -165,10 +169,8 @@ export default {
 							fromUrlParams(pageQuery)
 						)
 					}),
-					// setting for lend increment button is prefetched in loanChannelPageQuery
-					// TODO: REMOVE Once Lend Increment Button EXP ENDS
-					// Pre-fetch the assigned version for lend increment button
-					client.query({ query: experimentQuery, variables: { id: 'lend_increment_button_v2' } })
+					// experiment: add to basket interstitial
+					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
 				]);
 			});
 		}
@@ -188,8 +190,9 @@ export default {
 			query: loanChannelQuery,
 			variables: _merge(
 				this.loanQueryVars,
-				fromUrlParams(this.pageQuery)
-			)
+				fromUrlParams(this.pageQuery),
+				{ basketId: cookieStore.get('kvbskt') }
+			),
 		});
 		// Assign our initial view data
 		this.isLoggedIn = !!_get(baseData, 'my');
@@ -218,14 +221,19 @@ export default {
 			}
 		});
 
-		// Read assigned version of lend increment button experiment
-		const lendIncrementExperimentAssignment = this.apollo.readQuery({
+		// get assignment for add to basket interstitial
+		const addToBasketPopupEXP = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'lend_increment_button_v2' },
+			variables: { id: 'add_to_basket_popup' },
 		});
-		this.lendIncrementExpVersion = _get(lendIncrementExperimentAssignment, 'experiment.version') || null;
-		if (this.lendIncrementExpVersion !== null) {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-557', this.lendIncrementExpVersion.replace('variant-', ''));
+		// Update @client state if interstitial exp is active
+		if (_get(addToBasketPopupEXP, 'experiment.version') === 'shown') {
+			this.apollo.mutate({
+				mutation: updateAddToBasketInterstitial,
+				variables: {
+					active: true,
+				}
+			});
 		}
 	},
 	methods: {
@@ -256,7 +264,7 @@ export default {
 	beforeRouteLeave(to, from, next) {
 		if (typeof window !== 'undefined' && to.path.indexOf('/lend/') !== -1) {
 			// set cookie to signify redirect
-			this.cookieStore.set('redirectFromUi', true);
+			cookieStore.set('redirectFromUi', true);
 		}
 		next();
 	}

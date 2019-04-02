@@ -1,5 +1,5 @@
-mutation checkout {
-	shop {
+mutation checkout($basketId: String) {
+	shop (basketId: $basketId) {
 		checkout
 	}
 }

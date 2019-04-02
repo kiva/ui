@@ -7,9 +7,17 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<filter-menu-section title="Categories" :open="true" :result-count="10">
-					<ais-refinement-list :attribute="'sector.name'" />
-				</filter-menu-section>
+				<filter-section-gender :filter-menu-open="filterMenuOpen" />
+				<filter-section-sort :default-sort-indices="defaultSortIndices"/>
+				<filter-section-categories
+					:result-count="10"
+					:custom-categories="customCategories"
+					:selected-custom-categories="selectedCustomCategories"
+					@toggle-custom-category="toggleCustomCategory"
+				/>
+				<filter-section-location :result-count="10" />
+				<filter-section-range-slider :result-count="4" :filter-menu-open="filterMenuOpen" />
+
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced Filters
 				</div>
@@ -22,35 +30,55 @@
 </template>
 
 <script>
-// import _throttle from 'lodash/throttle';
 
+import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
+import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
+import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
+import FilterSectionRangeSlider from '@/pages/Lend/Filter/FilterSectionRangeSlider';
+import FilterSectionSort from '@/pages/Lend/Filter/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';
-
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-
-import { AisRefinementList } from 'vue-instantsearch';
 
 export default {
 	components: {
+		FilterSectionCategories,
+		FilterSectionGender,
+		FilterSectionLocation,
+		FilterSectionRangeSlider,
+		FilterSectionSort,
 		KvIcon,
-		FilterMenuSection,
-		AisRefinementList,
 	},
 	data() {
 		return {
 			filterMenuOpen: false,
 		};
 	},
+	props: {
+		customCategories: {
+			type: Object,
+			required: true,
+		},
+		defaultSortIndices: {
+			type: Array,
+			required: true,
+		},
+		selectedCustomCategories: {
+			type: Object,
+			required: true,
+		},
+	},
 	methods: {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
 		},
-		toggleFilterMenu() {
-			this.filterMenuOpen = !this.filterMenuOpen;
-		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';
 		},
+		toggleFilterMenu() {
+			this.filterMenuOpen = !this.filterMenuOpen;
+		},
+		toggleCustomCategory(categoryId) {
+			this.$emit('toggle-custom-category', categoryId);
+		}
 	},
 };
 </script>
@@ -68,7 +96,7 @@ export default {
 		width: 100vw;
 		top: 0;
 		left: 0;
-		z-index: 1;
+		z-index: 1001;
 		pointer-events: none;
 		background-color: rgba(0, 0, 0, 0);
 		transition: background-color $filter-transition;
@@ -82,7 +110,7 @@ export default {
 			position: absolute;
 			top: 0;
 			left: 0;
-			z-index: 1;
+			z-index: 1001;
 			padding: 0.25rem 0.25rem 0.25rem 0.5rem;
 			user-select: none;
 			height: 2rem;
@@ -105,7 +133,8 @@ export default {
 			top: 2rem;
 			left: 0;
 			opacity: 0;
-			z-index: 1;
+			z-index: 1001;
+			overflow: hidden;
 			user-select: none;
 			pointer-events: none;
 			min-width: rem-calc(270);

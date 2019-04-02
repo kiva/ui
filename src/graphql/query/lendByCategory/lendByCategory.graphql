@@ -1,4 +1,4 @@
-query {
+query($basketId: String) {
 	general {
 		rows: setting(setting: "ui.category_rows") {
 			value
@@ -11,10 +11,6 @@ query {
 			key
 			value
 		}
-		lendIncrementExp: setting(setting: "uiexp.lend_increment_button_v2") {
-			key
-			value
-		}
 		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loan_row") {
 			key
 			value
@@ -23,7 +19,15 @@ query {
 			key
 			value
 		}
-		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan") {
+		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan_v2") {
+			key
+			value
+		}
+		categoryDescriptionExperiment: setting(setting: "uiexp.category_description") {
+			key
+			value
+		}
+		addToBasketPopup: setting(setting: "uiexp.add_to_basket_popup") {
 			key
 			value
 		}
@@ -31,7 +35,7 @@ query {
 	my {
 		isAdmin
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			items {
 				values {

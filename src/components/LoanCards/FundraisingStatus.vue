@@ -1,5 +1,5 @@
 <template functional>
-	<div>
+	<div :class="{ 'single-line': props.singleLine }">
 		<div class="fundraising-meter progress">
 			<span v-if="props.isFunded"
 				class="meter"
@@ -34,6 +34,7 @@
 			background-color: $kiva-green;
 			display: block;
 			height: 100%;
+			transition: width 1s;
 		}
 	}
 
@@ -52,5 +53,19 @@
 
 	.loan-message {
 		color: $kiva-text-dark;
+	}
+
+	.single-line {
+		align-items: baseline;
+		display: flex;
+		flex-direction: row;
+
+		.fundraising-meter {
+			width: 60%;
+		}
+
+		.left-and-to-go-line {
+			margin-left: rem-calc(8);
+		}
 	}
 </style>

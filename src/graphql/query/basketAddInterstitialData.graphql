@@ -1,0 +1,42 @@
+query(
+	$basketId: String,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+) {
+	shop (basketId: $basketId) {
+		basket {
+			items {
+				totalCount
+				values {
+					id
+					price
+					... on LoanReservation {
+						expiryTime
+						isEndingSoon
+						loan {
+							id
+							name
+							use
+							plannedExpirationDate
+							loanFundraisingInfo {
+								isExpiringSoon
+								fundedAmount
+								reservedAmount
+							}
+							image {
+								id
+								hash
+								default: url(customSize: $imgDefaultSize)
+								retina: url(customSize: $imgRetinaSize)
+							}
+						}
+					}
+				}
+			}
+			totals {
+				itemTotal
+				loanReservationTotal
+			}
+		}
+	}
+}

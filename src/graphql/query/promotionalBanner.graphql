@@ -1,11 +1,11 @@
-query {
+query($basketId: String) {
 	my {
 		userAccount {
 			id
 			promoBalance
 		}
 	}
-	shop {
+	shop (basketId: $basketId) {
 		basket {
 			hasFreeCredits
 			totals {
