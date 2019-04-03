@@ -386,7 +386,7 @@ export default {
 				variables: {
 					amount: numeral(this.amount).format('0.00'),
 					nonce,
-					savePaymentMethod: this.storePaymentMethod // TODO: Activate with bt vault
+					savePaymentMethod: this.storePaymentMethod
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction
