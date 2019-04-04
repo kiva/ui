@@ -220,6 +220,13 @@ export default {
 		};
 	},
 	mounted() {
+		// Initialize algolia anayltics library
+		if (window.aa) {
+			window.aa('init', {
+				appId: this.algoliaAppId,
+				apiKey: this.algoliaApiKey,
+			});
+		}
 		// initialize searchClient + components on mount
 		// TODO: update initialization once vue-instantsearch V2 supports SSR
 		this.searchClient = algoliasearch(

@@ -75,6 +75,8 @@
 							interactionType: 'addToBasket',
 							interactionElement: 'Lend25'
 						})"
+
+						@add-to-basket="$emit('add-to-basket', $event)"
 					/>
 					<matching-text
 						:matching-text="loan.matchingText"
