@@ -21,11 +21,11 @@ export default {
 	props: {
 		browseUrl: {
 			type: String,
-			default: '/lend-by-category'
+			default: ''
 		},
 		filterUrl: {
 			type: String,
-			default: '/lend'
+			default: ''
 		},
 	}
 };
