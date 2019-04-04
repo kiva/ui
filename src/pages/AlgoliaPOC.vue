@@ -258,6 +258,18 @@ export default {
 		});
 		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
 
+		this.apollo.watchQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		}).subscribe({
+			next: ({ data }) => {
+				console.log(data);
+				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			},
+		});
+
 		const userData = this.apollo.readQuery({
 			query: userStatus
 		});

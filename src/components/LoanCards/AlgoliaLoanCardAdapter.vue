@@ -6,7 +6,6 @@
 			:is-visitor="!isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:loan-card-type="loanCardType"
-			:algolia-props="algoliaProps"
 			@add-to-basket="handleAddToBasket"
 		/>
 		<!--

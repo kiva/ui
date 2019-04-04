@@ -17,6 +17,7 @@
 					<ais-configure
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
+						clickAnalytics="true"
 						ref="aisConfigure"
 					/>
 					<selected-refinements
@@ -25,20 +26,25 @@
 						@remove-custom-category="removeCustomCategory"
 						@clear-custom-categories="clearCustomCategories"
 					/>
-					<ais-hits
-						class="loan-card-group row"
-						:results-per-page="12">
-						<template slot="default" slot-scope="{ items }">
-							<algolia-adapter
-								v-for="item in items" :key="item.id"
-								:loan="item"
-								:items-in-basket="itemsInBasket"
-								:is-logged-in="isLoggedIn"
-								loan-card-type="ListLoanCard"
-								class="small-12 columns"
-							/>
+					<ais-state-results>
+						<template slot-scope="{ page, hitsPerPage, queryID, index }">
+							<ais-hits
+								class="loan-card-group row"
+								:results-per-page="12">
+								<template slot="default" slot-scope="{ items }">
+									<algolia-adapter
+										v-for="(item, itemIndex) in items" :key="item.id"
+										:loan="item"
+										:items-in-basket="itemsInBasket"
+										:is-logged-in="isLoggedIn"
+										loan-card-type="ListLoanCard"
+										:algolia-props="{ page, hitsPerPage, queryID, index, itemIndex, item }"
+										class="small-12 columns"
+									/>
+								</template>
+							</ais-hits>
 						</template>
-					</ais-hits>
+					</ais-state-results>
 					<algolia-pagination-wrapper :padding="2" />
 					<algolia-pagination-stats :padding="2" />
 				</div>
@@ -67,6 +73,7 @@ import {
 	AisConfigure,
 	AisInstantSearch,
 	AisHits,
+	AisStateResults,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
@@ -84,6 +91,7 @@ export default {
 		AisConfigure,
 		AisInstantSearch,
 		AisHits,
+		AisStateResults,
 		AlgoliaAdapter,
 		AlgoliaPaginationWrapper,
 		AlgoliaPaginationStats,
@@ -104,6 +112,18 @@ export default {
 			},
 		});
 		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
+
+		this.apollo.watchQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		}).subscribe({
+			next: ({ data }) => {
+				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			},
+		});
+
 		// Set user status
 		const userData = this.apollo.readQuery({ query: userStatus });
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
