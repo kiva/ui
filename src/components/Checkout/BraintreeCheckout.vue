@@ -1,6 +1,17 @@
 <template>
 	<div class="braintree-holder">
 		<form id="braintree-payment-form">
+
+			<!-- Saved credit card data -->
+			<div class="row small-collapse braintree-form-row">
+				<div class="small-12 columns">
+					<input
+						type="radio">
+					<kvIcon>CREDIT CARD IMAGE</kvIcon>
+					<p>...0988</p>
+				</div>
+			</div>
+
 			<!-- Card number input -->
 			<div class="row small-collapse braintree-form-row">
 				<div class="small-12 columns">
