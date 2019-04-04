@@ -6,6 +6,8 @@
 			:is-visitor="!isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:loan-card-type="loanCardType"
+			:algolia-props="algoliaProps"
+			@add-to-basket="handleAddToBasket"
 		/>
 		<!--
 			Add tracking later
@@ -47,6 +49,10 @@ export default {
 		loanCardType: {
 			type: String,
 			required: true,
+		},
+		algoliaProps: {
+			type: Object,
+			default: () => {}
 		},
 	},
 	data() {
@@ -122,6 +128,20 @@ export default {
 					};
 				}
 			});
+		},
+		handleAddToBasket(payload) {
+			if (typeof window === 'undefined') return false;
+			console.log(payload);
+			console.log(this.algoliaProps);
+			// track algolia conversion if add to basket was successful
+			if (window.aa && payload.success) {
+				window.aa('convertedObjectIDs', {
+					eventName: 'Add to Cart',
+					index: this.algoliaProps.index,
+					queryID: this.algoliaProps.queryID,
+					objectIDs: [this.algoliaProps.item.objectID],
+				});
+			}
 		}
 	}
 };

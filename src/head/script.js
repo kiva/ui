@@ -42,6 +42,15 @@ export default config => {
 			ga('create', config.gaId, 'auto');
 			/* eslint-enable */
 		}
+
+		if (config.algoliaConfig.enableAA && !optout) {
+			/* eslint-disable */
+			(function(e,a,t,n,s,i,c){e.AlgoliaAnalyticsObject=s,e.aa=e.aa||function(){
+				(e.aa.queue=e.aa.queue||[]).push(arguments)},i=a.createElement(t),c=a.getElementsByTagName(t)
+				[0],i.async=1,i.src="https://cdn.jsdelivr.net/npm/search-insights@1.0.0",
+				c.parentNode.insertBefore(i,c)})(window,document,"script",0,"aa");
+			/* eslint-enable */
+		}
 	}
 
 	// Facebook JSSDK

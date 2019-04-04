@@ -73,6 +73,7 @@ export default {
 	},
 	methods: {
 		handleAddToBasketEvent(payload) {
+			this.$emit('add-to-basket', payload);
 			if (payload.success) {
 				this.triggerAddToBasketInterstitial(payload.loanId);
 			}

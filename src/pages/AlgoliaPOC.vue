@@ -18,6 +18,7 @@
 						<!-- :disjunctiveFacets="disjunctiveFacetsKeys" -->
 						<ais-configure
 							:hitsPerPage="12"
+							clickAnalytics="true"
 							ref="aisConfigure"
 							:disjunctiveFacetsRefinements="disjunctiveFacets"
 						>
@@ -27,9 +28,18 @@
 							</div>
 						</ais-configure>
 
+						<ais-state-results>
+							<template slot-scope="{ index }">
+								<small>{{ index }}</small>
+							</template>
+						</ais-state-results>
+
 						<ais-current-refinements />
 
-						<selected-refinements @facet-removed="handleFacetRemoved" :selected-custom-categories="{}"/>
+						<!-- <selected-refinements
+							@facet-removed="handleFacetRemoved"
+							:selected-custom-categories="{}"
+							:custom-categorties="customCategoryList" /> -->
 
 						<!-- POC for Custom Categories Refinements -->
 						<!-- > does NOT currently support count -->
@@ -65,20 +75,26 @@
 							:limit="100" />
 						<ais-sort-by :items="defaultSortIndices"/>
 
-						<ais-hits
-							class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
-							:results-per-page="12">
-							<template slot="default" slot-scope="{ items }">
-								<algolia-adapter
-									v-for="item in items" :key="item.id"
-									:loan="item"
-									:items-in-basket="itemsInBasket"
-									:is-logged-in="isLoggedIn"
-									loan-card-type="GridLoanCard"
-									class="column-block columns"
-								/>
+
+						<ais-state-results>
+							<template slot-scope="{ page, hitsPerPage, queryID, index }">
+								<ais-hits
+									class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
+									:results-per-page="12">
+									<template slot="default" slot-scope="{ items }">
+										<algolia-adapter
+											v-for="(item, itemIndex) in items" :key="item.id"
+											:loan="item"
+											:items-in-basket="itemsInBasket"
+											:is-logged-in="isLoggedIn"
+											:algolia-props="{ page, hitsPerPage, queryID, index, itemIndex, item }"
+											loan-card-type="GridLoanCard"
+											class="column-block columns"
+										/>
+									</template>
+								</ais-hits>
 							</template>
-						</ais-hits>
+						</ais-state-results>
 
 						<ais-pagination :padding="2" />
 						<ais-stats />
@@ -119,6 +135,7 @@ import {
 	AisBreadcrumb,
 	AisStats,
 	AisSortBy,
+	AisStateResults,
 } from 'vue-instantsearch';
 
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
@@ -146,7 +163,8 @@ export default {
 		KvCheckbox,
 		AlgoliaAdapter,
 		AisSortBy,
-		SelectedRefinements
+		SelectedRefinements,
+		AisStateResults,
 	},
 	inject: [
 		'apollo',
@@ -156,7 +174,7 @@ export default {
 		algoliaInit
 	],
 	metaInfo: {
-		title: 'Algolia Search'
+		title: 'Algolia Search',
 	},
 	data() {
 		return {

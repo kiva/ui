@@ -16,6 +16,7 @@
 		:is="loanCardType"
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
+		@add-to-basket="handleAddToBasket"
 	/>
 </template>
 
@@ -208,6 +209,9 @@ export default {
 				console.error(error);
 			});
 		},
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		}
 	},
 };
 </script>
