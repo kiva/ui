@@ -130,8 +130,6 @@ export default {
 		},
 		handleAddToBasket(payload) {
 			if (typeof window === 'undefined') return false;
-			console.log(payload);
-			console.log(this.algoliaProps);
 			// track algolia conversion if add to basket was successful
 			if (window.aa && payload.success) {
 				window.aa('convertedObjectIDs', {
