@@ -1,7 +1,7 @@
 <template>
 	<div class="row lend-header-row">
 		<div class="heading-region column small-12">
-			<view-toggle />
+			<view-toggle :browse-url="browseUrl" :filter-url="filterUrl" />
 
 			<h1>Make a loan, <br class="hide-for-medium">change a life</h1>
 			<p class="page-subhead show-for-large">
@@ -17,6 +17,16 @@ import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 export default {
 	components: {
 		ViewToggle,
+	},
+	props: {
+		browseUrl: {
+			type: String,
+			default: '/lend-by-category'
+		},
+		filterUrl: {
+			type: String,
+			default: '/lend'
+		},
 	}
 };
 </script>
