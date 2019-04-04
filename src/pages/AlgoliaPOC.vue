@@ -265,7 +265,6 @@ export default {
 			},
 		}).subscribe({
 			next: ({ data }) => {
-				console.log(data);
 				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 			},
 		});
