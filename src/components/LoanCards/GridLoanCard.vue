@@ -64,52 +64,57 @@
 </template>
 
 <script>
-import {
-	differenceInMinutes,
-	differenceInHours,
-	differenceInDays
-} from 'date-fns';
-import LoanCardImage from '@/components/LoanCards/LoanCardImage';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
-import _forEach from 'lodash/forEach';
 
 export default {
 	components: {
-		LoanCardImage,
+		ActionButton,
 		BorrowerInfo,
 		FundraisingStatus,
+		LoanCardImage,
 		MatchingText,
-		ActionButton,
 	},
 	inject: ['apollo'],
 	props: {
-		cardNumber: {
+		amountLeft: {
 			type: Number,
-			default: null
+			default: 0,
 		},
-		categoryId: {
-			type: Number,
-			default: null
+		experimentData: {
+			type: Object,
+			default: () => {},
 		},
-		categorySetId: {
+		expiringSoonMessage: {
 			type: String,
 			default: ''
 		},
+		imageEnhancementExperimentVersion: {
+			type: String,
+			default: ''
+		},
+		isFavorite: {
+			type: Boolean,
+			default: false
+		},
+		isFunded: {
+			type: Boolean,
+			default: false
+		},
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false
+		},
 		isVisitor: {
 			type: Boolean,
-			default: true
-		},
-		enableTracking: {
-			type: Boolean,
-			default: false,
+			required: true,
 		},
 		itemsInBasket: {
 			type: Array,
-			default: () => []
+			default: () => [],
 		},
 		loan: {
 			type: Object,
@@ -124,127 +129,23 @@ export default {
 				};
 			}
 		},
-		rowNumber: {
+		percentRaised: {
 			type: Number,
-			default: null
+			default: 0,
 		},
 		title: {
 			type: String,
 			default: ''
 		},
-		imageEnhancementExperimentVersion: {
-			type: String,
-			default: ''
-		},
-	},
-	data() {
-		return {
-			isFavorite: this.loan.userProperties.favorited,
-		};
-	},
-	watch: {
-		// watch for dynamic changes to the loan status to support algolia
-		'loan.userProperties.favorited': {
-			handler() {
-				this.isFavorite = this.loan.userProperties.favorited;
-			},
-			deep: true
-		}
-	},
-	computed: {
-		amountLeft() {
-			const {
-				fundedAmount,
-				reservedAmount
-			} = this.loan.loanFundraisingInfo;
-			return this.loan.loanAmount - fundedAmount - reservedAmount;
-		},
-		isFunded() {
-			return this.loan.status === 'funded';
-		},
-		isSelectedByAnother() {
-			return this.amountLeft <= 0 && !this.isFunded;
-		},
-		percentRaised() {
-			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
-		},
-		expiringSoonMessage() {
-			if (!this.loan.loanFundraisingInfo.isExpiringSoon) {
-				return '';
-			}
-			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
-			if (days >= 2) {
-				return `Only ${days} days left! `;
-			}
-			const hours = differenceInHours(this.loan.plannedExpirationDate, Date.now());
-			if (hours >= 2) {
-				return `Only ${hours} hours left! `;
-			}
-			const mins = differenceInMinutes(this.loan.plannedExpirationDate, Date.now());
-			if (mins >= 2) {
-				return `Only ${mins} minutes left! `;
-			}
-			return 'Expiring now!';
-		},
-
 	},
 	methods: {
 		toggleFavorite() {
-			// optimistically toggle it locally first
-			this.isFavorite = !this.isFavorite;
-
-			this.apollo.mutate({
-				mutation: loanFavoriteMutation,
-				variables: {
-					loan_id: this.loan.id,
-					is_favorite: this.isFavorite
-				}
-			}).then(data => {
-				if (data.errors) {
-					this.isFavorite = !this.isFavorite;
-					_forEach(data.errors, ({ message }) => {
-						this.$showTipMsg(message, 'error');
-					});
-				} else {
-					this.$kvTrackEvent(
-						'Lending',
-						'Loan Favorite Toggled',
-						this.isFavorite === true ? 'Favorite Loan Added'
-							: 'Loan Favorite Removed', this.isFavorite
-					);
-					if (this.isFavorite === true) {
-						// eslint-disable-next-line max-len
-						this.$showTipMsg('This loan has been saved to your "Starred loans" list, which is accessible under the "Lend" menu in the header.', 'confirm');
-					}
-				}
-				// Catch other errors
-			}).catch(error => {
-				this.isFavorite = !this.isFavorite;
-				console.error(error);
-			});
+			this.$emit('toggle-favorite');
 		},
 		trackInteraction(args) {
-			if (!this.enableTracking) {
-				return;
-			}
-
-			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_loan_interaction_event_schema_1_0_0.json#';
-			const interactionType = args.interactionType || 'unspecified';
-			const interactionElement = args.interactionElement || 'unspecified';
-			const loanInteractionTrackData = { schema, data: {} };
-
-			loanInteractionTrackData.data.interactionType = interactionType;
-			loanInteractionTrackData.data.interactionElement = interactionElement;
-			loanInteractionTrackData.data.loanId = this.loan.id;
-			loanInteractionTrackData.data.categorySetIdentifier = this.categorySetId;
-			loanInteractionTrackData.data.categoryId = this.categoryId;
-			loanInteractionTrackData.data.row = this.rowNumber;
-			loanInteractionTrackData.data.position = this.cardNumber;
-
-			this.$kvTrackSelfDescribingEvent(loanInteractionTrackData);
-		},
-	}
+			this.$emit('track-interaction', args);
+		}
+	},
 };
 </script>
 

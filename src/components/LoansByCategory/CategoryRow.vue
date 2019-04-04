@@ -39,6 +39,7 @@
 				>
 					<component
 						:is="loanCardType"
+						loan-card-type="GridLoanCard"
 						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
@@ -85,7 +86,7 @@
 import _get from 'lodash/get';
 import _kebabCase from 'lodash/kebabCase';
 import _throttle from 'lodash/throttle';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 
 const minWidthToShowLargeCards = 340;
@@ -94,7 +95,7 @@ const largeCardWidthPlusPadding = 300;
 
 export default {
 	components: {
-		GridLoanCard,
+		LoanCardController,
 		GridMicroLoanCard
 	},
 	inject: ['apollo'],
@@ -145,7 +146,7 @@ export default {
 	},
 	computed: {
 		loanCardType() {
-			return this.isMicro ? 'GridMicroLoanCard' : 'GridLoanCard';
+			return this.isMicro ? 'GridMicroLoanCard' : 'LoanCardController';
 		},
 		loanCardTypeKebabCase() {
 			return _kebabCase(this.loanCardType);
