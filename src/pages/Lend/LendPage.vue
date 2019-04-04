@@ -9,12 +9,13 @@
 
 			<div class="columns small-12">
 				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<GridLoanCard
+					<loan-card-controller
 						v-for="loan in loans"
-						:key="loan.id"
-						:loan="loan"
 						:is-visitor="isVisitor"
 						:items-in-basket="itemsInBasket"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
@@ -37,7 +38,7 @@ import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import LoadingOverlay from './LoadingOverlay';
 
@@ -72,7 +73,7 @@ function fromUrlParams(params) {
 export default {
 	components: {
 		WwwPage,
-		GridLoanCard,
+		LoanCardController,
 		KvPagination,
 		LoadingOverlay,
 	},

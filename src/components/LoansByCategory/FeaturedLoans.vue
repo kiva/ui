@@ -20,7 +20,7 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<GridLoanCard
+					<loan-card-controller
 						class="is-in-featured"
 						:loan="loan1"
 						:category-id="featuredCategoryIds[0]"
@@ -32,9 +32,10 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+						loan-card-type="GridLoanCard"
 					/>
 
-					<GridLoanCard
+					<loan-card-controller
 						class="is-in-featured"
 						:loan="loan2"
 						:category-id="featuredCategoryIds[1]"
@@ -46,9 +47,10 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+						loan-card-type="GridLoanCard"
 					/>
 
-					<GridLoanCard
+					<loan-card-controller
 						class="is-in-featured"
 						:loan="loan3"
 						:category-id="featuredCategoryIds[2]"
@@ -60,6 +62,7 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+						loan-card-type="GridLoanCard"
 					/>
 				</div>
 			</div>
@@ -81,7 +84,7 @@ import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
@@ -92,7 +95,7 @@ const featuredCategoryIds = [56, 60, 54];
 
 export default {
 	components: {
-		GridLoanCard,
+		LoanCardController,
 	},
 	inject: ['apollo'],
 	props: {

@@ -13,12 +13,13 @@
 
 			<div class="columns small-12">
 				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<GridLoanCard
+					<loan-card-controller
 						v-for="loan in loans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
 						:key="loan.id"
 						:loan="loan"
-						:is-visitor="isVisitor"
-						:items-in-basket="itemsInBasket"
+						loan-card-type="GridLoanCard"
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
@@ -48,7 +49,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
@@ -98,7 +99,7 @@ function getTargetedChannel(targetedRoute, allChannels) {
 export default {
 	components: {
 		WwwPage,
-		GridLoanCard,
+		LoanCardController,
 		KvPagination,
 		LoadingOverlay,
 		ViewToggle,

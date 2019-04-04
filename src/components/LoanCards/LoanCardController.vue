@@ -1,18 +1,19 @@
 <template>
 	<component
-		:is="loanCardType"
-		:key="loan.id"
-		:loan="loan"
-		:items-in-basket="itemsInBasket"
-		:is-visitor="isVisitor"
-		:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-		:is-favorite="isFavorite"
-		:expiring-soon-message="expiringSoonMessage"
-		:percent-raised="percentRaised"
-		:is-funded="isFunded"
-		:is-selected-by-another="isSelectedByAnother"
 		:amount-left="amountLeft"
 		:experiment-data="experimentData"
+		:expiring-soon-message="expiringSoonMessage"
+		:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+		:is-favorite="isFavorite"
+		:is-funded="isFunded"
+		:is-selected-by-another="isSelectedByAnother"
+		:is-visitor="isVisitor"
+		:items-in-basket="itemsInBasket"
+		:key="loan.id"
+		:loan="loan"
+		:percent-raised="percentRaised"
+		:title="title"
+		:is="loanCardType"
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
 	/>
@@ -91,7 +92,11 @@ export default {
 		experimentData: {
 			type: Object,
 			default: () => {},
-		}
+		},
+		title: {
+			type: String,
+			default: ''
+		},
 	},
 	inject: ['apollo'],
 	computed: {
