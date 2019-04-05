@@ -3,7 +3,7 @@ query (
 	$numberOfLoans: Int = 1,
 ) {
 	lend {
-		loans(limit: $numberOfLoans, filters: {loanIds: $ids}) {
+		loans(limit: $numberOfLoans, filters: {loanIds: $ids, status: all}) {
 			totalCount
 			values {
 				id
