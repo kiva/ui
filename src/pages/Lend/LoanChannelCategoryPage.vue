@@ -106,8 +106,10 @@ export default {
 		AddToBasketInterstitial,
 	},
 	inject: ['apollo'],
-	metaInfo: {
-		title: 'Fundraising loans'
+	metaInfo() {
+		return {
+			title: this.pageTitle
+		};
 	},
 	data() {
 		return {
@@ -144,6 +146,13 @@ export default {
 		filterUrl() {
 			// initial release sends us back to /lend
 			return `/lend/${this.$route.params.category || ''}`;
+		},
+		pageTitle() {
+			let title = 'Fundraising loans';
+			if (this.loanChannel && this.loanChannel.name) {
+				title = `${this.loanChannel.name}`;
+			}
+			return title;
 		}
 	},
 	apollo: {
@@ -180,6 +189,8 @@ export default {
 		const allChannelsData = this.apollo.readQuery({
 			query: loanChannelPageQuery
 		});
+		// set user status
+		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
 		// filter routes on param.category to get current path
 		const targetedLoanChannelURL = _get(this.$route, 'params.category');
 		// isolate targeted loan channel id
@@ -195,9 +206,8 @@ export default {
 				{ basketId: cookieStore.get('kvbskt') }
 			),
 		});
+
 		// Assign our initial view data
-		this.isLoggedIn = !!_get(baseData, 'my');
-		this.isVisitor = !_get(baseData, 'my.userAccount.id');
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
 
