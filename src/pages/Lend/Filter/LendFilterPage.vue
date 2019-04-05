@@ -1,6 +1,6 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
-		<lend-header filter-url="/lend/filter" />
+		<lend-header browse-url="/lend-by-category" filter-url="/lend/filter" />
 		<div class="row page-content">
 			<ais-instant-search
 				v-if="searchClient"
