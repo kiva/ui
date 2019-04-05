@@ -394,7 +394,7 @@ a.view-all-link {
 
 // view all loans category card
 .view-all-loans-category {
-	.grid-loan-card {
+	.loan-card-controller {
 		background-color: $very-light-gray;
 		border: 1px solid $kiva-stroke-gray;
 		display: flex;
@@ -410,7 +410,7 @@ a.view-all-link {
 	}
 
 	.grid-micro-loan-card {
-		@extend .grid-loan-card;
+		@extend .loan-card-controller;
 
 		padding: rem-calc(15);
 	}
