@@ -1,6 +1,6 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<lend-header />
+		<lend-header filter-url="/lend" />
 
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
