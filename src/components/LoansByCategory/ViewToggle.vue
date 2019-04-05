@@ -49,8 +49,6 @@ export default {
 @import 'settings';
 
 @mixin toggle-hover($type) {
-	cursor: default;
-
 	:hover {
 		.#{$type}-toggle-icon {
 			fill: $kiva-text-medium;
@@ -81,7 +79,6 @@ export default {
 .view-toggle {
 	.view-text {
 		color: $kiva-text-light;
-		cursor: default;
 	}
 
 	.divider {
@@ -99,7 +96,6 @@ export default {
 
 	.browse-toggle-icon,
 	.filter-toggle-icon {
-		cursor: default;
 		display: block;
 		height: rem-calc(30);
 		width: rem-calc(30);
@@ -108,6 +104,7 @@ export default {
 	}
 
 	.browse-box {
+		cursor: pointer;
 		margin-right: 0.75rem;
 
 		@include breakpoint(xlarge) {
@@ -118,6 +115,7 @@ export default {
 
 		// lend-by-category/<CATEGORY_ID>
 		&.router-link-active {
+			cursor: pointer;
 			@include filter-icon-and-text($kiva-text-light);
 			@include toggle-hover('browse');
 		}
@@ -125,6 +123,7 @@ export default {
 		// lend-by-category
 		&.router-link-exact-active {
 			&.router-link-active {
+				cursor: default;
 				@include filter-icon-and-text($kiva-green);
 			}
 		}
@@ -133,16 +132,21 @@ export default {
 	.filter-box {
 		@include toggle-hover('filter');
 
+		cursor: pointer;
+
 		// lend/filter
 		&.router-link-active {
+			cursor: default;
 			text-decoration: none;
 
 			.filter-toggle-icon {
+				cursor: default;
 				fill: $kiva-green;
 				opacity: 0.85;
 			}
 
 			.view-text {
+				cursor: default;
 				color: $kiva-text-light;
 				text-decoration: none;
 			}
