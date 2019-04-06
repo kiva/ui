@@ -137,7 +137,7 @@ export default {
 
 		// set style for slider
 		sliderStyle() {
-			const sliderLeftColor = '#4faf4e';
+			const sliderLeftColor = '#8ccb8c';
 			const sliderRightColor = '#dbdbdb';
 
 			const selectedStop = this.minimumMaximumSwap === true
@@ -188,13 +188,13 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-$track-height: rem-calc(5);
-$thumb-radius: rem-calc(15);
+$track-height: rem-calc(6);
+$thumb-radius: rem-calc(14);
 
 @mixin thumb {
 	-webkit-appearance: none !important;
-	background: $kiva-green;
-	border: rem-calc(1) solid $kiva-green;
+	background: #60b75f;
+	border: rem-calc(1) solid #60b75f;
 	border-radius: $thumb-radius;
 	cursor: pointer;
 	height: $thumb-radius;
@@ -217,18 +217,22 @@ $thumb-radius: rem-calc(15);
 .range-input {
 	margin-bottom: rem-calc(3);
 
+	.title {
+		color: #484848;
+	}
+
 	.range-label {
-		color: $kiva-text-light;
+		color: #808080;
 	}
 
 	.slider {
-		width: 75%;
+		width: rem-calc(200);
 
 		input[type='range'] {
 			@include track;
 
 			@media screen and (-webkit-min-device-pixel-ratio: 0) {
-				background-color: $kiva-green;
+				background-color: #8ccb8c;
 				height: $track-height;
 			}
 
@@ -262,7 +266,7 @@ $thumb-radius: rem-calc(15);
 			}
 
 			&::-ms-fill-lower {
-				background-color: #4faf4e;
+				background-color: #8ccb8c;
 			}
 
 			&::-ms-fill-upper {
