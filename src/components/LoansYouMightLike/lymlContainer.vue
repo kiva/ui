@@ -20,15 +20,17 @@
 								v-touch:swipe.left="scrollRowRight"
 								v-touch:swipe.right="scrollRowLeft"
 							>
-								<minimal-loan-card
+								<loan-card-controller
 									v-for="(loan, index) in loansYouMightLike"
 									:key="index"
 									class="inside-scrolling-wrapper"
 									:loan="loan"
+									:is-visitor="true"
 									category-set-id="loans-you-might-like"
-									:card-number="index"
+									:card-number="index + 1"
 									:items-in-basket="itemsInBasket"
-									:enable-tracking="true"
+									loan-card-type="AdaptiveMicroLoanCard"
+									@add-to-basket="handleAddToBasket"
 									@refreshtotals="$emit('refreshtotals')"
 									@updating-totals="$emit('updating-totals', $event)"
 								/>
@@ -51,7 +53,7 @@ import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
-import MinimalLoanCard from '@/components/LoansYouMightLike/MinimalLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
 import expSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import expAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -62,17 +64,13 @@ const largeCardWidthPlusPadding = 190;
 
 export default {
 	components: {
-		MinimalLoanCard,
+		LoanCardController,
 	},
 	props: {
 		loans: {
 			type: Array,
 			default: () => [],
 		},
-		// wrapperRef: {
-		// 	type: String,
-		// 	default: 'window'
-		// }
 	},
 	computed: {
 		itemsInBasket() {
@@ -102,15 +100,15 @@ export default {
 			const cardCount = this.lymlVariant === 'variant-a' ? 3 : 4;
 			return (cardCount - this.cardsInWindow) * -this.cardWidth;
 		},
-		throttledResize() {
-			return _throttle(this.saveWindowWidth, 100);
-		},
 		shiftIncrement() {
 			// multiple number of cards by card width to shift a full set ie. this.cardsInWindow * this.cardWidth;
 			return this.cardWidth;
 		},
 		cardClass() {
 			return this.lymlVariant === 'variant-a' ? 'three-cards' : 'four-cards';
+		},
+		carouselActive() {
+			return this.windowWidth > 480;
 		}
 	},
 	data() {
@@ -138,45 +136,13 @@ export default {
 	},
 	mounted() {
 		// we're doing this all client side
-		// this.activateLoansYouMightLike();
 		this.getLoansYouMightLike();
-		window.addEventListener('resize', this.throttledResize);
+		window.addEventListener('resize', this.throttledResize());
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', this.throttledResize);
+		window.removeEventListener('resize', this.throttledResize());
 	},
 	methods: {
-		activateLoansYouMightLike() {
-			// query to get experiment setting
-			this.apollo.query({
-				query: expSettingQuery,
-				variables: { key: 'uiexp.checkout_lyml_4card' },
-			}).then(() => {
-				// query to assign experiment version
-				this.apollo.query({
-					query: expAssignmentQuery,
-					variables: { id: 'checkout_lyml_4card' },
-				}).then(expAssignment => {
-					// update our values
-					this.lymlVariant = _get(expAssignment, 'data.experiment.version');
-
-					// track loans you might like version visibility
-					if (this.lymlVariant !== null) {
-						let version = 'a';
-						if (this.lymlVariant === 'variant-a') {
-							version = 'b';
-						} else if (this.lymlVariant === 'variant-b') {
-							version = 'c';
-						}
-						this.$kvTrackEvent('basket', 'EXP-lyml-checkout', version);
-					}
-
-					if (this.lymlVariant === 'variant-a' || this.lymlVariant === 'variant-b') {
-						this.getLoansYouMightLike();
-					}
-				}).catch(Promise.reject);
-			}).catch(Promise.reject);
-		},
 		getLoansYouMightLike() {
 			this.apollo.query({
 				query: loansYouMightLikeData,
@@ -239,16 +205,19 @@ export default {
 			}
 		},
 		scrollRowLeft() {
-			if (this.scrollPos < 0) {
+			if (this.carouselActive && this.scrollPos < 0) {
 				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
 				this.scrollPos = newLeftMargin;
 			}
 		},
 		scrollRowRight() {
-			if (this.scrollPos > this.minLeftMargin) {
+			if (this.carouselActive && this.scrollPos > this.minLeftMargin) {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
 			}
+		},
+		throttledResize() {
+			return _throttle(this.saveWindowWidth, 100);
 		},
 	},
 };
@@ -313,14 +282,19 @@ export default {
 }
 
 .lyml-card-holder {
-	display: flex;
-	align-items: stretch;
-	flex-wrap: nowrap;
 	transition: margin 0.5s;
+
+	@include breakpoint(medium) {
+		display: flex;
+		align-items: stretch;
+		flex-wrap: nowrap;
+	}
 }
 
 .inside-scrolling-wrapper {
-	flex: 0 0 auto;
+	@include breakpoint(medium) {
+		flex: 0 0 auto;
+	}
 }
 
 @media (hover: none) {
@@ -333,42 +307,26 @@ export default {
 	}
 }
 
-/* 3 card 43rem */
-.three-cards {
-	$three-card-width: 672;
-
-	#lyml-row-title,
-	#lyml-row-cards {
-		max-width: rem-calc($three-card-width);
-	}
-	// hide arrows if screen is wide enough
-	@media only screen and (min-width: rem-calc($three-card-width)) {
-		.lyml-row-wrapper .arrow {
-			visibility: hidden;
-		}
-	}
-}
-
-/* 4 card 54rem */
-.four-cards {
-	$four-card-width: 864;
-
-	#lyml-row-title,
-	#lyml-row-cards {
-		max-width: rem-calc($four-card-width);
-	}
-	// hide arrows if screen is wide enough
-	@media only screen and (min-width: rem-calc($four-card-width)) {
-		.lyml-row-wrapper .arrow {
-			visibility: hidden;
-		}
-	}
-}
-
 // hide arrows on mobile
 @media (hover: none) {
 	.lyml-row-wrapper .arrow {
 		visibility: hidden;
 	}
 }
+
+/* 4 card 54rem */
+// .four-cards {
+// 	$four-card-width: 864;
+
+// 	#lyml-row-title,
+// 	#lyml-row-cards {
+// 		max-width: rem-calc($four-card-width);
+// 	}
+// 	// hide arrows if screen is wide enough
+// 	@media only screen and (min-width: rem-calc($four-card-width)) {
+// 		.lyml-row-wrapper .arrow {
+// 			visibility: hidden;
+// 		}
+// 	}
+// }
 </style>

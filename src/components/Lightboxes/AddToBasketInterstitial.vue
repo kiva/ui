@@ -7,7 +7,7 @@
 			:no-padding-bottom="true"
 			@lightbox-closed="closeLightbox">
 			<h1 class="lightbox-title" slot="title">You're almost there!</h1>
-			<div class="lightbox-loan-wrapper row" v-if="loan.loan">
+			<div class="lightbox-loan-wrapper" v-if="loan.loan">
 				<div class="loan-preview columns small-12 large-8 xxlarge-7 large-offset-4" v-if="loan.loan">
 					<div class="row">
 						<div class="loan-image-wrapper columns small-4">
@@ -31,16 +31,16 @@
 						<span class="text-subtotals columns small-6">Subtotal ${{ loanTotals | numeral('0,0') }}</span>
 					</div>
 					<div class="button-actions row">
-						<div class="columns small-6">
+						<div class="columns small-12 medium-6">
 							<kv-button
-								class="button-keep-exploring secondary smallest"
+								class="button-keep-exploring secondary smaller"
 								@click.native.prevent="closeLightbox">
 								Keep exploring
 							</kv-button>
 						</div>
-						<div class="columns small-6">
+						<div class="columns small-12 medium-6">
 							<kv-button
-								class="button-checkout smallest"
+								class="button-checkout smaller"
 								to="/checkout"
 								@click.native="closeLightbox">
 								Checkout
@@ -184,11 +184,11 @@ export default {
 	}
 
 	.lightbox-loan-wrapper {
-		padding: 1rem;
+		padding: 0.5rem;
 		position: relative;
 
 		@include breakpoint(medium) {
-			padding: 1rem 2rem;
+			padding: 1rem;
 		}
 
 		.loan-preview {

@@ -1,3 +1,5 @@
+#import '../../fragments/loanCardFields.graphql'
+
 query (
 	$country: [String],
 	$activity: [Int],
@@ -8,125 +10,49 @@ query (
 	lend {
 		sameCountry: loans(filters: {country: $country, status: fundraising}, limit: 2, sortBy: random) {
 			values {
-				id
-				name
-				loanAmount
-				loanFundraisingInfo {
-					fundedAmount
-					reservedAmount
-				}
+				...loanCardFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
+					hash
 				}
-				activity {
-					id
-					name
-				}
-				geocode {
-					country {
-						isoCode
-						name
-					}
-				}
-				sector {
-          			id
-          			name
-        		}
 			}
 		}
 
 		sameActivity: loans (filters: {activity: $activity, status: fundraising}, limit: 2, sortBy: random) {
 			values {
-				id
-				name
-				loanAmount
-				loanFundraisingInfo {
-					fundedAmount
-					reservedAmount
-				}
+				...loanCardFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
+					hash
 				}
-				activity {
-					id
-					name
-				}
-				geocode {
-					country {
-						isoCode
-						name
-					}
-				}
-				sector {
-          			id
-          			name
-        		}
 			}
 		}
 
 		sameSector: loans(filters: {sector: $sector, status: fundraising}, limit: 2, sortBy: random) {
 			values {
-				id
-				name
-				loanAmount
-				loanFundraisingInfo {
-					fundedAmount
-					reservedAmount
-				}
+				...loanCardFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
+					hash
 				}
-				activity {
-					id
-					name
-				}
-				geocode {
-					country {
-						isoCode
-						name
-					}
-				}
-				sector {
-          			id
-          			name
-        		}
 			}
 		}
 
 		randomLoan: loans (filters: {status: fundraising}, limit: 4, sortBy: random) {
 			values {
-				id
-				name
-				loanAmount
-				loanFundraisingInfo {
-					fundedAmount
-					reservedAmount
-				}
+				...loanCardFields
 				image {
 					id
 					default: url(customSize: $imgDefaultSize)
 					retina: url(customSize: $imgRetinaSize)
+					hash
 				}
-				activity {
-					id
-					name
-				}
-				geocode {
-					country {
-						isoCode
-						name
-					}
-				}
-				sector {
-          			id
-          			name
-        		}
 			}
 		}
 	}

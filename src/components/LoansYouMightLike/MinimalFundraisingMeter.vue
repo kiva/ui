@@ -1,13 +1,11 @@
 <template functional>
-	<div>
-		<div class="fundraising-meter progress">
-			<span v-if="props.isFunded"
-				class="meter"
-				style="width: 100%;"></span>
-			<span v-else
-				class="meter"
-				:style="`width: ${(props.percentRaised * 100)}%;`"></span>
-		</div>
+	<div class="fundraising-meter progress">
+		<span v-if="props.isFunded"
+			class="meter"
+			style="width: 100%;"></span>
+		<span v-else
+			class="meter"
+			:style="`width: ${(props.percentRaised * 100)}%;`"></span>
 	</div>
 </template>
 

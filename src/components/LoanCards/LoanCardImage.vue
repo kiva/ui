@@ -1,5 +1,5 @@
 <template>
-	<div class="borrower-image-wrapper">
+	<div class="borrower-image-wrapper" :class="{'offset-borrower-image': useDefaultStyles}">
 		<router-link
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']"
@@ -71,6 +71,10 @@ export default {
 		loanImageHash: {
 			type: String,
 			default: ''
+		},
+		useDefaultStyles: {
+			type: Boolean,
+			default: true
 		}
 	},
 
@@ -103,25 +107,25 @@ export default {
 <style lang="scss" scoped>
 	@import 'settings';
 
-	.borrower-image-wrapper {
+	.offset-borrower-image {
 		height: 0;
 		overflow: hidden;
 		padding-top: 75%;
 		background: $kiva-stroke-gray;
 		position: relative;
-	}
 
-	.borrower-image {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-	}
+		.borrower-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
 
-	.favorite-star {
-		position: absolute;
-		bottom: 0;
-		right: 0;
+		.favorite-star {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+		}
 	}
 </style>

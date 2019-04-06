@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
 import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
@@ -35,6 +36,7 @@ import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql'
 
 export default {
 	components: {
+		AdaptiveMicroLoanCard,
 		FeaturedHeroLoan,
 		GridLoanCard,
 		GridMicroLoanCard,
