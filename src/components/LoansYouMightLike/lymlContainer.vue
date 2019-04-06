@@ -55,8 +55,6 @@ import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
-import expSettingQuery from '@/graphql/query/experimentSetting.graphql';
-import expAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
