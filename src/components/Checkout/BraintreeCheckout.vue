@@ -2,59 +2,60 @@
 	<div class="braintree-holder">
 		<!-- Saved credit card data -->
 
-		<!-- Need an if condition that looks for the user's saved credit cards
-		Need a v-for that loops through all saved cards and displays them -->
-
-		<form id="braintree-stored-payment-form"
-			v-if="storedPaymentMethods">
-			<div class="row small-collapse braintree-form-row"
-				v-for="(paymentMethod, index) in storedPaymentMethods" :key="index">
-				<div class="small-12 columns">
+		<!-- v-if user has stored payment methods show the following div -->
+		<!-- v-for loop going through the user's saved credit cards and displaying them -->
+		<div id="braintree-stored-payment-form"
+			v-show="storedPaymentMethods && btVaultActive">
+			<div class="row small-collapse braintree-form-row">
+				<div
+					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
+					class="small-12 columns">
 					<label>
 						<input
 							id="savedPaymentRadio"
 							type="radio"
 							:value="index"
 							v-model="selectedCard">
-
-						<!-- Need a check to see what credit card type the user is using
-						then display that card icon. -->
+						<!-- Checking credit card type to display correct credit card icon. -->
 						<kv-icon
 							:name="setCardType(paymentMethod.details.cardType)"
 							class="credit-card-icon" />
-						<!-- Need to pass in the last 4 digits of card from paymentMethod.details.lastFour -->
+						<!-- Passing in the last 4 digits of the stored card -->
 						<span>...{{ paymentMethod.details.lastFour }}</span>
 					</label>
 				</div>
+				<div class="small-12 columns">
+					<label>
+						<input
+							id="newPaymentRadio"
+							type="radio"
+							value="newCard"
+							v-model="selectedCard"
+							@input="useNewCardRadioSelected">
+						<span>Use a new card</span>
+					</label>
+				</div>
 			</div>
-			<div>
-				<label>
-					<input
-						id="newPaymentRadio"
-						type="radio"
-						value="newCard"
-						v-model="selectedCard"
-						@input="useNewCardRadioSelected">
-					<span>Use a new card</span>
-				</label>
-			</div>
-			<!-- Submit payment button -->
+			<!-- Submit saved card payment button -->
 			<div
 				v-show="selectedCard !== 'newCard'"
 				class="row small-collapse">
 				<div class="small-12 columns">
-					<kv-button value="submit" id="stored-card-submit" class="button smallest">
+					<kv-button
+						id="stored-card-submit"
+						class="button smallest"
+						@click.native="checkoutWithStoredCard">
 						<kv-icon name="lock" />
 						Pay with saved <span id="card-type">card</span>
 					</kv-button>
 				</div>
 			</div>
-		</form>
+		</div>
 
 		<!-- If the user has no savedPaymentMethods or the useNewCard radio is
 		selected show braintree hosted fields form -->
 		<form id="braintree-payment-form"
-			v-show="!storedPaymentMethods || selectedCard === 'newCard'">
+			v-show="!storedPaymentMethods || selectedCard === 'newCard' ">
 			<!-- Card number input -->
 			<div class="row small-collapse braintree-form-row">
 				<div class="small-12 columns">
@@ -89,7 +90,9 @@
 			</div>
 
 			<!-- Inline Inputs -->
-			<div class="row small-collapse">
+			<div
+				v-show="btVaultActive"
+				class="row small-collapse">
 				<div class="small-12 columns vault-checkbox-wrapper">
 					<label for="vault-checkbox">
 						<input
@@ -156,7 +159,7 @@ export default {
 			storedPaymentMethods: [],
 			paymentMethods: {},
 			useNewCardRadioSelected: false,
-			selectedCard: null,
+			selectedCard: 'newCard',
 			selectedCardType: null,
 		};
 	},
@@ -270,30 +273,10 @@ export default {
 					return;
 				}
 
-				let vaultInstance = null;
-				braintree.vaultManager.create({
-					// client: clientInstance,
-					authorization: this.clientToken
-				}, (vaultError, btVaultInstance) => {
-					vaultInstance = btVaultInstance;
-
-					console.error(vaultError);
-					console.log(vaultInstance);
-
-					vaultInstance.fetchPaymentMethods((fetchPaymentMethodError, paymentMethods) => {
-						console.error(fetchPaymentMethodError);
-						this.storedPaymentMethods = paymentMethods || [];
-						paymentMethods.forEach(paymentMethod => {
-							// add payment method to UI
-							console.log(paymentMethod);
-							console.log(paymentMethod.details.cardType);
-							console.log(paymentMethod.details.lastFour);
-							// paymentMethod.nonce // <- transactable nonce associated with payment method
-							// paymentMethod.details // <- object with additional information about payment method
-							// paymentMethod.type // <- a constant signifying the type
-						});
-					});
-				});
+				// If btVaultActive flag is true, initialize the BT Vault
+				if (this.btVaultActive) {
+					this.initializeBTVault();
+				}
 
 				braintree.hostedFields.create({
 					client: clientInstance,
@@ -398,8 +381,34 @@ export default {
 				this.doBraintreeCheckout(payload.nonce);
 			});
 		},
+		initializeBTVault() {
+			let vaultInstance = null;
+			braintree.vaultManager.create({
+				// client: clientInstance,
+				authorization: this.clientToken
+			}, (vaultError, btVaultInstance) => {
+				vaultInstance = btVaultInstance;
+
+				console.error(vaultError);
+				console.log(vaultInstance);
+
+				vaultInstance.fetchPaymentMethods(
+					{ defaultFirst: true },
+					(fetchPaymentMethodError, paymentMethods) => {
+						console.error(fetchPaymentMethodError);
+						this.storedPaymentMethods = paymentMethods || [];
+						// if the user has storedPayment methods then set the selectedCard
+						// to the first one in the list of storedCards
+						if (this.storedPaymentMethods.length > 0) {
+							this.selectedCard = 0;
+						}
+					}
+				);
+			});
+		},
 		checkoutWithStoredCard() {
-			// doBraintreeCheckout(nonce);
+			this.storePaymentMethod = false;
+			this.doBraintreeCheckout(this.storedPaymentMethods[this.selectedCard].nonce);
 		},
 		setCardType(cardType) {
 			if (cardType === 'American Express') {
@@ -556,33 +565,9 @@ $error-red: #fdeceb;
 .braintree-holder {
 	margin-top: rem-calc(25);
 
-	#braintree-stored-payment-form {
-		padding: 0 1rem;
-
-		.credit-card-icon {
-			width: rem-calc(32);
-			height: rem-calc(20);
-		}
-
-		// duplicated from other form
-		#stored-card-submit {
-			width: 100%;
-			margin-top: 0.8rem;
-			font-size: 1.25rem;
-
-			.icon-lock {
-				height: rem-calc(20);
-				width: rem-calc(20);
-				fill: white;
-				top: rem-calc(3);
-				position: relative;
-				margin-right: rem-calc(8);
-			}
-		}
-	}
-
 	// We control wrapping form and input container styles
-	#braintree-payment-form {
+	#braintree-payment-form,
+	#braintree-stored-payment-form {
 		padding: 0 1rem;
 
 		.braintree-form-row {
@@ -654,7 +639,13 @@ $error-red: #fdeceb;
 		}
 		// .kv-card-number-error {}
 
-		#braintree-submit {
+		.credit-card-icon {
+			width: rem-calc(32);
+			height: rem-calc(20);
+		}
+
+		#braintree-submit,
+		#stored-card-submit {
 			width: 100%;
 			margin-top: 0.8rem;
 			font-size: 1.25rem;
