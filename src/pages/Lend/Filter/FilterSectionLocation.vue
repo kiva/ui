@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" >
+	<filter-menu-section title="Location" >
 		<ais-hierarchical-menu
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"
@@ -44,12 +44,6 @@ export default {
 		FilterMenuSection,
 		AisHierarchicalMenu,
 		HierarchicalMenuList,
-	},
-	props: {
-		title: {
-			type: String,
-			default: 'Location',
-		},
 	},
 	methods: {
 		transformItems(items, isChild) {

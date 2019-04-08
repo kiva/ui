@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" >
+	<filter-menu-section title="Loan details" >
 		<filter-section-wrapper-range-slider
 			:minimum="4"
 			:maximum="25"
@@ -67,10 +67,6 @@ export default {
 		filterMenuOpen: {
 			type: Boolean,
 			default: true,
-		},
-		title: {
-			type: String,
-			default: 'Loan details',
 		},
 	}
 };

@@ -4,12 +4,7 @@
 			<div class="filter-summary-title" >
 				{{ title }}
 			</div>
-			<ais-state-results>
-				<div class="filter-summary-applied-filters" slot-scope="{ nbHits }">
-					<span>{{ appliedFilters }}</span>
-					<span v-if="!hideCount" class="filter-result-count">({{ nbHits }})</span>
-				</div>
-			</ais-state-results>
+			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
 		</div>
 		<div class="filter-items-container">
 			<slot></slot>
@@ -18,12 +13,7 @@
 </template>
 
 <script>
-import { AisStateResults } from 'vue-instantsearch';
-
 export default {
-	components: {
-		AisStateResults,
-	},
 	props: {
 		title: {
 			type: String,
@@ -32,10 +22,6 @@ export default {
 		appliedFilters: {
 			type: String,
 			default: 'All',
-		},
-		hideCount: {
-			type: Boolean,
-			default: false,
 		},
 	},
 	data() {
@@ -65,12 +51,6 @@ export default {
 			font-size: 1rem;
 			font-weight: 400;
 		}
-
-		.filter-summary-applied-filters {
-			.filter-result-count {
-				display: none;
-			}
-		}
 	}
 
 	.filter-items-container {
@@ -98,14 +78,6 @@ export default {
 
 	&.open {
 		background-color: rgba($green, 0.05);
-
-		.filter-summary {
-			.filter-summary-applied-filters {
-				.filter-result-count {
-					display: inline;
-				}
-			}
-		}
 
 		.filter-items-container {
 			display: block;
