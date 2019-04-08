@@ -10,7 +10,6 @@
 				<filter-section-gender :filter-menu-open="filterMenuOpen" />
 				<filter-section-sort :default-sort-indices="defaultSortIndices"/>
 				<filter-section-categories
-					:applied-filters="customCategorySectionTitle"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
 					@toggle-custom-category="toggleCustomCategory"
@@ -30,7 +29,6 @@
 </template>
 
 <script>
-import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
@@ -47,28 +45,10 @@ export default {
 		FilterSectionSort,
 		KvIcon,
 	},
-	mixins: [
-		algoliaCustomCategories,
-	],
 	data() {
 		return {
 			filterMenuOpen: false,
 		};
-	},
-	computed: {
-		customCategorySectionTitle() {
-			switch (this.customCategoryItems.length) {
-				case 0: {
-					return 'All';
-				}
-				case 1: {
-					return this.customCategoryItems[0].label;
-				}
-				default: {
-					return `${this.customCategoryItems.length} categories selected`;
-				}
-			}
-		},
 	},
 	props: {
 		customCategories: {
