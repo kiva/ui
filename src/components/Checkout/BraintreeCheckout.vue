@@ -20,7 +20,7 @@
 						<!-- Need a check to see what credit card type the user is using
 						then display that card icon. -->
 						<kv-icon
-							name="visa"
+							:name="setCardType(paymentMethod.details.cardType)"
 							class="credit-card-icon" />
 						<!-- Need to pass in the last 4 digits of card from paymentMethod.details.lastFour -->
 						<span>...{{ paymentMethod.details.lastFour }}</span>
@@ -400,6 +400,16 @@ export default {
 		},
 		checkoutWithStoredCard() {
 			// doBraintreeCheckout(nonce);
+		},
+		setCardType(cardType) {
+			if (cardType === 'American Express') {
+				return 'amex';
+			} else if (cardType === 'Visa') {
+				return 'visa';
+			} else if (cardType === 'MasterCard') {
+				return 'mastercard';
+			}
+			return 'unknown_card';
 		},
 		useNewCardSelected() {
 			this.useNewCardRadioSelected = this.useNewCardRadio.selected || false;
