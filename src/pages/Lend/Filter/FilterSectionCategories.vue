@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" :result-count="resultCount" :applied-filters="appliedFilters" >
+	<filter-menu-section :title="title" :applied-filters="appliedFilters" >
 		<kv-checkbox
 			v-for="{name, categoryId, checkboxInput, isChecked} in customCategoryList"
 			:key="categoryId"
@@ -38,10 +38,6 @@ export default {
 		appliedFilters: {
 			type: String,
 			default: 'All',
-		},
-		resultCount: {
-			type: Number,
-			required: true,
 		},
 	},
 	methods: {

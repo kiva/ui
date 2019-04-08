@@ -1,10 +1,15 @@
 <template>
 	<div class="filter-menu-section" :class="{open}">
 		<div class="filter-summary" @click="toggleMenu">
-			<div class="filter-summary-title">
-				{{ title }} <span v-if="resultCount !== null" class="filter-result-count">({{ resultCount }})</span>
+			<div class="filter-summary-title" >
+				{{ title }}
 			</div>
-			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
+			<ais-state-results>
+				<div class="filter-summary-applied-filters" slot-scope="{ nbHits }">
+					<span>{{ appliedFilters }}</span>
+					<span v-if="!hideCount" class="filter-result-count">({{ nbHits }})</span>
+				</div>
+			</ais-state-results>
 		</div>
 		<div class="filter-items-container">
 			<slot></slot>
@@ -13,7 +18,12 @@
 </template>
 
 <script>
+import { AisStateResults } from 'vue-instantsearch';
+
 export default {
+	components: {
+		AisStateResults,
+	},
 	props: {
 		title: {
 			type: String,
@@ -23,9 +33,9 @@ export default {
 			type: String,
 			default: 'All',
 		},
-		resultCount: {
-			type: Number,
-			default: null,
+		hideCount: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
@@ -55,6 +65,12 @@ export default {
 			font-size: 1rem;
 			font-weight: 400;
 		}
+
+		.filter-summary-applied-filters {
+			.filter-result-count {
+				display: none;
+			}
+		}
 	}
 
 	.filter-items-container {
@@ -82,6 +98,14 @@ export default {
 
 	&.open {
 		background-color: rgba($green, 0.05);
+
+		.filter-summary {
+			.filter-summary-applied-filters {
+				.filter-result-count {
+					display: inline;
+				}
+			}
+		}
 
 		.filter-items-container {
 			display: block;

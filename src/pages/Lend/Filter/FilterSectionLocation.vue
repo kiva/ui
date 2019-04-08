@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" :result-count="10">
+	<filter-menu-section :title="title" >
 		<ais-hierarchical-menu
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"
@@ -49,10 +49,6 @@ export default {
 		title: {
 			type: String,
 			default: 'Location',
-		},
-		resultCount: {
-			type: Number,
-			required: true,
 		},
 	},
 	methods: {
