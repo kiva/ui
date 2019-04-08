@@ -1,17 +1,60 @@
 <template>
 	<div class="braintree-holder">
-		<form id="braintree-payment-form">
+		<!-- Saved credit card data -->
 
-			<!-- Saved credit card data -->
-			<div class="row small-collapse braintree-form-row">
+		<!-- Need an if condition that looks for the user's saved credit cards
+		Need a v-for that loops through all saved cards and displays them -->
+
+		<form id="braintree-stored-payment-form"
+			v-if="storedPaymentMethods">
+			<div class="row small-collapse braintree-form-row"
+				v-for="(paymentMethod, index) in storedPaymentMethods" :key="index">
 				<div class="small-12 columns">
-					<input
-						type="radio">
-					<kvIcon>CREDIT CARD IMAGE</kvIcon>
-					<p>...0988</p>
+					<label>
+						<input
+							id="savedPaymentRadio"
+							type="radio"
+							:value="index"
+							v-model="selectedCard">
+
+						<!-- Need a check to see what credit card type the user is using
+						then display that card icon. -->
+						<kv-icon
+							name="visa"
+							class="credit-card-icon" />
+						<!-- Need to pass in the last 4 digits of card from paymentMethod.details.lastFour -->
+						<span>...{{ paymentMethod.details.lastFour }}</span>
+					</label>
 				</div>
 			</div>
+			<div>
+				<label>
+					<input
+						id="newPaymentRadio"
+						type="radio"
+						value="newCard"
+						v-model="selectedCard"
+						@input="useNewCardRadioSelected">
+					<span>Use a new card</span>
+				</label>
+			</div>
+			<!-- Submit payment button -->
+			<div
+				v-show="selectedCard !== 'newCard'"
+				class="row small-collapse">
+				<div class="small-12 columns">
+					<kv-button value="submit" id="stored-card-submit" class="button smallest">
+						<kv-icon name="lock" />
+						Pay with saved <span id="card-type">card</span>
+					</kv-button>
+				</div>
+			</div>
+		</form>
 
+		<!-- If the user has no savedPaymentMethods or the useNewCard radio is
+		selected show braintree hosted fields form -->
+		<form id="braintree-payment-form"
+			v-show="!storedPaymentMethods || selectedCard === 'newCard'">
 			<!-- Card number input -->
 			<div class="row small-collapse braintree-form-row">
 				<div class="small-12 columns">
@@ -95,7 +138,7 @@ export default {
 		amount: {
 			type: String,
 			default: ''
-		}
+		},
 	},
 	data() {
 		return {
@@ -110,6 +153,11 @@ export default {
 			kvExpirationError: '',
 			kvCVVError: '',
 			kvPostalCodeError: '',
+			storedPaymentMethods: [],
+			paymentMethods: {},
+			useNewCardRadioSelected: false,
+			selectedCard: null,
+			selectedCardType: null,
 		};
 	},
 	apollo: {
@@ -222,26 +270,6 @@ export default {
 					return;
 				}
 
-				// Fallback usage of clientInstance
-				// https://github.com/braintree/braintree-web/issues/269
-				// - https://codepen.io/lilaconlee/pen/PpbbOL
-				// clientInstance.request({
-				// 	endpoint: 'payment_methods',
-				// 	method: 'get',
-				// 	data: {
-				// 		defaultFirst: 1
-				// 	}
-				// }, (paymentMethodErr, payload) => {
-				// 	if (paymentMethodErr) {
-				// 		console.error(paymentMethodErr);
-				// 		return;
-				// 	}
-
-				// 	// const { paymentMethods } = payload;
-
-				// 	console.log(payload);
-				// });
-
 				let vaultInstance = null;
 				braintree.vaultManager.create({
 					// client: clientInstance,
@@ -254,12 +282,15 @@ export default {
 
 					vaultInstance.fetchPaymentMethods((fetchPaymentMethodError, paymentMethods) => {
 						console.error(fetchPaymentMethodError);
+						this.storedPaymentMethods = paymentMethods || [];
 						paymentMethods.forEach(paymentMethod => {
 							// add payment method to UI
 							console.log(paymentMethod);
-							// paymentMethod.nonce <- transactable nonce associated with payment method
-							// paymentMethod.details <- object with additional information about payment method
-							// paymentMethod.type <- a constant signifying the type
+							console.log(paymentMethod.details.cardType);
+							console.log(paymentMethod.details.lastFour);
+							// paymentMethod.nonce // <- transactable nonce associated with payment method
+							// paymentMethod.details // <- object with additional information about payment method
+							// paymentMethod.type // <- a constant signifying the type
 						});
 					});
 				});
@@ -302,29 +333,6 @@ export default {
 
 						return;
 					}
-
-					// Activate Braintree Vault
-					// if (this.btVaultActive) {
-					// 	let vaultInstance = null;
-					// 	braintree.vaultManager.create({
-					// 		// client: clientInstance,
-					// 		authorization: this.clientToken
-					// 	}, (vaultError, btVaultInstance) => {
-					// 		vaultInstance = btVaultInstance;
-					// 		console.error(vaultError);
-					// 		console.log(vaultInstance);
-					// 		vaultInstance.fetchPaymentMethods((fetchPaymentMethodError, paymentMethods) => {
-					// 			console.error(fetchPaymentMethodError);
-					// 			paymentMethods.forEach(paymentMethod => {
-					// 				// add payment method to UI
-					// 				console.log(paymentMethod);
-					// 				// paymentMethod.nonce <- transactable nonce associated with payment method
-					// 				// paymentMethod.details <- object with additional information about payment method
-					// 				// paymentMethod.type <- a constant signifying the type
-					// 			});
-					// 		});
-					// 	});
-					// }
 
 					// Watch for validity change on hosted field inputs
 					hostedFieldsInstance.on('validityChange', event => {
@@ -389,6 +397,12 @@ export default {
 				// call transaction method if no errors
 				this.doBraintreeCheckout(payload.nonce);
 			});
+		},
+		checkoutWithStoredCard() {
+			// doBraintreeCheckout(nonce);
+		},
+		useNewCardSelected() {
+			this.useNewCardRadioSelected = this.useNewCardRadio.selected || false;
 		},
 		doBraintreeCheckout(nonce) {
 			// Apollo call to the query mutation
@@ -531,6 +545,31 @@ $error-red: #fdeceb;
 
 .braintree-holder {
 	margin-top: rem-calc(25);
+
+	#braintree-stored-payment-form {
+		padding: 0 1rem;
+
+		.credit-card-icon {
+			width: rem-calc(32);
+			height: rem-calc(20);
+		}
+
+		// duplicated from other form
+		#stored-card-submit {
+			width: 100%;
+			margin-top: 0.8rem;
+			font-size: 1.25rem;
+
+			.icon-lock {
+				height: rem-calc(20);
+				width: rem-calc(20);
+				fill: white;
+				top: rem-calc(3);
+				position: relative;
+				margin-right: rem-calc(8);
+			}
+		}
+	}
 
 	// We control wrapping form and input container styles
 	#braintree-payment-form {
