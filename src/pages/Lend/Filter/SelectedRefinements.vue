@@ -1,38 +1,45 @@
 <template>
 	<div class="selected-refinements">
-		<ais-current-refinements
-			:transform-items="transformItems"
-		>
+		<ais-current-refinements :transform-items="transformItems">
 			<div slot-scope="{ items }">
-				<div class="filter-summary-container">
-					<div>{{ items.length }} Filters Applied</div>
-					<div v-if="isCollapsible" class="show-toggle-container">
-						<div v-if="isCollapsed" @click="handleClickShowMore">Show</div>
-						<div v-else @click="handleClickShowFewer">Hide</div>
+				<div class="row">
+					<div class="small-12 medium-10 columns">
+						<div :class="[{ collapsed: isCollapsed }, 'accordion-container']">
+							<div class="accordion-content" ref="accordionContent">
+								<filter-chip
+									v-for="item in items"
+									:key="[
+										item.attribute,
+										item.type,
+										item.label,
+										item.operator,
+									].join(':')"
+									:title="`${item.label}`"
+									@click-chip="handleRemoveRefinement(item)"
+								/>
+							</div>
+						</div>
+					</div>
+					<div class="small-12 medium-2 columns">
+						<div class="filter-summary-container">
+							<div v-if="isCollapsible" class="show-toggle-container">
+								<!-- eslint-disable max-len -->
+								<div v-if="isCollapsed" @click="handleClickShowMore">Show all {{ items.length }} filters</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<div class="accordion-container" :class="{collapsed: isCollapsed}">
-					<div class="accordion-content" ref="accordionContent">
-						<filter-chip
-							v-for="item in items"
-							:key="[
-								item.attribute,
-								item.type,
-								item.label,
-								item.operator,
-							].join(':')"
-							:title="`${item.label}`"
-							@click-chip="handleRemoveRefinement(item)"
+				<div v-if="!isCollapsed && isCollapsible" class="hide-reset-toggle-container">
+					<div @click="handleClickShowFewer" class="hide-filter align-middle">Hide filters</div>
+
+					<ais-clear-refinements class="clear-all align-middle">
+						<clear-all-refinements
+							slot-scope="{ canRefine, refine }"
+							@clear-all-refinements="refine"
+							@clear-custom-categories="clearCustomCategories"
+							v-if="canRefine"
 						/>
-						<ais-clear-refinements class="clear-all-container">
-							<clear-all-refinements
-								slot-scope="{ canRefine, refine }"
-								@clear-all-refinements="refine"
-								@clear-custom-categories="clearCustomCategories"
-								v-if="canRefine && isCollapsible"
-							/>
-						</ais-clear-refinements>
-					</div>
+					</ais-clear-refinements>
 				</div>
 			</div>
 		</ais-current-refinements>
@@ -92,7 +99,8 @@ export default {
 					plural: 's',
 				},
 			},
-			fixedRowHeight: 40,
+			fixedRowHeight: 38,
+			fixedRowCount: 3,
 			isCollapsible: false,
 			isCollapsed: true,
 		};
@@ -109,8 +117,11 @@ export default {
 			this.isCollapsed = true;
 		},
 		setCollapsibleState() {
+			// eslint-disable-next-line max-len
+			const accordionHeight = window.innerWidth <= 680 ? this.fixedRowHeight * this.fixedRowCount : this.fixedRowHeight;
+
 			this.isCollapsible = this.$refs.accordionContent
-				? this.$refs.accordionContent.clientHeight > this.fixedRowHeight
+				? this.$refs.accordionContent.clientHeight > accordionHeight
 				: false;
 		},
 		generateLabel(item) {
@@ -163,9 +174,11 @@ export default {
 			setTimeout(() => { this.setCollapsibleState(); }, 0);
 		},
 		removeCustomCategory(customCategoryId) {
+			this.setCollapsibleState();
 			this.$emit('remove-custom-category', customCategoryId);
 		},
 		clearCustomCategories() {
+			this.isCollapsed = true;
 			this.$emit('clear-custom-categories');
 		},
 	},
@@ -184,37 +197,73 @@ export default {
 @import 'settings';
 
 .selected-refinements {
-	$fixed-row-height: 40;
+	$fixed-row-height: 38;
 
-	margin: 1rem 0;
+	margin-top: rem-calc(10);
 
-	.link {
-		color: $blue;
-		user-select: none;
+	.row {
+		margin: 0;
+
+		.columns {
+			padding: 0;
+		}
+
+		.filter-summary-container {
+			display: flex;
+			padding-bottom: rem-calc(5);
+
+			@include breakpoint(medium up) {
+				padding-top: rem-calc(5);
+			}
+		}
+
+		.accordion-container {
+			overflow: hidden;
+			transition: max-height 0.25s ease;
+
+			&.collapsed {
+				max-height: rem-calc($fixed-row-height);
+
+				@include breakpoint(medium down) {
+					max-height: rem-calc($fixed-row-height * 3);
+				}
+			}
+		}
+	}
+
+	.show-toggle-container {
+		color: $faded-blue;
 		cursor: pointer;
-	}
+		font-size: rem-calc(14);
+		user-select: none;
+		white-space: nowrap;
+		width: 100%;
 
-	.filter-summary-container {
-		display: flex;
+		div {
+			@include breakpoint(medium up) {
+				text-align: right;
+			}
 
-		.show-toggle-container {
-			@extend .link;
-
-			margin-left: rem-calc(4);
+			display: inline-block;
 		}
 	}
 
-	.accordion-container {
-		overflow: hidden;
-		max-height: 15rem;
-		transition: max-height 0.25s ease;
+	.hide-reset-toggle-container {
+		@extend .show-toggle-container;
 
-		.clear-all-container {
-			display: inline;
+		height: rem-calc(20);
+		margin-left: rem-calc(4);
+		margin-top: rem-calc(5);
+
+		.hide-filter {
+			height: rem-calc(20);
+			padding-right: rem-calc(5);
 		}
 
-		&.collapsed {
-			max-height: rem-calc($fixed-row-height);
+		.clear-all {
+			height: rem-calc(20);
+			border-left: 1px solid $charcoal;
+			padding-left: rem-calc(9);
 		}
 	}
 }
