@@ -6,7 +6,7 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="true"
-			v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
+			@click.native="trackProfileClick"
 			:open-in-new-tab="true"
 			:use-default-styles="false"
 		/>
@@ -33,7 +33,6 @@
 					v-if="!itemInBasket"
 					@click.prevent="addToBasket()"
 					class="card-action"
-					v-kv-track-event="['basket', 'basket-loan-upsell', 'loan-type', parseInt(cardNumber)]"
 				>Add to basket
 				</a>
 				<p
@@ -46,6 +45,7 @@
 </template>
 <script>
 import numeral from 'numeral';
+import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import _includes from 'lodash/includes';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
@@ -108,6 +108,12 @@ export default {
 		percentRaised() {
 			return numeral(numeral(this.loan.loanAmount).subtract(this.amountLeft))
 				.divide(this.loan.loanAmount).value();
+		},
+		loanType() {
+			const country = _get(this.loan, 'geocode.country.name');
+			const sector = _get(this.loan, 'sector.name');
+			const activity = _get(this.loan, 'activity.name');
+			return `location=${country},sector=${sector},activity=${activity}`;
 		}
 	},
 	methods: {
@@ -131,9 +137,24 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 				}
+
+				this.$kvTrackEvent(
+					'Lending',
+					'lend-button-loan-upsell',
+					this.loanType,
+					this.cardNumber
+				);
 			}).catch(() => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
 			});
+		},
+		trackProfileClick() {
+			this.$kvTrackEvent(
+				'Lending',
+				'lend-button-loan-profile',
+				this.loanType,
+				this.cardNumber
+			);
 		}
 	},
 };

@@ -34,6 +34,10 @@
 						<div class="columns small-12 medium-6">
 							<kv-button
 								class="button-keep-exploring secondary smaller"
+								v-kv-track-event="[
+									'Lending',
+									'Add-to-basket Interstitial',
+									'keep-exploring-button-click']"
 								@click.native.prevent="closeLightbox">
 								Keep exploring
 							</kv-button>
@@ -42,6 +46,10 @@
 							<kv-button
 								class="button-checkout smaller"
 								to="/basket"
+								v-kv-track-event="[
+									'Lending',
+									'Add-to-basket Interstitial',
+									'checkout-button-click']"
 								@click.native="closeLightbox">
 								Checkout
 							</kv-button>

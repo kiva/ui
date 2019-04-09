@@ -1,6 +1,7 @@
 <template>
 	<component
 		:amount-left="amountLeft"
+		:card-number="cardNumber"
 		:experiment-data="experimentData"
 		:expiring-soon-message="expiringSoonMessage"
 		:image-enhancement-experiment-version="imageEnhancementExperimentVersion"

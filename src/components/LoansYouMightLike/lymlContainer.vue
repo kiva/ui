@@ -51,6 +51,7 @@ import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
+import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
 
@@ -130,7 +131,13 @@ export default {
 					this.saveWindowWidth();
 				});
 			}
-		}
+		},
+		// watch for change to targetLoan and refetch loans
+		targetLoan() {
+			this.$nextTick(() => {
+				this.getLoansYouMightLike();
+			});
+		},
 	},
 	mounted() {
 		// we're doing this all client side
@@ -151,12 +158,18 @@ export default {
 				}
 			}).then(data => {
 				const loansYouMightLike = [];
-				const randomLoans = _get(data.data.lend, 'randomLoan.values');
+				const randomLoans = _filter(
+					_get(data.data.lend, 'randomLoan.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
 
 				loansYouMightLike.push(randomLoans[0]);
 
 				// same Country loans
-				const sameCountryLoans = _get(data, 'data.lend.sameCountry.values') || [];
+				const sameCountryLoans = _filter(
+					_get(data, 'data.lend.sameCountry.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
 				if (sameCountryLoans.length > 1) {
 					loansYouMightLike.push(sameCountryLoans[1]);
 				} else {
@@ -164,7 +177,10 @@ export default {
 				}
 
 				// same Activity loans
-				const sameActivityLoans = _get(data, 'data.lend.sameActivity.values') || [];
+				const sameActivityLoans = _filter(
+					_get(data, 'data.lend.sameActivity.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
 				if (sameActivityLoans.length > 1) {
 					loansYouMightLike.push(sameActivityLoans[1]);
 				} else {
@@ -172,26 +188,29 @@ export default {
 				}
 
 				// same Sector loans
-				// if user is in variant-b we add an additional loan card from the same sector
-				// as the first loan in the basket.
-				// if (this.lymlVariant === 'variant-b') {
-				const sameSectorLoans = _get(data, 'data.lend.sameSector.values') || [];
+				const sameSectorLoans = _filter(
+					_get(data, 'data.lend.sameSector.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
 				if (sameSectorLoans.length > 1) {
 					loansYouMightLike.push(sameSectorLoans[1]);
 				} else {
 					loansYouMightLike.push(randomLoans[3]);
 				}
-				// }
+
 				// randomize array order
 				this.loansYouMightLike = _shuffle(loansYouMightLike);
 
 				// once we have loans flip the switch to show them
-				// this.showLYML = this.lymlVariant !== 'control';
 				this.showLYML = true;
 
+				// update window width once loans are loaded
 				this.$nextTick(() => {
 					this.saveWindowWidth();
 				});
+
+				// track loans shown
+				this.$kvTrackEvent('Lending', 'lyml-loans-shown', _map(this.loansYouMightLike, 'id'));
 			});
 		},
 		saveWindowWidth() {
@@ -279,6 +298,7 @@ export default {
 	&.inactive:active {
 		color: $kiva-stroke-gray;
 		cursor: not-allowed;
+		visibility: hidden;
 	}
 
 	// show arrows when carousel interface is active

@@ -66,7 +66,7 @@
 			</div>
 		</div>
 
-		<add-to-basket-interstitial />
+		<add-to-basket-interstitial v-show="addToBasketExpActive" />
 	</www-page>
 </template>
 
@@ -142,6 +142,7 @@ export default {
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
+			addToBasketExpActive: false,
 		};
 	},
 	computed: {
@@ -418,8 +419,9 @@ export default {
 			query: experimentQuery,
 			variables: { id: 'add_to_basket_popup' },
 		});
+		this.addToBasketExpActive = _get(addToBasketPopupEXP, 'experiment.version') === 'shown';
 		// Update @client state if interstitial exp is active
-		if (_get(addToBasketPopupEXP, 'experiment.version') === 'shown') {
+		if (this.addToBasketExpActive) {
 			this.apollo.mutate({
 				mutation: updateAddToBasketInterstitial,
 				variables: {
@@ -427,6 +429,12 @@ export default {
 				}
 			});
 		}
+		// Fire Event for Exp CASH-612 Status
+		this.$kvTrackEvent(
+			'Lending',
+			'EXP-CASH-612-Apr2019',
+			this.addToBasketExpActive ? 'b' : 'a'
+		);
 	},
 	mounted() {
 		this.fetchRecentlyViewed();
