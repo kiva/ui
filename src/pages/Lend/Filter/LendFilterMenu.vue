@@ -106,7 +106,6 @@ export default {
 			position: absolute;
 			top: 0;
 			left: 0;
-			z-index: 1001;
 			padding: 0.25rem 0.25rem 0.25rem 0.75rem;
 			user-select: none;
 			height: 2rem;
@@ -168,6 +167,10 @@ export default {
 		}
 
 		#lend-filter-wrapper {
+			#filter-toggle {
+				z-index: 1001;
+			}
+
 			#filter-menu {
 				opacity: 1;
 				pointer-events: initial;
