@@ -33,8 +33,6 @@ export default class KvAuth0 {
 					scope,
 				});
 			});
-		} else {
-			this.webAuth = Promise.reject(new Error('Client auth called in server mode'));
 		}
 	}
 
@@ -70,6 +68,11 @@ export default class KvAuth0 {
 
 	// Silently check for a logged in session with auth0 using hidden iframes
 	checkSession() {
+		// only try this if in the browser
+		if (this.isServer) {
+			return Promise.reject(new Error('checkSession called in server mode'));
+		}
+
 		// Ensure that we only check the session once at a time
 		if (this[sessionPromise]) return this[sessionPromise];
 
@@ -88,6 +91,11 @@ export default class KvAuth0 {
 
 	// Open a popup window to the login page
 	popupLogin() {
+		// only try this if in the browser
+		if (this.isServer) {
+			return Promise.reject(new Error('popupLogin called in server mode'));
+		}
+
 		// Ensure we only ask to login once at a time
 		if (this[loginPromise]) return this[loginPromise];
 
@@ -111,6 +119,10 @@ export default class KvAuth0 {
 
 	// Handle the auth0 callback in the popup frame
 	popupCallback() {
+		// only try this if in the browser
+		if (this.isServer) {
+			return Promise.reject(new Error('popupCallback called in server mode'));
+		}
 		return this.webAuth.then(webAuth => webAuth.popup.callback());
 	}
 }
