@@ -2,10 +2,9 @@
 	<transition name="kvfade">
 		<div
 			class="lyml-section-wrapper"
-			:class="cardClass"
 			v-if="showLYML">
 			<div class="lyml-section-container">
-				<div id="lyml-row-cards" class="">
+				<div id="lyml-row-cards">
 					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span
 							class="arrow lyml-left-arrow"
@@ -31,8 +30,7 @@
 									:items-in-basket="itemsInBasket"
 									loan-card-type="AdaptiveMicroLoanCard"
 									@add-to-basket="handleAddToBasket"
-									@refreshtotals="$emit('refreshtotals')"
-									@updating-totals="$emit('updating-totals', $event)"
+									@processing-add-to-basket="processingAddToBasket"
 								/>
 							</div>
 						</div>
@@ -69,6 +67,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		targetLoan: {
+			type: Object,
+			default: () => {}
+		}
 	},
 	computed: {
 		itemsInBasket() {
@@ -78,13 +80,14 @@ export default {
 			return this.loans.length || false;
 		},
 		sameCountry() {
-			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.geocode.country.isoCode') : ['US'];
+			// this.loans[0];
+			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.geocode.country.isoCode') : ['US'];
 		},
 		sameActivity() {
-			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.activity.id') : [120];
+			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.activity.id') : [120];
 		},
 		sameSector() {
-			return this.hasLoansInBasket ? _get(this.loans[0], 'loan.sector.id') : [1];
+			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.sector.id') : [1];
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
@@ -101,9 +104,6 @@ export default {
 		shiftIncrement() {
 			// multiple number of cards by card width to shift a full set ie. this.cardsInWindow * this.cardWidth;
 			return this.cardWidth;
-		},
-		cardClass() {
-			return this.lymlVariant === 'variant-a' ? 'three-cards' : 'four-cards';
 		},
 		carouselActive() {
 			return this.windowWidth > 480;
@@ -201,6 +201,7 @@ export default {
 				// console.log(this.$refs.innerWrapper.clientWidth);
 				this.wrapperWidth = this.$refs.innerWrapper.clientWidth;
 			}
+			if (this.windowWidth < 481) this.scrollPos = 0;
 		},
 		scrollRowLeft() {
 			if (this.carouselActive && this.scrollPos < 0) {
@@ -217,6 +218,15 @@ export default {
 		throttledResize() {
 			return _throttle(this.saveWindowWidth, 100);
 		},
+		// the async processing phase triggered upon clicking add to basket
+		processingAddToBasket() {
+			this.$emit('processing-add-to-basket');
+		},
+		// the final outcome of adding a loan to basket
+		// payload is { loanId: ######, success: true/false }
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		}
 	},
 };
 
@@ -242,9 +252,22 @@ export default {
 }
 
 .arrow {
-	color: $kiva-text-light;
+	display: block;
+	position: absolute;
+	// hidden by default on small, for vertical scrolling
+	visibility: hidden;
 	cursor: pointer;
-	font-size: rem-calc(70);
+	width: 0;
+	margin: 0;
+	color: $kiva-text-dark;
+	font-size: 2.8rem;
+	font-weight: 100;
+	background: white;
+	border-radius: rem-calc(40);
+	height: rem-calc(40);
+	line-height: rem-calc(34);
+	text-align: center;
+	box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.5);
 
 	&:hover,
 	&:active {
@@ -257,14 +280,23 @@ export default {
 		color: $kiva-stroke-gray;
 		cursor: not-allowed;
 	}
+
+	// show arrows when carousel interface is active
+	@include breakpoint(medium) {
+		visibility: visible;
+		// width: auto;
+		width: rem-calc(40);
+	}
 }
 
 .lyml-left-arrow {
-	margin: 0 0.375rem;
+	left: 0.75rem;
+	letter-spacing: rem-calc(2);
 }
 
 .lyml-right-arrow {
-	margin: 0 0.375rem;
+	right: 0.75rem;
+	letter-spacing: rem-calc(-3);
 }
 
 .lyml-row-wrapper {
@@ -272,6 +304,10 @@ export default {
 	display: flex;
 	flex-grow: 0;
 	flex-basis: initial;
+
+	@include breakpoint(medium) {
+		margin: 0 2rem;
+	}
 }
 
 .lyml-card-display-window {
@@ -292,39 +328,21 @@ export default {
 .inside-scrolling-wrapper {
 	@include breakpoint(medium) {
 		flex: 0 0 auto;
+
+		&:first-child {
+			margin-left: 0;
+		}
+
+		&:last-child {
+			margin-right: 0;
+		}
 	}
 }
 
-@media (hover: none) {
-	.section-name {
-		margin-left: 0;
-	}
-
-	.arrow {
-		display: none;
-	}
-}
-
-// hide arrows on mobile
+// hide arrows on touch enabled devices
 @media (hover: none) {
 	.lyml-row-wrapper .arrow {
 		visibility: hidden;
 	}
 }
-
-/* 4 card 54rem */
-// .four-cards {
-// 	$four-card-width: 864;
-
-// 	#lyml-row-title,
-// 	#lyml-row-cards {
-// 		max-width: rem-calc($four-card-width);
-// 	}
-// 	// hide arrows if screen is wide enough
-// 	@media only screen and (min-width: rem-calc($four-card-width)) {
-// 		.lyml-row-wrapper .arrow {
-// 			visibility: hidden;
-// 		}
-// 	}
-// }
 </style>

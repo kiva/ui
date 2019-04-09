@@ -17,6 +17,7 @@
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
 		@add-to-basket="handleAddToBasket"
+		@processing-add-to-basket="processingAddToBasket"
 	/>
 </template>
 
@@ -211,9 +212,15 @@ export default {
 				console.error(error);
 			});
 		},
+		// the async processing phase triggered upon clicking add to basket
+		processingAddToBasket() {
+			this.$emit('processing-add-to-basket');
+		},
+		// the final outcome of adding a loan to basket
+		// payload is { loanId: ######, success: true/false }
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
-		}
+		},
 	},
 };
 </script>

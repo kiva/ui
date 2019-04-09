@@ -41,7 +41,7 @@
 						<div class="columns small-12 medium-6">
 							<kv-button
 								class="button-checkout smaller"
-								to="/checkout"
+								to="/basket"
 								@click.native="closeLightbox">
 								Checkout
 							</kv-button>
@@ -55,8 +55,11 @@
 				<div class="additional-loans">
 					<h2>Similar loans to {{ loan.loan.name }}</h2>
 					<l-y-m-l
-						v-if="loans"
+						v-if="loans && loan.id"
 						:loans="loans"
+						:target-loan="loan"
+						@add-to-basket="handleAddToBasket"
+						@processing-add-to-basket="processingAddToBasket"
 					/>
 				</div>
 			</div>
@@ -148,12 +151,13 @@ export default {
 					},
 					fetchPolicy: 'network-only',
 				}).then(({ data }) => {
-					// console.log(data);
+					// all loans in basket
 					this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 					this.loanCount = this.loans.length;
 					this.loanTotals = _get(data, 'shop.basket.totals.loanReservationTotal');
 					const addedLoan = _find(this.loans, { id: this.basketInterstitialState.loanId });
-					// console.log(addedLoan);
+
+					// newly added loan
 					this.loan = addedLoan;
 
 					this.loadingOffTimeout = window.setTimeout(() => {
@@ -161,7 +165,22 @@ export default {
 					}, 500);
 				});
 			}
-		}
+		},
+		// the async processing phase triggered upon clicking add to basket
+		processingAddToBasket() {
+			this.$emit('processing-add-to-basket');
+			this.loading = true;
+		},
+		// the final outcome of adding a loan to basket
+		// payload is { loanId: ######, success: true/false }
+		handleAddToBasket(payload) {
+			this.loading = false;
+			this.$emit('add-to-basket', payload);
+			if (payload.success) {
+				// update basket items + totals
+				this.fetchLoan();
+			}
+		},
 	},
 	destroyed() {
 		clearTimeout(this.loadingOnTimeout);

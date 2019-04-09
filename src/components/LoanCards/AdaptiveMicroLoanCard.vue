@@ -112,7 +112,7 @@ export default {
 	},
 	methods: {
 		addToBasket() {
-			this.$emit('updating-totals', true);
+			this.$emit('processing-add-to-basket');
 			this.apollo.mutate({
 				mutation: updateLoanReservation,
 				variables: {
@@ -120,15 +120,16 @@ export default {
 					price: numeral(25).format('0.00'),
 				},
 			}).then(({ errors }) => {
+				this.$emit('add-to-basket', {
+					loanId: this.loanId,
+					success: !errors,
+				});
+
 				if (errors) {
 					// Handle errors from adding to basket
 					_forEach(errors, ({ message }) => {
 						this.$showTipMsg(message, 'error');
 					});
-					this.$emit('updating-totals', false);
-				} else {
-					// If no errors, update the basket + loan info
-					this.$emit('refreshtotals');
 				}
 			}).catch(() => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
@@ -167,8 +168,14 @@ export default {
 }
 
 .minimal-loan-card-data-wrap {
+	position: relative;
 	width: 50%;
 	padding: 0.25rem 0.875rem 0;
+
+	@media screen and (min-width: 320px) {
+		padding-top: 0.5rem;
+		font-size: rem-calc(16);
+	}
 
 	@include breakpoint(medium) {
 		width: 100%;
@@ -212,7 +219,18 @@ export default {
 	}
 
 	.minimal-loan-card-action-wrap {
+		position: absolute;
+		bottom: 0.25rem;
 		padding: 0;
+
+		@media screen and (min-width: 320px) {
+			bottom: 0.5rem;
+		}
+
+		@include breakpoint(medium) {
+			position: relative;
+			bottom: auto;
+		}
 
 		.card-action {
 			display: block;
