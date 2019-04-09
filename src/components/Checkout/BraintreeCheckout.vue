@@ -1,7 +1,6 @@
 <template>
 	<div class="braintree-holder">
 		<!-- Saved credit card data -->
-
 		<!-- v-if user has stored payment methods show the following div -->
 		<!-- v-for loop going through the user's saved credit cards and displaying them -->
 		<div id="braintree-stored-payment-form"
@@ -30,8 +29,7 @@
 							id="newPaymentRadio"
 							type="radio"
 							value="newCard"
-							v-model="selectedCard"
-							@input="useNewCardRadioSelected">
+							v-model="selectedCard">
 						<span>Use a new card</span>
 					</label>
 				</div>
@@ -158,7 +156,6 @@ export default {
 			kvPostalCodeError: '',
 			storedPaymentMethods: [],
 			paymentMethods: {},
-			useNewCardRadioSelected: false,
 			selectedCard: 'newCard',
 			selectedCardType: null,
 		};
@@ -341,7 +338,6 @@ export default {
 								if (validationStatus === true) {
 									// Call tokenize
 									this.tokenizeFormFields(hostedFieldsInstance);
-									// Todo: Use Vault Payment Nonce
 								} else {
 									// validation failed
 									this.setUpdating(false);
@@ -390,7 +386,6 @@ export default {
 				vaultInstance = btVaultInstance;
 
 				console.error(vaultError);
-				console.log(vaultInstance);
 
 				vaultInstance.fetchPaymentMethods(
 					{ defaultFirst: true },
@@ -409,6 +404,8 @@ export default {
 		checkoutWithStoredCard() {
 			this.storePaymentMethod = false;
 			this.doBraintreeCheckout(this.storedPaymentMethods[this.selectedCard].nonce);
+			this.$kvTrackEvent('basket', 'Braintree Stored Payment', 'Button Click');
+			this.setUpdating(true);
 		},
 		setCardType(cardType) {
 			if (cardType === 'American Express') {
@@ -419,9 +416,6 @@ export default {
 				return 'mastercard';
 			}
 			return 'unknown_card';
-		},
-		useNewCardSelected() {
-			this.useNewCardRadioSelected = this.useNewCardRadio.selected || false;
 		},
 		doBraintreeCheckout(nonce) {
 			// Apollo call to the query mutation
