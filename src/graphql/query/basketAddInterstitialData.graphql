@@ -1,3 +1,5 @@
+#import '../fragments/loanCardFields.graphql'
+
 query(
 	$basketId: String,
 	$imgDefaultSize: String = "w480h360",
@@ -14,15 +16,7 @@ query(
 						expiryTime
 						isEndingSoon
 						loan {
-							id
-							name
-							use
-							plannedExpirationDate
-							loanFundraisingInfo {
-								isExpiringSoon
-								fundedAmount
-								reservedAmount
-							}
+							...loanCardFields
 							image {
 								id
 								hash

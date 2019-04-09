@@ -5,11 +5,17 @@ fragment loanCardFields on LoanBasic {
 	borrowerCount
 	geocode {
 		country {
+			isoCode
 			name
 		}
 	}
 	use
 	activity {
+		id
+		name
+	}
+	sector {
+		id
 		name
 	}
 	whySpecial
