@@ -113,9 +113,6 @@ export default {
 				? this.$refs.accordionContent.clientHeight > this.fixedRowHeight
 				: false;
 		},
-		getCustomCategoryLabel(customCategoryId) {
-			return this.customCategories[customCategoryId].name;
-		},
 		generateLabel(item) {
 			const {
 				label,
