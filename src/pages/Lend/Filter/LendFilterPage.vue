@@ -1,7 +1,7 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
 		<lend-header browse-url="/lend-by-category" filter-url="/lend/filter" />
-		<div class="row page-content">
+		<div class="row page-content" :class="{'filter-menu-open': filterMenuOpen}">
 			<ais-instant-search
 				v-if="searchClient"
 				:search-client="searchClient"
@@ -10,6 +10,9 @@
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
+					:filter-menu-open="filterMenuOpen"
+					@hide-filter-menu="hideFilterMenu"
+					@toggle-filter-menu="toggleFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
@@ -132,6 +135,7 @@ export default {
 		return {
 			itemsInBasket: null,
 			isLoggedIn: false,
+			filterMenuOpen: false,
 			selectedCustomCategories: {},
 		};
 	},
@@ -183,6 +187,12 @@ export default {
 		}
 	},
 	methods: {
+		hideFilterMenu() {
+			this.filterMenuOpen = false;
+		},
+		toggleFilterMenu() {
+			this.filterMenuOpen = !this.filterMenuOpen;
+		},
 		toggleCustomCategory(categoryId) {
 			this.$set(
 				this.selectedCustomCategories,
@@ -214,9 +224,21 @@ export default {
 @import 'settings';
 
 .lend-filter-page {
+	$filter-transition: 0.25s ease-out;
+
 	.page-content {
 		max-width: 63.75rem;
 		padding: 0 1.5625rem;
+
+		.loan-card-group {
+			transition: opacity $filter-transition;
+		}
+
+		&.filter-menu-open {
+			.loan-card-group {
+				opacity: 0.2;
+			}
+		}
 	}
 }
 </style>
