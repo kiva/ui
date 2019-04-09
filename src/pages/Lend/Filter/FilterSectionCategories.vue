@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" :result-count="10" :applied-filters="appliedFilters" >
+	<filter-menu-section title="Categories" :applied-filters="appliedFilters" >
 		<kv-checkbox
 			v-for="{name, categoryId, checkboxInput, isChecked} in customCategoryList"
 			:key="categoryId"
@@ -12,6 +12,7 @@
 
 <script>
 import _map from 'lodash/map';
+import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
 import { AisRefinementList } from 'vue-instantsearch';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
@@ -22,6 +23,9 @@ export default {
 		FilterMenuSection,
 		AisRefinementList,
 	},
+	mixins: [
+		algoliaCustomCategories,
+	],
 	props: {
 		customCategories: {
 			type: Object,
@@ -29,18 +33,6 @@ export default {
 		},
 		selectedCustomCategories: {
 			type: Object,
-			required: true,
-		},
-		title: {
-			type: String,
-			default: 'Categories',
-		},
-		appliedFilters: {
-			type: String,
-			default: 'All',
-		},
-		resultCount: {
-			type: Number,
 			required: true,
 		},
 	},
@@ -59,6 +51,19 @@ export default {
 				},
 				isChecked: !!this.selectedCustomCategories[categoryId],
 			}));
+		},
+		appliedFilters() {
+			switch (this.customCategoryItems.length) {
+				case 0: {
+					return 'All';
+				}
+				case 1: {
+					return this.customCategoryItems[0].label;
+				}
+				default: {
+					return `${this.customCategoryItems.length} categories selected`;
+				}
+			}
 		},
 	},
 };

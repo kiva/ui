@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section :title="title" :result-count="10">
+	<filter-menu-section title="Location" >
 		<ais-hierarchical-menu
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"
@@ -44,16 +44,6 @@ export default {
 		FilterMenuSection,
 		AisHierarchicalMenu,
 		HierarchicalMenuList,
-	},
-	props: {
-		title: {
-			type: String,
-			default: 'Location',
-		},
-		resultCount: {
-			type: Number,
-			required: true,
-		},
 	},
 	methods: {
 		transformItems(items, isChild) {

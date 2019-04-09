@@ -1,8 +1,8 @@
 <template>
 	<div class="filter-menu-section" :class="{open}">
 		<div class="filter-summary" @click="toggleMenu">
-			<div class="filter-summary-title">
-				{{ title }} <span v-if="resultCount !== null" class="filter-result-count">({{ resultCount }})</span>
+			<div class="filter-summary-title" >
+				{{ title }}
 			</div>
 			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
 		</div>
@@ -22,10 +22,6 @@ export default {
 		appliedFilters: {
 			type: String,
 			default: 'All',
-		},
-		resultCount: {
-			type: Number,
-			default: null,
 		},
 	},
 	data() {
