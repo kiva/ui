@@ -7,7 +7,7 @@
 			:no-padding-bottom="true"
 			@lightbox-closed="closeLightbox">
 			<h1 class="lightbox-title" slot="title">You're almost there!</h1>
-			<div class="lightbox-loan-wrapper" v-if="loan.loan">
+			<div class="lightbox-loan-wrapper">
 				<div class="loan-preview columns small-12 large-8 xxlarge-7 large-offset-4" v-if="loan.loan">
 					<div class="row">
 						<div class="loan-image-wrapper columns small-4">
@@ -57,7 +57,11 @@
 					</div>
 				</div>
 
-				<loading-overlay v-show="loading" id="loading-preview-overlay" />
+				<div v-show="loading" class="loading-overlay" id="loading-preview-overlay">
+					<div class="spinner-wrapper">
+						<kv-loading-spinner />
+					</div>
+				</div>
 			</div>
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
 				<div class="additional-loans">
@@ -85,9 +89,9 @@ import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
@@ -95,7 +99,7 @@ export default {
 		KvButton,
 		LoanReservation,
 		LYML,
-		LoadingOverlay
+		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	data() {
@@ -213,6 +217,7 @@ export default {
 	.lightbox-loan-wrapper {
 		padding: 0.5rem;
 		position: relative;
+		min-height: 12rem;
 
 		@include breakpoint(medium) {
 			padding: 1rem;
@@ -274,6 +279,7 @@ export default {
 
 <style lang="scss">
 #loading-preview-overlay {
+	position: absolute;
 	width: auto;
 	height: auto;
 	left: 1rem;
