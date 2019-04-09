@@ -45,12 +45,11 @@ export default {
 		FilterSectionSort,
 		KvIcon,
 	},
-	data() {
-		return {
-			filterMenuOpen: false,
-		};
-	},
 	props: {
+		filterMenuOpen: {
+			type: Boolean,
+			required: true,
+		},
 		customCategories: {
 			type: Object,
 			required: true,
@@ -66,13 +65,13 @@ export default {
 	},
 	methods: {
 		hideFilterMenu() {
-			this.filterMenuOpen = false;
+			this.$emit('hide-filter-menu');
+		},
+		toggleFilterMenu() {
+			this.$emit('toggle-filter-menu');
 		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';
-		},
-		toggleFilterMenu() {
-			this.filterMenuOpen = !this.filterMenuOpen;
 		},
 		toggleCustomCategory(categoryId) {
 			this.$emit('toggle-custom-category', categoryId);
@@ -96,7 +95,6 @@ export default {
 		left: 0;
 		z-index: 1001;
 		pointer-events: none;
-		background-color: rgba(0, 0, 0, 0);
 		transition: background-color $filter-transition;
 	}
 
@@ -109,26 +107,29 @@ export default {
 			top: 0;
 			left: 0;
 			z-index: 1001;
-			padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+			padding: 0.25rem 0.25rem 0.25rem 0.75rem;
 			user-select: none;
 			height: 2rem;
 			cursor: pointer;
 			display: inline-flex;
 			justify-content: flex-start;
 			align-items: center;
-			background-color: rgba(255, 255, 255, 0);
-			border-radius: $filter-border-radius $filter-border-radius 0 0;
+			background-color: $white;
+			border-radius: $filter-border-radius;
+			border: 1px solid $blue;
+			color: $blue;
 			transition: background-color $filter-transition;
 
 			.filter-toggle-chevron {
 				height: rem-calc(5);
 				width: 2rem;
+				stroke: $blue;
 			}
 		}
 
 		#filter-menu {
 			position: absolute;
-			top: 2rem;
+			top: 2.5rem;
 			left: 0;
 			opacity: 0;
 			z-index: 1001;
@@ -137,7 +138,8 @@ export default {
 			pointer-events: none;
 			min-width: rem-calc(270);
 			background-color: rgba(255, 255, 255, 1);
-			border-radius: 0 $filter-border-radius $filter-border-radius $filter-border-radius;
+			box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.4);
+			border-radius: $filter-border-radius;
 			transition: opacity $filter-transition;
 
 			.filter-section {
@@ -162,15 +164,10 @@ export default {
 
 	&.open {
 		#lend-filter-overlay {
-			background-color: rgba(0, 0, 0, 0.6);
 			pointer-events: initial;
 		}
 
 		#lend-filter-wrapper {
-			#filter-toggle {
-				background-color: rgba(255, 255, 255, 1);
-			}
-
 			#filter-menu {
 				opacity: 1;
 				pointer-events: initial;
