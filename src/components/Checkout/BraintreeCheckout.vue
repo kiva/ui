@@ -217,14 +217,6 @@ export default {
 		}
 	},
 	methods: {
-		// Getting the client token from our server, this will be used to verify
-		// the transaction later on.
-		isTabSelected(index) {
-			return index === this.selectedIndex;
-		},
-		setSelected(index) {
-			this.selectedIndex = index;
-		},
 		getClientToken() {
 			this.apollo.query({
 				query: getClientToken,
