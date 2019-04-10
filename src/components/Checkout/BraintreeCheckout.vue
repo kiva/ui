@@ -649,10 +649,10 @@ $error-red: #fdeceb;
 		.use-new-card-text {
 			color: $tab-pill-color;
 			position: relative;
-			top: rem-calc(3);
+			top: rem-calc(-1);
 		}
 
-		.saved-payment-radio[type="radio"]:checked + .card-last-four-digits,
+		.saved-payment-radio[type="radio"]:checked ~ .card-last-four-digits,
 		#new-payment-radio[type="radio"]:checked + .use-new-card-text {
 			font-weight: 500;
 			color: $charcoal;
@@ -666,7 +666,7 @@ $error-red: #fdeceb;
 		.credit-card-icon {
 			width: rem-calc(32);
 			height: rem-calc(20);
-			top: rem-calc(6);
+			top: rem-calc(3);
 			position: relative;
 			margin: 0 rem-calc(20) 0 rem-calc(20);
 		}
