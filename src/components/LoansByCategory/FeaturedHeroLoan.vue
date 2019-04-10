@@ -61,7 +61,7 @@
 										:is-expiring-soon="false"
 										:is-funded="false"
 										:percent-raised="percentRaised"
-										:single-line="true"
+										:single-line="false"
 									/>
 								</div>
 								<div v-else>
@@ -300,6 +300,10 @@ $row-max-width: 58.75rem;
 					.why-special {
 						margin-top: rem-calc(20);
 						margin-bottom: rem-calc(20);
+
+						.fundraising-thermometer {
+							text-align: center;
+						}
 					}
 
 					.why-special .bold {
