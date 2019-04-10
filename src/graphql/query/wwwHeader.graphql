@@ -22,4 +22,10 @@ query($basketId: String) {
 			id
 		}
 	}
+	general {
+		legacyExpData: userSessionData(sessionKey: ABExperimentData) {
+			sessionKey
+			data
+		}
+	}
 }

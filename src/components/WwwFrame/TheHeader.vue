@@ -91,7 +91,7 @@
 		</div>
 		<promo-banner-small />
 		<kv-dropdown :controller="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
-			<the-lend-menu ref="lendMenu" />
+			<the-lend-menu ref="lendMenu" :legacy-exp-data="legacyExpData" />
 		</kv-dropdown>
 		<kv-dropdown :controller="aboutMenuId" v-if="isVisitor" class="dropdown-list">
 			<ul>
@@ -281,6 +281,7 @@ export default {
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
 			searchOpen: false,
+			legacyExpData: null
 		};
 	},
 	computed: {
@@ -312,6 +313,7 @@ export default {
 			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
 			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
 			this.profilePic = _get(data, 'my.lender.image.url');
+			this.legacyExpData = _get(data, 'general.legacyExpData.data');
 		},
 	},
 	methods: {
