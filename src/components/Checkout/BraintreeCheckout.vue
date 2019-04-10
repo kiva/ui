@@ -644,7 +644,7 @@ $error-red: #fdeceb;
 		#braintree-submit,
 		#stored-card-submit {
 			width: 100%;
-			margin-top: 0.8rem;
+			margin-top: 1rem;
 			font-size: 1.25rem;
 
 			.icon-lock {
