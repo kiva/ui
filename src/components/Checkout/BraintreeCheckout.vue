@@ -9,7 +9,9 @@
 				<div
 					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
 					class="small-12 columns">
-					<label :for="`saved-payment-radio-${index}`">
+					<label
+						class="saved-payment-radio-label"
+						:for="`saved-payment-radio-${index}`">
 						<input
 							:id="`saved-payment-radio-${index}`"
 							type="radio"
@@ -25,9 +27,12 @@
 					</label>
 				</div>
 				<div class="small-12 columns">
-					<label for="new-payment-radio">
+					<label
+						class="new-payment-radio-label"
+						for="new-payment-radio">
 						<input
 							id="new-payment-radio"
+							class="new-payment-radio"
 							type="radio"
 							value="newCard"
 							v-model="selectedCard">
@@ -38,7 +43,7 @@
 			<!-- Submit saved card payment button -->
 			<div
 				v-show="selectedCard !== 'newCard'"
-				class="row small-collapse">
+				class="row small-collapse additional-side-padding">
 				<div class="small-12 columns">
 					<kv-button
 						id="stored-card-submit"
@@ -103,7 +108,7 @@
 			</div>
 
 			<!-- Submit payment button -->
-			<div class="row small-collapse">
+			<div class="row small-collapse additional-side-padding">
 				<div class="small-12 columns">
 					<kv-button value="submit" id="braintree-submit" class="button smallest">
 						<kv-icon name="lock" />
@@ -293,11 +298,9 @@ export default {
 					fields: {
 						number: {
 							selector: '#kv-card-number',
-							placeholder: '4111 1111 1111 1111'
 						},
 						cvv: {
 							selector: '#kv-cvv',
-							placeholder: '123'
 						},
 						expirationDate: {
 							selector: '#kv-expiration-date',
@@ -305,7 +308,6 @@ export default {
 						},
 						postalCode: {
 							selector: '#kv-postal-code',
-							placeholder: '90210'
 						}
 					}
 				}, (hostedFieldsErr, hostedFieldsInstance) => {
@@ -565,15 +567,19 @@ $error-red: #fdeceb;
 }
 
 .braintree-holder {
-	margin-top: rem-calc(25);
+	margin-top: 1rem;
 
+
+	#braintree-payment-form {
+		margin-top: 1.5rem;
+	}
 	// We control wrapping form and input container styles
 	#braintree-payment-form,
 	#braintree-stored-payment-form {
 		padding: 0 1rem;
 
 		.braintree-form-row {
-			margin: 0 0 1.25rem;
+			margin: 0 0 rem-calc(4);
 		}
 
 		label {
@@ -642,14 +648,28 @@ $error-red: #fdeceb;
 		// .kv-card-number-error {}
 
 		.use-new-card-text {
-			margin-left: rem-calc(19);
+			margin-left: rem-calc(8);
 		}
 
 		.card-last-four-digits,
 		.use-new-card-text {
 			color: $tab-pill-color;
-			position: relative;
-			top: rem-calc(-1);
+		}
+
+		.new-payment-radio-label,
+		.saved-payment-radio-label {
+			display: flex;
+			align-items: center;
+			line-height: 2.25;
+		}
+
+		.new-payment-radio,
+		.saved-payment-radio {
+			margin-bottom: 0.125rem;
+
+				@include breakpoint(medium) {
+					margin-bottom: rem-calc(5);
+				}
 		}
 
 		.saved-payment-radio[type="radio"]:checked ~ .card-last-four-digits,
@@ -667,14 +687,17 @@ $error-red: #fdeceb;
 			width: rem-calc(32);
 			height: rem-calc(20);
 			top: rem-calc(3);
-			position: relative;
-			margin: 0 rem-calc(20) 0 rem-calc(20);
+			margin: 0 1rem;
+		}
+
+		.additional-side-padding {
+			padding: 0 1rem;
 		}
 
 		#braintree-submit,
 		#stored-card-submit {
 			width: 100%;
-			margin-top: 1rem;
+			margin-top: 1.45rem;
 			font-size: 1.25rem;
 
 			.icon-lock {
