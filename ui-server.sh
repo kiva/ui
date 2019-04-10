@@ -1,14 +1,12 @@
 # Note: Kiva server only tool
 #
 #!/bin/bash
-GREEN='\e[0;32m'
-WHITE='\e[97m'
-TITLE="${GREEN}Kiva${WHITE} UI server"
+TITLE="Kiva UI server"
 
 display_help() {
     echo -e "${TITLE} : Help"
     echo
-    echo "Usage: ui-server.sh {status|log|restart}" >&2
+    echo "Usage: ui-server.sh {status|log|restart|start_local}" >&2
     echo
     exit 1
 }
@@ -24,6 +22,8 @@ elif [ "$1" == "restart" ]; then
     sudo systemctl restart ui-server
     echo -e "${TITLE} : Restarting"
     echo
+elif [ "$1" == "start_local" ]; then
+    npm run dev -- --port=8888 --config=dev-local
 elif [ "$1" == "--help" ]; then
     display_help
 else
