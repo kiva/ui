@@ -566,7 +566,6 @@ $error-red: #fdeceb;
 .braintree-holder {
 	margin-top: 1rem;
 
-
 	#braintree-payment-form {
 		margin-top: 1.5rem;
 	}
