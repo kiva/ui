@@ -251,6 +251,7 @@ export default {
 			}, 200);
 		},
 		renderBraintreeForm() {
+			this.setUpdating(true);
 			// clear ensureBraintree interval
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
@@ -278,6 +279,8 @@ export default {
 				// If btVaultActive flag is true, initialize the BT Vault
 				if (this.btVaultActive) {
 					this.initializeBTVault();
+				} else {
+					this.setUpdating(false);
 				}
 
 				braintree.hostedFields.create({
@@ -380,6 +383,7 @@ export default {
 			});
 		},
 		initializeBTVault() {
+			// this.setUpdating(true);
 			let vaultInstance = null;
 			braintree.vaultManager.create({
 				// client: clientInstance,
@@ -399,6 +403,7 @@ export default {
 						if (this.storedPaymentMethods.length > 0) {
 							this.selectedCard = 0;
 						}
+						this.setUpdating(false);
 					}
 				);
 			});
