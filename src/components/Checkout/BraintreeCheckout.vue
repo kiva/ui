@@ -633,6 +633,10 @@ $error-red: #fdeceb;
 		}
 		// .kv-card-number-error {}
 
+		.vault-checkbox-wrapper {
+			margin-bottom: 0.25rem;
+		}
+
 		.credit-card-icon {
 			width: rem-calc(32);
 			height: rem-calc(20);
