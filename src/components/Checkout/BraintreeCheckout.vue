@@ -636,6 +636,9 @@ $error-red: #fdeceb;
 		.credit-card-icon {
 			width: rem-calc(32);
 			height: rem-calc(20);
+			top: rem-calc(6);
+			position: relative;
+			margin: 0 rem-calc(20) 0 rem-calc(20);
 		}
 
 		#braintree-submit,
