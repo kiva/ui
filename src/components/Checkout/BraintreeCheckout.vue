@@ -635,6 +635,7 @@ $error-red: #fdeceb;
 
 		.vault-checkbox-wrapper {
 			margin-bottom: 0.25rem;
+			padding: 0 1rem;
 		}
 
 		.credit-card-icon {
