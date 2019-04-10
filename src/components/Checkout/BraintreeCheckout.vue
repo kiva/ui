@@ -9,10 +9,11 @@
 				<div
 					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
 					class="small-12 columns">
-					<label>
+					<label :for="`saved-payment-radio-${index}`">
 						<input
-							id="savedPaymentRadio"
+							:id="`saved-payment-radio-${index}`"
 							type="radio"
+							class="saved-payment-radio"
 							:value="index"
 							v-model="selectedCard">
 						<!-- Checking credit card type to display correct credit card icon. -->
@@ -20,17 +21,17 @@
 							:name="setCardType(paymentMethod.details.cardType)"
 							class="credit-card-icon" />
 						<!-- Passing in the last 4 digits of the stored card -->
-						<span>...{{ paymentMethod.details.lastFour }}</span>
+						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
 				</div>
 				<div class="small-12 columns">
-					<label>
+					<label for="new-payment-radio">
 						<input
-							id="newPaymentRadio"
+							id="new-payment-radio"
 							type="radio"
 							value="newCard"
 							v-model="selectedCard">
-						<span>Use a new card</span>
+						<span class="use-new-card-text">Use a new card</span>
 					</label>
 				</div>
 			</div>
@@ -139,7 +140,7 @@ export default {
 		amount: {
 			type: String,
 			default: ''
-		},
+		}
 	},
 	data() {
 		return {
@@ -158,6 +159,7 @@ export default {
 			paymentMethods: {},
 			selectedCard: 'newCard',
 			selectedCardType: null,
+			isActive: false
 		};
 	},
 	apollo: {
@@ -212,6 +214,12 @@ export default {
 	methods: {
 		// Getting the client token from our server, this will be used to verify
 		// the transaction later on.
+		isTabSelected(index) {
+			return index === this.selectedIndex;
+		},
+		setSelected(index) {
+			this.selectedIndex = index;
+		},
 		getClientToken() {
 			this.apollo.query({
 				query: getClientToken,
@@ -632,6 +640,23 @@ $error-red: #fdeceb;
 			font-size: 0.875rem;
 		}
 		// .kv-card-number-error {}
+
+		.use-new-card-text {
+			margin-left: rem-calc(19);
+		}
+
+		.card-last-four-digits,
+		.use-new-card-text {
+			color: $tab-pill-color;
+			position: relative;
+			top: rem-calc(3);
+		}
+
+		.saved-payment-radio[type="radio"]:checked + .card-last-four-digits,
+		#new-payment-radio[type="radio"]:checked + .use-new-card-text {
+			font-weight: 500;
+			color: $charcoal;
+		}
 
 		.vault-checkbox-wrapper {
 			margin-bottom: 0.25rem;
