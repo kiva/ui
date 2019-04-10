@@ -163,8 +163,7 @@ export default {
 			storedPaymentMethods: [],
 			paymentMethods: {},
 			selectedCard: 'newCard',
-			selectedCardType: null,
-			isActive: false
+			selectedCardType: null
 		};
 	},
 	apollo: {
@@ -383,7 +382,6 @@ export default {
 			});
 		},
 		initializeBTVault() {
-			// this.setUpdating(true);
 			let vaultInstance = null;
 			braintree.vaultManager.create({
 				// client: clientInstance,
