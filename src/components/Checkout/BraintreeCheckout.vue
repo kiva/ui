@@ -664,11 +664,12 @@ $error-red: #fdeceb;
 		.saved-payment-radio {
 			margin-bottom: 0.125rem;
 
-				@include breakpoint(medium) {
-					margin-bottom: rem-calc(5);
-				}
+			@include breakpoint(medium) {
+				margin-bottom: rem-calc(5);
+			}
 		}
 
+		// eslint-disable-next-line
 		.saved-payment-radio[type="radio"]:checked ~ .card-last-four-digits,
 		#new-payment-radio[type="radio"]:checked + .use-new-card-text {
 			font-weight: 500;
