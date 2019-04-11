@@ -1,11 +1,10 @@
 <template>
-	<div class="pill-toggle">
-		<kv-pill-toggle
-			:options="genderOptions"
-			:selected="genderOptionSelected"
-			@pill-toggled="genderPillToggled"
-		/>
-	</div>
+	<kv-pill-toggle
+		class="gender-pill-toggle"
+		:options="genderOptions"
+		:selected="genderOptionSelected"
+		@pill-toggled="genderPillToggled"
+	/>
 </template>
 
 <script>
@@ -79,12 +78,8 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.pill-toggle {
-	align-items: center;
+.gender-pill-toggle {
 	display: flex;
-	justify-content: center;
-	margin: rem-calc(5);
-	margin-left: rem-calc(1);
-	margin-right: rem-calc(3);
+	font-size: 0.875rem;
 }
 </style>
