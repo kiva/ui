@@ -39,7 +39,7 @@ export default {
 $form-border-radius: rem-calc(3);
 
 .pill-toggle {
-	font-size: rem-calc(14);
+	font-size: 1rem;
 	height: rem-calc(34);
 	width: 100%;
 
@@ -65,7 +65,6 @@ $form-border-radius: rem-calc(3);
 			text-align: center;
 			width: 100%;
 			padding: 0 rem-calc(15);
-			font-size: 1rem;
 		}
 
 		&:first-child {
