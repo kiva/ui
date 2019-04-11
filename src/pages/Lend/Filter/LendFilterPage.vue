@@ -11,6 +11,7 @@
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
 					:filter-menu-open="filterMenuOpen"
+					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
 					@toggle-filter-menu="toggleFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
