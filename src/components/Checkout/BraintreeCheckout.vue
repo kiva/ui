@@ -26,7 +26,10 @@
 						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
 				</div>
-				<div class="small-12 columns">
+				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
+				<div
+					v-show="storedPaymentMethods.length > 0"
+					class="small-12 columns">
 					<label
 						class="new-payment-radio-label"
 						for="new-payment-radio">
@@ -50,7 +53,7 @@
 						class="button smallest"
 						@click.native="checkoutWithStoredCard">
 						<kv-icon name="lock" />
-						Pay with saved <span id="card-type">card</span>
+						Pay with <span id="card-type">card</span>
 					</kv-button>
 				</div>
 			</div>
@@ -562,18 +565,13 @@ $error-red: #fdeceb;
 }
 
 .braintree-holder {
-	margin-top: 1rem;
-
-	#braintree-payment-form {
-		margin-top: 1.5rem;
-	}
 	// We control wrapping form and input container styles
 	#braintree-payment-form,
 	#braintree-stored-payment-form {
 		padding: 0 1rem;
 
 		.braintree-form-row {
-			margin: 0 0 rem-calc(4);
+			margin: 0 0 1.5rem;
 		}
 
 		label {
@@ -642,7 +640,7 @@ $error-red: #fdeceb;
 		// .kv-card-number-error {}
 
 		.use-new-card-text {
-			margin-left: rem-calc(8);
+			margin-left: 1rem;
 		}
 
 		.card-last-four-digits,
@@ -674,7 +672,7 @@ $error-red: #fdeceb;
 		}
 
 		.vault-checkbox-wrapper {
-			margin-bottom: 0.25rem;
+			margin-bottom: 1.25rem;
 			padding: 0 1rem;
 		}
 
@@ -686,15 +684,12 @@ $error-red: #fdeceb;
 		}
 
 		.additional-side-padding {
-			@include breakpoint(medium) {
-				padding: 0 1rem;
-			}
+			padding: 0 1rem;
 		}
 
 		#braintree-submit,
 		#stored-card-submit {
 			width: 100%;
-			margin-top: 1.45rem;
 			font-size: 1.25rem;
 
 			.icon-lock {
