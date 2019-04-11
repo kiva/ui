@@ -184,6 +184,7 @@ export default {
 
 		@include breakpoint(medium) {
 			width: 100%;
+			max-height: rem-calc(132);
 		}
 	}
 }
