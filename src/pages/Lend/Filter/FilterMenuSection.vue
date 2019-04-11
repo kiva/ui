@@ -49,7 +49,9 @@ export default {
 
 		.filter-summary-title {
 			font-size: 1rem;
-			font-weight: 400;
+			font-weight: 500;
+			margin: 0;
+			transition: margin 0.15s ease-in;
 		}
 	}
 
@@ -58,25 +60,22 @@ export default {
 
 		ul {
 			list-style-type: none;
-			margin-bottom: 0;
-		}
-
-		.ais-HierarchicalMenu {
-			a {
-				color: $charcoal;
-				text-decoration: none;
-			}
-
-			.ais-HierarchicalMenu-item--selected {
-				> a {
-					font-weight: 600;
-					color: $green;
-				}
-			}
+			margin: 0;
 		}
 	}
 
 	&.open {
+		.filter-summary {
+			.filter-summary-title {
+				margin: 0.25rem 0 0.75rem 0;
+			}
+
+			.filter-summary-applied-filters {
+				/* Hide when menu is open as per design */
+				display: none;
+			}
+		}
+
 		.filter-items-container {
 			display: block;
 		}

@@ -39,7 +39,7 @@
 					<kv-button
 						class="filter-show-loans-mobile"
 						slot-scope="{ nbHits }"
-						@click="hideFilterMenu"
+						@click.native="hideFilterMenu"
 					>
 						Show {{ nbHits }} loan{{ nbHits > 1 ? 's' : '' }}
 					</kv-button>
