@@ -483,6 +483,7 @@ export default {
 		font-weight: $global-weight-highlight;
 		font-size: $medium-text-font-size;
 		min-height: 2rem;
+		vertical-align: top;
 
 		.edit-donation {
 			width: 1rem;
