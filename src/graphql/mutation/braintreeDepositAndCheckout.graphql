@@ -1,5 +1,5 @@
-mutation doNoncePaymentDepositAndCheckout($amount: Money!, $nonce: String!, $savePaymentMethod: Boolean) {
-	shop {
+mutation doNoncePaymentDepositAndCheckout($basketId: String, $amount: Money!, $nonce: String!, $savePaymentMethod: Boolean) {
+	shop (basketId: $basketId) {
 		doNoncePaymentDepositAndCheckout (amount: $amount, nonce: $nonce, savePaymentMethod: $savePaymentMethod)
 	}
 }
