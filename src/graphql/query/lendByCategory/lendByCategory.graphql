@@ -1,6 +1,7 @@
 query($basketId: String) {
 	general {
 		rows: setting(setting: "ui.category_rows") {
+			key
 			value
 		}
 		rowsExp: setting(setting: "uiexp.category_rows") {
