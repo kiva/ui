@@ -1,5 +1,5 @@
-query ($useCustomerId: Boolean = false) {
-	shop {
+query ($basketId: String, $useCustomerId: Boolean = false) {
+	shop (basketId: $basketId) {
 		getClientToken(useCustomerId: $useCustomerId)
 	}
 }
