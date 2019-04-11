@@ -7,7 +7,7 @@
 			:no-padding-bottom="true"
 			@lightbox-closed="closeLightbox">
 			<h1 class="lightbox-title" slot="title">You're almost there!</h1>
-			<div class="lightbox-loan-wrapper row" v-if="loan.loan">
+			<div class="lightbox-loan-wrapper">
 				<div class="loan-preview columns small-12 large-8 xxlarge-7 large-offset-4" v-if="loan.loan">
 					<div class="row">
 						<div class="loan-image-wrapper columns small-4">
@@ -31,17 +31,25 @@
 						<span class="text-subtotals columns small-6">Subtotal ${{ loanTotals | numeral('0,0') }}</span>
 					</div>
 					<div class="button-actions row">
-						<div class="columns small-6">
+						<div class="columns small-12 medium-6">
 							<kv-button
-								class="button-keep-exploring secondary smallest"
+								class="button-keep-exploring secondary smaller"
+								v-kv-track-event="[
+									'Lending',
+									'Add-to-basket Interstitial',
+									'keep-exploring-button-click']"
 								@click.native.prevent="closeLightbox">
 								Keep exploring
 							</kv-button>
 						</div>
-						<div class="columns small-6">
+						<div class="columns small-12 medium-6">
 							<kv-button
-								class="button-checkout smallest"
-								to="/checkout"
+								class="button-checkout smaller"
+								to="/basket"
+								v-kv-track-event="[
+									'Lending',
+									'Add-to-basket Interstitial',
+									'checkout-button-click']"
 								@click.native="closeLightbox">
 								Checkout
 							</kv-button>
@@ -49,14 +57,21 @@
 					</div>
 				</div>
 
-				<loading-overlay v-show="loading" id="loading-preview-overlay" />
+				<div v-show="loading" class="loading-overlay" id="loading-preview-overlay">
+					<div class="spinner-wrapper">
+						<kv-loading-spinner />
+					</div>
+				</div>
 			</div>
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
 				<div class="additional-loans">
 					<h2>Similar loans to {{ loan.loan.name }}</h2>
 					<l-y-m-l
-						v-if="loans"
+						v-if="loans && loan.id"
 						:loans="loans"
+						:target-loan="loan"
+						@add-to-basket="handleAddToBasket"
+						@processing-add-to-basket="processingAddToBasket"
 					/>
 				</div>
 			</div>
@@ -74,9 +89,9 @@ import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
@@ -84,7 +99,7 @@ export default {
 		KvButton,
 		LoanReservation,
 		LYML,
-		LoadingOverlay
+		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	data() {
@@ -148,12 +163,13 @@ export default {
 					},
 					fetchPolicy: 'network-only',
 				}).then(({ data }) => {
-					// console.log(data);
+					// all loans in basket
 					this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 					this.loanCount = this.loans.length;
 					this.loanTotals = _get(data, 'shop.basket.totals.loanReservationTotal');
 					const addedLoan = _find(this.loans, { id: this.basketInterstitialState.loanId });
-					// console.log(addedLoan);
+
+					// newly added loan
 					this.loan = addedLoan;
 
 					this.loadingOffTimeout = window.setTimeout(() => {
@@ -161,7 +177,22 @@ export default {
 					}, 500);
 				});
 			}
-		}
+		},
+		// the async processing phase triggered upon clicking add to basket
+		processingAddToBasket() {
+			this.$emit('processing-add-to-basket');
+			this.loading = true;
+		},
+		// the final outcome of adding a loan to basket
+		// payload is { loanId: ######, success: true/false }
+		handleAddToBasket(payload) {
+			this.loading = false;
+			this.$emit('add-to-basket', payload);
+			if (payload.success) {
+				// update basket items + totals
+				this.fetchLoan();
+			}
+		},
 	},
 	destroyed() {
 		clearTimeout(this.loadingOnTimeout);
@@ -184,11 +215,12 @@ export default {
 	}
 
 	.lightbox-loan-wrapper {
-		padding: 1rem;
+		padding: 0.5rem;
 		position: relative;
+		min-height: 12rem;
 
 		@include breakpoint(medium) {
-			padding: 1rem 2rem;
+			padding: 1rem;
 		}
 
 		.loan-preview {
@@ -247,6 +279,7 @@ export default {
 
 <style lang="scss">
 #loading-preview-overlay {
+	position: absolute;
 	width: auto;
 	height: auto;
 	left: 1rem;

@@ -278,6 +278,7 @@ $row-max-width: 63.75rem;
 .arrow {
 	display: flex;
 	position: absolute;
+	top: 0;
 	background: rgba(255, 255, 255, 0.8);
 	width: 2.5rem;
 	margin: 0;

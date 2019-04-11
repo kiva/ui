@@ -1,6 +1,7 @@
 <template>
 	<component
 		:amount-left="amountLeft"
+		:card-number="cardNumber"
 		:experiment-data="experimentData"
 		:expiring-soon-message="expiringSoonMessage"
 		:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
@@ -17,10 +18,12 @@
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
 		@add-to-basket="handleAddToBasket"
+		@processing-add-to-basket="processingAddToBasket"
 	/>
 </template>
 
 <script>
+import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
 import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
@@ -35,6 +38,7 @@ import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql'
 
 export default {
 	components: {
+		AdaptiveMicroLoanCard,
 		FeaturedHeroLoan,
 		GridLoanCard,
 		GridMicroLoanCard,
@@ -209,9 +213,15 @@ export default {
 				console.error(error);
 			});
 		},
+		// the async processing phase triggered upon clicking add to basket
+		processingAddToBasket() {
+			this.$emit('processing-add-to-basket');
+		},
+		// the final outcome of adding a loan to basket
+		// payload is { loanId: ######, success: true/false }
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
-		}
+		},
 	},
 };
 </script>

@@ -9,10 +9,13 @@
 				<div
 					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
 					class="small-12 columns">
-					<label>
+					<label
+						class="saved-payment-radio-label"
+						:for="`saved-payment-radio-${index}`">
 						<input
-							id="savedPaymentRadio"
+							:id="`saved-payment-radio-${index}`"
 							type="radio"
+							class="saved-payment-radio"
 							:value="index"
 							v-model="selectedCard">
 						<!-- Checking credit card type to display correct credit card icon. -->
@@ -20,31 +23,37 @@
 							:name="setCardType(paymentMethod.details.cardType)"
 							class="credit-card-icon" />
 						<!-- Passing in the last 4 digits of the stored card -->
-						<span>...{{ paymentMethod.details.lastFour }}</span>
+						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
 				</div>
-				<div class="small-12 columns">
-					<label>
+				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
+				<div
+					v-show="storedPaymentMethods.length > 0"
+					class="small-12 columns">
+					<label
+						class="new-payment-radio-label"
+						for="new-payment-radio">
 						<input
-							id="newPaymentRadio"
+							id="new-payment-radio"
+							class="new-payment-radio"
 							type="radio"
 							value="newCard"
 							v-model="selectedCard">
-						<span>Use a new card</span>
+						<span class="use-new-card-text">Use a new card</span>
 					</label>
 				</div>
 			</div>
 			<!-- Submit saved card payment button -->
 			<div
 				v-show="selectedCard !== 'newCard'"
-				class="row small-collapse">
+				class="row small-collapse additional-side-padding">
 				<div class="small-12 columns">
 					<kv-button
 						id="stored-card-submit"
 						class="button smallest"
 						@click.native="checkoutWithStoredCard">
 						<kv-icon name="lock" />
-						Pay with saved <span id="card-type">card</span>
+						Pay with <span id="card-type">card</span>
 					</kv-button>
 				</div>
 			</div>
@@ -102,7 +111,7 @@
 			</div>
 
 			<!-- Submit payment button -->
-			<div class="row small-collapse">
+			<div class="row small-collapse additional-side-padding">
 				<div class="small-12 columns">
 					<kv-button value="submit" id="braintree-submit" class="button smallest">
 						<kv-icon name="lock" />
@@ -139,7 +148,7 @@ export default {
 		amount: {
 			type: String,
 			default: ''
-		},
+		}
 	},
 	data() {
 		return {
@@ -157,7 +166,7 @@ export default {
 			storedPaymentMethods: [],
 			paymentMethods: {},
 			selectedCard: 'newCard',
-			selectedCardType: null,
+			selectedCardType: null
 		};
 	},
 	apollo: {
@@ -210,8 +219,6 @@ export default {
 		}
 	},
 	methods: {
-		// Getting the client token from our server, this will be used to verify
-		// the transaction later on.
 		getClientToken() {
 			this.apollo.query({
 				query: getClientToken,
@@ -246,6 +253,7 @@ export default {
 			}, 200);
 		},
 		renderBraintreeForm() {
+			this.setUpdating(true);
 			// clear ensureBraintree interval
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
@@ -273,6 +281,8 @@ export default {
 				// If btVaultActive flag is true, initialize the BT Vault
 				if (this.btVaultActive) {
 					this.initializeBTVault();
+				} else {
+					this.setUpdating(false);
 				}
 
 				braintree.hostedFields.create({
@@ -285,11 +295,9 @@ export default {
 					fields: {
 						number: {
 							selector: '#kv-card-number',
-							placeholder: '4111 1111 1111 1111'
 						},
 						cvv: {
 							selector: '#kv-cvv',
-							placeholder: '123'
 						},
 						expirationDate: {
 							selector: '#kv-expiration-date',
@@ -297,7 +305,6 @@ export default {
 						},
 						postalCode: {
 							selector: '#kv-postal-code',
-							placeholder: '90210'
 						}
 					}
 				}, (hostedFieldsErr, hostedFieldsInstance) => {
@@ -397,6 +404,7 @@ export default {
 						if (this.storedPaymentMethods.length > 0) {
 							this.selectedCard = 0;
 						}
+						this.setUpdating(false);
 					}
 				);
 			});
@@ -557,15 +565,13 @@ $error-red: #fdeceb;
 }
 
 .braintree-holder {
-	margin-top: rem-calc(25);
-
 	// We control wrapping form and input container styles
 	#braintree-payment-form,
 	#braintree-stored-payment-form {
 		padding: 0 1rem;
 
 		.braintree-form-row {
-			margin: 0 0 1.25rem;
+			margin: 0 0 1.5rem;
 		}
 
 		label {
@@ -633,15 +639,57 @@ $error-red: #fdeceb;
 		}
 		// .kv-card-number-error {}
 
+		.use-new-card-text {
+			margin-left: 1rem;
+		}
+
+		.card-last-four-digits,
+		.use-new-card-text {
+			color: $tab-pill-color;
+		}
+
+		.new-payment-radio-label,
+		.saved-payment-radio-label {
+			display: flex;
+			align-items: center;
+			line-height: 2.25;
+		}
+
+		.new-payment-radio,
+		.saved-payment-radio {
+			margin-bottom: 0.125rem;
+
+			@include breakpoint(medium) {
+				margin-bottom: rem-calc(5);
+			}
+		}
+
+		// eslint-disable-next-line
+		.saved-payment-radio[type="radio"]:checked ~ .card-last-four-digits,
+		#new-payment-radio[type="radio"]:checked + .use-new-card-text {
+			font-weight: 500;
+			color: $charcoal;
+		}
+
+		.vault-checkbox-wrapper {
+			margin-bottom: 1.25rem;
+			padding: 0 1rem;
+		}
+
 		.credit-card-icon {
 			width: rem-calc(32);
 			height: rem-calc(20);
+			top: rem-calc(3);
+			margin: 0 1rem;
+		}
+
+		.additional-side-padding {
+			padding: 0 1rem;
 		}
 
 		#braintree-submit,
 		#stored-card-submit {
 			width: 100%;
-			margin-top: 0.8rem;
 			font-size: 1.25rem;
 
 			.icon-lock {
