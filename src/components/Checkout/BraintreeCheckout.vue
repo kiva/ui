@@ -686,7 +686,9 @@ $error-red: #fdeceb;
 		}
 
 		.additional-side-padding {
-			padding: 0 1rem;
+			@include breakpoint(medium) {
+				padding: 0 1rem;
+			}
 		}
 
 		#braintree-submit,
