@@ -394,7 +394,7 @@ export default {
 		// CASH-350 : Experiment : Featured Hero Loan
 		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'featured_hero_loan_v2' },
+			variables: { id: 'featured_hero_loan_v3' },
 		});
 
 		// eslint-disable-next-line max-len

@@ -20,7 +20,7 @@ query($basketId: String) {
 			key
 			value
 		}
-		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan_v2") {
+		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan_v3") {
 			key
 			value
 		}
