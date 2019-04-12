@@ -1,6 +1,9 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
-		<lend-header browse-url="/lend-by-category" filter-url="/lend/filter" />
+		<lend-header
+			class="filter-page-lend-header"
+			browse-url="/lend-by-category"
+			filter-url="/lend/filter" />
 		<div class="row page-content" :class="{'filter-menu-open': filterMenuOpen}">
 			<ais-instant-search
 				v-if="searchClient"
@@ -228,8 +231,8 @@ export default {
 	$filter-transition: 0.25s ease-out;
 
 	.page-content {
-		max-width: 63.75rem;
-		padding: 0 1.5625rem;
+		// max-width: 63.75rem;
+		padding: 0 2rem;
 
 		.loan-card-group {
 			transition: opacity $filter-transition;
@@ -243,3 +246,21 @@ export default {
 	}
 }
 </style>
+
+<style lang="scss">
+@import 'settings';
+
+.lend-filter-page {
+	.filter-page-lend-header {
+		.heading-region {
+			padding: 0 1rem;
+			margin-bottom: 1rem;
+
+			@media screen and (min-width: 1020px) {
+				padding: 0 1.9rem;
+			}
+		}
+	}
+}
+</style>
+
