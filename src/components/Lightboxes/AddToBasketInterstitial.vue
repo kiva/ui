@@ -233,10 +233,6 @@ export default {
 			@include breakpoint(large) {
 				position: absolute;
 				left: 1rem;
-
-				// .loan-image {
-				// 	padding-right: 0.8rem;
-				// }
 			}
 		}
 
