@@ -277,6 +277,7 @@ export default {
 		h2 {
 			padding: 0 1rem;
 			font-size: 1.25rem;
+			font-weight: 500;
 
 			@include breakpoint(medium) {
 				padding: 0 2rem;
