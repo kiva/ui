@@ -9,7 +9,7 @@
 			</div>
 			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
 		</div>
-		<div class="filter-items-container" @click="handleClickFilterItemsContainer">
+		<div class="filter-items-container" @click.stop>
 			<slot></slot>
 		</div>
 	</div>
@@ -38,9 +38,6 @@ export default {
 	methods: {
 		toggleMenu() {
 			this.open = !this.open;
-		},
-		handleClickFilterItemsContainer(event) {
-			event.stopPropagation();
 		},
 	},
 };
