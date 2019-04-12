@@ -248,17 +248,13 @@ export default {
 </style>
 
 <style lang="scss">
-@import 'settings';
+.filter-page-lend-header {
+	.heading-region {
+		padding: 0 1rem;
+		margin-bottom: 1rem;
 
-.lend-filter-page {
-	.filter-page-lend-header {
-		.heading-region {
-			padding: 0 1rem;
-			margin-bottom: 1rem;
-
-			@media screen and (min-width: 1020px) {
-				padding: 0 1.9rem;
-			}
+		@media screen and (min-width: 1020px) {
+			padding: 0 1.9rem;
 		}
 	}
 }
