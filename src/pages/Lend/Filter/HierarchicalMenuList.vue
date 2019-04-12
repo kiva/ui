@@ -12,17 +12,11 @@
 				:class="{selected: item.isRefined}"
 			>
 				<input
-					v-if="item.isChild"
 					type="checkbox"
 					:checked="item.isRefined"
 					class="hierarchical-menu-item-checkbox"
 					@click.prevent
 				>
-				<kv-icon
-					v-else
-					name="large-chevron"
-					class="hierarchical-menu-item-chevron"
-				/>
 				<span class="hierarchical-menu-item-text">
 					<span class="hierarchical-menu-item-description">{{ item.label }}</span>
 					<span class="hierarchical-menu-item-count">({{ item.count }})</span>
@@ -74,37 +68,14 @@ export default {
 			cursor: pointer;
 			user-select: none;
 
-			.hierarchical-menu-item-checkbox {
-				margin-bottom: 0;
-			}
-
-			.hierarchical-menu-item-chevron {
-				width: 1rem;
-				height: rem-calc(11);
-				margin-right: 0.5rem;
-				transform: rotate(270deg);
-			}
-
 			.hierarchical-menu-item-text {
-				.hierarchical-menu-item-description {
-					color: $charcoal;
-				}
-
-				.hierarchical-menu-item-count {
-					color: $gray;
-				}
-			}
-
-			&.selected {
-				.hierarchical-menu-item-chevron {
-					transform: initial;
-				}
+				color: $charcoal;
 			}
 		}
 
 		&.child {
 			.hierarchical-menu-item-label {
-				margin-left: 0.5rem;
+				margin-left: 1.5rem;
 			}
 		}
 	}

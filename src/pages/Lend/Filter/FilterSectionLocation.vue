@@ -46,15 +46,13 @@ export default {
 		HierarchicalMenuList,
 	},
 	methods: {
-		transformItems(items, isChild) {
+		transformItems(items, searchParameters, isChild) {
 			return items.map(item => ({
 				...item,
 				isChild,
-				data: item.data ? this.transformItems(item.data, true) : item.data,
+				data: item.data ? this.transformItems(item.data, searchParameters, true) : item.data,
 			}));
 		},
 	},
 };
 </script>
-<style>
-</style>

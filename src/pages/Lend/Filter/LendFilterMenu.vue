@@ -7,7 +7,7 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
-				<div id="filter-section-mobile-reset-all" class="filter-section hide-for-medium">
+				<div id="filter-section-mobile-reset-all" class="filter-section">
 					<ais-clear-refinements class="clear-all-container">
 						<div
 							class="filter-mobile-reset-all-link"
@@ -39,7 +39,7 @@
 					<kv-button
 						class="filter-show-loans-mobile"
 						slot-scope="{ nbHits }"
-						@click="hideFilterMenu"
+						@click.native="hideFilterMenu"
 					>
 						Show {{ nbHits }} loan{{ nbHits > 1 ? 's' : '' }}
 					</kv-button>
@@ -211,6 +211,10 @@ export default {
 				&#filter-section-advanced {
 					cursor: pointer;
 					color: #B5B5B5;
+				}
+
+				&:first-child {
+					border-top: none;
 				}
 			}
 

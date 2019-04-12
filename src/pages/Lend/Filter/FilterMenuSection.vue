@@ -1,19 +1,25 @@
 <template>
-	<div class="filter-menu-section" :class="{open}">
-		<div class="filter-summary" @click="toggleMenu">
-			<div class="filter-summary-title" >
-				{{ title }}
+	<div class="filter-menu-section" :class="{open}" @click="toggleMenu">
+		<div class="filter-summary">
+			<div class="filter-summary-title-row">
+				<div class="filter-summary-title" >
+					{{ title }}
+				</div>
+				<kv-icon class="filter-summary-title-chevron" name="small-chevron-mobile" />
 			</div>
 			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
 		</div>
-		<div class="filter-items-container">
+		<div class="filter-items-container" @click.stop>
 			<slot></slot>
 		</div>
 	</div>
 </template>
 
 <script>
+import KvIcon from '@/components/Kv/KvIcon';
+
 export default {
+	components: { KvIcon },
 	props: {
 		title: {
 			type: String,
@@ -41,15 +47,36 @@ export default {
 @import 'settings';
 
 .filter-menu-section {
+	$filter-transition-timing: 0.15s ease-in;
+
 	font-size: 0.875rem;
 	font-weight: 300;
+	cursor: pointer;
 
 	.filter-summary {
-		cursor: pointer;
+		.filter-summary-title-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			stroke-width: rem-calc(2);
 
-		.filter-summary-title {
-			font-size: 1rem;
-			font-weight: 400;
+			.filter-summary-title {
+				font-size: 1rem;
+				font-weight: 500;
+				margin: 0;
+				transition: margin $filter-transition-timing;
+			}
+
+			.filter-summary-title-chevron {
+				height: rem-calc(6);
+				width: rem-calc(10);
+				transition: transform $filter-transition-timing;
+			}
+		}
+
+		.filter-summary-applied-filters {
+			/* Hide this altogether until implemented fully */
+			display: none;
 		}
 	}
 
@@ -58,26 +85,27 @@ export default {
 
 		ul {
 			list-style-type: none;
-			margin-bottom: 0;
-		}
-
-		.ais-HierarchicalMenu {
-			a {
-				color: $charcoal;
-				text-decoration: none;
-			}
-
-			.ais-HierarchicalMenu-item--selected {
-				> a {
-					font-weight: 600;
-					color: $green;
-				}
-			}
+			margin: 0;
 		}
 	}
 
 	&.open {
-		background-color: rgba($green, 0.05);
+		.filter-summary {
+			.filter-summary-title-row {
+				.filter-summary-title {
+					margin: 0.25rem 0 0.75rem 0;
+				}
+
+				.filter-summary-title-chevron {
+					transform: rotate(180deg);
+				}
+			}
+
+			.filter-summary-applied-filters {
+				/* Hide when menu is open as per design */
+				display: none;
+			}
+		}
 
 		.filter-items-container {
 			display: block;

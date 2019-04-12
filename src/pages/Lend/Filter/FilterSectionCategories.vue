@@ -1,7 +1,8 @@
 <template>
-	<filter-menu-section title="Categories" :applied-filters="appliedFilters" >
+	<filter-menu-section title="Categories" :applied-filters="appliedFilters" class="filter-section-categories">
 		<kv-checkbox
 			v-for="{name, categoryId, checkboxInput, isChecked} in customCategoryList"
+			class="category-checkbox"
 			:key="categoryId"
 			:label="name"
 			:is-checked="isChecked"
@@ -68,3 +69,11 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+.filter-section-categories {
+	.category-checkbox {
+		cursor: pointer;
+	}
+}
+</style>
