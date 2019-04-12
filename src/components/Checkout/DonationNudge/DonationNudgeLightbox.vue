@@ -3,6 +3,7 @@
 		:visible="nudgeLightboxVisible"
 		:no-padding-sides="true"
 		:no-padding-bottom="true"
+		:no-padding-top="true"
 		@lightbox-closed="closeNudgeLightbox"
 	>
 		<div id="nudge-donation-container">
@@ -128,6 +129,16 @@ export default {
 	#nudge-donation-top {
 		padding-bottom: 1.6rem;
 		background: #F8F8F8;
+		border-radius: rem-calc(4) rem-calc(4) 0 0;
+		padding-top: 2.5rem;
+
+		@include breakpoint(medium) {
+			padding-top: 4rem;
+		}
+
+		@include breakpoint(large) {
+			padding-top: 4.75rem;
+		}
 
 		#nudge-donation-top-boxes-wrapper {
 			@extend .nudge-lightbox-row-padding;
