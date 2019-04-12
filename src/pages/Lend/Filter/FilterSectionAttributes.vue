@@ -20,21 +20,20 @@ export default {
 	data() {
 		return {
 			visibleThemes: {
-				'Conflict Zone': true,
-				'Clean Energy': true,
-				'Displaced Populations': true,
-				/* Below are untested, taken directly from ticket */
-				'Rural Exclusion': true,
-				'Social Enterprise': true,
-				'Water and Sanitation': true,
-				Youth: true,
+				'conflict zone': true,
+				'clean energy': true,
+				'displaced populations': true,
+				'rural exclusion': true,
+				'social enterprise': true,
+				'water and sanitation': true,
+				youth: true,
 			},
 		};
 	},
 	methods: {
 		transformItems(items) {
 			return items
-				.filter(item => !!this.visibleThemes[item.label])
+				.filter(item => !!this.visibleThemes[item.label.toLowerCase()])
 				.map(item => ({ ...item, count: `(${item.count})` }));
 		}
 	},
