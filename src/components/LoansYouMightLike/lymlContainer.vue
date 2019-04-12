@@ -266,7 +266,7 @@ export default {
 
 .lyml-section-wrapper {
 	padding: 0;
-	min-height: 22rem;
+	min-height: 17rem;
 	position: relative;
 }
 
