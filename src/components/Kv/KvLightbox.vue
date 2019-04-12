@@ -171,9 +171,9 @@ export default {
 		.lightbox-content {
 			display: block;
 			position: relative;
-			padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+			padding: 2.625rem 1.5rem 1.5rem 1.5rem;
 			max-width: 61rem;
-			background: rgba(255, 255, 255, 0.95);
+			background: $white;
 			border-radius: rem-calc(4);
 
 			@include breakpoint(medium) {
@@ -190,8 +190,8 @@ export default {
 				right: 1rem;
 
 				.icon.icon-small-x {
-					height: 1rem;
-					width: 1rem;
+					height: 1.5rem;
+					width: 1.5rem;
 					fill: $subtle-gray;
 					transition: fill 0.16s linear;
 				}
@@ -205,11 +205,6 @@ export default {
 				@include breakpoint(medium) {
 					top: 1.5rem;
 					right: 1.5rem;
-
-					.icon.icon-small-x {
-						height: 1.25rem;
-						width: 1.25rem;
-					}
 				}
 
 				@include breakpoint(large) {

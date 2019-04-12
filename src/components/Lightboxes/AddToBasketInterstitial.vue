@@ -8,7 +8,7 @@
 			@lightbox-closed="closeLightbox">
 			<h1 class="lightbox-title" slot="title">You're almost there!</h1>
 			<div class="lightbox-loan-wrapper">
-				<div class="loan-preview columns small-12 large-8 xxlarge-7 large-offset-4" v-if="loan.loan">
+				<div class="loan-preview columns small-12 large-8 large-offset-4" v-if="loan.loan">
 					<div class="row">
 						<div class="loan-image-wrapper columns small-4">
 							<div class="loan-image">
@@ -18,6 +18,7 @@
 						<div class="loan-title columns small-8">
 							<h3><span>${{ loan.price | numeral('0,0') }}</span> to {{ loan.loan.name }}</h3>
 							<loan-reservation
+								class="popup-reservation-text"
 								:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 								:is-funded="loan.isFunded"
 								:expiry-time="loan.expiryTime"
@@ -206,8 +207,9 @@ export default {
 
 .basket-add-interstitial {
 	.lightbox-title {
-		padding: 1rem 1rem 0.8rem;
+		padding: 1rem 2.5rem 0.8rem 1rem;
 		border-bottom: 1px solid $subtle-gray;
+		font-size: 1.75rem;
 
 		@include breakpoint(medium) {
 			padding: 1rem 2rem 0.8rem;
@@ -230,12 +232,12 @@ export default {
 		.loan-image-wrapper {
 			@include breakpoint(large) {
 				position: absolute;
-				left: 2rem;
-
-				.loan-image {
-					padding-right: 0.8rem;
-				}
+				left: 1rem;
 			}
+		}
+
+		.loan-title .popup-reservation-text {
+			font-size: 1rem;
 		}
 
 		.basket-summary {
@@ -243,6 +245,7 @@ export default {
 			margin: 0.625rem 0 0.5rem;
 			border-top: 1px solid $subtle-gray;
 			font-weight: 400;
+			color: $kiva-text-light;
 
 			.text-subtotals {
 				text-align: right;
@@ -251,6 +254,11 @@ export default {
 
 		.button-actions {
 			padding: 0.375rem 0;
+			flex-direction: column-reverse;
+
+			@include breakpoint(medium) {
+				flex-direction: row;
+			}
 
 			button,
 			a {
@@ -262,12 +270,14 @@ export default {
 	}
 
 	.lightbox-lyml-wrapper {
-		padding: 2rem 0;
+		padding: 1.5rem 0;
 		background: $platinum;
 		border-radius: 0 0 rem-calc(4) rem-calc(4);
 
 		h2 {
 			padding: 0 1rem;
+			font-size: 1.25rem;
+			font-weight: 500;
 
 			@include breakpoint(medium) {
 				padding: 0 2rem;
@@ -278,6 +288,10 @@ export default {
 </style>
 
 <style lang="scss">
+.basket-add-interstitial .kv-lightbox-wrap .kv-lightbox .lightbox-content .close-lightbox {
+	top: 1.5rem;
+}
+
 #loading-preview-overlay {
 	position: absolute;
 	width: auto;
