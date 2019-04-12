@@ -81,5 +81,6 @@ export default {
 .gender-pill-toggle {
 	display: flex;
 	font-size: 0.875rem;
+	margin: 0.5rem 0;
 }
 </style>
