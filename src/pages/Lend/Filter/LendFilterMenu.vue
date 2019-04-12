@@ -23,7 +23,7 @@
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />
 				<filter-section-sort :default-sort-indices="defaultSortIndices" class="filter-section" />
-				<!--
+				<!-- Custom Categories
 				<filter-section-categories
 					class="filter-section"
 					:custom-categories="customCategories"
