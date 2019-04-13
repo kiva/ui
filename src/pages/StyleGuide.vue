@@ -38,6 +38,9 @@
 						<li>
 							<router-link to="/styleguide/images">Images</router-link>
 						</li>
+						<li>
+							<router-link to="/styleguide/icons">Icons</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="small-12 large-9 columns">
