@@ -110,7 +110,7 @@ export default {
 		},
 		toggleFilterMenu() {
 			this.filterMenuOpen = !this.filterMenuOpen;
-			this.$emit('toggle-filter-menu');
+			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';

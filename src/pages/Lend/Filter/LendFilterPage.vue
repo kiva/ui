@@ -15,7 +15,7 @@
 					:selected-custom-categories="selectedCustomCategories"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
-					@toggle-filter-menu="toggleFilterMenu"
+					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
@@ -195,8 +195,8 @@ export default {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
 		},
-		toggleFilterMenu() {
-			this.filterMenuOpen = !this.filterMenuOpen;
+		showFilterMenu() {
+			this.filterMenuOpen = true;
 		},
 		toggleCustomCategory(categoryId) {
 			this.$set(
