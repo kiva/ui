@@ -133,6 +133,8 @@ export default {
 #lend-filter-menu {
 	$filter-transition: 0.25s ease-out;
 	$filter-border-radius: rem-calc(3);
+	// Margin hack
+	margin-left: -1.9375rem;
 
 	#lend-filter-overlay {
 		position: fixed;
