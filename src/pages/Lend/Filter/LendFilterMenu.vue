@@ -84,11 +84,12 @@ export default {
 		KvIcon,
 		KvButton,
 	},
+	data() {
+		return {
+			filterMenuOpen: false,
+		};
+	},
 	props: {
-		filterMenuOpen: {
-			type: Boolean,
-			required: true,
-		},
 		defaultSortIndices: {
 			type: Array,
 			required: true,
@@ -104,9 +105,11 @@ export default {
 	},
 	methods: {
 		hideFilterMenu() {
+			this.filterMenuOpen = false;
 			this.$emit('hide-filter-menu');
 		},
 		toggleFilterMenu() {
+			this.filterMenuOpen = !this.filterMenuOpen;
 			this.$emit('toggle-filter-menu');
 		},
 		showAdvancedFilters() {
