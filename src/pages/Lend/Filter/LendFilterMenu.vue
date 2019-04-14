@@ -85,16 +85,16 @@ export default {
 		KvButton,
 	},
 	props: {
-		filterMenuOpen: {
-			type: Boolean,
-			required: true,
-		},
 		defaultSortIndices: {
 			type: Array,
 			required: true,
 		},
 		customCategories: {
 			type: Object,
+			required: true,
+		},
+		filterMenuOpen: {
+			type: Boolean,
 			required: true,
 		},
 		selectedCustomCategories: {
@@ -104,10 +104,10 @@ export default {
 	},
 	methods: {
 		hideFilterMenu() {
-			this.$emit('hide-filter-menu');
+			this.filterMenuOpen = false;
 		},
 		toggleFilterMenu() {
-			this.$emit('toggle-filter-menu');
+			this.filterMenuOpen = !this.filterMenuOpen;
 		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';
