@@ -13,9 +13,8 @@
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
+					:filter-menu-open.sync="filterMenuOpen"
 					@clear-custom-categories="clearCustomCategories"
-					@hide-filter-menu="hideFilterMenu"
-					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
@@ -192,12 +191,6 @@ export default {
 		}
 	},
 	methods: {
-		hideFilterMenu() {
-			this.filterMenuOpen = false;
-		},
-		showFilterMenu() {
-			this.filterMenuOpen = true;
-		},
 		toggleCustomCategory(categoryId) {
 			this.$set(
 				this.selectedCustomCategories,
