@@ -84,6 +84,11 @@ export default {
 		KvIcon,
 		KvButton,
 	},
+	data() {
+		return {
+			filterMenuOpen: false,
+		};
+	},
 	props: {
 		defaultSortIndices: {
 			type: Array,
@@ -91,10 +96,6 @@ export default {
 		},
 		customCategories: {
 			type: Object,
-			required: true,
-		},
-		filterMenuOpen: {
-			type: Boolean,
 			required: true,
 		},
 		selectedCustomCategories: {
@@ -105,9 +106,11 @@ export default {
 	methods: {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
+			this.$emit('hide-filter-menu');
 		},
 		toggleFilterMenu() {
 			this.filterMenuOpen = !this.filterMenuOpen;
+			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';
