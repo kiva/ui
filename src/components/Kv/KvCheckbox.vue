@@ -1,24 +1,22 @@
 <template>
-	<div class="kv-checkbox">
-		<label>
-			<input
-				v-if="isControlledComponent"
-				type="checkbox"
-				:checked="isChecked"
-				@change="handleChange"
-				@input="handleInput"
-			>
-			<input
-				v-else
-				type="checkbox"
-				v-model="checkboxStatus"
-				@change="handleChange"
-				@input="handleInput"
-			>
-			<slot v-if="hasDefaultSlot"></slot>
-			<span v-else-if="label">{{ label }}</span>
-		</label>
-	</div>
+	<label class="kv-checkbox">
+		<input
+			v-if="isControlledComponent"
+			type="checkbox"
+			:checked="isChecked"
+			@change="handleChange"
+			@input="handleInput"
+		>
+		<input
+			v-else
+			type="checkbox"
+			v-model="checkboxStatus"
+			@change="handleChange"
+			@input="handleInput"
+		>
+		<slot v-if="hasDefaultSlot"></slot>
+		<span v-else-if="label">{{ label }}</span>
+	</label>
 </template>
 
 <script>

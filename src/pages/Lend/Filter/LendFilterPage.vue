@@ -1,7 +1,10 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
-		<lend-header browse-url="/lend-by-category" filter-url="/lend/filter" />
-		<div class="row page-content" :class="{'filter-menu-open': filterMenuOpen}">
+		<lend-header
+			class="filter-page-lend-header"
+			browse-url="/lend-by-category"
+			filter-url="/lend/filter" />
+		<div class="row page-content">
 			<ais-instant-search
 				v-if="searchClient"
 				:search-client="searchClient"
@@ -10,9 +13,9 @@
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
-					:filter-menu-open="filterMenuOpen"
+					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
-					@toggle-filter-menu="toggleFilterMenu"
+					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
@@ -33,7 +36,9 @@
 						<template slot-scope="{ page, hitsPerPage, queryID, index }">
 							<ais-hits
 								class="loan-card-group row"
-								:results-per-page="12">
+								:class="{'filter-menu-open': filterMenuOpen}"
+								:results-per-page="12"
+							>
 								<template slot="default" slot-scope="{ items }">
 									<algolia-adapter
 										v-for="(item, itemIndex) in items" :key="item.id"
@@ -190,8 +195,8 @@ export default {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
 		},
-		toggleFilterMenu() {
-			this.filterMenuOpen = !this.filterMenuOpen;
+		showFilterMenu() {
+			this.filterMenuOpen = true;
 		},
 		toggleCustomCategory(categoryId) {
 			this.$set(
@@ -227,18 +232,31 @@ export default {
 	$filter-transition: 0.25s ease-out;
 
 	.page-content {
-		max-width: 63.75rem;
-		padding: 0 1.5625rem;
+		// max-width: 63.75rem;
+		padding: 0 2rem;
 
 		.loan-card-group {
+			opacity: 1;
 			transition: opacity $filter-transition;
-		}
 
-		&.filter-menu-open {
-			.loan-card-group {
+			&.filter-menu-open {
 				opacity: 0.2;
 			}
 		}
 	}
 }
 </style>
+
+<style lang="scss">
+.filter-page-lend-header {
+	.heading-region {
+		padding: 0 1rem;
+		margin-bottom: 1rem;
+
+		@media screen and (min-width: 1020px) {
+			padding: 0 1.9rem;
+		}
+	}
+}
+</style>
+

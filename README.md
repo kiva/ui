@@ -12,10 +12,10 @@
 
 ``` bash
 # Note: Kiva server only tool
-# script to get status / get log / restart server
+# script to get status / get log / restart server / start_local
 # copy to user home directory for global use
 
-$ ./ui-server.sh {status|log|restart}
+$ ./ui-server.sh {status|log|restart|start_local}
 
 # install dependencies
 $ npm install

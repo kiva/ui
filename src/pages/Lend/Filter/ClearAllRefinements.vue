@@ -3,7 +3,7 @@
 		class="clear-all-refinements"
 		@click.prevent="clearAll"
 	>
-		Clear all
+		Reset all
 	</div>
 </template>
 
@@ -22,9 +22,10 @@ export default {
 @import 'settings';
 
 .clear-all-refinements {
-	color: $blue;
-	user-select: none;
+	color: $faded-blue;
 	cursor: pointer;
 	display: inline;
+	font-size: rem-calc(14);
+	user-select: none;
 }
 </style>

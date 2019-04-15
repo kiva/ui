@@ -1,6 +1,7 @@
 query($basketId: String) {
 	general {
 		rows: setting(setting: "ui.category_rows") {
+			key
 			value
 		}
 		rowsExp: setting(setting: "uiexp.category_rows") {
@@ -19,7 +20,7 @@ query($basketId: String) {
 			key
 			value
 		}
-		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan_v2") {
+		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan_v3") {
 			key
 			value
 		}

@@ -1,9 +1,8 @@
 <template>
 	<transition name="kvfade">
-		<div
-			class="lyml-section-wrapper"
-			v-if="showLYML">
-			<div class="lyml-section-container">
+		<div class="lyml-section-wrapper">
+			<div class="lyml-section-container"
+				v-if="showLYML">
 				<div id="lyml-row-cards">
 					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span
@@ -42,6 +41,12 @@
 					</div>
 				</div>
 			</div>
+
+			<div v-show="loading" class="loading-overlay" id="loading-lyml-overlay">
+				<div class="spinner-wrapper">
+					<kv-loading-spinner />
+				</div>
+			</div>
 		</div>
 	</transition>
 </template>
@@ -53,6 +58,7 @@ import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
 
 const minWidthToShowLargeCards = 0;
@@ -62,6 +68,7 @@ const largeCardWidthPlusPadding = 190;
 export default {
 	components: {
 		LoanCardController,
+		KvLoadingSpinner,
 	},
 	props: {
 		loans: {
@@ -116,7 +123,7 @@ export default {
 			lymlVariant: null,
 			randomLoan: [],
 			loansYouMightLike: [],
-			loading: false,
+			loading: true,
 			scrollPos: 0,
 			windowWidth: 0,
 			wrapperWidth: 0,
@@ -149,6 +156,7 @@ export default {
 	},
 	methods: {
 		getLoansYouMightLike() {
+			this.loading = true;
 			this.apollo.query({
 				query: loansYouMightLikeData,
 				variables: {
@@ -203,6 +211,7 @@ export default {
 
 				// once we have loans flip the switch to show them
 				this.showLYML = true;
+				this.loading = false;
 
 				// update window width once loans are loaded
 				this.$nextTick(() => {
@@ -257,6 +266,8 @@ export default {
 
 .lyml-section-wrapper {
 	padding: 0;
+	min-height: 17rem;
+	position: relative;
 }
 
 .lyml-section-container {
@@ -363,6 +374,29 @@ export default {
 @media (hover: none) {
 	.lyml-row-wrapper .arrow {
 		visibility: hidden;
+	}
+}
+
+#loading-lyml-overlay {
+	position: absolute;
+	width: auto;
+	height: auto;
+	left: 1rem;
+	right: 1rem;
+	bottom: 0;
+	top: 0;
+	background-color: rgba($platinum, 0.7);
+
+	.spinner-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		height: 100%;
+		top: auto;
+		left: auto;
+		transform: none;
+		transition: top 100ms linear;
 	}
 }
 </style>

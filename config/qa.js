@@ -35,7 +35,7 @@ module.exports = merge(base, {
 				CeQC6x4yEVuzjgZ8ohQwBvZtAdHMFCTD: 'http://partners.qa.kiva.org/login',
 				DI2eKv1v4S7Ms3ZtOej2xyeULKfXYd47: 'http://qa.kiva.org/authenticate',
 			},
-			enable: true,
+			enable: false,
 			apiAudience: 'https://api.qa.kivaws.org/graphql',
 			browserClientID: 'D4nisXFEuifQ8Am1WoJJpuneCBTBle3Q',
 			serverClientID: 'tZuDW6xKBP5WYgP8FEwNsl41T4fhjWhF',

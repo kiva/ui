@@ -92,7 +92,7 @@ $form-border-radius: rem-calc(3);
 	white-space: nowrap;
 	text-align: center;
 	border: 1px solid $subtle-gray; //#c3c3c3
-	padding: 0 0.6rem 1.5rem;
+	padding: 0 0.6rem 1.25rem;
 	border-radius: $form-border-radius;
 	margin: 3rem auto 0 auto;
 	min-width: rem-calc(300);
