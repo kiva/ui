@@ -8,7 +8,7 @@
 			<kv-icon class="icon" name="twitter" />
 			<kv-icon class="icon" name="yelp" />
 			<kv-icon class="icon" name="instagram" />
-			<kv-icon class="icon" name="linkedin"/>
+			<kv-icon class="icon" name="linkedIn"/>
 			<kv-icon class="icon" name="pinterest" />
 		</div>
 		<div class="sector-icons">
@@ -88,6 +88,7 @@
 			<h3>Grey circle</h3>
 			<kv-icon class="icon" name="confirmation" />
 			<kv-icon class="icon" name="error" />
+			<!-- Info and warning are the same icon -->
 			<kv-icon class="icon" name="info" />
 			<kv-icon class="icon" name="question" />
 			<kv-icon class="icon" name="warning" />
