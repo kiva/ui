@@ -1,11 +1,27 @@
 const cookie = require('cookie');
-const dateFns = require('date-fns');
 const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 
+function getSyncCookie(req) {
+	const cookies = cookie.parse(req.headers.cookie || '');
+	return cookies.kvls;
+}
+
+function setSyncCookie(res, login) {
+	res.append('Set-Cookie', cookie.serialize('kvls', login ? 'i' : 'o', { secure: true }));
+}
+
+// Helper functions for managing the login sync cookie
+const isNotedLoggedIn = req => getSyncCookie(req) === 'i';
+const isNotedLoggedOut = req => getSyncCookie(req) === 'o';
+const noteLoggedIn = res => setSyncCookie(res, true);
+const noteLoggedOut = res => setSyncCookie(res, false);
+
 module.exports = function authRouter(config = {}) {
 	const router = express.Router();
+
+	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
 		if (req.query.error === 'access_denied') {
 			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
@@ -14,6 +30,7 @@ module.exports = function authRouter(config = {}) {
 			next();
 		}
 	});
+
 	if (!config.auth0.enable) {
 		// return routes that redirect to kiva/kiva login
 		router.get('/ui-login', (req, res) => res.redirect('/login'));
@@ -21,6 +38,7 @@ module.exports = function authRouter(config = {}) {
 		return router;
 	}
 
+	// Setup Passport.js using the Auth0 passport strategy
 	passport.use(new Auth0Strategy({
 		domain: config.auth0.domain,
 		clientID: config.auth0.serverClientID,
@@ -29,13 +47,14 @@ module.exports = function authRouter(config = {}) {
 	}, (accessToken, refreshToken, extraParams, profile, done) => {
 		return done(null, { ...profile, accessToken });
 	}));
-
 	passport.serializeUser((user, done) => done(null, user));
 	passport.deserializeUser((user, done) => done(null, user));
 
+	// Add passport to the router
 	router.use(passport.initialize());
 	router.use(passport.session());
 
+	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
@@ -45,28 +64,60 @@ module.exports = function authRouter(config = {}) {
 	}, passport.authenticate('auth0', {
 		audience: config.auth0.apiAudience,
 		scope: config.auth0.scope,
-	}), (req, res) => res.redirect('/'));
+	}));
 
+	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
-		req.logout();
+		req.logout(); // removes req.user
+		noteLoggedOut(res);
 		res.redirect(logoutUrl);
 	});
 
+	// Callback redirected to after Auth0 authentication
 	router.get('/process-ssr-auth', (req, res, next) => {
+		const { doneUrl } = req.session;
+		delete req.session.doneUrl;
+
 		passport.authenticate('auth0', (authErr, user) => {
 			if (authErr) return next(authErr);
-			if (!user) return res.redirect('/ui-login');
 
-			req.login(user, loginErr => {
-				if (loginErr) return next(loginErr);
+			if (user) {
+				noteLoggedIn(res);
+			} else {
+				noteLoggedOut(res);
+				return res.redirect(doneUrl || '/');
+			}
+
+			// req.login sets the given user as req.user, after passing through the
+			// serializeUser function above, which may result in a serializeError.
+			req.login(user, serializeError => {
+				if (serializeError) return next(serializeError);
 				// Redirect to the stored url
-				const { doneUrl } = req.session;
-				delete req.session.doneUrl;
 				res.redirect(doneUrl || '/portfolio');
 			});
 		})(req, res, next);
+	});
+
+	// For all other routes, check the login sync cookie to see if login or logout is needed
+	router.use((req, res, next) => {
+		if (isNotedLoggedIn(req) && !req.user) {
+			// Store current url to redirect to after auth
+			req.session.doneUrl = req.originalUrl;
+
+			// Attempt silent authentication (prompt=none)
+			passport.authenticate('auth0', {
+				audience: config.auth0.apiAudience,
+				scope: config.auth0.scope,
+				prompt: 'none',
+			})(req, res, next);
+		} else {
+			if (isNotedLoggedOut(req) && req.user) {
+				req.logout(); // removes req.user
+			}
+			next();
+		}
 	});
 
 	return router;
