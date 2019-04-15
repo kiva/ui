@@ -23,12 +23,16 @@
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />
 				<filter-section-sort :default-sort-indices="defaultSortIndices" class="filter-section" />
+				<!-- Custom Categories
 				<filter-section-categories
 					class="filter-section"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
 					@toggle-custom-category="toggleCustomCategory"
 				/>
+				-->
+				<filter-section-sectors class="filter-section" />
+				<filter-section-attributes class="filter-section" />
 				<filter-section-location class="filter-section" />
 				<filter-section-range-slider class="filter-section" :filter-menu-open="filterMenuOpen" />
 
@@ -54,7 +58,10 @@ import {
 	AisClearRefinements,
 	AisStateResults,
 } from 'vue-instantsearch';
-import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
+// Custom Categories
+// import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
+import FilterSectionSectors from '@/pages/Lend/Filter/FilterSectionSectors';
+import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSectionAttributes';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
 import FilterSectionRangeSlider from '@/pages/Lend/Filter/FilterSectionRangeSlider';
@@ -66,7 +73,10 @@ export default {
 	components: {
 		AisClearRefinements,
 		AisStateResults,
-		FilterSectionCategories,
+		// Custom Categories
+		// FilterSectionCategories,
+		FilterSectionSectors,
+		FilterSectionAttributes,
 		FilterSectionGender,
 		FilterSectionLocation,
 		FilterSectionRangeSlider,
@@ -74,17 +84,18 @@ export default {
 		KvIcon,
 		KvButton,
 	},
+	data() {
+		return {
+			filterMenuOpen: false,
+		};
+	},
 	props: {
-		filterMenuOpen: {
-			type: Boolean,
+		defaultSortIndices: {
+			type: Array,
 			required: true,
 		},
 		customCategories: {
 			type: Object,
-			required: true,
-		},
-		defaultSortIndices: {
-			type: Array,
 			required: true,
 		},
 		selectedCustomCategories: {
@@ -94,10 +105,12 @@ export default {
 	},
 	methods: {
 		hideFilterMenu() {
+			this.filterMenuOpen = false;
 			this.$emit('hide-filter-menu');
 		},
 		toggleFilterMenu() {
-			this.$emit('toggle-filter-menu');
+			this.filterMenuOpen = !this.filterMenuOpen;
+			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
 		showAdvancedFilters() {
 			window.location.href = '/lend';
@@ -123,6 +136,8 @@ export default {
 #lend-filter-menu {
 	$filter-transition: 0.25s ease-out;
 	$filter-border-radius: rem-calc(3);
+	// Margin hack
+	margin-left: -1.9375rem;
 
 	#lend-filter-overlay {
 		position: fixed;

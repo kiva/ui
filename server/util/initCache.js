@@ -3,7 +3,7 @@ const memjs = require('memjs');
 
 function FakeMemcached(options) {
 	// Create LRU-cache instance
-	const lru = LRU(options);
+	const lru = new LRU(options);
 
 	// Replace 'get' with an async wrapper
 	const oldGet = lru.get;

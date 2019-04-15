@@ -146,7 +146,7 @@ export default {
 		transformItems(items) {
 			const newItems = [];
 
-			items.forEach(({ refinements, refine, attribute }) => {
+			items.forEach(({ refinements, refine/* , Custom Categoris skip: attribute */ }) => {
 				refinements.forEach(refinement => {
 					const { type, operator, value } = refinement;
 					if (type === 'numeric') {
@@ -157,9 +157,11 @@ export default {
 							return;
 						}
 					}
+					/* Custom Categories Skip
 					if (this.customCategoryAttributes.includes(attribute)) {
 						return;
 					}
+					*/
 					newItems.push({
 						...refinement,
 						label: this.generateLabel(refinement),
@@ -200,6 +202,8 @@ export default {
 	$fixed-row-height: 38;
 
 	margin-top: rem-calc(10);
+	// Margin hack
+	margin-left: -1.9375rem;
 
 	.row {
 		margin: 0;

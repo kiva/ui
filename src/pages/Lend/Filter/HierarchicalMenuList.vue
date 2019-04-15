@@ -15,7 +15,6 @@
 					type="checkbox"
 					:checked="item.isRefined"
 					class="hierarchical-menu-item-checkbox"
-					@click.prevent
 				>
 				<span class="hierarchical-menu-item-text">
 					<span class="hierarchical-menu-item-description">{{ item.label }}</span>
@@ -67,6 +66,10 @@ export default {
 		.hierarchical-menu-item-label {
 			cursor: pointer;
 			user-select: none;
+
+			.hierarchical-menu-item-checkbox {
+				pointer-events: none;
+			}
 
 			.hierarchical-menu-item-text {
 				color: $charcoal;
