@@ -1,3 +1,5 @@
+import cookieStore from './cookieStore';
+
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
 const loginPromise = Symbol('loginPromise');
@@ -36,7 +38,7 @@ export default class KvAuth0 {
 		}
 	}
 
-	[setAuthData]({ idTokenPayload, accessToken }) {
+	[setAuthData]({ idTokenPayload, accessToken } = {}) {
 		this.user = idTokenPayload || null;
 		this.accessToken = accessToken || '';
 		// handle expiration?
@@ -59,7 +61,7 @@ export default class KvAuth0 {
 					this[setAuthData]();
 					if (err.error === 'login_required') {
 						// User is not logged in, so continue without authentication
-						// @TODO: set logged out cookie
+						cookieStore.set('kvls', 'o', { secure: true });
 						resolve();
 					} else if (err.error === 'consent_required' || err.error === 'interaction_required') {
 						// These errors require interaction beyond what can be provided by webauth,
@@ -110,8 +112,9 @@ export default class KvAuth0 {
 					reject(err);
 				} else {
 					// Successful authentication
+					cookieStore.set('kvls', 'i', { secure: true });
 					this[setAuthData](result);
-					resolve();
+					resolve(result);
 				}
 			});
 		}));
