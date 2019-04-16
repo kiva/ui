@@ -64,7 +64,8 @@ export default {
 .icon-sector-wholesale,
 .icon-small-x,
 .icon-browse-toggle,
-.icon-filters-toggle {
+.icon-filters-toggle,
+.icon-lock {
 	fill: $kiva-text-dark;
 }
 
@@ -100,7 +101,12 @@ export default {
 	}
 }
 
+.icon-facebook-box-logo {
+	fill: $gray;
+}
+
 .icon-facebook,
+.icon-facebook-box-logo,
 .icon-pinterest,
 .icon-twitter,
 .icon-youtube,
@@ -112,6 +118,10 @@ export default {
 
 .icon-facebook:hover {
 	color: $facebook-hover-color;
+}
+
+.icon-facebook-box-logo:hover {
+	fill: $facebook-hover-color;
 }
 
 .icon-pinterest:hover {

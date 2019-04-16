@@ -5,6 +5,7 @@
 			<h3>Social</h3>
 			<kv-icon class="icon" name="youtube" />
 			<kv-icon class="icon" name="facebook" />
+			<kv-icon class="icon" name="facebook-box-logo" />
 			<kv-icon class="icon" name="twitter" />
 			<kv-icon class="icon" name="yelp" />
 			<kv-icon class="icon" name="instagram" />
@@ -56,6 +57,7 @@
 		<div class="grey-border-icons">
 			<h3>Grey border</h3>
 			<kv-icon class="icon" name="auto-deposit" />
+			<kv-icon class="icon" name="boundaries" />
 			<kv-icon class="icon" name="goals" />
 			<kv-icon class="icon" name="hand-up" />
 			<kv-icon class="icon" name="high-five" />
@@ -95,17 +97,15 @@
 		</div>
 		<div class="uncategorized-icons">
 			<h3>Uncategorized</h3>
-			<kv-icon class="icon" name="boundries" />
-			<kv-icon class="icon" name="browser-toggle" />
+			<kv-icon class="icon" name="browse-toggle" />
 			<kv-icon class="icon" name="corporate-engagement" />
 			<kv-icon class="icon" name="curved-arrow" />
 			<kv-icon class="icon" name="dedicate-heart" />
 			<kv-icon class="icon" name="distribution" />
 			<kv-icon class="icon" name="edit" />
 			<kv-icon class="icon" name="email" />
-			<kv-icon class="icon" name="facebook-box-logo" />
 			<kv-icon class="icon" name="filter" />
-			<kv-icon class="icon" name="filter-toggle" />
+			<kv-icon class="icon" name="filters-toggle" />
 			<kv-icon class="icon" name="filters" />
 			<kv-icon class="icon" name="globe" />
 			<kv-icon class="icon" name="grants" />
