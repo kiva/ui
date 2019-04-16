@@ -1,4 +1,9 @@
 <template>
+	<!-- TODO: Next steps:
+	- Figure out why the linkedIn icon doesn't display
+	- Add label to each icon that displays the name
+	- Sort the uncatgorized icons further
+	- Bonus: set up click interaction that copies entire <kv-icon class="icon" name="NAME" /> to clipboard -->
 	<section id="section-icons">
 		<h1>Icons</h1>
 		<div class="social-icons">
