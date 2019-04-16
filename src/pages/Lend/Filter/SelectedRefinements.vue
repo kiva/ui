@@ -99,6 +99,10 @@ export default {
 					plural: 's',
 				},
 			},
+			genderMap: {
+				female: 'Women',
+				male: 'Men',
+			},
 			fixedRowHeight: 38,
 			fixedRowCount: 3,
 			isCollapsible: false,
@@ -128,8 +132,14 @@ export default {
 			const {
 				label,
 				type,
+				attribute,
 			} = item;
-			return type === 'numeric' ? this.generateNumericLabel(item) : label;
+			if (type === 'numeric') {
+				return this.generateNumericLabel(item);
+			} else if (attribute === 'gender') {
+				return this.genderMap[label];
+			}
+			return label;
 		},
 		generateNumericLabel({
 			operator,

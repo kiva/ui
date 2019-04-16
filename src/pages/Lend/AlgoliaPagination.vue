@@ -14,7 +14,7 @@
 			<a
 				v-else
 				:href="createUrl(currentRefinement - 1)"
-				@click.prevent="refine(currentRefinement - 1)"
+				@click.prevent="previousPage"
 				aria-label="Previous"
 				class="ais-Pagination-link"
 			>
@@ -58,7 +58,7 @@
 			<a
 				v-else
 				:href="createUrl(currentRefinement + 1)"
-				@click.prevent="refine(currentRefinement + 1)"
+				@click.prevent="nextPage"
 				aria-label="Next"
 				class="ais-Pagination-link"
 			>
@@ -150,6 +150,28 @@ export default {
 
 			return numbers;
 		},
+	},
+	methods: {
+		goToPage(page) {
+			this.refine(page);
+		},
+		nextPage() {
+			this.runOnPagination();
+			this.goToPage(this.currentRefinement + 1);
+		},
+		previousPage() {
+			this.runOnPagination();
+			this.goToPage(this.currentRefinement - 1);
+		},
+		runOnPagination() {
+			window.scrollTo(0, 0);
+		},
+	},
+	mounted() {
+		document.querySelector('html').classList.add('smooth-scroll');
+	},
+	beforeDestroy() {
+		document.querySelector('html').classList.remove('smooth-scroll');
 	},
 };
 </script>

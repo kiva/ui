@@ -37,7 +37,7 @@
 				<filter-section-range-slider class="filter-section" :filter-menu-open="filterMenuOpen" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
-					Advanced Filters
+					Advanced filters
 				</div>
 				<ais-state-results class="filter-section filter-show-loans-mobile-wrapper hide-for-medium">
 					<kv-button

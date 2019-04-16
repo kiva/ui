@@ -229,6 +229,7 @@ export default {
 @import 'settings';
 
 .lend-filter-page {
+	scroll-behavior: smooth;
 	$filter-transition: 0.25s ease-out;
 
 	.page-content {
