@@ -28,6 +28,7 @@ export default {
 .icon {
 	fill: none;
 	stroke: none;
+	backface-visibility: hidden;
 	-webkit-backface-visibility: hidden;
 }
 
