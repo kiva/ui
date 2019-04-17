@@ -105,11 +105,7 @@
 						<input
 							v-model="storePaymentMethod"
 							type="checkbox"
-<<<<<<< HEAD
-							id="vault-checkbox"> Store Payment method
-=======
 							id="vault-checkbox"> Save payment method
->>>>>>> c35c601... cash-814 text updated as requested from product
 					</label>
 				</div>
 			</div>
