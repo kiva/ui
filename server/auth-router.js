@@ -1,22 +1,12 @@
-const cookie = require('cookie');
 const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
-
-function getSyncCookie(req) {
-	const cookies = cookie.parse(req.headers.cookie || '');
-	return cookies.kvls;
-}
-
-function setSyncCookie(res, login) {
-	res.append('Set-Cookie', cookie.serialize('kvls', login ? 'i' : 'o', { secure: true }));
-}
-
-// Helper functions for managing the login sync cookie
-const isNotedLoggedIn = req => getSyncCookie(req) === 'i';
-const isNotedLoggedOut = req => getSyncCookie(req) === 'o';
-const noteLoggedIn = res => setSyncCookie(res, true);
-const noteLoggedOut = res => setSyncCookie(res, false);
+const {
+	isNotedLoggedIn,
+	isNotedLoggedOut,
+	noteLoggedIn,
+	noteLoggedOut,
+} = require('./util/syncCookie');
 
 module.exports = function authRouter(config = {}) {
 	const router = express.Router();
