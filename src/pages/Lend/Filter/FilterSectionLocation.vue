@@ -3,7 +3,7 @@
 		<ais-hierarchical-menu
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"
-			:limit="100"
+			:limit="1000"
 			:transform-items="transformItems"
 		>
 			<div
