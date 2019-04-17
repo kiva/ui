@@ -71,12 +71,16 @@
 <script>
 import _range from 'lodash/range';
 import _uniq from 'lodash/uniq';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		KvIcon,
 	},
+	mixins: [
+		smoothScrollMixin,
+	],
 	props: {
 		currentRefinement: {
 			type: Number,
@@ -164,14 +168,8 @@ export default {
 			this.goToPage(this.currentRefinement - 1);
 		},
 		runOnPagination() {
-			window.scrollTo(0, 0);
+			this.smoothScrollTo({ yPosition: 0, millisecondsToAnimate: 150 });
 		},
-	},
-	mounted() {
-		document.querySelector('html').classList.add('smooth-scroll');
-	},
-	beforeDestroy() {
-		document.querySelector('html').classList.remove('smooth-scroll');
 	},
 };
 </script>
