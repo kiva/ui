@@ -105,7 +105,7 @@
 						<input
 							v-model="storePaymentMethod"
 							type="checkbox"
-							id="vault-checkbox"> Store payment method
+							id="vault-checkbox"> Save payment method
 					</label>
 				</div>
 			</div>
