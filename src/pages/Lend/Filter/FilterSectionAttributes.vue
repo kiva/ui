@@ -3,6 +3,7 @@
 		<ais-refinement-list
 			:attribute="'themeData.loanThemeTypeName'"
 			:sort-by="['name:asc']"
+			:limit="1000"
 			:transform-items="transformItems"
 		/>
 	</filter-menu-section>
