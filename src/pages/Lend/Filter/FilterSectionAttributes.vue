@@ -1,10 +1,11 @@
 <template>
 	<filter-menu-section title="Attributes" class="filter-section-attributes">
 		<ais-refinement-list
-			:attribute="'themeData.loanThemeTypeName'"
+			:attribute="'loanThemeFilters.name'"
 			:sort-by="['name:asc']"
 			:limit="1000"
 			:transform-items="transformItems"
+			:limit="1000"
 		/>
 	</filter-menu-section>
 </template>
@@ -21,9 +22,9 @@ export default {
 	data() {
 		return {
 			visibleThemes: {
-				'conflict zone': true,
+				'conflict zones': true,
 				'clean energy': true,
-				'displaced populations': true,
+				'refugees/displaced': true,
 				'rural exclusion': true,
 				'social enterprise': true,
 				'water and sanitation': true,
