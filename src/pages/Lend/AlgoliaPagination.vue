@@ -168,7 +168,7 @@ export default {
 			this.goToPage(this.currentRefinement - 1);
 		},
 		runOnPagination() {
-			this.smoothScrollTo({ yPosition: 0, millisecondsToAnimate: 150 });
+			this.smoothScrollTo({ yPosition: 0, millisecondsToAnimate: 125 });
 		},
 	},
 };
