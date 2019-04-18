@@ -5,7 +5,6 @@
 			:sort-by="['name:asc']"
 			:limit="1000"
 			:transform-items="transformItems"
-			:limit="1000"
 		/>
 	</filter-menu-section>
 </template>
