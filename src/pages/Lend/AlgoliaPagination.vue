@@ -14,7 +14,7 @@
 			<a
 				v-else
 				:href="createUrl(currentRefinement - 1)"
-				@click.prevent="refine(currentRefinement - 1)"
+				@click.prevent="previousPage"
 				aria-label="Previous"
 				class="ais-Pagination-link"
 			>
@@ -58,7 +58,7 @@
 			<a
 				v-else
 				:href="createUrl(currentRefinement + 1)"
-				@click.prevent="refine(currentRefinement + 1)"
+				@click.prevent="nextPage"
 				aria-label="Next"
 				class="ais-Pagination-link"
 			>
@@ -71,12 +71,16 @@
 <script>
 import _range from 'lodash/range';
 import _uniq from 'lodash/uniq';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		KvIcon,
 	},
+	mixins: [
+		smoothScrollMixin,
+	],
 	props: {
 		currentRefinement: {
 			type: Number,
@@ -149,6 +153,22 @@ export default {
 			}
 
 			return numbers;
+		},
+	},
+	methods: {
+		goToPage(page) {
+			this.refine(page);
+		},
+		nextPage() {
+			this.runOnPagination();
+			this.goToPage(this.currentRefinement + 1);
+		},
+		previousPage() {
+			this.runOnPagination();
+			this.goToPage(this.currentRefinement - 1);
+		},
+		runOnPagination() {
+			this.smoothScrollTo({ yPosition: 0, millisecondsToAnimate: 125 });
 		},
 	},
 };
