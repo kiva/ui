@@ -26,7 +26,7 @@ module.exports = {
 			group: 'prod',
 			appId: 'H4ONVZQ2C6',
 			apiKey: '82ec72aa3177a6f4fc47b7103e6db786',
-			defaultIndex: 'prod_fundraising_loans',
+			defaultIndex: 'prod_fundraising_popularity',
 		},
 		auth0: {
 			loginRedirectUrls: {
