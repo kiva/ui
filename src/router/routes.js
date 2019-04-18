@@ -68,6 +68,11 @@ export default [
 				name: 'images',
 				component: () => import('@/components/Styleguide/StyleguideImages')
 			},
+			{
+				path: 'icons',
+				name: 'icons',
+				component: () => import('@/components/Styleguide/StyleguideIcons')
+			},
 		]
 	},
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
