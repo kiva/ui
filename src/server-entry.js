@@ -3,6 +3,7 @@ import serialize from 'serialize-javascript';
 import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';
@@ -84,6 +85,8 @@ export default context => {
 			return preFetchAll(matchedComponents, apolloClient, {
 				route: router.currentRoute,
 				kvAuth0,
+			}).then(() => {
+				return fetchAllExpSettings(apolloClient);
 			}).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now

@@ -11,6 +11,7 @@ type Mutation {
 	showTipMessage(message: String, persist: Boolean, type: String): Boolean
 	updateUsingTouch(usingTouch: Boolean): Boolean
 	updateAddToBasketInterstitial(active: Boolean, visible: Boolean, loanId: Int): Boolean
+	updateExperimentVersion(id: String, version: String): Experiment
 }
 
 type Query {
