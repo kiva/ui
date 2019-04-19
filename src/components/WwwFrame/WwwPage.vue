@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
@@ -23,6 +24,9 @@ import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
 import GlobalPromo from './PromotionalBanner/GlobalPromotionalBanner';
 
 export default {
+	inject: [
+		'apollo'
+	],
 	components: {
 		TheHeader,
 		TheFooter,
@@ -37,6 +41,11 @@ export default {
 			default: false,
 		},
 	},
+	apollo: {
+		preFetch(config, client) {
+			return fetchAllExpSettings(client);
+		}
+	}
 };
 </script>
 
