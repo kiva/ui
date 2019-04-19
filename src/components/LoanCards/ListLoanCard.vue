@@ -69,6 +69,7 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -82,6 +83,7 @@
 						:matching-text="loan.matchingText"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 					/>
 				</div>
 			</div>
@@ -95,8 +97,12 @@
 					:loan-id="loan.id"
 					class="small-12 columns"
 				/>
-				<!-- eslint-disable-next-line -->
-				<div class="fundraising-wrapper small-12 medium-10 medium-offset-1 large-8 large-offset-0 xlarge-6 xxlarge-7 columns">
+				<!-- eslint-disable max-len -->
+				<div
+					class="fundraising-wrapper small-12 medium-10 medium-offset-1 large-8 large-offset-0 xlarge-6 xxlarge-7 columns"
+					v-if="!isExpired"
+				>
+					<!-- eslint-enable max-len -->
 					<fundraising-status
 						:amount-left="amountLeft"
 						:percent-raised="percentRaised"
@@ -115,6 +121,7 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -127,6 +134,7 @@
 							:matching-text="loan.matchingText"
 							:is-funded="isFunded"
 							:is-selected-by-another="isSelectedByAnother"
+							:is-expired="isExpired"
 						/>
 					</div>
 				</div>
@@ -191,6 +199,10 @@ export default {
 			default: false,
 		},
 		isSelectedByAnother: {
+			type: Boolean,
+			default: false,
+		},
+		isExpired: {
 			type: Boolean,
 			default: false,
 		},

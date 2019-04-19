@@ -1,7 +1,10 @@
 <template functional>
 	<span
 		class="small-text matching-text"
-		:class="{'has-match': props.matchingText, 'hide-match': props.isFunded || props.isSelectedByAnother }"
+		:class="{
+			'has-match': props.matchingText,
+			'hide-match': props.isFunded || props.isSelectedByAnother || props.isExpired,
+		}"
 	>
 		2x matching by {{ props.matchingText }}
 	</span>
