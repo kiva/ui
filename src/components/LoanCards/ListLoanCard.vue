@@ -100,6 +100,7 @@
 				<!-- eslint-disable-next-line -->
 				<div class="fundraising-wrapper small-12 medium-10 medium-offset-1 large-8 large-offset-0 xlarge-6 xxlarge-7 columns">
 					<fundraising-status
+						v-if="!isExpired"
 						:amount-left="amountLeft"
 						:percent-raised="percentRaised"
 						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
