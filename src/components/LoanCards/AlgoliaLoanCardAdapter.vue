@@ -143,9 +143,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss">
-.algolia-loan-card-adapter {
-	padding: 0;
-}
-</style>

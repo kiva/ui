@@ -1,5 +1,5 @@
 <template>
-	<div class="list-loan-card row">
+	<div class="row list-loan-card">
 		<div class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns">
 			<div class="list-loan-card-desktop-column-container row">
 				<div class="small-12 columns">
@@ -225,8 +225,6 @@ export default {
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
 	transition: box-shadow 0.15s linear;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
 
 	.list-loan-card-desktop-column {
 		padding: 0;
@@ -288,6 +286,10 @@ export default {
 				}
 			}
 		}
+	}
+
+	&.row {
+		margin: 1rem 0;
 	}
 
 	&:hover {
