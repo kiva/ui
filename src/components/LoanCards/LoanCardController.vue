@@ -118,6 +118,9 @@ export default {
 		isSelectedByAnother() {
 			return this.amountLeft <= 0 && !this.isFunded;
 		},
+		isExpired() {
+			return this.loan.status === 'expired';
+		},
 		percentRaised() {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},

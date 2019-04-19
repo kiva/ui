@@ -69,6 +69,7 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -82,6 +83,7 @@
 						:matching-text="loan.matchingText"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 					/>
 				</div>
 			</div>
@@ -115,6 +117,7 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -127,6 +130,7 @@
 							:matching-text="loan.matchingText"
 							:is-funded="isFunded"
 							:is-selected-by-another="isSelectedByAnother"
+							:is-expired="isExpired"
 						/>
 					</div>
 				</div>
@@ -191,6 +195,10 @@ export default {
 			default: false,
 		},
 		isSelectedByAnother: {
+			type: Boolean,
+			default: false,
+		},
+		isExpired: {
 			type: Boolean,
 			default: false,
 		},
