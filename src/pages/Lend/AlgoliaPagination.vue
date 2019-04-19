@@ -36,7 +36,7 @@
 
 			<a v-else-if="number > 0"
 				:href="createUrl(number - 1)"
-				@click.prevent="refine(number - 1)"
+				@click.prevent="goToPage(number - 1)"
 				class="ais-Pagination-link">
 				{{ number }}
 			</a>
@@ -156,16 +156,20 @@ export default {
 		},
 	},
 	methods: {
-		goToPage(page) {
+		requestPage(page) {
 			this.refine(page);
+		},
+		goToPage(page) {
+			this.runOnPagination();
+			this.requestPage(page);
 		},
 		nextPage() {
 			this.runOnPagination();
-			this.goToPage(this.currentRefinement + 1);
+			this.requestPage(this.currentRefinement + 1);
 		},
 		previousPage() {
 			this.runOnPagination();
-			this.goToPage(this.currentRefinement - 1);
+			this.requestPage(this.currentRefinement - 1);
 		},
 		runOnPagination() {
 			this.smoothScrollTo({ yPosition: 0, millisecondsToAnimate: 125 });
