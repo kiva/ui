@@ -147,7 +147,7 @@ export default () => {
 						assignments[id] = assignVersion(experiment || {});
 
 						// save the new assignments to the experiment cookie
-						cookieStore.set('uiab', serializeExpCookie(assignments));
+						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
 
 						// get the new assignment. return null if undefined so that apollo saves the value
 						version = _isUndefined(assignments[id]) ? null : assignments[id];
@@ -182,7 +182,7 @@ export default () => {
 						assignments[id] = version;
 
 						// save the new assignments to the experiment cookie
-						cookieStore.set('uiab', serializeExpCookie(assignments));
+						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
 
 						// get the new assignment. return null if undefined so that apollo saves the value
 						updatedVersion = _isUndefined(assignments[id]) ? null : assignments[id];
