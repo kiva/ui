@@ -1,6 +1,10 @@
+import cookieStore from '@/util/cookieStore';
 import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import getDeepComponents from './getDeepComponents';
+
+// initial basketId from cookie
+let basketId = cookieStore.get('kvbskt');
 
 export function handleApolloErrors(handlers, errors, args) {
 	return Promise.all(_map(handlers, (handler, code) => {
@@ -32,9 +36,10 @@ export function preFetchApolloQuery(config, client, args) {
 
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
+		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables(args) : {};
 		client.query({
 			query: config.query,
-			variables: config.preFetchVariables ? config.preFetchVariables(args) : {},
+			variables: { basketId, ...prefetchVariables },
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
@@ -48,6 +53,8 @@ export function preFetchApolloQuery(config, client, args) {
 }
 
 export function preFetchAll(components, apolloClient, { ...args }) {
+	// update basketId before preFetch cycle
+	basketId = cookieStore.get('kvbskt');
 	const allComponents = getDeepComponents(components);
 	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
 	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));
