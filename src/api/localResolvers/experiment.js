@@ -166,7 +166,7 @@ export default () => {
 				updateExperimentVersion(_, { id, version }) { // , context
 					// start with previously assigned version for this experiment id
 					let updatedVersion = assignments[id];
-					console.log(`previous version: ${updatedVersion}, new version: ${version}`);
+					// console.log(`previous version: ${updatedVersion}, new version: ${version}`);
 
 					// Do we really need to check this?
 					// > Commented out lines below would incorporate and experiment check too
@@ -187,7 +187,6 @@ export default () => {
 						// get the new assignment. return null if undefined so that apollo saves the value
 						updatedVersion = _isUndefined(assignments[id]) ? null : assignments[id];
 					}
-					console.log(updatedVersion);
 
 					return {
 						id,

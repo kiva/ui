@@ -143,6 +143,7 @@ export default {
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
 			addToBasketExpActive: false,
+			lendFilterExpVersion: '',
 		};
 	},
 	computed: {
@@ -163,6 +164,9 @@ export default {
 		},
 		realCategoryIds() {
 			return _without(this.categoryIds, ...customCategoryIds);
+		},
+		leadHeaderFilterLink() {
+			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
 		}
 	},
 	methods: {
@@ -435,6 +439,12 @@ export default {
 			'EXP-CASH-612-Apr2019',
 			this.addToBasketExpActive ? 'b' : 'a'
 		);
+
+		const lendFilterEXP = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'lend_filter' },
+		});
+		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
 	},
 	mounted() {
 		this.fetchRecentlyViewed();

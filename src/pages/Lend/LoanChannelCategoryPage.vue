@@ -123,6 +123,7 @@ export default {
 			pageQuery: { page: '1' },
 			loading: false,
 			addToBasketExpActive: false,
+			lendFilterExpVersion: '',
 		};
 	},
 	computed: {
@@ -146,7 +147,10 @@ export default {
 		},
 		filterUrl() {
 			// initial release sends us back to /lend
-			return `/lend/${this.$route.params.category || ''}`;
+			// return `/lend/${this.$route.params.category || ''}`;
+			return this.lendFilterExpVersion === 'b'
+				? '/lend/filter'
+				: `/lend/${this.$route.params.category || ''}`;
 		},
 		pageTitle() {
 			let title = 'Fundraising loans';
@@ -154,7 +158,7 @@ export default {
 				title = `${this.loanChannel.name}`;
 			}
 			return title;
-		}
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -254,6 +258,12 @@ export default {
 			'EXP-CASH-612-Apr2019',
 			this.addToBasketExpActive ? 'b' : 'a'
 		);
+
+		const lendFilterEXP = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'lend_filter' },
+		});
+		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
 	},
 	methods: {
 		pageChange(number) {

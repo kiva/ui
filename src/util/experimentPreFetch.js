@@ -4,23 +4,21 @@ import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 // Pre-fetch pre-determined list of experiment settings
-// TODO: Centralize this in Settings Manager or elsewhere...
+// TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
 const activeExperiments = [
-	'lend_filter',
-	'some_thing_is_missing'
+	'lend_filter'
 ];
 
-export function settingErrorHandler(errors, ...args) {
-	console.log(errors);
-	console.log(args);
-	return new Promise(resolve => {
-		resolve();
-	});
-}
+// TODO: Enhance Error handling
+// export function settingErrorHandler(errors, ...args) {
+// 	console.log(errors);
+// 	console.log(args);
+// 	return new Promise(resolve => {
+// 		resolve();
+// 	});
+// }
 
 export function assignExperiments(settingId, client) {
-	console.log(typeof client);
-	console.log(settingId);
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
 		client.query({
@@ -29,10 +27,9 @@ export function assignExperiments(settingId, client) {
 				id: settingId || '',
 			}
 		}).then(result => {
-			console.log(JSON.stringify(result));
 			if (result.errors) {
 				resolve(result.errors);
-				// Handle Apollo errors with custom code
+				// TODO: Handle Apollo errors with custom code
 				// handleApolloErrors(settingErrorHandler, result.errors).then(resolve).catch(reject);
 			} else {
 				resolve(result);
@@ -42,8 +39,6 @@ export function assignExperiments(settingId, client) {
 }
 
 export function fetchExperimentSettings(settingId, client) {
-	console.log(typeof client);
-	console.log(settingId);
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
 		client.query({
@@ -53,16 +48,17 @@ export function fetchExperimentSettings(settingId, client) {
 			},
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
-			console.log(JSON.stringify(result));
 			if (result.errors) {
 				console.error(result.errors);
 				resolve(result.errors);
 			}
+			// TODO: Make Active Exp list a map including a flag for pre-fetch assignment
 			return assignExperiments(settingId, client);
 		}).then(result => {
 			if (result.errors) {
+				console.error(result.errors);
 				resolve(result.errors);
-				// Handle Apollo errors with custom code
+				// TODO: Handle Apollo errors with custom code
 				// handleApolloErrors(settingErrorHandler, result.errors).then(resolve).catch(reject);
 			} else {
 				resolve(result);

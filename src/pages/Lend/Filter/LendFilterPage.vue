@@ -19,6 +19,7 @@
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
+					@exit-lend-filter-exp="exitLendFilterExp"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
@@ -227,33 +228,35 @@ export default {
 		},
 		getLendFilterExpVersion() {
 			// Lend Filter Exp
-			// Read temp cookie (set before redirect from /lend) + Assignment
-			const lendListViewExpLegacy = cookieStore.get('kvlendfilter');
+			// Read temp cookie (set before redirect from /lend) + Assignment (should only ever = 'b')
+			const lendListViewExpLegacy = cookieStore.get('kvlendfilter') || '';
 			// We have a legacy experiment already set
 			if (lendListViewExpLegacy !== '') {
-				console.log('found legacy exp');
 				// use legacy version
 				this.lendFilterExpVersion = lendListViewExpLegacy;
 				// Once Mounted we need to update the ui cookie to ensure future continuity between stacks
 				this.shouldUpdateLendFilterExpCookie = true;
 			} else {
-				console.log('assigning via ui exp manager');
-				// we have no legacy exp setup, so assign in ui
+				// we have no legacy exp setup, use ui assignment
 				const lendFilterEXP = this.apollo.readQuery({
 					query: experimentQuery,
-					variables: { id: 'lend_filter_v3' },
+					variables: { id: 'lend_filter' },
 				});
-
 				this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
 			}
-			// Update exp active values
 			// Set Active Status
-			// TODO: DO we actually need this on this page?
 			this.lendFilterExpActive = this.lendFilterExpVersion === 'b';
 		},
 		updateLendFilterExp() {
-			// if we've recieved overridden the ui assignment with a legacy assignment
-			if (this.shouldUpdateLendFilterExpCookie) {
+			if (this.lendFilterExpActive || this.lendFilterExpVersion === 'c') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-545-Apr2019',
+					this.lendFilterExpVersion
+				);
+			}
+			// if we've recieved + overridden the ui assignment with a legacy assignment
+			if (this.shouldUpdateLendFilterExpCookie || this.lendFilterExpVersion === 'c') {
 				// re-assign uiab cookie using our legacy assignment
 				this.apollo.mutate({
 					mutation: updateExperimentVersion,
@@ -261,13 +264,17 @@ export default {
 						id: 'lend_filter',
 						version: this.lendFilterExpVersion
 					}
-				}).then(newExpData => {
-					// will remove
-					console.log(newExpData);
+				}).then(() => {
 					// remove legacy cookie
 					cookieStore.remove('kvlendfilter');
 				});
 			}
+		},
+		exitLendFilterExp() {
+			this.lendFilterExpVersion = 'c';
+			this.updateLendFilterExp();
+			this.$kvTrackEvent('Lending', 'click-advanced-filters', 'Exit-CASH-545-2019');
+			window.location.href = '/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c';
 		}
 	},
 };
