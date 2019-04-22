@@ -116,7 +116,7 @@ export default {
 			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
 		showAdvancedFilters() {
-			window.location.href = '/lend';
+			this.$emit('exit-lend-filter-exp');
 		},
 		toggleCustomCategory(categoryId) {
 			this.$emit('toggle-custom-category', categoryId);
