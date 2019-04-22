@@ -212,8 +212,6 @@ export default {
 	$fixed-row-height: 38;
 
 	margin-top: rem-calc(10);
-	// Margin hack
-	margin-left: -1.9375rem;
 
 	.row {
 		margin: 0;
