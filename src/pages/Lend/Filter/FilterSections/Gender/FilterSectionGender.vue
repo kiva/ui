@@ -2,7 +2,7 @@
 	<div class="pill-toggle">
 		<ais-refinement-list :attribute="'gender'">
 			<div slot-scope="{ items, refine }">
-				<filter-section-gender-pill-toggle
+				<pill-toggle-wrapper
 					:refine="refine"
 					:items="items"
 					:filter-menu-open="filterMenuOpen"
@@ -14,12 +14,12 @@
 
 <script>
 import { AisRefinementList } from 'vue-instantsearch';
-import FilterSectionGenderPillToggle from '@/pages/Lend/Filter/FilterSectionGenderPillToggle';
+import PillToggleWrapper from '@/pages/Lend/Filter/FilterSections/Gender/PillToggleWrapper';
 
 export default {
 	components: {
 		AisRefinementList,
-		FilterSectionGenderPillToggle,
+		PillToggleWrapper,
 	},
 	props: {
 		title: {

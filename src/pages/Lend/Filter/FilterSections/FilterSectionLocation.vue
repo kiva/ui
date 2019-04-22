@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-import HierarchicalMenuList from '@/pages/Lend/Filter/HierarchicalMenuList';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
+import HierarchicalMenuList from '@/pages/Lend/Filter/FilterComponents/HierarchicalMenuList';
 import { AisHierarchicalMenu } from 'vue-instantsearch';
 
 export default {

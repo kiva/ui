@@ -142,7 +142,7 @@ import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
-import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
+import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';

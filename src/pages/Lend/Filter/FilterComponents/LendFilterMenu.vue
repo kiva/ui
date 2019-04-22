@@ -34,7 +34,7 @@
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
 				<filter-section-location class="filter-section" />
-				<filter-section-range-slider class="filter-section" :filter-menu-open="filterMenuOpen" />
+				<filter-section-loan-details class="filter-section" :filter-menu-open="filterMenuOpen" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced filters
@@ -59,13 +59,13 @@ import {
 	AisStateResults,
 } from 'vue-instantsearch';
 // Custom Categories
-// import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
-import FilterSectionSectors from '@/pages/Lend/Filter/FilterSectionSectors';
-import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSectionAttributes';
-import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
-import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
-import FilterSectionRangeSlider from '@/pages/Lend/Filter/FilterSectionRangeSlider';
-import FilterSectionSort from '@/pages/Lend/Filter/FilterSectionSort';
+// import FilterSectionCategories from '@/pages/Lend/Filter/FilterSections/FilterSectionCategories';
+import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSectionSectors';
+import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSectionAttributes';
+import FilterSectionGender from '@/pages/Lend/Filter/FilterSections/Gender/FilterSectionGender';
+import FilterSectionLocation from '@/pages/Lend/Filter/FilterSections/FilterSectionLocation';
+import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
+import FilterSectionSort from '@/pages/Lend/Filter/FilterSections/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 
@@ -79,7 +79,7 @@ export default {
 		FilterSectionAttributes,
 		FilterSectionGender,
 		FilterSectionLocation,
-		FilterSectionRangeSlider,
+		FilterSectionLoanDetails,
 		FilterSectionSort,
 		KvIcon,
 		KvButton,
