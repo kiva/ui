@@ -52,8 +52,8 @@ import {
 	AisCurrentRefinements,
 	AisClearRefinements,
 } from 'vue-instantsearch';
-import FilterChip from '@/pages/Lend/Filter/FilterChip';
-import ClearAllRefinements from '@/pages/Lend/Filter/ClearAllRefinements';
+import FilterChip from '@/pages/Lend/Filter/FilterComponents/FilterChip';
+import ClearAllRefinements from '@/pages/Lend/Filter/FilterComponents/ClearAllRefinements';
 
 export default {
 	components: {

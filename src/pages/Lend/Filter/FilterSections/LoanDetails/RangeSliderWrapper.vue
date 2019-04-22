@@ -31,7 +31,7 @@
 
 <script>
 import { AisRangeInput } from 'vue-instantsearch';
-import FilterRangeSlider from '@/pages/Lend/Filter/FilterRangeSlider';
+import FilterRangeSlider from '@/pages/Lend/Filter/FilterComponents/FilterRangeSlider';
 
 export default {
 	components: {

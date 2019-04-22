@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 import { AisRefinementList } from 'vue-instantsearch';
 
 export default {

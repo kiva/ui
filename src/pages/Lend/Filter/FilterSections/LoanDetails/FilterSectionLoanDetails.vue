@@ -1,6 +1,6 @@
 <template>
 	<filter-menu-section title="Loan details" >
-		<filter-section-wrapper-range-slider
+		<range-slider-wrapper
 			:minimum="4"
 			:maximum="25"
 			:value="25"
@@ -12,7 +12,7 @@
 			:filter-menu-open="filterMenuOpen"
 		/>
 
-		<filter-section-wrapper-range-slider
+		<range-slider-wrapper
 			:minimum="0"
 			:maximum="58"
 			:value="58"
@@ -25,7 +25,7 @@
 			:filter-menu-open="filterMenuOpen"
 		/>
 
-		<filter-section-wrapper-range-slider
+		<range-slider-wrapper
 			:minimum="0"
 			:maximum="24"
 			:value="24"
@@ -38,7 +38,7 @@
 			:filter-menu-open="filterMenuOpen"
 		/>
 
-		<filter-section-wrapper-range-slider
+		<range-slider-wrapper
 			:minimum="0"
 			:minimum-maximum-swap="true"
 			:maximum="5"
@@ -55,13 +55,13 @@
 </template>
 
 <script>
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-import FilterSectionWrapperRangeSlider from '@/pages/Lend/Filter/FilterSectionWrapperRangeSlider';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
+import RangeSliderWrapper from '@/pages/Lend/Filter/FilterSections/LoanDetails/RangeSliderWrapper';
 
 export default {
 	components: {
 		FilterMenuSection,
-		FilterSectionWrapperRangeSlider,
+		RangeSliderWrapper,
 	},
 	props: {
 		filterMenuOpen: {

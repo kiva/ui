@@ -88,8 +88,8 @@ import {
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
-import LendFilterMenu from '@/pages/Lend/Filter/LendFilterMenu';
-import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
+import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
+import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
 
 export default {
 	components: {
