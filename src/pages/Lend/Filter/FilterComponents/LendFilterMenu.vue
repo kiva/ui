@@ -33,6 +33,7 @@
 				-->
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
+				<filter-section-tags class="filter-section" />
 				<filter-section-location class="filter-section" />
 				<filter-section-loan-details class="filter-section" :filter-menu-open="filterMenuOpen" />
 
@@ -62,6 +63,7 @@ import {
 // import FilterSectionCategories from '@/pages/Lend/Filter/FilterSections/FilterSectionCategories';
 import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSectionSectors';
 import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSectionAttributes';
+import FilterSectionTags from '@/pages/Lend/Filter/FilterSections/FilterSectionTags';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSections/Gender/FilterSectionGender';
 import FilterSectionLocation from '@/pages/Lend/Filter/FilterSections/FilterSectionLocation';
 import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
@@ -77,6 +79,7 @@ export default {
 		// FilterSectionCategories,
 		FilterSectionSectors,
 		FilterSectionAttributes,
+		FilterSectionTags,
 		FilterSectionGender,
 		FilterSectionLocation,
 		FilterSectionLoanDetails,

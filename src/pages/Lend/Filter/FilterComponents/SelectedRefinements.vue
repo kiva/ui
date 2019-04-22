@@ -136,10 +136,18 @@ export default {
 			} = item;
 			if (type === 'numeric') {
 				return this.generateNumericLabel(item);
-			} else if (attribute === 'gender') {
-				return this.genderMap[label];
 			}
-			return label;
+			switch (attribute) {
+				case 'gender': {
+					return this.genderMap[label];
+				}
+				case 'tags.name': {
+					return label.replace(/#/g, '');
+				}
+				default: {
+					return label;
+				}
+			}
 		},
 		generateNumericLabel({
 			operator,
