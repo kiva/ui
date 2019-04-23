@@ -35,7 +35,7 @@
 				<filter-section-attributes class="filter-section" />
 				<filter-section-tags class="filter-section" />
 				<filter-section-location class="filter-section" />
-				<filter-section-loan-details class="filter-section" :filter-menu-open="filterMenuOpen" />
+				<filter-section-loan-details class="filter-section" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced filters

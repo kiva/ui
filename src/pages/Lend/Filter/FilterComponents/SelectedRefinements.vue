@@ -166,15 +166,6 @@ export default {
 
 			items.forEach(({ refinements, refine/* , Custom Categoris skip: attribute */ }) => {
 				refinements.forEach(refinement => {
-					const { type, operator, value } = refinement;
-					if (type === 'numeric') {
-						if (operator === '>=' && value === -1) {
-							return;
-						}
-						if (operator === '<=' && value === 1000) {
-							return;
-						}
-					}
 					/* Custom Categories Skip
 					if (this.customCategoryAttributes.includes(attribute)) {
 						return;
