@@ -9,6 +9,7 @@
 		<div class="row page-content">
 			<ais-instant-search
 				v-if="searchClient"
+				class="instant-search-container"
 				:search-client="searchClient"
 				:index-name="algoliaDefaultIndex"
 				:routing="routing">
@@ -289,12 +290,16 @@ export default {
 	$filter-transition: 0.25s ease-out;
 
 	.page-content {
-		.loan-card-group {
-			opacity: 1;
-			transition: opacity $filter-transition;
+		.instant-search-container {
+			width: 100%;
 
-			&.filter-menu-open {
-				opacity: 0.2;
+			.loan-card-group {
+				opacity: 1;
+				transition: opacity $filter-transition;
+
+				&.filter-menu-open {
+					opacity: 0.2;
+				}
 			}
 		}
 	}
