@@ -16,6 +16,7 @@
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
+					:activate-timer="false"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -71,6 +72,7 @@ export default {
 	},
 	data() {
 		return {
+			activateTimer: false,
 			loanVisible: true
 		};
 	},

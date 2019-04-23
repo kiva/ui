@@ -18,6 +18,7 @@
 						<div class="loan-title columns small-8">
 							<h3><span>${{ loan.price | numeral('0,0') }}</span> to {{ loan.loan.name }}</h3>
 							<loan-reservation
+								:activate-timer="activateTimer"
 								class="popup-reservation-text"
 								:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 								:is-funded="loan.isFunded"
@@ -105,6 +106,7 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
+			activateTimer: false,
 			showInterstitial: false,
 			basketInterstitialState: {},
 			loan: {},
