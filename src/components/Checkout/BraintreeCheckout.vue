@@ -321,19 +321,6 @@ export default {
 						return;
 					}
 
-					// Watch for validity change on hosted field inputs
-					hostedFieldsInstance.on('validityChange', event => {
-						const field = event.fields[event.emittedBy];
-
-						if (field.isValid) {
-							console.log(event.emittedBy, 'is fully valid');
-						} else if (field.isPotentiallyValid) {
-							console.log(event.emittedBy, 'is potentially valid');
-						} else {
-							console.log(event.emittedBy, 'is not valid');
-						}
-					});
-
 					form.addEventListener('submit', event => {
 						event.preventDefault();
 						this.$kvTrackEvent('basket', 'Braintree Payment', 'Button Click');

@@ -138,7 +138,6 @@ export default {
 	},
 	methods: {
 		closeLightbox() {
-			console.log('lightbox closed');
 			this.clearInterstitial();
 
 			this.loadingOnTimeout = window.setTimeout(() => {
