@@ -22,7 +22,6 @@ export default {
 				{ key: 'female', title: 'Women' },
 				{ key: 'male', title: 'Men' },
 			],
-			genderOptionSelected: 'all_genders',
 		};
 	},
 	props: {
@@ -39,37 +38,22 @@ export default {
 			default: false,
 		},
 	},
-	watch: {
-		items(data) {
-			// set gender pill to 'all genders' when menu is closed and gender filter has been removed
-			if (this.filterMenuOpen === false && _filter(data, { isRefined: true }).length === 0) {
-				this.genderOptionSelected = 'all_genders';
+	computed: {
+		genderOptionSelected() {
+			const refinedOption = _filter(this.items, { isRefined: true });
+			if (refinedOption.length) {
+				return refinedOption[0].value;
 			}
+			return 'all_genders';
 		}
 	},
 	methods: {
 		genderPillToggled(key) {
-			// eslint-disable-next-line max-len
-			// - issue: no ability to clear gender refinements, so applying a new refine applies any previous refinements
-			// - solution: toggle (turn off) previous refinement
-
-			// user selected female or male
-			if (key !== 'all_genders') {
-				// toggle previous gender selection
-				if (this.genderOptionSelected !== 'all_genders') {
-					this.refine(this.genderOptionSelected);
-				}
-
-				// apply gender selection
+			if (key === 'all_genders') {
+				this.refine('');
+			} else {
 				this.refine(key);
-
-			// user selected 'all_genders' and previous selection was female/male
-			} else if (this.genderOptionSelected !== 'all_genders') {
-				// toggle previous gender
-				this.refine(this.genderOptionSelected);
 			}
-
-			this.genderOptionSelected = key;
 		},
 	},
 };

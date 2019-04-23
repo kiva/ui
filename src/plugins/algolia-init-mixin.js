@@ -51,6 +51,9 @@ function stateToRoute(uiState) {
 	console.log(`uiState: ${JSON.stringify(uiState)}`);
 	return {
 		query: uiState.query,
+		gender:
+			uiState.menu &&
+			uiState.menu.gender,
 		sector:
 			uiState.refinementList &&
 			uiState.refinementList['sector.name'] &&
@@ -76,6 +79,9 @@ function routeToState(routeState) {
 	console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
+		menu: {
+			gender: routeState.gender
+		},
 		refinementList: {
 			'sector.name':
 				routeState.sector
