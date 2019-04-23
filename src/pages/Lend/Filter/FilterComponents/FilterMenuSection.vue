@@ -38,6 +38,12 @@ export default {
 	methods: {
 		toggleMenu() {
 			this.open = !this.open;
+
+			const eventAction = `${this.open ? 'open' : 'close'}-${this.title.toLowerCase()}-filter-section`;
+			this.$kvTrackEvent(
+				'Lending',
+				eventAction.replace(/ /g, '-')
+			);
 		},
 	},
 };

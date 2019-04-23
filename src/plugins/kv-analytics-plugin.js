@@ -10,8 +10,15 @@ export default Vue => {
 			snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 		},
 		pageview: (to, from) => {
-			const toUrl = window.location.origin + to.path;
-			const asyncFromUrl = window.location.origin + from.path;
+			if (!inBrowser) return false;
+
+			let toUrl = window.location.href;
+			let fromUrl = document.referrer;
+			// update urls for async page changes
+			if (to.matched && to.matched.length && from.matched && from.matched.length) {
+				toUrl = window.location.origin + to.fullPath;
+				fromUrl = window.location.origin + from.fullPath;
+			}
 
 			// Snowplown pageview
 			if (snowplowLoaded) {
@@ -19,19 +26,22 @@ export default Vue => {
 				window.snowplow('setCustomUrl', toUrl);
 				// set referrer for async page transitions
 				if (from.matched && from.path !== '') {
-					window.snowplow('setReferrerUrl', asyncFromUrl);
+					window.snowplow('setReferrerUrl', fromUrl); // asyncFromUrl
 				}
 				window.snowplow('trackPageView');
 			}
 
 			// Google Analytics Pageview
 			if (gaLoaded) {
-				if (to.path) {
-					window.ga('set', 'page', to.path);
+				let gaPath = `${window.location.pathname}${window.location.search || ''}`;
+				if (to.matched && to.matched.length) {
+					gaPath = to.fullPath;
 				}
+				window.ga('set', 'page', gaPath);
 				window.ga('send', 'pageview');
 			}
 		},
+		// TODO: Update to accept snowplow property as the 4th param, value moves to 5th param for trackStructEvent
 		trackEvent: (category, action, label, value) => {
 			const eventLabel = (label !== undefined && label !== null) ? String(label) : undefined;
 			const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;

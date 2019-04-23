@@ -59,6 +59,12 @@
 					</ais-state-results>
 					<algolia-pagination-wrapper :padding="2" />
 					<algolia-pagination-stats :padding="2" />
+
+					<ais-state-results>
+						<template slot-scope="stateData">
+							<algolia-track-state :state-data-hits="stateData.hits" />
+						</template>
+					</ais-state-results>
 				</div>
 				<!-- eslint-enable vue/attribute-hyphenation -->
 			</ais-instant-search>
@@ -93,6 +99,7 @@ import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
 import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
+import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 
 export default {
 	components: {
@@ -108,6 +115,7 @@ export default {
 		AlgoliaAdapter,
 		AlgoliaPaginationWrapper,
 		AlgoliaPaginationStats,
+		AlgoliaTrackState,
 	},
 	metaInfo: {
 		title: 'Lend Filter'
@@ -200,9 +208,11 @@ export default {
 	methods: {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
+			this.$kvTrackEvent('Lending', 'close-lend-filter-menu');
 		},
 		showFilterMenu() {
 			this.filterMenuOpen = true;
+			this.$kvTrackEvent('Lending', 'open-lend-filter-menu');
 		},
 		toggleCustomCategory(categoryId) {
 			this.$set(

@@ -158,6 +158,9 @@ export default {
 	methods: {
 		requestPage(page) {
 			this.refine(page);
+			setTimeout(() => {
+				this.$fireServerPageView();
+			}, 400);
 		},
 		goToPage(page) {
 			this.runOnPagination();
