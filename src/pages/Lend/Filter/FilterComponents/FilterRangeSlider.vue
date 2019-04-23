@@ -8,23 +8,20 @@
 				({{ rangeLabel }})
 			</span>
 		</div>
-		<div class="slider">
+		<div
+			class="slider"
+			v-if="range.min !== range.max"
+		>
 			<input
 				type="range"
-				:min="minimum"
-				:max="maximum"
+				:min="sliderMinimum"
+				:max="sliderMaximum"
 				:value="sliderValue"
 				:style="sliderStyle"
-				@input="onSliderChange(
-					refine,
-					range,
-					$event)">
-
-			<div class="hide">
-				<!-- TODO: create new component to replace this hidden element computed property -->
-				{{ sliderPosition }}
-			</div>
+				@input="onSliderChange(refine, range, $event)"
+			>
 		</div>
+		<div class="slider-unavailable" v-else>No refinements available</div>
 	</div>
 </template>
 
@@ -32,54 +29,9 @@
 import numeral from 'numeral';
 
 export default {
-	data() {
-		return {
-			sliderValue: this.value,
-		};
-	},
 	props: {
 		currentRefinement: {
 			type: Object,
-			required: true
-		},
-		filterMenuOpen: {
-			type: Boolean,
-			default: false,
-		},
-		inbetweenLabel: {
-			type: String,
-			required: true
-		},
-		maximum: {
-			type: Number,
-			required: true
-		},
-		maximumLabel: {
-			type: String,
-			required: true
-		},
-		maximumValueLabel: {
-			type: Boolean,
-			default: true
-		},
-		minimumMaximumSwap: {
-			type: Boolean,
-			default: false
-		},
-		minimum: {
-			type: Number,
-			required: true
-		},
-		minimumLabel: {
-			type: String,
-			required: true
-		},
-		minimumValueLabel: {
-			type: Boolean,
-			default: true
-		},
-		queryAttribute: {
-			type: String,
 			required: true
 		},
 		range: {
@@ -94,55 +46,54 @@ export default {
 			type: String,
 			required: true
 		},
-		value: {
+		isSliderSettingMinimum: {
+			type: Boolean,
+			default: false
+		},
+		minimum: {
 			type: Number,
+			required: true,
+		},
+		maximum: {
+			type: Number,
+			required: true,
+		},
+		minimumLabel: {
+			type: String,
+			default: '',
+		},
+		maximumLabel: {
+			type: String,
+			default: '',
+		},
+		inbetweenLabel: {
+			type: String,
 			required: true
 		},
 	},
 	computed: {
-		// set label for slider
+		defaultRangeLabel() {
+			return `${this.sliderValue}${this.inbetweenLabel}`;
+		},
 		rangeLabel() {
-			let value = this.maximumLabel;
-
-			if (this.sliderValue === this.maximum) {
-				value = this.maximumLabel;
-
-			// minimum value
-			} else if (this.sliderValue === this.minimum) {
-				if (this.minimumValueLabel === false) {
-					value = this.minimumLabel;
-				} else {
-					value = `${this.sliderValue}${this.minimumLabel}`;
-				}
-
-			// values in between min/max value
-			} else {
-				value = `${this.sliderValue}${this.inbetweenLabel}`;
+			if (this.sliderValue <= this.sliderMinimum) {
+				return this.isSliderSettingMinimum
+					? 'All'
+					: this.minimumLabel || this.defaultRangeLabel;
+			} else if (this.sliderValue >= this.sliderMaximum) {
+				return this.isSliderSettingMinimum
+					? this.maximumLabel || this.defaultRangeLabel
+					: 'All';
 			}
-
-			return value;
+			return this.defaultRangeLabel;
 		},
-
-		// set slider position only when filter menu is closed
-		// eslint-disable-next-line max-len
-		// NOTE: The computed property, slidePosition(), exists solely to allow the setting of the position of the slider when a refinement is deleted
-		sliderPosition() {
-			//	eslint-disable-next-line max-len
-			if (this.filterMenuOpen === false && this.currentRefinement.min === null && this.currentRefinement.max === null) {
-				this.setSliderValue();
-			}
-
-			return '';
-		},
-
-		// set style for slider
 		sliderStyle() {
 			const sliderLeftColor = '#8ccb8c';
 			const sliderRightColor = '#dbdbdb';
 
-			const selectedStop = this.minimumMaximumSwap === true
-				? (this.sliderValue / this.maximum)
-				: (Math.abs(this.sliderValue - this.minimum) / Math.abs(this.maximum - this.minimum));
+			const selectedStop = this.isSliderSettingMinimum
+				? (this.sliderValue / this.sliderMaximum)
+				: (Math.abs(this.sliderValue - this.sliderMinimum) / Math.abs(this.sliderMaximum - this.sliderMinimum));
 
 			const basicStyle = 'background-image: -webkit-linear-gradient(left,';
 			const stop1 = `${sliderLeftColor} 0%,`;
@@ -151,35 +102,36 @@ export default {
 			const stop4 = `${sliderRightColor} 100%);`;
 
 			return `${basicStyle}${stop1}${stop2}${stop3}${stop4}`;
-		}
+		},
+
+		sliderMinimum() {
+			return Math.max(this.minimum, this.range.min);
+		},
+		sliderMaximum() {
+			return Math.min(this.maximum, this.range.max);
+		},
+		sliderValue() {
+			if (this.isSliderSettingMinimum) {
+				return this.currentRefinement.min !== null ? this.currentRefinement.min : this.minimum;
+			}
+			return this.currentRefinement.max !== null ? this.currentRefinement.max : this.maximum;
+		},
 	},
 	methods: {
 		onSliderChange(refine, range, event) {
 			const sliderValue = parseInt(event.target.value, 10);
-			let refineMinimum = this.minimumMaximumSwap === true ? sliderValue : parseInt(this.minimum, 10);
-			let refineMaximum = this.minimumMaximumSwap === true ? parseInt(this.maximum, 10) : sliderValue;
 
-			// maximum value
-			// eslint-disable-next-line max-len
-			if ((this.minimumMaximumSwap === false && sliderValue === range.max) || (this.minimumMaximumSwap === true && sliderValue === range.min)) {
-				// set min/max to large values to allow for 'any' values beyond loan details min/max
-				refineMinimum = -1;
-				refineMaximum = 1000;
-
-				// eslint-disable-next-line no-param-reassign
-				range.min = refineMinimum;
-
-				// eslint-disable-next-line no-param-reassign
-				range.max = refineMaximum;
+			if (
+				(this.isSliderSettingMinimum === false && sliderValue === this.sliderMaximum)
+				|| (this.isSliderSettingMinimum === true && sliderValue === this.sliderMinimum)
+			) {
+				refine({});
 			}
 
-			refine({ min: refineMinimum, max: refineMaximum });
-
-			// set label of slider based on current position
-			this.sliderValue = sliderValue;
-		},
-		setSliderValue() {
-			this.sliderValue = this.value;
+			refine({
+				min: this.isSliderSettingMinimum === true ? sliderValue : undefined,
+				max: this.isSliderSettingMinimum === true ? undefined : sliderValue,
+			});
 		},
 	},
 };
@@ -218,7 +170,7 @@ $thumb-radius: rem-calc(14);
 	margin-bottom: rem-calc(3);
 
 	.title {
-		color: #484848;
+		color: $charcoal;
 	}
 
 	.range-label {
@@ -281,6 +233,10 @@ $thumb-radius: rem-calc(14);
 				outline: 0;
 			}
 		}
+	}
+
+	.slider-unavailable {
+		color: #808080;
 	}
 }
 </style>

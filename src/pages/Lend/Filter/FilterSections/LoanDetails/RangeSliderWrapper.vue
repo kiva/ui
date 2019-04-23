@@ -1,8 +1,6 @@
 <template>
 	<ais-range-input
 		:attribute="queryAttribute"
-		:min="minimumValue"
-		:max="maximumValue"
 		:class-names="{
 			'ais-RangeInput': 'range-input',
 		}"
@@ -10,20 +8,15 @@
 		<div slot-scope="{ currentRefinement, range, refine }">
 			<filter-range-slider
 				:current-refinement="currentRefinement"
-				:filter-menu-open="filterMenuOpen"
 				:inbetween-label="inbetweenLabel"
 				:maximum="maximum"
 				:maximum-label="maximumLabel"
-				:maximum-value-label="maximumValueLabel"
 				:minimum="minimum"
 				:minimum-label="minimumLabel"
-				:minimum-maximum-swap="minimumMaximumSwap"
-				:minimum-value-label="minimumValueLabel"
-				:query-attribute="queryAttribute"
+				:is-slider-setting-minimum="isSliderSettingMinimum"
 				:range="range"
 				:refine="refine"
 				:title="title"
-				:value="value"
 			/>
 		</div>
 	</ais-range-input>
@@ -43,15 +36,9 @@ export default {
 			rangeLabel: '',
 			rangeValue: null,
 			sliderStyle: '',
-			minimumValue: -1,
-			maximumValue: 1000,
 		};
 	},
 	props: {
-		filterMenuOpen: {
-			type: Boolean,
-			default: false,
-		},
 		inbetweenLabel: {
 			type: String,
 			default: '',
@@ -65,13 +52,8 @@ export default {
 		maximumLabel: {
 			type: String,
 			default: '',
-			required: true
 		},
-		maximumValueLabel: {
-			type: Boolean,
-			default: true
-		},
-		minimumMaximumSwap: {
+		isSliderSettingMinimum: {
 			type: Boolean,
 			default: false
 		},
@@ -83,11 +65,6 @@ export default {
 		minimumLabel: {
 			type: String,
 			default: '',
-			required: true
-		},
-		minimumValueLabel: {
-			type: Boolean,
-			default: true
 		},
 		queryAttribute: {
 			type: String,
@@ -99,16 +76,7 @@ export default {
 			default: '',
 			required: true
 		},
-		value: {
-			type: Number,
-			default: null,
-			required: true
-		},
 	},
-	mounted() {
-		this.minimumValue = this.minimum;
-		this.maximumValue = this.maximum;
-	}
 };
 </script>
 <style lang="scss" scoped>
