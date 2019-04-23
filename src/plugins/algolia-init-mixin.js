@@ -48,7 +48,7 @@ function rebuildSortByIndexFromRoute(routeStateSortBy) {
 }
 
 function stateToRoute(uiState) {
-	console.log(`uiState: ${JSON.stringify(uiState)}`);
+	// console.log(`uiState: ${JSON.stringify(uiState)}`);
 	return {
 		query: uiState.query,
 		gender:
@@ -76,7 +76,7 @@ function stateToRoute(uiState) {
 }
 
 function routeToState(routeState) {
-	console.log(`routeState: ${JSON.stringify(routeState)}`);
+	// console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
 		menu: {
