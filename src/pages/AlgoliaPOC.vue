@@ -274,11 +274,6 @@ export default {
 		});
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
-	mounted() {
-		this.$nextTick(() => {
-			// this.getRefinementCounts();
-		});
-	},
 	methods: {
 		// Our checkbox toggle provides category data on change
 		// > we decide what to do with it.
@@ -327,35 +322,8 @@ export default {
 			// console.log(`New Search State: ${JSON.stringify(newDisjunctiveFacets)}`);
 			return newDisjunctiveFacets;
 		},
-		getRefinementCounts() {
-			console.log(this.$refs.sectorRefinements);
-			console.log(this.$refs.sectorRefinements.$el);
-			// well it takes a moment for these to show up...
-			// > Whats the right way to wait and do this? To monitor it based on the component instance
-			// > May be able to watch these or some other property to detect state changes
-			setTimeout(() => {
-				console.log(this.$refs.sectorRefinements.items);
-			}, 1000);
-			// const sectorRefinements = this.$refs.sectorRefinements.items || null;
-			// const themeRefinements = _get(this.$refs.themeRefinements, 'items');
-			// const tagRefinements = _get(this.$refs.tagRefinements, 'items');
-
-			/* item signature
-				count: 1561
-				highlighted: "Agriculture"
-				isRefined: false
-				label: "Agriculture"
-				value: "Agriculture"
-			*/
-
-			// console.log(this.$refs.sectorRefinements.getAttribute('items'));
-			// console.log(themeRefinements);
-			// console.log(tagRefinements);
-
-			return 0;
-		},
 		handleFacetRemoved(payload) {
-			console.log(payload);
+			// console.log(payload);
 			/* item signature
 				attribute: "sector.name"
 				count: 62
@@ -370,12 +338,12 @@ export default {
 
 			// remove facets from existing set
 			_forEach(newDisjunctiveFacets, (value, key) => {
-				console.log(value, key);
-				console.log(payload.value);
+				// console.log(value, key);
+				// console.log(payload.value);
 				// filter existing array by removed array
 				if (key === payload.attribute) {
 					newDisjunctiveFacets[key] = value.filter(facet => {
-						console.log(facet);
+						// console.log(facet);
 						return facet !== payload.value;
 					});
 				}
