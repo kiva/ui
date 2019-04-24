@@ -40,16 +40,16 @@
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
 					Advanced filters
 				</div>
-				<ais-state-results class="filter-section filter-show-loans-mobile-wrapper hide-for-medium">
-					<kv-button
-						class="filter-show-loans-mobile"
-						slot-scope="{ nbHits }"
-						@click.native="hideFilterMenu"
-					>
-						Show {{ nbHits }} loan{{ nbHits > 1 ? 's' : '' }}
-					</kv-button>
-				</ais-state-results>
 			</div>
+			<ais-state-results class="filter-section filter-show-loans-mobile-wrapper hide-for-medium">
+				<kv-button
+					class="filter-show-loans-mobile"
+					slot-scope="{ nbHits }"
+					@click.native="hideFilterMenu"
+				>
+					Show {{ nbHits }} loan{{ nbHits > 1 ? 's' : '' }}
+				</kv-button>
+			</ais-state-results>
 		</div>
 	</div>
 </template>
@@ -108,10 +108,12 @@ export default {
 	},
 	methods: {
 		hideFilterMenu() {
+			this.unlockScroll();
 			this.filterMenuOpen = false;
 			this.$emit('hide-filter-menu');
 		},
 		toggleFilterMenu() {
+			this.lockScroll();
 			this.filterMenuOpen = !this.filterMenuOpen;
 			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
@@ -128,7 +130,17 @@ export default {
 		clearAllRefinements(refine) {
 			refine();
 			this.$emit('clear-custom-categories');
-		}
+		},
+		lockScroll() {
+			if (typeof window !== 'undefined') {
+				document.body.classList.add('scroll-locked-small-only');
+			}
+		},
+		unlockScroll() {
+			if (typeof window !== 'undefined') {
+				document.body.classList.remove('scroll-locked-small-only');
+			}
+		},
 	},
 };
 </script>
@@ -139,6 +151,11 @@ export default {
 #lend-filter-menu {
 	$filter-transition: 0.25s ease-out;
 	$filter-border-radius: rem-calc(3);
+
+	.basic-filter-section {
+		padding: 0.5rem 1.5rem;
+		border-top: 1px solid #E5E5E5;
+	}
 
 	#lend-filter-overlay {
 		position: fixed;
@@ -182,22 +199,22 @@ export default {
 		#filter-menu {
 			position: fixed;
 			top: 0;
+			bottom: 0;
 			left: 0;
+			right: 0;
 			opacity: 0;
 			z-index: 1001;
 			overflow-x: hidden;
 			overflow-y: auto;
 			user-select: none;
 			pointer-events: none;
-			width: 100vw;
-			height: 100vh;
-			padding-bottom: rem-calc(75);
+			padding-bottom: rem-calc(65);
 			background-color: rgba(255, 255, 255, 1);
 			transition: opacity $filter-transition;
+			-webkit-overflow-scrolling: touch;
 
 			.filter-section {
-				padding: 0.5rem 1.5rem;
-				border-top: 1px solid #E5E5E5;
+				@extend .basic-filter-section;
 
 				&#filter-section-mobile-reset-all {
 					display: flex;
@@ -233,18 +250,23 @@ export default {
 					border-top: none;
 				}
 			}
+		}
 
-			.filter-show-loans-mobile-wrapper {
-				position: fixed;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				background: $white;
+		.filter-show-loans-mobile-wrapper {
+			@extend .basic-filter-section;
 
-				.filter-show-loans-mobile {
-					margin: 0 0 rem-calc(2) 0;
-					width: 100%;
-				}
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: $white;
+			z-index: 1001;
+			opacity: 0;
+			pointer-events: none;
+
+			.filter-show-loans-mobile {
+				margin: 0 0 rem-calc(2) 0;
+				width: 100%;
 			}
 		}
 	}
@@ -263,6 +285,11 @@ export default {
 				opacity: 1;
 				pointer-events: initial;
 			}
+
+			.filter-show-loans-mobile-wrapper {
+				opacity: 1;
+				pointer-events: initial;
+			}
 		}
 	}
 
@@ -271,6 +298,8 @@ export default {
 			#filter-menu {
 				position: absolute;
 				top: 2.5rem;
+				bottom: initial;
+				right: initial;
 				padding-bottom: 0;
 				overflow-y: hidden;
 				min-width: rem-calc(270);

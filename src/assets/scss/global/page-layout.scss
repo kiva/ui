@@ -16,6 +16,13 @@ body.scroll-locked {
 	}
 }
 
+body.scroll-locked-small-only {
+	@include breakpoint(small only) {
+		-webkit-overflow-scrolling: auto;
+		overflow: hidden;
+	}
+}
+
 code {
 	display: block;
 	overflow: auto;
