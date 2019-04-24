@@ -70,6 +70,18 @@ function stateToRoute(uiState) {
 			uiState.hierarchicalMenu &&
 			uiState.hierarchicalMenu['locationFacets.lvl0'] &&
 			uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
+		repayment:
+			uiState.range &&
+			uiState.range.lenderRepaymentTerm,
+		delinquency:
+			uiState.range &&
+			uiState.range['partner.delinquencyRate'],
+		default:
+			uiState.range &&
+			uiState.range['partner.defaultRate'],
+		risk:
+			uiState.range &&
+			uiState.range['partner.riskRating'],
 		sortBy: createSimpleSortByFromState(uiState.sortBy),
 		page: uiState.page
 	};
@@ -97,6 +109,16 @@ function routeToState(routeState) {
 			'locationFacets.lvl0':
 				routeState.location
 				&& routeState.location.split('~'),
+		},
+		range: {
+			lenderRepaymentTerm:
+				routeState.repayment,
+			'partner.delinquencyRate':
+				routeState.delinquency,
+			'partner.defaultRate':
+				routeState.default,
+			'partner.riskRating':
+				routeState.risk,
 		},
 		sortBy: rebuildSortByIndexFromRoute(routeState.sortBy),
 		page: routeState.page
