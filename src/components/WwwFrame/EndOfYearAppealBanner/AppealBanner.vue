@@ -3,15 +3,15 @@
 		<div class="appeal-banner">
 			<div class="row"
 				@click="toggleAccordion">
-				<div class="small-2 show-for-large"></div>
+				<!-- <div class="small-2 show-for-large"></div> -->
 				<div class="appeal-header small-12 large-10 padding">
 					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
-						<span v-if="appealBonusEnabled">Donate today and receive a bonus to lend!</span>
+						<span v-if="appealBonusEnabled">Donate to Kiva today and earn a free loan!</span>
 						<!-- IF MATCHED APPEAL BANNER -->
-						<span v-else-if="appealMatchEnabled">Double or triple the impact of your donation!</span>
+						<!-- <span v-if="appealMatchEnabled">Double or triple the impact of your donation!</span> -->
 						<!-- ELSE STANDARD APPEAL BANNER -->
-						<span v-else>Your donation will power impact and hope in 2019</span>
+						<span v-else>Your donations keep Kiva growing</span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
@@ -25,35 +25,32 @@
 				<div class="row"
 					v-show="open">
 					<div class="small-2 show-for-large text-center">
-						<appeal-image />
+						<!-- <appeal-image /> -->
 					</div>
 					<div class="small-12 large-10 padding">
 						<div class="appeal-copy">
 							<!-- IF BONUS APPEAL BANNER -->
 							<p v-if="appealBonusEnabled" class="small-text quote">
-								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
-								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
-								Thank you for investing in a better world.
+								Each loan on Kiva costs us more than $3 to facilitate
+								(and we facilitate a lot of loans!) so when you donate to Kiva
+								you help us cover the costs to grow our impact. <strong> Donate
+								$35 or more to kiva today and we'll send you a bonus tomorrow to
+								make a free loan. </strong> Your donation of any amount makes a difference!
 							</p>
 							<!-- IF MATCHED APPEAL BANNER -->
-							<p v-else-if="appealMatchEnabled" class="small-text quote">
+							<!-- <p v-else-if="appealMatchEnabled" class="small-text quote">
 								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
 								from people like you to operate and grow. For a limited time,
 								<strong>donations to Kiva of $20 or more are matched, and donations of $50
 								or more are triple matched by generous donors!</strong>
 								Thank you for investing in a better world.
-							</p>
+							</p> -->
 							<!-- IF REGULAR APPEAL BANNER -->
 							<p v-else class="small-text">
-								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. Donate to Kiva to help us reach more
-								communities in 2019 - your donation of any size makes a difference. Thank you
-								for investing in a better world.
-							</p>
-
-							<p class="small-text">
-								Premal Shah, President & Co-Founder, Kiva
+								Each loan on Kiva costs us more than $3 to facilitate (and we faciliate a lot of loans!)
+								so when you donate to Kiva you help us cover costs, grow our impact and develop
+								innovative new programs that improve lives. Your donation of any amount
+								makes a difference!
 							</p>
 						</div>
 						<div>
@@ -74,16 +71,17 @@
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
 							>Other</kv-button>
-							<input
+							<a
 								class="dollar-amount-input show-for-large"
 								placeholder="other"
-								@blur="validateInput"
-								v-model="donationAmount">
-							<kv-button
+								href="/donate"
+								@blur="validateInput">Other amount
+							</a>
+						<!-- <kv-button
 								class="smallest setting submit-button show-for-large"
 								id="appeal-donation-button"
 								@click.native.prevent.stop="updateDonationTo(undefined, true)"
-							>Submit</kv-button>
+							>Submit</kv-button> -->
 						</div>
 					</div>
 				</div>
@@ -96,7 +94,8 @@
 import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
+// import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
+import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
@@ -109,7 +108,8 @@ export default {
 	components: {
 		KvButton,
 		KvIcon,
-		AppealImage,
+		AppealThermometer,
+		// AppealImage,
 		KvExpandable,
 	},
 	inject: ['apollo'],
@@ -257,17 +257,17 @@ export default {
 			}
 		}
 
-		input.dollar-amount-input {
-			font-size: 1.25rem;
-			padding: 0.7rem 0.5rem;
-			margin-right: rem-calc(10);
-			vertical-align: top;
-			width: 46%;
+		// input.dollar-amount-input {
+		// 	font-size: 1.25rem;
+		// 	padding: 0.7rem 0.5rem;
+		// 	margin-right: rem-calc(10);
+		// 	vertical-align: top;
+		// 	width: 46%;
 
-			@include breakpoint(large) {
-				width: 17%;
-			}
-		}
+		// 	@include breakpoint(large) {
+		// 		width: 17%;
+		// 	}
+		// }
 	}
 
 	.toggle-arrow {
