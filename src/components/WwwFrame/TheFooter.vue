@@ -22,14 +22,14 @@
 		<nav class="large-footer show-for-large row">
 			<div class="groups">
 				<div class="narrow">
-					<h1>Borrow</h1>
+					<h2>Borrow</h2>
 					<p>Loans for entrepreneurs doing amazing things.</p>
 					<ul>
 						<li><router-link :to="applyUrl">Apply now</router-link></li>
 					</ul>
 				</div>
 				<div class="narrow">
-					<h1>Explore</h1>
+					<h2>Explore</h2>
 					<ul>
 						<li v-if="isProtocolLive"><router-link to="/protocol">Protocol</router-link></li>
 						<li><router-link to="/gifts">Gifts</router-link></li>
@@ -41,7 +41,7 @@
 					</ul>
 				</div>
 				<div class="narrow">
-					<h1>Get to know us</h1>
+					<h2>Get to know us</h2>
 					<ul>
 						<li><router-link :to="aboutUrl">About us</router-link></li>
 						<li><router-link to="/about/how">How Kiva works</router-link></li>
@@ -54,7 +54,7 @@
 					</ul>
 				</div>
 				<div class="narrow">
-					<h1>Community</h1>
+					<h2>Community</h2>
 					<ul>
 						<li><router-link to="/teams">Teams</router-link></li>
 						<li><router-link to="/kivau/intro">Students and educators</router-link></li>
@@ -71,7 +71,7 @@
 					</ul>
 				</div>
 				<div class="work-with-us wide">
-					<h1>Work with us</h1>
+					<h2>Work with us</h2>
 					<ul>
 						<li><router-link :to="careersUrl">Careers</router-link></li>
 						<li><router-link to="/work-with-us/internvolunteers">Volunteer internships</router-link></li>
@@ -167,8 +167,9 @@ $footer-link-separator-color: $light-green;
 		}
 	}
 
-	h1 {
+	h2 {
 		font-size: 0.875rem;
+		font-weight: $global-weight-bold;
 		margin: 0;
 	}
 
