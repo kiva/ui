@@ -2,68 +2,6 @@
 	<www-page>
 		<div id="checkout-slim" class="row page-content">
 			<div class="columns">
-				<div v-if="!emptyBasket" class="login-wrap">
-					<div v-if="!isLoggedIn || preCheckoutStep" class="checkout-step">
-						<hr>
-						<span class="number-icon number-1">1</span>
-					</div>
-
-					<div v-if="!isLoggedIn" class="login-reg-holder row align-center">
-						<div class="columns small-12 medium-8 large-11 xxlarge-9 login-reg-header">
-							<h3 v-if="showLogin">Login to complete your loan</h3>
-							<h3 v-else>Register to complete your loan</h3>
-						</div>
-
-						<div class="columns small-12 medium-8 large-5 xxlarge-4">
-							<login-form v-if="showLogin" :refresh="true" @login-loading="setLoginLoading" />
-							<register-form v-if="showReg" :refresh="true" @reg-loading="setLoginLoading" />
-						</div>
-
-						<div class="columns show-for-large large-1">
-							<div class="v-divider"></div>
-						</div>
-
-						<div class="columns small-12 medium-8 large-5 xxlarge-4">
-							<div class="or-callout">
-								<hr>
-								<span>Or</span>
-							</div>
-
-							<!-- <p class="social-callout">We won’t ever post without asking.</p> -->
-
-							<facebook-login-register
-								:process-type="showLogin ? 'login' : 'register'"
-								@fb-loading="setLoginLoading" />
-
-							<p class="social-callout">We won’t ever post without asking.</p>
-
-							<div v-if="showReg" class="login-reg-switch">
-								<p>Already have an account? <br><a
-									@click.prevent="switchToLogin"
-									v-kv-track-event="['Register', 'alreadyMemberLnk']"
-									id="loginLink">Sign in</a></p>
-							</div>
-
-							<div class="login-reg-switch">
-								<p><a v-if="showLogin" class="register-link text-center"
-									v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
-									@click.prevent="switchToRegister">
-									Sign up for Kiva
-								</a></p>
-							</div>
-						</div>
-						<loading-overlay v-if="loginLoading" id="loading-overlay" />
-					</div>
-
-					<div v-else class="login-reg-complete" :class="{'pre-login': !preCheckoutStep}">
-						<p class="featured-text">
-							<span v-if="preCheckoutStep === 'register'">Thanks for registering!</span>
-							<span v-else>Welcome back!</span><br>
-							Please continue below to complete your purchase.</p>
-					</div>
-					<div v-if="isLoggedIn && !preCheckoutStep" class="pre-login-rule"><hr></div>
-				</div>
-
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
 						<div v-if="!emptyBasket && !isLoggedIn || preCheckoutStep" class="checkout-step">
@@ -128,15 +66,6 @@
 						<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 					</div>
 
-					<div v-if="!isLoggedIn" class="container basket-overlay-bg"></div>
-					<div v-if="!isLoggedIn" @click="overlayMouseover"
-						class="basket-overlay-fg">
-						<div class="basket-overlay row align-center align-middle"
-							:class="{ unhovered: !isHovered }">
-							<p class="columns small-11 medium-6 xlarge-5 text-center">
-								Please register or sign in above to complete your purchase.</p>
-						</div>
-					</div>
 				</div>
 
 				<kv-lightbox
@@ -196,9 +125,6 @@ import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
-import LoginForm from '@/components/Forms/LoginForm';
-import RegisterForm from '@/components/Forms/RegisterForm';
-import FacebookLoginRegister from '@/components/Forms/FacebookLoginRegister';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
@@ -219,9 +145,6 @@ export default {
 		KvButton,
 		KvLightbox,
 		OrderTotals,
-		LoginForm,
-		RegisterForm,
-		FacebookLoginRegister,
 		BasketItemsList,
 		KivaCardRedemption,
 		LoadingOverlay,
@@ -307,33 +230,34 @@ export default {
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
+			// change this to check the token
+			// this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
-		// if we have a user id but are not actively logged in
-		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-			this.switchToLogin();
-		}
-
-		// Check for some page content customizations based on query
-		if (this.$route.query
-			// use when arriving directly to force showing the login form for with ?login=true
-			&& (this.$route.query.login === 'true'
-			// The login form refreshes the page with ?login=success, used to show login welcome message
-			|| this.$route.query.login === 'success')) {
-			this.preCheckoutStep = 'login';
-			this.switchToLogin();
-		} else if (this.$route.query
-			// use when arriving directly to force register form with ?register=true
-			&& (this.$route.query.register === 'true'
-			// The register form refreshes the page with ?register=success, used to show register welcome message
-			|| this.$route.query.register === 'success')) {
-			this.preCheckoutStep = 'register';
-			this.switchToRegister();
-		}
+		// // if we have a user id but are not actively logged in
+		// if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+		// 	this.switchToLogin();
+		// }
+		//
+		// // Check for some page content customizations based on query
+		// if (this.$route.query
+		// 	// use when arriving directly to force showing the login form for with ?login=true
+		// 	&& (this.$route.query.login === 'true'
+		// 	// The login form refreshes the page with ?login=success, used to show login welcome message
+		// 	|| this.$route.query.login === 'success')) {
+		// 	this.preCheckoutStep = 'login';
+		// 	this.switchToLogin();
+		// } else if (this.$route.query
+		// 	// use when arriving directly to force register form with ?register=true
+		// 	&& (this.$route.query.register === 'true'
+		// 	// The register form refreshes the page with ?register=success, used to show register welcome message
+		// 	|| this.$route.query.register === 'success')) {
+		// 	this.preCheckoutStep = 'register';
+		// 	this.switchToRegister();
+		// }
 
 		this.holidayModeEnabled = settingEnabled(
 			this.apollo.readQuery({
@@ -460,18 +384,10 @@ export default {
 			this.updatingTotals = state;
 		},
 		switchToRegister() {
-			this.showReg = true;
-			this.showLogin = false;
+			// popup to register
 		},
 		switchToLogin() {
-			this.showReg = false;
-			this.showLogin = true;
-		},
-		setLoginLoading(state) {
-			this.loginLoading = state;
-		},
-		overlayMouseover() {
-			this.isHovered = !this.isHovered;
+			// popup to login
 		},
 		redirectToLegacy() {
 			this.$router.push({
@@ -542,90 +458,6 @@ export default {
 				text-align: center;
 				line-height: 3.3rem;
 			}
-		}
-	}
-
-	.login-wrap {
-		padding-bottom: 2.5rem;
-
-		.pre-login-rule hr {
-			margin-bottom: 0;
-		}
-	}
-
-	.login-reg-holder {
-		position: relative;
-
-		.login-reg-header {
-			h3 {
-				font-size: $featured-text-font-size;
-				font-weight: $global-weight-highlight;
-
-				@include breakpoint(large only) {
-					max-width: 47%;
-				}
-			}
-		}
-
-		.v-divider {
-			width: 1px;
-			height: 100%;
-			background: $subtle-gray;
-			margin: 0 auto;
-		}
-
-		.or-callout {
-			position: relative;
-			text-align: center;
-
-			hr {
-				border-bottom: 2px solid $kiva-text-dark;
-				margin-right: 2rem;
-				margin-left: 2rem;
-			}
-
-			span {
-				margin: -3.125rem auto 0;
-				background: $white;
-				padding: 1rem;
-				display: block;
-				width: fit-content;
-				text-transform: uppercase;
-				font-style: italic;
-				font-weight: $global-weight-highlight;
-			}
-		}
-
-		.social-callout {
-			text-align: center;
-			line-height: 1.3;
-			margin-bottom: 2rem;
-		}
-
-		.login-reg-switch {
-			text-align: center;
-			font-size: 1.3rem;
-			font-weight: $global-weight-highlight;
-
-			/* turned off for now */
-			// @include breakpoint(large) {
-			// 	text-align: left;
-			// 	position: absolute;
-			// 	bottom: 0;
-			// 	font-weight: $global-weight-highlight;
-			// }
-		}
-	}
-
-	.login-reg-complete {
-		p {
-			text-align: center;
-			color: $kiva-text-light;
-			margin: 0;
-		}
-
-		&.pre-login {
-			padding: 2rem 0;
 		}
 	}
 
