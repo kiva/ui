@@ -48,6 +48,7 @@ import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
+import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
@@ -106,6 +107,9 @@ export default {
 		AddToBasketInterstitial,
 	},
 	inject: ['apollo'],
+	mixins: [
+		lendFilterExpMixin,
+	],
 	metaInfo() {
 		return {
 			title: this.pageTitle
@@ -264,6 +268,12 @@ export default {
 			variables: { id: 'lend_filter' },
 		});
 		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
+
+		// Update Lend Filter Exp CASH-545
+		this.getLendFilterExpVersion();
+	},
+	mounted() {
+		this.updateLendFilterExp();
 	},
 	methods: {
 		pageChange(number) {
