@@ -117,7 +117,7 @@ export default {
 				if (data.lend.loans.totalCount) {
 					this.latestFundraisingInfo = {
 						fundedAmount: _get(data, 'lend.loans.values[0].loanFundraisingInfo.fundedAmount'),
-						isExpiringSoon: _get(data, 'lend.loans.values[0].loanFundraisingInfo.expiringSoon'),
+						isExpiringSoon: _get(data, 'lend.loans.values[0].loanFundraisingInfo.isExpiringSoon'),
 						reservedAmount: _get(data, 'lend.loans.values[0].loanFundraisingInfo.reservedAmount'),
 					};
 					// update our local user props
