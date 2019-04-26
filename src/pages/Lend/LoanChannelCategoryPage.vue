@@ -49,6 +49,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
+import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
@@ -109,6 +110,7 @@ export default {
 	inject: ['apollo'],
 	mixins: [
 		lendFilterExpMixin,
+		loanChannelQueryMapMixin,
 	],
 	metaInfo() {
 		return {
@@ -153,7 +155,7 @@ export default {
 			// initial release sends us back to /lend
 			// return `/lend/${this.$route.params.category || ''}`;
 			return this.lendFilterExpVersion === 'b'
-				? '/lend/filter'
+				? this.getAlgoliaFilterUrl()
 				: `/lend/${this.$route.params.category || ''}`;
 		},
 		pageTitle() {
@@ -274,6 +276,12 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
+		// check for newly assigned bounceback
+		const redirectFromUiCookie = cookieStore.get('redirectFromUi') || '';
+		if (redirectFromUiCookie === 'true') {
+			cookieStore.remove('redirectFromUi');
+			this.$router.push(this.getAlgoliaFilterUrl());
+		}
 	},
 	methods: {
 		pageChange(number) {
@@ -289,6 +297,27 @@ export default {
 			if (!_isEqual(this.$route.query, this.urlParams)) {
 				this.$router.push({ query: this.urlParams });
 			}
+		},
+		getAlgoliaFilterUrl() {
+			// get match channel data
+			const matchedUrls = _filter(
+				this.loanChannelQueryMap,
+				channel => {
+					return channel.url === this.$route.params.category;
+				}
+			);
+			// check for fallback url
+			const fallback = _get(matchedUrls, '[0]fallbackUrl');
+			if (typeof fallback !== 'undefined') {
+				return fallback;
+			}
+			// use algolia params if available
+			const algoliaParams = _get(matchedUrls, '[0]algoliaParams') || '';
+			if (algoliaParams !== '') {
+				return `/lend/filter?${algoliaParams}`;
+			}
+			// use default
+			return '/lend/filter';
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -301,7 +330,9 @@ export default {
 		next();
 	},
 	beforeRouteLeave(to, from, next) {
-		if (typeof window !== 'undefined' && to.path.indexOf('/lend/') !== -1) {
+		if (typeof window !== 'undefined'
+			&& to.path.indexOf('/lend/') !== -1
+			&& to.path.indexOf('/lend/filter') === -1) {
 			// set cookie to signify redirect
 			cookieStore.set('redirectFromUi', true);
 		}
