@@ -87,7 +87,7 @@ export default {
 				matchingText: '',
 				name: _get(this.loan, 'name'),
 				partnerName: _get(this.loan, 'partner.name'),
-				plannedExpirationData: exprirationDate.toISOString(),
+				plannedExpirationDate: exprirationDate.toISOString(),
 				userProperties: this.latestUserProperties || {
 					favorited: false,
 					lentTo: false
