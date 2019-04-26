@@ -1,15 +1,13 @@
 <template>
-	<div class="appeal-banner-wrapper" v-if="showAppeal">
-		<div class="appeal-banner">
+	<div class="appeal-banner-wrapper sitewide-appeal-wrapper" v-if="showAppeal">
+		<div class="appeal-banner sitewide-appeal">
 			<div class="row"
 				@click="toggleAccordion">
 				<!-- <div class="small-2 show-for-large"></div> -->
-				<div class="appeal-header small-12 large-10 padding">
+				<div class="appeal-header small-12 padding sitewide-header">
 					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
 						<span v-if="appealBonusEnabled">Donate to Kiva today and earn a free loan!</span>
-						<!-- IF MATCHED APPEAL BANNER -->
-						<!-- <span v-if="appealMatchEnabled">Double or triple the impact of your donation!</span> -->
 						<!-- ELSE STANDARD APPEAL BANNER -->
 						<span v-else>Your donations keep Kiva growing</span>
 						<kv-icon
@@ -24,10 +22,12 @@
 			<kv-expandable easing="ease-in-out">
 				<div class="row"
 					v-show="open">
-					<div class="small-2 show-for-large text-center">
-						<!-- <appeal-image /> -->
+					<div class="sitewide-body">
+						<div class="thermometer-holder show-for-medium medium-2 columns">
+							<appeal-thermometer />
+						</div>
 					</div>
-					<div class="small-12 large-10 padding">
+					<div class="small-12 medium-10 padding">
 						<div class="appeal-copy">
 							<!-- IF BONUS APPEAL BANNER -->
 							<p v-if="appealBonusEnabled" class="small-text quote">
@@ -37,14 +37,6 @@
 								$35 or more to kiva today and we'll send you a bonus tomorrow to
 								make a free loan. </strong> Your donation of any amount makes a difference!
 							</p>
-							<!-- IF MATCHED APPEAL BANNER -->
-							<!-- <p v-else-if="appealMatchEnabled" class="small-text quote">
-								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. For a limited time,
-								<strong>donations to Kiva of $20 or more are matched, and donations of $50
-								or more are triple matched by generous donors!</strong>
-								Thank you for investing in a better world.
-							</p> -->
 							<!-- IF REGULAR APPEAL BANNER -->
 							<p v-else class="small-text">
 								Each loan on Kiva costs us more than $3 to facilitate (and we faciliate a lot of loans!)
@@ -77,11 +69,6 @@
 								href="/donate"
 								@blur="validateInput">Other amount
 							</a>
-						<!-- <kv-button
-								class="smallest setting submit-button show-for-large"
-								id="appeal-donation-button"
-								@click.native.prevent.stop="updateDonationTo(undefined, true)"
-							>Submit</kv-button> -->
 						</div>
 					</div>
 				</div>
@@ -94,7 +81,6 @@
 import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-// import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
 import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
@@ -109,7 +95,6 @@ export default {
 		KvButton,
 		KvIcon,
 		AppealThermometer,
-		// AppealImage,
 		KvExpandable,
 	},
 	inject: ['apollo'],
@@ -202,12 +187,116 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 @import 'settings';
 @import "global/transitions";
 
-.appeal-banner-wrapper {
+.sitewide-appeal-wrapper {
 	background: $kiva-alert-yellow;
+
+	.sitewide-appeal {
+		padding-left: rem-calc(10);
+		padding-right: rem-calc(10);
+	}
+
+	.thermometer-holder {
+		@media #{$medium-up} {
+			height: rem-calc(185);
+		}
+	}
+
+	// 	.thermometer-wrap {
+	// 		padding: 1rem;
+
+	// 		.thermometer {
+	// 			background-color: #efefef;
+	// 			border: none;
+	// 			padding: 0;
+	// 			border-radius: rem-calc(15);
+	// 			height: rem-calc(13);
+
+	// 			@media #{$medium-up} {
+	// 				transform: rotate(270deg);
+	// 				position: relative;
+	// 				width: rem-calc(150);
+	// 				top: rem-calc(53);
+	// 				left: rem-calc(-47);
+	// 			}
+
+	// 			@media #{$large-up} {
+	// 				left: rem-calc(-28);
+	// 			}
+
+	// 			@media #{$xlarge-up} {
+	// 				left: rem-calc(-14);
+	// 			}
+
+	// 			@media #{$xxlarge-up} {
+	// 				left: rem-calc(-5);
+	// 			}
+
+	// 			.inner-meter {
+	// 				background-color: #4faf4e;
+	// 				display: block;
+	// 				height: 100%;
+	// 				float: left;
+	// 				border-radius: rem-calc(7);
+	// 				transition: width 3500ms ease-in-out;
+	// 				width: 0;
+	// 				max-width: 100%;
+	// 			}
+
+	// 			.tick-wrapper {
+	// 				position: absolute;
+	// 				height: 100%;
+	// 				width: 100%;
+
+	// 				.tick-lines {
+	// 					border-left: 1px solid #4faf4e;
+	// 					border-right: 1px solid #efefef;
+	// 					padding-right: 7%;
+	// 					height: 9%;
+	// 					float: left;
+	// 					top: rem-calc(3);
+	// 					position: relative;
+
+	// 					@media #{$medium-up} {
+	// 						height: 55%;
+	// 						padding-right: rem-calc(10);
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+
+	// 		.thermometer-bulb {
+	// 			background-color: #4faf4e;
+	// 			position: relative;
+	// 			display: inline-block;
+	// 			border-radius: rem-calc(20);
+	// 			height: rem-calc(30);
+	// 			width: rem-calc(30);
+	// 			left: rem-calc(-10);
+	// 			top: rem-calc(-32);
+
+	// 			@media #{$medium-up} {
+	// 				left: rem-calc(13);
+	// 				top: rem-calc(96);
+	// 			}
+
+	// 			@media #{$large-up} {
+	// 				left: rem-calc(32);
+	// 			}
+
+	// 			@media #{$xlarge-up} {
+	// 				left: rem-calc(46);
+	// 			}
+
+	// 			@media #{$xxlarge-up} {
+	// 				left: rem-calc(55);
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	.appeal-banner {
 		padding-left: 0.625rem;
@@ -256,18 +345,6 @@ export default {
 				width: 17%;
 			}
 		}
-
-		// input.dollar-amount-input {
-		// 	font-size: 1.25rem;
-		// 	padding: 0.7rem 0.5rem;
-		// 	margin-right: rem-calc(10);
-		// 	vertical-align: top;
-		// 	width: 46%;
-
-		// 	@include breakpoint(large) {
-		// 		width: 17%;
-		// 	}
-		// }
 	}
 
 	.toggle-arrow {
