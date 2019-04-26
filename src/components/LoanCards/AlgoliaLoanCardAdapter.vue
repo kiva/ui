@@ -45,6 +45,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		userId: {
+			type: String,
+			default: ''
+		},
 		loanCardType: {
 			type: String,
 			required: true,
@@ -133,10 +137,21 @@ export default {
 			// track algolia conversion if add to basket was successful
 			if (window.aa && payload.success) {
 				window.aa('convertedObjectIDs', {
-					eventName: 'Add to Cart',
+					eventName: 'add-to-basket-conversion',
 					index: this.algoliaProps.index,
 					queryID: this.algoliaProps.queryID,
+					userToken: this.userId,
 					objectIDs: [this.algoliaProps.item.objectID],
+				});
+				const offset = this.algoliaProps.hitsPerPage * this.algoliaProps.page;
+				const position = offset + this.algoliaProps.itemIndex + 1;
+				window.aa('clickedObjectIDsAfterSearch', {
+					eventName: 'add-to-basket-click',
+					index: this.algoliaProps.index,
+					queryID: this.algoliaProps.queryID,
+					userToken: this.userId,
+					objectIDs: [this.algoliaProps.item.objectID],
+					positions: [position],
 				});
 			}
 		}

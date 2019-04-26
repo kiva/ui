@@ -29,6 +29,7 @@
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
 						clickAnalytics="true"
+						:userToken="userId.toString()"
 						ref="aisConfigure"
 					/>
 					<selected-refinements
@@ -50,6 +51,7 @@
 										:loan="item"
 										:items-in-basket="itemsInBasket"
 										:is-logged-in="isLoggedIn"
+										:user-id="userId.toString()"
 										loan-card-type="ListLoanCard"
 										:algolia-props="{ page, hitsPerPage, queryID, index, itemIndex, item }"
 										class="small-12 columns"
@@ -139,6 +141,7 @@ export default {
 				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				// Set user status
 				this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
+				this.userId = _get(data, 'my.userAccount.id') || '';
 			},
 		});
 
@@ -149,6 +152,7 @@ export default {
 		return {
 			itemsInBasket: null,
 			isLoggedIn: false,
+			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
 		};
