@@ -29,7 +29,7 @@
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
 						clickAnalytics="true"
-						:userToken="userId"
+						:userToken="userId.toString()"
 						ref="aisConfigure"
 					/>
 					<selected-refinements
@@ -51,7 +51,7 @@
 										:loan="item"
 										:items-in-basket="itemsInBasket"
 										:is-logged-in="isLoggedIn"
-										:user-id="userId"
+										:user-id="userId.toString()"
 										loan-card-type="ListLoanCard"
 										:algolia-props="{ page, hitsPerPage, queryID, index, itemIndex, item }"
 										class="small-12 columns"
