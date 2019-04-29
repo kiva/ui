@@ -16,88 +16,116 @@
 						<!-- Apply via array :facetFilters="facetFilters" -->
 						<!-- :sumOrFiltersScores="true" Show loans that meet all criteria first-->
 						<!-- :disjunctiveFacets="disjunctiveFacetsKeys" -->
+						<!-- :disjunctiveFacetsRefinements="disjunctiveFacets" -->
 						<ais-configure
 							:hitsPerPage="12"
 							clickAnalytics="true"
 							ref="aisConfigure"
-							:disjunctiveFacetsRefinements="disjunctiveFacets"
 						>
-							<div slot-scope="{ searchParameters }">
-								Currently applied filters:
+							<!-- <div slot-scope="{ searchParameters }">
+								AisConfigure: Search Parameters
 								<p class="small-text"><pre>{{ searchParameters }}</pre></p>
-							</div>
+							</div> -->
 						</ais-configure>
 
-						<ais-state-results>
+
+						<!-- Add instantSearchInstance.helper object with methods :connector="true" -->
+						<!-- <ais-state-results>
 							<template slot-scope="{ index }">
 								<small>{{ index }}</small>
 							</template>
-						</ais-state-results>
+						</ais-state-results> -->
 
-						<ais-current-refinements />
+						<div class="row search-filter-and-results">
+							<div class="columns small-12 small-push xlarge-3">
+								<!-- <selected-refinements
+									@facet-removed="handleFacetRemoved"
+									:selected-custom-categories="{}"
+									:custom-categorties="customCategoryList" /> -->
 
-						<!-- <selected-refinements
-							@facet-removed="handleFacetRemoved"
-							:selected-custom-categories="{}"
-							:custom-categorties="customCategoryList" /> -->
+								<!-- POC for Custom Categories Refinements -->
+								<!-- > does NOT currently support count -->
+								<!-- <div class="custom-refinement-list">
+									<div class="custom-refinement"
+										v-for="category in customCategoryList" :key="category.name">
+										<kv-checkbox
+											@checkbox-toggled="handleCheckboxToggle($event, category)">
+											{{ category.name }} ({{ 0 }})
+										</kv-checkbox>
+									</div>
+								</div> -->
+								<h3>Sort By:</h3>
+								<ais-sort-by :items="defaultSortIndices"/>
 
-						<!-- POC for Custom Categories Refinements -->
-						<!-- > does NOT currently support count -->
-						<div class="custom-refinement-list">
-							<div class="custom-refinement"
-								v-for="category in customCategoryList" :key="category.name">
-								<kv-checkbox
-									@checkbox-toggled="handleCheckboxToggle($event, category)">
-									{{ category.name }} ({{ 0 }})
-								</kv-checkbox>
+								<h3>Gender:</h3>
+								<ais-refinement-list
+									:attribute="'gender'"
+									:limit="100" />
+
+								<h3>Location:</h3>
+								<ais-hierarchical-menu
+									:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
+									:limit="100" />
+
+								<h3>Sectors:</h3>
+								<ais-refinement-list
+									:attribute="'sector.name'" :limit="1000"
+									ref="sectorRefinements" />
+
+								<h3>Attributes:</h3>
+								<ais-refinement-list
+									:attribute="'loanThemeFilters.name'" :limit="1000"
+									ref="themeRefinements" />
+
+								<h3>Tags:</h3>
+								<ais-refinement-list
+									:attribute="'tags.name'" :limit="1000"
+									ref="tagRefinements" />
+
+							</div>
+
+							<div class="columns small-12 small-push xlarge-9">
+								<ais-stats>
+									<h3 slot-scope="{ nbHits }">{{ nbHits }} loans found</h3>
+								</ais-stats>
+
+								<!-- we can easily turn off or switch out the icons shown for all controls -->
+								<ais-search-box :show-loading-indicator="true" />
+
+								<ais-current-refinements />
+
+								<ais-state-results>
+									<template slot-scope="{ page, hitsPerPage, queryID, index }">
+										<ais-hits
+											class="loan-card-group"
+											:results-per-page="12">
+											<template slot="default" slot-scope="{ items }">
+												<algolia-adapter
+													v-for="(item, itemIndex) in items" :key="item.id"
+													:loan="item"
+													:items-in-basket="itemsInBasket"
+													:is-logged-in="isLoggedIn"
+													:algolia-props="{
+														page, hitsPerPage, queryID, index, itemIndex, item
+													}"
+													loan-card-type="ListLoanCard"
+													class="column-block columns"
+												/>
+											</template>
+										</ais-hits>
+									</template>
+								</ais-state-results>
 							</div>
 						</div>
 
-						<!-- These are hidden and used a data providers to create counts -->
-						<ais-refinement-list
-							v-show="false"
-							:attribute="'sector.name'" :limit="1000"
-							ref="sectorRefinements" />
-						<ais-refinement-list
-							v-show="false"
-							:attribute="'themeData.loanThemeTypeName'" :limit="1000"
-							ref="themeRefinements" />
-						<ais-refinement-list
-							v-show="false"
-							:attribute="'tags.name'" :limit="1000"
-							ref="tagRefinements" />
-
-						<!-- <ais-breadcrumb
-							root-path=""
-							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']" /> -->
-						<ais-hierarchical-menu
-							:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
-							:limit="100" />
-						<ais-sort-by :items="defaultSortIndices"/>
-
-
-						<ais-state-results>
-							<template slot-scope="{ page, hitsPerPage, queryID, index }">
-								<ais-hits
-									class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
-									:results-per-page="12">
-									<template slot="default" slot-scope="{ items }">
-										<algolia-adapter
-											v-for="(item, itemIndex) in items" :key="item.id"
-											:loan="item"
-											:items-in-basket="itemsInBasket"
-											:is-logged-in="isLoggedIn"
-											:algolia-props="{ page, hitsPerPage, queryID, index, itemIndex, item }"
-											loan-card-type="GridLoanCard"
-											class="column-block columns"
-										/>
-									</template>
-								</ais-hits>
-							</template>
-						</ais-state-results>
-
-						<ais-pagination :padding="2" />
-						<ais-stats />
+						<div class="row search-pagination-stats align-center">
+							<ais-pagination :padding="2" class="columns small-12 xlarge-offset-3"/>
+							<ais-stats class="columns small-12 xlarge-offset-3 text-center" />
+							<ais-hits-per-page class="columns small-12 xlarge-offset-3" :items="[
+								{ label: '12 hits per page', value: 12, default: true },
+								{ label: '24 hits per page', value: 24 },
+							]"/>
+						</div>
 					</ais-instant-search>
 				</div>
 			</div>
@@ -126,8 +154,10 @@ import algoliaConfig from '@/plugins/algolia-config-mixin';
 import {
 	AisConfigure,
 	AisInstantSearch,
+	AisSearchBox,
 	AisHits,
 	AisPagination,
+	AisHitsPerPage,
 	AisCurrentRefinements,
 	AisRefinementList,
 	AisHierarchicalMenu,
@@ -152,7 +182,9 @@ export default {
 		WwwPage,
 		AisConfigure,
 		AisInstantSearch,
+		AisSearchBox,
 		AisHits,
+		AisHitsPerPage,
 		AisPagination,
 		AisCurrentRefinements,
 		AisRefinementList,
@@ -225,11 +257,11 @@ export default {
 			// Optional default search state
 			// INFO: These properties alter the ais-configure component
 			// > Sets search state and reflects that state in ais-current-refinements component
-			disjunctiveFacets: {
-				'sector.name': [],
-				'themeData.loanThemeTypeName': [],
-				'tags.name': []
-			},
+			// disjunctiveFacets: {
+			// 	'sector.name': [],
+			// 	'themeData.loanThemeTypeName': [],
+			// 	'tags.name': []
+			// },
 			itemsInBasket: null,
 			isLoggedIn: false,
 		};
@@ -275,6 +307,20 @@ export default {
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
 	methods: {
+
+		fetchFacets() {
+			// Calling a search on the client with facets declared will return all options for thos facets
+			// WHAT: Access search instance on a global component to call this...
+			// WHY 1: Use global list within each facet's transform function to ensure items are always shown
+			// WHY 2: auto suggest https://www.algolia.com/doc/api-reference/api-methods/search-for-facet-values
+			/*
+			client.search({
+				query: '',
+				facets: ['Beds', 'Occupancy', 'Floor'],
+				attributesToRetrieve: [],  // a little optimisation for response transfer speed
+			});
+			*/
+		},
 		// Our checkbox toggle provides category data on change
 		// > we decide what to do with it.
 		handleCheckboxToggle(checkboxStatus, category) {
@@ -362,8 +408,59 @@ export default {
 	padding: 1.625rem 0;
 }
 
+.search-filter-and-results {
+	flex-direction: column-reverse;
+}
+
+@include breakpoint(large) {
+	.search-filter-and-results {
+		flex-direction: initial;
+	}
+}
+
 .loan-card-group {
 	position: relative;
+}
+
+.ais-HierarchicalMenu-list,
+.ais-RefinementList-list {
+	list-style: none;
+	margin-left: 0;
+
+	.ais-HierarchicalMenu-list--child {
+		list-style-type: circle;
+		margin-left: 1.2rem;
+	}
+}
+
+.algolia-loan-card-adapter {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.ais-SearchBox-form {
+	display: flex;
+	position: relative;
+
+	.ais-SearchBox-submit,
+	.ais-SearchBox-reset {
+		display: block;
+		padding: 0.2rem 0.8rem;
+		height: 1rem;
+		height: 2.6875rem;
+		background: rgba(0, 0, 0, 0.03);
+		margin-left: 0.2rem;
+
+		&:hover {
+			background-color: rgba(110, 176, 252, 0.05);
+		}
+	}
+
+	.ais-SearchBox-loadingIndicator {
+		position: absolute;
+		right: 6rem;
+		top: 0.8rem;
+	}
 }
 
 .ais-Pagination-list {
@@ -371,9 +468,9 @@ export default {
 	text-align: center;
 	display: flex;
 	margin: 0.75rem auto;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
-	max-width: 17rem;
+	max-width: 25rem;
 
 	.ais-Pagination-item {
 		color: $kiva-text-light;
@@ -383,6 +480,18 @@ export default {
 	.ais-Pagination-item--disabled {
 		a {
 			color: $kiva-text-light;
+		}
+	}
+
+	.ais-Pagination-link {
+		padding: 0.5rem 0.8rem;
+		// border: 1px solid #eee;
+		border-radius: 0.3rem;
+		background-color: rgba(0, 0, 0, 0.03);
+		margin: 0 0.2rem;
+
+		&:hover {
+			background-color: rgba(110, 176, 252, 0.05);
 		}
 	}
 
@@ -397,5 +506,9 @@ export default {
 			text-decoration: none;
 		}
 	}
+}
+
+.ais-HitsPerPage {
+	max-width: 13rem;
 }
 </style>
