@@ -1,6 +1,6 @@
 <template>
-	<div class="appeal-banner-wrapper sitewide-appeal-wrapper" v-if="showAppeal">
-		<div class="appeal-banner sitewide-appeal">
+	<div class="sitewide-appeal-wrapper" v-if="showAppeal">
+		<div class="appeal-banner sitewide-appeal row">
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="appeal-header small-12 padding sitewide-header">
@@ -19,14 +19,15 @@
 			</div>
 
 			<kv-expandable easing="ease-in-out">
-				<div class="row"
+				<div class="grid-x row"
 					v-show="open">
-					<div class="sitewide-body">
-						<div class="thermometer-holder show-for-medium medium-2 columns">
-							<appeal-thermometer />
+					<div class="sitewide-body cell small-12 medium-2">
+						<div class="hide-for-small show-for-medium thermometer-holder">
+							<appeal-thermometer
+								:amount-raised="amountRaised"/>
 						</div>
 					</div>
-					<div class="small-12 medium-10 padding">
+					<div class="cell small-12 medium-10">
 						<div class="appeal-copy">
 							<!-- IF BONUS APPEAL BANNER -->
 							<p v-if="appealBonusEnabled" class="small-text quote">
@@ -43,6 +44,10 @@
 								innovative new programs that improve lives. Your donation of any amount
 								makes a difference!
 							</p>
+						</div>
+						<div class="show-for-small hide-for-medium thermometer-holder">
+							<appeal-thermometer
+								:amount-raised="amountRaised"/>
 						</div>
 						<div>
 							<kv-button
@@ -77,7 +82,7 @@
 </template>
 
 <script>
-import { readBoolSetting } from '@/util/settingsUtils';
+// import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
@@ -115,8 +120,13 @@ export default {
 
 			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
 
+			// eslint-disable-next-line max-len
+			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
+			// eslint-disable-next-line max-len
+			this.targetAmount = _get(data, 'general.kivaStats.latestDonationCampaign.target_amount');
+
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
-			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
+			// this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
 		},
 	},
 	computed: {
