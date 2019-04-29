@@ -28,7 +28,12 @@ export default config => {
 				n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,'script','//d1fc8wv8zag5ca.cloudfront.net/2.9.0/sp.js','snowplow'));
 			window.snowplow('newTracker', 'cf', config.snowplowUri, { // Initialize a tracker
 				appId: 'kiva' ,
-				cookieDomain: '.kiva.org'
+				cookieDomain: '.kiva.org',
+				contexts: {
+					webPage: true,
+					// performanceTiming: true,
+				},
+				encodeBase64: false,
 			});
 			/* eslint-enable */
 		}

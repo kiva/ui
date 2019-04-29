@@ -20,7 +20,7 @@ export default Vue => {
 				fromUrl = window.location.origin + from.fullPath;
 			}
 
-			// Snowplown pageview
+			// Snowplow pageview
 			if (snowplowLoaded) {
 				// - snowplow seems to know better than the path rewriting performed by vue-router
 				window.snowplow('setCustomUrl', toUrl);
@@ -28,7 +28,18 @@ export default Vue => {
 				if (from.matched && from.path !== '') {
 					window.snowplow('setReferrerUrl', fromUrl); // asyncFromUrl
 				}
-				window.snowplow('trackPageView');
+				window.snowplow(
+					'trackPageView',
+					null,
+					[{
+						// eslint-disable-next-line
+						schema: 'https://github.com/snowplow/iglu-central/blob/master/schemas/org.w3/PerformanceTiming/jsonschema/1-0-0',
+						data: window.performance.timing,
+					}],
+				);
+				// setTimeout(() => {
+				// 	window.snowplow('trackPageView');
+				// }, 0);
 			}
 
 			// Google Analytics Pageview
@@ -128,7 +139,9 @@ export default Vue => {
 	Vue.prototype.$fireServerPageView = () => {
 		const to = { path: window.location.pathname };
 		const from = { path: document.referrer };
-		kvActions.pageview(to, from);
+		setTimeout(() => {
+			kvActions.pageview(to, from);
+		}, 500);
 	};
 
 	// eslint-disable-next-line no-param-reassign
