@@ -111,12 +111,15 @@ export default {
 					// eslint-disable-next-line
 					fallbackUrl: '/lend?partner=510,503,131,186,173,249,200,228,350,485,482,498,525,547,523,532,539,540,542,552,565,568,570,575,586,495,530,546,589,497,501,511,516,518,492,587,545,531,566,585,508,513,573,580,581,555,536,486,594,592,345,491,505,500,502,509,512,520,526,529,591,494,524,506,496,517,489,490,515,535,548,556,577,583,315,558,593,514,553,560,569,571,534,543,557,563,258,418,574,538,567,561,408,218,544,281,466,305,397,437,225,390,493,521,356,198,480,369,469,295,311,417,301,379,274,317,285,62,175,40,358,578,361,477,392,528,576,365,211,479,483,330,389,292,415,403,412,263,431,275,376,342,468,446,461,451,445,449,452,465,458,459&riskRating=0,5&status=fundRaising&sortBy=popularity&kexpn=lend_filter.lend_filter_versions&kexpv=c',
 				},
-				// {
-				// 	id: 33,
-				// 	url: 'social-enterprises',
-				// 	queryParams: 'status=fundRaising&riskRating=0,5&theme=Social Enterprise',
-				// 	algoliaParams: 'attributes=Social%20Enterprise'
-				// },
+				{
+					// id: 33,
+					// This used to be Loan Channel id 33 but was changed. However, lenders still have this page
+					// book marked and get redirected here so we have to map the url.
+					// If the attribute/themeFilter is removed we'll need to update this redirect
+					url: 'social-enterprises',
+					queryParams: 'status=fundRaising&riskRating=0,5&theme=Social Enterprise',
+					algoliaParams: 'attributes=Social%20Enterprise'
+				},
 				{
 					id: 13,
 					url: 'retail-businesses',
