@@ -6,7 +6,7 @@
 				<div class="appeal-header small-12 columns sitewide-header">
 					<h2>
 						<!-- IF BONUS APPEAL BANNER -->
-						<span v-if="appealBonusEnabled">Donate to Kiva today and earn a free loan!</span>
+						<span v-if="appealMatchEnabled">Donate to Kiva today and earn a free loan!</span>
 						<!-- ELSE STANDARD APPEAL BANNER -->
 						<span v-else>Your donations keep Kiva growing</span>
 						<kv-icon
@@ -32,7 +32,7 @@
 					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
 							<!-- IF BONUS APPEAL BANNER -->
-							<p v-if="appealBonusEnabled">
+							<p v-if="appealMatchEnabled">
 								Each loan on Kiva costs us more than $3 to facilitate
 								(and we facilitate a lot of loans!) so when you donate to Kiva
 								you help us cover the costs to grow our impact. <strong> Donate
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { readBoolSetting } from '@/util/settingsUtils';
+// import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
@@ -124,7 +124,7 @@ export default {
 			this.targetAmount = _get(data, 'general.kivaStats.latestDonationCampaign.target_amount');
 
 			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
-			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
+			// this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
 		},
 	},
 	computed: {

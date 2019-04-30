@@ -27,7 +27,7 @@
 		height: 0.8125rem;
 		width: 90%;
 		border-radius: rem-calc(8);
-		background-color: $kiva-stroke-gray;
+		background-color: $platinum;
 		margin: rem-calc(30) rem-calc(20);
 
 		@include breakpoint(medium) {
@@ -44,7 +44,7 @@
 			display: block;
 			height: 100%;
 			max-width: 100%;
-			// Not yet working
+			width: 0;
 			transition: width 3500ms ease-in-out;
 		}
 
