@@ -106,7 +106,6 @@
 					<fundraising-status
 						:amount-left="amountLeft"
 						:percent-raised="percentRaised"
-						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
 						:expiring-soon-message="expiringSoonMessage"
 						:is-funded="isFunded"
 					/>
