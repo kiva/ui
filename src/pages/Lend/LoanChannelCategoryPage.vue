@@ -5,10 +5,14 @@
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
 				<p class="small-text">
 					<router-link to="/lend-by-category">All Loans</router-link> >
-					<span class="show-for-large">{{ loanChannel.name }}</span>
+					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
-				<h1>{{ loanChannel.name }}</h1>
-				<p class="page-subhead show-for-large">{{ loanChannel.description }}</p>
+				<h1>{{ loanChannelName }}</h1>
+				<p v-if="loanChannelDescription"
+					class="page-subhead show-for-large">{{ loanChannelDescription }}</p>
+				<p v-else>We couldn't find any loans for this search.
+					<a href="/lend-by-category">Browse these loans</a>.
+				</p>
 			</div>
 
 			<div class="columns small-12">
@@ -137,6 +141,12 @@ export default {
 			return toUrlParams({
 				offset: this.offset,
 			});
+		},
+		loanChannelName() {
+			return _get(this.loanChannel, 'name') || 'No loans found';
+		},
+		loanChannelDescription() {
+			return _get(this.loanChannel, 'description') || null;
 		},
 		loans() {
 			return _get(this.loanChannel, 'loans.values') || [];
