@@ -12,7 +12,7 @@
 			:minimum="0"
 			:maximum="58"
 			query-attribute="partner.delinquencyRate"
-			title="Delinquency rate"
+			title="Partner delinquency rate"
 			minimum-label="Only 0%"
 			inbetween-label="% or less"
 		/>
@@ -21,7 +21,7 @@
 			:minimum="0"
 			:maximum="24"
 			query-attribute="partner.defaultRate"
-			title="Default rate"
+			title="Partner default rate"
 			minimum-label="Only 0%"
 			inbetween-label="% or less"
 		/>
@@ -31,7 +31,7 @@
 			:is-slider-setting-minimum="true"
 			:maximum="5"
 			query-attribute="partner.riskRating"
-			title="Risk rating"
+			title="Partner risk rating"
 			maximum-label="Only 5 stars"
 			inbetween-label=" stars or more"
 		/>
