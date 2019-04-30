@@ -143,7 +143,7 @@ export default Vue => {
 		const fallbackPageview = setTimeout(() => {
 			pageviewFired = true;
 			kvActions.pageview(to, from);
-		}, 1000);
+		}, 500);
 		document.onreadystatechange = () => {
 			// fire on complete if not already fired
 			if (document.readyState === 'complete') {
