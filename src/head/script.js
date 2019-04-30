@@ -30,8 +30,8 @@ export default config => {
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org',
 				contexts: {
+					// global context that establishes additional session identification, enables better perf reporting
 					webPage: true,
-					// performanceTiming: true,
 				},
 				encodeBase64: false,
 			});

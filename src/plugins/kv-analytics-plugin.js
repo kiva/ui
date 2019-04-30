@@ -31,15 +31,13 @@ export default Vue => {
 				window.snowplow(
 					'trackPageView',
 					null,
+					// Include context on pageview for performance
 					[{
 						// eslint-disable-next-line
 						schema: 'https://github.com/snowplow/iglu-central/blob/master/schemas/org.w3/PerformanceTiming/jsonschema/1-0-0',
 						data: window.performance.timing,
 					}],
 				);
-				// setTimeout(() => {
-				// 	window.snowplow('trackPageView');
-				// }, 0);
 			}
 
 			// Google Analytics Pageview
@@ -139,6 +137,7 @@ export default Vue => {
 	Vue.prototype.$fireServerPageView = () => {
 		const to = { path: window.location.pathname };
 		const from = { path: document.referrer };
+		// delay pageview call to ensure window.performance.timing is fully populated
 		setTimeout(() => {
 			kvActions.pageview(to, from);
 		}, 500);
