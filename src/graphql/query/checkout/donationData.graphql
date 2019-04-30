@@ -1,22 +1,22 @@
 query {
 	general {
-		donationNudgeExperiment: setting(setting: "uiexp.donation_nudge_lightbox_custom_tip") {
+		donationNudgeExperiment: uiExperimentSetting(key: "donation_nudge_lightbox_custom_tip") {
 			key
 			value
 		}
-		donationNudgeLendingCostExperiment: setting(setting: "uiexp.donation_nudge_lending_cost") {
+		donationNudgeLendingCostExperiment: uiExperimentSetting(key: "donation_nudge_lending_cost") {
 			key
 			value
 		}
-		checkoutDonation100TextExperiment: setting(setting: "uiexp.checkout_donation_100_text") {
+		checkoutDonation100TextExperiment: uiExperimentSetting(key: "checkout_donation_100_text") {
 			key
 			value
 		}
-		donationNudgeBorrowerImageExperiment: setting(setting: "uiexp.donation_nudge_borrower_image") {
+		donationNudgeBorrowerImageExperiment: uiExperimentSetting(key: "donation_nudge_borrower_image") {
 			key
 			value
 		}
-		donationNudge17Experiment: setting(setting: "uiexp.donation_nudge_17") {
+		donationNudge17Experiment: uiExperimentSetting(key: "donation_nudge_17") {
 			key
 			value
 		}

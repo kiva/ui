@@ -19,7 +19,7 @@ query($basketId: String) {
 		}
 	}
 	general {
-		activeLoginDuration: setting(setting: "config.login_timeouts.www.active_login") {
+		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
 			value
 			key
 		}
@@ -27,10 +27,10 @@ query($basketId: String) {
 			sessionKey
 			data
 		}
-		braintree_checkout: setting(setting: "ui.feature.braintree_checkout") {
+		braintree_checkout: uiConfigSetting(key: "feature.braintree_checkout") {
 			value
 		}
-		braintreeExp: setting(setting: "uiexp.bt_test") {
+		braintreeExp: uiExperimentSetting(key: "bt_test") {
 			key
 			value
 		}

@@ -1,6 +1,6 @@
 query {
 	general {
-		protocol: setting(setting: "feature.protocol_ui_page") {
+		protocol: featureSetting(key: "protocol_ui_page") {
 			value
 		}
 	}

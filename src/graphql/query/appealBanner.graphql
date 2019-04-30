@@ -1,12 +1,12 @@
 query {
 	general {
-		appeal_enabled: setting(setting: "feature.endofyear_appeal.enabled") {
+		appeal_enabled: featureSetting(key: "endofyear_appeal.enabled") {
 			value
 		}
-		appeal_match_enabled: setting(setting: "feature.endofyear_appeal_match.enabled") {
+		appeal_match_enabled: featureSetting(key: "endofyear_appeal_match.enabled") {
 			value
 		}
-		appeal_bonus_active: setting(setting: "ui.endofyear_appeal_bonus") {
+		appeal_bonus_active: uiConfigSetting(key: "endofyear_appeal_bonus") {
 			value
 		}
 	}

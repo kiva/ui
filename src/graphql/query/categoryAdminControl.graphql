@@ -9,11 +9,11 @@ query {
 		}
 	}
 	general {
-		rows: setting(setting: "ui.category_rows") {
+		rows: uiConfigSetting(key: "category_rows") {
 			key
 			value
 		}
-		experiment: setting(setting: "uiexp.category_rows") {
+		experiment: uiExperimentSetting(key: "category_rows") {
 			key
 			value
 		}

@@ -1,34 +1,34 @@
 query($basketId: String) {
 	general {
-		rows: setting(setting: "ui.category_rows") {
+		rows: uiConfigSetting(key: "category_rows") {
 			key
 			value
 		}
-		rowsExp: setting(setting: "uiexp.category_rows") {
+		rowsExp: uiExperimentSetting(key: "category_rows") {
 			key
 			value
 		}
-		featuredExp: setting(setting: "uiexp.featured_loans") {
+		featuredExp: uiExperimentSetting(key: "featured_loans") {
 			key
 			value
 		}
-		recentlyViewedLoans: setting(setting: "uiexp.recently_viewed_loan_row") {
+		recentlyViewedLoans: uiExperimentSetting(key: "recently_viewed_loan_row") {
 			key
 			value
 		}
-		imageEnhancementExperiment: setting(setting: "uiexp.image_enhancement") {
+		imageEnhancementExperiment: uiExperimentSetting(key: "image_enhancement") {
 			key
 			value
 		}
-		featuredHeroLoanExperiment: setting(setting: "uiexp.featured_hero_loan_v3") {
+		featuredHeroLoanExperiment: uiExperimentSetting(key: "featured_hero_loan_v3") {
 			key
 			value
 		}
-		categoryDescriptionExperiment: setting(setting: "uiexp.category_description") {
+		categoryDescriptionExperiment: uiExperimentSetting(key: "category_description") {
 			key
 			value
 		}
-		addToBasketPopup: setting(setting: "uiexp.add_to_basket_popup") {
+		addToBasketPopup: uiExperimentSetting(key: "add_to_basket_popup") {
 			key
 			value
 		}
