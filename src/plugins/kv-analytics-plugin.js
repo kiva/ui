@@ -20,7 +20,7 @@ export default Vue => {
 				fromUrl = window.location.origin + from.fullPath;
 			}
 
-			// Snowplown pageview
+			// Snowplow pageview
 			if (snowplowLoaded) {
 				// - snowplow seems to know better than the path rewriting performed by vue-router
 				window.snowplow('setCustomUrl', toUrl);
@@ -28,7 +28,16 @@ export default Vue => {
 				if (from.matched && from.path !== '') {
 					window.snowplow('setReferrerUrl', fromUrl); // asyncFromUrl
 				}
-				window.snowplow('trackPageView');
+				window.snowplow(
+					'trackPageView',
+					null,
+					// Include context on pageview for performance
+					[{
+						// eslint-disable-next-line
+						schema: 'https://github.com/snowplow/iglu-central/blob/master/schemas/org.w3/PerformanceTiming/jsonschema/1-0-0',
+						data: window.performance.timing,
+					}],
+				);
 			}
 
 			// Google Analytics Pageview
@@ -128,7 +137,22 @@ export default Vue => {
 	Vue.prototype.$fireServerPageView = () => {
 		const to = { path: window.location.pathname };
 		const from = { path: document.referrer };
-		kvActions.pageview(to, from);
+		// delay pageview call to ensure window.performance.timing is fully populated
+		let pageviewFired = false;
+		// fallback if readyState = complete is delayed
+		const fallbackPageview = setTimeout(() => {
+			pageviewFired = true;
+			kvActions.pageview(to, from);
+		}, 500);
+		document.onreadystatechange = () => {
+			// fire on complete if not already fired
+			if (document.readyState === 'complete') {
+				if (!pageviewFired) {
+					clearInterval(fallbackPageview);
+					kvActions.pageview(to, from);
+				}
+			}
+		};
 	};
 
 	// eslint-disable-next-line no-param-reassign
