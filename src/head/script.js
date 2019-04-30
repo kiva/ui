@@ -33,7 +33,7 @@ export default config => {
 					// global context that establishes additional session identification, enables better perf reporting
 					webPage: true,
 				},
-				encodeBase64: false,
+				// encodeBase64: false, // uncomment this option to examine context information in your vm
 			});
 			/* eslint-enable */
 		}
