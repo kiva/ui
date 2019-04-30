@@ -1,5 +1,6 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
+		<kv-message :message="topMessage"/>
 		<lend-header
 			:hard-left-align="true"
 			class="filter-page-lend-header"
@@ -83,6 +84,7 @@ import cookieStore from '@/util/cookieStore';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
+import KvMessage from '@/components/Kv/KvMessage';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -106,6 +108,7 @@ import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrack
 
 export default {
 	components: {
+		KvMessage,
 		SelectedRefinements,
 		LoadingOverlay,
 		WwwPage,
@@ -155,6 +158,8 @@ export default {
 			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
+			// eslint-disable-next-line
+			topMessage: `Welcome to Kiva's new filter page! Take it for a spin below, or <a v-kv-track-event="['Lending', 'click-return-classic', 'Exit-CASH-545-2019']" href="https://www.kiva.org/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c">return to the classic view</a> at any time.`,
 		};
 	},
 	computed: {
