@@ -138,9 +138,23 @@ export default Vue => {
 		const to = { path: window.location.pathname };
 		const from = { path: document.referrer };
 		// delay pageview call to ensure window.performance.timing is fully populated
-		setTimeout(() => {
-			kvActions.pageview(to, from);
-		}, 500);
+		let pageviewFired = false;
+		document.onreadystatechange = () => {
+			console.log(document.readyState);
+			if (document.readyState === 'interactive') {
+				// fallback if readyState = complete is delayed
+				setTimeout(() => {
+					pageviewFired = true;
+					kvActions.pageview(to, from);
+				}, 1000);
+			}
+			// fire on complete if not already fired
+			if (document.readyState === 'complete') {
+				if (!pageviewFired) {
+					kvActions.pageview(to, from);
+				}
+			}
+		};
 	};
 
 	// eslint-disable-next-line no-param-reassign
