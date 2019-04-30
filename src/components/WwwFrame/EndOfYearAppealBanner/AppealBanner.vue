@@ -22,9 +22,10 @@
 				<div class="grid-x row"
 					v-show="open">
 					<div class="sitewide-body cell small-12 medium-2">
-						<div class="hide-for-small show-for-medium thermometer-holder">
+						<div class="hide-for-small show-for-medium thermometer-holder"
+							:title="`${ calculateAmountRaised }% raised`">
 							<appeal-thermometer
-								:amount-raised="amountRaised"/>
+								:percent-toward-goal="calculateAmountRaised" />
 						</div>
 					</div>
 					<div class="cell small-12 medium-10">
@@ -47,7 +48,7 @@
 						</div>
 						<div class="show-for-small hide-for-medium thermometer-holder">
 							<appeal-thermometer
-								:amount-raised="amountRaised"/>
+								:percent-toward-goal="calculateAmountRaised" />
 						</div>
 						<div>
 							<kv-button
@@ -110,6 +111,7 @@ export default {
 			appealBonusEnabled: false,
 			amount: 0,
 			donationAmount: null,
+			percentTowardGoal: null
 		};
 	},
 	apollo: {
@@ -133,6 +135,11 @@ export default {
 		showAppeal() {
 			// make sure the appeal is enable + we're not on checkout
 			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
+		},
+		calculateAmountRaised() {
+			// calculating the % toward the appeal banner fundraising goal
+			const percentTowardGoal = Math.round((this.amountRaised / this.targetAmount) * 100);
+			return percentTowardGoal;
 		}
 	},
 	mounted() {
@@ -191,7 +198,7 @@ export default {
 		validateInput() {
 			// format the value taken from the donation input
 			this.donationAmount = numeral(this.donationAmount).format('$0,0.00');
-		},
+		}
 	},
 };
 </script>
@@ -225,16 +232,16 @@ export default {
 			padding-right: 0.25rem;
 		}
 
-		.custom-width {
-			padding: 0.75rem 0;
-			margin-right: rem-calc(10);
-			text-align: center;
-			width: 46%;
+		// .custom-width {
+		// 	padding: 0.75rem 0;
+		// 	margin-right: rem-calc(10);
+		// 	text-align: center;
+		// 	width: 46%;
 
-			@include breakpoint(large) {
-				width: 18%;
-			}
-		}
+		// 	@include breakpoint(large) {
+		// 		width: 18%;
+		// 	}
+		// }
 
 		h2 {
 			font-weight: $global-weight-highlight;
