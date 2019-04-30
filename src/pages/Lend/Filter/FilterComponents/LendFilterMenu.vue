@@ -31,10 +31,10 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
+				<filter-section-location class="filter-section" />
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
 				<filter-section-tags class="filter-section" />
-				<filter-section-location class="filter-section" />
 				<filter-section-loan-details class="filter-section" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
