@@ -11,7 +11,7 @@
 				<p v-if="loanChannelDescription"
 					class="page-subhead show-for-large">{{ loanChannelDescription }}</p>
 				<p v-else>We couldn't find any loans for this search.
-					<a href="/lend-by-category">Browse these loans</a>.
+					<router-link to="/lend-by-category">Browse these loans</router-link>.
 				</p>
 			</div>
 
