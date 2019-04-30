@@ -29,11 +29,8 @@ export default config => {
 			window.snowplow('newTracker', 'cf', config.snowplowUri, { // Initialize a tracker
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org',
-				contexts: {
-					// global context that establishes additional session identification, enables better perf reporting
-					webPage: true,
-				},
-				// encodeBase64: false, // uncomment this option to examine context information in your vm
+				// uncomment this option to examine context information in your vm
+				// encodeBase64: false,
 			});
 			/* eslint-enable */
 		}
