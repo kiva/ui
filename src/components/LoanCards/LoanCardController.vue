@@ -125,10 +125,12 @@ export default {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
 		expiringSoonMessage() {
-			if (!this.loan.loanFundraisingInfo.isExpiringSoon) {
+			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			// Send empty message if expiration is greater than 6 days
+			// > This matches the wwwApp implmentation
+			if (days >= 6) {
 				return '';
 			}
-			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
 			if (days >= 2) {
 				return `Only ${days} days left! `;
 			}
