@@ -1,6 +1,6 @@
 <template>
 	<div class="sitewide-appeal-wrapper" v-if="showAppeal">
-		<div class="appeal-banner sitewide-appeal row">
+		<div class="sitewide-appeal">
 			<div class="row"
 				@click="toggleAccordion">
 				<div class="appeal-header small-12 columns sitewide-header">
@@ -221,60 +221,56 @@ export default {
 		}
 	}
 
-	.appeal-banner {
-		padding-left: 0.625rem;
+	.appeal-copy {
+		margin-bottom: 1.25rem;
+	}
 
-		.appeal-copy {
-			margin-bottom: 1.25rem;
+	h2 {
+		font-weight: $global-weight-highlight;
+		margin-top: 0.3rem;
+		padding-right: 2.5rem;
+	}
+
+	.icon {
+		width: rem-calc(25);
+		height: rem-calc(40);
+		cursor: pointer;
+	}
+
+	.button-wrapper {
+		text-align: center;
+
+		@include breakpoint(medium) {
+			text-align: left;
 		}
 
-		h2 {
-			font-weight: $global-weight-highlight;
-			margin-top: 0.3rem;
-			padding-right: 2.5rem;
+		.custom-width {
+			margin-right: rem-calc(15);
+			margin-bottom: 0;
 		}
+	}
 
-		.icon {
-			width: rem-calc(25);
-			height: rem-calc(40);
-			cursor: pointer;
+	button.submit-button {
+		vertical-align: super;
+		padding: 0.9rem 0;
+		width: 46%;
+
+		@include breakpoint(large) {
+			width: 17%;
 		}
+	}
 
-		.button-wrapper {
-			text-align: center;
+	.other-amount-link {
+		margin: auto;
+		line-height: 2.5;
+		display: block;
+		font-size: 1.25rem;
+		font-weight: 400;
 
-			@include breakpoint(medium) {
-				text-align: left;
-			}
-
-			.custom-width {
-				margin-right: rem-calc(15);
-				margin-bottom: 0;
-			}
-		}
-
-		button.submit-button {
-			vertical-align: super;
-			padding: 0.9rem 0;
-			width: 46%;
-
-			@include breakpoint(large) {
-				width: 17%;
-			}
-		}
-
-		.other-amount-link {
-			margin: auto;
-			line-height: 2.5;
-			display: block;
-			font-size: 1.25rem;
-			font-weight: 400;
-
-			@include breakpoint(medium) {
-				display: inline-block;
-				top: rem-calc(4);
-				position: relative;
-			}
+		@include breakpoint(medium) {
+			display: inline-block;
+			top: rem-calc(4);
+			position: relative;
 		}
 	}
 
