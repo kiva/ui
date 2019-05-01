@@ -2,7 +2,7 @@
 	<www-page class="lend-filter-page" :gray-background="true">
 		<kv-message>
 			Welcome to Kiva's new filter page! Take it for a spin below, or
-			<a @click="exitLendFilterExp">return to the classic view</a> at any time.
+			<a @click="exitLendFilterExp('click-return-classic')">return to the classic view</a> at any time.
 		</kv-message>
 		<lend-header
 			:hard-left-align="true"
@@ -25,7 +25,7 @@
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
-					@exit-lend-filter-exp="exitLendFilterExp"
+					@exit-lend-filter-exp="exitLendFilterExp('click-advanced-filters')"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
