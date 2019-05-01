@@ -19,9 +19,9 @@
 			</div>
 
 			<kv-expandable easing="ease-in-out">
-				<div class="row"
+				<div class="row appeal-content"
 					v-show="open">
-					<div class="small-12 medium-2 columms">
+					<div class="small-12 medium-1 columms">
 						<div
 							class="hide-for-small show-for-medium thermometer-holder"
 							:title="`${ percentTowardGoal }% raised`">
@@ -203,10 +203,13 @@ export default {
 	background: $kiva-alert-yellow;
 
 	.sitewide-appeal {
-		padding-left: rem-calc(10);
+		// padding-left: rem-calc(10);
 		padding-right: rem-calc(10);
 	}
 
+	.appeal-content {
+		padding: 0.4rem 0;
+	}
 	.sitewide-body {
 		@include breakpoint(medium) {
 			padding-bottom: 1.25rem;
@@ -217,6 +220,7 @@ export default {
 		@include breakpoint(medium) {
 			height: rem-calc(195);
 			top: rem-calc(19);
+			left: -2.5rem;
 			position: relative;
 		}
 	}
@@ -226,7 +230,7 @@ export default {
 	}
 
 	h2 {
-		font-weight: $global-weight-highlight;
+		font-weight: 300;
 		margin-top: 0.3rem;
 		padding-right: 2.5rem;
 	}
