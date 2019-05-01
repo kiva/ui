@@ -24,9 +24,9 @@
 					<div class="small-12 medium-2 columms">
 						<div
 							class="hide-for-small show-for-medium thermometer-holder"
-							:title="`${ calculateAmountRaised }% raised`">
+							:title="`${ percentTowardGoal }% raised`">
 							<appeal-thermometer
-								:percent-toward-goal="calculateAmountRaised" />
+								:percent-toward-goal="percentTowardGoal" />
 						</div>
 					</div>
 					<div class="small-12 medium-10 columns sitewide-body">
@@ -49,7 +49,7 @@
 						</div>
 						<div class="show-for-small hide-for-medium thermometer-holder">
 							<appeal-thermometer
-								:percent-toward-goal="calculateAmountRaised" />
+								:percent-toward-goal="percentTowardGoal" />
 						</div>
 						<div class="button-wrapper">
 							<kv-button
@@ -128,11 +128,6 @@ export default {
 			// make sure the appeal is enable + we're not on checkout
 			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
 		},
-		calculateAmountRaised() {
-			// calculating the % toward the appeal banner fundraising goal
-			const percentTowardGoal = Math.round((this.amountRaised / this.targetAmount) * 100);
-			return percentTowardGoal;
-		}
 	},
 	mounted() {
 		if (store2.session.get('appeal_banner_shrunk')) {
@@ -140,6 +135,7 @@ export default {
 		} else {
 			this.open = true;
 		}
+		this.calculateAmountRaised();
 	},
 	methods: {
 		toggleAccordion() {
@@ -152,6 +148,10 @@ export default {
 			} else {
 				store2.session.remove('appeal_banner_shrunk');
 			}
+		},
+		calculateAmountRaised() {
+			// calculating the % toward the appeal banner fundraising goal
+			this.percentTowardGoal = Math.round((this.amountRaised / this.targetAmount) * 100);
 		},
 		updateDonationTo(amount, isCustom) {
 			if (isCustom) {
