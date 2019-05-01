@@ -56,10 +56,10 @@ export default {
 				});
 			}
 		},
-		exitLendFilterExp() {
+		exitLendFilterExp(click) {
 			this.lendFilterExpVersion = 'c';
 			this.updateLendFilterExp();
-			this.$kvTrackEvent('Lending', 'click-advanced-filters', 'Exit-CASH-545-2019');
+			this.$kvTrackEvent('Lending', click, 'Exit-CASH-545-2019');
 			window.location.href = '/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c';
 		}
 	}

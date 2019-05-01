@@ -1,5 +1,9 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
+		<kv-message>
+			Welcome to Kiva's new filter page! Take it for a spin below, or
+			<a @click="exitLendFilterExp('click-return-classic')">return to the classic view</a> at any time.
+		</kv-message>
 		<lend-header
 			:hard-left-align="true"
 			class="filter-page-lend-header"
@@ -21,7 +25,7 @@
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
-					@exit-lend-filter-exp="exitLendFilterExp"
+					@exit-lend-filter-exp="exitLendFilterExp('click-advanced-filters')"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="small-12 columns">
@@ -83,6 +87,7 @@ import cookieStore from '@/util/cookieStore';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
+import KvMessage from '@/components/Kv/KvMessage';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -106,6 +111,7 @@ import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrack
 
 export default {
 	components: {
+		KvMessage,
 		SelectedRefinements,
 		LoadingOverlay,
 		WwwPage,
