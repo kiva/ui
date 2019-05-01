@@ -1,36 +1,15 @@
-<template>
-	<div class="kv-message message-text text-center message-text-confirmation" v-if="safeMessage">
+<template functional>
+	<div class="kv-message message-text text-center message-text-confirmation">
 		<div class="kv-message-row">
 			<img class="kv-message-image" src="~@/assets/images/beta-icon.svg">
 			<div class="kv-message-message">
-				<p class="message" v-html="safeMessage"></p>
+				<p class="message">
+					<slot></slot>
+				</p>
 			</div>
 		</div>
 	</div>
 </template>
-
-<script>
-import sanitize from 'sanitize-html';
-
-export default {
-	props: {
-		message: {
-			type: String,
-			default: '',
-		},
-	},
-	computed: {
-		safeMessage() {
-			return sanitize(this.message, {
-				allowedTags: ['b', 'i', 'em', 'strong', 'a', 'v-kv-track-event'],
-				allowedAttributes: {
-					a: ['href'],
-				},
-			});
-		},
-	},
-};
-</script>
 
 <style lang="scss" scoped>
 @import 'settings';
@@ -47,6 +26,7 @@ export default {
 		justify-content: center;
 		padding-right: 0.625rem;
 		padding-left: 0.625rem;
+		user-select: none;
 
 		.kv-message-image {
 			width: 53px;

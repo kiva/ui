@@ -1,6 +1,9 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
-		<kv-message :message="topMessage"/>
+		<kv-message>
+			Welcome to Kiva's new filter page! Take it for a spin below, or
+			<a @click="exitLendFilterExp">return to the classic view</a> at any time.
+		</kv-message>
 		<lend-header
 			:hard-left-align="true"
 			class="filter-page-lend-header"
@@ -159,7 +162,6 @@ export default {
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
 			// eslint-disable-next-line
-			topMessage: `Welcome to Kiva's new filter page! Take it for a spin below, or <a v-kv-track-event="['Lending', 'click-return-classic', 'Exit-CASH-545-2019']" href="https://www.kiva.org/lend?kexpn=lend_filter.lend_filter_versions&kexpv=c">return to the classic view</a> at any time.`,
 		};
 	},
 	computed: {
