@@ -161,7 +161,6 @@ export default {
 			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
-			// eslint-disable-next-line
 		};
 	},
 	computed: {
