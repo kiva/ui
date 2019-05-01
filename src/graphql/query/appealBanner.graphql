@@ -9,5 +9,11 @@ query {
 		appeal_bonus_active: setting(setting: "ui.endofyear_appeal_bonus") {
 			value
 		}
+		kivaStats {
+			latestDonationCampaign {
+        		amount_raised
+        		target_amount
+    		}
+    	}
 	}
 }
