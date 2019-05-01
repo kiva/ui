@@ -234,7 +234,7 @@ export default {
 		font-weight: 300;
 		margin-top: 0.3rem;
 		padding-right: 2.5rem;
-		font-size: 28px;
+		font-size: rem-calc(28);
 	}
 
 	.icon {
