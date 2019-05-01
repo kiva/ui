@@ -5,7 +5,7 @@
 				@click="toggleAccordion">
 				<div class="appeal-header small-12 columns sitewide-header">
 					<h2>
-						<!-- IF BONUS APPEAL BANNER -->
+						<!-- IF MATCHED APPEAL BANNER -->
 						<span v-if="appealMatchEnabled">Donate to Kiva today and earn a free loan!</span>
 						<!-- ELSE STANDARD APPEAL BANNER -->
 						<span v-else>Your donations keep Kiva growing</span>
@@ -19,7 +19,7 @@
 			</div>
 
 			<kv-expandable easing="ease-in-out">
-				<div class="grid-x row"
+				<div class="row"
 					v-show="open">
 					<div class="small-12 medium-2 columms">
 						<div
@@ -31,12 +31,12 @@
 					</div>
 					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
-							<!-- IF BONUS APPEAL BANNER -->
+							<!-- IF MATCHED APPEAL BANNER -->
 							<p v-if="appealMatchEnabled">
 								Each loan on Kiva costs us more than $3 to facilitate
-								(and we facilitate a lot of loans!) so when you donate to Kiva
-								you help us cover the costs to grow our impact. <strong> Donate
-								$35 or more to kiva today and we'll send you a bonus tomorrow to
+								(and we facilitate a lot of loans!), so when you donate to Kiva
+								you help us cover the costs to grow our impact. <strong> TODAY when you donate
+								$35 or more to Kiva, we'll send you a bonus tomorrow to
 								make a free loan. </strong> Your donation of any amount makes a difference!
 							</p>
 							<!-- IF REGULAR APPEAL BANNER -->
@@ -104,7 +104,6 @@ export default {
 			open: true,
 			appealEnabled: false,
 			appealMatchEnabled: false,
-			appealBonusEnabled: false,
 			amount: 0,
 			donationAmount: null,
 			percentTowardGoal: null
@@ -122,9 +121,6 @@ export default {
 			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
 			// eslint-disable-next-line max-len
 			this.targetAmount = _get(data, 'general.kivaStats.latestDonationCampaign.target_amount');
-
-			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
-			// this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
 		},
 	},
 	computed: {
