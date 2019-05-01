@@ -5,7 +5,9 @@
 				@click="toggleAccordion">
 				<div class="appeal-header small-12 columns sitewide-header">
 					<h2>
-						<!-- IF MATCHED APPEAL BANNER -->
+						<!-- IF ALTERNATE APPEAL BANNER -->
+						<!-- current version implemented has bonus language,
+						but we're using the appealMatchedEnabled flag -->
 						<span v-if="appealMatchEnabled">Donate to Kiva today and earn a free loan!</span>
 						<!-- ELSE STANDARD APPEAL BANNER -->
 						<span v-else>Your donations keep Kiva growing</span>
@@ -31,7 +33,9 @@
 					</div>
 					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
-							<!-- IF MATCHED APPEAL BANNER -->
+							<!-- IF ALTERNATE APPEAL BANNER -->
+							<!-- current version implemented has bonus language,
+							but we're using the appealMatchedEnabled flag -->
 							<p v-if="appealMatchEnabled">
 								Each loan on Kiva costs us more than $3 to facilitate
 								(and we facilitate a lot of loans!), so when you donate to Kiva
@@ -79,7 +83,6 @@
 </template>
 
 <script>
-// import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
@@ -114,9 +117,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
-
 			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
-
 			// eslint-disable-next-line max-len
 			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
 			// eslint-disable-next-line max-len
@@ -203,13 +204,13 @@ export default {
 	background: $kiva-alert-yellow;
 
 	.sitewide-appeal {
-		// padding-left: rem-calc(10);
 		padding-right: rem-calc(10);
 	}
 
 	.appeal-content {
 		padding: 0.4rem 0;
 	}
+
 	.sitewide-body {
 		@include breakpoint(medium) {
 			padding-bottom: 1.25rem;
