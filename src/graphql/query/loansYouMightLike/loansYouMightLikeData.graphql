@@ -2,8 +2,10 @@
 
 query (
 	$country: [String],
-	$activity: [Int],
 	$sector: [Int],
+	$partner: [Int],
+	$gender: GenderEnum,
+	$activity: [Int],
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w480h360",
 ) {
