@@ -289,7 +289,8 @@ export default {
 					client: clientInstance,
 					styles: {
 						'#expiration::placeholder': {
-							'font-style': 'italic'
+							'font-style': 'italic',
+							color: '#c3c3c3'
 						},
 						// Import class for inputs which apply directly to the input elements
 						// > Our divs become wrappers which can be styled by our css
