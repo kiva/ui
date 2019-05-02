@@ -27,6 +27,7 @@ export default [
 	},
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
+	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{
