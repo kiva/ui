@@ -1,9 +1,9 @@
 <template>
-	<div id="lend-filter-menu" class="small-12 columns" :class="{open: filterMenuOpen}">
+	<div id="lend-filter-menu" class="small-12 columns" :class="{open: filterMenuOpen, pinned: filterMenuPinned}">
 		<div id="lend-filter-overlay" @click="hideFilterMenu"></div>
 		<div id="lend-filter-wrapper">
 			<div id="filter-toggle" @click="toggleFilterMenu">
-				<div>Filters</div>
+				<div>Filter and sort</div>
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
@@ -31,10 +31,10 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
+				<filter-section-location class="filter-section" />
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
 				<filter-section-tags class="filter-section" />
-				<filter-section-location class="filter-section" />
 				<filter-section-loan-details class="filter-section" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
@@ -104,6 +104,10 @@ export default {
 		selectedCustomCategories: {
 			type: Object,
 			required: true,
+		},
+		filterMenuPinned: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	methods: {
@@ -311,6 +315,41 @@ export default {
 				.filter-section {
 					margin: 0 1rem;
 					padding: 0.5rem 0.5rem;
+				}
+			}
+		}
+	}
+
+	&.pinned {
+		@include breakpoint(1194px) {
+			max-width: 21rem;
+
+			#lend-filter-overlay {
+				display: none;
+			}
+
+			#lend-filter-wrapper {
+				margin-right: 2rem;
+
+				#filter-toggle {
+					display: none;
+				}
+
+				#filter-menu {
+					width: rem-calc(320);
+					position: initial;
+					opacity: 1;
+					pointer-events: initial;
+					box-shadow: none;
+					border: 1px solid $light-gray;
+
+					.filter-section {
+						&#filter-section-mobile-reset-all {
+							.filter-mobile-close-icon-wrapper {
+								display: none;
+							}
+						}
+					}
 				}
 			}
 		}

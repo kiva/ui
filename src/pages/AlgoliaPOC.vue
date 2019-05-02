@@ -82,6 +82,8 @@
 									:attribute="'tags.name'" :limit="1000"
 									ref="tagRefinements" />
 
+								<filter-section-loan-details class="filter-section" />
+
 							</div>
 
 							<div class="columns small-12 small-push xlarge-9">
@@ -172,7 +174,8 @@ import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
-import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
+// import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
+import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
@@ -195,7 +198,7 @@ export default {
 		KvCheckbox,
 		AlgoliaAdapter,
 		AisSortBy,
-		SelectedRefinements,
+		FilterSectionLoanDetails,
 		AisStateResults,
 	},
 	inject: [

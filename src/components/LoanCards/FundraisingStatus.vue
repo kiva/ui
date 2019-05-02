@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="left-and-to-go-line">
-			<span v-if="props.isExpiringSoon"
+			<span v-if="props.expiringSoonMessage !== ''"
 				class="loan-message">{{ props.expiringSoonMessage }}</span>
 			<span v-if="props.isFunded" class="funded">Funded</span>
 			<span v-else>${{ props.amountLeft | numeral('0,0') }} to go</span>
