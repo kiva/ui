@@ -20,7 +20,7 @@ query (
 			}
 		}
 
-		sameActivity: loans (filters: {activity: $activity, status: fundraising}, limit: 5, sortBy: random) {
+		sameSector: loans(filters: {sector: $sector, status: fundraising}, limit: 5, sortBy: random) {
 			values {
 				...loanCardFields
 				image {
@@ -32,7 +32,32 @@ query (
 			}
 		}
 
-		sameSector: loans(filters: {sector: $sector, status: fundraising}, limit: 5, sortBy: random) {
+		samePartner: loans(filters: {partner: $partner, status: fundraising}, limit: 5, sortBy: random) {
+			values {
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+
+		sameGender: loans(filters: {gender: $gender, status: fundraising}, limit: 5, sortBy: random) {
+			values {
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+
+		# TODO: Might be able to delete this, will need to verify
+		sameActivity: loans (filters: {activity: $activity, status: fundraising}, limit: 5, sortBy: random) {
 			values {
 				...loanCardFields
 				image {
