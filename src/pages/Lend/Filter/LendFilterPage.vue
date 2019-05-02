@@ -90,6 +90,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -163,7 +164,7 @@ export default {
 			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
-			filterMenuPinned: true,
+			filterMenuPinned: false,
 		};
 	},
 	computed: {
@@ -216,6 +217,22 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
+		// Only allow experiment when in show-for-large (>= 1194px) screen size
+		if (window.innerWidth >= 1194) {
+			// CASH-851: Experiment - Pinned filter
+			const pinnedFilterExperimentVersionArray = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'pinned_filter' },
+			});
+
+			this.pinnedFilterExperimentVersion = _get(pinnedFilterExperimentVersionArray, 'experiment.version') || null;
+			if (this.pinnedFilterExperimentVersion === 'variant-a') {
+				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'a');
+			} else if (this.pinnedFilterExperimentVersion === 'variant-b') {
+				this.filterMenuPinned = true;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'b');
+			}
+		}
 	},
 	methods: {
 		hideFilterMenu() {
