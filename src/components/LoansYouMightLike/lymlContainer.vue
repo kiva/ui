@@ -166,45 +166,73 @@ export default {
 				}
 			}).then(data => {
 				const loansYouMightLike = [];
-				const randomLoans = _filter(
-					_get(data.data.lend, 'randomLoan.values') || [],
-					loan => this.targetLoan.id !== loan.id
-				);
-
-				loansYouMightLike.push(randomLoans[0]);
-
+				// ===========================================
 				// same Country loans
+				// this filters out one of the sameCountry loans if it's already in basket
 				const sameCountryLoans = _filter(
 					_get(data, 'data.lend.sameCountry.values') || [],
 					loan => this.targetLoan.id !== loan.id
 				);
+
+				// if the sameCountryLoans array is greater than 1
+				// iterate through the first 4 items in the array
+				// then push them into the loansYouMightLike array
 				if (sameCountryLoans.length > 1) {
-					loansYouMightLike.push(sameCountryLoans[1]);
-				} else {
-					loansYouMightLike.push(randomLoans[1]);
+					for (let i = 0; i < sameCountryLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(sameCountryLoans[i]);
+						console.log('same country loans', loansYouMightLike);
+					}
 				}
 
-				// same Activity loans
-				const sameActivityLoans = _filter(
-					_get(data, 'data.lend.sameActivity.values') || [],
-					loan => this.targetLoan.id !== loan.id
-				);
-				if (sameActivityLoans.length > 1) {
-					loansYouMightLike.push(sameActivityLoans[1]);
-				} else {
-					loansYouMightLike.push(randomLoans[2]);
-				}
-
+				// ==============================================
 				// same Sector loans
 				const sameSectorLoans = _filter(
 					_get(data, 'data.lend.sameSector.values') || [],
 					loan => this.targetLoan.id !== loan.id
 				);
 				if (sameSectorLoans.length > 1) {
-					loansYouMightLike.push(sameSectorLoans[1]);
-				} else {
-					loansYouMightLike.push(randomLoans[3]);
+					for (let i = 0; i < sameSectorLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(sameSectorLoans[i]);
+						console.log('same sector loans', loansYouMightLike);
+					}
 				}
+
+				// ==============================================
+				// same Partner loans
+				const samePartnerLoans = _filter(
+					_get(data, 'data.lend.samePartner.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
+				if (samePartnerLoans.length > 1) {
+					for (let i = 0; i < samePartnerLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(samePartnerLoans[i]);
+						console.log('same partner loans', loansYouMightLike);
+					}
+				}
+
+				// ==============================================
+				// same Gender loans
+				const sameGenderLoans = _filter(
+					_get(data, 'data.lend.sameGender.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
+				if (sameGenderLoans.length > 1) {
+					for (let i = 0; i < sameGenderLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(sameGenderLoans[i]);
+						console.log('same gender loans', loansYouMightLike);
+					}
+				}
+
+				// ===============================================
+				const randomLoans = _filter(
+					_get(data.data.lend, 'randomLoan.values') || [],
+					loan => this.targetLoan.id !== loan.id
+				);
+
+				// Check the length of the length of the loansYouMightLike array, 
+				// however many it is under 16 add random loans until loansYouMightLike.length === 16
+				
+				loansYouMightLike.push(randomLoans[0]);
 
 				// randomize array order
 				this.loansYouMightLike = _shuffle(loansYouMightLike);
