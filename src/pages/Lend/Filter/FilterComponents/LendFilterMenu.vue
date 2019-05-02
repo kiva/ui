@@ -3,7 +3,7 @@
 		<div id="lend-filter-overlay" @click="hideFilterMenu"></div>
 		<div id="lend-filter-wrapper">
 			<div id="filter-toggle" @click="toggleFilterMenu">
-				<div>Filters</div>
+				<div>Filter and sort</div>
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
