@@ -6,11 +6,12 @@
 		</kv-message>
 		<lend-header
 			:hard-left-align="true"
+			:side-pinned-filter-padding="filterMenuPinned"
 			class="filter-page-lend-header"
 			browse-url="/lend-by-category"
 			filter-url="/lend/filter"
 		/>
-		<div class="row page-content">
+		<div class="row page-content" :class="{'filter-menu-pinned': filterMenuPinned}">
 			<ais-instant-search
 				v-if="searchClient"
 				class="instant-search-container"
@@ -21,6 +22,7 @@
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
+					:filter-menu-pinned="filterMenuPinned"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
@@ -28,7 +30,7 @@
 					@exit-lend-filter-exp="exitLendFilterExp('click-advanced-filters')"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
-				<div class="small-12 columns">
+				<div class="lend-filter-results-container small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
@@ -161,6 +163,7 @@ export default {
 			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
+			filterMenuPinned: true,
 		};
 	},
 	computed: {
@@ -254,8 +257,9 @@ export default {
 @import 'settings';
 
 .lend-filter-page {
-	scroll-behavior: smooth;
 	$filter-transition: 0.25s ease-out;
+
+	scroll-behavior: smooth;
 
 	.page-content {
 		.instant-search-container {
@@ -267,6 +271,22 @@ export default {
 
 				&.filter-menu-open {
 					opacity: 0.2;
+				}
+			}
+		}
+
+		&.filter-menu-pinned {
+			@include breakpoint(1194px) {
+				max-width: rem-calc(1174);
+
+				.instant-search-container {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
+					.lend-filter-results-container {
+						max-width: calc(100% - 21rem);
+					}
 				}
 			}
 		}
