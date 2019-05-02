@@ -6,7 +6,8 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 // Pre-fetch pre-determined list of experiment settings
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
 const activeExperiments = [
-	'lend_filter'
+	'lend_filter',
+	'pinned_filter',
 ];
 
 // TODO: Enhance Error handling

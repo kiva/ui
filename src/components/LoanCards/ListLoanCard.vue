@@ -53,7 +53,7 @@
 						@favorite-toggled="toggleFavorite"
 					/>
 				</div>
-				<div class="small-7 medium-8 large-5 xlarge-6 xxlarge-7 columns">
+				<div class="small-7 medium-8 large-5 xlarge-6 columns">
 					<borrower-info-header
 						:country="loan.geocode.country.name"
 						:name="loan.name"
@@ -61,7 +61,7 @@
 						class="list-loan-card-borrower-info-header"
 					/>
 				</div>
-				<div class="large-7 xlarge-6 xxlarge-5 columns show-for-large">
+				<div class="large-7 xlarge-6 columns show-for-large">
 					<action-button
 						:loan-id="loan.id"
 						:loan="loan"

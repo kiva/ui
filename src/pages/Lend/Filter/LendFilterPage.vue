@@ -6,11 +6,12 @@
 		</kv-message>
 		<lend-header
 			:hard-left-align="true"
+			:side-pinned-filter-padding="filterMenuPinned"
 			class="filter-page-lend-header"
 			browse-url="/lend-by-category"
 			filter-url="/lend/filter"
 		/>
-		<div class="row page-content">
+		<div class="row page-content" :class="{'filter-menu-pinned': filterMenuPinned}">
 			<ais-instant-search
 				v-if="searchClient"
 				class="instant-search-container"
@@ -21,6 +22,7 @@
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
+					:filter-menu-pinned="filterMenuPinned"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
@@ -28,7 +30,7 @@
 					@exit-lend-filter-exp="exitLendFilterExp('click-advanced-filters')"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
-				<div class="small-12 columns">
+				<div class="lend-filter-results-container small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
@@ -88,6 +90,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -161,6 +164,7 @@ export default {
 			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
+			filterMenuPinned: false,
 		};
 	},
 	computed: {
@@ -213,6 +217,22 @@ export default {
 	},
 	mounted() {
 		this.updateLendFilterExp();
+		// Only allow experiment when in show-for-large (>= 1194px) screen size
+		if (window.innerWidth >= 1194) {
+			// CASH-851: Experiment - Pinned filter
+			const pinnedFilterExperimentVersionArray = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'pinned_filter' },
+			});
+
+			this.pinnedFilterExperimentVersion = _get(pinnedFilterExperimentVersionArray, 'experiment.version') || null;
+			if (this.pinnedFilterExperimentVersion === 'variant-a') {
+				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'a');
+			} else if (this.pinnedFilterExperimentVersion === 'variant-b') {
+				this.filterMenuPinned = true;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'b');
+			}
+		}
 	},
 	methods: {
 		hideFilterMenu() {
@@ -254,8 +274,9 @@ export default {
 @import 'settings';
 
 .lend-filter-page {
-	scroll-behavior: smooth;
 	$filter-transition: 0.25s ease-out;
+
+	scroll-behavior: smooth;
 
 	.page-content {
 		.instant-search-container {
@@ -267,6 +288,22 @@ export default {
 
 				&.filter-menu-open {
 					opacity: 0.2;
+				}
+			}
+		}
+
+		&.filter-menu-pinned {
+			@include breakpoint(1194px) {
+				max-width: rem-calc(1174);
+
+				.instant-search-container {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
+					.lend-filter-results-container {
+						max-width: calc(100% - 21rem);
+					}
 				}
 			}
 		}

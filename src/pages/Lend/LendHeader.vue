@@ -2,8 +2,9 @@
 	<div
 		class="row lend-header-row"
 		:class="{
-			'extended-side-padding': extendedSidePadding,
+			'side-arrows-padding': sideArrowsPadding,
 			'hard-left-align': hardLeftAlign,
+			'side-pinned-filter-padding': sidePinnedFilterPadding,
 		}"
 	>
 		<div class="heading-region column small-12">
@@ -33,7 +34,11 @@ export default {
 			type: String,
 			default: '',
 		},
-		extendedSidePadding: {
+		sideArrowsPadding: {
+			type: Boolean,
+			default: false,
+		},
+		sidePinnedFilterPadding: {
 			type: Boolean,
 			default: false,
 		},
@@ -77,7 +82,7 @@ export default {
 		}
 	}
 
-	&.extended-side-padding {
+	&.side-arrows-padding {
 		max-width: 63.75rem;
 
 		.heading-region {
@@ -92,6 +97,12 @@ export default {
 
 		h1 {
 			margin-left: rem-calc(-2.5);
+		}
+	}
+
+	&.side-pinned-filter-padding {
+		@include breakpoint(1194px) {
+			max-width: rem-calc(1174);
 		}
 	}
 }

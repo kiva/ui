@@ -1,6 +1,6 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<lend-header filter-url="/lend" :extended-side-padding="true"/>
+		<lend-header filter-url="/lend" :side-arrows-padding="true"/>
 
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
