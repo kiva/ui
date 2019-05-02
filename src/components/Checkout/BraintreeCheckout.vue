@@ -288,6 +288,9 @@ export default {
 				braintree.hostedFields.create({
 					client: clientInstance,
 					styles: {
+						'#expiration::placeholder': {
+							'font-style': 'italic'
+						},
 						// Import class for inputs which apply directly to the input elements
 						// > Our divs become wrappers which can be styled by our css
 						input: 'braintree-form-inputs'
