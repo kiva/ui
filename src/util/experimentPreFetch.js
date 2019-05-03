@@ -8,6 +8,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 const activeExperiments = [
 	'lend_filter',
 	'pinned_filter',
+	'algolia_search',
 ];
 
 // TODO: Enhance Error handling
