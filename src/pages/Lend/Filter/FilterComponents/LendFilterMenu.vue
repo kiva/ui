@@ -6,6 +6,9 @@
 				<div>Filter and sort</div>
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
+			<div id="algolia-pagination-stats">
+				<algolia-pagination-stats/>
+			</div>
 			<div id="filter-menu">
 				<div id="filter-section-mobile-reset-all" class="filter-section">
 					<ais-clear-refinements class="clear-all-container">
@@ -61,6 +64,7 @@ import {
 } from 'vue-instantsearch';
 // Custom Categories
 // import FilterSectionCategories from '@/pages/Lend/Filter/FilterSections/FilterSectionCategories';
+import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSectionSectors';
 import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSectionAttributes';
 import FilterSectionTags from '@/pages/Lend/Filter/FilterSections/FilterSectionTags';
@@ -75,6 +79,7 @@ export default {
 	components: {
 		AisClearRefinements,
 		AisStateResults,
+		AlgoliaPaginationStats,
 		// Custom Categories
 		// FilterSectionCategories,
 		FilterSectionSectors,
@@ -175,6 +180,16 @@ export default {
 	#lend-filter-wrapper {
 		position: relative;
 		height: 2rem;
+
+		#algolia-pagination-stats {
+			display: block;
+			padding-left: rem-calc(160);
+			padding-top: rem-calc(1);
+
+			@include breakpoint(1194px) {
+				display: none;
+			}
+		}
 
 		#filter-toggle {
 			position: absolute;

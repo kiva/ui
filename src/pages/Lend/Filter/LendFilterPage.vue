@@ -33,7 +33,7 @@
 				<!-- eslint-disable vue/attribute-hyphenation -->
 				<div class="lend-filter-results-container small-12 columns">
 					<ais-configure
-						:hitsPerPage="12"
+						:hitsPerPage="15"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
 						clickAnalytics="true"
 						:userToken="userId.toString()"
@@ -47,12 +47,14 @@
 						@clear-custom-categories="clearCustomCategories"
 					/>
 					<algolia-search-box class="algolia-search-box-component" v-if="algoliaSearchEnabled" />
+					<!-- eslint-disable-next-line max-len -->
+					<algolia-pagination-stats class="algolia-pagination-stats-component" />
 					<ais-state-results class="ais-state-results-component">
 						<template slot-scope="{ page, hitsPerPage, queryID, index }">
 							<ais-hits
 								class="loan-card-group row"
 								:class="{'filter-menu-open': filterMenuOpen}"
-								:results-per-page="12"
+								:results-per-page="15"
 							>
 								<template slot="default" slot-scope="{ items }">
 									<algolia-adapter
@@ -70,7 +72,7 @@
 						</template>
 					</ais-state-results>
 					<algolia-pagination-wrapper :padding="2" class="algolia-pagination-component" />
-					<algolia-pagination-stats :padding="2" class="algolia-pagination-stats-component" />
+					<algolia-pagination-hits-per-page class="algolia-pagination-hits-per-page-component" />
 
 					<ais-state-results>
 						<template slot-scope="stateData">
@@ -109,8 +111,9 @@ import {
 	AisStateResults,
 } from 'vue-instantsearch';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
-import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
+import AlgoliaPaginationHitsPerPage from '@/pages/Lend/AlgoliaPaginationHitsPerPage';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
+import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
 import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
 import AlgoliaSearchBox from '@/pages/Lend/AlgoliaSearchBox';
@@ -129,8 +132,9 @@ export default {
 		AisHits,
 		AisStateResults,
 		AlgoliaAdapter,
-		AlgoliaPaginationWrapper,
+		AlgoliaPaginationHitsPerPage,
 		AlgoliaPaginationStats,
+		AlgoliaPaginationWrapper,
 		AlgoliaTrackState,
 		AlgoliaSearchBox,
 	},
@@ -318,6 +322,14 @@ export default {
 						opacity: 0.2;
 					}
 				}
+
+				.algolia-pagination-stats-component {
+					display: none;
+
+					@include breakpoint(1194px) {
+						display: block;
+					}
+				}
 			}
 		}
 
@@ -335,10 +347,6 @@ export default {
 						display: flex;
 						flex-direction: column;
 
-						.selected-refinements-component {
-							order: 1;
-						}
-
 						.algolia-search-box-component {
 							margin-top: 0;
 							max-width: initial;
@@ -346,16 +354,25 @@ export default {
 							order: 0;
 						}
 
-						.ais-state-results-component {
-							order: 2;
-						}
-
-						.algolia-pagination-component {
-							order: 3;
+						.selected-refinements-component {
+							order: 1;
 						}
 
 						.algolia-pagination-stats-component {
+							display: flex;
+							order: 2;
+						}
+
+						.ais-state-results-component {
+							order: 3;
+						}
+
+						.algolia-pagination-component {
 							order: 4;
+						}
+
+						.algolia-pagination-hits-per-page-component {
+							order: 5;
 						}
 					}
 				}

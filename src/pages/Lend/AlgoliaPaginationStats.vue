@@ -1,5 +1,5 @@
 <template>
-	<ais-stats :padding="padding">
+	<ais-stats>
 		<div class="ais-Pagination-Stats-List" slot-scope="{ nbHits }">
 			<div class="loan-count">
 				{{ nbHits | numeral('0,0') }} loans
@@ -15,12 +15,6 @@ export default {
 	components: {
 		AisStats,
 	},
-	props: {
-		padding: {
-			type: Number,
-			default: 0,
-		}
-	},
 };
 </script>
 
@@ -28,16 +22,26 @@ export default {
 @import 'settings';
 
 .ais-Pagination-Stats-List {
-	align-items: center;
+	align-items: left;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	margin: 0.75rem auto;
-	text-align: center;
+	justify-content: left;
+	margin: 0.15rem auto;
+	text-align: left;
 	width: 100%;
 
 	.loan-count {
-		color: $kiva-text-light;
+		@include breakpoint(small only) {
+			color: $gray;
+		}
+
+		font-size: rem-calc(14);
+		height: rem-calc(15);
+
+		@include breakpoint(1194px) {
+			font-size: rem-calc(16);
+			height: rem-calc(16);
+		}
 	}
 }
 </style>

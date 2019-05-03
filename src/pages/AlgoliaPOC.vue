@@ -100,7 +100,7 @@
 									<template slot-scope="{ page, hitsPerPage, queryID, index }">
 										<ais-hits
 											class="loan-card-group"
-											:results-per-page="12">
+											:results-per-page="15">
 											<template slot="default" slot-scope="{ items }">
 												<algolia-adapter
 													v-for="(item, itemIndex) in items" :key="item.id"
@@ -124,8 +124,9 @@
 							<ais-pagination :padding="2" class="columns small-12 xlarge-offset-3"/>
 							<ais-stats class="columns small-12 xlarge-offset-3 text-center" />
 							<ais-hits-per-page class="columns small-12 xlarge-offset-3" :items="[
-								{ label: '12 hits per page', value: 12, default: true },
-								{ label: '24 hits per page', value: 24 },
+								{ label: '15', value: 15, default: true },
+								{ label: '25', value: 25 },
+								{ label: '50', value: 50 },
 							]"/>
 						</div>
 					</ais-instant-search>
