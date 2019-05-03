@@ -39,7 +39,6 @@
 						:userToken="userId.toString()"
 						ref="aisConfigure"
 					/>
-					<algolia-search-box class="algolia-search-box-component" v-if="algoliaSearchEnabled" />
 					<selected-refinements
 						class="selected-refinements-component"
 						:custom-categories="customCategories"
@@ -47,6 +46,7 @@
 						@remove-custom-category="removeCustomCategory"
 						@clear-custom-categories="clearCustomCategories"
 					/>
+					<algolia-search-box class="algolia-search-box-component" v-if="algoliaSearchEnabled" />
 					<ais-state-results class="ais-state-results-component">
 						<template slot-scope="{ page, hitsPerPage, queryID, index }">
 							<ais-hits
@@ -322,18 +322,27 @@ export default {
 		}
 
 		&.filter-menu-pinned {
-			@include breakpoint(1193px down) {
+			@include breakpoint(1194px) {
+				max-width: rem-calc(1174);
+
 				.instant-search-container {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
 					.lend-filter-results-container {
+						max-width: calc(100% - 21rem);
 						display: flex;
 						flex-direction: column;
 
-						.algolia-search-box-component {
-							height: 49px;
+						.selected-refinements-component {
 							order: 1;
 						}
 
-						.selected-refinements-component {
+						.algolia-search-box-component {
+							margin-top: 0;
+							max-width: initial;
+							height: 49px;
 							order: 0;
 						}
 
@@ -347,25 +356,6 @@ export default {
 
 						.algolia-pagination-stats-component {
 							order: 4;
-						}
-					}
-				}
-			}
-
-			@include breakpoint(1194px) {
-				max-width: rem-calc(1174);
-
-				.instant-search-container {
-					display: flex;
-					flex-direction: row;
-					justify-content: space-between;
-
-					.lend-filter-results-container {
-						max-width: calc(100% - 21rem);
-
-						.algolia-search-box-component {
-							margin-top: 0;
-							max-width: initial;
 						}
 					}
 				}
