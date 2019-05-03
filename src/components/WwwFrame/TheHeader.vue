@@ -17,6 +17,7 @@
 				:aria-expanded="searchOpen ? 'true' : 'false'"
 				:aria-pressed="searchOpen ? 'true' : 'false'"
 				aria-controls="top-nav-search-area"
+				v-if="!hideSearchInHeader"
 				@click="toggleSearch"
 				v-kv-track-event="['TopNav','click-search-toggle']"
 			>
@@ -283,6 +284,12 @@ export default {
 			searchOpen: false,
 			legacyExpData: null
 		};
+	},
+	props: {
+		hideSearchInHeader: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		isTrustee() {

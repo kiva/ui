@@ -1,5 +1,5 @@
 <template>
-	<www-page class="lend-filter-page" :gray-background="true">
+	<www-page class="lend-filter-page" :gray-background="true" :hide-search-in-header="algoliaSearchEnabled">
 		<kv-message>
 			Welcome to Kiva's new filter page! Take it for a spin below, or
 			<a @click="exitLendFilterExp('click-return-classic')">return to the classic view</a> at any time.
@@ -17,7 +17,8 @@
 				class="instant-search-container"
 				:search-client="searchClient"
 				:index-name="algoliaDefaultIndex"
-				:routing="routing">
+				:routing="routing"
+			>
 				<lend-filter-menu
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
@@ -39,12 +40,14 @@
 						ref="aisConfigure"
 					/>
 					<selected-refinements
+						class="selected-refinements-component"
 						:custom-categories="customCategories"
 						:selected-custom-categories="selectedCustomCategories"
 						@remove-custom-category="removeCustomCategory"
 						@clear-custom-categories="clearCustomCategories"
 					/>
-					<ais-state-results>
+					<algolia-search-box class="algolia-search-box-component" v-if="algoliaSearchEnabled" />
+					<ais-state-results class="ais-state-results-component">
 						<template slot-scope="{ page, hitsPerPage, queryID, index }">
 							<ais-hits
 								class="loan-card-group row"
@@ -66,8 +69,8 @@
 							</ais-hits>
 						</template>
 					</ais-state-results>
-					<algolia-pagination-wrapper :padding="2" />
-					<algolia-pagination-stats :padding="2" />
+					<algolia-pagination-wrapper :padding="2" class="algolia-pagination-component" />
+					<algolia-pagination-stats :padding="2" class="algolia-pagination-stats-component" />
 
 					<ais-state-results>
 						<template slot-scope="stateData">
@@ -110,6 +113,7 @@ import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
 import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
+import AlgoliaSearchBox from '@/pages/Lend/AlgoliaSearchBox';
 import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 
 export default {
@@ -128,6 +132,7 @@ export default {
 		AlgoliaPaginationWrapper,
 		AlgoliaPaginationStats,
 		AlgoliaTrackState,
+		AlgoliaSearchBox,
 	},
 	metaInfo: {
 		title: 'Lend Filter'
@@ -165,6 +170,7 @@ export default {
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
 			filterMenuPinned: false,
+			algoliaSearchEnabled: false,
 		};
 	},
 	computed: {
@@ -225,13 +231,30 @@ export default {
 				variables: { id: 'pinned_filter' },
 			});
 
-			this.pinnedFilterExperimentVersion = _get(pinnedFilterExperimentVersionArray, 'experiment.version') || null;
-			if (this.pinnedFilterExperimentVersion === 'variant-a') {
+			// eslint-disable-next-line max-len
+			const pinnedFilterExperimentVersion = _get(pinnedFilterExperimentVersionArray, 'experiment.version') || null;
+			if (pinnedFilterExperimentVersion === 'variant-a') {
 				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'a');
-			} else if (this.pinnedFilterExperimentVersion === 'variant-b') {
+			} else if (pinnedFilterExperimentVersion === 'variant-b') {
 				this.filterMenuPinned = true;
 				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'b');
 			}
+		}
+
+		// CASH-682: Experiment - Algolia Search
+		// Only run if filter menu pinned
+		const algoliaSearchExperimentVersionArray = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'algolia_search' },
+		});
+
+		// eslint-disable-next-line max-len
+		const algoliaSearchExperimentVersion = _get(algoliaSearchExperimentVersionArray, 'experiment.version') || null;
+		if (algoliaSearchExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-682-Apr2019', 'a');
+		} else if (algoliaSearchExperimentVersion === 'variant-b') {
+			this.algoliaSearchEnabled = true;
+			this.$kvTrackEvent('Lending', 'EXP-CASH-682-Apr2019', 'b');
 		}
 	},
 	methods: {
@@ -282,12 +305,18 @@ export default {
 		.instant-search-container {
 			width: 100%;
 
-			.loan-card-group {
-				opacity: 1;
-				transition: opacity $filter-transition;
+			.lend-filter-results-container {
+				.algolia-search-box-component {
+					margin-top: 1.125rem;
+				}
 
-				&.filter-menu-open {
-					opacity: 0.2;
+				.loan-card-group {
+					opacity: 1;
+					transition: opacity $filter-transition;
+
+					&.filter-menu-open {
+						opacity: 0.2;
+					}
 				}
 			}
 		}
@@ -303,6 +332,31 @@ export default {
 
 					.lend-filter-results-container {
 						max-width: calc(100% - 21rem);
+						display: flex;
+						flex-direction: column;
+
+						.selected-refinements-component {
+							order: 1;
+						}
+
+						.algolia-search-box-component {
+							margin-top: 0;
+							max-width: initial;
+							height: 49px;
+							order: 0;
+						}
+
+						.ais-state-results-component {
+							order: 2;
+						}
+
+						.algolia-pagination-component {
+							order: 3;
+						}
+
+						.algolia-pagination-stats-component {
+							order: 4;
+						}
 					}
 				}
 			}
