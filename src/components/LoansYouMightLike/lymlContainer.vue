@@ -54,6 +54,7 @@
 <script>
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
+import _uniqBy from 'lodash/uniqBy';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
@@ -162,95 +163,81 @@ export default {
 				variables: {
 					country: this.sameCountry,
 					activity: this.sameActivity,
-					sector: this.sameSector
+					sector: this.sameSector,
+					partner: this.partner,
+					gender: this.gender
 				}
 			}).then(data => {
 				const loansYouMightLike = [];
-				// ===========================================
-				// same Country loans
-				// this filters out one of the sameCountry loans if it's already in basket
+
+				// Same Country loans
+				// Filters out sameCountry loan if it's already in basket
 				const sameCountryLoans = _filter(
 					_get(data, 'data.lend.sameCountry.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 
-				// if the sameCountryLoans array is greater than 1
-				// iterate through the first 4 items in the array
+				// Iterate through the first 4 items of the SameCountry loans,
 				// then push them into the loansYouMightLike array
 				if (sameCountryLoans.length > 1) {
 					for (let i = 0; i < sameCountryLoans.length && i < 4; i += 1) {
 						loansYouMightLike.push(sameCountryLoans[i]);
-						console.log('same country loans', loansYouMightLike);
 					}
-					
-					// attempted to redo this for loop using ES6, failed so far
-					// for (const value of sameCountryLoans) {
-					// 	loansYouMightLike.push(sameCountryLoans[value]);
-					// 	console.log('same country loans', loansYouMightLike);
-					// }
 				}
 
-				// ==============================================
 				// same Sector loans
 				const sameSectorLoans = _filter(
 					_get(data, 'data.lend.sameSector.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 				if (sameSectorLoans.length > 1) {
 					for (let i = 0; i < sameSectorLoans.length && i < 4; i += 1) {
 						loansYouMightLike.push(sameSectorLoans[i]);
-						console.log('same sector loans', loansYouMightLike);
 					}
 				}
 
-				// ==============================================
 				// same Partner loans
 				const samePartnerLoans = _filter(
 					_get(data, 'data.lend.samePartner.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 				if (samePartnerLoans.length > 1) {
 					for (let i = 0; i < samePartnerLoans.length && i < 4; i += 1) {
 						loansYouMightLike.push(samePartnerLoans[i]);
-						console.log('same partner loans', loansYouMightLike);
 					}
 				}
 
-				// ==============================================
 				// same Gender loans
 				const sameGenderLoans = _filter(
 					_get(data, 'data.lend.sameGender.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 				if (sameGenderLoans.length > 1) {
 					for (let i = 0; i < sameGenderLoans.length && i < 4; i += 1) {
 						loansYouMightLike.push(sameGenderLoans[i]);
-						console.log('same gender loans', loansYouMightLike);
 					}
 				}
 
-				// ===============================================
 				// Random loans to fill up the rest of the loansYouMightLike[]
 				const randomLoans = _filter(
 					_get(data.data.lend, 'randomLoan.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 
-				// Check the length of the length of the loansYouMightLike array,
+				// Check the length of the loansYouMightLike array,
 				// however many it is under 16 add random loans until loansYouMightLike.length === 16
 				const currentLength = loansYouMightLike.length;
-				if (currentLength < 16) {
+				if (currentLength <= 16) {
 					for (let i = currentLength; i < 16; i += 1) {
 						loansYouMightLike.push(randomLoans[i]);
-						console.log('random loans', loansYouMightLike);
 					}
 				}
 
-				console.log('1', { loansYouMightLike });
-				// not convinced this _shuffle is working, need to verify
+				// Using _uniqBy to remove duplicate loans from being displayed in LYML suggestions
+				const prunedLoansYouMightLike = _uniqBy(loansYouMightLike, 'id');
+
 				// randomize array order
-				this.loansYouMightLike = _shuffle(loansYouMightLike);
-				console.log('2', { loansYouMightLike });
+				this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
 
 				// once we have loans flip the switch to show them
 				this.showLYML = true;

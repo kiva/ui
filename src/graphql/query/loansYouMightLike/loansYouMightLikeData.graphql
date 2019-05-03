@@ -71,10 +71,7 @@ query (
 			}
 		}
 
-		# I've increased this limit to 16, if there are 0 matches on all the other categories
-		# well have to load in 16 random loans and display them to meet requirements for 
-		# cash-718
-		randomLoan: loans (filters: {status: fundraising}, limit: 16, sortBy: random) {
+		randomLoan: loans (filters: {status: fundraising}, limit: 5, sortBy: random) {
 			values {
 				...loanCardFields
 				image {
