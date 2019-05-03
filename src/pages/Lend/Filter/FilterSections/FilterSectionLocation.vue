@@ -3,7 +3,7 @@
 		<ais-hierarchical-menu
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"
-			:limit="100"
+			:limit="1000"
 			:transform-items="transformItems"
 		>
 			<div
@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
-import HierarchicalMenuList from '@/pages/Lend/Filter/HierarchicalMenuList';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
+import HierarchicalMenuList from '@/pages/Lend/Filter/FilterComponents/HierarchicalMenuList';
 import { AisHierarchicalMenu } from 'vue-instantsearch';
 
 export default {

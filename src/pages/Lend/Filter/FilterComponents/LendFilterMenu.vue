@@ -1,9 +1,9 @@
 <template>
-	<div id="lend-filter-menu" class="small-12 columns" :class="{open: filterMenuOpen}">
+	<div id="lend-filter-menu" class="small-12 columns" :class="{open: filterMenuOpen, pinned: filterMenuPinned}">
 		<div id="lend-filter-overlay" @click="hideFilterMenu"></div>
 		<div id="lend-filter-wrapper">
 			<div id="filter-toggle" @click="toggleFilterMenu">
-				<div>Filters</div>
+				<div>Filter and sort</div>
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="filter-menu">
@@ -31,24 +31,25 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
+				<filter-section-location class="filter-section" />
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
-				<filter-section-location class="filter-section" />
-				<filter-section-range-slider class="filter-section" :filter-menu-open="filterMenuOpen" />
+				<filter-section-tags class="filter-section" />
+				<filter-section-loan-details class="filter-section" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
-					Advanced Filters
+					Advanced filters
 				</div>
-				<ais-state-results class="filter-section filter-show-loans-mobile-wrapper hide-for-medium">
-					<kv-button
-						class="filter-show-loans-mobile"
-						slot-scope="{ nbHits }"
-						@click.native="hideFilterMenu"
-					>
-						Show {{ nbHits }} loan{{ nbHits > 1 ? 's' : '' }}
-					</kv-button>
-				</ais-state-results>
 			</div>
+			<ais-state-results class="filter-section filter-show-loans-mobile-wrapper hide-for-medium">
+				<kv-button
+					class="filter-show-loans-mobile"
+					slot-scope="{ nbHits }"
+					@click.native="hideFilterMenu"
+				>
+					Show {{ nbHits }} loan{{ nbHits > 1 ? 's' : '' }}
+				</kv-button>
+			</ais-state-results>
 		</div>
 	</div>
 </template>
@@ -59,13 +60,14 @@ import {
 	AisStateResults,
 } from 'vue-instantsearch';
 // Custom Categories
-// import FilterSectionCategories from '@/pages/Lend/Filter/FilterSectionCategories';
-import FilterSectionSectors from '@/pages/Lend/Filter/FilterSectionSectors';
-import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSectionAttributes';
-import FilterSectionGender from '@/pages/Lend/Filter/FilterSectionGender';
-import FilterSectionLocation from '@/pages/Lend/Filter/FilterSectionLocation';
-import FilterSectionRangeSlider from '@/pages/Lend/Filter/FilterSectionRangeSlider';
-import FilterSectionSort from '@/pages/Lend/Filter/FilterSectionSort';
+// import FilterSectionCategories from '@/pages/Lend/Filter/FilterSections/FilterSectionCategories';
+import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSectionSectors';
+import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSectionAttributes';
+import FilterSectionTags from '@/pages/Lend/Filter/FilterSections/FilterSectionTags';
+import FilterSectionGender from '@/pages/Lend/Filter/FilterSections/Gender/FilterSectionGender';
+import FilterSectionLocation from '@/pages/Lend/Filter/FilterSections/FilterSectionLocation';
+import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
+import FilterSectionSort from '@/pages/Lend/Filter/FilterSections/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 
@@ -77,9 +79,10 @@ export default {
 		// FilterSectionCategories,
 		FilterSectionSectors,
 		FilterSectionAttributes,
+		FilterSectionTags,
 		FilterSectionGender,
 		FilterSectionLocation,
-		FilterSectionRangeSlider,
+		FilterSectionLoanDetails,
 		FilterSectionSort,
 		KvIcon,
 		KvButton,
@@ -102,18 +105,24 @@ export default {
 			type: Object,
 			required: true,
 		},
+		filterMenuPinned: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	methods: {
 		hideFilterMenu() {
+			this.unlockScroll();
 			this.filterMenuOpen = false;
 			this.$emit('hide-filter-menu');
 		},
 		toggleFilterMenu() {
+			this.lockScroll();
 			this.filterMenuOpen = !this.filterMenuOpen;
 			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
 		showAdvancedFilters() {
-			window.location.href = '/lend';
+			this.$emit('exit-lend-filter-exp');
 		},
 		toggleCustomCategory(categoryId) {
 			this.$emit('toggle-custom-category', categoryId);
@@ -125,7 +134,17 @@ export default {
 		clearAllRefinements(refine) {
 			refine();
 			this.$emit('clear-custom-categories');
-		}
+		},
+		lockScroll() {
+			if (typeof window !== 'undefined') {
+				document.body.classList.add('scroll-locked-small-only');
+			}
+		},
+		unlockScroll() {
+			if (typeof window !== 'undefined') {
+				document.body.classList.remove('scroll-locked-small-only');
+			}
+		},
 	},
 };
 </script>
@@ -136,8 +155,11 @@ export default {
 #lend-filter-menu {
 	$filter-transition: 0.25s ease-out;
 	$filter-border-radius: rem-calc(3);
-	// Margin hack
-	margin-left: -1.9375rem;
+
+	.basic-filter-section {
+		padding: 0.5rem 1.5rem;
+		border-top: 1px solid #E5E5E5;
+	}
 
 	#lend-filter-overlay {
 		position: fixed;
@@ -181,22 +203,22 @@ export default {
 		#filter-menu {
 			position: fixed;
 			top: 0;
+			bottom: 0;
 			left: 0;
+			right: 0;
 			opacity: 0;
 			z-index: 1001;
 			overflow-x: hidden;
 			overflow-y: auto;
 			user-select: none;
 			pointer-events: none;
-			width: 100vw;
-			height: 100vh;
-			padding-bottom: rem-calc(75);
+			padding-bottom: rem-calc(65);
 			background-color: rgba(255, 255, 255, 1);
 			transition: opacity $filter-transition;
+			-webkit-overflow-scrolling: touch;
 
 			.filter-section {
-				padding: 0.5rem 1.5rem;
-				border-top: 1px solid #E5E5E5;
+				@extend .basic-filter-section;
 
 				&#filter-section-mobile-reset-all {
 					display: flex;
@@ -232,18 +254,23 @@ export default {
 					border-top: none;
 				}
 			}
+		}
 
-			.filter-show-loans-mobile-wrapper {
-				position: fixed;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				background: $white;
+		.filter-show-loans-mobile-wrapper {
+			@extend .basic-filter-section;
 
-				.filter-show-loans-mobile {
-					margin: 0 0 rem-calc(2) 0;
-					width: 100%;
-				}
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: $white;
+			z-index: 1001;
+			opacity: 0;
+			pointer-events: none;
+
+			.filter-show-loans-mobile {
+				margin: 0 0 rem-calc(2) 0;
+				width: 100%;
 			}
 		}
 	}
@@ -262,6 +289,11 @@ export default {
 				opacity: 1;
 				pointer-events: initial;
 			}
+
+			.filter-show-loans-mobile-wrapper {
+				opacity: 1;
+				pointer-events: initial;
+			}
 		}
 	}
 
@@ -270,6 +302,8 @@ export default {
 			#filter-menu {
 				position: absolute;
 				top: 2.5rem;
+				bottom: initial;
+				right: initial;
 				padding-bottom: 0;
 				overflow-y: hidden;
 				min-width: rem-calc(270);
@@ -281,6 +315,41 @@ export default {
 				.filter-section {
 					margin: 0 1rem;
 					padding: 0.5rem 0.5rem;
+				}
+			}
+		}
+	}
+
+	&.pinned {
+		@include breakpoint(1194px) {
+			max-width: 21rem;
+
+			#lend-filter-overlay {
+				display: none;
+			}
+
+			#lend-filter-wrapper {
+				margin-right: 2rem;
+
+				#filter-toggle {
+					display: none;
+				}
+
+				#filter-menu {
+					width: rem-calc(320);
+					position: initial;
+					opacity: 1;
+					pointer-events: initial;
+					box-shadow: none;
+					border: 1px solid $light-gray;
+
+					.filter-section {
+						&#filter-section-mobile-reset-all {
+							.filter-mobile-close-icon-wrapper {
+								display: none;
+							}
+						}
+					}
 				}
 			}
 		}

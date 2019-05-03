@@ -23,24 +23,19 @@
 
 			<div
 				class="loan-message"
-				v-if="loanReservationMsg2" >Reserved for {{ mins }} more minutes
+				v-if="loanReservationMsg2">{{ differenceInWords }}
 			</div>
 
 			<div
-				v-if="loanReservationMsg3"
-				class="red loan-message">Reserved for {{ mins }} more minutes
-			</div>
-
-			<div
-				v-if="loanReservationMsg4"
-				class="red loan-message">Reserved for 1 more minute
+				v-if="loanReservationMsg3 || loanReservationMsg4"
+				class="loan-message red">{{ differenceInWords }}
 			</div>
 		</span>
 	</div>
 </template>
 
 <script>
-import { differenceInMinutes } from 'date-fns';
+import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -50,7 +45,8 @@ export default {
 	data() {
 		return {
 			defaultLbVisible: false,
-			mins: '',
+			differenceInWords: '',
+			reservationMessageId: null,
 			loanReservationMsg1: false,
 			loanReservationMsg2: false,
 			loanReservationMsg3: false,
@@ -58,6 +54,10 @@ export default {
 		};
 	},
 	props: {
+		activateTimer: {
+			type: Boolean,
+			default: false
+		},
 		expiryTime: {
 			type: String,
 			default: ''
@@ -74,24 +74,41 @@ export default {
 		lightboxClosed() {
 			this.defaultLbVisible = false;
 		},
-		setMins(mins) {
-			this.mins = mins;
+		setDifferenceInWords(value) {
+			this.differenceInWords = value;
 		},
 		reservationMessage() {
-			const reservedDate = new Date(this.expiryTime);
-			const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
-
 			if (this.expiryTime !== null) {
-				const timeLeft = reservedDate.getTime() - Date.now();
-				if (timeLeft <= 0 || this.isExpiringSoon) {
+				const reservedDate = new Date(this.expiryTime);
+				const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
+				const seconds = differenceInSeconds(reservedDate.getTime(), Date.now()) % 60;
+
+				let warningMessageUpperBoundMinutes = 6;
+				let differenceInWords = `Reserved for ${mins} more minutes`;
+
+				if (this.activateTimer === true) {
+					warningMessageUpperBoundMinutes = 10;
+					differenceInWords = `Reservation expires in ${mins} minutes and ${seconds} seconds`;
+				}
+
+				if ((reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {
+					clearInterval(this.reservationMessageId);
 					this.loanReservationMsg1 = true;
-				} else if (mins > 6) {
-					this.setMins(mins);
+					this.loanReservationMsg2 = false;
+					this.loanReservationMsg3 = false;
+					this.loanReservationMsg4 = false;
+				} else if (mins > warningMessageUpperBoundMinutes) {
+					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg2 = true;
-				} else if (mins <= 6) {
-					this.setMins(mins);
+				} else if (mins > 1 && mins <= warningMessageUpperBoundMinutes) {
+					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
+					differenceInWords = this.activateTimer === true ?
+						`Reservation expires in ${seconds} seconds` :
+						'Reserved for 1 more minute';
+
+					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg4 = true;
 				}
 			}
@@ -100,6 +117,18 @@ export default {
 	created() {
 		this.reservationMessage();
 	},
+	mounted() {
+		if (this.activateTimer === true) {
+			this.reservationMessageId = setInterval(() => {
+				this.reservationMessage();
+			}, 1000);
+		}
+	},
+	destroyed() {
+		if (this.activateTimer === true) {
+			clearInterval(this.reservationMessageId);
+		}
+	}
 };
 
 </script>
@@ -121,7 +150,7 @@ export default {
 		font-weight: $global-weight-normal;
 	}
 
-	.loan-message >>> .red {
+	.loan-message.red {
 		color: $kiva-accent-red;
 		font-weight: $global-weight-highlight;
 	}

@@ -1,17 +1,16 @@
 <template>
-	<div class="appeal-banner-wrapper" v-if="showAppeal">
-		<div class="appeal-banner">
+	<div class="sitewide-appeal-wrapper" v-if="showAppeal">
+		<div class="sitewide-appeal">
 			<div class="row"
 				@click="toggleAccordion">
-				<div class="small-2 show-for-large"></div>
-				<div class="appeal-header small-12 large-10 padding">
+				<div class="appeal-header small-12 columns sitewide-header">
 					<h2>
-						<!-- IF BONUS APPEAL BANNER -->
-						<span v-if="appealBonusEnabled">Donate today and receive a bonus to lend!</span>
-						<!-- IF MATCHED APPEAL BANNER -->
-						<span v-else-if="appealMatchEnabled">Double or triple the impact of your donation!</span>
+						<!-- IF ALTERNATE APPEAL BANNER -->
+						<!-- current version implemented has bonus language,
+						but we're using the appealMatchedEnabled flag -->
+						<span v-if="appealMatchEnabled">Donate to Kiva today and earn a free loan!</span>
 						<!-- ELSE STANDARD APPEAL BANNER -->
-						<span v-else>Your donation will power impact and hope in 2019</span>
+						<span v-else>Your donations keep Kiva growing</span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
@@ -22,41 +21,41 @@
 			</div>
 
 			<kv-expandable easing="ease-in-out">
-				<div class="row"
+				<div class="row appeal-content"
 					v-show="open">
-					<div class="small-2 show-for-large text-center">
-						<appeal-image />
+					<div class="small-12 medium-1 columms">
+						<div
+							class="hide-for-small show-for-medium thermometer-holder"
+							:title="`${ percentTowardGoal }% raised`">
+							<appeal-thermometer
+								:percent-toward-goal="percentTowardGoal" />
+						</div>
 					</div>
-					<div class="small-12 large-10 padding">
+					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
-							<!-- IF BONUS APPEAL BANNER -->
-							<p v-if="appealBonusEnabled" class="small-text quote">
-								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. <strong>TODAY ONLY, donate $35 or
-								more to Kiva and we'll send you a $25 bonus tomorrow to make a loan!</strong>
-								Thank you for investing in a better world.
-							</p>
-							<!-- IF MATCHED APPEAL BANNER -->
-							<p v-else-if="appealMatchEnabled" class="small-text quote">
-								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. For a limited time,
-								<strong>donations to Kiva of $20 or more are matched, and donations of $50
-								or more are triple matched by generous donors!</strong>
-								Thank you for investing in a better world.
+							<!-- IF ALTERNATE APPEAL BANNER -->
+							<!-- current version implemented has bonus language,
+							but we're using the appealMatchedEnabled flag -->
+							<p v-if="appealMatchEnabled">
+								Each loan on Kiva costs us more than $3 to facilitate
+								(and we facilitate a lot of loans!), so when you donate to Kiva
+								you help us cover the costs to grow our impact. <strong> TODAY when you donate
+								$35 or more to Kiva, we'll send you a bonus tomorrow to
+								make a free loan. </strong> Your donation of any amount makes a difference!
 							</p>
 							<!-- IF REGULAR APPEAL BANNER -->
-							<p v-else class="small-text">
-								100% of money lent on Kiva goes to funding loans, so Kiva relies on donations
-								from people like you to operate and grow. Donate to Kiva to help us reach more
-								communities in 2019 - your donation of any size makes a difference. Thank you
-								for investing in a better world.
-							</p>
-
-							<p class="small-text">
-								Premal Shah, President & Co-Founder, Kiva
+							<p v-else>
+								Each loan on Kiva costs us more than $3 to facilitate (and we faciliate a lot of loans!)
+								so when you donate to Kiva you help us cover costs, grow our impact and develop
+								innovative new programs that improve lives. Your donation of any amount
+								makes a difference!
 							</p>
 						</div>
-						<div>
+						<div class="show-for-small hide-for-medium thermometer-holder">
+							<appeal-thermometer
+								:percent-toward-goal="percentTowardGoal" />
+						</div>
+						<div class="button-wrapper">
 							<kv-button
 								class='smallest custom-width'
 								@click.native.prevent.stop="updateDonationTo(20)"
@@ -69,21 +68,12 @@
 								class="smallest custom-width"
 								@click.native.prevent.stop="updateDonationTo(50)"
 							>$50</kv-button>
-							<kv-button
-								class="smallest custom-width hide-for-large"
-								to="/donate/supportus"
-								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
-							>Other</kv-button>
-							<input
-								class="dollar-amount-input show-for-large"
-								placeholder="other"
+							<a
+								class="other-amount-link"
+								href="/donate/supportus"
 								@blur="validateInput"
-								v-model="donationAmount">
-							<kv-button
-								class="smallest setting submit-button show-for-large"
-								id="appeal-donation-button"
-								@click.native.prevent.stop="updateDonationTo(undefined, true)"
-							>Submit</kv-button>
+								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']">Other amount
+							</a>
 						</div>
 					</div>
 				</div>
@@ -93,10 +83,9 @@
 </template>
 
 <script>
-import { readBoolSetting } from '@/util/settingsUtils';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import AppealImage from '@/components/WwwFrame/EndOfYearAppealBanner/AppealImage';
+import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
@@ -109,7 +98,7 @@ export default {
 	components: {
 		KvButton,
 		KvIcon,
-		AppealImage,
+		AppealThermometer,
 		KvExpandable,
 	},
 	inject: ['apollo'],
@@ -118,9 +107,9 @@ export default {
 			open: true,
 			appealEnabled: false,
 			appealMatchEnabled: false,
-			appealBonusEnabled: false,
 			amount: 0,
 			donationAmount: null,
+			percentTowardGoal: null
 		};
 	},
 	apollo: {
@@ -128,18 +117,18 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
-
 			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
-
-			// This setting SHOULD be temporary and CANNOT reveal this appeal alone.
-			this.appealBonusEnabled = readBoolSetting(data, 'general.appeal_bonus_active.value');
+			// eslint-disable-next-line max-len
+			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
+			// eslint-disable-next-line max-len
+			this.targetAmount = _get(data, 'general.kivaStats.latestDonationCampaign.target_amount');
 		},
 	},
 	computed: {
 		showAppeal() {
 			// make sure the appeal is enable + we're not on checkout
 			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
-		}
+		},
 	},
 	mounted() {
 		if (store2.session.get('appeal_banner_shrunk')) {
@@ -147,6 +136,7 @@ export default {
 		} else {
 			this.open = true;
 		}
+		this.calculateAmountRaised();
 	},
 	methods: {
 		toggleAccordion() {
@@ -159,6 +149,10 @@ export default {
 			} else {
 				store2.session.remove('appeal_banner_shrunk');
 			}
+		},
+		calculateAmountRaised() {
+			// calculating the % toward the appeal banner fundraising goal
+			this.percentTowardGoal = Math.round((this.amountRaised / this.targetAmount) * 100);
 		},
 		updateDonationTo(amount, isCustom) {
 			if (isCustom) {
@@ -197,76 +191,92 @@ export default {
 		validateInput() {
 			// format the value taken from the donation input
 			this.donationAmount = numeral(this.donationAmount).format('$0,0.00');
-		},
+		}
 	},
 };
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 @import 'settings';
 @import "global/transitions";
 
-.appeal-banner-wrapper {
+.sitewide-appeal-wrapper {
 	background: $kiva-alert-yellow;
 
-	.appeal-banner {
-		padding-left: 0.625rem;
+	.sitewide-appeal {
+		padding-right: rem-calc(10);
+	}
 
-		.padding {
-			padding: 0 rem-calc(10);
+	.appeal-content {
+		padding: 0.4rem 0;
+	}
+
+	.sitewide-body {
+		@include breakpoint(medium) {
+			padding-bottom: 1.25rem;
 		}
+	}
 
-		.appeal-copy {
-			padding-right: 0.25rem;
+	.thermometer-holder {
+		@include breakpoint(medium) {
+			height: rem-calc(195);
+			top: rem-calc(19);
+			left: -2.5rem;
+			position: relative;
+		}
+	}
+
+	.appeal-copy {
+		margin-bottom: 1.25rem;
+	}
+
+	h2 {
+		font-weight: 300;
+		margin-top: 0.3rem;
+		padding-right: 2.5rem;
+		font-size: rem-calc(28);
+	}
+
+	.icon {
+		width: rem-calc(25);
+		height: rem-calc(40);
+		cursor: pointer;
+	}
+
+	.button-wrapper {
+		text-align: center;
+
+		@include breakpoint(medium) {
+			text-align: left;
 		}
 
 		.custom-width {
-			padding: 0.75rem 0;
-			margin-right: rem-calc(10);
-			text-align: center;
-			width: 46%;
-
-			@include breakpoint(large) {
-				width: 18%;
-			}
+			margin-right: rem-calc(15);
+			margin-bottom: 0;
 		}
+	}
 
-		h2 {
-			font-weight: $global-weight-highlight;
-			margin-top: 0.3rem;
-			padding-right: 2.5rem;
+	button.submit-button {
+		vertical-align: super;
+		padding: 0.9rem 0;
+		width: 46%;
+
+		@include breakpoint(large) {
+			width: 17%;
 		}
+	}
 
-		.icon {
-			width: rem-calc(25);
-			height: rem-calc(40);
-			cursor: pointer;
-		}
+	.other-amount-link {
+		margin: auto;
+		line-height: 2.5;
+		display: block;
+		font-size: 1.25rem;
+		font-weight: 400;
 
-		.small-text {
-			font-weight: $global-weight-highlight;
-		}
-
-		button.submit-button {
-			vertical-align: super;
-			padding: 0.9rem 0;
-			width: 46%;
-
-			@include breakpoint(large) {
-				width: 17%;
-			}
-		}
-
-		input.dollar-amount-input {
-			font-size: 1.25rem;
-			padding: 0.7rem 0.5rem;
-			margin-right: rem-calc(10);
-			vertical-align: top;
-			width: 46%;
-
-			@include breakpoint(large) {
-				width: 17%;
-			}
+		@include breakpoint(medium) {
+			display: inline-block;
+			top: rem-calc(4);
+			position: relative;
 		}
 	}
 

@@ -1,15 +1,16 @@
 <template>
 	<filter-menu-section title="Attributes" class="filter-section-attributes">
 		<ais-refinement-list
-			:attribute="'themeData.loanThemeTypeName'"
+			:attribute="'loanThemeFilters.name'"
 			:sort-by="['name:asc']"
+			:limit="1000"
 			:transform-items="transformItems"
 		/>
 	</filter-menu-section>
 </template>
 
 <script>
-import FilterMenuSection from '@/pages/Lend/Filter/FilterMenuSection';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 import { AisRefinementList } from 'vue-instantsearch';
 
 export default {
@@ -20,9 +21,9 @@ export default {
 	data() {
 		return {
 			visibleThemes: {
-				'conflict zone': true,
+				'conflict zones': true,
 				'clean energy': true,
-				'displaced populations': true,
+				'refugees/displaced': true,
 				'rural exclusion': true,
 				'social enterprise': true,
 				'water and sanitation': true,

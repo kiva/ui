@@ -52,8 +52,8 @@ import {
 	AisCurrentRefinements,
 	AisClearRefinements,
 } from 'vue-instantsearch';
-import FilterChip from '@/pages/Lend/Filter/FilterChip';
-import ClearAllRefinements from '@/pages/Lend/Filter/ClearAllRefinements';
+import FilterChip from '@/pages/Lend/Filter/FilterComponents/FilterChip';
+import ClearAllRefinements from '@/pages/Lend/Filter/FilterComponents/ClearAllRefinements';
 
 export default {
 	components: {
@@ -99,6 +99,10 @@ export default {
 					plural: 's',
 				},
 			},
+			genderMap: {
+				female: 'Women',
+				male: 'Men',
+			},
 			fixedRowHeight: 38,
 			fixedRowCount: 3,
 			isCollapsible: false,
@@ -128,8 +132,22 @@ export default {
 			const {
 				label,
 				type,
+				attribute,
 			} = item;
-			return type === 'numeric' ? this.generateNumericLabel(item) : label;
+			if (type === 'numeric') {
+				return this.generateNumericLabel(item);
+			}
+			switch (attribute) {
+				case 'gender': {
+					return this.genderMap[label];
+				}
+				case 'tags.name': {
+					return label.replace(/#/g, '');
+				}
+				default: {
+					return label;
+				}
+			}
 		},
 		generateNumericLabel({
 			operator,
@@ -148,15 +166,6 @@ export default {
 
 			items.forEach(({ refinements, refine/* , Custom Categoris skip: attribute */ }) => {
 				refinements.forEach(refinement => {
-					const { type, operator, value } = refinement;
-					if (type === 'numeric') {
-						if (operator === '>=' && value === -1) {
-							return;
-						}
-						if (operator === '<=' && value === 1000) {
-							return;
-						}
-					}
 					/* Custom Categories Skip
 					if (this.customCategoryAttributes.includes(attribute)) {
 						return;
@@ -202,8 +211,6 @@ export default {
 	$fixed-row-height: 38;
 
 	margin-top: rem-calc(10);
-	// Margin hack
-	margin-left: -1.9375rem;
 
 	.row {
 		margin: 0;

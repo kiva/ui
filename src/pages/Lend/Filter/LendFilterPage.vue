@@ -1,29 +1,41 @@
 <template>
 	<www-page class="lend-filter-page" :gray-background="true">
+		<kv-message>
+			Welcome to Kiva's new filter page! Take it for a spin below, or
+			<a @click="exitLendFilterExp('click-return-classic')">return to the classic view</a> at any time.
+		</kv-message>
 		<lend-header
+			:hard-left-align="true"
+			:side-pinned-filter-padding="filterMenuPinned"
 			class="filter-page-lend-header"
 			browse-url="/lend-by-category"
-			filter-url="/lend/filter" />
-		<div class="row page-content">
+			filter-url="/lend/filter"
+		/>
+		<div class="row page-content" :class="{'filter-menu-pinned': filterMenuPinned}">
 			<ais-instant-search
 				v-if="searchClient"
+				class="instant-search-container"
 				:search-client="searchClient"
-				:index-name="algoliaDefaultIndex">
+				:index-name="algoliaDefaultIndex"
+				:routing="routing">
 				<lend-filter-menu
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
+					:filter-menu-pinned="filterMenuPinned"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
 					@toggle-custom-category="toggleCustomCategory"
+					@exit-lend-filter-exp="exitLendFilterExp('click-advanced-filters')"
 				/>
 				<!-- eslint-disable vue/attribute-hyphenation -->
-				<div class="small-12 columns">
+				<div class="lend-filter-results-container small-12 columns">
 					<ais-configure
 						:hitsPerPage="12"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
 						clickAnalytics="true"
+						:userToken="userId.toString()"
 						ref="aisConfigure"
 					/>
 					<selected-refinements
@@ -45,6 +57,7 @@
 										:loan="item"
 										:items-in-basket="itemsInBasket"
 										:is-logged-in="isLoggedIn"
+										:user-id="userId.toString()"
 										loan-card-type="ListLoanCard"
 										:algolia-props="{ page, hitsPerPage, queryID, index, itemIndex, item }"
 										class="small-12 columns"
@@ -55,6 +68,12 @@
 					</ais-state-results>
 					<algolia-pagination-wrapper :padding="2" />
 					<algolia-pagination-stats :padding="2" />
+
+					<ais-state-results>
+						<template slot-scope="stateData">
+							<algolia-track-state :state-data-hits="stateData.hits" />
+						</template>
+					</ais-state-results>
 				</div>
 				<!-- eslint-enable vue/attribute-hyphenation -->
 			</ais-instant-search>
@@ -70,9 +89,12 @@ import cookieStore from '@/util/cookieStore';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
+import KvMessage from '@/components/Kv/KvMessage';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 
-import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
-import userStatus from '@/graphql/query/userId.graphql';
+import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
+
+import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 
 // Algolia Imports
 import algoliaInit from '@/plugins/algolia-init-mixin';
@@ -86,11 +108,13 @@ import {
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
-import LendFilterMenu from '@/pages/Lend/Filter/LendFilterMenu';
-import SelectedRefinements from '@/pages/Lend/Filter/SelectedRefinements';
+import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
+import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
+import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 
 export default {
 	components: {
+		KvMessage,
 		SelectedRefinements,
 		LoadingOverlay,
 		WwwPage,
@@ -103,45 +127,44 @@ export default {
 		AlgoliaAdapter,
 		AlgoliaPaginationWrapper,
 		AlgoliaPaginationStats,
+		AlgoliaTrackState,
 	},
 	metaInfo: {
 		title: 'Lend Filter'
 	},
 	mixins: [
 		algoliaInit,
-		algoliaConfig
+		algoliaConfig,
+		lendFilterExpMixin,
 	],
 	created() {
-		// Set items in basket
-		const itemsInBasketResults = this.apollo.readQuery({
-			query: itemsInBasketQuery,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
-		});
-		this.itemsInBasket = _map(_get(itemsInBasketResults, 'shop.basket.items.values'), 'id');
-
+		// subscribe to and set page query data
 		this.apollo.watchQuery({
-			query: itemsInBasketQuery,
+			query: lendFilterPageQuery,
 			variables: {
 				basketId: cookieStore.get('kvbskt'),
 			},
 		}).subscribe({
 			next: ({ data }) => {
+				// Set items in basket (prefetch also sets up the subscribe query)
 				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+				// Set user status
+				this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
+				this.userId = _get(data, 'my.userAccount.id') || '';
 			},
 		});
 
-		// Set user status
-		const userData = this.apollo.readQuery({ query: userStatus });
-		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+		// Update Lend Filter Exp
+		this.getLendFilterExpVersion();
 	},
 	data() {
 		return {
 			itemsInBasket: null,
 			isLoggedIn: false,
+			userId: '',
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
+			filterMenuPinned: false,
 		};
 	},
 	computed: {
@@ -183,20 +206,42 @@ export default {
 	],
 	apollo: {
 		preFetch(config, client) {
+			// prefetch page data + experiment settings
 			return client.query({
-				query: itemsInBasketQuery,
-			}).then(() => {
-				// Pre-fetch user Status
-				return client.query({ query: userStatus });
+				query: lendFilterPageQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt')
+				},
 			});
+		}
+	},
+	mounted() {
+		this.updateLendFilterExp();
+		// Only allow experiment when in show-for-large (>= 1194px) screen size
+		if (window.innerWidth >= 1194) {
+			// CASH-851: Experiment - Pinned filter
+			const pinnedFilterExperimentVersionArray = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'pinned_filter' },
+			});
+
+			this.pinnedFilterExperimentVersion = _get(pinnedFilterExperimentVersionArray, 'experiment.version') || null;
+			if (this.pinnedFilterExperimentVersion === 'variant-a') {
+				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'a');
+			} else if (this.pinnedFilterExperimentVersion === 'variant-b') {
+				this.filterMenuPinned = true;
+				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'b');
+			}
 		}
 	},
 	methods: {
 		hideFilterMenu() {
 			this.filterMenuOpen = false;
+			this.$kvTrackEvent('Lending', 'close-lend-filter-menu');
 		},
 		showFilterMenu() {
 			this.filterMenuOpen = true;
+			this.$kvTrackEvent('Lending', 'open-lend-filter-menu');
 		},
 		toggleCustomCategory(categoryId) {
 			this.$set(
@@ -231,32 +276,37 @@ export default {
 .lend-filter-page {
 	$filter-transition: 0.25s ease-out;
 
+	scroll-behavior: smooth;
+
 	.page-content {
-		// max-width: 63.75rem;
-		padding: 0 2rem;
+		.instant-search-container {
+			width: 100%;
 
-		.loan-card-group {
-			opacity: 1;
-			transition: opacity $filter-transition;
+			.loan-card-group {
+				opacity: 1;
+				transition: opacity $filter-transition;
 
-			&.filter-menu-open {
-				opacity: 0.2;
+				&.filter-menu-open {
+					opacity: 0.2;
+				}
+			}
+		}
+
+		&.filter-menu-pinned {
+			@include breakpoint(1194px) {
+				max-width: rem-calc(1174);
+
+				.instant-search-container {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
+					.lend-filter-results-container {
+						max-width: calc(100% - 21rem);
+					}
+				}
 			}
 		}
 	}
 }
 </style>
-
-<style lang="scss">
-.filter-page-lend-header {
-	.heading-region {
-		padding: 0 1rem;
-		margin-bottom: 1rem;
-
-		@media screen and (min-width: 1020px) {
-			padding: 0 1.9rem;
-		}
-	}
-}
-</style>
-

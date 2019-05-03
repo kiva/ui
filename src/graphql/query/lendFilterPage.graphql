@@ -1,0 +1,16 @@
+query($basketId: String) {
+	my {
+		userAccount {
+			id
+		}
+	}
+	shop (basketId: $basketId) {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}

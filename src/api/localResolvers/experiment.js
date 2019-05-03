@@ -147,7 +147,7 @@ export default () => {
 						assignments[id] = assignVersion(experiment || {});
 
 						// save the new assignments to the experiment cookie
-						cookieStore.set('uiab', serializeExpCookie(assignments));
+						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
 
 						// get the new assignment. return null if undefined so that apollo saves the value
 						version = _isUndefined(assignments[id]) ? null : assignments[id];
@@ -161,6 +161,42 @@ export default () => {
 						__typename: 'Experiment',
 					};
 				},
+			},
+			Mutation: {
+				updateExperimentVersion(_, { id, version }) { // , context
+					// start with previously assigned version for this experiment id
+					let updatedVersion = assignments[id];
+					// console.log(`previous version: ${updatedVersion}, new version: ${version}`);
+
+					// Do we really need to check this?
+					// > Commented out lines below would incorporate and experiment check too
+					// > We could read the experiment data from the cache and compare version to values within
+					// const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
+					// console.log(experiment);
+
+					// re-assign experiment version
+					// if (experiment && previousVersion !== version) {
+					if (updatedVersion !== version) {
+						// assign the passed version
+						// > this must be a valid version from the exp setting
+						assignments[id] = version;
+
+						// save the new assignments to the experiment cookie
+						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
+
+						// get the new assignment. return null if undefined so that apollo saves the value
+						updatedVersion = _isUndefined(assignments[id]) ? null : assignments[id];
+					}
+
+					return {
+						id,
+						// if experiment exist & enabled = false return a null version
+						// > we don't want to render a disabled experiment even if a cookie version is present
+						// version: (experiment === null || !experiment.enabled) ? null : updatedVersion,
+						version: updatedVersion,
+						__typename: 'Experiment',
+					};
+				}
 			}
 		}
 	};

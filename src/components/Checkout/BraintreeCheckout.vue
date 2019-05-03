@@ -105,7 +105,7 @@
 						<input
 							v-model="storePaymentMethod"
 							type="checkbox"
-							id="vault-checkbox"> Store Payment method
+							id="vault-checkbox"> Save payment method
 					</label>
 				</div>
 			</div>
@@ -288,6 +288,10 @@ export default {
 				braintree.hostedFields.create({
 					client: clientInstance,
 					styles: {
+						'#expiration::placeholder': {
+							'font-style': 'italic',
+							color: '#c3c3c3'
+						},
 						// Import class for inputs which apply directly to the input elements
 						// > Our divs become wrappers which can be styled by our css
 						input: 'braintree-form-inputs'
@@ -320,19 +324,6 @@ export default {
 
 						return;
 					}
-
-					// Watch for validity change on hosted field inputs
-					hostedFieldsInstance.on('validityChange', event => {
-						const field = event.fields[event.emittedBy];
-
-						if (field.isValid) {
-							console.log(event.emittedBy, 'is fully valid');
-						} else if (field.isPotentiallyValid) {
-							console.log(event.emittedBy, 'is potentially valid');
-						} else {
-							console.log(event.emittedBy, 'is not valid');
-						}
-					});
 
 					form.addEventListener('submit', event => {
 						event.preventDefault();

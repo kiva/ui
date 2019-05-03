@@ -38,6 +38,13 @@ export default {
 	methods: {
 		toggleMenu() {
 			this.open = !this.open;
+
+			const eventAction = `${this.open ? 'open' : 'close'}-filter-section`;
+			this.$kvTrackEvent(
+				'Lending',
+				eventAction,
+				this.title.toLowerCase().replace(/ /g, '-')
+			);
 		},
 	},
 };
@@ -59,12 +66,12 @@ export default {
 			justify-content: space-between;
 			align-items: center;
 			stroke-width: rem-calc(2);
+			transition: margin $filter-transition-timing;
 
 			.filter-summary-title {
 				font-size: 1rem;
 				font-weight: 500;
 				margin: 0;
-				transition: margin $filter-transition-timing;
 			}
 
 			.filter-summary-title-chevron {
@@ -92,9 +99,7 @@ export default {
 	&.open {
 		.filter-summary {
 			.filter-summary-title-row {
-				.filter-summary-title {
-					margin: 0.25rem 0 0.75rem 0;
-				}
+				margin: 0.25rem 0 0.75rem 0;
 
 				.filter-summary-title-chevron {
 					transform: rotate(180deg);

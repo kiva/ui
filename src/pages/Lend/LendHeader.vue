@@ -1,5 +1,12 @@
 <template>
-	<div class="row lend-header-row">
+	<div
+		class="row lend-header-row"
+		:class="{
+			'side-arrows-padding': sideArrowsPadding,
+			'hard-left-align': hardLeftAlign,
+			'side-pinned-filter-padding': sidePinnedFilterPadding,
+		}"
+	>
 		<div class="heading-region column small-12">
 			<view-toggle :browse-url="browseUrl" :filter-url="filterUrl" />
 
@@ -21,13 +28,25 @@ export default {
 	props: {
 		browseUrl: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		filterUrl: {
 			type: String,
-			default: ''
+			default: '',
 		},
-	}
+		sideArrowsPadding: {
+			type: Boolean,
+			default: false,
+		},
+		sidePinnedFilterPadding: {
+			type: Boolean,
+			default: false,
+		},
+		hardLeftAlign: {
+			type: Boolean,
+			default: false,
+		},
+	},
 };
 </script>
 
@@ -35,11 +54,9 @@ export default {
 @import 'settings';
 
 .lend-header-row {
-	max-width: 63.75rem;
-
 	.heading-region {
 		margin: 2rem 0;
-		padding: 0 2.5rem;
+		padding: 0 1rem;
 
 		.view-toggle {
 			margin: 0.125rem 0 0 0.375rem;
@@ -62,6 +79,30 @@ export default {
 		@media (hover: none) {
 			margin: 1rem 0;
 			padding: 0 1rem;
+		}
+	}
+
+	&.side-arrows-padding {
+		max-width: 63.75rem;
+
+		.heading-region {
+			padding: 0 2.5rem;
+		}
+	}
+
+	&.hard-left-align {
+		.page-subhead {
+			margin-left: rem-calc(-1);
+		}
+
+		h1 {
+			margin-left: rem-calc(-2.5);
+		}
+	}
+
+	&.side-pinned-filter-padding {
+		@include breakpoint(1194px) {
+			max-width: rem-calc(1174);
 		}
 	}
 }

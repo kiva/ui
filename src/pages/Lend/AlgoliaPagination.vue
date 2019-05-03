@@ -14,7 +14,7 @@
 			<a
 				v-else
 				:href="createUrl(currentRefinement - 1)"
-				@click.prevent="refine(currentRefinement - 1)"
+				@click.prevent="previousPage"
 				aria-label="Previous"
 				class="ais-Pagination-link"
 			>
@@ -36,7 +36,7 @@
 
 			<a v-else-if="number > 0"
 				:href="createUrl(number - 1)"
-				@click.prevent="refine(number - 1)"
+				@click.prevent="goToPage(number - 1)"
 				class="ais-Pagination-link">
 				{{ number }}
 			</a>
@@ -58,7 +58,7 @@
 			<a
 				v-else
 				:href="createUrl(currentRefinement + 1)"
-				@click.prevent="refine(currentRefinement + 1)"
+				@click.prevent="nextPage"
 				aria-label="Next"
 				class="ais-Pagination-link"
 			>
@@ -71,12 +71,16 @@
 <script>
 import _range from 'lodash/range';
 import _uniq from 'lodash/uniq';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
 		KvIcon,
 	},
+	mixins: [
+		smoothScrollMixin,
+	],
 	props: {
 		currentRefinement: {
 			type: Number,
@@ -149,6 +153,29 @@ export default {
 			}
 
 			return numbers;
+		},
+	},
+	methods: {
+		requestPage(page) {
+			this.refine(page);
+			setTimeout(() => {
+				this.$fireServerPageView();
+			}, 400);
+		},
+		goToPage(page) {
+			this.runOnPagination();
+			this.requestPage(page);
+		},
+		nextPage() {
+			this.runOnPagination();
+			this.requestPage(this.currentRefinement + 1);
+		},
+		previousPage() {
+			this.runOnPagination();
+			this.requestPage(this.currentRefinement - 1);
+		},
+		runOnPagination() {
+			this.smoothScrollTo({ yPosition: 0, millisecondsToAnimate: 125 });
 		},
 	},
 };

@@ -1,5 +1,5 @@
 <template>
-	<div class="list-loan-card row">
+	<div class="row list-loan-card">
 		<div class="list-loan-card-desktop-column show-for-large large-4 xlarge-4 columns">
 			<div class="list-loan-card-desktop-column-container row">
 				<div class="small-12 columns">
@@ -21,7 +21,7 @@
 				</div>
 				<div class="small-12 columns">
 					<div class="list-loan-card-desktop-column-text-wrapper row">
-						<div class="large-12 xxlarge-7 columns">
+						<div class="large-12 xxlarge-7 columns" v-if="loan.partnerName">
 							<div class="list-loan-card-desktop-column-title">Field Partner</div>
 							<div class="list-loan-card-desktop-column-content">{{ loan.partnerName }}</div>
 						</div>
@@ -53,7 +53,7 @@
 						@favorite-toggled="toggleFavorite"
 					/>
 				</div>
-				<div class="small-7 medium-8 large-5 xlarge-6 xxlarge-7 columns">
+				<div class="small-7 medium-8 large-5 xlarge-6 columns">
 					<borrower-info-header
 						:country="loan.geocode.country.name"
 						:name="loan.name"
@@ -61,7 +61,7 @@
 						class="list-loan-card-borrower-info-header"
 					/>
 				</div>
-				<div class="large-7 xlarge-6 xxlarge-5 columns show-for-large">
+				<div class="large-7 xlarge-6 columns show-for-large">
 					<action-button
 						:loan-id="loan.id"
 						:loan="loan"
@@ -69,6 +69,7 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -82,6 +83,7 @@
 						:matching-text="loan.matchingText"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 					/>
 				</div>
 			</div>
@@ -95,12 +97,15 @@
 					:loan-id="loan.id"
 					class="small-12 columns"
 				/>
-				<!-- eslint-disable-next-line -->
-				<div class="fundraising-wrapper small-12 medium-10 medium-offset-1 large-8 large-offset-0 xlarge-6 xxlarge-7 columns">
+				<!-- eslint-disable max-len -->
+				<div
+					class="fundraising-wrapper small-12 medium-10 medium-offset-1 large-8 large-offset-0 xlarge-6 xxlarge-7 columns"
+					v-if="!isExpired"
+				>
+					<!-- eslint-enable max-len -->
 					<fundraising-status
 						:amount-left="amountLeft"
 						:percent-raised="percentRaised"
-						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
 						:expiring-soon-message="expiringSoonMessage"
 						:is-funded="isFunded"
 					/>
@@ -115,6 +120,7 @@
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
+						:is-expired="isExpired"
 						class="list-loan-card-action-button"
 
 						@click.native="trackInteraction({
@@ -127,6 +133,7 @@
 							:matching-text="loan.matchingText"
 							:is-funded="isFunded"
 							:is-selected-by-another="isSelectedByAnother"
+							:is-expired="isExpired"
 						/>
 					</div>
 				</div>
@@ -194,6 +201,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		isExpired: {
+			type: Boolean,
+			default: false,
+		},
 		amountLeft: {
 			type: Number,
 			default: 0,
@@ -225,8 +236,6 @@ export default {
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
 	transition: box-shadow 0.15s linear;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
 
 	.list-loan-card-desktop-column {
 		padding: 0;
@@ -288,6 +297,10 @@ export default {
 				}
 			}
 		}
+	}
+
+	&.row {
+		margin: 1rem 0;
 	}
 
 	&:hover {

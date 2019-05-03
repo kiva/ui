@@ -17,6 +17,7 @@ import CheckoutNowButton from './CheckoutNowButton';
 import LendAgainButton from './LendAgainButton';
 import LoanFundedText from './LoanFundedText';
 import LoanSelectedText from './LoanSelectedText';
+import LoanExpiredText from './LoanExpiredText';
 
 export default {
 	mixins: [
@@ -48,6 +49,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		isExpired: {
+			type: Boolean,
+			default: false,
+		},
 		isLend25Button: {
 			type: Boolean,
 			default: false
@@ -66,6 +71,9 @@ export default {
 			}
 			if (this.isSelectedByAnother) {
 				return LoanSelectedText;
+			}
+			if (this.isExpired) {
+				return LoanExpiredText;
 			}
 
 			return this.isLend25Button ? Lend25Button : LendIncrementButton;

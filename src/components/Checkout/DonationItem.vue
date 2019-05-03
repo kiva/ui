@@ -47,7 +47,7 @@
 					@blur="validateInput"
 					@keyup.enter.prevent="updateDonation()">
 				<kv-button
-					class="secondary"
+					class="secondary update-donation-inline-button"
 					@click.native.prevent.stop="updateDonation()"
 				>Update</kv-button>
 				<div
@@ -500,8 +500,20 @@ export default {
 	}
 }
 
+.inline-donation-amount {
+	width: rem-calc(132);
+
+	@include breakpoint(medium) {
+		width: rem-calc(90);
+	}
+}
+
 .donation-amount-input-wrapper {
 	padding-left: rem-calc(10);
+
+	.update-donation-inline-button.secondary {
+		@extend .inline-donation-amount;
+	}
 
 	@include breakpoint(medium) {
 		float: right;
@@ -510,17 +522,17 @@ export default {
 }
 
 .donation-amount-input {
+	@extend .inline-donation-amount;
+
 	display: block;
 	border: 1px solid $charcoal;
 	border-radius: $button-radius;
-	width: rem-calc(132);
 	text-align: center;
 	font-weight: $global-weight-highlight;
 	color: $charcoal;
 	margin-bottom: rem-calc(15);
 
 	@include breakpoint(medium) {
-		width: rem-calc(90);
 		height: rem-calc(36);
 	}
 }
