@@ -100,7 +100,7 @@ export default {
 		gender: {
 			type: String,
 			default: ''
-		},
+		}
 	},
 	computed: {
 		itemInBasket() {

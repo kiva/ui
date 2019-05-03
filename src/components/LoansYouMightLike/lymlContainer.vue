@@ -182,6 +182,12 @@ export default {
 						loansYouMightLike.push(sameCountryLoans[i]);
 						console.log('same country loans', loansYouMightLike);
 					}
+					
+					// attempted to redo this for loop using ES6, failed so far
+					// for (const value of sameCountryLoans) {
+					// 	loansYouMightLike.push(sameCountryLoans[value]);
+					// 	console.log('same country loans', loansYouMightLike);
+					// }
 				}
 
 				// ==============================================
@@ -224,18 +230,27 @@ export default {
 				}
 
 				// ===============================================
+				// Random loans to fill up the rest of the loansYouMightLike[]
 				const randomLoans = _filter(
 					_get(data.data.lend, 'randomLoan.values') || [],
 					loan => this.targetLoan.id !== loan.id
 				);
 
-				// Check the length of the length of the loansYouMightLike array, 
+				// Check the length of the length of the loansYouMightLike array,
 				// however many it is under 16 add random loans until loansYouMightLike.length === 16
-				
-				loansYouMightLike.push(randomLoans[0]);
+				const currentLength = loansYouMightLike.length;
+				if (currentLength < 16) {
+					for (let i = currentLength; i < 16; i += 1) {
+						loansYouMightLike.push(randomLoans[i]);
+						console.log('random loans', loansYouMightLike);
+					}
+				}
 
+				console.log('1', { loansYouMightLike });
+				// not convinced this _shuffle is working, need to verify
 				// randomize array order
 				this.loansYouMightLike = _shuffle(loansYouMightLike);
+				console.log('2', { loansYouMightLike });
 
 				// once we have loans flip the switch to show them
 				this.showLYML = true;
