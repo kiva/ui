@@ -58,6 +58,7 @@
 								<div v-if="showFundraisingThermometer" class="fundraising-thermometer">
 									<fundraising-status
 										:amount-left="amountLeft"
+										:expiring-soon-message="expiringSoonMessage"
 										:is-expiring-soon="false"
 										:is-funded="false"
 										:percent-raised="percentRaised"
@@ -126,6 +127,10 @@ export default {
 		experimentData: {
 			type: Object,
 			default: () => {},
+		},
+		expiringSoonMessage: {
+			type: String,
+			default: ''
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,
