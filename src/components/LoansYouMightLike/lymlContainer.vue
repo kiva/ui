@@ -107,7 +107,7 @@ export default {
 				: smallCardWidthPlusPadding;
 		},
 		minLeftMargin() {
-			const cardCount = this.lymlVariant === 'variant-a' ? 3 : 4;
+			const cardCount = this.loansYouMightLike.length || 0;
 			return (cardCount - this.cardsInWindow) * -this.cardWidth;
 		},
 		shiftIncrement() {
@@ -226,9 +226,15 @@ export default {
 
 				// Check the length of the loansYouMightLike array,
 				// however many it is under 16 add random loans until loansYouMightLike.length === 16
-				const currentLength = loansYouMightLike.length;
-				if (currentLength <= 16) {
-					for (let i = currentLength; i < 16; i += 1) {
+				if (loansYouMightLike.length < 16) {
+					// calculate the number of random loan needed to reach 16
+					console.log('loans you might light length', loansYouMightLike.length);
+					const randomLoansNeeded = 16 - loansYouMightLike.length;
+					// push through all available randomLoans that we have up until the loansYouMightLike[] reaches 16
+					// TODO: I don't think this is working YET
+					// eslint-disable-next-line
+					for (let i = loansYouMightLike.length; i < randomLoansNeeded && randomLoans !== undefined; i += 1) {
+						console.log('random loan added');
 						loansYouMightLike.push(randomLoans[i]);
 					}
 				}
@@ -238,6 +244,7 @@ export default {
 
 				// randomize array order
 				this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
+				console.log('new this.loansyoumightlike length', this.loansYouMightLike.length);
 
 				// once we have loans flip the switch to show them
 				this.showLYML = true;
