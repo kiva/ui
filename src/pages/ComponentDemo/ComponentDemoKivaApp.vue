@@ -45,7 +45,7 @@ export default {
 				// first query the setting
 				client.query({
 					query: expQuery,
-					variables: { key: 'uiexp.test' },
+					variables: { key: 'test' },
 				}).then(() => {
 					// with the cache now primed, query for a version assignment
 					client.query({
@@ -68,7 +68,7 @@ export default {
 		// section to only do the experiment assignment from the client.
 		// this.apollo.query({
 		// 	query: expQuery,
-		// 	variables: { key: 'uiexp.test' },
+		// 	variables: { key: 'test' },
 		// }).then(() => {
 		// 	this.apollo.query({
 		// 		query: verQuery,
@@ -88,4 +88,3 @@ export default {
 	padding: 1.625rem 0;
 }
 </style>
-
