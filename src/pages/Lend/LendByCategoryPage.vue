@@ -1,6 +1,6 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<lend-header filter-url="/lend" :side-arrows-padding="true"/>
+		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true"/>
 
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
@@ -147,9 +147,6 @@ export default {
 		};
 	},
 	computed: {
-		ssrCategoryIds() {
-			return _take(this.realCategoryIds, ssrRowLimiter);
-		},
 		categoryIds() {
 			return _map(this.categorySetting, 'id');
 		},
