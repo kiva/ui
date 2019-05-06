@@ -91,11 +91,13 @@ export default {
 		computedCategories() {
 			let categoryRowsActive = false;
 			// try to get status of category row exp
-			try {
-				const expData = JSON.parse(this.legacyExpData);
-				const categoryRowsExp = _get(expData, 'category_rowscategory_rows');
-				categoryRowsActive = categoryRowsExp && categoryRowsExp.version === 'b';
-			} catch (e) { console.error(e); }
+			if (this.legacyExpData !== '') {
+				try {
+					const expData = JSON.parse(this.legacyExpData);
+					const categoryRowsExp = _get(expData, 'category_rowscategory_rows');
+					categoryRowsActive = categoryRowsExp && categoryRowsExp.version === 'b';
+				} catch (e) { console.error(e); }
+			}
 			// convert category urls to use /lend-by-category if exp is active
 			if (categoryRowsActive) {
 				return _map(this.categories, category => {
