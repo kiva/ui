@@ -304,6 +304,9 @@ export default {
 		}
 	},
 	mounted() {
+		// This empty upon page load so we refetch in order to be able to use when we need it.
+		// TODO: Move this to a global operation that runs once, pushing the results into Apollo client state
+		// TODO: Refactor this operation to use a watch query on the afformentioned client state.
 		console.log(JSON.stringify(this.kvAuth0));
 		if (this.kvAuth0.user === null) {
 			this.kvAuth0.checkSession().then(() => {
