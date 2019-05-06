@@ -58,7 +58,6 @@ query (
 			}
 		}
 
-		# TODO: Might be able to delete this, will need to verify
 		sameActivity: loans (filters: {activity: $activity, status: fundraising}, limit: 5, sortBy: random) {
 			values {
 				...loanCardFields

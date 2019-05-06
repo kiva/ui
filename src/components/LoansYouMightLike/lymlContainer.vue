@@ -224,27 +224,26 @@ export default {
 					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 
-				// Check the length of the loansYouMightLike array,
-				// however many it is under 16 add random loans until loansYouMightLike.length === 16
-				if (loansYouMightLike.length < 16) {
-					// calculate the number of random loan needed to reach 16
-					console.log('loans you might light length', loansYouMightLike.length);
-					const randomLoansNeeded = 16 - loansYouMightLike.length;
-					// push through all available randomLoans that we have up until the loansYouMightLike[] reaches 16
-					// TODO: I don't think this is working YET
-					// eslint-disable-next-line
-					for (let i = loansYouMightLike.length; i < randomLoansNeeded && randomLoans !== undefined; i += 1) {
-						console.log('random loan added');
-						loansYouMightLike.push(randomLoans[i]);
+				// Pruning out duplicates among queried loan sets
+				const prunedLoansYouMightLike = _uniqBy(loansYouMightLike, 'id');
+
+				// Check the length of the prunedLoansYouMightLike array,
+				// however many it is under 16, add random loans until prunedLoansYouMightLike.length === 16
+				if (prunedLoansYouMightLike.length < 16 && randomLoans.length > 0) {
+					// Calculate the number of random loans needed to reach 16
+					const randomLoansNeeded = 16 - prunedLoansYouMightLike.length;
+					// Push through all available randomLoans that we have up until the loansYouMightLike[] reaches 16
+					// or we run out of randomLoans
+					for (let i = 0; i < randomLoansNeeded && randomLoans.length >= i; i += 1) {
+						prunedLoansYouMightLike.push(randomLoans[i]);
 					}
 				}
 
 				// Using _uniqBy to remove duplicate loans from being displayed in LYML suggestions
-				const prunedLoansYouMightLike = _uniqBy(loansYouMightLike, 'id');
+				const finalLoansYouMightLike = _uniqBy(prunedLoansYouMightLike, 'id');
 
-				// randomize array order
-				this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
-				console.log('new this.loansyoumightlike length', this.loansYouMightLike.length);
+				// Randomize array order to be displayed in the front end
+				this.loansYouMightLike = _shuffle(finalLoansYouMightLike);
 
 				// once we have loans flip the switch to show them
 				this.showLYML = true;
