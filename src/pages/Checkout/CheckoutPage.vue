@@ -4,9 +4,8 @@
 			<div class="columns">
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
-						<div v-if="!emptyBasket && !isLoggedIn || preCheckoutStep" class="checkout-step">
-							<hr>
-							<span class="number-icon number-2">2</span>
+						<div class="checkout-steps-wrapper">
+							<checkout-steps :checkout-steps="currentStep" />
 						</div>
 
 						<basket-items-list
@@ -38,8 +37,8 @@
 							@refreshtotals="refreshTotals"
 							@updating-totals="setUpdatingTotals" />
 
-						<div v-if="isLoggedIn" class="checkout-actions row">
-							<div class="small-12">
+						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
+							<div v-if="isLoggedIn" class="small-12">
 								<pay-pal-exp
 									v-if="showPayPal && !showBraintree"
 									:show-braintree="showBraintree"
@@ -60,6 +59,15 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									class=" checkout-button" />
+							</div>
+
+							<div v-else class="columns small-12">
+								<kv-button
+									v-if="showLoginContinueButton"
+									class="checkout-button smallest"
+									v-kv-track-event="['basket', 'Login to Continue Button']"
+									title="Login to Continue Button"
+									@click.prevent.native="loginToContinue">Login to Continue</kv-button>
 							</div>
 						</div>
 
@@ -116,11 +124,13 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
@@ -140,6 +150,7 @@ import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelect
 export default {
 	components: {
 		WwwPage,
+		CheckoutSteps,
 		PayPalExp,
 		KivaCreditPayment,
 		KvButton,
@@ -154,7 +165,7 @@ export default {
 		PaymentWrapper,
 		RandomLoanSelector,
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'kvAuth0'],
 	mixins: [
 		checkoutUtils
 	],
@@ -165,7 +176,6 @@ export default {
 		return {
 			myBalance: null,
 			myId: null,
-			currentStep: 'basket',
 			loans: [],
 			donations: [],
 			kivaCards: [],
@@ -175,6 +185,7 @@ export default {
 			updatingTotals: false,
 			showReg: true,
 			showLogin: false,
+			showLoginContinueButton: false,
 			loginLoading: false,
 			isHovered: false,
 			activeLoginDuration: 3600,
@@ -216,9 +227,19 @@ export default {
 				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
 			});
 		},
-		result({ data }) {
+		result({ data, errors }) {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
+			// check for authentication errors to indicate initial login status
+			if (errors && errors.length) {
+				console.log(errors);
+				const authErrors = _filter(errors, error => {
+					return error.code === 'api.authenticationRequired';
+				});
+				if (authErrors.length) {
+					this.showLoginContinueButton = true;
+				}
+			}
 			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
@@ -283,6 +304,16 @@ export default {
 		}
 	},
 	mounted() {
+		console.log(JSON.stringify(this.kvAuth0));
+		if (this.kvAuth0.user === null) {
+			this.kvAuth0.checkSession().then(() => {
+				console.log('kvAuth0 checkSession');
+				console.log(JSON.stringify(this.kvAuth0.user));
+				this.myId = _get(this.kvAuth0.user, 'https://www.kiva.org/kiva_id');
+				this.lastActiveLogin = _get(this.kvAuth0.user, 'https://www.kiva.org/last_login');
+			});
+		}
+
 		// fire tracking event when the page loads
 		// - this event will be duplicated when the page reloads with a newly registered/logged in user
 		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
@@ -316,6 +347,9 @@ export default {
 			}
 			return false;
 		},
+		currentStep() {
+			return this.isLoggedIn ? 'payment' : 'basket';
+		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
 		},
@@ -340,6 +374,30 @@ export default {
 		},
 	},
 	methods: {
+		loginToContinue() {
+			if (this.kvAuth0.enabled) {
+				// this.kvAuth0.redirectUri = window.location.href;
+				this.kvAuth0.popupLogin().then(result => {
+					// Only refetch data if login was successful
+					if (result) {
+						// console.log(result);
+						this.lastActiveLogin = _get(result, 'idTokenPayload.https://www.kiva.org/last_login');
+						this.myId = _get(result, 'https://www.kiva.org/kiva_id');
+						// Refetch the queries for all the components in this route. All the components that use
+						// the default options for the apollo plugin or that setup their own query observer will update
+						// @todo maybe show a loding state until this completes?
+						const matched = this.$router.getMatchedComponents(this.$route);
+						return preFetchAll(matched, this.apollo, {
+							route: this.$route,
+							kvAuth0: this.kvAuth0,
+						}).then(data => {
+							console.log(data);
+							// TODO: Verify no errors and complete refresh sequence
+						});
+					}
+				});
+			}
+		},
 		/* Validate the Entire Basket on mounted */
 		validatePreCheckout() {
 			this.setUpdatingTotals(true);
