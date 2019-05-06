@@ -3,8 +3,8 @@
 		<div class="page-content">
 			<form
 				id="registerSocialTermsForm"
-				ref="registerSocialTermsForm"
 				class="promptForm"
+				action="."
 				@submit.prevent.stop="postRegisterSocialForm">
 
 				<div class="terms">
