@@ -121,7 +121,6 @@ export default {
 	data() {
 		return {
 			showLYML: false,
-			lymlVariant: null,
 			randomLoan: [],
 			loansYouMightLike: [],
 			loading: true,
