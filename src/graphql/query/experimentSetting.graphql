@@ -1,6 +1,6 @@
-query($key: String) {
+query($key: String!) {
 	general {
-		setting(setting: $key) {
+		uiExperimentSetting(key: $key) {
 			key
 			value
 		}

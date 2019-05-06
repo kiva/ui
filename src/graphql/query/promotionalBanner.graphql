@@ -15,22 +15,22 @@ query($basketId: String) {
 		lendingRewardOffered
 	}
 	general {
-		holiday_enabled: setting(setting: "feature.holiday_mode.enabled") {
+		holiday_enabled: featureSetting(key: "holiday_mode.enabled") {
 			value
 		}
-		holiday_start_time: setting(setting: "feature.holiday_mode.start_time") {
+		holiday_start_time: featureSetting(key: "holiday_mode.start_time") {
 			value
 		}
-		holiday_end_time: setting(setting: "feature.holiday_mode.end_time") {
+		holiday_end_time: featureSetting(key: "holiday_mode.end_time") {
 			value
 		}
-		promo_enabled: setting(setting: "promo.topnav_promo.enabled") {
+		promo_enabled: promoSetting(key: "topnav_promo.enabled") {
 			value
 		}
-		promo_start_time: setting(setting: "promo.topnav_promo.start_time") {
+		promo_start_time: promoSetting(key: "topnav_promo.start_time") {
 			value
 		}
-		promo_end_time: setting(setting: "promo.topnav_promo.end_time") {
+		promo_end_time: promoSetting(key: "topnav_promo.end_time") {
 			value
 		}
 	}

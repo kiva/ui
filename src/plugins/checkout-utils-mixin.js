@@ -82,9 +82,10 @@ export default {
 				}
 				/* eslint-enable max-len */
 
-				// Refresh the page if they have timed out
+				// We used to refresh the page if they have timed out
+				// TODO: What should we do now? Re-show the login button? Flash a Message?
 				if (error === 'api.authenticationRequired') {
-					window.location = window.location;
+					// window.location = window.location;
 				}
 
 				// Handle multiple errors

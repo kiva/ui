@@ -2,7 +2,7 @@
 	<div class="www-page">
 		<appeal-banner />
 		<global-promo />
-		<the-header />
+		<the-header :hide-search-in-header="hideSearchInHeader" />
 		<slot name="secondary"></slot>
 		<main :class="{'gray-background': grayBackground}">
 			<slot name="tertiary"></slot>
@@ -37,6 +37,10 @@ export default {
 	},
 	props: {
 		grayBackground: {
+			type: Boolean,
+			default: false,
+		},
+		hideSearchInHeader: {
 			type: Boolean,
 			default: false,
 		},

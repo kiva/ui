@@ -1,6 +1,6 @@
 query {
 	general {
-		experiment: setting(setting: "uiexp.featured_loans") {
+		experiment: uiExperimentSetting(key: "featured_loans") {
 			key
 			value
 		}

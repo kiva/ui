@@ -8,6 +8,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 const activeExperiments = [
 	'lend_filter',
 	'pinned_filter',
+	'algolia_search',
 ];
 
 // TODO: Enhance Error handling
@@ -45,7 +46,7 @@ export function fetchExperimentSettings(settingId, client) {
 		client.query({
 			query: experimentSettingQuery,
 			variables: {
-				key: `uiexp.${settingId}` || '',
+				key: settingId || '',
 			},
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
