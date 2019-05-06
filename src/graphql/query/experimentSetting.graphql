@@ -1,4 +1,4 @@
-query($key: String) {
+query($key: String!) {
 	general {
 		uiExperimentSetting(key: $key) {
 			key
