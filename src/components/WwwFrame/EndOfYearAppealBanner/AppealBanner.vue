@@ -126,8 +126,9 @@ export default {
 	},
 	computed: {
 		showAppeal() {
-			// make sure the appeal is enable + we're not on checkout
-			return (this.appealEnabled || this.appealMatchEnabled) && this.$route.path !== '/checkout';
+			// make sure the appeal is enable + we're not on certain whitelisted pages
+			var whitelist = ["/checkout", "/error", "/register/social"];
+			return (this.appealEnabled || this.appealMatchEnabled) && !whitelist.includes(this.$route.path);
 		},
 	},
 	mounted() {
