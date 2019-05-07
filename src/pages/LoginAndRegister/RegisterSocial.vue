@@ -58,6 +58,12 @@ export default {
 		};
 	},
 
+	mounted() {
+		if (!this.$route.query.state) {
+			this.$router.push('/error');
+		}
+	},
+
 	methods: {
 		validateTerms() {
 			return this.newAcctTerms;
