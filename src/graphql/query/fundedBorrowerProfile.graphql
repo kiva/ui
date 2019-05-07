@@ -1,0 +1,23 @@
+query {
+	lend {
+		loans {
+      		values {
+				image {
+					id
+				}
+				borrowers {
+					firstName
+				}
+				status
+				loanFundraisingInfo {
+					fundedAmount
+				}
+				geocode {
+					city
+				}
+				use
+				description
+			}
+		}
+	}
+}
