@@ -29,6 +29,8 @@ export default function createApolloClient({
 			if (object.__typename === 'Shop') return 'Shop';
 			return defaultDataIdFromObject(object);
 		},
+		// Use a simpler underlying cache for server renders
+		resultCaching: typeof window !== 'undefined',
 	});
 
 	return new ApolloClient({
