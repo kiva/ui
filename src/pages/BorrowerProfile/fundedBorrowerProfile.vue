@@ -13,7 +13,7 @@
 					:standard-image-url="loan.image.default"
 					v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
 					:open-in-new-tab="true"
-					use-default-styles="false"
+					:use-default-styles="false"
 				/>
 			</div>
 		</div>
