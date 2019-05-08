@@ -3,6 +3,9 @@
 		<!-- Borrower photo -->
 		<div class="row">
 			<div class="small-6 columns">
+				<!-- TODO:
+				- tracking info needs to be updated
+				- need to fold back in logged in state :is-visitor="isVisitor" -->
 				<loan-card-image
 					:loan-id="loan.id"
 					:name="loan.name"
@@ -10,6 +13,7 @@
 					:standard-image-url="loan.image.default"
 					v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
 					:open-in-new-tab="true"
+					use-default-styles="false"
 				/>
 			</div>
 		</div>
@@ -26,6 +30,9 @@
 		<!-- Loan description -->
 		<div class='row' v-html="loan.description"></div>
 		<!-- Link to see full borrower profile in old stack. Need borrower ID here -->
+		<div class='row'>
+			<router-link :to="`/lend/${loan.id}`">Full Borrower Profile</router-link>
+		</div>
 	</www-page>
 </template>
 
