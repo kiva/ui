@@ -1,10 +1,12 @@
 <template>
 	<www-page>
 		<div class="page-content">
+			<h1>Almost done...</h1>
+			<p>To complete your registration, please agree to the Terms of Use and Privacy Policy</p>
 			<form
 				id="registerSocialTermsForm"
-				ref="registerSocialTermsForm"
 				class="promptForm"
+				action="."
 				@submit.prevent.stop="postRegisterSocialForm">
 
 				<div class="terms">

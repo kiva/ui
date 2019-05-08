@@ -5,7 +5,7 @@
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
 						<div class="checkout-steps-wrapper">
-							<checkout-steps :checkout-steps="currentStep" />
+							<checkout-steps :current-step="currentStep" />
 						</div>
 
 						<basket-items-list
@@ -124,7 +124,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
-import { preFetchAll } from '@/util/apolloPreFetch';
+// import { preFetchAll } from '@/util/apolloPreFetch';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
@@ -228,8 +228,6 @@ export default {
 			});
 		},
 		result({ data, errors }) {
-			this.myBalance = _get(data, 'my.userAccount.balance');
-			this.myId = _get(data, 'my.userAccount.id');
 			// check for authentication errors to indicate initial login status
 			if (errors && errors.length) {
 				console.log(errors);
@@ -240,7 +238,15 @@ export default {
 					this.showLoginContinueButton = true;
 				}
 			}
+
+			console.log('-------- prefetch data ---------');
+			console.log(data);
+			// user data
+			this.myBalance = _get(data, 'my.userAccount.balance');
+			this.myId = _get(data, 'my.userAccount.id');
+			this.teams = _get(data, 'my.lender.teams.values');
 			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
+			// basket data
 			this.totals = _get(data, 'shop.basket.totals');
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
@@ -250,35 +256,16 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			// change this to check the token
-			// this.lastActiveLogin = parseInt(_get(data, 'general.lastActiveLogin.data'), 10) || 0;
-			this.teams = _get(data, 'my.lender.teams.values');
 			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
-		// // if we have a user id but are not actively logged in
-		// if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-		// 	this.switchToLogin();
-		// }
-		//
-		// // Check for some page content customizations based on query
-		// if (this.$route.query
-		// 	// use when arriving directly to force showing the login form for with ?login=true
-		// 	&& (this.$route.query.login === 'true'
-		// 	// The login form refreshes the page with ?login=success, used to show login welcome message
-		// 	|| this.$route.query.login === 'success')) {
-		// 	this.preCheckoutStep = 'login';
-		// 	this.switchToLogin();
-		// } else if (this.$route.query
-		// 	// use when arriving directly to force register form with ?register=true
-		// 	&& (this.$route.query.register === 'true'
-		// 	// The register form refreshes the page with ?register=success, used to show register welcome message
-		// 	|| this.$route.query.register === 'success')) {
-		// 	this.preCheckoutStep = 'register';
-		// 	this.switchToRegister();
-		// }
+		// if we have a user id but are not actively logged in
+		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+			this.showLoginContinueButton = true;
+		}
 
 		this.holidayModeEnabled = settingEnabled(
 			this.apollo.readQuery({
@@ -311,10 +298,11 @@ export default {
 		if (this.kvAuth0.user === null) {
 			this.kvAuth0.checkSession().then(() => {
 				console.log('kvAuth0 checkSession');
-				console.log(JSON.stringify(this.kvAuth0.user));
-				this.myId = _get(this.kvAuth0.user, 'https://www.kiva.org/kiva_id');
-				this.lastActiveLogin = _get(this.kvAuth0.user, 'https://www.kiva.org/last_login');
+				console.log(this.kvAuth0.user);
+				this.setAuthStatus(_get(this.kvAuth0, 'user'));
 			});
+		} else {
+			this.setAuthStatus(_get(this.kvAuth0, 'user'));
 		}
 
 		// fire tracking event when the page loads
@@ -379,26 +367,46 @@ export default {
 	methods: {
 		loginToContinue() {
 			if (this.kvAuth0.enabled) {
-				// this.kvAuth0.redirectUri = window.location.href;
+				this.updatingTotals = true;
 				this.kvAuth0.popupLogin().then(result => {
 					// Only refetch data if login was successful
 					if (result) {
-						// console.log(result);
-						this.lastActiveLogin = _get(result, 'idTokenPayload.https://www.kiva.org/last_login');
-						this.myId = _get(result, 'https://www.kiva.org/kiva_id');
+						console.log(result);
+						console.log(this.$kvAuth0);
+						// this.setAuthStatus(_get(result, 'idTokenPayload'));
+
+						window.location = window.location;
+
 						// Refetch the queries for all the components in this route. All the components that use
 						// the default options for the apollo plugin or that setup their own query observer will update
 						// @todo maybe show a loding state until this completes?
-						const matched = this.$router.getMatchedComponents(this.$route);
-						return preFetchAll(matched, this.apollo, {
-							route: this.$route,
-							kvAuth0: this.kvAuth0,
-						}).then(data => {
-							console.log(data);
-							// TODO: Verify no errors and complete refresh sequence
-						});
+						// const matched = this.$router.getMatchedComponents(this.$route);
+						// When this is initially called the graphql doesn't have the auth token
+						// return preFetchAll(matched, this.apollo, {
+						// 	route: this.$route,
+						// 	kvAuth0: this.kvAuth0,
+						// });
 					}
+					return false;
 				});
+				// .then(data => {
+				// here we get all the datas from the prefetch and they are authenticated
+				// console.log(data);
+
+				// TODO: Verify no errors and complete refresh sequence
+				// const idTokenPayload = _get(data, 'idTokenPayload');
+				// if (typeof idTokenPayload !== 'undefined') {
+				// 	this.lastActiveLogin = idTokenPayload['https://www.kiva.org/last_login'];
+				// 	this.myId = idTokenPayload['https://www.kiva.org/kiva_id'];
+				// }
+				// });
+			}
+		},
+		setAuthStatus(userState) {
+			if (typeof userState !== 'undefined') {
+				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
+				this.myId = userState['https://www.kiva.org/kiva_id'];
+				this.showLoginContinueButton = false;
 			}
 		},
 		/* Validate the Entire Basket on mounted */

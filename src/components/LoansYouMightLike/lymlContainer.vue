@@ -54,6 +54,7 @@
 <script>
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
+import _uniqBy from 'lodash/uniqBy';
 import _throttle from 'lodash/throttle';
 import _map from 'lodash/map';
 import _filter from 'lodash/filter';
@@ -106,7 +107,7 @@ export default {
 				: smallCardWidthPlusPadding;
 		},
 		minLeftMargin() {
-			const cardCount = this.lymlVariant === 'variant-a' ? 3 : 4;
+			const cardCount = this.loansYouMightLike.length || 0;
 			return (cardCount - this.cardsInWindow) * -this.cardWidth;
 		},
 		shiftIncrement() {
@@ -120,7 +121,6 @@ export default {
 	data() {
 		return {
 			showLYML: false,
-			lymlVariant: null,
 			randomLoan: [],
 			loansYouMightLike: [],
 			loading: true,
@@ -162,52 +162,87 @@ export default {
 				variables: {
 					country: this.sameCountry,
 					activity: this.sameActivity,
-					sector: this.sameSector
+					sector: this.sameSector,
+					partner: this.partner,
+					gender: this.gender
 				}
 			}).then(data => {
 				const loansYouMightLike = [];
-				const randomLoans = _filter(
-					_get(data.data.lend, 'randomLoan.values') || [],
-					loan => this.targetLoan.id !== loan.id
-				);
 
-				loansYouMightLike.push(randomLoans[0]);
-
-				// same Country loans
+				// Same Country loans
+				// Filters out sameCountry loan if it's already in basket
 				const sameCountryLoans = _filter(
 					_get(data, 'data.lend.sameCountry.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
-				if (sameCountryLoans.length > 1) {
-					loansYouMightLike.push(sameCountryLoans[1]);
-				} else {
-					loansYouMightLike.push(randomLoans[1]);
-				}
 
-				// same Activity loans
-				const sameActivityLoans = _filter(
-					_get(data, 'data.lend.sameActivity.values') || [],
-					loan => this.targetLoan.id !== loan.id
-				);
-				if (sameActivityLoans.length > 1) {
-					loansYouMightLike.push(sameActivityLoans[1]);
-				} else {
-					loansYouMightLike.push(randomLoans[2]);
+				// Iterate through the first 4 items of the SameCountry loans,
+				// then push them into the loansYouMightLike array
+				if (sameCountryLoans.length > 1) {
+					for (let i = 0; i < sameCountryLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(sameCountryLoans[i]);
+					}
 				}
 
 				// same Sector loans
 				const sameSectorLoans = _filter(
 					_get(data, 'data.lend.sameSector.values') || [],
-					loan => this.targetLoan.id !== loan.id
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 				if (sameSectorLoans.length > 1) {
-					loansYouMightLike.push(sameSectorLoans[1]);
-				} else {
-					loansYouMightLike.push(randomLoans[3]);
+					for (let i = 0; i < sameSectorLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(sameSectorLoans[i]);
+					}
 				}
 
-				// randomize array order
-				this.loansYouMightLike = _shuffle(loansYouMightLike);
+				// same Partner loans
+				const samePartnerLoans = _filter(
+					_get(data, 'data.lend.samePartner.values') || [],
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
+				);
+				if (samePartnerLoans.length > 1) {
+					for (let i = 0; i < samePartnerLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(samePartnerLoans[i]);
+					}
+				}
+
+				// same Gender loans
+				const sameGenderLoans = _filter(
+					_get(data, 'data.lend.sameGender.values') || [],
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
+				);
+				if (sameGenderLoans.length > 1) {
+					for (let i = 0; i < sameGenderLoans.length && i < 4; i += 1) {
+						loansYouMightLike.push(sameGenderLoans[i]);
+					}
+				}
+
+				// Random loans to fill up the rest of the loansYouMightLike[]
+				const randomLoans = _filter(
+					_get(data.data.lend, 'randomLoan.values') || [],
+					loan => this.itemsInBasket.indexOf(loan.id) === -1
+				);
+
+				// Pruning out duplicates among queried loan sets
+				const prunedLoansYouMightLike = _uniqBy(loansYouMightLike, 'id');
+
+				// Check the length of the prunedLoansYouMightLike array,
+				// however many it is under 16, add random loans until prunedLoansYouMightLike.length === 16
+				if (prunedLoansYouMightLike.length < 16 && randomLoans.length > 0) {
+					// Calculate the number of random loans needed to reach 16
+					const randomLoansNeeded = 16 - prunedLoansYouMightLike.length;
+					// Push through all available randomLoans that we have up until the loansYouMightLike[] reaches 16
+					// or we run out of randomLoans
+					for (let i = 0; i < randomLoansNeeded && randomLoans.length >= i; i += 1) {
+						prunedLoansYouMightLike.push(randomLoans[i]);
+					}
+				}
+
+				// Using _uniqBy to remove duplicate loans from being displayed in LYML suggestions
+				const finalLoansYouMightLike = _uniqBy(prunedLoansYouMightLike, 'id');
+
+				// Randomize array order to be displayed in the front end
+				this.loansYouMightLike = _shuffle(finalLoansYouMightLike);
 
 				// once we have loans flip the switch to show them
 				this.showLYML = true;

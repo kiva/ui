@@ -93,6 +93,14 @@ export default {
 			type: String,
 			default: ''
 		},
+		partner: {
+			type: String,
+			default: ''
+		},
+		gender: {
+			type: String,
+			default: ''
+		}
 	},
 	computed: {
 		itemInBasket() {
@@ -112,8 +120,10 @@ export default {
 		loanType() {
 			const country = _get(this.loan, 'geocode.country.name');
 			const sector = _get(this.loan, 'sector.name');
+			const partner = _get(this.loan, 'partner.name');
+			const gender = _get(this.loan, 'gender.name');
 			const activity = _get(this.loan, 'activity.name');
-			return `location=${country},sector=${sector},activity=${activity}`;
+			return `location=${country},sector=${sector},partner=${partner},gender=${gender},activity=${activity}`;
 		}
 	},
 	methods: {
