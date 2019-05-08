@@ -5,7 +5,7 @@
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
 						<div class="checkout-steps-wrapper">
-							<checkout-steps :checkout-steps="currentStep" />
+							<checkout-steps :current-step="currentStep" />
 						</div>
 
 						<basket-items-list
@@ -124,7 +124,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
-import { preFetchAll } from '@/util/apolloPreFetch';
+// import { preFetchAll } from '@/util/apolloPreFetch';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
@@ -298,13 +298,11 @@ export default {
 		if (this.kvAuth0.user === null) {
 			this.kvAuth0.checkSession().then(() => {
 				console.log('kvAuth0 checkSession');
-				console.log(JSON.stringify(this.kvAuth0.user));
-				const user = _get(this.kvAuth0, 'user');
-				if (typeof idTokenPayload !== 'undefined') {
-					this.lastActiveLogin = user['https://www.kiva.org/last_login'];
-					this.myId = user['https://www.kiva.org/kiva_id'];
-				}
+				console.log(this.kvAuth0.user);
+				this.setAuthStatus(_get(this.kvAuth0, 'user'));
 			});
+		} else {
+			this.setAuthStatus(_get(this.kvAuth0, 'user'));
 		}
 
 		// fire tracking event when the page loads
@@ -381,27 +379,38 @@ export default {
 						}
 						console.log(this.$kvAuth0);
 
+						window.location = window.location;
+
 						// Refetch the queries for all the components in this route. All the components that use
 						// the default options for the apollo plugin or that setup their own query observer will update
 						// @todo maybe show a loding state until this completes?
-						const matched = this.$router.getMatchedComponents(this.$route);
+						// const matched = this.$router.getMatchedComponents(this.$route);
 						// When this is initially called the graphql doesn't have the auth token
-						return preFetchAll(matched, this.apollo, {
-							route: this.$route,
-							kvAuth0: this.kvAuth0,
-						});
+						// return preFetchAll(matched, this.apollo, {
+						// 	route: this.$route,
+						// 	kvAuth0: this.kvAuth0,
+						// });
 					}
 					return false;
-				}).then(data => {
-					// here we get all the datas from the prefetch and they are authenticated
-					console.log(data);
-					// TODO: Verify no errors and complete refresh sequence
-					// const idTokenPayload = _get(data, 'idTokenPayload');
-					// if (typeof idTokenPayload !== 'undefined') {
-					// 	this.lastActiveLogin = idTokenPayload['https://www.kiva.org/last_login'];
-					// 	this.myId = idTokenPayload['https://www.kiva.org/kiva_id'];
-					// }
 				});
+				// .then(data => {
+				// here we get all the datas from the prefetch and they are authenticated
+				// console.log(data);
+
+				// TODO: Verify no errors and complete refresh sequence
+				// const idTokenPayload = _get(data, 'idTokenPayload');
+				// if (typeof idTokenPayload !== 'undefined') {
+				// 	this.lastActiveLogin = idTokenPayload['https://www.kiva.org/last_login'];
+				// 	this.myId = idTokenPayload['https://www.kiva.org/kiva_id'];
+				// }
+				// });
+			}
+		},
+		setAuthStatus(userState) {
+			if (typeof userState !== 'undefined') {
+				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
+				this.myId = userState['https://www.kiva.org/kiva_id'];
+				this.showLoginContinueButton = false;
 			}
 		},
 		/* Validate the Entire Basket on mounted */
