@@ -1,24 +1,38 @@
 <template>
 	<www-page>
-		<div class='row'>
-			<!-- Borrower photo -->
-			<!-- Borrower Name -->
-			<p> {{ loan.name }} </p>
-			<!-- Total funded/loan amount -->
-			<p> {{ loan.use }}</p>
-			<p> {{ loan.description }}</p>
-			<!-- Funded State/ FUNDED! -->
-			<p> {{ loan.status }}</p>
-			<!-- Borrower location -->
-			<p> {{ loan.geocode.city }}</p>
+		<!-- Borrower photo -->
+		<div class="row">
+			<div class="small-6 columns">
+				<!-- TODO:
+				- tracking info needs to be updated
+				- need to fold back in logged in state :is-visitor="isVisitor" -->
+				<loan-card-image
+					:loan-id="loan.id"
+					:name="loan.name"
+					:retina-image-url="loan.image.retina"
+					:standard-image-url="loan.image.default"
+					v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
+					:open-in-new-tab="true"
+					:use-default-styles="false"
+				/>
+			</div>
 		</div>
-		<div class='row'>
-			<!-- Loan use statement -->
-		</div>
-		<div class='row'>
-			<!-- Borrower story -->
-		</div>
+		<!-- Borrower Name -->
+		<div class='row'> {{ loan.name }} </div>
+		<!-- Total funded/loan amount -->
+		<div class='row'> {{ loan.loanFundraisingInfo.fundedAmount }}</div>
+		<!-- Funded State/ FUNDED! -->
+		<div class='row'> {{ loan.status }}</div>
+		<!-- Borrower location -->
+		<div class='row'> {{ loan.geocode.city }}</div>
+		<!-- Loan use -->
+		<div class='row'> {{ loan.use }} </div>
+		<!-- Loan description -->
+		<div class='row' v-html="loan.description"></div>
 		<!-- Link to see full borrower profile in old stack. Need borrower ID here -->
+		<div class='row'>
+			<router-link :to="`/lend/${loan.id}`">Full Borrower Profile</router-link>
+		</div>
 	</www-page>
 </template>
 
@@ -26,10 +40,12 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import _get from 'lodash/get';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
+import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 
 export default {
 	components: {
-		WwwPage
+		WwwPage,
+		LoanCardImage,
 	},
 	inject: ['apollo'],
 	data() {
