@@ -1,0 +1,8 @@
+query {
+	general {
+		activeExperiments: uiConfigSetting(key: "active_experiments") {
+			key
+			value
+		}
+	}
+}
