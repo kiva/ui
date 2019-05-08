@@ -367,17 +367,13 @@ export default {
 	methods: {
 		loginToContinue() {
 			if (this.kvAuth0.enabled) {
-				// this.kvAuth0.redirectUri = window.location.href;
+				this.updatingTotals = true;
 				this.kvAuth0.popupLogin().then(result => {
 					// Only refetch data if login was successful
 					if (result) {
 						console.log(result);
-						const idTokenPayload = _get(result, 'idTokenPayload');
-						if (typeof idTokenPayload !== 'undefined') {
-							this.lastActiveLogin = idTokenPayload['https://www.kiva.org/last_login'];
-							this.myId = idTokenPayload['https://www.kiva.org/kiva_id'];
-						}
 						console.log(this.$kvAuth0);
+						// this.setAuthStatus(_get(result, 'idTokenPayload'));
 
 						window.location = window.location;
 
