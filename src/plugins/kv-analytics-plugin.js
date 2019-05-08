@@ -16,10 +16,10 @@ export default Vue => {
 			let fromUrl = typeof from === 'string' ? from : document.referrer;
 
 			// update urls for async page changes
-			if (to.matched && to.matched.length) {
+			if (to && to.matched && to.matched.length) {
 				toUrl = window.location.origin + to.fullPath;
 			}
-			if (from.matched && from.matched.length) {
+			if (from && from.matched && from.matched.length) {
 				fromUrl = window.location.origin + from.fullPath;
 			}
 
