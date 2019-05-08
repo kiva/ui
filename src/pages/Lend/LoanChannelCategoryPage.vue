@@ -95,7 +95,7 @@ function getTargetedChannel(targetedRoute, allChannels) {
 	const targetedLoanChannel = _filter(
 		loanChannels,
 		loanChannel => {
-			return loanChannel.url.indexOf(targetedRoute) !== -1;
+			return loanChannel.url.split('/').pop() === targetedRoute;
 		}
 	);
 	// isolate targeted loan channel id

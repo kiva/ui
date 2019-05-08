@@ -1,6 +1,7 @@
 import _isUndefined from 'lodash/isUndefined';
 import _filter from 'lodash/filter';
 import _fromPairs from 'lodash/fromPairs';
+// import _get from 'lodash/get';
 import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
 import cookieStore from '@/util/cookieStore';
@@ -196,6 +197,29 @@ export default () => {
 						version: updatedVersion,
 						__typename: 'Experiment',
 					};
+				},
+				// COMING SOON
+				// eslint-disable-next-line
+				cleanExperimentCookie(_, data, context) {
+					// get array of active experiment ids from cache
+					// const activeExperiments = JSON.parse(_get(
+					// 	context,
+					// 	`cache.data.data['Setting:ui.active_experiments'].value` // eslint-disable-line
+					// ));
+					// console.log('------- Active Exps in cookie cleaner -------');
+					// console.log(activeExperiments);
+
+					// if (activeExperiments.length) {
+					// 	const currentAssignments = parseExpCookie(cookieStore.get('uiab'));
+					// 	console.log('current cookie assignments: ', currentAssignments);
+					// 	const remainingAssignments = _filter(currentAssignments, (value, index) => {
+					// 		return activeExperiments.indexOf(index) !== -1;
+					// 	});
+					// 	console.log('new cookie assignments: ', remainingAssignments);
+					// 	// cookieStore.set('uiab', serializeExpCookie(remainingAssignments), { path: '/' });
+					// }
+
+					return true;
 				}
 			}
 		}
