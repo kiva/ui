@@ -21,13 +21,6 @@ module.exports = function authRouter(config = {}) {
 		}
 	});
 
-	if (!config.auth0.enable) {
-		// return routes that redirect to kiva/kiva login
-		router.get('/ui-login', (req, res) => res.redirect('/login'));
-		router.get('/ui-logout', (req, res) => res.redirect('/logout'));
-		return router;
-	}
-
 	// Setup Passport.js using the Auth0 passport strategy
 	passport.use(new Auth0Strategy({
 		domain: config.auth0.domain,
