@@ -352,6 +352,7 @@ export default {
 							max-width: initial;
 							height: 49px;
 							order: 0;
+							margin-bottom: 0.5rem;
 						}
 
 						.selected-refinements-component {

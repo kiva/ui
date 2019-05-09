@@ -21,8 +21,8 @@
 						</div>
 					</div>
 					<div class="small-12 medium-2 columns">
-						<div class="filter-summary-container">
-							<div v-if="isCollapsible" class="show-toggle-container">
+						<div v-if="isCollapsible" class="filter-summary-container">
+							<div class="show-toggle-container">
 								<!-- eslint-disable max-len -->
 								<div v-if="isCollapsed" @click="handleClickShowMore">Show all {{ items.length }} filters</div>
 							</div>
@@ -209,8 +209,6 @@ export default {
 
 .selected-refinements {
 	$fixed-row-height: 38;
-
-	margin-top: rem-calc(10);
 
 	.row {
 		margin: 0;
