@@ -84,8 +84,8 @@ module.exports = function authRouter(config = {}) {
 			// serializeUser function above, which may result in a serializeError.
 			req.login(user, serializeError => {
 				if (serializeError) return next(serializeError);
-				// Redirect to the stored url
-				res.redirect(doneUrl || '/portfolio');
+				// Redirect for post-authenticate actions
+				res.redirect(`/authenticate/ui?doneUrl=${doneUrl || '/portfolio'}`);
 			});
 		})(req, res, next);
 	});

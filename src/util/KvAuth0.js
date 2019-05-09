@@ -128,12 +128,12 @@ export default class KvAuth0 {
 	}
 
 	// Handle the auth0 callback in the popup frame
-	popupCallback() {
+	popupCallback(options) {
 		// only try this if in the browser
 		if (this.isServer) {
 			return Promise.reject(new Error('popupCallback called in server mode'));
 		}
-		return this.webAuth.then(webAuth => webAuth.popup.callback());
+		return this.webAuth.then(webAuth => webAuth.popup.callback(options));
 	}
 }
 
