@@ -19,9 +19,17 @@ query (
 			}
 			geocode {
 				city
+				state
+				country {
+					name
+					isoCode
+				}
 			}
 			use
 			description
+			sector {
+				name
+			}
 		}
 	}
 }
