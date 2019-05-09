@@ -12,11 +12,14 @@ export default Vue => {
 		pageview: (to, from) => {
 			if (!inBrowser) return false;
 
-			let toUrl = window.location.href;
-			let fromUrl = document.referrer;
+			let toUrl = typeof to === 'string' ? to : window.location.href;
+			let fromUrl = typeof from === 'string' ? from : document.referrer;
+
 			// update urls for async page changes
-			if (to.matched && to.matched.length && from.matched && from.matched.length) {
+			if (to && to.matched && to.matched.length) {
 				toUrl = window.location.origin + to.fullPath;
+			}
+			if (from && from.matched && from.matched.length) {
 				fromUrl = window.location.origin + from.fullPath;
 			}
 

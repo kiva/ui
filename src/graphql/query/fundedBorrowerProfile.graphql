@@ -1,0 +1,27 @@
+query (
+  	$id: Int!,
+	$imgDefaultSize: String = "w480h360",
+    $imgRetinaSize: String = "w960h720",
+) {
+	lend {
+		loan(id: $id) {
+			id
+			image {
+				id
+				default: url(customSize: $imgDefaultSize)
+				retina: url(customSize: $imgRetinaSize)
+				hash
+			}
+			name
+			status
+			loanFundraisingInfo {
+				fundedAmount
+			}
+			geocode {
+				city
+			}
+			use
+			description
+		}
+	}
+}
