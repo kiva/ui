@@ -1,0 +1,9 @@
+query {
+	activeLoan @client {
+		xCoordinate
+		yCoordinate
+		loan
+		hoverLoanId
+		tracking
+	}
+}

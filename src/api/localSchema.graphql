@@ -12,6 +12,7 @@ type Mutation {
 	updateUsingTouch(usingTouch: Boolean): Boolean
 	updateAddToBasketInterstitial(active: Boolean, visible: Boolean, loanId: Int): Boolean
 	updateExperimentVersion(id: String, version: String): Experiment
+	activeLoan(hoverLoanId: Int): Boolean
 }
 
 type Query {
@@ -19,6 +20,7 @@ type Query {
 	tip: TipMessage
 	usingTouch: Boolean
 	basketAddInterstitial: BasketAddInterstitial
+	activeLoan: ActiveLoan
 }
 
 type TipMessage {
@@ -33,3 +35,11 @@ type BasketAddInterstitial {
 	visible: Boolean
 	loanId: Int
 }
+
+type ActiveLoan {
+	hoverLoanId: Int
+	xCoordinate: Number
+	yCoordinate: Number
+	loan: String
+	tracking: String
+ }

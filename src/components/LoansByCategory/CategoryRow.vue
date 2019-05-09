@@ -37,9 +37,8 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<component
-						:is="loanCardType"
-						loan-card-type="GridLoanCard"
+					<loan-card-controller
+						:loan-card-type="loanCardType"
 						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
@@ -120,9 +119,9 @@ export default {
 			type: String,
 			default: 'Control'
 		},
-		isMicro: {
+		showExpandableLoanCards: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,
@@ -146,7 +145,7 @@ export default {
 	},
 	computed: {
 		loanCardType() {
-			return this.isMicro ? 'GridMicroLoanCard' : 'LoanCardController';
+			return this.showExpandableLoanCards ? 'ExpandableLoanCardCollapsed' : 'GridLoanCard';
 		},
 		loanCardTypeKebabCase() {
 			return _kebabCase(this.loanCardType);

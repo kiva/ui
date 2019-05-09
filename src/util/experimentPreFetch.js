@@ -9,6 +9,7 @@ const activeExperiments = [
 	'lend_filter',
 	'pinned_filter',
 	'algolia_search',
+	'expandable_loan_cards',
 ];
 
 // TODO: Enhance Error handling

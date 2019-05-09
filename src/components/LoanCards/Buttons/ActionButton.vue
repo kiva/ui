@@ -53,7 +53,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		isLend25Button: {
+		isSimpleLendButton: {
 			type: Boolean,
 			default: false
 		},
@@ -76,7 +76,7 @@ export default {
 				return LoanExpiredText;
 			}
 
-			return this.isLend25Button ? Lend25Button : LendIncrementButton;
+			return this.isSimpleLendButton ? Lend25Button : LendIncrementButton;
 		},
 	},
 	methods: {
