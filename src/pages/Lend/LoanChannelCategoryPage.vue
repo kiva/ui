@@ -27,7 +27,7 @@
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
-				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange"/>
+				<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange"/>
 				<div v-if="totalCount > 0" class="loan-count">
 					{{ totalCount }} loans
 				</div>
