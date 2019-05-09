@@ -45,6 +45,7 @@
 		<!-- Loans you might light section -->
 		<div class="row lyml-wrapper">
 			<div class="small-12 columns">
+				<hr>
 				<h3 class="lyml-text text-center">
 					{{ loan.name }}'s loan has already fully funded, but these
 					other deserving borrowers need your support to cross the finish line
