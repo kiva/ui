@@ -45,4 +45,5 @@ query($basketId: String) {
 			}
 		}
 	}
+	usingTouch @client
 }
