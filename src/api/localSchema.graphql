@@ -39,8 +39,8 @@ type BasketAddInterstitial {
 
 type ActiveLoan {
 	hoverLoanId: Int
-	xCoordinate: Number
-	yCoordinate: Number
+	xCoordinate: Int
+	yCoordinate: Int
 	loan: String
 	tracking: String
  }
