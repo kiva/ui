@@ -67,7 +67,7 @@
 									class="checkout-button smallest"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
 									title="Login to Continue Button"
-									@click.prevent.native="loginToContinue">Login to Continue</kv-button>
+									@click.native="loginToContinue">Login to Continue</kv-button>
 							</div>
 						</div>
 
