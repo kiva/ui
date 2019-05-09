@@ -23,10 +23,6 @@ query($basketId: String) {
 			value
 			key
 		}
-		lastActiveLogin: userSessionData(sessionKey: LastActiveLogin) {
-			sessionKey
-			data
-		}
 		braintree_checkout: uiConfigSetting(key: "feature.braintree_checkout") {
 			value
 		}

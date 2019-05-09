@@ -5,6 +5,7 @@ query (
 ) {
 	lend {
 		loan(id: $id) {
+			id
 			image {
 				id
 				default: url(customSize: $imgDefaultSize)
