@@ -61,7 +61,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-.expandable-loan-card-collapsed {}
-</style>
