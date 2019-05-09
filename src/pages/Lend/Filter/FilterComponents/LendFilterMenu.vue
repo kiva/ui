@@ -161,6 +161,8 @@ export default {
 	$filter-transition: 0.25s ease-out;
 	$filter-border-radius: rem-calc(3);
 
+	margin-bottom: rem-calc(10);
+
 	.basic-filter-section {
 		padding: 0.5rem 1.5rem;
 		border-top: 1px solid #E5E5E5;

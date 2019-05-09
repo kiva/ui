@@ -4,8 +4,7 @@ module.exports = {
 	app: {
 		host: 'www.kiva.org',
 		publicPath: 'https://www-kiva-org.global.ssl.fastly.net/ui/',
-		graphqlUri: 'https://www.kiva.org/ajax/graphql',
-		// graphqlUri: 'https://api.kivaws.org/graphql', // when using auth0
+		graphqlUri: 'https://api.kivaws.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
 		enableAnalytics: true,
@@ -34,7 +33,7 @@ module.exports = {
 				hIkkBL8POL6hCBp3uOI0bLMlz6nt2jW2: 'http://partners.kiva.org/login',
 				maWr24ubbIjM4aOnWsQ7XWYBdJG9AL8g: 'http://www.kiva.org/authenticate',
 			},
-			enable: false,
+			enable: true,
 			apiAudience: 'https://api.kivaws.org/graphql',
 			browserClientID: 'AEnMbebwn6LBvxg1iMYczZKoAgdUt37K',
 			serverClientID: 'xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd',
