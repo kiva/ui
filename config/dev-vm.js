@@ -5,8 +5,9 @@ module.exports = merge(base, {
 	app: {
 		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
-		// graphqlUri: 'https://dev-vm-01.kiva.org/ajax/graphql',
-		graphqlUri: 'https://api-vm.kiva.org/graphql', // when using auth0
+		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// use this to override authentication
+		// graphqlUri: 'https://api-vm.kiva.org/graphql?user_id=<user id>&app_id=org.kiva.www&scopes=access',
 		enablePerimeterx: false,
 		perimeterxAppId: '###',
 		enableAnalytics: false,

@@ -5,8 +5,7 @@ module.exports = merge(base, {
 	app: {
 		host: 'www.qa.kiva.org',
 		publicPath: 'https://www-qa-kiva-org.global.ssl.fastly.net/ui/',
-		// graphqlUri: 'https://www.qa.kiva.org/ajax/graphql',
-		graphqlUri: 'https://api.qa.kivaws.org/graphql', // when using auth0
+		graphqlUri: 'https://api.qa.kivaws.org/graphql',
 		enablePerimeterx: false,
 		perimeterxAppId: '####',
 		enableAnalytics: true,

@@ -5,8 +5,7 @@ module.exports = merge(base, {
 	app: {
 		host: 'www.dev.kiva.org',
 		publicPath: 'https://www-dev-kiva-org.global.ssl.fastly.net/ui/',
-		graphqlUri: 'https://www.dev.kiva.org/ajax/graphql',
-		// graphqlUri: 'https://api.dev.kivaws.org/graphql', // when using auth0
+		graphqlUri: 'https://api.dev.kivaws.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PX5u4Lz98O',
 		enableAnalytics: true,
@@ -35,7 +34,7 @@ module.exports = merge(base, {
 				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners.dev.kiva.org/login',
 				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'http://dev.kiva.org/authenticate',
 			},
-			enable: false,
+			enable: true,
 			apiAudience: 'https://api.dev.kivaws.org/graphql',
 			browserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
 			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
