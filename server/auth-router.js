@@ -85,7 +85,9 @@ module.exports = function authRouter(config = {}) {
 
 	// For all other routes, check the login sync cookie to see if login or logout is needed
 	router.use((req, res, next) => {
-		if (isNotedLoggedIn(req) && !req.user) {
+		if (req.path === '/process-browser-auth') {
+			next();
+		} else if (isNotedLoggedIn(req) && !req.user) {
 			// Store current url to redirect to after auth
 			req.session.doneUrl = req.originalUrl;
 
