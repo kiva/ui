@@ -77,15 +77,17 @@ module.exports = function authRouter(config = {}) {
 			// serializeUser function above, which may result in a serializeError.
 			req.login(user, serializeError => {
 				if (serializeError) return next(serializeError);
-				// Redirect to the stored url
-				res.redirect(doneUrl || '/portfolio');
+				// Redirect for post-authenticate actions
+				res.redirect(`/authenticate/ui?doneUrl=${doneUrl || '/portfolio'}`);
 			});
 		})(req, res, next);
 	});
 
 	// For all other routes, check the login sync cookie to see if login or logout is needed
 	router.use((req, res, next) => {
-		if (isNotedLoggedIn(req) && !req.user) {
+		if (req.path === '/process-browser-auth') {
+			next();
+		} else if (isNotedLoggedIn(req) && !req.user) {
 			// Store current url to redirect to after auth
 			req.session.doneUrl = req.originalUrl;
 
