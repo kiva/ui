@@ -42,6 +42,20 @@
 				</div>
 			</div>
 		</div>
+		<!-- Loans you might light section -->
+		<div class="row lyml-wrapper">
+			<div class="small-12 columns">
+				<h3 class="lyml-text text-center">
+					{{ loan.name }}'s loan has already fully funded, but these
+					other deserving borrowers need your support to cross the finish line
+				</h3>
+				<l-y-m-l
+					:target-loan="loan"
+					@add-to-basket="handleAddToBasket"
+					@processing-add-to-basket="processingAddToBasket"
+				/>
+			</div>
+		</div>
 		<hr>
 		<div class='row'>
 			<div class="small-12 columns text-center">
@@ -68,12 +82,14 @@ import _get from 'lodash/get';
 import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
+import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
 export default {
 	components: {
 		WwwPage,
 		LoanCardImage,
-		KvFlag
+		KvFlag,
+		LYML
 	},
 	inject: ['apollo'],
 	data() {
@@ -122,12 +138,17 @@ export default {
 .loan-use-text,
 .loan-total-text,
 .loan-description-heading-text,
-.loan-location-text {
+.loan-location-text,
+.lyml-text {
 	font-weight: $button-font-weight;
 }
 
 .loan-description-wrapper {
 	padding-bottom: 1.25rem;
+}
+
+.lyml-wrapper {
+	padding: 1.25rem 0;
 }
 
 </style>
