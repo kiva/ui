@@ -58,13 +58,15 @@
 									v-if="showKivaCreditButton"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
-									class=" checkout-button" />
+									class=" checkout-button"
+									id="kiva-credit-payment-button" />
 							</div>
 
 							<div v-else class="columns small-12">
 								<kv-button
 									v-if="showLoginContinueButton"
 									class="checkout-button smallest"
+									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
 									title="Login to Continue Button"
 									@click.native="loginToContinue">Login to Continue</kv-button>
@@ -92,6 +94,7 @@
 
 					<kv-button slot="controls"
 						class="smaller checkout-button"
+						id="Continue-to-legacy-button"
 						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 						title="Continue"
 						@click.prevent.native="redirectToLegacy">Continue</kv-button>
