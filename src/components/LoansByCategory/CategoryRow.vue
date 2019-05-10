@@ -51,6 +51,7 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+						:using-touch="usingTouch"
 					/>
 
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
@@ -130,6 +131,10 @@ export default {
 		showCategoryDescription: {
 			type: Boolean,
 			default: false
+		},
+		usingTouch: {
+			type: Boolean,
+			required: true,
 		},
 	},
 	data() {
@@ -248,12 +253,14 @@ export default {
 			if (this.scrollPos < 0) {
 				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
 				this.scrollPos = newLeftMargin;
+				this.$emit('scrolling-row');
 			}
 		},
 		scrollRowRight() {
 			if (this.scrollPos > this.minLeftMargin) {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
+				this.$emit('scrolling-row');
 			}
 		},
 	},
