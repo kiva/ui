@@ -59,8 +59,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.initPopper();
-		this.attachEvents();
+		this.makeDropdown();
 	},
 	updated() {
 		if (this.popper) {
@@ -68,10 +67,7 @@ export default {
 		}
 	},
 	beforeDestroy() {
-		this.removeEvents();
-		if (this.popper) {
-			this.popper.destroy();
-		}
+		this.unmakeDropdown();
 	},
 	methods: {
 		open() {
@@ -96,6 +92,20 @@ export default {
 			} else {
 				this.open();
 			}
+		},
+		makeDropdown() {
+			this.initPopper();
+			this.attachEvents();
+		},
+		unmakeDropdown() {
+			this.removeEvents();
+			if (this.popper) {
+				this.popper.destroy();
+			}
+		},
+		remakeDropdown() {
+			this.unmakeDropdown();
+			this.makeDropdown();
 		},
 		initPopper() {
 			this.popper = new Popper(this.reference, this.$el, {
