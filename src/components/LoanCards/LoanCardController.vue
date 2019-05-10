@@ -20,6 +20,7 @@
 		:category-id="categoryId"
 		:category-set-id="categorySetId"
 		:row-number="rowNumber"
+		:using-touch="usingTouch"
 
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
@@ -113,6 +114,10 @@ export default {
 			default: '',
 		},
 		expanded: {
+			type: Boolean,
+			default: false,
+		},
+		usingTouch: {
 			type: Boolean,
 			default: false,
 		},

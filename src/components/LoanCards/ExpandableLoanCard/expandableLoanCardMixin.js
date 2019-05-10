@@ -65,6 +65,10 @@ export default {
 			type: Number,
 			default: null,
 		},
+		usingTouch: {
+			type: Boolean,
+			required: true,
+		},
 	},
 	methods: {
 		toggleFavorite() {

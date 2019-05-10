@@ -12,10 +12,7 @@
 				:src = "formattedImageStandardUrl"
 				:alt = "'photo of ' + name"
 
-				@click="$emit('track-loan-card-interaction', {
-					interactionType: 'viewBorrowerPage',
-					interactionElement: 'photo'
-				})"
+				@click="handleImageClick"
 			>
 
 			<favorite-star class="favorite-star"
@@ -75,7 +72,11 @@ export default {
 		useDefaultStyles: {
 			type: Boolean,
 			default: true
-		}
+		},
+		disableLink: {
+			type: Boolean,
+			default: false,
+		},
 	},
 
 	computed: {
@@ -89,16 +90,26 @@ export default {
 
 		linkTarget() {
 			return this.openInNewTab ? '_blank' : '_self';
-		}
+		},
 	},
 
 	methods: {
 		formatImageUrl(imageUrl, transformations) {
 			return (this.imageEnhancementExperimentVersion === 'variant-b' ? this.formatCloudinaryUrl(transformations) : imageUrl);  // eslint-disable-line
 		},
-
 		formatCloudinaryUrl(transformations) {
 			return `https://res.cloudinary.com/kiva/${transformations}/e_viesus_correct/e_sharpen:150/a_ignore,fl_progressive,q_auto:best/remote/${this.loanImageHash}.jpg`; // eslint-disable-line
+		},
+		handleImageClick(event) {
+			if (this.disableLink) {
+				event.preventDefault();
+				event.stopPropagation();
+				return;
+			}
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'photo'
+			});
 		},
 	},
 };

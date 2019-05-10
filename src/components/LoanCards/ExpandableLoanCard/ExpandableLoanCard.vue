@@ -1,6 +1,12 @@
 <template>
 	<div class="expandable-loan-card" :class="{ expanded }">
+		<div class="expandable-loan-card-close show-for-small-only">
+			<button @click.prevent="clearHoverLoan" class="close-button" aria-label="Close">
+				<kv-icon name="small-x" />
+			</button>
+		</div>
 		<loan-card-image
+			class="loan-card-image-component"
 			:loan-id="loan.id"
 			:name="loan.name"
 			:retina-image-url="loan.image.retina"
@@ -8,6 +14,7 @@
 			:is-visitor="isVisitor"
 			:is-favorite="isFavorite"
 			:loan-image-hash="loan.image.hash"
+			:disable-link="disableImageLink"
 
 			@track-loan-card-interaction="trackInteraction"
 			@favorite-toggled="toggleFavorite"
@@ -73,6 +80,7 @@ import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
@@ -82,11 +90,17 @@ export default {
 		FundraisingStatus,
 		LoanCardImage,
 		MatchingText,
+		KvIcon,
 	},
 	mixins: [
 		expandableLoanCardMixin,
 		activeLoanMixin,
 	],
+	computed: {
+		disableImageLink() {
+			return this.usingTouch && !this.expanded;
+		},
+	},
 };
 </script>
 
@@ -100,10 +114,39 @@ export default {
 	height: 100%;
 	width: rem-calc(254);
 	margin: auto;
-	transition: box-shadow linear 0.15s;
+	transition: box-shadow linear 0.1s;
+
+	.expandable-loan-card-close {
+		display: none;
+		position: relative;
+		height: 46px;
+		width: 100%;
+
+		.close-button {
+			width: 3rem;
+			position: absolute;
+			right: rem-calc(12);
+			top: 1rem;
+			text-align: right;
+
+			.icon.icon-small-x {
+				height: 1rem;
+				width: 1rem;
+				fill: $subtle-gray;
+				transition: fill 0.16s linear;
+			}
+
+			&:hover {
+				.icon.icon-small-x {
+					fill: $charcoal;
+				}
+			}
+		}
+	}
 
 	.expandable-loan-card-bottom {
 		border: 1px solid $kiva-stroke-gray;
+		border-top: none;
 		padding: 0.5rem 0.75rem 0.75rem 0.75rem;
 		max-height: rem-calc(100);
 		transition: max-height ease-out 0.2s;
@@ -114,13 +157,24 @@ export default {
 		}
 	}
 
-	&:hover {
-		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
-	}
-
 	&.expanded {
+		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+
 		.expandable-loan-card-bottom {
 			max-height: rem-calc(350);
+		}
+
+		@include breakpoint(small only) {
+			width: 100%;
+			height: initial;
+
+			.expandable-loan-card-close {
+				display: block;
+			}
+
+			.loan-card-image-component {
+				margin: 0 0.5rem;
+			}
 		}
 	}
 }

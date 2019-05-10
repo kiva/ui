@@ -41,6 +41,8 @@
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:show-category-description="showCategoryDescription"
 				:show-expandable-loan-cards="showExpandableLoanCards"
+				:using-touch="usingTouch"
+				@scrolling-row="handleScrollingRow"
 			/>
 		</div>
 
@@ -71,8 +73,10 @@
 
 		<expandable-loan-card-expanded
 			v-if="showExpandableLoanCards"
+			ref="expandableLoanCardComponent"
 			:is-visitor="!isLoggedIn"
 			:items-in-basket="itemsInBasket"
+			:using-touch="usingTouch"
 		/>
 	</www-page>
 </template>
@@ -309,6 +313,11 @@ export default {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 				},
 			});
+		},
+		handleScrollingRow() {
+			if (this.$refs.expandableLoanCardComponent) {
+				this.$refs.expandableLoanCardComponent.collapseCard();
+			}
 		},
 	},
 	apollo: {
