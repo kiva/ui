@@ -154,7 +154,13 @@
 				</li>
 			</ul>
 		</kv-dropdown>
-		<kv-dropdown :controller="myKivaMenuId" v-if="!isVisitor" class="dropdown-list" id="my-kiva-dropdown">
+		<kv-dropdown
+			:controller="myKivaMenuId"
+			v-if="!isVisitor"
+			class="dropdown-list"
+			id="my-kiva-dropdown"
+			ref="userDropdown"
+		>
 			<ul>
 				<template v-if="isBorrower">
 					<li>
@@ -357,6 +363,15 @@ export default {
 			}
 		}
 	},
+	watch: {
+		isVisitor(newVal, oldVal) {
+			if (newVal !== oldVal && !newVal) {
+				this.$nextTick(() => {
+					this.$refs.userDropdown.remakeDropdown();
+				});
+			}
+		}
+	}
 };
 </script>
 
