@@ -56,16 +56,22 @@
 	}
 
 	.single-line {
-		align-items: baseline;
 		display: flex;
-		flex-direction: row;
+		flex-direction: row-reverse;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 0.625rem;
 
 		.fundraising-meter {
 			width: 60%;
+			margin: 0;
 		}
 
 		.left-and-to-go-line {
-			margin-left: rem-calc(8);
+			flex-shrink: 0;
+			color: $subtle-gray;
+			font-style: italic;
+			font-weight: $global-weight-normal;
 		}
 	}
 </style>

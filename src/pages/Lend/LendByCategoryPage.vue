@@ -40,6 +40,9 @@
 				:is-logged-in="isLoggedIn"
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:show-category-description="showCategoryDescription"
+				:show-expandable-loan-cards="showExpandableLoanCards"
+				:using-touch="usingTouch"
+				@scrolling-row="handleScrollingRow"
 			/>
 		</div>
 
@@ -67,6 +70,14 @@
 		</div>
 
 		<add-to-basket-interstitial v-show="addToBasketExpActive" />
+
+		<expandable-loan-card-expanded
+			v-if="showExpandableLoanCards"
+			ref="expandableLoanCardComponent"
+			:is-visitor="!isLoggedIn"
+			:items-in-basket="itemsInBasket"
+			:using-touch="usingTouch"
+		/>
 	</www-page>
 </template>
 
@@ -95,6 +106,7 @@ import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
+import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -118,6 +130,7 @@ export default {
 		LoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,
+		ExpandableLoanCardExpanded,
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -144,6 +157,8 @@ export default {
 			categoryDescriptionExperimentVersion: null,
 			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
+			usingTouch: false,
+			showExpandableLoanCards: false,
 		};
 	},
 	computed: {
@@ -299,6 +314,11 @@ export default {
 				},
 			});
 		},
+		handleScrollingRow() {
+			if (this.$refs.expandableLoanCardComponent) {
+				this.$refs.expandableLoanCardComponent.collapseCard();
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -312,6 +332,7 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				// Get the category rows experiment object from settings
 				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
+				this.usingTouch = _get(data, 'usingTouch');
 
 				return Promise.all([
 					// Get the assigned category rows experiment version
@@ -442,6 +463,27 @@ export default {
 			variables: { id: 'lend_filter' },
 		});
 		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
+
+		// CASH-676: Expandable loan card experiment
+		const expandableLoanCardExperiment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'expandable_loan_cards' },
+		});
+		const expandableLoanCardExperimentVersion = _get(expandableLoanCardExperiment, 'experiment.version');
+		if (expandableLoanCardExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-676-Apr2019',
+				`a${this.usingTouch ? '-touch' : '-non-touch'}`,
+			);
+		} else if (expandableLoanCardExperimentVersion === 'variant-b') {
+			this.showExpandableLoanCards = true;
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-676-Apr2019',
+				`b${this.usingTouch ? '-touch' : 'non-touch'}`,
+			);
+		}
 	},
 	mounted() {
 		this.fetchRecentlyViewed();

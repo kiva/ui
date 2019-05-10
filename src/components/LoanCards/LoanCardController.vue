@@ -15,6 +15,13 @@
 		:percent-raised="percentRaised"
 		:title="title"
 		:is="loanCardType"
+
+		:expanded="expanded"
+		:category-id="categoryId"
+		:category-set-id="categorySetId"
+		:row-number="rowNumber"
+		:using-touch="usingTouch"
+
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
 		@add-to-basket="handleAddToBasket"
@@ -26,6 +33,8 @@
 import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
 import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import ExpandableLoanCardCollapsed from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardCollapsed';
+import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import {
@@ -41,6 +50,8 @@ export default {
 		AdaptiveMicroLoanCard,
 		FeaturedHeroLoan,
 		GridLoanCard,
+		ExpandableLoanCard,
+		ExpandableLoanCardCollapsed,
 		GridMicroLoanCard,
 		ListLoanCard,
 	},
@@ -55,15 +66,15 @@ export default {
 		},
 		categoryId: {
 			type: Number,
-			default: null
+			default: null,
 		},
 		categorySetId: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		rowNumber: {
 			type: Number,
-			default: null
+			default: null,
 		},
 		cardNumber: {
 			type: Number,
@@ -80,7 +91,7 @@ export default {
 					},
 					image: {},
 				};
-			}
+			},
 		},
 		isVisitor: {
 			type: Boolean,
@@ -92,7 +103,7 @@ export default {
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		experimentData: {
 			type: Object,
@@ -100,7 +111,15 @@ export default {
 		},
 		title: {
 			type: String,
-			default: ''
+			default: '',
+		},
+		expanded: {
+			type: Boolean,
+			default: false,
+		},
+		usingTouch: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	inject: ['apollo'],
@@ -179,7 +198,7 @@ export default {
 					categoryId: this.categoryId,
 					row: this.rowNumber,
 					position: this.cardNumber,
-				}
+				},
 			};
 
 			this.$kvTrackSelfDescribingEvent(loanInteractionTrackData);
@@ -193,7 +212,7 @@ export default {
 				variables: {
 					loan_id: this.loan.id,
 					is_favorite: this.isFavorite
-				}
+				},
 			}).then(data => {
 				if (data.errors) {
 					this.isFavorite = !this.isFavorite;

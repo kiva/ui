@@ -74,6 +74,7 @@ import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDet
 import FilterSectionSort from '@/pages/Lend/Filter/FilterSections/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
+import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
 	components: {
@@ -92,6 +93,9 @@ export default {
 		KvIcon,
 		KvButton,
 	},
+	mixins: [
+		lockScrollUtils,
+	],
 	data() {
 		return {
 			filterMenuOpen: false,
@@ -117,12 +121,12 @@ export default {
 	},
 	methods: {
 		hideFilterMenu() {
-			this.unlockScroll();
+			this.unlockScrollSmallOnly();
 			this.filterMenuOpen = false;
 			this.$emit('hide-filter-menu');
 		},
 		toggleFilterMenu() {
-			this.lockScroll();
+			this.lockScrollSmallOnly();
 			this.filterMenuOpen = !this.filterMenuOpen;
 			this.$emit(this.filterMenuOpen ? 'show-filter-menu' : 'hide-filter-menu');
 		},
@@ -139,16 +143,6 @@ export default {
 		clearAllRefinements(refine) {
 			refine();
 			this.$emit('clear-custom-categories');
-		},
-		lockScroll() {
-			if (typeof window !== 'undefined') {
-				document.body.classList.add('scroll-locked-small-only');
-			}
-		},
-		unlockScroll() {
-			if (typeof window !== 'undefined') {
-				document.body.classList.remove('scroll-locked-small-only');
-			}
 		},
 	},
 };

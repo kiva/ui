@@ -41,12 +41,16 @@
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
+import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
 	components: {
 		KvIcon,
 		KvButton
 	},
+	mixins: [
+		lockScrollUtils,
+	],
 	data() {
 		return {
 			isShown: false
@@ -108,16 +112,6 @@ export default {
 			// remove scroll lock class from body
 			this.unlockScroll();
 		},
-		lockScroll() {
-			if (typeof window !== 'undefined') {
-				document.body.classList.add('scroll-locked');
-			}
-		},
-		unlockScroll() {
-			if (typeof window !== 'undefined') {
-				document.body.classList.remove('scroll-locked');
-			}
-		}
 	}
 };
 </script>

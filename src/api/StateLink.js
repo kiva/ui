@@ -4,6 +4,7 @@ import experiment from './localResolvers/experiment';
 import tipMessage from './localResolvers/tipMessage';
 import usingTouch from './localResolvers/usingTouch';
 import basketAddInterstitial from './localResolvers/addToBasketInterstitial';
+import activeLoan from './localResolvers/activeLoan';
 
 export default ({ cache, ...options }) => {
 	return withClientState({
@@ -13,6 +14,7 @@ export default ({ cache, ...options }) => {
 			tipMessage(options),
 			usingTouch(options),
 			basketAddInterstitial(options),
+			activeLoan(options),
 		),
 	});
 };

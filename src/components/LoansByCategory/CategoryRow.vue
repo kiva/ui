@@ -37,9 +37,8 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<component
-						:is="loanCardType"
-						loan-card-type="GridLoanCard"
+					<loan-card-controller
+						:loan-card-type="loanCardType"
 						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
@@ -52,6 +51,7 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+						:using-touch="usingTouch"
 					/>
 
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
@@ -120,9 +120,9 @@ export default {
 			type: String,
 			default: 'Control'
 		},
-		isMicro: {
+		showExpandableLoanCards: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		imageEnhancementExperimentVersion: {
 			type: String,
@@ -131,6 +131,10 @@ export default {
 		showCategoryDescription: {
 			type: Boolean,
 			default: false
+		},
+		usingTouch: {
+			type: Boolean,
+			required: true,
 		},
 	},
 	data() {
@@ -146,7 +150,7 @@ export default {
 	},
 	computed: {
 		loanCardType() {
-			return this.isMicro ? 'GridMicroLoanCard' : 'LoanCardController';
+			return this.showExpandableLoanCards ? 'ExpandableLoanCardCollapsed' : 'GridLoanCard';
 		},
 		loanCardTypeKebabCase() {
 			return _kebabCase(this.loanCardType);
@@ -249,12 +253,14 @@ export default {
 			if (this.scrollPos < 0) {
 				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
 				this.scrollPos = newLeftMargin;
+				this.$emit('scrolling-row');
 			}
 		},
 		scrollRowRight() {
 			if (this.scrollPos > this.minLeftMargin) {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
+				this.$emit('scrolling-row');
 			}
 		},
 	},
