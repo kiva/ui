@@ -124,7 +124,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
-// import { preFetchAll } from '@/util/apolloPreFetch';
+import { preFetchAll } from '@/util/apolloPreFetch';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
@@ -238,9 +238,9 @@ export default {
 					this.showLoginContinueButton = true;
 				}
 			}
-
-			console.log('-------- prefetch data ---------');
-			console.log(data);
+			// use the following to observe the unauthenticated prefetch call
+			// console.log('-------- prefetch data ---------');
+			// console.log(data);
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
@@ -294,11 +294,9 @@ export default {
 		// This empty upon page load so we refetch in order to be able to use when we need it.
 		// TODO: Move this to a global operation that runs once, pushing the results into Apollo client state
 		// TODO: Refactor this operation to use a watch query on the afformentioned client state.
-		console.log(JSON.stringify(this.kvAuth0));
+		// console.log(JSON.stringify(this.kvAuth0));
 		if (this.kvAuth0.user === null) {
 			this.kvAuth0.checkSession().then(() => {
-				console.log('kvAuth0 checkSession');
-				console.log(this.kvAuth0.user);
 				this.setAuthStatus(_get(this.kvAuth0, 'user'));
 			});
 		} else {
@@ -371,39 +369,41 @@ export default {
 				this.kvAuth0.popupLogin().then(result => {
 					// Only refetch data if login was successful
 					if (result) {
-						console.log(result);
-						console.log(this.$kvAuth0);
+						// we should operate here but it get's overwritten by the prefetch
 						// this.setAuthStatus(_get(result, 'idTokenPayload'));
-
-						window.location = window.location;
 
 						// Refetch the queries for all the components in this route. All the components that use
 						// the default options for the apollo plugin or that setup their own query observer will update
-						// @todo maybe show a loding state until this completes?
-						// const matched = this.$router.getMatchedComponents(this.$route);
+						const matched = this.$router.getMatchedComponents(this.$route);
 						// When this is initially called the graphql doesn't have the auth token
-						// return preFetchAll(matched, this.apollo, {
-						// 	route: this.$route,
-						// 	kvAuth0: this.kvAuth0,
-						// });
+						// This has the unfortunate side affect of resetting the recently set userId from the login
+						return preFetchAll(matched, this.apollo, {
+							route: this.$route,
+							kvAuth0: this.kvAuth0,
+						});
 					}
 					return false;
-				});
-				// .then(data => {
-				// here we get all the datas from the prefetch and they are authenticated
-				// console.log(data);
-
-				// TODO: Verify no errors and complete refresh sequence
-				// const idTokenPayload = _get(data, 'idTokenPayload');
-				// if (typeof idTokenPayload !== 'undefined') {
-				// 	this.lastActiveLogin = idTokenPayload['https://www.kiva.org/last_login'];
-				// 	this.myId = idTokenPayload['https://www.kiva.org/kiva_id'];
-				// }
-				// });
+				})
+					.then(() => {
+						// update after the re-prefetch process
+						this.setAuthStatus(_get(this.kvAuth0, 'user'));
+						return true;
+					})
+					.catch(err => {
+						console.error(err);
+						// handle closed popup dialog with the following error signature
+						// {original: "User closed the popup window", code: null, description: null}
+						if (err && err.original === 'User closed the popup window') {
+							this.updatingTotals = false;
+						}
+					})
+					.finally(() => {
+						this.updatingTotals = false;
+					});
 			}
 		},
 		setAuthStatus(userState) {
-			if (typeof userState !== 'undefined') {
+			if (typeof userState !== 'undefined' && userState !== null) {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
 				this.myId = userState['https://www.kiva.org/kiva_id'];
 				this.showLoginContinueButton = false;
