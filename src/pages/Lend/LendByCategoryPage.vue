@@ -42,6 +42,7 @@
 				:show-category-description="showCategoryDescription"
 				:show-expandable-loan-cards="showExpandableLoanCards"
 				:using-touch="usingTouch"
+				ref="categoryRow"
 				@scrolling-row="handleScrollingRow"
 			/>
 		</div>
@@ -76,7 +77,8 @@
 			ref="expandableLoanCardComponent"
 			:is-visitor="!isLoggedIn"
 			:items-in-basket="itemsInBasket"
-			:using-touch="usingTouch"
+			:right-arrow-position="rightArrowPosition"
+			:left-arrow-position="leftArrowPosition"
 		/>
 	</www-page>
 </template>
@@ -159,6 +161,8 @@ export default {
 			lendFilterExpVersion: '',
 			usingTouch: false,
 			showExpandableLoanCards: false,
+			rightArrowPosition: undefined,
+			leftArrowPosition: undefined,
 		};
 	},
 	computed: {
@@ -316,8 +320,29 @@ export default {
 		},
 		handleScrollingRow() {
 			if (this.$refs.expandableLoanCardComponent) {
-				this.$refs.expandableLoanCardComponent.collapseCard();
+				this.$refs.expandableLoanCardComponent.collapseCardAndPauseHover(500);
 			}
+		},
+		setRightArrowPosition() {
+			if (this.$refs.categoryRow && this.$refs.categoryRow.length) {
+				this.rightArrowPosition = this.$refs.categoryRow
+					.find(row => row.hasRightArrow)
+					.getRightArrowPosition();
+			}
+		},
+		setLeftArrowPosition() {
+			if (this.$refs.categoryRow && this.$refs.categoryRow.length) {
+				this.leftArrowPosition = this.$refs.categoryRow
+					.find(row => row.hasLeftArrow)
+					.getLeftArrowPosition();
+			}
+		},
+		handleResize() {
+			if (this.$refs.expandableLoanCardComponent) {
+				this.$refs.expandableLoanCardComponent.clearHoverLoan();
+			}
+			this.setRightArrowPosition();
+			this.setLeftArrowPosition();
 		},
 	},
 	apollo: {
@@ -516,6 +541,14 @@ export default {
 				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
 			}
 		}
+
+		// CASH-676: Expandable Loan Card Experiment
+		window.addEventListener('resize', this.handleResize);
+		this.setRightArrowPosition();
+		this.setLeftArrowPosition();
+	},
+	beforeDestroy() {
+		window.removeEventListener('resize', this.handleResize);
 	},
 };
 </script>

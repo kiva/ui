@@ -64,13 +64,20 @@ export default {
 				variables: emptyActiveLoan,
 			});
 		},
-		onActiveLoanChange() {},
-		onActiveLoanClear() {},
+		activeLoanWillChange() {},
+		activeLoanWillClear() {},
+		activeLoanDidChange() {},
+		activeLoanDidClear() {},
 	},
 	mounted() {
 		this.apollo.watchQuery({ query: activeLoanClient }).subscribe({
 			next: ({ data }) => {
 				const activeLoanState = _get(data, 'activeLoan');
+				if (activeLoanState.hoverLoanId) {
+					this.activeLoanWillChange();
+				} else {
+					this.activeLoanWillClear();
+				}
 				this.activeLoan = Object.assign({}, this.activeLoan, {
 					xCoordinate: activeLoanState.xCoordinate,
 					yCoordinate: activeLoanState.yCoordinate,
@@ -79,9 +86,9 @@ export default {
 					tracking: activeLoanState.tracking,
 				});
 				if (activeLoanState.hoverLoanId) {
-					this.onActiveLoanChange();
+					this.activeLoanDidChange();
 				} else {
-					this.onActiveLoanClear();
+					this.activeLoanDidClear();
 				}
 			},
 		});

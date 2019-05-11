@@ -1,5 +1,10 @@
 <template functional>
-	<div :class="{ 'single-line': props.singleLine }">
+	<div
+		:class="{
+			'single-line': props.singleLine,
+			'hide-meter': props.singleLine && props.expiringSoonMessage,
+		}"
+	>
 		<div class="fundraising-meter progress">
 			<span v-if="props.isFunded"
 				class="meter"
@@ -72,6 +77,14 @@
 			color: $subtle-gray;
 			font-style: italic;
 			font-weight: $global-weight-normal;
+		}
+
+		&.hide-meter {
+			flex-direction: row;
+
+			.fundraising-meter {
+				display: none;
+			}
 		}
 	}
 </style>

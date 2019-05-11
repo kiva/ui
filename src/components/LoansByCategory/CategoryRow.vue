@@ -28,6 +28,7 @@
 			<span
 				class="arrow left-arrow"
 				:class="{inactive: scrollPos === 0}"
+				ref="leftArrow"
 				@click="scrollRowLeft"
 			>&lsaquo;</span>
 			<div class="cards-display-window" ref="innerWrapper">
@@ -63,7 +64,7 @@
 								'click-View all',
 								`Loan card`]">
 
-							<div :class="loanCardTypeKebabCase">
+							<div class="see-all-card">
 								<div class="link">
 									{{ viewAllLoansCategoryTitle }}
 								</div>
@@ -76,6 +77,7 @@
 			<span
 				class="arrow right-arrow"
 				:class="{inactive: scrollPos <= minLeftMargin}"
+				ref="rightArrow"
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
@@ -84,7 +86,6 @@
 
 <script>
 import _get from 'lodash/get';
-import _kebabCase from 'lodash/kebabCase';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
@@ -92,6 +93,7 @@ import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
 const largeCardWidthPlusPadding = 300;
+const expandableCardWidthPlusPadding = 274;
 
 export default {
 	components: {
@@ -152,13 +154,13 @@ export default {
 		loanCardType() {
 			return this.showExpandableLoanCards ? 'ExpandableLoanCardCollapsed' : 'GridLoanCard';
 		},
-		loanCardTypeKebabCase() {
-			return _kebabCase(this.loanCardType);
-		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
 		cardWidth() {
+			if (this.showExpandableLoanCards) {
+				return expandableCardWidthPlusPadding;
+			}
 			return this.windowWidth > minWidthToShowLargeCards
 				? largeCardWidthPlusPadding
 				: smallCardWidthPlusPadding;
@@ -223,7 +225,13 @@ export default {
 		},
 		viewAllLoansCategoryTitle() {
 			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
-		}
+		},
+		hasRightArrow() {
+			return this.$refs.rightArrow;
+		},
+		hasLeftArrow() {
+			return this.$refs.leftArrow;
+		},
 	},
 	watch: {
 		loanChannel: {
@@ -261,6 +269,16 @@ export default {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
 				this.$emit('scrolling-row');
+			}
+		},
+		getRightArrowPosition() {
+			if (this.hasRightArrow) {
+				return this.$refs.rightArrow.getBoundingClientRect().right;
+			}
+		},
+		getLeftArrowPosition() {
+			if (this.hasLeftArrow) {
+				return this.$refs.leftArrow.getBoundingClientRect().left;
 			}
 		},
 	},
@@ -401,7 +419,7 @@ a.view-all-link {
 
 // view all loans category card
 .view-all-loans-category {
-	.loan-card-controller {
+	.see-all-card {
 		background-color: $very-light-gray;
 		border: 1px solid $kiva-stroke-gray;
 		display: flex;
@@ -414,12 +432,6 @@ a.view-all-link {
 		&:hover {
 			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
 		}
-	}
-
-	.grid-micro-loan-card {
-		@extend .loan-card-controller;
-
-		padding: rem-calc(15);
 	}
 
 	.link {
