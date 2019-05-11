@@ -20,7 +20,6 @@
 			:category-set-id="categorySetId"
 			:row-number="rowNumber"
 			:card-number="cardNumber"
-			:using-touch="usingTouch"
 
 			@track-loan-card-interaction="trackInteraction"
 			@favorite-toggled="toggleFavorite"

@@ -1,5 +1,6 @@
 <template>
 	<component
+		class="loan-card-controller"
 		:amount-left="amountLeft"
 		:card-number="cardNumber"
 		:experiment-data="experimentData"
@@ -20,7 +21,8 @@
 		:category-id="categoryId"
 		:category-set-id="categorySetId"
 		:row-number="rowNumber"
-		:using-touch="usingTouch"
+		:right-arrow-position="rightArrowPosition"
+		:left-arrow-position="leftArrowPosition"
 
 		@track-interaction="trackInteraction"
 		@toggle-favorite="toggleFavorite"
@@ -117,9 +119,13 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		usingTouch: {
-			type: Boolean,
-			default: false,
+		rightArrowPosition: {
+			type: Number,
+			default: undefined,
+		},
+		leftArrowPosition: {
+			type: Number,
+			default: undefined,
 		},
 	},
 	inject: ['apollo'],
@@ -249,3 +255,22 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss">
+@import 'settings';
+
+.loan-card-controller {
+	&.column.is-in-category-row {
+		flex: 0 0 auto;
+
+		&.column-block {
+			padding: 0 rem-calc(10);
+			margin-bottom: 0;
+
+			&:first-of-type {
+				padding-left: 0;
+			}
+		}
+	}
+}
+</style>

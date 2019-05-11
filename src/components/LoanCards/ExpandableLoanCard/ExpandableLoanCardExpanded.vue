@@ -43,9 +43,29 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		usingTouch: {
-			type: Boolean,
-			required: true,
+		rightArrowPosition: {
+			type: Number,
+			default: undefined,
+		},
+		leftArrowPosition: {
+			type: Number,
+			default: undefined,
+		},
+	},
+	computed: {
+		isUnderArrow() {
+			return this.isUnderRightArrow || this.isUnderLeftArrow;
+		},
+		isUnderRightArrow() {
+			return this.rightArrowPosition !== undefined && (this.hoverLoanXCoordinate + 254) > this.rightArrowPosition;
+		},
+		isUnderLeftArrow() {
+			return this.leftArrowPosition !== undefined && this.hoverLoanXCoordinate < this.leftArrowPosition;
+		},
+		shouldNotExpandCard() {
+			const isUnderArrowOnDesktop = this.arrowsVisible() && this.isUnderArrow;
+			const isOffScreenOnTablet = (this.hoverLoanXCoordinate + 254) > document.documentElement.clientWidth;
+			return !this.hoverIsActive || isUnderArrowOnDesktop || isOffScreenOnTablet;
 		},
 	},
 	data() {
@@ -56,24 +76,28 @@ export default {
 		};
 	},
 	methods: {
-		collapseCard() {
+		collapseCardAndPauseHover(timeToPause) {
 			this.clearHoverLoan();
-			this.pauseHover(500);
+			this.pauseHover(timeToPause);
 		},
-		onActiveLoanChange() {
-			if (!this.hoverIsActive) {
+		activeLoanWillChange() {
+			this.expanded = false;
+			this.show = false;
+		},
+		activeLoanDidChange() {
+			if (this.shouldNotExpandCard) {
 				this.clearHoverLoan();
 				return;
 			}
-			const xOffset = (this.tracking.cardNumber === 1 && !this.usingTouch) ? -15 : -5;
+			const xOffset = this.tracking.cardNumber === 1 ? -15 : -5;
 			this.$refs.expandedContainer.style.top = `${this.hoverLoanYCoordinate}px`;
 			this.$refs.expandedContainer.style.left = `${this.hoverLoanXCoordinate + xOffset}px`;
 			this.expanded = false;
 			this.show = true;
 			this.lockScrollSmallOnly();
-			this.$nextTick(() => { this.expanded = true; });
+			setTimeout(() => { this.expanded = true; }, 0);
 		},
-		onActiveLoanClear() {
+		activeLoanDidClear() {
 			this.expanded = false;
 			this.show = false;
 			this.unlockScrollSmallOnly();
@@ -86,6 +110,16 @@ export default {
 		},
 		resumeHover() {
 			this.hoverIsActive = true;
+		},
+		arrowsVisible() {
+			/*
+			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
+			usingTouch unfortunately.
+			*/
+			if (typeof window === 'undefined') {
+				return true;
+			}
+			return window.getComputedStyle(document.querySelector('.arrow.right-arrow')).display !== 'none';
 		},
 	},
 };

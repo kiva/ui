@@ -98,7 +98,23 @@ export default {
 	],
 	computed: {
 		disableImageLink() {
-			return this.usingTouch && !this.expanded;
+			/*
+			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
+			usingTouch unfortunately.
+			*/
+			return !this.arrowsVisible() && !this.expanded;
+		},
+	},
+	methods: {
+		arrowsVisible() {
+			/*
+			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
+			usingTouch unfortunately.
+			*/
+			if (typeof window === 'undefined') {
+				return true;
+			}
+			return window.getComputedStyle(document.querySelector('.arrow.right-arrow')).display !== 'none';
 		},
 	},
 };
