@@ -280,19 +280,9 @@ export default {
 }
 
 .column.is-in-category-row {
-	flex: 0 0 auto;
-
-	&.column-block {
-		padding: 0 rem-calc(10);
-		margin-bottom: 0;
-
-		&:first-of-type {
-			padding-left: 0;
-		}
-	}
-
 	.grid-micro-loan-card {
 		width: rem-calc(280);
+
 		@include breakpoint(340px down) {
 			min-width: rem-calc(256);
 			width: rem-calc(256);
