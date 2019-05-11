@@ -62,9 +62,9 @@
 									id="kiva-credit-payment-button" />
 							</div>
 
-							<div v-else class="columns small-12">
+							<div v-else class="small-12">
 								<kv-button
-									v-if="showLoginContinueButton"
+									v-if="!isActivelyLoggedIn"
 									class="checkout-button smallest"
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
@@ -332,7 +332,7 @@ export default {
 			return false;
 		},
 		isActivelyLoggedIn() {
-			const lastLogin = (parseInt(this.lastActiveLogin, 10) * 1000) || 0;
+			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
 
 			if (lastLogin + (this.activeLoginDuration * 1000) > Date.now()) {
 				return true;
