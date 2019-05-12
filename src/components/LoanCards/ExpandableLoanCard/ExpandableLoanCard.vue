@@ -6,6 +6,7 @@
 			</button>
 		</div>
 		<loan-card-image
+			v-if="loan.image.default"
 			class="loan-card-image-component"
 			:loan-id="loan.id"
 			:name="loan.name"

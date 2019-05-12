@@ -543,9 +543,11 @@ export default {
 		}
 
 		// CASH-676: Expandable Loan Card Experiment
-		window.addEventListener('resize', this.handleResize);
-		this.setRightArrowPosition();
-		this.setLeftArrowPosition();
+		if (this.showExpandableLoanCards) {
+			window.addEventListener('resize', this.handleResize);
+			this.setRightArrowPosition();
+			this.setLeftArrowPosition();
+		}
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.handleResize);
