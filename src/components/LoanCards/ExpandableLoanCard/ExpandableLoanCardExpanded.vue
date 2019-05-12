@@ -64,7 +64,9 @@ export default {
 		},
 		shouldNotExpandCard() {
 			const isUnderArrowOnDesktop = this.arrowsVisible() && this.isUnderArrow;
-			const isOffScreenOnTablet = (this.hoverLoanXCoordinate + 254) > document.documentElement.clientWidth;
+			const isOffScreenOnTablet =
+				document.documentElement.clientWidth > 480
+				&& (this.hoverLoanXCoordinate + 254) > document.documentElement.clientWidth;
 			return !this.hoverIsActive || isUnderArrowOnDesktop || isOffScreenOnTablet;
 		},
 	},
