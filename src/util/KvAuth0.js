@@ -90,7 +90,7 @@ export default class KvAuth0 {
 	}
 
 	// Open a popup window to the login page
-	popupLogin() {
+	popupLogin(prompt) {
 		// only try this if in the browser
 		if (this.isServer) {
 			return Promise.reject(new Error('popupLogin called in server mode'));
@@ -102,6 +102,7 @@ export default class KvAuth0 {
 		// Open up popup window to login
 		this[loginPromise] = this.webAuth.then(webAuth => new Promise((resolve, reject) => {
 			webAuth.popup.authorize({
+				prompt: prompt || 'none', // default is 'none', 'login' forces the login form even if token exists
 				popupOptions: {
 					width: 480,
 					height: 740,
