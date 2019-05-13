@@ -40,8 +40,8 @@
 								Each loan on Kiva costs us more than $3 to facilitate
 								(and we facilitate a lot of loans!), so when you donate to Kiva
 								you help us cover the costs to grow our impact. <strong> TODAY when you donate
-								$35 or more to Kiva, we'll send you a bonus tomorrow to
-								make a free loan. </strong> Your donation of any amount makes a difference!
+									$35 or more to Kiva, we'll send you a bonus tomorrow to
+									make a free loan. </strong> Your donation of any amount makes a difference!
 							</p>
 							<!-- IF REGULAR APPEAL BANNER -->
 							<p v-else>

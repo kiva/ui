@@ -25,7 +25,10 @@ export default {
 		};
 	},
 	computed: {
+		/* eslint-disable */
 		currentActivePromo() {
+			// TODO: Fix lint rule
+
 			// Temporarily remove holiday or default banner if either of these are true.
 			// Each of these will render their own banners in the near future.
 			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
@@ -37,6 +40,7 @@ export default {
 			} else if (this.promoEnabled) {
 				return IWDPromoBanner;
 			}
+			/* eslint-enable */
 		},
 		textlength() {
 			return this.someVar.length;

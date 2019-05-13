@@ -76,6 +76,8 @@ export default {
 			return `${this.sliderValue}${this.inbetweenLabel}`;
 		},
 		rangeLabel() {
+			/* eslint-disable */
+			// TODO: Fix lint rule
 			if (this.sliderValue <= this.sliderMinimum) {
 				return this.isSliderSettingMinimum
 					? 'All'
@@ -86,6 +88,7 @@ export default {
 					: 'All';
 			}
 			return this.defaultRangeLabel;
+			/* eslint-enable */
 		},
 		sliderStyle() {
 			const sliderLeftColor = '#8ccb8c';

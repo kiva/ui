@@ -5,6 +5,7 @@
 			<div class="small-12 columns">
 				<div v-for="year in years" :key="year">
 					<h3>{{ year }}</h3>
+					<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 					<div v-if="paper.year === year" v-for="(paper, index) in papers" :key="index">
 						<p>
 							<a :href="paper.url" target="_blank">{{ paper.author }}. "{{ paper.title }}".
@@ -12,6 +13,7 @@
 							</a>
 						</p>
 					</div>
+					<!-- eslint-enable -->
 				</div>
 			</div>
 		</div>

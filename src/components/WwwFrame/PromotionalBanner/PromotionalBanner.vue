@@ -18,12 +18,15 @@ export default {
 		};
 	},
 	computed: {
+		/* eslint-disable */
 		currentActivePromo() {
+			// TODO: Fix lint rule to allow else if
 			if (this.lendingRewardOffered) {
 				return LendingRewardsBanner;
 			} else if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
 				return BonusBanner;
 			}
+			/* eslint-enable */
 		}
 	},
 	apollo: {

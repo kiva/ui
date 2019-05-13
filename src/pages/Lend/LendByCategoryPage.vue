@@ -117,7 +117,6 @@ export default {
 		FeaturedLoans,
 		FeaturedHeroLoanWrapper,
 		WwwPage,
-		ViewToggle,
 		LoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,

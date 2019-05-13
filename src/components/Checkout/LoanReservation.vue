@@ -104,9 +104,9 @@ export default {
 					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
-					differenceInWords = this.activateTimer === true ?
-						`Reservation expires in ${seconds} seconds` :
-						'Reserved for 1 more minute';
+					differenceInWords = this.activateTimer === true
+						? `Reservation expires in ${seconds} seconds`
+						: 'Reserved for 1 more minute';
 
 					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg4 = true;

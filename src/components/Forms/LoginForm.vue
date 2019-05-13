@@ -96,7 +96,6 @@
 import formDataEntries from 'form-data-entries';
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
-import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import LoginQuery from '@/graphql/query/loginQuery.graphql';
 import _get from 'lodash/get';
@@ -106,9 +105,7 @@ import LoginRegisterTeamChooser from '@/components/Forms/LoginRegisterTeamChoose
 export default {
 	components: {
 		KvButton,
-		KvFacebookButton,
 		KvLightbox,
-		LoginQuery,
 		LoginRegisterTeamChooser,
 	},
 	inject: ['apollo'],

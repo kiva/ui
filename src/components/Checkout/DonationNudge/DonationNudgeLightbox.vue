@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
@@ -50,7 +49,6 @@ import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 
 export default {
 	components: {
-		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
 		DonationNudgeBoxes,

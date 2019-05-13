@@ -49,7 +49,6 @@ export default {
 	components: {
 		KvButton,
 		KvLightbox,
-		TeamInfoFromId,
 	},
 	inject: ['apollo'],
 	props: {

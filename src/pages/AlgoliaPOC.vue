@@ -83,7 +83,6 @@
 									ref="tagRefinements" />
 
 								<filter-section-loan-details class="filter-section" />
-
 							</div>
 
 							<div class="columns small-12 small-push xlarge-9">
@@ -164,8 +163,8 @@ import {
 	AisCurrentRefinements,
 	AisRefinementList,
 	AisHierarchicalMenu,
-	AisToggleRefinement,
-	AisBreadcrumb,
+	// AisToggleRefinement,
+	// AisBreadcrumb,
 	AisStats,
 	AisSortBy,
 	AisStateResults,
@@ -173,7 +172,7 @@ import {
 
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
-import KvCheckbox from '@/components/Kv/KvCheckbox';
+// import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 // import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
 import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
@@ -193,10 +192,10 @@ export default {
 		AisCurrentRefinements,
 		AisRefinementList,
 		AisHierarchicalMenu,
-		AisToggleRefinement,
-		AisBreadcrumb,
+		// AisToggleRefinement,
+		// AisBreadcrumb,
 		AisStats,
-		KvCheckbox,
+		// KvCheckbox,
 		AlgoliaAdapter,
 		AisSortBy,
 		FilterSectionLoanDetails,

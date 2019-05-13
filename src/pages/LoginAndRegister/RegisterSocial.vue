@@ -7,8 +7,8 @@
 				id="registerSocialTermsForm"
 				class="promptForm"
 				action="."
-				@submit.prevent.stop="postRegisterSocialForm">
-
+				@submit.prevent.stop="postRegisterSocialForm"
+			>
 				<div class="terms">
 					<label>
 						<input
@@ -32,7 +32,8 @@
 					class="register-button smaller"
 					type="submit"
 					name="regForm_submit"
-					id="regForm_submit">
+					id="regForm_submit"
+				>
 					Complete registration
 				</KvButton>
 			</form>
@@ -75,8 +76,8 @@ export default {
 				// show error here
 				this.showNewAcctTermsError = true;
 			} else {
-				window.location = `https://${this.auth0Config.domain}` +
-					`/continue?agree=yes&state=${this.$route.query.state}`;
+				window.location = `https://${this.auth0Config.domain}`
+				+ `/continue?agree=yes&state=${this.$route.query.state}`;
 			}
 		},
 	}

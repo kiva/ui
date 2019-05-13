@@ -56,7 +56,6 @@ export default {
 	components: {
 		LoanCardImage,
 		MinimalFundraisingMeter,
-		updateLoanReservation,
 	},
 	inject: ['apollo'],
 	props: {

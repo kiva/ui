@@ -109,12 +109,12 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 		return activeExperiments;
 	})
 
-		// COMING SOON!!!
-		// Remove any cookies that don't exisit in the active experiments listing
-		// }).then(() => {
-		// 	return apolloClient.mutate({
-		// 		mutation: experimentCookieCleaner
-		// 	});
+	// COMING SOON!!!
+	// Remove any cookies that don't exisit in the active experiments listing
+	// }).then(() => {
+	// 	return apolloClient.mutate({
+	// 		mutation: experimentCookieCleaner
+	// 	});
 
 		// Assign specific experiment version if present in query params
 		// > query param must be 'setuiab'

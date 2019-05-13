@@ -87,7 +87,7 @@
 						</h1>
 
 						<p>We'll redirect you so you can get back to changing lives, or click here if you aren't
-						automatically redirected.</p>
+							automatically redirected.</p>
 
 						<p>Thank you for minding our dust.</p>
 					</section>
@@ -106,7 +106,7 @@
 				<div class="columns small-12">
 					<h2 class="empty-basket-heading">Your basket is empty!</h2>
 					<p>But we'd love to help you change that! Please consider
-					supporting one of the borrowers below, or
+						supporting one of the borrowers below, or
 						<a href="/lend-by-category">browse all loans</a>.
 					</p>
 				</div>
@@ -144,9 +144,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
-import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
@@ -162,9 +160,7 @@ export default {
 		BasketItemsList,
 		KivaCardRedemption,
 		LoadingOverlay,
-		KvIcon,
 		CheckoutHolidayPromo,
-		BraintreeCheckout,
 		PaymentWrapper,
 		RandomLoanSelector,
 	},

@@ -15,14 +15,12 @@
 import _map from 'lodash/map';
 import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
-import { AisRefinementList } from 'vue-instantsearch';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
 		KvCheckbox,
 		FilterMenuSection,
-		AisRefinementList,
 	},
 	mixins: [
 		algoliaCustomCategories,

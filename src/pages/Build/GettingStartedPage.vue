@@ -10,8 +10,12 @@
 				<p>
 					We know you are eager to start working with code, but it is important
 					that you read and understand the
-					<router-link to="/build/terms-of-service">Terms of Service</router-link> and
-					<router-link to="/build/code-of-conduct">Code of Conduct</router-link>.
+					<router-link to="/build/terms-of-service">
+						Terms of Service
+					</router-link> and
+					<router-link to="/build/code-of-conduct">
+						Code of Conduct
+					</router-link>.
 					Start with these to make sure the application you have in mind is in
 					the spirit of our terms for use of the API.
 				</p>
@@ -28,8 +32,8 @@
 						Query for newest fundraising loans
 					</a>
 				</p>
-				<p>Try changing up some of the parameters and see how the search results
-				change.
+				<p>
+					Try changing up some of the parameters and see how the search results change.
 					<br>
 					Press the "Play" button on the top left hand corner to see the new results.
 					<br>

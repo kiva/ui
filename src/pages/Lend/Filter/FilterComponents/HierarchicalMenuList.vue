@@ -34,13 +34,9 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	name: 'HierarchicalMenuList',
-	components: {
-		KvIcon,
-	},
 	props: {
 		items: {
 			type: Array,

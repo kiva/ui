@@ -16,7 +16,7 @@
 			file.</p>
 
 		<p>What this means for us is a head start across almost all default HTML element styles along with
-		a system to empower a grid + flexbox powered layout across the site.</p>
+			a system to empower a grid + flexbox powered layout across the site.</p>
 
 		<h2>Grid System</h2>
 		<p>We are using the <a href="https://foundation.zurb.com/sites/docs/flex-grid.html" target="_blank">
@@ -43,4 +43,3 @@
 @import 'foundation';
 @include foundation-callout;
 </style>
-

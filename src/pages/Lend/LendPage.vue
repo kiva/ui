@@ -4,7 +4,7 @@
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
 				<p>Each Kiva loan helps people build a better
-				future for themselves and their families.</p>
+					future for themselves and their families.</p>
 			</div>
 
 			<div class="columns small-12">

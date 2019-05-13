@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
@@ -60,7 +59,6 @@ const mobileImage = require('@/assets/images/checkout/donation-nudge/nudge-borro
 
 export default {
 	components: {
-		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
 		DonationNudgeBoxes,

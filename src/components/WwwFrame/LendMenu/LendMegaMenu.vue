@@ -81,12 +81,14 @@
 			</ul>
 		</div>
 		<kv-expandable property="width" :skip-leave="true">
+			<!-- eslint-disable -->
 			<div
 				v-for="region in regions"
 				:key="region.name"
 				v-if="isOpenSection(region.name)"
 				class="right-section"
 			>
+			<!-- eslint-enable -->
 				<h2>{{ region.name }}</h2>
 				<country-list :countries="region.countries" />
 			</div>

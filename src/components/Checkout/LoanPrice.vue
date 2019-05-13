@@ -75,7 +75,9 @@ export default {
 		};
 	},
 	computed: {
+		/* eslint-disable */
 		prices() {
+			// TODO: convert to switch statement with default value returned
 			if (this.type === 'loan') {
 				// determine how many (if any) overall additional shares are remaining
 				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
@@ -102,6 +104,7 @@ export default {
 					'500', '750', '1,000', '2,000'];
 				return priceArray;
 			}
+			/* eslint-enable */
 		}
 	},
 	methods: {
