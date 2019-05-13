@@ -90,7 +90,7 @@ export default class KvAuth0 {
 	}
 
 	// Open a popup window to the login page
-	popupLogin() {
+	popupLogin(authorizeOptions) {
 		// only try this if in the browser
 		if (this.isServer) {
 			return Promise.reject(new Error('popupLogin called in server mode'));
@@ -106,6 +106,7 @@ export default class KvAuth0 {
 					width: 480,
 					height: 740,
 				},
+				...authorizeOptions
 			}, (err, result) => {
 				if (err) {
 					this[setAuthData]();

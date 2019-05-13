@@ -333,7 +333,6 @@ export default {
 		},
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-
 			if (lastLogin + (this.activeLoginDuration * 1000) > Date.now()) {
 				return true;
 			}
@@ -369,7 +368,12 @@ export default {
 		loginToContinue() {
 			if (this.kvAuth0.enabled) {
 				this.updatingTotals = true;
-				this.kvAuth0.popupLogin().then(result => {
+				// we need to force show the login popup if not actively logged in
+				const authorizeOptions = {};
+				if (!this.isActivelyLoggedIn) {
+					authorizeOptions.prompt = 'login';
+				}
+				this.kvAuth0.popupLogin(authorizeOptions).then(result => {
 					// Only refetch data if login was successful
 					if (result) {
 						// we should operate here but it get's overwritten by the prefetch
@@ -398,6 +402,10 @@ export default {
 						// {original: "User closed the popup window", code: null, description: null}
 						if (err && err.original === 'User closed the popup window') {
 							this.updatingTotals = false;
+						}
+						// handle temporary error situation with popup by refreshing page
+						if (err && err.name === 'SyntaxError') {
+							window.location = window.location; // eslint-disable-line
 						}
 					})
 					.finally(() => {
