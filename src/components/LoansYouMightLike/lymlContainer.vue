@@ -219,7 +219,7 @@ export default {
 
 				// Random loans to fill up the rest of the loansYouMightLike[]
 				const randomLoans = _filter(
-					_get(data.data.lend, 'randomLoan.values') || [],
+					_get(data, 'data.lend.randomLoan.values') || [],
 					loan => this.itemsInBasket.indexOf(loan.id) === -1
 				);
 

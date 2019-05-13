@@ -10,14 +10,14 @@
 					:name="loan.name"
 					:retina-image-url="loan.image.retina"
 					:standard-image-url="loan.image.default"
-					is-visitor="false"
+					:is-visitor="true"
 					v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
 					:open-in-new-tab="true"
 					:use-default-styles="false"
 				/>
 			</div>
 			<div class="small-12 medium-8 columns">
-				<!-- Funded State/ FUNDED! -->
+				<!-- Funded State -->
 				<h2 class="strong funding-status">100% {{ loan.status }}</h2>
 				<!-- Total funded/loan amount -->
 				<div class="loan-total-text">
@@ -52,8 +52,6 @@
 				</h3>
 				<l-y-m-l
 					:target-loan="loan"
-					@add-to-basket="handleAddToBasket"
-					@processing-add-to-basket="processingAddToBasket"
 				/>
 			</div>
 		</div>
@@ -62,7 +60,7 @@
 			<div class="small-12 columns text-center">
 				<!-- Loan use -->
 				<h2 class="loan-use-text">
-					A loan of {{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helps {{ loan.use }}
+					A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helps {{ loan.use }}
 				</h2>
 			</div>
 		</div>
