@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import activeLoanClient from '@/graphql/query/activeLoanClient.graphql';
 import activeLoanMixin from '@/plugins/active-loan-mixin';
 import lockScrollUtils from '@/plugins/lock-scroll';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -91,6 +93,9 @@ export default {
 				this.clearHoverLoan();
 				return;
 			}
+			if (!this.$refs.expandedContainer) {
+				return;
+			}
 			const xOffset = this.tracking.cardNumber === 1 ? -15 : -5;
 			this.$refs.expandedContainer.style.top = `${this.hoverLoanYCoordinate}px`;
 			this.$refs.expandedContainer.style.left = `${this.hoverLoanXCoordinate + xOffset}px`;
@@ -99,6 +104,7 @@ export default {
 			this.lockScrollSmallOnly();
 			setTimeout(() => { this.expanded = true; }, 0);
 		},
+		activeLoanWillClear() {},
 		activeLoanDidClear() {
 			this.expanded = false;
 			this.show = false;
@@ -118,11 +124,39 @@ export default {
 			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
 			usingTouch unfortunately.
 			*/
-			if (typeof window === 'undefined') {
+			if (typeof window === 'undefined' || typeof document === 'undefined') {
 				return true;
 			}
-			return window.getComputedStyle(document.querySelector('.arrow.right-arrow')).display !== 'none';
+			const rightArrow = document.querySelector('.arrow.right-arrow');
+			if (!rightArrow) {
+				return true;
+			}
+			return window.getComputedStyle(rightArrow).display !== 'none';
 		},
+	},
+	mounted() {
+		this.apollo.watchQuery({ query: activeLoanClient }).subscribe({
+			next: ({ data }) => {
+				const activeLoanState = _get(data, 'activeLoan');
+				if (activeLoanState.hoverLoanId) {
+					this.activeLoanWillChange();
+				} else {
+					this.activeLoanWillClear();
+				}
+				this.activeLoan = Object.assign({}, this.activeLoan, {
+					xCoordinate: activeLoanState.xCoordinate,
+					yCoordinate: activeLoanState.yCoordinate,
+					loan: activeLoanState.loan,
+					hoverLoanId: activeLoanState.hoverLoanId,
+					tracking: activeLoanState.tracking,
+				});
+				if (activeLoanState.hoverLoanId) {
+					this.activeLoanDidChange();
+				} else {
+					this.activeLoanDidClear();
+				}
+			},
+		});
 	},
 };
 </script>

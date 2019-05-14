@@ -112,10 +112,14 @@ export default {
 			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
 			usingTouch unfortunately.
 			*/
-			if (typeof window === 'undefined') {
+			if (typeof window === 'undefined' || typeof document === 'undefined') {
 				return true;
 			}
-			return window.getComputedStyle(document.querySelector('.arrow.right-arrow')).display !== 'none';
+			const rightArrow = document.querySelector('.arrow.right-arrow');
+			if (!rightArrow) {
+				return true;
+			}
+			return window.getComputedStyle(rightArrow).display !== 'none';
 		},
 	},
 };

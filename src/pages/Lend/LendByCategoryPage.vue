@@ -41,7 +41,6 @@
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:show-category-description="showCategoryDescription"
 				:show-expandable-loan-cards="showExpandableLoanCards"
-				:using-touch="usingTouch"
 				ref="categoryRow"
 				@scrolling-row="handleScrollingRow"
 			/>
@@ -319,7 +318,7 @@ export default {
 			});
 		},
 		handleScrollingRow() {
-			if (this.$refs.expandableLoanCardComponent) {
+			if (this.showExpandableLoanCards && this.$refs.expandableLoanCardComponent) {
 				this.$refs.expandableLoanCardComponent.collapseCardAndPauseHover(500);
 			}
 		},
@@ -550,7 +549,9 @@ export default {
 		}
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', this.handleResize);
+		if (this.showExpandableLoanCards) {
+			window.removeEventListener('resize', this.handleResize);
+		}
 	},
 };
 </script>

@@ -52,7 +52,6 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-						:using-touch="usingTouch"
 					/>
 
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
@@ -133,10 +132,6 @@ export default {
 		showCategoryDescription: {
 			type: Boolean,
 			default: false
-		},
-		usingTouch: {
-			type: Boolean,
-			required: true,
 		},
 	},
 	data() {
