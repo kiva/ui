@@ -16,6 +16,7 @@
 
 <script>
 import _get from 'lodash/get';
+import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
@@ -53,7 +54,16 @@ export default {
 				path: _get(args, 'route.path')
 			});
 		}
-	}
+	},
+	mounted() {
+		const usingTouch =
+			('ontouchstart' in window)
+			|| window.TouchEvent;
+		this.apollo.mutate({
+			mutation: usingTouchMutation,
+			variables: { usingTouch }
+		});
+	},
 };
 </script>
 
