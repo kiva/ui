@@ -1,5 +1,3 @@
-import _get from 'lodash/get';
-import activeLoanClient from '@/graphql/query/activeLoanClient.graphql';
 import updateActiveLoan from '@/graphql/mutation/updateActiveLoan.graphql';
 
 const emptyActiveLoan = {
@@ -64,33 +62,5 @@ export default {
 				variables: emptyActiveLoan,
 			});
 		},
-		activeLoanWillChange() {},
-		activeLoanWillClear() {},
-		activeLoanDidChange() {},
-		activeLoanDidClear() {},
-	},
-	mounted() {
-		this.apollo.watchQuery({ query: activeLoanClient }).subscribe({
-			next: ({ data }) => {
-				const activeLoanState = _get(data, 'activeLoan');
-				if (activeLoanState.hoverLoanId) {
-					this.activeLoanWillChange();
-				} else {
-					this.activeLoanWillClear();
-				}
-				this.activeLoan = Object.assign({}, this.activeLoan, {
-					xCoordinate: activeLoanState.xCoordinate,
-					yCoordinate: activeLoanState.yCoordinate,
-					loan: activeLoanState.loan,
-					hoverLoanId: activeLoanState.hoverLoanId,
-					tracking: activeLoanState.tracking,
-				});
-				if (activeLoanState.hoverLoanId) {
-					this.activeLoanDidChange();
-				} else {
-					this.activeLoanDidClear();
-				}
-			},
-		});
 	},
 };
