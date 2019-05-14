@@ -1,0 +1,3 @@
+mutation updateTouchCapable($touchCapable: Boolean) {
+	updateTouchCapable(touchCapable: $touchCapable) @client
+}

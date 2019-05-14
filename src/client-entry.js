@@ -6,6 +6,7 @@ import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
+import touchCapableMutation from '@/graphql/mutation/updateTouchCapable.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -42,16 +43,6 @@ const {
 		types: config.graphqlFragmentTypes,
 	},
 	kvAuth0,
-	mounted() {
-		// Setup adding touch info to the state
-		const usingTouch =
-			('ontouchstart' in window)
-			|| window.TouchEvent;
-		apolloClient.mutate({
-			mutation: usingTouchMutation,
-			variables: { usingTouch },
-		});
-	},
 });
 
 // Apply Server state to Client Store
@@ -73,6 +64,22 @@ app.$setKvAnalyticsData(userId);
 
 // fire server rendered pageview
 app.$fireServerPageView();
+
+// Setup adding touch info to the state
+window.addEventListener('touchstart', function onFirstTouch() {
+	apolloClient.mutate({
+		mutation: usingTouchMutation,
+		variables: { usingTouch: true }
+	});
+	window.removeEventListener('touchstart', onFirstTouch);
+});
+const touchCapable =
+	('ontouchstart' in window)
+	|| window.TouchEvent;
+apolloClient.mutate({
+	mutation: touchCapableMutation,
+	variables: { touchCapable },
+});
 
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {

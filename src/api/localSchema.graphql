@@ -10,6 +10,7 @@ type Mutation {
 	closeTipMessage: Boolean
 	showTipMessage(message: String, persist: Boolean, type: String): Boolean
 	updateUsingTouch(usingTouch: Boolean): Boolean
+	updateTouchCapable(touchCapable: Boolean): Boolean
 	updateAddToBasketInterstitial(active: Boolean, visible: Boolean, loanId: Int): Boolean
 	updateExperimentVersion(id: String, version: String): Experiment
 	cleanExperimentCookie: Boolean
@@ -20,6 +21,7 @@ type Query {
 	experiment(id: String): Experiment
 	tip: TipMessage
 	usingTouch: Boolean
+	touchCapable: Boolean
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
 }
