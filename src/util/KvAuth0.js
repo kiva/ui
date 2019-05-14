@@ -3,6 +3,7 @@ import cookieStore from './cookieStore';
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
 const loginPromise = Symbol('loginPromise');
+const popupWindow = Symbol('popupWindow');
 const sessionPromise = Symbol('sessionPromise');
 const setAuthData = Symbol('setAuthData');
 
@@ -96,12 +97,15 @@ export default class KvAuth0 {
 			return Promise.reject(new Error('popupLogin called in server mode'));
 		}
 
+		// re-focus on the popup if it's already open
+		if (this[popupWindow]) this[popupWindow].focus();
+
 		// Ensure we only ask to login once at a time
 		if (this[loginPromise]) return this[loginPromise];
 
 		// Open up popup window to login
 		this[loginPromise] = this.webAuth.then(webAuth => new Promise((resolve, reject) => {
-			webAuth.popup.authorize({
+			this[popupWindow] = webAuth.popup.authorize({
 				popupOptions: {
 					width: 480,
 					height: 740,
@@ -134,6 +138,7 @@ export default class KvAuth0 {
 		if (this.isServer) {
 			return Promise.reject(new Error('popupCallback called in server mode'));
 		}
+		this[popupWindow] = null;
 		return this.webAuth.then(webAuth => webAuth.popup.callback(options));
 	}
 }
