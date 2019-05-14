@@ -209,6 +209,7 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: initializeCheckout,
+				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				// check for free credit, bonus credit or lending rewards and redirect if present
@@ -241,9 +242,6 @@ export default {
 					this.showLoginContinueButton = true;
 				}
 			}
-			// use the following to observe the unauthenticated prefetch call
-			// console.log('-------- prefetch data ---------');
-			// console.log(data);
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
@@ -265,6 +263,9 @@ export default {
 		}
 	},
 	created() {
+		// start the page with loading state
+		this.setUpdatingTotals(true);
+
 		// if we have a user id but are not actively logged in
 		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
 			this.showLoginContinueButton = true;
@@ -317,6 +318,9 @@ export default {
 		// Run our validate items method once in the client on page load
 		if (this.isLoggedIn) {
 			this.validatePreCheckout();
+		} else {
+			// clear loading state if not logged in
+			this.setUpdatingTotals(false);
 		}
 
 		// check for free credits
