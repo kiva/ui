@@ -42,6 +42,16 @@ const {
 		types: config.graphqlFragmentTypes,
 	},
 	kvAuth0,
+	mounted() {
+		// Setup adding touch info to the state
+		const usingTouch =
+			('ontouchstart' in window)
+			|| window.TouchEvent;
+		apolloClient.mutate({
+			mutation: usingTouchMutation,
+			variables: { usingTouch },
+		});
+	},
 });
 
 // Apply Server state to Client Store
@@ -63,15 +73,6 @@ app.$setKvAnalyticsData(userId);
 
 // fire server rendered pageview
 app.$fireServerPageView();
-
-// Setup adding touch info to the state
-window.addEventListener('touchstart', function onFirstTouch() {
-	apolloClient.mutate({
-		mutation: usingTouchMutation,
-		variables: { usingTouch: true }
-	});
-	window.removeEventListener('touchstart', onFirstTouch);
-});
 
 // Wait until router has resolved all async before hooks and async components
 router.onReady(() => {
