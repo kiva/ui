@@ -14,13 +14,25 @@ const indexKeys = [
 
 // Rebuild index name as set in Algolia
 function setSortByEnv(selectedRouteSort) {
-	let expandedRouteSort = '';
-	['dev', 'qa', 'prod'].forEach(env => {
-		if (typeof window !== 'undefined' && window.location.host.indexOf(env) !== -1) {
-			expandedRouteSort = `${env}_fundraising_${selectedRouteSort[0].value}`;
+	[
+		{
+			envName: 'dev',
+			hostNameField: 'dev',
+		},
+		{
+			envName: 'qa',
+			hostNameField: 'qa',
+		},
+		{
+			envName: 'prod',
+			hostNameField: 'www.kiva.org',
+		}
+	].forEach(({ envName, hostNameField }) => {
+		if (typeof window !== 'undefined' && window.location.host.indexOf(hostNameField) !== -1) {
+			return `${envName}_fundraising_${selectedRouteSort[0].value}`;
 		}
 	});
-	return expandedRouteSort;
+	return '';
 }
 
 // extract custom, simple name for sortBy value in url
