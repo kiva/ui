@@ -28,7 +28,7 @@ export default Vue => {
 				// - snowplow seems to know better than the path rewriting performed by vue-router
 				window.snowplow('setCustomUrl', toUrl);
 				// set referrer for async page transitions
-				if (from.matched && from.path !== '') {
+				if (from && from.matched && from.path !== '') {
 					window.snowplow('setReferrerUrl', fromUrl); // asyncFromUrl
 				}
 				window.snowplow(
@@ -46,7 +46,7 @@ export default Vue => {
 			// Google Analytics Pageview
 			if (gaLoaded) {
 				let gaPath = `${window.location.pathname}${window.location.search || ''}`;
-				if (to.matched && to.matched.length) {
+				if (to && to.matched && to.matched.length) {
 					gaPath = to.fullPath;
 				}
 				window.ga('set', 'page', gaPath);
