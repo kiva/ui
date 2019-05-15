@@ -158,7 +158,6 @@ export default {
 			categoryDescriptionExperimentVersion: null,
 			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
-			usingTouch: false,
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
@@ -356,7 +355,6 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				// Get the category rows experiment object from settings
 				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
-				this.usingTouch = _get(data, 'usingTouch');
 
 				return Promise.all([
 					// Get the assigned category rows experiment version
@@ -498,14 +496,14 @@ export default {
 			this.$kvTrackEvent(
 				'Lending',
 				'EXP-CASH-676-Apr2019',
-				`a${this.usingTouch ? '-touch' : '-non-touch'}`,
+				'a',
 			);
 		} else if (expandableLoanCardExperimentVersion === 'variant-b') {
 			this.showExpandableLoanCards = true;
 			this.$kvTrackEvent(
 				'Lending',
 				'EXP-CASH-676-Apr2019',
-				`b${this.usingTouch ? '-touch' : 'non-touch'}`,
+				'b',
 			);
 		}
 	},
