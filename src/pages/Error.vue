@@ -3,7 +3,12 @@
 		<div class="page-content row">
 			<div class="columns">
 				<h1>Oh no, something went wrong!</h1>
-				<div class="message">Please <a :href="`${loginRedirectUrl}`">try again.</a></div>
+				<h2 v-if="errorDescription">{{ errorDescription }}</h2>
+				<div class="message">
+					<div v-if="loginRedirectUrl">
+						Please <a :href="`${loginRedirectUrl}`">try again.</a>
+					</div>
+				</div>
 				<div class="contact">
 					If you need us, we're always available at
 					<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>
