@@ -3,15 +3,6 @@
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true"/>
 
 		<featured-hero-loan-wrapper
-			ref="featured"
-			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
-			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-			:is-logged-in="isLoggedIn"
-			:items-in-basket="itemsInBasket"
-			:show-category-description="showCategoryDescription"
-		/>
-
-		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
 			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
