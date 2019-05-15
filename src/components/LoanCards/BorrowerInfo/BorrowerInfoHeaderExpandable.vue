@@ -14,7 +14,7 @@
 
 .borrower-info-header-expandable {
 	white-space: nowrap;
-	margin-bottom: rem-calc(10);
+	margin-bottom: rem-calc(12);
 
 	.expandable {
 		overflow: hidden;
