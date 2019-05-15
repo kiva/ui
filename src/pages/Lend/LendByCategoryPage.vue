@@ -41,7 +41,6 @@
 				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:show-category-description="showCategoryDescription"
 				:show-expandable-loan-cards="showExpandableLoanCards"
-				:using-touch="usingTouch"
 				ref="categoryRow"
 				@scrolling-row="handleScrollingRow"
 			/>
@@ -159,7 +158,6 @@ export default {
 			categoryDescriptionExperimentVersion: null,
 			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
-			usingTouch: false,
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
@@ -319,7 +317,7 @@ export default {
 			});
 		},
 		handleScrollingRow() {
-			if (this.$refs.expandableLoanCardComponent) {
+			if (this.showExpandableLoanCards && this.$refs.expandableLoanCardComponent) {
 				this.$refs.expandableLoanCardComponent.collapseCardAndPauseHover(500);
 			}
 		},
@@ -357,7 +355,6 @@ export default {
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
 				// Get the category rows experiment object from settings
 				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
-				this.usingTouch = _get(data, 'usingTouch');
 
 				return Promise.all([
 					// Get the assigned category rows experiment version
@@ -499,14 +496,14 @@ export default {
 			this.$kvTrackEvent(
 				'Lending',
 				'EXP-CASH-676-Apr2019',
-				`a${this.usingTouch ? '-touch' : '-non-touch'}`,
+				'a',
 			);
 		} else if (expandableLoanCardExperimentVersion === 'variant-b') {
 			this.showExpandableLoanCards = true;
 			this.$kvTrackEvent(
 				'Lending',
 				'EXP-CASH-676-Apr2019',
-				`b${this.usingTouch ? '-touch' : 'non-touch'}`,
+				'b',
 			);
 		}
 	},
@@ -543,12 +540,16 @@ export default {
 		}
 
 		// CASH-676: Expandable Loan Card Experiment
-		window.addEventListener('resize', this.handleResize);
-		this.setRightArrowPosition();
-		this.setLeftArrowPosition();
+		if (this.showExpandableLoanCards) {
+			window.addEventListener('resize', this.handleResize);
+			this.setRightArrowPosition();
+			this.setLeftArrowPosition();
+		}
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', this.handleResize);
+		if (this.showExpandableLoanCards) {
+			window.removeEventListener('resize', this.handleResize);
+		}
 	},
 };
 </script>
