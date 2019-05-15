@@ -1,23 +1,31 @@
 <template>
-	<div
-		class="expandable-loan-card-expanded column column-block"
-		v-show="show"
-		@mouseleave="clearHoverLoan"
-		ref="expandedContainer"
-	>
-		<loan-card-controller
-			class="loan-card-controller-component"
-			loan-card-type="ExpandableLoanCard"
-			:loan="hoverLoan"
-			:items-in-basket="itemsInBasket"
-			:category-id="tracking.categoryId"
-			:category-set-id="tracking.categorySetId"
-			:row-number="tracking.rowNumber"
-			:card-number="tracking.cardNumber"
-			:enable-tracking="true"
-			:is-visitor="isVisitor"
-			:expanded="expanded"
-		/>
+	<div class="expandable-loan-card-expanded">
+		<div
+			class="expandable-loan-card-expanded-container column column-block"
+			v-show="show"
+			@mouseleave="clearHoverLoan"
+			ref="expandedContainer"
+		>
+			<loan-card-controller
+				class="loan-card-controller-component"
+				loan-card-type="ExpandableLoanCard"
+				:loan="hoverLoan"
+				:items-in-basket="itemsInBasket"
+				:category-id="tracking.categoryId"
+				:category-set-id="tracking.categorySetId"
+				:row-number="tracking.rowNumber"
+				:card-number="tracking.cardNumber"
+				:enable-tracking="true"
+				:is-visitor="isVisitor"
+				:expanded="expanded"
+			/>
+		</div>
+		<div
+			class="expandable-loan-card-expanded-tablet-overlay show-for-medium"
+			v-if="hoverLoanId"
+			@click="clearHoverLoan"
+		>
+		</div>
 	</div>
 </template>
 
@@ -165,30 +173,52 @@ export default {
 @import 'settings';
 
 .expandable-loan-card-expanded {
-	z-index: 1001;
+	.expandable-loan-card-expanded-container {
+		z-index: 1001;
 
-	@include breakpoint(small only) {
-		position: fixed;
-		background: $ghost;
+		@include breakpoint(small only) {
+			position: fixed;
+			background: $ghost;
 
-		/* !important is required since positioning for desktop is set in JS */
-		top: 0 !important;
-		left: 0 !important;
-		bottom: 0;
-		right: 0;
-		margin: 0;
-		padding: 0;
-
-		.loan-card-controller-component {
-			position: absolute;
-			top: 0;
-			left: 0;
+			/* !important is required since positioning for desktop is set in JS */
+			top: 0 !important;
+			left: 0 !important;
+			bottom: 0;
 			right: 0;
+			margin: 0;
+			padding: 0;
+
+			.loan-card-controller-component {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+			}
+		}
+
+		@include breakpoint(medium) {
+			position: absolute;
 		}
 	}
 
+	.expandable-loan-card-expanded-tablet-overlay {
+		display: none;
+		pointer-events: none;
+	}
+
 	@include breakpoint(medium) {
-		position: absolute;
+		@media (hover: none) {
+			.expandable-loan-card-expanded-tablet-overlay {
+				display: block;
+				pointer-events: initial;
+				position: fixed;
+				z-index: 1000;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+			}
+		}
 	}
 }
 </style>

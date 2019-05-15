@@ -27,6 +27,9 @@ export default {
 		hoverLoan() {
 			return JSON.parse(this.activeLoan.loan);
 		},
+		hoverLoanId() {
+			return this.activeLoan.hoverLoanId;
+		},
 		hoverLoanXCoordinate() {
 			return this.activeLoan.xCoordinate;
 		},
