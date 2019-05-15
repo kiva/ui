@@ -131,7 +131,7 @@ import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
-import experimentSetting from '@/graphql/query/experimentSetting.graphql';
+import uiConfigSetting from '@/graphql/query/uiConfigSetting.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -170,14 +170,14 @@ export default {
 		};
 	},
 	apollo: {
-		query: experimentSetting,
+		query: uiConfigSetting,
 		variables() {
 			return {
-				key: 'ui.feature.braintree_vault'
+				key: 'feature.braintree_vault'
 			};
 		},
 		result({ data }) {
-			this.btVaultActive = _get(data, 'general.setting.value') === 'true' || false;
+			this.btVaultActive = _get(data, 'general.uiConfigSetting.value') === 'true' || false;
 		},
 	},
 	metaInfo() {
