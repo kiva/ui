@@ -12,10 +12,6 @@ query($basketId: String) {
 			key
 			value
 		}
-		recentlyViewedLoans: uiExperimentSetting(key: "recently_viewed_loan_row") {
-			key
-			value
-		}
 		imageEnhancementExperiment: uiExperimentSetting(key: "image_enhancement") {
 			key
 			value
