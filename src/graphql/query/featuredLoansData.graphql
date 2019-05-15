@@ -2,7 +2,8 @@
 
 query (
 	$ids: [Int],
-	$numberOfLoans: Int = 1,
+	$numberOfLoans: Int = 4,
+	$offset: Int = 0,
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
 ) {
@@ -12,7 +13,7 @@ query (
 			name
 			description
 			url
-			loans(limit: $numberOfLoans, unique: true) {
+			loans(limit: $numberOfLoans, offset: $offset, unique: true) {
 				values {
 					...loanCardFields
 					image {

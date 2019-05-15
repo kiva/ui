@@ -3,6 +3,15 @@
 		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true"/>
 
 		<featured-hero-loan-wrapper
+			ref="featured"
+			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
+			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
+			:is-logged-in="isLoggedIn"
+			:items-in-basket="itemsInBasket"
+			:show-category-description="showCategoryDescription"
+		/>
+
+		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
 			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
@@ -19,13 +28,6 @@
 			:is-logged-in="isLoggedIn"
 			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			:show-category-description="showCategoryDescription"
-		/>
-
-		<recently-viewed-loans
-			:is-micro="true"
-			:items-in-basket="itemsInBasket"
-			:is-logged-in="isLoggedIn"
-			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		/>
 
 		<div>
@@ -90,7 +92,6 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
-import WebStorage from 'store2';
 import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
@@ -102,7 +103,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
-import RecentlyViewedLoans from '@/components/LoansByCategory/RecentlyViewedLoans';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
@@ -125,7 +125,6 @@ export default {
 		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
 		FeaturedLoans,
 		FeaturedHeroLoanWrapper,
-		RecentlyViewedLoans,
 		WwwPage,
 		ViewToggle,
 		LoadingOverlay,
@@ -151,8 +150,6 @@ export default {
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
-			showRecentlyViewed: false,
-			recentLoanIds: [],
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
 			categoryDescriptionExperimentVersion: null,
@@ -207,17 +204,6 @@ export default {
 				loanIds.push({
 					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
 				});
-			}
-
-			// Inject Data for Recently viewed if present
-			if (this.showRecentlyViewed) {
-				if (this.recentLoanIds.length) {
-					_each(this.recentLoanIds, (loanId, index) => {
-						loanIds.push({
-							r: -1, p: index + 1, c: 64, l: loanId
-						});
-					});
-				}
 			}
 
 			_each(categories, (category, catIndex) => {
@@ -282,26 +268,6 @@ export default {
 				this.clientCategories = _get(data, 'lend.loanChannelsById') || [];
 			});
 		},
-		fetchRecentlyViewed() {
-			// Setup Recently Viewed Loans data for inclusion in page load loan row analytics
-			// Read assignment for Recently Viewed Loans EXP
-			const recentlyViewedEXP = this.apollo.readQuery({
-				query: experimentQuery,
-				variables: { id: 'recently_viewed_loan_row' }
-			});
-			this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
-			// if Recently Viewed Exp is active look for loans in local storage
-			if (this.showRecentlyViewed) {
-				// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)
-				const recentlyViewed = WebStorage('recentlyViewedLoans');
-				// decode, parse then set recently viewed loan data
-				try {
-					this.recentLoanIds = JSON.parse(atob(recentlyViewed));
-				} catch (e) {
-					// no-op
-				}
-			}
-		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
 			this.apollo.watchQuery({
@@ -361,8 +327,6 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
 					// Pre-fetch the assigned featured loans experiment version
 					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
-					// Pre-fetch the assigned version for recently viewed loans
-					client.query({ query: experimentQuery, variables: { id: 'recently_viewed_loan_row' } }),
 					// experiment: image enhancement
 					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
 					// experiment: featured hero loan
@@ -508,8 +472,6 @@ export default {
 		}
 	},
 	mounted() {
-		this.fetchRecentlyViewed();
-
 		this.fetchRemainingLoanChannels().then(() => {
 			this.rowLazyLoadComplete = true;
 
