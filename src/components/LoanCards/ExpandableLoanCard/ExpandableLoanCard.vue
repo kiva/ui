@@ -28,6 +28,7 @@
 					:name="loan.name"
 					:loan-id="loan.id"
 					:single-line="true"
+					:expanded="expanded"
 					class="list-loan-card-borrower-info-header"
 				/>
 				<fundraising-status
