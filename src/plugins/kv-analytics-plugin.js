@@ -3,11 +3,13 @@ export default Vue => {
 	const inBrowser = typeof window !== 'undefined';
 	let snowplowLoaded;
 	let gaLoaded;
+	let fbLoaded;
 
 	const kvActions = {
 		checkLibs: () => {
 			gaLoaded = inBrowser && typeof window.ga === 'function';
 			snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
+			fbLoaded = inBrowser && typeof window.fbq === 'function';
 		},
 		pageview: (to, from) => {
 			if (!inBrowser) return false;
@@ -51,6 +53,13 @@ export default Vue => {
 				}
 				window.ga('set', 'page', gaPath);
 				window.ga('send', 'pageview');
+			}
+
+			// facebook pixel pageview
+			if (fbLoaded) {
+				// we used to pass a user_type but it's always empty across the site
+				// { user_type: '???'}
+				window.fbq('track', 'PageView');
 			}
 		},
 		// TODO: Update to accept snowplow property as the 4th param, value moves to 5th param for trackStructEvent
