@@ -70,7 +70,7 @@
 					<h2>Similar loans to {{ loan.loan.name }}</h2>
 					<l-y-m-l
 						v-if="loans && loan.id"
-						:loans="loans"
+						:basketed-loans="loans"
 						:target-loan="loan"
 						@add-to-basket="handleAddToBasket"
 						@processing-add-to-basket="processingAddToBasket"
