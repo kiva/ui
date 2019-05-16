@@ -25,10 +25,10 @@ function setSortByEnv(selectedRouteSort) {
 		},
 		{
 			envName: 'prod',
-			hostNameField: 'www.kiva.org',
+			hostNameField: '',
 		}
 	].forEach(({ envName, hostNameField }) => {
-		if (typeof window !== 'undefined' && window.location.host.indexOf(hostNameField) !== -1) {
+		if (typeof window !== 'undefined' && window.location.host.includes(hostNameField)) {
 			return `${envName}_fundraising_${selectedRouteSort[0].value}`;
 		}
 	});
