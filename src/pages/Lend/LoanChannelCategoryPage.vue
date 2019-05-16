@@ -151,6 +151,9 @@ export default {
 		loans() {
 			return _get(this.loanChannel, 'loans.values') || [];
 		},
+		loanIds() {
+			return _map(this.loans, 'id');
+		},
 		totalCount() {
 			return _get(this.loanChannel, 'loans.totalCount') || 0;
 		},
@@ -328,6 +331,23 @@ export default {
 			}
 			// use default
 			return '/lend/filter';
+		}
+	},
+	watch: {
+		loanIds(newVal, oldVal) {
+			if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+				// check for and use snowplow directly where the 4th param is a property
+				if (typeof window !== 'undefined' && typeof snowplow === 'function') {
+					window.snowplow('setCustomUrl', window.location.href);
+					window.snowplow(
+						'trackStructEvent',
+						'Lending',
+						newVal.length ? 'loans-shown' : 'zero-loans-shown',
+						newVal.length ? 'loan-ids' : undefined,
+						newVal.length ? newVal.join() : undefined
+					);
+				}
+			}
 		}
 	},
 	beforeRouteEnter(to, from, next) {
