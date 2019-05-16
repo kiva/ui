@@ -25,7 +25,7 @@
 				<kv-icon v-show="searchOpen" class="close-icon" name="x" />
 			</button>
 			<div class="flexible-center-area">
-				<div id="top-nav-search-area" :aria-hidden="searchOpen ? 'false' : 'true'">
+				<div id="top-nav-search-area" v-if="!hideSearchInHeader" :aria-hidden="searchOpen ? 'false' : 'true'">
 					<button class="close-search hide-for-large"
 						:aria-expanded="searchOpen ? 'true' : 'false'"
 						:aria-pressed="searchOpen ? 'true' : 'false'"
