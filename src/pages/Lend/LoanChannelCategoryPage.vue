@@ -4,14 +4,22 @@
 			<div class="small-12 columns heading-region">
 				<view-toggle browse-url="/lend-by-category" :filter-url="filterUrl" />
 				<p class="small-text">
-					<router-link to="/lend-by-category">All Loans</router-link> >
+					<router-link to="/lend-by-category">
+						All Loans
+					</router-link> >
 					<span class="show-for-large">{{ loanChannelName }}</span>
 				</p>
 				<h1>{{ loanChannelName }}</h1>
 				<p v-if="loanChannelDescription"
-					class="page-subhead show-for-large">{{ loanChannelDescription }}</p>
-				<p v-else>We couldn't find any loans for this search.
-					<router-link to="/lend-by-category">Browse these loans</router-link>.
+					class="page-subhead show-for-large"
+				>
+					{{ loanChannelDescription }}
+				</p>
+				<p v-else>
+					We couldn't find any loans for this search.
+					<router-link to="/lend-by-category">
+						Browse these loans
+					</router-link>.
 				</p>
 			</div>
 
@@ -27,7 +35,7 @@
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
-				<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange"/>
+				<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
 				<div v-if="totalCount > 0" class="loan-count">
 					{{ totalCount }} loans
 				</div>

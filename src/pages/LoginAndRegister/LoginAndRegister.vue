@@ -6,14 +6,19 @@
 					Already have an account? <a
 						@click.prevent.stop="switchToLogin"
 						v-kv-track-event="['register', 'alreadyMemberLnk']"
-						id="loginLink">Sign in</a>
+						id="loginLink"
+					>Sign in</a>
 					<hr>
 				</div>
 
 				<facebook-login-register :process-type="showLogin ? 'login' : 'register'" />
-				<p class="fb-help text-center">We won't post to Facebook without asking.</p>
+				<p class="fb-help text-center">
+					We won't post to Facebook without asking.
+				</p>
 				<hr>
-				<div class="featured-text text-center">Or use your email</div>
+				<div class="featured-text text-center">
+					Or use your email
+				</div>
 
 				<login-form v-if="showLogin" done-url="lend-vue?page=2" @switchtoregister="switchToRegister" />
 
@@ -22,7 +27,8 @@
 				<p class="text-center">
 					<a v-if="showLogin" class="register-link text-center"
 						v-kv-track-event="['Login', 'click-Sign-up-register', 'SignupForKivaClick']"
-						@click.prevent.stop="switchToRegister">
+						@click.prevent.stop="switchToRegister"
+					>
 						Sign up for Kiva
 					</a>
 				</p>

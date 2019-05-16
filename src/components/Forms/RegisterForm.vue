@@ -7,8 +7,8 @@
 			method="post"
 			:action="regActionUrl"
 			@submit.prevent.stop="register"
-			novalidate>
-
+			novalidate
+		>
 			<ul v-show="serverErrors" class="server-errors">
 				<li v-for="(errorText, index) in serverErrors" :key="index">
 					{{ errorText }}
@@ -24,11 +24,14 @@
 						maxlength="40"
 						v-model="firstName"
 						autofocus
-						@blur="validateName(firstName)">
+						@blur="validateName(firstName)"
+					>
 				</label>
 				<p v-if="nameErrors.length">
 					<ul class="validation-errors">
-						<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
+						<li v-for="nameError in nameErrors" :key="nameError">
+							{{ nameError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -42,11 +45,14 @@
 						name="lastName"
 						maxlength="40"
 						v-model="lastName"
-						@blur="validateName(lastName)">
+						@blur="validateName(lastName)"
+					>
 				</label>
 				<p v-if="nameErrors.length">
 					<ul class="validation-errors">
-						<li v-for="nameError in nameErrors" :key="nameError">{{ nameError }}</li>
+						<li v-for="nameError in nameErrors" :key="nameError">
+							{{ nameError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -60,11 +66,14 @@
 						name="email"
 						maxlength="100"
 						v-model="email"
-						@blur="validateEmail(email)">
+						@blur="validateEmail(email)"
+					>
 				</label>
 				<p v-if="emailErrors.length">
 					<ul class="validation-errors">
-						<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+						<li v-for="emailError in emailErrors" :key="emailError">
+							{{ emailError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -78,18 +87,22 @@
 							name="password"
 							v-model="password"
 							class="reg-password"
-							@blur="validatePassword(password)">
+							@blur="validatePassword(password)"
+						>
 						<div id="password-strength-meter">
 							<span class="strength-meter"
 								:style="passwordStrength"
-								:class="passwordClass">
+								:class="passwordClass"
+							>
 							</span>
 						</div>
 					</div>
 				</label>
 				<p v-if="passwordErrors.length">
 					<ul class="validation-errors password-validation-errors">
-						<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+						<li v-for="passwordError in passwordErrors" :key="passwordError">
+							{{ passwordError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -104,7 +117,8 @@
 			ex: https://www.kiva.org/invitedby/joshuastarkey -->
 			<div
 				v-if="inviterName.length"
-				class="input-set">
+				class="input-set"
+			>
 				<label for="inviter">
 					Referred by
 					<div>
@@ -112,7 +126,8 @@
 							type="text"
 							name="inviter"
 							v-model="inviterName"
-							disabled>
+							disabled
+						>
 					</div>
 				</label>
 			</div>
@@ -124,24 +139,29 @@
 						name="terms_agreement"
 						id="registerForm_terms_of_use_privacy_poicy"
 						v-model="terms"
-						@change="validateTerms(terms)">
+						@change="validateTerms(terms)"
+					>
 					I have read and agree to the
 					<a href="legal/terms"
 						target="_blank"
 						title="Open Terms of Use in a new window"
-						v-kv-track-event="['Register','click-terms-of-use','TermsOfUseClick']">
+						v-kv-track-event="['Register','click-terms-of-use','TermsOfUseClick']"
+					>
 						Terms of Use
 					</a> and
 					<a href="legal/privacy"
 						target="_blank"
 						title="Open Privacy Policy in a new window"
-						v-kv-track-event="['Register','click-privacy-policy','PrivacyPolicyClick']">
+						v-kv-track-event="['Register','click-privacy-policy','PrivacyPolicyClick']"
+					>
 						Privacy Policy
 					</a>.
 				</label>
 				<p v-if="termsErrors.length">
 					<ul class="validation-errors">
-						<li v-for="termsError in termsErrors" :key="termsError">{{ termsError }}</li>
+						<li v-for="termsError in termsErrors" :key="termsError">
+							{{ termsError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -150,7 +170,8 @@
 				class="register-button smaller"
 				type="submit"
 				name="regForm_submit"
-				id="regForm_submit">
+				id="regForm_submit"
+			>
 				Continue
 			</KvButton>
 

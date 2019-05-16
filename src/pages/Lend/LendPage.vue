@@ -3,8 +3,10 @@
 		<div class="row">
 			<div class="small-12 columns heading-region">
 				<h1>Make a loan, change a life</h1>
-				<p>Each Kiva loan helps people build a better
-					future for themselves and their families.</p>
+				<p>
+					Each Kiva loan helps people build a better
+					future for themselves and their families.
+				</p>
 			</div>
 
 			<div class="columns small-12">
@@ -19,7 +21,7 @@
 					/>
 					<loading-overlay v-if="loading" />
 				</div>
-				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange"/>
+				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange" />
 				<div v-if="totalCount > 0" class="loan-count">
 					{{ totalCount }} loans
 				</div>

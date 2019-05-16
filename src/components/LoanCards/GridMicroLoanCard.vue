@@ -1,7 +1,8 @@
 <template>
 	<div class="column column-block">
-
-		<h3 v-if="title">{{ title }}</h3>
+		<h3 v-if="title">
+			{{ title }}
+		</h3>
 
 		<div class="grid-micro-loan-card">
 			<div class="row small-collapse">
@@ -57,7 +58,6 @@
 						})"
 					/>
 				</div>
-
 			</div>
 		</div>
 	</div>

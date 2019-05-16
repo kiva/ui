@@ -1,8 +1,12 @@
 <template>
 	<div class="join-team-form">
 		<div v-if="showForm">
-			<h2 v-if="inviterDisplayName">{{ inviterDisplayName }} invited you to the {{ teamName }} team!</h2>
-			<h2 v-else>You're invited to the {{ teamName }} team!</h2>
+			<h2 v-if="inviterDisplayName">
+				{{ inviterDisplayName }} invited you to the {{ teamName }} team!
+			</h2>
+			<h2 v-else>
+				You're invited to the {{ teamName }} team!
+			</h2>
 			<p>
 				By joining the team, you can see your impact, interact with teammates, and get more out of Kiva.
 			</p>
@@ -17,7 +21,7 @@
 			<p v-if="showError" class="error">
 				Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
 			</p>
-			<loading-overlay id="loading-overlay-teams" v-if="loading"/>
+			<loading-overlay id="loading-overlay-teams" v-if="loading" />
 		</div>
 		<div v-if="showSuccess">
 			<div v-if="openTeam">

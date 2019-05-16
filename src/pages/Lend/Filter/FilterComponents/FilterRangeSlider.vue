@@ -21,7 +21,9 @@
 				@input="onSliderChange(refine, range, $event)"
 			>
 		</div>
-		<div class="slider-unavailable" v-else>No refinements available</div>
+		<div class="slider-unavailable" v-else>
+			No refinements available
+		</div>
 	</div>
 </template>
 

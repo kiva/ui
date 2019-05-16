@@ -6,14 +6,18 @@
 		<kv-lightbox
 			id="new-account-lightbox"
 			:visible="newAcctLbVisible"
-			@lightbox-closed="newAcctLbClosed">
-			<h2 slot="title">Create a new account</h2>
+			@lightbox-closed="newAcctLbClosed"
+		>
+			<h2 slot="title">
+				Create a new account
+			</h2>
 			<hr>
 			<form
 				id="fbLegalPromptForm"
 				ref="fbLegalPromptForm"
 				class="promptForm"
-				@submit.prevent.stop="postKivaFbNewAcctForm">
+				@submit.prevent.stop="postKivaFbNewAcctForm"
+			>
 				<div class="account-visibility">
 					<h3>Set my lender page as:</h3>
 					<img
@@ -21,12 +25,14 @@
 						id="fb-pic"
 						:src="fbImage"
 						width="50"
-						height="50">
+						height="50"
+					>
 					<img
 						v-else id="anon-pic"
 						src="/images/characters/1.jpg"
 						width="50"
-						height="50">
+						height="50"
+					>
 					<ul>
 						<li>
 							<label>
@@ -35,7 +41,8 @@
 									name="visibility"
 									value="public"
 									checked="true"
-									@click="newAcctAnon = false"> {{ fbName }}</label>
+									@click="newAcctAnon = false"
+								> {{ fbName }}</label>
 						</li>
 						<li>
 							<label>
@@ -43,7 +50,8 @@
 									type="radio"
 									name="visibility"
 									value="anonymous"
-									@click="newAcctAnon = true"> Anonymous</label>
+									@click="newAcctAnon = true"
+								> Anonymous</label>
 						</li>
 					</ul>
 				</div>
@@ -55,7 +63,8 @@
 							id="terms_agreement_popup"
 							name="terms_agreement_popup"
 							v-model="newAcctTerms"
-							@click="showNewAcctTermsError = validateTerms()">
+							@click="showNewAcctTermsError = validateTerms()"
+						>
 						I have read and agree to the Kiva
 						<a href="/legal/terms" target="_blank">Terms of Use</a>
 						and
@@ -68,10 +77,13 @@
 					</ul>
 				</div>
 
-				<kv-button type="submit" name="register" class="smaller" value="Register">Register</kv-button>
+				<kv-button type="submit" name="register" class="smaller" value="Register">
+					Register
+				</kv-button>
 				<hr>
 				<a class="existing-user"
-					@click.stop.prevent="showFbExistingAcctLightbox">Already have an account?</a>
+					@click.stop.prevent="showFbExistingAcctLightbox"
+				>Already have an account?</a>
 			</form>
 		</kv-lightbox>
 
@@ -79,15 +91,18 @@
 		<kv-lightbox
 			id="existing-account-lightbox"
 			:visible="existingAcctLbVisible"
-			@lightbox-closed="existingAcctLbClosed">
-			<h2 slot="title">Facebook Connect to an existing Kiva account</h2>
+			@lightbox-closed="existingAcctLbClosed"
+		>
+			<h2 slot="title">
+				Facebook Connect to an existing Kiva account
+			</h2>
 			<hr>
 			<form
 				id="fbExistingPromptForm"
 				ref="fbExistingPromptForm"
 				class="existingPromptForm"
-				@submit.prevent.stop="postKivaFbExistingAcctForm">
-
+				@submit.prevent.stop="postKivaFbExistingAcctForm"
+			>
 				<div class="input-set">
 					<label for="email">
 						Kiva Email <input
@@ -96,11 +111,14 @@
 							id="kiva_email"
 							v-model="linkedKivaEmail"
 							autocomplete="off"
-							@blur="validateEmail(linkedKivaEmail)">
+							@blur="validateEmail(linkedKivaEmail)"
+						>
 					</label>
 					<p v-if="emailErrors.length">
 						<ul class="validation-errors">
-							<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+							<li v-for="emailError in emailErrors" :key="emailError">
+								{{ emailError }}
+							</li>
 						</ul>
 					</p>
 				</div>
@@ -114,16 +132,21 @@
 							v-model="linkedKivaPW"
 							maxlength="31"
 							autocomplete="off"
-							@blur="validatePassword(linkedKivaPW)">
+							@blur="validatePassword(linkedKivaPW)"
+						>
 					</label>
 					<p v-if="passwordErrors.length">
 						<ul class="validation-errors">
-							<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+							<li v-for="passwordError in passwordErrors" :key="passwordError">
+								{{ passwordError }}
+							</li>
 						</ul>
 					</p>
 				</div>
 
-				<kv-button type="submit" name="connect" class="smaller" value="continue">Connect</kv-button>
+				<kv-button type="submit" name="connect" class="smaller" value="continue">
+					Connect
+				</kv-button>
 				<hr>
 				<a class="new-user" @click.prevent.stop="showFbNewAcctLightbox">New to Kiva?</a>
 			</form>

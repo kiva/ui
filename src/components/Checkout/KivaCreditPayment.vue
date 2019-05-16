@@ -4,7 +4,8 @@
 		class="smaller"
 		v-kv-track-event="['payment.continueBtn']"
 		title="Checkout using your Kiva credit"
-		@click.prevent.native="validateCreditBasket">
+		@click.prevent.native="validateCreditBasket"
+	>
 		<slot>Complete order</slot>
 	</kv-button>
 </template>

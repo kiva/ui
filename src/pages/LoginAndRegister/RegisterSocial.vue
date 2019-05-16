@@ -16,7 +16,8 @@
 							id="terms_agreement_popup"
 							name="terms_agreement_popup"
 							v-model="newAcctTerms"
-							@click="showNewAcctTermsError = validateTerms()">
+							@click="showNewAcctTermsError = validateTerms()"
+						>
 						I have read and agree to the Kiva
 						<a href="/legal/terms" target="_blank">Terms of Use</a>
 						and

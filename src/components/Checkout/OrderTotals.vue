@@ -11,13 +11,15 @@
 				<a
 					v-if="showRemoveKivaCredit"
 					class="remove-credit"
-					@click.prevent.stop="removeCredit('kiva_credit')">
+					@click.prevent.stop="removeCredit('kiva_credit')"
+				>
 					<kv-icon name="small-x" />
 				</a>
 				<a
 					v-if="showApplyKivaCredit"
 					class="apply-credit small-text"
-					@click.prevent.stop="addCredit('kiva_credit')">Apply</a>
+					@click.prevent.stop="addCredit('kiva_credit')"
+				>Apply</a>
 			</div>
 		</div>
 		<div class="order-total columns small-12">

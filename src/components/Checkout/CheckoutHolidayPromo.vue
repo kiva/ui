@@ -1,7 +1,8 @@
 <template>
 	<div class="checkout-holiday-promo">
-		<kv-icon name="present" class="holiday-present-icon"/>
-		<div>Give hope this holiday season.
+		<kv-icon name="present" class="holiday-present-icon" />
+		<div>
+			Give hope this holiday season.
 			<a
 				href="#"
 				@click.prevent.stop="addOnePrintKivaCard"

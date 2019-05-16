@@ -8,7 +8,9 @@
 				<option
 					v-for="price in prices"
 					:key="price"
-					:value="price">${{ price }}
+					:value="price"
+				>
+					${{ price }}
 				</option>
 			</select>
 		</div>

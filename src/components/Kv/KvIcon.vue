@@ -1,7 +1,7 @@
 <template>
 	<svg class="icon" :class="iconClass">
 		<title v-if="title">{{ title }}</title>
-		<use :xlink:href="iconId"/>
+		<use :xlink:href="iconId" />
 	</svg>
 </template>
 

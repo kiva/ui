@@ -23,7 +23,8 @@
 							<div class="name">
 								<router-link
 									:to="`/lend/${loan.id}`"
-									v-kv-track-event="['Lending', 'click-Read more', 'Name', loan.id, 'true']">
+									v-kv-track-event="['Lending', 'click-Read more', 'Name', loan.id, 'true']"
+								>
 									<span
 										@click="$emit('track-interaction', {
 											interactionType: 'viewBorrowerPage',
@@ -49,7 +50,9 @@
 												interactionType: 'viewBorrowerPage',
 												interactionElement: 'readMore'
 											})"
-										>Read more</div>
+										>
+											Read more
+										</div>
 									</router-link>
 								</div>
 							</div>
@@ -66,7 +69,9 @@
 									/>
 								</div>
 								<div v-else>
-									<div class="bold">This loan is special because:</div>
+									<div class="bold">
+										This loan is special because:
+									</div>
 									{{ loan.whySpecial }}
 								</div>
 							</div>

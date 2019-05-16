@@ -35,8 +35,9 @@
 					A POST request is recommended for longer queries
 				</p>
 				<!-- eslint-disable-next-line max-len -->
-				<p>With all the methods above, the successfully returned JSON data should look something like:<br>
-					<kv-code-block :code='sampleJson' />
+				<p>
+					With all the methods above, the successfully returned JSON data should look something like:<br>
+					<kv-code-block :code="sampleJson" />
 				</p>
 				<p>
 					For more information on GraphQL itself, and how to write queries,

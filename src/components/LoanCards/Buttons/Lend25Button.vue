@@ -3,7 +3,8 @@
 		price="25"
 		:loan-id="loanId"
 		class="lend-25-button"
-		@add-to-basket="$emit('add-to-basket', $event)">
+		@add-to-basket="$emit('add-to-basket', $event)"
+	>
 		Lend $25
 	</lend-button>
 </template>

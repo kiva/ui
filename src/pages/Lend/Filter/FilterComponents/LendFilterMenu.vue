@@ -7,7 +7,7 @@
 				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
 			</div>
 			<div id="algolia-pagination-stats">
-				<algolia-pagination-stats/>
+				<algolia-pagination-stats />
 			</div>
 			<div id="filter-menu">
 				<div id="filter-section-mobile-reset-all" class="filter-section">
@@ -21,7 +21,7 @@
 						</div>
 					</ais-clear-refinements>
 					<div class="filter-mobile-close-icon-wrapper" @click="hideFilterMenu">
-						<kv-icon class="filter-mobile-close-icon" name="x"/>
+						<kv-icon class="filter-mobile-close-icon" name="x" />
 					</div>
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />

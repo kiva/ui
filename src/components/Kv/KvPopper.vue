@@ -3,7 +3,8 @@
 		<div class="popper-pane"
 			:style="styles"
 			:aria-hidden="show ? 'false' : 'true'"
-			v-show="show">
+			v-show="show"
+		>
 			<slot></slot>
 		</div>
 	</transition>

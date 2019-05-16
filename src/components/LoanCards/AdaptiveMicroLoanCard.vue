@@ -11,7 +11,9 @@
 			:use-default-styles="false"
 		/>
 		<div class="minimal-loan-card-data-wrap">
-			<p class="small-text name">{{ loan.name }}</p>
+			<p class="small-text name">
+				{{ loan.name }}
+			</p>
 			<!-- loan meter	 -->
 			<div class="minimal-fundraising-meter">
 				<minimal-fundraising-meter
@@ -37,7 +39,9 @@
 				</a>
 				<p
 					class="card-action"
-					v-else>In your basket
+					v-else
+				>
+					In your basket
 				</p>
 			</div>
 		</div>

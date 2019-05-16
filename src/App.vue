@@ -1,8 +1,8 @@
 <template>
 	<div id="app">
-		<router-view/>
-		<vue-progress-bar/>
-		<the-tip-message/>
+		<router-view />
+		<vue-progress-bar />
+		<the-tip-message />
 	</div>
 </template>
 

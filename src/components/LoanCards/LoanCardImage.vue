@@ -6,11 +6,10 @@
 			class="borrower-image-link"
 			:target="linkTarget"
 		>
-
 			<img class="borrower-image"
-				:srcset = "formattedImageRetinaUrl + ' 2x'"
-				:src = "formattedImageStandardUrl"
-				:alt = "'photo of ' + name"
+				:srcset="formattedImageRetinaUrl + ' 2x'"
+				:src="formattedImageStandardUrl"
+				:alt="'photo of ' + name"
 
 				@click="handleImageClick"
 			>

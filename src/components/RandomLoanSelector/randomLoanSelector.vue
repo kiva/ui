@@ -1,7 +1,8 @@
 <template>
 	<transition name="kvfade">
 		<div
-			class="section-wrapper random-loan-cards">
+			class="section-wrapper random-loan-cards"
+		>
 			<div v-if="randomLoans.length" class="section-container">
 				<div id="row-cards" class="row">
 					<div class="column row-wrapper">

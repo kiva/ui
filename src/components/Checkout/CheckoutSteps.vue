@@ -2,25 +2,35 @@
 	<div class="checkout-steps">
 		<ul class="checkout-step-list">
 			<li id="basket-step" class="step first" :class="isActive('basket')">
-				<p class="step-name">Basket</p>
+				<p class="step-name">
+					Basket
+				</p>
 				<span class="step-icon number-icon number-1">1</span>
 			</li>
 			<li id="account-step" class="step" :class="isActive('account')">
-				<p class="step-name">Account</p>
+				<p class="step-name">
+					Account
+				</p>
 				<span class="step-icon number-icon number-2">2</span>
 			</li>
 			<li id="payment-step" class="step" :class="isActive('payment')">
-				<p class="step-name">Payment</p>
+				<p class="step-name">
+					Payment
+				</p>
 				<span class="step-icon number-icon number-2">3</span>
 			</li>
 			<li id="thanks-step" class="step last" :class="isActive('thanks')">
-				<p class="step-name">Thank you!</p>
+				<p class="step-name">
+					Thank you!
+				</p>
 				<span class="step-icon checkmark">
 					<kv-icon name="confirmation" />
 				</span>
 			</li>
 		</ul>
-		<div class="step-rule"><hr></div>
+		<div class="step-rule">
+			<hr>
+		</div>
 	</div>
 </template>
 

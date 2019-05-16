@@ -4,11 +4,16 @@
 			<select
 				v-model="selectedId"
 				class="team-select-dd small-text"
-				@change="updateLoanReservation()">
-				<option value="0">None</option>
+				@change="updateLoanReservation()"
+			>
+				<option value="0">
+					None
+				</option>
 				<option v-for="team in sortTeams"
 					:key="team.id"
-					:value="team.id">{{ team.name }}
+					:value="team.id"
+				>
+					{{ team.name }}
 				</option>
 			</select>
 		</div>

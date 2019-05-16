@@ -4,7 +4,8 @@
 			v-for="option in options" :key="option.key"
 			@click="pillToggled(option.key)"
 			:class="{ active: selected === option.key }
-			">
+			"
+		>
 			<div class="title">
 				{{ option.title }}
 			</div>

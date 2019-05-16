@@ -99,56 +99,64 @@
 				<li>
 					<router-link
 						to="/about"
-						v-kv-track-event="['TopNav','click-About-About us']">
+						v-kv-track-event="['TopNav','click-About-About us']"
+					>
 						About us
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/how"
-						v-kv-track-event="['TopNav','click-About-How Kiva works']">
+						v-kv-track-event="['TopNav','click-About-How Kiva works']"
+					>
 						How Kiva works
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/where-kiva-works"
-						v-kv-track-event="['TopNav','click-About-Where Kiva works']">
+						v-kv-track-event="['TopNav','click-About-Where Kiva works']"
+					>
 						Where Kiva works
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/impact"
-						v-kv-track-event="['TopNav','click-About-Impact']">
+						v-kv-track-event="['TopNav','click-About-Impact']"
+					>
 						Impact
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/leadership"
-						v-kv-track-event="['TopNav','click-About-Leadership']">
+						v-kv-track-event="['TopNav','click-About-Leadership']"
+					>
 						Leadership
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/finances"
-						v-kv-track-event="['TopNav','click-About-Finances']">
+						v-kv-track-event="['TopNav','click-About-Finances']"
+					>
 						Finances
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/press-center"
-						v-kv-track-event="['TopNav','click-About-Press']">
+						v-kv-track-event="['TopNav','click-About-Press']"
+					>
 						Press
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/about/due-diligence"
-						v-kv-track-event="['TopNav','click-About-Due diligence']">
+						v-kv-track-event="['TopNav','click-About-Due diligence']"
+					>
 						Due diligence
 					</router-link>
 				</li>
@@ -166,7 +174,8 @@
 					<li>
 						<router-link
 							to="/my/borrower"
-							v-kv-track-event="['TopNav','click-Portfolio-My borrower dashboard']">
+							v-kv-track-event="['TopNav','click-Portfolio-My borrower dashboard']"
+						>
 							My borrower dashboard
 						</router-link>
 					</li>
@@ -174,14 +183,16 @@
 						<li>
 							<router-link
 								:to="`/lend/${loanId}`"
-								v-kv-track-event="['TopNav','click-Portfolio-My loan page']">
+								v-kv-track-event="['TopNav','click-Portfolio-My loan page']"
+							>
 								My loan page
 							</router-link>
 						</li>
 						<li>
 							<router-link
 								:to="`/lend/${loanId}#loanComments`"
-								v-kv-track-event="['TopNav','click-Portfolio-My Conversations']">
+								v-kv-track-event="['TopNav','click-Portfolio-My Conversations']"
+							>
 								My conversations
 							</router-link>
 						</li>
@@ -192,14 +203,16 @@
 						<li>
 							<router-link
 								:to="trusteeLoansUrl"
-								v-kv-track-event="['TopNav','click-Portfolio-My Trustee loans']">
+								v-kv-track-event="['TopNav','click-Portfolio-My Trustee loans']"
+							>
 								My Trustee loans
 							</router-link>
 						</li>
 						<li>
 							<router-link
 								:to="`/trustees/${trusteeId}`"
-								v-kv-track-event="['TopNav','click-Portfolio-My public Trustee page']">
+								v-kv-track-event="['TopNav','click-Portfolio-My public Trustee page']"
+							>
 								My public Trustee page
 							</router-link>
 						</li>
@@ -207,7 +220,8 @@
 					<li>
 						<router-link
 							to="/my/trustee"
-							v-kv-track-event="['TopNav','click-Portfolio-My Trustee dashboard']">
+							v-kv-track-event="['TopNav','click-Portfolio-My Trustee dashboard']"
+						>
 							My Trustee dashboard
 						</router-link>
 					</li>
@@ -216,28 +230,32 @@
 				<li>
 					<router-link
 						to="/portfolio"
-						v-kv-track-event="['TopNav','click-Portfolio-Portfolio']">
+						v-kv-track-event="['TopNav','click-Portfolio-Portfolio']"
+					>
 						Portfolio
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/teams/my-teams"
-						v-kv-track-event="['TopNav','click-Portfolio-My teams']">
+						v-kv-track-event="['TopNav','click-Portfolio-My teams']"
+					>
 						My teams
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/portfolio/donations"
-						v-kv-track-event="['TopNav','click-Portfolio-Donations']">
+						v-kv-track-event="['TopNav','click-Portfolio-Donations']"
+					>
 						Donations
 					</router-link>
 				</li>
 				<li>
 					<router-link
 						to="/settings"
-						v-kv-track-event="['TopNav','click-Portfolio-Settings']">
+						v-kv-track-event="['TopNav','click-Portfolio-Settings']"
+					>
 						Settings
 					</router-link>
 				</li>
@@ -245,7 +263,8 @@
 				<li>
 					<router-link
 						to="/ui-logout"
-						v-kv-track-event="['TopNav','click-Portfolio-Sign out']">
+						v-kv-track-event="['TopNav','click-Portfolio-Sign out']"
+					>
 						Sign out
 					</router-link>
 				</li>

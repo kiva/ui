@@ -2,7 +2,9 @@
 	<div class="paypal-holder">
 		<div id="paypal-button" ref="paypalbutton"></div>
 		<p class="pp-tagline small-text"
-			v-if="!showBraintree">Thanks to PayPal, Kiva receives
+			v-if="!showBraintree"
+		>
+			Thanks to PayPal, Kiva receives
 			<br class="hide-for-large"> free payment processing.
 		</p>
 	</div>

@@ -2,12 +2,14 @@
 	<div class="filter-menu-section" :class="{open}" @click="toggleMenu">
 		<div class="filter-summary">
 			<div class="filter-summary-title-row">
-				<div class="filter-summary-title" >
+				<div class="filter-summary-title">
 					{{ title }}
 				</div>
 				<kv-icon class="filter-summary-title-chevron" name="small-chevron-mobile" />
 			</div>
-			<div class="filter-summary-applied-filters">{{ appliedFilters }}</div>
+			<div class="filter-summary-applied-filters">
+				{{ appliedFilters }}
+			</div>
 		</div>
 		<div class="filter-items-container" @click.stop>
 			<slot></slot>

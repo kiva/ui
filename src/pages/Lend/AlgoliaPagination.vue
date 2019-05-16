@@ -3,7 +3,8 @@
 		<!-- previous page -->
 		<li
 			class="ais-Pagination-item ais-Pagination-item--previousPage"
-			:class="{ 'ais-Pagination-item--disabled' : isFirstPage }">
+			:class="{ 'ais-Pagination-item--disabled' : isFirstPage }"
+		>
 			<span
 				v-if="isFirstPage"
 				aria-label="Previous (Inactive)"
@@ -30,14 +31,16 @@
 		>
 			<span
 				v-if="number - 1 === currentRefinement"
-				class="ais-Pagination-link">
+				class="ais-Pagination-link"
+			>
 				{{ number }}
 			</span>
 
 			<a v-else-if="number > 0"
 				:href="createUrl(number - 1)"
 				@click.prevent="goToPage(number - 1)"
-				class="ais-Pagination-link">
+				class="ais-Pagination-link"
+			>
 				{{ number }}
 			</a>
 		</li>

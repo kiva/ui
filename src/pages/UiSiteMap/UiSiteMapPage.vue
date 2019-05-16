@@ -3,7 +3,7 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>Available Routes</h1>
-				<route-listing/>
+				<route-listing />
 			</div>
 		</div>
 	</www-page>

@@ -1,6 +1,6 @@
 <template>
 	<www-page class="lend-by-category-page">
-		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true"/>
+		<lend-header :filter-url="leadHeaderFilterLink" :side-arrows-padding="true" />
 
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
@@ -43,14 +43,19 @@
 			<div class="column small-12">
 				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
 					<loading-overlay id="updating-overlay" />
-					<h3 class="text-center">Loading more rows...</h3>
+					<h3 class="text-center">
+						Loading more rows...
+					</h3>
 				</div>
 
-				<h2 class="category-name"><router-link
-					:to="{ path: '/categories'}"
-					class="view-all-link">
-					View all categories<span class="view-all-arrow">&rsaquo;</span>
-				</router-link></h2>
+				<h2 class="category-name">
+					<router-link
+						:to="{ path: '/categories'}"
+						class="view-all-link"
+					>
+						View all categories<span class="view-all-arrow">&rsaquo;</span>
+					</router-link>
+				</h2>
 			</div>
 		</div>
 
@@ -94,7 +99,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
-import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';

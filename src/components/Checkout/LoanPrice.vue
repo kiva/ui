@@ -4,10 +4,13 @@
 			<select
 				v-model="selectedOption"
 				class="loan-price medium-text-font-size"
-				@change="updateLoanReservation()">
-				<option v-for="price in prices"
-					:key="price"
-					:value="price">${{ price }}
+				@change="updateLoanReservation()"
+			>
+				<option v-for="priceOption in prices"
+					:key="priceOption"
+					:value="priceOption"
+				>
+					${{ priceOption }}
 				</option>
 			</select>
 		</div>

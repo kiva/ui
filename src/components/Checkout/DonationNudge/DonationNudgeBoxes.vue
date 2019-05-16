@@ -22,7 +22,8 @@
 					>
 						<!-- eslint-enable max-len -->
 						<div
-							class="nudge-box-top nudge-box-padded nudge-box-custom-donation">
+							class="nudge-box-top nudge-box-padded nudge-box-custom-donation"
+						>
 							You decide — enter custom amount
 						</div>
 					</div>
@@ -77,13 +78,15 @@
 								v-if="index === 0"
 								id="first-button"
 								:tabindex="index + 1"
-								class="smallest nudge-box-button">
+								class="smallest nudge-box-button"
+							>
 								Select
 							</kv-button>
 							<kv-button
 								v-else
 								:tabindex="index + 1"
-								class="smallest nudge-box-button">
+								class="smallest nudge-box-button"
+							>
 								Select
 							</kv-button>
 						</div>
@@ -98,7 +101,8 @@
 						>
 							<kv-button
 								class="smallest nudge-box-button custom-amount-submit"
-								tabindex="11">
+								tabindex="11"
+							>
 								Submit
 							</kv-button>
 						</div>
@@ -175,7 +179,9 @@
 				>
 					Update Donation
 				</kv-button>
-				<div class="nudge-box-tax-deduction">Your Donation is eligible for a tax deduction if you live in the U.S.</div>
+				<div class="nudge-box-tax-deduction">
+					Your Donation is eligible for a tax deduction if you live in the U.S.
+				</div>
 			</div>
 		</div>
 		<div class="hide-for-large nudge-boxes-mobile">

@@ -11,7 +11,8 @@
 						v-kv-track-event="[
 							'Lending',
 							'click-Category-View-All',
-							`View all ${cleanName} loans`]">
+							`View all ${cleanName} loans`]"
+					>
 						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
 					</router-link>
 					<template v-else>
@@ -61,8 +62,8 @@
 							v-kv-track-event="[
 								'Lending',
 								'click-View all',
-								`Loan card`]">
-
+								`Loan card`]"
+						>
 							<div class="see-all-card">
 								<div class="link">
 									{{ viewAllLoansCategoryTitle }}
@@ -70,7 +71,6 @@
 							</div>
 						</router-link>
 					</div>
-
 				</div>
 			</div>
 			<span

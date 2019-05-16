@@ -21,8 +21,11 @@
 
 		<kv-lightbox
 			:visible="teamLbVisible"
-			@lightbox-closed="teamLightboxClosed">
-			<h2 slot="title">Join the team!</h2>
+			@lightbox-closed="teamLightboxClosed"
+		>
+			<h2 slot="title">
+				Join the team!
+			</h2>
 			<p>
 				<!-- eslint-disable-next-line max-len -->
 				By joining the {{ teamName }} team you can see your impact, interact with colleagues, and get more out of Kiva.

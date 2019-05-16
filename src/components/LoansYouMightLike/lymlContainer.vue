@@ -2,7 +2,8 @@
 	<transition name="kvfade">
 		<div class="lyml-section-wrapper">
 			<div class="lyml-section-container"
-				v-if="showLYML">
+				v-if="showLYML"
+			>
 				<div id="lyml-row-cards">
 					<div class="lyml-row-wrapper" ref="lymlContainer">
 						<span

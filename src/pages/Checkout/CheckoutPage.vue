@@ -24,18 +24,21 @@
 							:credits="redemption_credits"
 							:totals="totals"
 							@refreshtotals="refreshTotals"
-							@updating-totals="setUpdatingTotals" />
+							@updating-totals="setUpdatingTotals"
+						/>
 
 						<hr>
 
 						<checkout-holiday-promo
 							v-if="holidayModeEnabled"
-							@updating-totals="setUpdatingTotals" />
+							@updating-totals="setUpdatingTotals"
+						/>
 
 						<order-totals
 							:totals="totals"
 							@refreshtotals="refreshTotals"
-							@updating-totals="setUpdatingTotals" />
+							@updating-totals="setUpdatingTotals"
+						/>
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
@@ -44,7 +47,8 @@
 									:show-braintree="showBraintree"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals" />
+									@updating-totals="setUpdatingTotals"
+								/>
 
 								<payment-wrapper
 									v-if="showBraintree"
@@ -59,7 +63,8 @@
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									class=" checkout-button"
-									id="kiva-credit-payment-button" />
+									id="kiva-credit-payment-button"
+								/>
 							</div>
 
 							<div v-else class="small-12">
@@ -69,25 +74,30 @@
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
 									title="Login to Continue Button"
-									@click.native="loginToContinue">Login to Continue</kv-button>
+									@click.native="loginToContinue"
+								>
+									Login to Continue
+								</kv-button>
 							</div>
 						</div>
 
 						<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 					</div>
-
 				</div>
 
 				<kv-lightbox
 					:visible="redirectLightboxVisible"
-					@lightbox-closed="redirectLightboxClosed">
+					@lightbox-closed="redirectLightboxClosed"
+				>
 					<section>
 						<h1>
 							This checkout is being tested right now, but doesn't support some functions yet.
 						</h1>
 
-						<p>We'll redirect you so you can get back to changing lives, or click here if you aren't
-							automatically redirected.</p>
+						<p>
+							We'll redirect you so you can get back to changing lives, or click here if you aren't
+							automatically redirected.
+						</p>
 
 						<p>Thank you for minding our dust.</p>
 					</section>
@@ -97,15 +107,21 @@
 						id="Continue-to-legacy-button"
 						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
 						title="Continue"
-						@click.prevent.native="redirectToLegacy">Continue</kv-button>
+						@click.prevent.native="redirectToLegacy"
+					>
+						Continue
+					</kv-button>
 				</kv-lightbox>
 			</div>
 		</div>
 		<div v-if="emptyBasket" class="empty-basket">
 			<div class="row display-align text-center">
 				<div class="columns small-12">
-					<h2 class="empty-basket-heading">Your basket is empty!</h2>
-					<p>But we'd love to help you change that! Please consider
+					<h2 class="empty-basket-heading">
+						Your basket is empty!
+					</h2>
+					<p>
+						But we'd love to help you change that! Please consider
 						supporting one of the borrowers below, or
 						<a href="/lend-by-category">browse all loans</a>.
 					</p>

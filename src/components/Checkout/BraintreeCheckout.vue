@@ -4,24 +4,29 @@
 		<!-- v-if user has stored payment methods show the following div -->
 		<!-- v-for loop going through the user's saved credit cards and displaying them -->
 		<div id="braintree-stored-payment-form"
-			v-show="storedPaymentMethods && btVaultActive">
+			v-show="storedPaymentMethods && btVaultActive"
+		>
 			<div class="row small-collapse braintree-form-row">
 				<div
 					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
-					class="small-12 columns">
+					class="small-12 columns"
+				>
 					<label
 						class="saved-payment-radio-label"
-						:for="`saved-payment-radio-${index}`">
+						:for="`saved-payment-radio-${index}`"
+					>
 						<input
 							:id="`saved-payment-radio-${index}`"
 							type="radio"
 							class="saved-payment-radio"
 							:value="index"
-							v-model="selectedCard">
+							v-model="selectedCard"
+						>
 						<!-- Checking credit card type to display correct credit card icon. -->
 						<kv-icon
 							:name="setCardType(paymentMethod.details.cardType)"
-							class="credit-card-icon" />
+							class="credit-card-icon"
+						/>
 						<!-- Passing in the last 4 digits of the stored card -->
 						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
@@ -29,16 +34,19 @@
 				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
 				<div
 					v-show="storedPaymentMethods.length > 0"
-					class="small-12 columns">
+					class="small-12 columns"
+				>
 					<label
 						class="new-payment-radio-label"
-						for="new-payment-radio">
+						for="new-payment-radio"
+					>
 						<input
 							id="new-payment-radio"
 							class="new-payment-radio"
 							type="radio"
 							value="newCard"
-							v-model="selectedCard">
+							v-model="selectedCard"
+						>
 						<span class="use-new-card-text">Use a new card</span>
 					</label>
 				</div>
@@ -46,12 +54,14 @@
 			<!-- Submit saved card payment button -->
 			<div
 				v-show="selectedCard !== 'newCard'"
-				class="row small-collapse additional-side-padding">
+				class="row small-collapse additional-side-padding"
+			>
 				<div class="small-12 columns">
 					<kv-button
 						id="stored-card-submit"
 						class="button smallest"
-						@click.native="checkoutWithStoredCard">
+						@click.native="checkoutWithStoredCard"
+					>
 						<kv-icon name="lock" />
 						Pay with <span id="card-type">card</span>
 					</kv-button>
@@ -62,7 +72,8 @@
 		<!-- If the user has no savedPaymentMethods or the useNewCard radio is
 		selected show braintree hosted fields form -->
 		<form id="braintree-payment-form"
-			v-show="!storedPaymentMethods || selectedCard === 'newCard' ">
+			v-show="!storedPaymentMethods || selectedCard === 'newCard' "
+		>
 			<!-- Card number input -->
 			<div class="row small-collapse braintree-form-row">
 				<div class="small-12 columns">
@@ -70,7 +81,10 @@
 					<div id="kv-card-number" class="kv-braintree-wrapper"></div>
 					<p v-if="kvCardNumberError"
 						class="kv-card-number-error kv-bt-field-error"
-						ref="kv-card-number-error">{{ kvCardNumberError }}</p>
+						ref="kv-card-number-error"
+					>
+						{{ kvCardNumberError }}
+					</p>
 				</div>
 			</div>
 
@@ -89,23 +103,32 @@
 					<div id="kv-postal-code" class="kv-braintree-wrapper"></div>
 				</div>
 				<ul class="kv-multi-field-error-list"
-					ref="kv-multi-field-error-list">
-					<li v-if="kvExpirationError" class="kv-bt-field-error">{{ kvExpirationError }}</li>
-					<li v-if="kvCVVError" class="kv-bt-field-error">{{ kvCVVError }}</li>
-					<li v-if="kvPostalCodeError" class="kv-bt-field-error">{{ kvPostalCodeError }}</li>
+					ref="kv-multi-field-error-list"
+				>
+					<li v-if="kvExpirationError" class="kv-bt-field-error">
+						{{ kvExpirationError }}
+					</li>
+					<li v-if="kvCVVError" class="kv-bt-field-error">
+						{{ kvCVVError }}
+					</li>
+					<li v-if="kvPostalCodeError" class="kv-bt-field-error">
+						{{ kvPostalCodeError }}
+					</li>
 				</ul>
 			</div>
 
 			<!-- Inline Inputs -->
 			<div
 				v-show="btVaultActive"
-				class="row small-collapse">
+				class="row small-collapse"
+			>
 				<div class="small-12 columns vault-checkbox-wrapper">
 					<label for="vault-checkbox">
 						<input
 							v-model="storePaymentMethod"
 							type="checkbox"
-							id="vault-checkbox"> Save payment method
+							id="vault-checkbox"
+						> Save payment method
 					</label>
 				</div>
 			</div>

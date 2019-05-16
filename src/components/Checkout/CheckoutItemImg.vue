@@ -1,8 +1,8 @@
 <template>
 	<router-link
 		:to="`/lend/${loanId}`"
-		v-kv-track-event="['basket', 'click-Read more', 'Photo', loanId, 'true']">
-
+		v-kv-track-event="['basket', 'click-Read more', 'Photo', loanId, 'true']"
+	>
 		<img class="loan-img"
 			:src="imageUrl"
 			:alt="'photo of ' + name"

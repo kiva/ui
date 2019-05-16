@@ -2,7 +2,8 @@
 	<div class="appeal-meter progress">
 		<span
 			class="meter"
-			:style="`width: ${ props.percentTowardGoal }%;`">
+			:style="`width: ${ props.percentTowardGoal }%;`"
+		>
 		</span>
 		<div class="tick-wrapper">
 			<span class="tick-lines"></span>

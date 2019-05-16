@@ -18,28 +18,44 @@
 				<div class="columns small-12 large-3">
 					<ul>
 						<li>
-							<router-link to="/styleguide">Intro</router-link>
+							<router-link to="/styleguide">
+								Intro
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/typography">Typography</router-link>
+							<router-link to="/styleguide/typography">
+								Typography
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/copy">Copy</router-link>
+							<router-link to="/styleguide/copy">
+								Copy
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/buttons">Buttons</router-link>
+							<router-link to="/styleguide/buttons">
+								Buttons
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/colors">Colors</router-link>
+							<router-link to="/styleguide/colors">
+								Colors
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/forms">Forms</router-link>
+							<router-link to="/styleguide/forms">
+								Forms
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/images">Images</router-link>
+							<router-link to="/styleguide/images">
+								Images
+							</router-link>
 						</li>
 						<li>
-							<router-link to="/styleguide/icons">Icons</router-link>
+							<router-link to="/styleguide/icons">
+								Icons
+							</router-link>
 						</li>
 					</ul>
 				</div>

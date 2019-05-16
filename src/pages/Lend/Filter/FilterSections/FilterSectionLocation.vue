@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section title="Location" >
+	<filter-menu-section title="Location">
 		<ais-hierarchical-menu
 			:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
 			:sort-by="['name:asc']"

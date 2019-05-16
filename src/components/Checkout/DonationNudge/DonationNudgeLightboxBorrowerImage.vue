@@ -33,7 +33,7 @@
 				/>
 				<donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
-					:percentage-rows= "percentageRows"
+					:percentage-rows="percentageRows"
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"

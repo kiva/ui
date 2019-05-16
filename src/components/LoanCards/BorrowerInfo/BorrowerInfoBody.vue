@@ -6,7 +6,8 @@
 		</span>
 		<router-link
 			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']">
+			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']"
+		>
 			<span
 				@click="$emit('track-loan-card-interaction', {
 					interactionType: 'viewBorrowerPage',
