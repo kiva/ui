@@ -3,7 +3,7 @@
 		<ais-current-refinements :transform-items="transformItems">
 			<div slot-scope="{ items }">
 				<div class="row">
-					<div class="small-12 medium-10 columns">
+					<div class="small-12 large-10 columns">
 						<div :class="[{ collapsed: isCollapsed }, 'accordion-container']">
 							<div class="accordion-content" ref="accordionContent">
 								<filter-chip
@@ -20,11 +20,12 @@
 							</div>
 						</div>
 					</div>
-					<div class="small-12 medium-2 columns">
+					<div class="small-12 large-2 columns">
 						<div v-if="isCollapsible" class="filter-summary-container">
-							<div class="show-toggle-container">
-								<!-- eslint-disable max-len -->
-								<div v-if="isCollapsed" @click="handleClickShowMore">Show all {{ items.length }} filters</div>
+							<div class="show-all-container">
+								<div class="show-all" v-if="isCollapsed" @click="handleClickShowMore">
+									Show all {{ items.length }} filters
+								</div>
 							</div>
 						</div>
 					</div>
@@ -121,8 +122,9 @@ export default {
 			this.isCollapsed = true;
 		},
 		setCollapsibleState() {
-			// eslint-disable-next-line max-len
-			const accordionHeight = window.innerWidth <= 680 ? this.fixedRowHeight * this.fixedRowCount : this.fixedRowHeight;
+			const accordionHeight = window.innerWidth <= 680
+				? this.fixedRowHeight * this.fixedRowCount
+				: this.fixedRowHeight;
 
 			this.isCollapsible = this.$refs.accordionContent
 				? this.$refs.accordionContent.clientHeight > accordionHeight
@@ -240,37 +242,47 @@ export default {
 		}
 	}
 
-	.show-toggle-container {
+	.toggle-container {
 		color: $faded-blue;
-		cursor: pointer;
 		font-size: rem-calc(14);
 		user-select: none;
-		white-space: nowrap;
+	}
+
+	.show-all-container {
+		@extend .toggle-container;
+
 		width: 100%;
 
-		div {
-			@include breakpoint(medium up) {
-				text-align: right;
-			}
+		.show-all {
+			cursor: pointer;
+		}
 
-			display: inline-block;
+		@include breakpoint(large) {
+			text-align: right;
 		}
 	}
 
 	.hide-reset-toggle-container {
-		@extend .show-toggle-container;
+		@extend .toggle-container;
 
 		height: rem-calc(20);
-		margin-left: rem-calc(4);
-		margin-top: rem-calc(5);
+		margin-left: rem-calc(1);
+
+		.hide-buttons {
+			cursor: pointer;
+			display: inline-block;
+			height: rem-calc(20);
+		}
 
 		.hide-filter {
-			height: rem-calc(20);
+			@extend .hide-buttons;
+
 			padding-right: rem-calc(5);
 		}
 
 		.clear-all {
-			height: rem-calc(20);
+			@extend .hide-buttons;
+
 			border-left: 1px solid $charcoal;
 			padding-left: rem-calc(9);
 		}
