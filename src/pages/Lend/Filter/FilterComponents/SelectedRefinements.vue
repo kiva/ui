@@ -23,8 +23,9 @@
 					<div class="small-12 large-2 columns">
 						<div v-if="isCollapsible" class="filter-summary-container">
 							<div class="show-toggle-container">
-								<!-- eslint-disable max-len -->
-								<div v-if="isCollapsed" @click="handleClickShowMore">Show all {{ items.length }} filters</div>
+								<div v-if="isCollapsed" @click="handleClickShowMore">
+									Show all {{ items.length }} filters
+								</div>
 							</div>
 						</div>
 					</div>
