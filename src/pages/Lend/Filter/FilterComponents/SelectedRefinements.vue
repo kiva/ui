@@ -22,8 +22,8 @@
 					</div>
 					<div class="small-12 large-2 columns">
 						<div v-if="isCollapsible" class="filter-summary-container">
-							<div class="show-toggle-container">
-								<div v-if="isCollapsed" @click="handleClickShowMore">
+							<div class="show-all-container">
+								<div class="show-all" v-if="isCollapsed" @click="handleClickShowMore">
 									Show all {{ items.length }} filters
 								</div>
 							</div>
@@ -243,37 +243,47 @@ export default {
 		}
 	}
 
-	.show-toggle-container {
+	.toggle-container {
 		color: $faded-blue;
-		cursor: pointer;
 		font-size: rem-calc(14);
 		user-select: none;
-		white-space: nowrap;
+	}
+
+	.show-all-container {
+		@extend .toggle-container;
+
 		width: 100%;
 
-		div {
-			@include breakpoint(medium up) {
-				text-align: right;
-			}
+		.show-all {
+			cursor: pointer;
+		}
 
-			display: inline-block;
+		@include breakpoint(large) {
+			text-align: right;
 		}
 	}
 
 	.hide-reset-toggle-container {
-		@extend .show-toggle-container;
+		@extend .toggle-container;
 
 		height: rem-calc(20);
-		margin-left: rem-calc(4);
-		margin-top: rem-calc(5);
+		margin-left: rem-calc(1);
+
+		.hide-buttons {
+			cursor: pointer;
+			display: inline-block;
+			height: rem-calc(20);
+		}
 
 		.hide-filter {
-			height: rem-calc(20);
+			@extend .hide-buttons;
+
 			padding-right: rem-calc(5);
 		}
 
 		.clear-all {
-			height: rem-calc(20);
+			@extend .hide-buttons;
+
 			border-left: 1px solid $charcoal;
 			padding-left: rem-calc(9);
 		}
