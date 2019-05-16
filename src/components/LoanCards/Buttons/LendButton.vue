@@ -62,6 +62,15 @@ export default {
 						this.$showTipMsg(message, 'error');
 					});
 				} else {
+					try {
+						// track facebook add to basket
+						if (typeof window !== 'undefined' && typeof fbq === 'function') {
+							window.fbq('track', 'AddToCart', { content_category: 'Loan' });
+						}
+					} catch (e) {
+						console.error(e);
+					}
+
 					return this.apollo.query({
 						query: loanCardBasketed,
 						variables: {
