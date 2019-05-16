@@ -127,7 +127,7 @@ export default {
 	computed: {
 		showAppeal() {
 			// make sure the appeal is enable + we're not on certain blacklisted pages
-			const blacklist = ['/checkout', '/error', '/register/social'];
+			const blacklist = ['/checkout', '/error', '/join-team', '/register/social'];
 			return (this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path);
 		},
 	},

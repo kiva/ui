@@ -85,12 +85,13 @@ module.exports = function authRouter(config = {}) {
 
 	// For all other routes, check the login sync cookie to see if login or logout is needed
 	router.use((req, res, next) => {
-		if (req.path === '/process-browser-auth') {
+		// don't try to perform login sync for the following paths
+		const bypassPaths = ['/error', '/join-team', '/process-browser-auth', '/register/social'];
+		if (bypassPaths.includes(req.path)) {
 			next();
 		} else if (isNotedLoggedIn(req) && !req.user) {
 			// Store current url to redirect to after auth
 			req.session.doneUrl = req.originalUrl;
-
 			// Attempt silent authentication (prompt=none)
 			passport.authenticate('auth0', {
 				audience: config.auth0.apiAudience,
