@@ -122,7 +122,6 @@ export default {
 			this.isCollapsed = true;
 		},
 		setCollapsibleState() {
-			// eslint-disable-next-line max-len
 			const accordionHeight = window.innerWidth <= 680
 				? this.fixedRowHeight * this.fixedRowCount
 				: this.fixedRowHeight;
