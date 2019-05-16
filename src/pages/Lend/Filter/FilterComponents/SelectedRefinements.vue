@@ -3,7 +3,7 @@
 		<ais-current-refinements :transform-items="transformItems">
 			<div slot-scope="{ items }">
 				<div class="row">
-					<div class="small-12 medium-10 columns">
+					<div class="small-12 large-10 columns">
 						<div :class="[{ collapsed: isCollapsed }, 'accordion-container']">
 							<div class="accordion-content" ref="accordionContent">
 								<filter-chip
@@ -20,7 +20,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="small-12 medium-2 columns">
+					<div class="small-12 large-2 columns">
 						<div v-if="isCollapsible" class="filter-summary-container">
 							<div class="show-toggle-container">
 								<!-- eslint-disable max-len -->
@@ -122,7 +122,9 @@ export default {
 		},
 		setCollapsibleState() {
 			// eslint-disable-next-line max-len
-			const accordionHeight = window.innerWidth <= 680 ? this.fixedRowHeight * this.fixedRowCount : this.fixedRowHeight;
+			const accordionHeight = window.innerWidth <= 680
+				? this.fixedRowHeight * this.fixedRowCount
+				: this.fixedRowHeight;
 
 			this.isCollapsible = this.$refs.accordionContent
 				? this.$refs.accordionContent.clientHeight > accordionHeight
