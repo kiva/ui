@@ -4,73 +4,14 @@ query (
 	$country: [String],
 	$sector: [Int],
 	$partner: [Int],
-	$gender: GenderEnum,
-	$activity: [Int],
+	$gender: GenderEnum = null,
+	$limit: Int = 8,
+	$sortBy: LoanSearchSortByEnum = random,
 	$imgDefaultSize: String = "w480h360",
-	$imgRetinaSize: String = "w480h360",
+	$imgRetinaSize: String = "w480h360"
 ) {
 	lend {
-		sameCountry: loans(filters: {country: $country, status: fundraising}, limit: 5, sortBy: random) {
-			values {
-				...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
-			}
-		}
-
-		sameSector: loans(filters: {sector: $sector, status: fundraising}, limit: 5, sortBy: random) {
-			values {
-				...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
-			}
-		}
-
-		samePartner: loans(filters: {partner: $partner, status: fundraising}, limit: 5, sortBy: random) {
-			values {
-				...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
-			}
-		}
-
-		sameGender: loans(filters: {gender: $gender, status: fundraising}, limit: 5, sortBy: random) {
-			values {
-				...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
-			}
-		}
-
-		sameActivity: loans (filters: {activity: $activity, status: fundraising}, limit: 5, sortBy: random) {
-			values {
-				...loanCardFields
-				image {
-					id
-					default: url(customSize: $imgDefaultSize)
-					retina: url(customSize: $imgRetinaSize)
-					hash
-				}
-			}
-		}
-
-		randomLoan: loans (filters: {status: fundraising}, limit: 8, sortBy: random) {
+		loans(filters: {country: $country, sector: $sector, partner: $partner, gender: $gender, status: fundraising}, limit: $limit, sortBy: $sortBy) {
 			values {
 				...loanCardFields
 				image {

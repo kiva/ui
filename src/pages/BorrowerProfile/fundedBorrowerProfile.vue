@@ -10,14 +10,14 @@
 					:name="loan.name"
 					:retina-image-url="loan.image.retina"
 					:standard-image-url="loan.image.default"
-					is-visitor="false"
+					:is-visitor="true"
 					v-kv-track-event="['basket', 'basket-loan-profile', 'basket-loan-profile']"
 					:open-in-new-tab="true"
 					:use-default-styles="false"
 				/>
 			</div>
 			<div class="small-12 medium-8 columns">
-				<!-- Funded State/ FUNDED! -->
+				<!-- Funded State -->
 				<h2 class="strong funding-status">100% {{ loan.status }}</h2>
 				<!-- Total funded/loan amount -->
 				<div class="loan-total-text">
@@ -51,9 +51,9 @@
 					other deserving borrowers need your support to cross the finish line
 				</h3>
 				<l-y-m-l
+					:basketed-loans="itemsInBasket"
 					:target-loan="loan"
 					@add-to-basket="handleAddToBasket"
-					@processing-add-to-basket="processingAddToBasket"
 				/>
 			</div>
 		</div>
@@ -62,7 +62,7 @@
 			<div class="small-12 columns text-center">
 				<!-- Loan use -->
 				<h2 class="loan-use-text">
-					A loan of {{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helps {{ loan.use }}
+					A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helps {{ loan.use }}
 				</h2>
 			</div>
 		</div>
@@ -78,10 +78,12 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import cookieStore from '@/util/cookieStore';
 import _get from 'lodash/get';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
+import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
@@ -95,7 +97,8 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			loan: () => {}
+			loan: () => {},
+			itemsInBasket: []
 		};
 	},
 	apollo: {
@@ -104,7 +107,8 @@ export default {
 			return client.query({
 				query: fundedBorrowerProfile,
 				variables: {
-					id: fundedLoanId
+					id: fundedLoanId,
+					basketId: cookieStore.get('kvbskt'),
 				}
 			});
 		},
@@ -114,12 +118,26 @@ export default {
 		const loanData = this.apollo.readQuery({
 			query: fundedBorrowerProfile,
 			variables: {
-				id: this.$route.params.id
+				id: this.$route.params.id,
+				basketId: cookieStore.get('kvbskt'),
 			},
 		});
 
 		this.loan = _get(loanData, 'lend.loan');
-		// console.log('loanData', this.loan);
+		this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
+	},
+	methods: {
+		handleAddToBasket(payload) {
+			if (payload.success) {
+				this.apollo.query({
+					query: basketItems,
+					fetchPolicy: 'network-only',
+				}).then(data => {
+					// need to update this.itemsInBasket here.
+					this.itemsInBasket = _get(data, 'data.shop.basket.items.values');
+				});
+			}
+		},
 	}
 };
 </script>

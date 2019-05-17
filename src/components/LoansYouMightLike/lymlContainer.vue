@@ -61,6 +61,7 @@ import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
+import basketCount from '@/graphql/query/basketCount.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
@@ -72,7 +73,7 @@ export default {
 		KvLoadingSpinner,
 	},
 	props: {
-		loans: {
+		basketedLoans: {
 			type: Array,
 			default: () => [],
 		},
@@ -83,17 +84,14 @@ export default {
 	},
 	computed: {
 		itemsInBasket() {
-			return _map(this.loans, 'id');
+			return _map(this.basketedLoans, 'id');
 		},
 		hasLoansInBasket() {
-			return this.loans.length || false;
+			return this.basketedLoans.length || false;
 		},
 		sameCountry() {
 			// this.loans[0];
 			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.geocode.country.isoCode') : ['US'];
-		},
-		sameActivity() {
-			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.activity.id') : [120];
 		},
 		sameSector() {
 			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.sector.id') : [1];
@@ -157,105 +155,60 @@ export default {
 	methods: {
 		getLoansYouMightLike() {
 			this.loading = true;
-			this.apollo.query({
-				query: loansYouMightLikeData,
-				variables: {
-					country: this.sameCountry,
-					activity: this.sameActivity,
-					sector: this.sameSector,
-					partner: this.partner,
+			const queryTypes = [
+				{
 					gender: this.gender
+				},
+				{
+					country: this.country
+				},
+				{
+					sector: this.sector
+				},
+				{
+					partner: this.partner
+				},
+				{
+					sortBy: 'random'
 				}
-			}).then(data => {
-				const loansYouMightLike = [];
+			];
+			let loansYouMightLike = [];
 
-				// Same Country loans
-				// Filters out sameCountry loan if it's already in basket
-				const sameCountryLoans = _filter(
-					_get(data, 'data.lend.sameCountry.values') || [],
-					loan => this.itemsInBasket.indexOf(loan.id) === -1
-				);
-
-				// Iterate through the first 4 items of the SameCountry loans,
-				// then push them into the loansYouMightLike array
-				if (sameCountryLoans.length > 1) {
-					for (let i = 0; i < sameCountryLoans.length && i < 4; i += 1) {
-						loansYouMightLike.push(sameCountryLoans[i]);
-					}
-				}
-
-				// same Sector loans
-				const sameSectorLoans = _filter(
-					_get(data, 'data.lend.sameSector.values') || [],
-					loan => this.itemsInBasket.indexOf(loan.id) === -1
-				);
-				if (sameSectorLoans.length > 1) {
-					for (let i = 0; i < sameSectorLoans.length && i < 4; i += 1) {
-						loansYouMightLike.push(sameSectorLoans[i]);
-					}
-				}
-
-				// same Partner loans
-				const samePartnerLoans = _filter(
-					_get(data, 'data.lend.samePartner.values') || [],
-					loan => this.itemsInBasket.indexOf(loan.id) === -1
-				);
-				if (samePartnerLoans.length > 1) {
-					for (let i = 0; i < samePartnerLoans.length && i < 4; i += 1) {
-						loansYouMightLike.push(samePartnerLoans[i]);
-					}
-				}
-
-				// same Gender loans
-				const sameGenderLoans = _filter(
-					_get(data, 'data.lend.sameGender.values') || [],
-					loan => this.itemsInBasket.indexOf(loan.id) === -1
-				);
-				if (sameGenderLoans.length > 1) {
-					for (let i = 0; i < sameGenderLoans.length && i < 4; i += 1) {
-						loansYouMightLike.push(sameGenderLoans[i]);
-					}
-				}
-
-				// Random loans to fill up the rest of the loansYouMightLike[]
-				const randomLoans = _filter(
-					_get(data.data.lend, 'randomLoan.values') || [],
-					loan => this.itemsInBasket.indexOf(loan.id) === -1
-				);
-
-				// Pruning out duplicates among queried loan sets
-				const prunedLoansYouMightLike = _uniqBy(loansYouMightLike, 'id');
-
-				// Check the length of the prunedLoansYouMightLike array,
-				// however many it is under 16, add random loans until prunedLoansYouMightLike.length === 16
-				if (prunedLoansYouMightLike.length < 16 && randomLoans.length > 0) {
-					// Calculate the number of random loans needed to reach 16
-					const randomLoansNeeded = 16 - prunedLoansYouMightLike.length;
-					// Push through all available randomLoans that we have up until the loansYouMightLike[] reaches 16
-					// or we run out of randomLoans
-					for (let i = 0; i < randomLoansNeeded && randomLoans.length >= i; i += 1) {
-						prunedLoansYouMightLike.push(randomLoans[i]);
-					}
-				}
-
-				// Using _uniqBy to remove duplicate loans from being displayed in LYML suggestions
-				const finalLoansYouMightLike = _uniqBy(prunedLoansYouMightLike, 'id');
-
-				// Randomize array order to be displayed in the front end
-				this.loansYouMightLike = _shuffle(finalLoansYouMightLike);
-
-				// once we have loans flip the switch to show them
-				this.showLYML = true;
-				this.loading = false;
-
-				// update window width once loans are loaded
-				this.$nextTick(() => {
-					this.saveWindowWidth();
+			Promise.all(_map(queryTypes, variables => {
+				return this.apollo.query({
+					query: loansYouMightLikeData,
+					variables
+				}).then(data => {
+					const loans = _get(data, 'data.lend.loans.values');
+					loansYouMightLike = loansYouMightLike.concat(loans);
 				});
-
-				// track loans shown
-				this.$kvTrackEvent('Lending', 'lyml-loans-shown', _map(this.loansYouMightLike, 'id'));
+			})).then(() => {
+				this.parseLoansYouMightLike(loansYouMightLike);
 			});
+		},
+		parseLoansYouMightLike(loansYouMightLike) {
+			const withoutBasketedLoans = _filter(
+				loansYouMightLike || [],
+				loan => this.itemsInBasket.indexOf(loan.id) === -1
+			);
+
+			// Pruning out duplicates among queried loan sets
+			const prunedLoansYouMightLike = _uniqBy(withoutBasketedLoans, 'id');
+
+			// Randomize array order to be displayed in the front end
+			this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
+
+			// once we have loans flip the switch to show them
+			this.showLYML = true;
+			this.loading = false;
+
+			// update window width once loans are loaded
+			this.$nextTick(() => {
+				this.saveWindowWidth();
+			});
+
+			// track loans shown
+			this.$kvTrackEvent('Lending', 'lyml-loans-shown', _map(this.loansYouMightLike, 'id'));
 		},
 		saveWindowWidth() {
 			// console.log(window.innerWidth);
@@ -289,6 +242,12 @@ export default {
 		// payload is { loanId: ######, success: true/false }
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
+			if (payload.success) {
+				this.apollo.query({
+					query: basketCount,
+					fetchPolicy: 'network-only',
+				});
+			}
 		}
 	},
 };

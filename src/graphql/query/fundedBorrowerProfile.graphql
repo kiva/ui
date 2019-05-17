@@ -1,5 +1,6 @@
 query (
   	$id: Int!,
+	$basketId: String,
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
 ) {
@@ -29,6 +30,15 @@ query (
 			description
 			sector {
 				name
+			}
+		}
+	}
+	shop (basketId: $basketId) {
+		basket {
+			items {
+				values {
+					id
+				}
 			}
 		}
 	}
