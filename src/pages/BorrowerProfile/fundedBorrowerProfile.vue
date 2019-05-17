@@ -53,8 +53,6 @@
 				<l-y-m-l
 					:basketed-loans="itemsInBasket"
 					:target-loan="loan"
-					@add-to-basket="handleAddToBasket"
-					@processing-add-to-basket="processingAddToBasket"
 				/>
 			</div>
 		</div>
@@ -80,14 +78,10 @@
 
 <script>
 import cookieStore from '@/util/cookieStore';
-// import _filter from 'lodash/filter';
-// import _find from 'lodash/find';
 import _get from 'lodash/get';
-// import _map from 'lodash/map';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
-// import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
 
@@ -102,7 +96,7 @@ export default {
 	data() {
 		return {
 			loan: () => {},
-			itemsInBasket: [],
+			itemsInBasket: []
 		};
 	},
 	apollo: {
@@ -129,8 +123,19 @@ export default {
 
 		this.loan = _get(loanData, 'lend.loan');
 		this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
-	},
-	methods: {
+
+		this.apollo.watchQuery({
+			query: fundedBorrowerProfile,
+			variables: {
+				id: this.$route.params.id,
+				basketId: cookieStore.get('kvbskt'),
+			}
+		}).subscribe({
+			next: ({ data }) => {
+				console.log(data);
+				this.itemsInBasket = _get(data, 'shop.basket.items.values');
+			},
+		});
 	}
 };
 </script>

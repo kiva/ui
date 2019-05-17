@@ -187,18 +187,17 @@ export default {
 			});
 		},
 		parseLoansYouMightLike(loansYouMightLike) {
-			console.log('parseLoansYouMightLike hit');
+			// console.log('parseLoansYouMightLike hit');
 			const withoutBasketedLoans = _filter(
-				// HOW IS THIS FILTERING OUT THE BASKETED LOANS?
 				loansYouMightLike || [],
 				loan => this.itemsInBasket.indexOf(loan.id) === -1
 			);
 
-			console.log('without basketed loans', withoutBasketedLoans);
+			// console.log('without basketed loans', withoutBasketedLoans);
 
 			// Pruning out duplicates among queried loan sets
 			const prunedLoansYouMightLike = _uniqBy(withoutBasketedLoans, 'id');
-			console.log('prunedLYML', prunedLoansYouMightLike);
+			// console.log('prunedLYML', prunedLoansYouMightLike);
 
 			// Randomize array order to be displayed in the front end
 			this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
