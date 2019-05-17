@@ -5,8 +5,8 @@ query (
 	$sector: [Int],
 	$partner: [Int],
 	$gender: GenderEnum = null,
-	$limit: Int = 5,
-	$sortBy: LoanSearchSortByEnum = popularity,
+	$limit: Int = 8,
+	$sortBy: LoanSearchSortByEnum = random,
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w480h360"
 ) {

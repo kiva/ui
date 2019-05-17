@@ -61,6 +61,7 @@ import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
+import basketCount from '@/graphql/query/basketCount.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
@@ -180,24 +181,19 @@ export default {
 				}).then(data => {
 					const loans = _get(data, 'data.lend.loans.values');
 					loansYouMightLike = loansYouMightLike.concat(loans);
-					// console.log('loans you might like', loansYouMightLike);
 				});
 			})).then(() => {
 				this.parseLoansYouMightLike(loansYouMightLike);
 			});
 		},
 		parseLoansYouMightLike(loansYouMightLike) {
-			// console.log('parseLoansYouMightLike hit');
 			const withoutBasketedLoans = _filter(
 				loansYouMightLike || [],
 				loan => this.itemsInBasket.indexOf(loan.id) === -1
 			);
 
-			// console.log('without basketed loans', withoutBasketedLoans);
-
 			// Pruning out duplicates among queried loan sets
 			const prunedLoansYouMightLike = _uniqBy(withoutBasketedLoans, 'id');
-			// console.log('prunedLYML', prunedLoansYouMightLike);
 
 			// Randomize array order to be displayed in the front end
 			this.loansYouMightLike = _shuffle(prunedLoansYouMightLike);
@@ -246,6 +242,12 @@ export default {
 		// payload is { loanId: ######, success: true/false }
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
+			if (payload.success) {
+				this.apollo.query({
+					query: basketCount,
+					fetchPolicy: 'network-only',
+				});
+			}
 		}
 	},
 };
