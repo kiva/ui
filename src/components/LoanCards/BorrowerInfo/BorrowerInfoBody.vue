@@ -70,15 +70,14 @@ export default {
 			const maxLength = 1000;
 			const lowerCaseUse = this.use.toString().charAt(0).toLowerCase() + this.use.toString().slice(1);
 			const convertedUse = (this.use.substring(0, this.name.length) === this.name) ? this.use : lowerCaseUse;
-			/* eslint-disable */
-			// TODO: Fix eslint rule to allow else if
+
 			if (this.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			} else if (this.use.length > maxLength) {
+			}
+			if (this.use.length > maxLength) {
 				return `${convertedUse.substring(0, maxLength)}...`;
 			}
 			return convertedUse;
-			/* eslint-enable */
 		},
 	}
 };

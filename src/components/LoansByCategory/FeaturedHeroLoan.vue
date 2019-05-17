@@ -212,16 +212,13 @@ export default {
 			// eslint-disable-next-line max-len
 			const convertedUse = (this.loan.use.substring(0, this.loan.name.length) === this.loan.name) ? this.loan.use : lowerCaseUse;
 
-			/* eslint-disable */
-			// TODO: fix lint rule
 			if (this.loan.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			} else if (this.loan.use.length > this.loanUseMaxLength) {
+			}
+			if (this.loan.use.length > this.loanUseMaxLength) {
 				return `${convertedUse.substring(0, this.loanUseMaxLength)}...`;
 			}
-
 			return convertedUse;
-			/* eslint-enable */
 		},
 		toggleFavorite() {
 			this.$emit('toggle-favorite');

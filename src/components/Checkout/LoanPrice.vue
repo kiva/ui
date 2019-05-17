@@ -78,9 +78,7 @@ export default {
 		};
 	},
 	computed: {
-		/* eslint-disable */
 		prices() {
-			// TODO: convert to switch statement with default value returned
 			if (this.type === 'loan') {
 				// determine how many (if any) overall additional shares are remaining
 				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
@@ -101,13 +99,14 @@ export default {
 				const reservePriceArray = this.buildShareArray(sharesBelowReserve);
 
 				return reservePriceArray;
-			} else if (this.type === 'kivaCard') {
+			}
+			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element
 				const priceArray = ['25', '30', '50', '75', '100', '150', '200', '250', '300', '400',
 					'500', '750', '1,000', '2,000'];
 				return priceArray;
 			}
-			/* eslint-enable */
+			return ['0'];
 		}
 	},
 	methods: {

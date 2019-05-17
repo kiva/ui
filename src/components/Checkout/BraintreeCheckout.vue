@@ -430,17 +430,16 @@ export default {
 			this.setUpdating(true);
 		},
 		setCardType(cardType) {
-			/* eslint-disable */
-			// TODO: Convert to switch statement
 			if (cardType === 'American Express') {
 				return 'amex';
-			} else if (cardType === 'Visa') {
+			}
+			if (cardType === 'Visa') {
 				return 'visa';
-			} else if (cardType === 'MasterCard') {
+			}
+			if (cardType === 'MasterCard') {
 				return 'mastercard';
 			}
 			return 'unknown_card';
-			/* eslint-enable */
 		},
 		doBraintreeCheckout(nonce) {
 			// Apollo call to the query mutation
