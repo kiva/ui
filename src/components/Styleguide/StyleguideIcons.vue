@@ -14,7 +14,7 @@
 			<kv-icon class="icon" name="twitter" />
 			<kv-icon class="icon" name="yelp" />
 			<kv-icon class="icon" name="instagram" />
-			<kv-icon class="icon" name="linkedIn"/>
+			<kv-icon class="icon" name="linkedIn" />
 			<kv-icon class="icon" name="pinterest" />
 		</div>
 		<div class="sector-icons">

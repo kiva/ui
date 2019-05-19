@@ -4,7 +4,9 @@
 			<a :href="search.url">{{ search.name }}</a>
 		</li>
 		<li>
-			<router-link to="/lend/saved-search">Manage saved searches</router-link>
+			<router-link to="/lend/saved-search">
+				Manage saved searches
+			</router-link>
 		</li>
 	</ul>
 </template>

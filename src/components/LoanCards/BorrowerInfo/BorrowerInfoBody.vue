@@ -6,7 +6,8 @@
 		</span>
 		<router-link
 			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']">
+			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']"
+		>
 			<span
 				@click="$emit('track-loan-card-interaction', {
 					interactionType: 'viewBorrowerPage',
@@ -72,7 +73,8 @@ export default {
 
 			if (this.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			} else if (this.use.length > maxLength) {
+			}
+			if (this.use.length > maxLength) {
 				return `${convertedUse.substring(0, maxLength)}...`;
 			}
 			return convertedUse;

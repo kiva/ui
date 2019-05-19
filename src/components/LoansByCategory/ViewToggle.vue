@@ -3,22 +3,26 @@
 		<router-link
 			:to="browseUrl"
 			class="browse-box"
-			v-kv-track-event="['Lending', 'click-filter-toggle', 'Explore']">
+			v-kv-track-event="['Lending', 'click-filter-toggle', 'Explore']"
+		>
 			<span>
 				<kv-icon
 					name="browse-toggle"
-					class="browse-toggle-icon"/>
+					class="browse-toggle-icon"
+				/>
 				<span class="small-text show-for-xlarge view-text">Explore</span>
 			</span>
 		</router-link>
 		<router-link
 			:to="filterUrl"
 			class="filter-box"
-			v-kv-track-event="['Lending', 'click-filter-toggle', 'Filter']">
+			v-kv-track-event="['Lending', 'click-filter-toggle', 'Filter']"
+		>
 			<span class="divider">
 				<kv-icon
 					name="filters-toggle"
-					class="filter-toggle-icon"/>
+					class="filter-toggle-icon"
+				/>
 				<span class="small-text show-for-xlarge view-text">Filter</span>
 			</span>
 		</router-link>

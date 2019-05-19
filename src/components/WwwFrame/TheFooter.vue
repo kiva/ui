@@ -2,15 +2,39 @@
 	<footer class="www-footer">
 		<nav class="small-footer hide-for-large">
 			<ul>
-				<li><router-link :to="applyUrl">Borrow</router-link></li>
-				<li><router-link :to="aboutUrl">About</router-link></li>
-				<li><router-link :to="helpUrl">Help</router-link></li>
-				<li><router-link :to="careersUrl">Careers</router-link></li>
-				<li><router-link :to="sitemapUrl">Site map</router-link></li>
+				<li>
+					<router-link :to="applyUrl">
+						Borrow
+					</router-link>
+				</li>
+				<li>
+					<router-link :to="aboutUrl">
+						About
+					</router-link>
+				</li>
+				<li>
+					<router-link :to="helpUrl">
+						Help
+					</router-link>
+				</li>
+				<li>
+					<router-link :to="careersUrl">
+						Careers
+					</router-link>
+				</li>
+				<li>
+					<router-link :to="sitemapUrl">
+						Site map
+					</router-link>
+				</li>
 			</ul>
 			<div>
-				<router-link :to="privacyUrl">Privacy policy</router-link> |
-				<router-link :to="termsUrl">Terms of use</router-link>
+				<router-link :to="privacyUrl">
+					Privacy policy
+				</router-link> |
+				<router-link :to="termsUrl">
+					Terms of use
+				</router-link>
 			</div>
 			<p>
 				Lending through Kiva involves risk of principal loss.
@@ -25,39 +49,111 @@
 					<h2>Borrow</h2>
 					<p>Loans for entrepreneurs doing amazing things.</p>
 					<ul>
-						<li><router-link :to="applyUrl">Apply now</router-link></li>
+						<li>
+							<router-link :to="applyUrl">
+								Apply now
+							</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="narrow">
 					<h2>Explore</h2>
 					<ul>
-						<li v-if="isProtocolLive"><router-link to="/protocol">Protocol</router-link></li>
-						<li><router-link to="/gifts">Gifts</router-link></li>
-						<li><router-link to="/live">Happening now</router-link></li>
-						<li><router-link :to="sitemapUrl">Site map</router-link></li>
-						<li><router-link to="/build">Developer API</router-link></li>
-						<li><router-link :to="privacyUrl">Privacy policy</router-link></li>
-						<li><router-link :to="termsUrl">Terms of use</router-link></li>
+						<li v-if="isProtocolLive">
+							<router-link to="/protocol">
+								Protocol
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/gifts">
+								Gifts
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/live">
+								Happening now
+							</router-link>
+						</li>
+						<li>
+							<router-link :to="sitemapUrl">
+								Site map
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/build">
+								Developer API
+							</router-link>
+						</li>
+						<li>
+							<router-link :to="privacyUrl">
+								Privacy policy
+							</router-link>
+						</li>
+						<li>
+							<router-link :to="termsUrl">
+								Terms of use
+							</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="narrow">
 					<h2>Get to know us</h2>
 					<ul>
-						<li><router-link :to="aboutUrl">About us</router-link></li>
-						<li><router-link to="/about/how">How Kiva works</router-link></li>
-						<li><router-link to="/about/how#faq-hkw-section">FAQs</router-link></li>
-						<li><router-link to="/about/where-kiva-works">Where Kiva works</router-link></li>
-						<li><router-link to="/blog">Blog</router-link></li>
-						<li><router-link to="/partner-with-us">Partner with us</router-link></li>
-						<li><router-link to="/help/contact-us">Contact us</router-link></li>
-						<li><router-link :to="helpUrl">Help</router-link></li>
+						<li>
+							<router-link :to="aboutUrl">
+								About us
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/about/how">
+								How Kiva works
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/about/how#faq-hkw-section">
+								FAQs
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/about/where-kiva-works">
+								Where Kiva works
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/blog">
+								Blog
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/partner-with-us">
+								Partner with us
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/help/contact-us">
+								Contact us
+							</router-link>
+						</li>
+						<li>
+							<router-link :to="helpUrl">
+								Help
+							</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="narrow">
 					<h2>Community</h2>
 					<ul>
-						<li><router-link to="/teams">Teams</router-link></li>
-						<li><router-link to="/kivau/intro">Students and educators</router-link></li>
+						<li>
+							<router-link to="/teams">
+								Teams
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/kivau/intro">
+								Students and educators
+							</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="wide">
@@ -67,17 +163,41 @@
 						Portland and staff around the globe.
 					</div>
 					<ul class="siteFooter-links">
-						<li><router-link to="/donate/supportus">Donate to Kiva here.</router-link></li>
+						<li>
+							<router-link to="/donate/supportus">
+								Donate to Kiva here.
+							</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="work-with-us wide">
 					<h2>Work with us</h2>
 					<ul>
-						<li><router-link :to="careersUrl">Careers</router-link></li>
-						<li><router-link to="/work-with-us/internvolunteers">Volunteer internships</router-link></li>
-						<li><router-link to="/work-with-us/fellows">Kiva fellows</router-link></li>
-						<li><router-link to="/work-with-us/reviewers">Review and translation</router-link></li>
-						<li><router-link to="/trustees">Trustees</router-link></li>
+						<li>
+							<router-link :to="careersUrl">
+								Careers
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/work-with-us/internvolunteers">
+								Volunteer internships
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/work-with-us/fellows">
+								Kiva fellows
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/work-with-us/reviewers">
+								Review and translation
+							</router-link>
+						</li>
+						<li>
+							<router-link to="/trustees">
+								Trustees
+							</router-link>
+						</li>
 					</ul>
 				</div>
 				<div class="wide">

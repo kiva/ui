@@ -10,9 +10,9 @@ function checkHashSuccess(hash) {
 	if (hash.indexOf('error') > -1) {
 		return false;
 	}
-	if (hash.indexOf('access_token') === -1 &&
-		hash.indexOf('id_token') === -1 &&
-		hash.indexOf('refresh_token') === -1) {
+	if (hash.indexOf('access_token') === -1
+		&& hash.indexOf('id_token') === -1
+		&& hash.indexOf('refresh_token') === -1) {
 		return false;
 	}
 	return true;

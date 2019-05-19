@@ -1,6 +1,8 @@
 <template functional>
 	<div class="borrower-info-header-expandable" :class="{'expanded': props.expanded}">
-		<div class="name" v-if="props.name">{{ props.name }}</div>
+		<div class="name" v-if="props.name">
+			{{ props.name }}
+		</div>
 		<div class="details" v-if="props.country || props.activity">
 			{{ props.country ? `${props.country}` : '' }}
 			{{ props.country && props.activity ? '|' : '' }}

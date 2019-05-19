@@ -7,7 +7,8 @@
 			{ label: '15', value: 15, default: true },
 			{ label: '25', value: 25 },
 			{ label: '50', value: 50 },
-		]"/>
+		]"
+		/>
 	</div>
 </template>
 

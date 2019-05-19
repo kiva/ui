@@ -7,8 +7,8 @@
 			method="post"
 			:action="loginActionUrl"
 			@submit.prevent.stop="doLogin"
-			novalidate>
-
+			novalidate
+		>
 			<ul v-show="serverErrors" class="server-errors">
 				<li v-for="(errorText, index) in serverErrors" :key="index">
 					{{ errorText }}
@@ -24,11 +24,14 @@
 						v-model="email"
 						autofocus
 						@blur="validateEmail(email)"
-						@keyup.enter="doLogin">
+						@keyup.enter="doLogin"
+					>
 				</label>
 				<p v-if="emailErrors.length">
 					<ul class="validation-errors">
-						<li v-for="emailError in emailErrors" :key="emailError">{{ emailError }}</li>
+						<li v-for="emailError in emailErrors" :key="emailError">
+							{{ emailError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -41,11 +44,14 @@
 						v-model="password"
 						maxlength="31"
 						@blur="validatePassword(password)"
-						@keyup.enter="doLogin">
+						@keyup.enter="doLogin"
+					>
 				</label>
 				<p v-if="passwordErrors.length">
 					<ul class="validation-errors">
-						<li v-for="passwordError in passwordErrors" :key="passwordError">{{ passwordError }}</li>
+						<li v-for="passwordError in passwordErrors" :key="passwordError">
+							{{ passwordError }}
+						</li>
 					</ul>
 				</p>
 			</div>
@@ -60,22 +66,27 @@
 				<span id="keep_me_signed_id" style="cursor: pointer;">Keep me signed in.</span>
 				<a class="helpTip sfHelpTip_old"
 					id="persist_login_details"
-					@click.prevent="triggerDefaultLightbox">
+					@click.prevent="triggerDefaultLightbox"
+				>
 					Details
 				</a>
 			</div>
 
 			<kv-lightbox
 				:visible="defaultLbVisible"
-				@lightbox-closed="lightboxClosed">
-				<h2 slot="title">{{ salesforceHelpText.name }}</h2>
+				@lightbox-closed="lightboxClosed"
+			>
+				<h2 slot="title">
+					{{ salesforceHelpText.name }}
+				</h2>
 				<p>{{ salesforceHelpText.note }}</p>
 			</kv-lightbox>
 
 			<KvButton
 				class="sign-in-button smaller"
 				type="submit"
-				name="loginForm_submit">
+				name="loginForm_submit"
+			>
 				Sign in
 			</KvButton>
 
@@ -85,7 +96,8 @@
 
 			<a href="/help/forgot-password"
 				class="forgot-password-link"
-				v-kv-track-event="['Login','click-forgot-password','ForgotPasswordClick']">
+				v-kv-track-event="['Login','click-forgot-password','ForgotPasswordClick']"
+			>
 				Forgot your password?
 			</a>
 		</form>
@@ -96,7 +108,6 @@
 import formDataEntries from 'form-data-entries';
 import loginRegUtils from '@/plugins/login-reg-mixin';
 import KvButton from '@/components/Kv/KvButton';
-import KvFacebookButton from '@/components/Kv/KvFacebookButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import LoginQuery from '@/graphql/query/loginQuery.graphql';
 import _get from 'lodash/get';
@@ -106,9 +117,7 @@ import LoginRegisterTeamChooser from '@/components/Forms/LoginRegisterTeamChoose
 export default {
 	components: {
 		KvButton,
-		KvFacebookButton,
 		KvLightbox,
-		LoginQuery,
 		LoginRegisterTeamChooser,
 	},
 	inject: ['apollo'],

@@ -8,15 +8,18 @@
 		<div class="fundraising-meter progress">
 			<span v-if="props.isFunded"
 				class="meter"
-				style="width: 100%;"></span>
+				style="width: 100%;"
+			></span>
 			<span v-else
 				class="meter"
-				:style="{width: (props.percentRaised * 100) + '%'}"></span>
+				:style="{width: (props.percentRaised * 100) + '%'}"
+			></span>
 		</div>
 
 		<div class="left-and-to-go-line">
 			<span v-if="props.expiringSoonMessage !== ''"
-				class="loan-message">{{ props.expiringSoonMessage }}</span>
+				class="loan-message"
+			>{{ props.expiringSoonMessage }}</span>
 			<span v-if="props.isFunded" class="funded">Funded</span>
 			<span v-else>${{ props.amountLeft | numeral('0,0') }} to go</span>
 		</div>

@@ -37,14 +37,14 @@
 				<p>
 					<!-- eslint-disable-next-line max-len -->
 					When you decompress and extract a data snapshot you'll have a collection of documents with the following structure (CSV files will have the .csv file format):
-					<kv-code-block :code='fileStructure' />
+					<kv-code-block :code="fileStructure" />
 				</p>
 				<h2>File Format</h2>
 				<h3>JSON snapshot</h3>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
 					As mentioned, the format of the JSON snapshot is very similar to the API format. The main difference is the loans_lenders mapping file, which maps between the loans and lenders files. The format of the loans_lenders.json might look like this:
-					<kv-code-block :code='loanLenders' />
+					<kv-code-block :code="loanLenders" />
 				</p>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
@@ -54,12 +54,12 @@
 				<p>
 					<!-- eslint-disable-next-line max-len -->
 					The CSV snapshot is a direct translation of the JSON snapshot. Fields that are reprented as arrays in the JSON snapshot are translated to comma separated lists. For instance, consider the following record in loans.json:
-					<kv-code-block :code='jsonSchema' />
+					<kv-code-block :code="jsonSchema" />
 				</p>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
 					In the loans.csv snapshot, this would be split into three separate fields, each having its data separated by a comma and a space:
-					<kv-code-block :code='csvSchema' />
+					<kv-code-block :code="csvSchema" />
 				</p>
 			</div>
 		</div>

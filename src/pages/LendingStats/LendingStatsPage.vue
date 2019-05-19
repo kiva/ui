@@ -5,8 +5,10 @@
 			<the-portfolio-tertiary-menu slot="tertiary" class="show-for-large" />
 			<div class="small-12 large-9 columns">
 				<h1>Lending stats</h1>
-				<p>This is a snapshot of your lending activity on Kiva.
-				Use this page to collect loans and hit milestones along the way.</p>
+				<p>
+					This is a snapshot of your lending activity on Kiva.
+					Use this page to collect loans and hit milestones along the way.
+				</p>
 				<hr>
 				<stats-section
 					title="Countries &amp; Territories*"
@@ -42,11 +44,13 @@
 					query="partner"
 				/>
 				<hr>
-				<p>* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
-				This means, you may end up supporting a loan in a country or through a Field Partner that
-				is no longer active and therefore not included in the total number of countries or partners
-				noted on this page. For this reason, it is possible to see discrepancies between the number
-				you've supported and the number to go.</p>
+				<p>
+					* Please note, Kiva is continually adding and ending partnerships as we deem necessary.
+					This means, you may end up supporting a loan in a country or through a Field Partner that
+					is no longer active and therefore not included in the total number of countries or partners
+					noted on this page. For this reason, it is possible to see discrepancies between the number
+					you've supported and the number to go.
+				</p>
 			</div>
 		</div>
 	</www-page>

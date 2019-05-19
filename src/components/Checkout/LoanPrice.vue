@@ -4,10 +4,13 @@
 			<select
 				v-model="selectedOption"
 				class="loan-price medium-text-font-size"
-				@change="updateLoanReservation()">
-				<option v-for="price in prices"
-					:key="price"
-					:value="price">${{ price }}
+				@change="updateLoanReservation()"
+			>
+				<option v-for="priceOption in prices"
+					:key="priceOption"
+					:value="priceOption"
+				>
+					${{ priceOption }}
 				</option>
 			</select>
 		</div>
@@ -96,12 +99,14 @@ export default {
 				const reservePriceArray = this.buildShareArray(sharesBelowReserve);
 
 				return reservePriceArray;
-			} else if (this.type === 'kivaCard') {
+			}
+			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element
 				const priceArray = ['25', '30', '50', '75', '100', '150', '200', '250', '300', '400',
 					'500', '750', '1,000', '2,000'];
 				return priceArray;
 			}
+			return ['0'];
 		}
 	},
 	methods: {

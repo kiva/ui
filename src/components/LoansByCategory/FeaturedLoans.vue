@@ -2,7 +2,9 @@
 	<div class="featured-section-wrapper">
 		<div class="row">
 			<div class="column small-12">
-				<h2 class="section-name">Featured loans</h2>
+				<h2 class="section-name">
+					Featured loans
+				</h2>
 			</div>
 		</div>
 
@@ -72,7 +74,6 @@
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
-
 	</div>
 </template>
 

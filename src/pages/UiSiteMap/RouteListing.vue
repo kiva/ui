@@ -4,7 +4,11 @@
 			<h3>Prod Routes</h3>
 			<ul>
 				<li v-for="route in prodRoutes" :key="route.path">
-					<p><router-link :to="route.path">{{ route.path.replace('/','') }}</router-link></p>
+					<p>
+						<router-link :to="route.path">
+							{{ route.path.replace('/','') }}
+						</router-link>
+					</p>
 				</li>
 			</ul>
 		</div>
@@ -12,7 +16,11 @@
 			<h3>Dev Routes</h3>
 			<ul>
 				<li v-for="route in devRoutes" :key="route.path">
-					<p><router-link :to="route.path">{{ route.path.replace('/','') }}</router-link></p>
+					<p>
+						<router-link :to="route.path">
+							{{ route.path.replace('/','') }}
+						</router-link>
+					</p>
 				</li>
 			</ul>
 		</div>

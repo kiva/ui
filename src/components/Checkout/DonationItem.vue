@@ -14,7 +14,8 @@
 				<a
 					class="small-text donation-help-text"
 					@click.prevent="triggerDefaultLightbox"
-					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']">
+					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+				>
 					{{ donationDetailsLink }}
 				</a>
 			</div>
@@ -23,18 +24,21 @@
 		<span class="small-12 medium-4 large-3 medium-text-font-size">
 			<div
 				v-show="!editDonation"
-				class="donation-amount-wrapper">
+				class="donation-amount-wrapper"
+			>
 				<span
 					class="donation-amount"
 					v-kv-track-event="['basket', 'Edit Donation']"
 					@click="enterEditDonation"
-					title="Edit Donation">{{ formattedAmount }}
+					title="Edit Donation"
+				>{{ formattedAmount }}
 					<kv-icon
 						role="img"
 						aria-label="Edit Donation"
 						title="Edit Donation"
 						class="edit-donation"
-						name="pencil"/>
+						name="pencil"
+					/>
 				</span>
 			</div>
 			<div v-show="editDonation" class="small-12 donation-amount-input-wrapper">
@@ -45,21 +49,24 @@
 					id="donation"
 					v-model="amount"
 					@blur="validateInput"
-					@keyup.enter.prevent="updateDonation()">
+					@keyup.enter.prevent="updateDonation()"
+				>
 				<kv-button
 					class="secondary update-donation-inline-button"
 					@click.native.prevent.stop="updateDonation()"
 				>Update</kv-button>
 				<div
 					class="show-for-medium remove-wrapper"
-					@click="updateLoanAmount('remove')">
+					@click="updateLoanAmount('remove')"
+				>
 					<kv-icon class="remove-x" name="small-x" />
 				</div>
 			</div>
 			<donate-repayments
 				v-if="hasLoans"
 				@updating-totals="$emit('updating-totals', $event)"
-				@refreshtotals="$emit('refreshtotals')" />
+				@refreshtotals="$emit('refreshtotals')"
+			/>
 		</span>
 		<donation-nudge-lightbox
 			ref="nudgeLightbox"
@@ -91,8 +98,11 @@
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
-			@lightbox-closed="lightboxClosed">
-			<h2 slot="title">How does Kiva use donations?</h2>
+			@lightbox-closed="lightboxClosed"
+		>
+			<h2 slot="title">
+				How does Kiva use donations?
+			</h2>
 			<div>
 				100% of every dollar you lend on Kiva goes directly to funding loans.
 				We rely on small optional donations from you and others to keep Kiva running.
@@ -109,7 +119,6 @@
 			</div>
 		</kv-lightbox>
 	</div>
-
 </template>
 
 <script>

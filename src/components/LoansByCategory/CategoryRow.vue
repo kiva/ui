@@ -11,7 +11,8 @@
 						v-kv-track-event="[
 							'Lending',
 							'click-Category-View-All',
-							`View all ${cleanName} loans`]">
+							`View all ${cleanName} loans`]"
+					>
 						{{ cleanName }} <span v-if="showViewAllLink" class="view-all-arrow">&rsaquo;</span>
 					</router-link>
 					<template v-else>
@@ -61,8 +62,8 @@
 							v-kv-track-event="[
 								'Lending',
 								'click-View all',
-								`Loan card`]">
-
+								`Loan card`]"
+						>
 							<div class="see-all-card">
 								<div class="link">
 									{{ viewAllLoansCategoryTitle }}
@@ -70,7 +71,6 @@
 							</div>
 						</router-link>
 					</div>
-
 				</div>
 			</div>
 			<span
@@ -87,7 +87,6 @@
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 
 const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
@@ -97,7 +96,6 @@ const expandableCardWidthPlusPadding = 274;
 export default {
 	components: {
 		LoanCardController,
-		GridMicroLoanCard
 	},
 	inject: ['apollo'],
 	props: {
@@ -174,9 +172,9 @@ export default {
 
 			// empty url value for certain urls and if no url is passed in
 			if (
-				this.url.includes('loans-with-research-backed-impact') === true ||
-				this.url.includes('recently-viewed-loans') === true ||
-				this.url === '') {
+				this.url.includes('loans-with-research-backed-impact') === true
+				|| this.url.includes('recently-viewed-loans') === true
+				|| this.url === '') {
 				cleanUrl = '';
 			}
 
@@ -210,9 +208,9 @@ export default {
 			let isVisible = true;
 
 			if (
-				this.url.includes('loans-with-research-backed-impact') === true ||
-				this.url.includes('recently-viewed-loans') === true ||
-				this.url === '') {
+				this.url.includes('loans-with-research-backed-impact') === true
+				|| this.url.includes('recently-viewed-loans') === true
+				|| this.url === '') {
 				isVisible = false;
 			}
 

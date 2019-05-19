@@ -1,7 +1,9 @@
 <template>
 	<div class="filter-chip-container">
 		<div @click="handleClick" class="filter-chip">
-			<div class="filter-title">{{ title }}</div>
+			<div class="filter-title">
+				{{ title }}
+			</div>
 			<div class="filter-close-button-container">
 				<kv-icon name="small-x" class="filter-close-button" />
 			</div>

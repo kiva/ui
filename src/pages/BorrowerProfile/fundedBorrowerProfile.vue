@@ -17,8 +17,10 @@
 				/>
 			</div>
 			<div class="small-12 medium-8 columns">
-				<!-- Funded State -->
-				<h2 class="strong funding-status">100% {{ loan.status }}</h2>
+				<!-- Funded State/ FUNDED! -->
+				<h2 class="strong funding-status">
+					100% {{ loan.status }}
+				</h2>
 				<!-- Total funded/loan amount -->
 				<div class="loan-total-text">
 					Loan total: ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }}
@@ -37,7 +39,9 @@
 
 					<div>
 						<!-- Link to see full borrower profile in old stack -->
-						<router-link :to="`/lend/${loan.id}`">See full borrower profile</router-link>
+						<router-link :to="`/lend/${loan.id}`">
+							See full borrower profile
+						</router-link>
 					</div>
 				</div>
 			</div>
@@ -58,7 +62,7 @@
 			</div>
 		</div>
 		<hr>
-		<div class='row'>
+		<div class="row">
 			<div class="small-12 columns text-center">
 				<!-- Loan use -->
 				<h2 class="loan-use-text">
@@ -69,7 +73,9 @@
 		<hr>
 		<div class="row">
 			<div class="small-12 columns loan-description-wrapper">
-				<h2 class="loan-description-heading-text"> {{ loan.name }}'s story </h2>
+				<h2 class="loan-description-heading-text">
+					{{ loan.name }}'s story
+				</h2>
 				<!-- Loan description -->
 				<div v-html="loan.description"></div>
 			</div>

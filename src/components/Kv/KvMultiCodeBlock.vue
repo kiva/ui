@@ -15,7 +15,7 @@
 			>
 				{{ title }}
 			</div>
-			<kv-hamburger-icon class="hamburger-menu" :open="open" color="#118aec" width="1.5rem"/>
+			<kv-hamburger-icon class="hamburger-menu" :open="open" color="#118aec" width="1.5rem" />
 		</div>
 		<kv-code-block :code="selectedCode" :nowrap="nowrap" />
 	</div>

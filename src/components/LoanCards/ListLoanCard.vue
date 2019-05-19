@@ -22,11 +22,17 @@
 				<div class="small-12 columns">
 					<div class="list-loan-card-desktop-column-text-wrapper row">
 						<div class="large-12 xxlarge-7 columns" v-if="loan.partnerName">
-							<div class="list-loan-card-desktop-column-title">Field Partner</div>
-							<div class="list-loan-card-desktop-column-content">{{ loan.partnerName }}</div>
+							<div class="list-loan-card-desktop-column-title">
+								Field Partner
+							</div>
+							<div class="list-loan-card-desktop-column-content">
+								{{ loan.partnerName }}
+							</div>
 						</div>
 						<div class="large-12 xxlarge-5 columns">
-							<div class="list-loan-card-desktop-column-title">Loan Length</div>
+							<div class="list-loan-card-desktop-column-title">
+								Loan Length
+							</div>
 							<div class="list-loan-card-desktop-column-content">
 								{{ loan.lenderRepaymentTerm }} months
 							</div>

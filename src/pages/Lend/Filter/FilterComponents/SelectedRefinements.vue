@@ -31,7 +31,9 @@
 					</div>
 				</div>
 				<div v-if="!isCollapsed && isCollapsible" class="hide-reset-toggle-container">
-					<div @click="handleClickShowFewer" class="hide-filter align-middle">Hide filters</div>
+					<div @click="handleClickShowFewer" class="hide-filter align-middle">
+						Hide filters
+					</div>
 
 					<ais-clear-refinements class="clear-all align-middle">
 						<clear-all-refinements

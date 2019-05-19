@@ -43,7 +43,8 @@ export default {
 			// warning icon-info, error icon-error
 			if (this.messageType === 'warning') {
 				return 'info';
-			} else if (this.messageType === 'error') {
+			}
+			if (this.messageType === 'error') {
 				return 'error';
 			}
 			// default icon-confirmation

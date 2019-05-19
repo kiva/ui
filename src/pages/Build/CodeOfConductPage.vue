@@ -15,7 +15,9 @@
 					Before you develop an application on the Kiva API we must insist you
 					read the
 					<!-- eslint-disable-next-line max-len -->
-					<router-link to="/build/terms-of-service">Terms of Service</router-link>. Our staff and some pretty smart lawyers
+					<router-link to="/build/terms-of-service">
+						Terms of Service
+					</router-link>. Our staff and some pretty smart lawyers
 					worked really hard on these to protect you, Kiva, and our lenders.
 					You must understand and abide by these terms
 				</p>
@@ -47,7 +49,9 @@
 				<h2>4. Do not use the API for commercial use</h2>
 				<p>
 					<!-- eslint-disable-next-line max-len -->
-					Kiva is a 501(c)(3) non-profit and, by law, we cannot allow our resources to be used for commercial purposes. Commercial entities can use the API to charitable ends in line with Kiva's mission, but if you have any doubts that what you are doing is within our <router-link to="/build/terms-of-service">Terms of Service</router-link>, please contact us.
+					Kiva is a 501(c)(3) non-profit and, by law, we cannot allow our resources to be used for commercial purposes. Commercial entities can use the API to charitable ends in line with Kiva's mission, but if you have any doubts that what you are doing is within our <router-link to="/build/terms-of-service">
+						Terms of Service
+					</router-link>, please contact us.
 				</p>
 				<h2>5. Be your own brand</h2>
 				<p>
@@ -86,7 +90,9 @@
 				<p>
 					When making API calls or linking back to Kiva, please pass an App ID
 					in your request. Currently, this isn't required by the
-					<router-link to="/build/terms-of-service">Terms Of Service</router-link>,
+					<router-link to="/build/terms-of-service">
+						Terms Of Service
+					</router-link>,
 					but consider it a polite way of saying hello and letting us know who's
 					using the API. In the future we hope to return the favor by giving you
 					stats on how your app is doing.

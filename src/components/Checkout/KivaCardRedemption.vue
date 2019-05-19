@@ -1,22 +1,26 @@
 <template>
 	<div class="columns">
 		<div
-			class="kiva-card-entry-wrapper row">
+			class="kiva-card-entry-wrapper row"
+		>
 			<span class="small-3 large-2">
 				<a @click="toggleAccordion">
 					<kv-icon
 						:class="{ flipped: open }"
 						class="toggle-arrow"
-						name="medium-chevron" />
+						name="medium-chevron"
+					/>
 				</a>
 			</span>
 			<span
 				class="featured-text accordion-title small-9 large-10"
-				@click="toggleAccordion">Have a Kiva Card?</span>
+				@click="toggleAccordion"
+			>Have a Kiva Card?</span>
 			<kv-expandable easing="ease-in-out">
 				<div
 					v-show="open"
-					class="accordion-info row small-12">
+					class="accordion-info row small-12"
+				>
 					<div class="small-3 large-2"></div>
 					<div class="small-9 large-10">
 						<div>
@@ -24,18 +28,26 @@
 								placeholder="ABCD-1234-EFGH-5678"
 								class="kiva-card-input"
 								v-model="kivaCardCode"
-								@keyup.enter.prevent="updateKivaCard('redemption_code')">
+								@keyup.enter.prevent="updateKivaCard('redemption_code')"
+							>
 							<button class="button secondary"
-								@click.prevent="updateKivaCard('redemption_code')">Apply</button>
+								@click.prevent="updateKivaCard('redemption_code')"
+							>
+								Apply
+							</button>
 
 							<!-- This lightbox will be replaced with a Popper tip message. -->
 							<a @click.prevent="triggerDefaultLightbox"
-								class="help-lightbox-trigger">Need help?
+								class="help-lightbox-trigger"
+							>Need help?
 							</a>
 							<kv-lightbox
 								:visible="defaultLbVisible"
-								@lightbox-closed="lightboxClosed">
-								<h2 slot="title">Where can I find my Kiva Card code?</h2>
+								@lightbox-closed="lightboxClosed"
+							>
+								<h2 slot="title">
+									Where can I find my Kiva Card code?
+								</h2>
 								<p>
 									Kiva issues three types of Kiva Cards: print-it-yourself cards,
 									email delivery and postal delivery.
@@ -45,19 +57,22 @@
 									class="card-spacing"
 									height="116"
 									src="../../assets/images/checkout/printcard_codelocation.jpg"
-									width="450">
+									width="450"
+								>
 								<p>Email delivery:</p>
 								<img alt="email-kiva-card"
 									class="card-spacing"
 									height="199"
 									src="../../assets/images/checkout/emailcard_codelocation.jpg"
-									width="450">
+									width="450"
+								>
 								<p>Postal delivery:</p>
 								<img alt="postal-kiva-card"
 									class="postal-card"
 									height="158"
 									src="../../assets/images/checkout/physicalcard_codelocation.jpg"
-									width="430">
+									width="430"
+								>
 							</kv-lightbox>
 
 							<ul class="redemption-items">
@@ -65,7 +80,8 @@
 									<span class="heading">Kiva Card value: </span>
 									<span class="value">${{ credit.applied }}</span>
 									<span class="remove-wrapper"
-										@click.prevent.stop="removeCredit('redemption_code', credit.id)">
+										@click.prevent.stop="removeCredit('redemption_code', credit.id)"
+									>
 										<kv-icon class="remove-x" name="small-x" />
 									</span>
 								</li>

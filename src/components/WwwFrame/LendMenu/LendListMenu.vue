@@ -9,7 +9,8 @@
 				<li v-for="(category, index) in categories" :key="index">
 					<a
 						:href="category.url"
-						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]">
+						v-kv-track-event="['TopNav', 'click-Lend-Category', category.name, index + 1]"
+					>
 						{{ category.name }}
 					</a>
 				</li>
@@ -35,7 +36,9 @@
 				</expandable-list-item>
 			</ul>
 		</expandable-list-item>
-		<router-link to="/lend">All loans</router-link>
+		<router-link to="/lend">
+			All loans
+		</router-link>
 		<expandable-list-item id="lend-menu-my-kiva-panel" ref="myKiva" v-if="userId">
 			<template slot="title">
 				<span>My Kiva</span>
@@ -46,7 +49,8 @@
 					<router-link
 						v-if="favorites > 0"
 						:to="{ path: '/lend', query: { lenderFavorite: userId } }"
-						v-kv-track-event="['TopNav','click-Lend-Favorites']">
+						v-kv-track-event="['TopNav','click-Lend-Favorites']"
+					>
 						Starred loans
 					</router-link>
 					<span v-else>Starred loans</span>
@@ -64,7 +68,8 @@
 				<li>
 					<router-link
 						to="/lend/countries-not-lent"
-						v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']">
+						v-kv-track-event="['TopNav','click-Lend-Countries_Not_Lent']"
+					>
 						Countries I haven't lent to
 					</router-link>
 				</li>

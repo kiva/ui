@@ -5,7 +5,7 @@
 			class="banner-link"
 			v-kv-track-event="['TopNav','click-Promo','IWD 2019 Banner']"
 		>
-			<kv-icon name="iwd-flower" class="iwd-flower-icon"/>
+			<kv-icon name="iwd-flower" class="iwd-flower-icon" />
 			<div class="content">
 				<span class="call-to-action-text">Help us fund 10,000 loans to women</span>
 				this International Women’s Day

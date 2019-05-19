@@ -24,19 +24,29 @@
 		<p>{{ lorem }}</p>
 
 		<label class="elem-desc">Small text (.small-text)</label>
-		<p class="small-text">{{ lorem }}</p>
+		<p class="small-text">
+			{{ lorem }}
+		</p>
 
 		<label class="elem-desc">Featured text (.featured-text)</label>
-		<p class="featured-text">{{ lorem }}</p>
+		<p class="featured-text">
+			{{ lorem }}
+		</p>
 
 		<label class="elem-desc">Overlay text (.overlay-text)</label>
-		<p class="overlay-text">{{ lorem }}</p>
+		<p class="overlay-text">
+			{{ lorem }}
+		</p>
 
 		<label class="elem-desc">Impact text (.impact-text)</label>
-		<p class="impact-text">{{ shortLorem }}</p>
+		<p class="impact-text">
+			{{ shortLorem }}
+		</p>
 
 		<label class="elem-desc">Huge level 1 header (h1.huge)</label>
-		<h1 class="huge">{{ shortLorem }}</h1>
+		<h1 class="huge">
+			{{ shortLorem }}
+		</h1>
 	</section>
 </template>
 

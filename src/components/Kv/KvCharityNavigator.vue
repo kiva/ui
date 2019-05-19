@@ -1,11 +1,15 @@
 <template>
 	<div id="container">
-		<div id="title" :class="`${wideIcon ? 'wide-icon' : ''}`">{{ title }}</div>
+		<div id="title" :class="`${wideIcon ? 'wide-icon' : ''}`">
+			{{ title }}
+		</div>
 		<div id="image" :class="`${wideIcon ? 'wide-icon' : ''}`">
 			<img v-if="!wideIcon" src="~@/assets/images/charity-navigator.png">
 			<img v-else src="~@/assets/images/charity-navigator-wide.png">
 		</div>
-		<div id="subtitle" v-if="subtitle">{{ subtitle }}</div>
+		<div id="subtitle" v-if="subtitle">
+			{{ subtitle }}
+		</div>
 	</div>
 </template>
 

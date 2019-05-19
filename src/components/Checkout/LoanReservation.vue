@@ -5,14 +5,16 @@
 			that QA/David configured -->
 			<div
 				class="loan-message"
-				v-if="loanReservationMsg1">
+				v-if="loanReservationMsg1"
+			>
 				Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
 			</div>
 			<!-- TODO: Replace this lightbox with a Popper tip message. -->
 			<kv-lightbox
 				class="loanNotReservedLightbox"
 				:visible="defaultLbVisible"
-				@lightbox-closed="lightboxClosed">
+				@lightbox-closed="lightboxClosed"
+			>
 				<h2 slot="title">What does it mean that my loan is not reserved?</h2>
 				<div>
 					Loans will not be reserved if they've been in your basket for more than 45 minutes or have less
@@ -23,12 +25,14 @@
 
 			<div
 				class="loan-message"
-				v-if="loanReservationMsg2">{{ differenceInWords }}
+				v-if="loanReservationMsg2"
+			>{{ differenceInWords }}
 			</div>
 
 			<div
 				v-if="loanReservationMsg3 || loanReservationMsg4"
-				class="loan-message red">{{ differenceInWords }}
+				class="loan-message red"
+			>{{ differenceInWords }}
 			</div>
 		</span>
 	</div>
@@ -104,9 +108,9 @@ export default {
 					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
-					differenceInWords = this.activateTimer === true ?
-						`Reservation expires in ${seconds} seconds` :
-						'Reserved for 1 more minute';
+					differenceInWords = this.activateTimer === true
+						? `Reservation expires in ${seconds} seconds`
+						: 'Reserved for 1 more minute';
 
 					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg4 = true;

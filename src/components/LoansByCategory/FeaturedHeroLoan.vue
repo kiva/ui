@@ -23,7 +23,8 @@
 							<div class="name">
 								<router-link
 									:to="`/lend/${loan.id}`"
-									v-kv-track-event="['Lending', 'click-Read more', 'Name', loan.id, 'true']">
+									v-kv-track-event="['Lending', 'click-Read more', 'Name', loan.id, 'true']"
+								>
 									<span
 										@click="$emit('track-interaction', {
 											interactionType: 'viewBorrowerPage',
@@ -49,7 +50,9 @@
 												interactionType: 'viewBorrowerPage',
 												interactionElement: 'readMore'
 											})"
-										>Read more</div>
+										>
+											Read more
+										</div>
 									</router-link>
 								</div>
 							</div>
@@ -66,7 +69,9 @@
 									/>
 								</div>
 								<div v-else>
-									<div class="bold">This loan is special because:</div>
+									<div class="bold">
+										This loan is special because:
+									</div>
 									{{ loan.whySpecial }}
 								</div>
 							</div>
@@ -105,7 +110,6 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
@@ -113,7 +117,6 @@ import MatchingText from '@/components/LoanCards/MatchingText';
 export default {
 	components: {
 		ActionButton,
-		BorrowerInfo,
 		FundraisingStatus,
 		LoanCardImage,
 		MatchingText,
@@ -211,10 +214,10 @@ export default {
 
 			if (this.loan.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			} else if (this.loan.use.length > this.loanUseMaxLength) {
+			}
+			if (this.loan.use.length > this.loanUseMaxLength) {
 				return `${convertedUse.substring(0, this.loanUseMaxLength)}...`;
 			}
-
 			return convertedUse;
 		},
 		toggleFavorite() {

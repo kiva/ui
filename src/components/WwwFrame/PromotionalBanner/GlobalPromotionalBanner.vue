@@ -34,9 +34,11 @@ export default {
 			}
 			if (this.holidayModeEnabled && this.$route.path !== '/gifts') {
 				return GiftBanner;
-			} else if (this.promoEnabled) {
+			}
+			if (this.promoEnabled) {
 				return IWDPromoBanner;
 			}
+			return '';
 		},
 		textlength() {
 			return this.someVar.length;

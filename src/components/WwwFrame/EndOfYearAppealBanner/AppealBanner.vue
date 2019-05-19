@@ -2,7 +2,8 @@
 	<div class="sitewide-appeal-wrapper" v-if="showAppeal">
 		<div class="sitewide-appeal">
 			<div class="row"
-				@click="toggleAccordion">
+				@click="toggleAccordion"
+			>
 				<div class="appeal-header small-12 columns sitewide-header">
 					<h2>
 						<!-- IF ALTERNATE APPEAL BANNER -->
@@ -15,20 +16,24 @@
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
 							class="toggle-arrow"
-							name="medium-chevron" />
+							name="medium-chevron"
+						/>
 					</h2>
 				</div>
 			</div>
 
 			<kv-expandable easing="ease-in-out">
 				<div class="row appeal-content"
-					v-show="open">
+					v-show="open"
+				>
 					<div class="small-12 medium-1 columms">
 						<div
 							class="hide-for-small show-for-medium thermometer-holder"
-							:title="`${ percentTowardGoal }% raised`">
+							:title="`${ percentTowardGoal }% raised`"
+						>
 							<appeal-thermometer
-								:percent-toward-goal="percentTowardGoal" />
+								:percent-toward-goal="percentTowardGoal"
+							/>
 						</div>
 					</div>
 					<div class="small-12 medium-10 columns sitewide-body">
@@ -40,8 +45,8 @@
 								Each loan on Kiva costs us more than $3 to facilitate
 								(and we facilitate a lot of loans!), so when you donate to Kiva
 								you help us cover the costs to grow our impact. <strong> TODAY when you donate
-								$35 or more to Kiva, we'll send you a bonus tomorrow to
-								make a free loan. </strong> Your donation of any amount makes a difference!
+									$35 or more to Kiva, we'll send you a bonus tomorrow to
+									make a free loan. </strong> Your donation of any amount makes a difference!
 							</p>
 							<!-- IF REGULAR APPEAL BANNER -->
 							<p v-else>
@@ -53,26 +58,34 @@
 						</div>
 						<div class="show-for-small hide-for-medium thermometer-holder">
 							<appeal-thermometer
-								:percent-toward-goal="percentTowardGoal" />
+								:percent-toward-goal="percentTowardGoal"
+							/>
 						</div>
 						<div class="button-wrapper">
 							<kv-button
-								class='smallest custom-width'
+								class="smallest custom-width"
 								@click.native.prevent.stop="updateDonationTo(20)"
-							>$20</kv-button>
+							>
+								$20
+							</kv-button>
 							<kv-button
 								class="smallest custom-width"
 								@click.native.prevent.stop="updateDonationTo(35)"
-							>$35</kv-button>
+							>
+								$35
+							</kv-button>
 							<kv-button
 								class="smallest custom-width"
 								@click.native.prevent.stop="updateDonationTo(50)"
-							>$50</kv-button>
+							>
+								$50
+							</kv-button>
 							<a
 								class="other-amount-link"
 								href="/donate/supportus"
 								@blur="validateInput"
-								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']">Other amount
+								v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
+							>Other amount
 							</a>
 						</div>
 					</div>

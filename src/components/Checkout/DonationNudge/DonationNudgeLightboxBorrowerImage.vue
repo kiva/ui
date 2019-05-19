@@ -33,7 +33,7 @@
 				/>
 				<donation-nudge-boxes
 					id="nudge-donation-top-boxes-wrapper"
-					:percentage-rows= "percentageRows"
+					:percentage-rows="percentageRows"
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
@@ -60,7 +59,6 @@ const mobileImage = require('@/assets/images/checkout/donation-nudge/nudge-borro
 
 export default {
 	components: {
-		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
 		DonationNudgeBoxes,

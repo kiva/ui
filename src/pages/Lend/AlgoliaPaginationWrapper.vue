@@ -1,14 +1,14 @@
 <template>
 	<ais-pagination :padding="padding">
 		<div slot-scope="{
-				currentRefinement,
-				nbPages,
-				pages,
-				isFirstPage,
-				isLastPage,
-				refine,
-				createURL
-			}"
+			currentRefinement,
+			nbPages,
+			pages,
+			isFirstPage,
+			isLastPage,
+			refine,
+			createURL
+		}"
 		>
 			<algolia-pagination
 				:current-refinement="currentRefinement"
@@ -40,4 +40,3 @@ export default {
 	},
 };
 </script>
-

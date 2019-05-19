@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<div class="row page-content">
-			<join-team-form/>
+			<join-team-form />
 		</div>
 	</www-page>
 </template>

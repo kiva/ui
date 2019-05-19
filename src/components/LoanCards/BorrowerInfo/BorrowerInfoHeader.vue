@@ -15,7 +15,9 @@
 				{{ name }}
 			</span>
 		</router-link>
-		<div class="country" v-if="country">{{ country }}</div>
+		<div class="country" v-if="country">
+			{{ country }}
+		</div>
 	</div>
 </template>
 

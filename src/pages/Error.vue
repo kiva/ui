@@ -3,7 +3,9 @@
 		<div class="page-content row">
 			<div class="columns">
 				<h1>Oh no, something went wrong!</h1>
-				<h2 v-if="errorDescription">{{ errorDescription }}</h2>
+				<h2 v-if="errorDescription">
+					{{ errorDescription }}
+				</h2>
 				<div class="message">
 					<div v-if="loginRedirectUrl">
 						Please <a :href="`${loginRedirectUrl}`">try again.</a>

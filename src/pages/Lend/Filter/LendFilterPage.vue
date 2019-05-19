@@ -91,7 +91,8 @@ import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _forEach from 'lodash/forEach';
 import cookieStore from '@/util/cookieStore';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+// TODO: Use this
+// import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
@@ -123,7 +124,8 @@ export default {
 	components: {
 		KvMessage,
 		SelectedRefinements,
-		LoadingOverlay,
+		// TODO: Use this
+		// LoadingOverlay,
 		WwwPage,
 		LendHeader,
 		LendFilterMenu,

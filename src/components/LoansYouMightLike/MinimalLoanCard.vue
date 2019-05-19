@@ -18,7 +18,9 @@
 					:name="loan.name"
 					:title="loan.name"
 					class="small-text name"
-				>{{ loan.name }}</p>
+				>
+					{{ loan.name }}
+				</p>
 				<!-- loan meter	 -->
 				<minimal-fundraising-meter
 					class="minimal-fundraising-meter-margins"
@@ -30,7 +32,8 @@
 				<p
 					class="small-text loan-data"
 					:country="loan.geocode.country.name"
-					:sector="loan.activity.name">
+					:sector="loan.activity.name"
+				>
 					{{ loan.geocode.country.name }} <br> {{ loan.activity.name }}
 				</p>
 			</div>
@@ -47,7 +50,9 @@
 			</a>
 			<p
 				class="card-action"
-				v-else>In your basket
+				v-else
+			>
+				In your basket
 			</p>
 		</div>
 	</div>
@@ -64,7 +69,6 @@ export default {
 	components: {
 		LoanCardImage,
 		MinimalFundraisingMeter,
-		updateLoanReservation,
 	},
 	inject: ['apollo'],
 	props: {

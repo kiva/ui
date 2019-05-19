@@ -23,7 +23,6 @@
 				<p>
 					Let the world experience microlending through
 					<a href="http://pages.kiva.org/apps">the applications you've built</a>!
-
 				</p>
 				<h2>Discussion</h2>
 				<p>

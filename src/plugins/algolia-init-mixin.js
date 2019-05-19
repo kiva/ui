@@ -64,36 +64,36 @@ function stateToRoute(uiState) {
 	return {
 		query: uiState.query,
 		gender:
-			uiState.menu &&
-			uiState.menu.gender,
+			uiState.menu
+			&& uiState.menu.gender,
 		sector:
-			uiState.refinementList &&
-			uiState.refinementList['sector.name'] &&
-			uiState.refinementList['sector.name'].join('~'),
+			uiState.refinementList
+			&& uiState.refinementList['sector.name']
+			&& uiState.refinementList['sector.name'].join('~'),
 		attributes:
-			uiState.refinementList &&
-			uiState.refinementList['loanThemeFilters.name'] &&
-			uiState.refinementList['loanThemeFilters.name'].join('~'),
+			uiState.refinementList
+			&& uiState.refinementList['loanThemeFilters.name']
+			&& uiState.refinementList['loanThemeFilters.name'].join('~'),
 		tags:
-			uiState.refinementList &&
-			uiState.refinementList['tags.name'] &&
-			uiState.refinementList['tags.name'].join('~'),
+			uiState.refinementList
+			&& uiState.refinementList['tags.name']
+			&& uiState.refinementList['tags.name'].join('~'),
 		location:
-			uiState.hierarchicalMenu &&
-			uiState.hierarchicalMenu['locationFacets.lvl0'] &&
-			uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
+			uiState.hierarchicalMenu
+			&& uiState.hierarchicalMenu['locationFacets.lvl0']
+			&& uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
 		repayment:
-			uiState.range &&
-			uiState.range.lenderRepaymentTerm,
+			uiState.range
+			&& uiState.range.lenderRepaymentTerm,
 		delinquency:
-			uiState.range &&
-			uiState.range['partner.delinquencyRate'],
+			uiState.range
+			&& uiState.range['partner.delinquencyRate'],
 		default:
-			uiState.range &&
-			uiState.range['partner.defaultRate'],
+			uiState.range
+			&& uiState.range['partner.defaultRate'],
 		risk:
-			uiState.range &&
-			uiState.range['partner.riskRating'],
+			uiState.range
+			&& uiState.range['partner.riskRating'],
 		sortBy: createSimpleSortByFromState(uiState.sortBy),
 		page: uiState.page
 	};

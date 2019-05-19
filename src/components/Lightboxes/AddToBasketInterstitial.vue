@@ -5,8 +5,11 @@
 			:no-padding-top="true"
 			:no-padding-sides="true"
 			:no-padding-bottom="true"
-			@lightbox-closed="closeLightbox">
-			<h1 class="lightbox-title" slot="title">You're almost there!</h1>
+			@lightbox-closed="closeLightbox"
+		>
+			<h1 class="lightbox-title" slot="title">
+				You're almost there!
+			</h1>
 			<div class="lightbox-loan-wrapper">
 				<div class="loan-preview columns small-12 large-8 large-offset-4" v-if="loan.loan">
 					<div class="row">
@@ -40,7 +43,8 @@
 									'Lending',
 									'Add-to-basket Interstitial',
 									'keep-exploring-button-click']"
-								@click.native.prevent="closeLightbox">
+								@click.native.prevent="closeLightbox"
+							>
 								Keep exploring
 							</kv-button>
 						</div>
@@ -52,7 +56,8 @@
 									'Lending',
 									'Add-to-basket Interstitial',
 									'checkout-button-click']"
-								@click.native="closeLightbox">
+								@click.native="closeLightbox"
+							>
 								Checkout
 							</kv-button>
 						</div>
@@ -316,4 +321,3 @@ export default {
 	}
 }
 </style>
-

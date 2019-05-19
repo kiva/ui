@@ -15,16 +15,19 @@
 				<donation-nudge-boxes
 					ref="nudgeBoxes"
 					id="nudge-donation-top-boxes-wrapper"
-					:percentage-rows= "percentageRows"
+					:percentage-rows="percentageRows"
 					:has-custom-donation="hasCustomDonation"
 					:loan-reservation-total="loanReservationTotal"
 					:set-donation-and-close="setDonationAndClose"
 					:current-donation-amount="currentDonationAmount"
 				/>
-				<div><a
-					id="no-donation-link"
-					@click="setDonationAndClose(0)"
-					tabindex="12">No donation to Kiva</a></div>
+				<div>
+					<a
+						id="no-donation-link"
+						@click="setDonationAndClose(0)"
+						tabindex="12"
+					>No donation to Kiva</a>
+				</div>
 			</div>
 			<div id="nudge-donation-bottom" class="show-for-large">
 				<div class="row">
@@ -42,7 +45,6 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
@@ -50,7 +52,6 @@ import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 
 export default {
 	components: {
-		KvButton,
 		KvLightbox,
 		KvCharityNavigator,
 		DonationNudgeBoxes,

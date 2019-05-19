@@ -1,11 +1,12 @@
 <template>
-	<filter-menu-section title="Sort order" >
+	<filter-menu-section title="Sort order">
 		<ais-sort-by :items="defaultSortIndices">
 			<ul slot-scope="{ items, currentRefinement, refine }">
 				<li v-for="item in items" :key="item.value" :value="item.value" class="sort">
 					<a href="#"
 						:class="{ 'selected': item.value === currentRefinement }"
-						@click.prevent="refine(item.value)">
+						@click.prevent="refine(item.value)"
+					>
 						{{ item.label | changeCase('sentenceCase') }}
 					</a>
 				</li>
@@ -15,12 +16,11 @@
 </template>
 
 <script>
-import { AisConfigure, AisSortBy } from 'vue-instantsearch';
+import { AisSortBy } from 'vue-instantsearch';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 
 export default {
 	components: {
-		AisConfigure,
 		AisSortBy,
 		FilterMenuSection,
 	},

@@ -21,9 +21,11 @@ export default {
 		currentActivePromo() {
 			if (this.lendingRewardOffered) {
 				return LendingRewardsBanner;
-			} else if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
+			}
+			if (this.bonusBalance > 0) { // TODO: skip if on a checkout/basket page
 				return BonusBanner;
 			}
+			return null;
 		}
 	},
 	apollo: {

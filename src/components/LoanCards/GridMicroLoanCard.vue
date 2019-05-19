@@ -1,7 +1,8 @@
 <template>
 	<div class="column column-block">
-
-		<h3 v-if="title">{{ title }}</h3>
+		<h3 v-if="title">
+			{{ title }}
+		</h3>
 
 		<div class="grid-micro-loan-card">
 			<div class="row small-collapse">
@@ -57,7 +58,6 @@
 						})"
 					/>
 				</div>
-
 			</div>
 		</div>
 	</div>
@@ -72,7 +72,6 @@ import {
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
-import MatchingText from '@/components/LoanCards/MatchingText';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 
 export default {
@@ -80,7 +79,6 @@ export default {
 		LoanCardImage,
 		BorrowerInfo,
 		FundraisingStatus,
-		MatchingText,
 		ActionButton,
 	},
 	inject: ['apollo'],

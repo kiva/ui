@@ -2,7 +2,9 @@
 	<div class="featured-section-wrapper">
 		<div class="row">
 			<div class="column small-12">
-				<h2 class="section-name">Featured: Research-backed impact</h2>
+				<h2 class="section-name">
+					Featured: Research-backed impact
+				</h2>
 				<p v-if="showCategoryDescription" class="section-description show-for-large">
 					{{ loanChannel.description }}
 				</p>

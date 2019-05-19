@@ -10,10 +10,13 @@
 				class="donate-repayments-checkbox"
 				type="checkbox"
 				v-model="donateRepayments"
-				@change="toggleDonateRepayments">
+				@change="toggleDonateRepayments"
+			>
 		</label>
 		<kv-tooltip controller="donate-repayments-tooltip">
-			<template slot="title">Thanks for your support!</template>
+			<template slot="title">
+				Thanks for your support!
+			</template>
 			When you check this box, repayments go back to Kiva in the form of donations,
 			helping us cover operating costs and reach even more borrowers worldwide.
 			<br>

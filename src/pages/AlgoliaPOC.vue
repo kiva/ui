@@ -9,7 +9,8 @@
 						v-if="searchClient"
 						:search-client="searchClient"
 						:index-name="algoliaDefaultIndex"
-						:routing="routing">
+						:routing="routing"
+					>
 						<!-- eslint-disable vue/attribute-hyphenation -->
 						<!-- We could run a default query... :query="defaultSearch" -->
 						<!-- Apply multiple facets or global facets with :filters="filters" -->
@@ -55,40 +56,46 @@
 									</div>
 								</div> -->
 								<h3>Sort By:</h3>
-								<ais-sort-by :items="defaultSortIndices"/>
+								<ais-sort-by :items="defaultSortIndices" />
 
 								<h3>Gender:</h3>
 								<ais-refinement-list
 									:attribute="'gender'"
-									:limit="100" />
+									:limit="100"
+								/>
 
 								<h3>Location:</h3>
 								<ais-hierarchical-menu
 									:attributes="['locationFacets.lvl0', 'locationFacets.lvl1']"
-									:limit="100" />
+									:limit="100"
+								/>
 
 								<h3>Sectors:</h3>
 								<ais-refinement-list
 									:attribute="'sector.name'" :limit="1000"
-									ref="sectorRefinements" />
+									ref="sectorRefinements"
+								/>
 
 								<h3>Attributes:</h3>
 								<ais-refinement-list
 									:attribute="'loanThemeFilters.name'" :limit="1000"
-									ref="themeRefinements" />
+									ref="themeRefinements"
+								/>
 
 								<h3>Tags:</h3>
 								<ais-refinement-list
 									:attribute="'tags.name'" :limit="1000"
-									ref="tagRefinements" />
+									ref="tagRefinements"
+								/>
 
 								<filter-section-loan-details class="filter-section" />
-
 							</div>
 
 							<div class="columns small-12 small-push xlarge-9">
 								<ais-stats>
-									<h3 slot-scope="{ nbHits }">{{ nbHits }} loans found</h3>
+									<h3 slot-scope="{ nbHits }">
+										{{ nbHits }} loans found
+									</h3>
 								</ais-stats>
 
 								<!-- we can easily turn off or switch out the icons shown for all controls -->
@@ -100,7 +107,8 @@
 									<template slot-scope="{ page, hitsPerPage, queryID, index }">
 										<ais-hits
 											class="loan-card-group"
-											:results-per-page="15">
+											:results-per-page="15"
+										>
 											<template slot="default" slot-scope="{ items }">
 												<algolia-adapter
 													v-for="(item, itemIndex) in items" :key="item.id"
@@ -121,13 +129,14 @@
 						</div>
 
 						<div class="row search-pagination-stats align-center">
-							<ais-pagination :padding="2" class="columns small-12 xlarge-offset-3"/>
+							<ais-pagination :padding="2" class="columns small-12 xlarge-offset-3" />
 							<ais-stats class="columns small-12 xlarge-offset-3 text-center" />
 							<ais-hits-per-page class="columns small-12 xlarge-offset-3" :items="[
 								{ label: '15', value: 15, default: true },
 								{ label: '25', value: 25 },
 								{ label: '50', value: 50 },
-							]"/>
+							]"
+							/>
 						</div>
 					</ais-instant-search>
 				</div>
@@ -164,8 +173,8 @@ import {
 	AisCurrentRefinements,
 	AisRefinementList,
 	AisHierarchicalMenu,
-	AisToggleRefinement,
-	AisBreadcrumb,
+	// AisToggleRefinement,
+	// AisBreadcrumb,
 	AisStats,
 	AisSortBy,
 	AisStateResults,
@@ -173,7 +182,7 @@ import {
 
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
-import KvCheckbox from '@/components/Kv/KvCheckbox';
+// import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 // import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
 import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
@@ -193,10 +202,10 @@ export default {
 		AisCurrentRefinements,
 		AisRefinementList,
 		AisHierarchicalMenu,
-		AisToggleRefinement,
-		AisBreadcrumb,
+		// AisToggleRefinement,
+		// AisBreadcrumb,
 		AisStats,
-		KvCheckbox,
+		// KvCheckbox,
 		AlgoliaAdapter,
 		AisSortBy,
 		FilterSectionLoanDetails,

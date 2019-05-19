@@ -4,7 +4,8 @@
 		:popper-modifiers="popperModifiers"
 		popper-placement="top"
 		transition-type="kvfastfade"
-		class="tooltip-pane">
+		class="tooltip-pane"
+	>
 		<div class="tooltip-content">
 			<div class="title-slot">
 				<slot name="title"></slot>
@@ -13,7 +14,9 @@
 				<slot></slot>
 			</div>
 		</div>
-		<div class="tooltip-arrow" x-arrow=""><div class="tooltip-inner-arrow"></div></div>
+		<div class="tooltip-arrow" x-arrow="">
+			<div class="tooltip-inner-arrow"></div>
+		</div>
 	</kv-popper>
 </template>
 

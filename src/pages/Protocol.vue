@@ -12,14 +12,20 @@
 		</div>
 		<div class="row" id="intro">
 			<div class="small-12 columns">
-				<div id="intro-title">{{ introTitle }}</div>
-				<p v-for="(paragraph, index) in introText" :key="index">{{ paragraph }}</p>
+				<div id="intro-title">
+					{{ introTitle }}
+				</div>
+				<p v-for="(paragraph, index) in introText" :key="index">
+					{{ paragraph }}
+				</p>
 				<p><a href="https://pages.kiva.org/kiva-protocol-faq">{{ introLinkTitle }}</a></p>
 			</div>
 		</div>
 		<div v-if="showPartners" class="row" id="partners">
 			<div class="small-12 columns">
-				<div id="partners-title">In partnership with</div>
+				<div id="partners-title">
+					In partnership with
+				</div>
 				<div id="partners-row" class="row">
 					<div class="partners-block small-4 columns">
 						<div>
@@ -29,7 +35,9 @@
 								alt="Sierra Leone"
 							>
 						</div>
-						<div class="partner-name">Government of Sierra Leone</div>
+						<div class="partner-name">
+							Government of Sierra Leone
+						</div>
 					</div>
 					<div class="partners-block small-4 columns">
 						<div>
@@ -39,7 +47,9 @@
 								alt="UNDP"
 							>
 						</div>
-						<div class="partner-name">United Nations Development Programme</div>
+						<div class="partner-name">
+							United Nations Development Programme
+						</div>
 					</div>
 					<div class="partners-block small-4 columns">
 						<div>
@@ -49,7 +59,9 @@
 								alt="UNCDF"
 							>
 						</div>
-						<div class="partner-name">United Nations Capital Development Fund</div>
+						<div class="partner-name">
+							United Nations Capital Development Fund
+						</div>
 					</div>
 				</div>
 			</div>
@@ -62,7 +74,7 @@
 			<div class="row" id="press">
 				<div class="press-block">
 					<div>
-						<img class="press-image" src="~@/assets/images/protocol/time.png" >
+						<img class="press-image" src="~@/assets/images/protocol/time.png">
 					</div>
 					<div
 						class="press-text"
@@ -72,7 +84,7 @@
 				</div>
 				<div class="press-block">
 					<div>
-						<img class="press-image" src="~@/assets/images/protocol/fast-company.png" >
+						<img class="press-image" src="~@/assets/images/protocol/fast-company.png">
 					</div>
 					<div
 						class="press-text"
@@ -82,7 +94,7 @@
 				</div>
 				<div class="press-block">
 					<div>
-						<img class="press-image" src="~@/assets/images/protocol/wired.png" >
+						<img class="press-image" src="~@/assets/images/protocol/wired.png">
 					</div>
 					<div
 						class="press-text"
@@ -95,8 +107,12 @@
 		<div id="support-container">
 			<div class="row">
 				<div id="support-donate-container" class="small-12 large-6 columns">
-					<h1 id="support-title">Support Kiva innovation</h1>
-					<div id="support-text">{{ supportText }}</div>
+					<h1 id="support-title">
+						Support Kiva innovation
+					</h1>
+					<div id="support-text">
+						{{ supportText }}
+					</div>
 					<kv-custom-donation :default-value="100" />
 				</div>
 				<div class="show-for-large medium-8 medium-offset-2 large-5 large-offset-1 columns">
@@ -108,7 +124,9 @@
 			<div class="row" id="about">
 				<div class="small-12 large-7 columns">
 					<h1>About Kiva</h1>
-					<p id="about-text">{{ aboutText }}</p>
+					<p id="about-text">
+						{{ aboutText }}
+					</p>
 				</div>
 				<div
 					id="charity-navigator-container"
