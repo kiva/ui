@@ -53,6 +53,7 @@
 								<payment-wrapper
 									v-if="showBraintree"
 									:amount="creditNeeded"
+									:show-braintree="showBraintree"
 									:last-payment-type="lastPaymentType"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"

@@ -10,7 +10,7 @@
 			</div>
 			<div>
 				<pay-pal-exp
-					v-show="selectedOption === 'pp'"
+					v-if="selectedOption === 'pp'"
 					:amount="amount"
 					:show-braintree="showBraintree"
 					@refreshtotals="$emit('refreshTotals', $event)"
@@ -19,7 +19,7 @@
 			</div>
 			<div>
 				<braintree-checkout
-					v-show="selectedOption === 'bt'"
+					v-if="selectedOption === 'bt'"
 					:amount="amount"
 					@refreshtotals="$emit('refreshTotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"

@@ -401,17 +401,19 @@ export default {
 		initializeBTVault() {
 			let vaultInstance = null;
 			braintree.vaultManager.create({
-				// client: clientInstance,
 				authorization: this.clientToken
 			}, (vaultError, btVaultInstance) => {
 				vaultInstance = btVaultInstance;
-
-				console.error(vaultError);
+				if (vaultError) {
+					console.error(vaultError);
+				}
 
 				vaultInstance.fetchPaymentMethods(
 					{ defaultFirst: true },
 					(fetchPaymentMethodError, paymentMethods) => {
-						console.error(fetchPaymentMethodError);
+						if (fetchPaymentMethodError) {
+							console.error(fetchPaymentMethodError);
+						}
 						this.storedPaymentMethods = paymentMethods || [];
 						// if the user has storedPayment methods then set the selectedCard
 						// to the first one in the list of storedCards
