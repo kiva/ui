@@ -70,7 +70,7 @@
 
 							<div v-else class="small-12">
 								<kv-button
-									v-if="!isActivelyLoggedIn"
+									v-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="checkout-button smallest"
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
@@ -279,11 +279,6 @@ export default {
 		// start the page with loading state
 		this.setUpdatingTotals(true);
 
-		// if we have a user id but are not actively logged in
-		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-			this.showLoginContinueButton = true;
-		}
-
 		this.holidayModeEnabled = settingEnabled(
 			this.apollo.readQuery({
 				query: promoQuery,
@@ -317,6 +312,7 @@ export default {
 				this.setAuthStatus(_get(this.kvAuth0, 'user'));
 			});
 		} else {
+			// setAuthStatus will show the login button if needed
 			this.setAuthStatus(_get(this.kvAuth0, 'user'));
 		}
 
@@ -435,6 +431,10 @@ export default {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
 				this.myId = userState['https://www.kiva.org/kiva_id'];
 				this.showLoginContinueButton = false;
+			}
+			// if we have a user id but are not actively logged in
+			if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+				this.showLoginContinueButton = true;
 			}
 		},
 		/* Validate the Entire Basket on mounted */
