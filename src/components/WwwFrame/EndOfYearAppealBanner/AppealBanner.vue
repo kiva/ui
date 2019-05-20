@@ -8,7 +8,7 @@
 						<!-- IF ALTERNATE APPEAL BANNER -->
 						<!-- current version implemented has bonus language,
 						but we're using the appealMatchedEnabled flag -->
-						<span v-if="appealMatchEnabled">Donate to Kiva today and earn a free loan!</span>
+						<span v-if="appealMatchEnabled">Donate to Kiva today and earn up to 2 free loans!</span>
 						<!-- ELSE STANDARD APPEAL BANNER -->
 						<span v-else>Your donations keep Kiva growing</span>
 						<kv-icon
@@ -37,11 +37,18 @@
 							<!-- current version implemented has bonus language,
 							but we're using the appealMatchedEnabled flag -->
 							<p v-if="appealMatchEnabled">
+<<<<<<< HEAD
 								Each loan on Kiva costs us more than $3 to facilitate
 								(and we facilitate a lot of loans!), so when you donate to Kiva
 								you help us cover the costs to grow our impact. <strong> TODAY when you donate
 								$35 or more to Kiva, we'll send you a bonus tomorrow to
 								make a free loan. </strong> Your donation of any amount makes a difference!
+=======
+								We're extending our spring donation drive by 1 day only!
+								<strong> TODAY when you donate $25 to Kiva, we'll send you a $25 bonus
+									to make a free loan. Donate $50 and you'll get $50 to lend!
+								</strong> That's up to 2 loans when you help fund our work creating opportunity.
+>>>>>>> fae78e0... cash-943 midyear appeal bonus language updated
 							</p>
 							<!-- IF REGULAR APPEAL BANNER -->
 							<p v-else>
