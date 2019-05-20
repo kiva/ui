@@ -75,8 +75,8 @@ export default {
 	.checkout-step-list::before {
 		content: '';
 		position: absolute;
-		border-top: 1px dashed $subtle-gray;
-		bottom: 0.9rem;
+		border-top: 1px dashed $kiva-stroke-gray;
+		bottom: 0.7rem;
 		left: 2rem;
 		right: 3rem;
 
@@ -95,44 +95,37 @@ export default {
 
 		.step-name {
 			margin-bottom: 0.3rem;
-			font-size: 0.9rem;
-
-			@include breakpoint(large) {
-				font-size: inherit;
-			}
+			font-size: 0.875rem;
+			font-weight: 400;
 		}
 
 		.step-icon {
 			display: block;
 			margin: 0 auto;
-			width: 2rem;
-			height: 2rem;
+			width: 1.5rem;
+			height: 1.5rem;
 
 			&.number-icon {
 				background: $kiva-bg-lightgray;
 				color: $kiva-stroke-gray;
 				border: 1px solid $kiva-stroke-gray;
-				border-radius: 1rem;
-				font-size: 1.2rem;
+				border-radius: 0.8rem;
+				font-size: 1rem;
 				text-align: center;
-				line-height: 1.825rem;
+				line-height: 1.325rem;
+				font-weight: 700;
 			}
 
 			.icon {
-				// width: 1.9rem;
-				width: rem-calc(30px);
-				// height: 1.9rem;
-				height: rem-calc(30px);
-				// border-radius: 1.9rem;
+				width: 1.4rem;
+				height: 1.4rem;
 				fill: $kiva-bg-lightgray;
 			}
 		}
 
 		.checkmark {
-			// background: white;
 			background: $kiva-stroke-gray;
-			// border-radius: 1.9rem;
-			border-radius: rem-calc(30px);
+			border-radius: 1.5rem;
 			border: 1px solid $kiva-stroke-gray;
 		}
 
