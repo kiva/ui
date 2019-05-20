@@ -1,20 +1,18 @@
 <template>
 	<www-page class="ui-error-page">
-		<div class="page-content row">
-			<div class="columns">
+		<div class="page-content row align-center">
+			<div class="columns shrink">
 				<h1>Oh no, something went wrong!</h1>
-				<h2 v-if="errorDescription">
-					{{ errorDescription }}
+				<h2 v-if="description">
+					{{ description }}
 				</h2>
-				<div class="message">
-					<div v-if="loginRedirectUrl">
-						Please <a :href="`${loginRedirectUrl}`">try again.</a>
-					</div>
-				</div>
-				<div class="contact">
+				<p class="message" v-if="loginRedirectUrl">
+					Please <a :href="`${loginRedirectUrl}`">try again.</a>
+				</p>
+				<p>
 					If you need us, we're always available at
 					<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>
-				</div>
+				</p>
 			</div>
 		</div>
 	</www-page>
@@ -34,15 +32,23 @@ export default {
 			errorCode: this.$route.query.error,
 			errorDescription: this.$route.query.error_description,
 			clientId: this.$route.query.client_id,
-			loginRedirectUrl: ''
 		};
 	},
-	created() {
-		this.loginRedirectUrl = this.auth0Config.loginRedirectUrls[this.clientId];
+	computed: {
+		description() {
+			if (this.errorDescription === 'Access expired.') {
+				return 'The link emailed to you has expired.';
+			}
+			return this.errorDescription;
+		},
+		loginRedirectUrl() {
+			return this.auth0Config.loginRedirectUrls[this.clientId];
+		},
 	},
-	mounted() {
-		console.log(`Auth0 error: ${this.errorCode}`);
-	}
+	created() {
+		// eslint-disable-next-line no-console
+		console.warn('Auth0 error:', this.$route.query);
+	},
 };
 </script>
 
@@ -53,17 +59,10 @@ export default {
 	.page-content {
 		text-align: center;
 		padding: 1.625rem 0;
-		font-size: 1.125rem;
-		font-weight: 400;
 	}
 
 	h1 {
-		margin: 1.5rem;
-	}
-
-	.contact {
-		margin-bottom: 1rem;
+		margin: 1.5rem 0;
 	}
 }
-
 </style>
