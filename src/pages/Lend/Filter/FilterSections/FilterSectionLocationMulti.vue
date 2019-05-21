@@ -17,12 +17,18 @@
 					v-for="item in items"
 					:key="item.value"
 					:is-checked="item.isRefined"
-					:label="`{${item.label} (${item.count})`"
+					:label="`${item.label} (${item.count})`"
 					:href="createURL(item)"
-					@click.prevent="refine(item.value)"
+					@checkbox-input="refine(item.value)"
 				/>
 			</div>
 		</ais-refinement-list>
+		<ais-refinement-list
+			attribute="locationFacets.lvl1"
+			:sort-by="['name:asc']"
+			:limit="1000"
+			:transform-items="transformItemsChild"
+		/>
 	</filter-menu-section>
 </template>
 
@@ -39,6 +45,9 @@ export default {
 	},
 	methods: {
 		transformItems(items) {
+			return items;
+		},
+		transformItemsChild(items) {
 			return items;
 		},
 	},
