@@ -22,6 +22,8 @@
 		/>
 
 		<div>
+			<favorite-country-loans />
+
 			<category-row
 				class="loan-category-row"
 				v-for="(category, index) in categories"
@@ -103,6 +105,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
+import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -125,6 +128,7 @@ export default {
 		LendHeader,
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
+		FavoriteCountryLoans
 	},
 	inject: ['apollo'],
 	metaInfo: {
