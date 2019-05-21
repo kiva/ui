@@ -149,6 +149,7 @@
 <script>
 /* global braintree */
 import _get from 'lodash/get';
+import cookieStore from '@/util/cookieStore';
 import numeral from 'numeral';
 import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -448,9 +449,10 @@ export default {
 			this.apollo.mutate({
 				mutation: braintreeDepositAndCheckout,
 				variables: {
+					basketId: cookieStore.get('kvbskt'),
 					amount: numeral(this.amount).format('0.00'),
 					nonce,
-					savePaymentMethod: this.storePaymentMethod
+					savePaymentMethod: this.storePaymentMethod,
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction
