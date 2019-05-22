@@ -277,7 +277,7 @@ export default {
 
 		const lendFilterEXP = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'lend_filter' },
+			variables: { id: 'lend_filter_v2' },
 		});
 		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
 
