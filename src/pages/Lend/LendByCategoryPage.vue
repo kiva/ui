@@ -22,7 +22,12 @@
 		/>
 
 		<div>
-			<favorite-country-loans />
+			<favorite-country-loans
+				:items-in-basket="itemsInBasket"
+				ref="favorite"
+				:show-category-description="showCategoryDescription"
+				:is-logged-in="isLoggedIn"
+			/>
 
 			<category-row
 				class="loan-category-row"

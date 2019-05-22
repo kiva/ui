@@ -58,7 +58,7 @@ export default {
 					values: [],
 				},
 			},
-			isLoaded: false,
+			isLoaded: true,
 			zeroRecentLoans: false
 		};
 	},
