@@ -30,9 +30,9 @@ module.exports = merge(base, {
 		},
 		auth0: {
 			loginRedirectUrls: {
-				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin.dev.kiva.org/login',
-				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners.dev.kiva.org/login',
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'http://dev.kiva.org/authenticate',
+				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'https://admin.dev.kiva.org/login',
+				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'https://partners.dev.kiva.org/login',
+				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://www.dev.kiva.org/authenticate',
 			},
 			enable: true,
 			apiAudience: 'https://api.dev.kivaws.org/graphql',
