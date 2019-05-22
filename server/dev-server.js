@@ -11,6 +11,8 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+// Import Middleware for Exposing server routes
+const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const sessionRouter = require('./session-router');
 const vueMiddleware = require('./vue-middleware');
@@ -106,6 +108,9 @@ serverCompiler.watch({}, (err, rawStats) => {
 	serverBundle = JSON.parse(readFile(mfs, 'vue-ssr-server-bundle.json'));
 	updateHandler();
 });
+
+// Apply serverRoutes middleware to expose available routes
+app.use('/ui-routes', serverRoutes);
 
 // install dev/hot middleware
 app.use(devMiddleware);
