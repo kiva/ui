@@ -185,7 +185,7 @@ export default {
 }
 </style>
 
-<style>
+<style lang="scss">
 /* Hide Basket Bar (this won't work with scoped) */
 .basket-bar {
 	display: none;
