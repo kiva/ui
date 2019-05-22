@@ -114,7 +114,7 @@ export default class KvAuth0 {
 			this[popupWindow] = webAuth.popup.authorize({
 				popupOptions: {
 					width: 480,
-					height: 740,
+					height: 940,
 				},
 				...authorizeOptions
 			}, (err, result) => {
