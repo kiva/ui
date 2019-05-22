@@ -26,7 +26,7 @@ export default {
 				// we have no legacy exp setup, use ui assignment
 				const lendFilterEXP = this.apollo.readQuery({
 					query: experimentQuery,
-					variables: { id: 'lend_filter' },
+					variables: { id: 'lend_filter_v2' },
 				});
 				this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
 			}
@@ -47,7 +47,7 @@ export default {
 				this.apollo.mutate({
 					mutation: updateExperimentVersion,
 					variables: {
-						id: 'lend_filter',
+						id: 'lend_filter_v2',
 						version: this.lendFilterExpVersion
 					}
 				}).then(() => {

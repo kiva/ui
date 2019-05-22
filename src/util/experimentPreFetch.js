@@ -10,7 +10,7 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 // Pre-fetch pre-determined list of experiment settings
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
 let activeExperiments = [
-	'lend_filter',
+	'lend_filter_v2',
 	'pinned_filter',
 	'algolia_search',
 	'expandable_loan_cards',
