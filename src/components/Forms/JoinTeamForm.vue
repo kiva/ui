@@ -184,3 +184,10 @@ export default {
 	background-color: rgba($white, 0.7);
 }
 </style>
+
+<style>
+/* Hide Basket Bar (this won't work with scoped) */
+.basket-bar {
+	display: none;
+}
+</style>
