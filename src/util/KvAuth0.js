@@ -39,10 +39,16 @@ export default class KvAuth0 {
 		}
 	}
 
-	[setAuthData]({ idTokenPayload, accessToken } = {}) {
+	[setAuthData]({ idTokenPayload, accessToken, expiresIn } = {}) {
 		this.user = idTokenPayload || null;
 		this.accessToken = accessToken || '';
-		// handle expiration?
+
+		if (expiresIn > 0) {
+			setTimeout(() => {
+				// set null auth data to remove expired token
+				this[setAuthData]();
+			}, Number(expiresIn) * 1000);
+		}
 	}
 
 	// Silently check for a logged in session with auth0 using hidden iframes
