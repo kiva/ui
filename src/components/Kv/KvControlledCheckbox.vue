@@ -1,11 +1,11 @@
 <template>
 	<div
-		class="kv-checkbox"
+		class="kv-controlled-checkbox"
 		@click="handleInput"
 		@keypress="handleKeyPressContainer"
 		:tabindex="tabindex"
 	>
-		<label class="kv-checkbox-label">
+		<label class="kv-controlled-checkbox-label">
 			<input
 				type="checkbox"
 				:checked="isChecked"
@@ -54,8 +54,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.kv-checkbox {
-	.kv-checkbox-label {
+@import 'settings';
+
+.kv-controlled-checkbox {
+	.kv-controlled-checkbox-label {
 		pointer-events: none;
 	}
 }

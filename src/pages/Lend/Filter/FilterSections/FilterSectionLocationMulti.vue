@@ -1,5 +1,11 @@
 <template>
 	<filter-menu-section title="Location">
+		<location-multi-wrapper
+			v-for="region in regionList"
+			:key="region"
+			:region="region"
+		/>
+		<!--
 		<ais-refinement-list
 			attribute="locationFacets.lvl0"
 			:sort-by="['name:asc']"
@@ -29,20 +35,38 @@
 			:limit="1000"
 			:transform-items="transformItemsChild"
 		/>
+		-->
 	</filter-menu-section>
 </template>
 
 <script>
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
-import { AisRefinementList } from 'vue-instantsearch';
-import KvControlledCheckbox from '@/components/Kv/KvControlledCheckbox';
+import LocationMultiWrapper from '@/pages/Lend/Filter/FilterSections/LocationMulti/LocationMultiWrapper';
+// import { AisRefinementList } from 'vue-instantsearch';
+// import KvControlledCheckbox from '@/components/Kv/KvControlledCheckbox';
 
 export default {
 	components: {
-		KvControlledCheckbox,
+		// KvControlledCheckbox,
 		FilterMenuSection,
-		AisRefinementList,
+		LocationMultiWrapper,
+		// AisRefinementList,
 	},
+	data() {
+		return {
+			regionList: [
+				'Africa',
+				'Asia',
+				'Central America',
+				'Eastern Europe',
+				'Middle East',
+				'North America',
+				'Oceania',
+				'South America',
+			],
+		};
+	},
+	/*
 	methods: {
 		transformItems(items) {
 			return items;
@@ -51,5 +75,6 @@ export default {
 			return items;
 		},
 	},
+	*/
 };
 </script>
