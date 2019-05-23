@@ -242,6 +242,9 @@ export default {
 			}).then(() => {
 				// initialize braintree exp assignment
 				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
+			}).then(() => {
+				// initialize braintree exp assignment
+				return client.query({ query: experimentQuery, variables: { id: 'basket_item_timer' } });
 			});
 		},
 		result({ data, errors }) {

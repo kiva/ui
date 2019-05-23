@@ -92,7 +92,7 @@ export default {
 
 				if (this.activateTimer === true) {
 					warningMessageUpperBoundMinutes = 10;
-					differenceInWords = `Reservation expires in ${mins} minutes and ${seconds} seconds`;
+					differenceInWords = `Reservation expires in ${mins}m and ${seconds}s`;
 				}
 
 				if ((reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {
@@ -109,7 +109,7 @@ export default {
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
 					differenceInWords = this.activateTimer === true
-						? `Reservation expires in ${seconds} seconds`
+						? `Reservation expires in ${seconds}s`
 						: 'Reserved for 1 more minute';
 
 					this.setDifferenceInWords(differenceInWords);
