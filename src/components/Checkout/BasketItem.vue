@@ -16,7 +16,7 @@
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
-					:activate-timer="false"
+					:activate-timer="activateTimer"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
@@ -60,6 +62,7 @@ export default {
 		LoanPrice,
 		TeamAttribution
 	},
+	inject: ['apollo'],
 	props: {
 		loan: {
 			type: Object,
@@ -73,8 +76,27 @@ export default {
 	data() {
 		return {
 			activateTimer: false,
-			loanVisible: true
+			loanVisible: true,
+			basketItemTimerExpVersion: 'control'
 		};
+	},
+	created() {
+		// Read assigned version of braintree experiment
+		const basketItemTimerExpAssignment = this.apollo.readQuery({
+			query: experimentQuery,
+			variables: { id: 'bt_test' },
+		});
+		this.basketItemTimerExpVersion = _get(basketItemTimerExpAssignment, 'experiment.version') || null;
+		if (this.basketItemTimerExpVersion !== null) {
+			if (this.basketItemTimerExpVersion === 'shown') {
+				this.activateTimer = true;
+			}
+			this.$kvTrackEvent(
+				'basket',
+				'EXP-CASH-39-Basket-Item-Timer',
+				this.basketItemTimerExpVersion === 'shown' ? 'b' : 'a'
+			);
+		}
 	},
 	methods: {
 		onLoanUpdate($event) {
