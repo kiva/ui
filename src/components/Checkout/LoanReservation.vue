@@ -92,7 +92,7 @@ export default {
 
 				if (this.activateTimer === true) {
 					warningMessageUpperBoundMinutes = 10;
-					differenceInWords = `Reservation expires in ${mins} minutes and ${seconds} seconds`;
+					differenceInWords = `Reservation expires in ${mins}m and ${seconds}s`;
 				}
 
 				if ((reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {
@@ -109,13 +109,20 @@ export default {
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
 					differenceInWords = this.activateTimer === true
-						? `Reservation expires in ${seconds} seconds`
+						? `Reservation expires in ${seconds}s`
 						: 'Reserved for 1 more minute';
 
 					this.setDifferenceInWords(differenceInWords);
 					this.loanReservationMsg4 = true;
 				}
 			}
+		},
+		activateReservationTimer() {
+			clearInterval(this.reservationMessageId);
+
+			this.reservationMessageId = setInterval(() => {
+				this.reservationMessage();
+			}, 1000);
 		}
 	},
 	created() {
@@ -123,14 +130,25 @@ export default {
 	},
 	mounted() {
 		if (this.activateTimer === true) {
-			this.reservationMessageId = setInterval(() => {
-				this.reservationMessage();
-			}, 1000);
+			this.activateReservationTimer();
 		}
 	},
 	destroyed() {
 		if (this.activateTimer === true) {
 			clearInterval(this.reservationMessageId);
+		}
+	},
+	watch: {
+		// This watch is only necessary due to a potentially changing experiment value
+		// TODO: remove this watch + similify setTimeout activation once experiment is removed
+		activateTimer(newValue) {
+			this.$nextTick(() => {
+				if (newValue) {
+					this.activateReservationTimer();
+				} else {
+					clearInterval(this.reservationMessageId);
+				}
+			});
 		}
 	}
 };
