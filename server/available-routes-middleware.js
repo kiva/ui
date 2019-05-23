@@ -14,9 +14,7 @@ function buildRouteJSON() {
 	// Pull in Route Declarations as a string so import statements aren't attempted
 	const routesAsString = fs.readFileSync(path.resolve(__dirname, vuejsRouteFile), 'utf-8');
 	// Clean out the arrow functions and imports used for code-splitting routes in vue
-	// const cleanedRoutes = routesAsString.replace('module.exports =', '')
-	// 	.replace(/[()@;=>]/g, '').replace(/import/g, '');
-	// console.log(JSON.stringify(cleanedRoutes));
+	// console.log(JSON.stringify(routesAsString));
 	// re-establish a js array from our cleaned string
 	const matchPaths = RegExp(/path:\s'([^']*)'/g);
 	let myArray = [];
@@ -27,12 +25,19 @@ function buildRouteJSON() {
 		// console.log(msg);
 		const pathOnly = msg.replace(/(path:\s)/, '');
 		// console.log(pathOnly);
-		paths.push(pathOnly.replace(/'/g, ''));
+		const cleanString = pathOnly.replace(/'/g, '');
+		// console.log(cleanString);
+		if (cleanString !== '*' && cleanString !== '' && cleanString.indexOf('/') === 0) {
+			paths.push(cleanString);
+		}
+		// allow styleguide children
+		// TODO: find some better way to handle children arrays
+		if (cleanString === '/styleguide') {
+			paths.push('/styleguide/:any');
+		}
 	}
-	// add static path and anything against it
-	paths.push('/static/*');
-	// TODO: Clean up dynamic paths
-	// TODO: Remove or Merge Child Paths (includes empty, * and paths that do not start with /)
+	// add /static path and anything against it
+	paths.push('/static/:any');
 	// console.log(paths);
 	return paths;
 }
