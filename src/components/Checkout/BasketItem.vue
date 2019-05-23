@@ -81,22 +81,18 @@ export default {
 		};
 	},
 	created() {
-		// Read assigned version of braintree experiment
-		const basketItemTimerExpAssignment = this.apollo.readQuery({
+		// watch assigned version of basket item timer experiment
+		this.apollo.watchQuery({
 			query: experimentQuery,
-			variables: { id: 'bt_test' },
-		});
-		this.basketItemTimerExpVersion = _get(basketItemTimerExpAssignment, 'experiment.version') || null;
-		if (this.basketItemTimerExpVersion !== null) {
-			if (this.basketItemTimerExpVersion === 'shown') {
+			variables: { id: 'basket_item_timer' },
+		}).subscribe(({ data }) => {
+			this.basketItemTimerExpVersion = _get(data, 'experiment.version') || null;
+			if (this.basketItemTimerExpVersion !== null && this.basketItemTimerExpVersion === 'shown') {
 				this.activateTimer = true;
+			} else {
+				this.activateTimer = false;
 			}
-			this.$kvTrackEvent(
-				'basket',
-				'EXP-CASH-39-Basket-Item-Timer',
-				this.basketItemTimerExpVersion === 'shown' ? 'b' : 'a'
-			);
-		}
+		});
 	},
 	methods: {
 		onLoanUpdate($event) {

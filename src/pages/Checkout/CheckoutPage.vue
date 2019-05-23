@@ -149,6 +149,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import updateExperimentMutation from '@/graphql/mutation/updateExperimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
@@ -214,6 +215,7 @@ export default {
 			braintree: false,
 			braintreeExpVersion: null,
 			lastPaymentType: null,
+			basketItemTimerExpVersion: 'control'
 		};
 	},
 	apollo: {
@@ -304,6 +306,9 @@ export default {
 		if (this.braintreeExpVersion !== null) {
 			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
+
+		// Set Up basket timer exp
+		this.initializeBasketItemTimer();
 	},
 	mounted() {
 		// This empty upon page load so we refetch in order to be able to use when we need it.
@@ -501,6 +506,32 @@ export default {
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
 		},
+		initializeBasketItemTimer() {
+			// Read assigned version of basket item experiment
+			const basketItemTimerExpAssignment = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'basket_item_timer' },
+			});
+			// Only track the exp for a targeted basket state
+			// preserve original assignment + track if only 1 loan in basket
+			if (this.loans.length === 1) {
+				this.$kvTrackEvent(
+					'basket',
+					'EXP-CASH-39-Basket-Item-Timer',
+					_get(basketItemTimerExpAssignment, 'experiment.version') === 'shown' ? 'b' : 'a'
+				);
+			} else {
+				// Ensure control assignment if no basketed loans or > 1 loan
+				// > prevents the new interface from showing in the BasketItem component
+				this.apollo.mutate({
+					mutation: updateExperimentMutation,
+					variables: {
+						id: 'basket_item_timer',
+						version: 'control',
+					},
+				});
+			}
+		}
 	},
 };
 </script>
