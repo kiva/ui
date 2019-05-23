@@ -251,6 +251,9 @@ export default {
 						shape: 'rect',
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
 						fundingicons: !this.showBraintree
+					},
+					funding: {
+						disallowed: [paypal.FUNDING.CREDIT]
 					}
 				},
 				'#paypal-button'
