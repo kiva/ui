@@ -514,7 +514,7 @@ export default {
 			});
 			// Only track the exp for a targeted basket state
 			// preserve original assignment + track if only 1 loan in basket
-			if (this.loans.length === 1) {
+			if (this.loans.length <= 1) {
 				this.$kvTrackEvent(
 					'basket',
 					'EXP-CASH-39-Basket-Item-Timer',
