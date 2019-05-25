@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const cookie = require('cookie');
 const { createBundleRenderer } = require('vue-server-renderer');
+const clearCachedVueModule = require('./util/clearCachedVueModule');
 const getGqlFragmentTypes = require('./util/getGqlFragmentTypes');
 const getSessionCookies = require('./util/getSessionCookies');
 const vueSsrCache = require('./util/vueSsrCache');
@@ -85,6 +86,8 @@ module.exports = function createMiddleware({
 				context.cookies = Object.assign(context.cookies, cookieInfo.cookies);
 				// forward any newly fetched 'Set-Cookie' headers
 				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+				// Clear module cache of global Vue instance to ensure clean render
+				clearCachedVueModule();
 				// render the app
 				return renderer.renderToString(context);
 			}).then(html => {
