@@ -32,8 +32,13 @@ function buildRouteJSON() {
 			paths.push('/styleguide/:any');
 		}
 	}
-	// add /static path and anything against it
+	// add /static path and anything against it to allow initial calls for static assets
 	paths.push('/static/:any');
+	// add paths for auth0 implementation
+	paths.push('/error');
+	paths.push('/ui-login');
+	paths.push('/ui-logout');
+	paths.push('/process-ssr-auth');
 
 	return paths;
 }
