@@ -16,7 +16,7 @@
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
-					:activate-timer="false"
+					:activate-timer="activateTimer"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
@@ -60,6 +62,7 @@ export default {
 		LoanPrice,
 		TeamAttribution
 	},
+	inject: ['apollo'],
 	props: {
 		loan: {
 			type: Object,
@@ -73,8 +76,23 @@ export default {
 	data() {
 		return {
 			activateTimer: false,
-			loanVisible: true
+			loanVisible: true,
+			basketItemTimerExpVersion: 'control'
 		};
+	},
+	created() {
+		// watch assigned version of basket item timer experiment
+		this.apollo.watchQuery({
+			query: experimentQuery,
+			variables: { id: 'basket_item_timer' },
+		}).subscribe(({ data }) => {
+			this.basketItemTimerExpVersion = _get(data, 'experiment.version') || null;
+			if (this.basketItemTimerExpVersion !== null && this.basketItemTimerExpVersion === 'shown') {
+				this.activateTimer = true;
+			} else {
+				this.activateTimer = false;
+			}
+		});
 	},
 	methods: {
 		onLoanUpdate($event) {

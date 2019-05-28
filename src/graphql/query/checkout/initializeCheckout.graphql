@@ -30,6 +30,10 @@ query($basketId: String) {
 			key
 			value
 		}
+		basketItemTimerExp: uiExperimentSetting(key: "basket_item_timer") {
+			key
+			value
+		}
 	}
 	shop (basketId: $basketId) {
 		basket {

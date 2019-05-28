@@ -53,6 +53,7 @@
 								<payment-wrapper
 									v-if="showBraintree"
 									:amount="creditNeeded"
+									:show-braintree="showBraintree"
 									:last-payment-type="lastPaymentType"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
@@ -69,7 +70,7 @@
 
 							<div v-else class="small-12">
 								<kv-button
-									v-if="!isActivelyLoggedIn"
+									v-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="checkout-button smallest"
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
@@ -148,6 +149,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import updateExperimentMutation from '@/graphql/mutation/updateExperimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
@@ -213,6 +215,7 @@ export default {
 			braintree: false,
 			braintreeExpVersion: null,
 			lastPaymentType: null,
+			basketItemTimerExpVersion: 'control'
 		};
 	},
 	apollo: {
@@ -241,6 +244,9 @@ export default {
 			}).then(() => {
 				// initialize braintree exp assignment
 				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
+			}).then(() => {
+				// initialize braintree exp assignment
+				return client.query({ query: experimentQuery, variables: { id: 'basket_item_timer' } });
 			});
 		},
 		result({ data, errors }) {
@@ -278,11 +284,6 @@ export default {
 		// start the page with loading state
 		this.setUpdatingTotals(true);
 
-		// if we have a user id but are not actively logged in
-		if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-			this.showLoginContinueButton = true;
-		}
-
 		this.holidayModeEnabled = settingEnabled(
 			this.apollo.readQuery({
 				query: promoQuery,
@@ -305,6 +306,9 @@ export default {
 		if (this.braintreeExpVersion !== null) {
 			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
+
+		// Set Up basket timer exp
+		this.initializeBasketItemTimer();
 	},
 	mounted() {
 		// This empty upon page load so we refetch in order to be able to use when we need it.
@@ -316,6 +320,7 @@ export default {
 				this.setAuthStatus(_get(this.kvAuth0, 'user'));
 			});
 		} else {
+			// setAuthStatus will show the login button if needed
 			this.setAuthStatus(_get(this.kvAuth0, 'user'));
 		}
 
@@ -435,6 +440,10 @@ export default {
 				this.myId = userState['https://www.kiva.org/kiva_id'];
 				this.showLoginContinueButton = false;
 			}
+			// if we have a user id but are not actively logged in
+			if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
+				this.showLoginContinueButton = true;
+			}
 		},
 		/* Validate the Entire Basket on mounted */
 		validatePreCheckout() {
@@ -497,6 +506,32 @@ export default {
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
 		},
+		initializeBasketItemTimer() {
+			// Read assigned version of basket item experiment
+			const basketItemTimerExpAssignment = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'basket_item_timer' },
+			});
+			// Only track the exp for a targeted basket state
+			// preserve original assignment + track if only 1 loan in basket
+			if (this.loans.length <= 1) {
+				this.$kvTrackEvent(
+					'basket',
+					'EXP-CASH-39-Basket-Item-Timer',
+					_get(basketItemTimerExpAssignment, 'experiment.version') === 'shown' ? 'b' : 'a'
+				);
+			} else {
+				// Ensure control assignment if no basketed loans or > 1 loan
+				// > prevents the new interface from showing in the BasketItem component
+				this.apollo.mutate({
+					mutation: updateExperimentMutation,
+					variables: {
+						id: 'basket_item_timer',
+						version: 'control',
+					},
+				});
+			}
+		}
 	},
 };
 </script>
