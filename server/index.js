@@ -2,6 +2,7 @@ require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const cluster = require('cluster');
 const express = require('express');
 const helmet = require('helmet');
+const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const sessionRouter = require('./session-router');
 const vueMiddleware = require('./vue-middleware');
@@ -37,6 +38,9 @@ app.use(express.static('dist', {
 // Setup Request Logger
 // -> placed here to exclude static
 app.use(logger.requestLogger);
+
+// Apply serverRoutes middleware to expose available routes
+app.use('/ui-routes', serverRoutes);
 
 // Configure session
 app.use('/', sessionRouter(config.server));
