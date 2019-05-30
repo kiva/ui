@@ -15,8 +15,7 @@
 				role="presentation"
 				tabindex="-1"
 			>
-			<slot v-if="hasDefaultSlot"></slot>
-			<span v-else-if="label">{{ label }}</span>
+			<slot>{{ label }}</slot>
 		</label>
 	</div>
 </template>
@@ -26,7 +25,7 @@ export default {
 	props: {
 		label: {
 			type: String,
-			default: null,
+			default: '',
 		},
 		checked: {
 			type: Boolean,
@@ -40,9 +39,6 @@ export default {
 	computed: {
 		ariaChecked() {
 			return this.checked ? 'true' : 'false';
-		},
-		hasDefaultSlot() {
-			return !!this.$slots.default;
 		},
 	},
 	methods: {
