@@ -4,6 +4,8 @@
 		@click="handleInput"
 		@keypress="handleKeyPressContainer"
 		:tabindex="tabindex"
+		role="checkbox"
+		:aria-checked="checked"
 	>
 		<label class="kv-controlled-checkbox-label">
 			<input
