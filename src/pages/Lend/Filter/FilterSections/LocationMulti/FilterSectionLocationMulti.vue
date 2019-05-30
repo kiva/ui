@@ -13,7 +13,6 @@
 				}"
 			>
 				<location-multi-refinements
-					ref="countryRefinementsCheckboxes"
 					:items="items"
 					:refine="refine"
 				/>
@@ -56,17 +55,6 @@ export default {
 					newItems.push(computedRegionList[region]);
 				}
 				computedRegionList[region].countries.push(newItem);
-				/*
-				computedRegionList[region].count = computedRegionList[region].countries
-					.reduce((accumulator, { count }) => accumulator + count, 0);
-
-				const refinedCountriesCount = computedRegionList[region].countries
-					.reduce((accumulator, { isRefined }) => accumulator + isRefined, 0);
-				const allCountriesCount = computedRegionList[region].countries.length;
-				computedRegionList[region].isRefined = refinedCountriesCount > 0;
-				computedRegionList[region].isIndeterminate = computedRegionList[region].isRefined
-					&& refinedCountriesCount < allCountriesCount;
-				*/
 
 				newItems.push(newItem);
 			});
