@@ -11,7 +11,7 @@
 			>
 				<div
 					class="region-title-row"
-					@click="toggleRegionState(item.region)"
+					@click="toggleRegionOpenState(item.region)"
 				>
 					<kv-icon
 						name="large-chevron"
@@ -46,7 +46,7 @@
 				class="country"
 				:checked="isCountryChecked(item.isRefined, item.region)"
 				:label="`${item.label} (${item.count})`"
-				@checkbox-input="handleLocationCheckboxInput(item)"
+				@checkbox-input="handleCountryCheckboxInput(item)"
 			/>
 		</div>
 	</div>
@@ -113,12 +113,6 @@ export default {
 		handleCountryCheckboxInput(item) {
 			this.refine(item.value);
 		},
-		handleRegionCheckboxInput(item) {
-			console.log(item);
-			const { isRefined, isIndeterminate, countries } = item;
-			const refineTo = (!isRefined || isIndeterminate);
-			this.refineAllCountries(countries, refineTo);
-		},
 		refineAllCountries(countries, refineTo) {
 			countries.forEach(({ isRefined, value }) => {
 				if (isRefined !== refineTo) {
@@ -161,14 +155,7 @@ export default {
 			}
 			return this.regionMap[region].temporaryRefinement;
 		},
-		handleLocationCheckboxInput(item) {
-			if (!item.isRegion) {
-				this.handleCountryCheckboxInput(item);
-			} else {
-				this.handleRegionCheckboxInput(item);
-			}
-		},
-		toggleRegionState(region) {
+		toggleRegionOpenState(region) {
 			this.regionMap[region].open = !this.regionMap[region].open;
 		},
 		isRegionOpen(region) {
