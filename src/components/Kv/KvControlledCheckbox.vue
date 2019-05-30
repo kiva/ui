@@ -5,7 +5,7 @@
 		@keypress="handleKeyPressContainer"
 		:tabindex="tabindex"
 		role="checkbox"
-		:aria-checked="checked"
+		:aria-checked="ariaChecked"
 	>
 		<label class="kv-controlled-checkbox-label">
 			<input
@@ -38,6 +38,9 @@ export default {
 		},
 	},
 	computed: {
+		ariaChecked() {
+			return this.checked ? 'true' : 'false';
+		},
 		hasDefaultSlot() {
 			return !!this.$slots.default;
 		},
