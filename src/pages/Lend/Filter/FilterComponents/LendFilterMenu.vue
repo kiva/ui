@@ -69,7 +69,7 @@ import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSecti
 import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSectionAttributes';
 import FilterSectionTags from '@/pages/Lend/Filter/FilterSections/FilterSectionTags';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSections/Gender/FilterSectionGender';
-import FilterSectionLocationMulti from '@/pages/Lend/Filter/FilterSections/FilterSectionLocationMulti';
+import FilterSectionLocationMulti from '@/pages/Lend/Filter/FilterSections/LocationMulti/FilterSectionLocationMulti';
 import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
 import FilterSectionSort from '@/pages/Lend/Filter/FilterSections/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';

@@ -82,6 +82,10 @@ function stateToRoute(uiState) {
 			uiState.hierarchicalMenu
 			&& uiState.hierarchicalMenu['locationFacets.lvl0']
 			&& uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
+		countries:
+			uiState.refinementList
+			&& uiState.refinementList['locationFacets.lvl1']
+			&& uiState.refinementList['locationFacets.lvl1'].join('~'),
 		repayment:
 			uiState.range
 			&& uiState.range.lenderRepaymentTerm,
@@ -116,6 +120,9 @@ function routeToState(routeState) {
 			'tags.name':
 				routeState.tags
 				&& routeState.tags.split('~'),
+			'locationFacets.lvl1':
+				routeState.countries
+				&& routeState.countries.split('~'),
 		},
 		hierarchicalMenu: {
 			'locationFacets.lvl0':

@@ -8,7 +8,7 @@
 		<label class="kv-controlled-checkbox-label">
 			<input
 				type="checkbox"
-				:checked="isChecked"
+				:checked="checked"
 				aria-hidden="true"
 				role="presentation"
 				tabindex="-1"
@@ -24,11 +24,11 @@ export default {
 	props: {
 		label: {
 			type: String,
-			default: null
-		},
-		isChecked: {
-			type: Boolean,
 			default: null,
+		},
+		checked: {
+			type: Boolean,
+			required: true,
 		},
 		tabindex: {
 			type: Number,
@@ -58,7 +58,12 @@ export default {
 
 .kv-controlled-checkbox {
 	.kv-controlled-checkbox-label {
+		color: $charcoal;
 		pointer-events: none;
+	}
+
+	&:focus {
+		outline: none;
 	}
 }
 </style>
