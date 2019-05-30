@@ -23,7 +23,7 @@
 				</h2>
 				<!-- Total funded/loan amount -->
 				<div class="loan-total-text">
-					Loan total: ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }}
+					Total loan: ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }}
 				</div>
 				<!-- Borrower Name -->
 				<h1> {{ loan.name }} </h1>
@@ -66,7 +66,7 @@
 			<div class="small-12 columns text-center">
 				<!-- Loan use -->
 				<h2 class="loan-use-text">
-					A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helps {{ loan.use }}
+					A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helped {{ loan.use }}
 				</h2>
 			</div>
 		</div>
