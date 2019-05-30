@@ -35,9 +35,9 @@ query($basketId: String) {
 	}
 	my {
 		isAdmin
-    	recommendations {
-      		topCountry
-    	}
+		recommendations {
+			topCountry
+		}
 	}
 	shop (basketId: $basketId) {
 		basket {
