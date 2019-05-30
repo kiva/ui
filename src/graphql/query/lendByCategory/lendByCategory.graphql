@@ -28,9 +28,16 @@ query($basketId: String) {
 			key
 			value
 		}
+		favoriteCountryRow: uiExperimentSetting(key: "favorite_country") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
+    	recommendations {
+      		topCountry
+    	}
 	}
 	shop (basketId: $basketId) {
 		basket {

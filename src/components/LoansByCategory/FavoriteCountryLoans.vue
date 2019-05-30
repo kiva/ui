@@ -1,6 +1,5 @@
 <template>
-	<div class="most-lent-country-holder" :class="{ 'favorite-country-loans-loaded': isLoaded }">
-		<div>Testing</div>
+	<div v-if="isLoggedIn" class="most-lent-country-holder" :class="{ 'favorite-country-loans-loaded': isLoaded }">
 		<div v-if="showFavoriteCountry">
 			<div v-if="isLoaded">
 				<category-row
@@ -11,6 +10,9 @@
 					:row-number="-1"
 					set-id="CASH-794-favorite-country"
 					:is-logged-in="isLoggedIn"
+					:show-category-description="showCategoryDescription"
+					:show-expandable-loan-cards="showExpandableLoanCards"
+					@scrolling-row="handleScrollingRow"
 				/>
 			</div>
 		</div>
@@ -28,57 +30,98 @@ export default {
 		CategoryRow,
 	},
 	inject: ['apollo'],
+	props: {
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
+		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
+		showCategoryDescription: {
+			type: Boolean,
+			default: false,
+		},
+		showExpandableLoanCards: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	data() {
 		return {
 			favoriteCountryLoans: [],
-			favoriteCountryCategory: {
-				id: 99, // This will have to be the country abrevition for the user's most let to country
-				// that's retured from the graphql query,
-				name: 'Favorite Country category loans',
-				url: '/lend/favorite-country-loans', // required field
-				loans: {
-					values: [],
-				},
-			},
 			isLoaded: false
 		};
 	},
 	apollo: {
-		// TODO: Need to fold in a check for logged in
 		preFetch(config, client) {
-			// need to add check to verify the user is logged in
 			return client.query({
 				query: favoriteCountryQuery
 			}).then(data => {
-				console.log('data', data);
 				const favoriteCountry = _get(data, 'data.my.recommendations.topCountry');
-				console.log('favorite country', favoriteCountry);
+				// skip if not logged in or no favorite country
+				if (favoriteCountry === undefined) return null;
+
 				return client.query({
 					query: loanCardData,
 					variables: {
-						filters: { country: 'FJ' },
+						filters: { country: favoriteCountry || 'us' },
 						limit: 12
 					},
 				});
 			}).then(loanData => {
-				const favoriteCountryLoans = _get(loanData, 'data.lend.loans.values');
-				if (favoriteCountryLoans !== undefined || favoriteCountryLoans.length > 0) {
-					this.favoriteCountryCategory.loans.values = favoriteCountryLoans;
-				}
-				// console.log('favorite country category', this.favoriteCountryCategory);
-				// this.isLoaded = true;
-				console.log('2nd then statement in prefetch', loanData);
-				return favoriteCountryLoans;
+				// skip if not logged in or no favorite country
+				if (loanData === null) return null;
+				return _get(loanData, 'data.lend.loans.values');
 			});
 		}
 	},
 	computed: {
 		showFavoriteCountry() {
-			if (this.favoriteCountryCategory.loans.values.length > 0
-				|| this.favoriteCountryCategory.loans.values !== null) {
-				return false;
+			if (this.favoriteCountryLoans.length > 0) {
+				return true;
 			}
-			return true;
+			return false;
+		},
+		favoriteCountryCategory() {
+			const loans = this.favoriteCountryLoans || [];
+			const countryName = _get(this.favoriteCountryLoans, '[0].geocode.country.name');
+			const countryTitle = countryName || 'your favorite country';
+			const filterQuery = `?location=${countryName}`;
+			return {
+				id: 99, // This will have to be the country abrevition for the user's most let to country
+				// that's retured from the graphql query,
+				name: `Support more borrowers in ${countryTitle}`,
+				url: `/lend/filter${countryName !== null ? filterQuery : ''}`, // required field
+				loans: {
+					values: loans,
+				},
+			};
+		},
+	},
+	created() {
+		const favoriteCountryCodeData = this.apollo.readQuery({
+			query: favoriteCountryQuery
+		});
+
+		this.apollo.query({
+			query: loanCardData,
+			variables: {
+				filters: { country: _get(favoriteCountryCodeData, 'my.recommendations.topCountry') || 'us' },
+				limit: 12
+			},
+		}).then(loanData => {
+			const favoriteCountryLoans = _get(loanData, 'data.lend.loans.values');
+			if (favoriteCountryLoans !== undefined || favoriteCountryLoans.length > 0) {
+				this.isLoaded = true;
+				this.favoriteCountryLoans = favoriteCountryLoans;
+			}
+		});
+	},
+	methods: {
+		handleScrollingRow() {
+			this.$emit('scrolling-row');
 		}
 	}
 };
