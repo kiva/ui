@@ -52,7 +52,7 @@
 				<hr>
 				<h3 class="lyml-text text-center">
 					{{ loan.name }}'s loan has already fully funded, but these
-					other deserving borrowers need your support to cross the finish line
+					other borrowers need your support
 				</h3>
 				<l-y-m-l
 					:basketed-loans="itemsInBasket"
