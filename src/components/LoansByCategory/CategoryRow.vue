@@ -183,6 +183,11 @@ export default {
 				return '/lend/countries-not-lent';
 			}
 
+			// special handling for CASH-794 Favorite Country row
+			if (this.url.includes('favorite-countries-link')) {
+				return this.url.replace('favorite-countries-link', '');
+			}
+
 			// otherwise transform to use /lend-by-category as root path
 			return `/lend-by-category${cleanUrl}`;
 		},

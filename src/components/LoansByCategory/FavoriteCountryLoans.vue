@@ -22,7 +22,7 @@
 <script>
 import _get from 'lodash/get';
 import favoriteCountryQuery from '@/graphql/query/lendByCategory/favoriteCountry.graphql';
-import loanCardData from '@/graphql/query/loanCardData.graphql';
+import basicLoanData from '@/graphql/query/basicLoanData.graphql';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 
 export default {
@@ -60,18 +60,18 @@ export default {
 				query: favoriteCountryQuery
 			}).then(data => {
 				const favoriteCountry = _get(data, 'data.my.recommendations.topCountry');
-				// skip if not logged in or no favorite country
+				// skip if no favorite country
 				if (favoriteCountry === undefined) return null;
 
 				return client.query({
-					query: loanCardData,
+					query: basicLoanData,
 					variables: {
-						filters: { country: favoriteCountry || 'us' },
+						filters: { country: favoriteCountry },
 						limit: 12
 					},
 				});
 			}).then(loanData => {
-				// skip if not logged in or no favorite country
+				// skip if no loan data
 				if (loanData === null) return null;
 				return _get(loanData, 'data.lend.loans.values');
 			});
@@ -87,13 +87,18 @@ export default {
 		favoriteCountryCategory() {
 			const loans = this.favoriteCountryLoans || [];
 			const countryName = _get(this.favoriteCountryLoans, '[0].geocode.country.name');
+			const countryRegion = _get(this.favoriteCountryLoans, '[0].geocode.country.region');
 			const countryTitle = countryName || 'your favorite country';
-			const filterQuery = `?location=${countryName}`;
+			let countryTitleAugmented = countryTitle;
+			if (countryName === 'United States') {
+				countryTitleAugmented = `the ${countryTitle}`;
+			}
+			const filterQuery = `?location=${encodeURIComponent(countryRegion)}~${encodeURIComponent(countryName)}`;
 			return {
-				id: 99, // This will have to be the country abrevition for the user's most let to country
-				// that's retured from the graphql query,
-				name: `Support more borrowers in ${countryTitle}`,
-				url: `/lend/filter${countryName !== null ? filterQuery : ''}`, // required field
+				id: 99,
+				name: `Support more borrowers in ${countryTitleAugmented}`,
+				// sample algolia location query location=North%20America~United%20States
+				url: `favorite-countries-link/lend/filter${countryName !== undefined ? filterQuery : ''}`,
 				loans: {
 					values: loans,
 				},
@@ -104,20 +109,20 @@ export default {
 		const favoriteCountryCodeData = this.apollo.readQuery({
 			query: favoriteCountryQuery
 		});
-
-		this.apollo.query({
-			query: loanCardData,
+		const favoriteCountry = _get(favoriteCountryCodeData, 'my.recommendations.topCountry') || 'us';
+		const favoriteCountryData = this.apollo.readQuery({
+			query: basicLoanData,
 			variables: {
-				filters: { country: _get(favoriteCountryCodeData, 'my.recommendations.topCountry') || 'us' },
+				filters: { country: favoriteCountry },
 				limit: 12
 			},
-		}).then(loanData => {
-			const favoriteCountryLoans = _get(loanData, 'data.lend.loans.values');
-			if (favoriteCountryLoans !== undefined || favoriteCountryLoans.length > 0) {
-				this.isLoaded = true;
-				this.favoriteCountryLoans = favoriteCountryLoans;
-			}
 		});
+
+		const favoriteCountryLoans = _get(favoriteCountryData, 'lend.loans.values');
+		if (favoriteCountryLoans !== undefined && favoriteCountryLoans.length > 0) {
+			this.isLoaded = true;
+			this.favoriteCountryLoans = favoriteCountryLoans;
+		}
 	},
 	methods: {
 		handleScrollingRow() {

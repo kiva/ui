@@ -287,7 +287,7 @@ export default {
 			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 				next: ({ data }) => {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-					console.log(_get(data, 'my.recommendations.topCountry'));
+					// CASH-794 Favorite Country Row
 					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
 				},
 			});
@@ -345,7 +345,7 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
-					// experiment: favorite country row
+					// experiment: // CASH-794 Favorite Country Row
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 				]);
 			}).then(expResults => {
@@ -377,7 +377,7 @@ export default {
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
-		console.log(_get(baseData, 'my.recommendations.topCountry'));
+		// CASH-794 Favorite Country Row
 		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
