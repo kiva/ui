@@ -184,7 +184,7 @@ export default {
 		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
 
 		.expandable-loan-card-bottom {
-			max-height: rem-calc(350);
+			max-height: rem-calc(450);
 		}
 
 		@include breakpoint(small only) {
