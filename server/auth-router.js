@@ -21,6 +21,11 @@ module.exports = function authRouter(config = {}) {
 		}
 	});
 
+	// If no server-side auth0 secret is provided, skip setting up auth routes
+	if (!process.env.UI_AUTH0_CLIENT_SECRET) {
+		return router;
+	}
+
 	// Setup Passport.js using the Auth0 passport strategy
 	passport.use(new Auth0Strategy({
 		domain: config.auth0.domain,
