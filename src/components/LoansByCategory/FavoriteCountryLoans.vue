@@ -93,7 +93,8 @@ export default {
 			if (countryName === 'United States') {
 				countryTitleAugmented = `the ${countryTitle}`;
 			}
-			const filterQuery = `?location=${encodeURIComponent(countryRegion)}~${encodeURIComponent(countryName)}`;
+			const countryQuery = `${countryRegion} > ${countryName}`;
+			const filterQuery = `?countries=${encodeURIComponent(countryQuery)}`;
 			return {
 				id: 99,
 				name: `Support more borrowers in ${countryTitleAugmented}`,
