@@ -20,6 +20,8 @@ function setSortByEnv(selectedRouteSort) {
 			envName = 'dev';
 		} else if (window.location.host.includes('qa')) {
 			envName = 'qa';
+		} else if (window.location.host.includes('stage')) {
+			envName = 'stage';
 		} else {
 			envName = 'prod';
 		}
