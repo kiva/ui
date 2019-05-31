@@ -45,6 +45,7 @@
 					:status="loan.status"
 					:use="loan.use"
 					:loan-id="loan.id"
+					:max-use-length="145"
 				/>
 				<action-button
 					class="expandable-loan-card-action-button"
