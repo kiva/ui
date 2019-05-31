@@ -223,14 +223,17 @@ export default {
 
 			// track cash 794 if shown
 			if (this.showFavoriteCountryRow) {
-				_each(this.$refs.favoriteCountries.favoriteCountryLoans, (loan, loanIndex) => {
-					loanIds.push({
-						r: -1,
-						p: loanIndex + 1,
-						c: 99,
-						l: loan.id
+				const favoriteCountryLoans = _get(this.$refs, 'favoriteCountries.favoriteCountryLoans');
+				if (favoriteCountryLoans !== undefined && favoriteCountryLoans.length > 0) {
+					_each(favoriteCountryLoans, (loan, loanIndex) => {
+						loanIds.push({
+							r: -1,
+							p: loanIndex + 1,
+							c: 99,
+							l: loan.id
+						});
 					});
-				});
+				}
 			}
 
 			_each(categories, (category, catIndex) => {
