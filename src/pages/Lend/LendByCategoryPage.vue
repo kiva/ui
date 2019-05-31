@@ -21,7 +21,7 @@
 			:show-category-description="showCategoryDescription"
 		/>
 
-		<div v-if="isLoggedIn && hasFavoriteCountry">
+		<div v-if="showFavoriteCountryRow">
 			<favorite-country-loans
 				:items-in-basket="itemsInBasket"
 				ref="favoriteCountries"
@@ -166,6 +166,7 @@ export default {
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
 			hasFavoriteCountry: false,
+			favoriteCountryExpVersion: 'control',
 		};
 	},
 	computed: {
@@ -186,6 +187,12 @@ export default {
 		},
 		leadHeaderFilterLink() {
 			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
+		},
+		showFavoriteCountryRow() {
+			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion === 'shown') {
+				return true;
+			}
+			return false;
 		}
 	},
 	methods: {
@@ -211,6 +218,18 @@ export default {
 			} else if (this.showFeaturedHeroLoan) {
 				loanIds.push({
 					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
+				});
+			}
+
+			// track cash 794 if shown
+			if (this.showFavoriteCountryRow) {
+				_each(this.$refs.favoriteCountries.favoriteCountryLoans, (loan, loanIndex) => {
+					loanIds.push({
+						r: -1,
+						p: loanIndex + 1,
+						c: 99,
+						l: loan.id
+					});
 				});
 			}
 
@@ -286,6 +305,8 @@ export default {
 			});
 			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 				next: ({ data }) => {
+					this.isAdmin = !!_get(data, 'my.isAdmin');
+					this.isLoggedIn = !!_get(data, 'my');
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 					// CASH-794 Favorite Country Row
 					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
@@ -317,6 +338,24 @@ export default {
 			}
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
+		},
+		initializeFavoriteCountryRowExp() {
+			// experiment: CASH-794 Favorite Country Row
+			// get assignment
+			const favoriteCountryRowEXP = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'favorite_country' },
+			});
+			this.favoriteCountryExpVersion = _get(favoriteCountryRowEXP, 'experiment.version');
+			// Only track and activate if these conditions exist
+			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion !== null) {
+				// Fire Event for Exp CASH-794
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-794-June2019',
+					this.favoriteCountryExpVersion === 'shown' ? 'b' : 'a'
+				);
+			}
 		},
 	},
 	apollo: {
@@ -435,6 +474,9 @@ export default {
 			this.showFeaturedLoans = false;
 			this.showFeaturedHeroLoan = true;
 		}
+
+		// Initialize CASH-794 Favorite Country Row
+		this.initializeFavoriteCountryRowExp();
 
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readQuery({

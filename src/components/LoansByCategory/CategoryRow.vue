@@ -376,7 +376,7 @@ a.view-all-link {
 
 	.view-all-arrow {
 		position: absolute;
-		top: -0.95rem;
+		bottom: -0.7rem;
 		right: -1.4rem;
 		padding: 0 0.3rem;
 		font-weight: $global-weight-normal;
@@ -384,7 +384,7 @@ a.view-all-link {
 
 		@include breakpoint(medium) {
 			font-size: 3rem;
-			top: -0.9rem;
+			bottom: -0.75rem;
 			right: -1.6rem;
 		}
 	}
