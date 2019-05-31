@@ -23,10 +23,10 @@ module.exports = merge(base, {
 		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',
 		algoliaConfig: {
 			enableAA: false,
-			group: 'dev',
+			group: 'stage',
 			appId: 'testingZ9YK0WNQ85',
 			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
-			defaultIndex: 'dev_fundraising_popularity',
+			defaultIndex: 'stage_fundraising_popularity',
 		},
 		auth0: {
 			loginRedirectUrls: {

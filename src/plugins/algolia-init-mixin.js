@@ -14,25 +14,19 @@ const indexKeys = [
 
 // Rebuild index name as set in Algolia
 function setSortByEnv(selectedRouteSort) {
-	[
-		{
-			envName: 'dev',
-			hostNameField: 'dev',
-		},
-		{
-			envName: 'qa',
-			hostNameField: 'qa',
-		},
-		{
-			envName: 'prod',
-			hostNameField: '',
+	let envName;
+	if (typeof window !== 'undefined') {
+		if (window.location.host.includes('dev')) {
+			envName = 'dev';
+		} else if (window.location.host.includes('qa')) {
+			envName = 'qa';
+		} else if (window.location.host.includes('stage')) {
+			envName = 'stage';
+		} else {
+			envName = 'prod';
 		}
-	].forEach(({ envName, hostNameField }) => {
-		if (typeof window !== 'undefined' && window.location.host.includes(hostNameField)) {
-			return `${envName}_fundraising_${selectedRouteSort[0].value}`;
-		}
-	});
-	return '';
+	}
+	return `${envName}_fundraising_${selectedRouteSort[0].value}`;
 }
 
 // extract custom, simple name for sortBy value in url
