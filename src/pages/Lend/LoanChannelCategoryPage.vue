@@ -212,7 +212,7 @@ export default {
 						)
 					}),
 					// experiment: add to basket interstitial
-					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
+					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
 				]);
 			});
 		}
@@ -267,7 +267,7 @@ export default {
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'add_to_basket_popup' },
+			variables: { id: 'add_to_basket_v2' },
 		});
 		this.addToBasketExpActive = _get(addToBasketPopupEXP, 'experiment.version') === 'shown';
 		// Update @client state if interstitial exp is active
