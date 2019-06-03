@@ -8,7 +8,7 @@
 			@lightbox-closed="closeLightbox"
 		>
 			<h1 class="lightbox-title" slot="title">
-				You're almost there!
+				Thank you for making an impact
 			</h1>
 			<div class="lightbox-loan-wrapper">
 				<div class="loan-preview columns small-12 large-8 large-offset-4" v-if="loan.loan">
@@ -45,7 +45,7 @@
 									'keep-exploring-button-click']"
 								@click.native.prevent="closeLightbox"
 							>
-								Keep exploring
+								Find more loans
 							</kv-button>
 						</div>
 						<div class="columns small-12 medium-6">
@@ -72,7 +72,7 @@
 			</div>
 			<div class="lightbox-lyml-wrapper" v-if="loan.loan">
 				<div class="additional-loans">
-					<h2>Similar loans to {{ loan.loan.name }}</h2>
+					<h2>Support more loans like {{ loan.loan.name }}</h2>
 					<l-y-m-l
 						v-if="loans && loan.id"
 						:basketed-loans="loans"
@@ -111,7 +111,7 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			activateTimer: false,
+			activateTimer: true,
 			showInterstitial: false,
 			basketInterstitialState: {},
 			loan: {},
