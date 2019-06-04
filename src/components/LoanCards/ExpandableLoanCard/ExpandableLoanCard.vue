@@ -45,6 +45,7 @@
 					:status="loan.status"
 					:use="loan.use"
 					:loan-id="loan.id"
+					:max-use-length="145"
 				/>
 				<action-button
 					class="expandable-loan-card-action-button"
@@ -183,7 +184,7 @@ export default {
 		box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
 
 		.expandable-loan-card-bottom {
-			max-height: rem-calc(350);
+			max-height: rem-calc(450);
 		}
 
 		@include breakpoint(small only) {

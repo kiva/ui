@@ -92,7 +92,7 @@ export default {
 
 				if (this.activateTimer === true) {
 					warningMessageUpperBoundMinutes = 10;
-					differenceInWords = `Reservation expires in ${mins}m and ${seconds}s`;
+					differenceInWords = `Reservation expires in ${mins}m ${seconds}s`;
 				}
 
 				if ((reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {

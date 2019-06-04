@@ -14,25 +14,19 @@ const indexKeys = [
 
 // Rebuild index name as set in Algolia
 function setSortByEnv(selectedRouteSort) {
-	[
-		{
-			envName: 'dev',
-			hostNameField: 'dev',
-		},
-		{
-			envName: 'qa',
-			hostNameField: 'qa',
-		},
-		{
-			envName: 'prod',
-			hostNameField: '',
+	let envName;
+	if (typeof window !== 'undefined') {
+		if (window.location.host.includes('dev')) {
+			envName = 'dev';
+		} else if (window.location.host.includes('qa')) {
+			envName = 'qa';
+		} else if (window.location.host.includes('stage')) {
+			envName = 'stage';
+		} else {
+			envName = 'prod';
 		}
-	].forEach(({ envName, hostNameField }) => {
-		if (typeof window !== 'undefined' && window.location.host.includes(hostNameField)) {
-			return `${envName}_fundraising_${selectedRouteSort[0].value}`;
-		}
-	});
-	return '';
+	}
+	return `${envName}_fundraising_${selectedRouteSort[0].value}`;
 }
 
 // extract custom, simple name for sortBy value in url
@@ -82,6 +76,10 @@ function stateToRoute(uiState) {
 			uiState.hierarchicalMenu
 			&& uiState.hierarchicalMenu['locationFacets.lvl0']
 			&& uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
+		countries:
+			uiState.refinementList
+			&& uiState.refinementList['locationFacets.lvl1']
+			&& uiState.refinementList['locationFacets.lvl1'].join('~'),
 		repayment:
 			uiState.range
 			&& uiState.range.lenderRepaymentTerm,
@@ -116,6 +114,9 @@ function routeToState(routeState) {
 			'tags.name':
 				routeState.tags
 				&& routeState.tags.split('~'),
+			'locationFacets.lvl1':
+				routeState.countries
+				&& routeState.countries.split('~'),
 		},
 		hierarchicalMenu: {
 			'locationFacets.lvl0':

@@ -50,6 +50,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		maxUseLength: {
+			type: Number,
+			default: 500
+		},
 	},
 	computed: {
 		helpedLanguage() {
@@ -67,15 +71,14 @@ export default {
 			return ' ';
 		},
 		shortenedLoanUse() {
-			const maxLength = 1000;
 			const lowerCaseUse = this.use.toString().charAt(0).toLowerCase() + this.use.toString().slice(1);
 			const convertedUse = (this.use.substring(0, this.name.length) === this.name) ? this.use : lowerCaseUse;
 
 			if (this.use.length === 0) {
 				return 'For the borrower\'s privacy, this loan has been made anonymous.';
 			}
-			if (this.use.length > maxLength) {
-				return `${convertedUse.substring(0, maxLength)}...`;
+			if (this.use.length > this.maxUseLength) {
+				return `${convertedUse.substring(0, this.maxUseLength)}...`;
 			}
 			return convertedUse;
 		},

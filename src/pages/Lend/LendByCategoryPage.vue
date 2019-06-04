@@ -21,6 +21,17 @@
 			:show-category-description="showCategoryDescription"
 		/>
 
+		<div v-if="showFavoriteCountryRow">
+			<favorite-country-loans
+				:items-in-basket="itemsInBasket"
+				ref="favoriteCountries"
+				:show-category-description="showCategoryDescription"
+				:is-logged-in="isLoggedIn"
+				:show-expandable-loan-cards="showExpandableLoanCards"
+				@scrolling-row="handleScrollingRow"
+			/>
+		</div>
+
 		<div>
 			<category-row
 				class="loan-category-row"
@@ -103,6 +114,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
+import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
 
 // Insert Loan Channel Ids here
 // They should also be added to the possibleCategories in CategoryAdminControls
@@ -125,6 +137,7 @@ export default {
 		LendHeader,
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
+		FavoriteCountryLoans
 	},
 	inject: ['apollo'],
 	metaInfo: {
@@ -137,7 +150,7 @@ export default {
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
-			imageEnhancementExperimentVersion: '',
+			imageEnhancementExperimentVersion: null,
 			showFeaturedLoans: true,
 			showFeaturedHeroLoan: false,
 			featuredHeroLoanExperimentVersion: '',
@@ -152,6 +165,8 @@ export default {
 			showExpandableLoanCards: false,
 			rightArrowPosition: undefined,
 			leftArrowPosition: undefined,
+			hasFavoriteCountry: false,
+			favoriteCountryExpVersion: 'control',
 		};
 	},
 	computed: {
@@ -172,6 +187,12 @@ export default {
 		},
 		leadHeaderFilterLink() {
 			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
+		},
+		showFavoriteCountryRow() {
+			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion === 'shown') {
+				return true;
+			}
+			return false;
 		}
 	},
 	methods: {
@@ -198,6 +219,21 @@ export default {
 				loanIds.push({
 					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
 				});
+			}
+
+			// track cash 794 if shown
+			if (this.showFavoriteCountryRow) {
+				const favoriteCountryLoans = _get(this.$refs, 'favoriteCountries.favoriteCountryLoans');
+				if (favoriteCountryLoans !== undefined && favoriteCountryLoans.length > 0) {
+					_each(favoriteCountryLoans, (loan, loanIndex) => {
+						loanIds.push({
+							r: -1,
+							p: loanIndex + 1,
+							c: 99,
+							l: loan.id
+						});
+					});
+				}
 			}
 
 			_each(categories, (category, catIndex) => {
@@ -272,7 +308,11 @@ export default {
 			});
 			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
 				next: ({ data }) => {
+					this.isAdmin = !!_get(data, 'my.isAdmin');
+					this.isLoggedIn = !!_get(data, 'my');
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+					// CASH-794 Favorite Country Row
+					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
 				},
 			});
 		},
@@ -302,6 +342,24 @@ export default {
 			this.setRightArrowPosition();
 			this.setLeftArrowPosition();
 		},
+		initializeFavoriteCountryRowExp() {
+			// experiment: CASH-794 Favorite Country Row
+			// get assignment
+			const favoriteCountryRowEXP = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'favorite_country' },
+			});
+			this.favoriteCountryExpVersion = _get(favoriteCountryRowEXP, 'experiment.version');
+			// Only track and activate if these conditions exist
+			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion !== null) {
+				// Fire Event for Exp CASH-794
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-794-June2019',
+					this.favoriteCountryExpVersion === 'shown' ? 'b' : 'a'
+				);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -328,7 +386,9 @@ export default {
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
-					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_popup' } }),
+					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
+					// experiment: // CASH-794 Favorite Country Row
+					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -359,6 +419,8 @@ export default {
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
+		// CASH-794 Favorite Country Row
+		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
@@ -379,19 +441,19 @@ export default {
 		// this.setCustomRowData(categoryData);
 
 		// CASH-578 : Experiment : Cloudinary image enhancement
-		const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'image_enhancement' },
-		});
+		// const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
+		// 	query: experimentQuery,
+		// 	variables: { id: 'image_enhancement' },
+		// });
 
 		// eslint-disable-next-line max-len
-		this.imageEnhancementExperimentVersion = _get(imageEnchancementExperimentVersionArray, 'experiment.version') || null;
+		// this.imageEnhancementExperimentVersion = _get(imageEnchancementExperimentVersionArray, 'experiment.version') || null;
 
-		if (this.imageEnhancementExperimentVersion === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
-		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
-		}
+		// if (this.imageEnhancementExperimentVersion === 'variant-a') {
+		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
+		// } else if (this.imageEnhancementExperimentVersion === 'variant-b') {
+		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
+		// }
 
 		// CASH-350 : Experiment : Featured Hero Loan
 		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
@@ -416,10 +478,13 @@ export default {
 			this.showFeaturedHeroLoan = true;
 		}
 
+		// Initialize CASH-794 Favorite Country Row
+		this.initializeFavoriteCountryRowExp();
+
 		// get assignment for add to basket interstitial
 		const addToBasketPopupEXP = this.apollo.readQuery({
 			query: experimentQuery,
-			variables: { id: 'add_to_basket_popup' },
+			variables: { id: 'add_to_basket_v2' },
 		});
 		this.addToBasketExpActive = _get(addToBasketPopupEXP, 'experiment.version') === 'shown';
 		// Update @client state if interstitial exp is active

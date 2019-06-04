@@ -34,7 +34,7 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
-				<filter-section-location class="filter-section" />
+				<filter-section-location-multi class="filter-section" />
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
 				<filter-section-tags class="filter-section" />
@@ -69,7 +69,7 @@ import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSecti
 import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSectionAttributes';
 import FilterSectionTags from '@/pages/Lend/Filter/FilterSections/FilterSectionTags';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSections/Gender/FilterSectionGender';
-import FilterSectionLocation from '@/pages/Lend/Filter/FilterSections/FilterSectionLocation';
+import FilterSectionLocationMulti from '@/pages/Lend/Filter/FilterSections/LocationMulti/FilterSectionLocationMulti';
 import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
 import FilterSectionSort from '@/pages/Lend/Filter/FilterSections/FilterSectionSort';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -87,7 +87,7 @@ export default {
 		FilterSectionAttributes,
 		FilterSectionTags,
 		FilterSectionGender,
-		FilterSectionLocation,
+		FilterSectionLocationMulti,
 		FilterSectionLoanDetails,
 		FilterSectionSort,
 		KvIcon,

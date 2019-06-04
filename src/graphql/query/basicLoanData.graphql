@@ -1,0 +1,28 @@
+#import '../fragments/loanCardFields.graphql'
+
+query(
+	$offset: Int,
+	$limit: Int,
+	$filters: LoanSearchFiltersInput,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+) {
+	lend {
+		loans(
+			offset: $offset,
+			limit: $limit,
+			filters: $filters
+			) {
+			totalCount
+			values {
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+	}
+}
