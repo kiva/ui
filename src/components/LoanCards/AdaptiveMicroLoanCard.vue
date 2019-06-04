@@ -188,18 +188,6 @@ export default {
 		flex-direction: column;
 		justify-content: space-between;
 	}
-
-	.borrower-image-wrapper {
-		width: 50%;
-		height: auto;
-		margin: 0;
-		padding: 0;
-
-		@include breakpoint(medium) {
-			width: 100%;
-			max-height: rem-calc(132);
-		}
-	}
 }
 
 .minimal-loan-card-data-wrap {
