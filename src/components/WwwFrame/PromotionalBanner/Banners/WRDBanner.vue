@@ -7,7 +7,7 @@
 		>
 			<div class="content">
 				<span class="call-to-action-text">Help us fund $1 million in loans to refugees</span>
-				for World Refugee Day
+				for World Refugee Day.
 			</div>
 		</router-link>
 	</div>
