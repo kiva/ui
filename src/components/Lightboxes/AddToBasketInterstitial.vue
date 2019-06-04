@@ -8,7 +8,7 @@
 			@lightbox-closed="closeLightbox"
 		>
 			<h1 class="lightbox-title" slot="title">
-				Thank you for making an impact
+				Thanks for your commitment to make an impact
 			</h1>
 			<div class="lightbox-loan-wrapper">
 				<div class="loan-preview columns small-12 large-8 large-offset-4" v-if="loan.loan">
