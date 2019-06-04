@@ -39,7 +39,11 @@
 
 					<div>
 						<!-- Link to see full borrower profile in old stack -->
-						<router-link :to="`/lend/${loan.id}`">
+						<!-- This needs a tracking event -->
+						<router-link
+							:to="`/lend/${loan.id}?minimal=false`"
+							v-kv-track-event="['Lending', 'EXP-CASH-847-Jun2019-exit-link']"
+						>
 							See full borrower profile
 						</router-link>
 					</div>
@@ -131,6 +135,13 @@ export default {
 
 		this.loan = _get(loanData, 'lend.loan');
 		this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
+	},
+	mounted() {
+		// Tracking event for the funded borrower profile experiment
+		const borrowerRedirectExp = this.$route.query.minimal;
+		if (borrowerRedirectExp === 'true') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-847-Jun2019', 'b');
+		}
 	},
 	methods: {
 		handleAddToBasket(payload) {
