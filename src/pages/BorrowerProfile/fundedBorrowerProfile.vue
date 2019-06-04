@@ -51,7 +51,7 @@
 			<div class="small-12 columns">
 				<hr>
 				<h3 class="lyml-text text-center">
-					{{ loan.name }}'s loan has already fully funded, but these
+					{{ loan.name }}'s loan finished fundraising, but these
 					other borrowers need your support
 				</h3>
 				<l-y-m-l
