@@ -14,7 +14,6 @@
 			<p class="name">
 				{{ loan.name }}
 			</p>
-			<!-- loan meter	 -->
 			<div class="minimal-fundraising-meter">
 				<minimal-fundraising-meter
 					:amount-left="amountLeft"
@@ -22,7 +21,6 @@
 					:is-funded="loan.status==='funded'"
 				/>
 			</div>
-			<!-- Country -->
 			<p class="small-text loan-data">
 				{{ loan.geocode.country.name }} / {{ loan.activity.name }}
 			</p>
