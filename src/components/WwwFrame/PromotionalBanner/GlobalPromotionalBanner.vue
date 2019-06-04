@@ -11,7 +11,8 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import GiftBanner from './Banners/GiftBanner';
 // import DefaultPromoBanner from './Banners/DefaultPromoBanner';
-import IWDPromoBanner from './Banners/IWDPromoBanner';
+// import IWDPromoBanner from './Banners/IWDPromoBanner';
+import WRDBanner from './Banners/WRDBanner';
 
 export default {
 	inject: ['apollo'],
@@ -36,13 +37,10 @@ export default {
 				return GiftBanner;
 			}
 			if (this.promoEnabled) {
-				return IWDPromoBanner;
+				return WRDBanner;
 			}
 			return '';
 		},
-		textlength() {
-			return this.someVar.length;
-		}
 	},
 	apollo: {
 		query: promoQuery,
@@ -126,6 +124,21 @@ export default {
 			display: flex;
 			align-items: center;
 			color: #6e1947;
+		}
+	}
+
+	.wrd-banner {
+		background-image: none;
+		background-color: #edf7ed;
+
+		.banner-link {
+			display: flex;
+			align-items: center;
+			color: #484848;
+
+			&:hover {
+				color: #63669D;
+			}
 		}
 	}
 
