@@ -83,6 +83,7 @@ export default class KvAuth0 {
 				} else {
 					// Successful authentication
 					this[setAuthData](result);
+					cookieStore.set('kvls', 'i', { secure: true });
 					resolve();
 				}
 			});
