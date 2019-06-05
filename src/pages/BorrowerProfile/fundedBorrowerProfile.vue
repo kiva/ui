@@ -2,8 +2,6 @@
 	<www-page>
 		<div class="row borrower-profile-wrapper">
 			<div class="small-12 medium-4 columns">
-				<!-- TODO:
-				- tracking info needs to be updated -->
 				<!-- Borrower photo -->
 				<loan-card-image
 					:loan-id="loan.id"
@@ -39,7 +37,6 @@
 
 					<div>
 						<!-- Link to see full borrower profile in old stack -->
-						<!-- This needs a tracking event -->
 						<router-link
 							:to="`/lend/${loan.id}?minimal=false`"
 							v-kv-track-event="['Lending', 'EXP-CASH-847-Jun2019-exit-link']"
