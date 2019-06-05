@@ -2,8 +2,6 @@
 	<www-page>
 		<div class="row borrower-profile-wrapper">
 			<div class="small-12 medium-4 columns">
-				<!-- TODO:
-				- tracking info needs to be updated -->
 				<!-- Borrower photo -->
 				<loan-card-image
 					:loan-id="loan.id"
@@ -23,7 +21,7 @@
 				</h2>
 				<!-- Total funded/loan amount -->
 				<div class="loan-total-text">
-					Loan total: ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }}
+					Total loan: ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }}
 				</div>
 				<!-- Borrower Name -->
 				<h1> {{ loan.name }} </h1>
@@ -39,7 +37,10 @@
 
 					<div>
 						<!-- Link to see full borrower profile in old stack -->
-						<router-link :to="`/lend/${loan.id}`">
+						<router-link
+							:to="`/lend/${loan.id}?minimal=false`"
+							v-kv-track-event="['Lending', 'EXP-CASH-847-Jun2019-exit-link']"
+						>
 							See full borrower profile
 						</router-link>
 					</div>
@@ -51,8 +52,8 @@
 			<div class="small-12 columns">
 				<hr>
 				<h3 class="lyml-text text-center">
-					{{ loan.name }}'s loan has already fully funded, but these
-					other deserving borrowers need your support to cross the finish line
+					{{ loan.name }}'s loan finished fundraising, but these
+					other borrowers need your support
 				</h3>
 				<l-y-m-l
 					:basketed-loans="itemsInBasket"
@@ -66,7 +67,7 @@
 			<div class="small-12 columns text-center">
 				<!-- Loan use -->
 				<h2 class="loan-use-text">
-					A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helps {{ loan.use }}
+					A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helped {{ loan.use }}
 				</h2>
 			</div>
 		</div>
@@ -131,6 +132,13 @@ export default {
 
 		this.loan = _get(loanData, 'lend.loan');
 		this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
+	},
+	mounted() {
+		// Tracking event for the funded borrower profile experiment
+		const borrowerRedirectExp = this.$route.query.minimal;
+		if (borrowerRedirectExp === 'true') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-847-Jun2019', 'b');
+		}
 	},
 	methods: {
 		handleAddToBasket(payload) {
