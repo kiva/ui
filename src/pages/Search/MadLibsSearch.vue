@@ -21,19 +21,35 @@
 				/>
 
 				<div class="row search-filter-and-results">
-					<div class="columns small-12 small-push xlarge-3">
-						I want to support
-						<ais-menu-select
-							:attribute="'gender'"
-						/>
-						in
-						<ais-menu-select
-							:attribute="'locationFacets.lvl0'" :limit="100"
-						/>
-						with loans to
-						<ais-menu-select
-							:attribute="'sector.name'" :limit="100"
-						/>
+					<div class="columns small-12 text-center">
+						<div class="search-statement-wrapper">
+							<span>
+								I want to support
+								<ais-menu-select
+									:attribute="'gender'"
+								>
+									<template slot="defaultOption">
+										women and men
+									</template>
+								</ais-menu-select>
+								in
+								<ais-menu-select
+									:attribute="'locationFacets.lvl0'" :limit="100"
+								>
+									<template slot="defaultOption">
+										any region
+									</template>
+								</ais-menu-select>
+								with loans to
+								<ais-menu-select
+									:attribute="'sector.name'" :limit="100"
+								>
+									<template slot="defaultOption">
+										improve their businesses
+									</template>
+								</ais-menu-select>
+							</span>
+						</div>
 
 						<ais-state-results>
 							<template slot-scope="{ page, hitsPerPage, queryID, index }">
@@ -198,29 +214,12 @@ export default {
 	padding-right: 0;
 }
 
-.ais-SearchBox-form {
-	display: flex;
-	position: relative;
+.search-statement-wrapper {
+	margin: 20px 0;
+}
 
-	.ais-SearchBox-submit,
-	.ais-SearchBox-reset {
-		display: block;
-		padding: 0.2rem 0.8rem;
-		height: 1rem;
-		height: 2.6875rem;
-		background: rgba(0, 0, 0, 0.03);
-		margin-left: 0.2rem;
-
-		&:hover {
-			background-color: rgba(110, 176, 252, 0.05);
-		}
-	}
-
-	.ais-SearchBox-loadingIndicator {
-		position: absolute;
-		right: 6rem;
-		top: 0.8rem;
-	}
+.ais-MenuSelect {
+	display: inline-block;
 }
 
 .ais-Pagination-list {
