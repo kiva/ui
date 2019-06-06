@@ -1,5 +1,5 @@
 <template>
-	<div class="hover-loan-card-small" :class="{hover}">
+	<div class="hover-loan-card-small" :class="{expanded: hover}">
 		<loan-card-image
 			:loan-id="loan.id"
 			:name="loan.name"
@@ -41,6 +41,12 @@ export default {
 	mixins: [
 		hoverLoanCardMixin,
 	],
+	props: {
+		hover: {
+			type: Boolean,
+			default: false,
+		},
+	},
 };
 </script>
 <style lang="scss" scoped>

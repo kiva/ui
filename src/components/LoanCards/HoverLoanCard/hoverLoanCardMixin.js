@@ -25,10 +25,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		hover: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	methods: {
 		trackInteraction(args) {
