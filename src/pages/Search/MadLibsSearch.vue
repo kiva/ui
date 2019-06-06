@@ -1,0 +1,275 @@
+<template>
+	<www-page>
+		<div class="algolia-wrap">
+			<ais-instant-search
+				v-if="searchClient"
+				:search-client="searchClient"
+				:index-name="algoliaDefaultIndex"
+				:routing="routing"
+			>
+				<!-- eslint-disable vue/attribute-hyphenation -->
+				<!-- We could run a default query... :query="defaultSearch" -->
+				<!-- Apply multiple facets or global facets with :filters="filters" -->
+				<!-- Apply via array :facetFilters="facetFilters" -->
+				<!-- :sumOrFiltersScores="true" Show loans that meet all criteria first-->
+				<!-- :disjunctiveFacets="disjunctiveFacetsKeys" -->
+				<!-- :disjunctiveFacetsRefinements="disjunctiveFacets" -->
+				<ais-configure
+					:hitsPerPage="12"
+					clickAnalytics="true"
+					ref="aisConfigure"
+				/>
+
+				<div class="row search-filter-and-results">
+					<div class="columns small-12 small-push xlarge-3">
+						I want to support
+						<ais-menu-select
+							:attribute="'gender'"
+						/>
+						in
+						<ais-menu-select
+							:attribute="'locationFacets.lvl0'" :limit="100"
+						/>
+						with loans to
+						<ais-menu-select
+							:attribute="'sector.name'" :limit="100"
+						/>
+
+						<ais-state-results>
+							<template slot-scope="{ page, hitsPerPage, queryID, index }">
+								<ais-hits
+									class="loan-card-group"
+									:results-per-page="15"
+								>
+									<template slot="default" slot-scope="{ items }">
+										<algolia-adapter
+											v-for="(item, itemIndex) in items" :key="item.id"
+											:loan="item"
+											:items-in-basket="itemsInBasket"
+											:is-logged-in="isLoggedIn"
+											:algolia-props="{
+												page, hitsPerPage, queryID, index, itemIndex, item
+											}"
+											loan-card-type="GridLoanCard"
+											class="column-block columns"
+										/>
+									</template>
+								</ais-hits>
+							</template>
+						</ais-state-results>
+					</div>
+				</div>
+
+				<div class="row search-pagination-stats align-center">
+					<ais-pagination :padding="2" class="columns small-12 xlarge-offset-3" />
+					<ais-stats class="columns small-12 xlarge-offset-3 text-center" />
+					<ais-hits-per-page class="columns small-12 xlarge-offset-3" :items="[
+						{ label: '15', value: 15, default: true },
+						{ label: '25', value: 25 },
+						{ label: '50', value: 50 },
+					]"
+					/>
+				</div>
+			</ais-instant-search>
+		</div>
+	</www-page>
+</template>
+
+<script>
+import cookieStore from '@/util/cookieStore';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+
+import _get from 'lodash/get';
+import _map from 'lodash/map';
+
+// This mixin provides some algolia search instance initialization on mounted
+import algoliaInit from '@/plugins/algolia-init-mixin';
+// This mixin provides config for our indices + loan channel categories
+import algoliaConfig from '@/plugins/algolia-config-mixin';
+
+import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
+
+import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+
+// Import your specific Algolia Components here
+// https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
+// algolia search is always required, moved to mixin
+// import algoliasearch from 'algoliasearch/lite';
+import {
+	AisConfigure,
+	AisInstantSearch,
+	AisHits,
+	AisPagination,
+	AisHitsPerPage,
+	AisStats,
+	AisStateResults,
+	AisMenuSelect,
+} from 'vue-instantsearch';
+
+export default {
+	components: {
+		WwwPage,
+		AisConfigure,
+		AisInstantSearch,
+		AisHits,
+		AisPagination,
+		AisHitsPerPage,
+		AisStats,
+		AisStateResults,
+		AisMenuSelect,
+		AlgoliaAdapter,
+	},
+	inject: [
+		'apollo',
+	],
+	mixins: [
+		algoliaConfig,
+		algoliaInit
+	],
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: itemsInBasketQuery
+			}).then(() => {
+				// Pre-fetch user Status
+				return client.query({ query: userStatus });
+			});
+		}
+	},
+	created() {
+		const basketData = this.apollo.readQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		});
+		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
+
+		this.apollo.watchQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		}).subscribe({
+			next: ({ data }) => {
+				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			},
+		});
+
+		const userData = this.apollo.readQuery({
+			query: userStatus
+		});
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+	},
+};
+</script>
+
+<style lang="scss">
+@import 'settings';
+
+.search-filter-and-results {
+	flex-direction: column-reverse;
+}
+
+@include breakpoint(large) {
+	.search-filter-and-results {
+		flex-direction: initial;
+	}
+}
+
+.loan-card-group {
+	position: relative;
+}
+
+.ais-HierarchicalMenu-list,
+.ais-RefinementList-list {
+	list-style: none;
+	margin-left: 0;
+
+	.ais-HierarchicalMenu-list--child {
+		list-style-type: circle;
+		margin-left: 1.2rem;
+	}
+}
+
+.algolia-loan-card-adapter {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.ais-SearchBox-form {
+	display: flex;
+	position: relative;
+
+	.ais-SearchBox-submit,
+	.ais-SearchBox-reset {
+		display: block;
+		padding: 0.2rem 0.8rem;
+		height: 1rem;
+		height: 2.6875rem;
+		background: rgba(0, 0, 0, 0.03);
+		margin-left: 0.2rem;
+
+		&:hover {
+			background-color: rgba(110, 176, 252, 0.05);
+		}
+	}
+
+	.ais-SearchBox-loadingIndicator {
+		position: absolute;
+		right: 6rem;
+		top: 0.8rem;
+	}
+}
+
+.ais-Pagination-list {
+	list-style: none;
+	text-align: center;
+	display: flex;
+	margin: 0.75rem auto;
+	justify-content: center;
+	align-items: center;
+	max-width: 25rem;
+
+	.ais-Pagination-item {
+		color: $kiva-text-light;
+	}
+
+	.ais-Pagination-item--active,
+	.ais-Pagination-item--disabled {
+		a {
+			color: $kiva-text-light;
+		}
+	}
+
+	.ais-Pagination-link {
+		padding: 0.5rem 0.8rem;
+		// border: 1px solid #eee;
+		border-radius: 0.3rem;
+		background-color: rgba(0, 0, 0, 0.03);
+		margin: 0 0.2rem;
+
+		&:hover {
+			background-color: rgba(110, 176, 252, 0.05);
+		}
+	}
+
+	.ais-Pagination-item--first,
+	.ais-Pagination-item--previous,
+	.ais-Pagination-item--next,
+	.ais-Pagination-item--last {
+		font-weight: bold;
+
+		a:hover,
+		a:visited {
+			text-decoration: none;
+		}
+	}
+}
+
+.ais-HitsPerPage {
+	max-width: 13rem;
+}
+
+</style>
