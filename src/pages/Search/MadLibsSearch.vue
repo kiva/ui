@@ -1,5 +1,7 @@
 <template>
-	<www-page>
+	<www-page :gray-background="true">
+		<lend-header :side-arrows-padding="true" />
+
 		<div class="algolia-wrap">
 			<ais-instant-search
 				v-if="searchClient"
@@ -54,7 +56,7 @@
 						<ais-state-results>
 							<template slot-scope="{ page, hitsPerPage, queryID, index }">
 								<ais-hits
-									class="loan-card-group"
+									class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
 									:results-per-page="15"
 								>
 									<template slot="default" slot-scope="{ items }">
@@ -69,6 +71,7 @@
 											loan-card-type="GridLoanCard"
 											class="column-block columns"
 										/>
+										<loading-overlay v-if="loading" />
 									</template>
 								</ais-hits>
 							</template>
@@ -92,21 +95,20 @@
 </template>
 
 <script>
-import cookieStore from '@/util/cookieStore';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-
 import _get from 'lodash/get';
 import _map from 'lodash/map';
+import cookieStore from '@/util/cookieStore';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import LendHeader from '@/pages/Lend/LendHeader';
 
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
 // This mixin provides config for our indices + loan channel categories
 import algoliaConfig from '@/plugins/algolia-config-mixin';
+import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
-
-import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 
 // Import your specific Algolia Components here
 // https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
@@ -135,6 +137,7 @@ export default {
 		AisStateResults,
 		AisMenuSelect,
 		AlgoliaAdapter,
+		LendHeader
 	},
 	inject: [
 		'apollo',
