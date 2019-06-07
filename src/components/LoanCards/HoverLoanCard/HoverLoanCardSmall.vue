@@ -74,15 +74,15 @@ export default {
 		position: relative;
 		padding: 0.75rem 1rem;
 		text-align: center;
-		border: 1px solid $kiva-stroke-gray;
+		border: rem-calc(1) solid $kiva-stroke-gray;
 		border-radius: 0 0 rem-calc(3) rem-calc(3);
 		border-top: none;
-		height: 90px;
+		height: rem-calc(90);
 
 		.name {
 			line-height: rem-calc(20);
 			color: $kiva-text-dark;
-			margin-bottom: 12px;
+			margin-bottom: 0.75rem;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
