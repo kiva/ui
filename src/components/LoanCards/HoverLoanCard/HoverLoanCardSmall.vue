@@ -53,7 +53,6 @@ export default {
 @import "settings";
 
 .hover-loan-card-small {
-	margin: rem-calc(10);
 	width: rem-calc(180);
 	background: white;
 	display: inline-flex;
@@ -62,7 +61,7 @@ export default {
 	flex-shrink: 0;
 	transform: scale(1, 1);
 	opacity: 1;
-	transition: transform 0.2s linear, opacity 0.2s linear;
+	transition: transform 0.15s linear, opacity 0.15s linear;
 
 	.hover-loan-card-data-wrap {
 		position: relative;
@@ -96,7 +95,7 @@ export default {
 	}
 
 	&.expanded {
-		transform: scale(3.2, 1.1);
+		transform: scale(calc(29 / 9), calc(10 / 9));
 		opacity: 0;
 	}
 }
