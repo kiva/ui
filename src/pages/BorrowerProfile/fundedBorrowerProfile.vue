@@ -28,7 +28,7 @@
 				<!-- Borrower location -->
 				<div>
 					<span class="country-image">
-						<kv-flag :country="`${ loan.geocode.country.isoCode }`" />
+						<kv-flag :country="`${ loan.geocode.country.isoCode }`" :custom-height="14" />
 					</span>
 					<span class="loan-location-text">
 						{{ loan.geocode.city }}, {{ loan.geocode.state }}, {{ loan.geocode.country.name }}
