@@ -55,7 +55,7 @@ export default {
 
 .hover-loan-card-small {
 	width: rem-calc(180);
-	background: white;
+	background: $white;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
