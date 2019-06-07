@@ -1,7 +1,7 @@
 <template>
 	<ul class="lending-stats-item-list">
 		<li v-for="item in items" :key="item[itemKey]">
-			<kv-flag v-if="isCountry" :country="item.isoCode" />
+			<kv-flag v-if="isCountry" :country="item.isoCode" :custom-height="14" />
 			<kv-icon v-else :name="iconKey(item)" class="item-icon" />
 			<router-link :to="{ path: '/lend', query: { [param]: item[itemKey] }}">
 				{{ item.name }}

@@ -1,1038 +1,313 @@
 <template>
-	<div :class="`flag-icon ${country.toLowerCase()}`"></div>
+	<div
+		class="kv-flag"
+		:style="style"
+	>
+	</div>
 </template>
 
 <script>
 export default {
 	props: {
-		country: { type: String, required: true }
+		country: {
+			type: String,
+			required: true,
+		},
+		width: {
+			type: Number,
+			default: 16,
+		},
+		customHeight: {
+			type: Number,
+			default: null,
+		},
+	},
+	data() {
+		return {
+			countryOffsets: {
+				qs: 246,
+				_African_Union: 1,
+				_Arab_League: 2,
+				_ASEAN: 3,
+				_CARICOM: 4,
+				_CIS: 5,
+				_Commonwealth: 6,
+				_England: 7,
+				_European_Union: 8,
+				eu: 8,
+				_Islamic_Conference: 9,
+				xk: 10,
+				_NATO: 11,
+				_Northern_Cyprus: 12,
+				_Northern_Ireland: 13,
+				_Olimpic_Movement: 14,
+				_OPEC: 15,
+				_Red_Cross: 16,
+				_Scotland: 17,
+				_Somaliland: 18,
+				_Tibet: 19,
+				_United_Nations: 20,
+				_Wales: 21,
+				ad: 22,
+				ae: 23,
+				af: 24,
+				ag: 25,
+				ai: 26,
+				al: 27,
+				am: 28,
+				ao: 29,
+				aq: 30,
+				ar: 31,
+				as: 32,
+				at: 33,
+				au: 34,
+				aw: 35,
+				ax: 36,
+				az: 37,
+				ba: 38,
+				bb: 39,
+				bd: 40,
+				be: 41,
+				bf: 42,
+				bg: 43,
+				bh: 44,
+				bi: 45,
+				bj: 46,
+				bm: 47,
+				bn: 48,
+				bo: 49,
+				br: 50,
+				bs: 51,
+				bt: 52,
+				bw: 53,
+				by: 54,
+				bz: 55,
+				ca: 56,
+				cg: 57,
+				cf: 58,
+				cd: 59,
+				ch: 60,
+				ci: 61,
+				ck: 62,
+				cl: 63,
+				cm: 64,
+				cn: 65,
+				co: 66,
+				cr: 67,
+				cu: 68,
+				cv: 69,
+				cy: 70,
+				cz: 71,
+				de: 72,
+				dj: 73,
+				dk: 74,
+				dm: 75,
+				do: 76,
+				dz: 77,
+				ec: 78,
+				ee: 79,
+				eg: 80,
+				eh: 81,
+				er: 82,
+				es: 83,
+				et: 84,
+				fi: 85,
+				fj: 86,
+				fm: 87,
+				fo: 88,
+				fr: 89,
+				bl: 89,
+				cp: 89,
+				mf: 89,
+				yt: 89,
+				ga: 90,
+				gb: 91,
+				sh: 91,
+				gd: 92,
+				ge: 93,
+				gg: 94,
+				gh: 95,
+				gi: 96,
+				gl: 97,
+				gm: 98,
+				gn: 99,
+				gp: 100,
+				gq: 101,
+				gr: 102,
+				gt: 103,
+				gu: 104,
+				gw: 105,
+				gy: 106,
+				hk: 107,
+				hn: 108,
+				hr: 109,
+				ht: 110,
+				hu: 111,
+				id: 112,
+				mc: 112,
+				ie: 113,
+				il: 114,
+				im: 115,
+				in: 116,
+				iq: 117,
+				ir: 118,
+				is: 119,
+				it: 120,
+				je: 121,
+				jm: 122,
+				jo: 123,
+				jp: 124,
+				ke: 125,
+				kg: 126,
+				kh: 127,
+				ki: 128,
+				km: 129,
+				kn: 130,
+				kp: 131,
+				kr: 132,
+				kw: 133,
+				ky: 134,
+				kz: 135,
+				la: 136,
+				lb: 137,
+				lc: 138,
+				li: 139,
+				lk: 140,
+				lr: 141,
+				ls: 142,
+				lt: 143,
+				lu: 144,
+				lv: 145,
+				ly: 146,
+				ma: 147,
+				md: 148,
+				me: 149,
+				mg: 150,
+				mh: 151,
+				mk: 152,
+				ml: 153,
+				mm: 154,
+				mn: 155,
+				mo: 156,
+				mq: 157,
+				mr: 158,
+				ms: 159,
+				mt: 160,
+				mu: 161,
+				mv: 162,
+				mw: 163,
+				mx: 164,
+				my: 165,
+				mz: 166,
+				na: 167,
+				nc: 168,
+				ne: 169,
+				ng: 170,
+				ni: 171,
+				nl: 172,
+				bq: 172,
+				no: 173,
+				bv: 173,
+				nq: 173,
+				sj: 173,
+				np: 174,
+				nr: 175,
+				nz: 176,
+				om: 177,
+				pa: 178,
+				pe: 179,
+				pf: 180,
+				pg: 181,
+				ph: 182,
+				pk: 183,
+				pl: 184,
+				pr: 185,
+				ps: 186,
+				pt: 187,
+				pw: 188,
+				py: 189,
+				qa: 190,
+				re: 191,
+				ro: 192,
+				rs: 193,
+				ru: 194,
+				rw: 195,
+				sa: 196,
+				sb: 197,
+				sc: 198,
+				sd: 199,
+				se: 200,
+				sg: 201,
+				si: 202,
+				sk: 203,
+				sl: 204,
+				sm: 205,
+				sn: 206,
+				so: 207,
+				sr: 208,
+				st: 209,
+				sv: 210,
+				sy: 211,
+				sz: 212,
+				tc: 213,
+				td: 214,
+				tg: 215,
+				th: 216,
+				tj: 217,
+				tl: 218,
+				tm: 219,
+				tn: 220,
+				to: 221,
+				tr: 222,
+				tt: 223,
+				tv: 224,
+				tw: 225,
+				tz: 226,
+				ua: 227,
+				ug: 228,
+				us: 229,
+				uy: 230,
+				uz: 231,
+				va: 232,
+				vc: 233,
+				ve: 234,
+				vg: 235,
+				vi: 236,
+				vn: 237,
+				vu: 238,
+				ws: 239,
+				ye: 240,
+				za: 241,
+				zm: 242,
+				zw: 243,
+				sx: 244,
+				cw: 245,
+				ss: 246,
+			},
+		};
+	},
+	computed: {
+		style() {
+			return {
+				backgroundSize: `${this.width}px`,
+				backgroundPosition: `0 -${this.offset}px`,
+				width: `${this.width}px`,
+				height: `${this.customHeight ? this.customHeight : this.width}px`,
+			};
+		},
+		offset() {
+			return this.width * this.countryOffsets[this.country.toLowerCase()];
+		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-	.flag-icon {
+	.kv-flag {
 		background: url('~@/assets/images/flags.png') no-repeat;
-		background-size: 16px;
 		display: inline-block;
 		margin-right: 0.25rem;
-		width: 16px;
-		height: 14px;
 
 		/* https://github&.com/lafeber/world-flags-sprite */
-
-		/* Kiva mods */
-
-		/* Kosovo */
-		&.qs {
-			background-position: 0 -3936px;
-		}
-
-		/* South Sudan */
-
-		/* Start Flags */
-		&._African_Union {
-			background-position: 0 -16px;
-		}
-
-		&._Arab_League {
-			background-position: 0 -32px;
-		}
-
-		&._ASEAN {
-			background-position: 0 -48px;
-		}
-
-		&._CARICOM {
-			background-position: 0 -64px;
-		}
-
-		&._CIS {
-			background-position: 0 -80px;
-		}
-
-		&._Commonwealth {
-			background-position: 0 -96px;
-		}
-
-		&._England {
-			background-position: 0 -112px;
-		}
-
-		&._European_Union,
-		&.eu {
-			background-position: 0 -128px;
-		}
-
-		&._Islamic_Conference {
-			background-position: 0 -144px;
-		}
-
-		&.xk {
-			background-position: 0 -160px;
-		}
-
-		&._NATO {
-			background-position: 0 -176px;
-		}
-
-		&._Northern_Cyprus {
-			background-position: 0 -192px;
-		}
-
-		&._Northern_Ireland {
-			background-position: 0 -208px;
-		}
-
-		&._Olimpic_Movement {
-			background-position: 0 -224px;
-		}
-
-		&._OPEC {
-			background-position: 0 -240px;
-		}
-
-		&._Red_Cross {
-			background-position: 0 -256px;
-		}
-
-		&._Scotland {
-			background-position: 0 -272px;
-		}
-
-		&._Somaliland {
-			background-position: 0 -288px;
-		}
-
-		&._Tibet {
-			background-position: 0 -304px;
-		}
-
-		&._United_Nations {
-			background-position: 0 -320px;
-		}
-
-		&._Wales {
-			background-position: 0 -336px;
-		}
-
-		&.ad {
-			background-position: 0 -352px;
-		}
-
-		&.ae {
-			background-position: 0 -368px;
-		}
-
-		&.af {
-			background-position: 0 -384px;
-		}
-
-		&.ag {
-			background-position: 0 -400px;
-		}
-
-		&.ai {
-			background-position: 0 -416px;
-		}
-
-		&.al {
-			background-position: 0 -432px;
-		}
-
-		&.am {
-			background-position: 0 -448px;
-		}
-
-		&.ao {
-			background-position: 0 -464px;
-		}
-
-		&.aq {
-			background-position: 0 -480px;
-		}
-
-		&.ar {
-			background-position: 0 -496px;
-		}
-
-		&.as {
-			background-position: 0 -512px;
-		}
-
-		&.at {
-			background-position: 0 -528px;
-		}
-
-		&.au {
-			background-position: 0 -544px;
-		}
-
-		&.aw {
-			background-position: 0 -560px;
-		}
-
-		&.ax {
-			background-position: 0 -576px;
-		}
-
-		&.az {
-			background-position: 0 -592px;
-		}
-
-		&.ba {
-			background-position: 0 -608px;
-		}
-
-		&.bb {
-			background-position: 0 -624px;
-		}
-
-		&.bd {
-			background-position: 0 -640px;
-		}
-
-		&.be {
-			background-position: 0 -656px;
-		}
-
-		&.bf {
-			background-position: 0 -672px;
-		}
-
-		&.bg {
-			background-position: 0 -688px;
-		}
-
-		&.bh {
-			background-position: 0 -704px;
-		}
-
-		&.bi {
-			background-position: 0 -720px;
-		}
-
-		&.bj {
-			background-position: 0 -736px;
-		}
-
-		&.bm {
-			background-position: 0 -752px;
-		}
-
-		&.bn {
-			background-position: 0 -768px;
-		}
-
-		&.bo {
-			background-position: 0 -784px;
-		}
-
-		&.br {
-			background-position: 0 -800px;
-		}
-
-		&.bs {
-			background-position: 0 -816px;
-		}
-
-		&.bt {
-			background-position: 0 -832px;
-		}
-
-		&.bw {
-			background-position: 0 -848px;
-		}
-
-		&.by {
-			background-position: 0 -864px;
-		}
-
-		&.bz {
-			background-position: 0 -880px;
-		}
-
-		&.ca {
-			background-position: 0 -896px;
-		}
-
-		&.cg {
-			background-position: 0 -912px;
-		}
-
-		&.cf {
-			background-position: 0 -928px;
-		}
-
-		&.cd {
-			background-position: 0 -944px;
-		}
-
-		&.ch {
-			background-position: 0 -960px;
-		}
-
-		&.ci {
-			background-position: 0 -976px;
-		}
-
-		&.ck {
-			background-position: 0 -992px;
-		}
-
-		&.cl {
-			background-position: 0 -1008px;
-		}
-
-		&.cm {
-			background-position: 0 -1024px;
-		}
-
-		&.cn {
-			background-position: 0 -1040px;
-		}
-
-		&.co {
-			background-position: 0 -1056px;
-		}
-
-		&.cr {
-			background-position: 0 -1072px;
-		}
-
-		&.cu {
-			background-position: 0 -1088px;
-		}
-
-		&.cv {
-			background-position: 0 -1104px;
-		}
-
-		&.cy {
-			background-position: 0 -1120px;
-		}
-
-		&.cz {
-			background-position: 0 -1136px;
-		}
-
-		&.de {
-			background-position: 0 -1152px;
-		}
-
-		&.dj {
-			background-position: 0 -1168px;
-		}
-
-		&.dk {
-			background-position: 0 -1184px;
-		}
-
-		&.dm {
-			background-position: 0 -1200px;
-		}
-
-		&.do {
-			background-position: 0 -1216px;
-		}
-
-		&.dz {
-			background-position: 0 -1232px;
-		}
-
-		&.ec {
-			background-position: 0 -1248px;
-		}
-
-		&.ee {
-			background-position: 0 -1264px;
-		}
-
-		&.eg {
-			background-position: 0 -1280px;
-		}
-
-		&.eh {
-			background-position: 0 -1296px;
-		}
-
-		&.er {
-			background-position: 0 -1312px;
-		}
-
-		&.es {
-			background-position: 0 -1328px;
-		}
-
-		&.et {
-			background-position: 0 -1344px;
-		}
-
-		&.fi {
-			background-position: 0 -1360px;
-		}
-
-		&.fj {
-			background-position: 0 -1376px;
-		}
-
-		&.fm {
-			background-position: 0 -1392px;
-		}
-
-		&.fo {
-			background-position: 0 -1408px;
-		}
-
-		&.fr,
-		&.bl,
-		&.cp,
-		&.mf,
-		&.yt {
-			background-position: 0 -1424px;
-		}
-
-		&.ga {
-			background-position: 0 -1440px;
-		}
-
-		&.gb {
-			background-position: 0 -1456px;
-		}
-
-		&.sh {
-			background-position: 0 -1456px;
-		}
-
-		&.gd {
-			background-position: 0 -1472px;
-		}
-
-		&.ge {
-			background-position: 0 -1488px;
-		}
-
-		&.gg {
-			background-position: 0 -1504px;
-		}
-
-		&.gh {
-			background-position: 0 -1520px;
-		}
-
-		&.gi {
-			background-position: 0 -1536px;
-		}
-
-		&.gl {
-			background-position: 0 -1552px;
-		}
-
-		&.gm {
-			background-position: 0 -1568px;
-		}
-
-		&.gn {
-			background-position: 0 -1584px;
-		}
-
-		&.gp {
-			background-position: 0 -1600px;
-		}
-
-		&.gq {
-			background-position: 0 -1616px;
-		}
-
-		&.gr {
-			background-position: 0 -1632px;
-		}
-
-		&.gt {
-			background-position: 0 -1648px;
-		}
-
-		&.gu {
-			background-position: 0 -1664px;
-		}
-
-		&.gw {
-			background-position: 0 -1680px;
-		}
-
-		&.gy {
-			background-position: 0 -1696px;
-		}
-
-		&.hk {
-			background-position: 0 -1712px;
-		}
-
-		&.hn {
-			background-position: 0 -1728px;
-		}
-
-		&.hr {
-			background-position: 0 -1744px;
-		}
-
-		&.ht {
-			background-position: 0 -1760px;
-		}
-
-		&.hu {
-			background-position: 0 -1776px;
-		}
-
-		&.id {
-			background-position: 0 -1792px;
-		}
-
-		&.mc {
-			background-position: 0 -1792px;
-		}
-
-		&.ie {
-			background-position: 0 -1808px;
-		}
-
-		&.il {
-			background-position: 0 -1824px;
-		}
-
-		&.im {
-			background-position: 0 -1840px;
-		}
-
-		&.in {
-			background-position: 0 -1856px;
-		}
-
-		&.iq {
-			background-position: 0 -1872px;
-		}
-
-		&.ir {
-			background-position: 0 -1888px;
-		}
-
-		&.is {
-			background-position: 0 -1904px;
-		}
-
-		&.it {
-			background-position: 0 -1920px;
-		}
-
-		&.je {
-			background-position: 0 -1936px;
-		}
-
-		&.jm {
-			background-position: 0 -1952px;
-		}
-
-		&.jo {
-			background-position: 0 -1968px;
-		}
-
-		&.jp {
-			background-position: 0 -1984px;
-		}
-
-		&.ke {
-			background-position: 0 -2000px;
-		}
-
-		&.kg {
-			background-position: 0 -2016px;
-		}
-
-		&.kh {
-			background-position: 0 -2032px;
-		}
-
-		&.ki {
-			background-position: 0 -2048px;
-		}
-
-		&.km {
-			background-position: 0 -2064px;
-		}
-
-		&.kn {
-			background-position: 0 -2080px;
-		}
-
-		&.kp {
-			background-position: 0 -2096px;
-		}
-
-		&.kr {
-			background-position: 0 -2112px;
-		}
-
-		&.kw {
-			background-position: 0 -2128px;
-		}
-
-		&.ky {
-			background-position: 0 -2144px;
-		}
-
-		&.kz {
-			background-position: 0 -2160px;
-		}
-
-		&.la {
-			background-position: 0 -2176px;
-		}
-
-		&.lb {
-			background-position: 0 -2192px;
-		}
-
-		&.lc {
-			background-position: 0 -2208px;
-		}
-
-		&.li {
-			background-position: 0 -2224px;
-		}
-
-		&.lk {
-			background-position: 0 -2240px;
-		}
-
-		&.lr {
-			background-position: 0 -2256px;
-		}
-
-		&.ls {
-			background-position: 0 -2272px;
-		}
-
-		&.lt {
-			background-position: 0 -2288px;
-		}
-
-		&.lu {
-			background-position: 0 -2304px;
-		}
-
-		&.lv {
-			background-position: 0 -2320px;
-		}
-
-		&.ly {
-			background-position: 0 -2336px;
-		}
-
-		&.ma {
-			background-position: 0 -2352px;
-		}
-
-		&.md {
-			background-position: 0 -2368px;
-		}
-
-		&.me {
-			background-position: 0 -2384px;
-		}
-
-		&.mg {
-			background-position: 0 -2400px;
-		}
-
-		&.mh {
-			background-position: 0 -2416px;
-		}
-
-		&.mk {
-			background-position: 0 -2432px;
-		}
-
-		&.ml {
-			background-position: 0 -2448px;
-		}
-
-		&.mm {
-			background-position: 0 -2464px;
-		}
-
-		&.mn {
-			background-position: 0 -2480px;
-		}
-
-		&.mo {
-			background-position: 0 -2496px;
-		}
-
-		&.mq {
-			background-position: 0 -2512px;
-		}
-
-		&.mr {
-			background-position: 0 -2528px;
-		}
-
-		&.ms {
-			background-position: 0 -2544px;
-		}
-
-		&.mt {
-			background-position: 0 -2560px;
-		}
-
-		&.mu {
-			background-position: 0 -2576px;
-		}
-
-		&.mv {
-			background-position: 0 -2592px;
-		}
-
-		&.mw {
-			background-position: 0 -2608px;
-		}
-
-		&.mx {
-			background-position: 0 -2624px;
-		}
-
-		&.my {
-			background-position: 0 -2640px;
-		}
-
-		&.mz {
-			background-position: 0 -2656px;
-		}
-
-		&.na {
-			background-position: 0 -2672px;
-		}
-
-		&.nc {
-			background-position: 0 -2688px;
-		}
-
-		&.ne {
-			background-position: 0 -2704px;
-		}
-
-		&.ng {
-			background-position: 0 -2720px;
-		}
-
-		&.ni {
-			background-position: 0 -2736px;
-		}
-
-		&.nl {
-			background-position: 0 -2752px;
-		}
-
-		&.bq {
-			background-position: 0 -2752px;
-		}
-
-		&.no,
-		&.bv,
-		&.nq,
-		&.sj {
-			background-position: 0 -2768px;
-		}
-
-		&.np {
-			background-position: 0 -2784px;
-		}
-
-		&.nr {
-			background-position: 0 -2800px;
-		}
-
-		&.nz {
-			background-position: 0 -2816px;
-		}
-
-		&.om {
-			background-position: 0 -2832px;
-		}
-
-		&.pa {
-			background-position: 0 -2848px;
-		}
-
-		&.pe {
-			background-position: 0 -2864px;
-		}
-
-		&.pf {
-			background-position: 0 -2880px;
-		}
-
-		&.pg {
-			background-position: 0 -2896px;
-		}
-
-		&.ph {
-			background-position: 0 -2912px;
-		}
-
-		&.pk {
-			background-position: 0 -2928px;
-		}
-
-		&.pl {
-			background-position: 0 -2944px;
-		}
-
-		&.pr {
-			background-position: 0 -2960px;
-		}
-
-		&.ps {
-			background-position: 0 -2976px;
-		}
-
-		&.pt {
-			background-position: 0 -2992px;
-		}
-
-		&.pw {
-			background-position: 0 -3008px;
-		}
-
-		&.py {
-			background-position: 0 -3024px;
-		}
-
-		&.qa {
-			background-position: 0 -3040px;
-		}
-
-		&.re {
-			background-position: 0 -3056px;
-		}
-
-		&.ro {
-			background-position: 0 -3072px;
-		}
-
-		&.rs {
-			background-position: 0 -3088px;
-		}
-
-		&.ru {
-			background-position: 0 -3104px;
-		}
-
-		&.rw {
-			background-position: 0 -3120px;
-		}
-
-		&.sa {
-			background-position: 0 -3136px;
-		}
-
-		&.sb {
-			background-position: 0 -3152px;
-		}
-
-		&.sc {
-			background-position: 0 -3168px;
-		}
-
-		&.sd {
-			background-position: 0 -3184px;
-		}
-
-		&.se {
-			background-position: 0 -3200px;
-		}
-
-		&.sg {
-			background-position: 0 -3216px;
-		}
-
-		&.si {
-			background-position: 0 -3232px;
-		}
-
-		&.sk {
-			background-position: 0 -3248px;
-		}
-
-		&.sl {
-			background-position: 0 -3264px;
-		}
-
-		&.sm {
-			background-position: 0 -3280px;
-		}
-
-		&.sn {
-			background-position: 0 -3296px;
-		}
-
-		&.so {
-			background-position: 0 -3312px;
-		}
-
-		&.sr {
-			background-position: 0 -3328px;
-		}
-
-		&.st {
-			background-position: 0 -3344px;
-		}
-
-		&.sv {
-			background-position: 0 -3360px;
-		}
-
-		&.sy {
-			background-position: 0 -3376px;
-		}
-
-		&.sz {
-			background-position: 0 -3392px;
-		}
-
-		&.tc {
-			background-position: 0 -3408px;
-		}
-
-		&.td {
-			background-position: 0 -3424px;
-		}
-
-		&.tg {
-			background-position: 0 -3440px;
-		}
-
-		&.th {
-			background-position: 0 -3456px;
-		}
-
-		&.tj {
-			background-position: 0 -3472px;
-		}
-
-		&.tl {
-			background-position: 0 -3488px;
-		}
-
-		&.tm {
-			background-position: 0 -3504px;
-		}
-
-		&.tn {
-			background-position: 0 -3520px;
-		}
-
-		&.to {
-			background-position: 0 -3536px;
-		}
-
-		&.tr {
-			background-position: 0 -3552px;
-		}
-
-		&.tt {
-			background-position: 0 -3568px;
-		}
-
-		&.tv {
-			background-position: 0 -3584px;
-		}
-
-		&.tw {
-			background-position: 0 -3600px;
-		}
-
-		&.tz {
-			background-position: 0 -3616px;
-		}
-
-		&.ua {
-			background-position: 0 -3632px;
-		}
-
-		&.ug {
-			background-position: 0 -3648px;
-		}
-
-		&.us {
-			background-position: 0 -3664px;
-		}
-
-		&.uy {
-			background-position: 0 -3680px;
-		}
-
-		&.uz {
-			background-position: 0 -3696px;
-		}
-
-		&.va {
-			background-position: 0 -3712px;
-		}
-
-		&.vc {
-			background-position: 0 -3728px;
-		}
-
-		&.ve {
-			background-position: 0 -3744px;
-		}
-
-		&.vg {
-			background-position: 0 -3760px;
-		}
-
-		&.vi {
-			background-position: 0 -3776px;
-		}
-
-		&.vn {
-			background-position: 0 -3792px;
-		}
-
-		&.vu {
-			background-position: 0 -3808px;
-		}
-
-		&.ws {
-			background-position: 0 -3824px;
-		}
-
-		&.ye {
-			background-position: 0 -3840px;
-		}
-
-		&.za {
-			background-position: 0 -3856px;
-		}
-
-		&.zm {
-			background-position: 0 -3872px;
-		}
-
-		&.zw {
-			background-position: 0 -3888px;
-		}
-
-		&.sx {
-			background-position: 0 -3904px;
-		}
-
-		&.cw {
-			background-position: 0 -3920px;
-		}
-
-		&.ss {
-			background-position: 0 -3936px;
-		}
 	}
 </style>
