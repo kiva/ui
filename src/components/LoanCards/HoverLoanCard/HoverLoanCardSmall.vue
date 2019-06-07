@@ -1,14 +1,15 @@
 <template>
-	<div class="hover-loan-card-small" :class="{expanded}">
+	<div class="hover-loan-card-small" :class="{expanded: hover}">
 		<loan-card-image
+			class="hover-loan-card-image"
 			:loan-id="loan.id"
 			:name="loan.name"
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="true"
-			@click.native="trackProfileClick"
-			:open-in-new-tab="true"
 			:use-default-styles="false"
+
+			@track-loan-card-interaction="trackInteraction"
 		/>
 		<div class="hover-loan-card-data-wrap">
 			<p class="name">
@@ -28,10 +29,9 @@
 	</div>
 </template>
 <script>
-import numeral from 'numeral';
-import _get from 'lodash/get';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
+import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
 
 export default {
 	components: {
@@ -39,59 +39,14 @@ export default {
 		MinimalFundraisingMeter,
 	},
 	inject: ['apollo'],
+	mixins: [
+		hoverLoanCardMixin,
+	],
 	props: {
-		loan: {
-			type: Object,
-			default: () => {
-				return {
-					userProperties: {},
-					loanFundraisingInfo: {},
-					geocode: {
-						country: {}
-					},
-					image: {}
-				};
-			}
-		},
-		cardNumber: {
-			type: Number,
-			default: 0
-		},
-		expanded: {
+		hover: {
 			type: Boolean,
 			default: false,
 		},
-	},
-	computed: {
-		amountLeft() {
-			const { fundedAmount, reservedAmount } = this.loan.loanFundraisingInfo;
-			return numeral(this.loan.loanAmount).subtract(fundedAmount).subtract(reservedAmount).value();
-		},
-		isFunded() {
-			return this.loan.status === 'funded' || this.amountLeft <= 0;
-		},
-		percentRaised() {
-			return numeral(numeral(this.loan.loanAmount).subtract(this.amountLeft))
-				.divide(this.loan.loanAmount).value();
-		},
-		loanType() {
-			const country = _get(this.loan, 'geocode.country.name');
-			const sector = _get(this.loan, 'sector.name');
-			const partner = _get(this.loan, 'partner.name');
-			const gender = _get(this.loan, 'gender.name');
-			const activity = _get(this.loan, 'activity.name');
-			return `location=${country},sector=${sector},partner=${partner},gender=${gender},activity=${activity}`;
-		}
-	},
-	methods: {
-		trackProfileClick() {
-			this.$kvTrackEvent(
-				'Lending',
-				'lend-button-loan-profile',
-				this.loanType,
-				this.cardNumber
-			);
-		}
 	},
 };
 </script>
@@ -99,29 +54,35 @@ export default {
 @import "settings";
 
 .hover-loan-card-small {
-	margin: rem-calc(10);
 	width: rem-calc(180);
-	background: white;
-	display: inline-flex;
+	background: $white;
+	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	flex-shrink: 0;
+	border-radius: rem-calc(3);
 	transform: scale(1, 1);
 	opacity: 1;
-	transition: transform 0.2s linear, opacity 0.2s linear;
+	transition: transform 0.15s linear, opacity 0.15s linear;
+
+	.hover-loan-card-image {
+		border-radius: rem-calc(3) rem-calc(3) 0 0;
+		overflow: hidden;
+	}
 
 	.hover-loan-card-data-wrap {
 		position: relative;
 		padding: 0.75rem 1rem;
 		text-align: center;
-		border: 1px solid $kiva-stroke-gray;
+		border: rem-calc(1) solid $kiva-stroke-gray;
+		border-radius: 0 0 rem-calc(3) rem-calc(3);
 		border-top: none;
-		height: 90px;
+		height: rem-calc(90);
 
 		.name {
 			line-height: rem-calc(20);
 			color: $kiva-text-dark;
-			margin-bottom: 12px;
+			margin-bottom: 0.75rem;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -142,7 +103,7 @@ export default {
 	}
 
 	&.expanded {
-		transform: scale(3.2, 1.1);
+		transform: scale(calc(29 / 9), calc(10 / 9));
 		opacity: 0;
 	}
 }
