@@ -1,6 +1,7 @@
 <template>
 	<div class="hover-loan-card-small" :class="{expanded: hover}">
 		<loan-card-image
+			class="hover-loan-card-image"
 			:loan-id="loan.id"
 			:name="loan.name"
 			:retina-image-url="loan.image.retina"
@@ -59,15 +60,22 @@ export default {
 	flex-direction: column;
 	justify-content: space-between;
 	flex-shrink: 0;
+	border-radius: rem-calc(3);
 	transform: scale(1, 1);
 	opacity: 1;
 	transition: transform 0.15s linear, opacity 0.15s linear;
+
+	.hover-loan-card-image {
+		border-radius: rem-calc(3) rem-calc(3) 0 0;
+		overflow: hidden;
+	}
 
 	.hover-loan-card-data-wrap {
 		position: relative;
 		padding: 0.75rem 1rem;
 		text-align: center;
 		border: 1px solid $kiva-stroke-gray;
+		border-radius: 0 0 rem-calc(3) rem-calc(3);
 		border-top: none;
 		height: 90px;
 
