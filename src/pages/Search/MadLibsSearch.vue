@@ -1,6 +1,10 @@
 <template>
 	<www-page :gray-background="true">
-		<lend-header :side-arrows-padding="true" />
+		<lend-header
+			:side-arrows-padding="true"
+			browse-url="/lend-by-category"
+			filter-url="/lend/filter"
+		/>
 
 		<div class="algolia-wrap">
 			<ais-instant-search
@@ -10,12 +14,6 @@
 				:routing="routing"
 			>
 				<!-- eslint-disable vue/attribute-hyphenation -->
-				<!-- We could run a default query... :query="defaultSearch" -->
-				<!-- Apply multiple facets or global facets with :filters="filters" -->
-				<!-- Apply via array :facetFilters="facetFilters" -->
-				<!-- :sumOrFiltersScores="true" Show loans that meet all criteria first-->
-				<!-- :disjunctiveFacets="disjunctiveFacetsKeys" -->
-				<!-- :disjunctiveFacetsRefinements="disjunctiveFacets" -->
 				<ais-configure
 					:hitsPerPage="12"
 					clickAnalytics="true"
@@ -80,9 +78,9 @@
 				</div>
 
 				<div class="row search-pagination-stats align-center">
-					<ais-pagination :padding="2" class="columns small-12 xlarge-offset-3" />
-					<ais-stats class="columns small-12 xlarge-offset-3 text-center" />
-					<ais-hits-per-page class="columns small-12 xlarge-offset-3" :items="[
+					<ais-pagination :padding="2" class="columns small-12" />
+					<ais-stats class="columns small-12 text-center" />
+					<ais-hits-per-page class="columns small-12" :items="[
 						{ label: '15', value: 15, default: true },
 						{ label: '25', value: 25 },
 						{ label: '50', value: 50 },
@@ -100,6 +98,7 @@ import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
@@ -137,7 +136,8 @@ export default {
 		AisStateResults,
 		AisMenuSelect,
 		AlgoliaAdapter,
-		LendHeader
+		LendHeader,
+		LoadingOverlay
 	},
 	inject: [
 		'apollo',
@@ -218,7 +218,7 @@ export default {
 }
 
 .search-statement-wrapper {
-	margin: 20px 0;
+	margin-bottom: rem-calc(32);
 }
 
 .ais-MenuSelect {

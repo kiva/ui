@@ -54,16 +54,19 @@ function rebuildSortByIndexFromRoute(routeStateSortBy) {
 }
 
 function stateToRoute(uiState) {
-	// console.log(`uiState: ${JSON.stringify(uiState)}`);
+	console.log(`uiState: ${JSON.stringify(uiState)}`);
+	/* eslint-disable no-mixed-operators no-alert */
 	return {
 		query: uiState.query,
 		gender:
 			uiState.menu
 			&& uiState.menu.gender,
 		sector:
-			uiState.refinementList
+			(uiState.refinementList
 			&& uiState.refinementList['sector.name']
-			&& uiState.refinementList['sector.name'].join('~'),
+			&& uiState.refinementList['sector.name'].join('~'))
+			|| (uiState.menu
+			&& uiState.menu['sector.name']),
 		attributes:
 			uiState.refinementList
 			&& uiState.refinementList['loanThemeFilters.name']
@@ -73,9 +76,11 @@ function stateToRoute(uiState) {
 			&& uiState.refinementList['tags.name']
 			&& uiState.refinementList['tags.name'].join('~'),
 		location:
-			uiState.hierarchicalMenu
+			(uiState.hierarchicalMenu
 			&& uiState.hierarchicalMenu['locationFacets.lvl0']
-			&& uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'),
+			&& uiState.hierarchicalMenu['locationFacets.lvl0'].join('~'))
+			|| (uiState.menu
+			&& uiState.menu['locationFacets.lvl0']),
 		countries:
 			uiState.refinementList
 			&& uiState.refinementList['locationFacets.lvl1']
@@ -98,11 +103,13 @@ function stateToRoute(uiState) {
 }
 
 function routeToState(routeState) {
-	// console.log(`routeState: ${JSON.stringify(routeState)}`);
+	console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
 		menu: {
-			gender: routeState.gender
+			gender: routeState.gender,
+			'sector.name': routeState.sector,
+			'locationFacets.lvl0': routeState.location,
 		},
 		refinementList: {
 			'sector.name':
