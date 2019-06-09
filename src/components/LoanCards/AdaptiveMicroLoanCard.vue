@@ -16,10 +16,11 @@
 			</p>
 			<!-- loan meter	 -->
 			<div class="minimal-fundraising-meter">
-				<minimal-fundraising-meter
+				<fundraising-status-meter
 					:amount-left="amountLeft"
 					:percent-raised="percentRaised"
 					:is-funded="loan.status==='funded'"
+					:short-meter="true"
 				/>
 			</div>
 			<!-- Country -->
@@ -53,13 +54,13 @@ import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import _includes from 'lodash/includes';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
+import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatusMeter';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 
 export default {
 	components: {
 		LoanCardImage,
-		MinimalFundraisingMeter,
+		FundraisingStatusMeter,
 	},
 	inject: ['apollo'],
 	props: {

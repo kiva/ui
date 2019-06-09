@@ -1,49 +1,66 @@
-<template functional>
+<template>
 	<div
+		class="fundraising-status"
 		:class="{
-			'single-line': props.singleLine,
-			'hide-meter': props.singleLine && props.expiringSoonMessage,
+			'single-line': singleLine,
+			'hide-meter': singleLine && expiringSoonMessage,
 		}"
 	>
-		<div class="fundraising-meter progress">
-			<span v-if="props.isFunded"
-				class="meter"
-				style="width: 100%;"
-			></span>
-			<span v-else
-				class="meter"
-				:style="{width: (props.percentRaised * 100) + '%'}"
-			></span>
-		</div>
-
+		<fundraising-status-meter
+			class="fundraising-status-meter"
+			:is-funded="isFunded"
+			:percent-raised="percentRaised"
+		/>
 		<div class="left-and-to-go-line">
-			<span v-if="props.expiringSoonMessage !== ''"
+			<span v-if="expiringSoonMessage !== ''"
 				class="loan-message"
-			>{{ props.expiringSoonMessage }}</span>
-			<span v-if="props.isFunded" class="funded">Funded</span>
-			<span v-else>${{ props.amountLeft | numeral('0,0') }} to go</span>
+			>
+				{{ expiringSoonMessage }}
+			</span>
+			<span v-if="isFunded" class="funded">Funded</span>
+			<span v-else>${{ amountLeft | numeral('0,0') }} to go</span>
 		</div>
 	</div>
 </template>
 
+<script>
+import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatusMeter';
+
+export default {
+	components: {
+		FundraisingStatusMeter,
+	},
+	props: {
+		singleLine: {
+			type: Boolean,
+			default: false,
+		},
+		expiringSoonMessage: {
+			type: String,
+			default: '',
+		},
+		isFunded: {
+			type: Boolean,
+			default: false
+		},
+		percentRaised: {
+			type: Number,
+			default: 0,
+		},
+		amountLeft: {
+			type: Number,
+			default: 0,
+		},
+	},
+};
+</script>
+
 <style lang="scss" scoped>
-	@import 'settings';
-	$loan-card-meter-height: rem-calc(8);
+@import 'settings';
 
-	.fundraising-meter {
-		height: $loan-card-meter-height;
-		width: 100%;
+.fundraising-status {
+	.fundraising-status-meter {
 		margin: 0 0 rem-calc(8);
-		border-radius: $loan-card-meter-height;
-		background-color: $kiva-stroke-gray;
-
-		.meter {
-			border-radius: $loan-card-meter-height;
-			background-color: $kiva-green;
-			display: block;
-			height: 100%;
-			transition: width 1s;
-		}
 	}
 
 	.left-and-to-go-line {
@@ -54,23 +71,23 @@
 		font-weight: $button-font-weight;
 		color: $kiva-green;
 
+		.loan-message {
+			color: $kiva-text-dark;
+		}
+
 		.funded {
 			font-style: normal;
 		}
 	}
 
-	.loan-message {
-		color: $kiva-text-dark;
-	}
-
-	.single-line {
+	&.single-line {
 		display: flex;
 		flex-direction: row-reverse;
 		justify-content: space-between;
 		align-items: center;
 		margin-bottom: 0.625rem;
 
-		.fundraising-meter {
+		.fundraising-status-meter {
 			width: 60%;
 			margin: 0;
 		}
@@ -85,9 +102,10 @@
 		&.hide-meter {
 			flex-direction: row;
 
-			.fundraising-meter {
+			.fundraising-status-meter {
 				display: none;
 			}
 		}
 	}
+}
 </style>
