@@ -16,10 +16,11 @@
 				{{ loan.name }}
 			</p>
 			<div class="minimal-fundraising-meter">
-				<minimal-fundraising-meter
+				<fundraising-status-meter
 					:amount-left="amountLeft"
 					:percent-raised="percentRaised"
 					:is-funded="loan.status==='funded'"
+					:short-meter="true"
 				/>
 			</div>
 			<p class="small-text loan-data">
@@ -30,13 +31,13 @@
 </template>
 <script>
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import MinimalFundraisingMeter from '@/components/LoansYouMightLike/MinimalFundraisingMeter';
+import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatusMeter';
 import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
 
 export default {
 	components: {
 		LoanCardImage,
-		MinimalFundraisingMeter,
+		FundraisingStatusMeter,
 	},
 	inject: ['apollo'],
 	mixins: [
