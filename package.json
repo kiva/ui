@@ -75,7 +75,7 @@
 		"store2": "^2.7.1",
 		"vue": "^2.6.10",
 		"vue-instantsearch": "^2.0.1",
-		"vue-meta": "^1.6.0",
+		"vue-meta": "^2.0.0",
 		"vue-progressbar": "^0.7.3",
 		"vue-router": "^3.0.4",
 		"vue-server-renderer": "^2.6.10",
