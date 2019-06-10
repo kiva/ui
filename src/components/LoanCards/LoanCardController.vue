@@ -39,6 +39,7 @@ import ExpandableLoanCardCollapsed from '@/components/LoanCards/ExpandableLoanCa
 import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
+import HoverLoanCard from '@/components/LoanCards/HoverLoanCard/HoverLoanCard';
 import {
 	differenceInMinutes,
 	differenceInHours,
@@ -56,6 +57,7 @@ export default {
 		ExpandableLoanCardCollapsed,
 		GridMicroLoanCard,
 		ListLoanCard,
+		HoverLoanCard,
 	},
 	props: {
 		loanCardType: {

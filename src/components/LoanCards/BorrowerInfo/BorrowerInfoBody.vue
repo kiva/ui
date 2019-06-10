@@ -13,7 +13,9 @@
 					interactionType: 'viewBorrowerPage',
 					interactionElement: 'readMore'
 				})"
-			>Read more</span>
+			>
+				{{ readMoreLinkText }}
+			</span>
 		</router-link>
 		<!--
         <div v-if="activeSort === 'loanLength'" class="loan-length">
@@ -53,6 +55,10 @@ export default {
 		maxUseLength: {
 			type: Number,
 			default: 500
+		},
+		readMoreLinkText: {
+			type: String,
+			default: 'Read more',
 		},
 	},
 	computed: {

@@ -4,12 +4,14 @@
 		:class="{
 			'single-line': singleLine,
 			'hide-meter': singleLine && expiringSoonMessage,
+			'left-and-to-go-on-top': leftAndToGoOnTop,
 		}"
 	>
 		<fundraising-status-meter
 			class="fundraising-status-meter"
 			:is-funded="isFunded"
 			:percent-raised="percentRaised"
+			:short-meter="shortMeter"
 		/>
 		<div class="left-and-to-go-line">
 			<span v-if="expiringSoonMessage !== ''"
@@ -32,6 +34,14 @@ export default {
 	},
 	props: {
 		singleLine: {
+			type: Boolean,
+			default: false,
+		},
+		leftAndToGoOnTop: {
+			type: Boolean,
+			default: false,
+		},
+		shortMeter: {
 			type: Boolean,
 			default: false,
 		},
@@ -59,8 +69,11 @@ export default {
 @import 'settings';
 
 .fundraising-status {
+	display: flex;
+	flex-direction: column;
+
 	.fundraising-status-meter {
-		margin: 0 0 rem-calc(8);
+		margin-bottom: rem-calc(8);
 	}
 
 	.left-and-to-go-line {
@@ -80,8 +93,21 @@ export default {
 		}
 	}
 
+	&.left-and-to-go-on-top {
+		flex-direction: column-reverse;
+
+		.fundraising-status-meter {
+			margin-bottom: 0;
+		}
+
+		.left-and-to-go-line {
+			margin-bottom: 0.25rem;
+			font-weight: $global-weight-normal;
+			font-style: normal;
+		}
+	}
+
 	&.single-line {
-		display: flex;
 		flex-direction: row-reverse;
 		justify-content: space-between;
 		align-items: center;

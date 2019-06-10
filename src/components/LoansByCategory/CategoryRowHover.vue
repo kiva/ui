@@ -40,7 +40,7 @@
 					v-touch:swipe.right="scrollRowLeft"
 				>
 					<loan-card-controller
-						:loan-card-type="loanCardType"
+						loan-card-type="HoverLoanCard"
 						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
@@ -52,7 +52,6 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
@@ -91,7 +90,6 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 const minWidthToShowLargeCards = 340;
 const smallCardWidthPlusPadding = 276;
 const largeCardWidthPlusPadding = 300;
-const expandableCardWidthPlusPadding = 274;
 
 export default {
 	components: {
@@ -119,14 +117,6 @@ export default {
 			type: String,
 			default: 'Control'
 		},
-		showExpandableLoanCards: {
-			type: Boolean,
-			default: false,
-		},
-		imageEnhancementExperimentVersion: {
-			type: String,
-			default: ''
-		},
 		showCategoryDescription: {
 			type: Boolean,
 			default: false
@@ -144,16 +134,10 @@ export default {
 		};
 	},
 	computed: {
-		loanCardType() {
-			return this.showExpandableLoanCards ? 'ExpandableLoanCardCollapsed' : 'GridLoanCard';
-		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
 		cardWidth() {
-			if (this.showExpandableLoanCards) {
-				return expandableCardWidthPlusPadding;
-			}
 			return this.windowWidth > minWidthToShowLargeCards
 				? largeCardWidthPlusPadding
 				: smallCardWidthPlusPadding;
@@ -366,7 +350,7 @@ $row-max-width: 63.75rem;
 
 	font-weight: $global-weight-normal;
 	margin-top: rem-calc(12);
-	margin-bottom: rem-calc(20);
+	margin-bottom: 0;
 }
 
 a.view-all-link {
