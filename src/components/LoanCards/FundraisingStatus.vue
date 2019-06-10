@@ -3,18 +3,22 @@
 		class="fundraising-status"
 		:class="{
 			'single-line': singleLine,
-			'hide-meter': singleLine && expiringSoonMessage,
+			'hide-meter': hideMeter,
 			'left-and-to-go-on-top': leftAndToGoOnTop,
 		}"
 	>
-		<fundraising-status-meter
-			class="fundraising-status-meter"
-			:is-funded="isFunded"
-			:percent-raised="percentRaised"
-			:short-meter="shortMeter"
-		/>
+		<div
+			class="fundraising-status-meter-wrapper"
+		>
+			<fundraising-status-meter
+				:is-funded="isFunded"
+				:percent-raised="percentRaised"
+				:short-meter="shortMeter"
+			/>
+		</div>
 		<div class="left-and-to-go-line">
-			<span v-if="expiringSoonMessage !== ''"
+			<span
+				v-if="expiringSoonMessage !== ''"
 				class="loan-message"
 			>
 				{{ expiringSoonMessage }}
@@ -62,6 +66,11 @@ export default {
 			default: 0,
 		},
 	},
+	computed: {
+		hideMeter() {
+			return this.singleLine && this.expiringSoonMessage;
+		},
+	},
 };
 </script>
 
@@ -72,7 +81,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 
-	.fundraising-status-meter {
+	.fundraising-status-meter-wrapper {
 		margin-bottom: rem-calc(8);
 	}
 
@@ -96,7 +105,7 @@ export default {
 	&.left-and-to-go-on-top {
 		flex-direction: column-reverse;
 
-		.fundraising-status-meter {
+		.fundraising-status-meter-wrapper {
 			margin-bottom: 0;
 		}
 
@@ -113,7 +122,7 @@ export default {
 		align-items: center;
 		margin-bottom: 0.625rem;
 
-		.fundraising-status-meter {
+		.fundraising-status-meter-wrapper {
 			width: 60%;
 			margin: 0;
 		}
@@ -128,7 +137,7 @@ export default {
 		&.hide-meter {
 			flex-direction: row;
 
-			.fundraising-status-meter {
+			.fundraising-status-meter-wrapper {
 				display: none;
 			}
 		}
