@@ -40,9 +40,12 @@
 										any region
 									</template>
 								</ais-menu-select>
-								with loans to
+								with loans {{ toFor }}
 								<ais-menu-select
 									:attribute="'sector.name'" :limit="100"
+									:class="sectorDropdown"
+									ref="sectorDropdown"
+									@change="console.log('change event occurred');"
 								>
 									<template slot="defaultOption">
 										improve their businesses
@@ -69,7 +72,7 @@
 											loan-card-type="GridLoanCard"
 											class="column-block columns"
 										/>
-										<loading-overlay v-if="loading" />
+										<!-- <loading-overlay v-if="loading" /> -->
 									</template>
 								</ais-hits>
 							</template>
@@ -87,6 +90,12 @@
 					]"
 					/>
 				</div>
+
+				<ais-state-results>
+					<template slot-scope="stateData">
+						<algolia-track-state :state-data-hits="stateData.hits" />
+					</template>
+				</ais-state-results>
 			</ais-instant-search>
 		</div>
 	</www-page>
@@ -98,13 +107,14 @@ import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+// import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
 // This mixin provides config for our indices + loan channel categories
 import algoliaConfig from '@/plugins/algolia-config-mixin';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
@@ -136,8 +146,14 @@ export default {
 		AisStateResults,
 		AisMenuSelect,
 		AlgoliaAdapter,
+		AlgoliaTrackState,
 		LendHeader,
-		LoadingOverlay
+		// LoadingOverlay
+	},
+	data() {
+		return {
+			toFor: 'to'
+		};
 	},
 	inject: [
 		'apollo',
@@ -181,6 +197,15 @@ export default {
 		});
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
+	mounted() {
+		// const { sectorDropdown } = this.$refs;
+		const sectorDropdown = document.querySelector('.sectorDropdown');
+		console.log(sectorDropdown);
+		sectorDropdown.addEventListener('change', () => {
+			console.log(sectorDropdown);
+			this.toFor = `${sectorDropdown !== 'defaultOption' ? 'to' : 'for'}`;
+		});
+	}
 };
 </script>
 

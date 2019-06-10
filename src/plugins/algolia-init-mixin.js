@@ -54,7 +54,7 @@ function rebuildSortByIndexFromRoute(routeStateSortBy) {
 }
 
 function stateToRoute(uiState) {
-	console.log(`uiState: ${JSON.stringify(uiState)}`);
+	// console.log(`uiState: ${JSON.stringify(uiState)}`);
 	/* eslint-disable no-mixed-operators no-alert */
 	return {
 		query: uiState.query,
@@ -103,7 +103,7 @@ function stateToRoute(uiState) {
 }
 
 function routeToState(routeState) {
-	console.log(`routeState: ${JSON.stringify(routeState)}`);
+	// console.log(`routeState: ${JSON.stringify(routeState)}`);
 	return {
 		query: routeState.query,
 		menu: {
