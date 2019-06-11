@@ -30,16 +30,23 @@
 									<template slot="defaultOption">
 										women and men
 									</template>
+									<template slot="item" slot-scope="{ item }">
+										{{ item.label }}
+									</template>
 								</ais-menu-select>
 								in
 								<ais-menu-select
-									:attribute="'locationFacets.lvl0'" :limit="100"
+									:attribute="'locationFacets.lvl0'"
+									:limit="100"
 								>
 									<template slot="defaultOption">
 										any region
 									</template>
+									<template slot="item" slot-scope="{ item }">
+										{{ item.label }}
+									</template>
 								</ais-menu-select>
-								with loans {{ toForLanguage }}
+								with loans {{ toFor }}
 								<ais-menu-select
 									attribute="sector.name"
 									:limit="100"
@@ -47,7 +54,7 @@
 									<select
 										slot-scope="{ items, canRefine, refine }"
 										:disabled="!canRefine"
-										@change="refine($event.currentTarget.value)"
+										@change="toForLanguage(refine, $event.currentTarget.value)"
 									>
 										<option value="">improve their businesses</option>
 										<option
@@ -163,7 +170,7 @@ export default {
 	},
 	data() {
 		return {
-			toForLanguage: 'to'
+			toFor: 'to'
 		};
 	},
 	inject: [
@@ -210,32 +217,18 @@ export default {
 	},
 	methods: {
 		// How is this connected to the specific dropdown that I want to target?
-		// toForLanguage(refine, $event) {
-		// 	const { currentTarget } = $event.currentTarget.value;
-		// 	console.log('current target', currentTarget);
-		// 	if (currentTarget !== '') {
-		// 		return 'for';
-		// 	}
-		// },
-		transformItems(items) {
-			const newItems = [];
-
-			items.forEach(({ refinements, refine/* , Custom Categoris skip: attribute */ }) => {
-				refinements.forEach(refinement => {
-					/* Custom Categories Skip
-					if (this.customCategoryAttributes.includes(attribute)) {
-						return;
-					}
-					*/
-					newItems.push({
-						...refinement,
-						label: this.generateLabel(refinement),
-						refine,
-					});
-				});
-			});
-			this.runOnTransformItems();
-			return newItems.concat(this.customCategoryItems);
+		toForLanguage(refine, $event) {
+			// const { currentTarget } = $event.currentTarget.value;
+			// console.log('current target', currentTarget);
+			// if (currentTarget !== '') {
+			// 	return 'for';
+			// }
+			if ($event !== '') {
+				this.toFor = 'for';
+			} else {
+				this.toFor = 'to';
+			}
+			refine($event);
 		},
 	},
 	mounted() {
