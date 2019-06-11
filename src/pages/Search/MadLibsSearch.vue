@@ -24,6 +24,9 @@
 						<div class="search-statement-wrapper">
 							<span>
 								I want to support
+								<!-- documentation for reference: -->
+								<!-- eslint-disable max-len -->
+								<!-- https://www.algolia.com/doc/api-reference/widgets/menu-select/vue/?language=vue#customize-the-ui -->
 								<ais-menu-select
 									:attribute="'gender'"
 								>
@@ -88,7 +91,7 @@
 											loan-card-type="GridLoanCard"
 											class="column-block columns"
 										/>
-										<!-- <loading-overlay v-if="loading" /> -->
+										<loading-overlay v-if="loading" />
 									</template>
 								</ais-hits>
 							</template>
@@ -123,7 +126,7 @@ import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
-// import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
@@ -164,7 +167,7 @@ export default {
 		AlgoliaAdapter,
 		AlgoliaTrackState,
 		LendHeader,
-		// LoadingOverlay
+		LoadingOverlay
 	},
 	props: {
 	},
@@ -216,13 +219,7 @@ export default {
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
 	methods: {
-		// How is this connected to the specific dropdown that I want to target?
 		toForLanguage(refine, $event) {
-			// const { currentTarget } = $event.currentTarget.value;
-			// console.log('current target', currentTarget);
-			// if (currentTarget !== '') {
-			// 	return 'for';
-			// }
 			if ($event !== '') {
 				this.toFor = 'for';
 			} else {
@@ -230,15 +227,6 @@ export default {
 			}
 			refine($event);
 		},
-	},
-	mounted() {
-		// const { sectorDropdown } = this.$refs;
-		// const sectorDropdown = document.querySelector('.sectorDropdown');
-		// console.log(sectorDropdown);
-		// sectorDropdown.addEventListener('change', () => {
-		// 	console.log(sectorDropdown);
-		// 	this.toFor = `${sectorDropdown !== 'defaultOption' ? 'to' : 'for'}`;
-		// });
 	}
 };
 </script>
@@ -258,17 +246,6 @@ export default {
 
 .loan-card-group {
 	position: relative;
-}
-
-.ais-HierarchicalMenu-list,
-.ais-RefinementList-list {
-	list-style: none;
-	margin-left: 0;
-
-	.ais-HierarchicalMenu-list--child {
-		list-style-type: circle;
-		margin-left: 1.2rem;
-	}
 }
 
 .algolia-loan-card-adapter {
