@@ -19,7 +19,6 @@
 					clickAnalytics="true"
 					ref="aisConfigure"
 				/>
-
 				<div class="row search-filter-and-results">
 					<div class="columns small-12 text-center">
 						<div class="search-statement-wrapper">
@@ -40,16 +39,26 @@
 										any region
 									</template>
 								</ais-menu-select>
-								with loans {{ toFor }}
+								with loans {{ toForLanguage }}
 								<ais-menu-select
-									:attribute="'sector.name'" :limit="100"
-									:class="sectorDropdown"
-									ref="sectorDropdown"
-									@change="console.log('change event occurred');"
+									attribute="sector.name"
+									:limit="100"
 								>
-									<template slot="defaultOption">
-										improve their businesses
-									</template>
+									<select
+										slot-scope="{ items, canRefine, refine }"
+										:disabled="!canRefine"
+										@change="refine($event.currentTarget.value)"
+									>
+										<option value="">improve their businesses</option>
+										<option
+											v-for="item in items"
+											:key="item.value"
+											:value="item.value"
+											:selected="item.isRefined"
+										>
+											{{ item.label }}
+										</option>
+									</select>
 								</ais-menu-select>
 							</span>
 						</div>
@@ -150,9 +159,11 @@ export default {
 		LendHeader,
 		// LoadingOverlay
 	},
+	props: {
+	},
 	data() {
 		return {
-			toFor: 'to'
+			toForLanguage: 'to'
 		};
 	},
 	inject: [
@@ -197,14 +208,44 @@ export default {
 		});
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
 	},
+	methods: {
+		// How is this connected to the specific dropdown that I want to target?
+		// toForLanguage(refine, $event) {
+		// 	const { currentTarget } = $event.currentTarget.value;
+		// 	console.log('current target', currentTarget);
+		// 	if (currentTarget !== '') {
+		// 		return 'for';
+		// 	}
+		// },
+		transformItems(items) {
+			const newItems = [];
+
+			items.forEach(({ refinements, refine/* , Custom Categoris skip: attribute */ }) => {
+				refinements.forEach(refinement => {
+					/* Custom Categories Skip
+					if (this.customCategoryAttributes.includes(attribute)) {
+						return;
+					}
+					*/
+					newItems.push({
+						...refinement,
+						label: this.generateLabel(refinement),
+						refine,
+					});
+				});
+			});
+			this.runOnTransformItems();
+			return newItems.concat(this.customCategoryItems);
+		},
+	},
 	mounted() {
 		// const { sectorDropdown } = this.$refs;
-		const sectorDropdown = document.querySelector('.sectorDropdown');
-		console.log(sectorDropdown);
-		sectorDropdown.addEventListener('change', () => {
-			console.log(sectorDropdown);
-			this.toFor = `${sectorDropdown !== 'defaultOption' ? 'to' : 'for'}`;
-		});
+		// const sectorDropdown = document.querySelector('.sectorDropdown');
+		// console.log(sectorDropdown);
+		// sectorDropdown.addEventListener('change', () => {
+		// 	console.log(sectorDropdown);
+		// 	this.toFor = `${sectorDropdown !== 'defaultOption' ? 'to' : 'for'}`;
+		// });
 	}
 };
 </script>
