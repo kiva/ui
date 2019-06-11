@@ -33,7 +33,8 @@
 		</div>
 
 		<div>
-			<category-row
+			<component
+				:is="categoryRowType"
 				class="loan-category-row"
 				v-for="(category, index) in categories"
 				:key="category.id"
@@ -108,6 +109,7 @@ import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
+import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
@@ -167,6 +169,7 @@ export default {
 			leftArrowPosition: undefined,
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
+			showHoverLoanCards: false,
 		};
 	},
 	computed: {
@@ -193,7 +196,10 @@ export default {
 				return true;
 			}
 			return false;
-		}
+		},
+		categoryRowType() {
+			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
+		},
 	},
 	methods: {
 		assemblePageViewData(categories) {
@@ -357,6 +363,30 @@ export default {
 					'Lending',
 					'EXP-CASH-794-June2019',
 					this.favoriteCountryExpVersion === 'shown' ? 'b' : 'a'
+				);
+			}
+		},
+		initializeHoverLoanCard() {
+			// CASH-521: Hover loan card experiment
+			const hoverLoanCardExperiment = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'hover_loan_cards' },
+			});
+			const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'experiment.version');
+			if (hoverLoanCardExperimentVersion === 'variant-a') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-521-Jun2019',
+					'a',
+				);
+			} else if (hoverLoanCardExperimentVersion === 'variant-b') {
+				this.showHoverLoanCards = true;
+				// We shouldn't run both expandable and hover loan cards at the same time for now
+				this.showExpandableLoanCards = false;
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-521-Jun2019',
+					'b',
 				);
 			}
 		},
@@ -529,6 +559,9 @@ export default {
 				'b',
 			);
 		}
+
+		// Initialize CASH-521: Hover loan card experiment
+		this.initializeHoverLoanCard();
 	},
 	mounted() {
 		this.fetchRemainingLoanChannels().then(() => {
