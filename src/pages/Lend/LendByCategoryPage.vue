@@ -366,6 +366,30 @@ export default {
 				);
 			}
 		},
+		initializeHoverLoanCard() {
+			// CASH-521: Hover loan card experiment
+			const hoverLoanCardExperiment = this.apollo.readQuery({
+				query: experimentQuery,
+				variables: { id: 'hover_loan_cards' },
+			});
+			const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'experiment.version');
+			if (hoverLoanCardExperimentVersion === 'variant-a') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-521-Jun2019',
+					'a',
+				);
+			} else if (hoverLoanCardExperimentVersion === 'variant-b') {
+				this.showHoverLoanCards = true;
+				// We shouldn't run both expandable and hover loan cards at the same time for now
+				this.showExpandableLoanCards = false;
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-521-Jun2019',
+					'b',
+				);
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -536,28 +560,8 @@ export default {
 			);
 		}
 
-		// CASH-521: Hover loan card experiment
-		const hoverLoanCardExperiment = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'hover_loan_cards' },
-		});
-		const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'experiment.version');
-		if (hoverLoanCardExperimentVersion === 'variant-a') {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-521-Jun2019',
-				'a',
-			);
-		} else if (hoverLoanCardExperimentVersion === 'variant-b') {
-			this.showHoverLoanCards = true;
-			// We shouldn't run both expandable and hover loan cards at the same time for now
-			this.showExpandableLoanCards = false;
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-521-Jun2019',
-				'b',
-			);
-		}
+		// Initialize CASH-521: Hover loan card experiment
+		this.initializeHoverLoanCard();
 	},
 	mounted() {
 		this.fetchRemainingLoanChannels().then(() => {
