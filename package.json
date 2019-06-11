@@ -103,7 +103,7 @@
 		"chalk": "^2.4.2",
 		"chokidar": "^3.0.0",
 		"coveralls": "^3.0.3",
-		"css-loader": "^2.1.1",
+		"css-loader": "^3.0.0",
 		"cssnano": "^4.1.10",
 		"cypress": "^3.3.1",
 		"dart-sass": "^1.18.0",
