@@ -252,7 +252,7 @@ export default {
 		result({ data, errors }) {
 			// check for authentication errors to indicate initial login status
 			if (errors && errors.length) {
-				console.log(errors);
+				console.error(errors);
 				const authErrors = _filter(errors, error => {
 					return error.code === 'api.authenticationRequired';
 				});
@@ -314,36 +314,30 @@ export default {
 		// This empty upon page load so we refetch in order to be able to use when we need it.
 		// TODO: Move this to a global operation that runs once, pushing the results into Apollo client state
 		// TODO: Refactor this operation to use a watch query on the afformentioned client state.
-		// console.log(JSON.stringify(this.kvAuth0));
-		if (this.kvAuth0.user === null) {
-			this.kvAuth0.checkSession().then(() => {
-				this.setAuthStatus(_get(this.kvAuth0, 'user'));
+		this.verifyUserStatus().then(() => {
+			this.$nextTick(() => {
+				// fire tracking event when the page loads
+				// - this event will be duplicated when the page reloads with a newly registered/logged in user
+				let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+				if (this.isActivelyLoggedIn) {
+					userStatus = 'Actively Logged-In';
+				}
+				this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+
+				// Run our validate items method once in the client on page load
+				if (this.isLoggedIn) {
+					this.validatePreCheckout();
+				} else {
+					// clear loading state if not logged in
+					this.setUpdatingTotals(false);
+				}
+
+				// check for free credits
+				if (this.hasFreeCredits) {
+					this.refreshTotals('kiva-card-applied');
+				}
 			});
-		} else {
-			// setAuthStatus will show the login button if needed
-			this.setAuthStatus(_get(this.kvAuth0, 'user'));
-		}
-
-		// fire tracking event when the page loads
-		// - this event will be duplicated when the page reloads with a newly registered/logged in user
-		let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-		if (this.isActivelyLoggedIn) {
-			userStatus = 'Actively Logged-In';
-		}
-		this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
-
-		// Run our validate items method once in the client on page load
-		if (this.isLoggedIn) {
-			this.validatePreCheckout();
-		} else {
-			// clear loading state if not logged in
-			this.setUpdatingTotals(false);
-		}
-
-		// check for free credits
-		if (this.hasFreeCredits) {
-			this.refreshTotals('kiva-card-applied');
-		}
+		});
 	},
 	computed: {
 		isLoggedIn() {
@@ -386,6 +380,22 @@ export default {
 		},
 	},
 	methods: {
+		verifyUserStatus() {
+			return new Promise((resolve, reject) => {
+				if (this.kvAuth0.user === null) {
+					return this.kvAuth0.checkSession().then(() => {
+						this.setAuthStatus(_get(this.kvAuth0, 'user'));
+						resolve(true);
+					}).catch(error => {
+						console.error(error);
+						reject(error);
+					});
+				}
+				// setAuthStatus will show the login button if needed
+				this.setAuthStatus(_get(this.kvAuth0, 'user'));
+				resolve(true);
+			});
+		},
 		loginToContinue() {
 			if (this.kvAuth0.enabled) {
 				this.updatingTotals = true;
@@ -426,6 +436,7 @@ export default {
 						}
 						// handle temporary error situation with popup by refreshing page
 						if (err && err.name === 'SyntaxError') {
+							console.error(err);
 							window.location = window.location; // eslint-disable-line
 						}
 					})
