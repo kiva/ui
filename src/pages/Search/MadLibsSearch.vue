@@ -91,7 +91,6 @@
 											loan-card-type="GridLoanCard"
 											class="column-block columns"
 										/>
-										<loading-overlay v-if="loading" />
 									</template>
 								</ais-hits>
 							</template>
@@ -126,7 +125,6 @@ import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
@@ -166,10 +164,7 @@ export default {
 		AisMenuSelect,
 		AlgoliaAdapter,
 		AlgoliaTrackState,
-		LendHeader,
-		LoadingOverlay
-	},
-	props: {
+		LendHeader
 	},
 	data() {
 		return {
@@ -283,7 +278,6 @@ export default {
 
 	.ais-Pagination-link {
 		padding: 0.5rem 0.8rem;
-		// border: 1px solid #eee;
 		border-radius: 0.3rem;
 		background-color: rgba(0, 0, 0, 0.03);
 		margin: 0 0.2rem;
