@@ -39,7 +39,7 @@ export default {
 					id: 28,
 					url: 'kiva-u-s',
 					queryParams: 'status=fundRaising&riskRating=0,5&country=US&distributionModel=direct',
-					algoliaParams: 'location=North%20America~United%20States'
+					algoliaParams: 'countries=North%20America%20%3E%20United%20States'
 				},
 				{
 					id: 23,
