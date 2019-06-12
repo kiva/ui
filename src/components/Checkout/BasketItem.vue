@@ -84,10 +84,10 @@ export default {
 		// watch assigned version of basket item timer experiment
 		this.apollo.watchQuery({
 			query: experimentQuery,
-			variables: { id: 'basket_item_timer' },
+			variables: { id: 'basket_item_timer_v2' },
 		}).subscribe(({ data }) => {
 			this.basketItemTimerExpVersion = _get(data, 'experiment.version') || null;
-			if (this.basketItemTimerExpVersion !== null && this.basketItemTimerExpVersion === 'shown') {
+			if (this.basketItemTimerExpVersion !== null && this.basketItemTimerExpVersion === 'inline') {
 				this.activateTimer = true;
 			} else {
 				this.activateTimer = false;

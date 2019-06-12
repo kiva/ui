@@ -8,6 +8,15 @@
 							<checkout-steps :current-step="currentStep" />
 						</div>
 
+						<transition v-if="basketItemTimerExpVersion === 'above'" name="fade">
+							<div class="basket-timer-header">
+								<p>
+									<span><kv-icon name="hourglass" /></span>
+									You’ve reserved this loan for {{ basketTimerText }}
+								</p>
+							</div>
+						</transition>
+
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -155,6 +164,7 @@ import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
@@ -173,6 +183,7 @@ export default {
 		PayPalExp,
 		KivaCreditPayment,
 		KvButton,
+		KvIcon,
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
@@ -215,7 +226,8 @@ export default {
 			braintree: false,
 			braintreeExpVersion: null,
 			lastPaymentType: null,
-			basketItemTimerExpVersion: 'control'
+			basketItemTimerExpVersion: 'control',
+			basketTimerText: '',
 		};
 	},
 	apollo: {
@@ -246,7 +258,7 @@ export default {
 				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
 			}).then(() => {
 				// initialize braintree exp assignment
-				return client.query({ query: experimentQuery, variables: { id: 'basket_item_timer' } });
+				return client.query({ query: experimentQuery, variables: { id: 'basket_item_timer_v2' } });
 			});
 		},
 		result({ data, errors }) {
@@ -521,15 +533,27 @@ export default {
 			// Read assigned version of basket item experiment
 			const basketItemTimerExpAssignment = this.apollo.readQuery({
 				query: experimentQuery,
-				variables: { id: 'basket_item_timer' },
+				variables: { id: 'basket_item_timer_v2' },
 			});
+			this.basketItemTimerExpVersion = _get(basketItemTimerExpAssignment, 'experiment.version');
+			let basketTimerTrackingVersion;
+			switch (this.basketItemTimerExpVersion) {
+				case 'inline':
+					basketTimerTrackingVersion = 'b';
+					break;
+				case 'above':
+					basketTimerTrackingVersion = 'c';
+					break;
+				default:
+					basketTimerTrackingVersion = 'a';
+			}
 			// Only track the exp for a targeted basket state
 			// preserve original assignment + track if only 1 loan in basket
-			if (this.loans.length <= 1) {
+			if (this.loans.length === 1) {
 				this.$kvTrackEvent(
 					'basket',
 					'EXP-CASH-39-Basket-Item-Timer',
-					_get(basketItemTimerExpAssignment, 'experiment.version') === 'shown' ? 'b' : 'a'
+					basketTimerTrackingVersion
 				);
 			} else {
 				// Ensure control assignment if no basketed loans or > 1 loan
@@ -537,7 +561,7 @@ export default {
 				this.apollo.mutate({
 					mutation: updateExperimentMutation,
 					variables: {
-						id: 'basket_item_timer',
+						id: 'basket_item_timer_v2',
 						version: 'control',
 					},
 				});
@@ -606,6 +630,31 @@ export default {
 	.basket-wrap {
 		position: relative;
 		padding-bottom: 0.5rem;
+
+		.basket-timer-header {
+			display: block;
+			width: 100%;
+			text-align: center;
+			padding: 0 1rem 2rem;
+
+			p {
+				span {
+					display: inline-block;
+					vertical-align: text-top;
+					height: rem-calc(28);
+					margin-right: 0.5rem;
+
+					.icon-hourglass {
+						fill: $kiva-accent-red;
+						width: rem-calc(20);
+						height: rem-calc(28);
+					}
+				}
+
+				font-size: 1.5rem;
+				color: $kiva-accent-red;
+			}
+		}
 
 		.totals-and-actions {
 			display: block;
