@@ -1,0 +1,307 @@
+<template>
+	<www-page :gray-background="true">
+		<lend-header
+			:side-arrows-padding="true"
+			browse-url="/lend-by-category"
+			filter-url="/lend/filter"
+		/>
+
+		<div class="algolia-wrap">
+			<ais-instant-search
+				v-if="searchClient"
+				:search-client="searchClient"
+				:index-name="algoliaDefaultIndex"
+				:routing="routing"
+			>
+				<!-- eslint-disable vue/attribute-hyphenation -->
+				<ais-configure
+					:hitsPerPage="12"
+					clickAnalytics="true"
+					ref="aisConfigure"
+				/>
+				<div class="row search-filter-and-results">
+					<div class="columns small-12 text-center">
+						<div class="search-statement-wrapper">
+							<span>
+								I want to support
+								<!-- documentation for reference: -->
+								<!-- eslint-disable max-len -->
+								<!-- https://www.algolia.com/doc/api-reference/widgets/menu-select/vue/?language=vue#customize-the-ui -->
+								<ais-menu-select
+									:attribute="'gender'"
+								>
+									<template slot="defaultOption">
+										women and men
+									</template>
+									<template slot="item" slot-scope="{ item }">
+										{{ item.label }}
+									</template>
+								</ais-menu-select>
+								in
+								<ais-menu-select
+									:attribute="'locationFacets.lvl0'"
+									:limit="100"
+								>
+									<template slot="defaultOption">
+										any region
+									</template>
+									<template slot="item" slot-scope="{ item }">
+										{{ item.label }}
+									</template>
+								</ais-menu-select>
+								with loans {{ toFor }}
+								<ais-menu-select
+									attribute="sector.name"
+									:limit="100"
+								>
+									<select
+										slot-scope="{ items, canRefine, refine }"
+										:disabled="!canRefine"
+										@change="toForLanguage(refine, $event.currentTarget.value)"
+									>
+										<option value="">improve their businesses</option>
+										<option
+											v-for="item in items"
+											:key="item.value"
+											:value="item.value"
+											:selected="item.isRefined"
+										>
+											{{ item.label }}
+										</option>
+									</select>
+								</ais-menu-select>
+							</span>
+						</div>
+
+						<ais-state-results>
+							<template slot-scope="{ page, hitsPerPage, queryID, index }">
+								<ais-hits
+									class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3"
+									:results-per-page="15"
+								>
+									<template slot="default" slot-scope="{ items }">
+										<algolia-adapter
+											v-for="(item, itemIndex) in items" :key="item.id"
+											:loan="item"
+											:items-in-basket="itemsInBasket"
+											:is-logged-in="isLoggedIn"
+											:algolia-props="{
+												page, hitsPerPage, queryID, index, itemIndex, item
+											}"
+											loan-card-type="GridLoanCard"
+											class="column-block columns"
+										/>
+									</template>
+								</ais-hits>
+							</template>
+						</ais-state-results>
+					</div>
+				</div>
+
+				<div class="row search-pagination-stats align-center">
+					<ais-pagination :padding="2" class="columns small-12" />
+					<ais-stats class="columns small-12 text-center" />
+					<ais-hits-per-page class="columns small-12" :items="[
+						{ label: '15', value: 15, default: true },
+						{ label: '25', value: 25 },
+						{ label: '50', value: 50 },
+					]"
+					/>
+				</div>
+
+				<ais-state-results>
+					<template slot-scope="stateData">
+						<algolia-track-state :state-data-hits="stateData.hits" />
+					</template>
+				</ais-state-results>
+			</ais-instant-search>
+		</div>
+	</www-page>
+</template>
+
+<script>
+import _get from 'lodash/get';
+import _map from 'lodash/map';
+import cookieStore from '@/util/cookieStore';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import LendHeader from '@/pages/Lend/LendHeader';
+
+// This mixin provides some algolia search instance initialization on mounted
+import algoliaInit from '@/plugins/algolia-init-mixin';
+// This mixin provides config for our indices + loan channel categories
+import algoliaConfig from '@/plugins/algolia-config-mixin';
+import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
+
+import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
+
+// Import your specific Algolia Components here
+// https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
+// algolia search is always required, moved to mixin
+// import algoliasearch from 'algoliasearch/lite';
+import {
+	AisConfigure,
+	AisInstantSearch,
+	AisHits,
+	AisPagination,
+	AisHitsPerPage,
+	AisStats,
+	AisStateResults,
+	AisMenuSelect,
+} from 'vue-instantsearch';
+
+export default {
+	components: {
+		WwwPage,
+		AisConfigure,
+		AisInstantSearch,
+		AisHits,
+		AisPagination,
+		AisHitsPerPage,
+		AisStats,
+		AisStateResults,
+		AisMenuSelect,
+		AlgoliaAdapter,
+		AlgoliaTrackState,
+		LendHeader
+	},
+	data() {
+		return {
+			toFor: 'to'
+		};
+	},
+	inject: [
+		'apollo',
+	],
+	mixins: [
+		algoliaConfig,
+		algoliaInit
+	],
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: itemsInBasketQuery
+			}).then(() => {
+				// Pre-fetch user Status
+				return client.query({ query: userStatus });
+			});
+		}
+	},
+	created() {
+		const basketData = this.apollo.readQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		});
+		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
+
+		this.apollo.watchQuery({
+			query: itemsInBasketQuery,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		}).subscribe({
+			next: ({ data }) => {
+				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+			},
+		});
+
+		const userData = this.apollo.readQuery({
+			query: userStatus
+		});
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+	},
+	methods: {
+		toForLanguage(refine, $event) {
+			if ($event !== '') {
+				this.toFor = 'for';
+			} else {
+				this.toFor = 'to';
+			}
+			refine($event);
+		},
+	}
+};
+</script>
+
+<style lang="scss">
+@import 'settings';
+
+.search-filter-and-results {
+	flex-direction: column-reverse;
+}
+
+@include breakpoint(large) {
+	.search-filter-and-results {
+		flex-direction: initial;
+	}
+}
+
+.loan-card-group {
+	position: relative;
+}
+
+.algolia-loan-card-adapter {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.search-statement-wrapper {
+	margin-bottom: rem-calc(32);
+}
+
+.ais-MenuSelect {
+	display: inline-block;
+}
+
+.ais-Pagination-list {
+	list-style: none;
+	text-align: center;
+	display: flex;
+	margin: 0.75rem auto;
+	justify-content: center;
+	align-items: center;
+	max-width: 25rem;
+
+	.ais-Pagination-item {
+		color: $kiva-text-light;
+	}
+
+	.ais-Pagination-item--active,
+	.ais-Pagination-item--disabled {
+		a {
+			color: $kiva-text-light;
+		}
+	}
+
+	.ais-Pagination-link {
+		padding: 0.5rem 0.8rem;
+		border-radius: 0.3rem;
+		background-color: rgba(0, 0, 0, 0.03);
+		margin: 0 0.2rem;
+
+		&:hover {
+			background-color: rgba(110, 176, 252, 0.05);
+		}
+	}
+
+	.ais-Pagination-item--first,
+	.ais-Pagination-item--previous,
+	.ais-Pagination-item--next,
+	.ais-Pagination-item--last {
+		font-weight: bold;
+
+		a:hover,
+		a:visited {
+			text-decoration: none;
+		}
+	}
+}
+
+.ais-HitsPerPage {
+	max-width: 13rem;
+}
+
+</style>
