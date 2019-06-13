@@ -17,6 +17,7 @@
 				/>
 				<loan-reservation
 					:activate-timer="activateTimer"
+					:hide-timed-message="hideTimedMessage"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -77,7 +78,8 @@ export default {
 		return {
 			activateTimer: false,
 			loanVisible: true,
-			basketItemTimerExpVersion: 'control'
+			basketItemTimerExpVersion: 'control',
+			hideTimedMessage: false,
 		};
 	},
 	created() {
@@ -89,6 +91,9 @@ export default {
 			this.basketItemTimerExpVersion = _get(data, 'experiment.version') || null;
 			if (this.basketItemTimerExpVersion !== null && this.basketItemTimerExpVersion === 'inline') {
 				this.activateTimer = true;
+			} else if (this.basketItemTimerExpVersion === 'above') {
+				this.activateTimer = true;
+				this.hideTimedMessage = true;
 			} else {
 				this.activateTimer = false;
 			}

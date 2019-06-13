@@ -8,7 +8,10 @@
 							<checkout-steps :current-step="currentStep" />
 						</div>
 
-						<transition v-if="basketItemTimerExpVersion === 'above'" name="fade">
+						<transition
+							v-if="basketItemTimerExpVersion === 'above' && basketTimerText !== null"
+							name="kvfade"
+						>
 							<div class="basket-timer-header">
 								<p>
 									<span><kv-icon name="hourglass" /></span>
@@ -154,6 +157,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
@@ -227,7 +231,8 @@ export default {
 			braintreeExpVersion: null,
 			lastPaymentType: null,
 			basketItemTimerExpVersion: 'control',
-			basketTimerText: '',
+			basketTimerText: null,
+			basketTimerInterval: null,
 		};
 	},
 	apollo: {
@@ -264,7 +269,10 @@ export default {
 		result({ data, errors }) {
 			// check for authentication errors to indicate initial login status
 			if (errors && errors.length) {
+<<<<<<< 3e5d94805a5a349cd8ab7b89543098eeb9ef58d1
 				console.error(errors);
+=======
+>>>>>>> add timer content and ensure it is removed when loan is no longer reserved.
 				const authErrors = _filter(errors, error => {
 					return error.code === 'api.authenticationRequired';
 				});
@@ -552,7 +560,7 @@ export default {
 			if (this.loans.length === 1) {
 				this.$kvTrackEvent(
 					'basket',
-					'EXP-CASH-39-Basket-Item-Timer',
+					'EXP-CASH-947-Basket-Item-Timer',
 					basketTimerTrackingVersion
 				);
 			} else {
@@ -566,7 +574,31 @@ export default {
 					},
 				});
 			}
+
+			this.setBasketTimerText();
+
+			this.basketTimerInterval = setInterval(() => {
+				this.setBasketTimerText();
+			}, 1000);
+		},
+		setBasketTimerText() {
+			const firstLoan = _get(this.loans, '[0]');
+			if (firstLoan && firstLoan.expiryTime !== null) {
+				const reservedDate = new Date(firstLoan.expiryTime);
+				const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
+				const seconds = differenceInSeconds(reservedDate.getTime(), Date.now()) % 60;
+
+				this.basketTimerText = `${mins}m ${seconds}s`;
+
+				if ((reservedDate.getTime() - Date.now()) <= 0) {
+					this.basketTimerText = null;
+					clearInterval(this.basketTimerInterval);
+				}
+			}
 		}
+	},
+	destroyed() {
+		clearInterval(this.basketTimerInterval);
 	},
 };
 </script>
@@ -635,7 +667,7 @@ export default {
 			display: block;
 			width: 100%;
 			text-align: center;
-			padding: 0 1rem 2rem;
+			padding: 0 1rem 2.25rem;
 
 			p {
 				span {
