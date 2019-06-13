@@ -17,6 +17,11 @@
 		:title="title"
 		:is="loanCardType"
 
+		@track-interaction="trackInteraction"
+		@toggle-favorite="toggleFavorite"
+		@add-to-basket="handleAddToBasket"
+		@processing-add-to-basket="processingAddToBasket"
+
 		:expanded="expanded"
 		:category-id="categoryId"
 		:category-set-id="categorySetId"
@@ -24,11 +29,20 @@
 		:right-arrow-position="rightArrowPosition"
 		:left-arrow-position="leftArrowPosition"
 
-		@track-interaction="trackInteraction"
-		@toggle-favorite="toggleFavorite"
-		@add-to-basket="handleAddToBasket"
-		@processing-add-to-basket="processingAddToBasket"
+		:detailed-loan-cache-id="detailedLoanCacheId"
+		:hover-loan-cache-id="hoverLoanCacheId"
+
+		@update-detailed-loan-cache-id="updateDetailedLoanCacheId"
+		@update-hover-loan-cache-id="updateHoverLoanCacheId"
 	/>
+	<!--
+		Blocks of attributes above:
+		1) Props for implemented loan cards
+		2) Events for implemented loan cards
+		3) Props for ExpandableLoanCard experiment
+		4) Props for HoverLoanCard experiment
+		5) Events for HoverLoanCard experiment
+	-->
 </template>
 
 <script>
@@ -128,6 +142,14 @@ export default {
 		leftArrowPosition: {
 			type: Number,
 			default: undefined,
+		},
+		detailedLoanCacheId: {
+			type: String,
+			default: null,
+		},
+		hoverLoanCacheId: {
+			type: String,
+			default: null,
 		},
 	},
 	inject: ['apollo'],
@@ -253,6 +275,12 @@ export default {
 		// payload is { loanId: ######, success: true/false }
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
+		},
+		updateDetailedLoanCacheId(loanCacheId) {
+			this.$emit('update-detailed-loan-cache-id', loanCacheId);
+		},
+		updateHoverLoanCacheId(loanCacheId) {
+			this.$emit('update-hover-loan-cache-id', loanCacheId);
 		},
 	},
 };
