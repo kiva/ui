@@ -269,10 +269,6 @@ export default {
 		result({ data, errors }) {
 			// check for authentication errors to indicate initial login status
 			if (errors && errors.length) {
-<<<<<<< 3e5d94805a5a349cd8ab7b89543098eeb9ef58d1
-				console.error(errors);
-=======
->>>>>>> add timer content and ensure it is removed when loan is no longer reserved.
 				const authErrors = _filter(errors, error => {
 					return error.code === 'api.authenticationRequired';
 				});
