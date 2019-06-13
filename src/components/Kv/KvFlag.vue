@@ -307,6 +307,7 @@ export default {
 		background: url('~@/assets/images/flags.png') no-repeat;
 		display: inline-block;
 		margin-right: 0.25rem;
+		flex-shrink: 0;
 
 		/* https://github&.com/lafeber/world-flags-sprite */
 	}
