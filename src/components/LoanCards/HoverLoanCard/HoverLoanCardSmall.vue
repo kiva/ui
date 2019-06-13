@@ -1,5 +1,5 @@
 <template>
-	<div class="hover-loan-card-small" :class="{expanded: hover}">
+	<div class="hover-loan-card-small" :class="{expanded}">
 		<loan-card-image
 			class="hover-loan-card-image"
 			:loan-id="loan.id"
@@ -44,7 +44,7 @@ export default {
 		hoverLoanCardMixin,
 	],
 	props: {
-		hover: {
+		expanded: {
 			type: Boolean,
 			default: false,
 		},
@@ -55,6 +55,8 @@ export default {
 @import "settings";
 
 .hover-loan-card-small {
+	$card-expansion-duration: 0.2s;
+
 	width: rem-calc(180);
 	background: $white;
 	display: flex;
@@ -64,7 +66,9 @@ export default {
 	border-radius: rem-calc(3);
 	transform: scale(1, 1);
 	opacity: 1;
-	transition: transform 0.15s linear, opacity 0.15s linear;
+	// Swap comments on lines below for original transition
+	transition: transform $card-expansion-duration ease-out, opacity $card-expansion-duration ease-in;
+	// transition: transform $card-expansion-duration ease-in, opacity $card-expansion-duration ease-out;
 
 	.hover-loan-card-image {
 		border-radius: rem-calc(3) rem-calc(3) 0 0;
@@ -106,6 +110,8 @@ export default {
 	&.expanded {
 		transform: scale(calc(29 / 9), calc(10 / 9));
 		opacity: 0;
+		// Comment line below for original transition
+		transition: transform $card-expansion-duration ease-in, opacity $card-expansion-duration ease-out;
 	}
 }
 </style>

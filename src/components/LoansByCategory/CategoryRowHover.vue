@@ -52,8 +52,19 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-					/>
 
+						:detailed-loan-cache-id="detailedLoanCacheId"
+						:hover-loan-cache-id="hoverLoanCacheId"
+
+						@update-detailed-loan-cache-id="updateDetailedLoanCacheId"
+						@update-hover-loan-cache-id="updateHoverLoanCacheId"
+					/>
+					<!--
+						Blocks of attributes above:
+						1) Props for implemented loan cards
+						2) Props for HoverLoanCard experiment
+						3) Events for HoverLoanCard experiment
+					-->
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
 						<router-link
 							:to="cleanUrl"
@@ -131,6 +142,8 @@ export default {
 			url: '',
 			windowWidth: 0,
 			wrapperWidth: 0,
+			detailedLoanCacheId: null,
+			hoverLoanCacheId: null,
 		};
 	},
 	computed: {
@@ -263,6 +276,12 @@ export default {
 				return this.$refs.leftArrow.getBoundingClientRect().left;
 			}
 		},
+		updateDetailedLoanCacheId(detailedLoanCacheId) {
+			this.detailedLoanCacheId = detailedLoanCacheId;
+		},
+		updateHoverLoanCacheId(hoverLoanCacheId) {
+			this.hoverLoanCacheId = hoverLoanCacheId;
+		},
 	},
 };
 </script>
@@ -329,6 +348,7 @@ $row-max-width: 63.75rem;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 	padding-left: 2.5rem;
+	overflow-y: hidden;
 }
 
 .row.title-row {
