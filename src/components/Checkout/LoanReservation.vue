@@ -25,6 +25,7 @@
 
 			<div
 				class="loan-message"
+				:class="{hide: hideTimedMessage}"
 				v-if="loanReservationMsg2"
 			>{{ differenceInWords }}
 			</div>
@@ -32,6 +33,7 @@
 			<div
 				v-if="loanReservationMsg3 || loanReservationMsg4"
 				class="loan-message red"
+				:class="{hide: hideTimedMessage}"
 			>{{ differenceInWords }}
 			</div>
 		</span>
@@ -59,6 +61,10 @@ export default {
 	},
 	props: {
 		activateTimer: {
+			type: Boolean,
+			default: false
+		},
+		hideTimedMessage: {
 			type: Boolean,
 			default: false
 		},
