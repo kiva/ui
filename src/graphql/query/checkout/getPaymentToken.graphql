@@ -1,4 +1,4 @@
-query ($amount: Money!) {
+query getPaymentToken($amount: Money!) {
 	shop {
 		getPaymentToken(amount: $amount)
 	}

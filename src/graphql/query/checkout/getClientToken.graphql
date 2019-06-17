@@ -1,4 +1,4 @@
-query ($useCustomerId: Boolean = false) {
+query getClientToken($useCustomerId: Boolean = false) {
 	shop {
 		getClientToken(useCustomerId: $useCustomerId)
 	}

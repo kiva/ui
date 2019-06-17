@@ -1,6 +1,6 @@
 #import '../../fragments/shopTotals.graphql'
 
-query($basketId: String) {
+query initializeCheckout($basketId: String) {
 	my {
 		mostRecentPaymentType
 		userAccount {

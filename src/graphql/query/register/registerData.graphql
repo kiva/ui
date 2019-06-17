@@ -1,4 +1,4 @@
-query {
+query registerData {
 	general {
 		experiment: uiExperimentSetting(key: "register_fields") {
 			key

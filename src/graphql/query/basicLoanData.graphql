@@ -1,6 +1,6 @@
 #import '../fragments/loanCardFields.graphql'
 
-query(
+query basicLoanData(
 	$offset: Int,
 	$limit: Int,
 	$filters: LoanSearchFiltersInput,

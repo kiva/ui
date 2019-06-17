@@ -1,6 +1,6 @@
 #import '../fragments/loanCardFields.graphql'
 
-query (
+query loanChannelData(
 	$ids: [Int],
 	$numberOfLoans: Int = 11,
 	$imgDefaultSize: String = "w480h360",

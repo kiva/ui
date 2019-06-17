@@ -1,4 +1,4 @@
-query {
+query userId {
 	my {
 		userAccount {
 			id

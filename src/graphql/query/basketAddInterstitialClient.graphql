@@ -1,4 +1,4 @@
-query {
+query basketAddInterstitialClient {
 	basketAddInterstitial @client {
 		active
 		visible

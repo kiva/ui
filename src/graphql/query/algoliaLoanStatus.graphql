@@ -1,4 +1,4 @@
-query (
+query algoliaLoanStatus(
 	$ids: [Int],
 	$numberOfLoans: Int = 1,
 ) {

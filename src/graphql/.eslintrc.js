@@ -26,6 +26,10 @@ module.exports = {
 		'graphql/no-deprecated-fields': ['warn', {
 			env: 'literal',
 			schemaString: schema,
-		}]
+		}],
+		"graphql/named-operations": ['error', {
+			env: 'literal',
+			schemaString: schema,
+		}],
 	}
 }

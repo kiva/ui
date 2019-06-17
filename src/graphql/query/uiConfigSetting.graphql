@@ -1,4 +1,4 @@
-query($key: String!) {
+query uiConfigSetting($key: String!) {
 	general {
 		uiConfigSetting(key: $key) {
 			key

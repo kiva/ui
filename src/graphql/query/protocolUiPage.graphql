@@ -1,4 +1,4 @@
-query {
+query protocolUiPage {
 	general {
 		protocol: featureSetting(key: "protocol_ui_page") {
 			value

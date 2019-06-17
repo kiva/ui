@@ -1,4 +1,4 @@
-query (
+query emptyBasketData(
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w480h360",
 ) {

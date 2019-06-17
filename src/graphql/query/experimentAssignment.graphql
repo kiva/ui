@@ -1,4 +1,4 @@
-query($id: String) {
+query experimentAssignment($id: String) {
 	experiment(id: $id) @client {
 		id
 		version

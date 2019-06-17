@@ -1,4 +1,4 @@
-mutation($categories: String, $experiment: String) {
+mutation setCategoryRows($categories: String, $experiment: String) {
 	general {
 		rows: setSetting(
 			key: "ui.category_rows",

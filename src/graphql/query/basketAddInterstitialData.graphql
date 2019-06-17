@@ -1,6 +1,6 @@
 #import '../fragments/loanCardFields.graphql'
 
-query(
+query basketAddInterstitialData(
 	$basketId: String,
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w960h720",

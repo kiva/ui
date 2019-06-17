@@ -1,4 +1,4 @@
-query($basketId: String) {
+query lendByCategory($basketId: String) {
 	general {
 		rows: uiConfigSetting(key: "category_rows") {
 			key

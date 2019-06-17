@@ -1,4 +1,4 @@
-query (
+query fundedBorrowerProfile(
   	$id: Int!,
 	$basketId: String,
 	$imgDefaultSize: String = "w480h360",
