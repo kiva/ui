@@ -7,13 +7,14 @@
 		role="checkbox"
 		:aria-checked="ariaChecked"
 	>
-		<label class="kv-controlled-checkbox-label">
+		<label class="kv-controlled-checkbox-label" :class="{ disabled: disabled }">
 			<input
 				type="checkbox"
 				:checked="checked"
 				aria-hidden="true"
 				role="presentation"
 				tabindex="-1"
+				:disabled="disabled"
 			>
 			<slot>{{ label }}</slot>
 		</label>
@@ -35,6 +36,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		disabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
 		ariaChecked() {
@@ -43,6 +48,7 @@ export default {
 	},
 	methods: {
 		handleInput() {
+			if (this.disabled) return;
 			this.$emit('checkbox-input');
 		},
 		handleKeyPressContainer(event) {
@@ -65,6 +71,11 @@ export default {
 
 	&:focus {
 		outline: none;
+	}
+
+	.disabled {
+		color: $kiva-text-light;
+		cursor: not-allowed;
 	}
 }
 </style>
