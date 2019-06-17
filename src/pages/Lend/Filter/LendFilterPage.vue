@@ -23,6 +23,7 @@
 					:default-sort-indices="defaultSortIndices"
 					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
+					:location-lvl1-data="locationLvl1"
 					:filter-menu-pinned="filterMenuPinned"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
