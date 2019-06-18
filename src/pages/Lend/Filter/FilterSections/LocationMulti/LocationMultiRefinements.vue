@@ -47,6 +47,7 @@
 				:checked="isCountryChecked(item.isRefined, item.region)"
 				:label="`${item.label} (${item.count})`"
 				@checkbox-input="handleCountryCheckboxInput(item)"
+				:disabled="item.count === 0"
 			/>
 		</div>
 	</div>

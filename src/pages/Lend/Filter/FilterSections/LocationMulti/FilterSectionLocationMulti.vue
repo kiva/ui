@@ -23,6 +23,8 @@
 
 <script>
 import _forEach from 'lodash/forEach';
+import _find from 'lodash/find';
+import _sortBy from 'lodash/sortBy';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 import LocationMultiRefinements from '@/pages/Lend/Filter/FilterSections/LocationMulti/LocationMultiRefinements';
 import { AisRefinementList } from 'vue-instantsearch';
@@ -33,11 +35,26 @@ export default {
 		LocationMultiRefinements,
 		AisRefinementList,
 	},
+	props: {
+		locationLvl1Data: {
+			type: Array,
+			default: () => []
+		},
+	},
 	methods: {
 		transformItems(items) {
+			// new container for location items
+			let sourceItems = [];
+			if (this.locationLvl1Data.length > 0) {
+				// if we have source data, use for location item foundation
+				sourceItems = this.mergeLocationData(items);
+			} else {
+				// otherwise just use filtered location data
+				sourceItems = items;
+			}
 			const newItems = [];
 			const computedRegionList = {};
-			items.forEach(item => {
+			sourceItems.forEach(item => {
 				const region = item.label.substring(0, item.label.indexOf(' >'));
 				const newItem = {
 					...item,
@@ -73,6 +90,26 @@ export default {
 
 			return newItems;
 		},
+		mergeLocationData(filteredLocations) {
+			// sort our full facet query to match what sort set in algolia component above
+			const originalItems = _sortBy(this.locationLvl1Data, [loc => { return loc.value; }]);
+			// new array to hold our merged items
+			const patchedItems = [];
+			originalItems.forEach(ol => {
+				// check filtered result items for matches
+				const matchedLocation = _find(filteredLocations, item => {
+					return item.value === ol.value;
+				});
+				if (matchedLocation !== undefined) {
+					// push matched/active item data
+					patchedItems.push(matchedLocation);
+				} else {
+					// push stub item data
+					patchedItems.push(ol);
+				}
+			});
+			return patchedItems;
+		}
 	},
 };
 </script>

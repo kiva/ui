@@ -1,4 +1,5 @@
 import _filter from 'lodash/filter';
+import _map from 'lodash/map';
 import algoliasearch from 'algoliasearch/lite';
 import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
 
@@ -162,12 +163,16 @@ export default {
 			routing,
 			// Root searchClient Instance
 			searchClient: null,
+			// Utility instance of default index
+			defaultIndexInstance: null,
 			// These are required in each instance of the plugin
 			algoliaAppId: this.algoliaConfig.appId,
 			algoliaApiKey: this.algoliaConfig.apiKey,
 			// environment + index config
 			algoliaDefaultIndex: this.algoliaConfig.defaultIndex,
 			algoliaGroup: this.algoliaConfig.group,
+			// all locationFacets.lvl1 facet values
+			locationLvl1: null,
 		};
 	},
 	mounted() {
@@ -184,5 +189,33 @@ export default {
 			this.algoliaAppId,
 			this.algoliaApiKey
 		);
+
+		// initialize utility instance of default index
+		this.defaultIndexInstance = this.searchClient.initIndex(this.algoliaDefaultIndex);
+
+		// set global data set for Lvl1 Locations
+		this.setAllLvl1Locations();
 	},
+	methods: {
+		setAllLvl1Locations() {
+			this.defaultIndexInstance.searchForFacetValues({
+				facetName: 'locationFacets.lvl1',
+				facetQuery: '*',
+				maxFacetHits: 100,
+			}, (err, data) => {
+				if (err) throw err;
+				if (data.facetHits) {
+					this.locationLvl1 = _map(data.facetHits, facet => {
+						return {
+							count: 0,
+							isRefined: false,
+							highlighted: facet.highlighted,
+							label: facet.value,
+							value: facet.value,
+						};
+					});
+				}
+			});
+		}
+	}
 };

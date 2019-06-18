@@ -34,7 +34,7 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
-				<filter-section-location-multi class="filter-section" />
+				<filter-section-location-multi class="filter-section" :location-lvl1-data="locationLvl1Data" />
 				<filter-section-sectors class="filter-section" />
 				<filter-section-attributes class="filter-section" />
 				<filter-section-tags class="filter-section" />
@@ -113,6 +113,10 @@ export default {
 		selectedCustomCategories: {
 			type: Object,
 			required: true,
+		},
+		locationLvl1Data: {
+			type: Array,
+			default: () => []
 		},
 		filterMenuPinned: {
 			type: Boolean,
