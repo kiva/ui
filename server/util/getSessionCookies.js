@@ -1,10 +1,18 @@
-const fetch = require('./fetch');
 const setCookieParser = require('set-cookie-parser');
+const fetch = require('./fetch');
 
 const getCookieString = cookies => {
 	return Object.keys(cookies)
 		.map(key => `${key}=${cookies[key]}`)
 		.join(';');
+};
+
+const decodeCookieValue = value => {
+	try {
+		return decodeURIComponent(value);
+	} catch (e) {
+		return value;
+	}
 };
 
 module.exports = function getSessionCookies(url = '', requestCookies = {}) {
@@ -16,10 +24,10 @@ module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 				},
 			}).then(res => {
 				const setCookies = res.headers.getAll('set-cookie');
-				const parsed = setCookieParser(setCookies);
+				const parsed = setCookieParser(setCookies, { decodeValues: false });
 				const cookies = parsed.reduce((cookieObject, cookie) => {
 					if (cookie.value !== 'deleted') {
-						return Object.assign(cookieObject, { [cookie.name]: cookie.value });
+						return Object.assign(cookieObject, { [cookie.name]: decodeCookieValue(cookie.value) });
 					}
 					return cookieObject;
 				}, {});
