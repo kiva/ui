@@ -1,4 +1,4 @@
-query {
+query donationData {
 	general {
 		donationNudgeExperiment: uiExperimentSetting(key: "donation_nudge_lightbox_custom_tip") {
 			key

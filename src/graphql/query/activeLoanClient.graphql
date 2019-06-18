@@ -1,4 +1,4 @@
-query {
+query activeLoanClient {
 	activeLoan @client {
 		xCoordinate
 		yCoordinate

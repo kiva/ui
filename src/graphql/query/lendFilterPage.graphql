@@ -1,4 +1,4 @@
-query($basketId: String) {
+query lendFilterPage($basketId: String) {
 	my {
 		userAccount {
 			id

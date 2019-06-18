@@ -1,4 +1,4 @@
-query($basketId: String) {
+query promotionalBanner($basketId: String) {
 	my {
 		userAccount {
 			id

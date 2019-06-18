@@ -1,6 +1,6 @@
 # This will get folded into loanCardData.graphql
 
-query($basketId: String) {
+query basketItems($basketId: String) {
 	shop (basketId: $basketId) {
 		basket {
 			items {

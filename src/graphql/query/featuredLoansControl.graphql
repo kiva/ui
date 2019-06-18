@@ -1,4 +1,4 @@
-query {
+query featuredLoansControl{
 	general {
 		experiment: uiExperimentSetting(key: "featured_loans") {
 			key

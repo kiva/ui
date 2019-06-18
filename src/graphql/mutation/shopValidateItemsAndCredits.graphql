@@ -1,4 +1,4 @@
-mutation($basketId: String) {
+mutation shopValidateItemsAndCredits($basketId: String) {
 	shop (basketId: $basketId) {
 		validateItemsAndCredits {
 			success

@@ -1,4 +1,4 @@
-query($basketId: String) {
+query wwwHeader($basketId: String) {
 	shop (basketId: $basketId) {
 		nonTrivialItemCount
 	}

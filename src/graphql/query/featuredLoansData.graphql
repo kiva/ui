@@ -1,6 +1,6 @@
 #import '../fragments/loanCardFields.graphql'
 
-query (
+query featuredLoansData(
 	$ids: [Int],
 	$numberOfLoans: Int = 4,
 	$offset: Int = 0,

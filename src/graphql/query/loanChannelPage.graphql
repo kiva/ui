@@ -1,4 +1,4 @@
-query {
+query loanChannelPage {
 	my {
 		userAccount {
 			id

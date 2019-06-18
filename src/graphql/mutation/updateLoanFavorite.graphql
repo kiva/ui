@@ -1,4 +1,4 @@
-mutation ($loan_id: Int, $is_favorite: Boolean) {
+mutation updateLoanFavorite($loan_id: Int, $is_favorite: Boolean) {
   loan (id: $loan_id){
     favorite(favorite: $is_favorite)
   }

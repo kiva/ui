@@ -1,4 +1,4 @@
-query ($userId: Int){
+query lendMenuPrivateData($userId: Int) {
 	lend {
 		loans(limit: 0, filters: {
 			lenderFavorite: $userId

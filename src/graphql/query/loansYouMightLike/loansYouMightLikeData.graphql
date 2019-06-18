@@ -1,6 +1,6 @@
 #import '../../fragments/loanCardFields.graphql'
 
-query (
+query loansYouMightLikeData(
 	$country: [String],
 	$sector: [Int],
 	$partner: [Int],

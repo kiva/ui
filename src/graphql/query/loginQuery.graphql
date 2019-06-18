@@ -1,4 +1,4 @@
-query {
+query loginQuery {
 	general {
 		salesforceSolution(id: "50150000000TCyi") {
 			name

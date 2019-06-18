@@ -1,4 +1,4 @@
-query {
+query registerExpAssignment {
 	experiment(id: "register_fields") @client {
 		id
 		version

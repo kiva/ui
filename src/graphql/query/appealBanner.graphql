@@ -1,4 +1,4 @@
-query {
+query appealBanner {
 	general {
 		appeal_enabled: featureSetting(key: "endofyear_appeal.enabled") {
 			value

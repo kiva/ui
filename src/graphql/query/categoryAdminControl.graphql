@@ -1,4 +1,4 @@
-query {
+query categoryAdminControl {
 	lend {
 		loanChannels(offset:0, limit:1000, popular: false, applyMinLoanCount: false) {
 			totalCount

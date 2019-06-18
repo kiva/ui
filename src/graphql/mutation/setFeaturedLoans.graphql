@@ -1,4 +1,4 @@
-mutation($experiment: String) {
+mutation setFeaturedLoans($experiment: String) {
 	general {
 		setSetting(
 			key: "uiexp.featured_loans",

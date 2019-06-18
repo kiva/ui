@@ -1,4 +1,4 @@
-query {
+query myLendingStats {
 	my {
 		lendingStats {
 			countriesLentTo {

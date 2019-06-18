@@ -1,4 +1,4 @@
-query {
+query experimentIds{
 	general {
 		activeExperiments: uiConfigSetting(key: "active_experiments") {
 			key
