@@ -71,9 +71,8 @@ export default config => {
 				appId: config.fbApplicationId,
 				autoLogAppEvents: true,
 				cookie: true, // sets a cookie for the session
-				status: true, // set to true to check login status automatically on each page load
 				xfbml: false, // set to true to have fb parse the dom looking for social plugins
-				version: 'v2.2' // current 'v3.1'
+				version: 'v3.3' // current 'v3.3'
 			});
 		};
 		(function(d, s, id) {
