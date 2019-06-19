@@ -29,11 +29,12 @@
 		:right-arrow-position="rightArrowPosition"
 		:left-arrow-position="leftArrowPosition"
 
-		:detailed-loan-cache-id="detailedLoanCacheId"
-		:hover-loan-cache-id="hoverLoanCacheId"
+		:detailed-loan-index="detailedLoanIndex"
+		:hover-loan-index="hoverLoanIndex"
+		:shift-increment="shiftIncrement"
 
-		@update-detailed-loan-cache-id="updateDetailedLoanCacheId"
-		@update-hover-loan-cache-id="updateHoverLoanCacheId"
+		@update-detailed-loan-index="updateDetailedLoanIndex"
+		@update-hover-loan-index="updateHoverLoanIndex"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -143,13 +144,17 @@ export default {
 			type: Number,
 			default: undefined,
 		},
-		detailedLoanCacheId: {
-			type: String,
+		detailedLoanIndex: {
+			type: Number,
 			default: null,
 		},
-		hoverLoanCacheId: {
-			type: String,
+		hoverLoanIndex: {
+			type: Number,
 			default: null,
+		},
+		shiftIncrement: {
+			type: Number,
+			default: 0,
 		},
 	},
 	inject: ['apollo'],
@@ -276,11 +281,11 @@ export default {
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
-		updateDetailedLoanCacheId(loanCacheId) {
-			this.$emit('update-detailed-loan-cache-id', loanCacheId);
+		updateDetailedLoanIndex(detailedLoanIndex) {
+			this.$emit('update-detailed-loan-index', detailedLoanIndex);
 		},
-		updateHoverLoanCacheId(loanCacheId) {
-			this.$emit('update-hover-loan-cache-id', loanCacheId);
+		updateHoverLoanIndex(hoverLoanIndex) {
+			this.$emit('update-hover-loan-index', hoverLoanIndex);
 		},
 	},
 };

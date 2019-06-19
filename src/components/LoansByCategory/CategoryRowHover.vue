@@ -25,7 +25,11 @@
 			</div>
 		</div>
 
-		<div class="cards-and-arrows-wrapper" ref="outerWrapper">
+		<div
+			class="cards-and-arrows-wrapper"
+			ref="outerWrapper"
+			@mouseleave="handleMouseLeave"
+		>
 			<span
 				class="arrow left-arrow"
 				:class="{inactive: scrollPos === 0}"
@@ -53,17 +57,21 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 
-						:detailed-loan-cache-id="detailedLoanCacheId"
-						:hover-loan-cache-id="hoverLoanCacheId"
+						:detailed-loan-index="detailedLoanIndex"
+						:hover-loan-index="hoverLoanIndex"
+						:shift-increment="calculateCardShiftIncrement(index)"
 
-						@update-detailed-loan-cache-id="updateDetailedLoanCacheId"
-						@update-hover-loan-cache-id="updateHoverLoanCacheId"
+						@update-detailed-loan-index="updateDetailedLoanIndex"
+						@update-hover-loan-index="updateHoverLoanIndex"
+
+						ref="loanCards"
 					/>
 					<!--
 						Blocks of attributes above:
 						1) Props for implemented loan cards
 						2) Props for HoverLoanCard experiment
 						3) Events for HoverLoanCard experiment
+						4) Ref for HoverLoanCard experiment
 					-->
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
 						<router-link
@@ -98,9 +106,7 @@ import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
-const minWidthToShowLargeCards = 340;
-const smallCardWidthPlusPadding = 276;
-const largeCardWidthPlusPadding = 300;
+const cardWidthPlusPadding = 200;
 
 export default {
 	components: {
@@ -142,18 +148,14 @@ export default {
 			url: '',
 			windowWidth: 0,
 			wrapperWidth: 0,
-			detailedLoanCacheId: null,
-			hoverLoanCacheId: null,
+			detailedLoanIndex: null,
+			hoverLoanIndex: null,
+			cardWidth: cardWidthPlusPadding,
 		};
 	},
 	computed: {
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
-		},
-		cardWidth() {
-			return this.windowWidth > minWidthToShowLargeCards
-				? largeCardWidthPlusPadding
-				: smallCardWidthPlusPadding;
 		},
 		cleanName() {
 			// remove any text contained within square brackets, including the brackets
@@ -227,6 +229,13 @@ export default {
 		hasLeftArrow() {
 			return this.$refs.leftArrow;
 		},
+		detailedLoanCacheId() {
+			if (this.detailedLoanIndex === null) {
+				return '';
+			}
+			// eslint-disable-next-line no-underscore-dangle
+			return `${this.loans[this.detailedLoanIndex].__typename}:${this.loans[this.detailedLoanIndex].id}`;
+		},
 	},
 	watch: {
 		loanChannel: {
@@ -276,11 +285,25 @@ export default {
 				return this.$refs.leftArrow.getBoundingClientRect().left;
 			}
 		},
-		updateDetailedLoanCacheId(detailedLoanCacheId) {
-			this.detailedLoanCacheId = detailedLoanCacheId;
+		updateDetailedLoanIndex(detailedLoanIndex) {
+			this.detailedLoanIndex = detailedLoanIndex;
 		},
-		updateHoverLoanCacheId(hoverLoanCacheId) {
-			this.hoverLoanCacheId = hoverLoanCacheId;
+		updateHoverLoanIndex(hoverLoanIndex) {
+			this.hoverLoanIndex = hoverLoanIndex;
+		},
+		calculateCardShiftIncrement(index) {
+			if (this.hoverLoanIndex === null || index === this.hoverLoanIndex) {
+				return 0;
+			}
+			if (index < this.hoverLoanIndex) {
+				return -1;
+			}
+			if (index > this.hoverLoanIndex) {
+				return 1;
+			}
+		},
+		handleMouseLeave() {
+			this.hoverLoanIndex = null;
 		},
 	},
 };
@@ -293,7 +316,7 @@ $row-max-width: 63.75rem;
 
 .cards-and-arrows-wrapper {
 	max-width: $row-max-width;
-	margin: 0 auto 2rem;
+	margin: 0 auto 1rem;
 	align-items: center;
 	display: flex;
 	position: relative;
