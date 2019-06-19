@@ -282,7 +282,7 @@ export default {
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
 			// basket data
-			this.totals = _get(data, 'shop.basket.totals');
+			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 			this.donations = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'Donation' });
 			this.kivaCards = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'KivaCard' });
