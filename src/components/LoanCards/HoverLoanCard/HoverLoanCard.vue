@@ -107,16 +107,16 @@ export default {
 			return this.detailedLoanIndex !== null;
 		},
 		shiftLeft() {
-			return this.shiftIncrement === -1;
+			return !this.rowHasDetailedLoan && this.shiftIncrement === -1;
 		},
 		shiftLeftDouble() {
-			return this.shiftIncrement === -2;
+			return !this.rowHasDetailedLoan && this.shiftIncrement === -2;
 		},
 		shiftRight() {
-			return this.shiftIncrement === 1;
+			return !this.rowHasDetailedLoan && this.shiftIncrement === 1;
 		},
 		shiftRightDouble() {
-			return this.shiftIncrement === 2;
+			return !this.rowHasDetailedLoan && this.shiftIncrement === 2;
 		},
 	},
 	mixins: [
