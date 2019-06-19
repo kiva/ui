@@ -36,6 +36,7 @@
 			<component
 				:is="categoryRowType"
 				class="loan-category-row"
+				:class="{'hover-row': showHoverLoanCards}"
 				v-for="(category, index) in categories"
 				:key="category.id"
 				:loan-channel="category"
@@ -618,6 +619,10 @@ export default {
 
 		@include breakpoint(medium) {
 			margin: 0 0 rem-calc(40);
+		}
+
+		&.hover-row {
+			margin: 0 0 1rem;
 		}
 
 		&:last-of-type {

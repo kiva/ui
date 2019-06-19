@@ -135,11 +135,11 @@ export default {
 @import "settings";
 
 .hover-loan-card-large {
-	$card-expansion-duration: 0.2s;
+	$card-expansion-duration: 0.15s;
+	$card-expansion-curve: linear;
 
 	background: $white;
 	flex-shrink: 0;
-	transition: transform $card-expansion-duration ease-in, opacity $card-expansion-duration ease-out;
 	width: rem-calc(580);
 	height: rem-calc(250);
 	display: flex;
@@ -151,6 +151,18 @@ export default {
 	transform: scale(1, 1);
 	opacity: 1;
 	z-index: 1;
+	pointer-events: initial;
+
+	/*
+		Using variables due to:
+		1) Limitations disabling max-len in eslint in SASS
+		2) Incorrect SASS transpilation when using multi-line
+	*/
+	$transition1: transform $card-expansion-duration $card-expansion-curve;
+	$transition2: opacity $card-expansion-duration ease-out;
+	$transition3: pointer-events 0s linear $card-expansion-duration;
+
+	transition: $transition1, $transition2, $transition3;
 
 	.hover-loan-card-image {
 		/* Design width: 332px */
@@ -183,6 +195,9 @@ export default {
 				overflow: hidden;
 				text-overflow: ellipsis;
 				font-weight: 500;
+
+				/* Next line prevents a weird visual bug on chrome */
+				margin-top: rem-calc(1);
 			}
 		}
 
@@ -204,8 +219,7 @@ export default {
 		transform: scale(calc(9 / 29), 0.9);
 		opacity: 0;
 		pointer-events: none;
-		// Comment line below for original transition
-		transition: transform $card-expansion-duration ease-out, opacity $card-expansion-duration ease-in;
+		transition: transform $card-expansion-duration $card-expansion-curve, opacity $card-expansion-duration ease-in;
 	}
 }
 </style>
