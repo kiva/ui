@@ -11,7 +11,6 @@ export default [
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
-	{ path: '/login-vue', component: () => import('@/pages/LoginAndRegister/LoginAndRegister') },
 	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutPage') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
