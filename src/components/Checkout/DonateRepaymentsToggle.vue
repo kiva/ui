@@ -54,7 +54,7 @@ export default {
 		this.apollo.watchQuery({ query: initializeCheckout }).subscribe({
 			next: ({ data }) => {
 				this.myDonateRepayments = _get(data, 'my.userAccount.donateRepayments');
-				this.totals = _get(data, 'shop.basket.totals');
+				this.totals = _get(data, 'shop.basket.totals') || {};
 				this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
 
 				_forEach(this.loans, loan => {
