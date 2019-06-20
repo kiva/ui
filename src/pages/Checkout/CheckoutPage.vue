@@ -444,16 +444,16 @@ export default {
 						return true;
 					})
 					.catch(err => {
-						console.error(err);
 						// handle closed popup dialog with the following error signature
 						// {original: "User closed the popup window", code: null, description: null}
 						if (err && err.original === 'User closed the popup window') {
 							this.updatingTotals = false;
-						}
-						// handle temporary error situation with popup by refreshing page
-						if (err && err.name === 'SyntaxError') {
+						} else if (err && err.name === 'SyntaxError') {
+							// handle temporary error situation with popup by refreshing page
 							console.error(err);
 							window.location = window.location; // eslint-disable-line
+						} else {
+							console.error(err);
 						}
 					})
 					.finally(() => {
