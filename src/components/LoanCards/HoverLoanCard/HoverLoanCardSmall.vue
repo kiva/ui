@@ -69,16 +69,10 @@ export default {
 	opacity: 1;
 	pointer-events: initial;
 
-	/*
-		Using variables due to:
-		1) Limitations disabling max-len in eslint in SASS
-		2) Incorrect SASS transpilation when using multi-line
-	*/
 	$transition1: transform $card-expansion-duration $card-expansion-curve;
 	$transition2: opacity $card-expansion-duration ease-in;
-	$transition3: pointer-events 0s linear $card-expansion-duration;
 
-	transition: $transition1, $transition2, $transition3;
+	transition: $transition1, $transition2;
 
 	.hover-loan-card-image {
 		border-radius: rem-calc(3) rem-calc(3) 0 0;

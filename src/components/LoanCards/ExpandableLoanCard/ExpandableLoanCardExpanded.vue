@@ -34,6 +34,7 @@ import _get from 'lodash/get';
 import activeLoanClient from '@/graphql/query/activeLoanClient.graphql';
 import activeLoanMixin from '@/plugins/active-loan-mixin';
 import lockScrollUtils from '@/plugins/lock-scroll';
+import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 export default {
@@ -43,6 +44,7 @@ export default {
 	mixins: [
 		activeLoanMixin,
 		lockScrollUtils,
+		categoryRowArrowsVisibleMixin,
 	],
 	props: {
 		isVisitor: {
@@ -73,7 +75,7 @@ export default {
 			return this.leftArrowPosition !== undefined && this.hoverLoanXCoordinate < this.leftArrowPosition;
 		},
 		shouldNotExpandCard() {
-			const isUnderArrowOnDesktop = this.arrowsVisible() && this.isUnderArrow;
+			const isUnderArrowOnDesktop = this.categoryRowArrowsVisible() && this.isUnderArrow;
 			const isOffScreenOnTablet = document.documentElement.clientWidth > 480
 				&& (this.hoverLoanXCoordinate + 254) > document.documentElement.clientWidth;
 			return !this.hoverIsActive || isUnderArrowOnDesktop || isOffScreenOnTablet;
@@ -125,20 +127,6 @@ export default {
 		},
 		resumeHover() {
 			this.hoverIsActive = true;
-		},
-		arrowsVisible() {
-			/*
-			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
-			usingTouch unfortunately.
-			*/
-			if (typeof window === 'undefined' || typeof document === 'undefined') {
-				return true;
-			}
-			const rightArrow = document.querySelector('.arrow.right-arrow');
-			if (!rightArrow) {
-				return true;
-			}
-			return window.getComputedStyle(rightArrow).display !== 'none';
 		},
 	},
 	mounted() {

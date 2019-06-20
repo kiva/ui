@@ -42,6 +42,8 @@
 					:style="{ marginLeft: scrollPos + 'px' }"
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
+
+					ref="hoverCardsHolder"
 				>
 					<loan-card-controller
 						loan-card-type="HoverLoanCard"
@@ -64,7 +66,7 @@
 						@update-detailed-loan-index="updateDetailedLoanIndex"
 						@update-hover-loan-index="updateHoverLoanIndex"
 
-						ref="loanCards"
+						ref="hoverLoanCards"
 					/>
 					<!--
 						Blocks of attributes above:
@@ -105,6 +107,7 @@
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 
 const cardWidthPlusPadding = 200;
 
@@ -112,6 +115,9 @@ export default {
 	components: {
 		LoanCardController,
 	},
+	mixins: [
+		categoryRowArrowsVisibleMixin,
+	],
 	inject: ['apollo'],
 	props: {
 		isLoggedIn: {
@@ -236,6 +242,38 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			return `${this.loans[this.detailedLoanIndex].__typename}:${this.loans[this.detailedLoanIndex].id}`;
 		},
+		noHoverLoan() {
+			return this.hoverLoanIndex === null;
+		},
+		hoverLoanIsLeftMost() {
+			if (this.noHoverLoan) {
+				return false;
+			}
+
+			const bodyRect = document.body.getBoundingClientRect();
+			const hoverLoanCardRect = this.$refs.hoverLoanCards[this.hoverLoanIndex].$el.getBoundingClientRect();
+			const hoverLoanCardLeft = hoverLoanCardRect.left - bodyRect.left;
+
+			const hoverCardsHolderRect = this.$refs.hoverCardsHolder.getBoundingClientRect();
+			const noArrowPaddingSide = 1;
+			const arrowWidthInRem = 2.5;
+			const pxInRem = 16;
+			const leftPadding = this.categoryRowArrowsVisible()
+				? arrowWidthInRem * pxInRem
+				: noArrowPaddingSide * pxInRem;
+			const hoverCardsHolderLeft = hoverCardsHolderRect.left - bodyRect.left + leftPadding;
+
+			const hoverCardDistanceFromLeft = hoverLoanCardLeft - hoverCardsHolderLeft;
+
+			return hoverCardDistanceFromLeft === 0;
+		},
+		hoverLoanIsRightMost() {
+			if (this.noHoverLoan) {
+				return false;
+			}
+
+			return false;
+		},
 	},
 	watch: {
 		loanChannel: {
@@ -292,7 +330,25 @@ export default {
 			this.hoverLoanIndex = hoverLoanIndex;
 		},
 		calculateCardShiftIncrement(index) {
-			if (this.hoverLoanIndex === null || index === this.hoverLoanIndex) {
+			if (this.hoverLoanIsLeftMost) {
+				if (index > this.hoverLoanIndex) {
+					return 2;
+				}
+				if (index === this.hoverLoanIndex) {
+					return 1;
+				}
+				return 0;
+			}
+			if (this.hoverLoanIsRightMost) {
+				if (index < this.hoverLoanIndex) {
+					return -2;
+				}
+				if (index === this.hoverLoanIndex) {
+					return -1;
+				}
+				return 0;
+			}
+			if (this.noHoverLoan || index === this.hoverLoanIndex) {
 				return 0;
 			}
 			if (index < this.hoverLoanIndex) {
@@ -371,7 +427,7 @@ $row-max-width: 63.75rem;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 	padding-left: 2.5rem;
-	overflow-y: hidden;
+	overflow: hidden;
 }
 
 .row.title-row {
