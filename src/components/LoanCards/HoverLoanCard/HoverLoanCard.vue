@@ -141,15 +141,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
+@import "components/loan-cards/hover-loan-card";
 
 .hover-loan-card {
-	$chevron-animation-duration: 0.2s;
-	$card-expansion-duration: 0.15s;
-	$card-expansion-curve: linear;
-	$chevron-animation-out: $chevron-animation-duration linear;
-	$chevron-animation-in: $chevron-animation-out $card-expansion-duration;
-
-	padding: rem-calc(25) rem-calc(10) rem-calc(41) rem-calc(10);
+	padding: rem-calc(25) rem-calc($hover-card-right-margin) rem-calc(41) rem-calc($hover-card-right-margin);
 
 	$transition1: padding-bottom $card-expansion-duration $card-expansion-curve;
 	$transition2: transform $card-expansion-duration $card-expansion-curve;
@@ -158,7 +153,7 @@ export default {
 
 	.hover-loan-card-wrapper {
 		position: relative;
-		transition: opacity $card-expansion-duration ease-out;
+		transition: $hover-card-transition-opacity-out;
 
 		.more-details-wrapper {
 			position: absolute;
@@ -179,19 +174,19 @@ export default {
 	}
 
 	&.shift-left {
-		transform: translateX(-200px);
+		transform: translateX(-$hover-card-width-difference / 2);
 	}
 
 	&.shift-left-double {
-		transform: translateX(-400px);
+		transform: translateX(-$hover-card-width-difference);
 	}
 
 	&.shift-right {
-		transform: translateX(200px);
+		transform: translateX($hover-card-width-difference / 2);
 	}
 
 	&.shift-right-double {
-		transform: translateX(400px);
+		transform: translateX($hover-card-width-difference);
 	}
 
 	&.expanded {

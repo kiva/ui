@@ -53,29 +53,24 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "settings";
+@import "components/loan-cards/hover-loan-card";
 
 .hover-loan-card-small {
-	$card-expansion-duration: 0.15s;
-	$card-expansion-curve: linear;
-
-	width: rem-calc(180);
+	width: $small-hover-card-width;
 	background: $white;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	flex-shrink: 0;
-	border-radius: rem-calc(3);
-	transform: scale(1, 1);
+	border-radius: $hover-card-border-radius;
+	// Re-enable to add card expansion animation
+	// transform: scale(1, 1);
 	opacity: 1;
 	pointer-events: initial;
-
-	$transition1: transform $card-expansion-duration $card-expansion-curve;
-	$transition2: opacity $card-expansion-duration ease-in;
-
-	transition: $transition1, $transition2;
+	transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
 
 	.hover-loan-card-image {
-		border-radius: rem-calc(3) rem-calc(3) 0 0;
+		border-radius: $hover-card-border-radius $hover-card-border-radius 0 0;
 		overflow: hidden;
 	}
 
@@ -84,7 +79,7 @@ export default {
 		padding: 0.75rem 1rem;
 		text-align: center;
 		border: rem-calc(1) solid $kiva-stroke-gray;
-		border-radius: 0 0 rem-calc(3) rem-calc(3);
+		border-radius: 0 0 $hover-card-border-radius $hover-card-border-radius;
 		border-top: none;
 		height: rem-calc(90);
 
@@ -112,11 +107,12 @@ export default {
 	}
 
 	&.expanded {
-		// Re-enable next line to add card expansion animation
-		// transform: scale(calc(29 / 9), calc(10 / 9));
 		opacity: 0;
 		pointer-events: none;
-		transition: transform $card-expansion-duration $card-expansion-curve, opacity $card-expansion-duration ease-out;
+		transition: $hover-card-transition-opacity-out;
+		// Re-enable to add card expansion animation
+		// transform: scale($width-ratio-large-to-small, $height-ratio-large-to-small);
+		// transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
 	}
 }
 </style>

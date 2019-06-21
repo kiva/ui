@@ -133,47 +133,41 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "settings";
+@import "components/loan-cards/hover-loan-card";
 
 .hover-loan-card-large {
-	$card-expansion-duration: 0.15s;
-	$card-expansion-curve: linear;
-
 	background: $white;
 	flex-shrink: 0;
-	width: rem-calc(580);
-	height: rem-calc(250);
+	width: $large-hover-card-width;
+	height: $large-hover-card-height;
 	display: flex;
 	justify-content: space-between;
 	position: absolute;
-	top: calc(-100% / 18);
-	left: calc(-2000% / 18);
-	border-radius: rem-calc(3);
+	top: $hover-card-large-top-shift;
+	left: $hover-card-large-left-shift;
+	border-radius: $hover-card-border-radius;
 	transform: scale(1, 1);
 	opacity: 1;
 	z-index: 1;
 	pointer-events: initial;
-
-	$transition1: transform $card-expansion-duration $card-expansion-curve;
-	$transition2: opacity $card-expansion-duration ease-out;
-
-	transition: $transition1, $transition2;
+	transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
 
 	.hover-loan-card-image {
-		/* Design width: 332px */
+		/* Original design width: 332px */
 		width: rem-calc(335.17);
-		height: rem-calc(250);
+		height: $large-hover-card-height;
 		border-radius: rem-calc(3) 0 0 rem-calc(3);
 		overflow: hidden;
 	}
 
 	.hover-loan-card-data-wrap {
-		/* Design width: 248px */
+		/* Original design width: 248px */
 		width: rem-calc(244.83);
-		height: rem-calc(250);
+		height: $large-hover-card-height;
 		padding: 0.5rem 1rem;
 		margin-bottom: 0.75rem;
 		border: 1px solid $kiva-stroke-gray;
-		border-radius: 0 rem-calc(3) rem-calc(3) 0;
+		border-radius: 0 $hover-card-border-radius $hover-card-border-radius 0;
 		border-left: none;
 		display: flex;
 		flex-direction: column;
@@ -210,10 +204,10 @@ export default {
 	}
 
 	&.collapsed {
-		transform: scale(calc(9 / 29), 0.9);
 		opacity: 0;
 		pointer-events: none;
-		transition: transform $card-expansion-duration $card-expansion-curve, opacity $card-expansion-duration ease-in;
+		transform: scale($width-ratio-small-to-large, $height-ratio-small-to-large);
+		transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
 	}
 }
 </style>
