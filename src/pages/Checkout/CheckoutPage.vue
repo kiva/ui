@@ -444,16 +444,16 @@ export default {
 						return true;
 					})
 					.catch(err => {
-						console.error(err);
 						// handle closed popup dialog with the following error signature
 						// {original: "User closed the popup window", code: null, description: null}
 						if (err && err.original === 'User closed the popup window') {
 							this.updatingTotals = false;
-						}
-						// handle temporary error situation with popup by refreshing page
-						if (err && err.name === 'SyntaxError') {
-							console.error(err);
+						} else if (err && err.name === 'SyntaxError') {
+							// handle temporary error situation with popup by refreshing page
+							console.error(this.extractAuth0Error(err));
 							window.location = window.location; // eslint-disable-line
+						} else {
+							console.error(this.extractAuth0Error(err));
 						}
 					})
 					.finally(() => {
@@ -532,6 +532,12 @@ export default {
 		},
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
+		},
+		extractAuth0Error(errorObject) {
+			if (typeof errorObject.original === 'object') {
+				return `${errorObject.error}: ${errorObject.errorDescription}`;
+			}
+			return JSON.stringify(errorObject.original);
 		},
 		initializeBasketItemTimer() {
 			// Read assigned version of basket item experiment
