@@ -1,0 +1,40 @@
+@import 'settings';
+
+// Card Styles
+$hover-card-border-radius: rem-calc(3);
+
+// Card sizes
+$small-hover-card-width: rem-calc(180);
+$small-hover-card-height: rem-calc(225);
+$large-hover-card-width: rem-calc(580);
+$large-hover-card-height: rem-calc(250);
+$hover-card-right-margin: rem-calc(10);
+
+// Differences
+$small-hover-card-total-width: $small-hover-card-width + $hover-card-right-margin;
+$large-hover-card-total-width: $large-hover-card-width + $hover-card-right-margin;
+$hover-card-width-difference: $large-hover-card-total-width - $small-hover-card-total-width;
+$hover-card-height-difference: $large-hover-card-height - $small-hover-card-height;
+
+// Ratios
+$width-ratio-large-to-small: $large-hover-card-width / $small-hover-card-width;
+$height-ratio-large-to-small: $large-hover-card-height / $small-hover-card-height;
+$width-ratio-small-to-large: $small-hover-card-width / $large-hover-card-width;
+$height-ratio-small-to-large: $small-hover-card-height / $large-hover-card-height;
+
+// Large Card Positioning Shift
+$hover-card-large-left-shift: ($hover-card-width-difference / $small-hover-card-width) * -50%;
+$hover-card-large-top-shift: ($hover-card-height-difference / $small-hover-card-height) * -50%;
+
+// Animations
+// Expansion
+$card-expansion-duration: 0.15s;
+$card-expansion-curve: linear;
+$hover-card-transition-transform: transform $card-expansion-duration $card-expansion-curve;
+$hover-card-transition-opacity-in: opacity $card-expansion-duration ease-in;
+$hover-card-transition-opacity-out: opacity $card-expansion-duration ease-out;
+
+// Chevron
+$chevron-animation-duration: 0.2s;
+$chevron-animation-out: $chevron-animation-duration linear;
+$chevron-animation-in: $chevron-animation-out $card-expansion-duration;
