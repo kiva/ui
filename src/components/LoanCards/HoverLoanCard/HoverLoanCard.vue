@@ -151,11 +151,6 @@ export default {
 
 	padding: rem-calc(25) rem-calc(10) rem-calc(41) rem-calc(10);
 
-	/*
-		Using variables due to:
-		1) Limitations disabling max-len in eslint in SASS
-		2) Incorrect SASS transpilation when using multi-line
-	*/
 	$transition1: padding-bottom $card-expansion-duration $card-expansion-curve;
 	$transition2: transform $card-expansion-duration $card-expansion-curve;
 
@@ -208,16 +203,10 @@ export default {
 				transform: translate(-50%, 0);
 				pointer-events: initial;
 
-				/*
-					Using variables due to:
-					1) Limitations disabling max-len in eslint in SASS
-					2) Incorrect SASS transpilation when using multi-line
-				*/
 				$transition1: opacity $chevron-animation-in;
 				$transition2: transform $chevron-animation-in;
-				$transition3: pointer-events 0s linear $card-expansion-duration;
 
-				transition: $transition1, $transition2, $transition3;
+				transition: $transition1, $transition2;
 			}
 		}
 	}

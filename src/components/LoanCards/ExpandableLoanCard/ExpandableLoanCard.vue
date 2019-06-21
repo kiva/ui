@@ -83,6 +83,7 @@ import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';
+import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -98,6 +99,7 @@ export default {
 	mixins: [
 		expandableLoanCardMixin,
 		activeLoanMixin,
+		categoryRowArrowsVisibleMixin,
 	],
 	computed: {
 		disableImageLink() {
@@ -105,23 +107,7 @@ export default {
 			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
 			usingTouch unfortunately.
 			*/
-			return !this.arrowsVisible() && !this.expanded;
-		},
-	},
-	methods: {
-		arrowsVisible() {
-			/*
-			We are using the lack of CSS hover support to gate the visibility of the arrows. That doesn't sync with
-			usingTouch unfortunately.
-			*/
-			if (typeof window === 'undefined' || typeof document === 'undefined') {
-				return true;
-			}
-			const rightArrow = document.querySelector('.arrow.right-arrow');
-			if (!rightArrow) {
-				return true;
-			}
-			return window.getComputedStyle(rightArrow).display !== 'none';
+			return !this.categoryRowArrowsVisible() && !this.expanded;
 		},
 	},
 };
