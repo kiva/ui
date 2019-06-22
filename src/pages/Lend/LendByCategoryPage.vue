@@ -104,6 +104,7 @@ import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
@@ -260,13 +261,15 @@ export default {
 			const expData = readJSONSetting(data, 'general.rowsExp.value') || {};
 
 			// Read the assigned category rows experiment version from the cache
-			const versionData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'category_rows' } });
-			const version = _get(versionData, 'experiment.version');
-			const variantRows = _get(expData, `variants.${version}.categories`);
+			const versionData = this.apollo.readFragment({
+				id: 'Experiment:category_rows',
+				fragment: experimentVersionFragment,
+			}) || {};
+			const variantRows = _get(expData, `variants.${versionData.version}.categories`);
 
 			// Set from the ids for the variant, or the default if that is undefined
 			this.categorySetting = variantRows || rowData;
-			this.categorySetId = version || _get(expData, 'control.key');
+			this.categorySetId = versionData.version || _get(expData, 'control.key');
 		},
 		setCustomRowData(data) { // eslint-disable-line
 			this.customCategories = [];
@@ -351,13 +354,13 @@ export default {
 		initializeFavoriteCountryRowExp() {
 			// experiment: CASH-794 Favorite Country Row
 			// get assignment
-			const favoriteCountryRowEXP = this.apollo.readQuery({
-				query: experimentQuery,
-				variables: { id: 'favorite_country' },
-			});
-			this.favoriteCountryExpVersion = _get(favoriteCountryRowEXP, 'experiment.version');
+			const favoriteCountryRowEXP = this.apollo.readFragment({
+				id: 'Experiment:favorite_country',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.favoriteCountryExpVersion = favoriteCountryRowEXP.version;
 			// Only track and activate if these conditions exist
-			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion !== null) {
+			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion) {
 				// Fire Event for Exp CASH-794
 				this.$kvTrackEvent(
 					'Lending',
@@ -368,9 +371,9 @@ export default {
 		},
 		initializeHoverLoanCard() {
 			// CASH-521: Hover loan card experiment
-			const hoverLoanCardExperiment = this.apollo.readQuery({
-				query: experimentQuery,
-				variables: { id: 'hover_loan_cards' },
+			const hoverLoanCardExperiment = this.apollo.readFragment({
+				id: 'Experiment:hover_loan_cards',
+				fragment: experimentVersionFragment,
 			});
 			const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'experiment.version');
 			if (hoverLoanCardExperimentVersion === 'variant-a') {
@@ -455,8 +458,11 @@ export default {
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Read the assigned feateured loan experiment version from the cache
-		const versionData = this.apollo.readQuery({ query: experimentQuery, variables: { id: 'featured_loans' } });
-		this.showFeaturedLoans = _get(versionData, 'experiment.version') === 'shown';
+		const versionData = this.apollo.readFragment({
+			id: 'Experiment:featured_loans',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.showFeaturedLoans = versionData.version === 'shown';
 
 		// Read the SSR ready loan channels from the cache
 		const categoryData = this.apollo.readQuery({
@@ -471,28 +477,26 @@ export default {
 		// this.setCustomRowData(categoryData);
 
 		// CASH-578 : Experiment : Cloudinary image enhancement
-		// const imageEnchancementExperimentVersionArray = this.apollo.readQuery({
-		// 	query: experimentQuery,
-		// 	variables: { id: 'image_enhancement' },
-		// });
+		const imageEnchancementExperiment = this.apollo.readFragment({
+			id: 'Experiment:image_enhancement',
+			fragment: experimentVersionFragment,
+		}) || {};
 
-		// eslint-disable-next-line max-len
-		// this.imageEnhancementExperimentVersion = _get(imageEnchancementExperimentVersionArray, 'experiment.version') || null;
+		this.imageEnhancementExperimentVersion = imageEnchancementExperiment.version;
 
-		// if (this.imageEnhancementExperimentVersion === 'variant-a') {
-		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
-		// } else if (this.imageEnhancementExperimentVersion === 'variant-b') {
-		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
-		// }
+		if (this.imageEnhancementExperimentVersion === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
+		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
+		}
 
 		// CASH-350 : Experiment : Featured Hero Loan
-		const featuredHeroLoanExperimentVersionArray = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'featured_hero_loan_v3' },
-		});
+		const featuredHeroLoanExperiment = this.apollo.readFragment({
+			id: 'Experiment:featured_hero_loan_v3',
+			fragment: experimentVersionFragment,
+		}) || {};
 
-		// eslint-disable-next-line max-len
-		this.featuredHeroLoanExperimentVersion = _get(featuredHeroLoanExperimentVersionArray, 'experiment.version') || null;
+		this.featuredHeroLoanExperimentVersion = featuredHeroLoanExperiment.version;
 
 		if (this.featuredHeroLoanExperimentVersion === 'variant-a') {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'a');
@@ -512,11 +516,11 @@ export default {
 		this.initializeFavoriteCountryRowExp();
 
 		// get assignment for add to basket interstitial
-		const addToBasketPopupEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'add_to_basket_v2' },
-		});
-		this.addToBasketExpActive = _get(addToBasketPopupEXP, 'experiment.version') === 'shown';
+		const addToBasketPopupEXP = this.apollo.readFragment({
+			id: 'Experiment:add_to_basket_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
 		// Update @client state if interstitial exp is active
 		if (this.addToBasketExpActive) {
 			this.apollo.mutate({
@@ -533,25 +537,25 @@ export default {
 			this.addToBasketExpActive ? 'b' : 'a'
 		);
 
-		const lendFilterEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'lend_filter_v2' },
-		});
-		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
+		const lendFilterEXP = this.apollo.readFragment({
+			id: 'Experiment:lend_filter_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.lendFilterExpVersion = lendFilterEXP.version;
 
 		// CASH-676: Expandable loan card experiment
-		const expandableLoanCardExperiment = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'expandable_loan_cards' },
-		});
-		const expandableLoanCardExperimentVersion = _get(expandableLoanCardExperiment, 'experiment.version');
-		if (expandableLoanCardExperimentVersion === 'variant-a') {
+		const expandableLoanCardExperiment = this.apollo.readFragment({
+			id: 'Experiment:expandable_loan_cards',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (expandableLoanCardExperiment.version === 'variant-a') {
 			this.$kvTrackEvent(
 				'Lending',
 				'EXP-CASH-676-Apr2019',
 				'a',
 			);
-		} else if (expandableLoanCardExperimentVersion === 'variant-b') {
+		} else if (expandableLoanCardExperiment.version === 'variant-b') {
 			this.showExpandableLoanCards = true;
 			this.$kvTrackEvent(
 				'Lending',
@@ -576,13 +580,12 @@ export default {
 		// Only allow experiment when in show-for-large (>= 1024px) screen size
 		if (window.innerWidth >= 680) {
 			// CASH-658 : Experiment : Category description
-			const categoryDescriptionExperimentVersionArray = this.apollo.readQuery({
-				query: experimentQuery,
-				variables: { id: 'category_description' },
-			});
+			const categoryDescriptionExperiment = this.apollo.readFragment({
+				id: 'Experiment:category_description',
+				fragment: experimentVersionFragment,
+			}) || {};
 
-			// eslint-disable-next-line max-len
-			this.categoryDescriptionExperimentVersion = _get(categoryDescriptionExperimentVersionArray, 'experiment.version') || null;
+			this.categoryDescriptionExperimentVersion = categoryDescriptionExperiment.version;
 
 			if (this.categoryDescriptionExperimentVersion === 'variant-a') {
 				this.showCategoryDescription = false;

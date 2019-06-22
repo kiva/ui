@@ -1,6 +1,5 @@
-import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.graphql';
 
 export default {
@@ -24,11 +23,11 @@ export default {
 				this.shouldUpdateLendFilterExpCookie = true;
 			} else {
 				// we have no legacy exp setup, use ui assignment
-				const lendFilterEXP = this.apollo.readQuery({
-					query: experimentQuery,
-					variables: { id: 'lend_filter_v2' },
-				});
-				this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
+				const lendFilterEXP = this.apollo.readFragment({
+					id: 'Experiment:lend_filter_v2',
+					fragment: experimentVersionFragment,
+				}) || {};
+				this.lendFilterExpVersion = lendFilterEXP.version;
 			}
 			// Set Active Status
 			this.lendFilterExpActive = this.lendFilterExpVersion === 'b';

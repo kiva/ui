@@ -162,6 +162,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateExperimentMutation from '@/graphql/mutation/updateExperimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
@@ -313,13 +314,13 @@ export default {
 		);
 
 		// Read assigned version of braintree experiment
-		const braintreeExpAssignment = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'bt_test' },
-		});
-		this.braintreeExpVersion = _get(braintreeExpAssignment, 'experiment.version') || null;
+		const braintreeExpAssignment = this.apollo.readFragment({
+			id: 'Experiment:bt_test',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.braintreeExpVersion = braintreeExpAssignment.version;
 		// TODO: Update for actual launch
-		if (this.braintreeExpVersion !== null) {
+		if (this.braintreeExpVersion) {
 			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
 
@@ -541,11 +542,11 @@ export default {
 		},
 		initializeBasketItemTimer() {
 			// Read assigned version of basket item experiment
-			const basketItemTimerExpAssignment = this.apollo.readQuery({
-				query: experimentQuery,
-				variables: { id: 'basket_item_timer_v2' },
-			});
-			this.basketItemTimerExpVersion = _get(basketItemTimerExpAssignment, 'experiment.version');
+			const basketItemTimerExpAssignment = this.apollo.readFragment({
+				id: 'Experiment:basket_item_timer_v2',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.basketItemTimerExpVersion = basketItemTimerExpAssignment.version;
 			let basketTimerTrackingVersion;
 			switch (this.basketItemTimerExpVersion) {
 				case 'inline':

@@ -59,6 +59,7 @@ import cookieStore from '@/util/cookieStore';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
@@ -265,11 +266,11 @@ export default {
 		});
 
 		// get assignment for add to basket interstitial
-		const addToBasketPopupEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'add_to_basket_v2' },
-		});
-		this.addToBasketExpActive = _get(addToBasketPopupEXP, 'experiment.version') === 'shown';
+		const addToBasketPopupEXP = this.apollo.readFragment({
+			id: 'Experiment:add_to_basket_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
 		// Update @client state if interstitial exp is active
 		if (this.addToBasketExpActive) {
 			this.apollo.mutate({
@@ -286,11 +287,11 @@ export default {
 			this.addToBasketExpActive ? 'b' : 'a'
 		);
 
-		const lendFilterEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'lend_filter_v2' },
-		});
-		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
+		const lendFilterEXP = this.apollo.readFragment({
+			id: 'Experiment:lend_filter_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.lendFilterExpVersion = lendFilterEXP.version;
 
 		// Update Lend Filter Exp CASH-545
 		this.getLendFilterExpVersion();

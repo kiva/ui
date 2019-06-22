@@ -129,6 +129,7 @@ import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
@@ -297,14 +298,12 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
-			const checkoutDonation100TextExpVersion = this.apollo.readQuery({
-				query: experimentAssignmentQuery,
-				variables: { id: 'checkout_donation_100_text' },
-			});
-			// eslint-disable-next-line max-len
-			this.checkoutDonation100TextExperiment = _get(checkoutDonation100TextExpVersion, 'experiment.version') || null;
+			const checkoutDonation100TextExp = this.apollo.readFragment({
+				id: 'Experiment:checkout_donation_100_text',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.checkoutDonation100TextExperiment = checkoutDonation100TextExp.version;
 
-			// eslint-disable-next-line max-len
 			if (this.checkoutDonation100TextExperiment === 'variant-a') {
 				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'a');
 			}
@@ -312,11 +311,13 @@ export default {
 				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'b');
 			}
 
-			const nudgeExperimentVersion = this.apollo.readQuery({
-				query: experimentAssignmentQuery,
-				variables: { id: 'donation_nudge_lightbox_custom_tip' },
-			});
-			this.donationNudgeLightboxExpVersion = _get(nudgeExperimentVersion, 'experiment.version') || null;
+			// donation nudge lightbox experiment
+			const nudgeExperiment = this.apollo.readFragment({
+				id: 'Experiment:donation_nudge_lightbox_custom_tip',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.donationNudgeLightboxExpVersion = nudgeExperiment.version;
+
 			if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-a') {
 				this.isCash80Running = true;
 				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'a');
@@ -332,47 +333,49 @@ export default {
 			});
 			this.loanHistoryCount = _get(totalLoansLentQuery, 'my.loans.totalCount') || null;
 
-			const nudgeLendingCostExperimentVersion = this.apollo.readQuery({
-				query: experimentAssignmentQuery,
-				variables: { id: 'donation_nudge_lending_cost' },
-			});
-			// eslint-disable-next-line max-len
-			const nudgeLendingCostExperimentVersionString = _get(nudgeLendingCostExperimentVersion, 'experiment.version') || null;
-			if (this.hasLoans && this.loanHistoryCount > 0 && nudgeLendingCostExperimentVersionString === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
-				// eslint-disable-next-line max-len
-			} else if (this.hasLoans && this.loanHistoryCount > 0 && nudgeLendingCostExperimentVersionString === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
-				this.donationNudgeExperimentalHeader = true;
-				this.donationNudgeExperimentalDescription = true;
+			if (this.hasLoans && this.loanHistoryCount > 0) {
+				const nudgeLendingCostExperiment = this.apollo.readFragment({
+					id: 'Experiment:donation_nudge_lending_cost',
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				if (nudgeLendingCostExperiment.version === 'variant-a') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
+				} else if (nudgeLendingCostExperiment.version === 'variant-b') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
+					this.donationNudgeExperimentalHeader = true;
+					this.donationNudgeExperimentalDescription = true;
+				}
 			}
 
 			// CASH-379: Donation Nudge Borrower Image Experiment
-			const nudgeBorrowerImageExperimentVersion = this.apollo.readQuery({
-				query: experimentAssignmentQuery,
-				variables: { id: 'donation_nudge_borrower_image' },
-			});
-			// eslint-disable-next-line max-len
-			const nudgeBorrowerImageExperimentVersionString = _get(nudgeBorrowerImageExperimentVersion, 'experiment.version') || null;
-			if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'a');
-			} else if (this.hasLoans && nudgeBorrowerImageExperimentVersionString === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'b');
-				this.donationNudgeBorrowerImageExperiment = true;
+			if (this.hasLoans) {
+				const nudgeBorrowerImageExperiment = this.apollo.readFragment({
+					id: 'Experiment:donation_nudge_borrower_image',
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				if (nudgeBorrowerImageExperiment.version === 'variant-a') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'a');
+				} else if (nudgeBorrowerImageExperiment.version === 'variant-b') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'b');
+					this.donationNudgeBorrowerImageExperiment = true;
+				}
 			}
 
 			// CASH-66: 17% donation nudge experiment
-			const donationNudge17ExperimentVersion = this.apollo.readQuery({
-				query: experimentAssignmentQuery,
-				variables: { id: 'donation_nudge_17' },
-			});
-			// eslint-disable-next-line max-len
-			const donationNudge17ExperimentVersionString = _get(donationNudge17ExperimentVersion, 'experiment.version') || null;
-			if (this.hasLoans && donationNudge17ExperimentVersionString === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'a');
-			} else if (this.hasLoans && donationNudge17ExperimentVersionString === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'b');
-				this.donationNudge17Experiment = true;
+			if (this.hasLoans) {
+				const donationNudge17Experiment = this.apollo.readFragment({
+					id: 'Experiment:donation_nudge_17',
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				if (donationNudge17Experiment.version === 'variant-a') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'a');
+				} else if (donationNudge17Experiment.version === 'variant-b') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'b');
+					this.donationNudge17Experiment = true;
+				}
 			}
 		},
 		updateDonation() {
