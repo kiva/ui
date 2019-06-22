@@ -40,6 +40,8 @@ import numeral from 'numeral';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 
 // research-backed impact category
 const featuredCategoryIds = [56];
@@ -116,16 +118,22 @@ export default {
 
 		this.experimentData = { featured_hero_loan_fundraising_thermometer: this.featuredHeroLoanExperimentVersion };
 		// get initial loan data
-		const rawData = this.apollo.readQuery({
-			query: featuredLoansQuery,
-			variables: {
-				ids: this.featuredCategoryIds,
-				numberOfLoans: this.initialLoanCount,
-			},
-			fetchPolicy: 'network-only',
-		});
+		let rawData = {};
+		try {
+			rawData = this.apollo.readQuery({
+				query: featuredLoansQuery,
+				variables: {
+					ids: this.featuredCategoryIds,
+					numberOfLoans: this.initialLoanCount,
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
+
 		// set initial loan data so we ssr with a loan if possible
-		const loanArray = _filter(rawData.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]);
+		const loanArray = _filter(_get(rawData, 'lend.loanChannelsById'), ['id', this.featuredCategoryIds[0]]);
 		this.loanChannel = _get(loanArray, '[0]');
 		// remove loans that are funded
 		this.loans = _filter(_get(loanArray, '[0].loans.values'), loan => {

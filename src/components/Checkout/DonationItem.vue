@@ -135,6 +135,8 @@ import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonationNudgeLightboxBorrowerImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxBorrowerImage';
+import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
 	components: {
@@ -328,10 +330,18 @@ export default {
 			}
 
 			// Experiment: CASH-386
-			const totalLoansLentQuery = this.apollo.readQuery({
-				query: donationDataQuery,
-			});
-			this.loanHistoryCount = _get(totalLoansLentQuery, 'my.loans.totalCount') || null;
+			let totalLoansLentData = {};
+			try {
+				totalLoansLentData = this.apollo.readQuery({
+					query: donationDataQuery,
+					variables: {
+						basketId: cookieStore.get('kvbskt'),
+					},
+				});
+			} catch (e) {
+				logReadQueryError(e);
+			}
+			this.loanHistoryCount = _get(totalLoansLentData, 'my.loans.totalCount') || null;
 
 			if (this.hasLoans && this.loanHistoryCount > 0) {
 				const nudgeLendingCostExperiment = this.apollo.readFragment({

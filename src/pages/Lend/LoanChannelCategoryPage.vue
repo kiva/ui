@@ -56,6 +56,7 @@ import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -219,9 +220,18 @@ export default {
 		}
 	},
 	created() {
-		const allChannelsData = this.apollo.readQuery({
-			query: loanChannelPageQuery
-		});
+		let allChannelsData = {};
+		try {
+			allChannelsData = this.apollo.readQuery({
+				query: loanChannelPageQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				}
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
+
 		// set user status
 		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
 		// filter routes on param.category to get current path
@@ -231,14 +241,19 @@ export default {
 		// extract query
 		this.pageQuery = _get(this.$route, 'query');
 		// Read the page data from the cache
-		const baseData = this.apollo.readQuery({
-			query: loanChannelQuery,
-			variables: _merge(
-				this.loanQueryVars,
-				fromUrlParams(this.pageQuery),
-				{ basketId: cookieStore.get('kvbskt') }
-			),
-		});
+		let baseData = {};
+		try {
+			baseData = this.apollo.readQuery({
+				query: loanChannelQuery,
+				variables: _merge(
+					this.loanQueryVars,
+					fromUrlParams(this.pageQuery),
+					{ basketId: cookieStore.get('kvbskt') }
+				),
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
 
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');

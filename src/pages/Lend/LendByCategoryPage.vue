@@ -101,6 +101,7 @@ import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
@@ -443,12 +444,18 @@ export default {
 	},
 	created() {
 		// Read the page data from the cache
-		const baseData = this.apollo.readQuery({
-			query: lendByCategoryQuery,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
-		});
+		let baseData = {};
+		try {
+			baseData = this.apollo.readQuery({
+				query: lendByCategoryQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
+
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
@@ -465,14 +472,20 @@ export default {
 		this.showFeaturedLoans = versionData.version === 'shown';
 
 		// Read the SSR ready loan channels from the cache
-		const categoryData = this.apollo.readQuery({
-			query: loanChannelQuery,
-			variables: {
-				ids: _take(this.realCategoryIds, ssrRowLimiter)
-				// @todo variables for fetching data for custom channels
-			},
-		});
-		this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
+		try {
+			const categoryData = this.apollo.readQuery({
+				query: loanChannelQuery,
+				variables: {
+					ids: _take(this.realCategoryIds, ssrRowLimiter),
+					basketId: cookieStore.get('kvbskt'),
+					// @todo variables for fetching data for custom channels
+				},
+			});
+			this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
+		} catch (e) {
+			logReadQueryError(e);
+		}
+
 		// If active, update our custom categories prior to render
 		// this.setCustomRowData(categoryData);
 

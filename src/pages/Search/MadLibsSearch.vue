@@ -123,6 +123,7 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 
@@ -189,12 +190,17 @@ export default {
 		}
 	},
 	created() {
-		const basketData = this.apollo.readQuery({
-			query: itemsInBasketQuery,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
-		});
+		let basketData = {};
+		try {
+			basketData = this.apollo.readQuery({
+				query: itemsInBasketQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
 		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
 
 		this.apollo.watchQuery({
@@ -208,10 +214,18 @@ export default {
 			},
 		});
 
-		const userData = this.apollo.readQuery({
-			query: userStatus
-		});
-		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+		let userData;
+		try {
+			userData = this.apollo.readQuery({
+				query: userStatus,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
 	},
 	methods: {
 		toForLanguage(refine, $event) {

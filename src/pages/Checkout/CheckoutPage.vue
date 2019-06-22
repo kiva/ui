@@ -157,6 +157,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import logReadQueryError from '@/util/logReadQueryError';
 import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
@@ -301,17 +302,21 @@ export default {
 		// start the page with loading state
 		this.setUpdatingTotals(true);
 
-		this.holidayModeEnabled = settingEnabled(
-			this.apollo.readQuery({
-				query: promoQuery,
-				variables: {
-					basketId: cookieStore.get('kvbskt'),
-				},
-			}),
-			'general.holiday_enabled.value',
-			'general.holiday_start_time.value',
-			'general.holiday_end_time.value'
-		);
+		try {
+			this.holidayModeEnabled = settingEnabled(
+				this.apollo.readQuery({
+					query: promoQuery,
+					variables: {
+						basketId: cookieStore.get('kvbskt'),
+					},
+				}),
+				'general.holiday_enabled.value',
+				'general.holiday_start_time.value',
+				'general.holiday_end_time.value'
+			);
+		} catch (e) {
+			logReadQueryError(e);
+		}
 
 		// Read assigned version of braintree experiment
 		const braintreeExpAssignment = this.apollo.readFragment({
