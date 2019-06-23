@@ -1,5 +1,6 @@
 import checkApolloInject from '@/util/apolloInjectCheck';
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 
 // install method for plugin
 export default Vue => {
@@ -21,14 +22,19 @@ export default Vue => {
 					// if the query was prefetched, read the data from the cache
 					if (preFetch) {
 						const basketId = cookieStore.get('kvbskt');
-						const data = this.apollo.readQuery({
-							query,
-							variables: {
-								basketId,
-								...preFetchVariables({ route: this.$route }),
-							}
-						});
-						result.call(this, { data });
+						try {
+							const data = this.apollo.readQuery({
+								query,
+								variables: {
+									basketId,
+									...preFetchVariables({ route: this.$route }),
+								}
+							});
+							result.call(this, { data });
+						} catch (e) {
+							// if there's an error, skip reading from teh cache and just wait for the watch query
+							logReadQueryError(e);
+						}
 					}
 
 					if (!this.$isServer) {

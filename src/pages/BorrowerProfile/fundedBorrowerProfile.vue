@@ -86,6 +86,7 @@
 
 <script>
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import _get from 'lodash/get';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
@@ -122,13 +123,18 @@ export default {
 	},
 	created() {
 		// Read the page data from the cache
-		const loanData = this.apollo.readQuery({
-			query: fundedBorrowerProfile,
-			variables: {
-				id: this.$route.params.id,
-				basketId: cookieStore.get('kvbskt'),
-			},
-		});
+		let loanData = {};
+		try {
+			loanData = this.apollo.readQuery({
+				query: fundedBorrowerProfile,
+				variables: {
+					id: this.$route.params.id,
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
 
 		this.loan = _get(loanData, 'lend.loan');
 		this.itemsInBasket = _get(loanData, 'shop.basket.items.values');

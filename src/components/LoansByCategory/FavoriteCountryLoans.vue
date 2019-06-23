@@ -24,6 +24,8 @@ import _get from 'lodash/get';
 import favoriteCountryQuery from '@/graphql/query/lendByCategory/favoriteCountry.graphql';
 import basicLoanData from '@/graphql/query/basicLoanData.graphql';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
+import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
 	components: {
@@ -107,17 +109,27 @@ export default {
 		},
 	},
 	created() {
-		const favoriteCountryCodeData = this.apollo.readQuery({
-			query: favoriteCountryQuery
-		});
-		const favoriteCountry = _get(favoriteCountryCodeData, 'my.recommendations.topCountry') || 'us';
-		const favoriteCountryData = this.apollo.readQuery({
-			query: basicLoanData,
-			variables: {
-				filters: { country: favoriteCountry },
-				limit: 12
-			},
-		});
+		const basketId = cookieStore.get('kvbskt');
+
+		let favoriteCountryData;
+
+		try {
+			const favoriteCountryCodeData = this.apollo.readQuery({
+				query: favoriteCountryQuery,
+				variables: { basketId },
+			});
+			const favoriteCountry = _get(favoriteCountryCodeData, 'my.recommendations.topCountry') || 'us';
+			favoriteCountryData = this.apollo.readQuery({
+				query: basicLoanData,
+				variables: {
+					filters: { country: favoriteCountry },
+					limit: 12,
+					basketId,
+				},
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
 
 		const favoriteCountryLoans = _get(favoriteCountryData, 'lend.loans.values');
 		if (favoriteCountryLoans !== undefined && favoriteCountryLoans.length > 0) {
