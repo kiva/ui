@@ -490,18 +490,18 @@ export default {
 		// this.setCustomRowData(categoryData);
 
 		// CASH-578 : Experiment : Cloudinary image enhancement
-		const imageEnchancementExperiment = this.apollo.readFragment({
-			id: 'Experiment:image_enhancement',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.imageEnhancementExperimentVersion = imageEnchancementExperiment.version;
-
-		if (this.imageEnhancementExperimentVersion === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
-		} else if (this.imageEnhancementExperimentVersion === 'variant-b') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
-		}
+		// const imageEnchancementExperiment = this.apollo.readFragment({
+		// 	id: 'Experiment:image_enhancement',
+		// 	fragment: experimentVersionFragment,
+		// }) || {};
+		//
+		// this.imageEnhancementExperimentVersion = imageEnchancementExperiment.version;
+		//
+		// if (this.imageEnhancementExperimentVersion === 'variant-a') {
+		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
+		// } else if (this.imageEnhancementExperimentVersion === 'variant-b') {
+		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
+		// }
 
 		// CASH-350 : Experiment : Featured Hero Loan
 		const featuredHeroLoanExperiment = this.apollo.readFragment({
