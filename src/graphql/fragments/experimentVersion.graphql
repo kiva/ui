@@ -1,0 +1,4 @@
+fragment expermentVersion on Experiment {
+	id
+	version
+}

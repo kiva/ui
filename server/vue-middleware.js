@@ -98,6 +98,12 @@ module.exports = function createMiddleware({
 				if (!isProd) {
 					console.log(`whole request: ${Date.now() - s}ms`);
 				}
-			}).catch(err => handleError(err, req, res, next));
+			}).catch(err => {
+				if (err.url) {
+					// since this error is a redirect, set any cookies created during the app render
+					context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+				}
+				handleError(err, req, res, next);
+			});
 	};
 };

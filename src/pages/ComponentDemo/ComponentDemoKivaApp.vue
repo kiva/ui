@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import expQuery from '@/graphql/query/experimentSetting.graphql';
 import verQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
@@ -58,11 +58,11 @@ export default {
 	},
 	created() {
 		// read the experiment version assignment from the cache for ssr
-		const data = this.apollo.readQuery({
-			query: verQuery,
-			variables: { id: 'test' },
-		});
-		this.assignedVersion = _get(data, 'experiment.version');
+		const data = this.apollo.readFragment({
+			id: 'Experiment:test',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.assignedVersion = data.version;
 
 		// alternatively, comment out the above and the preFetch function and uncomment this
 		// section to only do the experiment assignment from the client.
