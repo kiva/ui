@@ -103,6 +103,7 @@ export default context => {
 				if (error instanceof Error) {
 					reject(error);
 				} else {
+					context.setCookies = cookieStore.getSetCookies();
 					reject({
 						url: router.resolve(error).href,
 					});

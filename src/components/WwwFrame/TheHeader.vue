@@ -279,6 +279,7 @@ import headerQuery from '@/graphql/query/wwwHeader.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import cookieStore from '@/util/cookieStore';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
@@ -347,6 +348,17 @@ export default {
 			this.profilePic = _get(data, 'my.lender.image.url');
 			this.legacyExpData = _get(data, 'general.legacyExpData.data');
 		},
+		errorHandlers: {
+			'shop.invalidBasketId': ({ route }) => {
+				cookieStore.remove('kvbskt');
+				// on server, reject with url to trigger redirect
+				if (typeof window === 'undefined') {
+					return Promise.reject(route);
+				}
+				// otherwise on client refresh the page
+				window.location = route.fullPath;
+			}
+		}
 	},
 	methods: {
 		auth0Login() {
