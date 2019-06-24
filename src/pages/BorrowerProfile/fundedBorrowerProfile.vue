@@ -118,6 +118,14 @@ export default {
 					id: fundedLoanId,
 					basketId: cookieStore.get('kvbskt'),
 				}
+			}).then(({ data }) => {
+				const loan = _get(data, 'lend.loan');
+				if (loan === null || loan === 'undefined') {
+					// redirect to legacy borrower profile
+					return Promise.reject({
+						path: `/lend/${fundedLoanId}`,
+					});
+				}
 			});
 		},
 	},
