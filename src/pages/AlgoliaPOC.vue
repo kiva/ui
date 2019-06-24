@@ -152,6 +152,7 @@ import _forEach from 'lodash/forEach';
 import _union from 'lodash/union';
 
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 // This mixin provides some algolia search instance initialization on mounted
@@ -295,29 +296,38 @@ export default {
 		}
 	},
 	created() {
-		const basketData = this.apollo.readQuery({
-			query: itemsInBasketQuery,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
-		});
-		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
+		const basketId = cookieStore.get('kvbskt');
+
+		try {
+			const basketData = this.apollo.readQuery({
+				query: itemsInBasketQuery,
+				variables: { basketId },
+			});
+			this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
+		} catch (e) {
+			logReadQueryError(e);
+		}
 
 		this.apollo.watchQuery({
 			query: itemsInBasketQuery,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
+			variables: { basketId },
 		}).subscribe({
 			next: ({ data }) => {
 				this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 			},
 		});
 
-		const userData = this.apollo.readQuery({
-			query: userStatus
-		});
-		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined || false;
+		let userData = {};
+		try {
+			userData = this.apollo.readQuery({
+				query: userStatus,
+				variables: { basketId },
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
+
+		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
 	},
 	methods: {
 

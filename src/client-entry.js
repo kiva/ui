@@ -7,6 +7,7 @@ import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
+import logReadQueryError from '@/util/logReadQueryError';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
@@ -52,10 +53,16 @@ if (window.__APOLLO_STATE__) {
 // Extract user id from apollo cache
 let userId = null;
 try {
-	const data = apolloClient.readQuery({ query: userIdQuery });
+	const data = apolloClient.readQuery({
+		query: userIdQuery,
+		variables: {
+			basketId: cookieStore.get('kvbskt'),
+		},
+	});
 	userId = _get(data, 'my.userAccount.id');
 } catch (e) {
 	// do nothing (leave user id as null)
+	logReadQueryError(e);
 }
 
 // setup global analytics data

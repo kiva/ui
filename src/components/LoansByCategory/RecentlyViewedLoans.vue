@@ -22,7 +22,7 @@
 import _get from 'lodash/get';
 import WebStorage from 'store2';
 import loansByIDQuery from '@/graphql/query/loansById.graphql';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
@@ -64,11 +64,11 @@ export default {
 	},
 	mounted() {
 		// Read assignment for Recently Viewed Loans EXP Setup Recently Viewed Loans
-		const recentlyViewedEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'recently_viewed_loan_row' }
-		});
-		this.showRecentlyViewed = _get(recentlyViewedEXP, 'experiment.version') === 'variant-a';
+		const recentlyViewedEXP = this.apollo.readFragment({
+			id: 'Experiment:recently_viewed_loan_row',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.showRecentlyViewed = recentlyViewedEXP.version === 'variant-a';
 
 		let recentLoanIds = [];
 		// fetch recently viewed from localStorage (currently set in wwwApp on Borrower Profile)

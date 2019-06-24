@@ -97,7 +97,7 @@ import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -233,13 +233,12 @@ export default {
 		// Only allow experiment when in show-for-large (>= 1194px) screen size
 		if (window.innerWidth >= 1194) {
 			// CASH-851: Experiment - Pinned filter
-			const pinnedFilterExperimentVersionArray = this.apollo.readQuery({
-				query: experimentQuery,
-				variables: { id: 'pinned_filter' },
-			});
+			const pinnedFilterExperiment = this.apollo.readFragment({
+				id: 'Experiment:pinned_filter',
+				fragment: experimentVersionFragment,
+			}) || {};
 
-			// eslint-disable-next-line max-len
-			const pinnedFilterExperimentVersion = _get(pinnedFilterExperimentVersionArray, 'experiment.version') || null;
+			const pinnedFilterExperimentVersion = pinnedFilterExperiment.version;
 			if (pinnedFilterExperimentVersion === 'variant-a') {
 				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'a');
 			} else if (pinnedFilterExperimentVersion === 'variant-b') {
@@ -250,16 +249,14 @@ export default {
 
 		// CASH-682: Experiment - Algolia Search
 		// Only run if filter menu pinned
-		const algoliaSearchExperimentVersionArray = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'algolia_search' },
-		});
+		const algoliaSearchExperiment = this.apollo.readFragment({
+			id: 'Experiment:algolia_search',
+			fragment: experimentVersionFragment,
+		}) || {};
 
-		// eslint-disable-next-line max-len
-		const algoliaSearchExperimentVersion = _get(algoliaSearchExperimentVersionArray, 'experiment.version') || null;
-		if (algoliaSearchExperimentVersion === 'variant-a') {
+		if (algoliaSearchExperiment.version === 'variant-a') {
 			this.$kvTrackEvent('Lending', 'EXP-CASH-682-Apr2019', 'a');
-		} else if (algoliaSearchExperimentVersion === 'variant-b') {
+		} else if (algoliaSearchExperiment.version === 'variant-b') {
 			this.algoliaSearchEnabled = true;
 			this.$kvTrackEvent('Lending', 'EXP-CASH-682-Apr2019', 'b');
 		}

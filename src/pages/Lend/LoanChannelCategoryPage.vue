@@ -56,9 +56,11 @@ import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import loanChannelPageQuery from '@/graphql/query/loanChannelPage.graphql';
 import loanChannelQuery from '@/graphql/query/loanChannelDataExpanded.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 import loanChannelQueryMapMixin from '@/plugins/loan-channel-query-map';
@@ -218,9 +220,18 @@ export default {
 		}
 	},
 	created() {
-		const allChannelsData = this.apollo.readQuery({
-			query: loanChannelPageQuery
-		});
+		let allChannelsData = {};
+		try {
+			allChannelsData = this.apollo.readQuery({
+				query: loanChannelPageQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				}
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
+
 		// set user status
 		this.isVisitor = !_get(allChannelsData, 'my.userAccount.id');
 		// filter routes on param.category to get current path
@@ -230,14 +241,19 @@ export default {
 		// extract query
 		this.pageQuery = _get(this.$route, 'query');
 		// Read the page data from the cache
-		const baseData = this.apollo.readQuery({
-			query: loanChannelQuery,
-			variables: _merge(
-				this.loanQueryVars,
-				fromUrlParams(this.pageQuery),
-				{ basketId: cookieStore.get('kvbskt') }
-			),
-		});
+		let baseData = {};
+		try {
+			baseData = this.apollo.readQuery({
+				query: loanChannelQuery,
+				variables: _merge(
+					this.loanQueryVars,
+					fromUrlParams(this.pageQuery),
+					{ basketId: cookieStore.get('kvbskt') }
+				),
+			});
+		} catch (e) {
+			logReadQueryError(e);
+		}
 
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
@@ -265,11 +281,11 @@ export default {
 		});
 
 		// get assignment for add to basket interstitial
-		const addToBasketPopupEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'add_to_basket_v2' },
-		});
-		this.addToBasketExpActive = _get(addToBasketPopupEXP, 'experiment.version') === 'shown';
+		const addToBasketPopupEXP = this.apollo.readFragment({
+			id: 'Experiment:add_to_basket_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
 		// Update @client state if interstitial exp is active
 		if (this.addToBasketExpActive) {
 			this.apollo.mutate({
@@ -286,11 +302,11 @@ export default {
 			this.addToBasketExpActive ? 'b' : 'a'
 		);
 
-		const lendFilterEXP = this.apollo.readQuery({
-			query: experimentQuery,
-			variables: { id: 'lend_filter_v2' },
-		});
-		this.lendFilterExpVersion = _get(lendFilterEXP, 'experiment.version');
+		const lendFilterEXP = this.apollo.readFragment({
+			id: 'Experiment:lend_filter_v2',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.lendFilterExpVersion = lendFilterEXP.version;
 
 		// Update Lend Filter Exp CASH-545
 		this.getLendFilterExpVersion();
