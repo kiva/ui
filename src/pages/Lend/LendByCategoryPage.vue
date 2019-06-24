@@ -377,7 +377,7 @@ export default {
 				id: 'Experiment:hover_loan_cards',
 				fragment: experimentVersionFragment,
 			});
-			const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'experiment.version');
+			const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'version');
 			if (hoverLoanCardExperimentVersion === 'variant-a') {
 				this.$kvTrackEvent(
 					'Lending',
