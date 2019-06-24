@@ -123,7 +123,7 @@ export default {
 				if (loan === null || loan === 'undefined') {
 					// redirect to legacy borrower profile
 					return Promise.reject({
-						path: `/lend/${fundedLoanId}`,
+						path: `/lend/${fundedLoanId}?minimal=false`,
 					});
 				}
 			});
