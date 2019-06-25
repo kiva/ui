@@ -1,0 +1,54 @@
+var merge = require('webpack-merge')
+var base = require('./index.js')
+
+module.exports = merge(base, {
+	app: {
+		host: 'www.test.kiva.org',
+		publicPath: 'https://www-test-kiva-org.global.ssl.fastly.net/ui/',
+		graphqlUri: 'https://api.test.kiva.org/graphql',
+		enablePerimeterx: false,
+		perimeterxAppId: '####',
+		enableAnalytics: true,
+		enableGTM: true,
+		googleTagmanagerId: 'GTM-K6HR28',
+		enableGA: true,
+		gaId: 'UA-11686022-5',
+		enableSnowplow: true,
+		snowplowUri: 'events.fivetran.com/snowplow/v5qt54ocr2nm',
+		enableFB: true,
+		fbApplicationId: '2260431077572912',
+		fbPixelId: '',
+		fbOgNameSpace: 'test-kiva',
+		enableSentry: true,
+		sentryURI: 'https://7ce141b23c4a4e6091c206d08442f0e9@sentry.io/1201287',
+		algoliaConfig: {
+			enableAA: false,
+			group: 'test',
+			appId: 'testingZ9YK0WNQ85',
+			apiKey: '28aaa1d56e6a1688f13f6b41da0f27a5',
+			defaultIndex: 'stage_fundraising_popularity',
+		},
+		auth0: {
+			loginRedirectUrls: {
+				iHNp5rV3XxaozU7B50oXpNye6RCAE5OD: 'https://admin.test.kiva.org/login',
+				fNYmJqpKX6mWiz1Evk8b1eqbM9KoeQ45: 'https://partners.test.kiva.org/login',
+				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'https://www.test.kiva.org/authenticate',
+				Ch7rwGop9lctGpm5KfEl6VTVMrqKoWZ4: 'https://www.test.kiva.org/ui-login',
+				pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe: 'https://www.test.kiva.org/ui-login',
+			},
+			enable: true,
+			apiAudience: 'https://api.test.kiva.org/graphql',
+			browserClientID: 'pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe',
+			serverClientID: 'Ch7rwGop9lctGpm5KfEl6VTVMrqKoWZ4',
+			browserCallbackUri: 'https://www.test.kiva.org/process-browser-auth',
+			serverCallbackUri: 'https://www.test.kiva.org/process-ssr-auth',
+			domain: 'login.test.kiva.org',
+		},
+	},
+	server: {
+		graphqlUri: 'https://api.test.kiva.org/graphql',
+		sessionUri: 'https://www.test.kiva.org/start-ui-session',
+		memcachedEnabled: true,
+		memcachedServers: 'test-web-01:11211',
+	}
+})
