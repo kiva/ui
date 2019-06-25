@@ -172,7 +172,9 @@ export default {
 			algoliaDefaultIndex: this.algoliaConfig.defaultIndex,
 			algoliaGroup: this.algoliaConfig.group,
 			// all locationFacets.lvl1 facet values
-			locationLvl1: null,
+			locationLvl1: [],
+			// all sector.name facet values
+			allSectorNames: [],
 		};
 	},
 	mounted() {
@@ -195,6 +197,8 @@ export default {
 
 		// set global data set for Lvl1 Locations
 		this.setAllLvl1Locations();
+		// set global data for sector.names
+		this.setAllSectors();
 	},
 	methods: {
 		setAllLvl1Locations() {
@@ -206,6 +210,26 @@ export default {
 				if (err) throw err;
 				if (data.facetHits) {
 					this.locationLvl1 = _map(data.facetHits, facet => {
+						return {
+							count: 0,
+							isRefined: false,
+							highlighted: facet.highlighted,
+							label: facet.value,
+							value: facet.value,
+						};
+					});
+				}
+			});
+		},
+		setAllSectors() {
+			this.defaultIndexInstance.searchForFacetValues({
+				facetName: 'sector.name',
+				facetQuery: '*',
+				maxFacetHits: 100,
+			}, (err, data) => {
+				if (err) throw err;
+				if (data.facetHits) {
+					this.allSectorNames = _map(data.facetHits, facet => {
 						return {
 							count: 0,
 							isRefined: false,

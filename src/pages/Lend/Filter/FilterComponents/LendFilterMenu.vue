@@ -35,7 +35,7 @@
 				/>
 				-->
 				<filter-section-location-multi class="filter-section" :location-lvl1-data="locationLvl1Data" />
-				<filter-section-sectors class="filter-section" />
+				<filter-section-sectors class="filter-section" :all-sector-names="allSectorNames" />
 				<filter-section-attributes class="filter-section" />
 				<filter-section-tags class="filter-section" />
 				<filter-section-loan-details class="filter-section" />
@@ -115,6 +115,10 @@ export default {
 			required: true,
 		},
 		locationLvl1Data: {
+			type: Array,
+			default: () => []
+		},
+		allSectorNames: {
 			type: Array,
 			default: () => []
 		},
