@@ -2,7 +2,7 @@ export default [
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
-	{ path: '/madlibs-search', component: () => import('@/pages/Search/MadLibsSearch') },
+	{ path: '/start', component: () => import('@/pages/Search/MadLibsSearch') },
 	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
