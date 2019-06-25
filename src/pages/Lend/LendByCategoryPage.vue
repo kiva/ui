@@ -376,15 +376,15 @@ export default {
 			const hoverLoanCardExperiment = this.apollo.readFragment({
 				id: 'Experiment:hover_loan_cards',
 				fragment: experimentVersionFragment,
-			});
-			const hoverLoanCardExperimentVersion = _get(hoverLoanCardExperiment, 'experiment.version');
-			if (hoverLoanCardExperimentVersion === 'variant-a') {
+			}) || {};
+
+			if (hoverLoanCardExperiment.version === 'variant-a') {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-521-Jun2019',
 					'a',
 				);
-			} else if (hoverLoanCardExperimentVersion === 'variant-b') {
+			} else if (hoverLoanCardExperiment.version === 'variant-b') {
 				this.showHoverLoanCards = true;
 				// We shouldn't run both expandable and hover loan cards at the same time for now
 				this.showExpandableLoanCards = false;
