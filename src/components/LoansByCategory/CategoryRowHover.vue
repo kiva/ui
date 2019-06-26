@@ -109,7 +109,9 @@ import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 
-const cardWidthPlusPadding = 200;
+const hoverCardSmallWidth = 220;
+const hoverCardRightMargin = 10;
+const hoverCardSmallWidthTotal = hoverCardSmallWidth + hoverCardRightMargin * 2;
 
 export default {
 	components: {
@@ -156,7 +158,7 @@ export default {
 			wrapperWidth: 0,
 			detailedLoanIndex: null,
 			hoverLoanIndex: null,
-			cardWidth: cardWidthPlusPadding,
+			cardWidth: hoverCardSmallWidthTotal,
 		};
 	},
 	computed: {
@@ -245,35 +247,6 @@ export default {
 		noHoverLoan() {
 			return this.hoverLoanIndex === null;
 		},
-		hoverLoanIsLeftMost() {
-			if (this.noHoverLoan) {
-				return false;
-			}
-
-			const bodyRect = document.body.getBoundingClientRect();
-			const hoverLoanCardRect = this.$refs.hoverLoanCards[this.hoverLoanIndex].$el.getBoundingClientRect();
-			const hoverLoanCardLeft = hoverLoanCardRect.left - bodyRect.left;
-
-			const hoverCardsHolderRect = this.$refs.hoverCardsHolder.getBoundingClientRect();
-			const noArrowPaddingSide = 1;
-			const arrowWidthInRem = 2.5;
-			const pxInRem = 16;
-			const leftPadding = this.categoryRowArrowsVisible()
-				? arrowWidthInRem * pxInRem
-				: noArrowPaddingSide * pxInRem;
-			const hoverCardsHolderLeft = hoverCardsHolderRect.left - bodyRect.left + leftPadding;
-
-			const hoverCardDistanceFromLeft = hoverLoanCardLeft - hoverCardsHolderLeft;
-
-			return hoverCardDistanceFromLeft === 0;
-		},
-		hoverLoanIsRightMost() {
-			if (this.noHoverLoan) {
-				return false;
-			}
-
-			return false;
-		},
 	},
 	watch: {
 		loanChannel: {
@@ -329,8 +302,42 @@ export default {
 		updateHoverLoanIndex(hoverLoanIndex) {
 			this.hoverLoanIndex = hoverLoanIndex;
 		},
+		hoverLoanIsLeftMost() {
+			if (this.noHoverLoan) {
+				return false;
+			}
+
+			const hoverCardDistanceFromLeft = (this.hoverLoanIndex * hoverCardSmallWidthTotal) + this.scrollPos;
+
+			return hoverCardDistanceFromLeft === 0;
+		},
+		hoverLoanIsRightMost() {
+			if (this.noHoverLoan) {
+				return false;
+			}
+
+			const bodyRect = document.body.getBoundingClientRect();
+
+			const hoverCardsHolderRect = this.$refs.hoverCardsHolder.getBoundingClientRect();
+			const arrowWidthInRem = 2.5;
+			const pxInRem = 16;
+			const endPadding = this.categoryRowArrowsVisible()
+				? arrowWidthInRem * pxInRem
+				: 0;
+
+			const hoverCardsHolderRight = hoverCardsHolderRect.right - bodyRect.left - endPadding;
+			const hoverCardsHolderLeft = hoverCardsHolderRect.left - bodyRect.left + endPadding - this.scrollPos;
+
+			// eslint-disable-next-line
+			const hoverLoanCardRightOffset = (this.hoverLoanIndex * hoverCardSmallWidthTotal) + hoverCardSmallWidth + this.scrollPos;
+			const hoverLoanCardRight = hoverLoanCardRightOffset + hoverCardsHolderLeft;
+
+			const hoverCardDistanceFromRight = hoverCardsHolderRight - hoverLoanCardRight;
+
+			return hoverCardDistanceFromRight < hoverCardSmallWidthTotal;
+		},
 		calculateCardShiftIncrement(index) {
-			if (this.hoverLoanIsLeftMost) {
+			if (this.hoverLoanIsLeftMost()) {
 				if (index > this.hoverLoanIndex) {
 					return 2;
 				}
@@ -339,7 +346,7 @@ export default {
 				}
 				return 0;
 			}
-			if (this.hoverLoanIsRightMost) {
+			if (this.hoverLoanIsRightMost()) {
 				if (index < this.hoverLoanIndex) {
 					return -2;
 				}
