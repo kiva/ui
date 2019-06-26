@@ -16,6 +16,7 @@ export default Vue => {
 		},
 		pageview: (to, from) => {
 			if (!inBrowser) return false;
+			kvActions.checkLibs();
 
 			let toUrl = typeof to === 'string' ? to : window.location.href;
 			let fromUrl = typeof from === 'string' ? from : document.referrer;
@@ -58,6 +59,7 @@ export default Vue => {
 				window.ga('send', 'pageview');
 			}
 
+			// Classic ga.js for utm tracking
 			if (gaAltLoaded) {
 				let gaAltId;
 				/* eslint-disable no-underscore-dangle */
