@@ -100,6 +100,14 @@
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
+
+		<kv-expandable>
+			<detailed-loan-card
+				v-show="detailedLoanCacheId"
+				:loan-id="detailedLoanCacheId"
+				@close="detailedLoanIndex = null"
+			/>
+		</kv-expandable>
 	</div>
 </template>
 
@@ -108,12 +116,16 @@ import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
+import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
+import KvExpandable from '@/components/Kv/KvExpandable';
 
 const cardWidthPlusPadding = 200;
 
 export default {
 	components: {
 		LoanCardController,
+		DetailedLoanCard,
+		KvExpandable,
 	},
 	mixins: [
 		categoryRowArrowsVisibleMixin,
