@@ -3,11 +3,14 @@ export default Vue => {
 	const inBrowser = typeof window !== 'undefined';
 	let snowplowLoaded;
 	let gaLoaded;
+	let gaAltLoaded;
 	let fbLoaded;
 
 	const kvActions = {
 		checkLibs: () => {
 			gaLoaded = inBrowser && typeof window.ga === 'function';
+			// eslint-disable-next-line no-underscore-dangle
+			gaAltLoaded = inBrowser && typeof window._gaq === 'object';
 			snowplowLoaded = inBrowser && typeof window.snowplow === 'function';
 			fbLoaded = inBrowser && typeof window.fbq === 'function';
 		},
@@ -53,6 +56,17 @@ export default Vue => {
 				}
 				window.ga('set', 'page', gaPath);
 				window.ga('send', 'pageview');
+			}
+
+			if (gaAltLoaded) {
+				let gaAltId;
+				/* eslint-disable no-underscore-dangle */
+				if (window.__KV_CONFIG__ && window.__KV_CONFIG__.gaAlternateId) {
+					gaAltId = window.__KV_CONFIG__.gaAlternateId;
+				}
+				window._gaq.push(['_setAccount', gaAltId]);
+				window._gaq.push(['_trackPageview']);
+				/* eslint-enable no-underscore-dangle */
 			}
 
 			// facebook pixel pageview
