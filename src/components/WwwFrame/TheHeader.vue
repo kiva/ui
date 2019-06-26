@@ -350,7 +350,7 @@ export default {
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ route }) => {
-				cookieStore.remove('kvbskt');
+				cookieStore.remove('kvbskt', { path: '/', secure: true });
 				// on server, reject with url to trigger redirect
 				if (typeof window === 'undefined') {
 					return Promise.reject(route);
