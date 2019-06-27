@@ -31,6 +31,7 @@
 								<ais-menu-select
 									:attribute="'gender'"
 									class="madlibs-dropdown"
+									:transform-items="transformGenders"
 								>
 									<template
 										slot="defaultOption"
@@ -52,6 +53,7 @@
 								<ais-menu-select
 									:attribute="'locationFacets.lvl0'"
 									:limit="100"
+									class="madlibs-dropdown"
 								>
 									<template
 										slot="defaultOption"
@@ -72,6 +74,7 @@
 								<ais-menu-select
 									attribute="sector.name"
 									:limit="100"
+									class="madlibs-dropdown"
 								>
 									<select
 										slot-scope="{ items, canRefine, refine }"
@@ -256,6 +259,18 @@ export default {
 			}
 			refine($event);
 		},
+		transformGenders(items) {
+			return items.map(item => {
+				const newItem = item;
+				if (item.label === 'female') {
+					newItem.label = 'women';
+				}
+				if (item.label === 'male') {
+					newItem.label = 'men';
+				}
+				return newItem;
+			});
+		}
 	}
 };
 </script>
@@ -289,12 +304,14 @@ export default {
 
 .search-statement-wrapper {
 	margin-bottom: rem-calc(32);
+	padding: 0 2.5rem;
 }
 
 .madlibs-dropdown {
-	background-image: url('../../assets/images/customDropdown.png');
-	// background-image: url('../../assets/icons/medium-chevron.svg');
+	background-image: url('../../assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
+    background-position: 100% 65%;
+	background-size: rem-calc(18);
 }
 
 .ais-MenuSelect {
@@ -310,7 +327,13 @@ export default {
     line-height: 2.25rem;
 	height: rem-calc(47);
 	margin-bottom: 0;
+	background-image: none;
 }
+
+.ais-MenuSelect select:focus {
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
 
 .ais-Pagination-list {
 	list-style: none;
