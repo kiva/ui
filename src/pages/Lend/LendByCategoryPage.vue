@@ -297,11 +297,18 @@ export default {
 				});
 			});
 			// Client Fetch the remaining category rows
+			const hoverLoanCardExperiment = this.apollo.readFragment({
+				id: 'Experiment:hover_loan_cards',
+				fragment: experimentVersionFragment,
+			}) || {};
+			const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 			return this.apollo.query({
 				query: loanChannelQuery,
 				variables: {
 					ids: _drop(this.realCategoryIds, ssrRowLimiter),
 					excludeIds: ssrLoanIds,
+					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
 					// @todo variables for fetching data for custom channels
 				},
 			}).then(({ data }) => {
@@ -311,10 +318,17 @@ export default {
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
+			const hoverLoanCardExperiment = this.apollo.readFragment({
+				id: 'Experiment:hover_loan_cards',
+				fragment: experimentVersionFragment,
+			}) || {};
+			const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 			this.apollo.watchQuery({
 				query: loanChannelQuery,
 				variables: {
 					ids: this.realCategoryIds,
+					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
 				},
 			});
 			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
@@ -424,6 +438,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
 					// experiment: // CASH-794 Favorite Country Row
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
+					// experiment: CASH-521 Hover Loan Card Experiment
+					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -431,12 +447,20 @@ export default {
 				// get the ids for the variant, or the default if that is undefined
 				const ids = _map(variantRows || rowData, 'id');
 
+				const hoverLoanCardExperiment = client.readFragment({
+					id: 'Experiment:hover_loan_cards',
+					fragment: experimentVersionFragment,
+				}) || {};
+				const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
+
 				// Pre-fetch all the data for SSR targeted channels
 				return client.query({
 					query: loanChannelQuery,
 					variables: {
 						// exclude custom rows + limit for ssr
-						ids: _take(_without(ids, ...customCategoryIds), ssrRowLimiter)
+						ids: _take(_without(ids, ...customCategoryIds), ssrRowLimiter),
+						imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
+						imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
 						// @todo variables for fetching data for custom channels
 					},
 				});
@@ -473,12 +497,19 @@ export default {
 		this.showFeaturedLoans = versionData.version === 'shown';
 
 		// Read the SSR ready loan channels from the cache
+		const hoverLoanCardExperiment = this.apollo.readFragment({
+			id: 'Experiment:hover_loan_cards',
+			fragment: experimentVersionFragment,
+		}) || {};
+		const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 		try {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
 					ids: _take(this.realCategoryIds, ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
+					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
 					// @todo variables for fetching data for custom channels
 				},
 			});
