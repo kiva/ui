@@ -1,7 +1,7 @@
 <template>
 	<www-page :gray-background="true">
 		<lend-header
-			:side-arrows-padding="true"
+			:side-arrows-padding="false"
 			browse-url="/lend-by-category"
 			filter-url="/lend/filter"
 		/>
@@ -32,6 +32,8 @@
 									:attribute="'gender'"
 									class="madlibs-dropdown"
 									:transform-items="transformGenders"
+									aria-haspopup="true"
+									aria-expanded="false"
 								>
 									<template
 										slot="defaultOption"
@@ -48,12 +50,15 @@
 									</template>
 								</ais-menu-select>
 								<br class="show-for-small-only">
-								<span class="show-for-small-only">located</span> in
+								<span class="show-for-small-only">located</span>
+								<br class="hide-for-small-only">in
 								<br class="show-for-small-only">
 								<ais-menu-select
 									:attribute="'locationFacets.lvl0'"
 									:limit="100"
 									class="madlibs-dropdown"
+									aria-haspopup="true"
+									aria-expanded="false"
 								>
 									<template
 										slot="defaultOption"
@@ -75,6 +80,8 @@
 									attribute="sector.name"
 									:limit="100"
 									class="madlibs-dropdown"
+									aria-haspopup="true"
+									aria-expanded="false"
 								>
 									<select
 										slot-scope="{ items, canRefine, refine }"
@@ -281,7 +288,6 @@ export default {
 .search-filter-and-results {
 	flex-direction: column-reverse;
 
-
 	@include breakpoint(medium) {
 		text-align: center;
 	}
@@ -304,14 +310,20 @@ export default {
 
 .search-statement-wrapper {
 	margin-bottom: rem-calc(32);
-	padding: 0 2.5rem;
+	padding: 0 .375rem;
 }
 
 .madlibs-dropdown {
 	background-image: url('../../assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
-    background-position: 100% 65%;
+	background-position: 100% 65%;
 	background-size: rem-calc(18);
+	margin-right: rem-calc(8);
+	margin-bottom: rem-calc(10);
+
+	@include breakpoint(medium) {
+		margin-bottom: unset;
+	}
 }
 
 .ais-MenuSelect {
@@ -321,19 +333,25 @@ export default {
 
 .ais-MenuSelect select {
 	border: none;
-    background-color: transparent;
+	background-color: transparent;
 	color: $kiva-accent-blue;
 	font-size: 1.5rem;
-    line-height: 2.25rem;
+	line-height: 2.25rem;
 	height: rem-calc(47);
 	margin-bottom: 0;
 	background-image: none;
+	padding-left: 0;
+
+	@include breakpoint(medium) {
+		text-align-last: center;
+		padding-left: unset;
+	}
 }
 
 .ais-MenuSelect select:focus {
-		-webkit-box-shadow: none;
-		box-shadow: none;
-	}
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
 
 .ais-Pagination-list {
 	list-style: none;
