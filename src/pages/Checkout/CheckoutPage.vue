@@ -613,6 +613,7 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+@import 'global/transitions';
 
 .page-content,
 .empty-basket {
