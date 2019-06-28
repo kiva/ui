@@ -16,6 +16,7 @@
 				type="range"
 				:min="sliderMinimum"
 				:max="sliderMaximum"
+				:step="step"
 				:value="sliderValue"
 				:style="sliderStyle"
 				@input="onSliderChange(refine, range, $event)"
@@ -72,6 +73,10 @@ export default {
 			type: String,
 			required: true
 		},
+		step: {
+			type: Number,
+			default: 1
+		},
 	},
 	computed: {
 		defaultRangeLabel() {
@@ -122,9 +127,10 @@ export default {
 			return this.currentRefinement.max !== null ? this.currentRefinement.max : this.maximum;
 		},
 	},
+
 	methods: {
 		onSliderChange(refine, range, event) {
-			const sliderValue = parseInt(event.target.value, 10);
+			const sliderValue = parseFloat(event.target.value, 10);
 
 			if (
 				(this.isSliderSettingMinimum === false && sliderValue === this.sliderMaximum)
@@ -132,7 +138,6 @@ export default {
 			) {
 				refine({});
 			}
-
 			refine({
 				min: this.isSliderSettingMinimum === true ? sliderValue : undefined,
 				max: this.isSliderSettingMinimum === true ? undefined : sliderValue,

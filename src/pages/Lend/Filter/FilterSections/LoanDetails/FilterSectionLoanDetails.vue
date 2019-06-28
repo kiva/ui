@@ -28,8 +28,10 @@
 
 		<range-slider-wrapper
 			:minimum="0"
-			:is-slider-setting-minimum="true"
 			:maximum="5"
+			:is-slider-setting-minimum="true"
+			:precision="1"
+			:step="0.5"
 			query-attribute="partner.riskRating"
 			title="Partner risk rating"
 			maximum-label="Only 5 stars"

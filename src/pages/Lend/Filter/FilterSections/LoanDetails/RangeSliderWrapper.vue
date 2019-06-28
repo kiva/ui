@@ -1,6 +1,7 @@
 <template>
 	<ais-range-input
 		:attribute="queryAttribute"
+		:precision="precision"
 		:class-names="{
 			'ais-RangeInput': 'range-input',
 		}"
@@ -16,6 +17,7 @@
 				:is-slider-setting-minimum="isSliderSettingMinimum"
 				:range="range"
 				:refine="refine"
+				:step="step"
 				:title="title"
 			/>
 		</div>
@@ -71,11 +73,19 @@ export default {
 			default: '',
 			required: true
 		},
+		precision: {
+			type: Number,
+			default: 0
+		},
 		title: {
 			type: String,
 			default: '',
 			required: true
 		},
+		step: {
+			type: Number,
+			default: 1
+		}
 	},
 };
 </script>
