@@ -255,7 +255,7 @@ export default {
 	width: rem-calc(132);
 	border-radius: $button-radius;
 	height: rem-calc(50);
-	background-image: url('../../assets/images/customDropdown.png');
+	background-image: url('~@/assets/images/customDropdown.png');
 	background-size: 2rem 2rem;
 	color: $charcoal;
 	font-size: $medium-text-font-size;

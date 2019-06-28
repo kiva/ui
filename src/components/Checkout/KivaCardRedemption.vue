@@ -56,21 +56,21 @@
 								<img alt="print-kiva-card"
 									class="card-spacing"
 									height="116"
-									src="../../assets/images/checkout/printcard_codelocation.jpg"
+									src="~@/assets/images/checkout/printcard_codelocation.jpg"
 									width="450"
 								>
 								<p>Email delivery:</p>
 								<img alt="email-kiva-card"
 									class="card-spacing"
 									height="199"
-									src="../../assets/images/checkout/emailcard_codelocation.jpg"
+									src="~@/assets/images/checkout/emailcard_codelocation.jpg"
 									width="450"
 								>
 								<p>Postal delivery:</p>
 								<img alt="postal-kiva-card"
 									class="postal-card"
 									height="158"
-									src="../../assets/images/checkout/physicalcard_codelocation.jpg"
+									src="~@/assets/images/checkout/physicalcard_codelocation.jpg"
 									width="430"
 								>
 							</kv-lightbox>
