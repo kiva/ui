@@ -310,7 +310,7 @@ export default {
 
 .search-statement-wrapper {
 	margin-bottom: rem-calc(32);
-	padding: 0 .375rem;
+	padding: 0.375rem;
 }
 
 .madlibs-dropdown {
