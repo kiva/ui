@@ -1,9 +1,6 @@
 import _find from 'lodash/find';
-// import _sortBy from 'lodash/sortBy';
 
 export default function mergeRefinmentListItems(allItems, filteredItems) {
-	// sort our full facet query to match what sort set in algolia component above
-	// const originalItems = _sortBy(allItems, [item => { return item.value; }]);
 	// new array to hold our merged items
 	const patchedItems = [];
 	allItems.forEach(originalItem => {
