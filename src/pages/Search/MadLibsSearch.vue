@@ -316,8 +316,7 @@ export default {
 .madlibs-dropdown {
 	background-image: url('~@/assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
-	// background-position: 100% 65%;
-	background-position: left 3.8rem center;
+	background-position: right 1.3rem;
 	background-size: rem-calc(18);
 	margin-right: rem-calc(8);
 	margin-bottom: rem-calc(10);
