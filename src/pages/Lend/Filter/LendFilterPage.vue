@@ -25,6 +25,8 @@
 					:selected-custom-categories="selectedCustomCategories"
 					:location-lvl1-data="locationLvl1"
 					:all-sector-names="allSectorNames"
+					:all-loan-theme-names="allLoanThemeNames"
+					:all-tag-names="allTagNames"
 					:filter-menu-pinned="filterMenuPinned"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
