@@ -1,28 +1,49 @@
 <template>
 	<div class="detailed-loan-card row collapse">
-		<div class="multi-pane columns small-12 medium-7 xlarge-8 small-order-1 medium-order-2">
+		<div class="multi-pane columns small-12 medium-7 small-order-1 medium-order-2">
 			<div class="borrower-image">
 				<div class="borrower-image-content-wrapper">
 					Borrower image
 				</div>
 			</div>
 			<transition name="kvfastfade">
-				<component :is="tabComponent" class="content-tab show-for-medium" />
+				<component
+					:is="tabComponent"
+					:expandable="false"
+					:loan-id="loanId"
+					class="content-tab show-for-medium"
+				/>
 			</transition>
 		</div>
-		<div class="columns small-12 medium-5 xlarge-4 small-order-2 medium-order-1">
+		<div class="main-panel columns small-12 medium-5 small-order-2 medium-order-1">
 			<div class="info-tab-selector show-for-medium">
-				<button @click="tabComponent = null" class="tab-title">
-					Overview
+				<button
+					class="tab-title"
+					@click="tabComponent = null"
+					:class="{ active: tabComponent === null }"
+				>
+					<span>Overview</span>
 				</button>
-				<button @click="tabComponent = storyPanel" class="tab-title">
-					Story
+				<button
+					class="tab-title"
+					@click="tabComponent = storyPanel"
+					:class="{ active: tabComponent === storyPanel }"
+				>
+					<span>Story</span>
 				</button>
-				<button class="tab-title">
-					Details
+				<button
+					class="tab-title"
+					@click="tabComponent = detailsPanel"
+					:class="{ active: tabComponent === detailsPanel }"
+				>
+					<span>Details</span>
 				</button>
-				<button class="tab-title">
-					Partner
+				<button
+					class="tab-title"
+					@click="tabComponent = partnerPanel"
+					:class="{ active: tabComponent === partnerPanel }"
+				>
+					<span>Partner</span>
 				</button>
 			</div>
 			<div>
@@ -47,15 +68,9 @@
 			<div>
 				Overview toggle panel (mobile)
 			</div>
-			<div>
-				Borrower story toggle panel (mobile)
-			</div>
-			<div>
-				Loan details toggle panel (mobile)
-			</div>
-			<div>
-				Field partner info toggle panel (mobile)
-			</div>
+			<borrower-story-panel :loan-id="loanId" />
+			<loan-details-panel :loan-id="loanId" />
+			<partner-info-panel :loan-id="loanId" />
 			<div>
 				Read more link (mobile)
 			</div>
@@ -69,18 +84,26 @@
 </template>
 
 <script>
-import LoanStoryPanel from './LoanStoryPanel';
-// import KvExpandable from '@/components/Kv/KvExpandable';
+import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
+import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
+import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
+	props: {
+		loanId: { type: String, default: '' },
+	},
 	components: {
+		BorrowerStoryPanel,
 		KvIcon,
-		// KvExpandable,
+		LoanDetailsPanel,
+		PartnerInfoPanel,
 	},
 	data() {
 		return {
-			storyPanel: LoanStoryPanel,
+			detailsPanel: LoanDetailsPanel,
+			partnerPanel: PartnerInfoPanel,
+			storyPanel: BorrowerStoryPanel,
 			tabComponent: null,
 		};
 	},
@@ -92,16 +115,47 @@ export default {
 
 .detailed-loan-card {
 	position: relative;
+	background-color: $white;
+	border: 1px solid $kiva-stroke-gray;
+
+	.main-panel.columns {
+		padding: 1rem;
+	}
 
 	.info-tab-selector {
 		display: flex;
-		justify-content: space-evenly;
+		margin-bottom: 0.5rem;
 
 		.tab-title {
 			background: transparent;
 			border: none;
-			padding: 0;
+			border-left: 1px solid $kiva-stroke-gray;
+			padding: 0 1rem;
 			margin: 0;
+
+			&:first-of-type {
+				border-left: none;
+				padding-left: 0;
+			}
+
+			&:focus {
+				outline: none;
+			}
+
+			span {
+				$speed-curve: 300ms linear;
+				text-transform: uppercase;
+				transition: border-color $speed-curve, color $speed-curve;
+				border-color: rgba($white, 0);
+				color: $kiva-text-light;
+				font-weight: $global-weight-normal;
+			}
+
+			&.active span {
+				border-bottom: 0.1rem solid rgba($kiva-textlink, 1);
+				color: $kiva-text-dark;
+				font-weight: $global-weight-highlight;
+			}
 		}
 	}
 
@@ -112,6 +166,8 @@ export default {
 			position: absolute;
 			top: 0;
 			left: 0;
+			width: 100%;
+			height: 100%;
 		}
 	}
 
@@ -144,6 +200,7 @@ export default {
 
 		.icon-x {
 			stroke: $white;
+			display: block;
 			width: 1.5rem;
 			height: 1.5rem;
 			padding: 0;

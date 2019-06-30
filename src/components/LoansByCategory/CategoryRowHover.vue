@@ -103,7 +103,8 @@
 
 		<kv-expandable>
 			<detailed-loan-card
-				v-show="detailedLoanCacheId"
+				class="expanded-card-row"
+				v-if="detailedLoanCacheId"
 				:loan-id="detailedLoanCacheId"
 				@close="detailedLoanIndex = null"
 			/>
@@ -443,6 +444,10 @@ $row-max-width: 63.75rem;
 }
 
 .row.title-row {
+	max-width: $row-max-width;
+}
+
+.expanded-card-row {
 	max-width: $row-max-width;
 }
 
