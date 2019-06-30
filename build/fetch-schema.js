@@ -2,9 +2,8 @@ const { join } = require('path');
 const { readFile, writeFile } = require('fs');
 const { concat, map, uniqBy } = require('lodash');
 const { buildSchema, printSchema } = require('graphql');
-const { introspectSchema, mergeSchemas } = require('graphql-tools');
-const { HttpLink } = require('apollo-link-http');
-const fetch = require('../server/util/fetch');
+const { mergeSchemas } = require('graphql-tools');
+const getRemoteGqlSchema = require('../server/util/getRemoteGqlSchema');
 const argv = require('minimist')(process.argv.slice(2));
 const config = require('../config/selectConfig')(argv.config);
 
@@ -21,15 +20,6 @@ function readLocalSchema(schemaPath) {
 			}
 		});
 	});
-}
-
-// Return a GraphQLSchema made from introspecting a remote api
-function fetchRemoteSchema(uri) {
-	// Create link to remote api
-	const link = new HttpLink({ uri, fetch });
-
-	// Do the fetch
-	return introspectSchema(link);
 }
 
 // Merge GraphQLSchema objects for client usage (i.e. including directives)
@@ -63,7 +53,7 @@ function writeSchemaFile(schema, filePath) {
 // Fetch the schemas, merge them, and write them out a file
 Promise.all([
 	readLocalSchema(join(__dirname, '../src/api/localSchema.graphql')),
-	fetchRemoteSchema(config.server.graphqlUri)
+	getRemoteGqlSchema(config.server.graphqlUri)
 ]).then(schemas => {
 	const schema = mergeClientSchemas(...schemas);
 	return writeSchemaFile(schema, join(__dirname, 'schema.graphql'));
