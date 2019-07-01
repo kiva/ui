@@ -1,7 +1,7 @@
 <template>
 	<www-page :gray-background="true">
 		<lend-header
-			:side-arrows-padding="true"
+			:side-arrows-padding="false"
 			browse-url="/lend-by-category"
 			filter-url="/lend/filter"
 		/>
@@ -20,44 +20,74 @@
 					ref="aisConfigure"
 				/>
 				<div class="row search-filter-and-results">
-					<div class="columns small-12 text-center">
+					<div class="columns small-12">
 						<div class="search-statement-wrapper">
-							<span>
+							<span class="featured-text">
 								I want to support
 								<!-- documentation for reference: -->
 								<!-- eslint-disable max-len -->
 								<!-- https://www.algolia.com/doc/api-reference/widgets/menu-select/vue/?language=vue#customize-the-ui -->
+								<br class="show-for-small-only">
 								<ais-menu-select
 									:attribute="'gender'"
+									class="madlibs-dropdown"
+									:transform-items="transformGenders"
+									aria-haspopup="true"
+									aria-expanded="false"
 								>
-									<template slot="defaultOption">
+									<template
+										slot="defaultOption"
+										class="featured-text"
+									>
 										women and men
 									</template>
-									<template slot="item" slot-scope="{ item }">
+									<template
+										slot="item"
+										slot-scope="{ item }"
+										class="featured-text"
+									>
 										{{ item.label }}
 									</template>
 								</ais-menu-select>
-								in
+								<br class="show-for-small-only">
+								<span class="show-for-small-only">located</span>
+								<br class="hide-for-small-only">in
+								<br class="show-for-small-only">
 								<ais-menu-select
 									:attribute="'locationFacets.lvl0'"
 									:limit="100"
+									class="madlibs-dropdown"
+									aria-haspopup="true"
+									aria-expanded="false"
 								>
-									<template slot="defaultOption">
+									<template
+										slot="defaultOption"
+										class="featured-text"
+									>
 										any region
 									</template>
-									<template slot="item" slot-scope="{ item }">
+									<template
+										slot="item"
+										slot-scope="{ item }"
+										class="featured-text"
+									>
 										{{ item.label }}
 									</template>
 								</ais-menu-select>
+								<br class="show-for-small-only">
 								with loans {{ toFor }}
 								<ais-menu-select
 									attribute="sector.name"
 									:limit="100"
+									class="madlibs-dropdown"
+									aria-haspopup="true"
+									aria-expanded="false"
 								>
 									<select
 										slot-scope="{ items, canRefine, refine }"
 										:disabled="!canRefine"
 										@change="toForLanguage(refine, $event.currentTarget.value)"
+										class="featured-text"
 									>
 										<option value="">improve their businesses</option>
 										<option
@@ -236,6 +266,18 @@ export default {
 			}
 			refine($event);
 		},
+		transformGenders(items) {
+			return items.map(item => {
+				const newItem = item;
+				if (item.label === 'female') {
+					newItem.label = 'women';
+				}
+				if (item.label === 'male') {
+					newItem.label = 'men';
+				}
+				return newItem;
+			});
+		}
 	}
 };
 </script>
@@ -245,11 +287,15 @@ export default {
 
 .search-filter-and-results {
 	flex-direction: column-reverse;
-}
 
-@include breakpoint(large) {
-	.search-filter-and-results {
-		flex-direction: initial;
+	@include breakpoint(medium) {
+		text-align: center;
+	}
+
+	@include breakpoint(large) {
+		.search-filter-and-results {
+			flex-direction: initial;
+		}
 	}
 }
 
@@ -264,10 +310,47 @@ export default {
 
 .search-statement-wrapper {
 	margin-bottom: rem-calc(32);
+	padding: 0.375rem;
+}
+
+.madlibs-dropdown {
+	background-image: url('~@/assets/images/medium-chevron2x.png');
+	background-repeat: no-repeat;
+	background-position: right 1.3rem;
+	background-size: rem-calc(18);
+	margin-right: rem-calc(8);
+	margin-bottom: rem-calc(10);
+
+	@include breakpoint(medium) {
+		margin-bottom: unset;
+	}
 }
 
 .ais-MenuSelect {
 	display: inline-block;
+	border-bottom: 1px dashed #118aec;
+}
+
+.ais-MenuSelect select {
+	border: none;
+	background-color: transparent;
+	color: $kiva-accent-blue;
+	font-size: 1.5rem;
+	line-height: 2.25rem;
+	height: rem-calc(47);
+	margin-bottom: 0;
+	background-image: none;
+	padding-left: 0;
+
+	@include breakpoint(medium) {
+		text-align-last: center;
+		padding-left: unset;
+	}
+}
+
+.ais-MenuSelect select:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
 .ais-Pagination-list {
