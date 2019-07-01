@@ -14,6 +14,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
+const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
@@ -35,6 +36,13 @@ app.use(helmet());
 
 // Setup Request Logger
 app.use(logger.requestLogger);
+
+// Setup optional mock graphql server
+if (argv.mock) {
+	app.use('/', mockGraphQLRouter(config.app.graphqlUri));
+	config.app.graphqlUri = `http://localhost:${port}/graphql`;
+	config.app.auth0.enable = false;
+}
 
 // webpack setup
 const clientCompiler = webpack(clientConfig);
