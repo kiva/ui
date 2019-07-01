@@ -25,7 +25,11 @@ export default {
 	},
 	computed: {
 		hoverLoan() {
-			return JSON.parse(this.activeLoan.loan);
+			try {
+				return JSON.parse(this.activeLoan.loan);
+			} catch (e) {
+				return {};
+			}
 		},
 		hoverLoanId() {
 			return this.activeLoan.hoverLoanId;
@@ -37,7 +41,11 @@ export default {
 			return this.activeLoan.yCoordinate;
 		},
 		tracking() {
-			return JSON.parse(this.activeLoan.tracking);
+			try {
+				return JSON.parse(this.activeLoan.tracking);
+			} catch (e) {
+				return {};
+			}
 		},
 	},
 	methods: {
