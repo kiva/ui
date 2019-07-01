@@ -35,9 +35,9 @@
 				/>
 				-->
 				<filter-section-location-multi class="filter-section" :location-lvl1-data="locationLvl1Data" />
-				<filter-section-sectors class="filter-section" />
-				<filter-section-attributes class="filter-section" />
-				<filter-section-tags class="filter-section" />
+				<filter-section-sectors class="filter-section" :all-sector-names="allSectorNames" />
+				<filter-section-attributes class="filter-section" :all-loan-theme-names="allLoanThemeNames" />
+				<filter-section-tags class="filter-section" :all-tag-names="allTagNames" />
 				<filter-section-loan-details class="filter-section" />
 
 				<div id="filter-section-advanced" class="filter-section" @click="showAdvancedFilters">
@@ -115,6 +115,18 @@ export default {
 			required: true,
 		},
 		locationLvl1Data: {
+			type: Array,
+			default: () => []
+		},
+		allSectorNames: {
+			type: Array,
+			default: () => []
+		},
+		allLoanThemeNames: {
+			type: Array,
+			default: () => []
+		},
+		allTagNames: {
 			type: Array,
 			default: () => []
 		},

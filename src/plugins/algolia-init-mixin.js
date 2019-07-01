@@ -172,7 +172,13 @@ export default {
 			algoliaDefaultIndex: this.algoliaConfig.defaultIndex,
 			algoliaGroup: this.algoliaConfig.group,
 			// all locationFacets.lvl1 facet values
-			locationLvl1: null,
+			locationLvl1: [],
+			// all sector.name facet values
+			allSectorNames: [],
+			// all loanThemeFilters.name facet values
+			allLoanThemeNames: [],
+			// all tags.name facet values
+			allTagNames: [],
 		};
 	},
 	mounted() {
@@ -195,6 +201,12 @@ export default {
 
 		// set global data set for Lvl1 Locations
 		this.setAllLvl1Locations();
+		// set global data for Sectors aka. sector.names
+		this.setAllSectors();
+		// set global data for Attributes aka. loanThemeFilters.name
+		this.setAllLoanthemeFilters();
+		// set global data for Tags aka. tags.name
+		this.setAllTags();
 	},
 	methods: {
 		setAllLvl1Locations() {
@@ -216,6 +228,66 @@ export default {
 					});
 				}
 			});
-		}
+		},
+		setAllSectors() {
+			this.defaultIndexInstance.searchForFacetValues({
+				facetName: 'sector.name',
+				facetQuery: '*',
+				maxFacetHits: 100,
+			}, (err, data) => {
+				if (err) throw err;
+				if (data.facetHits) {
+					this.allSectorNames = _map(data.facetHits, facet => {
+						return {
+							count: 0,
+							isRefined: false,
+							highlighted: facet.highlighted,
+							label: facet.value,
+							value: facet.value,
+						};
+					});
+				}
+			});
+		},
+		setAllLoanthemeFilters() {
+			this.defaultIndexInstance.searchForFacetValues({
+				facetName: 'loanThemeFilters.name',
+				facetQuery: '*',
+				maxFacetHits: 100,
+			}, (err, data) => {
+				if (err) throw err;
+				if (data.facetHits) {
+					this.allLoanThemeNames = _map(data.facetHits, facet => {
+						return {
+							count: 0,
+							isRefined: false,
+							highlighted: facet.highlighted,
+							label: facet.value,
+							value: facet.value,
+						};
+					});
+				}
+			});
+		},
+		setAllTags() {
+			this.defaultIndexInstance.searchForFacetValues({
+				facetName: 'tags.name',
+				facetQuery: '*',
+				maxFacetHits: 100,
+			}, (err, data) => {
+				if (err) throw err;
+				if (data.facetHits) {
+					this.allTagNames = _map(data.facetHits, facet => {
+						return {
+							count: 0,
+							isRefined: false,
+							highlighted: facet.highlighted,
+							label: facet.value,
+							value: facet.value,
+						};
+					});
+				}
+			});
+		},
 	}
 };
