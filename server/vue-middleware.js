@@ -65,7 +65,9 @@ module.exports = function createMiddleware({
 			user: req.user || {},
 		};
 
+		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
+		res.setHeader('Cache-Control', 'no-cache, must-revalidate');
 
 		// get graphql api fragment types for the graphql client
 		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
