@@ -27,8 +27,6 @@ export default {
 			const { hash } = window.location;
 
 			if (checkHashSuccess(hash)) {
-				// note the user as logged in
-				cookieStore.set('kvls', 'i', { secure: true });
 				// store hash for after post-auth redirect
 				store2.session(hashKey, hash);
 				// post-auth redirect
