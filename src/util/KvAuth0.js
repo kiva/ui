@@ -68,7 +68,6 @@ export default class KvAuth0 {
 					this[setAuthData]();
 					if (err.error === 'login_required') {
 						// User is not logged in, so continue without authentication
-						cookieStore.set('kvls', 'o', { secure: true });
 						resolve();
 					} else if (err.error === 'consent_required' || err.error === 'interaction_required') {
 						// These errors require interaction beyond what can be provided by webauth,
@@ -83,7 +82,6 @@ export default class KvAuth0 {
 				} else {
 					// Successful authentication
 					this[setAuthData](result);
-					cookieStore.set('kvls', 'i', { secure: true });
 					resolve();
 				}
 			});
