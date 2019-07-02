@@ -30,7 +30,7 @@
 								<br class="show-for-small-only">
 								<ais-menu-select
 									:attribute="'gender'"
-									class="madlibs-dropdown"
+									class="sentence-search-dropdown"
 									:transform-items="transformGenders"
 									aria-haspopup="true"
 									aria-expanded="false"
@@ -56,7 +56,7 @@
 								<ais-menu-select
 									:attribute="'locationFacets.lvl0'"
 									:limit="100"
-									class="madlibs-dropdown"
+									class="sentence-search-dropdown"
 									aria-haspopup="true"
 									aria-expanded="false"
 								>
@@ -79,7 +79,7 @@
 								<ais-menu-select
 									attribute="sector.name"
 									:limit="100"
-									class="madlibs-dropdown"
+									class="sentence-search-dropdown"
 									aria-haspopup="true"
 									aria-expanded="false"
 								>
@@ -313,7 +313,7 @@ export default {
 	padding: 0.375rem;
 }
 
-.madlibs-dropdown {
+.sentence-search-dropdown {
 	background-image: url('~@/assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
 	background-position: right 1.3rem;
