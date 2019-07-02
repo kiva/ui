@@ -4,7 +4,6 @@
 
 <script>
 import store2 from 'store2';
-import cookieStore from '@/util/cookieStore';
 
 function checkHashSuccess(hash) {
 	if (hash.indexOf('error') > -1) {
