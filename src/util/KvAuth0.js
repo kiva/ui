@@ -122,7 +122,7 @@ export default class KvAuth0 {
 					reject(err);
 				} else {
 					// Successful authentication
-					cookieStore.set('kvls', 'i', { secure: true });
+					cookieStore.set('kvls', 'i', { path: '/', secure: true });
 					this[setAuthData](result);
 					resolve(result);
 				}
