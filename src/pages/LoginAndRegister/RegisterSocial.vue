@@ -38,6 +38,9 @@
 					Complete registration
 				</KvButton>
 			</form>
+			<div class="small-12">
+				<a :href="`https://${auth0Config.domain}/v2/logout`">Cancel registration</a>
+			</div>
 		</div>
 	</www-page>
 </template>
