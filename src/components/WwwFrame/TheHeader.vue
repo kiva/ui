@@ -17,7 +17,7 @@
 				:aria-expanded="searchOpen ? 'true' : 'false'"
 				:aria-pressed="searchOpen ? 'true' : 'false'"
 				aria-controls="top-nav-search-area"
-				v-if="!hideSearchInHeader"
+				v-show="!hideSearchInHeader"
 				@click="toggleSearch"
 				v-kv-track-event="['TopNav','click-search-toggle']"
 			>
@@ -40,7 +40,7 @@
 				<promo-banner-large />
 			</div>
 			<router-link
-				v-if="isVisitor"
+				v-show="isVisitor"
 				to="/borrow"
 				class="header-button show-for-xlarge"
 				v-kv-track-event="['TopNav','click-Borrow']"
@@ -49,7 +49,7 @@
 			</router-link>
 			<router-link
 				:id="aboutMenuId"
-				v-if="isVisitor"
+				v-show="isVisitor"
 				to="/about"
 				class="header-button"
 				v-kv-track-event="['TopNav','click-About']"
@@ -57,7 +57,7 @@
 				<span>About <kv-icon name="triangle" /></span>
 			</router-link>
 			<router-link
-				v-if="showBasket"
+				v-show="showBasket"
 				to="/basket"
 				class="header-button show-for-large"
 				v-kv-track-event="['TopNav','click-Basket']"
@@ -68,7 +68,7 @@
 				</span>
 			</router-link>
 			<router-link
-				v-if="isVisitor"
+				v-show="isVisitor"
 				to="/ui-login"
 				class="header-button"
 				:event="kvAuth0.enabled ? '' : 'click'"
@@ -78,7 +78,7 @@
 				<span>Sign in</span>
 			</router-link>
 			<router-link
-				v-else
+				v-show="!isVisitor"
 				:id="myKivaMenuId"
 				to="/portfolio"
 				class="header-button my-kiva"
@@ -94,7 +94,7 @@
 		<kv-dropdown :controller="lendMenuId" @show.once="loadLendInfo" @show="onLendMenuShow" @hide="onLendMenuHide">
 			<the-lend-menu ref="lendMenu" :legacy-exp-data="legacyExpData" />
 		</kv-dropdown>
-		<kv-dropdown :controller="aboutMenuId" v-if="isVisitor" class="dropdown-list">
+		<kv-dropdown :controller="aboutMenuId" v-show="isVisitor" class="dropdown-list">
 			<ul>
 				<li>
 					<router-link
@@ -164,7 +164,7 @@
 		</kv-dropdown>
 		<kv-dropdown
 			:controller="myKivaMenuId"
-			v-if="!isVisitor"
+			v-show="!isVisitor"
 			class="dropdown-list"
 			id="my-kiva-dropdown"
 			ref="userDropdown"
