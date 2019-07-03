@@ -156,14 +156,12 @@ import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
-
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
 // This mixin provides config for our indices + loan channel categories
 import algoliaConfig from '@/plugins/algolia-config-mixin';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
-
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
 
@@ -258,8 +256,9 @@ export default {
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
 	},
 	mounted() {
-		const sentenceSearchRedirectExp = this.$route.query.registration;
-		if (sentenceSearchRedirectExp === 'true') {
+		const sentenceSearchRedirectExp = _get(this.$route, 'query.registration');
+		if (sentenceSearchRedirectExp === 'new') {
+			console.log('sentence search exp active.');
 			this.$kvTrackEvent('Lending', 'EXP-CASH-1026-Jun2019', 'b');
 		}
 	},
