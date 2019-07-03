@@ -10,7 +10,7 @@ function getSyncCookie(req) {
 }
 
 function setSyncCookie(res, login) {
-	res.append('Set-Cookie', cookie.serialize(NAME, login ? LOGIN : LOGOUT, { secure: true }));
+	res.append('Set-Cookie', cookie.serialize(NAME, login ? LOGIN : LOGOUT, { path: '/', secure: true }));
 }
 
 // Helper functions for managing the login sync cookie
