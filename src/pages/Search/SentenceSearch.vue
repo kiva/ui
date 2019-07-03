@@ -258,7 +258,6 @@ export default {
 	mounted() {
 		const sentenceSearchRedirectExp = _get(this.$route, 'query.registration');
 		if (sentenceSearchRedirectExp === 'new') {
-			console.log('sentence search exp active.');
 			this.$kvTrackEvent('Lending', 'EXP-CASH-1026-Jun2019', 'b');
 		}
 	},
