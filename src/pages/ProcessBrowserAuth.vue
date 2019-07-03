@@ -4,7 +4,6 @@
 
 <script>
 import store2 from 'store2';
-import cookieStore from '@/util/cookieStore';
 
 function checkHashSuccess(hash) {
 	if (hash.indexOf('error') > -1) {
@@ -27,8 +26,6 @@ export default {
 			const { hash } = window.location;
 
 			if (checkHashSuccess(hash)) {
-				// note the user as logged in
-				cookieStore.set('kvls', 'i', { secure: true });
 				// store hash for after post-auth redirect
 				store2.session(hashKey, hash);
 				// post-auth redirect
