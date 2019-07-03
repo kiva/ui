@@ -257,6 +257,12 @@ export default {
 		}
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
 	},
+	mounted() {
+		const sentenceSearchRedirectExp = this.$route.query.registration;
+		if (sentenceSearchRedirectExp === 'true') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1026-Jun2019', 'b');
+		}
+	},
 	methods: {
 		toForLanguage(refine, $event) {
 			if ($event !== '') {
