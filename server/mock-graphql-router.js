@@ -9,7 +9,7 @@ module.exports = function mockGraphqlRouter(url) {
 	getRemoteGqlSchema(url).then(schema => {
 		const server = new ApolloServer({ schema });
 
-		router.use('/__lunar', lunarExpress({ schema }));
+		router.use('/__lunar', lunarExpress({ schema, mocks: {} }));
 		server.applyMiddleware({ app: router });
 	});
 
