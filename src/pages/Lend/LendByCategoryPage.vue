@@ -172,7 +172,7 @@ export default {
 			leftArrowPosition: undefined,
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
-			showHoverLoanCards: true,
+			showHoverLoanCards: false,
 		};
 	},
 	computed: {
