@@ -40,39 +40,55 @@
 				</button>
 				<button
 					class="tab-title"
+					v-if="hasPartner"
 					@click="tabComponent = partnerPanel"
 					:class="{ active: tabComponent === partnerPanel }"
 				>
 					<span>Partner</span>
 				</button>
+				<button
+					class="tab-title"
+					v-if="hasTrustee"
+					@click="tabComponent = trusteePanel"
+					:class="{ active: tabComponent === trusteePanel }"
+				>
+					<span>Trustee</span>
+				</button>
 			</div>
-			<div>
-				Name/Location/Sector
-			</div>
-			<div class="show-for-medium">
-				Overview and Read more link (non-mobile)
-			</div>
-			<div>
-				Funding progress
-			</div>
-			<div class="row">
-				<div class="columns small-12 large-expand">
-					Lend button
+			<div class="basic-info-flex-column">
+				<div>
+					Name/Location/Sector
 				</div>
-				<div class="columns small-12 large-3">
-					2x matching
+				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-medium">
+					A loan of $50,000 helps to provide 2,900 families in the Andes with sustainable sphagnum
+					moss harvesting training and employment that will double their annual incomes.
+					<router-link to="">
+						Read full details
+					</router-link>
+				</div>
+				<div>
+					Funding progress
+				</div>
+				<div class="row">
+					<div class="columns small-12 large-expand">
+						Lend button
+					</div>
+					<div class="matching-text columns small-12 large-4">
+						2x matching
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="columns small-12 small-order-3 hide-for-medium">
-			<div>
-				Overview toggle panel (mobile)
-			</div>
+			<overview-panel :loan-id="loanId" />
 			<borrower-story-panel :loan-id="loanId" />
 			<loan-details-panel :loan-id="loanId" />
-			<partner-info-panel :loan-id="loanId" />
+			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
+			<trustee-info-panel v-if="hasTrustee" :loan-id="loanId" />
 			<div>
-				Read more link (mobile)
+				<router-link to="">
+					Read full details
+				</router-link>
 			</div>
 		</div>
 		<div class="close-button-wrapper">
@@ -86,7 +102,10 @@
 <script>
 import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
 import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
+import OverviewPanel from './InfoPanels/OverviewPanel';
 import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
+import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
+import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -95,17 +114,29 @@ export default {
 	},
 	components: {
 		BorrowerStoryPanel,
+		KvExpandable,
 		KvIcon,
 		LoanDetailsPanel,
+		OverviewPanel,
 		PartnerInfoPanel,
+		TrusteeInfoPanel
 	},
 	data() {
 		return {
 			detailsPanel: LoanDetailsPanel,
 			partnerPanel: PartnerInfoPanel,
 			storyPanel: BorrowerStoryPanel,
+			trusteePanel: TrusteeInfoPanel,
 			tabComponent: null,
 		};
+	},
+	computed: {
+		hasPartner() {
+			return true;
+		},
+		hasTrustee() {
+			return false;
+		},
 	},
 };
 </script>
@@ -117,10 +148,6 @@ export default {
 	position: relative;
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
-
-	.main-panel.columns {
-		padding: 1rem;
-	}
 
 	.info-tab-selector {
 		display: flex;
@@ -157,6 +184,34 @@ export default {
 				font-weight: $global-weight-highlight;
 			}
 		}
+	}
+
+	.main-panel.columns {
+		padding: 1rem;
+		display: flex;
+		flex-flow: column nowrap;
+	}
+
+	.basic-info-flex-column {
+		flex-grow: 1;
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: flex-end;
+	}
+
+	.overview-column {
+		transition: flex 300ms ease-out;
+		height: auto;
+		overflow: hidden;
+		flex: 1;
+
+		&.collapsed {
+			flex: 0;
+		}
+	}
+
+	.matching-text {
+		white-space: nowrap;
 	}
 
 	.multi-pane {
