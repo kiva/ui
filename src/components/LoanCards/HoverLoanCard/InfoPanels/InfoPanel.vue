@@ -1,16 +1,16 @@
 <template>
 	<div class="info-panel">
-		<h3>
-			<button
-				@click="toggle"
-				:aria-controls="id"
-				:aria-expanded="open ? 'true' : 'false'"
-				class="title-button"
-			>
+		<button
+			@click="toggle"
+			:aria-controls="id"
+			:aria-expanded="open ? 'true' : 'false'"
+			class="title-button"
+		>
+			<h3 class="panel-title">
 				<slot name="title"></slot>
-				<kv-icon v-if="expandable" name="small-chevron-mobile" />
-			</button>
-		</h3>
+			</h3>
+			<kv-icon v-if="expandable" name="small-chevron-mobile" />
+		</button>
 		<kv-expandable>
 			<div
 				:id="id"
@@ -44,6 +44,11 @@ export default {
 			default: true,
 		},
 	},
+	data() {
+		return {
+			open: false,
+		};
+	},
 	created() {
 		this.open = !this.expandable;
 	},
@@ -69,6 +74,11 @@ export default {
 
 	button {
 		text-align: left;
+		width: 100%;
+
+		.panel-title {
+			display: inline-block;
+		}
 
 		.icon {
 			float: right;
