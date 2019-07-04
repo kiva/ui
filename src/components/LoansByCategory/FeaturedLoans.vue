@@ -33,7 +33,6 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 						loan-card-type="GridLoanCard"
 					/>
 
@@ -48,7 +47,6 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 						loan-card-type="GridLoanCard"
 					/>
 
@@ -63,7 +61,6 @@
 						:items-in-basket="itemsInBasket"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 						loan-card-type="GridLoanCard"
 					/>
 				</div>
@@ -107,10 +104,6 @@ export default {
 		isLoggedIn: {
 			type: Boolean,
 			default: false
-		},
-		imageEnhancementExperimentVersion: {
-			type: String,
-			default: ''
 		},
 	},
 	data() {

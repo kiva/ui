@@ -17,7 +17,6 @@
 				category-set-id="featured-hero-loan"
 				:enable-tracking="true"
 				:experiment-data="experimentData"
-				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:is-visitor="!isLoggedIn"
 				:items-in-basket="itemsInBasket"
 				:key="loan.id"
@@ -54,14 +53,6 @@ export default {
 	},
 	inject: ['apollo'],
 	props: {
-		featuredHeroLoanExperimentVersion: {
-			type: String,
-			default: ''
-		},
-		imageEnhancementExperimentVersion: {
-			type: String,
-			default: ''
-		},
 		isLoggedIn: {
 			type: Boolean,
 			default: false
@@ -77,7 +68,7 @@ export default {
 	},
 	data() {
 		return {
-			experimentData: null,
+			experimentData: () => {},
 			featuredCategoryIds,
 			initialLoanCount,
 			loan: null,
@@ -116,7 +107,6 @@ export default {
 	created() {
 		this.loading = true;
 
-		this.experimentData = { featured_hero_loan_fundraising_thermometer: this.featuredHeroLoanExperimentVersion };
 		// get initial loan data
 		let rawData = {};
 		try {

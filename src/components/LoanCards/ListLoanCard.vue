@@ -11,8 +11,6 @@
 							:standard-image-url="loan.image.default"
 							:is-visitor="isVisitor"
 							:is-favorite="isFavorite"
-							:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-							:loan-image-hash="loan.image.hash"
 
 							@track-loan-card-interaction="trackInteraction"
 							@favorite-toggled="toggleFavorite"
@@ -51,8 +49,6 @@
 						:standard-image-url="loan.image.default"
 						:is-visitor="isVisitor"
 						:is-favorite="isFavorite"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-						:loan-image-hash="loan.image.hash"
 						class="list-loan-card-mobile-borrower-image"
 
 						@track-loan-card-interaction="trackInteraction"
@@ -188,10 +184,6 @@ export default {
 			}
 		},
 		title: {
-			type: String,
-			default: ''
-		},
-		imageEnhancementExperimentVersion: {
 			type: String,
 			default: ''
 		},

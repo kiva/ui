@@ -5,19 +5,8 @@
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
-			:featured-hero-loan-experiment-version="featuredHeroLoanExperimentVersion"
-			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
-			:show-category-description="showCategoryDescription"
-		/>
-
-		<FeaturedLoans
-			v-if="showFeaturedLoans"
-			ref="featured"
-			:items-in-basket="itemsInBasket"
-			:is-logged-in="isLoggedIn"
-			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 			:show-category-description="showCategoryDescription"
 		/>
 
@@ -44,7 +33,6 @@
 				:row-number="index + 1"
 				:set-id="categorySetId"
 				:is-logged-in="isLoggedIn"
-				:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 				:show-category-description="showCategoryDescription"
 				:show-expandable-loan-cards="showExpandableLoanCards"
 				ref="categoryRow"
@@ -71,8 +59,6 @@
 				</h2>
 			</div>
 		</div>
-
-		<featured-admin-controls v-if="isAdmin" />
 
 		<div class="row" v-if="isAdmin">
 			<div class="columns small-12">
@@ -113,7 +99,6 @@ import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketI
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
-import FeaturedLoans from '@/components/LoansByCategory/FeaturedLoans';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
@@ -134,8 +119,6 @@ export default {
 	components: {
 		CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
-		FeaturedAdminControls: () => import('./admin/FeaturedAdminControls'),
-		FeaturedLoans,
 		FeaturedHeroLoanWrapper,
 		WwwPage,
 		LoadingOverlay,
@@ -155,10 +138,7 @@ export default {
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
-			imageEnhancementExperimentVersion: null,
-			showFeaturedLoans: true,
-			showFeaturedHeroLoan: false,
-			featuredHeroLoanExperimentVersion: '',
+			showFeaturedHeroLoan: true,
 			realCategories: [],
 			customCategories: [],
 			clientCategories: [],
@@ -214,17 +194,7 @@ export default {
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
 
-			if (this.showFeaturedLoans) {
-				loanIds.push({
-					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan1.id')
-				});
-				loanIds.push({
-					r: 0, p: 2, c: featuredCategoryIds[1], l: _get(this, '$refs.featured.loan2.id')
-				});
-				loanIds.push({
-					r: 0, p: 3, c: featuredCategoryIds[2], l: _get(this, '$refs.featured.loan3.id')
-				});
-			} else if (this.showFeaturedHeroLoan) {
+			if (this.showFeaturedHeroLoan) {
 				loanIds.push({
 					r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
 				});
@@ -426,12 +396,6 @@ export default {
 				return Promise.all([
 					// Get the assigned category rows experiment version
 					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
-					// Pre-fetch the assigned featured loans experiment version
-					client.query({ query: experimentQuery, variables: { id: 'featured_loans' } }),
-					// experiment: image enhancement
-					client.query({ query: experimentQuery, variables: { id: 'image_enhancement' } }),
-					// experiment: featured hero loan
-					client.query({ query: experimentQuery, variables: { id: 'featured_hero_loan_v3' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -489,13 +453,6 @@ export default {
 
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
-		// Read the assigned feateured loan experiment version from the cache
-		const versionData = this.apollo.readFragment({
-			id: 'Experiment:featured_loans',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.showFeaturedLoans = versionData.version === 'shown';
-
 		// Read the SSR ready loan channels from the cache
 		const hoverLoanCardExperiment = this.apollo.readFragment({
 			id: 'Experiment:hover_loan_cards',
@@ -520,42 +477,6 @@ export default {
 
 		// If active, update our custom categories prior to render
 		// this.setCustomRowData(categoryData);
-
-		// CASH-578 : Experiment : Cloudinary image enhancement
-		// const imageEnchancementExperiment = this.apollo.readFragment({
-		// 	id: 'Experiment:image_enhancement',
-		// 	fragment: experimentVersionFragment,
-		// }) || {};
-		//
-		// this.imageEnhancementExperimentVersion = imageEnchancementExperiment.version;
-		//
-		// if (this.imageEnhancementExperimentVersion === 'variant-a') {
-		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'a');
-		// } else if (this.imageEnhancementExperimentVersion === 'variant-b') {
-		// 	this.$kvTrackEvent('Lending', 'EXP-CASH-578-Mar2019', 'b');
-		// }
-
-		// CASH-350 : Experiment : Featured Hero Loan
-		const featuredHeroLoanExperiment = this.apollo.readFragment({
-			id: 'Experiment:featured_hero_loan_v3',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		this.featuredHeroLoanExperimentVersion = featuredHeroLoanExperiment.version;
-
-		if (this.featuredHeroLoanExperimentVersion === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'a');
-			this.showFeaturedLoans = true;
-			this.showFeaturedHeroLoan = false;
-		} else if (this.featuredHeroLoanExperimentVersion === 'variant-b') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'b');
-			this.showFeaturedLoans = false;
-			this.showFeaturedHeroLoan = true;
-		} else if (this.featuredHeroLoanExperimentVersion === 'variant-c') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-350-Mar2019', 'c');
-			this.showFeaturedLoans = false;
-			this.showFeaturedHeroLoan = true;
-		}
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
