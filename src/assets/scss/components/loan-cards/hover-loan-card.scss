@@ -12,8 +12,8 @@ $hover-card-border-radius: rem-calc(3);
 // Card sizes
 $small-hover-card-width: rem-calc(220);
 $small-hover-card-height: rem-calc(228);
-$large-hover-card-width: rem-calc(440);
-$large-hover-card-height: rem-calc(250);
+$large-hover-card-width: rem-calc(320);
+$large-hover-card-height: rem-calc(403);
 $hover-card-right-margin: rem-calc(10);
 
 // Card Section Sizes
@@ -51,8 +51,37 @@ $card-expansion-curve: linear;
 $hover-card-transition-transform: transform $card-expansion-duration $card-expansion-curve;
 $hover-card-transition-opacity-in: opacity $card-expansion-duration ease-in;
 $hover-card-transition-opacity-out: opacity $card-expansion-duration ease-out;
+$hover-card-transition-opacity: opacity $card-expansion-duration ease;
 
 // Chevron
 $chevron-animation-duration: 0.2s;
 $chevron-animation-out: $chevron-animation-duration linear;
 $chevron-animation-in: $chevron-animation-out $card-expansion-duration;
+
+// Base Styles
+.base-portrait-hover-loan-card {
+	background: $white;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	flex-shrink: 0;
+	border-radius: $hover-card-border-radius;
+	pointer-events: initial;
+	opacity: 1;
+	transform: scale(1, 1);
+}
+
+.base-portrait-hover-loan-card-image {
+	border-radius: $hover-card-border-radius $hover-card-border-radius 0 0;
+	overflow: hidden;
+	flex-shrink: 0;
+	transform: scaleY(1);
+	transform-origin: top center;
+	transition: $hover-card-transition-transform;
+}
+
+.base-portrait-hover-loan-card-data-wrap {
+	border: rem-calc(1) solid $kiva-stroke-gray;
+	border-radius: 0 0 $hover-card-border-radius $hover-card-border-radius;
+	border-top: none;
+}

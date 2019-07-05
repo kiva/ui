@@ -8,9 +8,11 @@
 			:standard-image-url="loan.image.default"
 			:is-visitor="isVisitor"
 			:use-default-styles="false"
+			:disable-link="true"
 
 			@track-loan-card-interaction="trackInteraction"
 			@favorite-toggled="toggleFavorite"
+			@image-click="updateDetailedLoanIndex"
 		/>
 		<div class="hover-loan-card-data-wrap">
 			<div>
@@ -32,21 +34,7 @@
 						</span>
 					</router-link>
 				</div>
-				<borrower-info-body
-					class="hover-borrower-info-body"
-					:amount="loan.loanAmount"
-					:borrower-count="loan.borrowerCount"
-					:name="loan.name"
-					:status="loan.status"
-					:use="loan.use"
-					:loan-id="loan.id"
-					:max-use-length="90"
-					read-more-link-text="Read full details"
-				/>
-			</div>
-			<div>
 				<fundraising-status
-					class="fundraising-status"
 					:amount-left="amountLeft"
 					:percent-raised="percentRaised"
 					:expiring-soon-message="expiringSoonMessage"
@@ -54,28 +42,48 @@
 					:left-and-to-go-on-top="true"
 					:short-meter="true"
 				/>
-				<action-button
-					class="hover-loan-card-action-button"
-					:loan-id="loan.id"
-					:loan="loan"
-					:items-in-basket="itemsInBasket"
-					:is-lent-to="loan.userProperties.lentTo"
-					:is-funded="isFunded"
-					:is-selected-by-another="isSelectedByAnother"
-					:is-simple-lend-button="true"
+			</div>
+			<borrower-info-body
+				class="hover-borrower-info-body"
+				:amount="loan.loanAmount"
+				:borrower-count="loan.borrowerCount"
+				:name="loan.name"
+				:status="loan.status"
+				:use="loan.use"
+				:loan-id="loan.id"
+				:max-use-length="73"
+				:disable-link="true"
+				read-more-link-text="Expand to learn more"
+				@read-more-link="updateDetailedLoanIndex"
+			/>
+			<div class="action-row">
+				<div class="action-button-container">
+					<action-button
+						class="hover-loan-card-action-button"
+						:loan-id="loan.id"
+						:loan="loan"
+						:items-in-basket="itemsInBasket"
+						:is-lent-to="loan.userProperties.lentTo"
+						:is-funded="isFunded"
+						:is-selected-by-another="isSelectedByAnother"
+						:is-simple-lend-button="true"
 
-					@click.native="trackInteraction({
-						interactionType: 'addToBasket',
-						interactionElement: 'Lend25'
-					})"
+						@click.native="trackInteraction({
+							interactionType: 'addToBasket',
+							interactionElement: 'Lend25'
+						})"
 
-					@add-to-basket="$emit('add-to-basket', $event)"
-				/>
-				<matching-text
-					:matching-text="loan.matchingText"
-					:is-funded="isFunded"
-					:is-selected-by-another="isSelectedByAnother"
-				/>
+						@add-to-basket="$emit('add-to-basket', $event)"
+					/>
+				</div>
+				<div class="matching-text-container">
+					<matching-text
+						:matching-text="loan.matchingText"
+						:is-funded="isFunded"
+						:is-selected-by-another="isSelectedByAnother"
+						class="matching-text"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -128,6 +136,9 @@ export default {
 		toggleFavorite() {
 			this.$emit('toggle-favorite');
 		},
+		updateDetailedLoanIndex() {
+			this.$emit('update-detailed-loan-index');
+		},
 	},
 };
 </script>
@@ -136,39 +147,28 @@ export default {
 @import "components/loan-cards/hover-loan-card";
 
 .hover-loan-card-large {
-	background: $white;
-	flex-shrink: 0;
+	@extend .base-portrait-hover-loan-card;
+
 	width: $large-hover-card-width;
 	height: $large-hover-card-height;
-	display: flex;
-	justify-content: space-between;
+	// transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
+	transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
 	position: absolute;
 	top: $hover-card-large-top-shift;
 	left: $hover-card-large-left-shift;
-	border-radius: $hover-card-border-radius;
-	transform: scale(1, 1);
-	opacity: 1;
 	z-index: 1;
-	pointer-events: initial;
-	transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
 
 	.hover-loan-card-image {
-		/* Original design width: 332px */
-		width: rem-calc(335.17);
-		height: $large-hover-card-height;
-		border-radius: rem-calc(3) 0 0 rem-calc(3);
-		overflow: hidden;
+		@extend .base-portrait-hover-loan-card-image;
+
+		height: $large-hover-card-image-height;
 	}
 
 	.hover-loan-card-data-wrap {
-		/* Original design width: 248px */
-		width: rem-calc(244.83);
-		height: $large-hover-card-height;
-		padding: 0.5rem 1rem;
-		margin-bottom: 0.75rem;
-		border: 1px solid $kiva-stroke-gray;
-		border-radius: 0 $hover-card-border-radius $hover-card-border-radius 0;
-		border-left: none;
+		@extend .base-portrait-hover-loan-card-data-wrap;
+
+		height: $large-hover-card-data-height;
+		padding: rem-calc(5) 1rem 1rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -194,12 +194,28 @@ export default {
 			line-height: rem-calc(18);
 		}
 
-		.fundraising-status {
-			margin-bottom: rem-calc(14);
-		}
+		.action-row {
+			display: flex;
 
-		.hover-loan-card-action-button {
-			margin: 0;
+			.action-button-container {
+				width: rem-calc(126);
+				flex-shrink: 0;
+
+				.hover-loan-card-action-button {
+					margin: 0;
+					font-size: rem-calc(18);
+					padding: 0.5rem 1.5rem;
+				}
+			}
+
+			.matching-text-container {
+				padding-left: 1rem;
+
+				.matching-text {
+					white-space: normal;
+					line-height: rem-calc(18);
+				}
+			}
 		}
 	}
 
@@ -207,7 +223,12 @@ export default {
 		opacity: 0;
 		pointer-events: none;
 		transform: scale($width-ratio-small-to-large, $height-ratio-small-to-large);
+		// transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
 		transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
+
+		.hover-loan-card-image {
+			transform: scale(1, $large-hover-card-image-scale-y);
+		}
 	}
 }
 </style>
