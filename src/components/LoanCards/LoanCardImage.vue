@@ -100,9 +100,9 @@ export default {
 			return `https://res.cloudinary.com/kiva/${transformations}/e_viesus_correct/e_sharpen:150/a_ignore,fl_progressive,q_auto:best/remote/${this.loanImageHash}.jpg`; // eslint-disable-line
 		},
 		handleImageClick(event) {
+			this.$emit('image-click');
 			if (this.disableLink) {
 				event.preventDefault();
-				event.stopPropagation();
 				return;
 			}
 			this.$emit('track-loan-card-interaction', {

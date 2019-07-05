@@ -9,10 +9,7 @@
 			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']"
 		>
 			<span
-				@click="$emit('track-loan-card-interaction', {
-					interactionType: 'viewBorrowerPage',
-					interactionElement: 'readMore'
-				})"
+				@click="handleReadMoreLink"
 			>
 				{{ readMoreLinkText }}
 			</span>
@@ -60,6 +57,10 @@ export default {
 			type: String,
 			default: 'Read more',
 		},
+		disableLink: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		helpedLanguage() {
@@ -88,7 +89,20 @@ export default {
 			}
 			return convertedUse;
 		},
-	}
+	},
+	methods: {
+		handleReadMoreLink(event) {
+			this.$emit('read-more-link', event);
+			if (this.disableLink) {
+				event.preventDefault();
+				return;
+			}
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'readMore'
+			});
+		},
+	},
 };
 </script>
 
