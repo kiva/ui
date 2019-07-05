@@ -132,9 +132,21 @@ export default {
 		},
 		updateHoverLoanIndex() {
 			this.$emit('update-hover-loan-index', this.loanIndex);
+			this.$kvTrackEvent(
+				'Lending',
+				'lend-hover-interaction',
+				'hover',
+				this.loan.id,
+			);
 		},
 		updateDetailedLoanIndex() {
 			this.$emit('update-detailed-loan-index', this.loanIndex);
+			this.$kvTrackEvent(
+				'Lending',
+				'lend-hover-interaction',
+				'expand-details',
+				this.loan.id,
+			);
 		},
 	},
 };
