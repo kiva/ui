@@ -30,7 +30,7 @@
 								<br class="show-for-small-only">
 								<ais-menu-select
 									:attribute="'gender'"
-									class="madlibs-dropdown"
+									class="sentence-search-dropdown"
 									:transform-items="transformGenders"
 									aria-haspopup="true"
 									aria-expanded="false"
@@ -56,7 +56,7 @@
 								<ais-menu-select
 									:attribute="'locationFacets.lvl0'"
 									:limit="100"
-									class="madlibs-dropdown"
+									class="sentence-search-dropdown"
 									aria-haspopup="true"
 									aria-expanded="false"
 								>
@@ -79,7 +79,7 @@
 								<ais-menu-select
 									attribute="sector.name"
 									:limit="100"
-									class="madlibs-dropdown"
+									class="sentence-search-dropdown"
 									aria-haspopup="true"
 									aria-expanded="false"
 								>
@@ -156,14 +156,12 @@ import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
-
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
 // This mixin provides config for our indices + loan channel categories
 import algoliaConfig from '@/plugins/algolia-config-mixin';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
-
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
 
@@ -257,6 +255,12 @@ export default {
 		}
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
 	},
+	mounted() {
+		const sentenceSearchRedirectExp = _get(this.$route, 'query.registration');
+		if (sentenceSearchRedirectExp === 'new') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1026-Jun2019', 'b');
+		}
+	},
 	methods: {
 		toForLanguage(refine, $event) {
 			if ($event !== '') {
@@ -313,7 +317,7 @@ export default {
 	padding: 0.375rem;
 }
 
-.madlibs-dropdown {
+.sentence-search-dropdown {
 	background-image: url('~@/assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
 	background-position: right 1.3rem;
