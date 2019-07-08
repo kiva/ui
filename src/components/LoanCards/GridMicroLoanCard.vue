@@ -13,7 +13,6 @@
 						:retina-image-url="loan.image.retina"
 						:standard-image-url="loan.image.default"
 						:is-visitor="true"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 						:loan-image-hash="loan.image.hash"
 
 						@track-loan-card-interaction="trackInteraction"
@@ -125,10 +124,6 @@ export default {
 			default: null
 		},
 		title: {
-			type: String,
-			default: ''
-		},
-		imageEnhancementExperimentVersion: {
 			type: String,
 			default: ''
 		},

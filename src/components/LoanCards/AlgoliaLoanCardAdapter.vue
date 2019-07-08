@@ -15,9 +15,6 @@
 			:category-set-id="setId"
 			:row-number="rowNumber"
 			:card-number="index + 1"
-
-			Add experiments later
-			:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		-->
 	</div>
 </template>

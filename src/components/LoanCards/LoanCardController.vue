@@ -5,7 +5,6 @@
 		:card-number="cardNumber"
 		:experiment-data="experimentData"
 		:expiring-soon-message="expiringSoonMessage"
-		:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 		:is-favorite="isFavorite"
 		:is-funded="isFunded"
 		:is-selected-by-another="isSelectedByAnother"
@@ -119,10 +118,6 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
-		},
-		imageEnhancementExperimentVersion: {
-			type: String,
-			default: '',
 		},
 		experimentData: {
 			type: Object,

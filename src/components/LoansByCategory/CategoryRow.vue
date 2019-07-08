@@ -52,7 +52,6 @@
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
-						:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
 					/>
 
 					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
@@ -122,10 +121,6 @@ export default {
 		showExpandableLoanCards: {
 			type: Boolean,
 			default: false,
-		},
-		imageEnhancementExperimentVersion: {
-			type: String,
-			default: ''
 		},
 		showCategoryDescription: {
 			type: Boolean,

@@ -11,9 +11,6 @@
 							:standard-image-url="loan.image.default"
 							:is-visitor="isVisitor"
 							:is-favorite="loan.userProperties.favorited"
-							:image-enhancement-experiment-version="imageEnhancementExperimentVersion"
-							:loan-image-hash="loan.image.hash"
-
 							@track-loan-card-interaction="trackInteraction"
 							@favorite-toggled="toggleFavorite"
 						/>
@@ -57,8 +54,8 @@
 								</div>
 							</div>
 
-							<div class="why-special">
-								<div v-if="showFundraisingThermometer" class="fundraising-thermometer">
+							<div class="fundraising-thermometer-wrapper">
+								<div class="fundraising-thermometer">
 									<fundraising-status
 										:amount-left="amountLeft"
 										:expiring-soon-message="expiringSoonMessage"
@@ -67,12 +64,6 @@
 										:percent-raised="percentRaised"
 										:single-line="false"
 									/>
-								</div>
-								<div v-else>
-									<div class="bold">
-										This loan is special because:
-									</div>
-									{{ loan.whySpecial }}
 								</div>
 							</div>
 
@@ -106,7 +97,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import numeral from 'numeral';
 
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
@@ -132,10 +122,6 @@ export default {
 			default: () => {},
 		},
 		expiringSoonMessage: {
-			type: String,
-			default: ''
-		},
-		imageEnhancementExperimentVersion: {
 			type: String,
 			default: ''
 		},
@@ -201,9 +187,6 @@ export default {
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);
 		},
-		showFundraisingThermometer() {
-			return _get(this.experimentData, 'featured_hero_loan_fundraising_thermometer') === 'variant-c';
-		}
 	},
 	methods: {
 		loanUseTruncated() {
@@ -305,7 +288,7 @@ $row-max-width: 58.75rem;
 					}
 
 					.use,
-					.why-special {
+					.fundraising-thermometer-wrapper {
 						margin-top: rem-calc(20);
 						margin-bottom: rem-calc(20);
 
@@ -314,7 +297,7 @@ $row-max-width: 58.75rem;
 						}
 					}
 
-					.why-special .bold {
+					.fundraising-thermometer-wrapper .bold {
 						font-weight: $global-weight-bold;
 					}
 

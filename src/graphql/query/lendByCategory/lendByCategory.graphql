@@ -8,18 +8,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		featuredExp: uiExperimentSetting(key: "featured_loans") {
-			key
-			value
-		}
-		imageEnhancementExperiment: uiExperimentSetting(key: "image_enhancement") {
-			key
-			value
-		}
-		featuredHeroLoanExperiment: uiExperimentSetting(key: "featured_hero_loan_v3") {
-			key
-			value
-		}
 		categoryDescriptionExperiment: uiExperimentSetting(key: "category_description") {
 			key
 			value
