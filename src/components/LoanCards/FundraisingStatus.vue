@@ -113,6 +113,7 @@ export default {
 			margin-bottom: 0.25rem;
 			font-weight: $global-weight-normal;
 			font-style: normal;
+			color: $gray;
 		}
 	}
 

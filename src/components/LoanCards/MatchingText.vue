@@ -4,6 +4,7 @@
 		:class="{
 			'has-match': props.matchingText,
 			'hide-match': props.isFunded || props.isSelectedByAnother || props.isExpired,
+			'wrap': props.wrap,
 		}"
 	>
 		2x matching by {{ props.matchingText }}
@@ -27,6 +28,11 @@
 
 	&.has-match.hide-match {
 		visibility: hidden;
+	}
+
+	&.wrap {
+		white-space: normal;
+		line-height: rem-calc(18);
 	}
 }
 </style>

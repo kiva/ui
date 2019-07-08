@@ -32,6 +32,7 @@
 				:is-visitor="isVisitor"
 				:is-selected-by-another="isSelectedByAnother"
 				:items-in-basket="itemsInBasket"
+				@update-detailed-loan-index="updateDetailedLoanIndex"
 			/>
 			<div
 				class="more-details-wrapper"
@@ -144,7 +145,7 @@ export default {
 @import "components/loan-cards/hover-loan-card";
 
 .hover-loan-card {
-	padding: rem-calc(25) rem-calc($hover-card-right-margin) rem-calc(41) rem-calc($hover-card-right-margin);
+	padding: rem-calc(87) rem-calc($hover-card-right-margin) rem-calc(109) rem-calc($hover-card-right-margin);
 
 	$transition1: padding-bottom $card-expansion-duration $card-expansion-curve;
 	$transition2: transform $card-expansion-duration $card-expansion-curve;
@@ -157,7 +158,7 @@ export default {
 
 		.more-details-wrapper {
 			position: absolute;
-			bottom: rem-calc(-50);
+			bottom: rem-calc(-118);
 			left: 50%;
 			cursor: pointer;
 			opacity: 0;

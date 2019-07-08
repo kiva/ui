@@ -56,32 +56,26 @@ export default {
 @import "components/loan-cards/hover-loan-card";
 
 .hover-loan-card-small {
+	@extend .base-portrait-hover-loan-card;
+
 	width: $small-hover-card-width;
-	background: $white;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	flex-shrink: 0;
-	border-radius: $hover-card-border-radius;
-	// Re-enable to add card expansion animation
-	// transform: scale(1, 1);
-	opacity: 1;
-	pointer-events: initial;
-	transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
+	height: $small-hover-card-height;
+	// Re-enable to add card opacity transition
+	// transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
+	transition: $hover-card-transition-transform;
 
 	.hover-loan-card-image {
-		border-radius: $hover-card-border-radius $hover-card-border-radius 0 0;
-		overflow: hidden;
+		@extend .base-portrait-hover-loan-card-image;
+
+		height: $small-hover-card-image-height;
 	}
 
 	.hover-loan-card-data-wrap {
-		position: relative;
+		@extend .base-portrait-hover-loan-card-data-wrap;
+
+		height: $small-hover-card-data-height;
 		padding: 0.75rem 1rem;
 		text-align: center;
-		border: rem-calc(1) solid $kiva-stroke-gray;
-		border-radius: 0 0 $hover-card-border-radius $hover-card-border-radius;
-		border-top: none;
-		height: rem-calc(90);
 
 		.name {
 			line-height: rem-calc(20);
@@ -107,12 +101,15 @@ export default {
 	}
 
 	&.expanded {
-		opacity: 0;
 		pointer-events: none;
-		transition: $hover-card-transition-opacity-out;
-		// Re-enable to add card expansion animation
-		// transform: scale($width-ratio-large-to-small, $height-ratio-large-to-small);
-		// transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
+		transform: scale($width-ratio-large-to-small, $height-ratio-large-to-small);
+		// Re-enable to add card opacity transition
+		// opacity: 0;
+		// transition: $hover-card-transition-transform, $hover-card-transition-opacity-in;
+
+		.hover-loan-card-image {
+			transform: scale(1, $small-hover-card-image-scale-y);
+		}
 	}
 }
 </style>
