@@ -100,6 +100,15 @@
 				@click="scrollRowRight"
 			>&rsaquo;</span>
 		</div>
+
+		<kv-expandable>
+			<detailed-loan-card
+				class="expanded-card-row"
+				v-if="detailedLoanCacheId"
+				:loan-id="detailedLoanCacheId"
+				@close="detailedLoanIndex = null"
+			/>
+		</kv-expandable>
 	</div>
 </template>
 
@@ -108,6 +117,8 @@ import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
+import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
+import KvExpandable from '@/components/Kv/KvExpandable';
 
 const hoverCardSmallWidth = 220;
 const hoverCardRightMargin = 10;
@@ -116,6 +127,8 @@ const hoverCardSmallWidthTotal = hoverCardSmallWidth + hoverCardRightMargin * 2;
 export default {
 	components: {
 		LoanCardController,
+		DetailedLoanCard,
+		KvExpandable,
 	},
 	mixins: [
 		categoryRowArrowsVisibleMixin,
@@ -438,6 +451,10 @@ $row-max-width: 63.75rem;
 }
 
 .row.title-row {
+	max-width: $row-max-width;
+}
+
+.expanded-card-row {
 	max-width: $row-max-width;
 }
 
