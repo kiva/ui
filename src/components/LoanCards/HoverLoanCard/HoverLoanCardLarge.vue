@@ -81,7 +81,7 @@
 						:matching-text="loan.matchingText"
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
-						class="matching-text"
+						:wrap="true"
 					/>
 				</div>
 			</div>
@@ -210,11 +210,6 @@ export default {
 
 			.matching-text-container {
 				padding-left: 1rem;
-
-				.matching-text {
-					white-space: normal;
-					line-height: rem-calc(18);
-				}
 			}
 		}
 	}
