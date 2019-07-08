@@ -171,6 +171,7 @@ export default {
 
 			span {
 				$speed-curve: 300ms linear;
+
 				text-transform: uppercase;
 				transition: border-color $speed-curve, color $speed-curve;
 				border-color: rgba($white, 0);
