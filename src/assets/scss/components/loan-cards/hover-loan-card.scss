@@ -1,5 +1,11 @@
 @import 'settings';
 
+// Reference
+$small-default-hover-image-width: rem-calc(480);
+$small-default-hover-image-height: rem-calc(300);
+$large-default-hover-image-width: $small-default-hover-image-width;
+$large-default-hover-image-height: $small-default-hover-image-height;
+
 // Card Styles
 $hover-card-border-radius: rem-calc(3);
 
@@ -9,6 +15,12 @@ $small-hover-card-height: rem-calc(228);
 $large-hover-card-width: rem-calc(440);
 $large-hover-card-height: rem-calc(250);
 $hover-card-right-margin: rem-calc(10);
+
+// Card Section Sizes
+$small-hover-card-image-height: $small-default-hover-image-height / $small-default-hover-image-width * $small-hover-card-width;
+$small-hover-card-data-height: $small-hover-card-height - $small-hover-card-image-height;
+$large-hover-card-image-height: $large-default-hover-image-height / $large-default-hover-image-width * $large-hover-card-width;
+$large-hover-card-data-height: $large-hover-card-height - $large-hover-card-image-height;
 
 // Differences
 $small-hover-card-total-width: $small-hover-card-width + $hover-card-right-margin;
@@ -25,6 +37,12 @@ $height-ratio-small-to-large: $small-hover-card-height / $large-hover-card-heigh
 // Large Card Positioning Shift
 $hover-card-large-left-shift: ($hover-card-width-difference / $small-hover-card-width) * -50%;
 $hover-card-large-top-shift: ($hover-card-height-difference / $small-hover-card-height) * -50%;
+
+// Portrait Card Image Sync Adjustment
+$large-hover-card-image-height-adjusted: $small-hover-card-image-height * $large-hover-card-height / $small-hover-card-height;
+$large-hover-card-image-scale-y: $large-hover-card-image-height-adjusted / $large-hover-card-image-height;
+$small-hover-card-image-height-adjusted: $large-hover-card-image-height * $small-hover-card-height / $large-hover-card-height;
+$small-hover-card-image-scale-y: $small-hover-card-image-height-adjusted / $small-hover-card-image-height;
 
 // Animations
 // Expansion
