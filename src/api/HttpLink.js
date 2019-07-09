@@ -26,24 +26,18 @@ export default ({ csrfToken = '', uri = '' }) => {
 			agent: new Agent({
 				// fix request blocked b/c of self-signed certificate on dev-vm.
 				rejectUnauthorized: !onVm
-			})
-		}
+			}),
+		},
+		// setup authorization
+		// TODO: convert to omit for localhost
+		credentials: 'include',
+		'headers.cookie': cookie !== '' ? cookie : serializeSelectClientCookies(cookieStore.get()),
 	};
 
 	// only add the csrf token if we have one
 	if (csrfToken.length > 0 && viaAjax) {
 		options.headers['x-crumb'] = csrfToken;
 	}
-
-	// setup authorization
-	// if (cookie && viaAjax) {
-	// 	options.headers.cookie = cookie;
-	// } else {
-	// options.credentials = 'same-origin';
-	// }
-
-	// options.credentials = 'include';
-	options.headers.cookie = cookie !== '' ? cookie : serializeSelectClientCookies(cookieStore.get());
 
 	return new BatchHttpLink(options);
 };
