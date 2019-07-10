@@ -21,17 +21,18 @@ export default ({ csrfToken = '', uri = '' }) => {
 	const options = {
 		uri,
 		fetch,
-		headers: {},
+		// setup authorization
+		// TODO: convert to omit for localhost
+		credentials: 'include',
+		headers: {
+			cookie: cookie !== '' ? cookie : serializeSelectClientCookies(cookieStore.get()),
+		},
 		fetchOptions: {
 			agent: new Agent({
 				// fix request blocked b/c of self-signed certificate on dev-vm.
 				rejectUnauthorized: !onVm
 			}),
 		},
-		// setup authorization
-		// TODO: convert to omit for localhost
-		credentials: 'include',
-		'headers.cookie': cookie !== '' ? cookie : serializeSelectClientCookies(cookieStore.get()),
 	};
 
 	// only add the csrf token if we have one
