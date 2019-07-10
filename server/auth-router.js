@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const {
+	getSyncCookie,
 	isNotedLoggedIn,
 	isNotedLoggedOut,
 	noteLoggedIn,
@@ -48,6 +49,7 @@ module.exports = function authRouter(config = {}) {
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
 		}
+		console.log(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
 		next();
 	}, passport.authenticate('auth0', {
 		audience: config.auth0.apiAudience,
@@ -56,6 +58,7 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
+		console.log(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
 		req.logout(); // removes req.user
@@ -68,12 +71,20 @@ module.exports = function authRouter(config = {}) {
 		const { doneUrl } = req.session;
 		delete req.session.doneUrl;
 
-		passport.authenticate('auth0', (authErr, user) => {
-			if (authErr) return next(authErr);
+		passport.authenticate('auth0', (authErr, user, info) => {
+			if (authErr) {
+				console.log(`LoginUI: auth error, session id:${req.sessionID}, error:${authErr}`);
+				return next(authErr);
+			}
 
 			if (user) {
+				console.log(`LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}`); // eslint-disable-line max-len
 				noteLoggedIn(res);
 			} else {
+				if (!doneUrl) {
+					console.warn(`LoginSyncUI: No user and no done url post-login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}`); // eslint-disable-line max-len
+				}
+				console.log(`LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${info}`); // eslint-disable-line max-len
 				noteLoggedOut(res);
 				return res.redirect(doneUrl || '/');
 			}
@@ -95,6 +106,7 @@ module.exports = function authRouter(config = {}) {
 		if (bypassPaths.includes(req.path)) {
 			next();
 		} else if (isNotedLoggedIn(req) && !req.user) {
+			console.log(`LoginSyncUI: attempt silent login, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user}`); // eslint-disable-line max-len
 			// Store current url to redirect to after auth
 			req.session.doneUrl = req.originalUrl;
 			// Attempt silent authentication (prompt=none)
@@ -105,6 +117,7 @@ module.exports = function authRouter(config = {}) {
 			})(req, res, next);
 		} else {
 			if (isNotedLoggedOut(req) && req.user) {
+				console.log(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
 				req.logout(); // removes req.user
 			}
 			next();
