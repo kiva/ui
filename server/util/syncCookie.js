@@ -10,11 +10,13 @@ function getSyncCookie(req) {
 }
 
 function setSyncCookie(res, login) {
+	console.log(`LoginSyncUI: setting sync cookie, value:${login ? LOGIN : LOGOUT}`);
 	res.append('Set-Cookie', cookie.serialize(NAME, login ? LOGIN : LOGOUT, { path: '/', secure: true }));
 }
 
 // Helper functions for managing the login sync cookie
 module.exports = {
+	getSyncCookie,
 	isNotedLoggedIn: req => getSyncCookie(req) === LOGIN,
 	isNotedLoggedOut: req => getSyncCookie(req) === LOGOUT,
 	noteLoggedIn: res => setSyncCookie(res, true),
