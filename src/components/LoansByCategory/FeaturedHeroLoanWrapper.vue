@@ -68,7 +68,7 @@ export default {
 	},
 	data() {
 		return {
-			experimentData: () => {},
+			experimentData: {},
 			featuredCategoryIds,
 			initialLoanCount,
 			loan: null,
