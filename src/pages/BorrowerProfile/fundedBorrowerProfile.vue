@@ -16,7 +16,6 @@
 					/>
 				</div>
 				<div class="small-12 medium-8 columns">
-					<!-- Funded State/ FUNDED! -->
 					<h2
 						class="strong funding-status"
 						v-if="loan.status==='funded'"
