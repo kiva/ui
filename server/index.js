@@ -4,11 +4,12 @@ const express = require('express');
 const helmet = require('helmet');
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
+const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
-const argv = require('minimist')(process.argv.slice(2));
+const argv = require('./util/argv');
 const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
@@ -38,6 +39,13 @@ app.use(express.static('dist', {
 // Setup Request Logger
 // -> placed here to exclude static
 app.use(logger.requestLogger);
+
+// Setup optional mock graphql server
+if (argv.mock) {
+	app.use('/', mockGraphQLRouter(config.app.graphqlUri));
+	config.app.graphqlUri = `http://localhost:${port}/graphql`;
+	config.app.auth0.enable = false;
+}
 
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);

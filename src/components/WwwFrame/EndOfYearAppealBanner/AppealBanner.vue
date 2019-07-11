@@ -128,8 +128,17 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
-			this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
+			try {
+				this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
+			} catch (e) {
+				this.appealEnabled = false;
+			}
+
+			try {
+				this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
+			} catch (e) {
+				this.appealMatchEnabled = false;
+			}
 			// eslint-disable-next-line max-len
 			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
 			// eslint-disable-next-line max-len

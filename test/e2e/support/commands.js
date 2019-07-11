@@ -1,25 +1,18 @@
 // ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
 // For more comprehensive examples of custom
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This is will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('lunar', method => {
+	cy.request('POST', `/__lunar/${method}`);
+});
+
+Cypress.Commands.add('mock', mocks => {
+	const serializedMocks = Object.keys(mocks).reduce(
+		(packet, key) => Object.assign(packet, { [key]: mocks[key].toString() }),
+		{}
+	);
+
+	cy.request('POST', '/__lunar/mock', serializedMocks);
+});

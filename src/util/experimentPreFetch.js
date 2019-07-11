@@ -104,7 +104,11 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 		// Check for active experiments listing
 		const activeExperimentsSettings = _get(results, 'data.general.activeExperiments');
 		if (typeof activeExperimentsSettings !== 'undefined' && activeExperimentsSettings !== null) {
-			activeExperiments = JSON.parse(activeExperimentsSettings.value).split(',');
+			try {
+				activeExperiments = JSON.parse(activeExperimentsSettings.value).split(',');
+			} catch (e) {
+				// leave as defaults
+			}
 		}
 		return activeExperiments;
 	})
