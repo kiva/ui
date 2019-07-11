@@ -11,6 +11,7 @@
 			'shift-right-double': shiftRightDouble,
 		}"
 		@mouseenter="handleMouseEnter"
+		@click="handleClick"
 	>
 		<div
 			class="hover-loan-card-wrapper"
@@ -50,6 +51,7 @@ import HoverLoanCardSmall from './HoverLoanCardSmall';
 import HoverLoanCardLarge from './HoverLoanCardLarge';
 import hoverLoanCardMixin from './hoverLoanCardMixin';
 import KvIcon from '@/components/Kv/KvIcon';
+import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 
 export default {
 	components: {
@@ -122,19 +124,32 @@ export default {
 	},
 	mixins: [
 		hoverLoanCardMixin,
+		categoryRowArrowsVisibleMixin,
 	],
 	methods: {
 		handleMouseEnter() {
 			if (this.rowHasDetailedLoan && !this.isDetailed) {
 				this.updateDetailedLoanIndex();
+			} else if (this.hoverEffectActive()) {
+				this.updateHoverLoanIndex();
 			}
-			this.updateHoverLoanIndex();
+		},
+		hoverEffectActive() {
+			const windowWidth = document.documentElement.clientWidth;
+			const arrowsVisible = this.categoryRowArrowsVisible();
+
+			return (arrowsVisible && windowWidth >= 800) || (!arrowsVisible && windowWidth >= 768);
 		},
 		updateHoverLoanIndex() {
 			this.$emit('update-hover-loan-index', this.loanIndex);
 		},
 		updateDetailedLoanIndex() {
 			this.$emit('update-detailed-loan-index', this.loanIndex);
+		},
+		handleClick() {
+			if (!this.hoverEffectActive()) {
+				this.$emit('update-detailed-loan-index', this.loanIndex);
+			}
 		},
 	},
 };
