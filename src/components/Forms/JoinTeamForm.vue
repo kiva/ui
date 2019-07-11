@@ -24,7 +24,7 @@
 			<loading-overlay id="loading-overlay-teams" v-if="loading" />
 		</div>
 		<div v-if="showSuccess">
-			<div v-if="openTeam">
+			<div v-if="isMember">
 				<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
 				<p>
 					When you make loans, you'll now have the option to count those loans towards this team.
@@ -69,12 +69,11 @@ export default {
 			return {
 				team_id: route.query.team_id,
 				team_recruitment_id: route.query.id,
+				promo_id: route.query.promo_id,
 			};
 		},
 		result({ data }) {
 			this.teamName = _get(data, 'community.team.name');
-			this.membershipType = _get(data, 'community.team.membershipType');
-			this.openTeam = this.membershipType === 'open';
 			if (!this.inviterDisplayName) {
 				this.inviterDisplayName = _get(data, 'my.teamRecruitment.recruiterDisplayName');
 			}
@@ -86,18 +85,19 @@ export default {
 	data() {
 		return {
 			teamName: '',
-			openTeam: '',
-			membershipType: '',
+			isMember: false,
 			doneUrl: this.$route.query.doneUrl,
 			teamRecruitmentId: this.$route.query.id,
 			inviterId: this.$route.query.inviter_id,
 			inviterDisplayName: this.$route.query.inviter_display_name,
 			teamId: this.$route.query.team_id,
+			promoId: this.$route.query.promo_id,
 			showError: false,
 			showForm: true,
 			showSuccess: false,
 			loading: false,
-			message: ''
+			message: '',
+			joined: false
 		};
 	},
 	methods: {
@@ -129,7 +129,8 @@ export default {
 					mutation: joinTeam,
 					variables: {
 						team_id: this.teamId,
-						team_recruitment_id: this.teamRecruitmentId
+						team_recruitment_id: this.teamRecruitmentId,
+						promo_id: this.promoId
 					}
 				}).then(result => {
 					this.loading = false;
@@ -137,6 +138,7 @@ export default {
 						this.showError = true;
 						console.log(result.errors);
 					} else {
+						this.isMember = true; // todo: check if they joined or requested
 						this.showForm = false;
 						this.showSuccess = true;
 					}

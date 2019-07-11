@@ -1,5 +1,5 @@
-mutation joinTeam($team_id: Int!, $team_recruitment_id: Int) {
+mutation joinTeam($team_id: Int!, $team_recruitment_id: Int, $promo_id: Int) {
 	my {
-		joinTeam (teamId: $team_id, teamRecruitmentId: $team_recruitment_id)
+		joinTeam (teamId: $team_id, teamRecruitmentId: $team_recruitment_id, promoId: $promo_id)
 	}
 }
