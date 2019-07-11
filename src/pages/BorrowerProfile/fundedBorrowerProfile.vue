@@ -16,8 +16,14 @@
 			</div>
 			<div class="small-12 medium-8 columns">
 				<!-- Funded State/ FUNDED! -->
+				<h2
+					class="strong funding-status"
+					v-if="loan.status==='funded'"
+				>
+					100%
+				</h2>
 				<h2 class="strong funding-status">
-					100% {{ loan.status }}
+					{{ loan.status }}
 				</h2>
 				<!-- Total funded/loan amount -->
 				<div class="loan-total-text">
@@ -180,6 +186,7 @@ export default {
 .funding-status {
 	color: $kiva-green;
 	font-size: 2.5rem;
+	display: inline-block;
 }
 
 .loan-use-text,
