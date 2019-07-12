@@ -1,0 +1,7 @@
+fragment checkoutValidationErrors on ShopMutation {
+	validatePreCheckout {
+		error
+		success
+		value
+	}
+}
