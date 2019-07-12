@@ -162,7 +162,7 @@ export default {
 		},
 		handleRejectTeam() {
 			this.showError = false;
-			window.location.href = `/ajax/declineInvitationToJoinTeam?doneUrl=${this.doneUrl}`;
+			window.location.href = `/declineInvitationToJoinTeam?doneUrl=${this.doneUrl}`;
 		}
 	},
 	created() {
