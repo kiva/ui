@@ -195,6 +195,7 @@ export default {
 	color: $kiva-green;
 	font-size: 2.5rem;
 	display: inline-block;
+	text-transform: capitalize;
 }
 
 .loan-use-text,
