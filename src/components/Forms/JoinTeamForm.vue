@@ -24,7 +24,7 @@
 			<loading-overlay id="loading-overlay-teams" v-if="loading" />
 		</div>
 		<div v-if="showSuccess">
-			<div v-if="openTeam">
+			<div v-if="isMember">
 				<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
 				<p>
 					When you make loans, you'll now have the option to count those loans towards this team.
@@ -47,6 +47,7 @@ import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
+import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
@@ -69,12 +70,11 @@ export default {
 			return {
 				team_id: route.query.team_id,
 				team_recruitment_id: route.query.id,
+				promo_id: route.query.promo_id,
 			};
 		},
 		result({ data }) {
 			this.teamName = _get(data, 'community.team.name');
-			this.membershipType = _get(data, 'community.team.membershipType');
-			this.openTeam = this.membershipType === 'open';
 			if (!this.inviterDisplayName) {
 				this.inviterDisplayName = _get(data, 'my.teamRecruitment.recruiterDisplayName');
 			}
@@ -86,13 +86,13 @@ export default {
 	data() {
 		return {
 			teamName: '',
-			openTeam: '',
-			membershipType: '',
+			isMember: false,
 			doneUrl: this.$route.query.doneUrl,
 			teamRecruitmentId: this.$route.query.id,
 			inviterId: this.$route.query.inviter_id,
 			inviterDisplayName: this.$route.query.inviter_display_name,
 			teamId: this.$route.query.team_id,
+			promoId: this.$route.query.promo_id,
 			showError: false,
 			showForm: true,
 			showSuccess: false,
@@ -125,31 +125,44 @@ export default {
 					resolve();
 				}
 			}).then(() => {
-				this.apollo.mutate({
+				return this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
 						team_id: this.teamId,
-						team_recruitment_id: this.teamRecruitmentId
+						team_recruitment_id: this.teamRecruitmentId,
+						promo_id: this.promoId
 					}
-				}).then(result => {
-					this.loading = false;
-					if (result.errors) {
-						this.showError = true;
-						console.log(result.errors);
-					} else {
-						this.showForm = false;
-						this.showSuccess = true;
-					}
-				}).catch(error => {
+				});
+			}).then(result => {
+				if (result.errors) {
+					throw result.errors;
+				} else {
+					return this.apollo.query({
+						query: myTeamsQuery,
+						variables: {
+							teamIds: [this.teamId]
+						}
+					});
+				}
+			}).then(result => {
+				this.loading = false;
+				if (result.errors) {
+					throw result.errors;
+				} else {
+					this.isMember = _get(result.data, 'my.teams.values').length;
+					this.showForm = false;
+					this.showSuccess = true;
+				}
+			})
+				.catch(error => {
 					this.loading = false;
 					this.showError = true;
 					console.log(error);
 				});
-			});
 		},
 		handleRejectTeam() {
 			this.showError = false;
-			window.location.href = this.doneUrl;
+			window.location.href = `/declineInvitationToJoinTeam?doneUrl=${this.doneUrl}`;
 		}
 	},
 	created() {
