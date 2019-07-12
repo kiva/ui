@@ -85,6 +85,7 @@ export default {
 				// We used to refresh the page if they have timed out
 				// TODO: What should we do now? Re-show the login button? Flash a Message?
 				if (error === 'api.authenticationRequired') {
+					return;
 					// window.location = window.location;
 				}
 
@@ -95,7 +96,10 @@ export default {
 					errorMessages = errorMessage;
 				}
 			});
-			this.$showTipMsg(errorMessages, 'error');
+
+			if (errorMessages) {
+				this.$showTipMsg(errorMessages, 'error');
+			}
 		},
 
 		/* Redirect to the thanks
