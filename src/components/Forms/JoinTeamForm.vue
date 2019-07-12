@@ -47,6 +47,7 @@ import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
+import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
@@ -125,29 +126,41 @@ export default {
 					resolve();
 				}
 			}).then(() => {
-				this.apollo.mutate({
+				return this.apollo.mutate({
 					mutation: joinTeam,
 					variables: {
 						team_id: this.teamId,
 						team_recruitment_id: this.teamRecruitmentId,
 						promo_id: this.promoId
 					}
-				}).then(result => {
-					this.loading = false;
-					if (result.errors) {
-						this.showError = true;
-						console.log(result.errors);
-					} else {
-						this.isMember = true; // todo: check if they joined or requested
-						this.showForm = false;
-						this.showSuccess = true;
-					}
-				}).catch(error => {
+				});
+			}).then(result => {
+				if (result.errors) {
+					throw result.errors;
+				} else {
+					return this.apollo.query({
+						query: myTeamsQuery,
+						variables: {
+							teamIds: [this.teamId]
+						}
+					});
+				}
+			}).then(result => {
+				this.loading = false;
+				if (result.errors) {
+					throw result.errors;
+				} else {
+					this.isMember = _get(result.data, 'my.teams.values').length;
+					console.log(this.isMember);
+					this.showForm = false;
+					this.showSuccess = true;
+				}
+			})
+				.catch(error => {
 					this.loading = false;
 					this.showError = true;
 					console.log(error);
 				});
-			});
 		},
 		handleRejectTeam() {
 			this.showError = false;
