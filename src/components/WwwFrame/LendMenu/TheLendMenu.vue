@@ -89,24 +89,11 @@ export default {
 			return regions.sort(indexIn(this.regionDisplayOrder, 'name'));
 		},
 		computedCategories() {
-			let categoryRowsActive = false;
-			// try to get status of category row exp
-			if (this.legacyExpData !== '') {
-				try {
-					const expData = JSON.parse(this.legacyExpData);
-					const categoryRowsExp = _get(expData, 'category_rowscategory_rows');
-					categoryRowsActive = categoryRowsExp && categoryRowsExp.version === 'b';
-				} catch (e) { console.error(e); }
-			}
-			// convert category urls to use /lend-by-category if exp is active
-			if (categoryRowsActive) {
-				return _map(this.categories, category => {
-					const updatedCat = JSON.parse(JSON.stringify(category));
-					updatedCat.url = updatedCat.url.replace('lend', 'lend-by-category');
-					return updatedCat;
-				});
-			}
-			return this.categories;
+			return _map(this.categories, category => {
+				const updatedCat = JSON.parse(JSON.stringify(category));
+				updatedCat.url = updatedCat.url.replace('lend', 'lend-by-category');
+				return updatedCat;
+			});
 		},
 		isLoading() {
 			return this.loadingSemaphore > 0 || this.categories.length === 0;
