@@ -97,8 +97,7 @@ export default {
 			showForm: true,
 			showSuccess: false,
 			loading: false,
-			message: '',
-			joined: false
+			message: ''
 		};
 	},
 	methods: {
@@ -164,7 +163,7 @@ export default {
 		},
 		handleRejectTeam() {
 			this.showError = false;
-			window.location.href = this.doneUrl;
+			window.location.href = `/ajax/declineInvitationToJoinTeam?doneUrl=${this.doneUrl}`;
 		}
 	},
 	created() {
