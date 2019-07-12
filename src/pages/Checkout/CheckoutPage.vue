@@ -160,11 +160,14 @@ import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
 import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import updateExperimentMutation from '@/graphql/mutation/updateExperimentVersion.graphql';
+import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
+import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
@@ -219,7 +222,6 @@ export default {
 			updatingTotals: false,
 			showReg: true,
 			showLogin: false,
-			showLoginContinueButton: false,
 			loginLoading: false,
 			isHovered: false,
 			activeLoginDuration: 3600,
@@ -242,14 +244,14 @@ export default {
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
 			return client.query({
-				query: initializeCheckout,
+				query: checkoutSettings,
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				// check for free credit, bonus credit or lending rewards and redirect if present
 				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
-				if (hasFreeCredits && typeof window === 'undefined') {
+				if (hasFreeCredits) {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
@@ -261,28 +263,22 @@ export default {
 				}
 				return data;
 			}).then(() => {
-				// initialize braintree exp assignment
-				return client.query({ query: experimentQuery, variables: { id: 'bt_test' } });
+				return client.mutate({ mutation: validatePreCheckoutMutation });
 			}).then(() => {
-				// initialize braintree exp assignment
-				return client.query({ query: experimentQuery, variables: { id: 'basket_item_timer_v2' } });
+				return Promise.all([
+					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
+					client.query({ query: experimentQuery, variables: { id: 'bt_test' } }),
+					client.query({ query: experimentQuery, variables: { id: 'basket_item_timer_v2' } })
+				]);
 			});
 		},
-		result({ data, errors }) {
-			// check for authentication errors to indicate initial login status
-			if (errors && errors.length) {
-				const authErrors = _filter(errors, error => {
-					return error.code === 'api.authenticationRequired';
-				});
-				if (authErrors.length) {
-					this.showLoginContinueButton = true;
-				}
-			}
+		result({ data }) {
 			// user data
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
 			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
+			this.lastActiveLogin = _get(data, 'my.lastLoginTimestamp', 0);
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
 			this.loans = _filter(_get(data, 'shop.basket.items.values'), { __typename: 'LoanReservation' });
@@ -299,9 +295,15 @@ export default {
 		}
 	},
 	created() {
-		// start the page with loading state
-		this.setUpdatingTotals(true);
+		// show any validation errors that occured during preFetch
+		const shopMutationData = this.apollo.readFragment({
+			id: 'ShopMutation',
+			fragment: validationErrorsFragment,
+		});
+		const validationErrors = _get(shopMutationData, 'validatePreCheckout', []);
+		this.showCheckoutError(validationErrors);
 
+		// check if holiday mode is enabled
 		try {
 			this.holidayModeEnabled = settingEnabled(
 				this.apollo.readQuery({
@@ -333,32 +335,14 @@ export default {
 		this.initializeBasketItemTimer();
 	},
 	mounted() {
-		// This empty upon page load so we refetch in order to be able to use when we need it.
-		// TODO: Move this to a global operation that runs once, pushing the results into Apollo client state
-		// TODO: Refactor this operation to use a watch query on the afformentioned client state.
-		this.verifyUserStatus().then(() => {
-			this.$nextTick(() => {
-				// fire tracking event when the page loads
-				// - this event will be duplicated when the page reloads with a newly registered/logged in user
-				let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-				if (this.isActivelyLoggedIn) {
-					userStatus = 'Actively Logged-In';
-				}
-				this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
-
-				// Run our validate items method once in the client on page load
-				if (this.isLoggedIn) {
-					this.validatePreCheckout();
-				} else {
-					// clear loading state if not logged in
-					this.setUpdatingTotals(false);
-				}
-
-				// check for free credits
-				if (this.hasFreeCredits) {
-					this.refreshTotals('kiva-card-applied');
-				}
-			});
+		this.$nextTick(() => {
+			// fire tracking event when the page loads
+			// - this event will be duplicated when the page reloads with a newly registered/logged in user
+			let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+			if (this.isActivelyLoggedIn) {
+				userStatus = 'Actively Logged-In';
+			}
+			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 		});
 	},
 	computed: {
@@ -393,6 +377,12 @@ export default {
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
 		},
+		showLoginContinueButton() {
+			if (!this.myId || !this.isActivelyLoggedIn) {
+				return true;
+			}
+			return false;
+		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
 				&& parseFloat(_get(this.donations, '[0].price')) === 0) {
@@ -402,22 +392,6 @@ export default {
 		},
 	},
 	methods: {
-		verifyUserStatus() {
-			return new Promise((resolve, reject) => {
-				if (this.kvAuth0.user === null) {
-					return this.kvAuth0.checkSession().then(() => {
-						this.setAuthStatus(_get(this.kvAuth0, 'user'));
-						resolve(true);
-					}).catch(error => {
-						console.error(error);
-						reject(error);
-					});
-				}
-				// setAuthStatus will show the login button if needed
-				this.setAuthStatus(_get(this.kvAuth0, 'user'));
-				resolve(true);
-			});
-		},
 		loginToContinue() {
 			if (this.kvAuth0.enabled) {
 				this.updatingTotals = true;
@@ -471,11 +445,6 @@ export default {
 			if (typeof userState !== 'undefined' && userState !== null) {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
 				this.myId = userState['https://www.kiva.org/kiva_id'];
-				this.showLoginContinueButton = false;
-			}
-			// if we have a user id but are not actively logged in
-			if (this.myId !== null && this.myId !== undefined && !this.isActivelyLoggedIn) {
-				this.showLoginContinueButton = true;
 			}
 		},
 		/* Validate the Entire Basket on mounted */

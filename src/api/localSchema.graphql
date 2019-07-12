@@ -24,6 +24,10 @@ type Query {
 	activeLoan: ActiveLoan
 }
 
+extend type My {
+	lastLoginTimestamp: Int
+}
+
 type TipMessage {
 	message: String
 	persist: Boolean
