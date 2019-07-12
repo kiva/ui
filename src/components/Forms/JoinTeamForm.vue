@@ -150,7 +150,6 @@ export default {
 					throw result.errors;
 				} else {
 					this.isMember = _get(result.data, 'my.teams.values').length;
-					console.log(this.isMember);
 					this.showForm = false;
 					this.showSuccess = true;
 				}
