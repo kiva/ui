@@ -63,7 +63,7 @@ export default {
 		/* Handle Various errors from GraphQL
 		 * @param {Object} errorResponse contains errors node with array of errors
 		 */
-		showCheckoutError(errorResponse) {
+		showCheckoutError(errorResponse, ignoreAuth = false) {
 			// const errors = _get(errorResponse, 'errors');
 			let errorMessages = '';
 			// When validation or checkout fails and errors object is returned along with the data
@@ -82,11 +82,8 @@ export default {
 				}
 				/* eslint-enable max-len */
 
-				// We used to refresh the page if they have timed out
-				// TODO: What should we do now? Re-show the login button? Flash a Message?
-				if (error === 'api.authenticationRequired') {
+				if (error === 'api.authenticationRequired' && ignoreAuth) {
 					return;
-					// window.location = window.location;
 				}
 
 				// Handle multiple errors
