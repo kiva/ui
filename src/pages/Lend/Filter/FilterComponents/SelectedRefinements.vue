@@ -66,10 +66,6 @@ export default {
 		ClearAllRefinements,
 	},
 	props: {
-		customCategories: {
-			type: Object,
-			required: true,
-		},
 		selectedCustomCategories: {
 			type: Object,
 			required: true,
