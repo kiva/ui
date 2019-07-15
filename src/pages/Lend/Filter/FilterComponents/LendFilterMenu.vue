@@ -34,7 +34,7 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
-				<filter-section-location-multi class="filter-section" :location-lvl1-data="locationLvl1Data" />
+				<filter-section-location-multi class="filter-section" :all-locations-lvl1="allLocationsLvl1" />
 				<filter-section-sectors class="filter-section" :all-sector-names="allSectorNames" />
 				<filter-section-attributes class="filter-section" :all-loan-theme-names="allLoanThemeNames" />
 				<filter-section-tags class="filter-section" :all-tag-names="allTagNames" />
@@ -63,6 +63,8 @@ import {
 	AisStateResults,
 } from 'vue-instantsearch';
 // Custom Categories
+// import the following to access "customCategories"
+// import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 // import FilterSectionCategories from '@/pages/Lend/Filter/FilterSections/FilterSectionCategories';
 import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
 import FilterSectionSectors from '@/pages/Lend/Filter/FilterSections/FilterSectionSectors';
@@ -106,15 +108,11 @@ export default {
 			type: Array,
 			required: true,
 		},
-		customCategories: {
-			type: Object,
-			required: true,
-		},
 		selectedCustomCategories: {
 			type: Object,
 			required: true,
 		},
-		locationLvl1Data: {
+		allLocationsLvl1: {
 			type: Array,
 			default: () => []
 		},

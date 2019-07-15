@@ -21,9 +21,8 @@
 			>
 				<lend-filter-menu
 					:default-sort-indices="defaultSortIndices"
-					:custom-categories="customCategories"
 					:selected-custom-categories="selectedCustomCategories"
-					:location-lvl1-data="locationLvl1"
+					:all-locations-lvl1="allLocationsLvl1"
 					:all-sector-names="allSectorNames"
 					:all-loan-theme-names="allLoanThemeNames"
 					:all-tag-names="allTagNames"
@@ -45,7 +44,6 @@
 					/>
 					<selected-refinements
 						class="selected-refinements-component"
-						:custom-categories="customCategories"
 						:selected-custom-categories="selectedCustomCategories"
 						@remove-custom-category="removeCustomCategory"
 						@clear-custom-categories="clearCustomCategories"
@@ -108,7 +106,7 @@ import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
 
 // Algolia Imports
 import algoliaInit from '@/plugins/algolia-init-mixin';
-import algoliaConfig from '@/plugins/algolia-config-mixin';
+import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 import {
 	AisConfigure,
 	AisInstantSearch,
@@ -149,7 +147,7 @@ export default {
 	},
 	mixins: [
 		algoliaInit,
-		algoliaConfig,
+		algoliaCustomCategories,
 		lendFilterExpMixin,
 	],
 	created() {

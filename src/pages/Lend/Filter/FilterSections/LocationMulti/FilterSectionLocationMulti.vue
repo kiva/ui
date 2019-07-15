@@ -36,7 +36,7 @@ export default {
 		AisRefinementList,
 	},
 	props: {
-		locationLvl1Data: {
+		allLocationsLvl1: {
 			type: Array,
 			default: () => []
 		},
@@ -45,7 +45,7 @@ export default {
 		transformItems(items) {
 			// new container for location items
 			let sourceItems = [];
-			if (this.locationLvl1Data.length > 0) {
+			if (this.allLocationsLvl1.length > 0) {
 				// if we have source data, use for location item foundation
 				sourceItems = this.mergeLocationData(items);
 			} else {
@@ -92,7 +92,7 @@ export default {
 		},
 		mergeLocationData(filteredLocations) {
 			// sort our full facet query to match what sort set in algolia component above
-			const originalItems = _sortBy(this.locationLvl1Data, [loc => { return loc.value; }]);
+			const originalItems = _sortBy(this.allLocationsLvl1, [loc => { return loc.value; }]);
 			// new array to hold our merged items
 			const patchedItems = [];
 			originalItems.forEach(ol => {

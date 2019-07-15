@@ -157,8 +157,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
-// This mixin provides config for our indices + loan channel categories
-import algoliaConfig from '@/plugins/algolia-config-mixin';
 
 // Import your specific Algolia Components here
 // https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
@@ -216,7 +214,6 @@ export default {
 		'apollo',
 	],
 	mixins: [
-		algoliaConfig,
 		algoliaInit
 	],
 	metaInfo: {
@@ -225,7 +222,7 @@ export default {
 	data() {
 		return {
 			// aka. Loan Channel config
-			// PROVIDED BY: algolia-config-mixin
+			// PROVIDED BY: algolia-custom-categories-mixin
 			/* eslint-disable max-len */
 			// customCategories: [
 			// 	{
@@ -243,7 +240,6 @@ export default {
 
 			// Optional default search state
 			// > Sets search state and reflects that state in ais-current-refinements component
-			// PROVIDED BY: algolia-config-mixin
 			// disjunctiveFacets: {
 			// 	'sector.name': [],
 			// 	'themeData.loanThemeTypeName': [],
@@ -281,9 +277,9 @@ export default {
 		};
 	},
 	computed: {
-		customCategoryList() {
-			return _map(this.customCategories, (category, categoryId) => ({ ...category, categoryId }));
-		},
+		// customCategoryList() {
+		// 	return _map(this.customCategories, (category, categoryId) => ({ ...category, categoryId }));
+		// },
 	},
 	apollo: {
 		preFetch(config, client) {
