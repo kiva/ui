@@ -3,17 +3,23 @@
 		<template #title>
 			Borrower story
 		</template>
-		<p>Lot's of stories and text.</p>
+		<p>{{ loanStory }}</p>
+		<p>{{ whySpecial }}</p>
+		<p>{{ partnerName }}</p>
+		<p>{{ partnerRiskRating }}</p>
 	</info-panel>
 </template>
 
 <script>
+import _get from 'lodash/get';
 import InfoPanel from './InfoPanel';
+import expandableLoanCardStoryQuery from '@/graphql/query/expandableLoanCardStory.graphql';
 
 export default {
 	components: {
 		InfoPanel,
 	},
+	inject: ['apollo'],
 	props: {
 		expandable: {
 			type: Boolean,
@@ -23,6 +29,26 @@ export default {
 			type: String,
 			default: '',
 		},
+	},
+	data() {
+		return {
+			loanStory: 'test',
+			whySpecial: 'test',
+			partnerName: 'test',
+			partnerRiskRating: 'test'
+		};
+	},
+	apollo: {
+		preFetch(config, client) {
+			return client.query({
+				query: expandableLoanCardStoryQuery
+			}).then(({ data }) => {
+				this.loanStory = _get(data, 'lend.loan.description');
+				this.whySpecial = _get(data, 'lend.loan.whySpecial');
+				this.partnerName = _get(data, 'lend.loan.LoanPartner.partnerName');
+				this.partnerRiskRating = _get(data, 'lend.loan.LoanPartner.partner.riskRating');
+			});
+		}
 	},
 	computed: {
 		elementId() {

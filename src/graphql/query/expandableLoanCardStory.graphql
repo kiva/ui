@@ -1,0 +1,15 @@
+{
+	lend {
+		loan{
+			id
+			description
+			whySpecial
+			... on LoanPartner {
+				partnerName
+				partner {
+				riskRating
+				}
+			}
+		}
+  	}
+}
