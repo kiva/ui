@@ -1,4 +1,4 @@
-fragment loanCardFields on LoanBasic {
+fragment detailedLoanCard on LoanBasic {
 	id
 	status
 	name
@@ -39,5 +39,11 @@ fragment loanCardFields on LoanBasic {
 	}
 	...on LoanDirect {
 		trusteeName
+	}
+	image {
+		id
+		default: url(customSize: "w480h300")
+		retina: url(customSize: "w960h600")
+		hash
 	}
 }
