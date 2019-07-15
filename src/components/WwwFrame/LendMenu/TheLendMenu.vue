@@ -43,12 +43,6 @@ export default {
 		LendMegaMenu,
 	},
 	inject: ['apollo'],
-	props: {
-		legacyExpData: {
-			type: String,
-			default: ''
-		}
-	},
 	data() {
 		return {
 			userId: null,
