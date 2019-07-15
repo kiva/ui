@@ -237,6 +237,8 @@ export default {
 			basketItemTimerExpVersion: 'control',
 			basketTimerText: null,
 			basketTimerInterval: null,
+			currentTime: Date.now(),
+			currentTimeInterval: null,
 		};
 	},
 	apollo: {
@@ -301,7 +303,7 @@ export default {
 			fragment: validationErrorsFragment,
 		});
 		const validationErrors = _get(shopMutationData, 'validatePreCheckout', []);
-		this.showCheckoutError(validationErrors);
+		this.showCheckoutError(validationErrors, true);
 
 		// check if holiday mode is enabled
 		try {
@@ -335,6 +337,11 @@ export default {
 		this.initializeBasketItemTimer();
 	},
 	mounted() {
+		// update current time every second for reactivity
+		this.currentTimeInterval = setInterval(() => {
+			this.currentTime = Date.now();
+		}, 1000);
+
 		this.$nextTick(() => {
 			// fire tracking event when the page loads
 			// - this event will be duplicated when the page reloads with a newly registered/logged in user
@@ -354,7 +361,7 @@ export default {
 		},
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
-			if (lastLogin + (this.activeLoginDuration * 1000) > Date.now()) {
+			if (lastLogin + (this.activeLoginDuration * 1000) > this.currentTime) {
 				return true;
 			}
 			return false;
@@ -576,6 +583,7 @@ export default {
 	},
 	destroyed() {
 		clearInterval(this.basketTimerInterval);
+		clearInterval(this.currentTimeInterval);
 	},
 };
 </script>
