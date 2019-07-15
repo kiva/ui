@@ -149,7 +149,7 @@ export default {
 				if (result.errors) {
 					throw result.errors;
 				} else {
-					this.isMember = _get(result.data, 'my.teams.values').length;
+					this.isMember = _get(result.data, 'my.teams.values', []).length;
 					this.showForm = false;
 					this.showSuccess = true;
 				}
