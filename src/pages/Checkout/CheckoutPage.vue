@@ -269,7 +269,7 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-					client.query({ query: experimentQuery, variables: { id: 'bt_test' } }),
+					client.query({ query: experimentQuery, variables: { id: 'bt_v1' } }),
 					client.query({ query: experimentQuery, variables: { id: 'basket_item_timer_v2' } })
 				]);
 			});
@@ -324,13 +324,12 @@ export default {
 
 		// Read assigned version of braintree experiment
 		const braintreeExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:bt_test',
+			id: 'Experiment:bt_v1',
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.braintreeExpVersion = braintreeExpAssignment.version;
-		// TODO: Update for actual launch
 		if (this.braintreeExpVersion) {
-			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
+			this.$kvTrackEvent('basket', 'EXP-CASH-673-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
 
 		// Set Up basket timer exp
