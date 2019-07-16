@@ -1,20 +1,16 @@
 <template>
 	<div class="detailed-loan-card row collapse">
 		<div class="multi-pane columns small-12 medium-7 small-order-1 medium-order-2">
-			<div class="borrower-image">
-				<div class="borrower-image-content-wrapper">
-					<loan-card-image
-						:loan-id="loan.id"
-						:name="loan.name"
-						:retina-image-url="retinaImageUrl"
-						:standard-image-url="standardImageUrl"
-						:is-visitor="true"
-						:use-default-styles="false"
+			<loan-card-image
+				:loan-id="loan.id"
+				:name="loan.name"
+				:retina-image-url="retinaImageUrl"
+				:standard-image-url="standardImageUrl"
+				:is-visitor="true"
+				:use-default-styles="false"
 
-						@track-loan-card-interaction="trackInteraction"
-					/>
-				</div>
-			</div>
+				@track-loan-card-interaction="trackInteraction"
+			/>
 			<transition name="kvfastfade">
 				<component
 					:is="tabComponent"
@@ -251,20 +247,6 @@ export default {
 		position: relative;
 
 		.content-tab {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
-	}
-
-	.borrower-image {
-		position: relative;
-		padding-bottom: 3 / 4 * 100%;
-
-		.borrower-image-content-wrapper {
-			text-align: center;
 			position: absolute;
 			top: 0;
 			left: 0;
