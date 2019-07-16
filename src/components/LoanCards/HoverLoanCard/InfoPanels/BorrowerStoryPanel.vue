@@ -3,17 +3,14 @@
 		<template #title>
 			Borrower story
 		</template>
-		<p>{{ loanStory }}</p>
-		<p>{{ whySpecial }}</p>
-		<p>{{ partnerName }}</p>
-		<p>{{ partnerRiskRating }}</p>
+		<p v-html="loanStory"></p>
 	</info-panel>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import InfoPanel from './InfoPanel';
-import expandableLoanCardStoryQuery from '@/graphql/query/expandableLoanCardStory.graphql';
+import loanDescriptionQuery from '@/graphql/query/loanDescription.graphql';
 
 export default {
 	components: {
@@ -26,34 +23,34 @@ export default {
 			default: true,
 		},
 		loanId: {
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 	},
 	data() {
 		return {
-			loanStory: 'test',
-			whySpecial: 'test',
-			partnerName: 'test',
-			partnerRiskRating: 'test'
+			loanStory: ''
 		};
 	},
-	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: expandableLoanCardStoryQuery
-			}).then(({ data }) => {
-				this.loanStory = _get(data, 'lend.loan.description');
-				this.whySpecial = _get(data, 'lend.loan.whySpecial');
-				this.partnerName = _get(data, 'lend.loan.LoanPartner.partnerName');
-				this.partnerRiskRating = _get(data, 'lend.loan.LoanPartner.partner.riskRating');
-			});
-		}
+	created() {
+		this.apollo.query({
+			// TODO: RENAME THIS QUERY
+			query: loanDescriptionQuery,
+			variables: {
+				id: parseInt(this.loanId, 10)
+			}
+		}).then(({ data }) => {
+			console.log(data);
+			this.loanStory = _get(data, 'lend.loan.description');
+			this.whySpecial = _get(data, 'lend.loan.whySpecial');
+			this.partnerName = _get(data, 'lend.loan.LoanPartner.partnerName');
+			this.partnerRiskRating = _get(data, 'lend.loan.LoanPartner.partner.riskRating');
+		});
 	},
 	computed: {
 		elementId() {
 			return `${this.loanId}-borrower-story-panel-ex-${this.expandable ? '1' : '0'}`;
 		}
-	}
+	},
 };
 </script>
