@@ -1,20 +1,16 @@
 <template>
 	<div class="detailed-loan-card row collapse">
 		<div class="multi-pane columns small-12 medium-7 small-order-1 medium-order-2">
-			<div class="borrower-image">
-				<div class="borrower-image-content-wrapper">
-					<loan-card-image
-						:loan-id="loan.id"
-						:name="loan.name"
-						:retina-image-url="retinaImageUrl"
-						:standard-image-url="standardImageUrl"
-						:is-visitor="true"
-						:use-default-styles="false"
+			<loan-card-image
+				:loan-id="loan.id"
+				:name="loan.name"
+				:retina-image-url="retinaImageUrl"
+				:standard-image-url="standardImageUrl"
+				:is-visitor="true"
+				:use-default-styles="false"
 
-						@track-loan-card-interaction="trackInteraction"
-					/>
-				</div>
-			</div>
+				@track-loan-card-interaction="trackInteraction"
+			/>
 			<transition name="kvfastfade">
 				<component
 					:is="tabComponent"
@@ -109,6 +105,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
 import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
 import OverviewPanel from './InfoPanels/OverviewPanel';
@@ -118,6 +115,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
+import trackInteractionMixin from '@/plugins/track-interaction-mixin';
 
 export default {
 	props: {
@@ -134,6 +132,9 @@ export default {
 		LoanCardImage,
 	},
 	inject: ['apollo'],
+	mixins: [
+		trackInteractionMixin,
+	],
 	data() {
 		return {
 			detailsPanel: LoanDetailsPanel,
@@ -154,15 +155,15 @@ export default {
 			return this.apollo.readFragment({
 				id: this.loanId,
 				fragment: detailedLoanCardFragment,
-			});
+			}) || {};
 		},
 		retinaImageUrl() {
 			// eslint-disable-next-line quotes
-			return this.loan.image.retina.replace(`/w960h600/`, `/w960h720/`);
+			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w960h720/`);
 		},
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
-			return this.loan.image.default.replace(`/w480h300/`, `/w480h360/`);
+			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w480h360/`);
 		},
 	},
 };
@@ -246,20 +247,6 @@ export default {
 		position: relative;
 
 		.content-tab {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
-	}
-
-	.borrower-image {
-		position: relative;
-		padding-bottom: 3 / 4 * 100%;
-
-		.borrower-image-content-wrapper {
-			text-align: center;
 			position: absolute;
 			top: 0;
 			left: 0;
