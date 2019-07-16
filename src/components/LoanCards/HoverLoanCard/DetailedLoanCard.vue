@@ -3,7 +3,16 @@
 		<div class="multi-pane columns small-12 medium-7 small-order-1 medium-order-2">
 			<div class="borrower-image">
 				<div class="borrower-image-content-wrapper">
-					Borrower image
+					<loan-card-image
+						:loan-id="loan.id"
+						:name="loan.name"
+						:retina-image-url="retinaImageUrl"
+						:standard-image-url="standardImageUrl"
+						:is-visitor="true"
+						:use-default-styles="false"
+
+						@track-loan-card-interaction="trackInteraction"
+					/>
 				</div>
 			</div>
 			<transition name="kvfastfade">
@@ -107,6 +116,8 @@ import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
 import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
+import LoanCardImage from '@/components/LoanCards/LoanCardImage';
+import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
 
 export default {
 	props: {
@@ -119,8 +130,10 @@ export default {
 		LoanDetailsPanel,
 		OverviewPanel,
 		PartnerInfoPanel,
-		TrusteeInfoPanel
+		TrusteeInfoPanel,
+		LoanCardImage,
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			detailsPanel: LoanDetailsPanel,
@@ -136,6 +149,20 @@ export default {
 		},
 		hasTrustee() {
 			return false;
+		},
+		loan() {
+			return this.apollo.readFragment({
+				id: this.loanId,
+				fragment: detailedLoanCardFragment,
+			});
+		},
+		retinaImageUrl() {
+			// eslint-disable-next-line quotes
+			return this.loan.image.retina.replace(`/w960h600/`, `/w960h720/`);
+		},
+		standardImageUrl() {
+			// eslint-disable-next-line quotes
+			return this.loan.image.default.replace(`/w480h300/`, `/w480h360/`);
 		},
 	},
 };
@@ -238,7 +265,6 @@ export default {
 			left: 0;
 			width: 100%;
 			height: 100%;
-			border: 0.5rem solid $pale-blue;
 		}
 	}
 

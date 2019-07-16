@@ -158,17 +158,10 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 // This mixin provides some algolia search instance initialization on mounted
 import algoliaInit from '@/plugins/algolia-init-mixin';
-// This mixin provides config for our indices + loan channel categories
-import algoliaConfig from '@/plugins/algolia-config-mixin';
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
 import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
 import userStatus from '@/graphql/query/userId.graphql';
-
-// Import your specific Algolia Components here
-// https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
-// algolia search is always required, moved to mixin
-// import algoliasearch from 'algoliasearch/lite';
 import {
 	AisConfigure,
 	AisInstantSearch,
@@ -204,7 +197,6 @@ export default {
 		'apollo',
 	],
 	mixins: [
-		algoliaConfig,
 		algoliaInit
 	],
 	apollo: {

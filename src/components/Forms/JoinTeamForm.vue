@@ -149,7 +149,7 @@ export default {
 				if (result.errors) {
 					throw result.errors;
 				} else {
-					this.isMember = _get(result.data, 'my.teams.values').length;
+					this.isMember = _get(result.data, 'my.teams.values', []).length;
 					this.showForm = false;
 					this.showSuccess = true;
 				}
@@ -162,7 +162,7 @@ export default {
 		},
 		handleRejectTeam() {
 			this.showError = false;
-			window.location.href = `/declineInvitationToJoinTeam?doneUrl=${this.doneUrl}`;
+			window.location.href = `/declineInvitationToJoinTeam?team_id=${this.teamId}&doneUrl=${this.doneUrl}`;
 		}
 	},
 	created() {
