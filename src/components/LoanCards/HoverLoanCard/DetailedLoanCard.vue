@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
 import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
 import OverviewPanel from './InfoPanels/OverviewPanel';
@@ -118,6 +119,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
+import trackInteractionMixin from '@/plugins/track-interaction-mixin';
 
 export default {
 	props: {
@@ -134,6 +136,9 @@ export default {
 		LoanCardImage,
 	},
 	inject: ['apollo'],
+	mixins: [
+		trackInteractionMixin,
+	],
 	data() {
 		return {
 			detailsPanel: LoanDetailsPanel,
@@ -154,15 +159,15 @@ export default {
 			return this.apollo.readFragment({
 				id: this.loanId,
 				fragment: detailedLoanCardFragment,
-			});
+			}) || {};
 		},
 		retinaImageUrl() {
 			// eslint-disable-next-line quotes
-			return this.loan.image.retina.replace(`/w960h600/`, `/w960h720/`);
+			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w960h720/`);
 		},
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
-			return this.loan.image.default.replace(`/w480h300/`, `/w480h360/`);
+			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w480h360/`);
 		},
 	},
 };
