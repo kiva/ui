@@ -328,9 +328,8 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.braintreeExpVersion = braintreeExpAssignment.version;
-		// TODO: Update for actual launch
 		if (this.braintreeExpVersion) {
-			this.$kvTrackEvent('basket', 'EXP-CASH-647-Pre-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
+			this.$kvTrackEvent('basket', 'EXP-CASH-673-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
 
 		// Set Up basket timer exp
