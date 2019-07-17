@@ -110,9 +110,11 @@
 			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
 			<trustee-info-panel v-if="hasTrustee" :loan-id="loanId" />
 			<div>
-				<router-link to="">
-					Read full details
+				<hr>
+				<router-link to="" class="featured-text">
+					Read full borrower details
 				</router-link>
+				<hr>
 			</div>
 		</div>
 		<div class="close-button-wrapper">

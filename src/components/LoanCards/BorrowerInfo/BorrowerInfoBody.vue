@@ -55,7 +55,7 @@ export default {
 		},
 		readMoreLinkText: {
 			type: String,
-			default: 'Read more',
+			default: 'Read full borrower details',
 		},
 		disableLink: {
 			type: Boolean,
