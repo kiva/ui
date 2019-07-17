@@ -15,7 +15,7 @@
 				<component
 					:is="tabComponent"
 					:expandable="false"
-					:loan-id="loanId"
+					:loan-id="loan.id"
 					class="content-tab show-for-medium"
 				/>
 			</transition>
@@ -105,7 +105,7 @@
 					read-more-link-text=""
 				/>
 			</info-panel>
-			<borrower-story-panel :loan-id="loanId" />
+			<borrower-story-panel :loan-id="loan.id" />
 			<loan-details-panel :loan-id="loanId" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
 			<trustee-info-panel v-if="hasTrustee" :loan-id="loanId" />

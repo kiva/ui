@@ -1,0 +1,10 @@
+query loanDescription(
+	$id: Int!,
+){
+	lend {
+		loan(id: $id){
+			id
+			description
+		}
+  	}
+}

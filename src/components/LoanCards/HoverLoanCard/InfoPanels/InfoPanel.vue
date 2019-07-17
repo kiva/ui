@@ -6,7 +6,7 @@
 			:aria-expanded="open ? 'true' : 'false'"
 			class="title-button"
 		>
-			<h3 class="panel-title">
+			<h3 class="panel-title featured-text">
 				<slot name="title"></slot>
 			</h3>
 			<kv-icon v-if="expandable" name="small-chevron-mobile" />
