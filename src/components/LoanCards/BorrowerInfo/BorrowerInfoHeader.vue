@@ -1,20 +1,6 @@
 <template>
 	<div class="borrower-info-header">
-		<router-link
-			:to="`/lend/${loanId}`"
-			class="name"
-			v-kv-track-event="['Lending', 'click-Read more', 'Name', loanId, 'true']"
-			v-if="name"
-		>
-			<span
-				@click="$emit('track-loan-card-interaction', {
-					interactionType: 'viewBorrowerPage',
-					interactionElement: 'borrowerName'
-				})"
-			>
-				{{ name }}
-			</span>
-		</router-link>
+		<borrower-info-name v-if="name" :name="name" :loan-id="loanId" />
 		<div class="country" v-if="country">
 			{{ country }}
 		</div>
@@ -22,7 +8,12 @@
 </template>
 
 <script>
+import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+
 export default {
+	components: {
+		BorrowerInfoName,
+	},
 	props: {
 		country: {
 			type: String,
@@ -45,11 +36,6 @@ export default {
 
 .borrower-info-header {
 	line-height: rem-calc(22);
-
-	.name {
-		font-size: rem-calc(22);
-		font-weight: $global-weight-highlight;
-	}
 
 	.country {
 		color: $kiva-text-light;

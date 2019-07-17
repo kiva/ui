@@ -17,19 +17,7 @@
 					</div>
 					<div class="column small-12 large-6">
 						<div class="borrower-info-wrapper">
-							<div class="name">
-								<router-link
-									:to="`/lend/${loan.id}`"
-									v-kv-track-event="['Lending', 'click-Read more', 'Name', loan.id, 'true']"
-								>
-									<span
-										@click="$emit('track-interaction', {
-											interactionType: 'viewBorrowerPage',
-											interactionElement: 'borrowerName'
-										})"
-									>{{ loan.name }}</span>
-								</router-link>
-							</div>
+							<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name" />
 
 							<div class="country">
 								<!-- eslint-disable-next-line max-len -->
@@ -103,6 +91,7 @@ import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
+import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
 export default {
 	components: {
@@ -110,6 +99,7 @@ export default {
 		FundraisingStatus,
 		LoanCardImage,
 		MatchingText,
+		BorrowerInfoName,
 	},
 	inject: ['apollo'],
 	props: {
