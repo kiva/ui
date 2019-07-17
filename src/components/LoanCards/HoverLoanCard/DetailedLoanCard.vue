@@ -16,6 +16,7 @@
 					:is="tabComponent"
 					:expandable="false"
 					:loan-id="loan.id"
+					:loan="loan"
 					class="content-tab show-for-medium"
 				/>
 			</transition>
