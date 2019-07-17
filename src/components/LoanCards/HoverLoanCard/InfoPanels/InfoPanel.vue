@@ -71,6 +71,7 @@ export default {
 
 .info-panel {
 	background: rgba($white, 0.8);
+	overflow-y: scroll;
 
 	button {
 		text-align: left;
