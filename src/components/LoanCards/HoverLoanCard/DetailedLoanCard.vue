@@ -105,7 +105,10 @@
 					read-more-link-text=""
 				/>
 			</info-panel>
-			<borrower-story-panel :loan-id="loan.id" />
+			<borrower-story-panel
+				:loan-id="loan.id"
+				read-more-link-text=""
+			/>
 			<loan-details-panel :loan-id="loanId" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
 			<trustee-info-panel v-if="hasTrustee" :loan-id="loanId" />
@@ -114,6 +117,13 @@
 				<router-link
 					:to="`/lend/${loan.id}`"
 					class="featured-text full-details-link"
+					v-kv-track-event="[
+						'Lending',
+						'click-Read full borrower details',
+						'Profile Link',
+						loanId,
+						'true'
+					]"
 				>
 					Read full borrower details
 				</router-link>

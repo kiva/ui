@@ -12,6 +12,7 @@
 			:use="use"
 			:name="name"
 			:loan-id="loanId"
+			read-more-link-text="Read full story"
 		/>
 	</div>
 </template>
