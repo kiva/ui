@@ -65,11 +65,15 @@
 					Name/Location/Sector
 				</div>
 				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-medium">
-					A loan of $50,000 helps to provide 2,900 families in the Andes with sustainable sphagnum
-					moss harvesting training and employment that will double their annual incomes.
-					<router-link to="">
-						Read full details
-					</router-link>
+					<borrower-info-body
+						:amount="loan.loanAmount"
+						:borrower-count="loan.borrowerCount"
+						:name="loan.name"
+						:status="loan.status"
+						:max-use-length="200"
+						:use="loan.use"
+						:loan-id="loan.id"
+					/>
 				</div>
 				<div>
 					Funding progress
@@ -84,8 +88,23 @@
 				</div>
 			</div>
 		</div>
-		<div class="columns small-12 small-order-3 hide-for-medium">
-			<overview-panel :loan-id="loanId" />
+		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
+			<info-panel :id="`${loanId}-overview-panel`" :expandable="true">
+				<template #title>
+					Overview
+				</template>
+				<borrower-info-body
+					:amount="loan.loanAmount"
+					:borrower-count="loan.borrowerCount"
+					:name="loan.name"
+					:status="loan.status"
+					:use="loan.use"
+					:max-use-length="1000"
+					:loan-id="loan.id"
+					:disable-link="true"
+					read-more-link-text=""
+				/>
+			</info-panel>
 			<borrower-story-panel :loan-id="loan.id" />
 			<loan-details-panel :loan-id="loanId" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
@@ -107,10 +126,11 @@
 <script>
 import _get from 'lodash/get';
 import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
+import InfoPanel from './InfoPanels/InfoPanel';
 import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
-import OverviewPanel from './InfoPanels/OverviewPanel';
 import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
 import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
+import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
@@ -122,11 +142,12 @@ export default {
 		loanId: { type: String, default: '' },
 	},
 	components: {
+		BorrowerInfoBody,
 		BorrowerStoryPanel,
+		InfoPanel,
 		KvExpandable,
 		KvIcon,
 		LoanDetailsPanel,
-		OverviewPanel,
 		PartnerInfoPanel,
 		TrusteeInfoPanel,
 		LoanCardImage,
@@ -176,6 +197,10 @@ export default {
 	position: relative;
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
+
+	.mobile-sections {
+		padding: 0 1rem;
+	}
 
 	.info-tab-selector {
 		display: flex;
