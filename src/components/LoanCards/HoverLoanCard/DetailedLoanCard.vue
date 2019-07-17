@@ -65,7 +65,6 @@
 					Name/Location/Sector
 				</div>
 				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-medium">
-					<!--eslint-disable max-len-->
 					<borrower-info-body
 						:amount="loan.loanAmount"
 						:borrower-count="loan.borrowerCount"
@@ -75,7 +74,6 @@
 						:use="loan.use"
 						:loan-id="loan.id"
 					/>
-					<!--eslint-enable max-len-->
 				</div>
 				<div>
 					Funding progress
