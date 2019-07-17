@@ -6,7 +6,7 @@
 			</router-link>
 			<router-link
 				:id="lendMenuId"
-				to="/lend"
+				to="/lend-by-category"
 				class="header-button"
 				v-kv-track-event="['TopNav','click-Lend']"
 			>
