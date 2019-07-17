@@ -111,10 +111,12 @@
 			<trustee-info-panel v-if="hasTrustee" :loan-id="loanId" />
 			<div>
 				<hr>
-				<router-link to="" class="featured-text">
+				<router-link
+					:to="`/lend/${loan.id}`"
+					class="featured-text full-details-link"
+				>
 					Read full borrower details
 				</router-link>
-				<hr>
 			</div>
 		</div>
 		<div class="close-button-wrapper">
@@ -280,6 +282,11 @@ export default {
 			width: 100%;
 			height: 100%;
 		}
+	}
+
+	.full-details-link {
+		margin-bottom: 1.25rem;
+		display: inline-block;
 	}
 
 	.close-button-wrapper {
