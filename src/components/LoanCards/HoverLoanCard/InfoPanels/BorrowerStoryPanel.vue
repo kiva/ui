@@ -45,15 +45,16 @@ export default {
 			loanStory: ''
 		};
 	},
-	created() {
-		this.apollo.query({
-			query: loanDescriptionQuery,
-			variables: {
-				id: parseInt(this.loanId, 10)
-			}
-		}).then(({ data }) => {
+	apollo: {
+		query: loanDescriptionQuery,
+		variables() {
+			return {
+				id: parseInt(this.loanId, 10),
+			};
+		},
+		result({ data }) {
 			this.loanStory = _get(data, 'lend.loan.description');
-		});
+		},
 	},
 	computed: {
 		elementId() {
