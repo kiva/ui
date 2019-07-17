@@ -85,7 +85,7 @@
 			</div>
 		</div>
 		<div class="columns small-12 small-order-3 hide-for-medium">
-			<overview-panel :loan-id="loanId" />
+			<overview-panel :loan="loan" />
 			<borrower-story-panel :loan-id="loan.id" />
 			<loan-details-panel :loan-id="loanId" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />

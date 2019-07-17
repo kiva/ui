@@ -26,11 +26,27 @@ export default {
 			type: String,
 			default: '',
 		},
+		loan: {
+			type: Object,
+			default: () => {
+				return {
+					userProperties: {},
+					loanFundraisingInfo: {},
+					geocode: {
+						country: {}
+					},
+					image: {}
+				};
+			},
+		},
 	},
 	computed: {
 		elementId() {
 			return `${this.loanId}-overview-panel-ex-${this.expandable ? '1' : '0'}`;
-		}
+		},
+		loanId() {
+			return this.loan.id;
+		},
 	}
 };
 </script>
