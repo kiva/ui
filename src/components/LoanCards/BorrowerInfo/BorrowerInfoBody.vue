@@ -10,6 +10,7 @@
 		>
 			<span
 				@click="handleReadMoreLink"
+				v-if="readMoreLinkText"
 			>
 				{{ readMoreLinkText }}
 			</span>
@@ -55,7 +56,7 @@ export default {
 		},
 		readMoreLinkText: {
 			type: String,
-			default: 'Read full details',
+			default: 'Read more',
 		},
 		disableLink: {
 			type: Boolean,

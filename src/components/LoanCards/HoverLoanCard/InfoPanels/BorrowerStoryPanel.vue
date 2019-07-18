@@ -12,7 +12,10 @@
 				<kv-loading-spinner />
 			</div>
 		</div>
-		<router-link :to="`/lend/${loanId}`">
+		<router-link
+			:to="`/lend/${loanId}`"
+			v-if="readMoreLinkText"
+		>
 			{{ readMoreLinkText }}
 		</router-link>
 	</info-panel>
