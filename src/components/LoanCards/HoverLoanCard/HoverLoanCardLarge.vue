@@ -18,21 +18,7 @@
 			<div>
 				<div class="name-row">
 					<kv-flag v-if="loan.geocode.country.isoCode" :country="loan.geocode.country.isoCode" :width="20" />
-					<router-link
-						:to="`/lend/${loan.id}`"
-						class="name"
-						v-kv-track-event="['Lending', 'click-Read more', 'Name', loan.id, 'true']"
-						v-if="loan.name"
-					>
-						<span
-							@click="$emit('track-loan-card-interaction', {
-								interactionType: 'viewBorrowerPage',
-								interactionElement: 'borrowerName'
-							})"
-						>
-							{{ loan.name }}
-						</span>
-					</router-link>
+					<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name" />
 				</div>
 				<fundraising-status
 					:amount-left="amountLeft"
@@ -96,6 +82,7 @@ import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCa
 import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
+import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
 export default {
 	components: {
@@ -105,6 +92,7 @@ export default {
 		FundraisingStatus,
 		ActionButton,
 		MatchingText,
+		BorrowerInfoName,
 	},
 	inject: ['apollo'],
 	mixins: [

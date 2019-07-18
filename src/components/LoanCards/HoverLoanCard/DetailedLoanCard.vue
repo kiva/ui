@@ -61,8 +61,20 @@
 				</button>
 			</div>
 			<div class="basic-info-flex-column">
-				<div>
-					Name/Location/Sector
+				<div class="name-location-sector">
+					<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name" />
+					<div class="location-sector-row">
+						<kv-flag
+							v-if="loan.geocode.country.isoCode"
+							class="flag"
+							:width="20"
+							:country="loan.geocode.country.isoCode"
+						/>
+						<div>
+							{{ `${loan.geocode.city ? `${loan.geocode.city}, ` : ''}` }}{{ loan.geocode.country.name }}
+							/ {{ loan.sector.name }}
+						</div>
+					</div>
 				</div>
 				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-medium">
 					<borrower-info-body
@@ -136,6 +148,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
 import trackInteractionMixin from '@/plugins/track-interaction-mixin';
+import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+import KvFlag from '@/components/Kv/KvFlag';
 
 export default {
 	props: {
@@ -151,6 +165,8 @@ export default {
 		PartnerInfoPanel,
 		TrusteeInfoPanel,
 		LoanCardImage,
+		BorrowerInfoName,
+		KvFlag,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -251,6 +267,30 @@ export default {
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: flex-end;
+
+		.name-location-sector {
+			margin-bottom: rem-calc(12);
+
+			.name {
+				font-size: rem-calc(28);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				font-weight: 500;
+				line-height: rem-calc(51);
+			}
+
+			.location-sector-row {
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				color: $gray;
+
+				.flag {
+					margin-right: rem-calc(14);
+				}
+			}
+		}
 	}
 
 	.overview-column {
