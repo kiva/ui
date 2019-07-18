@@ -81,20 +81,6 @@
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
 			:current-donation-amount="amount"
-			v-if="!donationNudgeBorrowerImageExperiment"
-		/>
-		<donation-nudge-lightbox-borrower-image
-			:loan-count="loanCount"
-			:loan-reservation-total="loanReservationTotal"
-			:nudge-lightbox-visible="nudgeLightboxVisible"
-			:close-nudge-lightbox="closeNudgeLightbox"
-			:update-donation-to="updateDonationTo"
-			:has-custom-donation="hasCustomDonation"
-			:header="donationNudgeHeader()"
-			:experimental-header="donationNudgeExperimentalHeader"
-			:description="donationNudgeDescription()"
-			:percentage-rows="donationNudgePercentageRows"
-			v-else
 		/>
 		<kv-lightbox
 			:visible="defaultLbVisible"
@@ -129,14 +115,13 @@ import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+// import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import numeral from 'numeral';
-import _get from 'lodash/get';
+// import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
-import DonationNudgeLightboxBorrowerImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxBorrowerImage';
-import cookieStore from '@/util/cookieStore';
-import logReadQueryError from '@/util/logReadQueryError';
+// import cookieStore from '@/util/cookieStore';
+// import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
 	components: {
@@ -145,7 +130,6 @@ export default {
 		KvLightbox,
 		DonateRepayments,
 		DonationNudgeLightbox,
-		DonationNudgeLightboxBorrowerImage,
 	},
 	inject: ['apollo'],
 	props: {
@@ -168,11 +152,9 @@ export default {
 			amount: numeral(this.donation.price).format('$0,0.00'),
 			cachedAmount: numeral(this.donation.price).format('$0,0.00'),
 			editDonation: false,
-			checkoutDonation100TextExperiment: '',
 			nudgeLightboxVisible: false,
-			isCash80Running: false,
-			hasCustomDonation: false,
-			donationNudge17Experiment: false,
+			isCash80Running: true,
+			hasCustomDonation: true,
 			donationNudgeExperimentalHeader: false,
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
@@ -188,39 +170,11 @@ export default {
 				client.query({
 					query: donationDataQuery
 				}).then(() => {
-					// Get the assigned experiment version for Donation Nudge Lightbox
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'donation_nudge_lightbox_custom_tip',
-						},
-					}).then(resolve).catch(reject);
-					// Get the assigned experiment version for Donation Nudge Lending Cost
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'donation_nudge_lending_cost',
-						},
-					}).then(resolve).catch(reject);
-					// Get the assigned experiment version for Checkout Donation Lending Cost
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'checkout_donation_100_text',
-						},
-					}).then(resolve).catch(reject);
 					// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
 					client.query({
 						query: experimentAssignmentQuery,
 						variables: {
 							id: 'donation_nudge_borrower_image',
-						},
-					}).then(resolve).catch(reject);
-					// Get the assigned experiment version for Donation Nudge 17 Experiment
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'donation_nudge_17',
 						},
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -248,19 +202,17 @@ export default {
 		},
 		donationTagLine() {
 			/* eslint-disable max-len */
-			const coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
-			return this.checkoutDonation100TextExperiment === 'variant-b'
-				? `${coverOurCosts} 100% of every dollar lent goes to funding loans.`
-				: coverOurCosts;
+			const coverOurCosts = `${this.loanCount > 1
+				? 'These loans cost'
+				: 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
 			/* eslint-enable max-len */
+			return coverOurCosts;
 		},
 		donationNudgePercentageRows() {
 			const basePercentageRows = [
 				{
-					percentage: this.donationNudge17Experiment ? 17 : 15,
-					appeal: this.donationNudge17Experiment
-						? 'Help make Kiva sustainable'
-						: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
+					percentage: 15,
+					appeal: `Cover the cost to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'}`,
 					appealIsHorizontallyPadded: false,
 				},
 				{
@@ -300,93 +252,6 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
-			const checkoutDonation100TextExp = this.apollo.readFragment({
-				id: 'Experiment:checkout_donation_100_text',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.checkoutDonation100TextExperiment = checkoutDonation100TextExp.version;
-
-			if (this.checkoutDonation100TextExperiment === 'variant-a') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'a');
-			}
-			if (this.checkoutDonation100TextExperiment === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-570-Feb2019', 'b');
-			}
-
-			// donation nudge lightbox experiment
-			const nudgeExperiment = this.apollo.readFragment({
-				id: 'Experiment:donation_nudge_lightbox_custom_tip',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.donationNudgeLightboxExpVersion = nudgeExperiment.version;
-
-			if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-a') {
-				this.isCash80Running = true;
-				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'a');
-			} else if (this.hasLoans && this.donationNudgeLightboxExpVersion === 'variant-b') {
-				this.$kvTrackEvent('basket', 'EXP-CASH-80-Jan2019', 'b');
-				this.isCash80Running = true;
-				this.hasCustomDonation = true;
-			}
-
-			// Experiment: CASH-386
-			let totalLoansLentData = {};
-			try {
-				totalLoansLentData = this.apollo.readQuery({
-					query: donationDataQuery,
-					variables: {
-						basketId: cookieStore.get('kvbskt'),
-					},
-				});
-			} catch (e) {
-				logReadQueryError(e);
-			}
-			this.loanHistoryCount = _get(totalLoansLentData, 'my.loans.totalCount') || null;
-
-			if (this.hasLoans && this.loanHistoryCount > 0) {
-				const nudgeLendingCostExperiment = this.apollo.readFragment({
-					id: 'Experiment:donation_nudge_lending_cost',
-					fragment: experimentVersionFragment,
-				}) || {};
-
-				if (nudgeLendingCostExperiment.version === 'variant-a') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'a');
-				} else if (nudgeLendingCostExperiment.version === 'variant-b') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-386-Jan2019', 'b');
-					this.donationNudgeExperimentalHeader = true;
-					this.donationNudgeExperimentalDescription = true;
-				}
-			}
-
-			// CASH-379: Donation Nudge Borrower Image Experiment
-			if (this.hasLoans) {
-				const nudgeBorrowerImageExperiment = this.apollo.readFragment({
-					id: 'Experiment:donation_nudge_borrower_image',
-					fragment: experimentVersionFragment,
-				}) || {};
-
-				if (nudgeBorrowerImageExperiment.version === 'variant-a') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'a');
-				} else if (nudgeBorrowerImageExperiment.version === 'variant-b') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-379-Feb2019', 'b');
-					this.donationNudgeBorrowerImageExperiment = true;
-				}
-			}
-
-			// CASH-66: 17% donation nudge experiment
-			if (this.hasLoans) {
-				const donationNudge17Experiment = this.apollo.readFragment({
-					id: 'Experiment:donation_nudge_17',
-					fragment: experimentVersionFragment,
-				}) || {};
-
-				if (donationNudge17Experiment.version === 'variant-a') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'a');
-				} else if (donationNudge17Experiment.version === 'variant-b') {
-					this.$kvTrackEvent('basket', 'EXP-CASH-66-March2019', 'b');
-					this.donationNudge17Experiment = true;
-				}
-			}
 		},
 		updateDonation() {
 			this.editDonation = false;
@@ -442,18 +307,11 @@ export default {
 			this.$refs.nudgeLightbox.openNudgeLightbox();
 		},
 		donationNudgeHeader() {
-			const newLoanCount = this.loanHistoryCount + this.loanCount;
-			/* eslint-disable max-len */
-			return this.donationNudgeExperimentalHeader
-				? `${this.loanCount > 1 ? 'These loans' : 'This loan'} will bring you to ${newLoanCount} ${newLoanCount > 1 ? 'loans' : 'loan'} made on Kiva!`
-				: 'We rely on donations to reach the people who need it the most';
-			/* eslint-enable max-len */
+			return 'We rely on donations to reach the people who need it the most';
 		},
 		donationNudgeDescription() {
 			/* eslint-disable max-len */
-			return this.donationNudgeExperimentalDescription
-				? 'Did you know every $25 lent on Kiva costs over $3 to facilitate?'
-				: 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
+			return 'Reaching financially excluded people around the world requires things like performing due diligence in over 80 countries, training hundreds of volunteer translators, and maintaining the infrastructure to facilitate over $1B in loans.';
 			/* eslint-enable max-len */
 		},
 	}

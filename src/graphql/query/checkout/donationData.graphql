@@ -1,22 +1,6 @@
 query donationData {
 	general {
-		donationNudgeExperiment: uiExperimentSetting(key: "donation_nudge_lightbox_custom_tip") {
-			key
-			value
-		}
-		donationNudgeLendingCostExperiment: uiExperimentSetting(key: "donation_nudge_lending_cost") {
-			key
-			value
-		}
-		checkoutDonation100TextExperiment: uiExperimentSetting(key: "checkout_donation_100_text") {
-			key
-			value
-		}
 		donationNudgeBorrowerImageExperiment: uiExperimentSetting(key: "donation_nudge_borrower_image") {
-			key
-			value
-		}
-		donationNudge17Experiment: uiExperimentSetting(key: "donation_nudge_17") {
 			key
 			value
 		}
