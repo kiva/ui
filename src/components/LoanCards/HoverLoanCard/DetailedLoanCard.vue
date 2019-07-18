@@ -73,6 +73,7 @@
 						:max-use-length="200"
 						:use="loan.use"
 						:loan-id="loan.id"
+						read-more-text-link=""
 					/>
 				</div>
 				<div>
@@ -107,7 +108,6 @@
 			</info-panel>
 			<borrower-story-panel
 				:loan-id="loan.id"
-				read-more-link-text=""
 			/>
 			<loan-details-panel :loan-id="loanId" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
