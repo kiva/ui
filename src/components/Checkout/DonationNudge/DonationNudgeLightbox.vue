@@ -194,7 +194,7 @@ export default {
 
 				.icon {
 					fill: $kiva-text-medium;
-					margin: 0.1rem .325rem 0 0;
+					margin: 0.1rem 0.325rem 0 0;
 					display: inline-block;
 					vertical-align: text-top;
 					width: 1.325rem;
