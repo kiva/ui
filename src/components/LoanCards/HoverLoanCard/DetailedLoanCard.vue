@@ -93,10 +93,41 @@
 				</div>
 				<div class="row">
 					<div class="columns small-12 large-expand">
-						Lend button
+						<action-button
+							class="expandable-loan-card-action-button"
+							:loan-id="loan.id"
+							:loan="loan"
+							:items-in-basket="itemsInBasket"
+							:is-lent-to="loan.userProperties.lentTo"
+							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
+							:is-simple-lend-button="false"
+
+							@click.native="trackInteraction({
+								interactionType: 'addToBasket',
+								interactionElement: 'Lend25'
+							})"
+
+							@add-to-basket="$emit('add-to-basket', $event)"
+						/>
 					</div>
-					<div class="matching-text columns small-12 large-4">
-						2x matching
+					<div class="columns small-12 large-4 show-for-large matching-text-wrap">
+						<matching-text
+							:matching-text="loan.matchingText"
+							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
+							:wrap="true"
+						/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="columns small-12 large-4 show-for-small hide-for-large text-center">
+						<matching-text
+							:matching-text="loan.matchingText"
+							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
+							:wrap="true"
+						/>
 					</div>
 				</div>
 			</div>
@@ -164,6 +195,8 @@ import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graph
 import trackInteractionMixin from '@/plugins/track-interaction-mixin';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 import KvFlag from '@/components/Kv/KvFlag';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import MatchingText from '@/components/LoanCards/MatchingText';
 
 export default {
 	props: {
@@ -181,6 +214,8 @@ export default {
 		LoanCardImage,
 		BorrowerInfoName,
 		KvFlag,
+		ActionButton,
+		MatchingText,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -318,8 +353,12 @@ export default {
 		}
 	}
 
+	.matching-text-wrap {
+		margin: auto;
+	}
+
 	.matching-text {
-		white-space: nowrap;
+		color: $subtle-gray;
 	}
 
 	.multi-pane {
