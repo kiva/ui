@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const {
+	clearNotedLoginState,
 	getSyncCookie,
 	isNotedLoggedIn,
 	isNotedLoggedOut,
@@ -81,6 +82,8 @@ module.exports = function authRouter(config = {}) {
 				if (req.user) {
 					console.warn(`LoginSyncUI: login was attempted despite already having user, user id:${req.user.id}, session id:${req.sessionID}, state:${req.query.state}, last state:${req.session.lastUsedState}`); // eslint-disable-line max-len
 					doneUrl = req.session.lastUsedDoneUrl;
+				} else {
+					clearNotedLoginState(res);
 				}
 				console.log(`LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${JSON.stringify(info)}`); // eslint-disable-line max-len
 				return res.redirect(doneUrl || '/');
