@@ -81,12 +81,14 @@
 
 						@add-to-basket="$emit('add-to-basket', $event)"
 					/>
-					<matching-text
-						:matching-text="loan.matchingText"
-						:is-funded="isFunded"
-						:is-selected-by-another="isSelectedByAnother"
-						:is-expired="isExpired"
-					/>
+					<div v-if="loan.matchingText && !isFunded" class="list-loan-card-matching-text">
+						<matching-text
+							:matching-text="loan.matchingText"
+							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
+							:is-expired="isExpired"
+						/>
+					</div>
 				</div>
 			</div>
 			<div class="list-loan-card-body-info row">
@@ -131,12 +133,14 @@
 						})"
 					/>
 					<div class="small-12 columns">
-						<matching-text
-							:matching-text="loan.matchingText"
-							:is-funded="isFunded"
-							:is-selected-by-another="isSelectedByAnother"
-							:is-expired="isExpired"
-						/>
+						<div v-if="loan.matchingText && !isFunded" class="list-loan-card-matching-text">
+							<matching-text
+								:matching-text="loan.matchingText"
+								:is-funded="isFunded"
+								:is-selected-by-another="isSelectedByAnother"
+								:is-expired="isExpired"
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -284,6 +288,11 @@ export default {
 			}
 		}
 
+		.list-loan-card-matching-text {
+			text-align: center;
+			margin: 0.4rem 0 0.5rem;
+		}
+
 		.list-loan-card-body-info {
 			margin-top: 1rem;
 
@@ -315,8 +324,12 @@ export default {
 				}
 			}
 
+			.list-loan-card-matching-text {
+				margin: 0.4rem 0 0;
+			}
+
 			.list-loan-card-body-info {
-				margin-top: 0;
+				margin-top: 0.5rem;
 			}
 		}
 	}
