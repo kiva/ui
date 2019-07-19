@@ -31,7 +31,7 @@
 </template>
 <script>
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatusMeter';
+import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
 
 export default {
