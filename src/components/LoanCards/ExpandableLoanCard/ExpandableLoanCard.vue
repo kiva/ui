@@ -79,7 +79,7 @@ import activeLoanMixin from '@/plugins/active-loan-mixin';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfoHeaderExpandable from '@/components/LoanCards/BorrowerInfo/BorrowerInfoHeaderExpandable';
 import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import expandableLoanCardMixin from '@/components/LoanCards/ExpandableLoanCard/expandableLoanCardMixin';

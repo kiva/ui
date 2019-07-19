@@ -63,7 +63,7 @@ import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import _includes from 'lodash/includes';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatusMeter';
+import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 
 export default {
