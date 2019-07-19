@@ -29,14 +29,22 @@
 					>No donation to Kiva</a>
 				</div>
 			</div>
-			<div id="nudge-donation-bottom" class="show-for-large">
+			<div id="nudge-donation-bottom" :class="{ 'show-for-large': !experimentalFooter}">
 				<div class="row">
 					<div class="large-10 large-offset-1 columns">
 						<kv-charity-navigator
+							v-if="!experimentalFooter"
 							title="Kiva has been awarded Charity Navigator's highest rating for operational efficiency."
 							:wide-icon="true"
 							subtitle="Your donation is eligible for a tax deduction if you live in the U.S."
 						/>
+						<div v-else class="charity-overhead text-center">
+							<h3><kv-icon name="info" /> <span>Did you know?</span></h3>
+							<p>
+								Kiva donations are more efficient than the average charity,
+								which uses 37% on overhead. Kiva only asks for a 15% donation to help cover our costs.
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -46,6 +54,7 @@
 
 <script>
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvIcon from '@/components/Kv/KvIcon';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
@@ -53,6 +62,7 @@ import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 export default {
 	components: {
 		KvLightbox,
+		KvIcon,
 		KvCharityNavigator,
 		DonationNudgeBoxes,
 		DonationNudgeIntro,
@@ -87,6 +97,10 @@ export default {
 			default: '',
 		},
 		experimentalHeader: {
+			type: Boolean,
+			default: false,
+		},
+		experimentalFooter: {
 			type: Boolean,
 			default: false,
 		},
@@ -168,6 +182,35 @@ export default {
 
 		#charity-navigator-tax-deduction {
 			font-size: 0.8rem;
+		}
+
+		.charity-overhead {
+			margin: 0.2rem 0;
+
+			h3 {
+				color: $kiva-text-medium;
+				margin-bottom: 0.2rem;
+				font-size: 1.375rem;
+
+				.icon {
+					fill: $kiva-text-medium;
+					margin: 0.1rem 0.325rem 0 0;
+					display: inline-block;
+					vertical-align: text-top;
+					width: 1.325rem;
+					height: 1.325rem;
+				}
+
+				span {
+					font-weight: 400;
+					line-height: 1.75rem;
+				}
+			}
+
+			p {
+				font-size: 1.125rem;
+				line-height: 1.625rem;
+			}
 		}
 	}
 }
