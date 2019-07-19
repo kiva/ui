@@ -20,8 +20,8 @@ export default {
 			default: true,
 		},
 		loanId: {
-			type: String,
-			default: '',
+			type: Number,
+			default: 0,
 		},
 	},
 	computed: {
