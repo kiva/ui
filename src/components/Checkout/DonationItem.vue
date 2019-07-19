@@ -118,11 +118,8 @@ import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import numeral from 'numeral';
-// import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
-// import cookieStore from '@/util/cookieStore';
-// import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
 	components: {
