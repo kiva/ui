@@ -77,7 +77,7 @@
 <script>
 import KvFlag from '@/components/Kv/KvFlag';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
 import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';

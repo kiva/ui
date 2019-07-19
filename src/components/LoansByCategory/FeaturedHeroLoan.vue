@@ -88,7 +88,7 @@
 import numeral from 'numeral';
 
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';

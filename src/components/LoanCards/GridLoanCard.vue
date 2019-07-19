@@ -67,7 +67,7 @@
 <script>
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import MatchingText from '@/components/LoanCards/MatchingText';
 

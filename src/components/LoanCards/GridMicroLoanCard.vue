@@ -70,7 +70,7 @@ import {
 } from 'date-fns';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfo from '@/components/LoanCards/BorrowerInfo/BorrowerInfo';
-import FundraisingStatus from '@/components/LoanCards/FundraisingStatus';
+import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 
 export default {
