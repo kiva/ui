@@ -102,7 +102,7 @@
 			</div>
 		</div>
 		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
-			<info-panel :id="`${loanId}-overview-panel`" :expandable="true">
+			<info-panel :id="`${loan.id}-overview-panel`" :expandable="true">
 				<template #title>
 					Overview
 				</template>
@@ -122,9 +122,9 @@
 				:loan-id="loan.id"
 				read-more-link-text=""
 			/>
-			<loan-details-panel :loan-id="loanId" />
-			<partner-info-panel v-if="hasPartner" :loan-id="loanId" />
-			<trustee-info-panel v-if="hasTrustee" :loan-id="loanId" />
+			<loan-details-panel :loan-id="loan.id" />
+			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
+			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" />
 			<div>
 				<hr>
 				<router-link
@@ -142,7 +142,7 @@
 			</div>
 		</div>
 		<div class="close-button-wrapper">
-			<button @click="$emit('close')" class="close-button">
+			<button @click="$emit('close-detailed-loan-card')" class="close-button">
 				<kv-icon name="x" />
 			</button>
 		</div>
@@ -160,14 +160,36 @@ import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBo
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
-import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
-import trackInteractionMixin from '@/plugins/track-interaction-mixin';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 import KvFlag from '@/components/Kv/KvFlag';
 
 export default {
 	props: {
-		loanId: { type: String, default: '' },
+		loan: {
+			type: Object,
+			default: () => {
+				return {
+					userProperties: {},
+					loanFundraisingInfo: {},
+					geocode: {
+						country: {}
+					},
+					image: {}
+				};
+			}
+		},
+		percentRaised: {
+			type: Number,
+			default: 0,
+		},
+		amountLeft: {
+			type: Number,
+			default: 0,
+		},
+		expiringSoonMessage: {
+			type: String,
+			default: '',
+		},
 	},
 	components: {
 		BorrowerInfoBody,
@@ -182,10 +204,6 @@ export default {
 		BorrowerInfoName,
 		KvFlag,
 	},
-	inject: ['apollo'],
-	mixins: [
-		trackInteractionMixin,
-	],
 	data() {
 		return {
 			detailsPanel: LoanDetailsPanel,
@@ -202,12 +220,6 @@ export default {
 		hasTrustee() {
 			return false;
 		},
-		loan() {
-			return this.apollo.readFragment({
-				id: this.loanId,
-				fragment: detailedLoanCardFragment,
-			}) || {};
-		},
 		retinaImageUrl() {
 			// eslint-disable-next-line quotes
 			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w960h720/`);
@@ -215,6 +227,11 @@ export default {
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
 			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w480h360/`);
+		},
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
 		},
 	},
 };
