@@ -60,20 +60,20 @@ export default {
 	},
 	computed: {
 		currentButtonState() {
+			if (this.isFunded) {
+				return LoanFundedText;
+			}
+			if (this.isExpired) {
+				return LoanExpiredText;
+			}
 			if (_includes(this.itemsInBasket, this.loanId)) {
 				return CheckoutNowButton;
 			}
 			if (this.isLentTo) {
 				return LendAgainButton;
 			}
-			if (this.isFunded) {
-				return LoanFundedText;
-			}
 			if (this.isSelectedByAnother) {
 				return LoanSelectedText;
-			}
-			if (this.isExpired) {
-				return LoanExpiredText;
 			}
 
 			return this.isSimpleLendButton ? Lend25Button : LendIncrementButton;
