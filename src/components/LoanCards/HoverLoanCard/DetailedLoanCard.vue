@@ -353,7 +353,7 @@ export default {
 		}
 	}
 
-	.lend-increment-container.action-button{
+	.lend-increment-container.action-button {
 		margin-top: 0.875rem;
 	}
 
