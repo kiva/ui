@@ -353,6 +353,18 @@ export default {
 		}
 	}
 
+	.lend-increment-container.action-button{
+		margin-top: 0.875rem;
+	}
+
+	.lend-increment-dropdown {
+		min-width: rem-calc(80);
+	}
+
+	.lend-increment-button {
+		white-space: nowrap;
+	}
+
 	.matching-text-wrap {
 		margin: auto;
 	}
