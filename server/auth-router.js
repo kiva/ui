@@ -85,7 +85,6 @@ module.exports = function authRouter(config = {}) {
 					console.warn(`LoginSyncUI: No user and no done url post-login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}`); // eslint-disable-line max-len
 				}
 				console.log(`LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${info}`); // eslint-disable-line max-len
-				noteLoggedOut(res);
 				return res.redirect(doneUrl || '/');
 			}
 
