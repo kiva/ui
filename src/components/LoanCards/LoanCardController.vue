@@ -34,6 +34,7 @@
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
+		@close-detailed-loan-card="handleCloseDetailedLoanCard"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -54,6 +55,7 @@ import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/Expand
 import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import HoverLoanCard from '@/components/LoanCards/HoverLoanCard/HoverLoanCard';
+import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
 import {
 	differenceInMinutes,
 	differenceInHours,
@@ -73,6 +75,7 @@ export default {
 		GridMicroLoanCard,
 		ListLoanCard,
 		HoverLoanCard,
+		DetailedLoanCard,
 	},
 	props: {
 		loanCardType: {
@@ -261,6 +264,9 @@ export default {
 		},
 		updateHoverLoanIndex(hoverLoanIndex) {
 			this.$emit('update-hover-loan-index', hoverLoanIndex);
+		},
+		handleCloseDetailedLoanCard() {
+			this.$emit('close-detailed-loan-card');
 		},
 	},
 };
