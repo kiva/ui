@@ -15,13 +15,15 @@
 		</div>
 		<div class="left-and-to-go-line">
 			<span
-				v-if="expiringSoonMessage !== ''"
-				class="loan-message"
+				v-if="isFunded"
+				class="funded"
 			>
-				{{ expiringSoonMessage }}
+				Funded
 			</span>
-			<span v-if="isFunded" class="funded">Funded</span>
-			<span v-else>
+			<span
+				:class="{'expiring-soon': expiringSoonMessage}"
+				v-else
+			>
 				{{ timeLeftMessage }} / ${{ amountLeft | numeral('0,0') }} to go
 			</span>
 		</div>
@@ -36,6 +38,10 @@ export default {
 		FundraisingStatusMeter,
 	},
 	props: {
+		expiringSoonMessage: {
+			type: String,
+			default: '',
+		},
 		timeLeftMessage: {
 			type: String,
 			default: '',
@@ -84,12 +90,9 @@ export default {
 		line-height: $small-text-font-size;
 		color: $gray;
 
-		.loan-message {
+		.funded,
+		.expiring-soon {
 			color: $kiva-text-dark;
-		}
-
-		.funded {
-			font-style: normal;
 		}
 	}
 }

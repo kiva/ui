@@ -95,6 +95,7 @@
 						:amount-left="amountLeft"
 						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
 						:lender-count="loan.lenders.totalCount"
+						:expiring-soon-message="expiringSoonMessage"
 						:time-left-message="timeLeftMessage"
 					/>
 				</div>
@@ -194,6 +195,10 @@ export default {
 		amountLeft: {
 			type: Number,
 			default: 0,
+		},
+		expiringSoonMessage: {
+			type: String,
+			default: '',
 		},
 		timeLeftMessage: {
 			type: String,
