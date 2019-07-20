@@ -102,20 +102,21 @@
 		</div>
 
 		<kv-expandable>
-			<loan-card-controller
-				class="expanded-card-row"
-				v-if="detailedLoanCacheId"
-				loan-card-type="DetailedLoanCard"
-				:loan="detailedLoan"
-				:items-in-basket="itemsInBasket"
-				:category-id="loanChannel.id"
-				:category-set-id="setId"
-				:row-number="rowNumber"
-				:card-number="detailedLoanIndex + 1"
-				:enable-tracking="true"
-				:is-visitor="!isLoggedIn"
-				@close-detailed-loan-card="detailedLoanIndex = null"
-			/>
+			<div v-if="detailedLoanCacheId">
+				<loan-card-controller
+					class="expanded-card-row"
+					loan-card-type="DetailedLoanCard"
+					:loan="detailedLoan"
+					:items-in-basket="itemsInBasket"
+					:category-id="loanChannel.id"
+					:category-set-id="setId"
+					:row-number="rowNumber"
+					:card-number="detailedLoanIndex + 1"
+					:enable-tracking="true"
+					:is-visitor="!isLoggedIn"
+					@close-detailed-loan-card="detailedLoanIndex = null"
+				/>
+			</div>
 		</kv-expandable>
 	</div>
 </template>
