@@ -314,8 +314,9 @@ export default {
 			.location-sector-row {
 				display: flex;
 				justify-content: flex-start;
-				align-items: center;
+				align-items: flex-start;
 				color: $gray;
+				line-height: rem-calc(22);
 
 				.flag {
 					margin-right: rem-calc(14);
