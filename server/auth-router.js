@@ -132,21 +132,17 @@ module.exports = function authRouter(config = {}) {
 
 	// For all routes, check if the access token is expired and attempt to renew it
 	router.use((req, res, next) => {
-		if (req.user) {
-			if (isExpired(req.user.accessToken)) {
-				// Remove expired token from session
-				req.logout();
-				// Store current url to redirect to after auth
-				req.session.doneUrl = req.originalUrl;
-				// Attempt silent authentication (prompt=none)
-				passport.authenticate('auth0', {
-					audience: config.auth0.apiAudience,
-					scope: config.auth0.scope,
-					prompt: 'none',
-				})(req, res, next);
-			} else {
-				next();
-			}
+		if (req.user && isExpired(req.user.accessToken)) {
+			// Remove expired token from session
+			req.logout();
+			// Store current url to redirect to after auth
+			req.session.doneUrl = req.originalUrl;
+			// Attempt silent authentication (prompt=none)
+			passport.authenticate('auth0', {
+				audience: config.auth0.apiAudience,
+				scope: config.auth0.scope,
+				prompt: 'none',
+			})(req, res, next);
 		} else {
 			next();
 		}
