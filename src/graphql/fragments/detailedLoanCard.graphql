@@ -34,6 +34,9 @@ fragment detailedLoanCard on LoanBasic {
 		favorited
 		lentTo
 	}
+	lenders {
+		totalCount
+	}
 	... on LoanPartner {
 		partnerName
 	}

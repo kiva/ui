@@ -31,6 +31,7 @@
 		:detailed-loan-index="detailedLoanIndex"
 		:hover-loan-index="hoverLoanIndex"
 		:shift-increment="shiftIncrement"
+		:time-left-message="timeLeftMessage"
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
@@ -180,12 +181,10 @@ export default {
 		percentRaised() {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
-		expiringSoonMessage() {
+		timeLeftMessage() {
 			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
-			// Send empty message if expiration is greater than 6 days
-			// > This matches the wwwApp implmentation
 			if (days >= 6) {
-				return '';
+				return `${days} days left`;
 			}
 			if (days >= 2) {
 				return `Only ${days} days left! `;
@@ -199,6 +198,15 @@ export default {
 				return `Only ${mins} minutes left! `;
 			}
 			return 'Expiring now!';
+		},
+		expiringSoonMessage() {
+			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			// Send empty message if expiration is greater than 6 days
+			// > This matches the wwwApp implmentation
+			if (days >= 6) {
+				return '';
+			}
+			return this.timeLeftMessage;
 		},
 	},
 	data() {
