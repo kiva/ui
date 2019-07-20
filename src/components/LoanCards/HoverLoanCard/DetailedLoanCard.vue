@@ -7,7 +7,7 @@
 				:retina-image-url="retinaImageUrl"
 				:standard-image-url="standardImageUrl"
 				:is-visitor="true"
-				:use-default-styles="false"
+				:use-default-styles="true"
 
 				@track-loan-card-interaction="trackInteraction"
 			/>
