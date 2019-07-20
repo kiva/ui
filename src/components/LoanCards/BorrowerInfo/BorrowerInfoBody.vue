@@ -10,6 +10,7 @@
 		>
 			<span
 				@click="handleReadMoreLink"
+				v-if="readMoreLinkText"
 			>
 				{{ readMoreLinkText }}
 			</span>

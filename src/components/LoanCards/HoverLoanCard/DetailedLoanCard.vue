@@ -85,6 +85,7 @@
 						:max-use-length="200"
 						:use="loan.use"
 						:loan-id="loan.id"
+						read-more-link-text="Read full details"
 					/>
 				</div>
 				<div>
@@ -117,13 +118,26 @@
 					read-more-link-text=""
 				/>
 			</info-panel>
-			<borrower-story-panel :loan-id="loan.id" />
+			<borrower-story-panel
+				:loan-id="loan.id"
+				read-more-link-text=""
+			/>
 			<loan-details-panel :loan-id="loan.id" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
 			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" />
 			<div>
-				<router-link to="">
-					Read full details
+				<hr>
+				<router-link
+					:to="`/lend/${loan.id}`"
+					class="featured-text full-details-link"
+					v-kv-track-event="[
+						'Lending',
+						'click-Read full borrower details',
+						'Profile Link',
+						loan.id
+					]"
+				>
+					Read full borrower details
 				</router-link>
 			</div>
 		</div>
@@ -335,6 +349,11 @@ export default {
 			width: 100%;
 			height: 100%;
 		}
+	}
+
+	.full-details-link {
+		margin-bottom: 1.25rem;
+		display: inline-block;
 	}
 
 	.close-button-wrapper {

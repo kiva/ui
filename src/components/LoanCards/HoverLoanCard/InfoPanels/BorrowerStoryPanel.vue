@@ -12,8 +12,11 @@
 				<kv-loading-spinner />
 			</div>
 		</div>
-		<router-link :to="`/lend/${loanId}`">
-			Read full story
+		<router-link
+			:to="`/lend/${loanId}`"
+			v-if="readMoreLinkText"
+		>
+			{{ readMoreLinkText }}
 		</router-link>
 	</info-panel>
 </template>
@@ -38,6 +41,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: 0,
+		},
+		readMoreLinkText: {
+			type: String,
+			default: 'Read full story',
 		},
 	},
 	data() {
