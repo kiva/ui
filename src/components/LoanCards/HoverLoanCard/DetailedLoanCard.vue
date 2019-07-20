@@ -88,8 +88,16 @@
 						read-more-link-text="Read full details"
 					/>
 				</div>
-				<div>
-					Funding progress
+				<div class="fundraising-status-container">
+					<fundraising-status-large
+						:is-funded="loan.status==='funded'"
+						:percent-raised="percentRaised"
+						:amount-left="amountLeft"
+						:is-expiring-soon="loan.loanFundraisingInfo.isExpiringSoon"
+						:lender-count="loan.lenders.totalCount"
+						:expiring-soon-message="expiringSoonMessage"
+						:time-left-message="timeLeftMessage"
+					/>
 				</div>
 				<div class="row">
 					<div class="columns small-12 large-expand">
@@ -162,6 +170,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 import KvFlag from '@/components/Kv/KvFlag';
+import FundraisingStatusLarge from '@/components/LoanCards/FundraisingStatus/FundraisingStatusLarge';
 
 export default {
 	props: {
@@ -174,7 +183,8 @@ export default {
 					geocode: {
 						country: {}
 					},
-					image: {}
+					image: {},
+					lenders: {},
 				};
 			}
 		},
@@ -187,6 +197,10 @@ export default {
 			default: 0,
 		},
 		expiringSoonMessage: {
+			type: String,
+			default: '',
+		},
+		timeLeftMessage: {
 			type: String,
 			default: '',
 		},
@@ -203,6 +217,7 @@ export default {
 		LoanCardImage,
 		BorrowerInfoName,
 		KvFlag,
+		FundraisingStatusLarge,
 	},
 	data() {
 		return {
@@ -321,6 +336,10 @@ export default {
 					margin-right: rem-calc(14);
 				}
 			}
+		}
+
+		.fundraising-status-container {
+			margin-bottom: 1rem;
 		}
 	}
 

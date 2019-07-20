@@ -31,6 +31,7 @@
 		:detailed-loan-index="detailedLoanIndex"
 		:hover-loan-index="hoverLoanIndex"
 		:shift-increment="shiftIncrement"
+		:time-left-message="timeLeftMessage"
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
@@ -63,7 +64,6 @@ import {
 } from 'date-fns';
 import _forEach from 'lodash/forEach';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
-import trackInteractionMixin from '@/plugins/track-interaction-mixin';
 
 export default {
 	components: {
@@ -157,9 +157,6 @@ export default {
 		},
 	},
 	inject: ['apollo'],
-	mixins: [
-		trackInteractionMixin,
-	],
 	computed: {
 		amountLeft() {
 			const {
@@ -180,12 +177,10 @@ export default {
 		percentRaised() {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
-		expiringSoonMessage() {
+		timeLeftMessage() {
 			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
-			// Send empty message if expiration is greater than 6 days
-			// > This matches the wwwApp implmentation
 			if (days >= 6) {
-				return '';
+				return `${days} days left`;
 			}
 			if (days >= 2) {
 				return `Only ${days} days left! `;
@@ -199,6 +194,15 @@ export default {
 				return `Only ${mins} minutes left! `;
 			}
 			return 'Expiring now!';
+		},
+		expiringSoonMessage() {
+			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			// Send empty message if expiration is greater than 6 days
+			// > This matches the wwwApp implmentation
+			if (days >= 6) {
+				return '';
+			}
+			return this.timeLeftMessage;
 		},
 	},
 	data() {
@@ -216,6 +220,30 @@ export default {
 		}
 	},
 	methods: {
+		trackInteraction(args) {
+			if (!this.enableTracking) {
+				return;
+			}
+
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_loan_interaction_event_schema_1_0_0.json#';
+			const interactionType = args.interactionType || 'unspecified';
+			const interactionElement = args.interactionElement || 'unspecified';
+			const loanInteractionTrackData = {
+				schema,
+				data: {
+					interactionType,
+					interactionElement,
+					loanId: this.loan.id,
+					categorySetIdentifier: this.categorySetId,
+					categoryId: this.categoryId,
+					row: this.rowNumber,
+					position: this.cardNumber,
+				},
+			};
+
+			this.$kvTrackSelfDescribingEvent(loanInteractionTrackData);
+		},
 		toggleFavorite() {
 			// optimistically toggle it locally first
 			this.isFavorite = !this.isFavorite;
