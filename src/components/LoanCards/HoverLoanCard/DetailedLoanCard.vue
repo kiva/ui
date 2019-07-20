@@ -134,7 +134,7 @@
 						'Lending',
 						'click-Read full borrower details',
 						'Profile Link',
-						loanId
+						loan.id
 					]"
 				>
 					Read full borrower details
