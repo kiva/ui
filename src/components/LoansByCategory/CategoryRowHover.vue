@@ -102,12 +102,21 @@
 		</div>
 
 		<kv-expandable>
-			<detailed-loan-card
-				class="expanded-card-row"
-				v-if="detailedLoanCacheId"
-				:loan-id="detailedLoanCacheId"
-				@close="detailedLoanIndex = null"
-			/>
+			<div v-if="detailedLoanCacheId">
+				<loan-card-controller
+					class="expanded-card-row"
+					loan-card-type="DetailedLoanCard"
+					:loan="detailedLoan"
+					:items-in-basket="itemsInBasket"
+					:category-id="loanChannel.id"
+					:category-set-id="setId"
+					:row-number="rowNumber"
+					:card-number="detailedLoanIndex + 1"
+					:enable-tracking="true"
+					:is-visitor="!isLoggedIn"
+					@close-detailed-loan-card="detailedLoanIndex = null"
+				/>
+			</div>
 		</kv-expandable>
 	</div>
 </template>
@@ -117,8 +126,8 @@ import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
-import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
 import KvExpandable from '@/components/Kv/KvExpandable';
+import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
 
 const hoverCardSmallWidth = 220;
 const hoverCardRightMargin = 10;
@@ -127,7 +136,6 @@ const hoverCardSmallWidthTotal = hoverCardSmallWidth + hoverCardRightMargin * 2;
 export default {
 	components: {
 		LoanCardController,
-		DetailedLoanCard,
 		KvExpandable,
 	},
 	mixins: [
@@ -259,6 +267,12 @@ export default {
 		},
 		noHoverLoan() {
 			return this.hoverLoanIndex === null;
+		},
+		detailedLoan() {
+			return this.apollo.readFragment({
+				id: this.detailedLoanCacheId,
+				fragment: detailedLoanCardFragment,
+			}) || {};
 		},
 	},
 	watch: {
