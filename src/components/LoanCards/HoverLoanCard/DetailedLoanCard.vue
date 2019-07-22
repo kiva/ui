@@ -8,6 +8,7 @@
 				:standard-image-url="standardImageUrl"
 				:is-visitor="true"
 				:use-default-styles="false"
+				:full-width-image="true"
 
 				@track-loan-card-interaction="trackInteraction"
 			/>
@@ -329,8 +330,9 @@ export default {
 			.location-sector-row {
 				display: flex;
 				justify-content: flex-start;
-				align-items: center;
+				align-items: flex-start;
 				color: $gray;
+				line-height: rem-calc(22);
 
 				.flag {
 					margin-right: rem-calc(14);

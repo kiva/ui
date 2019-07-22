@@ -1,5 +1,11 @@
 <template>
-	<div class="borrower-image-wrapper" :class="{'offset-borrower-image': useDefaultStyles}">
+	<div
+		class="borrower-image-wrapper"
+		:class="{
+			'offset-borrower-image': useDefaultStyles,
+			'full-width-borrower-image': fullWidthImage,
+		}"
+	>
 		<router-link
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Photo', loanId, 'true']"
@@ -34,37 +40,41 @@ export default {
 	props: {
 		loanId: {
 			type: Number,
-			default: null
+			default: null,
 		},
 		retinaImageUrl: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		standardImageUrl: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		name: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		isVisitor: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		isFavorite: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		openInNewTab: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		useDefaultStyles: {
 			type: Boolean,
-			default: true
+			default: true,
 		},
 		disableLink: {
+			type: Boolean,
+			default: false,
+		},
+		fullWidthImage: {
 			type: Boolean,
 			default: false,
 		},
@@ -93,21 +103,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	@import 'settings';
+@import 'settings';
 
-	.offset-borrower-image {
-		height: 0;
-		overflow: hidden;
+.borrower-image-wrapper {
+	&.absolute-positioned {
 		padding-top: 75%;
-		background: $kiva-stroke-gray;
 		position: relative;
 
 		.borrower-image {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
 		}
 
 		.favorite-star {
@@ -116,4 +120,33 @@ export default {
 			right: 0;
 		}
 	}
+
+	&.offset-borrower-image {
+		@extend .absolute-positioned;
+
+		height: 0;
+		overflow: hidden;
+		background: $kiva-stroke-gray;
+
+		.borrower-image {
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&.full-width-borrower-image {
+		@extend .absolute-positioned;
+
+		height: 100%;
+
+		.borrower-image {
+			top: 50%;
+			transform: translateY(-50%);
+			width: 100%;
+			height: auto;
+		}
+	}
+}
 </style>
