@@ -358,7 +358,7 @@ $row-arrow-width: 2.5rem;
 	}
 
 	.main-panel.columns {
-		padding: 0.5rem 1rem;
+		padding: 0.5rem 1rem 1.5rem;
 		display: flex;
 		flex-flow: column nowrap;
 	}
