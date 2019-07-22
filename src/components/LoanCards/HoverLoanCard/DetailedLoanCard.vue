@@ -323,6 +323,7 @@ $row-arrow-width: 2.5rem;
 			margin-bottom: rem-calc(12);
 
 			.name {
+				display: block;
 				font-size: rem-calc(28);
 				white-space: nowrap;
 				overflow: hidden;
