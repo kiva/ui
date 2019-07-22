@@ -256,10 +256,14 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.detailed-loan-card {
+$parent-row-max-width: 63.75rem;
+$row-arrow-width: 2.5rem;
+
+.detailed-loan-card.row {
 	position: relative;
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
+	max-width: $parent-row-max-width - (2 * $row-arrow-width);
 
 	.mobile-sections {
 		padding: 0 1rem;
