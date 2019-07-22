@@ -22,7 +22,7 @@
 				<div class="search-filter-and-results">
 					<div class="small-12">
 						<div class="search-statement-wrapper">
-							<span class="featured-text">
+							<h2>
 								I want to support
 								<!-- documentation for reference: -->
 								<!-- eslint-disable max-len -->
@@ -51,19 +51,6 @@
 								</ais-menu-select>
 								<br class="show-for-small-only">
 								<span class="show-for-small-only">located</span>
-								<br class="hide-for-small-only">in
-								<br class="show-for-small-only">
-								<ais-menu-select
-									:attribute="'locationFacets.lvl0'"
-									:limit="100"
-									class="sentence-search-dropdown"
-									aria-haspopup="true"
-									aria-expanded="false"
-								>
-									<template
-										slot="defaultOption"
-										class="featured-text"
-									>
 								<span class="no-break"> in
 									<br class="show-for-small-only">
 									<ais-menu-select
@@ -73,17 +60,22 @@
 										aria-haspopup="true"
 										aria-expanded="false"
 									>
-										any region
-									</template>
-									<template
-										slot="item"
-										slot-scope="{ item }"
-										class="featured-text"
-									>
-										{{ item.label }}
-									</template>
-								</ais-menu-select>
-								<br class="show-for-small-only">
+										<template
+											slot="defaultOption"
+											class="featured-text"
+										>
+											any region
+										</template>
+										<template
+											slot="item"
+											slot-scope="{ item }"
+											class="featured-text"
+										>
+											{{ item.label }}
+										</template>
+									</ais-menu-select>
+								</span>
+								<br>
 								with loans {{ toFor }}
 								<ais-menu-select
 									attribute="sector.name"
@@ -98,7 +90,11 @@
 										@change="toForLanguage(refine, $event.currentTarget.value)"
 										class="featured-text"
 									>
-										<option value="">improve their businesses</option>
+										<option
+											value=""
+										>
+											improve their businesses
+										</option>
 										<option
 											v-for="item in items"
 											:key="item.value"
@@ -109,7 +105,7 @@
 										</option>
 									</select>
 								</ais-menu-select>
-							</span>
+							</h2>
 						</div>
 
 						<ais-state-results>
@@ -349,6 +345,10 @@ export default {
 		height: rem-calc(42);
 		background-position: right rem-calc(23);
 	}
+}
+
+.no-break {
+	white-space: nowrap;
 }
 
 .ais-MenuSelect {
