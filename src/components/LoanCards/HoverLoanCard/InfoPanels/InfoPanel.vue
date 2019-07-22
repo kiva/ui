@@ -71,11 +71,14 @@ export default {
 
 .info-panel {
 	background: rgba($white, 0.8);
-	overflow-y: scroll;
 
-	button {
+	.title-button {
 		text-align: left;
 		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-right: 0.5rem;
 
 		.panel-title {
 			display: inline-block;
@@ -89,7 +92,7 @@ export default {
 		}
 	}
 
-	button[aria-expanded="true"] {
+	.title-button[aria-expanded="true"] {
 		.icon {
 			transform: rotate(-180deg);
 		}

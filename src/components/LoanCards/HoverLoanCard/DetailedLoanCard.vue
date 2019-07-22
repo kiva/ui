@@ -37,7 +37,7 @@
 				>
 					<span>Story</span>
 				</button>
-				<button
+				<!-- <button
 					class="tab-title"
 					@click="tabComponent = detailsPanel"
 					:class="{ active: tabComponent === detailsPanel }"
@@ -59,7 +59,7 @@
 					:class="{ active: tabComponent === trusteePanel }"
 				>
 					<span>Trustee</span>
-				</button>
+				</button> -->
 			</div>
 			<div class="basic-info-flex-column">
 				<div class="name-location-sector">
@@ -132,7 +132,7 @@
 			</div>
 		</div>
 		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
-			<info-panel :id="`${loan.id}-overview-panel`" :expandable="true">
+			<info-panel :id="`${loan.id}-overview-panel`" class="overview-panel" :expandable="true">
 				<template #title>
 					Overview
 				</template>
@@ -152,11 +152,10 @@
 				:loan-id="loan.id"
 				read-more-link-text=""
 			/>
-			<loan-details-panel :loan-id="loan.id" />
+			<!-- <loan-details-panel :loan-id="loan.id" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
-			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" />
+			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
-				<hr>
 				<router-link
 					:to="`/lend/${loan.id}`"
 					class="featured-text full-details-link"
@@ -275,11 +274,11 @@ export default {
 		},
 		retinaImageUrl() {
 			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w960h720/`);
+			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w1096h822/`);
 		},
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w480h360/`);
+			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
 		},
 	},
 	methods: {
@@ -293,18 +292,36 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-.detailed-loan-card {
+$parent-row-max-width: 63.75rem;
+$row-arrow-width: 2.5rem;
+
+.detailed-loan-card.row {
 	position: relative;
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
+	max-width: $parent-row-max-width - (2 * $row-arrow-width);
 
 	.mobile-sections {
 		padding: 0 1rem;
+
+		.info-panel {
+			border-bottom: 1px solid $kiva-stroke-gray;
+			margin-bottom: 1rem;
+
+			.title-button {
+				margin-bottom: 1rem;
+			}
+		}
+
+		.overview-panel .borrower-info-body {
+			line-height: $paragraph-lineheight;
+			margin-bottom: $paragraph-margin-bottom;
+		}
 	}
 
 	.info-tab-selector {
 		display: flex;
-		margin-bottom: 0.5rem;
+		margin: 0.25rem 0 0.5rem;
 
 		.tab-title {
 			background: transparent;
@@ -341,7 +358,7 @@ export default {
 	}
 
 	.main-panel.columns {
-		padding: 1rem;
+		padding: 0.5rem 1rem 1.5rem;
 		display: flex;
 		flex-flow: column nowrap;
 	}
@@ -356,6 +373,7 @@ export default {
 			margin-bottom: rem-calc(12);
 
 			.name {
+				display: block;
 				font-size: rem-calc(28);
 				white-space: nowrap;
 				overflow: hidden;
@@ -427,6 +445,8 @@ export default {
 			left: 0;
 			width: 100%;
 			height: 100%;
+			padding: 0.5rem 1rem;
+			overflow-y: scroll;
 		}
 	}
 
