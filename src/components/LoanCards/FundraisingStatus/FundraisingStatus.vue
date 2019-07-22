@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatusMeter';
+import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 
 export default {
 	components: {

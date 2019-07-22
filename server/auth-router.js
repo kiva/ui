@@ -1,7 +1,9 @@
 const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
+const { isExpired } = require('./util/jwt');
 const {
+	clearNotedLoginState,
 	getSyncCookie,
 	isNotedLoggedIn,
 	isNotedLoggedOut,
@@ -68,26 +70,30 @@ module.exports = function authRouter(config = {}) {
 
 	// Callback redirected to after Auth0 authentication
 	router.get('/process-ssr-auth', (req, res, next) => {
-		const { doneUrl } = req.session;
-		delete req.session.doneUrl;
-
 		passport.authenticate('auth0', (authErr, user, info) => {
 			if (authErr) {
 				console.log(`LoginUI: auth error, session id:${req.sessionID}, error:${authErr}`);
 				return next(authErr);
 			}
 
-			if (user) {
-				console.log(`LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}`); // eslint-disable-line max-len
-				noteLoggedIn(res);
-			} else {
-				if (!doneUrl) {
-					console.warn(`LoginSyncUI: No user and no done url post-login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}`); // eslint-disable-line max-len
+			let { doneUrl } = req.session;
+			delete req.session.doneUrl;
+
+			if (!user) {
+				if (req.user) {
+					console.warn(`LoginSyncUI: login was attempted despite already having user, user id:${req.user.id}, session id:${req.sessionID}, state:${req.query.state}, last state:${req.session.lastUsedState}`); // eslint-disable-line max-len
+					doneUrl = req.session.lastUsedDoneUrl;
+				} else {
+					clearNotedLoginState(res);
 				}
-				console.log(`LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${info}`); // eslint-disable-line max-len
-				noteLoggedOut(res);
+				console.log(`LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${JSON.stringify(info)}`); // eslint-disable-line max-len
 				return res.redirect(doneUrl || '/');
 			}
+
+			console.log(`LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}`); // eslint-disable-line max-len
+			noteLoggedIn(res);
+			req.session.lastUsedDoneUrl = doneUrl;
+			req.session.lastUsedState = req.query && req.query.state;
 
 			// req.login sets the given user as req.user, after passing through the
 			// serializeUser function above, which may result in a serializeError.
@@ -120,6 +126,24 @@ module.exports = function authRouter(config = {}) {
 				console.log(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
 				req.logout(); // removes req.user
 			}
+			next();
+		}
+	});
+
+	// For all routes, check if the access token is expired and attempt to renew it
+	router.use((req, res, next) => {
+		if (req.user && isExpired(req.user.accessToken)) {
+			// Remove expired token from session
+			req.logout();
+			// Store current url to redirect to after auth
+			req.session.doneUrl = req.originalUrl;
+			// Attempt silent authentication (prompt=none)
+			passport.authenticate('auth0', {
+				audience: config.auth0.apiAudience,
+				scope: config.auth0.scope,
+				prompt: 'none',
+			})(req, res, next);
+		} else {
 			next();
 		}
 	});

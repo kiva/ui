@@ -8,6 +8,7 @@ query algoliaLoanStatus(
 			values {
 				id
 				status
+				matchingText
 				loanFundraisingInfo {
 					fundedAmount
 					reservedAmount

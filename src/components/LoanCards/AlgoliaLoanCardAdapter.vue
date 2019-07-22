@@ -59,6 +59,8 @@ export default {
 		return {
 			latestFundraisingInfo: null,
 			latestUserProperties: null,
+			latestStatus: null,
+			latestMatchingText: null,
 		};
 	},
 	computed: {
@@ -85,7 +87,7 @@ export default {
 					reservedAmount: _get(this.loan, 'reservedAmount'),
 				},
 				use: _get(this.loan, 'use'),
-				matchingText: '',
+				matchingText: this.latestMatchingText || _get(this.loan, 'matchingText'),
 				name: _get(this.loan, 'name'),
 				partnerName: _get(this.loan, 'partner.name'),
 				plannedExpirationDate: exprirationDate.toISOString(),
@@ -126,6 +128,10 @@ export default {
 						favorited: _get(data, 'lend.loans.values[0].userProperties.favorited'),
 						lentTo: _get(data, 'lend.loans.values[0].userProperties.lentTo'),
 					};
+					// patch in latest matchingText
+					this.latestMatchingText = _get(data, 'lend.loans.values[0].matchingText');
+					// patch in latest status
+					this.latestStatus = _get(data, 'lend.loans.values[0].status');
 				}
 			});
 		},

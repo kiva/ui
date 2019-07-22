@@ -78,6 +78,7 @@
 			:has-custom-donation="hasCustomDonation"
 			:header="donationNudgeHeader()"
 			:experimental-header="donationNudgeExperimentalHeader"
+			:experimental-footer="showCharityOverheadFooter"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
 			:current-donation-amount="amount"
@@ -115,13 +116,10 @@ import DonateRepayments from '@/components/Checkout/DonateRepaymentsToggle';
 import donationDataQuery from '@/graphql/query/checkout/donationData.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
-// import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import numeral from 'numeral';
-// import _get from 'lodash/get';
 import _forEach from 'lodash/forEach';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
-// import cookieStore from '@/util/cookieStore';
-// import logReadQueryError from '@/util/logReadQueryError';
 
 export default {
 	components: {
@@ -161,6 +159,7 @@ export default {
 			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			donationTitle: 'Donation to Kiva',
+			showCharityOverheadFooter: false,
 		};
 	},
 	apollo: {
@@ -174,7 +173,7 @@ export default {
 					client.query({
 						query: experimentAssignmentQuery,
 						variables: {
-							id: 'donation_nudge_borrower_image',
+							id: 'charity_overhead',
 						},
 					}).then(resolve).catch(reject);
 				}).catch(reject);
@@ -252,6 +251,19 @@ export default {
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
+			// CASH-1022: Show charity overhead footer
+			if (this.hasLoans) {
+				const charityOverheadExp = this.apollo.readFragment({
+					id: 'Experiment:charity_overhead',
+					fragment: experimentVersionFragment,
+				}) || {};
+				if (charityOverheadExp.version === 'control') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-1022-Jul2019', 'a');
+				} else if (charityOverheadExp.version === 'shown') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-1022-Jul2019', 'b');
+					this.showCharityOverheadFooter = true;
+				}
+			}
 		},
 		updateDonation() {
 			this.editDonation = false;

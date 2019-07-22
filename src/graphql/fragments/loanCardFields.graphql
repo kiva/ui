@@ -4,6 +4,7 @@ fragment loanCardFields on LoanBasic {
 	name
 	borrowerCount
 	geocode {
+		# city added for DetailedLoanCard Query Cache
 		city
 		country {
 			isoCode
@@ -33,6 +34,10 @@ fragment loanCardFields on LoanBasic {
 	userProperties {
 		favorited
 		lentTo
+	}
+	# lenders added for DetailedLoanCard Query Cache
+	lenders {
+		totalCount
 	}
 	... on LoanPartner {
 		partnerName

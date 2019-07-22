@@ -1,6 +1,6 @@
 query donationData {
 	general {
-		donationNudgeBorrowerImageExperiment: uiExperimentSetting(key: "donation_nudge_borrower_image") {
+		donationNudgeBorrowerImageExperiment: uiExperimentSetting(key: "charity_overhead") {
 			key
 			value
 		}
