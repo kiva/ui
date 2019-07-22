@@ -135,7 +135,6 @@
 			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
 			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
-				<hr>
 				<router-link
 					:to="`/lend/${loan.id}`"
 					class="featured-text full-details-link"
@@ -267,6 +266,11 @@ $row-arrow-width: 2.5rem;
 
 	.mobile-sections {
 		padding: 0 1rem;
+
+		.info-panel {
+			border-bottom: 1px solid $kiva-stroke-gray;
+			margin-bottom: 1rem;
+		}
 	}
 
 	.info-tab-selector {
@@ -308,7 +312,7 @@ $row-arrow-width: 2.5rem;
 	}
 
 	.main-panel.columns {
-		padding: 1rem;
+		padding: 0.5rem 1rem;
 		display: flex;
 		flex-flow: column nowrap;
 	}
@@ -374,6 +378,8 @@ $row-arrow-width: 2.5rem;
 			left: 0;
 			width: 100%;
 			height: 100%;
+			padding: 0.5rem 1rem;
+			overflow-y: scroll;
 		}
 	}
 
