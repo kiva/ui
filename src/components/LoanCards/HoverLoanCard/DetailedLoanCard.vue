@@ -37,7 +37,7 @@
 				>
 					<span>Story</span>
 				</button>
-				<button
+				<!-- <button
 					class="tab-title"
 					@click="tabComponent = detailsPanel"
 					:class="{ active: tabComponent === detailsPanel }"
@@ -59,7 +59,7 @@
 					:class="{ active: tabComponent === trusteePanel }"
 				>
 					<span>Trustee</span>
-				</button>
+				</button> -->
 			</div>
 			<div class="basic-info-flex-column">
 				<div class="name-location-sector">
@@ -131,9 +131,9 @@
 				:loan-id="loan.id"
 				read-more-link-text=""
 			/>
-			<loan-details-panel :loan-id="loan.id" />
+			<!-- <loan-details-panel :loan-id="loan.id" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
-			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" />
+			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
 				<hr>
 				<router-link
