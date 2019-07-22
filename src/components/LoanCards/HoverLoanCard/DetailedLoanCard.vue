@@ -102,10 +102,31 @@
 				</div>
 				<div class="row">
 					<div class="columns small-12 large-expand">
-						Lend button
+						<action-button
+							class="expandable-loan-card-action-button"
+							:loan-id="loan.id"
+							:loan="loan"
+							:items-in-basket="itemsInBasket"
+							:is-lent-to="loan.userProperties.lentTo"
+							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
+							:is-simple-lend-button="false"
+
+							@click.native="trackInteraction({
+								interactionType: 'addToBasket',
+								interactionElement: 'Lend25'
+							})"
+
+							@add-to-basket="$emit('add-to-basket', $event)"
+						/>
 					</div>
-					<div class="matching-text columns small-12 large-4">
-						2x matching
+					<div class="columns medium-12 large-4 matching-text-wrap">
+						<matching-text
+							:matching-text="loan.matchingText"
+							:is-funded="isFunded"
+							:is-selected-by-another="isSelectedByAnother"
+							:wrap="true"
+						/>
 					</div>
 				</div>
 			</div>
@@ -171,6 +192,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 import KvFlag from '@/components/Kv/KvFlag';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import MatchingText from '@/components/LoanCards/MatchingText';
 import FundraisingStatusLarge from '@/components/LoanCards/FundraisingStatus/FundraisingStatusLarge';
 
 export default {
@@ -205,6 +228,18 @@ export default {
 			type: String,
 			default: '',
 		},
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
+		},
+		isFunded: {
+			type: Boolean,
+			default: false
+		},
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false
+		},
 	},
 	components: {
 		BorrowerInfoBody,
@@ -218,7 +253,9 @@ export default {
 		LoanCardImage,
 		BorrowerInfoName,
 		KvFlag,
-		FundraisingStatusLarge,
+		ActionButton,
+		MatchingText,
+		FundraisingStatusLarge
 	},
 	data() {
 		return {
@@ -356,8 +393,29 @@ export default {
 		}
 	}
 
-	.matching-text {
+	.lend-increment-container.action-button {
+		margin-top: 0.875rem;
+	}
+
+	.lend-increment-dropdown {
+		min-width: rem-calc(80);
+	}
+
+	.lend-increment-button {
 		white-space: nowrap;
+	}
+
+	.matching-text-wrap {
+		margin: auto;
+		text-align: center;
+
+		@include breakpoint(large) {
+			text-align: unset;
+		}
+	}
+
+	.matching-text {
+		color: $subtle-gray;
 	}
 
 	.multi-pane {
