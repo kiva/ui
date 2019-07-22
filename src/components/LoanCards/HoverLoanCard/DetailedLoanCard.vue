@@ -111,7 +111,7 @@
 			</div>
 		</div>
 		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
-			<info-panel :id="`${loan.id}-overview-panel`" :expandable="true">
+			<info-panel :id="`${loan.id}-overview-panel`" class="overview-panel" :expandable="true">
 				<template #title>
 					Overview
 				</template>
@@ -270,6 +270,15 @@ $row-arrow-width: 2.5rem;
 		.info-panel {
 			border-bottom: 1px solid $kiva-stroke-gray;
 			margin-bottom: 1rem;
+
+			.title-button {
+				margin-bottom:1rem;
+			}
+		}
+
+		.overview-panel .borrower-info-body {
+			line-height: $paragraph-lineheight;
+			margin-bottom: $paragraph-margin-bottom;
 		}
 	}
 
