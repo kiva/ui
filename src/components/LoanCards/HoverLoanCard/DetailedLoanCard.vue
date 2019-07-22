@@ -119,17 +119,7 @@
 							@add-to-basket="$emit('add-to-basket', $event)"
 						/>
 					</div>
-					<!-- <div class="columns small-12 large-4 show-for-large matching-text-wrap">
-						<matching-text
-							:matching-text="loan.matchingText"
-							:is-funded="isFunded"
-							:is-selected-by-another="isSelectedByAnother"
-							:wrap="true"
-						/>
-					</div> -->
-				</div>
-				<div class="row">
-					<div class="columns small-12 large-4 show-for-small hide-for-large text-center">
+					<div class="columns medium-12 large-4 matching-text-wrap">
 						<matching-text
 							:matching-text="loan.matchingText"
 							:is-funded="isFunded"
@@ -242,6 +232,10 @@ export default {
 			default: () => [],
 		},
 		isFunded: {
+			type: Boolean,
+			default: false
+		},
+		isSelectedByAnother: {
 			type: Boolean,
 			default: false
 		},
@@ -411,6 +405,11 @@ export default {
 
 	.matching-text-wrap {
 		margin: auto;
+		text-align: center;
+
+		@include breakpoint(large) {
+			text-align: unset;
+		}
 	}
 
 	.matching-text {
