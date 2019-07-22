@@ -274,11 +274,11 @@ export default {
 		},
 		retinaImageUrl() {
 			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w960h720/`);
+			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w1096h822/`);
 		},
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w480h360/`);
+			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
 		},
 	},
 	methods: {
