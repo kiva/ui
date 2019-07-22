@@ -284,7 +284,7 @@ $row-arrow-width: 2.5rem;
 
 	.info-tab-selector {
 		display: flex;
-		margin-bottom: 0.5rem;
+		margin: 0.25rem 0 0.5rem;
 
 		.tab-title {
 			background: transparent;
