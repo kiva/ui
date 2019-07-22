@@ -309,7 +309,7 @@ $row-arrow-width: 2.5rem;
 			margin-bottom: 1rem;
 
 			.title-button {
-				margin-bottom:1rem;
+				margin-bottom: 1rem;
 			}
 		}
 
