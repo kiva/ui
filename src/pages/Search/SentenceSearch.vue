@@ -64,6 +64,15 @@
 										slot="defaultOption"
 										class="featured-text"
 									>
+								<span class="no-break"> in
+									<br class="show-for-small-only">
+									<ais-menu-select
+										:attribute="'locationFacets.lvl0'"
+										:limit="100"
+										class="sentence-search-dropdown"
+										aria-haspopup="true"
+										aria-expanded="false"
+									>
 										any region
 									</template>
 									<template
