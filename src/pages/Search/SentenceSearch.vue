@@ -321,17 +321,25 @@ export default {
 	border-bottom: 1px solid $kiva-bg-darkgray;
 }
 
+.search-statement-wrapper h2 {
+	@include breakpoint(medium) {
+		line-height: 1.7;
+	}
+}
+
 .sentence-search-dropdown {
 	background-image: url('~@/assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
-	background-position: right 1.68rem;
+	background-position: right rem-calc(20);
 	background-size: rem-calc(12);
 	margin-right: rem-calc(8);
 	margin-bottom: rem-calc(10);
-	height: rem-calc(43);
+	height: rem-calc(36);
 
 	@include breakpoint(medium) {
 		margin-bottom: unset;
+		height: rem-calc(43);
+		background-position: right rem-calc(23);
 	}
 }
 
@@ -342,10 +350,10 @@ export default {
 .ais-MenuSelect {
 	display: inline-block;
 	border-bottom: 1px dashed #118aec;
-	margin-bottom: rem-calc(10);
+	margin-bottom: rem-calc(24);
 
 	@include breakpoint(large) {
-		margin-bottom: unset;
+		margin-bottom: rem-calc(16);
 	}
 }
 
@@ -353,17 +361,19 @@ export default {
 	border: none;
 	background-color: transparent;
 	color: $kiva-accent-blue;
-	font-size: 1.5rem;
+	font-size: 1.375rem;
 	line-height: 2.25rem;
-	height: rem-calc(47);
+	height: rem-calc(43);
 	margin-bottom: 0;
 	background-image: none;
-	padding-left: 0;
-	padding-bottom: 0;
+	padding: 0 inherit 0 0;
 
 	@include breakpoint(medium) {
 		text-align-last: center;
+		font-size: 1.75rem;
 		padding-left: unset;
+		height: rem-calc(47);
+		padding-top: unset;
 	}
 }
 
