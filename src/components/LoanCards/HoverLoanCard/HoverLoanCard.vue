@@ -142,14 +142,25 @@ export default {
 		},
 		updateHoverLoanIndex() {
 			this.$emit('update-hover-loan-index', this.loanIndex);
+			this.trackInteraction({
+				interactionType: 'hover-expand',
+				interactionElement: 'hover-card'
+			});
 		},
 		updateDetailedLoanIndex() {
 			this.$emit('update-detailed-loan-index', this.loanIndex);
+			this.trackInteraction({
+				interactionType: 'hover-details-click',
+				interactionElement: 'hover-card'
+			});
 		},
 		handleClick() {
 			if (!this.hoverEffectActive()) {
 				this.$emit('update-detailed-loan-index', this.loanIndex);
 			}
+		},
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
 		},
 	},
 };
