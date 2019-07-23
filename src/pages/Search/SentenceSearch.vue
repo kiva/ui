@@ -19,8 +19,8 @@
 					clickAnalytics="true"
 					ref="aisConfigure"
 				/>
-				<div class="row search-filter-and-results">
-					<div class="columns small-12">
+				<div class="search-filter-and-results">
+					<div class="small-12">
 						<div class="search-statement-wrapper">
 							<h2>
 								I want to support
@@ -287,6 +287,10 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.lend-header-row .heading-region {
+	margin-bottom: rem-calc(18);
+}
+
 .search-filter-and-results {
 	flex-direction: column-reverse;
 
@@ -312,8 +316,8 @@ export default {
 
 .search-statement-wrapper {
 	background-color: $white;
-	margin-bottom: rem-calc(32);
-	padding: 0.375rem;
+	margin-bottom: rem-calc(44);
+	padding: rem-calc(29) rem-calc(40);
 	border-top: 1px solid $kiva-bg-darkgray;
 	border-bottom: 1px solid $kiva-bg-darkgray;
 }
@@ -325,6 +329,7 @@ export default {
 	background-size: rem-calc(12);
 	margin-right: rem-calc(8);
 	margin-bottom: rem-calc(10);
+	height: rem-calc(43);
 
 	@include breakpoint(medium) {
 		margin-bottom: unset;
@@ -338,6 +343,11 @@ export default {
 .ais-MenuSelect {
 	display: inline-block;
 	border-bottom: 1px dashed #118aec;
+	margin-bottom: rem-calc(10);
+
+	@include breakpoint(large) {
+		margin-bottom: unset;
+	}
 }
 
 .ais-MenuSelect select {
