@@ -15,13 +15,14 @@
 # script to get status / get log / restart server / start_local
 # copy to user home directory for global use
 
-$ ./ui-server.sh {status|log|restart|start_local}
+$ ./ui-server.sh {status|log|restart|local|start_local}
 
 # install dependencies
 $ npm install
 
 # serve with hot reload at localhost:8080
 $ npm run dev
+$ npm run dev -- --config=local (any context outside of kiva vm)
 
 # build for production with minification
 $ npm run build
