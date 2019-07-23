@@ -52,7 +52,6 @@
 								<br class="show-for-small-only">
 								<span class="show-for-small-only">located</span>
 								<span class="no-break"> in
-									<!-- <br class="show-for-small"> in -->
 									<br class="show-for-small-only">
 									<ais-menu-select
 										:attribute="'locationFacets.lvl0'"
