@@ -374,6 +374,10 @@ export default {
 	padding-bottom: 0;
 	padding-left: 0;
 
+	&:hover {
+		cursor: pointer;
+	}
+
 	@include breakpoint(medium) {
 		text-align-last: center;
 		font-size: 1.75rem;
