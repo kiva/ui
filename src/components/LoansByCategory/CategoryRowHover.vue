@@ -62,9 +62,11 @@
 						:detailed-loan-index="detailedLoanIndex"
 						:hover-loan-index="hoverLoanIndex"
 						:shift-increment="calculateCardShiftIncrement(index)"
+						:prevent-updating-detailed-card="preventUpdatingDetailedCard"
 
 						@update-detailed-loan-index="updateDetailedLoanIndex"
 						@update-hover-loan-index="updateHoverLoanIndex"
+						@set-prevent-updating-detailed-card="handleSetPreventUpdatingDetailedCard"
 
 						ref="hoverLoanCards"
 					/>
@@ -176,6 +178,7 @@ export default {
 			detailedLoanIndex: null,
 			hoverLoanIndex: null,
 			cardWidth: hoverCardSmallWidthTotal,
+			preventUpdatingDetailedCard: false,
 		};
 	},
 	computed: {
@@ -390,6 +393,13 @@ export default {
 		},
 		handleMouseLeave() {
 			this.hoverLoanIndex = null;
+			this.setPreventUpdatingDetailedCard(false);
+		},
+		setPreventUpdatingDetailedCard(newState) {
+			this.preventUpdatingDetailedCard = newState;
+		},
+		handleSetPreventUpdatingDetailedCard(newState) {
+			this.setPreventUpdatingDetailedCard(newState);
 		},
 	},
 };

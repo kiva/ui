@@ -32,10 +32,12 @@
 		:hover-loan-index="hoverLoanIndex"
 		:shift-increment="shiftIncrement"
 		:time-left-message="timeLeftMessage"
+		:prevent-updating-detailed-card="preventUpdatingDetailedCard"
 
 		@update-detailed-loan-index="updateDetailedLoanIndex"
 		@update-hover-loan-index="updateHoverLoanIndex"
 		@close-detailed-loan-card="handleCloseDetailedLoanCard"
+		@set-prevent-updating-detailed-card="handleSetPreventUpdatingDetailedCard"
 	/>
 	<!--
 		Blocks of attributes above:
@@ -154,6 +156,10 @@ export default {
 		shiftIncrement: {
 			type: Number,
 			default: 0,
+		},
+		preventUpdatingDetailedCard: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	inject: ['apollo'],
@@ -295,6 +301,9 @@ export default {
 		},
 		handleCloseDetailedLoanCard() {
 			this.$emit('close-detailed-loan-card');
+		},
+		handleSetPreventUpdatingDetailedCard(newState) {
+			this.$emit('set-prevent-updating-detailed-card', newState);
 		},
 	},
 };
