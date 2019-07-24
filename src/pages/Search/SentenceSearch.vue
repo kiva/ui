@@ -316,9 +316,13 @@ export default {
 .search-statement-wrapper {
 	background-color: $white;
 	margin-bottom: rem-calc(44);
-	padding: rem-calc(29) rem-calc(40);
+	padding: 1.8125rem 2.5rem 0.8rem 2.5rem;
 	border-top: 1px solid $kiva-bg-darkgray;
 	border-bottom: 1px solid $kiva-bg-darkgray;
+
+	@include breakpoint(medium) {
+		padding-bottom: 1rem;
+	}
 }
 
 .search-statement-wrapper h2 {
@@ -338,7 +342,7 @@ export default {
 
 	@include breakpoint(medium) {
 		margin-bottom: unset;
-		height: rem-calc(43);
+		height: rem-calc(42);
 		background-position: right rem-calc(23);
 	}
 }
@@ -366,7 +370,9 @@ export default {
 	height: rem-calc(43);
 	margin-bottom: 0;
 	background-image: none;
-	padding: 0 inherit 0 0;
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-left: 0;
 
 	@include breakpoint(medium) {
 		text-align-last: center;
