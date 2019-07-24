@@ -484,7 +484,7 @@ $row-max-width: 63.75rem;
 	font-weight: $global-weight-normal;
 	margin-top: rem-calc(12);
 	margin-bottom: 0;
-	min-height: rem-calc(84);
+	min-height: rem-calc(56);
 }
 
 a.view-all-link {
