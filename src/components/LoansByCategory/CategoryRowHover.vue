@@ -19,7 +19,7 @@
 						{{ cleanName }}
 					</template>
 				</h2>
-				<p v-if="showCategoryDescription" class="category-description show-for-large">
+				<p class="category-description show-for-large">
 					{{ loanChannel.description }}
 				</p>
 			</div>
@@ -162,10 +162,6 @@ export default {
 		setId: {
 			type: String,
 			default: 'Control'
-		},
-		showCategoryDescription: {
-			type: Boolean,
-			default: false
 		},
 	},
 	data() {
@@ -406,7 +402,7 @@ $row-max-width: 63.75rem;
 
 .cards-and-arrows-wrapper {
 	max-width: $row-max-width;
-	margin: 0 auto 1rem;
+	margin: rem-calc(-67) auto 1rem;
 	align-items: center;
 	display: flex;
 	position: relative;
@@ -488,6 +484,7 @@ $row-max-width: 63.75rem;
 	font-weight: $global-weight-normal;
 	margin-top: rem-calc(12);
 	margin-bottom: 0;
+	min-height: rem-calc(56);
 }
 
 a.view-all-link {
