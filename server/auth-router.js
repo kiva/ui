@@ -7,12 +7,25 @@ const {
 	getSyncCookie,
 	isNotedLoggedIn,
 	isNotedLoggedOut,
+	isNotedUserRequestUser,
 	noteLoggedIn,
 	noteLoggedOut,
 } = require('./util/syncCookie');
 
 module.exports = function authRouter(config = {}) {
 	const router = express.Router();
+
+	// Helper function to start slient authentication process
+	function attemptSilentAuth(req, res, next) {
+		// Store current url to redirect to after auth
+		req.session.doneUrl = req.originalUrl;
+		// Attempt silent authentication (prompt=none)
+		passport.authenticate('auth0', {
+			audience: config.auth0.apiAudience,
+			scope: config.auth0.scope,
+			prompt: 'none',
+		})(req, res, next);
+	}
 
 	// Handle recoverable Auth0 errors
 	router.use('/error', (req, res, next) => {
@@ -91,7 +104,7 @@ module.exports = function authRouter(config = {}) {
 			}
 
 			console.log(`LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}`); // eslint-disable-line max-len
-			noteLoggedIn(res);
+			noteLoggedIn(res, user);
 			req.session.lastUsedDoneUrl = doneUrl;
 			req.session.lastUsedState = req.query && req.query.state;
 
@@ -113,14 +126,11 @@ module.exports = function authRouter(config = {}) {
 			next();
 		} else if (isNotedLoggedIn(req) && !req.user) {
 			console.log(`LoginSyncUI: attempt silent login, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user}`); // eslint-disable-line max-len
-			// Store current url to redirect to after auth
-			req.session.doneUrl = req.originalUrl;
-			// Attempt silent authentication (prompt=none)
-			passport.authenticate('auth0', {
-				audience: config.auth0.apiAudience,
-				scope: config.auth0.scope,
-				prompt: 'none',
-			})(req, res, next);
+			attemptSilentAuth(req, res, next);
+		} else if (isNotedLoggedIn(req) && !isNotedUserRequestUser(req)) {
+			console.log(`LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user.id}`); // eslint-disable-line max-len
+			req.logout(); // removes req.user
+			attemptSilentAuth(req, res, next);
 		} else {
 			if (isNotedLoggedOut(req) && req.user) {
 				console.log(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
@@ -133,16 +143,8 @@ module.exports = function authRouter(config = {}) {
 	// For all routes, check if the access token is expired and attempt to renew it
 	router.use((req, res, next) => {
 		if (req.user && isExpired(req.user.accessToken)) {
-			// Remove expired token from session
-			req.logout();
-			// Store current url to redirect to after auth
-			req.session.doneUrl = req.originalUrl;
-			// Attempt silent authentication (prompt=none)
-			passport.authenticate('auth0', {
-				audience: config.auth0.apiAudience,
-				scope: config.auth0.scope,
-				prompt: 'none',
-			})(req, res, next);
+			req.logout(); // Remove expired token from session
+			attemptSilentAuth(req, res, next);
 		} else {
 			next();
 		}
