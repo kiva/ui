@@ -8,10 +8,15 @@
 			:standard-image-url="loan.image.default"
 			:is-visitor="true"
 			:use-default-styles="false"
+			:disable-link="true"
 
 			@track-loan-card-interaction="trackInteraction"
+			@image-click="handleClick"
 		/>
-		<div class="hover-loan-card-data-wrap">
+		<div
+			class="hover-loan-card-data-wrap"
+			@click="handleClick"
+		>
 			<p class="name">
 				{{ loan.name }}
 			</p>
@@ -47,6 +52,11 @@ export default {
 		expanded: {
 			type: Boolean,
 			default: false,
+		},
+	},
+	methods: {
+		handleClick() {
+			this.$emit('update-detailed-loan-index');
 		},
 	},
 };

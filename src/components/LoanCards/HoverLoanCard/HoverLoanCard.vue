@@ -23,6 +23,7 @@
 				:loan="loan"
 				:percent-raised="percentRaised"
 				:expanded="expanded"
+				@update-detailed-loan-index="hoverCardSmallUpdateDetailedLoanIndex"
 			/>
 			<hover-loan-card-large
 				:amount-left="amountLeft"
@@ -34,7 +35,7 @@
 				:is-visitor="isVisitor"
 				:is-selected-by-another="isSelectedByAnother"
 				:items-in-basket="itemsInBasket"
-				@update-detailed-loan-index="updateDetailedLoanIndex"
+				@update-detailed-loan-index="hoverCardLargeUpdateDetailedLoanIndex"
 			/>
 			<div
 				class="more-details-wrapper"
@@ -93,6 +94,10 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		preventUpdatingDetailedCard: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		expanded() {
@@ -133,7 +138,9 @@ export default {
 	methods: {
 		handleMouseEnter() {
 			if (this.rowHasDetailedLoan && !this.isDetailed) {
-				this.updateDetailedLoanIndex();
+				if (!this.preventUpdatingDetailedCard) {
+					this.updateDetailedLoanIndex();
+				}
 			} else if (this.hoverEffectActive()) {
 				this.updateHoverLoanIndex();
 			}
@@ -170,12 +177,22 @@ export default {
 		},
 		handleClick() {
 			if (!this.hoverEffectActive()) {
-				this.$emit('update-detailed-loan-index', this.loanIndex);
+				this.updateDetailedLoanIndex();
 			}
 		},
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
 		},
+		hoverCardLargeUpdateDetailedLoanIndex() {
+			if (!this.rowHasDetailedLoan) {
+				this.$emit('set-prevent-updating-detailed-card', true);
+			}
+			this.updateDetailedLoanIndex();
+		},
+		hoverCardSmallUpdateDetailedLoanIndex() {
+			this.$emit('set-prevent-updating-detailed-card', false);
+			this.updateDetailedLoanIndex();
+		}
 	},
 };
 </script>
