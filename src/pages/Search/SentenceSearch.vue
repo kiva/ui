@@ -338,6 +338,10 @@ export default {
 	background-image: none;
 	padding-left: 0;
 
+	&:hover {
+		cursor: pointer;
+	}
+
 	@include breakpoint(medium) {
 		text-align-last: center;
 		padding-left: unset;
