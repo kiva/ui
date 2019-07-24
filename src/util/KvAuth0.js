@@ -1,3 +1,4 @@
+import _get from 'lodash/get';
 import cookieStore from './cookieStore';
 
 // These symbols are unique, and therefore are private to this scope.
@@ -49,6 +50,21 @@ export default class KvAuth0 {
 				this[setAuthData]();
 			}, Number(expiresIn) * 1000);
 		}
+	}
+
+	// Return the kiva id for the current user (or undefined)
+	getKivaId() {
+		const kivaIdKey = 'https://www.kiva.org/kiva_id';
+		return _get(this, `user["${kivaIdKey}"]`)
+			|| _get(this, `user._json["${kivaIdKey}"]`);
+	}
+
+	// Return the last login timestamp for the current user (or 0)
+	getLastLogin() {
+		const lastLoginKey = 'https://www.kiva.org/last_login';
+		return _get(this, `user["${lastLoginKey}"]`)
+			|| _get(this, `user._json["${lastLoginKey}"]`)
+			|| 0;
 	}
 
 	// Silently check for a logged in session with auth0 using hidden iframes
@@ -153,6 +169,8 @@ export const MockKvAuth0 = {
 	enabled: false,
 	user: {},
 	accessToken: '',
+	getKivaId: () => undefined,
+	getLastLogin: () => 0,
 	checkSession: () => Promise.resolve({}),
 	popupLogin: () => Promise.resolve({}),
 	popupCallback: () => Promise.resolve({}),
