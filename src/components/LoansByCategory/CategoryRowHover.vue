@@ -406,7 +406,7 @@ $row-max-width: 63.75rem;
 
 .cards-and-arrows-wrapper {
 	max-width: $row-max-width;
-	margin: 0 auto 1rem;
+	margin: rem-calc(-67) auto 1rem;
 	align-items: center;
 	display: flex;
 	position: relative;

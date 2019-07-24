@@ -10,11 +10,12 @@
 			'shift-right': shiftRight,
 			'shift-right-double': shiftRightDouble,
 		}"
-		@mouseenter="handleMouseEnter"
+		@mouseenter="handleMouseEnterCardMargins"
 		@click="handleClick"
 	>
 		<div
 			class="hover-loan-card-wrapper"
+			@mouseenter="handleMouseEnterCardOnly"
 		>
 			<hover-loan-card-small
 				:amount-left="amountLeft"
@@ -109,6 +110,9 @@ export default {
 		rowHasDetailedLoan() {
 			return this.detailedLoanIndex !== null;
 		},
+		rowHasHoverLoan() {
+			return this.hoverLoanIndex !== null;
+		},
 		shiftLeft() {
 			return !this.rowHasDetailedLoan && this.shiftIncrement === -1;
 		},
@@ -132,6 +136,16 @@ export default {
 				this.updateDetailedLoanIndex();
 			} else if (this.hoverEffectActive()) {
 				this.updateHoverLoanIndex();
+			}
+		},
+		handleMouseEnterCardMargins() {
+			if (this.rowHasHoverLoan) {
+				this.handleMouseEnter();
+			}
+		},
+		handleMouseEnterCardOnly() {
+			if (!this.rowHasHoverLoan) {
+				this.handleMouseEnter();
 			}
 		},
 		hoverEffectActive() {
