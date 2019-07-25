@@ -84,8 +84,8 @@ export default {
 				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
 
 				// subtract reservedAmount shares (minus our own reserved shares)
-				// - only do this for loans that are not expiring soon
-				// - for loans expiring soon we just show remaining shares which are all un-reserved
+				// - only do this for loans that are not ending soon
+				// - for loans ending soon we just show remaining shares which are all un-reserved
 				if (!this.isExpiringSoon) {
 					remainingShares -= (parseFloat(this.reservedAmount) - parseInt(this.price, 10));
 				}
