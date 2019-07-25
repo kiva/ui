@@ -1,0 +1,24 @@
+query loanDescription(
+	$id: Int!,
+){
+	lend {
+		loan {
+			whySpecial
+			... on LoanPartner {
+				lenderRepaymentTerm
+				disbursalDate
+				hasCurrencyExchangeLossLenders
+				partnerName
+				partner {
+					chargesFeesInterest
+					countries {
+						ppp
+						fundsLentInCountry
+						numLoansFundraising
+						fundsLentInCountry
+					}
+				}
+			}    
+		}
+	}
+}
