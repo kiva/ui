@@ -198,7 +198,7 @@ export default {
 			if (mins >= 2) {
 				return `Only ${mins} minutes left! `;
 			}
-			return 'Expiring now!';
+			return 'Ending now!';
 		},
 	},
 	data() {
