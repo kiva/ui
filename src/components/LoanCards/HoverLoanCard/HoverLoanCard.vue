@@ -205,9 +205,8 @@ export default {
 	padding: rem-calc(87) rem-calc($hover-card-right-margin) rem-calc(109) rem-calc($hover-card-right-margin);
 
 	$transition1: padding-bottom $card-expansion-duration $card-expansion-curve;
-	$transition2: transform $card-expansion-duration $card-expansion-curve;
 
-	transition: $transition1, $transition2;
+	transition: $transition1, $hover-card-transition-transform;
 
 	.hover-loan-card-wrapper {
 		position: relative;

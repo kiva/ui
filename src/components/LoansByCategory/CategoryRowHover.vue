@@ -86,7 +86,11 @@
 								'click-View all',
 								`Loan card`]"
 						>
-							<div class="see-all-card">
+							<div
+								class="see-all-card"
+								:class="seeAllCardClass"
+								@mouseenter="updateHoverLoanIndex(null)"
+							>
 								<div class="link">
 									{{ viewAllLoansCategoryTitle }}
 								</div>
@@ -273,6 +277,21 @@ export default {
 				fragment: detailedLoanCardFragment,
 			}) || {};
 		},
+		hoverLoanIsLeftMost() {
+			if (this.noHoverLoan) {
+				return false;
+			}
+
+			const hoverCardDistanceFromLeft = (this.hoverLoanIndex * hoverCardSmallWidthTotal) + this.scrollPos;
+
+			return hoverCardDistanceFromLeft === 0;
+		},
+		seeAllCardClass() {
+			if (this.noHoverLoan) {
+				return '';
+			}
+			return this.hoverLoanIsLeftMost ? 'shift-2x' : 'shift-1x';
+		},
 	},
 	watch: {
 		loanChannel: {
@@ -328,15 +347,6 @@ export default {
 		updateHoverLoanIndex(hoverLoanIndex) {
 			this.hoverLoanIndex = hoverLoanIndex;
 		},
-		hoverLoanIsLeftMost() {
-			if (this.noHoverLoan) {
-				return false;
-			}
-
-			const hoverCardDistanceFromLeft = (this.hoverLoanIndex * hoverCardSmallWidthTotal) + this.scrollPos;
-
-			return hoverCardDistanceFromLeft === 0;
-		},
 		hoverLoanIsRightMost() {
 			if (this.noHoverLoan) {
 				return false;
@@ -363,7 +373,7 @@ export default {
 			return hoverCardDistanceFromRight < hoverCardSmallWidthTotal;
 		},
 		calculateCardShiftIncrement(index) {
-			if (this.hoverLoanIsLeftMost()) {
+			if (this.hoverLoanIsLeftMost) {
 				if (index > this.hoverLoanIndex) {
 					return 2;
 				}
@@ -392,7 +402,7 @@ export default {
 			}
 		},
 		handleMouseLeave() {
-			this.hoverLoanIndex = null;
+			this.updateHoverLoanIndex(null);
 			this.setPreventUpdatingDetailedCard(false);
 		},
 		setPreventUpdatingDetailedCard(newState) {
@@ -407,6 +417,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import "components/loan-cards/hover-loan-card";
 
 $row-max-width: 63.75rem;
 
@@ -545,18 +556,30 @@ a.view-all-link {
 
 // view all loans category card
 .view-all-loans-category {
+	padding-right: 0.625rem;
+	padding-left: 0.625rem;
+
 	.see-all-card {
 		background-color: $very-light-gray;
 		border: 1px solid $kiva-stroke-gray;
 		display: flex;
 		flex-direction: column;
-		height: 100%;
-		margin: auto;
 		padding: rem-calc(50);
-		width: rem-calc(280);
+		width: 13.75rem;
+		height: 14.25rem;
+		margin-top: 5.4375rem;
+		transition: $hover-card-transition-transform, box-shadow $card-expansion-duration $card-expansion-curve;
 
 		&:hover {
-			box-shadow: rem-calc(2) rem-calc(2) rem-calc(4) rgba(0, 0, 0, 0.1);
+			box-shadow: 0 0 rem-calc(6) rgba(0, 0, 0, 0.2);
+		}
+
+		&.shift-1x {
+			transform: translateX($hover-card-width-difference / 2);
+		}
+
+		&.shift-2x {
+			transform: translateX($hover-card-width-difference);
 		}
 	}
 
