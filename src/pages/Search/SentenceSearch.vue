@@ -195,7 +195,8 @@ export default {
 	},
 	data() {
 		return {
-			toFor: 'to'
+			toFor: 'to',
+			itemsInBasket: null,
 		};
 	},
 	inject: [
