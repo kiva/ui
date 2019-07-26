@@ -1,6 +1,7 @@
 import _get from 'lodash/get';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
+import cookieStore from '@/util/cookieStore';
 
 export default {
 	methods: {
@@ -104,6 +105,7 @@ export default {
 		 */
 		redirectToThanks(transactionId) {
 			if (transactionId) {
+				cookieStore.remove('kvbskt', { path: '/', secure: true });
 				window.location = `/thanks?kiva_transaction_id=${transactionId}`;
 			}
 		}
