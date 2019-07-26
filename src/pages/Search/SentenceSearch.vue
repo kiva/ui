@@ -19,10 +19,10 @@
 					clickAnalytics="true"
 					ref="aisConfigure"
 				/>
-				<div class="row search-filter-and-results">
-					<div class="columns small-12">
+				<div class="search-filter-and-results">
+					<div class="small-12">
 						<div class="search-statement-wrapper">
-							<span class="featured-text">
+							<h2>
 								I want to support
 								<!-- documentation for reference: -->
 								<!-- eslint-disable max-len -->
@@ -51,30 +51,31 @@
 								</ais-menu-select>
 								<br class="show-for-small-only">
 								<span class="show-for-small-only">located</span>
-								<br class="hide-for-small-only">in
-								<br class="show-for-small-only">
-								<ais-menu-select
-									:attribute="'locationFacets.lvl0'"
-									:limit="100"
-									class="sentence-search-dropdown"
-									aria-haspopup="true"
-									aria-expanded="false"
-								>
-									<template
-										slot="defaultOption"
-										class="featured-text"
+								<span class="no-break"> in
+									<br class="show-for-small-only">
+									<ais-menu-select
+										:attribute="'locationFacets.lvl0'"
+										:limit="100"
+										class="sentence-search-dropdown"
+										aria-haspopup="true"
+										aria-expanded="false"
 									>
-										any region
-									</template>
-									<template
-										slot="item"
-										slot-scope="{ item }"
-										class="featured-text"
-									>
-										{{ item.label }}
-									</template>
-								</ais-menu-select>
-								<br class="show-for-small-only">
+										<template
+											slot="defaultOption"
+											class="featured-text"
+										>
+											any region
+										</template>
+										<template
+											slot="item"
+											slot-scope="{ item }"
+											class="featured-text"
+										>
+											{{ item.label }}
+										</template>
+									</ais-menu-select>
+								</span>
+								<br>
 								with loans {{ toFor }}
 								<ais-menu-select
 									attribute="sector.name"
@@ -89,7 +90,11 @@
 										@change="toForLanguage(refine, $event.currentTarget.value)"
 										class="featured-text"
 									>
-										<option value="">improve their businesses</option>
+										<option
+											value=""
+										>
+											improve their businesses
+										</option>
 										<option
 											v-for="item in items"
 											:key="item.value"
@@ -100,7 +105,7 @@
 										</option>
 									</select>
 								</ais-menu-select>
-							</span>
+							</h2>
 						</div>
 
 						<ais-state-results>
@@ -281,6 +286,10 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.lend-header-row .heading-region {
+	margin-bottom: rem-calc(18);
+}
+
 .search-filter-and-results {
 	flex-direction: column-reverse;
 
@@ -305,42 +314,76 @@ export default {
 }
 
 .search-statement-wrapper {
-	margin-bottom: rem-calc(32);
-	padding: 0.375rem;
+	background-color: $white;
+	margin-bottom: rem-calc(44);
+	padding: 1.8125rem 2.5rem 0.8rem 2.5rem;
+	border-top: 1px solid $kiva-bg-darkgray;
+	border-bottom: 1px solid $kiva-bg-darkgray;
+
+	@include breakpoint(medium) {
+		padding-bottom: 1rem;
+	}
+}
+
+.search-statement-wrapper h2 {
+	@include breakpoint(medium) {
+		line-height: 1.7;
+	}
 }
 
 .sentence-search-dropdown {
 	background-image: url('~@/assets/images/medium-chevron2x.png');
 	background-repeat: no-repeat;
-	background-position: right 1.3rem;
-	background-size: rem-calc(18);
+	background-position: right rem-calc(20);
+	background-size: rem-calc(12);
 	margin-right: rem-calc(8);
 	margin-bottom: rem-calc(10);
+	height: rem-calc(36);
 
 	@include breakpoint(medium) {
 		margin-bottom: unset;
+		height: rem-calc(42);
+		background-position: right rem-calc(23);
 	}
+}
+
+.no-break {
+	white-space: nowrap;
 }
 
 .ais-MenuSelect {
 	display: inline-block;
 	border-bottom: 1px dashed #118aec;
+	margin-bottom: rem-calc(24);
+
+	@include breakpoint(large) {
+		margin-bottom: rem-calc(16);
+	}
 }
 
 .ais-MenuSelect select {
 	border: none;
 	background-color: transparent;
 	color: $kiva-accent-blue;
-	font-size: 1.5rem;
+	font-size: 1.375rem;
 	line-height: 2.25rem;
-	height: rem-calc(47);
+	height: rem-calc(43);
 	margin-bottom: 0;
 	background-image: none;
+	padding-top: 0;
+	padding-bottom: 0;
 	padding-left: 0;
+
+	&:hover {
+		cursor: pointer;
+	}
 
 	@include breakpoint(medium) {
 		text-align-last: center;
+		font-size: 1.75rem;
 		padding-left: unset;
+		height: rem-calc(47);
+		padding-top: unset;
 	}
 }
 
