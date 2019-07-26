@@ -18,9 +18,9 @@
 					</router-link>
 				</li>
 				<li>
-					<router-link :to="careersUrl">
+					<a :href="careersUrl" target="_blank">
 						Careers
-					</router-link>
+					</a>
 				</li>
 				<li>
 					<router-link :to="sitemapUrl">
@@ -174,9 +174,9 @@
 					<h2>Work with us</h2>
 					<ul>
 						<li>
-							<router-link :to="careersUrl">
+							<a :href="careersUrl" target="_blank">
 								Careers
-							</router-link>
+							</a>
 						</li>
 						<li>
 							<router-link to="/work-with-us/internvolunteers">
@@ -184,9 +184,9 @@
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/work-with-us/fellows">
+							<a href="https://www.careers.kiva.org/fellowships" target="_blank">
 								Kiva fellows
-							</router-link>
+							</a>
 						</li>
 						<li>
 							<router-link to="/work-with-us/reviewers">
@@ -236,7 +236,7 @@ export default {
 			applyUrl: '/borrow',
 			aboutUrl: '/about',
 			helpUrl: '/help',
-			careersUrl: '/work-with-us/careers',
+			careersUrl: 'https://www.careers.kiva.org/',
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',
 			termsUrl: '/legal/terms'
