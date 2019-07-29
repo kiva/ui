@@ -1,6 +1,11 @@
 <template>
 	<div class="borrower-info-header">
-		<borrower-info-name v-if="name" :name="name" :loan-id="loanId" />
+		<borrower-info-name
+			v-if="name"
+			:name="name"
+			:loan-id="loanId"
+			@track-loan-card-interaction="trackInteraction"
+		/>
 		<div class="country" v-if="country">
 			{{ country }}
 		</div>
@@ -26,6 +31,11 @@ export default {
 		name: {
 			type: String,
 			default: ''
+		},
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-loan-card-interaction', args);
 		},
 	},
 };

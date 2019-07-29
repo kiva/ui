@@ -33,6 +33,9 @@ export default kvAuth0 => {
 			return getAuthContext(previousContext, kvAuth0.user, kvAuth0.accessToken);
 		}
 
+		// Return previousContext if on a server process before checkSession block
+		if (kvAuth0.isServer) return getAuthContext(previousContext);
+
 		// Otherwise, check to see if the user has a session on Auth0 and then add that info to the context
 		return new Promise((resolve, reject) => {
 			kvAuth0.checkSession().then(() => {
