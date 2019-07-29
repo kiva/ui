@@ -10,7 +10,6 @@
 			:use-default-styles="false"
 			:disable-link="true"
 
-			@track-loan-card-interaction="trackInteraction"
 			@favorite-toggled="toggleFavorite"
 			@image-click="updateDetailedLoanIndex"
 		/>
@@ -18,7 +17,12 @@
 			<div>
 				<div class="name-row">
 					<kv-flag v-if="loan.geocode.country.isoCode" :country="loan.geocode.country.isoCode" :width="20" />
-					<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name" />
+					<borrower-info-name
+						:name="loan.name"
+						:loan-id="loan.id"
+						class="name"
+						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
+					/>
 				</div>
 				<fundraising-status
 					:amount-left="amountLeft"
@@ -59,7 +63,7 @@
 							interactionElement: 'Lend25'
 						})"
 
-						@add-to-basket="$emit('add-to-basket', $event)"
+						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
 				<div class="matching-text-container">
@@ -126,6 +130,18 @@ export default {
 		},
 		updateDetailedLoanIndex() {
 			this.$emit('update-detailed-loan-index');
+		},
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
+		},
+		trackInteractionBorrowerInfoName(args) {
+			this.trackInteraction({
+				...args,
+				interactionElement: `${args.interactionElement}HoverCard`,
+			});
+		},
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
 		},
 	},
 };

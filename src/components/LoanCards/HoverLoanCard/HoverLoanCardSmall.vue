@@ -10,7 +10,6 @@
 			:use-default-styles="false"
 			:disable-link="true"
 
-			@track-loan-card-interaction="trackInteraction"
 			@image-click="handleClick"
 		/>
 		<div

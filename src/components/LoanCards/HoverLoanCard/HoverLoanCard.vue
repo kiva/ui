@@ -35,6 +35,8 @@
 				:is-visitor="isVisitor"
 				:is-selected-by-another="isSelectedByAnother"
 				:items-in-basket="itemsInBasket"
+				@add-to-basket="handleAddToBasket"
+				@track-interaction="trackInteraction"
 				@update-detailed-loan-index="hoverCardLargeUpdateDetailedLoanIndex"
 			/>
 			<div
@@ -192,7 +194,10 @@ export default {
 		hoverCardSmallUpdateDetailedLoanIndex() {
 			this.$emit('set-prevent-updating-detailed-card', false);
 			this.updateDetailedLoanIndex();
-		}
+		},
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
 	},
 };
 </script>
