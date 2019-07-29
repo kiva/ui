@@ -6,13 +6,16 @@ query loanDescription(
 			id
 			whySpecial
 			hasCurrencyExchangeLossLenders
+			plannedExpirationDate
+			fundraisingDate
+			lenderRepaymentTerm
+			repaymentInterval
 			geocode {
 				country {
 					name
 				}
 			}
 			... on LoanPartner {
-				lenderRepaymentTerm
 				disbursalDate
 				partnerName
 				partner {
@@ -24,7 +27,7 @@ query loanDescription(
 						numLoansFundraising
 					}
 				}
-			}    
+			}
 		}
 	}
 }
