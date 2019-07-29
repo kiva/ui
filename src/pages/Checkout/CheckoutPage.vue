@@ -8,18 +8,6 @@
 							<checkout-steps :current-step="currentStep" />
 						</div>
 
-						<transition
-							v-if="basketItemTimerExpVersion === 'above' && basketTimerText !== null"
-							name="kvfade"
-						>
-							<div class="basket-timer-header">
-								<p>
-									<span><kv-icon name="hourglass" /></span>
-									You’ve reserved this loan for {{ basketTimerText }}
-								</p>
-							</div>
-						</transition>
-
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -158,14 +146,12 @@ import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
-import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import updateExperimentMutation from '@/graphql/mutation/updateExperimentVersion.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -173,7 +159,6 @@ import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
@@ -192,7 +177,6 @@ export default {
 		PayPalExp,
 		KivaCreditPayment,
 		KvButton,
-		KvIcon,
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
@@ -234,9 +218,6 @@ export default {
 			braintree: false,
 			braintreeExpVersion: null,
 			lastPaymentType: null,
-			basketItemTimerExpVersion: 'control',
-			basketTimerText: null,
-			basketTimerInterval: null,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 		};
@@ -270,7 +251,6 @@ export default {
 				return Promise.all([
 					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
 					client.query({ query: experimentQuery, variables: { id: 'bt_v1' } }),
-					client.query({ query: experimentQuery, variables: { id: 'basket_item_timer_v2' } })
 				]);
 			});
 		},
@@ -332,8 +312,16 @@ export default {
 			this.$kvTrackEvent('basket', 'EXP-CASH-673-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
 
-		// Set Up basket timer exp
-		this.initializeBasketItemTimer();
+		// Read assigned version of loan res 20 exp
+		const loanRes20ExpAssignment = this.apollo.readFragment({
+			id: 'Experiment:loan_res_20',
+			fragment: experimentVersionFragment,
+		}) || {};
+		try {
+			this.$kvTrackEvent('basket', 'EXP-CASH-673-Launch', loanRes20ExpAssignment === 'shown' ? 'b' : 'a');
+		} catch (e) {
+			// noop
+		}
 	},
 	mounted() {
 		// update current time every second for reactivity
@@ -520,68 +508,8 @@ export default {
 			}
 			return JSON.stringify(errorObject.original);
 		},
-		initializeBasketItemTimer() {
-			// Read assigned version of basket item experiment
-			const basketItemTimerExpAssignment = this.apollo.readFragment({
-				id: 'Experiment:basket_item_timer_v2',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.basketItemTimerExpVersion = basketItemTimerExpAssignment.version;
-			let basketTimerTrackingVersion;
-			switch (this.basketItemTimerExpVersion) {
-				case 'inline':
-					basketTimerTrackingVersion = 'b';
-					break;
-				case 'above':
-					basketTimerTrackingVersion = 'c';
-					break;
-				default:
-					basketTimerTrackingVersion = 'a';
-			}
-			// Only track the exp for a targeted basket state
-			// preserve original assignment + track if only 1 loan in basket
-			if (this.loans.length === 1) {
-				this.$kvTrackEvent(
-					'basket',
-					'EXP-CASH-947-Basket-Item-Timer',
-					basketTimerTrackingVersion
-				);
-			} else {
-				// Ensure control assignment if no basketed loans or > 1 loan
-				// > prevents the new interface from showing in the BasketItem component
-				this.apollo.mutate({
-					mutation: updateExperimentMutation,
-					variables: {
-						id: 'basket_item_timer_v2',
-						version: 'control',
-					},
-				});
-			}
-
-			this.setBasketTimerText();
-
-			this.basketTimerInterval = setInterval(() => {
-				this.setBasketTimerText();
-			}, 1000);
-		},
-		setBasketTimerText() {
-			const firstLoan = _get(this.loans, '[0]');
-			if (firstLoan && firstLoan.expiryTime !== null) {
-				const reservedDate = new Date(firstLoan.expiryTime);
-				const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
-				const seconds = differenceInSeconds(reservedDate.getTime(), Date.now()) % 60;
-
-				this.basketTimerText = `${mins}m ${seconds}s`;
-
-				if ((reservedDate.getTime() - Date.now()) <= 0) {
-					this.basketTimerText = null;
-					clearInterval(this.basketTimerInterval);
-				}
-			}
-		}
 	},
 	destroyed() {
-		clearInterval(this.basketTimerInterval);
 		clearInterval(this.currentTimeInterval);
 	},
 };
@@ -589,7 +517,6 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-@import 'global/transitions';
 
 .page-content,
 .empty-basket {
@@ -614,64 +541,9 @@ export default {
 .page-content {
 	padding: 1.625rem 0;
 
-	.checkout-step {
-		position: relative;
-		text-align: center;
-		height: 2rem;
-		display: block;
-		margin: 1rem 0 2rem;
-
-		hr {
-			border-bottom: 1px solid $subtle-gray;
-			margin: 2.5rem 0;
-		}
-
-		span {
-			display: block;
-			margin: -4.2rem auto 0;
-			width: 3.4rem;
-			height: 3.4rem;
-
-			&.number-icon {
-				background: $white;
-				color: $subtle-gray;
-				border: 1px solid $subtle-gray;
-				border-radius: 1.7rem;
-				font-size: 1.7rem;
-				text-align: center;
-				line-height: 3.3rem;
-			}
-		}
-	}
-
 	.basket-wrap {
 		position: relative;
 		padding-bottom: 0.5rem;
-
-		.basket-timer-header {
-			display: block;
-			width: 100%;
-			text-align: center;
-			padding: 0 1rem 2.25rem;
-
-			p {
-				span {
-					display: inline-block;
-					vertical-align: text-top;
-					height: rem-calc(28);
-					margin-right: 0.5rem;
-
-					.icon-hourglass {
-						fill: $kiva-accent-red;
-						width: rem-calc(20);
-						height: rem-calc(28);
-					}
-				}
-
-				font-size: 1.5rem;
-				color: $kiva-accent-red;
-			}
-		}
 
 		.totals-and-actions {
 			display: block;
