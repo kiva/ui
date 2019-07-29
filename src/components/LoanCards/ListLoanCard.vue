@@ -61,6 +61,7 @@
 						:name="loan.name"
 						:loan-id="loan.id"
 						class="list-loan-card-borrower-info-header"
+						@track-loan-card-interaction="trackInteraction"
 					/>
 				</div>
 				<div class="large-7 xlarge-6 columns show-for-large">
@@ -100,6 +101,7 @@
 					:use="loan.use"
 					:loan-id="loan.id"
 					class="small-12 columns"
+					@track-loan-card-interaction="trackInteraction"
 				/>
 				<!-- eslint-disable max-len -->
 				<div
