@@ -4,6 +4,7 @@
 			:country="country"
 			:name="name"
 			:loan-id="loanId"
+			@track-loan-card-interaction="trackInteraction"
 		/>
 		<borrower-info-body
 			:amount="amount"
@@ -12,6 +13,7 @@
 			:use="use"
 			:name="name"
 			:loan-id="loanId"
+			@track-loan-card-interaction="trackInteraction"
 		/>
 	</div>
 </template>
@@ -64,6 +66,11 @@ export default {
 	components: {
 		BorrowerInfoBody,
 		BorrowerInfoHeader,
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-loan-card-interaction', args);
+		},
 	},
 };
 </script>

@@ -46,6 +46,7 @@
 					:use="loan.use"
 					:loan-id="loan.id"
 					:max-use-length="145"
+					@track-loan-card-interaction="trackInteraction"
 				/>
 				<action-button
 					class="expandable-loan-card-action-button"
@@ -108,6 +109,11 @@ export default {
 			usingTouch unfortunately.
 			*/
 			return !this.categoryRowArrowsVisible() && !this.expanded;
+		},
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
 		},
 	},
 };

@@ -87,6 +87,7 @@
 						:use="loan.use"
 						:loan-id="loan.id"
 						read-more-link-text="Read full details"
+						@track-loan-card-interaction="trackInteraction"
 					/>
 				</div>
 				<div class="fundraising-status-container">
@@ -146,6 +147,7 @@
 					:loan-id="loan.id"
 					:disable-link="true"
 					read-more-link-text=""
+					@track-loan-card-interaction="trackInteraction"
 				/>
 			</info-panel>
 			<borrower-story-panel
