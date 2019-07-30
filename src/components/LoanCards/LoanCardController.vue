@@ -199,7 +199,7 @@ export default {
 			if (mins >= 2) {
 				return `Only ${mins} minutes left! `;
 			}
-			return 'Expiring now!';
+			return 'Ending now!';
 		},
 		expiringSoonMessage() {
 			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
