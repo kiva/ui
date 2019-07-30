@@ -318,7 +318,11 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		try {
-			this.$kvTrackEvent('basket', 'EXP-CASH-673-Launch', loanRes20ExpAssignment === 'shown' ? 'b' : 'a');
+			this.$kvTrackEvent(
+				'basket',
+				'EXP-CASH-1023-Aug2019',
+				loanRes20ExpAssignment.version === 'shown' ? 'b' : 'a'
+			);
 		} catch (e) {
 			// noop
 		}

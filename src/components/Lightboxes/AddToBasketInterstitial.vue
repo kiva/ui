@@ -138,6 +138,11 @@ export default {
 			if (loanRes20ExpAssignment.version === 'shown') {
 				this.setTimedMessage = true;
 			}
+			this.$kvTrackEvent(
+				'basket',
+				'EXP-CASH-1023-Aug2019',
+				loanRes20ExpAssignment.version === 'shown' ? 'b' : 'a'
+			);
 		} catch (e) {
 			// noop
 		}
