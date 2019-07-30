@@ -92,7 +92,6 @@ import _find from 'lodash/find';
 import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-// import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
