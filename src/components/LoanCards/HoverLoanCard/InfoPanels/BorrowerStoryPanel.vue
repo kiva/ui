@@ -15,6 +15,10 @@
 		<router-link
 			:to="`/lend/${loanId}`"
 			v-if="readMoreLinkText"
+			@click="$emit('track-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'readMoreStoryPanel'
+			})"
 		>
 			{{ readMoreLinkText }}
 		</router-link>
