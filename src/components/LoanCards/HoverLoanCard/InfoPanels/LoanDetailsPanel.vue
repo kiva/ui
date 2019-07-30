@@ -22,12 +22,12 @@
 					{{ disbursalDateFormatted }}
 				</p>
 			</li>
-			<li>
+			<!-- <li>
 				<label>Currency exchange loss:</label>
 				<p class="data">
 					{{ currencyExchangeLoss }}
 				</p>
-			</li>
+			</li> -->
 			<li>
 				<label>Facilitated by Field Partner:</label>
 				<p class="data">
@@ -35,7 +35,7 @@
 				</p>
 			</li>
 			<li>
-				<label>Is borrower paying interest? </label>
+				<label>Is borrower paying interest?</label>
 				<p class="data">
 					{{ borrowerPayingInterestFormatted }}
 				</p>
@@ -43,23 +43,24 @@
 			<li>
 				<label>Field Partner risk rating:</label>
 				<p class="data">
-					{{ riskRating }}
+					{{ riskRating }} stars
 				</p>
 			</li>
 		</ul>
 		<ul>
-			<!-- The size of the following tag will need to be adjusted -->
-			<h3>{{ country }} country facts</h3>
-			<li>
+			<h3 class="country-heading">
+				{{ country }} country facts
+			</h3>
+			<!-- <li>
 				<label>Average annual income (USD):</label>
 				<p class="data">
 					{{ avgAnnualIncome }}
 				</p>
-			</li>
+			</li> -->
 			<li>
 				<label>Funds lent in {{ country }}:</label>
 				<p class="data">
-					{{ fundsLentInCountry }}
+					{{ fundslentInCountryFormatted }}
 				</p>
 			</li>
 			<li>
@@ -68,15 +69,15 @@
 					{{ loansCurrentlyFundraising }}
 				</p>
 			</li>
-			<li>
+			<!-- <li>
 				<label>Loans transacted in:</label>
 				<p class="data">
 					{{ loansTransactedIn }}
 				</p>
-			</li>
+			</li> -->
 		</ul>
 		<div>
-			<h2>This loan is special because</h2>
+			<h3>This loan is special because</h3>
 			<p class="data">
 				{{ whySpecial }}
 			</p>
@@ -86,20 +87,14 @@
 
 <script>
 import _get from 'lodash/get';
-import {
-	format,
-	// differenceInMinutes,
-	// differenceInHours,
-	// differenceInDays
-} from 'date-fns';
+import numeral from 'numeral';
+import { format } from 'date-fns';
 import InfoPanel from './InfoPanel';
-// import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
 
 export default {
 	components: {
 		InfoPanel,
-		// KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	props: {
@@ -120,14 +115,13 @@ export default {
 			repaymentSchedule: '',
 			borrowerPayingInterest: '',
 			facilitatedByFieldPartner: '',
-
-			currencyExchangeLoss: 'test',
-			riskRating: 'test',
-			avgAnnualIncome: 'test',
-			fundsLentInCountry: 'test',
-			loansCurrentlyFundraising: 'test',
-			loansTransactedIn: 'test',
-			whySpecial: 'test',
+			whySpecial: '',
+			riskRating: '',
+			avgAnnualIncome: '',
+			fundsLentInCountry: '',
+			loansCurrentlyFundraising: '',
+			// loansTransactedIn: 'test',
+			// currencyExchangeLoss: 'test',
 		};
 	},
 	apollo: {
@@ -138,24 +132,25 @@ export default {
 			};
 		},
 		result({ data }) {
-			// This list of data is good
 			this.country = _get(data, 'lend.loan.geocode.country.name');
 			this.disbursalDate = _get(data, 'lend.loan.disbursalDate');
 			this.loanLength = _get(data, 'lend.loan.lenderRepaymentTerm');
 			this.repaymentSchedule = _get(data, 'lend.loan.repaymentInterval');
 			this.borrowerPayingInterest = _get(data, 'lend.loan.partner.chargesFeesInterest');
-
 			this.facilitatedByFieldPartner = _get(data, 'lend.loan.partnerName');
 			this.trustee = _get(data, 'lend.loan.trusteeName');
-
-			// This data needs to be formatted/calculated/verified
-			this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
-			this.riskRating = _get(data, 'lend.loan.partner.riskRating');
-			this.avgAnnualIncome = _get(data, 'lend.loan.partner.countries.ppp');
-			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries.fundsLentInCountry');
-			this.loansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries.numLoansFundraising');
-			// this.loansTransactedIn = _get(data, 'lend.loan.partner.countries.fundsLentInCountry');
 			this.whySpecial = _get(data, 'lend.loan.whySpecial');
+			this.avgAnnualIncome = _get(data, 'lend.loan.partner.countries[0].ppp');
+			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries[0].fundsLentInCountry');
+			this.loansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
+
+			// This needs to be formatted from the returned string into a star display
+			// Ticket created for this: cash-1151
+			this.riskRating = _get(data, 'lend.loan.partner.riskRating');
+
+			// This data needs to be added/configured in graphql before displaying it
+			// this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
+			// this.loansTransactedIn = _get(data, 'lend.loan.partner.countries.fundsLentInCountry');
 		},
 	},
 	computed: {
@@ -164,6 +159,9 @@ export default {
 		},
 		disbursalDateFormatted() {
 			return format(this.disbursalDate, 'MMMM DD, YYYY');
+		},
+		fundslentInCountryFormatted() {
+			return numeral(this.fundsLentInCountry).format('$0,0.00');
 		},
 		borrowerPayingInterestFormatted() {
 			// Alters borrowerPayingInterest boolean FROM true/false TO yes/no
@@ -198,39 +196,16 @@ ul {
 	list-style: none;
 }
 
-label {
-	display: inline-block;
-}
-
 .data {
 	color: $kiva-green;
-	display: inline-block;
 }
 
 .repayment-schedule-text {
 	text-transform: capitalize;
 }
 
-#loading-overlay {
-	position: absolute;
-	width: auto;
-	height: auto;
-	left: 1rem;
-	right: 1rem;
-	bottom: 0;
-	top: 0;
-	background-color: rgba($platinum, 0.7);
-
-	.spinner-wrapper {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		height: 100%;
-		top: auto;
-		left: auto;
-		transform: none;
-		transition: top 100ms linear;
-	}
+.country-heading {
+	color: $black;
 }
+
 </style>
