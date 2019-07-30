@@ -31,7 +31,7 @@
 			<li>
 				<label>Facilitated by Field Partner:</label>
 				<p class="data">
-					{{}}
+					{{ facilitatedByFieldPartnerFormatted }}
 				</p>
 			</li>
 			<li>
@@ -119,6 +119,7 @@ export default {
 			loanLength: '',
 			repaymentSchedule: '',
 			borrowerPayingInterest: '',
+			facilitatedByFieldPartner: '',
 
 			currencyExchangeLoss: 'test',
 			riskRating: 'test',
@@ -143,6 +144,9 @@ export default {
 			this.loanLength = _get(data, 'lend.loan.lenderRepaymentTerm');
 			this.repaymentSchedule = _get(data, 'lend.loan.repaymentInterval');
 			this.borrowerPayingInterest = _get(data, 'lend.loan.partner.chargesFeesInterest');
+
+			this.facilitatedByFieldPartner = _get(data, 'lend.loan.partnerName');
+			this.trustee = _get(data, 'lend.loan.trusteeName');
 
 			// This data needs to be formatted/calculated/verified
 			this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
@@ -171,6 +175,17 @@ export default {
 				formattedReturn = 'Yes';
 			}
 			return formattedReturn;
+		},
+		facilitatedByFieldPartnerFormatted() {
+			let facilitatedByFieldPartnerFormatted = '';
+			if (this.facilitatedByFieldPartner !== '') {
+				facilitatedByFieldPartnerFormatted = this.facilitatedByFieldPartner;
+			} else if (this.trustee !== '') {
+				facilitatedByFieldPartnerFormatted = this.trustee;
+			} else if (this.facilitatedByFieldPartner === '' && this.trustee === '') {
+				facilitatedByFieldPartnerFormatted = 'Not facilitated by a Field Partner or Trustee';
+			}
+			return facilitatedByFieldPartnerFormatted;
 		}
 	},
 };
