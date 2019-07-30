@@ -63,7 +63,12 @@
 			</div>
 			<div class="basic-info-flex-column">
 				<div class="name-location-sector">
-					<borrower-info-name :name="loan.name" :loan-id="loan.id" class="name" />
+					<borrower-info-name
+						:name="loan.name"
+						:loan-id="loan.id"
+						class="name"
+						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
+					/>
 					<div class="location-sector-row">
 						<kv-flag
 							v-if="loan.geocode.country.isoCode"
@@ -153,6 +158,7 @@
 			<borrower-story-panel
 				:loan-id="loan.id"
 				read-more-link-text=""
+				@track-interaction="trackInteraction"
 			/>
 			<!-- <loan-details-panel :loan-id="loan.id" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
@@ -173,7 +179,7 @@
 			</div>
 		</div>
 		<div class="close-button-wrapper">
-			<button @click="$emit('close-detailed-loan-card')" class="close-button">
+			<button @click="handleClickClose" class="close-button">
 				<kv-icon name="x" />
 			</button>
 		</div>
@@ -286,6 +292,19 @@ export default {
 	methods: {
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
+		},
+		trackInteractionBorrowerInfoName(args) {
+			this.trackInteraction({
+				...args,
+				interactionElement: `${args.interactionElement}DetailedCard`,
+			});
+		},
+		handleClickClose() {
+			this.trackInteraction({
+				interactionType: 'click-close',
+				interactionElement: 'detailed-loan-card'
+			});
+			this.$emit('close-detailed-loan-card');
 		},
 	},
 };
