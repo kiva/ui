@@ -3,6 +3,7 @@
 		price="25"
 		:loan-id="loanId"
 		class="lend-25-button"
+		:hide-adding-to-basket-text="hideAddingToBasketText"
 		@add-to-basket="$emit('add-to-basket', $event)"
 	>
 		Lend $25
@@ -20,6 +21,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: null
+		},
+		hideAddingToBasketText: {
+			type: Boolean,
+			default: false,
 		},
 	},
 };

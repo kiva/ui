@@ -6,9 +6,13 @@
 	>
 		<slot>Lend now</slot>
 	</kv-button>
-	<kv-button v-else class="lend-button adding-to-basket">
+	<kv-button
+		v-else
+		class="lend-button adding-to-basket"
+		:class="{'hide-adding-to-basket-text': hideAddingToBasketText}"
+	>
 		<kv-loading-spinner />
-		Adding to basket
+		<span v-if="!hideAddingToBasketText">Adding to basket</span>
 	</kv-button>
 </template>
 
@@ -34,6 +38,10 @@ export default {
 		price: {
 			type: [Number, String],
 			default: 25,
+		},
+		hideAddingToBasketText: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
@@ -123,5 +131,12 @@ export default {
 
 .lend-by-category-page .adding-to-basket.button.smaller {
 	font-size: 1rem;
+
+	&.hide-adding-to-basket-text {
+		.loading-spinner {
+			height: 1.125rem;
+			width: 1.125rem;
+		}
+	}
 }
 </style>
