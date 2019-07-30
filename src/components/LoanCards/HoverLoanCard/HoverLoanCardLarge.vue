@@ -57,6 +57,8 @@
 						:is-funded="isFunded"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-simple-lend-button="true"
+						:hide-adding-to-basket-text="true"
+						:minimal-checkout-button="true"
 
 						@click.native="trackInteraction({
 							interactionType: 'addToBasket',

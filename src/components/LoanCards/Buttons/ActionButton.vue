@@ -4,6 +4,8 @@
 		class="action-button smaller"
 		:loan-id="loanId"
 		:loan="loan"
+		:hide-adding-to-basket-text="hideAddingToBasketText"
+		:minimal-checkout-button="minimalCheckoutButton"
 		@add-to-basket="handleAddToBasketEvent"
 	/>
 </template>
@@ -56,6 +58,14 @@ export default {
 		isSimpleLendButton: {
 			type: Boolean,
 			default: false
+		},
+		hideAddingToBasketText: {
+			type: Boolean,
+			default: false,
+		},
+		minimalCheckoutButton: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	computed: {

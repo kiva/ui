@@ -4,8 +4,8 @@
 		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, 'true']"
 		to="/basket"
 	>
-		<kv-icon name="check-in-circle" />
-		Checkout now
+		<kv-icon name="check-in-circle" v-if="!minimalCheckoutButton" />
+		Checkout<span v-if="!minimalCheckoutButton"> now</span>
 	</kv-button>
 </template>
 
@@ -22,6 +22,10 @@ export default {
 		loanId: {
 			type: Number,
 			default: null
+		},
+		minimalCheckoutButton: {
+			type: Boolean,
+			default: false,
 		},
 	},
 };
