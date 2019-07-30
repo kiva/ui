@@ -11,10 +11,6 @@ query checkoutSettings($basketId: String) {
 			key
 			value
 		}
-		basketItemTimerExp: uiExperimentSetting(key: "basket_item_timer_v2") {
-			key
-			value
-		}
 	}
 	shop (basketId: $basketId) {
 		basket {

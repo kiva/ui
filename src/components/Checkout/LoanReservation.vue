@@ -3,12 +3,23 @@
 		<span v-if="expiryTime">
 			<!-- The loan-message class is on all possible loan-message return types for use in automated tests
 			that QA/David configured -->
-			<div
-				class="loan-message"
-				v-if="loanReservationMsg1"
-			>
+
+			<!-- Loading state -->
+			<div class="loan-message" v-if="calculatingMessage">
+				<em>Calculating loan reservation...</em>
+			</div>
+			<!-- Not Reserved -->
+			<div class="loan-message" v-if="loanReservationMsg1">
 				Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
 			</div>
+			<!-- Time Based Messages -->
+			<div
+				v-if="loanReservationMsg2 || loanReservationMsg3 || loanReservationMsg4"
+				class="loan-message"
+				:class="{red: loanReservationMsg3 || loanReservationMsg4}"
+			>{{ differenceInWords }}
+			</div>
+
 			<!-- TODO: Replace this lightbox with a Popper tip message. -->
 			<kv-lightbox
 				class="loanNotReservedLightbox"
@@ -17,31 +28,18 @@
 			>
 				<h2 slot="title">What does it mean that my loan is not reserved?</h2>
 				<div>
-					Loans will not be reserved if they've been in your basket for more than 45 minutes or have less
-					than 6 hours left to fundraise. This means there's a chance this loan may be funded by other lenders
-					even though it's in your basket. To make this loan, please proceed through the checkout process.
+					Loans will not be reserved if they've been in your basket for more than {{ reservationLength }}
+					minutes or have less than 6 hours left to fundraise. This means there's a chance this loan may be
+					funded by other lenders even though it's in your basket. To make this loan, please proceed through
+					the checkout process.
 				</div>
 			</kv-lightbox>
-
-			<div
-				class="loan-message"
-				:class="{hide: hideTimedMessage}"
-				v-if="loanReservationMsg2"
-			>{{ differenceInWords }}
-			</div>
-
-			<div
-				v-if="loanReservationMsg3 || loanReservationMsg4"
-				class="loan-message red"
-				:class="{hide: hideTimedMessage}"
-			>{{ differenceInWords }}
-			</div>
 		</span>
 	</div>
 </template>
 
 <script>
-import { differenceInMinutes, differenceInSeconds } from 'date-fns';
+import { differenceInMinutes, differenceInSeconds, subMinutes } from 'date-fns';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -57,14 +55,15 @@ export default {
 			loanReservationMsg2: false,
 			loanReservationMsg3: false,
 			loanReservationMsg4: false,
+			calculatingMessage: true,
 		};
 	},
 	props: {
 		activateTimer: {
 			type: Boolean,
-			default: false
+			default: true
 		},
-		hideTimedMessage: {
+		setTimedMessage: {
 			type: Boolean,
 			default: false
 		},
@@ -76,6 +75,17 @@ export default {
 			type: Boolean,
 			default: false
 		},
+	},
+	computed: {
+		reservedDate() {
+			const shortendedDate = subMinutes(new Date(this.expiryTime), 25);
+			const standardDate = new Date(this.expiryTime);
+			const reservedDate = this.setTimedMessage ? shortendedDate : standardDate;
+			return reservedDate;
+		},
+		reservationLength() {
+			return this.setTimedMessage ? '20' : '45';
+		}
 	},
 	methods: {
 		triggerDefaultLightbox() {
@@ -89,19 +99,18 @@ export default {
 		},
 		reservationMessage() {
 			if (this.expiryTime !== null) {
-				const reservedDate = new Date(this.expiryTime);
-				const mins = differenceInMinutes(reservedDate.getTime(), Date.now());
-				const seconds = differenceInSeconds(reservedDate.getTime(), Date.now()) % 60;
+				const mins = differenceInMinutes(this.reservedDate.getTime(), Date.now());
+				const seconds = differenceInSeconds(this.reservedDate.getTime(), Date.now()) % 60;
 
-				let warningMessageUpperBoundMinutes = 6;
+				let warningMessageUpperBoundMinutes = 5;
 				let differenceInWords = `Reserved for ${mins} more minutes`;
 
 				if (this.activateTimer === true) {
-					warningMessageUpperBoundMinutes = 10;
+					warningMessageUpperBoundMinutes = 9;
 					differenceInWords = `Reservation expires in ${mins}m ${seconds}s`;
 				}
 
-				if ((reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {
+				if ((this.reservedDate.getTime() - Date.now()) <= 0 || this.isExpiringSoon) {
 					clearInterval(this.reservationMessageId);
 					this.loanReservationMsg1 = true;
 					this.loanReservationMsg2 = false;
@@ -109,9 +118,11 @@ export default {
 					this.loanReservationMsg4 = false;
 				} else if (mins > warningMessageUpperBoundMinutes) {
 					this.setDifferenceInWords(differenceInWords);
+					this.loanReservationMsg1 = false;
 					this.loanReservationMsg2 = true;
 				} else if (mins > 1 && mins <= warningMessageUpperBoundMinutes) {
 					this.setDifferenceInWords(differenceInWords);
+					this.loanReservationMsg2 = false;
 					this.loanReservationMsg3 = true;
 				} else if (mins <= 1) {
 					differenceInWords = this.activateTimer === true
@@ -119,8 +130,11 @@ export default {
 						: 'Reserved for 1 more minute';
 
 					this.setDifferenceInWords(differenceInWords);
+					this.loanReservationMsg3 = false;
 					this.loanReservationMsg4 = true;
 				}
+				// clear calculating message
+				this.calculatingMessage = false;
 			}
 		},
 		activateReservationTimer() {
@@ -130,9 +144,6 @@ export default {
 				this.reservationMessage();
 			}, 1000);
 		}
-	},
-	created() {
-		this.reservationMessage();
 	},
 	mounted() {
 		if (this.activateTimer === true) {

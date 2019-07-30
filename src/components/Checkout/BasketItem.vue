@@ -16,8 +16,7 @@
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
-					:activate-timer="activateTimer"
-					:hide-timed-message="hideTimedMessage"
+					:set-timed-message="setTimedMessage"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -47,8 +46,7 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
@@ -76,28 +74,25 @@ export default {
 	},
 	data() {
 		return {
-			activateTimer: false,
+			activateTimer: true,
 			loanVisible: true,
-			basketItemTimerExpVersion: 'control',
-			hideTimedMessage: false,
+			loanRes20Version: 'control',
+			setTimedMessage: false,
 		};
 	},
 	created() {
-		// watch assigned version of basket item timer experiment
-		this.apollo.watchQuery({
-			query: experimentQuery,
-			variables: { id: 'basket_item_timer_v2' },
-		}).subscribe(({ data }) => {
-			this.basketItemTimerExpVersion = _get(data, 'experiment.version') || null;
-			if (this.basketItemTimerExpVersion !== null && this.basketItemTimerExpVersion === 'inline') {
-				this.activateTimer = true;
-			} else if (this.basketItemTimerExpVersion === 'above') {
-				this.activateTimer = true;
-				this.hideTimedMessage = true;
-			} else {
-				this.activateTimer = false;
+		// Read assigned version of loan res 20 exp
+		const loanRes20ExpAssignment = this.apollo.readFragment({
+			id: 'Experiment:loan_res_20',
+			fragment: experimentVersionFragment,
+		}) || {};
+		try {
+			if (loanRes20ExpAssignment.version === 'shown') {
+				this.setTimedMessage = true;
 			}
-		});
+		} catch (e) {
+			// noop
+		}
 	},
 	methods: {
 		onLoanUpdate($event) {
