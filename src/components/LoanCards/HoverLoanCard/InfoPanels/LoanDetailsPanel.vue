@@ -3,84 +3,91 @@
 		<template #title>
 			Loan Details
 		</template>
-		<ul>
-			<li>
-				<label>Loan length:</label>
-				<span class="data">
-					{{ loanLength }} months
-				</span>
-			</li>
-			<li>
-				<label>Repayment schedule:</label>
-				<span class="data repayment-schedule-text">
-					{{ repaymentSchedule }}
-				</span>
-			</li>
-			<li>
-				<label>Disbursal date:</label>
+		<div v-if="!loanLength" id="loading-overlay">
+			<div class="spinner-wrapper">
+				<kv-loading-spinner />
+			</div>
+		</div>
+		<div v-else>
+			<ul>
+				<li>
+					<label>Loan length:</label>
+					<span class="data">
+						{{ loanLength }} months
+					</span>
+				</li>
+				<li>
+					<label>Repayment schedule:</label>
+					<span class="data repayment-schedule-text">
+						{{ repaymentSchedule }}
+					</span>
+				</li>
+				<li>
+					<label>Disbursal date:</label>
+					<p class="data">
+						{{ disbursalDateFormatted }}
+					</p>
+				</li>
+				<!-- <li>
+					<label>Currency exchange loss:</label>
+					<p class="data">
+						{{ currencyExchangeLoss }}
+					</p>
+				</li> -->
+				<li>
+					<label>Facilitated by Field Partner:</label>
+					<p class="data">
+						{{ facilitatedByFieldPartnerFormatted }}
+					</p>
+				</li>
+				<li>
+					<label>Is borrower paying interest?</label>
+					<p class="data">
+						{{ borrowerPayingInterestFormatted }}
+					</p>
+				</li>
+				<li>
+					<label>Field Partner risk rating:</label>
+					<p class="data">
+						{{ riskRating }} stars
+					</p>
+				</li>
+			</ul>
+			<ul>
+				<h3 class="country-heading">
+					{{ country }} country facts
+				</h3>
+				<!-- <li>
+					<label>Average annual income (USD):</label>
+					<p class="data">
+						{{ avgAnnualIncome }}
+					</p>
+				</li> -->
+				<li>
+					<label>Funds lent in {{ country }}:</label>
+					<p class="data">
+						{{ fundslentInCountryFormatted }}
+					</p>
+				</li>
+				<li>
+					<label>Loans currently fundraising:</label>
+					<p class="data">
+						{{ loansCurrentlyFundraising }}
+					</p>
+				</li>
+				<!-- <li>
+					<label>Loans transacted in:</label>
+					<p class="data">
+						{{ loansTransactedIn }}
+					</p>
+				</li> -->
+			</ul>
+			<div>
+				<h3>This loan is special because</h3>
 				<p class="data">
-					{{ disbursalDateFormatted }}
+					{{ whySpecial }}
 				</p>
-			</li>
-			<!-- <li>
-				<label>Currency exchange loss:</label>
-				<p class="data">
-					{{ currencyExchangeLoss }}
-				</p>
-			</li> -->
-			<li>
-				<label>Facilitated by Field Partner:</label>
-				<p class="data">
-					{{ facilitatedByFieldPartnerFormatted }}
-				</p>
-			</li>
-			<li>
-				<label>Is borrower paying interest?</label>
-				<p class="data">
-					{{ borrowerPayingInterestFormatted }}
-				</p>
-			</li>
-			<li>
-				<label>Field Partner risk rating:</label>
-				<p class="data">
-					{{ riskRating }} stars
-				</p>
-			</li>
-		</ul>
-		<ul>
-			<h3 class="country-heading">
-				{{ country }} country facts
-			</h3>
-			<!-- <li>
-				<label>Average annual income (USD):</label>
-				<p class="data">
-					{{ avgAnnualIncome }}
-				</p>
-			</li> -->
-			<li>
-				<label>Funds lent in {{ country }}:</label>
-				<p class="data">
-					{{ fundslentInCountryFormatted }}
-				</p>
-			</li>
-			<li>
-				<label>Loans currently fundraising:</label>
-				<p class="data">
-					{{ loansCurrentlyFundraising }}
-				</p>
-			</li>
-			<!-- <li>
-				<label>Loans transacted in:</label>
-				<p class="data">
-					{{ loansTransactedIn }}
-				</p>
-			</li> -->
-		</ul>
-		<div>
-			<h3>This loan is special because</h3>
-			<p class="data">
-				{{ whySpecial }}
-			</p>
+			</div>
 		</div>
 	</info-panel>
 </template>
@@ -91,10 +98,12 @@ import numeral from 'numeral';
 import { format } from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
 		InfoPanel,
+		KvLoadingSpinner
 	},
 	inject: ['apollo'],
 	props: {
@@ -207,5 +216,4 @@ ul {
 .country-heading {
 	color: $black;
 }
-
 </style>
