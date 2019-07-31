@@ -107,8 +107,8 @@
 			>&rsaquo;</span>
 		</div>
 
-		<kv-expandable>
-			<div v-if="detailedLoanCacheId">
+		<kv-expandable :delay="150" easing="linear">
+			<div v-if="detailedLoanCacheId" ref="detailedLoanCardContainer">
 				<loan-card-controller
 					class="expanded-card-row"
 					loan-card-type="DetailedLoanCard"
@@ -134,10 +134,13 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 const hoverCardSmallWidth = 220;
 const hoverCardRightMargin = 10;
 const hoverCardSmallWidthTotal = hoverCardSmallWidth + hoverCardRightMargin * 2;
+const hoverCardSmallPaddingTop = 87;
+const cardExpansionDuration = 150;
 
 export default {
 	components: {
@@ -146,6 +149,7 @@ export default {
 	},
 	mixins: [
 		categoryRowArrowsVisibleMixin,
+		smoothScrollMixin,
 	],
 	inject: ['apollo'],
 	props: {
@@ -302,7 +306,23 @@ export default {
 			},
 			immediate: true,
 			deep: true,
-		}
+		},
+		detailedLoanIndex(newValue, oldValue) {
+			if (this.runningOnServer()) {
+				return;
+			}
+
+			const isMobile = document.documentElement.clientWidth < 480;
+			const detailedLoanIsOpening = oldValue === null && newValue !== null;
+
+			if (isMobile) {
+				this.$nextTick(() => {
+					this.smoothScrollToDetailedPanel();
+				});
+			} else if (detailedLoanIsOpening) {
+				this.smoothScrollToLoanRow();
+			}
+		},
 	},
 	mounted() {
 		this.saveWindowWidth();
@@ -410,6 +430,27 @@ export default {
 		},
 		handleSetPreventUpdatingDetailedCard(newState) {
 			this.setPreventUpdatingDetailedCard(newState);
+		},
+		runningOnServer() {
+			return typeof window === 'undefined' || typeof document === 'undefined';
+		},
+		smoothScrollToLoanRow() {
+			if (!this.runningOnServer() && this.$refs.innerWrapper) {
+				const bodyRect = document.body.getBoundingClientRect();
+				const detailedLoanCardRect = this.$refs.innerWrapper.getBoundingClientRect();
+
+				const yPosition = detailedLoanCardRect.top - bodyRect.top + hoverCardSmallPaddingTop - 10;
+				this.smoothScrollTo({ yPosition, millisecondsToAnimate: cardExpansionDuration });
+			}
+		},
+		smoothScrollToDetailedPanel() {
+			if (!this.runningOnServer() && this.$refs.detailedLoanCardContainer) {
+				const bodyRect = document.body.getBoundingClientRect();
+				const detailedLoanCardRect = this.$refs.detailedLoanCardContainer.getBoundingClientRect();
+
+				const yPosition = detailedLoanCardRect.top - bodyRect.top;
+				this.smoothScrollTo({ yPosition, millisecondsToAnimate: cardExpansionDuration });
+			}
 		},
 	},
 };
