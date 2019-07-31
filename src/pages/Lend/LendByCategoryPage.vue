@@ -22,22 +22,25 @@
 		</div>
 
 		<div>
-			<component
-				:is="categoryRowType"
-				class="loan-category-row"
+			<div
+				class="loan-category-row-wrapper"
 				:class="{'hover-row': showHoverLoanCards}"
 				v-for="(category, index) in categories"
 				:key="category.id"
-				:loan-channel="category"
-				:items-in-basket="itemsInBasket"
-				:row-number="index + 1"
-				:set-id="categorySetId"
-				:is-logged-in="isLoggedIn"
-				:show-category-description="showCategoryDescription"
-				:show-expandable-loan-cards="showExpandableLoanCards"
-				ref="categoryRow"
-				@scrolling-row="handleScrollingRow"
-			/>
+			>
+				<component
+					:is="categoryRowType"
+					:loan-channel="category"
+					:items-in-basket="itemsInBasket"
+					:row-number="index + 1"
+					:set-id="categorySetId"
+					:is-logged-in="isLoggedIn"
+					:show-category-description="showCategoryDescription"
+					:show-expandable-loan-cards="showExpandableLoanCards"
+					ref="categoryRow"
+					@scrolling-row="handleScrollingRow"
+				/>
+			</div>
 		</div>
 
 		<div class="row pre-footer">
@@ -582,7 +585,7 @@ export default {
 @import 'global/transitions';
 
 .lend-by-category-page {
-	.loan-category-row {
+	.loan-category-row-wrapper {
 		margin: 0 0 rem-calc(20);
 
 		@include breakpoint(medium) {
