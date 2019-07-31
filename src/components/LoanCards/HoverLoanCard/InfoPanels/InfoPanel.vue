@@ -6,7 +6,7 @@
 			:aria-expanded="open ? 'true' : 'false'"
 			class="title-button"
 		>
-			<h3 class="panel-title featured-text">
+			<h3 class="panel-title">
 				<slot name="title"></slot>
 			</h3>
 			<kv-icon v-if="expandable" name="small-chevron-mobile" />
@@ -82,6 +82,9 @@ export default {
 
 		.panel-title {
 			display: inline-block;
+			font-size: rem-calc(26);
+			font-weight: 500;
+			line-height: 2rem;
 		}
 
 		.icon {
@@ -89,6 +92,10 @@ export default {
 			height: 1.5rem;
 			width: rem-calc(25);
 			transition: transform 300ms ease;
+		}
+
+		&:focus {
+			outline: none;
 		}
 	}
 

@@ -166,7 +166,7 @@
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
-					class="featured-text full-details-link"
+					class="full-details-link"
 					v-kv-track-event="[
 						'Lending',
 						'click-Read full borrower details',
@@ -474,6 +474,8 @@ $row-arrow-width: 2.5rem;
 	.full-details-link {
 		margin-bottom: 1.25rem;
 		display: inline-block;
+		font-size: rem-calc(20);
+		line-height: 2rem;
 	}
 
 	.close-button-wrapper {
