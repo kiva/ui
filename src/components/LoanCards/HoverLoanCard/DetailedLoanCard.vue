@@ -44,7 +44,7 @@
 				>
 					<span>Details</span>
 				</button>
-				<!-- <button
+				<button
 					class="tab-title"
 					v-if="hasPartner"
 					@click="tabComponent = partnerPanel"
@@ -59,7 +59,7 @@
 					:class="{ active: tabComponent === trusteePanel }"
 				>
 					<span>Trustee</span>
-				</button> -->
+				</button>
 			</div>
 			<div class="basic-info-flex-column">
 				<div class="name-location-sector">
