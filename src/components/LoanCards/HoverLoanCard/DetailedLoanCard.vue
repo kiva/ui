@@ -37,14 +37,14 @@
 				>
 					<span>Story</span>
 				</button>
-				<!-- <button
+				<button
 					class="tab-title"
 					@click="tabComponent = detailsPanel"
 					:class="{ active: tabComponent === detailsPanel }"
 				>
 					<span>Details</span>
 				</button>
-				<button
+				<!-- <button
 					class="tab-title"
 					v-if="hasPartner"
 					@click="tabComponent = partnerPanel"
