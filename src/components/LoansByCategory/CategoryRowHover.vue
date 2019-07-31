@@ -1,5 +1,9 @@
 <template>
-	<div v-if="showCategory">
+	<div
+		v-if="showCategory"
+		class="category-row-hover"
+		:class="{'displaying-detailed-loan': detailedLoanCacheId}"
+	>
 		<div class="row title-row">
 			<div class="column small-12">
 				<h2 class="category-name">
@@ -421,9 +425,18 @@ export default {
 
 $row-max-width: 63.75rem;
 
+.category-row-hover {
+	padding-bottom: 0;
+	transition: padding-bottom $card-expansion-duration $card-expansion-curve;
+
+	&.displaying-detailed-loan {
+		padding-bottom: 2rem;
+	}
+}
+
 .cards-and-arrows-wrapper {
 	max-width: $row-max-width;
-	margin: rem-calc(-67) auto 1rem;
+	margin: rem-calc(-67) auto 0;
 	align-items: center;
 	display: flex;
 	position: relative;
