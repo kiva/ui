@@ -308,7 +308,7 @@ export default {
 			deep: true,
 		},
 		detailedLoanIndex(newValue, oldValue) {
-			if (this.runningOnServer()) {
+			if (this.$isServer) {
 				return;
 			}
 
@@ -431,11 +431,8 @@ export default {
 		handleSetPreventUpdatingDetailedCard(newState) {
 			this.setPreventUpdatingDetailedCard(newState);
 		},
-		runningOnServer() {
-			return typeof window === 'undefined' || typeof document === 'undefined';
-		},
 		smoothScrollToLoanRow() {
-			if (!this.runningOnServer() && this.$refs.innerWrapper) {
+			if (!this.$isServer && this.$refs.innerWrapper) {
 				const bodyRect = document.body.getBoundingClientRect();
 				const detailedLoanCardRect = this.$refs.innerWrapper.getBoundingClientRect();
 
@@ -444,7 +441,7 @@ export default {
 			}
 		},
 		smoothScrollToDetailedPanel() {
-			if (!this.runningOnServer() && this.$refs.detailedLoanCardContainer) {
+			if (!this.$isServer && this.$refs.detailedLoanCardContainer) {
 				const bodyRect = document.body.getBoundingClientRect();
 				const detailedLoanCardRect = this.$refs.detailedLoanCardContainer.getBoundingClientRect();
 
