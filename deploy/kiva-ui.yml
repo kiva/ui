@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vertex-cron
+  labels:
+    app: vertex-cron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vertex-cron
+  template:
+    metadata:
+      labels:
+        app: vertex-cron
+    spec:
+      containers:
+      - name: vertex-test
+        image: kiva/jenkins_vertex:master
+        command: ["/vertex/bin/docker_run_cron_service.sh"]
+        args: ["-e", "dev"]
+        env:
+        - name: vertex_snowflake_user
+          valueFrom:
+            secretKeyRef:
+              name: vertex-creds
+              key: vertex_snowflake_user
+        - name: vertex_snowflake_password_encrypted
+          valueFrom:
+            secretKeyRef:
+              name: vertex-creds
+              key: vertex_snowflake_password_encrypted
+        - name: vertex_snowflake_schema
+          value: 'VERTEX'
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred

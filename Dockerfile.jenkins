@@ -1,0 +1,17 @@
+FROM alpine
+
+RUN apk add --no-cache nodejs=10.14.2-r0
+RUN apk add --no-cache npm
+RUN apk add --no-cache git
+RUN apk add --no-cache bash
+RUN mkdir /ui
+COPY ./ /ui/
+WORKDIR /ui
+RUN npm i --no-save
+RUN npm run build
+RUN rm -rf node_modules
+# if prod: npm i --production
+WORKDIR /ui/ui-build
+RUN npm install cross-env
+CMD [ "/usr/bin/npm", "start", "--", "--port=8888", "--config=index", "--prefix", "/ui/ui-build" ]
+

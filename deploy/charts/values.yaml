@@ -1,0 +1,15 @@
+# Default values for vertex service.
+
+image:
+  repository: kiva/ui
+  tag: "" # Expected be set by Jenkins
+
+deployenv:
+  environment: "" # set either by jenkins or manually
+
+# might be usful to use this instead if we wind up with more config values than just the one
+#configmap:
+#  data:
+#  - key: some_key
+#    value: 'the_value'
+#    envVar: the var
