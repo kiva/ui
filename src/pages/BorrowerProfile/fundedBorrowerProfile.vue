@@ -151,7 +151,7 @@ export default {
 		lymlHeading() {
 			const defaultMessage = `${this.loan.name}'s loan finished fundraising,
 				but these other borrowers need your support`;
-			const customMessage = `${this.loan.name}'s loan finished fundraising,<br>
+			const customMessage = `${this.loan.name}'s loan finished fundraising,<br class="show-for-medium">
 				but these similar borrowers just need a little more help to reach their goals!`;
 			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
 		}
