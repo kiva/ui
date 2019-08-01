@@ -1,9 +1,10 @@
-query loanPartner(
+query loanPartnerTrustee(
 	$id: Int!,
 ){
 	lend {
 		loan(id: $id) {
 			id
+			name
 			... on LoanPartner {
 				partner {
 					loansPosted
@@ -16,6 +17,27 @@ query loanPartner(
 					loanAlertText
 					currencyExchangeLossRate
         		}
+			}
+			... on LoanDirect {
+				endorsement
+				trustee {
+					title
+					trusteeType
+					contactRecord {
+						state
+					}
+					memberSince
+					stats {
+						numLoansEndorsedPublic
+						totalLoansValue
+						numFundraisingLoans
+						numPayingOnTimeLoans
+						numPayingBackDelinquentLoans
+						numRepaidInFullLoans
+						numDefaultedLoans
+						repaymentRate
+					}
+				}
 			}
 		}
 	}
