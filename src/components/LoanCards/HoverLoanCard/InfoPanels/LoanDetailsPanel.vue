@@ -170,7 +170,7 @@ export default {
 			return format(this.disbursalDate, 'MMMM DD, YYYY');
 		},
 		fundslentInCountryFormatted() {
-			return numeral(this.fundsLentInCountry).format('$0,0.00');
+			return numeral(this.fundsLentInCountry).format('$0,0');
 		},
 		borrowerPayingInterestFormatted() {
 			// Alters borrowerPayingInterest boolean FROM true/false TO yes/no

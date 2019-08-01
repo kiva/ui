@@ -32,36 +32,6 @@
 				>
 					<span>{{ title }}</span>
 				</button>
-				<button
-					class="tab-title"
-					@click="tabComponent = storyPanel"
-					:class="{ active: tabComponent === storyPanel }"
-				>
-					<span>Story</span>
-				</button>
-				<button
-					class="tab-title"
-					@click="tabComponent = detailsPanel"
-					:class="{ active: tabComponent === detailsPanel }"
-				>
-					<span>Details</span>
-				</button>
-				<button
-					class="tab-title"
-					v-if="hasPartner"
-					@click="tabComponent = partnerPanel"
-					:class="{ active: tabComponent === partnerPanel }"
-				>
-					<span>Partner</span>
-				</button>
-				<button
-					class="tab-title"
-					v-if="hasTrustee"
-					@click="tabComponent = trusteePanel"
-					:class="{ active: tabComponent === trusteePanel }"
-				>
-					<span>Trustee</span>
-				</button>
 			</div>
 			<div class="basic-info-flex-column">
 				<div class="name-location-sector">
@@ -167,8 +137,8 @@
 				@track-interaction="trackInteraction"
 			/>
 			<loan-details-panel :loan-id="loan.id" />
-			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
-			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" />
+			<!-- <partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
+			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"

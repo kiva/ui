@@ -3,28 +3,29 @@
 		<template #title>
 			Field Partner info
 		</template>
-		<!-- v-if="!loanLength" -->
-		<!-- <div id="loading-overlay">
+		<div
+			v-if="!timeOnKivaFormatted"
+			id="loading-overlay"
+		>
 			<div class="spinner-wrapper">
 				<kv-loading-spinner />
 			</div>
-		</div> -->
-		<!-- v-else -->
-		<div>
+		</div>
+		<div v-else>
 			<ul>
-				<li>
+				<li v-if="timeOnKiva">
 					<label>Time on Kiva:</label>
 					<span class="data">
 						{{ timeOnKivaFormatted }} months
 					</span>
 				</li>
-				<li>
+				<li v-if="numOfBorrowers">
 					<label>Kiva borrowers:</label>
 					<span class="data">
-						{{ numOfBorrowers }}
+						{{ numOfBorrowersFormatted }}
 					</span>
 				</li>
-				<li>
+				<li v-if="this.totalAmountRaised">
 					<label>Total loans:</label>
 					<p class="data">
 						{{ totalAmountRaisedFormatted }}
@@ -42,38 +43,38 @@
 						{{}}
 					</p>
 				</li> -->
-				<li>
+				<li v-if="this.avgLoanSize">
 					<label>Average loan size (% per capita income):</label>
 					<p class="data">
 						{{ avgLoanSize }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.deliquencyRate">
 					<label>Deliquency rate:</label>
 					<p class="data">
-						{{ deliquencyRate }}
+						{{ deliquencyRate }}%
 					</p>
 				</li>
-				<li>
+				<li v-if="this.riskRate">
 					<label>Loans at risk rate:</label>
 					<p class="data">
-						{{ riskRateFormatted }}
+						{{ riskRateFormatted }}%
 					</p>
 				</li>
-				<li>
+				<li v-if="this.defaultRate">
 					<label>Default rate:</label>
 					<p class="data">
-						{{ defaultRateFormatted }}
+						{{ defaultRateFormatted }}%
 					</p>
 				</li>
-				<li>
+				<li v-if="this.currencyExchangeLossRate">
 					<label>Currency exchange loss rate:</label>
 					<p class="data">
-						{{ currencyExchangeLossRateFormatted }}
+						{{ currencyExchangeLossRateFormatted }}%
 					</p>
 				</li>
 			</ul>
-			<div>
+			<div v-if="this.loanAlertText && this.loanAlertText != ''">
 				<h3>Why Kiva works with this partner:</h3>
 				<p class="data">
 					{{ loanAlertText }}
@@ -92,12 +93,12 @@ import {
 } from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
-// import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
 		InfoPanel,
-		// KvLoadingSpinner
+		KvLoadingSpinner
 	},
 	inject: ['apollo'],
 	props: {
@@ -131,7 +132,6 @@ export default {
 			};
 		},
 		result({ data }) {
-			// This data needs to be verified.
 			this.timeOnKiva = _get(data, 'lend.loan.partner.startDate');
 			this.numOfBorrowers = _get(data, 'lend.loan.partner.loansPosted');
 			this.totalAmountRaised = _get(data, 'lend.loan.partner.totalAmountRaised');
@@ -153,16 +153,19 @@ export default {
 			return differenceInCalendarMonths(formattedNow, formattedStartDate);
 		},
 		totalAmountRaisedFormatted() {
-			return numeral(this.totalAmountRaised).format('$0,0.00');
+			return numeral(this.totalAmountRaised).format('$0,0');
 		},
 		riskRateFormatted() {
-			return numeral(this.riskRate).format('0.000%');
+			return numeral(this.riskRate).format('0.00');
+		},
+		numOfBorrowersFormatted() {
+			return numeral(this.numOfBorrowers).format('0,0');
 		},
 		defaultRateFormatted() {
-			return numeral(this.defaultRate).format('0.000%');
+			return numeral(this.defaultRate).format('0.00');
 		},
 		currencyExchangeLossRateFormatted() {
-			return numeral(this.currencyExchangeLossRate).format('0.000%');
+			return numeral(this.currencyExchangeLossRate).format('0.00');
 		},
 	},
 };

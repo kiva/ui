@@ -12,80 +12,80 @@
 		<!-- v-else -->
 		<div>
 			<ul>
-				<li>
+				<li v-if="this.trusteeName">
 					<label>Trustee Name:</label>
 					<span class="data">
 						{{ trusteeName }}
 					</span>
 				</li>
-				<li>
+				<li v-if="this.trusteeType">
 					<label>Trustee type:</label>
 					<span class="data">
 						{{ trusteeType }}
 					</span>
 				</li>
-				<li>
+				<li v-if="this.trusteeLocation">
 					<label>Locatiion:</label>
 					<p class="data">
 						{{ trusteeLocation }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.timeOnKiva">
 					<label>Time on Kiva:</label>
 					<p class="data">
 						{{ timeOnKiva }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.numBorrowers">
 					<label>Kiva borrowers:</label>
 					<p class="data">
 						{{ numBorrowers }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.totalLoanDollarValue">
 					<label>Total loans:</label>
 					<p class="data">
 						{{ totalLoanDollarValue }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.loansFundraisingRaised">
 					<label>Fundraising/raised:</label>
 					<p class="data">
 						{{ loansFundraisingRaised }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.loansPayingBackOnTime">
 					<label>Paying back on time:</label>
 					<p class="data">
 						{{ loansPayingBackOnTime }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.loansPayingBackLate">
 					<label>Paying back late:</label>
 					<p class="data">
 						{{ loansPayingBackLate }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.loansRepaidInFull">
 					<label>Repaid in full:</label>
 					<p class="data">
 						{{ loansRepaidInFull }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.loansDefaulted">
 					<label>Defaulted:</label>
 					<p class="data">
 						{{ loansDefaulted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.repaymentRate">
 					<label>Repayment rate:</label>
 					<p class="data">
 						{{ repaymentRate }}
 					</p>
 				</li>
 			</ul>
-			<div>
+			<div v-if="this.endorsement && this.endorsement != ''">
 				<h3>Why are you endorsing {{ borrrowerName }}?:</h3>
 				<p class="data">
 					{{ endorsement }}
