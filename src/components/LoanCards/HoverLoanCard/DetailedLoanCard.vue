@@ -24,42 +24,14 @@
 		<div class="main-panel columns small-12 medium-5 small-order-2 medium-order-1">
 			<div class="info-tab-selector show-for-medium">
 				<button
+					v-for="{title, id} in tabs"
+					:key="id"
 					class="tab-title"
-					@click="tabComponent = null"
-					:class="{ active: tabComponent === null }"
+					:class="{ active: isTabComponentActive(id) }"
+					@click="setTabComponent(id)"
 				>
-					<span>Overview</span>
+					<span>{{ title }}</span>
 				</button>
-				<button
-					class="tab-title"
-					@click="tabComponent = storyPanel"
-					:class="{ active: tabComponent === storyPanel }"
-				>
-					<span>Story</span>
-				</button>
-				<button
-					class="tab-title"
-					@click="tabComponent = detailsPanel"
-					:class="{ active: tabComponent === detailsPanel }"
-				>
-					<span>Details</span>
-				</button>
-				<!-- <button
-					class="tab-title"
-					v-if="hasPartner"
-					@click="tabComponent = partnerPanel"
-					:class="{ active: tabComponent === partnerPanel }"
-				>
-					<span>Partner</span>
-				</button>
-				<button
-					class="tab-title"
-					v-if="hasTrustee"
-					@click="tabComponent = trusteePanel"
-					:class="{ active: tabComponent === trusteePanel }"
-				>
-					<span>Trustee</span>
-				</button> -->
 			</div>
 			<div class="basic-info-flex-column">
 				<div class="name-location-sector">
@@ -138,7 +110,11 @@
 			</div>
 		</div>
 		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
-			<info-panel :id="`${loan.id}-overview-panel`" class="overview-panel" :expandable="true">
+			<info-panel
+				:id="`${loan.id}-overview-panel`"
+				class="overview-panel"
+				:expandable="true"
+			>
 				<template #title>
 					Overview
 				</template>
@@ -160,9 +136,9 @@
 				read-more-link-text=""
 				@track-interaction="trackInteraction"
 			/>
-			<!-- <loan-details-panel :loan-id="loan.id" />
-			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
-			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
+			<loan-details-panel :loan-id="loan.id" />
+			<!-- <partner-info-panel v-if="hasPartner" :loan-id="loan.id" /> -->
+			<!-- <trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
@@ -266,11 +242,36 @@ export default {
 	},
 	data() {
 		return {
-			detailsPanel: LoanDetailsPanel,
-			partnerPanel: PartnerInfoPanel,
-			storyPanel: BorrowerStoryPanel,
-			trusteePanel: TrusteeInfoPanel,
-			tabComponent: null,
+			selectedTab: '',
+			tabs: [
+				{
+					component: null,
+					title: 'Overview',
+					id: 'Overview'
+				},
+				{
+					component: BorrowerStoryPanel,
+					title: 'Story',
+					id: 'Story',
+				},
+				{
+					component: LoanDetailsPanel,
+					title: 'Details',
+					id: 'Details',
+				},
+				/*
+				{
+					component: PartnerInfoPanel,
+					title: 'Partner',
+					id: 'Partner',
+				},
+				{
+					component: TrusteeInfoPanel,
+					title: 'Trustee',
+					id: 'Trustee',
+				},
+				*/
+			],
 		};
 	},
 	computed: {
@@ -287,6 +288,16 @@ export default {
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
 			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
+		},
+		tabIdMap() {
+			const tabIdMap = {};
+			this.tabs.forEach(({ id, component }) => {
+				tabIdMap[id] = component;
+			});
+			return tabIdMap;
+		},
+		tabComponent() {
+			return this.tabIdMap[this.selectedTab];
 		},
 	},
 	methods: {
@@ -305,6 +316,16 @@ export default {
 				interactionElement: 'detailed-loan-card'
 			});
 			this.$emit('close-detailed-loan-card');
+		},
+		setTabComponent(tabId) {
+			this.trackInteraction({
+				interactionType: 'set-tab-component-desktop',
+				interactionElement: tabId,
+			});
+			this.selectedTab = tabId;
+		},
+		isTabComponentActive(tabId) {
+			return this.selectedTab === tabId;
 		},
 	},
 };
