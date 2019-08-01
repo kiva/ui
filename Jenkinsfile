@@ -34,10 +34,11 @@ pipeline {
       }
     }
 
-    stage('Publish_Docker_Image')
+    stage('Publish_Docker_Image') {
       steps {
         withDockerRegistry([ credentialsId: "kivapush_docker", url: ""]) {
           sh "docker push ${TAGGED_IMAGE_NAME}"
+        }
       }
     }
 
