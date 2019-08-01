@@ -57,10 +57,7 @@
 			<div class="row lyml-wrapper">
 				<div class="small-12 columns">
 					<hr>
-					<h3 class="lyml-text text-center">
-						{{ loan.name }}'s loan finished fundraising, but these
-						other borrowers need your support
-					</h3>
+					<h3 class="lyml-text text-center" v-html="lymlHeading"></h3>
 					<l-y-m-l
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
@@ -149,6 +146,15 @@ export default {
 				return client.query({ query: experimentAssignment, variables: { id: 'funded_lyml_sort' } });
 			});
 		},
+	},
+	computed: {
+		lymlHeading() {
+			const defaultMessage = `${this.loan.name}'s loan finished fundraising,
+				but these other borrowers need your support`;
+			const customMessage = `${this.loan.name}'s loan finished fundraising,<br>
+				but these similar borrowers just need a little more help to reach their goals!`;
+			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
+		}
 	},
 	created() {
 		// Read the page data from the cache
