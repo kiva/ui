@@ -1,0 +1,22 @@
+query loanPartner(
+	$id: Int!,
+){
+	lend {
+		loan(id: $id) {
+			id
+			... on LoanPartner {
+				partner {
+					loansPosted
+          			totalAmountRaised
+					avgLoanSizePercentPerCapitaIncome
+					startDate
+					defaultRate
+					loansAtRiskRate
+					delinquencyRateNote
+					loanAlertText
+					currencyExchangeLossRate
+        		}
+			}
+		}
+	}
+}
