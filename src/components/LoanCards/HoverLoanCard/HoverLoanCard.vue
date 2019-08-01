@@ -140,7 +140,7 @@ export default {
 	methods: {
 		handleMouseEnter() {
 			if (this.rowHasDetailedLoan && !this.isDetailed) {
-				if (!this.preventUpdatingDetailedCard) {
+				if (!this.preventUpdatingDetailedCard && this.hoverEffectActive()) {
 					this.updateDetailedLoanIndex();
 				}
 			} else if (this.hoverEffectActive()) {
