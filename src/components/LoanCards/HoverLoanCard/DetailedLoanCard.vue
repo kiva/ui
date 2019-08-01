@@ -180,7 +180,7 @@
 		</div>
 		<div class="close-button-wrapper">
 			<button @click="handleClickClose" class="close-button">
-				<kv-icon name="x" />
+				<kv-icon name="small-x" />
 			</button>
 		</div>
 	</div>
@@ -479,19 +479,26 @@ $row-arrow-width: 2.5rem;
 	}
 
 	.close-button-wrapper {
+		background-image: linear-gradient(45deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.15));
 		position: absolute;
 		top: 0;
 		right: 0;
+		width: rem-calc(100);
+		height: rem-calc(100);
+		pointer-events: none;
 
 		.close-button {
-			background-color: rgba($kiva-bg-darkgray, 0.5);
 			border: none;
 			padding: 0.5rem;
 			margin: 0;
+			position: absolute;
+			top: 0;
+			right: 0;
+			pointer-events: initial;
 		}
 
-		.icon-x {
-			stroke: $white;
+		.icon-small-x {
+			fill: $white;
 			display: block;
 			width: 1.5rem;
 			height: 1.5rem;
