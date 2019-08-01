@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --no-cache nodejs=10.14.2-r0
+RUN apk add --no-cache nodejs=10.16.0-r0
 RUN apk add --no-cache npm
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
