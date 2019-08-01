@@ -81,6 +81,10 @@ export default {
 		targetLoan: {
 			type: Object,
 			default: () => {}
+		},
+		sortBy: {
+			type: String,
+			default: 'random'
 		}
 	},
 	computed: {
@@ -158,19 +162,23 @@ export default {
 			this.loading = true;
 			const queryTypes = [
 				{
-					gender: this.gender
+					gender: this.gender,
+					sortBy: this.sortBy
 				},
 				{
-					country: this.country
+					country: this.country,
+					sortBy: this.sortBy
 				},
 				{
-					sector: this.sector
+					sector: this.sector,
+					sortBy: this.sortBy
 				},
 				{
-					partner: this.partner
+					partner: this.partner,
+					sortBy: this.sortBy
 				},
 				{
-					sortBy: 'random'
+					sortBy: this.sortBy
 				}
 			];
 			let loansYouMightLike = [];

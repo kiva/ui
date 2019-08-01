@@ -4,6 +4,12 @@ query fundedBorrowerProfile(
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
 ) {
+	general {
+		customSort: uiExperimentSetting(key: "funded_lyml_sort") {
+			key
+			value
+		}
+	}
 	lend {
 		loan(id: $id) {
 			id
