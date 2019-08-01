@@ -23,7 +23,7 @@
 
 		<div>
 			<div
-				class="loan-category-row-wrapper"
+				class="loan-category-row"
 				:class="{'hover-row': showHoverLoanCards}"
 				v-for="(category, index) in categories"
 				:key="category.id"
@@ -585,7 +585,7 @@ export default {
 @import 'global/transitions';
 
 .lend-by-category-page {
-	.loan-category-row-wrapper {
+	.loan-category-row {
 		margin: 0 0 rem-calc(20);
 
 		@include breakpoint(medium) {
