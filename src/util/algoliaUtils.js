@@ -7,7 +7,7 @@ export const fundraisingIndices = [
 	{ value: 'dev_fundraising_amount_asc', label: 'Amount: low to high' },
 	{ value: 'dev_fundraising_amount_desc', label: 'Amount: high to low' },
 	{ value: 'dev_fundraising_amount_remaining', label: 'Amount left' },
-	{ value: 'dev_fundraising_expiring_soon', label: 'Expiring soon' },
+	{ value: 'dev_fundraising_expiring_soon', label: 'Ending soon' },
 	{ value: 'dev_fundraising_loan_length', label: 'Loan length' },
 	{ value: 'dev_fundraising_loans', label: 'Most Recent' },
 	{ value: 'dev_fundraising_popularity', label: 'Trending Now' },
