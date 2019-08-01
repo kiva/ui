@@ -45,6 +45,7 @@
 				:disable-link="true"
 				read-more-link-text="Expand to learn more"
 				@read-more-link="updateDetailedLoanIndex"
+				@track-loan-card-interaction="trackInteraction"
 			/>
 			<div class="action-row">
 				<div class="action-button-container">

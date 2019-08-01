@@ -24,11 +24,13 @@
 		<div class="main-panel columns small-12 medium-5 small-order-2 medium-order-1">
 			<div class="info-tab-selector show-for-medium">
 				<button
+					v-for="{title, id} in tabs"
+					:key="id"
 					class="tab-title"
-					@click="tabComponent = null"
-					:class="{ active: tabComponent === null }"
+					:class="{ active: isTabComponentActive(id) }"
+					@click="setTabComponent(id)"
 				>
-					<span>Overview</span>
+					<span>{{ title }}</span>
 				</button>
 				<button
 					class="tab-title"
@@ -138,7 +140,11 @@
 			</div>
 		</div>
 		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
-			<info-panel :id="`${loan.id}-overview-panel`" class="overview-panel" :expandable="true">
+			<info-panel
+				:id="`${loan.id}-overview-panel`"
+				class="overview-panel"
+				:expandable="true"
+			>
 				<template #title>
 					Overview
 				</template>
@@ -160,13 +166,13 @@
 				read-more-link-text=""
 				@track-interaction="trackInteraction"
 			/>
-			<!-- <loan-details-panel :loan-id="loan.id" />
+			<loan-details-panel :loan-id="loan.id" />
 			<partner-info-panel v-if="hasPartner" :loan-id="loan.id" />
-			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
+			<trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" />
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
-					class="featured-text full-details-link"
+					class="full-details-link"
 					v-kv-track-event="[
 						'Lending',
 						'click-Read full borrower details',
@@ -180,7 +186,7 @@
 		</div>
 		<div class="close-button-wrapper">
 			<button @click="handleClickClose" class="close-button">
-				<kv-icon name="x" />
+				<kv-icon name="small-x" />
 			</button>
 		</div>
 	</div>
@@ -266,11 +272,34 @@ export default {
 	},
 	data() {
 		return {
-			detailsPanel: LoanDetailsPanel,
-			partnerPanel: PartnerInfoPanel,
-			storyPanel: BorrowerStoryPanel,
-			trusteePanel: TrusteeInfoPanel,
-			tabComponent: null,
+			selectedTab: '',
+			tabs: [
+				{
+					component: null,
+					title: 'Overview',
+					id: 'Overview'
+				},
+				{
+					component: BorrowerStoryPanel,
+					title: 'Story',
+					id: 'Story',
+				},
+				{
+					component: LoanDetailsPanel,
+					title: 'Details',
+					id: 'Details',
+				},
+				{
+					component: PartnerInfoPanel,
+					title: 'Partner',
+					id: 'Partner',
+				},
+				{
+					component: TrusteeInfoPanel,
+					title: 'Trustee',
+					id: 'Trustee',
+				},
+			],
 		};
 	},
 	computed: {
@@ -287,6 +316,16 @@ export default {
 		standardImageUrl() {
 			// eslint-disable-next-line quotes
 			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
+		},
+		tabIdMap() {
+			const tabIdMap = {};
+			this.tabs.forEach(({ id, component }) => {
+				tabIdMap[id] = component;
+			});
+			return tabIdMap;
+		},
+		tabComponent() {
+			return this.tabIdMap[this.selectedTab];
 		},
 	},
 	methods: {
@@ -305,6 +344,16 @@ export default {
 				interactionElement: 'detailed-loan-card'
 			});
 			this.$emit('close-detailed-loan-card');
+		},
+		setTabComponent(tabId) {
+			this.trackInteraction({
+				interactionType: 'set-tab-component-desktop',
+				interactionElement: tabId,
+			});
+			this.selectedTab = tabId;
+		},
+		isTabComponentActive(tabId) {
+			return this.selectedTab === tabId;
 		},
 	},
 };
@@ -474,22 +523,31 @@ $row-arrow-width: 2.5rem;
 	.full-details-link {
 		margin-bottom: 1.25rem;
 		display: inline-block;
+		font-size: rem-calc(20);
+		line-height: 2rem;
 	}
 
 	.close-button-wrapper {
+		background-image: linear-gradient(45deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.15));
 		position: absolute;
 		top: 0;
 		right: 0;
+		width: rem-calc(100);
+		height: rem-calc(100);
+		pointer-events: none;
 
 		.close-button {
-			background-color: rgba($kiva-bg-darkgray, 0.5);
 			border: none;
 			padding: 0.5rem;
 			margin: 0;
+			position: absolute;
+			top: 0;
+			right: 0;
+			pointer-events: initial;
 		}
 
-		.icon-x {
-			stroke: $white;
+		.icon-small-x {
+			fill: $white;
 			display: block;
 			width: 1.5rem;
 			height: 1.5rem;

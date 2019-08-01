@@ -1,5 +1,9 @@
 <template>
-	<div v-if="showCategory">
+	<div
+		v-if="showCategory"
+		class="category-row-hover"
+		:class="{'displaying-detailed-loan': detailedLoanCacheId}"
+	>
 		<div class="row title-row">
 			<div class="column small-12">
 				<h2 class="category-name">
@@ -107,8 +111,8 @@
 			>&rsaquo;</span>
 		</div>
 
-		<kv-expandable>
-			<div v-if="detailedLoanCacheId">
+		<kv-expandable :delay="150" easing="linear">
+			<div v-if="detailedLoanCacheId" ref="detailedLoanCardContainer">
 				<loan-card-controller
 					class="expanded-card-row"
 					loan-card-type="DetailedLoanCard"
@@ -134,10 +138,13 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
+import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 const hoverCardSmallWidth = 220;
 const hoverCardRightMargin = 10;
 const hoverCardSmallWidthTotal = hoverCardSmallWidth + hoverCardRightMargin * 2;
+const hoverCardSmallPaddingTop = 87;
+const cardExpansionDuration = 150;
 
 export default {
 	components: {
@@ -146,6 +153,7 @@ export default {
 	},
 	mixins: [
 		categoryRowArrowsVisibleMixin,
+		smoothScrollMixin,
 	],
 	inject: ['apollo'],
 	props: {
@@ -302,7 +310,23 @@ export default {
 			},
 			immediate: true,
 			deep: true,
-		}
+		},
+		detailedLoanIndex(newValue, oldValue) {
+			if (this.$isServer) {
+				return;
+			}
+
+			const isMobile = document.documentElement.clientWidth < 480;
+			const detailedLoanIsOpening = oldValue === null && newValue !== null;
+
+			if (isMobile) {
+				this.$nextTick(() => {
+					this.smoothScrollToDetailedPanel();
+				});
+			} else if (detailedLoanIsOpening) {
+				this.smoothScrollToLoanRow();
+			}
+		},
 	},
 	mounted() {
 		this.saveWindowWidth();
@@ -411,6 +435,24 @@ export default {
 		handleSetPreventUpdatingDetailedCard(newState) {
 			this.setPreventUpdatingDetailedCard(newState);
 		},
+		smoothScrollToLoanRow() {
+			if (!this.$isServer && this.$refs.innerWrapper) {
+				const bodyRect = document.body.getBoundingClientRect();
+				const detailedLoanCardRect = this.$refs.innerWrapper.getBoundingClientRect();
+
+				const yPosition = detailedLoanCardRect.top - bodyRect.top + hoverCardSmallPaddingTop - 10;
+				this.smoothScrollTo({ yPosition, millisecondsToAnimate: cardExpansionDuration });
+			}
+		},
+		smoothScrollToDetailedPanel() {
+			if (!this.$isServer && this.$refs.detailedLoanCardContainer) {
+				const bodyRect = document.body.getBoundingClientRect();
+				const detailedLoanCardRect = this.$refs.detailedLoanCardContainer.getBoundingClientRect();
+
+				const yPosition = detailedLoanCardRect.top - bodyRect.top;
+				this.smoothScrollTo({ yPosition, millisecondsToAnimate: cardExpansionDuration });
+			}
+		},
 	},
 };
 </script>
@@ -421,9 +463,18 @@ export default {
 
 $row-max-width: 63.75rem;
 
+.category-row-hover {
+	padding-bottom: 0;
+	transition: padding-bottom $card-expansion-duration $card-expansion-curve;
+
+	&.displaying-detailed-loan {
+		padding-bottom: 2rem;
+	}
+}
+
 .cards-and-arrows-wrapper {
 	max-width: $row-max-width;
-	margin: rem-calc(-67) auto 1rem;
+	margin: rem-calc(-67) auto 0;
 	align-items: center;
 	display: flex;
 	position: relative;
