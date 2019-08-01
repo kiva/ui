@@ -3,14 +3,15 @@
 		<template #title>
 			Trustee info
 		</template>
-		<!-- v-if="!loanLength" -->
-		<!-- <div id="loading-overlay">
+		<div
+			id="loading-overlay"
+			v-if="!this.trusteeName"
+		>
 			<div class="spinner-wrapper">
 				<kv-loading-spinner />
 			</div>
-		</div> -->
-		<!-- v-else -->
-		<div>
+		</div>
+		<div v-else>
 			<ul>
 				<li v-if="this.trusteeName">
 					<label>Trustee Name:</label>
@@ -100,13 +101,13 @@ import _get from 'lodash/get';
 // import numeral from 'numeral';
 // import { format } from 'date-fns';
 import InfoPanel from './InfoPanel';
-import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
-// import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
 		InfoPanel,
-		// KvLoadingSpinner,
+		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	props: {
@@ -138,7 +139,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: loanDetailsQuery,
+		query: loanPartnerQuery,
 		variables() {
 			return {
 				id: parseInt(this.loanId, 10),
