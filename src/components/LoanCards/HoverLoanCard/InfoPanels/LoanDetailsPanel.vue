@@ -224,7 +224,8 @@ ul {
 	text-transform: capitalize;
 }
 
-.country-heading {
+.country-heading,
+.why-special {
 	color: $black;
 }
 </style>
