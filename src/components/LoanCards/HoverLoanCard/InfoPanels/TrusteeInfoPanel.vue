@@ -173,9 +173,11 @@ export default {
 
 ul {
 	list-style: none;
+	margin-left: 0;
 }
 
 .data {
 	color: $kiva-green;
+	margin-bottom: 0;
 }
 </style>
