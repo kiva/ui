@@ -152,7 +152,7 @@ export default {
 			this.repaymentSchedule = _get(data, 'lend.loan.repaymentInterval');
 			this.borrowerPayingInterest = _get(data, 'lend.loan.partner.chargesFeesInterest');
 			this.facilitatedByFieldPartner = _get(data, 'lend.loan.partnerName');
-			this.trustee = _get(data, 'lend.loan.trusteeame');
+			this.trustee = _get(data, 'lend.loan.trustee.name');
 			this.whySpecial = _get(data, 'lend.loan.whySpecial');
 			this.avgAnnualIncome = _get(data, 'lend.loan.partner.countries[0].ppp');
 			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries[0].fundsLentInCountry');
