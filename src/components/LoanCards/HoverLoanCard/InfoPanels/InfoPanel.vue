@@ -70,7 +70,7 @@ export default {
 @import 'settings';
 
 .info-panel {
-	background: rgba($white, 0.8);
+	background: rgba($white, 0.85);
 
 	.title-button {
 		text-align: left;
