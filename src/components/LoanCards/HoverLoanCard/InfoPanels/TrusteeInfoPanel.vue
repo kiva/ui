@@ -87,7 +87,7 @@
 				</li>
 			</ul>
 			<div v-if="this.endorsement && this.endorsement != ''">
-				<h3>
+				<h3 class="loan-endorsement-text">
 					Why are you endorsing {{ borrrowerName }}?:
 				</h3>
 				<p class="data">
@@ -181,5 +181,9 @@ ul {
 .data {
 	color: $kiva-green;
 	margin-bottom: 0;
+}
+
+.loan-endorsement-text {
+	color: $black;
 }
 </style>

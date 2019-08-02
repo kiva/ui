@@ -181,4 +181,8 @@ ul {
 .data {
 	color: $kiva-green;
 }
+
+.loan-alert-text {
+	color: $black;
+}
 </style>
