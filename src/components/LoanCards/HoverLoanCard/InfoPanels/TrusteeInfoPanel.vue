@@ -88,7 +88,7 @@
 			</ul>
 			<div v-if="this.endorsement && this.endorsement != ''">
 				<h3 class="loan-endorsement-text">
-					Why are you endorsing {{ borrrowerName }}?
+					Why are you endorsing this borrower?
 				</h3>
 				<p class="data">
 					{{ endorsement }}
@@ -127,7 +127,7 @@ export default {
 	},
 	data() {
 		return {
-			borrowerName: '',
+			// borrowerName: '',
 			trusteeName: '',
 			trusteeType: '',
 			trusteeLocation: '',
@@ -151,7 +151,7 @@ export default {
 			};
 		},
 		result({ data }) {
-			this.borrowerName = _get(data, 'lend.loan.name');
+			// this.borrowerName = _get(data, 'lend.loan.name');
 			this.trusteeName = _get(data, 'lend.loan.trustee.title');
 			this.trusteeType = _get(data, 'lend.loan.trustee.trusteeType');
 			this.trusteeLocation = _get(data, 'lend.loan.trustee.trusteeLocation');
