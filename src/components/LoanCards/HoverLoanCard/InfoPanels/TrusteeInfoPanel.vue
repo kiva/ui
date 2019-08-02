@@ -87,7 +87,9 @@
 				</li>
 			</ul>
 			<div v-if="this.endorsement && this.endorsement != ''">
-				<h3>Why are you endorsing {{ borrrowerName }}?:</h3>
+				<h3>
+					Why are you endorsing {{ borrrowerName }}?:
+				</h3>
 				<p class="data">
 					{{ endorsement }}
 				</p>
@@ -173,9 +175,11 @@ export default {
 
 ul {
 	list-style: none;
+	margin-left: 0;
 }
 
 .data {
 	color: $kiva-green;
+	margin-bottom: 0;
 }
 </style>
