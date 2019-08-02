@@ -392,19 +392,19 @@ $row-arrow-width: 2.5rem;
 			}
 
 			span {
-				$speed-curve: 300ms linear;
+				$speed-curve: 150ms linear;
 
 				text-transform: uppercase;
-				transition: border-color $speed-curve, color $speed-curve;
+				transition: border-color $speed-curve, color $speed-curve, text-shadow $speed-curve;
 				border-color: rgba($white, 0);
 				color: $kiva-text-light;
 				font-weight: $global-weight-normal;
 			}
 
 			&.active span {
-				border-bottom: 0.1rem solid rgba($kiva-textlink, 1);
+				border-bottom: rem-calc(1) solid rgba($kiva-textlink, 1);
 				color: $kiva-text-dark;
-				font-weight: $global-weight-highlight;
+				text-shadow: rem-calc(0.5) 0 $kiva-text-dark;
 			}
 		}
 	}
@@ -422,7 +422,7 @@ $row-arrow-width: 2.5rem;
 		justify-content: flex-end;
 
 		.name-location-sector {
-			margin-bottom: rem-calc(12);
+			margin-bottom: 1rem;
 
 			.name {
 				display: block;
@@ -448,7 +448,7 @@ $row-arrow-width: 2.5rem;
 		}
 
 		.fundraising-status-container {
-			margin-bottom: 1rem;
+			margin-bottom: 0.5rem;
 		}
 	}
 
@@ -481,6 +481,7 @@ $row-arrow-width: 2.5rem;
 
 		@include breakpoint(large) {
 			text-align: unset;
+			padding-left: 0;
 		}
 	}
 
