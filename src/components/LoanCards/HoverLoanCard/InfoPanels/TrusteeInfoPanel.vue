@@ -21,7 +21,7 @@
 				</li>
 				<li v-if="this.trusteeType">
 					<label>Trustee type:</label>
-					<span class="data">
+					<span class="data trusteeType">
 						{{ trusteeType }}
 					</span>
 				</li>
@@ -34,7 +34,7 @@
 				<li v-if="this.timeOnKiva">
 					<label>Time on Kiva:</label>
 					<p class="data">
-						{{ timeOnKiva }}
+						{{ timeOnKivaFormatted }}
 					</p>
 				</li>
 				<li v-if="this.numBorrowers">
@@ -46,7 +46,7 @@
 				<li v-if="this.totalLoanDollarValue">
 					<label>Total loans:</label>
 					<p class="data">
-						{{ totalLoanDollarValue }}
+						{{ totalDollarValueFormatted }}
 					</p>
 				</li>
 				<li v-if="this.loansFundraisingRaised">
@@ -82,12 +82,12 @@
 				<li v-if="this.repaymentRate">
 					<label>Repayment rate:</label>
 					<p class="data">
-						{{ repaymentRate }}
+						{{ repaymentRateFormatted }}
 					</p>
 				</li>
 			</ul>
 			<div v-if="this.endorsement && this.endorsement != ''">
-				<h3>
+				<h3 class="loan-endorsement-text">
 					Why are you endorsing {{ borrrowerName }}?:
 				</h3>
 				<p class="data">
@@ -100,6 +100,11 @@
 
 <script>
 import _get from 'lodash/get';
+import numeral from 'numeral';
+import {
+	format,
+	differenceInCalendarMonths
+} from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -165,7 +170,18 @@ export default {
 	computed: {
 		elementId() {
 			return `${this.loanId}-trustee-info-panel-ex-${this.expandable ? '1' : '0'}`;
-		}
+		},
+		timeOnKivaFormatted() {
+			const formattedNow = format(Date.now(), 'YYYY, M, D');
+			const formattedStartDate = format(this.timeOnKiva, 'YYYY, M, D');
+			return differenceInCalendarMonths(formattedNow, formattedStartDate);
+		},
+		repaymentRateFormatted() {
+			return numeral(this.repaymentRate).format('0.00');
+		},
+		totalDollarValueFormatted() {
+			return numeral(this.totalDollarValue).format('0.00');
+		},
 	},
 };
 </script>
@@ -179,7 +195,15 @@ ul {
 }
 
 .data {
-	color: $kiva-green;
+	color: $kiva-icon-green;
 	margin-bottom: 0;
+}
+
+.trusteeType {
+	text-transform: capitalize;
+}
+
+.loan-endorsement-text {
+	color: $black;
 }
 </style>

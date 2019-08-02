@@ -216,7 +216,7 @@ ul {
 }
 
 .data {
-	color: $kiva-green;
+	color: $kiva-icon-green;
 	margin-bottom: 0;
 }
 
@@ -224,7 +224,8 @@ ul {
 	text-transform: capitalize;
 }
 
-.country-heading {
+.country-heading,
+.why-special {
 	color: $black;
 }
 </style>
