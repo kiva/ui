@@ -72,10 +72,16 @@
 						{{ fundslentInCountryFormatted }}
 					</p>
 				</li>
-				<li v-if="this.loansCurrentlyFundraising">
+				<li v-if="this.partnerLoansCurrentlyFundraising">
 					<label>Loans currently fundraising:</label>
 					<p class="data">
 						{{ loansCurrentlyFundraising }}
+					</p>
+				</li>
+				<li v-if="this.directLoansCurrentlyFundraising">
+					<label>Loans currently fundraising:</label>
+					<p class="data">
+						{{ directLoansCurrentlyFundraising }}
 					</p>
 				</li>
 				<!-- <li v-if="this.loansTransactedIn">
@@ -133,7 +139,8 @@ export default {
 			riskRating: '',
 			avgAnnualIncome: '',
 			fundsLentInCountry: '',
-			loansCurrentlyFundraising: '',
+			partnerLoansCurrentlyFundraising: '',
+			directLoansCurrentlyFundraising: '',
 			// loansTransactedIn: 'test',
 			// currencyExchangeLoss: 'test',
 		};
@@ -156,7 +163,8 @@ export default {
 			this.whySpecial = _get(data, 'lend.loan.whySpecial');
 			this.avgAnnualIncome = _get(data, 'lend.loan.partner.countries[0].ppp');
 			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries[0].fundsLentInCountry');
-			this.loansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
+			this.partnerLoansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
+			this.directLoansCurrentlyFundraising = _get(data, 'lend.loan.trusteeStats.numLoansFundraising');
 
 			// This needs to be formatted from the returned string into a star display
 			// Ticket created for this: cash-1151
