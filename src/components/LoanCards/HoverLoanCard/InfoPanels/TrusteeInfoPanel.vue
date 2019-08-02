@@ -46,7 +46,7 @@
 				<li v-if="this.totalLoanDollarValue">
 					<label>Total loans:</label>
 					<p class="data">
-						{{ totalLoanDollarValue }}
+						{{ totalDollarValueFormatted }}
 					</p>
 				</li>
 				<li v-if="this.loansFundraisingRaised">
@@ -82,7 +82,7 @@
 				<li v-if="this.repaymentRate">
 					<label>Repayment rate:</label>
 					<p class="data">
-						{{ repaymentRate }}
+						{{ repaymentRateFormatted }}
 					</p>
 				</li>
 			</ul>
@@ -174,6 +174,12 @@ export default {
 			const formattedNow = format(Date.now(), 'YYYY, M, D');
 			const formattedStartDate = format(this.timeOnKiva, 'YYYY, M, D');
 			return differenceInCalendarMonths(formattedNow, formattedStartDate);
+		},
+		repaymentRateFormatted() {
+			return numeral(this.repaymentRate).format('0.00');
+		},
+		totalDollarValueFormatted() {
+			return numeral(this.totalDollarValue).format('0.00');
 		},
 	},
 };
