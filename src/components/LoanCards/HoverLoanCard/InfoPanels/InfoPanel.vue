@@ -104,5 +104,10 @@ export default {
 			transform: rotate(-180deg);
 		}
 	}
+
+	@include breakpoint(small only) {
+		/* Positioning is to handle loading spinner */
+		position: relative;
+	}
 }
 </style>

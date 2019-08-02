@@ -1,6 +1,6 @@
 <template>
 	<div class="detailed-loan-card row collapse">
-		<div class="multi-pane columns small-12 medium-7 small-order-1 medium-order-2">
+		<div class="multi-pane columns small-12 xlarge-6 xxlarge-7 small-order-1 xlarge-order-2">
 			<loan-card-image
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -17,12 +17,12 @@
 					:is="tabComponent"
 					:expandable="false"
 					:loan-id="loan.id"
-					class="content-tab show-for-medium"
+					class="content-tab show-for-xlarge"
 				/>
 			</transition>
 		</div>
-		<div class="main-panel columns small-12 medium-5 small-order-2 medium-order-1">
-			<div class="info-tab-selector show-for-medium">
+		<div class="main-panel columns small-12 xlarge-6 xxlarge-5 small-order-2 xlarge-order-1">
+			<div class="info-tab-selector show-for-xlarge">
 				<button
 					v-for="{title, id} in tabs"
 					:key="id"
@@ -54,7 +54,7 @@
 						</div>
 					</div>
 				</div>
-				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-medium">
+				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-xlarge">
 					<borrower-info-body
 						:amount="loan.loanAmount"
 						:borrower-count="loan.borrowerCount"
@@ -109,7 +109,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
+		<div class="mobile-sections columns small-12 small-order-3 hide-for-xlarge">
 			<info-panel
 				:id="`${loan.id}-overview-panel`"
 				class="overview-panel"
@@ -131,14 +131,14 @@
 					@track-loan-card-interaction="trackInteraction"
 				/>
 			</info-panel>
-			<borrower-story-panel
+			<component
+				v-for="{ component, id } in mobileSections"
+				:key="id"
+				:is="component"
 				:loan-id="loan.id"
 				read-more-link-text=""
 				@track-interaction="trackInteraction"
 			/>
-			<loan-details-panel :loan-id="loan.id" />
-			<!-- <partner-info-panel v-if="hasPartner" :loan-id="loan.id" /> -->
-			<!-- <trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
@@ -242,7 +242,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedTab: '',
+			selectedTab: 'Overview',
 		};
 	},
 	computed: {
@@ -309,6 +309,9 @@ export default {
 		tabComponent() {
 			return this.tabIdMap[this.selectedTab];
 		},
+		mobileSections() {
+			return this.tabs.filter(({ component }) => component);
+		},
 	},
 	methods: {
 		trackInteraction(args) {
@@ -351,7 +354,9 @@ $row-arrow-width: 2.5rem;
 	position: relative;
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
-	max-width: $parent-row-max-width - (2 * $row-arrow-width);
+	max-width: rem-calc(414);
+	border-radius: rem-calc(3);
+	overflow: hidden;
 
 	.mobile-sections {
 		padding: 0 1rem;
@@ -536,6 +541,11 @@ $row-arrow-width: 2.5rem;
 			padding: 0;
 			margin: 0;
 		}
+	}
+
+	@include breakpoint(xlarge) {
+		max-width: $parent-row-max-width - (2 * $row-arrow-width);
+		border-radius: 0;
 	}
 }
 </style>

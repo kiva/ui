@@ -11,11 +11,11 @@
 			'shift-right-double': shiftRightDouble,
 		}"
 		@mouseenter="handleMouseEnterCardMargins"
-		@click="handleClick"
 	>
 		<div
 			class="hover-loan-card-wrapper"
 			@mouseenter="handleMouseEnterCardOnly"
+			@click="handleClick"
 		>
 			<hover-loan-card-small
 				:amount-left="amountLeft"
