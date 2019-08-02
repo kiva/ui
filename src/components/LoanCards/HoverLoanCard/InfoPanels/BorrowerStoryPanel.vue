@@ -15,7 +15,7 @@
 		</div>
 		<router-link
 			:to="`/lend/${loanId}`"
-			v-if="readMoreLinkText"
+			v-if="readMoreLinkText && loanStory"
 			@click="$emit('track-interaction', {
 				interactionType: 'viewBorrowerPage',
 				interactionElement: 'readMoreStoryPanel'
@@ -87,8 +87,8 @@ export default {
 	position: absolute;
 	width: auto;
 	height: auto;
-	left: 1rem;
-	right: 1rem;
+	left: 0;
+	right: 0;
 	bottom: 0;
 	top: 0;
 	background-color: rgba($platinum, 0.7);
@@ -103,6 +103,10 @@ export default {
 		left: auto;
 		transform: none;
 		transition: top 100ms linear;
+	}
+
+	@include breakpoint(small only) {
+		top: -1rem;
 	}
 }
 

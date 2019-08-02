@@ -141,6 +141,7 @@ import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graph
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 
 const hoverCardSmallWidth = 220;
+const hoverCardSmallHeight = 228;
 const hoverCardRightMargin = 10;
 const hoverCardSmallWidthTotal = hoverCardSmallWidth + hoverCardRightMargin * 2;
 const hoverCardSmallPaddingTop = 87;
@@ -438,18 +439,19 @@ export default {
 		smoothScrollToLoanRow() {
 			if (!this.$isServer && this.$refs.innerWrapper) {
 				const bodyRect = document.body.getBoundingClientRect();
-				const detailedLoanCardRect = this.$refs.innerWrapper.getBoundingClientRect();
+				const loanCardRowRect = this.$refs.innerWrapper.getBoundingClientRect();
 
-				const yPosition = detailedLoanCardRect.top - bodyRect.top + hoverCardSmallPaddingTop - 10;
+				const yPosition = loanCardRowRect.top - bodyRect.top + hoverCardSmallPaddingTop - 10;
 				this.smoothScrollTo({ yPosition, millisecondsToAnimate: cardExpansionDuration });
 			}
 		},
 		smoothScrollToDetailedPanel() {
-			if (!this.$isServer && this.$refs.detailedLoanCardContainer) {
+			if (!this.$isServer && this.$refs.innerWrapper) {
 				const bodyRect = document.body.getBoundingClientRect();
-				const detailedLoanCardRect = this.$refs.detailedLoanCardContainer.getBoundingClientRect();
+				const loanCardRowRect = this.$refs.innerWrapper.getBoundingClientRect();
 
-				const yPosition = detailedLoanCardRect.top - bodyRect.top;
+				// eslint-disable-next-line max-len
+				const yPosition = loanCardRowRect.top - bodyRect.top + hoverCardSmallPaddingTop + hoverCardSmallHeight + 20;
 				this.smoothScrollTo({ yPosition, millisecondsToAnimate: cardExpansionDuration });
 			}
 		},
@@ -540,7 +542,7 @@ $row-max-width: 63.75rem;
 	max-width: $row-max-width;
 }
 
-.category-name {
+.category-text {
 	font-weight: $global-weight-highlight;
 	margin: 0 1.875rem;
 	margin-bottom: 0.5rem;
@@ -550,8 +552,15 @@ $row-max-width: 63.75rem;
 	}
 }
 
+.category-name {
+	@extend .category-text;
+
+	z-index: 11;
+	position: relative;
+}
+
 .category-description {
-	@extend .category-name;
+	@extend .category-text;
 
 	font-weight: $global-weight-normal;
 	margin-top: rem-calc(12);
