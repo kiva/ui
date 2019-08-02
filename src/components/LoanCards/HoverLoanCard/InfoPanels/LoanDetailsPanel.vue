@@ -13,43 +13,43 @@
 			class="loan-details-container"
 		>
 			<ul>
-				<li>
+				<li v-if="this.loanLength">
 					<label>Loan length:</label>
 					<span class="data">
 						{{ loanLength }} months
 					</span>
 				</li>
-				<li>
+				<li v-if="this.repaymentSchedule">
 					<label>Repayment schedule:</label>
 					<span class="data repayment-schedule-text">
 						{{ repaymentSchedule }}
 					</span>
 				</li>
-				<li>
+				<li v-if="this.disbursalDate">
 					<label>Disbursal date:</label>
 					<p class="data">
 						{{ disbursalDateFormatted }}
 					</p>
 				</li>
-				<!-- <li>
+				<!-- <li v-if="this.currencyExchangeLoss">
 					<label>Currency exchange loss:</label>
 					<p class="data">
 						{{ currencyExchangeLoss }}
 					</p>
 				</li> -->
-				<li>
-					<label>Facilitated by Field Partner:</label>
+				<li v-if="this.facilitatedByFieldPartner">
+					<label>Facilitated by Field Partner/trustee:</label>
 					<p class="data">
 						{{ facilitatedByFieldPartnerFormatted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.borrowerPayingInterest">
 					<label>Is borrower paying interest?</label>
 					<p class="data">
 						{{ borrowerPayingInterestFormatted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.riskRating">
 					<label>Field Partner risk rating:</label>
 					<p class="data">
 						{{ riskRating }} stars
@@ -60,32 +60,32 @@
 				<h3 class="country-heading">
 					{{ country }} country facts
 				</h3>
-				<!-- <li>
+				<!-- <li v-if="this.avgAnnualIncome">
 					<label>Average annual income (USD):</label>
 					<p class="data">
 						{{ avgAnnualIncome }}
 					</p>
 				</li> -->
-				<li>
+				<li v-if="this.fundsLetInCountry">
 					<label>Funds lent in {{ country }}:</label>
 					<p class="data">
 						{{ fundslentInCountryFormatted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.loansCurrentlyFundraising">
 					<label>Loans currently fundraising:</label>
 					<p class="data">
 						{{ loansCurrentlyFundraising }}
 					</p>
 				</li>
-				<!-- <li>
+				<!-- <li v-if="this.loansTransactedIn">
 					<label>Loans transacted in:</label>
 					<p class="data">
 						{{ loansTransactedIn }}
 					</p>
 				</li> -->
 			</ul>
-			<div>
+			<div v-if="this.whySpecial">
 				<h3 class="why-special">
 					This loan is special because
 				</h3>
@@ -152,7 +152,7 @@ export default {
 			this.repaymentSchedule = _get(data, 'lend.loan.repaymentInterval');
 			this.borrowerPayingInterest = _get(data, 'lend.loan.partner.chargesFeesInterest');
 			this.facilitatedByFieldPartner = _get(data, 'lend.loan.partnerName');
-			this.trustee = _get(data, 'lend.loan.trusteeName');
+			this.trustee = _get(data, 'lend.loan.trusteeame');
 			this.whySpecial = _get(data, 'lend.loan.whySpecial');
 			this.avgAnnualIncome = _get(data, 'lend.loan.partner.countries[0].ppp');
 			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries[0].fundsLentInCountry');
