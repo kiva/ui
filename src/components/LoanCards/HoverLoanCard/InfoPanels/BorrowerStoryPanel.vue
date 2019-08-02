@@ -6,6 +6,7 @@
 		<p
 			v-if="loanStory"
 			v-html="loanStory"
+			class="loan-story"
 		></p>
 		<div v-else id="loading-overlay">
 			<div class="spinner-wrapper">
@@ -77,6 +78,10 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
+.loan-story {
+    padding: rem-calc(5) rem-calc(2);
+}
 
 #loading-overlay {
 	position: absolute;

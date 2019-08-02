@@ -13,13 +13,13 @@
 		</div>
 		<div v-else>
 			<ul>
-				<li v-if="timeOnKiva">
+				<li v-if="this.timeOnKiva">
 					<label>Time on Kiva:</label>
 					<span class="data">
 						{{ timeOnKivaFormatted }} months
 					</span>
 				</li>
-				<li v-if="numOfBorrowers">
+				<li v-if="this.numOfBorrowers">
 					<label>Kiva borrowers:</label>
 					<span class="data">
 						{{ numOfBorrowersFormatted }}
@@ -75,7 +75,7 @@
 				</li>
 			</ul>
 			<div v-if="this.loanAlertText && this.loanAlertText != ''">
-				<h3>Why Kiva works with this partner:</h3>
+				<h3 class="loan-alert-text">Why Kiva works with this partner:</h3>
 				<p class="data">
 					{{ loanAlertText }}
 				</p>

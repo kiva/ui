@@ -8,7 +8,10 @@
 				<kv-loading-spinner />
 			</div>
 		</div>
-		<div v-else>
+		<div
+			v-else
+			class="loan-details-container"
+		>
 			<ul>
 				<li>
 					<label>Loan length:</label>
@@ -83,7 +86,7 @@
 				</li> -->
 			</ul>
 			<div>
-				<h3>This loan is special because</h3>
+				<h3 class="why-special">This loan is special because</h3>
 				<p class="data">
 					{{ whySpecial }}
 				</p>
@@ -201,12 +204,18 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+.panel-title {
+	margin-bottom: rem-calc(10);
+}
+
 ul {
 	list-style: none;
+	margin-left: 0;
 }
 
 .data {
 	color: $kiva-green;
+	margin-bottom: 0;
 }
 
 .repayment-schedule-text {
