@@ -75,7 +75,9 @@
 				</li>
 			</ul>
 			<div v-if="this.loanAlertText && this.loanAlertText != ''">
-				<h3 class="loan-alert-text">Why Kiva works with this partner:</h3>
+				<h3 class="loan-alert-text">
+					Why Kiva works with this partner:
+				</h3>
 				<p class="data">
 					{{ loanAlertText }}
 				</p>

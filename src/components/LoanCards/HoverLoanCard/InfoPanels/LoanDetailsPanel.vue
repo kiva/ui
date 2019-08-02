@@ -86,7 +86,9 @@
 				</li> -->
 			</ul>
 			<div>
-				<h3 class="why-special">This loan is special because</h3>
+				<h3 class="why-special">
+					This loan is special because
+				</h3>
 				<p class="data">
 					{{ whySpecial }}
 				</p>
