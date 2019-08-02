@@ -46,7 +46,7 @@
 				<li v-if="this.avgLoanSize">
 					<label>Average loan size (% per capita income):</label>
 					<p class="data">
-						{{ avgLoanSize }}
+						{{ avgLoanSize }}%
 					</p>
 				</li>
 				<li v-if="this.deliquencyRate">
