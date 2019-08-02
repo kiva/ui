@@ -21,7 +21,7 @@
 				</li>
 				<li v-if="this.trusteeType">
 					<label>Trustee type:</label>
-					<span class="data">
+					<span class="data trusteeType">
 						{{ trusteeType }}
 					</span>
 				</li>
@@ -34,7 +34,7 @@
 				<li v-if="this.timeOnKiva">
 					<label>Time on Kiva:</label>
 					<p class="data">
-						{{ timeOnKiva }}
+						{{ timeOnKivaFormatted }}
 					</p>
 				</li>
 				<li v-if="this.numBorrowers">
@@ -100,6 +100,10 @@
 
 <script>
 import _get from 'lodash/get';
+import {
+	format,
+	differenceInCalendarMonths
+} from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -165,7 +169,12 @@ export default {
 	computed: {
 		elementId() {
 			return `${this.loanId}-trustee-info-panel-ex-${this.expandable ? '1' : '0'}`;
-		}
+		},
+		timeOnKivaFormatted() {
+			const formattedNow = format(Date.now(), 'YYYY, M, D');
+			const formattedStartDate = format(this.timeOnKiva, 'YYYY, M, D');
+			return differenceInCalendarMonths(formattedNow, formattedStartDate);
+		},
 	},
 };
 </script>
@@ -181,6 +190,10 @@ ul {
 .data {
 	color: $kiva-icon-green;
 	margin-bottom: 0;
+}
+
+.trusteeType {
+	text-transform: capitalize;
 }
 
 .loan-endorsement-text {
