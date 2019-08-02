@@ -259,7 +259,6 @@ export default {
 					title: 'Details',
 					id: 'Details',
 				},
-				/*
 				{
 					component: PartnerInfoPanel,
 					title: 'Partner',
@@ -270,7 +269,6 @@ export default {
 					title: 'Trustee',
 					id: 'Trustee',
 				},
-				*/
 			],
 		};
 	},
