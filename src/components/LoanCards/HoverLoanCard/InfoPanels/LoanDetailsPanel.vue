@@ -58,8 +58,8 @@
 			</ul>
 			<ul
 				v-if="this.fundsLetInCountry
-				|| this.partnerLoansCurrentlyFundraising
-				|| this.directLoansCurrentlyFundraising"
+					|| this.partnerLoansCurrentlyFundraising
+					|| this.directLoansCurrentlyFundraising"
 			>
 				<h3 class="country-heading">
 					{{ country }} country facts
