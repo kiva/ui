@@ -100,6 +100,7 @@
 
 <script>
 import _get from 'lodash/get';
+import numeral from 'numeral';
 import {
 	format,
 	differenceInCalendarMonths
