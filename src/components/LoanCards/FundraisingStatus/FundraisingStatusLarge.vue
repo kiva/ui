@@ -11,6 +11,7 @@
 			<fundraising-status-meter
 				:is-funded="isFunded"
 				:percent-raised="percentRaised"
+				:short-meter="true"
 			/>
 		</div>
 		<div class="left-and-to-go-line">
