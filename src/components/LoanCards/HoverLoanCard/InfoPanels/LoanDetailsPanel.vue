@@ -56,7 +56,7 @@
 					</p>
 				</li>
 			</ul>
-			<ul>
+			<ul v-if="this.fundsLetInCountry || this.partnerLoansCurrentlyFundraising || this.directLoansCurrentlyFundraising">
 				<h3 class="country-heading">
 					{{ country }} country facts
 				</h3>
@@ -66,16 +66,16 @@
 						{{ avgAnnualIncome }}
 					</p>
 				</li> -->
-				<li v-if="this.fundsLetInCountry">
+				<li v-if="this.fundsLentInCountry">
 					<label>Funds lent in {{ country }}:</label>
 					<p class="data">
-						{{ fundslentInCountryFormatted }}
+						{{ fundsLentInCountryFormatted }}
 					</p>
 				</li>
 				<li v-if="this.partnerLoansCurrentlyFundraising">
 					<label>Loans currently fundraising:</label>
 					<p class="data">
-						{{ loansCurrentlyFundraising }}
+						{{ partnerLoansCurrentlyFundraising }}
 					</p>
 				</li>
 				<li v-if="this.directLoansCurrentlyFundraising">
@@ -182,7 +182,7 @@ export default {
 		disbursalDateFormatted() {
 			return format(this.disbursalDate, 'MMMM DD, YYYY');
 		},
-		fundslentInCountryFormatted() {
+		fundsLentInCountryFormatted() {
 			return numeral(this.fundsLentInCountry).format('$0,0');
 		},
 		borrowerPayingInterestFormatted() {
