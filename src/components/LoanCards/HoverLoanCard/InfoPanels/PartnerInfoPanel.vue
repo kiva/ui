@@ -179,7 +179,7 @@ ul {
 }
 
 .data {
-	color: $kiva-green;
+	color: $kiva-icon-green;
 }
 
 .loan-alert-text {
