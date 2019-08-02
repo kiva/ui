@@ -80,7 +80,7 @@ export default {
 @import 'settings';
 
 .loan-story {
-    padding: rem-calc(5) rem-calc(2);
+	padding: rem-calc(5) rem-calc(2);
 }
 
 #loading-overlay {

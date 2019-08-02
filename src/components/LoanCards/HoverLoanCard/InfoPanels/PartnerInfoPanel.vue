@@ -4,7 +4,7 @@
 			Field Partner info
 		</template>
 		<div
-			v-if="!timeOnKivaFormatted"
+			v-if="!timeOnKiva"
 			id="loading-overlay"
 		>
 			<div class="spinner-wrapper">
@@ -76,9 +76,7 @@
 			</ul>
 			<div v-if="this.loanAlertText && this.loanAlertText != ''">
 				<h3 class="loan-alert-text">Why Kiva works with this partner:</h3>
-				<p class="data">
-					{{ loanAlertText }}
-				</p>
+				<p class="data" v-html="loanAlertText"></p>
 			</div>
 		</div>
 	</info-panel>
