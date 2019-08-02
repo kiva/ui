@@ -56,7 +56,11 @@
 					</p>
 				</li>
 			</ul>
-			<ul v-if="this.fundsLetInCountry || this.partnerLoansCurrentlyFundraising || this.directLoansCurrentlyFundraising">
+			<ul
+				v-if="this.fundsLetInCountry
+				|| this.partnerLoansCurrentlyFundraising
+				|| this.directLoansCurrentlyFundraising"
+			>
 				<h3 class="country-heading">
 					{{ country }} country facts
 				</h3>
