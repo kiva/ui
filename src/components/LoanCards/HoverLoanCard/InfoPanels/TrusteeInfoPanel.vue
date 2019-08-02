@@ -34,7 +34,7 @@
 				<li v-if="this.timeOnKiva">
 					<label>Time on Kiva:</label>
 					<p class="data">
-						{{ timeOnKivaFormatted }}
+						{{ timeOnKivaFormatted }} months
 					</p>
 				</li>
 				<li v-if="this.numBorrowers">
