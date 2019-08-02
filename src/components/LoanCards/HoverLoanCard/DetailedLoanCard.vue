@@ -243,11 +243,31 @@ export default {
 	data() {
 		return {
 			selectedTab: '',
-			tabs: [
+		};
+	},
+	computed: {
+		hasPartner() {
+			const partnerName = _get(this.loan, 'partnerName');
+			return typeof partnerName !== 'undefined' || false;
+		},
+		hasTrustee() {
+			const trusteeName = _get(this.loan, 'trusteeName');
+			return typeof trusteeName !== 'undefined' || false;
+		},
+		retinaImageUrl() {
+			// eslint-disable-next-line quotes
+			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w1096h822/`);
+		},
+		standardImageUrl() {
+			// eslint-disable-next-line quotes
+			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
+		},
+		tabs() {
+			const baseTabs = [
 				{
 					component: null,
 					title: 'Overview',
-					id: 'Overview'
+					id: 'Overview',
 				},
 				{
 					component: BorrowerStoryPanel,
@@ -258,34 +278,26 @@ export default {
 					component: LoanDetailsPanel,
 					title: 'Details',
 					id: 'Details',
-				},
-				{
+				}
+			];
+
+			if (this.hasPartner) {
+				baseTabs.push({
 					component: PartnerInfoPanel,
 					title: 'Partner',
 					id: 'Partner',
-				},
-				{
+				});
+			}
+
+			if (this.hasTrustee) {
+				baseTabs.push({
 					component: TrusteeInfoPanel,
 					title: 'Trustee',
 					id: 'Trustee',
-				},
-			],
-		};
-	},
-	computed: {
-		hasPartner() {
-			return true;
-		},
-		hasTrustee() {
-			return false;
-		},
-		retinaImageUrl() {
-			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w1096h822/`);
-		},
-		standardImageUrl() {
-			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
+				});
+			}
+
+			return baseTabs;
 		},
 		tabIdMap() {
 			const tabIdMap = {};
