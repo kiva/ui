@@ -1,15 +1,43 @@
-# Default values for vertex service.
+# Default values for kiva-ui service.
 
 image:
   repository: kiva/ui
   tag: "" # Expected be set by Jenkins
+  pullPolicy: Always
 
 deployenv:
   environment: "" # set either by jenkins or manually
 
-# might be usful to use this instead if we wind up with more config values than just the one
-#configmap:
-#  data:
-#  - key: some_key
-#    value: 'the_value'
-#    envVar: the var
+replicaCount: 2
+
+strategy:
+  type: "RollingUpdate"
+
+service:
+  type: ClusterIP
+  port: 80
+  containerPort: 8888
+  targetPort: 8888
+  portName: "https"
+
+
+ingress:
+  enabled: false
+  name: "kiva-ui-ingress"
+  annotations:
+    certmanager.k8s.io/acme-challenge-type: dns01
+    certmanager.k8s.io/acme-dns01-provider: route53
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx-ingress-external
+    kubernetes.io/ingress.ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  host: "ui-dev.dk1.kiva.org"
+  spec:
+    rules:
+      - host: "ui-dev.dk1.kiva.org"
+        http:
+          paths:
+          - backend:
+              serviceName: "kiva-ui"
+              servicePort: 8888
+            path: /

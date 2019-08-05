@@ -13,5 +13,5 @@ RUN rm -rf node_modules
 # if prod: npm i --production
 WORKDIR /ui/ui-build
 RUN npm install cross-env
-CMD [ "/usr/bin/npm", "start", "--", "--port=8888", "--config=index", "--prefix", "/ui/ui-build" ]
+CMD [ "/usr/bin/npm", "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui/ui-build" ]
 
