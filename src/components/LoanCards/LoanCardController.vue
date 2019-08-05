@@ -248,8 +248,6 @@ export default {
 				},
 			};
 
-			console.log(loanInteractionTrackData);
-
 			this.$kvTrackSelfDescribingEvent(loanInteractionTrackData);
 		},
 		toggleFavorite() {
