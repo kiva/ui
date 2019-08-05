@@ -14,7 +14,8 @@ spec:
       app.kubernetes.io/name: {{ include "ui-helm.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
-  strategy: {{ .Values.strategy.type }}
+  strategy: 
+    type: {{ .Values.strategy.type }}
   template:
     metadata:
       labels:
