@@ -50,7 +50,7 @@ pipeline {
         echo "Deploying to development Kubernetes cluster..."
         withKubeConfig([credentialsId: "test-k8s-config"]) {
           withAWS([credentials: "jenkins-ci"]) {
-            sh "helm upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE} --tiller-namespace helm-system --values ./deploy/dev/${K8S_RELEASE_NAME}.values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8sdev"
+            sh "helm upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE} --tiller-namespace helm-system --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8sdev"
           }
         }
         }
