@@ -57,7 +57,7 @@
 				</li>
 			</ul>
 			<ul
-				v-if="this.fundsLetInCountry
+				v-if="this.fundsLentInCountry
 					|| this.partnerLoansCurrentlyFundraising
 					|| this.directLoansCurrentlyFundraising"
 			>
