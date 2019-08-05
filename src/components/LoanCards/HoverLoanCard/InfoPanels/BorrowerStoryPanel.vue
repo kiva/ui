@@ -1,5 +1,10 @@
 <template>
-	<info-panel :id="elementId" :expandable="expandable">
+	<info-panel
+		:id="elementId"
+		:expandable="expandable"
+		panel-id="borrower-story"
+		@track-interaction="trackInteraction"
+	>
 		<template #title>
 			Borrower story
 		</template>
@@ -72,6 +77,11 @@ export default {
 		elementId() {
 			return `${this.loanId}-borrower-story-panel-ex-${this.expandable ? '1' : '0'}`;
 		}
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
+		},
 	},
 };
 </script>

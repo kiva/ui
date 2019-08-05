@@ -1,5 +1,10 @@
 <template>
-	<info-panel :id="elementId" :expandable="expandable">
+	<info-panel
+		:id="elementId"
+		:expandable="expandable"
+		panel-id="partner-info"
+		@track-interaction="trackInteraction"
+	>
 		<template #title>
 			Field Partner info
 		</template>
@@ -166,6 +171,11 @@ export default {
 		},
 		currencyExchangeLossRateFormatted() {
 			return numeral(this.currencyExchangeLossRate).format('0.00');
+		},
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
 		},
 	},
 };

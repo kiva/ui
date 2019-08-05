@@ -1,5 +1,10 @@
 <template>
-	<info-panel :id="elementId" :expandable="expandable">
+	<info-panel
+		:id="elementId"
+		:expandable="expandable"
+		panel-id="loan-details"
+		@track-interaction="trackInteraction"
+	>
 		<template #title>
 			Loan Details
 		</template>
@@ -211,6 +216,11 @@ export default {
 			}
 			return facilitatedByFieldPartnerFormatted;
 		}
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
+		},
 	},
 };
 </script>
