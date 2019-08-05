@@ -114,6 +114,8 @@
 				:id="`${loan.id}-overview-panel`"
 				class="overview-panel"
 				:expandable="true"
+				panel-id="overview"
+				@track-interaction="trackInteraction"
 			>
 				<template #title>
 					Overview

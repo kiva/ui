@@ -1,7 +1,7 @@
 <template>
 	<div class="info-panel">
 		<button
-			@click="toggle"
+			@click.prevent="toggle"
 			:aria-controls="id"
 			:aria-expanded="open ? 'true' : 'false'"
 			class="title-button"
@@ -43,6 +43,10 @@ export default {
 			type: Boolean,
 			default: true,
 		},
+		panelId: {
+			type: String,
+			default: '',
+		},
 	},
 	data() {
 		return {
@@ -55,6 +59,10 @@ export default {
 	methods: {
 		toggle() {
 			this.open = !this.open || !this.expandable;
+			this.$emit('track-interaction', {
+				interactionType: `${this.open ? 'open' : 'close'}-${this.panelId}-panel`,
+				interactionElement: `mobile-${this.panelId}-panel`
+			});
 		},
 		expand() {
 			this.open = true;

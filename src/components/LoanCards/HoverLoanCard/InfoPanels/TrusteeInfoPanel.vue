@@ -1,5 +1,10 @@
 <template>
-	<info-panel :id="elementId" :expandable="expandable">
+	<info-panel
+		:id="elementId"
+		:expandable="expandable"
+		panel-id="trustee-info"
+		@track-interaction="trackInteraction"
+	>
 		<template #title>
 			Trustee info
 		</template>
@@ -181,6 +186,11 @@ export default {
 		},
 		totalDollarValueFormatted() {
 			return numeral(this.totalDollarValue).format('0.00');
+		},
+	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
 		},
 	},
 };
