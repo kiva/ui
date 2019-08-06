@@ -101,10 +101,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import {
-	// format,
-	differenceInCalendarMonths
-} from 'date-fns';
+import { differenceInCalendarMonths } from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
