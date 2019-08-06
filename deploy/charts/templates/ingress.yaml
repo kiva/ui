@@ -1,20 +1,41 @@
 {{- if .Values.ingress.enabled -}}
-{{- if $fullName := include "ui-helm.fullname" . -}}
+{{- $fullName := include "ui-helm.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "ui-helm.name" . }}
+    helm.sh/chart: {{ include "ui-helm.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.ingress.spec.rules }}
-  rules:
-    {{- with .Values.ingress.spec.rules }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
   {{- end }}
 {{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http
+        {{- end }}
+  {{- end }}
 {{- end }}
 

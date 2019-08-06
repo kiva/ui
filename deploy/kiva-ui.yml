@@ -1,37 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vertex-cron
+  name: kiva-ui
   labels:
-    app: vertex-cron
+    app: kiva-ui
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vertex-cron
+      app: kiva-ui
   template:
     metadata:
       labels:
-        app: vertex-cron
+        app: kiva-ui
     spec:
       containers:
-      - name: vertex-test
-        image: kiva/jenkins_vertex:master
-        command: ["/vertex/bin/docker_run_cron_service.sh"]
-        args: ["-e", "dev"]
+      - name: kiva-ui
+        image: kiva/ui:master
+        command: [ "/usr/bin/npm" ]
+        args: [ "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui/ui-build" ]
         env:
-        - name: vertex_snowflake_user
+        - name: UI_SESSION_SECRET
           valueFrom:
             secretKeyRef:
               name: vertex-creds
-              key: vertex_snowflake_user
-        - name: vertex_snowflake_password_encrypted
+              key: ui_session_secret
+        - name: UI_AUTH0_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               name: vertex-creds
-              key: vertex_snowflake_password_encrypted
-        - name: vertex_snowflake_schema
-          value: 'VERTEX'
+              key: ui_auth0_client_secret
         imagePullPolicy: Always
       imagePullSecrets:
         - name: regcred
