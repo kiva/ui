@@ -3,6 +3,10 @@ cache:
   npm: true
   directories:
     - ~/.cache
+addons:
+  apt:
+    packages:
+    - libgconf-2-4
 matrix:
   fast_finish: true
   include:
