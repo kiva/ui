@@ -21,7 +21,7 @@
 						:name="loan.name"
 						:loan-id="loan.id"
 						class="name"
-						@click="trackInteractionBorrowerInfoName"
+						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 					/>
 				</div>
 				<fundraising-status
