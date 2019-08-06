@@ -92,10 +92,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import {
-	format,
-	differenceInCalendarMonths
-} from 'date-fns';
+import { differenceInCalendarMonths } from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -153,9 +150,7 @@ export default {
 			return `${this.loanId}-partner-info-panel-ex-${this.expandable ? '1' : '0'}`;
 		},
 		timeOnKivaFormatted() {
-			const formattedNow = format(Date.now(), 'YYYY, M, D');
-			const formattedStartDate = format(this.timeOnKiva, 'YYYY, M, D');
-			return differenceInCalendarMonths(formattedNow, formattedStartDate);
+			return differenceInCalendarMonths(Date.now(), this.timeOnKiva);
 		},
 		totalAmountRaisedFormatted() {
 			return numeral(this.totalAmountRaised).format('$0,0');
