@@ -102,7 +102,7 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import {
-	format,
+	// format,
 	differenceInCalendarMonths
 } from 'date-fns';
 import InfoPanel from './InfoPanel';
@@ -172,9 +172,7 @@ export default {
 			return `${this.loanId}-trustee-info-panel-ex-${this.expandable ? '1' : '0'}`;
 		},
 		timeOnKivaFormatted() {
-			const formattedNow = format(Date.now(), 'YYYY, M, D');
-			const formattedStartDate = format(this.timeOnKiva, 'YYYY, M, D');
-			return differenceInCalendarMonths(formattedNow, formattedStartDate);
+			return differenceInCalendarMonths(Date.now(), this.timeOnKiva);
 		},
 		repaymentRateFormatted() {
 			return numeral(this.repaymentRate).format('0.00');
