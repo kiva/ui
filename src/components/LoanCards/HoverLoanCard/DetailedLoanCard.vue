@@ -39,7 +39,7 @@
 						:name="loan.name"
 						:loan-id="loan.id"
 						class="name"
-						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
+						@click="trackInteractionBorrowerInfoName"
 					/>
 					<div class="location-sector-row">
 						<kv-flag
