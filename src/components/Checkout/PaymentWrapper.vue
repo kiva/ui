@@ -53,10 +53,6 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		lastPaymentType: {
-			type: String,
-			default: null
-		}
 	},
 	data() {
 		return {
@@ -72,9 +68,6 @@ export default {
 			],
 			selectedOption: 'bt',
 		};
-	},
-	created() {
-		this.selectedOption = this.lastPaymentType === 'paypal' ? 'pp' : 'bt';
 	},
 	methods: {
 		// layer in error conditions, is there ever a situation where we wouldn't want to

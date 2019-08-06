@@ -2,7 +2,6 @@
 
 query initializeCheckout($basketId: String) {
 	my {
-		mostRecentPaymentType
 		lastLoginTimestamp @client
 		userAccount {
 			id

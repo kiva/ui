@@ -54,7 +54,6 @@
 									v-if="showBraintree"
 									:amount="creditNeeded"
 									:show-braintree="showBraintree"
-									:last-payment-type="lastPaymentType"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 								/>
@@ -217,7 +216,6 @@ export default {
 			holidayModeEnabled: false,
 			braintree: false,
 			braintreeExpVersion: null,
-			lastPaymentType: null,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 		};
@@ -259,7 +257,6 @@ export default {
 			this.myBalance = _get(data, 'my.userAccount.balance');
 			this.myId = _get(data, 'my.userAccount.id');
 			this.teams = _get(data, 'my.lender.teams.values');
-			this.lastPaymentType = _get(data, 'my.mostRecentPaymentType');
 			this.lastActiveLogin = _get(data, 'my.lastLoginTimestamp', 0);
 			// basket data
 			this.totals = _get(data, 'shop.basket.totals') || {};
