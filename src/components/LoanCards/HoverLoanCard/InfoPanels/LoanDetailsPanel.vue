@@ -1,5 +1,10 @@
 <template>
-	<info-panel :id="elementId" :expandable="expandable">
+	<info-panel
+		:id="elementId"
+		:expandable="expandable"
+		panel-id="loan-details"
+		@track-interaction="trackInteraction"
+	>
 		<template #title>
 			Loan Details
 		</template>
@@ -8,82 +13,97 @@
 				<kv-loading-spinner />
 			</div>
 		</div>
-		<div v-else>
+		<div
+			v-else
+			class="loan-details-container"
+		>
 			<ul>
-				<li>
+				<li v-if="this.loanLength">
 					<label>Loan length:</label>
 					<span class="data">
 						{{ loanLength }} months
 					</span>
 				</li>
-				<li>
+				<li v-if="this.repaymentSchedule">
 					<label>Repayment schedule:</label>
 					<span class="data repayment-schedule-text">
 						{{ repaymentSchedule }}
 					</span>
 				</li>
-				<li>
+				<li v-if="this.disbursalDate">
 					<label>Disbursal date:</label>
 					<p class="data">
 						{{ disbursalDateFormatted }}
 					</p>
 				</li>
-				<!-- <li>
+				<!-- <li v-if="this.currencyExchangeLoss">
 					<label>Currency exchange loss:</label>
 					<p class="data">
 						{{ currencyExchangeLoss }}
 					</p>
 				</li> -->
-				<li>
-					<label>Facilitated by Field Partner:</label>
+				<li v-if="this.facilitatedByFieldPartner">
+					<label>Facilitated by Field Partner/trustee:</label>
 					<p class="data">
 						{{ facilitatedByFieldPartnerFormatted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.borrowerPayingInterest">
 					<label>Is borrower paying interest?</label>
 					<p class="data">
 						{{ borrowerPayingInterestFormatted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.riskRating">
 					<label>Field Partner risk rating:</label>
 					<p class="data">
 						{{ riskRating }} stars
 					</p>
 				</li>
 			</ul>
-			<ul>
+			<ul
+				v-if="this.fundsLentInCountry
+					|| this.partnerLoansCurrentlyFundraising
+					|| this.directLoansCurrentlyFundraising"
+			>
 				<h3 class="country-heading">
 					{{ country }} country facts
 				</h3>
-				<!-- <li>
+				<!-- <li v-if="this.avgAnnualIncome">
 					<label>Average annual income (USD):</label>
 					<p class="data">
 						{{ avgAnnualIncome }}
 					</p>
 				</li> -->
-				<li>
+				<li v-if="this.fundsLentInCountry">
 					<label>Funds lent in {{ country }}:</label>
 					<p class="data">
-						{{ fundslentInCountryFormatted }}
+						{{ fundsLentInCountryFormatted }}
 					</p>
 				</li>
-				<li>
+				<li v-if="this.partnerLoansCurrentlyFundraising">
 					<label>Loans currently fundraising:</label>
 					<p class="data">
-						{{ loansCurrentlyFundraising }}
+						{{ partnerLoansCurrentlyFundraising }}
 					</p>
 				</li>
-				<!-- <li>
+				<li v-if="this.directLoansCurrentlyFundraising">
+					<label>Loans currently fundraising:</label>
+					<p class="data">
+						{{ directLoansCurrentlyFundraising }}
+					</p>
+				</li>
+				<!-- <li v-if="this.loansTransactedIn">
 					<label>Loans transacted in:</label>
 					<p class="data">
 						{{ loansTransactedIn }}
 					</p>
 				</li> -->
 			</ul>
-			<div>
-				<h3>This loan is special because</h3>
+			<div v-if="this.whySpecial">
+				<h3 class="why-special">
+					This loan is special because
+				</h3>
 				<p class="data">
 					{{ whySpecial }}
 				</p>
@@ -128,7 +148,8 @@ export default {
 			riskRating: '',
 			avgAnnualIncome: '',
 			fundsLentInCountry: '',
-			loansCurrentlyFundraising: '',
+			partnerLoansCurrentlyFundraising: '',
+			directLoansCurrentlyFundraising: '',
 			// loansTransactedIn: 'test',
 			// currencyExchangeLoss: 'test',
 		};
@@ -147,11 +168,12 @@ export default {
 			this.repaymentSchedule = _get(data, 'lend.loan.repaymentInterval');
 			this.borrowerPayingInterest = _get(data, 'lend.loan.partner.chargesFeesInterest');
 			this.facilitatedByFieldPartner = _get(data, 'lend.loan.partnerName');
-			this.trustee = _get(data, 'lend.loan.trusteeName');
+			this.trustee = _get(data, 'lend.loan.trustee.name');
 			this.whySpecial = _get(data, 'lend.loan.whySpecial');
 			this.avgAnnualIncome = _get(data, 'lend.loan.partner.countries[0].ppp');
 			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries[0].fundsLentInCountry');
-			this.loansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
+			this.partnerLoansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
+			this.directLoansCurrentlyFundraising = _get(data, 'lend.loan.trusteeStats.numLoansFundraising');
 
 			// This needs to be formatted from the returned string into a star display
 			// Ticket created for this: cash-1151
@@ -169,8 +191,8 @@ export default {
 		disbursalDateFormatted() {
 			return format(this.disbursalDate, 'MMMM DD, YYYY');
 		},
-		fundslentInCountryFormatted() {
-			return numeral(this.fundsLentInCountry).format('$0,0.00');
+		fundsLentInCountryFormatted() {
+			return numeral(this.fundsLentInCountry).format('$0,0');
 		},
 		borrowerPayingInterestFormatted() {
 			// Alters borrowerPayingInterest boolean FROM true/false TO yes/no
@@ -195,25 +217,37 @@ export default {
 			return facilitatedByFieldPartnerFormatted;
 		}
 	},
+	methods: {
+		trackInteraction(args) {
+			this.$emit('track-interaction', args);
+		},
+	},
 };
 </script>
 
 <style lang="scss">
 @import 'settings';
 
+.panel-title {
+	margin-bottom: rem-calc(10);
+}
+
 ul {
 	list-style: none;
+	margin-left: 0;
 }
 
 .data {
-	color: $kiva-green;
+	color: $kiva-icon-green;
+	margin-bottom: 0;
 }
 
 .repayment-schedule-text {
 	text-transform: capitalize;
 }
 
-.country-heading {
+.country-heading,
+.why-special {
 	color: $black;
 }
 </style>

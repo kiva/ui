@@ -31,6 +31,11 @@ query loanDescription(
 			... on LoanDirect {
 				disbursalDate
 				trusteeName
+				trustee {
+					stats {
+						numFundraisingLoans
+					}
+				}
 			}
 		}
 	}

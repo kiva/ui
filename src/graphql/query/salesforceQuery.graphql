@@ -1,0 +1,10 @@
+query salesforceQuery (
+	$id: String!,
+){
+	general {
+		salesforceSolution(id: $id) {
+			name
+			note
+		}
+	}
+}

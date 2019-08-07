@@ -1,6 +1,6 @@
 <template>
 	<www-page>
-		<div v-if="loan">
+		<div v-if="typeof loan !== 'undefined'">
 			<div class="row borrower-profile-wrapper">
 				<div class="small-12 medium-4 columns">
 					<!-- Borrower photo -->
@@ -57,13 +57,11 @@
 			<div class="row lyml-wrapper">
 				<div class="small-12 columns">
 					<hr>
-					<h3 class="lyml-text text-center">
-						{{ loan.name }}'s loan finished fundraising, but these
-						other borrowers need your support
-					</h3>
+					<h3 class="lyml-text text-center" v-html="lymlHeading"></h3>
 					<l-y-m-l
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
+						:sort-by="lymlCustomSort"
 						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
@@ -103,6 +101,8 @@ import _get from 'lodash/get';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
+import experimentAssignment from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
@@ -120,12 +120,14 @@ export default {
 	data() {
 		return {
 			loan: () => {},
-			itemsInBasket: []
+			itemsInBasket: [],
+			lymlCustomSort: 'random',
 		};
 	},
 	apollo: {
 		preFetch(config, client, args) {
 			const fundedLoanId = _get(args, 'route.params.id');
+
 			return client.query({
 				query: fundedBorrowerProfile,
 				variables: {
@@ -140,26 +142,51 @@ export default {
 						path: `/lend/${fundedLoanId}?minimal=false`,
 					});
 				}
+
+				return client.query({ query: experimentAssignment, variables: { id: 'funded_lyml_sort' } });
 			});
 		},
+	},
+	computed: {
+		lymlHeading() {
+			const defaultMessage = `${this.loan.name}'s loan finished fundraising,
+				but these other borrowers need your support`;
+			const customMessage = `${this.loan.name}'s loan finished fundraising,<br class="show-for-medium">
+				but these similar borrowers just need a little more help to reach their goals!`;
+			return this.lymlCustomSort === 'random' ? defaultMessage : customMessage;
+		}
 	},
 	created() {
 		// Read the page data from the cache
 		let loanData = {};
+		const loanIdFromRoute = _get(this.$route, 'params.id');
+
 		try {
 			loanData = this.apollo.readQuery({
 				query: fundedBorrowerProfile,
 				variables: {
-					id: this.$route.params.id,
+					id: loanIdFromRoute,
 					basketId: cookieStore.get('kvbskt'),
 				},
 			});
+
+			this.loan = _get(loanData, 'lend.loan');
+			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
 		} catch (e) {
 			logReadQueryError(e);
+			window.location = `/lend/${loanIdFromRoute}?minimal=false`;
 		}
 
-		this.loan = _get(loanData, 'lend.loan');
-		this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
+		// Read assigned version of lyml custom sort exp
+		const customSortExpVersion = this.apollo.readFragment({
+			id: 'Experiment:funded_lyml_sort',
+			fragment: experimentVersionFragment,
+		}) || {};
+		// set custom sort on component and track exp version
+		if (customSortExpVersion.version) {
+			this.lymlCustomSort = customSortExpVersion.version === 'shown' ? 'amountLeft' : 'random';
+			this.$kvTrackEvent('basket', 'EXP-CASH-1030-Aug2019', customSortExpVersion.version === 'shown' ? 'b' : 'a');
+		}
 	},
 	mounted() {
 		// Tracking event for the funded borrower profile experiment

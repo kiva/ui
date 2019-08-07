@@ -9,7 +9,7 @@
 		v-kv-track-event="['Lending', 'click-Read more', 'Name', props.loanId, 'true']"
 	>
 		<span
-			@click="$emit('track-loan-card-interaction', {
+			@click="listeners['track-loan-card-interaction']({
 				interactionType: 'viewBorrowerPage',
 				interactionElement: 'borrowerName'
 			})"

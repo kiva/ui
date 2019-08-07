@@ -1,6 +1,6 @@
 <template>
 	<div class="detailed-loan-card row collapse">
-		<div class="multi-pane columns small-12 medium-7 small-order-1 medium-order-2">
+		<div class="multi-pane columns small-12 xlarge-6 xxlarge-7 small-order-1 xlarge-order-2">
 			<loan-card-image
 				:loan-id="loan.id"
 				:name="loan.name"
@@ -17,12 +17,12 @@
 					:is="tabComponent"
 					:expandable="false"
 					:loan-id="loan.id"
-					class="content-tab show-for-medium"
+					class="content-tab show-for-xlarge"
 				/>
 			</transition>
 		</div>
-		<div class="main-panel columns small-12 medium-5 small-order-2 medium-order-1">
-			<div class="info-tab-selector show-for-medium">
+		<div class="main-panel columns small-12 xlarge-6 xxlarge-5 small-order-2 xlarge-order-1">
+			<div class="info-tab-selector show-for-xlarge">
 				<button
 					v-for="{title, id} in tabs"
 					:key="id"
@@ -54,7 +54,7 @@
 						</div>
 					</div>
 				</div>
-				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-medium">
+				<div :class="{collapsed: tabComponent !== null}" class="overview-column show-for-xlarge">
 					<borrower-info-body
 						:amount="loan.loanAmount"
 						:borrower-count="loan.borrowerCount"
@@ -109,11 +109,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="mobile-sections columns small-12 small-order-3 hide-for-medium">
+		<div class="mobile-sections columns small-12 small-order-3 hide-for-xlarge">
 			<info-panel
 				:id="`${loan.id}-overview-panel`"
 				class="overview-panel"
 				:expandable="true"
+				panel-id="overview"
+				@track-interaction="trackInteraction"
 			>
 				<template #title>
 					Overview
@@ -131,14 +133,14 @@
 					@track-loan-card-interaction="trackInteraction"
 				/>
 			</info-panel>
-			<borrower-story-panel
+			<component
+				v-for="{ component, id } in mobileSections"
+				:key="id"
+				:is="component"
 				:loan-id="loan.id"
 				read-more-link-text=""
 				@track-interaction="trackInteraction"
 			/>
-			<loan-details-panel :loan-id="loan.id" />
-			<!-- <partner-info-panel v-if="hasPartner" :loan-id="loan.id" /> -->
-			<!-- <trustee-info-panel v-if="hasTrustee" :loan-id="loan.id" /> -->
 			<div>
 				<router-link
 					:to="`/lend/${loan.id}`"
@@ -242,12 +244,32 @@ export default {
 	},
 	data() {
 		return {
-			selectedTab: '',
-			tabs: [
+			selectedTab: 'Overview',
+		};
+	},
+	computed: {
+		hasPartner() {
+			const partnerName = _get(this.loan, 'partnerName');
+			return typeof partnerName !== 'undefined' || false;
+		},
+		hasTrustee() {
+			const trusteeName = _get(this.loan, 'trusteeName');
+			return typeof trusteeName !== 'undefined' || false;
+		},
+		retinaImageUrl() {
+			// eslint-disable-next-line quotes
+			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w1096h822/`);
+		},
+		standardImageUrl() {
+			// eslint-disable-next-line quotes
+			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
+		},
+		tabs() {
+			const baseTabs = [
 				{
 					component: null,
 					title: 'Overview',
-					id: 'Overview'
+					id: 'Overview',
 				},
 				{
 					component: BorrowerStoryPanel,
@@ -258,36 +280,26 @@ export default {
 					component: LoanDetailsPanel,
 					title: 'Details',
 					id: 'Details',
-				},
-				/*
-				{
+				}
+			];
+
+			if (this.hasPartner) {
+				baseTabs.push({
 					component: PartnerInfoPanel,
 					title: 'Partner',
 					id: 'Partner',
-				},
-				{
+				});
+			}
+
+			if (this.hasTrustee) {
+				baseTabs.push({
 					component: TrusteeInfoPanel,
 					title: 'Trustee',
 					id: 'Trustee',
-				},
-				*/
-			],
-		};
-	},
-	computed: {
-		hasPartner() {
-			return true;
-		},
-		hasTrustee() {
-			return false;
-		},
-		retinaImageUrl() {
-			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.retina', '').replace(`/w960h600/`, `/w1096h822/`);
-		},
-		standardImageUrl() {
-			// eslint-disable-next-line quotes
-			return _get(this.loan, 'image.default', '').replace(`/w480h300/`, `/w548h411/`);
+				});
+			}
+
+			return baseTabs;
 		},
 		tabIdMap() {
 			const tabIdMap = {};
@@ -298,6 +310,9 @@ export default {
 		},
 		tabComponent() {
 			return this.tabIdMap[this.selectedTab];
+		},
+		mobileSections() {
+			return this.tabs.filter(({ component }) => component);
 		},
 	},
 	methods: {
@@ -341,7 +356,9 @@ $row-arrow-width: 2.5rem;
 	position: relative;
 	background-color: $white;
 	border: 1px solid $kiva-stroke-gray;
-	max-width: $parent-row-max-width - (2 * $row-arrow-width);
+	max-width: rem-calc(414);
+	border-radius: rem-calc(3);
+	overflow: hidden;
 
 	.mobile-sections {
 		padding: 0 1rem;
@@ -351,7 +368,7 @@ $row-arrow-width: 2.5rem;
 			margin-bottom: 1rem;
 
 			.title-button {
-				margin-bottom: 1rem;
+				margin: 0.5rem 0 0.4rem 0;
 			}
 		}
 
@@ -382,19 +399,19 @@ $row-arrow-width: 2.5rem;
 			}
 
 			span {
-				$speed-curve: 300ms linear;
+				$speed-curve: 150ms linear;
 
 				text-transform: uppercase;
-				transition: border-color $speed-curve, color $speed-curve;
+				transition: border-color $speed-curve, color $speed-curve, text-shadow $speed-curve;
 				border-color: rgba($white, 0);
 				color: $kiva-text-light;
 				font-weight: $global-weight-normal;
 			}
 
 			&.active span {
-				border-bottom: 0.1rem solid rgba($kiva-textlink, 1);
+				border-bottom: rem-calc(1) solid rgba($kiva-textlink, 1);
 				color: $kiva-text-dark;
-				font-weight: $global-weight-highlight;
+				text-shadow: rem-calc(0.5) 0 $kiva-text-dark;
 			}
 		}
 	}
@@ -412,7 +429,7 @@ $row-arrow-width: 2.5rem;
 		justify-content: flex-end;
 
 		.name-location-sector {
-			margin-bottom: rem-calc(12);
+			margin-bottom: 1rem;
 
 			.name {
 				display: block;
@@ -438,7 +455,7 @@ $row-arrow-width: 2.5rem;
 		}
 
 		.fundraising-status-container {
-			margin-bottom: 1rem;
+			margin-bottom: 0.5rem;
 		}
 	}
 
@@ -471,6 +488,7 @@ $row-arrow-width: 2.5rem;
 
 		@include breakpoint(large) {
 			text-align: unset;
+			padding-left: 0;
 		}
 	}
 
@@ -526,6 +544,11 @@ $row-arrow-width: 2.5rem;
 			padding: 0;
 			margin: 0;
 		}
+	}
+
+	@include breakpoint(xlarge) {
+		max-width: $parent-row-max-width - (2 * $row-arrow-width);
+		border-radius: 0;
 	}
 }
 </style>

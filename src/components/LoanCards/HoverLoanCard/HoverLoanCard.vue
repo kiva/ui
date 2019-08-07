@@ -11,7 +11,6 @@
 			'shift-right-double': shiftRightDouble,
 		}"
 		@mouseenter="handleMouseEnterCardMargins"
-		@click="handleClick"
 	>
 		<div
 			class="hover-loan-card-wrapper"
@@ -176,11 +175,6 @@ export default {
 				interactionType: 'hover-details-click',
 				interactionElement: 'hover-card'
 			});
-		},
-		handleClick() {
-			if (!this.hoverEffectActive()) {
-				this.updateDetailedLoanIndex();
-			}
 		},
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
