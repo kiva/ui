@@ -22,7 +22,7 @@ service:
 
 
 ingress:
-  enabled: false
+  enabled: true
   name: "kiva-ui-ingress"
   annotations:
     certmanager.k8s.io/acme-challenge-type: dns01

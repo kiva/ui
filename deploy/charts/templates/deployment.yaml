@@ -33,17 +33,8 @@ spec:
         args: ["start", "--", "--port=8888", "--config={{ .Values.deployenv.environment }}", "--prefix", "/ui/ui-build"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-         - name: http
-           containerPort: 8888
-           protocol: TCP
-        livenessProbe:
-          httpGet: 
-            path: "/ui-routes"
-            port: http
-        readinessProbe:
-          httpGet:
-            path: "/ui-routes"
-            port: http
+         - name: {{ .Values.service.portName }}
+           containerPort: {{ .Values.service.containerPort }}
 #       env:
 #         - name: foo
 #           valueFrom:
