@@ -44,7 +44,7 @@ pipeline {
 
     stage('Kubernetes_Dev_Deployment') {
       when {
-        branch 'kubernetes_deploy_ui'
+        branch 'master'
       }
       steps {
         echo "Deploying to development Kubernetes cluster..."
