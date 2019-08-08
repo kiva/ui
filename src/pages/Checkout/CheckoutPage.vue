@@ -42,28 +42,19 @@
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
-								<pay-pal-exp
-									v-if="showPayPal && !showBraintree"
-									:show-braintree="showBraintree"
-									:amount="creditNeeded"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-								/>
-
-								<payment-wrapper
-									v-if="showBraintree"
-									:amount="creditNeeded"
-									:show-braintree="showBraintree"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-								/>
-
 								<kiva-credit-payment
 									v-if="showKivaCreditButton"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									class=" checkout-button"
 									id="kiva-credit-payment-button"
+								/>
+
+								<payment-wrapper
+									v-else
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
 								/>
 							</div>
 
@@ -154,7 +145,6 @@ import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheck
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
-import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
@@ -172,7 +162,6 @@ export default {
 	components: {
 		WwwPage,
 		CheckoutSteps,
-		PayPalExp,
 		KivaCreditPayment,
 		KvButton,
 		KvLightbox,
@@ -213,8 +202,6 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
-			braintree: false,
-			braintreeExpVersion: null,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 		};
@@ -268,7 +255,6 @@ export default {
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
@@ -347,14 +333,6 @@ export default {
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
-		},
-		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0
-			&& this.braintree === false;
-		},
-		showBraintree() {
-			return parseFloat(this.creditNeeded) > 0
-				&& this.braintree === true;
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
