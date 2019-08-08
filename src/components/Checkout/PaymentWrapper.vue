@@ -12,7 +12,6 @@
 				<pay-pal-exp
 					v-if="selectedOption === 'pp'"
 					:amount="amount"
-					:show-braintree="showBraintree"
 					@refreshtotals="$emit('refreshTotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
 				/>
@@ -48,11 +47,7 @@ export default {
 		amount: {
 			type: String,
 			default: ''
-		},
-		showBraintree: {
-			type: Boolean,
-			default: true
-		},
+		}
 	},
 	data() {
 		return {

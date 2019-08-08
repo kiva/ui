@@ -42,28 +42,19 @@
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
-								<pay-pal-exp
-									v-if="showPayPal && !showBraintree"
-									:show-braintree="showBraintree"
-									:amount="creditNeeded"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-								/>
-
-								<payment-wrapper
-									v-if="showBraintree"
-									:amount="creditNeeded"
-									:show-braintree="showBraintree"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-								/>
-
 								<kiva-credit-payment
 									v-if="showKivaCreditButton"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
 									class=" checkout-button"
 									id="kiva-credit-payment-button"
+								/>
+
+								<payment-wrapper
+									v-else
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
 								/>
 							</div>
 
@@ -149,13 +140,11 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
-import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
-import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
@@ -173,7 +162,6 @@ export default {
 	components: {
 		WwwPage,
 		CheckoutSteps,
-		PayPalExp,
 		KivaCreditPayment,
 		KvButton,
 		KvLightbox,
@@ -214,8 +202,6 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
-			braintree: false,
-			braintreeExpVersion: null,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 		};
@@ -248,7 +234,6 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-					client.query({ query: experimentQuery, variables: { id: 'bt_v1' } }),
 				]);
 			});
 		},
@@ -270,7 +255,6 @@ export default {
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.braintree = _get(data, 'general.braintree_checkout.value') === 'true';
 		}
 	},
 	created() {
@@ -297,16 +281,6 @@ export default {
 			);
 		} catch (e) {
 			logReadQueryError(e);
-		}
-
-		// Read assigned version of braintree experiment
-		const braintreeExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:bt_v1',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.braintreeExpVersion = braintreeExpAssignment.version;
-		if (this.braintreeExpVersion) {
-			this.$kvTrackEvent('basket', 'EXP-CASH-673-Launch', this.braintreeExpVersion === 'shown' ? 'b' : 'a');
 		}
 
 		// Read assigned version of loan res 20 exp
@@ -359,15 +333,6 @@ export default {
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
-		},
-		showPayPal() {
-			return parseFloat(this.creditNeeded) > 0
-			&& (this.braintreeExpVersion === 'control' || this.braintree === false);
-		},
-		showBraintree() {
-			return parseFloat(this.creditNeeded) > 0
-				&& this.braintree === true
-				&& this.braintreeExpVersion === 'shown';
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;

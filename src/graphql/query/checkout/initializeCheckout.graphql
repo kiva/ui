@@ -23,13 +23,6 @@ query initializeCheckout($basketId: String) {
 			value
 			key
 		}
-		braintree_checkout: uiConfigSetting(key: "feature.braintree_checkout") {
-			value
-		}
-		braintreeExp: uiExperimentSetting(key: "bt_v1") {
-			key
-			value
-		}
 	}
 	shop (basketId: $basketId) {
 		basket {
