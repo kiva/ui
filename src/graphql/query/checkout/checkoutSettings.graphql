@@ -4,9 +4,6 @@ query checkoutSettings($basketId: String) {
 			value
 			key
 		}
-		braintree_checkout: uiConfigSetting(key: "feature.braintree_checkout") {
-			value
-		}
 	}
 	shop (basketId: $basketId) {
 		basket {
