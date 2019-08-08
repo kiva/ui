@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kiva-ui
+  labels:
+    app: kiva-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kiva-ui
+  template:
+    metadata:
+      labels:
+        app: kiva-ui
+    spec:
+      containers:
+      - name: kiva-ui
+        image: kiva/ui:master
+        command: [ "/usr/bin/npm" ]
+        args: [ "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui/ui-build" ]
+        env:
+        - name: UI_SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: vertex-creds
+              key: ui_session_secret
+        - name: UI_AUTH0_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: vertex-creds
+              key: ui_auth0_client_secret
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: regcred

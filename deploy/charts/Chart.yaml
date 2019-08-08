@@ -1,0 +1,6 @@
+---
+apiVersion: v1
+appVersion: "1.0"
+description: kiva-ui service deployment
+name: kiva-ui
+version: 0.1.0
