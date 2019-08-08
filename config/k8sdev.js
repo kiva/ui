@@ -1,7 +1,10 @@
 var merge = require('webpack-merge')
-var devVm  = require('./dev-vm.js')
+var dev  = require('./dev.js')
 
-module.exports = merge(devVm, {
+module.exports = merge(dev, {
+	app: {
+		publicPath: 'https://www-dev-kiva-org.global.ssl.fastly.net/',
+	}
 	server: {
 		memcachedServers: 'k8sdev-elasticache.bu9ifv.cfg.usw1.cache.amazonaws.com:11211',
 	}
