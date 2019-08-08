@@ -45,7 +45,7 @@
 							<!-- Link to see full borrower profile in old stack -->
 							<router-link
 								:to="`/lend/${loan.id}?minimal=false`"
-								v-kv-track-event="['Lending', 'EXP-CASH-847-Jun2019-exit-link']"
+								v-kv-track-event="['Lending', 'full-borrower-profile-exit-link']"
 							>
 								See full borrower profile
 							</router-link>
@@ -186,13 +186,6 @@ export default {
 		if (customSortExpVersion.version) {
 			this.lymlCustomSort = customSortExpVersion.version === 'shown' ? 'amountLeft' : 'random';
 			this.$kvTrackEvent('basket', 'EXP-CASH-1030-Aug2019', customSortExpVersion.version === 'shown' ? 'b' : 'a');
-		}
-	},
-	mounted() {
-		// Tracking event for the funded borrower profile experiment
-		const borrowerRedirectExp = this.$route.query.minimal;
-		if (borrowerRedirectExp === 'true') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-847-Jun2019', 'b');
 		}
 	},
 	methods: {
