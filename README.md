@@ -20,15 +20,20 @@ $ ./ui-server.sh {status|log|restart|local|start_local}
 # install dependencies
 $ npm install
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:8888
 $ npm run dev
 $ npm run dev -- --config=local (any context outside of kiva vm)
+# visit localhost:8888/ui-site-map to explore some pages (/styleguide or /lend-by-category may be of interest)
 
 # build for production with minification
 $ npm run build
 
 # build for production and view the bundle analyzer report
 $ npm run build --report
+
+# start the server using compiled build
+$ npm start -- --config=local
+# visit localhost:8888/ui-site-map to explore some pages (/styleguide or /lend-by-category may be of interest)
 
 # run unit tests
 $ npm run unit
