@@ -171,19 +171,6 @@ export default {
 
 		// Get Lend Filter Exp version
 		this.getLendFilterExpVersion();
-
-		// get exp assignment for remove words setting
-		const algoliaRemoveWordsExp = this.apollo.readFragment({
-			id: 'Experiment:remove_words',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (algoliaRemoveWordsExp.version === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'a');
-		} else if (algoliaRemoveWordsExp.version === 'variant-b') {
-			this.removeWordsIfNoResults = 'lastWords';
-			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'b');
-		}
 	},
 	data() {
 		return {
@@ -256,6 +243,20 @@ export default {
 	mounted() {
 		// update global lend filter experiment setting
 		this.updateLendFilterExp();
+
+		// get exp assignment for remove words setting
+		const algoliaRemoveWordsExp = this.apollo.readFragment({
+			id: 'Experiment:remove_words',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (algoliaRemoveWordsExp.version === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'a');
+		} else if (algoliaRemoveWordsExp.version === 'variant-b') {
+			this.removeWordsIfNoResults = 'lastWords';
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'b');
+		}
+
 		// Only allow experiment when in show-for-large (>= 1194px) screen size
 		if (window.innerWidth >= 1194) {
 			// CASH-851: Experiment - Pinned filter
