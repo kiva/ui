@@ -39,6 +39,7 @@
 						:hitsPerPage="15"
 						:disjunctiveFacetsRefinements="disjunctiveFacets"
 						clickAnalytics="true"
+						:removeWordsIfNoResults="removeWordsIfNoResults"
 						:userToken="userId.toString()"
 						ref="aisConfigure"
 					/>
@@ -98,6 +99,7 @@ import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
+import experimentAssignment from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
@@ -167,7 +169,7 @@ export default {
 			},
 		});
 
-		// Update Lend Filter Exp
+		// Get Lend Filter Exp version
 		this.getLendFilterExpVersion();
 	},
 	data() {
@@ -179,6 +181,7 @@ export default {
 			selectedCustomCategories: {},
 			filterMenuPinned: false,
 			algoliaSearchEnabled: false,
+			removeWordsIfNoResults: 'none', // default: 'none', options: 'firstWords' 'lastWords' 'allOptional'
 		};
 	},
 	computed: {
@@ -226,11 +229,34 @@ export default {
 				variables: {
 					basketId: cookieStore.get('kvbskt')
 				},
+			}).then(() => {
+				// Pre-fetch user Status
+				return client.query({
+					query: experimentAssignment,
+					variables: {
+						id: 'remove_words',
+					},
+				});
 			});
 		}
 	},
 	mounted() {
+		// update global lend filter experiment setting
 		this.updateLendFilterExp();
+
+		// get exp assignment for remove words setting
+		const algoliaRemoveWordsExp = this.apollo.readFragment({
+			id: 'Experiment:remove_words',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (algoliaRemoveWordsExp.version === 'variant-a') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'a');
+		} else if (algoliaRemoveWordsExp.version === 'variant-b') {
+			this.removeWordsIfNoResults = 'lastWords';
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'b');
+		}
+
 		// Only allow experiment when in show-for-large (>= 1194px) screen size
 		if (window.innerWidth >= 1194) {
 			// CASH-851: Experiment - Pinned filter
