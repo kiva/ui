@@ -169,6 +169,9 @@ export default {
 			},
 		});
 
+		// Get Lend Filter Exp version
+		this.getLendFilterExpVersion();
+
 		// get exp assignment for remove words setting
 		const algoliaRemoveWordsExp = this.apollo.readFragment({
 			id: 'Experiment:remove_words',
@@ -251,6 +254,8 @@ export default {
 		}
 	},
 	mounted() {
+		// update global lend filter experiment setting
+		this.updateLendFilterExp();
 		// Only allow experiment when in show-for-large (>= 1194px) screen size
 		if (window.innerWidth >= 1194) {
 			// CASH-851: Experiment - Pinned filter
