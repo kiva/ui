@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"algoliasearch": "^3.32.1",
-		"apollo-cache-inmemory": "^1.5.1",
+		"apollo-cache-inmemory": "^1.6.3",
 		"apollo-client": "2.4.13",
 		"apollo-link": "^1.2.11",
 		"apollo-link-batch-http": "^1.2.11",
