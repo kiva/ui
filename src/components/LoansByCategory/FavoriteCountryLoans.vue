@@ -128,7 +128,7 @@ export default {
 				},
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'FavoriteCountryLoans favoriteCountryQueryOrData');
 		}
 
 		const favoriteCountryLoans = _get(favoriteCountryData, 'lend.loans.values');

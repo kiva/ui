@@ -62,7 +62,7 @@ try {
 	userId = _get(data, 'my.userAccount.id');
 } catch (e) {
 	// do nothing (leave user id as null)
-	logReadQueryError(e);
+	logReadQueryError(e, 'client-entry userIdQuery');
 }
 
 // setup global analytics data

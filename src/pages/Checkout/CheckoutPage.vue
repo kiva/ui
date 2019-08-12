@@ -280,7 +280,7 @@ export default {
 				'general.holiday_end_time.value'
 			);
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'CheckoutPage promoQuery');
 		}
 
 		// Read assigned version of loan res 20 exp

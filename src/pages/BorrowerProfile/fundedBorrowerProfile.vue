@@ -173,7 +173,7 @@ export default {
 			this.loan = _get(loanData, 'lend.loan');
 			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			window.location = `/lend/${loanIdFromRoute}?minimal=false`;
 		}
 

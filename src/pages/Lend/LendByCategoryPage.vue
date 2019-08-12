@@ -445,7 +445,7 @@ export default {
 				},
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
 		}
 
 		this.setRows(baseData);
@@ -475,7 +475,7 @@ export default {
 			});
 			this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'LendByCategory loanChannelQuery');
 		}
 
 		// If active, update our custom categories prior to render

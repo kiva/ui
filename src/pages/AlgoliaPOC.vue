@@ -301,7 +301,7 @@ export default {
 			});
 			this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'AlgoliaPOC itemsInBasketQuery');
 		}
 
 		this.apollo.watchQuery({
@@ -320,7 +320,7 @@ export default {
 				variables: { basketId },
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'AlgoliaPOC userStatus');
 		}
 
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
