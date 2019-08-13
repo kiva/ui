@@ -38,6 +38,7 @@ import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
+	inject: ['apollo'],
 	components: {
 		BraintreeCheckout,
 		PayPalExp,
@@ -45,6 +46,10 @@ export default {
 	},
 	props: {
 		amount: {
+			type: String,
+			default: ''
+		},
+		selectedOption: {
 			type: String,
 			default: ''
 		}
@@ -61,7 +66,7 @@ export default {
 					key: 'pp',
 				},
 			],
-			selectedOption: 'bt',
+			// selectedOption: 'bt',
 		};
 	},
 	methods: {
