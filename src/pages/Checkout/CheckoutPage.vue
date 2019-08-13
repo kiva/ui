@@ -204,8 +204,7 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
-			braintreeExpVersion: null,
-			selectedOption: null,
+			braintreeVsPaypalVersion: null,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 		};
@@ -357,7 +356,7 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		translateSelectedOption() {
-			if (this.braintreeExpVersion === 'control' || this.braintreeVsPaypalVersion === 'a') {
+			if (this.braintreeVsPaypalVersion === 'control') {
 				return 'pp';
 			}
 			return 'bt';
