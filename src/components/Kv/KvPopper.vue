@@ -14,7 +14,7 @@
 import Popper from 'popper.js';
 import _map from 'lodash/map';
 import _merge from 'lodash/merge';
-import usingTouchQuery from '@/graphql/query/shared/usingTouchClient.graphql';
+import usingTouchMixin from '@/plugins/touch-detection-mixin';
 import {
 	onBodyTouchstart,
 	offBodyTouchstart,
@@ -22,7 +22,7 @@ import {
 } from '@/util/touchEvents';
 
 export default {
-	inject: ['apollo'],
+	mixins: [usingTouchMixin],
 	props: {
 		controller: { type: String, required: true },
 		openDelay: { type: Number, default: 0 },
@@ -38,19 +38,12 @@ export default {
 			styles: {},
 			show: false,
 			timeout: null,
-			usingTouch: false,
 		};
 	},
 	computed: {
 		reference() {
 			return document.getElementById(this.controller);
 		},
-	},
-	apollo: {
-		query: usingTouchQuery,
-		result({ data }) {
-			this.usingTouch = data.usingTouch;
-		}
 	},
 	watch: {
 		usingTouch() {
