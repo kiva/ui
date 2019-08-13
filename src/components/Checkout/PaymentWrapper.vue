@@ -47,6 +47,10 @@ export default {
 		amount: {
 			type: String,
 			default: ''
+		},
+		selectedOption: {
+			type: String,
+			default: 'bt'
 		}
 	},
 	data() {
@@ -61,7 +65,6 @@ export default {
 					key: 'pp',
 				},
 			],
-			selectedOption: 'bt',
 		};
 	},
 	methods: {
