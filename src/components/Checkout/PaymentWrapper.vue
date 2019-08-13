@@ -65,6 +65,8 @@ export default {
 					key: 'pp',
 				},
 			],
+			// Uncomment this selectedOption line to set a default payment option
+			// bt = braintree, pp = paypal
 			// selectedOption: 'bt',
 		};
 	},
