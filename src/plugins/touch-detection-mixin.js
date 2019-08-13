@@ -6,8 +6,9 @@ export default {
 	},
 	created() {
 		if (window) {
+			const self = this;
 			window.addEventListener('touchstart', function onFirstTouch() {
-				this.usingTouch = true;
+				self.usingTouch = true;
 				window.removeEventListener('touchstart', onFirstTouch);
 			});
 		}
