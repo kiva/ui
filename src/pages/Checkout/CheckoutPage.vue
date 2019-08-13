@@ -357,7 +357,7 @@ export default {
 			return parseFloat(this.creditNeeded) === 0;
 		},
 		translateSelectedOption() {
-			if (this.braintreeExpVersion === 'control') {
+			if (this.braintreeExpVersion === 'control' || this.braintreeVsPaypalVersion === 'a') {
 				return 'pp';
 			}
 			return 'bt';

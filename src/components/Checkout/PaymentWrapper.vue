@@ -38,7 +38,6 @@ import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
-	inject: ['apollo'],
 	components: {
 		BraintreeCheckout,
 		PayPalExp,
