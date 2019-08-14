@@ -4,6 +4,10 @@ query donationData {
 			key
 			value
 		}
+		donationNudgeFellows: uiExperimentSetting(key: "donation_nudge_fellows") {
+			key
+			value
+		}
 	}
 	my {
 		loans {
