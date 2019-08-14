@@ -58,6 +58,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import DonationNudgeBoxes from '@/components/Checkout/DonationNudge/DonationNudgeBoxes';
 import DonationNudgeIntro from '@/components/Checkout/DonationNudge/DonationNudgeIntro';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
+import donationNudgeLightboxMixin from '@/components/Checkout/DonationNudge/donationNudgeLightboxMixin';
 
 export default {
 	components: {
@@ -67,65 +68,14 @@ export default {
 		DonationNudgeBoxes,
 		DonationNudgeIntro,
 	},
+	mixins: [
+		donationNudgeLightboxMixin,
+	],
 	props: {
-		nudgeLightboxVisible: {
-			type: Boolean,
-			required: true,
-		},
-		closeNudgeLightbox: {
-			type: Function,
-			required: true,
-		},
-		updateDonationTo: {
-			type: Function,
-			required: true,
-		},
-		loanCount: {
-			type: Number,
-			default: 0
-		},
-		loanReservationTotal: {
-			type: Number,
-			default: 0,
-		},
-		hasCustomDonation: {
-			type: Boolean,
-			default: false,
-		},
-		header: {
-			type: String,
-			default: '',
-		},
-		experimentalHeader: {
-			type: Boolean,
-			default: false,
-		},
 		experimentalFooter: {
 			type: Boolean,
 			default: false,
 		},
-		description: {
-			type: String,
-			default: '',
-		},
-		percentageRows: {
-			type: Array,
-			default: () => [],
-		},
-		currentDonationAmount: {
-			type: String,
-			default: ''
-		},
-	},
-	methods: {
-		setDonationAndClose(amount) {
-			this.updateDonationTo(amount);
-			this.$kvTrackEvent('basket', 'Update Loan Amount', 'Update Success', amount * 100);
-			this.closeNudgeLightbox();
-		},
-		openNudgeLightbox() {
-			this.$refs.nudgeBoxes.openNudgeLightbox();
-		}
 	},
 };
 </script>

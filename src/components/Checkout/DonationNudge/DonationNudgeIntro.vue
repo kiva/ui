@@ -1,14 +1,12 @@
 <template functional>
 	<div
 		id="donation-nudge-intro"
-		:class="{'hide-header-on-mobile': props.hideHeaderOnMobile, 'no-description': !props.description}"
+		:class="{
+			'hide-header-on-mobile': props.hideHeaderOnMobile,
+			'no-description': !props.description,
+			'hide-description-on-mobile': props.hideDescriptionMobile,
+		}"
 	>
-		<div
-			id="nudge-donation-top-header"
-			class="impact-text"
-		>
-			{{ props.header }}
-		</div>
 		<div
 			v-if="props.mobileImageUrl"
 			id="borrower-image-mobile-container"
@@ -17,7 +15,18 @@
 		>
 			<img id="nudge-donation-borrower-image-mobile" :src="props.mobileImageUrl">
 		</div>
-		<div class="row" id="nudge-donation-top-content-row" v-if="props.description">
+		<div
+			id="nudge-donation-top-header"
+			class="impact-text"
+		>
+			{{ props.header }}
+		</div>
+		<div
+			class="row"
+			id="nudge-donation-top-content-row"
+			v-if="props.description"
+			:class="{'show-for-large': props.hideDescriptionMobile}"
+		>
 			<div v-if="props.noPaddingDescription" class="nudge-donation-top-content" v-html="props.description"></div>
 			<div v-else class="small-10 small-offset-1 columns" v-html="props.description"></div>
 		</div>
@@ -46,6 +55,10 @@ export default {
 		mobileImageUrl: {
 			type: String,
 			default: '',
+		},
+		hideDescriptionMobile: {
+			type: Boolean,
+			default: false,
 		},
 	},
 };
@@ -82,8 +95,6 @@ export default {
 	}
 
 	#borrower-image-mobile-container {
-		@extend .nudge-lightbox-row-padding;
-
 		margin-bottom: 0.5rem;
 
 		&.has-description {
@@ -126,6 +137,10 @@ export default {
 				margin-bottom: 0;
 			}
 		}
+	}
+
+	&.hide-description-on-mobile {
+		margin-bottom: 0;
 	}
 }
 </style>

@@ -331,7 +331,7 @@ export default {
 		validateInputDesktopRadio() {
 			this.setInputs(numeral(this.$refs.customDonationInputDesktopRadio.value).format('$0,0.00'));
 		},
-		validateInputMobile() {
+		validateInput() {
 			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
 		},
 	},
