@@ -48,7 +48,7 @@ export default {
 			type: String,
 			default: ''
 		},
-		selectedOption: {
+		expSelectedOption: {
 			type: String,
 			default: 'bt'
 		}
@@ -65,7 +65,22 @@ export default {
 					key: 'pp',
 				},
 			],
+			selectedOption: 'bt'
 		};
+	},
+	created() {
+		if (this.expSelectedOption !== '') {
+			this.selectedOption = this.expSelectedOption;
+		}
+	},
+	mounted() {
+		if (this.expSelectedOption !== '') {
+			this.$kvTrackEvent(
+				'basket',
+				'EXP-CASH-1167-Aug2019',
+				this.expSelectedOption === 'bt' ? 'b' : 'a'
+			);
+		}
 	},
 	methods: {
 		// layer in error conditions, is there ever a situation where we wouldn't want to
