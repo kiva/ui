@@ -29,7 +29,7 @@
 					<div class="small-5 columns nudge-box-column nudge-box-column-button">
 						<input
 							type="text"
-							ref="customDonationInputMobile"
+							ref="customDonationInput"
 							name="customDonationInputTextMobile"
 							maxlength="10"
 							class="nudge-box-input"
@@ -121,16 +121,13 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(this.$refs.customDonationInputMobile.value);
+			this.setDonationAndClose(this.$refs.customDonationInput.value);
 		},
 		setInputs(value) {
-			this.$refs.customDonationInputMobile.value = value;
-		},
-		validateInputDesktop() {
-			this.setInputs(numeral(this.$refs.customDonationInputDesktop.value).format('$0,0.00'));
+			this.$refs.customDonationInput.value = value;
 		},
 		validateInput() {
-			this.setInputs(numeral(this.$refs.customDonationInputMobile.value).format('$0,0.00'));
+			this.setInputs(numeral(this.$refs.customDonationInput.value).format('$0,0.00'));
 		},
 		focusInput() {
 			this.hasEnteredCustomBox = true;
