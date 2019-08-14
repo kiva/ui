@@ -55,7 +55,7 @@
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
-									:selected-option="translateSelectedOption"
+									:exp-selected-option="translateSelectedOption"
 								/>
 							</div>
 
@@ -293,13 +293,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.braintreeVsPaypalVersion = braintreeVsPaypalExpAssignment.version;
-		if (this.braintreeVsPaypalVersion) {
-			this.$kvTrackEvent(
-				'basket',
-				'EXP-CASH-1167-Aug2019',
-				this.braintreeVsPaypalVersion === 'shown' ? 'b' : 'a'
-			);
-		}
 
 		// Read assigned version of loan res 20 exp
 		const loanRes20ExpAssignment = this.apollo.readFragment({
