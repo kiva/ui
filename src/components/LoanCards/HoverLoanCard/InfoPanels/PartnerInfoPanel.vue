@@ -36,12 +36,12 @@
 						{{ totalAmountRaisedFormatted }}
 					</p>
 				</li>
-				<!-- <li>
+				<li>
 					<label>Average cost to borrower:</label>
 					<p class="data">
-						{{}}
+						{{ avgCostToBorrowerFormatted }} PY
 					</p>
-				</li> -->
+				</li>
 				<!-- <li>
 					<label>Profitabilty (return on assets):</label>
 					<p class="data">
@@ -119,6 +119,7 @@ export default {
 			numOfBorrowers: 0,
 			totalAmountRaised: 0,
 			avgLoanSize: '',
+			avgCostToBorrower: '',
 			deliquencyRate: '',
 			riskRate: '',
 			defaultRate: '',
@@ -143,6 +144,7 @@ export default {
 			this.defaultRate = _get(data, 'lend.loan.partner.defaultRate');
 			this.currencyExchangeLossRate = _get(data, 'lend.loan.partner.currencyExchangeLossRate');
 			this.loanAlertText = _get(data, 'lend.loan.partner.loanAlertText');
+			this.avgCostToBorrower = _get(data, 'lend.loan.partner.avgBorrowerCost');
 		},
 	},
 	computed: {
@@ -167,6 +169,9 @@ export default {
 		currencyExchangeLossRateFormatted() {
 			return numeral(this.currencyExchangeLossRate).format('0.00');
 		},
+		avgCostToBorrowerFormatted() {
+			return numeral(this.avgBorrowerCost).format('0%');
+		}
 	},
 	methods: {
 		trackInteraction(args) {
