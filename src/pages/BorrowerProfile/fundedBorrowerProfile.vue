@@ -71,7 +71,7 @@
 				<div class="small-12 columns text-center">
 					<!-- Loan use -->
 					<h2 class="loan-use-text">
-						A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helped {{ loan.use }}
+						A loan helped {{ loan.use }}
 					</h2>
 				</div>
 			</div>
