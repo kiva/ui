@@ -225,7 +225,7 @@ export default {
 				},
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'SentenceSearch itemsInBasketQuery');
 		}
 		this.itemsInBasket = _map(_get(basketData, 'shop.basket.items.values'), 'id');
 
@@ -249,7 +249,7 @@ export default {
 				},
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'SentenceSearch userStatus');
 		}
 		this.isLoggedIn = _get(userData, 'my.userAccount.id') !== undefined;
 	},

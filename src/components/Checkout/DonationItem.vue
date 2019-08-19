@@ -69,6 +69,7 @@
 			/>
 		</span>
 		<donation-nudge-lightbox
+			v-if="!donationNudgeFellows"
 			ref="nudgeLightbox"
 			:loan-count="loanCount"
 			:loan-reservation-total="loanReservationTotal"
@@ -76,8 +77,21 @@
 			:close-nudge-lightbox="closeNudgeLightbox"
 			:update-donation-to="updateDonationTo"
 			:has-custom-donation="hasCustomDonation"
-			:header="donationNudgeHeader()"
-			:experimental-header="donationNudgeExperimentalHeader"
+			:experimental-footer="showCharityOverheadFooter"
+			:description="donationNudgeDescription()"
+			:percentage-rows="donationNudgePercentageRows"
+			:current-donation-amount="amount"
+		/>
+		<donation-nudge-lightbox-image
+			v-else
+			ref="nudgeLightbox"
+			:loan-count="loanCount"
+			:loan-reservation-total="loanReservationTotal"
+			:nudge-lightbox-visible="nudgeLightboxVisible"
+			:close-nudge-lightbox="closeNudgeLightbox"
+			:update-donation-to="updateDonationTo"
+			:has-custom-donation="hasCustomDonation"
+			:header="donationNudgeFellowsHeader"
 			:experimental-footer="showCharityOverheadFooter"
 			:description="donationNudgeDescription()"
 			:percentage-rows="donationNudgePercentageRows"
@@ -120,6 +134,7 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
+import DonationNudgeLightboxImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxImage';
 
 export default {
 	components: {
@@ -128,6 +143,7 @@ export default {
 		KvLightbox,
 		DonateRepayments,
 		DonationNudgeLightbox,
+		DonationNudgeLightboxImage,
 	},
 	inject: ['apollo'],
 	props: {
@@ -153,13 +169,14 @@ export default {
 			nudgeLightboxVisible: false,
 			isCash80Running: true,
 			hasCustomDonation: true,
-			donationNudgeExperimentalHeader: false,
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
 			donationNudgeBorrowerImageExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			donationTitle: 'Donation to Kiva',
 			showCharityOverheadFooter: false,
+			donationNudgeFellows: false,
+			donationNudgeFellowsHeader: 'Donations enable Kiva Fellows to reach the people who need it most',
 		};
 	},
 	apollo: {
@@ -169,13 +186,12 @@ export default {
 				client.query({
 					query: donationDataQuery
 				}).then(() => {
-					// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
-					client.query({
-						query: experimentAssignmentQuery,
-						variables: {
-							id: 'charity_overhead',
-						},
-					}).then(resolve).catch(reject);
+					Promise.all([
+						// Get the assigned experiment version for Donation Nudge Borrower Image Experiment
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'charity_overhead' } }),
+						// Get the assigned experiment version for Donation nudge fellows experiment
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'donation_nudge_fellows' } }),
+					]).then(resolve).catch(reject);
 				}).catch(reject);
 			});
 		}
@@ -264,6 +280,19 @@ export default {
 					this.showCharityOverheadFooter = true;
 				}
 			}
+			// CASH-1111: Donation Nudge Fellows
+			if (this.hasLoans) {
+				const donationNudgeFellowsExp = this.apollo.readFragment({
+					id: 'Experiment:donation_nudge_fellows',
+					fragment: experimentVersionFragment,
+				}) || {};
+				if (donationNudgeFellowsExp.version === 'control') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'a');
+				} else if (donationNudgeFellowsExp.version === 'shown') {
+					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'b');
+					this.donationNudgeFellows = true;
+				}
+			}
 		},
 		updateDonation() {
 			this.editDonation = false;
@@ -317,9 +346,6 @@ export default {
 			this.$kvTrackEvent('basket', 'click-open nudge');
 			this.nudgeLightboxVisible = true;
 			this.$refs.nudgeLightbox.openNudgeLightbox();
-		},
-		donationNudgeHeader() {
-			return 'We rely on donations to reach the people who need it the most';
 		},
 		donationNudgeDescription() {
 			/* eslint-disable max-len */

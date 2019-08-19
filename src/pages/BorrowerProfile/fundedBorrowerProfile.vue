@@ -71,7 +71,7 @@
 				<div class="small-12 columns text-center">
 					<!-- Loan use -->
 					<h2 class="loan-use-text">
-						A loan of ${{ loan.loanFundraisingInfo.fundedAmount | numeral('0,0') }} helped {{ loan.use }}
+						A loan helped {{ loan.use }}
 					</h2>
 				</div>
 			</div>
@@ -173,7 +173,7 @@ export default {
 			this.loan = _get(loanData, 'lend.loan');
 			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			window.location = `/lend/${loanIdFromRoute}?minimal=false`;
 		}
 

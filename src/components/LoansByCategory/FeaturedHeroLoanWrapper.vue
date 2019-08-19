@@ -119,7 +119,7 @@ export default {
 				},
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'FeaturedHeroLoanWrapper featuredLoansQuery');
 		}
 
 		// set initial loan data so we ssr with a loan if possible

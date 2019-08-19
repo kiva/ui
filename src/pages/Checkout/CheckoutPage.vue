@@ -55,6 +55,7 @@
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
+									:exp-selected-option="translateSelectedOption"
 								/>
 							</div>
 
@@ -140,6 +141,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
+import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
@@ -202,6 +204,7 @@ export default {
 			redirectLightboxVisible: false,
 			teams: [],
 			holidayModeEnabled: false,
+			braintreeVsPaypalVersion: null,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 		};
@@ -234,6 +237,7 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
+					client.query({ query: experimentQuery, variables: { id: 'braintree_vs_paypal' } }),
 				]);
 			});
 		},
@@ -280,8 +284,15 @@ export default {
 				'general.holiday_end_time.value'
 			);
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'CheckoutPage promoQuery');
 		}
+
+		// Read assigned version of braintree vs paypal exp
+		const braintreeVsPaypalExpAssignment = this.apollo.readFragment({
+			id: 'Experiment:braintree_vs_paypal',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.braintreeVsPaypalVersion = braintreeVsPaypalExpAssignment.version;
 
 		// Read assigned version of loan res 20 exp
 		const loanRes20ExpAssignment = this.apollo.readFragment({
@@ -336,6 +347,12 @@ export default {
 		},
 		showKivaCreditButton() {
 			return parseFloat(this.creditNeeded) === 0;
+		},
+		translateSelectedOption() {
+			if (this.braintreeVsPaypalVersion === 'control') {
+				return 'pp';
+			}
+			return 'bt';
 		},
 		showLoginContinueButton() {
 			if (!this.myId || !this.isActivelyLoggedIn) {

@@ -229,7 +229,7 @@ export default {
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'LoanChanngeCategoryPage loanChannelPageQuery');
 		}
 
 		// set user status
@@ -252,7 +252,7 @@ export default {
 				),
 			});
 		} catch (e) {
-			logReadQueryError(e);
+			logReadQueryError(e, 'LoanChanngeCategoryPage loanChannelQuery');
 		}
 
 		// Assign our initial view data
