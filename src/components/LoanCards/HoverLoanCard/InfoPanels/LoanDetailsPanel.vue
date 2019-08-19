@@ -36,6 +36,12 @@
 						{{ disbursalDateFormatted }}
 					</p>
 				</li>
+				<li v-if="this.fundingModel">
+					<label>Funding model:</label>
+					<p class="data funding-model-text">
+						{{ fundingModelFormatted }}
+					</p>
+				</li>
 				<!-- <li v-if="this.currencyExchangeLoss">
 					<label>Currency exchange loss:</label>
 					<p class="data">
@@ -150,6 +156,7 @@ export default {
 			fundsLentInCountry: '',
 			partnerLoansCurrentlyFundraising: '',
 			directLoansCurrentlyFundraising: '',
+			fundingModel: '',
 			// loansTransactedIn: 'test',
 			// currencyExchangeLoss: 'test',
 		};
@@ -174,6 +181,7 @@ export default {
 			this.fundsLentInCountry = _get(data, 'lend.loan.partner.countries[0].fundsLentInCountry');
 			this.partnerLoansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
 			this.directLoansCurrentlyFundraising = _get(data, 'lend.loan.trusteeStats.numLoansFundraising');
+			this.fundingModel = _get(data, 'lend.loan.terms.flexibleFundraisingEnabled');
 
 			// This needs to be formatted from the returned string into a star display
 			// Ticket created for this: cash-1151
@@ -215,6 +223,12 @@ export default {
 				facilitatedByFieldPartnerFormatted = 'Not facilitated by a Field Partner or Trustee';
 			}
 			return facilitatedByFieldPartnerFormatted;
+		},
+		fundingModelFormatted() {
+			if (this.fundingModel === true) {
+				return 'flexible';
+			}
+			return 'fixed';
 		}
 	},
 	methods: {
@@ -242,7 +256,8 @@ ul {
 	margin-bottom: 0;
 }
 
-.repayment-schedule-text {
+.repayment-schedule-text,
+.funding-model-textds {
 	text-transform: capitalize;
 }
 
