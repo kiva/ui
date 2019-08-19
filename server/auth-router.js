@@ -19,6 +19,7 @@ module.exports = function authRouter(config = {}) {
 	function attemptSilentAuth(req, res, next) {
 		// Store current url to redirect to after auth
 		req.session.doneUrl = req.originalUrl;
+		req.session.silentAuth = true;
 		// Attempt silent authentication (prompt=none)
 		passport.authenticate('auth0', {
 			audience: config.auth0.apiAudience,
@@ -87,6 +88,19 @@ module.exports = function authRouter(config = {}) {
 			if (authErr) {
 				console.log(`LoginUI: auth error, session id:${req.sessionID}, error:${authErr}`);
 				return next(authErr);
+			}
+
+			const { silentAuth } = req.session;
+			delete req.session.silentAuth;
+
+			// Re-attempt login with the login form forced to display if unauthorized error happened
+			if (info === 'unauthorized' && !silentAuth) {
+				req.query = {}; // Remove query params from previous auth attempt
+				return passport.authenticate('auth0', {
+					audience: config.auth0.apiAudience,
+					scope: config.auth0.scope,
+					prompt: 'login',
+				})(req, res, next);
 			}
 
 			let { doneUrl } = req.session;
