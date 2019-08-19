@@ -4,6 +4,7 @@ import cookieStore from './cookieStore';
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
 const loginPromise = Symbol('loginPromise');
+const popupAuthorize = Symbol('authorize');
 const popupWindow = Symbol('popupWindow');
 const sessionPromise = Symbol('sessionPromise');
 const setAuthData = Symbol('setAuthData');
@@ -52,6 +53,36 @@ export default class KvAuth0 {
 		}
 	}
 
+	// Private method to handle popup authorization which can be called
+	// recursively to deal with authorization errors
+	[popupAuthorize](webAuth, options, resolve, reject) {
+		this[popupWindow] = webAuth.popup.authorize({
+			popupOptions: {
+				width: 480,
+				height: 940,
+			},
+			...options
+		}, (err, result) => {
+			if (err) {
+				// Handle unauthorized error by reattemoting authentication with prompted login
+				if (err.code === 'unauthorized') {
+					return this[popupAuthorize](webAuth, {
+						...options,
+						prompt: 'login',
+					}, resolve, reject);
+				}
+				// Otherwise, fail authentication
+				this[setAuthData]();
+				reject(err);
+			} else {
+				// Successful authentication
+				cookieStore.set('kvls', 'i', { path: '/', secure: true });
+				this[setAuthData](result);
+				resolve(result);
+			}
+		});
+	}
+
 	// Return the kiva id for the current user (or undefined)
 	getKivaId() {
 		const kivaIdKey = 'https://www.kiva.org/kiva_id';
@@ -82,7 +113,7 @@ export default class KvAuth0 {
 			webAuth.checkSession({}, (err, result) => {
 				if (err) {
 					this[setAuthData]();
-					if (err.error === 'login_required') {
+					if (err.error === 'login_required' || err.error === 'unauthorized') {
 						// User is not logged in, so continue without authentication
 						resolve();
 					} else if (err.error === 'consent_required' || err.error === 'interaction_required') {
@@ -126,23 +157,7 @@ export default class KvAuth0 {
 
 		// Open up popup window to login
 		this[loginPromise] = this.webAuth.then(webAuth => new Promise((resolve, reject) => {
-			this[popupWindow] = webAuth.popup.authorize({
-				popupOptions: {
-					width: 480,
-					height: 940,
-				},
-				...authorizeOptions
-			}, (err, result) => {
-				if (err) {
-					this[setAuthData]();
-					reject(err);
-				} else {
-					// Successful authentication
-					cookieStore.set('kvls', 'i', { path: '/', secure: true });
-					this[setAuthData](result);
-					resolve(result);
-				}
-			});
+			this[popupAuthorize](webAuth, authorizeOptions, resolve, reject);
 		}));
 
 		// Once the promise completes, stop tracking it
