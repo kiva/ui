@@ -24,6 +24,7 @@ query loanDescription(
 				partner {
 					chargesFeesInterest
 					riskRating
+					currencyExchangeLossRate
 					countries {
 						ppp
 						fundsLentInCountry

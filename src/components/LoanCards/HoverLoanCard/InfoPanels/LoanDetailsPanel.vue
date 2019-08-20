@@ -42,12 +42,12 @@
 						{{ fundingModelFormatted }}
 					</p>
 				</li>
-				<!-- <li v-if="this.currencyExchangeLoss">
+				<li v-if="this.currencyExchangeLoss">
 					<label>Currency exchange loss:</label>
 					<p class="data">
 						{{ currencyExchangeLoss }}
 					</p>
-				</li> -->
+				</li>
 				<li v-if="this.facilitatedByFieldPartner">
 					<label>Facilitated by Field Partner/trustee:</label>
 					<p class="data">
@@ -158,7 +158,7 @@ export default {
 			directLoansCurrentlyFundraising: '',
 			fundingModel: '',
 			// loansTransactedIn: 'test',
-			// currencyExchangeLoss: 'test',
+			currencyExchangeLoss: '',
 		};
 	},
 	apollo: {
@@ -182,14 +182,11 @@ export default {
 			this.partnerLoansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
 			this.directLoansCurrentlyFundraising = _get(data, 'lend.loan.trusteeStats.numLoansFundraising');
 			this.fundingModel = _get(data, 'lend.loan.terms.flexibleFundraisingEnabled');
+			this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
 
 			// This needs to be formatted from the returned string into a star display
 			// Ticket created for this: cash-1151
 			this.riskRating = _get(data, 'lend.loan.partner.riskRating');
-
-			// This data needs to be added/configured in graphql before displaying it
-			// this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
-			// this.loansTransactedIn = _get(data, 'lend.loan.partner.countries.fundsLentInCountry');
 		},
 	},
 	computed: {
