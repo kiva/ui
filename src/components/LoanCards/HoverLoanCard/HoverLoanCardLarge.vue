@@ -28,7 +28,7 @@
 					:amount-left="amountLeft"
 					:percent-raised="percentRaised"
 					:expiring-soon-message="expiringSoonMessage"
-					:is-funded="loan.status==='funded'"
+					:is-funded="isFunded"
 					:left-and-to-go-on-top="true"
 					:short-meter="true"
 				/>
@@ -48,7 +48,7 @@
 				@track-loan-card-interaction="trackInteraction"
 			/>
 			<div class="action-row">
-				<div class="action-button-container">
+				<div class="action-button-container" :class="{'full-width': isFunded || isExpired}">
 					<action-button
 						class="hover-loan-card-action-button"
 						:loan-id="loan.id"
@@ -56,6 +56,7 @@
 						:items-in-basket="itemsInBasket"
 						:is-lent-to="loan.userProperties.lentTo"
 						:is-funded="isFunded"
+						:is-expired="isExpired"
 						:is-selected-by-another="isSelectedByAnother"
 						:is-simple-lend-button="true"
 						:hide-adding-to-basket-text="true"
@@ -69,7 +70,7 @@
 						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
-				<div class="matching-text-container">
+				<div class="matching-text-container" :class="{hide: isFunded || isExpired}">
 					<matching-text
 						:matching-text="loan.matchingText"
 						:is-funded="isFunded"
@@ -123,6 +124,10 @@ export default {
 			required: true,
 		},
 		expanded: {
+			type: Boolean,
+			default: false,
+		},
+		isExpired: {
 			type: Boolean,
 			default: false,
 		},
@@ -212,6 +217,15 @@ export default {
 					margin: 0;
 					font-size: rem-calc(18);
 					padding: 0.5rem 1.5rem;
+
+					&.loan-funded-text,
+					&.loan-expired-text {
+						font-size: 0.875rem;
+					}
+				}
+
+				&.full-width {
+					width: 100%;
 				}
 			}
 
