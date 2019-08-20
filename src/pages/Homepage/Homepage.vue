@@ -14,9 +14,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 export default {
 	components: {
 		WwwPage
-	},
-	metaInfo: {
-		title: 'Sitemap'
 	}
 };
 </script>
