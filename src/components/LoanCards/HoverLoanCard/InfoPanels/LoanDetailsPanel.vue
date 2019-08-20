@@ -36,7 +36,7 @@
 						{{ disbursalDateFormatted }}
 					</p>
 				</li>
-				<li v-if="this.fundingModel">
+				<li v-if="this.fundingModel !== ''">
 					<label>Funding model:</label>
 					<p class="data funding-model-text">
 						{{ fundingModelFormatted }}
@@ -257,7 +257,7 @@ ul {
 }
 
 .repayment-schedule-text,
-.funding-model-textds {
+.funding-model-text {
 	text-transform: capitalize;
 }
 
