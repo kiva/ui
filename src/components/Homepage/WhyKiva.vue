@@ -3,7 +3,7 @@
 		<h1 class="text-center kiva-green">
 			Why Kiva?
 		</h1>
-		<img src="https://www.kiva.org/cms/page/images/world-map-simple.min_.svg">
+		<img class="map-background" src="https://www.kiva.org/cms/page/images/world-map-simple.min_.svg">
 		<div>
 			<h2 class="kiva-green">
 				<span class="large-number">{{ repaymentRateFormatted }}% </span>
@@ -45,6 +45,15 @@
 				countries
 			</h2>
 		</div>
+		<p>
+			<router-link
+				:to="`/about`"
+				class="kiva-text-grey"
+				v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
+			>
+				Learn more
+			</router-link>
+		</p>
 	</div>
 </template>
 
@@ -92,6 +101,11 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+img.map-background {
+	opacity: 0.1;
+	position: absolute;
+}
 
 .kiva-green {
 	color: $kiva-green;
