@@ -1,0 +1,9 @@
+query homepage {
+	general {
+    	kivaStats {
+      		amountFunded
+      		repaymentRate
+      		numCountries
+    	}
+  	}
+}

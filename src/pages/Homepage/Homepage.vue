@@ -3,6 +3,7 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>NEW UI HOMEPAGE</h1>
+				<why-kiva />
 			</div>
 		</div>
 	</www-page>
@@ -10,10 +11,12 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import WhyKiva from '@/components/Homepage/WhyKiva';
 
 export default {
 	components: {
-		WwwPage
+		WwwPage,
+		WhyKiva,
 	}
 };
 </script>

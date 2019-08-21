@@ -1,0 +1,114 @@
+<template>
+	<div>
+		<h1 class="text-center kiva-green">
+			Why Kiva?
+		</h1>
+		<img src="https://www.kiva.org/cms/page/images/world-map-simple.min_.svg">
+		<div>
+			<h2 class="kiva-green">
+				<span class="large-number">{{ repaymentRateFormatted }}% </span>
+				repayment rate
+			</h2>
+			<p class="kiva-text-grey">
+				It's a loan not a donation; so when you're repaid you can use the money again.
+			</p>
+		</div>
+		<div>
+			<h2 class="kiva-green">
+				<span class="large-number">100%</span>
+				goes to the field
+			</h2>
+			<p class="kiva-text-grey">
+				Your voluntary donations and our incredible partners make this possible.
+			</p>
+		</div>
+		<div>
+			<span>
+				<kv-icon name="star" class="kiva-green star" />
+				<kv-icon name="star" class="kiva-green star" />
+				<kv-icon name="star" class="kiva-green star" />
+				<kv-icon name="star" class="kiva-green star" />
+			</span>
+			<p class="kiva-text-grey">
+				Charity Navigator's highest award rating
+			</p>
+		</div>
+		<div>
+			<h2 class="kiva-green">
+				<span class="large-number">{{ totalLoansInDollarsFormatted }}</span>
+				billion in loans
+			</h2>
+		</div>
+		<div>
+			<h2 class="kiva-green">
+				<span class="large-number">{{ numCountries }}</span>
+				countries
+			</h2>
+		</div>
+	</div>
+</template>
+
+<script>
+import _get from 'lodash/get';
+import numeral from 'numeral';
+import KvIcon from '@/components/Kv/KvIcon';
+import homepageQuery from '@/graphql/query/homepage.graphql';
+
+export default {
+	components: {
+		KvIcon,
+	},
+	inject: ['apollo'],
+	data() {
+		return {
+			repaymentRate: '',
+			totalLoansInDollars: '',
+			numCountries: ''
+		};
+	},
+	apollo: {
+		query: homepageQuery,
+		result({ data }) {
+			this.repaymentRate = _get(data, 'general.kivaStats.repaymentRate');
+			this.totalLoansInDollars = _get(data, 'general.kivaStats.amountFunded');
+			this.numCountries = _get(data, 'general.kivaStats.numCountries');
+		}
+	},
+	computed: {
+		repaymentRateFormatted() {
+			return numeral(this.repaymentRate).format('0.0');
+		},
+		totalLoansInDollarsFormatted() {
+			// numeral's .format almost gives us what we want, but we need to strip
+			// the "b" at the end of the formatted numeral return.
+			let roundedValue = numeral(this.totalLoansInDollars).format('$0.0a');
+			roundedValue = roundedValue.slice(0, -1);
+			return roundedValue;
+		}
+	}
+
+};
+</script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.kiva-green {
+	color: $kiva-green;
+}
+
+.star {
+	fill: none;
+	height: rem-calc(20);
+	width: rem-calc(20);
+}
+
+.large-number {
+	font-size: rem-calc(39);
+}
+
+.kiva-text-grey {
+	color: $kiva-text-light;
+}
+
+</style>
