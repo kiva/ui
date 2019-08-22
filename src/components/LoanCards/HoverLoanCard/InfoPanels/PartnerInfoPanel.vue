@@ -39,7 +39,7 @@
 				<li>
 					<label>Average cost to borrower:</label>
 					<p class="data">
-						{{ avgCostToBorrowerFormatted }} PY
+						{{ avgCostToBorrowerFormatted }}
 					</p>
 				</li>
 				<!-- <li>
@@ -145,6 +145,7 @@ export default {
 			this.currencyExchangeLossRate = _get(data, 'lend.loan.partner.currencyExchangeLossRate');
 			this.loanAlertText = _get(data, 'lend.loan.partner.loanAlertText');
 			this.avgCostToBorrower = _get(data, 'lend.loan.partner.avgBorrowerCost');
+			this.avgCostToBorrowerType = _get(data, 'FILL THIS IN ONCE I KNOW WHERE IT IS PUT')
 		},
 	},
 	computed: {
@@ -170,7 +171,18 @@ export default {
 			return numeral(this.currencyExchangeLossRate).format('0.00');
 		},
 		avgCostToBorrowerFormatted() {
-			return numeral(this.avgBorrowerCost).format('0%');
+			let avgCostToBorrowerFormatted = '';
+			if (this.avgCostToBorrowerType === 'ARP') {
+				avgCostToBorrowerFormatted = numeral(this.avgCostToBorrower).format('0%');
+				avgCostToBorrowerFormatted = (avgCostToBorrowerFormatted, ' ARP');
+			} else if (this.avgCostToBorrowerType === 'MRP') {
+				avgCostToBorrowerFormatted = numeral(this.avgCostToBorrower).format('0%');
+				avgCostToBorrowerFormatted = (avgCostToBorrowerFormatted, ' MRP');
+			} else if (this.avgCostToBorrowerType === 'PY') {
+				avgCostToBorrowerFormatted = numeral(this.avgCostToBorrower).format('0%');
+				avgCostToBorrowerFormatted = (avgCostToBorrowerFormatted, ' PY');
+			}
+			return avgCostToBorrowerFormatted;
 		}
 	},
 	methods: {
