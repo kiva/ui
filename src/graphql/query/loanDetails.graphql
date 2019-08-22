@@ -1,11 +1,10 @@
-query loanDescription(
+query loanDetails(
 	$id: Int!,
 ){
 	lend {
 		loan(id: $id) {
 			id
 			whySpecial
-			hasCurrencyExchangeLossLenders
 			plannedExpirationDate
 			fundraisingDate
 			lenderRepaymentTerm
@@ -16,6 +15,7 @@ query loanDescription(
 				}
 			}
 			terms {
+		        lossLiabilityCurrencyExchange
 				flexibleFundraisingEnabled
 			}
 			... on LoanPartner {
