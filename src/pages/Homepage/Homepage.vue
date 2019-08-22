@@ -1,5 +1,5 @@
 <template>
-	<www-page>
+	<www-page id="homepage">
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>NEW UI HOMEPAGE</h1>
