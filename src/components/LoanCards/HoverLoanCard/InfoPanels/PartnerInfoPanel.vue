@@ -120,6 +120,7 @@ export default {
 			totalAmountRaised: 0,
 			avgLoanSize: '',
 			avgCostToBorrower: '',
+			avgCostToBorrowerType: '',
 			deliquencyRate: '',
 			riskRate: '',
 			defaultRate: '',
