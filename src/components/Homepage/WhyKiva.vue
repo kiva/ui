@@ -3,7 +3,7 @@
 		<h1 class="text-center kiva-green show-for-large large-12 column">
 			Why Kiva?
 		</h1>
-		<img class="map-background" src="https://www.kiva.org/cms/page/images/world-map-simple.min_.svg">
+		<img class="map-background" src="@/assets/images/world-map-simple.svg">
 		<div class="small-12 large-6 column text-center">
 			<h2 class="kiva-green">
 				<span class="large-number">{{ repaymentRateFormatted }}% </span>
