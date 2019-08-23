@@ -304,7 +304,7 @@ export default {
 			return numeral(this.loanReservationTotal * (percent / 100)).format('0.00');
 		},
 		setCustomDonationAndClose() {
-			this.setDonationAndClose(this.$refs.customDonationInputMobile.value);
+			this.setDonationAndClose(numeral(this.$refs.customDonationInputMobile.value).value());
 		},
 		setRadioDonationAndClose() {
 			// eslint-disable-next-line no-restricted-globals
