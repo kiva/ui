@@ -1,5 +1,6 @@
 <template>
 	<www-page id="homepage">
+		<hero-slideshow />
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<h1>NEW UI HOMEPAGE</h1>
@@ -10,9 +11,11 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import HeroSlideshow from './HeroSlideshow';
 
 export default {
 	components: {
+		HeroSlideshow,
 		WwwPage
 	}
 };

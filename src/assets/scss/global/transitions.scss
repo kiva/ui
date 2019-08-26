@@ -21,3 +21,16 @@
 .kvfastfade-leave-to {
 	opacity: 0;
 }
+
+.kv-slide-left-enter {
+	transform: translateX(100%);
+}
+
+.kv-slide-left-leave-to {
+	transform: translateX(-100%);
+}
+
+.kv-slide-left-enter-active,
+.kv-slide-left-leave-active {
+	transition: transform 500ms ease;
+}
