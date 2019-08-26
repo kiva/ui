@@ -18,10 +18,38 @@
 				<kv-responsive-image v-if="counter > 4" :images="heroImages(5)" />
 			</kv-carousel-slide>
 		</kv-carousel>
+		<div class="headline-bar">
+			<div class="mask">
+				&nbsp;
+			</div>
+			<div class="headline">
+				<span class="headline-title">Dreams are universal,<br class="smo"> opportunity is not.</span>
+				<p class="headline-body">
+					Lend as little as $25<br class="so">
+					to create<br class="mo">
+					opportunity<br class="so"><br class="lu">
+					for people<br class="mo">
+					around the world.
+				</p>
+			</div>
+			<div class="mask">
+				&nbsp;
+			</div>
+		</div>
+		<div class="action-button-wrapper">
+			<kv-button
+				class="slideshow-action-button"
+				to="/lend-by-category"
+				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
+			>
+				Start lending
+			</kv-button>
+		</div>
 	</div>
 </template>
 
 <script>
+import KvButton from '@/components/Kv/KvButton';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
@@ -30,6 +58,7 @@ const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
 
 export default {
 	components: {
+		KvButton,
 		KvCarousel,
 		KvCarouselSlide,
 		KvResponsiveImage,
@@ -69,6 +98,11 @@ export default {
 .hero-slideshow {
 	position: relative;
 	width: 100%;
+	margin-bottom: 2.5rem;
+
+	@include breakpoint(medium) {
+		margin-bottom: 3.5rem;
+	}
 
 	.slide-placeholder {
 		background-color: $kiva-bg-lightgray;
@@ -89,6 +123,74 @@ export default {
 
 		@include breakpoint(xxlarge) {
 			padding-bottom: 820/1920 * 100%;
+		}
+	}
+
+	.headline-bar {
+		display: flex;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+
+		.mask {
+			flex-grow: 1;
+			transform: scaleY(0.5) translateY(50%);
+			background-color: $white;
+		}
+
+		.headline {
+			flex-grow: 1;
+			max-width: rem-calc(750);
+			padding: 1.125rem 0.5rem 2rem;
+			color: $white;
+			background-color: rgba($kiva-green, 0.9);
+			text-align: center;
+
+			@include breakpoint(medium) {
+				padding: 1.125rem 1.25rem 2rem;
+			}
+		}
+
+		.headline-title {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-size: 1.75rem;
+			line-height: 2rem;
+			font-weight: 400;
+
+			@include breakpoint(medium) {
+				font-size: 2.25rem;
+				line-height: 2.5rem;
+			}
+
+			@include breakpoint(large only) {
+				font-size: 2.1rem;
+			}
+		}
+
+		.headline-body {
+			font-size: 1.25rem;
+			line-height: 1.5rem;
+
+			@include breakpoint(medium) {
+				font-size: 1.75rem;
+				line-height: 2rem;
+			}
+		}
+	}
+
+	.action-button-wrapper {
+		position: absolute;
+		width: 100%;
+		bottom: 0;
+		text-align: center;
+	}
+
+	.slideshow-action-button {
+		margin-bottom: -1rem;
+
+		@include breakpoint(medium) {
+			margin-bottom: -2rem;
 		}
 	}
 }
