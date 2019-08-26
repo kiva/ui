@@ -1,65 +1,75 @@
 <template>
-	<div class="row row-container">
-		<h1 class="text-center kiva-green show-for-large large-12 column why-kiva-text">
-			Why Kiva?
-		</h1>
-		<img class="map-background" src="@/assets/images/world-map-simple.svg">
-		<div class="small-12 large-6 column text-center info-block">
-			<h2 class="kiva-green">
-				<span class="large-number">{{ repaymentRateFormatted }}% </span>
-				repayment rate
-			</h2>
-			<p class="kiva-text-grey">
-				It's a loan not a donation;<br>
-				so when you're repaid you<br>
-				can use the money again.
+	<div>
+		<div
+			v-if="totalLoansInDollars && totalLoansInDollars !== ''"
+			class="row row-container"
+		>
+			<h1 class="text-center kiva-green show-for-large large-12 column why-kiva-text">
+				Why Kiva?
+			</h1>
+			<img class="map-background" src="@/assets/images/world-map-simple.svg">
+			<div class="small-12 large-6 column text-center info-block">
+				<h2 class="kiva-green">
+					<span class="large-number">{{ repaymentRateFormatted }}% </span>
+					repayment rate
+				</h2>
+				<p class="kiva-text-grey">
+					It's a loan not a donation;<br>
+					so when you're repaid you<br>
+					can use the money again.
+				</p>
+			</div>
+			<div class="small-12 large-6 column text-center info-block">
+				<h2 class="kiva-green">
+					<span class="large-number">100%</span>
+					goes to the field
+				</h2>
+				<p class="kiva-text-grey">
+					Your voluntary donations and<br>
+					our incredible partners<br>
+					make this possible.
+				</p>
+			</div>
+			<div class="small-12 column text-center info-block">
+				<span>
+					<kv-icon name="star" class="kiva-green star" />
+					<kv-icon name="star" class="kiva-green star" />
+					<kv-icon name="star" class="kiva-green star" />
+					<kv-icon name="star" class="kiva-green star" />
+				</span>
+				<p class="kiva-text-grey">
+					Charity Navigator's<br>
+					highest award rating
+				</p>
+			</div>
+			<div class="small-12 large-6 column text-center stats-block">
+				<h2 class="kiva-green">
+					<span class="large-number">{{ totalLoansInDollarsFormatted }}</span>
+					billion in loans
+				</h2>
+			</div>
+			<div class="small-12 large-6 column text-center stats-block">
+				<h2 class="kiva-green">
+					<span class="hide-for-large">in</span>
+					<span class="large-number">{{ numCountries }}</span>
+					countries
+				</h2>
+			</div>
+			<p class="show-for-large column large-12 text-center">
+				<router-link
+					:to="`/about`"
+					class="kiva-text-grey"
+					v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
+				>
+					Learn more
+				</router-link>
 			</p>
 		</div>
-		<div class="small-12 large-6 column text-center info-block">
-			<h2 class="kiva-green">
-				<span class="large-number">100%</span>
-				goes to the field
-			</h2>
-			<p class="kiva-text-grey">
-				Your voluntary donations and<br>
-				our incredible partners<br>
-				make this possible.
-			</p>
+		<div v-else id="loading-overlay">
+			<div class="spinner-wrapper">
+				<kv-loading-spinner />
+			</div>
 		</div>
-		<div class="small-12 column text-center info-block">
-			<span>
-				<kv-icon name="star" class="kiva-green star" />
-				<kv-icon name="star" class="kiva-green star" />
-				<kv-icon name="star" class="kiva-green star" />
-				<kv-icon name="star" class="kiva-green star" />
-			</span>
-			<p class="kiva-text-grey">
-				Charity Navigator's<br>
-				highest award rating
-			</p>
-		</div>
-		<div class="small-12 large-6 column text-center stats-block">
-			<h2 class="kiva-green">
-				<span class="large-number">{{ totalLoansInDollarsFormatted }}</span>
-				billion in loans
-			</h2>
-		</div>
-		<div class="small-12 large-6 column text-center stats-block">
-			<h2 class="kiva-green">
-				<span class="hide-for-large">in</span>
-				<span class="large-number">{{ numCountries }}</span>
-				countries
-			</h2>
-		</div>
-		<p class="show-for-large column large-12 text-center">
-			<router-link
-				:to="`/about`"
-				class="kiva-text-grey"
-				v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
-			>
-				Learn more
-			</router-link>
-		</p>
 	</div>
 </template>
 
@@ -68,10 +78,12 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import KvIcon from '@/components/Kv/KvIcon';
 import homepageQuery from '@/graphql/query/homepage.graphql';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
 		KvIcon,
+		KvLoadingSpinner
 	},
 	inject: ['apollo'],
 	data() {
@@ -111,6 +123,10 @@ export default {
 .row-container {
 	position: relative;
 	overflow: hidden;
+
+	#loading-overlay {
+		text-align: center;
+	}
 
 	img.map-background {
 		position: absolute;
