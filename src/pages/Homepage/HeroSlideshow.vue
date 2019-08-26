@@ -1,0 +1,201 @@
+<template>
+	<div class="hero-slideshow">
+		<kv-carousel @change="slideChange">
+			<div class="slide-placeholder"></div>
+			<kv-carousel-slide>
+				<kv-responsive-image :images="heroImages(1)" />
+			</kv-carousel-slide>
+			<kv-carousel-slide>
+				<kv-responsive-image :images="heroImages(2)" />
+			</kv-carousel-slide>
+			<kv-carousel-slide>
+				<kv-responsive-image v-if="counter > 2" :images="heroImages(3)" />
+			</kv-carousel-slide>
+			<kv-carousel-slide>
+				<kv-responsive-image v-if="counter > 3" :images="heroImages(4)" />
+			</kv-carousel-slide>
+			<kv-carousel-slide>
+				<kv-responsive-image v-if="counter > 4" :images="heroImages(5)" />
+			</kv-carousel-slide>
+		</kv-carousel>
+		<div class="headline-bar">
+			<div class="mask">
+				&nbsp;
+			</div>
+			<div class="headline">
+				<span class="headline-title">Dreams are universal,<br class="smo"> opportunity is not.</span>
+				<p class="headline-body">
+					Lend as little as $25<br class="so">
+					to create<br class="mo">
+					opportunity<br class="so"><br class="lu">
+					for people<br class="mo">
+					around the world.
+				</p>
+			</div>
+			<div class="mask">
+				&nbsp;
+			</div>
+		</div>
+		<div class="action-button-wrapper">
+			<kv-button
+				class="slideshow-action-button"
+				to="/lend-by-category"
+				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
+			>
+				Start lending
+			</kv-button>
+		</div>
+	</div>
+</template>
+
+<script>
+import KvButton from '@/components/Kv/KvButton';
+import KvCarousel from '@/components/Kv/KvCarousel';
+import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+
+const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
+
+export default {
+	components: {
+		KvButton,
+		KvCarousel,
+		KvCarouselSlide,
+		KvResponsiveImage,
+	},
+	data() {
+		return {
+			counter: 2,
+		};
+	},
+	methods: {
+		slideChange() {
+			// count the number of slides shown to use for lazy-loading images with v-if
+			if (this.counter < 5) this.counter += 1;
+		},
+		// return the responsive image array for a given numbered hero image
+		heroImages(number) {
+			return [
+				['small', imageRequire(`./hero-${number}-sm-std.jpg`)],
+				['small retina', imageRequire(`./hero-${number}-sm-retina.jpg`)],
+				['medium', imageRequire(`./hero-${number}-med-std.jpg`)],
+				['medium retina', imageRequire(`./hero-${number}-med-retina.jpg`)],
+				['large', imageRequire(`./hero-${number}-lg-std.jpg`)],
+				['large retina', imageRequire(`./hero-${number}-lg-retina.jpg`)],
+				['xlarge', imageRequire(`./hero-${number}-xl-std.jpg`)],
+				['xlarge retina', imageRequire(`./hero-${number}-xl-retina.jpg`)],
+				['xxlarge', imageRequire(`./hero-${number}-xxl-std.jpg`)],
+				['xxlarge retina', imageRequire(`./hero-${number}-xxl-retina.jpg`)],
+			];
+		}
+	},
+};
+</script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.hero-slideshow {
+	position: relative;
+	width: 100%;
+	margin-bottom: 2.5rem;
+
+	@include breakpoint(medium) {
+		margin-bottom: 3.5rem;
+	}
+
+	.slide-placeholder {
+		background-color: $kiva-bg-lightgray;
+		width: 100%;
+		padding-bottom: 600/480 * 100%;
+
+		@include breakpoint(medium) {
+			padding-bottom: 675/680 * 100%;
+		}
+
+		@include breakpoint(large) {
+			padding-bottom: 545/1024 * 100%;
+		}
+
+		@include breakpoint(xlarge) {
+			padding-bottom: 768/1440 * 100%;
+		}
+
+		@include breakpoint(xxlarge) {
+			padding-bottom: 820/1920 * 100%;
+		}
+	}
+
+	.kv-carousel-slide img {
+		width: 100%;
+	}
+
+	.headline-bar {
+		display: flex;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+
+		.mask {
+			flex-grow: 1;
+			transform: scaleY(0.5) translateY(50%);
+			background-color: $white;
+		}
+
+		.headline {
+			flex-grow: 1;
+			max-width: rem-calc(750);
+			padding: 1.125rem 0.5rem 2rem;
+			color: $white;
+			background-color: rgba($kiva-green, 0.9);
+			text-align: center;
+
+			@include breakpoint(medium) {
+				padding: 1.125rem 1.25rem 2rem;
+			}
+		}
+
+		.headline-title {
+			display: block;
+			margin-bottom: 0.5rem;
+			font-size: 1.75rem;
+			line-height: 2rem;
+			font-weight: 400;
+
+			@include breakpoint(medium) {
+				font-size: 2.25rem;
+				line-height: 2.5rem;
+			}
+
+			@include breakpoint(large only) {
+				font-size: 2.1rem;
+			}
+		}
+
+		.headline-body {
+			font-size: 1.25rem;
+			line-height: 1.5rem;
+
+			@include breakpoint(medium) {
+				font-size: 1.75rem;
+				line-height: 2rem;
+			}
+		}
+	}
+
+	.action-button-wrapper {
+		position: absolute;
+		width: 100%;
+		bottom: 0;
+		text-align: center;
+	}
+
+	.slideshow-action-button {
+		margin-bottom: -1rem;
+
+		@include breakpoint(medium) {
+			margin-bottom: -2rem;
+		}
+	}
+}
+</style>
