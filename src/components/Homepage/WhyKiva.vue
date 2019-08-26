@@ -1,9 +1,8 @@
 <template>
-	<div class="row">
+	<div class="row main-row">
 		<h1 class="text-center kiva-green show-for-large large-12 column">
 			Why Kiva?
 		</h1>
-		<img class="map-background" src="@/assets/images/world-map-simple.svg">
 		<div class="small-12 large-6 column text-center">
 			<h2 class="kiva-green">
 				<span class="large-number">{{ repaymentRateFormatted }}% </span>
@@ -105,6 +104,7 @@ export default {
 img.map-background {
 	opacity: 0.1;
 	position: absolute;
+	width: 70%;
 }
 
 .kiva-green {
@@ -123,6 +123,10 @@ img.map-background {
 
 .kiva-text-grey {
 	color: $kiva-text-light;
+}
+
+.main-row {
+	background-image: url("@/assets/images/world-map-simple.svg");
 }
 
 </style>
