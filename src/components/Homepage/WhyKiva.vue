@@ -1,27 +1,32 @@
 <template>
-	<div class="row main-row">
-		<h1 class="text-center kiva-green show-for-large large-12 column">
+	<div class="row row-container">
+		<h1 class="text-center kiva-green show-for-large large-12 column why-kiva-text">
 			Why Kiva?
 		</h1>
-		<div class="small-12 large-6 column text-center">
+		<img class="map-background" src="@/assets/images/world-map-simple.svg">
+		<div class="small-12 large-6 column text-center info-block">
 			<h2 class="kiva-green">
 				<span class="large-number">{{ repaymentRateFormatted }}% </span>
 				repayment rate
 			</h2>
 			<p class="kiva-text-grey">
-				It's a loan not a donation; so when you're repaid you can use the money again.
+				It's a loan not a donation;<br>
+				so when you're repaid you<br>
+				can use the money again.
 			</p>
 		</div>
-		<div class="small-12 large-6 column text-center">
+		<div class="small-12 large-6 column text-center info-block">
 			<h2 class="kiva-green">
 				<span class="large-number">100%</span>
 				goes to the field
 			</h2>
 			<p class="kiva-text-grey">
-				Your voluntary donations and our incredible partners make this possible.
+				Your voluntary donations and<br>
+				our incredible partners<br>
+				make this possible.
 			</p>
 		</div>
-		<div class="small-12 large-6 column text-center">
+		<div class="small-12 column text-center info-block">
 			<span>
 				<kv-icon name="star" class="kiva-green star" />
 				<kv-icon name="star" class="kiva-green star" />
@@ -29,17 +34,19 @@
 				<kv-icon name="star" class="kiva-green star" />
 			</span>
 			<p class="kiva-text-grey">
-				Charity Navigator's highest award rating
+				Charity Navigator's<br>
+				highest award rating
 			</p>
 		</div>
-		<div class="small-12 large-6 column text-center">
+		<div class="small-12 large-6 column text-center stats-block">
 			<h2 class="kiva-green">
 				<span class="large-number">{{ totalLoansInDollarsFormatted }}</span>
 				billion in loans
 			</h2>
 		</div>
-		<div class="small-12 large-6 column text-center">
+		<div class="small-12 large-6 column text-center stats-block">
 			<h2 class="kiva-green">
+				<span class="hide-for-large">in</span>
 				<span class="large-number">{{ numCountries }}</span>
 				countries
 			</h2>
@@ -101,32 +108,65 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-img.map-background {
-	opacity: 0.1;
-	position: absolute;
-	width: 70%;
-}
+.row-container {
+	position: relative;
 
-.kiva-green {
-	color: $kiva-green;
-}
+	img.map-background {
+		position: absolute;
+		background-image: url('~@/assets/images/world-map-simple.svg');
+		background-repeat: no-repeat;
+		opacity: 0.1;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		min-width: rem-calc(643);
+	}
 
-.star {
-	fill: none;
-	height: rem-calc(20);
-	width: rem-calc(20);
-}
+	.why-kiva-text {
+		margin-bottom: 2.4rem;
+	}
 
-.large-number {
-	font-size: rem-calc(39);
-}
+	.info-block {
+		padding-bottom: 1.875rem;
+	}
 
-.kiva-text-grey {
-	color: $kiva-text-light;
-}
+	.stats-block {
+		@include breakpoint(large) {
+			padding: 4.5% 0 9%;
+		}
+	}
 
-.main-row {
-	background-image: url("@/assets/images/world-map-simple.svg");
+	h2 {
+		font-size: 1.3125rem;
+		line-height: 1.6875rem;
+
+		@include breakpoint(large) {
+			font-size: 1.625rem;
+			line-height: 2.25rem;
+		}
+	}
+
+	.kiva-green {
+		color: $kiva-green;
+	}
+
+	.star {
+		fill: none;
+		height: rem-calc(20);
+		width: rem-calc(20);
+	}
+
+	.large-number {
+		font-size: 21px;
+
+		@include breakpoint(large) {
+			font-size: rem-calc(39);
+		}
+	}
+
+	.kiva-text-grey {
+		color: $kiva-text-light;
+	}
 }
 
 </style>
