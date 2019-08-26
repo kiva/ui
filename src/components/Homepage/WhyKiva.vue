@@ -110,6 +110,7 @@ export default {
 
 .row-container {
 	position: relative;
+	overflow: hidden;
 
 	img.map-background {
 		position: absolute;
@@ -157,7 +158,7 @@ export default {
 	}
 
 	.large-number {
-		font-size: 21px;
+		font-size: rem-calc(21);
 
 		@include breakpoint(large) {
 			font-size: rem-calc(39);
