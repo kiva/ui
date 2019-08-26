@@ -1,5 +1,5 @@
 <template>
-	<www-page>
+	<www-page id="homepage">
 		<hero-slideshow />
 		<div class="row page-content">
 			<div class="small-12 columns">
