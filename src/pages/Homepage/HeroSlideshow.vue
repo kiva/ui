@@ -126,6 +126,10 @@ export default {
 		}
 	}
 
+	.kv-carousel-slide img {
+		width: 100%;
+	}
+
 	.headline-bar {
 		display: flex;
 		position: absolute;
