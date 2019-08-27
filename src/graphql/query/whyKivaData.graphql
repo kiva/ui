@@ -1,4 +1,4 @@
-query homepage {
+query whyKiva {
 	general {
     	kivaStats {
       		amountFunded

@@ -1,11 +1,7 @@
 <template>
 	<www-page id="homepage">
 		<hero-slideshow />
-		<div class="row page-content">
-			<div class="small-12 columns">
-				<why-kiva />
-			</div>
-		</div>
+		<why-kiva />
 	</www-page>
 </template>
 
