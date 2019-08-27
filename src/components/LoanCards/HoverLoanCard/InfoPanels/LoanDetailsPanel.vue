@@ -223,9 +223,9 @@ export default {
 		},
 		fundingModelFormatted() {
 			if (this.fundingModel === true) {
-				return 'flexible';
+				return 'Flexible';
 			}
-			return 'fixed';
+			return 'Fixed';
 		}
 	},
 	methods: {
