@@ -1,22 +1,20 @@
 <template>
 	<www-page id="homepage">
 		<hero-slideshow />
-		<div class="row page-content">
-			<div class="small-12 columns">
-				<h1>NEW UI HOMEPAGE</h1>
-			</div>
-		</div>
+		<why-kiva />
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
 
 export default {
 	components: {
+		WwwPage,
+		WhyKiva,
 		HeroSlideshow,
-		WwwPage
 	}
 };
 </script>
