@@ -7,12 +7,12 @@ import _throttle from 'lodash/throttle';
 
 // predefined breakpoints
 const breakpoints = [
-	{ name: 'wxga', size: 1440 },
-	{ name: 'xga', size: 1024 },
-	{ name: 'xxlarge', size: 988 },
-	{ name: 'xlarge', size: 760 },
-	{ name: 'large', size: 680 },
-	{ name: 'medium', size: 480 },
+	{ name: 'wxga', size: 1441 },
+	{ name: 'xga', size: 1025 },
+	{ name: 'xxlarge', size: 989 },
+	{ name: 'xlarge', size: 761 },
+	{ name: 'large', size: 681 },
+	{ name: 'medium', size: 481 },
 	{ name: 'small', size: 0 },
 ];
 
