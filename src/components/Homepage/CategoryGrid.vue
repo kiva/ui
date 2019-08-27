@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="impact-text text-center">
+		<h1 class="impact-text text-center heading-text">
 			Browse loans by category
 		</h1>
 		<div class="row text-center">
@@ -49,17 +49,24 @@
 			<div class="columns small-6 medium-4">
 				<img class="category-image">
 				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
+					<p class="category-card-title featured-text"></p>
 				</div>
 			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
+			<div class="columns small-12 medium-4 view-all-card">
+				<router-link
+					:to="`/lend-by-category`"
+					class="view-all-card-text featured-text"
+					v-kv-track-event="[
+						'homepage',
+						'click-View all categories',
+						'view-all-categories-homepage-card',
+						'true']"
+				>
+					View all
+				</router-link>
 			</div>
 		</div>
-		<p class="featured-text row text-center category-sub-text">
+		<p class="featured-text row columns text-center category-sub-text">
 			By lending as little as $25, you can help people around the world
 			create opportunity for themselves and their communities.<br>
 			<router-link
@@ -106,8 +113,16 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.heading-text {
+	padding: 3rem;
+}
+
 .get-started-link {
 	display: contents;
+}
+
+.view-all-card-text {
+	color: $white;
 }
 
 .category-sub-text {
@@ -115,6 +130,15 @@ export default {
 	padding-bottom: 6.25rem;
 	color: $kiva-text-medium;
 	max-width: 47rem;
+}
+
+.view-all-card {
+	height: 4rem;
+	background-color: $kiva-accent-blue;
+}
+
+.view-all-card-text {
+	line-height: 2.5;
 }
 
 </style>
