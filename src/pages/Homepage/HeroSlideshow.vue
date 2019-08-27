@@ -82,10 +82,10 @@ export default {
 				['medium retina', imageRequire(`./hero-${number}-med-retina.jpg`)],
 				['large', imageRequire(`./hero-${number}-lg-std.jpg`)],
 				['large retina', imageRequire(`./hero-${number}-lg-retina.jpg`)],
-				['xlarge', imageRequire(`./hero-${number}-xl-std.jpg`)],
-				['xlarge retina', imageRequire(`./hero-${number}-xl-retina.jpg`)],
-				['xxlarge', imageRequire(`./hero-${number}-xxl-std.jpg`)],
-				['xxlarge retina', imageRequire(`./hero-${number}-xxl-retina.jpg`)],
+				['xga', imageRequire(`./hero-${number}-xga-std.jpg`)],
+				['xga retina', imageRequire(`./hero-${number}-xga-retina.jpg`)],
+				['wxga', imageRequire(`./hero-${number}-wxga-std.jpg`)],
+				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
 			];
 		}
 	},
@@ -117,11 +117,11 @@ export default {
 			padding-bottom: 545/1024 * 100%;
 		}
 
-		@include breakpoint(xlarge) {
+		@include breakpoint(xga) {
 			padding-bottom: 768/1440 * 100%;
 		}
 
-		@include breakpoint(xxlarge) {
+		@include breakpoint(wxga) {
 			padding-bottom: 820/1920 * 100%;
 		}
 	}
