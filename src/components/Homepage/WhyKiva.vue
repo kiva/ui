@@ -112,6 +112,7 @@ export default {
 .row-container {
 	position: relative;
 	overflow: hidden;
+	margin-bottom: 2rem;
 
 	img.map-background {
 		position: absolute;

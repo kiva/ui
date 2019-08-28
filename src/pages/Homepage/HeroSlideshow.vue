@@ -98,10 +98,10 @@ export default {
 .hero-slideshow {
 	position: relative;
 	width: 100%;
-	margin-bottom: 2.5rem;
+	margin-bottom: 5rem;
 
 	@include breakpoint(medium) {
-		margin-bottom: 3.5rem;
+		margin-bottom: 6rem;
 	}
 
 	.slide-placeholder {
