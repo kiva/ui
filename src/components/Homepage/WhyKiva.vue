@@ -142,6 +142,7 @@ export default {
 	h2 {
 		font-size: 1.3125rem;
 		line-height: 1.6875rem;
+		font-weight: 400;
 
 		@include breakpoint(large) {
 			font-size: 1.625rem;
