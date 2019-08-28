@@ -1,0 +1,12 @@
+query braintreeConfig {
+	general {
+		btVaultActive: uiConfigSetting(key: "feature.braintree_vault") {
+			key
+			value
+		}
+		btDataCollectorActive: uiConfigSetting(key: "feature.braintree_data_collector") {
+			key
+			value
+		}
+	}
+}
