@@ -4,7 +4,7 @@ query braintreeConfig {
 			key
 			value
 		}
-		btDataCollectorActive: uiConfigSetting(key: "feature.braintree_vault") {
+		btDataCollectorActive: uiConfigSetting(key: "feature.braintree_data_collector") {
 			key
 			value
 		}
