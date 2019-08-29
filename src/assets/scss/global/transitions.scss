@@ -32,5 +32,5 @@
 
 .kv-slide-left-enter-active,
 .kv-slide-left-leave-active {
-	transition: transform 500ms ease;
+	transition: transform 500ms ease-in-out;
 }
