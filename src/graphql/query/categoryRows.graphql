@@ -1,0 +1,13 @@
+query categoryRows {
+	lend {
+		loanChannels {
+			values {
+				id
+				name
+				image {
+					url
+				}
+			}
+		}
+  	}
+}

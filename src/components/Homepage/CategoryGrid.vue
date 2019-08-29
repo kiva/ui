@@ -1,72 +1,38 @@
 <template>
-	<div>
-		<h1 class="impact-text text-center heading-text">
+	<div class="row text-center frame">
+		<h1 class="columns small-12 impact-text heading-text">
 			Browse loans by category
 		</h1>
-		<div class="row text-center">
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
+		<div class="row">
+			<div
+				v-for="loanChannel in loanChannels" :key="loanChannel.id"
+				class="columns small-6 medium-4 small-uncollapse category-card"
+			>
+				<kv-responsive-image
+					:src="loanChannel.image.url"
+					class="loan-channel-image"
+				/>
 				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
+					<p class="category-card-title featured-text">
+						{{ loanChannel.name }}
+					</p>
 				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title"></p>
-				</div>
-			</div>
-			<div class="columns small-6 medium-4">
-				<img class="category-image">
-				<div class="category-card-title-wrap">
-					<p class="category-card-title featured-text"></p>
-				</div>
-			</div>
-			<div class="columns small-12 medium-4 view-all-card">
-				<router-link
-					:to="`/lend-by-category`"
-					class="view-all-card-text featured-text"
-					v-kv-track-event="[
-						'homepage',
-						'click-View all categories',
-						'view-all-categories-homepage-card',
-						'true']"
-				>
-					View all
-				</router-link>
 			</div>
 		</div>
-		<p class="featured-text row columns text-center category-sub-text">
+		<div class="columns small-6 medium-4 small-uncollapse view-all-card">
+			<router-link
+				:to="`/lend-by-category`"
+				class="view-all-card-text featured-text"
+				v-kv-track-event="[
+					'homepage',
+					'click-View all categories',
+					'view-all-categories-homepage-card',
+					'true']"
+			>
+				View all
+			</router-link>
+		</div>
+		<p class="featured-text row columns category-sub-text">
 			By lending as little as $25, you can help people around the world
 			create opportunity for themselves and their communities.<br>
 			<router-link
@@ -86,27 +52,27 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import categoryRowsQuery from '@/graphql/query/categoryRows.graphql';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 export default {
 	components: {
+		KvResponsiveImage,
 	},
 	inject: ['apollo'],
 	data() {
 		return {
 		};
 	},
-	// apollo: {
-	// 	query: whyKivaQuery,
-	// 	preFetch: true,
-	// 	result({ data }) {
-	// 		this.repaymentRate = _get(data, 'general.kivaStats.repaymentRate');
-	// 		this.totalLoansInDollars = _get(data, 'general.kivaStats.amountFunded');
-	// 		this.numCountries = _get(data, 'general.kivaStats.numCountries');
-	// 	}
-	// },
-	computed: {
+	apollo: {
+		query: categoryRowsQuery,
+		preFetch: true,
+		result({ data }) {
+			this.loanChannels = _get(data, 'lend.loanChannels.values');
+			this.imageUrl = _get(data, 'lend.loanChannels.values.img.url');
+		}
 	}
-
 };
 </script>
 
@@ -123,6 +89,7 @@ export default {
 
 .view-all-card-text {
 	color: $white;
+	line-height: 2.5;
 }
 
 .category-sub-text {
@@ -132,13 +99,42 @@ export default {
 	max-width: 47rem;
 }
 
+.frame {
+	padding: 0 0.625rem;
+	max-width: 61.875rem;
+	margin: 0 auto;
+
+	@include breakpoint(medium) {
+		padding: 0 1.25rem;
+	}
+}
+
+.category-card {
+	position: relative;
+}
+
+.loan-channel-image {
+	width: 100%;
+}
+
+.category-card-title-wrap {
+	top: 80%;
+	position: absolute;
+	width: 100%;
+	transform: translateY(-50%);
+}
+
+.category-card-title {
+	padding: 0 0.375rem;
+	margin: 0;
+	text-align: center;
+	text-shadow: 1px 1px 3px #333;
+	color: $white;
+}
+
 .view-all-card {
 	height: 4rem;
 	background-color: $kiva-accent-blue;
-}
-
-.view-all-card-text {
-	line-height: 2.5;
 }
 
 </style>
