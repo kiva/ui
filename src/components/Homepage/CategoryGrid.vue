@@ -15,19 +15,17 @@
 					'true']"
 			>
 				<div class="category-card-overlay">
-					<div>
-						<kv-responsive-image
-							:images="[
-								['small', loanChannel.image.url],
-								['small-retina', loanChannel.retinaImage.url]
-							]"
-							class="loan-channel-image"
-						/>
-						<div class="category-card-title-wrap">
-							<p class="category-card-title featured-text">
-								{{ loanChannel.name }}
-							</p>
-						</div>
+					<kv-responsive-image
+						:images="[
+							['small', loanChannel.image.url],
+							['small-retina', loanChannel.retinaImage.url]
+						]"
+						class="loan-channel-image"
+					/>
+					<div class="category-card-title-wrap">
+						<p class="category-card-title featured-text">
+							{{ loanChannel.name }}
+						</p>
 					</div>
 				</div>
 			</router-link>
