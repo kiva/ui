@@ -132,7 +132,7 @@ export default {
 .solid-card-overlay {
 	margin: 2px;
 	position: relative;
-    background-color: $white;
+	background-color: $white;
 	height: 98%;
 }
 
