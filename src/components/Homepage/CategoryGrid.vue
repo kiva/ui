@@ -3,10 +3,16 @@
 		<h1 class="columns small-12 impact-text heading-text">
 			Browse loans by category
 		</h1>
-		<div class="row">
-			<div
+		<div class="row card-row">
+			<a
+				:href="`/lend-by-category/${loanChannel.name}`"
 				v-for="loanChannel in loanChannels" :key="loanChannel.id"
-				class="columns small-6 medium-4 small-uncollapse category-card"
+				class="columns small-6 medium-4 category-card"
+				v-kv-track-event="[
+					'homepage',
+					'click-Category-card',
+					`${loanChannel.name}-category-card`,
+					'true']"
 			>
 				<kv-responsive-image
 					:src="loanChannel.image.url"
@@ -17,22 +23,22 @@
 						{{ loanChannel.name }}
 					</p>
 				</div>
+			</a>
+			<div class="columns small-12 medium-4 view-all-card">
+				<router-link
+					:to="`/lend-by-category`"
+					class="view-all-card-text featured-text"
+					v-kv-track-event="[
+						'homepage',
+						'click-View all categories',
+						'view-all-categories-homepage-card',
+						'true']"
+				>
+					View all
+				</router-link>
 			</div>
 		</div>
-		<div class="columns small-6 medium-4 small-uncollapse view-all-card">
-			<router-link
-				:to="`/lend-by-category`"
-				class="view-all-card-text featured-text"
-				v-kv-track-event="[
-					'homepage',
-					'click-View all categories',
-					'view-all-categories-homepage-card',
-					'true']"
-			>
-				View all
-			</router-link>
-		</div>
-		<p class="featured-text row columns category-sub-text">
+		<div class="featured-text row small-10 category-sub-text">
 			By lending as little as $25, you can help people around the world
 			create opportunity for themselves and their communities.<br>
 			<router-link
@@ -47,7 +53,7 @@
 			>
 				Get started
 			</router-link>
-		</p>
+		</div>
 	</div>
 </template>
 
@@ -96,7 +102,8 @@ export default {
 	padding-top: 6.25rem;
 	padding-bottom: 6.25rem;
 	color: $kiva-text-medium;
-	max-width: 47rem;
+	margin: 0 auto;
+
 }
 
 .frame {
@@ -111,6 +118,7 @@ export default {
 
 .category-card {
 	position: relative;
+	padding: 2px;
 }
 
 .loan-channel-image {
@@ -135,6 +143,10 @@ export default {
 .view-all-card {
 	height: 4rem;
 	background-color: $kiva-accent-blue;
+
+	@include breakpoint(medium) {
+		height: inherit;
+	}
 }
 
 </style>

@@ -1,6 +1,6 @@
 query categoryRows {
 	lend {
-		loanChannels {
+		loanChannels (limit: 8, popular: true) {
 			values {
 				id
 				name
