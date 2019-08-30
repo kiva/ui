@@ -70,6 +70,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
 
 export default {
+	name: 'WhyKiva',
+	serverCacheKey: () => 'WhyKiva',
 	components: {
 		KvIcon
 	},
