@@ -138,7 +138,7 @@ export default {
 
 		.mask {
 			flex-grow: 1;
-			transform: scaleY(0.5) translateY(50%);
+			transform: scaleY(0.51) translateY(50%);
 			background-color: $white;
 		}
 
