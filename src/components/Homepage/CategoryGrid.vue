@@ -74,6 +74,8 @@ import categoryRowsQuery from '@/graphql/query/categoryRows.graphql';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 export default {
+	name: 'CategoryGrid',
+	serverCacheKey: () => 'CategoryGrid',
 	components: {
 		KvResponsiveImage,
 	},
