@@ -57,6 +57,8 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
 
 export default {
+	name: 'HeroSlideshow',
+	serverCacheKey: () => 'HeroSlideshow',
 	components: {
 		KvButton,
 		KvCarousel,
