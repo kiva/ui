@@ -97,7 +97,7 @@ export default {
 }
 
 .get-started-link {
-	display: contents;
+	margin: 0 auto;
 }
 
 .category-sub-text {
