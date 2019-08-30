@@ -87,6 +87,7 @@ export default {
 
 .heading-text {
 	padding: 3rem;
+	font-weight: 300;
 }
 
 .get-started-link {
