@@ -5,7 +5,7 @@
 		</h1>
 		<div class="row card-row">
 			<a
-				:href="`/lend-by-category/${loanChannel.name}`"
+				:href="`/lend-by-category/${loanChannel.name.toLowerCase()}`"
 				v-for="loanChannel in loanChannels" :key="loanChannel.id"
 				class="columns small-6 medium-4 category-card"
 				v-kv-track-event="[
@@ -15,7 +15,10 @@
 					'true']"
 			>
 				<kv-responsive-image
-					:src="loanChannel.image.url"
+					:images="[
+						['small', loanChannel.image.url],
+						['small-retina', loanChannel.retinaImage.url]
+					]"
 					class="loan-channel-image"
 				/>
 				<div class="category-card-title-wrap">
@@ -76,9 +79,8 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.loanChannels = _get(data, 'lend.loanChannels.values');
-			this.imageUrl = _get(data, 'lend.loanChannels.values.img.url');
 		}
-	}
+	},
 };
 </script>
 

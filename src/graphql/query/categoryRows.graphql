@@ -5,7 +5,10 @@ query categoryRows {
 				id
 				name
 				image {
-					url
+					url (presetSize: original)
+				}
+				retinaImage {
+					url (presetSize: original)
 				}
 			}
 		}
