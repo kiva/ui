@@ -5,7 +5,7 @@
 		</h1>
 		<div class="row card-row">
 			<router-link
-				:to="`/lend-by-category/${loanChannel.name.toLowerCase().split(' ').join('-')}`"
+				:to="loanChannel.url"
 				v-for="loanChannel in loanChannels" :key="loanChannel.id"
 				class="small-6 medium-4"
 				v-kv-track-event="[
@@ -126,7 +126,7 @@ export default {
 .category-card-overlay {
 	margin: 2px;
 	position: relative;
-    background-color: $black;
+	background-color: $black;
 }
 
 .solid-card-overlay {
@@ -184,9 +184,9 @@ export default {
 	.view-all-card {
 		opacity: 1;
 	}
+
 	.view-all-card-title {
 		text-decoration: underline;
 	}
 }
-
 </style>
