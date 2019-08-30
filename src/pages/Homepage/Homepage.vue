@@ -2,6 +2,7 @@
 	<www-page id="homepage">
 		<hero-slideshow />
 		<why-kiva />
+		<category-grid />
 	</www-page>
 </template>
 
@@ -9,12 +10,14 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
+import CategoryGrid from '@/components/Homepage/CategoryGrid';
 
 export default {
 	components: {
 		WwwPage,
 		WhyKiva,
 		HeroSlideshow,
+		CategoryGrid,
 	}
 };
 </script>
