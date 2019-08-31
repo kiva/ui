@@ -50,6 +50,7 @@ export default {
 				'rural exclusion': true,
 				'social enterprise': true,
 				'water and sanitation': true,
+				'higher education': true,
 				youth: true,
 			},
 		};

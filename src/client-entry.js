@@ -7,7 +7,6 @@ import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
-import logReadQueryError from '@/util/logReadQueryError';
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
@@ -62,7 +61,6 @@ try {
 	userId = _get(data, 'my.userAccount.id');
 } catch (e) {
 	// do nothing (leave user id as null)
-	logReadQueryError(e, 'client-entry userIdQuery');
 }
 
 // setup global analytics data

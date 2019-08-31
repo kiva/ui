@@ -34,6 +34,7 @@
 				:is-visitor="isVisitor"
 				:is-selected-by-another="isSelectedByAnother"
 				:items-in-basket="itemsInBasket"
+				:is-expired="isExpired"
 				@add-to-basket="handleAddToBasket"
 				@track-interaction="trackInteraction"
 				@update-detailed-loan-index="hoverCardLargeUpdateDetailedLoanIndex"
@@ -96,6 +97,10 @@ export default {
 			default: 0,
 		},
 		preventUpdatingDetailedCard: {
+			type: Boolean,
+			default: false,
+		},
+		isExpired: {
 			type: Boolean,
 			default: false,
 		},
