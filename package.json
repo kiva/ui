@@ -35,7 +35,6 @@
 		"apollo-link-batch-http": "^1.2.11",
 		"apollo-link-context": "^1.0.17",
 		"apollo-link-http": "^1.5.15",
-		"apollo-link-state": "^0.4.2",
 		"apollo-server-express": "^2.6.9",
 		"auth0-js": "^9.10.1",
 		"babel-polyfill": "^6.26.0",

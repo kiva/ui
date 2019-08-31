@@ -9,7 +9,7 @@ import {
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import HttpLinkCreator from './HttpLink';
-import StateLinkCreator from './StateLink';
+import initState from './localState';
 
 export default function createApolloClient({
 	csrfToken,
@@ -34,14 +34,17 @@ export default function createApolloClient({
 		resultCaching: typeof window !== 'undefined',
 	});
 
-	return new ApolloClient({
+	// initialize local state resolvers
+	const { resolvers, defaults } = initState({ kvAuth0 });
+
+	const client = new ApolloClient({
 		link: ApolloLink.from([
 			Auth0LinkCreator(kvAuth0),
 			BasketLinkCreator(),
-			StateLinkCreator({ cache, kvAuth0 }),
 			HttpLinkCreator({ csrfToken, uri }),
 		]),
 		cache,
+		resolvers,
 		defaultOptions: {
 			watchQuery: {
 				errorPolicy: 'all',
@@ -54,4 +57,10 @@ export default function createApolloClient({
 			},
 		}
 	});
+
+	// set default local state
+	cache.writeData({ data: defaults });
+	client.onResetStore(() => cache.writeData({ data: defaults }));
+
+	return client;
 }
