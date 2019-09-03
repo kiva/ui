@@ -4,8 +4,8 @@
 			Browse loans by category
 		</h1>
 		<div class="row card-row">
-			<router-link
-				:to="loanChannel.url"
+			<a
+				:href="loanChannel.url"
 				v-for="loanChannel in loanChannels" :key="loanChannel.id"
 				class="small-6 medium-4"
 				v-kv-track-event="[
@@ -28,7 +28,7 @@
 						</p>
 					</div>
 				</div>
-			</router-link>
+			</a>
 			<router-link
 				:to="`/lend-by-category`"
 				class="small-12 medium-4"
