@@ -363,7 +363,7 @@ export default {
 	},
 	methods: {
 		auth0Login() {
-			if (this.kvAuth0.enabled) {
+			if (this.showPopupLogin) {
 				this.kvAuth0.popupLogin().then(result => {
 					// Only refetch data if login was successful
 					if (result) {
