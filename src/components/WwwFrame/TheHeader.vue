@@ -71,7 +71,7 @@
 				v-show="isVisitor"
 				to="/ui-login"
 				class="header-button"
-				:event="kvAuth0.enabled ? '' : 'click'"
+				:event="showPopupLogin ? '' : 'click'"
 				@click.native="auth0Login"
 				v-kv-track-event="['TopNav','click-Sign-in']"
 			>
@@ -333,6 +333,9 @@ export default {
 		showBasket() {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
+		showPopupLogin() {
+			return this.kvAuth0.enabled && this.$route.fullPath !== '/';
+		}
 	},
 	apollo: {
 		query: headerQuery,
