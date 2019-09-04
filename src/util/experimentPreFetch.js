@@ -14,7 +14,7 @@ let activeExperiments = [
 	'pinned_filter',
 	'algolia_search',
 	'expandable_loan_cards',
-	'loan_res_20',
+	'loan_res_10',
 ];
 
 // TODO: Enhance Error handling

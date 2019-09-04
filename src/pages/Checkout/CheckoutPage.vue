@@ -294,16 +294,16 @@ export default {
 		}) || {};
 		this.braintreeVsPaypalVersion = braintreeVsPaypalExpAssignment.version;
 
-		// Read assigned version of loan res 20 exp
-		const loanRes20ExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:loan_res_20',
+		// ONLY USED FOR Analytics Tracking - Read assigned version of loan res 10 exp
+		const loanRes10ExpAssignment = this.apollo.readFragment({
+			id: 'Experiment:loan_res_10',
 			fragment: experimentVersionFragment,
 		}) || {};
 		try {
 			this.$kvTrackEvent(
 				'basket',
-				'EXP-CASH-1023-Aug2019',
-				loanRes20ExpAssignment.version === 'shown' ? 'b' : 'a'
+				'EXP-CASH-1231-Sep2019',
+				loanRes10ExpAssignment.version === 'shown' ? 'b' : 'a'
 			);
 		} catch (e) {
 			// noop
