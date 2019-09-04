@@ -1,6 +1,5 @@
 const { join } = require('path');
 const { readFile, writeFile } = require('fs');
-const { concat, map, uniqBy } = require('lodash');
 const { extendSchema, parse, printSchema } = require('graphql');
 const getRemoteGqlSchema = require('../server/util/getRemoteGqlSchema');
 const argv = require('minimist')(process.argv.slice(2));
