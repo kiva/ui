@@ -128,19 +128,19 @@ export default {
 		}
 	},
 	created() {
-		// Read assigned version of loan res 20 exp
-		const loanRes20ExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:loan_res_20',
+		// Read assigned version of loan res 10 exp
+		const loanRes10ExpAssignment = this.apollo.readFragment({
+			id: 'Experiment:loan_res_10',
 			fragment: experimentVersionFragment,
 		}) || {};
 		try {
-			if (loanRes20ExpAssignment.version === 'shown') {
+			if (loanRes10ExpAssignment.version === 'shown') {
 				this.setTimedMessage = true;
 			}
 			this.$kvTrackEvent(
 				'basket',
-				'EXP-CASH-1023-Aug2019',
-				loanRes20ExpAssignment.version === 'shown' ? 'b' : 'a'
+				'EXP-CASH-1231-Sep2019',
+				loanRes10ExpAssignment.version === 'shown' ? 'b' : 'a'
 			);
 		} catch (e) {
 			// noop
