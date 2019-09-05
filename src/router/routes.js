@@ -1,10 +1,5 @@
 export default [
-	// Homepage urls
-	// -----
 	{ path: '/', component: () => import('@/pages/Homepage/Homepage') },
-	{ path: '/home', component: () => import('@/pages/Homepage/Homepage') },
-	{ path: '/homepage', component: () => import('@/pages/Homepage/Homepage') },
-	// -----
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
