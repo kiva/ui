@@ -78,13 +78,13 @@ export default {
 	},
 	computed: {
 		reservedDate() {
-			const shortendedDate = subMinutes(new Date(this.expiryTime), 25);
+			const shortendedDate = subMinutes(new Date(this.expiryTime), 35);
 			const standardDate = new Date(this.expiryTime);
 			const reservedDate = this.setTimedMessage ? shortendedDate : standardDate;
 			return reservedDate;
 		},
 		reservationLength() {
-			return this.setTimedMessage ? '20' : '45';
+			return this.setTimedMessage ? '10' : '45';
 		}
 	},
 	methods: {

@@ -154,7 +154,7 @@ import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
-import uiConfigSetting from '@/graphql/query/uiConfigSetting.graphql';
+import braintreeConfig from '@/graphql/query/checkout/braintreeConfig.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -181,6 +181,8 @@ export default {
 			clientToken: null,
 			storePaymentMethod: false,
 			btVaultActive: false,
+			btDataCollectorActive: false,
+			dataCollectorDeviceData: '',
 			kvCardNumberError: '',
 			kvMultiFieldError: '',
 			kvExpirationError: '',
@@ -193,44 +195,48 @@ export default {
 		};
 	},
 	apollo: {
-		query: uiConfigSetting,
-		variables() {
-			return {
-				key: 'feature.braintree_vault'
-			};
-		},
+		query: braintreeConfig,
+		preFetch: true,
 		result({ data }) {
-			this.btVaultActive = _get(data, 'general.uiConfigSetting.value') === 'true' || false;
+			this.btVaultActive = _get(data, 'general.btVaultActive.value') === 'true' || false;
+			this.btDataCollectorActive = _get(data, 'general.btDataCollectorActive.value') === 'true' || false;
 		},
 	},
 	metaInfo() {
 		// ensure Braintree script is loaded
 		const braintreeScript = {};
 		const braintreeHostedFieldsScript = {};
+		const braintreeDataCollectorScript = {};
 		const braintreeVaultManagerScript = {};
 
 		// check for braintree incase script is already loaded
 		if (typeof braintree === 'undefined') {
 			braintreeScript.type = 'text/javascript';
 			// Loading in the Braintree SDK by hitting this URL
-			braintreeScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/client.min.js';
+			braintreeScript.src = 'https://js.braintreegateway.com/web/3.50.1/js/client.min.js';
 			// load in the hosted fields script
 			braintreeHostedFieldsScript.type = 'text/javascript';
-			braintreeHostedFieldsScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/hosted-fields.min.js';
+			braintreeHostedFieldsScript.src = 'https://js.braintreegateway.com/web/3.50.1/js/hosted-fields.min.js';
+			// load data collector
+			braintreeDataCollectorScript.type = 'text/javascript';
+			braintreeDataCollectorScript.src = 'https://js.braintreegateway.com/web/3.50.1/js/data-collector.min.js';
 			// load in the hosted fields vault manager
 			braintreeVaultManagerScript.type = 'text/javascript';
-			braintreeVaultManagerScript.src = 'https://js.braintreegateway.com/web/3.42.0/js/vault-manager.min.js';
+			braintreeVaultManagerScript.src = 'https://js.braintreegateway.com/web/3.50.1/js/vault-manager.min.js';
 		}
 
 		return {
 			script: [
 				braintreeScript,
 				braintreeHostedFieldsScript,
-				braintreeVaultManagerScript
+				braintreeVaultManagerScript,
+				braintreeDataCollectorScript,
 			]
 		};
 	},
 	mounted() {
+		// TODO: Create a loader instance inside the payment wrapper for use by paypal + braintree initialization
+		this.setUpdating(true);
 		this.getClientToken();
 	},
 	watch: {
@@ -273,10 +279,10 @@ export default {
 				if (typeof braintree !== 'undefined' && !this.braintreeRendered) {
 					this.renderBraintreeForm();
 				}
-			}, 200);
+			}, 100);
 		},
 		renderBraintreeForm() {
-			this.setUpdating(true);
+			// this.setUpdating(true);
 			// clear ensureBraintree interval
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
@@ -306,6 +312,11 @@ export default {
 					this.initializeBTVault();
 				} else {
 					this.setUpdating(false);
+				}
+
+				// If btDataCollectorActive flag is true, initialize DataCollector
+				if (this.btDataCollectorActive) {
+					this.initializeDataCollector(clientInstance);
 				}
 
 				braintree.hostedFields.create({
@@ -406,6 +417,13 @@ export default {
 				vaultInstance = btVaultInstance;
 				if (vaultError) {
 					console.error(vaultError);
+					Raven.captureException(vaultError.code, {
+						tags: {
+							bt_stage: 'btVaultCreateError',
+							bt_client_create_error: vaultError.message
+						}
+					});
+					return;
 				}
 
 				vaultInstance.fetchPaymentMethods(
@@ -423,6 +441,25 @@ export default {
 						this.setUpdating(false);
 					}
 				);
+			});
+		},
+		initializeDataCollector(clientInstance) {
+			braintree.dataCollector.create({
+				client: clientInstance,
+				kount: true
+			}, (dataCollectorError, dataCollectorInstance) => {
+				if (dataCollectorError) {
+					console.error(dataCollectorError);
+					Raven.captureException(dataCollectorError.code, {
+						tags: {
+							bt_stage: 'btDataCollectorCreateError',
+							bt_client_create_error: dataCollectorError.message
+						}
+					});
+					return;
+				}
+
+				this.dataCollectorDeviceData = dataCollectorInstance.deviceData;
 			});
 		},
 		checkoutWithStoredCard() {
@@ -450,7 +487,8 @@ export default {
 				variables: {
 					amount: numeral(this.amount).format('0.00'),
 					nonce,
-					savePaymentMethod: this.storePaymentMethod
+					savePaymentMethod: this.storePaymentMethod,
+					deviceData: this.dataCollectorDeviceData,
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction

@@ -1,0 +1,9 @@
+query whyKiva {
+	general {
+    	kivaStats {
+      		amountFunded
+      		repaymentRate
+      		numCountries
+    	}
+  	}
+}

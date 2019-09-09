@@ -170,6 +170,7 @@ export default {
 			fundingModel: '',
 			// loansTransactedIn: 'test',
 			currencyLossLiability: '',
+			currencyExchangeLoss: '',
 		};
 	},
 	apollo: {
@@ -194,6 +195,7 @@ export default {
 			this.directLoansCurrentlyFundraising = _get(data, 'lend.loan.trusteeStats.numLoansFundraising');
 			this.fundingModel = _get(data, 'lend.loan.terms.flexibleFundraisingEnabled');
 			this.currencyLossLiability = _get(data, 'lend.loan.terms.lossLiabilityCurrencyExchange');
+			this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
 
 			// This needs to be formatted from the returned string into a star display
 			// Ticket created for this: cash-1151

@@ -1,0 +1,17 @@
+query categoryRows {
+	lend {
+		loanChannels (limit: 8, popular: true) {
+			values {
+				id
+				url
+				name
+				image {
+					url (presetSize: original)
+				}
+				retinaImage {
+					url (presetSize: original)
+				}
+			}
+		}
+  	}
+}
