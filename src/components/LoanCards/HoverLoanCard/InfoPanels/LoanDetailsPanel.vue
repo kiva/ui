@@ -42,19 +42,11 @@
 						{{ fundingModelFormatted }}
 					</p>
 				</li>
-				<li v-if="this.currencyLossLiability === 'shared'
-					|| this.currencyLossLiability === 'partner'
-					|| this.currencyLossLiability === 'lender'"
-				>
-					<label>Partner covers currency loss:</label>
-					<p class="data">
-						{{ currencyLossLiabilityFormatted }}
-					</p>
-				</li>
-				<li v-if="this.currencyLossLiability === ''
-					|| this.currencyLossLiability=== 'none'"
-				>
-					<label>Currency exchange loss:</label>
+				<li>
+					<label v-if="this.currencyLossLiability">
+						Partner covers currency loss:
+					</label>
+					<label v-else>Currency exchange loss:</label>
 					<p class="data">
 						{{ currencyLossLiabilityFormatted }}
 					</p>
