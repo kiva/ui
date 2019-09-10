@@ -6,6 +6,7 @@ query featuredLoansData(
 	$offset: Int = 0,
 	$imgDefaultSize: String = "w480h360",
     $imgRetinaSize: String = "w960h720",
+	$sector: [Int],
 ) {
 	lend {
 		loanChannelsById(ids: $ids) {
@@ -22,6 +23,22 @@ query featuredLoansData(
 						retina: url(customSize: $imgRetinaSize)
 						hash
 					}
+				}
+			}
+		}
+		loans(
+			offset: $offset,
+			limit: $numberOfLoans,
+			filters: {sector: $sector, status: fundraising}
+			) {
+			totalCount
+			values {
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
 				}
 			}
 		}

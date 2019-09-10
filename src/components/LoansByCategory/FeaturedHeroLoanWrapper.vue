@@ -36,14 +36,13 @@ import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 
+import myRecommendations from '@/graphql/query/myRecommendations.graphql';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
-import loanCardData from '@/graphql/query/loanCardData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 
-// research-backed impact category
+// DEFAULT category research-backed impact
 const featuredCategoryIds = [56];
 const initialLoanCount = 4;
 
@@ -78,8 +77,7 @@ export default {
 	data() {
 		return {
 			experimentData: {},
-			featuredCategoryIds,
-			initialLoanCount,
+			featuredCategoryIds: [56],
 			loan: null,
 			loanChannel: null,
 			loans: [],
@@ -89,76 +87,57 @@ export default {
 		};
 	},
 	apollo: {
-		query: featuredLoansQuery,
-		preFetchVariables() {
-			return {
-				ids: featuredCategoryIds,
-				numberOfLoans: initialLoanCount,
-			};
-		},
-		variables() {
-			return {
-				ids: this.featuredCategoryIds,
-				numberOfLoans: this.initialLoanCount,
-			};
-		},
 		preFetch(config, client) {
 			return client.query({
-				query: featuredLoansQuery,
-				variables: {
-					ids: featuredCategoryIds,
-					numberOfLoans: initialLoanCount,
-				},
-				fetchPolicy: 'network-only',
+				query: myRecommendations
+			}).then(({ data }) => {
+				const topSectorId = _get(data, 'my.recommendations.topSectorId');
+				return client.query({
+					query: featuredLoansQuery,
+					variables: {
+						ids: featuredCategoryIds,
+						numberOfLoans: initialLoanCount,
+						sector: topSectorId ? [topSectorId] : null
+					},
+					fetchPolicy: 'network-only',
+				});
 			});
 		},
 	},
 	created() {
 		this.loading = true;
 
-		if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
-			// query custom loan set
-			this.apollo.query({
-				query: loanCardData,
+		// fetch cached query data
+		let allLoanData = {};
+		try {
+			allLoanData = this.apollo.readQuery({
+				query: featuredLoansQuery,
 				variables: {
-					limit: initialLoanCount,
-					filters: { sector: this.favoriteSectorId }
+					ids: featuredCategoryIds,
+					numberOfLoans: initialLoanCount,
+					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
 				}
-			}).then(({ data, errors }) => {
-				if (errors) {
-					console.error(errors);
-				}
-
-				// set initial loan data so we ssr with a loan if possible
-				const loanArray = _get(data, 'lend.loans.values');
-				this.setInitialLoan(loanArray);
 			});
+		} catch (e) {
+			logReadQueryError(e, 'FeatureHeroLoanWrapper featuredLoansQuery');
+		}
+
+		if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
+			// set initial loan data so we ssr with a loan if possible
+			const loanArray = _get(allLoanData, 'lend.loans.values');
+			this.setInitialLoan(loanArray);
 			// display custom channel data
 			this.loanChannel = {
 				id: 999,
 				description: 'Some special text',
 				name: 'Some special title',
 			};
+			this.featuredCategoryIds = [999];
 		} else {
-			// get initial loan data
-			let rawData = {};
-			try {
-				rawData = this.apollo.readQuery({
-					query: featuredLoansQuery,
-					variables: {
-						ids: this.featuredCategoryIds,
-						numberOfLoans: this.initialLoanCount,
-						basketId: cookieStore.get('kvbskt'),
-					},
-				});
-			} catch (e) {
-				logReadQueryError(e, 'FeaturedHeroLoanWrapper featuredLoansQuery');
-			}
-
 			// set initial loan data so we ssr with a loan if possible
 			const loanChannelArray = _filter(
-				_get(rawData, 'lend.loanChannelsById'),
-				['id', this.featuredCategoryIds[0]]
+				_get(allLoanData, 'lend.loanChannelsById'),
+				['id', featuredCategoryIds[0]]
 			);
 			this.loanChannel = _get(loanChannelArray, '[0]');
 			this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
@@ -166,11 +145,10 @@ export default {
 	},
 	mounted() {
 		// if we have no loans due to being funded, fetch some in the client
-		if (this.favoriteSectorId === null && this.featuredSectorExpVersion !== 'shown') {
-			if (this.loans && this.loans.length <= 0) {
-				this.fetchMoreLoans();
-			}
+		if (this.loans && this.loans.length <= 0) {
+			this.fetchMoreLoans();
 		}
+
 		if (this.featuredSectorExpVersion !== null) {
 			// fire tracking for active exp here
 			this.$kvTrackEvent(
@@ -244,15 +222,20 @@ export default {
 			this.apollo.query({
 				query: featuredLoansQuery,
 				variables: {
-					ids: this.featuredCategoryIds,
+					ids: featuredCategoryIds,
 					offset: this.queryOffset,
+					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
 				}
 			}).then(({ data }) => {
-				const loanArray = _filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]);
-				this.loans = _get(
-					loanArray,
-					'[0].loans.values'
-				);
+				if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
+					this.loans = _get(data, 'lend.loans.values');
+				} else {
+					const loanArray = _filter(data.lend.loanChannelsById, ['id', featuredCategoryIds[0]]);
+					this.loans = _get(
+						loanArray,
+						'[0].loans.values'
+					);
+				}
 
 				this.filterFundedLoans();
 			});
