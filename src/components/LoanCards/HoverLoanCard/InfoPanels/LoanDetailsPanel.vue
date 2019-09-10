@@ -42,10 +42,13 @@
 						{{ fundingModelFormatted }}
 					</p>
 				</li>
-				<li v-if="this.currencyExchangeLoss">
-					<label>Currency exchange loss:</label>
+				<li>
+					<label v-if="this.currencyLossLiability">
+						Partner covers currency loss:
+					</label>
+					<label v-else>Currency exchange loss:</label>
 					<p class="data">
-						{{ currencyExchangeLoss }}
+						{{ currencyLossLiabilityFormatted }}
 					</p>
 				</li>
 				<li v-if="this.facilitatedByFieldPartner">
@@ -158,6 +161,7 @@ export default {
 			directLoansCurrentlyFundraising: '',
 			fundingModel: '',
 			// loansTransactedIn: 'test',
+			currencyLossLiability: '',
 			currencyExchangeLoss: '',
 		};
 	},
@@ -182,6 +186,7 @@ export default {
 			this.partnerLoansCurrentlyFundraising = _get(data, 'lend.loan.partner.countries[0].numLoansFundraising');
 			this.directLoansCurrentlyFundraising = _get(data, 'lend.loan.trusteeStats.numLoansFundraising');
 			this.fundingModel = _get(data, 'lend.loan.terms.flexibleFundraisingEnabled');
+			this.currencyLossLiability = _get(data, 'lend.loan.terms.lossLiabilityCurrencyExchange');
 			this.currencyExchangeLoss = _get(data, 'lend.loan.hasCurrencyExchangeLossLenders');
 
 			// This needs to be formatted from the returned string into a star display
@@ -223,9 +228,22 @@ export default {
 		},
 		fundingModelFormatted() {
 			if (this.fundingModel === true) {
-				return 'Flexible';
+				return 'flexible';
 			}
-			return 'Fixed';
+			return 'fixed';
+		},
+		currencyLossLiabilityFormatted() {
+			let currencyLossLiabilityFormatted = '';
+			if (this.currencyLossLiability === '' || this.currencyLossLiability === 'none') {
+				currencyLossLiabilityFormatted = 'N/A';
+			} else if (this.currencyLossLiability === 'shared') {
+				currencyLossLiabilityFormatted = 'Partially';
+			} else if (this.currencyLossLiability === 'partner') {
+				currencyLossLiabilityFormatted = 'Yes';
+			} else if (this.currencyLossLiability === 'lender') {
+				currencyLossLiabilityFormatted = 'No';
+			}
+			return currencyLossLiabilityFormatted;
 		}
 	},
 	methods: {
@@ -253,7 +271,8 @@ ul {
 	margin-bottom: 0;
 }
 
-.repayment-schedule-text {
+.repayment-schedule-text,
+.funding-model-text {
 	text-transform: capitalize;
 }
 
