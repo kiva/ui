@@ -7,6 +7,8 @@ query loanPartnerTrustee(
 			name
 			... on LoanPartner {
 				partner {
+					avgBorrowerCost
+					avgBorrowerCostType
 					loansPosted
           			totalAmountRaised
 					avgLoanSizePercentPerCapitaIncome
