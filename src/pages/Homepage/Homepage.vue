@@ -1,6 +1,5 @@
 <template>
 	<www-page id="homepage">
-		THIS IS THE UI HOMEPAGE
 		<hero-slideshow />
 		<why-kiva />
 		<category-grid />
