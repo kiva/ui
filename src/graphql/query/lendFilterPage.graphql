@@ -18,5 +18,9 @@ query lendFilterPage($basketId: String) {
 			key
 			value
 		}
+		expandFilters: uiExperimentSetting(key: "expanded_filters") {
+			key
+			value
+		}
 	}
 }

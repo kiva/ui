@@ -25,7 +25,11 @@
 					</div>
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />
-				<filter-section-sort :default-sort-indices="defaultSortIndices" class="filter-section" />
+				<filter-section-sort
+					:default-sort-indices="defaultSortIndices"
+					class="filter-section"
+					:initial-accordian-state-open="initiallyExpandedFilters"
+				/>
 				<!-- Custom Categories
 				<filter-section-categories
 					class="filter-section"
@@ -34,8 +38,16 @@
 					@toggle-custom-category="toggleCustomCategory"
 				/>
 				-->
-				<filter-section-location-multi class="filter-section" :all-locations-lvl1="allLocationsLvl1" />
-				<filter-section-sectors class="filter-section" :all-sector-names="allSectorNames" />
+				<filter-section-location-multi
+					class="filter-section"
+					:all-locations-lvl1="allLocationsLvl1"
+					:initial-accordian-state-open="initiallyExpandedFilters"
+				/>
+				<filter-section-sectors
+					class="filter-section"
+					:all-sector-names="allSectorNames"
+					:initial-accordian-state-open="initiallyExpandedFilters"
+				/>
 				<filter-section-attributes class="filter-section" :all-loan-theme-names="allLoanThemeNames" />
 				<filter-section-tags class="filter-section" :all-tag-names="allTagNames" />
 				<filter-section-loan-details class="filter-section" />
@@ -132,6 +144,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		initiallyExpandedFilters: {
+			type: Boolean,
+			default: false
+		}
 	},
 	methods: {
 		hideFilterMenu() {

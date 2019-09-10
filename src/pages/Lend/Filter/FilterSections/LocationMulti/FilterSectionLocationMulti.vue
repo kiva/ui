@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section title="Location">
+	<filter-menu-section title="Location" :initial-accordian-state-open="initialAccordianStateOpen">
 		<ais-refinement-list
 			:attribute="'locationFacets.lvl1'"
 			:sort-by="['name:asc']"
@@ -40,6 +40,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		initialAccordianStateOpen: {
+			type: Boolean,
+			default: false
+		}
 	},
 	methods: {
 		transformItems(items) {
