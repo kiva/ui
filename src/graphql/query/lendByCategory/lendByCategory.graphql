@@ -24,11 +24,16 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		favoriteSectorFeature: uiExperimentSetting(key: "featured_sector") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
 		recommendations {
 			topCountry
+			topSectorId
 		}
 	}
 	shop (basketId: $basketId) {

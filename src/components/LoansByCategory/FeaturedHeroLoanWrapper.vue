@@ -37,6 +37,7 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
+import loanCardData from '@/graphql/query/loanCardData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import cookieStore from '@/util/cookieStore';
@@ -65,6 +66,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		favoriteSectorId: {
+			type: String,
+			default: null
+		},
+		featuredSectorExpVersion: {
+			type: String,
+			default: null
+		}
 	},
 	data() {
 		return {
@@ -107,45 +116,87 @@ export default {
 	created() {
 		this.loading = true;
 
-		// get initial loan data
-		let rawData = {};
-		try {
-			rawData = this.apollo.readQuery({
-				query: featuredLoansQuery,
+		if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
+			// query custom loan set
+			this.apollo.query({
+				query: loanCardData,
 				variables: {
-					ids: this.featuredCategoryIds,
-					numberOfLoans: this.initialLoanCount,
-					basketId: cookieStore.get('kvbskt'),
-				},
-			});
-		} catch (e) {
-			logReadQueryError(e, 'FeaturedHeroLoanWrapper featuredLoansQuery');
-		}
+					limit: initialLoanCount,
+					filters: { sector: this.favoriteSectorId }
+				}
+			}).then(({ data, errors }) => {
+				if (errors) {
+					console.error(errors);
+				}
 
-		// set initial loan data so we ssr with a loan if possible
-		const loanArray = _filter(_get(rawData, 'lend.loanChannelsById'), ['id', this.featuredCategoryIds[0]]);
-		this.loanChannel = _get(loanArray, '[0]');
-		// remove loans that are funded
-		this.loans = _filter(_get(loanArray, '[0].loans.values'), loan => {
-			return this.testFundedStatus(loan);
-		});
-		// get the first loan that is not funded
-		if (this.loans.length > 0) {
-			// eslint-disable-next-line prefer-destructuring
-			this.loan = this.loans[0];
-			this.loading = false;
+				// set initial loan data so we ssr with a loan if possible
+				const loanArray = _get(data, 'lend.loans.values');
+				this.setInitialLoan(loanArray);
+			});
+			// display custom channel data
+			this.loanChannel = {
+				id: 999,
+				description: 'Some special text',
+				name: 'Some special title',
+			};
 		} else {
-			// show the funded loan on ssr
-			this.loan = _get(loanArray, '[0].loans.values[0]');
+			// get initial loan data
+			let rawData = {};
+			try {
+				rawData = this.apollo.readQuery({
+					query: featuredLoansQuery,
+					variables: {
+						ids: this.featuredCategoryIds,
+						numberOfLoans: this.initialLoanCount,
+						basketId: cookieStore.get('kvbskt'),
+					},
+				});
+			} catch (e) {
+				logReadQueryError(e, 'FeaturedHeroLoanWrapper featuredLoansQuery');
+			}
+
+			// set initial loan data so we ssr with a loan if possible
+			const loanChannelArray = _filter(
+				_get(rawData, 'lend.loanChannelsById'),
+				['id', this.featuredCategoryIds[0]]
+			);
+			this.loanChannel = _get(loanChannelArray, '[0]');
+			this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
 		}
 	},
 	mounted() {
 		// if we have no loans due to being funded, fetch some in the client
-		if (this.loans && this.loans.length <= 0) {
-			this.fetchMoreLoans();
+		if (this.favoriteSectorId === null && this.featuredSectorExpVersion !== 'shown') {
+			if (this.loans && this.loans.length <= 0) {
+				this.fetchMoreLoans();
+			}
+		}
+		if (this.featuredSectorExpVersion !== null) {
+			// fire tracking for active exp here
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1113-Sept2019',
+				this.featuredSectorExpVersion === 'shown' ? 'b' : 'a',
+			);
 		}
 	},
 	methods: {
+		setInitialLoan(loanArray) {
+			// accept original loans array
+			// filter for funded
+			this.loans = _filter(loanArray, loan => {
+				return this.testFundedStatus(loan);
+			});
+			// get the first loan that is not funded
+			if (this.loans.length > 0) {
+				// eslint-disable-next-line prefer-destructuring
+				this.loan = this.loans[0];
+				this.loading = false;
+			} else {
+				// or just show initial loan on ssr even if funded
+				this.loan = _get(loanArray, '[0]');
+			}
+		},
 		filterFundedLoans() {
 			// remove loans that are funded
 			this.loans = _filter(this.loans, loan => {

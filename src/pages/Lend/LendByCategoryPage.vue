@@ -5,6 +5,8 @@
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
+			:favorite-sector-id="favoriteSectorId"
+			:featured-sector-exp-version="featuredSectorExpVersion"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
@@ -156,6 +158,8 @@ export default {
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
+			favoriteSectorId: null,
+			featuredSectorExpVersion: null,
 		};
 	},
 	computed: {
@@ -311,6 +315,7 @@ export default {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 					// CASH-794 Favorite Country Row
 					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
+					this.favoriteSectorId = _get(data, 'my.recommendations.topSectorId');
 				},
 			});
 		},
@@ -407,6 +412,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
+					// experiment: CASH-1113 Hover Loan Card Experiment
+					client.query({ query: experimentQuery, variables: { id: 'featured_sector' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -532,6 +539,15 @@ export default {
 				'b',
 			);
 		}
+
+		// CASH-1113 Favorite Sector on Featured Card Exp
+		this.favoriteSectorId = _get(baseData, 'my.recommendations.topSectorId');
+		// Read the SSR ready featured_sector exp cache
+		const featuredSectorExperiment = this.apollo.readFragment({
+			id: 'Experiment:featured_sector',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.featuredSectorExpVersion = featuredSectorExperiment.version;
 
 		// Initialize CASH-521: Hover loan card experiment
 		this.initializeHoverLoanCard();
