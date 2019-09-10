@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section title="Sort order">
+	<filter-menu-section title="Sort order" :initial-accordian-state-open="initialAccordianStateOpen">
 		<ais-sort-by :items="defaultSortIndices">
 			<ul slot-scope="{ items, currentRefinement, refine }">
 				<li v-for="item in items" :key="item.value" :value="item.value" class="sort">
@@ -29,6 +29,10 @@ export default {
 			type: Array,
 			required: true,
 		},
+		initialAccordianStateOpen: {
+			type: Boolean,
+			default: false
+		}
 	},
 };
 </script>
