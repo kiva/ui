@@ -1,5 +1,6 @@
 <template>
 	<filter-menu-section title="Location">
+		<find-new-country :attribute="'locationFacets.lvl1'" />
 		<ais-refinement-list
 			:attribute="'locationFacets.lvl1'"
 			:sort-by="['name:asc']"
@@ -25,13 +26,15 @@
 import _forEach from 'lodash/forEach';
 import _find from 'lodash/find';
 import _sortBy from 'lodash/sortBy';
-import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
-import LocationMultiRefinements from '@/pages/Lend/Filter/FilterSections/LocationMulti/LocationMultiRefinements';
 import { AisRefinementList } from 'vue-instantsearch';
+import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
+import LocationMultiRefinements from './LocationMultiRefinements';
+import FindNewCountry from './FindNewCountry';
 
 export default {
 	components: {
 		FilterMenuSection,
+		FindNewCountry,
 		LocationMultiRefinements,
 		AisRefinementList,
 	},
