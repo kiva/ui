@@ -42,9 +42,10 @@ export default {
 		},
 	},
 	methods: {
-		setDonationAndClose(amount) {
+		setDonationAndClose(amount, source) {
+			const clickSource = source ? ` - ${source}` : '';
 			this.updateDonationTo(amount);
-			this.$kvTrackEvent('basket', 'Update Nudge Donation', 'Update Success', amount * 100);
+			this.$kvTrackEvent('basket', 'Update Nudge Donation', `Update Success${clickSource}`, amount * 100);
 			this.closeNudgeLightbox();
 		},
 		openNudgeLightbox() {

@@ -24,7 +24,7 @@
 					:set-donation-and-close="setDonationAndClose"
 					:current-donation-amount="currentDonationAmount"
 				/>
-				<div class="no-donation-container" @click="setDonationAndClose(0)">
+				<div class="no-donation-container" @click="setDonationAndClose(0, 'No Donation Link')">
 					<kv-icon class="no-donation-x" name="x" />
 					<div id="no-donation-link">
 						No donation to Kiva
