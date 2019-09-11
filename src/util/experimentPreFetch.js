@@ -15,6 +15,7 @@ let activeExperiments = [
 	'algolia_search',
 	'expandable_loan_cards',
 	'loan_res_10',
+	'mg_promo'
 ];
 
 // TODO: Enhance Error handling
