@@ -1,0 +1,18 @@
+query countriesNotLentTo {
+	lend {
+		countryFacets {
+			country {
+				isoCode
+				name
+				region
+			}
+		}
+	}
+	my {
+		lendingStats {
+			countriesLentTo {
+				isoCode
+			}
+		}
+	}
+}
