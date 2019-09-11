@@ -3,7 +3,13 @@
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="section-name">
-					Featured: Research-backed impact
+					Featured:
+					<template v-if="featuredSectorExpVersion === 'shown'">
+						{{ loanChannel.name }}
+					</template>
+					<template v-else>
+						Research-backed impact
+					</template>
 				</h2>
 				<p v-if="showCategoryDescription" class="section-description show-for-large">
 					{{ loanChannel.description }}
@@ -127,10 +133,12 @@ export default {
 			const loanArray = _get(allLoanData, 'lend.loans.values');
 			this.setInitialLoan(loanArray);
 			// display custom channel data
+			const sectorName = _get(loanArray, '[0].sector.name');
+			const sectorDescription = `You’ve made more loans to ${sectorName} than any other sector!`;
 			this.loanChannel = {
 				id: 999,
-				description: 'Some special text',
-				name: 'Some special title',
+				description: sectorName !== null ? sectorDescription : '',
+				name: sectorName !== null ? sectorName : '',
 			};
 			this.featuredCategoryIds = [999];
 		} else {
