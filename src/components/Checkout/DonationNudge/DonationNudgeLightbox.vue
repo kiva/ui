@@ -24,7 +24,7 @@
 				<div>
 					<a
 						id="no-donation-link"
-						@click="setDonationAndClose(0)"
+						@click="setDonationAndClose(0, 'No Donation Link')"
 						tabindex="12"
 					>No donation to Kiva</a>
 				</div>
