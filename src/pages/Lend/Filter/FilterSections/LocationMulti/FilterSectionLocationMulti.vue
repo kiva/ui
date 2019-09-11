@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section title="Location">
+	<filter-menu-section title="Location" :initial-accordian-state-open="initialAccordianStateOpen">
 		<find-new-country :attribute="'locationFacets.lvl1'" />
 		<ais-refinement-list
 			:attribute="'locationFacets.lvl1'"
@@ -43,6 +43,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		initialAccordianStateOpen: {
+			type: Boolean,
+			default: false
+		}
 	},
 	methods: {
 		transformItems(items) {

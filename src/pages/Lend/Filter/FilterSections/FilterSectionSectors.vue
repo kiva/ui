@@ -1,5 +1,9 @@
 <template>
-	<filter-menu-section title="Sectors" class="filter-section-sectors">
+	<filter-menu-section
+		title="Sectors"
+		class="filter-section-sectors"
+		:initial-accordian-state-open="initialAccordianStateOpen"
+	>
 		<ais-refinement-list
 			:attribute="'sector.name'"
 			:sort-by="['name:asc']"
@@ -40,6 +44,10 @@ export default {
 			type: Array,
 			default: () => []
 		},
+		initialAccordianStateOpen: {
+			type: Boolean,
+			default: false
+		}
 	},
 	methods: {
 		transformItems(items) {

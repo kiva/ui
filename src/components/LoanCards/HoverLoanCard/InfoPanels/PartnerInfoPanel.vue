@@ -36,12 +36,12 @@
 						{{ totalAmountRaisedFormatted }}
 					</p>
 				</li>
-				<!-- <li>
+				<li v-if="this.avgCostToBorrower">
 					<label>Average cost to borrower:</label>
 					<p class="data">
-						{{}}
+						{{ avgCostToBorrower }}% {{ avgCostToBorrowerType }}
 					</p>
-				</li> -->
+				</li>
 				<!-- <li>
 					<label>Profitabilty (return on assets):</label>
 					<p class="data">
@@ -119,6 +119,8 @@ export default {
 			numOfBorrowers: 0,
 			totalAmountRaised: 0,
 			avgLoanSize: '',
+			avgCostToBorrower: '',
+			avgCostToBorrowerType: '',
 			deliquencyRate: '',
 			riskRate: '',
 			defaultRate: '',
@@ -143,6 +145,8 @@ export default {
 			this.defaultRate = _get(data, 'lend.loan.partner.defaultRate');
 			this.currencyExchangeLossRate = _get(data, 'lend.loan.partner.currencyExchangeLossRate');
 			this.loanAlertText = _get(data, 'lend.loan.partner.loanAlertText');
+			this.avgCostToBorrower = _get(data, 'lend.loan.partner.avgBorrowerCost');
+			this.avgCostToBorrowerType = _get(data, 'lend.loan.partner.avgBorrowerCostType');
 		},
 	},
 	computed: {

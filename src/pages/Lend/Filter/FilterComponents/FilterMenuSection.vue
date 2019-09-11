@@ -31,10 +31,14 @@ export default {
 			type: String,
 			default: 'All',
 		},
+		initialAccordianStateOpen: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
-			open: false,
+			open: this.initialAccordianStateOpen,
 		};
 	},
 	methods: {

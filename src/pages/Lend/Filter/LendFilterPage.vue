@@ -27,6 +27,7 @@
 					:all-loan-theme-names="allLoanThemeNames"
 					:all-tag-names="allTagNames"
 					:filter-menu-pinned="filterMenuPinned"
+					:initially-expanded-filters="initiallyExpandedFilters"
 					@clear-custom-categories="clearCustomCategories"
 					@hide-filter-menu="hideFilterMenu"
 					@show-filter-menu="showFilterMenu"
@@ -182,6 +183,7 @@ export default {
 			filterMenuPinned: false,
 			algoliaSearchEnabled: false,
 			removeWordsIfNoResults: 'none', // default: 'none', options: 'firstWords' 'lastWords' 'allOptional'
+			initiallyExpandedFilters: false,
 		};
 	},
 	computed: {
@@ -230,19 +232,29 @@ export default {
 					basketId: cookieStore.get('kvbskt')
 				},
 			}).then(() => {
-				// Pre-fetch user Status
-				return client.query({
-					query: experimentAssignment,
-					variables: {
-						id: 'remove_words',
-					},
-				});
+				return Promise.all([
+					client.query({ query: experimentAssignment, variables: { id: 'expanded_filters' } }),
+					client.query({ query: experimentAssignment, variables: { id: 'remove_words' } })
+				]);
 			});
 		}
 	},
 	mounted() {
 		// update global lend filter experiment setting
 		this.updateLendFilterExp();
+
+		// get exp assignment for expanded filters
+		const lendExpandedFiltersExp = this.apollo.readFragment({
+			id: 'Experiment:expanded_filters',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (lendExpandedFiltersExp.version === 'control') {
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1212-Sept2019', 'a');
+		} else if (lendExpandedFiltersExp.version === 'shown') {
+			this.initiallyExpandedFilters = true;
+			this.$kvTrackEvent('Lending', 'EXP-CASH-1212-Sept2019', 'b');
+		}
 
 		// get exp assignment for remove words setting
 		const algoliaRemoveWordsExp = this.apollo.readFragment({
