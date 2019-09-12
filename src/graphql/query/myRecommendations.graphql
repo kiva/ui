@@ -1,0 +1,8 @@
+query myRecommendations {
+	my {
+    	recommendations {
+      		topCountry
+			topSectorId
+    	}
+	}
+}

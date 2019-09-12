@@ -3,7 +3,13 @@
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="section-name">
-					Featured: Research-backed impact
+					Featured:
+					<template v-if="featuredSectorExpVersion === 'shown'">
+						{{ loanChannel.name }}
+					</template>
+					<template v-else>
+						Research-backed impact
+					</template>
 				</h2>
 				<p v-if="showCategoryDescription" class="section-description show-for-large">
 					{{ loanChannel.description }}
@@ -36,13 +42,13 @@ import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 
+import myRecommendations from '@/graphql/query/myRecommendations.graphql';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
-import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 
-// research-backed impact category
+// DEFAULT category research-backed impact
 const featuredCategoryIds = [56];
 const initialLoanCount = 4;
 
@@ -65,12 +71,19 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		favoriteSectorId: {
+			type: String,
+			default: null
+		},
+		featuredSectorExpVersion: {
+			type: String,
+			default: null
+		}
 	},
 	data() {
 		return {
 			experimentData: {},
-			featuredCategoryIds,
-			initialLoanCount,
+			featuredCategoryIds: [56],
 			loan: null,
 			loanChannel: null,
 			loans: [],
@@ -80,63 +93,62 @@ export default {
 		};
 	},
 	apollo: {
-		query: featuredLoansQuery,
-		preFetchVariables() {
-			return {
-				ids: featuredCategoryIds,
-				numberOfLoans: initialLoanCount,
-			};
-		},
-		variables() {
-			return {
-				ids: this.featuredCategoryIds,
-				numberOfLoans: this.initialLoanCount,
-			};
-		},
 		preFetch(config, client) {
 			return client.query({
-				query: featuredLoansQuery,
-				variables: {
-					ids: featuredCategoryIds,
-					numberOfLoans: initialLoanCount,
-				},
-				fetchPolicy: 'network-only',
+				query: myRecommendations
+			}).then(({ data }) => {
+				const topSectorId = _get(data, 'my.recommendations.topSectorId');
+				return client.query({
+					query: featuredLoansQuery,
+					variables: {
+						ids: featuredCategoryIds,
+						numberOfLoans: initialLoanCount,
+						sector: topSectorId ? [topSectorId] : null
+					},
+					fetchPolicy: 'network-only',
+				});
 			});
 		},
 	},
 	created() {
 		this.loading = true;
 
-		// get initial loan data
-		let rawData = {};
+		// fetch cached query data
+		let allLoanData = {};
 		try {
-			rawData = this.apollo.readQuery({
+			allLoanData = this.apollo.readQuery({
 				query: featuredLoansQuery,
 				variables: {
-					ids: this.featuredCategoryIds,
-					numberOfLoans: this.initialLoanCount,
-					basketId: cookieStore.get('kvbskt'),
-				},
+					ids: featuredCategoryIds,
+					numberOfLoans: initialLoanCount,
+					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
+				}
 			});
 		} catch (e) {
-			logReadQueryError(e, 'FeaturedHeroLoanWrapper featuredLoansQuery');
+			logReadQueryError(e, 'FeatureHeroLoanWrapper featuredLoansQuery');
 		}
 
-		// set initial loan data so we ssr with a loan if possible
-		const loanArray = _filter(_get(rawData, 'lend.loanChannelsById'), ['id', this.featuredCategoryIds[0]]);
-		this.loanChannel = _get(loanArray, '[0]');
-		// remove loans that are funded
-		this.loans = _filter(_get(loanArray, '[0].loans.values'), loan => {
-			return this.testFundedStatus(loan);
-		});
-		// get the first loan that is not funded
-		if (this.loans.length > 0) {
-			// eslint-disable-next-line prefer-destructuring
-			this.loan = this.loans[0];
-			this.loading = false;
+		if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
+			// set initial loan data so we ssr with a loan if possible
+			const loanArray = _get(allLoanData, 'lend.loans.values');
+			this.setInitialLoan(loanArray);
+			// display custom channel data
+			const sectorName = _get(loanArray, '[0].sector.name');
+			const sectorDescription = `You’ve made more loans to ${sectorName} than any other sector!`;
+			this.loanChannel = {
+				id: 999,
+				description: sectorName !== null ? sectorDescription : '',
+				name: sectorName !== null ? sectorName : '',
+			};
+			this.featuredCategoryIds = [999];
 		} else {
-			// show the funded loan on ssr
-			this.loan = _get(loanArray, '[0].loans.values[0]');
+			// set initial loan data so we ssr with a loan if possible
+			const loanChannelArray = _filter(
+				_get(allLoanData, 'lend.loanChannelsById'),
+				['id', featuredCategoryIds[0]]
+			);
+			this.loanChannel = _get(loanChannelArray, '[0]');
+			this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
 		}
 	},
 	mounted() {
@@ -144,8 +156,33 @@ export default {
 		if (this.loans && this.loans.length <= 0) {
 			this.fetchMoreLoans();
 		}
+
+		if (this.featuredSectorExpVersion !== null) {
+			// fire tracking for active exp here
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1113-Sept2019',
+				this.featuredSectorExpVersion === 'shown' ? 'b' : 'a',
+			);
+		}
 	},
 	methods: {
+		setInitialLoan(loanArray) {
+			// accept original loans array
+			// filter for funded
+			this.loans = _filter(loanArray, loan => {
+				return this.testFundedStatus(loan);
+			});
+			// get the first loan that is not funded
+			if (this.loans.length > 0) {
+				// eslint-disable-next-line prefer-destructuring
+				this.loan = this.loans[0];
+				this.loading = false;
+			} else {
+				// or just show initial loan on ssr even if funded
+				this.loan = _get(loanArray, '[0]');
+			}
+		},
 		filterFundedLoans() {
 			// remove loans that are funded
 			this.loans = _filter(this.loans, loan => {
@@ -193,15 +230,20 @@ export default {
 			this.apollo.query({
 				query: featuredLoansQuery,
 				variables: {
-					ids: this.featuredCategoryIds,
+					ids: featuredCategoryIds,
 					offset: this.queryOffset,
+					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
 				}
 			}).then(({ data }) => {
-				const loanArray = _filter(data.lend.loanChannelsById, ['id', this.featuredCategoryIds[0]]);
-				this.loans = _get(
-					loanArray,
-					'[0].loans.values'
-				);
+				if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
+					this.loans = _get(data, 'lend.loans.values');
+				} else {
+					const loanArray = _filter(data.lend.loanChannelsById, ['id', featuredCategoryIds[0]]);
+					this.loans = _get(
+						loanArray,
+						'[0].loans.values'
+					);
+				}
 
 				this.filterFundedLoans();
 			});
