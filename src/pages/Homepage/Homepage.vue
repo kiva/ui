@@ -1,6 +1,6 @@
 <template>
 	<www-page id="homepage">
-		<hero-slideshow />
+		<hero-slideshow :mg-promo-exp="mgPromoExp" />
 		<why-kiva />
 		<category-grid />
 	</www-page>
@@ -11,6 +11,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 export default {
 	components: {
@@ -18,7 +19,29 @@ export default {
 		WhyKiva,
 		HeroSlideshow,
 		CategoryGrid,
-	}
+	},
+	data() {
+		return {
+			mgPromoExp: { id: null, version: null }
+		};
+	},
+	inject: ['apollo'],
+	created() {
+		// get exp assignment for monthly good promo
+		this.mgPromoExp = this.apollo.readFragment({
+			id: 'Experiment:mg_promo',
+			fragment: experimentVersionFragment,
+		}) || {};
+	},
+	mounted() {
+		if (this.mgPromoExp.version !== null) {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-129-Sept2019',
+				this.mgPromoExp.version === 'shown' ? 'b' : 'a'
+			);
+		}
+	},
 };
 </script>
 

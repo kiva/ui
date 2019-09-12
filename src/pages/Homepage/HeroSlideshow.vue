@@ -1,6 +1,12 @@
 <template>
 	<div class="hero-slideshow">
-		<kv-carousel @change="slideChange">
+		<kv-carousel @change="slideChange" v-if="showMgPromo">
+			<div class="slide-placeholder"></div>
+			<kv-carousel-slide>
+				<kv-responsive-image :images="mgHeroImages(1)" />
+			</kv-carousel-slide>
+		</kv-carousel>
+		<kv-carousel @change="slideChange" v-else>
 			<div class="slide-placeholder"></div>
 			<kv-carousel-slide>
 				<kv-responsive-image :images="heroImages(1)" />
@@ -22,7 +28,15 @@
 			<div class="mask">
 				&nbsp;
 			</div>
-			<div class="headline">
+			<div class="headline" v-if="showMgPromo">
+				<span class="headline-title">Make a bigger impact.</span>
+				<p class="headline-body">
+					A Monthly Good subscription<br class="su">
+					makes supporting entrepreneurs<br class="su">
+					part of your routine with monthly contributions.
+				</p>
+			</div>
+			<div class="headline" v-else>
 				<span class="headline-title">Dreams are universal,<br class="smo"> opportunity is not.</span>
 				<p class="headline-body">
 					Lend as little as $25<br class="so">
@@ -38,6 +52,15 @@
 		</div>
 		<div class="action-button-wrapper">
 			<kv-button
+				v-if="showMgPromo"
+				class="slideshow-action-button"
+				to="/monthlygood"
+				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
+			>
+				Sign up
+			</kv-button>
+			<kv-button
+				v-else
 				class="slideshow-action-button"
 				to="/lend-by-category"
 				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
@@ -55,20 +78,35 @@ import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
+const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/', true);
 
 export default {
 	name: 'HeroSlideshow',
-	serverCacheKey: () => 'HeroSlideshow',
+	serverCacheKey: props => {
+		return props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+	},
+	inject: ['apollo'],
 	components: {
 		KvButton,
 		KvCarousel,
 		KvCarouselSlide,
 		KvResponsiveImage,
 	},
+	props: {
+		mgPromoExp: {
+			type: Object,
+			default: () => {},
+		},
+	},
 	data() {
 		return {
 			counter: 2,
 		};
+	},
+	computed: {
+		showMgPromo() {
+			return this.mgPromoExp.version === 'shown';
+		}
 	},
 	methods: {
 		slideChange() {
@@ -88,6 +126,20 @@ export default {
 				['xga retina', imageRequire(`./hero-${number}-xga-retina.jpg`)],
 				['wxga', imageRequire(`./hero-${number}-wxga-std.jpg`)],
 				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
+			];
+		},
+		mgHeroImages(number) {
+			return [
+				['small', mgPromoImageRequire(`./mg-hppromo-${number}-sm-std.jpg`)],
+				['small retina', mgPromoImageRequire(`./mg-hppromo-${number}-sm-retina.jpg`)],
+				['medium', mgPromoImageRequire(`./mg-hppromo-${number}-med-std.jpg`)],
+				['medium retina', mgPromoImageRequire(`./mg-hppromo-${number}-med-retina.jpg`)],
+				['large', mgPromoImageRequire(`./mg-hppromo-${number}-lg-std.jpg`)],
+				['large retina', mgPromoImageRequire(`./mg-hppromo-${number}-lg-retina.jpg`)],
+				['xga', mgPromoImageRequire(`./mg-hppromo-${number}-xga-std.jpg`)],
+				['xga retina', mgPromoImageRequire(`./mg-hppromo-${number}-xga-retina.jpg`)],
+				['wxga', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-std.jpg`)],
+				['wxga retina', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-retina.jpg`)],
 			];
 		}
 	},
