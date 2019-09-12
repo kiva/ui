@@ -47,6 +47,7 @@ export default {
 .icon-refresh,
 .icon-grid,
 .icon-map,
+.icon-monthly-good,
 .icon-tags-checkmark,
 .icon-sector-agriculture,
 .icon-sector-arts,

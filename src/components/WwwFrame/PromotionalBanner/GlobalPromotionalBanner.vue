@@ -9,10 +9,12 @@ import numeral from 'numeral';
 import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import GiftBanner from './Banners/GiftBanner';
 // import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 // import IWDPromoBanner from './Banners/IWDPromoBanner';
 import WRDBanner from './Banners/WRDBanner';
+import MonthlyGoodPromoBanner from './Banners/MonthlyGoodPromoBanner';
 
 export default {
 	inject: ['apollo'],
@@ -22,11 +24,16 @@ export default {
 			promoEnabled: false,
 			lendingRewardOffered: false,
 			bonusBalance: 0,
-			hasFreeCredits: false
+			hasFreeCredits: false,
+			mgPromoExp: { id: null, version: null }
 		};
 	},
 	computed: {
 		currentActivePromo() {
+			// check for monthly good promo exp first, it's ok if any other bonus credit states are active
+			if (this.monthlyGoodActive) {
+				return MonthlyGoodPromoBanner;
+			}
 			// Temporarily remove holiday or default banner if either of these are true.
 			// Each of these will render their own banners in the near future.
 			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
@@ -41,6 +48,9 @@ export default {
 			}
 			return '';
 		},
+		monthlyGoodActive() {
+			return this.mgPromoExp.version === 'shown';
+		}
 	},
 	apollo: {
 		query: promoQuery,
@@ -66,6 +76,22 @@ export default {
 
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+		}
+	},
+	created() {
+		// get exp assignment for monthly good promo
+		this.mgPromoExp = this.apollo.readFragment({
+			id: 'Experiment:mg_promo',
+			fragment: experimentVersionFragment,
+		}) || {};
+	},
+	mounted() {
+		if (this.mgPromoExp.version !== null) {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-129-Sept2019',
+				this.mgPromoExp.version === 'shown' ? 'b' : 'a'
+			);
 		}
 	},
 };
@@ -143,12 +169,17 @@ export default {
 	}
 
 	.gift-banner .present-icon,
+	.gift-banner .monthly-good-icon,
 	.iwd-banner .iwd-flower-icon {
 		display: block;
 		height: rem-calc(22);
 		width: rem-calc(22);
 		margin-right: rem-calc(10);
 		margin-top: -0.2rem;
+	}
+
+	.gift-banner .monthly-good-icon {
+		fill: $kiva-darkgreen;
 	}
 
 	.gift-banner .banner-link:hover {
