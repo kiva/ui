@@ -138,7 +138,7 @@
 		"semver": "^6.0.0",
 		"shelljs": "^0.8.3",
 		"stylelint": "^8.4.0",
-		"stylelint-config-standard": "^18.3.0",
+		"stylelint-config-standard": "^19.0.0",
 		"stylelint-scss": "^3.5.4",
 		"stylelint-webpack-plugin": "^0.10.4",
 		"url-loader": "^1.1.2",
