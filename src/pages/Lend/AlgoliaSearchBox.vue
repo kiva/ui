@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
 import { AisSearchBox } from 'vue-instantsearch';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {

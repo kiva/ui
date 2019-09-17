@@ -157,16 +157,6 @@
 <script>
 import _get from 'lodash/get';
 import _map from 'lodash/map';
-import cookieStore from '@/util/cookieStore';
-import logReadQueryError from '@/util/logReadQueryError';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import LendHeader from '@/pages/Lend/LendHeader';
-// This mixin provides some algolia search instance initialization on mounted
-import algoliaInit from '@/plugins/algolia-init-mixin';
-import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
-import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
-import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
-import userStatus from '@/graphql/query/userId.graphql';
 import {
 	AisConfigure,
 	AisInstantSearch,
@@ -177,6 +167,16 @@ import {
 	AisStateResults,
 	AisMenuSelect,
 } from 'vue-instantsearch';
+import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+import LendHeader from '@/pages/Lend/LendHeader';
+// This mixin provides some algolia search instance initialization on mounted
+import algoliaInit from '@/plugins/algolia-init-mixin';
+import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
+import itemsInBasketQuery from '@/graphql/query/basketItems.graphql';
+import userStatus from '@/graphql/query/userId.graphql';
 
 export default {
 	components: {

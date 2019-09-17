@@ -94,6 +94,25 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _forEach from 'lodash/forEach';
+
+// Algolia Imports
+import {
+	AisConfigure,
+	AisInstantSearch,
+	AisHits,
+	AisStateResults,
+} from 'vue-instantsearch';
+import algoliaInit from '@/plugins/algolia-init-mixin';
+import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
+import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+import AlgoliaPaginationHitsPerPage from '@/pages/Lend/AlgoliaPaginationHitsPerPage';
+import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
+import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
+import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
+import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
+import AlgoliaSearchBox from '@/pages/Lend/AlgoliaSearchBox';
+import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
+
 import cookieStore from '@/util/cookieStore';
 // TODO: Use this
 // import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
@@ -106,24 +125,6 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
 import lendFilterExpMixin from '@/plugins/lend-filter-page-exp-mixin';
-
-// Algolia Imports
-import algoliaInit from '@/plugins/algolia-init-mixin';
-import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
-import {
-	AisConfigure,
-	AisInstantSearch,
-	AisHits,
-	AisStateResults,
-} from 'vue-instantsearch';
-import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
-import AlgoliaPaginationHitsPerPage from '@/pages/Lend/AlgoliaPaginationHitsPerPage';
-import AlgoliaPaginationStats from '@/pages/Lend/AlgoliaPaginationStats';
-import AlgoliaPaginationWrapper from '@/pages/Lend/AlgoliaPaginationWrapper';
-import LendFilterMenu from '@/pages/Lend/Filter/FilterComponents/LendFilterMenu';
-import SelectedRefinements from '@/pages/Lend/Filter/FilterComponents/SelectedRefinements';
-import AlgoliaSearchBox from '@/pages/Lend/AlgoliaSearchBox';
-import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrackState';
 
 export default {
 	components: {

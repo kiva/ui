@@ -23,10 +23,10 @@
 </template>
 
 <script>
+import { AisRefinementList } from 'vue-instantsearch';
 import _sortBy from 'lodash/sortBy';
 import mergeRefinmentListItems from '@/util/algoliaUtils';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
-import { AisRefinementList } from 'vue-instantsearch';
 import KvControlledCheckbox from '@/components/Kv/KvControlledCheckbox';
 
 export default {
