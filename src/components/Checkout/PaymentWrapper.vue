@@ -69,7 +69,6 @@ export default {
 		};
 	},
 	created() {
-		console.log('selectedOption', this.selectedOption);
 		if (this.expSelectedOption !== '') {
 			this.selectedOption = this.expSelectedOption;
 		}
