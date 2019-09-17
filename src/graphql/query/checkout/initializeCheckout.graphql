@@ -23,7 +23,7 @@ query initializeCheckout($basketId: String) {
 			value
 			key
 		}
-		braintreeVsPaypalExp: uiExperimentSetting(key: "braintree_vs_paypal") {
+		braintreeVsPaypalExp: uiExperimentSetting(key: "bt_vs_paypal") {
 			key
 			value
 		}

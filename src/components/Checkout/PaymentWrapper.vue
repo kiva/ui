@@ -69,6 +69,7 @@ export default {
 		};
 	},
 	created() {
+		console.log('selectedOption', this.selectedOption);
 		if (this.expSelectedOption !== '') {
 			this.selectedOption = this.expSelectedOption;
 		}
@@ -77,8 +78,8 @@ export default {
 		if (this.expSelectedOption !== '') {
 			this.$kvTrackEvent(
 				'basket',
-				'EXP-CASH-1167-Aug2019',
-				this.expSelectedOption === 'bt' ? 'b' : 'a'
+				'EXP-CASH-1167-Sept2019',
+				this.selectedOption === 'bt' ? 'b' : 'a'
 			);
 		}
 	},
