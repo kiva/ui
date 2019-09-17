@@ -35,9 +35,9 @@
 </template>
 
 <script>
+import { AisHierarchicalMenu } from 'vue-instantsearch';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 import HierarchicalMenuList from '@/pages/Lend/Filter/FilterComponents/HierarchicalMenuList';
-import { AisHierarchicalMenu } from 'vue-instantsearch';
 
 export default {
 	components: {

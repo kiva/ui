@@ -1,6 +1,6 @@
-import cookieStore from '@/util/cookieStore';
 import _filter from 'lodash/filter';
 import _map from 'lodash/map';
+import cookieStore from '@/util/cookieStore';
 import getDeepComponents from './getDeepComponents';
 
 // initial basketId from cookie

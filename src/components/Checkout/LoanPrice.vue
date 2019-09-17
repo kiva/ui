@@ -25,9 +25,9 @@
 
 <script>
 import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
-import _forEach from 'lodash/forEach';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {

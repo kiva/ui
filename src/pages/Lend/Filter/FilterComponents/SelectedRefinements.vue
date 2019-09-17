@@ -50,11 +50,11 @@
 </template>
 
 <script>
-import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 import {
 	AisCurrentRefinements,
 	AisClearRefinements,
 } from 'vue-instantsearch';
+import algoliaCustomCategories from '@/plugins/algolia-custom-categories-mixin';
 import FilterChip from '@/pages/Lend/Filter/FilterComponents/FilterChip';
 import ClearAllRefinements from '@/pages/Lend/Filter/FilterComponents/ClearAllRefinements';
 

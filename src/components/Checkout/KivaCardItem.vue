@@ -87,9 +87,9 @@
 </template>
 
 <script>
+import { format } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanPrice from '@/components/Checkout/LoanPrice';
-import { format } from 'date-fns';
 
 export default {
 	components: {

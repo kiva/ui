@@ -95,16 +95,16 @@
 </template>
 
 <script>
+import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
+import _get from 'lodash/get';
+import store2 from 'store2';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import numeral from 'numeral';
-import _forEach from 'lodash/forEach';
-import _get from 'lodash/get';
-import store2 from 'store2';
 
 export default {
 	components: {

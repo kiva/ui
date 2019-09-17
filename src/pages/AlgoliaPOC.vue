@@ -151,13 +151,6 @@ import _map from 'lodash/map';
 import _forEach from 'lodash/forEach';
 import _union from 'lodash/union';
 
-import cookieStore from '@/util/cookieStore';
-import logReadQueryError from '@/util/logReadQueryError';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-
-// This mixin provides some algolia search instance initialization on mounted
-import algoliaInit from '@/plugins/algolia-init-mixin';
-
 // Import your specific Algolia Components here
 // https://www.algolia.com/doc/api-reference/widgets/instantsearch/vue/
 // algolia search is always required, moved to mixin
@@ -180,6 +173,13 @@ import {
 } from 'vue-instantsearch';
 
 import AlgoliaAdapter from '@/components/LoanCards/AlgoliaLoanCardAdapter';
+
+// This mixin provides some algolia search instance initialization on mounted
+import algoliaInit from '@/plugins/algolia-init-mixin';
+
+import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 // import KvCheckbox from '@/components/Kv/KvCheckbox';
 
