@@ -237,7 +237,7 @@ export default {
 			}).then(() => {
 				return Promise.all([
 					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-					client.query({ query: experimentQuery, variables: { id: 'braintree_vs_paypal' } }),
+					client.query({ query: experimentQuery, variables: { id: 'bt_vs_paypal' } }),
 				]);
 			});
 		},
@@ -289,7 +289,7 @@ export default {
 
 		// Read assigned version of braintree vs paypal exp
 		const braintreeVsPaypalExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:braintree_vs_paypal',
+			id: 'Experiment:bt_vs_paypal',
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.braintreeVsPaypalVersion = braintreeVsPaypalExpAssignment.version;
