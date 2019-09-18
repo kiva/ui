@@ -30,6 +30,9 @@
 						<!-- Passing in the last 4 digits of the stored card -->
 						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
+					<label class="delete-card-item" :for="`delete-card-${index}`">
+						<button class="delete-card-button" @click="matchCardForDeletion(paymentMethod)">X</button>
+					</label>
 				</div>
 				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
 				<div
@@ -149,10 +152,13 @@
 <script>
 /* global braintree */
 import _get from 'lodash/get';
+import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
+import myStoredCards from '@/graphql/query/myStoredCards.graphql';
+import deleteBraintreeCard from '@/graphql/mutation/deleteBraintreeCard.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeConfig from '@/graphql/query/checkout/braintreeConfig.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -181,6 +187,7 @@ export default {
 			clientToken: null,
 			storePaymentMethod: false,
 			btVaultActive: false,
+			btVaultInstance: () => {},
 			btDataCollectorActive: false,
 			dataCollectorDeviceData: '',
 			kvCardNumberError: '',
@@ -189,7 +196,7 @@ export default {
 			kvCVVError: '',
 			kvPostalCodeError: '',
 			storedPaymentMethods: [],
-			paymentMethods: {},
+			kivaStoredPaymentMethods: [],
 			selectedCard: 'newCard',
 			selectedCardType: null
 		};
@@ -410,11 +417,10 @@ export default {
 			});
 		},
 		initializeBTVault() {
-			let vaultInstance = null;
 			braintree.vaultManager.create({
 				authorization: this.clientToken
 			}, (vaultError, btVaultInstance) => {
-				vaultInstance = btVaultInstance;
+				this.btVaultInstance = btVaultInstance;
 				if (vaultError) {
 					console.error(vaultError);
 					Raven.captureException(vaultError.code, {
@@ -423,24 +429,92 @@ export default {
 							bt_client_create_error: vaultError.message
 						}
 					});
-					return;
+					return false;
 				}
-
-				vaultInstance.fetchPaymentMethods(
-					{ defaultFirst: true },
-					(fetchPaymentMethodError, paymentMethods) => {
-						if (fetchPaymentMethodError) {
-							console.error(fetchPaymentMethodError);
-						}
-						this.storedPaymentMethods = paymentMethods || [];
-						// if the user has storedPayment methods then set the selectedCard
-						// to the first one in the list of storedCards
-						if (this.storedPaymentMethods.length > 0) {
-							this.selectedCard = 0;
-						}
-						this.setUpdating(false);
+				this.fetchStoredCards();
+				this.fetchKivaStoredCards();
+			});
+		},
+		fetchStoredCards() {
+			this.setUpdating(true);
+			this.btVaultInstance.fetchPaymentMethods(
+				{ defaultFirst: true },
+				(fetchPaymentMethodError, paymentMethods) => {
+					if (fetchPaymentMethodError) {
+						console.error(fetchPaymentMethodError);
 					}
-				);
+					this.storedPaymentMethods = paymentMethods || [];
+					// if the user has storedPayment methods then set the selectedCard
+					// to the first one in the list of storedCards
+					if (this.storedPaymentMethods.length > 0) {
+						this.selectedCard = 0;
+					}
+					this.setUpdating(false);
+				}
+			);
+		},
+		// TODO: Look into enabling this feature at the account level
+		// deleteStoredCard(paymentMethod) {
+		// 	// The function exists but currently returns an error when attempting to use
+		// 	// console.log(this.btVaultInstance.deletePaymentMethod);
+		// 	const paymentMethodNonce = _get(paymentMethod, 'nonce');
+		// 	if (paymentMethodNonce) {
+		// 		this.btVaultInstance.deletePaymentMethod(paymentMethodNonce, data => {
+		// 			console.log(data);
+		// 			this.fetchStoredCards();
+		// 		});
+		// 	}
+		// },
+		// TODO: Deprecate once we have direct access through VaultManager
+		matchCardForDeletion(paymentMethod) {
+			// exit if not kiva stored payment methods to match
+			if (!this.kivaStoredPaymentMethods.length) {
+				return false;
+			}
+			// get bt payment method details
+			const paymentMethodDetails = _get(paymentMethod, 'details');
+			const { cardType, expirationYear, lastFour } = paymentMethodDetails;
+			// match selected card for deletion against kiva payment method call
+			const targetCard = _filter(this.kivaStoredPaymentMethods, kpm => {
+				return kpm.cardType === cardType
+				&& kpm.expirationDate.indexOf(expirationYear) !== -1
+				&& kpm.last4 === lastFour;
+			});
+			// execute deletion
+			if (this.kivaStoredPaymentMethods.length) {
+				this.deleteBraintreeCard(targetCard[0]);
+			} else {
+				return false;
+			}
+		},
+		deleteBraintreeCard(targetCard) {
+			if (targetCard.token) {
+				this.apollo.mutate({
+					mutation: deleteBraintreeCard,
+					variables: {
+						token: targetCard.token
+					}
+				}).then(({ data }) => {
+					if (data.errors) {
+						console.error(data.errors);
+						const errorCode = _get(data, 'errors[0].code');
+						const errorMessage = _get(data, 'errors[0].message');
+						Raven.captureException(errorCode, {
+							tags: {
+								bt_stage: 'btDeleteMyCreditCardError',
+								bt_delete_card_error: errorMessage
+							}
+						});
+					}
+					// refetch stored cards from BT Vault
+					this.fetchStoredCards();
+				});
+			}
+		},
+		fetchKivaStoredCards() {
+			this.apollo.query({ query: myStoredCards }).then(({ data }) => {
+				console.log(data);
+				this.kivaStoredPaymentMethods = _get(data, 'my.creditCardVault.creditCards');
 			});
 		},
 		initializeDataCollector(clientInstance) {

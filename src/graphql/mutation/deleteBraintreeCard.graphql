@@ -1,0 +1,7 @@
+mutation deleteBraintreeCard($token: ID!) {
+  my {
+	  creditCardVault {
+		  deleteCreditCard(token: $token)
+	  }
+  }
+}
