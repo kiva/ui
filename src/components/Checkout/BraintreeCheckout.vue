@@ -9,7 +9,7 @@
 			<div class="row small-collapse braintree-form-row">
 				<div
 					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
-					class="small-12 columns"
+					class="small-12 columns braintree-form-row-inner"
 				>
 					<label
 						class="saved-payment-radio-label"
@@ -31,7 +31,9 @@
 						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
 					<label class="delete-card-item" :for="`delete-card-${index}`">
-						<button class="delete-card-button" @click="matchCardForDeletion(paymentMethod)">X</button>
+						<button class="delete-card-button" @click="showDeleteCardPopup(paymentMethod)">
+							<kv-icon name="small-x" />
+						</button>
 					</label>
 				</div>
 				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
@@ -146,6 +148,41 @@
 				</div>
 			</div>
 		</form>
+
+		<kv-lightbox
+			class="delete-card-lightbox"
+			:no-padding-bottom="true"
+			:visible="deleteLbVisible"
+			@lightbox-closed="hideDeleteCardPopup"
+		>
+			<div class="delete-popup-icon-holder">
+				<kv-icon name="notice" />
+			</div>
+			<div class="delete-popup-content">
+				<!-- <h2>Are you sure?</h2>
+				<p>You will not be able to undo this action.</p> -->
+				<h3>
+					Are you sure you want to<br>remove this saved card?
+				</h3>
+				<slot name="controls">
+					<kv-button
+						value="Delete card"
+						id="braintree-delete-card"
+						class="button smallest"
+						@click.prevent.native="matchCardForDeletion"
+					>
+						Delete card
+						<span v-if="targetedCardForDeletion !== null">
+							...{{ targetedCardForDeletion.details.lastFour }}
+						</span>
+					</kv-button>
+					<br>
+					<a href="#" title="Cancel" @click.prevent="hideDeleteCardPopup">
+						Cancel
+					</a>
+				</slot>
+			</div>
+		</kv-lightbox>
 	</div>
 </template>
 
@@ -163,11 +200,13 @@ import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndC
 import braintreeConfig from '@/graphql/query/checkout/braintreeConfig.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		KvButton,
-		KvIcon
+		KvIcon,
+		KvLightbox,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -198,7 +237,9 @@ export default {
 			storedPaymentMethods: [],
 			kivaStoredPaymentMethods: [],
 			selectedCard: 'newCard',
-			selectedCardType: null
+			selectedCardType: null,
+			targetedCardForDeletion: null,
+			deleteLbVisible: false,
 		};
 	},
 	apollo: {
@@ -446,9 +487,10 @@ export default {
 					this.storedPaymentMethods = paymentMethods || [];
 					// if the user has storedPayment methods then set the selectedCard
 					// to the first one in the list of storedCards
-					if (this.storedPaymentMethods.length > 0) {
-						this.selectedCard = 0;
-					}
+					this.selectedCard = this.storedPaymentMethods.length > 0 ? 0 : 'newCard';
+					// if (this.storedPaymentMethods.length > 0) {
+					// 	this.selectedCard = 0;
+					// }
 					this.setUpdating(false);
 				}
 			);
@@ -462,17 +504,19 @@ export default {
 		// 		this.btVaultInstance.deletePaymentMethod(paymentMethodNonce, data => {
 		// 			console.log(data);
 		// 			this.fetchStoredCards();
+		//			// clean up target data
+		//			this.targetedCardForDeletion = null;
 		// 		});
 		// 	}
 		// },
 		// TODO: Deprecate once we have direct access through VaultManager
-		matchCardForDeletion(paymentMethod) {
+		matchCardForDeletion() {
 			// exit if not kiva stored payment methods to match
-			if (!this.kivaStoredPaymentMethods.length) {
+			if (!this.kivaStoredPaymentMethods.length || !this.targetedCardForDeletion) {
 				return false;
 			}
 			// get bt payment method details
-			const paymentMethodDetails = _get(paymentMethod, 'details');
+			const paymentMethodDetails = _get(this.targetedCardForDeletion, 'details');
 			const { cardType, expirationYear, lastFour } = paymentMethodDetails;
 			// match selected card for deletion against kiva payment method call
 			const targetCard = _filter(this.kivaStoredPaymentMethods, kpm => {
@@ -508,14 +552,25 @@ export default {
 					}
 					// refetch stored cards from BT Vault
 					this.fetchStoredCards();
+					// close pop up
+					this.hideDeleteCardPopup();
+					// clean up target data
+					this.targetedCardForDeletion = null;
 				});
 			}
 		},
 		fetchKivaStoredCards() {
 			this.apollo.query({ query: myStoredCards }).then(({ data }) => {
-				console.log(data);
 				this.kivaStoredPaymentMethods = _get(data, 'my.creditCardVault.creditCards');
 			});
+		},
+		showDeleteCardPopup(paymentMethod) {
+			this.targetedCardForDeletion = paymentMethod;
+			this.deleteLbVisible = true;
+		},
+		hideDeleteCardPopup() {
+			this.targetedCardForDeletion = null;
+			this.deleteLbVisible = false;
 		},
 		initializeDataCollector(clientInstance) {
 			braintree.dataCollector.create({
@@ -702,6 +757,11 @@ $error-red: #fdeceb;
 
 		.braintree-form-row {
 			margin: 0 0 1.5rem;
+
+			.braintree-form-row-inner {
+				display: flex;
+				justify-content: space-between;
+			}
 		}
 
 		label {
@@ -813,6 +873,16 @@ $error-red: #fdeceb;
 			margin: 0 1rem;
 		}
 
+		.delete-card-button {
+			padding-top: 0.5rem;
+
+			.icon {
+				width: 1.25rem;
+				height: 1.25rem;
+				fill: $kiva-stroke-gray;
+			}
+		}
+
 		.additional-side-padding {
 			padding: 0 1rem;
 		}
@@ -830,6 +900,34 @@ $error-red: #fdeceb;
 				position: relative;
 				margin-right: rem-calc(8);
 			}
+		}
+	}
+
+	.delete-card-lightbox {
+		display: flex;
+		align-items: center;
+
+		.delete-popup-content {
+			padding-bottom: 2rem;
+
+			h3 {
+				line-height: 1.5rem;
+				padding-bottom: 1rem;
+			}
+		}
+
+		.delete-popup-icon-holder {
+			// eslint-disable-next-line
+			.icon-notice {
+				width: 2.125rem;
+				height: 2.125rem;
+			}
+		}
+
+		a {
+			font-size: 1.2rem;
+			text-decoration: underline;
+			font-weight: 400;
 		}
 	}
 }
