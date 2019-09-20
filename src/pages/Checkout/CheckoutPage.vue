@@ -42,13 +42,15 @@
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
-								<kiva-credit-payment
-									v-if="showKivaCreditButton"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-									class=" checkout-button"
-									id="kiva-credit-payment-button"
-								/>
+								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
+									<input type="hidden" name="js_loaded" value="false">
+									<kiva-credit-payment
+										@refreshtotals="refreshTotals"
+										@updating-totals="setUpdatingTotals"
+										class=" checkout-button"
+										id="kiva-credit-payment-button"
+									/>
+								</form>
 
 								<payment-wrapper
 									v-else
