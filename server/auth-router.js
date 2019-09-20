@@ -61,16 +61,20 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
+		const options = {
+			audience: config.auth0.apiAudience,
+			scope: config.auth0.scope,
+		};
+		if (req.query.force === 'true') {
+			options.prompt = 'login';
+		}
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
 		}
 		console.log(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
-		next();
-	}, passport.authenticate('auth0', {
-		audience: config.auth0.apiAudience,
-		scope: config.auth0.scope,
-	}));
+		passport.authenticate('auth0', options)(req, res, next);
+	});
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {

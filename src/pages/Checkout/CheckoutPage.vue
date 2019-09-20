@@ -66,7 +66,8 @@
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
 									title="Login to Continue Button"
-									@click.native="loginToContinue"
+									@click.prevent.native="loginToContinue"
+									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Login to Continue
 								</kv-button>
