@@ -222,7 +222,6 @@ export default {
 		return {
 			ensureBraintreeScript: null,
 			braintreeRendered: false,
-			loading: false,
 			clientToken: null,
 			storePaymentMethod: false,
 			btVaultActive: false,
@@ -283,8 +282,7 @@ export default {
 		};
 	},
 	mounted() {
-		// TODO: Create a loader instance inside the payment wrapper for use by paypal + braintree initialization
-		this.setUpdating(true);
+		this.setUpdatingPaymentWrapper(true);
 		this.getClientToken();
 	},
 	watch: {
@@ -305,7 +303,7 @@ export default {
 				}
 			}).then(response => {
 				if (response.errors) {
-					this.setUpdating(false);
+					this.setUpdatingPaymentWrapper(false);
 					console.error(response.errors);
 					const errorCode = _get(response, 'errors[0].code');
 					const errorMessage = _get(response, 'errors[0].message');
@@ -330,7 +328,6 @@ export default {
 			}, 100);
 		},
 		renderBraintreeForm() {
-			// this.setUpdating(true);
 			// clear ensureBraintree interval
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
@@ -359,7 +356,7 @@ export default {
 				if (this.btVaultActive) {
 					this.initializeBTVault();
 				} else {
-					this.setUpdating(false);
+					this.setUpdatingPaymentWrapper(false);
 				}
 
 				// If btDataCollectorActive flag is true, initialize DataCollector
@@ -477,7 +474,7 @@ export default {
 			});
 		},
 		fetchStoredCards() {
-			this.setUpdating(true);
+			this.setUpdatingPaymentWrapper(true);
 			this.btVaultInstance.fetchPaymentMethods(
 				{ defaultFirst: true },
 				(fetchPaymentMethodError, paymentMethods) => {
@@ -488,10 +485,7 @@ export default {
 					// if the user has storedPayment methods then set the selectedCard
 					// to the first one in the list of storedCards
 					this.selectedCard = this.storedPaymentMethods.length > 0 ? 0 : 'newCard';
-					// if (this.storedPaymentMethods.length > 0) {
-					// 	this.selectedCard = 0;
-					// }
-					this.setUpdating(false);
+					this.setUpdatingPaymentWrapper(false);
 				}
 			);
 		},
@@ -592,10 +586,10 @@ export default {
 			});
 		},
 		checkoutWithStoredCard() {
+			this.setUpdating(true);
 			this.storePaymentMethod = false;
 			this.doBraintreeCheckout(this.storedPaymentMethods[this.selectedCard].nonce);
 			this.$kvTrackEvent('basket', 'Braintree Stored Payment', 'Button Click');
-			this.setUpdating(true);
 		},
 		setCardType(cardType) {
 			if (cardType === 'American Express') {
@@ -727,8 +721,10 @@ export default {
 			}
 		},
 		setUpdating(state) {
-			this.loading = state;
 			this.$emit('updating-totals', state);
+		},
+		setUpdatingPaymentWrapper(state) {
+			this.$emit('updating-payment-wrapper', state);
 		}
 	}
 };

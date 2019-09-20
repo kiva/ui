@@ -56,6 +56,7 @@ export default {
 	},
 	methods: {
 		initializePaypal() {
+			this.setUpdatingPaymentWrapper(true);
 			// ensure paypal is loaded before calling
 			this.ensurePaypalScript = window.setInterval(() => {
 				if (typeof paypal !== 'undefined' && !this.paypalRendered) {
@@ -248,10 +249,15 @@ export default {
 				},
 				'#paypal-button'
 			);
+			// clear loader
+			this.setUpdatingPaymentWrapper(false);
 		},
 		setUpdating(state) {
 			this.loading = state;
 			this.$emit('updating-totals', state);
+		},
+		setUpdatingPaymentWrapper(state) {
+			this.$emit('updating-payment-wrapper', state);
 		}
 	}
 };
@@ -263,6 +269,7 @@ export default {
 .paypal-holder {
 	display: block;
 	text-align: center;
+	min-height: rem-calc(55);
 
 	@include breakpoint(medium) {
 		text-align: right;
