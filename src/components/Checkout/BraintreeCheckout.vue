@@ -30,11 +30,15 @@
 						<!-- Passing in the last 4 digits of the stored card -->
 						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
-					<label class="delete-card-item" :for="`delete-card-${index}`">
-						<button class="delete-card-button" @click="showDeleteCardPopup(paymentMethod)">
+					<span class="delete-card-item">
+						<button
+							:id="`delete-card-${index}`"
+							class="delete-card-button"
+							@click="showDeleteCardPopup(paymentMethod)"
+						>
 							<kv-icon name="small-x" />
 						</button>
-					</label>
+					</span>
 				</div>
 				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
 				<div
@@ -159,8 +163,6 @@
 				<kv-icon name="notice" />
 			</div>
 			<div class="delete-popup-content">
-				<!-- <h2>Are you sure?</h2>
-				<p>You will not be able to undo this action.</p> -->
 				<h3>
 					Are you sure you want to<br>remove this saved card?
 				</h3>
@@ -870,7 +872,7 @@ $error-red: #fdeceb;
 		}
 
 		.delete-card-button {
-			padding-top: 0.5rem;
+			padding-top: 0.7rem;
 
 			.icon {
 				width: 1.25rem;
