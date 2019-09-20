@@ -9,7 +9,7 @@
 			<div class="row small-collapse braintree-form-row">
 				<div
 					v-for="(paymentMethod, index) in storedPaymentMethods" :key="index"
-					class="small-12 columns"
+					class="small-12 columns braintree-form-row-inner"
 				>
 					<label
 						class="saved-payment-radio-label"
@@ -30,6 +30,15 @@
 						<!-- Passing in the last 4 digits of the stored card -->
 						<span class="card-last-four-digits">...{{ paymentMethod.details.lastFour }}</span>
 					</label>
+					<span class="delete-card-item">
+						<button
+							:id="`delete-card-${index}`"
+							class="delete-card-button"
+							@click="showDeleteCardPopup(paymentMethod)"
+						>
+							<kv-icon name="small-x" />
+						</button>
+					</span>
 				</div>
 				<!-- Only show this div if the user has savedPaymentMethods, otherwise it has not context -->
 				<div
@@ -143,25 +152,63 @@
 				</div>
 			</div>
 		</form>
+
+		<kv-lightbox
+			class="delete-card-lightbox"
+			:no-padding-bottom="true"
+			:visible="deleteLbVisible"
+			@lightbox-closed="hideDeleteCardPopup"
+		>
+			<div class="delete-popup-icon-holder">
+				<kv-icon name="notice" />
+			</div>
+			<div class="delete-popup-content">
+				<h3>
+					Are you sure you want to<br>remove this saved card?
+				</h3>
+				<slot name="controls">
+					<kv-button
+						value="Delete card"
+						id="braintree-delete-card"
+						class="button smallest"
+						@click.prevent.native="matchCardForDeletion"
+					>
+						Delete card
+						<span v-if="targetedCardForDeletion !== null">
+							...{{ targetedCardForDeletion.details.lastFour }}
+						</span>
+					</kv-button>
+					<br>
+					<a href="#" title="Cancel" @click.prevent="hideDeleteCardPopup">
+						Cancel
+					</a>
+				</slot>
+			</div>
+		</kv-lightbox>
 	</div>
 </template>
 
 <script>
 /* global braintree */
 import _get from 'lodash/get';
+import _filter from 'lodash/filter';
 import numeral from 'numeral';
 import Raven from 'raven-js';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
+import myStoredCards from '@/graphql/query/myStoredCards.graphql';
+import deleteBraintreeCard from '@/graphql/mutation/deleteBraintreeCard.graphql';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeConfig from '@/graphql/query/checkout/braintreeConfig.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		KvButton,
-		KvIcon
+		KvIcon,
+		KvLightbox,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -177,10 +224,10 @@ export default {
 		return {
 			ensureBraintreeScript: null,
 			braintreeRendered: false,
-			loading: false,
 			clientToken: null,
 			storePaymentMethod: false,
 			btVaultActive: false,
+			btVaultInstance: () => {},
 			btDataCollectorActive: false,
 			dataCollectorDeviceData: '',
 			kvCardNumberError: '',
@@ -189,9 +236,11 @@ export default {
 			kvCVVError: '',
 			kvPostalCodeError: '',
 			storedPaymentMethods: [],
-			paymentMethods: {},
+			kivaStoredPaymentMethods: [],
 			selectedCard: 'newCard',
-			selectedCardType: null
+			selectedCardType: null,
+			targetedCardForDeletion: null,
+			deleteLbVisible: false,
 		};
 	},
 	apollo: {
@@ -235,8 +284,7 @@ export default {
 		};
 	},
 	mounted() {
-		// TODO: Create a loader instance inside the payment wrapper for use by paypal + braintree initialization
-		this.setUpdating(true);
+		this.setUpdatingPaymentWrapper(true);
 		this.getClientToken();
 	},
 	watch: {
@@ -257,7 +305,7 @@ export default {
 				}
 			}).then(response => {
 				if (response.errors) {
-					this.setUpdating(false);
+					this.setUpdatingPaymentWrapper(false);
 					console.error(response.errors);
 					const errorCode = _get(response, 'errors[0].code');
 					const errorMessage = _get(response, 'errors[0].message');
@@ -282,7 +330,6 @@ export default {
 			}, 100);
 		},
 		renderBraintreeForm() {
-			// this.setUpdating(true);
 			// clear ensureBraintree interval
 			window.clearInterval(this.ensureBraintreeScript);
 			// signify we've already rendered
@@ -311,7 +358,7 @@ export default {
 				if (this.btVaultActive) {
 					this.initializeBTVault();
 				} else {
-					this.setUpdating(false);
+					this.setUpdatingPaymentWrapper(false);
 				}
 
 				// If btDataCollectorActive flag is true, initialize DataCollector
@@ -410,11 +457,10 @@ export default {
 			});
 		},
 		initializeBTVault() {
-			let vaultInstance = null;
 			braintree.vaultManager.create({
 				authorization: this.clientToken
 			}, (vaultError, btVaultInstance) => {
-				vaultInstance = btVaultInstance;
+				this.btVaultInstance = btVaultInstance;
 				if (vaultError) {
 					console.error(vaultError);
 					Raven.captureException(vaultError.code, {
@@ -423,25 +469,104 @@ export default {
 							bt_client_create_error: vaultError.message
 						}
 					});
-					return;
+					return false;
 				}
-
-				vaultInstance.fetchPaymentMethods(
-					{ defaultFirst: true },
-					(fetchPaymentMethodError, paymentMethods) => {
-						if (fetchPaymentMethodError) {
-							console.error(fetchPaymentMethodError);
-						}
-						this.storedPaymentMethods = paymentMethods || [];
-						// if the user has storedPayment methods then set the selectedCard
-						// to the first one in the list of storedCards
-						if (this.storedPaymentMethods.length > 0) {
-							this.selectedCard = 0;
-						}
-						this.setUpdating(false);
-					}
-				);
+				this.fetchStoredCards();
+				this.fetchKivaStoredCards();
 			});
+		},
+		fetchStoredCards() {
+			this.setUpdatingPaymentWrapper(true);
+			this.btVaultInstance.fetchPaymentMethods(
+				{ defaultFirst: true },
+				(fetchPaymentMethodError, paymentMethods) => {
+					if (fetchPaymentMethodError) {
+						console.error(fetchPaymentMethodError);
+					}
+					this.storedPaymentMethods = paymentMethods || [];
+					// if the user has storedPayment methods then set the selectedCard
+					// to the first one in the list of storedCards
+					this.selectedCard = this.storedPaymentMethods.length > 0 ? 0 : 'newCard';
+					this.setUpdatingPaymentWrapper(false);
+				}
+			);
+		},
+		// TODO: Look into enabling this feature at the account level
+		// deleteStoredCard(paymentMethod) {
+		// 	// The function exists but currently returns an error when attempting to use
+		// 	// console.log(this.btVaultInstance.deletePaymentMethod);
+		// 	const paymentMethodNonce = _get(paymentMethod, 'nonce');
+		// 	if (paymentMethodNonce) {
+		// 		this.btVaultInstance.deletePaymentMethod(paymentMethodNonce, data => {
+		// 			console.log(data);
+		// 			this.fetchStoredCards();
+		//			// clean up target data
+		//			this.targetedCardForDeletion = null;
+		// 		});
+		// 	}
+		// },
+		// TODO: Deprecate once we have direct access through VaultManager
+		matchCardForDeletion() {
+			// exit if not kiva stored payment methods to match
+			if (!this.kivaStoredPaymentMethods.length || !this.targetedCardForDeletion) {
+				return false;
+			}
+			// get bt payment method details
+			const paymentMethodDetails = _get(this.targetedCardForDeletion, 'details');
+			const { cardType, expirationYear, lastFour } = paymentMethodDetails;
+			// match selected card for deletion against kiva payment method call
+			const targetCard = _filter(this.kivaStoredPaymentMethods, kpm => {
+				return kpm.cardType === cardType
+				&& kpm.expirationDate.indexOf(expirationYear) !== -1
+				&& kpm.last4 === lastFour;
+			});
+			// execute deletion
+			if (this.kivaStoredPaymentMethods.length) {
+				this.deleteBraintreeCard(targetCard[0]);
+			} else {
+				return false;
+			}
+		},
+		deleteBraintreeCard(targetCard) {
+			if (targetCard.token) {
+				this.apollo.mutate({
+					mutation: deleteBraintreeCard,
+					variables: {
+						token: targetCard.token
+					}
+				}).then(({ data }) => {
+					if (data.errors) {
+						console.error(data.errors);
+						const errorCode = _get(data, 'errors[0].code');
+						const errorMessage = _get(data, 'errors[0].message');
+						Raven.captureException(errorCode, {
+							tags: {
+								bt_stage: 'btDeleteMyCreditCardError',
+								bt_delete_card_error: errorMessage
+							}
+						});
+					}
+					// refetch stored cards from BT Vault
+					this.fetchStoredCards();
+					// close pop up
+					this.hideDeleteCardPopup();
+					// clean up target data
+					this.targetedCardForDeletion = null;
+				});
+			}
+		},
+		fetchKivaStoredCards() {
+			this.apollo.query({ query: myStoredCards }).then(({ data }) => {
+				this.kivaStoredPaymentMethods = _get(data, 'my.creditCardVault.creditCards');
+			});
+		},
+		showDeleteCardPopup(paymentMethod) {
+			this.targetedCardForDeletion = paymentMethod;
+			this.deleteLbVisible = true;
+		},
+		hideDeleteCardPopup() {
+			this.targetedCardForDeletion = null;
+			this.deleteLbVisible = false;
 		},
 		initializeDataCollector(clientInstance) {
 			braintree.dataCollector.create({
@@ -463,10 +588,10 @@ export default {
 			});
 		},
 		checkoutWithStoredCard() {
+			this.setUpdating(true);
 			this.storePaymentMethod = false;
 			this.doBraintreeCheckout(this.storedPaymentMethods[this.selectedCard].nonce);
 			this.$kvTrackEvent('basket', 'Braintree Stored Payment', 'Button Click');
-			this.setUpdating(true);
 		},
 		setCardType(cardType) {
 			if (cardType === 'American Express') {
@@ -598,8 +723,10 @@ export default {
 			}
 		},
 		setUpdating(state) {
-			this.loading = state;
 			this.$emit('updating-totals', state);
+		},
+		setUpdatingPaymentWrapper(state) {
+			this.$emit('updating-payment-wrapper', state);
 		}
 	}
 };
@@ -628,6 +755,11 @@ $error-red: #fdeceb;
 
 		.braintree-form-row {
 			margin: 0 0 1.5rem;
+
+			.braintree-form-row-inner {
+				display: flex;
+				justify-content: space-between;
+			}
 		}
 
 		label {
@@ -739,6 +871,16 @@ $error-red: #fdeceb;
 			margin: 0 1rem;
 		}
 
+		.delete-card-button {
+			padding-top: 0.7rem;
+
+			.icon {
+				width: 1.25rem;
+				height: 1.25rem;
+				fill: $kiva-stroke-gray;
+			}
+		}
+
 		.additional-side-padding {
 			padding: 0 1rem;
 		}
@@ -756,6 +898,34 @@ $error-red: #fdeceb;
 				position: relative;
 				margin-right: rem-calc(8);
 			}
+		}
+	}
+
+	.delete-card-lightbox {
+		display: flex;
+		align-items: center;
+
+		.delete-popup-content {
+			padding-bottom: 2rem;
+
+			h3 {
+				line-height: 1.5rem;
+				padding-bottom: 1rem;
+			}
+		}
+
+		.delete-popup-icon-holder {
+			// eslint-disable-next-line
+			.icon-notice {
+				width: 2.125rem;
+				height: 2.125rem;
+			}
+		}
+
+		a {
+			font-size: 1.2rem;
+			text-decoration: underline;
+			font-weight: 400;
 		}
 	}
 }

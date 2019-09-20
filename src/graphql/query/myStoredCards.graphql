@@ -1,0 +1,14 @@
+query myStoredCards {
+	my {
+		creditCardVault {
+			creditCards {
+				token
+				last4
+				expirationDate
+				default
+				cardType
+				imageUrl
+			}
+		}
+	}
+}
