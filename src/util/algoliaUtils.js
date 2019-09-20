@@ -38,11 +38,12 @@ export function getDefaultSortIndices(algoliaGroup) {
 export function setSortByEnv(selectedRouteSort) {
 	let envName;
 	if (typeof window !== 'undefined') {
-		if (window.location.host.includes('dev')) {
+		const { host } = window.location;
+		if (host.includes('dev') || host.includes('localhost')) {
 			envName = 'dev';
-		} else if (window.location.host.includes('qa')) {
+		} else if (host.includes('qa')) {
 			envName = 'qa';
-		} else if (window.location.host.includes('stage')) {
+		} else if (host.includes('stage')) {
 			envName = 'stage';
 		} else {
 			envName = 'prod';
