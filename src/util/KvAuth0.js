@@ -1,4 +1,6 @@
+import { differenceInMilliseconds } from 'date-fns';
 import _get from 'lodash/get';
+import Raven from 'raven-js';
 import cookieStore from './cookieStore';
 
 // These symbols are unique, and therefore are private to this scope.
@@ -55,7 +57,8 @@ export default class KvAuth0 {
 
 	// Private method to handle popup authorization which can be called
 	// recursively to deal with authorization errors
-	[popupAuthorize](webAuth, options, resolve, reject) {
+	[popupAuthorize](webAuth, options, resolve) {
+		const startTime = new Date();
 		this[popupWindow] = webAuth.popup.authorize({
 			popupOptions: {
 				width: 480,
@@ -64,16 +67,22 @@ export default class KvAuth0 {
 			...options
 		}, (err, result) => {
 			if (err) {
-				// Handle unauthorized error by reattemoting authentication with prompted login
+				// Handle unauthorized error by reattempting authentication with prompted login
 				if (err.code === 'unauthorized') {
 					return this[popupAuthorize](webAuth, {
 						...options,
 						prompt: 'login',
-					}, resolve, reject);
+					}, resolve);
 				}
-				// Otherwise, fail authentication
-				this[setAuthData]();
-				reject(err);
+				// Otherwise log meaningful errors (ignores user closed popup error which does not have a code)
+				if (err.code || err.name) {
+					console.error(err);
+					Raven.captureException(err);
+				} else if (differenceInMilliseconds(new Date(), startTime) < 100) {
+					Raven.captureException(new Error('Login window closed quickly. Popups may be blocked.'));
+				}
+				// Popup login failed for some reason, so resolve without a result
+				resolve();
 			} else {
 				// Successful authentication
 				cookieStore.set('kvls', 'i', { path: '/', secure: true });
@@ -156,8 +165,8 @@ export default class KvAuth0 {
 		if (this[loginPromise]) return this[loginPromise];
 
 		// Open up popup window to login
-		this[loginPromise] = this.webAuth.then(webAuth => new Promise((resolve, reject) => {
-			this[popupAuthorize](webAuth, authorizeOptions, resolve, reject);
+		this[loginPromise] = this.webAuth.then(webAuth => new Promise(resolve => {
+			this[popupAuthorize](webAuth, authorizeOptions, resolve);
 		}));
 
 		// Once the promise completes, stop tracking it

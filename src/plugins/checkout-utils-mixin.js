@@ -1,4 +1,5 @@
 import _get from 'lodash/get';
+import Raven from 'raven-js';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import cookieStore from '@/util/cookieStore';
@@ -31,6 +32,7 @@ export default {
 					}
 				}).catch(errorResponse => {
 					console.error(errorResponse);
+					Raven.captureException(errorResponse);
 					reject(errorResponse);
 				});
 			});
@@ -56,6 +58,7 @@ export default {
 					resolve(data);
 				}).catch(errorResponse => {
 					console.error(errorResponse);
+					Raven.captureException(errorResponse);
 					reject(errorResponse);
 				});
 			});
@@ -86,6 +89,9 @@ export default {
 				if (error === 'api.authenticationRequired' && ignoreAuth) {
 					return;
 				}
+
+				// Log validation errors
+				Raven.captureException(`${error}:${value}`);
 
 				// Handle multiple errors
 				if (errorMessages !== '') {

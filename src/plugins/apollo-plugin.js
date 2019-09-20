@@ -32,8 +32,8 @@ export default Vue => {
 							});
 							result.call(this, { data });
 						} catch (e) {
-							// if there's an error, skip reading from teh cache and just wait for the watch query
-							logReadQueryError(e);
+							// if there's an error, skip reading from the cache and just wait for the watch query
+							logReadQueryError(e, `ApolloMixin ${query.definitions[0].name.value}`);
 						}
 					}
 
