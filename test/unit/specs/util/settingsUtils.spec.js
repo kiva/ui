@@ -54,7 +54,7 @@ describe('settingsUtils.js', () => {
 
 		it('converts a string including digits into a 32bit integer', () => {
 			const simpleString = 'some string 12345';
-			expect(hashCode(simpleString)).toEqual(-472388848);
+			expect(hashCode(simpleString)).toEqual(472388848);
 		});
 
 		it('converts a complex string including digits into a 32bit integer', () => {

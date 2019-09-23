@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import { isWithinRange } from 'date-fns';
 import _get from 'lodash/get';
 
@@ -66,6 +68,7 @@ export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
  *
  * @param {string} source
  */
+
 export function hashCode(source) {
 	let hash = 0;
 	// return 0 if empty or incorrect type
@@ -77,11 +80,9 @@ export function hashCode(source) {
 		// isolate character
 		const character = source.charCodeAt(i);
 		// original approach left shift
-		hash = ((hash << 5) - hash) + character; // eslint-disable-line no-bitwise
-		// replicated without lint issues
-		// hash = ((hash * (2 ** 5)) - hash) + character;
+		hash = ((hash << 5) - hash) + character;
 		// Convert to 32bit integer
 		hash &= hash; // eslint-disable-line no-bitwise
 	}
-	return hash;
+	return Math.abs(hash);
 }

@@ -128,7 +128,6 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 		// > value should be and ACTIVE experiment id and the verison you want to assign separated by a period '.'
 		.then(() => {
 			const routeQuery = _get(route, 'query.setuiab');
-			console.log(typeof encodeURIComponent);
 			if (routeQuery !== undefined) {
 				// TODO: Check for experiment setting + enable = true from server before running mutation
 				const forcedExp = routeQuery.split('.');

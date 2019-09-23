@@ -1,8 +1,5 @@
 import _isUndefined from 'lodash/isUndefined';
 import _filter from 'lodash/filter';
-// import _find from 'lodash/find';
-// import _fromPairs from 'lodash/fromPairs';
-// import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
@@ -181,6 +178,7 @@ export default () => {
 							hash: settingHash,
 						};
 
+						// apply updates to assignments object
 						assignments[id] = currentAssignment;
 
 						// save the new assignments to the experiment cookie
@@ -210,7 +208,8 @@ export default () => {
 							id,
 							hash: updatedVersion.hash || 0
 						};
-						// update our assignments object
+
+						// apply updates to assignments object
 						assignments[id] = updatedVersion;
 
 						// save the new assignments to the experiment cookie
