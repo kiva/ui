@@ -1,36 +1,57 @@
 import _isUndefined from 'lodash/isUndefined';
 import _filter from 'lodash/filter';
-import _fromPairs from 'lodash/fromPairs';
+// import _find from 'lodash/find';
+// import _fromPairs from 'lodash/fromPairs';
 // import _get from 'lodash/get';
+import _map from 'lodash/map';
 import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
 import cookieStore from '@/util/cookieStore';
-import { readJSONSetting } from '@/util/settingsUtils';
+import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 
 /**
- * Parse the experiment cookie value into a plain object
+ * Parse the experiment cookie value into an object
+ *
+ * Accepts: pinned_filter:pinned_filter:-73648897|lend_filter_v2:x:186894633...
+ * Returns: { pinned_filter : { id: 'pinned_filter', version: 'pinned_filter', hash: -73648897 }, ... }
  *
  * @param {string} cookie
  * @returns {object}
  */
 function parseExpCookie(cookie) {
 	if (!cookie) return {};
+
 	const expStrings = cookie.split('|');
-	const pairs = expStrings.map(exp => exp.split(':'));
-	// filter out pairs that have a non-truthy value (index 1)
-	const filteredPairs = _filter(pairs, 1);
-	return _fromPairs(filteredPairs);
+	const assignments = {};
+	expStrings.forEach(exp => {
+		const expValues = exp.split(':');
+		if (typeof expValues[0] === 'string') {
+			assignments[expValues[0]] = {
+				id: expValues[0],
+				version: expValues[1],
+				hash: parseInt(expValues[2], 10),
+			};
+		}
+	});
+
+	return assignments;
 }
 
 /**
  * Serialize an object into a string for the experiment cookie value
  *
+ * Accepts: { pinned_filter : { id: 'pinned_filter', version: 'pinned_filter', hash: -73648897 }, ... }
+ * Returns: pinned_filter:pinned_filter:-73648897|lend_filter_v2:x:186894633...
+ *
  * @param {object} assignments
  * @returns {string}
  */
 function serializeExpCookie(assignments) {
-	const pairs = _toPairs(assignments);
-	const expStrings = pairs.map(pair => pair.join(':'));
+	if (!assignments) return '';
+
+	const expStrings = _map(assignments, exp => {
+		return `${exp.id}:${exp.version}:${exp.hash ? exp.hash : 'no-hash'}`;
+	});
 	// filter out strings that end with a ':', as they have no assignment
 	const filteredStrings = _filter(expStrings, s => s.slice(-1) !== ':');
 	return filteredStrings.join('|');
@@ -137,64 +158,69 @@ export default () => {
 			Query: {
 				experiment(_, { id }, context) {
 					// get the existing assigned version for this experiment id
-					let version = assignments[id];
+					let currentAssignment = assignments[id] || {};
 
 					// read the experiment data from the cache
 					const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
+					// get the hash for our current experiment setting
+					const settingHash = hashCode(JSON.stringify(experiment));
 
-					// assign an experiment version if it's currently undefined
-					if (experiment && _isUndefined(version)) {
+					// Add hash to exisitng cookie exps if it's missing
+					if (typeof currentAssignment.hash === 'undefined') {
+						currentAssignment.hash = settingHash;
+					}
+
+					// assign an experiment version if it's currently undefined or hashes don't match
+					if (experiment !== null
+						&& experiment.enabled
+						&& (_isUndefined(currentAssignment.version) || settingHash !== currentAssignment.hash)) {
 						// assign the version using the experiment data (undefined if experiment disabled)
-						assignments[id] = assignVersion(experiment || {});
+						currentAssignment = {
+							id,
+							version: assignVersion(experiment || {}),
+							hash: settingHash,
+						};
+
+						assignments[id] = currentAssignment;
 
 						// save the new assignments to the experiment cookie
 						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
-
-						// get the new assignment. return null if undefined so that apollo saves the value
-						version = _isUndefined(assignments[id]) ? null : assignments[id];
 					}
 
 					return {
 						id,
 						// if experiment exist & enabled = false return a null version
 						// > we don't want to render a disabled experiment even if a cookie version is present
-						version: (experiment === null || !experiment.enabled) ? null : version,
+						version: (experiment === null || !experiment.enabled) ? null : currentAssignment.version,
 						__typename: 'Experiment',
 					};
 				},
 			},
 			Mutation: {
-				updateExperimentVersion(_, { id, version }) { // , context
+				updateExperimentVersion(_, { id, version }) {
 					// start with previously assigned version for this experiment id
-					let updatedVersion = assignments[id];
-					// console.log(`previous version: ${updatedVersion}, new version: ${version}`);
-
-					// Do we really need to check this?
-					// > Commented out lines below would incorporate and experiment check too
-					// > We could read the experiment data from the cache and compare version to values within
-					// const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
-					// console.log(experiment);
+					let updatedVersion = assignments[id] || {};
 
 					// re-assign experiment version
-					// if (experiment && previousVersion !== version) {
-					if (updatedVersion !== version) {
+					if (updatedVersion.version !== version) {
 						// assign the passed version
-						// > this must be a valid version from the exp setting
-						assignments[id] = version;
+						updatedVersion = {
+							// get the new assignment
+							version,
+							id,
+							hash: updatedVersion.hash || 0
+						};
+						// update our assignments object
+						assignments[id] = updatedVersion;
 
 						// save the new assignments to the experiment cookie
 						cookieStore.set('uiab', serializeExpCookie(assignments), { path: '/' });
-
-						// get the new assignment. return null if undefined so that apollo saves the value
-						updatedVersion = _isUndefined(assignments[id]) ? null : assignments[id];
 					}
 
 					return {
 						id,
-						// if experiment exist & enabled = false return a null version
-						// > we don't want to render a disabled experiment even if a cookie version is present
-						// version: (experiment === null || !experiment.enabled) ? null : updatedVersion,
-						version: updatedVersion,
+						// return null if undefined so that apollo saves the value
+						version: _isUndefined(version) ? null : version,
 						__typename: 'Experiment',
 					};
 				},
