@@ -95,11 +95,11 @@
 </template>
 
 <script>
+import _forEach from 'lodash/forEach';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
-import _forEach from 'lodash/forEach';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {

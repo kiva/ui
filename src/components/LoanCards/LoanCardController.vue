@@ -50,6 +50,12 @@
 </template>
 
 <script>
+import {
+	differenceInMinutes,
+	differenceInHours,
+	differenceInDays
+} from 'date-fns';
+import _forEach from 'lodash/forEach';
 import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
 import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
@@ -59,12 +65,6 @@ import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import HoverLoanCard from '@/components/LoanCards/HoverLoanCard/HoverLoanCard';
 import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
-import {
-	differenceInMinutes,
-	differenceInHours,
-	differenceInDays
-} from 'date-fns';
-import _forEach from 'lodash/forEach';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
 export default {

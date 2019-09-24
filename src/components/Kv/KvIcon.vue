@@ -187,7 +187,8 @@ export default {
 	fill: #C31B00;
 }
 
-.icon-checkbox-bad {
+.icon-checkbox-bad,
+.icon-notice {
 	fill: $kiva-accent-red;
 }
 

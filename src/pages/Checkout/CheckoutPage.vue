@@ -42,13 +42,15 @@
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
-								<kiva-credit-payment
-									v-if="showKivaCreditButton"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-									class=" checkout-button"
-									id="kiva-credit-payment-button"
-								/>
+								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
+									<input type="hidden" name="js_loaded" value="false">
+									<kiva-credit-payment
+										@refreshtotals="refreshTotals"
+										@updating-totals="setUpdatingTotals"
+										class=" checkout-button"
+										id="kiva-credit-payment-button"
+									/>
+								</form>
 
 								<payment-wrapper
 									v-else
@@ -66,7 +68,8 @@
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
 									title="Login to Continue Button"
-									@click.native="loginToContinue"
+									@click.prevent.native="loginToContinue"
+									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									Login to Continue
 								</kv-button>
@@ -400,19 +403,6 @@ export default {
 						this.setAuthStatus(_get(this.kvAuth0, 'user'));
 						return true;
 					})
-					.catch(err => {
-						// handle closed popup dialog with the following error signature
-						// {original: "User closed the popup window", code: null, description: null}
-						if (err && err.original === 'User closed the popup window') {
-							this.updatingTotals = false;
-						} else if (err && err.name === 'SyntaxError') {
-							// handle temporary error situation with popup by refreshing page
-							console.error(this.extractAuth0Error(err));
-							window.location = window.location; // eslint-disable-line
-						} else {
-							console.error(this.extractAuth0Error(err));
-						}
-					})
 					.finally(() => {
 						this.updatingTotals = false;
 					});
@@ -484,12 +474,6 @@ export default {
 		},
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
-		},
-		extractAuth0Error(errorObject) {
-			if (typeof errorObject.original === 'object') {
-				return `${errorObject.error}: ${errorObject.errorDescription}`;
-			}
-			return JSON.stringify(errorObject.original);
 		},
 	},
 	destroyed() {

@@ -20,9 +20,9 @@
 </template>
 
 <script>
+import numeral from 'numeral';
 import KvButton from '@/components/Kv/KvButton';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import numeral from 'numeral';
 
 export default {
 	components: {

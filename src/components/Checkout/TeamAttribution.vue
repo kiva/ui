@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 import _forEach from 'lodash/forEach';
 import _orderBy from 'lodash/orderBy';
 import numeral from 'numeral';
+import updateLoanReservationTeam from '@/graphql/mutation/updateLoanReservationTeam.graphql';
 
 export default {
 	props: {

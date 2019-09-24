@@ -14,6 +14,7 @@
 					:amount="amount"
 					@refreshtotals="$emit('refreshTotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@updating-payment-wrapper="setUpdatingPaymentWrapper"
 				/>
 			</div>
 			<div>
@@ -22,8 +23,14 @@
 					:amount="amount"
 					@refreshtotals="$emit('refreshTotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@updating-payment-wrapper="setUpdatingPaymentWrapper"
 				/>
 			</div>
+			<loading-overlay
+				v-show="updatingPaymentWrapper"
+				id="payment-updating-overlay"
+				class="updating-totals-overlay"
+			/>
 		</div>
 		<div class="attribution-text small-12 medium-7 large-6">
 			Thanks to PayPal powered by Braintree,
@@ -36,12 +43,14 @@
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 export default {
 	components: {
 		BraintreeCheckout,
 		PayPalExp,
-		KvPillToggle
+		KvPillToggle,
+		LoadingOverlay,
 	},
 	props: {
 		amount: {
@@ -65,7 +74,8 @@ export default {
 					key: 'pp',
 				},
 			],
-			selectedOption: 'bt'
+			selectedOption: 'bt',
+			updatingPaymentWrapper: false,
 		};
 	},
 	created() {
@@ -89,6 +99,9 @@ export default {
 			this.selectedOption = key;
 			this.$kvTrackEvent('basket', 'payment type toggled', key);
 		},
+		setUpdatingPaymentWrapper(state) {
+			this.updatingPaymentWrapper = state;
+		}
 	},
 };
 </script>
@@ -99,6 +112,7 @@ export default {
 $form-border-radius: rem-calc(3);
 
 .payment-holder {
+	position: relative;
 	display: inline-block;
 	white-space: nowrap;
 	text-align: center;
@@ -133,6 +147,29 @@ $form-border-radius: rem-calc(3);
 	.paypal-button {
 		text-align: center;
 		margin-top: rem-calc(25);
+	}
+
+	#payment-updating-overlay {
+		margin-top: 1rem;
+		z-index: 1000;
+		width: auto;
+		height: auto;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		top: 0;
+		background-color: rgba($white, 0.7);
+
+		.spinner-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: initial;
+			height: 100%;
+			top: auto;
+			left: auto;
+			transform: none;
+		}
 	}
 }
 
