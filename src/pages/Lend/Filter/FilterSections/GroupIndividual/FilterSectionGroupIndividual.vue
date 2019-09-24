@@ -1,26 +1,37 @@
 <template>
 	<div class="pill-toggle">
-		<ais-menu :attribute="'borrowerCount'">
+		<ais-numeric-menu
+			attribute="borrowerCount"
+			:items="aisMenuConfig"
+		>
 			<div slot-scope="{ items, refine }">
 				<group-toggle-wrapper
-					:transform-items="determineIfGroup"
 					:refine="refine"
 					:items="items"
 					:filter-menu-open="filterMenuOpen"
 				/>
 			</div>
-		</ais-menu>
+		</ais-numeric-menu>
 	</div>
 </template>
 
 <script>
-import { AisMenu } from 'vue-instantsearch';
+import { AisNumericMenu } from 'vue-instantsearch';
 import GroupToggleWrapper from '@/pages/Lend/Filter/FilterSections/GroupIndividual/GroupToggleWrapper';
 
 export default {
 	components: {
-		AisMenu,
+		AisNumericMenu,
 		GroupToggleWrapper,
+	},
+	data() {
+		return {
+			aisMenuConfig: [
+				{ label: 'All' },
+				{ label: 'Individual', end: 1 },
+				{ label: 'Group', start: 2, end: 50 }
+			]
+		};
 	},
 	props: {
 		title: {
@@ -36,13 +47,5 @@ export default {
 			default: true,
 		},
 	},
-	methods: {
-		determineIfGroup(borrowerCount) {
-			if (borrowerCount > 1) {
-				return 'Group';
-			}
-			return 'Individual';
-		}
-	}
 };
 </script>

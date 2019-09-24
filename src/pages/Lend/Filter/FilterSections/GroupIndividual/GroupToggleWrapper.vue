@@ -1,10 +1,24 @@
 <template>
 	<kv-pill-toggle
 		class="pill-toggle"
-		:options="isGroupOptions"
+		:options="items"
 		:selected="isGroupOptionSelected"
 		@pill-toggled="groupPillToggled"
 	/>
+
+	<!-- Based on the Algolia doc found here:
+	https://www.algolia.com/doc/api-reference/widgets/numeric-menu/vue/#examples
+	the following code should work. It does not... -->
+
+	<!-- <ul v-if="items.length">
+		<li
+			:v-for="item in items"
+			:key="item.value"
+			@click.prevent="refine(item.value)"
+		>
+			{{ item.label }}
+		</li>
+	</ul> -->
 </template>
 
 <script>
@@ -14,15 +28,6 @@ import KvPillToggle from '@/components/Kv/KvPillToggle';
 export default {
 	components: {
 		KvPillToggle,
-	},
-	data() {
-		return {
-			isGroupOptions: [
-				{ key: 'both', title: 'Both' },
-				{ key: 'individual', title: 'Individual' },
-				{ key: 'group', title: 'Group' }
-			],
-		};
 	},
 	props: {
 		refine: {
@@ -44,15 +49,15 @@ export default {
 			if (refinedOption.length) {
 				return refinedOption[0].value;
 			}
-			return 'both';
+			return 'All';
 		}
 	},
 	methods: {
-		groupPillToggled(key) {
-			if (key === 'both') {
+		groupPillToggled() {
+			if (this.item.label === 'All') {
 				this.refine('');
 			} else {
-				this.refine(key);
+				this.refine(this.item.label);
 			}
 		},
 	},
