@@ -50,7 +50,32 @@
 				&nbsp;
 			</div>
 		</div>
-		<div class="action-button-wrapper">
+		<div
+			v-if="showMgPromo && showDoubleArrowButton"
+			class="action-button-wrapper"
+		>
+			<kv-button
+				v-if="showMgPromo"
+				class="slideshow-action-button"
+				to="/monthlygood"
+				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
+			>
+				Sign up >>
+			</kv-button>
+			<kv-button
+				v-else
+				class="slideshow-action-button"
+				to="/lend-by-category"
+				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
+			>
+				Start lending >>
+			</kv-button>
+		</div>
+
+		<div
+			v-else
+			class="action-button-wrapper"
+		>
 			<kv-button
 				v-if="showMgPromo"
 				class="slideshow-action-button"
@@ -82,6 +107,7 @@ const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/'
 
 export default {
 	name: 'HeroSlideshow',
+	// I need to return the props.doubleArrowButtonExp like the following example is doing for mgPromoExp
 	serverCacheKey: props => {
 		return props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
 	},
@@ -97,6 +123,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		doubleArrowButtonExp: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	data() {
 		return {
@@ -106,6 +136,9 @@ export default {
 	computed: {
 		showMgPromo() {
 			return this.mgPromoExp.version === 'shown';
+		},
+		showDoubleArrowButton() {
+			return this.doubleArrowButtonExp.version === 'shown';
 		}
 	},
 	methods: {
