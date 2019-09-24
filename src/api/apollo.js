@@ -32,6 +32,9 @@ export default function createApolloClient({
 		},
 		// Use a simpler underlying cache for server renders
 		resultCaching: typeof window !== 'undefined',
+		// Block modifying cache results outside of normal operations
+		// see https://github.com/apollographql/apollo-client/pull/4543
+		freezeResults: true,
 	});
 
 	// initialize local state resolvers
@@ -55,7 +58,10 @@ export default function createApolloClient({
 			mutate: {
 				errorPolicy: 'all',
 			},
-		}
+		},
+		// Allow optimizations that are only possible because we have freezeResults=true
+		// see https://github.com/apollographql/apollo-client/pull/4543
+		assumeImmutableResults: true,
 	});
 
 	// set default local state
