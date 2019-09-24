@@ -37,17 +37,25 @@
 			maximum-label="Only 5 stars"
 			inbetween-label=" stars or more"
 		/>
+
+		<filter-section-group-individual
+			:filter-menu-open="filterMenuOpen"
+			class="filter-section"
+		/>
 	</filter-menu-section>
 </template>
 
 <script>
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 import RangeSliderWrapper from '@/pages/Lend/Filter/FilterSections/LoanDetails/RangeSliderWrapper';
+// eslint-disable-next-line max-len
+import FilterSectionGroupIndividual from '@/pages/Lend/Filter/FilterSections/GroupIndividual/FilterSectionGroupIndividual';
 
 export default {
 	components: {
 		FilterMenuSection,
 		RangeSliderWrapper,
+		FilterSectionGroupIndividual,
 	},
 };
 </script>

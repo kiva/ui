@@ -2,7 +2,7 @@
 	<div class="pill-toggle">
 		<ais-menu :attribute="'gender'">
 			<div slot-scope="{ items, refine }">
-				<pill-toggle-wrapper
+				<gender-toggle-wrapper
 					:refine="refine"
 					:items="items"
 					:filter-menu-open="filterMenuOpen"
@@ -14,12 +14,12 @@
 
 <script>
 import { AisMenu } from 'vue-instantsearch';
-import PillToggleWrapper from '@/pages/Lend/Filter/FilterSections/Gender/PillToggleWrapper';
+import GenderToggleWrapper from '@/pages/Lend/Filter/FilterSections/Gender/GenderToggleWrapper';
 
 export default {
 	components: {
 		AisMenu,
-		PillToggleWrapper,
+		GenderToggleWrapper,
 	},
 	props: {
 		title: {

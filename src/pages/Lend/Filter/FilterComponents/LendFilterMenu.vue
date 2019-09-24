@@ -25,7 +25,6 @@
 					</div>
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />
-				<filter-section-group-individual :filter-menu-open="filterMenuOpen" class="filter-section" />
 				<filter-section-sort
 					:default-sort-indices="defaultSortIndices"
 					class="filter-section"
@@ -85,7 +84,6 @@ import FilterSectionAttributes from '@/pages/Lend/Filter/FilterSections/FilterSe
 import FilterSectionTags from '@/pages/Lend/Filter/FilterSections/FilterSectionTags';
 import FilterSectionGender from '@/pages/Lend/Filter/FilterSections/Gender/FilterSectionGender';
 // eslint-disable-next-line max-len
-import filterSectionGroupIndividual from '@/pages/Lend/Filter/FilterSections/GroupIndividual/FilterSectionGroupIndividual';
 import FilterSectionLocationMulti from '@/pages/Lend/Filter/FilterSections/LocationMulti/FilterSectionLocationMulti';
 import FilterSectionLoanDetails from '@/pages/Lend/Filter/FilterSections/LoanDetails/FilterSectionLoanDetails';
 import FilterSectionSort from '@/pages/Lend/Filter/FilterSections/FilterSectionSort';
@@ -104,7 +102,6 @@ export default {
 		FilterSectionAttributes,
 		FilterSectionTags,
 		FilterSectionGender,
-		filterSectionGroupIndividual,
 		FilterSectionLocationMulti,
 		FilterSectionLoanDetails,
 		FilterSectionSort,

@@ -4,25 +4,34 @@
 			attribute="borrowerCount"
 			:items="aisMenuConfig"
 		>
-			<div slot-scope="{ items, refine }">
+			<!-- <div slot-scope="{ items, refine }">
 				<group-toggle-wrapper
 					:refine="refine"
 					:items="items"
-					:filter-menu-open="filterMenuOpen"
 				/>
-			</div>
+			</div> -->
+			<ul slot-scope="{ items, refine, createURL }">
+				<li :v-for="item in items">
+					<a :href="createURL(item.value)"
+						:key="item.value"
+						@click.prevent="refine(item.value)"
+					>
+						{{ item.label }}
+					</a>
+				</li>
+			</ul>
 		</ais-numeric-menu>
 	</div>
 </template>
 
 <script>
 import { AisNumericMenu } from 'vue-instantsearch';
-import GroupToggleWrapper from '@/pages/Lend/Filter/FilterSections/GroupIndividual/GroupToggleWrapper';
+// import GroupToggleWrapper from '@/pages/Lend/Filter/FilterSections/GroupIndividual/GroupToggleWrapper';
 
 export default {
 	components: {
 		AisNumericMenu,
-		GroupToggleWrapper,
+		// GroupToggleWrapper,
 	},
 	data() {
 		return {
@@ -39,10 +48,6 @@ export default {
 			default: 'group',
 		},
 		open: {
-			type: Boolean,
-			default: true,
-		},
-		filterMenuOpen: {
 			type: Boolean,
 			default: true,
 		},

@@ -1,16 +1,16 @@
 <template>
-	<kv-pill-toggle
+	<!-- <kv-pill-toggle
 		class="pill-toggle"
-		:options="items"
+		:options="items.label"
 		:selected="isGroupOptionSelected"
 		@pill-toggled="groupPillToggled"
-	/>
+	/> -->
 
 	<!-- Based on the Algolia doc found here:
 	https://www.algolia.com/doc/api-reference/widgets/numeric-menu/vue/#examples
 	the following code should work. It does not... -->
 
-	<!-- <ul v-if="items.length">
+	<ul>
 		<li
 			:v-for="item in items"
 			:key="item.value"
@@ -18,16 +18,16 @@
 		>
 			{{ item.label }}
 		</li>
-	</ul> -->
+	</ul>
 </template>
 
 <script>
-import _filter from 'lodash/filter';
-import KvPillToggle from '@/components/Kv/KvPillToggle';
+// import _filter from 'lodash/filter';
+// import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
 	components: {
-		KvPillToggle,
+		// KvPillToggle,
 	},
 	props: {
 		refine: {
@@ -38,29 +38,25 @@ export default {
 			type: Array,
 			required: true,
 		},
-		filterMenuOpen: {
-			type: Boolean,
-			default: false,
-		},
 	},
-	computed: {
-		isGroupOptionSelected() {
-			const refinedOption = _filter(this.items, { isRefined: true });
-			if (refinedOption.length) {
-				return refinedOption[0].value;
-			}
-			return 'All';
-		}
-	},
-	methods: {
-		groupPillToggled() {
-			if (this.item.label === 'All') {
-				this.refine('');
-			} else {
-				this.refine(this.item.label);
-			}
-		},
-	},
+	// computed: {
+	// 	isGroupOptionSelected() {
+	// 		const refinedOption = _filter(this.items, { isRefined: true });
+	// 		if (refinedOption.length) {
+	// 			return refinedOption[0].value;
+	// 		}
+	// 		return 'All';
+	// 	}
+	// },
+	// methods: {
+	// 	groupPillToggled() {
+	// 		if (this.item.label === 'All') {
+	// 			this.refine('');
+	// 		} else {
+	// 			this.refine(this.item.label);
+	// 		}
+	// 	},
+	// },
 };
 </script>
 
