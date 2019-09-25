@@ -11,6 +11,10 @@ const popupWindow = Symbol('popupWindow');
 const sessionPromise = Symbol('sessionPromise');
 const setAuthData = Symbol('setAuthData');
 
+function getErrorString(err) {
+	return `${err.error || err.code || err.name}: ${err.error_description || err.description}`;
+}
+
 // Class to handle interacting with auth0 in the browser
 export default class KvAuth0 {
 	constructor({
@@ -77,7 +81,9 @@ export default class KvAuth0 {
 				// Otherwise log meaningful errors (ignores user closed popup error which does not have a code)
 				if (err.code || err.name) {
 					console.error(err);
-					Raven.captureException(err);
+					Raven.captureMessage(getErrorString(err), {
+						tags: { auth_method: 'popup authorize' }
+					});
 				} else if (differenceInMilliseconds(new Date(), startTime) < 100) {
 					Raven.captureException(new Error('Login window closed quickly. Popups may be blocked.'));
 				}
@@ -133,6 +139,9 @@ export default class KvAuth0 {
 						resolve();
 					} else {
 						// Everything else, actually throw an error
+						Raven.captureMessage(getErrorString(err), {
+							tags: { auth_method: 'check session' }
+						});
 						reject(err);
 					}
 				} else {
