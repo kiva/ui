@@ -58,6 +58,7 @@
 				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
 			>
 				Sign up
+				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button>
 			<kv-button
 				v-else
@@ -66,6 +67,7 @@
 				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
 			>
 				Start lending
+				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button>
 		</div>
 	</div>
@@ -83,7 +85,11 @@ const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/'
 export default {
 	name: 'HeroSlideshow',
 	serverCacheKey: props => {
-		return props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+		let cacheKey = props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+		if (props.doubleArrowButtonExp.version === 'shown') {
+			cacheKey = `${cacheKey}Arrows`;
+		}
+		return cacheKey;
 	},
 	inject: ['apollo'],
 	components: {
@@ -97,6 +103,10 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		doubleArrowButtonExp: {
+			type: Object,
+			default: () => {},
+		},
 	},
 	data() {
 		return {
@@ -106,6 +116,9 @@ export default {
 	computed: {
 		showMgPromo() {
 			return this.mgPromoExp.version === 'shown';
+		},
+		showDoubleArrowButton() {
+			return this.doubleArrowButtonExp.version === 'shown';
 		}
 	},
 	methods: {
