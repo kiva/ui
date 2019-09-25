@@ -86,6 +86,7 @@ export default {
 	name: 'HeroSlideshow',
 	// I need to return the props.doubleArrowButtonExp like the following example is doing for mgPromoExp
 	serverCacheKey: props => {
+		// props.doubleArrowButtonExp.version === 'shown' ? 'DoubleArrowButttonExp' : 'DefaultStartButton';
 		return props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
 	},
 	inject: ['apollo'],
