@@ -84,10 +84,12 @@ const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/'
 
 export default {
 	name: 'HeroSlideshow',
-	// I need to return the props.doubleArrowButtonExp like the following example is doing for mgPromoExp
 	serverCacheKey: props => {
-		// props.doubleArrowButtonExp.version === 'shown' ? 'DoubleArrowButttonExp' : 'DefaultStartButton';
-		return props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+		let cacheKey = props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+		if (props.doubleArrowButtonExp.version === 'shown') {
+			cacheKey = `${cacheKey}Arrows`;
+		}
+		return cacheKey;
 	},
 	inject: ['apollo'],
 	components: {
