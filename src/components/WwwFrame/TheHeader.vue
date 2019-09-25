@@ -334,7 +334,8 @@ export default {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
 		showPopupLogin() {
-			return this.kvAuth0.enabled && this.$route.fullPath !== '/';
+			return false;
+			// return this.kvAuth0.enabled && this.$route.fullPath !== '/';
 		}
 	},
 	apollo: {
