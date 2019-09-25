@@ -50,32 +50,7 @@
 				&nbsp;
 			</div>
 		</div>
-		<div
-			v-if="showMgPromo && showDoubleArrowButton"
-			class="action-button-wrapper"
-		>
-			<kv-button
-				v-if="showMgPromo"
-				class="slideshow-action-button"
-				to="/monthlygood"
-				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
-			>
-				Sign up >>
-			</kv-button>
-			<kv-button
-				v-else
-				class="slideshow-action-button"
-				to="/lend-by-category"
-				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
-			>
-				Start lending >>
-			</kv-button>
-		</div>
-
-		<div
-			v-else
-			class="action-button-wrapper"
-		>
+		<div class="action-button-wrapper">
 			<kv-button
 				v-if="showMgPromo"
 				class="slideshow-action-button"
@@ -83,6 +58,7 @@
 				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
 			>
 				Sign up
+				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button>
 			<kv-button
 				v-else
@@ -91,6 +67,7 @@
 				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
 			>
 				Start lending
+				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button>
 		</div>
 	</div>

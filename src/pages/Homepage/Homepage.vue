@@ -52,7 +52,7 @@ export default {
 			);
 		}
 		if (this.doubleArrowButtonExp.version !== null) {
-			this.$$kvTrackEvent(
+			this.$kvTrackEvent(
 				'Homepage',
 				'EXP-CASH-1313-Oct2019',
 				this.doubleArrowButtonExp.version === 'shown' ? 'b' : 'a'
