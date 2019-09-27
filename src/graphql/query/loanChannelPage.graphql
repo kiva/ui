@@ -18,5 +18,9 @@ query loanChannelPage {
 			key
 			value
 		}
+		mgPromoCategoryExp: uiExperimentSetting(key: "mg_promo_category") {
+			key
+			value
+		}
 	}
 }
