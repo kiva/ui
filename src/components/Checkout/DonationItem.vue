@@ -9,15 +9,26 @@
 			<span class="donation-info featured-text">
 				{{ donationTitle }}
 			</span>
-			<div>
-				<div v-if="hasLoans" class="donation-tagline small-text">{{ donationTagLine }}</div>
-				<a
-					class="small-text donation-help-text"
-					@click.prevent="triggerDefaultLightbox"
-					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+			<div v-if="hasLoans">
+				<div
+					v-if="specificDonationUseTextExperiment"
+					class="donation-tagline small-text"
 				>
-					{{ donationDetailsLink }}
-				</a>
+					<span class="strong">Did you know?</span> Each loan costs more than $3 to facilitate,
+					and 60% of our expenses are covered by optional donations from individuals like you.
+				</div>
+				<div v-else>
+					<div class="donation-tagline small-text">
+						{{ donationTagLine }}
+					</div>
+					<a
+						class="small-text donation-help-text"
+						@click.prevent="triggerDefaultLightbox"
+						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+					>
+						{{ donationDetailsLink }}
+					</a>
+				</div>
 			</div>
 		</span>
 		<!-- <span class="small-3 show-for-small-only"></span> -->
@@ -172,6 +183,7 @@ export default {
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
 			donationNudgeBorrowerImageExperiment: false,
+			specificDonationUseTextExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			donationTitle: 'Donation to Kiva',
 			showCharityOverheadFooter: false,
@@ -191,6 +203,9 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'charity_overhead' } }),
 						// Get the assigned experiment version for Donation nudge fellows experiment
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'donation_nudge_fellows' } }),
+						// Get the assigned experiment version for more Specific Donation Use Text experiment cash-1282
+						// eslint-disable-next-line max-len
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'specific_donation_use_text' } }),
 					]).then(resolve).catch(reject);
 				}).catch(reject);
 			});
@@ -291,6 +306,19 @@ export default {
 				} else if (donationNudgeFellowsExp.version === 'shown') {
 					this.$kvTrackEvent('basket', 'EXP-CASH-1111-Aug2019', 'b');
 					this.donationNudgeFellows = true;
+				}
+			}
+			// CASH-1282: Specific donation use text experiement
+			if (this.hasLoans) {
+				const specificDonationUseTextExperiment = this.apollo.readFragment({
+					id: 'Experiment:specific_donation_use_text',
+					fragment: experimentVersionFragment,
+				}) || {};
+				if (specificDonationUseTextExperiment.version === 'control') {
+					this.$kvTrackEvent('Basket', 'EXP-CASH-1282-Sep2019', 'a');
+				} else if (specificDonationUseTextExperiment.version === 'shown') {
+					this.$kvTrackEvent('Basket', 'EXP-CASH-1282-Sep2019', 'b');
+					this.specificDonationUseTextExperiment = true;
 				}
 			}
 		},

@@ -8,6 +8,10 @@ query donationData {
 			key
 			value
 		}
+		specificDonationUseTextExperiment: uiExperimentSetting(key: "specific_donation_use_text") {
+			key
+			value
+		}
 	}
 	my {
 		loans {
