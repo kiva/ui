@@ -62,6 +62,7 @@
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import _includes from 'lodash/includes';
+import Raven from 'raven-js';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
@@ -135,16 +136,20 @@ export default {
 			}).then(({ errors }) => {
 				if (errors) {
 					// Handle errors from adding to basket
-					_forEach(errors, ({ message }) => {
-						this.$showTipMsg(message, 'error');
+					_forEach(errors, error => {
+						this.$showTipMsg(error.message, 'error');
+						this.$kvtrackevent('Lending', 'Add-to-Basket', `Failed: ${error.message.substring(0, 40)}...`);
+						Raven.captionException(error);
 					});
 					this.$emit('updating-totals', false);
 				} else {
 					// If no errors, update the basket + loan info
 					this.$emit('refreshtotals');
 				}
-			}).catch(() => {
+			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+				this.$kvtrackevent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Raven.captureException(error);
 			});
 		}
 	},

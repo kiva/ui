@@ -19,6 +19,7 @@
 <script>
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
+import Raven from 'raven-js';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -66,8 +67,10 @@ export default {
 
 				if (errors) {
 					// Handle errors from adding to basket
-					_forEach(errors, ({ message }) => {
-						this.$showTipMsg(message, 'error');
+					_forEach(errors, error => {
+						this.$showTipMsg(error.message, 'error');
+						this.$kvtrackevent('Lending', 'Add-to-Basket', `Failed: ${error.message.substring(0, 40)}...`);
+						Raven.captionException(error);
 					});
 				} else {
 					try {
@@ -87,8 +90,10 @@ export default {
 						fetchPolicy: 'network-only',
 					});
 				}
-			}).catch(() => {
+			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
+				this.$kvtrackevent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				Raven.captureException(error);
 			}).finally(() => {
 				this.setLoading(false);
 			});
