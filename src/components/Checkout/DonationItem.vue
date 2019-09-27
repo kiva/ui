@@ -16,14 +16,18 @@
 				>
 					{{ specificDonationTagLine }}
 				</div>
-				<div v-else class="donation-tagline small-text">{{ donationTagLine }}</div>
-				<a
-					class="small-text donation-help-text"
-					@click.prevent="triggerDefaultLightbox"
-					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
-				>
-					{{ donationDetailsLink }}
-				</a>
+				<div v-else>
+					<div class="donation-tagline small-text">
+						{{ donationTagLine }}
+					</div>
+					<a
+						class="small-text donation-help-text"
+						@click.prevent="triggerDefaultLightbox"
+						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+					>
+						{{ donationDetailsLink }}
+					</a>
+				</div>
 			</div>
 		</span>
 		<!-- <span class="small-3 show-for-small-only"></span> -->
@@ -235,7 +239,7 @@ export default {
 		},
 		specificDonationTagLine() {
 			/* eslint-disable max-len */
-			const moreSpecificCoverOurCosts = 'Each loan costs more than $3 to facilitate, and 60% of our expenses are covered by optional donations frm individuals like you.';
+			const moreSpecificCoverOurCosts = 'Each loan costs more than $3 to facilitate, and 60% of our expenses are covered by optional donations from individuals like you.';
 			return moreSpecificCoverOurCosts;
 		},
 		donationNudgePercentageRows() {
