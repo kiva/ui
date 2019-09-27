@@ -14,7 +14,8 @@
 					v-if="specificDonationUseTextExperiment"
 					class="donation-tagline small-text"
 				>
-					{{ specificDonationTagLine }}
+					<span class="strong">Did you know?</span> Each loan costs more than $3 to facilitate,
+					and 60% of our expenses are covered by optional donations from individuals like you.
 				</div>
 				<div v-else>
 					<div class="donation-tagline small-text">
@@ -236,11 +237,6 @@ export default {
 				: 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
 			/* eslint-enable max-len */
 			return coverOurCosts;
-		},
-		specificDonationTagLine() {
-			/* eslint-disable max-len */
-			const moreSpecificCoverOurCosts = 'Each loan costs more than $3 to facilitate, and 60% of our expenses are covered by optional donations from individuals like you.';
-			return moreSpecificCoverOurCosts;
 		},
 		donationNudgePercentageRows() {
 			const basePercentageRows = [
