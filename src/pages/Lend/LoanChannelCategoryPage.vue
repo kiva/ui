@@ -431,7 +431,6 @@ export default {
 			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 
-			console.log(currentRoute, matchedRoutes);
 			if (matchedRoutes.length) {
 				// match active category urls before activating experiment
 				this.mgCategoryPromoActive = mgCategoryPromo.version === 'shown';

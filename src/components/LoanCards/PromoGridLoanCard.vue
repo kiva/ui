@@ -1,13 +1,7 @@
 <template>
 	<div class="column column-block">
 		<div class="grid-loan-card promo-grid-card">
-			<div class="promo-image-wrapper">
-				<!-- <img class="promo-background-image"
-					srcset="~@/assets/images/promos/mg-promo-retina.jpg 2x"
-					src="~@/assets/images/promos/mg-promo-std.jpg"
-					alt="Image of aspirational woman"
-				> -->
-			</div>
+			<div class="promo-image-wrapper"></div>
 			<div class="image-overlay"></div>
 			<div class="promo-content-wrapper">
 				<div class="promo-content">
@@ -38,12 +32,6 @@ export default {
 			type: Object,
 			default: () => {},
 		},
-	},
-	data() {
-		return {
-			standardImageUrl: '~@/assets/images/promos/mg-promo-std.jpg',
-			retinaImageUrl: '~@/assets/images/promos/mg-promo-retina.jpg'
-		};
 	},
 	computed: {
 		targetUrl() {
