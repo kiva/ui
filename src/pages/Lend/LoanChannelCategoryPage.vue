@@ -24,9 +24,30 @@
 			</div>
 
 			<div class="columns small-12">
-				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<div v-if="!mgCategoryPromoActive" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
 						v-for="loan in loans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
+					/>
+				</div>
+				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+					<loan-card-controller
+						v-for="loan in firstLoan"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
+					/>
+					<promo-grid-loan-card
+						:experiment-data="mgTargetCateogry"
+					/>
+					<loan-card-controller
+						v-for="loan in remainingLoans"
 						:items-in-basket="itemsInBasket"
 						:is-visitor="isVisitor"
 						:key="loan.id"
@@ -70,6 +91,7 @@ import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import LoadingOverlay from './LoadingOverlay';
+import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 const loansPerPage = 12;
 
@@ -120,6 +142,7 @@ export default {
 		LoadingOverlay,
 		ViewToggle,
 		AddToBasketInterstitial,
+		PromoGridLoanCard,
 	},
 	inject: ['apollo'],
 	mixins: [
@@ -144,6 +167,8 @@ export default {
 			loading: false,
 			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
+			mgCategoryPromoActive: false,
+			mgTargetCateogry: null
 		};
 	},
 	computed: {
@@ -160,6 +185,12 @@ export default {
 		},
 		loans() {
 			return _get(this.loanChannel, 'loans.values') || [];
+		},
+		firstLoan() {
+			return [this.loans[0]];
+		},
+		remainingLoans() {
+			return _filter(this.loans, (loan, index) => index > 0);
 		},
 		loanIds() {
 			return _map(this.loans, 'id');
@@ -215,6 +246,8 @@ export default {
 					}),
 					// experiment: add to basket interstitial
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
+					// experiment: add to basket interstitial
+					client.query({ query: experimentQuery, variables: { id: 'mg_promo_category' } }),
 				]);
 			});
 		}
@@ -260,56 +293,21 @@ export default {
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
 
 		// Setup Reactivity for Loan Data + Basket Status
-		const observer = this.apollo.watchQuery({
-			query: loanChannelQuery,
-			variables: this.loanQueryVars,
-		});
-		this.$watch(() => this.loanQueryVars, vars => {
-			observer.setVariables(vars);
-		}, { deep: true });
-		// Subscribe to the observer to see each result
-		observer.subscribe({
-			next: ({ data, loading }) => {
-				if (loading) {
-					this.loading = true;
-				} else {
-					this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
-					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-					this.loading = false;
-				}
-			}
-		});
+		// TODO: Move to mounted
+		this.activateLoanChannelWatchQuery();
 
-		// get assignment for add to basket interstitial
-		const addToBasketPopupEXP = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
-		// Update @client state if interstitial exp is active
-		if (this.addToBasketExpActive) {
-			this.apollo.mutate({
-				mutation: updateAddToBasketInterstitial,
-				variables: {
-					active: true,
-				}
-			});
-		}
-		// Fire Event for Exp CASH-612 Status
-		this.$kvTrackEvent(
-			'Lending',
-			'EXP-CASH-612-Apr2019',
-			this.addToBasketExpActive ? 'b' : 'a'
-		);
+		/*
+		 * Experiment Initializations
+		*/
 
-		const lendFilterEXP = this.apollo.readFragment({
-			id: 'Experiment:lend_filter_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.lendFilterExpVersion = lendFilterEXP.version;
+		// Monthly Good Category Promo
+		this.initializeMonthlyGoodPromo();
 
-		// Update Lend Filter Exp CASH-545
-		this.getLendFilterExpVersion();
+		// Add to Basket Interstitial
+		this.initializeAddToBasketInterstitial();
+
+		// Lend Filter Redirects
+		this.initializeLendFilterRedirects();
 	},
 	mounted() {
 		this.updateLendFilterExp();
@@ -335,6 +333,27 @@ export default {
 				this.$router.push({ query: this.urlParams });
 			}
 		},
+		activateLoanChannelWatchQuery() {
+			const observer = this.apollo.watchQuery({
+				query: loanChannelQuery,
+				variables: this.loanQueryVars,
+			});
+			this.$watch(() => this.loanQueryVars, vars => {
+				observer.setVariables(vars);
+			}, { deep: true });
+			// Subscribe to the observer to see each result
+			observer.subscribe({
+				next: ({ data, loading }) => {
+					if (loading) {
+						this.loading = true;
+					} else {
+						this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
+						this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+						this.loading = false;
+					}
+				}
+			});
+		},
 		getAlgoliaFilterUrl() {
 			// get match channel data
 			const matchedUrls = _filter(
@@ -355,7 +374,76 @@ export default {
 			}
 			// use default
 			return '/lend/filter';
-		}
+		},
+		initializeAddToBasketInterstitial() {
+			// get assignment for add to basket interstitial
+			const addToBasketPopupEXP = this.apollo.readFragment({
+				id: 'Experiment:add_to_basket_v2',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
+			// Update @client state if interstitial exp is active
+			if (this.addToBasketExpActive) {
+				this.apollo.mutate({
+					mutation: updateAddToBasketInterstitial,
+					variables: {
+						active: true,
+					}
+				});
+			}
+			// Fire Event for Exp CASH-612 Status
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-612-Apr2019',
+				this.addToBasketExpActive ? 'b' : 'a'
+			);
+		},
+		initializeLendFilterRedirects() {
+			const lendFilterEXP = this.apollo.readFragment({
+				id: 'Experiment:lend_filter_v2',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.lendFilterExpVersion = lendFilterEXP.version;
+
+			// Update Lend Filter Exp CASH-545
+			this.getLendFilterExpVersion();
+		},
+		initializeMonthlyGoodPromo() {
+			// get assignment for monthly good promo exp
+			const mgCategoryPromo = this.apollo.readFragment({
+				id: 'Experiment:mg_promo_category',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			console.log(this.$route.path);
+			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
+			const targetRoutes = [
+				{ route: 'women', id: 'women' },
+				{ route: 'loans-to-women', id: 'women' },
+				{ route: 'education', id: 'education' },
+				{ route: 'loans-for-education', id: 'education' },
+				{ route: 'refugees-and-i-d-ps', id: 'refugees' },
+				{ route: 'loans-to-refugees-and-i-d-ps', id: 'refugees' },
+				{ route: 'eco-friendly', id: 'eco_friendly' },
+				{ route: 'eco-friendly-loans', id: 'eco_friendly' },
+				{ route: 'agriculture', id: 'agriculture' },
+				{ route: 'loans-to-farmers', id: 'agriculture' },
+			];
+			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
+
+			if (matchedRoutes.length) {
+				// match active category urls before activating experiment
+				this.mgCategoryPromoActive = mgCategoryPromo.version === 'shown';
+				[this.mgTargetCateogry] = matchedRoutes;
+
+				// Fire Event for Exp CASH-1324 MG Category Experiment
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-1324-Sept2019',
+					this.mgCategoryPromoActive ? 'b' : 'a'
+				);
+			}
+		},
 	},
 	watch: {
 		loanIds(newVal, oldVal) {
