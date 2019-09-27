@@ -2,11 +2,11 @@
 	<div class="column column-block">
 		<div class="grid-loan-card promo-grid-card">
 			<div class="promo-image-wrapper">
-				<img class="promo-background-image"
+				<!-- <img class="promo-background-image"
 					srcset="~@/assets/images/promos/mg-promo-retina.jpg 2x"
 					src="~@/assets/images/promos/mg-promo-std.jpg"
 					alt="Image of aspirational woman"
-				>
+				> -->
 			</div>
 			<div class="image-overlay"></div>
 			<div class="promo-content-wrapper">
@@ -80,6 +80,7 @@ export default {
 	position: relative;
 	overflow: hidden;
 	min-height: 30rem;
+	background-color: rgb(61, 61, 61);
 }
 
 .promo-image-wrapper {
@@ -88,28 +89,8 @@ export default {
 	right: 0;
 	bottom: 0;
 	left: 0;
-
-	img {
-		height: -webkit-fill-available;
-		margin-left: -70%;
-		max-width: initial;
-
-		@include breakpoint(large) {
-			margin-left: -30%;
-		}
-
-		@include breakpoint(large) {
-			margin-left: -70%;
-		}
-
-		@include breakpoint(xlarge) {
-			margin-left: -50%;
-		}
-
-		@include breakpoint(xxlarge) {
-			margin-left: -90%;
-		}
-	}
+	background: url(~@/assets/images/promos/mg-promo-retina.jpg);
+	background-position: top center;
 }
 
 .image-overlay {
