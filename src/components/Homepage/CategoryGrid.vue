@@ -72,10 +72,11 @@
 import _get from 'lodash/get';
 import categoryRowsQuery from '@/graphql/query/categoryRows.graphql';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'CategoryGrid',
-	serverCacheKey: () => 'CategoryGrid',
+	serverCacheKey: () => getCacheKey('CategoryGrid'),
 	components: {
 		KvResponsiveImage,
 	},

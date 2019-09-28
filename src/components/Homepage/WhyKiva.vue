@@ -72,10 +72,11 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 // import KvIcon from '@/components/Kv/KvIcon';
 import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'WhyKiva',
-	serverCacheKey: () => 'WhyKiva',
+	serverCacheKey: () => getCacheKey('WhyKiva'),
 	components: {
 		// KvIcon
 	},
