@@ -78,6 +78,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import getCacheKey from '@/util/getCacheKey';
 
 const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
 const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/', true);
@@ -89,7 +90,7 @@ export default {
 		if (props.doubleArrowButtonExp.version === 'shown') {
 			cacheKey = `${cacheKey}Arrows`;
 		}
-		return cacheKey;
+		return getCacheKey(cacheKey);
 	},
 	inject: ['apollo'],
 	components: {

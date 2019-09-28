@@ -217,6 +217,7 @@
 import { getYear } from 'date-fns';
 import _get from 'lodash/get';
 import protocolUiPageQuery from '@/graphql/query/protocolUiPage.graphql';
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	inject: ['apollo'],
@@ -228,7 +229,7 @@ export default {
 		},
 	},
 	name: 'TheFooter',
-	// serverCacheKey: () => 'footer',
+	serverCacheKey: () => getCacheKey('footer'),
 	data() {
 		return {
 			isProtocolLive: false,
