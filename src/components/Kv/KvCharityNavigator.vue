@@ -1,6 +1,6 @@
 <template>
 	<div id="container">
-		<div id="title" :class="`${wideIcon ? 'wide-icon' : ''}`">
+		<!-- <div id="title" :class="`${wideIcon ? 'wide-icon' : ''}`">
 			{{ title }}
 		</div>
 		<div id="image" :class="`${wideIcon ? 'wide-icon' : ''}`">
@@ -9,7 +9,7 @@
 		</div>
 		<div id="subtitle" v-if="subtitle">
 			{{ subtitle }}
-		</div>
+		</div> -->
 	</div>
 </template>
 
