@@ -1,9 +1,10 @@
 query whyKiva {
 	general {
-    	kivaStats {
-      		amountFunded
-      		repaymentRate
-      		numCountries
-    	}
-  	}
+		kivaStats {
+			amountFunded
+			repaymentRate
+			numCountries
+			numLenders
+		}
+	}
 }
