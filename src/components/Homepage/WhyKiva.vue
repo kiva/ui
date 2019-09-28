@@ -27,7 +27,7 @@
 			</p>
 		</div>
 		<div class="small-12 column text-center info-block">
-			<span>
+			<!-- <span>
 				<kv-icon name="star" class="kiva-green star" />
 				<kv-icon name="star" class="kiva-green star" />
 				<kv-icon name="star" class="kiva-green star" />
@@ -36,7 +36,11 @@
 			<p class="kiva-text-grey">
 				Charity Navigator's<br>
 				highest award rating
-			</p>
+			</p> -->
+			<h2 class="kiva-green">
+				<span class="large-number">{{ numLendersFormated }}</span>
+				million lenders
+			</h2>
 		</div>
 		<div class="small-12 large-6 column text-center stats-block">
 			<h2 class="kiva-green">
@@ -66,21 +70,22 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import KvIcon from '@/components/Kv/KvIcon';
+// import KvIcon from '@/components/Kv/KvIcon';
 import whyKivaQuery from '@/graphql/query/whyKivaData.graphql';
 
 export default {
 	name: 'WhyKiva',
 	serverCacheKey: () => 'WhyKiva',
 	components: {
-		KvIcon
+		// KvIcon
 	},
 	inject: ['apollo'],
 	data() {
 		return {
 			repaymentRate: '',
 			totalLoansInDollars: '',
-			numCountries: ''
+			numCountries: '',
+			numLenders: '',
 		};
 	},
 	apollo: {
@@ -90,9 +95,15 @@ export default {
 			this.repaymentRate = _get(data, 'general.kivaStats.repaymentRate');
 			this.totalLoansInDollars = _get(data, 'general.kivaStats.amountFunded');
 			this.numCountries = _get(data, 'general.kivaStats.numCountries');
+			this.numLenders = _get(data, 'general.kivaStats.numLenders');
 		}
 	},
 	computed: {
+		numLendersFormated() {
+			// numeral's .format almost gives us what we want, but we need to strip
+			// the "m" at the end of the formatted numeral return.
+			return numeral(this.numLenders).format('0.0a').slice(0, -1);
+		},
 		repaymentRateFormatted() {
 			return numeral(this.repaymentRate).format('0.0');
 		},
