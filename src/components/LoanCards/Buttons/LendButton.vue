@@ -69,8 +69,16 @@ export default {
 					// Handle errors from adding to basket
 					_forEach(errors, error => {
 						this.$showTipMsg(error.message, 'error');
-						this.$kvTrackEvent('Lending', 'Add-to-Basket', `Failed: ${error.message.substring(0, 40)}...`);
-						Raven.captionException(error);
+						try {
+							this.$kvTrackEvent(
+								'Lending',
+								'Add-to-Basket',
+								`Failed: ${error.message.substring(0, 40)}...`
+							);
+							Raven.captionException(error);
+						} catch (e) {
+							// no-op
+						}
 					});
 				} else {
 					try {
