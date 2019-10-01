@@ -144,7 +144,6 @@ export default {
 								'Add-to-Basket',
 								`Failed: ${error.message.substring(0, 40)}...`
 							);
-							Raven.captionException(error);
 						} catch (e) {
 							// no-op
 						}
