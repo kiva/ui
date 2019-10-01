@@ -1,3 +1,5 @@
+/* eslint-disable no-bitwise */
+
 import { isWithinRange } from 'date-fns';
 import _get from 'lodash/get';
 
@@ -58,4 +60,29 @@ export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
 	const startTime = readDateSetting(data, startTimeKey);
 	const endTime = readDateSetting(data, endTimeKey);
 	return enabled && isWithinRange(new Date(), startTime, endTime);
+}
+
+/**
+ * Convert a string to a 32 bit integer
+ * Inspiration: https://stackoverflow.com/a/8831937
+ *
+ * @param {string} source
+ */
+
+export function hashCode(source) {
+	let hash = 0;
+	// return 0 if empty or incorrect type
+	if (typeof source === 'undefined' || typeof source !== 'string' || source === '') {
+		return hash;
+	}
+	// shift the bits
+	for (let i = 0; i < source.length; i++) { // eslint-disable-line
+		// isolate character
+		const character = source.charCodeAt(i);
+		// original approach left shift
+		hash = ((hash << 5) - hash) + character;
+		// Convert to 32bit integer
+		hash &= hash; // eslint-disable-line no-bitwise
+	}
+	return Math.abs(hash);
 }

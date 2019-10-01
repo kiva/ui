@@ -129,12 +129,13 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 		.then(() => {
 			const routeQuery = _get(route, 'query.setuiab');
 			if (routeQuery !== undefined) {
+				// TODO: Check for experiment setting + enable = true from server before running mutation
 				const forcedExp = routeQuery.split('.');
 				return apolloClient.mutate({
 					mutation: updateExperimentVersion,
 					variables: {
-						id: forcedExp[0],
-						version: forcedExp[1]
+						id: encodeURIComponent(forcedExp[0]),
+						version: encodeURIComponent(forcedExp[1])
 					}
 				});
 			}
