@@ -138,7 +138,7 @@ export default {
 					// Handle errors from adding to basket
 					_forEach(errors, error => {
 						this.$showTipMsg(error.message, 'error');
-						this.$kvtrackevent('Lending', 'Add-to-Basket', `Failed: ${error.message.substring(0, 40)}...`);
+						this.$kvTrackEvent('Lending', 'Add-to-Basket', `Failed: ${error.message.substring(0, 40)}...`);
 						Raven.captionException(error);
 					});
 					this.$emit('updating-totals', false);
@@ -148,7 +148,7 @@ export default {
 				}
 			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
-				this.$kvtrackevent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
+				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
 				Raven.captureException(error);
 			});
 		}
