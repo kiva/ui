@@ -144,6 +144,7 @@ export default {
 								'Add-to-Basket',
 								`Failed: ${error.message.substring(0, 40)}...`
 							);
+							Raven.captureMessage(`Add to Basket: ${error.message}`);
 						} catch (e) {
 							// no-op
 						}
