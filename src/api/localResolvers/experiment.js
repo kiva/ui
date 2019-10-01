@@ -1,6 +1,7 @@
 import _isUndefined from 'lodash/isUndefined';
 import _filter from 'lodash/filter';
 import _map from 'lodash/map';
+import _pick from 'lodash/pick';
 import _toPairs from 'lodash/toPairs';
 import { isWithinRange } from 'date-fns';
 import cookieStore from '@/util/cookieStore';
@@ -159,8 +160,11 @@ export default () => {
 
 					// read the experiment data from the cache
 					const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
+					// create targeted subset of experiment setting to use in hash
+					// Changing the Name, Distribution, Variants or Control values will "reset" an experiment assignment
+					const experimentSubset = _pick(experiment, ['name', 'distribution', 'variants', 'control']);
 					// get the hash for our current experiment setting
-					const settingHash = hashCode(JSON.stringify(experiment));
+					const settingHash = hashCode(JSON.stringify(experimentSubset));
 
 					// Add hash to exisitng cookie exps if it's missing
 					if (typeof currentAssignment.hash === 'undefined') {
