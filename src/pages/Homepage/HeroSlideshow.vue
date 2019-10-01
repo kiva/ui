@@ -58,7 +58,7 @@
 				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
 			>
 				Sign up
-				<span v-if="showDoubleArrowButton"> >></span>
+				<span v-if="showDoubleArrowButton"> »</span>
 			</kv-button>
 			<kv-button
 				v-else
@@ -67,7 +67,7 @@
 				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
 			>
 				Start lending
-				<span v-if="showDoubleArrowButton"> >></span>
+				<span v-if="showDoubleArrowButton"> »</span>
 			</kv-button>
 		</div>
 	</div>
