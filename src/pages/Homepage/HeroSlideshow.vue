@@ -1,6 +1,15 @@
 <template>
 	<div class="hero-slideshow">
-		<kv-carousel @change="slideChange" v-if="showMgPromo">
+		<!-- -------------
+			Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		-------------------- -->
+		<!-- <kv-carousel @change="slideChange" v-if="showMgPromo">
+			<div class="slide-placeholder"></div>
+			<kv-carousel-slide>
+				<kv-responsive-image :images="mgHeroImages(1)" />
+			</kv-carousel-slide>
+		</kv-carousel> -->
+		<kv-carousel @change="slideChange" v-if="showBillionToWomenPromo">
 			<div class="slide-placeholder"></div>
 			<kv-carousel-slide>
 				<kv-responsive-image :images="mgHeroImages(1)" />
@@ -28,12 +37,24 @@
 			<div class="mask">
 				&nbsp;
 			</div>
-			<div class="headline" v-if="showMgPromo">
+			<!-- -------------
+				Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+			-------------------- -->
+
+			<!-- <div class="headline" v-if="showMgPromo">
 				<span class="headline-title">Make a bigger impact.</span>
 				<p class="headline-body">
 					A Monthly Good subscription<br class="su">
 					makes supporting entrepreneurs<br class="su">
 					part of your routine with monthly contributions.
+				</p>
+			</div> -->
+			<div class="headline" v-if="showBillionToWomenPromo">
+				<span class="headline-title">Make a bigger impact.</span>
+				<p class="headline-body">
+					With your help, we've funded over<br class="su">
+					a billion dollars to women - and<br class="su">
+					we're just getting started.
 				</p>
 			</div>
 			<div class="headline" v-else>
@@ -51,14 +72,24 @@
 			</div>
 		</div>
 		<div class="action-button-wrapper">
-			<kv-button
+			<!-- <kv-button
 				v-if="showMgPromo"
 				class="slideshow-action-button"
 				to="/monthlygood"
 				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
 			>
 				Sign up
-				<span v-if="showDoubleArrowButton"> »</span>
+				<span v-if="showDoubleArrowButton"> >></span>
+			</kv-button> -->
+			<!-- WHERE IS THIS BUTTON DIRECTING? -->
+			<kv-button
+				v-if="showMgPromo"
+				class="slideshow-action-button"
+				to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
+				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
+			>
+				Fuel Her Future
+				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button>
 			<kv-button
 				v-else
@@ -118,6 +149,9 @@ export default {
 		showMgPromo() {
 			return this.mgPromoExp.version === 'shown';
 		},
+		// showBillionToWomenPromo() {
+		// 	return this.billionToWomen.version === 'shown';
+		// },
 		showDoubleArrowButton() {
 			return this.doubleArrowButtonExp.version === 'shown';
 		}
@@ -155,7 +189,21 @@ export default {
 				['wxga', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-std.jpg`)],
 				['wxga retina', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-retina.jpg`)],
 			];
-		}
+		},
+		// billionToWomenImages(number) {
+		// 	return [
+		// 		['small', billionToWomenImageRequire(`./mg-hppromo-${number}-sm-std.jpg`)],
+		// 		['small retina', billionToWomenImageRequire(`./mg-hppromo-${number}-sm-retina.jpg`)],
+		// 		['medium', billionToWomenImageRequire(`./mg-hppromo-${number}-med-std.jpg`)],
+		// 		['medium retina', billionToWomenImage(`./mg-hppromo-${number}-med-retina.jpg`)],
+		// 		['large', billionToWomenImage(`./mg-hppromo-${number}-lg-std.jpg`)],
+		// 		['large retina', billionToWomenImage(`./mg-hppromo-${number}-lg-retina.jpg`)],
+		// 		['xga', billionToWomenImage(`./mg-hppromo-${number}-xga-std.jpg`)],
+		// 		['xga retina', billionToWomenImage(`./mg-hppromo-${number}-xga-retina.jpg`)],
+		// 		['wxga', billionToWomenImage(`./mg-hppromo-${number}-wxga-std.jpg`)],
+		// 		['wxga retina', billionToWomenImage(`./mg-hppromo-${number}-wxga-retina.jpg`)],
+		// 	]
+		// }
 	},
 };
 </script>
