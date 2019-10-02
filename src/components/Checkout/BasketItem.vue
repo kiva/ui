@@ -16,7 +16,6 @@
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
-					:set-timed-message="setTimedMessage"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -75,8 +74,7 @@ export default {
 		return {
 			activateTimer: true,
 			loanVisible: true,
-			loanRes20Version: 'control',
-			setTimedMessage: false,
+			loanRes20Version: 'control'
 		};
 	},
 	methods: {
