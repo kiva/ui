@@ -220,10 +220,11 @@ export default {
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+				const lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 				// check for free credit, bonus credit or lending rewards and redirect if present
 				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
-				if (hasFreeCredits) {
+				if (hasFreeCredits || lendingRewardOffered) {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
