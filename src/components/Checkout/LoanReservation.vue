@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { differenceInMinutes, differenceInSeconds, subMinutes } from 'date-fns';
+import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -74,7 +74,7 @@ export default {
 	},
 	computed: {
 		reservedDate() {
-			return new Date(this.expiryTime);;
+			return new Date(this.expiryTime);
 		},
 	},
 	methods: {
