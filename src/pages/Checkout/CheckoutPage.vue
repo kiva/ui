@@ -295,21 +295,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.braintreeVsPaypalVersion = braintreeVsPaypalExpAssignment.version;
-
-		// ONLY USED FOR Analytics Tracking - Read assigned version of loan res 10 exp
-		const loanRes10ExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:loan_res_10',
-			fragment: experimentVersionFragment,
-		}) || {};
-		try {
-			this.$kvTrackEvent(
-				'basket',
-				'EXP-CASH-1231-Sep2019',
-				loanRes10ExpAssignment.version === 'shown' ? 'b' : 'a'
-			);
-		} catch (e) {
-			// noop
-		}
 	},
 	mounted() {
 		// update current time every second for reactivity

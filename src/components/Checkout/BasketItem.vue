@@ -16,7 +16,6 @@
 					:matching-text="loan.loan.matchingText"
 				/>
 				<loan-reservation
-					:set-timed-message="setTimedMessage"
 					:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 					:is-funded="loan.isFunded"
 					:expiry-time="loan.expiryTime"
@@ -46,7 +45,6 @@
 </template>
 
 <script>
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CheckoutItemImg from '@/components/Checkout/CheckoutItemImg';
 import LoanMatcher from '@/components/Checkout/LoanMatcher';
 import LoanReservation from '@/components/Checkout/LoanReservation';
@@ -75,24 +73,8 @@ export default {
 	data() {
 		return {
 			activateTimer: true,
-			loanVisible: true,
-			loanRes20Version: 'control',
-			setTimedMessage: false,
+			loanVisible: true
 		};
-	},
-	created() {
-		// Read assigned version of loan res 10 exp
-		const loanRes10ExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:loan_res_10',
-			fragment: experimentVersionFragment,
-		}) || {};
-		try {
-			if (loanRes10ExpAssignment.version === 'shown') {
-				this.setTimedMessage = true;
-			}
-		} catch (e) {
-			// noop
-		}
 	},
 	methods: {
 		onLoanUpdate($event) {

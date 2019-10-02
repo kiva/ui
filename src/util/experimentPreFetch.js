@@ -14,7 +14,6 @@ let activeExperiments = [
 	'pinned_filter',
 	'algolia_search',
 	'expandable_loan_cards',
-	'loan_res_10',
 	'mg_promo',
 	'double_arrow_button'
 ];

@@ -21,7 +21,6 @@
 						<div class="loan-title columns small-8">
 							<h3><span>${{ loan.price | numeral('0,0') }}</span> to {{ loan.loan.name }}</h3>
 							<loan-reservation
-								:set-timed-message="setTimedMessage"
 								class="popup-reservation-text"
 								:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"
 								:is-funded="loan.isFunded"
@@ -91,7 +90,6 @@ import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
@@ -112,7 +110,6 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			setTimedMessage: false,
 			showInterstitial: false,
 			basketInterstitialState: {},
 			loan: {},
@@ -125,25 +122,6 @@ export default {
 	computed: {
 		basketInterstitialActive() {
 			return this.basketInterstitialState.active || false;
-		}
-	},
-	created() {
-		// Read assigned version of loan res 10 exp
-		const loanRes10ExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:loan_res_10',
-			fragment: experimentVersionFragment,
-		}) || {};
-		try {
-			if (loanRes10ExpAssignment.version === 'shown') {
-				this.setTimedMessage = true;
-			}
-			this.$kvTrackEvent(
-				'basket',
-				'EXP-CASH-1231-Sep2019',
-				loanRes10ExpAssignment.version === 'shown' ? 'b' : 'a'
-			);
-		} catch (e) {
-			// noop
 		}
 	},
 	mounted() {
