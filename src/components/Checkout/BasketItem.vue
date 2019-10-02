@@ -73,8 +73,7 @@ export default {
 	data() {
 		return {
 			activateTimer: true,
-			loanVisible: true,
-			loanRes20Version: 'control'
+			loanVisible: true
 		};
 	},
 	methods: {
