@@ -14,7 +14,12 @@ import GiftBanner from './Banners/GiftBanner';
 // import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 // import IWDPromoBanner from './Banners/IWDPromoBanner';
 import WRDBanner from './Banners/WRDBanner';
-import MonthlyGoodPromoBanner from './Banners/MonthlyGoodPromoBanner';
+
+// --------------------
+// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+// ---------------------
+// import MonthlyGoodPromoBanner from './Banners/MonthlyGoodPromoBanner';
+import BillionToWomenPromoBanner from './Banners/BillionToWomenBanner';
 
 export default {
 	inject: ['apollo'],
@@ -25,15 +30,24 @@ export default {
 			lendingRewardOffered: false,
 			bonusBalance: 0,
 			hasFreeCredits: false,
-			mgPromoExp: { id: null, version: null }
+			// mgPromoExp: { id: null, version: null }
 		};
 	},
 	computed: {
 		currentActivePromo() {
+			// --------------------
+			// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+			// ---------------------
+
 			// check for monthly good promo exp first, it's ok if any other bonus credit states are active
-			if (this.monthlyGoodActive) {
-				return MonthlyGoodPromoBanner;
+			// if (this.monthlyGoodActive) {
+			// 	return MonthlyGoodPromoBanner;
+			// }
+
+			if (this.billionToWomenActive) {
+				return BillionToWomenPromoBanner;
 			}
+
 			// Temporarily remove holiday or default banner if either of these are true.
 			// Each of these will render their own banners in the near future.
 			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
@@ -48,8 +62,16 @@ export default {
 			}
 			return '';
 		},
-		monthlyGoodActive() {
-			return this.mgPromoExp.version === 'shown';
+		// --------------------
+		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		// ---------------------
+
+		// monthlyGoodActive() {
+		// 	return this.mgPromoExp.version === 'shown';
+		// }
+
+		billionToWomenActive() {
+			return this.billionToWomen.version === 'shown';
 		}
 	},
 	apollo: {
@@ -79,18 +101,39 @@ export default {
 		}
 	},
 	created() {
+		// --------------------
+		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		// ---------------------
+
 		// get exp assignment for monthly good promo
-		this.mgPromoExp = this.apollo.readFragment({
-			id: 'Experiment:mg_promo',
+		// this.mgPromoExp = this.apollo.readFragment({
+		// 	id: 'Experiment:mg_promo',
+		// 	fragment: experimentVersionFragment,
+		// }) || {};
+
+		this.billionToWomen = this.apollo.readFragment({
+			id: 'Experiment:billion_to_women',
 			fragment: experimentVersionFragment,
 		}) || {};
 	},
 	mounted() {
-		if (this.mgPromoExp.version !== null) {
+		// --------------------
+		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		// ---------------------
+
+		// if (this.mgPromoExp.version !== null) {
+		// 	this.$kvTrackEvent(
+		// 		'Lending',
+		// 		'EXP-CASH-129-Sept2019',
+		// 		this.mgPromoExp.version === 'shown' ? 'b' : 'a'
+		// 	);
+		// }
+
+		if (this.billionToWoment.version !== null) {
 			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-129-Sept2019',
-				this.mgPromoExp.version === 'shown' ? 'b' : 'a'
+				'Header',
+				'billion-to-women-2019',
+				'shown'
 			);
 		}
 	},

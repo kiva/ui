@@ -15,8 +15,10 @@ let activeExperiments = [
 	'algolia_search',
 	'expandable_loan_cards',
 	'loan_res_10',
-	'mg_promo',
-	'double_arrow_button'
+	// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+	// 'mg_promo',
+	'double_arrow_button',
+	'billion_to_women',
 ];
 
 // TODO: Enhance Error handling
