@@ -1,25 +1,25 @@
 <template>
 	<div class="row align-center gift-banner">
 		<router-link
-			to="/monthlygood"
+			to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
 			class="banner-link"
-			v-kv-track-event="['TopNav','click-Promo','Monthly Good Sept 2019']"
+			v-kv-track-event="['TopNav','billion-to-women-2019','click-billion-to-women-banner-promo']"
 		>
-			<kv-icon name="monthly-good" class="monthly-good-icon" />
 			<div class="content">
-				Make a bigger impact with a<br class="smo">
-				Monthly Good subscription. <span class="call-to-action-text">Sign up.</span>
+				<span class="call-to-action-text">Click here</span>
+				to get a free $25 lending credit<br class="smo">
+				when you make a loan this week.
 			</div>
 		</router-link>
 	</div>
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+// import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	components: {
-		KvIcon
+		// KvIcon
 	},
 };
 </script>

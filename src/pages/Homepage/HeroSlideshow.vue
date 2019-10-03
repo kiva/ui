@@ -50,11 +50,11 @@
 				</p>
 			</div> -->
 			<div class="headline" v-if="showBillionToWomenPromo">
-				<span class="headline-title">Make a bigger impact.</span>
+				<span class="headline-title">We just hit $1 billion in loans to woomen.</span>
 				<p class="headline-body">
-					With your help, we've funded over<br class="su">
-					a billion dollars to women - and<br class="su">
-					we're just getting started.
+					And we're not stopping here.<br class="su">
+					To celebrate, we'll give you a free<br class="su">
+					$25 credit after you make a loan this week.
 				</p>
 			</div>
 			<div class="headline" v-else>
@@ -81,14 +81,13 @@
 				Sign up
 				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button> -->
-			<!-- WHERE IS THIS BUTTON DIRECTING? -->
 			<kv-button
 				v-if="showMgPromo"
 				class="slideshow-action-button"
 				to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
-				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
+				v-kv-track-event="['Home', 'billion-to-women-2019', 'click-billion-to-women-hp-promo']"
 			>
-				Fuel Her Future
+				Lend now
 				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button>
 			<kv-button
