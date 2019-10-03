@@ -85,7 +85,7 @@
 				v-if="showMgPromo"
 				class="slideshow-action-button"
 				to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
-				v-kv-track-event="['Home', 'billion-to-women-2019', 'click-billion-to-women-hp-promo']"
+				v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
 			>
 				Lend now
 				<span v-if="showDoubleArrowButton"> >></span>
