@@ -16,21 +16,27 @@ query promotionalBanner($basketId: String) {
 	}
 	general {
 		holiday_enabled: featureSetting(key: "holiday_mode.enabled") {
+			key
 			value
 		}
 		holiday_start_time: featureSetting(key: "holiday_mode.start_time") {
+			key
 			value
 		}
 		holiday_end_time: featureSetting(key: "holiday_mode.end_time") {
+			key
 			value
 		}
 		promo_enabled: promoSetting(key: "topnav_promo.enabled") {
+			key
 			value
 		}
 		promo_start_time: promoSetting(key: "topnav_promo.start_time") {
+			key
 			value
 		}
 		promo_end_time: promoSetting(key: "topnav_promo.end_time") {
+			key
 			value
 		}
 	}
