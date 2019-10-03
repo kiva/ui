@@ -4,7 +4,7 @@ var base = require('./index.js')
 module.exports = merge(base, {
 	app: {
 		host: 'www.qa.kiva.org',
-		publicPath: 'https://www-qa-kiva-org.global.ssl.fastly.net/ui/',
+		publicPath: 'https://www-qa-kiva-org.freetls.fastly.net/ui/',
 		graphqlUri: 'https://api.qa.kivaws.org/graphql',
 		enablePerimeterx: false,
 		perimeterxAppId: '####',

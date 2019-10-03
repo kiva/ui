@@ -28,7 +28,7 @@
 			>
 				<h2 slot="title">What does it mean that my loan is not reserved?</h2>
 				<div>
-					Loans will not be reserved if they've been in your basket for more than {{ reservationLength }}
+					Loans will not be reserved if they've been in your basket for more than 45
 					minutes or have less than 6 hours left to fundraise. This means there's a chance this loan may be
 					funded by other lenders even though it's in your basket. To make this loan, please proceed through
 					the checkout process.
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { differenceInMinutes, differenceInSeconds, subMinutes } from 'date-fns';
+import { differenceInMinutes, differenceInSeconds } from 'date-fns';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -63,10 +63,6 @@ export default {
 			type: Boolean,
 			default: true
 		},
-		setTimedMessage: {
-			type: Boolean,
-			default: false
-		},
 		expiryTime: {
 			type: String,
 			default: ''
@@ -78,14 +74,8 @@ export default {
 	},
 	computed: {
 		reservedDate() {
-			const shortendedDate = subMinutes(new Date(this.expiryTime), 35);
-			const standardDate = new Date(this.expiryTime);
-			const reservedDate = this.setTimedMessage ? shortendedDate : standardDate;
-			return reservedDate;
+			return new Date(this.expiryTime);
 		},
-		reservationLength() {
-			return this.setTimedMessage ? '10' : '45';
-		}
 	},
 	methods: {
 		triggerDefaultLightbox() {

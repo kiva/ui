@@ -220,10 +220,11 @@ export default {
 				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+				const lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 				// check for free credit, bonus credit or lending rewards and redirect if present
 				// IMPORTANT: THIS IS DEPENDENT ON THE CheckoutBeta Experiment
 				// TODO: remove once bonus credit functionality is added
-				if (hasFreeCredits) {
+				if (hasFreeCredits || lendingRewardOffered) {
 					// cancel the promise, returning a route for redirect
 					return Promise.reject({
 						path: '/basket',
@@ -295,21 +296,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.braintreeVsPaypalVersion = braintreeVsPaypalExpAssignment.version;
-
-		// ONLY USED FOR Analytics Tracking - Read assigned version of loan res 10 exp
-		const loanRes10ExpAssignment = this.apollo.readFragment({
-			id: 'Experiment:loan_res_10',
-			fragment: experimentVersionFragment,
-		}) || {};
-		try {
-			this.$kvTrackEvent(
-				'basket',
-				'EXP-CASH-1231-Sep2019',
-				loanRes10ExpAssignment.version === 'shown' ? 'b' : 'a'
-			);
-		} catch (e) {
-			// noop
-		}
 	},
 	mounted() {
 		// update current time every second for reactivity
