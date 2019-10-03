@@ -1,12 +1,15 @@
 query appealBanner {
 	general {
 		appeal_enabled: featureSetting(key: "endofyear_appeal.enabled") {
+			key
 			value
 		}
 		appeal_match_enabled: featureSetting(key: "endofyear_appeal_match.enabled") {
+			key
 			value
 		}
 		appeal_bonus_active: uiConfigSetting(key: "endofyear_appeal_bonus") {
+			key
 			value
 		}
 		kivaStats {
