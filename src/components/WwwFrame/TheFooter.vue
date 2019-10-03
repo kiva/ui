@@ -59,7 +59,7 @@
 				<div class="narrow">
 					<h2>Explore</h2>
 					<ul>
-						<li v-if="isProtocolLive">
+						<li>
 							<router-link to="/protocol">
 								Protocol
 							</router-link>
@@ -215,24 +215,13 @@
 
 <script>
 import { getYear } from 'date-fns';
-import _get from 'lodash/get';
-import protocolUiPageQuery from '@/graphql/query/protocolUiPage.graphql';
 import getCacheKey from '@/util/getCacheKey';
 
 export default {
-	inject: ['apollo'],
-	apollo: {
-		query: protocolUiPageQuery,
-		preFetch: true,
-		result({ data }) {
-			this.isProtocolLive = _get(data, 'general.protocol.value') === 'true' || false;
-		},
-	},
 	name: 'TheFooter',
 	serverCacheKey: () => getCacheKey('footer'),
 	data() {
 		return {
-			isProtocolLive: false,
 			year: getYear(new Date()),
 			applyUrl: '/borrow',
 			aboutUrl: '/about',
