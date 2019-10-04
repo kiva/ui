@@ -54,7 +54,7 @@ export default {
 		}) || {};
 
 		this.promoSetting = this.apollo.readFragment({
-			id: 'Setting:promo.topNav_promo.enabled',
+			id: 'Setting:promo.topnav_promo.enabled',
 			fragment: promoSettingFragment,
 		}) || {};
 
@@ -75,7 +75,12 @@ export default {
 				promoStart: this.promoStart,
 				promoEnd: this.promoEnd,
 			};
-			return settingEnabled(settingData, settingData.promoSetting, settingData.promoStart, settingData.promoEnd);
+			return settingEnabled(
+				settingData,
+				'settingData.promoSetting',
+				'settingData.promoStart',
+				'settingData.promoEnd'
+			);
 		}
 	},
 	mounted() {
