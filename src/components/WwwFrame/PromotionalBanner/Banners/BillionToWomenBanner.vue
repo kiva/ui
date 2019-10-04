@@ -13,13 +13,3 @@
 		</router-link>
 	</div>
 </template>
-
-<script>
-// import KvIcon from '@/components/Kv/KvIcon';
-
-export default {
-	components: {
-		// KvIcon
-	},
-};
-</script>

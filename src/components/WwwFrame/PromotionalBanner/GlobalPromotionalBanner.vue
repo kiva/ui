@@ -9,11 +9,11 @@ import numeral from 'numeral';
 import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+// import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import GiftBanner from './Banners/GiftBanner';
 // import DefaultPromoBanner from './Banners/DefaultPromoBanner';
 // import IWDPromoBanner from './Banners/IWDPromoBanner';
-import WRDBanner from './Banners/WRDBanner';
+// import WRDBanner from './Banners/WRDBanner';
 
 // --------------------
 // Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
@@ -44,10 +44,6 @@ export default {
 			// 	return MonthlyGoodPromoBanner;
 			// }
 
-			if (this.billionToWomenActive) {
-				return BillionToWomenPromoBanner;
-			}
-
 			// Temporarily remove holiday or default banner if either of these are true.
 			// Each of these will render their own banners in the near future.
 			// TODO: Consider adding route based exclude list for pages that shouldn't show banners
@@ -58,7 +54,7 @@ export default {
 				return GiftBanner;
 			}
 			if (this.promoEnabled) {
-				return WRDBanner;
+				return BillionToWomenPromoBanner;
 			}
 			return '';
 		},
@@ -69,10 +65,6 @@ export default {
 		// monthlyGoodActive() {
 		// 	return this.mgPromoExp.version === 'shown';
 		// }
-
-		billionToWomenActive() {
-			return this.billionToWomen.version === 'shown';
-		}
 	},
 	apollo: {
 		query: promoQuery,
@@ -110,11 +102,6 @@ export default {
 		// 	id: 'Experiment:mg_promo',
 		// 	fragment: experimentVersionFragment,
 		// }) || {};
-
-		this.billionToWomen = this.apollo.readFragment({
-			id: 'Experiment:billion_to_women',
-			fragment: experimentVersionFragment,
-		}) || {};
 	},
 	mounted() {
 		// --------------------
@@ -129,7 +116,7 @@ export default {
 		// 	);
 		// }
 
-		if (this.billionToWoment.version !== null) {
+		if (this.promoEnabled) {
 			this.$kvTrackEvent(
 				'Header',
 				'billion-to-women-2019',
