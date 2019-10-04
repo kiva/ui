@@ -1,0 +1,4 @@
+fragment promoSetting on Setting {
+	id
+	version
+}
