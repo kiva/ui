@@ -3,16 +3,18 @@
 		<!-- -------------
 			Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
 		-------------------- -->
+
 		<!-- <kv-carousel @change="slideChange" v-if="showMgPromo">
 			<div class="slide-placeholder"></div>
 			<kv-carousel-slide>
 				<kv-responsive-image :images="mgHeroImages(1)" />
 			</kv-carousel-slide>
 		</kv-carousel> -->
-		<kv-carousel @change="slideChange" v-if="showBillionToWomenPromo">
+
+		<kv-carousel @change="slideChange" v-if="promoEnabled">
 			<div class="slide-placeholder"></div>
 			<kv-carousel-slide>
-				<kv-responsive-image :images="mgHeroImages(1)" />
+				<kv-responsive-image :images="billionToWomenImages(1)" />
 			</kv-carousel-slide>
 		</kv-carousel>
 		<kv-carousel @change="slideChange" v-else>
@@ -49,8 +51,9 @@
 					part of your routine with monthly contributions.
 				</p>
 			</div> -->
-			<div class="headline" v-if="showBillionToWomenPromo">
-				<span class="headline-title">We just hit $1 billion in loans to woomen.</span>
+
+			<div class="headline" v-if="promoEnabled">
+				<span class="headline-title">We just hit $1 billion in loans to women.</span>
 				<p class="headline-body">
 					And we're not stopping here.<br class="su">
 					To celebrate, we'll give you a free<br class="su">
@@ -72,6 +75,10 @@
 			</div>
 		</div>
 		<div class="action-button-wrapper">
+			<!-- -------------
+			Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+			-------------------- -->
+
 			<!-- <kv-button
 				v-if="showMgPromo"
 				class="slideshow-action-button"
@@ -81,8 +88,9 @@
 				Sign up
 				<span v-if="showDoubleArrowButton"> >></span>
 			</kv-button> -->
+
 			<kv-button
-				v-if="showMgPromo"
+				v-if="promoEnabled"
 				class="slideshow-action-button"
 				to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
 				v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
@@ -111,12 +119,19 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import getCacheKey from '@/util/getCacheKey';
 
 const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
-const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/', true);
+const billionToWomenImageRequire = require.context('@/assets/images/billion-to-women-slideshow/', true);
+
+// --------------------
+// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+// ---------------------
+
+// const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/', true);
 
 export default {
 	name: 'HeroSlideshow',
 	serverCacheKey: props => {
-		let cacheKey = props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+		// let cacheKey = props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
+		let cacheKey = props.promoEnabled === 'true' ? 'BillionToWomenSlideshow' : 'DefaultHeroSlideshow';
 		if (props.doubleArrowButtonExp.version === 'shown') {
 			cacheKey = `${cacheKey}Arrows`;
 		}
@@ -130,9 +145,17 @@ export default {
 		KvResponsiveImage,
 	},
 	props: {
-		mgPromoExp: {
-			type: Object,
-			default: () => {},
+		// --------------------
+		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		// ---------------------
+
+		// mgPromoExp: {
+		// 	type: Object,
+		// 	default: () => {},
+		// },
+		promoEnabled: {
+			type: Boolean,
+			default: false,
 		},
 		doubleArrowButtonExp: {
 			type: Object,
@@ -145,15 +168,16 @@ export default {
 		};
 	},
 	computed: {
-		showMgPromo() {
-			return this.mgPromoExp.version === 'shown';
-		},
-		// showBillionToWomenPromo() {
-		// 	return this.billionToWomen.version === 'shown';
+		// --------------------
+		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		// ---------------------
+
+		// showMgPromo() {
+		// 	return this.mgPromoExp.version === 'shown';
 		// },
 		showDoubleArrowButton() {
 			return this.doubleArrowButtonExp.version === 'shown';
-		}
+		},
 	},
 	methods: {
 		slideChange() {
@@ -175,34 +199,38 @@ export default {
 				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
 			];
 		},
-		mgHeroImages(number) {
-			return [
-				['small', mgPromoImageRequire(`./mg-hppromo-${number}-sm-std.jpg`)],
-				['small retina', mgPromoImageRequire(`./mg-hppromo-${number}-sm-retina.jpg`)],
-				['medium', mgPromoImageRequire(`./mg-hppromo-${number}-med-std.jpg`)],
-				['medium retina', mgPromoImageRequire(`./mg-hppromo-${number}-med-retina.jpg`)],
-				['large', mgPromoImageRequire(`./mg-hppromo-${number}-lg-std.jpg`)],
-				['large retina', mgPromoImageRequire(`./mg-hppromo-${number}-lg-retina.jpg`)],
-				['xga', mgPromoImageRequire(`./mg-hppromo-${number}-xga-std.jpg`)],
-				['xga retina', mgPromoImageRequire(`./mg-hppromo-${number}-xga-retina.jpg`)],
-				['wxga', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-std.jpg`)],
-				['wxga retina', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-retina.jpg`)],
-			];
-		},
-		// billionToWomenImages(number) {
+		// --------------------
+		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
+		// ---------------------
+
+		// mgHeroImages(number) {
 		// 	return [
-		// 		['small', billionToWomenImageRequire(`./mg-hppromo-${number}-sm-std.jpg`)],
-		// 		['small retina', billionToWomenImageRequire(`./mg-hppromo-${number}-sm-retina.jpg`)],
-		// 		['medium', billionToWomenImageRequire(`./mg-hppromo-${number}-med-std.jpg`)],
-		// 		['medium retina', billionToWomenImage(`./mg-hppromo-${number}-med-retina.jpg`)],
-		// 		['large', billionToWomenImage(`./mg-hppromo-${number}-lg-std.jpg`)],
-		// 		['large retina', billionToWomenImage(`./mg-hppromo-${number}-lg-retina.jpg`)],
-		// 		['xga', billionToWomenImage(`./mg-hppromo-${number}-xga-std.jpg`)],
-		// 		['xga retina', billionToWomenImage(`./mg-hppromo-${number}-xga-retina.jpg`)],
-		// 		['wxga', billionToWomenImage(`./mg-hppromo-${number}-wxga-std.jpg`)],
-		// 		['wxga retina', billionToWomenImage(`./mg-hppromo-${number}-wxga-retina.jpg`)],
-		// 	]
-		// }
+		// 		['small', mgPromoImageRequire(`./mg-hppromo-${number}-sm-std.jpg`)],
+		// 		['small retina', mgPromoImageRequire(`./mg-hppromo-${number}-sm-retina.jpg`)],
+		// 		['medium', mgPromoImageRequire(`./mg-hppromo-${number}-med-std.jpg`)],
+		// 		['medium retina', mgPromoImageRequire(`./mg-hppromo-${number}-med-retina.jpg`)],
+		// 		['large', mgPromoImageRequire(`./mg-hppromo-${number}-lg-std.jpg`)],
+		// 		['large retina', mgPromoImageRequire(`./mg-hppromo-${number}-lg-retina.jpg`)],
+		// 		['xga', mgPromoImageRequire(`./mg-hppromo-${number}-xga-std.jpg`)],
+		// 		['xga retina', mgPromoImageRequire(`./mg-hppromo-${number}-xga-retina.jpg`)],
+		// 		['wxga', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-std.jpg`)],
+		// 		['wxga retina', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-retina.jpg`)],
+		// 	];
+		// },
+		billionToWomenImages(number) {
+			return [
+				['small', billionToWomenImageRequire(`./1b2w-${number}-sm-std.jpg`)],
+				['small retina', billionToWomenImageRequire(`./1b2w-${number}-sm-retina.jpg`)],
+				['medium', billionToWomenImageRequire(`./1b2w-${number}-med-std.jpg`)],
+				['medium retina', billionToWomenImageRequire(`./1b2w-${number}-med-retina.jpg`)],
+				['large', billionToWomenImageRequire(`./1b2w-${number}-lg-std.jpg`)],
+				['large retina', billionToWomenImageRequire(`./1b2w-${number}-lg-retina.jpg`)],
+				['xga', billionToWomenImageRequire(`./1b2w-${number}-xl-std.jpg`)],
+				['xga retina', billionToWomenImageRequire(`./1b2w-${number}-xl-retina.jpg`)],
+				['wxga', billionToWomenImageRequire(`./1b2w-${number}-xxl-std.jpg`)],
+				['wxga retina', billionToWomenImageRequire(`./1b2w-${number}-xxl-retina.jpg`)],
+			];
+		}
 	},
 };
 </script>
