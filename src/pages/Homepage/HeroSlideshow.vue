@@ -52,10 +52,9 @@
 				</p>
 			</div> -->
 
-			<div class="headline" v-if="promoEnabled">
+			<div class="headline billion-to-women-headline" v-if="promoEnabled">
 				<span class="headline-title">We just hit $1 billion in loans to women.</span>
 				<p class="headline-body">
-					And we're not stopping here.<br class="su">
 					To celebrate, we'll give you a free<br class="su">
 					$25 credit after you make a loan this week.
 				</p>
@@ -91,12 +90,12 @@
 
 			<kv-button
 				v-if="promoEnabled"
-				class="slideshow-action-button"
+				class="slideshow-action-button billion-to-women-action"
 				to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
 				v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
 			>
 				Lend now
-				<span v-if="showDoubleArrowButton"> >></span>
+				<span v-if="showDoubleArrowButton"> »</span>
 			</kv-button>
 			<kv-button
 				v-else
@@ -339,6 +338,19 @@ export default {
 		@include breakpoint(medium) {
 			margin-bottom: -2rem;
 		}
+	}
+
+	.headline-bar .billion-to-women-headline {
+		background-color: #FDC88A;
+	}
+
+	.billion-to-women-action {
+		background-color: #FA7466;
+		box-shadow: 0 2px #E35269;
+	}
+
+	.billion-to-women-action:hover {
+		background-color: #E35269;
 	}
 }
 </style>
