@@ -26,7 +26,9 @@ export function readBoolSetting(data, key) {
  */
 export function readDateSetting(data, key) {
 	const val = _get(data, key);
-	return val ? new Date(val) : null;
+	// extra string cleanup for firefox
+	const cleanedDateVal = val.replace(/[/"]/g, '');
+	return val ? new Date(cleanedDateVal) : null;
 }
 
 /**
