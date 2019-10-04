@@ -11,13 +11,14 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import { settingEnabled } from '@/util/settingsUtils';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import { settingEnabled } from '@/util/settingsUtils';
-import promoSettingFragment from '@/graphql/fragments/promoSetting.graphql';
 
 export default {
 	components: {
@@ -30,12 +31,32 @@ export default {
 		return {
 			mgPromoExp: { id: null, version: null },
 			doubleArrowButtonExp: { id: null, version: null },
-			promoStart: null,
-			promoEnd: null,
-			promoSetting: null,
+			promoEnabled: false,
+			holidayModeEnabled: false,
 		};
 	},
 	inject: ['apollo'],
+	apollo: {
+		query: promoQuery,
+		preFetch: true,
+		result({ data }) {
+			this.holidayModeEnabled = settingEnabled(
+				data,
+				'general.holiday_enabled.value',
+				'general.holiday_start_time.value',
+				'general.holiday_end_time.value'
+			);
+
+			this.promoEnabled = settingEnabled(
+				data,
+				'general.promo_enabled.value',
+				'general.promo_start_time.value',
+				'general.promo_end_time.value'
+			);
+
+			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+		}
+	},
 	created() {
 		// --------------------
 		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
@@ -52,36 +73,6 @@ export default {
 			id: 'Experiment:double_arrow_button',
 			fragment: experimentVersionFragment,
 		}) || {};
-
-		this.promoSetting = this.apollo.readFragment({
-			id: 'Setting:promo.topnav_promo.enabled',
-			fragment: promoSettingFragment,
-		}) || {};
-
-		this.promoStart = this.apollo.readFragment({
-			id: 'Setting:promo.topnav_promo.start_time',
-			fragment: promoSettingFragment,
-		}) || {};
-
-		this.promoEnd = this.apollo.readFragment({
-			id: 'Setting:promo.topnav_promo.end_time',
-			fragment: promoSettingFragment,
-		}) || {};
-	},
-	computed: {
-		promoEnabled() {
-			const settingData = {
-				promoSetting: this.promoSetting,
-				promoStart: this.promoStart,
-				promoEnd: this.promoEnd,
-			};
-			return settingEnabled(
-				settingData,
-				'settingData.promoSetting',
-				'settingData.promoStart',
-				'settingData.promoEnd'
-			);
-		}
 	},
 	mounted() {
 		// --------------------

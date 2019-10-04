@@ -3,7 +3,7 @@
 		<router-link
 			to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
 			class="banner-link"
-			v-kv-track-event="['TopNav','Click here','click-Promo 1 Billion to Women 2019']"
+			v-kv-track-event="['TopNav','click-Promo','click-Promo 1 Billion to Women 2019']"
 		>
 			<div class="content">
 				<span class="call-to-action-text">Click here</span>
