@@ -82,7 +82,7 @@ export default {
 		// --------------------
 		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
 		// ---------------------
-		
+
 		// if (this.mgPromoExp.version !== null) {
 		// 	this.$kvTrackEvent(
 		// 		'Lending',
