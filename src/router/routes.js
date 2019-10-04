@@ -4,6 +4,7 @@ export default [
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
+	{ path: '/settings/autolending', component: () => import('@/pages/Autolending/AutolendingPage') },
 	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
