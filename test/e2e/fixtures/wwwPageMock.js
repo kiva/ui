@@ -2,7 +2,7 @@ export default function wwwPageMock() {
 	return {
 		Query: () => ({
 			my: null,
-			shop: () => ({
+			shop: {
 				nonTrivialItemCount: 0,
 				lendingRewardOffered: false,
 				basket: {
@@ -11,8 +11,8 @@ export default function wwwPageMock() {
 						redemptionCodeAvailableTotal: '0.00',
 					}
 				}
-			}),
-			general: () => ({
+			},
+			general: {
 				featureSetting: (parent, args) => ({ key: args.key, value: '' }),
 				promoSetting: (parent, args) => ({ key: args.key, value: '' }),
 				uiConfigSetting: (parent, args) => ({ key: args.key, value: '' }),
@@ -23,7 +23,7 @@ export default function wwwPageMock() {
 						target_amount: 0,
 					}
 				},
-			}),
+			},
 		}),
 	};
 }
