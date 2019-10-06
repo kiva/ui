@@ -1,12 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="32px" height="20px" viewBox="0 0 32 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 53 (72520) - https://sketchapp.com -->
-    <title>Group</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Group">
-            <rect id="Rectangle" fill="#F6F6F6" x="0" y="3" width="32" height="14"></rect>
-            <path d="M29.6512665,0 L2.34873346,0 C1.05157108,0 0,1.04894298 0,2.34292137 L0,4.23021534 L32,4.23021534 L32,2.34292137 C32,1.04902845 30.9484289,0 29.6512665,0 Z M0,17.6570786 C0,18.9509716 1.05157108,20 2.34873346,20 L29.6512665,20 C30.9484289,20 32,18.9509716 32,17.6570786 L32,8.18702005 L0,8.18702005 L0,17.6570786 Z M23.7794329,11.3629934 L28.4508729,11.3629934 L28.4508729,12.8467952 L23.7794329,12.8467952 L23.7794329,11.3629934 Z M3.60135148,11.3629934 L13.9489543,11.3629934 L13.9489543,12.8467952 L3.60135148,12.8467952 L3.60135148,11.3629934 Z M3.60135148,14.4477729 L9.21231903,14.4477729 L9.21231903,15.9315747 L3.60135148,15.9315747 L3.60135148,14.4477729 Z" id="Shape" fill="#434A54" fill-rule="nonzero"></path>
-        </g>
-    </g>
-</svg>
+<svg width="32" height="20" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path fill="#F6F6F6" d="M0 3h32v14H0z"/><path d="M29.651 0H2.35A2.346 2.346 0 000 2.343V4.23h32V2.343A2.346 2.346 0 0029.651 0zM0 17.657A2.346 2.346 0 002.349 20H29.65A2.346 2.346 0 0032 17.657v-9.47H0v9.47zm23.78-6.294h4.67v1.484h-4.67v-1.484zm-20.179 0H13.95v1.484H3.601v-1.484zm0 3.085h5.611v1.484h-5.61v-1.484z" fill="#434A54" fill-rule="nonzero"/></g></svg>

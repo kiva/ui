@@ -1,8 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-    <!-- Generator: Sketch 3.3.3 (12081) - http://www.bohemiancoding.com/sketch -->
-    <title>Warning icon</title>
-    <g id="Page-1" stroke-width="1" fill-rule="evenodd" sketch:type="MSPage">
-        <path d="M14,0 C6.2685,0 0,6.2685 0,14 C0,21.7315 6.2685,28 14,28 C21.7315,28 28,21.7315 28,14 C28,6.2685 21.7315,0 14,0 Z M11.375,7.48125 C11.375,8.68875 12.215,9.66 13.6325,9.66 C15.05,9.66 15.89,8.68875 15.89,7.48125 C15.89,6.1425 14.97125,5.25 13.6325,5.25 C12.29375,5.25 11.375,6.1425 11.375,7.48125 Z M11.7425,22.75 L15.5225,22.75 L15.5225,12.25 L11.7425,12.25 L11.7425,22.75 Z" id="info-circle-copy" sketch:type="MSShapeGroup"></path>
-    </g>
-</svg>
+<svg width="28" height="28" xmlns="http://www.w3.org/2000/svg"><path d="M14 0C6.269 0 0 6.269 0 14c0 7.732 6.269 14 14 14 7.732 0 14-6.268 14-14 0-7.731-6.268-14-14-14zm-2.625 7.481c0 1.208.84 2.179 2.258 2.179 1.417 0 2.257-.971 2.257-2.179 0-1.338-.919-2.231-2.258-2.231-1.338 0-2.257.893-2.257 2.231zm.367 15.269h3.78v-10.5h-3.78v10.5z" fill-rule="evenodd"/></svg>

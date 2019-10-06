@@ -1,10 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="102px" height="43px" viewBox="0 0 102 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
-    <!-- Generator: Sketch 3.3.3 (12081) - http://www.bohemiancoding.com/sketch -->
-    <title>Large Chevron</title>
-    <desc>Large chevron icon.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke-width="1" fill-rule="evenodd" sketch:type="MSPage">
-        <path d="M1,1.04340818 L51.0299191,41 L101,1" id="Path-5-Copy" stroke-width="2" sketch:type="MSShapeGroup"></path>
-    </g>
-</svg>
+<svg width="102" height="43" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.043L51.03 41 101 1" stroke-width="2" fill-rule="evenodd"/></svg>

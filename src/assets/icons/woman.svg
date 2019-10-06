@@ -1,8 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="35" viewBox="0 0 24 35" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <title>Female symbol</title>
-  <g fill="none" fill-rule="evenodd" stroke-width="4">
-    <circle id="Oval-1" cx="12" cy="12" r="10"></circle>
-    <path d="M12 23L12 33M17 29L7 29" stroke-linecap="square"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="35"><g fill="none" fill-rule="evenodd" stroke-width="4"><circle cx="12" cy="12" r="10"/><path d="M12 23v10m5-4H7" stroke-linecap="square"/></g></svg>

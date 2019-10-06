@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="27px" height="22px" viewBox="-1 -3 27 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="Group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(0.000000, -3.000000)">
-        <rect id="path-1" stroke="#333333" x="0" y="3" width="18" height="18"></rect>
-        <polyline id="Shape" fill="#5E9C43" fill-rule="nonzero" points="5.58323414 9.359 3 11.943 9.25856726 18.199 25.0599995 2.583 22.4757652 0 9.25856726 13.033 5.58323414 9.359"></polyline>
-    </g>
-</svg>
+<svg width="27" height="22" viewBox="-1 -3 27 22" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path stroke="#333" d="M0 0h18v18H0z"/><path fill="#5E9C43" fill-rule="nonzero" d="M5.583 6.359L3 8.943l6.259 6.256L25.06-.417 22.476-3 9.259 10.033 5.583 6.359"/></g></svg>
