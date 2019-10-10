@@ -7,6 +7,9 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/kiva/ui.svg)](https://greenkeeper.io/)
 [![Known Vulnerabilities](https://snyk.io/test/github/kiva/ui/badge.svg)](https://snyk.io/test/github/kiva/ui)
 
+## Contribution Guidelines
+Kiva welcomes outside contributions to our UI repository. If you have any ideas for a feature or improvement, create an issue and we can discuss whether it makes sense to create a pull request. Thanks for the help!
+
 ## Build Setup for localhost (outside of a Kiva VM or Server)
 
 ``` bash
