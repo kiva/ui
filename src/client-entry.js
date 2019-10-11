@@ -44,6 +44,20 @@ const {
 	kvAuth0,
 });
 
+// Show a tip message when there is an unhandled auth0 error
+kvAuth0.onError(({ eventId, user }) => {
+	let message = 'We\'re sorry, something went wrong.';
+	if (user) {
+		message = `${message} Please log out and try again.`;
+	} else {
+		message = `${message} Please clear your cookies and try again.`;
+	}
+	if (eventId) {
+		message = `${message} (event id: ${eventId})`;
+	}
+	app.$showTipMsg(message, 'error');
+});
+
 // Apply Server state to Client Store
 if (window.__APOLLO_STATE__) {
 	apolloClient.cache.restore(window.__APOLLO_STATE__);
