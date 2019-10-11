@@ -227,4 +227,5 @@ export const MockKvAuth0 = {
 	checkSession: () => Promise.resolve({}),
 	popupLogin: () => Promise.resolve({}),
 	popupCallback: () => Promise.resolve({}),
+	onError: () => {},
 };
