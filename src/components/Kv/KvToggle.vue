@@ -1,19 +1,17 @@
 <template>
-	<span class="toggle">
-		<div class="small-1">
-			<label class="label-switch switch-primary">
-				<input
-					type="checkbox"
-					class="switch switch-bootstrap status"
-					name="status"
-					id="status"
-					value="1"
-					checked="checked"
-				>
-				<span class="label"></span>
-			</label>
-		</div>
-	</span>
+	<div class="columns small-1">
+		<label class="label-switch switch-primary">
+			<input
+				type="checkbox"
+				class="switch switch-bootstrap status"
+				name="status"
+				id="status"
+				value="1"
+				checked="checked"
+			>
+			<span class="label"></span>
+		</label>
+	</div>
 </template>
 
 <script>

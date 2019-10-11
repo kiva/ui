@@ -7,10 +7,12 @@
 			</div>
 		</div>
 		<div class="body-area">
-			<div class="row column">
+			<div class="row">
 				<!-- main toggles -->
 				<kv-toggle />
-				<span>Autolending ON</span>
+				<h3 class="columns small-11 strong">
+					Autolending ON
+				</h3>
 				<!-- hr or border -->
 				<!-- basic criteria (counter starts here) -->
 				<!-- hr or border -->
