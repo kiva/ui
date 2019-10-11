@@ -145,6 +145,7 @@ import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.grap
 import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql';
 import experimentQuery from '@/graphql/query/lendByCategory/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUser.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -215,9 +216,10 @@ export default {
 		query: initializeCheckout,
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {
-			return client.query({
-				query: checkoutSettings,
-				fetchPolicy: 'network-only',
+			return client.mutate({
+				mutation: setupBasketForUserMutation
+			}).then(() => {
+				return client.query({ query: checkoutSettings, fetchPolicy: 'network-only' });
 			}).then(({ data }) => {
 				const hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 				const lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
@@ -237,12 +239,13 @@ export default {
 				return data;
 			}).then(() => {
 				return client.mutate({ mutation: validatePreCheckoutMutation });
-			}).then(() => {
-				return Promise.all([
-					client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
-					client.query({ query: experimentQuery, variables: { id: 'bt_vs_paypal' } }),
-				]);
-			});
+			})
+				.then(() => {
+					return Promise.all([
+						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' }),
+						client.query({ query: experimentQuery, variables: { id: 'bt_vs_paypal' } }),
+					]);
+				});
 		},
 		result({ data }) {
 			// user data
