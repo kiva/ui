@@ -91,7 +91,7 @@
 			<kv-button
 				v-if="promoEnabled"
 				class="slideshow-action-button billion-to-women-action"
-				to="/lend/lendingReward?lending_reward=264&doneUrl=lend-by-category/women"
+				to="/lend/lendingReward?lending_reward=265&doneUrl=lend-by-category/women"
 				v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
 			>
 				Lend now
