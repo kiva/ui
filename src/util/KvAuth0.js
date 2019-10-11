@@ -1,10 +1,14 @@
+import { WebAuth } from 'auth0-js';
 import { differenceInMilliseconds } from 'date-fns';
 import _get from 'lodash/get';
+import _over from 'lodash/over';
 import Raven from 'raven-js';
 import cookieStore from './cookieStore';
 
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
+const errorCallbacks = Symbol('errorCallbacks');
+const handleUnknownError = Symbol('handleUnknownError');
 const loginPromise = Symbol('loginPromise');
 const popupAuthorize = Symbol('authorize');
 const popupWindow = Symbol('popupWindow');
@@ -26,23 +30,20 @@ export default class KvAuth0 {
 		scope,
 		user = null,
 	}) {
+		this[errorCallbacks] = [];
 		this.enabled = true;
 		this.user = user;
 		this.accessToken = accessToken;
 		this.isServer = typeof window === 'undefined';
 
 		if (!this.isServer) {
-			// delay loading of webauth until we've confirmed we're in the browser,
-			// as it complains about not having window
-			this.webAuth = import('auth0-js').then(({ WebAuth }) => {
-				return new WebAuth({
-					audience,
-					clientID,
-					domain,
-					redirectUri,
-					responseType: 'token id_token',
-					scope,
-				});
+			this.webAuth = new WebAuth({
+				audience,
+				clientID,
+				domain,
+				redirectUri,
+				responseType: 'token id_token',
+				scope,
 			});
 		}
 	}
@@ -61,9 +62,9 @@ export default class KvAuth0 {
 
 	// Private method to handle popup authorization which can be called
 	// recursively to deal with authorization errors
-	[popupAuthorize](webAuth, options, resolve) {
+	[popupAuthorize](options, resolve) {
 		const startTime = new Date();
-		this[popupWindow] = webAuth.popup.authorize({
+		this[popupWindow] = this.webAuth.popup.authorize({
 			popupOptions: {
 				width: 480,
 				height: 940,
@@ -73,19 +74,19 @@ export default class KvAuth0 {
 			if (err) {
 				// Handle unauthorized error by reattempting authentication with prompted login
 				if (err.code === 'unauthorized') {
-					return this[popupAuthorize](webAuth, {
+					return this[popupAuthorize]({
 						...options,
 						prompt: 'login',
 					}, resolve);
 				}
 				// Otherwise log meaningful errors (ignores user closed popup error which does not have a code)
 				if (err.code || err.name) {
-					console.error(err);
 					Raven.captureMessage(getErrorString(err), {
 						tags: { auth_method: 'popup authorize' }
 					});
+					this[handleUnknownError](err);
 				} else if (differenceInMilliseconds(new Date(), startTime) < 100) {
-					Raven.captureException(new Error('Login window closed quickly. Popups may be blocked.'));
+					Raven.captureMessage('Login window closed quickly. Popups may be blocked.');
 				}
 				// Popup login failed for some reason, so resolve without a result
 				resolve();
@@ -124,8 +125,8 @@ export default class KvAuth0 {
 		if (this[sessionPromise]) return this[sessionPromise];
 
 		// Check for an existing session
-		this[sessionPromise] = this.webAuth.then(webAuth => new Promise((resolve, reject) => {
-			webAuth.checkSession({}, (err, result) => {
+		this[sessionPromise] = new Promise(resolve => {
+			this.webAuth.checkSession({}, (err, result) => {
 				if (err) {
 					this[setAuthData]();
 					if (err.error === 'login_required' || err.error === 'unauthorized') {
@@ -135,14 +136,17 @@ export default class KvAuth0 {
 						// These errors require interaction beyond what can be provided by webauth,
 						// so resolve without authentication for now. Other possibility is to redirect
 						// to login to complete authentication.
-						console.warn(`Auth session not started (${err.error_description})`);
+						Raven.captureMessage(`Auth session not started: ${getErrorString(err)}`, {
+							level: 'warning',
+						});
 						resolve();
 					} else {
 						// Everything else, actually throw an error
 						Raven.captureMessage(getErrorString(err), {
 							tags: { auth_method: 'check session' }
 						});
-						reject(err);
+						this[handleUnknownError](err);
+						resolve();
 					}
 				} else {
 					// Successful authentication
@@ -150,7 +154,7 @@ export default class KvAuth0 {
 					resolve();
 				}
 			});
-		}));
+		});
 
 		// Once the promise completes, stop tracking it
 		this[sessionPromise].finally(() => {
@@ -174,9 +178,9 @@ export default class KvAuth0 {
 		if (this[loginPromise]) return this[loginPromise];
 
 		// Open up popup window to login
-		this[loginPromise] = this.webAuth.then(webAuth => new Promise(resolve => {
-			this[popupAuthorize](webAuth, authorizeOptions, resolve);
-		}));
+		this[loginPromise] = new Promise(resolve => {
+			this[popupAuthorize](authorizeOptions, resolve);
+		});
 
 		// Once the promise completes, stop tracking it
 		this[loginPromise].finally(() => {
@@ -193,7 +197,23 @@ export default class KvAuth0 {
 			return Promise.reject(new Error('popupCallback called in server mode'));
 		}
 		this[popupWindow] = null;
-		return this.webAuth.then(webAuth => webAuth.popup.callback(options));
+		return this.webAuth.popup.callback(options);
+	}
+
+	// Receive a callback to be called in case of an unknown error
+	onError(callback) {
+		this[errorCallbacks].push(callback);
+	}
+
+	// Call error callbacks with error information
+	[handleUnknownError](error) {
+		console.error(error);
+		_over(this[errorCallbacks])({
+			error,
+			errorString: getErrorString(error),
+			eventId: Raven.lastEventId(),
+			user: this.user,
+		});
 	}
 }
 
