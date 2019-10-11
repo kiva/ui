@@ -6,6 +6,7 @@ import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
+import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -42,6 +43,27 @@ const {
 		types: config.graphqlFragmentTypes,
 	},
 	kvAuth0,
+});
+
+// Show a tip message when there is an unhandled auth0 error
+kvAuth0.onError(({ eventId, user }) => {
+	let message = 'We\'re sorry, something went wrong.';
+	if (user) {
+		message = `${message} Please log out and try again.`;
+	} else {
+		message = `${message} Please clear your cookies and try again.`;
+	}
+	if (eventId) {
+		message = `${message} (event id: ${eventId})`;
+	}
+	apolloClient.mutate({
+		mutation: showTipMessage,
+		variables: {
+			message,
+			type: 'error',
+			persist: true,
+		},
+	});
 });
 
 // Apply Server state to Client Store
