@@ -6,6 +6,7 @@ import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
+import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import createApp from '@/main';
 import '@/assets/iconLoader';
@@ -55,7 +56,14 @@ kvAuth0.onError(({ eventId, user }) => {
 	if (eventId) {
 		message = `${message} (event id: ${eventId})`;
 	}
-	app.$showTipMsg(message, 'error');
+	apolloClient.mutate({
+		mutation: showTipMessage,
+		variables: {
+			message,
+			type: 'error',
+			persist: true,
+		},
+	});
 });
 
 // Apply Server state to Client Store
