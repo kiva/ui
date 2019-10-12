@@ -1,0 +1,5 @@
+mutation setupBasketForUser($basketId: String) {
+	shop (basketId: $basketId) {
+		setupBasketForUser
+	}
+}
