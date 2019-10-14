@@ -5,7 +5,6 @@
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
-			:favorite-sector-id="favoriteSectorId"
 			:featured-sector-exp-version="featuredSectorExpVersion"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
@@ -158,7 +157,6 @@ export default {
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
-			favoriteSectorId: null,
 			featuredSectorExpVersion: null,
 		};
 	},
@@ -315,7 +313,6 @@ export default {
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 					// CASH-794 Favorite Country Row
 					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
-					this.favoriteSectorId = _get(data, 'my.recommendations.topSectorId');
 				},
 			});
 		},
@@ -540,8 +537,6 @@ export default {
 			);
 		}
 
-		// CASH-1113 Favorite Sector on Featured Card Exp
-		this.favoriteSectorId = _get(baseData, 'my.recommendations.topSectorId');
 		// Read the SSR ready featured_sector exp cache
 		const featuredSectorExperiment = this.apollo.readFragment({
 			id: 'Experiment:featured_sector',

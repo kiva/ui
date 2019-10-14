@@ -33,7 +33,6 @@ query lendByCategory($basketId: String) {
 		isAdmin
 		recommendations {
 			topCountry
-			topSectorId
 		}
 	}
 	shop (basketId: $basketId) {
