@@ -71,10 +71,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		favoriteSectorId: {
-			type: String,
-			default: null
-		},
 		featuredSectorExpVersion: {
 			type: String,
 			default: null
@@ -83,6 +79,7 @@ export default {
 	data() {
 		return {
 			experimentData: {},
+			favoriteSectorId: null,
 			featuredCategoryIds: [56],
 			loan: null,
 			loanChannel: null,
@@ -116,6 +113,9 @@ export default {
 		// fetch cached query data
 		let allLoanData = {};
 		try {
+			const recData = this.apollo.readQuery({ query: myRecommendations });
+			this.favoriteSectorId = _get(recData, 'my.recommendations.topSectorId') || null;
+
 			allLoanData = this.apollo.readQuery({
 				query: featuredLoansQuery,
 				variables: {
