@@ -1,6 +1,6 @@
 <template>
 	<div class="columns small-1">
-		<label class="label-switch switch-wrap">
+		<label class="switch-wrap">
 			<input
 				type="checkbox"
 				class="switch"
@@ -26,6 +26,10 @@ export default {
 
 .switch-wrap {
 	input.switch:checked + .label::before {
+		// Check with adam about this color
+		// Do we want to add a new color to the styleguide?
+		// Or should we set an standard opacity on a current green
+		// to define this color?
 		background-color: #9AC892;
 	}
 
@@ -46,48 +50,17 @@ export default {
 		+ .label {
 			position: relative;
 			display: inline-block;
-			margin: 0;
-			line-height: rem-calc(20);
-			min-height: rem-calc(18);
-			min-width: rem-calc(18);
 			cursor: pointer;
-
-			& ::before {
-				cursor: pointer;
-				content: "\a0";
-				background-color: #FAFAFA;
-				border: 1px solid #c8c8c8;
-				border-radius: 0;
-				display: inline-block;
-				height: rem-calc(16);
-				line-height: rem-calc(14);
-				min-width: rem-calc(16);
-				margin-right: 1px;
-				position: relative;
-				top: -1px;
-			}
 		}
 
 		+ .label::before {
-			line-height: rem-calc(17);
-			height: rem-calc(20);
-			overflow: hidden;
 			border-radius: rem-calc(12);
-			background-color: #F5F5F5;
-			border: 1px solid #CCC;
 			float: left;
-			padding: 0;
 			width: rem-calc(52);
-			margin-right: 0;
-			top: auto;
-
 			content: "";
-			border-width: 0;
 			background-color: $kiva-stroke-gray;
-			color: #F2F2F2;
 			width: rem-calc(52);
 			height: rem-calc(22);
-			line-height: rem-calc(21);
 			-webkit-transition: background 0.1s ease;
 			-o-transition: background 0.1s ease;
 			transition: background 0.1s ease;
@@ -97,12 +70,11 @@ export default {
 			content: '';
 			position: absolute;
 			top: 2px;
-			left: rem-calc(3);
+			left: rem-calc(2);
 			border-radius: rem-calc(12);
 			width: rem-calc(18);
 			height: rem-calc(18);
 			background-color: $white;
-			border: rem-calc(4) solid $white;
 			-webkit-transition: left 0.2s ease;
 			-o-transition: left 0.2s ease;
 			transition: left 0.2s ease;
