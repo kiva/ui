@@ -41,7 +41,7 @@ export default {
 			float: left;
 			content: "";
 			background-color: $kiva-stroke-gray;
-			width: rem-calc(52);
+			width: rem-calc(36);
 			height: rem-calc(22);
 			-webkit-transition: background 0.1s ease;
 			-o-transition: background 0.1s ease;
@@ -68,7 +68,7 @@ export default {
 	}
 
 	.switch:checked + .switch-label::after {
-		left: rem-calc(32);
+		left: rem-calc(16);
 		background-color: $white;
 		border: rem-calc(4) solid $white;
 	}
