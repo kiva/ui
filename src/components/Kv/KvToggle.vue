@@ -64,11 +64,7 @@ export default {
 	}
 
 	.switch:checked + .switch-label::before {
-		// Check with adam about this color
-		// Do we want to add a new color to the styleguide?
-		// Or should we set an standard opacity on a current green
-		// to define this color?
-		background-color: #8ccb8c;
+		background-color: $kiva-light-green;
 	}
 
 	.switch:checked + .switch-label::after {
