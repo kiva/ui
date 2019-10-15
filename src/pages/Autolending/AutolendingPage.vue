@@ -11,7 +11,7 @@
 				<!-- main toggles -->
 				<kv-toggle />
 				<h3 class="columns small-11 strong">
-					Autolending ON
+					Autolending
 				</h3>
 				<!-- hr or border -->
 				<!-- basic criteria (counter starts here) -->

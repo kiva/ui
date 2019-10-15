@@ -6,18 +6,13 @@
 				class="switch"
 				checked="checked"
 			>
-			<span class="label">test</span>
+			<span class="switch-label"></span>
 		</label>
 	</div>
 </template>
 
 <script>
 export default {
-	methods: {
-		pillToggled(key) {
-			this.$emit('switch-toggled', key);
-		}
-	},
 };
 </script>
 
@@ -25,19 +20,7 @@ export default {
 @import "settings";
 
 .switch-wrap {
-	// input.switch:checked + .label::before {
-	// 	// Check with adam about this color
-	// 	// Do we want to add a new color to the styleguide?
-	// 	// Or should we set an standard opacity on a current green
-	// 	// to define this color?
-	// 	background-color: #9AC892;
-	// }
-
-	// input.switch:checked + .label::after {
-	// 	left: rem-calc(32);
-	// 	background-color: $white;
-	// 	border: rem-calc(4) solid $white;
-	// }
+	margin-top: rem-calc(5);
 
 	.switch {
 		opacity: 0;
@@ -47,13 +30,13 @@ export default {
 		height: rem-calc(18);
 		cursor: pointer;
 
-		+ .label {
+		+ .switch-label {
 			position: relative;
 			display: inline-block;
 			cursor: pointer;
 		}
 
-		+ .label::before {
+		+ .switch-label::before {
 			border-radius: rem-calc(12);
 			float: left;
 			content: "";
@@ -65,7 +48,7 @@ export default {
 			transition: background 0.1s ease;
 		}
 
-		+ .label::after {
+		+ .switch-label::after {
 			content: '';
 			position: absolute;
 			top: rem-calc(2);
@@ -80,15 +63,15 @@ export default {
 		}
 	}
 
-	.switch:checked + .label::before {
+	.switch:checked + .switch-label::before {
 		// Check with adam about this color
 		// Do we want to add a new color to the styleguide?
 		// Or should we set an standard opacity on a current green
 		// to define this color?
-		background-color: #9AC892;
+		background-color: #8ccb8c;
 	}
 
-	.switch:checked + .label::after {
+	.switch:checked + .switch-label::after {
 		left: rem-calc(32);
 		background-color: $white;
 		border: rem-calc(4) solid $white;
