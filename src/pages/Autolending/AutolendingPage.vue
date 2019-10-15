@@ -48,8 +48,6 @@ export default {
 @import 'settings';
 
 .autolending {
-	// background-color: $kiva-bg-lightgray;
-
 	.title-area {
 		padding: 1.625rem 0;
 		background-color: $white;
