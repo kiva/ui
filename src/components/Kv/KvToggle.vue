@@ -69,7 +69,7 @@ export default {
 		+ .label::after {
 			content: '';
 			position: absolute;
-			top: 2px;
+			top: rem-calc(2);
 			left: rem-calc(2);
 			border-radius: rem-calc(12);
 			width: rem-calc(18);
