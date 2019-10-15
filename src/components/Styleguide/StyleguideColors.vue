@@ -14,6 +14,15 @@
 				</div>
 			</div>
 			<div class="columns small-2 color-card">
+				<div class="color-box kiva-light-green"></div>
+				<div class="color-hex small-text">
+					#8ccb8c
+				</div>
+				<div class="color-name">
+					$kiva-light-green
+				</div>
+			</div>
+			<div class="columns small-2 color-card">
 				<div class="color-box kiva-green"></div>
 				<div class="color-hex small-text">
 					#4faf4e
@@ -264,6 +273,10 @@
 
 .color-name {
 	font-weight: bold;
+}
+
+.kiva-light-green {
+	background: $kiva-light-green;
 }
 
 .kiva-green {
