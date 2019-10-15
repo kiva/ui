@@ -25,19 +25,19 @@ export default {
 @import "settings";
 
 .switch-wrap {
-	input.switch:checked + .label::before {
-		// Check with adam about this color
-		// Do we want to add a new color to the styleguide?
-		// Or should we set an standard opacity on a current green
-		// to define this color?
-		background-color: #9AC892;
-	}
+	// input.switch:checked + .label::before {
+	// 	// Check with adam about this color
+	// 	// Do we want to add a new color to the styleguide?
+	// 	// Or should we set an standard opacity on a current green
+	// 	// to define this color?
+	// 	background-color: #9AC892;
+	// }
 
-	input.switch:checked + .label::after {
-		left: rem-calc(32);
-		background-color: $white;
-		border: rem-calc(4) solid $white;
-	}
+	// input.switch:checked + .label::after {
+	// 	left: rem-calc(32);
+	// 	background-color: $white;
+	// 	border: rem-calc(4) solid $white;
+	// }
 
 	.switch {
 		opacity: 0;
@@ -56,7 +56,6 @@ export default {
 		+ .label::before {
 			border-radius: rem-calc(12);
 			float: left;
-			width: rem-calc(52);
 			content: "";
 			background-color: $kiva-stroke-gray;
 			width: rem-calc(52);
@@ -79,6 +78,20 @@ export default {
 			-o-transition: left 0.2s ease;
 			transition: left 0.2s ease;
 		}
+	}
+
+	.switch:checked + .label::before {
+		// Check with adam about this color
+		// Do we want to add a new color to the styleguide?
+		// Or should we set an standard opacity on a current green
+		// to define this color?
+		background-color: #9AC892;
+	}
+
+	.switch:checked + .label::after {
+		left: rem-calc(32);
+		background-color: $white;
+		border: rem-calc(4) solid $white;
 	}
 }
 
