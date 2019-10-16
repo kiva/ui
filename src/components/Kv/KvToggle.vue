@@ -1,0 +1,77 @@
+<template>
+	<label class="switch-wrap">
+		<input
+			type="checkbox"
+			class="switch"
+			checked="checked"
+		>
+		<span class="switch-label">
+			<slot></slot>
+		</span>
+	</label>
+</template>
+
+<script>
+export default {
+};
+</script>
+
+<style lang="scss" scoped>
+@import "settings";
+
+.switch-wrap {
+	margin-top: rem-calc(5);
+
+	.switch {
+		opacity: 0;
+		position: absolute;
+		z-index: 1;
+		width: rem-calc(18);
+		height: rem-calc(18);
+		cursor: pointer;
+
+		+ .switch-label {
+			position: relative;
+			display: inline-block;
+			cursor: pointer;
+		}
+
+		+ .switch-label::before {
+			border-radius: rem-calc(12);
+			float: left;
+			content: "";
+			background-color: $kiva-stroke-gray;
+			width: rem-calc(36);
+			height: rem-calc(22);
+			-webkit-transition: background 0.1s ease;
+			-o-transition: background 0.1s ease;
+			transition: background 0.1s ease;
+		}
+
+		+ .switch-label::after {
+			content: '';
+			position: absolute;
+			top: rem-calc(2);
+			left: rem-calc(2);
+			border-radius: rem-calc(12);
+			width: rem-calc(18);
+			height: rem-calc(18);
+			background-color: $white;
+			-webkit-transition: left 0.2s ease;
+			-o-transition: left 0.2s ease;
+			transition: left 0.2s ease;
+		}
+	}
+
+	.switch:checked + .switch-label::before {
+		background-color: $kiva-light-green;
+	}
+
+	.switch:checked + .switch-label::after {
+		left: rem-calc(16);
+		background-color: $white;
+		border: rem-calc(4) solid $white;
+	}
+}
+
+</style>

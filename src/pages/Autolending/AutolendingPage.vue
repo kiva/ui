@@ -6,23 +6,28 @@
 				<h2>Make the impact you want even if you’re away from your account for a while</h2>
 			</div>
 		</div>
-		<!-- main toggles -->
-		<!-- hr or border -->
-		<!-- basic criteria (counter starts here) -->
-		<!-- hr or border -->
-		<!-- advanced settings -->
-		<!-- save button, only visible when changes exist -->
+		<div class="row column">
+			<!-- main toggles -->
+			<kv-toggle />
+			<!-- hr or border -->
+			<!-- basic criteria (counter starts here) -->
+			<!-- hr or border -->
+			<!-- advanced settings -->
+			<!-- save button, only visible when changes exist -->
+		</div>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import KvToggle from '@/components/Kv/KvToggle';
 // import query from '@/graphql/query/autolending.graphql';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		WwwPage,
+		KvToggle
 	},
 	// apollo: {
 	// 	query,
