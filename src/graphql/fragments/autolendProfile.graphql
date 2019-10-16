@@ -1,0 +1,33 @@
+fragment autolendProfileFragment on AutolendProfile {
+	id
+	isEnabled
+	enableAfter
+	donationPercentage
+	loanSearchCriteria {
+		queryString
+		filters {
+			arrearsRate {
+				min
+				max
+			}
+			country
+			defaultRate {
+				min
+				max
+			}
+			gender
+			isGroup
+			lenderTerm {
+				min
+				max
+			}
+			# loanLimit
+			partner
+			riskRating {
+				min
+			}
+			sector
+			theme
+		}
+	}
+}

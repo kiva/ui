@@ -1,0 +1,12 @@
+#import '../../fragments/autolendProfile.graphql'
+
+query autolendingProfiles {
+	autolending @client {
+		currentProfile {
+			...autolendProfileFragment
+		}
+		savedProfile {
+			...autolendProfileFragment
+		}
+	}
+}
