@@ -1,16 +1,14 @@
 <template>
-	<div class="columns">
-		<label class="switch-wrap">
-			<input
-				type="checkbox"
-				class="switch"
-				checked="checked"
-			>
-			<span class="switch-label">
-				<slot></slot>
-			</span>
-		</label>
-	</div>
+	<label class="switch-wrap">
+		<input
+			type="checkbox"
+			class="switch"
+			checked="checked"
+		>
+		<span class="switch-label">
+			<slot></slot>
+		</span>
+	</label>
 </template>
 
 <script>

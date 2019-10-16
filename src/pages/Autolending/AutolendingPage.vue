@@ -6,7 +6,7 @@
 				<h2>Make the impact you want even if you’re away from your account for a while</h2>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row column">
 			<!-- main toggles -->
 			<kv-toggle />
 			<!-- hr or border -->
