@@ -1,0 +1,7 @@
+query loanCount($filters: LoanSearchFiltersInput, $queryString: String) {
+	lend {
+		loans(filters: $filters, queryString: $queryString) {
+			totalCount
+		}
+	}
+}

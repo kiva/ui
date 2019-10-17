@@ -1,0 +1,9 @@
+#import '../../fragments/autolendProfile.graphql'
+
+query fullAutolendProfile {
+	my {
+		autolendProfile {
+			...autolendProfileFragment
+		}
+	}
+}

@@ -1,0 +1,9 @@
+#import '../../fragments/autolendProfile.graphql'
+
+mutation updateAutolendingProfile($profile: AutolendProfileUpdateInput!) {
+	my {
+		updateAutolendProfile(profile: $profile) {
+			...autolendProfileFragment
+		}
+	}
+}
