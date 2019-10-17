@@ -1,5 +1,0 @@
-mutation toggleAutolendingEnabled($isEnabled: Boolean) {
-	autolending @client {
-		editProfile(profile: { isEnabled: $isEnabled })
-	}
-}

@@ -1,5 +1,5 @@
 <template>
-	<www-page class="autolending">
+	<www-page class="autolending" :gray-background="true">
 		<div class="title-area">
 			<div class="row column">
 				<h1>Auto-lending preferences</h1>
@@ -8,17 +8,10 @@
 		</div>
 		<!-- main toggles -->
 		<div class="row column">
-			<!-- <kv-toggle v-model="isEnabled"> -->
-			<kv-toggle>
-				<template v-if="isEnabled">
-					Auto-lending on
-				</template>
-				<template v-else>
-					Auto-lending off
-				</template>
-			</kv-toggle>
+			<div class="setting-group">
+				<main-toggle />
+			</div>
 		</div>
-		<!-- hr or border -->
 		<!-- basic criteria (counter starts here) -->
 		<!-- hr or border -->
 		<!-- advanced settings -->
@@ -34,23 +27,21 @@
 <script>
 import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
-import KvToggle from '@/components/Kv/KvToggle';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-import toggleEnabled from '@/graphql/mutation/autolending/toggleEnabled.graphql';
 import saveChanges from '@/graphql/mutation/autolending/saveChanges.graphql';
+import MainToggle from './MainToggle';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
 		WwwPage,
-		KvToggle
+		MainToggle,
 	},
 	data() {
 		return {
-			isEnabled: false,
 			isChanged: false,
 		};
 	},
@@ -61,22 +52,8 @@ export default {
 				.then(() => client.query({ query: autolendingQuery }));
 		},
 		result({ data }) {
-			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 		},
-	},
-	watch: {
-		isEnabled(enabled, previouslyEnabled) {
-			if (enabled !== previouslyEnabled) {
-				// TODO move this into the autolend toggle component
-				this.apollo.mutate({
-					mutation: toggleEnabled,
-					variables: {
-						isEnabled: enabled
-					}
-				});
-			}
-		}
 	},
 	methods: {
 		save() {
@@ -91,11 +68,15 @@ export default {
 @import 'settings';
 
 .autolending {
-	background-color: $kiva-bg-lightgray;
-
 	.title-area {
 		padding: 1.625rem 0;
+		margin-bottom: 2rem;
 		background-color: $white;
+	}
+
+	.setting-group {
+		margin: 2rem 0;
+		border-bottom: 1px solid $kiva-stroke-gray;
 	}
 }
 </style>
