@@ -1,15 +1,22 @@
 <template>
 	<div class="dropdown-wrapper">
-		<select class="dropdown">
-			<option>
-				<slot></slot>
-			</option>
+		<select
+			class="dropdown"
+			v-model="inputValue"
+			v-on="inputListeners"
+			v-bind="$attrs"
+		>
+			<slot></slot>
 		</select>
 	</div>
 </template>
 
 <script>
+import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
+export default {
+	mixins: [inputWrapperMixin]
+};
 </script>
 
 <style lang="scss" scoped>
