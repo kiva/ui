@@ -1,9 +1,5 @@
-query autolending {
+query autolendingPage {
 	autolending @client {
 		profileChanged
-		currentProfile {
-			isEnabled
-			donationPercentage
-		}
 	}
 }

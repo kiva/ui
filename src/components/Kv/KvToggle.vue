@@ -3,7 +3,9 @@
 		<input
 			type="checkbox"
 			class="switch"
-			checked="checked"
+			v-model="inputValue"
+			v-on="inputListeners"
+			v-bind="$attrs"
 		>
 		<span class="switch-label">
 			<slot></slot>
@@ -12,7 +14,10 @@
 </template>
 
 <script>
+import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
+
 export default {
+	mixins: [inputWrapperMixin]
 };
 </script>
 
