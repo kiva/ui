@@ -6,6 +6,22 @@ type Experiment {
 	version: String
 }
 
+type Autolending {
+	currentLoanCount: Int
+	currentProfile: AutolendProfile
+	profileChanged: Boolean
+	savedProfile: AutolendProfile
+	loadingProfile: Boolean
+	countingLoans: Boolean
+	savingProfile: Boolean
+}
+
+type AutolendingMutation {
+	initAutolending: Boolean
+	editProfile(profile: AutolendProfileUpdateInput): Boolean
+	saveProfile: Boolean
+}
+
 extend type Mutation {
 	closeTipMessage: Boolean
 	showTipMessage(message: String, persist: Boolean, type: String): Boolean
@@ -14,6 +30,7 @@ extend type Mutation {
 	updateExperimentVersion(id: String, version: String): Experiment
 	cleanExperimentCookie: Boolean
 	updateActiveLoan(xCoordinate: Int, yCoordinate: Int, hoverLoanId: Int, loan: String, tracking: String): ActiveLoan
+	autolending: AutolendingMutation
 }
 
 extend type Query {
@@ -22,6 +39,7 @@ extend type Query {
 	usingTouch: Boolean
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
+	autolending: Autolending
 }
 
 extend type My {
