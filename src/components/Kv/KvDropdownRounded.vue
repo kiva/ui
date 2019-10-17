@@ -31,7 +31,7 @@ export default {
 		border-radius: $button-radius;
 		line-height: $medium-text-line-height;
 		background-image: url('~@/assets/images/customDropdown.png');
-		background-size: 1.438rem 1.25rem;
+		background-size: rem-calc(23) rem-calc(20);
 		color: $charcoal;
 		font-size: $medium-text-font-size;
 		font-weight: $global-weight-highlight;
