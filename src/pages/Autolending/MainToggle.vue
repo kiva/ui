@@ -72,10 +72,12 @@ export default {
 	.toggle-text-wrapper {
 		margin-left: 3rem;
 	}
+
 	.toggle-text {
 		font-size: $normal-text-font-size;
 		font-weight: 400;
 	}
+
 	.toggle-sub-text {
 		display: block;
 		color: $kiva-text-light;
