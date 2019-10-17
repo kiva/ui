@@ -8,7 +8,6 @@
 		</div>
 		<!-- main toggles -->
 		<div class="row column">
-
 			<!-- <kv-toggle v-model="isEnabled"> -->
 			<kv-toggle>
 				<template v-if="isEnabled">
@@ -52,11 +51,6 @@ export default {
 		WwwPage,
 		KvToggle,
 		KvDropdownRounded
-	},
-	data() {
-		return {
-			lendMenuId: 'Testing',
-		};
 	},
 	data() {
 		return {
