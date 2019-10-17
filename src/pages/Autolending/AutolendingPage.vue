@@ -9,6 +9,7 @@
 		<div class="row column">
 			<!-- main toggles -->
 			<kv-toggle />
+			<kv-dropdown-rounded />
 			<!-- hr or border -->
 			<!-- basic criteria (counter starts here) -->
 			<!-- hr or border -->
@@ -21,13 +22,20 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvToggle from '@/components/Kv/KvToggle';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 // import query from '@/graphql/query/autolending.graphql';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		WwwPage,
-		KvToggle
+		KvToggle,
+		KvDropdownRounded
+	},
+	data() {
+		return {
+			lendMenuId: 'Testing',
+		};
 	},
 	// apollo: {
 	// 	query,
