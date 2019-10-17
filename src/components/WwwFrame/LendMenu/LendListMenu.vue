@@ -1,5 +1,8 @@
 <template>
 	<ul class="lend-list-menu">
+		<router-link to="/lend-by-category">
+			Explore Categories
+		</router-link>
 		<expandable-list-item id="lend-menu-category-panel" ref="categories">
 			<template slot="title">
 				<span>Categories</span>
