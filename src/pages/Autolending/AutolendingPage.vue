@@ -27,7 +27,6 @@
 <script>
 import _get from 'lodash/get';
 import KvButton from '@/components/Kv/KvButton';
-// import query from '@/graphql/query/autolending.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
