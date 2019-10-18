@@ -44,7 +44,7 @@ export default {
 		color: $kiva-text-light;
 	}
 
-	label:before {
+	label::before {
 		content: " ";
 		display: inline-block;
 		position: relative;
@@ -57,7 +57,7 @@ export default {
 		background-color: transparent;
 	}
 
-	input[type=radio]:checked + label:after {
+	input[type=radio]:checked + label::after {
 		border-radius: rem-calc(11);
 		width: rem-calc(15);
 		height: rem-calc(15);
