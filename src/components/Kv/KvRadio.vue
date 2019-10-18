@@ -2,14 +2,14 @@
 	<span class="styled-radio">
 		<input
 			type="radio"
-			id="option1"
-			name=""
-			value=""
+			value="radio-input"
+			:id="optionLabelSet"
+			:name="optionSetName"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
 		>
-		<label for="option1">
+		<label :for="optionLabelSet">
 			<slot></slot>
 		</label>
 	</span>
@@ -19,8 +19,16 @@
 import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
 export default {
+	data() {
+		return {
+			// These will need to be reuable
+			optionLabelSet: 1,
+			optionSetName: 'same_name'
+		};
+	},
 	mixins: [inputWrapperMixin]
 };
+
 </script>
 
 <style lang="scss" scoped>
