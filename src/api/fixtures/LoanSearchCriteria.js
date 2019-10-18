@@ -1,57 +1,47 @@
-import _isEqual from 'lodash/isEqual';
-import _omit from 'lodash/omit';
+import _pick from 'lodash/pick';
+import LoanSearchFilters, {
+	filtersAreEqual,
+	getCacheableFilters,
+	getInputFilters,
+} from './LoanSearchFilters';
 
 // Return a LoanSearchCriteria object with default values
 export default function LoanSearchCriteria() {
 	return {
 		__typename: 'LoanSearchCriteria',
 		queryString: '',
-		filters: {
-			__typename: 'LoanSearchFilters',
-			arrearsRate: {
-				__typename: 'MinMaxRange',
-				min: null,
-				max: null,
-			},
-			theme: [],
-			country: [],
-			defaultRate: {
-				__typename: 'MinMaxRange',
-				min: null,
-				max: null,
-			},
-			gender: null,
-			isGroup: null,
-			lenderTerm: {
-				__typename: 'MinMaxRange',
-				min: null,
-				max: null,
-			},
-			// loanLimit
-			partner: [],
-			riskRating: {
-				__typename: 'MinMaxRange',
-				min: 0,
-				max: 5,
-			},
-			sector: [],
-		},
+		filters: LoanSearchFilters(),
 	};
 }
 
-// Return a cleaned criteria suitable for input
-export function getInputCriteria(criteria) {
-	return _omit(criteria, [
-		'__typename',
-		'filters.__typename',
-		'filters.arrearsRate.__typename',
-		'filters.defaultRate.__typename',
-		'filters.lenderTerm.__typename',
-		'filters.riskRating.__typename',
-	]);
+// Return a criteria suitable to write to the cache
+export function getCacheableCriteria(criteria) {
+	const result = {
+		...criteria,
+		__typename: 'LoanSearchCriteria',
+	};
+	if (criteria.filters) {
+		result.filters = getCacheableFilters(criteria.filters);
+	}
+	return result;
 }
 
-// Return true if the two given loan search critera values are the same
+// Return a cleaned criteria suitable for a query variable
+export function getInputCriteria({ filters, ...criteria }) {
+	const cleanCriteria = _pick(criteria, [
+		'queryString'
+	]);
+	return {
+		...cleanCriteria,
+		filters: getInputFilters(filters),
+	};
+}
+
+// Return true if the two given loan search criteria values are the same
 export function criteriaAreEqual(a, b) {
-	return _isEqual(a, b);
+	if (!a && !b) return true; // if both are undefined, return true
+	if (!a || !b) return false; // if only one is undefined, return false
+	if (a.queryString !== b.queryString) return false;
+	if (!filtersAreEqual(a.filters, b.filters)) return false;
+	return true;
 }
