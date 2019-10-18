@@ -51,6 +51,9 @@ const devMiddleware = webpackDevMiddleware(clientCompiler, {
 	logLevel: 'silent',
 	stats: false,
 	publicPath: clientConfig.output.publicPath,
+	watchOptions: {
+		poll: 1000
+	}
 	// serverSideRender: true,
 });
 const hotMiddleware = webpackHotMiddleware(clientCompiler, {
@@ -106,7 +109,9 @@ clientCompiler.plugin('done', rawStats => {
 // update when the server bundle changes
 const mfs = new MFS();
 serverCompiler.outputFileSystem = mfs;
-serverCompiler.watch({}, (err, rawStats) => {
+serverCompiler.watch({
+	poll: 1000
+}, (err, rawStats) => {
 	// abort on error
 	if (err) throw err;
 	const stats = rawStats.toJson();
