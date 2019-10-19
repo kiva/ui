@@ -11,12 +11,6 @@
 			<div class="setting-group">
 				<main-toggle />
 			</div>
-			<kv-radio
-				name-set="testSet"
-				label-set="testLabelSet"
-			>
-				testing
-			</kv-radio>
 		</div>
 		<!-- basic criteria (counter starts here) -->
 		<!-- hr or border -->
@@ -37,7 +31,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
 import saveChanges from '@/graphql/mutation/autolending/saveChanges.graphql';
-import KvRadio from '@/components/Kv/KvRadio';
 import MainToggle from './MainToggle';
 
 export default {
@@ -46,7 +39,6 @@ export default {
 		KvButton,
 		WwwPage,
 		MainToggle,
-		KvRadio,
 	},
 	data() {
 		return {
