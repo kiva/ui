@@ -11,7 +11,12 @@
 			<div class="setting-group">
 				<main-toggle />
 			</div>
-			<kv-radio />
+			<kv-radio
+				name-set="testSet"
+				label-set="testLabelSet"
+			>
+				testing
+			</kv-radio>
 		</div>
 		<!-- basic criteria (counter starts here) -->
 		<!-- hr or border -->

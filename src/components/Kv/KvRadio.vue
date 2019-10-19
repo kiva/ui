@@ -3,13 +3,13 @@
 		<input
 			type="radio"
 			value="radio-input"
-			:id="optionLabelSet"
-			:name="optionSetName"
+			:id="labelSet"
+			:name="nameSet"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
 		>
-		<label :for="optionLabelSet">
+		<label :for="labelSet">
 			<slot></slot>
 		</label>
 	</span>
@@ -19,12 +19,15 @@
 import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
 export default {
-	data() {
-		return {
-			// These will need to be reuable
-			optionLabelSet: 1,
-			optionSetName: 'same_name'
-		};
+	props: {
+		labelSet: {
+			type: String,
+			required: true
+		},
+		nameSet: {
+			type: String,
+			required: true
+		},
 	},
 	mixins: [inputWrapperMixin]
 };
