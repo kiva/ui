@@ -12,6 +12,7 @@
 						<kv-controlled-checkbox
 							:checked="item.isRefined"
 							:label="`${item.label} (${item.count})`"
+							:id="item.label|changeCase('param')"
 							@checkbox-input="refine(item.value)"
 							:disabled="item.count === 0"
 						/>

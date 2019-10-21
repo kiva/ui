@@ -15,6 +15,7 @@
 				role="presentation"
 				tabindex="-1"
 				:disabled="disabled"
+				:id="id"
 			>
 			<slot>{{ label }}</slot>
 		</label>
@@ -24,6 +25,10 @@
 <script>
 export default {
 	props: {
+		id: {
+			type: String,
+			default: '',
+		},
 		label: {
 			type: String,
 			default: '',
