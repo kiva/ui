@@ -7,15 +7,20 @@ Some helpful info on editor plugins that will make working on this repo easier.
 These packages can all be added from within Atom in the Settings -> Install section, or by using `apm install <package_name>`.
 -OR-
 If you want to install all packages (Essential & Recommended) run this in your mac:
+
+```bash
 apm install editorconfig language-vue linter-eslint linter-stylelint language-graphql linter-alex file-icons pigments minimap
+```
 
 Essential packages:
+
 - [editorconfig](https://atom.io/packages/editorconfig) for enforcing code styles.
 - [language-vue](https://atom.io/packages/language-vue) for Vuejs single file component support.
 - [linter-eslint](https://atom.io/packages/linter-eslint) for Javascript linting. (Add `text.html.vue` to the linter-eslint scopes setting)
 - [linter-stylelint](https://atom.io/packages/linter-stylelint) for SCSS linting. (Currently doesn't work for .vue files)
 
 Recommended packages:
+
 - [language-graphql](https://atom.io/packages/language-graphql) for GraphQL syntax highlighting.
 - [linter-alex](https://atom.io/packages/linter-alex) to help catch insensitive, inconsiderate writing.
 - [file-icons](https://atom.io/packages/file-icons) for better visual grepping of the file tree.
@@ -24,7 +29,7 @@ Recommended packages:
 
 ## VSCode
 
-Command Shift P - to install extensions
+Command Shift P - to install extensions manually
 
 - [Vetur - octref.vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur) Vuejs syntax + linting
 - [EditorConfig for VS Code - EditorConfig.EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) for enforcing code styles.
@@ -34,14 +39,55 @@ Command Shift P - to install extensions
 
 > Search the name (ex. octref.vetur or shinn.stylelint) into the Extensions area to install within VSCode
 
-### VSCode Setup for Eslint
-> Generate the .vscode folder with a settings.json inside and apply the following settings (.vscode is already in our .gitignore file)
+Install all extensions via the command line
+
+> First requires that VSCode is in your PATH variable. From VSCode Command Palette (⇧⌘P) execute command "Shell Command: Install 'code' command in PATH"
+
+```bash
+code --install-extension octref.vetur && code --install-extension EditorConfig.EditorConfig && code --install-extension dbaeumer.vscode-eslint && code --install-extension shinnn.stylelint && code --install-extension sdras.vue-vscode-snippets
 ```
-"eslint.validate": [
-	"javascript",
-	"javascriptreact",
-	"vue"
-]
+
+### VSCode Setup for Eslint
+
+Workspace Settings
+
+> Generate the .vscode folder with a settings.json inside and apply *one* of the following settings (.vscode is already in our .gitignore file)
+
+Basic ESLint integration
+
+```json
+{
+    /* Other workspace settings...  */
+    "eslint.validate": [
+        "javascript",
+        "vue"
+    ]
+}
+```
+
+ESLint auto fix
+> If you would like ESLint to automatically fix auto-fixable errors when you save a file
+
+```json
+{
+    /* Other workspace settings...  */
+    "eslint.validate":[
+        {
+            "language":"vue",
+            "autoFix":true
+        },
+        {
+            "language":"html",
+            "autoFix":true
+        },
+        {
+            "language":"javascript",
+            "autoFix":true
+        }
+    ],
+    "eslint.autoFixOnSave": true,
+    "editor.formatOnSave": false,
+}
 ```
 
 ## PHPStorm
