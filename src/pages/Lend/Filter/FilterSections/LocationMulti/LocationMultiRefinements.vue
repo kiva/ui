@@ -31,13 +31,14 @@
 					<div
 						v-if="!item.allCountriesSelected"
 						@click="selectAllCountries(item.countries, item.region)"
-						id="select-all"
+						:id="'select-all-'+item.region|changeCase('param')"
 					>
 						Select all
 					</div>
 					<div
 						v-else
 						@click="deselectAllCountries(item.countries, item.region)"
+						:id="'deselect-all-'+item.region|changeCase('param')"
 					>
 						Deselect all
 					</div>
