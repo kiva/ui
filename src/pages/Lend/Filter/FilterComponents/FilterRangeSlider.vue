@@ -19,6 +19,7 @@
 				:step="step"
 				:value="sliderValue"
 				:style="sliderStyle"
+				:id="title|changeCase('param')"
 				@input="onSliderChange(refine, range, $event)"
 			>
 		</div>

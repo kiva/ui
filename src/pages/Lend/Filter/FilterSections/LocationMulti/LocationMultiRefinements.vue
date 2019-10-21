@@ -19,6 +19,7 @@
 					/>
 					<div
 						class="region-label"
+						:id="item.label|changeCase('param')"
 					>
 						{{ item.label }} ({{ item.count }})
 					</div>
@@ -30,12 +31,14 @@
 					<div
 						v-if="!item.allCountriesSelected"
 						@click="selectAllCountries(item.countries, item.region)"
+						:id="'select-all-'+item.region|changeCase('param')"
 					>
 						Select all
 					</div>
 					<div
 						v-else
 						@click="deselectAllCountries(item.countries, item.region)"
+						:id="'deselect-all-'+item.region|changeCase('param')"
 					>
 						Deselect all
 					</div>
@@ -46,6 +49,7 @@
 				class="country"
 				:checked="isCountryChecked(item.isRefined, item.region)"
 				:label="`${item.label} (${item.count})`"
+				:id="item.label|changeCase('param')"
 				@checkbox-input="handleCountryCheckboxInput(item)"
 				:disabled="item.count === 0"
 			/>

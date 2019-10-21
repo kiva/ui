@@ -1,5 +1,5 @@
 <template>
-	<div class="pill-toggle">
+	<div class="filter-menu-section filter-section-gender filter-section">
 		<ais-menu :attribute="'gender'">
 			<div slot-scope="{ items, refine }">
 				<pill-toggle-wrapper
