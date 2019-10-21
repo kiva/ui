@@ -1,26 +1,55 @@
 <template>
-	<loan-count class="floating-counter" :style="style">
-		Current loans that match your criteria:
-	</loan-count>
+	<figure class="floating-counter" :class="classNames" :style="style">
+		<figcaption class="count-caption">
+			Current loans that match your criteria:
+		</figcaption>
+		<loan-count-span class="count-value" :count="count" :counting="counting" />
+	</figure>
 </template>
 
 <script>
+import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
+import gql from 'graphql-tag';
 import numeral from 'numeral';
-import LoanCount from './LoanCount';
+import LoanCountSpan from './LoanCountSpan';
 
 export default {
+	inject: ['apollo'],
 	components: {
-		LoanCount,
+		LoanCountSpan,
 	},
 	data() {
 		return {
+			count: 0,
+			counting: false,
 			fixed: false,
 			marginRight: 0,
 			marginTop: 0,
+			warningThreshold: 0,
 		};
 	},
+	apollo: {
+		query: gql`{
+			autolending @client {
+				currentLoanCount
+				countingLoans
+				warningThreshold
+			}
+		}`,
+		preFetch: true,
+		result({ data }) {
+			this.count = _get(data, 'autolending.currentLoanCount');
+			this.counting = _get(data, 'autolending.countingLoans');
+			this.warningThreshold = _get(data, 'autolending.warningThreshold');
+		},
+	},
 	computed: {
+		classNames() {
+			return {
+				low: this.count < this.warningThreshold,
+			};
+		},
 		style() {
 			if (this.fixed) {
 				return {
@@ -80,11 +109,13 @@ export default {
 @import 'settings';
 
 .floating-counter {
+	$border-radius: rem-calc(3);
+
 	position: absolute;
 	top: 0;
 	right: 0;
 	width: rem-calc(202);
-	border-radius: rem-calc(3);
+	border-radius: $border-radius;
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
 	text-align: center;
 	overflow: hidden;
@@ -95,6 +126,9 @@ export default {
 		color: $kiva-text-light;
 		font-size: rem-calc(18);
 		line-height: 1.33;
+		border: 1px solid $kiva-stroke-gray;
+		border-radius: $border-radius $border-radius 0 0;
+		border-bottom: none;
 	}
 
 	.count-value {
@@ -118,8 +152,10 @@ export default {
 		}
 	}
 
-	&.zero .count-value {
-		background-color: $kiva-accent-red;
+	&.low {
+		.count-value {
+			background-color: $kiva-accent-red;
+		}
 	}
 }
 </style>

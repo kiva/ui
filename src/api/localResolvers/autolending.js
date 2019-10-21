@@ -73,6 +73,7 @@ export default () => {
 				loadingProfile: false, // true when first loading the profile from the server
 				countingLoans: false, // true when loan count is updating
 				savingProfile: false, // true when profile is being saved o the server
+				warningThreshold: 25, // minimum loan count to avoid getting a warning message
 			},
 		},
 		resolvers: {
