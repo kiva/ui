@@ -6,42 +6,50 @@
 				<h2>Make the impact you want even if you’re away from your account for a while</h2>
 			</div>
 		</div>
-		<!-- main toggles -->
 		<div class="row column">
+			<!-- main toggles -->
 			<div class="setting-group">
 				<main-toggle />
 				<gender-radios />
 			</div>
+			<!-- basic criteria -->
+			<div class="setting-group">
+				<h2>Auto-lending criteria</h2>
+				<floating-counter class="show-for-medium" />
+				<!-- row for criteria components -->
+			</div>
+			<!-- advanced settings -->
+			<!-- save button -->
+			<save-button class="show-for-medium" />
 		</div>
-		<!-- basic criteria (counter starts here) -->
-		<!-- hr or border -->
-		<!-- advanced settings -->
-		<!-- save button, only visible when changes exist -->
-		<div class="row column">
-			<kv-button @click.native="save" v-if="isChanged">
-				Save settings
-			</kv-button>
+		<!-- mobile-only footer -->
+		<div class="mobile-footer hide-for-medium">
+			<mobile-counter />
+			<save-button :show-warning="false" />
 		</div>
 	</www-page>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import KvButton from '@/components/Kv/KvButton';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-import saveChanges from '@/graphql/mutation/autolending/saveChanges.graphql';
+import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import GenderRadios from './GenderRadios';
+import MobileCounter from './MobileCounter';
+import SaveButton from './SaveButton';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		KvButton,
 		WwwPage,
+		FloatingCounter,
 		MainToggle,
 		GenderRadios,
+		MobileCounter,
+		SaveButton,
 	},
 	data() {
 		return {
@@ -58,17 +66,27 @@ export default {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 		},
 	},
+	mounted() {
+		window.addEventListener('beforeunload', this.onLeave);
+	},
+	beforeDestroy() {
+		window.removeEventListener('beforeunload', this.onLeave);
+	},
 	methods: {
-		save() {
-			// TODO move this into the save button component
-			this.apollo.mutate({ mutation: saveChanges });
-		}
+		onLeave(event) {
+			if (this.isChanged) {
+				// eslint-disable-next-line no-param-reassign
+				event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
+			}
+		},
 	},
 };
 </script>
 
 <style lang="scss">
 @import 'settings';
+
+$autolending-font-size: rem-calc(18.8);
 
 .autolending {
 	.title-area {
@@ -78,8 +96,30 @@ export default {
 	}
 
 	.setting-group {
+		position: relative;
 		margin: 2rem 0;
 		border-bottom: 1px solid $kiva-stroke-gray;
+
+		label {
+			font-size: $autolending-font-size;
+		}
+	}
+
+	.mobile-footer {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		background-color: $white;
+		box-shadow: 0 -2px 9px 0 rgba(0, 0, 0, 0.1);
+
+		.save-button-wrapper {
+			padding: 0 1rem 0.5rem;
+
+			.button {
+				width: 100%;
+			}
+		}
 	}
 }
 </style>
