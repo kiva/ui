@@ -7,6 +7,8 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var SvgStorePlugin = require('webpack-svgstore-plugin');
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+
 module.exports = merge.smart(baseWebpackConfig, {
 	entry: {
 		app: './src/client-entry.js'
@@ -21,6 +23,11 @@ module.exports = merge.smart(baseWebpackConfig, {
 				use: [MiniCssExtractPlugin.loader].concat(styleLoaders)
 			},
 		]
+	},
+	optimization: {
+		splitChunks: {
+			chunks: 'all'
+		}
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
@@ -39,6 +46,16 @@ module.exports = merge.smart(baseWebpackConfig, {
 			},
 			prefix: 'icon-',
 		}),
+		new HardSourceWebpackPlugin.ExcludeModulePlugin([
+			{
+				// HardSource works with mini-css-extract-plugin but due to how
+				// mini-css emits assets, assets are not emitted on repeated builds with
+				// mini-css and hard-source together. Ignoring the mini-css loader
+				// modules, but not the other css loader modules, excludes the modules
+				// that mini-css needs rebuilt to output assets every time.
+				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
+			}
+		]),
 		new VueSSRClientPlugin()
 	]
 });

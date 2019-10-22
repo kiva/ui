@@ -9,6 +9,18 @@ var GitRevisionPlugin = require('git-revision-webpack-plugin');
 var gitRevisionPlugin = new GitRevisionPlugin({
 	branch: true
 });
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const threadLoader = require('thread-loader');
+
+threadLoader.warmup({
+	// pool options, like passed to loader options
+	// must match loader options to boot the correct pool
+  }, [
+	// modules to load
+	'babel-loader',
+	'graphql-tag/loader',
+	'vue-style-loader',
+  ]);
 
 function resolve (dir) {
 	return path.join(__dirname, '..', dir);
@@ -47,7 +59,7 @@ module.exports = {
 			{
 				// Inject styles from the /pages/ directory as <style> tags
 				test: /\/pages\/.+\.scss$/,
-				use: ['vue-style-loader'].concat(styleLoaders)
+				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)
 			},
 			{
 				test: /\.html$/,
@@ -56,13 +68,13 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
-				loader: 'babel-loader?cacheDirectory',
+				use: [ "thread-loader",'babel-loader?cacheDirectory'],
 				include: [resolve('src'), resolve('test')]
 			},
 			{
 				test: /\.(graphql|gql)$/,
 				exclude: /node_modules/,
-				loader: 'graphql-tag/loader'
+				use: [ "thread-loader",'graphql-tag/loader']
 			},
 			{
 				// Modules who define their `browser` or `module` key as `mjs` force
@@ -104,9 +116,22 @@ module.exports = {
 			exclude: /vue-loader.*type=style/
 		}),
 		new VueLoaderPlugin(),
+		// new StylelintPlugin({
+		// 	files: ['src/**/*.scss'],
+		// 	syntax: 'scss'
+		// }),
 		new webpack.DefinePlugin({
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
-			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
+			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
+		}),
+		new HardSourceWebpackPlugin({
+			cachePrune: {
+				// Caches younger than `maxAge` are not considered for deletion. They must
+				// be at least this (default: 2 days) old in milliseconds.
+				maxAge: 2 * 24 * 60 * 60 * 1000,
+				// Prune once cache reaches 500MB
+				sizeThreshold: 500 * 1024 * 1024
+			}
 		})
 	]
 };

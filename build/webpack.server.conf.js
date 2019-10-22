@@ -1,17 +1,13 @@
-var webpack = require('webpack');
 var merge = require('webpack-merge');
-var path = require('path');
 var baseWebpackConfig = require('./webpack.base.conf');
 var nodeExternals = require('webpack-node-externals');
 var VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
-var noop = path.resolve(__dirname, 'no-op.js');
-
 module.exports = merge.smart(baseWebpackConfig, {
 	entry: './src/server-entry.js',
 	target: 'node',
-	devtool: '#source-map',
+	devtool: 'eval',
 	output: {
 		libraryTarget: 'commonjs2'
 		, filename: 'server-bundle.js'
@@ -32,6 +28,8 @@ module.exports = merge.smart(baseWebpackConfig, {
 		// do not externalize style files in case we need to import it from a dep
 		whitelist: [
 			/\.css$/,
+			/\.scss$/,
+			/\.vue$/,
 			/\?vue&type=style/,
 			// whitelist algolia deps https://github.com/algolia/vue-instantsearch/issues/588
 			// TODO: remove once they have SSR enabled
