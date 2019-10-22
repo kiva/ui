@@ -1,8 +1,8 @@
 <template>
-	<span class="styled-radio">
+	<div class="styled-radio">
 		<input
 			type="radio"
-			value="radio-input"
+			:value="value"
 			:id="labelSet"
 			:name="nameSet"
 			v-model="inputValue"
@@ -12,7 +12,7 @@
 		<label :for="labelSet">
 			<slot></slot>
 		</label>
-	</span>
+	</div>
 </template>
 
 <script>
@@ -28,6 +28,10 @@ export default {
 			type: String,
 			required: true
 		},
+		value: {
+			type: String,
+			required: true
+		}
 	},
 	mixins: [inputWrapperMixin]
 };

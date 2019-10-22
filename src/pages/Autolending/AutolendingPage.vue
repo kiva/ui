@@ -10,7 +10,7 @@
 		<div class="row column">
 			<div class="setting-group">
 				<main-toggle />
-				<gender-radio />
+				<gender-radios />
 			</div>
 		</div>
 		<!-- basic criteria (counter starts here) -->
@@ -33,7 +33,7 @@ import initAutolending from '@/graphql/mutation/autolending/initAutolending.grap
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
 import saveChanges from '@/graphql/mutation/autolending/saveChanges.graphql';
 import MainToggle from './MainToggle';
-import GenderRadio from './GenderRadio';
+import GenderRadios from './GenderRadios';
 
 export default {
 	inject: ['apollo'],
@@ -41,7 +41,7 @@ export default {
 		KvButton,
 		WwwPage,
 		MainToggle,
-		GenderRadio,
+		GenderRadios,
 	},
 	data() {
 		return {
