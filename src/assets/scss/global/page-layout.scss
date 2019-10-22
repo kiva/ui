@@ -9,11 +9,6 @@ body {
 body.scroll-locked {
 	-webkit-overflow-scrolling: auto;
 	overflow: hidden;
-
-	.www-page {
-		-webkit-overflow-scrolling: auto;
-		overflow: hidden;
-	}
 }
 
 body.scroll-locked-small-only {

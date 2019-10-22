@@ -4,22 +4,26 @@ import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql'
 import loanCountQuery from '@/graphql/query/loanCount.graphql';
 import serverProfileQuery from '@/graphql/query/autolending/profileFromServer.graphql';
 import updateServerProfile from '@/graphql/mutation/autolending/updateServerProfile.graphql';
-import AutolendProfile, { getInputProfile, profilesAreEqual } from '@/api/fixtures/AutolendProfile';
+import AutolendProfile, {
+	getCacheableProfile,
+	getInputProfile,
+	profilesAreEqual,
+} from '@/api/fixtures/AutolendProfile';
 import { criteriaAreEqual, getInputCriteria } from '@/api/fixtures/LoanSearchCriteria';
 
 // Helper function for writing autolending data to the cache
-function writeAutolendingData(cache, data) {
+function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) {
 	// Set base typename
 	const autolending = {
 		__typename: 'Autolending',
 		...data,
 	};
 	// Set autolend profile typenames
-	if (autolending.currentProfile) {
-		autolending.currentProfile.__typename = 'AutolendProfile';
+	if (currentProfile) {
+		autolending.currentProfile = getCacheableProfile(currentProfile);
 	}
-	if (autolending.savedProfile) {
-		autolending.savedProfile.__typename = 'AutolendProfile';
+	if (savedProfile) {
+		autolending.savedProfile = getCacheableProfile(savedProfile);
 	}
 	// Write autolending object to cache
 	cache.writeData({ data: { autolending } });
@@ -69,6 +73,7 @@ export default () => {
 				loadingProfile: false, // true when first loading the profile from the server
 				countingLoans: false, // true when loan count is updating
 				savingProfile: false, // true when profile is being saved o the server
+				warningThreshold: 25, // minimum loan count to avoid getting a warning message
 			},
 		},
 		resolvers: {

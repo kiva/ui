@@ -10,8 +10,8 @@
 			tabindex="500"
 		>
 			<div class="kv-lightbox">
-				<div class="row" id="lightbox-row">
-					<div class="columns" id="lightbox-columns">
+				<div class="row lightbox-row">
+					<div class="columns lightbox-columns">
 						<!-- eslint-disable max-len -->
 						<div
 							class="lightbox-content"
@@ -145,14 +145,14 @@ export default {
 		z-index: 1502;
 		padding: 0;
 
-		#lightbox-row {
+		.lightbox-row {
 			padding: 0;
 			align-items: center;
 			flex-direction: column;
 			margin-right: -0.0625rem;
 			margin-left: -0.0625rem;
 
-			#lightbox-columns {
+			.lightbox-columns {
 				position: relative;
 				width: 100%;
 				max-width: 900px;
