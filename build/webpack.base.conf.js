@@ -3,7 +3,6 @@ var assetsPath = require('./assets-path');
 var styleLoaders = require('./style-loaders');
 var config = require('../config');
 var VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
-// var StylelintPlugin = require('stylelint-webpack-plugin');
 var FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 var webpack = require('webpack');
 var GitRevisionPlugin = require('git-revision-webpack-plugin');
@@ -33,15 +32,6 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			// {
-			// 	test: /\.(js|vue)$/,
-			// 	loader: 'eslint-loader',
-			// 	enforce: 'pre',
-			// 	include: [resolve('src'), resolve('test')],
-			// 	options: {
-			// 		formatter: require('eslint-friendly-formatter')
-			// 	}
-			// },
 			{
 				test: /\.vue$/,
 				loader: 'vue-loader',
@@ -114,10 +104,6 @@ module.exports = {
 			exclude: /vue-loader.*type=style/
 		}),
 		new VueLoaderPlugin(),
-		// new StylelintPlugin({
-		// 	files: ['src/**/*.scss'],
-		// 	syntax: 'scss'
-		// }),
 		new webpack.DefinePlugin({
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
 			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
