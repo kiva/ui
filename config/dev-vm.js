@@ -9,7 +9,7 @@ module.exports = merge(base, {
 		// Use this to debug graphql calls in PHPStorm
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?XDEBUG_SESSION_START=PHPSTORM',
 		// use this to override authentication
-		// graphqlUri: 'https://api-vm.kiva.org/graphql?user_id=908357&app_id=org.kiva.www&scopes=access',
+		// graphqlUri: 'https://api-vm.kiva.org/graphql?user_id=<user id>&app_id=org.kiva.www&scopes=access',
 		enablePerimeterx: false,
 		perimeterxAppId: '###',
 		enableAnalytics: false,
