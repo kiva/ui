@@ -3,7 +3,7 @@
 		<input
 			type="radio"
 			:id="labelSet"
-			:value="value"
+			:value="radioValue"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
@@ -20,6 +20,10 @@ import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 export default {
 	props: {
 		labelSet: {
+			type: String,
+			required: true
+		},
+		radioValue: {
 			type: String,
 			required: true
 		},
