@@ -25,7 +25,7 @@ export default {
 @import "settings";
 
 .switch-wrap {
-	margin-top: rem-calc(5);
+	position: relative;
 
 	.switch {
 		opacity: 0;
@@ -43,8 +43,10 @@ export default {
 
 		+ .switch-label::before {
 			border-radius: rem-calc(12);
-			float: left;
 			content: "";
+			position: absolute;
+			top: rem-calc(4);
+			left: 0;
 			background-color: $kiva-stroke-gray;
 			width: rem-calc(36);
 			height: rem-calc(22);
@@ -56,7 +58,7 @@ export default {
 		+ .switch-label::after {
 			content: '';
 			position: absolute;
-			top: rem-calc(2);
+			top: rem-calc(6);
 			left: rem-calc(2);
 			border-radius: rem-calc(12);
 			width: rem-calc(18);
