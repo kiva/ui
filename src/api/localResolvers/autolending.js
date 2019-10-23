@@ -29,6 +29,8 @@ function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) 
 	cache.writeData({ data: { autolending } });
 }
 
+let loanCountObservable;
+
 // Return promise to fetch current loan count for the given autolend profile
 function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	// Indicate fetching new loan count
@@ -37,28 +39,32 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	// Get criteria input from current profile
 	const { filters, queryString } = getInputCriteria(currentProfile.loanSearchCriteria);
 
+	// Cancel the currently in-flight query
+	if (loanCountObservable) loanCountObservable.unsubscribe();
+
 	return new Promise(resolve => {
 		// Query for total number of loans currently fundraising matching the profile's filters
-		client.query({
+		loanCountObservable = client.watchQuery({
 			query: loanCountQuery,
 			variables: { filters, queryString },
-		})
-			// Parse the count from result
-			.then(result => _get(result, 'data.lend.loans.totalCount') || 0)
-			// Save the count in the cache
-			.then(count => {
+		}).subscribe({
+			next(result) {
+				// Parse the count from result
+				const count = _get(result, 'data.lend.loans.totalCount') || 0;
+				// Save the count in the cache
 				writeAutolendingData(cache, {
 					currentLoanCount: count,
 					countingLoans: false,
 				});
 				resolve(count);
-			})
+			},
 			// Log any errors
-			.catch(e => {
+			error(e) {
 				console.error(e);
 				writeAutolendingData(cache, { countingLoans: false });
 				resolve(0);
-			});
+			},
+		});
 	});
 }
 
