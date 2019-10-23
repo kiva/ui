@@ -27,7 +27,7 @@
 						<country-filter />
 					</div>
 					<div class="small-12 large-6 columns">
-						<!-- <sector-filter /> -->
+						<sector-filter />
 					</div>
 				</div>
 			</div>
@@ -77,7 +77,7 @@ import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import MobileCounter from './MobileCounter';
 import SaveButton from './SaveButton';
-// import SectorFilter from './SectorFilter';
+import SectorFilter from './SectorFilter';
 
 export default {
 	inject: ['apollo'],
@@ -89,7 +89,7 @@ export default {
 		MainToggle,
 		MobileCounter,
 		SaveButton,
-		// SectorFilter,
+		SectorFilter,
 	},
 	data() {
 		return {

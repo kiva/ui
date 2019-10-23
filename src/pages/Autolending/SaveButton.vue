@@ -19,7 +19,8 @@
 				</h2>
 			</template>
 			<p class="warning-text">
-				There are {{ loansLeft }} that match your criteria - we may not be able to lend your funds.
+				There {{ beVerb }} {{ loansLeft }} that {{ matchVerb }} your criteria -
+				we may not be able to lend your funds.
 			</p>
 			<template #controls>
 				<kv-button class="smallest warning-button" @click.native="closeWarning">
@@ -66,12 +67,18 @@ export default {
 		};
 	},
 	computed: {
+		beVerb() {
+			return this.loanCount === 1 ? 'is' : 'are';
+		},
 		loansLeft() {
 			if (this.loanCount > 0) {
 				return `only ${this.loanCount} loan${this.loanCount !== 1 ? 's' : ''}`;
 			}
 			return '0 loans';
-		}
+		},
+		matchVerb() {
+			return this.loanCount === 1 ? 'matches' : 'match';
+		},
 	},
 	apollo: {
 		query: gql`{

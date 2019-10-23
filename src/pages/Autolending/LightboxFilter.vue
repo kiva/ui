@@ -1,6 +1,8 @@
 <template>
 	<div class="lightbox-filter">
-		<h3>{{ name | changeCase('title') }}</h3>
+		<h3 class="filter-title">
+			{{ name | changeCase('title') }}
+		</h3>
 		<kv-radio
 			class="filter-radio"
 			:label-set="`${name}-radio-all`"
@@ -35,13 +37,20 @@
 			@lightbox-closed="closeLightbox"
 		>
 			<slot :on-change="onChange">
-				<h2>Select {{ name }}</h2>
+				<h2 class="lightbox-title">
+					Select {{ name }}
+				</h2>
 				<check-list
 					:items="itemsWithSelected"
 					:use-block-grid="true"
 					@change="onChange"
 				/>
 			</slot>
+			<template #controls>
+				<kv-button class="smaller close-button" @click.native="closeLightbox">
+					Done
+				</kv-button>
+			</template>
 		</kv-lightbox>
 	</div>
 </template>
@@ -51,6 +60,7 @@ import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import _union from 'lodash/union';
 import _without from 'lodash/without';
+import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -73,6 +83,7 @@ export default {
 	},
 	components: {
 		CheckList,
+		KvButton,
 		KvIcon,
 		KvLightbox,
 		KvRadio,
@@ -165,7 +176,7 @@ export default {
 @import 'settings';
 
 .lightbox-filter {
-	h3 {
+	.filter-title {
 		font-size: 1rem;
 		color: $kiva-text-light;
 	}
@@ -194,8 +205,13 @@ export default {
 		padding: 1rem;
 	}
 
-	h2 {
+	.lightbox-title {
 		margin-bottom: 1rem;
+	}
+
+	.close-button {
+		display: block;
+		margin: 1rem auto 0;
 	}
 }
 </style>

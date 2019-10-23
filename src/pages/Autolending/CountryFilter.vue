@@ -7,7 +7,7 @@
 		@change="changeCountries"
 	>
 		<template #default="{ onChange }">
-			<h2 class="filter-title">
+			<h2 class="lightbox-title">
 				Select countries
 			</h2>
 			<div class="row collapse">
@@ -131,7 +131,7 @@ export default {
 		}
 	}
 
-	.filter-title {
+	.lightbox-title {
 		padding: $section-padding;
 	}
 
@@ -180,7 +180,7 @@ export default {
 	}
 
 	@include breakpoint(large) {
-		.filter-title,
+		.lightbox-title,
 		.country-list p,
 		.country-list label {
 			padding: $desktop-section-padding;
