@@ -1,0 +1,17 @@
+query sectorList {
+	autolending @client {
+		currentProfile {
+			loanSearchCriteria {
+				filters {
+					sector
+				}
+			}
+		}
+	}
+	lend {
+		sector {
+			id
+			name
+		}
+	}
+}
