@@ -73,7 +73,7 @@ export default {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										gender: ${gender}
+										gender: ${gender === 'both' ? null : gender}
 									}
 								}
 							})
@@ -85,23 +85,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-// .gender-radio {
-// 	.toggle-text-wrapper {
-// 		margin-left: 3rem;
-// 	}
-
-// 	.toggle-text {
-// 		font-size: $normal-text-font-size;
-// 		font-weight: 400;
-// 	}
-
-// 	.toggle-sub-text {
-// 		display: block;
-// 		color: $kiva-text-light;
-// 	}
-// }
-</style>
