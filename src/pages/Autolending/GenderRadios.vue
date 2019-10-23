@@ -1,10 +1,9 @@
 <template>
 	<div class="gender-radios">
-		<template>
 			<kv-radio
 				label-set="genderRadioSetBoth"
 				name-set="genderRadio"
-				value="both"
+				radio-value="both"
 				v-model="gender"
 				class="both-radio"
 			>
@@ -14,7 +13,7 @@
 			<kv-radio
 				label-set="genderRadioSetMale"
 				name-set="genderRadio"
-				value="male"
+				radio-value="male"
 				v-model="gender"
 				class="male-radio"
 			>
@@ -24,13 +23,12 @@
 			<kv-radio
 				label-set="genderRadioSetFemale"
 				name-set="genderRadio"
-				value="female"
+				radio-value="female"
 				v-model="gender"
 				class="female-radio"
 			>
 				Female
 			</kv-radio>
-		</template>
 	</div>
 </template>
 
@@ -46,7 +44,6 @@ export default {
 	},
 	data() {
 		return {
-			isEnabled: false,
 			gender: 'both',
 		};
 	},
@@ -54,7 +51,6 @@ export default {
 		query: gql`{
 			autolending @client {
 				currentProfile {
-					isEnabled
 					loanSearchCriteria {
 						loanSearchFilters {
 							gender
@@ -65,22 +61,10 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.gender = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.loanSearchFilters.gender');
 		},
 	},
 	watch: {
-		isEnabled(enabled, previouslyEnabled) {
-			if (enabled !== previouslyEnabled) {
-				this.apollo.mutate({
-					mutation: gql`mutation {
-						autolending @client {
-							editProfile(profile: { isEnabled: ${enabled} })
-						}
-					}`,
-				});
-			}
-		},
 		gender(gender, previousGender) {
 			if (gender !== previousGender) {
 				this.apollo.mutate({

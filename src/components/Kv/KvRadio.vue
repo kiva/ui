@@ -3,6 +3,7 @@
 		<input
 			type="radio"
 			:id="labelSet"
+			:value="value"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
