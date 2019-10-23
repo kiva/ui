@@ -11,6 +11,8 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const threadLoader = require('thread-loader');
+
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
@@ -43,6 +45,20 @@ if (argv.mock) {
 	config.app.graphqlUri = `http://localhost:${port}/graphql`;
 	config.app.auth0.enable = false;
 }
+
+// Setup thread loader for use in webpack build
+threadLoader.warmup({
+	// pool options, like passed to loader options
+	// must match loader options to boot the correct pool
+}, [
+	// modules to load
+	'babel-loader',
+	'graphql-tag/loader',
+	'vue-style-loader',
+	'css-loader',
+	'postcss-loader',
+	'sass-loader'
+]);
 
 // webpack setup
 const clientCompiler = webpack(clientConfig);

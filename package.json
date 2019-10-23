@@ -15,6 +15,7 @@
 		"build:all": "rimraf dist && npm run build:client && npm run build:server",
 		"build:client": "rimraf dist/static && webpack --config build/webpack.client.prod.conf.js --progress --hide-modules",
 		"build:server": "webpack --config build/webpack.server.conf.js --progress --hide-modules",
+		"destroyBuildCache": "rimraf node_modules/.cache",
 		"e2e:dev": "cypress open --config baseUrl=https://dev-vm-01.kiva.org",
 		"e2e:headless": "cypress run --config baseUrl=http://localhost:8888",
 		"fetchSchema": "node build/fetch-schema.js",
