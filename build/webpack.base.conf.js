@@ -110,6 +110,9 @@ module.exports = {
 			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
 		}),
 		new HardSourceWebpackPlugin({
+			configHash(webpackConfig) {
+				return `${process.env.NODE_ENV.substring(0,3)}_${require('node-object-hash')({sort: false}).hash(webpackConfig)}`
+			},
 			cachePrune: {
 				// Caches younger than `maxAge` are not considered for deletion. They must
 				// be at least this (default: 2 days) old in milliseconds.
