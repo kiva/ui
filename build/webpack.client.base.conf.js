@@ -1,4 +1,3 @@
-var config = require('../config');
 var merge = require('webpack-merge');
 var assetsPath = require('./assets-path');
 var baseWebpackConfig = require('./webpack.base.conf');
@@ -8,12 +7,13 @@ var SvgStorePlugin = require('webpack-svgstore-plugin');
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = merge.smart(baseWebpackConfig, {
 	entry: {
 		app: './src/client-entry.js'
 	},
-	devtool: config.build.productionSourceMap ? '#source-map' : false,
+	devtool: isProd ? 'source-map' : false,
 	module: {
 		rules: [
 			{
@@ -53,8 +53,8 @@ module.exports = merge.smart(baseWebpackConfig, {
 				// mini-css and hard-source together. Ignoring the mini-css loader
 				// modules, but not the other css loader modules, excludes the modules
 				// that mini-css needs rebuilt to output assets every time.
-				// The above it also true for .woff font files and the SVG sprite created by
-				// svgXhr
+				// The above is also true for .woff font files and the SVG sprite
+				// created by svgXhr
 				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
 			},
 			{

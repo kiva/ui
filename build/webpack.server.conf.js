@@ -3,11 +3,12 @@ var baseWebpackConfig = require('./webpack.base.conf');
 var nodeExternals = require('webpack-node-externals');
 var VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = merge.smart(baseWebpackConfig, {
 	entry: './src/server-entry.js',
 	target: 'node',
-	devtool: 'eval',
+	devtool: isProd ? 'source-map' : 'eval',
 	output: {
 		libraryTarget: 'commonjs2'
 		, filename: 'server-bundle.js'
