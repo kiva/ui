@@ -1,5 +1,6 @@
 <template>
 	<div class="gender-radios">
+		<h3 class="filter-title">Individuals/Groups</h3>
 		<kv-radio
 			label-set="genderRadioSetBoth"
 			name-set="genderRadio"
@@ -7,17 +8,7 @@
 			v-model="gender"
 			class="both-radio"
 		>
-			Both
-		</kv-radio>
-		<br>
-		<kv-radio
-			label-set="genderRadioSetMale"
-			name-set="genderRadio"
-			radio-value="male"
-			v-model="gender"
-			class="male-radio"
-		>
-			Male
+			Everyone
 		</kv-radio>
 		<br>
 		<kv-radio
@@ -27,7 +18,17 @@
 			v-model="gender"
 			class="female-radio"
 		>
-			Female
+			Women only
+		</kv-radio>
+		<br>
+		<kv-radio
+			label-set="genderRadioSetMale"
+			name-set="genderRadio"
+			radio-value="male"
+			v-model="gender"
+			class="male-radio"
+		>
+			Men only
 		</kv-radio>
 	</div>
 </template>
@@ -85,3 +86,13 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.filter-title {
+	font-size: 1rem;
+	color: $kiva-text-light;
+}
+
+</style>
