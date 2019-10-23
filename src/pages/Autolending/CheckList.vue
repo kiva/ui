@@ -1,7 +1,6 @@
 <template>
-	<ul class="check-list" :class="rowClasses">
+	<ul class="check-list" :class="{ 'use-columns': useColumns }">
 		<li
-			:class="columnClasses"
 			:key="id"
 			v-for="{ id, name, selected } in items"
 		>
@@ -28,21 +27,13 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		useBlockGrid: {
+		useColumns: {
 			type: Boolean,
 			default: false,
 		},
 	},
 	components: {
 		KvToggle,
-	},
-	computed: {
-		columnClasses() {
-			return this.useBlockGrid ? ['column'] : [];
-		},
-		rowClasses() {
-			return this.useBlockGrid ? ['row', 'collapse', 'small-up-1', 'medium-up-2', 'large-up-3'] : [];
-		},
 	},
 };
 </script>
@@ -53,6 +44,16 @@ export default {
 .check-list {
 	list-style: none;
 	margin: 0;
+
+	&.use-columns {
+		@include breakpoint(medium) {
+			column-count: 2;
+		}
+
+		@include breakpoint(large) {
+			column-count: 3;
+		}
+	}
 
 	.list-item {
 		font-size: 1rem;
