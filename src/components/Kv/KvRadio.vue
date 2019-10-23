@@ -4,7 +4,6 @@
 			type="radio"
 			:value="value"
 			:id="labelSet"
-			:name="nameSet"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
@@ -21,10 +20,6 @@ import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 export default {
 	props: {
 		labelSet: {
-			type: String,
-			required: true
-		},
-		nameSet: {
 			type: String,
 			required: true
 		},
@@ -51,12 +46,7 @@ export default {
 		// Pushing the default radio off the page instead of using
 		// display: none; for screen reader accessibilty
 		position: absolute !important;
-		top: rem-calc(-9999) !important;
 		left: rem-calc(-9999) !important;
-	}
-
-	label {
-		color: $kiva-text-light;
 	}
 
 	label::before {
@@ -72,16 +62,20 @@ export default {
 		background-color: transparent;
 	}
 
-	input[type=radio]:checked + label::after {
-		border-radius: rem-calc(11);
-		width: rem-calc(15);
-		height: rem-calc(15);
-		position: absolute;
-		top: rem-calc(6);
-		left: rem-calc(14);
-		content: " ";
-		display: block;
-		border: rem-calc(5) solid $kiva-light-green;
+	input[type=radio]:checked + label {
+		font-weight: 500;
+
+		&::after {
+			border-radius: rem-calc(11);
+			width: rem-calc(15);
+			height: rem-calc(15);
+			position: absolute;
+			top: rem-calc(6);
+			left: rem-calc(14);
+			content: " ";
+			display: block;
+			border: rem-calc(5) solid $kiva-light-green;
+		}
 	}
 }
 
