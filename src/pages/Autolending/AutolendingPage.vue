@@ -16,8 +16,45 @@
 				<h2>Auto-lending criteria</h2>
 				<floating-counter class="show-for-medium" />
 				<!-- row for criteria components -->
+				<div class="row">
+					<div class="small-12 medium-6 columns">
+						<!-- gender -->
+					</div>
+					<div class="small-12 medium-6 columns">
+						<!-- group -->
+					</div>
+					<div class="small-12 medium-6 columns">
+						<country-filter />
+					</div>
+					<div class="small-12 medium-6 columns">
+						<!-- <sector-filter /> -->
+					</div>
+				</div>
 			</div>
 			<!-- advanced settings -->
+			<div class="row">
+				<div class="small-12 medium-6 columns">
+					<!-- loan increment -->
+				</div>
+				<div class="small-12 medium-6 columns">
+					<!-- <attribute-filter /> -->
+				</div>
+				<div class="small-12 medium-6 columns">
+					<!-- loan term -->
+				</div>
+				<div class="small-12 medium-6 columns">
+					<!-- partners -->
+				</div>
+				<div class="small-12 medium-6 columns">
+					<!-- delinquency -->
+				</div>
+				<div class="small-12 medium-6 columns">
+					<!-- risk rating -->
+				</div>
+				<div class="small-12 medium-6 columns">
+					<!-- default rate -->
+				</div>
+			</div>
 			<!-- save button -->
 			<save-button class="show-for-medium" />
 		</div>
@@ -34,19 +71,25 @@ import _get from 'lodash/get';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
+// import AttributeFilter from './AttributeFilter';
+import CountryFilter from './CountryFilter';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import MobileCounter from './MobileCounter';
 import SaveButton from './SaveButton';
+// import SectorFilter from './SectorFilter';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		WwwPage,
+		// AttributeFilter,
+		CountryFilter,
 		FloatingCounter,
 		MainToggle,
 		MobileCounter,
 		SaveButton,
+		// SectorFilter,
 	},
 	data() {
 		return {
