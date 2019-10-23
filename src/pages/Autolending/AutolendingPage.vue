@@ -21,7 +21,7 @@
 						<!-- gender -->
 					</div>
 					<div class="small-12 large-6 columns">
-						<!-- group -->
+						<group-radios />
 					</div>
 					<div class="small-12 large-6 columns">
 						<country-filter />
@@ -78,6 +78,7 @@ import MainToggle from './MainToggle';
 import MobileCounter from './MobileCounter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
+import GroupRadios from './GroupRadios';
 
 export default {
 	inject: ['apollo'],
@@ -90,6 +91,7 @@ export default {
 		MobileCounter,
 		SaveButton,
 		SectorFilter,
+		GroupRadios,
 	},
 	data() {
 		return {
