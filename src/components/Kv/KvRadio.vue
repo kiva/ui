@@ -2,7 +2,6 @@
 	<div class="styled-radio">
 		<input
 			type="radio"
-			:value="value"
 			:id="labelSet"
 			v-model="inputValue"
 			v-on="inputListeners"
@@ -23,10 +22,6 @@ export default {
 			type: String,
 			required: true
 		},
-		value: {
-			type: String,
-			required: true
-		}
 	},
 	mixins: [inputWrapperMixin]
 };
@@ -70,7 +65,7 @@ export default {
 			width: rem-calc(15);
 			height: rem-calc(15);
 			position: absolute;
-			top: rem-calc(6);
+			top: rem-calc(10);
 			left: rem-calc(14);
 			content: " ";
 			display: block;

@@ -10,7 +10,6 @@
 			<!-- main toggles -->
 			<div class="setting-group">
 				<main-toggle />
-				<gender-radios />
 			</div>
 			<!-- basic criteria -->
 			<div class="setting-group">
@@ -19,7 +18,7 @@
 				<!-- row for criteria components -->
 				<div class="row">
 					<div class="small-12 large-6 columns">
-						<!-- gender -->
+						<gender-radios />
 					</div>
 					<div class="small-12 large-6 columns">
 						<!-- group -->

@@ -1,8 +1,8 @@
-<template v-model="isEnabled">
+<template>
 	<div class="gender-radios">
-		<template v-if="isEnabled">
+		<template>
 			<kv-radio
-				label-set="genderRadioSet"
+				label-set="genderRadioSetBoth"
 				name-set="genderRadio"
 				value="both"
 				v-model="gender"
@@ -12,7 +12,7 @@
 			</kv-radio>
 			<br>
 			<kv-radio
-				label-set="genderRadioSet"
+				label-set="genderRadioSetMale"
 				name-set="genderRadio"
 				value="male"
 				v-model="gender"
@@ -22,7 +22,7 @@
 			</kv-radio>
 			<br>
 			<kv-radio
-				label-set="genderRadioSet"
+				label-set="genderRadioSetFemale"
 				name-set="genderRadio"
 				value="female"
 				v-model="gender"
@@ -30,9 +30,6 @@
 			>
 				Female
 			</kv-radio>
-		</template>
-		<template v-else>
-			isEnabled = false
 		</template>
 	</div>
 </template>
@@ -84,18 +81,18 @@ export default {
 				});
 			}
 		},
-		gender(enable, previouslyEnabled) {
-			if (enabled !== previouslyEnabled) {
+		gender(gender, previousGender) {
+			if (gender !== previousGender) {
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
-							currentProfile {
-								loanSearchCriteria {
-									loanSearchFilters {
-										editProfile(profile: { gender: ${gender} })
+							editProfile(profile: {
+								loanSearchCriteria: {
+									filters: {
+										gender: ${gender}
 									}
 								}
-							}
+							})
 						}
 					}`,
 				});
