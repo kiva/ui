@@ -14,52 +14,52 @@
 			<!-- basic criteria -->
 			<div class="setting-group">
 				<h2>Auto-lending criteria</h2>
-				<floating-counter class="show-for-medium" />
+				<floating-counter class="show-for-large" />
 				<!-- row for criteria components -->
 				<div class="row">
-					<div class="small-12 medium-6 columns">
+					<div class="small-12 large-6 columns">
 						<!-- gender -->
 					</div>
-					<div class="small-12 medium-6 columns">
+					<div class="small-12 large-6 columns">
 						<!-- group -->
 					</div>
-					<div class="small-12 medium-6 columns">
+					<div class="small-12 large-6 columns">
 						<country-filter />
 					</div>
-					<div class="small-12 medium-6 columns">
+					<div class="small-12 large-6 columns">
 						<!-- <sector-filter /> -->
 					</div>
 				</div>
 			</div>
 			<!-- advanced settings -->
 			<div class="row">
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- loan increment -->
 				</div>
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- <attribute-filter /> -->
 				</div>
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- loan term -->
 				</div>
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- partners -->
 				</div>
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- delinquency -->
 				</div>
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- risk rating -->
 				</div>
-				<div class="small-12 medium-6 columns">
+				<div class="small-12 large-6 columns">
 					<!-- default rate -->
 				</div>
 			</div>
 			<!-- save button -->
-			<save-button class="show-for-medium" />
+			<save-button class="show-for-large" />
 		</div>
 		<!-- mobile-only footer -->
-		<div class="mobile-footer hide-for-medium">
+		<div class="mobile-footer hide-for-large">
 			<mobile-counter />
 			<save-button :show-warning="false" />
 		</div>
