@@ -43,7 +43,7 @@
 					<!-- loan term -->
 				</div>
 				<div class="small-12 large-6 columns">
-					<!-- partners -->
+					<partner-filter />
 				</div>
 				<div class="small-12 large-6 columns">
 					<!-- delinquency -->
@@ -76,6 +76,7 @@ import CountryFilter from './CountryFilter';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import MobileCounter from './MobileCounter';
+import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 // import SectorFilter from './SectorFilter';
 
@@ -88,6 +89,7 @@ export default {
 		FloatingCounter,
 		MainToggle,
 		MobileCounter,
+		PartnerFilter,
 		SaveButton,
 		// SectorFilter,
 	},
