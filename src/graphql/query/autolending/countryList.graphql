@@ -1,0 +1,20 @@
+query countryList {
+	autolending @client {
+		currentProfile {
+			loanSearchCriteria {
+				filters {
+					country
+				}
+			}
+		}
+	}
+	lend {
+		countryFacets {
+			country {
+				name
+				region
+				isoCode
+			}
+		}
+	}
+}
