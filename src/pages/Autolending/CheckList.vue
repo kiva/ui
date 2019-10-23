@@ -11,7 +11,9 @@
 				:value="selected"
 				@input="$emit('change', $event, id)"
 			>
-				<span class="list-item-label">{{ name }}</span>
+				<div class="list-item-label">
+					{{ name }}
+				</div>
 			</kv-toggle>
 		</li>
 	</ul>
@@ -53,13 +55,15 @@ export default {
 	margin: 0;
 
 	.list-item {
-		line-height: 1;
-		margin: 0 0 0.75rem;
+		font-size: 1rem;
+
+		@include breakpoint(large) {
+			font-size: rem-calc(18);
+		}
 	}
 
 	.list-item-label {
-		margin-left: 0.75rem;
-		vertical-align: middle;
+		margin-left: 2.75rem;
 	}
 }
 </style>

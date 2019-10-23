@@ -7,7 +7,9 @@
 		@change="changeCountries"
 	>
 		<template #default="{ onChange }">
-			<h2>Select countries</h2>
+			<h2 class="filter-title">
+				Select countries
+			</h2>
 			<div class="row collapse">
 				<div class="small-6 columns region-list">
 					<ul>
@@ -118,7 +120,8 @@ export default {
 @import 'settings';
 
 .country-filter {
-	$section-padding: 0 1.5rem;
+	$section-padding: 0.4rem 0.5rem;
+	$desktop-section-padding: 0.2rem 1.5rem;
 
 	.kv-lightbox-wrap .kv-lightbox .lightbox-row .lightbox-columns {
 		max-width: 32rem;
@@ -128,7 +131,7 @@ export default {
 		}
 	}
 
-	h2 {
+	.filter-title {
 		padding: $section-padding;
 	}
 
@@ -146,7 +149,7 @@ export default {
 		padding: $section-padding;
 		color: $kiva-textlink;
 		line-height: 1.8;
-		font-size: rem-calc(18);
+		font-size: 1rem;
 		text-align: left;
 
 		&:hover {
@@ -168,12 +171,24 @@ export default {
 		}
 
 		label {
-			font-size: rem-calc(18);
 			padding: $section-padding;
 		}
 
 		input {
 			margin-bottom: 0;
+		}
+	}
+
+	@include breakpoint(large) {
+		.filter-title,
+		.country-list p,
+		.country-list label {
+			padding: $desktop-section-padding;
+		}
+
+		.region-button {
+			padding: $desktop-section-padding;
+			font-size: rem-calc(18);
 		}
 	}
 }
