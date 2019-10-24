@@ -74,15 +74,12 @@ export default {
 
 .donation-dropdown {
 	margin-left: 3rem;
+	margin-bottom: 0.5rem;
 
 	.filter-title {
 		font-size: 1rem;
 		color: $kiva-text-light;
 		margin-bottom: 0.5rem;
-	}
-
-	.dropdown-select {
-		margin-bottom: 1.5rem;
 	}
 }
 </style>
