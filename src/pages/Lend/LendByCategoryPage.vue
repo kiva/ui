@@ -64,11 +64,11 @@
 			</div>
 		</div>
 
-		<div class="row" v-if="isAdmin">
+		<!-- <div class="row" v-if="isAdmin">
 			<div class="columns small-12">
 				<category-admin-controls />
 			</div>
-		</div>
+		</div> -->
 
 		<add-to-basket-interstitial v-show="addToBasketExpActive" />
 
@@ -121,7 +121,7 @@ const ssrRowLimiter = 2;
 
 export default {
 	components: {
-		CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
+		// CategoryAdminControls: () => import('./admin/CategoryAdminControls'),
 		CategoryRow,
 		FeaturedHeroLoanWrapper,
 		WwwPage,
