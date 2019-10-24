@@ -55,7 +55,7 @@ export default {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
-						loanSearchFilters {
+						filters {
 							gender
 						}
 					}
@@ -64,7 +64,7 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.gender = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.loanSearchFilters.gender');
+			this.gender = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.filters.gender');
 		},
 	},
 	watch: {
