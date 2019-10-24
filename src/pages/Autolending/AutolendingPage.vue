@@ -6,7 +6,7 @@
 				<h2>Make the impact you want even if you’re away from your account for a while</h2>
 			</div>
 		</div>
-		<div class="row column">
+		<div class="row column settings-area">
 			<!-- main toggles -->
 			<div class="setting-group">
 				<main-toggle />
@@ -18,7 +18,7 @@
 				<!-- row for criteria components -->
 				<div class="row">
 					<div class="small-12 large-6 columns">
-						<!-- gender -->
+						<gender-radios />
 					</div>
 					<div class="small-12 large-6 columns">
 						<group-radios />
@@ -32,29 +32,36 @@
 				</div>
 			</div>
 			<!-- advanced settings -->
-			<div class="row">
-				<div class="small-12 large-6 columns">
-					<!-- loan increment -->
-				</div>
-				<div class="small-12 large-6 columns">
-					<!-- <attribute-filter /> -->
-				</div>
-				<div class="small-12 large-6 columns">
-					<!-- loan term -->
-				</div>
-				<div class="small-12 large-6 columns">
-					<!-- partners -->
-				</div>
-				<div class="small-12 large-6 columns">
-					<!-- delinquency -->
-				</div>
-				<div class="small-12 large-6 columns">
-					<!-- risk rating -->
-				</div>
-				<div class="small-12 large-6 columns">
-					<!-- default rate -->
-				</div>
+			<div class="row column">
+				<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
+					{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
+				</button>
 			</div>
+			<kv-expandable>
+				<div class="row" v-show="showAdvanced">
+					<div class="small-12 large-6 columns">
+						<!-- loan increment -->
+					</div>
+					<div class="small-12 large-6 columns">
+						<!-- <attribute-filter /> -->
+					</div>
+					<div class="small-12 large-6 columns">
+						<!-- loan term -->
+					</div>
+					<div class="small-12 large-6 columns">
+						<partner-filter />
+					</div>
+					<div class="small-12 large-6 columns">
+						<!-- delinquency -->
+					</div>
+					<div class="small-12 large-6 columns">
+						<!-- risk rating -->
+					</div>
+					<div class="small-12 large-6 columns">
+						<!-- default rate -->
+					</div>
+				</div>
+			</kv-expandable>
 			<!-- save button -->
 			<save-button class="show-for-large" />
 		</div>
@@ -68,6 +75,7 @@
 
 <script>
 import _get from 'lodash/get';
+import KvExpandable from '@/components/Kv/KvExpandable';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
@@ -75,7 +83,9 @@ import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphq
 import CountryFilter from './CountryFilter';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
+import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
+import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
 import GroupRadios from './GroupRadios';
@@ -84,11 +94,14 @@ export default {
 	inject: ['apollo'],
 	components: {
 		WwwPage,
+		KvExpandable,
 		// AttributeFilter,
 		CountryFilter,
 		FloatingCounter,
 		MainToggle,
+		GenderRadios,
 		MobileCounter,
+		PartnerFilter,
 		SaveButton,
 		SectorFilter,
 		GroupRadios,
@@ -96,6 +109,7 @@ export default {
 	data() {
 		return {
 			isChanged: false,
+			showAdvanced: false,
 		};
 	},
 	apollo: {
@@ -137,14 +151,24 @@ $autolending-font-size: rem-calc(18.8);
 		background-color: $white;
 	}
 
+	.settings-area {
+		margin-bottom: 5rem;
+	}
+
+	label {
+		font-size: $autolending-font-size;
+	}
+
 	.setting-group {
 		position: relative;
 		margin: 2rem 0;
 		border-bottom: 1px solid $kiva-stroke-gray;
+	}
 
-		label {
-			font-size: $autolending-font-size;
-		}
+	.advanced-settings-toggle {
+		color: $kiva-textlink;
+		font-weight: 300;
+		margin-bottom: 2rem;
 	}
 
 	.mobile-footer {

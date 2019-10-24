@@ -1,0 +1,19 @@
+query partnerList {
+	autolending @client {
+		currentProfile {
+			loanSearchCriteria {
+				filters {
+					partner
+				}
+			}
+		}
+	}
+	general {
+		partners(limit:1000, filters:{status:active}) {
+			values {
+				id
+				name
+			}
+		}
+	}
+}
