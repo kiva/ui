@@ -11,7 +11,6 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import changeCase from 'change-case';
 import gql from 'graphql-tag';
 import themeListQuery from '@/graphql/query/autolending/themeList.graphql';
 import LightboxFilter from './LightboxFilter';
@@ -43,7 +42,6 @@ export default {
 		result({ data }) {
 			this.allThemes = _get(data, 'lend.loanThemeFilter') || [];
 			this.currentIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.theme') || [];
-			console.log(this.mappedThemes);
 		},
 	},
 	methods: {
