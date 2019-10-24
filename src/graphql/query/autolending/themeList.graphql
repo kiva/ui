@@ -1,0 +1,16 @@
+query themeList {
+	autolending @client {
+		currentProfile {
+			loanSearchCriteria {
+				filters {
+					theme
+				}
+			}
+		}
+	}
+	lend {
+		loanThemeFilter {
+			name
+		}
+	}
+}

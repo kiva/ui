@@ -43,7 +43,7 @@
 						<!-- loan increment -->
 					</div>
 					<div class="small-12 large-6 columns">
-						<!-- <attribute-filter /> -->
+						<attribute-filter />
 					</div>
 					<div class="small-12 large-6 columns">
 						<!-- loan term -->
@@ -79,7 +79,7 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-// import AttributeFilter from './AttributeFilter';
+import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
@@ -95,7 +95,7 @@ export default {
 	components: {
 		WwwPage,
 		KvExpandable,
-		// AttributeFilter,
+		AttributeFilter,
 		CountryFilter,
 		FloatingCounter,
 		MainToggle,

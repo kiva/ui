@@ -70,7 +70,6 @@ export default {
 
 .main-toggle {
 	.toggle-text-wrapper {
-		margin-top: -0.4rem;
 		margin-left: 3rem;
 	}
 
