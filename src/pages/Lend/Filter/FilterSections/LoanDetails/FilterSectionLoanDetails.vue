@@ -1,5 +1,5 @@
 <template>
-	<filter-menu-section title="Loan details">
+	<filter-menu-section title="Loan details" class="filter-section-loan-details">
 		<range-slider-wrapper
 			:minimum="4"
 			:maximum="25"

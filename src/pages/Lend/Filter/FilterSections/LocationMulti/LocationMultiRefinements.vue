@@ -7,6 +7,7 @@
 			<div
 				v-if="item.isRegion"
 				class="region"
+				:id="item.region|changeCase('param')"
 				:class="{open: isRegionOpen(item.region)}"
 			>
 				<div

@@ -1,5 +1,9 @@
 <template>
-	<filter-menu-section title="Sort order" :initial-accordian-state-open="initialAccordianStateOpen">
+	<filter-menu-section
+		title="Sort order"
+		class="filter-section-sort-order"
+		:initial-accordian-state-open="initialAccordianStateOpen"
+	>
 		<ais-sort-by :items="defaultSortIndices">
 			<ul slot-scope="{ items, currentRefinement, refine }">
 				<li v-for="item in items" :key="item.value" :value="item.value" class="sort">

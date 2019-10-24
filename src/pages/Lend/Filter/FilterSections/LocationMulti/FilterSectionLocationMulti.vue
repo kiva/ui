@@ -1,5 +1,9 @@
 <template>
-	<filter-menu-section title="Location" :initial-accordian-state-open="initialAccordianStateOpen">
+	<filter-menu-section
+		class="filter-section-location"
+		title="Location"
+		:initial-accordian-state-open="initialAccordianStateOpen"
+	>
 		<find-new-country :attribute="'locationFacets.lvl1'" />
 		<ais-refinement-list
 			:attribute="'locationFacets.lvl1'"
