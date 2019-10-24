@@ -64,7 +64,7 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.gender = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.filters.gender');
+			this.gender = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.gender') || 'both';
 		},
 	},
 	watch: {
