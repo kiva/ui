@@ -1,31 +1,33 @@
 <template>
-	<div class="group-individuals-radios">
-		<h3 class="filter-title">Individuals/Groups</h3>
+	<div class="group-radios">
+		<h3 class="filter-title">
+			Individuals/groups
+		</h3>
 		<kv-radio
-			label-set="groupIndividualsRadioSetBoth"
-			name-set="groupIndividualsRadio"
+			label-set="groupRadioSetBoth"
+			name-set="groupRadio"
 			radio-value="both"
-			v-model="groupIndividual"
+			v-model="isGroup"
 			class="both-radio"
 		>
 			Both
 		</kv-radio>
 		<br>
 		<kv-radio
-			label-set="groupIndividualsRadioSetMale"
-			name-set="groupIndividualsRadio"
-			radio-value="individuals-only"
-			v-model="groupIndividual"
+			label-set="groupRadioSetMale"
+			name-set="groupRadio"
+			radio-value="individual-only"
+			v-model="isGroup"
 			class="individual-radio"
 		>
 			Individuals only
 		</kv-radio>
 		<br>
 		<kv-radio
-			label-set="groupIndividualsRadioSetFemale"
-			name-set="groupIndividualsRadio"
+			label-set="groupRadioSetFemale"
+			name-set="groupRadio"
 			radio-value="groups-only"
-			v-model="groupIndividual"
+			v-model="isGroup"
 			class="group-radio"
 		>
 			Groups only
@@ -53,7 +55,7 @@ export default {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
-						loanSearchFilters {
+						filters {
 							isGroup
 						}
 					}
@@ -62,19 +64,19 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.gender = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.loanSearchFilters.isGroup');
+			this.isGroup = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.filters.isGroup') || 'both';
 		},
 	},
 	watch: {
-		gender(gender, previousGender) {
-			if (gender !== previousGender) {
+		group(groupOption, previousGroupOption) {
+			if (groupOption !== previousGroupOption) {
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										isGroup: ${gender === 'both' ? null : gender}
+										isGroup: ${isGroup === 'both' ? null : isGroup}
 									}
 								}
 							})
