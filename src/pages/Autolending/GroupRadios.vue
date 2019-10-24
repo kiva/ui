@@ -26,7 +26,7 @@
 		<kv-radio
 			label-set="groupRadioSetFemale"
 			name-set="groupRadio"
-			radio-value="groups-only"
+			radio-value="group-only"
 			v-model="isGroup"
 			class="group-radio"
 		>
@@ -64,7 +64,14 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.isGroup = !!_get(data, 'autolending.currentProfile.loanSearchCriteria.filters.isGroup') || 'both';
+			const isGroup = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.isGroup');
+			if (isGroup === true) {
+  				this.isGroup = 'group-only';
+			} else if (isGroup === false) {
+				this.isGroup = 'individual-only';
+			} else {
+				this.isGroup = 'both';
+			}
 		},
 	},
 	watch: {
@@ -76,7 +83,15 @@ export default {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										isGroup: ${isGroup === 'both' ? null : isGroup}
+										isGroup: 
+											if (isGroup) === true) {
+												isGroup = "group-only";
+											} else if (isGroup === false) {
+												isGroup = "individual-only";
+											} else {
+												isGroup = "both";
+											}
+										
 									}
 								}
 							})
