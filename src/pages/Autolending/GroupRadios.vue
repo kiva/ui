@@ -66,7 +66,7 @@ export default {
 		result({ data }) {
 			const isGroup = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.isGroup');
 			if (isGroup === true) {
-  				this.isGroup = 'group-only';
+				this.isGroup = 'group-only';
 			} else if (isGroup === false) {
 				this.isGroup = 'individual-only';
 			} else {
