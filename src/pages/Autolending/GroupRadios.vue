@@ -1,34 +1,34 @@
 <template>
-	<div class="gender-radios">
+	<div class="group-radios">
 		<h3 class="filter-title">
-			Gender
+			Individuals/groups
 		</h3>
 		<kv-radio
-			label-set="genderRadioSetBoth"
-			name-set="genderRadio"
+			label-set="groupRadioSetBoth"
+			name-set="groupRadio"
 			radio-value="both"
-			v-model="gender"
+			v-model="isGroup"
 			class="filter-radio"
 		>
-			Everyone
+			Both
 		</kv-radio>
 		<kv-radio
-			label-set="genderRadioSetFemale"
-			name-set="genderRadio"
-			radio-value="female"
-			v-model="gender"
+			label-set="groupRadioSetMale"
+			name-set="groupRadio"
+			radio-value="individual-only"
+			v-model="isGroup"
 			class="filter-radio"
 		>
-			Women only
+			Individuals only
 		</kv-radio>
 		<kv-radio
-			label-set="genderRadioSetMale"
-			name-set="genderRadio"
-			radio-value="male"
-			v-model="gender"
+			label-set="groupRadioSetFemale"
+			name-set="groupRadio"
+			radio-value="group-only"
+			v-model="isGroup"
 			class="filter-radio"
 		>
-			Men only
+			Groups only
 		</kv-radio>
 	</div>
 </template>
@@ -45,7 +45,7 @@ export default {
 	},
 	data() {
 		return {
-			gender: 'both',
+			isGroup: 'both',
 		};
 	},
 	apollo: {
@@ -54,7 +54,7 @@ export default {
 				currentProfile {
 					loanSearchCriteria {
 						filters {
-							gender
+							isGroup
 						}
 					}
 				}
@@ -62,19 +62,32 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.gender = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.gender') || 'both';
+			const isGroup = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.isGroup');
+			if (isGroup === true) {
+				this.isGroup = 'group-only';
+			} else if (isGroup === false) {
+				this.isGroup = 'individual-only';
+			} else {
+				this.isGroup = 'both';
+			}
 		},
 	},
 	watch: {
-		gender(gender, previousGender) {
-			if (gender !== previousGender) {
+		isGroup(groupOption, previousGroupOption) {
+			if (groupOption !== previousGroupOption) {
+				let isGroup = null;
+				if (groupOption === 'group-only') {
+					isGroup = true;
+				} else if (groupOption === 'individual-only') {
+					isGroup = false;
+				}
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										gender: ${gender === 'both' ? null : gender}
+										isGroup: ${isGroup}
 									}
 								}
 							})
