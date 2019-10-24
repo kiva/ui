@@ -75,7 +75,7 @@ export default {
 		},
 	},
 	watch: {
-		group(groupOption, previousGroupOption) {
+		isGroup(groupOption, previousGroupOption) {
 			if (groupOption !== previousGroupOption) {
 				let isGroup = null;
 				if (groupOption === 'group-only') {
