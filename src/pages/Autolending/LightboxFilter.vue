@@ -42,7 +42,7 @@
 				</h2>
 				<check-list
 					:items="itemsWithSelected"
-					:use-block-grid="true"
+					:use-columns="true"
 					@change="onChange"
 				/>
 			</slot>
