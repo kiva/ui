@@ -1,3 +1,4 @@
+import _get from 'lodash/get';
 import checkApolloInject from '@/util/apolloInjectCheck';
 import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
@@ -33,7 +34,7 @@ export default Vue => {
 							result.call(this, { data });
 						} catch (e) {
 							// if there's an error, skip reading from the cache and just wait for the watch query
-							logReadQueryError(e, `ApolloMixin ${query.definitions[0].name.value}`);
+							logReadQueryError(e, `ApolloMixin ${_get(query, 'definitions[0].name.value')}`);
 						}
 					}
 
