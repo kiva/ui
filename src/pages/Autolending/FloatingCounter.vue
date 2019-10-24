@@ -114,6 +114,7 @@ export default {
 	position: absolute;
 	top: 0;
 	right: 0;
+	z-index: 10;
 	width: rem-calc(202);
 	border-radius: $border-radius;
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
