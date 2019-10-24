@@ -1,5 +1,5 @@
 <template>
-	<span class="styled-radio">
+	<div class="styled-radio">
 		<input
 			type="radio"
 			:id="labelSet"
@@ -11,7 +11,7 @@
 		<label :for="labelSet">
 			<slot></slot>
 		</label>
-	</span>
+	</div>
 </template>
 
 <script>
@@ -70,7 +70,7 @@ export default {
 			width: rem-calc(15);
 			height: rem-calc(15);
 			position: absolute;
-			top: rem-calc(6);
+			top: rem-calc(10);
 			left: rem-calc(14);
 			content: " ";
 			display: block;

@@ -18,7 +18,7 @@
 				<!-- row for criteria components -->
 				<div class="row">
 					<div class="small-12 large-6 columns">
-						<!-- gender -->
+						<gender-radios />
 					</div>
 					<div class="small-12 large-6 columns">
 						<!-- group -->
@@ -75,6 +75,7 @@ import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphq
 import CountryFilter from './CountryFilter';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
+import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
@@ -87,6 +88,7 @@ export default {
 		CountryFilter,
 		FloatingCounter,
 		MainToggle,
+		GenderRadios,
 		MobileCounter,
 		SaveButton,
 		SectorFilter,
