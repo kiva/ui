@@ -77,21 +77,19 @@ export default {
 	watch: {
 		group(groupOption, previousGroupOption) {
 			if (groupOption !== previousGroupOption) {
+				let isGroup = null;
+				if (groupOption === 'group-only') {
+					isGroup = true;
+				} else if (groupOption === 'individual-only') {
+					isGroup = false;
+				}
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										isGroup: 
-											if (isGroup) === true) {
-												isGroup = "group-only";
-											} else if (isGroup === false) {
-												isGroup = "individual-only";
-											} else {
-												isGroup = "both";
-											}
-										
+										isGroup: ${isGroup}
 									}
 								}
 							})
