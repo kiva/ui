@@ -8,27 +8,25 @@
 			name-set="groupRadio"
 			radio-value="both"
 			v-model="isGroup"
-			class="both-radio"
+			class="filter-radio"
 		>
 			Both
 		</kv-radio>
-		<br>
 		<kv-radio
 			label-set="groupRadioSetMale"
 			name-set="groupRadio"
 			radio-value="individual-only"
 			v-model="isGroup"
-			class="individual-radio"
+			class="filter-radio"
 		>
 			Individuals only
 		</kv-radio>
-		<br>
 		<kv-radio
 			label-set="groupRadioSetFemale"
 			name-set="groupRadio"
 			radio-value="group-only"
 			v-model="isGroup"
-			class="group-radio"
+			class="filter-radio"
 		>
 			Groups only
 		</kv-radio>
@@ -108,6 +106,11 @@ export default {
 .filter-title {
 	font-size: 1rem;
 	color: $kiva-text-light;
+}
+
+.filter-radio {
+	display: block;
+	margin: 0 0 0 -0.875rem;
 }
 
 </style>
