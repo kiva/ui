@@ -10,23 +10,28 @@
 			<!-- main toggles -->
 			<div class="setting-group">
 				<main-toggle />
+				<!-- timing dropdown -->
+				<donation-dropdown />
+				<!-- kiva chooses for me -->
 			</div>
 			<!-- basic criteria -->
 			<div class="setting-group">
-				<h2>Auto-lending criteria</h2>
+				<h2 class="criteria-title">
+					Auto-lending criteria
+				</h2>
 				<floating-counter class="show-for-large" />
 				<!-- row for criteria components -->
 				<div class="row">
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<gender-radios />
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<group-radios />
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<country-filter />
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<sector-filter />
 					</div>
 				</div>
@@ -39,25 +44,25 @@
 			</div>
 			<kv-expandable>
 				<div class="row" v-show="showAdvanced">
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<!-- loan increment -->
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<attribute-filter />
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<!-- loan term -->
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<partner-filter />
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<!-- delinquency -->
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<!-- risk rating -->
 					</div>
-					<div class="small-12 large-6 columns">
+					<div class="small-12 large-6 columns setting-column">
 						<!-- default rate -->
 					</div>
 				</div>
@@ -81,6 +86,7 @@ import initAutolending from '@/graphql/mutation/autolending/initAutolending.grap
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
 import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
+import DonationDropdown from './DonationDropdown';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import GenderRadios from './GenderRadios';
@@ -97,6 +103,7 @@ export default {
 		KvExpandable,
 		AttributeFilter,
 		CountryFilter,
+		DonationDropdown,
 		FloatingCounter,
 		MainToggle,
 		GenderRadios,
@@ -163,6 +170,14 @@ $autolending-font-size: rem-calc(18.8);
 		position: relative;
 		margin: 2rem 0;
 		border-bottom: 1px solid $kiva-stroke-gray;
+	}
+
+	.criteria-title {
+		margin-bottom: 2rem;
+	}
+
+	.setting-column {
+		margin-bottom: 1.25rem;
 	}
 
 	.advanced-settings-toggle {
