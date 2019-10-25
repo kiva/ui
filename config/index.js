@@ -58,6 +58,5 @@ module.exports = {
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),
 		assetsSubDirectory: 'static',
-		productionSourceMap: true,
 	}
 }

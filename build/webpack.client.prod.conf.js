@@ -4,11 +4,6 @@ var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlug
 
 module.exports = merge.smart(baseWebpackConfig, {
 	mode: 'production',
-	optimization: {
-		splitChunks: {
-			chunks: 'all',
-		},
-	},
 	plugins: [
 		new BundleAnalyzerPlugin({
 			analyzerMode: 'disabled',
