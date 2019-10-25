@@ -46,7 +46,7 @@ module.exports = merge.smart(baseWebpackConfig, {
 			},
 			prefix: 'icon-',
 		}),
-		new HardSourceWebpackPlugin.ExcludeModulePlugin([
+		...(isProd ? [] : [new HardSourceWebpackPlugin.ExcludeModulePlugin([
 			{
 				// HardSource works with mini-css-extract-plugin but due to how
 				// mini-css emits assets, assets are not emitted on repeated builds with
@@ -63,7 +63,7 @@ module.exports = merge.smart(baseWebpackConfig, {
 			{
 				test: /iconLoader.js/,
 			},
-		]),
+		])]),
 		new VueSSRClientPlugin()
 	]
 });

@@ -9,6 +9,7 @@ var GitRevisionPlugin = require('git-revision-webpack-plugin');
 var gitRevisionPlugin = new GitRevisionPlugin({
 	branch: true
 });
+const isProd = process.env.NODE_ENV === 'production';
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 
 function resolve (dir) {
@@ -109,7 +110,7 @@ module.exports = {
 			UI_COMMIT: JSON.stringify(gitRevisionPlugin.commithash()),
 			UI_BRANCH: JSON.stringify(gitRevisionPlugin.branch())
 		}),
-		new HardSourceWebpackPlugin({
+		...(isProd ? [] : [new HardSourceWebpackPlugin({
 			configHash(webpackConfig) {
 				return `${process.env.NODE_ENV.substring(0,3)}_${require('node-object-hash')({sort: false}).hash(webpackConfig)}`
 			},
@@ -120,6 +121,6 @@ module.exports = {
 				// Prune once cache reaches 500MB
 				sizeThreshold: 500 * 1024 * 1024
 			}
-		})
+		})])
 	]
 };
