@@ -6,10 +6,12 @@
 				<h2>Make the impact you want even if you’re away from your account for a while</h2>
 			</div>
 		</div>
-		<div class="row column settings-area">
+		<div class="row column">
+			<main-toggle />
+		</div>
+		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
 			<!-- main toggles -->
 			<div class="setting-group">
-				<main-toggle />
 				<!-- timing dropdown -->
 				<donation-dropdown />
 				<!-- kiva chooses for me -->
@@ -67,11 +69,13 @@
 					</div>
 				</div>
 			</kv-expandable>
+		</div>
+		<div class="row column save-button-area">
 			<!-- save button -->
 			<save-button class="show-for-large" />
 		</div>
 		<!-- mobile-only footer -->
-		<div class="mobile-footer hide-for-large">
+		<div class="mobile-footer hide-for-large" v-show="isEnabled || isChanged">
 			<mobile-counter />
 			<save-button :show-warning="false" />
 		</div>
@@ -116,6 +120,7 @@ export default {
 	data() {
 		return {
 			isChanged: false,
+			isEnabled: false,
 			showAdvanced: false,
 		};
 	},
@@ -127,6 +132,7 @@ export default {
 		},
 		result({ data }) {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
+			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 		},
 	},
 	mounted() {
@@ -158,8 +164,9 @@ $autolending-font-size: rem-calc(18.8);
 		background-color: $white;
 	}
 
-	.settings-area {
-		margin-bottom: 5rem;
+	.settings-area.obscure {
+		opacity: 0.2;
+		pointer-events: none;
 	}
 
 	label {
@@ -184,6 +191,10 @@ $autolending-font-size: rem-calc(18.8);
 		color: $kiva-textlink;
 		font-weight: 300;
 		margin-bottom: 2rem;
+	}
+
+	.save-button-area {
+		margin-bottom: 5rem;
 	}
 
 	.mobile-footer {
