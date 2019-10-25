@@ -126,9 +126,23 @@ export default {
 	},
 	apollo: {
 		query: autolendingQuery,
-		preFetch(config, client) {
-			return client.mutate({ mutation: initAutolending })
-				.then(() => client.query({ query: autolendingQuery }));
+		preFetch(config, client, { route }) {
+			return new Promise((resolve, reject) => {
+				client.mutate({ mutation: initAutolending })
+					.then(() => client.query({ query: autolendingQuery }))
+					.then(resolve)
+					.catch(e => {
+						// Redirect to login upon authentication error
+						if (e.message.indexOf('api.authenticationRequired') > -1) {
+							reject({
+								path: '/ui-login',
+								query: { doneUrl: route.fullPath }
+							});
+						} else {
+							console.error(e);
+						}
+					});
+			});
 		},
 		result({ data }) {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
