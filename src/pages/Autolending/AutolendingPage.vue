@@ -75,7 +75,7 @@
 			<save-button class="show-for-large" />
 		</div>
 		<!-- mobile-only footer -->
-		<div class="mobile-footer hide-for-large" v-show="isEnabled">
+		<div class="mobile-footer hide-for-large" v-show="isEnabled || isChanged">
 			<mobile-counter />
 			<save-button :show-warning="false" />
 		</div>
