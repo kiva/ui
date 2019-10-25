@@ -116,6 +116,11 @@ export default {
 						saveProfile
 					}
 				}`
+			}).then(() => {
+				this.$showTipMsg('Your settings have been saved');
+			}).catch(e => {
+				console.error(e);
+				this.$showTipMsg('There was a problem saving your settings', 'error');
 			});
 		},
 	},

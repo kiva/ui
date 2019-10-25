@@ -93,9 +93,22 @@ export default () => {
 					// Indicate loading profile info from server
 					writeAutolendingData(cache, { loadingProfile: true });
 
-					return new Promise(resolve => {
+					return new Promise((resolve, reject) => {
 						// Query for all the details of the server profile
 						client.query({ query: serverProfileQuery })
+							.then(result => {
+								if (result.errors) {
+									// Throw the first error that is found
+									// NOTE: this error only gets passed as a NetworkError and it's not
+									// possible to pass more data than the a message, so currently this
+									// uses the error's code as the message. One alternative would be switching
+									// back to using apollo-link-state, which handles errors from client
+									// resolvers as actual graphql errors. More discussion here
+									// https://github.com/apollographql/apollo-client/issues/4575
+									throw new Error(result.errors[0].code || result.errors[0].message);
+								}
+								return result;
+							})
 							// Return default profile if non is defined on the server
 							.then(result => _get(result, 'data.my.autolendProfile') || AutolendProfile())
 							// Write the fetched profile to the cache as both the current and saved profiles
@@ -115,11 +128,10 @@ export default () => {
 							// Finish by fetching the loan count for the current profile
 							.then(currentProfile => updateCurrentLoanCount({ cache, client, currentProfile }))
 							.then(() => resolve(true))
-							// Log any errors
+							// Reject errors
 							.catch(e => {
-								console.error(e);
 								writeAutolendingData(cache, { loadingProfile: false });
-								resolve(false);
+								reject(e);
 							});
 					});
 				},
@@ -176,12 +188,20 @@ export default () => {
 					const profileData = cache.readQuery({ query: bothProfilesQuery });
 					const profile = getInputProfile(_get(profileData, 'autolending.currentProfile'));
 
-					return new Promise(resolve => {
+					return new Promise((resolve, reject) => {
 						// Update the profile
 						client.mutate({
 							mutation: updateServerProfile,
 							variables: { profile },
 						})
+							.then(result => {
+								if (result.errors) {
+									// Throw the first error that is found
+									// NOTE: see note above in initAutolending about local state error handling
+									throw new Error(result.errors[0].code || result.errors[0].message);
+								}
+								return result;
+							})
 							// Store returned profile as 'savedProfile'
 							.then(result => _get(result, 'data.my.updateAutolendProfile'))
 							.then(serverProfile => {
@@ -197,11 +217,10 @@ export default () => {
 									resolve(false);
 								}
 							})
-							// Log any errors
+							// Reject errors
 							.catch(e => {
-								console.error(e);
 								writeAutolendingData(cache, { savingProfile: false });
-								resolve(false);
+								reject(e);
 							});
 					});
 				},
