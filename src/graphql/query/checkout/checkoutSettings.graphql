@@ -4,10 +4,6 @@ query checkoutSettings($basketId: String) {
 			value
 			key
 		}
-		braintreeVsPaypalExp: uiExperimentSetting(key: "bt_vs_paypal") {
-			key
-			value
-		}
 	}
 	shop (basketId: $basketId) {
 		basket {
