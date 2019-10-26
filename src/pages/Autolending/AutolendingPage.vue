@@ -140,6 +140,7 @@ export default {
 							});
 						} else {
 							console.error(e);
+							resolve();
 						}
 					});
 			});
