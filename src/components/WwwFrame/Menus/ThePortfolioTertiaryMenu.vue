@@ -1,5 +1,5 @@
 <template>
-	<tertiary-menu>
+	<tertiary-menu class="large-3">
 		<ul>
 			<li>
 				<router-link

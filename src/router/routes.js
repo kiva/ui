@@ -79,4 +79,6 @@ export default [
 		]
 	},
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
+	{ path: '/legal/terms-of-use-february-2020', component: () => import('@/pages/Legal/TermsOfUse') },
+	{ path: '/legal/promo-terms-of-use-february-2020', component: () => import('@/pages/Legal/PromoTermsOfUse') },
 ];
