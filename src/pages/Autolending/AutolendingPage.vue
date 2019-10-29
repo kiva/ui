@@ -53,7 +53,8 @@
 						<attribute-filter />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
-						<!-- loan term -->
+						<loan-term-dropdown />
+						<kv-dropdown-rounded />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<partner-filter />
@@ -98,6 +99,8 @@ import MobileCounter from './MobileCounter';
 import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
+import LoanTermDropdown from './LoanTermDropdown';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import GroupRadios from './GroupRadios';
 
 export default {
@@ -115,6 +118,8 @@ export default {
 		PartnerFilter,
 		SaveButton,
 		SectorFilter,
+		LoanTermDropdown,
+		KvDropdownRounded,
 		GroupRadios,
 	},
 	data() {
