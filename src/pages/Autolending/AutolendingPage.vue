@@ -47,7 +47,7 @@
 			<kv-expandable>
 				<div class="row" v-show="showAdvanced">
 					<div class="small-12 large-6 columns setting-column">
-						<loan-increment />
+						<!-- <loan-increment /> -->
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<attribute-filter />
