@@ -47,7 +47,7 @@
 			<kv-expandable>
 				<div class="row" v-show="showAdvanced">
 					<div class="small-12 large-6 columns setting-column">
-						<!-- loan increment -->
+						<loan-increment />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<attribute-filter />
@@ -99,6 +99,7 @@ import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
 import GroupRadios from './GroupRadios';
+import LoanIncrement from './LoanIncrementFilter';
 
 export default {
 	inject: ['apollo'],
@@ -116,6 +117,7 @@ export default {
 		SaveButton,
 		SectorFilter,
 		GroupRadios,
+		LoanIncrement,
 	},
 	data() {
 		return {
