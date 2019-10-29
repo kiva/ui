@@ -114,13 +114,15 @@ export default {
 		TertiaryMenu
 	},
 	metaInfo: {
-		title: 'Terms Of Use'
+		title: 'Promotional Lending Terms and Conditions'
 	},
 };
 </script>
 
 <style lang="scss">
 @import 'settings';
+
+h1 { margin-top: 0.5rem; }
 
 .tertiary-menu-terms {
 	margin: 1.625rem 0;
