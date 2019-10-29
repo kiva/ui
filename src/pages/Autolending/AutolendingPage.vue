@@ -99,7 +99,7 @@ import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
 import GroupRadios from './GroupRadios';
-import LoanIncrement from './LoanIncrementFilter';
+// import LoanIncrement from './LoanIncrementFilter';
 
 export default {
 	inject: ['apollo'],
@@ -117,7 +117,7 @@ export default {
 		SaveButton,
 		SectorFilter,
 		GroupRadios,
-		LoanIncrement,
+		// LoanIncrement,
 	},
 	data() {
 		return {
