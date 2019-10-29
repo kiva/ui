@@ -36,7 +36,7 @@ export default {
 	},
 	data() {
 		return {
-			loanIncrement: 'both',
+			loanIncrement: 'any',
 		};
 	},
 	apollo: {
