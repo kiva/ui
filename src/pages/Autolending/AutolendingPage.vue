@@ -136,7 +136,7 @@ export default {
 						if (e.message.indexOf('api.authenticationRequired') > -1) {
 							reject({
 								path: '/ui-login',
-								query: { doneUrl: route.fullPath }
+								query: { force: true, doneUrl: route.fullPath }
 							});
 						} else {
 							console.error(e);
