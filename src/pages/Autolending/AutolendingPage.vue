@@ -230,5 +230,9 @@ $autolending-font-size: rem-calc(18.8);
 			}
 		}
 	}
+
+	.basket-bar {
+		display: none;
+	}
 }
 </style>
