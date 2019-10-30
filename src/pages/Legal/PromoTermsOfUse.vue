@@ -4,12 +4,7 @@
 			<tertiary-menu class="show-for-large large-2 tertiary-menu-terms">
 				<ul>
 					<li>
-						<router-link to="/legal/privacy">
-							Privacy Policy
-						</router-link>
-					</li>
-					<li>
-						<router-link to="/legal/terms-of-use-february-2020">
+						<router-link to="/legal/terms">
 							Terms of Use
 						</router-link>
 					</li>
