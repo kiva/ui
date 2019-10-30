@@ -114,7 +114,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 h1 { margin-top: 0.5rem; }
