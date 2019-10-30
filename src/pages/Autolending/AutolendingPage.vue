@@ -47,7 +47,7 @@
 			<kv-expandable>
 				<div class="row" v-show="showAdvanced">
 					<div class="small-12 large-6 columns setting-column">
-						<!-- loan increment -->
+						<!-- <loan-increment-radios /> -->
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<attribute-filter />
@@ -102,6 +102,7 @@ import SectorFilter from './SectorFilter';
 import LoanTermDropdown from './LoanTermDropdown';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import GroupRadios from './GroupRadios';
+// import LoanIncrementRadios from './LoanIncrementRadios';
 
 export default {
 	inject: ['apollo'],
@@ -121,6 +122,7 @@ export default {
 		LoanTermDropdown,
 		KvDropdownRounded,
 		GroupRadios,
+		// LoanIncrementRadios,
 	},
 	data() {
 		return {
