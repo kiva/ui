@@ -99,7 +99,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TertiaryMenu from '@/components/WwwFrame/TertiaryMenu';
 
