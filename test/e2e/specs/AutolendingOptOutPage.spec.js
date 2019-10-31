@@ -1,6 +1,6 @@
 import wwwPageMock from '../fixtures/wwwPageMock';
 
-describe('Autolending', () => {
+describe('Autolending Opt Out Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock());
 	});
