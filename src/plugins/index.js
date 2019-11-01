@@ -1,7 +1,7 @@
 import changeCaseFilter from './change-case-filter';
 import apolloMixin from './apollo-plugin';
 import numeralFilter from './numeral-filter';
-import kvAnayltics from './kv-analytics-plugin';
+import kvAnalytics from './kv-analytics-plugin';
 import tipMessage from './tip-message-plugin';
 
 export default {
@@ -9,7 +9,7 @@ export default {
 		apolloMixin(Vue);
 		Vue.filter('changeCase', changeCaseFilter);
 		Vue.filter('numeral', numeralFilter);
-		kvAnayltics(Vue);
+		kvAnalytics(Vue);
 		tipMessage(Vue);
 	}
 };
