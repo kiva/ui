@@ -4,7 +4,7 @@
 			Loan term
 		</h3>
 		<kv-dropdown-rounded v-model="loanTerm">
-			<option value="all">
+			<option value="default">
 				All loan terms
 			</option>
 			<option value="6m-or-less">
@@ -25,7 +25,6 @@
 
 <script>
 import _get from 'lodash/get';
-import _isFinite from 'lodash/isFinite';
 import gql from 'graphql-tag';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
@@ -36,7 +35,7 @@ export default {
 	},
 	data() {
 		return {
-			loanTerm: 'all',
+			loanTerm: 'default',
 		};
 	},
 	apollo: {
@@ -45,7 +44,9 @@ export default {
 				currentProfile {
 					loanSearchCriteria {
 						filters {
-							lenderTerm
+							lenderTerm {
+								max
+							}
 						}
 					}
 				}
@@ -53,16 +54,32 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			const loanTermMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.min');
-			console.log('loan term:', loanTermMin);
-			// Here I'll have to handle the date ranges from the endpoint
-			// which comes through as a min and max
-			// this.loanTerm = _isFinite(loanTerm) ? loanTerm : 'all';
+			const loanTermMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max');
+			if (loanTermMax <= 6) {
+				this.loanTerm = '6m-or-less';
+			} else if (loanTermMax > 6 && loanTermMax <= 12) {
+				this.loanTerm = '12m-or-less';
+			} else if (loanTermMax > 12 && loanTermMax <= 18) {
+				this.loanTerm = '18m-or-less'
+			} else if (loanTermMax > 18 && loanTermMax <= 24) {
+				this.loanTerm = '24m-or-less'
+			}
 		},
 	},
 	watch: {
-		donation(loanTerm, previousLoanTerm) {
-			if (loanTerm !== previousLoanTerm) {
+		loanTerm(loanTermMax, previousLoanTermMax) {
+			let loanTerm = null;
+			if (loanTermMax !== previousLoanTermMax) {		
+				if (loanTermMax === '6m-or-less') {
+					loanTerm = 6;
+				}
+				else if (loanTermMax === '12m-or-less' ) {
+					loanTerm = 12;
+				} else if (loanTermMax === '18m-or-less') {
+					loanTerm = 18;
+				} else if (loanTermMax === '24m-or-less') {
+					loanTerm = 24;
+				}
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {

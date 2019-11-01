@@ -54,7 +54,6 @@
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<loan-term-dropdown />
-						<kv-dropdown-rounded />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<partner-filter />
@@ -100,7 +99,6 @@ import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
 import LoanTermDropdown from './LoanTermDropdown';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import GroupRadios from './GroupRadios';
 // import LoanIncrementRadios from './LoanIncrementRadios';
 
@@ -120,7 +118,6 @@ export default {
 		SaveButton,
 		SectorFilter,
 		LoanTermDropdown,
-		KvDropdownRounded,
 		GroupRadios,
 		// LoanIncrementRadios,
 	},
