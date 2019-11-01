@@ -60,20 +60,19 @@ export default {
 			} else if (loanTermMax > 6 && loanTermMax <= 12) {
 				this.loanTerm = '12m-or-less';
 			} else if (loanTermMax > 12 && loanTermMax <= 18) {
-				this.loanTerm = '18m-or-less'
+				this.loanTerm = '18m-or-less';
 			} else if (loanTermMax > 18 && loanTermMax <= 24) {
-				this.loanTerm = '24m-or-less'
+				this.loanTerm = '24m-or-less';
 			}
 		},
 	},
 	watch: {
 		loanTerm(loanTermMax, previousLoanTermMax) {
 			let loanTerm = null;
-			if (loanTermMax !== previousLoanTermMax) {		
+			if (loanTermMax !== previousLoanTermMax) {
 				if (loanTermMax === '6m-or-less') {
 					loanTerm = 6;
-				}
-				else if (loanTermMax === '12m-or-less' ) {
+				} else if (loanTermMax === '12m-or-less') {
 					loanTerm = 12;
 				} else if (loanTermMax === '18m-or-less') {
 					loanTerm = 18;
