@@ -55,11 +55,12 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
+			console.log('data:', data)
 			// eslint-disable-next-line max-len
 			const riskRatingMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.max');
-			// const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min');
+			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min');
 			console.log('riskRatingMax', riskRatingMax);
-			// console.log('riskRatingMin', riskRatingMin);
+			console.log('riskRatingMin', riskRatingMin);
 
 			if (riskRatingMax <= 1) {
 				this.riskRating = '1-star-up';
