@@ -4,7 +4,7 @@
 			<tertiary-menu class="show-for-large large-2 tertiary-menu-terms">
 				<ul>
 					<li>
-						<router-link to="/legal/terms">
+						<router-link to="/legal/terms-of-use-february-2020">
 							Terms of Use
 						</router-link>
 					</li>
