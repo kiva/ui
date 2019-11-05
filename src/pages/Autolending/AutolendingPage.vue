@@ -53,7 +53,7 @@
 						<attribute-filter />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
-						<!-- loan term -->
+						<loan-term-dropdown />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<partner-filter />
@@ -98,6 +98,7 @@ import MobileCounter from './MobileCounter';
 import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
+import LoanTermDropdown from './LoanTermDropdown';
 import GroupRadios from './GroupRadios';
 // import LoanIncrementRadios from './LoanIncrementRadios';
 
@@ -116,6 +117,7 @@ export default {
 		PartnerFilter,
 		SaveButton,
 		SectorFilter,
+		LoanTermDropdown,
 		GroupRadios,
 		// LoanIncrementRadios,
 	},
