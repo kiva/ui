@@ -16,9 +16,6 @@
 			<option value="4-star-up">
 				&#9733; &#9733; &#9733; &#9733; and up
 			</option>
-			<option value="5-star-up">
-				&#9733; &#9733; &#9733; &#9733; &#9733; and up
-			</option>
 		</kv-dropdown-rounded>
 	</div>
 </template>
@@ -46,7 +43,6 @@ export default {
 						filters {
 							riskRating {
 								min
-								max
 							}
 						}
 					}
@@ -55,40 +51,31 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			console.log('data:', data)
-			// eslint-disable-next-line max-len 
-			const riskRatingMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.max');
 			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min');
-			console.log('riskRatingMax', riskRatingMax);
-			console.log('riskRatingMin', riskRatingMin);
 
-			if (riskRatingMax <= 1) {
+			if (riskRatingMin <= 1.9) {
 				this.riskRating = '1-star-up';
-			} else if (riskRatingMax <= 2) {
+			} else if (riskRatingMin <= 2.9) {
 				this.riskRating = '2-star-up';
-			} else if (riskRatingMax <= 3) {
+			} else if (riskRatingMin <= 3.9) {
 				this.riskRating = '3-star-up';
-			} else if (riskRatingMax <= 4) {
+			} else if (riskRatingMin <= 5) {
 				this.riskRating = '4-star-up';
-			} else if (riskRatingMax <= 5) {
-				this.riskRating = '5-star-up';
 			}
 		},
 	},
 	watch: {
-		delinquencyRate(riskRatingMax, previousRiskRatingMax) {
+		riskRating(riskRatingMin, previousRiskRatingMin) {
 			let riskRating = null;
-			if (riskRatingMax !== previousRiskRatingMax) {
-				if (riskRatingMax === '5-or-less') {
-					riskRating = 5;
-				} else if (riskRatingMax === '10-or-less') {
-					riskRating = 10;
-				} else if (riskRatingMax === '15-or-less') {
-					riskRating = 15;
-				} else if (riskRatingMax === '20-or-less') {
-					riskRating = 20;
-				} else if (riskRatingMax === '25-or-less') {
-					riskRating = 25;
+			if (riskRatingMin !== previousRiskRatingMin) {
+				if (riskRatingMin === '1-star-up') {
+					riskRating = 1;
+				} else if (riskRatingMin === '2-star-up') {
+					riskRating = 2;
+				} else if (riskRatingMin === '3-star-up') {
+					riskRating = 3;
+				} else if (riskRatingMin === '4-star-up') {
+					riskRating = 4;
 				}
 				this.apollo.mutate({
 					mutation: gql`mutation {
