@@ -56,7 +56,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			console.log('data:', data)
-			// eslint-disable-next-line max-len
+			// eslint-disable-next-line max-len 
 			const riskRatingMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.max');
 			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min');
 			console.log('riskRatingMax', riskRatingMax);
@@ -76,9 +76,9 @@ export default {
 		},
 	},
 	watch: {
-		delinquencyRate(riskRatingMax, previousriskRatingMax) {
+		delinquencyRate(riskRatingMax, previousRiskRatingMax) {
 			let riskRating = null;
-			if (riskRatingMax !== previousriskRatingMax) {
+			if (riskRatingMax !== previousRiskRatingMax) {
 				if (riskRatingMax === '5-or-less') {
 					riskRating = 5;
 				} else if (riskRatingMax === '10-or-less') {
