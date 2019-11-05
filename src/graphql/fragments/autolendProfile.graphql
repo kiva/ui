@@ -3,6 +3,8 @@ fragment autolendProfileFragment on AutolendProfile {
 	isEnabled
 	enableAfter
 	donationPercentage
+	lendAfterDaysIdle
+	idleCreditOptIn
 	loanSearchCriteria {
 		queryString
 		filters {
