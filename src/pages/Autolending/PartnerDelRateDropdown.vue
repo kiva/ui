@@ -38,7 +38,7 @@ export default {
 	},
 	data() {
 		return {
-			delinquency: 'default',
+			delinquencyRate: 'default',
 		};
 	},
 	apollo: {
@@ -47,7 +47,8 @@ export default {
 				currentProfile {
 					loanSearchCriteria {
 						filters {
-							delinquencyRate {
+							arrearsRate {
+								min
 								max
 							}
 						}
@@ -58,7 +59,11 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// eslint-disable-next-line max-len
-			const delinquencyRate = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.loanTerm.max');
+			const delinquencyRateMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.min');
+			const delinquencyRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max');
+			console.log('del rate min', delinquencyRateMin);
+			console.log('del rate max', delinquencyRateMax);
+
 			if (delinquencyRate <= 5) {
 				this.loanTerm = '5-or-less';
 			} else if (delinquencyRate > 5 && delinquencyRate <= 10) {
