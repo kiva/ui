@@ -18,18 +18,11 @@ module.exports = {
 	coverageReporters: ['lcov', 'text-summary'],
 	collectCoverageFrom: [
 		'src/**/*.{js,vue}',
-		'!**/node_modules/**'
-	],
-	coveragePathIgnorePatterns: [
-		'.eslintrc.js',
-		'<rootDir>/build/',
-		'<rootDir>/src/assets/',
-		'<rootDir>/src/components',
-		'<rootDir>/src/head/',
-		'<rootDir>/src/pages/',
-		'<rootDir>/src/plugins/index.js',
-		'<rootDir>/src/router/',
-		'<rootDir>/node_modules/'
+		'!**/node_modules/**',
+		'!src/plugins/index.js',
+		'!src/assets/',
+		'!src/router/',
+		'!src/head/'
 	],
 	testURL: 'http://localhost'
 };
