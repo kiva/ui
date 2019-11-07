@@ -59,7 +59,7 @@
 						<partner-filter />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
-						<!-- delinquency -->
+						<partner-del-rate-dropdown />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<!-- risk rating -->
@@ -100,6 +100,7 @@ import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
 import LoanTermDropdown from './LoanTermDropdown';
 import GroupRadios from './GroupRadios';
+import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 // import LoanIncrementRadios from './LoanIncrementRadios';
 
 export default {
@@ -119,6 +120,7 @@ export default {
 		SectorFilter,
 		LoanTermDropdown,
 		GroupRadios,
+		PartnerDelRateDropdown
 		// LoanIncrementRadios,
 	},
 	data() {
