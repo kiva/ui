@@ -118,7 +118,6 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-@import 'global/transitions';
 
 /* Background, Structure + Close Button Styles */
 .kv-lightbox-wrap {

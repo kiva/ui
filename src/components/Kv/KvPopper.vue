@@ -163,8 +163,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'global/transitions';
-
 .popper-pane {
 	position: absolute;
 }

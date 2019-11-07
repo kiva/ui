@@ -593,7 +593,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'global/transitions';
 
 .lend-by-category-page {
 	.loan-category-row {

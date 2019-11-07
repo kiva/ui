@@ -21,10 +21,11 @@ fragment autolendProfileFragment on AutolendProfile {
 				min
 				max
 			}
-			# loanLimit
+			loanLimit
 			partner
 			riskRating {
 				min
+				max
 			}
 			sector
 			theme

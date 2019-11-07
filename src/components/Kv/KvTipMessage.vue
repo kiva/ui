@@ -97,7 +97,6 @@ export default {
 
 <style lang="scss">
 @import 'settings';
-@import 'global/transitions';
 
 .message-text {
 	display: block;
