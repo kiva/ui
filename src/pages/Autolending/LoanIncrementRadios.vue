@@ -65,7 +65,7 @@ export default {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										loanIncrement: ${loanIncrement === 'any' ? null : loanIncrement}
+										loanLimit: ${loanIncrement === 'any' ? null : loanIncrement}
 									}
 								}
 							})
