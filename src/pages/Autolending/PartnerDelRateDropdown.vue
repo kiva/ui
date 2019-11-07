@@ -57,6 +57,7 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
+			// eslint-disable-next-line max-len
 			const delinquencyRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max');
 			this.delinquencyRate = delinquencyRateMax;
 		},
