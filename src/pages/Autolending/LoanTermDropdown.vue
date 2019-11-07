@@ -4,7 +4,7 @@
 			Loan term
 		</h3>
 		<kv-dropdown-rounded v-model="loanTerm">
-			<option value="default">
+			<option value="70">
 				All loan terms
 			</option>
 			<option value="6">
@@ -35,7 +35,7 @@ export default {
 	},
 	data() {
 		return {
-			loanTerm: 'default',
+			loanTerm: '70',
 		};
 	},
 	apollo: {
@@ -56,15 +56,6 @@ export default {
 		result({ data }) {
 			const loanTermMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max');
 			this.loanTerm = loanTermMax;
-			// if (loanTermMax <= 6) {
-			// 	this.loanTerm = 6;
-			// } else if (loanTermMax > 6 && loanTermMax <= 12) {
-			// 	this.loanTerm = 12;
-			// } else if (loanTermMax > 12 && loanTermMax <= 18) {
-			// 	this.loanTerm = 18;
-			// } else if (loanTermMax > 18 && loanTermMax <= 24) {
-			// 	this.loanTerm = 24;
-			// }
 		},
 	},
 	watch: {
@@ -72,15 +63,6 @@ export default {
 			let loanTerm = null;
 			if (loanTermMax !== previousLoanTermMax) {
 				loanTerm = loanTermMax;
-				// if (loanTermMax === 6) {
-				// 	loanTerm = 6;
-				// } else if (loanTermMax === 12) {
-				// 	loanTerm = 12;
-				// } else if (loanTermMax === 18) {
-				// 	loanTerm = 18;
-				// } else if (loanTermMax === 24) {
-				// 	loanTerm = 24;
-				// }
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
