@@ -4,7 +4,7 @@
 			Partner delinquency rate
 		</h3>
 		<kv-dropdown-rounded v-model="delinquencyRate">
-			<option value="50">
+			<option value="0">
 				All delinquency rates
 			</option>
 			<option value="5">
@@ -38,7 +38,7 @@ export default {
 	},
 	data() {
 		return {
-			delinquencyRate: '50',
+			delinquencyRate: 0,
 		};
 	},
 	apollo: {
@@ -58,15 +58,12 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// eslint-disable-next-line max-len
-			const delinquencyRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max');
-			this.delinquencyRate = delinquencyRateMax;
+			this.delinquencyRate = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max') || 0;
 		},
 	},
 	watch: {
 		delinquencyRate(delinquencyRateMax, previousDelinquencyRateMax) {
-			let delinquencyRate = null;
 			if (delinquencyRateMax !== previousDelinquencyRateMax) {
-				delinquencyRate = delinquencyRateMax;
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
@@ -74,7 +71,8 @@ export default {
 								loanSearchCriteria: {
 									filters: {
 										arrearsRate: {
-											max: ${delinquencyRate}
+											min: 0
+											max: ${delinquencyRateMax || null}
 										}
 									}
 								}
