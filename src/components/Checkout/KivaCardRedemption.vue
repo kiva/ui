@@ -193,7 +193,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
-@import "global/transitions";
 
 div.columns .kiva-card-entry-wrapper {
 	max-width: rem-calc(800);

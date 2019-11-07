@@ -265,7 +265,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'global/transitions';
 
 .lyml-section-wrapper {
 	padding: 0;
