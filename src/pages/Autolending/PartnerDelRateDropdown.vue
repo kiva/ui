@@ -1,23 +1,26 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Loan term
+			Partner delinquency rate
 		</h3>
-		<kv-dropdown-rounded v-model="loanTerm">
-			<option value="70">
-				All loan terms
+		<kv-dropdown-rounded v-model="delinquencyRate">
+			<option value="50">
+				All delinquency rates
 			</option>
-			<option value="6">
-				6 months or less
+			<option value="5">
+				5% or less
 			</option>
-			<option value="12">
-				12 months or less
+			<option value="10">
+				10% or less
 			</option>
-			<option value="18">
-				18 months or less
+			<option value="15">
+				15% or less
 			</option>
-			<option value="24">
-				24 months or less
+			<option value="20">
+				20% or less
+			</option>
+			<option value="25">
+				25% or less
 			</option>
 		</kv-dropdown-rounded>
 	</div>
@@ -35,7 +38,7 @@ export default {
 	},
 	data() {
 		return {
-			loanTerm: '70',
+			delinquencyRate: '50',
 		};
 	},
 	apollo: {
@@ -44,7 +47,7 @@ export default {
 				currentProfile {
 					loanSearchCriteria {
 						filters {
-							lenderTerm {
+							arrearsRate {
 								max
 							}
 						}
@@ -54,23 +57,24 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			const loanTermMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max');
-			this.loanTerm = loanTermMax;
+			// eslint-disable-next-line max-len
+			const delinquencyRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max');
+			this.delinquencyRate = delinquencyRateMax;
 		},
 	},
 	watch: {
-		loanTerm(loanTermMax, previousLoanTermMax) {
-			let loanTerm = null;
-			if (loanTermMax !== previousLoanTermMax) {
-				loanTerm = loanTermMax;
+		delinquencyRate(delinquencyRateMax, previousDelinquencyRateMax) {
+			let delinquencyRate = null;
+			if (delinquencyRateMax !== previousDelinquencyRateMax) {
+				delinquencyRate = delinquencyRateMax;
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										lenderTerm: {
-											max: ${loanTerm}
+										arrearsRate: {
+											max: ${delinquencyRate}
 										}
 									}
 								}
