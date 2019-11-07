@@ -55,37 +55,39 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			const loanTermMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max');
-			if (loanTermMax <= 6) {
-				this.loanTerm = 6;
-			} else if (loanTermMax > 6 && loanTermMax <= 12) {
-				this.loanTerm = 12;
-			} else if (loanTermMax > 12 && loanTermMax <= 18) {
-				this.loanTerm = 18;
-			} else if (loanTermMax > 18 && loanTermMax <= 24) {
-				this.loanTerm = 24;
-			}
+			this.loanTerm = loanTermMax;
+			// if (loanTermMax <= 6) {
+			// 	this.loanTerm = 6;
+			// } else if (loanTermMax > 6 && loanTermMax <= 12) {
+			// 	this.loanTerm = 12;
+			// } else if (loanTermMax > 12 && loanTermMax <= 18) {
+			// 	this.loanTerm = 18;
+			// } else if (loanTermMax > 18 && loanTermMax <= 24) {
+			// 	this.loanTerm = 24;
+			// }
 		},
 	},
 	watch: {
 		loanTerm(loanTermMax, previousLoanTermMax) {
 			let loanTerm = null;
 			if (loanTermMax !== previousLoanTermMax) {
-				if (loanTermMax === 6) {
-					loanTerm = 6;
-				} else if (loanTermMax === 12) {
-					loanTerm = 12;
-				} else if (loanTermMax === 18) {
-					loanTerm = 18;
-				} else if (loanTermMax === 24) {
-					loanTerm = 24;
-				}
+				loanTerm = loanTermMax;
+				// if (loanTermMax === 6) {
+				// 	loanTerm = 6;
+				// } else if (loanTermMax === 12) {
+				// 	loanTerm = 12;
+				// } else if (loanTermMax === 18) {
+				// 	loanTerm = 18;
+				// } else if (loanTermMax === 24) {
+				// 	loanTerm = 24;
+				// }
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: {
-								loanSearchCriteria {
-									filters {
-										lenderTerm {
+								loanSearchCriteria: {
+									filters: {
+										lenderTerm: {
 											max: ${loanTerm}
 										}
 									}
