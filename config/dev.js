@@ -45,7 +45,6 @@ module.exports = merge(base, {
 			browserCallbackUri: 'https://www.dev.kiva.org/process-browser-auth',
 			serverCallbackUri: 'https://www.dev.kiva.org/process-ssr-auth',
 			domain: 'login.dev.kiva.org',
-			altDomain: 'kiva-dev.auth0.com',
 		},
 	},
 	server: {

@@ -80,14 +80,8 @@ export default {
 				// show error here
 				this.showNewAcctTermsError = true;
 			} else {
-				let auth0Domain = this.auth0Config.domain;
-
-				// Use alternatvie domain for mobile app
-				if (this.$route.query.clientID === 'p6WnYfHbJZiBtnIGAx55Yb2PSeL5MJgB' && this.auth0Config.altDomain) {
-					auth0Domain = this.auth0Config.altDomain;
-				}
-
-				window.location = `https://${auth0Domain}/continue?agree=yes&state=${this.$route.query.state}`;
+				window.location = `https://${this.auth0Config.domain}`
+				+ `/continue?agree=yes&state=${this.$route.query.state}`;
 			}
 		},
 	}
