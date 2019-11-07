@@ -4,7 +4,7 @@
 	"description": "The Kiva ui",
 	"author": "braincrave",
 	"private": true,
-	"licencse": "UNLICENCSED",
+	"license": "UNLICENSED",
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development node --max-old-space-size=2048 server/dev-server.js",
 		"start": "cross-env NODE_ENV=production node --max-old-space-size=2048 server/index.js",

@@ -2,9 +2,11 @@ import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
 import { MockKvAuth0 } from '@/util/KvAuth0';
+import numeralFilter from '@/plugins/numeral-filter';
 
 const localVue = createLocalVue();
 localVue.use(kvAnalytics);
+localVue.filter('numeral', numeralFilter);
 
 describe('TheHeader', () => {
 	it('should hide/show the search area when the search toggle button is clicked', () => {
@@ -15,6 +17,9 @@ describe('TheHeader', () => {
 				SearchBar: {
 					template: '<div></div>',
 					methods: { focus() {} }
+				},
+				TheLendMenu: {
+					template: '<div></div>'
 				},
 			},
 			provide: {
