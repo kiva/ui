@@ -4,22 +4,22 @@
 			Partner delinquency rate
 		</h3>
 		<kv-dropdown-rounded v-model="delinquencyRate">
-			<option value="default">
+			<option value="50">
 				All delinquency rates
 			</option>
-			<option value="5-or-less">
+			<option value="5">
 				5% or less
 			</option>
-			<option value="10-or-less">
+			<option value="10">
 				10% or less
 			</option>
-			<option value="15-or-less">
+			<option value="15">
 				15% or less
 			</option>
-			<option value="20-or-less">
+			<option value="20">
 				20% or less
 			</option>
-			<option value="25-or-less">
+			<option value="25">
 				25% or less
 			</option>
 		</kv-dropdown-rounded>
@@ -38,7 +38,7 @@ export default {
 	},
 	data() {
 		return {
-			delinquencyRate: 'default',
+			delinquencyRate: '50',
 		};
 	},
 	apollo: {
@@ -48,7 +48,6 @@ export default {
 					loanSearchCriteria {
 						filters {
 							arrearsRate {
-								min
 								max
 							}
 						}
@@ -58,44 +57,27 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			// eslint-disable-next-line max-len
-			const delinquencyRateMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.min');
 			const delinquencyRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max');
-			console.log('del rate min', delinquencyRateMin);
-			console.log('del rate max', delinquencyRateMax);
-
-			if (delinquencyRate <= 5) {
-				this.loanTerm = '5-or-less';
-			} else if (delinquencyRate > 5 && delinquencyRate <= 10) {
-				this.loanTerm = '10-or-less';
-			} else if (delinquencyRate > 10 && delinquencyRate <= 15) {
-				this.loanTerm = '15-or-less';
-			} else if (delinquencyRate > 15 && delinquencyRate <= 20) {
-				this.loanTerm = '20-or-less';
-			} else if (delinquencyRate > 20 && delinquencyRate <= 25) {
-				this.loanTerm = '25-or-less';
-			}
+			this.delinquencyRate = delinquencyRateMax;
 		},
 	},
 	watch: {
 		delinquencyRate(delinquencyRateMax, previousDelinquencyRateMax) {
 			let delinquencyRate = null;
 			if (delinquencyRateMax !== previousDelinquencyRateMax) {
-				if (delinquencyRateMax === '5-or-less') {
-					delinquencyRate = 5;
-				} else if (delinquencyRateMax === '10-or-less') {
-					delinquencyRate = 10;
-				} else if (delinquencyRateMax === '15-or-less') {
-					delinquencyRate = 15;
-				} else if (delinquencyRateMax === '20-or-less') {
-					delinquencyRate = 20;
-				} else if (delinquencyRateMax === '25-or-less') {
-					delinquencyRate = 25;
-				}
+				delinquencyRate = delinquencyRateMax;
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
-							editProfile(profile: { delinquencyRate: ${delinquencyRate} })
+							editProfile(profile: {
+								loanSearchCriteria: {
+									filters: {
+										arrearsRate: {
+											max: ${delinquencyRate}
+										}
+									}
+								}
+							})
 						}
 					}`,
 				});
