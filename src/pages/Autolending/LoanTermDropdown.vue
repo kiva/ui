@@ -7,16 +7,16 @@
 			<option value="default">
 				All loan terms
 			</option>
-			<option value="6m-or-less">
+			<option value="6">
 				6 months or less
 			</option>
-			<option value="12m-or-less">
+			<option value="12">
 				12 months or less
 			</option>
-			<option value="18m-or-less">
+			<option value="18">
 				18 months or less
 			</option>
-			<option value="24m-or-less">
+			<option value="24">
 				24 months or less
 			</option>
 		</kv-dropdown-rounded>
@@ -56,13 +56,13 @@ export default {
 		result({ data }) {
 			const loanTermMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max');
 			if (loanTermMax <= 6) {
-				this.loanTerm = '6m-or-less';
+				this.loanTerm = 6;
 			} else if (loanTermMax > 6 && loanTermMax <= 12) {
-				this.loanTerm = '12m-or-less';
+				this.loanTerm = 12;
 			} else if (loanTermMax > 12 && loanTermMax <= 18) {
-				this.loanTerm = '18m-or-less';
+				this.loanTerm = 18;
 			} else if (loanTermMax > 18 && loanTermMax <= 24) {
-				this.loanTerm = '24m-or-less';
+				this.loanTerm = 24;
 			}
 		},
 	},
@@ -70,19 +70,27 @@ export default {
 		loanTerm(loanTermMax, previousLoanTermMax) {
 			let loanTerm = null;
 			if (loanTermMax !== previousLoanTermMax) {
-				if (loanTermMax === '6m-or-less') {
+				if (loanTermMax === 6) {
 					loanTerm = 6;
-				} else if (loanTermMax === '12m-or-less') {
+				} else if (loanTermMax === 12) {
 					loanTerm = 12;
-				} else if (loanTermMax === '18m-or-less') {
+				} else if (loanTermMax === 18) {
 					loanTerm = 18;
-				} else if (loanTermMax === '24m-or-less') {
+				} else if (loanTermMax === 24) {
 					loanTerm = 24;
 				}
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
-							editProfile(profile: { lenderTerm: ${loanTerm} })
+							editProfile(profile: {
+								loanSearchCriteria {
+									filters {
+										lenderTerm {
+											max: ${loanTerm}
+										}
+									}
+								}
+							})
 						}
 					}`,
 				});
