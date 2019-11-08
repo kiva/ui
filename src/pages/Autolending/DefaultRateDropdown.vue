@@ -47,7 +47,7 @@ export default {
 	},
 	data() {
 		return {
-			defaultRate: '0',
+			defaultRate: 0,
 		};
 	},
 	apollo: {
@@ -67,7 +67,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// eslint-disable-next-line max-len
-			const defaultRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.defaultRate.max');
+			const defaultRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.defaultRate.max') || 0;
 			this.defaultRate = defaultRateMax;
 		},
 	},
@@ -84,7 +84,7 @@ export default {
 									filters: {
 										defaultRate: {
 											min: 0
-											max: ${defaultRate}
+											max: ${defaultRate || null}
 										}
 									}
 								}
