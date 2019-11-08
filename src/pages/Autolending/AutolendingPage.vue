@@ -65,7 +65,7 @@
 						<risk-rating-dropdown />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
-						<!-- default rate -->
+						<!-- <default-rate-dropdown /> -->
 					</div>
 				</div>
 			</kv-expandable>
@@ -103,6 +103,7 @@ import LoanTermDropdown from './LoanTermDropdown';
 import GroupRadios from './GroupRadios';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 // import LoanIncrementRadios from './LoanIncrementRadios';
+// import DefaultRateDropdown from './DefaultRateDropdown';
 
 export default {
 	inject: ['apollo'],
@@ -124,6 +125,7 @@ export default {
 		GroupRadios,
 		PartnerDelRateDropdown
 		// LoanIncrementRadios,
+		// DefaultRateDropdown,
 	},
 	data() {
 		return {
