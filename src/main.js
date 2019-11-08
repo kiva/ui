@@ -24,6 +24,7 @@ Vue.use(VueProgressBar, {
 		opacity: '0s',
 		termination: 300,
 	},
+	autoFinish: false,
 });
 
 // App Instance Factory
