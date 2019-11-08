@@ -47,7 +47,7 @@
 			<kv-expandable>
 				<div class="row" v-show="showAdvanced">
 					<div class="small-12 large-6 columns setting-column">
-						<!-- <loan-increment-radios /> -->
+						<loan-increment-radios />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
 						<attribute-filter />
@@ -102,7 +102,7 @@ import RiskRatingDropdown from './RiskRatingDropdown';
 import LoanTermDropdown from './LoanTermDropdown';
 import GroupRadios from './GroupRadios';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
-// import LoanIncrementRadios from './LoanIncrementRadios';
+import LoanIncrementRadios from './LoanIncrementRadios';
 // import DefaultRateDropdown from './DefaultRateDropdown';
 
 export default {
@@ -123,8 +123,8 @@ export default {
 		RiskRatingDropdown,
 		LoanTermDropdown,
 		GroupRadios,
-		PartnerDelRateDropdown
-		// LoanIncrementRadios,
+		PartnerDelRateDropdown,
+		LoanIncrementRadios,
 		// DefaultRateDropdown,
 	},
 	data() {
