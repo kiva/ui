@@ -51,6 +51,7 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
+			// eslint-disable-next-line max-len
 			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min' || 1);
 			this.riskRating = riskRatingMin;
 		},
