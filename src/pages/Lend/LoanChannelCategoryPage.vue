@@ -23,7 +23,7 @@
 				</p>
 			</div>
 
-			<div class="columns small-12">
+			<div class="columns small-12" v-if="loans.length > 0">
 				<div v-if="!mgCategoryPromoActive" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
 						v-for="loan in loans"
@@ -177,6 +177,9 @@ export default {
 				offset: this.offset,
 			});
 		},
+		lastLoanPage() {
+			return Math.ceil(this.totalCount / this.limit);
+		},
 		loanChannelName() {
 			return _get(this.loanChannel, 'name') || 'No loans found';
 		},
@@ -262,7 +265,7 @@ export default {
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e, 'LoanChanngeCategoryPage loanChannelPageQuery');
+			logReadQueryError(e, 'LoanChangeCategoryPage loanChannelPageQuery');
 		}
 
 		// set user status
@@ -285,16 +288,12 @@ export default {
 				),
 			});
 		} catch (e) {
-			logReadQueryError(e, 'LoanChanngeCategoryPage loanChannelQuery');
+			logReadQueryError(e, 'LoanChangeCategoryPage loanChannelQuery');
 		}
 
 		// Assign our initial view data
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 		this.loanChannel = _get(baseData, 'lend.loanChannelsById[0]');
-
-		// Setup Reactivity for Loan Data + Basket Status
-		// TODO: Move to mounted
-		this.activateLoanChannelWatchQuery();
 
 		/*
 		 * Experiment Initializations
@@ -310,6 +309,9 @@ export default {
 		this.initializeLendFilterRedirects();
 	},
 	mounted() {
+		// Setup Reactivity for Loan Data + Basket Status
+		this.activateLoanChannelWatchQuery();
+
 		this.updateLendFilterExp();
 		// check for newly assigned bounceback
 		const redirectFromUiCookie = cookieStore.get('redirectFromUi') || '';
@@ -319,6 +321,15 @@ export default {
 		}
 	},
 	methods: {
+		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
+			// determines if the page query param is for a page that is out of bounds.
+			// if it is, changes page to the last page and displays a tip message
+			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
+			if (loansOutOfRange) {
+				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`); // eslint-disable-line max-len
+				this.pageChange(this.lastLoanPage);
+			}
+		},
 		pageChange(number) {
 			const offset = loansPerPage * (number - 1);
 			this.offset = offset;
@@ -349,6 +360,7 @@ export default {
 					} else {
 						this.loanChannel = _get(data, 'lend.loanChannelsById[0]');
 						this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
+						this.checkIfPageIsOutOfRange(this.loanChannel.loans.values.length, this.pageQuery.page);
 						this.loading = false;
 					}
 				}
