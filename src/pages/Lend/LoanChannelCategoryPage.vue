@@ -265,7 +265,7 @@ export default {
 				}
 			});
 		} catch (e) {
-			logReadQueryError(e, 'LoanChangeCategoryPage loanChannelPageQuery');
+			logReadQueryError(e, 'LoanChannelCategoryPage loanChannelPageQuery');
 		}
 
 		// set user status
