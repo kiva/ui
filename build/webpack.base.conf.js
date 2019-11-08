@@ -52,6 +52,14 @@ module.exports = {
 				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)
 			},
 			{
+				test: /\.scss$/,
+				use: [
+				  'vue-style-loader',
+				  'css-loader',
+				  'sass-loader'
+				].concat(styleLoaders),
+			},
+			{
 				test: /\.html$/,
 				loader: resolve('build/template-string-loader'),
 				include: [resolve('src'), resolve('test')]
