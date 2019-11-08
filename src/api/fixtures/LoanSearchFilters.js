@@ -79,6 +79,13 @@ export function getInputFilters(filters) {
 	]);
 }
 
+// Return filters that can be used in a loan search
+export function getSearchableFilters(filters) {
+	return _omit(getInputFilters(filters), [
+		'loanLimit',
+	]);
+}
+
 // Return true if the two given loan search filters objects are the same
 export function filtersAreEqual(a, b) {
 	return _isEqual(a, b);

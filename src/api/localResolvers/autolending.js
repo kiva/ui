@@ -9,7 +9,7 @@ import AutolendProfile, {
 	getInputProfile,
 	profilesAreEqual,
 } from '@/api/fixtures/AutolendProfile';
-import { criteriaAreEqual, getInputCriteria } from '@/api/fixtures/LoanSearchCriteria';
+import { criteriaAreEqual, getSearchableCriteria } from '@/api/fixtures/LoanSearchCriteria';
 
 // Helper function for writing autolending data to the cache
 function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) {
@@ -37,7 +37,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	writeAutolendingData(cache, { countingLoans: true });
 
 	// Get criteria input from current profile
-	const { filters, queryString } = getInputCriteria(currentProfile.loanSearchCriteria);
+	const { filters, queryString } = getSearchableCriteria(currentProfile.loanSearchCriteria);
 
 	// Cancel the currently in-flight query
 	if (loanCountObservable) loanCountObservable.unsubscribe();

@@ -220,7 +220,6 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
-@import "global/transitions";
 
 .sitewide-appeal-wrapper {
 	background: $kiva-alert-yellow;

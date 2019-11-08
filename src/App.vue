@@ -164,6 +164,7 @@ export default {
 @import 'global/line-breaks';
 @import 'global/typography';
 @import 'global/forms';
+@import 'global/transitions';
 
 #app {
 	height: 100%;

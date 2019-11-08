@@ -3,6 +3,7 @@ import LoanSearchFilters, {
 	filtersAreEqual,
 	getCacheableFilters,
 	getInputFilters,
+	getSearchableFilters,
 } from './LoanSearchFilters';
 
 // Return a LoanSearchCriteria object with default values
@@ -34,6 +35,17 @@ export function getInputCriteria({ filters, ...criteria }) {
 	return {
 		...cleanCriteria,
 		filters: getInputFilters(filters),
+	};
+}
+
+// Return criteria that can be used in a loan search
+export function getSearchableCriteria({ filters, ...criteria }) {
+	const cleanCriteria = _pick(criteria, [
+		'queryString'
+	]);
+	return {
+		...cleanCriteria,
+		filters: getSearchableFilters(filters),
 	};
 }
 

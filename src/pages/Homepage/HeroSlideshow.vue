@@ -10,7 +10,6 @@
 				<kv-responsive-image :images="mgHeroImages(1)" />
 			</kv-carousel-slide>
 		</kv-carousel> -->
-
 		<kv-carousel @change="slideChange" v-if="promoEnabled">
 			<div class="slide-placeholder"></div>
 			<kv-carousel-slide>

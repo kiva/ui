@@ -138,7 +138,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'global/transitions';
 
 .section-wrapper {
 	background-color: $kiva-bg-lightgray;

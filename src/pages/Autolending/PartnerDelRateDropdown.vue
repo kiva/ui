@@ -1,23 +1,26 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Loan term
+			Partner delinquency rate
 		</h3>
-		<kv-dropdown-rounded v-model="loanTerm">
+		<kv-dropdown-rounded v-model="delinquencyRate">
 			<option value="0">
-				All loan terms
+				All delinquency rates
 			</option>
-			<option value="6">
-				6 months or less
+			<option value="5">
+				5% or less
 			</option>
-			<option value="12">
-				12 months or less
+			<option value="10">
+				10% or less
 			</option>
-			<option value="18">
-				18 months or less
+			<option value="15">
+				15% or less
 			</option>
-			<option value="24">
-				24 months or less
+			<option value="20">
+				20% or less
+			</option>
+			<option value="25">
+				25% or less
 			</option>
 		</kv-dropdown-rounded>
 	</div>
@@ -35,7 +38,7 @@ export default {
 	},
 	data() {
 		return {
-			loanTerm: 0,
+			delinquencyRate: 0,
 		};
 	},
 	apollo: {
@@ -44,7 +47,7 @@ export default {
 				currentProfile {
 					loanSearchCriteria {
 						filters {
-							lenderTerm {
+							arrearsRate {
 								max
 							}
 						}
@@ -54,21 +57,22 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.loanTerm = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.lenderTerm.max') || 0;
+			// eslint-disable-next-line max-len
+			this.delinquencyRate = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.arrearsRate.max') || 0;
 		},
 	},
 	watch: {
-		loanTerm(loanTermMax, previousLoanTermMax) {
-			if (loanTermMax !== previousLoanTermMax) {
+		delinquencyRate(delinquencyRateMax, previousDelinquencyRateMax) {
+			if (delinquencyRateMax !== previousDelinquencyRateMax) {
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										lenderTerm: {
+										arrearsRate: {
 											min: 0
-											max: ${loanTermMax || null}
+											max: ${delinquencyRateMax || null}
 										}
 									}
 								}
