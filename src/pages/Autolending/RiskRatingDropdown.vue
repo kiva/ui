@@ -32,7 +32,7 @@ export default {
 	},
 	data() {
 		return {
-			riskRating: '1',
+			riskRating: 1,
 		};
 	},
 	apollo: {
@@ -52,7 +52,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// eslint-disable-next-line max-len
-			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min' || 1);
+			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min') || 1;
 			this.riskRating = riskRatingMin;
 		},
 	},
@@ -68,8 +68,8 @@ export default {
 								loanSearchCriteria: {
 									filters: {
 										riskRating: {
-											min: 0
-											max: ${riskRating || null}
+											min: ${riskRating || null}
+											max: 5
 										}
 									}
 								}
