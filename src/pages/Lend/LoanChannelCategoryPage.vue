@@ -288,7 +288,7 @@ export default {
 				),
 			});
 		} catch (e) {
-			logReadQueryError(e, 'LoanChangeCategoryPage loanChannelQuery');
+			logReadQueryError(e, 'LoanChannelCategoryPage loanChannelQuery');
 		}
 
 		// Assign our initial view data
