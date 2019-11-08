@@ -4,16 +4,16 @@
 			Risk Rating
 		</h3>
 		<kv-dropdown-rounded v-model="riskRating">
-			<option value="1-star-up">
+			<option value="1">
 				&#9733; and up
 			</option>
-			<option value="2-star-up">
+			<option value="2">
 				&#9733; &#9733; and up
 			</option>
-			<option value="3-star-up">
+			<option value="3">
 				&#9733; &#9733; &#9733; and up
 			</option>
-			<option value="4-star-up">
+			<option value="4">
 				&#9733; &#9733; &#9733; &#9733; and up
 			</option>
 		</kv-dropdown-rounded>
@@ -32,7 +32,7 @@ export default {
 	},
 	data() {
 		return {
-			riskRating: '1-star-up',
+			riskRating: '1',
 		};
 	},
 	apollo: {
@@ -51,36 +51,28 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min');
-
-			if (riskRatingMin <= 1.9) {
-				this.riskRating = '1-star-up';
-			} else if (riskRatingMin <= 2.9) {
-				this.riskRating = '2-star-up';
-			} else if (riskRatingMin <= 3.9) {
-				this.riskRating = '3-star-up';
-			} else if (riskRatingMin <= 5) {
-				this.riskRating = '4-star-up';
-			}
+			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min' || 1);
+			this.riskRating = riskRatingMin;
 		},
 	},
 	watch: {
 		riskRating(riskRatingMin, previousRiskRatingMin) {
 			let riskRating = null;
 			if (riskRatingMin !== previousRiskRatingMin) {
-				if (riskRatingMin === '1-star-up') {
-					riskRating = 1;
-				} else if (riskRatingMin === '2-star-up') {
-					riskRating = 2;
-				} else if (riskRatingMin === '3-star-up') {
-					riskRating = 3;
-				} else if (riskRatingMin === '4-star-up') {
-					riskRating = 4;
-				}
+				riskRating = riskRatingMin;
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
-							editProfile(profile: { riskRating: ${riskRating} })
+							editProfile(profile: {
+								loanSearchCriteria: {
+									filters: {
+										riskRating: {
+											min: 0
+											max: ${riskRating || null}
+										}
+									}
+								}
+							})
 						}
 					}`,
 				});
