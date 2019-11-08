@@ -95,7 +95,7 @@ export default () => {
 
 					return new Promise((resolve, reject) => {
 						// Query for all the details of the server profile
-						client.query({ query: serverProfileQuery })
+						client.query({ query: serverProfileQuery, fetchPolicy: 'network-only' })
 							.then(result => {
 								if (result.errors) {
 									// Throw the first error that is found
