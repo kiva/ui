@@ -4,31 +4,31 @@
 			Partner default rate
 		</h3>
 		<kv-dropdown-rounded v-model="defaultRate">
-			<option value="default">
+			<option value="0">
 				All
 			</option>
-			<option value="1-or-less">
+			<option value="1">
 				1% or less
 			</option>
-			<option value="2-or-less">
+			<option value="2">
 				2% or less
 			</option>
-			<option value="3-or-less">
+			<option value="3">
 				3% or less
 			</option>
-			<option value="4-or-less">
+			<option value="4">
 				4% or less
 			</option>
-			<option value="5-or-less">
+			<option value="5">
 				5% or less
 			</option>
-			<option value="6-or-less">
+			<option value="6">
 				6% or less
 			</option>
-			<option value="7-or-less">
+			<option value="7">
 				7% or less
 			</option>
-			<option value="8-or-less">
+			<option value="8">
 				8% or less
 			</option>
 		</kv-dropdown-rounded>
@@ -47,7 +47,7 @@ export default {
 	},
 	data() {
 		return {
-			defaultRate: 'default',
+			defaultRate: '0',
 		};
 	},
 	apollo: {
@@ -68,40 +68,27 @@ export default {
 		result({ data }) {
 			// eslint-disable-next-line max-len
 			const defaultRateMax = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.defaultRate.max');
-			console.log('default rate max', defaultRateMax);
-
-			if (defaultRate <= 5) {
-				this.defaultRate = '5-or-less';
-			} else if (defaultRate > 5 && defaultRate <= 10) {
-				this.defaultRate = '10-or-less';
-			} else if (defaultRate > 10 && defaultRate <= 15) {
-				this.defaultRate = '15-or-less';
-			} else if (defaultRate > 15 && defaultRate <= 20) {
-				this.defaultRate = '20-or-less';
-			} else if (defaultRate > 20 && defaultRate <= 25) {
-				this.defaultRate = '25-or-less';
-			}
+			this.defaultRate = defaultRateMax;
 		},
 	},
 	watch: {
 		defaultRate(defaultRateMax, previousDefaultRateMax) {
 			let defaultRate = null;
 			if (defaultRateMax !== previousDefaultRateMax) {
-				if (defaultRateMax === '5-or-less') {
-					defaultRate = 5;
-				} else if (defaultRateMax === '10-or-less') {
-					defaultRate = 10;
-				} else if (defaultRateMax === '15-or-less') {
-					defaultRate = 15;
-				} else if (defaultRateMax === '20-or-less') {
-					defaultRate = 20;
-				} else if (defaultRateMax === '25-or-less') {
-					defaultRate = 25;
-				}
+				defaultRate = defaultRateMax;
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
-							editProfile(profile: { defaultRate: ${defaultRate} })
+							editProfile(profile: {
+								loanSearchCriteria: {
+									filters: {
+										defaultRate: {
+											min: 0
+											max: ${defaultRate}
+										}
+									}
+								}
+							})
 						}
 					}`,
 				});
