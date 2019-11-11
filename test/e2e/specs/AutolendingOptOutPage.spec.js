@@ -1,6 +1,7 @@
 import wwwPageMock from '../fixtures/wwwPageMock';
 
-describe('Autolending Opt Out Spec', () => {
+// TODO enable these tests again once these routes are active
+xdescribe('Autolending Opt Out Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock());
 	});

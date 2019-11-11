@@ -20,8 +20,8 @@ export default [
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
 	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
-	{ path: '/legal/promo-terms-of-use-february-2020', component: () => import('@/pages/Legal/PromoTermsOfUse') },
-	{ path: '/legal/terms-of-use-february-2020', component: () => import('@/pages/Legal/TermsOfUse') },
+	// { path: '/legal/promo-terms-of-use-february-2020', component: () => import('@/pages/Legal/PromoTermsOfUse') },
+	// { path: '/legal/terms-of-use-february-2020', component: () => import('@/pages/Legal/TermsOfUse') },
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
@@ -31,12 +31,12 @@ export default [
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
-	{ path: '/settings/autolending', component: () => import('@/pages/Autolending/AutolendingPage')	},
-	{
-		path: '/settings/autolending/opt-out',
-		component: () => import('@/pages/Autolending/AutolendingOptOutPage'),
-		props: route => ({ success: (route.query.success === 'true') })
-	},
+	// { path: '/settings/autolending', component: () => import('@/pages/Autolending/AutolendingPage')	},
+	// {
+	// 	path: '/settings/autolending/opt-out',
+	// 	component: () => import('@/pages/Autolending/AutolendingOptOutPage'),
+	// 	props: route => ({ success: (route.query.success === 'true') })
+	// },
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
 		path: '/styleguide',
