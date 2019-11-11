@@ -48,16 +48,8 @@ module.exports = {
 			},
 			{
 				// Inject styles from the /pages/ directory as <style> tags
-				test: /\/pages\/.+\.scss$/,
-				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)
-			},
-			{
 				test: /\.scss$/,
-				use: [
-				  'vue-style-loader',
-				  'css-loader',
-				  'sass-loader'
-				].concat(styleLoaders),
+				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)
 			},
 			{
 				test: /\.html$/,
