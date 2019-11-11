@@ -10,6 +10,7 @@
 			<main-toggle />
 		</div>
 		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
+			<lend-timing-dropdown />
 			<!-- main toggles -->
 			<div class="setting-group">
 				<!-- timing dropdown -->
@@ -91,6 +92,7 @@ import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphq
 import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
 import DonationDropdown from './DonationDropdown';
+import LendTimingDropdown from './LendTimingDropdown';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import GenderRadios from './GenderRadios';
@@ -108,24 +110,25 @@ import LoanIncrementRadios from './LoanIncrementRadios';
 export default {
 	inject: ['apollo'],
 	components: {
-		WwwPage,
-		KvExpandable,
 		AttributeFilter,
 		CountryFilter,
 		DonationDropdown,
 		FloatingCounter,
-		MainToggle,
 		GenderRadios,
+		GroupRadios,
+		KvExpandable,
+		LendTimingDropdown,
+		MainToggle,
 		MobileCounter,
 		PartnerFilter,
 		SaveButton,
 		SectorFilter,
 		RiskRatingDropdown,
 		LoanTermDropdown,
-		GroupRadios,
 		PartnerDelRateDropdown,
 		LoanIncrementRadios,
 		// DefaultRateDropdown,
+		WwwPage,
 	},
 	data() {
 		return {
