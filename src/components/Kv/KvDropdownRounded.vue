@@ -43,10 +43,7 @@ export default {
 	// Media query targeting IE 10+ only
 	@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 		.dropdown {
-			width: 100%;
-			// This will need to be adjusted, but I'll test this when it's on dev, since I deleted my
-			// Windows VM to free up space on my computer.
-			background-position: left 3.8rem center;
+			background-position: right -1.9rem center;
 		}
 	}
 
