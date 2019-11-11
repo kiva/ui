@@ -4,6 +4,9 @@
 			Risk Rating
 		</h3>
 		<kv-dropdown-rounded v-model="riskRating">
+			<option value="0">
+				All loans
+			</option>
 			<option value="1">
 				&#9733; and up
 			</option>
@@ -32,7 +35,7 @@ export default {
 	},
 	data() {
 		return {
-			riskRating: 1,
+			riskRating: 0,
 		};
 	},
 	apollo: {
@@ -52,7 +55,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			// eslint-disable-next-line max-len
-			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min') || 1;
+			const riskRatingMin = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.riskRating.min') || 0;
 			this.riskRating = riskRatingMin;
 		},
 	},
