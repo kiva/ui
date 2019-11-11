@@ -17,7 +17,7 @@
 			radio-value="some"
 			v-model="radio"
 		>
-			Specific {{ name }} only.
+			Specific {{ name }} only
 			<button
 				v-if="selectedItems.length > 0"
 				class="edit-button"
