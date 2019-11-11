@@ -1,7 +1,7 @@
 import wwwPageMock from '../fixtures/wwwPageMock';
 
-
-describe('Autolending Page Spec', () => {
+// TODO enable these tests again once these routes are active
+xdescribe('Autolending Page Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock());
 	});
