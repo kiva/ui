@@ -1,8 +1,26 @@
 
 const path = require('path');
 // your app's webpack.config.js
-const custom = require('../build/webpack.base.conf');
+const kvWebpackConfig = require('../build/webpack.base.conf');
+
 
 module.exports = async ({ config, mode }) => {
-  return { ...config, module: { ...config.module, rules: custom.module.rules } };
+
+	const newConfig = {
+		...config,
+		resolve: {
+			...config.resolve,
+			alias: {
+				...config.resolve.alias,
+				...kvWebpackConfig.resolve.alias
+			}
+		},
+		module: {
+			...config.module,
+			rules: kvWebpackConfig.module.rules
+		}
+	};
+
+	console.dir(newConfig, { depth: null }) || config;
+	return newConfig;
 };
