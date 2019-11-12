@@ -1,4 +1,4 @@
-export default function wwwPageMock() {
+export default function wwwPageMock(userId = null) {
 	return {
 		LatestDonationCampaign: () => ({
 			amount_raised: 0,
@@ -7,7 +7,6 @@ export default function wwwPageMock() {
 		Manifest: () => ({
 			hasFreeCredits: false,
 		}),
-		My: () => null,
 		Setting: (parent, args) => ({
 			key: args.key,
 			value: '',
@@ -18,6 +17,9 @@ export default function wwwPageMock() {
 		}),
 		ShopTotals: () => ({
 			redemptionCodeAvailableTotal: '0.00',
+		}),
+		UserAccount: () => ({
+			id: userId
 		}),
 		UserSession: (parent, args) => ({
 			sessionKey: args.sessionKey,
