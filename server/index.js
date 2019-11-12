@@ -76,7 +76,7 @@ app.use(logger.fallbackErrorHandler);
 const numCPUs = 2;
 
 // Start the cluster master process
-if (cluster.isMaster) {
+if (cluster.isMaster && !argv.mock) {
 	console.log(`Master ${process.pid} is running`); // eslint-disable-line
 
 	// Fork workers.
