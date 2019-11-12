@@ -1,12 +1,18 @@
 import KvButton from './KvButton';
 
-export default { title: 'Button' };
+export default { title: 'KV|KvButton', component: KvButton };
 
-export const withText = () => '<kv-button>with text</kv-button>';
-
-export const withEmoji = () => '<kv-button>😀 😎 👍 💯</kv-button>';
-
-export const asAComponent = () => ({
+export const Default = () => ({
 	components: { KvButton },
-	template: '<kv-button :rounded="true">rounded</kv-button>'
+	template: '<kv-button>Button</kv-button>'
+});
+
+export const Disabled = () => ({
+	components: { KvButton },
+	template: '<kv-button disabled>Button</kv-button>'
+});
+
+export const AsALink = () => ({
+	components: { KvButton },
+	template: '<kv-button href="http://www.google.com">Button</kv-button>'
 });
