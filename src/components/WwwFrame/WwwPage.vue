@@ -2,6 +2,7 @@
 	<div class="www-page">
 		<appeal-banner />
 		<global-promo />
+		<global-promo-contentful />
 		<the-header :hide-search-in-header="hideSearchInHeader" />
 		<slot name="secondary"></slot>
 		<main :class="{'gray-background': grayBackground}">
@@ -23,18 +24,21 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
 import GlobalPromo from './PromotionalBanner/GlobalPromotionalBanner';
+import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
+
 
 export default {
 	inject: [
 		'apollo'
 	],
 	components: {
-		TheHeader,
-		TheFooter,
-		TheBasketBar,
 		AppealBanner,
-		GlobalPromo,
 		CookieBanner,
+		GlobalPromo,
+		GlobalPromoContentful,
+		TheBasketBar,
+		TheFooter,
+		TheHeader,
 	},
 	props: {
 		grayBackground: {

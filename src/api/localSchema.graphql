@@ -40,6 +40,11 @@ extend type Query {
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
 	autolending: Autolending
+	contentfulCMS(contentType: String!, contentKey: String): ContentfulCMS
+}
+
+extend type ContentfulCMS {
+	items: []
 }
 
 extend type My {

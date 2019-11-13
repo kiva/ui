@@ -7,11 +7,12 @@ import _get from 'lodash/get';
  * Read a boolean setting from SettingsManager
  *
  * @param {object} data
- * @param {string} key
+ * @param {string|boolean} key
  * @returns {boolean|null}
  */
 export function readBoolSetting(data, key) {
-	const val = _get(data, key);
+	let val = _get(data, key);
+	if (val) val = val.toString();
 	if (val === 'true') return true;
 	if (val === 'false') return false;
 	return null;

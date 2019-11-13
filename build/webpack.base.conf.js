@@ -28,6 +28,7 @@ module.exports = {
 	resolve: {
 		extensions: ['.mjs', '.js', '.vue', '.json'],
 		alias: {
+			'~': resolve('node_modules'),
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
 		}
