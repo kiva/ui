@@ -9,7 +9,10 @@ import AutolendProfile, {
 	getInputProfile,
 	profilesAreEqual,
 } from '@/api/fixtures/AutolendProfile';
-import { criteriaAreEqual, getSearchableCriteria } from '@/api/fixtures/LoanSearchCriteria';
+import LoanSearchCriteria, {
+	criteriaAreEqual,
+	getSearchableCriteria,
+} from '@/api/fixtures/LoanSearchCriteria';
 
 // Helper function for writing autolending data to the cache
 function writeAutolendingData(cache, { currentProfile, savedProfile, ...data }) {
@@ -109,8 +112,14 @@ export default () => {
 								}
 								return result;
 							})
-							// Return default profile if non is defined on the server
-							.then(result => _get(result, 'data.my.autolendProfile') || AutolendProfile())
+							// Return default profile/loan search criteria if none is defined on the server
+							.then(result => {
+								const profile = _get(result, 'data.my.autolendProfile') || AutolendProfile();
+								return {
+									...profile,
+									loanSearchCriteria: profile.loanSearchCriteria || LoanSearchCriteria(),
+								};
+							})
 							// Write the fetched profile to the cache as both the current and saved profiles
 							.then(profile => {
 								writeAutolendingData(cache, {
