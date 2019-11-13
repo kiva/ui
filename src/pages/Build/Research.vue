@@ -36,14 +36,15 @@ export default {
 		return {
 			years: [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
-				{	year: 2019,
+				{	
+					year: 2019,
 					author: 'Tsai, Jeanne et al',
 					title: 'Culturally Valued Facial Expressions Enhance Loan Request Success',
 					publication: 'American Psychological Association',
 					/* eslint-disable max-len */ 
 					url: 'https://culture-emotion-lab.sites.stanford.edu/sites/g/files/sbiybj9351/f/culturallyvaluedfacialloansuccess.pdf',
 					/* eslint-enable max-len */			
-					},
+				},
 				{
 					year: 2018,
 					author: 'Jain, Lalit and Jamieson, Kevin',
