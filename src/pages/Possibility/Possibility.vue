@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import WwwPage from "@/components/WwwFrame/WwwPage";
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
