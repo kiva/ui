@@ -13,6 +13,7 @@ export default function AutolendProfile() {
 		isEnabled: false,
 		donationPercentage: 15,
 		lendAfterDaysIdle: 90,
+		idleCreditOptIn: true,
 		enableAfter: 0,
 		loanSearchCriteria: LoanSearchCriteria(),
 	};
@@ -48,6 +49,7 @@ export function profilesAreEqual(a, b) {
 	if (!a || !b) return false; // if only one is undefined, return false
 	if (a.isEnabled !== b.isEnabled) return false;
 	if (a.enableAfter !== b.enableAfter) return false;
+	if (a.idleCreditOptIn !== b.idleCreditOptIn) return false;
 	if (a.donationPercentage !== b.donationPercentage) return false;
 	if (a.lendAfterDaysIdle !== b.lendAfterDaysIdle) return false;
 	if (!criteriaAreEqual(a.loanSearchCriteria, b.loanSearchCriteria)) return false;

@@ -10,7 +10,7 @@ export default function LoanSearchFilters() {
 			min: null,
 			max: null,
 		},
-		theme: [],
+		theme: null,
 		country: [],
 		defaultRate: {
 			__typename: 'MinMaxRange',
@@ -24,14 +24,14 @@ export default function LoanSearchFilters() {
 			min: null,
 			max: null,
 		},
-		// loanLimit
-		partner: [],
+		loanLimit: null,
+		partner: null,
 		riskRating: {
 			__typename: 'MinMaxRange',
 			min: 0,
 			max: 5,
 		},
-		sector: [],
+		sector: null,
 	};
 }
 
