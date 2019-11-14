@@ -31,20 +31,20 @@ export default [
 	{
 		path: '/possibility',
 		component: () => import('@/pages/Possibility/Possibility'),
-		// children: [
-		// 	{
-		// 		path: 'giving-tuesday',
-		// 		component: () => import('@/pages/Possibility/GivingTuesday')
-		// 	},
-		// 	{
-		// 		path: '12-days-of-lending',
-		// 		component: () => import('@/pages/Possibility/12DaysOfLending')
-		// 	},
-		// 	{
-		// 		path: 'year-end',
-		// 		component: () => import('@/pages/Possibility/YearEnd')
-		// 	},
-		// ]
+		children: [
+			{
+				path: 'giving-tuesday',
+				component: () => import('@/pages/Possibility/GivingTuesday')
+			},
+			{
+				path: '12-days-of-lending',
+				component: () => import('@/pages/Possibility/12DaysOfLending')
+			},
+			{
+				path: 'year-end',
+				component: () => import('@/pages/Possibility/YearEnd')
+			},
+		]
 	},
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
