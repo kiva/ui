@@ -12,19 +12,20 @@ export default {
 		WwwPage
 	},
 	beforeCreate() {
-		const todaysDate = new Date();
-		const timezoneOffset = todaysDate.getTimezoneOffset() - 480; // PDT Offset is 480 minutes
-		todaysDate.setMinutes(todaysDate.getMinutes() + timezoneOffset);
+		const offset = 8 * 60 * 60 * 1000; // PDT is 8 hours behind UTC
+		const now = Date.now() - offset;
 
-		const day = todaysDate.getDate();
-		const month = todaysDate.getMonth() + 1; // getMonth is 0 based
+		const dec3 = 1575331200000;
+		const dec14 = 1576281600000;
+		const dec26 = 1577318400000;
+		const jan1 = 157783680000;
 
 		let url = '/';
-		if (month === 12 && (day >= 3 && day <= 13)) {
+		if (now >= dec3 && now <= dec14) {
 			url = '/possibility/giving-tuesday';
-		} else if (month === 12 && (day >= 14 && day <= 25)) {
+		} else if (now >= dec14 && now <= dec26) {
 			url = '/possibility/12-days-of-lending';
-		} else if (month === 12 && (day >= 26 && day <= 31)) {
+		} else if (now >= dec26 && now <= jan1) {
 			url = '/possibility/year-end';
 		}
 
