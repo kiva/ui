@@ -1,3 +1,5 @@
+import { GraphQLJSONObject } from 'graphql-type-json';
+
 const contentful = require('contentful');
 const appConfig = require('../../../config/index');
 
@@ -5,13 +7,13 @@ const contentfulClient = contentful.createClient({
 	accessToken: appConfig.app.contentful.accessToken,
 	space: appConfig.app.contentful.space
 });
-
 /**
  * ContentfulCMS resolvers
  */
 export default () => {
 	return {
 		resolvers: {
+			JSONObject: GraphQLJSONObject,
 			Query: {
 				contentfulCMS(_, { contentKey, contentType }) {
 					// contentType is a required parameter
