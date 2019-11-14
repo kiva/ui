@@ -21,11 +21,11 @@ export default {
 		const jan1 = 157783680000;
 
 		let url = '/';
-		if (now >= dec3 && now <= dec14) {
+		if (now >= dec3 && now < dec14) {
 			url = '/possibility/giving-tuesday';
-		} else if (now >= dec14 && now <= dec26) {
+		} else if (now >= dec14 && now < dec26) {
 			url = '/possibility/12-days-of-lending';
-		} else if (now >= dec26 && now <= jan1) {
+		} else if (now >= dec26 && now < jan1) {
 			url = '/possibility/year-end';
 		}
 
