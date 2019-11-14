@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<kv-hero>
+		<kv-hero headline-bg-color="#0b290c">
 			<template v-slot:images>
 				<kv-responsive-image :images="possibilitiesImages" alt="A woman smiling" />
 			</template>

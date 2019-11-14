@@ -12,6 +12,7 @@
 			</div>
 			<div class="headline-main">
 				<div class="headline-title">
+				<div class="headline-background" :style="headlineBgStyles"></div>
 					<slot name="headlineTitle"></slot>
 				</div>
 				<div class="headline-body" v-if="hasHeadlineBody">
@@ -30,12 +31,21 @@
 
 <script>
 export default {
+	props: {
+		headlineBgColor: {
+			type: String,
+			default: ''
+		}
+	},
 	computed: {
 		hasHeadlineBody() {
 			return !!this.$slots.headlineBody;
 		},
 		hasAction() {
 			return !!this.$slots.action;
+		},
+		headlineBgStyles() {
+			return this.headlineBgColor ? `background-color: ${this.headlineBgColor}` : '';
 		}
 	}
 };
@@ -56,6 +66,7 @@ export default {
 
 .images {
 	position: relative;
+	overflow: hidden;
 
 	img {
 		width: 100%;
@@ -65,7 +76,6 @@ export default {
 .images-container {
 	position: absolute;
 	top: 0;
-	overflow: hidden;
 }
 
 .images-placeholder {
@@ -98,11 +108,11 @@ export default {
 }
 
 .headline-main {
+	position: relative;
 	flex-grow: 1;
 	max-width: rem-calc(750);
 	padding: 1.125rem 0.5rem;
 	color: $white;
-	background-color: rgba($kiva-green, 0.9);
 	text-align: center;
 
 	@include breakpoint(medium) {
@@ -110,7 +120,18 @@ export default {
 	}
 }
 
+.headline-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: $kiva-green;
+	opacity: 0.9;
+}
+
 .headline-title {
+	position: relative;
 	display: block;
 	margin-bottom: 0;
 	font-size: 1.75rem;
@@ -128,6 +149,7 @@ export default {
 }
 
 .headline-body {
+	position: relative;
 	font-size: 1.25rem;
 	line-height: 1.5rem;
 	margin-top: 0.5rem;
@@ -146,6 +168,7 @@ export default {
 }
 
 .action {
+	position: relative;
 	text-align: center;
 	margin-top: 1rem;
 	margin-bottom: -4rem;
