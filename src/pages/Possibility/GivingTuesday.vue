@@ -7,16 +7,6 @@
 			<template v-slot:headlineTitle>
 				Making opportunity possible<br class="lu"> is a team effort
 			</template>
-			<template v-slot:headlineTitle>
-				Dreams are universal, opportunity is not.
-			</template>
-			<template v-slot:headlineBody>
-				Lend as little as $25<br class="so">
-				to create<br class="mo">
-				opportunity<br class="so"><br class="lu">
-				for people<br class="mo">
-				around the world.
-			</template>
 			<template v-slot:action>
 				<!-- TODO: What is the the URL and tracking info? -->
 				<kv-button
