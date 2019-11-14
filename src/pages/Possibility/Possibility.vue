@@ -13,6 +13,9 @@ export default {
 	},
 	beforeCreate() {
 		const todaysDate = new Date();
+		const timezoneOffset = todaysDate.getTimezoneOffset() - 480; // PDT Offset is 480 minutes
+		todaysDate.setMinutes(todaysDate.getMinutes() + timezoneOffset);
+
 		const day = todaysDate.getDate();
 		const month = todaysDate.getMonth() + 1; // getMonth is 0 based
 
