@@ -142,7 +142,7 @@ export default {
 	margin-bottom: 0;
 	font-size: 1.75rem;
 	line-height: 2rem;
-	font-weight: 400;
+	font-weight: $global-weight-highlight;
 
 	@include breakpoint(medium) {
 		font-size: 2.25rem;
