@@ -7,28 +7,28 @@
 			<option value="0">
 				All
 			</option>
-			<option value="1">
+			<option value="0.01">
 				1% or less
 			</option>
-			<option value="2">
+			<option value="0.02">
 				2% or less
 			</option>
-			<option value="3">
+			<option value="0.03">
 				3% or less
 			</option>
-			<option value="4">
+			<option value="0.04">
 				4% or less
 			</option>
-			<option value="5">
+			<option value="0.05">
 				5% or less
 			</option>
-			<option value="6">
+			<option value="0.06">
 				6% or less
 			</option>
-			<option value="7">
+			<option value="0.07">
 				7% or less
 			</option>
-			<option value="8">
+			<option value="0.08">
 				8% or less
 			</option>
 		</kv-dropdown-rounded>
