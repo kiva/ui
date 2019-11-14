@@ -6,13 +6,13 @@
 				<slot name="images"></slot>
 			</div>
 		</div>
-		<div class="headline">
+		<div class="headline" v-if="showHeadline">
 			<div class="headline-mask">
 				&nbsp;
 			</div>
 			<div class="headline-main">
-				<div class="headline-title">
 				<div class="headline-background" :style="headlineBgStyles"></div>
+				<div class="headline-title" v-if="hasHeadlineTitle">
 					<slot name="headlineTitle"></slot>
 				</div>
 				<div class="headline-body" v-if="hasHeadlineBody">
@@ -38,11 +38,17 @@ export default {
 		}
 	},
 	computed: {
+		hasHeadlineTitle() {
+			return !!this.$slots.headlineTitle;
+		},
 		hasHeadlineBody() {
 			return !!this.$slots.headlineBody;
 		},
 		hasAction() {
 			return !!this.$slots.action;
+		},
+		showHeadline() {
+			return this.hasHeadlineTitle || this.hasHeadlineBody || this.hasAction;
 		},
 		headlineBgStyles() {
 			return this.headlineBgColor ? `background-color: ${this.headlineBgColor}` : '';
