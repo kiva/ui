@@ -57,7 +57,7 @@ export default {
 	color: $kiva-icon-green;
 	text-decoration: none;
 	text-align: center;
-	padding: 0.625rem;
+	padding: 0.365rem;
 	line-height: 1.25;
 
 	&:hover,
