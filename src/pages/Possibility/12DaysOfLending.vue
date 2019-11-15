@@ -61,6 +61,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import 'settings';
+@import 'foundation';
 
+$cta-color: #02582e;
+
+.cta-button {
+	@include button-style($cta-color, auto, #fff);
+}
 </style>

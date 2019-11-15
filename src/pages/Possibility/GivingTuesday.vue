@@ -86,6 +86,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
+@import 'foundation';
+
 $cta-color: #02582e;
 
 .intro,
@@ -101,12 +103,7 @@ $cta-color: #02582e;
 }
 
 .cta-button {
-	background-color: $cta-color;
-
-	&:hover,
-	&:focus {
-		background-color: darken($cta-color, 10%);
-	}
+	@include button-style($cta-color, auto, #fff);
 }
 
 .donate-cta-link {
