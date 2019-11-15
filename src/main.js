@@ -52,7 +52,6 @@ export default function createApp({
 			algoliaConfig: appConfig.algoliaConfig,
 			auth0Config: appConfig.auth0,
 			kvAuth0,
-			contentfulConfig: appConfig.contentful,
 		}
 	});
 

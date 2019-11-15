@@ -1,4 +1,4 @@
-import { readJSONSetting, hashCode } from '@/util/settingsUtils';
+import { readJSONSetting, hashCode, readBoolSetting } from '@/util/settingsUtils';
 
 describe('settingsUtils.js', () => {
 	describe('readJSONSetting', () => {
@@ -67,6 +67,32 @@ describe('settingsUtils.js', () => {
 			// eslint-disable-next-line
 			const stringifiedObj = '"{\"name\":\"AlgoliaSearch\",\"enabled\":true,\"startTime\":\"2018-08-29T00:00\",\"endTime\":\"2020-02-16T15:00\",\"control\":{\"key\":\"variant-a\",\"name\":\"Control (variant-a)\"},\"variants\":{\"variant-b\":{\"name\":\"Algolia Search Enabled\"}},\"distribution\":{\"variant-a\":0,\"variant-b\":1}}"';
 			expect(hashCode(stringifiedObj)).toEqual(157042145);
+		});
+	});
+
+	describe('readBoolSetting', () => {
+		it('returns false if key is missing from data', () => {
+			expect(readBoolSetting({}, 'missingKey')).toEqual(null);
+		});
+		it('returns false if key is string false', () => {
+			expect(readBoolSetting({
+				stringKey: 'false'
+			}, 'stringKey')).toEqual(false);
+		});
+		it('returns false if key is boolean false', () => {
+			expect(readBoolSetting({
+				booleanKey: false
+			}, 'booleanKey')).toEqual(false);
+		});
+		it('returns true if key is string true', () => {
+			expect(readBoolSetting({
+				stringKey: 'true'
+			}, 'stringKey')).toEqual(true);
+		});
+		it('returns true if key is boolean true', () => {
+			expect(readBoolSetting({
+				booleanKey: true
+			}, 'booleanKey')).toEqual(true);
 		});
 	});
 });

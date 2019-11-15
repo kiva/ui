@@ -52,16 +52,34 @@ export default {
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 
-			// returns the contentful content of the uiSetting key ui-global-promos or empty object
+			// returns the contentful content of the uiSetting key ui-global-promo or empty object
+			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo') || {}; // eslint-disable-line max-len
-			this.promoBannerContent = _get(uiGlobalPromoSetting, 'content.fields');
 
-			this.isPromoEnabled = settingEnabled(
+			// uiGlobalPromoSetting can contain an array of different banners with
+			// different start/end dates first determine if setting is enabled.
+			const isGlobalSettingEnabled = settingEnabled(
 				uiGlobalPromoSetting,
 				'active',
 				'startDate',
 				'endDate'
 			);
+
+			// if setting is enabled determine which banner to display
+			if (isGlobalSettingEnabled) {
+				const activePromoBanner = uiGlobalPromoSetting.content.find(promoContent => {
+					return settingEnabled(
+						promoContent.fields,
+						'active',
+						'startDate',
+						'endDate'
+					);
+				});
+				if (activePromoBanner) {
+					this.promoBannerContent = activePromoBanner.fields;
+					this.isPromoEnabled = true;
+				}
+			}
 		}
 	},
 };
