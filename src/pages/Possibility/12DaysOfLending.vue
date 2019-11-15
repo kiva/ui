@@ -13,20 +13,19 @@
 					a borrower and be a part of possibility.
 				</p>
 				<!-- TODO: What is the tracking info? -->
-				<kv-button
-					class="cta-button"
+				<router-link
 					to="/lend-by-category"
-					v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
+					class="cta-link"
+					v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
 				>
 					Lend now
-				</kv-button>
+				</router-link>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
@@ -34,7 +33,6 @@ const possibilitiesImageRequire = require.context('@/assets/images/possibilities
 
 export default {
 	components: {
-		KvButton,
 		KvHero,
 		KvResponsiveImage,
 	},
@@ -62,11 +60,15 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-@import 'foundation';
 
 $cta-color: #02582e;
 
-.cta-button {
-	@include button-style($cta-color, auto, #fff);
+.intro {
+	margin-bottom: 4rem;
+}
+
+.cta-link {
+	color: $cta-color;
+	font-weight: $global-weight-bold;
 }
 </style>

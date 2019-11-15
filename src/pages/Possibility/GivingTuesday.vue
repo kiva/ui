@@ -39,7 +39,7 @@
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 				<router-link
 					to="/lend-by-category"
-					class="donate-cta-link"
+					class="cta-link"
 					v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
 				>
 					Donate Today
@@ -106,8 +106,8 @@ $cta-color: #02582e;
 	@include button-style($cta-color, auto, #fff);
 }
 
-.donate-cta-link {
+.cta-link {
 	color: $cta-color;
-	font-weight: bold;
+	font-weight: $global-weight-bold;
 }
 </style>
