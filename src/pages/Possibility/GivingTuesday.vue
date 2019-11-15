@@ -28,10 +28,10 @@
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 			</div>
 		</div>
+		<!-- Kiva Content Block -->
 		<div class="row kiva-stories">
-			<!-- TODO: Add Content block here -->
-			<div class="columns small-12 text-center">
-				<img src="http://placekitten.com/750/300">
+			<div class="columns small-12">
+				<kiva-content-block />
 			</div>
 		</div>
 		<div class="row donate-cta">
@@ -53,6 +53,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -61,6 +62,7 @@ export default {
 		KvButton,
 		KvHero,
 		KvResponsiveImage,
+		KivaContentBlock,
 	},
 	metaInfo: {
 		title: 'Giving Tuesday'
