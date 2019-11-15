@@ -10,15 +10,19 @@
 			<div class="headline-mask">
 				&nbsp;
 			</div>
-			<div class="headline-main">
-				<div class="headline-background" :style="headlineBgStyles"></div>
-				<div class="headline-title" v-if="hasHeadlineTitle">
-					<slot name="headlineTitle"></slot>
+			<div>
+				<!-- eslint-disable-next-line max-len -->
+				<div class="headline-main" :class="{ 'headline-main--has-action' : hasAction }" v-if="hasHeadlineTitle || hasHeadlineBody">
+					<div class="headline-background" :style="headlineBgStyles"></div>
+					<div class="headline-title" v-if="hasHeadlineTitle">
+						<slot name="headlineTitle"></slot>
+					</div>
+					<div class="headline-body" v-if="hasHeadlineBody">
+						<slot name="headlineBody"></slot>
+					</div>
 				</div>
-				<div class="headline-body" v-if="hasHeadlineBody">
-					<slot name="headlineBody"></slot>
-				</div>
-				<div class="action" v-if="hasAction">
+				<!-- eslint-disable-next-line max-len -->
+				<div class="action" :class="{ 'action--has-headline' : hasHeadlineTitle || hasHeadlineBody }" v-if="hasAction">
 					<slot name="action"></slot>
 				</div>
 			</div>
@@ -124,6 +128,14 @@ export default {
 	@include breakpoint(medium) {
 		padding: 1.125rem 1.25rem;
 	}
+
+	&--has-action {
+		padding-bottom: 2.625rem;
+
+		@include breakpoint(medium) {
+			padding-bottom: 3.125rem;
+		}
+	}
 }
 
 .headline-background {
@@ -159,7 +171,6 @@ export default {
 	font-size: 1.25rem;
 	line-height: 1.5rem;
 	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
 
 	@include breakpoint(medium) {
 		font-size: 1.75rem;
@@ -176,7 +187,22 @@ export default {
 .action {
 	position: relative;
 	text-align: center;
-	margin-top: 1rem;
+	margin-top: -0.5rem;
 	margin-bottom: -4rem;
+
+	@include breakpoint(medium) {
+		margin-top: -1rem;
+		margin-bottom: -5rem;
+	}
+
+	&--has-headline {
+		margin-top: -1.25rem;
+		margin-bottom: -2.625rem;
+
+		@include breakpoint(medium) {
+			margin-top: -1.75rem;
+			margin-bottom: -3.125rem;
+		}
+	}
 }
 </style>
