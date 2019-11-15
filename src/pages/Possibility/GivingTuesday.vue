@@ -2,7 +2,7 @@
 	<div>
 		<kv-hero headline-bg-color="#0b290c">
 			<template v-slot:images>
-				<kv-responsive-image :images="possibilitiesImages" alt="A woman smiling" />
+				<kv-responsive-image :images="givingTuesdayImages" alt="A woman smiling" />
 			</template>
 			<template v-slot:headlineTitle>
 				Making opportunity possible<br class="lu"> is a team effort
@@ -67,7 +67,7 @@ export default {
 	},
 	data() {
 		return {
-			possibilitiesImages: [
+			givingTuesdayImages: [
 				['small', possibilitiesImageRequire('./Phase1-sm-std.jpg')],
 				['small retina', possibilitiesImageRequire('./Phase1-sm-retina.jpg')],
 				['medium', possibilitiesImageRequire('./Phase1-med-std.jpg')],
