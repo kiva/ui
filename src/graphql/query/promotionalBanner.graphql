@@ -1,4 +1,4 @@
-query promotionalBanner($basketId: String, $contentType: String!, $contentKey: String) {
+query promotionalBanner($basketId: String, $contentType: String, $contentKey: String) {
 	my {
 		userAccount {
 			id
