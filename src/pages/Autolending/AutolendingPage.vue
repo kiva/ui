@@ -10,6 +10,7 @@
 			<main-toggle />
 		</div>
 		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
+			<lend-timing-dropdown />
 			<!-- main toggles -->
 			<div class="setting-group">
 				<!-- timing dropdown -->
@@ -65,7 +66,7 @@
 						<risk-rating-dropdown />
 					</div>
 					<div class="small-12 large-6 columns setting-column">
-						<!-- <default-rate-dropdown /> -->
+						<default-rate-dropdown />
 					</div>
 				</div>
 			</kv-expandable>
@@ -91,6 +92,7 @@ import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphq
 import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
 import DonationDropdown from './DonationDropdown';
+import LendTimingDropdown from './LendTimingDropdown';
 import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import GenderRadios from './GenderRadios';
@@ -103,29 +105,30 @@ import LoanTermDropdown from './LoanTermDropdown';
 import GroupRadios from './GroupRadios';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import LoanIncrementRadios from './LoanIncrementRadios';
-// import DefaultRateDropdown from './DefaultRateDropdown';
+import DefaultRateDropdown from './DefaultRateDropdown';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		WwwPage,
-		KvExpandable,
 		AttributeFilter,
 		CountryFilter,
 		DonationDropdown,
 		FloatingCounter,
-		MainToggle,
 		GenderRadios,
+		GroupRadios,
+		KvExpandable,
+		LendTimingDropdown,
+		MainToggle,
 		MobileCounter,
 		PartnerFilter,
 		SaveButton,
 		SectorFilter,
 		RiskRatingDropdown,
 		LoanTermDropdown,
-		GroupRadios,
 		PartnerDelRateDropdown,
 		LoanIncrementRadios,
-		// DefaultRateDropdown,
+		DefaultRateDropdown,
+		WwwPage,
 	},
 	data() {
 		return {

@@ -7,19 +7,19 @@
 			<option value="0">
 				All delinquency rates
 			</option>
-			<option value="5">
+			<option value="0.05">
 				5% or less
 			</option>
-			<option value="10">
+			<option value="0.1">
 				10% or less
 			</option>
-			<option value="15">
+			<option value="0.15">
 				15% or less
 			</option>
-			<option value="20">
+			<option value="0.2">
 				20% or less
 			</option>
-			<option value="25">
+			<option value="0.25">
 				25% or less
 			</option>
 		</kv-dropdown-rounded>
