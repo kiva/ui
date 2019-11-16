@@ -216,9 +216,15 @@ export default () => {
 							.then(serverProfile => {
 								if (serverProfile) {
 									writeAutolendingData(cache, {
+										currentProfile: {
+											...serverProfile,
+											id: 0,
+										},
 										profileChanged: false,
 										savingProfile: false,
-										savedProfile: serverProfile,
+										savedProfile: {
+											...serverProfile,
+										},
 									});
 									resolve(true);
 								} else {
