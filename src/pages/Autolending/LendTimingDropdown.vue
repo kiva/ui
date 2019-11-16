@@ -1,6 +1,6 @@
 <template>
 	<div class="lend-timing-dropdown">
-		<kv-dropdown-rounded v-model="lendAfterDaysIdle">
+		<kv-dropdown-rounded :value="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
 			<option value="0">
 				As soon as possible
 			</option>
@@ -36,6 +36,7 @@ export default {
 	},
 	data() {
 		return {
+			changedIdleOptIn: false,
 			legacyAutoLender: false,
 			enableAfter: null, // legacy setting
 			lendAfterDaysIdle: 0
@@ -70,7 +71,10 @@ export default {
 				default:
 					return '';
 			}
-			return `Notice: Your previous setting was '${legacyAutoLendDescription}', the closest matching setting above will be applied upon save.`;// eslint-disable-line max-len
+
+			let notice = `Notice: Your previous setting was '${legacyAutoLendDescription}'`;
+			notice += this.changedIdleOptIn ? '.' : ', the closest matching setting above will be applied upon save.';
+			return notice;
 		}
 	},
 	methods: {
@@ -91,7 +95,22 @@ export default {
 				default:
 					return 0;
 			}
-		}
+		},
+		updateLendAfterDaysIdle(value) {
+			if (value !== this.lendAfterDaysIdle) {
+				this.apollo.mutate({
+					mutation: gql`mutation {
+						autolending @client {
+							editProfile(profile: {
+								enableAfter: 0
+								idleCreditOptIn: true
+								lendAfterDaysIdle: ${value}
+							})
+						}
+					}`,
+				});
+			}
+		},
 	},
 	apollo: {
 		query: gql`{
@@ -101,32 +120,23 @@ export default {
 					lendAfterDaysIdle
 					idleCreditOptIn
 				}
+				savedProfile {
+					idleCreditOptIn
+				}
 			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.enableAfter = _get(data, 'autolending.currentProfile.enableAfter');
 			// flag user as one who had auto lending set
-			this.legacyAutoLender = !_get(data, 'autolending.currentProfile.idleCreditOptIn');
-			if (this.legacyAutoLender) {
+			this.legacyAutoLender = !_get(data, 'autolending.savedProfile.idleCreditOptIn');
+			this.changedIdleOptIn = _get(data, 'autolending.currentProfile.idleCreditOptIn');
+			if (this.legacyAutoLender && !this.changedIdleOptIn) {
 				this.lendAfterDaysIdle = this.convertEnableAfterToNewSetting(this.enableAfter);
 			} else {
 				this.lendAfterDaysIdle = _get(data, 'autolending.currentProfile.lendAfterDaysIdle');
 			}
 		},
-	},
-	watch: {
-		lendAfterDaysIdle(lendAfterDaysIdle, previouslendAfterDaysIdle) {
-			if (lendAfterDaysIdle !== previouslendAfterDaysIdle) {
-				this.apollo.mutate({
-					mutation: gql`mutation {
-						autolending @client {
-							editProfile(profile: { lendAfterDaysIdle: ${lendAfterDaysIdle} })
-						}
-					}`,
-				});
-			}
-		}
 	},
 };
 </script>
