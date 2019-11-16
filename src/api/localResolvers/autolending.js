@@ -71,6 +71,25 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	});
 }
 
+function convertEnableAfterToNewSetting(value) {
+	switch (value) {
+		case 0:// 'Whenever I have credit available'
+			return 0;
+		case 1:// 'If I don\'t log in for 1 Month'
+			return 45;
+		case 2:// 'If I don\'t log in for 2 Months'
+			return 45;
+		case 3:// 'If I don\'t log in for 3 Months';
+			return 90;
+		case 6:// 'If I don\'t log in for 6 Months';
+		case 12:// 'If I don\'t log in for 1 Year'
+		case 18:// 'If I don\'t log in for 1.5 Years'
+			return 120;
+		default:
+			return 0;
+	}
+}
+
 // export resolvers and defaults for Autolending and AutolendingMutation
 export default () => {
 	return {
@@ -196,6 +215,13 @@ export default () => {
 					// Get profile info to send
 					const profileData = cache.readQuery({ query: bothProfilesQuery });
 					const profile = getInputProfile(_get(profileData, 'autolending.currentProfile'));
+
+					// Opt-in to idle credit
+					if (!profile.idleCreditOptIn) {
+						profile.idleCreditOptIn = true;
+						profile.lendAfterDaysIdle = convertEnableAfterToNewSetting(profile.enableAfter);
+						profile.enableAfter = 0;
+					}
 
 					return new Promise((resolve, reject) => {
 						// Update the profile
