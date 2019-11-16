@@ -1,5 +1,4 @@
 import _isNumber from 'lodash/isNumber';
-import _pick from 'lodash/pick';
 
 // Return a MinMaxRange object with default values
 export default function MinMaxRange() {
