@@ -1,5 +1,4 @@
 import _isNumber from 'lodash/isNumber';
-import _pick from 'lodash/pick';
 
 // Return a MinMaxRange object with default values
 export default function MinMaxRange() {
@@ -20,7 +19,13 @@ export function getCacheableRange(range) {
 
 // Return a cleaned range object suitable for a query variable
 export function getInputRange(range) {
-	return _pick(range, ['min', 'max']);
+	if (range && (_isNumber(range.min) || _isNumber(range.max))) {
+		return {
+			min: range.min,
+			max: range.max,
+		};
+	}
+	return null;
 }
 
 // Return range that can be used in a loan search
