@@ -2,7 +2,7 @@
 	<div>
 		<kv-hero headline-bg-color="#0b290c">
 			<template v-slot:images>
-				<kv-responsive-image :images="possibilitiesImages" alt="A woman smiling" />
+				<kv-responsive-image :images="givingTuesdayImages" alt="A woman smiling" />
 			</template>
 			<template v-slot:headlineTitle>
 				Making opportunity possible<br class="lu"> is a team effort
@@ -39,7 +39,7 @@
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 				<router-link
 					to="/lend-by-category"
-					class="donate-cta-link"
+					class="cta-link"
 					v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
 				>
 					Donate Today
@@ -69,7 +69,7 @@ export default {
 	},
 	data() {
 		return {
-			possibilitiesImages: [
+			givingTuesdayImages: [
 				['small', possibilitiesImageRequire('./Phase1-sm-std.jpg')],
 				['small retina', possibilitiesImageRequire('./Phase1-sm-retina.jpg')],
 				['medium', possibilitiesImageRequire('./Phase1-med-std.jpg')],
@@ -88,6 +88,8 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
+@import 'foundation';
+
 $cta-color: #02582e;
 
 .intro,
@@ -103,16 +105,11 @@ $cta-color: #02582e;
 }
 
 .cta-button {
-	background-color: $cta-color;
-
-	&:hover,
-	&:focus {
-		background-color: darken($cta-color, 10%);
-	}
+	@include button-style($cta-color, auto, #fff);
 }
 
-.donate-cta-link {
+.cta-link {
 	color: $cta-color;
-	font-weight: bold;
+	font-weight: $global-weight-bold;
 }
 </style>
