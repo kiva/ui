@@ -11,8 +11,11 @@
 				&nbsp;
 			</div>
 			<div>
-				<!-- eslint-disable-next-line max-len -->
-				<div class="headline-main" :class="{ 'headline-main--has-action' : hasAction }" v-if="hasHeadlineTitle || hasHeadlineBody">
+				<div
+					v-if="hasHeadlineTitle || hasHeadlineBody"
+					class="headline-main"
+					:class="{ 'headline-main--has-action' : hasAction }"
+				>
 					<div class="headline-background" :style="headlineBgStyles"></div>
 					<div class="headline-title" v-if="hasHeadlineTitle">
 						<slot name="headlineTitle"></slot>
@@ -21,8 +24,11 @@
 						<slot name="headlineBody"></slot>
 					</div>
 				</div>
-				<!-- eslint-disable-next-line max-len -->
-				<div class="action" :class="{ 'action--has-headline' : hasHeadlineTitle || hasHeadlineBody }" v-if="hasAction">
+				<div
+					v-if="hasAction"
+					class="action"
+					:class="{ 'action--has-headline' : hasHeadlineTitle || hasHeadlineBody }"
+				>
 					<slot name="action"></slot>
 				</div>
 			</div>
