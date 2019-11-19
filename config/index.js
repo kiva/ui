@@ -53,7 +53,7 @@ module.exports = {
 		graphqlUri: 'https://api.kivaws.org/graphql',
 		sessionUri: 'https://www.kiva.org/start-ui-session',
 		memcachedEnabled: true,
-		memcachedServers: 'memcache-01:11211',
+		memcachedServers: 'memcache-03:11211,memcache-04:11211',
 	},
 	build: {
 		assetsRoot: path.resolve(__dirname, '../dist'),

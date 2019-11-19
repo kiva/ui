@@ -8,11 +8,10 @@
 				Making opportunity possible<br class="lu"> is a team effort
 			</template>
 			<template v-slot:action>
-				<!-- TODO: What is the the URL and tracking info? -->
 				<kv-button
 					class="cta-button"
 					to="/lend-by-category"
-					v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
+					v-kv-track-event="['possibiliy', 'click-hero-link', 'giving-tuesday']"
 				>
 					Lend now
 				</kv-button>
@@ -40,7 +39,7 @@
 				<router-link
 					to="/lend-by-category"
 					class="cta-link"
-					v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
+					v-kv-track-event="['possibiliy', 'click-footer-cta', 'giving-tuesday']"
 				>
 					Donate Today
 				</router-link>

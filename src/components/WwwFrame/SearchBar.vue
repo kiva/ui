@@ -106,7 +106,8 @@ export default {
 				'Group or Individual',
 				'Attributes',
 				'User tags',
-				'Partners'
+				'Partners',
+				'Gifts'
 			];
 			return unsortedSections.sort(indexIn(sectionOrder, 'name'));
 		}
@@ -119,7 +120,21 @@ export default {
 			this.hasFocus = true;
 			this.apollo.query({ query: suggestionsQuery }).then(({ data }) => {
 				if (data && data.lend) {
-					engine.reset(data.lend.loanSearchSuggestions);
+					engine.reset([
+						...data.lend.loanSearchSuggestions,
+						{
+							group: 'Gifts',
+							label: 'Kiva Cards',
+							keywords: ['gift card', 'kiva card', 'gift', 'gift certificate'],
+							url: 'https://www.kiva.org/gifts/kiva-cards',
+						},
+						{
+							group: 'Gifts',
+							label: 'Kiva Store',
+							keywords: ['gift card', 'kiva card', 'gift', 'gift certificate'],
+							url: 'https://store.kiva.org',
+						},
+					]);
 				}
 			});
 		},
@@ -152,14 +167,19 @@ export default {
 		},
 		runSearch(suggestion) {
 			let query;
-			if (suggestion.query) {
-				const [key, value] = suggestion.query.split('=');
-				query = { [key]: value };
-			} else {
-				query = { queryString: suggestion };
-			}
 			this.searching = true;
-			this.$router.push({ path: '/lend', query });
+
+			if (suggestion.url) {
+				window.location = suggestion.url;
+			} else {
+				if (suggestion.query) {
+					const [key, value] = suggestion.query.split('=');
+					query = { [key]: value };
+				} else {
+					query = { queryString: suggestion };
+				}
+				this.$router.push({ path: '/lend', query });
+			}
 		},
 		formatResult({ label, matches }) {
 			// If no match is found, just return the label, unmarked
