@@ -12,11 +12,10 @@
 					to see what surprises we have up our sleeves. Can't wait? Click below to support
 					a borrower and be a part of possibility.
 				</p>
-				<!-- TODO: What is the tracking info? -->
 				<router-link
 					to="/lend-by-category"
 					class="cta-link"
-					v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
+					v-kv-track-event="['possibiliy', 'click-intro-link', '12-days-of-lending']"
 				>
 					Lend now
 				</router-link>
