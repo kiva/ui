@@ -21,11 +21,11 @@
 		</div>
 		<div class="columns small-4">
 			<template>
-				<!-- <kv-responsive-image
+				<kv-responsive-image
 					:images="kivaContentBlockImages"
 					href="/blog/one-woman-brewing-change-in-africa-and-beyond"
-				/> -->
-				<img src="http://placekitten.com/500/500">
+				/>
+				<!-- <img src="http://placekitten.com/500/500"> -->
 			</template>
 		</div>
 	</div>
@@ -33,28 +33,30 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-// import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
-const kivaContentBlockImageRequire = require.context('@/assets/images/possibilities-banners/', true);
+const kivaContentBlockImageRequire = require.context('@/assets/images/kiva-content-block/', true);
 
 export default {
 	components: {
 		KvButton,
-		// KvResponsiveImage,
+		KvResponsiveImage,
 	},
 	data() {
 		return {
 			kivaContentBlockImages: [
-				['small', kivaContentBlockImageRequire('./Phase1-sm-std.jpg')],
-				['small retina', kivaContentBlockImageRequire('./Phase1-sm-retina.jpg')],
-				['medium', kivaContentBlockImageRequire('./Phase1-med-std.jpg')],
-				['medium retina', kivaContentBlockImageRequire('./Phase1-med-retina.jpg')],
-				['large', kivaContentBlockImageRequire('./Phase1-lg-std.jpg')],
-				['large retina', kivaContentBlockImageRequire('./Phase1-lg-retina.jpg')],
-				['xga', kivaContentBlockImageRequire('./Phase1-xl-std.jpg')],
-				['xga retina', kivaContentBlockImageRequire('./Phase1-xl-retina.jpg')],
-				['wxga', kivaContentBlockImageRequire('./Phase1-xxl-std.jpg')],
-				['wxga retina', kivaContentBlockImageRequire('./Phase1-xxl-retina.jpg')]
+				// slide 1
+				['small', kivaContentBlockImageRequire('./1x/Asset1.jpg')],
+				['small retina', kivaContentBlockImageRequire('./2x/Asset1@2x.jpg')],
+				// slide 2
+				['small', kivaContentBlockImageRequire('./1x/Asset2.jpg')],
+				['small retina', kivaContentBlockImageRequire('./2x/Asset2@2x.jpg')],
+				// slide 3
+				['small', kivaContentBlockImageRequire('./1x/Asset3.jpg')],
+				['small retina', kivaContentBlockImageRequire('./2x/Asset3@2x.jpg')],
+				//slide 4
+				['small', kivaContentBlockImageRequire('./1x/Asset4.jpg')],
+				['small retina', kivaContentBlockImageRequire('./2x/Asset4@2x.jpg')],
 			],
 		};
 	}
