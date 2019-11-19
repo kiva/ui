@@ -49,7 +49,8 @@ module.exports = {
 		},
 		contentful: {
 			accessToken: 'kMmnBKkNsHXuCkBhcFUndWKXeWZ81NREp45K-VvtdMw',
-			space: 'j0p9a6ql0rn7'
+			space: 'j0p9a6ql0rn7',
+			environment: 'master'
 		},
 	},
 	server: {

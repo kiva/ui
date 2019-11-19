@@ -5,7 +5,8 @@ const appConfig = require('../../../config/index');
 
 const contentfulClient = contentful.createClient({
 	accessToken: appConfig.app.contentful.accessToken,
-	space: appConfig.app.contentful.space
+	space: appConfig.app.contentful.space,
+	environment: appConfig.app.contentful.environment
 });
 /**
  * ContentfulCMS resolvers
