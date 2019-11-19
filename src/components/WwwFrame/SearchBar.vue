@@ -120,20 +120,21 @@ export default {
 			this.hasFocus = true;
 			this.apollo.query({ query: suggestionsQuery }).then(({ data }) => {
 				if (data && data.lend) {
-					const suggestions = data.lend.loanSearchSuggestions;
-					suggestions.push({
-						group: 'Gifts',
-						label: 'Kiva Cards',
-						keywords: ['gift card', 'kiva card', 'gift', 'gift certificate'],
-						url: 'https://www.kiva.org/gifts/kiva-cards',
-					});
-					suggestions.push({
-						group: 'Gifts',
-						label: 'Kiva Store',
-						keywords: ['gift card', 'kiva card', 'gift', 'gift certificate'],
-						url: 'https://store.kiva.org',
-					});
-					engine.reset(suggestions);
+					engine.reset([
+						...data.lend.loanSearchSuggestions,
+						{
+							group: 'Gifts',
+							label: 'Kiva Cards',
+							keywords: ['gift card', 'kiva card', 'gift', 'gift certificate'],
+							url: 'https://www.kiva.org/gifts/kiva-cards',
+						},
+						{
+							group: 'Gifts',
+							label: 'Kiva Store',
+							keywords: ['gift card', 'kiva card', 'gift', 'gift certificate'],
+							url: 'https://store.kiva.org',
+						},
+					]);
 				}
 			});
 		},
