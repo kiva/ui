@@ -31,7 +31,7 @@ export default class SearchEngine {
 			threshold: 0.25,
 			distance: 100000,
 			includeMatches: true,
-			keys: ['label'],
+			keys: ['label', 'keywords'],
 		});
 		this.resolveReady();
 	}
