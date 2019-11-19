@@ -1,6 +1,8 @@
  # declare the @client directive to appease KnownDirectives rule
 directive @client on FIELD
 
+scalar JSONObject
+
 type Experiment {
 	id: String
 	version: String
@@ -40,6 +42,11 @@ extend type Query {
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
 	autolending: Autolending
+	contentfulCMS(contentType: String!, contentKey: String): ContentfulCMS
+}
+
+type ContentfulCMS {
+	items: [JSONObject]
 }
 
 extend type My {
