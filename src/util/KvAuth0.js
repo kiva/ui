@@ -37,8 +37,8 @@ export default class KvAuth0 {
 		this.enabled = true;
 		this.user = user;
 		this.accessToken = accessToken;
-
-		if (!isServer) {
+		this.isServer = isServer;
+		if (!this.isServer) {
 			this.webAuth = new auth0js.WebAuth({
 				audience,
 				clientID,
@@ -119,7 +119,7 @@ export default class KvAuth0 {
 	// Silently check for a logged in session with auth0 using hidden iframes
 	checkSession() {
 		// only try this if in the browser
-		if (isServer) {
+		if (this.isServer) {
 			return Promise.reject(new Error('checkSession called in server mode'));
 		}
 
@@ -169,7 +169,7 @@ export default class KvAuth0 {
 	// Open a popup window to the login page
 	popupLogin(authorizeOptions) {
 		// only try this if in the browser
-		if (isServer) {
+		if (this.isServer) {
 			return Promise.reject(new Error('popupLogin called in server mode'));
 		}
 
@@ -195,7 +195,7 @@ export default class KvAuth0 {
 	// Handle the auth0 callback in the popup frame
 	popupCallback(options) {
 		// only try this if in the browser
-		if (isServer) {
+		if (this.isServer) {
 			return Promise.reject(new Error('popupCallback called in server mode'));
 		}
 		this[popupWindow] = null;
