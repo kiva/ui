@@ -1,6 +1,6 @@
 <template>
 	<kv-carousel @change="slideChange">
-		<kv-carousel-slide :v-for="{ images, url, headline, subheadline } in kivaContentBlockData">
+		<kv-carousel-slide :key="headline" v-for="{ images, url, headline, subheadline } in kivaContentBlockData">
 			<div class="row">
 				<div class="columns small-12 hide-for-large small-image">
 					<kv-responsive-image :images="images" />
@@ -16,7 +16,7 @@
 						<kv-button
 							class="smallest action-button"
 							:href="url"
-							v-kv-track-event="['possibiliy', 'click-kiva-content-block-read-more', 'giving-tuesday']"
+							v-kv-track-event="['possibility', 'click-kiva-content-block-read-more', 'giving-tuesday']"
 						>
 							Read more
 						</kv-button>
@@ -39,24 +39,6 @@ import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 const kivaContentBlockImageRequire = require.context('@/assets/images/kiva-content-block/', true);
 
 export default {
-	props: {
-		images: {
-			type: Array,
-			default: () => []
-		},
-		url: {
-			type: String,
-			default: ''
-		},
-		headline: {
-			type: String,
-			default: ''
-		},
-		subheadline: {
-			type: String,
-			default: ''
-		}
-	},
 	components: {
 		KvButton,
 		KvResponsiveImage,
