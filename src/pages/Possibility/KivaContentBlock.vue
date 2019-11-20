@@ -83,6 +83,7 @@ export default {
 					],
 					url: '/blog/ernestina-is-a-skilled-carver-making-a-name-for-herself-in-a-male-dominated-craft',
 					headline: 'Turning possibility into craft',
+					// eslint-disable-next-line max-len
 					subheadline: 'Carving a place for women in a male-dominated craft, Ernestina is more than a trailblazer'
 				}
 			]
@@ -92,7 +93,7 @@ export default {
 		slideChange() {
 			if (this.counter < 4) this.counter += 1;
 		}
-	}
+	},
 }
 </script>
 
