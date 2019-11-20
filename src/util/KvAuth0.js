@@ -1,9 +1,11 @@
-import { WebAuth } from 'auth0-js';
 import { differenceInMilliseconds } from 'date-fns';
 import _get from 'lodash/get';
 import _over from 'lodash/over';
 import Raven from 'raven-js';
 import cookieStore from './cookieStore';
+
+// only require auth0-js if we are not in a server environment
+const auth0js = typeof window !== 'undefined' ? require('auth0-js') : null;
 
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
@@ -37,7 +39,7 @@ export default class KvAuth0 {
 		this.isServer = typeof window === 'undefined';
 
 		if (!this.isServer) {
-			this.webAuth = new WebAuth({
+			this.webAuth = new auth0js.WebAuth({
 				audience,
 				clientID,
 				domain,
