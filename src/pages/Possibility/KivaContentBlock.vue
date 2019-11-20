@@ -1,5 +1,6 @@
 <template>
 	<kv-carousel @change="slideChange">
+		<div class="slide-placeholder"></div>
 		<kv-carousel-slide :key="headline" v-for="{ images, url, headline, subheadline } in kivaContentBlockData">
 			<div class="row">
 				<div class="columns small-12 hide-for-large small-image">
@@ -89,7 +90,6 @@ export default {
 	},
 	methods: {
 		slideChange() {
-			// count the number of slides shown to use for lazy-loading images with v-if
 			if (this.counter < 4) this.counter += 1;
 		}
 	}
@@ -143,14 +143,39 @@ $cta-color: #611b1f;
 
 		.action-button {
 			background-color: $cta-color;
-			box-shadow: darken($cta-color, 10%);
+			box-shadow: darken($cta-color, 10%) !important;
 
 			&:hover,
 			&:focus {
-				background-color: darken($cta-color, 10%);
+				background-color: darken($cta-color, 10%) !important;
 			}
 		}
 	}
 }
 
+.slide-placeholder {
+	// background-color: red;
+	width: 100%;
+	padding-bottom: 600/480 * 100%;
+
+	@include breakpoint(medium) {
+		// background-color: blue;
+		padding-bottom: 545/680 * 100%;
+	}
+
+	@include breakpoint(large) {
+		// background-color: green;
+		padding-bottom: 530/1024 * 100%;
+	}
+	// GOOD
+	@include breakpoint(xga) {
+		// background-color: purple;
+		padding-bottom: 530/1440 * 100%;
+	}
+	// GOOD
+	@include breakpoint(wxga) {
+		// background-color: teal;
+		padding-bottom: 690/1920 * 100%;
+	}
+}
 </style>
