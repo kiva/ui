@@ -94,7 +94,7 @@ export default {
 			if (this.counter < 4) this.counter += 1;
 		}
 	},
-}
+};
 </script>
 
 <style lang="scss" scoped>
