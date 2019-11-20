@@ -4,8 +4,9 @@ import _over from 'lodash/over';
 import Raven from 'raven-js';
 import cookieStore from './cookieStore';
 
+const isServer = typeof window === 'undefined';
 // only require auth0-js if we are not in a server environment
-const auth0js = typeof window !== 'undefined' ? require('auth0-js') : null;
+const auth0js = !isServer ? require('auth0-js') : null;
 
 // These symbols are unique, and therefore are private to this scope.
 // For more details, see https://medium.com/@davidrhyswhite/private-members-in-es6-db1ccd6128a5
@@ -36,9 +37,8 @@ export default class KvAuth0 {
 		this.enabled = true;
 		this.user = user;
 		this.accessToken = accessToken;
-		this.isServer = typeof window === 'undefined';
 
-		if (!this.isServer) {
+		if (!isServer) {
 			this.webAuth = new auth0js.WebAuth({
 				audience,
 				clientID,
@@ -119,7 +119,7 @@ export default class KvAuth0 {
 	// Silently check for a logged in session with auth0 using hidden iframes
 	checkSession() {
 		// only try this if in the browser
-		if (this.isServer) {
+		if (isServer) {
 			return Promise.reject(new Error('checkSession called in server mode'));
 		}
 
@@ -169,7 +169,7 @@ export default class KvAuth0 {
 	// Open a popup window to the login page
 	popupLogin(authorizeOptions) {
 		// only try this if in the browser
-		if (this.isServer) {
+		if (isServer) {
 			return Promise.reject(new Error('popupLogin called in server mode'));
 		}
 
@@ -195,7 +195,7 @@ export default class KvAuth0 {
 	// Handle the auth0 callback in the popup frame
 	popupCallback(options) {
 		// only try this if in the browser
-		if (this.isServer) {
+		if (isServer) {
 			return Promise.reject(new Error('popupCallback called in server mode'));
 		}
 		this[popupWindow] = null;
