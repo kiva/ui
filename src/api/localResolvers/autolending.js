@@ -40,7 +40,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	writeAutolendingData(cache, { countingLoans: true });
 
 	// Get criteria input from current profile
-	const { filters, queryString } = getSearchableCriteria(currentProfile.loanSearchCriteria);
+	const { filters } = getSearchableCriteria(currentProfile.loanSearchCriteria);
 
 	// Cancel the currently in-flight query
 	if (loanCountObservable) loanCountObservable.unsubscribe();
@@ -49,7 +49,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 		// Query for total number of loans currently fundraising matching the profile's filters
 		loanCountObservable = client.watchQuery({
 			query: loanCountQuery,
-			variables: { filters, queryString },
+			variables: { filters },
 		}).subscribe({
 			next(result) {
 				// Parse the count from result
@@ -222,6 +222,9 @@ export default () => {
 						profile.lendAfterDaysIdle = convertEnableAfterToNewSetting(profile.enableAfter);
 						profile.enableAfter = 0;
 					}
+
+					// Patch over deprecated filter values
+					profile.loanSearchCriteria.queryString = null;
 
 					return new Promise((resolve, reject) => {
 						// Update the profile
