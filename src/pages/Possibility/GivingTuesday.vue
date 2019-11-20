@@ -11,7 +11,7 @@
 				<kv-button
 					class="cta-button"
 					to="/lend-by-category"
-					v-kv-track-event="['possibiliy', 'click-hero-link', 'giving-tuesday']"
+					v-kv-track-event="['possibility', 'click-hero-link', 'giving-tuesday']"
 				>
 					Lend now
 				</kv-button>
@@ -37,9 +37,9 @@
 			<div class="text-center featured-text columns small-12">
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 				<router-link
-					to="/lend-by-category"
+					to="/donate/supportus"
 					class="cta-link"
-					v-kv-track-event="['possibiliy', 'click-footer-cta', 'giving-tuesday']"
+					v-kv-track-event="['possibility', 'click-footer-cta', 'giving-tuesday']"
 				>
 					Donate Today
 				</router-link>
