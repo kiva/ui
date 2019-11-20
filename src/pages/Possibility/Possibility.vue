@@ -20,8 +20,7 @@ export default {
 		const dec26 = 1577318400000;
 		const jan1 = 157783680000;
 
-		// let url = '/possibility/giving-tuesday';
-		let url = '/';
+		let url = '/possibility/giving-tuesday';
 		if (now >= dec3 && now < dec14) {
 			url = '/possibility/giving-tuesday';
 		} else if (now >= dec14 && now < dec26) {
