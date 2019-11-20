@@ -29,7 +29,7 @@
 		</div>
 		<!-- Kiva Content Block -->
 		<div class="row kiva-stories">
-			<div class="columns small-12">
+			<div class="columns small-12 large-10">
 				<kiva-content-block />
 			</div>
 		</div>
@@ -98,6 +98,10 @@ $cta-color: #02582e;
 }
 
 .kiva-stories {
+	div {
+		margin: 0 auto;
+	}
+
 	img {
 		margin-bottom: 1rem;
 	}
