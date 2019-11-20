@@ -1,7 +1,10 @@
 <template>
-	<kv-carousel @change="slideChange">
+	<kv-carousel>
 		<div class="slide-placeholder"></div>
-		<kv-carousel-slide v-for="{ images, url, headline, subheadline } in kivaContentBlockData" :key="`headline-${index}`">
+		<kv-carousel-slide
+			v-for="({ images, url, headline, subheadline }, index) in kivaContentBlockData"
+			:key="`headline-${index}`"
+		>
 			<div class="row">
 				<div class="columns small-12 hide-for-large small-image">
 					<kv-responsive-image :images="images" />
@@ -88,11 +91,6 @@ export default {
 				}
 			]
 		};
-	},
-	methods: {
-		slideChange() {
-			if (this.counter < 4) this.counter += 1;
-		}
 	},
 };
 </script>
