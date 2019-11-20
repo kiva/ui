@@ -11,7 +11,7 @@
 				<kv-button
 					class="cta-button"
 					to="/lend-by-category"
-					v-kv-track-event="['possibiliy', 'click-hero-link', 'giving-tuesday']"
+					v-kv-track-event="['possibility', 'click-hero-link', 'giving-tuesday']"
 				>
 					Lend now
 				</kv-button>
@@ -27,19 +27,19 @@
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 			</div>
 		</div>
+		<!-- Kiva Content Block -->
 		<div class="row kiva-stories">
-			<!-- TODO: Add Content block here -->
-			<div class="columns small-12 text-center">
-				<img src="http://placekitten.com/750/300">
+			<div class="columns small-12 large-10">
+				<kiva-content-block />
 			</div>
 		</div>
 		<div class="row donate-cta">
 			<div class="text-center featured-text columns small-12">
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 				<router-link
-					to="/lend-by-category"
+					to="/donate/supportus"
 					class="cta-link"
-					v-kv-track-event="['possibiliy', 'click-footer-cta', 'giving-tuesday']"
+					v-kv-track-event="['possibility', 'click-footer-cta', 'giving-tuesday']"
 				>
 					Donate Today
 				</router-link>
@@ -52,6 +52,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -60,6 +61,7 @@ export default {
 		KvButton,
 		KvHero,
 		KvResponsiveImage,
+		KivaContentBlock,
 	},
 	metaInfo: {
 		title: 'Giving Tuesday'
@@ -96,6 +98,10 @@ $cta-color: #02582e;
 }
 
 .kiva-stories {
+	div {
+		margin: 0 auto;
+	}
+
 	img {
 		margin-bottom: 1rem;
 	}
