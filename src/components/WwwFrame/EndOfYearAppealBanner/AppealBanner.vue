@@ -148,7 +148,15 @@ export default {
 	computed: {
 		showAppeal() {
 			// make sure the appeal is enable + we're not on certain blacklisted pages
-			const blacklist = ['/checkout', '/error', '/join-team', '/register/social'];
+			const blacklist = [
+				'/checkout',
+				'/error',
+				'/join-team',
+				'/register/social',
+				'/possibility/giving-tuesday',
+				'/possibility/12-days-of-lending',
+				'/possibility/year-end'
+			];
 			return (this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path);
 		},
 	},
