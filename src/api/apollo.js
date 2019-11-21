@@ -16,6 +16,7 @@ export default function createApolloClient({
 	kvAuth0,
 	types = [],
 	uri,
+	appConfig
 }) {
 	const cache = new InMemoryCache({
 		fragmentMatcher: new IntrospectionFragmentMatcher({
@@ -38,7 +39,7 @@ export default function createApolloClient({
 	});
 
 	// initialize local state resolvers
-	const { resolvers, defaults } = initState({ kvAuth0 });
+	const { resolvers, defaults } = initState({ kvAuth0, appConfig });
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
