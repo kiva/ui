@@ -135,7 +135,7 @@ $cta-color3: #02582e;
 		}
 	}
 
-	div.action-button-wrapper {
+	.action-button-wrapper {
 		text-align: center;
 
 		@include breakpoint(large) {
@@ -153,7 +153,7 @@ $cta-color3: #02582e;
 		}
 	}
 
-	// This color customization isn't working for the second slide, because the 
+	// This color customization isn't working for the second slide, because the
 	// kv-carousel uses the css display: none; property which removes the element from
 	// the DOM which then messes up the ability to apply css using :nth-child(#)
 
