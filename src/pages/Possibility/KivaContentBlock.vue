@@ -99,88 +99,130 @@ export default {
 @import "settings";
 
 $cta-color: #611b1f;
+$cta-color2: #00244e;
+$cta-color3: #02582e;
 
-.small-image {
-	margin-bottom: 2rem;
-	text-align: center;
-}
-
-.headline {
-	color: $cta-color;
-	font-weight: bold;
-	max-width: 24rem;
-	margin: 0 auto 1rem auto;
-	text-align: center;
-
-	@include breakpoint(large) {
-		margin: unset;
-		margin-bottom: 1rem;
-		text-align: unset;
-	}
-}
-
-.subheadline {
-	font-weight: $global-weight-highlight;
-	max-width: 24rem;
-	margin: 0 auto 1.5rem auto;
-	text-align: center;
-
-	@include breakpoint(large) {
-		margin: unset;
+.kv-carousel {
+	.small-image {
 		margin-bottom: 2rem;
-		text-align: unset;
-	}
-}
-
-.action-button-wrapper {
-	text-align: center;
-
-	@include breakpoint(large) {
-		text-align: unset;
+		// text-align: center;
 	}
 
-	.action-button {
-		background-color: $cta-color;
-		box-shadow: 0 2px darken($cta-color, 10%);
+	.headline {
+		color: $cta-color;
+		font-weight: bold;
+		max-width: 24rem;
+		margin: 0 auto 1rem auto;
+		text-align: center;
 
-		&:hover,
-		&:focus {
-			background-color: darken($cta-color, 10%);
+		@include breakpoint(large) {
+			margin: unset;
+			margin-bottom: 1rem;
+			text-align: unset;
 		}
 	}
-}
 
-// This is brute force solution to the varing heights of the content within this component
-// In the furture slideshows should have a defined height, so we can avoid this customization.
-.slide-placeholder {
-	padding-bottom: 39rem;
+	.subheadline {
+		font-weight: $global-weight-highlight;
+		max-width: 24rem;
+		margin: 0 auto 1.5rem auto;
+		text-align: center;
 
-	@include breakpoint(360 up) {
-		padding-bottom: 42rem;
+		@include breakpoint(large) {
+			margin: unset;
+			margin-bottom: 2rem;
+			text-align: unset;
+		}
 	}
 
-	@include breakpoint(420 up) {
-		padding-bottom: 43rem;
+	div.action-button-wrapper {
+		text-align: center;
+
+		@include breakpoint(large) {
+			text-align: unset;
+		}
+
+		.action-button {
+			background-color: $cta-color;
+			box-shadow: 0 2px darken($cta-color, 10%);
+
+			&:hover,
+			&:focus {
+				background-color: darken($cta-color, 10%);
+			}
+		}
 	}
 
-	@include breakpoint(481 up) {
-		padding-bottom: 48rem;
+	// This color customization isn't working for the second slide, because the 
+	// kv-carousel uses the css display: none; property which removes the element from
+	// the DOM which then messes up the ability to apply css using :nth-child(#)
+
+	// Slide 2 colors override
+	// div:nth-child(3) {
+	// 	.headline {
+	// 		color: $cta-color2;
+	// 	}
+
+	// 	.action-button {
+	// 		background-color: $cta-color2;
+	// 		box-shadow: 0 2px darken($cta-color2, 10%);
+
+	// 		&:hover,
+	// 		&:focus {
+	// 			background-color: darken($cta-color2, 10%);
+	// 		}
+	// 	}
+	// }
+
+	// Slide 3 colors override
+	div:nth-child(4) {
+		.headline {
+			color: $cta-color3;
+		}
+
+		.action-button {
+			background-color: $cta-color3;
+			box-shadow: 0 2px darken($cta-color3, 10%);
+
+			&:hover,
+			&:focus {
+				background-color: darken($cta-color3, 10%);
+			}
+		}
 	}
 
-	@include breakpoint(510 up) {
-		padding-bottom: 50rem;
-	}
+	// This is brute force solution to the varing heights of the content within this component
+	// In the furture slideshows should have a defined height, so we can avoid this customization.
+	.slide-placeholder {
+		padding-bottom: 39rem;
 
-	@include breakpoint(535 up) {
-		padding-bottom: 55rem;
-	}
+		@include breakpoint(360 up) {
+			padding-bottom: 42rem;
+		}
 
-	@include breakpoint(630 up) {
-		padding-bottom: 59rem;
-	}
+		@include breakpoint(420 up) {
+			padding-bottom: 43rem;
+		}
 
-	@include breakpoint(680 up) {
-		padding-bottom: 20rem;
+		@include breakpoint(481 up) {
+			padding-bottom: 48rem;
+		}
+
+		@include breakpoint(510 up) {
+			padding-bottom: 50rem;
+		}
+
+		@include breakpoint(535 up) {
+			padding-bottom: 55rem;
+		}
+
+		@include breakpoint(630 up) {
+			padding-bottom: 59rem;
+		}
+
+		@include breakpoint(680 up) {
+			padding-bottom: 20rem;
+		}
 	}
 }
 </style>

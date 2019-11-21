@@ -52,7 +52,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KivaContentBlock from '@/components/Possibility/KivaContentBlock';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
