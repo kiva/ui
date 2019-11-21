@@ -40,7 +40,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	writeAutolendingData(cache, { countingLoans: true });
 
 	// Get criteria input from current profile
-	const { filters, queryString } = getSearchableCriteria(currentProfile.loanSearchCriteria);
+	const { filters } = getSearchableCriteria(currentProfile.loanSearchCriteria);
 
 	// Cancel the currently in-flight query
 	if (loanCountObservable) loanCountObservable.unsubscribe();
@@ -49,7 +49,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 		// Query for total number of loans currently fundraising matching the profile's filters
 		loanCountObservable = client.watchQuery({
 			query: loanCountQuery,
-			variables: { filters, queryString },
+			variables: { filters },
 		}).subscribe({
 			next(result) {
 				// Parse the count from result
@@ -137,6 +137,38 @@ export default () => {
 								return {
 									...profile,
 									loanSearchCriteria: profile.loanSearchCriteria || LoanSearchCriteria(),
+								};
+							})
+							// Replace any legacy filter values
+							.then(profile => {
+								const { loanSearchCriteria } = profile || {};
+								const { filters } = loanSearchCriteria || {};
+								const { riskRating, lenderTerm } = filters || {};
+
+								// Convert legacy risk rating value to 0, 1, 2, 3, or 4
+								const riskRatingMin = _get(riskRating, 'min') || 0;
+								const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
+								const integerRiskRating = Math.ceil(boundedRiskRating);
+
+								return {
+									...profile,
+									loanSearchCriteria: {
+										...loanSearchCriteria,
+										filters: {
+											...filters,
+											lenderTerm: {
+												...lenderTerm,
+												// Fix minimum loan term to be 0
+												min: 0,
+											},
+											riskRating: {
+												...riskRating,
+												min: integerRiskRating,
+											}
+										},
+										// Fix keyword to be null
+										queryString: null,
+									}
 								};
 							})
 							// Write the fetched profile to the cache as both the current and saved profiles
