@@ -153,6 +153,7 @@ $cta-color3: #02582e;
 		}
 	}
 
+	/* stylelint-disable */
 	// Slide 2 color override
 	.slide-1 {
 		.headline {
@@ -186,6 +187,7 @@ $cta-color3: #02582e;
 			}
 		}
 	}
+	/* stylelint-enable */
 
 	// This is brute force solution to the varing heights of the content within this component
 	// In the furture slideshows should have a defined height, so we can avoid this customization.
