@@ -4,6 +4,7 @@
 		<kv-carousel-slide
 			v-for="({ images, url, headline, subheadline }, index) in kivaContentBlockData"
 			:key="`headline-${index}`"
+			:class="`slide-${index}`"
 		>
 			<div class="row">
 				<div class="columns small-12 hide-for-large small-image">
@@ -105,7 +106,6 @@ $cta-color3: #02582e;
 .kv-carousel {
 	.small-image {
 		margin-bottom: 2rem;
-		// text-align: center;
 	}
 
 	.headline {
@@ -153,34 +153,30 @@ $cta-color3: #02582e;
 		}
 	}
 
-	// This color customization isn't working for the second slide, because the
-	// kv-carousel uses the css display: none; property which removes the element from
-	// the DOM which then messes up the ability to apply css using :nth-child(#)
+	// Slide 2 color override
+	.slide-1 {
+		.headline {
+			color: $cta-color2;
+		}
 
-	// Slide 2 colors override
-	// div:nth-child(3) {
-	// 	.headline {
-	// 		color: $cta-color2;
-	// 	}
+		.action-button-wrapper .action-button {
+			background-color: $cta-color2;
+			box-shadow: 0 2px darken($cta-color2, 10%);
 
-	// 	.action-button {
-	// 		background-color: $cta-color2;
-	// 		box-shadow: 0 2px darken($cta-color2, 10%);
+			&:hover,
+			&:focus {
+				background-color: darken($cta-color2, 10%);
+			}
+		}
+	}
 
-	// 		&:hover,
-	// 		&:focus {
-	// 			background-color: darken($cta-color2, 10%);
-	// 		}
-	// 	}
-	// }
-
-	// Slide 3 colors override
-	div:nth-child(4) {
+	// Slide 3 color override
+	.slide-2 {
 		.headline {
 			color: $cta-color3;
 		}
 
-		.action-button {
+		.action-button-wrapper .action-button {
 			background-color: $cta-color3;
 			box-shadow: 0 2px darken($cta-color3, 10%);
 
@@ -225,4 +221,5 @@ $cta-color3: #02582e;
 		}
 	}
 }
+
 </style>
