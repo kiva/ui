@@ -139,6 +139,38 @@ export default () => {
 									loanSearchCriteria: profile.loanSearchCriteria || LoanSearchCriteria(),
 								};
 							})
+							// Replace any legacy filter values
+							.then(profile => {
+								const { loanSearchCriteria } = profile || {};
+								const { filters } = loanSearchCriteria || {};
+								const { riskRating, lenderTerm } = filters || {};
+
+								// Convert legacy risk rating value to 0, 1, 2, 3, or 4
+								const riskRatingMin = _get(riskRating, 'min') || 0;
+								const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
+								const integerRiskRating = Math.ceil(boundedRiskRating);
+
+								return {
+									...profile,
+									loanSearchCriteria: {
+										...loanSearchCriteria,
+										filters: {
+											...filters,
+											lenderTerm: {
+												...lenderTerm,
+												// Fix minimum loan term to be 0
+												min: 0,
+											},
+											riskRating: {
+												...riskRating,
+												min: integerRiskRating,
+											}
+										},
+										// Fix keyword to be null
+										queryString: null,
+									}
+								};
+							})
 							// Write the fetched profile to the cache as both the current and saved profiles
 							.then(profile => {
 								writeAutolendingData(cache, {
@@ -222,9 +254,6 @@ export default () => {
 						profile.lendAfterDaysIdle = convertEnableAfterToNewSetting(profile.enableAfter);
 						profile.enableAfter = 0;
 					}
-
-					// Patch over deprecated filter values
-					profile.loanSearchCriteria.queryString = null;
 
 					return new Promise((resolve, reject) => {
 						// Update the profile
