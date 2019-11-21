@@ -1,17 +1,16 @@
+/* eslint-disable no-underscore-dangle */
 import { GraphQLJSONObject } from 'graphql-type-json';
+import { createClient } from 'contentful';
 
-const contentful = require('contentful');
-const appConfig = require('../../../config/index');
-
-const contentfulClient = contentful.createClient({
-	accessToken: appConfig.app.contentful.accessToken,
-	space: appConfig.app.contentful.space,
-	environment: appConfig.app.contentful.environment
-});
 /**
  * ContentfulCMS resolvers
  */
-export default () => {
+export default context => {
+	const contentfulClient = createClient({
+		accessToken: context.appConfig.contentful.accessToken,
+		space: context.appConfig.contentful.space,
+		environment: context.appConfig.contentful.environment
+	});
 	return {
 		resolvers: {
 			JSONObject: GraphQLJSONObject,
