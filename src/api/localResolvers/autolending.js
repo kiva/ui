@@ -90,6 +90,53 @@ function convertEnableAfterToNewSetting(value) {
 	}
 }
 
+// Returns a profile with legacy filter values converted or removed
+function convertLegacyProfile(profile) {
+	const { loanSearchCriteria } = profile || {};
+	const { filters } = loanSearchCriteria || {};
+	const { riskRating, lenderTerm } = filters || {};
+
+	// Convert legacy risk rating value to 0, 1, 2, 3, or 4
+	const riskRatingMin = _get(riskRating, 'min') || 0;
+	const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
+	const integerRiskRating = Math.ceil(boundedRiskRating);
+
+	// Convert legacy loan term value to 6, 12, 18, or 24
+	let termMax = _get(lenderTerm, 'max');
+	if (termMax >= 24) {
+		termMax = 24;
+	} else if (termMax >= 18) {
+		termMax = 18;
+	} else if (termMax >= 12) {
+		termMax = 12;
+	} else if (termMax >= 6) {
+		termMax = 6;
+	} else {
+		termMax = null;
+	}
+
+	return {
+		...profile,
+		loanSearchCriteria: {
+			...loanSearchCriteria,
+			filters: {
+				...filters,
+				lenderTerm: {
+					// Fix minimum loan term to be 0
+					min: 0,
+					max: termMax,
+				},
+				riskRating: {
+					...riskRating,
+					min: integerRiskRating,
+				}
+			},
+			// Fix keyword to be null
+			queryString: null,
+		}
+	};
+}
+
 // export resolvers and defaults for Autolending and AutolendingMutation
 export default () => {
 	return {
@@ -140,37 +187,7 @@ export default () => {
 								};
 							})
 							// Replace any legacy filter values
-							.then(profile => {
-								const { loanSearchCriteria } = profile || {};
-								const { filters } = loanSearchCriteria || {};
-								const { riskRating, lenderTerm } = filters || {};
-
-								// Convert legacy risk rating value to 0, 1, 2, 3, or 4
-								const riskRatingMin = _get(riskRating, 'min') || 0;
-								const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
-								const integerRiskRating = Math.ceil(boundedRiskRating);
-
-								return {
-									...profile,
-									loanSearchCriteria: {
-										...loanSearchCriteria,
-										filters: {
-											...filters,
-											lenderTerm: {
-												...lenderTerm,
-												// Fix minimum loan term to be 0
-												min: 0,
-											},
-											riskRating: {
-												...riskRating,
-												min: integerRiskRating,
-											}
-										},
-										// Fix keyword to be null
-										queryString: null,
-									}
-								};
-							})
+							.then(convertLegacyProfile)
 							// Write the fetched profile to the cache as both the current and saved profiles
 							.then(profile => {
 								writeAutolendingData(cache, {
