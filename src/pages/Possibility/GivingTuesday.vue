@@ -52,7 +52,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
+import KivaContentBlock from '@/components/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -92,7 +92,6 @@ export default {
 $cta-color: #02582e;
 
 .intro,
-.kiva-stories,
 .donate-cta {
 	margin-bottom: 4rem;
 }
@@ -109,6 +108,8 @@ $cta-color: #02582e;
 
 .cta-button {
 	@include button-style($cta-color, auto, #fff);
+	// Include in order to override the default box-shadow of this button
+	box-shadow: 0 2px darken($cta-color, 10%);
 }
 
 .cta-link {
