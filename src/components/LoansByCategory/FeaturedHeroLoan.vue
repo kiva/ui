@@ -25,8 +25,7 @@
 							</div>
 
 							<div class="use">
-								{{ loanUse }}
-
+								<span>{{ loanUse }}</span>
 								<div v-if="showReadMore">
 									<!-- eslint-disable-next-line max-len -->
 									<router-link :to="`/lend/${loan.id}`" v-kv-track-event="['Lending', 'click-Read more', 'Read more', loan.id, 'true']">
@@ -85,8 +84,6 @@
 </template>
 
 <script>
-import numeral from 'numeral';
-
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
@@ -156,43 +153,19 @@ export default {
 		};
 	},
 	computed: {
-		borrowerCountLanguage() {
-			if (this.loan.borrowerCount > 1) {
-				return ' a member ';
-			}
-			return ' ';
-		},
-		helpedLanguage() {
-			if (this.loan.status === 'fundraising'
-			|| this.loan.status === 'inactive'
-			|| this.loan.status === 'reviewed') {
-				return 'helps';
-			}
-			return 'helped';
-		},
 		loanUse() {
-			// eslint-disable-next-line max-len
-			return `A loan of ${numeral(this.loan.loanAmount).format('$0,0')} ${this.helpedLanguage} ${this.borrowerCountLanguage} ${this.loanUseTruncated()}`;
+			return this.$options.filters.loanUse(this.loan.use,
+				this.loan.name,
+				this.loan.status,
+				this.loan.loanAmount,
+				this.loan.borrowerCount,
+				this.loanUseMaxLength);
 		},
 		showReadMore() {
 			return !!(this.loanUse.length > this.loanUseMaxLength);
 		},
 	},
 	methods: {
-		loanUseTruncated() {
-			const lowerCaseUse = this.loan.use.toString().charAt(0).toLowerCase() + this.loan.use.toString().slice(1);
-
-			// eslint-disable-next-line max-len
-			const convertedUse = (this.loan.use.substring(0, this.loan.name.length) === this.loan.name) ? this.loan.use : lowerCaseUse;
-
-			if (this.loan.use.length === 0) {
-				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			}
-			if (this.loan.use.length > this.loanUseMaxLength) {
-				return `${convertedUse.substring(0, this.loanUseMaxLength)}...`;
-			}
-			return convertedUse;
-		},
 		toggleFavorite() {
 			this.$emit('toggle-favorite');
 		},

@@ -1,9 +1,6 @@
 <template>
 	<div class="borrower-info-body loan-use">
-		<span>
-			A loan of {{ amount | numeral('$0,0') }} {{ helpedLanguage }}
-			{{ borrowerCountLanguage }} {{ shortenedLoanUse }}
-		</span>
+		<span>{{ use | loanUse(name, status, amount, borrowerCount, maxUseLength) }}</span>
 		<router-link
 			:to="`/lend/${loanId}`"
 			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']"
@@ -61,34 +58,6 @@ export default {
 		disableLink: {
 			type: Boolean,
 			default: false,
-		},
-	},
-	computed: {
-		helpedLanguage() {
-			if (this.status === 'fundraising'
-				|| this.status === 'inactive'
-				|| this.status === 'reviewed') {
-				return 'helps';
-			}
-			return 'helped';
-		},
-		borrowerCountLanguage() {
-			if (this.borrowerCount > 1) {
-				return ' a member ';
-			}
-			return ' ';
-		},
-		shortenedLoanUse() {
-			const lowerCaseUse = this.use.toString().charAt(0).toLowerCase() + this.use.toString().slice(1);
-			const convertedUse = (this.use.substring(0, this.name.length) === this.name) ? this.use : lowerCaseUse;
-
-			if (this.use.length === 0) {
-				return 'For the borrower\'s privacy, this loan has been made anonymous.';
-			}
-			if (this.use.length > this.maxUseLength) {
-				return `${convertedUse.substring(0, this.maxUseLength)}...`;
-			}
-			return convertedUse;
 		},
 	},
 	methods: {
