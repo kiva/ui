@@ -35,11 +35,16 @@ describe('loanUseFilter', () => {
 				.toBe('A loan of $501 helps a member loan use');
 		});
 		it('Combined filter should work with missing params and default values', () => {
-			expect(loanUseFilter('loan use', undefined, 'fundraising', 500.50, 35, 10)).toBe('A loan of $501 helps a member loan use');
-			expect(loanUseFilter('loan use', 'loan name', undefined, 500.50, 35, 10)).toBe('A loan of $501 helped a member loan use');
-			expect(loanUseFilter('loan use', 'loan name', 'fundraising', undefined, 35, 10)).toBe('A loan of $0 helps a member loan use');
-			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, undefined, 10)).toBe('A loan of $501 helps loan use');
-			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, undefined)).toBe('A loan of $501 helps a member ...');
+			expect(loanUseFilter('loan use', undefined, 'fundraising', 500.50, 35, 10))
+				.toBe('A loan of $501 helps a member loan use');
+			expect(loanUseFilter('loan use', 'loan name', undefined, 500.50, 35, 10))
+				.toBe('A loan of $501 helped a member loan use');
+			expect(loanUseFilter('loan use', 'loan name', 'fundraising', undefined, 35, 10))
+				.toBe('A loan of $0 helps a member loan use');
+			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, undefined, 10))
+				.toBe('A loan of $501 helps loan use');
+			expect(loanUseFilter('loan use', 'loan name', 'fundraising', 500.50, 35, undefined))
+				.toBe('A loan of $501 helps a member ...');
 		});
 	});
 });
