@@ -24,7 +24,7 @@
 						<kv-button
 							class="action-button"
 							to="/lend-by-category/"
-							v-kv-track-event="['Home', 'possibility', 'click-Lend-now', null, 'true']"
+							v-kv-track-event="['Home', 'possibility', 'click-Lend-now']"
 						>
 							Lend Now »
 						</kv-button>
@@ -33,7 +33,7 @@
 						<kv-button
 							class="action-button"
 							to="/donate/supportus/"
-							v-kv-track-event="['Home', 'possibility', 'click-Donate', null, 'true']"
+							v-kv-track-event="['Home', 'possibility', 'click-Donate']"
 						>
 							Donate to Kiva »
 						</kv-button>
