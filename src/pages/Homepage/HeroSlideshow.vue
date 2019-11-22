@@ -76,7 +76,7 @@
 			<template v-slot:action>
 				<kv-button
 					to="/lend-by-category"
-					v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
+					v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending']"
 				>
 					Start lending »
 				</kv-button>
