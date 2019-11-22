@@ -157,7 +157,6 @@ export default {
 			// First check if Appeal Banner or Appeal Banner Matching
 			// is active and the user is not on a blacklisted page URL
 			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
-				console.log('appeal banner on and not on blacklisted page');
 				// Next we check if the user has Promo Credit
 				// (lending reward credit, bonus credit, or free credit)
 				// If the have any of the above, we hide the appeal banner.
