@@ -1,4 +1,19 @@
-query appealBanner {
+query appealBanner($basketId: String) {
+	my {
+		userAccount {
+			id
+			promoBalance
+		}
+	}
+	shop (basketId: $basketId) {
+		basket {
+			hasFreeCredits
+			totals {
+				redemptionCodeAvailableTotal
+			}
+		}
+		lendingRewardOffered
+	}
 	general {
 		appeal_enabled: featureSetting(key: "endofyear_appeal.enabled") {
 			key
