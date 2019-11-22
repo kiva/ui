@@ -34,10 +34,11 @@
 					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
 							<p>
-								Thank you for the impact you’ve made this year! Together we’ve funded more than 170,000
-								loans and raised more than $120 million for financially excluded people around the world.
-								It costs us more than $3 to facilitate each $25 loan, and we rely on optional donations
-								from individuals like you to cover our costs.
+								Thank you for the impact you’ve made this year! Together we’ve funded more
+								than 170,000 loans and raised more than $120 million for financially
+								excluded people around the world. It costs us more than $3 to facilitate
+								each $25 loan, and we rely on optional donations from individuals like
+								you to cover our costs.
 								<strong v-if="appealMatchEnabled">Your donations are matched while funds last!</strong>
 							</p>
 						</div>
