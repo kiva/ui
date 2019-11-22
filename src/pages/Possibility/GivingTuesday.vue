@@ -10,10 +10,10 @@
 			<template v-slot:action>
 				<kv-button
 					class="cta-button"
-					to="/lend-by-category"
+					to="/donate/supportus"
 					v-kv-track-event="['possibility', 'click-hero-link', 'giving-tuesday']"
 				>
-					Lend now
+					Donate now
 				</kv-button>
 			</template>
 		</kv-hero>
