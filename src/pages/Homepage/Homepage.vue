@@ -49,7 +49,7 @@ export default {
 				'startDate',
 				'endDate'
 			);
-			this.promoEnabled = uiPromoSetting.active;
+			// this.promoEnabled = uiPromoSetting.active; // use this to bypass date during dev
 		}
 	},
 };
