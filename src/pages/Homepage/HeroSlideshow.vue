@@ -5,13 +5,13 @@
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
 					<kv-carousel-slide>
-						<kv-responsive-image :images="possibilitiesImages(1)" />
+						<kv-responsive-image :images="possibilitiesImages(1)" alt="An African American woman in a park wearing a leather jacket, smiling broadly" />
 					</kv-carousel-slide>
 					<kv-carousel-slide>
-						<kv-responsive-image :images="possibilitiesImages(2)" />
+						<kv-responsive-image :images="possibilitiesImages(2)" alt="Two people carrying a large blue water container into a village" />
 					</kv-carousel-slide>
 					<kv-carousel-slide>
-						<kv-responsive-image v-if="counter > 2" :images="possibilitiesImages(3)" />
+						<kv-responsive-image v-if="counter > 2" :images="possibilitiesImages(3)" alt="A Latino man wearing a cowboy hat gazing hopefully and proudly" />
 					</kv-carousel-slide>
 				</kv-carousel>
 			</template>
