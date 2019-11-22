@@ -6,9 +6,6 @@
 			>
 				<div class="appeal-header small-12 columns sitewide-header">
 					<h2>
-						<!-- IF ALTERNATE APPEAL BANNER -->
-						<!-- current version implemented has bonus language,
-						but we're using the appealMatchedEnabled flag -->
 						<span>Love making a difference with Kiva? Your donations keep us running.</span>
 						<kv-icon
 							@click="toggleAccordion"
