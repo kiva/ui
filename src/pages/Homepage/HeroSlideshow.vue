@@ -15,14 +15,14 @@
 					</kv-carousel-slide>
 				</kv-carousel>
 			</template>
-			<template v-slot:headlineTitle>
-				Make opportunity possible <br class="smo">for borrowers around the world.
+			<template v-slot:headlineBody>
+				Make opportunity possible <br class="smo">for borrowers <br class="lu">around the world.
 			</template>
 			<template v-slot:action>
 				<div class="row">
 					<div class="small-12 large-6 columns action-1">
 						<kv-button
-							class="action-button"
+							class="action-button smallest"
 							to="/lend-by-category/"
 							v-kv-track-event="['Home', 'possibility', 'click-Lend-now']"
 						>
@@ -31,7 +31,7 @@
 					</div>
 					<div class="small-12 large-6 columns action-2">
 						<kv-button
-							class="action-button"
+							class="action-button smallest"
 							to="/donate/supportus/"
 							v-kv-track-event="['Home', 'possibility', 'click-Donate']"
 						>
@@ -177,18 +177,31 @@ export default {
 		margin-bottom: 6rem;
 
 		::v-deep .headline-main--has-action {
-			padding-bottom: 7.125rem;
+			padding-bottom: 6.125rem;
+
+			@include breakpoint(large) {
+				padding-bottom: 3.125rem;
+			}
 		}
 
 		::v-deep .action--has-headline {
-			margin-top: -5.65rem;
+			margin-top: -4.65rem;
+
+			@include breakpoint(large) {
+				margin-top: -1.75rem;
+				margin-bottom: -2.125rem;
+			}
 		}
 
 		.action-button {
 			@include button-style($blue, auto, #fff);
 
 			box-shadow: 0 2px darken($blue, 10%);
-			width: 80%;
+			width: 50%;
+
+			@include breakpoint(large) {
+				width: 88%;
+			}
 		}
 
 		@include breakpoint(large) {
