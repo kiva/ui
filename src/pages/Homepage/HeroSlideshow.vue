@@ -4,7 +4,6 @@
 		<kv-hero v-if="promoEnabled" headline-bg-color="#00244e" class="possibilities-promo">
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
-					<div class="slide-placeholder"></div>
 					<kv-carousel-slide>
 						<kv-responsive-image :images="possibilitiesImages(1)" />
 					</kv-carousel-slide>
@@ -47,7 +46,6 @@
 		<kv-hero v-else>
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
-					<div class="slide-placeholder"></div>
 					<kv-carousel-slide>
 						<kv-responsive-image :images="heroImages(1)" />
 					</kv-carousel-slide>
