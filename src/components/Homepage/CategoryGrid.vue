@@ -21,6 +21,7 @@
 							['small-retina', loanChannel.retinaImage.url]
 						]"
 						class="loan-channel-image"
+						alt=""
 					/>
 					<div class="category-card-title-wrap">
 						<p class="category-card-title featured-text">
