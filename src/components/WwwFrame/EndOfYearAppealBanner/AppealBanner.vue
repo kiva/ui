@@ -165,7 +165,7 @@ export default {
 				}
 				return true;
 			}
-			return;
+			return false;
 		},
 	},
 	mounted() {
