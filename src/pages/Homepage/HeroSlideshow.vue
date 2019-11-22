@@ -111,7 +111,7 @@ export default {
 	serverCacheKey: props => {
 		let cacheKey = 'DefaultHeroSlideshow';
 		if (props.promoEnabled) {
-			cacheKey = 'PromoSlideshow';
+			cacheKey = 'PromoSlideshowPossibility';
 		}
 		return getCacheKey(cacheKey);
 	},
