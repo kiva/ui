@@ -108,7 +108,10 @@ export default {
 			appealMatchEnabled: false,
 			amount: 0,
 			donationAmount: null,
-			percentTowardGoal: null
+			percentTowardGoal: null,
+			lendingRewardOffered: false,
+			bonusBalance: 0,
+			hasFreeCredits: false,
 		};
 	},
 	apollo: {
@@ -130,6 +133,13 @@ export default {
 			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
 			// eslint-disable-next-line max-len
 			this.targetAmount = _get(data, 'general.kivaStats.latestDonationCampaign.target_amount');
+
+			// Used for calculating if the user has a promotional balance
+			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
+			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
+			this.bonusBalance = promoBalance + basketPromoBalance;
+			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 		},
 	},
 	computed: {
@@ -144,7 +154,18 @@ export default {
 				'/possibility/12-days-of-lending',
 				'/possibility/year-end'
 			];
-			return (this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path);
+			// First check if Appeal Banner or Appeal Banner Matching
+			// is active and the user is not on a blacklisted page URL
+			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
+				// Next we check if the user has Promo Credit
+				// (lending reward credit, bonus credit, or free credit)
+				// If the have any of the above, we hide the appeal banner.
+				if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
+					return false;
+				}
+				return true;
+			}
+			return false;
 		},
 	},
 	mounted() {
