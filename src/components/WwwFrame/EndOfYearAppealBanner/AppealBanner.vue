@@ -9,9 +9,7 @@
 						<!-- IF ALTERNATE APPEAL BANNER -->
 						<!-- current version implemented has bonus language,
 						but we're using the appealMatchedEnabled flag -->
-						<span v-if="appealMatchEnabled">Donate to Kiva today and earn up to 2 free loans!</span>
-						<!-- ELSE STANDARD APPEAL BANNER -->
-						<span v-else>Your donations keep Kiva growing</span>
+						<span>Love making a difference with Kiva? Your donations keep us running.</span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
@@ -38,21 +36,12 @@
 					</div>
 					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
-							<!-- IF ALTERNATE APPEAL BANNER -->
-							<!-- current version implemented has bonus language,
-							but we're using the appealMatchedEnabled flag -->
-							<p v-if="appealMatchEnabled">
-								We're extending our spring donation drive by 1 day only!
-								<strong> TODAY when you donate $25 to Kiva, we'll send you a $25 bonus
-									to make a free loan. Donate $50 and you'll get $50 to lend!
-								</strong> That's up to 2 loans when you help fund our work creating opportunity.
-							</p>
-							<!-- IF REGULAR APPEAL BANNER -->
-							<p v-else>
-								Each loan on Kiva costs us more than $3 to facilitate (and we faciliate a lot of loans!)
-								so when you donate to Kiva you help us cover costs, grow our impact and develop
-								innovative new programs that improve lives. Your donation of any amount
-								makes a difference!
+							<p>
+								Thank you for the impact you’ve made this year! Together we’ve funded more than 170,000
+								loans and raised more than $120 million for financially excluded people around the world.
+								It costs us more than $3 to facilitate each $25 loan, and we rely on optional donations
+								from individuals like you to cover our costs.
+								<strong v-if="appealMatchEnabled">Your donations are matched while funds last!</strong>
 							</p>
 						</div>
 						<div class="show-for-small hide-for-medium thermometer-holder">
