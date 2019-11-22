@@ -4,12 +4,13 @@
 		<kv-carousel-slide
 			v-for="({ images, url, headline, subheadline }, index) in kivaContentBlockData"
 			:key="`headline-${index}`"
+			:class="`slide-${index}`"
 		>
 			<div class="row">
 				<div class="columns small-12 hide-for-large small-image">
 					<kv-responsive-image :images="images" />
 				</div>
-				<div class="columns small-12 large-8 kiva-content-text">
+				<div class="columns small-12 large-7">
 					<h1 class="headline">
 						{{ headline }}
 					</h1>
@@ -26,7 +27,7 @@
 						</kv-button>
 					</div>
 				</div>
-				<div class="columns large-4 show-for-large">
+				<div class="columns large-5 show-for-large">
 					<kv-responsive-image :images="images" />
 				</div>
 			</div>
@@ -99,13 +100,14 @@ export default {
 @import "settings";
 
 $cta-color: #611b1f;
+$cta-color2: #00244e;
+$cta-color3: #02582e;
 
-.small-image {
-	margin-bottom: 2rem;
-	text-align: center;
-}
+.kv-carousel {
+	.small-image {
+		margin-bottom: 2rem;
+	}
 
-.kiva-content-text {
 	.headline {
 		color: $cta-color;
 		font-weight: bold;
@@ -123,7 +125,7 @@ $cta-color: #611b1f;
 	.subheadline {
 		font-weight: $global-weight-highlight;
 		max-width: 24rem;
-		margin: 0 auto 2rem auto;
+		margin: 0 auto 1.5rem auto;
 		text-align: center;
 
 		@include breakpoint(large) {
@@ -142,39 +144,84 @@ $cta-color: #611b1f;
 
 		.action-button {
 			background-color: $cta-color;
-			box-shadow: darken($cta-color, 10%) !important;
+			box-shadow: 0 2px darken($cta-color, 10%);
 
 			&:hover,
 			&:focus {
-				background-color: darken($cta-color, 10%) !important;
+				background-color: darken($cta-color, 10%);
 			}
+		}
+	}
+
+	/* stylelint-disable */
+	// Slide 2 color override
+	.slide-1 {
+		.headline {
+			color: $cta-color2;
+		}
+
+		.action-button-wrapper .action-button {
+			background-color: $cta-color2;
+			box-shadow: 0 2px darken($cta-color2, 10%);
+
+			&:hover,
+			&:focus {
+				background-color: darken($cta-color2, 10%);
+			}
+		}
+	}
+
+	// Slide 3 color override
+	.slide-2 {
+		.headline {
+			color: $cta-color3;
+		}
+
+		.action-button-wrapper .action-button {
+			background-color: $cta-color3;
+			box-shadow: 0 2px darken($cta-color3, 10%);
+
+			&:hover,
+			&:focus {
+				background-color: darken($cta-color3, 10%);
+			}
+		}
+	}
+	/* stylelint-enable */
+
+	// This is brute force solution to the varing heights of the content within this component
+	// In the furture slideshows should have a defined height, so we can avoid this customization.
+	.slide-placeholder {
+		padding-bottom: 39rem;
+
+		@include breakpoint(360 up) {
+			padding-bottom: 42rem;
+		}
+
+		@include breakpoint(420 up) {
+			padding-bottom: 43rem;
+		}
+
+		@include breakpoint(481 up) {
+			padding-bottom: 48rem;
+		}
+
+		@include breakpoint(510 up) {
+			padding-bottom: 50rem;
+		}
+
+		@include breakpoint(535 up) {
+			padding-bottom: 55rem;
+		}
+
+		@include breakpoint(630 up) {
+			padding-bottom: 59rem;
+		}
+
+		@include breakpoint(680 up) {
+			padding-bottom: 20rem;
 		}
 	}
 }
 
-.slide-placeholder {
-	// background-color: red;
-	width: 100%;
-	padding-bottom: 600/480 * 100%;
-
-	@include breakpoint(medium) {
-		// background-color: blue;
-		padding-bottom: 545/680 * 100%;
-	}
-
-	@include breakpoint(large) {
-		// background-color: green;
-		padding-bottom: 530/1024 * 100%;
-	}
-	// GOOD
-	@include breakpoint(xga) {
-		// background-color: purple;
-		padding-bottom: 530/1440 * 100%;
-	}
-	// GOOD
-	@include breakpoint(wxga) {
-		// background-color: teal;
-		padding-bottom: 690/1920 * 100%;
-	}
-}
 </style>
