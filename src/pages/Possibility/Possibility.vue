@@ -18,14 +18,14 @@ export default {
 		const dec3 = 1575331200000;
 		const dec14 = 1576281600000;
 		const dec26 = 1577318400000;
-		const jan1 = 157783680000;
 
-		let url = '/';
+		let url = '/possibility/giving-tuesday';
+
 		if (now >= dec3 && now < dec14) {
 			url = '/possibility/giving-tuesday';
 		} else if (now >= dec14 && now < dec26) {
 			url = '/possibility/12-days-of-lending';
-		} else if (now >= dec26 && now < jan1) {
+		} else if (now >= dec26) {
 			url = '/possibility/year-end';
 		}
 
