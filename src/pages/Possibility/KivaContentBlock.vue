@@ -104,6 +104,11 @@ $cta-color2: #00244e;
 $cta-color3: #02582e;
 
 .kv-carousel {
+	.kv-carousel-slide {
+		width: 100%;
+		background: $white;
+	}
+
 	.small-image {
 		margin-bottom: 2rem;
 	}
