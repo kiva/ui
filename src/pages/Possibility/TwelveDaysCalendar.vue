@@ -135,7 +135,7 @@ export default {
 					starPosition: 'top-right'
 				},
 				{
-					text: 'Make a donation of $300 dollars or more during December and receive exclusive beta access to our iOS app before it launches for the public in March!',
+					text: 'Make a donation of $150 dollars or more during December and receive exclusive beta access to our iOS app before it launches for the public in March!',
 					url: '/donate/supportus',
 					ctaText: 'Donate now',
 					starPosition: 'top-left'
@@ -159,7 +159,7 @@ export default {
 					starPosition: 'bottom-left'
 				},
 				{
-					text: 'Make a donation of $200 or more, get a tote bag and a $50 lending credit, while funds last',
+					text: 'Make a donation of $250 or more, get a tote bag and a $50 lending credit, while funds last',
 					url: '/donate/supportus',
 					ctaText: 'Donate now',
 					starPosition: 'top-left'
