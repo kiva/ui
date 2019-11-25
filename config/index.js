@@ -47,6 +47,11 @@ module.exports = {
 				'https://www.kiva.org/kiva_id ' +
 				'openid email profile',
 		},
+		contentful: {
+			accessToken: 'kMmnBKkNsHXuCkBhcFUndWKXeWZ81NREp45K-VvtdMw',
+			space: 'j0p9a6ql0rn7',
+			environment: 'master'
+		},
 	},
 	server: {
 		port: 8888,

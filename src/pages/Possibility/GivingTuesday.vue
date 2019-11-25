@@ -10,10 +10,10 @@
 			<template v-slot:action>
 				<kv-button
 					class="cta-button"
-					to="/lend-by-category"
-					v-kv-track-event="['possibiliy', 'click-hero-link', 'giving-tuesday']"
+					to="/donate/supportus"
+					v-kv-track-event="['possibility', 'click-hero-link', 'giving-tuesday']"
 				>
-					Lend now
+					Donate now
 				</kv-button>
 			</template>
 		</kv-hero>
@@ -27,19 +27,19 @@
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 			</div>
 		</div>
+		<!-- Kiva Content Block -->
 		<div class="row kiva-stories">
-			<!-- TODO: Add Content block here -->
-			<div class="columns small-12 text-center">
-				<img src="http://placekitten.com/750/300">
+			<div class="columns small-12 large-10">
+				<kiva-content-block />
 			</div>
 		</div>
 		<div class="row donate-cta">
 			<div class="text-center featured-text columns small-12">
 				<p>Join a community of donors who believe in the possibilities of Kiva.</p>
 				<router-link
-					to="/lend-by-category"
+					to="/donate/supportus"
 					class="cta-link"
-					v-kv-track-event="['possibiliy', 'click-footer-cta', 'giving-tuesday']"
+					v-kv-track-event="['possibility', 'click-footer-cta', 'giving-tuesday']"
 				>
 					Donate Today
 				</router-link>
@@ -52,6 +52,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -60,6 +61,7 @@ export default {
 		KvButton,
 		KvHero,
 		KvResponsiveImage,
+		KivaContentBlock,
 	},
 	metaInfo: {
 		title: 'Giving Tuesday'
@@ -90,12 +92,15 @@ export default {
 $cta-color: #02582e;
 
 .intro,
-.kiva-stories,
 .donate-cta {
 	margin-bottom: 4rem;
 }
 
 .kiva-stories {
+	div {
+		margin: 0 auto;
+	}
+
 	img {
 		margin-bottom: 1rem;
 	}
@@ -103,6 +108,8 @@ $cta-color: #02582e;
 
 .cta-button {
 	@include button-style($cta-color, auto, #fff);
+	// Include in order to override the default box-shadow of this button
+	box-shadow: 0 2px darken($cta-color, 10%);
 }
 
 .cta-link {

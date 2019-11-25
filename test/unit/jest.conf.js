@@ -5,6 +5,7 @@ module.exports = {
 	testMatch: ['**/unit/specs/**/*.spec.js'],
 	moduleFileExtensions: ['js', 'json', 'vue'],
 	moduleNameMapper: {
+		'^~/(.*)$': '<rootDir>/node_modules/$1',
 		'^@/(.*)$': '<rootDir>/src/$1',
 		foundation: '<rootDir>/build/no-op.js',
 	},

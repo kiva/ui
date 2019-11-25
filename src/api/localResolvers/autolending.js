@@ -40,7 +40,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 	writeAutolendingData(cache, { countingLoans: true });
 
 	// Get criteria input from current profile
-	const { filters, queryString } = getSearchableCriteria(currentProfile.loanSearchCriteria);
+	const { filters } = getSearchableCriteria(currentProfile.loanSearchCriteria);
 
 	// Cancel the currently in-flight query
 	if (loanCountObservable) loanCountObservable.unsubscribe();
@@ -49,7 +49,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 		// Query for total number of loans currently fundraising matching the profile's filters
 		loanCountObservable = client.watchQuery({
 			query: loanCountQuery,
-			variables: { filters, queryString },
+			variables: { filters },
 		}).subscribe({
 			next(result) {
 				// Parse the count from result
@@ -88,6 +88,53 @@ function convertEnableAfterToNewSetting(value) {
 		default:
 			return 0;
 	}
+}
+
+// Returns a profile with legacy filter values converted or removed
+function convertLegacyProfile(profile) {
+	const { loanSearchCriteria } = profile || {};
+	const { filters } = loanSearchCriteria || {};
+	const { riskRating, lenderTerm } = filters || {};
+
+	// Convert legacy risk rating value to 0, 1, 2, 3, or 4
+	const riskRatingMin = _get(riskRating, 'min') || 0;
+	const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
+	const integerRiskRating = Math.ceil(boundedRiskRating);
+
+	// Convert legacy loan term value to 6, 12, 18, or 24
+	let termMax = _get(lenderTerm, 'max');
+	if (termMax >= 24) {
+		termMax = 24;
+	} else if (termMax >= 18) {
+		termMax = 18;
+	} else if (termMax >= 12) {
+		termMax = 12;
+	} else if (termMax >= 6) {
+		termMax = 6;
+	} else {
+		termMax = null;
+	}
+
+	return {
+		...profile,
+		loanSearchCriteria: {
+			...loanSearchCriteria,
+			filters: {
+				...filters,
+				lenderTerm: {
+					// Fix minimum loan term to be 0
+					min: 0,
+					max: termMax,
+				},
+				riskRating: {
+					...riskRating,
+					min: integerRiskRating,
+				}
+			},
+			// Fix keyword to be null
+			queryString: null,
+		}
+	};
 }
 
 // export resolvers and defaults for Autolending and AutolendingMutation
@@ -139,6 +186,8 @@ export default () => {
 									loanSearchCriteria: profile.loanSearchCriteria || LoanSearchCriteria(),
 								};
 							})
+							// Replace any legacy filter values
+							.then(convertLegacyProfile)
 							// Write the fetched profile to the cache as both the current and saved profiles
 							.then(profile => {
 								writeAutolendingData(cache, {

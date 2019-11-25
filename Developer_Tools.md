@@ -36,6 +36,7 @@ Command Shift P - to install extensions manually
 - [ESlint - dbaeumer.vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for Javascript linting.
 - [Stylelint - shinnn.stylelint](https://marketplace.visualstudio.com/items?itemName=shinnn.stylelint) for scss linting.
 - [Vue VSCode Snippets - sdras.vue-vscode-snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets) VueJS code snippets
+- [GraphQL - prisma.vscode-graphql](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql) GraphQL Syntax support.
 
 > Search the name (ex. octref.vetur or shinn.stylelint) into the Extensions area to install within VSCode
 
@@ -44,7 +45,7 @@ Install all extensions via the command line
 > First requires that VSCode is in your PATH variable. From VSCode Command Palette (⇧⌘P) execute command "Shell Command: Install 'code' command in PATH"
 
 ```bash
-code --install-extension octref.vetur && code --install-extension EditorConfig.EditorConfig && code --install-extension dbaeumer.vscode-eslint && code --install-extension shinnn.stylelint && code --install-extension sdras.vue-vscode-snippets
+code --install-extension octref.vetur && code --install-extension EditorConfig.EditorConfig && code --install-extension dbaeumer.vscode-eslint && code --install-extension shinnn.stylelint && code --install-extension sdras.vue-vscode-snippets && code --install-extension prisma.vscode-graphql
 ```
 
 ### VSCode Setup for Eslint

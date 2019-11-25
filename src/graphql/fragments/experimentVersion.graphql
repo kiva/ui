@@ -1,4 +1,4 @@
-fragment expermentVersion on Experiment {
+fragment experimentVersion on Experiment {
 	id
 	version
 }

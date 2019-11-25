@@ -1,111 +1,117 @@
 <template>
-	<div class="hero-slideshow">
-		<!-- -------------
-			Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-		-------------------- -->
+	<div>
+		<!-- Promo -->
+		<kv-hero v-if="promoEnabled" headline-bg-color="#00244e" class="possibilities-promo">
+			<template v-slot:images>
+				<kv-carousel @change="slideChange">
+					<kv-carousel-slide>
+						<kv-responsive-image
+							:images="possibilitiesImages(1)"
+							alt="A young businesswoman, wearing pink lipstick and leather blazer, laughs."
+						/>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<kv-responsive-image
+							:images="possibilitiesImages(2)"
+							alt="Two women carry a large blue barrel between them through a rural African village."
+						/>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<kv-responsive-image
+							v-if="counter > 2"
+							:images="possibilitiesImages(3)"
+							alt="An older Latin American farmer gazes hopefully into the distance."
+						/>
+					</kv-carousel-slide>
+				</kv-carousel>
+			</template>
+			<template v-slot:headlineBody>
+				Make opportunity possible <br class="smo">for borrowers <br class="lu">around the world.
+			</template>
+			<template v-slot:action>
+				<div class="row">
+					<div class="small-12 large-6 columns action-1">
+						<kv-button
+							class="action-button smallest"
+							to="/lend-by-category/"
+							v-kv-track-event="['Home', 'possibility', 'click-Lend-now']"
+						>
+							Lend Now »
+						</kv-button>
+					</div>
+					<div class="small-12 large-6 columns action-2">
+						<kv-button
+							class="action-button smallest"
+							to="/donate/supportus/"
+							v-kv-track-event="['Home', 'possibility', 'click-Donate']"
+						>
+							Donate to Kiva »
+						</kv-button>
+					</div>
+				</div>
+			</template>
+		</kv-hero>
 
-		<!-- <kv-carousel @change="slideChange" v-if="showMgPromo">
-			<div class="slide-placeholder"></div>
-			<kv-carousel-slide>
-				<kv-responsive-image :images="mgHeroImages(1)" />
-			</kv-carousel-slide>
-		</kv-carousel> -->
-		<kv-carousel @change="slideChange" v-if="promoEnabled">
-			<div class="slide-placeholder"></div>
-			<kv-carousel-slide>
-				<kv-responsive-image :images="billionToWomenImages(1)" />
-			</kv-carousel-slide>
-		</kv-carousel>
-		<kv-carousel @change="slideChange" v-else>
-			<div class="slide-placeholder"></div>
-			<kv-carousel-slide>
-				<kv-responsive-image :images="heroImages(1)" />
-			</kv-carousel-slide>
-			<kv-carousel-slide>
-				<kv-responsive-image :images="heroImages(2)" />
-			</kv-carousel-slide>
-			<kv-carousel-slide>
-				<kv-responsive-image v-if="counter > 2" :images="heroImages(3)" />
-			</kv-carousel-slide>
-			<kv-carousel-slide>
-				<kv-responsive-image v-if="counter > 3" :images="heroImages(4)" />
-			</kv-carousel-slide>
-			<kv-carousel-slide>
-				<kv-responsive-image v-if="counter > 4" :images="heroImages(5)" />
-			</kv-carousel-slide>
-		</kv-carousel>
-		<div class="headline-bar">
-			<div class="mask">
-				&nbsp;
-			</div>
-			<!-- -------------
-				Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-			-------------------- -->
-
-			<!-- <div class="headline" v-if="showMgPromo">
-				<span class="headline-title">Make a bigger impact.</span>
-				<p class="headline-body">
-					A Monthly Good subscription<br class="su">
-					makes supporting entrepreneurs<br class="su">
-					part of your routine with monthly contributions.
-				</p>
-			</div> -->
-
-			<div class="headline billion-to-women-headline" v-if="promoEnabled">
-				<span class="headline-title">We just hit $1 billion in loans to women.</span>
-				<p class="headline-body">
-					To celebrate, we'll give you a free<br class="su">
-					$25 credit after you make a loan this week.
-				</p>
-			</div>
-			<div class="headline" v-else>
-				<span class="headline-title">Dreams are universal,<br class="smo"> opportunity is not.</span>
-				<p class="headline-body">
-					Lend as little as $25<br class="so">
-					to create<br class="mo">
-					opportunity<br class="so"><br class="lu">
-					for people<br class="mo">
-					around the world.
-				</p>
-			</div>
-			<div class="mask">
-				&nbsp;
-			</div>
-		</div>
-		<div class="action-button-wrapper">
-			<!-- -------------
-			Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-			-------------------- -->
-
-			<!-- <kv-button
-				v-if="showMgPromo"
-				class="slideshow-action-button"
-				to="/monthlygood"
-				v-kv-track-event="['Home', 'EXP-Montly-Good-Promo', 'click-Sign-up']"
-			>
-				Sign up
-				<span v-if="showDoubleArrowButton"> >></span>
-			</kv-button> -->
-
-			<kv-button
-				v-if="promoEnabled"
-				class="slideshow-action-button billion-to-women-action"
-				to="/lend/lendingReward?lending_reward=265&doneUrl=lend-by-category/women"
-				v-kv-track-event="['Home', 'Lend now', 'click-Promo 1 Billion to Women 2019']"
-			>
-				Lend now
-				<span v-if="showDoubleArrowButton"> »</span>
-			</kv-button>
-			<kv-button
-				v-else
-				class="slideshow-action-button"
-				to="/lend-by-category"
-				v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending', null, 'true']"
-			>
-				Start lending
-				<span v-if="showDoubleArrowButton"> »</span>
-			</kv-button>
-		</div>
+		<!-- Default -->
+		<kv-hero v-else>
+			<template v-slot:images>
+				<kv-carousel @change="slideChange">
+					<!-- eslint-disable max-len -->
+					<kv-carousel-slide>
+						<kv-responsive-image
+							:images="heroImages(1)"
+							alt="A woman laughs while sitting on a traditional wooden boat on the waterways of Southeast Asia."
+						/>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<kv-responsive-image
+							:images="heroImages(2)"
+							alt="Four women wear colorful, patterned African dresses and smile. One holds a baby and another holds a silver bowl full of fish."
+						/>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<kv-responsive-image
+							v-if="counter > 2"
+							:images="heroImages(3)"
+							alt="An older woman wearing a bright pink shirt smiles, standing in front of a tropical forest landscape."
+						/>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<kv-responsive-image
+							v-if="counter > 3"
+							:images="heroImages(4)"
+							alt="An older Latin American farmer with a mustache smiles. He stands in front of tropical shrubbery."
+						/>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<kv-responsive-image
+							v-if="counter > 4"
+							:images="heroImages(5)"
+							alt="A man wearing a light blue dashiki smiles in a workshop filled with traditional African crafts and jewelry."
+						/>
+					</kv-carousel-slide>
+					<!-- eslint-enable max-len -->
+				</kv-carousel>
+			</template>
+			<template v-slot:headlineTitle>
+				Dreams are universal,<br class="smo"> opportunity is not.
+			</template>
+			<template v-slot:headlineBody>
+				Lend as little as $25<br class="so">
+				to create<br class="mo">
+				opportunity<br class="so"><br class="lu">
+				for people<br class="mo">
+				around the world.
+			</template>
+			<template v-slot:action>
+				<kv-button
+					to="/lend-by-category"
+					v-kv-track-event="['Home', 'EXP-HeroWhyKiva', 'click-Start-lending']"
+				>
+					Start lending »
+				</kv-button>
+			</template>
+		</kv-hero>
 	</div>
 </template>
 
@@ -113,69 +119,39 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import getCacheKey from '@/util/getCacheKey';
 
 const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
-const billionToWomenImageRequire = require.context('@/assets/images/billion-to-women-slideshow/', true);
-
-// --------------------
-// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-// ---------------------
-
-// const mgPromoImageRequire = require.context('@/assets/images/mg-hero-slideshow/', true);
+const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/homepage/', true);
 
 export default {
 	name: 'HeroSlideshow',
 	serverCacheKey: props => {
-		// let cacheKey = props.mgPromoExp.version === 'shown' ? 'MgSlideshow' : 'DefaultHeroSlideshow';
-		let cacheKey = props.promoEnabled === 'true' ? 'BillionToWomenSlideshow' : 'DefaultHeroSlideshow';
-		if (props.doubleArrowButtonExp.version === 'shown') {
-			cacheKey = `${cacheKey}Arrows`;
+		let cacheKey = 'DefaultHeroSlideshow';
+		if (props.promoEnabled) {
+			cacheKey = 'PromoSlideshowPossibility';
 		}
 		return getCacheKey(cacheKey);
 	},
-	inject: ['apollo'],
 	components: {
 		KvButton,
 		KvCarousel,
 		KvCarouselSlide,
+		KvHero,
 		KvResponsiveImage,
 	},
 	props: {
-		// --------------------
-		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-		// ---------------------
-
-		// mgPromoExp: {
-		// 	type: Object,
-		// 	default: () => {},
-		// },
 		promoEnabled: {
 			type: Boolean,
-			default: false,
-		},
-		doubleArrowButtonExp: {
-			type: Object,
-			default: () => {},
+			default: false
 		},
 	},
 	data() {
 		return {
 			counter: 2,
 		};
-	},
-	computed: {
-		// --------------------
-		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-		// ---------------------
-
-		// showMgPromo() {
-		// 	return this.mgPromoExp.version === 'shown';
-		// },
-		showDoubleArrowButton() {
-			return this.doubleArrowButtonExp.version === 'shown';
-		},
 	},
 	methods: {
 		slideChange() {
@@ -197,159 +173,77 @@ export default {
 				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
 			];
 		},
-		// --------------------
-		// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-		// ---------------------
-
-		// mgHeroImages(number) {
-		// 	return [
-		// 		['small', mgPromoImageRequire(`./mg-hppromo-${number}-sm-std.jpg`)],
-		// 		['small retina', mgPromoImageRequire(`./mg-hppromo-${number}-sm-retina.jpg`)],
-		// 		['medium', mgPromoImageRequire(`./mg-hppromo-${number}-med-std.jpg`)],
-		// 		['medium retina', mgPromoImageRequire(`./mg-hppromo-${number}-med-retina.jpg`)],
-		// 		['large', mgPromoImageRequire(`./mg-hppromo-${number}-lg-std.jpg`)],
-		// 		['large retina', mgPromoImageRequire(`./mg-hppromo-${number}-lg-retina.jpg`)],
-		// 		['xga', mgPromoImageRequire(`./mg-hppromo-${number}-xga-std.jpg`)],
-		// 		['xga retina', mgPromoImageRequire(`./mg-hppromo-${number}-xga-retina.jpg`)],
-		// 		['wxga', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-std.jpg`)],
-		// 		['wxga retina', mgPromoImageRequire(`./mg-hppromo-${number}-wxga-retina.jpg`)],
-		// 	];
-		// },
-		billionToWomenImages(number) {
+		possibilitiesImages(number) {
 			return [
-				['small', billionToWomenImageRequire(`./1b2w-${number}-sm-std.jpg`)],
-				['small retina', billionToWomenImageRequire(`./1b2w-${number}-sm-retina.jpg`)],
-				['medium', billionToWomenImageRequire(`./1b2w-${number}-med-std.jpg`)],
-				['medium retina', billionToWomenImageRequire(`./1b2w-${number}-med-retina.jpg`)],
-				['large', billionToWomenImageRequire(`./1b2w-${number}-lg-std.jpg`)],
-				['large retina', billionToWomenImageRequire(`./1b2w-${number}-lg-retina.jpg`)],
-				['xga', billionToWomenImageRequire(`./1b2w-${number}-xl-std.jpg`)],
-				['xga retina', billionToWomenImageRequire(`./1b2w-${number}-xl-retina.jpg`)],
-				['wxga', billionToWomenImageRequire(`./1b2w-${number}-xxl-std.jpg`)],
-				['wxga retina', billionToWomenImageRequire(`./1b2w-${number}-xxl-retina.jpg`)],
+				['small', possibilitiesImageRequire(`./Homepage${number}_sm_std.jpg`)],
+				['small retina', possibilitiesImageRequire(`./Homepage${number}_sm_retina.jpg`)],
+				['medium', possibilitiesImageRequire(`./Homepage${number}_med_std.jpg`)],
+				['medium retina', possibilitiesImageRequire(`./Homepage${number}_med_retina.jpg`)],
+				['large', possibilitiesImageRequire(`./Homepage${number}_lg_std.jpg`)],
+				['large retina', possibilitiesImageRequire(`./Homepage${number}_lg_retina.jpg`)],
+				['xga', possibilitiesImageRequire(`./Homepage${number}_xl_std.jpg`)],
+				['xga retina', possibilitiesImageRequire(`./Homepage${number}_xl_retina.jpg`)],
+				['wxga', possibilitiesImageRequire(`./Homepage${number}_xxl_std.jpg`)],
+				['wxga retina', possibilitiesImageRequire(`./Homepage${number}_xxl_retina.jpg`)],
 			];
-		}
+		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+	@import "settings";
+	@import "foundation";
 
-.hero-slideshow {
-	position: relative;
-	width: 100%;
-	margin-bottom: 5rem;
+	.possibilities-promo {
+		$green: #02582e;
+		$dark_green: #0b2a0d;
+		$red:#611b15;
+		$dark_red: #2e0004;
+		$blue: #015a76;
+		$dark_blue: #00244e;
+		$gold: #ebdf7f;
 
-	@include breakpoint(medium) {
 		margin-bottom: 6rem;
-	}
 
-	.slide-placeholder {
-		background-color: $kiva-bg-lightgray;
-		width: 100%;
-		padding-bottom: 600/480 * 100%;
+		::v-deep .headline-main--has-action {
+			padding-bottom: 6.125rem;
 
-		@include breakpoint(medium) {
-			padding-bottom: 675/680 * 100%;
+			@include breakpoint(large) {
+				padding-bottom: 3.125rem;
+			}
+		}
+
+		::v-deep .action--has-headline {
+			margin-top: -4.65rem;
+
+			@include breakpoint(large) {
+				margin-top: -1.75rem;
+				margin-bottom: -2.125rem;
+			}
+		}
+
+		.action-button {
+			@include button-style($blue, auto, #fff);
+
+			box-shadow: 0 2px darken($blue, 10%);
+			width: 50%;
+
+			@include breakpoint(large) {
+				width: 88%;
+			}
 		}
 
 		@include breakpoint(large) {
-			padding-bottom: 545/1024 * 100%;
-		}
-
-		@include breakpoint(xga) {
-			padding-bottom: 768/1440 * 100%;
-		}
-
-		@include breakpoint(wxga) {
-			padding-bottom: 820/1920 * 100%;
-		}
-	}
-
-	.kv-carousel-slide img {
-		width: 100%;
-	}
-
-	.headline-bar {
-		display: flex;
-		position: absolute;
-		bottom: 0;
-		width: 100%;
-
-		.mask {
-			flex-grow: 1;
-			transform: scaleY(0.51) translateY(50%);
-			background-color: $white;
-		}
-
-		.headline {
-			flex-grow: 1;
-			max-width: rem-calc(750);
-			padding: 1.125rem 0.5rem 2rem;
-			color: $white;
-			background-color: rgba($kiva-green, 0.9);
-			text-align: center;
-
-			@include breakpoint(medium) {
-				padding: 1.125rem 1.25rem 2rem;
-			}
-		}
-
-		.headline-title {
-			display: block;
-			margin-bottom: 0.5rem;
-			font-size: 1.75rem;
-			line-height: 2rem;
-			font-weight: 400;
-
-			@include breakpoint(medium) {
-				font-size: 2.25rem;
-				line-height: 2.5rem;
+			.action-1 {
+				display: flex;
+				justify-content: flex-end;
 			}
 
-			@include breakpoint(large only) {
-				font-size: 2.1rem;
-			}
-		}
-
-		.headline-body {
-			font-size: 1.25rem;
-			line-height: 1.5rem;
-
-			@include breakpoint(medium) {
-				font-size: 1.75rem;
-				line-height: 2rem;
+			.action-2 {
+				display: flex;
+				justify-content: flex-start;
 			}
 		}
 	}
-
-	.action-button-wrapper {
-		position: absolute;
-		width: 100%;
-		bottom: 0;
-		text-align: center;
-	}
-
-	.slideshow-action-button {
-		margin-bottom: -1rem;
-
-		@include breakpoint(medium) {
-			margin-bottom: -2rem;
-		}
-	}
-
-	.headline-bar .billion-to-women-headline {
-		background-color: #FDC88A;
-	}
-
-	.billion-to-women-action {
-		background-color: #FA7466;
-		box-shadow: 0 2px #E35269;
-	}
-
-	.billion-to-women-action:hover {
-		background-color: #E35269;
-	}
-}
 </style>
