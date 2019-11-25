@@ -2,32 +2,15 @@
 	<kv-carousel>
 		<div class="slide-placeholder"></div>
 		<kv-carousel-slide
-			v-for="({ images, url, headline, subheadline }, index) in kivaContentBlockData"
-			:key="`headline-${index}`"
+			v-for="({ images }, index) in kivaSliderData"
+			:key="`image-${index}`"
 			:class="`slide-${index}`"
 		>
 			<div class="row">
-				<div class="columns small-12 hide-for-large small-image text-center">
+				<div class="small-12 large-6">
 					<kv-responsive-image :images="images" />
 				</div>
-				<div class="columns small-12 large-7">
-					<h1 class="headline">
-						{{ headline }}
-					</h1>
-					<h3 class="subheadline">
-						{{ subheadline }}
-					</h3>
-					<div class="action-button-wrapper">
-						<kv-button
-							class="smallest action-button"
-							:href="url"
-							v-kv-track-event="['possibility', 'click-kiva-content-block-read-more', 'giving-tuesday']"
-						>
-							Read more
-						</kv-button>
-					</div>
-				</div>
-				<div class="columns large-5 show-for-large">
+				<div class="small-12 large-6">
 					<kv-responsive-image :images="images" />
 				</div>
 			</div>
@@ -41,7 +24,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 
-const kivaContentBlockImageRequire = require.context('@/assets/images/possibilities-banners/kiva-content-block/', true);
+const kivanSliderImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
 
 export default {
 	components: {
@@ -52,44 +35,43 @@ export default {
 	},
 	data() {
 		return {
-			kivaContentBlockData: [
+			kivaSliderData: [
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset1.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset1@2x.jpg')]
+						['small', kivanSliderImageRequire('./kivan-1a-std.jpg')],
+						['small retina', kivanSliderImageRequire('./kivan-1a-retina.jpg')]
 					],
-					url: '/blog/one-woman-brewing-change-in-africa-and-beyond',
-					headline: 'Possibility brews from fair trade',
-					subheadline: 'Vava’s passion for creating change started with possibility in coffee farmers'
 				},
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset2.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset2@2x.jpg')]
+						['small', kivanSliderImageRequire('./kivan-1b-std.jpg')],
+						['small retina', kivanSliderImageRequire('./kivan-1b-retina.jpg')]
 					],
-					url: '/blog/a-loan-to-one-entrepreneur-in-togo-impacts-his-whole-community',
-					headline: 'Possibility in family traditions',
-					subheadline: 'From a mother to her son — how one man turned possibility into a community dream'
 				},
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset3.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset3@2x.jpg')]
+						['small', kivanSliderImageRequire('./kivan-2a-std.jpg')],
+						['small retina', kivanSliderImageRequire('./kivan-2a-retina.jpg')]
 					],
-					url: '/blog/three-sisters-become-fish-farming-pioneers',
-					headline: 'Possibility grows in ponds',
-					subheadline: 'Pioneering possibility — a story of three sisters from Zimbabwe spreading knowledge'
 				},
 				{
 					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset4.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset4@2x.jpg')]
+						['small', kivanSliderImageRequire('./kivan-2b-std.jpg')],
+						['small retina', kivanSliderImageRequire('./kivan-2b-retina.jpg')]
 					],
-					url: '/blog/ernestina-is-a-skilled-carver-making-a-name-for-herself-in-a-male-dominated-craft',
-					headline: 'Turning possibility into craft',
-					// eslint-disable-next-line max-len
-					subheadline: 'Carving a place for women in a male-dominated craft, Ernestina is more than a trailblazer'
-				}
+				},
+				{
+					images: [
+						['small', kivanSliderImageRequire('./kivan-3a-std.jpg')],
+						['small retina', kivanSliderImageRequire('./kivan-3a-retina.jpg')]
+					],
+				},
+				{
+					images: [
+						['small', kivanSliderImageRequire('./kivan-3b-std.jpg')],
+						['small retina', kivanSliderImageRequire('./kivan-3b-retina.jpg')]
+					],
+				},
 			]
 		};
 	},
@@ -104,6 +86,8 @@ $cta-color2: #00244e;
 $cta-color3: #02582e;
 
 .kv-carousel {
+    margin-bottom: 140px;
+
 	.kv-carousel-slide {
 		width: 100%;
 		background: $white;

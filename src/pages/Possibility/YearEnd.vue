@@ -21,6 +21,12 @@
 				</p>
 			</div>
 		</div>
+
+		<div class="row">
+			<div class="columns large-12">
+				<kivan-slider />
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -28,6 +34,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KivanSlider from '@/pages/Possibility/KivanSlider';
 
 const yearEndImagesRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -36,6 +43,7 @@ export default {
 		KvButton,
 		KvHero,
 		KvResponsiveImage,
+		KivanSlider
 	},
 	metaInfo: {
 		title: 'Year End'
