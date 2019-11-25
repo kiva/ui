@@ -1,6 +1,6 @@
 import KvButton from './KvButton';
 
-export default { title: 'KV|KvButton', component: KvButton };
+export default { title: 'KV|KvButton' };
 
 export const Default = () => ({
 	components: { KvButton },

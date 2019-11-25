@@ -43,7 +43,7 @@ export const headlineBodyAction = () => ({
 			</template>
 			<template v-slot:action>
 				<kv-button
-					to="/lend-by-category"
+					href="/lend-by-category"
 				>
 					Lend now
 				</kv-button>
@@ -73,7 +73,7 @@ export const headlineAction = () => ({
 			</template>
 			<template v-slot:action>
 				<kv-button
-					to="/lend-by-category"
+					href="/lend-by-category"
 				>
 					Lend now
 				</kv-button>
@@ -122,7 +122,7 @@ export const action = () => ({
 			</template>
 			<template v-slot:action>
 				<kv-button
-					to="/lend-by-category"
+					href="/lend-by-category"
 				>
 					Lend now
 				</kv-button>
