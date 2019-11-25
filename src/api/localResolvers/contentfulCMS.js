@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { createClient } from 'contentful';
 
