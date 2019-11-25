@@ -7,20 +7,20 @@
 					<kv-carousel-slide>
 						<kv-responsive-image
 							:images="possibilitiesImages(1)"
-							alt="An African American woman in a park wearing a leather jacket, smiling broadly"
+							alt="A young businesswoman, wearing pink lipstick and leather blazer, laughs."
 						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>
 						<kv-responsive-image
 							:images="possibilitiesImages(2)"
-							alt="Two people carrying a large blue water container into a village"
+							alt="Two women carry a large blue barrel between them through a rural African village."
 						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>
 						<kv-responsive-image
 							v-if="counter > 2"
 							:images="possibilitiesImages(3)"
-							alt="A Latino man wearing a cowboy hat gazing hopefully and proudly"
+							alt="An older Latin American farmer gazes hopefully into the distance."
 						/>
 					</kv-carousel-slide>
 				</kv-carousel>
@@ -56,21 +56,41 @@
 		<kv-hero v-else>
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
+					<!-- eslint-disable max-len -->
 					<kv-carousel-slide>
-						<kv-responsive-image :images="heroImages(1)" />
+						<kv-responsive-image
+							:images="heroImages(1)"
+							alt="A woman laughs while sitting on a traditional wooden boat on the waterways of Southeast Asia."
+						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>
-						<kv-responsive-image :images="heroImages(2)" />
+						<kv-responsive-image
+							:images="heroImages(2)"
+							alt="Four women wear colorful, patterned African dresses and smile. One holds a baby and another holds a silver bowl full of fish."
+						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>
-						<kv-responsive-image v-if="counter > 2" :images="heroImages(3)" />
+						<kv-responsive-image
+							v-if="counter > 2"
+							:images="heroImages(3)"
+							alt="An older woman wearing a bright pink shirt smiles, standing in front of a tropical forest landscape."
+						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>
-						<kv-responsive-image v-if="counter > 3" :images="heroImages(4)" />
+						<kv-responsive-image
+							v-if="counter > 3"
+							:images="heroImages(4)"
+							alt="An older Latin American farmer with a mustache smiles. He stands in front of tropical shrubbery."
+						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>
-						<kv-responsive-image v-if="counter > 4" :images="heroImages(5)" />
+						<kv-responsive-image
+							v-if="counter > 4"
+							:images="heroImages(5)"
+							alt="A man wearing a light blue dashiki smiles in a workshop filled with traditional African crafts and jewelry."
+						/>
 					</kv-carousel-slide>
+					<!-- eslint-enable max-len -->
 				</kv-carousel>
 			</template>
 			<template v-slot:headlineTitle>
