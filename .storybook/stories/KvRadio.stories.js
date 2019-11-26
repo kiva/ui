@@ -5,7 +5,7 @@ export default {
 	component: KvRadio
 };
 
-export const isChecked = () => ({
+export const Default = () => ({
 	components: {
 		KvRadio
 	},
@@ -42,6 +42,31 @@ export const isChecked = () => ({
 				class="filter-radio"
 			>
 				Men only
+			</kv-radio>
+		</div>
+	`
+});
+
+export const Disabled = () => ({
+	components: {
+		KvRadio
+	},
+	data() {
+		return {
+			gender: 'female',
+		}
+	},
+	template: `
+		<div>
+			<kv-radio
+				label-set="genderRadioSetBoth"
+				name-set="genderRadio"
+				radio-value="both"
+				v-model="gender"
+				class="filter-radio"
+				disabled
+			>
+				Disabled
 			</kv-radio>
 		</div>
 	`

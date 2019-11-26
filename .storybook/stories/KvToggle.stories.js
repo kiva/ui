@@ -5,12 +5,27 @@ export default {
 	component: KvToggle
 };
 
-export const isChecked = () => ({
+export const Default = () => ({
 	components: {
 		KvToggle
 	},
-	data: () => ({
-		checked: true,
-	}),
-	template: '<kv-toggle v-bind="checked">Label here</kv-toggle>'
+	data() {
+		return {
+			checked: true,
+		}
+	},
+	template: `<kv-toggle v-model="checked">Label here</kv-toggle>`
 });
+
+export const Disabled = () => ({
+	components: {
+		KvToggle
+	},
+	data() {
+		return {
+			checked: true,
+		}
+	},
+	template: `<kv-toggle disabled v-model="checked">Label here</kv-toggle>`
+});
+
