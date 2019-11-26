@@ -1,39 +1,37 @@
 <template>
-	<section>
+	<div>
 		<h1>Colors</h1>
-		<ul class="color-groups">
+		<ul class="color-group-list">
 			<li class="color-group" v-for="group in colorGroups" :key="group.categoy">
 				<h2>{{ group.category }}</h2>
-				<ul class="color-blocks">
+				<ul class="color-block-list">
 					<li class="color-block" v-for="color in group.colors" :key="color[0]">
-						<div class="color-box" :style="{ backgroundColor: color[0] }"></div>
-						<div>
-							<kv-button
-								class="smallest secondary"
-								@click.native="copyToClipboard(color[0])">
+						<div class="color-square" :style="{ backgroundColor: color[0] }"></div>
+						<div class="color-values">
+							<button
+								class="color-values-btn"
+								@click="copyToClipboard(color[0])"
+							>
 								{{ color[0] }}
-							</kv-button>
-							<kv-button
-								class="smallest secondary"
-								@click.native="copyToClipboard(color[1])">
+							</button>
+							<button
+								class="color-values-btn"
+								@click="copyToClipboard(color[1])"
+							>
 								{{ color[1] }}
-							</kv-button>
+							</button>
 						</div>
 					</li>
 				</ul>
 			</li>
 		</ul>
-	</section>
+	</div>
 </template>
 
 <script>
 import copy from 'copy-to-clipboard';
-import KvButton from '@/components/Kv/KvButton';
 
 export default {
-	components: {
-		KvButton
-	},
 	data() {
 		return {
 			colorGroups: [
@@ -98,37 +96,45 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.color-groups,
-.color-blocks {
+.color-group-list,
+.color-block-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-.color-blocks {
+.color-group {
+	margin-bottom: 4rem;
+}
+
+.color-block-list {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 	grid-gap: 1rem;
 }
 
-.color-card {
-	text-align: center;
-	padding: rem-calc(5);
+.color-block {
+	position: relative;
 }
 
-.color-box {
-	height: rem-calc(75);
+.color-square {
+	height: rem-calc(100);
 	margin: 0 auto;
 }
 
-.color-hex {
-	color: $dark-gray;
+.color-values {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	display: grid;
+	grid-template-columns: 7rem auto;
 }
 
-.color-name {
-	font-weight: bold;
+.color-values-btn {
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.2);
+	padding: 0.5rem;
+	text-align: left;
 }
-
-
-
 </style>
