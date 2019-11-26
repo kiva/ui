@@ -1,6 +1,6 @@
 
 const path = require('path');
-// your app's webpack.config.js
+const styleLoaders = require('../build/style-loaders');
 const kvWebpackConfig = require('../build/webpack.base.conf');
 
 
@@ -18,6 +18,10 @@ module.exports = async ({ config, mode }) => {
 		module: {
 			...config.module,
 			rules: [
+				{
+					test: /\.scss$/,
+					use: ["thread-loader", "vue-style-loader"].concat(styleLoaders)
+				},
 				...kvWebpackConfig.module.rules,
 				{
 					test: /\.stories\.jsx?$/,
