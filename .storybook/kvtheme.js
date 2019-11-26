@@ -32,6 +32,6 @@ export default create({
 //   inputBorderRadius: 4,
 
   brandTitle: 'My custom storybook',
-  brandUrl: 'https://example.com',
-  brandImage: 'https://placehold.it/350x150',
+  brandUrl: 'https://kiva.org',
+  brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
 });
