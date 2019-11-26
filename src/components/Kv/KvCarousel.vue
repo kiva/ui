@@ -37,12 +37,21 @@ export default {
 	},
 	methods: {
 		getNextIndex() {
+			console.log('get NEXT index triggered');
 			const nextSlideIndex = this.currentIndex + 1;
 			if (nextSlideIndex < this.slides.length) {
 				return nextSlideIndex;
 			}
 			return 0;
 		},
+		getPreviousIndex() {
+			console.log('get PREVIOUS index triggered');
+			const previousSlideIndex = this.currentIndex - 1;
+			if (previousSlideIndex < this.slides.length) {
+				return previousSlideIndex;
+			}
+			return 0;
+		}
 	}
 };
 </script>

@@ -1,6 +1,28 @@
 <template>
 	<kv-carousel>
 		<div class="slide-placeholder"></div>
+		<kv-icon
+			name="small-chevron"
+			class="left-arrow"
+			@click="getPreviousIndex()"
+		/>
+		<div class="bullet-box">
+			<kv-radio />
+			<kv-radio />
+			<kv-radio />
+			<!-- <input
+				type="radio"
+				class="bullet bullet1"
+			/>
+			<input
+				type="radio"
+				class="bullet bullet2"
+			/>
+			<input
+				type="radio"
+				class="bullet bullet3"
+			/> -->
+		</div>
 		<kv-carousel-slide
 			v-for="(slide , index) in slidesData"
 			:key="`image-${index}`"
@@ -15,6 +37,11 @@
 				</div>
 			</div>
 		</kv-carousel-slide>
+		<kv-icon
+			name="small-chevron"
+			class="right-arrow"
+			@click="getNextIndex()"
+		/>
 	</kv-carousel>
 </template>
 
@@ -23,6 +50,9 @@ import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvIcon from '@/components/Kv/KvIcon';
+import KvRadio from '@/components/Kv/KvRadio';
+
 
 const slidesImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
 
@@ -32,6 +62,8 @@ export default {
 		KvResponsiveImage,
 		KvCarousel,
 		KvCarouselSlide,
+		KvIcon,
+		KvRadio
 	},
 	data() {
 		return {
@@ -82,6 +114,37 @@ $cta-color3: #02582e;
 
 .kv-carousel {
 	margin-bottom: 140px;
+
+	.left-arrow,
+	.right-arrow {
+		z-index: 10000;
+		stroke: $white;
+		height: 30px;
+		width: 30px;
+		position: absolute;
+		top: 190px;
+		cursor: pointer;
+	}
+
+	.left-arrow {
+		transform: rotate(90deg);
+	}
+
+	.right-arrow {
+		right: 0;
+		transform: rotate(-90deg);
+	}
+
+	.bullet-box {
+		z-index: 10000;
+		position: absolute;
+		bottom: 15%;
+		left: 45%;
+
+		.styled-radios {
+			width: 23px;
+		}
+	}
 
 	.kv-carousel-slide {
 		width: 100%;
