@@ -53,15 +53,12 @@ module.exports = merge.smart(baseWebpackConfig, {
 				// mini-css and hard-source together. Ignoring the mini-css loader
 				// modules, but not the other css loader modules, excludes the modules
 				// that mini-css needs rebuilt to output assets every time.
-				// The above is also true for .woff font files, pngs in css, and the
-				// SVG sprite created by svgXhr
+				// The above is also true for .woff font files, jpgs/pngs referenced in
+				// css, and the SVG sprite created by svgXhr
 				test: /mini-css-extract-plugin[\\/]dist[\\/]loader/,
 			},
 			{
-				test: /png/,
-			},
-			{
-				test: /woff/,
+				test: /url-loader.*woff|url-loader.*png|url-loader.*jpg/,
 			},
 			{
 				test: /iconLoader.js/,
