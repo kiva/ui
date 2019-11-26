@@ -17,7 +17,14 @@ module.exports = async ({ config, mode }) => {
 		},
 		module: {
 			...config.module,
-			rules: kvWebpackConfig.module.rules
+			rules: [
+				...kvWebpackConfig.module.rules,
+				{
+					test: /\.stories\.jsx?$/,
+					loaders: [require.resolve('@storybook/source-loader')],
+					enforce: 'pre',
+				}
+			]
 		}
 	};
 
