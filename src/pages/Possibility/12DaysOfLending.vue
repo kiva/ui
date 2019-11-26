@@ -21,12 +21,16 @@
 				</router-link>
 			</div>
 		</div>
+		<div class="row column calendar">
+			<twelve-days-calendar :current-day="today()" />
+		</div>
 	</div>
 </template>
 
 <script>
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import TwelveDaysCalendar from './TwelveDaysCalendar';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -34,6 +38,7 @@ export default {
 	components: {
 		KvHero,
 		KvResponsiveImage,
+		TwelveDaysCalendar,
 	},
 	metaInfo: {
 		title: '12 Days of Lending'
@@ -53,6 +58,11 @@ export default {
 				['wxga retina', possibilitiesImageRequire('./Phase2-xxl-retina.jpg')]
 			],
 		};
+	},
+	methods: {
+		today() {
+			return 4; // TODO Determine how we're going to drive the dates
+		}
 	}
 };
 </script>
@@ -62,7 +72,8 @@ export default {
 
 $cta-color: #02582e;
 
-.intro {
+.intro,
+.calendar {
 	margin-bottom: 4rem;
 }
 
