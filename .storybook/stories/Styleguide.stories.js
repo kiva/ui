@@ -1,6 +1,6 @@
-import StyleguideColors from './StyleguideColors';
-import StyleguideTypography from './StyleguideTypography';
-import StyleguideForms from './StyleguideForms';
+import StyleguideColors from '@/components/Styleguide/StyleguideColors';
+import StyleguideTypography from '@/components/Styleguide/StyleguideTypography';
+import StyleguideForms from '@/components/Styleguide/StyleguideForms';
 
 export default { title: 'Styleguide', component: StyleguideColors };
 

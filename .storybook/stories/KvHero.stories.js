@@ -1,6 +1,6 @@
-import KvHero from './KvHero';
-import KvButton from './KvButton';
-import KvResponsiveImage from './KvResponsiveImage';
+import KvHero from '@/components/Kv/KvHero';
+import KvButton from '@/components/Kv/KvButton';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 const possibilitiesImageRequire = require.context('@/assets/images/mg-hero-slideshow', true);
 const sampleResponsiveImageSet = [

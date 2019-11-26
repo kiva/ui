@@ -1,4 +1,4 @@
-import KvToggle from './KvToggle';
+import KvToggle from '@/components/Kv/KvToggle';
 
 export default {
 	title: 'Kv | KvToggle',
@@ -12,5 +12,5 @@ export const isChecked = () => ({
 	data: () => ({
 		checked: true,
 	}),
-	template: '<kv-toggle v-bind="checked">{{checked}} Label here</kv-toggle>'
+	template: '<kv-toggle v-bind="checked">Label here</kv-toggle>'
 });
