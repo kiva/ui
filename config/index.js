@@ -48,6 +48,7 @@ module.exports = {
 				'openid email profile',
 		},
 		contentful: {
+			enable: true,
 			accessToken: 'kMmnBKkNsHXuCkBhcFUndWKXeWZ81NREp45K-VvtdMw',
 			space: 'j0p9a6ql0rn7',
 			environment: 'master'

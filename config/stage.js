@@ -45,7 +45,7 @@ module.exports = merge(base, {
 			domain: 'login.stage.kiva.org',
 		},
 		contentful: {
-			environment: 'development'
+			enable: false,
 		},
 	},
 	server: {
