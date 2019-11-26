@@ -12,7 +12,7 @@ var gitRevisionPlugin = new GitRevisionPlugin({
 const isProd = process.env.NODE_ENV === 'production';
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 
-function resolve (dir) {
+function resolve(dir) {
 	return path.join(__dirname, '..', dir);
 }
 
@@ -59,13 +59,13 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
-				use: [ "thread-loader",'babel-loader?cacheDirectory'],
+				use: ["thread-loader", 'babel-loader?cacheDirectory'],
 				include: [resolve('src'), resolve('test')]
 			},
 			{
 				test: /\.(graphql|gql)$/,
 				exclude: /node_modules/,
-				use: [ "thread-loader",'graphql-tag/loader']
+				use: ["thread-loader", 'graphql-tag/loader']
 			},
 			{
 				// Modules who define their `browser` or `module` key as `mjs` force
@@ -85,7 +85,7 @@ module.exports = {
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
-				exclude: [resolve('src/assets/icons'), resolve('src/assets/inline-svgs/')],
+				exclude: [resolve('src/assets/icons'), resolve('src/assets/inline-svgs')],
 				loader: 'url-loader',
 				options: {
 					limit: 1, // 10000 is default but we'd need to exclude apple-touch-icons,
@@ -118,7 +118,7 @@ module.exports = {
 		}),
 		...(isProd ? [] : [new HardSourceWebpackPlugin({
 			configHash(webpackConfig) {
-				return `${process.env.NODE_ENV.substring(0,3)}_${require('node-object-hash')({sort: false}).hash(webpackConfig)}`
+				return `${process.env.NODE_ENV.substring(0, 3)}_${require('node-object-hash')({ sort: false }).hash(webpackConfig)}`
 			},
 			cachePrune: {
 				// Caches younger than `maxAge` are not considered for deletion. They must
