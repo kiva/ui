@@ -2,16 +2,16 @@
 	<kv-carousel>
 		<div class="slide-placeholder"></div>
 		<kv-carousel-slide
-			v-for="({ images }, index) in kivaSliderData"
+			v-for="(slide , index) in slidesData"
 			:key="`image-${index}`"
 			:class="`slide-${index}`"
 		>
 			<div class="row">
 				<div class="small-12 large-6">
-					<kv-responsive-image :images="images" />
+					<kv-responsive-image :images="slide.left" />
 				</div>
 				<div class="small-12 large-6">
-					<kv-responsive-image :images="images" />
+					<kv-responsive-image :images="slide.right" />
 				</div>
 			</div>
 		</kv-carousel-slide>
@@ -24,7 +24,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 
-const kivanSliderImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
+const slidesImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
 
 export default {
 	components: {
@@ -35,43 +35,38 @@ export default {
 	},
 	data() {
 		return {
-			kivaSliderData: [
+			slidesData: 
+			[
 				{
-					images: [
-						['small', kivanSliderImageRequire('./kivan-1a-std.jpg')],
-						['small retina', kivanSliderImageRequire('./kivan-1a-retina.jpg')]
+					left: [
+						['small', slidesImageRequire('./kivan-1a-std.jpg')],
+						['small retina', slidesImageRequire('./kivan-1a-retina.jpg')]
 					],
+					right: [
+						['small', slidesImageRequire('./kivan-1b-std.jpg')],
+						['small retina', slidesImageRequire('./kivan-1b-retina.jpg')],
+					]
 				},
 				{
-					images: [
-						['small', kivanSliderImageRequire('./kivan-1b-std.jpg')],
-						['small retina', kivanSliderImageRequire('./kivan-1b-retina.jpg')]
+					left: [
+						['small', slidesImageRequire('./kivan-2a-std.jpg')],
+						['small retina', slidesImageRequire('./kivan-2a-retina.jpg')],
 					],
+					right: [
+						['small', slidesImageRequire('./kivan-2b-std.jpg')],
+			 			['small retina', slidesImageRequire('./kivan-2b-retina.jpg')],
+					]
 				},
 				{
-					images: [
-						['small', kivanSliderImageRequire('./kivan-2a-std.jpg')],
-						['small retina', kivanSliderImageRequire('./kivan-2a-retina.jpg')]
+					left: [
+						['small', slidesImageRequire('./kivan-3a-std.jpg')],
+			 			['small retina', slidesImageRequire('./kivan-3a-retina.jpg')],
 					],
-				},
-				{
-					images: [
-						['small', kivanSliderImageRequire('./kivan-2b-std.jpg')],
-						['small retina', kivanSliderImageRequire('./kivan-2b-retina.jpg')]
-					],
-				},
-				{
-					images: [
-						['small', kivanSliderImageRequire('./kivan-3a-std.jpg')],
-						['small retina', kivanSliderImageRequire('./kivan-3a-retina.jpg')]
-					],
-				},
-				{
-					images: [
-						['small', kivanSliderImageRequire('./kivan-3b-std.jpg')],
-						['small retina', kivanSliderImageRequire('./kivan-3b-retina.jpg')]
-					],
-				},
+					right: [
+						['small', slidesImageRequire('./kivan-3b-std.jpg')],
+			 			['small retina', slidesImageRequire('./kivan-3b-retina.jpg')]
+					]
+				}
 			]
 		};
 	},
@@ -86,7 +81,7 @@ $cta-color2: #00244e;
 $cta-color3: #02582e;
 
 .kv-carousel {
-    margin-bottom: 140px;
+	margin-bottom: 140px;
 
 	.kv-carousel-slide {
 		width: 100%;
