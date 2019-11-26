@@ -2,6 +2,7 @@ require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const cluster = require('cluster');
 const express = require('express');
 const helmet = require('helmet');
+const timesyncServer = require('timesync/server');
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
@@ -49,6 +50,9 @@ if (argv.mock) {
 
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);
+
+// Handle time sychronization requests
+app.use('/timesync', timesyncServer.requestHandler);
 
 // Configure session
 app.use('/', sessionRouter(config.server));
