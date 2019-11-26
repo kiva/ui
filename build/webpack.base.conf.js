@@ -85,12 +85,17 @@ module.exports = {
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
-				exclude: [resolve('src/assets/icons')],
+				exclude: [resolve('src/assets/icons'), resolve('src/assets/inline-svgs/')],
 				loader: 'url-loader',
 				options: {
 					limit: 1, // 10000 is default but we'd need to exclude apple-touch-icons,
 					name: assetsPath('img/[name].[hash:7].[ext]')
 				}
+			},
+			{
+				test: /\.svg$/,
+				include: [resolve('src/assets/inline-svgs/')],
+				use: ['babel-loader', 'vue-svg-loader'],
 			},
 			{
 				test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,

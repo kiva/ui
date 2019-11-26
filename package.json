@@ -31,6 +31,12 @@
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook"
 	},
+	"husky": {
+		"hooks": {
+			"pre-push": "npm run lint",
+			"post-checkout": "npm run destroyBuildCache"
+		}
+	},
 	"dependencies": {
 		"@contentful/rich-text-html-renderer": "^13.4.0",
 		"algoliasearch": "^3.34.0",
@@ -142,6 +148,7 @@
 		"git-revision-webpack-plugin": "^3.0.3",
 		"hard-source-webpack-plugin": "^0.13.1",
 		"html-minifier": "^4.0.0",
+		"husky": "^3.1.0",
 		"inject-loader": "^4.0.1",
 		"jest": "^23.6.0",
 		"jest-serializer-vue": "^2.0.2",
@@ -164,6 +171,7 @@
 		"vue-jest": "^3.0.5",
 		"vue-loader": "^15.7.1",
 		"vue-style-loader": "^4.1.2",
+		"vue-svg-loader": "^0.15.0",
 		"vue-template-compiler": "^2.6.10",
 		"wait-on": "^3.3.0",
 		"webpack": "^4.40.2",
