@@ -138,6 +138,7 @@ import _filter from 'lodash/filter';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
+import syncDate from '@/util/syncDate';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutSettings from '@/graphql/query/checkout/checkoutSettings.graphql';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
@@ -289,19 +290,22 @@ export default {
 		}
 	},
 	mounted() {
-		// update current time every second for reactivity
-		this.currentTimeInterval = setInterval(() => {
-			this.currentTime = Date.now();
-		}, 1000);
+		// Ensure browser clock is correct before using current time
+		syncDate().then(() => {
+			// update current time every second for reactivity
+			this.currentTimeInterval = setInterval(() => {
+				this.currentTime = Date.now();
+			}, 1000);
 
-		this.$nextTick(() => {
-			// fire tracking event when the page loads
-			// - this event will be duplicated when the page reloads with a newly registered/logged in user
-			let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
-			if (this.isActivelyLoggedIn) {
-				userStatus = 'Actively Logged-In';
-			}
-			this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+			this.$nextTick(() => {
+				// fire tracking event when the page loads
+				// - this event will be duplicated when the page reloads with a newly registered/logged in user
+				let userStatus = this.isLoggedIn ? 'Logged-In' : 'Un-Authenticated';
+				if (this.isActivelyLoggedIn) {
+					userStatus = 'Actively Logged-In';
+				}
+				this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
+			});
 		});
 	},
 	computed: {
