@@ -44,6 +44,9 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.stage.kiva.org/process-ssr-auth',
 			domain: 'login.stage.kiva.org',
 		},
+		contentful: {
+			environment: 'development'
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.stage.kivaws.org/graphql',
