@@ -33,12 +33,17 @@ export default context => {
 				 * @returns {array}
 				 */
 				contentfulCMS(_, { contentKey, contentType }) {
+					// if contentful is not enabled just return empty object without making API call
+					if (!context.appConfig.contentful.enable) {
+						return {};
+					}
 					const contentfulQueryParams = {
 						content_type: contentType
 					};
 					if (contentKey) {
 						contentfulQueryParams['fields.key'] = contentKey;
 					}
+
 					return contentfulClient.getEntries(contentfulQueryParams).then(contentfulResponse => {
 						const items = contentfulResponse.items.map(entry => entry.fields);
 						return {
