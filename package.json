@@ -81,7 +81,6 @@
 		"memcached": "^2.2.2",
 		"memjs": "^1.2.2",
 		"minimist": "^1.2.0",
-		"node-sass": "^4.13.0",
 		"numeral": "^2.0.6",
 		"passport": "^0.4.0",
 		"passport-auth0": "^1.2.1",
