@@ -3,7 +3,7 @@ import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 
 // same styles that are in App.vue
-import './appstyles.scss';
+import '../src/assets/scss/app.scss';
 
 import kvTheme from './kvtheme';
 
