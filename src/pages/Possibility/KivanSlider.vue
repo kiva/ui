@@ -55,7 +55,7 @@ export default {
 	},
 	data() {
 		return {
-			slidesData: 
+			slidesData:
 			[
 				{
 					left: [
@@ -74,17 +74,17 @@ export default {
 					],
 					right: [
 						['small', slidesImageRequire('./kivan-2b-std.jpg')],
-			 			['small retina', slidesImageRequire('./kivan-2b-retina.jpg')],
+						['small retina', slidesImageRequire('./kivan-2b-retina.jpg')],
 					]
 				},
 				{
 					left: [
 						['small', slidesImageRequire('./kivan-3a-std.jpg')],
-			 			['small retina', slidesImageRequire('./kivan-3a-retina.jpg')],
+						['small retina', slidesImageRequire('./kivan-3a-retina.jpg')],
 					],
 					right: [
 						['small', slidesImageRequire('./kivan-3b-std.jpg')],
-			 			['small retina', slidesImageRequire('./kivan-3b-retina.jpg')]
+						['small retina', slidesImageRequire('./kivan-3b-retina.jpg')]
 					]
 				}
 			]

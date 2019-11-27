@@ -21,13 +21,13 @@ export default {
 
 		let url = '/possibility/year-end';
 
-		// if (now >= dec3 && now < dec14) {
-		// 	url = '/possibility/giving-tuesday';
-		// } else if (now >= dec14 && now < dec26) {
-		// 	url = '/possibility/12-days-of-lending';
-		// } else if (now >= dec26) {
-		// 	url = '/possibility/year-end';
-		// }
+		if (now >= dec3 && now < dec14) {
+			url = '/possibility/giving-tuesday';
+		} else if (now >= dec14 && now < dec26) {
+			url = '/possibility/12-days-of-lending';
+		} else if (now >= dec26) {
+			url = '/possibility/year-end';
+		}
 
 		if (this.$route.path === '/possibility') {
 			this.$router.push({ path: url, query: this.$route.query });
