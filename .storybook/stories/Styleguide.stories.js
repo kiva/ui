@@ -2,7 +2,7 @@ import StyleguideColors from '@/components/Styleguide/StyleguideColors';
 import StyleguideTypography from '@/components/Styleguide/StyleguideTypography';
 import StyleguideForms from '@/components/Styleguide/StyleguideForms';
 
-export default { title: 'Styleguide', component: StyleguideColors };
+export default { title: 'Styleguide' };
 
 export const Colors = () => ({
 	components: { StyleguideColors },

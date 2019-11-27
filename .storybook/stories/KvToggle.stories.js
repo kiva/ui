@@ -1,9 +1,6 @@
 import KvToggle from '@/components/Kv/KvToggle';
 
-export default {
-	title: 'Kv | KvToggle',
-	component: KvToggle
-};
+export default { title: 'Kv | KvToggle' };
 
 export const Default = () => ({
 	components: {
