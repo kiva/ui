@@ -9,7 +9,10 @@ query promotionalBanner($basketId: String, $contentType: String!, $contentKey: S
 		basket {
 			hasFreeCredits
 			totals {
+				bonusAvailableTotal
+				freeTrialAvailableTotal
 				redemptionCodeAvailableTotal
+				universalCodeAvailableTotal
 			}
 		}
 		lendingRewardOffered
