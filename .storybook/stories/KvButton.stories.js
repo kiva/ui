@@ -4,7 +4,7 @@ export default { title: 'KV|KvButton' };
 
 export const Default = () => ({
 	components: { KvButton },
-	template: '<kv-button>Buttons</kv-button>'
+	template: '<kv-button>Button</kv-button>'
 });
 
 export const Disabled = () => ({
