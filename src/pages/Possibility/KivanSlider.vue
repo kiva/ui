@@ -10,18 +10,6 @@
 			<kv-radio />
 			<kv-radio />
 			<kv-radio />
-			<!-- <input
-				type="radio"
-				class="bullet bullet1"
-			/>
-			<input
-				type="radio"
-				class="bullet bullet2"
-			/>
-			<input
-				type="radio"
-				class="bullet bullet3"
-			/> -->
 		</div>
 		<kv-carousel-slide
 			v-for="(slide , index) in slidesData"
@@ -46,7 +34,7 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
+// import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
@@ -58,7 +46,7 @@ const slidesImageRequire = require.context('@/assets/images/possibilities-banner
 
 export default {
 	components: {
-		KvButton,
+	// 	KvButton,
 		KvResponsiveImage,
 		KvCarousel,
 		KvCarouselSlide,
