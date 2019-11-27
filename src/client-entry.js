@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import 'babel-polyfill';
+import '@babel/polyfill';
 import _dropWhile from 'lodash/dropWhile';
 import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
