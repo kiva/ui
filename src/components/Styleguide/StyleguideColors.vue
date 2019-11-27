@@ -130,12 +130,12 @@ export default {
 	left: 0;
 	width: 100%;
 	display: grid;
-	grid-template-columns: 7rem auto;
+	grid-template-columns: 7rem max-content;
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
 .color-values-btn {
 	color: #fff;
-	background-color: rgba(0, 0, 0, 0.2);
 	padding: 0.5rem;
 	text-align: left;
 }
