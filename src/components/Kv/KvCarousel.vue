@@ -6,6 +6,12 @@
 
 <script>
 export default {
+	props: {
+		autoplay: {
+			type: Boolean,
+			default: true
+		}
+	},
 	data() {
 		return {
 			currentIndex: 0,
@@ -23,7 +29,7 @@ export default {
 		}
 
 		// setup autoplay
-		if (this.slides.length > 1) {
+		if (this.slides.length > 1 && this.autoplay) {
 			this.interval = setInterval(() => {
 				this.slides[this.currentIndex].hide();
 				this.currentIndex = this.getNextIndex();
