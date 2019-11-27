@@ -10,16 +10,16 @@
  *   });
  */
 
-import { create } from 'timesync';
+const timesync = require('timesync');
 
-const time = create({
+const time = timesync.create({
 	server: '/timesync',
 	delay: 250,
 	interval: null, // disable automatic syncing
 });
 
 let syncPromise;
-export default function sync() {
+module.exports = function sync() {
 	// Return sync promise if one already exists to prevent multiple calls to time.sync()
 	if (syncPromise) {
 		return syncPromise;
@@ -43,7 +43,7 @@ export default function sync() {
 		time.sync();
 	});
 	return syncPromise;
-}
+};
 
 // This function allows for creating a Date object with an arbitrary number of arguments, which
 // allows the Date constructor to be overridden.
