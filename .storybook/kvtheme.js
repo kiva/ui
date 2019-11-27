@@ -31,7 +31,7 @@ export default create({
 //   inputTextColor: 'black',
 //   inputBorderRadius: 4,
 
-  brandTitle: 'My custom storybook',
+  brandTitle: 'Kiva.org',
   brandUrl: 'https://kiva.org',
   brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
 });
