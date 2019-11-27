@@ -29,8 +29,6 @@
 </template>
 
 <script>
-import copy from 'copy-to-clipboard';
-
 export default {
 	data() {
 		return {
@@ -87,7 +85,11 @@ export default {
 	},
 	methods: {
 		copyToClipboard(string) {
-			return copy(string);
+			try {
+				navigator.clipboard.writeText(string);
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	}
 };
