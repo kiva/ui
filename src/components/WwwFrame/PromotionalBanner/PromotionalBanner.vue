@@ -33,9 +33,23 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
-			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
-			this.bonusBalance = promoBalance + basketPromoBalance;
-
+			const bonusAvailableTotal = numeral(
+				_get(data, 'shop.basket.totals.bonusAvailableTotal')
+			).value();
+			const freeTrialAvailableTotal = numeral(
+				_get(data, 'shop.basket.totals.freeTrialAvailableTotal')
+			).value();
+			const redemptionCodeAvailableTotal = numeral(
+				_get(data, 'shop.basket.totals.redemptionCodeAvailableTotal')
+			).value();
+			const universalCodeAvailableTotal = numeral(
+				_get(data, 'shop.basket.totals.universalCodeAvailableTotal')
+			).value();
+			this.bonusBalance = promoBalance
+				+ bonusAvailableTotal
+				+ freeTrialAvailableTotal
+				+ redemptionCodeAvailableTotal
+				+ universalCodeAvailableTotal;
 			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 		}
 	},
