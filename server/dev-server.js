@@ -12,7 +12,6 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const threadLoader = require('thread-loader');
-const timesyncServer = require('timesync/server');
 
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
@@ -141,9 +140,6 @@ serverCompiler.watch({
 
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);
-
-// Handle time sychronization requests
-app.use('/timesync', timesyncServer.requestHandler);
 
 // install dev/hot middleware
 app.use(devMiddleware);
