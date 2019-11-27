@@ -1,8 +1,5 @@
-
-const path = require('path');
 const styleLoaders = require('../build/style-loaders');
 const kvWebpackConfig = require('../build/webpack.base.conf');
-
 
 module.exports = async ({ config, mode }) => {
 
@@ -22,16 +19,15 @@ module.exports = async ({ config, mode }) => {
 					test: /\.scss$/,
 					use: ["thread-loader", "vue-style-loader"].concat(styleLoaders)
 				},
-				...kvWebpackConfig.module.rules,
 				{
 					test: /\.stories\.jsx?$/,
 					loaders: [require.resolve('@storybook/source-loader')],
 					enforce: 'pre',
-				}
+				},
+				...kvWebpackConfig.module.rules,
 			]
 		}
 	};
 
-	console.dir(newConfig, { depth: null }) || config;
 	return newConfig;
 };
