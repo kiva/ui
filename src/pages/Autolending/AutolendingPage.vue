@@ -7,6 +7,14 @@
 			</div>
 		</div>
 		<div class="row column">
+			<div class="columns large-10" v-show="!idleCreditOptIn && !isEnabled">
+				<blockquote>
+					<em>
+						You currently have auto-lending turned off and are opted out of this feature.
+						If you turn it on you are electing to participate in this feature.
+					</em>
+				</blockquote><br>
+			</div>
 			<main-toggle />
 		</div>
 		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
@@ -113,6 +121,7 @@ const pageQuery = gql`{
 		profileChanged
 		currentProfile {
 			isEnabled
+			idleCreditOptIn
 		}
 	}
 }`;
@@ -145,6 +154,7 @@ export default {
 			isChanged: false,
 			isEnabled: false,
 			showAdvanced: false,
+			idleCreditOptIn: false
 		};
 	},
 	apollo: {
@@ -186,6 +196,7 @@ export default {
 		result({ data }) {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
+			this.idleCreditOptIn = !!_get(data, 'autolending.currentProfile.idleCreditOptIn');
 		},
 	},
 	mounted() {
