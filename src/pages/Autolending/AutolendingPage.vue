@@ -155,7 +155,7 @@ export default {
 					.then(({ data }) => {
 						const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
 						const duration = 1000 * (parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600);
-						if (kvAuth0.user && Date.now() > lastLogin + duration) {
+						if (kvAuth0.getKivaId() && Date.now() > lastLogin + duration) {
 							throw new Error('activeLoginRequired');
 						}
 					})
