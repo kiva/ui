@@ -36,7 +36,7 @@ export default {
 	},
 	data() {
 		return {
-			changedIdleOptIn: false,
+			changedTiming: false,
 			legacyAutoLender: false,
 			enableAfter: null, // legacy setting
 			lendAfterDaysIdle: 0
@@ -73,7 +73,7 @@ export default {
 			}
 
 			let notice = `Notice: Your previous setting was '${legacyAutoLendDescription}'`;
-			notice += this.changedIdleOptIn ? '.' : ', the closest matching setting above will be applied upon save.';
+			notice += this.changedTiming ? '.' : ', the closest matching setting above will be applied upon save.';
 			return notice;
 		}
 	},
@@ -103,7 +103,6 @@ export default {
 						autolending @client {
 							editProfile(profile: {
 								enableAfter: 0
-								idleCreditOptIn: true
 								lendAfterDaysIdle: ${value}
 							})
 						}
@@ -118,20 +117,19 @@ export default {
 				currentProfile {
 					enableAfter
 					lendAfterDaysIdle
-					idleCreditOptIn
 				}
 				savedProfile {
-					idleCreditOptIn
+					enableAfter
 				}
 			}
 		}`,
 		preFetch: true,
 		result({ data }) {
-			this.enableAfter = _get(data, 'autolending.currentProfile.enableAfter');
+			this.enableAfter = _get(data, 'autolending.savedProfile.enableAfter');
 			// flag user as one who had auto lending set
-			this.legacyAutoLender = !_get(data, 'autolending.savedProfile.idleCreditOptIn');
-			this.changedIdleOptIn = _get(data, 'autolending.currentProfile.idleCreditOptIn');
-			if (this.legacyAutoLender && !this.changedIdleOptIn) {
+			this.legacyAutoLender = this.enableAfter > 0;
+			this.changedTiming = _get(data, 'autolending.currentProfile.enabledAfter') !== this.enableAfter;
+			if (this.legacyAutoLender && !this.changedTiming) {
 				this.lendAfterDaysIdle = this.convertEnableAfterToNewSetting(this.enableAfter);
 			} else {
 				this.lendAfterDaysIdle = _get(data, 'autolending.currentProfile.lendAfterDaysIdle');
