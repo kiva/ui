@@ -1,8 +1,11 @@
 query autolendingPage {
-	autolending @client {
-		profileChanged
-		currentProfile {
-			isEnabled
+	my {
+		lastLoginTimestamp @client
+	}
+	general {
+		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
+			value
+			key
 		}
 	}
 }
