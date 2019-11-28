@@ -85,6 +85,7 @@
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
@@ -106,6 +107,15 @@ import GroupRadios from './GroupRadios';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import LoanIncrementRadios from './LoanIncrementRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
+
+const pageQuery = gql`{
+	autolending @client {
+		profileChanged
+		currentProfile {
+			isEnabled
+		}
+	}
+}`;
 
 export default {
 	inject: ['apollo'],
@@ -138,20 +148,35 @@ export default {
 		};
 	},
 	apollo: {
-		query: autolendingQuery,
-		preFetch(config, client, { route }) {
+		query: pageQuery,
+		preFetch(config, client, { route, kvAuth0 }) {
 			return new Promise((resolve, reject) => {
-				client.mutate({ mutation: initAutolending })
-					.then(() => client.query({ query: autolendingQuery }))
+				client.query({ query: autolendingQuery })
+					.then(({ data }) => {
+						const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
+						const duration = 1000 * (parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600);
+						if (kvAuth0.user && Date.now() > lastLogin + duration) {
+							throw new Error('activeLoginRequired');
+						}
+					})
+					.then(() => client.mutate({ mutation: initAutolending }))
+					.then(() => client.query({ query: pageQuery }))
 					.then(resolve)
 					.catch(e => {
-						// Redirect to login upon authentication error
-						if (e.message.indexOf('api.authenticationRequired') > -1) {
+						if (e.message.indexOf('activeLoginRequired') > -1) {
+							// Force a login when active login is required
 							reject({
 								path: '/ui-login',
 								query: { force: true, doneUrl: route.fullPath }
 							});
+						} else if (e.message.indexOf('api.authenticationRequired') > -1) {
+							// Redirect to login upon authentication error
+							reject({
+								path: '/ui-login',
+								query: { doneUrl: route.fullPath }
+							});
 						} else {
+							// Log other errors
 							console.error(e);
 							resolve();
 						}
