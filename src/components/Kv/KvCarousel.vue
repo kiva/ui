@@ -1,5 +1,8 @@
 <template>
-	<div class="kv-carousel">
+	<div
+		class="kv-carousel"
+		@event="handler"
+	>
 		<slot></slot>
 	</div>
 </template>
@@ -42,6 +45,9 @@ export default {
 		clearInterval(this.interval);
 	},
 	methods: {
+		handler() {
+			console.log('triggered');
+		},
 		getNextIndex() {
 			console.log('get NEXT index triggered');
 			const nextSlideIndex = this.currentIndex + 1;

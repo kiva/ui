@@ -1,16 +1,11 @@
 <template>
-	<kv-carousel>
+	<kv-carousel :autoplay="false">
 		<div class="slide-placeholder"></div>
 		<kv-icon
 			name="small-chevron"
 			class="left-arrow"
-			@click="getPreviousIndex()"
+			@click="previousSlide()"
 		/>
-		<div class="bullet-box">
-			<kv-radio />
-			<kv-radio />
-			<kv-radio />
-		</div>
 		<kv-carousel-slide
 			v-for="(slide , index) in slidesData"
 			:key="`image-${index}`"
@@ -28,7 +23,7 @@
 		<kv-icon
 			name="small-chevron"
 			class="right-arrow"
-			@click="getNextIndex()"
+			@click="nextSlide()"
 		/>
 	</kv-carousel>
 </template>
@@ -39,7 +34,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvRadio from '@/components/Kv/KvRadio';
+// import KvRadio from '@/components/Kv/KvRadio';
 
 
 const slidesImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
@@ -51,7 +46,7 @@ export default {
 		KvCarousel,
 		KvCarouselSlide,
 		KvIcon,
-		KvRadio
+	// 	KvRadio
 	},
 	data() {
 		return {
@@ -90,6 +85,14 @@ export default {
 			]
 		};
 	},
+	methods: {
+		previousSlide(params) {
+			this.$emit('event', getPreviousSlide());
+		},
+		nextSlide(params) {
+			this.$emit('event', getNextSlide());
+		}
+	}
 };
 </script>
 
