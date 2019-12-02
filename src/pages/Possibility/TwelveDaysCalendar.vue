@@ -25,6 +25,7 @@
 					<StarLittle class="star-little" :class="starPositionClass(index)" />
 					<component :is="numberComponent(index)" class="number" />
 					<router-link
+						v-if="promoEnabled"
 						:to="reward.url"
 						class="reward-link"
 					>
@@ -35,6 +36,17 @@
 							{{ reward.ctaText }}
 						</div>
 					</router-link>
+					<div
+						v-else
+						class="reward-link"
+					>
+						<p class="body-text">
+							Today: {{ reward.text }}
+						</p>
+						<div class="body-cta">
+							SOLD OUT
+						</div>
+					</div>
 				</button>
 				<div v-else class="reward" :class="rewardColorClass(index)">
 					<SquigglyLine class="squiggly-line" />
@@ -98,6 +110,10 @@ export default {
 		currentDay: {
 			type: Number,
 			default: 1
+		},
+		promoEnabled: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -291,7 +307,7 @@ $gold: #ebdf7f;
 	line-height: 1.35;
 }
 
-.body-cta::after {
+a .body-cta::after {
 	content: ' »';
 }
 
@@ -371,6 +387,7 @@ $gold: #ebdf7f;
 
 .reward--showing {
 	pointer-events: none;
+	color: #fff;
 
 	.number {
 		transition: all 0.25s;
@@ -388,7 +405,7 @@ $gold: #ebdf7f;
 		opacity: 0; // Strange bug on star-little with display: none so using opacity
 	}
 
-	.reward-link {
+	a.reward-link {
 		color: #fff;
 		pointer-events: auto;
 
