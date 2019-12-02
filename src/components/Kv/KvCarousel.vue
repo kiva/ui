@@ -43,7 +43,7 @@ export default {
 			this.goToSlide(this.getNextIndex());
 		},
 		previous() {
-			this.goToSlide(this.getPreviousIndex())
+			this.goToSlide(this.getPreviousIndex());
 		},
 		goToSlide(index) {
 			this.slides[this.currentIndex].hide();
