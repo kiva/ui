@@ -1,8 +1,5 @@
 <template>
-	<div
-		class="kv-carousel"
-		@event="handler"
-	>
+	<div class="kv-carousel">
 		<slot></slot>
 	</div>
 </template>
@@ -34,10 +31,7 @@ export default {
 		// setup autoplay
 		if (this.slides.length > 1 && this.autoplay) {
 			this.interval = setInterval(() => {
-				this.slides[this.currentIndex].hide();
-				this.currentIndex = this.getNextIndex();
-				this.slides[this.currentIndex].show();
-				this.$emit('change', this.currentIndex);
+				this.advance();
 			}, 5000);
 		}
 	},
@@ -45,8 +39,17 @@ export default {
 		clearInterval(this.interval);
 	},
 	methods: {
-		handler() {
-			console.log('triggered');
+		advance() {
+			this.goToSlide(this.getNextIndex());
+		},
+		previous() {
+			this.goToSlide(this.getPreviousIndex())
+		},
+		goToSlide(index) {
+			this.slides[this.currentIndex].hide();
+			this.currentIndex = index;
+			this.slides[this.currentIndex].show();
+			this.$emit('change', this.currentIndex);
 		},
 		getNextIndex() {
 			console.log('get NEXT index triggered');
@@ -59,10 +62,10 @@ export default {
 		getPreviousIndex() {
 			console.log('get PREVIOUS index triggered');
 			const previousSlideIndex = this.currentIndex - 1;
-			if (previousSlideIndex < this.slides.length) {
+			if (previousSlideIndex >= 0) {
 				return previousSlideIndex;
 			}
-			return 0;
+			return this.slides.length - 1;
 		}
 	}
 };

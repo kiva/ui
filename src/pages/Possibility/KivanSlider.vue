@@ -1,15 +1,20 @@
 <template>
-	<kv-carousel :autoplay="false">
+	<kv-carousel
+		:autoplay="false"
+		ref="KvCarousel"
+	>
 		<div class="slide-placeholder"></div>
-		<kv-icon
-			name="small-chevron"
-			class="left-arrow"
-			@click="previousSlide()"
-		/>
+		<button @click="previousSlide">
+			<kv-icon
+				name="small-chevron"
+				class="left-arrow"
+			/>
+		</button>
 		<kv-carousel-slide
 			v-for="(slide , index) in slidesData"
 			:key="`image-${index}`"
 			:class="`slide-${index}`"
+			:transtion-name="transitionName"
 		>
 			<div class="row">
 				<div class="small-12 large-6">
@@ -20,11 +25,12 @@
 				</div>
 			</div>
 		</kv-carousel-slide>
-		<kv-icon
-			name="small-chevron"
-			class="right-arrow"
-			@click="nextSlide()"
-		/>
+		<button @click="nextSlide">
+			<kv-icon
+				name="small-chevron"
+				class="right-arrow"
+			/>
+		</button>
 	</kv-carousel>
 </template>
 
@@ -82,15 +88,25 @@ export default {
 						['small retina', slidesImageRequire('./kivan-3b-retina.jpg')]
 					]
 				}
-			]
+			],
+			transitionName: 'kv-slide-left'
 		};
 	},
 	methods: {
-		previousSlide(params) {
-			this.$emit('event', getPreviousSlide());
+		previousSlide() {
+			console.log(this.$refs);
+			this.transitionName = 'kv-slide-right';
+			this.$nextTick(() => {
+				this.$refs.KvCarousel.previous();
+			});
+			console.log('get previous slide');
 		},
-		nextSlide(params) {
-			this.$emit('event', getNextSlide());
+		nextSlide() {
+			this.transitionName = 'kv-slide-left';
+			this.$nextTick(() => {
+				this.$refs.KvCarousel.advance();
+			});
+			console.log('get next slide');
 		}
 	}
 };
