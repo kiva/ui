@@ -107,7 +107,7 @@ export default {
 		StarLittle,
 	},
 	props: {
-		currentDay: {
+		adventDay: {
 			type: Number,
 			default: 1
 		},
@@ -198,10 +198,10 @@ export default {
 	},
 	methods: {
 		isPast(index) {
-			return this.currentDay > index + 1;
+			return this.adventDay > index + 1;
 		},
 		isPresent(index) {
-			return this.currentDay === index + 1;
+			return this.adventDay === index + 1;
 		},
 		numberComponent(index) {
 			return `Number${index + 1}`;
