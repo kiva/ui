@@ -14,7 +14,7 @@
 			v-for="(slide , index) in slidesData"
 			:key="`image-${index}`"
 			:class="`slide-${index}`"
-			:transtion-name="transitionName"
+			:transition-name="transitionName"
 		>
 			<div class="row">
 				<div class="small-12 large-6">

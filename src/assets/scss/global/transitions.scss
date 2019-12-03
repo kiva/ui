@@ -36,7 +36,7 @@
 }
 
 .kv-slide-right-enter {
-	transform: translateX(100%);
+	transform: translateX(-100%);
 }
 
 .kv-slide-right-leave-to {
@@ -45,5 +45,5 @@
 
 .kv-slide-right-enter-active,
 .kv-slide-right-leave-active {
-	transition: transform 5000ms ease-in-out;
+	transition: transform 500ms ease-in-out;
 }
