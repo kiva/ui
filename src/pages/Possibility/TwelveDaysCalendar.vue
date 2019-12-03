@@ -44,6 +44,10 @@
 			</li>
 		</ol>
 
+		<p class="disclaimer">
+			* You'll receive a lending credit in 24 hours
+		</p>
+
 		<svg width="0" height="0">
 			<defs>
 				<linearGradient id="shinygold" x1="0%" y1="0%" x2="100%" y2="160%">
@@ -111,7 +115,7 @@ export default {
 					starPosition: 'top-left'
 				},
 				{
-					text: 'Make a donation of $50 or more and get a $25 lending credit while funds last. Courtesy of Bank of America.',
+					text: 'Make a donation of $50 or more and get a $25 lending credit* while funds last. Courtesy of Bank of America.',
 					url: '/donate/supportus',
 					ctaText: 'Donate now',
 					starPosition: 'bottom-left'
@@ -129,7 +133,7 @@ export default {
 					starPosition: 'bottom-left'
 				},
 				{
-					text: 'Make a donation of $35 or more and get a $25 lending credit while funds last!',
+					text: 'Make a donation of $35 or more and get a $25 lending credit* while funds last!',
 					url: '/donate/supportus',
 					ctaText: 'Donate now',
 					starPosition: 'top-right'
@@ -147,7 +151,7 @@ export default {
 					starPosition: 'top-right'
 				},
 				{
-					text: 'Make a $100 donation, get a $50 lending credit!',
+					text: 'Make a $100 donation, get a $50 lending credit!*',
 					url: '/donate/supportus',
 					ctaText: 'Lend now',
 					starPosition: 'top-left'
@@ -159,7 +163,7 @@ export default {
 					starPosition: 'bottom-left'
 				},
 				{
-					text: 'Make a donation of $250 or more, get a tote bag and a $50 lending credit, while funds last',
+					text: 'Make a donation of $250 or more, get a tote bag and a $50 lending credit*, while funds last',
 					url: '/donate/supportus',
 					ctaText: 'Donate now',
 					starPosition: 'top-left'
@@ -207,6 +211,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "_settings";
+
 $green: #02582e;
 $dark_green: #0b2a0d;
 $red:#611b15;
@@ -466,4 +472,11 @@ $gold: #ebdf7f;
 		}
 	}
 }
+
+.disclaimer {
+	font-size: $small-font-size;
+	text-align: center;
+	margin: 1rem 0;
+}
+
 </style>
