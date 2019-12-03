@@ -80,7 +80,7 @@ export default {
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
-				return new Date(promo.fields.startDate).toDateString() === this.PDTDate.toDateString();
+				return new Date(promo.fields.startDate).toDateString() === this.getPdtDate().toDateString();
 			});
 
 			if (todaysLimitedPromo) {
@@ -89,16 +89,11 @@ export default {
 		}
 	},
 	computed: {
-		PDTDate() {
-			const PDTOffsetHours = -8; // hours offset from UTC
-			const clientOffsetHours = new Date().getTimezoneOffset() / 60;
-			const offsetMs = (PDTOffsetHours + clientOffsetHours) * 60 * 60 * 1000;
-			return new Date(Date.now() + offsetMs);
-		},
 		adventDay() {
-			const month = this.PDTDate.getMonth();
-			const day = this.PDTDate.getDate();
-			const year = this.PDTDate.getFullYear();
+			const pdtDate = this.getPdtDate();
+			const day = pdtDate.getDate();
+			const month = pdtDate.getMonth();
+			const year = pdtDate.getFullYear();
 
 			let adventDay = 0; // show all entries as unopened
 			if (year === 2019 && month === 12 && day >= 14) {
@@ -108,6 +103,14 @@ export default {
 			}
 
 			return adventDay;
+		}
+	},
+	methods: {
+		getPdtDate() {
+			const pdtOffsetHours = -8; // hours offset from UTC
+			const clientOffsetHours = new Date().getTimezoneOffset() / 60;
+			const offsetMs = (pdtOffsetHours + clientOffsetHours) * 60 * 60 * 1000;
+			return new Date(Date.now() + offsetMs);
 		}
 	}
 };
