@@ -63,20 +63,18 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: gql`{
-			contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-				items
-			}
-		}`,
-		variables() {
-			return {
+	mounted() {
+		this.apollo.query({
+			query: gql`{
+				contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
+					items
+				}
+			}`,
+			variables: {
 				contentType: 'uiSetting',
-				contentKey: 'ui-global-promo'
-			};
-		},
-		preFetch: true,
-		result({ data }) {
+				contentKey: 'ui-global-promo',
+			}
+		}).then(({ data }) => {
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
@@ -86,7 +84,7 @@ export default {
 			if (todaysLimitedPromo) {
 				this.promoEnabled = todaysLimitedPromo.fields.active;
 			}
-		}
+		});
 	},
 	computed: {
 		adventDay() {

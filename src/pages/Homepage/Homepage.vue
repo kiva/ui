@@ -10,8 +10,8 @@
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
-import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
@@ -30,16 +30,18 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: promoQuery,
-		variables() {
-			return {
+	mounted() {
+		this.apollo.query({
+			query: gql`{
+				contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
+					items
+				}
+			}`,
+			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-homepage-promo',
-			};
-		},
-		preFetch: true,
-		result({ data }) {
+			}
+		}).then(({ data }) => {
 			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-homepage-promo'); // eslint-disable-line max-len
@@ -49,7 +51,7 @@ export default {
 				'startDate',
 				'endDate'
 			);
-		}
+		});
 	},
 };
 </script>
