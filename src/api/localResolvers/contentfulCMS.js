@@ -46,7 +46,7 @@ export default context => {
 						contentfulQueryParams['fields.key'] = contentKey;
 					}
 
-					// Use the contentful URL as the cache key to sessionStorage
+					// Use the contentful URL as the cache key to localStorage
 					const cacheKey = 'https://cdn.contentful.com'
 									+ `/spaces/${context.appConfig.contentful.space}`
 									+ `/environments/${context.appConfig.contentful.environment}`
