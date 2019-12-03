@@ -8,7 +8,7 @@
     "scss/at-rule-no-unknown": true,
     "at-rule-empty-line-before": null,
     "no-empty-source": null,
-    "unit-whitelist": ["em", "rem", "%", "px", "deg", "vh", "vw", "ms", "s"],
+    "unit-whitelist": ["em", "rem", "%", "px", "deg", "vh", "vw", "ms", "s", "fr"],
     "selector-pseudo-element-no-unknown": [true, {
       "ignorePseudoElements": ["v-deep"]
     }]
