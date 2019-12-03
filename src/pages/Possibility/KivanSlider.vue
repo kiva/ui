@@ -96,16 +96,12 @@ export default {
 		previousSlide() {
 			console.log(this.$refs);
 			this.transitionName = 'kv-slide-right';
-			this.$nextTick(() => {
-				this.$refs.KvCarousel.previous();
-			});
+			this.$refs.KvCarousel.previous();
 			console.log('get previous slide');
 		},
 		nextSlide() {
 			this.transitionName = 'kv-slide-left';
-			this.$nextTick(() => {
-				this.$refs.KvCarousel.advance();
-			});
+			this.$refs.KvCarousel.advance();
 			console.log('get next slide');
 		}
 	}
