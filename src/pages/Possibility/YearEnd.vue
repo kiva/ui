@@ -21,6 +21,30 @@
 				</p>
 			</div>
 		</div>
+		<div class="row dual-cta">
+			<div class="small-12 large-6 text-center dual-cta-block">
+				<router-link class="dual-cta-link" to="/donate/supportus">
+					<h2 class="dual-cta-header">
+						Already donated?
+					</h2>
+					<p class="dual-cta-body">
+						Take a look at the impact you made<br> with your contribution.
+					</p>
+					<sketchy-arrow class="sketchy-arrow" />
+				</router-link>
+			</div>
+			<div class="small-12 large-6 text-center dual-cta-block">
+				<router-link class="dual-cta-link" to="/donate/supportus">
+					<h2 class="dual-cta-header">
+						Haven't donated yet?
+					</h2>
+					<p class="dual-cta-body">
+						There's still time! Help us<br> empower borrowers.
+					</p>
+					<sketchy-arrow class="sketchy-arrow" />
+				</router-link>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -28,6 +52,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import SketchyArrow from '@/assets/inline-svgs/sketchy-arrow.svg';
 
 const yearEndImagesRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -36,6 +61,7 @@ export default {
 		KvButton,
 		KvHero,
 		KvResponsiveImage,
+		SketchyArrow
 	},
 	metaInfo: {
 		title: 'Year End'
@@ -60,6 +86,58 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import "_settings";
+
+$blue: #015a76;
+$dark_blue: #00244e;
+
+.sketchy-arrow {
+	display: block;
+	margin: 0 auto;
+	width: 6.5rem;
+
+	path {
+		fill: $blue;
+	}
+}
+
+.intro,
+.dual-cta {
+	margin-bottom: 1.5rem;
+}
+
+.dual-cta-block {
+	margin-bottom: 3rem;
+}
+
+.dual-cta-header {
+	font-weight: $global-weight-bold;
+}
+
+.dual-cta-body {
+	font-size: $medium-text-font-size;
+	line-height: $subheader-lineheight;
+}
+
+.dual-cta-link {
+	color: $blue;
+
+	&:hover,
+	&:focus,
+	&:active {
+		color: $dark_blue;
+		text-decoration: none;
+
+		.dual-cta-header {
+			text-decoration: underline;
+		}
+
+		.sketchy-arrow {
+			path {
+				fill: $dark_blue;
+			}
+		}
+	}
+}
 
 </style>
