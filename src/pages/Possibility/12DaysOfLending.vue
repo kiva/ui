@@ -29,7 +29,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
@@ -65,11 +65,7 @@ export default {
 	inject: ['apollo'],
 	mounted() {
 		this.apollo.query({
-			query: gql`{
-				contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-					items
-				}
-			}`,
+			query: contentfulCMS,
 			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-global-promo',

@@ -10,7 +10,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
@@ -32,11 +32,7 @@ export default {
 	inject: ['apollo'],
 	mounted() {
 		this.apollo.query({
-			query: gql`{
-				contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-					items
-				}
-			}`,
+			query: contentfulCMS,
 			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-homepage-promo',
