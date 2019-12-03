@@ -1,5 +1,5 @@
 import StoryRouter from 'storybook-vue-router';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 import TwelveDaysCalendar from '@/pages/Possibility/TwelveDaysCalendar';
 
 export default {
@@ -12,11 +12,17 @@ export const TwelveDaysCalendarAd = () => ({
 		TwelveDaysCalendar,
 	},
 	props: {
-		currentDay: {
-			default: number('currentDay', 3)
+		adventDay: {
+			default: number('adventDay', 3)
 		},
+		promoEnabled: {
+			default: boolean('promoEnabled', true)
+		}
 	},
 	template: `
-		<twelve-days-calendar :current-day="currentDay" />
+		<twelve-days-calendar
+			:advent-day="adventDay"
+			:promo-enabled="promoEnabled"
+		/>
 	`,
 });

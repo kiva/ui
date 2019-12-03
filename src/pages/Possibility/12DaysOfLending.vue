@@ -22,12 +22,14 @@
 			</div>
 		</div>
 		<div class="row column calendar">
-			<twelve-days-calendar :current-day="today()" />
+			<twelve-days-calendar :advent-day="adventDay" :promo-enabled="promoEnabled" />
 		</div>
 	</div>
 </template>
 
 <script>
+import _get from 'lodash/get';
+import gql from 'graphql-tag';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
@@ -45,6 +47,7 @@ export default {
 	},
 	data() {
 		return {
+			promoEnabled: true,
 			twelveDaysImages: [
 				['small', possibilitiesImageRequire('./Phase2-sm-std.jpg')],
 				['small retina', possibilitiesImageRequire('./Phase2-sm-retina.jpg')],
@@ -59,9 +62,55 @@ export default {
 			],
 		};
 	},
+	inject: ['apollo'],
+	apollo: {
+		query: gql`{
+			contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
+				items
+			}
+		}`,
+		variables() {
+			return {
+				contentType: 'uiSetting',
+				contentKey: 'ui-global-promo'
+			};
+		},
+		preFetch: true,
+		result({ data }) {
+			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
+
+			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
+				return new Date(promo.fields.startDate).toDateString() === this.getPdtDate().toDateString();
+			});
+
+			if (todaysLimitedPromo) {
+				this.promoEnabled = todaysLimitedPromo.fields.active;
+			}
+		}
+	},
+	computed: {
+		adventDay() {
+			const pdtDate = this.getPdtDate();
+			const day = pdtDate.getDate();
+			const month = pdtDate.getMonth();
+			const year = pdtDate.getFullYear();
+
+			let adventDay = 0; // show all entries as unopened
+			if (year === 2019 && month === 12 && day >= 14) {
+				adventDay = day - 13; // Day 1 of the advent calendar is Dec 14
+			} else if ((month === 12 && day > 25) || year === 2020) {
+				adventDay = 13; // show all entries as opened
+			}
+
+			return adventDay;
+		}
+	},
 	methods: {
-		today() {
-			return 4; // TODO Determine how we're going to drive the dates
+		getPdtDate() {
+			const pdtOffsetHours = -8; // hours offset from UTC
+			const clientOffsetHours = new Date().getTimezoneOffset() / 60;
+			const offsetMs = (pdtOffsetHours + clientOffsetHours) * 60 * 60 * 1000;
+			return new Date(Date.now() + offsetMs);
 		}
 	}
 };
