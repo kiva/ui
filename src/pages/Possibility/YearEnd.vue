@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "_settings";
+@import "settings";
 
 $blue: #015a76;
 $dark_blue: #00244e;
