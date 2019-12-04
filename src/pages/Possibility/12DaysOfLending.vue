@@ -86,7 +86,7 @@ export default {
 		adventDay() {
 			const pdtDate = this.getPdtDate();
 			const day = pdtDate.getDate();
-			const month = pdtDate.getMonth();
+			const month = pdtDate.getMonth() + 1; // getMonth is 0 based
 			const year = pdtDate.getFullYear();
 
 			let adventDay = 0; // show all entries as unopened
