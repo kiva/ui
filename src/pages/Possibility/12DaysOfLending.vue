@@ -29,7 +29,7 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
@@ -63,20 +63,14 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: gql`{
-			contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-				items
-			}
-		}`,
-		variables() {
-			return {
+	mounted() {
+		this.apollo.query({
+			query: contentfulCMS,
+			variables: {
 				contentType: 'uiSetting',
-				contentKey: 'ui-global-promo'
-			};
-		},
-		preFetch: true,
-		result({ data }) {
+				contentKey: 'ui-global-promo',
+			}
+		}).then(({ data }) => {
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
@@ -86,7 +80,7 @@ export default {
 			if (todaysLimitedPromo) {
 				this.promoEnabled = todaysLimitedPromo.fields.active;
 			}
-		}
+		});
 	},
 	computed: {
 		adventDay() {

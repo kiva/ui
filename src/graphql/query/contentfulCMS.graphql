@@ -1,0 +1,5 @@
+query contentfulCMS($contentType: String!, $contentKey: String) {
+	contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
+		items
+	}
+}
