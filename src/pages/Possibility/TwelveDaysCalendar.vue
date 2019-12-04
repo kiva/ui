@@ -9,7 +9,7 @@
 				<div
 					v-if="isPast(index)"
 					class="reward reward--past hide-for-small-only"
-					:class="rewardColorClass(index)"
+					:class="rewardClass(index)"
 				>
 					<div class="folded-corner"></div>
 					<component :is="numberComponent(index)" class="number" />
@@ -17,7 +17,8 @@
 				<button
 					v-else-if="isPresent(index)"
 					class="reward reward--present"
-					:class="rewardColorClass(index)"
+					:class="rewardClass(index, rewardShowing)"
+					:disabled="rewardShowing"
 					@click="showReward"
 				>
 					<SquigglyLine class="squiggly-line" />
@@ -48,7 +49,7 @@
 						</div>
 					</div>
 				</button>
-				<div v-else class="reward" :class="rewardColorClass(index)">
+				<div v-else class="reward" :class="rewardClass(index)">
 					<SquigglyLine class="squiggly-line" />
 					<StarLittle class="star-little" :class="starPositionClass(index)" />
 					<component :is="numberComponent(index)" class="number" />
@@ -56,7 +57,7 @@
 			</li>
 		</ol>
 
-		<p class="disclaimer">
+		<p class="disclaimer" v-if="showCreditDisclaimer">
 			* You'll receive a lending credit in 24 hours
 		</p>
 
@@ -123,6 +124,7 @@ export default {
 	data() {
 		return {
 			/* eslint-disable max-len */
+			rewardShowing: false,
 			rewards: [
 				{
 					text: 'Invite someone special to Kiva using your unique share link!',
@@ -200,6 +202,12 @@ export default {
 		};
 		/* eslint-enable max-len */
 	},
+	computed: {
+		showCreditDisclaimer() {
+			const creditAdventDays = [2, 5, 8, 10];
+			return creditAdventDays.includes(this.adventDay) && this.rewardShowing;
+		}
+	},
 	methods: {
 		isPast(index) {
 			return this.adventDay > index + 1;
@@ -210,18 +218,17 @@ export default {
 		numberComponent(index) {
 			return `Number${index + 1}`;
 		},
-		rewardColorClass(index) {
+		rewardClass(index, rewardShowing = false) {
 			const colors = ['green', 'blue', 'red'];
-			return `reward--${colors[index % 3]}`;
+			const showing = rewardShowing ? 'reward--showing' : '';
+			return `reward--${colors[index % 3]} ${showing}`;
 		},
 		starPositionClass(index) {
 			return `star-little--${this.rewards[index].starPosition}`;
 		},
-		showReward(e) {
-			const { currentTarget } = e;
-			currentTarget.classList.add('reward--showing');
-			currentTarget.disabled = true;
-		}
+		showReward() {
+			this.rewardShowing = true;
+		},
 	}
 };
 </script>
