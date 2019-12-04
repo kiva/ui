@@ -71,10 +71,11 @@ export default {
 				contentKey: 'ui-global-promo',
 			}
 		}).then(({ data }) => {
+			const pdtDateString = this.getPdtDate().toDateString();
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
-				return new Date(promo.fields.startDate).toDateString() === this.getPdtDate().toDateString();
+				return new Date(promo.fields.startDate).toDateString() === pdtDateString;
 			});
 
 			if (todaysLimitedPromo) {
@@ -86,7 +87,7 @@ export default {
 		adventDay() {
 			const pdtDate = this.getPdtDate();
 			const day = pdtDate.getDate();
-			const month = pdtDate.getMonth();
+			const month = pdtDate.getMonth() + 1; // getMonth is 0 based
 			const year = pdtDate.getFullYear();
 
 			let adventDay = 0; // show all entries as unopened
