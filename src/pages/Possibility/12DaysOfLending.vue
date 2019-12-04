@@ -71,10 +71,11 @@ export default {
 				contentKey: 'ui-global-promo',
 			}
 		}).then(({ data }) => {
+			const pdtDateString = this.getPdtDate().toDateString();
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
-				return new Date(promo.fields.startDate).toDateString() === this.getPdtDate().toDateString();
+				return new Date(promo.fields.startDate).toDateString() === pdtDateString;
 			});
 
 			if (todaysLimitedPromo) {
