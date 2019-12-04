@@ -6,10 +6,17 @@ import store2 from 'store2';
  * ContentfulCMS resolvers
  */
 export default context => {
+	const {
+		accessToken,
+		space,
+		environment,
+		enable
+	} = context.appConfig.contentful;
+
 	const contentfulClient = createClient({
-		accessToken: context.appConfig.contentful.accessToken,
-		space: context.appConfig.contentful.space,
-		environment: context.appConfig.contentful.environment
+		accessToken,
+		space,
+		environment
 	});
 	return {
 		resolvers: {
@@ -35,7 +42,7 @@ export default context => {
 				 */
 				contentfulCMS(_, { contentKey, contentType }) {
 					// if contentful is not enabled just return empty object without making API call
-					if (!context.appConfig.contentful.enable) {
+					if (!enable) {
 						return {};
 					}
 
@@ -49,15 +56,14 @@ export default context => {
 
 					// Use the contentful URL as the cache key to localStorage
 					const cacheKey = 'https://cdn.contentful.com'
-									+ `/spaces/${context.appConfig.contentful.space}`
-									+ `/environments/${context.appConfig.contentful.environment}`
+									+ `/spaces/${space}`
+									+ `/environments/${environment}`
 									+ `/entries?${Object.entries(contentfulQueryParams).map(entry => entry.join('=')).join('&')}`;// eslint-disable-line max-len
-
 					const cachedResponse = store2.get(cacheKey);
 					const lastContentfulCacheRefresh = store2.get('lastContentfulCacheRefresh');
 					const ageOfContentfulCacheInMinutes = !lastContentfulCacheRefresh ? 0 : (new Date().getTime() - lastContentfulCacheRefresh) / (1000 * 60); // eslint-disable-line max-len
-					// if cachedResponse exists and is fresher then 30 minutes, return from cache
-					if (cachedResponse !== null && lastContentfulCacheRefresh !== null && ageOfContentfulCacheInMinutes < 30) { // eslint-disable-line max-len
+					// if cachedResponse exists, is fresher then 30 minutes, not development channel, return from cache
+					if (cachedResponse !== null && lastContentfulCacheRefresh !== null && ageOfContentfulCacheInMinutes < 30 && environment !== 'development') { // eslint-disable-line max-len
 						return {
 							items: JSON.parse(cachedResponse),
 							__typename: 'ContentfulCMS',
