@@ -1,5 +1,6 @@
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { createClient } from 'contentful';
+import store2 from 'store2';
 
 /**
  * ContentfulCMS resolvers
@@ -52,10 +53,9 @@ export default context => {
 									+ `/environments/${context.appConfig.contentful.environment}`
 									+ `/entries?${Object.entries(contentfulQueryParams).map(entry => entry.join('=')).join('&')}`;// eslint-disable-line max-len
 
-					const cachedResponse = localStorage.getItem(cacheKey);
-					const lastContentfulCacheRefresh = localStorage.getItem('lastContentfulCacheRefresh');
+					const cachedResponse = store2.get(cacheKey);
+					const lastContentfulCacheRefresh = store2.get('lastContentfulCacheRefresh');
 					const ageOfContentfulCacheInMinutes = !lastContentfulCacheRefresh ? 0 : (new Date().getTime() - lastContentfulCacheRefresh) / (1000 * 60); // eslint-disable-line max-len
-
 					// if cachedResponse exists and is fresher then 30 minutes, return from cache
 					if (cachedResponse !== null && lastContentfulCacheRefresh !== null && ageOfContentfulCacheInMinutes < 30) { // eslint-disable-line max-len
 						return {
@@ -68,8 +68,8 @@ export default context => {
 					return contentfulClient.getEntries(contentfulQueryParams).then(contentfulResponse => {
 						const items = contentfulResponse.items.map(entry => entry.fields);
 						// store timestamp and results in localStorage
-						localStorage.setItem('lastContentfulCacheRefresh', new Date().getTime());
-						localStorage.setItem(cacheKey, JSON.stringify(items));
+						store2.set('lastContentfulCacheRefresh', new Date().getTime());
+						store2.set(cacheKey, JSON.stringify(items));
 						return {
 							items,
 							__typename: 'ContentfulCMS',

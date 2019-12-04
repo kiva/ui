@@ -1,6 +1,6 @@
 <template>
 	<www-page id="homepage">
-		<hero-slideshow
+		<hero-slideshow v-if="showSlideShow"
 			:promo-enabled="promoEnabled"
 		/>
 		<why-kiva />
@@ -26,7 +26,8 @@ export default {
 	},
 	data() {
 		return {
-			promoEnabled: false
+			promoEnabled: false,
+			showSlideShow: null
 		};
 	},
 	inject: ['apollo'],
@@ -47,6 +48,8 @@ export default {
 				'startDate',
 				'endDate'
 			);
+		}).finally(() => {
+			this.showSlideShow = true;
 		});
 	},
 };
