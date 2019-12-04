@@ -94,15 +94,16 @@ export default {
 	},
 	methods: {
 		previousSlide() {
-			console.log(this.$refs);
 			this.transitionName = 'kv-slide-right';
-			this.$refs.KvCarousel.previous();
-			console.log('get previous slide');
+			this.$nextTick(() => {
+				this.$refs.KvCarousel.previous();
+			});
 		},
 		nextSlide() {
 			this.transitionName = 'kv-slide-left';
-			this.$refs.KvCarousel.advance();
-			console.log('get next slide');
+			this.$nextTick(() => {
+				this.$refs.KvCarousel.advance();
+			});
 		}
 	}
 };

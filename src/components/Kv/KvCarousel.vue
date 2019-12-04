@@ -52,7 +52,6 @@ export default {
 			this.$emit('change', this.currentIndex);
 		},
 		getNextIndex() {
-			console.log('get NEXT index triggered');
 			const nextSlideIndex = this.currentIndex + 1;
 			if (nextSlideIndex < this.slides.length) {
 				return nextSlideIndex;
@@ -60,7 +59,6 @@ export default {
 			return 0;
 		},
 		getPreviousIndex() {
-			console.log('get PREVIOUS index triggered');
 			const previousSlideIndex = this.currentIndex - 1;
 			if (previousSlideIndex >= 0) {
 				return previousSlideIndex;
