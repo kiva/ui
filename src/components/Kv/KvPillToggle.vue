@@ -1,23 +1,44 @@
 <template>
 	<div class="pill-toggle">
-		<span
-			v-for="option in options" :key="option.key"
-			@click="pillToggled(option.key)"
-			:class="[option.key, {active: selected === option.key }]"
+		<div
+			v-for="option in options"
+			:key="option.key"
+			class="pill"
 		>
-			<div class="title">
+			<input
+				class="radio"
+				type="radio"
+				:name="`pill-${uuid}`"
+				:id="`${option.key}-${uuid}`"
+				:class="option.key"
+				:disabled="option.disabled"
+				:checked="isSelected(option.key)"
+				@change="onChange(option.key)"
+			>
+			<label class="label" :for="`${option.key}-${uuid}`">
 				{{ option.title }}
-			</div>
-		</span>
+			</label>
+		</div>
 	</div>
 </template>
 
 <script>
+let uuid = 0;
+
 export default {
 	props: {
 		options: {
 			type: Array,
-			required: true
+			required: true,
+			default() {
+				return [
+					{
+						title: '',
+						key: '',
+						disabled: false
+					}
+				];
+			}
 		},
 		selected: {
 			type: String,
@@ -25,10 +46,17 @@ export default {
 		},
 	},
 	methods: {
-		pillToggled(key) {
+		onChange(key) {
 			this.$emit('pill-toggled', key);
+		},
+		isSelected(key) {
+			return this.selected === key;
 		}
-	}
+	},
+	beforeCreate() {
+		this.uuid = uuid.toString();
+		uuid += 1;
+	},
 };
 
 </script>
@@ -39,33 +67,13 @@ export default {
 $form-border-radius: rem-calc(3);
 
 .pill-toggle {
-	font-size: 1rem;
-	height: rem-calc(34);
-	width: 100%;
+	display: flex;
 
-	span {
+	.pill {
 		background: $tab-pill-background;
 		border: $tab-pill-border;
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-		color: $tab-pill-color;
-		cursor: pointer;
-		display: inline-block;
-		height: 100%;
 		min-width: rem-calc(85);
 		margin-left: rem-calc(-1);
-
-		.title {
-			align-items: center;
-			display: flex;
-			height: 100%;
-			justify-content: center;
-			text-align: center;
-			width: 100%;
-			padding: 0 rem-calc(15);
-		}
 
 		&:first-child {
 			margin-left: 0;
@@ -79,12 +87,49 @@ $form-border-radius: rem-calc(3);
 		}
 	}
 
-	.active {
-		background: $tab-pill-active-background;
-		border: rem-calc(1) solid $kiva-green;
-		color: $white;
-		cursor: default;
-		position: relative;
+	.label {
+		align-items: center;
+		display: flex;
+		justify-content: center;
+		padding: 0 rem-calc(15);
+		margin: 0;
+		font-size: 1rem;
+		color: $tab-pill-color;
+		text-align: center;
+		min-height: 100%;
+
+		&:hover {
+			background: $white;
+			color: $kiva-text-dark;
+		}
+	}
+
+	.radio {
+		position: absolute;
+		opacity: 0;
+		width: 0;
+
+		&:focus + .label {
+			outline: rem-calc(2) solid $kiva-green;
+			outline-offset: rem-calc(-2);
+		}
+
+		&:checked + .label {
+			background: $tab-pill-active-background;
+			color: $white;
+			cursor: default;
+			border: rem-calc(1) solid $kiva-green;
+			margin: rem-calc(-1);
+		}
+
+		&:active + .label {
+			background: $kiva-green;
+			color: $white;
+		}
+
+		&[disabled] + .label {
+			@include disabled();
+		}
 	}
 }
 </style>
