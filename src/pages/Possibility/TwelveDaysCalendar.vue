@@ -234,7 +234,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "_settings";
+@import "settings";
 
 $green: #02582e;
 $dark_green: #0b2a0d;
