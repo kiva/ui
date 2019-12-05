@@ -23,7 +23,7 @@
 		</div>
 		<div class="row dual-cta">
 			<div class="small-12 large-6 text-center dual-cta-block">
-				<router-link class="dual-cta-link" to="/donate/supportus">
+				<router-link class="dual-cta-link" to="/blog/what-your-donations-really-do">
 					<h2 class="dual-cta-header">
 						Already donated?
 					</h2>
