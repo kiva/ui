@@ -129,7 +129,7 @@ $cta-color2: #00244e;
 $cta-color3: #02582e;
 
 .kv-carousel {
-	margin-bottom: rem-calc(140);
+	margin-bottom: 2.75rem;
 
 	.left-arrow,
 	.right-arrow {
@@ -138,11 +138,11 @@ $cta-color3: #02582e;
 		height: rem-calc(30);
 		width: rem-calc(30);
 		position: absolute;
-		top: 29%;
+		top: 38%;
 		cursor: pointer;
 
 		@include breakpoint(medium) {
-			top: 33%;
+			top: 41%;
 		}
 	}
 
