@@ -42,7 +42,7 @@ export default {
 		},
 		selected: {
 			type: String,
-			required: true
+			default: '',
 		},
 	},
 	methods: {
