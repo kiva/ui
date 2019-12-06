@@ -21,6 +21,13 @@
 				</p>
 			</div>
 		</div>
+
+
+		<div class="row">
+			<div class="columns large-12">
+				<kivan-slider />
+			</div>
+		</div>
 		<div class="row dual-cta">
 			<div class="small-12 large-6 text-center dual-cta-block">
 				<router-link class="dual-cta-link" to="/blog/what-your-donations-really-do">
@@ -52,6 +59,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KivanSlider from '@/pages/Possibility/KivanSlider';
 import SketchyArrow from '@/assets/inline-svgs/sketchy-arrow.svg';
 
 const yearEndImagesRequire = require.context('@/assets/images/possibilities-banners/', true);
@@ -61,6 +69,7 @@ export default {
 		KvButton,
 		KvHero,
 		KvResponsiveImage,
+		KivanSlider,
 		SketchyArrow
 	},
 	metaInfo: {

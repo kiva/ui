@@ -41,7 +41,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 
-const kivaContentBlockImageRequire = require.context('@/assets/images/kiva-content-block/', true);
+const kivaContentBlockImageRequire = require.context('@/assets/images/possibilities-banners/kiva-content-block/', true);
 
 export default {
 	components: {
