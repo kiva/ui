@@ -68,6 +68,7 @@ $form-border-radius: rem-calc(3);
 
 .pill-toggle {
 	display: flex;
+	height: rem-calc(34);
 
 	.label {
 		align-items: center;
@@ -80,6 +81,7 @@ $form-border-radius: rem-calc(3);
 		text-align: center;
 		min-height: 100%;
 		border: $tab-pill-border;
+		margin-left: rem-calc(-1);
 
 		&:hover {
 			background: $white;
@@ -90,14 +92,12 @@ $form-border-radius: rem-calc(3);
 	.pill {
 		background: $tab-pill-background;
 		min-width: rem-calc(85);
-		margin-left: rem-calc(-1);
 
 		&:first-child {
-			margin-left: 0;
-
 			.label {
 				border-bottom-left-radius: $form-border-radius;
 				border-top-left-radius: $form-border-radius;
+				margin-left: 0;
 			}
 		}
 
@@ -125,6 +125,7 @@ $form-border-radius: rem-calc(3);
 			color: $white;
 			cursor: default;
 			border-color: $kiva-green;
+			position: relative;
 		}
 
 		&:active + .label {
