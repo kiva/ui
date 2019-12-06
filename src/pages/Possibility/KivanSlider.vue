@@ -2,8 +2,16 @@
 	<kv-carousel
 		:autoplay="false"
 		ref="KvCarousel"
+		@change="slideTransition($event)"
 	>
 		<div class="slide-placeholder"></div>
+		<div class="bullet-wrap text-center">
+			<div
+				v-for="(slide , index) in slidesData"
+				:class="['bullet', {active: currentIndex === index}]"
+				@click="setSlide(index)"
+			></div>
+		</div>
 		<button @click="previousSlide">
 			<kv-icon
 				name="small-chevron"
@@ -35,24 +43,20 @@
 </template>
 
 <script>
-// import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
-// import KvRadio from '@/components/Kv/KvRadio';
 
 
 const slidesImageRequire = require.context('@/assets/images/possibilities-banners/kivan-slider', true);
 
 export default {
 	components: {
-	// 	KvButton,
 		KvResponsiveImage,
 		KvCarousel,
 		KvCarouselSlide,
 		KvIcon,
-	// 	KvRadio
 	},
 	data() {
 		return {
@@ -89,6 +93,7 @@ export default {
 					]
 				}
 			],
+			currentIndex: 0,
 			transitionName: 'kv-slide-left'
 		};
 	},
@@ -104,6 +109,12 @@ export default {
 			this.$nextTick(() => {
 				this.$refs.KvCarousel.advance();
 			});
+		},
+		slideTransition(payload) {
+			this.currentIndex = payload;
+		},
+		setSlide(index) {
+			this.$refs.KvCarousel.goToSlide(index);
 		}
 	}
 };
@@ -139,14 +150,23 @@ $cta-color3: #02582e;
 		transform: rotate(-90deg);
 	}
 
-	.bullet-box {
+	.bullet-wrap {
 		z-index: 10000;
-		position: absolute;
-		bottom: 15%;
-		left: 45%;
+		position: relative;
+		bottom: -9%;
+		margin: 0 auto;
+		width: 100%;
 
-		.styled-radios {
-			width: 23px;
+		.bullet {
+			width: 15px;
+			height: 15px;
+			border: 1px solid $white;
+			border-radius: 50%;
+			display: inline-block;
+		}
+
+		.bullet.active {
+			background-color: $white;
 		}
 	}
 
