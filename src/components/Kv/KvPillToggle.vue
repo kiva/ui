@@ -74,14 +74,15 @@ $form-border-radius: rem-calc(3);
 		align-items: center;
 		display: flex;
 		justify-content: center;
-		padding: 0 rem-calc(15);
+		padding: rem-calc(6) rem-calc(13);
 		margin: 0;
-		font-size: 1rem;
+		font-size: 1em;
 		color: $tab-pill-color;
 		text-align: center;
 		min-height: 100%;
 		border: $tab-pill-border;
 		margin-left: rem-calc(-1);
+		line-height: 1.3;
 
 		&:hover {
 			background: $white;
