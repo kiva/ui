@@ -1,18 +1,16 @@
 <template>
 	<div class="global-promo-bar">
 		<generic-promo-banner
-			v-if="isPromoEnabled && isPromotionalBannerShown"
+			v-if="isPromoEnabled"
 			:promo-banner-content="promoBannerContent"
 		/>
 	</div>
 </template>
 
 <script>
-import numeral from 'numeral';
 import _get from 'lodash/get';
 import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
-import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 
 export default {
@@ -23,30 +21,8 @@ export default {
 	data() {
 		return {
 			isPromoEnabled: false,
-			lendingRewardOffered: false,
-			bonusBalance: 0,
-			hasFreeCredits: false,
 			promoBannerContent: {},
 		};
-	},
-	computed: {
-		isPromotionalBannerShown() {
-			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
-				return false;
-			}
-			return true;
-		},
-	},
-	apollo: {
-		query: promoQuery,
-		preFetch: true,
-		result({ data }) {
-			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
-			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
-			this.bonusBalance = promoBalance + basketPromoBalance;
-			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
-			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-		}
 	},
 	mounted() {
 		this.apollo.query({
