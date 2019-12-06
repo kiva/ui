@@ -29,7 +29,7 @@
 				<div class="small-12 large-6">
 					<kv-responsive-image :images="slide.left" />
 				</div>
-				<div class="small-12 large-6">
+				<div class="small-12 large-6 show-for-large">
 					<kv-responsive-image :images="slide.right" />
 				</div>
 			</div>
@@ -129,17 +129,21 @@ $cta-color2: #00244e;
 $cta-color3: #02582e;
 
 .kv-carousel {
-	margin-bottom: 140px;
+	margin-bottom: rem-calc(140);
 
 	.left-arrow,
 	.right-arrow {
 		z-index: 10000;
 		stroke: $white;
-		height: 30px;
-		width: 30px;
+		height: rem-calc(30);
+		width: rem-calc(30);
 		position: absolute;
-		top: 190px;
+		top: 29%;
 		cursor: pointer;
+
+		@include breakpoint(medium) {
+			top: 33%;
+		}
 	}
 
 	.left-arrow {
@@ -154,16 +158,16 @@ $cta-color3: #02582e;
 	.bullet-wrap {
 		z-index: 10000;
 		position: relative;
-		bottom: -9%;
 		margin: 0 auto;
 		width: 100%;
 
 		.bullet {
-			width: 15px;
-			height: 15px;
+			width: rem-calc(15);
+			height: rem-calc(15);
 			border: 1px solid $white;
 			border-radius: 50%;
 			display: inline-block;
+			margin: rem-calc(2);
 		}
 
 		.bullet.active {
@@ -264,34 +268,102 @@ $cta-color3: #02582e;
 	// This is brute force solution to the varing heights of the content within this component
 	// In the furture slideshows should have a defined height, so we can avoid this customization.
 	.slide-placeholder {
-		padding-bottom: 39rem;
+		padding-bottom: 14rem;
+
+		@include breakpoint(340 up) {
+			padding-bottom: 15rem;
+		}
 
 		@include breakpoint(360 up) {
-			padding-bottom: 42rem;
+			padding-bottom: 16rem;
+		}
+
+		@include breakpoint(380 up) {
+			padding-bottom: 17rem;
+		}
+
+		@include breakpoint(400 up) {
+			padding-bottom: 18rem;
 		}
 
 		@include breakpoint(420 up) {
-			padding-bottom: 43rem;
+			padding-bottom: 19rem;
 		}
 
-		@include breakpoint(481 up) {
-			padding-bottom: 48rem;
-		}
-
-		@include breakpoint(510 up) {
-			padding-bottom: 50rem;
-		}
-
-		@include breakpoint(535 up) {
-			padding-bottom: 55rem;
-		}
-
-		@include breakpoint(630 up) {
-			padding-bottom: 59rem;
-		}
-
-		@include breakpoint(680 up) {
+		@include breakpoint(440 up) {
 			padding-bottom: 20rem;
+		}
+
+		@include breakpoint(460 up) {
+			padding-bottom: 21rem;
+		}
+
+		@include breakpoint(480 up) {
+			padding-bottom: 22rem;
+		}
+
+		@include breakpoint(500 up) {
+			padding-bottom: 23rem;
+		}
+
+		@include breakpoint(520 up) {
+			padding-bottom: 24rem;
+		}
+
+		@include breakpoint(540 up) {
+			padding-bottom: 25rem;
+		}
+
+		@include breakpoint(560 up) {
+			padding-bottom: 26rem;
+		}
+
+		@include breakpoint(580 up) {
+			padding-bottom: 27rem;
+		}
+		
+		@include breakpoint(600 up) {
+			padding-bottom: 28rem;
+		}
+
+		@include breakpoint(620 up) {
+			padding-bottom: 29rem;
+		}
+
+		@include breakpoint(640 up) {
+			padding-bottom: 30rem;
+		}
+
+		@include breakpoint(660 up) {
+			padding-bottom: 31rem;
+		}
+
+		@include breakpoint(large) {
+			padding-bottom: 15.5rem;
+		}
+
+		@include breakpoint(xlarge) {
+			padding-bottom: 17rem;
+		}
+
+		@include breakpoint(800 up) {
+			padding-bottom: 18rem;
+		}
+
+		@include breakpoint(850 up) {
+			padding-bottom: 19rem;
+		}
+
+		@include breakpoint(900 up) {
+			padding-bottom: 21rem;
+		}
+
+		@include breakpoint(950 up) {
+			padding-bottom: 22rem;
+		}
+
+		@include breakpoint(1000 up) {
+			padding-bottom: 23rem;
 		}
 	}
 }
