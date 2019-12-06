@@ -69,24 +69,6 @@ $form-border-radius: rem-calc(3);
 .pill-toggle {
 	display: flex;
 
-	.pill {
-		background: $tab-pill-background;
-		border: $tab-pill-border;
-		min-width: rem-calc(85);
-		margin-left: rem-calc(-1);
-
-		&:first-child {
-			margin-left: 0;
-			border-bottom-left-radius: $form-border-radius;
-			border-top-left-radius: $form-border-radius;
-		}
-
-		&:last-child {
-			border-bottom-right-radius: $form-border-radius;
-			border-top-right-radius: $form-border-radius;
-		}
-	}
-
 	.label {
 		align-items: center;
 		display: flex;
@@ -97,10 +79,33 @@ $form-border-radius: rem-calc(3);
 		color: $tab-pill-color;
 		text-align: center;
 		min-height: 100%;
+		border: $tab-pill-border;
 
 		&:hover {
 			background: $white;
 			color: $kiva-text-dark;
+		}
+	}
+
+	.pill {
+		background: $tab-pill-background;
+		min-width: rem-calc(85);
+		margin-left: rem-calc(-1);
+
+		&:first-child {
+			margin-left: 0;
+
+			.label {
+				border-bottom-left-radius: $form-border-radius;
+				border-top-left-radius: $form-border-radius;
+			}
+		}
+
+		&:last-child {
+			.label {
+				border-bottom-right-radius: $form-border-radius;
+				border-top-right-radius: $form-border-radius;
+			}
 		}
 	}
 
@@ -110,16 +115,16 @@ $form-border-radius: rem-calc(3);
 		width: 0;
 
 		&:focus + .label {
-			outline: rem-calc(2) solid $kiva-green;
-			outline-offset: rem-calc(-2);
+			border: $input-border-focus;
+			background-color: $input-background-focus;
+			box-shadow: $input-shadow-focus;
 		}
 
 		&:checked + .label {
 			background: $tab-pill-active-background;
 			color: $white;
 			cursor: default;
-			border: rem-calc(1) solid $kiva-green;
-			margin: rem-calc(-1);
+			border-color: $kiva-green;
 		}
 
 		&:active + .label {
