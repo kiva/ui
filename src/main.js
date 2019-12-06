@@ -1,3 +1,4 @@
+/* global UI_COMMIT */
 import Vue from 'vue';
 import * as Sentry from '@sentry/browser';
 import * as Integrations from '@sentry/integrations';
@@ -36,12 +37,12 @@ export default function createApp({
 } = {}) {
 	const apolloClient = createApolloClient({ ...apollo, kvAuth0, appConfig });
 	const router = createRouter();
-
 	// Checking that sentry is enabled & is not server side
 	if (appConfig.enableSentry && typeof window !== 'undefined') {
 		Sentry.init({
 			dsn: appConfig.sentryURI,
 			integrations: [new Integrations.Vue({ Vue, attachProps: true })],
+			release: UI_COMMIT
 		});
 	}
 
