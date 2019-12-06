@@ -16,14 +16,14 @@ export default {
 		const now = Date.now() - offset;
 
 		const dec3 = 1575331200000;
-		const dec14 = 1576281600000;
+		const dec13 = 1576195200000;
 		const dec26 = 1577318400000;
 
 		let url = '/possibility/year-end';
 
-		if (now >= dec3 && now < dec14) {
+		if (now >= dec3 && now < dec13) {
 			url = '/possibility/giving-tuesday';
-		} else if (now >= dec14 && now < dec26) {
+		} else if (now >= dec13 && now < dec26) {
 			url = '/possibility/12-days-of-lending';
 		} else if (now >= dec26) {
 			url = '/possibility/year-end';

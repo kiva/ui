@@ -44,11 +44,14 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.stage.kiva.org/process-ssr-auth',
 			domain: 'login.stage.kiva.org',
 		},
+		contentful: {
+			enable: false,
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.stage.kivaws.org/graphql',
 		sessionUri: 'https://www.stage.kiva.org/start-ui-session',
 		memcachedEnabled: true,
-		memcachedServers: 'stage-web-01:11211',
+		memcachedServers: 'kivadev-oregon-memcached.knmtma.cfg.usw2.cache.amazonaws.com:11211',
 	}
 })

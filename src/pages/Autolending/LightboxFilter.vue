@@ -17,7 +17,7 @@
 			radio-value="some"
 			v-model="radio"
 		>
-			Specific {{ name }} only.
+			Specific {{ name }} only
 			<button
 				v-if="selectedItems.length > 0"
 				class="edit-button"
@@ -189,6 +189,7 @@ export default {
 	.edit-button {
 		color: $kiva-textlink;
 		font-weight: 300;
+		margin-left: 0.55em;
 
 		.icon {
 			width: 0.75rem;

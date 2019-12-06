@@ -55,7 +55,7 @@ export default {
 				this.apollo.mutate({
 					mutation: gql`mutation {
 						autolending @client {
-							editProfile(profile: { isEnabled: ${enabled} })
+							editProfile(profile: { isEnabled: ${enabled}, idleCreditOptIn: ${enabled} })
 						}
 					}`,
 				});

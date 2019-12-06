@@ -21,12 +21,18 @@
 				</router-link>
 			</div>
 		</div>
+		<div class="row column calendar">
+			<twelve-days-calendar :advent-day="adventDay" :promo-enabled="promoEnabled" />
+		</div>
 	</div>
 </template>
 
 <script>
+import _get from 'lodash/get';
+import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import TwelveDaysCalendar from './TwelveDaysCalendar';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -34,12 +40,14 @@ export default {
 	components: {
 		KvHero,
 		KvResponsiveImage,
+		TwelveDaysCalendar,
 	},
 	metaInfo: {
 		title: '12 Days of Lending'
 	},
 	data() {
 		return {
+			promoEnabled: true,
 			twelveDaysImages: [
 				['small', possibilitiesImageRequire('./Phase2-sm-std.jpg')],
 				['small retina', possibilitiesImageRequire('./Phase2-sm-retina.jpg')],
@@ -53,6 +61,52 @@ export default {
 				['wxga retina', possibilitiesImageRequire('./Phase2-xxl-retina.jpg')]
 			],
 		};
+	},
+	inject: ['apollo'],
+	mounted() {
+		this.apollo.query({
+			query: contentfulCMS,
+			variables: {
+				contentType: 'uiSetting',
+				contentKey: 'ui-global-promo',
+			}
+		}).then(({ data }) => {
+			const pdtDateString = this.getPdtDate().toDateString();
+			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
+
+			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
+				return new Date(promo.fields.startDate).toDateString() === pdtDateString;
+			});
+
+			if (todaysLimitedPromo) {
+				this.promoEnabled = todaysLimitedPromo.fields.active;
+			}
+		});
+	},
+	computed: {
+		adventDay() {
+			const pdtDate = this.getPdtDate();
+			const day = pdtDate.getDate();
+			const month = pdtDate.getMonth() + 1; // getMonth is 0 based
+			const year = pdtDate.getFullYear();
+
+			let adventDay = 0; // show all entries as unopened
+			if (year === 2019 && month === 12 && day >= 14) {
+				adventDay = day - 13; // Day 1 of the advent calendar is Dec 14
+			} else if ((month === 12 && day > 25) || year === 2020) {
+				adventDay = 13; // show all entries as opened
+			}
+
+			return adventDay;
+		}
+	},
+	methods: {
+		getPdtDate() {
+			const pdtOffsetHours = -8; // hours offset from UTC
+			const clientOffsetHours = new Date().getTimezoneOffset() / 60;
+			const offsetMs = (pdtOffsetHours + clientOffsetHours) * 60 * 60 * 1000;
+			return new Date(Date.now() + offsetMs);
+		}
 	}
 };
 </script>
@@ -62,7 +116,8 @@ export default {
 
 $cta-color: #02582e;
 
-.intro {
+.intro,
+.calendar {
 	margin-bottom: 4rem;
 }
 

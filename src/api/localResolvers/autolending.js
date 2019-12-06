@@ -265,12 +265,14 @@ export default () => {
 					const profileData = cache.readQuery({ query: bothProfilesQuery });
 					const profile = getInputProfile(_get(profileData, 'autolending.currentProfile'));
 
-					// Opt-in to idle credit
-					if (!profile.idleCreditOptIn) {
-						profile.idleCreditOptIn = true;
+					// Update legacy timing options if present
+					if (profile.enableAfter > 0) {
 						profile.lendAfterDaysIdle = convertEnableAfterToNewSetting(profile.enableAfter);
 						profile.enableAfter = 0;
 					}
+
+					// always sync idleCreditOptIn with isEnabled
+					profile.idleCreditOptIn = profile.isEnabled;
 
 					return new Promise((resolve, reject) => {
 						// Update the profile

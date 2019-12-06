@@ -22,6 +22,9 @@ module.exports = merge.smart(baseWebpackConfig, {
 		hotUpdateChunkFilename: assetsPath('[id].hot-update.js'),
 		hotUpdateMainFilename: assetsPath('hot-update.json')
 	},
+	optimization: {
+		runtimeChunk: true,
+	},
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		new FriendlyErrorsPlugin({
