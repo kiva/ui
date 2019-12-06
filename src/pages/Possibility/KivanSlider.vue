@@ -8,6 +8,7 @@
 		<div class="bullet-wrap text-center">
 			<div
 				v-for="(slide , index) in slidesData"
+				:key="index"
 				:class="['bullet', {active: currentIndex === index}]"
 				@click="setSlide(index)"
 			></div>
