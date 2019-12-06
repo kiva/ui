@@ -19,7 +19,7 @@
 <script>
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import loanCardBasketed from '@/graphql/query/loanCardBasketed.graphql';
 import KvButton from '@/components/Kv/KvButton';
@@ -75,7 +75,7 @@ export default {
 								'Add-to-Basket',
 								`Failed: ${error.message.substring(0, 40)}...`
 							);
-							Raven.captureMessage(`Add to Basket: ${error.message}`);
+							Sentry.captureMessage(`Add to Basket: ${error.message}`);
 						} catch (e) {
 							// no-op
 						}
@@ -101,7 +101,7 @@ export default {
 			}).catch(error => {
 				this.$showTipMsg('Failed to add loan. Please try again.', 'error');
 				this.$kvTrackEvent('Lending', 'Add-to-Basket', 'Failed to add loan. Please try again.');
-				Raven.captureException(error);
+				Sentry.captureException(error);
 			}).finally(() => {
 				this.setLoading(false);
 			});

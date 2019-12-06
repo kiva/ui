@@ -8,7 +8,7 @@
 /* global paypal */
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
@@ -102,11 +102,10 @@ export default {
 											.catch(error => {
 												console.error(error);
 												// Fire specific exception to Sentry/Raven
-												// eslint-disable-next-line
-												Raven.captureException(JSON.stringify(error.errors ? error.errors : error), {
-													tags: {
-														pp_stage: 'onPaymentGetPaymentTokenCatch'
-													}
+
+												Sentry.withScope(scope => {
+													scope.setTag('pp_stage', 'onPaymentGetPaymentTokenCatch');
+													Sentry.captureException(JSON.stringify(error.errors ? error.errors : error)); // eslint-disable-line max-len
 												});
 
 												reject(error);
@@ -124,10 +123,9 @@ export default {
 									console.error(error);
 
 									// Fire specific exception to Sentry/Raven
-									Raven.captureException(JSON.stringify(error), {
-										tags: {
-											pp_stage: 'onPaymentValidationCatch'
-										}
+									Sentry.withScope(scope => {
+										scope.setTag('pp_stage', 'onPaymentValidationCatch');
+										Sentry.captureException(JSON.stringify(error));
 									});
 								});
 						});
@@ -161,11 +159,10 @@ export default {
 													this.$showTipMsg(standardError, 'error');
 
 													// Fire specific exception to Sentry/Raven
-													Raven.captureException(JSON.stringify(ppResponse.errors), {
-														tags: {
-															pp_stage: 'onAuthorize',
-															pp_token: data.paymentToken
-														}
+													Sentry.withScope(scope => {
+														scope.setTag('pp_stage', 'onAuthorize');
+														scope.setTag('pp_token', 'data.paymentToken');
+														Sentry.captureException(JSON.stringify(ppResponse.errors));
 													});
 
 													// Restart the Exp Checkout interface to allow payment changes
@@ -201,10 +198,9 @@ export default {
 												this.setUpdating(false);
 
 												// Fire specific exception to Sentry/Raven
-												Raven.captureException(JSON.stringify(catchError), {
-													tags: {
-														pp_stage: 'onAuthorizeCatch'
-													}
+												Sentry.withScope(scope => {
+													scope.setTag('pp_stage', 'onAuthorizeCatch');
+													Sentry.captureException(JSON.stringify(catchError));
 												});
 
 												reject(catchError);
@@ -222,10 +218,9 @@ export default {
 									console.error(error);
 
 									// Fire specific exception to Sentry/Raven
-									Raven.captureException(JSON.stringify(error), {
-										tags: {
-											pp_stage: 'onAuthorizeValidationCatch'
-										}
+									Sentry.withScope(scope => {
+										scope.setTag('pp_stage', 'onAuthorizeValidationCatch');
+										Sentry.captureException(JSON.stringify(error));
 									});
 								});
 						});

@@ -40,6 +40,8 @@
 	"dependencies": {
 		"@babel/polyfill": "^7.0.0",
 		"@contentful/rich-text-html-renderer": "^13.4.0",
+		"@sentry/browser": "^5.10.1",
+		"@sentry/integrations": "^5.10.1",
 		"algoliasearch": "^3.34.0",
 		"apollo-cache-inmemory": "^1.6.3",
 		"apollo-client": "2.6.4",
@@ -85,8 +87,6 @@
 		"passport": "^0.4.0",
 		"passport-auth0": "^1.2.1",
 		"popper.js": "^1.15.0",
-		"raven": "^2.6.4",
-		"raven-js": "^3.27.2",
 		"sanitize-html": "^1.20.1",
 		"serialize-javascript": "^2.1.0",
 		"set-cookie-parser": "^2.4.0",

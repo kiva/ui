@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Raven from 'raven-js';
-import RavenVue from 'raven-js/plugins/vue';
+import * as Sentry from '@sentry/browser';
+import * as Integrations from '@sentry/integrations';
 import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
 import Vue2TouchEvents from 'vue2-touch-events';
@@ -39,9 +39,10 @@ export default function createApp({
 
 	// Checking that sentry is enabled & is not server side
 	if (appConfig.enableSentry && typeof window !== 'undefined') {
-		Raven.config(appConfig.sentryURI);
-		Raven.addPlugin(RavenVue, Vue);
-		Raven.install();
+		Sentry.init({
+			dsn: appConfig.sentryURI,
+			integrations: [new Integrations.Vue({ Vue, attachProps: true })],
+		});
 	}
 
 	const app = new Vue({

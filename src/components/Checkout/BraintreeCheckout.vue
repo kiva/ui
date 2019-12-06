@@ -193,7 +193,7 @@
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import myStoredCards from '@/graphql/query/myStoredCards.graphql';
@@ -310,11 +310,10 @@ export default {
 					const errorCode = _get(response, 'errors[0].code');
 					const errorMessage = _get(response, 'errors[0].message');
 
-					Raven.captureException(errorCode, {
-						tags: {
-							bt_stage: 'btGetClientTokenError',
-							bt_get_client_token_error: errorMessage
-						}
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage', 'btGetClientTokenError');
+						scope.setTag('bt_get_client_token_error', errorMessage);
+						Sentry.captureException(errorCode);
 					});
 				} else {
 					this.clientToken = _get(response, 'data.shop.getClientToken');
@@ -344,11 +343,10 @@ export default {
 				if (btCreateError) {
 					console.error(btCreateError);
 
-					Raven.captureException(btCreateError.code, {
-						tags: {
-							bt_stage: 'btCreateError',
-							bt_client_create_error: btCreateError.message
-						}
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage', 'btCreateError');
+						scope.setTag('bt_client_create_error', btCreateError.message);
+						Sentry.captureException(btCreateError.code);
 					});
 
 					return;
@@ -396,13 +394,11 @@ export default {
 					if (hostedFieldsErr) {
 						console.error(hostedFieldsErr);
 
-						Raven.captureException(hostedFieldsErr.code, {
-							tags: {
-								bt_stage: 'btHostedFieldsCreateError',
-								bt_hosted_fields_error: hostedFieldsErr.message
-							}
+						Sentry.withScope(scope => {
+							scope.setTag('bt_stage', 'btHostedFieldsCreateError');
+							scope.setTag('bt_hosted_fields_error', hostedFieldsErr.message);
+							Sentry.captureException(hostedFieldsErr.code);
 						});
-
 						return;
 					}
 
@@ -432,11 +428,10 @@ export default {
 								console.error(error);
 
 								// Fire specific exception to Sentry/Raven
-								Raven.captureException(errorCode, {
-									tags: {
-										bt_stage: 'btSubmitValidationCatch',
-										bt_basket_validation_error: errorMessage
-									}
+								Sentry.withScope(scope => {
+									scope.setTag('bt_stage', 'btSubmitValidationCatch');
+									scope.setTag('bt_basket_validation_error', errorMessage);
+									Sentry.captureException(errorCode);
 								});
 							});
 					});
@@ -463,11 +458,10 @@ export default {
 				this.btVaultInstance = btVaultInstance;
 				if (vaultError) {
 					console.error(vaultError);
-					Raven.captureException(vaultError.code, {
-						tags: {
-							bt_stage: 'btVaultCreateError',
-							bt_client_create_error: vaultError.message
-						}
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage', 'btVaultCreateError');
+						scope.setTag('bt_client_create_error', vaultError.message);
+						Sentry.captureException(vaultError.code);
 					});
 					return false;
 				}
@@ -539,11 +533,10 @@ export default {
 						console.error(data.errors);
 						const errorCode = _get(data, 'errors[0].code');
 						const errorMessage = _get(data, 'errors[0].message');
-						Raven.captureException(errorCode, {
-							tags: {
-								bt_stage: 'btDeleteMyCreditCardError',
-								bt_delete_card_error: errorMessage
-							}
+						Sentry.withScope(scope => {
+							scope.setTag('bt_stage', 'btDeleteMyCreditCardError');
+							scope.setTag('bt_delete_card_error', errorMessage);
+							Sentry.captureException(errorCode);
 						});
 					}
 					// refetch stored cards from BT Vault
@@ -575,11 +568,10 @@ export default {
 			}, (dataCollectorError, dataCollectorInstance) => {
 				if (dataCollectorError) {
 					console.error(dataCollectorError);
-					Raven.captureException(dataCollectorError.code, {
-						tags: {
-							bt_stage: 'btDataCollectorCreateError',
-							bt_client_create_error: dataCollectorError.message
-						}
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage', 'btDataCollectorCreateError');
+						scope.setTag('bt_client_create_error', dataCollectorError.message);
+						Sentry.captureException(dataCollectorError.code);
 					});
 					return;
 				}
@@ -628,11 +620,10 @@ export default {
 					this.$showTipMsg(standardError, 'error');
 
 					// Fire specific exception to Sentry/Raven
-					Raven.captureException(errorCode, {
-						tags: {
-							bt_stage: 'btDepositAndCheckout',
-							bt_kv_transaction_error: errorMessage
-						}
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage', 'btDepositAndCheckout');
+						scope.setTag('bt_kv_transaction_error', errorMessage);
+						Sentry.captureException(errorCode);
 					});
 
 					// exit
@@ -672,12 +663,10 @@ export default {
 			if (tokenizeErr.code !== 'HOSTED_FIELDS_FIELDS_INVALID'
 				&& tokenizeErr.code !== 'HOSTED_FIELDS_FIELDS_EMPTY') {
 				this.$showTipMsg(tokenizeErr.message, 'error');
-
-				Raven.captureException(tokenizeErr.code, {
-					tags: {
-						bt_stage: 'btTokenizeHostedFieldsError',
-						bt_tokenize_card_error: tokenizeErr.message
-					}
+				Sentry.withScope(scope => {
+					scope.setTag('bt_stage', 'btTokenizeHostedFieldsError');
+					scope.setTag('bt_tokenize_card_error', tokenizeErr.message);
+					Sentry.captureException(tokenizeErr.code);
 				});
 			}
 		},

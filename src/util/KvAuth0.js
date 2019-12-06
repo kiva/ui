@@ -1,7 +1,7 @@
 import { differenceInMilliseconds } from 'date-fns';
 import _get from 'lodash/get';
 import _over from 'lodash/over';
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import cookieStore from './cookieStore';
 
 const isServer = typeof window === 'undefined';
@@ -83,12 +83,13 @@ export default class KvAuth0 {
 				}
 				// Otherwise log meaningful errors (ignores user closed popup error which does not have a code)
 				if (err.code || err.name) {
-					Raven.captureMessage(getErrorString(err), {
-						tags: { auth_method: 'popup authorize' }
+					Sentry.withScope(scope => {
+						scope.setTag('auth_method', 'popup authorize');
+						Sentry.captureMessage(getErrorString(err));
 					});
 					this[handleUnknownError](err);
 				} else if (differenceInMilliseconds(new Date(), startTime) < 100) {
-					Raven.captureMessage('Login window closed quickly. Popups may be blocked.');
+					Sentry.captureMessage('Login window closed quickly. Popups may be blocked.');
 				}
 				// Popup login failed for some reason, so resolve without a result
 				resolve();
@@ -138,14 +139,16 @@ export default class KvAuth0 {
 						// These errors require interaction beyond what can be provided by webauth,
 						// so resolve without authentication for now. Other possibility is to redirect
 						// to login to complete authentication.
-						Raven.captureMessage(`Auth session not started: ${getErrorString(err)}`, {
-							level: 'warning',
+						Sentry.withScope(scope => {
+							scope.setLevel('warning');
+							Sentry.captureMessage(`Auth session not started: ${getErrorString(err)}`);
 						});
 						resolve();
 					} else {
 						// Everything else, actually throw an error
-						Raven.captureMessage(getErrorString(err), {
-							tags: { auth_method: 'check session' }
+						Sentry.withScope(scope => {
+							scope.setTag('auth_method', 'check session');
+							Sentry.captureMessage(getErrorString(err));
 						});
 						this[handleUnknownError](err);
 						resolve();
@@ -213,7 +216,7 @@ export default class KvAuth0 {
 		_over(this[errorCallbacks])({
 			error,
 			errorString: getErrorString(error),
-			eventId: Raven.lastEventId(),
+			eventId: Sentry.lastEventId(),
 			user: this.user,
 		});
 	}
