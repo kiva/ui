@@ -321,7 +321,7 @@ $cta-color3: #02582e;
 		@include breakpoint(580 up) {
 			padding-bottom: 27rem;
 		}
-		
+
 		@include breakpoint(600 up) {
 			padding-bottom: 28rem;
 		}
