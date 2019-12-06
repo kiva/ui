@@ -104,11 +104,11 @@
 					<div id="kv-expiration-date" class="kv-braintree-wrapper"></div>
 				</div>
 				<div class="small-4 columns">
-					<label class="cvv-label">CVV</label>
+					<label for="kv-cvv" class="cvv-label">CVV</label>
 					<div id="kv-cvv" class="kv-braintree-wrapper"></div>
 				</div>
 				<div class="small-4 columns">
-					<label>Postal code</label>
+					<label for="kv-postal-code">Postal code</label>
 					<div id="kv-postal-code" class="kv-braintree-wrapper"></div>
 				</div>
 				<ul class="kv-multi-field-error-list"
