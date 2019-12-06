@@ -1,5 +1,5 @@
 import _get from 'lodash/get';
-import Raven from 'raven-js';
+import * as Sentry from '@sentry/browser';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import cookieStore from '@/util/cookieStore';
@@ -32,7 +32,7 @@ export default {
 					}
 				}).catch(errorResponse => {
 					console.error(errorResponse);
-					Raven.captureException(errorResponse);
+					Sentry.captureException(errorResponse);
 					reject(errorResponse);
 				});
 			});
@@ -58,7 +58,7 @@ export default {
 					resolve(data);
 				}).catch(errorResponse => {
 					console.error(errorResponse);
-					Raven.captureException(errorResponse);
+					Sentry.captureException(errorResponse);
 					reject(errorResponse);
 				});
 			});
@@ -91,7 +91,7 @@ export default {
 				}
 
 				// Log validation errors
-				Raven.captureException(`${error}:${value}`);
+				Sentry.captureException(`${error}:${value}`);
 
 				// Handle multiple errors
 				if (errorMessages !== '') {
