@@ -16,5 +16,26 @@ addParameters({
 addDecorator(withA11y);
 addDecorator(withKnobs);
 
-// automatically import all files ending in *.stories.js
-configure(require.context('./stories/', true, /\.stories\.js$/), module);
+const GlobalDecorator = () => ({
+	template: `
+		<div
+			:style="{
+				margin: '1rem'
+			}
+		">
+			<story />
+		</div>
+	  `
+});
+addDecorator(GlobalDecorator);
+
+const loaderFn = () => {
+	const stories = [
+		require('./stories/Styleguide.stories.js') // load the styleguide first
+	];
+	const others = require.context('./stories/', true, /\.stories\.js$/);
+	others.keys().forEach(fname => stories.push(others(fname)));
+	return stories;
+  };
+
+configure(loaderFn, module);
