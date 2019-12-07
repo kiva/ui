@@ -102,7 +102,7 @@ export const MultipleOnPage = () => ({
 	},
 	data() {
 		return {
-			options: [
+			options1: [
 				{
 					title: 'Option 1',
 					key: 'o1',
@@ -116,22 +116,52 @@ export const MultipleOnPage = () => ({
 					key: 'o3',
 				},
 			],
-			selected: 'o2',
+			selected1: 'o1',
+			options2: [
+				{
+					title: 'Option 1',
+					key: 'o1',
+				},
+				{
+					title: 'Option 2',
+					key: 'o2',
+				},
+				{
+					title: 'Option 3',
+					key: 'o3',
+				},
+			],
+			selected2: 'o2',
+			options3: [
+				{
+					title: 'Option 1',
+					key: 'o1',
+				},
+				{
+					title: 'Option 2',
+					key: 'o2',
+				},
+				{
+					title: 'Option 3',
+					key: 'o3',
+				},
+			],
+			selected3: 'o3',
 		}
 	},
 	template: `
 		<div>
 			<kv-pill-toggle
-				:options="options"
-				:selected="selected"
+				:options="options1"
+				:selected="selected1"
 			/>
 			<kv-pill-toggle
-				:options="options"
-				:selected="selected"
+				:options="options2"
+				:selected="selected2"
 			/>
 			<kv-pill-toggle
-				:options="options"
-				:selected="selected"
+				:options="options3"
+				:selected="selected3"
 			/>
 		</div>
 	`
