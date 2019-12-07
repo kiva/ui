@@ -78,11 +78,6 @@ $form-border-radius: rem-calc(3);
 		min-height: 100%;
 		margin-left: rem-calc(-1);
 		line-height: 1.3;
-
-		&:hover {
-			background: $white;
-			color: $kiva-text-dark;
-		}
 	}
 
 	.title {
@@ -90,6 +85,11 @@ $form-border-radius: rem-calc(3);
 		padding: rem-calc(6) rem-calc(13);
 		color: $tab-pill-color;
 		border: $tab-pill-border;
+
+		&:hover {
+			background: $white;
+			color: $kiva-text-dark;
+		}
 	}
 
 	.pill {
@@ -138,6 +138,12 @@ $form-border-radius: rem-calc(3);
 
 		&[disabled] + .title {
 			@include disabled();
+		}
+
+		&[disabled]:active + .title,
+		&[disabled] + .title:hover {
+			background: inherit;
+			color: $tab-pill-color;
 		}
 	}
 }
