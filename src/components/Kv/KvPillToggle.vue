@@ -15,7 +15,7 @@
 					v-model="checked"
 					@change="onChange(option.key)"
 				>
-				<div class="title">{{ option.title }}</div>
+				<span class="title">{{ option.title }}</span>
 			</label>
 		</div>
 	</div>
