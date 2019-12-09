@@ -493,6 +493,11 @@ $button-smaller-medium-shadow: 0 2px $button-background-hover;
 	}
 }
 
+@mixin disabled() {
+	cursor: not-allowed;
+	opacity: 0.3;
+}
+
 // 11.2 Button - Foundation vars not currently used by Kiva
 // -----------
 

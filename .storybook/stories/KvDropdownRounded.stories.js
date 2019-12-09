@@ -1,6 +1,6 @@
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
-export default { title: 'Kv | KvDropdownRounded' };
+export default { title: 'Kv | Form Elements/KvDropdownRounded' };
 
 export const Default = () => ({
 	components: { KvDropdownRounded },
