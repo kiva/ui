@@ -44,16 +44,13 @@ export default {
 	},
 	data() {
 		return {
-			checked: ''
+			checked: this.selected
 		};
 	},
 	methods: {
 		onChange(key) {
 			this.$emit('pill-toggled', key);
 		},
-	},
-	created() {
-		this.checked = this.selected;
 	}
 };
 
