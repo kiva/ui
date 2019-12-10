@@ -418,7 +418,6 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			console.log(this.$route.path, mgCategoryPromo);
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const targetRoutes = [
 				{ route: 'women', id: 'women', label: 'women' },
