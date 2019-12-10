@@ -24,6 +24,14 @@
 		<div class="row column calendar">
 			<twelve-days-calendar :advent-day="adventDay" :promo-enabled="promoEnabled" />
 		</div>
+
+		<!-- Kiva Content Block -->
+		<div class="row kiva-stories">
+			<div class="columns small-12 large-10 large-offset-1">
+				<kiva-content-block />
+			</div>
+		</div>
+		<br><br>
 	</div>
 </template>
 
@@ -33,6 +41,7 @@ import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -41,6 +50,7 @@ export default {
 		KvHero,
 		KvResponsiveImage,
 		TwelveDaysCalendar,
+		KivaContentBlock,
 	},
 	metaInfo: {
 		title: '12 Days of Lending'
