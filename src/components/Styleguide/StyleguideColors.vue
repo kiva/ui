@@ -6,7 +6,6 @@
 				<h2>{{ group.category }}</h2>
 				<ul class="color-block-list">
 					<li class="color-block" v-for="color in group.colors" :key="color[0]">
-						<div class="color-square" :style="{ backgroundColor: color[0] }"></div>
 						<div class="color-values">
 							<button
 								class="color-values-btn"
@@ -21,6 +20,7 @@
 								{{ color[1] }}
 							</button>
 						</div>
+						<div class="color-square" :style="{ backgroundColor: color[0] }"></div>
 					</li>
 				</ul>
 			</li>
@@ -36,18 +36,18 @@ export default {
 				{
 					category: 'Greens',
 					colors: [
-						['#8ccb8c', '$kiva-accent-green'],
 						['#aee15c', '$kiva-light-green'],
+						['#8ccb8c', '$kiva-accent-green'],
 						['#4faf4e', '$kiva-green'],
 						['#49953f', '$kiva-icon-green'],
 						['#247037', '$kiva-darkgreen'],
-						['#DDFFF4', '$aqua-light-green'],
-						['#C4E7DB', '$aqua-medium-green'],
 					]
 				},
 				{
 					category: 'Blues',
 					colors: [
+						['#DDFFF4', '$aqua-light-green'],
+						['#C4E7DB', '$aqua-medium-green'],
 						['#d2f0f8', '$kiva-filter-indicator-bg'],
 						['#6badc2', '$shadow-lightblue'],
 						['#1f92ba', '$shadow-blue'],
@@ -111,32 +111,29 @@ export default {
 
 .color-block-list {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 	grid-gap: 1rem;
 }
 
 .color-block {
-	position: relative;
+	display: grid;
+	grid-template-columns: 12rem 1fr;
+	grid-gap: 0.5rem;
 }
 
 .color-square {
-	height: rem-calc(100);
-	margin: 0 auto;
+	height: rem-calc(80);
 }
 
 .color-values {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
 	display: grid;
-	grid-template-columns: 7rem max-content;
-	background-color: rgba(0, 0, 0, 0.2);
+	grid-template-rows: auto auto;
+	grid-gap: 0.5rem;
+	align-content: center;
 }
 
 .color-values-btn {
-	color: #fff;
-	padding: 0.5rem;
+	// color: #fff;
+	padding: 0.125rem 0;
 	text-align: left;
 }
 </style>
