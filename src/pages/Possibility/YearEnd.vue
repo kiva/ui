@@ -52,6 +52,14 @@
 				</router-link>
 			</div>
 		</div>
+
+		<!-- Kiva Content Block -->
+		<div class="row kiva-stories">
+			<div class="columns small-12 large-10 large-offset-1">
+				<kiva-content-block />
+			</div>
+		</div>
+		<br><br>
 	</div>
 </template>
 
@@ -61,6 +69,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KivanSlider from '@/pages/Possibility/KivanSlider';
 import SketchyArrow from '@/assets/inline-svgs/sketchy-arrow.svg';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const yearEndImagesRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -70,7 +79,8 @@ export default {
 		KvHero,
 		KvResponsiveImage,
 		KivanSlider,
-		SketchyArrow
+		SketchyArrow,
+		KivaContentBlock,
 	},
 	metaInfo: {
 		title: 'Year End'

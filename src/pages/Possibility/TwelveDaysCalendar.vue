@@ -181,7 +181,7 @@ export default {
 					starPosition: 'bottom-left'
 				},
 				{
-					text: 'Make a donation of $250 or more, get a tote bag and a $50 lending credit*, while funds last',
+					text: 'Make a donation of $200 or more, get a tote bag and a $50 lending credit*, while funds last',
 					url: '/donate/supportus',
 					ctaText: 'Donate now',
 					starPosition: 'top-left'
