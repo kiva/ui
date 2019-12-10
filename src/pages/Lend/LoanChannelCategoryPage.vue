@@ -24,17 +24,7 @@
 			</div>
 
 			<div class="columns small-12" v-if="loans.length > 0">
-				<div v-if="!mgCategoryPromoActive" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-					<loan-card-controller
-						v-for="loan in loans"
-						:items-in-basket="itemsInBasket"
-						:is-visitor="isVisitor"
-						:key="loan.id"
-						:loan="loan"
-						loan-card-type="GridLoanCard"
-					/>
-				</div>
-				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
 						v-for="loan in firstLoan"
 						:items-in-basket="itemsInBasket"
@@ -44,7 +34,7 @@
 						loan-card-type="GridLoanCard"
 					/>
 					<promo-grid-loan-card
-						:experiment-data="mgTargetCateogry"
+						:experiment-data="mgTargetCategory" :experiment-version="mgCategoryExpVersion"
 					/>
 					<loan-card-controller
 						v-for="loan in remainingLoans"
@@ -168,7 +158,8 @@ export default {
 			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
 			mgCategoryPromoActive: false,
-			mgTargetCateogry: null
+			mgTargetCategory: null,
+			mgCategoryExpVersion: ''
 		};
 	},
 	computed: {
@@ -249,7 +240,7 @@ export default {
 					}),
 					// experiment: add to basket interstitial
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
-					// experiment: add to basket interstitial
+					// experiment: mg_promo_category
 					client.query({ query: experimentQuery, variables: { id: 'mg_promo_category' } }),
 				]);
 			});
@@ -427,31 +418,31 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			console.log(this.$route.path);
+			console.log(this.$route.path, mgCategoryPromo);
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const targetRoutes = [
-				{ route: 'women', id: 'women' },
-				{ route: 'loans-to-women', id: 'women' },
-				{ route: 'education', id: 'education' },
-				{ route: 'loans-for-education', id: 'education' },
-				{ route: 'refugees-and-i-d-ps', id: 'refugees' },
-				{ route: 'loans-to-refugees-and-i-d-ps', id: 'refugees' },
-				{ route: 'eco-friendly', id: 'eco_friendly' },
-				{ route: 'eco-friendly-loans', id: 'eco_friendly' },
-				{ route: 'agriculture', id: 'agriculture' },
-				{ route: 'loans-to-farmers', id: 'agriculture' },
+				{ route: 'women', id: 'women', label: 'women' },
+				{ route: 'loans-to-women', id: 'women', label: 'women' },
+				{ route: 'education', id: 'education', label: 'students' },
+				{ route: 'loans-for-education', id: 'education', label: 'students' },
+				{ route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
+				{ route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
+				{ route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly' },
+				{ route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly' },
+				{ route: 'agriculture', id: 'agriculture', label: 'farmers' },
+				{ route: 'loans-to-farmers', id: 'agriculture', label: 'farmers' },
 			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 
 			if (matchedRoutes.length) {
 				// match active category urls before activating experiment
 				this.mgCategoryPromoActive = mgCategoryPromo.version === 'shown';
-				[this.mgTargetCateogry] = matchedRoutes;
-
-				// Fire Event for Exp CASH-1324 MG Category Experiment
+				this.mgCategoryExpVersion = mgCategoryPromo.version;
+				[this.mgTargetCategory] = matchedRoutes;
+				// Fire Event for Exp CASH-1426 MG Category Experiment
 				this.$kvTrackEvent(
 					'Lending',
-					'EXP-CASH-1324-Sept2019',
+					'EXP-CASH-1426-Dec2019',
 					this.mgCategoryPromoActive ? 'b' : 'a'
 				);
 			}
