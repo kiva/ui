@@ -24,7 +24,17 @@
 			</div>
 
 			<div class="columns small-12" v-if="loans.length > 0">
-				<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<div v-if="!mgCategoryPromoActive" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+					<loan-card-controller
+						v-for="loan in loans"
+						:items-in-basket="itemsInBasket"
+						:is-visitor="isVisitor"
+						:key="loan.id"
+						:loan="loan"
+						loan-card-type="GridLoanCard"
+					/>
+				</div>
+				<div v-else class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
 						v-for="loan in firstLoan"
 						:items-in-basket="itemsInBasket"
