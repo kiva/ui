@@ -18,6 +18,7 @@
 				:alt="'photo of ' + name"
 
 				@click="handleImageClick"
+				loading="lazy"
 			>
 
 			<favorite-star class="favorite-star"
