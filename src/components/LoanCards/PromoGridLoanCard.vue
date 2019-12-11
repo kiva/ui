@@ -28,12 +28,18 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import { isHighDensity, isRetina } from '@/util/checkScreenDensity';
 
 const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
 
 export default {
 	components: {
 		KvButton,
+	},
+	data() {
+		return {
+			isRetina: false,
+		};
 	},
 	props: {
 		experimentData: {
@@ -46,25 +52,32 @@ export default {
 		},
 	},
 	computed: {
+		imageDensity() {
+			return this.isRetina ? 'retina' : 'std';
+		},
 		targetUrl() {
 			return `/monthlygood?category=${this.experimentData.id}`;
 		},
 		backgroundImage() {
 			try {
 				if (this.experimentVersion === 'shown') {
-					return promoLoanImageRequire(`./mg-promo-${this.experimentData.id}-retina.jpg`);
+					return promoLoanImageRequire(`./mg-promo-${this.experimentData.id}-${this.imageDensity}.jpg`);
 				}
-				// if this.experimentVersion === 'control'
-				return promoLoanImageRequire('./mg-promo-default-retina.jpg');
 			} catch {
-				return promoLoanImageRequire('./mg-promo-default-retina.jpg');
+				// noop, go to default return
 			}
+			// if this.experimentVersion === 'control' or theres some error, return default
+			return promoLoanImageRequire(`./mg-promo-default-${this.imageDensity}.jpg`);
 		}
 	},
 	methods: {
 		trackInteraction(args) {
 			this.$emit('track-interaction', args);
 		}
+	},
+	mounted() {
+		// Check for retina/high density display
+		this.isRetina = isRetina() || isHighDensity();
 	},
 };
 </script>
