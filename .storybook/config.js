@@ -20,7 +20,7 @@ const GlobalDecorator = () => ({
 	template: `
 		<div
 			:style="{
-				margin: '2rem'
+				padding: '2rem'
 			}
 		">
 			<story />
