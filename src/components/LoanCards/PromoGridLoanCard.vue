@@ -1,16 +1,22 @@
 <template>
 	<div class="column column-block">
 		<div class="grid-loan-card promo-grid-card">
-			<div class="promo-image-wrapper"></div>
+			<div class="promo-image-wrapper" :style="{ 'background-image': 'url(' + backgroundImage + ')' }"></div>
 			<div class="image-overlay"></div>
 			<div class="promo-content-wrapper">
 				<div class="promo-content">
 					<h1>Make a<br class="su">monthly impact</h1>
-					<p>We’ll make a loan for you every month with a Monthly Good subscription.</p>
+					<p v-if="experimentVersion === 'control'">
+						We’ll make a loan for you every month with a Monthly Good subscription.
+					</p>
+					<p v-if="experimentVersion === 'shown'">
+						We’ll lend to {{ experimentData.label }} for you every month with a Monthly Good subscription.
+					</p>
+
 					<kv-button
 						class="small"
 						:href="targetUrl"
-						v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1324 Sept2019']"
+						v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
 					>
 						Learn more
 					</kv-button>
@@ -23,6 +29,8 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 
+const promoLoanImageRequire = require.context('@/assets/images/mg-promo-loan-card/', true);
+
 export default {
 	components: {
 		KvButton,
@@ -32,10 +40,25 @@ export default {
 			type: Object,
 			default: () => {},
 		},
+		experimentVersion: {
+			type: String,
+			default: 'control'
+		},
 	},
 	computed: {
 		targetUrl() {
 			return `/monthlygood?category=${this.experimentData.id}`;
+		},
+		backgroundImage() {
+			try {
+				if (this.experimentVersion === 'shown') {
+					return promoLoanImageRequire(`./mg-promo-${this.experimentData.id}-retina.jpg`);
+				}
+				// if this.experimentVersion === 'control'
+				return promoLoanImageRequire('./mg-promo-default-retina.jpg');
+			} catch {
+				return promoLoanImageRequire('./mg-promo-default-retina.jpg');
+			}
 		}
 	},
 	methods: {
@@ -77,7 +100,6 @@ export default {
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: url(~@/assets/images/promos/mg-promo-retina.jpg);
 	background-position: top center;
 }
 
