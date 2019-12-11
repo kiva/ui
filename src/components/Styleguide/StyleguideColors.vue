@@ -36,8 +36,8 @@ export default {
 				{
 					category: 'Greens',
 					colors: [
-						['#aee15c', '$kiva-light-green'],
-						['#8ccb8c', '$kiva-accent-green'],
+						['#aee15c', '$kiva-accent-green'],
+						['#8ccb8c', '$kiva-light-green'],
 						['#4faf4e', '$kiva-green'],
 						['#49953f', '$kiva-icon-green'],
 						['#247037', '$kiva-darkgreen'],
