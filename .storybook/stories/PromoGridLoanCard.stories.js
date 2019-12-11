@@ -14,8 +14,8 @@ const promoCategories = {
 	Education2: { route: 'loans-for-education', id: 'education', label: 'students' },
 	Refugees1: { route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
 	Refugees2: { route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-	Eco1: { route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly' },
-	Eco2: { route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly' },
+	Eco1: { route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly loans' },
+	Eco2: { route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
 	Agriculture1: { route: 'agriculture', id: 'agriculture', label: 'farmers' },
 	Agriculture2: { route: 'loans-to-farmers', id: 'agriculture' , label: 'farmers'},
 };
