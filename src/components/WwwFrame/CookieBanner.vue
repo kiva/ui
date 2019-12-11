@@ -3,9 +3,6 @@
 		<div class="cookie-banner-container" v-if="showBanner">
 			<div class="cookie-banner">
 				<div class="cookie-banner-content">
-					<h3 class="text-center hide-for-xxlarge">
-						Cookie Policy
-					</h3>
 					We use cookies to improve your experience and enable the functionality and security of this site.
 					By continuing to use this site, you agree to the use of these cookies.
 					For more information or to change your cookie
@@ -100,7 +97,7 @@ export default {
 		.cookie-banner-content {
 			text-align: center;
 			margin: 0 auto;
-			max-width: 38.75rem;
+			max-width: 29.75rem;
 		}
 	}
 
