@@ -18,11 +18,7 @@ addDecorator(withKnobs);
 
 const GlobalDecorator = () => ({
 	template: `
-		<div
-			:style="{
-				padding: '2rem'
-			}
-		">
+		<div style="padding: 2rem">
 			<story />
 		</div>
 	  `
