@@ -4,8 +4,7 @@
 			Loan increment
 		</h3>
 		<kv-radio
-			label-set="loanIncrementRadioSetAny"
-			name-set="loanIncrementRadio"
+			name="loanIncrementRadio"
 			radio-value="any"
 			v-model="loanIncrement"
 			class="filter-radio"
@@ -13,8 +12,7 @@
 			Any amount
 		</kv-radio>
 		<kv-radio
-			label-set="LoanIncrementRadioSet25"
-			name-set="LoanIncrementRadio"
+			name="LoanIncrementRadio"
 			radio-value="25"
 			v-model="loanIncrement"
 			class="filter-radio"

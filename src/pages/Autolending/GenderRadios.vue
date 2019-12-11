@@ -4,8 +4,7 @@
 			Gender
 		</h3>
 		<kv-radio
-			label-set="genderRadioSetBoth"
-			name-set="genderRadio"
+			name="genderRadio"
 			radio-value="both"
 			v-model="gender"
 			class="filter-radio"
@@ -13,8 +12,7 @@
 			Everyone
 		</kv-radio>
 		<kv-radio
-			label-set="genderRadioSetFemale"
-			name-set="genderRadio"
+			name="genderRadio"
 			radio-value="female"
 			v-model="gender"
 			class="filter-radio"
@@ -22,8 +20,7 @@
 			Women only
 		</kv-radio>
 		<kv-radio
-			label-set="genderRadioSetMale"
-			name-set="genderRadio"
+			name="genderRadio"
 			radio-value="male"
 			v-model="gender"
 			class="filter-radio"

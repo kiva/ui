@@ -13,38 +13,39 @@ export const Default = () => ({
 	},
 	template: `
 		<div>
-			<kv-radio
-				label-set="genderRadioSetBoth"
-				name-set="genderRadio"
-				radio-value="both"
-				v-model="gender"
-				class="filter-radio"
-			>
-				Everyone
-			</kv-radio>
-			<kv-radio
-				label-set="genderRadioSetFemale"
-				name-set="genderRadio"
-				radio-value="female"
-				v-model="gender"
-				class="filter-radio"
-			>
-				Women only
-			</kv-radio>
-			<kv-radio
-				label-set="genderRadioSetMale"
-				name-set="genderRadio"
-				radio-value="male"
-				v-model="gender"
-				class="filter-radio"
-			>
-				Men only
-			</kv-radio>
+			<div>
+				<kv-radio
+					name="gender-radio"
+					radio-value="both"
+					v-model="gender"
+					disabled
+				>
+					Everyone
+				</kv-radio>
+			</div>
+			<div>
+				<kv-radio
+					name="gender-radio"
+					radio-value="female"
+					v-model="gender"
+				>
+					Women only
+				</kv-radio>
+			</div>
+			<div>
+				<kv-radio
+					name="gender-radio"
+					radio-value="male"
+					v-model="gender"
+				>
+					Men only
+				</kv-radio>
+			</div>
 		</div>
 	`
 });
 
-export const Disabled = () => ({
+export const FontSized = () => ({
 	components: {
 		KvRadio
 	},
@@ -54,17 +55,35 @@ export const Disabled = () => ({
 		}
 	},
 	template: `
-		<div>
-			<kv-radio
-				label-set="genderRadioSetBoth"
-				name-set="genderRadio"
-				radio-value="both"
-				v-model="gender"
-				class="filter-radio"
-				disabled
-			>
-				Disabled
-			</kv-radio>
+		<div style="font-size: 2rem;">
+			<div>
+				<kv-radio
+					name="gender-radio"
+					radio-value="both"
+					v-model="gender"
+					disabled
+				>
+					Everyone
+				</kv-radio>
+			</div>
+			<div>
+				<kv-radio
+					name="gender-radio"
+					radio-value="female"
+					v-model="gender"
+				>
+					Women only
+				</kv-radio>
+			</div>
+			<div>
+				<kv-radio
+					name="gender-radio"
+					radio-value="male"
+					v-model="gender"
+				>
+					Men only
+				</kv-radio>
+			</div>
 		</div>
 	`
 });
