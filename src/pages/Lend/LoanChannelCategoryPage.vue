@@ -24,7 +24,7 @@
 			</div>
 
 			<div class="columns small-12" v-if="loans.length > 0">
-				<div v-if="!mgCategoryPromoActive" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<div v-if="!displayLoanPromoCard" class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 					<loan-card-controller
 						v-for="loan in loans"
 						:items-in-basket="itemsInBasket"
@@ -167,7 +167,7 @@ export default {
 			loading: false,
 			addToBasketExpActive: false,
 			lendFilterExpVersion: '',
-			mgCategoryPromoActive: false,
+			displayLoanPromoCard: false,
 			mgTargetCategory: null,
 			mgCategoryExpVersion: ''
 		};
@@ -445,14 +445,14 @@ export default {
 
 			if (matchedRoutes.length) {
 				// match active category urls before activating experiment
-				this.mgCategoryPromoActive = mgCategoryPromo.version === 'shown';
+				this.displayLoanPromoCard = true;
 				this.mgCategoryExpVersion = mgCategoryPromo.version;
 				[this.mgTargetCategory] = matchedRoutes;
 				// Fire Event for Exp CASH-1426 MG Category Experiment
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-1426-Dec2019',
-					this.mgCategoryPromoActive ? 'b' : 'a'
+					mgCategoryPromo.version === 'shown' ? 'b' : 'a'
 				);
 			}
 		},
