@@ -114,6 +114,7 @@ export default {
 	bottom: 0;
 	left: 0;
 	background-position: top center;
+	background-size: cover;
 }
 
 .image-overlay {
