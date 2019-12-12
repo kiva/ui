@@ -436,8 +436,8 @@ export default {
 				{ route: 'loans-for-education', id: 'education', label: 'students' },
 				{ route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
 				{ route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-				{ route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly' },
-				{ route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly' },
+				{ route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly loans' },
+				{ route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
 				{ route: 'agriculture', id: 'agriculture', label: 'farmers' },
 				{ route: 'loans-to-farmers', id: 'agriculture', label: 'farmers' },
 			];

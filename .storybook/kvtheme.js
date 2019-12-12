@@ -7,7 +7,7 @@ export default create({
 //   colorSecondary: 'deepskyblue',
 
 //   // UI
-//   appBg: 'white',
+	appBg: '#fafafa',
 //   appContentBg: 'silver',
 //   appBorderColor: 'grey',
 //   appBorderRadius: 4,
@@ -31,7 +31,7 @@ export default create({
 //   inputTextColor: 'black',
 //   inputBorderRadius: 4,
 
-  brandTitle: 'Kiva.org',
-  brandUrl: 'https://kiva.org',
-  brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
+	brandTitle: 'Kiva.org',
+	brandUrl: 'https://kiva.org',
+	brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
 });

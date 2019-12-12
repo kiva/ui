@@ -140,7 +140,7 @@ export default {
 				},
 				{
 					text: 'Join a lending team if you haven\'t already!',
-					url: '/donate/supportus',
+					url: '/teams',
 					ctaText: 'Join a team',
 					starPosition: 'top-right'
 				},
