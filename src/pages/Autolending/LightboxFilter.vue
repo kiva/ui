@@ -4,7 +4,7 @@
 			{{ name | changeCase('title') }}
 		</h3>
 		<kv-radio
-			:name="`filter_${name}`"
+			:name="`filter-${name}`"
 			:id="`filter-all_${name}`"
 			radio-value="all"
 			v-model="radio"
@@ -12,7 +12,7 @@
 			All {{ name }}
 		</kv-radio>
 		<kv-radio
-			:name="`filter_${name}`"
+			:name="`filter-${name}`"
 			:id="`filter-some_${name}`"
 			radio-value="some"
 			v-model="radio"
