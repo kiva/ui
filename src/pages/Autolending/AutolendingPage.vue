@@ -170,7 +170,7 @@ export default {
 						}
 						const isSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 						if (isSubscriber) {
-							throw new Error('monhtlyGoodSubscriber');
+							throw new Error('monthlyGoodSubscriber');
 						}
 					})
 					.then(() => client.mutate({ mutation: initAutolending }))
@@ -189,7 +189,7 @@ export default {
 								path: '/ui-login',
 								query: { doneUrl: route.fullPath }
 							});
-						} else if (e.message.indexOf('monhtlyGoodSubscriber') > -1) {
+						} else if (e.message.indexOf('monthlyGoodSubscriber') > -1) {
 							// Redirect to legacy Monthly Good Settins page
 							reject({
 								path: '/settings/credit'
