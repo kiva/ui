@@ -8,40 +8,44 @@ export const Default = () => ({
 	},
 	data() {
 		return {
-			gender: 'female',
+			color: 'red',
 		}
 	},
 	template: `
-		<div>
+		<fieldset>
+			<legend>What is your favorite color?</legend>
 			<div>
 				<kv-radio
-					name="gender-radio"
-					radio-value="both"
-					v-model="gender"
+					id="color-radio-red"
+					name="color-radio"
+					radio-value="red"
+					v-model="color"
 					disabled
 				>
-					Everyone
+					Red
 				</kv-radio>
 			</div>
 			<div>
 				<kv-radio
-					name="gender-radio"
-					radio-value="female"
-					v-model="gender"
+					id="color-radio-green"
+					name="color-radio"
+					radio-value="green"
+					v-model="color"
 				>
-					Women only
+					Green
 				</kv-radio>
 			</div>
 			<div>
 				<kv-radio
-					name="gender-radio"
-					radio-value="male"
-					v-model="gender"
+					id="color-radio-blue"
+					name="color-radio-blue"
+					radio-value="blue"
+					v-model="color"
 				>
-					Men only
+					Blue
 				</kv-radio>
 			</div>
-		</div>
+		</fieldset>
 	`
 });
 
@@ -51,39 +55,43 @@ export const FontSized = () => ({
 	},
 	data() {
 		return {
-			gender: 'female',
+			color: 'green',
 		}
 	},
 	template: `
-		<div style="font-size: 2rem;">
+		<fieldset style="font-size: 2rem;">
+			<legend>What is your favorite color?</legend>
 			<div>
 				<kv-radio
-					name="gender-radio"
-					radio-value="both"
-					v-model="gender"
+					id="color-radio-red"
+					name="color-radio"
+					radio-value="red"
+					v-model="color"
 					disabled
 				>
-					Everyone
+					Red
 				</kv-radio>
 			</div>
 			<div>
 				<kv-radio
-					name="gender-radio"
-					radio-value="female"
-					v-model="gender"
+					id="color-radio-green"
+					name="color-radio"
+					radio-value="green"
+					v-model="color"
 				>
-					Women only
+					Green
 				</kv-radio>
 			</div>
 			<div>
 				<kv-radio
-					name="gender-radio"
-					radio-value="male"
-					v-model="gender"
+					id="color-radio-blue"
+					name="color-radio-blue"
+					radio-value="blue"
+					v-model="color"
 				>
-					Men only
+					Blue
 				</kv-radio>
 			</div>
-		</div>
+		</fieldset>
 	`
 });

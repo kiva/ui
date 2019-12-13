@@ -46,8 +46,10 @@ export const KitchenSink = () => ({
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
+						<legend>Gender</legend>
 						<div>
 							<kv-radio
+								id="gender-radio-both"
 								name="gender-radio"
 								radioValue="both"
 								v-model="kvRadioSelected"
@@ -58,6 +60,7 @@ export const KitchenSink = () => ({
 						</div>
 						<div>
 							<kv-radio
+								id="gender-radio-female"
 								name="gender-radio"
 								radioValue="female"
 								v-model="kvRadioSelected"
@@ -67,6 +70,7 @@ export const KitchenSink = () => ({
 						</div>
 						<div>
 							<kv-radio
+								id="gender-radio-male"
 								name="gender-radio"
 								radioValue="male"
 								v-model="kvRadioSelected"
