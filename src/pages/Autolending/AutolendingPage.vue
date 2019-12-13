@@ -168,6 +168,10 @@ export default {
 						if (kvAuth0.getKivaId() && Date.now() > lastLogin + duration) {
 							throw new Error('activeLoginRequired');
 						}
+						const isSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+						if (isSubscriber) {
+							throw new Error('monhtlyGoodSubscriber');
+						}
 					})
 					.then(() => client.mutate({ mutation: initAutolending }))
 					.then(() => client.query({ query: pageQuery }))
@@ -184,6 +188,11 @@ export default {
 							reject({
 								path: '/ui-login',
 								query: { doneUrl: route.fullPath }
+							});
+						} else if (e.message.indexOf('monhtlyGoodSubscriber') > -1) {
+							// Redirect to legacy Monthly Good Settins page
+							reject({
+								path: '/settings/credit'
 							});
 						} else {
 							// Log other errors
