@@ -11,11 +11,11 @@
 			v-bind="$attrs"
 		>
 		<label
-			class="wrapper"
+			class="label"
 			:for="id"
 		>
 			<div class="disc"></div>
-			<div class="label">
+			<div>
 				<slot></slot>
 			</div>
 		</label>
@@ -52,10 +52,11 @@ export default {
 	display: inline-block;
 	position: relative;
 
-	.wrapper {
+	.label {
 		display: flex;
 		align-items: center;
 		font-size: 1em;
+		margin: 0;
 	}
 
 	.disc {
@@ -84,7 +85,7 @@ export default {
 	.input {
 		@include visually-hidden();
 
-		&:checked + .wrapper {
+		&:checked + .label {
 			.disc {
 				background-color: $kiva-light-green;
 				border-color: $kiva-light-green;
@@ -98,13 +99,13 @@ export default {
 			}
 		}
 
-		&:focus + .wrapper {
+		&:focus + .label {
 			.disc {
 				box-shadow: 0 0 0 0.25em rgba(174, 225, 92, 0.4); // $kiva-accent-green TODO: break into a scss mixin
 			}
 		}
 
-		&[disabled] + .wrapper {
+		&[disabled] + .label {
 			@include disabled();
 		}
 	}
