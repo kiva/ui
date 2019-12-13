@@ -4,7 +4,8 @@
 			Gender
 		</h3>
 		<kv-radio
-			name="genderRadio"
+			id="gender-radio-both"
+			name="gender-radio"
 			radio-value="both"
 			v-model="gender"
 			class="filter-radio"
@@ -12,7 +13,8 @@
 			Everyone
 		</kv-radio>
 		<kv-radio
-			name="genderRadio"
+			id="gender-radio-female"
+			name="gender-radio"
 			radio-value="female"
 			v-model="gender"
 			class="filter-radio"
@@ -20,7 +22,8 @@
 			Women only
 		</kv-radio>
 		<kv-radio
-			name="genderRadio"
+			id="gender-radio-male"
+			name="gender-radio"
 			radio-value="male"
 			v-model="gender"
 			class="filter-radio"

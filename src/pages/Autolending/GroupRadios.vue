@@ -4,8 +4,8 @@
 			Individuals/groups
 		</h3>
 		<kv-radio
-			label-set="groupRadioSetBoth"
-			name-set="groupRadio"
+			id="group-radio-both"
+			name="group-radio"
 			radio-value="both"
 			v-model="isGroup"
 			class="filter-radio"
@@ -13,8 +13,8 @@
 			Both
 		</kv-radio>
 		<kv-radio
-			label-set="groupRadioSetMale"
-			name-set="groupRadio"
+			id="group-radio-individual"
+			name="group-radio"
 			radio-value="individual-only"
 			v-model="isGroup"
 			class="filter-radio"
@@ -22,8 +22,8 @@
 			Individuals only
 		</kv-radio>
 		<kv-radio
-			label-set="groupRadioSetFemale"
-			name-set="groupRadio"
+			id="group-radio-groups"
+			name="group-radio"
 			radio-value="group-only"
 			v-model="isGroup"
 			class="filter-radio"

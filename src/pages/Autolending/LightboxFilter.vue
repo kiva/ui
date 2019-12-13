@@ -5,7 +5,8 @@
 		</h3>
 		<kv-radio
 			class="filter-radio"
-			name="filter"
+			:name="`filter_${name}`"
+			:id="`filter-all_${name}`"
 			radio-value="all"
 			v-model="radio"
 		>
@@ -13,7 +14,8 @@
 		</kv-radio>
 		<kv-radio
 			class="filter-radio"
-			name="filter"
+			:name="`filter_${name}`"
+			:id="`filter-some_${name}`"
 			radio-value="some"
 			v-model="radio"
 		>
