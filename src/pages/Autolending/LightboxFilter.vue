@@ -4,16 +4,14 @@
 			{{ name | changeCase('title') }}
 		</h3>
 		<kv-radio
-			class="filter-radio"
-			:label-set="`${name}-radio-all`"
+			:id="`filter-all-${name}`"
 			radio-value="all"
 			v-model="radio"
 		>
 			All {{ name }}
 		</kv-radio>
 		<kv-radio
-			class="filter-radio"
-			:label-set="`${name}-radio-some`"
+			:id="`filter-some-${name}`"
 			radio-value="some"
 			v-model="radio"
 		>
@@ -179,11 +177,6 @@ export default {
 	.filter-title {
 		font-size: 1rem;
 		color: $kiva-text-light;
-	}
-
-	.filter-radio {
-		display: block;
-		margin: 0 0 0 -0.875rem;
 	}
 
 	.edit-button {

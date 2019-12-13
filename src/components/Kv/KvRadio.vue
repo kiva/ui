@@ -1,15 +1,22 @@
 <template>
-	<div class="styled-radio">
+	<div class="kv-radio">
 		<input
+			class="input"
 			type="radio"
-			:id="labelSet"
+			:id="id"
 			:value="radioValue"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
 		>
-		<label :for="labelSet">
-			<slot></slot>
+		<label
+			class="label"
+			:for="id"
+		>
+			<div class="disc"></div>
+			<div>
+				<slot></slot>
+			</div>
 		</label>
 	</div>
 </template>
@@ -19,7 +26,7 @@ import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
 export default {
 	props: {
-		labelSet: {
+		id: {
 			type: String,
 			required: true
 		},
@@ -36,45 +43,65 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.styled-radio {
-	display: inline-block;
+.kv-radio {
+	display: block;
 	position: relative;
-	padding: 0 rem-calc(6);
-	margin: rem-calc(10) 0 0;
 
-	input[type='radio'] {
-		// Pushing the default radio off the page instead of using
-		// display: none; for screen reader accessibilty
-		position: absolute !important;
-		left: rem-calc(-9999) !important;
+	.label {
+		display: flex;
+		align-items: center;
+		font-size: 1em;
+		margin: 0;
 	}
 
-	label::before {
-		content: " ";
-		display: inline-block;
+	.disc {
+		border-radius: 50%;
+		width: 1em;
+		height: 1em;
+		background-color: #fff;
+		border: 0.125em solid $subtle-gray;
+		margin-right: 0.5em;
+		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
 		position: relative;
-		top: rem-calc(2);
-		margin: 0 rem-calc(5) 0 0;
-		width: rem-calc(15);
-		height: rem-calc(15);
-		border-radius: rem-calc(11);
-		border: 1px solid $subtle-gray;
-		background-color: transparent;
-	}
-
-	input[type=radio]:checked + label {
-		font-weight: 500;
+		transition: background-color 200ms ease-in-out, border-color 100ms ease-in-out, box-shadow 300ms ease-in-out;
 
 		&::after {
-			border-radius: rem-calc(11);
-			width: rem-calc(15);
-			height: rem-calc(15);
+			content: '';
 			position: absolute;
-			top: rem-calc(10);
-			left: rem-calc(14);
-			content: " ";
-			display: block;
-			border: rem-calc(5) solid $kiva-light-green;
+			border-radius: 50%;
+			background: #fff;
+			transition: all 150ms ease-out;
+			width: 0.5em;
+			height: 0.5em;
+			transform: translate(0.125em, 0.125em);
+		}
+	}
+
+	.input {
+		@include visually-hidden();
+
+		&:checked + .label {
+			.disc {
+				background-color: $kiva-light-green;
+				border-color: $kiva-light-green;
+
+				&::after {
+					transform: translate(0.25em, 0.25em);
+					width: 0.25em;
+					height: 0.25em;
+					transition: all 100ms ease-in;
+				}
+			}
+		}
+
+		&:focus + .label {
+			.disc {
+				box-shadow: 0 0 0 0.25em rgba(174, 225, 92, 0.4); // $kiva-accent-green TODO: break into a scss mixin
+			}
+		}
+
+		&[disabled] + .label {
+			@include disabled();
 		}
 	}
 }

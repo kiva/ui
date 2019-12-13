@@ -8,63 +8,72 @@ export const Default = () => ({
 	},
 	data() {
 		return {
-			gender: 'female',
+			color: 'red',
 		}
 	},
 	template: `
-		<div>
+		<fieldset>
+			<legend>What is your favorite color?</legend>
 			<kv-radio
-				label-set="genderRadioSetBoth"
-				name-set="genderRadio"
-				radio-value="both"
-				v-model="gender"
-				class="filter-radio"
+				id="color-radio-red"
+				radio-value="red"
+				v-model="color"
+				disabled
 			>
-				Everyone
+				Red
 			</kv-radio>
 			<kv-radio
-				label-set="genderRadioSetFemale"
-				name-set="genderRadio"
-				radio-value="female"
-				v-model="gender"
-				class="filter-radio"
+				id="color-radio-green"
+				radio-value="green"
+				v-model="color"
 			>
-				Women only
+				Green
 			</kv-radio>
 			<kv-radio
-				label-set="genderRadioSetMale"
-				name-set="genderRadio"
-				radio-value="male"
-				v-model="gender"
-				class="filter-radio"
+				id="color-radio-blue"
+				radio-value="blue"
+				v-model="color"
 			>
-				Men only
+				Blue
 			</kv-radio>
-		</div>
+		</fieldset>
 	`
 });
 
-export const Disabled = () => ({
+export const FontSized = () => ({
 	components: {
 		KvRadio
 	},
 	data() {
 		return {
-			gender: 'female',
+			color: 'green',
 		}
 	},
 	template: `
-		<div>
+		<fieldset style="font-size: 2rem;">
+			<legend>What is your favorite color?</legend>
 			<kv-radio
-				label-set="genderRadioSetBoth"
-				name-set="genderRadio"
-				radio-value="both"
-				v-model="gender"
-				class="filter-radio"
+				id="color-radio-red"
+				radio-value="red"
+				v-model="color"
 				disabled
 			>
-				Disabled
+				Red
 			</kv-radio>
-		</div>
+			<kv-radio
+				id="color-radio-green"
+				radio-value="green"
+				v-model="color"
+			>
+				Green
+			</kv-radio>
+			<kv-radio
+				id="color-radio-blue"
+				radio-value="blue"
+				v-model="color"
+			>
+				Blue
+			</kv-radio>
+		</fieldset>
 	`
 });
