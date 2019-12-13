@@ -16,7 +16,6 @@ export const Default = () => ({
 			<legend>What is your favorite color?</legend>
 			<kv-radio
 				id="color-radio-red"
-				name="color-radio"
 				radio-value="red"
 				v-model="color"
 				disabled
@@ -25,7 +24,6 @@ export const Default = () => ({
 			</kv-radio>
 			<kv-radio
 				id="color-radio-green"
-				name="color-radio"
 				radio-value="green"
 				v-model="color"
 			>
@@ -33,7 +31,6 @@ export const Default = () => ({
 			</kv-radio>
 			<kv-radio
 				id="color-radio-blue"
-				name="color-radio-blue"
 				radio-value="blue"
 				v-model="color"
 			>
@@ -57,7 +54,6 @@ export const FontSized = () => ({
 			<legend>What is your favorite color?</legend>
 			<kv-radio
 				id="color-radio-red"
-				name="color-radio"
 				radio-value="red"
 				v-model="color"
 				disabled
@@ -66,7 +62,6 @@ export const FontSized = () => ({
 			</kv-radio>
 			<kv-radio
 				id="color-radio-green"
-				name="color-radio"
 				radio-value="green"
 				v-model="color"
 			>
@@ -74,7 +69,6 @@ export const FontSized = () => ({
 			</kv-radio>
 			<kv-radio
 				id="color-radio-blue"
-				name="color-radio-blue"
 				radio-value="blue"
 				v-model="color"
 			>

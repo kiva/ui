@@ -5,7 +5,6 @@
 		</h3>
 		<kv-radio
 			id="group-radio-both"
-			name="group-radio"
 			radio-value="both"
 			v-model="isGroup"
 		>
@@ -13,7 +12,6 @@
 		</kv-radio>
 		<kv-radio
 			id="group-radio-individual"
-			name="group-radio"
 			radio-value="individual-only"
 			v-model="isGroup"
 		>
@@ -21,7 +19,6 @@
 		</kv-radio>
 		<kv-radio
 			id="group-radio-groups"
-			name="group-radio"
 			radio-value="group-only"
 			v-model="isGroup"
 		>

@@ -5,7 +5,6 @@
 			type="radio"
 			:id="id"
 			:value="radioValue"
-			:name="name"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
@@ -28,10 +27,6 @@ import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 export default {
 	props: {
 		id: {
-			type: String,
-			required: true
-		},
-		name: {
 			type: String,
 			required: true
 		},

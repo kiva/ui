@@ -5,7 +5,6 @@
 		</h3>
 		<kv-radio
 			id="gender-radio-both"
-			name="gender-radio"
 			radio-value="both"
 			v-model="gender"
 		>
@@ -13,7 +12,6 @@
 		</kv-radio>
 		<kv-radio
 			id="gender-radio-female"
-			name="gender-radio"
 			radio-value="female"
 			v-model="gender"
 		>
@@ -21,7 +19,6 @@
 		</kv-radio>
 		<kv-radio
 			id="gender-radio-male"
-			name="gender-radio"
 			radio-value="male"
 			v-model="gender"
 		>

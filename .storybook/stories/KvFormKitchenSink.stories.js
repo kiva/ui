@@ -49,7 +49,6 @@ export const KitchenSink = () => ({
 						<legend>Gender</legend>
 						<kv-radio
 							id="gender-radio-both"
-							name="gender-radio"
 							radio-value="both"
 							v-model="kvRadioSelected"
 							disabled
@@ -58,7 +57,6 @@ export const KitchenSink = () => ({
 						</kv-radio>
 						<kv-radio
 							id="gender-radio-female"
-							name="gender-radio"
 							radio-value="female"
 							v-model="kvRadioSelected"
 						>
@@ -66,7 +64,6 @@ export const KitchenSink = () => ({
 						</kv-radio>
 						<kv-radio
 							id="gender-radio-male"
-							name="gender-radio"
 							radio-value="male"
 							v-model="kvRadioSelected"
 						>
