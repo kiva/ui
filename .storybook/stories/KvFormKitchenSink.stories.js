@@ -47,37 +47,31 @@ export const KitchenSink = () => ({
 
 					<fieldset style="margin-bottom: 2rem;">
 						<legend>Gender</legend>
-						<div>
-							<kv-radio
-								id="gender-radio-both"
-								name="gender-radio"
-								radioValue="both"
-								v-model="kvRadioSelected"
-								disabled
-							>
-								Everyone
-							</kv-radio>
-						</div>
-						<div>
-							<kv-radio
-								id="gender-radio-female"
-								name="gender-radio"
-								radioValue="female"
-								v-model="kvRadioSelected"
-							>
-								Women only
-							</kv-radio>
-						</div>
-						<div>
-							<kv-radio
-								id="gender-radio-male"
-								name="gender-radio"
-								radioValue="male"
-								v-model="kvRadioSelected"
-							>
-								Men only
-							</kv-radio>
-						</div>
+						<kv-radio
+							id="gender-radio-both"
+							name="gender-radio"
+							radio-value="both"
+							v-model="kvRadioSelected"
+							disabled
+						>
+							Everyone
+						</kv-radio>
+						<kv-radio
+							id="gender-radio-female"
+							name="gender-radio"
+							radio-value="female"
+							v-model="kvRadioSelected"
+						>
+							Women only
+						</kv-radio>
+						<kv-radio
+							id="gender-radio-male"
+							name="gender-radio"
+							radio-value="male"
+							v-model="kvRadioSelected"
+						>
+							Men only
+						</kv-radio>
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
