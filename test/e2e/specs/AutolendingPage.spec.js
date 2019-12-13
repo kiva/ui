@@ -28,6 +28,21 @@ describe('Autolending Page Spec', () => {
 			// Assert that key elements of the page are visible
 			cy.contains('Auto-lending preferences');
 		});
+
+		it('Redirects to credit/settings if visitor isSubscriber', () => {
+			// Mock autolending as enabled
+			cy.mock({
+				AutoDeposit: () => ({
+					isSubscriber: true,
+				}),
+			});
+
+			// Attempt to Visit autolending settings
+			cy.visit('/settings/autolending', {
+				failOnStatusCode: false
+			});
+			cy.location('pathname').should('eq', '/settings/credit');
+		});
 	});
 
 	describe('Main toggle', () => {
