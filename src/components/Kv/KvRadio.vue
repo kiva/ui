@@ -49,7 +49,7 @@ export default {
 @import 'settings';
 
 .kv-radio {
-	display: inline-block;
+	display: block;
 	position: relative;
 
 	.label {

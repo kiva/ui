@@ -8,7 +8,6 @@
 			name="loan-increment-radio"
 			radio-value="any"
 			v-model="loanIncrement"
-			class="filter-radio"
 		>
 			Any amount
 		</kv-radio>
@@ -17,7 +16,6 @@
 			name="loan-increment-radio"
 			radio-value="25"
 			v-model="loanIncrement"
-			class="filter-radio"
 		>
 			Limit my loans to $25 increments
 		</kv-radio>
@@ -84,11 +82,6 @@ export default {
 .filter-title {
 	font-size: 1rem;
 	color: $kiva-text-light;
-}
-
-.filter-radio {
-	display: block;
-	margin: 0 0 0 -0.875rem;
 }
 
 </style>

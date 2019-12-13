@@ -14,37 +14,31 @@ export const Default = () => ({
 	template: `
 		<fieldset>
 			<legend>What is your favorite color?</legend>
-			<div>
-				<kv-radio
-					id="color-radio-red"
-					name="color-radio"
-					radio-value="red"
-					v-model="color"
-					disabled
-				>
-					Red
-				</kv-radio>
-			</div>
-			<div>
-				<kv-radio
-					id="color-radio-green"
-					name="color-radio"
-					radio-value="green"
-					v-model="color"
-				>
-					Green
-				</kv-radio>
-			</div>
-			<div>
-				<kv-radio
-					id="color-radio-blue"
-					name="color-radio-blue"
-					radio-value="blue"
-					v-model="color"
-				>
-					Blue
-				</kv-radio>
-			</div>
+			<kv-radio
+				id="color-radio-red"
+				name="color-radio"
+				radio-value="red"
+				v-model="color"
+				disabled
+			>
+				Red
+			</kv-radio>
+			<kv-radio
+				id="color-radio-green"
+				name="color-radio"
+				radio-value="green"
+				v-model="color"
+			>
+				Green
+			</kv-radio>
+			<kv-radio
+				id="color-radio-blue"
+				name="color-radio-blue"
+				radio-value="blue"
+				v-model="color"
+			>
+				Blue
+			</kv-radio>
 		</fieldset>
 	`
 });
@@ -61,37 +55,31 @@ export const FontSized = () => ({
 	template: `
 		<fieldset style="font-size: 2rem;">
 			<legend>What is your favorite color?</legend>
-			<div>
-				<kv-radio
-					id="color-radio-red"
-					name="color-radio"
-					radio-value="red"
-					v-model="color"
-					disabled
-				>
-					Red
-				</kv-radio>
-			</div>
-			<div>
-				<kv-radio
-					id="color-radio-green"
-					name="color-radio"
-					radio-value="green"
-					v-model="color"
-				>
-					Green
-				</kv-radio>
-			</div>
-			<div>
-				<kv-radio
-					id="color-radio-blue"
-					name="color-radio-blue"
-					radio-value="blue"
-					v-model="color"
-				>
-					Blue
-				</kv-radio>
-			</div>
+			<kv-radio
+				id="color-radio-red"
+				name="color-radio"
+				radio-value="red"
+				v-model="color"
+				disabled
+			>
+				Red
+			</kv-radio>
+			<kv-radio
+				id="color-radio-green"
+				name="color-radio"
+				radio-value="green"
+				v-model="color"
+			>
+				Green
+			</kv-radio>
+			<kv-radio
+				id="color-radio-blue"
+				name="color-radio-blue"
+				radio-value="blue"
+				v-model="color"
+			>
+				Blue
+			</kv-radio>
 		</fieldset>
 	`
 });

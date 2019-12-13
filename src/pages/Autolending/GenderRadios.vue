@@ -8,7 +8,6 @@
 			name="gender-radio"
 			radio-value="both"
 			v-model="gender"
-			class="filter-radio"
 		>
 			Everyone
 		</kv-radio>
@@ -17,7 +16,6 @@
 			name="gender-radio"
 			radio-value="female"
 			v-model="gender"
-			class="filter-radio"
 		>
 			Women only
 		</kv-radio>
@@ -26,7 +24,6 @@
 			name="gender-radio"
 			radio-value="male"
 			v-model="gender"
-			class="filter-radio"
 		>
 			Men only
 		</kv-radio>
@@ -93,11 +90,6 @@ export default {
 .filter-title {
 	font-size: 1rem;
 	color: $kiva-text-light;
-}
-
-.filter-radio {
-	display: block;
-	margin: 0 0 0 -0.875rem;
 }
 
 </style>
