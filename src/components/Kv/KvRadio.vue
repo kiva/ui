@@ -1,21 +1,25 @@
 <template>
-	<label class="kv-radio">
+	<div class="kv-radio">
 		<input
 			class="input"
 			type="radio"
+			:id="id"
 			:value="radioValue"
 			:name="name"
 			v-model="inputValue"
 			v-on="inputListeners"
 			v-bind="$attrs"
 		>
-		<div class="wrapper">
+		<label
+			class="wrapper"
+			:for="id"
+		>
 			<div class="disc"></div>
 			<div class="label">
 				<slot></slot>
 			</div>
-		</div>
-	</label>
+		</label>
+	</div>
 </template>
 
 <script>
@@ -23,6 +27,10 @@ import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
 
 export default {
 	props: {
+		id: {
+			type: String,
+			required: true
+		},
 		name: {
 			type: String,
 			required: true
@@ -41,13 +49,13 @@ export default {
 @import 'settings';
 
 .kv-radio {
-	font-size: 1em;
 	display: inline-block;
 	position: relative;
 
 	.wrapper {
 		display: flex;
 		align-items: center;
+		font-size: 1em;
 	}
 
 	.disc {
