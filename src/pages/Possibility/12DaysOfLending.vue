@@ -24,15 +24,24 @@
 		<div class="row column calendar">
 			<twelve-days-calendar :advent-day="adventDay" :promo-enabled="promoEnabled" />
 		</div>
+
+		<!-- Kiva Content Block -->
+		<div class="row kiva-stories">
+			<div class="columns small-12 large-10 large-offset-1">
+				<kiva-content-block />
+			</div>
+		</div>
+		<br><br>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
+import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
+import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 
@@ -41,6 +50,7 @@ export default {
 		KvHero,
 		KvResponsiveImage,
 		TwelveDaysCalendar,
+		KivaContentBlock,
 	},
 	metaInfo: {
 		title: '12 Days of Lending'
@@ -63,36 +73,31 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: gql`{
-			contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-				items
-			}
-		}`,
-		variables() {
-			return {
+	mounted() {
+		this.apollo.query({
+			query: contentfulCMS,
+			variables: {
 				contentType: 'uiSetting',
-				contentKey: 'ui-global-promo'
-			};
-		},
-		preFetch: true,
-		result({ data }) {
+				contentKey: 'ui-global-promo',
+			}
+		}).then(({ data }) => {
+			const pdtDateString = this.getPdtDate().toDateString();
 			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
 
 			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
-				return new Date(promo.fields.startDate).toDateString() === this.getPdtDate().toDateString();
+				return new Date(promo.fields.startDate).toDateString() === pdtDateString;
 			});
 
 			if (todaysLimitedPromo) {
 				this.promoEnabled = todaysLimitedPromo.fields.active;
 			}
-		}
+		});
 	},
 	computed: {
 		adventDay() {
 			const pdtDate = this.getPdtDate();
 			const day = pdtDate.getDate();
-			const month = pdtDate.getMonth();
+			const month = pdtDate.getMonth() + 1; // getMonth is 0 based
 			const year = pdtDate.getFullYear();
 
 			let adventDay = 0; // show all entries as unopened

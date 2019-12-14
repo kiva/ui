@@ -1,5 +1,5 @@
 <template>
-	<transition name="kv-slide-left">
+	<transition :name="transitionName">
 		<div v-show="display" class="kv-carousel-slide">
 			<slot></slot>
 		</div>
@@ -9,6 +9,12 @@
 <script>
 export default {
 	name: 'KvCarouselSlide',
+	props: {
+		transitionName: {
+			type: String,
+			default: 'kv-slide-left'
+		}
+	},
 	data() {
 		return {
 			display: false,

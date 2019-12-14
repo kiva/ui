@@ -1,5 +1,5 @@
 <template>
-	<div class="sitewide-appeal-wrapper" v-if="showAppeal">
+	<div class="sitewide-appeal-wrapper">
 		<div class="sitewide-appeal">
 			<div class="row"
 				@click="toggleAccordion"
@@ -101,71 +101,28 @@ export default {
 		KvExpandable,
 	},
 	inject: ['apollo'],
+	props: {
+		appealMatchEnabled: {
+			type: Boolean,
+			default: false,
+		}
+	},
 	data() {
 		return {
 			open: true,
-			appealEnabled: false,
-			appealMatchEnabled: false,
 			amount: 0,
 			donationAmount: null,
 			percentTowardGoal: null,
-			lendingRewardOffered: false,
-			bonusBalance: 0,
-			hasFreeCredits: false,
 		};
 	},
 	apollo: {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			try {
-				this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
-			} catch (e) {
-				this.appealEnabled = false;
-			}
-
-			try {
-				this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
-			} catch (e) {
-				this.appealMatchEnabled = false;
-			}
 			// eslint-disable-next-line max-len
 			this.amountRaised = _get(data, 'general.kivaStats.latestDonationCampaign.amount_raised');
 			// eslint-disable-next-line max-len
 			this.targetAmount = _get(data, 'general.kivaStats.latestDonationCampaign.target_amount');
-
-			// Used for calculating if the user has a promotional balance
-			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
-			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
-			this.bonusBalance = promoBalance + basketPromoBalance;
-			this.lendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
-			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-		},
-	},
-	computed: {
-		showAppeal() {
-			// make sure the appeal is enable + we're not on certain blacklisted pages
-			const blacklist = [
-				'/checkout',
-				'/error',
-				'/join-team',
-				'/register/social',
-				'/possibility/giving-tuesday',
-				'/possibility/12-days-of-lending',
-				'/possibility/year-end'
-			];
-			// First check if Appeal Banner or Appeal Banner Matching
-			// is active and the user is not on a blacklisted page URL
-			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
-				// Next we check if the user has Promo Credit
-				// (lending reward credit, bonus credit, or free credit)
-				// If the have any of the above, we hide the appeal banner.
-				if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
-					return false;
-				}
-				return true;
-			}
-			return false;
 		},
 	},
 	mounted() {

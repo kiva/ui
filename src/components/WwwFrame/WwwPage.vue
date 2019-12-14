@@ -1,8 +1,6 @@
 <template>
 	<div class="www-page">
-		<appeal-banner />
-		<!-- <global-promo /> -->
-		<global-promo-contentful />
+		<the-banner-area />
 		<the-header :hide-search-in-header="hideSearchInHeader" />
 		<slot name="secondary"></slot>
 		<main :class="{'gray-background': grayBackground}">
@@ -22,20 +20,15 @@ import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
-import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
-// import GlobalPromo from './PromotionalBanner/GlobalPromotionalBanner';
-import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
-
+import TheBannerArea from './TheBannerArea';
 
 export default {
 	inject: [
 		'apollo'
 	],
 	components: {
-		AppealBanner,
 		CookieBanner,
-		// GlobalPromo,
-		GlobalPromoContentful,
+		TheBannerArea,
 		TheBasketBar,
 		TheFooter,
 		TheHeader,

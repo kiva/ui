@@ -51,11 +51,8 @@ export default {
 		},
 	},
 	mounted() {
-		// Check for retina/high denisty display
+		// Check for retina/high density display
 		this.isRetina = isRetina() || isHighDensity();
 	},
 };
 </script>
-
-<style lang="scss">
-</style>

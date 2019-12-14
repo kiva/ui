@@ -7,7 +7,7 @@
 					<kv-carousel-slide>
 						<kv-responsive-image
 							:images="possibilitiesImages(1)"
-							alt="A young businesswoman, wearing pink lipstick and leather blazer, laughs."
+							alt="Two Cambodian women smile and laugh. One holds a wicker basket."
 						/>
 					</kv-carousel-slide>
 					<kv-carousel-slide>

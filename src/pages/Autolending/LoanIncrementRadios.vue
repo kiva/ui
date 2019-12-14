@@ -4,20 +4,16 @@
 			Loan increment
 		</h3>
 		<kv-radio
-			label-set="loanIncrementRadioSetAny"
-			name-set="loanIncrementRadio"
+			id="loan-increment-any"
 			radio-value="any"
 			v-model="loanIncrement"
-			class="filter-radio"
 		>
 			Any amount
 		</kv-radio>
 		<kv-radio
-			label-set="LoanIncrementRadioSet25"
-			name-set="LoanIncrementRadio"
+			id="loan-increment-25"
 			radio-value="25"
 			v-model="loanIncrement"
-			class="filter-radio"
 		>
 			Limit my loans to $25 increments
 		</kv-radio>
@@ -84,11 +80,6 @@ export default {
 .filter-title {
 	font-size: 1rem;
 	color: $kiva-text-light;
-}
-
-.filter-radio {
-	display: block;
-	margin: 0 0 0 -0.875rem;
 }
 
 </style>

@@ -41,7 +41,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 
-const kivaContentBlockImageRequire = require.context('@/assets/images/kiva-content-block/', true);
+const kivaContentBlockImageRequire = require.context('@/assets/images/possibilities-banners/kiva-content-block/', true);
 
 export default {
 	components: {
@@ -53,15 +53,6 @@ export default {
 	data() {
 		return {
 			kivaContentBlockData: [
-				{
-					images: [
-						['small', kivaContentBlockImageRequire('./1x/Asset1.jpg')],
-						['small retina', kivaContentBlockImageRequire('./2x/Asset1@2x.jpg')]
-					],
-					url: '/blog/one-woman-brewing-change-in-africa-and-beyond',
-					headline: 'Possibility brews from fair trade',
-					subheadline: 'Vava’s passion for creating change started with possibility in coffee farmers'
-				},
 				{
 					images: [
 						['small', kivaContentBlockImageRequire('./1x/Asset2.jpg')],
@@ -159,8 +150,8 @@ $cta-color3: #02582e;
 	}
 
 	/* stylelint-disable */
-	// Slide 2 color override
-	.slide-1 {
+	// Slide 1 color override
+	.slide-0 {
 		.headline {
 			color: $cta-color2;
 		}
@@ -176,8 +167,8 @@ $cta-color3: #02582e;
 		}
 	}
 
-	// Slide 3 color override
-	.slide-2 {
+	// Slide 2 color override
+	.slide-1 {
 		.headline {
 			color: $cta-color3;
 		}

@@ -41,7 +41,6 @@ module.exports = merge(base, {
 			apiAudience: 'https://api.dev.kivaws.org/graphql',
 			browserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
 			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
-			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
 			browserCallbackUri: 'https://www.dev.kiva.org/process-browser-auth',
 			serverCallbackUri: 'https://www.dev.kiva.org/process-ssr-auth',
 			domain: 'login.dev.kiva.org',

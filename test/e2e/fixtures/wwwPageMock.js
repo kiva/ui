@@ -7,6 +7,9 @@ export default function wwwPageMock(userId = null) {
 		Manifest: () => ({
 			hasFreeCredits: false,
 		}),
+		AutoDeposit: () => ({
+			isSubscriber: false
+		}),
 		Setting: (parent, args) => ({
 			key: args.key,
 			value: '',

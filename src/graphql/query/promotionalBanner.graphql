@@ -1,4 +1,4 @@
-query promotionalBanner($basketId: String, $contentType: String!, $contentKey: String) {
+query promotionalBanner($basketId: String) {
 	my {
 		userAccount {
 			id
@@ -16,9 +16,6 @@ query promotionalBanner($basketId: String, $contentType: String!, $contentKey: S
 			}
 		}
 		lendingRewardOffered
-	}
-	contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-		items
 	}
 	general {
 		holiday_enabled: featureSetting(key: "holiday_mode.enabled") {

@@ -4,29 +4,23 @@
 			Gender
 		</h3>
 		<kv-radio
-			label-set="genderRadioSetBoth"
-			name-set="genderRadio"
+			id="gender-radio-both"
 			radio-value="both"
 			v-model="gender"
-			class="filter-radio"
 		>
 			Everyone
 		</kv-radio>
 		<kv-radio
-			label-set="genderRadioSetFemale"
-			name-set="genderRadio"
+			id="gender-radio-female"
 			radio-value="female"
 			v-model="gender"
-			class="filter-radio"
 		>
 			Women only
 		</kv-radio>
 		<kv-radio
-			label-set="genderRadioSetMale"
-			name-set="genderRadio"
+			id="gender-radio-male"
 			radio-value="male"
 			v-model="gender"
-			class="filter-radio"
 		>
 			Men only
 		</kv-radio>
@@ -93,11 +87,6 @@ export default {
 .filter-title {
 	font-size: 1rem;
 	color: $kiva-text-light;
-}
-
-.filter-radio {
-	display: block;
-	margin: 0 0 0 -0.875rem;
 }
 
 </style>
