@@ -9,13 +9,14 @@
 			<template slot-scope="{ items, refine, }">
 				<ul>
 					<li v-for="item in items" :key="item.value">
-						<kv-controlled-checkbox
-							:checked="item.isRefined"
-							:label="`${item.label} (${item.count})`"
+						<kv-checkbox
 							:id="item.label|changeCase('param')"
-							@checkbox-input="refine(item.value)"
 							:disabled="item.count === 0"
-						/>
+							v-model="item.isRefined"
+							@change="refine(item.value)"
+						>
+							{{ item.label }} ({{ item.count }})
+						</kv-checkbox>
 					</li>
 				</ul>
 			</template>
@@ -28,13 +29,13 @@ import _sortBy from 'lodash/sortBy';
 import { AisRefinementList } from 'vue-instantsearch';
 import mergeRefinmentListItems from '@/util/algoliaUtils';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
-import KvControlledCheckbox from '@/components/Kv/KvControlledCheckbox';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
 		FilterMenuSection,
 		AisRefinementList,
-		KvControlledCheckbox,
+		KvCheckbox,
 	},
 	props: {
 		allTagNames: {

@@ -4,10 +4,11 @@
 			v-for="{name, categoryId, checkboxInput, isChecked} in customCategoryList"
 			class="category-checkbox"
 			:key="categoryId"
-			:label="name"
 			:is-checked="isChecked"
-			@checkbox-input="checkboxInput"
-		/>
+			@change="checkboxInput"
+		>
+			{{ name }}
+		</kv-checkbox>
 	</filter-menu-section>
 </template>
 
