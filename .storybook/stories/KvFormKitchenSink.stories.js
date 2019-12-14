@@ -1,3 +1,4 @@
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -6,13 +7,17 @@ export default { title: 'Kv | Form Elements' };
 
 export const KitchenSink = () => ({
 	components: {
+		KvCheckbox,
 		KvDropdownRounded,
 		KvPillToggle,
 		KvRadio,
 	},
 	data() {
 		return {
-			kvRadioSelected: 'female',
+			kvCheckboxModel1: true,
+			kvCheckboxModel2: false,
+			kvCheckboxModel3: false,
+			kvDropdownRoundedModel: 'test2',
 			kvPillOptions: [
 				{
 					title: 'Option 1',
@@ -29,7 +34,7 @@ export const KitchenSink = () => ({
 				},
 			],
 			kvPillSelected: 'o2',
-			kvDropdownRoundedModel: 'test2'
+			kvRadioSelected: 'female',
 		}
 	},
 	template: `
@@ -69,6 +74,29 @@ export const KitchenSink = () => ({
 						>
 							Men only
 						</kv-radio>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvCheckbox</legend>
+						<kv-checkbox
+							id="checkbox-1"
+							v-model="kvCheckboxModel1"
+							disabled
+						>
+							Option 1
+						</kv-checkbox>
+						<kv-checkbox
+							id="checkbox-2"
+							v-model="kvCheckboxModel2"
+						>
+							Option 2
+						</kv-checkbox>
+						<kv-checkbox
+							id="checkbox-3"
+							v-model="kvCheckboxModel3"
+						>
+							Option 3
+						</kv-checkbox>
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
