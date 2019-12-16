@@ -4,7 +4,7 @@
 			v-for="{name, categoryId, checkboxInput, isChecked} in customCategoryList"
 			class="category-checkbox"
 			:key="categoryId"
-			:is-checked="isChecked"
+			:checked="isChecked"
 			@change="checkboxInput"
 		>
 			{{ name }}

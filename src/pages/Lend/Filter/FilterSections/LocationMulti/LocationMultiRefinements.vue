@@ -50,7 +50,7 @@
 				class="country"
 				:id="item.label|changeCase('param')"
 				:disabled="item.count === 0"
-				:is-checked="isCountryChecked(item.isRefined, item.region)"
+				:checked="isCountryChecked(item.isRefined, item.region)"
 				@change="handleCountryCheckboxInput(item)"
 			>
 				{{ item.label }} ({{ item.count }})
