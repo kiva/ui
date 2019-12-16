@@ -1,4 +1,5 @@
 import KvCheckbox from '@/components/Kv/KvCheckbox';
+import { boolean } from '@storybook/addon-knobs';
 
 export default { title: 'Kv | Form Elements/KvCheckbox' };
 
@@ -6,42 +7,49 @@ export const Default = () => ({
 	components: {
 		KvCheckbox
 	},
-	data() {
-		return {
-			kvCheckboxModel1: false,
-			kvCheckboxModel2: true,
-			kvCheckboxModel3: true,
-		}
+	props: {
+		option1: {
+			type: Boolean,
+			default: boolean('option1', false)
+		},
+		option2: {
+			type: Boolean,
+			default: boolean('option2', true)
+		},
+		option3: {
+			type: Boolean,
+			default: boolean('option3', false)
+		 },
 	},
 	template: `
 		<fieldset>
 			<legend>Using v-model</legend>
 			<kv-checkbox
 				id="checkbox-1"
-				v-model="kvCheckboxModel1"
-				@input="onInput"
+				v-model="option1"
+				@change="onChange"
 				disabled
 			>
 				Option 1
 			</kv-checkbox>
 			<kv-checkbox
 				id="checkbox-2"
-				v-model="kvCheckboxModel2"
-				@input="onInput"
+				v-model="option2"
+				@change="onChange"
 			>
 				Option 2
 			</kv-checkbox>
 			<kv-checkbox
 				id="checkbox-3"
-				v-model="kvCheckboxModel3"
-				@input="onInput"
+				v-model="option3"
+				@change="onChange"
 			>
 				Option 3
 			</kv-checkbox>
 		</fieldset>
 	`,
 	methods: {
-		onInput(val) {
+		onChange(val) {
 			console.log(val);
 		}
 	}
@@ -53,25 +61,25 @@ export const IsChecked = () => ({
 	},
 	template: `
 		<fieldset>
-			<legend>Using :is-checked</legend>
+			<legend>Using :checked</legend>
 			<kv-checkbox
 				id="is-checked1"
-				:is-checked="someMethod(true)"
-				@input="onInput"
+				:checked="someMethod(true)"
+				@change="onChange"
 			>
 				True by default
 			</kv-checkbox>
 			<kv-checkbox
 				id="is-checked2"
-				:is-checked="someMethod(false)"
-				@input="onInput"
+				:checked="someMethod(false)"
+				@change="onChange"
 			>
 				False by default
 			</kv-checkbox>
 		</fieldset>
 	`,
 	methods: {
-		onInput(val) {
+		onChange(val) {
 			console.log(val);
 		},
 		someMethod(param) {
@@ -89,27 +97,27 @@ export const FontSized = () => ({
 			<legend>Font Sized</legend>
 			<kv-checkbox
 				id="big"
-				:is-checked="true"
+				:checked="true"
 				style="font-size: 2rem;"
 			>
 				2rem
 			</kv-checkbox>
 			<kv-checkbox
 				id="normal"
-				:is-checked="true"
+				:checked="true"
 			>
 			normal
 			</kv-checkbox>
 			<kv-checkbox
 				id="small"
-				:is-checked="true"
+				:checked="true"
 				style="font-size: .875rem;"
 			>
 				.875rem
 			</kv-checkbox>
 			<kv-checkbox
 				id="smaller"
-				:is-checked="true"
+				:checked="true"
 				style="font-size: .75rem;"
 			>
 				.75rem
