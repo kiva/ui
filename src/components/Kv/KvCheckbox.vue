@@ -102,7 +102,7 @@ export default {
 				border-width: 0.0625em;
 
 				&::after {
-					top: 0.0625em;
+					top: 0.0825em;
 					left: 0.2875em;
 					border-color: white;
 				}
