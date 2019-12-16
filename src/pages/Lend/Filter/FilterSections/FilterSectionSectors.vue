@@ -16,7 +16,7 @@
 						<kv-checkbox
 							:id="item.label|changeCase('param')"
 							:disabled="item.count === 0"
-							v-model="item.isRefined"
+							:checked="item.isRefined"
 							@change="refine(item.value)"
 						>
 							{{ item.label }} ({{ item.count }})
