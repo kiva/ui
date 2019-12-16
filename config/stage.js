@@ -47,6 +47,9 @@ module.exports = merge(base, {
 		contentful: {
 			enable: false,
 		},
+		intercom: {
+			enable: false,
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.stage.kivaws.org/graphql',
