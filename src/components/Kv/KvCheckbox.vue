@@ -4,9 +4,9 @@
 			class="input"
 			type="checkbox"
 			:id="id"
-			v-model="inputValue"
-			v-on="inputListeners"
-			v-bind="$attrs"
+			:disabled="disabled"
+			:checked="checked"
+			@change="onChange($event)"
 		>
 		<label
 			class="label"
@@ -21,30 +21,35 @@
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
-
 export default {
+	model: {
+		prop: 'checked',
+		event: 'change'
+	},
 	props: {
 		id: {
 			type: String,
 			required: true
 		},
-		isChecked: { // workaround to allow both v-model binding and setting checked programatically
+		disabled: {
+			type: Boolean,
+			default: false
+		},
+		checked: {
 			type: Boolean,
 			default: null
-		}
+		},
 	},
-	watch: {
-		isChecked(val) {
-			this.inputValue = val;
-		}
-	},
-	mounted() {
-		if (this.isChecked !== null) {
-			this.inputValue = this.isChecked;
-		}
-	},
-	mixins: [inputWrapperMixin],
+	methods: {
+		onChange(event) {
+			/**
+			 * The value of the checkbox :checked state
+			 * @event change
+			 * @type {Event}
+			 */
+			this.$emit('change', event.target.checked);
+		},
+	}
 };
 </script>
 
