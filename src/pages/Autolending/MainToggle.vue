@@ -1,7 +1,7 @@
 <template>
 	<kv-toggle
 		class="main-toggle"
-		id="auto-lending-toggle"
+		id="auto-lending-enabled-toggle"
 		v-model="isEnabled"
 	>
 		<p class="toggle-text-wrapper">
