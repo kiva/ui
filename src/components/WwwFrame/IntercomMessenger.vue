@@ -16,7 +16,12 @@ export default {
 				id: 'Experiment:intercom_messenger',
 				fragment: experimentVersionFragment,
 			}) || {};
-
+			// Fire Event for Exp CASH-1590 Intercom
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1590-Jan2020',
+				intercomMessenger.version === 'shown' ? 'b' : 'a'
+			);
 			if (intercomMessenger.version === 'shown') {
 				// Intercom Snippet
 				/* eslint-disable */
