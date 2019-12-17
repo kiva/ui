@@ -132,7 +132,7 @@ export const WithContents = () => ({
 	},
 	template: `
 		<fieldset>
-			<legend>Font Sized</legend>
+			<legend>With Contents</legend>
 			<kv-toggle
 				id="option-1"
 				:checked="true"
