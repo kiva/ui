@@ -4,8 +4,6 @@
 
 <script>
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-// This mixin checks for the uiab experiment intercom_messenger, if version is shown, then
-// it injects the Intercom JS SDK code into the window to load/enable the Intercom Messenger
 
 export default {
 	props: {
