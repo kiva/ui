@@ -493,6 +493,10 @@ $button-smaller-medium-shadow: 0 2px $button-background-hover;
 	}
 }
 
+@mixin input-focus() {
+	box-shadow: 0 0 0 0.25em rgba(174, 225, 92, 0.4); // $kiva-accent-green
+}
+
 @mixin disabled() {
 	cursor: not-allowed;
 	opacity: 0.3;

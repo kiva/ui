@@ -111,7 +111,7 @@ export default {
 
 		&:focus + .label {
 			.square {
-				box-shadow: 0 0 0 0.25em rgba(174, 225, 92, 0.4); // $kiva-accent-green TODO: break into a scss mixin
+				@include input-focus();
 			}
 		}
 
