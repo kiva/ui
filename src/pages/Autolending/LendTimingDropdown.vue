@@ -128,7 +128,7 @@ export default {
 			this.enableAfter = _get(data, 'autolending.savedProfile.enableAfter');
 			// flag user as one who had auto lending set
 			this.legacyAutoLender = this.enableAfter > 0;
-			this.changedTiming = _get(data, 'autolending.currentProfile.enabledAfter') !== this.enableAfter;
+			this.changedTiming = _get(data, 'autolending.currentProfile.enableAfter') !== this.enableAfter;
 			if (this.legacyAutoLender && !this.changedTiming) {
 				this.lendAfterDaysIdle = this.convertEnableAfterToNewSetting(this.enableAfter);
 			} else {
