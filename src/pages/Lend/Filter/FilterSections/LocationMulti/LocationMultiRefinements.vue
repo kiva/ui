@@ -45,26 +45,27 @@
 					</div>
 				</div>
 			</div>
-			<kv-controlled-checkbox
+			<kv-checkbox
 				v-else-if="isRegionOpen(item.region)"
 				class="country"
-				:checked="isCountryChecked(item.isRefined, item.region)"
-				:label="`${item.label} (${item.count})`"
 				:id="item.label|changeCase('param')"
-				@checkbox-input="handleCountryCheckboxInput(item)"
 				:disabled="item.count === 0"
-			/>
+				:checked="isCountryChecked(item.isRefined, item.region)"
+				@change="handleCountryCheckboxInput(item)"
+			>
+				{{ item.label }} ({{ item.count }})
+			</kv-checkbox>
 		</div>
 	</div>
 </template>
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
-import KvControlledCheckbox from '@/components/Kv/KvControlledCheckbox';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
-		KvControlledCheckbox,
+		KvCheckbox,
 		KvIcon,
 	},
 	data() {

@@ -50,7 +50,7 @@
 									<div class="custom-refinement"
 										v-for="category in customCategoryList" :key="category.name">
 										<kv-checkbox
-											@checkbox-toggled="handleCheckboxToggle($event, category)">
+											@change="handleCheckboxToggle(checkboxStatus, category)">
 											{{ category.name }} ({{ 0 }})
 										</kv-checkbox>
 									</div>
