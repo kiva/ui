@@ -6,9 +6,9 @@
 		>
 			<kv-toggle
 				class="list-item"
-				:name="id"
+				:id="`${id}`"
 				:value="selected"
-				@input="$emit('change', $event, id)"
+				@change="$emit('change', $event, id)"
 			>
 				<div class="list-item-label">
 					{{ name }}
@@ -61,10 +61,6 @@ export default {
 		@include breakpoint(large) {
 			font-size: rem-calc(18);
 		}
-	}
-
-	.list-item-label {
-		margin-left: 2.75rem;
 	}
 }
 </style>
