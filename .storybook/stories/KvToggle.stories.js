@@ -1,5 +1,4 @@
 import KvToggle from '@/components/Kv/KvToggle';
-import { boolean } from '@storybook/addon-knobs';
 
 export default { title: 'Kv | Form Elements/KvToggle' };
 
@@ -7,19 +6,12 @@ export const Default = () => ({
 	components: {
 		KvToggle
 	},
-	props: {
-		option1: {
-			type: Boolean,
-			default: boolean('option1', false)
-		},
-		option2: {
-			type: Boolean,
-			default: boolean('option2', true)
-		},
-		option3: {
-			type: Boolean,
-			default: boolean('option3', false)
-		 },
+	data() {
+		return {
+			option1: false,
+			option2: true,
+			option3: false
+		}
 	},
 	template: `
 		<fieldset>

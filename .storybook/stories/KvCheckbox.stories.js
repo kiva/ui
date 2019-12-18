@@ -1,5 +1,4 @@
 import KvCheckbox from '@/components/Kv/KvCheckbox';
-import { boolean } from '@storybook/addon-knobs';
 
 export default { title: 'Kv | Form Elements/KvCheckbox' };
 
@@ -7,19 +6,12 @@ export const Default = () => ({
 	components: {
 		KvCheckbox
 	},
-	props: {
-		option1: {
-			type: Boolean,
-			default: boolean('option1', false)
-		},
-		option2: {
-			type: Boolean,
-			default: boolean('option2', true)
-		},
-		option3: {
-			type: Boolean,
-			default: boolean('option3', false)
-		 },
+	data() {
+		return {
+			option1: false,
+			option2: true,
+			option3: false
+		}
 	},
 	template: `
 		<fieldset>
