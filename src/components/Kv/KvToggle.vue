@@ -1,84 +1,125 @@
 <template>
-	<label class="switch-wrap">
+	<div class="kv-toggle">
 		<input
+			class="input"
 			type="checkbox"
-			class="switch"
-			v-model="inputValue"
-			v-on="inputListeners"
-			v-bind="$attrs"
+			:id="id"
+			:disabled="disabled"
+			:checked="checked"
+			@change="onChange($event)"
 		>
-		<span class="switch-label">
-			<slot></slot>
-		</span>
-	</label>
+		<label
+			class="label"
+			:for="id"
+		>
+			<div class="circle"></div>
+			<div>
+				<slot></slot>
+			</div>
+		</label>
+	</div>
 </template>
 
 <script>
-import inputWrapperMixin from '@/plugins/input-wrapper-mixin';
-
 export default {
-	mixins: [inputWrapperMixin]
+	model: {
+		prop: 'checked',
+		event: 'change'
+	},
+	props: {
+		id: {
+			type: String,
+			required: true
+		},
+		disabled: {
+			type: Boolean,
+			default: false
+		},
+		checked: {
+			type: Boolean,
+			default: null
+		},
+	},
+	methods: {
+		onChange($event) {
+			/**
+			 * The value of the toggle :checked state
+			 * @event change
+			 * @type {Event}
+			 */
+			this.$emit('change', $event.target.checked);
+		},
+	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import "settings";
 
-.switch-wrap {
+.kv-toggle {
 	position: relative;
+	cursor: pointer;
 
-	.switch {
-		opacity: 0;
-		position: absolute;
-		z-index: 1;
-		width: rem-calc(18);
-		height: rem-calc(18);
-		cursor: pointer;
+	.label {
+		display: flex;
+		margin: 0;
+		font-size: 1em;
+	}
 
-		+ .switch-label {
-			position: relative;
-			display: inline-block;
-			cursor: pointer;
-		}
+	.circle {
+		position: relative;
+		width: 2.25em;
+		height: 1.375em;
+		top: 0.2em;
+		margin-right: 0.5em;
+		border-radius: 0.75em;
+		content: "";
+		background-color: $kiva-stroke-gray;
+		transition: background-color 0.1s ease;
 
-		+ .switch-label::before {
-			border-radius: rem-calc(12);
-			content: "";
-			position: absolute;
-			top: rem-calc(4);
-			left: 0;
-			background-color: $kiva-stroke-gray;
-			width: rem-calc(36);
-			height: rem-calc(22);
-			-webkit-transition: background 0.1s ease;
-			-o-transition: background 0.1s ease;
-			transition: background 0.1s ease;
-		}
-
-		+ .switch-label::after {
+		&::after {
 			content: '';
 			position: absolute;
-			top: rem-calc(6);
-			left: rem-calc(2);
-			border-radius: rem-calc(12);
-			width: rem-calc(18);
-			height: rem-calc(18);
+			top: 0.125em;
+			left: 0.125em;
+			border-radius: 50%;
+			width: 1.125em;
+			height: 1.125em;
 			background-color: $white;
-			-webkit-transition: left 0.2s ease;
-			-o-transition: left 0.2s ease;
 			transition: left 0.2s ease;
 		}
 	}
 
-	.switch:checked + .switch-label::before {
-		background-color: $kiva-light-green;
-	}
+	.input {
+		@include visually-hidden();
 
-	.switch:checked + .switch-label::after {
-		left: rem-calc(16);
-		background-color: $white;
-		border: rem-calc(4) solid $white;
+		&[disabled] + .label {
+			@include disabled();
+		}
+
+		&:focus + .label {
+			.circle {
+				@include input-focus();
+			}
+		}
+
+		&:checked + .label {
+			.circle {
+				background-color: $kiva-light-green;
+
+				&::after {
+					left: 1em;
+					background-color: $white;
+					border: 0.25em solid $white;
+				}
+			}
+		}
+
+		&:active + .label {
+			.circle {
+				background-color: $kiva-green;
+			}
+		}
 	}
 }
-
 </style>

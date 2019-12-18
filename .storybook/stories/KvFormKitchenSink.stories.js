@@ -2,6 +2,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
+import KvToggle from '@/components/Kv/KvToggle';
 
 export default { title: 'Kv | Form Elements' };
 
@@ -11,6 +12,7 @@ export const KitchenSink = () => ({
 		KvDropdownRounded,
 		KvPillToggle,
 		KvRadio,
+		KvToggle
 	},
 	data() {
 		return {
@@ -35,6 +37,9 @@ export const KitchenSink = () => ({
 			],
 			kvPillSelected: 'o2',
 			kvRadioSelected: 'female',
+			kvToggle1: true,
+			kvToggle2: false,
+			kvToggle3: true
 		}
 	},
 	template: `
@@ -98,6 +103,29 @@ export const KitchenSink = () => ({
 						>
 							Option 3
 						</kv-checkbox>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvToggle</legend>
+						<kv-toggle
+							id="kv-toggle-1"
+							v-model="kvToggle1"
+							disabled
+						>
+							Option 1
+						</kv-toggle>
+						<kv-toggle
+							id="kv-toggle-2"
+							v-model="kvToggle2"
+						>
+							Option 2
+						</kv-toggle>
+						<kv-toggle
+							id="kv-toggle-3"
+							v-model="kvToggle3"
+						>
+							Option 3
+						</kv-toggle>
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
