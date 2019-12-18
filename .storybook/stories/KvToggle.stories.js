@@ -47,7 +47,7 @@ export const Default = () => ({
 	}
 });
 
-export const IsChecked = () => ({
+export const Checked = () => ({
 	components: {
 		KvToggle
 	},
@@ -55,14 +55,14 @@ export const IsChecked = () => ({
 		<fieldset>
 			<legend>Using :checked</legend>
 			<kv-toggle
-				id="is-checked1"
+				id="checked1"
 				:checked="someMethod(true)"
 				@change="onChange"
 			>
 				True by default
 			</kv-toggle>
 			<kv-toggle
-				id="is-checked2"
+				id="checked2"
 				:checked="someMethod(false)"
 				@change="onChange"
 			>
