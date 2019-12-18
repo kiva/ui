@@ -5,6 +5,7 @@
 				<kv-pill-toggle
 					:selected="selectedOption"
 					:options="options"
+					id="payment-options"
 					@pill-toggled="pillToggled"
 				/>
 			</div>

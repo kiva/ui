@@ -45,6 +45,7 @@ export const KitchenSink = () => ({
 
 					<fieldset style="margin-bottom: 2rem;">
 						<kv-pill-toggle
+							id="pill"
 							:options="kvPillOptions"
 							:selected="kvPillSelected"
 						/>
