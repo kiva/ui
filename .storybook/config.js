@@ -2,10 +2,15 @@ import { configure, addDecorator, addParameters } from '@storybook/vue';
 import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 
-// same styles that are in App.vue
-import '../src/assets/scss/app.scss';
+import Vue from 'vue';
+import kivaPlugins from '@/plugins';
+import Vue2TouchEvents from 'vue2-touch-events';
 
 import kvTheme from './kvtheme';
+import '../src/assets/scss/app.scss'; // same styles that are in App.vue
+
+Vue.use(kivaPlugins);
+Vue.use(Vue2TouchEvents);
 
 addParameters({
   options: {
