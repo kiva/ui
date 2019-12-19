@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import numeral from 'numeral';
 import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 
 export default {
@@ -108,23 +107,6 @@ export default {
 			return this.defaultRangeLabel;
 			/* eslint-enable */
 		},
-		sliderStyle() {
-			const sliderLeftColor = '#8ccb8c';
-			const sliderRightColor = '#dbdbdb';
-
-			const selectedStop = this.isSliderSettingMinimum
-				? (this.sliderValue / this.sliderMaximum)
-				: (Math.abs(this.sliderValue - this.sliderMinimum) / Math.abs(this.sliderMaximum - this.sliderMinimum));
-
-			const basicStyle = 'background-image: -webkit-linear-gradient(left,';
-			const stop1 = `${sliderLeftColor} 0%,`;
-			const stop2 = `${sliderLeftColor} ${numeral(selectedStop).format('0%')},`;
-			const stop3 = `${sliderRightColor} ${numeral(selectedStop).format('0%')},`;
-			const stop4 = `${sliderRightColor} 100%);`;
-
-			return `${basicStyle}${stop1}${stop2}${stop3}${stop4}`;
-		},
-
 		sliderMinimum() {
 			return Math.max(this.minimum, this.range.min);
 		},
