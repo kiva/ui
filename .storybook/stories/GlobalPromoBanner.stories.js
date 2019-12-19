@@ -6,7 +6,7 @@ import GlobalPromoContentful from '@/components/WwwFrame/PromotionalBanner/Globa
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
-let mockedContentfulAPIResponse = {
+const mockedContentfulAPIResponse = {
 	data: {
 		contentfulCMS: {
 			items: [{
