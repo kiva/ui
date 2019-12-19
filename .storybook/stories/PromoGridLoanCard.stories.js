@@ -1,11 +1,6 @@
-import Vue from 'vue';
 import StoryRouter from 'storybook-vue-router';
 import { select, radios } from '@storybook/addon-knobs';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
-
-import kivaPlugins from '@/plugins';
-
-Vue.use(kivaPlugins)
 
 const promoCategories = {
 	Women1: { route: 'women', id: 'women', label: 'women' },
@@ -27,7 +22,7 @@ const expOptions = {
 };
 
 export default {
-	title: 'Promos|Grid Loan Card',
+	title: 'Promos|MG Grid Loan Card',
 	decorators: [StoryRouter()],
 };
 

@@ -1,5 +1,6 @@
 const styleLoaders = require('../build/style-loaders');
 const kvWebpackConfig = require('../build/webpack.base.conf');
+var SvgStorePlugin = require('webpack-svgstore-plugin');
 
 module.exports = async ({ config, mode }) => {
 
@@ -26,7 +27,22 @@ module.exports = async ({ config, mode }) => {
 				},
 				...kvWebpackConfig.module.rules,
 			]
-		}
+		},
+		plugins: [
+			...config.plugins,
+			// minify and combine svg icons
+			new SvgStorePlugin({
+				svg: {
+					'xmlns': 'http://www.w3.org/2000/svg',
+					'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+					'style': 'display:none;',
+				},
+				svgoOptions: {
+					floatPrecision: 3,
+				},
+				prefix: 'icon-',
+			}),
+		]
 	};
 
 	return newConfig;
