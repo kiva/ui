@@ -2,6 +2,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
+import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 import KvToggle from '@/components/Kv/KvToggle';
 
 export default { title: 'Kv | Form Elements' };
@@ -12,6 +13,7 @@ export const KitchenSink = () => ({
 		KvDropdownRounded,
 		KvPillToggle,
 		KvRadio,
+		KvRangeSlider,
 		KvToggle
 	},
 	data() {
@@ -37,6 +39,7 @@ export const KitchenSink = () => ({
 			],
 			kvPillSelected: 'o2',
 			kvRadioSelected: 'female',
+			kvRangeSlider: 50,
 			kvToggle1: true,
 			kvToggle2: false,
 			kvToggle3: true
@@ -49,6 +52,7 @@ export const KitchenSink = () => ({
 					<legend>Example Legend</legend>
 
 					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvPillToggle</legend>
 						<kv-pill-toggle
 							id="pill"
 							:options="kvPillOptions"
@@ -57,7 +61,7 @@ export const KitchenSink = () => ({
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
-						<legend>Gender</legend>
+						<legend>KvRadio</legend>
 						<kv-radio
 							id="gender-radio-both"
 							radio-value="both"
@@ -80,6 +84,29 @@ export const KitchenSink = () => ({
 						>
 							Men only
 						</kv-radio>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvRangeSlider</legend>
+
+						<kv-range-slider
+							id="slider-1"
+							v-model="kvRangeSlider"
+						>
+							Slider Label
+							<template v-slot:value>(value: {{kvRangeSlider}})</template>
+						</kv-range-slider>
+
+						<br>
+
+						<kv-range-slider
+							id="slider-2"
+							v-model="kvRangeSlider"
+							disabled
+						>
+							Slider Label Disabled
+							<template v-slot:value>(value: {{kvRangeSlider}})</template>
+						</kv-range-slider>
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
