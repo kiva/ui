@@ -61,8 +61,6 @@ export const Default = () => ({
 	components: {
 		GlobalPromoContentful,
 	},
-	props: {
-	},
 	template: `
 		<global-promo-contentful />
 	`,
