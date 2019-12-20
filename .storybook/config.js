@@ -1,10 +1,12 @@
 import { configure, addDecorator, addParameters } from '@storybook/vue';
 import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
+//load all the svg icon sprites
+import '@/assets/iconLoader';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
-
+// storybook theme
 import kvTheme from './kvtheme';
 
 addParameters({
