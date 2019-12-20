@@ -49,7 +49,7 @@ module.exports = merge(base, {
 			environment: 'development'
 		},
 		intercom: {
-			enable: false,
+			enable: true,
 		},
 	},
 	server: {
