@@ -7,14 +7,10 @@
 			</div>
 		</div>
 		<div class="row column">
-			<div class="columns large-10" v-show="!idleCreditOptIn && !isEnabled">
-				<blockquote>
-					<em>
-						You currently have auto-lending turned off and are opted out of this feature.
-						If you turn it on you are electing to participate in this feature.
-					</em>
-				</blockquote><br>
-			</div>
+			<opt-in-status-controls
+				:idle-credit-opt-in="idleCreditOptIn"
+				:is-enabled="isChanged"
+			/>
 			<main-toggle />
 		</div>
 		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
@@ -106,6 +102,7 @@ import FloatingCounter from './FloatingCounter';
 import MainToggle from './MainToggle';
 import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
+import OptInStatusControls from './OptInStatusControls';
 import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
@@ -139,6 +136,7 @@ export default {
 		LendTimingDropdown,
 		MainToggle,
 		MobileCounter,
+		OptInStatusControls,
 		PartnerFilter,
 		SaveButton,
 		SectorFilter,
