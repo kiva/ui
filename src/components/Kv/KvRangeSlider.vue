@@ -79,7 +79,9 @@ export default {
 
 $thumb-diameter: 1.25em;
 $thumb-fill: #60b75f;
+$thumb-fill-active: $kiva-green;
 $track-height: 0.375em;
+$track-background: $kiva-stroke-gray;
 $track-fill: $kiva-light-green;
 
 @mixin thumb() {
@@ -95,11 +97,19 @@ $track-fill: $kiva-light-green;
 
 @mixin track() {
 	box-sizing: border-box;
-	border: 0;
 	width: 100%;
 	height: $track-height;
+	border: 0;
 	outline: 0;
-	background: $kiva-stroke-gray linear-gradient(to right, $track-fill 0%, $track-fill, var(--percent-full), $kiva-stroke-gray, var(--percent-full), $kiva-stroke-gray 100%); // eslint-disable-line max-len
+	background:
+		$track-background
+		linear-gradient(
+			to right,
+			$track-fill 0%,
+			$track-fill var(--percent-full),
+			$track-background var(--percent-full),
+			$track-background 100%
+		);
 	border-radius: 1.5em;
 }
 
@@ -179,17 +189,17 @@ $track-fill: $kiva-light-green;
 		&:active {
 			&::-webkit-slider-thumb {
 				transform: scale(1);
-				background: $kiva-green;
+				background: $thumb-fill-active;
 			}
 
 			&::-moz-range-thumb {
 				transform: scale(1);
-				background: $kiva-green;
+				background: $thumb-fill-active;
 			}
 
 			&::-ms-thumb {
 				transform: scale(1);
-				background: $kiva-green;
+				background: $thumb-fill-active;
 			}
 		}
 
