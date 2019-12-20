@@ -172,22 +172,6 @@ $track-fill: $kiva-light-green;
 			display: none;
 		}
 
-		&:hover:not([disabled]) {
-			cursor: pointer;
-
-			&::-webkit-slider-thumb {
-				transform: scale(1.15);
-			}
-
-			&::-moz-range-thumb {
-				transform: scale(1.15);
-			}
-
-			&::-ms-thumb {
-				transform: scale(1.15);
-			}
-		}
-
 		&:active {
 			&::-webkit-slider-thumb {
 				transform: scale(1);
@@ -222,6 +206,23 @@ $track-fill: $kiva-light-green;
 
 			&::-ms-thumb {
 				@include input-focus();
+			}
+		}
+
+		&:hover:not([disabled]) {
+			cursor: pointer;
+			overflow: visible;
+
+			&::-webkit-slider-thumb {
+				transform: scale(1.15);
+			}
+
+			&::-moz-range-thumb {
+				transform: scale(1.15);
+			}
+
+			&::-ms-thumb {
+				transform: scale(1.15);
 			}
 		}
 
