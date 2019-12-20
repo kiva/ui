@@ -139,6 +139,8 @@ $track-fill: $kiva-light-green;
 
 		&::-ms-track {
 			@include track();
+
+			color: transparent;
 		}
 
 		&::-moz-range-progress {
