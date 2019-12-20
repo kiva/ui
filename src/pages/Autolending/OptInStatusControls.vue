@@ -38,11 +38,11 @@ export default {
 	props: {
 		idleCreditOptIn: {
 			type: Boolean,
-			default: null
+			required: true
 		},
 		isEnabled: {
 			type: Boolean,
-			default: null
+			required: true
 		}
 	},
 	data() {
