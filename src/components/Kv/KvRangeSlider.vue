@@ -170,7 +170,7 @@ $track-fill: $kiva-light-green;
 			display: none;
 		}
 
-		&:hover {
+		&:hover:not([disabled]) {
 			cursor: pointer;
 
 			&::-webkit-slider-thumb {
