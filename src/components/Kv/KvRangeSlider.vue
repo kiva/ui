@@ -17,7 +17,7 @@
 			:max="max"
 			:step="step"
 			:value="value"
-			:style="sliderStyle()"
+			:style="sliderStyle"
 			@input="onInput($event)"
 			@change="onChange($event)"
 		>
@@ -56,13 +56,7 @@ export default {
 			default: 0
 		}
 	},
-	methods: {
-		onInput($event) {
-			this.$emit('input', parseFloat($event.target.value, 10));
-		},
-		onChange($event) {
-			this.$emit('change', parseFloat($event.target.value, 10));
-		},
+	computed: {
 		sliderStyle() {
 			const sliderLeftColor = '#8ccb8c';
 			const sliderRightColor = 'transparent';
@@ -77,6 +71,14 @@ export default {
 			const stop4 = `${sliderRightColor} 100%);`;
 
 			return `${basicStyle}${stop1}${stop2}${stop3}${stop4}`;
+		}
+	},
+	methods: {
+		onInput($event) {
+			this.$emit('input', parseFloat($event.target.value, 10));
+		},
+		onChange($event) {
+			this.$emit('change', parseFloat($event.target.value, 10));
 		},
 	},
 };
