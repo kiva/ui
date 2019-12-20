@@ -58,19 +58,9 @@ export default {
 	},
 	computed: {
 		sliderStyle() {
-			const sliderLeftColor = '#8ccb8c';
-			const sliderRightColor = 'transparent';
-
 			const snapped = Math.round(this.value / this.step) * this.step; // snap to the nearest :step
-			const selectedStop = Math.abs(snapped - this.min) / Math.abs(this.max - this.min) * 100;
-
-			const basicStyle = 'background-image: linear-gradient(to right,';
-			const stop1 = `${sliderLeftColor} 0%,`;
-			const stop2 = `${sliderLeftColor} ${selectedStop}%,`;
-			const stop3 = `${sliderRightColor} ${selectedStop}%,`;
-			const stop4 = `${sliderRightColor} 100%);`;
-
-			return `${basicStyle}${stop1}${stop2}${stop3}${stop4}`;
+			const percentFull = Math.abs(snapped - this.min) / Math.abs(this.max - this.min) * 100;
+			return `--percent-full: ${percentFull}%`;
 		}
 	},
 	methods: {
@@ -87,109 +77,139 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$thumb-diameter: 1.25em;
+$thumb-fill: #60b75f;
 $track-height: 0.375em;
-$thumb-radius: 0.875em;
+$track-fill: $kiva-light-green;
 
-@mixin thumb {
-	-webkit-appearance: none !important;
-	background: #60b75f;
-	border: 0.0625em solid #60b75f;
-	border-radius: $thumb-radius;
-	cursor: pointer;
-	height: $thumb-radius;
-	transition: 100ms;
-	width: $thumb-radius;
+@mixin thumb() {
+	box-sizing: border-box;
+	border: 0;
+	width: $thumb-diameter;
+	height: $thumb-diameter;
+	border-radius: 50%;
+	background: $thumb-fill;
+	transform: scale(1);
+	transition: all 100ms ease-in-out;
 }
 
-@mixin track {
-	-webkit-appearance: none;
-	-moz-apperance: none;
-	border-radius: 0.375em;
-	margin: 0;
-	outline: none;
-	padding: 0;
+@mixin track() {
+	box-sizing: border-box;
+	border: 0;
 	width: 100%;
-	cursor: pointer;
-	transition: all 300ms;
+	height: $track-height;
+	outline: 0;
+	background: $kiva-stroke-gray linear-gradient(to right, $track-fill 0%, $track-fill, var(--percent-full), $kiva-stroke-gray, var(--percent-full), $kiva-stroke-gray 100%); // eslint-disable-line max-len
+	border-radius: 1.5em;
+}
+
+@mixin fill() {
+	height: $track-height;
+	background: $track-fill;
 }
 
 .kv-range-slider {
 	.input {
-		@include track;
+		--percent-full: 0%;
 
-		@media screen and (-webkit-min-device-pixel-ratio: 0) {
-			background-color: $kiva-stroke-gray;
-			height: $track-height;
+		-webkit-appearance: none;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		height: $thumb-diameter;
+		background: transparent;
+
+		&::-webkit-slider-runnable-track {
+			@include track();
 		}
 
-		@supports (-ms-ime-align:auto) {
-			background-color: transparent;
-			height: $track-height * 4;
-		}
-
-		&::-moz-focus-outer {
-			border: 0;
-		}
-
-		&::-webkit-slider-thumb {
-			@include thumb;
-		}
-
-		&::-moz-range-thumb {
-			@include thumb;
-		}
-
-		&::-ms-thumb {
-			@include thumb;
+		&::-moz-range-track {
+			@include track();
 		}
 
 		&::-ms-track {
-			background-color: transparent;
-			border-color: transparent;
-			border-width: (0.9375em / 2) 0;
-			color: transparent;
-			height: $track-height;
+			@include track();
+		}
+
+		&::-moz-range-progress {
+			@include fill();
 		}
 
 		&::-ms-fill-lower {
-			background-color: $kiva-stroke-gray;
+			@include fill();
 		}
 
-		&::-ms-fill-upper {
-			background-color: $kiva-stroke-gray;
+		&::-webkit-slider-thumb {
+			@include thumb();
+
+			-webkit-appearance: none;
+			margin-top: 0.5 * ($track-height - $thumb-diameter);
+		}
+
+		&::-moz-range-thumb {
+			@include thumb();
+		}
+
+		&::-ms-thumb {
+			@include thumb();
+
+			margin-top: 0;
 		}
 
 		&::-ms-tooltip {
 			display: none;
 		}
 
-		&:focus {
-			outline: 0;
+		&:hover {
+			cursor: pointer;
 
 			&::-webkit-slider-thumb {
-				@include input-focus();
+				transform: scale(1.15);
 			}
 
 			&::-moz-range-thumb {
-				@include input-focus();
+				transform: scale(1.15);
 			}
 
 			&::-ms-thumb {
-				@include input-focus();
+				transform: scale(1.15);
 			}
 		}
 
 		&:active {
 			&::-webkit-slider-thumb {
+				transform: scale(1);
 				background: $kiva-green;
 			}
 
 			&::-moz-range-thumb {
+				transform: scale(1);
 				background: $kiva-green;
 			}
 
 			&::-ms-thumb {
+				transform: scale(1);
 				background: $kiva-green;
+			}
+		}
+
+		&:focus {
+			outline: 0;
+
+			&::-moz-focus-outer {
+				border: 0;
+			}
+
+			&::-webkit-slider-thumb {
+				@include input-focus();
+			}
+
+			&::-moz-range-thumb {
+				@include input-focus();
+			}
+
+			&::-ms-thumb {
+				@include input-focus();
 			}
 		}
 
