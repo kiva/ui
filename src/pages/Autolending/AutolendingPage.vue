@@ -9,7 +9,7 @@
 		<div class="row column">
 			<opt-in-status-controls
 				:idle-credit-opt-in="idleCreditOptIn"
-				:is-enabled="isChanged"
+				:is-enabled="isEnabled"
 			/>
 			<main-toggle />
 		</div>
