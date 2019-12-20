@@ -46,7 +46,7 @@ const mockedContentfulAPIResponse = {
 	}
 }
 export default {
-	title: 'Promos|Global Promotional Banner Contentful',
+	title: 'Apollo Examples|Global Promotional Banner Contentful',
 	decorators: [StoryRouter()],
 };
 

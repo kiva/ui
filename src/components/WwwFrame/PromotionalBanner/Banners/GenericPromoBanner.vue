@@ -5,8 +5,8 @@
 			class="banner-link"
 			v-kv-track-event="promoBannerContent.kvTrackEvent"
 		>
-			<kv-icon name="present" class="present-icon" />
-			<div class="content" v-html="richText">
+			<kv-icon :name="iconKey" :class="`${iconKey}-icon`" />
+			<div class="content" v-html="promoBannerContent.richText">
 			</div>
 		</router-link>
 	</div>
@@ -14,33 +14,26 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
 		KvIcon
 	},
 	props: {
+		iconKey: {
+			type: String,
+			default: ''
+		},
 		promoBannerContent: {
 			type: Object,
 			default() {
 				return {
-					bannerName: '',
 					kvTrackEvent: [],
 					link: '',
-					richText: {},
+					richText: '',
 				};
 			}
 		},
-	},
-	computed: {
-		richText() {
-			return documentToHtmlString(this.promoBannerContent.richText);
-		}
-	},
-	data() {
-		return {
-		};
 	},
 };
 </script>
@@ -87,7 +80,7 @@ export default {
 	}
 }
 
-.gift-banner .present-icon {
+.gift-banner [class*="-icon"] {
 	display: block;
 	height: rem-calc(22);
 	width: rem-calc(22);
@@ -96,7 +89,7 @@ export default {
 }
 
 .gift-banner .banner-link:hover {
-	.present-icon {
+	[class*="-icon"] {
 		stroke: $kiva-darkgreen;
 	}
 }
