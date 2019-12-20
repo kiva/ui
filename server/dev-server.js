@@ -138,6 +138,8 @@ serverCompiler.watch({
 	updateHandler();
 });
 
+app.use(express.static('storybook-static'));
+
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);
 
