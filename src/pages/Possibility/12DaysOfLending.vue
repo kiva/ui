@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="row column calendar">
-			<twelve-days-calendar :current-day="today()" />
+			<twelve-days-calendar :advent-day="adventDay" />
 		</div>
 	</div>
 </template>
@@ -45,6 +45,7 @@ export default {
 	},
 	data() {
 		return {
+			promoEnabled: true,
 			twelveDaysImages: [
 				['small', possibilitiesImageRequire('./Phase2-sm-std.jpg')],
 				['small retina', possibilitiesImageRequire('./Phase2-sm-retina.jpg')],
@@ -59,9 +60,26 @@ export default {
 			],
 		};
 	},
-	methods: {
-		today() {
-			return 4; // TODO Determine how we're going to drive the dates
+	computed: {
+		PDTDate() {
+			const PDTOffsetHours = -8; // hours offset from UTC
+			const clientOffsetHours = new Date().getTimezoneOffset() / 60;
+			const offsetMs = (PDTOffsetHours + clientOffsetHours) * 60 * 60 * 1000;
+			return new Date(Date.now() + offsetMs);
+		},
+		adventDay() {
+			const month = this.PDTDate.getMonth();
+			const day = this.PDTDate.getDate();
+			const year = this.PDTDate.getFullYear();
+
+			let adventDay = 0; // show all entries as unopened
+			if (year === 2019 && month === 12 && day >= 14) {
+				adventDay = day - 13; // Day 1 of the advent calendar is Dec 14
+			} else if ((month === 12 && day > 25) || year === 2020) {
+				adventDay = 13; // show all entries as opened
+			}
+
+			return adventDay;
 		}
 	}
 };
