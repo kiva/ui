@@ -22,12 +22,14 @@
 			</div>
 		</div>
 		<div class="row column calendar">
-			<twelve-days-calendar :advent-day="adventDay" />
+			<twelve-days-calendar :advent-day="adventDay" :promo-enabled="promoEnabled" />
 		</div>
 	</div>
 </template>
 
 <script>
+import _get from 'lodash/get';
+import gql from 'graphql-tag';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
@@ -59,6 +61,32 @@ export default {
 				['wxga retina', possibilitiesImageRequire('./Phase2-xxl-retina.jpg')]
 			],
 		};
+	},
+	inject: ['apollo'],
+	apollo: {
+		query: gql`{
+			contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
+				items
+			}
+		}`,
+		variables() {
+			return {
+				contentType: 'uiSetting',
+				contentKey: 'ui-global-promo'
+			};
+		},
+		preFetch: true,
+		result({ data }) {
+			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
+
+			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
+				return new Date(promo.fields.startDate).toDateString() === this.PDTDate.toDateString();
+			});
+
+			if (todaysLimitedPromo) {
+				this.promoEnabled = todaysLimitedPromo.fields.active;
+			}
+		}
 	},
 	computed: {
 		PDTDate() {
