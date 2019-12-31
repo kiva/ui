@@ -59,7 +59,7 @@ export default {
 	computed: {
 		sliderStyle() {
 			const snapped = Math.round(this.value / this.step) * this.step; // snap to the nearest :step
-			const percentFull = Math.abs(snapped - this.min) / Math.abs(this.max - this.min) * 100;
+			const percentFull = (Math.abs(snapped - this.min) / Math.abs(this.max - this.min)) * 100;
 			return `--percent-full: ${percentFull}%`;
 		}
 	},
