@@ -58,13 +58,6 @@ export default {
 		}) {
 			this.apollo.mutate({
 				mutation: updateActiveLoan,
-				// variables: Object.assign({}, this.activeLoan, {
-				// 	xCoordinate,
-				// 	yCoordinate,
-				// 	hoverLoanId,
-				// 	loan,
-				// 	tracking,
-				// }),
 				variables: {
 					...this.activeLoan,
 					xCoordinate,

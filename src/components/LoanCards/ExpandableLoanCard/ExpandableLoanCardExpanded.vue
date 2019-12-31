@@ -138,13 +138,7 @@ export default {
 				} else {
 					this.activeLoanWillClear();
 				}
-				// this.activeLoan = Object.assign({}, this.activeLoan, {
-				// 	xCoordinate: activeLoanState.xCoordinate,
-				// 	yCoordinate: activeLoanState.yCoordinate,
-				// 	loan: activeLoanState.loan,
-				// 	hoverLoanId: activeLoanState.hoverLoanId,
-				// 	tracking: activeLoanState.tracking,
-				// });
+
 				this.activeLoan = {
 					...this.activeLoan,
 					xCoordinate: activeLoanState.xCoordinate,
@@ -153,6 +147,7 @@ export default {
 					hoverLoanId: activeLoanState.hoverLoanId,
 					tracking: activeLoanState.tracking,
 				};
+
 				if (activeLoanState.hoverLoanId) {
 					this.activeLoanDidChange();
 				} else {
