@@ -53,6 +53,10 @@ module.exports = {
 			space: 'j0p9a6ql0rn7',
 			environment: 'master'
 		},
+		intercom: {
+			enable: true,
+			appId: 't3epx9oz'
+		},
 	},
 	server: {
 		port: 8888,
