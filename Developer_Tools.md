@@ -52,42 +52,23 @@ code --install-extension octref.vetur && code --install-extension EditorConfig.E
 
 Workspace Settings
 
-> Generate the .vscode folder with a settings.json inside and apply *one* of the following settings (.vscode is already in our .gitignore file)
+> Generate the .vscode folder with a settings.json inside and apply your workspace settings in that file (.vscode is already in our .gitignore file)
 
 Basic ESLint integration
 
-```json
-{
-    /* Other workspace settings...  */
-    "eslint.validate": [
-        "javascript",
-        "vue"
-    ]
-}
-```
+> Should be enabled by default
 
 ESLint auto fix
+
 > If you would like ESLint to automatically fix auto-fixable errors when you save a file
 
 ```json
 {
     /* Other workspace settings...  */
-    "eslint.validate":[
-        {
-            "language":"vue",
-            "autoFix":true
-        },
-        {
-            "language":"html",
-            "autoFix":true
-        },
-        {
-            "language":"javascript",
-            "autoFix":true
-        }
-    ],
-    "eslint.autoFixOnSave": true,
     "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
 }
 ```
 
