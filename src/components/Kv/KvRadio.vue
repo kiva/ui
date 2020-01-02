@@ -49,8 +49,9 @@ export default {
 
 	.label {
 		display: flex;
-		align-items: center;
+		align-items: baseline;
 		font-size: 1em;
+		line-height: inherit;
 		margin: 0;
 	}
 
@@ -58,6 +59,8 @@ export default {
 		border-radius: 50%;
 		width: 1em;
 		height: 1em;
+		top: 0.125em;
+		flex-shrink: 0;
 		background-color: #fff;
 		border: 0.125em solid $subtle-gray;
 		margin-right: 0.5em;

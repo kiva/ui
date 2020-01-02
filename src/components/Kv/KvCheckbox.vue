@@ -1,5 +1,8 @@
 <template>
-	<div class="kv-checkbox">
+	<div
+		class="kv-checkbox"
+		:class="{ 'kv-checkbox--right' : checkboxRight }"
+	>
 		<input
 			class="input"
 			type="checkbox"
@@ -39,6 +42,10 @@ export default {
 			type: Boolean,
 			default: null
 		},
+		checkboxRight: {
+			type: Boolean,
+			default: false
+		}
 	},
 	methods: {
 		onChange(event) {
@@ -62,14 +69,16 @@ export default {
 
 	.label {
 		display: flex;
-		align-items: center;
+		align-items: baseline;
 		font-size: 1em;
+		line-height: inherit;
 		margin: 0;
 	}
 
 	.square {
 		width: 1em;
 		height: 1em;
+		top: 0.125em;
 		flex-shrink: 0;
 		border-radius: 0.125em;
 		background-color: #fff;
@@ -89,6 +98,14 @@ export default {
 			border: solid transparent;
 			border-width: 0 0.125em 0.125em 0;
 			transform: rotate(45deg);
+		}
+	}
+
+	&--right {
+		.square {
+			order: 1;
+			margin-right: 0;
+			margin-left: 0.5em;
 		}
 	}
 
