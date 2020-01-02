@@ -3,9 +3,9 @@
 		<div class="columns small-12">
 			<h2>Featured Loans admin controls</h2>
 			<div class="experiment-controls">
-				<label>
-					Enable experiment: <input type="checkbox" v-model="experimentEnabled">
-				</label>
+				<kv-checkbox v-model="experimentEnabled">
+					Enable experiment:
+				</kv-checkbox>
 				<label>
 					Start time: <input type="datetime-local" v-model="experimentStart">
 				</label>
@@ -46,11 +46,13 @@ import { readJSONSetting } from '@/util/settingsUtils';
 import expDataQuery from '@/graphql/query/featuredLoansControl.graphql';
 import setExpMutation from '@/graphql/mutation/setFeaturedLoans.graphql';
 import KvButton from '@/components/Kv/KvButton';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
 		KvButton,
+		KvCheckbox,
 		KvLoadingSpinner,
 	},
 	inject: ['apollo'],

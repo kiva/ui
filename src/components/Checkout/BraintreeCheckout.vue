@@ -132,13 +132,12 @@
 				class="row small-collapse"
 			>
 				<div class="small-12 columns vault-checkbox-wrapper">
-					<label for="vault-checkbox">
-						<input
-							v-model="storePaymentMethod"
-							type="checkbox"
-							id="vault-checkbox"
-						> Save payment method
-					</label>
+					<kv-checkbox
+						v-model="storePaymentMethod"
+						id="vault-checkbox"
+					>
+						Save payment method
+					</kv-checkbox>
 				</div>
 			</div>
 
@@ -201,12 +200,14 @@ import deleteBraintreeCard from '@/graphql/mutation/deleteBraintreeCard.graphql'
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
 import braintreeConfig from '@/graphql/query/checkout/braintreeConfig.graphql';
 import KvButton from '@/components/Kv/KvButton';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		KvButton,
+		KvCheckbox,
 		KvIcon,
 		KvLightbox,
 	},
