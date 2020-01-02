@@ -129,11 +129,14 @@ export default {
 			next: ({ data }) => {
 				const interstitialState = _get(data, 'basketAddInterstitial');
 				this.showInterstitial = interstitialState.active ? interstitialState.visible : false;
-				this.basketInterstitialState = Object.assign({}, this.basketInterstitialState, {
+
+				this.basketInterstitialState = {
+					...this.basketInterstitialState,
 					active: interstitialState.active,
 					visible: interstitialState.visible,
 					loanId: interstitialState.loanId,
-				});
+				};
+
 				// check for loan id + fetch loan
 				if (interstitialState.loanId !== 0) {
 					this.fetchLoan();
