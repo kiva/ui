@@ -85,10 +85,6 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		experimentData: {
-			type: Object,
-			default: () => {},
-		},
 		expiringSoonMessage: {
 			type: String,
 			default: ''
