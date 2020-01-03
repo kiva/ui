@@ -1,3 +1,7 @@
-import changeCase from 'change-case';
+import * as changeCase from 'change-case';
+import { titleCase } from 'title-case';
 
-export default (value, type = 'no') => changeCase[type](value);
+const caseMethods = changeCase;
+caseMethods.titleCase = titleCase;
+
+export default (value, type = 'no') => caseMethods[type](value);

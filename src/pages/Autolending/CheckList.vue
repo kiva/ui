@@ -6,7 +6,7 @@
 		>
 			<kv-toggle
 				class="list-item"
-				:id="`${name}-${id}` | changeCase('param')"
+				:id="`${name}-${id}` | changeCase('paramCase')"
 				:value="selected"
 				@change="$emit('change', $event, id)"
 			>

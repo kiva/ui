@@ -28,7 +28,7 @@
 				<expandable-list-item
 					v-for="region in regions"
 					:key="region.name"
-					:id="`lend-menu-${region.name}-panel` | changeCase('param')"
+					:id="`lend-menu-${region.name}-panel` | changeCase('paramCase')"
 					ref="regionCountries"
 				>
 					<template slot="title">
