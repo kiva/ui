@@ -80,6 +80,21 @@ export const Checked = () => ({
 	}
 });
 
+export const CheckboxRight = () => ({
+	components: {
+		KvCheckbox
+	},
+	template: `
+		<kv-checkbox
+			id="right"
+			:checkbox-right="true"
+			:checked="true"
+		>
+			checkboxRight
+		</kv-checkbox>
+	`,
+});
+
 export const FontSized = () => ({
 	components: {
 		KvCheckbox
@@ -115,5 +130,19 @@ export const FontSized = () => ({
 				.75rem
 			</kv-checkbox>
 		</fieldset>
+	`,
+});
+
+export const MultiLine = () => ({
+	components: {
+		KvCheckbox
+	},
+	template: `
+		<kv-checkbox
+			id="multi-line"
+			:checked="true"
+		>
+			Lorem ipsum proident occaecat elit voluptate labore eu eiusmod quis elit enim commodo. Officia mollit Lorem do culpa quis consectetur deserunt sunt. Deserunt commodo non labore Lorem reprehenderit incididunt. Qui nisi nisi officia incididunt irure nostrud. Nulla laborum labore adipisicing aute anim sint ullamco adipisicing fugiat adipisicing. Ipsum elit mollit cillum aliquip irure reprehenderit ea duis. Velit duis in laborum sunt tempor adipisicing voluptate eiusmod aute.
+		</kv-checkbox>
 	`,
 });
