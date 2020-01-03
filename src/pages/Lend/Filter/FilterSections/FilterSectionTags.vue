@@ -10,7 +10,7 @@
 				<ul>
 					<li v-for="item in items" :key="item.value">
 						<kv-checkbox
-							:id="item.label|changeCase('param')"
+							:id="item.label|changeCase('paramCase')"
 							:disabled="item.count === 0"
 							:checked="item.isRefined"
 							@change="refine(item.value)"

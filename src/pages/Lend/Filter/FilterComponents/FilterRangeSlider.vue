@@ -2,7 +2,7 @@
 	<div>
 		<kv-range-slider
 			v-if="range.min !== range.max"
-			:id="title|changeCase('param')"
+			:id="title|changeCase('paramCase')"
 			:min="sliderMinimum"
 			:max="sliderMaximum"
 			:step="step"

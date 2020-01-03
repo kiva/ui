@@ -2,7 +2,7 @@
 	<experiment-slide v-bind="$attrs" v-on="$listeners">
 		<h3>{{ controlName }} <small>(default categories)</small></h3>
 		<label>
-			Key: {{ controlName | changeCase('param') }}
+			Key: {{ controlName | changeCase('paramCase') }}
 		</label>
 		<label>
 			name: <input type="text" v-model="inputName" :placeholder="defaultName">
