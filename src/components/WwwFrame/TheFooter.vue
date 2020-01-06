@@ -345,8 +345,7 @@ $footer-link-separator-color: $light-green;
 
 				li {
 					display: inline-block;
-					transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0);
-
+					transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0); /* stylelint-disable-line */
 					a {
 						padding-left: $spacing;
 						border-left: 1px solid $footer-link-separator-color;

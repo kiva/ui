@@ -112,7 +112,7 @@ $inner-arrow-offset: rem-calc($arrow-width - 1);
 	border-right-color: transparent;
 	border-bottom-color: transparent;
 	bottom: calc(#{$tooltip-border-width} * 4px);
-	left: calc(-#{$inner-arrow-offset} * 2);
+	left: calc(-#{$inner-arrow-offset} * 2); /* stylelint-disable-line */
 	margin-top: 0;
 	margin-bottom: 0;
 }
@@ -139,7 +139,7 @@ $inner-arrow-offset: rem-calc($arrow-width - 1);
 	border-right-color: transparent;
 	border-top-color: transparent;
 	top: calc(#{$tooltip-border-width} * 2px);
-	left: calc(-#{$inner-arrow-offset} * 2);
+	left: calc(-#{$inner-arrow-offset} * 2); /* stylelint-disable-line */
 	margin-top: 0;
 	margin-bottom: 0;
 }

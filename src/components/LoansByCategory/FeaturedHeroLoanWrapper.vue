@@ -195,7 +195,7 @@ export default {
 				this.loading = false;
 			} else if (this.queryOffset <= 20) {
 				// allow up to 4 extra queries to get eligible loans
-				this.queryOffset = this.queryOffset + 4;
+				this.queryOffset += 4;
 				this.fetchMoreLoans();
 			} else {
 				// fallback for 20 funded loans is to just show a funded loan
