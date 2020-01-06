@@ -5,8 +5,8 @@
 			<div class="small-12 columns">
 				<div>
 					<p>Kiva is proud to have worked with the academic and research community for over 10 years.
-						Some of Kiva's research and education partners have included: Stanford University, University of Michigan,
-						UC Berkeley, University of Washington, University of San Francisco.
+						Some of Kiva's research and education partners include: Stanford University, 
+						University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
 					</p>
 					<p>If your group is interested in a research collaboration with Kiva, Kiva's current
 					research interests include:
