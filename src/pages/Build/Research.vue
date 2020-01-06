@@ -3,6 +3,21 @@
 		<developer-secondary-menu slot="secondary" />
 		<div class="row page-content">
 			<div class="small-12 columns">
+				<div>
+					<p>Kiva is proud to have worked with the academic and research community for over 10 years.
+						Some of Kiva's research and education partners have included: Stanford University, University of Michigan,
+						UC Berkeley, University of Washington, University of San Francisco.
+					</p>
+					<p>If your group is interested in a research collaboration with Kiva, Kiva's current
+					research interests include:
+						<div v-for="topic in topics" :key="topic">
+							<ul>
+								<li>{{ topic }}</li>>
+							</ul>
+						</div>
+					<p>Please find below selected publications featuring Kiva data that are available on
+						the open web.
+				</div>
 				<div v-for="year in years" :key="year">
 					<h3>{{ year }}</h3>
 					<!-- eslint-disable vue/no-use-v-if-with-v-for -->
@@ -34,13 +49,24 @@ export default {
 	},
 	data() {
 		return {
+			topics: ["Creation of Synthetic Datasets", "Recommendation systems", "Social Good ML Applications",
+							"Behaviorial Pschology", "Fairness Research", "Social Impact Assessments"]
 			years: [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
 				{
 					year: 2019,
+					author: 'O’Luing, Mervyn, et al',
+					/* eslint-disable max-len */
+					title: 'A Grouping Genetic Algorithm for Joint Stratification and Sample Allocation Designs',
+					/* eslint-enable max-len */
+					publication: 'Survey Methodology',
+					url: 'https://www150.statcan.gc.ca/n1/pub/12-001-x/2019003/article/00007-eng.pdf'
+				},
+				{
+					year: 2019,
 					author: 'Tsai, Jeanne et al',
 					title: 'Culturally Valued Facial Expressions Enhance Loan Request Success',
-					publication: 'American Psychological Association',
+					publication: 'Emotion',
 					/* eslint-disable max-len */
 					url: 'https://culture-emotion-lab.sites.stanford.edu/sites/g/files/sbiybj9351/f/culturallyvaluedfacialloansuccess.pdf',
 					/* eslint-enable max-len */
@@ -71,15 +97,6 @@ export default {
 					/* eslint-enable max-len */
 					publication: 'Journal of Business Venturing',
 					url: 'https://whitman.syr.edu/pdfa/fundingthestoryofhybridventures.pdf'
-				},
-				{
-					year: 2018,
-					author: 'O’Luing, Mervyn, et al',
-					/* eslint-disable max-len */
-					title: 'A Grouping Genetic Algorithm for Joint Stratification and Sample Allocation Designs',
-					/* eslint-enable max-len */
-					publication: 'Insight Centre for Data Analytics',
-					url: 'https://arxiv.org/pdf/1709.03076.pdf'
 				},
 				{
 					year: 2018,
