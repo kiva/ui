@@ -22,7 +22,7 @@ module.exports = [
 		options: {
 			implementation: sass,
 			sassOptions: {
-				// fiber: false, // to disable automatic use of fibers package
+				fiber: false, // to disable automatic use of fibers package
 				includePaths: [
 					'src/assets/fonts',
 					'src/assets/scss',
