@@ -4,19 +4,24 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				<div>
-					<p>Kiva is proud to have worked with the academic and research community for over 10 years.
+					<p>
+						Kiva is proud to have worked with the academic and research community for over 10 years.
 						Some of Kiva's research and education partners include: Stanford University,
 						University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
 					</p>
-					<p>If your group is interested in a research collaboration with Kiva, Kiva's current
-					research interests include:
-						<div v-for="topic in topics" :key="topic">
-							<ul>
-								<li>{{ topic }}</li>>
-							</ul>
-						</div>
-					<p>Please find below selected publications featuring Kiva data that are available on
+					<p>
+						If your group is interested in a research collaboration with Kiva, Kiva's current
+						research interests include:
+					</p>
+					<div v-for="topic in topics" :key="topic">
+						<ul>
+							<li>{{ topic }}</li>
+						</ul>
+					</div>
+					<p>
+						Please find below selected publications featuring Kiva data that are available on
 						the open web.
+					</p>
 				</div>
 				<div v-for="year in years" :key="year">
 					<h3>{{ year }}</h3>
@@ -49,8 +54,8 @@ export default {
 	},
 	data() {
 		return {
-			topics: ["Creation of Synthetic Datasets", "Recommendation systems", "Social Good ML Applications",
-							"Behaviorial Pschology", "Fairness Research", "Social Impact Assessments"],
+			topics: ['Creation of Synthetic Datasets', 'Recommendation systems', 'Social Good ML Applications',
+				'Behaviorial Pschology', 'Fairness Research', 'Social Impact Assessments'],
 			years: [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
 				{
