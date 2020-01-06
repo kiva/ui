@@ -21,11 +21,14 @@ module.exports = [
 		loader: 'sass-loader',
 		options: {
 			implementation: sass,
-			includePaths: [
-				'src/assets/fonts',
-				'src/assets/scss',
-				'node_modules/foundation-sites/scss'
-			]
+			sassOptions: {
+				fiber: false, // to disable automatic use of fibers package
+				includePaths: [
+					'src/assets/fonts',
+					'src/assets/scss',
+					'node_modules/foundation-sites/scss'
+				]
+			}
 		}
 	}
 ];
