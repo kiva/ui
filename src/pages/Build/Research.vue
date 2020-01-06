@@ -5,7 +5,7 @@
 			<div class="small-12 columns">
 				<div>
 					<p>Kiva is proud to have worked with the academic and research community for over 10 years.
-						Some of Kiva's research and education partners include: Stanford University, 
+						Some of Kiva's research and education partners include: Stanford University,
 						University of Michigan, UC Berkeley, University of Washington, University of San Francisco.
 					</p>
 					<p>If your group is interested in a research collaboration with Kiva, Kiva's current
@@ -50,7 +50,7 @@ export default {
 	data() {
 		return {
 			topics: ["Creation of Synthetic Datasets", "Recommendation systems", "Social Good ML Applications",
-							"Behaviorial Pschology", "Fairness Research", "Social Impact Assessments"]
+							"Behaviorial Pschology", "Fairness Research", "Social Impact Assessments"],
 			years: [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
 				{
