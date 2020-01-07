@@ -1,4 +1,10 @@
-import { mocks, reset, setDelay } from 'timesync';
+import store2 from 'store2';
+import {
+	mocks,
+	realNow,
+	reset,
+	setDelay,
+} from 'timesync';
 import syncDate from '@/util/syncDate';
 
 describe('syncDate.js', () => {
@@ -10,12 +16,47 @@ describe('syncDate.js', () => {
 
 	afterEach(() => {
 		reset();
+		mocks.sync.mockClear();
+		store2.clearAll();
 	});
 
-	it('Prevents timesync.sync() from being called multiple times', () => {
+	it('Prevents timesync.sync() from being called multiple times while syncing', () => {
 		syncDate();
 		return syncDate().then(() => {
 			expect(mocks.sync.mock.calls.length).toBe(1);
+		});
+	});
+
+	it('Uses previous offset instead of syncing if less than 10 minutes has passed since the last sync', () => {
+		const nineMinutes = 9 * 60 * 1000;
+		store2.set('timesync.lastSyncTime', realNow() - nineMinutes);
+		const oldOffset = 1234;
+		store2.set('timesync.lastOffset', oldOffset);
+		// Expect the offset to initially be 0 before syncing is called
+		expect(mocks.offset).toBe(0);
+		return syncDate().then(() => {
+			// Expect timesync.sync() not to have been called
+			expect(mocks.sync.mock.calls.length).toBe(0);
+			// Expect the offset to be the saved offset
+			expect(mocks.offset).toBe(oldOffset);
+		});
+	});
+
+	it('Updates the last sync time in local storage upon syncing', () => {
+		const elevenMinutes = 11 * 60 * 1000;
+		const initialSyncTime = realNow() - elevenMinutes;
+		store2.set('timesync.lastSyncTime', initialSyncTime);
+		return syncDate().then(() => {
+			// Expect syncing to be called
+			expect(mocks.sync.mock.calls.length).toBe(1);
+			// Expect that the lastSyncTime has been updated
+			const syncTime = store2.get('timesync.lastSyncTime');
+			expect(syncTime).not.toBe(initialSyncTime);
+			// Expect that the lastSyncTime has been updated to now (approximately)
+			const differenceFromNow = Math.abs(realNow() - syncTime);
+			expect(differenceFromNow).toBeLessThan(20);
+			// Expect that the calculated delay has been saved
+			expect(store2.get('timesync.lastOffset')).toBe(delay);
 		});
 	});
 
