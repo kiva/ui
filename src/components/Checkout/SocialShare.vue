@@ -18,7 +18,7 @@
 			</div>
 
 			<div class="share__msg">
-				<textarea>{{ suggestedMessage }}</textarea>
+				<textarea v-model="suggestedMessage"></textarea>
 			</div>
 
 			<div class="share__social social">
@@ -65,12 +65,14 @@ export default {
 		};
 	},
 	computed: {
-		suggestedMessage() {
-			const selectedLoan = this.loans[this.selectedLoanIndex];
-			return `
-				Kiva is an easy way to make a real difference in someone's life.
-				Will you join me in helping ${selectedLoan.name} in ${selectedLoan.geocode.city} to pursue their dream?
-			`;
+		suggestedMessage: {
+			get() {
+				const selectedLoan = this.loans[this.selectedLoanIndex];
+				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${selectedLoan.name} in ${selectedLoan.geocode.city} to pursue their dream?`; // eslint-disable-line max-len
+			},
+			set(val) {
+				return val;
+			}
 		},
 	},
 	methods: {
