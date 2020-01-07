@@ -28,7 +28,7 @@ export default [
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
-	{ path: '/thanks', component: () => import('@/pages/Thanks/Thanks') },
+	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/Thanks') },
 	{
 		path: '/possibility',
 		component: () => import('@/pages/Possibility/Possibility'),
