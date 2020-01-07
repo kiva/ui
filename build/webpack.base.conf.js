@@ -31,6 +31,8 @@ module.exports = {
 			'~': resolve('node_modules'),
 			'@': resolve('src'),
 			'foundation': 'foundation-sites/js',
+			// alias promise module to handle timesync calling require('promise')
+			'promise': resolve('build/promise.js')
 		}
 	},
 	module: {

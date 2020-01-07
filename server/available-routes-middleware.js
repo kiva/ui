@@ -39,6 +39,8 @@ function buildRouteJSON() {
 	paths.push('/ui-login');
 	paths.push('/ui-logout');
 	paths.push('/process-ssr-auth');
+	// add path for time synchronization
+	paths.push('/timesync');
 
 	return paths;
 }
