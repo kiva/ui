@@ -50,7 +50,7 @@
 									<div class="custom-refinement"
 										v-for="category in customCategoryList" :key="category.name">
 										<kv-checkbox
-											@checkbox-toggled="handleCheckboxToggle($event, category)">
+											@change="handleCheckboxToggle(checkboxStatus, category)">
 											{{ category.name }} ({{ 0 }})
 										</kv-checkbox>
 									</div>
@@ -357,7 +357,8 @@ export default {
 
 			// merge newFacets into existing facets
 			// > clone existing facets so we don't mutate our data directly (we want 1 batch update)
-			const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			// const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			const newDisjunctiveFacets = { ...this.disjunctiveFacets };
 			// iterate over each facet type and merge array values for each facet
 			_forEach(newDisjunctiveFacets, (value, key) => {
 				newDisjunctiveFacets[key] = _union(value, newFacets[key]);
@@ -373,7 +374,8 @@ export default {
 			// console.log(`Removed Facets: ${JSON.stringify(removedFacets)}`);
 
 			// > clone existing facets so we don't mutate our data directly (we want 1 batch update)
-			const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			// const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			const newDisjunctiveFacets = { ...this.disjunctiveFacets };
 
 			// remove facets from existing set
 			_forEach(newDisjunctiveFacets, (value, key) => {
@@ -399,7 +401,8 @@ export default {
 				value: "Health"
 			*/
 			// Currently set global disjunctive facets
-			const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			// const newDisjunctiveFacets = Object.assign({}, this.disjunctiveFacets);
+			const newDisjunctiveFacets = { ...this.disjunctiveFacets };
 
 			// remove facets from existing set
 			_forEach(newDisjunctiveFacets, (value, key) => {

@@ -1,6 +1,7 @@
 <template>
 	<kv-pill-toggle
 		class="gender-pill-toggle"
+		id="gender-options"
 		:options="genderOptions"
 		:selected="genderOptionSelected"
 		@pill-toggled="genderPillToggled"

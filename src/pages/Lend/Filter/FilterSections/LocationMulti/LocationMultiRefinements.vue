@@ -7,7 +7,7 @@
 			<div
 				v-if="item.isRegion"
 				class="region"
-				:id="item.region|changeCase('param')"
+				:id="item.region|changeCase('paramCase')"
 				:class="{open: isRegionOpen(item.region)}"
 			>
 				<div
@@ -20,7 +20,7 @@
 					/>
 					<div
 						class="region-label"
-						:id="item.label|changeCase('param')"
+						:id="item.label|changeCase('paramCase')"
 					>
 						{{ item.label }} ({{ item.count }})
 					</div>
@@ -32,39 +32,40 @@
 					<div
 						v-if="!item.allCountriesSelected"
 						@click="selectAllCountries(item.countries, item.region)"
-						:id="'select-all-'+item.region|changeCase('param')"
+						:id="'select-all-'+item.region|changeCase('paramCase')"
 					>
 						Select all
 					</div>
 					<div
 						v-else
 						@click="deselectAllCountries(item.countries, item.region)"
-						:id="'deselect-all-'+item.region|changeCase('param')"
+						:id="'deselect-all-'+item.region|changeCase('paramCase')"
 					>
 						Deselect all
 					</div>
 				</div>
 			</div>
-			<kv-controlled-checkbox
+			<kv-checkbox
 				v-else-if="isRegionOpen(item.region)"
 				class="country"
-				:checked="isCountryChecked(item.isRefined, item.region)"
-				:label="`${item.label} (${item.count})`"
-				:id="item.label|changeCase('param')"
-				@checkbox-input="handleCountryCheckboxInput(item)"
+				:id="item.label|changeCase('paramCase')"
 				:disabled="item.count === 0"
-			/>
+				:checked="isCountryChecked(item.isRefined, item.region)"
+				@change="handleCountryCheckboxInput(item)"
+			>
+				{{ item.label }} ({{ item.count }})
+			</kv-checkbox>
 		</div>
 	</div>
 </template>
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
-import KvControlledCheckbox from '@/components/Kv/KvControlledCheckbox';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	components: {
-		KvControlledCheckbox,
+		KvCheckbox,
 		KvIcon,
 	},
 	data() {

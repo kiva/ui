@@ -1,18 +1,15 @@
 <template>
 	<div v-if="showToggle" class="donate-repayments-toggle">
-		<label v-if="!myDonateRepayments" class="donate-repayments-label">
-			<span class="donate-repayments-icon">
-				<kv-icon v-if="!donateRepayments" name="checkbox-rounded-unchecked" />
-				<kv-icon v-else name="checkbox-rounded-checked" />
-			</span>
+		<kv-checkbox
+			class="donate-repayments-label"
+			id="donate-repayments"
+			:checkbox-right="true"
+			v-if="!myDonateRepayments"
+			v-model="donateRepayments"
+			@change="toggleDonateRepayments"
+		>
 			<span id="donate-repayments-tooltip">Donate loan repayments instead?</span>
-			<input
-				class="donate-repayments-checkbox"
-				type="checkbox"
-				v-model="donateRepayments"
-				@change="toggleDonateRepayments"
-			>
-		</label>
+		</kv-checkbox>
 		<kv-tooltip controller="donate-repayments-tooltip">
 			<template slot="title">
 				Thanks for your support!
@@ -30,14 +27,14 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import _forEach from 'lodash/forEach';
 import numeral from 'numeral';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import initializeCheckout from '@/graphql/query/checkout/initializeCheckout.graphql';
 import updateLoanReservationDonateRepayments from '@/graphql/mutation/updateLoanReservationDonateRepayments.graphql';
 
 export default {
 	components: {
-		KvIcon,
+		KvCheckbox,
 		KvTooltip
 	},
 	inject: ['apollo'],
@@ -144,15 +141,14 @@ export default {
 
 .donate-repayments-toggle {
 	.donate-repayments-label {
-		display: flex;
 		position: relative;
 		padding: 0.5rem 0 0 0.55rem;
-		align-items: flex-start;
-		line-height: 1.5rem;
+		line-height: 1;
+		font-size: $small-text-font-size;
 		cursor: pointer;
 
 		@include breakpoint(medium) {
-			flex-direction: row-reverse;
+			text-align: right;
 			padding: 0.05rem 0 0 0.5rem;
 		}
 	}

@@ -1,7 +1,7 @@
 <template>
 	<div class="lightbox-filter">
 		<h3 class="filter-title">
-			{{ name | changeCase('title') }}
+			{{ name | changeCase('titleCase') }}
 		</h3>
 		<kv-radio
 			:id="`filter-all-${name}`"

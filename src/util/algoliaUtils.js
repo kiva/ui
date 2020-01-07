@@ -79,7 +79,6 @@ export function rebuildSortByIndexFromRoute(routeStateSortBy) {
 // Build Algolia specific map of current search state to url query parameters
 export function stateToRoute(uiState) {
 	// console.log(`uiState: ${JSON.stringify(uiState)}`);
-	/* eslint-disable no-mixed-operators no-alert */
 	return {
 		query: uiState.query,
 		gender:

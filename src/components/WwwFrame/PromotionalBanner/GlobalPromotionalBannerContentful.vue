@@ -1,10 +1,9 @@
 <template>
-	<div class="global-promo-bar">
-		<generic-promo-banner
-			v-if="isPromoEnabled"
-			:promo-banner-content="promoBannerContent"
-		/>
-	</div>
+	<generic-promo-banner
+		v-if="isPromoEnabled"
+		icon-key="present"
+		:promo-banner-content="promoBannerContent"
+	/>
 </template>
 
 <script>
@@ -12,6 +11,7 @@ import _get from 'lodash/get';
 import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	inject: ['apollo'],
@@ -56,7 +56,12 @@ export default {
 					);
 				});
 				if (activePromoBanner) {
-					this.promoBannerContent = activePromoBanner.fields;
+					// parse the contentful richText into an html string
+					this.promoBannerContent = {
+						kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
+						link: activePromoBanner.fields.link,
+						richText: documentToHtmlString(activePromoBanner.fields.richText)
+					};
 					this.isPromoEnabled = true;
 				}
 			}
@@ -64,13 +69,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-@import 'settings';
-
-.global-promo-bar {
-	background: white;
-	font-weight: 300;
-	color: $kiva-icon-green;
-}
-</style>

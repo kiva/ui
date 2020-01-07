@@ -121,6 +121,7 @@ export default {
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem saving your settings', 'error');
+				// TODO: handle api.authenticationRequired (delay then send to login)
 			});
 		},
 	},

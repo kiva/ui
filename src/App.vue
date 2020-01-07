@@ -3,11 +3,13 @@
 		<router-view />
 		<vue-progress-bar />
 		<the-tip-message />
+		<intercom-messenger :app-config="appConfig" />
 	</div>
 </template>
 
 <script>
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
+import IntercomMessenger from '@/components/WwwFrame/IntercomMessenger';
 
 export default {
 	name: 'App',
@@ -15,7 +17,8 @@ export default {
 		appConfig: { type: Object, default: () => {} }
 	},
 	components: {
-		TheTipMessage
+		TheTipMessage,
+		IntercomMessenger
 	},
 	metaInfo() {
 		return {

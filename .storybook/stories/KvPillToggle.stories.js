@@ -28,6 +28,7 @@ export const Default = () => ({
 	template: `
 		<div>
 			<kv-pill-toggle
+				id="pill"
 				:options="options"
 				:selected="selected"
 			/>
@@ -61,6 +62,7 @@ export const Disabled = () => ({
 	},
 	template: `
 		<kv-pill-toggle
+			id="pill"
 			:options="options"
 			:selected="selected"
 		/>
@@ -91,6 +93,7 @@ export const NoneSelected = () => ({
 	},
 	template: `
 		<kv-pill-toggle
+			id="pill"
 			:options="options"
 		/>
 	`
@@ -152,14 +155,17 @@ export const MultipleOnPage = () => ({
 	template: `
 		<div>
 			<kv-pill-toggle
+				id="pill1"
 				:options="options1"
 				:selected="selected1"
 			/>
 			<kv-pill-toggle
+				id="pill2"
 				:options="options2"
 				:selected="selected2"
 			/>
 			<kv-pill-toggle
+				id="pill3"
 				:options="options3"
 				:selected="selected3"
 			/>

@@ -1,18 +1,27 @@
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
+import KvRangeSlider from '@/components/Kv/KvRangeSlider';
+import KvToggle from '@/components/Kv/KvToggle';
 
 export default { title: 'Kv | Form Elements' };
 
 export const KitchenSink = () => ({
 	components: {
+		KvCheckbox,
 		KvDropdownRounded,
 		KvPillToggle,
 		KvRadio,
+		KvRangeSlider,
+		KvToggle
 	},
 	data() {
 		return {
-			kvRadioSelected: 'female',
+			kvCheckboxModel1: true,
+			kvCheckboxModel2: false,
+			kvCheckboxModel3: false,
+			kvDropdownRoundedModel: 'test2',
 			kvPillOptions: [
 				{
 					title: 'Option 1',
@@ -29,7 +38,11 @@ export const KitchenSink = () => ({
 				},
 			],
 			kvPillSelected: 'o2',
-			kvDropdownRoundedModel: 'test2'
+			kvRadioSelected: 'female',
+			kvRangeSlider: 50,
+			kvToggle1: true,
+			kvToggle2: false,
+			kvToggle3: true
 		}
 	},
 	template: `
@@ -39,14 +52,16 @@ export const KitchenSink = () => ({
 					<legend>Example Legend</legend>
 
 					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvPillToggle</legend>
 						<kv-pill-toggle
+							id="pill"
 							:options="kvPillOptions"
 							:selected="kvPillSelected"
 						/>
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">
-						<legend>Gender</legend>
+						<legend>KvRadio</legend>
 						<kv-radio
 							id="gender-radio-both"
 							radio-value="both"
@@ -69,6 +84,71 @@ export const KitchenSink = () => ({
 						>
 							Men only
 						</kv-radio>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvRangeSlider</legend>
+						<kv-range-slider
+							id="slider-1"
+							v-model="kvRangeSlider"
+						>
+							Slider Label
+							<template v-slot:value>(value: {{kvRangeSlider}})</template>
+						</kv-range-slider>
+						<kv-range-slider
+							id="slider-2"
+							v-model="kvRangeSlider"
+							disabled
+						>
+							Slider Label Disabled
+							<template v-slot:value>(value: {{kvRangeSlider}})</template>
+						</kv-range-slider>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvCheckbox</legend>
+						<kv-checkbox
+							id="checkbox-1"
+							v-model="kvCheckboxModel1"
+							disabled
+						>
+							Option 1
+						</kv-checkbox>
+						<kv-checkbox
+							id="checkbox-2"
+							v-model="kvCheckboxModel2"
+						>
+							Option 2
+						</kv-checkbox>
+						<kv-checkbox
+							id="checkbox-3"
+							v-model="kvCheckboxModel3"
+						>
+							Option 3
+						</kv-checkbox>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvToggle</legend>
+						<kv-toggle
+							id="kv-toggle-1"
+							v-model="kvToggle1"
+							disabled
+						>
+							Option 1
+						</kv-toggle>
+						<kv-toggle
+							id="kv-toggle-2"
+							v-model="kvToggle2"
+						>
+							Option 2
+						</kv-toggle>
+						<kv-toggle
+							id="kv-toggle-3"
+							v-model="kvToggle3"
+						>
+							Option 3
+						</kv-toggle>
 					</fieldset>
 
 					<fieldset style="margin-bottom: 2rem;">

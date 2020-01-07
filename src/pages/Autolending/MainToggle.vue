@@ -1,5 +1,9 @@
 <template>
-	<kv-toggle class="main-toggle" v-model="isEnabled">
+	<kv-toggle
+		class="main-toggle"
+		id="auto-lending-enabled-toggle"
+		v-model="isEnabled"
+	>
 		<p class="toggle-text-wrapper">
 			<span class="toggle-text">
 				<template v-if="isEnabled">
@@ -69,10 +73,6 @@ export default {
 @import 'settings';
 
 .main-toggle {
-	.toggle-text-wrapper {
-		margin-left: 3rem;
-	}
-
 	.toggle-text {
 		font-weight: 500;
 	}

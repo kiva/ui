@@ -17,6 +17,7 @@ let activeExperiments = [
 	// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
 	// 'mg_promo',
 	'double_arrow_button',
+	'intercom_messenger',
 ];
 
 // TODO: Enhance Error handling
@@ -117,7 +118,7 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 	})
 
 	// COMING SOON!!!
-	// Remove any cookies that don't exisit in the active experiments listing
+	// Remove any cookies that don't exist in the active experiments listing
 	// }).then(() => {
 	// 	return apolloClient.mutate({
 	// 		mutation: experimentCookieCleaner
@@ -125,7 +126,7 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 
 		// Assign specific experiment version if present in query params
 		// > query param must be 'setuiab'
-		// > value should be and ACTIVE experiment id and the verison you want to assign separated by a period '.'
+		// > value should be and ACTIVE experiment id and the version you want to assign separated by a period '.'
 		.then(() => {
 			const routeQuery = _get(route, 'query.setuiab');
 			if (routeQuery !== undefined) {

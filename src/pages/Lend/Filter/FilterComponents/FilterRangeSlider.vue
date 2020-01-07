@@ -1,38 +1,47 @@
 <template>
 	<div>
-		<div class="header">
+		<kv-range-slider
+			v-if="range.min !== range.max"
+			:id="title|changeCase('paramCase')"
+			:min="sliderMinimum"
+			:max="sliderMaximum"
+			:step="step"
+			:value="sliderValue"
+			@input="onSliderChange(refine, range, $event)"
+		>
 			<span class="title">
 				{{ title }}
 			</span>
-			<span class="range-label">
-				({{ rangeLabel }})
-			</span>
-		</div>
-		<div
-			class="slider"
-			v-if="range.min !== range.max"
-		>
-			<input
-				type="range"
-				:min="sliderMinimum"
-				:max="sliderMaximum"
-				:step="step"
-				:value="sliderValue"
-				:style="sliderStyle"
-				:id="title|changeCase('param')"
-				@input="onSliderChange(refine, range, $event)"
-			>
-		</div>
-		<div class="slider-unavailable" v-else>
-			No refinements available
+			<template v-slot:value>
+				<span class="range-label">
+					({{ rangeLabel }})
+				</span>
+			</template>
+		</kv-range-slider>
+
+		<div v-else>
+			<div class="header">
+				<span class="title">
+					{{ title }}
+				</span>
+				<span class="range-label">
+					({{ rangeLabel }})
+				</span>
+				<div class="slider-unavailable">
+					No refinements available
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import numeral from 'numeral';
+import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 
 export default {
+	components: {
+		KvRangeSlider
+	},
 	props: {
 		currentRefinement: {
 			type: Object,
@@ -98,23 +107,6 @@ export default {
 			return this.defaultRangeLabel;
 			/* eslint-enable */
 		},
-		sliderStyle() {
-			const sliderLeftColor = '#8ccb8c';
-			const sliderRightColor = '#dbdbdb';
-
-			const selectedStop = this.isSliderSettingMinimum
-				? (this.sliderValue / this.sliderMaximum)
-				: (Math.abs(this.sliderValue - this.sliderMinimum) / Math.abs(this.sliderMaximum - this.sliderMinimum));
-
-			const basicStyle = 'background-image: -webkit-linear-gradient(left,';
-			const stop1 = `${sliderLeftColor} 0%,`;
-			const stop2 = `${sliderLeftColor} ${numeral(selectedStop).format('0%')},`;
-			const stop3 = `${sliderRightColor} ${numeral(selectedStop).format('0%')},`;
-			const stop4 = `${sliderRightColor} 100%);`;
-
-			return `${basicStyle}${stop1}${stop2}${stop3}${stop4}`;
-		},
-
 		sliderMinimum() {
 			return Math.max(this.minimum, this.range.min);
 		},
@@ -130,9 +122,7 @@ export default {
 	},
 
 	methods: {
-		onSliderChange(refine, range, event) {
-			const sliderValue = parseFloat(event.target.value, 10);
-
+		onSliderChange(refine, range, sliderValue) {
 			if (
 				(this.isSliderSettingMinimum === false && sliderValue === this.sliderMaximum)
 				|| (this.isSliderSettingMinimum === true && sliderValue === this.sliderMinimum)
@@ -151,32 +141,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-$track-height: rem-calc(6);
-$thumb-radius: rem-calc(14);
-
-@mixin thumb {
-	-webkit-appearance: none !important;
-	background: #60b75f;
-	border: rem-calc(1) solid #60b75f;
-	border-radius: $thumb-radius;
-	cursor: pointer;
-	height: $thumb-radius;
-	transition: 100ms;
-	width: $thumb-radius;
-}
-
-@mixin track {
-	-webkit-appearance: none;
-	-moz-apperance: none;
-	border-radius: rem-calc(6);
-	margin: 0;
-	outline: none;
-	padding: 0;
-	width: 100%;
-	cursor: pointer;
-	transition: all 300ms;
-}
-
 .range-input {
 	margin-bottom: rem-calc(3);
 
@@ -186,64 +150,6 @@ $thumb-radius: rem-calc(14);
 
 	.range-label {
 		color: #808080;
-	}
-
-	.slider {
-		width: rem-calc(200);
-
-		input[type='range'] {
-			@include track;
-
-			@media screen and (-webkit-min-device-pixel-ratio: 0) {
-				background-color: #8ccb8c;
-				height: $track-height;
-			}
-
-			@supports (-ms-ime-align:auto) {
-				background-color: transparent;
-				height: $track-height * 4;
-			}
-
-			&::-moz-focus-outer {
-				border: 0;
-			}
-
-			&::-webkit-slider-thumb {
-				@include thumb;
-			}
-
-			&::-moz-range-thumb {
-				@include thumb;
-			}
-
-			&::-ms-track {
-				background-color: transparent;
-				border-color: transparent;
-				border-width: (15px / 2) 0;
-				color: transparent;
-				height: $track-height;
-			}
-
-			&::-ms-thumb {
-				@include thumb;
-			}
-
-			&::-ms-fill-lower {
-				background-color: #8ccb8c;
-			}
-
-			&::-ms-fill-upper {
-				background-color: #dbdbdb;
-			}
-
-			&::-ms-tooltip {
-				display: none;
-			}
-
-			&:focus {
-				outline: 0;
-			}
-		}
 	}
 
 	.slider-unavailable {

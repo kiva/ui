@@ -7,6 +7,36 @@ export const Default = () => ({
 	template: '<kv-button>Button</kv-button>'
 });
 
+export const DefaultSmaller = () => ({
+	components: { KvButton },
+	template: '<kv-button class="smaller">Button Smaller</kv-button>'
+});
+
+export const DefaultSmallest = () => ({
+	components: { KvButton },
+	template: '<kv-button class="smallest">Button Smallest</kv-button>'
+});
+
+export const Secondary = () => ({
+	components: { KvButton },
+	template: '<kv-button class="secondary">Secondary</kv-button>'
+});
+
+export const SecondarySmaller = () => ({
+	components: { KvButton },
+	template: '<kv-button class="secondary smaller">Secondary Smaller</kv-button>'
+});
+
+export const SecondarySmallest = () => ({
+	components: { KvButton },
+	template: '<kv-button class="secondary smallest">Secondary Smallest</kv-button>'
+});
+
+export const Setting = () => ({
+	components: { KvButton },
+	template: '<kv-button class="setting">Setting</kv-button>'
+});
+
 export const Disabled = () => ({
 	components: { KvButton },
 	template: '<kv-button disabled>Button</kv-button>'

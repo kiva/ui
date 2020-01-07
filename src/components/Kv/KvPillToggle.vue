@@ -1,21 +1,24 @@
 <template>
-	<div class="pill-toggle">
+	<div class="kv-pill-toggle">
 		<div
 			v-for="option in options"
 			:key="option.key"
 			class="pill"
 		>
-			<label class="label">
-				<input
-					class="radio"
-					type="radio"
-					:class="option.key"
-					:disabled="option.disabled"
-					:value="option.key"
-					v-model="checked"
-					@change="onChange(option.key)"
-				>
-				<span class="title">{{ option.title }}</span>
+			<input
+				class="radio"
+				type="radio"
+				:id="`${id}-${option.key}`"
+				:disabled="option.disabled"
+				:value="option.key"
+				v-model="checked"
+				@change="onChange(option.key)"
+			>
+			<label
+				class="label"
+				:for="`${id}-${option.key}`"
+			>
+				{{ option.title }}
 			</label>
 		</div>
 	</div>
@@ -24,6 +27,10 @@
 <script>
 export default {
 	props: {
+		id: {
+			type: String,
+			required: true
+		},
 		options: {
 			type: Array,
 			required: true,
@@ -61,11 +68,14 @@ export default {
 
 $form-border-radius: rem-calc(3);
 
-.pill-toggle {
+.kv-pill-toggle {
 	display: flex;
-	// height: rem-calc(34);
 
 	.label {
+		flex: 1;
+		padding: rem-calc(6) rem-calc(13);
+		color: $tab-pill-color;
+		border: $tab-pill-border;
 		display: flex;
 		justify-content: center;
 		align-items: stretch;
@@ -75,13 +85,6 @@ $form-border-radius: rem-calc(3);
 		min-height: 100%;
 		margin-left: rem-calc(-1);
 		line-height: 1.3;
-	}
-
-	.title {
-		flex: 1;
-		padding: rem-calc(6) rem-calc(13);
-		color: $tab-pill-color;
-		border: $tab-pill-border;
 
 		&:hover {
 			background: $white;
@@ -94,7 +97,7 @@ $form-border-radius: rem-calc(3);
 		min-width: rem-calc(85);
 
 		&:first-child {
-			.title {
+			.label {
 				border-bottom-left-radius: $form-border-radius;
 				border-top-left-radius: $form-border-radius;
 				margin-left: 0;
@@ -102,7 +105,7 @@ $form-border-radius: rem-calc(3);
 		}
 
 		&:last-child {
-			.title {
+			.label {
 				border-bottom-right-radius: $form-border-radius;
 				border-top-right-radius: $form-border-radius;
 			}
@@ -114,13 +117,13 @@ $form-border-radius: rem-calc(3);
 		opacity: 0;
 		width: 0;
 
-		&:focus + .title {
+		&:focus + .label {
 			border: $input-border-focus;
 			background-color: $input-background-focus;
 			box-shadow: $input-shadow-focus;
 		}
 
-		&:checked + .title {
+		&:checked + .label {
 			background: $tab-pill-active-background;
 			color: $white;
 			cursor: default;
@@ -128,16 +131,16 @@ $form-border-radius: rem-calc(3);
 			position: relative;
 		}
 
-		&:active + .title {
+		&:active + .label {
 			background: $kiva-green;
 			color: $white;
 		}
 
-		&[disabled] + .title {
+		&[disabled] + .label {
 			@include disabled();
 		}
 
-		&[disabled]:active + .title,
+		&[disabled]:active + .label,
 		&[disabled] + .title:hover {
 			background: inherit;
 			color: $tab-pill-color;

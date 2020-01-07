@@ -34,7 +34,7 @@ Command Shift P - to install extensions manually
 - [Vetur - octref.vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur) Vuejs syntax + linting
 - [EditorConfig for VS Code - EditorConfig.EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) for enforcing code styles.
 - [ESlint - dbaeumer.vscode-eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for Javascript linting.
-- [Stylelint - shinnn.stylelint](https://marketplace.visualstudio.com/items?itemName=shinnn.stylelint) for scss linting.
+- [Stylelint - stylelint.vscode-stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint) for scss linting.
 - [Vue VSCode Snippets - sdras.vue-vscode-snippets](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-snippets) VueJS code snippets
 - [GraphQL - prisma.vscode-graphql](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql) GraphQL Syntax support.
 
@@ -45,49 +45,30 @@ Install all extensions via the command line
 > First requires that VSCode is in your PATH variable. From VSCode Command Palette (⇧⌘P) execute command "Shell Command: Install 'code' command in PATH"
 
 ```bash
-code --install-extension octref.vetur && code --install-extension EditorConfig.EditorConfig && code --install-extension dbaeumer.vscode-eslint && code --install-extension shinnn.stylelint && code --install-extension sdras.vue-vscode-snippets && code --install-extension prisma.vscode-graphql
+code --install-extension octref.vetur && code --install-extension EditorConfig.EditorConfig && code --install-extension dbaeumer.vscode-eslint && code --install-extension stylelint.vscode-stylelint && code --install-extension sdras.vue-vscode-snippets && code --install-extension prisma.vscode-graphql
 ```
 
 ### VSCode Setup for Eslint
 
 Workspace Settings
 
-> Generate the .vscode folder with a settings.json inside and apply *one* of the following settings (.vscode is already in our .gitignore file)
+> Generate the .vscode folder with a settings.json inside and apply your workspace settings in that file (.vscode is already in our .gitignore file)
 
 Basic ESLint integration
 
-```json
-{
-    /* Other workspace settings...  */
-    "eslint.validate": [
-        "javascript",
-        "vue"
-    ]
-}
-```
+> Should be enabled by default
 
 ESLint auto fix
+
 > If you would like ESLint to automatically fix auto-fixable errors when you save a file
 
 ```json
 {
     /* Other workspace settings...  */
-    "eslint.validate":[
-        {
-            "language":"vue",
-            "autoFix":true
-        },
-        {
-            "language":"html",
-            "autoFix":true
-        },
-        {
-            "language":"javascript",
-            "autoFix":true
-        }
-    ],
-    "eslint.autoFixOnSave": true,
     "editor.formatOnSave": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
 }
 ```
 
