@@ -18,6 +18,11 @@
 			</div>
 
 			<div class="share__message message">
+				<div
+					class="message__triangle"
+					:class="`message__triangle--loan${selectedLoanIndex + 1}`"
+				>
+				</div>
 				<label
 					class="message__label"
 					for="message-textbox"
@@ -132,27 +137,50 @@ $color-facebook: #3b5998;
 $color-twitter: #08a0e9;
 $color-linkedin: #0077b5;
 
-.thanks {
-	&__headline {
-		@include impact-text();
+$loan-circle-size: rem-calc(70);
+$loan-circle-margin: 1rem;
+$loan-triangle-size: rem-calc(12);
 
-		text-align: center;
+// layout of blocks
+.share {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: rem-calc(600);
+	margin: 0 auto;
+
+	@include breakpoint(large) {
+		flex-direction: row;
 	}
 
-	&__subhead {
-		@include featured-text();
+	&__loans {
+		@include breakpoint(large) {
+			width: rem-calc(70);
+		}
+	}
 
-		text-align: center;
+	&__message {
+		flex: 1;
+		margin: 1rem 0;
+
+		@include breakpoint(large) {
+			margin: 0 1rem;
+		}
+	}
+
+	&__social {
+		@include breakpoint(large) {
+			width: rem-calc(135);
+		}
 	}
 }
 
+// blocks
 .loans {
 	display: flex;
-	justify-content: center;
 
 	@include breakpoint(large) {
 		flex-direction: column;
-		justify-content: flex-start;
 	}
 
 	&__img {
@@ -160,14 +188,24 @@ $color-linkedin: #0077b5;
 	}
 
 	&__circle {
-		width: rem-calc(70);
-		height: rem-calc(70);
+		width: $loan-circle-size;
+		height: $loan-circle-size;
 		border-radius: 50%;
 		overflow: hidden;
-		margin: 0 0.5rem;
+		margin: 0 $loan-circle-margin 0 0;
+
+		&:focus {
+			@include input-focus();
+
+			outline: 0;
+		}
 
 		@include breakpoint(large) {
-			margin: 0 0 1rem 0;
+			margin: 0 0 $loan-circle-margin 0;
+		}
+
+		&:last-child {
+			margin: 0;
 		}
 
 		&--selected {
@@ -191,6 +229,7 @@ $color-linkedin: #0077b5;
 		font-style: italic;
 		margin: 0;
 		padding: 1rem 1rem 3rem 1rem;
+		border-color: $subtle-gray;
 	}
 
 	&__charcount,
@@ -203,12 +242,99 @@ $color-linkedin: #0077b5;
 
 	&__charcount {
 		right: 1rem;
+		user-select: none;
 	}
 
 	&__suggested-btn {
 		left: 1rem;
 		font-weight: unset;
 		text-decoration: underline;
+	}
+
+	&__triangle {
+		position: absolute;
+		top: 0;
+		left: 0;
+		transition: transform 0.25s ease-in-out;
+
+		// triangles
+		&::after,
+		&::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: $loan-triangle-size * -2;
+			right: 100%;
+			width: 0;
+			height: 0;
+			border-style: solid;
+		}
+
+		// triangle fill
+		&::after {
+			top: $loan-triangle-size * -2 + rem-calc(1);
+			left: $loan-triangle-size;
+			border-width: $loan-triangle-size;
+			border-color: transparent transparent #fff transparent;
+		}
+
+		// triangle border
+		&::before {
+			top: $loan-triangle-size * -2 - rem-calc(1);
+			left: $loan-triangle-size - rem-calc(1);
+			border-width: $loan-triangle-size + rem-calc(1);
+			border-color: transparent transparent $subtle-gray transparent;
+		}
+
+		@include breakpoint(large) {
+			// triangle fill
+			&::after {
+				top: $loan-triangle-size;
+				left: unset;
+				border-color: transparent #fff transparent transparent;
+			}
+
+			// triangle border
+			&::before {
+				top: $loan-triangle-size - rem-calc(1);
+				left: unset;
+				border-color: transparent $subtle-gray transparent transparent;
+			}
+		}
+
+		@function circleoffset($index) {
+			@return calc(
+				#{$loan-circle-size * $index} +
+				#{$loan-circle-size / 2} -
+				#{$loan-triangle-size * 2} +
+				#{$index * $loan-circle-margin}
+			);
+		}
+		$offset: rem-calc(1);
+
+		&--loan1 {
+			transform: translate(circleoffset(0), $offset);
+
+			@include breakpoint(large) {
+				transform: translate($offset, circleoffset(0));
+			}
+		}
+
+		&--loan2 {
+			transform: translate(circleoffset(1), $offset);
+
+			@include breakpoint(large) {
+				transform: translate($offset, circleoffset(1));
+			}
+		}
+
+		&--loan3 {
+			transform: translate(circleoffset(2), $offset);
+
+			@include breakpoint(large) {
+				transform: translate($offset, circleoffset(2));
+			}
+		}
 	}
 }
 
@@ -269,39 +395,6 @@ $color-linkedin: #0077b5;
 		height: rem-calc(24);
 		flex-shrink: 0;
 		margin-right: 1rem;
-	}
-}
-
-.share {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	max-width: rem-calc(600);
-	margin: 0 auto;
-
-	@include breakpoint(large) {
-		flex-direction: row;
-	}
-
-	&__loans {
-		@include breakpoint(large) {
-			width: rem-calc(70);
-		}
-	}
-
-	&__message {
-		flex: 1;
-		margin: 1rem 0;
-
-		@include breakpoint(large) {
-			margin: 0 1rem;
-		}
-	}
-
-	&__social {
-		@include breakpoint(large) {
-			width: rem-calc(135);
-		}
 	}
 }
 </style>
