@@ -189,7 +189,7 @@ export default {
 	text-decoration: $anchor-text-decoration;
 
 	&__icon {
-		width: rem-calc(16px);
+		width: rem-calc(16);
 
 		path {
 			fill: $anchor-color;
@@ -212,7 +212,7 @@ export default {
 }
 
 .section {
-	border-bottom: solid rem-calc(1px) $light-gray;
+	border-bottom: solid rem-calc(1) $light-gray;
 	padding: $global-margin 0;
 	display: block;
 	overflow: hidden;

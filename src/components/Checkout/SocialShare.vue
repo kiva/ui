@@ -145,8 +145,8 @@ $color-linkedin: #0077b5;
 	}
 
 	&__circle {
-		width: rem-calc(70px);
-		height: rem-calc(70px);
+		width: rem-calc(70);
+		height: rem-calc(70);
 		border-radius: 50%;
 		overflow: hidden;
 		margin: 0 0.5rem;
@@ -236,8 +236,8 @@ $color-linkedin: #0077b5;
 	}
 
 	&__icon {
-		width: rem-calc(24px);
-		height: rem-calc(24px);
+		width: rem-calc(24);
+		height: rem-calc(24);
 		flex-shrink: 0;
 		margin-right: 1rem;
 	}
@@ -247,7 +247,7 @@ $color-linkedin: #0077b5;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: rem-calc(600px);
+	max-width: rem-calc(600);
 	margin: 0 auto;
 
 	@include breakpoint(large) {
@@ -256,7 +256,7 @@ $color-linkedin: #0077b5;
 
 	&__loans {
 		@include breakpoint(large) {
-			width: rem-calc(70px);
+			width: rem-calc(70);
 		}
 	}
 
@@ -271,7 +271,7 @@ $color-linkedin: #0077b5;
 
 	&__social {
 		@include breakpoint(large) {
-			width: rem-calc(135px);
+			width: rem-calc(135);
 		}
 	}
 }
