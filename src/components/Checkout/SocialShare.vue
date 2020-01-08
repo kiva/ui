@@ -30,7 +30,9 @@
 				>
 					Suggested message
 				</button>
-				<div class="message__charcount">{{ message.length }}/{{ maxMessageLength }}</div>
+				<div class="message__charcount">
+					{{ message.length }}/{{ maxMessageLength }}
+				</div>
 			</div>
 
 			<div class="share__social social">
@@ -131,16 +133,11 @@ $color-linkedin: #0077b5;
 
 .loans {
 	display: flex;
-	justify-content: space-between;
-
-	@include breakpoint(medium) {
-		justify-content: center;
-	}
+	justify-content: center;
 
 	@include breakpoint(large) {
 		flex-direction: column;
-		justify-content: space-between;
-		align-items: flex-end;
+		justify-content: flex-start;
 	}
 
 	&__img {
@@ -152,13 +149,10 @@ $color-linkedin: #0077b5;
 		height: rem-calc(70px);
 		border-radius: 50%;
 		overflow: hidden;
-
-		@include breakpoint(medium) {
-			margin: 0 0.5rem;
-		}
+		margin: 0 0.5rem;
 
 		@include breakpoint(large) {
-			margin: 0;
+			margin: 0 0 1rem 0;
 		}
 
 		&--selected {
@@ -215,18 +209,6 @@ $color-linkedin: #0077b5;
 			margin-right: 0;
 		}
 
-		@include breakpoint(medium) {
-			width: calc(25% - 0.75rem);
-
-			&:nth-child(2n) {
-				margin-right: 1rem;
-			}
-
-			&:last-child {
-				margin-right: 0;
-			}
-		}
-
 		@include breakpoint(large) {
 			width: 100%;
 			margin-right: 0;
@@ -256,6 +238,7 @@ $color-linkedin: #0077b5;
 	&__icon {
 		width: rem-calc(24px);
 		height: rem-calc(24px);
+		flex-shrink: 0;
 		margin-right: 1rem;
 	}
 }
@@ -273,7 +256,7 @@ $color-linkedin: #0077b5;
 
 	&__loans {
 		@include breakpoint(large) {
-			width: rem-calc(85px);
+			width: rem-calc(70px);
 		}
 	}
 
