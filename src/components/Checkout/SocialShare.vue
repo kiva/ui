@@ -17,8 +17,20 @@
 				</button>
 			</div>
 
-			<div class="share__msg">
-				<textarea v-model="suggestedMessage"></textarea>
+			<div class="share__message message">
+				<textarea
+					class="message__textbox"
+					v-model="message"
+					:maxlength="maxMessageLength"
+				></textarea>
+				<button
+					class="message__suggested-btn"
+					v-if="message !== suggestedMessage"
+					@click="setSuggestedMessage"
+				>
+					Suggested message
+				</button>
+				<div class="message__charcount">{{ suggestedMessage.length }}/{{ maxMessageLength }}</div>
 			</div>
 
 			<div class="share__social social">
@@ -61,29 +73,33 @@ export default {
 	},
 	data() {
 		return {
-			selectedLoanIndex: 0
+			selectedLoanIndex: 0,
+			message: '',
+			maxMessageLength: 280
 		};
 	},
 	computed: {
-		suggestedMessage: {
-			get() {
-				const selectedLoan = this.loans[this.selectedLoanIndex];
-				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${selectedLoan.name} in ${selectedLoan.geocode.city} to pursue their dream?`; // eslint-disable-line max-len
-			},
-			set(val) {
-				return val;
-			}
-		},
+		suggestedMessage() {
+			const selectedLoan = this.loans[this.selectedLoanIndex];
+			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${selectedLoan.name} in ${selectedLoan.geocode.city} to pursue their dream?`; // eslint-disable-line max-len
+		}
 	},
 	methods: {
 		setSelectedLoanIndex(index) {
 			this.selectedLoanIndex = index;
+			this.setSuggestedMessage();
+		},
+		setSuggestedMessage() {
+			this.message = this.suggestedMessage;
 		},
 		printReceipt() {
 			if (typeof window !== 'undefined') {
 				window.print();
 			}
 		}
+	},
+	mounted() {
+		this.setSuggestedMessage();
 	}
 };
 </script>
@@ -142,6 +158,32 @@ export default {
 				opacity: 1;
 			}
 		}
+	}
+}
+
+.message {
+	position: relative;
+
+	&__textbox {
+		resize: none;
+		height: 17rem;
+		font-style: italic;
+		margin: 0;
+		padding: 1rem 1rem 3rem 1rem;
+	}
+
+	&__charcount {
+		position: absolute;
+		bottom: 1rem;
+		right: 1rem;
+		line-height: 1;
+	}
+
+	&__suggested-btn {
+		position: absolute;
+		bottom: 1rem;
+		left: 1rem;
+		line-height: 1;
 	}
 }
 
@@ -227,7 +269,7 @@ export default {
 		}
 	}
 
-	&__msg {
+	&__message {
 		flex: 1;
 		margin: 1rem 0;
 
