@@ -30,7 +30,7 @@
 				>
 					Suggested message
 				</button>
-				<div class="message__charcount">{{ suggestedMessage.length }}/{{ maxMessageLength }}</div>
+				<div class="message__charcount">{{ message.length }}/{{ maxMessageLength }}</div>
 			</div>
 
 			<div class="share__social social">
