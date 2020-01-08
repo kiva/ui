@@ -4,23 +4,10 @@
 		<kv-hero v-if="promoEnabled">
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
-					<kv-carousel-slide>
+					<kv-carousel-slide v-for="(image, index) in promoContent.slideshow.images" :key="index">
 						<kv-responsive-image
-							:images="promoImages(1)"
-							alt="Todo"
-						/>
-					</kv-carousel-slide>
-					<kv-carousel-slide>
-						<kv-responsive-image
-							:images="promoImages(2)"
-							alt="Todo"
-						/>
-					</kv-carousel-slide>
-					<kv-carousel-slide>
-						<kv-responsive-image
-							v-if="counter > 2"
-							:images="promoImages(3)"
-							alt="Todo"
+							:images="promoImages(image)"
+							:alt="image.fields.description"
 						/>
 					</kv-carousel-slide>
 				</kv-carousel>
@@ -172,19 +159,19 @@ export default {
 				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
 			];
 		},
-		promoImages(number) {
-			if (this.promoContent.slideshow.images[number - 1].fields) {
+		promoImages(image) {
+			if (image.fields) {
 				return [
-					['small', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=480&h=600&fit=fill&f=faces`], // eslint-disable-line max-len
-					['small retina', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=960&h=1200&fit=fill&f=faces`], // eslint-disable-line max-len
-					['medium', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=680&h=675&fit=fill&f=faces`], // eslint-disable-line max-len
-					['medium retina', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=1360&h=1350&fit=fill&f=faces`], // eslint-disable-line max-len
-					['large', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=1024&h=545&fit=fill&f=faces`], // eslint-disable-line max-len
-					['large retina', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=2048&h=1090&fit=fill&f=faces`], // eslint-disable-line max-len
-					['xga', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=1440&h=768&fit=fill&f=faces`], // eslint-disable-line max-len
-					['xga retina', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=2880&h=1535&fit=fill&f=faces`], // eslint-disable-line max-len
-					['wxga', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=1920&h=820&fit=fill&f=faces`], // eslint-disable-line max-len
-					['wxga retina', `${this.promoContent.slideshow.images[number - 1].fields.file.url}?w=3840&h=1640&fit=fill&f=faces`], // eslint-disable-line max-len
+					['small', `${image.fields.file.url}?fm=jpg&fl=progressive&w=480&h=600&fit=fill&f=faces`], // eslint-disable-line max-len
+					['small retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=960&h=1200&fit=fill&f=faces`], // eslint-disable-line max-len
+					['medium', `${image.fields.file.url}?fm=jpg&fl=progressive&w=680&h=675&fit=fill&f=faces`], // eslint-disable-line max-len
+					['medium retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1360&h=1350&fit=fill&f=faces`], // eslint-disable-line max-len
+					['large', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1024&h=545&fit=fill&f=faces`], // eslint-disable-line max-len
+					['large retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=2048&h=1090&fit=fill&f=faces`], // eslint-disable-line max-len
+					['xga', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1440&h=768&fit=fill&f=faces`], // eslint-disable-line max-len
+					['xga retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=2880&h=1535&fit=fill&f=faces`], // eslint-disable-line max-len
+					['wxga', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1920&h=820&fit=fill&f=faces`], // eslint-disable-line max-len
+					['wxga retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=3840&h=1640&fit=fill&f=faces`], // eslint-disable-line max-len
 				];
 			}
 			return [];
