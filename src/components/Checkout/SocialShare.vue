@@ -106,6 +106,11 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import "foundation";
+
+$color-facebook: #3b5998;
+$color-twitter: #08a0e9;
+$color-linkedin: #0077b5;
 
 .thanks {
 	&__headline {
@@ -229,15 +234,15 @@ export default {
 		}
 
 		&--facebook {
-			background: #3b5998;
+			@include button-style($color-facebook, auto, #fff);
 		}
 
 		&--twitter {
-			background: #08a0e9;
+			@include button-style($color-twitter, auto, #fff);
 		}
 
 		&--linkedin {
-			background: #0077b5;
+			@include button-style($color-linkedin, auto, #fff);
 		}
 
 		&--email {
