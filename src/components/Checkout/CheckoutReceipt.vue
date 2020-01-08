@@ -3,7 +3,7 @@
 		<h2 class="checkout-receipt__headline">
 			Order Confirmation
 		</h2>
-		<section class="section checkout-receipt__lender">
+		<section class="section">
 			TODO: Date<br>
 			{{ lender.firstName }} {{ lender.lastName }}<br>
 			{{ lender.email }}
@@ -15,7 +15,10 @@
 					v-for="loan in receiptData.items.values"
 					:key="loan.id"
 				>
-					<div v-if="loan.basketItemType === 'loan_reservation'">
+					<div
+						class="loan"
+						v-if="loan.basketItemType === 'loan_reservation'"
+					>
 						<h3>
 							<router-link
 								class="loan__name"
@@ -36,7 +39,10 @@
 						</div>
 					</div>
 
-					<div v-else-if="loan.basketItemType === 'donation'">
+					<div
+						class="loan"
+						v-else-if="loan.basketItemType === 'donation'"
+					>
 						<h3 class="loan__name">
 							Donation
 						</h3>
@@ -81,7 +87,7 @@
 		<section class="section">
 			<button class="print" @click="printReceipt">
 				<icon-print class="print__icon" />
-				<span class="print__text">Print this receipt</span>
+				<span>Print this receipt</span>
 			</button>
 		</section>
 	</div>
@@ -190,14 +196,11 @@ export default {
 
 	&__icon {
 		width: rem-calc(16);
+		margin-right: 0.5rem;
 
 		path {
 			fill: $anchor-color;
 		}
-	}
-
-	&__text {
-		margin-left: 0.5rem;
 	}
 
 	&:hover,

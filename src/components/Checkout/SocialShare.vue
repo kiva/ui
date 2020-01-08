@@ -18,18 +18,28 @@
 			</div>
 
 			<div class="share__message message">
+				<label
+					class="message__label"
+					for="message-textbox"
+				>
+					Message
+				</label>
 				<textarea
 					class="message__textbox"
-					v-model="message"
+					id="message-textbox"
+					:placeholder="placeholderMessage"
 					:maxlength="maxMessageLength"
+					v-model="message"
 				></textarea>
-				<button
-					class="message__suggested-btn"
-					v-if="!isSuggestedMessage"
-					@click="useSuggestedMessage"
-				>
-					Suggested message
-				</button>
+				<transition name="kvfastfade">
+					<button
+						class="message__suggested-btn"
+						v-if="!isSuggestedMessage"
+						@click="useSuggestedMessage"
+					>
+						Suggested message
+					</button>
+				</transition>
 				<div class="message__charcount">
 					{{ message.length }}/{{ maxMessageLength }}
 				</div>
@@ -48,8 +58,8 @@
 					<icon-linkedin class="social__icon" />
 					<span>Share</span>
 				</button>
-				<button class="social__btn social__btn--email">
-					<span>Link to email</span>
+				<button class="social__btn social__btn--link">
+					<span>Copy Link</span>
 				</button>
 			</div>
 		</section>
@@ -81,9 +91,14 @@ export default {
 		};
 	},
 	computed: {
+		placeholderMessage() {
+			return `Why did you lend to ${this.loans[this.selectedLoanIndex].name}?`;
+		},
 		suggestedMessage() {
 			const selectedLoan = this.loans[this.selectedLoanIndex];
-			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${selectedLoan.name} in ${selectedLoan.geocode.city} to pursue their dream?`; // eslint-disable-line max-len
+			const { name } = selectedLoan;
+			const location = selectedLoan.geocode.city || selectedLoan.geocode.country.name;
+			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${name} in ${location} to pursue their dream?`; // eslint-disable-line max-len
 		},
 		isSuggestedMessage() {
 			return this.message.trim() === this.suggestedMessage;
@@ -91,8 +106,11 @@ export default {
 	},
 	methods: {
 		setSelectedLoanIndex(index) {
+			const usingSuggested = this.isSuggestedMessage;
 			this.selectedLoanIndex = index;
-			this.useSuggestedMessage();
+			if (usingSuggested) {
+				this.useSuggestedMessage();
+			}
 		},
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
@@ -103,9 +121,6 @@ export default {
 			}
 		}
 	},
-	mounted() {
-		this.useSuggestedMessage();
-	}
 };
 </script>
 
@@ -166,6 +181,10 @@ $color-linkedin: #0077b5;
 .message {
 	position: relative;
 
+	&__label {
+		@include visually-hidden();
+	}
+
 	&__textbox {
 		resize: none;
 		height: 17rem;
@@ -174,18 +193,22 @@ $color-linkedin: #0077b5;
 		padding: 1rem 1rem 3rem 1rem;
 	}
 
-	&__charcount {
-		position: absolute;
-		bottom: 1rem;
-		right: 1rem;
-		line-height: 1;
-	}
-
+	&__charcount,
 	&__suggested-btn {
 		position: absolute;
 		bottom: 1rem;
-		left: 1rem;
 		line-height: 1;
+		color: $subtle-gray;
+	}
+
+	&__charcount {
+		right: 1rem;
+	}
+
+	&__suggested-btn {
+		left: 1rem;
+		font-weight: unset;
+		text-decoration: underline;
 	}
 }
 
@@ -230,8 +253,14 @@ $color-linkedin: #0077b5;
 			@include button-style($color-linkedin, auto, #fff);
 		}
 
-		&--email {
+		&--link {
 			color: $kiva-textlink;
+
+			&:hover,
+			&:focus {
+				text-decoration: $anchor-text-decoration-hover;
+				color: $anchor-color-hover;
+			}
 		}
 	}
 
