@@ -25,8 +25,8 @@
 				></textarea>
 				<button
 					class="message__suggested-btn"
-					v-if="message !== suggestedMessage"
-					@click="setSuggestedMessage"
+					v-if="!isSuggestedMessage"
+					@click="useSuggestedMessage"
 				>
 					Suggested message
 				</button>
@@ -82,14 +82,17 @@ export default {
 		suggestedMessage() {
 			const selectedLoan = this.loans[this.selectedLoanIndex];
 			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${selectedLoan.name} in ${selectedLoan.geocode.city} to pursue their dream?`; // eslint-disable-line max-len
+		},
+		isSuggestedMessage() {
+			return this.message.trim() === this.suggestedMessage;
 		}
 	},
 	methods: {
 		setSelectedLoanIndex(index) {
 			this.selectedLoanIndex = index;
-			this.setSuggestedMessage();
+			this.useSuggestedMessage();
 		},
-		setSuggestedMessage() {
+		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
 		},
 		printReceipt() {
@@ -99,7 +102,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.setSuggestedMessage();
+		this.useSuggestedMessage();
 	}
 };
 </script>
