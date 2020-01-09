@@ -16,7 +16,6 @@
 				{{ promoContent.genericContentBlock.headline }}
 			</template>
 			<template v-slot:headlineBody>
-				<span class="featured-medium-up"></span>
 				{{ promoContent.genericContentBlock.subHeadline }}
 			</template>
 			<template v-slot:action>
@@ -181,56 +180,4 @@ export default {
 <style lang="scss" scoped>
 	@import "settings";
 	@import "foundation";
-
-	.possibilities-promo {
-		$green: #02582e;
-		$dark_green: #0b2a0d;
-		$red:#611b15;
-		$dark_red: #2e0004;
-		$blue: #015a76;
-		$dark_blue: #00244e;
-		$gold: #ebdf7f;
-
-		margin-bottom: 6rem;
-
-		::v-deep .headline-main--has-action {
-			padding-bottom: 6.125rem;
-
-			@include breakpoint(large) {
-				padding-bottom: 3.125rem;
-			}
-		}
-
-		::v-deep .action--has-headline {
-			margin-top: -4.65rem;
-
-			@include breakpoint(large) {
-				margin-top: -1.75rem;
-				margin-bottom: -2.125rem;
-			}
-		}
-
-		.action-button {
-			@include button-style($blue, auto, #fff);
-
-			box-shadow: 0 2px darken($blue, 10%);
-			width: 50%;
-
-			@include breakpoint(large) {
-				width: 88%;
-			}
-		}
-
-		@include breakpoint(large) {
-			.action-1 {
-				display: flex;
-				justify-content: flex-end;
-			}
-
-			.action-2 {
-				display: flex;
-				justify-content: flex-start;
-			}
-		}
-	}
 </style>

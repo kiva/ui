@@ -41,7 +41,6 @@ export default {
 				contentKey: 'ui-homepage-promo',
 			}
 		}).then(({ data }) => {
-			console.log('ui-homepage-promo', data);
 			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-homepage-promo'); // eslint-disable-line max-len
@@ -52,7 +51,6 @@ export default {
 				'endDate'
 			);
 			this.promoContent = processContent(uiPromoSetting.content);
-			console.log('promoContent', this.promoContent);
 		}).finally(() => {
 			this.showSlideShow = true;
 		});
