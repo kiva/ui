@@ -3,6 +3,7 @@ import _get from 'lodash/get';
 import _over from 'lodash/over';
 import * as Sentry from '@sentry/browser';
 import cookieStore from './cookieStore';
+import syncDate from './syncDate';
 
 const isServer = typeof window === 'undefined';
 // only require auth0-js if we are not in a server environment
@@ -129,35 +130,38 @@ export default class KvAuth0 {
 
 		// Check for an existing session
 		this[sessionPromise] = new Promise(resolve => {
-			this.webAuth.checkSession({}, (err, result) => {
-				if (err) {
-					this[setAuthData]();
-					if (err.error === 'login_required' || err.error === 'unauthorized') {
-						// User is not logged in, so continue without authentication
-						resolve();
-					} else if (err.error === 'consent_required' || err.error === 'interaction_required') {
-						// These errors require interaction beyond what can be provided by webauth,
-						// so resolve without authentication for now. Other possibility is to redirect
-						// to login to complete authentication.
-						Sentry.withScope(scope => {
-							scope.setLevel('warning');
-							Sentry.captureMessage(`Auth session not started: ${getErrorString(err)}`);
-						});
-						resolve();
+			// Ensure browser clock is correct before checking session
+			syncDate().then(() => {
+				this.webAuth.checkSession({}, (err, result) => {
+					if (err) {
+						this[setAuthData]();
+						if (err.error === 'login_required' || err.error === 'unauthorized') {
+							// User is not logged in, so continue without authentication
+							resolve();
+						} else if (err.error === 'consent_required' || err.error === 'interaction_required') {
+							// These errors require interaction beyond what can be provided by webauth,
+							// so resolve without authentication for now. Other possibility is to redirect
+							// to login to complete authentication.
+							Sentry.withScope(scope => {
+								scope.setLevel('warning');
+								Sentry.captureMessage(`Auth session not started: ${getErrorString(err)}`);
+							});
+							resolve();
+						} else {
+							// Everything else, actually throw an error
+							Sentry.withScope(scope => {
+								scope.setTag('auth_method', 'check session');
+								Sentry.captureMessage(getErrorString(err));
+							});
+							this[handleUnknownError](err);
+							resolve();
+						}
 					} else {
-						// Everything else, actually throw an error
-						Sentry.withScope(scope => {
-							scope.setTag('auth_method', 'check session');
-							Sentry.captureMessage(getErrorString(err));
-						});
-						this[handleUnknownError](err);
+						// Successful authentication
+						this[setAuthData](result);
 						resolve();
 					}
-				} else {
-					// Successful authentication
-					this[setAuthData](result);
-					resolve();
-				}
+				});
 			});
 		});
 
@@ -202,7 +206,10 @@ export default class KvAuth0 {
 			return Promise.reject(new Error('popupCallback called in server mode'));
 		}
 		this[popupWindow] = null;
-		return this.webAuth.popup.callback(options);
+		// Ensure browser clock is correct before verifying token
+		return syncDate().then(() => {
+			return this.webAuth.popup.callback(options);
+		});
 	}
 
 	// Receive a callback to be called in case of an unknown error
