@@ -1,54 +1,30 @@
 <template>
 	<div>
 		<!-- Promo -->
-		<kv-hero v-if="promoEnabled" headline-bg-color="#00244e" class="possibilities-promo">
+		<kv-hero v-if="promoEnabled">
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
-					<kv-carousel-slide>
+					<kv-carousel-slide v-for="(imageSet, index) in promoContent.responsiveImageSet" :key="index">
 						<kv-responsive-image
-							:images="possibilitiesImages(1)"
-							alt="Two Cambodian women smile and laugh. One holds a wicker basket."
-						/>
-					</kv-carousel-slide>
-					<kv-carousel-slide>
-						<kv-responsive-image
-							:images="possibilitiesImages(2)"
-							alt="Two women carry a large blue barrel between them through a rural African village."
-						/>
-					</kv-carousel-slide>
-					<kv-carousel-slide>
-						<kv-responsive-image
-							v-if="counter > 2"
-							:images="possibilitiesImages(3)"
-							alt="An older Latin American farmer gazes hopefully into the distance."
+							:images="promoImages(imageSet.images)"
+							:alt="imageSet.description"
 						/>
 					</kv-carousel-slide>
 				</kv-carousel>
 			</template>
+			<template v-slot:headlineTitle>
+				{{ promoContent.genericContentBlock.headline }}
+			</template>
 			<template v-slot:headlineBody>
-				Make opportunity possible <br class="smo">for borrowers <br class="lu">around the world.
+				{{ promoContent.genericContentBlock.subHeadline }}
 			</template>
 			<template v-slot:action>
-				<div class="row">
-					<div class="small-12 large-6 columns action-1">
-						<kv-button
-							class="action-button smallest"
-							to="/lend-by-category/"
-							v-kv-track-event="['Home', 'possibility', 'click-Lend-now']"
-						>
-							Lend Now »
-						</kv-button>
-					</div>
-					<div class="small-12 large-6 columns action-2">
-						<kv-button
-							class="action-button smallest"
-							to="/donate/supportus/"
-							v-kv-track-event="['Home', 'possibility', 'click-Donate']"
-						>
-							Donate to Kiva »
-						</kv-button>
-					</div>
-				</div>
+				<kv-button
+					:to="promoContent.genericContentBlock.primaryCtaLink"
+					:v-kv-track-event="[promoContent.genericContentBlock.primaryCtaKvTrackEvent]"
+				>
+					{{ promoContent.genericContentBlock.primaryCtaText }}
+				</kv-button>
 			</template>
 		</kv-hero>
 
@@ -124,14 +100,13 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import getCacheKey from '@/util/getCacheKey';
 
 const imageRequire = require.context('@/assets/images/hero-slideshow/', true);
-const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/homepage/', true);
 
 export default {
 	name: 'HeroSlideshow',
 	serverCacheKey: props => {
 		let cacheKey = 'DefaultHeroSlideshow';
 		if (props.promoEnabled) {
-			cacheKey = 'PromoSlideshowPossibility';
+			cacheKey = 'PromoSlideshow';
 		}
 		return getCacheKey(cacheKey);
 	},
@@ -146,6 +121,13 @@ export default {
 		promoEnabled: {
 			type: Boolean,
 			default: false
+		},
+		promoContent: {
+			type: Object,
+			default() {
+				return {
+				};
+			}
 		},
 	},
 	data() {
@@ -173,19 +155,23 @@ export default {
 				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
 			];
 		},
-		possibilitiesImages(number) {
-			return [
-				['small', possibilitiesImageRequire(`./Homepage${number}_sm_std.jpg`)],
-				['small retina', possibilitiesImageRequire(`./Homepage${number}_sm_retina.jpg`)],
-				['medium', possibilitiesImageRequire(`./Homepage${number}_med_std.jpg`)],
-				['medium retina', possibilitiesImageRequire(`./Homepage${number}_med_retina.jpg`)],
-				['large', possibilitiesImageRequire(`./Homepage${number}_lg_std.jpg`)],
-				['large retina', possibilitiesImageRequire(`./Homepage${number}_lg_retina.jpg`)],
-				['xga', possibilitiesImageRequire(`./Homepage${number}_xl_std.jpg`)],
-				['xga retina', possibilitiesImageRequire(`./Homepage${number}_xl_retina.jpg`)],
-				['wxga', possibilitiesImageRequire(`./Homepage${number}_xxl_std.jpg`)],
-				['wxga retina', possibilitiesImageRequire(`./Homepage${number}_xxl_retina.jpg`)],
-			];
+		// return the responsive image array from a contentful responsive image set.
+		promoImages(responsiveImageSetImages) {
+			if (responsiveImageSetImages) {
+				return [
+					['small', `${responsiveImageSetImages.find(item => item.responsiveSize === 'small').fields.file.url}?fm=jpg&fl=progressive&w=480&h=600&fit=fill`], // eslint-disable-line max-len
+					['small retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'small retina').fields.file.url}?fm=jpg&fl=progressive&w=960&h=1200&fit=fill`], // eslint-disable-line max-len
+					['medium', `${responsiveImageSetImages.find(item => item.responsiveSize === 'medium').fields.file.url}?fm=jpg&fl=progressive&w=680&h=675&fit=fill`], // eslint-disable-line max-len
+					['medium retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'medium retina').fields.file.url}?fm=jpg&fl=progressive&w=1360&h=1350&fit=fill`], // eslint-disable-line max-len
+					['large', `${responsiveImageSetImages.find(item => item.responsiveSize === 'large').fields.file.url}?fm=jpg&fl=progressive&w=1024&h=545&fit=fill`], // eslint-disable-line max-len
+					['large retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'large retina').fields.file.url}?fm=jpg&fl=progressive&w=2048&h=1090&fit=fill`], // eslint-disable-line max-len
+					['xga', `${responsiveImageSetImages.find(item => item.responsiveSize === 'xga').fields.file.url}?fm=jpg&fl=progressive&w=1440&h=768&fit=fill`], // eslint-disable-line max-len
+					['xga retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'xga retina').fields.file.url}?fm=jpg&fl=progressive&w=2880&h=1535&fit=fill`], // eslint-disable-line max-len
+					['wxga', `${responsiveImageSetImages.find(item => item.responsiveSize === 'wxga').fields.file.url}?fm=jpg&fl=progressive&w=1920&h=820&fit=fill`], // eslint-disable-line max-len
+					['wxga retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'wxga retina').fields.file.url}?fm=jpg&fl=progressive&w=3840&h=1640&fit=fill`], // eslint-disable-line max-len
+				];
+			}
+			return [];
 		},
 	},
 };
@@ -194,56 +180,4 @@ export default {
 <style lang="scss" scoped>
 	@import "settings";
 	@import "foundation";
-
-	.possibilities-promo {
-		$green: #02582e;
-		$dark_green: #0b2a0d;
-		$red:#611b15;
-		$dark_red: #2e0004;
-		$blue: #015a76;
-		$dark_blue: #00244e;
-		$gold: #ebdf7f;
-
-		margin-bottom: 6rem;
-
-		::v-deep .headline-main--has-action {
-			padding-bottom: 6.125rem;
-
-			@include breakpoint(large) {
-				padding-bottom: 3.125rem;
-			}
-		}
-
-		::v-deep .action--has-headline {
-			margin-top: -4.65rem;
-
-			@include breakpoint(large) {
-				margin-top: -1.75rem;
-				margin-bottom: -2.125rem;
-			}
-		}
-
-		.action-button {
-			@include button-style($blue, auto, #fff);
-
-			box-shadow: 0 2px darken($blue, 10%);
-			width: 50%;
-
-			@include breakpoint(large) {
-				width: 88%;
-			}
-		}
-
-		@include breakpoint(large) {
-			.action-1 {
-				display: flex;
-				justify-content: flex-end;
-			}
-
-			.action-2 {
-				display: flex;
-				justify-content: flex-start;
-			}
-		}
-	}
 </style>
