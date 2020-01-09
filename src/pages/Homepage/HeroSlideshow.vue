@@ -4,10 +4,10 @@
 		<kv-hero v-if="promoEnabled">
 			<template v-slot:images>
 				<kv-carousel @change="slideChange">
-					<kv-carousel-slide v-for="(image, index) in promoContent.slideshow.images" :key="index">
+					<kv-carousel-slide v-for="(imageSet, index) in promoContent.responsiveImageSet" :key="index">
 						<kv-responsive-image
-							:images="promoImages(image)"
-							:alt="image.fields.description"
+							:images="promoImages(imageSet.images)"
+							:alt="imageSet.description"
 						/>
 					</kv-carousel-slide>
 				</kv-carousel>
@@ -21,10 +21,10 @@
 			</template>
 			<template v-slot:action>
 				<kv-button
-					:to="promoContent.ctaButton.link"
-					:v-kv-track-event="[promoContent.ctaButton.kvTrackEvent]"
+					:to="promoContent.genericContentBlock.primaryCtaLink"
+					:v-kv-track-event="[promoContent.genericContentBlock.primaryCtaKvTrackEvent]"
 				>
-					{{ promoContent.ctaButton.buttonText }}
+					{{ promoContent.genericContentBlock.primaryCtaText }}
 				</kv-button>
 			</template>
 		</kv-hero>
@@ -127,9 +127,6 @@ export default {
 			type: Object,
 			default() {
 				return {
-					slideshow: {
-						images: []
-					}
 				};
 			}
 		},
@@ -159,19 +156,20 @@ export default {
 				['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
 			];
 		},
-		promoImages(image) {
-			if (image.fields) {
+		// return the responsive image array from a contentful responsive image set.
+		promoImages(responsiveImageSetImages) {
+			if (responsiveImageSetImages) {
 				return [
-					['small', `${image.fields.file.url}?fm=jpg&fl=progressive&w=480&h=600&fit=fill&f=faces`], // eslint-disable-line max-len
-					['small retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=960&h=1200&fit=fill&f=faces`], // eslint-disable-line max-len
-					['medium', `${image.fields.file.url}?fm=jpg&fl=progressive&w=680&h=675&fit=fill&f=faces`], // eslint-disable-line max-len
-					['medium retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1360&h=1350&fit=fill&f=faces`], // eslint-disable-line max-len
-					['large', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1024&h=545&fit=fill&f=faces`], // eslint-disable-line max-len
-					['large retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=2048&h=1090&fit=fill&f=faces`], // eslint-disable-line max-len
-					['xga', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1440&h=768&fit=fill&f=faces`], // eslint-disable-line max-len
-					['xga retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=2880&h=1535&fit=fill&f=faces`], // eslint-disable-line max-len
-					['wxga', `${image.fields.file.url}?fm=jpg&fl=progressive&w=1920&h=820&fit=fill&f=faces`], // eslint-disable-line max-len
-					['wxga retina', `${image.fields.file.url}?fm=jpg&fl=progressive&w=3840&h=1640&fit=fill&f=faces`], // eslint-disable-line max-len
+					['small', `${responsiveImageSetImages.find(item => item.responsiveSize === 'small').fields.file.url}?fm=jpg&fl=progressive&w=480&h=600&fit=fill`], // eslint-disable-line max-len
+					['small retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'small retina').fields.file.url}?fm=jpg&fl=progressive&w=960&h=1200&fit=fill`], // eslint-disable-line max-len
+					['medium', `${responsiveImageSetImages.find(item => item.responsiveSize === 'medium').fields.file.url}?fm=jpg&fl=progressive&w=680&h=675&fit=fill`], // eslint-disable-line max-len
+					['medium retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'medium retina').fields.file.url}?fm=jpg&fl=progressive&w=1360&h=1350&fit=fill`], // eslint-disable-line max-len
+					['large', `${responsiveImageSetImages.find(item => item.responsiveSize === 'large').fields.file.url}?fm=jpg&fl=progressive&w=1024&h=545&fit=fill`], // eslint-disable-line max-len
+					['large retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'large retina').fields.file.url}?fm=jpg&fl=progressive&w=2048&h=1090&fit=fill`], // eslint-disable-line max-len
+					['xga', `${responsiveImageSetImages.find(item => item.responsiveSize === 'xga').fields.file.url}?fm=jpg&fl=progressive&w=1440&h=768&fit=fill`], // eslint-disable-line max-len
+					['xga retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'xga retina').fields.file.url}?fm=jpg&fl=progressive&w=2880&h=1535&fit=fill`], // eslint-disable-line max-len
+					['wxga', `${responsiveImageSetImages.find(item => item.responsiveSize === 'wxga').fields.file.url}?fm=jpg&fl=progressive&w=1920&h=820&fit=fill`], // eslint-disable-line max-len
+					['wxga retina', `${responsiveImageSetImages.find(item => item.responsiveSize === 'wxga retina').fields.file.url}?fm=jpg&fl=progressive&w=3840&h=1640&fit=fill`], // eslint-disable-line max-len
 				];
 			}
 			return [];
