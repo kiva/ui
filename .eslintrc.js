@@ -21,6 +21,9 @@ module.exports = {
 		'import/resolver': {
 			'webpack': {
 				'config': 'build/webpack.base.conf.js'
+			},
+			'node': {
+				'extensions': ['.js', '.mjs']
 			}
 		}
 	},
@@ -35,7 +38,8 @@ module.exports = {
 		// don't require .vue extension when importing
 		'import/extensions': ['error', 'always', {
 			js: 'never',
-			vue: 'never'
+			vue: 'never',
+			mjs: 'never',
 		}],
 		// allow optionalDependencies
 		'import/no-extraneous-dependencies': ['error', {
