@@ -37,6 +37,10 @@
 					:receipt="receipt"
 				/>
 			</div>
+
+			<div v-else>
+				No receipt data yet. TODO: pass the checkoutID to this page.
+			</div>
 		</div>
 	</www-page>
 </template>
@@ -69,19 +73,25 @@ export default {
 		};
 	},
 	apollo: {
-		// query: checkoutReceiptQuery,
-		// variables: {
-		// 	checkoutId: 38649558, // TODO, have this passed in from the checkout page
-		// },
-		// preFetch: true,
-		// result({ data }) {
-		// 	console.log(data);
-		// 	this.lender = data.my.userAccount;
-		// 	this.receipt = data.shop.receipt;
-		// 	this.loans = data.shop.receipt.items.values
-		// 		.filter(item => item.basketItemType === 'loan_reservation')
-		// 		.map(item => item.loan);
-		// }
+		query: checkoutReceiptQuery,
+		preFetch: true,
+		preFetchVariables() {
+			return {
+				checkoutId: 38649558, // TODO, have this passed in from the checkout page
+			};
+		},
+		variables() {
+			return {
+				checkoutId: 38649558, // TODO, have this passed in from the checkout page
+			};
+		},
+		result({ data }) {
+			this.lender = data.my.userAccount;
+			this.receipt = data.shop.receipt;
+			this.loans = data.shop.receipt.items.values
+				.filter(item => item.basketItemType === 'loan_reservation')
+				.map(item => item.loan);
+		}
 	},
 	methods: {
 		toggleReceipt() {
@@ -89,25 +99,6 @@ export default {
 		}
 	},
 	mounted() {
-		// TEMP until can figure out why this doesn't work the normal way.
-		this.apollo.query({
-			query: checkoutReceiptQuery,
-			variables: {
-				checkoutId: 38649558, // TODO, have this passed in from the checkout page
-			},
-			fetchPolicy: 'no-cache',
-		}).then(({ data }) => {
-			console.log(data);
-			this.lender = data.my.userAccount;
-			this.receipt = data.shop.receipt;
-			this.loans = data.shop.receipt.items.values
-				.filter(item => item.basketItemType === 'loan_reservation')
-				.map(item => item.loan);
-		}).catch(error => {
-			console.error(error);
-		});
-		// end TEMP
-
 		confetti({
 			origin: {
 				y: 0.2
