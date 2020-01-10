@@ -62,9 +62,9 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			lender: null,
-			loans: null,
-			receipt: null,
+			lender: {},
+			loans: [],
+			receipt: {},
 			isReceiptVisible: true,
 		};
 	},

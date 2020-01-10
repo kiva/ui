@@ -1,5 +1,5 @@
 query checkoutReceipt($checkoutId: Int!) {
-	shop(basketId: null) {
+	shop {
 		receipt(checkoutId: $checkoutId) {
 			credits {
 				values {
