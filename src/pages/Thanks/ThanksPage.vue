@@ -129,9 +129,9 @@ export default {
 }
 
 .thanks {
-	&__checkout-steps {
+	// &__checkout-steps {
 
-	}
+	// }
 
 	&__header {
 		text-align: center;
