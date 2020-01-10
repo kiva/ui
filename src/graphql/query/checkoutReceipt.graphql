@@ -1,0 +1,56 @@
+query checkoutReceipt($checkoutId: Int!) {
+	shop(basketId: null) {
+		receipt(checkoutId: $checkoutId) {
+			credits {
+				values {
+					creditType
+					amount
+				}
+			}
+			totals {
+				itemTotal
+				donationTotal
+				kivaCardTotal
+				depositTotals {
+					depositTotal
+					kivaCreditAdded
+					kivaCreditUsed
+				}
+				kivaCreditAppliedTotal
+			}
+			hasFreeCredits
+			items {
+				totalCount
+				values {
+					price
+					basketItemType
+					creditsUsed {
+						amount
+					}
+					... on LoanReservation {
+						loan {
+							name
+							image {
+								url
+							}
+							use
+							geocode {
+								city
+								country {
+									name
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	my {
+		userAccount {
+			firstName
+			lastName
+			email
+		}
+	}
+}
