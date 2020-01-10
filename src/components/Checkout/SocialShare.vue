@@ -1,5 +1,5 @@
 <template>
-	<div class="thanks">
+	<div>
 		<section class="share">
 			<div class="share__loans loans">
 				<button

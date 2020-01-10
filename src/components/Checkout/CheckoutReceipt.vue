@@ -71,7 +71,7 @@
 			<h3 class="total__header split__item">
 				Total:
 			</h3>
-			<span class="total__amount split__item split__item--end">{{ receipt.totals.itemTotal }}</span>
+			<span class="total__amount split__item split__item--end">${{ receipt.totals.itemTotal }}</span>
 		</section>
 		<section class="section payments">
 			<h2 class="payments__header">
@@ -98,7 +98,7 @@
 				</li>
 			</ul>
 		</section>
-		<section class="section">
+		<section class="section section--print">
 			<button class="print" @click="printReceipt">
 				<icon-print class="print__icon" />
 				<span>Print this receipt</span>
@@ -138,6 +138,10 @@ export default {
 @import 'settings';
 
 .checkout-receipt {
+	background: #fff;
+	padding: 2rem;
+	border: 1px solid $subtle-gray;
+
 	&__headline {
 		@include impact-text();
 
@@ -233,6 +237,10 @@ export default {
 	padding: $global-margin 0;
 	display: block;
 	overflow: hidden;
+
+	&--print {
+		border-bottom: 0;
+	}
 }
 
 .split {

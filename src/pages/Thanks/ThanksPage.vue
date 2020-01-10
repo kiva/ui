@@ -1,23 +1,28 @@
 <template>
-	<www-page>
+	<www-page :gray-background="true">
 		<div class="row page-content">
 			<div class="small-12 columns thanks" v-if="lender && loans && receipt">
-				<div>
-					<h1 class="thanks__header">
+				<div class="thanks__checkout-steps">
+					<checkout-steps current-step="thanks" />
+				</div>
+
+				<div class="thanks__header">
+					<h1 class="thanks__header-h1">
 						{{ lender.firstName }}, thanks to you, {{ loans.length }}
 						{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
 					</h1>
-					<p class="thanks__subhead">
+					<p class="thanks__header-subhead">
 						But the journey isn't over for them and many other borrowers.<br>
 						Please tell your friends and multiply your impact
 					</p>
 				</div>
 
 				<social-share
+					class="thanks__social-share"
 					:loans="loans"
 				/>
 
-				<div>
+				<div class="thanks__confirmation">
 					<p>Confirmation sent to: {{ lender.email }}.</p>
 					<button @click="toggleReceipt">
 						<icon-receipt class="toggle-receipt-icon" />
@@ -26,6 +31,7 @@
 				</div>
 
 				<checkout-receipt
+					class="thanks__receipt"
 					v-if="isReceiptVisible"
 					:lender="lender"
 					:receipt="receipt"
@@ -39,14 +45,16 @@
 import confetti from 'canvas-confetti';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
+import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
+import IconReceipt from '@/assets/inline-svgs/icons/receipt.svg';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import IconReceipt from '@/assets/inline-svgs/icons/receipt.svg';
 import checkoutReceiptQuery from '@/graphql/query/checkoutReceipt.graphql';
 
 export default {
 	components: {
 		CheckoutReceipt,
+		CheckoutSteps,
 		IconReceipt,
 		SocialShare,
 		WwwPage,
@@ -61,20 +69,18 @@ export default {
 		};
 	},
 	apollo: {
-		// TODO: Figure out why this doesn't work
-
 		// query: checkoutReceiptQuery,
 		// variables: {
-		// 	checkoutId: 38646529, // TODO, how should this get passed in?
+		// 	checkoutId: 38649558, // TODO, have this passed in from the checkout page
 		// },
 		// preFetch: true,
 		// result({ data }) {
 		// 	console.log(data);
-		// 	// this.lender = data.my.userAccount;
-		// 	// this.receipt = data.shop.receipt;
-		// 	// this.loans = data.shop.receipt.items.values
-		// 	// 	.filter(item => item.basketItemType === 'loan_reservation')
-		// 	// 	.map(item => item.loan);
+		// 	this.lender = data.my.userAccount;
+		// 	this.receipt = data.shop.receipt;
+		// 	this.loans = data.shop.receipt.items.values
+		// 		.filter(item => item.basketItemType === 'loan_reservation')
+		// 		.map(item => item.loan);
 		// }
 	},
 	methods: {
@@ -87,9 +93,9 @@ export default {
 		this.apollo.query({
 			query: checkoutReceiptQuery,
 			variables: {
-				checkoutId: 38646529,
+				checkoutId: 38649558, // TODO, have this passed in from the checkout page
 			},
-			fetchPolicy: 'no-cache', // TODO
+			fetchPolicy: 'no-cache',
 		}).then(({ data }) => {
 			console.log(data);
 			this.lender = data.my.userAccount;
@@ -123,10 +129,35 @@ export default {
 }
 
 .thanks {
-	&__header {
-		@include impact-text();
+	&__checkout-steps {
 
+	}
+
+	&__header {
 		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	&__header-h1 {
+		@include impact-text();
+	}
+
+	&__header-subhead {
+		@include featured-text();
+	}
+
+	&__social-share {
+		margin-bottom: 3rem;
+	}
+
+	&__confirmation {
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	&__receipt {
+		max-width: rem-calc(485);
+		margin: 0 auto;
 	}
 }
 

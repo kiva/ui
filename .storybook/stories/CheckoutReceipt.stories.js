@@ -3,9 +3,8 @@ import StoryRouter from 'storybook-vue-router';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShare from '@/components/Checkout/SocialShare';
 
-// Log in as kiva test user 7, then
 // http://api-vm.kiva.org/graphql?user_id=1003394&app_id=org.kiva.www&query=%7B%0A%20%20shop%20%7B%0A%20%20%20%20receipt(checkoutId%3A%2038646529)%20%7B%0A%20%20%20%20%20%20credits%20%7B%0A%20%20%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20creditType%0A%20%20%20%20%20%20%20%20%20%20amount%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20totals%20%7B%0A%20%20%20%20%20%20%20%20itemTotal%0A%20%20%20%20%20%20%20%20donationTotal%0A%20%20%20%20%20%20%20%20kivaCardTotal%0A%20%20%20%20%20%20%20%20depositTotals%20%7B%0A%20%20%20%20%20%20%20%20%20%20depositTotal%0A%20%20%20%20%20%20%20%20%20%20kivaCreditAdded%0A%20%20%20%20%20%20%20%20%20%20kivaCreditUsed%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20kivaCreditAppliedTotal%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20hasFreeCredits%0A%20%20%20%20%20%20items%20%7B%0A%20%20%20%20%20%20%20%20totalCount%0A%20%20%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20%20%20price%0A%20%20%20%20%20%20%20%20%20%20basketItemType%0A%20%20%20%20%20%20%20%20%20%20creditsUsed%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20amount%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20...%20on%20LoanReservation%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20loan%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20image%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20url%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20use%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20geocode%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20city%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20country%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%09%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20my%20%7B%0A%20%20%20%20userAccount%20%7B%0A%20%20%20%20%20%20firstName%0A%20%20%20%20%20%20lastName%0A%20%20%20%20%20%20email%0A%20%20%20%20%7D%0A%20%20%7D%20%20%0A%7D%0A%0A
-const mockedGraphQLData = {
+const mockedReceiptData = {
 	"data": {
 		"shop": {
 		"receipt": {
@@ -199,7 +198,7 @@ export const Social_Share = () => ({
 		loans: {
 			type: Array,
 			default() {
-				return mockedGraphQLData.data.shop.receipt.items.values
+				return mockedReceiptData.data.shop.receipt.items.values
 					.filter(item => item.basketItemType === 'loan_reservation')
 					.map(item => item.loan);
 			}
@@ -221,13 +220,13 @@ export const Checkout_Receipt = () => ({
 		lender: {
 			type: Object,
 			default() {
-				return mockedGraphQLData.data.my.userAccount
+				return mockedReceiptData.data.my.userAccount
 			}
 		},
 		receipt: {
 			type: Object,
 			default() {
-				return mockedGraphQLData.data.shop.receipt
+				return mockedReceiptData.data.shop.receipt
 			}
 		}
 	},
