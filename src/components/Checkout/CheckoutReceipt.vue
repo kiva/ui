@@ -12,42 +12,56 @@
 			<ul class="checkout-receipt__loan-list">
 				<li
 					class="section"
-					v-for="loan in receiptData.items.values"
-					:key="loan.id"
+					v-for="item in receipt.items.values"
+					:key="item.id"
 				>
 					<div
 						class="loan"
-						v-if="loan.basketItemType === 'loan_reservation'"
+						v-if="item.basketItemType === 'loan_reservation'"
 					>
 						<h3>
 							<router-link
 								class="loan__name"
-								:to="`/lend/${loan.id}`"
+								:to="`/lend/${item.loan.id}`"
 							>
-								{{ loan.name }}
+								{{ item.loan.name }}
 							</router-link>
 						</h3>
 						<div class="loan__meta">
 							<p class="loan__meta-city">
-								<span v-if="loan.geocode && loan.geocode.city">{{ loan.geocode.city }},</span>
-								<span v-if="loan.geocode && loan.geocode.country">{{ loan.geocode.country.name }}</span>
+								<span v-if="item.loan.geocode && item.loan.geocode.city">
+									{{ item.loan.geocode.city }},
+								</span>
+								<span v-if="item.loan.geocode && item.loan.geocode.country">
+									{{ item.loan.geocode.country.name }}
+								</span>
 							</p>
-							<p>{{ loan.use }}</p>
+							<p>{{ item.loan.use }}</p>
 						</div>
 						<div class="loan__amount">
-							${{ loan.price }}
+							${{ item.price }}
 						</div>
 					</div>
-
 					<div
 						class="loan"
-						v-else-if="loan.basketItemType === 'donation'"
+						v-else-if="item.basketItemType === 'kiva_card'"
+					>
+						<h3 class="loan__name">
+							Kiva Card
+						</h3>
+						<div class="loan__amount">
+							${{ item.price }}
+						</div>
+					</div>
+					<div
+						class="loan"
+						v-else-if="item.basketItemType === 'donation'"
 					>
 						<h3 class="loan__name">
 							Donation
 						</h3>
 						<div class="loan__amount">
-							${{ loan.price }}
+							${{ item.price }}
 						</div>
 					</div>
 				</li>
@@ -57,7 +71,7 @@
 			<h3 class="total__header split__item">
 				Total:
 			</h3>
-			<span class="total__amount split__item split__item--end">{{ receiptData.totals.itemTotal }}</span>
+			<span class="total__amount split__item split__item--end">{{ receipt.totals.itemTotal }}</span>
 		</section>
 		<section class="section payments">
 			<h2 class="payments__header">
@@ -66,20 +80,20 @@
 			<ul class="payments__list">
 				<li
 					class="total split"
-					v-if="receiptData.totals.depositTotals.depositTotal > 0"
+					v-if="receipt.totals.depositTotals.depositTotal > 0"
 				>
 					<span class="total__header split__item">Kiva Credit:</span>
 					<span class="total__amount split__item split__item--end">
-						-${{ receiptData.totals.depositTotals.kivaCreditUsed }}
+						-${{ receipt.totals.depositTotals.kivaCreditUsed }}
 					</span>
 				</li>
 				<li
 					class="total split"
-					v-if="receiptData.totals.depositTotals.kivaCreditUsed > 0"
+					v-if="receipt.totals.depositTotals.kivaCreditUsed > 0"
 				>
 					<span class="total__header split__item">Kiva Credit:</span>
 					<span class="total__amount split__item split__item--end">
-						-${{ receiptData.totals.depositTotals.kivaCreditUsed }}
+						-${{ receipt.totals.depositTotals.kivaCreditUsed }}
 					</span>
 				</li>
 			</ul>
@@ -105,7 +119,7 @@ export default {
 			type: Object,
 			required: true
 		},
-		receiptData: {
+		receipt: {
 			type: Object,
 			required: true
 		},

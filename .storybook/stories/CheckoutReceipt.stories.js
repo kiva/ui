@@ -1,185 +1,184 @@
-import { boolean } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShare from '@/components/Checkout/SocialShare';
 
-// http://api-vm.kiva.org/graphql?scopes=access&app_id=org.kiva.www&query=%7B%0A%20%20my%20%7B%0A%20%20%20%20userAccount%20%7B%0A%20%20%20%20%20%20firstName%0A%20%20%20%20%20%20lastName%0A%20%20%20%20%20%20email%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D
-const mockedUserAccount = {
+// Log in as kiva test user 7, then
+// http://api-vm.kiva.org/graphql?user_id=1003394&app_id=org.kiva.www&query=%7B%0A%20%20shop%20%7B%0A%20%20%20%20receipt(checkoutId%3A%2038646529)%20%7B%0A%20%20%20%20%20%20credits%20%7B%0A%20%20%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20creditType%0A%20%20%20%20%20%20%20%20%20%20amount%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20totals%20%7B%0A%20%20%20%20%20%20%20%20itemTotal%0A%20%20%20%20%20%20%20%20donationTotal%0A%20%20%20%20%20%20%20%20kivaCardTotal%0A%20%20%20%20%20%20%20%20depositTotals%20%7B%0A%20%20%20%20%20%20%20%20%20%20depositTotal%0A%20%20%20%20%20%20%20%20%20%20kivaCreditAdded%0A%20%20%20%20%20%20%20%20%20%20kivaCreditUsed%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20kivaCreditAppliedTotal%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20hasFreeCredits%0A%20%20%20%20%20%20items%20%7B%0A%20%20%20%20%20%20%20%20totalCount%0A%20%20%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20%20%20price%0A%20%20%20%20%20%20%20%20%20%20basketItemType%0A%20%20%20%20%20%20%20%20%20%20creditsUsed%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20amount%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20...%20on%20LoanReservation%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20loan%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20image%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20url%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20use%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20geocode%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20city%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20country%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%09%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20my%20%7B%0A%20%20%20%20userAccount%20%7B%0A%20%20%20%20%20%20firstName%0A%20%20%20%20%20%20lastName%0A%20%20%20%20%20%20email%0A%20%20%20%20%7D%0A%20%20%7D%20%20%0A%7D%0A%0A
+const mockedGraphQLData = {
 	"data": {
-	  "my": {
-		"userAccount": {
-		  "firstName": "Captain",
-		  "lastName": "Kiva",
-		  "email": "user_1003394@braincrave.org"
-		}
-	  }
-	}
-  };
-
-// https://api-vm.kiva.org/graphql?scopes=access&app_id=org.kiva.www&query=%7B%0A%20%20shop%20%7B%0A%20%20%20%20receipt(checkoutId%3A%2038618686)%20%7B%0A%20%20%20%20%20%20credits%20%7B%0A%20%20%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20creditType%0A%20%20%20%20%20%20%20%20%20%20amount%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20totals%20%7B%0A%20%20%20%20%20%20%20%20itemTotal%0A%20%20%20%20%20%20%20%20donationTotal%0A%20%20%20%20%20%20%20%20kivaCardTotal%0A%20%20%20%20%20%20%20%20depositTotals%20%7B%0A%20%20%20%20%20%20%20%20%20%20depositTotal%0A%20%20%20%20%20%20%20%20%20%20kivaCreditAdded%0A%20%20%20%20%20%20%20%20%20%20kivaCreditUsed%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20kivaCreditAppliedTotal%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20hasFreeCredits%0A%20%20%20%20%20%20items%20%7B%0A%20%20%20%20%20%20%20%20totalCount%0A%20%20%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20price%0A%20%20%20%20%20%20%20%20%20%20basketItemType%0A%20%20%20%20%20%20%20%20%20%20creditsUsed%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20amount%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D
-const mockedShopReceipt = {
-	"data": {
-	  "shop": {
+		"shop": {
 		"receipt": {
-		  "credits": {
+			"credits": {
 			"values": [
-			  {
-				"id": 1003394,
-				"creditType": "kiva_credit",
-				"amount": null
-			  }
-			]
-		  },
-		  "totals": {
-			"itemTotal": "115.00",
-			"donationTotal": "15.00",
-			"kivaCardTotal": "0.00",
-			"depositTotals": {
-			  "depositTotal": "115.00",
-			  "kivaCreditAdded": "0.00",
-			  "kivaCreditUsed": "0.00"
+				{
+					"id": 1003394,
+					"creditType": "kiva_credit",
+					"amount": null
+					}
+				]
 			},
-			"kivaCreditAppliedTotal": "115.00"
-		  },
-		  "hasFreeCredits": false,
-		  "items": {
-			"totalCount": 5,
-			"values": [
-			  {
-				"id": 1904859,
-				"price": "25.00",
-				"basketItemType": "loan_reservation",
-				"creditsUsed": [
-				  {
-					"amount": "25.00"
-				  }
-				]
-			  },
-			  {
-				"id": 1905552,
-				"price": "25.00",
-				"basketItemType": "loan_reservation",
-				"creditsUsed": [
-				  {
-					"amount": "25.00"
-				  }
-				]
-			  },
-			  {
-				"id": 1905543,
-				"price": "25.00",
-				"basketItemType": "loan_reservation",
-				"creditsUsed": [
-				  {
-					"amount": "25.00"
-				  }
-				]
-			  },
-			  {
-				"id": 1905412,
-				"price": "25.00",
-				"basketItemType": "loan_reservation",
-				"creditsUsed": [
-				  {
-					"amount": "25.00"
-				  }
-				]
-			  },
-			  {
-				"id": 47525367,
-				"price": "15.00",
-				"basketItemType": "donation",
-				"creditsUsed": [
-				  {
-					"amount": "15.00"
-				  }
-				]
-			  }
-			]
-		  }
-		}
-	  }
-	}
-  };
-
-// https://api-vm.kiva.org/graphql?scopes=access&app_id=org.kiva.www&query=%23%20Welcome%20to%20Kiva%27s%20GraphQL%20API!%0A%23%20Here%27s%20an%20example%20query%20to%20get%20you%20started%0A%7B%0A%20%20lend%20%7B%0A%20%20%20%20loans%20(filters%3A%20%7BloanIds%3A%5B1904859%2C%201905552%2C%201905543%2C%201905412%2C%2047525367%5D%7D%2C%20limit%3A%205)%20%7B%0A%20%20%20%20%20%20values%20%7B%0A%20%20%20%20%20%20%20%20name%0A%09%09%09%09id%0A%20%20%20%20%20%20%20%20use%0A%20%20%20%20%20%20%20%20geocode%20%7B%0A%20%20%20%20%20%20%20%20%20%20city%0A%20%20%20%20%20%20%20%20%20%20country%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A%0A
-const mockedLoans = {
-	"data": {
-	  "lend": {
-		"loans": {
-		  "values": [
-			{
-			  "name": "Alan",
-			  "id": 1904859,
-			  "image": {
-				"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/190d121868fdbafd6a3a54f13af690c3.jpg"
-			  },
-			  "use": "to purchase farming inputs, such as certified seed and nutrient-rich fertilizer, to boost the quality of her produce and elevate her living standards.",
-			  "geocode": {
-				"city": "Maua",
-				"country": {
-				  "name": "Kenya"
-				}
-			  }
+			"totals": {
+				"itemTotal": "891.25",
+				"donationTotal": "116.25",
+				"kivaCardTotal": "150.00",
+				"depositTotals": {
+					"depositTotal": "891.25",
+					"kivaCreditAdded": "0.00",
+					"kivaCreditUsed": "0.00"
+				},
+				"kivaCreditAppliedTotal": "891.25"
 			},
-			{
-			  "name": "Abishyizehamwe B Cb Group",
-			  "id": 1905552,
-			  "image": {
-				"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/9de52c03fa24bb3ff934580b90f6d4c5.jpg"
-			  },
-			  "use": "to buy more beans, cassava and sorghum to add in her business.",
-			  "geocode": {
-				"city": null,
-				"country": {
-				  "name": "Rwanda"
+				"hasFreeCredits": false,
+				"items": {
+				"totalCount": 7,
+				"values": [
+					{
+					"price": "25.00",
+					"basketItemType": "loan_reservation",
+					"creditsUsed": [
+						{
+						"amount": "25.00"
+						}
+					],
+					"loan": {
+						"name": "Alan",
+						"id": 1890376,
+						"image": {
+						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/35bbf2ba0ae472c4814b99f301adae10.jpg"
+						},
+						"use": "to buy cattle feed , and to buy cattle to increase her income from raising cattle.",
+						"geocode": {
+						"city": "Kara-Suu village, Osh region",
+						"country": {
+							"name": "Kyrgyzstan"
+						}
+						}
+					}
+					},
+					{
+					"price": "25.00",
+					"basketItemType": "loan_reservation",
+					"creditsUsed": [
+						{
+						"amount": "25.00"
+						}
+					],
+					"loan": {
+						"name": "Alan's Group",
+						"id": 1908787,
+						"image": {
+						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/afb2502655fd85ab49aad7c6e93c91f3.jpg"
+						},
+						"use": "to purchase hybrid seeds and fertilizer to improve harvests of maize.",
+						"geocode": {
+						"city": "Teso",
+						"country": {
+							"name": "Kenya"
+						}
+						}
+					}
+					},
+					{
+					"price": "25.00",
+					"basketItemType": "loan_reservation",
+					"creditsUsed": [
+						{
+						"amount": "25.00"
+						}
+					],
+					"loan": {
+						"name": "Dukoranumwete Tcb Group",
+						"id": 1907446,
+						"image": {
+						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/4943ca4a6fefd22dafdb12d142826ff9.jpg"
+						},
+						"use": "to add more fish to her business in order to meet customer demand.",
+						"geocode": {
+						"city": null,
+						"country": {
+							"name": "Rwanda"
+						}
+						}
+					}
+					},
+					{
+					"price": "400.00",
+					"basketItemType": "loan_reservation",
+					"creditsUsed": [
+						{
+						"amount": "400.00"
+						}
+					],
+					"loan": {
+						"name": "Mujeres Del Milagro Group",
+						"id": 1908384,
+						"image": {
+						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/ff35a3d4c8a68b1750108aece4ac1a4a.jpg"
+						},
+						"use": "to buy 1 industrial stove, pots, and ingredients to continue preparing her recipes.",
+						"geocode": {
+						"city": "Patzun, Chimaltenango",
+						"country": {
+							"name": "Guatemala"
+						}
+						}
+					}
+					},
+					{
+					"price": "150.00",
+					"basketItemType": "loan_reservation",
+					"creditsUsed": [
+						{
+						"amount": "150.00"
+						}
+					],
+					"loan": {
+						"name": "Alan",
+						"id": 1894131,
+						"image": {
+						"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/fa3f2827dde0a60b883411224c40e62e.jpg"
+						},
+						"use": "to purchase sandals, jeans, beauty products (shampoo, cologne, talcum powder) and kits for bonuses.",
+						"geocode": {
+						"city": "Soledad (Atlántico)",
+						"country": {
+							"name": "Colombia"
+						}
+						}
+					}
+					},
+					{
+					"price": "150.00",
+					"basketItemType": "kiva_card",
+					"creditsUsed": [
+						{
+						"amount": "150.00"
+						}
+					]
+					},
+					{
+					"price": "116.25",
+					"basketItemType": "donation",
+					"creditsUsed": [
+						{
+						"amount": "116.25"
+						}
+					]
+					}
+				]
 				}
-			  }
-			},
-			{
-			  "name": "Alan's Group",
-			  "id": 1905543,
-			  "image": {
-				"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/fef5baeb4f1a26394dfc65ba8c2ece57.jpg"
-			  },
-			  "use": "to purchase hybrid seeds and fertilizer for the cultivation of maize, as well as a solar light.",
-			  "geocode": {
-				"city": "Alego",
-				"country": {
-				  "name": "Kenya"
-				}
-			  }
-			},
-			{
-			  "name": "Alan",
-			  "id": 1905412,
-			  "image": {
-				"url": "https://www-dev-kiva-org.global.ssl.fastly.net/img/s100/eee1751f770985f71d27d9d022300602.jpg"
-			  },
-			  "use": "To pay for his son’s tuition at the Medical University in order to help him have a bright future.",
-			  "geocode": {
-				"city": "Bokhtar",
-				"country": {
-				  "name": "Tajikistan"
-				}
-			  }
 			}
-		  ]
+		},
+		"my": {
+			"userAccount": {
+				"firstName": "Alan",
+				"lastName": "Smithee",
+				"email": "user_1003394@braincrave.org"
+			}
 		}
-	  }
 	}
-  };
-
-// Merge loan data into receipt. TODO: clean this up
-const receiptData = { ...mockedShopReceipt }
-const receiptPlusLoans = receiptData.data.shop.receipt.items.values.map((value) => {
-	const loan = mockedLoans.data.lend.loans.values.find(loan=> loan.id === value.id);
-	return { ...value, ...loan };
-});
-receiptData.data.shop.receipt.items.values = receiptPlusLoans;
-// console.log(receiptData);
-
+};
 
 
 export default {
@@ -200,7 +199,9 @@ export const Social_Share = () => ({
 		loans: {
 			type: Array,
 			default() {
-				return mockedLoans.data.lend.loans.values
+				return mockedGraphQLData.data.shop.receipt.items.values
+					.filter(item => item.basketItemType === 'loan_reservation')
+					.map(item => item.loan);
 			}
 		}
 	},
@@ -213,109 +214,21 @@ export const Checkout_Receipt = () => ({
 	template: `
 		<checkout-receipt
 			:lender="lender"
-			:receipt-data="receiptData"
+			:receipt="receipt"
 		/>
 	`,
 	props: {
 		lender: {
 			type: Object,
 			default() {
-				return mockedUserAccount.data.my.userAccount
+				return mockedGraphQLData.data.my.userAccount
 			}
 		},
-		receiptData: {
+		receipt: {
 			type: Object,
 			default() {
-				return receiptData.data.shop.receipt
+				return mockedGraphQLData.data.shop.receipt
 			}
 		}
-	},
-});
-
-
-// TODO: This code below will likely live in /pages/Checkout/Thanks.vue and will make the graphQL calls.
-// Using storybook and mocks for faster dev right now.
-import IconReceipt from '@/assets/inline-svgs/icons/receipt.svg';
-import confetti from 'canvas-confetti';
-export const ThanksPage = () => ({
-	components: {
-		CheckoutReceipt,
-		SocialShare,
-		IconReceipt
-	},
-	template: `
-		<div>
-			<div style="text-align: center; margin-bottom: 2rem;">
-				<h1>
-					{{ lender.firstName }}, thanks to you, {{ loans.length }}
-					{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
-				</h1>
-				<p>
-					But the journey isn't over for them and many other borrowers.<br>
-					Please tell your friends and multiply your impact
-				</p>
-			</div>
-
-			<social-share
-				:loans="loans"
-			/>
-
-			<div style="text-align: center; margin: 2rem 0;">
-				<p>Confirmation sent to: {{ lender.email }}.</p>
-				<button @click="toggleReceipt">
-					<icon-receipt style="width: 16px" />
-					<span>{{ isReceiptVisible ? 'Hide' : 'Show' }} Receipt</span>
-				</button>
-			</div>
-
-			<checkout-receipt
-				v-if="isReceiptVisible"
-				:lender="lender"
-				:receipt-data="receiptData"
-			/>
-		</div>
-	`,
-	props: {
-		lender: {
-			type: Object,
-			default() {
-				return mockedUserAccount.data.my.userAccount
-			}
-		},
-		receiptData: {
-			type: Object,
-			default() {
-				return receiptData.data.shop.receipt
-			}
-		},
-		loans: {
-			type: Array,
-			default() {
-				return mockedLoans.data.lend.loans.values
-			}
-		},
-	},
-	data() {
-		return {
-			isReceiptVisible: {
-				type: Boolean,
-				default: boolean('isReceiptVisible', true)
-			}
-		}
-	},
-	methods: {
-		toggleReceipt() {
-			this.isReceiptVisible = !this.isReceiptVisible;
-		}
-	},
-	mounted() {
-		confetti({
-			origin: {
-				y: 0.2
-			},
-			particleCount: 150	,
-			spread: 200,
-			colors: ['#d74937','#6859c0','#fee259','#118aec','#DDFFF4','#4faf4e','#aee15c'] // misc. kiva colors
-		});
 	},
 });

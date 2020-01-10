@@ -119,11 +119,6 @@ export default {
 		},
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
-		},
-		printReceipt() {
-			if (typeof window !== 'undefined') {
-				window.print();
-			}
 		}
 	},
 };
