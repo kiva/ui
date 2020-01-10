@@ -1,7 +1,7 @@
 <template>
 	<www-page :gray-background="true">
 		<div class="row page-content">
-			<div class="small-12 columns thanks" v-if="lender && loans && receipt">
+			<div class="small-12 columns thanks">
 				<div class="thanks__checkout-steps">
 					<checkout-steps current-step="thanks" />
 				</div>
@@ -37,10 +37,6 @@
 					:receipt="receipt"
 				/>
 			</div>
-
-			<div v-else>
-				No receipt data yet. TODO: pass the checkoutID to this page.
-			</div>
 		</div>
 	</www-page>
 </template>
@@ -75,14 +71,14 @@ export default {
 	apollo: {
 		query: checkoutReceiptQuery,
 		preFetch: true,
-		preFetchVariables() {
+		preFetchVariables({ route }) {
 			return {
-				checkoutId: 38649558, // TODO, have this passed in from the checkout page
+				checkoutId: route.query.kiva_transaction_id
 			};
 		},
 		variables() {
 			return {
-				checkoutId: 38649558, // TODO, have this passed in from the checkout page
+				checkoutId: this.$route.query.kiva_transaction_id
 			};
 		},
 		result({ data }) {
