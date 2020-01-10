@@ -3,6 +3,7 @@
 		<hero-slideshow v-if="showSlideShow"
 			:promo-enabled="promoEnabled" :promo-content="promoContent"
 		/>
+		<monthly-good-explained />
 		<why-kiva />
 		<category-grid />
 	</www-page>
@@ -15,6 +16,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
+import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
 import { processContent } from '@/util/contentfulUtils';
 
@@ -23,6 +25,7 @@ export default {
 		WwwPage,
 		WhyKiva,
 		HeroSlideshow,
+		MonthlyGoodExplained,
 		CategoryGrid,
 	},
 	data() {
