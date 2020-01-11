@@ -227,13 +227,4 @@ export default {
 	color: $kiva-icon-green;
 }
 
-.icon-hp-mg-1-signup,
-.icon-hp-mg-2-choose,
-.icon-hp-mg-3-receive,
-.icon-hp-mg-4-multiply {
-	// These SVGs are white so I'm applying a dark background
-	// so they are visible on the /styleguide/icons page
-	background-color: #333;
-}
-
 </style>
