@@ -56,7 +56,7 @@
 			</div>
 			<div class="column large-12 text-center learn-more-wrapper">
 				<router-link
-					:to="`/monthly-good`"
+					:to="`/monthlygood`"
 					class="learn-more-text"
 					v-kv-track-event="[
 						'homepage',
