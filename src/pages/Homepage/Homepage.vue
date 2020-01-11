@@ -3,7 +3,7 @@
 		<hero-slideshow v-if="showSlideShow"
 			:promo-enabled="promoEnabled" :promo-content="promoContent"
 		/>
-		<monthly-good-explained />
+		<monthly-good-explained v-if="promoEnabled" />
 		<why-kiva />
 		<category-grid />
 	</www-page>
