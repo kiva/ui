@@ -70,10 +70,10 @@
 </template>
 
 <script>
-import MgStepOne from '@/assets/icons/hp-mg-1-signup.svg';
-import MgStepTwo from '@/assets/icons/hp-mg-2-choose.svg';
-import MgStepThree from '@/assets/icons/hp-mg-3-receive.svg';
-import MgStepFour from '@/assets/icons/hp-mg-4-multiply.svg';
+import MgStepOne from '@/assets/inline-svgs/hp-mg-1-signup.svg';
+import MgStepTwo from '@/assets/inline-svgs/hp-mg-2-choose.svg';
+import MgStepThree from '@/assets/inline-svgs/hp-mg-3-receive.svg';
+import MgStepFour from '@/assets/inline-svgs/hp-mg-4-multiply.svg';
 
 export default {
 	components: {
@@ -114,11 +114,17 @@ export default {
 		padding: 1.6rem 0;
 	}
 
+	h2 {
+		margin-bottom: 0.125rem;
+	}
+
 	.step-wrapper {
 		margin-bottom: 2.5rem;
 	}
 
 	.number {
+		position: relative;
+		top: 0.625rem;
 		padding-left: 5.3rem;
 
 		@include breakpoint(medium) {
@@ -129,6 +135,7 @@ export default {
 	.description-text {
 		max-width: 12.5rem;
 		margin: 0 auto;
+		line-height: 1.4;
 
 		@include breakpoint(medium) {
 			margin: unset;
