@@ -143,7 +143,7 @@ export default {
 	}
 
 	.mg-image {
-		width: 45%;
+		// width: 45%;
 		max-height: 6.25rem;
 		display: block;
 		margin: 0 auto 1rem auto;
