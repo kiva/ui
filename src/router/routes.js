@@ -15,6 +15,7 @@ export default [
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutPage') },
+	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/ThanksPage') },
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
@@ -26,9 +27,10 @@ export default [
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
+	// TODO! This is a temporary route
+	{ path: '/monthlygood-ui', component: () => import('@/pages/MonthlyGood/MonthlyGoodPage') },
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
-	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/ThanksPage') },
 	{
 		path: '/possibility',
 		component: () => import('@/pages/Possibility/Possibility'),
