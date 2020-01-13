@@ -144,6 +144,10 @@
 			<kv-icon class="icon" name="triangle" />
 			<kv-icon class="icon" name="woman" />
 			<kv-icon class="icon" name="x" />
+			<kv-icon class="icon" name="hp-mg-1-signup" />
+			<kv-icon class="icon" name="hp-mg-2-choose" />
+			<kv-icon class="icon" name="hp-mg-3-receive" />
+			<kv-icon class="icon" name="hp-mg-4-multiply" />
 		</div>
 	</section>
 </template>
@@ -164,5 +168,14 @@ export default {
 .icon {
 	height: 5rem;
 	width: 5rem;
+}
+
+.icon.icon-hp-mg-1-signup,
+.icon.icon-hp-mg-2-choose,
+.icon.icon-hp-mg-3-receive,
+.icon.icon-hp-mg-4-multiply {
+	// These SVGs are white so I'm applying a dark background
+	// so they are visible on the /styleguide/icons page
+	background-color: $dark-charcoal;
 }
 </style>
