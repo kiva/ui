@@ -8,7 +8,7 @@
 				<span class="number">
 					1
 				</span>
-				<kv-icon name="hp-mg-1-signup" class="mg-image" />
+				<mg-step-one class="mg-image" />
 				<h2>
 					Sign up
 				</h2>
@@ -20,7 +20,7 @@
 				<span class="number">
 					2
 				</span>
-				<kv-icon name="hp-mg-2-choose" class="mg-image" />
+				<mg-step-two class="mg-image" />
 				<h2>
 					Choose
 				</h2>
@@ -32,7 +32,7 @@
 				<span class="number">
 					3
 				</span>
-				<kv-icon name="hp-mg-3-receive" class="mg-image" />
+				<mg-step-three class="mg-image" />
 				<h2>
 					Receive
 				</h2>
@@ -44,7 +44,7 @@
 				<span class="number">
 					4
 				</span>
-				<kv-icon name="hp-mg-4-multiply" class="mg-image" />
+				<mg-step-four class="mg-image" />
 				<h2>
 					Multiply
 				</h2>
@@ -59,8 +59,7 @@
 					v-kv-track-event="[
 						'homepage',
 						'click-monthly-good-Learn more',
-						'homepage-monthly-good-learn-more-link',
-						'true'
+						'homepage-monthly-good-learn-more-link'
 					]"
 				>
 					Learn more
@@ -71,11 +70,17 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import MgStepOne from '@/assets/icons/hp-mg-1-signup.svg';
+import MgStepTwo from '@/assets/icons/hp-mg-2-choose.svg';
+import MgStepThree from '@/assets/icons/hp-mg-3-receive.svg';
+import MgStepFour from '@/assets/icons/hp-mg-4-multiply.svg';
 
 export default {
 	components: {
-		KvIcon,
+		MgStepOne,
+		MgStepTwo,
+		MgStepThree,
+		MgStepFour
 	},
 };
 
