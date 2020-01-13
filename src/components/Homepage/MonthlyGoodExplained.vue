@@ -4,54 +4,52 @@
 			<h1 class="column small-12 text-center">
 				How does Monthly Good work?
 			</h1>
-			<div class="steps-container">
-				<div class="column small-12 medium-6 large-3 step-wrapper">
-					<span class="number">
-						1
-					</span>
-					<kv-icon name="hp-mg-1-signup" class="mg-image" />
-					<h2>
-						Sign up
-					</h2>
-					<div class="description-text">
-						to automatically help a borrower every month
-					</div>
+			<div class="column small-12 medium-6 large-3 step-wrapper">
+				<span class="number">
+					1
+				</span>
+				<kv-icon name="hp-mg-1-signup" class="mg-image" />
+				<h2>
+					Sign up
+				</h2>
+				<div class="description-text">
+					to automatically help a borrower every month
 				</div>
-				<div class="column small-12 medium-6 large-3 step-wrapper">
-					<span class="number">
-						2
-					</span>
-					<kv-icon name="hp-mg-2-choose" class="mg-image" />
-					<h2>
-						Choose
-					</h2>
-					<div class="description-text">
-						how much and who you want to lend to - Kiva's got it from here
-					</div>
+			</div>
+			<div class="column small-12 medium-6 large-3 step-wrapper">
+				<span class="number">
+					2
+				</span>
+				<kv-icon name="hp-mg-2-choose" class="mg-image" />
+				<h2>
+					Choose
+				</h2>
+				<div class="description-text">
+					how much and who you want to lend to - Kiva's got it from here
 				</div>
-				<div class="column small-12 medium-6 large-3 step-wrapper">
-					<span class="number">
-						3
-					</span>
-					<kv-icon name="hp-mg-3-receive" class="mg-image" />
-					<h2>
-						Receive
-					</h2>
-					<div class="description-text">
-						a personalized report on your impact once a month
-					</div>
+			</div>
+			<div class="column small-12 medium-6 large-3 step-wrapper">
+				<span class="number">
+					3
+				</span>
+				<kv-icon name="hp-mg-3-receive" class="mg-image" />
+				<h2>
+					Receive
+				</h2>
+				<div class="description-text">
+					a personalized report on your impact once a month
 				</div>
-				<div class="column small-12 medium-6 large-3 step-wrapper">
-					<span class="number">
-						4
-					</span>
-					<kv-icon name="hp-mg-4-multiply" class="mg-image" />
-					<h2>
-						Multiply
-					</h2>
-					<div class="description-text">
-						your impact as Kiva continues to re-lend your repayments
-					</div>
+			</div>
+			<div class="column small-12 medium-6 large-3 step-wrapper">
+				<span class="number">
+					4
+				</span>
+				<kv-icon name="hp-mg-4-multiply" class="mg-image" />
+				<h2>
+					Multiply
+				</h2>
+				<div class="description-text">
+					your impact as Kiva continues to re-lend your repayments
 				</div>
 			</div>
 			<div class="column large-12 text-center learn-more-wrapper">
@@ -98,53 +96,49 @@ export default {
 		color: $white;
 	}
 
+	h2,
+	.description-text {
+		text-align: center;
+
+		@include breakpoint(medium) {
+			text-align: unset;
+		}
+	}
+
 	h1 {
 		padding: 1.6rem 0;
 	}
 
-	.steps-container {
-		display: contents;
+	.step-wrapper {
+		margin-bottom: 2.5rem;
+	}
 
-		.step-wrapper {
-			margin-bottom: 2.5rem;
+	.number {
+		padding-left: 5.3rem;
+
+		@include breakpoint(medium) {
+			padding-left: unset;
 		}
+	}
 
-		.number {
-			padding-left: 5.3rem;
+	.description-text {
+		max-width: 12.5rem;
+		margin: 0 auto;
 
-			@include breakpoint(medium) {
-				padding-left: unset;
-			}
+		@include breakpoint(medium) {
+			margin: unset;
 		}
+	}
 
-		h2,
-		.description-text {
-			text-align: center;
+	.mg-image {
+		width: 45%;
+		max-height: 6.25rem;
+		display: block;
+		margin: 0 auto 1rem auto;
 
-			@include breakpoint(medium) {
-				text-align: unset;
-			}
-		}
-
-		.description-text {
-			max-width: 12.5rem;
-			margin: 0 auto;
-
-			@include breakpoint(medium) {
-				margin: unset;
-			}
-		}
-
-		.mg-image {
-			width: 45%;
-			max-height: 6.25rem;
-			display: block;
-			margin: 0 auto 1rem auto;
-
-			@include breakpoint(medium) {
-				text-align: unset;
-				margin-left: 1.25rem;
-			}
+		@include breakpoint(medium) {
+			text-align: unset;
+			margin-left: 1.25rem;
 		}
 	}
 
