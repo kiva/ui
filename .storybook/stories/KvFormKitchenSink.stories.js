@@ -4,6 +4,7 @@ import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
 import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 import KvToggle from '@/components/Kv/KvToggle';
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
 export default { title: 'Kv | Form Elements' };
 
@@ -14,7 +15,8 @@ export const KitchenSink = () => ({
 		KvPillToggle,
 		KvRadio,
 		KvRangeSlider,
-		KvToggle
+		KvToggle,
+		KvCurrencyInput
 	},
 	data() {
 		return {
@@ -42,7 +44,8 @@ export const KitchenSink = () => ({
 			kvRangeSlider: 50,
 			kvToggle1: true,
 			kvToggle2: false,
-			kvToggle3: true
+			kvToggle3: true,
+			kvCurrencyAmount: 25
 		}
 	},
 	template: `
@@ -192,6 +195,13 @@ export const KitchenSink = () => ({
 								{{ singleOption }}
 							</option>
 						</select>
+					</label>
+				</fieldset>
+
+				<fieldset>
+					<label class="input-label"for="amount">
+						KvCurrencyInput
+						<kv-currency-input id="amount" v-model="kvCurrencyAmount" />
 					</label>
 				</fieldset>
 

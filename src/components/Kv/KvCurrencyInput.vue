@@ -33,7 +33,7 @@ export default {
 			},
 			set(modifiedValue) {
 				// Recalculate value after ignoring "$" and "," in user input
-				let newValue = parseFloat(modifiedValue.replace(/[^\d\.]/g, ''));
+				let newValue = parseFloat(modifiedValue.replace(/[^\d.]/g, ''));
 				// Ensure that it is not NaN
 				if (Number.isNaN(newValue)) {
 					newValue = 0;
