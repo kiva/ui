@@ -8,6 +8,7 @@ query checkoutReceipt($checkoutId: Int!) {
 				}
 			}
 			totals {
+				bonusAppliedTotal
 				itemTotal
 				donationTotal
 				kivaCardTotal
@@ -16,20 +17,42 @@ query checkoutReceipt($checkoutId: Int!) {
 					kivaCreditAdded
 					kivaCreditUsed
 				}
+				freeTrialAppliedTotal
 				kivaCreditAppliedTotal
+				redemptionCodeAppliedTotal
+				universalCodeAppliedTotal
 			}
 			hasFreeCredits
 			items {
 				totalCount
 				values {
+					id
 					price
 					basketItemType
-					creditsUsed {
-						amount
+					... on KivaCard {
+						individualPrice
+						basketItemType
+						kivaCardObject {
+							deliveryType
+							mailingInfo {
+								firstName
+								lastName
+								address
+								address2
+								city
+								state
+								zip
+							}
+							recipient {
+								name
+								email
+							}
+						}
 					}
 					... on LoanReservation {
 						loan {
 							name
+							id
 							image {
 								url
 							}
