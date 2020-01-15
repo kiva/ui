@@ -2,9 +2,7 @@
 	<www-page :gray-background="true">
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
-				<div class="thanks__checkout-steps">
-					<checkout-steps current-step="thanks" />
-				</div>
+				<checkout-steps current-step="thanks" />
 
 				<div class="thanks__header">
 					<h1 class="thanks__header-h1">
@@ -60,6 +58,11 @@ export default {
 		WwwPage,
 	},
 	inject: ['apollo'],
+	metaInfo() {
+		return {
+			title: 'Thank you!'
+		};
+	},
 	data() {
 		return {
 			lender: {},
@@ -116,10 +119,6 @@ export default {
 }
 
 .thanks {
-	// &__checkout-steps {
-
-	// }
-
 	&__header {
 		text-align: center;
 		margin-bottom: 3rem;
