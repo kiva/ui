@@ -1,15 +1,18 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
 		<fieldset>
-			<label class="input-label" :class="{ 'error': $v.$invalid }" for="amount">
-				<kv-currency-input id="amount" :value="amount" @input="updateAmount" />
-				<ul class="validation-errors">
-					<li class="input-error" v-if="!$v.amount.required">Field is required</li>
-					<li class="input-error" v-if="!$v.amount.minValue || !$v.amount.maxValue">
-						Enter an amount of $5-$10,000
-					</li>
-				</ul>
+			<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount' + componentKey">
+				Amount
 			</label>
+			<kv-currency-input :id="'amount' + componentKey" :value="amount" @input="updateAmount" />
+			<ul class="validation-errors" v-if="$v.$invalid">
+				<li class="input-error" v-if="!$v.amount.required">
+					Field is required
+				</li>
+				<li class="input-error" v-if="!$v.amount.minValue || !$v.amount.maxValue">
+					Enter an amount of $5-$10,000
+				</li>
+			</ul>
 		</fieldset>
 		<kv-dropdown-rounded :value="selectedCategory" @input="updateSelected">
 			<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
@@ -54,6 +57,14 @@ export default {
 		selectedCategory: {
 			type: String,
 			default: 'default'
+		},
+	},
+	computed: {
+		componentKey() {
+			// This component can exist multiple times on the page or can be iterated over.
+			// If it has a key attribute, then it will be used in the input id to avoid
+			// duplicate inputs with the same id.
+			return this.$vnode.key || '';
 		}
 	},
 	methods: {

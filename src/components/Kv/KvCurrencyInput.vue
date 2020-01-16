@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import numeral from 'numeral';
+
 export default {
 	props: {
 		value: {
@@ -29,15 +31,12 @@ export default {
 					return this.value.toString();
 				}
 				// User is not modifying now. Format display value for user interface
-				return `$ ${this.value.toFixed(2).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, '$1,')}`;
+				return numeral(this.value).format('$0,0.00');
 			},
 			set(modifiedValue) {
 				// Recalculate value after ignoring "$" and "," in user input
-				let newValue = parseFloat(modifiedValue.replace(/[^\d.]/g, ''));
-				// Ensure that it is not NaN
-				if (Number.isNaN(newValue)) {
-					newValue = 0;
-				}
+				// ensure value is a number
+				let newValue = numeral(modifiedValue).value() || 0;
 				// Round to 2 decimal places
 				if (!Number.isInteger(newValue)) {
 					newValue = parseFloat(newValue.toFixed(2));

@@ -3,8 +3,16 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				Monthly Good page placeholder text
-				<landing-form :amount.sync="monthlyGoodAmount" :selected-category.sync="selectedCategory" />
-				<landing-form :amount.sync="monthlyGoodAmount" :selected-category.sync="selectedCategory" />
+				<landing-form
+					:amount.sync="monthlyGoodAmount"
+					:selected-category.sync="selectedCategory"
+					:key="1"
+				/>
+				<landing-form
+					:amount.sync="monthlyGoodAmount"
+					:selected-category.sync="selectedCategory"
+					:key="2"
+				/>
 			</div>
 		</div>
 	</www-page>

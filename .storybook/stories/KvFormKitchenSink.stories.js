@@ -201,8 +201,8 @@ export const KitchenSink = () => ({
 				<fieldset>
 					<label class="input-label"for="amount">
 						KvCurrencyInput
-						<kv-currency-input id="amount" v-model="kvCurrencyAmount" />
 					</label>
+					<kv-currency-input id="amount" v-model="kvCurrencyAmount" />
 				</fieldset>
 
 				<fieldset>

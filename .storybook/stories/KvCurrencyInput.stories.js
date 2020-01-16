@@ -16,8 +16,9 @@ export const Default = () => ({
 	template: `
 		<fieldset>
 			<label class="input-label"for="amount">
-				<kv-currency-input id="amount" v-model="amount"/>
+				Amount
 			</label>
+			<kv-currency-input id="amount" v-model="amount"/>
 		</fieldset>
 	`
 });
@@ -41,15 +42,16 @@ export const WithValidation = () => ({
 		},
 		template: `
 			<fieldset>
-				<label class="input-label" :class="{ 'error': $v.$invalid }" for="amount">
-					<kv-currency-input id="amount" v-model="amount"/>
-					<ul class="validation-errors">
-						<li class="input-error" v-if="!$v.amount.required">Field is required</li>
-						<li class="input-error" v-if="!$v.amount.minValue || !$v.amount.maxValue">
-							Enter an amount of $5-$10,000
-						</li>
-					</ul>
+				<label :class="{ 'error': $v.$invalid }" for="amount">
+					Amount
 				</label>
+				<kv-currency-input id="amount" v-model="amount"/>
+				<ul class="validation-errors">
+					<li class="input-error" v-if="!$v.amount.required">Field is required</li>
+					<li class="input-error" v-if="!$v.amount.minValue || !$v.amount.maxValue">
+						Enter an amount of $5-$10,000
+					</li>
+				</ul>
 			</fieldset>
 		`
 	});
