@@ -1,6 +1,6 @@
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 
-export default { title: 'Kv | Form Elements/KvPillToggle' };
+export default { title: 'Kv/Form Elements/KvPillToggle' };
 
 export const Default = () => ({
 	components: {

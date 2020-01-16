@@ -22,7 +22,7 @@ const expOptions = {
 };
 
 export default {
-	title: 'Promos|MG Grid Loan Card',
+	title: 'Promos/MG Grid Loan Card',
 	decorators: [StoryRouter()],
 };
 

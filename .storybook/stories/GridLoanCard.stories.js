@@ -9,7 +9,7 @@ import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
 export default {
-	title: 'Components|Grid Loan Card',
+	title: 'Components/Grid Loan Card',
 	decorators: [StoryRouter()],
 };
 

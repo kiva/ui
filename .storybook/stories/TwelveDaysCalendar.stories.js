@@ -3,7 +3,7 @@ import { number, boolean } from '@storybook/addon-knobs';
 import TwelveDaysCalendar from '@/pages/Possibility/TwelveDaysCalendar';
 
 export default {
-	title: 'Promos|12Days',
+	title: 'Promos/12Days',
 	decorators: [StoryRouter()],
 };
 

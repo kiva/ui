@@ -1,6 +1,6 @@
 import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 
-export default { title: 'Kv | Form Elements/KvRangeSlider' };
+export default { title: 'Kv/Form Elements/KvRangeSlider' };
 
 export const Default = () => ({
 	components: {
