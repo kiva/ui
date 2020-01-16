@@ -133,16 +133,26 @@ export default {
 			color: $kiva-green;
 
 			.step-icon {
+				.icon {
+					width: 2rem;
+					height: 2rem;
+					fill: $kiva-green;
+				}
+
 				&.number-icon {
 					background: $kiva-green;
 					color: $white;
 					border: 1px solid $kiva-green;
 				}
 
-				.icon {
-					width: 2rem;
-					height: 2rem;
-					fill: $kiva-green;
+				&.checkmark {
+					background: #fff;
+					border: 0;
+
+					.icon {
+						width: 1.5rem;
+						height: 1.5rem;
+					}
 				}
 			}
 		}
