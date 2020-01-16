@@ -226,4 +226,5 @@ export default {
 	fill: $kiva-icon-green;
 	color: $kiva-icon-green;
 }
+
 </style>

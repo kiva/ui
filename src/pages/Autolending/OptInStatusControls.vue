@@ -11,7 +11,7 @@
 		<div class="columns large-10" v-show="idleCreditOptIn && !isEnabled && inactiveCreditEligible">
 			<blockquote>
 				<em>
-					You're scheduled to be enrolled in 90-day auto-lending starting Feb 18, 2020.
+					You're scheduled to be enrolled in 90-day auto-lending starting Feb 20, 2020.
 					<kv-button
 						id="opt-out-button"
 						class="setting secondary"
