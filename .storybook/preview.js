@@ -13,6 +13,9 @@ addParameters({
 		},
 		showRoots: true,
 	},
+	docs: {
+		inlineStories: true,
+	}
 });
 
 const GlobalDecorator = () => ({
