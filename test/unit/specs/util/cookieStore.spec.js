@@ -22,6 +22,27 @@ describe('cookieStore.js', () => {
 		});
 	});
 
+	describe('getAll', () => {
+		it('reads document cookies when no request cookies are defined', () => {
+			document.cookie = 'test1=value1';
+			document.cookie = 'test2=value2';
+			expect(cookieStore.getAll()).toEqual({
+				test1: 'value1',
+				test2: 'value2'
+			});
+		});
+
+		it('only reads request cookies when they are defined', () => {
+			document.cookie = 'test=client_value';
+			const serverCookies = {
+				test1: 'server_value1',
+				test2: 'server_value2'
+			};
+			cookieStore.reset(serverCookies);
+			expect(cookieStore.getAll()).toEqual(serverCookies);
+		});
+	});
+
 	describe('getCookieString', () => {
 		it('returns the request cookies as a serialized string', () => {
 			cookieStore.reset({
