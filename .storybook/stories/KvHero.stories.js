@@ -16,7 +16,10 @@ const sampleResponsiveImageSet = [
 	['wxga retina', imagesRequire('./mg-hppromo-1-wxga-retina.jpg')],
 ];
 
-export default { title: 'Kv/KvHero' };
+export default {
+	title: 'Kv/KvHero',
+	component: KvHero,
+};
 
 export const headlineBodyAction = () => ({
 	components: {

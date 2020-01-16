@@ -10,6 +10,7 @@ Vue.use(kivaPlugins)
 
 export default {
 	title: 'Components/Grid Loan Card',
+	component: GridLoanCard,
 	decorators: [StoryRouter()],
 };
 

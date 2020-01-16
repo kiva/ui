@@ -5,7 +5,9 @@ import KvRadio from '@/components/Kv/KvRadio';
 import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 import KvToggle from '@/components/Kv/KvToggle';
 
-export default { title: 'Kv/Form Elements' };
+export default {
+	title: 'Kv/Form Elements',
+};
 
 export const KitchenSink = () => ({
 	components: {

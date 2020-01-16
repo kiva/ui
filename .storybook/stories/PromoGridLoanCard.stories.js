@@ -23,6 +23,7 @@ const expOptions = {
 
 export default {
 	title: 'Promos/MG Grid Loan Card',
+	component: PromoGridLoanCard,
 	decorators: [StoryRouter()],
 };
 

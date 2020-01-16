@@ -4,6 +4,7 @@ import TwelveDaysCalendar from '@/pages/Possibility/TwelveDaysCalendar';
 
 export default {
 	title: 'Promos/12Days',
+	component: TwelveDaysCalendar,
 	decorators: [StoryRouter()],
 };
 

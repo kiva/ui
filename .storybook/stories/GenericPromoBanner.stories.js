@@ -60,6 +60,7 @@ const decodeHTML = function(html) {
 
 export default {
 	title: 'Promos/Generic Global Promo Banner',
+	component: GenericPromoBanner,
 	decorators: [StoryRouter()],
 };
 
