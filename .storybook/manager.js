@@ -1,6 +1,7 @@
+import { addons } from '@storybook/addons';
 import { create } from '@storybook/theming/create';
 
-export default create({
+const theme = create({
 //   base: 'light',
 
 //   colorPrimary: 'hotpink',
@@ -34,4 +35,9 @@ export default create({
 	brandTitle: 'Kiva.org',
 	brandUrl: 'https://kiva.org',
 	brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
+});
+
+addons.setConfig({
+	panelPosition: 'bottom',
+	theme,
 });
