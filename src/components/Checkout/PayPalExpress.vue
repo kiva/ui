@@ -237,7 +237,6 @@ export default {
 						shape: 'rect',
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
 						fundingicons: false,
-						layout: 'vertical',
 					},
 					funding: {
 						disallowed: [paypal.FUNDING.CREDIT, paypal.FUNDING.VENMO]
