@@ -1,9 +1,13 @@
 <template>
 	<div class="hero">
 		<div class="images">
-			<div class="images-placeholder"></div>
-			<div class="images-container">
+			<div class="images-placeholder" v-if="hasCarousel"></div>
+			<div :class="{ 'images-container' : hasCarousel }">
+				<div class="overlay-content" v-if="hasOverlayContent">
+					<slot name="overlayContent"></slot>
+				</div>
 				<slot name="images"></slot>
+				<slot name="carousel"></slot>
 			</div>
 		</div>
 		<div class="headline" v-if="showHeadline">
@@ -45,9 +49,15 @@ export default {
 		headlineBgColor: {
 			type: String,
 			default: ''
-		}
+		},
 	},
 	computed: {
+		hasCarousel() {
+			return !!this.$slots.carousel;
+		},
+		hasOverlayContent() {
+			return !!this.$slots.overlayContent;
+		},
 		hasHeadlineTitle() {
 			return !!this.$slots.headlineTitle;
 		},
@@ -81,9 +91,6 @@ export default {
 }
 
 .images {
-	position: relative;
-	overflow: hidden;
-
 	img {
 		width: 100%;
 	}
@@ -97,6 +104,7 @@ export default {
 	left: 0;
 }
 
+// required to generate the height for the carousel images
 .images-placeholder {
 	background-color: $kiva-bg-lightgray;
 	width: 100%;
@@ -213,5 +221,12 @@ export default {
 			margin-bottom: -3.125rem;
 		}
 	}
+}
+
+.overlay-content {
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	transform: translateY(-50%);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<img :src="imageUrl" v-bind="$attrs">
+	<img :src="imageUrl" v-show="isRetina != null">
 </template>
 
 <script>
@@ -9,6 +9,8 @@ import { isHighDensity, isRetina } from '@/util/checkScreenDensity';
 import screenSizeMixin from '@/plugins/screen-size-mixin';
 
 export default {
+	// initializing isRetina as null and using the v-show above prevents flashing of a
+	// low res image before isRetina and screenWidth are set
 	mixins: [screenSizeMixin],
 	props: {
 		// An array of image sizes and urls, e.g. [['small', 'img-sm.jpg'], ['small retina', 'img-sm-retina.jpg']]
@@ -16,7 +18,7 @@ export default {
 	},
 	data() {
 		return {
-			isRetina: false,
+			isRetina: null,
 		};
 	},
 	computed: {

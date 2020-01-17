@@ -1,24 +1,28 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
-		<fieldset>
-			<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount' + componentKey">
-				Amount
-			</label>
-			<kv-currency-input :id="'amount' + componentKey" :value="amount" @input="updateAmount" />
-			<ul class="validation-errors" v-if="$v.$invalid">
-				<li class="input-error" v-if="!$v.amount.required">
-					Field is required
-				</li>
-				<li class="input-error" v-if="!$v.amount.minValue || !$v.amount.maxValue">
-					Enter an amount of $5-$10,000
-				</li>
-			</ul>
-		</fieldset>
-		<kv-dropdown-rounded :value="selectedCategory" @input="updateSelected">
-			<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
-				{{ option.label }}
-			</option>
-		</kv-dropdown-rounded>
+		<div class="row">
+			<fieldset class="large-4 medium-6 small-8 columns">
+				<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount' + componentKey">
+					Amount
+				</label>
+				<kv-currency-input :id="'amount' + componentKey" :value="amount" @input="updateAmount" />
+				<ul class="validation-errors" v-if="$v.$invalid">
+					<li v-if="!$v.amount.required">
+						Field is required
+					</li>
+					<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
+						Enter an amount of $5-$10,000
+					</li>
+				</ul>
+			</fieldset>
+			<fieldset class="large-8 medium-6 small-8 columns">
+				<kv-dropdown-rounded :value="selectedCategory" @input="updateSelected">
+					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
+						{{ option.label }}
+					</option>
+				</kv-dropdown-rounded>
+			</fieldset>
+		</div>
 
 		<kv-button class="button smaller" type="submit" :disabled="$v.$invalid">
 			Contribute monthly
@@ -114,24 +118,13 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-// TODO temporary form CSS, tweak when rest of page is created
-.validation-errors {
+// styles to match KvDropDownRounded
+input[id*="amount"] {
+	border: 1px solid $charcoal;
+	border-radius: $button-radius;
+	color: $charcoal;
+	font-size: $medium-text-font-size;
+	font-weight: $global-weight-highlight;
 	margin: 0;
-	float: left;
-
-	.input-error {
-		list-style: none;
-		color: $kiva-accent-red;
-		font-weight: $global-weight-highlight;
-		font-size: $small-text-font-size;
-	}
 }
-
-label.error {
-	input,
-	input:focus {
-		border: 1px solid $kiva-accent-red;
-	}
-}
-// end temporary form CSS
 </style>

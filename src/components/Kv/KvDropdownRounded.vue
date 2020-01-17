@@ -26,6 +26,7 @@ export default {
 	white-space: nowrap;
 
 	.dropdown {
+		max-width: 100%;
 		border: 1px solid $charcoal;
 		width: inherit;
 		border-radius: $button-radius;
