@@ -101,7 +101,7 @@ export default {
 			// R1: User balance > $25, # of days within dropdown - cIdleStartTime IS POSITIVE
 			// if () {
 			// eslint-disable-next-line max-len
-			// const formedExplanationText = 'Since you haven’t made a loan yourself for ' + `${daysIdle}` + ' days, we will auto-lend your eligible balance after ' + `${daysUntilLend}` + ' days—timing may vary based on loan supply.';
+			const formedExplanationText = 'Since you haven’t made a loan yourself for ' + `${daysIdle}` + ' days, we will auto-lend your eligible balance after ' + `${daysUntilLend}` + ' days—timing may vary based on loan supply.';
 			// }
 			// // R2: Balanace is > $25 (greater than)
 			// else if() {
@@ -110,7 +110,7 @@ export default {
 			// }
 			// // R3: Balance is < $25 (less than)
 			// eslint-disable-next-line max-len
-			const formedExplanationText = 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
+			// const formedExplanationText = 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
 			return formedExplanationText;
 		}
 	},
