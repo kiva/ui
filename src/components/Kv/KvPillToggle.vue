@@ -44,6 +44,9 @@ export default {
 				];
 			}
 		},
+		/**
+     	* A key from options array you want to be selected
+     	*/
 		selected: {
 			type: String,
 			default: '',

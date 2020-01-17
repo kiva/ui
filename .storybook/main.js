@@ -1,7 +1,6 @@
 module.exports = {
 	stories: [
-		'./stories/Styleguide.stories.(js|mdx)', // load the styleguide first
-		'./stories/**/*.stories.js'
+		'./stories/**/*.stories.(js|mdx)'
 	],
 	addons: [
 		'@storybook/addon-actions',

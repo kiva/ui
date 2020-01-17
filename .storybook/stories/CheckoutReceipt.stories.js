@@ -311,7 +311,7 @@ const mockedReceiptData = {
 };
 
 export default {
-	title: 'Components|ThanksPage',
+	title: 'Components/ThanksPage',
 	decorators: [StoryRouter()],
 };
 
