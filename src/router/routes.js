@@ -15,6 +15,7 @@ export default [
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutPage') },
+	{ path: '/checkout/post-purchase', component: () => import('@/pages/Checkout/PostPurchase') },
 	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/ThanksPage') },
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/error', component: () => import('@/pages/Error') },

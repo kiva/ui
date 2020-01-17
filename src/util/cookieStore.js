@@ -21,6 +21,13 @@ function get(name) {
 }
 
 /**
+ * Get a copy of all the current cookies
+ */
+function getAll() {
+	return cookies ? { ...cookies } : clientCookie.get();
+}
+
+/**
  * Get the request cookies as a serialized string
  *
  * @returns {string}
@@ -94,6 +101,7 @@ function reset(requestCookies) {
 
 export default {
 	get,
+	getAll,
 	getCookieString,
 	getSetCookies,
 	has,
