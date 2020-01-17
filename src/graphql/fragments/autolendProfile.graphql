@@ -5,6 +5,7 @@ fragment autolendProfileFragment on AutolendProfile {
 	donationPercentage
 	lendAfterDaysIdle
 	idleCreditOptIn
+	cIdleStartTime
 	loanSearchCriteria {
 		queryString
 		filters {
