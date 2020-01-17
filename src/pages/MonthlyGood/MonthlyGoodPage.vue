@@ -3,6 +3,16 @@
 		<div class="row page-content">
 			<div class="small-12 columns">
 				Monthly Good page placeholder text
+				<landing-form
+					:amount.sync="monthlyGoodAmount"
+					:selected-category.sync="selectedCategory"
+					:key="1"
+				/>
+				<landing-form
+					:amount.sync="monthlyGoodAmount"
+					:selected-category.sync="selectedCategory"
+					:key="2"
+				/>
 			</div>
 		</div>
 	</www-page>
@@ -10,10 +20,18 @@
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import LandingForm from './LandingForm';
 
 export default {
+	data() {
+		return {
+			monthlyGoodAmount: 25,
+			selectedCategory: 'default',
+		};
+	},
 	components: {
 		WwwPage,
+		LandingForm
 	}
 };
 

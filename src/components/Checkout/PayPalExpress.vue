@@ -236,10 +236,10 @@ export default {
 						color: 'blue',
 						shape: 'rect',
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
-						fundingicons: false
+						fundingicons: false,
 					},
 					funding: {
-						disallowed: [paypal.FUNDING.CREDIT]
+						disallowed: [paypal.FUNDING.CREDIT, paypal.FUNDING.VENMO]
 					}
 				},
 				'#paypal-button'

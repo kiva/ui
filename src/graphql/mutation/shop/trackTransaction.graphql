@@ -1,0 +1,21 @@
+mutation trackTransaction(
+	$campaign: String,
+	$campaignContent: String,
+	$medium: String,
+	$snowplowUserId: String,
+	$snowplowSessionId: String,
+	$source: String,
+	$transactionId: Int!
+) {
+	shop {
+		trackTransaction(
+			campaign: $campaign
+			campaignContent: $campaignContent
+			medium: $medium
+			snowplowUserId: $snowplowUserId
+			snowplowSessionId: $snowplowSessionId
+			source: $source
+			transactionId: $transactionId
+		)
+	}
+}
