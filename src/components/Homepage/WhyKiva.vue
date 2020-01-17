@@ -1,6 +1,6 @@
 <template>
 	<div class="row row-container">
-		<h1 class="text-center kiva-green show-for-large large-12 column why-kiva-text">
+		<h1 class="text-center kiva-green large-12 column why-kiva-text">
 			Why Kiva?
 		</h1>
 		<img class="map-background" src="@/assets/images/world-map-simple.svg">
@@ -55,11 +55,11 @@
 				countries
 			</h2>
 		</div>
-		<p class="show-for-large column large-12 text-center">
+		<p class="column large-12 text-center">
 			<router-link
 				:to="`/about`"
 				class="kiva-text-grey"
-				v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link', 'true']"
+				v-kv-track-event="['homepage', 'click-Learn more', 'homepage-learn-more-link']"
 			>
 				Learn more
 			</router-link>

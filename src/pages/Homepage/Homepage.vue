@@ -1,8 +1,9 @@
 <template>
 	<www-page id="homepage">
 		<hero-slideshow v-if="showSlideShow"
-			:promo-enabled="promoEnabled"
+			:promo-enabled="promoEnabled" :promo-content="promoContent"
 		/>
+		<monthly-good-explained v-if="promoEnabled" />
 		<why-kiva />
 		<category-grid />
 	</www-page>
@@ -15,19 +16,23 @@ import { settingEnabled } from '@/util/settingsUtils';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
+import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
+import { processContent } from '@/util/contentfulUtils';
 
 export default {
 	components: {
 		WwwPage,
 		WhyKiva,
 		HeroSlideshow,
+		MonthlyGoodExplained,
 		CategoryGrid,
 	},
 	data() {
 		return {
 			promoEnabled: false,
-			showSlideShow: null
+			showSlideShow: null,
+			promoContent: {}
 		};
 	},
 	inject: ['apollo'],
@@ -48,6 +53,7 @@ export default {
 				'startDate',
 				'endDate'
 			);
+			this.promoContent = processContent(uiPromoSetting.content);
 		}).finally(() => {
 			this.showSlideShow = true;
 		});

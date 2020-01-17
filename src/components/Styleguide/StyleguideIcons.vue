@@ -165,4 +165,5 @@ export default {
 	height: 5rem;
 	width: 5rem;
 }
+
 </style>

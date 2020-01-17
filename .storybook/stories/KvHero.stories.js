@@ -2,18 +2,18 @@ import KvHero from '@/components/Kv/KvHero';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
-const possibilitiesImageRequire = require.context('@/assets/images/mg-hero-slideshow', true);
+const imagesRequire = require.context('@/assets/images/mg-hero-slideshow', true);
 const sampleResponsiveImageSet = [
-	['small', possibilitiesImageRequire('./mg-hppromo-1-sm-std.jpg')],
-	['small retina', possibilitiesImageRequire('./mg-hppromo-1-sm-retina.jpg')],
-	['medium', possibilitiesImageRequire('./mg-hppromo-1-med-std.jpg')],
-	['medium retina', possibilitiesImageRequire('./mg-hppromo-1-med-retina.jpg')],
-	['large', possibilitiesImageRequire('./mg-hppromo-1-lg-std.jpg')],
-	['large retina', possibilitiesImageRequire('./mg-hppromo-1-lg-retina.jpg')],
-	['xga', possibilitiesImageRequire('./mg-hppromo-1-xga-std.jpg')],
-	['xga retina', possibilitiesImageRequire('./mg-hppromo-1-xga-retina.jpg')],
-	['wxga', possibilitiesImageRequire('./mg-hppromo-1-wxga-std.jpg')],
-	['wxga retina', possibilitiesImageRequire('./mg-hppromo-1-wxga-retina.jpg')],
+	['small', imagesRequire('./mg-hppromo-1-sm-std.jpg')],
+	['small retina', imagesRequire('./mg-hppromo-1-sm-retina.jpg')],
+	['medium', imagesRequire('./mg-hppromo-1-med-std.jpg')],
+	['medium retina', imagesRequire('./mg-hppromo-1-med-retina.jpg')],
+	['large', imagesRequire('./mg-hppromo-1-lg-std.jpg')],
+	['large retina', imagesRequire('./mg-hppromo-1-lg-retina.jpg')],
+	['xga', imagesRequire('./mg-hppromo-1-xga-std.jpg')],
+	['xga retina', imagesRequire('./mg-hppromo-1-xga-retina.jpg')],
+	['wxga', imagesRequire('./mg-hppromo-1-wxga-std.jpg')],
+	['wxga retina', imagesRequire('./mg-hppromo-1-wxga-retina.jpg')],
 ];
 
 export default { title: 'Kv|KvHero' };
