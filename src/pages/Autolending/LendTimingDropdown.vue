@@ -42,7 +42,9 @@ export default {
 			legacyAutoLender: false,
 			enableAfter: null, // legacy setting
 			lendAfterDaysIdle: 0,
-			cIdleStartTime: null // 'ex: 2018-10-22T23:04:15Z'
+			cIdleStartTime: null, // 'ex: 2018-10-22T23:04:15Z'
+			userBalance: 0,
+			donationPercentage: 5
 		};
 	},
 	computed: {
@@ -79,39 +81,35 @@ export default {
 			notice += this.changedTiming ? '.' : ', the closest matching setting above will be applied upon save.';
 			return notice;
 		},
-		// Calculating the number of days a user's balance has been idle
-		// daysIdleCalculation() {
-		// Calculating the number of days a user's balance has been idle
-		// const now = Date.now();
-		// Set user's idle start time from graphql to date after converting it to unix time
-		// 	const idleStartTime = Date.parse(this.cIdleStartTime);
-		//	const daysIdle = differenceInCalendarDays(now, idleStartTime);
-		// 	return daysIdle;
-		// },
 		autolendExplanationText() {
 			// Calculating the number of days a user's balance has been idle
 			const now = Date.now();
 			// Set user's idle start time from graphql to date after converting it to unix time
 			const idleStartTime = Date.parse(this.cIdleStartTime);
+			// console.log('now ', now);
+			// console.log('idleStartTime ', idleStartTime);
 			const daysIdle = differenceInCalendarDays(now, idleStartTime);
+			// console.log('lend after days idle ', this.lendAfterDaysIdle);
+			// console.log('days idle ', daysIdle);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
-			console.log(daysUntilLend);
+			console.log('days until lend ', daysUntilLend);
+			const realUserBalance = parseInt(this.userBalance);
+			console.log('real user balance', realUserBalance);
+			const loanAndDonationAmount = (1 + this.donationPercentage / 100) * 25;
+			console.log('donation and loan amount ', loanAndDonationAmount);
 
-			// TODO: I need to get user's avaialble balance into this function to use for the following if statment
+			let formedExplanationText;
 
 			// R1: User balance > $25, # of days within dropdown - cIdleStartTime IS POSITIVE
-			// if (BALANCE >= 25 && daysUntilLend > 0) {
+			if (realUserBalance > loanAndDonationAmount && daysUntilLend > 0) {
+				// eslint-disable-next-line max-len
+				formedExplanationText = 'Since you haven’t made a loan yourself for ' + `${daysIdle}` + ' days, we will auto-lend your eligible balance after ' + `${daysUntilLend}` + ' days—timing may vary based on loan supply.';
+			} else if (realUserBalance > loanAndDonationAmount) {
 			// eslint-disable-next-line max-len
-			// const formedExplanationText = 'Since you haven’t made a loan yourself for ' + `${daysIdle}` + ' days, we will auto-lend your eligible balance after ' + `${daysUntilLend}` + ' days—timing may vary based on loan supply.';
-			// }
-			// R2: Balanace is > $25 (greater than)
-			// else if(BALANCE >= 25) {
+				formedExplanationText = 'Since you haven’t made a loan yourself in over ' + `${daysIdle}` + ' days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.';
+			}
 			// eslint-disable-next-line max-len
-			// const formedExplanationText = 'Since you haven’t made a loan yourself in over ' + `${daysIdle}` + ' days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.';
-			// }
-			// R3: Balance is < $25 (less than)
-			// eslint-disable-next-line max-len
-			const formedExplanationText = 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
+			formedExplanationText = 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
 			return formedExplanationText;
 		}
 	},
@@ -151,11 +149,18 @@ export default {
 	},
 	apollo: {
 		query: gql`{
+			my {
+				userAccount {
+					id
+					balance
+				}
+			}
 			autolending @client {
 				currentProfile {
 					enableAfter
 					lendAfterDaysIdle
 					cIdleStartTime
+					donationPercentage
 				}
 				savedProfile {
 					enableAfter
@@ -166,6 +171,8 @@ export default {
 		result({ data }) {
 			this.enableAfter = _get(data, 'autolending.savedProfile.enableAfter');
 			this.cIdleStartTime = _get(data, 'autolending.currentProfile.cIdleStartTime');
+			this.userBalance = _get(data, 'my.userAccount.balance');
+			this.donationPercentage = _get(data, 'autolending.currentProfile.donationPercentage');
 
 			// flag user as one who had auto lending set
 			this.legacyAutoLender = this.enableAfter > 0;
