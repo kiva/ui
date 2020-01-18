@@ -10,7 +10,7 @@
 		</section>
 		<section>
 			<div
-				class="section text-center"
+				class="section text-center hide-for-print"
 				v-if="printableKivaCards.length > 0"
 			>
 				<h2>Print your Kiva {{ printableKivaCards.length > 1 ? 'Cards' : 'Card' }}</h2>
@@ -45,7 +45,7 @@
 									{{ loan.loan.geocode.country.name }}
 								</template>
 							</p>
-							<p v-if="loan.loan.use">
+							<p v-if="loan.loan.use" class="loan__meta-use">
 								A loan helps {{ loan.loan.use }}
 							</p>
 						</div>
@@ -125,7 +125,6 @@
 					v-if="kivaCards.length > 0"
 				>
 					For more details about all your Kiva Card purchases, please visit your
-					<!-- TODO: is this the tracking we want? -->
 					<router-link to="/portfolio/kiva-cards"
 						v-kv-track-event="['Thanks','click', 'kiva-card-portfolio']"
 					>
@@ -204,7 +203,7 @@
 				</li>
 			</ul>
 		</section>
-		<section class="section section--print">
+		<section class="section section--print hide-for-print">
 			<button class="print" @click="printReceipt">
 				<icon-print class="print__icon" />
 				<span>Print this receipt</span>
@@ -275,6 +274,10 @@ export default {
 	&--print {
 		border-bottom: 0;
 	}
+
+	@media print {
+		page-break-inside: avoid;
+	}
 }
 
 .checkout-receipt {
@@ -307,6 +310,10 @@ export default {
 
 	&__meta-city {
 		color: $kiva-text-light;
+		margin: 0;
+	}
+
+	&__meta-use {
 		margin: 0;
 	}
 
@@ -352,6 +359,10 @@ export default {
 	&__type-title,
 	&__type-amount {
 		flex: 1;
+	}
+
+	@media print {
+		border-bottom: none;
 	}
 }
 

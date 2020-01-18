@@ -1,0 +1,17 @@
+@media print {
+	* {
+		// Remove all css transitions
+		-webkit-transition: none !important;
+		transition: none !important;
+	}
+
+	html {
+		// Reduce text size (common browser default is 16pt; 75% * 16pt == 12pt)
+		font-size: 75%;
+	}
+
+	.row {
+		// Remove row width restrictions
+		max-width: none !important;
+	}
+}

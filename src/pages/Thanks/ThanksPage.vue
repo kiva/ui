@@ -4,7 +4,7 @@
 			<div class="small-12 columns thanks">
 				<checkout-steps current-step="thanks" />
 
-				<div class="thanks__header">
+				<div class="thanks__header hide-for-print">
 					<h1 class="thanks__header-h1">
 						{{ lender.firstName }}, thanks to you, {{ loans.length }}
 						{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
@@ -20,7 +20,7 @@
 					:loans="loans"
 				/>
 
-				<div class="thanks__confirmation">
+				<div class="thanks__confirmation hide-for-print">
 					<p>Confirmation sent to: {{ lender.email }}.</p>
 					<button @click="toggleReceipt">
 						<icon-receipt class="toggle-receipt-icon" />
@@ -144,6 +144,10 @@ export default {
 	&__receipt {
 		max-width: rem-calc(485);
 		margin: 0 auto;
+
+		@media print {
+			max-width: none;
+		}
 	}
 }
 

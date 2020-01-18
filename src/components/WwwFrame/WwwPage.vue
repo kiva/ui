@@ -62,6 +62,10 @@ export default {
 	display: flex;
 	flex-flow: column nowrap;
 
+	@media print {
+		display: block;
+	}
+
 	& > * {
 		flex-shrink: 0; // Handle IE defaulting flex-shrink to 1
 	}
