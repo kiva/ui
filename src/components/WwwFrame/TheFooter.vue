@@ -1,7 +1,7 @@
 <template>
 	<footer class="www-footer">
 		<nav class="small-footer hide-for-large">
-			<ul>
+			<ul class="hide-for-print">
 				<li>
 					<router-link :to="applyUrl">
 						Borrow
@@ -28,7 +28,7 @@
 					</router-link>
 				</li>
 			</ul>
-			<div>
+			<div class="hide-for-print">
 				<router-link :to="privacyUrl">
 					Privacy policy
 				</router-link> |
@@ -45,7 +45,7 @@
 		</nav>
 		<nav class="large-footer show-for-large row">
 			<div class="groups">
-				<div class="narrow">
+				<div class="narrow hide-for-print">
 					<h2>Borrow</h2>
 					<p>Loans for entrepreneurs doing amazing things.</p>
 					<ul>
@@ -56,7 +56,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="narrow">
+				<div class="narrow hide-for-print">
 					<h2>Explore</h2>
 					<ul>
 						<li>
@@ -96,7 +96,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="narrow">
+				<div class="narrow hide-for-print">
 					<h2>Get to know us</h2>
 					<ul>
 						<li>
@@ -141,7 +141,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="narrow">
+				<div class="narrow hide-for-print">
 					<h2>Community</h2>
 					<ul>
 						<li>
@@ -162,7 +162,7 @@
 						Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
 						Portland and staff around the globe.
 					</div>
-					<ul class="siteFooter-links">
+					<ul class="siteFooter-links hide-for-print">
 						<li>
 							<router-link to="/donate/supportus">
 								Donate to Kiva here.
@@ -170,7 +170,7 @@
 						</li>
 					</ul>
 				</div>
-				<div class="work-with-us wide">
+				<div class="work-with-us wide hide-for-print">
 					<h2>Work with us</h2>
 					<ul>
 						<li>
@@ -258,6 +258,12 @@ $footer-link-separator-color: $light-green;
 		min-height: 25rem;
 	}
 
+	@media print {
+		padding: 0;
+		min-height: auto;
+		font-weight: 300;
+	}
+
 	ul {
 		list-style: none;
 		margin: 0;
@@ -332,6 +338,17 @@ $footer-link-separator-color: $light-green;
 			ul {
 				li {
 					line-height: 1.6rem;
+				}
+			}
+
+			// For print, do a single full-width column
+			@media print {
+				display: block;
+				height: auto;
+
+				.narrow,
+				.wide {
+					width: 100%;
 				}
 			}
 		}

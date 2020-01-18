@@ -497,6 +497,13 @@ $close-search-button-size: 2.5rem;
 	@include breakpoint(large) {
 		height: $header-height-large;
 	}
+
+	@media print {
+		// Hide all children besides the first (the kiva logo)
+		:nth-child(n+2) {
+			display: none;
+		}
+	}
 }
 
 .header-logo {
@@ -510,6 +517,23 @@ $close-search-button-size: 2.5rem;
 
 		@include breakpoint(large) {
 			max-height: $header-height-large;
+		}
+	}
+
+	@media print {
+		// Center the logo in the page
+		width: 100%;
+
+		// Hide the contextual link information
+		&::after {
+			display: none;
+		}
+
+		// Make the logo green and make it bigger
+		.icon {
+			fill: $kiva-green;
+			width: 6rem;
+			height: 4rem;
 		}
 	}
 }
@@ -552,6 +576,10 @@ $close-search-button-size: 2.5rem;
 			width: 0.75rem;
 			height: 0.75rem;
 		}
+	}
+
+	@media print {
+		border: none;
 	}
 }
 

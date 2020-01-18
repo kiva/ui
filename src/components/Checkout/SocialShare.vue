@@ -1,74 +1,72 @@
 <template>
-	<div>
-		<section class="share">
-			<div class="share__loans loans">
+	<section class="share hide-for-print">
+		<div class="share__loans loans">
+			<button
+				v-for="(loan, index) in loans.slice(0,3)"
+				:key="loan.id"
+				class="loans__circle"
+				:class="{ 'loans__circle--selected': index === selectedLoanIndex }"
+				@click="setSelectedLoanIndex(index)"
+			>
+				<img
+					class="loans__img"
+					:src="loan.image.url"
+					:alt="`${loan.name} profile image`"
+				>
+			</button>
+		</div>
+
+		<div class="share__message message">
+			<div
+				class="message__triangle"
+				:class="`message__triangle--loan${selectedLoanIndex + 1}`"
+			>
+			</div>
+			<label
+				class="message__label"
+				for="message-textbox"
+			>
+				Message
+			</label>
+			<textarea
+				class="message__textbox"
+				id="message-textbox"
+				:placeholder="placeholderMessage"
+				:maxlength="maxMessageLength"
+				v-model="message"
+			></textarea>
+			<transition name="kvfastfade">
 				<button
-					v-for="(loan, index) in loans.slice(0,3)"
-					:key="loan.id"
-					class="loans__circle"
-					:class="{ 'loans__circle--selected': index === selectedLoanIndex }"
-					@click="setSelectedLoanIndex(index)"
+					class="message__suggested-btn"
+					v-if="!isSuggestedMessage"
+					@click="useSuggestedMessage"
 				>
-					<img
-						class="loans__img"
-						:src="loan.image.url"
-						:alt="`${loan.name} profile image`"
-					>
+					Suggested message
 				</button>
+			</transition>
+			<div class="message__charcount">
+				{{ message.length }}/{{ maxMessageLength }}
 			</div>
+		</div>
 
-			<div class="share__message message">
-				<div
-					class="message__triangle"
-					:class="`message__triangle--loan${selectedLoanIndex + 1}`"
-				>
-				</div>
-				<label
-					class="message__label"
-					for="message-textbox"
-				>
-					Message
-				</label>
-				<textarea
-					class="message__textbox"
-					id="message-textbox"
-					:placeholder="placeholderMessage"
-					:maxlength="maxMessageLength"
-					v-model="message"
-				></textarea>
-				<transition name="kvfastfade">
-					<button
-						class="message__suggested-btn"
-						v-if="!isSuggestedMessage"
-						@click="useSuggestedMessage"
-					>
-						Suggested message
-					</button>
-				</transition>
-				<div class="message__charcount">
-					{{ message.length }}/{{ maxMessageLength }}
-				</div>
-			</div>
-
-			<div class="share__social social">
-				<button class="social__btn social__btn--facebook">
-					<icon-facebook class="social__icon" />
-					<span>Share</span>
-				</button>
-				<button class="social__btn social__btn--twitter">
-					<icon-twitter class="social__icon" />
-					<span>Tweet</span>
-				</button>
-				<button class="social__btn social__btn--linkedin">
-					<icon-linkedin class="social__icon" />
-					<span>Share</span>
-				</button>
-				<button class="social__btn social__btn--link">
-					<span>Copy Link</span>
-				</button>
-			</div>
-		</section>
-	</div>
+		<div class="share__social social">
+			<button class="social__btn social__btn--facebook">
+				<icon-facebook class="social__icon" />
+				<span>Share</span>
+			</button>
+			<button class="social__btn social__btn--twitter">
+				<icon-twitter class="social__icon" />
+				<span>Tweet</span>
+			</button>
+			<button class="social__btn social__btn--linkedin">
+				<icon-linkedin class="social__icon" />
+				<span>Share</span>
+			</button>
+			<button class="social__btn social__btn--link">
+				<span>Copy Link</span>
+			</button>
+		</div>
+	</section>
 </template>
 
 <script>

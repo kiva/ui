@@ -1,5 +1,5 @@
 <template>
-	<div class="checkout-steps">
+	<div class="checkout-steps hide-for-print">
 		<ul class="checkout-step-list">
 			<li id="basket-step" class="step first" :class="isActive('basket')">
 				<p class="step-name">

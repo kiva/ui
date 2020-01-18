@@ -1,5 +1,5 @@
 <template>
-	<div class="show-for-xxlarge promo-banner-large">
+	<div class="show-for-xxlarge hide-for-print promo-banner-large">
 		<promotional-banner />
 	</div>
 </template>
