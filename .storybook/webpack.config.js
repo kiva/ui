@@ -25,6 +25,11 @@ module.exports = async ({ config, mode }) => {
 					loaders: [require.resolve('@storybook/source-loader')],
 					enforce: 'pre',
 				},
+				{
+					test: /\.vue$/,
+					loader: 'vue-docgen-loader', // necessary for storybook prop tables
+					enforce: 'post',
+				},
 				...kvWebpackConfig.module.rules,
 			]
 		},

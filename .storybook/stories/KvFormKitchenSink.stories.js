@@ -6,7 +6,9 @@ import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 import KvToggle from '@/components/Kv/KvToggle';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
-export default { title: 'Kv | Form Elements' };
+export default {
+	title: 'Kv/Form Elements',
+};
 
 export const KitchenSink = () => ({
 	components: {

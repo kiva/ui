@@ -1,6 +1,9 @@
 import KvRadio from '@/components/Kv/KvRadio';
 
-export default { title: 'Kv | Form Elements/KvRadio' };
+export default {
+	title: 'Kv/Form Elements/KvRadio',
+	component: KvRadio,
+};
 
 export const Default = () => ({
 	components: {

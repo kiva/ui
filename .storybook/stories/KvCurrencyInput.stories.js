@@ -2,7 +2,10 @@ import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-export default { title: 'Kv | Form Elements/KvCurrencyInput' };
+export default {
+	title: 'Kv/Form Elements/KvCurrencyInput',
+	component: KvCurrencyInput
+};
 
 export const Default = () => ({
 	components: {

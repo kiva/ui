@@ -1,6 +1,9 @@
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 
-export default { title: 'Kv | Form Elements/KvCheckbox' };
+export default {
+	title: 'Kv/Form Elements/KvCheckbox',
+	component: KvCheckbox,
+ };
 
 export const Default = () => ({
 	components: {

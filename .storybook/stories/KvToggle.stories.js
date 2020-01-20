@@ -1,6 +1,9 @@
 import KvToggle from '@/components/Kv/KvToggle';
 
-export default { title: 'Kv | Form Elements/KvToggle' };
+export default {
+	title: 'Kv/Form Elements/KvToggle',
+	component: KvToggle,
+};
 
 export const Default = () => ({
 	components: {

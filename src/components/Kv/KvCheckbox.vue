@@ -17,6 +17,7 @@
 		>
 			<div class="square"></div>
 			<div>
+				<!-- @slot Contents of the label element -->
 				<slot></slot>
 			</div>
 		</label>
