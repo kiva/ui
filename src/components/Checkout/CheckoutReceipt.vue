@@ -3,16 +3,15 @@
 		<h2 class="checkout-receipt__headline">
 			Order Confirmation
 		</h2>
-		<section class="section" id="qa-lender-info">
+		<section class="section qa-lender-info">
 			TODO: Date<br>
 			{{ lender.firstName }} {{ lender.lastName }}<br>
 			{{ lender.email }}
 		</section>
 		<section>
 			<div
-				class="section text-center hide-for-print"
+				class="section text-center hide-for-print qa-print-kcard-msg"
 				v-if="printableKivaCards.length > 0"
-				id="qa-print-kcard-msg"
 			>
 				<h2>Print your Kiva {{ printableKivaCards.length > 1 ? 'Cards' : 'Card' }}</h2>
 				<p>
@@ -125,8 +124,7 @@
 					</div>
 				</li>
 				<li
-					class="section text-center"
-					id="qa-kcard-portfolio"
+					class="section text-center qa-kcard-portfolio"
 					v-if="kivaCards.length > 0"
 				>
 					For more details about all your Kiva Card purchases, please visit your
@@ -141,7 +139,7 @@
 		<section>
 			<ul class="checkout-receipt__item-list">
 				<li class="section">
-					<div class="loan" id="qa-donation">
+					<div class="loan qa-donation">
 						<h3 class="loan__name">
 							Donation to Kiva
 						</h3>
@@ -156,7 +154,7 @@
 						</div>
 					</div>
 				</li>
-				<li class="section total" id="qa-receipt-total">
+				<li class="section total qa-receipt-total">
 					<h3 class="total__header">
 						Total:
 					</h3>
