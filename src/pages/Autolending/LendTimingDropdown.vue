@@ -82,35 +82,25 @@ export default {
 			return notice;
 		},
 		autolendExplanationText() {
-			// Calculating the number of days a user's balance has been idle
 			const now = Date.now();
 			// Set user's idle start time from graphql to date after converting it to unix time
 			const idleStartTime = Date.parse(this.cIdleStartTime);
-			// console.log('now ', now);
-			// console.log('idleStartTime ', idleStartTime);
 			const daysIdle = differenceInCalendarDays(now, idleStartTime);
-			// console.log('lend after days idle ', this.lendAfterDaysIdle);
-			// console.log('days idle ', daysIdle);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
-			console.log('days until lend ', daysUntilLend);
-			const realUserBalance = parseInt(this.userBalance);
-			console.log('real user balance', realUserBalance);
+			const realUserBalance = parseInt(this.userBalance, 10);
 			const loanAndDonationAmount = (1 + this.donationPercentage / 100) * 25;
-			console.log('donation and loan amount ', loanAndDonationAmount);
 
-			let formedExplanationText;
-
-			// R1: User balance > $25, # of days within dropdown - cIdleStartTime IS POSITIVE
+			// R1: User balance > $25, # of days within dropdown - cIdleStartTime is greater than 0
 			if (realUserBalance > loanAndDonationAmount && daysUntilLend > 0) {
 				// eslint-disable-next-line max-len
-				formedExplanationText = 'Since you haven’t made a loan yourself for ' + `${daysIdle}` + ' days, we will auto-lend your eligible balance after ' + `${daysUntilLend}` + ' days—timing may vary based on loan supply.';
-			} else if (realUserBalance > loanAndDonationAmount) {
+				return `Since you haven’t made a loan yourself for ${daysIdle} days, we will auto-lend your eligible balance after ${daysUntilLend} days—timing may vary based on loan supply.`;
+			}
+			if (realUserBalance > loanAndDonationAmount && daysUntilLend <= 0) {
 			// eslint-disable-next-line max-len
-				formedExplanationText = 'Since you haven’t made a loan yourself in over ' + `${daysIdle}` + ' days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.';
+				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 			}
 			// eslint-disable-next-line max-len
-			formedExplanationText = 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
-			return formedExplanationText;
+			return 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
 		}
 	},
 	methods: {
