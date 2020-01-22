@@ -39,7 +39,7 @@ export default {
 	data() {
 		return {
 			changedTiming: false,
-			legacyAutoLender: true,
+			legacyAutoLender: false,
 			enableAfter: null, // legacy setting
 			lendAfterDaysIdle: 0,
 			cIdleStartTime: null,
@@ -83,21 +83,18 @@ export default {
 		},
 		autolendExplanationText() {
 			const now = Date.now();
-			// Set user's idle start time from graphql to date after converting it to unix time
 			const idleStartTime = Date.parse(this.cIdleStartTime);
 			const daysIdle = differenceInCalendarDays(now, idleStartTime);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
-			const realUserBalance = parseFloat(this.userBalance).toFixed(2);
-			console.log('realuserbalance', realUserBalance);
-			// Kiva money service?
+			const userBalance = parseFloat(this.userBalance).toFixed(2);
 			const loanAndDonationAmount = ((1 + this.donationPercentage / 100) * 25).toFixed(2);
 
-			// R1: User balance > $25, # of days within dropdown - cIdleStartTime is greater than 0
-			if (realUserBalance > loanAndDonationAmount && daysUntilLend > 0) {
+			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
+			if (userBalance > loanAndDonationAmount && daysUntilLend > 0) {
 				// eslint-disable-next-line max-len
 				return `Since you haven’t made a loan yourself for ${daysIdle} days, we will auto-lend your eligible balance after ${daysUntilLend} days—timing may vary based on loan supply.`;
 			}
-			if (realUserBalance > loanAndDonationAmount && daysUntilLend <= 0) {
+			if (userBalance > loanAndDonationAmount && daysUntilLend <= 0) {
 			// eslint-disable-next-line max-len
 				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 			}
