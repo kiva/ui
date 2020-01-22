@@ -62,20 +62,29 @@
 				<icon-linkedin class="social__icon" />
 				<span>Share</span>
 			</button>
-			<button class="social__btn social__btn--link">
-				<span>Copy Link</span>
+			<button
+				class="social__btn social__btn--link"
+				:class="copyStatus.class"
+				:disabled="copyStatus.disabled"
+				@click="copyLink"
+			>
+				<icon-clipboard class="social__icon" />
+				<span>{{ this.copyStatus.text }}</span>
 			</button>
 		</div>
 	</section>
 </template>
 
 <script>
+import clipboardCopy from 'clipboard-copy';
+import IconClipboard from '@/assets/inline-svgs/icons/clipboard.svg';
 import IconFacebook from '@/assets/inline-svgs/social/facebook.svg';
 import IconLinkedin from '@/assets/inline-svgs/social/linkedin.svg';
 import IconTwitter from '@/assets/inline-svgs/social/twitter.svg';
 
 export default {
 	components: {
+		IconClipboard,
 		IconFacebook,
 		IconLinkedin,
 		IconTwitter
@@ -88,20 +97,29 @@ export default {
 	},
 	data() {
 		return {
-			selectedLoanIndex: 0,
+			copyStatus: {
+				class: '',
+				disabled: false,
+				text: 'Copy Link'
+			},
+			maxMessageLength: 280,
 			message: '',
-			maxMessageLength: 280
+			selectedLoanIndex: 0,
 		};
 	},
 	computed: {
+		selectedLoan() {
+			return this.loans[this.selectedLoanIndex];
+		},
+		selectedLoanUrl() {
+			return `https://www.kiva.org/lend/${this.selectedLoan.id}`;
+		},
 		placeholderMessage() {
-			return `Why did you lend to ${this.loans[this.selectedLoanIndex].name}?`;
+			return `Why did you lend to ${this.selectedLoan.name}?`;
 		},
 		suggestedMessage() {
-			const selectedLoan = this.loans[this.selectedLoanIndex];
-			const { name } = selectedLoan;
-			const location = selectedLoan.geocode.city || selectedLoan.geocode.country.name;
-			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${name} in ${location} to pursue their dream?`; // eslint-disable-line max-len
+			const location = this.selectedLoan.geocode.city || this.selectedLoan.geocode.country.name;
+			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} in ${location} to pursue their dream?`; // eslint-disable-line max-len
 		},
 		isSuggestedMessage() {
 			return this.message.trim() === this.suggestedMessage;
@@ -117,6 +135,30 @@ export default {
 		},
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
+		},
+		async copyLink() {
+			try {
+				await clipboardCopy(this.selectedLoanUrl);
+				this.copyStatus = {
+					class: 'social__btn--success',
+					disabled: true,
+					text: 'Copied!'
+				};
+			} catch (err) {
+				this.copyStatus = {
+					class: 'social__btn--error',
+					disabled: true,
+					text: 'Error'
+				};
+			} finally {
+				setTimeout(() => {
+					this.copyStatus = {
+						class: '',
+						disabled: false,
+						text: 'Copy Link'
+					};
+				}, 2500);
+			}
 		}
 	},
 };
@@ -218,7 +260,7 @@ $loan-triangle-size: rem-calc(12);
 
 	&__textbox {
 		resize: none;
-		height: 17rem;
+		height: rem-calc(274);
 		font-style: italic;
 		margin: 0;
 		padding: 1rem 1rem 3rem 1rem;
@@ -339,13 +381,20 @@ $loan-triangle-size: rem-calc(12);
 		flex-direction: column;
 	}
 
+	&__icon {
+		width: rem-calc(24);
+		height: rem-calc(24);
+		flex-shrink: 0;
+		margin-right: rem-calc(9);
+	}
+
 	&__btn {
 		display: flex;
 		align-items: center;
 		color: #fff;
 		width: calc(50% - 0.5rem);
 		margin: 0 1rem 1rem 0;
-		padding: 1rem;
+		padding: 1rem rem-calc(9) 1rem 1rem;
 
 		&:nth-child(2n) {
 			margin-right: 0;
@@ -374,20 +423,57 @@ $loan-triangle-size: rem-calc(12);
 
 		&--link {
 			color: $kiva-textlink;
+			border: rem-calc(1) solid $subtle-gray;
+			transition:
+				background-color 0.25s ease-in,
+				border-color 0.25s ease-in,
+				color 0.25s ease-in;
 
 			&:hover,
 			&:focus {
 				text-decoration: $anchor-text-decoration-hover;
 				color: $anchor-color-hover;
 			}
-		}
-	}
 
-	&__icon {
-		width: rem-calc(24);
-		height: rem-calc(24);
-		flex-shrink: 0;
-		margin-right: 1rem;
+			.social__icon {
+				path {
+					transition: fill 0.25s ease-in;
+					fill: $medium-gray;
+				}
+			}
+		}
+
+		&--success {
+			background-color: $kiva-green;
+			border-color: $kiva-green;
+		}
+
+		&--error {
+			background-color: $kiva-accent-red;
+			border-color: $kiva-accent-red;
+		}
+
+		&--success,
+		&--error {
+			color: #fff;
+			cursor: default;
+			transition:
+				background-color 0.25s ease-out,
+				border-color 0.25s ease-out,
+				color 0.25s ease-out;
+
+			&:hover {
+				color: #fff;
+				text-decoration: none;
+			}
+
+			.social__icon {
+				path {
+					transition: fill 0.25s ease-out;
+					fill: #fff;
+				}
+			}
+		}
 	}
 }
 </style>
