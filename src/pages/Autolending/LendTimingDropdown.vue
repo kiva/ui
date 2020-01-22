@@ -21,7 +21,7 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<span class="text-notice">{{ autolendExplanationText }} </span>
+		<span class="autolend-explaination-text">{{ autolendExplanationText }} </span>
 	</div>
 </template>
 
@@ -39,12 +39,12 @@ export default {
 	data() {
 		return {
 			changedTiming: false,
-			legacyAutoLender: false,
+			legacyAutoLender: true,
 			enableAfter: null, // legacy setting
 			lendAfterDaysIdle: 0,
-			cIdleStartTime: null, // 'ex: 2018-10-22T23:04:15Z'
+			cIdleStartTime: null,
 			userBalance: 0,
-			donationPercentage: 5
+			donationPercentage: 15
 		};
 	},
 	computed: {
@@ -87,8 +87,10 @@ export default {
 			const idleStartTime = Date.parse(this.cIdleStartTime);
 			const daysIdle = differenceInCalendarDays(now, idleStartTime);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
-			const realUserBalance = parseInt(this.userBalance, 10);
-			const loanAndDonationAmount = (1 + this.donationPercentage / 100) * 25;
+			const realUserBalance = parseFloat(this.userBalance).toFixed(2);
+			console.log('realuserbalance', realUserBalance);
+			// Kiva money service?
+			const loanAndDonationAmount = ((1 + this.donationPercentage / 100) * 25).toFixed(2);
 
 			// R1: User balance > $25, # of days within dropdown - cIdleStartTime is greater than 0
 			if (realUserBalance > loanAndDonationAmount && daysUntilLend > 0) {
@@ -100,7 +102,7 @@ export default {
 				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 			}
 			// eslint-disable-next-line max-len
-			return 'Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $25 through repayments or additional deposits.';
+			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmount} through repayments or additional deposits.`;
 		}
 	},
 	methods: {
@@ -190,6 +192,10 @@ export default {
 	.text-notice {
 		color: $kiva-text-light;
 		font-style: italic;
+	}
+
+	.autolend-explaination-text {
+		color: $kiva-green;
 	}
 }
 </style>
