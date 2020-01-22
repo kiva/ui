@@ -4,21 +4,23 @@
 			<div class="small-12 columns thanks">
 				<checkout-steps current-step="thanks" />
 
-				<div class="thanks__header hide-for-print">
-					<h1 class="thanks__header-h1">
-						{{ lender.firstName }}, thanks to you, {{ loans.length }}
-						{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
-					</h1>
-					<p class="thanks__header-subhead">
-						But the journey isn't over for them and many other borrowers.<br>
-						Please tell your friends and multiply your impact
-					</p>
-				</div>
+				<template v-if="loans.length > 0">
+					<div class="thanks__header hide-for-print">
+						<h1 class="thanks__header-h1">
+							{{ lender.firstName }}, thanks to you, {{ loans.length }}
+							{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
+						</h1>
+						<p class="thanks__header-subhead">
+							But the journey isn't over for them and many other borrowers.<br>
+							Please tell your friends and multiply your impact
+						</p>
+					</div>
 
-				<social-share
-					class="thanks__social-share"
-					:loans="loans"
-				/>
+					<social-share
+						class="thanks__social-share"
+						:loans="loans"
+					/>
+				</template>
 
 				<div class="thanks__confirmation hide-for-print">
 					<p>Confirmation sent to: {{ lender.email }}.</p>
