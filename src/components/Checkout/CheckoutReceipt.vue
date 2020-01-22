@@ -3,14 +3,14 @@
 		<h2 class="checkout-receipt__headline">
 			Order Confirmation
 		</h2>
-		<section class="section">
+		<section class="section qa-lender-info">
 			TODO: Date<br>
 			{{ lender.firstName }} {{ lender.lastName }}<br>
 			{{ lender.email }}
 		</section>
 		<section>
 			<div
-				class="section text-center hide-for-print"
+				class="section text-center hide-for-print qa-print-kcard-msg"
 				v-if="printableKivaCards.length > 0"
 			>
 				<h2>Print your Kiva {{ printableKivaCards.length > 1 ? 'Cards' : 'Card' }}</h2>
@@ -60,7 +60,7 @@
 					v-for="card in kivaCards"
 					:key="card.id"
 				>
-					<div class="loan">
+					<div class="loan qa-kcard">
 						<template v-if="card.kivaCardObject.deliveryType === 'print'">
 							<h3 class="loan__name">
 								Print-it-yourself Kiva Card
@@ -83,7 +83,7 @@
 							<h3 class="loan__name">
 								Postal delivery Kiva Card
 							</h3>
-							<div>
+							<div class="loan__details">
 								For: {{ card.kivaCardObject.mailingInfo.firstName }}
 								{{ card.kivaCardObject.mailingInfo.lastName }}<br>
 								{{ card.kivaCardObject.mailingInfo.address }}<br>
@@ -99,7 +99,10 @@
 							<h3 class="loan__name">
 								Kiva Card
 							</h3>
-							<div v-if="card.kivaCardObject.recipient.name">
+							<div
+								class="loan__details"
+								v-if="card.kivaCardObject.recipient.name"
+							>
 								For: {{ card.kivaCardObject.recipient.name }}
 							</div>
 						</template>
@@ -107,7 +110,7 @@
 							<h3 class="loan__name">
 								Email delivery Kiva Card
 							</h3>
-							<div>
+							<div class="loan__details">
 								For:
 								<template v-if="card.kivaCardObject.recipient.name">
 									{{ card.kivaCardObject.recipient.name }} &ndash;
@@ -121,7 +124,7 @@
 					</div>
 				</li>
 				<li
-					class="section text-center"
+					class="section text-center qa-kcard-portfolio"
 					v-if="kivaCards.length > 0"
 				>
 					For more details about all your Kiva Card purchases, please visit your
@@ -136,7 +139,7 @@
 		<section>
 			<ul class="checkout-receipt__item-list">
 				<li class="section">
-					<div class="loan">
+					<div class="loan qa-donation">
 						<h3 class="loan__name">
 							Donation to Kiva
 						</h3>
@@ -151,7 +154,7 @@
 						</div>
 					</div>
 				</li>
-				<li class="section total">
+				<li class="section total qa-receipt-total">
 					<h3 class="total__header">
 						Total:
 					</h3>
