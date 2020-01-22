@@ -168,35 +168,42 @@
 			</h2>
 			<ul class="payments__list">
 				<li
-					class="total"
+					class="total qa-kcard-payment"
+					v-if="receipt.totals.redemptionCodeAppliedTotal > 0"
+				>
+					<span class="total__header">Kiva Card:</span>
+					<span class="total__amount">${{ receipt.totals.redemptionCodeAppliedTotal }}</span>
+				</li>
+				<li
+					class="total qa-free-trial"
 					v-if="receipt.totals.freeTrialAppliedTotal > 0"
 				>
 					<span class="total__header">Free Trial:</span>
 					<span class="total__amount">Free!</span>
 				</li>
 				<li
-					class="total"
+					class="total qa-free-credit"
 					v-if="receipt.totals.bonusAppliedTotal > 0"
 				>
 					<span class="total__header">Free credit:</span>
 					<span class="total__amount">{{ receipt.totals.bonusAppliedTotal }}</span>
 				</li>
 				<li
-					class="total"
+					class="total qa-kiva-credit-added"
 					v-if="receipt.totals.depositTotals.kivaCreditAdded > 0"
 				>
 					<span class="total__header">Kiva credit added:</span>
 					<span class="total__amount">${{ receipt.totals.depositTotals.kivaCreditAdded }}</span>
 				</li>
 				<li
-					class="total"
+					class="total qa-kiva-credit-used"
 					v-if="receipt.totals.depositTotals.kivaCreditUsed > 0"
 				>
 					<span class="total__header">Kiva credit:</span>
 					<span class="total__amount">${{ receipt.totals.depositTotals.kivaCreditUsed }}</span>
 				</li>
 				<li
-					class="total"
+					class="total qa-amount-charged"
 					v-if="parseFloat(receipt.totals.depositTotals.depositTotal) > 0"
 				>
 					<span class="total__header">Amount charged:</span>
