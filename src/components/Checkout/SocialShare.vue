@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import clipboardCopy from 'clipboard-copy';
 import IconClipboard from '@/assets/inline-svgs/icons/clipboard.svg';
 import IconFacebook from '@/assets/inline-svgs/social/facebook.svg';
@@ -109,17 +110,20 @@ export default {
 	},
 	computed: {
 		selectedLoan() {
-			return this.loans[this.selectedLoanIndex];
+			return this.loans[this.selectedLoanIndex] || {};
 		},
 		selectedLoanUrl() {
-			return `https://www.kiva.org/lend/${this.selectedLoan.id}`;
+			return this.selectedLoan.id ? `https://www.kiva.org/lend/${this.selectedLoan.id}` : 'https://www.kiva.org';
 		},
 		placeholderMessage() {
-			return `Why did you lend to ${this.selectedLoan.name}?`;
+			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
 		},
 		suggestedMessage() {
-			const location = this.selectedLoan.geocode.city || this.selectedLoan.geocode.country.name;
-			return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} in ${location} to pursue their dream?`; // eslint-disable-line max-len
+			if (this.selectedLoan.name) {
+				const location = _get(this, 'selectedLoan.geocode.city') || _get(this, 'selectedLoan.geocode.country.name'); // eslint-disable-line max-len
+				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
+			}
+			return '';
 		},
 		isSuggestedMessage() {
 			return this.message.trim() === this.suggestedMessage;
