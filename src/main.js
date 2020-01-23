@@ -46,13 +46,14 @@ export default function createApp({
 		});
 	}
 
+	// Provide application config to all components
+	Vue.prototype.$appConfig = appConfig;
+
 	const app = new Vue({
 		router,
-		render: h => h(App, { props: { appConfig } }),
+		render: h => h(App),
 		provide: {
 			apollo: apolloClient,
-			algoliaConfig: appConfig.algoliaConfig,
-			auth0Config: appConfig.auth0,
 			kvAuth0,
 		}
 	});

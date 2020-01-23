@@ -7,9 +7,6 @@ export default {
 	render() {
 		return '<div></div>';
 	},
-	props: {
-		appConfig: { type: Object, default: () => {} }
-	},
 	inject: ['apollo'],
 	apollo: {
 		preFetch(config, client) {
@@ -17,7 +14,7 @@ export default {
 		},
 	},
 	mounted() {
-		if (this.appConfig.intercom.enable) {
+		if (this.$appConfig.intercom.enable) {
 			const intercomMessenger = this.apollo.readFragment({
 				id: 'Experiment:intercom_messenger',
 				fragment: experimentVersionFragment,
@@ -44,7 +41,7 @@ export default {
 					const userEmail = _get(data, 'my.userAccount.email');
 
 					const intercomSettings = {
-						app_id: this.appConfig.intercom.appId
+						app_id: this.$appConfig.intercom.appId
 					};
 					if (userId) {
 						intercomSettings.user_id = userId;
