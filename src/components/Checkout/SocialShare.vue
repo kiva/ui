@@ -50,7 +50,10 @@
 		</div>
 
 		<div class="share__social social">
-			<a :href="facebookShareUrl" class="social__btn social__btn--facebook">
+			<a
+				class="social__btn social__btn--facebook"
+				:href="facebookShareUrl"
+			>
 				<icon-facebook class="social__icon" />
 				<span>Share</span>
 			</a>
@@ -63,7 +66,8 @@
 				<icon-twitter class="social__icon" />
 				<span>Tweet</span>
 			</a>
-			<a class="social__btn social__btn--linkedin"
+			<a
+				class="social__btn social__btn--linkedin"
 				:href="linkedInShareUrl"
 				target="_blank"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
