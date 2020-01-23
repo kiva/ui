@@ -71,6 +71,7 @@ export default {
 		width: 2.25em;
 		height: 1.375em;
 		top: 0.2em;
+		flex-shrink: 0;
 		margin-right: 0.5em;
 		border-radius: 0.75em;
 		content: "";
