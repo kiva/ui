@@ -58,10 +58,14 @@
 				<icon-twitter class="social__icon" />
 				<span>Tweet</span>
 			</button>
-			<button class="social__btn social__btn--linkedin">
+			<a class="social__btn social__btn--linkedin"
+				:href="linkedInShareUrl"
+				target="_blank"
+				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
+			>
 				<icon-linkedin class="social__icon" />
 				<span>Share</span>
-			</button>
+			</a>
 			<button
 				class="social__btn social__btn--link"
 				:class="copyStatus.class"
@@ -127,6 +131,15 @@ export default {
 		},
 		isSuggestedMessage() {
 			return this.message.trim() === this.suggestedMessage;
+		},
+		linkedInShareUrl() {
+			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
+				mini: 'true',
+				source: `https://${this.$appConfig.host}`,
+				summary: this.shareMessage.substring(0, 256),
+				title: `A loan for ${this.selectedLoan.name}`,
+				url: `${this.shareLink}?utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
+			});
 		},
 		placeholderMessage() {
 			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
