@@ -21,7 +21,7 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<span class="autolend-explaination-text">{{ autolendExplanationText }} </span>
+		<span class="autolend-explanation-text">{{ autolendExplanationText }} </span>
 	</div>
 </template>
 
@@ -88,7 +88,12 @@ export default {
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
 			const userBalance = parseFloat(this.userBalance).toFixed(2);
 			const loanAndDonationAmount = ((1 + this.donationPercentage / 100) * 25).toFixed(2);
+			console.log('now', now);
 			console.log('cIdleStartTime', this.cIdleStartTime);
+			console.log('idleStartTime', idleStartTime);
+			console.log('daysIdle', daysIdle);
+			console.log('daysUntilLend', daysUntilLend);
+			console.log('this.userBalance', this.userBalance);
 			console.log('userBalance', userBalance);
 			console.log('loanAndDonationAmount', loanAndDonationAmount);
 
@@ -198,7 +203,7 @@ export default {
 		font-style: italic;
 	}
 
-	.autolend-explaination-text {
+	.autolend-explanation-text {
 		color: $kiva-green;
 	}
 }

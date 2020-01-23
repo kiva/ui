@@ -1,5 +1,9 @@
 export default function wwwPageMock(userId = null) {
 	return {
+		AutoDeposit: () => ({
+			isSubscriber: false
+		}),
+		Date: () => '',
 		LatestDonationCampaign: () => ({
 			amount_raised: 0,
 			target_amount: 0,
@@ -7,8 +11,11 @@ export default function wwwPageMock(userId = null) {
 		Manifest: () => ({
 			hasFreeCredits: false,
 		}),
-		AutoDeposit: () => ({
-			isSubscriber: false
+		// Tried adding this in here to get the user's balance data
+		My: () => ({
+			UserAccount: () => ({
+				balance: 40
+			})
 		}),
 		Setting: (parent, args) => ({
 			key: args.key,
@@ -29,6 +36,5 @@ export default function wwwPageMock(userId = null) {
 			sessionKey: args.sessionKey,
 			data: '',
 		}),
-		Date: () => '',
 	};
 }
