@@ -93,6 +93,10 @@ export default {
 		IconTwitter
 	},
 	props: {
+		lender: {
+			type: Object,
+			required: true
+		},
 		loans: {
 			type: Array,
 			required: true
@@ -132,9 +136,8 @@ export default {
 		},
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
-			// TODO: include lender/team info in share link
 			if (this.selectedLoan.id) {
-				return `${base}/lend/${this.selectedLoan.id}`;
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
 			}
 			return base;
 		},
