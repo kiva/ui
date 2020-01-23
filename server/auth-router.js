@@ -40,6 +40,7 @@ module.exports = function authRouter(config = {}) {
 
 	// If no server-side auth0 secret is provided, skip setting up auth routes
 	if (!process.env.UI_AUTH0_CLIENT_SECRET) {
+		console.warn('UI server-side authentication setup skipped because UI_AUTH0_CLIENT_SECRET is not defined!');
 		return router;
 	}
 
