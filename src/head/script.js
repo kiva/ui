@@ -65,35 +65,16 @@ export default config => {
 		}
 	}
 
-	// Facebook JSSDK
+	// Facebook Pixel Code
 	if (config.enableFB && !optout) {
 		/* eslint-disable */
-		window.fbAsyncInit = function() {
-			FB.init({
-				appId: config.fbApplicationId,
-				autoLogAppEvents: true,
-				cookie: true, // sets a cookie for the session
-				xfbml: false, // set to true to have fb parse the dom looking for social plugins
-				version: 'v3.3' // current 'v3.3'
-			});
-		};
-		(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-			js = d.createElement(s); js.id = id;
-			js.src = "https://connect.facebook.net/en_US/sdk.js";
-			// js.src = "https://connect.facebook.net/en_US/sdk/debug.js";
-			fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
-
-		// Facebook Pixel Code
 		!function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 			n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 			if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
 			n.queue=[];t=b.createElement(e);t.async=!0;
 			t.src=v;s=b.getElementsByTagName(e)[0];
 			s.parentNode.insertBefore(t,s)}(window, document,'script',
-		  	'https://connect.facebook.net/en_US/fbevents.js');
+			'https://connect.facebook.net/en_US/fbevents.js');
 		fbq('init', config.fbPixelId);
 		/* eslint-enable */
 	}
