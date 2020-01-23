@@ -309,7 +309,8 @@ export const mockedReceiptData = {
 			"userAccount": {
 				"firstName": "Alan",
 				"lastName": "Smithee",
-				"email": "user_1003394@braincrave.org"
+				"email": "user_1003394@braincrave.org",
+				"inviterName": "alans"
 			}
 		}
 	}
