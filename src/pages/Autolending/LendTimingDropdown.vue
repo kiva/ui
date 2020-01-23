@@ -105,6 +105,7 @@ export default {
 				// eslint-disable-next-line max-len
 				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 			}
+			// eslint-disable-next-line max-len
 			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmount} through repayments or additional deposits.`;
 		}
 	},
