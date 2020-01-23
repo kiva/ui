@@ -72,6 +72,38 @@
 				<span>{{ this.copyStatus.text }}</span>
 			</button>
 		</div>
+
+		<div class="share__teams teams" v-if="userTeams.length > 0">
+			<kv-checkbox
+				class="teams__checkbox"
+				id="team_invitation"
+				v-model="isTeamInvitation"
+			>
+				Make this a team invitation
+			</kv-checkbox>
+
+			<div v-if="isTeamInvitation">
+				<label
+					class="teams__select-label"
+					for="team_select"
+				>
+					Team
+				</label>
+				<kv-dropdown-rounded
+					class="teams__select"
+					id="team_select"
+					v-model="selectedUserTeam"
+				>
+					<option
+						v-for="userTeam in userTeams"
+						:key="userTeam.team.id"
+						:value="userTeam.team.id"
+					>
+						{{ userTeam.team.name }}
+					</option>
+				</kv-dropdown-rounded>
+			</div>
+		</div>
 	</section>
 </template>
 
@@ -82,19 +114,29 @@ import IconClipboard from '@/assets/inline-svgs/icons/clipboard.svg';
 import IconFacebook from '@/assets/inline-svgs/social/facebook.svg';
 import IconLinkedin from '@/assets/inline-svgs/social/linkedin.svg';
 import IconTwitter from '@/assets/inline-svgs/social/twitter.svg';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 export default {
 	components: {
 		IconClipboard,
 		IconFacebook,
 		IconLinkedin,
-		IconTwitter
+		IconTwitter,
+		KvCheckbox,
+		KvDropdownRounded,
 	},
 	props: {
 		loans: {
 			type: Array,
 			required: true
-		}
+		},
+		userTeams: {
+			type: Array,
+			default() {
+				return [];
+			}
+		},
 	},
 	data() {
 		return {
@@ -103,9 +145,11 @@ export default {
 				disabled: false,
 				text: 'Copy Link'
 			},
+			isTeamInvitation: false,
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
+			selectedUserTeam: _get(this, 'userTeams[0].team.id')
 		};
 	},
 	computed: {
@@ -113,6 +157,7 @@ export default {
 			return this.loans[this.selectedLoanIndex] || {};
 		},
 		selectedLoanUrl() {
+			// TODO: if (this.isTeamInvitation) add this.selectedUserTeam to url
 			return this.selectedLoan.id ? `https://www.kiva.org/lend/${this.selectedLoan.id}` : 'https://www.kiva.org';
 		},
 		placeholderMessage() {
@@ -190,6 +235,7 @@ $loan-triangle-size: rem-calc(12);
 
 	@include breakpoint(large) {
 		flex-direction: row;
+		flex-wrap: wrap;
 	}
 
 	&__loans {
@@ -203,13 +249,20 @@ $loan-triangle-size: rem-calc(12);
 		margin: 1rem 0;
 
 		@include breakpoint(large) {
-			margin: 0 1rem;
+			margin: 0 1rem 1rem 1rem;
 		}
 	}
 
 	&__social {
 		@include breakpoint(large) {
 			width: rem-calc(135);
+		}
+	}
+
+	&__teams {
+		flex-basis: 100%;
+		@include breakpoint(large) {
+			margin-left: calc(#{rem-calc(70) + 1rem});
 		}
 	}
 }
@@ -478,6 +531,23 @@ $loan-triangle-size: rem-calc(12);
 				}
 			}
 		}
+	}
+}
+
+.teams {
+	display: flex;
+	align-items: center;
+
+	&__checkbox {
+		margin-right: 1rem;
+	}
+
+	&__select-label {
+		@include visually-hidden();
+	}
+
+	&__select {
+		margin: 0;
 	}
 }
 </style>

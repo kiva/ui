@@ -70,6 +70,14 @@ query checkoutReceipt($checkoutId: Int!) {
 		}
 	}
 	my {
+		teams {
+			values {
+				team {
+					id
+					name
+				}
+			}
+		}
 		userAccount {
 			firstName
 			lastName

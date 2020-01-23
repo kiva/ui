@@ -15,6 +15,7 @@ export const Default = () => ({
 	template: `
 		<social-share
 			:loans="loans"
+			:user-teams="userTeams"
 		/>
 	`,
 	props: {
@@ -25,6 +26,12 @@ export const Default = () => ({
 					.filter(item => item.basketItemType === 'loan_reservation')
 					.map(item => item.loan);
 			}
-		}
+		},
+		userTeams: {
+			type: Array,
+			default() {
+				return mockedReceiptData.data.my.teams.values;
+			}
+		},
 	},
 });
