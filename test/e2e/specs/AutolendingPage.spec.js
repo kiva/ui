@@ -88,4 +88,69 @@ describe('Autolending Page Spec', () => {
 			// assert toggle says on
 		});
 	});
+
+	describe('Autolend explanation text', () => {
+		it('Verify user balance below lendable amount', () => {
+			// Mock date and idle start time
+			cy.mock({
+				AutolendProfile: () => ({
+					cIdleStartTime: null
+				}),
+				UserAccount: () => ({
+					balance: 5
+				})
+				// Date: () => ''
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert that toggle displays 'on'
+			cy.get('.autolend-explaination-text').contains(
+				'Your current balance is lower'
+			);
+		});
+
+		it('Verify lendable balance w/daysUntilLend > 0', () => {
+			// Mock cIdleStartTime and lendAfterDaysIdle
+			cy.mock({
+				Date: () => '2020-01-17T00:00:00',
+				AutolendProfile: () => ({
+					cIdleStartTime: '2020-01-17T00:00:00',
+					lendAfterDaysIdle: 7,
+				}),
+				UserAccount: () => ({
+					balance: 30
+				})
+			});
+
+			// cy.clock(1579651200000);
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the text on the page
+			cy.get('.autolend-explaination-text').contains(
+				'5 days').contains('2 days—timing');
+		});
+
+		it('Verify lendable balance w/daysUntilLend <= 0', () => {
+			// Mock cIdleStartTime and lendAfterDaysIdle
+			cy.mock({
+				AutolendProfile: () => ({
+					cIdleStartTime: '2019-10-17T00:00:00',
+					lendAfterDaysIdle: 0,
+				}),
+			});
+
+			// cy.clock(1579651200000);
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the text on the page
+			cy.get('.autolend-explaination-text').contains(
+				'97 days').contains('immediately');
+		});
+	});
 });

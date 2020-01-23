@@ -182,7 +182,7 @@ export default Vue => {
 			// fire on complete if not already fired
 			if (document.readyState === 'complete') {
 				if (!pageviewFired) {
-					clearInterval(fallbackPageview);
+					clearTimeout(fallbackPageview);
 					kvActions.pageview(to, from);
 				}
 			}

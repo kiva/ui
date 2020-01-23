@@ -22,11 +22,13 @@ export default function wwwPageMock(userId = null) {
 			redemptionCodeAvailableTotal: '0.00',
 		}),
 		UserAccount: () => ({
-			id: userId
+			id: userId,
+			balance: 0
 		}),
 		UserSession: (parent, args) => ({
 			sessionKey: args.sessionKey,
 			data: '',
 		}),
+		Date: () => '',
 	};
 }

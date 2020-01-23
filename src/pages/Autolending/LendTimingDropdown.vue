@@ -88,18 +88,24 @@ export default {
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
 			const userBalance = parseFloat(this.userBalance).toFixed(2);
 			const loanAndDonationAmount = ((1 + this.donationPercentage / 100) * 25).toFixed(2);
+			console.log('cIdleStartTime', this.cIdleStartTime);
+			console.log('userBalance', userBalance);
+			console.log('loanAndDonationAmount', loanAndDonationAmount);
 
+			
+			if (this.cIdleStartTime === null || userBalance < loanAndDonationAmount) {
+				// eslint-disable-next-line max-len
+				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmount} through repayments or additional deposits.`;
+			}
 			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
-			if (userBalance > loanAndDonationAmount && daysUntilLend > 0) {
+			if (userBalance >= loanAndDonationAmount && daysUntilLend > 0) {
 				// eslint-disable-next-line max-len
 				return `Since you haven’t made a loan yourself for ${daysIdle} days, we will auto-lend your eligible balance after ${daysUntilLend} days—timing may vary based on loan supply.`;
 			}
-			if (userBalance > loanAndDonationAmount && daysUntilLend <= 0) {
-			// eslint-disable-next-line max-len
+			if (userBalance >= loanAndDonationAmount && daysUntilLend <= 0) {
+				// eslint-disable-next-line max-len
 				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 			}
-			// eslint-disable-next-line max-len
-			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmount} through repayments or additional deposits.`;
 		}
 	},
 	methods: {
