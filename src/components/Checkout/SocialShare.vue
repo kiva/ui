@@ -204,8 +204,9 @@ export default {
 			this.message = this.suggestedMessage;
 		},
 		async copyLink() {
+			const url = `${this.shareLink}?utm_source=social_share_link&utm_campaign=social_share_checkout`;
 			try {
-				await clipboardCopy(this.shareLink);
+				await clipboardCopy(url);
 				this.copyStatus = {
 					class: 'social__btn--success',
 					disabled: true,
