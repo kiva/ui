@@ -12,11 +12,7 @@ export default function wwwPageMock(userId = null) {
 			hasFreeCredits: false,
 		}),
 		// Tried adding this in here to get the user's balance data
-		My: () => ({
-			UserAccount: () => ({
-				balance: 40
-			})
-		}),
+		Money: () => '30',
 		Setting: (parent, args) => ({
 			key: args.key,
 			value: '',
