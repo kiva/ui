@@ -54,10 +54,15 @@
 				<icon-facebook class="social__icon" />
 				<span>Share</span>
 			</a>
-			<button class="social__btn social__btn--twitter">
+			<a
+				class="social__btn social__btn--twitter"
+				:href="twitterShareUrl"
+				target="_blank"
+				@click="$showTipMsg('Thanks for tweeting!')"
+			>
 				<icon-twitter class="social__icon" />
 				<span>Tweet</span>
-			</button>
+			</a>
 			<a class="social__btn social__btn--linkedin"
 				:href="linkedInShareUrl"
 				target="_blank"
@@ -163,6 +168,13 @@ export default {
 				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
 			}
 			return '';
+		},
+		twitterShareUrl() {
+			return this.getFullUrl('https://twitter.com/intent/tweet', {
+				text: this.shareMessage,
+				url: `${this.shareLink}?utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`,
+				via: 'Kiva',
+			});
 		},
 	},
 	methods: {
