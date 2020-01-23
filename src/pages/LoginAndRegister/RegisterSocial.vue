@@ -39,7 +39,7 @@
 				</KvButton>
 			</form>
 			<div class="small-12">
-				<a :href="`https://${auth0Config.domain}/v2/logout`">Cancel registration</a>
+				<a :href="`https://${$appConfig.auth0.domain}/v2/logout`">Cancel registration</a>
 			</div>
 		</div>
 	</www-page>
@@ -54,21 +54,17 @@ export default {
 		WwwPage,
 		KvButton,
 	},
-	inject: ['auth0Config'],
-
 	data() {
 		return {
 			newAcctTerms: false,
 			showNewAcctTermsError: false,
 		};
 	},
-
 	mounted() {
 		if (!this.$route.query.state) {
 			this.$router.push('/error');
 		}
 	},
-
 	methods: {
 		validateTerms() {
 			return this.newAcctTerms;
@@ -80,7 +76,7 @@ export default {
 				// show error here
 				this.showNewAcctTermsError = true;
 			} else {
-				window.location = `https://${this.auth0Config.domain}`
+				window.location = `https://${this.$appConfig.auth0.domain}`
 				+ `/continue?agree=yes&state=${this.$route.query.state}`;
 			}
 		},

@@ -3,7 +3,7 @@
 		<router-view />
 		<vue-progress-bar />
 		<the-tip-message />
-		<intercom-messenger :app-config="appConfig" />
+		<intercom-messenger />
 	</div>
 </template>
 
@@ -13,9 +13,6 @@ import IntercomMessenger from '@/components/WwwFrame/IntercomMessenger';
 
 export default {
 	name: 'App',
-	props: {
-		appConfig: { type: Object, default: () => {} }
-	},
 	components: {
 		TheTipMessage,
 		IntercomMessenger
@@ -33,7 +30,7 @@ export default {
 					// eslint-disable-next-line max-len
 					content: 'Make a loan to an entrepreneur across the globe for as little as $25. Kiva is the world\'s first online lending platform connecting online lenders to entrepreneurs across the globe.'
 				}
-			].concat(this.appConfig.enableFB ? [
+			].concat(this.$appConfig.enableFB ? [
 				// Facebook Specific Tags
 				// TODO: We should consider omitting these on protected pages
 				{
@@ -44,7 +41,7 @@ export default {
 				{
 					vmid: 'fb:app_id',
 					property: 'fb:app_id',
-					content: this.appConfig.fbApplicationId
+					content: this.$appConfig.fbApplicationId
 				}
 			] : []).concat([
 				// Open Graph Tags

@@ -13,9 +13,6 @@ const routing = {
 };
 
 export default {
-	inject: [
-		'algoliaConfig'
-	],
 	data() {
 		return {
 			routing,
@@ -24,11 +21,11 @@ export default {
 			// Utility instance of default index
 			defaultIndexInstance: null,
 			// These are required in each instance of the plugin
-			algoliaAppId: this.algoliaConfig.appId,
-			algoliaApiKey: this.algoliaConfig.apiKey,
+			algoliaAppId: this.$appConfig.algoliaConfig.appId,
+			algoliaApiKey: this.$appConfig.algoliaConfig.apiKey,
 			// environment + index config
-			algoliaDefaultIndex: this.algoliaConfig.defaultIndex,
-			algoliaGroup: this.algoliaConfig.group,
+			algoliaDefaultIndex: this.$appConfig.algoliaConfig.defaultIndex,
+			algoliaGroup: this.$appConfig.algoliaConfig.group,
 			// all locationFacets.lvl1 facet values
 			allLocationsLvl1: [],
 			// all sector.name facet values

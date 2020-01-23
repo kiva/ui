@@ -23,7 +23,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: { WwwPage },
-	inject: ['auth0Config'],
 	metaInfo: {
 		title: 'Error'
 	},
@@ -42,7 +41,7 @@ export default {
 			return this.errorDescription;
 		},
 		loginRedirectUrl() {
-			return this.auth0Config.loginRedirectUrls[this.clientId];
+			return this.$appConfig.auth0.loginRedirectUrls[this.clientId];
 		},
 	},
 	created() {
