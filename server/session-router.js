@@ -7,7 +7,10 @@ module.exports = function sessionRouter(config = {}) {
 
 	const secret = process.env.UI_SESSION_SECRET;
 	// If we don't have a secret, don't start the session
-	if (!secret) return router;
+	if (!secret) {
+		console.warn('UI session setup skipped because UI_SESSION_SECRET is not defined!');
+		return router;
+	}
 
 	const sessionOptions = {
 		secret,
