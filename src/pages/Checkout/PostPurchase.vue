@@ -9,7 +9,7 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		preFetch({ route }, client) {
+		preFetch(config, client, { route }) {
 			return new Promise((resolve, reject) => {
 				if (typeof window !== 'undefined') {
 					// force server load if currently on a browser client
@@ -18,7 +18,8 @@ export default {
 					const transactionId = route.query.kiva_transaction_id;
 					if (!transactionId) {
 						// redirect to thanks page if no transaction id was provided
-						reject({ path: '/checkout/thanks' });
+						// currently resolves to portfolio via ThanksView getCheckoutId method
+						reject({ path: '/thanks' });
 					} else {
 						// get tracking data from google analytics cookie
 						const {
@@ -34,7 +35,7 @@ export default {
 
 						// build route for thanks page redirect
 						const successRoute = {
-							path: '/checkout/thanks',
+							path: '/thanks',
 							query: { kiva_transaction_id: transactionId },
 						};
 
