@@ -4,9 +4,9 @@
 			Order Confirmation
 		</h2>
 		<section class="section qa-lender-info">
-			TODO: Date<br>
-			{{ lender.firstName }} {{ lender.lastName }}<br>
-			{{ lender.email }}
+			<div>TODO: Date</div>
+			<div>{{ lender.firstName }} {{ lender.lastName }}</div>
+			<div>{{ lender.email }}</div>
 		</section>
 		<section>
 			<div
