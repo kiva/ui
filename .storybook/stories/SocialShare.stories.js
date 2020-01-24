@@ -19,6 +19,13 @@ export const Default = () => ({
 			:loans="loans"
 		/>
 	`,
+	provide: {
+		apollo: {
+			mutate() {
+				return Promise.resolve();
+			},
+		},
+	},
 	props: {
 		lender: {
 			type: Object,
