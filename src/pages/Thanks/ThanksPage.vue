@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import confetti from 'canvas-confetti';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
@@ -88,7 +89,11 @@ export default {
 			};
 		},
 		result({ data }) {
-			this.lender = data.my.userAccount;
+			const teams = _get(data.my.teams.values);
+			this.lender = {
+				...data.my.userAccount,
+				teams: teams ? teams.map(value => value.team) : []
+			};
 			this.receipt = data.shop.receipt;
 			this.loans = data.shop.receipt.items.values
 				.filter(item => item.basketItemType === 'loan_reservation')

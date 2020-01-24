@@ -86,7 +86,7 @@
 			</button>
 		</div>
 
-		<div class="share__teams teams" v-if="userTeams.length > 0">
+		<div class="share__teams teams" v-if="lender.teams.length > 0">
 			<kv-checkbox
 				class="teams__checkbox"
 				id="team_invitation"
@@ -108,11 +108,11 @@
 					v-model="selectedUserTeam"
 				>
 					<option
-						v-for="userTeam in userTeams"
-						:key="userTeam.team.id"
-						:value="userTeam.team.id"
+						v-for="team in lender.teams"
+						:key="team.id"
+						:value="team.id"
 					>
-						{{ userTeam.team.name }}
+						{{ team.name }}
 					</option>
 				</kv-dropdown-rounded>
 			</div>
@@ -150,12 +150,6 @@ export default {
 			type: Array,
 			required: true
 		},
-		userTeams: {
-			type: Array,
-			default() {
-				return [];
-			}
-		},
 	},
 	data() {
 		return {
@@ -168,7 +162,7 @@ export default {
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
-			selectedUserTeam: _get(this, 'userTeams[0].team.id')
+			selectedUserTeam: _get(this, 'lender.teams[0].id')
 		};
 	},
 	computed: {

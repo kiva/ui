@@ -1,4 +1,5 @@
 import { mockedReceiptData } from './CheckoutReceipt.stories';
+import _get from 'lodash/get';
 import SocialShare from '@/components/Checkout/SocialShare';
 import StoryRouter from 'storybook-vue-router';
 
@@ -16,14 +17,17 @@ export const Default = () => ({
 		<social-share
 			:lender="lender"
 			:loans="loans"
-			:user-teams="userTeams"
 		/>
 	`,
 	props: {
 		lender: {
 			type: Object,
 			default() {
-				return mockedReceiptData.data.my.userAccount;
+				const teams = _get(mockedReceiptData, 'data.my.teams.values');
+				return {
+					...mockedReceiptData.data.my.userAccount,
+					teams: teams ? teams.map(value => value.team) : []
+				};
 			}
 		},
 		loans: {
@@ -32,12 +36,6 @@ export const Default = () => ({
 				return mockedReceiptData.data.shop.receipt.items.values
 					.filter(item => item.basketItemType === 'loan_reservation')
 					.map(item => item.loan);
-			}
-		},
-		userTeams: {
-			type: Array,
-			default() {
-				return mockedReceiptData.data.my.teams.values;
 			}
 		},
 	},
