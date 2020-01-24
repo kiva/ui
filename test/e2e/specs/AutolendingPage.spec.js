@@ -2,10 +2,10 @@ import wwwPageMock from '../fixtures/wwwPageMock';
 
 
 describe('Autolending Page Spec', () => {
-	const userId = 42;
+	// const userId = 42;
 
 	beforeEach(() => {
-		cy.mock(wwwPageMock(userId));
+		cy.mock(wwwPageMock());
 		// Prevents the window beforeunload event from getting added
 		// which blocks Cypress from exiting test correctly
 		cy.on('window:before:load', window => {
@@ -94,8 +94,12 @@ describe('Autolending Page Spec', () => {
 			// Mock date and idle start time
 			cy.mock({
 				AutolendProfile: () => ({
+					isEnabled: true,
+					enableAfter: 0,
 					cIdleStartTime: null,
 				}),
+				// This is setting the user's balance
+				Money: () => '3.00'
 			});
 
 			// Visit autolending settings
@@ -107,57 +111,51 @@ describe('Autolending Page Spec', () => {
 			);
 		});
 
-		// I'm having issues mocking out the userBalance/balance for the following 2 tests
-		// below you can see the various way that i've tried to mock out the balance.
-		// 	it('Verify lendable balance w/daysUntilLend > 0', () => {
-		// 		// Mock cIdleStartTime and lendAfterDaysIdle
-		// 		cy.mock({
-		// 			AutolendProfile: () => ({
-		// 				cIdleStartTime: '2020-01-17T00:00:00',
-		// 				lendAfterDaysIdle: 7,
-		// 				donationPercentage: 5
-		// 				// userBalance: '5', Nope
-		// 				// balance: '5' Nope
-		// 			}),
-		// 			Date: () => cy.clock(1579651200000),
-		// 			// Money: () => '5',
-		// 			// userBalance: '5', Nope
-		// 			// UserBalance: () => '5', Nope
-		// 			// UserAccount: () => ({ Nope
-		// 			//	balance: '5'
-		// 			// })
-		// 			// My: () => ({ Nope
-		// 			// 	UserAccount: () => ({
-		// 			// 		balance: '40'
-		// 			// 	})
-		// 			// })
-		// 		});
+		it('Verify lendable balance w/daysUntilLend > 0', () => {
+			// Mock cIdleStartTime and lendAfterDaysIdle
+			cy.mock({
+				AutolendProfile: () => ({
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: '2020-01-17T00:00:00',
+					lendAfterDaysIdle: 7,
+					donationPercentage: 5
+				}),
+				// This is setting the user's balance
+				Money: () => '40.05'
+			});
+			cy.clock(1579651200000);
 
-		// 		// Visit autolending settings
-		// 		cy.visit('/settings/autolending');
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
 
-		// 		// Assert the text on the page
-		// 		cy.get('.autolend-explanation-text').contains(
-		// 			'6 days').contains('1 days—timing');
-		// 	});
+			// Assert the text on the page
+			cy.get('.autolend-explanation-text').contains(
+				'4 days').contains('3 days—timing');
+		});
 
-		// 	it('Verify lendable balance w/daysUntilLend <= 0', () => {
-		// 		// Mock cIdleStartTime and lendAfterDaysIdle
-		// 		cy.mock({
-		// 			AutolendProfile: () => ({
-		// 				cIdleStartTime: '2019-08-17T00:00:00',
-		// 				lendAfterDaysIdle: 90,
-		// 				donationPercentage: 15,
-		// 			}),
-		// 			Date: () => cy.clock(1579219200000),
-		// 		});
+		it('Verify lendable balance w/daysUntilLend <= 0', () => {
+			// Mock cIdleStartTime and lendAfterDaysIdle
+			cy.mock({
+				AutolendProfile: () => ({
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: '2019-08-17T00:00:00',
+					lendAfterDaysIdle: 90,
+					donationPercentage: 15,
+				}),
+				// This is setting the user's balance
+				Money: () => '40.90'
+			});
 
-		// 		// Visit autolending settings
-		// 		cy.visit('/settings/autolending');
+			cy.clock(1579219200000);
 
-		// 		// Assert the text on the page
-		// 		cy.get('.autolend-explanation-text').contains(
-		// 			'6 days').contains('immediately');
-		// 	});
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the text on the page
+			cy.get('.autolend-explanation-text').contains(
+				'152 days').contains('immediately');
+		});
 	});
 });

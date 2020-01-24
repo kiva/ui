@@ -29,6 +29,7 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { differenceInCalendarDays } from 'date-fns';
+import numeral from 'numeral';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 export default {
@@ -86,8 +87,8 @@ export default {
 			const idleStartTime = Date.parse(this.cIdleStartTime);
 			const daysIdle = differenceInCalendarDays(now, idleStartTime);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
-			const userBalance = parseFloat(this.userBalance).toFixed(2);
-			const loanAndDonationAmount = ((1 + this.donationPercentage / 100) * 25).toFixed(2);
+			const userBalance = numeral(this.userBalance).format('0,0.00');
+			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
 
 			if (this.cIdleStartTime === null || userBalance < loanAndDonationAmount) {
 				// eslint-disable-next-line max-len

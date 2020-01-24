@@ -1,4 +1,4 @@
-export default function wwwPageMock(userId = null) {
+export default function wwwPageMock() {
 	return {
 		AutoDeposit: () => ({
 			isSubscriber: false
@@ -11,7 +11,6 @@ export default function wwwPageMock(userId = null) {
 		Manifest: () => ({
 			hasFreeCredits: false,
 		}),
-		Money: () => '30',
 		Setting: (parent, args) => ({
 			key: args.key,
 			value: '',
@@ -24,8 +23,7 @@ export default function wwwPageMock(userId = null) {
 			redemptionCodeAvailableTotal: '0.00',
 		}),
 		UserAccount: () => ({
-			id: userId,
-			balance: 0
+			id: 42
 		}),
 		UserSession: (parent, args) => ({
 			sessionKey: args.sessionKey,
