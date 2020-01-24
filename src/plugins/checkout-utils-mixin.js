@@ -112,7 +112,7 @@ export default {
 		redirectToThanks(transactionId) {
 			if (transactionId) {
 				cookieStore.remove('kvbskt', { path: '/', secure: true });
-				window.location = `/thanks?kiva_transaction_id=${transactionId}`;
+				window.location = `/checkout/post-purchase?kiva_transaction_id=${transactionId}`;
 			}
 		}
 	}
