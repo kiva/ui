@@ -1,10 +1,17 @@
 import { addDecorator, addParameters } from '@storybook/vue';
+import Vue from 'vue';
 
 //load all the svg icon sprites
 import '@/assets/iconLoader';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
+
+// import config file for storybook environment
+import config from '../config/local';
+
+// provide global application config
+Vue.prototype.$appConfig = config.app;
 
 addParameters({
 	options: {
@@ -26,4 +33,3 @@ const GlobalDecorator = () => ({
 	  `
 });
 addDecorator(GlobalDecorator);
-

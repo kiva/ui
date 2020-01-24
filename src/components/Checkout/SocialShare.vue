@@ -50,18 +50,33 @@
 		</div>
 
 		<div class="share__social social">
-			<button class="social__btn social__btn--facebook">
+			<a
+				class="social__btn social__btn--facebook"
+				:href="facebookShareUrl"
+			>
 				<icon-facebook class="social__icon" />
 				<span>Share</span>
-			</button>
-			<button class="social__btn social__btn--twitter">
+			</a>
+			<a
+				class="social__btn social__btn--twitter"
+				:href="twitterShareUrl"
+				target="_blank"
+				rel="noopener"
+				@click="$showTipMsg('Thanks for tweeting!')"
+			>
 				<icon-twitter class="social__icon" />
 				<span>Tweet</span>
-			</button>
-			<button class="social__btn social__btn--linkedin">
+			</a>
+			<a
+				class="social__btn social__btn--linkedin"
+				:href="linkedInShareUrl"
+				target="_blank"
+				rel="noopener"
+				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
+			>
 				<icon-linkedin class="social__icon" />
 				<span>Share</span>
-			</button>
+			</a>
 			<button
 				class="social__btn social__btn--link"
 				:class="copyStatus.class"
@@ -77,6 +92,7 @@
 
 <script>
 import _get from 'lodash/get';
+import _map from 'lodash/map';
 import clipboardCopy from 'clipboard-copy';
 import IconClipboard from '@/assets/inline-svgs/icons/clipboard.svg';
 import IconFacebook from '@/assets/inline-svgs/social/facebook.svg';
@@ -84,6 +100,7 @@ import IconLinkedin from '@/assets/inline-svgs/social/linkedin.svg';
 import IconTwitter from '@/assets/inline-svgs/social/twitter.svg';
 
 export default {
+	inject: ['apollo'],
 	components: {
 		IconClipboard,
 		IconFacebook,
@@ -91,6 +108,10 @@ export default {
 		IconTwitter
 	},
 	props: {
+		lender: {
+			type: Object,
+			required: true
+		},
 		loans: {
 			type: Array,
 			required: true
@@ -109,14 +130,43 @@ export default {
 		};
 	},
 	computed: {
-		selectedLoan() {
-			return this.loans[this.selectedLoanIndex] || {};
+		facebookShareUrl() {
+			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
+			return this.getFullUrl('https://www.facebook.com/dialog/share', {
+				app_id: this.$appConfig.fbApplicationId,
+				display: 'page',
+				href: `${this.shareLink}?utm_source=facebook.com&utm_medium=social&utm_campaign=social_share_checkout`,
+				redirect_uri: `${pageUrl}?kiva_transaction_id=${this.$route.query.kiva_transaction_id}`,
+				quote: this.shareMessage,
+			});
 		},
-		selectedLoanUrl() {
-			return this.selectedLoan.id ? `https://www.kiva.org/lend/${this.selectedLoan.id}` : 'https://www.kiva.org';
+		isSuggestedMessage() {
+			return this.message.trim() === this.suggestedMessage;
+		},
+		linkedInShareUrl() {
+			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
+				mini: 'true',
+				source: `https://${this.$appConfig.host}`,
+				summary: this.shareMessage.substring(0, 256),
+				title: `A loan for ${this.selectedLoan.name}`,
+				url: `${this.shareLink}?utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
+			});
 		},
 		placeholderMessage() {
 			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
+		},
+		selectedLoan() {
+			return this.loans[this.selectedLoanIndex] || {};
+		},
+		shareLink() {
+			const base = `https://${this.$appConfig.host}`;
+			if (this.selectedLoan.id) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
+			}
+			return base;
+		},
+		shareMessage() {
+			return this.message.trim() || this.suggestedMessage;
 		},
 		suggestedMessage() {
 			if (this.selectedLoan.name) {
@@ -125,24 +175,44 @@ export default {
 			}
 			return '';
 		},
-		isSuggestedMessage() {
-			return this.message.trim() === this.suggestedMessage;
-		}
+		twitterShareUrl() {
+			return this.getFullUrl('https://twitter.com/intent/tweet', {
+				text: this.shareMessage,
+				url: `${this.shareLink}?utm_source=t.co&utm_medium=social&utm_campaign=social_share_checkout`,
+				via: 'Kiva',
+			});
+		},
 	},
 	methods: {
-		setSelectedLoanIndex(index) {
-			const usingSuggested = this.isSuggestedMessage;
-			this.selectedLoanIndex = index;
-			if (usingSuggested) {
-				this.useSuggestedMessage();
+		getFullUrl(base, args) {
+			const querystring = _map(args, (val, key) => `${key}=${encodeURIComponent(val)}`).join('&');
+			return `${base}?${querystring}`;
+		},
+		handleFacebookResponse() {
+			// Check for the route hash that facebook adds to the request
+			if (this.$route.hash === '#_=_') {
+				// Check for an error
+				const { error_code: code, error_message: message } = this.$route.query;
+				if (code) {
+					// The 4201 error code means the user pressed 'Cancel', so can be ignored
+					if (code !== '4201') {
+						this.$showTipMsg(`There was a problem sharing to Facebook: ${message}`, 'warning');
+					}
+				} else {
+					this.$showTipMsg('Thanks for sharing to Facebook!');
+				}
 			}
+		},
+		setSelectedLoanIndex(index) {
+			this.selectedLoanIndex = index;
 		},
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
 		},
 		async copyLink() {
+			const url = `${this.shareLink}?utm_source=social_share_link&utm_campaign=social_share_checkout`;
 			try {
-				await clipboardCopy(this.selectedLoanUrl);
+				await clipboardCopy(url);
 				this.copyStatus = {
 					class: 'social__btn--success',
 					disabled: true,
@@ -164,6 +234,9 @@ export default {
 				}, 2500);
 			}
 		}
+	},
+	mounted() {
+		this.handleFacebookResponse();
 	},
 };
 </script>
@@ -399,6 +472,8 @@ $loan-triangle-size: rem-calc(12);
 		width: calc(50% - 0.5rem);
 		margin: 0 1rem 1rem 0;
 		padding: 1rem rem-calc(9) 1rem 1rem;
+		font-weight: $button-font-weight;
+		line-height: 1;
 
 		&:nth-child(2n) {
 			margin-right: 0;
