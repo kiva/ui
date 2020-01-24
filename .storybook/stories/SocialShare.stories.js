@@ -14,11 +14,18 @@ export const Default = () => ({
 	},
 	template: `
 		<social-share
+			:lender="lender"
 			:loans="loans"
 			:user-teams="userTeams"
 		/>
 	`,
 	props: {
+		lender: {
+			type: Object,
+			default() {
+				return mockedReceiptData.data.my.userAccount;
+			}
+		},
 		loans: {
 			type: Array,
 			default() {

@@ -82,6 +82,7 @@ query checkoutReceipt($checkoutId: Int!) {
 			firstName
 			lastName
 			email
+			inviterName
 		}
 	}
 }
