@@ -105,7 +105,7 @@
 				<kv-dropdown-rounded
 					class="teams__select"
 					id="team_select"
-					v-model="selectedUserTeam"
+					v-model="selectedLenderTeam"
 				>
 					<option
 						v-for="team in lender.teams"
@@ -162,7 +162,7 @@ export default {
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
-			selectedUserTeam: _get(this, 'lender.teams[0].id')
+			selectedLenderTeam: _get(this, 'lender.teams[0].id')
 		};
 	},
 	computed: {
