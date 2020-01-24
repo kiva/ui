@@ -73,7 +73,7 @@ query checkoutReceipt($checkoutId: Int!) {
 		teams {
 			values {
 				team {
-					id
+					teamPublicId
 					name
 				}
 			}

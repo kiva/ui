@@ -110,7 +110,7 @@
 					<option
 						v-for="team in lender.teams"
 						:key="team.id"
-						:value="team.id"
+						:value="team.teamPublicId"
 					>
 						{{ team.name }}
 					</option>
@@ -162,7 +162,7 @@ export default {
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
-			selectedLenderTeam: _get(this, 'lender.teams[0].id')
+			selectedLenderTeam: _get(this, 'lender.teams[0].teamPublicId')
 		};
 	},
 	computed: {
@@ -188,6 +188,9 @@ export default {
 		shareLink() {
 			const base = `https://${this.$appConfig.host}`;
 			if (this.selectedLoan.id) {
+				if (this.isTeamInvitation) {
+					return `${base}/invitedto/${this.selectedLenderTeam}/by/${this.lender.inviterName}/for/${this.selectedLoan.id}`; // eslint-disable-line max-len
+				}
 				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
 			}
 			return base;
