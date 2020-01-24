@@ -61,6 +61,7 @@
 				class="social__btn social__btn--twitter"
 				:href="twitterShareUrl"
 				target="_blank"
+				rel="noopener"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
 				<icon-twitter class="social__icon" />
@@ -70,6 +71,7 @@
 				class="social__btn social__btn--linkedin"
 				:href="linkedInShareUrl"
 				target="_blank"
+				rel="noopener"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
 				<icon-linkedin class="social__icon" />
