@@ -88,14 +88,6 @@ export default {
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
 			const userBalance = parseFloat(this.userBalance).toFixed(2);
 			const loanAndDonationAmount = ((1 + this.donationPercentage / 100) * 25).toFixed(2);
-			console.log('now', now);
-			console.log('cIdleStartTime', this.cIdleStartTime);
-			console.log('idleStartTime', idleStartTime);
-			console.log('daysIdle', daysIdle);
-			console.log('daysUntilLend', daysUntilLend);
-			console.log('this.userBalance', this.userBalance);
-			console.log('userBalance', userBalance);
-			console.log('loanAndDonationAmount', loanAndDonationAmount);
 
 			if (this.cIdleStartTime === null || userBalance < loanAndDonationAmount) {
 				// eslint-disable-next-line max-len
