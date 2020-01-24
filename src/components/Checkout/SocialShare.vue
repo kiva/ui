@@ -166,6 +166,32 @@ export default {
 		};
 	},
 	computed: {
+		selectedLoan() {
+			return this.loans[this.selectedLoanIndex] || {};
+		},
+		placeholderMessage() {
+			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
+		},
+		suggestedMessage() {
+			if (this.selectedLoan.name) {
+				const location = _get(this, 'selectedLoan.geocode.city') || _get(this, 'selectedLoan.geocode.country.name'); // eslint-disable-line max-len
+				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
+			}
+			return '';
+		},
+		isSuggestedMessage() {
+			return this.message.trim() === this.suggestedMessage;
+		},
+		shareMessage() {
+			return this.message.trim() || this.suggestedMessage;
+		},
+		shareLink() {
+			const base = `https://${this.$appConfig.host}`;
+			if (this.selectedLoan.id) {
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
+			}
+			return base;
+		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return this.getFullUrl('https://www.facebook.com/dialog/share', {
@@ -176,9 +202,6 @@ export default {
 				quote: this.shareMessage,
 			});
 		},
-		isSuggestedMessage() {
-			return this.message.trim() === this.suggestedMessage;
-		},
 		linkedInShareUrl() {
 			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
@@ -187,29 +210,6 @@ export default {
 				title: `A loan for ${this.selectedLoan.name}`,
 				url: `${this.shareLink}?utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
 			});
-		},
-		placeholderMessage() {
-			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
-		},
-		selectedLoan() {
-			return this.loans[this.selectedLoanIndex] || {};
-		},
-		shareLink() {
-			const base = `https://${this.$appConfig.host}`;
-			if (this.selectedLoan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
-			}
-			return base;
-		},
-		shareMessage() {
-			return this.message.trim() || this.suggestedMessage;
-		},
-		suggestedMessage() {
-			if (this.selectedLoan.name) {
-				const location = _get(this, 'selectedLoan.geocode.city') || _get(this, 'selectedLoan.geocode.country.name'); // eslint-disable-line max-len
-				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
-			}
-			return '';
 		},
 		twitterShareUrl() {
 			return this.getFullUrl('https://twitter.com/intent/tweet', {
