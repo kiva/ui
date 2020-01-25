@@ -89,6 +89,10 @@ describe('Autolending Page Spec', () => {
 		});
 	});
 
+	// The following tests ensure the autolend explanation text is displaying correctly
+	// based on user's balance, set autolend donation percentage and timing around when
+	// autolending is eligible to occur.
+
 	describe('Autolend explanation text', () => {
 		it('Verify user balance below lendable amount', () => {
 			// Mock date and idle start time
@@ -147,7 +151,7 @@ describe('Autolending Page Spec', () => {
 				// This is setting the user's balance
 				Money: () => '40.90'
 			});
-
+			// Setting the now
 			cy.clock(1579219200000);
 
 			// Visit autolending settings
