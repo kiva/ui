@@ -310,14 +310,14 @@ export const mockedReceiptData = {
 				"values": [
 					{
 						"team": {
-							"id": 275197,
+							"teamPublicId": 'SRT',
 							"name": "Staff Reserve Team"
 						}
 					},
 					{
 						"team": {
-							"id": 275196,
-							"name": "Staff Reserve Team2"
+							"teamPublicId": 'testteam23',
+							"name": "TestTeam23"
 						}
 					}
 				]
