@@ -109,7 +109,7 @@
 				>
 					<option
 						v-for="team in lender.teams"
-						:key="team.id"
+						:key="team.teamPublicId"
 						:value="team.teamPublicId"
 					>
 						{{ team.name }}
