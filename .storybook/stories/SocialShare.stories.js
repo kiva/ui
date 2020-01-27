@@ -1,5 +1,4 @@
 import { mockedReceiptData } from './CheckoutReceipt.stories';
-import _get from 'lodash/get';
 import SocialShare from '@/components/Checkout/SocialShare';
 import StoryRouter from 'storybook-vue-router';
 
@@ -30,10 +29,9 @@ export const Default = () => ({
 		lender: {
 			type: Object,
 			default() {
-				const teams = _get(mockedReceiptData, 'data.my.teams.values');
 				return {
 					...mockedReceiptData.data.my.userAccount,
-					teams: teams ? teams.map(value => value.team) : []
+					teams: mockedReceiptData.data.my.teams.values.map(value => value.team)
 				};
 			}
 		},
