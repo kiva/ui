@@ -87,12 +87,13 @@ export default {
 			const idleStartTime = Date.parse(this.cIdleStartTime);
 			const daysIdle = differenceInCalendarDays(now, idleStartTime);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
-			const userBalance = numeral(this.userBalance).format('0,0.00');
-			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
+			const userBalance = numeral(this.userBalance).value();
+			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
+			const loanAndDonationAmountFormatted = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
 
 			if (this.cIdleStartTime === null || userBalance < loanAndDonationAmount) {
 				// eslint-disable-next-line max-len
-				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmount} through repayments or additional deposits.`;
+				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
 			}
 			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
 			if (userBalance >= loanAndDonationAmount && daysUntilLend > 0) {
@@ -104,7 +105,7 @@ export default {
 				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 			}
 			// eslint-disable-next-line max-len
-			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmount} through repayments or additional deposits.`;
+			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
 		}
 	},
 	methods: {

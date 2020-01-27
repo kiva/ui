@@ -134,8 +134,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert the text on the page
-			cy.get('.autolend-explanation-text').contains(
-				'4 days').contains('3 days—timing');
+			cy.get('.autolend-explanation-text').contains('4 days').contains('3 days—timing');
 		});
 
 		it('Verify lendable balance w/daysUntilLend <= 0', () => {
@@ -158,8 +157,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert the text on the page
-			cy.get('.autolend-explanation-text').contains(
-				'152 days').contains('immediately');
+			cy.get('.autolend-explanation-text').contains('152 days').contains('immediately');
 		});
 	});
 });
