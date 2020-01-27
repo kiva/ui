@@ -57,7 +57,7 @@
 		"connect-memjs": "^0.2.1",
 		"contentful": "^7.10.0",
 		"cookie": "^0.3.1",
-		"cross-env": "^6.0.3",
+		"cross-env": "^7.0.0",
 		"date-fns": "^1.30.1",
 		"dotenv": "^8.1.0",
 		"express": "^4.17.1",
@@ -142,12 +142,12 @@
 		"eslint-plugin-graphql": "^3.0.3",
 		"eslint-plugin-import": "^2.18.2",
 		"eslint-plugin-vue": "^6.1.2",
-		"file-loader": "^4.2.0",
+		"file-loader": "^5.0.2",
 		"friendly-errors-webpack-plugin": "^1.7.0",
 		"git-revision-webpack-plugin": "^3.0.3",
 		"hard-source-webpack-plugin": "^0.13.1",
 		"html-minifier": "^4.0.0",
-		"husky": "^3.1.0",
+		"husky": "^4.2.1",
 		"inject-loader": "^4.0.1",
 		"jest": "^23.6.0",
 		"jest-serializer-vue": "^2.0.2",
@@ -166,7 +166,7 @@
 		"stylelint-config-standard": "^19.0.0",
 		"stylelint-scss": "^3.13.0",
 		"thread-loader": "^2.1.3",
-		"url-loader": "^1.1.2",
+		"url-loader": "^3.0.0",
 		"vue-jest": "^3.0.5",
 		"vue-loader": "^15.7.1",
 		"vue-style-loader": "^4.1.2",
@@ -183,8 +183,8 @@
 		"webpack-svgstore-plugin": "^4.1.0"
 	},
 	"engines": {
-		"node": ">= 6.0.0",
-		"npm": ">= 5.0.0"
+		"node": ">= 10.0.0",
+		"npm": ">= 6.0.0"
 	},
 	"browserslist": [
 		"> 1%",
