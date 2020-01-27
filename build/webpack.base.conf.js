@@ -82,7 +82,8 @@ module.exports = {
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
-					name: assetsPath('fonts/[name].[hash:7].[ext]')
+					name: assetsPath('fonts/[name].[hash:7].[ext]'),
+					esModule: false,
 				}
 			},
 			{
@@ -91,7 +92,8 @@ module.exports = {
 				loader: 'url-loader',
 				options: {
 					limit: 1, // 10000 is default but we'd need to exclude apple-touch-icons,
-					name: assetsPath('img/[name].[hash:7].[ext]')
+					name: assetsPath('img/[name].[hash:7].[ext]'),
+					esModule: false,
 				}
 			},
 			{
@@ -104,7 +106,8 @@ module.exports = {
 				loader: 'url-loader',
 				options: {
 					limit: 10000,
-					name: assetsPath('media/[name].[hash:7].[ext]')
+					name: assetsPath('media/[name].[hash:7].[ext]'),
+					esModule: false,
 				}
 			}
 		]
