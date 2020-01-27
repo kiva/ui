@@ -10,7 +10,7 @@ addons:
 matrix:
   fast_finish: true
   include:
-    - node_js: '8.11'
+    - node_js: '12.14'
     - node_js: 'node'
       if: head_branch = master
 branches:
@@ -18,7 +18,6 @@ branches:
     - master
     - /^release-.*$/
 before_install:
-  - npm install -g npm@5.7
   - npm install -g greenkeeper-lockfile@1
 before_script:
   - greenkeeper-lockfile-update
