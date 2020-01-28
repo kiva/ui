@@ -177,7 +177,7 @@ export default {
 	font-size: 2rem;
 	line-height: 2rem;
 
-	@media only screen and (min-width: 800px) {
+	@include breakpoint(xlarge) {
 		font-size: 2.375rem;
 		line-height: 2.375rem;
 	}
@@ -189,7 +189,7 @@ export default {
 	line-height: 1.35rem;
 	margin-bottom: 0.65rem;
 
-	@media only screen and (min-width: 800px) {
+	@include breakpoint(xlarge) {
 		padding-top: 0.875rem;
 		font-size: 1.5rem;
 		line-height: 1.75rem;

@@ -27,7 +27,7 @@
 				<kv-responsive-image
 					:images="billionImpactImages"
 					class="show-for-large community-image"
-					alt=""
+					alt="10 years and $1 billion in loans funded"
 				/>
 			</div>
 		</div>

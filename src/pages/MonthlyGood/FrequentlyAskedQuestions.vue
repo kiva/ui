@@ -1,18 +1,16 @@
 <template>
-	<div class="frequently-asked-questions-section-wrapper">
-		<div class="row">
-			<div class="small-12 columns">
-				<h2 class="impact-text">
-					Frequently asked questions
-				</h2>
-			</div>
-			<expandable-question
-				v-for="(question, index) in faqs"
-				:key="index"
-				:title="question.title"
-				:content="question.content"
-			/>
+	<div class="frequently-asked-questions-section-wrapper row">
+		<div class="small-12 columns">
+			<h2 class="impact-text">
+				Frequently asked questions
+			</h2>
 		</div>
+		<expandable-question
+			v-for="(question, index) in faqs"
+			:key="index"
+			:title="question.title"
+			:content="question.content"
+		/>
 	</div>
 </template>
 

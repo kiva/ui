@@ -117,7 +117,7 @@
 				</div>
 				<div class="show-for-large medium-8 medium-offset-2 large-5 large-offset-1 columns">
 					<kv-responsive-image
-						:images="billionImpactImages"
+						:images="billionImpactImages" alt="10 years and $1 billion in loans funded"
 					/>
 				</div>
 			</div>
