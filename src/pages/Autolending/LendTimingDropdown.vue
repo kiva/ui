@@ -85,7 +85,7 @@ export default {
 		autolendExplanationText() {
 			const now = Date.now();
 			const idleStartTime = Date.parse(this.cIdleStartTime);
-			const daysIdle = differenceInCalendarDays(now, idleStartTime);
+			const daysIdle = differenceInCalendarDays(idleStartTime, now);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
 			const userBalance = numeral(this.userBalance).value();
 			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
