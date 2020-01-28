@@ -72,7 +72,7 @@ export default {
 	}
 
 	.hide-for-large.community-image {
-		max-width: 400px;
+		max-width: 25rem;
 		display: block;
 		margin: 0 auto;
 	}

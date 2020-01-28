@@ -66,8 +66,8 @@ export default {
 	border-top: 1px solid $charcoal;
 
 	.toggle-arrow {
-		height: 16px;
-		width: 25px;
+		height: 1rem;
+		width: 1.563rem;
 		position: relative;
 		right: 0;
 		top: 45%;

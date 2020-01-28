@@ -152,12 +152,15 @@ export default {
 	}
 
 	//set min height to improve sizing when image has not loaded yet
-	min-height: 100px;
-	@media only screen and (min-width: 761px) {
-		min-height: 355px;
+	min-height: 6.25rem;
+	@include breakpoint(xlarge) {
+		min-height: 20.19rem;
 	}
-	@media only screen and (min-width: 1025px) {
-		min-height: 440px;
+	@include breakpoint(xxlarge) {
+		min-height: 24.65rem;
+	}
+	@include breakpoint(xga) {
+		min-height: 27.5rem;
 	}
 }
 
