@@ -95,7 +95,6 @@ describe('Autolending Page Spec', () => {
 
 	describe('Autolend explanation text', () => {
 		it('Verify user balance below lendable amount', () => {
-			// Mock date and idle start time
 			cy.mock({
 				AutolendProfile: () => ({
 					isEnabled: true,
@@ -131,7 +130,6 @@ describe('Autolending Page Spec', () => {
 				};
 			`);
 
-			// Mock cIdleStartTime and lendAfterDaysIdle
 			cy.mock({
 				AutolendProfile,
 				// This is setting the user's balance
