@@ -1,25 +1,23 @@
 <template>
-	<div class="more-about-kiva-section-wrapper">
-		<div class="row">
-			<div class="small-12 columns">
-				<h2 class="impact-text">
-					More about Kiva
-				</h2>
-			</div>
-			<div class="small-12 large-7 columns">
-				<p>
-					<!-- eslint-disable-next-line max-len -->
-					Kiva is an international nonprofit, founded in 2005 and based in San Francisco, with a mission of expanding financial access to help underserved communities thrive. We celebrate and support people looking to create a better future for themselves, their families and their communities.
-				</p>
-			</div>
-			<div class="small-12 large-5 columns">
-				<icon-kiva-promise class="icon-kiva-promise" />
-			</div>
-			<div class="small-12 columns">
-				<p>
-					100% of funds lent on Kiva go to funding loans. Optional donations fund Kiva’s operations.
-				</p>
-			</div>
+	<div class="more-about-kiva-section-wrapper row">
+		<div class="small-12 columns">
+			<h2 class="impact-text">
+				More about Kiva
+			</h2>
+		</div>
+		<div class="small-12 large-7 columns">
+			<p>
+				<!-- eslint-disable-next-line max-len -->
+				Kiva is an international nonprofit, founded in 2005 and based in San Francisco, with a mission of expanding financial access to help underserved communities thrive. We celebrate and support people looking to create a better future for themselves, their families and their communities.
+			</p>
+		</div>
+		<div class="small-12 large-5 columns">
+			<icon-kiva-promise class="icon-kiva-promise" />
+		</div>
+		<div class="small-12 columns">
+			<p>
+				100% of funds lent on Kiva go to funding loans. Optional donations fund Kiva’s operations.
+			</p>
 		</div>
 	</div>
 </template>
