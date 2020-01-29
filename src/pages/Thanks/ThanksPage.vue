@@ -23,17 +23,12 @@
 					/>
 				</template>
 
-				<div class="thanks__confirmation hide-for-print">
-					<p>Confirmation sent to: {{ lender.email }}.</p>
-					<button @click="toggleReceipt">
-						<icon-receipt class="toggle-receipt-icon" />
-						<span>{{ isReceiptVisible ? 'Hide' : 'Show' }} Receipt</span>
-					</button>
-				</div>
+				<p class="thanks__confirmation hide-for-print">
+					Confirmation sent to: {{ lender.email }}.
+				</p>
 
 				<checkout-receipt
 					class="thanks__receipt"
-					v-if="isReceiptVisible"
 					:lender="lender"
 					:receipt="receipt"
 				/>
@@ -47,7 +42,6 @@ import confetti from 'canvas-confetti';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
-import IconReceipt from '@/assets/inline-svgs/icons/receipt.svg';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutReceiptQuery from '@/graphql/query/checkoutReceipt.graphql';
@@ -56,7 +50,6 @@ export default {
 	components: {
 		CheckoutReceipt,
 		CheckoutSteps,
-		IconReceipt,
 		SocialShare,
 		WwwPage,
 	},
@@ -71,7 +64,6 @@ export default {
 			lender: {},
 			loans: [],
 			receipt: {},
-			isReceiptVisible: true,
 		};
 	},
 	apollo: {
@@ -96,11 +88,6 @@ export default {
 			this.loans = data.shop.receipt.items.values
 				.filter(item => item.basketItemType === 'loan_reservation')
 				.map(item => item.loan);
-		}
-	},
-	methods: {
-		toggleReceipt() {
-			this.isReceiptVisible = !this.isReceiptVisible;
 		}
 	},
 	mounted() {
@@ -144,7 +131,7 @@ export default {
 
 	&__confirmation {
 		text-align: center;
-		margin-bottom: 3rem;
+		margin-bottom: 1rem;
 	}
 
 	&__receipt {
@@ -156,9 +143,4 @@ export default {
 		}
 	}
 }
-
-.toggle-receipt-icon {
-	width: rem-calc(16);
-}
-
 </style>
