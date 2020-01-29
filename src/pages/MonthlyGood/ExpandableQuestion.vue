@@ -1,5 +1,5 @@
 <template>
-	<div class="small-12 columns expandable-faq">
+	<div class="expandable-faq">
 		<button class="expandable-faq__header"
 			@click="open = !open"
 		>
@@ -63,9 +63,12 @@ export default {
 		height: 1rem;
 		width: 1.563rem;
 		position: absolute;
-		right: 0;
-		top: 1.25rem;
-		transform: translate(-50%, -50%);
+		right: 0.9375rem;
+		top: 0.75rem;
+	}
+
+	.flipped {
+		transform: rotate(180deg);
 	}
 
 	&:last-child {
@@ -73,7 +76,7 @@ export default {
 	}
 
 	.expandable-faq__header {
-		padding: 0.55rem 0;
+		padding: 0.55rem 0.9375rem;
 		width: 100%;
 		text-align: left;
 		position: relative;

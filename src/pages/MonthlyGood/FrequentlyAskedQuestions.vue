@@ -5,12 +5,17 @@
 				Frequently asked questions
 			</h2>
 		</div>
-		<expandable-question
-			v-for="(question, index) in faqs"
-			:key="index"
-			:title="question.title"
-			:content="question.content"
-		/>
+		<div class="small-12 columns">
+			<div class="row collapse">
+				<expandable-question
+					v-for="(question, index) in faqs"
+					:key="index"
+					:title="question.title"
+					:content="question.content"
+					class="small-12 columns"
+				/>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -72,7 +77,7 @@ export default {
 @import 'settings';
 
 .frequently-asked-questions-section-wrapper {
-	margin-bottom: 2rem;
+	margin-bottom: 4rem;
 
 	h2 {
 		color: $kiva-green;
