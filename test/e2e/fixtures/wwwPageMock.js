@@ -1,14 +1,15 @@
-export default function wwwPageMock(userId = null) {
+export default function wwwPageMock() {
 	return {
+		AutoDeposit: () => ({
+			isSubscriber: false
+		}),
+		Date: () => '',
 		LatestDonationCampaign: () => ({
 			amount_raised: 0,
 			target_amount: 0,
 		}),
 		Manifest: () => ({
 			hasFreeCredits: false,
-		}),
-		AutoDeposit: () => ({
-			isSubscriber: false
 		}),
 		Setting: (parent, args) => ({
 			key: args.key,
@@ -22,7 +23,7 @@ export default function wwwPageMock(userId = null) {
 			redemptionCodeAvailableTotal: '0.00',
 		}),
 		UserAccount: () => ({
-			id: userId
+			id: 42
 		}),
 		UserSession: (parent, args) => ({
 			sessionKey: args.sessionKey,

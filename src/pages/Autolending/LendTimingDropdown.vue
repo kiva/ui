@@ -21,12 +21,15 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
+		<span class="autolend-explanation-text">{{ autolendExplanationText }} </span>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+import { differenceInCalendarDays } from 'date-fns';
+import numeral from 'numeral';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 export default {
@@ -39,7 +42,10 @@ export default {
 			changedTiming: false,
 			legacyAutoLender: false,
 			enableAfter: null, // legacy setting
-			lendAfterDaysIdle: 0
+			lendAfterDaysIdle: 0,
+			cIdleStartTime: null,
+			userBalance: 0,
+			donationPercentage: 15
 		};
 	},
 	computed: {
@@ -75,6 +81,31 @@ export default {
 			let notice = `Notice: Your previous setting was '${legacyAutoLendDescription}'`;
 			notice += this.changedTiming ? '.' : ', the closest matching setting above will be applied upon save.';
 			return notice;
+		},
+		autolendExplanationText() {
+			const now = Date.now();
+			const idleStartTime = Date.parse(this.cIdleStartTime);
+			const daysIdle = differenceInCalendarDays(idleStartTime, now);
+			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
+			const userBalance = numeral(this.userBalance).value();
+			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
+			const loanAndDonationAmountFormatted = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
+
+			if (this.cIdleStartTime === null || userBalance < loanAndDonationAmount) {
+				// eslint-disable-next-line max-len
+				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
+			}
+			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
+			if (userBalance >= loanAndDonationAmount && daysUntilLend > 0) {
+				// eslint-disable-next-line max-len
+				return `Since you haven’t made a loan yourself for ${daysIdle} days, we will auto-lend your eligible balance after ${daysUntilLend} days—timing may vary based on loan supply.`;
+			}
+			if (userBalance >= loanAndDonationAmount && daysUntilLend <= 0) {
+				// eslint-disable-next-line max-len
+				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
+			}
+			// eslint-disable-next-line max-len
+			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
 		}
 	},
 	methods: {
@@ -113,10 +144,18 @@ export default {
 	},
 	apollo: {
 		query: gql`{
+			my {
+				userAccount {
+					id
+					balance
+				}
+			}
 			autolending @client {
 				currentProfile {
 					enableAfter
 					lendAfterDaysIdle
+					cIdleStartTime
+					donationPercentage
 				}
 				savedProfile {
 					enableAfter
@@ -126,6 +165,10 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.enableAfter = _get(data, 'autolending.savedProfile.enableAfter');
+			this.cIdleStartTime = _get(data, 'autolending.currentProfile.cIdleStartTime');
+			this.userBalance = _get(data, 'my.userAccount.balance');
+			this.donationPercentage = _get(data, 'autolending.currentProfile.donationPercentage');
+
 			// flag user as one who had auto lending set
 			this.legacyAutoLender = this.enableAfter > 0;
 			this.changedTiming = _get(data, 'autolending.currentProfile.enableAfter') !== this.enableAfter;
@@ -152,6 +195,10 @@ export default {
 	.text-notice {
 		color: $kiva-text-light;
 		font-style: italic;
+	}
+
+	.autolend-explanation-text {
+		color: $kiva-green;
 	}
 }
 </style>

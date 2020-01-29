@@ -14,6 +14,7 @@ export default function AutolendProfile() {
 		donationPercentage: 15,
 		lendAfterDaysIdle: 90,
 		idleCreditOptIn: true,
+		cIdleStartTime: null,
 		enableAfter: 0,
 		loanSearchCriteria: LoanSearchCriteria(),
 	};

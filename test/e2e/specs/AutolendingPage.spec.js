@@ -1,11 +1,11 @@
+import { addDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
-
 describe('Autolending Page Spec', () => {
-	const userId = 42;
+	// const userId = 42;
 
 	beforeEach(() => {
-		cy.mock(wwwPageMock(userId));
+		cy.mock(wwwPageMock());
 		// Prevents the window beforeunload event from getting added
 		// which blocks Cypress from exiting test correctly
 		cy.on('window:before:load', window => {
@@ -86,6 +86,89 @@ describe('Autolending Page Spec', () => {
 			// assert success banner?
 			// assert save not visible?
 			// assert toggle says on
+		});
+	});
+
+	// The following tests ensure the autolend explanation text is displaying correctly
+	// based on user's balance, set autolend donation percentage and timing around when
+	// autolending is eligible to occur.
+
+	describe('Autolend explanation text', () => {
+		it('Verify user balance below lendable amount', () => {
+			cy.mock({
+				AutolendProfile: () => ({
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: null,
+				}),
+				// This is setting the user's balance
+				Money: () => '3.00'
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert that toggle displays 'on'
+			cy.get('.autolend-explanation-text').contains(
+				'Your current balance is lower'
+			);
+		});
+
+		it('Verify lendable balance w/daysUntilLend > 0', () => {
+			const now = new Date();
+
+			// Had to pass in data this way, because I had to run a function
+			// to dynamically calculate a cIdleStartTime 4 days from 'now'
+			// eslint-disable-next-line no-new-func
+			const AutolendProfile = new Function(`
+				return {
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: '${addDays(now, 4)}',
+					lendAfterDaysIdle: 7,
+					donationPercentage: 5
+				};
+			`);
+
+			cy.mock({
+				AutolendProfile,
+				// This is setting the user's balance
+				Money: () => '40.05'
+			});
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the text on the page
+			cy.get('.autolend-explanation-text').contains('4 days').contains('3 days—timing');
+		});
+
+		it('Verify lendable balance w/daysUntilLend <= 0', () => {
+			const now = new Date();
+
+			// Had to pass in data this way, because I had to run a function
+			// to dynamically calculate a cIdleStartTime 4 days from 'now'
+			// eslint-disable-next-line no-new-func
+			const AutolendProfile = new Function(`
+				return {
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: '${addDays(now, 95)}',
+					lendAfterDaysIdle: 90,
+					donationPercentage: 15
+				};
+			`);
+
+			cy.mock({
+				AutolendProfile,
+				// This is setting the user's balance
+				Money: () => '40.90'
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the text on the page
+			cy.get('.autolend-explanation-text').contains('95 days').contains('immediately');
 		});
 	});
 });
