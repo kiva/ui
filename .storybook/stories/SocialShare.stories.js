@@ -18,11 +18,21 @@ export const Default = () => ({
 			:loans="loans"
 		/>
 	`,
+	provide: {
+		apollo: {
+			mutate() {
+				return Promise.resolve();
+			},
+		},
+	},
 	props: {
 		lender: {
 			type: Object,
 			default() {
-				return mockedReceiptData.data.my.userAccount;
+				return {
+					...mockedReceiptData.data.my.userAccount,
+					teams: mockedReceiptData.data.my.teams.values.map(value => value.team)
+				};
 			}
 		},
 		loans: {
@@ -32,6 +42,6 @@ export const Default = () => ({
 					.filter(item => item.basketItemType === 'loan_reservation')
 					.map(item => item.loan);
 			}
-		}
+		},
 	},
 });

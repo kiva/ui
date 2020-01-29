@@ -87,6 +87,38 @@
 				<span>{{ this.copyStatus.text }}</span>
 			</button>
 		</div>
+
+		<div class="share__teams teams" v-if="lender.teams.length > 0">
+			<kv-checkbox
+				class="teams__checkbox"
+				id="team_invitation"
+				v-model="isTeamInvitation"
+			>
+				Make this a team invitation
+			</kv-checkbox>
+
+			<div v-if="isTeamInvitation">
+				<label
+					class="teams__select-label"
+					for="team_select"
+				>
+					Team
+				</label>
+				<kv-dropdown-rounded
+					class="teams__select"
+					id="team_select"
+					v-model="selectedLenderTeam"
+				>
+					<option
+						v-for="team in lender.teams"
+						:key="team.teamPublicId"
+						:value="team.teamPublicId"
+					>
+						{{ team.name }}
+					</option>
+				</kv-dropdown-rounded>
+			</div>
+		</div>
 	</section>
 </template>
 
@@ -98,6 +130,8 @@ import IconClipboard from '@/assets/inline-svgs/icons/clipboard.svg';
 import IconFacebook from '@/assets/inline-svgs/social/facebook.svg';
 import IconLinkedin from '@/assets/inline-svgs/social/linkedin.svg';
 import IconTwitter from '@/assets/inline-svgs/social/twitter.svg';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 export default {
 	inject: ['apollo'],
@@ -105,7 +139,9 @@ export default {
 		IconClipboard,
 		IconFacebook,
 		IconLinkedin,
-		IconTwitter
+		IconTwitter,
+		KvCheckbox,
+		KvDropdownRounded,
 	},
 	props: {
 		lender: {
@@ -115,7 +151,7 @@ export default {
 		loans: {
 			type: Array,
 			required: true
-		}
+		},
 	},
 	data() {
 		return {
@@ -124,12 +160,43 @@ export default {
 				disabled: false,
 				text: 'Copy Link'
 			},
+			isTeamInvitation: false,
 			maxMessageLength: 280,
 			message: '',
 			selectedLoanIndex: 0,
+			selectedLenderTeam: _get(this, 'lender.teams[0].teamPublicId')
 		};
 	},
 	computed: {
+		selectedLoan() {
+			return this.loans[this.selectedLoanIndex] || {};
+		},
+		placeholderMessage() {
+			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
+		},
+		suggestedMessage() {
+			if (this.selectedLoan.name) {
+				const location = _get(this, 'selectedLoan.geocode.city') || _get(this, 'selectedLoan.geocode.country.name'); // eslint-disable-line max-len
+				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
+			}
+			return '';
+		},
+		isSuggestedMessage() {
+			return this.message.trim() === this.suggestedMessage;
+		},
+		shareMessage() {
+			return this.message.trim() || this.suggestedMessage;
+		},
+		shareLink() {
+			const base = `https://${this.$appConfig.host}`;
+			if (this.selectedLoan.id) {
+				if (this.isTeamInvitation) {
+					return `${base}/invitedto/${this.selectedLenderTeam}/by/${this.lender.inviterName}/for/${this.selectedLoan.id}`; // eslint-disable-line max-len
+				}
+				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
+			}
+			return base;
+		},
 		facebookShareUrl() {
 			const pageUrl = `https://${this.$appConfig.host}${this.$route.path}`;
 			return this.getFullUrl('https://www.facebook.com/dialog/share', {
@@ -140,9 +207,6 @@ export default {
 				quote: this.shareMessage,
 			});
 		},
-		isSuggestedMessage() {
-			return this.message.trim() === this.suggestedMessage;
-		},
 		linkedInShareUrl() {
 			return this.getFullUrl('https://www.linkedin.com/shareArticle', {
 				mini: 'true',
@@ -151,29 +215,6 @@ export default {
 				title: `A loan for ${this.selectedLoan.name}`,
 				url: `${this.shareLink}?utm_source=linkedin.com&utm_medium=social&utm_campaign=social_share_checkout`
 			});
-		},
-		placeholderMessage() {
-			return this.selectedLoan.name ? `Why did you lend to ${this.selectedLoan.name}?` : '';
-		},
-		selectedLoan() {
-			return this.loans[this.selectedLoanIndex] || {};
-		},
-		shareLink() {
-			const base = `https://${this.$appConfig.host}`;
-			if (this.selectedLoan.id) {
-				return `${base}/invitedby/${this.lender.inviterName}/for/${this.selectedLoan.id}`;
-			}
-			return base;
-		},
-		shareMessage() {
-			return this.message.trim() || this.suggestedMessage;
-		},
-		suggestedMessage() {
-			if (this.selectedLoan.name) {
-				const location = _get(this, 'selectedLoan.geocode.city') || _get(this, 'selectedLoan.geocode.country.name'); // eslint-disable-line max-len
-				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
-			}
-			return '';
 		},
 		twitterShareUrl() {
 			return this.getFullUrl('https://twitter.com/intent/tweet', {
@@ -263,6 +304,7 @@ $loan-triangle-size: rem-calc(12);
 
 	@include breakpoint(large) {
 		flex-direction: row;
+		flex-wrap: wrap;
 	}
 
 	&__loans {
@@ -276,13 +318,20 @@ $loan-triangle-size: rem-calc(12);
 		margin: 1rem 0;
 
 		@include breakpoint(large) {
-			margin: 0 1rem;
+			margin: 0 1rem 1rem 1rem;
 		}
 	}
 
 	&__social {
 		@include breakpoint(large) {
 			width: rem-calc(135);
+		}
+	}
+
+	&__teams {
+		flex-basis: 100%;
+		@include breakpoint(large) {
+			margin-left: calc(#{rem-calc(70) + 1rem});
 		}
 	}
 }
@@ -553,6 +602,23 @@ $loan-triangle-size: rem-calc(12);
 				}
 			}
 		}
+	}
+}
+
+.teams {
+	display: flex;
+	align-items: center;
+
+	&__checkbox {
+		margin-right: 1rem;
+	}
+
+	&__select-label {
+		@include visually-hidden();
+	}
+
+	&__select {
+		margin: 0;
 	}
 }
 </style>

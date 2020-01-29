@@ -88,7 +88,10 @@ export default {
 			};
 		},
 		result({ data }) {
-			this.lender = data.my.userAccount;
+			this.lender = {
+				...data.my.userAccount,
+				teams: data.my.teams.values.map(value => value.team)
+			};
 			this.receipt = data.shop.receipt;
 			this.loans = data.shop.receipt.items.values
 				.filter(item => item.basketItemType === 'loan_reservation')

@@ -306,6 +306,22 @@ export const mockedReceiptData = {
 			}
 		},
 		"my": {
+			"teams": {
+				"values": [
+					{
+						"team": {
+							"teamPublicId": 'SRT',
+							"name": "Staff Reserve Team"
+						}
+					},
+					{
+						"team": {
+							"teamPublicId": 'testteam23',
+							"name": "TestTeam23"
+						}
+					}
+				]
+			},
 			"userAccount": {
 				"firstName": "Alan",
 				"lastName": "Smithee",
