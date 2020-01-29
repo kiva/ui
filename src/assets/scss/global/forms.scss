@@ -53,3 +53,22 @@ input[type="submit"].hidden-submit {
 		margin-bottom: rem-calc(20);
 	}
 }
+
+// Form validation
+label.error {
+	& + input,
+	& + input:focus {
+		border: 1px solid $kiva-accent-red;
+	}
+}
+
+.validation-errors {
+	margin-left: 0;
+
+	li {
+		list-style: none;
+		color: $kiva-accent-red;
+		font-weight: $global-weight-highlight;
+		font-size: $small-text-font-size;
+	}
+}

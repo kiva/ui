@@ -93,15 +93,4 @@ export default {
 	margin: 1.4rem 0 2rem 0;
 }
 
-form {
-	.validation-errors {
-		li {
-			list-style: none;
-			color: $kiva-accent-red;
-			font-weight: $global-weight-highlight;
-			font-size: $small-text-font-size;
-		}
-	}
-}
-
 </style>

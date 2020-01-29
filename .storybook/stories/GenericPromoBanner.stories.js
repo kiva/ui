@@ -21,7 +21,7 @@ const iconKeySelect = {
 	handshake: "handshake",
 	iwd: "iwd-flower",
 	kiva: "kiva-card",
-	kiva: "kiva-promise",
+	kivapromise: "kiva-promise",
 	leaf: "leaf",
 	leaves: "leaves",
 	line: "line-graph",

@@ -189,9 +189,6 @@ export default {
 	margin-left: 3rem;
 	margin-top: -0.5rem;
 
-	// wraps the dropdown correctly for mobile
-	::v-deep .dropdown-wrapper select.dropdown { max-width: 100%; }
-
 	.text-notice {
 		color: $kiva-text-light;
 		font-style: italic;

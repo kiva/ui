@@ -2,7 +2,7 @@
 	<div>
 		<!-- Promo -->
 		<kv-hero v-if="promoEnabled">
-			<template v-slot:images>
+			<template v-slot:carousel>
 				<kv-carousel @change="slideChange">
 					<kv-carousel-slide v-for="(imageSet, index) in promoContent.responsiveImageSet" :key="index">
 						<kv-responsive-image
@@ -30,7 +30,7 @@
 
 		<!-- Default -->
 		<kv-hero v-else>
-			<template v-slot:images>
+			<template v-slot:carousel>
 				<kv-carousel @change="slideChange">
 					<!-- eslint-disable max-len -->
 					<kv-carousel-slide>

@@ -116,7 +116,9 @@
 					<kv-custom-donation :default-value="100" />
 				</div>
 				<div class="show-for-large medium-8 medium-offset-2 large-5 large-offset-1 columns">
-					<img src="~@/assets/images/10-years-billion-impact.jpg">
+					<kv-responsive-image
+						:images="billionImpactImages" alt="10 years and $1 billion in loans funded"
+					/>
 				</div>
 			</div>
 		</div>
@@ -143,12 +145,16 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvCharityNavigator from '@/components/Kv/KvCharityNavigator';
 import KvCustomDonation from '@/components/Kv/KvCustomDonation';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+
+const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
 
 export default {
 	components: {
 		WwwPage,
 		KvCharityNavigator,
 		KvCustomDonation,
+		KvResponsiveImage
 	},
 	data() {
 		return {
@@ -165,6 +171,10 @@ export default {
 			/* eslint-enable max-len */
 			showPress: false,
 			showPartners: false,
+			billionImpactImages: [
+				['small', billionImpactImagesRequire('./10-years-billion-impact.jpg')],
+				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x.jpg')],
+			]
 		};
 	},
 	metaInfo: {
