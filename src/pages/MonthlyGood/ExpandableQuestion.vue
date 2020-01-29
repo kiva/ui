@@ -1,22 +1,16 @@
 <template>
 	<div class="small-12 columns expandable-faq">
-		<div class="row expandable-faq__header"
+		<button class="expandable-faq__header"
 			@click="open = !open"
 		>
-			<div class="columns">
-				<h4>
-					{{ title }}
-				</h4>
-			</div>
-			<div class="shrink columns">
-				<kv-icon
-					@click="open = !open"
-					:class="{ flipped: open }"
-					class="toggle-arrow"
-					name="small-chevron"
-				/>
-			</div>
-		</div>
+			<h4>{{ title }}</h4>
+			<kv-icon
+				@click="open = !open"
+				:class="{ flipped: open }"
+				class="toggle-arrow"
+				name="small-chevron"
+			/>
+		</button>
 		<kv-expandable easing="ease-in-out">
 			<div
 				v-show="open"
@@ -68,9 +62,9 @@ export default {
 	.toggle-arrow {
 		height: 1rem;
 		width: 1.563rem;
-		position: relative;
+		position: absolute;
 		right: 0;
-		top: 45%;
+		top: 1.25rem;
 		transform: translate(-50%, -50%);
 	}
 
@@ -79,7 +73,15 @@ export default {
 	}
 
 	.expandable-faq__header {
-		padding: 0.35rem 0;
+		padding: 0.55rem 0;
+		width: 100%;
+		text-align: left;
+		position: relative;
+
+		h4 {
+			padding-right: 2.65rem;
+			line-height: 1.35rem;
+		}
 	}
 
 	.expandable-faq__content {
