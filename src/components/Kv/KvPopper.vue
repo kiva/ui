@@ -110,6 +110,7 @@ export default {
 					}
 				}, this.popperModifiers)
 			});
+			this.reference.tabIndex = 0;
 		},
 		bodyTouchHandler(e) {
 			if (!isTargetElement(e, [this.reference, this.$el])) {
@@ -123,7 +124,9 @@ export default {
 		},
 		attachEvents() {
 			this.reference.addEventListener('mouseover', this.open);
+			this.reference.addEventListener('focus', this.open);
 			this.reference.addEventListener('mouseout', this.close);
+			this.reference.addEventListener('blur', this.close);
 			this.$el.addEventListener('mouseover', this.open);
 			this.$el.addEventListener('mouseout', this.close);
 			this.reference.addEventListener('touchstart', this.referenceTapHandler);

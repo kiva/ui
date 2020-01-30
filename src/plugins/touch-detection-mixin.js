@@ -5,7 +5,7 @@ export default {
 		};
 	},
 	created() {
-		if (window) {
+		if (typeof window !== 'undefined') {
 			const self = this;
 			window.addEventListener('touchstart', function onFirstTouch() {
 				self.usingTouch = true;

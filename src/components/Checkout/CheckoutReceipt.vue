@@ -62,22 +62,26 @@
 				>
 					<div class="loan qa-kcard">
 						<template v-if="card.kivaCardObject.deliveryType === 'print'">
-							<h3 class="loan__name">
-								Print-it-yourself Kiva Card
-							</h3>
+							<div>
+								<h3 class="loan__name loan__name--inline">
+									Print-it-yourself Kiva Card
+								</h3>
+								<icon-question-mark
+									:id="`print-card-${card.id}`"
+									class="loan__question-icon"
+								/>
+								<kv-tooltip :controller="`print-card-${card.id}`">
+									You can print this card now. We'll also send it to
+									you in an email so you can print it later.
+								</kv-tooltip>
+							</div>
+
 							<kv-button
 								class="smallest"
 								@click="showPrintUrl(card.id)"
 							>
 								Print Kiva Card
 							</kv-button>
-							<!-- TODO: Should probably use a new icon here, maybe the (i) one. -->
-							<!-- <span :id="`print-card-${card.id}`">?</span> -->
-							<!-- TODO: This seems to blow up during SSR because of a window reference? -->
-							<!-- <kv-tooltip :controller="`print-card-${card.id}`">
-								You can print this card now. We'll also send it to
-								you in an email so you can print it later.
-							</kv-tooltip> -->
 						</template>
 						<template v-else-if="card.kivaCardObject.deliveryType === 'postal'">
 							<h3 class="loan__name">
@@ -224,13 +228,15 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-// import KvTooltip from '@/components/Kv/KvTooltip';
+import KvTooltip from '@/components/Kv/KvTooltip';
+import IconQuestionMark from '@/assets/inline-svgs/icons/question-mark.svg';
 import IconPrint from '@/assets/inline-svgs/icons/print.svg';
 
 export default {
 	components: {
+		IconQuestionMark,
 		IconPrint,
-		// KvTooltip,
+		KvTooltip,
 		KvButton,
 	},
 	props: {
@@ -312,6 +318,15 @@ export default {
 	&__name {
 		font-size: $medium-text-font-size;
 		font-weight: $global-weight-bold;
+	}
+
+	&__name--inline {
+		display: inline-block;
+	}
+
+	&__question-icon {
+		width: 1rem;
+		fill: $light-gray;
 	}
 
 	&__meta {
