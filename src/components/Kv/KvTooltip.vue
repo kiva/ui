@@ -7,7 +7,7 @@
 		class="tooltip-pane"
 	>
 		<div class="tooltip-content">
-			<div class="title-slot">
+			<div class="title-slot" v-if="this.$slots.title">
 				<slot name="title"></slot>
 			</div>
 			<div class="default-slot">
