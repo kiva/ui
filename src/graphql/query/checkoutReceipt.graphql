@@ -33,6 +33,7 @@ query checkoutReceipt($checkoutId: Int!) {
 						individualPrice
 						basketItemType
 						kivaCardObject {
+							redemptionCode
 							deliveryType
 							mailingInfo {
 								firstName
