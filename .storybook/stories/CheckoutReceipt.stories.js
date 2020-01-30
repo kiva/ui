@@ -13,6 +13,7 @@ export const mockedReceiptData = {
 	"data": {
 		"shop": {
 			"receipt": {
+				"transactionTime" : "2020-01-30T00:52:31Z",
 				"credits": {
 					"values": [
 						{

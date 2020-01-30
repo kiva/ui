@@ -4,7 +4,7 @@
 			Order Confirmation
 		</h2>
 		<section class="section qa-lender-info">
-			<div>TODO: Date</div>
+			<div>{{ formattedTransactionTime }}</div>
 			<div>{{ lender.firstName }} {{ lender.lastName }}</div>
 			<div>{{ lender.email }}</div>
 		</section>
@@ -223,6 +223,7 @@
 </template>
 
 <script>
+import { format } from 'date-fns';
 import KvButton from '@/components/Kv/KvButton';
 // import KvTooltip from '@/components/Kv/KvTooltip';
 import IconPrint from '@/assets/inline-svgs/icons/print.svg';
@@ -244,6 +245,9 @@ export default {
 		},
 	},
 	computed: {
+		formattedTransactionTime() {
+			return `${format(this.receipt.transactionTime, 'MMMM DD, YYYY h:mm A')} PDT`;
+		},
 		loans() {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'loan_reservation');
 		},
