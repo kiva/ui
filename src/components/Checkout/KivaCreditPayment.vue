@@ -48,7 +48,8 @@ export default {
 					if (typeof transactionResult !== 'object') {
 						// succesful validation
 						this.$kvTrackEvent('basket', 'Kiva Checkout', 'Success', transactionResult);
-						this.redirectToThanks(transactionResult);
+						// Complete transaction handles additional analytics + redirect
+						this.$emit('complete-transaction', transactionResult);
 					} else {
 						// checkout failed
 						this.$emit('updating-totals', false);

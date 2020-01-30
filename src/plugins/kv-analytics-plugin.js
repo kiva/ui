@@ -126,7 +126,48 @@ export default Vue => {
 				params = eventString.split('|');
 			}
 			kvActions.trackEvent.apply(this, params);
+		},
+		trackTransaction: transactionData => {
+			// Nothing to track
+			if (transactionData.transactionId === '') {
+				return false;
+			}
+
+			if (fbLoaded) {
+				kvActions.trackFBTransaction(transactionData);
+			}
+			if (gaLoaded) {
+				kvActions.trackGATransaction(transactionData);
+			}
+		},
+		trackFBTransaction: transactionData => {
+			const itemTotal = transactionData.itemTotal || '';
+			if (typeof window.fbq !== 'undefined' && typeof itemTotal !== 'undefined') {
+				window.fbq('track', 'Purchase', { currency: 'USD', value: itemTotal });
+			}
+		},
+		trackGATransaction: transactionData => {
+			// Add each purchased item to the tracker
+			const allItems = transactionData.loans.concat(transactionData.donations);
+			allItems.forEach(item => {
+				window.ga('ec:addProduct', {
+					id: item.id,
+					name: item.__typename, // eslint-disable-line
+					price: item.price,
+					quantity: 1
+				});
+			});
+
+			// Add the transaction to the tracker
+			window.ga('ec:setAction', 'purchase', {
+				id: transactionData.transactionId,
+				revenue: transactionData.itemTotal
+			});
+
+			// Save transaction information to GA
+			window.ga('send', 'event', 'Ecommerce', 'Purchase', { nonInteraction: 1 });
 		}
+
 	};
 
 	Vue.directive('kv-track-event', {
@@ -197,5 +238,10 @@ export default Vue => {
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$kvTrackSelfDescribingEvent = data => {
 		kvActions.trackSelfDescribingEvent(data);
+	};
+
+	// eslint-disable-next-line no-param-reassign
+	Vue.prototype.$kvTrackTransaction = transactionData => {
+		kvActions.trackTransaction(transactionData);
 	};
 };

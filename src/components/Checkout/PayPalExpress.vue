@@ -190,7 +190,8 @@ export default {
 														'Success',
 														transactionId
 													);
-													this.redirectToThanks(transactionId);
+													// Complete transaction handles additional analytics + redirect
+													this.$emit('complete-transaction', transactionId);
 												}
 												resolve(ppResponse);
 											})

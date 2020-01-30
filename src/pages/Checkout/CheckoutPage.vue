@@ -47,6 +47,7 @@
 									<kiva-credit-payment
 										@refreshtotals="refreshTotals"
 										@updating-totals="setUpdatingTotals"
+										@complete-transaction="completeTransaction"
 										class=" checkout-button"
 										id="kiva-credit-payment-button"
 									/>
@@ -57,6 +58,7 @@
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
+									@complete-transaction="completeTransaction"
 								/>
 							</div>
 
@@ -135,6 +137,8 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
+import _map from 'lodash/map';
+import _pick from 'lodash/pick';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
@@ -428,14 +432,28 @@ export default {
 				this.setUpdatingTotals(false);
 			});
 		},
+		completeTransaction(transactionId) {
+			// compile transaction information
+			const transactionData = {
+				transactionId,
+				itemTotal: this.totals.itemTotal,
+				loans: _map(this.loans, loan => {
+					return _pick(loan, ['__typename', 'id', 'price']);
+				}),
+				donations: _map(this.donations, donation => {
+					return _pick(donation, ['__typename', 'id', 'price']);
+				}),
+			};
+			// fire transaction events
+			this.$kvTrackTransaction(transactionData);
+			// redirect to thanks
+			window.setTimeout(
+				this.redirectToThanks(transactionId),
+				800
+			);
+		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
-		},
-		switchToRegister() {
-			// popup to register
-		},
-		switchToLogin() {
-			// popup to login
 		},
 		redirectToLegacy() {
 			this.$router.push({

@@ -15,6 +15,7 @@
 					:amount="amount"
 					@refreshtotals="$emit('refreshTotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@complete-transaction="$emit('complete-transaction', $event)"
 					@updating-payment-wrapper="setUpdatingPaymentWrapper"
 				/>
 			</div>
@@ -24,6 +25,7 @@
 					:amount="amount"
 					@refreshtotals="$emit('refreshTotals', $event)"
 					@updating-totals="$emit('updating-totals', $event)"
+					@complete-transaction="$emit('complete-transaction', $event)"
 					@updating-payment-wrapper="setUpdatingPaymentWrapper"
 				/>
 			</div>
