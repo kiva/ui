@@ -448,7 +448,9 @@ export default {
 			this.$kvTrackTransaction(transactionData);
 			// redirect to thanks
 			window.setTimeout(
-				this.redirectToThanks(transactionId),
+				() => {
+					this.redirectToThanks(transactionId);
+				},
 				800
 			);
 		},
