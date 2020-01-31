@@ -78,7 +78,8 @@
 
 							<kv-button
 								class="smallest"
-								@click="showPrintUrl(card.id)"
+								target="_blank"
+								:href="`/gifts/kiva-cards/print?giftCode=${card.kivaCardObject.redemptionCode}`"
 							>
 								Print Kiva Card
 							</kv-button>
@@ -268,11 +269,6 @@ export default {
 			if (typeof window !== 'undefined') {
 				window.print();
 			}
-		},
-		showPrintUrl(/* cardId */) {
-			// TODO: figure out how to make the popup. What is this experience like on mobile?
-			// '/gifts/kiva-cards/print?giftCode=${cardId}'
-			// pop('{$item.display_details.print_url}', 'Kiva_Help', 740, 550, 'toolbar=1,menubar=1');
 		},
 	}
 };

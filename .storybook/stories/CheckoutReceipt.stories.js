@@ -167,6 +167,7 @@ export const mockedReceiptData = {
 							],
 							"individualPrice": "30.00",
 							"kivaCardObject": {
+								"redemptionCode": "ABCDEFH123456789",
 								"deliveryType": "email",
 								"mailingInfo": {
 									"firstName": null,
@@ -194,6 +195,7 @@ export const mockedReceiptData = {
 							],
 							"individualPrice": "30.00",
 							"kivaCardObject": {
+								"redemptionCode": "ABCDEFH123456789",
 								"deliveryType": "email",
 								"mailingInfo": {
 									"firstName": null,
@@ -221,6 +223,7 @@ export const mockedReceiptData = {
 							],
 							"individualPrice": "150.00",
 							"kivaCardObject": {
+								"redemptionCode": "ABCDEFH123456789",
 								"deliveryType": "print",
 								"mailingInfo": {
 									"firstName": null,
@@ -248,6 +251,7 @@ export const mockedReceiptData = {
 							],
 							"individualPrice": "250.00",
 							"kivaCardObject": {
+								"redemptionCode": "ABCDEFH123456789",
 								"deliveryType": "postal",
 								"mailingInfo": {
 									"firstName": "John",
@@ -275,6 +279,7 @@ export const mockedReceiptData = {
 							],
 							"individualPrice": "250.00",
 							"kivaCardObject": {
+								"redemptionCode": "ABCDEFH123456789",
 								"deliveryType": "postal",
 								"mailingInfo": {
 									"firstName": "John",
