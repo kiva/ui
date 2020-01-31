@@ -245,7 +245,16 @@ export default {
 			}
 		},
 		setSelectedLoanIndex(index) {
+			// are we currently using the suggested message?
+			const isUsingSuggestedMessage = this.isSuggestedMessage;
+
+			// update the selected loan
 			this.selectedLoanIndex = index;
+
+			// if we were using the suggested message for the previous loan, use the suggested message for the new one.
+			if (isUsingSuggestedMessage) {
+				this.useSuggestedMessage();
+			}
 		},
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
