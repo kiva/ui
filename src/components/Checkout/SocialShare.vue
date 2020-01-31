@@ -6,7 +6,7 @@
 				:key="loan.id"
 				class="loans__circle"
 				:class="{ 'loans__circle--selected': index === selectedLoanIndex }"
-				@click="setSelectedLoanIndex(index)"
+				@click="onLoanSelect(index)"
 			>
 				<img
 					class="loans__img"
@@ -244,8 +244,17 @@ export default {
 				}
 			}
 		},
-		setSelectedLoanIndex(index) {
+		onLoanSelect(index) {
+			// are we currently using the suggested message?
+			const isUsingSuggestedMessage = this.isSuggestedMessage;
+
+			// update the selected loan which will change the suggestedMessage
 			this.selectedLoanIndex = index;
+
+			// if we were using the suggested message for the previous loan, use the suggested message for the new one.
+			if (isUsingSuggestedMessage) {
+				this.useSuggestedMessage();
+			}
 		},
 		useSuggestedMessage() {
 			this.message = this.suggestedMessage;
