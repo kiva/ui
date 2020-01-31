@@ -638,13 +638,15 @@ export default {
 				);
 				// redirect to thanks with KIVA transaction id
 				if (transactionId) {
+					// fire BT Success event
 					this.$kvTrackEvent(
 						'basket',
 						'Braintree Payment',
 						'Success',
 						transactionId
 					);
-					this.redirectToThanks(transactionId);
+					// Complete transaction handles additional analytics + redirect
+					this.$emit('complete-transaction', transactionId);
 				}
 				return kivaBraintreeResponse;
 			});
