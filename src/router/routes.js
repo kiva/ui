@@ -28,8 +28,15 @@ export default [
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
-	// TODO! This is a temporary route
-	{ path: '/monthlygood-ui', component: () => import('@/pages/MonthlyGood/MonthlyGoodPage') },
+
+	// TODO! These are temporary routes
+	{ path: '/monthlygood-ui', component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage') },
+	{
+		path: '/monthlygood-ui/setup',
+		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
+		props: route => ({ amount: route.query.amount, group: route.query.group })
+	},
+
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
 	{

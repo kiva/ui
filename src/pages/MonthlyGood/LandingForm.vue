@@ -72,13 +72,24 @@ export default {
 		}
 	},
 	methods: {
+		// Emits values to parent component to allow the synchronization of 2 landing
+		// forms on the same page
 		updateSelected(value) {
 			this.$emit('update:selectedCategory', value);
 		},
+		// Emits values to parent component to allow the synchronization of 2 landing
+		// forms on the same page
 		updateAmount(value) {
 			this.$emit('update:amount', value);
 		},
 		submit() {
+			this.$router.push({
+				path: '/monthlygood-ui/setup',
+				query: {
+					amount: this.amount,
+					group: this.selectedCategory
+				}
+			});
 		}
 	},
 	data() {
