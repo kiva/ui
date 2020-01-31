@@ -248,7 +248,7 @@ export default {
 			// are we currently using the suggested message?
 			const isUsingSuggestedMessage = this.isSuggestedMessage;
 
-			// update the selected loan
+			// update the selected loan which will change the suggestedMessage
 			this.selectedLoanIndex = index;
 
 			// if we were using the suggested message for the previous loan, use the suggested message for the new one.
