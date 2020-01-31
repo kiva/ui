@@ -4,7 +4,7 @@
 			Order Confirmation
 		</h2>
 		<section class="section qa-lender-info">
-			<div>TODO: Date</div>
+			<div>{{ formattedTransactionTime }}</div>
 			<div>{{ lender.firstName }} {{ lender.lastName }}</div>
 			<div>{{ lender.email }}</div>
 		</section>
@@ -228,10 +228,26 @@
 </template>
 
 <script>
+import { format } from 'date-fns';
 import KvButton from '@/components/Kv/KvButton';
 import KvTooltip from '@/components/Kv/KvTooltip';
 import IconQuestionMark from '@/assets/inline-svgs/icons/question-mark.svg';
 import IconPrint from '@/assets/inline-svgs/icons/print.svg';
+
+// Ensures the date renders the same on client or SSR in any timezone.
+// Taken from https://github.com/date-fns/date-fns/issues/376#issuecomment-353871093
+const getUTCDate = (dateString = Date.now()) => {
+	const date = new Date(dateString);
+
+	return new Date(
+		date.getUTCFullYear(),
+		date.getUTCMonth(),
+		date.getUTCDate(),
+		date.getUTCHours(),
+		date.getUTCMinutes(),
+		date.getUTCSeconds(),
+	);
+};
 
 export default {
 	components: {
@@ -251,6 +267,9 @@ export default {
 		},
 	},
 	computed: {
+		formattedTransactionTime() {
+			return `${format(getUTCDate(this.receipt.transactionTime), 'MMMM DD, YYYY h:mm A')} GMT`;
+		},
 		loans() {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'loan_reservation');
 		},
