@@ -1,13 +1,13 @@
 <template>
-	<div class="row text-center frame">
-		<h1 class="columns small-12 impact-text heading-text">
+	<div class="text-center frame">
+		<h1 class="impact-text heading-text">
 			Browse loans by category
 		</h1>
-		<div class="row card-row">
+		<div class="row card-row small-collapse">
 			<a
 				:href="loanChannel.url"
 				v-for="loanChannel in loanChannels" :key="loanChannel.id"
-				class="small-6 medium-4"
+				class="columns small-6 medium-4"
 				v-kv-track-event="[
 					'homepage',
 					'click-Category-card',
@@ -32,7 +32,7 @@
 			</a>
 			<router-link
 				:to="`/lend-by-category`"
-				class="small-12 medium-4"
+				class="columns small-12 medium-4"
 				v-kv-track-event="[
 					'homepage',
 					'click-View all categories',
