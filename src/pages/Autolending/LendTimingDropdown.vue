@@ -21,7 +21,9 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<span class="autolend-explanation-text">{{ autolendExplanationText }} </span>
+		<div class="autolend-explanation-text">
+			{{ autolendExplanationText }}
+		</div>
 	</div>
 </template>
 
@@ -196,6 +198,7 @@ export default {
 
 	.autolend-explanation-text {
 		color: $kiva-green;
+		max-width: 30rem;
 	}
 }
 </style>
