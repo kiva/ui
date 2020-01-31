@@ -228,6 +228,14 @@ import KvButton from '@/components/Kv/KvButton';
 // import KvTooltip from '@/components/Kv/KvTooltip';
 import IconPrint from '@/assets/inline-svgs/icons/print.svg';
 
+const convertDateToPDT = dateObj => {
+	const pdtOffsetHours = 8; // PDT hours offset from UTC
+	const clientOffsetHours = new Date().getTimezoneOffset() / 60; // client's hours offset from UTC
+	const offset = clientOffsetHours - pdtOffsetHours;
+	dateObj.setHours(dateObj.getHours() + offset);
+	return dateObj;
+};
+
 export default {
 	components: {
 		IconPrint,
@@ -246,7 +254,8 @@ export default {
 	},
 	computed: {
 		formattedTransactionTime() {
-			return `${format(this.receipt.transactionTime, 'MMMM DD, YYYY h:mm A')} PDT`;
+			const pdtTransactionDate = convertDateToPDT(new Date(this.receipt.transactionTime));
+			return `${format(pdtTransactionDate, 'MMMM DD, YYYY h:mm A')} PDT`;
 		},
 		loans() {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'loan_reservation');
