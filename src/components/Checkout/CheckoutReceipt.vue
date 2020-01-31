@@ -228,12 +228,19 @@ import KvButton from '@/components/Kv/KvButton';
 // import KvTooltip from '@/components/Kv/KvTooltip';
 import IconPrint from '@/assets/inline-svgs/icons/print.svg';
 
-const convertDateToPDT = dateObj => {
-	const pdtOffsetHours = 8; // PDT hours offset from UTC
-	const clientOffsetHours = new Date().getTimezoneOffset() / 60; // client's hours offset from UTC
-	const offset = clientOffsetHours - pdtOffsetHours;
-	dateObj.setHours(dateObj.getHours() + offset);
-	return dateObj;
+// Ensures the date renders the same on client or SSR in any timezone.
+// Taken from https://github.com/date-fns/date-fns/issues/376#issuecomment-353871093
+const getUTCDate = (dateString = Date.now()) => {
+	const date = new Date(dateString);
+
+	return new Date(
+		date.getUTCFullYear(),
+		date.getUTCMonth(),
+		date.getUTCDate(),
+		date.getUTCHours(),
+		date.getUTCMinutes(),
+		date.getUTCSeconds(),
+	);
 };
 
 export default {
@@ -254,8 +261,7 @@ export default {
 	},
 	computed: {
 		formattedTransactionTime() {
-			const pdtTransactionDate = convertDateToPDT(new Date(this.receipt.transactionTime));
-			return `${format(pdtTransactionDate, 'MMMM DD, YYYY h:mm A')} PDT`;
+			return `${format(getUTCDate(this.receipt.transactionTime), 'MMMM DD, YYYY h:mm A')} GMT`;
 		},
 		loans() {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'loan_reservation');
