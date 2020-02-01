@@ -20,7 +20,7 @@
 						</p>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
-							:selected-category.sync="selectedCategory"
+							:selected-group.sync="selectedGroup"
 							:key="1"
 							v-if="!isMonthlyGoodSubscriber"
 						/>
@@ -41,7 +41,7 @@
 			<template v-slot:form>
 				<landing-form
 					:amount.sync="monthlyGoodAmount"
-					:selected-category.sync="selectedCategory"
+					:selected-group.sync="selectedGroup"
 					:key="2"
 					v-if="!isMonthlyGoodSubscriber"
 				/>
@@ -100,7 +100,7 @@ export default {
 		return {
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
-			selectedCategory: 'default',
+			selectedGroup: 'default',
 			heroImages: [
 				['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
 				['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],

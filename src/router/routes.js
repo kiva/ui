@@ -34,7 +34,7 @@ export default [
 	{
 		path: '/monthlygood-ui/setup',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
-		props: route => ({ amount: route.query.amount, group: route.query.group })
+		props: route => ({ amount: Number(route.query.amount), group: route.query.group })
 	},
 
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
