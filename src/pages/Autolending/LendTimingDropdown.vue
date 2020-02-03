@@ -21,7 +21,7 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<div class="autolend-explanation-text">
+		<div class="autolend-explanation-text" v-if="isEnabled">
 			{{ autolendExplanationText }}
 		</div>
 	</div>
@@ -43,6 +43,7 @@ export default {
 		return {
 			changedTiming: false,
 			legacyAutoLender: false,
+			isEnabled: false,
 			enableAfter: null, // legacy setting
 			lendAfterDaysIdle: 0,
 			cIdleStartTime: null,
@@ -151,6 +152,7 @@ export default {
 			}
 			autolending @client {
 				currentProfile {
+					isEnabled
 					enableAfter
 					lendAfterDaysIdle
 					cIdleStartTime
@@ -163,6 +165,7 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
+			this.isEnabled = _get(data, 'autolending.currentProfile.isEnabled');
 			this.enableAfter = _get(data, 'autolending.savedProfile.enableAfter');
 			this.cIdleStartTime = _get(data, 'autolending.currentProfile.cIdleStartTime');
 			this.userBalance = _get(data, 'my.userAccount.balance');

@@ -37,6 +37,7 @@ export function getInputProfile({ loanSearchCriteria, ...profile }) {
 	const cleanProfile = _omit(profile, [
 		'id',
 		'__typename',
+		'cIdleStartTime',
 	]);
 	return {
 		...cleanProfile,
