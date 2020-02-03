@@ -42,7 +42,7 @@
 		"@contentful/rich-text-html-renderer": "^13.4.0",
 		"@sentry/browser": "^5.10.1",
 		"@sentry/integrations": "^5.10.1",
-		"algoliasearch": "^3.34.0",
+		"algoliasearch": "^4.0.0",
 		"apollo-cache-inmemory": "^1.6.5",
 		"apollo-client": "2.6.8",
 		"apollo-link": "^1.2.13",
