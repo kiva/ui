@@ -85,10 +85,6 @@ export default {
 			return notice;
 		},
 		autolendExplanationText() {
-			const now = Date.now();
-			const idleStartTime = Date.parse(this.cIdleStartTime);
-			const daysIdle = differenceInCalendarDays(idleStartTime, now);
-			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
 			const userBalance = numeral(this.userBalance).value();
 			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
 			const loanAndDonationAmountFormatted = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
@@ -97,17 +93,18 @@ export default {
 				// eslint-disable-next-line max-len
 				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
 			}
+
+			const idleStartTime = Date.parse(this.cIdleStartTime);
+			const daysIdle = differenceInCalendarDays(new Date(), idleStartTime);
+			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
+
 			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
-			if (userBalance >= loanAndDonationAmount && daysUntilLend > 0) {
+			if (daysUntilLend > 0) {
 				// eslint-disable-next-line max-len
 				return `Since you haven’t made a loan yourself for ${daysIdle} days, we will auto-lend your eligible balance after ${daysUntilLend} days—timing may vary based on loan supply.`;
 			}
-			if (userBalance >= loanAndDonationAmount && daysUntilLend <= 0) {
-				// eslint-disable-next-line max-len
-				return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
-			}
 			// eslint-disable-next-line max-len
-			return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
+			return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
 		}
 	},
 	methods: {
