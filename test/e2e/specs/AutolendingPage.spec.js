@@ -1,4 +1,4 @@
-import { addDays } from 'date-fns';
+import { subDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
 describe('Autolending Page Spec', () => {
@@ -94,12 +94,11 @@ describe('Autolending Page Spec', () => {
 	// autolending is eligible to occur.
 
 	describe('Autolend explanation text', () => {
-		it('Verify user balance below lendable amount', () => {
+		it('Explains no autolending because balance is low', () => {
 			cy.mock({
 				AutolendProfile: () => ({
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: null,
 				}),
 				// This is setting the user's balance
 				Money: () => '3.00'
@@ -108,13 +107,31 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 
-			// Assert that toggle displays 'on'
+			// Assert that message about the auto-lend timer not starting until balance is eligible
 			cy.get('.autolend-explanation-text').contains(
 				'Your current balance is lower'
 			);
 		});
 
-		it('Verify lendable balance w/daysUntilLend > 0', () => {
+		it('Explains no autolending because idle start time is null', () => {
+			cy.mock({
+				AutolendProfile: () => ({
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: null,
+				}),
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert that message about the auto-lend timer not starting until balance is eligible
+			cy.get('.autolend-explanation-text').contains(
+				'Your current balance is lower'
+			);
+		});
+
+		it('Explains that autolending will start in x days if user eligible and not idle', () => {
 			const now = new Date();
 
 			// Had to pass in data this way, because I had to run a function
@@ -124,7 +141,7 @@ describe('Autolending Page Spec', () => {
 				return {
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: '${addDays(now, 4)}',
+					cIdleStartTime: '${subDays(now, 4)}',
 					lendAfterDaysIdle: 7,
 					donationPercentage: 5
 				};
@@ -138,11 +155,11 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 
-			// Assert the text on the page
-			cy.get('.autolend-explanation-text').contains('4 days').contains('3 days—timing');
+			// Assert the message says the user has been idle for 4 days and lending will start in 3 days
+			cy.get('.autolend-explanation-text').contains('for 4 days').contains('after 3 days');
 		});
 
-		it('Verify lendable balance w/daysUntilLend <= 0', () => {
+		it('Explains that autolending will start immediately if user eligible and idle', () => {
 			const now = new Date();
 
 			// Had to pass in data this way, because I had to run a function
@@ -152,7 +169,7 @@ describe('Autolending Page Spec', () => {
 				return {
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: '${addDays(now, 95)}',
+					cIdleStartTime: '${subDays(now, 95)}',
 					lendAfterDaysIdle: 90,
 					donationPercentage: 15
 				};
@@ -167,8 +184,8 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 
-			// Assert the text on the page
-			cy.get('.autolend-explanation-text').contains('95 days').contains('immediately');
+			// Assert the message says the user has been idle over 95 days and lending will start immediately
+			cy.get('.autolend-explanation-text').contains('over 95 days').contains('immediately');
 		});
 	});
 });
