@@ -242,6 +242,7 @@ export default {
 			selectedCardType: null,
 			targetedCardForDeletion: null,
 			deleteLbVisible: false,
+			btDeleteFailed: false,
 		};
 	},
 	apollo: {
@@ -486,24 +487,47 @@ export default {
 				}
 			);
 		},
-		// TODO: Look into enabling this feature at the account level
-		// deleteStoredCard(paymentMethod) {
-		// 	// The function exists but currently returns an error when attempting to use
-		// 	// console.log(this.btVaultInstance.deletePaymentMethod);
-		// 	const paymentMethodNonce = _get(paymentMethod, 'nonce');
-		// 	if (paymentMethodNonce) {
-		// 		this.btVaultInstance.deletePaymentMethod(paymentMethodNonce, data => {
-		// 			console.log(data);
-		// 			this.fetchStoredCards();
-		//			// clean up target data
-		//			this.targetedCardForDeletion = null;
-		// 		});
-		// 	}
-		// },
+		// TODO: Make primary method for deletion once functionality is confirmed
+		deleteStoredCard(paymentMethod) {
+			const paymentMethodNonce = _get(paymentMethod, 'nonce');
+			if (paymentMethodNonce) {
+				this.btVaultInstance.deletePaymentMethod(paymentMethodNonce)
+					.then(() => {
+						this.fetchStoredCards();
+						// clean up target data
+						this.targetedCardForDeletion = null;
+						// close pop up
+						this.hideDeleteCardPopup();
+					})
+					.catch(deleteCardError => {
+						console.error(deleteCardError);
+						// If this method fails we can attempt the original path and log the error
+						this.btDeleteFailed = true;
+						this.matchCardForDeletion();
+						Sentry.withScope(scope => {
+							scope.setTag('bt_stage', 'btVaultDeleteCardError');
+							scope.setTag(
+								'bt_vault_delete_card_error',
+								_get(deleteCardError, 'message', 'no error message')
+							);
+							Sentry.captureException(_get(deleteCardError, 'code', 'no error code'));
+						});
+					});
+			}
+		},
 		// TODO: Deprecate once we have direct access through VaultManager
 		matchCardForDeletion() {
-			// exit if not kiva stored payment methods to match
-			if (!this.kivaStoredPaymentMethods.length || !this.targetedCardForDeletion) {
+			// exit if no targeted card to delete
+			if (!this.targetedCardForDeletion) {
+				return false;
+			}
+			// use braintree vault native delete method if present
+			if (!this.btDeleteFailed && typeof this.btVaultInstance.deletePaymentMethod === 'function') {
+				this.deleteStoredCard(this.targetedCardForDeletion);
+				return true;
+			}
+			// exit if no kiva stored payment methods to match
+			if (!this.kivaStoredPaymentMethods.length) {
 				return false;
 			}
 			// get bt payment method details
