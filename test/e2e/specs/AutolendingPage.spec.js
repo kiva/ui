@@ -120,7 +120,7 @@ describe('Autolending Page Spec', () => {
 					enableAfter: 0,
 				},
 				// This is setting the user's balance
-				Money: () => '3.00'
+				Money: '3.00'
 			});
 
 			// Visit autolending settings
