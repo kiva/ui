@@ -2,10 +2,12 @@ import { subDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
 describe('Autolending Page Spec', () => {
-	// const userId = 42;
-
 	beforeEach(() => {
-		cy.mock(wwwPageMock());
+		cy.mock(wwwPageMock({
+			UserAccount: {
+				id: 42,
+			}
+		}));
 		// Prevents the window beforeunload event from getting added
 		// which blocks Cypress from exiting test correctly
 		cy.on('window:before:load', window => {
@@ -32,9 +34,9 @@ describe('Autolending Page Spec', () => {
 		it('Redirects to credit/settings if visitor isSubscriber', () => {
 			// Mock autolending as enabled
 			cy.mock({
-				AutoDeposit: () => ({
+				AutoDeposit: {
 					isSubscriber: true,
-				}),
+				},
 			});
 
 			// Attempt to Visit autolending settings
@@ -49,9 +51,9 @@ describe('Autolending Page Spec', () => {
 		it('Can be turned from on to off', () => {
 			// Mock autolending as enabled
 			cy.mock({
-				AutolendProfile: () => ({
+				AutolendProfile: {
 					isEnabled: true,
-				}),
+				},
 			});
 
 			// Visit autolending settings
@@ -70,9 +72,9 @@ describe('Autolending Page Spec', () => {
 		it('Can be turned from off to on', () => {
 			// Mock autolending as disabled
 			cy.mock({
-				AutolendProfile: () => ({
+				AutolendProfile: {
 					isEnabled: false,
-				}),
+				},
 			});
 
 			// Visit autolending settings
@@ -96,10 +98,10 @@ describe('Autolending Page Spec', () => {
 	describe('Autolend explanation text', () => {
 		it('Explains no autolending because balance is low', () => {
 			cy.mock({
-				AutolendProfile: () => ({
+				AutolendProfile: {
 					isEnabled: true,
 					enableAfter: 0,
-				}),
+				},
 				// This is setting the user's balance
 				Money: () => '3.00'
 			});
@@ -115,11 +117,11 @@ describe('Autolending Page Spec', () => {
 
 		it('Explains no autolending because idle start time is null', () => {
 			cy.mock({
-				AutolendProfile: () => ({
+				AutolendProfile: {
 					isEnabled: true,
 					enableAfter: 0,
 					cIdleStartTime: null,
-				}),
+				},
 			});
 
 			// Visit autolending settings
@@ -134,23 +136,16 @@ describe('Autolending Page Spec', () => {
 		it('Explains that autolending will start in x days if user eligible and not idle', () => {
 			const now = new Date();
 
-			// Had to pass in data this way, because I had to run a function
-			// to dynamically calculate a cIdleStartTime 4 days from 'now'
-			// eslint-disable-next-line no-new-func
-			const AutolendProfile = new Function(`
-				return {
+			cy.mock({
+				AutolendProfile: {
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: '${subDays(now, 4)}',
+					cIdleStartTime: subDays(now, 4),
 					lendAfterDaysIdle: 7,
 					donationPercentage: 5
-				};
-			`);
-
-			cy.mock({
-				AutolendProfile,
+				},
 				// This is setting the user's balance
-				Money: () => '40.05'
+				Money: '40.05'
 			});
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
@@ -162,23 +157,16 @@ describe('Autolending Page Spec', () => {
 		it('Explains that autolending will start immediately if user eligible and idle', () => {
 			const now = new Date();
 
-			// Had to pass in data this way, because I had to run a function
-			// to dynamically calculate a cIdleStartTime 4 days from 'now'
-			// eslint-disable-next-line no-new-func
-			const AutolendProfile = new Function(`
-				return {
+			cy.mock({
+				AutolendProfile: {
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: '${subDays(now, 95)}',
+					cIdleStartTime: subDays(now, 95),
 					lendAfterDaysIdle: 90,
 					donationPercentage: 15
-				};
-			`);
-
-			cy.mock({
-				AutolendProfile,
+				},
 				// This is setting the user's balance
-				Money: () => '40.90'
+				Money: '40.90'
 			});
 
 			// Visit autolending settings
