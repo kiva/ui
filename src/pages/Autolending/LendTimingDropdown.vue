@@ -21,7 +21,7 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<div class="autolend-explanation-text" v-if="isEnabled">
+		<div data-test="timing-explanation" class="autolend-explanation-text" v-if="isEnabled">
 			{{ autolendExplanationText }}
 		</div>
 	</div>
@@ -90,7 +90,7 @@ export default {
 			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
 			const loanAndDonationAmountFormatted = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
 
-			if (this.cIdleStartTime === null || userBalance < loanAndDonationAmount) {
+			if (!this.cIdleStartTime || userBalance < loanAndDonationAmount) {
 				// eslint-disable-next-line max-len
 				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
 			}

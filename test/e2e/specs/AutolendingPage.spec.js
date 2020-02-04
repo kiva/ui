@@ -2,8 +2,8 @@ import { subDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
 function saveSettings() {
-	cy.get('.show-for-large .save-button').click();
-	cy.get('.tip-message').contains('have been saved');
+	cy.get('[data-test=save-button]').first().click();
+	cy.get('[data-test=tip-message]').contains('have been saved');
 }
 
 describe('Autolending Page Spec', () => {
@@ -74,13 +74,13 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 			// Assert that toggle displays 'on'
-			cy.get('.main-toggle').contains('Auto-lending on');
+			cy.get('[data-test=main-toggle]').contains('Auto-lending on');
 			// Flip the toggle
-			cy.get('.main-toggle').click();
+			cy.get('[data-test=main-toggle]').click();
 			// Save the profile settings
 			saveSettings();
 			// Assert that toggle displays 'off'
-			cy.get('.main-toggle').contains('Auto-lending off');
+			cy.get('[data-test=main-toggle]').contains('Auto-lending off');
 		});
 
 		it('Can be turned from off to on', () => {
@@ -98,13 +98,13 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 			// Assert that toggle displays 'off'
-			cy.get('.main-toggle').contains('Auto-lending off');
+			cy.get('[data-test=main-toggle]').contains('Auto-lending off');
 			// Flip the toggle
-			cy.get('.main-toggle').click();
+			cy.get('[data-test=main-toggle]').click();
 			// Save the profile settings
 			saveSettings();
 			// Assert that toggle displays 'on'
-			cy.get('.main-toggle').contains('Auto-lending on');
+			cy.get('[data-test=main-toggle]').contains('Auto-lending on');
 		});
 	});
 
@@ -127,7 +127,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert that message about the auto-lend timer not starting until balance is eligible
-			cy.get('.autolend-explanation-text').contains(
+			cy.get('[data-test=timing-explanation]').contains(
 				'Your current balance is lower'
 			);
 		});
@@ -145,7 +145,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert that message about the auto-lend timer not starting until balance is eligible
-			cy.get('.autolend-explanation-text').contains(
+			cy.get('[data-test=timing-explanation]').contains(
 				'Your current balance is lower'
 			);
 		});
@@ -168,7 +168,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert the message says the user has been idle for 4 days and lending will start in 3 days
-			cy.get('.autolend-explanation-text').contains('for 4 days').contains('after 3 days');
+			cy.get('[data-test=timing-explanation]').contains('for 4 days').contains('after 3 days');
 		});
 
 		it('Explains that autolending will start immediately if user eligible and idle', () => {
@@ -190,7 +190,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert the message says the user has been idle over 95 days and lending will start immediately
-			cy.get('.autolend-explanation-text').contains('over 95 days').contains('immediately');
+			cy.get('[data-test=timing-explanation]').contains('over 95 days').contains('immediately');
 		});
 	});
 });

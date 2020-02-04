@@ -1,5 +1,6 @@
 <template>
 	<kv-toggle
+		data-test="main-toggle"
 		class="main-toggle"
 		id="auto-lending-enabled-toggle"
 		v-model="isEnabled"
