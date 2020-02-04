@@ -167,40 +167,6 @@ export const KitchenSink = () => ({
 				</fieldset>
 
 				<fieldset>
-					<label for="example-select">
-						Select
-						<select
-							name="example-select"
-							id="example-select"
-						>
-							<option
-								v-for="singleOption in options"
-								:key="singleOption"
-								:value="singleOption"
-							>
-								{{ singleOption }}
-							</option>
-						</select>
-					</label>
-					<label for="example-multiple-select">
-						Multiple Select
-						<select
-							name="example-multiple-select"
-							id="example-multiple-select"
-							multiple
-						>
-							<option
-								v-for="singleOption in options"
-								:key="singleOption"
-								:value="singleOption"
-							>
-								{{ singleOption }}
-							</option>
-						</select>
-					</label>
-				</fieldset>
-
-				<fieldset>
 					<label class="input-label"for="amount">
 						KvCurrencyInput
 					</label>
