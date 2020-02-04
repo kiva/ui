@@ -1,9 +1,9 @@
 <template>
 	<div class="save-button-wrapper" v-show="isChanged">
-		<kv-button class="smaller" v-if="!saving" @click.native="checkSave">
+		<kv-button class="save-button smaller" v-if="!saving" @click.native="checkSave">
 			Save settings
 		</kv-button>
-		<kv-button class="smaller" v-else>
+		<kv-button class="save-button smaller" v-else>
 			Saving settings <kv-loading-spinner />
 		</kv-button>
 		<kv-lightbox

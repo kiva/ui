@@ -1,6 +1,11 @@
 import { subDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
+function saveSettings() {
+	cy.get('.show-for-large .save-button').click();
+	cy.get('.tip-message').contains('have been saved');
+}
+
 describe('Autolending Page Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock({
@@ -8,6 +13,12 @@ describe('Autolending Page Spec', () => {
 				id: 42,
 			}
 		}));
+		// Mock loan count
+		cy.mock({
+			LoanBasicCollection: {
+				totalCount: 2500,
+			}
+		});
 		// Prevents the window beforeunload event from getting added
 		// which blocks Cypress from exiting test correctly
 		cy.on('window:before:load', window => {
@@ -49,45 +60,51 @@ describe('Autolending Page Spec', () => {
 
 	describe('Main toggle', () => {
 		it('Can be turned from on to off', () => {
-			// Mock autolending as enabled
 			cy.mock({
-				AutolendProfile: {
-					isEnabled: true,
+				AutolendProfile: (obj, args) => {
+					// When arguments are provided, mock isEnabled with the same value that is passed in
+					if (args && args.profile && typeof args.profile.isEnabled === 'boolean') {
+						return { isEnabled: args.profile.isEnabled };
+					}
+					// Mock autolending as enabled when no arguments are provided
+					return { isEnabled: true };
 				},
 			});
 
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
-
 			// Assert that toggle displays 'on'
 			cy.get('.main-toggle').contains('Auto-lending on');
-
-			// hit toggle
-			// save
-			// assert success banner?
-			// assert save not visible?
-			// assert toggle says off
+			// Flip the toggle
+			cy.get('.main-toggle').click();
+			// Save the profile settings
+			saveSettings();
+			// Assert that toggle displays 'off'
+			cy.get('.main-toggle').contains('Auto-lending off');
 		});
 
 		it('Can be turned from off to on', () => {
-			// Mock autolending as disabled
 			cy.mock({
-				AutolendProfile: {
-					isEnabled: false,
+				AutolendProfile: (obj, args) => {
+					// When arguments are provided, mock isEnabled with the same value that is passed in
+					if (args && args.profile && typeof args.profile.isEnabled === 'boolean') {
+						return { isEnabled: args.profile.isEnabled };
+					}
+					// Mock autolending as disabled when no arguments are provided
+					return { isEnabled: false };
 				},
 			});
 
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
-
 			// Assert that toggle displays 'off'
 			cy.get('.main-toggle').contains('Auto-lending off');
-
-			// hit toggle
-			// save
-			// assert success banner?
-			// assert save not visible?
-			// assert toggle says on
+			// Flip the toggle
+			cy.get('.main-toggle').click();
+			// Save the profile settings
+			saveSettings();
+			// Assert that toggle displays 'on'
+			cy.get('.main-toggle').contains('Auto-lending on');
 		});
 	});
 
