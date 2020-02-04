@@ -10,7 +10,14 @@ Cypress.Commands.add('lunar', method => {
 
 Cypress.Commands.add('mock', mocks => {
 	const serializedMocks = Object.keys(mocks).reduce(
-		(packet, key) => Object.assign(packet, { [key]: mocks[key].toString() }),
+		(packet, key) => {
+			let mock = mocks[key];
+			if (typeof mock !== 'function') {
+				// eslint-disable-next-line no-new-func
+				mock = new Function(`return ${JSON.stringify(mocks[key])};`);
+			}
+			return Object.assign(packet, { [key]: mock.toString() });
+		},
 		{}
 	);
 

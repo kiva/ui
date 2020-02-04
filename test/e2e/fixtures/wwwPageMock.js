@@ -1,30 +1,28 @@
-export default function wwwPageMock() {
+export default function wwwPageMock({ UserAccount = null } = {}) {
 	return {
-		AutoDeposit: () => ({
+		AutoDeposit: {
 			isSubscriber: false
-		}),
-		Date: () => '',
-		LatestDonationCampaign: () => ({
+		},
+		Date: '',
+		LatestDonationCampaign: {
 			amount_raised: 0,
 			target_amount: 0,
-		}),
-		Manifest: () => ({
+		},
+		Manifest: {
 			hasFreeCredits: false,
-		}),
+		},
 		Setting: (parent, args) => ({
 			key: args.key,
 			value: '',
 		}),
-		Shop: () => ({
+		Shop: {
 			lendingRewardOffered: false,
 			nonTrivialItemCount: 0,
-		}),
-		ShopTotals: () => ({
+		},
+		ShopTotals: {
 			redemptionCodeAvailableTotal: '0.00',
-		}),
-		UserAccount: () => ({
-			id: 42
-		}),
+		},
+		UserAccount,
 		UserSession: (parent, args) => ({
 			sessionKey: args.sessionKey,
 			data: '',

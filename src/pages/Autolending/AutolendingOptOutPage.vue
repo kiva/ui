@@ -7,7 +7,7 @@
 			</div>
 		</div>
 		<div class="row autolending-opt-out-content">
-			<div class="small-12 medium-10 columns" v-if="success" id="autolending-opt-out-success">
+			<div data-test="opt-out-success" class="small-12 medium-10 columns" v-if="success">
 				<!-- Success -->
 				<p>You’re successfully opted out of auto-lending.</p>
 				<p>
@@ -17,7 +17,7 @@
 				</p>
 			</div>
 
-			<div class="small-12 medium-10 columns" v-if="!success" id="autolending-opt-out-failure">
+			<div data-test="opt-out-failure" class="small-12 medium-10 columns" v-if="!success">
 				<!-- Failure -->
 				<p>Oops - this link no longer works.</p>
 				<p>
