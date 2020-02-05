@@ -1,13 +1,14 @@
 <template>
 	<generic-promo-banner
 		v-if="isPromoEnabled"
-		icon-key="present"
+		:icon-key="promoBannerContent.iconKey"
 		:promo-banner-content="promoBannerContent"
 	/>
 </template>
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
 import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
@@ -22,6 +23,7 @@ export default {
 		return {
 			isPromoEnabled: false,
 			promoBannerContent: {},
+			specialConditions: null
 		};
 	},
 	mounted() {
@@ -60,12 +62,54 @@ export default {
 					this.promoBannerContent = {
 						kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
 						link: activePromoBanner.fields.link,
-						richText: documentToHtmlString(activePromoBanner.fields.richText)
+						richText: documentToHtmlString(activePromoBanner.fields.richText),
+						iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
 					};
-					this.isPromoEnabled = true;
+					// check for special conditions and allow that process to control enabled
+					const specialConditions = _get(activePromoBanner, 'fields.specialConditions', null);
+					if (specialConditions) {
+						this.specialConditions = specialConditions;
+						this.processSpecialConditions();
+					} else {
+						this.isPromoEnabled = true;
+					}
 				}
 			}
 		});
 	},
+	methods: {
+		processSpecialConditions() {
+			// check for and operate on autolending opt in condition
+			if (this.specialConditions.includes('autolending-opted-in')) {
+				this.verifyAutoLendingOptin();
+			}
+		},
+		verifyAutoLendingOptin() {
+			const query = gql`{
+				my {
+					autolendProfile	{
+						idleCreditOptIn
+					}
+					userAccount {
+						id
+						inactiveAccountSetting
+					}
+				}
+			}`;
+			// check this lender's autolend opt-out state
+			// - show the banner if they are currently opted in
+			// - and we are not on the /settings/autolending page
+			this.apollo.query({
+				query
+			}).then(({ data }) => {
+				const optedIn = _get(data, 'my.autolendProfile.idleCreditOptIn', false);
+				const inactiveAccountSetting = _get(data, 'my.userAccount.inactiveAccountSetting', null);
+				if ((optedIn || inactiveAccountSetting === 'email_address')
+					&& this.$route.path !== '/settings/autolending') {
+					this.isPromoEnabled = true;
+				}
+			});
+		}
+	}
 };
 </script>
