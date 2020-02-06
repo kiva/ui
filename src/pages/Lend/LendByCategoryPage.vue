@@ -411,6 +411,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 					// experiment: CASH-1113 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'featured_sector' } }),
+					// experiment: CASH-1807 Recommendation Row Category Experiment (forthcoming)
+					client.query({ query: experimentQuery, variables: { id: 'recommendation_channel' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -535,6 +537,30 @@ export default {
 				'EXP-CASH-676-Apr2019',
 				'b',
 			);
+		};
+
+		// CASH-1801: recommendationChannel experiment setup
+		const recommendationChannelExperiment = this.apollo.readFragment({
+			id: 'Experiment:recommendation_channel',
+			fragment: experimentVersionFragment,
+		}) || {};
+		if (recommendationChannelExperiment.version === 'variant-a') {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1801-Feb2020',
+				'a',
+			);
+			console.log("this is control for the recommendation_channel audience = no row"
+			);
+		} else if (recommendationChannelExperiment.version === 'variant-b') {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1801-Feb2020',
+				'b',
+			);
+			this.recommendation_channel = 0;
+			console.log("this is variant for recommendation_channel audience row:", 
+				recommendation_channel)
 		}
 
 		// Read the SSR ready featured_sector exp cache
