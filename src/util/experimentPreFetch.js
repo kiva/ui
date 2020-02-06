@@ -18,6 +18,8 @@ let activeExperiments = [
 	// 'mg_promo',
 	'double_arrow_button',
 	'intercom_messenger',
+	//experiment setting value for recommended loans category row
+	'recommendation_channel',
 ];
 
 // TODO: Enhance Error handling
