@@ -1,7 +1,6 @@
 <template>
 	<div v-if="isBannerAreaShown">
 		<appeal-banner v-if="showAppeal" :appeal-match-enabled="appealMatchEnabled" />
-		<!-- <global-promo /> -->
 		<global-promo-contentful v-if="!showAppeal" />
 	</div>
 </template>
@@ -12,14 +11,12 @@ import numeral from 'numeral';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
-// import GlobalPromo from './PromotionalBanner/GlobalPromotionalBanner';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		AppealBanner,
 		GlobalPromoContentful,
-		// GlobalPromo,
 	},
 	data() {
 		return {
