@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<div class="row align-center monthly-good-setup-page">
-			<div class="small-12 medium-11 large-9 column" v-if="!isMonthlyGoodSubscriber">
+			<div class="small-12 medium-11 large-10 column" v-if="!isMonthlyGoodSubscriber">
 				<h1 class="text-center impact-text">
 					Confirm your Good
 				</h1>
@@ -97,14 +97,6 @@
 									>
 										Donation
 									</label>
-									<!-- !TODO Amount and pencil display
-									<button class="button--ordinal-day">
-										<strong
-											class="additional-left-pad-currency"
-										>{{ donation | numeral('$0,0.00') }}</strong>
-										<icon-pencil class="icon-pencil" />
-									</button>
-									-->
 									<kv-dropdown-rounded
 										class="donation-dropdown"
 										v-model="donationOptionSelected"
@@ -324,14 +316,24 @@ export default {
 		}
 	},
 	watch: {
+		donation(newVal) {
+			if (newVal !== 0) {
+				this.donationCheckbox = true;
+			}
+			if (newVal === 0) {
+				this.donationOptionSelected = '0';
+			}
+		},
 		donationOptionSelected(newVal) {
-			// flag donation options as dirty, this stops the recalculation of the drop down values.
+			// flag donation options as dirty, which stops the recalculation of the drop down values.
 			this.isDonationOptionsDirty = true;
 			if (newVal !== 'other') {
 				this.donation = this.mgAmount * (Number(newVal) / 100);
-				// if donation dropdown is not 0, check checkbox
+				// sync the checkbox with the dropdown.
 				if (newVal !== '0') {
 					this.donationCheckbox = true;
+				} else {
+					this.donationCheckbox = false;
 				}
 			}
 		},
@@ -351,14 +353,13 @@ export default {
 				this.donationOptionSelected = '0';
 			}
 		},
-
 	},
 	computed: {
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
 				if (!frozenDropdownOptions) {
 					// make a copy of calculatedDonationOptions to freeze the values
-					frozenDropdownOptions = this.calculatedDonationOptions.map(a => ({ ...a }));
+					frozenDropdownOptions = this.calculatedDonationOptions.map(selectItem => ({ ...selectItem }));
 				}
 				return frozenDropdownOptions;
 			}
