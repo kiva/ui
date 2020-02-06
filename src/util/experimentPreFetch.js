@@ -14,8 +14,6 @@ let activeExperiments = [
 	'pinned_filter',
 	'algolia_search',
 	'expandable_loan_cards',
-	// Uncomment when the Billion To Women Campaign ends on Oct. 13th 2019
-	// 'mg_promo',
 	'double_arrow_button',
 	'intercom_messenger',
 ];
