@@ -1,5 +1,5 @@
 <template>
-	<div class="row align-center gift-banner">
+	<div class="row align-center generic-banner">
 		<router-link
 			:to="promoBannerContent.link"
 			class="banner-link"
@@ -70,7 +70,7 @@ export default {
 	}
 }
 
-.gift-banner {
+.generic-banner {
 	background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
 	background-position: bottom;
 
@@ -78,9 +78,17 @@ export default {
 		display: flex;
 		align-items: center;
 	}
+
+	.icon-info,
+	.icon-kiva-card,
+	.icon-monthly-good,
+	.icon-confirmation,
+	.icon-question {
+		fill: $kiva-icon-green;
+	}
 }
 
-.gift-banner [class*="-icon"] {
+.generic-banner [class*="-icon"] {
 	display: block;
 	height: rem-calc(22);
 	width: rem-calc(22);
@@ -88,9 +96,22 @@ export default {
 	margin-top: -0.2rem;
 }
 
-.gift-banner .banner-link:hover {
+.generic-banner .banner-link:hover {
 	[class*="-icon"] {
 		stroke: $kiva-darkgreen;
+	}
+
+	.icon-info,
+	.icon-kiva-card,
+	.icon-monthly-good,
+	.icon-confirmation,
+	.icon-question {
+		fill: $kiva-darkgreen;
+		stroke: none;
+	}
+
+	.icon-iwd-flower {
+		stroke: none;
 	}
 }
 
