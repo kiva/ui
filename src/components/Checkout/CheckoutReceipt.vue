@@ -3,14 +3,15 @@
 		<h2 class="checkout-receipt__headline">
 			Order Confirmation
 		</h2>
-		<section class="section qa-lender-info">
+		<section data-test="lender-info" class="section">
 			<div>{{ formattedTransactionTime }}</div>
 			<div>{{ lender.firstName }} {{ lender.lastName }}</div>
 			<div>{{ lender.email }}</div>
 		</section>
 		<section>
 			<div
-				class="section text-center hide-for-print qa-print-kcard-msg"
+				data-test="print-kcard-msg"
+				class="section text-center hide-for-print"
 				v-if="printableKivaCards.length > 0"
 			>
 				<h2>Print your Kiva {{ printableKivaCards.length > 1 ? 'Cards' : 'Card' }}</h2>
@@ -60,7 +61,10 @@
 					v-for="card in kivaCards"
 					:key="card.id"
 				>
-					<div class="loan qa-kcard">
+					<div
+						data-test="kcard"
+						class="loan kcard"
+					>
 						<template v-if="card.kivaCardObject.deliveryType === 'print'">
 							<div>
 								<h3 class="loan__name loan__name--inline">
@@ -129,7 +133,8 @@
 					</div>
 				</li>
 				<li
-					class="section text-center qa-kcard-portfolio"
+					data-test="kcard-portfolio"
+					class="section text-center"
 					v-if="kivaCards.length > 0"
 				>
 					For more details about all your Kiva Card purchases, please visit your
@@ -144,7 +149,10 @@
 		<section>
 			<ul class="checkout-receipt__item-list">
 				<li class="section">
-					<div class="loan qa-donation">
+					<div
+						class="loan"
+						data-test="donation"
+					>
 						<h3 class="loan__name">
 							Donation to Kiva
 						</h3>
@@ -159,7 +167,10 @@
 						</div>
 					</div>
 				</li>
-				<li class="section total qa-receipt-total">
+				<li
+					data-test="receipt-total"
+					class="section total"
+				>
 					<h3 class="total__header">
 						Total:
 					</h3>
@@ -173,42 +184,48 @@
 			</h2>
 			<ul class="payments__list">
 				<li
-					class="total qa-kcard-payment"
+					data-test="kcard-payment"
+					class="total"
 					v-if="receipt.totals.redemptionCodeAppliedTotal > 0"
 				>
 					<span class="total__header">Kiva Card:</span>
 					<span class="total__amount">${{ receipt.totals.redemptionCodeAppliedTotal }}</span>
 				</li>
 				<li
-					class="total qa-free-trial"
+					data-test="free-trial"
+					class="total"
 					v-if="receipt.totals.freeTrialAppliedTotal > 0"
 				>
 					<span class="total__header">Free Trial:</span>
 					<span class="total__amount">Free!</span>
 				</li>
 				<li
-					class="total qa-free-credit"
+					data-test="free-credit"
+					class="total"
 					v-if="receipt.totals.bonusAppliedTotal > 0"
 				>
 					<span class="total__header">Free credit:</span>
 					<span class="total__amount">{{ receipt.totals.bonusAppliedTotal }}</span>
 				</li>
 				<li
-					class="total qa-kiva-credit-added"
+					data-test="kiva-credit-added"
+					class="total"
 					v-if="receipt.totals.depositTotals.kivaCreditAdded > 0"
 				>
 					<span class="total__header">Kiva credit added:</span>
 					<span class="total__amount">${{ receipt.totals.depositTotals.kivaCreditAdded }}</span>
 				</li>
 				<li
-					class="total qa-kiva-credit-used"
+					data-test="kiva-credit-used"
+					class="total"
 					v-if="receipt.totals.depositTotals.kivaCreditUsed > 0"
 				>
 					<span class="total__header">Kiva credit:</span>
 					<span class="total__amount">${{ receipt.totals.depositTotals.kivaCreditUsed }}</span>
 				</li>
 				<li
-					class="total qa-amount-charged"
+					data-test="amount-charged"
+					class="total"
 					v-if="parseFloat(receipt.totals.depositTotals.depositTotal) > 0"
 				>
 					<span class="total__header">Amount charged:</span>
