@@ -88,6 +88,7 @@ export default {
 			const query = gql`{
 				my {
 					autolendProfile	{
+						isEnabled
 						idleCreditOptIn
 					}
 					userAccount {
@@ -102,6 +103,9 @@ export default {
 			this.apollo.query({
 				query
 			}).then(({ data }) => {
+				if (_get(data, 'my.autolendProfile.isEnabled')) {
+					return false;
+				}
 				const optedIn = _get(data, 'my.autolendProfile.idleCreditOptIn', false);
 				const inactiveAccountSetting = _get(data, 'my.userAccount.inactiveAccountSetting', null);
 				if ((optedIn || inactiveAccountSetting === 'email_address')
