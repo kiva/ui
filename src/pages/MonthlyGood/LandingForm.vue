@@ -16,7 +16,7 @@
 				</ul>
 			</fieldset>
 			<fieldset class="large-8 medium-6 small-8 columns">
-				<kv-dropdown-rounded :value="selectedCategory" @input="updateSelected">
+				<kv-dropdown-rounded :value="selectedGroup" @input="updateSelected">
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}
 					</option>
@@ -38,9 +38,13 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvButton from '@/components/Kv/KvButton';
+import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 export default {
-	mixins: [validationMixin],
+	mixins: [
+		validationMixin,
+		loanGroupCategoriesMixin
+	],
 	components: {
 		KvButton,
 		KvCurrencyInput,
@@ -58,7 +62,7 @@ export default {
 			type: Number,
 			default: 25
 		},
-		selectedCategory: {
+		selectedGroup: {
 			type: String,
 			default: 'default'
 		},
@@ -75,7 +79,7 @@ export default {
 		// Emits values to parent component to allow the synchronization of 2 landing
 		// forms on the same page
 		updateSelected(value) {
-			this.$emit('update:selectedCategory', value);
+			this.$emit('update:selectedGroup', value);
 		},
 		// Emits values to parent component to allow the synchronization of 2 landing
 		// forms on the same page
@@ -87,41 +91,10 @@ export default {
 				path: '/monthlygood-ui/setup',
 				query: {
 					amount: this.amount,
-					group: this.selectedCategory
+					group: this.selectedGroup
 				}
 			});
 		}
-	},
-	data() {
-		return {
-			lendingCategories: [
-				{
-					value: 'default',
-					label: 'Support all borrowers'
-				},
-				{
-					value: 'women',
-					label: 'Support women'
-				},
-
-				{
-					value: 'agriculture',
-					label: 'Support farmers'
-				},
-				{
-					value: 'refugees',
-					label: 'Support refugees'
-				},
-				{
-					value: 'education',
-					label: 'Support students'
-				},
-				{
-					value: 'eco_friendly',
-					label: 'Support eco-friendly loans'
-				}
-			],
-		};
 	},
 };
 
