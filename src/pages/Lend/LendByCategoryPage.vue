@@ -385,7 +385,7 @@ export default {
 			}
 		},
 		initializeRecommendedLoansRowExp() {
-			// experiment: CASH-1801 For You Recommendation Row
+			// experiment: CASH-1801 "Loans For You" Recommendation Row
 			// get assignment
 			let recommendationChannel;
 			const recommendedLoansRowEXP = this.apollo.readFragment({
@@ -401,6 +401,7 @@ export default {
 					'EXP-CASH-1801-Feb2020',
 					this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a'
 				);
+				// Divide loggedIn users into control and variant for rec channel
 				if (recommendedLoansRowEXP.version === 'variant-a') {
 					recommendationChannel = null;
 					console.log('this is control for the recommendation_channel audience row: ',
