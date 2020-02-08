@@ -18,7 +18,7 @@ let activeExperiments = [
 	// 'mg_promo',
 	'double_arrow_button',
 	'intercom_messenger',
-	];
+];
 
 // TODO: Enhance Error handling
 // export function settingErrorHandler(errors, ...args) {
