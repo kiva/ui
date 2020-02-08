@@ -28,6 +28,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		recommendationCategoryRow: uiExperimentSetting(key: "recommendation_channel") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
