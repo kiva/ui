@@ -384,6 +384,44 @@ export default {
 				);
 			}
 		},
+		initializeRecommendedLoansRowExp() {
+			// experiment: CASH-1801 For You Recommendation Row
+			// get assignment
+			let recommendationChannel;
+			const recommendedLoansRowEXP = this.apollo.readFragment({
+				id: 'Experiment:recommendation_channel',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.recommendedLoansRowExpVersion = recommendedLoansRowEXP.version;
+			// Only track and activate if these conditions exist
+			if (this.isLoggedIn) {
+				// Fire Event for Exp CASH-1801
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-1801-Feb2020',
+					this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a'
+				);
+				if (recommendedLoansRowEXP.version === 'variant-a') {
+					recommendationChannel = null;
+					console.log('this is control for the recommendation_channel audience row: ',
+						recommendationChannel);
+					this.$kvTrackEvent(
+						'Lending',
+						'EXP-CASH-1801-Feb2020',
+						'a',
+					);
+				} else if (recommendedLoansRowEXP.version === 'variant-b') {
+					recommendationChannel = 0;
+					console.log('this is variant for recommendation_channel audience row:',
+						recommendationChannel);
+					this.$kvTrackEvent(
+						'Lending',
+						'EXP-CASH-1801-Feb2020',
+						'b',
+					);
+				}
+			}
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -411,7 +449,7 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 					// experiment: CASH-1113 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'featured_sector' } }),
-					// experiment: CASH-1807 Recommendation Row Category Experiment (forthcoming)
+					// experiment: CASH-1807 Recommendation Channel Experiment (forthcoming)
 					client.query({ query: experimentQuery, variables: { id: 'recommendation_channel' } }),
 				]);
 			}).then(expResults => {
@@ -438,183 +476,160 @@ export default {
 					},
 				});
 			});
-		}
-	},
-	created() {
-		// Read the page data from the cache
-		let baseData = {};
-		try {
-			baseData = this.apollo.readQuery({
-				query: lendByCategoryQuery,
-				variables: {
-					basketId: cookieStore.get('kvbskt'),
-				},
-			});
-		} catch (e) {
-			logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
-		}
+		},
+		created() {
+			// Read the page data from the cache
+			let baseData = {};
+			try {
+				baseData = this.apollo.readQuery({
+					query: lendByCategoryQuery,
+					variables: {
+						basketId: cookieStore.get('kvbskt'),
+					},
+				});
+			} catch (e) {
+				logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
+			}
 
-		this.setRows(baseData);
-		this.isAdmin = !!_get(baseData, 'my.isAdmin');
-		this.isLoggedIn = !!_get(baseData, 'my');
-		// CASH-794 Favorite Country Row
-		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
+			this.setRows(baseData);
+			this.isAdmin = !!_get(baseData, 'my.isAdmin');
+			this.isLoggedIn = !!_get(baseData, 'my');
+			// CASH-794 Favorite Country Row
+			this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
 
-		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
+			this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
-		// Read the SSR ready loan channels from the cache
-		const hoverLoanCardExperiment = this.apollo.readFragment({
-			id: 'Experiment:hover_loan_cards',
-			fragment: experimentVersionFragment,
-		}) || {};
-		const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
-		try {
-			const categoryData = this.apollo.readQuery({
-				query: loanChannelQuery,
-				variables: {
-					ids: _take(this.realCategoryIds, ssrRowLimiter),
-					basketId: cookieStore.get('kvbskt'),
-					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
-					// @todo variables for fetching data for custom channels
-				},
-			});
-			this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
-		} catch (e) {
-			logReadQueryError(e, 'LendByCategory loanChannelQuery');
-		}
+			// Read the SSR ready loan channels from the cache
+			const hoverLoanCardExperiment = this.apollo.readFragment({
+				id: 'Experiment:hover_loan_cards',
+				fragment: experimentVersionFragment,
+			}) || {};
+			const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
+			try {
+				const categoryData = this.apollo.readQuery({
+					query: loanChannelQuery,
+					variables: {
+						ids: _take(this.realCategoryIds, ssrRowLimiter),
+						basketId: cookieStore.get('kvbskt'),
+						imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
+						imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
+						// @todo variables for fetching data for custom channels
+					},
+				});
+				this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
+			} catch (e) {
+				logReadQueryError(e, 'LendByCategory loanChannelQuery');
+			}
 
-		// If active, update our custom categories prior to render
-		// this.setCustomRowData(categoryData);
+			// If active, update our custom categories prior to render
+			// this.setCustomRowData(categoryData);
 
-		// Initialize CASH-794 Favorite Country Row
-		this.initializeFavoriteCountryRowExp();
+			// Initialize CASH-794 Favorite Country Row
+			this.initializeFavoriteCountryRowExp();
 
-		// get assignment for add to basket interstitial
-		const addToBasketPopupEXP = this.apollo.readFragment({
-			id: 'Experiment:add_to_basket_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
-		// Update @client state if interstitial exp is active
-		if (this.addToBasketExpActive) {
-			this.apollo.mutate({
-				mutation: updateAddToBasketInterstitial,
-				variables: {
-					active: true,
-				}
-			});
-		}
-		// Fire Event for Exp CASH-612 Status
-		this.$kvTrackEvent(
-			'Lending',
-			'EXP-CASH-612-Apr2019',
-			this.addToBasketExpActive ? 'b' : 'a'
-		);
-
-		const lendFilterEXP = this.apollo.readFragment({
-			id: 'Experiment:lend_filter_v2',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.lendFilterExpVersion = lendFilterEXP.version;
-
-		// CASH-676: Expandable loan card experiment
-		const expandableLoanCardExperiment = this.apollo.readFragment({
-			id: 'Experiment:expandable_loan_cards',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (expandableLoanCardExperiment.version === 'variant-a') {
+			// get assignment for add to basket interstitial
+			const addToBasketPopupEXP = this.apollo.readFragment({
+				id: 'Experiment:add_to_basket_v2',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.addToBasketExpActive = addToBasketPopupEXP.version === 'shown';
+			// Update @client state if interstitial exp is active
+			if (this.addToBasketExpActive) {
+				this.apollo.mutate({
+					mutation: updateAddToBasketInterstitial,
+					variables: {
+						active: true,
+					}
+				});
+			}
+			// Fire Event for Exp CASH-612 Status
 			this.$kvTrackEvent(
 				'Lending',
-				'EXP-CASH-676-Apr2019',
-				'a',
+				'EXP-CASH-612-Apr2019',
+				this.addToBasketExpActive ? 'b' : 'a'
 			);
-		} else if (expandableLoanCardExperiment.version === 'variant-b') {
-			this.showExpandableLoanCards = true;
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-676-Apr2019',
-				'b',
-			);
-		};
 
-		// CASH-1801: recommendationChannel experiment setup
-		const recommendationChannelExperiment = this.apollo.readFragment({
-			id: 'Experiment:recommendation_channel',
-			fragment: experimentVersionFragment,
-		}) || {};
-		if (recommendationChannelExperiment.version === 'variant-a') {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-1801-Feb2020',
-				'a',
-			);
-			console.log("this is control for the recommendation_channel audience = no row"
-			);
-		} else if (recommendationChannelExperiment.version === 'variant-b') {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-1801-Feb2020',
-				'b',
-			);
-			this.recommendation_channel = 0;
-			console.log("this is variant for recommendation_channel audience row:", 
-				recommendation_channel)
-		}
+			const lendFilterEXP = this.apollo.readFragment({
+				id: 'Experiment:lend_filter_v2',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.lendFilterExpVersion = lendFilterEXP.version;
 
-		// Read the SSR ready featured_sector exp cache
-		const featuredSectorExperiment = this.apollo.readFragment({
-			id: 'Experiment:featured_sector',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.featuredSectorExpVersion = featuredSectorExperiment.version;
-
-		// Initialize CASH-521: Hover loan card experiment
-		this.initializeHoverLoanCard();
-	},
-	mounted() {
-		this.fetchRemainingLoanChannels().then(() => {
-			this.rowLazyLoadComplete = true;
-
-			this.activateWatchers();
-
-			const pageViewTrackData = this.assemblePageViewData(this.categories);
-			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-		});
-
-		// Only allow experiment when in show-for-large (>= 1024px) screen size
-		if (window.innerWidth >= 680) {
-			// CASH-658 : Experiment : Category description
-			const categoryDescriptionExperiment = this.apollo.readFragment({
-				id: 'Experiment:category_description',
+			// CASH-676: Expandable loan card experiment
+			const expandableLoanCardExperiment = this.apollo.readFragment({
+				id: 'Experiment:expandable_loan_cards',
 				fragment: experimentVersionFragment,
 			}) || {};
 
-			this.categoryDescriptionExperimentVersion = categoryDescriptionExperiment.version;
-
-			if (this.categoryDescriptionExperimentVersion === 'variant-a') {
-				this.showCategoryDescription = false;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
-			} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
-				this.showCategoryDescription = true;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
+			if (expandableLoanCardExperiment.version === 'variant-a') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-676-Apr2019',
+					'a',
+				);
+			} else if (expandableLoanCardExperiment.version === 'variant-b') {
+				this.showExpandableLoanCards = true;
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-676-Apr2019',
+					'b',
+				);
 			}
-		}
 
-		// CASH-676: Expandable Loan Card Experiment
-		if (this.showExpandableLoanCards) {
-			window.addEventListener('resize', this.handleResize);
-			this.setRightArrowPosition();
-			this.setLeftArrowPosition();
-		}
-	},
-	beforeDestroy() {
-		if (this.showExpandableLoanCards) {
-			window.removeEventListener('resize', this.handleResize);
-		}
+			// Read the SSR ready featured_sector exp cache
+			const featuredSectorExperiment = this.apollo.readFragment({
+				id: 'Experiment:featured_sector',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.featuredSectorExpVersion = featuredSectorExperiment.version;
+
+			// Initialize CASH-521: Hover loan card experiment
+			this.initializeHoverLoanCard();
+		},
+		mounted() {
+			this.fetchRemainingLoanChannels().then(() => {
+				this.rowLazyLoadComplete = true;
+
+				this.activateWatchers();
+
+				const pageViewTrackData = this.assemblePageViewData(this.categories);
+				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+			});
+
+			// Only allow experiment when in show-for-large (>= 1024px) screen size
+			if (window.innerWidth >= 680) {
+				// CASH-658 : Experiment : Category description
+				const categoryDescriptionExperiment = this.apollo.readFragment({
+					id: 'Experiment:category_description',
+					fragment: experimentVersionFragment,
+				}) || {};
+
+				this.categoryDescriptionExperimentVersion = categoryDescriptionExperiment.version;
+
+				if (this.categoryDescriptionExperimentVersion === 'variant-a') {
+					this.showCategoryDescription = false;
+					this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'a');
+				} else if (this.categoryDescriptionExperimentVersion === 'variant-b') {
+					this.showCategoryDescription = true;
+					this.$kvTrackEvent('Lending', 'EXP-CASH-658-Mar2019', 'b');
+				}
+			}
+
+			// CASH-676: Expandable Loan Card Experiment
+			if (this.showExpandableLoanCards) {
+				window.addEventListener('resize', this.handleResize);
+				this.setRightArrowPosition();
+				this.setLeftArrowPosition();
+			}
+		},
+		beforeDestroy() {
+			if (this.showExpandableLoanCards) {
+				window.removeEventListener('resize', this.handleResize);
+			}
+		},
 	},
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -673,7 +688,6 @@ export default {
 			@include breakpoint(medium) {
 				margin-left: 1.625rem;
 			}
-
 			@include breakpoint(xxlarge) {
 				margin-left: 0.625rem;
 			}
