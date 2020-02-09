@@ -1,7 +1,7 @@
 <template>
-	<div v-if="isBannerAreaShown">
-		<appeal-banner v-if="showAppeal" :appeal-match-enabled="appealMatchEnabled" />
-		<global-promo-contentful v-if="!showAppeal" />
+	<div>
+		<appeal-banner v-if="showAppeal && !hasPromoSession" :appeal-match-enabled="appealMatchEnabled" />
+		<global-promo-contentful :has-promo-session="hasPromoSession" v-if="!showAppeal" />
 	</div>
 </template>
 
@@ -52,14 +52,14 @@ export default {
 		},
 	},
 	computed: {
-		isBannerAreaShown() {
+		hasPromoSession() {
 			// Check if the user has Promo Credit
 			// (lending reward credit, bonus credit, or free credit)
 			// If the have any of the above, we hide the banner area
 			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		},
 		showAppeal() {
 			// make sure the appeal is enable + we're not on certain blacklisted pages

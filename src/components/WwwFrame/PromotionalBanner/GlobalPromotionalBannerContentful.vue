@@ -19,6 +19,12 @@ export default {
 	components: {
 		GenericPromoBanner,
 	},
+	props: {
+		hasPromoSession: {
+			type: Boolean,
+			default: false
+		}
+	},
 	data() {
 		return {
 			isPromoEnabled: false,
@@ -58,6 +64,11 @@ export default {
 					);
 				});
 				if (activePromoBanner) {
+					// check for visibility on promo session override
+					const showForPromo = _get(activePromoBanner, 'fields.showForPromo', false);
+					if (this.hasPromoSession && !showForPromo) {
+						return false;
+					}
 					// parse the contentful richText into an html string
 					this.promoBannerContent = {
 						kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
