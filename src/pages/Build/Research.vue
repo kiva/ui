@@ -60,6 +60,15 @@ export default {
 			papers: [
 				{
 					year: 2019,
+					author: 'Wan, Bing et al',
+					/* eslint-disable max-len */
+					title: 'Social Networks in Online Peer-to-Peer Lending: The Case of Event-Type Ties as Pipes and Prisms',
+					/* eslint-enable max-len */
+					publication: 'Proceedings of the 52nd Hawaii International Conference on System Sciences',
+					url: 'https://scholarspace.manoa.hawaii.edu/bitstream/10125/60099/0659.pdf'
+				},
+				{
+					year: 2019,
 					author: 'O’Luing, Mervyn, et al',
 					/* eslint-disable max-len */
 					title: 'A Grouping Genetic Algorithm for Joint Stratification and Sample Allocation Designs',
