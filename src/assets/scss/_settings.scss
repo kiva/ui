@@ -148,7 +148,7 @@ $print-hrefs: true;
 
 $body-background: $white;
 $body-font-color: $kiva-text-dark;
-$body-font-family: 'PostGrotesk', Arial, Helvetica, sans-serif;
+$body-font-family: 'PostGrotesk', 'Arial', 'Helvetica', sans-serif;
 $body-antialiased: true;
 $global-margin: 1rem;
 $global-padding: 1rem;
@@ -306,7 +306,7 @@ $huge-headline-line-height-medium: rem-calc(70);
 	}
 }
 
-$font-family-monospace: Consolas, 'Liberation Mono', Courier, monospace;
+$font-family-monospace: 'Consolas', 'Liberation Mono', 'Courier', monospace;
 $code-color: $black;
 $code-font-family: $font-family-monospace;
 $code-font-weight: $global-weight-normal;
