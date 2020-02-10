@@ -158,6 +158,7 @@ export default {
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
 			featuredSectorExpVersion: null,
+			recommendedLoansRowExpVersion: null
 		};
 	},
 	computed: {
@@ -393,34 +394,33 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.recommendedLoansRowExpVersion = recommendedLoansRowEXP.version;
-			// Only track and activate if these conditions exist
-			if (this.isLoggedIn) {
-				// Fire Event for Exp CASH-1801
+			// Logged in user and non-users are included in this experiment,
+			// logged-in users are automatically tracked with their id
+			// Fire Event for Exp CASH-1801
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1801-Feb2020',
+				this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a'
+			);
+			// Divide loggedIn users into control and variant for rec channel
+			if (recommendedLoansRowEXP.version === 'variant-a') {
+				recommendationChannel = null;
+				console.log('this is control for the recommendation_channel audience row: ',
+					recommendationChannel);
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-1801-Feb2020',
-					this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a'
+					'a',
 				);
-				// Divide loggedIn users into control and variant for rec channel
-				if (recommendedLoansRowEXP.version === 'variant-a') {
-					recommendationChannel = null;
-					console.log('this is control for the recommendation_channel audience row: ',
-						recommendationChannel);
-					this.$kvTrackEvent(
-						'Lending',
-						'EXP-CASH-1801-Feb2020',
-						'a',
-					);
-				} else if (recommendedLoansRowEXP.version === 'variant-b') {
-					recommendationChannel = 0;
-					console.log('this is variant for recommendation_channel audience row:',
-						recommendationChannel);
-					this.$kvTrackEvent(
-						'Lending',
-						'EXP-CASH-1801-Feb2020',
-						'b',
-					);
-				}
+			} else if (recommendedLoansRowEXP.version === 'variant-b') {
+				recommendationChannel = 0;
+				console.log('this is variant for recommendation_channel audience row:',
+					recommendationChannel);
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-1801-Feb2020',
+					'b',
+				);
 			}
 		},
 	},
