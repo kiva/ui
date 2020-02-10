@@ -29,7 +29,10 @@
 					v-for="loan in loans"
 					:key="loan.id"
 				>
-					<div class="loan">
+					<div
+						data-test="loan"
+						class="loan"
+					>
 						<h3 class="loan__name">
 							<router-link
 								:to="`/lend/${loan.id}`"
