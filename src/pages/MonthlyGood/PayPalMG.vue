@@ -73,21 +73,16 @@ export default {
 				{
 					// TODO: Should we have a global key/switch for Prod
 					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
-					commit: true,
 					payment: () => {
 						return new paypal.Promise((resolve, reject) => {
 							// Get Express checkout token
 							return this.apollo.query({
 								query: getExpressCheckoutToken,
 							}).then(response => {
-								console.log('response', response);
 								if (response.errors) {
 									reject(response);
 								} else {
-									const expressCheckoutToken = _get(
-										response,
-										'data.my.payPalBillingAgreement.getExpressCheckoutToken'
-									);
+									const expressCheckoutToken = _get(response, 'data.my.payPalBillingAgreement.getExpressCheckoutToken');// eslint-disable-line max-len
 									resolve(expressCheckoutToken || response);
 								}
 							}).catch(error => {
@@ -95,15 +90,14 @@ export default {
 								// Fire specific exception to Sentry/Raven
 								Sentry.withScope(scope => {
 									scope.setTag('pp_stage', 'onPaymentGetPaymentTokenCatch');
-									Sentry.captureException(JSON.stringify(error.errors ? error.errors : error)); // eslint-disable-line max-len
+									Sentry.captureException(JSON.stringify(error.errors ? error.errors : error));
 								});
 
 								reject(error);
 							});
 						});
 					},
-					onAuthorize: (data, actions) => {
-						console.log('data,actions', data, actions);
+					onAuthorize: data => {
 						return new paypal.Promise((resolve, reject) => {
 							return this.apollo.mutate({
 								mutation: gql`
@@ -120,13 +114,12 @@ export default {
 									token: data.paymentToken
 								},
 							}).then(ppResponse => {
-								console.log('ppResponse', ppResponse);
 								// Check for errors
 								if (ppResponse.errors) {
 									const errorCode = _get(ppResponse, 'errors[0].code');
 									// -> server supplied language is not geared for lenders
 									const standardErrorCode = `(PayPal error: ${errorCode})`;
-									const standardError = `There was an error processing your payment.
+									const standardError = `There was an error processing your subscription.
 														Please try again. ${standardErrorCode}`;
 
 									this.$showTipMsg(standardError, 'error');
@@ -138,50 +131,39 @@ export default {
 										Sentry.captureException(JSON.stringify(ppResponse.errors));
 									});
 
-									// Restart the Exp Checkout interface to allow payment changes
-									// 10539 'payment declined' error
-									// 10486 transaction could not be completed
-									if (errorCode === '10539' || errorCode === '10486') {
-										return actions.restart();
-									}
-									// TODO: Are there other specific errors we should handle?
-
 									// exit
 									reject(data);
 								}
 
 								// Transaction is complete
-								const transactionId = _get(
+								const billingAgreementId = _get(
 									ppResponse,
-									'data.shop.doPaymentDepositAndCheckout'
+									'data.my.payPalBillingAgreement.createBillingAgreement'
 								);
-								console.log(transactionId);
 
-								// redirect to thanks with KIVA transaction id
-								if (transactionId) {
+								// redirect to thanks with KIVA billingAgreementId
+								if (billingAgreementId) {
 									// Complete transaction handles additional analytics + redirect
-									this.$emit('complete-transaction', transactionId);
+									this.$emit('complete-transaction', billingAgreementId);
 								}
 								resolve(ppResponse);
-							})
-								.catch(catchError => {
-									// Fire specific exception to Sentry/Raven
-									Sentry.withScope(scope => {
-										scope.setTag('pp_stage', 'onAuthorizeCatch');
-										Sentry.captureException(JSON.stringify(catchError));
-									});
-
-									reject(catchError);
-								});
-						})
-							.catch(error => {
-								console.error(error);
+							}).catch(catchError => {
 								// Fire specific exception to Sentry/Raven
 								Sentry.withScope(scope => {
-									scope.setTag('pp_stage', 'onAuthorizeValidationCatch');
-									Sentry.captureException(JSON.stringify(error));
+									scope.setTag('pp_stage', 'onAuthorizeCatch');
+									Sentry.captureException(JSON.stringify(catchError));
 								});
+
+								reject(catchError);
 							});
+						}).catch(error => {
+							console.error(error);
+							// Fire specific exception to Sentry/Raven
+							Sentry.withScope(scope => {
+								scope.setTag('pp_stage', 'onAuthorizeValidationCatch');
+								Sentry.captureException(JSON.stringify(error));
+							});
+						});
 					},
 					onError: data => {
 						console.error(data);
@@ -194,9 +176,6 @@ export default {
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'large' : 'responsive',
 						fundingicons: false,
 					},
-					funding: {
-						disallowed: [paypal.FUNDING.CREDIT, paypal.FUNDING.VENMO]
-					}
 				},
 				'#paypal-button'
 			);
