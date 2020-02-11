@@ -388,7 +388,6 @@ export default {
 		initializeRecommendedLoansRowExp() {
 			// experiment: CASH-1801 "Loans For You" Recommendation Row
 			// get assignment
-			let recommendationChannel;
 			const recommendedLoansRowEXP = this.apollo.readFragment({
 				id: 'Experiment:recommendation_channel',
 				fragment: experimentVersionFragment,
@@ -402,26 +401,6 @@ export default {
 				'EXP-CASH-1801-Feb2020',
 				this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a'
 			);
-			// Divide loggedIn users into control and variant for rec channel
-			if (recommendedLoansRowEXP.version === 'variant-a') {
-				recommendationChannel = null;
-				console.log('this is control for the recommendation_channel audience row: ',
-					recommendationChannel);
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-1801-Feb2020',
-					'a',
-				);
-			} else if (recommendedLoansRowEXP.version === 'variant-b') {
-				recommendationChannel = 0;
-				console.log('this is variant for recommendation_channel audience row:',
-					recommendationChannel);
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-1801-Feb2020',
-					'b',
-				);
-			}
 		},
 	},
 	apollo: {
