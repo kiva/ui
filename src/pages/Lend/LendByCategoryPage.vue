@@ -388,7 +388,7 @@ export default {
 		initializeRecommendedLoansRowExp() {
 			// experiment: CASH-1801 "Loans For You" Recommendation Row
 			// get assignment
-			let recommendation_channel = 0
+			const recommendationChannel = 0;
 			const recommendedLoansRowEXP = this.apollo.readFragment({
 				id: 'Experiment:recommendation_channel',
 				fragment: experimentVersionFragment,
@@ -400,7 +400,7 @@ export default {
 			this.$kvTrackEvent(
 				'Lending',
 				'EXP-CASH-1801-Feb2020',
-				recommendation_channel,
+				recommendationChannel,
 				this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a'
 			);
 		},
