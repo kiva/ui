@@ -8,7 +8,10 @@
 				</em>
 			</blockquote><br>
 		</div>
-		<div class="columns large-10" v-show="idleCreditOptIn && !isEnabled && inactiveCreditEligible">
+		<div
+			class="columns large-10"
+			v-show="showOptOutControls && idleCreditOptIn && !isEnabled && inactiveCreditEligible"
+		>
 			<blockquote>
 				<em>
 					You're scheduled to be enrolled in 90-day auto-lending starting Feb 20, 2020.
@@ -43,6 +46,10 @@ export default {
 		isEnabled: {
 			type: Boolean,
 			required: true
+		},
+		showOptOutControls: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
