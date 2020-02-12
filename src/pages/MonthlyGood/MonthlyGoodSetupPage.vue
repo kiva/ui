@@ -353,7 +353,6 @@ export default {
 							this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 							this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 							this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
-							this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
 							this.hasBillingAgreement = _get(
 								data,
 								'my.payPalBillingAgreement.hasPayPalBillingAgreement',
@@ -458,7 +457,7 @@ export default {
 					this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 
 					// !TODO send to thanks page
-					console.log(data);
+					console.log('Send to Thanks Page', data);
 					// send to thanks
 					// self._sendToThanks();
 				}
