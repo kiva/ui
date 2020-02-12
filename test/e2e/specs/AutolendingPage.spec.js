@@ -144,10 +144,8 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 
-			// Assert that message about the auto-lend timer not starting until balance is eligible
-			cy.get('[data-test=timing-explanation]').contains(
-				'Your current balance is lower'
-			);
+			// Assert that message about the auto-lend timer is not shown when cIdleStartTime is null
+			cy.get('[data-test=timing-explanation]').should('not.exist');
 		});
 
 		it('Explains that autolending will start in x days if user eligible and not idle', () => {

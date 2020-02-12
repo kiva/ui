@@ -21,7 +21,11 @@
 			</option>
 		</kv-dropdown-rounded>
 		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<div data-test="timing-explanation" class="autolend-explanation-text" v-if="isEnabled">
+		<div
+			data-test="timing-explanation"
+			class="autolend-explanation-text"
+			v-if="isEnabled && this.cIdleStartTime !== null"
+		>
 			{{ autolendExplanationText }}
 		</div>
 	</div>
