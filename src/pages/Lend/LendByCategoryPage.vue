@@ -158,6 +158,7 @@ export default {
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
 			featuredSectorExpVersion: null,
+			recommendedLoansRowExpVersion: null
 		};
 	},
 	computed: {
@@ -384,6 +385,25 @@ export default {
 				);
 			}
 		},
+		initializeRecommendedLoansRowExp() {
+			// experiment: CASH-1807 "Loans For You" Recommendation Row
+			// get assignment
+			const recommendationChannel = 0;
+			const recommendedLoansRowEXP = this.apollo.readFragment({
+				id: 'Experiment:recommendation_channel',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.recommendedLoansRowExpVersion = recommendedLoansRowEXP.version;
+			// Logged in user and non-users are included in this experiment,
+			// logged-in users are automatically tracked with their id
+			// Fire Event for Exp CASH-1807
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-1807-Feb2020',
+				this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a',
+				this.recommendedLoansRowExpVersion === 'shown' ? recommendationChannel : null,
+			);
+		},
 	},
 	apollo: {
 		preFetch(config, client) {
@@ -411,6 +431,8 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 					// experiment: CASH-1113 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'featured_sector' } }),
+					// experiment: CASH-1807 Recommendation Channel Experiment (forthcoming)
+					client.query({ query: experimentQuery, variables: { id: 'recommendation_channel' } }),
 				]);
 			}).then(expResults => {
 				const version = _get(expResults, '[0].data.experiment.version');
@@ -436,7 +458,7 @@ export default {
 					},
 				});
 			});
-		}
+		},
 	},
 	created() {
 		// Read the page data from the cache
@@ -589,6 +611,7 @@ export default {
 		}
 	},
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -647,7 +670,6 @@ export default {
 			@include breakpoint(medium) {
 				margin-left: 1.625rem;
 			}
-
 			@include breakpoint(xxlarge) {
 				margin-left: 0.625rem;
 			}
