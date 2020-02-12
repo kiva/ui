@@ -386,7 +386,7 @@ export default {
 			}
 		},
 		initializeRecommendedLoansRowExp() {
-			// experiment: CASH-1801 "Loans For You" Recommendation Row
+			// experiment: CASH-1807 "Loans For You" Recommendation Row
 			// get assignment
 			const recommendationChannel = 0;
 			const recommendedLoansRowEXP = this.apollo.readFragment({
@@ -396,10 +396,10 @@ export default {
 			this.recommendedLoansRowExpVersion = recommendedLoansRowEXP.version;
 			// Logged in user and non-users are included in this experiment,
 			// logged-in users are automatically tracked with their id
-			// Fire Event for Exp CASH-1801
+			// Fire Event for Exp CASH-1807
 			this.$kvTrackEvent(
 				'Lending',
-				'EXP-CASH-1801-Feb2020',
+				'EXP-CASH-1807-Feb2020',
 				this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a',
 				this.recommendedLoansRowExpVersion === 'shown' ? recommendationChannel : null,
 			);
