@@ -401,7 +401,7 @@ export default {
 				'Lending',
 				'EXP-CASH-1801-Feb2020',
 				this.recommendedLoansRowExpVersion === 'shown' ? 'b' : 'a',
-				recommendationChannel,
+				this.recommendedLoansRowExpVersion === 'shown' ? recommendationChannel : null,
 			);
 		},
 	},
