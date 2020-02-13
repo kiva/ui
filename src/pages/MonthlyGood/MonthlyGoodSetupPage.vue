@@ -201,7 +201,7 @@
 									type="submit"
 									data-test="confirm-monthly-good-button"
 									class="smaller"
-									:disabled="$v.$invalid"
+									:disabled="$v.$invalid || submitting"
 									@click.native="submitMonthlyGood()"
 								>
 									Confirm <kv-loading-spinner v-if="submitting" />
@@ -459,11 +459,8 @@ export default {
 					this.$showTipMsg(errorMessage, 'error');
 				} else {
 					this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
-
-					// !TODO send to thanks page
-					console.log('Send to Thanks Page', data);
-					// send to thanks
-					// self._sendToThanks();
+					// Send to thanks page
+					this.$router.push({ path: '/monthlygood-ui/thanks' });
 				}
 			}).catch(error => {
 				this.$showTipMsg(error, 'error');
