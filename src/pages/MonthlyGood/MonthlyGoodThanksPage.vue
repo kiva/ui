@@ -56,7 +56,7 @@ export default {
 		return {
 			mgAmount: 0,
 			donation: 0,
-			dayOfMonth: 1,
+			dayOfMonth: new Date().getDate(),
 			// user flags
 			isMonthlyGoodSubscriber: false,
 		};
