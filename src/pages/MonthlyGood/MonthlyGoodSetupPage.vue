@@ -8,7 +8,11 @@
 				<h3 class="text-center featured-text">
 					Review and set up your monthly contribution
 				</h3>
-				<form class="monthly-good-form" @submit.prevent novalidate>
+				<form
+					class="monthly-good-form"
+					@submit.prevent="hasBillingAgreement ? submitMonthlyGood : null"
+					novalidate
+				>
 					<div class="panel zigzag-bottom">
 						<div class="row align-center text-center">
 							<div class="medium-10 small-12 columns">
@@ -296,7 +300,7 @@ export default {
 			selectedGroup: 'default',
 			mgAmount: 25,
 			isDayInputShown: false,
-			dayOfMonth: 1,
+			dayOfMonth: new Date().getDate(),
 			donation: 25 * 0.15,
 			donationCheckbox: true,
 			donationOptionSelected: '15',
