@@ -104,7 +104,6 @@ export default {
 			const daysIdle = differenceInCalendarDays(new Date(), idleStartTime);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle > 0 ? this.lendAfterDaysIdle - daysIdle : 0;
 			const daysUntilMay = differenceInCalendarDays(new Date('5/20/2020'), new Date());
-			console.log(idleStartTime, daysIdle, daysUntilLend, daysUntilMay);
 
 			// TEMPORARY - Remove after 5/20/2020
 			// Special launch conditions for Autolenders with unchanged default of 90 days
