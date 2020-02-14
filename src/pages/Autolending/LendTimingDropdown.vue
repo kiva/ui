@@ -94,6 +94,7 @@ export default {
 			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
 			const loanAndDonationAmountFormatted = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
 
+			// Lender's balance is lower that the amount of a loan share + their chosen donation percentage
 			if (!this.cIdleStartTime || userBalance < loanAndDonationAmount) {
 				// eslint-disable-next-line max-len
 				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
@@ -101,7 +102,27 @@ export default {
 
 			const idleStartTime = Date.parse(this.cIdleStartTime);
 			const daysIdle = differenceInCalendarDays(new Date(), idleStartTime);
-			const daysUntilLend = this.lendAfterDaysIdle - daysIdle;
+			const daysUntilLend = this.lendAfterDaysIdle - daysIdle > 0 ? this.lendAfterDaysIdle - daysIdle : 0;
+			const daysUntilMay = differenceInCalendarDays(new Date('5/20/2020'), new Date());
+			console.log(idleStartTime, daysIdle, daysUntilLend, daysUntilMay);
+
+			// TEMPORARY - Remove after 5/20/2020
+			// Special launch conditions for Autolenders with unchanged default of 90 days
+			if (this.lendAfterDaysIdle === 90 && daysUntilMay >= 0) {
+				// lender has a qualifying credit change after 2/20/2020 thus resetting their 90 days beyond 5/20/2020
+				if (daysUntilLend > daysUntilMay) {
+					// eslint-disable-next-line max-len
+					return `You haven’t made a loan yourself in ${daysIdle} days –– your balance will be eligible for auto-lending in ${daysUntilLend} days.`;
+				}
+				// lender's 90 eligible window falls between now and 5/20/2020
+				if (daysUntilLend > 0 && daysUntilLend <= daysUntilMay) {
+					// eslint-disable-next-line max-len
+					return `You haven’t made a loan yourself in ${daysIdle} days—your balance will be eligible for auto-lending on May 20, 2020.`;
+				}
+				// lender is already eligible to autolend, but delayed until program launch
+				// eslint-disable-next-line max-len
+				return `Since you haven’t made a loan yourself in ${daysIdle} days, you will be eligible for auto-lending on May 20, 2020 when the first 90-day auto-loans are made.`;
+			}
 
 			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
 			if (daysUntilLend > 0) {
