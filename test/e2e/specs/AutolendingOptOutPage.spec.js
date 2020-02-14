@@ -3,6 +3,8 @@ import wwwPageMock from '../fixtures/wwwPageMock';
 describe('Autolending Opt Out Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock());
+		// Hide tracking cookie notice banner
+		cy.setCookie('kvgdpr', 'true');
 	});
 
 	describe('Visits autolending opt-out page', () => {

@@ -19,6 +19,8 @@ describe('Autolending Page Spec', () => {
 				totalCount: 2500,
 			}
 		});
+		// Hide tracking cookie notice banner
+		cy.setCookie('kvgdpr', 'true');
 		// Prevents the window beforeunload event from getting added
 		// which blocks Cypress from exiting test correctly
 		cy.on('window:before:load', window => {
