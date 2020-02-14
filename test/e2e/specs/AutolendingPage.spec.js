@@ -176,8 +176,8 @@ describe('Autolending Page Spec', () => {
 				AutolendProfile: {
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: subDays(now, 95),
-					lendAfterDaysIdle: 90,
+					cIdleStartTime: subDays(now, 55),
+					lendAfterDaysIdle: 45,
 					donationPercentage: 15
 				},
 				// This is setting the user's balance
@@ -188,7 +188,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert the message says the user has been idle over 95 days and lending will start immediately
-			cy.get('[data-test=timing-explanation]').contains('over 95 days').contains('immediately');
+			cy.get('[data-test=timing-explanation]').contains('over 55 days').contains('immediately');
 		});
 	});
 });
