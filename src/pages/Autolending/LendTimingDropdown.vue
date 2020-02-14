@@ -112,12 +112,12 @@ export default {
 				// lender has a qualifying credit change after 2/20/2020 thus resetting their 90 days beyond 5/20/2020
 				if (daysUntilLend > daysUntilMay) {
 					// eslint-disable-next-line max-len
-					return `You haven’t made a loan yourself in ${daysIdle} days –– your balance will be eligible for auto-lending in ${daysUntilLend} days.`;
+					return `You haven’t made a loan yourself in ${daysIdle} days – your balance will be eligible for auto-lending in ${daysUntilLend} days.`;
 				}
 				// lender's 90 eligible window falls between now and 5/20/2020
 				if (daysUntilLend > 0 && daysUntilLend <= daysUntilMay) {
 					// eslint-disable-next-line max-len
-					return `You haven’t made a loan yourself in ${daysIdle} days—your balance will be eligible for auto-lending on May 20, 2020.`;
+					return `You haven’t made a loan yourself in ${daysIdle} days – your balance will be eligible for auto-lending on May 20, 2020.`;
 				}
 				// lender is already eligible to autolend, but delayed until program launch
 				// eslint-disable-next-line max-len

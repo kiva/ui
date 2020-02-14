@@ -190,5 +190,53 @@ describe('Autolending Page Spec', () => {
 			// Assert the message says the user has been idle over 95 days and lending will start immediately
 			cy.get('[data-test=timing-explanation]').contains('over 55 days').contains('immediately');
 		});
+
+		// Special Conditions for Lenders with 90 day term at launch
+		it('Explains that autolending will start on May 20th 2020 if user already eligible and idle', () => {
+			const now = new Date();
+
+			cy.mock({
+				AutolendProfile: {
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: subDays(now, 155),
+					lendAfterDaysIdle: 90,
+					donationPercentage: 15
+				},
+				// This is setting the user's balance
+				Money: '40.90'
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the message says the user will be eligible on May 20, 2020
+			cy.get('[data-test=timing-explanation]')
+				.contains('May 20, 2020').contains('when the first 90-day auto-loans are made');
+		});
+
+		// Special Conditions for Lenders with 90 day term at launch
+		it('Explains that autolending will start in May if user becomes eligible before May 20th 2020', () => {
+			const now = new Date();
+
+			cy.mock({
+				AutolendProfile: {
+					isEnabled: true,
+					enableAfter: 0,
+					cIdleStartTime: subDays(now, 5),
+					lendAfterDaysIdle: 90,
+					donationPercentage: 15
+				},
+				// This is setting the user's balance
+				Money: '40.90'
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the message says the user will be eligible on May 20, 2020
+			cy.get('[data-test=timing-explanation]')
+				.contains('your balance will be eligible').contains('May 20, 2020');
+		});
 	});
 });
