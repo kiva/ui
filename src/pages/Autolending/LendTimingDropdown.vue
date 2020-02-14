@@ -192,8 +192,8 @@ export default {
 @import 'settings';
 
 .lend-timing-dropdown {
+	margin-bottom: 1rem;
 	margin-left: 3rem;
-	margin-top: -0.5rem;
 
 	.text-notice {
 		color: $kiva-text-light;

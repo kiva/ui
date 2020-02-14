@@ -15,10 +15,9 @@
 			<main-toggle />
 		</div>
 		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
-			<lend-timing-dropdown />
 			<!-- main toggles -->
-			<div class="setting-group">
-				<!-- timing dropdown -->
+			<div class="main-settings setting-group">
+				<lend-timing-dropdown />
 				<donation-dropdown />
 				<!-- kiva chooses for me -->
 			</div>
@@ -77,7 +76,6 @@
 			</kv-expandable>
 		</div>
 		<div class="row column save-button-area">
-			<!-- save button -->
 			<save-button class="show-for-large" />
 		</div>
 		<!-- mobile-only footer -->
@@ -278,6 +276,10 @@ $autolending-font-size: rem-calc(18.8);
 		position: relative;
 		margin: 2rem 0;
 		border-bottom: 1px solid $kiva-stroke-gray;
+
+		&.main-settings {
+			margin-top: 0;
+		}
 	}
 
 	.criteria-title {

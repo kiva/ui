@@ -74,6 +74,11 @@ export default {
 @import 'settings';
 
 .main-toggle {
+	.toggle-text-wrapper {
+		margin-bottom: 0.5rem;
+		margin-left: 0.25rem;
+	}
+
 	.toggle-text {
 		font-weight: 500;
 	}
