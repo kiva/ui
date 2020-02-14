@@ -81,13 +81,15 @@ export default {
 	},
 	methods: {
 		checkPosition() {
-			if (this.$el && this.$el.parentElement) {
+			if (this.$el && this.$el.parentElement && this.$el.parentElement.style.display !== 'none') {
 				const rect = this.$el.parentElement.getBoundingClientRect();
 				if (rect.top - this.marginTop > 0) {
 					this.fixed = false;
 				} else {
 					this.fixed = true;
 				}
+			} else {
+				this.fixed = false;
 			}
 		},
 		checkMargins() {

@@ -193,4 +193,66 @@ describe('Autolending Page Spec', () => {
 			cy.get('[data-test=timing-explanation]').contains('over 95 days').contains('immediately');
 		});
 	});
+
+	describe('Kiva Chooses toggle', () => {
+		it('Can be turned from Kiva Chooses to User Chooses', () => {
+			cy.mock({
+				AutolendProfile: (obj, args) => {
+					// When arguments are provided, mock kivaChooses with the same value that is passed in
+					if (args && args.profile && typeof args.profile.kivaChooses === 'boolean') {
+						return {
+							isEnabled: true,
+							kivaChooses: args.profile.kivaChooses,
+						};
+					}
+					// Mock kivaChooses as enabled when no arguments are provided
+					return {
+						isEnabled: true,
+						kivaChooses: true,
+					};
+				},
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+			// Assert that 'Let Kiva select the best loans for me' is selected
+			cy.get('[data-test=kiva-chooses-true]').should('be.checked');
+			// Select 'I want to set my own auto-lending criteria'
+			cy.get('[data-test=kiva-chooses-false] + label').click();
+			// Save the profile settings
+			saveSettings();
+			// Assert that 'I want to set my own auto-lending criteria' is selected
+			cy.get('[data-test=kiva-chooses-false]').should('be.checked');
+		});
+
+		it('Can be turned from User Chooses to Kiva Chooses', () => {
+			cy.mock({
+				AutolendProfile: (obj, args) => {
+					// When arguments are provided, mock kivaChooses with the same value that is passed in
+					if (args && args.profile && typeof args.profile.kivaChooses === 'boolean') {
+						return {
+							isEnabled: true,
+							kivaChooses: args.profile.kivaChooses,
+						};
+					}
+					// Mock kivaChooses as enabled when no arguments are provided
+					return {
+						isEnabled: true,
+						kivaChooses: false,
+					};
+				},
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+			// Assert that 'I want to set my own auto-lending criteria' is selected
+			cy.get('[data-test=kiva-chooses-false]').should('be.checked');
+			// Select 'Let Kiva select the best loans for me'
+			cy.get('[data-test=kiva-chooses-true] + label').click();
+			// Save the profile settings
+			saveSettings();
+			// Assert that 'Let Kiva select the best loans for me' is selected
+			cy.get('[data-test=kiva-chooses-true]').should('be.checked');
+		});
+	});
 });
