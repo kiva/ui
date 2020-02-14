@@ -51,6 +51,10 @@ module.exports = merge(base, {
 		intercom: {
 			enable: true,
 		},
+		paypal : {
+			url: 'www.sandbox.paypal.com',
+			environment: 'sandbox'
+		},
 	},
 	server: {
 		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',

@@ -72,8 +72,7 @@ export default {
 			// render paypal button
 			paypal.Button.render(
 				{
-					// TODO: Should we have a global key/switch for Prod
-					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
+					env: this.$appConfig.paypal.environment,
 					commit: true,
 					payment: () => {
 						this.$kvTrackEvent('basket', 'Paypal Payment', 'Button Click');

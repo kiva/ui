@@ -71,8 +71,7 @@ export default {
 			// render paypal button
 			paypal.Button.render(
 				{
-					// TODO: Should we have a global key/switch for Prod
-					env: (window.location.host.indexOf('www.kiva.org') !== -1) ? 'production' : 'sandbox',
+					env: this.$appConfig.paypal.environment,
 					payment: () => {
 						return new paypal.Promise((resolve, reject) => {
 							// Get Express checkout token

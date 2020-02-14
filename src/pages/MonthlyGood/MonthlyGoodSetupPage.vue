@@ -1,7 +1,7 @@
 <template>
 	<www-page>
 		<div class="row align-center monthly-good-setup-page">
-			<div class="small-12 medium-11 large-10 column" v-if="!isMonthlyGoodSubscriber">
+			<div class="small-12 medium-11 large-10 column" v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription">
 				<h1 class="text-center impact-text">
 					Confirm your Good
 				</h1>
@@ -228,6 +228,11 @@
 				</form>
 			</div>
 			<already-subscribed-notice class="small-12 medium-11 large-8 column" v-if="isMonthlyGoodSubscriber" />
+			<legacy-subscriber-notice
+				class="small-12 medium-11 large-8 column"
+				:legacy-subscriptions="legacySubs"
+				v-if="hasLegacySubscription"
+			/>
 		</div>
 	</www-page>
 </template>
@@ -240,6 +245,7 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AlreadySubscribedNotice from './AlreadySubscribedNotice';
+import LegacySubscriberNotice from './LegacySubscriberNotice';
 import PayPalMg from './PayPalMG';
 
 import IconPencil from '@/assets/inline-svgs/icons/pencil.svg';
@@ -254,6 +260,11 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const pageQuery = gql`{
 	my {
+		subscriptions {
+			values {
+				subscrId
+			}
+		}
 		autoDeposit {
 			id
 			amount
@@ -292,6 +303,7 @@ export default {
 		KvCurrencyInput,
 		KvDropdownRounded,
 		KvLoadingSpinner,
+		LegacySubscriberNotice,
 		PayPalMg,
 		WwwPage,
 	},
@@ -306,11 +318,13 @@ export default {
 			donationOptionSelected: '15',
 			isDonationOptionsDirty: false,
 			submitting: false,
+			legacySubs: [],
 			// user flags
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
 			hasAutoLending: false,
 			hasBillingAgreement: false,
+			hasLegacySubscription: false,
 		};
 	},
 	mixins: [
@@ -362,6 +376,8 @@ export default {
 								'my.payPalBillingAgreement.hasPayPalBillingAgreement',
 								false
 							);
+							this.legacySubs = _get(data, 'my.subscriptions.values', []);
+							this.hasLegacySubscription = this.legacySubs.length > 0;
 						});
 				})
 				.catch(e => {
@@ -381,6 +397,8 @@ export default {
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
 			this.hasBillingAgreement = _get(data, 'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
+			this.legacySubs = _get(data, 'my.subscriptions.values', []);
+			this.hasLegacySubscription = this.legacySubs.length > 0;
 		},
 	},
 	created() {
