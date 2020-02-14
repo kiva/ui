@@ -57,6 +57,10 @@ module.exports = {
 			enable: true,
 			appId: 't3epx9oz'
 		},
+		paypal : {
+			url: 'www.paypal.com',
+			environment: 'production'
+		},
 	},
 	server: {
 		port: 8888,

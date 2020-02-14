@@ -6,7 +6,7 @@
 
 		<p class="text-center">
 			Changes to this contribution can be made in your
-			<a class="credit-settings-link" href="/settings/credit">credit settings</a>.
+			<a href="/settings/credit">credit settings</a>.
 		</p>
 	</div>
 </template>
