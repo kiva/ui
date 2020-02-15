@@ -24,7 +24,7 @@
 		<div
 			data-test="timing-explanation"
 			class="autolend-explanation-text"
-			v-if="isEnabled && this.cIdleStartTime !== null"
+			v-if="isEnabled"
 		>
 			{{ autolendExplanationText }}
 		</div>
