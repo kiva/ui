@@ -27,7 +27,7 @@
 				</h1>
 
 				<h3>
-					(Effective February 20, 2020)*
+					(Last updated February 19, 2020)*
 				</h3>
 
 				<p class="light">
