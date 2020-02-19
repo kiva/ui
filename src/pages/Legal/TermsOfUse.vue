@@ -4,12 +4,17 @@
 			<tertiary-menu class="show-for-large large-2 tertiary-menu-terms">
 				<ul>
 					<li>
-						<router-link to="/legal/terms-of-use-february-2020">
+						<router-link to="/legal/privacy">
+							Privacy Policy
+						</router-link>
+					</li>
+					<li>
+						<router-link to="/legal/terms">
 							Terms of Use
 						</router-link>
 					</li>
 					<li>
-						<router-link to="/legal/promo-terms-of-use-february-2020">
+						<router-link to="/legal/promo-terms">
 							Promotional Lending Terms and Conditions
 						</router-link>
 					</li>
@@ -22,7 +27,7 @@
 				</h1>
 
 				<h3>
-					(Effective February 20, 2020)*
+					(Last updated February 19, 2020)*
 				</h3>
 
 				<p class="light">
