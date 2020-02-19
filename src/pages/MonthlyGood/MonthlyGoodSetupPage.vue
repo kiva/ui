@@ -371,11 +371,8 @@ export default {
 							this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 							this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 							this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
-							this.hasBillingAgreement = _get(
-								data,
-								'my.payPalBillingAgreement.hasPayPalBillingAgreement',
-								false
-							);
+							this.hasBillingAgreement = _get(data,
+								'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
 							this.legacySubs = _get(data, 'my.subscriptions.values', []);
 							this.hasLegacySubscription = this.legacySubs.length > 0;
 						});
@@ -396,7 +393,8 @@ export default {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
-			this.hasBillingAgreement = _get(data, 'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
+			this.hasBillingAgreement = _get(data,
+				'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 		},
@@ -409,6 +407,13 @@ export default {
 		if (!Number.isNaN(Number(this.amount))) {
 			this.mgAmount = this.amount;
 			this.donation = this.amount * 0.15;
+		}
+		// Fire snowplow events
+		if (this.isMonthlyGoodSubscriber) {
+			this.$kvTrackEvent('Registration', 'unsuccessful-monthly-good-reg', 'has-mg');
+		}
+		if (this.hasLegacySubscription) {
+			this.$kvTrackEvent('Registration', 'unsuccessful-monthly-good-reg', 'has-legacy-subscription');
 		}
 	},
 	watch: {
