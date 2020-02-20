@@ -1,4 +1,5 @@
 import _filter from 'lodash/filter';
+import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
 import getDeepComponents from './getDeepComponents';
@@ -6,20 +7,33 @@ import getDeepComponents from './getDeepComponents';
 // initial basketId from cookie
 let basketId = cookieStore.get('kvbskt');
 
-export function handleApolloErrors(handlers, errors, args) {
-	return Promise.all(_map(handlers, (handler, code) => {
-		// Get all the errors that match this handlers' error code
-		const graphQLErrors = _filter(errors, { code });
-		if (graphQLErrors.length) {
-			// Call the error handler with the errors and any additional args passed in from the top function
-			const handlerPromise = handler({ graphQLErrors, ...args });
-			// Warn against poorly-formed error handler functions
-			if (!(handlerPromise instanceof Promise)) {
-				throw new TypeError('Error handler functions must return a Promise');
-			}
-			return handlerPromise;
+export function handleApolloErrors(handlers = {}, errors, args) {
+	// Get the error code for each error from either error.code or error.extensions.code
+	const formattedErrors = _map(errors, error => {
+		const extensions = error.extensions || {};
+		return {
+			...error,
+			code: error.code || extensions.code,
+		};
+	});
+	// Group the errors by their error code
+	const errorsByCode = _groupBy(formattedErrors, 'code');
+	// Get promises handling all of the errors
+	return Promise.all(_map(errorsByCode, (graphQLErrors, code) => {
+		// Try to get the handler for this error code
+		const handler = handlers[code];
+		// Warn about errors being unhandled if a handler wasn't found
+		if (!handler) {
+			console.warn(`Warning: No error handler for error code '${code}'`);
+			return Promise.resolve();
 		}
-		return Promise.resolve();
+		// Call the error handler with the errors and any additional args passed in from the top function
+		const handlerPromise = handler({ graphQLErrors, ...args });
+		// Throw error for malformed error handler functions
+		if (!(handlerPromise instanceof Promise)) {
+			throw new TypeError('Error handler functions must return a Promise');
+		}
+		return handlerPromise;
 	}));
 }
 
