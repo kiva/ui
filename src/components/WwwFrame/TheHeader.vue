@@ -1,5 +1,5 @@
 <template>
-	<header class="top-nav">
+	<header class="top-nav" :style="cssVars">
 		<div class="header-row row">
 			<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
 				<kv-icon name="new-kiva-logo" />
@@ -315,6 +315,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		theme: {
+			type: Object,
+			default: () => {}
+		}
 	},
 	computed: {
 		isTrustee() {
@@ -336,6 +340,16 @@ export default {
 		showPopupLogin() {
 			return false;
 			// return this.kvAuth0.enabled && this.$route.fullPath !== '/';
+		},
+		cssVars() {
+			if (this.theme) {
+				return {
+					'--kv-header-background-color': this.theme.backgroundColor || '',
+					'--kv-header-foreground-color': this.theme.foregroundColor || '',
+					'--kv-header-accent-color': this.theme.accentColor || '',
+				};
+			}
+			return {};
 		}
 	},
 	apollo: {
@@ -423,15 +437,18 @@ $form-padding-large: 0.6rem;
 $close-search-button-size: 2.5rem;
 
 .top-nav {
-	background-color: $header-color;
+	background: $header-color; /* IE11 fallback */
+	background: var(--kv-header-background-color, $header-color);
 	font-size: $top-nav-font-size;
 	font-weight: $global-weight-highlight;
 	z-index: 1000;
 
 	.amount {
 		@include breakpoint(large) {
-			color: $header-color;
-			background-color: $text-color;
+			color: $header-color; /* IE11 fallback */
+			color: var(--kv-header-background-color, $header-color);
+			background: $text-color; /* IE11 fallback */
+			background: var(--kv-header-foreground-color, $text-color);
 			padding: rem-calc(1) rem-calc(7);
 		}
 	}
@@ -512,7 +529,8 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $text-color;
+		fill: $text-color; /* IE11 fallback */
+		fill: var(--kv-header-foreground-color, $text-color);
 		max-height: $header-height;
 
 		@include breakpoint(large) {
@@ -539,7 +557,8 @@ $close-search-button-size: 2.5rem;
 }
 
 .header-button {
-	border-right: 1px solid $divider-color;
+	border-right: 1px solid $divider-color; /* IE11 fallback */
+	border-right: 1px solid var(--kv-header-accent-color, $divider-color);
 	text-align: center;
 	white-space: nowrap;
 	flex-grow: 2;
@@ -548,16 +567,24 @@ $close-search-button-size: 2.5rem;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	color: $text-color; /* IE11 fallback */
+	color: var(--kv-header-foreground-color, $text-color);
 
 	&:last-child {
 		border-right: none;
 	}
 
-	&:link,
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.15);
+		text-decoration: none;
+		color: $text-color; /* IE11 fallback */
+		color: var(--kv-header-foreground-color, $text-color);
+	}
+
 	&:visited,
 	&:active {
-		color: white;
-		text-decoration: none;
+		color: $text-color; /* IE11 fallback */
+		color: var(--kv-header-foreground-color, $text-color);
 	}
 
 	@include breakpoint(large) {
@@ -566,7 +593,8 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.icon-triangle {
-		fill: $text-color;
+		fill: $text-color; /* IE11 fallback */
+		fill: var(--kv-header-foreground-color, $text-color);
 		width: 0.5rem;
 		height: 0.5rem;
 		transition: transform 400ms ease;
@@ -581,11 +609,6 @@ $close-search-button-size: 2.5rem;
 	@media print {
 		border: none;
 	}
-}
-
-.header-button:hover {
-	background-color: $hover-color;
-	color: $text-color;
 }
 
 .header-button[aria-expanded="true"] .icon-triangle {
@@ -603,7 +626,6 @@ $close-search-button-size: 2.5rem;
 
 	@include breakpoint(large) {
 		flex-grow: 0;
-		border-right: none;
 	}
 
 	.icon {
@@ -613,11 +635,13 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.search-icon {
-		fill: $text-color;
+		fill: $text-color; /* IE11 fallback */
+		fill: var(--kv-header-foreground-color, $text-color);
 	}
 
 	.close-icon {
-		stroke: $text-color;
+		stroke: $text-color; /* IE11 fallback */
+		stroke: var(--kv-header-foreground-color, $text-color);
 	}
 }
 
@@ -625,7 +649,8 @@ $close-search-button-size: 2.5rem;
 	flex-grow: 0;
 	order: -1;
 	height: 100%;
-	border-right: 1px solid $divider-color;
+	border-right: 1px solid $divider-color; /* IE11 fallback */
+	border-right: 1px solid var(--kv-header-accent-color, $divider-color);
 	text-align: center;
 
 	@include breakpoint(large) {
@@ -644,8 +669,8 @@ $close-search-button-size: 2.5rem;
 	top: 0;
 	height: 100%;
 	width: calc(100% + 1px);
-	background-color: $header-color;
-	border-right: solid 1px $divider-color;
+	border-right: 1px solid $divider-color; /* IE11 fallback */
+	border-right: var(--kv-header-accent-color, $divider-color);
 	transition: width 0.5s ease;
 	display: flex;
 
