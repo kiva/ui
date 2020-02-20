@@ -39,6 +39,7 @@
 
 <script>
 import confetti from 'canvas-confetti';
+import numeral from 'numeral';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
@@ -71,12 +72,12 @@ export default {
 		preFetch: true,
 		preFetchVariables({ route }) {
 			return {
-				checkoutId: parseInt(route.query.kiva_transaction_id, 10)
+				checkoutId: numeral(route.query.kiva_transaction_id, 10).value()
 			};
 		},
 		variables() {
 			return {
-				checkoutId: parseInt(this.$route.query.kiva_transaction_id, 10)
+				checkoutId: numeral(this.$route.query.kiva_transaction_id, 10).value()
 			};
 		},
 		result({ data }) {
