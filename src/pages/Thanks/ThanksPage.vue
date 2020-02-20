@@ -72,12 +72,12 @@ export default {
 		preFetch: true,
 		preFetchVariables({ route }) {
 			return {
-				checkoutId: numeral(route.query.kiva_transaction_id, 10).value()
+				checkoutId: numeral(route.query.kiva_transaction_id).value()
 			};
 		},
 		variables() {
 			return {
-				checkoutId: numeral(this.$route.query.kiva_transaction_id, 10).value()
+				checkoutId: numeral(this.$route.query.kiva_transaction_id).value()
 			};
 		},
 		result({ data }) {
