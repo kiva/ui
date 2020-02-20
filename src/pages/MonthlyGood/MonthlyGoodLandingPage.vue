@@ -99,7 +99,7 @@ export default {
 	},
 	data() {
 		return {
-			isExperimentActive: false, // !TODO CASH-1774
+			isExperimentActive: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
 			selectedGroup: 'default',
@@ -173,7 +173,7 @@ export default {
 		.overlay-column {
 			max-width: none;
 			@include breakpoint(medium) {
-				max-width: 500px;
+				max-width: 31.25rem;
 			}
 		}
 	}
@@ -254,7 +254,7 @@ export default {
 			padding: 1.5rem 0.5rem 0.5rem;
 			background-color: rgba(0, 0, 0, 0.35);
 			@include breakpoint(large) {
-				max-width: 500px;
+				max-width: 31.25rem;
 				padding: 1.5rem 2rem 1.25rem 2rem;
 			}
 		}
@@ -262,7 +262,7 @@ export default {
 
 	::v-deep .images > div,
 	::v-deep .images img {
-		min-height: 300px;
+		min-height: 18.75rem;
 	}
 
 	.mg-headline,
@@ -278,7 +278,7 @@ export default {
 	}
 
 	.mg-subhead {
-		max-width: 450px;
+		max-width: 28.125rem;
 		margin: 1rem 0 1.35rem 0;
 	}
 }
