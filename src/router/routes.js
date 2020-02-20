@@ -30,13 +30,13 @@ export default [
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 
 	// TODO! These are temporary routes
-	{ path: '/monthlygood-ui', component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage') },
+	{ path: '/monthlygood', component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage') },
 	{
-		path: '/monthlygood-ui/setup',
+		path: '/monthlygood/setup',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
 		props: route => ({ amount: Number(route.query.amount), group: route.query.group })
 	},
-	{ path: '/monthlygood-ui/thanks', component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage') },
+	{ path: '/monthlygood/thanks', component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage') },
 
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
