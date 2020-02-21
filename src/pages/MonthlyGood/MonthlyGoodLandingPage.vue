@@ -162,8 +162,6 @@ export default {
 			id: 'Experiment:mg_hero',
 			fragment: experimentVersionFragment,
 		}) || {};
-		console.log('Experiment:mg_hero', mgHeroExperiment);
-
 		this.isExperimentActive = mgHeroExperiment.version === 'shown';
 		// Fire Event for EXP-CASH-1774-Feb2020
 		this.$kvTrackEvent(
