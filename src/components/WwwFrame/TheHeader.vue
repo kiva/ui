@@ -427,7 +427,7 @@ export default {
 	},
 	mounted() {
 		if ('requestIdleCallback' in window) {
-			requestIdleCallback(this.loadLendInfo);
+			requestIdleCallback(this.loadLendInfo); // preload the Lend dropdown if we're idle
 		}
 	},
 	watch: {
