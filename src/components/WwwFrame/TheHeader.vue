@@ -448,27 +448,26 @@ export default {
 $top-nav-font-size: 1.125rem;
 $header-height: rem-calc(45);
 $header-height-large: rem-calc(64);
-$header-color: $kiva-green;
-$text-color: $white;
-$hover-color: $kiva-navdivider-green;
-$divider-color: $kiva-navdivider-green;
+$header-background-color: $kiva-green;
+$header-foreground-color: $white;
+$header-accent-color: $kiva-navdivider-green;
 $form-padding: 0.32rem;
 $form-padding-large: 0.6rem;
 $close-search-button-size: 2.5rem;
 
 .top-nav {
-	background: $header-color; // IE11 fallback
-	background: var(--kv-header-background-color, $header-color);
+	background: $header-background-color; // IE11 fallback
+	background: var(--kv-header-background-color, $header-background-color);
 	font-size: $top-nav-font-size;
 	font-weight: $global-weight-highlight;
 	z-index: 1000;
 
 	.amount {
 		@include breakpoint(large) {
-			color: $header-color; // IE11 fallback
-			color: var(--kv-header-background-color, $header-color);
-			background: $text-color; // IE11 fallback
-			background: var(--kv-header-foreground-color, $text-color);
+			color: $header-background-color; // IE11 fallback
+			color: var(--kv-header-background-color, $header-background-color);
+			background: $header-foreground-color; // IE11 fallback
+			background: var(--kv-header-foreground-color, $header-foreground-color);
 			padding: rem-calc(1) rem-calc(7);
 		}
 	}
@@ -549,8 +548,8 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $text-color; // IE11 fallback
-		fill: var(--kv-header-foreground-color, $text-color);
+		fill: $header-foreground-color; // IE11 fallback
+		fill: var(--kv-header-foreground-color, $header-foreground-color);
 		max-height: $header-height;
 
 		@include breakpoint(large) {
@@ -577,8 +576,8 @@ $close-search-button-size: 2.5rem;
 }
 
 .header-button {
-	border-right: 1px solid $divider-color; // IE11 fallback
-	border-right: 1px solid var(--kv-header-accent-color, $divider-color);
+	border-right: 1px solid $header-accent-color; // IE11 fallback
+	border-right: 1px solid var(--kv-header-accent-color, $header-accent-color);
 	text-align: center;
 	white-space: nowrap;
 	flex-grow: 2;
@@ -587,24 +586,25 @@ $close-search-button-size: 2.5rem;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	color: $text-color; // IE11 fallback
-	color: var(--kv-header-foreground-color, $text-color);
+	color: $header-foreground-color; // IE11 fallback
+	color: var(--kv-header-foreground-color, $header-foreground-color);
 
 	&:last-child {
 		border-right: none;
 	}
 
 	&:hover {
-		background-color: rgba(0, 0, 0, 0.15);
+		background-color: $header-accent-color; // IE11 fallback
+		background-color: var(--kv-header-accent-color, $header-accent-color);
 		text-decoration: none;
-		color: $text-color; // IE11 fallback
-		color: var(--kv-header-foreground-color, $text-color);
+		color: $header-foreground-color; // IE11 fallback
+		color: var(--kv-header-foreground-color, $header-foreground-color);
 	}
 
 	&:visited,
 	&:active {
-		color: $text-color; // IE11 fallback
-		color: var(--kv-header-foreground-color, $text-color);
+		color: $header-foreground-color; // IE11 fallback
+		color: var(--kv-header-foreground-color, $header-foreground-color);
 	}
 
 	@include breakpoint(large) {
@@ -613,8 +613,8 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.icon-triangle {
-		fill: $text-color; // IE11 fallback
-		fill: var(--kv-header-foreground-color, $text-color);
+		fill: $header-foreground-color; // IE11 fallback
+		fill: var(--kv-header-foreground-color, $header-foreground-color);
 		width: 0.5rem;
 		height: 0.5rem;
 		transition: transform 400ms ease;
@@ -655,13 +655,13 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.search-icon {
-		fill: $text-color; // IE11 fallback
-		fill: var(--kv-header-foreground-color, $text-color);
+		fill: $header-foreground-color; // IE11 fallback
+		fill: var(--kv-header-foreground-color, $header-foreground-color);
 	}
 
 	.close-icon {
-		stroke: $text-color; // IE11 fallback
-		stroke: var(--kv-header-foreground-color, $text-color);
+		stroke: $header-foreground-color; // IE11 fallback
+		stroke: var(--kv-header-foreground-color, $header-foreground-color);
 	}
 }
 
@@ -669,8 +669,8 @@ $close-search-button-size: 2.5rem;
 	flex-grow: 0;
 	order: -1;
 	height: 100%;
-	border-right: 1px solid $divider-color; // IE11 fallback
-	border-right: 1px solid var(--kv-header-accent-color, $divider-color);
+	border-right: 1px solid $header-accent-color; // IE11 fallback
+	border-right: 1px solid var(--kv-header-accent-color, $header-accent-color);
 	text-align: center;
 
 	@include breakpoint(large) {
@@ -689,8 +689,8 @@ $close-search-button-size: 2.5rem;
 	top: 0;
 	height: 100%;
 	width: calc(100% + 1px);
-	border-right: 1px solid $divider-color; // IE11 fallback
-	border-right: var(--kv-header-accent-color, $divider-color);
+	border-right: 1px solid $header-accent-color; // IE11 fallback
+	border-right: var(--kv-header-accent-color, $header-accent-color);
 	transition: width 0.5s ease;
 	display: flex;
 
