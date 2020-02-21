@@ -437,7 +437,7 @@ $form-padding-large: 0.6rem;
 $close-search-button-size: 2.5rem;
 
 .top-nav {
-	background: $header-color; /* IE11 fallback */
+	background: $header-color; // IE11 fallback
 	background: var(--kv-header-background-color, $header-color);
 	font-size: $top-nav-font-size;
 	font-weight: $global-weight-highlight;
@@ -445,9 +445,9 @@ $close-search-button-size: 2.5rem;
 
 	.amount {
 		@include breakpoint(large) {
-			color: $header-color; /* IE11 fallback */
+			color: $header-color; // IE11 fallback
 			color: var(--kv-header-background-color, $header-color);
-			background: $text-color; /* IE11 fallback */
+			background: $text-color; // IE11 fallback
 			background: var(--kv-header-foreground-color, $text-color);
 			padding: rem-calc(1) rem-calc(7);
 		}
@@ -529,7 +529,7 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $text-color; /* IE11 fallback */
+		fill: $text-color; // IE11 fallback
 		fill: var(--kv-header-foreground-color, $text-color);
 		max-height: $header-height;
 
@@ -557,7 +557,7 @@ $close-search-button-size: 2.5rem;
 }
 
 .header-button {
-	border-right: 1px solid $divider-color; /* IE11 fallback */
+	border-right: 1px solid $divider-color; // IE11 fallback
 	border-right: 1px solid var(--kv-header-accent-color, $divider-color);
 	text-align: center;
 	white-space: nowrap;
@@ -567,7 +567,7 @@ $close-search-button-size: 2.5rem;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	color: $text-color; /* IE11 fallback */
+	color: $text-color; // IE11 fallback
 	color: var(--kv-header-foreground-color, $text-color);
 
 	&:last-child {
@@ -577,13 +577,13 @@ $close-search-button-size: 2.5rem;
 	&:hover {
 		background-color: rgba(0, 0, 0, 0.15);
 		text-decoration: none;
-		color: $text-color; /* IE11 fallback */
+		color: $text-color; // IE11 fallback
 		color: var(--kv-header-foreground-color, $text-color);
 	}
 
 	&:visited,
 	&:active {
-		color: $text-color; /* IE11 fallback */
+		color: $text-color; // IE11 fallback
 		color: var(--kv-header-foreground-color, $text-color);
 	}
 
@@ -593,7 +593,7 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.icon-triangle {
-		fill: $text-color; /* IE11 fallback */
+		fill: $text-color; // IE11 fallback
 		fill: var(--kv-header-foreground-color, $text-color);
 		width: 0.5rem;
 		height: 0.5rem;
@@ -635,12 +635,12 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.search-icon {
-		fill: $text-color; /* IE11 fallback */
+		fill: $text-color; // IE11 fallback
 		fill: var(--kv-header-foreground-color, $text-color);
 	}
 
 	.close-icon {
-		stroke: $text-color; /* IE11 fallback */
+		stroke: $text-color; // IE11 fallback
 		stroke: var(--kv-header-foreground-color, $text-color);
 	}
 }
@@ -649,7 +649,7 @@ $close-search-button-size: 2.5rem;
 	flex-grow: 0;
 	order: -1;
 	height: 100%;
-	border-right: 1px solid $divider-color; /* IE11 fallback */
+	border-right: 1px solid $divider-color; // IE11 fallback
 	border-right: 1px solid var(--kv-header-accent-color, $divider-color);
 	text-align: center;
 
@@ -669,7 +669,7 @@ $close-search-button-size: 2.5rem;
 	top: 0;
 	height: 100%;
 	width: calc(100% + 1px);
-	border-right: 1px solid $divider-color; /* IE11 fallback */
+	border-right: 1px solid $divider-color; // IE11 fallback
 	border-right: var(--kv-header-accent-color, $divider-color);
 	transition: width 0.5s ease;
 	display: flex;
