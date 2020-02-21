@@ -1,288 +1,290 @@
 <template>
 	<header class="top-nav" :style="cssVars">
-		<div class="header-row row">
-			<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
-				<kv-icon name="new-kiva-logo" />
-			</router-link>
-			<router-link
-				:id="lendMenuId"
-				to="/lend-by-category"
-				class="header-button"
-				v-kv-track-event="['TopNav','click-Lend']"
-			>
-				<span>Lend <kv-icon name="triangle" /></span>
-			</router-link>
-			<button class="search-toggler header-button"
-				:class="{'show-for-large': isVisitor}"
-				:aria-expanded="searchOpen ? 'true' : 'false'"
-				:aria-pressed="searchOpen ? 'true' : 'false'"
-				aria-controls="top-nav-search-area"
-				v-show="!hideSearchInHeader"
-				@click="toggleSearch"
-				v-kv-track-event="['TopNav','click-search-toggle']"
-			>
-				<kv-icon v-show="!searchOpen" class="search-icon" name="magnify-glass" />
-				<kv-icon v-show="searchOpen" class="close-icon" name="x" />
-			</button>
-			<div class="flexible-center-area">
-				<div
-					id="top-nav-search-area"
-					v-if="!hideSearchInHeader"
-					:aria-hidden="searchOpen ? 'false' : 'true'"
+		<nav aria-label="Primary navigation">
+			<div class="header-row row">
+				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
+					<kv-icon name="new-kiva-logo" />
+				</router-link>
+				<router-link
+					:id="lendMenuId"
+					to="/lend-by-category"
+					class="header-button"
+					v-kv-track-event="['TopNav','click-Lend']"
 				>
-					<button class="close-search hide-for-large"
-						:aria-expanded="searchOpen ? 'true' : 'false'"
-						:aria-pressed="searchOpen ? 'true' : 'false'"
-						aria-controls="top-nav-search-area"
-						@click="toggleSearch"
-						v-kv-track-event="['TopNav','click-search-close-mobile']"
+					<span>Lend <kv-icon name="triangle" /></span>
+				</router-link>
+				<button class="search-toggler header-button"
+					:class="{'show-for-large': isVisitor}"
+					:aria-expanded="searchOpen ? 'true' : 'false'"
+					:aria-pressed="searchOpen ? 'true' : 'false'"
+					aria-controls="top-nav-search-area"
+					v-show="!hideSearchInHeader"
+					@click="toggleSearch"
+					v-kv-track-event="['TopNav','click-search-toggle']"
+				>
+					<kv-icon v-show="!searchOpen" class="search-icon" name="magnify-glass" />
+					<kv-icon v-show="searchOpen" class="close-icon" name="x" />
+				</button>
+				<div class="flexible-center-area">
+					<div
+						id="top-nav-search-area"
+						v-if="!hideSearchInHeader"
+						:aria-hidden="searchOpen ? 'false' : 'true'"
 					>
-						<kv-icon class="close-icon" name="x" />
-					</button>
-					<search-bar ref="search" />
+						<button class="close-search hide-for-large"
+							:aria-expanded="searchOpen ? 'true' : 'false'"
+							:aria-pressed="searchOpen ? 'true' : 'false'"
+							aria-controls="top-nav-search-area"
+							@click="toggleSearch"
+							v-kv-track-event="['TopNav','click-search-close-mobile']"
+						>
+							<kv-icon class="close-icon" name="x" />
+						</button>
+						<search-bar ref="search" />
+					</div>
+					<promo-banner-large />
 				</div>
-				<promo-banner-large />
+				<router-link
+					v-show="isVisitor"
+					to="/borrow"
+					class="header-button show-for-xlarge"
+					v-kv-track-event="['TopNav','click-Borrow']"
+				>
+					<span>Borrow</span>
+				</router-link>
+				<router-link
+					:id="aboutMenuId"
+					v-show="isVisitor"
+					to="/about"
+					class="header-button"
+					v-kv-track-event="['TopNav','click-About']"
+				>
+					<span>About <kv-icon name="triangle" /></span>
+				</router-link>
+				<router-link
+					v-show="showBasket"
+					to="/basket"
+					class="header-button show-for-large"
+					v-kv-track-event="['TopNav','click-Basket']"
+				>
+					<span>
+						<span class="amount">{{ basketCount }}</span>
+						Basket
+					</span>
+				</router-link>
+				<router-link
+					v-show="isVisitor"
+					to="/ui-login"
+					class="header-button"
+					:event="showPopupLogin ? '' : 'click'"
+					@click.native="auth0Login"
+					v-kv-track-event="['TopNav','click-Sign-in']"
+				>
+					<span>Sign in</span>
+				</router-link>
+				<router-link
+					v-show="!isVisitor"
+					:id="myKivaMenuId"
+					to="/portfolio"
+					class="header-button my-kiva"
+					v-kv-track-event="['TopNav','click-Portfolio']"
+				>
+					<span>
+						<span class="amount">{{ balance | numeral('$0') }}</span>
+						<img :src="profilePic">
+					</span>
+				</router-link>
 			</div>
-			<router-link
+			<promo-banner-small />
+			<kv-dropdown
+				:controller="lendMenuId"
+				@show.once="loadLendInfo"
+				@show="onLendMenuShow"
+				@hide="onLendMenuHide"
+			>
+				<the-lend-menu ref="lendMenu" />
+			</kv-dropdown>
+			<kv-dropdown
+				:controller="aboutMenuId"
 				v-show="isVisitor"
-				to="/borrow"
-				class="header-button show-for-xlarge"
-				v-kv-track-event="['TopNav','click-Borrow']"
+				class="dropdown-list"
 			>
-				<span>Borrow</span>
-			</router-link>
-			<router-link
-				:id="aboutMenuId"
-				v-show="isVisitor"
-				to="/about"
-				class="header-button"
-				v-kv-track-event="['TopNav','click-About']"
-			>
-				<span>About <kv-icon name="triangle" /></span>
-			</router-link>
-			<router-link
-				v-show="showBasket"
-				to="/basket"
-				class="header-button show-for-large"
-				v-kv-track-event="['TopNav','click-Basket']"
-			>
-				<span>
-					<span class="amount">{{ basketCount }}</span>
-					Basket
-				</span>
-			</router-link>
-			<router-link
-				v-show="isVisitor"
-				to="/ui-login"
-				class="header-button"
-				:event="showPopupLogin ? '' : 'click'"
-				@click.native="auth0Login"
-				v-kv-track-event="['TopNav','click-Sign-in']"
-			>
-				<span>Sign in</span>
-			</router-link>
-			<router-link
-				v-show="!isVisitor"
-				:id="myKivaMenuId"
-				to="/portfolio"
-				class="header-button my-kiva"
-				v-kv-track-event="['TopNav','click-Portfolio']"
-			>
-				<span>
-					<span class="amount">{{ balance | numeral('$0') }}</span>
-					<img :src="profilePic">
-				</span>
-			</router-link>
-		</div>
-		<promo-banner-small />
-		<kv-dropdown
-			:controller="lendMenuId"
-			@show.once="loadLendInfo"
-			@show="onLendMenuShow"
-			@hide="onLendMenuHide"
-		>
-			<the-lend-menu ref="lendMenu" />
-		</kv-dropdown>
-		<kv-dropdown
-			:controller="aboutMenuId"
-			v-show="isVisitor"
-			class="dropdown-list"
-		>
-			<ul>
-				<li>
-					<router-link
-						to="/about"
-						v-kv-track-event="['TopNav','click-About-About us']"
-					>
-						About us
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/how"
-						v-kv-track-event="['TopNav','click-About-How Kiva works']"
-					>
-						How Kiva works
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/where-kiva-works"
-						v-kv-track-event="['TopNav','click-About-Where Kiva works']"
-					>
-						Where Kiva works
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/impact"
-						v-kv-track-event="['TopNav','click-About-Impact']"
-					>
-						Impact
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/leadership"
-						v-kv-track-event="['TopNav','click-About-Leadership']"
-					>
-						Leadership
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/finances"
-						v-kv-track-event="['TopNav','click-About-Finances']"
-					>
-						Finances
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/press-center"
-						v-kv-track-event="['TopNav','click-About-Press']"
-					>
-						Press
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/about/due-diligence"
-						v-kv-track-event="['TopNav','click-About-Due diligence']"
-					>
-						Due diligence
-					</router-link>
-				</li>
-			</ul>
-		</kv-dropdown>
-		<kv-dropdown
-			:controller="myKivaMenuId"
-			v-show="!isVisitor"
-			class="dropdown-list"
-			id="my-kiva-dropdown"
-			ref="userDropdown"
-		>
-			<ul>
-				<template v-if="isBorrower">
+				<ul>
 					<li>
 						<router-link
-							to="/my/borrower"
-							v-kv-track-event="['TopNav','click-Portfolio-My borrower dashboard']"
+							to="/about"
+							v-kv-track-event="['TopNav','click-About-About us']"
 						>
-							My borrower dashboard
+							About us
 						</router-link>
 					</li>
-					<template v-if="loanId !== null">
+					<li>
+						<router-link
+							to="/about/how"
+							v-kv-track-event="['TopNav','click-About-How Kiva works']"
+						>
+							How Kiva works
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/about/where-kiva-works"
+							v-kv-track-event="['TopNav','click-About-Where Kiva works']"
+						>
+							Where Kiva works
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/about/impact"
+							v-kv-track-event="['TopNav','click-About-Impact']"
+						>
+							Impact
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/about/leadership"
+							v-kv-track-event="['TopNav','click-About-Leadership']"
+						>
+							Leadership
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/about/finances"
+							v-kv-track-event="['TopNav','click-About-Finances']"
+						>
+							Finances
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/about/press-center"
+							v-kv-track-event="['TopNav','click-About-Press']"
+						>
+							Press
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/about/due-diligence"
+							v-kv-track-event="['TopNav','click-About-Due diligence']"
+						>
+							Due diligence
+						</router-link>
+					</li>
+				</ul>
+			</kv-dropdown>
+			<kv-dropdown
+				:controller="myKivaMenuId"
+				v-show="!isVisitor"
+				class="dropdown-list"
+				id="my-kiva-dropdown"
+				ref="userDropdown"
+			>
+				<ul>
+					<template v-if="isBorrower">
 						<li>
 							<router-link
-								:to="`/lend/${loanId}`"
-								v-kv-track-event="['TopNav','click-Portfolio-My loan page']"
+								to="/my/borrower"
+								v-kv-track-event="['TopNav','click-Portfolio-My borrower dashboard']"
 							>
-								My loan page
+								My borrower dashboard
 							</router-link>
 						</li>
-						<li>
-							<router-link
-								:to="`/lend/${loanId}#loanComments`"
-								v-kv-track-event="['TopNav','click-Portfolio-My Conversations']"
-							>
-								My conversations
-							</router-link>
-						</li>
+						<template v-if="loanId !== null">
+							<li>
+								<router-link
+									:to="`/lend/${loanId}`"
+									v-kv-track-event="['TopNav','click-Portfolio-My loan page']"
+								>
+									My loan page
+								</router-link>
+							</li>
+							<li>
+								<router-link
+									:to="`/lend/${loanId}#loanComments`"
+									v-kv-track-event="['TopNav','click-Portfolio-My Conversations']"
+								>
+									My conversations
+								</router-link>
+							</li>
+						</template>
 					</template>
-				</template>
-				<template v-if="isTrustee">
-					<template v-if="!isBorrower">
+					<template v-if="isTrustee">
+						<template v-if="!isBorrower">
+							<li>
+								<router-link
+									:to="trusteeLoansUrl"
+									v-kv-track-event="['TopNav','click-Portfolio-My Trustee loans']"
+								>
+									My Trustee loans
+								</router-link>
+							</li>
+							<li>
+								<router-link
+									:to="`/trustees/${trusteeId}`"
+									v-kv-track-event="['TopNav','click-Portfolio-My public Trustee page']"
+								>
+									My public Trustee page
+								</router-link>
+							</li>
+						</template>
 						<li>
 							<router-link
-								:to="trusteeLoansUrl"
-								v-kv-track-event="['TopNav','click-Portfolio-My Trustee loans']"
+								to="/my/trustee"
+								v-kv-track-event="['TopNav','click-Portfolio-My Trustee dashboard']"
 							>
-								My Trustee loans
+								My Trustee dashboard
 							</router-link>
 						</li>
-						<li>
-							<router-link
-								:to="`/trustees/${trusteeId}`"
-								v-kv-track-event="['TopNav','click-Portfolio-My public Trustee page']"
-							>
-								My public Trustee page
-							</router-link>
-						</li>
+						<hr>
 					</template>
 					<li>
 						<router-link
-							to="/my/trustee"
-							v-kv-track-event="['TopNav','click-Portfolio-My Trustee dashboard']"
+							to="/portfolio"
+							v-kv-track-event="['TopNav','click-Portfolio-Portfolio']"
 						>
-							My Trustee dashboard
+							Portfolio
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/teams/my-teams"
+							v-kv-track-event="['TopNav','click-Portfolio-My teams']"
+						>
+							My teams
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/portfolio/donations"
+							v-kv-track-event="['TopNav','click-Portfolio-Donations']"
+						>
+							Donations
+						</router-link>
+					</li>
+					<li>
+						<router-link
+							to="/settings"
+							v-kv-track-event="['TopNav','click-Portfolio-Settings']"
+						>
+							Settings
 						</router-link>
 					</li>
 					<hr>
-				</template>
-				<li>
-					<router-link
-						to="/portfolio"
-						v-kv-track-event="['TopNav','click-Portfolio-Portfolio']"
-					>
-						Portfolio
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/teams/my-teams"
-						v-kv-track-event="['TopNav','click-Portfolio-My teams']"
-					>
-						My teams
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/portfolio/donations"
-						v-kv-track-event="['TopNav','click-Portfolio-Donations']"
-					>
-						Donations
-					</router-link>
-				</li>
-				<li>
-					<router-link
-						to="/settings"
-						v-kv-track-event="['TopNav','click-Portfolio-Settings']"
-					>
-						Settings
-					</router-link>
-				</li>
-				<hr>
-				<li>
-					<router-link
-						to="/ui-logout"
-						v-kv-track-event="['TopNav','click-Portfolio-Sign out']"
-					>
-						Sign out
-					</router-link>
-				</li>
-			</ul>
-		</kv-dropdown>
+					<li>
+						<router-link
+							to="/ui-logout"
+							v-kv-track-event="['TopNav','click-Portfolio-Sign out']"
+						>
+							Sign out
+						</router-link>
+					</li>
+				</ul>
+			</kv-dropdown>
+		</nav>
 	</header>
 </template>
 
