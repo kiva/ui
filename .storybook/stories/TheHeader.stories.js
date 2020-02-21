@@ -10,7 +10,6 @@ import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins);
 
 const mockedApolloResponse = {
-	data: {
 		shop: {
 			nonTrivialItemCount: 1,
 		},
@@ -30,7 +29,6 @@ const mockedApolloResponse = {
 			mostRecentBorrowedLoan: null,
 			trustee: null,
 		}
-	}
 }
 
 export default {
@@ -40,6 +38,27 @@ export default {
 };
 
 export const Default = () => ({
+	components: {
+		TheHeader
+	},
+	provide: {
+		apollo: {
+			readQuery() {},
+			query() {},
+			watchQuery() {
+				return {
+					subscribe() { }
+				}
+			},
+		},
+		kvAuth0: MockKvAuth0
+	},
+	template: `
+		<the-header />
+	`,
+});
+
+export const LoggedInWithCart = () => ({
 	components: {
 		TheHeader
 	},
@@ -70,12 +89,8 @@ export const HideSearchInHeader = () => ({
 	},
 	provide: {
 		apollo: {
-			readQuery() {
-				return Promise.resolve(mockedApolloResponse);
-			},
-			query() {
-				return Promise.resolve(mockedApolloResponse);
-			},
+			readQuery() {},
+			query() {},
 			watchQuery() {
 				return {
 					subscribe() { }
@@ -95,12 +110,8 @@ export const Themed = () => ({
 	},
 	provide: {
 		apollo: {
-			readQuery() {
-				return Promise.resolve(mockedApolloResponse);
-			},
-			query() {
-				return Promise.resolve(mockedApolloResponse);
-			},
+			readQuery() {},
+			query() {},
 			watchQuery() {
 				return {
 					subscribe() { }
