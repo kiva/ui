@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { object } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
 import { MockKvAuth0 } from '@/util/KvAuth0';
 
@@ -108,13 +109,16 @@ export const Themed = () => ({
 		},
 		kvAuth0: MockKvAuth0
 	},
-	data() {
-		return {
-			theme: {
-				backgroundColor: 'indigo',
-				foregroundColor: 'yellow',
-				accentColor: '#ff0000'
-			},
+	props: {
+		theme: {
+			type: Object,
+			default() {
+				return object('theme', {
+					backgroundColor: '#060f9f',
+					foregroundColor: 'yellow',
+					accentColor: 'hsl(178, 97%, 35%)'
+				});
+			}
 		}
 	},
 	template: `
