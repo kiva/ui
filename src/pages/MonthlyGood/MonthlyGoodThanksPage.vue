@@ -76,8 +76,6 @@ export default {
 					return client.query({ query: pageQuery, fetchPolicy: 'network-only' });
 				})
 				.catch(e => {
-					console.log('error1', e);
-
 					if (e.message.indexOf('activeLoginRequired') > -1) {
 						// Force a login when active login is required
 						return Promise.reject({
