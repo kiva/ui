@@ -73,19 +73,11 @@ export default {
 					}
 				})
 				.then(() => {
-					return client.query({ query: pageQuery })
-						.then(({ data }) => {
-							this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-							if (!this.isMonthlyGoodSubscriber) {
-								throw new Error('notMonthlyGoodSubscriber');
-							}
-							const totalAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
-							this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
-							this.mgAmount = totalAmount - this.donation;
-							this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-						});
+					return client.query({ query: pageQuery, fetchPolicy: 'network-only' });
 				})
 				.catch(e => {
+					console.log('error1', e);
+
 					if (e.message.indexOf('activeLoginRequired') > -1) {
 						// Force a login when active login is required
 						return Promise.reject({

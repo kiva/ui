@@ -154,22 +154,20 @@ export default {
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
+			const mgHeroExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_hero',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isExperimentActive = mgHeroExperiment.version === 'shown';
+			// Fire Event for EXP-CASH-1774-Feb2020
+			this.$kvTrackEvent(
+				'MonthlyGood',
+				'EXP-CASH-1774-Feb2020',
+				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
+			);
 		},
 	},
-	created() {
-		// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
-		const mgHeroExperiment = this.apollo.readFragment({
-			id: 'Experiment:mg_hero',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.isExperimentActive = mgHeroExperiment.version === 'shown';
-		// Fire Event for EXP-CASH-1774-Feb2020
-		this.$kvTrackEvent(
-			'MonthlyGood',
-			'EXP-CASH-1774-Feb2020',
-			mgHeroExperiment.version === 'shown' ? 'b' : 'a'
-		);
-	}
 };
 
 </script>
