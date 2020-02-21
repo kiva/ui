@@ -483,7 +483,7 @@ export default {
 				} else {
 					this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 					// Send to thanks page
-					this.$router.push({ path: '/monthlygood-ui/thanks' });
+					this.$router.push({ path: '/monthlygood/thanks' });
 				}
 			}).catch(error => {
 				this.$showTipMsg(error, 'error');

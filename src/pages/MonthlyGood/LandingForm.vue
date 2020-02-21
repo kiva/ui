@@ -92,7 +92,7 @@ export default {
 		},
 		submit() {
 			this.$router.push({
-				path: '/monthlygood-ui/setup',
+				path: '/monthlygood/setup',
 				query: {
 					amount: this.amount,
 					group: this.selectedGroup

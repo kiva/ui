@@ -96,7 +96,7 @@ export default {
 					if (e.message.indexOf('notMonthlyGoodSubscriber') > -1) {
 						// Force a login when active login is required
 						return Promise.reject({
-							path: '/monthlygood-ui',
+							path: '/monthlygood',
 						});
 					}
 					// Log other errors
@@ -106,7 +106,7 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			if (!this.isMonthlyGoodSubscriber) {
-				this.$router.push({ path: '/monthlygood-ui' });
+				this.$router.push({ path: '/monthlygood' });
 			}
 			const totalAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
 			this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');

@@ -63,6 +63,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
@@ -79,6 +80,12 @@ const pageQuery = gql`{
 	my {
 		autoDeposit {
 			isSubscriber
+		}
+	}
+	general {
+		uiExperimentSetting(key: "mg_hero") {
+			key
+			value
 		}
 	}
 }`;
@@ -136,7 +143,15 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return client.query({
+					query: experimentQuery, variables: { id: 'mg_hero' }
+				});
+			});
+		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 		},
@@ -147,6 +162,8 @@ export default {
 			id: 'Experiment:mg_hero',
 			fragment: experimentVersionFragment,
 		}) || {};
+		console.log('Experiment:mg_hero', mgHeroExperiment);
+
 		this.isExperimentActive = mgHeroExperiment.version === 'shown';
 		// Fire Event for EXP-CASH-1774-Feb2020
 		this.$kvTrackEvent(
@@ -168,7 +185,7 @@ export default {
 	margin-top: 1.25rem;
 }
 
-.mg-hero {
+.hero.mg-hero {
 	::v-deep .overlay-content {
 		.overlay-column {
 			max-width: none;
