@@ -119,8 +119,6 @@ import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
-import experimentAssignment from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
