@@ -13,14 +13,4 @@ query lendFilterPage($basketId: String) {
 			}
 		}
 	}
-	general {
-		removeLastWords: uiExperimentSetting(key: "remove_words") {
-			key
-			value
-		}
-		expandFilters: uiExperimentSetting(key: "expanded_filters") {
-			key
-			value
-		}
-	}
 }
