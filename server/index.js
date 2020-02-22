@@ -55,6 +55,7 @@ app.use('/ui-routes', serverRoutes);
 app.use('/timesync', timesyncServer.requestHandler);
 
 // Configure session
+app.set('trust proxy', 1);
 app.use('/', sessionRouter(config.server));
 
 // Configure auth
