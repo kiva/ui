@@ -30,7 +30,6 @@ module.exports = function sessionRouter(config = {}) {
 		});
 	}
 
-	router.set('trust proxy', 1);
 	router.use(session(sessionOptions));
 	return router;
 };
