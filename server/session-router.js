@@ -17,7 +17,7 @@ module.exports = function sessionRouter(config = {}) {
 		name: 'ui',
 		cookie: {
 			httpOnly: true,
-			secure: false,
+			secure: 'auto',
 			maxAge: 86400000,
 		},
 		resave: false,
@@ -30,6 +30,7 @@ module.exports = function sessionRouter(config = {}) {
 		});
 	}
 
+	router.set('trust proxy', 1);
 	router.use(session(sessionOptions));
 	return router;
 };
