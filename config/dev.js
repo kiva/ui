@@ -60,6 +60,6 @@ module.exports = merge(base, {
 		graphqlUri: 'https://marketplace-api.dk1.kiva.org/graphql',
 		sessionUri: 'https://www.dev.kiva.org/start-ui-session',
 		memcachedEnabled: true,
-		memcachedServers: 'dev-kivadev-oregon-memcached.knmtma.0001.usw2.cache.amazonaws.com:11211,dev-kivadev-oregon-memcached.knmtma.0002.usw2.cache.amazonaws.com:11211',
+		memcachedServers: 'dev-memcached-01:11211,dev-memcached-02:11211',
 	}
 })
