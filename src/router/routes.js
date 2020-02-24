@@ -29,7 +29,6 @@ export default [
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 
-	// TODO! These are temporary routes
 	{ path: '/monthlygood', component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage') },
 	{
 		path: '/monthlygood/setup',

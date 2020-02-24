@@ -1,7 +1,7 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
-			<fieldset class="large-4 medium-6 small-8 columns">
+			<fieldset class="large-4 medium-5 small-4 columns">
 				<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount' + componentKey">
 					Amount
 				</label>
@@ -15,7 +15,7 @@
 					</li>
 				</ul>
 			</fieldset>
-			<fieldset class="large-8 medium-6 small-8 columns">
+			<fieldset class="large-8 medium-7 small-8 columns">
 				<kv-dropdown-rounded :value="selectedGroup" @input="updateSelected">
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}
@@ -24,8 +24,8 @@
 			</fieldset>
 		</div>
 
-		<kv-button class="button smaller" type="submit" :disabled="$v.$invalid">
-			Contribute monthly
+		<kv-button class="smaller" type="submit" :disabled="$v.$invalid">
+			{{ buttonText }}
 		</kv-button>
 	</form>
 </template>
@@ -66,6 +66,10 @@ export default {
 			type: String,
 			default: 'default'
 		},
+		buttonText: {
+			type: String,
+			default: 'Contribute monthly'
+		},
 	},
 	computed: {
 		componentKey() {
@@ -88,7 +92,7 @@ export default {
 		},
 		submit() {
 			this.$router.push({
-				path: '/monthlygood-ui/setup',
+				path: '/monthlygood/setup',
 				query: {
 					amount: this.amount,
 					group: this.selectedGroup
@@ -99,16 +103,32 @@ export default {
 };
 
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 // styles to match KvDropDownRounded
-input[id*="amount"] {
-	border: 1px solid $charcoal;
+input[type="text"] {
 	border-radius: $button-radius;
 	color: $charcoal;
 	font-size: $medium-text-font-size;
 	font-weight: $global-weight-highlight;
 	margin: 0;
+}
+
+// When label is error, validation styles overwrite this
+label:not(.error) + input {
+	border: 1px solid $charcoal;
+}
+
+::v-deep .dropdown-wrapper select.dropdown {
+	width: 100%;
+}
+
+.validation-errors {
+	padding: 0.15rem 0 0 0.45rem;
+
+	li {
+		line-height: 1.15rem;
+	}
 }
 </style>

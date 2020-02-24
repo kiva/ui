@@ -69,6 +69,7 @@ export default {
 
 	.community-image {
 		padding: 1.25rem;
+		width: 100%;
 	}
 
 	.hide-for-large.community-image {

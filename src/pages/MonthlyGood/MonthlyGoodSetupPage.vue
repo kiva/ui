@@ -366,16 +366,7 @@ export default {
 					}
 				})
 				.then(() => {
-					return client.query({ query: pageQuery })
-						.then(({ data }) => {
-							this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-							this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
-							this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
-							this.hasBillingAgreement = _get(data,
-								'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
-							this.legacySubs = _get(data, 'my.subscriptions.values', []);
-							this.hasLegacySubscription = this.legacySubs.length > 0;
-						});
+					return client.query({ query: pageQuery });
 				})
 				.catch(e => {
 					if (e.message.indexOf('activeLoginRequired') > -1) {
@@ -483,7 +474,7 @@ export default {
 				} else {
 					this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 					// Send to thanks page
-					this.$router.push({ path: '/monthlygood-ui/thanks' });
+					this.$router.push({ path: '/monthlygood/thanks' });
 				}
 			}).catch(error => {
 				this.$showTipMsg(error, 'error');
