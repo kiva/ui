@@ -119,8 +119,6 @@ import cookieStore from '@/util/cookieStore';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
-import experimentAssignment from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import lendFilterPageQuery from '@/graphql/query/lendFilterPage.graphql';
 
@@ -182,8 +180,8 @@ export default {
 			filterMenuOpen: false,
 			selectedCustomCategories: {},
 			filterMenuPinned: false,
-			algoliaSearchEnabled: false,
-			removeWordsIfNoResults: 'none', // default: 'none', options: 'firstWords' 'lastWords' 'allOptional'
+			algoliaSearchEnabled: true,
+			removeWordsIfNoResults: 'lastWords', // default: 'none', options: 'firstWords' 'lastWords' 'allOptional'
 			initiallyExpandedFilters: false,
 		};
 	},
@@ -232,74 +230,17 @@ export default {
 				variables: {
 					basketId: cookieStore.get('kvbskt')
 				},
-			}).then(() => {
-				return Promise.all([
-					client.query({ query: experimentAssignment, variables: { id: 'expanded_filters' } }),
-					client.query({ query: experimentAssignment, variables: { id: 'remove_words' } })
-				]);
 			});
 		}
 	},
 	mounted() {
+		// show pinned filters when  screen size >= 1194px
+		if (window.innerWidth >= 1194) {
+			this.filterMenuPinned = true;
+		}
+
 		// update global lend filter experiment setting
 		this.updateLendFilterExp();
-
-		// get exp assignment for expanded filters
-		const lendExpandedFiltersExp = this.apollo.readFragment({
-			id: 'Experiment:expanded_filters',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (lendExpandedFiltersExp.version === 'control') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-1212-Sept2019', 'a');
-		} else if (lendExpandedFiltersExp.version === 'shown') {
-			this.initiallyExpandedFilters = true;
-			this.$kvTrackEvent('Lending', 'EXP-CASH-1212-Sept2019', 'b');
-		}
-
-		// get exp assignment for remove words setting
-		const algoliaRemoveWordsExp = this.apollo.readFragment({
-			id: 'Experiment:remove_words',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (algoliaRemoveWordsExp.version === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'a');
-		} else if (algoliaRemoveWordsExp.version === 'variant-b') {
-			this.removeWordsIfNoResults = 'lastWords';
-			this.$kvTrackEvent('Lending', 'EXP-CASH-1112-Aug2019', 'b');
-		}
-
-		// Only allow experiment when in show-for-large (>= 1194px) screen size
-		if (window.innerWidth >= 1194) {
-			// CASH-851: Experiment - Pinned filter
-			const pinnedFilterExperiment = this.apollo.readFragment({
-				id: 'Experiment:pinned_filter',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			const pinnedFilterExperimentVersion = pinnedFilterExperiment.version;
-			if (pinnedFilterExperimentVersion === 'variant-a') {
-				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'a');
-			} else if (pinnedFilterExperimentVersion === 'variant-b') {
-				this.filterMenuPinned = true;
-				this.$kvTrackEvent('Lending', 'EXP-CASH-851-May2019', 'b');
-			}
-		}
-
-		// CASH-682: Experiment - Algolia Search
-		// Only run if filter menu pinned
-		const algoliaSearchExperiment = this.apollo.readFragment({
-			id: 'Experiment:algolia_search',
-			fragment: experimentVersionFragment,
-		}) || {};
-
-		if (algoliaSearchExperiment.version === 'variant-a') {
-			this.$kvTrackEvent('Lending', 'EXP-CASH-682-Apr2019', 'a');
-		} else if (algoliaSearchExperiment.version === 'variant-b') {
-			this.algoliaSearchEnabled = true;
-			this.$kvTrackEvent('Lending', 'EXP-CASH-682-Apr2019', 'b');
-		}
 	},
 	methods: {
 		hideFilterMenu() {

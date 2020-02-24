@@ -11,8 +11,6 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
 let activeExperiments = [
 	'lend_filter_v2',
-	'pinned_filter',
-	'algolia_search',
 	'expandable_loan_cards',
 	'double_arrow_button',
 	'intercom_messenger',
