@@ -1,14 +1,15 @@
 <template>
 	<div class="row align-center generic-banner">
-		<router-link
+		<component
+			:is="currentWrapperComponent"
 			:to="promoBannerContent.link"
-			class="banner-link"
+			:class="{ 'banner-link' : promoBannerContent.link, 'banner-wrapper' : !promoBannerContent.link}"
 			v-kv-track-event="promoBannerContent.kvTrackEvent"
 		>
 			<kv-icon :name="iconKey" :class="`${iconKey}-icon`" />
 			<div class="content" v-html="promoBannerContent.richText">
 			</div>
-		</router-link>
+		</component>
 	</div>
 </template>
 
@@ -18,6 +19,15 @@ import KvIcon from '@/components/Kv/KvIcon';
 export default {
 	components: {
 		KvIcon
+	},
+	computed: {
+		// if the promoBannerContent includes a link, render a router-link element, else render a plain div
+		currentWrapperComponent() {
+			if (this.promoBannerContent.link) {
+				return 'router-link';
+			}
+			return 'div';
+		}
 	},
 	props: {
 		iconKey: {
@@ -46,19 +56,6 @@ export default {
 	max-width: 100%;
 }
 
-.banner-link {
-	color: $kiva-icon-green;
-	text-decoration: none;
-	text-align: center;
-	padding: 0.365rem;
-	line-height: 1.25;
-
-	&:hover,
-	&:active {
-		color: $kiva-darkgreen;
-	}
-}
-
 .content {
 	text-align: center;
 	display: block;
@@ -74,9 +71,16 @@ export default {
 	background-image: url('~@/assets/images/backgrounds/tipbar-bg-small.jpg');
 	background-position: bottom;
 
-	.banner-link {
-		display: flex;
-		align-items: center;
+	.icon {
+		flex-shrink: 0;
+	}
+
+	& [class*="-icon"] {
+		display: block;
+		height: rem-calc(22);
+		width: rem-calc(22);
+		margin-right: rem-calc(10);
+		margin-top: -0.2rem;
 	}
 
 	.icon-info,
@@ -86,33 +90,40 @@ export default {
 	.icon-question {
 		fill: $kiva-icon-green;
 	}
-}
 
-.generic-banner [class*="-icon"] {
-	display: block;
-	height: rem-calc(22);
-	width: rem-calc(22);
-	margin-right: rem-calc(10);
-	margin-top: -0.2rem;
-}
-
-.generic-banner .banner-link:hover {
-	[class*="-icon"] {
-		stroke: $kiva-darkgreen;
+	.banner-link,
+	.banner-wrapper {
+		display: flex;
+		align-items: center;
+		color: $kiva-icon-green;
+		text-decoration: none;
+		text-align: center;
+		padding: 0.365rem;
+		line-height: 1.25;
 	}
 
-	.icon-info,
-	.icon-kiva-card,
-	.icon-monthly-good,
-	.icon-confirmation,
-	.icon-question {
-		fill: $kiva-darkgreen;
-		stroke: none;
-	}
+	.banner-link {
+		&:hover,
+		&:active {
+			color: $kiva-darkgreen;
 
-	.icon-iwd-flower {
-		stroke: none;
+			[class*="-icon"] {
+				stroke: $kiva-darkgreen;
+			}
+
+			.icon-info,
+			.icon-kiva-card,
+			.icon-monthly-good,
+			.icon-confirmation,
+			.icon-question {
+				fill: $kiva-darkgreen;
+				stroke: none;
+			}
+
+			.icon-iwd-flower {
+				stroke: none;
+			}
+		}
 	}
 }
-
 </style>
