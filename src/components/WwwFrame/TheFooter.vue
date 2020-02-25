@@ -326,7 +326,6 @@ $footer-separator-color: $light-green;
 			border-bottom: 1px solid $footer-separator-color; // IE11 fallback
 			border-bottom: 1px solid var(--kv-footer-separator-color, $footer-separator-color);
 
-
 			@include breakpoint(medium only) {
 				font-size: rem-calc(16);
 			}
