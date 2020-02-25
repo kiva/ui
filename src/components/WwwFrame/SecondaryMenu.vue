@@ -1,18 +1,11 @@
 <template>
-	<div name="secondary" :class="`secondary-nav ${usesExactPaths ? 'exact-path' : 'non-exact-path'}`">
+	<div name="secondary" class="secondary-nav exact-path">
 		<slot></slot>
 	</div>
 </template>
 
 <script>
 export default {
-	props: {
-		usesExactPaths: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
 };
 </script>
 
@@ -43,26 +36,12 @@ export default {
 				&:hover {
 					@extend .basic-secondary-menu-active;
 				}
-			}
-		}
-	}
 
-	&.non-exact-path {
-		ul li a {
-			&.router-link-active {
-				@extend .basic-secondary-menu-active;
+				&.router-link-exact-active {
+					@extend .basic-secondary-menu-active;
 
-				text-shadow: 0.5px 0 $kiva-accent-green;
-			}
-		}
-	}
-
-	&.exact-path {
-		ul li a {
-			&.router-link-exact-active {
-				@extend .basic-secondary-menu-active;
-
-				text-shadow: 0.5px 0 $kiva-accent-green;
+					text-shadow: 0.5px 0 $kiva-accent-green;
+				}
 			}
 		}
 	}

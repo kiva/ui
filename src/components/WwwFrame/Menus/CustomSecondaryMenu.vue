@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<secondary-menu class="show-for-large" :uses-exact-paths="usesExactPaths">
+		<secondary-menu class="show-for-large">
 			<ul class="row">
 				<li v-for="{name, routerLink, url, eventTracking} in menuItems" :key="name">
 					<router-link
@@ -14,7 +14,7 @@
 				</li>
 			</ul>
 		</secondary-menu>
-		<div :class="`mobile-nav hide-for-large ${usesExactPaths ? 'exact-path' : 'non-exact-path'}`">
+		<div class="mobile-nav hide-for-large exact-path">
 			<button
 				@click="toggle"
 				aria-controls="secondary-menus-combo-nav"
@@ -78,11 +78,6 @@ export default {
 			type: Array,
 			required: true,
 		},
-		usesExactPaths: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 	},
 	apollo: {
 		query: usingTouchClient,
@@ -138,7 +133,6 @@ export default {
 
 	.sec-ter-combo-nav {
 		position: absolute;
-		top: rem-calc(90);
 		width: 100%;
 		z-index: 10;
 	}
@@ -156,22 +150,12 @@ export default {
 			a:visited {
 				@extend .basic-secondary-menu-active-mobile;
 			}
-		}
-	}
 
-	&.exact-path {
-		ul li a.router-link-exact-active {
-			@extend .basic-secondary-menu-active-mobile;
+			a.router-link-exact-active {
+				@extend .basic-secondary-menu-active-mobile;
 
-			color: $kiva-text-light;
-		}
-	}
-
-	&.non-exact-path {
-		ul li a.router-link-active {
-			@extend .basic-secondary-menu-active-mobile;
-
-			color: $kiva-text-light;
+				color: $kiva-text-light;
+			}
 		}
 	}
 
@@ -184,6 +168,12 @@ export default {
 		width: 100%;
 		text-align: left;
 		line-height: rem-calc(45);
+
+		span {
+			display: inline-block;
+			line-height: 1rem;
+			padding-top: 1rem;
+		}
 
 		&:hover {
 			span {
@@ -213,8 +203,9 @@ export default {
 }
 
 .basic-secondary-menu-active-mobile {
-	padding: 0 1rem;
+	padding: rem-calc(20) 1rem rem-calc(20) 1rem;
 	font-weight: normal;
-	line-height: rem-calc(45);
+	line-height: 1rem;
+	display: inline-block;
 }
 </style>
