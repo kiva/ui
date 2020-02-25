@@ -17,7 +17,7 @@ module.exports = function sessionRouter(config = {}) {
 		name: 'ui',
 		cookie: {
 			httpOnly: true,
-			secure: false,
+			secure: 'auto',
 			maxAge: 86400000,
 		},
 		resave: false,
