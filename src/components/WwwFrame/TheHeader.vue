@@ -360,8 +360,8 @@ export default {
 			if (this.theme) {
 				return {
 					'--kv-header-background-color': this.theme.backgroundColor || '',
-					'--kv-header-foreground-color': this.theme.foregroundColor || '',
-					'--kv-header-accent-color': this.theme.accentColor || '',
+					'--kv-header-link-color': this.theme.linkColor || '',
+					'--kv-header-separator-color': this.theme.separatorColor || '',
 				};
 			}
 			return {};
@@ -444,8 +444,8 @@ $top-nav-font-size: 1.125rem;
 $header-height: rem-calc(45);
 $header-height-large: rem-calc(64);
 $header-background-color: $kiva-green;
-$header-foreground-color: $white;
-$header-accent-color: $kiva-navdivider-green;
+$header-link-color: $white;
+$header-separator-color: $kiva-navdivider-green;
 $form-padding: 0.32rem;
 $form-padding-large: 0.6rem;
 $close-search-button-size: 2.5rem;
@@ -461,8 +461,8 @@ $close-search-button-size: 2.5rem;
 		@include breakpoint(large) {
 			color: $header-background-color; // IE11 fallback
 			color: var(--kv-header-background-color, $header-background-color);
-			background: $header-foreground-color; // IE11 fallback
-			background: var(--kv-header-foreground-color, $header-foreground-color);
+			background: $header-link-color; // IE11 fallback
+			background: var(--kv-header-link-color, $header-link-color);
 			padding: rem-calc(1) rem-calc(7);
 		}
 	}
@@ -543,8 +543,8 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $header-foreground-color; // IE11 fallback
-		fill: var(--kv-header-foreground-color, $header-foreground-color);
+		fill: $header-link-color; // IE11 fallback
+		fill: var(--kv-header-link-color, $header-link-color);
 		max-height: $header-height;
 
 		@include breakpoint(large) {
@@ -571,8 +571,8 @@ $close-search-button-size: 2.5rem;
 }
 
 .header-button {
-	border-right: 1px solid $header-accent-color; // IE11 fallback
-	border-right: 1px solid var(--kv-header-accent-color, $header-accent-color);
+	border-right: 1px solid $header-separator-color; // IE11 fallback
+	border-right: 1px solid var(--kv-header-separator-color, $header-separator-color);
 	text-align: center;
 	white-space: nowrap;
 	flex-grow: 2;
@@ -581,25 +581,25 @@ $close-search-button-size: 2.5rem;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	color: $header-foreground-color; // IE11 fallback
-	color: var(--kv-header-foreground-color, $header-foreground-color);
+	color: $header-link-color; // IE11 fallback
+	color: var(--kv-header-link-color, $header-link-color);
 
 	&:last-child {
 		border-right: none;
 	}
 
 	&:hover {
-		background-color: $header-accent-color; // IE11 fallback
-		background-color: var(--kv-header-accent-color, $header-accent-color);
+		background-color: $header-separator-color; // IE11 fallback
+		background-color: var(--kv-header-separator-color, $header-separator-color);
 		text-decoration: none;
-		color: $header-foreground-color; // IE11 fallback
-		color: var(--kv-header-foreground-color, $header-foreground-color);
+		color: $header-link-color; // IE11 fallback
+		color: var(--kv-header-link-color, $header-link-color);
 	}
 
 	&:visited,
 	&:active {
-		color: $header-foreground-color; // IE11 fallback
-		color: var(--kv-header-foreground-color, $header-foreground-color);
+		color: $header-link-color; // IE11 fallback
+		color: var(--kv-header-link-color, $header-link-color);
 	}
 
 	@include breakpoint(large) {
@@ -608,8 +608,8 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.icon-triangle {
-		fill: $header-foreground-color; // IE11 fallback
-		fill: var(--kv-header-foreground-color, $header-foreground-color);
+		fill: $header-link-color; // IE11 fallback
+		fill: var(--kv-header-link-color, $header-link-color);
 		width: 0.5rem;
 		height: 0.5rem;
 		transition: transform 400ms ease;
@@ -650,13 +650,13 @@ $close-search-button-size: 2.5rem;
 	}
 
 	.search-icon {
-		fill: $header-foreground-color; // IE11 fallback
-		fill: var(--kv-header-foreground-color, $header-foreground-color);
+		fill: $header-link-color; // IE11 fallback
+		fill: var(--kv-header-link-color, $header-link-color);
 	}
 
 	.close-icon {
-		stroke: $header-foreground-color; // IE11 fallback
-		stroke: var(--kv-header-foreground-color, $header-foreground-color);
+		stroke: $header-link-color; // IE11 fallback
+		stroke: var(--kv-header-link-color, $header-link-color);
 	}
 }
 
@@ -664,8 +664,8 @@ $close-search-button-size: 2.5rem;
 	flex-grow: 0;
 	order: -1;
 	height: 100%;
-	border-right: 1px solid $header-accent-color; // IE11 fallback
-	border-right: 1px solid var(--kv-header-accent-color, $header-accent-color);
+	border-right: 1px solid $header-separator-color; // IE11 fallback
+	border-right: 1px solid var(--kv-header-separator-color, $header-separator-color);
 	text-align: center;
 
 	@include breakpoint(large) {
@@ -684,8 +684,8 @@ $close-search-button-size: 2.5rem;
 	top: 0;
 	height: 100%;
 	width: calc(100% + 1px);
-	border-right: 1px solid $header-accent-color; // IE11 fallback
-	border-right: var(--kv-header-accent-color, $header-accent-color);
+	border-right: 1px solid $header-separator-color; // IE11 fallback
+	border-right: var(--kv-header-separator-color, $header-separator-color);
 	transition: width 0.5s ease;
 	display: flex;
 
