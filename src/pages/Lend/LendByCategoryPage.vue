@@ -404,6 +404,25 @@ export default {
 				this.recommendedLoansRowExpVersion === 'shown' ? recommendationChannel : null,
 			);
 		},
+		initializeCategoryRowHillclimb() {
+            // experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
+            // get assignment
+            const categoryRowHillclimb = 0;
+            const categoryRowHillclimbEXP = this.apollo.readFragment({
+                id: 'Experiment:category_row_hillclimb',
+                fragment: experimentVersionFragment,
+            }) || {};
+            this.categoryRowHillclimbExpVersion = categoryRowHillclimbEXP.version;
+            // Logged in user and non-users are included in this experiment,
+            // logged-in users are automatically tracked with their id
+            // Fire Event for Exp CASH-970
+            this.$kvTrackEvent(
+                'Lending',
+                'EXP-CASH-970-Mar2020',
+                this.categoryRowHillclimbExpVersion === 'variant-a' ? 'b' : 'a',
+                this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null,
+            );
+        },
 	},
 	apollo: {
 		preFetch(config, client) {

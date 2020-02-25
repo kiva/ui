@@ -32,6 +32,10 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
+		categoryRowHillclimb: uiExperimentSetting(key: "category_row_hillclimb") {
+			key
+			value
+		}
 	}
 	my {
 		isAdmin
