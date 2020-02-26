@@ -1,6 +1,6 @@
 <template>
-	<footer class="www-footer">
-		<nav class="small-footer hide-for-large">
+	<footer class="www-footer" :style="cssVars">
+		<nav class="small-footer hide-for-large" aria-label="Footer navigation">
 			<ul class="hide-for-print">
 				<li>
 					<router-link :to="applyUrl">
@@ -43,7 +43,7 @@
 				&copy; {{ year }} Kiva. All rights reserved.
 			</p>
 		</nav>
-		<nav class="large-footer show-for-large row">
+		<nav class="large-footer show-for-large row" aria-label="Footer navigation">
 			<div class="groups">
 				<div class="narrow hide-for-print">
 					<h2>Borrow</h2>
@@ -220,6 +220,12 @@ import getCacheKey from '@/util/getCacheKey';
 export default {
 	name: 'TheFooter',
 	serverCacheKey: () => getCacheKey('footer'),
+	props: {
+		theme: {
+			type: Object,
+			default: () => {}
+		}
+	},
 	data() {
 		return {
 			year: getYear(new Date()),
@@ -232,17 +238,35 @@ export default {
 			termsUrl: '/legal/terms'
 		};
 	},
+	computed: {
+		cssVars() {
+			if (this.theme) {
+				return {
+					'--kv-footer-background-color': this.theme.backgroundColor || '',
+					'--kv-footer-text-color': this.theme.textColor || '',
+					'--kv-footer-link-color': this.theme.linkColor || '',
+					'--kv-footer-separator-color': this.theme.separatorColor || '',
+				};
+			}
+			return {};
+		}
+	}
 };
 </script>
 
 <style lang="scss">
 @import 'settings';
 
-$footer-link-separator-color: $light-green;
+$footer-background-color: $kiva-green;
+$footer-text-color: #fff;
+$footer-link-color: $dark-green;
+$footer-separator-color: $light-green;
 
 .www-footer {
-	background-color: $kiva-green;
-	color: $white;
+	background-color: $footer-background-color; // IE11 fallback
+	background-color: var(--kv-footer-background-color, $footer-background-color);
+	color: $footer-text-color; // IE11 fallback
+	color: var(--kv-footer-text-color, $footer-text-color);
 	font-size: rem-calc(14);
 	font-weight: normal;
 	text-align: center;
@@ -275,11 +299,13 @@ $footer-link-separator-color: $light-green;
 	}
 
 	a {
-		color: $dark-green;
+		color: $footer-link-color;
+		color: var(--kv-footer-link-color, $footer-link-color);
 
 		&:visited,
 		&:active {
-			color: $dark-green;
+			color: $footer-link-color;
+			color: var(--kv-footer-link-color, $footer-link-color);
 		}
 	}
 
@@ -287,6 +313,7 @@ $footer-link-separator-color: $light-green;
 		font-size: 0.875rem;
 		font-weight: $global-weight-bold;
 		margin: 0;
+		line-height: 1.6;
 	}
 
 	.small-footer {
@@ -294,7 +321,8 @@ $footer-link-separator-color: $light-green;
 			display: flex;
 			justify-content: space-between;
 			margin-bottom: 1rem;
-			border-bottom: 1px solid $footer-link-separator-color;
+			border-bottom: 1px solid $footer-separator-color; // IE11 fallback
+			border-bottom: 1px solid var(--kv-footer-separator-color, $footer-separator-color);
 
 			@include breakpoint(medium only) {
 				font-size: rem-calc(16);
@@ -307,7 +335,8 @@ $footer-link-separator-color: $light-green;
 
 		div {
 			margin-bottom: 0.25rem;
-			color: $footer-link-separator-color;
+			color: $footer-separator-color; // IE11 fallback
+			color: var(--kv-footer-separator-color, $footer-separator-color);
 
 			a {
 				margin: 0 0.875rem;
@@ -337,7 +366,7 @@ $footer-link-separator-color: $light-green;
 
 			ul {
 				li {
-					line-height: 1.6rem;
+					line-height: 1.6;
 				}
 			}
 
@@ -365,7 +394,8 @@ $footer-link-separator-color: $light-green;
 					transform: translate3d(calc(-#{$spacing * 2} - 1px), 0, 0); /* stylelint-disable-line */
 					a {
 						padding-left: $spacing;
-						border-left: 1px solid $footer-link-separator-color;
+						border-left: 1px solid $footer-separator-color; // IE11 fallback
+						border-left: 1px solid var(--kv-footer-separator-color, $footer-separator-color);
 						margin-left: $spacing;
 						white-space: nowrap;
 					}
