@@ -544,10 +544,14 @@ export default {
 			margin-bottom: 1.5rem;
 			position: relative;
 			background-color: $kiva-bg-darkgray;
-			padding: 1rem 2rem 1rem 2rem;
+			padding: 1rem;
 
 			& > .row .row {
 				margin-bottom: 1rem;
+			}
+
+			@include breakpoint(large) {
+				padding: 1rem 2rem;
 			}
 		}
 
@@ -572,6 +576,7 @@ export default {
 		//aligns other rows to make room for checkbox
 		.additional-left-pad-spans {
 			padding-left: 1.55rem;
+			display: inline-block;
 		}
 
 		// styles to match KvDropDownRounded
