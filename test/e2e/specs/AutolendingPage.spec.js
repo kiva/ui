@@ -223,7 +223,7 @@ describe('Autolending Page Spec', () => {
 				AutolendProfile: {
 					isEnabled: true,
 					enableAfter: 0,
-					cIdleStartTime: subDays(now, 5),
+					cIdleStartTime: subDays(now, 80),
 					lendAfterDaysIdle: 90,
 					donationPercentage: 15
 				},
