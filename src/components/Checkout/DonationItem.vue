@@ -14,21 +14,18 @@
 					v-if="specificDonationUseTextExperiment"
 					class="donation-tagline small-text"
 				>
-					<span class="strong">Did you know?</span>
-					{{ specificDonationTagLine }}
+					For every $3 you donate, another $1 will be donated by our generous supporters.
 				</div>
-				<div v-else>
-					<div class="donation-tagline small-text">
-						{{ donationTagLine }}
-					</div>
-					<a
-						class="small-text donation-help-text"
-						@click.prevent="triggerDefaultLightbox"
-						v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
-					>
-						{{ donationDetailsLink }}
-					</a>
+				<div v-else class="donation-tagline small-text">
+					{{ donationTagLine }}
 				</div>
+				<a
+					class="small-text donation-help-text"
+					@click.prevent="triggerDefaultLightbox"
+					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+				>
+					{{ donationDetailsLink }}
+				</a>
 			</div>
 		</span>
 		<!-- <span class="small-3 show-for-small-only"></span> -->
@@ -185,7 +182,6 @@ export default {
 			donationNudgeBorrowerImageExperiment: false,
 			specificDonationUseTextExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
-			donationTitle: 'Donation to Kiva',
 			showCharityOverheadFooter: false,
 			donationNudgeFellows: false,
 			donationNudgeFellowsHeader: 'Donations enable Kiva Fellows to reach the people who need it most',
@@ -221,6 +217,12 @@ export default {
 		},
 	},
 	computed: {
+		donationTitle() {
+			if (this.specificDonationUseTextExperiment) {
+				return 'Your donations are matched this month!';
+			}
+			return 'Donation to Kiva';
+		},
 		hasLoans() {
 			return this.loanCount > 0;
 		},
@@ -237,13 +239,6 @@ export default {
 				: 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
 			/* eslint-enable max-len */
 			return coverOurCosts;
-		},
-		specificDonationTagLine() {
-			const moreSpecificCoverOurCosts = `It takes more than
-				${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')}
-				to facilitate ${this.loanCount > 1 ? 'these loans' : 'this loan'},
-				and we depend on your generous donations to cover the majority of these costs.`;
-			return moreSpecificCoverOurCosts;
 		},
 		donationNudgePercentageRows() {
 			const basePercentageRows = [
@@ -315,18 +310,13 @@ export default {
 					this.donationNudgeFellows = true;
 				}
 			}
-			// CASH-1282: Specific donation use text experiement
+			// CASH-1855 Using experiment setting to change wording for matched donations
 			if (this.hasLoans) {
 				const specificDonationUseTextExperiment = this.apollo.readFragment({
 					id: 'Experiment:specific_donation_use_text',
 					fragment: experimentVersionFragment,
 				}) || {};
-				if (specificDonationUseTextExperiment.version === 'control') {
-					this.$kvTrackEvent('Basket', 'EXP-CASH-1282-Sep2019', 'a');
-				} else if (specificDonationUseTextExperiment.version === 'shown') {
-					this.$kvTrackEvent('Basket', 'EXP-CASH-1282-Sep2019', 'b');
-					this.specificDonationUseTextExperiment = true;
-				}
+				this.specificDonationUseTextExperiment = specificDonationUseTextExperiment.version === 'shown';
 			}
 		},
 		updateDonation() {
