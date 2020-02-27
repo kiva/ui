@@ -34,8 +34,37 @@
 			</template>
 		</kv-hero>
 		<how-it-works />
-		<email-preview />
-		<kiva-as-expert>
+		<!-- <email-preview /> -->
+		<div v-for="(contentGroup, index) in contentGroups" :key="index">
+			<component
+				v-if="contentGroup.key === 'monthlyGoodKivaAsExpert'"
+				:is="'kiva-as-expert-contentful'"
+				:content-group="contentGroup"
+			>
+				<template v-slot:form>
+					<landing-form
+						:amount.sync="monthlyGoodAmount"
+						:selected-group.sync="selectedGroup"
+						:key="2"
+						v-if="!isMonthlyGoodSubscriber"
+						:button-text="pageCopy.button"
+					/>
+					<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
+						<h4>
+							You're already signed up for Monthly Good.
+							Changes to this contribution can be made in your
+							<a href="/settings/credit">credit settings</a>.
+						</h4>
+					</div>
+				</template>
+			</component>
+			<component
+				v-if="contentGroup.key === 'monthlyGoodDelivered'"
+				:is="'email-preview-contentful'"
+				:content-group="contentGroup"
+			/>
+		</div>
+		<!-- <kiva-as-expert>
 			<template v-slot:form>
 				<landing-form
 					:amount.sync="monthlyGoodAmount"
@@ -52,7 +81,7 @@
 					</h4>
 				</div>
 			</template>
-		</kiva-as-expert>
+		</kiva-as-expert> -->
 		<more-about-kiva />
 		<frequently-asked-questions />
 	</www-page>
@@ -61,6 +90,7 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -71,10 +101,14 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 import LandingForm from './LandingForm';
 import HowItWorks from './HowItWorks';
-import EmailPreview from './EmailPreview';
+// import EmailPreview from './EmailPreview';
+import EmailPreviewContentful from './EmailPreviewContentful';
+
 import MoreAboutKiva from './MoreAboutKiva';
-import KivaAsExpert from './KivaAsExpert';
+// import KivaAsExpert from './KivaAsExpert';
+import KivaAsExpertContentful from './KivaAsExpertContentful';
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions';
+import { processContent } from '@/util/contentfulUtils';
 
 const pageQuery = gql`{
 	my {
@@ -99,10 +133,12 @@ export default {
 		KvHero,
 		KvResponsiveImage,
 		HowItWorks,
-		EmailPreview,
+		// EmailPreview,
 		MoreAboutKiva,
-		KivaAsExpert,
-		FrequentlyAskedQuestions
+		// KivaAsExpert,
+		KivaAsExpertContentful,
+		FrequentlyAskedQuestions,
+		EmailPreviewContentful
 	},
 	props: {
 		category: {
@@ -128,6 +164,8 @@ export default {
 				['wxga', heroImagesRequire('./monthlygood-banner-xxl-std.jpg')],
 				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
 			],
+			// contentful data
+			contentGroups: []
 		};
 	},
 	computed: {
@@ -173,6 +211,28 @@ export default {
 				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
 			);
 		},
+	},
+	mounted() {
+		this.apollo.query({
+			query: contentfulCMS,
+			variables: {
+				contentType: 'page',
+				contentKey: 'monthlygood',
+			}
+		}).then(({ data }) => {
+			// Page Layout
+			const pageMonthlyGood = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'monthlygood'); // eslint-disable-line max-len
+			console.log('pageMonthlyGood', pageMonthlyGood);
+			const pageLayout = pageMonthlyGood.pageLayout.fields;
+			console.log('pageLayout', pageLayout);
+			this.contentGroups = pageLayout.contentGroups.map(contentGroup => contentGroup.fields);
+			console.log('contentGroups', this.contentGroups);
+
+			if (pageLayout.contentGroups) {
+				const processedContent = processContent(pageLayout.contentGroups);
+				console.log('processedContent', processedContent);
+			}
+		});
 	},
 };
 

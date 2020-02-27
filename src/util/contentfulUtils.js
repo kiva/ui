@@ -52,12 +52,13 @@ export function processContent(contentfulContent) {
 			contentfulContentObject[itemKey] = item.fields;
 		}
 	});
-
-	contentfulContentObject.responsiveImageSet.forEach(imageSet => {
-		imageSet.images.forEach((image, index) => {
-			// eslint-disable-next-line no-param-reassign
-			imageSet.images[index].responsiveSize = determineResponsiveSizeFromFileName(image.fields.file.fileName);
+	if (contentfulContentObject.responsiveImageSet) {
+		contentfulContentObject.responsiveImageSet.forEach(imageSet => {
+			imageSet.images.forEach((image, index) => {
+				// eslint-disable-next-line no-param-reassign
+				imageSet.images[index].responsiveSize = determineResponsiveSizeFromFileName(image.fields.file.fileName);
+			});
 		});
-	});
+	}
 	return contentfulContentObject;
 }
