@@ -121,7 +121,7 @@ export default {
 				variables: {
 					ids: featuredCategoryIds,
 					numberOfLoans: initialLoanCount,
-					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
+					sector: this.favoriteSectorId ? [numeral(this.favoriteSectorId).value()] : null,
 				}
 			});
 		} catch (e) {
