@@ -31,7 +31,7 @@
 			</p>
 			<!-- TODO: Url and tracking -->
 			<kv-button class="intro__cta cta">
-				Support women
+				Support Women
 			</kv-button>
 		</section>
 
@@ -62,7 +62,7 @@
 			</ul>
 			<!-- TODO: Url and tracking -->
 			<kv-button class="cta">
-				Learn more
+				Learn More
 			</kv-button>
 		</section>
 
@@ -70,7 +70,7 @@
 
 		<section class="section profiles">
 			<h2 class="headline profiles__headline">
-				Women who are changing the world
+				Women who are <span class="no-wrap">changing the world</span>
 			</h2>
 			<ul class="profiles__list">
 				<li class="profiles__li" v-for="woman in featuredWomen" :key="woman.url">
@@ -93,7 +93,7 @@
 						<p class="profiles__text" v-html="woman.text"></p>
 						<!-- TODO: Tracking -->
 						<kv-button class="cta" :to="woman.url">
-							Read {{ woman.name }}'s story
+							Read {{ woman.name }}'s Story
 						</kv-button>
 					</div>
 				</li>
@@ -112,7 +112,7 @@
 			</p>
 			<!-- TODO: Url and tracking -->
 			<kv-button class="cta categories__cta">
-				Support women
+				Support Women
 			</kv-button>
 			<h3 class="categories__subhead">
 				Explore other categories

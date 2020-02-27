@@ -69,3 +69,8 @@ br.xxlu {
 		display: inline;
 	}
 }
+
+// Use this to <span class="no-wrap">prevent words from wrapping</span> onto two lines. Useful to prevent orphans!
+.no-wrap {
+	white-space: nowrap;
+}
