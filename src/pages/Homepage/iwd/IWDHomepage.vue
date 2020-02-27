@@ -298,6 +298,11 @@
 
 		<img class="globe"
 			src="@/assets/images/iwd/globe.png"
+			srcset="
+				@/assets/images/iwd/globe.png,
+				@/assets/images/iwd/globe_2x.png 2x"
+			width="266"
+			height="164"
 			alt=""
 			loading="lazy"
 		>
@@ -844,6 +849,7 @@ $divider-height: 3rem;
 }
 
 .globe {
+	width: rem-calc(266);
 	display: block;
 	margin: -6rem auto 4rem;
 }
