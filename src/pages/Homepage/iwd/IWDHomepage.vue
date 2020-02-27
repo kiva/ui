@@ -4,84 +4,11 @@
 		:footer-theme="footerTheme"
 	>
 		<div class="hero">
-			<!-- PICTURE ELEMENT RESPONSIVE IMAGE POC -->
-			<!-- Ideally send picture element and srcset to all browsers
-			except IE11 to get eager image fetching -->
 
-			<!-- https://developers.google.com/web/fundamentals/design-and-ux/responsive/images -->
-			<!-- https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images -->
-			<!-- https://dev.to/stefanoverna/how-to-offer-responsive-progressive-images-in-2020-in-one-line-5fed -->
-
-			<!-- TODO: Move the picture element into KvResponsive Image,
-			if window.HTMLPictureElement doesn't exist, do what we do now by swapping src with JS.
-			Hmm, how will we handle SSR? May need to fix IE11 in the mounted hook -->
-
-			<!-- Current definitions for reference
-			const breakpoints = [
-				{ name: 'wxga', size: 1441 },
-				{ name: 'xga', size: 1025 },
-				{ name: 'xxlarge', size: 989 },
-				{ name: 'xlarge', size: 761 },
-				{ name: 'large', size: 681 },
-				{ name: 'medium', size: 481 },
-				{ name: 'small', size: 0 },
-			];
-			heroImages(number) {
-				return [
-					['small', imageRequire(`./hero-${number}-sm-std.jpg`)],
-					['small retina', imageRequire(`./hero-${number}-sm-retina.jpg`)],
-					['medium', imageRequire(`./hero-${number}-med-std.jpg`)],
-					['medium retina', imageRequire(`./hero-${number}-med-retina.jpg`)],
-					['large', imageRequire(`./hero-${number}-lg-std.jpg`)],
-					['large retina', imageRequire(`./hero-${number}-lg-retina.jpg`)],
-					['xga', imageRequire(`./hero-${number}-xga-std.jpg`)],
-					['xga retina', imageRequire(`./hero-${number}-xga-retina.jpg`)],
-					['wxga', imageRequire(`./hero-${number}-wxga-std.jpg`)],
-					['wxga retina', imageRequire(`./hero-${number}-wxga-retina.jpg`)],
-				];
-			}
-			-->
-
-			<picture class="hero__picture">
-				<!-- browser uses the first <source> tag matching media query even if later <source> tags also match -->
-				<source
-					media="(min-width: 1441px)"
-					srcset="@/assets/images/iwd/banner_xxl.png, @/assets/images/iwd/banner_xxl_2x.png 2x"
-				>
-				<source
-					media="(min-width: 1025px)"
-					srcset="@/assets/images/iwd/banner_xl.png, @/assets/images/iwd/banner_xl_2x.png 2x"
-				>
-				<source
-					media="(min-width: 989px)"
-					srcset="@/assets/images/iwd/banner_lg.png, @/assets/images/iwd/banner_lg_2x.png 2x"
-				>
-				<!--
-				<source
-					media="(min-width: 760px)"
-					srcset="@/assets/images/iwd/banner_md.png, @/assets/images/iwd/banner_md_2x.png 2x"
-				>
-				<source
-					media="(min-width: 680px)"
-					srcset="@/assets/images/iwd/banner_md.png, @/assets/images/iwd/banner_md_2x.png 2x"
-				>
-				-->
-				<source
-					media="(min-width: 761px)"
-					srcset="@/assets/images/iwd/banner_lg.png, @/assets/images/iwd/banner_lg_2x.png 2x"
-				>
-				<source
-					srcset="@/assets/images/iwd/banner_sm.png, @/assets/images/iwd/banner_sm_2x.png 2x"
-				>
-				<img class="hero__img"
-					src="@/assets/images/iwd/banner_xxl.png"
-					srcset="@/assets/images/iwd/banner_xxl_2x.png 2x"
-					alt=""
-					loading="eager"
-				>
-			</picture>
-			<!-- END PICTURE ELEMENT RESPONSIVE IMAGE POC -->
-
+			<kv-responsive-image2
+				:images="heroImageSet"
+				alt=""
+			/>
 			<div class="hero__text-wrapper">
 				<iwd-flag class="hero__iwd-flag" />
 				<div class="hero__tagline">
@@ -311,6 +238,7 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import IwdFlag from '@/assets/inline-svgs/iwd/iwd-flag.svg';
@@ -327,6 +255,7 @@ const iwdImagesRequire = require.context('@/assets/images/iwd/', true);
 export default {
 	components: {
 		KvButton,
+		KvResponsiveImage2,
 		WwwPage,
 		IwdFlag,
 		IwdCelebratingHerEveryDay,
@@ -351,6 +280,18 @@ export default {
 				separatorColor: '#a0e2ba'
 
 			},
+			heroImageSet: [
+				['small', iwdImagesRequire('./banner_sm.png')],
+				['small retina', iwdImagesRequire('./banner_sm_2x.png')],
+				['medium', iwdImagesRequire('./banner_md.png')],
+				['medium retina', iwdImagesRequire('./banner_md_2x.png')],
+				['large', iwdImagesRequire('./banner_lg.png')],
+				['large retina', iwdImagesRequire('./banner_lg_2x.png')],
+				['xga', iwdImagesRequire('./banner_xga.png')],
+				['xga retina', iwdImagesRequire('./banner_xga_2x.png')],
+				['wxga', iwdImagesRequire('./banner_wxga.png')],
+				['wxga retina', iwdImagesRequire('./banner_wxga_2x.png')],
+			],
 			featuredWomen: [
 				{
 					name: 'Abigail',
@@ -473,7 +414,7 @@ $divider-height: 3rem;
 }
 
 .text-block {
-	max-width: 51rem;
+	max-width: 55rem;
 	padding: 0 1rem;
 	line-height: 1.4;
 	margin: 0 auto 1.5rem;
@@ -516,8 +457,29 @@ $divider-height: 3rem;
 
 // PAGE BLOCKS
 .hero {
-	background-color: #fff;
+	background-color: $iwd-salmon;
 	position: relative;
+
+	// Copypasta from KV-HERO
+	height: 0;
+	padding-bottom: 600/480 * 100%;
+
+	@include breakpoint(medium) {
+		padding-bottom: 675/680 * 100%;
+	}
+
+	@include breakpoint(large) {
+		padding-bottom: 545/1024 * 100%;
+	}
+
+	@include breakpoint(xga) {
+		padding-bottom: 768/1440 * 100%;
+	}
+
+	@include breakpoint(wxga) {
+		padding-bottom: 820/1920 * 100%;
+	}
+	// end copypasta
 
 	&__text-wrapper {
 		position: absolute;
@@ -525,15 +487,6 @@ $divider-height: 3rem;
 		bottom: 0;
 		left: 0;
 		right: 0;
-	}
-
-	&__picture {
-		display: block;
-	}
-
-	&__img {
-		width: 100%;
-		height: auto;
 	}
 
 	&__iwd-flag {
@@ -594,6 +547,10 @@ $divider-height: 3rem;
 	color: #fff;
 	padding: 4rem 0;
 	font-weight: $global-weight-bold;
+
+	@include breakpoint('large') {
+		font-size: $featured-text-font-size;
+	}
 
 	&__cta {
 		@include button-style($iwd-indigo, auto, #fff);
