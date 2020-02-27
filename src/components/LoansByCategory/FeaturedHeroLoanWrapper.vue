@@ -232,7 +232,7 @@ export default {
 				variables: {
 					ids: featuredCategoryIds,
 					offset: this.queryOffset,
-					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
+					sector: this.favoriteSectorId ? [numeral(this.favoriteSectorId).value()] : null,
 				}
 			}).then(({ data }) => {
 				if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
