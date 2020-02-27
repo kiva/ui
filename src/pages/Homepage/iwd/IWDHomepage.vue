@@ -492,22 +492,22 @@ $divider-height: 3rem;
 	&__iwd-flag {
 		fill: #fff;
 		position: absolute;
-		width: 46.25%;
-		height: 21%; // IE11
+		width: 32.25%;
+		// height: 21%; // IE11
 		bottom: 7.5%;
 		right: 3.5%;
 		z-index: 1;
 
-		@include breakpoint('xlarge') {
+		@include breakpoint('large') {
 			bottom: auto;
 			top: 7%;
-			width: 23.5%;
-			height: 24%; // IE11
+			width: 25.5%;
+			// height: 24%; // IE11
 			right: 4.2%;
 		}
 
 		@include breakpoint('xxlarge') {
-			height: 31%; // IE11
+			// height: 31%; // IE11
 		}
 	}
 
@@ -518,15 +518,14 @@ $divider-height: 3rem;
 		position: absolute;
 		left: 4.5%;
 		bottom: 2.875%;
-		height: 8%; // IE11
+		// height: 8%; // IE11
 
-		@include breakpoint('xlarge') {
+		@include breakpoint('large') {
 			align-items: flex-end;
 			left: auto;
 			right: 4.75%;
-			width: 46.5%;
+			width: 41.5%;
 			height: 17%; // IE11
-			bottom: 7.5%;
 		}
 	}
 
