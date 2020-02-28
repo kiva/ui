@@ -10,13 +10,7 @@
 				{{ donationTitle }}
 			</span>
 			<div v-if="hasLoans">
-				<div
-					v-if="specificDonationUseTextExperiment"
-					class="donation-tagline small-text"
-				>
-					For every $3 you donate, another $1 will be donated by our generous supporters.
-				</div>
-				<div v-else class="donation-tagline small-text">
+				<div class="donation-tagline small-text">
 					{{ donationTagLine }}
 				</div>
 				<a
@@ -219,7 +213,7 @@ export default {
 	computed: {
 		donationTitle() {
 			if (this.specificDonationUseTextExperiment) {
-				return 'Your donations are matched this month!';
+				return 'Your donations are amplified today!';
 			}
 			return 'Donation to Kiva';
 		},
@@ -233,11 +227,14 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
-			/* eslint-disable max-len */
-			const coverOurCosts = `${this.loanCount > 1
-				? 'These loans cost'
-				: 'This loan costs'} Kiva more than ${numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0')} to facilitate. Will you help us cover our costs?`;
-			/* eslint-enable max-len */
+			const loanCost = numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0');
+			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
+
+			if (this.specificDonationUseTextExperiment) {
+				coverOurCosts += ` more than ${loanCost} to facilitate. Our generous supporters are donating $1 for every $3 you donate.`; // eslint-disable-line max-len
+			} else {
+				coverOurCosts += ` Kiva more than ${loanCost} to facilitate. Will you help us cover our costs?`;
+			}
 			return coverOurCosts;
 		},
 		donationNudgePercentageRows() {
