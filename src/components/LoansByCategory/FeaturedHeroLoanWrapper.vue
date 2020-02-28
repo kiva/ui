@@ -100,7 +100,7 @@ export default {
 					variables: {
 						ids: featuredCategoryIds,
 						numberOfLoans: initialLoanCount,
-						sector: topSectorId ? [topSectorId] : null
+						sector: topSectorId ? [numeral(topSectorId).value()] : null
 					},
 					fetchPolicy: 'network-only',
 				});
