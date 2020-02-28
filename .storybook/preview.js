@@ -1,4 +1,5 @@
 import { addDecorator, addParameters } from '@storybook/vue';
+import { withA11y } from '@storybook/addon-a11y';
 import Vue from 'vue';
 
 //load all the svg icon sprites
@@ -32,4 +33,6 @@ const GlobalDecorator = () => ({
 		</div>
 	  `
 });
+
+addDecorator(withA11y);
 addDecorator(GlobalDecorator);
