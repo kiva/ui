@@ -20,13 +20,14 @@
 		<section class="section intro">
 			<p class="text-block">
 				Over the past 14 years, the Kiva community has become a spark of hope and support for over 2.8 million
-				ambitious, multi-tasking, powerful women in 98 countries, turning into a global movement.
-				This incredible community has chosen to celebrate and empower women by funding over $1 billion
-				in loans to women borrowers over the years.
+				ambitious, multi-tasking, powerful women in <br class="xxlu">98 countries, turning into a
+				global movement. This incredible community has chosen to celebrate and empower women by funding over
+				<br class="xxlu">$1 billion in loans to women borrowers <span class="no-wrap">over the years.</span>
 			</p>
 			<p class="text-block">
 				Simply put, this is our norm. It’s our business as usual. Make supporting women your
-				#BusinessAsUsual, and join us in our goal to fund the loans of every woman on Kiva today.
+				#BusinessAsUsual, and join us in our goal to fund the loans of every woman
+				<span class="no-wrap"> on Kiva today.</span>
 			</p>
 			<!-- TODO: Url and tracking -->
 			<kv-button class="intro__cta cta">
@@ -59,10 +60,6 @@
 					<span class="stat-block__text">countries supported</span>
 				</li>
 			</ul>
-			<!-- TODO: Url and tracking -->
-			<kv-button class="cta">
-				Learn More
-			</kv-button>
 		</section>
 
 		<wavy-divider class="divider divider--indigo" />
@@ -636,7 +633,7 @@ $divider-height: 3rem;
 
 	&__list {
 		list-style: none;
-		margin: 4rem auto 0;
+		margin: 4rem auto -3rem;
 	}
 }
 
