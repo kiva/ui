@@ -25,8 +25,8 @@
 				<br class="xxlu">$1 billion in loans to women borrowers <span class="no-wrap">over the years.</span>
 			</p>
 			<p class="text-block">
-				Simply put, this is our norm. It’s our business as usual. Make supporting women your
-				#BusinessAsUsual, and join us in our goal to fund the loans of every woman
+				Simply put, this is our norm. It’s our business as usual. <br class="xxlu">Make supporting women your
+				#BusinessAsUsual, and join us <br class="xxlu">in our goal to fund the loans of every woman
 				<span class="no-wrap"> on Kiva today.</span>
 			</p>
 			<!-- TODO: Url and tracking -->
