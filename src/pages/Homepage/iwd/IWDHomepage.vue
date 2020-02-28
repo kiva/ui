@@ -117,7 +117,6 @@
 				Explore other categories
 			</h3>
 			<ul class="categories__list row">
-				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.url">
 				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.id">
 					<!-- TODO: tracking -->
 					<a
@@ -131,7 +130,10 @@
 							width="218"
 							height="122"
 							loading="lazy"
-							:srcset="`${category.image.url}${category.retinaImage.url ? ', ' + category.retinaImage.url + ' 2x' : ''}`"
+							:srcset="
+								`${category.image.url}${category.retinaImage.url
+									? ', ' + category.retinaImage.url + ' 2x'
+									: ''}`"
 						>
 						<span class="categories__title">{{ category.name.replace(' loans', '') }}</span>
 					</a>
@@ -238,7 +240,7 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
+// import _get from 'lodash/get';
 
 import iwdLoanChannelQuery from '@/graphql/query/iwdLoanChannels.graphql';
 import KvButton from '@/components/Kv/KvButton';
