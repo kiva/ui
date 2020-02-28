@@ -27,6 +27,9 @@ export const Default = () => ({
 					subscribe() {}
 				}
 			},
+			readQuery() {
+				return Promise.resolve({});
+			},
 			query() {
 				return Promise.resolve({});
 			}

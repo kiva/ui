@@ -4,7 +4,6 @@
 		:footer-theme="footerTheme"
 	>
 		<div class="hero">
-
 			<kv-responsive-image2
 				:images="heroImageSet"
 				alt=""
@@ -119,21 +118,23 @@
 			</h3>
 			<ul class="categories__list row">
 				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.url">
+				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.id">
 					<!-- TODO: tracking -->
-					<router-link
+					<a
 						class="categories__link"
-						:to="category.url"
+						:href="category.url"
 					>
 						<img
 							class="categories__img"
-							:src="category.img"
+							:src="category.image.url"
 							alt=""
-							width="255"
-							height="255"
+							width="218"
+							height="122"
 							loading="lazy"
+							:srcset="`${category.image.url}${category.retinaImage.url ? ', ' + category.retinaImage.url + ' 2x' : ''}`"
 						>
-						<span class="categories__title">{{ category.title }}</span>
-					</router-link>
+						<span class="categories__title">{{ category.name.replace(' loans', '') }}</span>
+					</a>
 				</li>
 			</ul>
 		</section>
@@ -237,6 +238,9 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+
+import iwdLoanChannelQuery from '@/graphql/query/iwdLoanChannels.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -266,6 +270,7 @@ export default {
 		NumberCountries,
 		WavyDivider,
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			headerTheme: {
@@ -327,50 +332,115 @@ export default {
 					]
 				},
 			],
-			loanCategories: [ // TODO: Get urls and images
-				{
-					title: 'Africa',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'Asia',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'Latin America',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'United States',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'Agriculture',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'Education',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'Arts',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-				{
-					title: 'Environment',
-					url: '#',
-					img: 'https://www-kiva-org-0.freetls.fastly.net/img/orig/bd25843149e68a42a681f4bc00a660b8.jpg',
-				},
-			]
+			loanCategories: []
 		};
 	},
+	apollo: {
+		query: iwdLoanChannelQuery,
+		preFetch: true,
+		preFetchVariables() {
+			return {
+				ids: [83, 84, 85, 86, 87, 88, 89, 90], // Special loan categories for IWD
+			};
+		},
+		result({ data }) {
+			console.log(data);
+			// this.loanCategories = _get(data, 'lend.loanChannelsById') || [];
+			// TODO: Move loan data into lower environments so we can test properly
+			/* eslint-disable max-len */
+			this.loanCategories = [
+				{
+					id: 83,
+					name: 'Africa loans',
+					url: 'https://www.kiva.org/lend/africa-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/57b99142b5267f1a93e4999112205c6e.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/67eb44b7acec4c90e8103152a717dc91.jpg'
+					}
+				},
+				{
+					id: 84,
+					name: 'Asia loans',
+					url: 'https://www.kiva.org/lend/asia-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/bd9f73c1c00f66d173e4d5815c726603.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/0e3d5ff9b6201426341e10f545efc15b.jpg'
+					}
+				},
+				{
+					id: 85,
+					name: 'Latin America loans',
+					url: 'https://www.kiva.org/lend/latin-america-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/cdff38af8d862bda07264fcc443af30f.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/9d6490e3f14feb392f78fd9eb781f7cb.jpg'
+					}
+				},
+				{
+					id: 86,
+					name: 'United States loans',
+					url: 'https://www.kiva.org/lend/united-states-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/e81d5dd2df095ade44a36b00a9965157.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/89afab2326ccdb4ba9585d5199b93dcf.jpg'
+					}
+				},
+				{
+					id: 87,
+					name: 'Agriculture loans',
+					url: 'https://www.kiva.org/lend/agriculture-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/f68797e760d8d0b61b2e866fab72d174.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/1ac7934a5816c22b5248994319fd0263.jpg'
+					}
+				},
+				{
+					id: 88,
+					name: 'Education loans',
+					url: 'https://www.kiva.org/lend/education-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/ff9949b8a62ccb63b5f85ff50551efeb.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/fa05ac95ddded82d53a1e5de820044df.jpg'
+					}
+				},
+				{
+					id: 89,
+					name: 'Arts loans',
+					url: 'https://www.kiva.org/lend/arts-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/29d396d1008832da7e23be907650ecaf.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/0ce20fa361c78242cc226d53ac53e333.jpg'
+					}
+				},
+				{
+					id: 90,
+					name: 'Eco-friendly loans',
+					url: 'https://www.kiva.org/lend/eco-friendly-loans',
+					image: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/3e24bc6cf22a5be5f0dc766ff8251ef3.jpg'
+					},
+					retinaImage: {
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/2116f8657fe23bc31cf54dfdb59413cb.jpg'
+					}
+				}
+			];
+			/* eslint-enable max-len */
+		}
+	}
 };
 </script>
 
@@ -670,9 +740,9 @@ $divider-height: 3rem;
 	}
 
 	&__text {
-		font-size: 1rem;
+		// font-size: 1rem;
 		font-weight: $global-weight-normal;
-		padding: 0.75rem 1.5rem;
+		padding: 0.75rem 0.5rem;
 		margin-bottom: 0.25rem;
 		line-height: 1.3;
 		display: block;
