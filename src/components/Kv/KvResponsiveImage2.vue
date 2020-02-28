@@ -9,7 +9,7 @@
 		<!-- browser uses the first <source> tag matching media query even if later <source> tags also match -->
 		<!-- So start with the largest window sizes first -->
 		<source
-			v-for="image in standardImages.reverse()"
+			v-for="image in standardImages"
 			:key="image[1]"
 			:media="`(min-width: ${getPxSizeForImage(image[0])}px)`"
 			:srcset="getSrcsetForImage(image)"
@@ -63,7 +63,7 @@ export default {
 		},
 		// An array of all images without 'retina' in the size name
 		standardImages() {
-			return this.images.filter(image => image[0].indexOf('retina') === -1);
+			return this.images.filter(image => image[0].indexOf('retina') === -1).reverse();
 		},
 		// The non-retina image that best fits the current screen size
 		bestStandardImage() {
