@@ -3,7 +3,7 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<div class="hero">
+		<a class="hero" :href="primaryCtaUrl">
 			<kv-responsive-image2
 				:images="heroImageSet"
 				alt=""
@@ -15,9 +15,13 @@
 					<iwd-business-as-usual class="hero__tagline-subhead" />
 				</div>
 			</div>
-		</div>
+		</a>
 
 		<section class="section intro">
+			<!-- TODO: Url and tracking -->
+			<kv-button :href="primaryCtaUrl" class="intro__cta cta">
+				Support Women
+			</kv-button>
 			<p class="text-block">
 				Over the past 14 years, the Kiva community has become a spark of hope and support for over 2.8 million
 				ambitious, multi-tasking, powerful women in <br class="xxlu">98 countries, turning into a
@@ -29,10 +33,6 @@
 				#BusinessAsUsual, and join us <br class="xxlu">in our goal to fund the loans of every woman
 				<span class="no-wrap"> on Kiva today.</span>
 			</p>
-			<!-- TODO: Url and tracking -->
-			<kv-button class="intro__cta cta">
-				Support Women
-			</kv-button>
 		</section>
 
 		<section class="section stats">
@@ -255,6 +255,13 @@ import WavyDivider from '@/assets/inline-svgs/iwd/wavy-divider.svg';
 
 const iwdImagesRequire = require.context('@/assets/images/iwd/', true);
 
+const getPdtDate = () => {
+	const pdtOffsetHours = -8; // hours offset from UTC
+	const clientOffsetHours = new Date().getTimezoneOffset() / 60;
+	const offsetMs = (pdtOffsetHours + clientOffsetHours) * 60 * 60 * 1000;
+	return new Date(Date.now() + offsetMs);
+};
+
 export default {
 	components: {
 		KvButton,
@@ -275,14 +282,14 @@ export default {
 			headerTheme: {
 				backgroundColor: '#fff',
 				linkColor: '#060f9f',
-				separatorColor: '#a0e2ba'
+				linkHoverColor: '#a0e2ba',
+				separatorColor: 'transparent'
 			},
 			footerTheme: {
 				backgroundColor: '#fff',
 				textColor: '#484848',
 				linkColor: '#060f9f',
 				separatorColor: '#a0e2ba'
-
 			},
 			heroImageSet: [
 				['small', iwdImagesRequire('./banner_sm.png')],
@@ -439,6 +446,13 @@ export default {
 			];
 			/* eslint-enable max-len */
 		}
+	},
+	computed: {
+		primaryCtaUrl() {
+			const date = getPdtDate();
+			const march8 = 1583654400000; // epoch time of march 8.
+			return date.valueOf() < march8 ? '/monthly-good' : '/women';
+		}
 	}
 };
 </script>
@@ -528,6 +542,7 @@ $divider-height: 3rem;
 .hero {
 	background-color: $iwd-salmon;
 	position: relative;
+	display: block;
 
 	// Copypasta from KV-HERO
 	height: 0;
@@ -624,6 +639,10 @@ $divider-height: 3rem;
 		@include button-style($iwd-indigo, auto, #fff);
 
 		box-shadow: 0 2px darken($iwd-indigo, 10%); // overwride blue foundation box-shadow
+		margin-top: -4rem;
+		margin-left: auto;
+		margin-right: auto;
+	}
 	}
 }
 
