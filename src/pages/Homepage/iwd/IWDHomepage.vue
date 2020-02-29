@@ -643,7 +643,6 @@ $divider-height: 3rem;
 		margin-left: auto;
 		margin-right: auto;
 	}
-	}
 }
 
 .stats {
