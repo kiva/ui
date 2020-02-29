@@ -361,6 +361,7 @@ export default {
 				return {
 					'--kv-header-background-color': this.theme.backgroundColor || '',
 					'--kv-header-link-color': this.theme.linkColor || '',
+					'--kv-header-link-hover-color': this.theme.linkHoverColor || '',
 					'--kv-header-separator-color': this.theme.separatorColor || '',
 				};
 			}
@@ -445,6 +446,7 @@ $header-height: rem-calc(45);
 $header-height-large: rem-calc(64);
 $header-background-color: $kiva-green;
 $header-link-color: $white;
+$header-link-hover-color: $kiva-navdivider-green;
 $header-separator-color: $kiva-navdivider-green;
 $form-padding: 0.32rem;
 $form-padding-large: 0.6rem;
@@ -589,8 +591,8 @@ $close-search-button-size: 2.5rem;
 	}
 
 	&:hover {
-		background-color: $header-separator-color; // IE11 fallback
-		background-color: var(--kv-header-separator-color, $header-separator-color);
+		background-color: $header-link-hover-color; // IE11 fallback
+		background-color: var(--kv-header-link-hover-color, $header-link-hover-color);
 		text-decoration: none;
 		color: $header-link-color; // IE11 fallback
 		color: var(--kv-header-link-color, $header-link-color);
