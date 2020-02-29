@@ -247,6 +247,60 @@ export default {
 					algoliaParams: 'attributes=Refugees%2FDisplaced'
 				},
 
+				// IWD 2020 Loan Channels
+				// TODO: Complete legacy query param for each set (already added gender filter)
+				// TODO: Create algolio filter mappings
+				{
+					id: 83,
+					url: 'africa-loans',
+					// eslint-disable-next-line
+					queryParams: 'country=mz,ug,sn,rw,ke,cd,lr,bf,cm,gh,tg,mg,ml,eg&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'countries=Africa%20>%20Cameroon~Africa%20>%20Congo%20%28DRC%29~Africa%20>%20Egypt~Africa%20>%20Ghana~Africa%20>%20Kenya~Africa%20>%20Liberia~Africa%20>%20Madagascar~Africa%20>%20Mali~Africa%20>%20Mozambique~Africa%20>%20Nigeria~Africa%20>%20Rwanda~Africa%20>%20Senegal~Africa%20>%20Uganda&sortBy=popularity'
+				},
+				{
+					id: 84,
+					url: 'asia-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+				{
+					id: 85,
+					url: 'latin-america-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+				{
+					id: 86,
+					url: 'united-states-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+				{
+					id: 87,
+					url: 'agriculture-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+				{
+					id: 88,
+					url: 'education-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+				{
+					id: 89,
+					url: 'arts-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+				{
+					id: 90,
+					url: 'eco-friendly-loans',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
+					algoliaParams: ''
+				},
+
 				// Misc Promotional or Unsupported URLS
 
 				{

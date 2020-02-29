@@ -1,8 +1,5 @@
 <template>
-	<www-page id="homepage"
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
+	<div>
 		<a class="hero" :href="primaryCtaUrl">
 			<kv-responsive-image2
 				:images="heroImageSet"
@@ -233,16 +230,13 @@
 			alt=""
 			loading="lazy"
 		>
-	</www-page>
+	</div>
 </template>
 
 <script>
-// import _get from 'lodash/get';
-
 import iwdLoanChannelQuery from '@/graphql/query/iwdLoanChannels.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
-import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import IwdFlag from '@/assets/inline-svgs/iwd/iwd-flag.svg';
 import IwdCelebratingHerEveryDay from '@/assets/inline-svgs/iwd/iwd-celebrating-her-every-day.svg';
@@ -266,7 +260,6 @@ export default {
 	components: {
 		KvButton,
 		KvResponsiveImage2,
-		WwwPage,
 		IwdFlag,
 		IwdCelebratingHerEveryDay,
 		IwdBusinessAsUsual,
@@ -279,18 +272,6 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			headerTheme: {
-				backgroundColor: '#fff',
-				linkColor: '#060f9f',
-				linkHoverColor: '#a0e2ba',
-				separatorColor: 'transparent'
-			},
-			footerTheme: {
-				backgroundColor: '#fff',
-				textColor: '#484848',
-				linkColor: '#060f9f',
-				separatorColor: '#a0e2ba'
-			},
 			heroImageSet: [
 				['small', iwdImagesRequire('./banner_sm.png')],
 				['small retina', iwdImagesRequire('./banner_sm_2x.png')],
@@ -358,7 +339,7 @@ export default {
 				{
 					id: 83,
 					name: 'Africa loans',
-					url: 'https://www.kiva.org/lend/africa-loans',
+					url: '/lend-by-category/africa-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/57b99142b5267f1a93e4999112205c6e.jpg'
 					},
