@@ -15,7 +15,7 @@
 		</a>
 
 		<section class="section intro">
-			<!-- TODO: Url and tracking -->
+			<!-- TODO: kv-track-event -->
 			<kv-button :href="primaryCtaUrl" class="intro__cta cta">
 				Support Women
 			</kv-button>
@@ -69,7 +69,7 @@
 			</h2>
 			<ul class="profiles__list">
 				<li class="profiles__li" v-for="(woman, index) in featuredWomen" :key="woman.url">
-					<!-- TODO: Tracking -->
+					<!-- TODO: kv-track-event -->
 					<router-link
 						class="profiles__link"
 						:to="woman.url"
@@ -93,7 +93,7 @@
 					</router-link>
 					<div class="profiles__text-wrapper">
 						<p class="profiles__text" v-html="woman.text"></p>
-						<!-- TODO: Tracking -->
+						<!-- TODO: kv-track-event -->
 						<kv-button class="cta" :to="woman.url">
 							Read {{ woman.name }}'s Story
 						</kv-button>
@@ -114,7 +114,7 @@
 				the world create opportunity for themselves, their families, and their communities.
 			</p>
 			<flourish-flags class="categories__flags" />
-			<!-- TODO: Url and tracking -->
+			<!-- TODO: kv-track-event -->
 			<kv-button class="cta categories__cta">
 				Support Women
 			</kv-button>
@@ -127,7 +127,7 @@
 			</div>
 			<ul class="categories__list row">
 				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.id">
-					<!-- TODO: tracking -->
+					<!-- TODO: kv-track-event -->
 					<a
 						class="categories__link"
 						:href="category.url"
