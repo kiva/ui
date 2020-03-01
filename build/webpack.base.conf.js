@@ -99,7 +99,19 @@ module.exports = {
 			{
 				test: /\.svg$/,
 				include: [resolve('src/assets/inline-svgs/')],
-				use: ['babel-loader', 'vue-svg-loader'],
+				use: [
+					'babel-loader',
+					{
+						loader: 'vue-svg-loader',
+						options: {
+							svgo: {
+								plugins: [
+									{ removeTitle: false },
+								],
+							},
+						},
+					},
+				],
 			},
 			{
 				test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
