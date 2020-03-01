@@ -472,7 +472,7 @@ export default {
 		primaryCtaUrl() {
 			const date = getPdtDate();
 			const march8 = 1583654400000; // epoch time of march 8.
-			return date.valueOf() < march8 ? '/monthlygood' : '/women';
+			return date.valueOf() < march8 ? '/monthlygood?category=women' : '/women';
 		}
 	}
 };
