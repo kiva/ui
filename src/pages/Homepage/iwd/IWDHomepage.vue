@@ -249,7 +249,6 @@
 </template>
 
 <script>
-import iwdLoanChannelQuery from '@/graphql/query/iwdLoanChannels.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
 
@@ -359,23 +358,8 @@ export default {
 					flourishComponent: FlourishShapes2
 				},
 			],
-			loanCategories: []
-		};
-	},
-	apollo: {
-		query: iwdLoanChannelQuery,
-		preFetch: true,
-		preFetchVariables() {
-			return {
-				ids: [83, 84, 85, 86, 87, 88, 89, 90], // Special loan categories for IWD
-			};
-		},
-		result({ data }) {
-			console.log(data);
-			// this.loanCategories = _get(data, 'lend.loanChannelsById') || [];
-			// TODO: Move loan data into lower environments so we can test properly
 			/* eslint-disable max-len */
-			this.loanCategories = [
+			loanCategories: [
 				{
 					id: 83,
 					name: 'Africa loans',
@@ -390,7 +374,7 @@ export default {
 				{
 					id: 84,
 					name: 'Asia loans',
-					url: 'https://www.kiva.org/lend/asia-loans',
+					url: '/lend-by-category/asia-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/bd9f73c1c00f66d173e4d5815c726603.jpg'
 					},
@@ -401,7 +385,7 @@ export default {
 				{
 					id: 85,
 					name: 'Latin America loans',
-					url: 'https://www.kiva.org/lend/latin-america-loans',
+					url: '/lend-by-category/latin-america-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/cdff38af8d862bda07264fcc443af30f.jpg'
 					},
@@ -412,7 +396,7 @@ export default {
 				{
 					id: 86,
 					name: 'United States loans',
-					url: 'https://www.kiva.org/lend/united-states-loans',
+					url: '/lend-by-category/united-states-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/e81d5dd2df095ade44a36b00a9965157.jpg'
 					},
@@ -423,7 +407,7 @@ export default {
 				{
 					id: 87,
 					name: 'Agriculture loans',
-					url: 'https://www.kiva.org/lend/agriculture-loans',
+					url: '/lend-by-category/agriculture-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/f68797e760d8d0b61b2e866fab72d174.jpg'
 					},
@@ -434,7 +418,7 @@ export default {
 				{
 					id: 88,
 					name: 'Education loans',
-					url: 'https://www.kiva.org/lend/education-loans',
+					url: '/lend-by-category/education-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/ff9949b8a62ccb63b5f85ff50551efeb.jpg'
 					},
@@ -445,7 +429,7 @@ export default {
 				{
 					id: 89,
 					name: 'Arts loans',
-					url: 'https://www.kiva.org/lend/arts-loans',
+					url: '/lend-by-category/arts-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/29d396d1008832da7e23be907650ecaf.jpg'
 					},
@@ -456,7 +440,7 @@ export default {
 				{
 					id: 90,
 					name: 'Eco-friendly loans',
-					url: 'https://www.kiva.org/lend/eco-friendly-loans',
+					url: '/lend-by-category/eco-friendly-loans',
 					image: {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/3e24bc6cf22a5be5f0dc766ff8251ef3.jpg'
 					},
@@ -464,15 +448,15 @@ export default {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/2116f8657fe23bc31cf54dfdb59413cb.jpg'
 					}
 				}
-			];
+			]
 			/* eslint-enable max-len */
-		}
+		};
 	},
 	computed: {
 		primaryCtaUrl() {
 			const date = getPdtDate();
 			const march8 = 1583654400000; // epoch time of march 8.
-			return date.valueOf() < march8 ? '/monthlygood?category=women' : '/women';
+			return date.valueOf() < march8 ? '/monthlygood?category=women' : '/lend-by-category/women';
 		}
 	}
 };

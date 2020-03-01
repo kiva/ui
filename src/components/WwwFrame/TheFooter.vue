@@ -219,7 +219,7 @@ import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'TheFooter',
-	serverCacheKey: () => getCacheKey('footer'),
+	serverCacheKey: props => getCacheKey(props.theme ? `footerThemed${props.theme.themeKey}` : 'footer'),
 	props: {
 		theme: {
 			type: Object,

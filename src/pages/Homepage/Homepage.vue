@@ -14,7 +14,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 
-const iwdSwitchQuery = gql`{
+const iwdSwitchQuery = gql`query homepageFrame {
 	general {
 		iwd_homepage_active: uiConfigSetting(key: "iwd_homepage_active") {
 			key
@@ -34,12 +34,14 @@ export default {
 		return {
 			isIwdActive: false,
 			iwdHeaderTheme: {
+				themeKey: 'IWD',
 				backgroundColor: '#fff',
 				linkColor: '#060f9f',
 				linkHoverColor: '#a0e2ba',
 				separatorColor: 'transparent'
 			},
 			iwdFooterTheme: {
+				themeKey: 'IWD',
 				backgroundColor: '#fff',
 				textColor: '#484848',
 				linkColor: '#060f9f',
@@ -62,7 +64,6 @@ export default {
 		query: iwdSwitchQuery,
 		preFetch: true,
 		result({ data }) {
-			console.log(data);
 			this.isIwdActive = _get(data, 'general.iwd_homepage_active.value');
 		}
 	}
