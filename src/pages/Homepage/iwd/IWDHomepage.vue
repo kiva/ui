@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="page-content">
 		<a class="hero" :href="primaryCtaUrl">
 			<kv-responsive-image2
 				:images="heroImageSet"
@@ -493,7 +493,7 @@ $iwd-grey: #ebebeb;
 $divider-height: 3rem;
 
 .page-content {
-	padding: 1.625rem 0;
+	overflow: hidden;
 }
 
 .section {
