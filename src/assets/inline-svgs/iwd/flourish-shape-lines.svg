@@ -4,8 +4,7 @@
       .cls-2{fill:#00afaa}.cls-4{fill:#fc4501}
     </style>
   </defs>
-  <g id="Layer_2" data-name="Layer 2">
-    <g id="Artwork">
+  <g>
       <path class="rellax" d="M26.34 134.9c48 4 97.44-100.35 148.31-84.49 54 16.85 45.11-40.2 34.14-41.12-20.38-1.7 1.27 41.23 13.19 21.63" stroke-width="2.6" stroke-miterlimit="10" stroke="#00afaa" fill="none"/>
       <path class="cls-2 rellax" transform="rotate(25.15 260.262 20.346)" d="M257.53 13.93h5.45v12.85h-5.45z"/>
       <path transform="rotate(25.15 60.208 38.9)" fill="gold" d="M57.09 31.58h6.22v14.65h-6.22z"/>
@@ -18,6 +17,5 @@
       <circle cx="76.67" cy="61.21" r="5.35" fill="#fff"/>
       <circle cx="238.96" cy="23.03" r="6.43" stroke-width="1.1" stroke="#fc4501" stroke-miterlimit="10" fill="none"/>
       <path d="M1.08 44.85c54.8-81.1 255.55 61.05 282.86 47.54" stroke="#fc4501" stroke-width="2.6" stroke-miterlimit="10" fill="none"/>
-    </g>
-  </g>
+   </g>
 </svg>

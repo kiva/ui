@@ -79,7 +79,7 @@
 								class="profiles__img"
 								:src="woman.img[0]"
 								:srcset="`${woman.img[1]} 2x`"
-								alt=""
+								:alt="woman.name"
 								width="255"
 								height="255"
 								loading="lazy"

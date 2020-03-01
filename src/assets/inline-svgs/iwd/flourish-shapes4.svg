@@ -1,1 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 91.34 139.79"><defs><style>.cls-1{fill:#000f9f;}.cls-2{fill:#00afaa;}.cls-3{fill:#ff8672;}.cls-4,.cls-6,.cls-7{fill:none;stroke-miterlimit:10;stroke-width:1.35px;}.cls-4{stroke:gold;}.cls-5{fill:#5700c9;}.cls-6{stroke:#00afaa;}.cls-7{stroke:#ff8672;}</style></defs><title>Asset 8</title><g id="Layer_2" data-name="Layer 2"><g id="Artwork"><polyline class="cls-1" points="63.4 69.39 57.95 66.83 63.98 53.99"/><rect class="cls-2" x="20.4" y="80.98" width="15.22" height="5.97" transform="translate(38.34 -3.94) rotate(25.15)"/><rect class="cls-3" x="0.56" y="48.08" width="15.22" height="5.97" transform="translate(-17.54 6.19) rotate(-20.72)"/><rect class="cls-4" x="14.7" y="1.73" width="5.97" height="5.97" transform="translate(-0.52 6.56) rotate(-20.72)"/><rect class="cls-5" x="57.66" y="96.77" width="5.97" height="5.97" transform="translate(48.15 -16.32) rotate(25.15)"/><circle class="cls-6" cx="84.46" cy="132.91" r="6.21"/><circle class="cls-7" cx="27.78" cy="32.15" r="6.21"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 91.34 139.79">
+  <g>
+    <path fill="#000f9f" d="M63.4 69.39l-5.45-2.56 6.03-12.84"/>
+    <path fill="#00afaa" d="M22.39 78.033L36.168 84.5l-2.538 5.404-13.777-6.468z"/>
+    <path fill="#ff8672" d="M-.005 50.962l14.235-5.385 2.112 5.584-14.235 5.385z"/>
+    <path stroke="gold" fill="none" stroke-miterlimit="10" stroke-width="1.35" d="M13.841 2.977L19.425.865l2.112 5.584-5.584 2.112z"/>
+    <path fill="#5700c9" d="M59.217 95.78l5.405 2.538-2.538 5.404-5.404-2.537z"/>
+    <circle cx="84.46" cy="132.91" r="6.21" stroke="#00afaa" fill="none" stroke-miterlimit="10" stroke-width="1.35"/>
+    <circle cx="27.78" cy="32.15" r="6.21" stroke="#ff8672" fill="none" stroke-miterlimit="10" stroke-width="1.35"/>
+  </g>
+</svg>
