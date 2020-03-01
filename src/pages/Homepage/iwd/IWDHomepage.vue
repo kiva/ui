@@ -599,7 +599,7 @@ $divider-height: 3rem;
 		fill: #fff;
 		position: absolute;
 		width: 32.25%;
-		// height: 21%; // IE11
+		height: 15%; // IE11
 		bottom: 7.5%;
 		right: 3.5%;
 		z-index: 1;
@@ -608,12 +608,12 @@ $divider-height: 3rem;
 			bottom: auto;
 			top: 7%;
 			width: 25.5%;
-			// height: 24%; // IE11
+			height: 24%; // IE11
 			right: 4.2%;
 		}
 
 		@include breakpoint('xxlarge') {
-			// height: 31%; // IE11
+			height: 31%; // IE11
 		}
 	}
 
@@ -624,7 +624,11 @@ $divider-height: 3rem;
 		position: absolute;
 		left: 4.5%;
 		bottom: 2.875%;
-		// height: 8%; // IE11
+		height: 10%; // IE11
+
+		@include breakpoint('medium') {
+			height: 12%; // IE11
+		}
 
 		@include breakpoint('large') {
 			align-items: flex-end;
@@ -799,6 +803,7 @@ $divider-height: 3rem;
 		flex-direction: column;
 		align-items: center;
 		margin-bottom: 4rem;
+		width: 100%;
 
 		@include breakpoint('large') {
 			flex-direction: row;
