@@ -1,6 +1,14 @@
 <template>
 	<div class="page-content">
-		<a class="hero" :href="primaryCtaUrl">
+		<a
+			class="hero"
+			:href="primaryCtaUrl"
+			v-kv-track-event="[
+				'homepage',
+				'click-IWD2020-hero',
+				'homepage-iwd2020-hero-banner-image'
+			]"
+		>
 			<kv-responsive-image2
 				:images="heroImageSet"
 				alt=""
@@ -15,8 +23,15 @@
 		</a>
 
 		<section class="section intro">
-			<!-- TODO: kv-track-event -->
-			<kv-button :href="primaryCtaUrl" class="intro__cta cta">
+			<kv-button
+				:href="primaryCtaUrl"
+				class="intro__cta cta"
+				v-kv-track-event="[
+					'homepage',
+					'click-IWD2020-hero',
+					'homepage-iwd2020-hero-cta-btn'
+				]"
+			>
 				Support Women
 			</kv-button>
 			<p class="text-block">
@@ -69,10 +84,14 @@
 			</h2>
 			<ul class="profiles__list">
 				<li class="profiles__li" v-for="(woman, index) in featuredWomen" :key="woman.url">
-					<!-- TODO: kv-track-event -->
 					<router-link
 						class="profiles__link"
 						:to="woman.url"
+						:v-kv-track-event="[
+							'homepage',
+							`click-IWD2020-story-${index}`,
+							'homepage-iwd2020-story-image'
+						]"
 					>
 						<div class="profiles__img-wrapper">
 							<img
@@ -93,8 +112,15 @@
 					</router-link>
 					<div class="profiles__text-wrapper">
 						<p class="profiles__text" v-html="woman.text"></p>
-						<!-- TODO: kv-track-event -->
-						<kv-button class="cta" :to="woman.url">
+						<kv-button
+							class="cta"
+							:to="woman.url"
+							:v-kv-track-event="[
+								'homepage',
+								`click-IWD2020-story-${index}`,
+								'homepage-iwd2020-story-cta'
+							]"
+						>
 							Read {{ woman.name }}'s Story
 						</kv-button>
 					</div>
@@ -114,8 +140,14 @@
 				the world create opportunity for themselves, their families, and their communities.
 			</p>
 			<flourish-flags class="categories__flags" />
-			<!-- TODO: kv-track-event -->
-			<kv-button class="cta categories__cta">
+			<kv-button
+				class="cta categories__cta"
+				v-kv-track-event="[
+					'homepage',
+					'click-IWD2020-get-started',
+					'homepage-iwd2020-get-started-cta'
+				]"
+			>
 				Support Women
 			</kv-button>
 			<div class="categories__subhead-wrapper">
@@ -127,10 +159,14 @@
 			</div>
 			<ul class="categories__list row">
 				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.id">
-					<!-- TODO: kv-track-event -->
 					<a
 						class="categories__link"
 						:href="category.url"
+						:v-kv-track-event="[
+							'homepage',
+							'click-IWD2020-category-card',
+							`homepage-iwd2020-category-${category.name.replace(' ', '-')}`
+						]"
 					>
 						<img
 							class="categories__img"
