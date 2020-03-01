@@ -1,5 +1,5 @@
 export default [
-	{ path: '/', component: () => import('@/pages/Homepage/iwd/IWDHomepage') },
+	{ path: '/', component: () => import('@/pages/Homepage/Homepage') },
 	{
 		path: '/algolia-vue',
 		component: () => import('@/pages/AlgoliaPOC'),
