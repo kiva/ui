@@ -57,6 +57,8 @@
 					<span class="stat-block__text">countries supported</span>
 				</li>
 			</ul>
+			<flourish-flags2 class="stats__flags" />
+			<flourish-shape-lines class="stats__divider-flourish" />
 		</section>
 
 		<wavy-divider class="divider divider--indigo" />
@@ -66,23 +68,30 @@
 				Women who are <span class="no-wrap">changing the world</span>
 			</h2>
 			<ul class="profiles__list">
-				<li class="profiles__li" v-for="woman in featuredWomen" :key="woman.url">
+				<li class="profiles__li" v-for="(woman, index) in featuredWomen" :key="woman.url">
 					<!-- TODO: Tracking -->
 					<router-link
 						class="profiles__link"
 						:to="woman.url"
 					>
-						<img
-							class="profiles__img"
-							:src="woman.img[0]"
-							:srcset="`${woman.img[1]} 2x`"
-							alt=""
-							width="255"
-							height="255"
-							loading="lazy"
-						>
+						<div class="profiles__img-wrapper">
+							<img
+								class="profiles__img"
+								:src="woman.img[0]"
+								:srcset="`${woman.img[1]} 2x`"
+								alt=""
+								width="255"
+								height="255"
+								loading="lazy"
+							>
+						</div>
+						<component
+							:is="woman.flourishComponent"
+							class="profiles__flourish"
+							:class="`profiles__flourish--${index}`"
+						/>
 					</router-link>
-					<div>
+					<div class="profiles__text-wrapper">
 						<p class="profiles__text" v-html="woman.text"></p>
 						<!-- TODO: Tracking -->
 						<kv-button class="cta" :to="woman.url">
@@ -91,6 +100,7 @@
 					</div>
 				</li>
 			</ul>
+			<flourish-shape-lines-2 class="profiles__divider-flourish" />
 		</section>
 
 		<wavy-divider class="divider divider--white" />
@@ -99,17 +109,22 @@
 			<h2 class="headline">
 				Ready to get started?
 			</h2>
-			<p class="text-block">
+			<p class="categories__body-text text-block">
 				Join over 1.8 million individuals who have helped more than 2 million women around
 				the world create opportunity for themselves, their families, and their communities.
 			</p>
+			<flourish-flags class="categories__flags" />
 			<!-- TODO: Url and tracking -->
 			<kv-button class="cta categories__cta">
 				Support Women
 			</kv-button>
-			<h3 class="categories__subhead">
-				Explore other categories
-			</h3>
+			<div class="categories__subhead-wrapper">
+				<flourish-shapes-3 class="categories__subhead-flourish" />
+				<h3 class="categories__subhead">
+					Explore other categories
+				</h3>
+				<flourish-shapes-5 class="categories__subhead-flourish-2" />
+			</div>
 			<ul class="categories__list row">
 				<li class="small-6 large-4 xlarge-3 columns" v-for="category in loanCategories" :key="category.id">
 					<!-- TODO: tracking -->
@@ -241,6 +256,18 @@ import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
 import IwdFlag from '@/assets/inline-svgs/iwd/iwd-flag.svg';
 import IwdCelebratingHerEveryDay from '@/assets/inline-svgs/iwd/iwd-celebrating-her-every-day.svg';
 import IwdBusinessAsUsual from '@/assets/inline-svgs/iwd/iwd-business-as-usual.svg';
+
+import FlourishCurrency from '@/assets/inline-svgs/iwd/flourish-currency.svg';
+import FlourishFlags from '@/assets/inline-svgs/iwd/flourish-flags.svg';
+import FlourishFlags2 from '@/assets/inline-svgs/iwd/flourish-flags2.svg';
+import FlourishShapeLines from '@/assets/inline-svgs/iwd/flourish-shape-lines.svg';
+import FlourishShapeLines2 from '@/assets/inline-svgs/iwd/flourish-shape-lines2.svg';
+import FlourishShapes from '@/assets/inline-svgs/iwd/flourish-shapes.svg';
+import FlourishShapes2 from '@/assets/inline-svgs/iwd/flourish-shapes2.svg';
+import FlourishShapes3 from '@/assets/inline-svgs/iwd/flourish-shapes3.svg';
+import FlourishShapes4 from '@/assets/inline-svgs/iwd/flourish-shapes4.svg';
+import FlourishShapes5 from '@/assets/inline-svgs/iwd/flourish-shapes5.svg';
+
 import NumberLoansFunded from '@/assets/inline-svgs/iwd/number-loans-funded.svg';
 import NumberToTheField from '@/assets/inline-svgs/iwd/number-to-the-field.svg';
 import NumberRepayment from '@/assets/inline-svgs/iwd/number-repayment.svg';
@@ -263,6 +290,16 @@ export default {
 		IwdFlag,
 		IwdCelebratingHerEveryDay,
 		IwdBusinessAsUsual,
+		FlourishFlags,
+		FlourishFlags2,
+		FlourishCurrency,
+		FlourishShapeLines,
+		FlourishShapeLines2,
+		FlourishShapes,
+		FlourishShapes2,
+		FlourishShapes3,
+		FlourishShapes4,
+		FlourishShapes5,
 		NumberLoansFunded,
 		NumberToTheField,
 		NumberRepayment,
@@ -294,7 +331,8 @@ export default {
 					img: [
 						[iwdImagesRequire('./profile-abigail.jpg')],
 						[iwdImagesRequire('./profile-abigail_2x.jpg')],
-					]
+					],
+					flourishComponent: FlourishShapes2
 				},
 				{
 					name: 'Estefania',
@@ -305,7 +343,8 @@ export default {
 					img: [
 						[iwdImagesRequire('./profile-estefania.jpg')],
 						[iwdImagesRequire('./profile-estefania_2x.jpg')],
-					]
+					],
+					flourishComponent: FlourishCurrency
 				},
 				{
 					name: 'Tinatin',
@@ -316,7 +355,8 @@ export default {
 					img: [
 						[iwdImagesRequire('./profile-tinatin.jpg')],
 						[iwdImagesRequire('./profile-tinatin_2x.jpg')],
-					]
+					],
+					flourishComponent: FlourishShapes2
 				},
 			],
 			loanCategories: []
@@ -495,6 +535,7 @@ $divider-height: 3rem;
 	width: 100%;
 	margin-top: -1 * $divider-height;
 	height: $divider-height;
+	position: relative;
 
 	&--white {
 		fill: #fff;
@@ -624,15 +665,56 @@ $divider-height: 3rem;
 		margin-left: auto;
 		margin-right: auto;
 	}
+
+	&__flourish {
+		width: rem-calc(106);
+	}
 }
 
 .stats {
 	background-color: $iwd-grey;
 	font-weight: $global-weight-bold;
+	position: relative;
 
 	&__list {
 		list-style: none;
 		margin: 4rem auto -3rem;
+		position: relative;
+		z-index: 2;
+	}
+
+	&__divider-flourish {
+		width: rem-calc(284);
+		height: rem-calc(136);
+		position: absolute;
+		z-index: 1;
+		left: calc(50% - #{rem-calc(150)});
+		bottom: -3.25rem;
+
+		@include breakpoint('xlarge') {
+			left: calc(50% - (61.875rem / 2) - 7%);
+			bottom: -4.25rem;
+		}
+	}
+
+	&__flags {
+		width: rem-calc(220);
+		height: rem-calc(151);
+		position: relative;
+		z-index: 1;
+		top: 2.5rem;
+
+		@include breakpoint('large') {
+			position: absolute;
+			top: 45%;
+			left: calc(50% - #{rem-calc(110)});
+			opacity: 0.3;
+		}
+
+		@include breakpoint('xxlarge') {
+			left: calc(50% + (61.875rem / 2) - #{rem-calc(110)});
+			top: 6rem;
+		}
 	}
 }
 
@@ -696,6 +778,7 @@ $divider-height: 3rem;
 }
 
 .profiles {
+	position: relative;
 	background-color: $iwd-indigo;
 	color: #fff;
 
@@ -723,10 +806,16 @@ $divider-height: 3rem;
 
 		@include breakpoint('xxlarge') {
 			flex-direction: column;
-			flex-basis: 33%;
+			width: 33%;
 			padding-right: 0.9375rem;
 			padding-left: 0.9375rem;
 		}
+	}
+
+	&__img-wrapper {
+		border-radius: 50%;
+		width: rem-calc(255);
+		overflow: hidden;
 	}
 
 	&__img {
@@ -737,25 +826,13 @@ $divider-height: 3rem;
 		flex-shrink: 0;
 	}
 
-	&__text {
-		// font-size: 1rem;
-		font-weight: $global-weight-normal;
-		padding: 0.75rem 0.5rem;
-		margin-bottom: 0.25rem;
-		line-height: 1.3;
-		display: block;
-	}
-
 	&__link {
 		display: block;
-		overflow: hidden;
 		text-decoration: none;
-		background-color: $iwd-grey;
 		color: $body-font-color;
-		border-radius: 50%;
-		width: rem-calc(255);
 		margin: 0 1rem 0.5rem;
 		flex-shrink: 0;
+		position: relative;
 
 		&:hover,
 		&:focus {
@@ -764,18 +841,104 @@ $divider-height: 3rem;
 			}
 		}
 	}
+
+	&__flourish {
+		position: absolute;
+		pointer-events: none;
+
+		&--0 {
+			width: rem-calc(91.34);
+			height: rem-calc(139.79);
+			left: -1.5rem;
+			top: 6rem;
+		}
+
+		&--1 {
+			width: rem-calc(82.72);
+			height: rem-calc(92.99);
+			right: 0;
+			top: 10rem;
+		}
+
+		&--2 {
+			width: rem-calc(91.34);
+			height: rem-calc(139.79);
+			right: -1.5rem;
+			top: 0;
+		}
+	}
+
+	&__divider-flourish {
+		width: rem-calc(284);
+		height: rem-calc(100);
+		position: absolute;
+		z-index: 1;
+		left: calc(50% - #{rem-calc(150)});
+		bottom: -1rem;
+
+		@include breakpoint('xlarge') {
+			left: auto;
+			right: calc(50% - (61.875rem / 2) - 7%);
+			bottom: 0;
+		}
+	}
+
+	&__text {
+		font-weight: $global-weight-normal;
+		padding: 0.75rem 0.5rem;
+		margin-bottom: 0.25rem;
+		line-height: 1.3;
+		display: block;
+	}
+
+	&__text-wrapper {
+		width: 100%; // IE 11
+	}
 }
 
 .categories {
 	background-color: #fff;
+	position: relative;
 
 	&__cta {
 		margin-bottom: 3rem;
 	}
 
+	&__body-text {
+		position: relative;
+		z-index: 1;
+	}
+
 	&__subhead {
 		font-weight: $global-weight-bold;
 		margin: 2rem 0;
+	}
+
+	&__subhead-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__subhead-flourish {
+		display: none;
+
+		@include breakpoint('large') {
+			display: block;
+			width: rem-calc(140);
+			height: rem-calc(126.78);
+		}
+	}
+
+	&__subhead-flourish-2 {
+		display: none;
+
+		@include breakpoint('large') {
+			display: block;
+			width: rem-calc(93.69);
+			height: rem-calc(57.48);
+			margin: -3rem 2rem 0 1rem;
+		}
 	}
 
 	&__list {
@@ -828,6 +991,20 @@ $divider-height: 3rem;
 			}
 		}
 	}
+
+	&__flags {
+		display: none;
+
+		@include breakpoint('large') {
+			display: block;
+			width: rem-calc(217);
+			z-index: 0;
+			position: absolute;
+			opacity: 0.3;
+			left: calc(50% - (61.875rem / 2) - 4.5%);
+			top: 4rem;
+		}
+	}
 }
 
 .partners {
@@ -876,6 +1053,7 @@ $divider-height: 3rem;
 	width: rem-calc(266);
 	display: block;
 	margin: -6rem auto 4rem;
+	position: relative;
 }
 
 </style>

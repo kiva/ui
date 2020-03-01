@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284.52 100.68">
+  <defs>
+    <style>
+      .cls-1{fill:#00afaa}.cls-3{fill:#fc4501}
+    </style>
+  </defs>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Artwork">
+      <path class="cls-1" transform="rotate(25.15 246.115 52.914)" d="M243.37 46.47h5.45v12.85h-5.45z"/>
+      <path transform="rotate(25.15 60.203 41.301)" fill="gold" d="M57.09 33.97h6.22v14.65h-6.22z"/>
+      <path class="cls-3" transform="rotate(25.15 58.905 5.002)" d="M52.64 2.42h12.52v5.17H52.64z"/>
+      <path class="cls-1" transform="rotate(25.15 118.23 15.157)" d="M115.3 8.26h5.86v13.81h-5.86z"/>
+      <path stroke-width="1.54" stroke-miterlimit="10" stroke="#a0e2ba" fill="#000f9f" d="M216.824 88.18l7.812 3.667-3.668 7.812-7.812-3.668z"/>
+      <path class="cls-3" transform="rotate(-154.85 198.402 39.214)" d="M195.47 33.63h5.87V44.8h-5.87z"/>
+      <path stroke-width="1.22" stroke-miterlimit="10" stroke="#a0e2ba" fill="#000f9f" d="M80.795 58.243l15.787 7.412-2.907 6.192-15.787-7.412z"/>
+      <circle cx="147.45" cy="22.74" r="4.94" stroke="gold" stroke-width=".84" fill="none" stroke-miterlimit="10"/>
+      <circle cx="129.14" cy="52.9" r="5.35" fill="#5700c9"/>
+      <circle cx="153.22" cy="84.97" r="6.43" stroke="#fc4501" stroke-width="1.1" fill="none" stroke-miterlimit="10"/>
+      <path d="M1.08 47.25c54.8-81.11 255.55 61 282.86 47.53" stroke-width="2.6" fill="none" stroke-miterlimit="10" stroke="#a0e2ba"/>
+    </g>
+  </g>
+</svg>
