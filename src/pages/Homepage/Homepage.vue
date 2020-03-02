@@ -64,7 +64,7 @@ export default {
 		query: iwdSwitchQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isIwdActive = _get(data, 'general.iwd_homepage_active.value');
+			this.isIwdActive = _get(data, 'general.iwd_homepage_active.value') === 'true' || false;
 		}
 	}
 };
