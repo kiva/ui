@@ -104,12 +104,18 @@ export default {
 		KivaAsExpert,
 		FrequentlyAskedQuestions
 	},
+	props: {
+		category: {
+			type: String,
+			default: 'default'
+		}
+	},
 	data() {
 		return {
 			isExperimentActive: false,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
-			selectedGroup: 'default',
+			selectedGroup: this.category || 'default',
 			heroImages: [
 				['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
 				['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],

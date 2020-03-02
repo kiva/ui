@@ -290,7 +290,7 @@ export default {
 			type: Number,
 			default: 25
 		},
-		group: {
+		category: {
 			type: String,
 			default: 'default'
 		}
@@ -392,8 +392,8 @@ export default {
 	},
 	created() {
 		// Sanitize and set initial form values.
-		if (this.lendingCategories.find(category => category.value === this.group)) {
-			this.selectedGroup = this.group;
+		if (this.lendingCategories.find(category => category.value === this.category)) {
+			this.selectedGroup = this.category;
 		}
 		if (!Number.isNaN(Number(this.amount))) {
 			this.mgAmount = this.amount;
@@ -507,7 +507,6 @@ export default {
 					value: '15',
 					label: `${numeral(this.mgAmount * 0.15).format('$0,0.00')}`
 				},
-
 				{
 					value: '8',
 					label: `${numeral(this.mgAmount * 0.08).format('$0,0.00')}`

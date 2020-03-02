@@ -95,7 +95,7 @@ export default {
 				path: '/monthlygood/setup',
 				query: {
 					amount: this.amount,
-					group: this.selectedGroup
+					category: this.selectedGroup
 				}
 			});
 		}
