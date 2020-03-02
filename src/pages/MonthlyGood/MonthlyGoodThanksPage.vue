@@ -39,6 +39,7 @@ import userInfoQuery from '@/graphql/query/userInfo.graphql';
 const pageQuery = gql`{
 	my {
 		autoDeposit {
+			id
 			amount
 			donateAmount
 			dayOfMonth
