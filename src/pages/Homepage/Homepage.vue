@@ -1,70 +1,71 @@
 <template>
-	<www-page id="homepage">
-		<hero-slideshow v-if="showSlideShow"
-			:promo-enabled="promoEnabled" :promo-content="promoContent"
-		/>
-		<monthly-good-explained v-if="promoEnabled" />
-		<why-kiva />
-		<category-grid />
+	<www-page id="homepage"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
+		<component :is="activeHomepage" />
 	</www-page>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
-import { settingEnabled } from '@/util/settingsUtils';
+import gql from 'graphql-tag';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import WhyKiva from '@/components/Homepage/WhyKiva';
-import HeroSlideshow from './HeroSlideshow';
-import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
-import CategoryGrid from '@/components/Homepage/CategoryGrid';
-import { processContent } from '@/util/contentfulUtils';
+import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
+import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
+
+const iwdSwitchQuery = gql`query homepageFrame {
+	general {
+		iwd_homepage_active: uiConfigSetting(key: "iwd_homepage_active") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
+	inject: ['apollo'],
 	components: {
 		WwwPage,
-		WhyKiva,
-		HeroSlideshow,
-		MonthlyGoodExplained,
-		CategoryGrid,
+		DefaultHomePage,
+		IWDHomePage,
 	},
 	data() {
 		return {
-			promoEnabled: false,
-			showSlideShow: null,
-			promoContent: {}
+			isIwdActive: false,
+			iwdHeaderTheme: {
+				themeKey: 'IWD',
+				backgroundColor: '#fff',
+				linkColor: '#060f9f',
+				linkHoverColor: '#a0e2ba',
+				separatorColor: 'transparent'
+			},
+			iwdFooterTheme: {
+				themeKey: 'IWD',
+				backgroundColor: '#fff',
+				textColor: '#484848',
+				linkColor: '#060f9f',
+				separatorColor: '#a0e2ba'
+			},
 		};
 	},
-	inject: ['apollo'],
-	mounted() {
-		this.apollo.query({
-			query: contentfulCMS,
-			variables: {
-				contentType: 'uiSetting',
-				contentKey: 'ui-homepage-promo',
-			}
-		}).then(({ data }) => {
-			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
-			// it should always be the first and only item in the array, since we pass the variable to the query above
-			const uiPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-homepage-promo'); // eslint-disable-line max-len
-			this.promoEnabled = settingEnabled(
-				uiPromoSetting,
-				'active',
-				'startDate',
-				'endDate'
-			);
-			this.promoContent = processContent(uiPromoSetting.content);
-		}).finally(() => {
-			this.showSlideShow = true;
-		});
+	computed: {
+		activeHomepage() {
+			return this.isIwdActive ? IWDHomePage : DefaultHomePage;
+		},
+		headerTheme() {
+			return this.activeHomepage !== DefaultHomePage ? this.iwdHeaderTheme : null;
+		},
+		footerTheme() {
+			return this.activeHomepage !== DefaultHomePage ? this.iwdFooterTheme : null;
+		}
 	},
+	apollo: {
+		query: iwdSwitchQuery,
+		preFetch: true,
+		result({ data }) {
+			this.isIwdActive = _get(data, 'general.iwd_homepage_active.value') === 'true' || false;
+		}
+	}
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-.page-content {
-	padding: 1.625rem 0;
-}
-</style>

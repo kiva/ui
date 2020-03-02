@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284.52 136.31">
+  <defs>
+    <style>
+      .cls-2{fill:#00afaa}.cls-4{fill:#fc4501}
+    </style>
+  </defs>
+  <g>
+      <path class="rellax" d="M26.34 134.9c48 4 97.44-100.35 148.31-84.49 54 16.85 45.11-40.2 34.14-41.12-20.38-1.7 1.27 41.23 13.19 21.63" stroke-width="2.6" stroke-miterlimit="10" stroke="#00afaa" fill="none"/>
+      <path class="cls-2 rellax" transform="rotate(25.15 260.262 20.346)" d="M257.53 13.93h5.45v12.85h-5.45z"/>
+      <path transform="rotate(25.15 60.208 38.9)" fill="gold" d="M57.09 31.58h6.22v14.65h-6.22z"/>
+      <path class="cls-4 rellax" transform="rotate(25.15 72.322 82.129)" d="M66.07 79.53h12.52v5.17H66.07z"/>
+      <path class="cls-2 rellax" transform="rotate(25.15 118.241 12.778)" d="M115.3 5.87h5.86v13.81h-5.86z"/>
+      <path stroke-width="1.54" fill="#000f9f" stroke="#a0e2ba" stroke-miterlimit="10" d="M56.83 101.439l7.812 3.668-3.667 7.811-7.812-3.667z"/>
+      <path class="cls-4 rellax" transform="rotate(-154.85 198.404 36.82)" d="M195.47 31.24h5.87v11.17h-5.87z"/>
+      <path stroke-width="1.22" fill="#000f9f" stroke="#a0e2ba" stroke-miterlimit="10" d="M169.424.806l15.787 7.411-2.907 6.192-15.787-7.412z"/>
+      <circle cx="58.6" cy="68.57" r="4.94" stroke="gold" stroke-width=".84" stroke-miterlimit="10" fill="none"/>
+      <circle cx="76.67" cy="61.21" r="5.35" fill="#fff"/>
+      <circle cx="238.96" cy="23.03" r="6.43" stroke-width="1.1" stroke="#fc4501" stroke-miterlimit="10" fill="none"/>
+      <path d="M1.08 44.85c54.8-81.1 255.55 61.05 282.86 47.54" stroke="#fc4501" stroke-width="2.6" stroke-miterlimit="10" fill="none"/>
+   </g>
+</svg>

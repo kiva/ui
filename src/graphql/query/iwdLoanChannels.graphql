@@ -1,0 +1,19 @@
+query categoryRows(
+	$imgDefaultSize: String = "w218h122",
+	$imgRetinaSize: String = "w436h244",
+	$ids: [Int]
+) {
+	lend {
+		loanChannelsById (ids: $ids) {
+				id
+				name
+      			url
+				image {
+					url (customSize: $imgDefaultSize)
+				}
+				retinaImage {
+					url (customSize: $imgRetinaSize)
+				}
+			}
+  	}
+}

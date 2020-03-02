@@ -270,7 +270,7 @@ export default {
 
 		.overlay-column {
 			max-width: none;
-			padding: 1.5rem 0.5rem 0.5rem;
+			padding: 1.5rem 1rem 0.5rem;
 			background-color: rgba(0, 0, 0, 0.35);
 			@include breakpoint(large) {
 				max-width: 31.25rem;
@@ -293,12 +293,19 @@ export default {
 	::v-deep form {
 		button {
 			width: 100%;
+			margin-top: 0.75rem;
 		}
 	}
 
 	.mg-subhead {
 		max-width: 28.125rem;
 		margin: 1rem 0 1.35rem 0;
+		font-size: 1.15rem;
+		line-height: 1.25rem;
+		@include breakpoint(xlarge) {
+			font-size: 1.25rem;
+			line-height: 1.5rem;
+		}
 	}
 }
 </style>

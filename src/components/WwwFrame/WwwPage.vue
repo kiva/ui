@@ -1,13 +1,18 @@
 <template>
 	<div class="www-page">
 		<the-banner-area />
-		<the-header :hide-search-in-header="hideSearchInHeader" />
+		<the-header
+			:hide-search-in-header="hideSearchInHeader"
+			:theme="headerTheme"
+		/>
 		<slot name="secondary"></slot>
 		<main :class="{'gray-background': grayBackground}">
 			<slot name="tertiary"></slot>
 			<slot></slot>
 		</main>
-		<the-footer />
+		<the-footer
+			:theme="footerTheme"
+		/>
 		<the-basket-bar />
 		<cookie-banner />
 	</div>
@@ -42,6 +47,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		headerTheme: {
+			type: Object,
+			default() {},
+		},
+		footerTheme: {
+			type: Object,
+			default() {},
+		}
 	},
 	apollo: {
 		preFetch(config, client, args) {

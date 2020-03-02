@@ -1,7 +1,7 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
-			<fieldset class="large-4 medium-5 small-4 columns">
+			<fieldset class="large-4 medium-5 small-12 columns input-wrapper">
 				<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount' + componentKey">
 					Amount
 				</label>
@@ -15,7 +15,7 @@
 					</li>
 				</ul>
 			</fieldset>
-			<fieldset class="large-8 medium-7 small-8 columns">
+			<fieldset class="large-8 medium-7 small-12 columns">
 				<kv-dropdown-rounded :value="selectedGroup" @input="updateSelected">
 					<option v-for="(option, index) in lendingCategories" :value="option.value" :key="index">
 						{{ option.label }}
@@ -124,8 +124,13 @@ label:not(.error) + input {
 	width: 100%;
 }
 
+.input-wrapper {
+	padding-bottom: 1rem;
+}
+
 .validation-errors {
-	padding: 0.15rem 0 0 0.45rem;
+	padding: 0.15rem 0 0 0;
+	margin-bottom: 0;
 
 	li {
 		line-height: 1.15rem;

@@ -1,12 +1,12 @@
 <template>
 	<div class="email-preview-section-wrapper row">
-		<div class="small-9 large-6 columns">
+		<div class="small-12 large-6 columns">
 			<kv-responsive-image
 				:images="images"
 				alt="A Monthly Good email in your inbox"
 			/>
 		</div>
-		<div class="small-12 large-6 columns text-center">
+		<div class="small-12 large-6 columns">
 			<div class="email-preview-text">
 				<h2 class="impact-text">
 					Monthly Good, delivered to your inbox
@@ -53,5 +53,11 @@ h2 {
 
 .email-preview-text {
 	padding: 4rem 1rem;
+}
+
+img {
+	max-width: 350px;
+	margin: 0 auto;
+	display: block;
 }
 </style>

@@ -100,7 +100,7 @@ export default {
 					variables: {
 						ids: featuredCategoryIds,
 						numberOfLoans: initialLoanCount,
-						sector: topSectorId ? [topSectorId] : null
+						sector: topSectorId ? [numeral(topSectorId).value()] : null
 					},
 					fetchPolicy: 'network-only',
 				});
@@ -121,7 +121,7 @@ export default {
 				variables: {
 					ids: featuredCategoryIds,
 					numberOfLoans: initialLoanCount,
-					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
+					sector: this.favoriteSectorId ? [numeral(this.favoriteSectorId).value()] : null,
 				}
 			});
 		} catch (e) {
@@ -232,7 +232,7 @@ export default {
 				variables: {
 					ids: featuredCategoryIds,
 					offset: this.queryOffset,
-					sector: this.favoriteSectorId ? [this.favoriteSectorId] : null,
+					sector: this.favoriteSectorId ? [numeral(this.favoriteSectorId).value()] : null,
 				}
 			}).then(({ data }) => {
 				if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
