@@ -111,6 +111,7 @@ export default {
 			if (this.lendAfterDaysIdle === 90 && daysUntilMay >= 0) {
 				// cash-1883
 				if (daysIdle === 0) {
+					// eslint-disable-next-line max-len
 					return `You're currently active! You'll be eligible for auto-lending if you don't make a loan yourself in the next 90 days.`;
 				}
 				// lender has a qualifying credit change after 2/20/2020 thus resetting their 90 days beyond 5/20/2020
