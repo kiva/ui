@@ -104,10 +104,15 @@ export default {
 			const daysIdle = differenceInCalendarDays(new Date(), idleStartTime);
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle > 0 ? this.lendAfterDaysIdle - daysIdle : 0;
 			const daysUntilMay = differenceInCalendarDays(new Date('5/20/2020'), new Date());
-
+			const lendAfterDaysIdle = this.lendAfterDaysIdle;
+			
 			// TEMPORARY - Remove after 5/20/2020
 			// Special launch conditions for Autolenders with unchanged default of 90 days
 			if (this.lendAfterDaysIdle === 90 && daysUntilMay >= 0) {
+				// cash-1883
+				if (daysIdle === 0) {
+					return `You're currently active! You'll be eligible for auto-lending if you don't make a loan yourself in the next 90 days.`;
+				}
 				// lender has a qualifying credit change after 2/20/2020 thus resetting their 90 days beyond 5/20/2020
 				if (daysUntilLend > daysUntilMay) {
 					// eslint-disable-next-line max-len
@@ -123,6 +128,11 @@ export default {
 				return `Since you haven’t made a loan yourself in ${daysIdle} days, you will be eligible for auto-lending on May 20, 2020 when the first 90-day auto-loans are made.`;
 			}
 
+			// cash-1883
+			if (daysIdle === 0) {
+				// eslint-disable-next-line max-len
+				return `You're currently active! You'll be eligible for auto-lending if you dot make a loan yourself in the next ${lendAfterDaysIdle} days.`;
+			}
 			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
 			if (daysUntilLend > 0) {
 				// eslint-disable-next-line max-len
