@@ -41,11 +41,15 @@ export default [
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 
-	{ path: '/monthlygood', component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage') },
+	{
+		path: '/monthlygood',
+		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
+		props: route => ({ category: route.query.category })
+	},
 	{
 		path: '/monthlygood/setup',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
-		props: route => ({ amount: Number(route.query.amount), group: route.query.group })
+		props: route => ({ amount: Number(route.query.amount), category: route.query.category })
 	},
 	{ path: '/monthlygood/thanks', component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage') },
 
