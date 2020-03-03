@@ -462,8 +462,8 @@ export default {
 						}
 					}`,
 				variables: {
-					amount: this.totalCombinedDeposit,
-					donateAmount: this.donation,
+					amount: numeral(this.totalCombinedDeposit).format('0.00'),
+					donateAmount: numeral(this.donation).format('0.00'),
 					dayOfMonth: this.dayOfMonth,
 					category: this.selectedGroup,
 				}
