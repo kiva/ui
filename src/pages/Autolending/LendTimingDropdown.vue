@@ -105,6 +105,12 @@ export default {
 			const daysUntilLend = this.lendAfterDaysIdle - daysIdle > 0 ? this.lendAfterDaysIdle - daysIdle : 0;
 			const daysUntilMay = differenceInCalendarDays(new Date('5/20/2020'), new Date());
 
+			// cash-1883
+			if (daysIdle === 0) {
+				// eslint-disable-next-line max-len
+				return `You're currently active! You'll be eligible for auto-lending if you don't make a loan yourself in the next ${this.lendAfterDaysIdle} days.`;
+			}
+
 			// TEMPORARY - Remove after 5/20/2020
 			// Special launch conditions for Autolenders with unchanged default of 90 days
 			if (this.lendAfterDaysIdle === 90 && daysUntilMay >= 0) {
