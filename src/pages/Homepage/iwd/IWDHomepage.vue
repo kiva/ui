@@ -141,6 +141,7 @@
 			</p>
 			<flourish-flags class="categories__flags" />
 			<kv-button
+				:href="primaryCtaUrl"
 				class="cta categories__cta"
 				v-kv-track-event="[
 					'homepage',
