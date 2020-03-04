@@ -57,7 +57,7 @@
 			<ul class="row stats__list">
 				<li class="small-12 large-6 xxlarge-3 columns stat-block">
 					<number-loans-funded class="stat-block__number stat-block__number--loans-funded" />
-					<span class="stat-block__text">loans funded to women</span>
+					<span class="stat-block__text">loans funded</span>
 				</li>
 				<li class="small-12 large-6 xxlarge-3 columns stat-block">
 					<number-to-the-field class="stat-block__number stat-block__number--to-the-field" />
