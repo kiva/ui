@@ -4,7 +4,7 @@ pipeline {
   environment {
     CI = 'true'
     K8S_RELEASE_NAME = "kiva-ui"
-    K8S_NAMESPACE = "kiva-ui"
+    K8S_NAMESPACE = "kiva-marketplace"
     DOCKER_REPO_NAME = "kiva/ui"
     TAG_NAME = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     TAGGED_IMAGE_NAME = "${DOCKER_REPO_NAME}:${TAG_NAME}"
@@ -48,13 +48,13 @@ pipeline {
       }
       steps {
         echo "Deploying to development Kubernetes cluster..."
-        withKubeConfig([credentialsId: "test-k8s-config"]) {
+        withKubeConfig([credentialsId: "jenkins-ci-kubeconfig"]) {
           withAWS([credentials: "jenkins-ci"]) {
-            sh "helm upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE} --tiller-namespace helm-system --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8sdev"
+            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE} --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8sdev"
           }
         }
         }
       }
-    
+
   }
 }
