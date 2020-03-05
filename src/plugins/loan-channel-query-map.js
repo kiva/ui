@@ -256,49 +256,87 @@ export default {
 					// eslint-disable-next-line
 					queryParams: 'country=mz,ug,sn,rw,ke,cd,lr,bf,cm,gh,tg,mg,ml,eg&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
 					// eslint-disable-next-line
-					algoliaParams: 'countries=Africa%20>%20Cameroon~Africa%20>%20Congo%20%28DRC%29~Africa%20>%20Egypt~Africa%20>%20Ghana~Africa%20>%20Kenya~Africa%20>%20Liberia~Africa%20>%20Madagascar~Africa%20>%20Mali~Africa%20>%20Mozambique~Africa%20>%20Nigeria~Africa%20>%20Rwanda~Africa%20>%20Senegal~Africa%20>%20Uganda&sortBy=popularity'
+					algoliaParams: 'gender=female&countries=Africa%20>%20Cameroon~Africa%20>%20Congo%20%28DRC%29~Africa%20>%20Egypt~Africa%20>%20Ghana~Africa%20>%20Kenya~Africa%20>%20Liberia~Africa%20>%20Madagascar~Africa%20>%20Mali~Africa%20>%20Mozambique~Africa%20>%20Nigeria~Africa%20>%20Rwanda~Africa%20>%20Senegal~Africa%20>%20Uganda&sortBy=popularity'
 				},
 				{
 					id: 84,
 					url: 'asia-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'country=kh,tj,th,vn,ph,kg,id,pk&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&countries=Asia%20>%20Cambodia~Asia%20>%20India~Asia%20>%20Kyrgyzstan~Asia%20>%20Nepal~Asia%20>%20Pakistan~Asia%20>%20Philippines~Asia%20>%20Tajikistan~Asia%20>%20Vietnam&sortBy=popularity'
 				},
 				{
 					id: 85,
 					url: 'latin-america-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'country=bo,gt,py,ni,hn,pe,cr,pa,ec,co,sv,mx,br&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&countries=North%20America%20>%20Mexico~South%20America%20>%20Bolivia~South%20America%20>%20Brazil~South%20America%20>%20Colombia~South%20America%20>%20Ecuador~South%20America%20>%20Paraguay~South%20America%20>%20Peru~Central%20America%20>%20Costa%20Rica~Central%20America%20>%20El%20Salvador~Central%20America%20>%20Guatemala~Central%20America%20>%20Honduras~Central%20America%20>%20Nicaragua~North%20America%20>%20Dominican%20Republic&sortBy=popularity'
 				},
 				{
 					id: 86,
 					url: 'united-states-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'country=us&distributionModel=field_partner&gender=female&riskRating=0,5&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&countries=North%20America%20>%20United%20States&sortBy=popularity'
 				},
 				{
 					id: 87,
 					url: 'agriculture-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=1&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&sector=Agriculture&sortBy=popularity'
 				},
 				{
 					id: 88,
 					url: 'education-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=15&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&sector=Education&sortBy=popularity'
 				},
 				{
 					id: 89,
 					url: 'arts-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=9&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&sector=Arts&sortBy=popularity'
 				},
 				{
 					id: 90,
 					url: 'eco-friendly-loans',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&gender=female',
-					algoliaParams: ''
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&tag=9&riskRating=0,5&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&tags=%23Eco-friendly&sortBy=popularity'
+				},
+				{
+					id: 92,
+					url: 'food-loans',
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=12&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&sector=Food&sortBy=popularity'
+				},
+				{
+					id: 93,
+					url: 'shelter-loans',
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=10&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&sector=Housing&sortBy=popularity'
+				},
+				{
+					id: 94,
+					url: 'retail-loans',
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=field_partner&gender=female&riskRating=0,5&sector=7&status=fundRaising&sortBy=popularity',
+					// eslint-disable-next-line
+					algoliaParams: 'gender=female&sector=Retail&sortBy=popularity'
 				},
 
 				// Misc Promotional or Unsupported URLS
