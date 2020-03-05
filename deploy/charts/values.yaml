@@ -5,6 +5,8 @@ image:
   tag: "" # Expected be set by Jenkins
   pullPolicy: Always
 
+imagePullSecretName: marketplace-regcred
+
 deployenv:
   environment: "" # set either by jenkins or manually
 
@@ -44,4 +46,4 @@ ingress:
   tls:
     - hosts:
       - ui-dev.dk1.kiva.org
-      secretName: "kiva-ui-tls" 
+      secretName: "kiva-ui-tls"
