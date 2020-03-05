@@ -4,7 +4,7 @@ pipeline {
   environment {
     CI = 'true'
     K8S_RELEASE_NAME = "kiva-ui"
-    K8S_NAMESPACE = "kiva-ui"
+    K8S_NAMESPACE = "kiva-marketplace"
     DOCKER_REPO_NAME = "kiva/ui"
     TAG_NAME = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     TAGGED_IMAGE_NAME = "${DOCKER_REPO_NAME}:${TAG_NAME}"
