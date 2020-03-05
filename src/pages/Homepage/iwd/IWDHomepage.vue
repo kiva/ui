@@ -452,37 +452,70 @@ export default {
 						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/1ac7934a5816c22b5248994319fd0263.jpg'
 					}
 				},
+				// {
+				// 	id: 88,
+				// 	name: 'Education loans',
+				// 	url: '/lend-by-category/education-loans',
+				// 	image: {
+				// 		url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/ff9949b8a62ccb63b5f85ff50551efeb.jpg'
+				// 	},
+				// 	retinaImage: {
+				// 		url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/fa05ac95ddded82d53a1e5de820044df.jpg'
+				// 	}
+				// },
 				{
-					id: 88,
-					name: 'Education loans',
-					url: '/lend-by-category/education-loans',
+					id: 92,
+					name: 'Food loans',
+					url: '/lend-by-category/food-loans',
 					image: {
-						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/ff9949b8a62ccb63b5f85ff50551efeb.jpg'
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/bb0b709ba2f7638034e5cb7f84ccbc58.jpg'
 					},
 					retinaImage: {
-						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/fa05ac95ddded82d53a1e5de820044df.jpg'
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/ebf791cbbe4c0aa09b4e998a877d35a2.jpg'
 					}
 				},
+				// {
+				// 	id: 89,
+				// 	name: 'Arts loans',
+				// 	url: '/lend-by-category/arts-loans',
+				// 	image: {
+				// 		url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/29d396d1008832da7e23be907650ecaf.jpg'
+				// 	},
+				// 	retinaImage: {
+				// 		url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/0ce20fa361c78242cc226d53ac53e333.jpg'
+				// 	}
+				// },
 				{
-					id: 89,
-					name: 'Arts loans',
-					url: '/lend-by-category/arts-loans',
+					id: 94,
+					name: 'Retail loans',
+					url: '/lend-by-category/retail-loans',
 					image: {
-						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/29d396d1008832da7e23be907650ecaf.jpg'
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/5fc167e0ba23640ccef9ca91d1bb978f.jpg'
 					},
 					retinaImage: {
-						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/0ce20fa361c78242cc226d53ac53e333.jpg'
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/d4df79ad89ff6cced71662f7887b9b60.jpg'
 					}
 				},
+				// {
+				// 	id: 90,
+				// 	name: 'Eco-friendly loans',
+				// 	url: '/lend-by-category/eco-friendly-loans',
+				// 	image: {
+				// 		url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/3e24bc6cf22a5be5f0dc766ff8251ef3.jpg'
+				// 	},
+				// 	retinaImage: {
+				// 		url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/2116f8657fe23bc31cf54dfdb59413cb.jpg'
+				// 	}
+				// },
 				{
-					id: 90,
-					name: 'Eco-friendly loans',
-					url: '/lend-by-category/eco-friendly-loans',
+					id: 93,
+					name: 'Shelter loans',
+					url: '/lend-by-category/shelter-loans',
 					image: {
-						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/3e24bc6cf22a5be5f0dc766ff8251ef3.jpg'
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w218h122/94612233eae1ed25382c8113643a5ce6.jpg'
 					},
 					retinaImage: {
-						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/2116f8657fe23bc31cf54dfdb59413cb.jpg'
+						url: 'https://www-kiva-org-0.freetls.fastly.net/img/w436h244/54db03c8268961334fb3dec3a3d73bd4.jpg'
 					}
 				}
 			]
