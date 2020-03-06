@@ -16,6 +16,7 @@ export default function AutolendProfile() {
 		idleCreditOptIn: true,
 		cIdleStartTime: null,
 		enableAfter: 0,
+		kivaChooses: true,
 		loanSearchCriteria: LoanSearchCriteria(),
 	};
 }
@@ -54,6 +55,7 @@ export function profilesAreEqual(a, b) {
 	if (a.idleCreditOptIn !== b.idleCreditOptIn) return false;
 	if (a.donationPercentage !== b.donationPercentage) return false;
 	if (a.lendAfterDaysIdle !== b.lendAfterDaysIdle) return false;
+	if (a.kivaChooses !== b.kivaChooses) return false;
 	if (!criteriaAreEqual(a.loanSearchCriteria, b.loanSearchCriteria)) return false;
 	return true;
 }

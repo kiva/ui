@@ -15,15 +15,14 @@
 			<main-toggle />
 		</div>
 		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
-			<lend-timing-dropdown />
 			<!-- main toggles -->
-			<div class="setting-group">
-				<!-- timing dropdown -->
+			<div class="main-settings setting-group">
+				<lend-timing-dropdown />
 				<donation-dropdown />
-				<!-- kiva chooses for me -->
+				<kiva-chooses-radios />
 			</div>
 			<!-- basic criteria -->
-			<div class="setting-group">
+			<div class="setting-group" v-show="!kivaChooses">
 				<h2 class="criteria-title">
 					Auto-lending criteria
 				</h2>
@@ -45,13 +44,13 @@
 				</div>
 			</div>
 			<!-- advanced settings -->
-			<div class="row column">
+			<div class="row column" v-show="!kivaChooses">
 				<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
 					{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
 				</button>
 			</div>
 			<kv-expandable>
-				<div class="row" v-show="showAdvanced">
+				<div class="row" v-show="showAdvanced && !kivaChooses">
 					<div class="small-12 large-6 columns setting-column">
 						<loan-increment-radios />
 					</div>
@@ -77,7 +76,6 @@
 			</kv-expandable>
 		</div>
 		<div class="row column save-button-area">
-			<!-- save button -->
 			<save-button class="show-for-large" />
 		</div>
 		<!-- mobile-only footer -->
@@ -115,6 +113,7 @@ import GroupRadios from './GroupRadios';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import LoanIncrementRadios from './LoanIncrementRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
+import KivaChoosesRadios from './KivaChoosesRadios';
 
 const pageQuery = gql`{
 	autolending @client {
@@ -122,6 +121,7 @@ const pageQuery = gql`{
 		currentProfile {
 			isEnabled
 			idleCreditOptIn
+			kivaChooses
 		}
 	}
 }`;
@@ -148,6 +148,7 @@ export default {
 		PartnerDelRateDropdown,
 		LoanIncrementRadios,
 		DefaultRateDropdown,
+		KivaChoosesRadios,
 		WwwPage,
 	},
 	data() {
@@ -157,6 +158,7 @@ export default {
 			showAdvanced: false,
 			idleCreditOptIn: false,
 			showOptOutControls: false,
+			kivaChooses: true,
 		};
 	},
 	apollo: {
@@ -208,6 +210,7 @@ export default {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.idleCreditOptIn = !!_get(data, 'autolending.currentProfile.idleCreditOptIn');
+			this.kivaChooses = !!_get(data, 'autolending.currentProfile.kivaChooses');
 		},
 	},
 	mounted() {
@@ -278,6 +281,10 @@ $autolending-font-size: rem-calc(18.8);
 		position: relative;
 		margin: 2rem 0;
 		border-bottom: 1px solid $kiva-stroke-gray;
+
+		&.main-settings {
+			margin-top: 0;
+		}
 	}
 
 	.criteria-title {
