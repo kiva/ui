@@ -18,7 +18,7 @@ spec:
       - name: kiva-ui
         image: kiva/ui:master
         command: [ "npm" ]
-        args: [ "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui/ui-build" ]
+        args: [ "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui" ]
         env:
         - name: UI_SESSION_SECRET
           valueFrom:

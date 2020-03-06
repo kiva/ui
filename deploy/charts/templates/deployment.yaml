@@ -29,8 +29,8 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" # In Jenkins, need to call helm with --set image.tag=master-XY
-        command: ["/usr/bin/npm"]
-        args: ["start", "--", "--port=8888", "--config={{ .Values.deployenv.environment }}", "--prefix", "/ui/ui-build"]
+        command: ["npm"]
+        args: ["start", "--", "--port=8888", "--config={{ .Values.deployenv.environment }}", "--prefix", "/ui"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
          - name: {{ .Values.service.portName }}
