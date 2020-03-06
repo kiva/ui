@@ -12,9 +12,11 @@ RUN npm run build
 
 # run stage
 FROM node:12-alpine as run-stage
+
 # Change working directory
 RUN mkdir /ui
 WORKDIR /ui
+
 # Bring over app files
 COPY --from=build-stage /ui/build ./build
 COPY --from=build-stage /ui/config ./config
@@ -24,10 +26,12 @@ COPY --from=build-stage /ui/server ./server
 COPY --from=build-stage /ui/src ./src
 COPY --from=build-stage /ui/package.json .
 COPY --from=build-stage /ui/package-lock.json .
+
 # Install PROD dependencies only
 RUN npm install --production
+
 # Expose API port to the outside
 EXPOSE 8888
+
 # Launch application
-# CMD ["npm","run","start","--","--config=local"]
 CMD [ "npm", "start", "--", "--port=8888", "--config=local", "--prefix", "/ui" ]
