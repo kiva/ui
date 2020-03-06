@@ -8,6 +8,8 @@ image:
 deployenv:
   environment: "" # set either by jenkins or manually
 
+secretName: kiva-ui
+
 replicaCount: 2
 
 strategy:
