@@ -67,7 +67,6 @@ export default context => {
 
 					// get new contentful data
 					return contentfulClient.getEntries(contentfulQueryParams).then(contentfulResponse => {
-						console.log('getEntries', contentfulResponse);
 						const items = contentfulResponse.items.map(entry => entry.fields);
 						// store timestamp and results in localStorage
 						store2.set('lastContentfulCacheRefresh', new Date().getTime());
