@@ -20,7 +20,6 @@ WORKDIR /ui
 # Bring over app files
 COPY --from=build-stage /ui/build ./build
 COPY --from=build-stage /ui/config ./config
-COPY --from=build-stage /ui/deploy ./deploy
 COPY --from=build-stage /ui/dist ./dist
 COPY --from=build-stage /ui/server ./server
 COPY --from=build-stage /ui/src ./src
