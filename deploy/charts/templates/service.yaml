@@ -12,7 +12,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.port }}
-  	targetPort: {{ .Values.service.portName }}
+    targetPort: {{ .Values.service.portName }}
     name: {{ .Values.service.portName }}
   selector:
     app.kubernetes.io/name: {{ include "ui-helm.name" . }}
