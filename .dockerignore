@@ -1,0 +1,12 @@
+node_modules
+__mocks__
+.storybook
+.vscode
+.editorconfig
+.test
+.stylelint
+cypress.json
+ui-server.sh
+Dockerfile*
+Jenkinsfile
+*.md

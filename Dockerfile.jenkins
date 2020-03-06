@@ -1,16 +1,33 @@
-# includes nodejs + npm
-FROM node:12-alpine
-
+# build stage
+FROM node:12-alpine as build-stage
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
+
 RUN mkdir /ui
 COPY ./ /ui/
 WORKDIR /ui
-# we should switch this to npm ci (need to figure out how to tell Jenkins to maintain some cache of modules first)
+
 RUN npm i --no-save
 RUN npm run build
-RUN npm prune --production
-WORKDIR /ui/ui-build
-RUN npm install cross-env
-CMD [ "/usr/bin/npm", "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui/ui-build" ]
 
+# run stage
+FROM node:12-alpine as run-stage
+# Change working directory
+RUN mkdir /ui
+WORKDIR /ui
+# Bring over app files
+COPY --from=build-stage /ui/build ./build
+COPY --from=build-stage /ui/config ./config
+COPY --from=build-stage /ui/deploy ./deploy
+COPY --from=build-stage /ui/dist ./dist
+COPY --from=build-stage /ui/server ./server
+COPY --from=build-stage /ui/src ./src
+COPY --from=build-stage /ui/package.json .
+COPY --from=build-stage /ui/package-lock.json .
+# Install PROD dependencies only
+RUN npm install --production
+# Expose API port to the outside
+EXPOSE 8888
+# Launch application
+# CMD ["npm","run","start","--","--config=local"]
+CMD [ "npm", "start", "--", "--port=8888", "--config=local", "--prefix", "/ui" ]
