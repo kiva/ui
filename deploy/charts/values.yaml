@@ -41,7 +41,7 @@ ingress:
           paths:
           - backend:
               serviceName: "kiva-ui"
-              servicePort: 8888
+              servicePort: 443
             path: /
   tls:
     - hosts:
