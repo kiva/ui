@@ -15,9 +15,7 @@ strategy:
 
 service:
   type: ClusterIP
-  port: 443
-  containerPort: 8888
-  targetPort: 8888
+  port: &servicePort 8888
   portName: "https"
 
 
@@ -37,7 +35,7 @@ ingress:
           paths:
           - backend:
               serviceName: "kiva-ui"
-              servicePort: 443
+              servicePort: *servicePort
             path: /
   tls:
     - hosts:
