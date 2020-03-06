@@ -1,11 +1,18 @@
 <template>
 	<div class="email-preview-section-wrapper row">
 		<div class="small-12 large-6 columns">
-			<img v-for="(media, index) in contentGroup.media" :src="media.fields.file.url" :key="index">
-			<!-- <kv-responsive-image
-				:images="images"
-				alt="A Monthly Good email in your inbox"
-			/> -->
+			<!-- <picture>
+				<source srcset="bootstrap-extra.jpg" media="(min-width: 1200px)" />
+				<source srcset="bootstrap-large.jpg" media="(min-width: 992px)" />
+				<source srcset="bootstrap-medium.jpg " media="(min-width: 768px)" />
+				<source srcset="bootstrap-small.jpg" media="(min-width: 576px)" />
+				<img src="bootstrap-extra-small.jpg" class="img-fluid" />
+			</picture> -->
+			<picture v-for="(media, index) in contentGroup.media" :key="index">
+				<source media="(min-width: 800px)" :srcset="media.fields.file.url +'?w=800&h=600&fm=webp&q=80'">
+				<source media="(min-width: 400px)" :srcset="media.fields.file.url + '?w=400&h=300&fm=webp&q=80'">
+				<img :src="media.fields.file.url" :alt="media.fields.description" style="width: auto;">
+			</picture>
 		</div>
 		<div class="small-12 large-6 columns">
 			<div class="email-preview-text">
@@ -14,10 +21,6 @@
 				</h2>
 				<div v-html="bodyCopy">
 				</div>
-				<!-- <p>
-					Once a month, we'll send you a dose of inspiration with an update
-					on who your funds supported and how you’re making a difference.
-				</p> -->
 			</div>
 		</div>
 	</div>
@@ -73,7 +76,7 @@ h2 {
 }
 
 img {
-	max-width: 350px;
+	max-width: 21.88rem;
 	margin: 0 auto;
 	display: block;
 }

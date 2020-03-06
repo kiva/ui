@@ -56,7 +56,7 @@ h2 {
 }
 
 img {
-	max-width: 350px;
+	max-width: 21.88rem;
 	margin: 0 auto;
 	display: block;
 }

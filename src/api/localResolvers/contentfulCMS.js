@@ -43,7 +43,6 @@ export default context => {
 					const contentfulQueryParams = {
 						content_type: contentType,
 						include: 10,
-						select: 'fields'
 					};
 					if (contentKey) {
 						contentfulQueryParams['fields.key'] = contentKey;
