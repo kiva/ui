@@ -1,5 +1,5 @@
 <template>
-	<img :src="imageUrl" v-show="isRetina != null">
+	<img :src="imageUrl" v-show="isRetina != null" class="img">
 </template>
 
 <script>
@@ -58,3 +58,8 @@ export default {
 	},
 };
 </script>
+<style lang="scss" scoped>
+.img {
+	width: 100%;
+}
+</style>
