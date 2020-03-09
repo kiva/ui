@@ -174,7 +174,11 @@ export default {
 		},
 		preFetch(config, client) {
 			return client.query({
-				query: pageQuery
+				query: pageQuery,
+				variables: {
+					contentType: 'page',
+					contentKey: 'monthlygood'
+				}
 			}).then(() => {
 				return client.query({
 					query: experimentQuery, variables: { id: 'mg_hero' }
