@@ -41,7 +41,8 @@ export default context => {
 
 					// setup contentful params
 					const contentfulQueryParams = {
-						content_type: contentType
+						content_type: contentType,
+						include: 10,
 					};
 					if (contentKey) {
 						contentfulQueryParams['fields.key'] = contentKey;
