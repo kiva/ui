@@ -76,7 +76,6 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
@@ -93,19 +92,24 @@ import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
 import KivaAsExpertContentful from '@/pages/MonthlyGood/KivaAsExpertContentful';
 import FrequentlyAskedQuestions from '@/pages/MonthlyGood/FrequentlyAskedQuestions';
 
-const pageQuery = gql`{
-	my {
-		autoDeposit {
-			isSubscriber
+const pageQuery = gql`
+	query ($contentType: String!, $contentKey: String) {
+		my {
+			autoDeposit {
+				isSubscriber
+			}
+		}
+		general {
+			uiExperimentSetting(key: "mg_hero") {
+				key
+				value
+			}
+		}
+		contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
+			items
 		}
 	}
-	general {
-		uiExperimentSetting(key: "mg_hero") {
-			key
-			value
-		}
-	}
-}`;
+`;
 
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
@@ -162,9 +166,19 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
+		variables() {
+			return {
+				contentType: 'page',
+				contentKey: 'monthlygood',
+			};
+		},
 		preFetch(config, client) {
 			return client.query({
-				query: pageQuery
+				query: pageQuery,
+				variables: {
+					contentType: 'page',
+					contentKey: 'monthlygood'
+				}
 			}).then(() => {
 				return client.query({
 					query: experimentQuery, variables: { id: 'mg_hero' }
@@ -185,16 +199,8 @@ export default {
 				'EXP-CASH-1774-Feb2020',
 				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
 			);
-		},
-	},
-	mounted() {
-		this.apollo.query({
-			query: contentfulCMS,
-			variables: {
-				contentType: 'page',
-				contentKey: 'monthlygood',
-			}
-		}).then(({ data }) => {
+
+			// Process Contentful Content
 			// Page Layout
 			const pageMonthlyGood = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'monthlygood'); // eslint-disable-line max-len
 			console.log('pageMonthlyGood', pageMonthlyGood);
@@ -204,8 +210,8 @@ export default {
 			// Pass content groups to components
 			this.contentGroups = pageLayout.contentGroups.map(contentGroup => contentGroup.fields);
 			console.log('contentGroups', this.contentGroups);
-		});
-	},
+		},
+	}
 };
 
 </script>
