@@ -80,7 +80,7 @@ import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'CategoryGrid',
-	serverCacheKey: () => getCacheKey('CategoryGrid_2020-03-10'),
+	serverCacheKey: () => getCacheKey('CategoryGrid'),
 	components: {
 		KvResponsiveImage,
 	},
