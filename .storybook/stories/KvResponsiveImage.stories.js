@@ -1,4 +1,4 @@
-import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 const imagesRequire = require.context('@/assets/images/mg-hero-slideshow', true);
 const sampleResponsiveImageSet = [
@@ -15,13 +15,13 @@ const sampleResponsiveImageSet = [
 ];
 
 export default {
-	title: 'Kv/KvResponsiveImage2',
-	component: KvResponsiveImage2,
+	title: 'Kv/KvResponsiveImage',
+	component: KvResponsiveImage,
 };
 
 export const Default = () => ({
 	components: {
-		KvResponsiveImage2,
+		KvResponsiveImage,
 	},
 	data() {
 		return {
@@ -29,6 +29,25 @@ export const Default = () => ({
 		};
 	},
 	template: `
-		<kv-responsive-image2 :images="images" alt="" />
+		<kv-responsive-image :images="images" alt="Testing Alt" />
+	`,
+});
+
+export const partialSet = () => ({
+	components: {
+		KvResponsiveImage,
+	},
+	data() {
+		return {
+			images: [
+				['small', imagesRequire('./mg-hppromo-1-sm-std.jpg')],
+				['small retina', imagesRequire('./mg-hppromo-1-sm-retina.jpg')],
+				['large', imagesRequire('./mg-hppromo-1-lg-std.jpg')],
+				['large retina', imagesRequire('./mg-hppromo-1-lg-retina.jpg')],
+			]
+		};
+	},
+	template: `
+		<kv-responsive-image :images="images" alt="Testing Alt" />
 	`,
 });
