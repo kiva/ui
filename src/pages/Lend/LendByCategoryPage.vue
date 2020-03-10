@@ -530,7 +530,7 @@ export default {
 				const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 
 				// Read recommended loans row experiment version assignment
-				const recommendedLoansRowEXP = this.apollo.readFragment({
+				const recommendedLoansRowEXP = client.readFragment({
 					id: 'Experiment:recommendation_channel',
 					fragment: experimentVersionFragment,
 				}) || {};
