@@ -1,0 +1,31 @@
+#import '../../fragments/loanCardFields.graphql'
+
+query recommendedLoans(
+	$channelId: Int = 0,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w960h720",
+	$loginId: Int = 0,
+	$numberOfLoans: Int = 11,
+) {
+	ml {
+		recommendationChannel(channelId: $channelId, loginId: $loginId, limit: $numberOfLoans, offset:0) {
+			id
+			loans {
+				values {
+					...loanCardFields
+					image {
+						id
+						default: url(customSize: $imgDefaultSize)
+						retina: url(customSize: $imgRetinaSize)
+						hash
+					}
+				}
+			}
+		}
+	}
+	my {
+		userAccount {
+			firstName
+		}
+	}
+}
