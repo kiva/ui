@@ -26,6 +26,7 @@ import { isHighDensity, isRetina } from '@/util/checkScreenDensity';
 // https://dev.to/stefanoverna/how-to-offer-responsive-progressive-images-in-2020-in-one-line-5fed
 
 export default {
+	inheritAttrs: false,
 	props: {
 		/**
 		 * A two-dimensional array containing image sizes and urls, ordered smallest to largest, e.g.,
