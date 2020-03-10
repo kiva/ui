@@ -7,7 +7,7 @@
 			<a
 				:href="loanChannel.url"
 				v-for="loanChannel in loanChannels" :key="loanChannel.id"
-				class="columns small-6 medium-4"
+				class="columns small-12 large-4"
 				v-kv-track-event="[
 					'homepage',
 					'click-Category-card',
@@ -18,10 +18,13 @@
 					<kv-responsive-image
 						:images="[
 							['small', loanChannel.image.url],
-							['small-retina', loanChannel.retinaImage.url]
+							['small retina', loanChannel.retinaImage.url]
 						]"
 						class="loan-channel-image"
 						alt=""
+						loading="lazy"
+						width="313"
+						height="176"
 					/>
 					<div class="category-card-title-wrap">
 						<p class="category-card-title featured-text">
@@ -32,7 +35,7 @@
 			</a>
 			<router-link
 				:to="`/lend-by-category`"
-				class="columns small-12 medium-4"
+				class="columns small-12 large-4"
 				v-kv-track-event="[
 					'homepage',
 					'click-View all categories',
@@ -77,7 +80,7 @@ import getCacheKey from '@/util/getCacheKey';
 
 export default {
 	name: 'CategoryGrid',
-	serverCacheKey: () => getCacheKey('CategoryGrid'),
+	serverCacheKey: () => getCacheKey('CategoryGrid_2020-03-10'),
 	components: {
 		KvResponsiveImage,
 	},
@@ -139,11 +142,12 @@ export default {
 }
 
 .view-all-card {
-	height: 4rem;
+	height: 0;
+	padding-bottom: 56%;
 	background-color: $kiva-accent-blue;
 	opacity: 0.7;
 
-	@include breakpoint(medium) {
+	@include breakpoint(large) {
 		height: 100%;
 	}
 }
