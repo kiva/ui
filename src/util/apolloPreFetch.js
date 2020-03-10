@@ -24,7 +24,7 @@ export function handleApolloErrors(handlers = {}, errors, args) {
 		const handler = handlers[code];
 		// Warn about errors being unhandled if a handler wasn't found
 		if (!handler) {
-			console.warn(`Warning: No error handler for error code '${code}'`);
+			console.warn(`Warning: No error handler for error code '${code}': ${graphQLErrors[0].message}`);
 			return Promise.resolve();
 		}
 		// Call the error handler with the errors and any additional args passed in from the top function
