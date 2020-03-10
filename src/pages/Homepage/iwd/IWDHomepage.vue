@@ -9,7 +9,7 @@
 				'homepage-iwd2020-hero-banner-image'
 			]"
 		>
-			<kv-responsive-image2
+			<kv-responsive-image
 				:images="heroImageSet"
 				alt=""
 			/>
@@ -287,7 +287,7 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import KvResponsiveImage2 from '@/components/Kv/KvResponsiveImage2';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 import IwdFlag from '@/assets/inline-svgs/iwd/iwd-flag.svg';
 import IwdCelebratingHerEveryDay from '@/assets/inline-svgs/iwd/iwd-celebrating-her-every-day.svg';
@@ -322,7 +322,7 @@ const getPdtDate = () => {
 export default {
 	components: {
 		KvButton,
-		KvResponsiveImage2,
+		KvResponsiveImage,
 		IwdFlag,
 		IwdCelebratingHerEveryDay,
 		IwdBusinessAsUsual,
