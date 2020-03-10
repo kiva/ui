@@ -132,6 +132,7 @@
 </template>
 
 <script>
+import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -307,7 +308,7 @@ export default {
 			handler(channel) {
 				this.name = _get(channel, 'name');
 				this.url = _get(channel, 'url');
-				this.loans = _get(channel, 'loans.values');
+				this.loans = _filter(_get(channel, 'loans.values'));
 			},
 			immediate: true,
 			deep: true,
