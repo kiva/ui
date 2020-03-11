@@ -3,7 +3,7 @@
 		<nav aria-label="Primary navigation">
 			<div class="header-row row">
 				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
-					<kv-icon name="new-kiva-logo" />
+					<icon-kiva-logo class="icon" />
 				</router-link>
 				<router-link
 					:id="lendMenuId"
@@ -298,11 +298,13 @@ import cookieStore from '@/util/cookieStore';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
+import IconKivaLogo from '@/assets/inline-svgs/icons/kiva-logo.svg';
 
 export default {
 	components: {
 		KvDropdown,
 		KvIcon,
+		IconKivaLogo,
 		SearchBar,
 		PromoBannerLarge,
 		PromoBannerSmall,
