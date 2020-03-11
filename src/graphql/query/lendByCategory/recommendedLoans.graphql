@@ -25,6 +25,7 @@ query recommendedLoans(
 	}
 	my {
 		userAccount {
+			id
 			firstName
 		}
 	}
