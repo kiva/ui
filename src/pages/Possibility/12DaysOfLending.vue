@@ -37,7 +37,7 @@
 
 <script>
 import _get from 'lodash/get';
-import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
+import contentful from '@/graphql/query/contentful.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import TwelveDaysCalendar from './TwelveDaysCalendar';
@@ -75,16 +75,16 @@ export default {
 	inject: ['apollo'],
 	mounted() {
 		this.apollo.query({
-			query: contentfulCMS,
+			query: contentful,
 			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-global-promo',
 			}
 		}).then(({ data }) => {
 			const pdtDateString = this.getPdtDate().toDateString();
-			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
+			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
 
-			const todaysLimitedPromo = uiGlobalPromoSetting.content.find(promo => {
+			const todaysLimitedPromo = uiGlobalPromoSetting.fields.content.find(promo => {
 				return new Date(promo.fields.startDate).toDateString() === pdtDateString;
 			});
 

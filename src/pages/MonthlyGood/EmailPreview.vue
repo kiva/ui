@@ -4,6 +4,7 @@
 			<kv-responsive-image
 				:images="images"
 				alt="A Monthly Good email in your inbox"
+				class="image"
 			/>
 		</div>
 		<div class="small-12 large-6 columns">
@@ -55,7 +56,7 @@ h2 {
 	padding: 4rem 1rem;
 }
 
-img {
+.image {
 	max-width: 21.88rem;
 	margin: 0 auto;
 	display: block;

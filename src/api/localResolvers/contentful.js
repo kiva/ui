@@ -3,7 +3,7 @@ import { createClient } from 'contentful';
 import store2 from 'store2';
 
 /**
- * ContentfulCMS resolvers
+ * Contentful resolvers
  */
 export default context => {
 	const contentfulClient = createClient({
@@ -15,6 +15,14 @@ export default context => {
 		resolvers: {
 			JSONObject: GraphQLJSONObject,
 			Query: {
+				contentful(_, payload) {
+					return {
+						...payload,
+						__typename: 'Contentful'
+					};
+				}
+			},
+			Contentful: {
 				/**
 				 * Get data from contentful CMS
 				 *
@@ -33,7 +41,7 @@ export default context => {
 				 * @param {string} contentKey, contentType
 				 * @returns {array}
 				 */
-				contentfulCMS(_, { contentKey, contentType }) {
+				entries(_, { contentKey, contentType }) {
 					// if contentful is not enabled just return empty object without making API call
 					if (!context.appConfig.contentful.enable) {
 						return {};
@@ -59,22 +67,16 @@ export default context => {
 					const ageOfContentfulCacheInMinutes = !lastContentfulCacheRefresh ? 0 : (new Date().getTime() - lastContentfulCacheRefresh) / (1000 * 60); // eslint-disable-line max-len
 					// if cachedResponse exists and is fresher then 30 minutes, return from cache
 					if (cachedResponse !== null && lastContentfulCacheRefresh !== null && ageOfContentfulCacheInMinutes < 30) { // eslint-disable-line max-len
-						return {
-							items: JSON.parse(cachedResponse),
-							__typename: 'ContentfulCMS',
-						};
+						return JSON.parse(cachedResponse);
 					}
 
 					// get new contentful data
 					return contentfulClient.getEntries(contentfulQueryParams).then(contentfulResponse => {
-						const items = contentfulResponse.items.map(entry => entry.fields);
+						// const items = contentfulResponse.items.map(entry => entry.fields);
 						// store timestamp and results in localStorage
 						store2.set('lastContentfulCacheRefresh', new Date().getTime());
-						store2.set(cacheKey, JSON.stringify(items));
-						return {
-							items,
-							__typename: 'ContentfulCMS',
-						};
+						store2.set(cacheKey, JSON.stringify(contentfulResponse));
+						return contentfulResponse;
 					});
 				},
 			},

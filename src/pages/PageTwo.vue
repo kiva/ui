@@ -1,5 +1,5 @@
 <template>
-	<!-- This is a sample page which recreates the monthly good landing page but with content from contentfulCMS -->
+	<!-- This is a sample page which recreates the monthly good landing page but with content from contentful -->
 	<www-page>
 		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
 			<template v-slot:images>
@@ -92,8 +92,8 @@ import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
 import KivaAsExpertContentful from '@/pages/MonthlyGood/KivaAsExpertContentful';
 import FrequentlyAskedQuestions from '@/pages/MonthlyGood/FrequentlyAskedQuestions';
 
-const pageQuery = gql`
-	query ($contentType: String!, $contentKey: String) {
+// ! TODO this query is not working
+const pageQuery = gql`query($contentType: String!, $contentKey: String) {
 		my {
 			autoDeposit {
 				isSubscriber
@@ -105,11 +105,10 @@ const pageQuery = gql`
 				value
 			}
 		}
-		contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-			items
+		contentful @client {
+			entries(contentType: $contentType, contentKey: $contentKey, key: $contentKey)
 		}
-	}
-`;
+	}`;
 
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
@@ -166,19 +165,17 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		variables() {
-			return {
-				contentType: 'page',
-				contentKey: 'monthlygood',
-			};
+		variables: {
+			contentType: 'page',
+			contentKey: 'monthlygood',
 		},
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery,
 				variables: {
 					contentType: 'page',
-					contentKey: 'monthlygood'
-				}
+					contentKey: 'monthlygood',
+				},
 			}).then(() => {
 				return client.query({
 					query: experimentQuery, variables: { id: 'mg_hero' }
@@ -202,13 +199,13 @@ export default {
 
 			// Process Contentful Content
 			// Page Layout
-			const pageMonthlyGood = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'monthlygood'); // eslint-disable-line max-len
+			const pageMonthlyGood = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'monthlygood'); // eslint-disable-line max-len
 			console.log('pageMonthlyGood', pageMonthlyGood);
 			// Choose Page Layout here
-			const pageLayout = pageMonthlyGood.pageLayout.fields;
+			const { pageLayout } = pageMonthlyGood.fields;
 			console.log('pageLayout', pageLayout);
 			// Pass content groups to components
-			this.contentGroups = pageLayout.contentGroups.map(contentGroup => contentGroup.fields);
+			this.contentGroups = pageLayout.fields.contentGroups.map(contentGroup => contentGroup.fields);
 			console.log('contentGroups', this.contentGroups);
 		},
 	}
