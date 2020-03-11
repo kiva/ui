@@ -76,11 +76,17 @@ export default [
 	{ path: '/process-browser-auth', component: () => import('@/pages/ProcessBrowserAuth') },
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
-	{ path: '/settings/autolending', component: () => import('@/pages/Autolending/AutolendingPage')	},
 	{
-		path: '/settings/autolending/opt-out',
-		component: () => import('@/pages/Autolending/AutolendingOptOutPage'),
-		props: route => ({ success: (route.query.success === 'true') })
+		path: '/settings/autolending',
+		component: () => import('@/pages/Autolending/AutolendingPage'),
+		children: [
+			{ path: '', component: () => import('@/pages/Autolending/AutolendingSettingsPage') },
+			{
+				path: ':action',
+				component: () => import('@/pages/Autolending/AutolendingMessagingPage'),
+				props: route => ({ success: (route.query.success === 'true'), action: route.params.action })
+			},
+		]
 	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
