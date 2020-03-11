@@ -60,7 +60,7 @@ export default {
 			papers: [
 				{
 					year: 2019,
-					author: 'Wan, Bing et al',
+					author: 'Wang, Bin et al',
 					/* eslint-disable max-len */
 					title: 'Social Networks in Online Peer-to-Peer Lending: The Case of Event-Type Ties as Pipes and Prisms',
 					/* eslint-enable max-len */
