@@ -1,19 +1,5 @@
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
-const imagesRequire = require.context('@/assets/images/mg-hero-slideshow', true);
-const sampleResponsiveImageSet = [
-	['small', imagesRequire('./mg-hppromo-1-sm-std.jpg')],
-	['small retina', imagesRequire('./mg-hppromo-1-sm-retina.jpg')],
-	['medium', imagesRequire('./mg-hppromo-1-med-std.jpg')],
-	['medium retina', imagesRequire('./mg-hppromo-1-med-retina.jpg')],
-	['large', imagesRequire('./mg-hppromo-1-lg-std.jpg')],
-	['large retina', imagesRequire('./mg-hppromo-1-lg-retina.jpg')],
-	['xga', imagesRequire('./mg-hppromo-1-xga-std.jpg')],
-	['xga retina', imagesRequire('./mg-hppromo-1-xga-retina.jpg')],
-	['wxga', imagesRequire('./mg-hppromo-1-wxga-std.jpg')],
-	['wxga retina', imagesRequire('./mg-hppromo-1-wxga-retina.jpg')],
-];
-
 export default {
 	title: 'Kv/KvResponsiveImage',
 	component: KvResponsiveImage,
@@ -25,7 +11,18 @@ export const Default = () => ({
 	},
 	data() {
 		return {
-			images: sampleResponsiveImageSet
+			images: [
+				['small', 'https://via.placeholder.com/480x600'],
+				['small retina', 'https://via.placeholder.com/960x1200'],
+				['medium', 'https://via.placeholder.com/675x675'],
+				['medium retina', 'https://via.placeholder.com/1350x1350'],
+				['large', 'https://via.placeholder.com/1024x554'],
+				['large retina', 'https://via.placeholder.com/2048x1108'],
+				['xga', 'https://via.placeholder.com/1440x768'],
+				['xga retina', 'https://via.placeholder.com/2880x1535'],
+				['wxga', 'https://via.placeholder.com/1920x820'],
+				['wxga retina', 'https://via.placeholder.com/3840x1640'],
+			]
 		};
 	},
 	template: `
@@ -40,10 +37,10 @@ export const partialSet = () => ({
 	data() {
 		return {
 			images: [
-				['small', imagesRequire('./mg-hppromo-1-sm-std.jpg')],
-				['small retina', imagesRequire('./mg-hppromo-1-sm-retina.jpg')],
-				['large', imagesRequire('./mg-hppromo-1-lg-std.jpg')],
-				['large retina', imagesRequire('./mg-hppromo-1-lg-retina.jpg')],
+				['small', 'https://via.placeholder.com/480x600'],
+				['small retina', 'https://via.placeholder.com/960x1200'],
+				['large', 'https://via.placeholder.com/1024x554'],
+				['large retina', 'https://via.placeholder.com/2048x1108'],
 			]
 		};
 	},
