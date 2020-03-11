@@ -2,6 +2,7 @@
 	<div class="email-preview-section-wrapper row">
 		<div class="small-12 large-6 columns">
 			<kv-responsive-image
+				class="img"
 				:images="images"
 				alt="A Monthly Good email in your inbox"
 			/>
@@ -55,7 +56,7 @@ h2 {
 	padding: 4rem 1rem;
 }
 
-img {
+.img {
 	max-width: 21.88rem;
 	margin: 0 auto;
 	display: block;
