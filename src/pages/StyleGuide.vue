@@ -3,7 +3,7 @@
 		<header class="top-nav">
 			<div class="header-row row">
 				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
-					<kv-icon name="new-kiva-logo" />
+					<icon-kiva-logo class="icon" />
 				</router-link>
 				<a href="/lend" id="lend-header-dropdown" class="header-button"><span>Lend</span></a>
 			</div>
@@ -68,11 +68,11 @@
 </template>
 
 <script>
-import KvIcon from '@/components/Kv/KvIcon';
+import IconKivaLogo from '@/assets/inline-svgs/icons/kiva-logo.svg';
 
 export default {
 	components: {
-		KvIcon,
+		IconKivaLogo,
 	},
 };
 </script>

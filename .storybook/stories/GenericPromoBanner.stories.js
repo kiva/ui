@@ -31,7 +31,6 @@ const iconKeySelect = {
 	map: "map",
 	match: "match",
 	nearme: "nearme",
-	new: "new-kiva-logo",
 	paypal: "paypal",
 	pdf: "pdf",
 	pencil: "pencil",

@@ -129,7 +129,6 @@
 			<kv-icon class="icon" name="map" />
 			<kv-icon class="icon" name="match" />
 			<kv-icon class="icon" name="nearme" />
-			<kv-icon class="icon" name="new-kiva-logo" />
 			<kv-icon class="icon" name="paypal" />
 			<kv-icon class="icon" name="pdf" />
 			<kv-icon class="icon" name="pencil" />
