@@ -419,15 +419,18 @@ export default {
 			// Load recommended loan data
 			if (recommendedLoansRowEXP.version === 'shown') {
 				try {
+					const variables = {
+						basketId: cookieStore.get('kvbskt'),
+						channelId: recommendationChannel,
+						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+						loginId: this.userId || 0,
+					};
+					console.log(variables);
+					console.log(_get(this, 'apollo.cache.data.data'));
 					const data = this.apollo.readQuery({
 						query: recommendedLoansQuery,
-						variables: {
-							basketId: cookieStore.get('kvbskt'),
-							channelId: recommendationChannel,
-							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-							loginId: this.userId || 0,
-						},
+						variables,
 					});
 					const loans = _get(data, 'ml.recommendationChannel.loans');
 					const channel = {
