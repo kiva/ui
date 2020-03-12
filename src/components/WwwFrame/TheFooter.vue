@@ -194,9 +194,9 @@
 							</router-link>
 						</li>
 						<li>
-							<router-link to="https://www.kivaushub.org/hubs">
+							<a href="https://www.kivaushub.org/hubs" target="_blank">
 								US Hubs
-							</router-link>
+							</a>
 						</li>
 					</ul>
 				</div>
