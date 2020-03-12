@@ -200,10 +200,6 @@ export default {
 	fill: $kiva-darkgreen;
 }
 
-.icon-new-kiva-logo {
-	fill: $kiva-green;
-}
-
 .icon-kiva-card {
 	fill: $kiva-icon-green;
 }
