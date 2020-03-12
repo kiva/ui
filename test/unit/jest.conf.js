@@ -13,7 +13,7 @@ module.exports = {
 		'^.+\\.(gql|graphql)$': 'jest-transform-graphql',
 		'^.+\\.vue$': 'vue-jest',
 		'^.+\\.js$': 'babel-jest',
-		'^.+\\.svg$': '<rootDir>/test/unit/specs/svgTransform.js',
+		'^.+\\.svg$': '<rootDir>/test/unit/transforms/svgTransform.js',
 	},
 	snapshotSerializers: ['jest-serializer-vue'],
 	coverageDirectory: '<rootDir>/test/unit/coverage',
