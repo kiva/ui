@@ -17,6 +17,7 @@
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:loan-channel="recommendedLoansChannel"
+			:set-id="categorySetId"
 			:show-category-description="showCategoryDescription"
 			:show-expandable-loan-cards="showExpandableLoanCards"
 			@scrolling-row="handleScrollingRow"
@@ -202,7 +203,7 @@ export default {
 			return false;
 		},
 		showRecommendedLoansRow() {
-			return this.recommendedLoansRowExpVersion === 'shown';
+			return this.recommendedLoansRowExpVersion === 'shown' && this.recommendedLoansChannel;
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
@@ -414,7 +415,7 @@ export default {
 			this.recommendedLoansRowExpVersion = recommendedLoansRowEXP.version;
 
 			// Load recommended loan data
-			if (this.showRecommendedLoansRow) {
+			if (recommendedLoansRowEXP.version === 'shown') {
 				try {
 					const data = this.apollo.readQuery({
 						query: recommendedLoansQuery,
@@ -426,10 +427,13 @@ export default {
 							loginId: this.kvAuth0.getKivaId() || 0,
 						},
 					});
-					const channel = _get(data, 'ml.recommendationChannel');
-					channel.id = -2;
-					channel.url = '';
-					if (this.kvAuth0.user) {
+					const loans = _get(data, 'ml.recommendationChannel.loans');
+					const channel = {
+						id: -2,
+						loans,
+						url: '',
+					};
+					if (this.kvAuth0.getKivaId()) {
 						const firstName = _get(data, 'my.userAccount.firstName') || 'you';
 						channel.name = `Recommended for ${firstName}`;
 						channel.description = 'Loans we think you\'ll love based on your lending history.';
@@ -439,7 +443,7 @@ export default {
 					}
 					this.recommendedLoansChannel = channel;
 				} catch (e) {
-					logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
+					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
 				}
 			}
 
