@@ -5,7 +5,7 @@
 		autocomplete="off"
 		@submit.prevent="onSubmit"
 	>
-		<kv-icon class="search-icon" name="magnify-glass" />
+		<kv-icon2 class="search-icon" name="magnify-glass" />
 		<input type="search"
 			ref="input"
 			name="queryString"
@@ -43,7 +43,7 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _zip from 'lodash/zip';
 import suggestionsQuery from '@/graphql/query/loanSearchSuggestions.graphql';
-import KvIcon from '@/components/Kv/KvIcon';
+import KvIcon2 from '@/components/Kv/KvIcon2';
 import SearchEngine from '@/util/searchEngine';
 import { indexIn } from '@/util/comparators';
 
@@ -51,7 +51,7 @@ const engine = new SearchEngine();
 
 export default {
 	components: {
-		KvIcon
+		KvIcon2
 	},
 	inject: ['apollo'],
 	data() {
@@ -240,6 +240,7 @@ form.search-form {
 	}
 
 	.search-icon {
+		fill: $kiva-text-dark;
 		position: absolute;
 		left: 0.4rem;
 		width: 1rem;
