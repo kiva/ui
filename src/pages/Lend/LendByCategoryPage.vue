@@ -154,6 +154,7 @@ export default {
 		return {
 			isAdmin: false,
 			isLoggedIn: false,
+			userId: null,
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
@@ -330,6 +331,7 @@ export default {
 				next: ({ data }) => {
 					this.isAdmin = !!_get(data, 'my.isAdmin');
 					this.isLoggedIn = !!_get(data, 'my');
+					this.userId = _get(data, 'my.userAccount.id') || null;
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 					// CASH-794 Favorite Country Row
 					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
@@ -424,7 +426,7 @@ export default {
 							channelId: recommendationChannel,
 							imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 							imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-							loginId: this.kvAuth0.getKivaId() || 0,
+							loginId: this.userId || 0,
 						},
 					});
 					const loans = _get(data, 'ml.recommendationChannel.loans');
@@ -433,7 +435,7 @@ export default {
 						loans,
 						url: '',
 					};
-					if (this.kvAuth0.getKivaId()) {
+					if (this.userId) {
 						const firstName = _get(data, 'my.userAccount.firstName') || 'you';
 						channel.name = `Recommended for ${firstName}`;
 						channel.description = 'Loans we think you\'ll love based on your lending history.';
@@ -585,6 +587,8 @@ export default {
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
+		this.userId = _get(baseData, 'my.userAccount.id') || null;
+
 		// CASH-794 Favorite Country Row
 		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
 

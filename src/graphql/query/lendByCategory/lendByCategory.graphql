@@ -42,6 +42,9 @@ query lendByCategory($basketId: String) {
 		recommendations {
 			topCountry
 		}
+		userAccount {
+			id
+		}
 	}
 	shop (basketId: $basketId) {
 		basket {
