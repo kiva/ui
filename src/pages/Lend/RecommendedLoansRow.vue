@@ -5,7 +5,7 @@
 			:loan-channel="loanChannel"
 			:items-in-basket="itemsInBasket"
 			:row-number="-2"
-			:set-id="categorySetId"
+			:set-id="setId"
 			:is-logged-in="isLoggedIn"
 			:show-category-description="showCategoryDescription"
 			:show-expandable-loan-cards="showExpandableLoanCards"
@@ -37,6 +37,10 @@ export default {
 		loanChannel: {
 			type: Object,
 			default: () => {},
+		},
+		setId: {
+			type: String,
+			default: '',
 		},
 		showCategoryDescription: {
 			type: Boolean,

@@ -77,6 +77,7 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import contentful from '@/graphql/query/contentful.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
@@ -92,8 +93,7 @@ import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
 import KivaAsExpertContentful from '@/pages/MonthlyGood/KivaAsExpertContentful';
 import FrequentlyAskedQuestions from '@/pages/MonthlyGood/FrequentlyAskedQuestions';
 
-// ! TODO this query is not working
-const pageQuery = gql`query($contentType: String!, $contentKey: String) {
+const pageQuery = gql`{
 		my {
 			autoDeposit {
 				isSubscriber
@@ -104,9 +104,6 @@ const pageQuery = gql`query($contentType: String!, $contentKey: String) {
 				key
 				value
 			}
-		}
-		contentful @client {
-			entries(contentType: $contentType, contentKey: $contentKey, key: $contentKey)
 		}
 	}`;
 
@@ -165,24 +162,25 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		variables: {
-			contentType: 'page',
-			contentKey: 'monthlygood',
-		},
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery,
-				variables: {
-					contentType: 'page',
-					contentKey: 'monthlygood',
-				},
 			}).then(() => {
 				return client.query({
 					query: experimentQuery, variables: { id: 'mg_hero' }
 				});
+			}).then(() => {
+				return client.query({
+					query: contentful,
+					variables: {
+						contentType: 'page',
+						contentKey: 'monthlygood',
+					},
+				});
 			});
 		},
 		result({ data }) {
+			console.log('data');
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
 			const mgHeroExperiment = this.apollo.readFragment({
