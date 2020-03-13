@@ -44,7 +44,7 @@
 				:class="{expanded}"
 				@click="updateDetailedLoanIndex"
 			>
-				<kv-icon class="more-details-arrow" name="medium-chevron" />
+				<kv-icon class="more-details-arrow" name="medium-chevron" :from-sprite="true" />
 			</div>
 		</div>
 	</div>

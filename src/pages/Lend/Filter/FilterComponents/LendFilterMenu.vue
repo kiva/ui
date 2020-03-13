@@ -4,7 +4,7 @@
 		<div id="lend-filter-wrapper">
 			<div id="filter-toggle" @click="toggleFilterMenu">
 				<div>Filter and sort</div>
-				<kv-icon class="filter-toggle-chevron" name="large-chevron" />
+				<kv-icon class="filter-toggle-chevron" name="large-chevron" :from-sprite="true" />
 			</div>
 			<div id="algolia-pagination-stats">
 				<algolia-pagination-stats />
@@ -21,7 +21,7 @@
 						</div>
 					</ais-clear-refinements>
 					<div class="filter-mobile-close-icon-wrapper" @click="hideFilterMenu">
-						<kv-icon class="filter-mobile-close-icon" name="x" />
+						<kv-icon class="filter-mobile-close-icon" name="x" :from-sprite="true" />
 					</div>
 				</div>
 				<filter-section-gender :filter-menu-open="filterMenuOpen" class="filter-section" />

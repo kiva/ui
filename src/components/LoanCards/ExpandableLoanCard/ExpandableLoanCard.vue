@@ -1,8 +1,8 @@
 <template>
 	<div class="expandable-loan-card" :class="{ expanded }">
 		<div class="expandable-loan-card-close show-for-small-only">
-			<button @click.prevent="clearHoverLoan" class="close-button" aria-label="Close">
-				<kv-icon name="small-x" />
+			<button @click.prevent="clearHoverLoan" class="close-button">
+				<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" title="Close" />
 			</button>
 		</div>
 		<loan-card-image
@@ -144,7 +144,7 @@ export default {
 			top: 1rem;
 			text-align: right;
 
-			.icon.icon-small-x {
+			.icon-small-x {
 				height: 1rem;
 				width: 1rem;
 				fill: $subtle-gray;
@@ -152,7 +152,7 @@ export default {
 			}
 
 			&:hover {
-				.icon.icon-small-x {
+				.icon-small-x {
 					fill: $charcoal;
 				}
 			}

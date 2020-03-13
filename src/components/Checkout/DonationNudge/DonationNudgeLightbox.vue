@@ -39,7 +39,7 @@
 							subtitle="Your donation is eligible for a tax deduction if you live in the U.S."
 						/>
 						<div v-else class="charity-overhead text-center">
-							<h3><kv-icon name="info" /> <span>Did you know?</span></h3>
+							<h3><kv-icon name="info" class="info-icon" /> <span>Did you know?</span></h3>
 							<p>
 								Kiva donations are more efficient than the average charity,
 								which uses 37% on overhead. Kiva only asks for a 15% donation to help cover our costs.
@@ -142,7 +142,7 @@ export default {
 				margin-bottom: 0.2rem;
 				font-size: 1.375rem;
 
-				.icon {
+				.info-icon {
 					fill: $kiva-text-medium;
 					margin: 0.1rem 0.325rem 0 0;
 					display: inline-block;

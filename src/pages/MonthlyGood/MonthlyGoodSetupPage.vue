@@ -248,7 +248,7 @@ import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
 import PayPalMg from './PayPalMG';
 
-import IconPencil from '@/assets/inline-svgs/icons/pencil.svg';
+import IconPencil from '@/assets/icons/inline/pencil.svg';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';

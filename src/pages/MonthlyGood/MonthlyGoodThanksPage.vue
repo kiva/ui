@@ -3,7 +3,7 @@
 		<div class="row align-center monthly-good-thanks-page">
 			<div class="small-12 medium-11 large-8 column">
 				<h1 class="text-center impact-text">
-					<icon-confirmation class="icon-confirmation" /> You joined Monthly Good!
+					<kv-icon name="confirmation" class="icon-confirmation" /> You joined Monthly Good!
 				</h1>
 
 				<p class="text-center">
@@ -32,7 +32,7 @@ import gql from 'graphql-tag';
 import numeral from 'numeral';
 
 import { addMonths, distanceInWordsToNow } from 'date-fns';
-import IconConfirmation from '@/assets/inline-svgs/icons/confirmation.svg';
+import KvIcon from '@/components/Kv/KvIcon';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 
@@ -50,7 +50,7 @@ const pageQuery = gql`{
 
 export default {
 	components: {
-		IconConfirmation,
+		KvIcon,
 		WwwPage,
 	},
 	data() {

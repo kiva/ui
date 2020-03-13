@@ -6,7 +6,7 @@
 		<expandable-list-item id="lend-menu-category-panel" ref="categories">
 			<template slot="title">
 				<span>Categories</span>
-				<kv-icon name="small-chevron-mobile" />
+				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
 				<li v-for="(category, index) in categories" :key="index">
@@ -22,7 +22,7 @@
 		<expandable-list-item id="lend-menu-region-panel" ref="regions">
 			<template slot="title">
 				<span>Regions</span>
-				<kv-icon name="small-chevron-mobile" />
+				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
 				<expandable-list-item
@@ -33,7 +33,7 @@
 				>
 					<template slot="title">
 						<span>{{ region.name }}</span>
-						<kv-icon name="small-chevron-mobile" />
+						<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 					</template>
 					<country-list :countries="region.countries" />
 				</expandable-list-item>
@@ -45,7 +45,7 @@
 		<expandable-list-item id="lend-menu-my-kiva-panel" ref="myKiva" v-if="userId">
 			<template slot="title">
 				<span>My Kiva</span>
-				<kv-icon name="small-chevron-mobile" />
+				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
 				<li>
@@ -61,7 +61,7 @@
 				<expandable-list-item id="lend-menu-saved-searches-panel" ref="searches" v-if="hasSearches">
 					<template slot="title">
 						<span>Saved searches</span>
-						<kv-icon name="small-chevron-mobile" />
+						<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 					</template>
 					<search-list :searches="searches" />
 				</expandable-list-item>
@@ -152,7 +152,7 @@ export default {
 		line-height: inherit;
 		color: $kiva-text-dark;
 
-		.icon {
+		.chevron-icon {
 			float: right;
 			height: 1.5rem;
 			width: rem-calc(25);
@@ -199,7 +199,7 @@ export default {
 			color: $kiva-text-light;
 		}
 
-		.icon {
+		.chevron-icon {
 			transform: rotate(-180deg);
 		}
 	}

@@ -37,7 +37,7 @@
 		<kv-expandable property="width">
 			<div class="close-section" v-show="sectionOpen">
 				<button @click="closeSection">
-					<kv-icon class="close-icon" name="medium-chevron" />
+					<kv-icon class="close-icon" name="medium-chevron" :from-sprite="true" />
 				</button>
 			</div>
 		</kv-expandable>

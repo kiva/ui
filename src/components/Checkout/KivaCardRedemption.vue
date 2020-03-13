@@ -4,18 +4,21 @@
 			class="kiva-card-entry-wrapper row"
 		>
 			<span class="small-3 large-2">
-				<a @click="toggleAccordion">
+				<button @click="toggleAccordion">
 					<kv-icon
 						:class="{ flipped: open }"
 						class="toggle-arrow"
 						name="medium-chevron"
+						:from-sprite="true"
 					/>
-				</a>
+				</button>
 			</span>
-			<span
+			<button
 				class="featured-text accordion-title small-9 large-10"
 				@click="toggleAccordion"
-			>Have a Kiva Card?</span>
+			>
+				Have a Kiva Card?
+			</button>
 			<kv-expandable easing="ease-in-out">
 				<div
 					v-show="open"
@@ -37,10 +40,11 @@
 							</button>
 
 							<!-- This lightbox will be replaced with a Popper tip message. -->
-							<a @click.prevent="triggerDefaultLightbox"
+							<button @click.prevent="triggerDefaultLightbox"
 								class="help-lightbox-trigger"
-							>Need help?
-							</a>
+							>
+								Need help?
+							</button>
 							<kv-lightbox
 								:visible="defaultLbVisible"
 								@lightbox-closed="lightboxClosed"
@@ -79,11 +83,11 @@
 								<li v-for="(credit, index) in credits" :key="index">
 									<span class="heading">Kiva Card value: </span>
 									<span class="value">${{ credit.applied }}</span>
-									<span class="remove-wrapper"
+									<button class="remove-wrapper"
 										@click.prevent.stop="removeCredit('redemption_code', credit.id)"
 									>
-										<kv-icon class="remove-x" name="small-x" />
-									</span>
+										<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove" />
+									</button>
 								</li>
 							</ul>
 						</div>
@@ -214,6 +218,7 @@ div.columns .kiva-card-entry-wrapper {
 .accordion-title {
 	font-weight: $global-weight-highlight;
 	padding-left: rem-calc(7);
+	text-align: left;
 
 	@include breakpoint(medium) {
 		padding-left: 0;

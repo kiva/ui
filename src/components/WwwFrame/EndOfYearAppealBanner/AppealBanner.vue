@@ -12,6 +12,7 @@
 							:class="{ flipped: open }"
 							class="toggle-arrow"
 							name="medium-chevron"
+							:from-sprite="true"
 						/>
 					</h2>
 				</div>

@@ -8,18 +8,19 @@
 				<span v-if="showApplyKivaCredit">
 					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
 				</span>
-				<a
-					v-if="showRemoveKivaCredit"
+				<button
 					class="remove-credit"
-					@click.prevent.stop="removeCredit('kiva_credit')"
+					@click="removeCredit('kiva_credit')"
 				>
-					<kv-icon name="small-x" />
-				</a>
-				<a
+					<kv-icon class="remove-credit-icon" name="small-x" :from-sprite="true" title="Remove Credit" />
+				</button>
+				<button
 					v-if="showApplyKivaCredit"
 					class="apply-credit small-text"
-					@click.prevent.stop="addCredit('kiva_credit')"
-				>Apply</a>
+					@click="addCredit('kiva_credit')"
+				>
+					Apply
+				</button>
 			</div>
 		</div>
 		<div class="order-total columns small-12">
@@ -154,8 +155,7 @@ export default {
 			margin-left: 0.625rem;
 		}
 
-		.icon-small-x {
-			display: inline-block;
+		.remove-credit-icon {
 			width: 1.1rem;
 			height: 1.1rem;
 			fill: $subtle-gray;

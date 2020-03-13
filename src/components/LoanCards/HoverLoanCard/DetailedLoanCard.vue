@@ -158,7 +158,7 @@
 		</div>
 		<div class="close-button-wrapper">
 			<button @click="handleClickClose" class="close-button">
-				<kv-icon name="small-x" />
+				<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" title="Close" />
 			</button>
 		</div>
 	</div>
@@ -538,7 +538,6 @@ $row-arrow-width: 2.5rem;
 
 		.icon-small-x {
 			fill: $white;
-			display: block;
 			width: 1.5rem;
 			height: 1.5rem;
 			padding: 0;

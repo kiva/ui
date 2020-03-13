@@ -59,7 +59,7 @@
 				:aria-expanded="open ? 'true' : 'false'"
 			>
 				<span>Portfolio</span>
-				<kv-icon name="small-chevron-mobile" />
+				<kv-icon name="small-chevron-mobile" class="chevron-icon" :from-sprite="true" />
 			</button>
 			<kv-expandable easing="ease-in-out">
 				<div
@@ -233,7 +233,7 @@ export default {
 			}
 		}
 
-		.icon {
+		.chevron-icon {
 			stroke: $white;
 			color: $white;
 			float: right;
@@ -248,7 +248,7 @@ export default {
 	}
 
 	button[aria-expanded="true"] {
-		.icon {
+		.chevron-icon {
 			transform: rotate(-180deg);
 		}
 	}

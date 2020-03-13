@@ -13,13 +13,13 @@
 				<div class="donation-tagline small-text">
 					{{ donationTagLine }}
 				</div>
-				<a
+				<button
 					class="small-text donation-help-text"
-					@click.prevent="triggerDefaultLightbox"
+					@click="triggerDefaultLightbox"
 					v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
 				>
 					{{ donationDetailsLink }}
-				</a>
+				</button>
 			</div>
 		</span>
 		<!-- <span class="small-3 show-for-small-only"></span> -->
@@ -28,7 +28,7 @@
 				v-show="!editDonation"
 				class="donation-amount-wrapper"
 			>
-				<span
+				<button
 					class="donation-amount"
 					v-kv-track-event="['basket', 'Edit Donation']"
 					@click="enterEditDonation"
@@ -41,7 +41,7 @@
 						class="edit-donation"
 						name="pencil"
 					/>
-				</span>
+				</button>
 			</div>
 			<div v-show="editDonation" class="small-12 donation-amount-input-wrapper">
 				<input
@@ -57,12 +57,12 @@
 					class="secondary update-donation-inline-button"
 					@click.native.prevent.stop="updateDonation()"
 				>Update</kv-button>
-				<div
+				<button
 					class="show-for-medium remove-wrapper"
 					@click="updateLoanAmount('remove')"
 				>
-					<kv-icon class="remove-x" name="small-x" />
-				</div>
+					<kv-icon class="remove-x" name="small-x" :from-sprite="true" />
+				</button>
 			</div>
 			<donate-repayments
 				v-if="hasLoans"
@@ -390,6 +390,7 @@ export default {
 	padding: rem-calc(12);
 	height: rem-calc(80);
 	width: rem-calc(80);
+	fill: $kiva-icon-green;
 }
 
 .donation-info {

@@ -6,7 +6,7 @@
 			:class="{ 'banner-link' : promoBannerContent.link, 'banner-wrapper' : !promoBannerContent.link}"
 			v-kv-track-event="promoBannerContent.kvTrackEvent"
 		>
-			<kv-icon :name="iconKey" :class="`${iconKey}-icon`" />
+			<kv-icon :name="iconKey" :class="`${iconKey}-icon icon`" />
 			<div class="content" v-html="promoBannerContent.richText">
 			</div>
 		</component>
@@ -81,14 +81,12 @@ export default {
 		width: rem-calc(22);
 		margin-right: rem-calc(10);
 		margin-top: -0.2rem;
+		fill: $kiva-icon-green;
 	}
 
-	.icon-info,
-	.icon-kiva-card,
-	.icon-monthly-good,
-	.icon-confirmation,
-	.icon-question {
-		fill: $kiva-icon-green;
+	.icon-corporate,
+	.icon-iwd {
+		fill: inherit;
 	}
 
 	.banner-link,
@@ -108,20 +106,12 @@ export default {
 			color: $kiva-darkgreen;
 
 			[class*="-icon"] {
-				stroke: $kiva-darkgreen;
-			}
-
-			.icon-info,
-			.icon-kiva-card,
-			.icon-monthly-good,
-			.icon-confirmation,
-			.icon-question {
 				fill: $kiva-darkgreen;
-				stroke: none;
 			}
 
-			.icon-iwd-flower {
-				stroke: none;
+			.icon-corporate,
+			.icon-iwd {
+				fill: inherit;
 			}
 		}
 	}

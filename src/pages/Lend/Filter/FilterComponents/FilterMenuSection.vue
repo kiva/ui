@@ -5,7 +5,7 @@
 				<div class="filter-summary-title">
 					{{ title }}
 				</div>
-				<kv-icon class="filter-summary-title-chevron" name="small-chevron-mobile" />
+				<kv-icon class="filter-summary-title-chevron" name="small-chevron-mobile" :from-sprite="true" />
 			</div>
 			<div class="filter-summary-applied-filters">
 				{{ appliedFilters }}
@@ -71,7 +71,6 @@ export default {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			stroke-width: rem-calc(2);
 			transition: margin $filter-transition-timing;
 
 			.filter-summary-title {
