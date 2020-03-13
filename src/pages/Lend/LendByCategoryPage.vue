@@ -103,6 +103,7 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
+import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
@@ -424,10 +425,8 @@ export default {
 						channelId: recommendationChannel,
 						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-						loginId: this.userId || 0,
+						loginId: numeral(this.userId).value() || 0,
 					};
-					console.log(variables);
-					console.log(_get(this, 'apollo.cache.data.data'));
 					const data = this.apollo.readQuery({
 						query: recommendedLoansQuery,
 						variables,
@@ -566,7 +565,7 @@ export default {
 							channelId: 0,
 							imgDefaultSize,
 							imgRetinaSize,
-							loginId: kvAuth0.getKivaId() || 0,
+							loginId: numeral(kvAuth0.getKivaId()).value() || 0,
 						},
 					}) : Promise.resolve(),
 				]);
