@@ -194,9 +194,9 @@
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/trustees">
-								Trustees
-							</router-link>
+							<a href="https://www.kivaushub.org/hubs" target="_blank">
+								US Hubs
+							</a>
 						</li>
 					</ul>
 				</div>
