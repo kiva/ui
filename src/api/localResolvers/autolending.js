@@ -174,7 +174,7 @@ export default () => {
 									// back to using apollo-link-state, which handles errors from client
 									// resolvers as actual graphql errors. More discussion here
 									// https://github.com/apollographql/apollo-client/issues/4575
-									throw new Error(result.errors[0].code || result.errors[0].message);
+									throw new Error(result.errors[0].extensions.code || result.errors[0].message);
 								}
 								return result;
 							})
