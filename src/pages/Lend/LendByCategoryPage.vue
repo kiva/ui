@@ -432,20 +432,22 @@ export default {
 						variables,
 					});
 					const loans = _get(data, 'ml.recommendationChannel.loans');
-					const channel = {
-						id: -2,
-						loans,
-						url: '',
-					};
-					if (this.userId) {
-						const firstName = _get(data, 'my.userAccount.firstName') || 'you';
-						channel.name = `Recommended for ${firstName}`;
-						channel.description = 'Loans we think you\'ll love based on your lending history.';
-					} else {
-						channel.name = 'Recommended by others';
-						channel.description = 'Log in for personalized recommendations.';
+					if (loans && loans.values && loans.values.length > 0) {
+						const channel = {
+							id: -2,
+							loans,
+							url: '',
+						};
+						if (this.userId) {
+							const firstName = _get(data, 'my.userAccount.firstName') || 'you';
+							channel.name = `Recommended for ${firstName}`;
+							channel.description = 'Loans we think you\'ll love based on your lending history.';
+						} else {
+							channel.name = 'Recommended by others';
+							channel.description = 'Log in for personalized recommendations.';
+						}
+						this.recommendedLoansChannel = channel;
 					}
-					this.recommendedLoansChannel = channel;
 				} catch (e) {
 					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
 				}
