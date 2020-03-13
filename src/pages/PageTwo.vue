@@ -180,7 +180,6 @@ export default {
 			});
 		},
 		result({ data }) {
-			console.log('data');
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
 			const mgHeroExperiment = this.apollo.readFragment({
@@ -194,19 +193,8 @@ export default {
 				'EXP-CASH-1774-Feb2020',
 				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
 			);
-
-			// Process Contentful Content
-			// Page Layout
-			const pageMonthlyGood = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'monthlygood'); // eslint-disable-line max-len
-			console.log('pageMonthlyGood', pageMonthlyGood);
-			// Choose Page Layout here
-			const { pageLayout } = pageMonthlyGood.fields;
-			console.log('pageLayout', pageLayout);
-			// Pass content groups to components
-			this.contentGroups = pageLayout.fields.contentGroups.map(contentGroup => contentGroup.fields);
-			console.log('contentGroups', this.contentGroups);
 		},
-	}
+	},
 };
 
 </script>
