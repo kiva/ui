@@ -17,18 +17,23 @@ export const Default = () => ({
 	`,
 });
 
+
+function getAllIconNames(r) {
+	return r.keys().map((filename) => {
+		let str = filename;
+		str = str.substring(2); // remove ./
+		str = str.substring(0, str.length - 4); // remove .svg
+		return str;
+	});
+}
+
 export const allIcons = () => ({
 	components: {
 		KvIcon2
 	},
 	data() {
 		return {
-			iconNames: [
-				'magnify-glass',
-				'print',
-				'small-chevron-mobile',
-				'star'
-			]
+			iconNames: getAllIconNames(require.context('@/assets/inline-svgs/icons/', true, /\.svg$/))
 		}
 	},
 	template: `
