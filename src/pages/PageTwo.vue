@@ -169,14 +169,6 @@ export default {
 				return client.query({
 					query: experimentQuery, variables: { id: 'mg_hero' }
 				});
-			}).then(() => {
-				return client.query({
-					query: contentful,
-					variables: {
-						contentType: 'page',
-						contentKey: 'monthlygood',
-					},
-				});
 			});
 		},
 		result({ data }) {
@@ -194,6 +186,26 @@ export default {
 				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
 			);
 		},
+	},
+	mounted() {
+		this.apollo.query({
+			query: contentful,
+			variables: {
+				contentType: 'page',
+				contentKey: 'monthlygood',
+			},
+		}).then(({ data }) => {
+			// Process Contentful Content
+			// Page Layout
+			const pageMonthlyGood = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'monthlygood'); // eslint-disable-line max-len
+			console.log('pageMonthlyGood', pageMonthlyGood);
+			// Choose Page Layout here
+			const { pageLayout } = pageMonthlyGood.fields;
+			console.log('pageLayout', pageLayout);
+			// Pass content groups to components
+			this.contentGroups = pageLayout.fields.contentGroups.map(contentGroup => contentGroup.fields);
+			console.log('contentGroups', this.contentGroups);
+		});
 	},
 };
 
