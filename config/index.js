@@ -4,7 +4,7 @@ module.exports = {
 	app: {
 		host: 'www.kiva.org',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
-		graphqlUri: 'https://api.kivaws.org/graphql',
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
 		enableAnalytics: true,
@@ -64,7 +64,7 @@ module.exports = {
 	},
 	server: {
 		port: 8888,
-		graphqlUri: 'https://api.kivaws.org/graphql',
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		sessionUri: 'https://www.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'memcached-01:11211,memcached-02:11211',
