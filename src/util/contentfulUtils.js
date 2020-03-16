@@ -47,16 +47,17 @@ export function processContent(contentfulContent) {
 			if (!contentfulContentObject.responsiveImageSet) {
 				contentfulContentObject.responsiveImageSet = [];
 			}
-			contentfulContentObject.responsiveImageSet.push(item.fields);
+			// Contentful Objects are non extensible so we have to perform a copy here of the fields object
+			contentfulContentObject.responsiveImageSet.push(JSON.parse(JSON.stringify(item.fields)));
 		} else {
-			contentfulContentObject[itemKey] = item.fields;
+			contentfulContentObject[itemKey] = JSON.parse(JSON.stringify(item.fields));
 		}
 	});
 	if (contentfulContentObject.responsiveImageSet) {
 		contentfulContentObject.responsiveImageSet.forEach(imageSet => {
-			imageSet.images.forEach((image, index) => {
+			imageSet.images.forEach(imageObj => {
 				// eslint-disable-next-line no-param-reassign
-				imageSet.images[index].responsiveSize = determineResponsiveSizeFromFileName(image.fields.file.fileName);
+				imageObj.responsiveSize = determineResponsiveSizeFromFileName(imageObj.fields.file.fileName);
 			});
 		});
 	}

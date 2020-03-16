@@ -1,0 +1,6 @@
+query contentful($contentType: String!, $contentKey: String) {
+	contentful @client {
+		entries(contentType: $contentType, contentKey: $contentKey)
+	}
+}
+

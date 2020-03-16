@@ -8,39 +8,43 @@ Vue.use(kivaPlugins)
 
 const mockedContentfulAPIResponse = {
 	data: {
-		contentfulCMS: {
-			items: [{
-				key: 'ui-global-promo',
-				active: true,
-				startDate: "2019-01-02T00:00-08:00",
-				endDate: "2030-01-02T00:00-08:00",
-				content: [
-					{
-						fields: {
-							active: true,
-							startDate: "2019-01-02T00:00-08:00",
-							endDate: "2030-01-02T00:00-08:00",
-							bannerName: '',
-							kvTrackEvent: [],
-							link: '',
-							richText: {
-								"data":{},
-								"content":[{
-									"data":{},
-									"content":[{
+		contentful: {
+			entries: {
+				items: [{
+					fields: {
+						key: 'ui-global-promo',
+						active: true,
+						startDate: "2019-01-02T00:00-08:00",
+						endDate: "2030-01-02T00:00-08:00",
+						content: [
+							{
+								fields: {
+									active: true,
+									startDate: "2019-01-02T00:00-08:00",
+									endDate: "2030-01-02T00:00-08:00",
+									bannerName: '',
+									kvTrackEvent: [],
+									link: '',
+									richText: {
 										"data":{},
-										"marks":[],
-										"value":"Invite someone special to Kiva using your unique share link!",
-										"nodeType":"text"
-									}],
-									"nodeType":"paragraph"
-								}],
-								"nodeType":"document"
-							},
-						}
+										"content":[{
+											"data":{},
+											"content":[{
+												"data":{},
+												"marks":[],
+												"value":"Invite someone special to Kiva using your unique share link!",
+												"nodeType":"text"
+											}],
+											"nodeType":"paragraph"
+										}],
+										"nodeType":"document"
+									},
+								}
+							}
+						]
 					}
-				]
-			}]
+				}]
+			}
 		}
 	}
 }
