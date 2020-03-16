@@ -16,7 +16,7 @@
 				<p>Oops - this link no longer works.</p>
 				<p>
 					If you want to opt-out of auto-lending, please let us know at
-					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20opt-out%20page">contactus@kiva.org</a>
+					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20opt-out%20page">contactus@kiva.org</a>.
 				</p>
 			</div>
 		</template>
@@ -32,8 +32,9 @@
 				<!-- Failure -->
 				<p>Oops - this link no longer works.</p>
 				<p>
-					If you want to turn off auto-lending, please let us know at
-					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20disable%20page">contactus@kiva.org</a>
+					<!-- eslint-disable-next-line -->
+					If you want to modify your auto-lending settings, please visit the auto-lending settings page or reach out to us directly at
+					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20disable%20page">contactus@kiva.org</a>.
 				</p>
 			</div>
 		</template>
