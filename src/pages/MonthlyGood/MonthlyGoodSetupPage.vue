@@ -464,7 +464,7 @@ export default {
 				variables: {
 					amount: numeral(this.totalCombinedDeposit).format('0.00'),
 					donateAmount: numeral(this.donation).format('0.00'),
-					dayOfMonth: this.dayOfMonth,
+					dayOfMonth: numeral(this.dayOfMonth).value(),
 					category: this.selectedGroup,
 				}
 			}).then(data => {
