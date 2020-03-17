@@ -44,6 +44,7 @@
 <script>
 
 import _get from 'lodash/get';
+import numeral from 'numeral';
 import KvButton from '@/components/Kv/KvButton';
 import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
@@ -68,9 +69,9 @@ export default {
 		},
 		preFetchVariables({ route }) {
 			return {
-				team_id: route.query.team_id,
-				team_recruitment_id: route.query.id,
-				promo_id: route.query.promo_id,
+				team_id: numeral(route.query.team_id).value(),
+				team_recruitment_id: numeral(route.query.id).value(),
+				promo_id: numeral(route.query.promo_id).value(),
 			};
 		},
 		result({ data }) {
@@ -88,11 +89,11 @@ export default {
 			teamName: '',
 			isMember: false,
 			doneUrl: this.$route.query.doneUrl,
-			teamRecruitmentId: this.$route.query.id,
-			inviterId: this.$route.query.inviter_id,
+			teamRecruitmentId: numeral(this.$route.query.id).value(),
+			inviterId: numeral(this.$route.query.inviter_id).value(),
 			inviterDisplayName: this.$route.query.inviter_display_name,
-			teamId: this.$route.query.team_id,
-			promoId: this.$route.query.promo_id,
+			teamId: numeral(this.$route.query.team_id).value(),
+			promoId: numeral(this.$route.query.promo_id).value(),
 			showError: false,
 			showForm: true,
 			showSuccess: false,

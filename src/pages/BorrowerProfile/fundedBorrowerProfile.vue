@@ -96,6 +96,7 @@
 
 <script>
 import _get from 'lodash/get';
+import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -126,7 +127,7 @@ export default {
 	},
 	apollo: {
 		preFetch(config, client, args) {
-			const fundedLoanId = _get(args, 'route.params.id');
+			const fundedLoanId = numeral(_get(args, 'route.params.id')).value();
 
 			return client.query({
 				query: fundedBorrowerProfile,
@@ -159,7 +160,7 @@ export default {
 	created() {
 		// Read the page data from the cache
 		let loanData = {};
-		const loanIdFromRoute = _get(this.$route, 'params.id');
+		const loanIdFromRoute = numeral(_get(this.$route, 'params.id')).value();
 
 		try {
 			loanData = this.apollo.readQuery({
