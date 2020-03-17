@@ -87,7 +87,7 @@ export default [
 				props: route => ({
 					success: (route.query.success === 'true'),
 					action: route.params.action,
-					days: route.query.days
+					days: Number(route.query.days)
 				})
 			},
 		]
