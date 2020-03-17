@@ -1,4 +1,5 @@
 <script>
+import numeral from 'numeral';
 import trackTransactionMutation from '@/graphql/mutation/shop/trackTransaction.graphql';
 import parseGACookie from '@/util/parseGACookie';
 import parseSPCookie from '@/util/parseSPCookie';
@@ -15,7 +16,7 @@ export default {
 					// force server load if currently on a browser client
 					window.location = route.fullPath;
 				} else {
-					const transactionId = route.query.kiva_transaction_id;
+					const transactionId = numeral(route.query.kiva_transaction_id).value();
 					if (!transactionId) {
 						// redirect to thanks page if no transaction id was provided
 						// currently resolves to portfolio via ThanksView getCheckoutId method
