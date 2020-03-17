@@ -38,6 +38,24 @@
 				</p>
 			</div>
 		</template>
+		<template v-if="action == 'pause'">
+			<div data-test="pause-success" class="small-12 medium-10 columns" v-if="success">
+				<!-- Success -->
+				<p>Paused for {{ days }} days.</p>
+				<!-- eslint-disable-next-line -->
+				<p>Click <router-link to="/settings/autolending">here</router-link> to visit the auto-lending settings page.</p>
+			</div>
+
+			<div data-test="pause-failure" class="small-12 medium-10 columns" v-if="!success">
+				<!-- Failure -->
+				<p>Oops - this link no longer works.</p>
+				<p>
+					<!-- eslint-disable-next-line -->
+					If you want to modify your auto-lending settings, please visit the auto-lending settings page or reach out to us directly at
+					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20pause%20page">contactus@kiva.org</a>.
+				</p>
+			</div>
+		</template>
 	</div>
 </template>
 
@@ -52,15 +70,14 @@ export default {
 		action: {
 			type: String,
 			default: ''
+		},
+		days: {
+			type: String,
+			default: ''
 		}
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-
-.autolending-opt-out-content {
-	padding: 2rem 0 6rem;
-}
 </style>
