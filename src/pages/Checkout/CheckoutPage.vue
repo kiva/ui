@@ -139,6 +139,7 @@ import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import _pick from 'lodash/pick';
+import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
@@ -435,7 +436,7 @@ export default {
 		completeTransaction(transactionId) {
 			// compile transaction information
 			const transactionData = {
-				transactionId,
+				transactionId: numeral(transactionId).value(),
 				itemTotal: this.totals.itemTotal,
 				loans: _map(this.loans, loan => {
 					return _pick(loan, ['__typename', 'id', 'price']);
