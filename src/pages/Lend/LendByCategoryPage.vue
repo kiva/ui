@@ -177,6 +177,7 @@ export default {
 			featuredSectorExpVersion: null,
 			recommendedLoansRowExpVersion: null,
 			recommendedLoansChannel: null,
+			recommendedLoans: [],
 		};
 	},
 	computed: {
@@ -236,6 +237,21 @@ export default {
 							r: -1,
 							p: loanIndex + 1,
 							c: 99,
+							l: loan.id
+						});
+					});
+				}
+			}
+
+			// track recommended loans row
+			if (this.showRecommendedLoansRow) {
+				if (this.recommendedLoans !== undefined && this.recommendedLoans.length > 0) {
+					const recommendedLoanValues = _get(this.recommendedLoans, 'values');
+					_each(recommendedLoanValues, (loan, loanIndex) => {
+						loanIds.push({
+							r: -2,
+							p: loanIndex + 1,
+							c: 95,
 							l: loan.id
 						});
 					});
@@ -431,11 +447,14 @@ export default {
 						query: recommendedLoansQuery,
 						variables,
 					});
-					const loans = _get(data, 'ml.recommendationChannel.loans');
-					if (loans && loans.values && loans.values.length > 0) {
+					// share out results of loan query for row analytics
+					this.recommendedLoans = _get(data, 'ml.recommendationChannel.loans');
+					if (this.recommendedLoans
+						&& this.recommendedLoans.values
+						&& this.recommendedLoans.values.length > 0) {
 						const channel = {
-							id: -2,
-							loans,
+							id: 95,
+							loans: this.recommendedLoans,
 							url: '',
 						};
 						if (this.userId) {
