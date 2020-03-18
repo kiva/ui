@@ -84,7 +84,11 @@ export default [
 			{
 				path: ':action',
 				component: () => import('@/pages/Autolending/AutolendingMessagingPage'),
-				props: route => ({ success: (route.query.success === 'true'), action: route.params.action })
+				props: route => ({
+					success: (route.query.success === 'true'),
+					action: route.params.action,
+					days: Number(route.query.days)
+				})
 			},
 		]
 	},
