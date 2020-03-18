@@ -453,7 +453,7 @@ export default {
 						&& this.recommendedLoans.values
 						&& this.recommendedLoans.values.length > 0) {
 						const channel = {
-							id: -2,
+							id: 95,
 							loans: this.recommendedLoans,
 							url: '',
 						};
