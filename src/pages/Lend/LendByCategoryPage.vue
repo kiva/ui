@@ -249,7 +249,7 @@ export default {
 					const recommendedLoanValues = _get(this.recommendedLoans, 'values');
 					_each(recommendedLoanValues, (loan, loanIndex) => {
 						loanIds.push({
-							r: 95,
+							r: -2,
 							p: loanIndex + 1,
 							c: 95,
 							l: loan.id
