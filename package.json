@@ -180,7 +180,7 @@
 		"webpack-filter-warnings-plugin": "^1.2.1",
 		"webpack-hot-middleware": "^2.25.0",
 		"webpack-node-externals": "^1.7.2",
-		"webpack-svgstore-plugin": "^4.1.0"
+		"webpack-svgstore-plugin": "ryan-ludwig/webpack-svgstore-plugin#develop"
 	},
 	"engines": {
 		"node": ">= 10.0.0",
