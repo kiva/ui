@@ -18,11 +18,11 @@
 <script>
 /* eslint-disable max-len */
 /**
- * Use KvIcon to display an inlined-svg from /assets/icons/inline on the page.
- * SVG files should only be one color so they can be styled using CSS fill property: `.my-icon { fill: pink; }`
+ * Use KvIcon to display an inlined-svg from /assets/icons/inline on the page, or from the sprite at /assets/icons/sprite.
+ * Icons can be colored using CSS fill property: `.my-icon { fill: pink; }`
  * Icons will fill the width of it's container. You can set the width with CSS: `.my-icon { width: 5rem; fill: pink; }`
  * If your SVG file is multi-colored or complex, consider moving it outside of the icons directory and importing it directly as an inline-svg or use an img tag.
- * A nice tool to clean up code before saving to the inline-svg directory is https://jakearchibald.github.io/svgomg/
+ * A nice tool to clean up code before saving to the icons/inline directory is https://jakearchibald.github.io/svgomg/. Toggle "Prefer viewbox to width/height" on.
  */
 /* eslint-enable max-len */
 export default {
