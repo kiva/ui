@@ -161,7 +161,6 @@ export default {
 		// Read the page data from the cache
 		let loanData = {};
 		const loanIdFromRoute = numeral(_get(this.$route, 'params.id')).value();
-
 		try {
 			loanData = this.apollo.readQuery({
 				query: fundedBorrowerProfile,
@@ -175,7 +174,7 @@ export default {
 			this.itemsInBasket = _get(loanData, 'shop.basket.items.values');
 		} catch (e) {
 			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
-			window.location = `/lend/${loanIdFromRoute}?minimal=false`;
+			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
 		}
 
 		// Read assigned version of lyml custom sort exp
