@@ -245,7 +245,7 @@ export default {
 
 			// track recommended loans row
 			if (this.showRecommendedLoansRow && this.showRecommendedLoansRow.id) {
-				if (this.recommendedLoans && this.recommendedLoans.values && this.recommendedLoans.length > 0) {
+				if (this.recommendedLoans && this.recommendedLoans.values && this.recommendedLoans.values.length > 0) {
 					const recommendedLoanValues = _get(this.recommendedLoans, 'values');
 					_each(recommendedLoanValues, (loan, loanIndex) => {
 						loanIds.push({
