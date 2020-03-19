@@ -423,8 +423,12 @@ export default {
 		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
+			document.activeElement.blur();
 			if (this.searchOpen) {
-				this.$refs.search.focus();
+				// wait one tick, then focus search input
+				this.$nextTick(() => {
+					this.$refs.search.focus();
+				});
 			}
 		}
 	},
