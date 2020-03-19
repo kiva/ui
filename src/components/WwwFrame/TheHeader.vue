@@ -40,7 +40,7 @@
 						>
 							<kv-icon class="close-icon" name="x" />
 						</button>
-						<search-bar ref="search" />
+						<search-bar ref="search" v-if="searchOpen" :aria-hidden="searchOpen ? 'false' : 'true'" />
 					</div>
 					<promo-banner-large />
 				</div>
@@ -423,8 +423,12 @@ export default {
 		},
 		toggleSearch() {
 			this.searchOpen = !this.searchOpen;
+			document.activeElement.blur();
 			if (this.searchOpen) {
-				this.$refs.search.focus();
+				// wait one tick, then focus search input
+				this.$nextTick(() => {
+					this.$refs.search.focus();
+				});
 			}
 		}
 	},
@@ -639,10 +643,6 @@ $close-search-button-size: 2.5rem;
 	height: 100%;
 	flex-direction: unset;
 
-	&:focus {
-		outline: none;
-	}
-
 	@include breakpoint(large) {
 		flex-grow: 0;
 	}
@@ -732,6 +732,7 @@ $close-search-button-size: 2.5rem;
 	float: left;
 	width: $close-search-button-size;
 	height: 100%;
+	background-color: $kiva-green;
 
 	.icon {
 		width: $top-nav-font-size;
