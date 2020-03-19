@@ -728,6 +728,7 @@ $close-search-button-size: 2.5rem;
 	float: left;
 	width: $close-search-button-size;
 	height: 100%;
+	background-color: $kiva-green;
 
 	.icon {
 		width: $top-nav-font-size;
