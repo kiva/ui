@@ -142,7 +142,7 @@
 		"eslint-plugin-graphql": "^3.0.3",
 		"eslint-plugin-import": "^2.18.2",
 		"eslint-plugin-vue": "^6.1.2",
-		"file-loader": "^5.0.2",
+		"file-loader": "^6.0.0",
 		"friendly-errors-webpack-plugin": "^1.7.0",
 		"git-revision-webpack-plugin": "^3.0.3",
 		"hard-source-webpack-plugin": "^0.13.1",
