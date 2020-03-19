@@ -40,7 +40,7 @@
 						>
 							<kv-icon class="close-icon" name="x" />
 						</button>
-						<search-bar ref="search" />
+						<search-bar ref="search" v-if="searchOpen" :aria-hidden="searchOpen ? 'false' : 'true'" />
 					</div>
 					<promo-banner-large />
 				</div>
@@ -638,10 +638,6 @@ $close-search-button-size: 2.5rem;
 	flex-grow: 1;
 	height: 100%;
 	flex-direction: unset;
-
-	&:focus {
-		outline: none;
-	}
 
 	@include breakpoint(large) {
 		flex-grow: 0;

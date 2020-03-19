@@ -35,13 +35,6 @@ $placeholder-font-style: italic;
 	font-style: $placeholder-font-style;
 }
 
-input[type="submit"].hidden-submit {
-	position: absolute;
-	left: -9999px;
-	width: 1px;
-	height: 1px;
-}
-
 .input-set {
 	label {
 		font-weight: 400;
