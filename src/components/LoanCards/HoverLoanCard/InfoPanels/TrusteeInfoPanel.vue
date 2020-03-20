@@ -106,7 +106,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import { differenceInCalendarMonths } from 'date-fns';
+import { differenceInCalendarMonths, parseISO } from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -174,7 +174,7 @@ export default {
 			return `${this.loanId}-trustee-info-panel-ex-${this.expandable ? '1' : '0'}`;
 		},
 		timeOnKivaFormatted() {
-			return differenceInCalendarMonths(Date.now(), this.timeOnKiva);
+			return differenceInCalendarMonths(Date.now(), parseISO(this.timeOnKiva));
 		},
 		repaymentRateFormatted() {
 			return numeral(this.repaymentRate).format('0.00');

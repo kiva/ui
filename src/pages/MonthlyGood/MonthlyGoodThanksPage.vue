@@ -31,7 +31,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import numeral from 'numeral';
 
-import { addMonths, distanceInWordsToNow } from 'date-fns';
+import { addMonths, formatDistanceToNow } from 'date-fns';
 import IconConfirmation from '@/assets/inline-svgs/icons/confirmation.svg';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
@@ -117,7 +117,7 @@ export default {
 				return 'next month';
 			}
 			const dateOfFirstLoan = addMonths(new Date(), numOfMonthUntilLoan);
-			return `in ${distanceInWordsToNow(dateOfFirstLoan)}`;
+			return `in ${formatDistanceToNow(dateOfFirstLoan)}`;
 		}
 	},
 };

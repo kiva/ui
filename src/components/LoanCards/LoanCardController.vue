@@ -53,7 +53,8 @@
 import {
 	differenceInMinutes,
 	differenceInHours,
-	differenceInDays
+	differenceInDays,
+	parseISO
 } from 'date-fns';
 import _forEach from 'lodash/forEach';
 import AdaptiveMicroLoanCard from '@/components/LoanCards/AdaptiveMicroLoanCard';
@@ -61,7 +62,6 @@ import FeaturedHeroLoan from '@/components/LoansByCategory/FeaturedHeroLoan';
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 import ExpandableLoanCardCollapsed from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardCollapsed';
 import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
-import GridMicroLoanCard from '@/components/LoanCards/GridMicroLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import HoverLoanCard from '@/components/LoanCards/HoverLoanCard/HoverLoanCard';
 import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
@@ -74,7 +74,6 @@ export default {
 		GridLoanCard,
 		ExpandableLoanCard,
 		ExpandableLoanCardCollapsed,
-		GridMicroLoanCard,
 		ListLoanCard,
 		HoverLoanCard,
 		DetailedLoanCard,
@@ -184,25 +183,25 @@ export default {
 			return (this.loan.loanAmount - this.amountLeft) / this.loan.loanAmount;
 		},
 		timeLeftMessage() {
-			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			const days = differenceInDays(parseISO(this.loan.plannedExpirationDate), Date.now());
 			if (days >= 6) {
 				return `${days} days left`;
 			}
 			if (days >= 2) {
 				return `Only ${days} days left! `;
 			}
-			const hours = differenceInHours(this.loan.plannedExpirationDate, Date.now());
+			const hours = differenceInHours(parseISO(this.loan.plannedExpirationDate), Date.now());
 			if (hours >= 2) {
 				return `Only ${hours} hours left! `;
 			}
-			const mins = differenceInMinutes(this.loan.plannedExpirationDate, Date.now());
+			const mins = differenceInMinutes(parseISO(this.loan.plannedExpirationDate), Date.now());
 			if (mins >= 2) {
 				return `Only ${mins} minutes left! `;
 			}
 			return 'Ending now!';
 		},
 		expiringSoonMessage() {
-			const days = differenceInDays(this.loan.plannedExpirationDate, Date.now());
+			const days = differenceInDays(parseISO(this.loan.plannedExpirationDate), Date.now());
 			// Send empty message if expiration is greater than 6 days
 			// > This matches the wwwApp implmentation
 			if (days >= 6) {

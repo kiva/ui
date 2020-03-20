@@ -288,7 +288,7 @@ export default {
 	},
 	computed: {
 		formattedTransactionTime() {
-			return `${format(getUTCDate(this.receipt.transactionTime), 'MMMM DD, YYYY h:mm A')} GMT`;
+			return `${format(getUTCDate(this.receipt.transactionTime), 'MMMM dd, yyyy h:mm A')} GMT`;
 		},
 		loans() {
 			return this.receipt.items.values.filter(item => item.basketItemType === 'loan_reservation');
