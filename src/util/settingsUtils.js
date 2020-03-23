@@ -1,6 +1,6 @@
 /* eslint-disable no-bitwise */
 
-import { isWithinRange } from 'date-fns';
+import { isWithinInterval } from 'date-fns';
 import _get from 'lodash/get';
 
 /**
@@ -62,7 +62,7 @@ export function settingEnabled(data, enabledKey, startTimeKey, endTimeKey) {
 	const enabled = readBoolSetting(data, enabledKey);
 	const startTime = readDateSetting(data, startTimeKey);
 	const endTime = readDateSetting(data, endTimeKey);
-	return enabled && isWithinRange(new Date(), startTime, endTime);
+	return enabled && isWithinInterval(new Date(), { start: startTime, end: endTime });
 }
 
 /**

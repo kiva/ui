@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoanPrice from '@/components/Checkout/LoanPrice';
 
@@ -119,7 +119,7 @@ export default {
 	},
 	computed: {
 		deliveryDate() {
-			return format(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate, 'MM/DD/YYYY');
+			return format(parseISO(this.kivaCard.kivaCardObject.recipient.scheduledDeliveryDate), 'MM/dd/yyyy');
 		},
 		formedEditUrl() {
 			let giftId = '';

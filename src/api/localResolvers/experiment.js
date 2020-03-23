@@ -3,7 +3,7 @@ import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import _pick from 'lodash/pick';
 import _toPairs from 'lodash/toPairs';
-import { isWithinRange } from 'date-fns';
+import { isWithinInterval } from 'date-fns';
 import cookieStore from '@/util/cookieStore';
 import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 
@@ -124,7 +124,7 @@ function assignVersion({
 	// only try to assign a version if the experiment targets match
 	if (!matchTargets(targets)) return undefined;
 	// only try to assign a version if the experiment is enabled, started, and not ended
-	if (isWithinRange(new Date(), new Date(startTime), new Date(endTime))) {
+	if (isWithinInterval(new Date(), { start: new Date(startTime), end: new Date(endTime) })) {
 		// Based on Algo from Manager.php
 		const marker = Math.random();
 		let cutoff = 0;
