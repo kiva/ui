@@ -34,7 +34,7 @@ module.exports = merge(base, {
 				erMiYChkrfWfIDiBdybgOUy5v5V2xSsF: 'https://admin.audit.kiva.org/login',
 				Y24mV3SPmgnsrwSUfqelVSucLHfLeJUl: 'https://partners.audit.kiva.org/login',
 				i4FGTy2eb69K1fga4VnhkK2ujtRxDMio: 'https://www.audit.kiva.org/authenticate',
-				26KTpMLdMUDdqWYrTYU3uu6reqVa7JcQ: 'https://www.audit.kiva.org/ui-login',
+				'26KTpMLdMUDdqWYrTYU3uu6reqVa7JcQ': 'https://www.audit.kiva.org/ui-login',
 				BvSELfanq0c6p36hVRcCL5QREpzz6ioc: 'https://www.audit.kiva.org/ui-login',
 			},
 			enable: true,
