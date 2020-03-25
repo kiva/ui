@@ -5,7 +5,8 @@ query recommendedLoans(
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w960h720",
 	$loginId: Int = 0,
-	$numberOfLoans: Int = 11,
+	$numberOfLoans: Int = 20,
+	$offset: Int = 0,
 ) {
 	ml {
 		recommendationChannel(channelId: $channelId, loginId: $loginId, limit: $numberOfLoans, offset:0) {

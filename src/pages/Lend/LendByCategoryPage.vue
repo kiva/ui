@@ -108,6 +108,7 @@ import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
+import fundedLoanFilterMixin from '@/plugins/funded-loans-mixin';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
@@ -148,6 +149,9 @@ export default {
 		RecommendedLoansRow,
 	},
 	inject: ['apollo', 'kvAuth0'],
+	mixins: [
+		fundedLoanFilterMixin
+	],
 	metaInfo: {
 		title: 'Loans by category'
 	},
@@ -447,11 +451,18 @@ export default {
 						query: recommendedLoansQuery,
 						variables,
 					});
+
+					// Filter out funded loans
+					const initialLoanSet = _get(data, 'ml.recommendationChannel.loans');
+					const filteredLoanSet = this.filterFundedLoans(_get(initialLoanSet, 'values'));
+
 					// share out results of loan query for row analytics
-					this.recommendedLoans = _get(data, 'ml.recommendationChannel.loans');
-					if (this.recommendedLoans
-						&& this.recommendedLoans.values
-						&& this.recommendedLoans.values.length > 0) {
+					this.recommendedLoans = {
+						values: filteredLoanSet,
+						__typename: 'LoanBasicCollection'
+					};
+
+					if (filteredLoanSet && filteredLoanSet.length > 0) {
 						const channel = {
 							id: 95,
 							loans: this.recommendedLoans,
@@ -495,6 +506,46 @@ export default {
 				label,
 				this.showRecommendedLoansRow ? recommendationChannel : null,
 			);
+		},
+		fetchRecommendedLoans() {
+			// once the initial loan set is filtered and loaded, we query for more loans if there are too few
+			// if there are 6 or fewer recommended loans we'll fetch 20 more
+			if (this.testForLowRecommendedLoans(6)) {
+				const variables = {
+					basketId: cookieStore.get('kvbskt'),
+					channelId: 0,
+					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					loginId: numeral(this.userId).value() || 0,
+					offset: 20
+				};
+				return this.apollo.query({
+					query: recommendedLoansQuery,
+					variables,
+				}).then(({ data }) => {
+					// filter and update recommended loans
+					const backfillLoanSet = _get(data, 'ml.recommendationChannel.loans.values');
+					const filteredBackfillLoans = this.filterFundedLoans(backfillLoanSet);
+
+					// add new loans to row
+					if (filteredBackfillLoans.length > 0) {
+						this.recommendedLoans.values = this.recommendedLoans.values.concat(filteredBackfillLoans);
+						Promise.resolve();
+					}
+				});
+			}
+			return Promise.resolve();
+		},
+		testForLowRecommendedLoans(threshold) {
+			if (this.showRecommendedLoansRow && this.showRecommendedLoansRow.id) {
+				if (this.recommendedLoans
+					&& this.recommendedLoans.values
+					&& this.recommendedLoans.values.length < threshold) {
+					return true;
+				}
+				return false;
+			}
+			return false;
 		},
 		initializeCategoryRowHillclimb() {
 			// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
@@ -708,7 +759,10 @@ export default {
 		this.initializeRecommendedLoansRowExp();
 	},
 	mounted() {
-		this.fetchRemainingLoanChannels().then(() => {
+		Promise.all([
+			this.fetchRemainingLoanChannels(),
+			this.fetchRecommendedLoans()
+		]).then(() => {
 			this.rowLazyLoadComplete = true;
 
 			this.activateWatchers();
