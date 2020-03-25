@@ -9,7 +9,7 @@ query recommendedLoans(
 	$offset: Int = 0,
 ) {
 	ml {
-		recommendationChannel(channelId: $channelId, loginId: $loginId, limit: $numberOfLoans, offset:0) {
+		recommendationChannel(channelId: $channelId, loginId: $loginId, limit: $numberOfLoans, offset: $offset) {
 			id
 			loans {
 				values {
