@@ -26,6 +26,10 @@ export default {
 				{
 					value: 'eco_friendly',
 					label: 'Support eco-friendly loans'
+				},
+				{
+					value: 'us_borrowers',
+					label: 'Support US borrowers'
 				}
 			],
 		};
