@@ -47,12 +47,12 @@ export default () => {
 				 *					}
 				 *				],
 				 *				"includes": {
-					*				"Entry": [
-					*					{
-					*						"sys": { <Contentful Metadata> },
-					*						"fields": { <Contentful Fields for that contentType> }
-					*					}
-					*				]
+				 *					"Entry": [
+				 *						{
+				 *							"sys": { <Contentful Metadata> },
+				 *							"fields": { <Contentful Fields for that contentType> }
+				 *						}
+				 *					]
 				 *				}
 				 *			}
 				 *		}
