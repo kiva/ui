@@ -50,7 +50,7 @@ module.exports = merge(base, {
 			domain: 'login.dev.kiva.org',
 		},
 		contentful: {
-			environment: 'development'
+			useLocalResolver: true
 		},
 		intercom: {
 			enable: false,
