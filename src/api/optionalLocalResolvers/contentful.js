@@ -1,7 +1,8 @@
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { createApolloFetch } from 'apollo-fetch';
+import _get from 'lodash/get';
 
-const fetch = createApolloFetch({
+const apolloFetch = createApolloFetch({
 	uri: 'https://marketplace-api.dk1.kiva.org/graphql',
 });
 
@@ -46,12 +47,12 @@ export default () => {
 				 *					}
 				 *				],
 				 *				"includes": {
-				 *				"Entry": [
-				 *					{
-				 *						"sys": { <Contentful Metadata> },
-				 *						"fields": { <Contentful Fields for that contentType> }
-				 *					}
-				 *				]
+					*				"Entry": [
+					*					{
+					*						"sys": { <Contentful Metadata> },
+					*						"fields": { <Contentful Fields for that contentType> }
+					*					}
+					*				]
 				 *				}
 				 *			}
 				 *		}
@@ -62,7 +63,7 @@ export default () => {
 				 */
 
 				entries(_, { contentKey, contentType }) {
-					fetch({
+					return apolloFetch({
 						query: `query ContentfulFromGQLFederation($contentType: String!, $contentKey: String!) {
 								contentful {
 									entries(contentType: $contentType, contentKey: $contentKey)
@@ -70,7 +71,7 @@ export default () => {
 							}`,
 						variables: { contentType, contentKey },
 					}).then(res => {
-						return res;
+						return _get(res, 'data.contentful.entries');
 					});
 				},
 			},
