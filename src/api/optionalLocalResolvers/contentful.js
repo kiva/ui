@@ -30,14 +30,35 @@ export default () => {
 				 * that matches that key is returned. contentKey is a custom contentful
 				 * field on objects of that type which corresponds to ['fields.key']
 				 *
-				 * Returns: Array of contentKey object in the form:
-				 * [{
-				 * 		fields: { <Contentful Fields for that contentType> }
-				 *		sys: { <Contentful Metadata> }
-				 * }]
+				 * Returns: object in the form:
+				 * {
+				 *	"data": {
+				 *		"contentful": {
+				 *			"entries": {
+				 *				"sys": { <Contentful Metadata> },
+				 *				"total": 1,
+				 *				"skip": 0,
+				 *				"limit": 100,
+				 *				"items": [
+				 *					{
+				 *						"sys": { <Contentful Metadata> },
+				 *						"fields": { <Contentful Fields for that contentType> }
+				 *					}
+				 *				],
+				 *				"includes": {
+				 *				"Entry": [
+				 *					{
+				 *						"sys": { <Contentful Metadata> },
+				 *						"fields": { <Contentful Fields for that contentType> }
+				 *					}
+				 *				]
+				 *				}
+				 *			}
+				 *		}
+				 *	}
 				 *
 				 * @param {string} contentKey, contentType
-				 * @returns {array}
+				 * @returns {object}
 				 */
 
 				entries(_, { contentKey, contentType }) {
@@ -49,7 +70,7 @@ export default () => {
 							}`,
 						variables: { contentType, contentKey },
 					}).then(res => {
-						return res.data;
+						return res;
 					});
 				},
 			},
