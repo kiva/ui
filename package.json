@@ -45,7 +45,6 @@
 		"algoliasearch": "^3.34.0",
 		"apollo-cache-inmemory": "^1.6.5",
 		"apollo-client": "2.6.8",
-		"apollo-fetch": "^0.7.0",
 		"apollo-link": "^1.2.13",
 		"apollo-link-batch-http": "^1.2.13",
 		"apollo-link-context": "^1.0.19",
