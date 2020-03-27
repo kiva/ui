@@ -45,9 +45,6 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://www.audit.kiva.org/process-ssr-auth',
 			domain: 'login.audit.kiva.org',
 		},
-		contentful: {
-			environment: 'development'
-		},
 		intercom: {
 			enable: true,
 		},
