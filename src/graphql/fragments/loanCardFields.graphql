@@ -6,6 +6,8 @@ fragment loanCardFields on LoanBasic {
 	geocode {
 		# city added for DetailedLoanCard Query Cache
 		city
+		# state is used for US loans on LoanChannelCategoryPage
+		state
 		country {
 			isoCode
 			name
