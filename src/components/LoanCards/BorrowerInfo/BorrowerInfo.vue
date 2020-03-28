@@ -2,6 +2,9 @@
 	<div class="borrower-info-wrapper">
 		<borrower-info-header
 			:country="country"
+			:iso-code="isoCode"
+			:state="state"
+			:city="city"
 			:name="name"
 			:loan-id="loanId"
 			@track-loan-card-interaction="trackInteraction"
@@ -37,6 +40,18 @@ export default {
 			default: ''
 		},
 		country: {
+			type: String,
+			default: ''
+		},
+		isoCode: {
+			type: String,
+			default: ''
+		},
+		state: {
+			type: String,
+			default: ''
+		},
+		city: {
 			type: String,
 			default: ''
 		},
