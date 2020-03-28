@@ -37,16 +37,7 @@ export default Vue => {
 				if (from && from.matched && from.path !== '') {
 					window.snowplow('setReferrerUrl', fromUrl); // asyncFromUrl
 				}
-				window.snowplow(
-					'trackPageView',
-					null,
-					// Include context on pageview for performance
-					typeof window.performance === 'object' && window.performance.timing ? [{
-						// eslint-disable-next-line
-						schema: 'https://github.com/snowplow/iglu-central/blob/master/schemas/org.w3/PerformanceTiming/jsonschema/1-0-0',
-						data: window.performance.timing,
-					}] : null,
-				);
+				window.snowplow('trackPageView');
 			}
 
 			// Google Analytics Pageview
