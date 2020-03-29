@@ -52,6 +52,7 @@
 		"apollo-link-http": "^1.5.16",
 		"apollo-server-express": "^2.9.3",
 		"auth0-js": "^9.12.2",
+		"braintree-web-drop-in": "^1.22.1",
 		"canvas-confetti": "^1.0.3",
 		"change-case": "^4.1.1",
 		"clipboard-copy": "^3.1.0",

@@ -23,6 +23,10 @@ query initializeCheckout($basketId: String) {
 			value
 			key
 		}
+		showDropInPayments: uiConfigSetting(key: "feature.braintree_dropin") {
+			value
+			key
+		}
 	}
 	shop (basketId: $basketId) {
 		basket {
