@@ -318,7 +318,7 @@ $border-width: 1px;
 		font-family: inherit;
 	}
 
-	.braintree-heading  {
+	.braintree-heading {
 		color: $charcoal;
 	}
 
