@@ -7,7 +7,7 @@
 			@track-loan-card-interaction="trackInteraction"
 		/>
 		<div class="country" v-if="country">
-			{{ country }}
+			{{ locationString }}
 		</div>
 	</div>
 </template>
@@ -24,6 +24,18 @@ export default {
 			type: String,
 			default: ''
 		},
+		isoCode: {
+			type: String,
+			default: ''
+		},
+		state: {
+			type: String,
+			default: ''
+		},
+		city: {
+			type: String,
+			default: ''
+		},
 		loanId: {
 			type: Number,
 			default: null
@@ -32,6 +44,20 @@ export default {
 			type: String,
 			default: ''
 		},
+	},
+	computed: {
+		locationString() {
+			const usLoanChannels = [
+				'kiva-u-s',
+				'loans-to-u-s-small-businesses',
+				'united-states-loans',
+			];
+			// show city, state on US category pages
+			if (this.isoCode === 'US' && usLoanChannels.includes(this.$route.params.category)) {
+				return `${this.city}, ${this.state}`;
+			}
+			return this.country;
+		}
 	},
 	methods: {
 		trackInteraction(args) {
