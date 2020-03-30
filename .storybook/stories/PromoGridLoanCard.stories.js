@@ -13,6 +13,9 @@ const promoCategories = {
 	Eco2: { route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
 	Agriculture1: { route: 'agriculture', id: 'agriculture', label: 'farmers' },
 	Agriculture2: { route: 'loans-to-farmers', id: 'agriculture' , label: 'farmers'},
+	KivaUS1: { route: 'kiva-u-s', id: 'us_borrowers' , label: 'U.S. borrowers'},
+	KivaUS2: { route: 'loans-to-u-s-small-businesses', id: 'us_borrowers', label: 'U.S. borrowers' },
+	KivaUS3: { route: 'united-states-loans', id: 'us_borrowers', label: 'U.S. borrowers' },
 };
 const promoDefaultValue = { route: 'women', id: 'women', label: 'women' };
 
