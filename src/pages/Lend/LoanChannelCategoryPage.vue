@@ -443,7 +443,6 @@ export default {
 				{ route: 'kiva-u-s', id: 'us_borrowers', label: 'U.S. borrowers' },
 				{ route: 'loans-to-u-s-small-businesses', id: 'us_borrowers', label: 'U.S. borrowers' },
 				{ route: 'united-states-loans', id: 'us_borrowers', label: 'U.S. borrowers' },
-
 			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 
