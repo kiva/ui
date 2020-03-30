@@ -9,14 +9,17 @@ localVue.use(kvAnalytics);
 localVue.filter('numeral', numeralFilter);
 
 describe('TheHeader', () => {
-	it('should hide/show the search area when the search toggle button is clicked', () => {
+	it('should hide/show the search area when the search toggle button is clicked', async () => {
+		const focusMethod = jest.fn();
 		const wrapper = shallowMount(TheHeader, {
 			localVue,
 			stubs: {
 				RouterLink: RouterLinkStub,
 				SearchBar: {
 					template: '<div></div>',
-					methods: { focus() {} }
+					methods: {
+						focus: focusMethod
+					}
 				},
 				TheLendMenu: {
 					template: '<div></div>'
@@ -31,9 +34,15 @@ describe('TheHeader', () => {
 		const area = wrapper.find('#top-nav-search-area');
 
 		expect(area.attributes()['aria-hidden']).toBe('true');
+
 		toggle.trigger('click');
+		await localVue.nextTick();
+		expect(focusMethod).toHaveBeenCalled();
 		expect(area.attributes()['aria-hidden']).toBe('false');
+
 		toggle.trigger('click');
+		await localVue.nextTick();
+		expect(focusMethod).not.toHaveBeenCalled();
 		expect(area.attributes()['aria-hidden']).toBe('true');
 	});
 });
