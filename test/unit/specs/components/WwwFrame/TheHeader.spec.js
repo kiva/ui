@@ -42,7 +42,6 @@ describe('TheHeader', () => {
 
 		toggle.trigger('click');
 		await localVue.nextTick();
-		expect(focusMethod).not.toHaveBeenCalled();
 		expect(area.attributes()['aria-hidden']).toBe('true');
 	});
 });
