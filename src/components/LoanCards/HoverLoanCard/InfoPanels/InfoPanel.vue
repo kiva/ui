@@ -9,7 +9,7 @@
 			<h3 class="panel-title">
 				<slot name="title"></slot>
 			</h3>
-			<kv-icon v-if="expandable" name="small-chevron-mobile" />
+			<kv-icon v-if="expandable" name="small-chevron-mobile" :from-sprite="true" />
 		</button>
 		<kv-expandable>
 			<div

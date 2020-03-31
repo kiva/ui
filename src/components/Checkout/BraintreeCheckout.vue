@@ -36,7 +36,7 @@
 							class="delete-card-button"
 							@click="showDeleteCardPopup(paymentMethod)"
 						>
-							<kv-icon name="small-x" />
+							<kv-icon name="small-x" title="Delete Card" :from-sprite="true" />
 						</button>
 					</span>
 				</div>
@@ -620,7 +620,7 @@ export default {
 			if (cardType === 'MasterCard') {
 				return 'mastercard';
 			}
-			return 'unknown_card';
+			return 'unknown-card';
 		},
 		doBraintreeCheckout(nonce) {
 			// Apollo call to the query mutation
@@ -885,6 +885,7 @@ $error-red: #fdeceb;
 			height: rem-calc(20);
 			top: rem-calc(3);
 			margin: 0 1rem;
+			line-height: 0;
 		}
 
 		.delete-card-button {
@@ -935,6 +936,7 @@ $error-red: #fdeceb;
 			.icon-notice {
 				width: 2.125rem;
 				height: 2.125rem;
+				fill: $kiva-accent-red;
 			}
 		}
 

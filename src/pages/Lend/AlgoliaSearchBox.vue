@@ -3,7 +3,7 @@
 		<ais-search-box
 			:placeholder="placeholder"
 		/>
-		<kv-icon class="algolia-magnifying-glass" name="magnify-glass" />
+		<kv-icon class="algolia-magnifying-glass" name="magnify-glass" :from-sprite="true" />
 	</div>
 </template>
 

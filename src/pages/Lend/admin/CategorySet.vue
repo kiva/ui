@@ -7,7 +7,7 @@
 			v-for="(category, index) in list"
 			:key="index"
 		>
-			<kv-icon name="list" />
+			<kv-icon name="list" class="icon" />
 			<span>{{ index + 1 }}.</span>
 			<select v-model="category.id">
 				<option v-for="option in categoryOptions"
@@ -18,7 +18,7 @@
 					{{ option.label }}
 				</option>
 			</select>
-			<kv-icon name="x" @click.native="removeCategory(category)" />
+			<kv-icon class="icon icon-x" name="x" @click.native="removeCategory(category)" :from-sprite="true" />
 		</li>
 		<kv-button slot="footer" class="add-button setting" @click.native="addCategory">
 			+ Add category

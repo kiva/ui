@@ -73,7 +73,8 @@
 								<h3 class="loan__name loan__name--inline">
 									Print-it-yourself Kiva Card
 								</h3>
-								<icon-question-mark
+								<kv-icon
+									name="question"
 									:id="`print-card-${card.id}`"
 									class="loan__question-icon"
 								/>
@@ -240,7 +241,7 @@
 		</section>
 		<section class="section section--print hide-for-print">
 			<button class="print" @click="printReceipt">
-				<icon-print class="print__icon" />
+				<kv-icon name="print" class="print__icon" />
 				<span>Print this receipt</span>
 			</button>
 		</section>
@@ -250,9 +251,8 @@
 <script>
 import { format } from 'date-fns';
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvTooltip from '@/components/Kv/KvTooltip';
-import IconQuestionMark from '@/assets/inline-svgs/icons/question-mark.svg';
-import IconPrint from '@/assets/inline-svgs/icons/print.svg';
 
 // Ensures the date renders the same on client or SSR in any timezone.
 // Taken from https://github.com/date-fns/date-fns/issues/376#issuecomment-353871093
@@ -271,10 +271,9 @@ const getUTCDate = (dateString = Date.now()) => {
 
 export default {
 	components: {
-		IconQuestionMark,
-		IconPrint,
-		KvTooltip,
 		KvButton,
+		KvIcon,
+		KvTooltip,
 	},
 	props: {
 		lender: {
@@ -435,10 +434,7 @@ export default {
 	&__icon {
 		width: rem-calc(16);
 		margin-right: 0.5rem;
-
-		path {
-			fill: $anchor-color;
-		}
+		fill: $anchor-color;
 	}
 
 	&:hover,
@@ -446,7 +442,7 @@ export default {
 		text-decoration: $anchor-text-decoration-hover;
 		color: $anchor-color-hover;
 
-		.print__icon path {
+		.print__icon {
 			fill: $anchor-color-hover;
 		}
 	}

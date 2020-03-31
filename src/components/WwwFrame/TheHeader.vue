@@ -3,7 +3,7 @@
 		<nav aria-label="Primary navigation">
 			<div class="header-row row">
 				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
-					<icon-kiva-logo class="icon" />
+					<kiva-logo class="icon" />
 				</router-link>
 				<router-link
 					:id="lendMenuId"
@@ -11,7 +11,7 @@
 					class="header-button"
 					v-kv-track-event="['TopNav','click-Lend']"
 				>
-					<span>Lend <kv-icon name="triangle" /></span>
+					<span>Lend <kv-icon name="triangle" :from-sprite="true" /></span>
 				</router-link>
 				<button class="search-toggler header-button"
 					:class="{'show-for-large': isVisitor}"
@@ -22,8 +22,20 @@
 					@click="toggleSearch"
 					v-kv-track-event="['TopNav','click-search-toggle']"
 				>
-					<kv-icon v-show="!searchOpen" class="search-icon" name="magnify-glass" />
-					<kv-icon v-show="searchOpen" class="close-icon" name="x" />
+					<kv-icon
+						v-show="!searchOpen"
+						class="search-icon"
+						name="magnify-glass"
+						:from-sprite="true"
+						title="Open Search"
+					/>
+					<kv-icon
+						v-show="searchOpen"
+						class="close-icon"
+						name="x"
+						:from-sprite="true"
+						title="Close Search"
+					/>
 				</button>
 				<div class="flexible-center-area">
 					<div
@@ -38,7 +50,12 @@
 							@click="toggleSearch"
 							v-kv-track-event="['TopNav','click-search-close-mobile']"
 						>
-							<kv-icon class="close-icon" name="x" />
+							<kv-icon
+								class="close-icon"
+								name="x"
+								:from-sprite="true"
+								title="Close Search"
+							/>
 						</button>
 						<search-bar ref="search" v-if="searchOpen" :aria-hidden="searchOpen ? 'false' : 'true'" />
 					</div>
@@ -59,7 +76,7 @@
 					class="header-button"
 					v-kv-track-event="['TopNav','click-About']"
 				>
-					<span>About <kv-icon name="triangle" /></span>
+					<span>About <kv-icon name="triangle" :from-sprite="true" /></span>
 				</router-link>
 				<router-link
 					v-show="showBasket"
@@ -298,13 +315,13 @@ import cookieStore from '@/util/cookieStore';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
-import IconKivaLogo from '@/assets/inline-svgs/icons/kiva-logo.svg';
+import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 
 export default {
 	components: {
 		KvDropdown,
 		KvIcon,
-		IconKivaLogo,
+		KivaLogo,
 		SearchBar,
 		PromoBannerLarge,
 		PromoBannerSmall,
@@ -653,14 +670,10 @@ $close-search-button-size: 2.5rem;
 		margin: 0 auto;
 	}
 
-	.search-icon {
+	.search-icon,
+	.close-icon {
 		fill: $header-link-color; // IE11 fallback
 		fill: var(--kv-header-link-color, $header-link-color);
-	}
-
-	.close-icon {
-		stroke: $header-link-color; // IE11 fallback
-		stroke: var(--kv-header-link-color, $header-link-color);
 	}
 }
 
@@ -737,7 +750,7 @@ $close-search-button-size: 2.5rem;
 	.icon {
 		width: $top-nav-font-size;
 		height: $header-height;
-		stroke: $kiva-darkgreen;
+		fill: $kiva-darkgreen;
 	}
 }
 

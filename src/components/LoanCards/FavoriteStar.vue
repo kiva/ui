@@ -3,7 +3,7 @@
 		v-kv-track-event="['Lending', 'click-Favorite star', 'Favorite', loanId, true]"
 		@click.prevent.stop="toggleFavorite"
 	>
-		<kv-icon name="star" :class="{ 'is-favorite': isFavorite }" />
+		<kv-icon name="star" :from-sprite="true" class="icon-star" :class="{ 'is-favorite': isFavorite }" />
 	</button>
 </template>
 

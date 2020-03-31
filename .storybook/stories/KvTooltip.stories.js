@@ -1,5 +1,5 @@
 import KvTooltip from '@/components/Kv/KvTooltip';
-import IconQuestionMark from '@/assets/inline-svgs/icons/question-mark.svg';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	title: 'Kv/KvTooltip',
@@ -29,11 +29,12 @@ export const Default = () => ({
 export const QuestionMarkIcon = () => ({
 	components: {
 		KvTooltip,
-		IconQuestionMark,
+		KvIcon,
 	},
 	template: `
 		<div>
-			<icon-question-mark
+			<kv-icon
+				name="question"
 				id="question"
 				style="fill: #d8d8d8; width: 1rem;"
 			/>

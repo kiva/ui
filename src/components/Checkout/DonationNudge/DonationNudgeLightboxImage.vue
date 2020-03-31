@@ -24,12 +24,12 @@
 					:set-donation-and-close="setDonationAndClose"
 					:current-donation-amount="currentDonationAmount"
 				/>
-				<div class="no-donation-container" @click="setDonationAndClose(0, 'No Donation Link')">
-					<kv-icon class="no-donation-x" name="x" />
+				<button class="no-donation-container" @click="setDonationAndClose(0, 'No Donation Link')">
+					<kv-icon class="no-donation-x" name="x" :from-sprite="true" />
 					<div id="no-donation-link">
 						No donation to Kiva
 					</div>
-				</div>
+				</button>
 			</div>
 			<div id="nudge-donation-right" class="show-for-large columns large-6">
 			</div>

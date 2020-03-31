@@ -7,12 +7,12 @@
 					@click.native="pageChange(current - 1, $event)"
 					aria-label="Previous page"
 				>
-					<kv-icon name="triangle" />
+					<kv-icon class="icon" name="triangle" :from-sprite="true" />
 					<span class="show-for-sr">Previous page</span>
 				</router-link>
 			</li>
 			<li v-else class="pagination-previous disabled">
-				<kv-icon name="triangle" />
+				<kv-icon class="icon" name="triangle" :from-sprite="true" />
 				<span class="show-for-sr">Previous page</span>
 			</li>
 			<li v-for="(number, index) in numbers"
@@ -40,12 +40,12 @@
 					aria-label="Next page"
 				>
 					<span class="show-for-sr">Next page</span>
-					<kv-icon name="triangle" />
+					<kv-icon class="icon" name="triangle" :from-sprite="true" />
 				</router-link>
 			</li>
 			<li v-else class="pagination-next disabled">
 				<span class="show-for-sr">Next page</span>
-				<kv-icon name="triangle" />
+				<kv-icon class="icon" name="triangle" :from-sprite="true" />
 			</li>
 		</ul>
 	</nav>

@@ -21,7 +21,7 @@
 				class="edit-button"
 				@click="openLightbox"
 			>
-				Edit <kv-icon name="pencil" title="edit" />
+				Edit <kv-icon name="pencil" />
 			</button>
 		</kv-radio>
 		<p class="selected-items">

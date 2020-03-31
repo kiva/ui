@@ -17,6 +17,7 @@
 					<kv-icon
 						name="large-chevron"
 						class="hierarchical-menu-item-chevron"
+						:from-sprite="true"
 					/>
 					<div
 						class="region-label"
@@ -194,7 +195,6 @@ export default {
 			.hierarchical-menu-item-chevron {
 				height: rem-calc(6);
 				width: rem-calc(10);
-				stroke-width: rem-calc(2);
 				margin-right: 0.5rem;
 				transform: rotate(-90deg);
 				transition: transform $filter-transition-timing;

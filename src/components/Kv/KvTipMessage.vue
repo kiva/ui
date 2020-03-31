@@ -8,7 +8,7 @@
 				<p data-test="tip-message" class="message" v-html="safeMessage"></p>
 			</span>
 			<button @click="close" class="close-tip-message" aria-label="Close">
-				<kv-icon name="x" />
+				<kv-icon name="x" :from-sprite="true" />
 			</button>
 		</div>
 	</transition>
@@ -138,7 +138,7 @@ export default {
 		right: rem-calc(6);
 
 		.icon.icon-x {
-			stroke: $kiva-text-dark;
+			fill: $kiva-text-dark;
 			height: rem-calc(30);
 			width: rem-calc(30);
 			margin-top: rem-calc(2);
@@ -175,7 +175,7 @@ export default {
 		}
 
 		.icon.icon-x {
-			stroke: $white;
+			fill: $white;
 		}
 	}
 }

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import IconKivaPromise from '@/assets/inline-svgs/icons/kiva-promise.svg';
+import IconKivaPromise from '@/assets/inline-svgs/kiva-promise.svg';
 
 export default {
 	components: {

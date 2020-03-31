@@ -9,6 +9,7 @@
 				:class="{ flipped: open }"
 				class="toggle-arrow"
 				name="small-chevron"
+				:from-sprite="true"
 			/>
 		</button>
 		<kv-expandable easing="ease-in-out">

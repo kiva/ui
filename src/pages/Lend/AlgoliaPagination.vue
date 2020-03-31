@@ -10,7 +10,7 @@
 				aria-label="Previous (Inactive)"
 				class="ais-Pagination-link"
 			>
-				<kv-icon name="triangle" class="disabled" />
+				<kv-icon name="triangle" class="icon disabled" :from-sprite="true" />
 			</span>
 			<a
 				v-else
@@ -19,7 +19,7 @@
 				aria-label="Previous"
 				class="ais-Pagination-link"
 			>
-				<kv-icon name="triangle" />
+				<kv-icon name="triangle" class="icon" :from-sprite="true" />
 			</a>
 		</li>
 
@@ -55,7 +55,7 @@
 				aria-label="Next (Inactive)"
 				class="ais-Pagination-link"
 			>
-				<kv-icon name="triangle" class="disabled" />
+				<kv-icon name="triangle" class="icon disabled" :from-sprite="true" />
 			</span>
 
 			<a
@@ -65,7 +65,7 @@
 				aria-label="Next"
 				class="ais-Pagination-link"
 			>
-				<kv-icon name="triangle" />
+				<kv-icon name="triangle" class="icon" :from-sprite="true" />
 			</a>
 		</li>
 	</ul>

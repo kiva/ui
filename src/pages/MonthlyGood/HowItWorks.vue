@@ -38,9 +38,9 @@
 </template>
 
 <script>
-import IconAutoDepositAlternate from '@/assets/inline-svgs/icons/auto-deposit-alternate.svg';
-import IconLend from '@/assets/inline-svgs/icons/lend.svg';
-import IconUpdatesAlternate from '@/assets/inline-svgs/icons/updates-alternate.svg';
+import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
+import IconLend from '@/assets/icons/inline/lend.svg';
+import IconUpdatesAlternate from '@/assets/icons/inline/updates-alternate.svg';
 
 export default {
 	components: {

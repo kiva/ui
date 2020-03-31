@@ -5,7 +5,7 @@
 		autocomplete="off"
 		@submit.prevent="onSubmit"
 	>
-		<kv-icon class="search-icon" name="magnify-glass" />
+		<kv-icon class="search-icon" name="magnify-glass" :from-sprite="true" />
 		<input type="search"
 			ref="input"
 			name="queryString"
@@ -240,6 +240,7 @@ form.search-form {
 	}
 
 	.search-icon {
+		fill: $kiva-text-dark;
 		position: absolute;
 		left: 0.4rem;
 		width: 1rem;

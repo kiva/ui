@@ -14,12 +14,12 @@
 				</option>
 			</select>
 		</div>
-		<div
+		<button
 			class="remove-wrapper"
 			@click="updateLoanReservation('remove')"
 		>
-			<kv-icon class="remove-x" name="small-x" />
-		</div>
+			<kv-icon class="remove-x" name="small-x" :from-sprite="true" />
+		</button>
 	</div>
 </template>
 

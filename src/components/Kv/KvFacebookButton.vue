@@ -1,6 +1,6 @@
 <template>
 	<kv-button class="smaller facebook">
-		<kv-icon class="facebook-box-logo" name="facebook-box-logo" />
+		<kv-icon class="facebook-box-logo" name="facebook-round" />
 		Continue with Facebook
 	</kv-button>
 </template>

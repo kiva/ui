@@ -1,226 +1,76 @@
 <template>
-	<svg class="icon" :class="iconClass">
-		<title v-if="title">{{ title }}</title>
-		<use :xlink:href="iconId" />
-	</svg>
+	<div class="wrapper">
+		<template v-if="fromSprite">
+			<svg :class="`icon icon-${name}`">
+				<title v-if="title">{{ title }}</title>
+				<use :xlink:href="`#icon-${name}`" />
+			</svg>
+		</template>
+		<template v-else>
+			<component
+				:is="iconFile"
+				:class="`icon icon-${name}`"
+			/>
+			<span v-if="title" class="visually-hidden">{{ title }}</span>
+		</template>
+	</div>
 </template>
-
 <script>
+/* eslint-disable max-len */
+/**
+ * Use KvIcon to display an inlined-svg from /assets/icons/inline on the page, or from the sprite at /assets/icons/sprite.
+ * Icons can be colored using CSS fill property: `.my-icon { fill: pink; }`
+ * Icons will fill the width of it's container. You can set the width with CSS: `.my-icon { width: 5rem; fill: pink; }`
+ * If your SVG file is multi-colored or complex, consider moving it outside of the icons directory and importing it directly as an inline-svg or use an img tag.
+ * A nice tool to clean up code before saving to the icons/inline directory is https://jakearchibald.github.io/svgomg/. Toggle "Prefer viewbox to width/height" on.
+ */
+/* eslint-enable max-len */
 export default {
 	props: {
-		name: { type: String, required: true },
-		title: { type: String, default: '' }
+		/**
+		 * The name of the svg file without the .svg suffix.
+		 * e.g., 'question' maps to '/assets/icons/inline/question.svg'
+		* */
+		name: {
+			type: String,
+			required: true
+		},
+		/**
+		 * The text read to assistive technology but not shown on the screen.
+		 * Use when there is no text describing the icon, like if the icon is the only content of a button.
+		* */
+		title: {
+			type: String,
+			default: ''
+		},
+		fromSprite: {
+			type: Boolean,
+			default: false
+		}
 	},
 	computed: {
-		iconClass() {
-			return `icon-${this.name}`;
-		},
-		iconId() {
-			return `#icon-${this.name}`;
-		},
-	},
+		iconFile() {
+			return () => import(`@/assets/icons/inline/${this.name}.svg`);
+		}
+	}
 };
 </script>
-
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
+.wrapper {
+	display: inline-flex;
+	max-height: 100%;
+}
+
 .icon {
-	fill: none;
-	stroke: none;
 	backface-visibility: hidden;
-	-webkit-backface-visibility: hidden;
+	flex: 1;
+	max-width: 100%;
+	max-height: 100%;
 }
 
-.icon-confirmation,
-.icon-error,
-.icon-info,
-.icon-warning,
-.icon-question,
-.icon-magnify-glass,
-.icon-nearme,
-.icon-triangle,
-.icon-globe,
-.icon-handshake,
-.icon-sort,
-.icon-edit,
-.icon-refresh,
-.icon-grid,
-.icon-map,
-.icon-monthly-good,
-.icon-tags-checkmark,
-.icon-sector-agriculture,
-.icon-sector-arts,
-.icon-sector-clothing,
-.icon-sector-construction,
-.icon-sector-education,
-.icon-sector-entertainment,
-.icon-sector-food,
-.icon-sector-health,
-.icon-sector-housing,
-.icon-sector-manufacturing,
-.icon-sector-personal-use,
-.icon-sector-retail,
-.icon-sector-services,
-.icon-sector-transportation,
-.icon-sector-wholesale,
-.icon-small-x,
-.icon-browse-toggle,
-.icon-filters-toggle,
-.icon-lock {
-	fill: $kiva-text-dark;
+.visually-hidden {
+	@include visually-hidden();
 }
-
-.icon-large-chevron,
-.icon-large-chevron-mobile,
-.icon-medium-chevron,
-.icon-small-chevron,
-.icon-small-chevron-mobile,
-.icon-x,
-.icon-list,
-.icon-filter {
-	stroke: $kiva-text-dark;
-}
-
-.icon-distribution,
-.icon-check-in-circle {
-	color: $kiva-text-dark;
-}
-
-.icon-star,
-.icon-half-star {
-	fill: $kiva-bg-darkgray;
-	color: $kiva-text-dark;
-}
-
-.icon-slideshow-dot {
-	stroke: $white;
-	fill: $white;
-	fill-opacity: 0.3;
-
-	.active {
-		fill-opacity: 1;
-	}
-}
-
-.icon-facebook-box-logo {
-	fill: $gray;
-}
-
-.icon-facebook,
-.icon-facebook-box-logo,
-.icon-pinterest,
-.icon-twitter,
-.icon-youtube,
-.icon-linkedIn,
-.icon-instagram,
-.icon-yelp {
-	color: $gray;
-}
-
-.icon-facebook:hover {
-	color: $facebook-hover-color;
-}
-
-.icon-facebook-box-logo:hover {
-	fill: $facebook-hover-color;
-}
-
-.icon-pinterest:hover {
-	color: $pinterest-hover-color;
-}
-
-.icon-twitter:hover {
-	color: $twitter-hover-color;
-}
-
-.icon-youtube:hover {
-	color: $youtube-hover-color;
-}
-
-.icon-linkedIn:hover {
-	color: $linkedin-hover-color;
-}
-
-.icon-instagram:hover {
-	color: $instagram-hover-color;
-}
-
-.icon-yelp:hover {
-	color: $yelp-hover-color;
-}
-
-.icon-boundaries,
-.icon-hand-up,
-.icon-lifting,
-.icon-recycle,
-.icon-impact,
-.icon-high-five,
-.icon-megaphone,
-.icon-money-muscle {
-	fill: #dbe3e5;
-	color: $kiva-green;
-}
-
-.icon-choose,
-.icon-lend,
-.icon-repaid,
-.icon-repeat,
-.icon-apply-circle,
-.icon-fundraise,
-.icon-invite {
-	fill: $kiva-green;
-	color: $kiva-icon-green;
-}
-
-.icon-leaf,
-.icon-leaves {
-	fill: $kiva-green;
-}
-
-.icon-match {
-	fill: $white;
-	color: $kiva-icon-green;
-}
-
-.icon-pdf {
-	fill: #C31B00;
-}
-
-.icon-checkbox-bad,
-.icon-notice {
-	fill: $kiva-accent-red;
-}
-
-.icon-checkbox-good {
-	fill: $kiva-green;
-}
-
-.icon-curved-arrow {
-	fill: $kiva-darkgreen;
-}
-
-.icon-kiva-card {
-	fill: $kiva-icon-green;
-}
-
-.icon-woman,
-.icon-present {
-	stroke: $kiva-icon-green;
-}
-
-.icon-apply,
-.icon-interview,
-.icon-matchmaking,
-.icon-offer,
-.icon-screen {
-	fill: black;
-}
-
-.icon-present {
-	stroke: $kiva-icon-green;
-	fill: $kiva-icon-green;
-	color: $kiva-icon-green;
-}
-
 </style>

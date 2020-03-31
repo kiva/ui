@@ -20,7 +20,7 @@
 						>
 							<!-- eslint-enable max-len -->
 							<button @click.stop.prevent="closeLightbox" class="close-lightbox" aria-label="Close">
-								<kv-icon name="small-x" />
+								<kv-icon name="small-x" :from-sprite="true" />
 							</button>
 							<slot name="title"></slot>
 							<slot>Lightbox content</slot>
@@ -182,7 +182,7 @@ export default {
 				top: 1rem;
 				right: 1rem;
 
-				.icon.icon-small-x {
+				.icon-small-x {
 					height: 1.5rem;
 					width: 1.5rem;
 					fill: $subtle-gray;
@@ -190,7 +190,7 @@ export default {
 				}
 
 				&:hover {
-					.icon.icon-small-x {
+					.icon-small-x {
 						fill: $charcoal;
 					}
 				}
@@ -232,7 +232,7 @@ export default {
 				background: transparent;
 
 				.close-lightbox {
-					.icon.icon-small-x {
+					.icon-small-x {
 						fill: $kiva-green;
 					}
 

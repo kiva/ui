@@ -17,6 +17,7 @@
 			<kv-icon
 				name="small-chevron"
 				class="left-arrow"
+				:from-sprite="true"
 			/>
 		</button>
 		<kv-carousel-slide
@@ -38,6 +39,7 @@
 			<kv-icon
 				name="small-chevron"
 				class="right-arrow"
+				:from-sprite="true"
 			/>
 		</button>
 	</kv-carousel>

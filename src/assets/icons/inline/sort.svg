@@ -1,0 +1,8 @@
+<svg viewBox="0 0 19 20" xmlns="http://www.w3.org/2000/svg">
+    <g fill-rule="evenodd">
+        <text font-family="PostGrotesk" font-size="9" font-weight="bold">
+            <tspan x="10.818" y="7">A</tspan> <tspan x="10.818" y="17">Z</tspan>
+        </text>
+        <path d="M3.333 16.016H1L4.05 19l3.053-2.984H4.77V1.454H3.333v14.562z"/>
+    </g>
+</svg>

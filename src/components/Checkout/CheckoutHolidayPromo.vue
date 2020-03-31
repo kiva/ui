@@ -62,7 +62,6 @@ export default {
 		height: 1.25rem;
 		width: 1.25rem;
 		flex-shrink: 0;
-		stroke-width: rem-calc(0.5);
 		margin-right: 0.75rem;
 	}
 }

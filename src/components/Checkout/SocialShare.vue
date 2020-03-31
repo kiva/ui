@@ -54,7 +54,7 @@
 				class="social__btn social__btn--facebook"
 				:href="facebookShareUrl"
 			>
-				<icon-facebook class="social__icon" />
+				<kv-icon name="facebook-round" title="Facebook" class="social__icon" />
 				<span>Share</span>
 			</a>
 			<a
@@ -64,7 +64,7 @@
 				rel="noopener"
 				@click="$showTipMsg('Thanks for tweeting!')"
 			>
-				<icon-twitter class="social__icon" />
+				<kv-icon name="twitter" title="Twitter" class="social__icon" />
 				<span>Tweet</span>
 			</a>
 			<a
@@ -74,7 +74,7 @@
 				rel="noopener"
 				@click="$showTipMsg('Thanks for sharing to LinkedIn!')"
 			>
-				<icon-linkedin class="social__icon" />
+				<kv-icon name="linkedin" title="LinkedIn" class="social__icon" />
 				<span>Share</span>
 			</a>
 			<button
@@ -83,7 +83,7 @@
 				:disabled="copyStatus.disabled"
 				@click="copyLink"
 			>
-				<icon-clipboard class="social__icon" />
+				<kv-icon name="clipboard" class="social__icon" />
 				<span>{{ this.copyStatus.text }}</span>
 			</button>
 		</div>
@@ -126,22 +126,16 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import clipboardCopy from 'clipboard-copy';
-import IconClipboard from '@/assets/inline-svgs/icons/clipboard.svg';
-import IconFacebook from '@/assets/inline-svgs/social/facebook.svg';
-import IconLinkedin from '@/assets/inline-svgs/social/linkedin.svg';
-import IconTwitter from '@/assets/inline-svgs/social/twitter.svg';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		IconClipboard,
-		IconFacebook,
-		IconLinkedin,
-		IconTwitter,
 		KvCheckbox,
 		KvDropdownRounded,
+		KvIcon
 	},
 	props: {
 		lender: {
@@ -521,6 +515,7 @@ $loan-triangle-size: rem-calc(12);
 		height: rem-calc(24);
 		flex-shrink: 0;
 		margin-right: rem-calc(9);
+		fill: #fff;
 	}
 
 	&__btn {
@@ -573,10 +568,8 @@ $loan-triangle-size: rem-calc(12);
 			}
 
 			.social__icon {
-				path {
-					transition: fill 0.25s ease-in;
-					fill: $medium-gray;
-				}
+				fill: $medium-gray;
+				transition: fill 0.25s ease-in;
 			}
 		}
 
@@ -605,10 +598,8 @@ $loan-triangle-size: rem-calc(12);
 			}
 
 			.social__icon {
-				path {
-					transition: fill 0.25s ease-out;
-					fill: #fff;
-				}
+				transition: fill 0.25s ease-out;
+				fill: #fff;
 			}
 		}
 	}
