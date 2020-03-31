@@ -55,7 +55,7 @@ export default {
 	data() {
 		return {
 			topics: ['Creation of Synthetic Datasets', 'Recommendation systems', 'Social Good ML Applications',
-				'Behaviorial Pschology', 'Fairness Research', 'Social Impact Assessments'],
+				'Pro-Social Behaviorial Pschology', 'Fairness Research', 'Social Impact Assessments'],
 			years: [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
 				{
@@ -179,6 +179,15 @@ export default {
 					title: 'Understanding and Promoting Micro-finance Activities in Kiva.org',
 					publication: '7th ACM International Conference on Web Search and Data Mining',
 					url: 'http://davian.korea.ac.kr/filemanager/wl/?id=vpPIpVAYZAozQXhJoXvDf1TeVJFLjKkk'
+				},
+				{
+					year: 2013,
+					author: 'Cryder, Cynthia et al',
+					/* eslint-disable max-len */
+					title: 'Goal gradient in helping behavior',
+					/* eslint-enable max-len */
+					publication: 'Journal of Experimental Social Psychology',
+					url: 'https://www.cmu.edu/dietrich/sds/docs/loewenstein/GoalGradBeh.pdf'
 				},
 				{
 					year: 2013,
