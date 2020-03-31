@@ -10,7 +10,7 @@ var gitRevisionPlugin = new GitRevisionPlugin({
 	branch: true
 });
 const isProd = process.env.NODE_ENV === 'production';
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug')
 
 function resolve (dir) {
 	return path.join(__dirname, '..', dir);

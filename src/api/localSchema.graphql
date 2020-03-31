@@ -42,11 +42,11 @@ extend type Query {
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
 	autolending: Autolending
-	contentfulCMS(contentType: String!, contentKey: String): ContentfulCMS
+	contentful: Contentful
 }
 
-type ContentfulCMS {
-	items: [JSONObject]
+type Contentful {
+	entries(contentType:String, contentKey:String): JSONObject
 }
 
 extend type My {

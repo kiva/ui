@@ -4,7 +4,7 @@ module.exports = {
 	app: {
 		host: 'www.kiva.org',
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/ui/',
-		graphqlUri: 'https://api.kivaws.org/graphql',
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		enablePerimeterx: true,
 		perimeterxAppId: 'PXr3pNVz1F',
 		enableAnalytics: true,
@@ -47,12 +47,6 @@ module.exports = {
 				'https://www.kiva.org/kiva_id ' +
 				'openid email profile',
 		},
-		contentful: {
-			enable: true,
-			accessToken: 'kMmnBKkNsHXuCkBhcFUndWKXeWZ81NREp45K-VvtdMw',
-			space: 'j0p9a6ql0rn7',
-			environment: 'master'
-		},
 		intercom: {
 			enable: true,
 			appId: 't3epx9oz'
@@ -64,7 +58,7 @@ module.exports = {
 	},
 	server: {
 		port: 8888,
-		graphqlUri: 'https://api.kivaws.org/graphql',
+		graphqlUri: 'https://marketplace-api.k1.kiva.org/graphql',
 		sessionUri: 'https://www.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'memcached-01:11211,memcached-02:11211',

@@ -6,7 +6,7 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var SvgStorePlugin = require('webpack-svgstore-plugin');
 var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug')
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = merge.smart(baseWebpackConfig, {

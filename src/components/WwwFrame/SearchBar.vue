@@ -33,7 +33,7 @@
 				</ol>
 			</li>
 		</ol>
-		<input type="submit" class="hidden-submit">
+		<input type="submit" class="hidden-submit" aria-hidden="true">
 	</form>
 </template>
 
@@ -245,6 +245,14 @@ form.search-form {
 		left: 0.4rem;
 		width: 1rem;
 		height: 100%;
+	}
+
+	input[type="submit"].hidden-submit {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		visibility: hidden;
 	}
 }
 

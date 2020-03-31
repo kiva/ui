@@ -1,5 +1,5 @@
 <template>
-	<!-- This is a sample page which recreates the monthly good landing page but with content from contentfulCMS -->
+	<!-- This is a sample page which recreates the monthly good landing page but with content from contentful -->
 	<www-page>
 		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
 			<template v-slot:images>
@@ -77,6 +77,7 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import contentful from '@/graphql/query/contentful.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
@@ -92,8 +93,7 @@ import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
 import KivaAsExpertContentful from '@/pages/MonthlyGood/KivaAsExpertContentful';
 import FrequentlyAskedQuestions from '@/pages/MonthlyGood/FrequentlyAskedQuestions';
 
-const pageQuery = gql`
-	query ($contentType: String!, $contentKey: String) {
+const pageQuery = gql`{
 		my {
 			autoDeposit {
 				isSubscriber
@@ -105,11 +105,7 @@ const pageQuery = gql`
 				value
 			}
 		}
-		contentfulCMS(contentType: $contentType, contentKey: $contentKey) @client {
-			items
-		}
-	}
-`;
+	}`;
 
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
@@ -166,19 +162,9 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		variables() {
-			return {
-				contentType: 'page',
-				contentKey: 'monthlygood',
-			};
-		},
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery,
-				variables: {
-					contentType: 'page',
-					contentKey: 'monthlygood'
-				}
 			}).then(() => {
 				return client.query({
 					query: experimentQuery, variables: { id: 'mg_hero' }
@@ -199,19 +185,28 @@ export default {
 				'EXP-CASH-1774-Feb2020',
 				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
 			);
-
+		},
+	},
+	mounted() {
+		this.apollo.query({
+			query: contentful,
+			variables: {
+				contentType: 'page',
+				contentKey: 'monthlygood',
+			},
+		}).then(({ data }) => {
 			// Process Contentful Content
 			// Page Layout
-			const pageMonthlyGood = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'monthlygood'); // eslint-disable-line max-len
+			const pageMonthlyGood = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'monthlygood'); // eslint-disable-line max-len
 			console.log('pageMonthlyGood', pageMonthlyGood);
 			// Choose Page Layout here
-			const pageLayout = pageMonthlyGood.pageLayout.fields;
+			const { pageLayout } = pageMonthlyGood.fields;
 			console.log('pageLayout', pageLayout);
 			// Pass content groups to components
-			this.contentGroups = pageLayout.contentGroups.map(contentGroup => contentGroup.fields);
+			this.contentGroups = pageLayout.fields.contentGroups.map(contentGroup => contentGroup.fields);
 			console.log('contentGroups', this.contentGroups);
-		},
-	}
+		});
+	},
 };
 
 </script>

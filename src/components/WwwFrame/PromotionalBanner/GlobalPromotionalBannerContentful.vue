@@ -9,7 +9,7 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
+import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -34,7 +34,7 @@ export default {
 	},
 	mounted() {
 		this.apollo.query({
-			query: contentfulCMS,
+			query: contentful,
 			variables: {
 				contentType: 'uiSetting',
 				contentKey: 'ui-global-promo',
@@ -42,12 +42,11 @@ export default {
 		}).then(({ data }) => {
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
-			const uiGlobalPromoSetting = _get(data, 'contentfulCMS.items', []).find(item => item.key === 'ui-global-promo'); // eslint-disable-line max-len
-
+			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
 			// uiGlobalPromoSetting can contain an array of different banners with
 			// different start/end dates first determine if setting is enabled.
 			const isGlobalSettingEnabled = settingEnabled(
-				uiGlobalPromoSetting,
+				uiGlobalPromoSetting.fields,
 				'active',
 				'startDate',
 				'endDate'
@@ -55,7 +54,7 @@ export default {
 
 			// if setting is enabled determine which banner to display
 			if (isGlobalSettingEnabled) {
-				const activePromoBanner = uiGlobalPromoSetting.content.find(promoContent => {
+				const activePromoBanner = uiGlobalPromoSetting.fields.content.find(promoContent => {
 					return settingEnabled(
 						promoContent.fields,
 						'active',

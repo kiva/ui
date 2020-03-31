@@ -124,7 +124,7 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import InfoPanel from './InfoPanel';
 import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -199,7 +199,7 @@ export default {
 			return `${this.loanId}-loan-details-panel-ex-${this.expandable ? '1' : '0'}`;
 		},
 		disbursalDateFormatted() {
-			return format(this.disbursalDate, 'MMMM DD, YYYY');
+			return format(parseISO(this.disbursalDate), 'MMMM dd, yyyy');
 		},
 		fundsLentInCountryFormatted() {
 			return numeral(this.fundsLentInCountry).format('$0,0');

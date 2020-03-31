@@ -87,7 +87,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-import contentfulCMS from '@/graphql/query/contentfulCMS.graphql';
+import contentful from '@/graphql/query/contentful.graphql';
 import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
 import DonationDropdown from './DonationDropdown';
@@ -223,7 +223,7 @@ export default {
 		getSetOptOutSetting() {
 			// get contentful setting for opt-out toggle visibility
 			this.apollo.query({
-				query: contentfulCMS,
+				query: contentful,
 				variables: {
 					contentType: 'uiSetting',
 					contentKey: 'ui-autolend-opt-out-toggle',
@@ -231,13 +231,13 @@ export default {
 			}).then(({ data }) => {
 				const uiOptOutSetting = _get(
 					data,
-					'contentfulCMS.items',
+					'contentful.entries.items',
 					[]
-				).find(item => item.key === 'ui-autolend-opt-out-toggle');
+				).find(item => item.fields.key === 'ui-autolend-opt-out-toggle');
 
 				// set opt out control visibility based on it's properties
 				this.showOptOutControls = settingEnabled(
-					uiOptOutSetting,
+					uiOptOutSetting.fields,
 					'active',
 					'startDate',
 					'endDate'

@@ -16,7 +16,7 @@
 				<p>Oops - this link no longer works.</p>
 				<p>
 					If you want to opt-out of auto-lending, please let us know at
-					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20opt-out%20page">contactus@kiva.org</a>
+					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20opt-out%20page">contactus@kiva.org</a>.
 				</p>
 			</div>
 		</template>
@@ -32,8 +32,26 @@
 				<!-- Failure -->
 				<p>Oops - this link no longer works.</p>
 				<p>
-					If you want to turn off auto-lending, please let us know at
-					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20disable%20page">contactus@kiva.org</a>
+					<!-- eslint-disable-next-line -->
+					If you want to modify your auto-lending settings, please visit the auto-lending settings page or reach out to us directly at
+					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20disable%20page">contactus@kiva.org</a>.
+				</p>
+			</div>
+		</template>
+		<template v-if="action == 'pause'">
+			<div data-test="pause-success" class="small-12 medium-10 columns" v-if="success && !isNaN(days)">
+				<!-- Success -->
+				<p>You have successfully paused auto-lending for {{ days }} {{ dayPluralString }}.</p>
+				<!-- eslint-disable-next-line -->
+				<p>Click <router-link to="/settings/autolending">here</router-link> to visit your auto-lending settings.</p>
+			</div>
+			<div data-test="pause-failure" class="small-12 medium-10 columns" v-if="!success || isNaN(days)">
+				<!-- Failure -->
+				<p>Oops - this link no longer works.</p>
+				<p>
+					<!-- eslint-disable-next-line -->
+					Click <router-link to="/settings/autolending">here</router-link> to modify your auto-lending settings or reach out to us directly at
+					<a href="mailto:contactus@kiva.org?subject=Auto-lending%20pause%20page">contactus@kiva.org</a>.
 				</p>
 			</div>
 		</template>
@@ -51,15 +69,19 @@ export default {
 		action: {
 			type: String,
 			default: ''
+		},
+		days: {
+			type: Number,
+			default: 0
+		}
+	},
+	computed: {
+		dayPluralString() {
+			return this.days === 1 ? 'day' : 'days';
 		}
 	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-
-.autolending-opt-out-content {
-	padding: 2rem 0 6rem;
-}
 </style>
