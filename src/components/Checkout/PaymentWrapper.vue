@@ -43,6 +43,9 @@
 </template>
 
 <script>
+import braintreePayWithQuery from '@/graphql/query/checkout/braintreePayWithData.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
@@ -75,7 +78,26 @@ export default {
 			],
 			selectedOption: 'bt',
 			updatingPaymentWrapper: false,
+			braintreePayWithShown: false,
 		};
+	},
+	inject: ['apollo'],
+	apollo: {
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				// Get the experiment object from settings
+				client.query({
+					query: braintreePayWithQuery
+				}).then(() => {
+					// Get the assigned experiment version for braintree pay with experiment
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'braintree_pay_with' } })
+						.then(resolve).catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
+	created() {
+		this.setupExperimentState();
 	},
 	methods: {
 		// layer in error conditions, is there ever a situation where we wouldn't want to
@@ -86,7 +108,22 @@ export default {
 		},
 		setUpdatingPaymentWrapper(state) {
 			this.updatingPaymentWrapper = state;
-		}
+		},
+		setupExperimentState() {
+			// get experiment data from apollo cache
+			// GROW-64: Show 'pay with' or not.
+			const braintreePayWithExp = this.apollo.readFragment({
+				id: 'Experiment:braintree_pay_with',
+				fragment: experimentVersionFragment,
+			}) || {};
+			if (braintreePayWithExp.version === 'control') {
+				this.$kvTrackEvent('basket', 'EXP-GROW-64-PayWith', 'a');
+			} else if (braintreePayWithExp.version === 'shown') {
+				this.options[0].title = 'Credit/debit card';
+				this.options[1].title = 'PayPal';
+				this.$kvTrackEvent('basket', 'EXP-GROW-64-PayWith', 'b');
+			}
+		},
 	},
 };
 </script>
