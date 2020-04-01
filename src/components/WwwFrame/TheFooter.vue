@@ -262,8 +262,8 @@ export default {
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',
 			termsUrl: '/legal/terms',
-			appStoreUrl: 'https://www.careers.kiva.org/',
-			playStoreUrl: 'https://www.careers.kiva.org/'
+			appStoreUrl: 'https://apps.apple.com/app/id1453093374',
+			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending'
 		};
 	},
 	computed: {
