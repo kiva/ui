@@ -344,16 +344,16 @@ $footer-separator-color: $light-green;
 		line-height: 1.6;
 	}
 
-	ul.download-app-icons li{
+	ul.download-app-icons li {
 		display: inline-block;
 		height: 60px;
 	}
 
-	ul.download-app-icons img{
+	ul.download-app-icons img {
 		height: 100%;
 	}
 
-	ul.download-app-icons li.app-store-icon{
+	ul.download-app-icons li.app-store-icon {
 		padding: 10px;
 		padding-left: 0;
 	}
@@ -375,13 +375,13 @@ $footer-separator-color: $light-green;
 			}
 		}
 
-		ul.download-app-icons{
+		ul.download-app-icons {
 			max-width: 350px;
 			margin: 0 auto;
 			border-bottom: none;
 		}
 
-		ul.download-app-icons li.app-store-icon{
+		ul.download-app-icons li.app-store-icon {
 			padding: 8px;
 			padding-left: 35px;
 			margin-right: 40px;
