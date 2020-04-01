@@ -36,6 +36,18 @@
 					Terms of use
 				</router-link>
 			</div>
+			<ul class="hide-for-print download-app-icons">
+				<li class="app-store-icon">
+					<a :href="appStoreUrl" target="_blank">
+						<img src="@/assets/images/app-store.svg">
+					</a>
+				</li>
+				<li class="play-store-icon">
+					<a :href="playStoreUrl" target="_blank">
+						<img src="@/assets/images/play-store.png">
+					</a>
+				</li>
+			</ul>
 			<p>
 				Lending through Kiva involves risk of principal loss.
 				Kiva does not guarantee repayment or offer a financial return on your loan.
@@ -167,6 +179,20 @@
 							<router-link to="/donate/supportus">
 								Donate to Kiva here.
 							</router-link>
+						</li>
+					</ul>
+				</div>
+				<div class="wide">
+					<ul class="siteFooter-links hide-for-print download-app-icons">
+						<li class="app-store-icon">
+							<a :href="appStoreUrl" target="_blank">
+								<img src="@/assets/images/app-store.svg">
+							</a>
+						</li>
+						<li class="play-store-icon">
+							<a :href="playStoreUrl" target="_blank">
+								<img src="@/assets/images/play-store.png">
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -316,6 +342,20 @@ $footer-separator-color: $light-green;
 		line-height: 1.6;
 	}
 
+	ul.download-app-icons li{
+		display: inline-block;
+		height: 60px;
+	}
+
+	ul.download-app-icons img{
+		height: 100%;
+	}
+
+	ul.download-app-icons li.app-store-icon{
+		padding: 10px;
+		padding-left: 0;
+	}
+
 	.small-footer {
 		ul {
 			display: flex;
@@ -331,6 +371,18 @@ $footer-separator-color: $light-green;
 			li {
 				margin: 0.125rem 0 0.9rem;
 			}
+		}
+
+		ul.download-app-icons{
+			max-width: 350px;
+			margin: 0 auto;
+			border-bottom: none;
+		}
+
+		ul.download-app-icons li.app-store-icon{
+			padding: 8px;
+			padding-left: 35px;
+			margin-right: 40px;
 		}
 
 		div {
