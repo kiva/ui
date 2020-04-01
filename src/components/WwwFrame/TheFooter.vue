@@ -261,7 +261,9 @@ export default {
 			careersUrl: 'https://www.careers.kiva.org/',
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',
-			termsUrl: '/legal/terms'
+			termsUrl: '/legal/terms',
+			appStoreUrl: 'https://www.careers.kiva.org/',
+			playStoreUrl: 'https://www.careers.kiva.org/'
 		};
 	},
 	computed: {
