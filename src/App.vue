@@ -91,6 +91,7 @@ export default {
 				},
 			])
 				.concat([
+					// Apple specific meta tag to show native app install banner
 					{
 						name: 'apple-itunes-app',
 						content: 'app-id=1453093374'
