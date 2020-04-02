@@ -40,18 +40,18 @@
 				<li>
 					<a :href="appStoreUrl" target="_blank" rel="noopener">
 						<img
-								src="@/assets/icons/app-store.svg"
-								loading="lazy"
-								alt="Check out our new app on the App Store"
+							src="@/assets/icons/app-store.svg"
+							loading="lazy"
+							alt="Check out our new app on the App Store"
 						>
 					</a>
 				</li>
 				<li>
 					<a :href="playStoreUrl" target="_blank" rel="noopener">
 						<img
-								src="@/assets/icons/play-store.svg"
-								loading="lazy"
-								alt="Check out our new app on the Play Store"
+							src="@/assets/icons/play-store.svg"
+							loading="lazy"
+							alt="Check out our new app on the Play Store"
 						>
 					</a>
 				</li>
@@ -195,18 +195,18 @@
 						<li>
 							<a :href="appStoreUrl" target="_blank" rel="noopener">
 								<img
-										src="@/assets/icons/app-store.svg"
-										loading="lazy"
-										alt="Check out our new app on the App Store"
+									src="@/assets/icons/app-store.svg"
+									loading="lazy"
+									alt="Check out our new app on the App Store"
 								>
 							</a>
 						</li>
 						<li>
 							<a :href="playStoreUrl" target="_blank" rel="noopener">
 								<img
-										src="@/assets/icons/play-store.svg"
-										loading="lazy"
-										alt="Check out our new app on the Play Store"
+									src="@/assets/icons/play-store.svg"
+									loading="lazy"
+									alt="Check out our new app on the Play Store"
 								>
 							</a>
 						</li>
