@@ -37,14 +37,14 @@
 				</router-link>
 			</div>
 			<ul class="hide-for-print download-app-icons">
-				<li class="app-store-icon">
-					<a :href="appStoreUrl" target="_blank">
-						<img src="@/assets/images/app-store.svg">
+				<li>
+					<a :href="appStoreUrl" target="_blank" rel="noopener">
+						<img src="@/assets/icons/app-store.svg" loading="lazy" alt="Check out our new app on the App Store">
 					</a>
 				</li>
-				<li class="play-store-icon">
-					<a :href="playStoreUrl" target="_blank">
-						<img src="@/assets/images/play-store.png">
+				<li>
+					<a :href="playStoreUrl" target="_blank" rel="noopener">
+						<img src="@/assets/icons/play-store.svg" loading="lazy" alt="Check out our new app on the Play Store">
 					</a>
 				</li>
 			</ul>
@@ -184,14 +184,14 @@
 				</div>
 				<div class="wide">
 					<ul class="siteFooter-links hide-for-print download-app-icons">
-						<li class="app-store-icon">
-							<a :href="appStoreUrl" target="_blank">
-								<img src="@/assets/images/app-store.svg">
+						<li>
+							<a :href="appStoreUrl" target="_blank" rel="noopener">
+								<img src="@/assets/icons/app-store.svg" loading="lazy" alt="Check out our new app on the App Store">
 							</a>
 						</li>
-						<li class="play-store-icon">
-							<a :href="playStoreUrl" target="_blank">
-								<img src="@/assets/images/play-store.png">
+						<li>
+							<a :href="playStoreUrl" target="_blank" rel="noopener">
+								<img src="@/assets/icons/play-store.svg" loading="lazy" alt="Check out our new app on the Play Store">
 							</a>
 						</li>
 					</ul>
@@ -346,16 +346,10 @@ $footer-separator-color: $light-green;
 
 	ul.download-app-icons li {
 		display: inline-block;
-		height: 60px;
 	}
 
 	ul.download-app-icons img {
-		height: 100%;
-	}
-
-	ul.download-app-icons li.app-store-icon {
-		padding: 10px;
-		padding-left: 0;
+		height: 2rem;
 	}
 
 	.small-footer {
@@ -376,15 +370,10 @@ $footer-separator-color: $light-green;
 		}
 
 		ul.download-app-icons {
-			max-width: 350px;
+			max-width: 15rem;
 			margin: 0 auto;
+			padding-top: 0.7rem;
 			border-bottom: none;
-		}
-
-		ul.download-app-icons li.app-store-icon {
-			padding: 8px;
-			padding-left: 35px;
-			margin-right: 40px;
 		}
 
 		div {
