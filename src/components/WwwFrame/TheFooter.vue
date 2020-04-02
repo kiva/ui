@@ -36,6 +36,36 @@
 					Terms of use
 				</router-link>
 			</div>
+			<ul class="hide-for-print download-app-icons">
+				<li>
+					<a
+						:href="appStoreUrl"
+						target="_blank"
+						rel="noopener"
+						v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+					>
+						<img
+							src="@/assets/icons/app-store.svg"
+							loading="lazy"
+							alt="Check out our new app on the App Store"
+						>
+					</a>
+				</li>
+				<li>
+					<a
+						:href="playStoreUrl"
+						target="_blank"
+						rel="noopener"
+						v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+					>
+						<img
+							src="@/assets/icons/play-store.svg"
+							loading="lazy"
+							alt="Check out our new app on the Play Store"
+						>
+					</a>
+				</li>
+			</ul>
 			<p>
 				Lending through Kiva involves risk of principal loss.
 				Kiva does not guarantee repayment or offer a financial return on your loan.
@@ -170,6 +200,37 @@
 						</li>
 					</ul>
 				</div>
+				<div class="wide">
+					<ul class="siteFooter-links hide-for-print download-app-icons">
+						<li>
+							<a
+								:href="appStoreUrl"
+								target="_blank" rel="noopener"
+								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+							>
+								<img
+									src="@/assets/icons/app-store.svg"
+									loading="lazy"
+									alt="Check out our new app on the App Store"
+								>
+							</a>
+						</li>
+						<li>
+							<a
+								:href="playStoreUrl"
+								target="_blank"
+								rel="noopener"
+								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+							>
+								<img
+									src="@/assets/icons/play-store.svg"
+									loading="lazy"
+									alt="Check out our new app on the Play Store"
+								>
+							</a>
+						</li>
+					</ul>
+				</div>
 				<div class="work-with-us wide hide-for-print">
 					<h2>Work with us</h2>
 					<ul>
@@ -235,7 +296,9 @@ export default {
 			careersUrl: 'https://www.careers.kiva.org/',
 			sitemapUrl: '/sitemap',
 			privacyUrl: '/legal/privacy',
-			termsUrl: '/legal/terms'
+			termsUrl: '/legal/terms',
+			appStoreUrl: 'https://apps.apple.com/app/id1453093374',
+			playStoreUrl: 'https://play.google.com/store/apps/details?id=org.kiva.lending'
 		};
 	},
 	computed: {
@@ -316,6 +379,14 @@ $footer-separator-color: $light-green;
 		line-height: 1.6;
 	}
 
+	ul.download-app-icons li {
+		display: inline-block;
+	}
+
+	ul.download-app-icons img {
+		height: 2rem;
+	}
+
 	.small-footer {
 		ul {
 			display: flex;
@@ -331,6 +402,13 @@ $footer-separator-color: $light-green;
 			li {
 				margin: 0.125rem 0 0.9rem;
 			}
+		}
+
+		ul.download-app-icons {
+			max-width: 15rem;
+			margin: 0 auto;
+			padding-top: 0.7rem;
+			border-bottom: none;
 		}
 
 		div {
