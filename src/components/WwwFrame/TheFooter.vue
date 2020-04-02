@@ -38,7 +38,12 @@
 			</div>
 			<ul class="hide-for-print download-app-icons">
 				<li>
-					<a :href="appStoreUrl" target="_blank" rel="noopener">
+					<a
+						:href="appStoreUrl"
+						target="_blank"
+						rel="noopener"
+						v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+					>
 						<img
 							src="@/assets/icons/app-store.svg"
 							loading="lazy"
@@ -47,7 +52,12 @@
 					</a>
 				</li>
 				<li>
-					<a :href="playStoreUrl" target="_blank" rel="noopener">
+					<a
+						:href="playStoreUrl"
+						target="_blank"
+						rel="noopener"
+						v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+					>
 						<img
 							src="@/assets/icons/play-store.svg"
 							loading="lazy"
@@ -193,7 +203,11 @@
 				<div class="wide">
 					<ul class="siteFooter-links hide-for-print download-app-icons">
 						<li>
-							<a :href="appStoreUrl" target="_blank" rel="noopener">
+							<a
+								:href="appStoreUrl"
+								target="_blank" rel="noopener"
+								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
+							>
 								<img
 									src="@/assets/icons/app-store.svg"
 									loading="lazy"
@@ -202,7 +216,12 @@
 							</a>
 						</li>
 						<li>
-							<a :href="playStoreUrl" target="_blank" rel="noopener">
+							<a
+								:href="playStoreUrl"
+								target="_blank"
+								rel="noopener"
+								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
+							>
 								<img
 									src="@/assets/icons/play-store.svg"
 									loading="lazy"
