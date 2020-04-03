@@ -1,23 +1,25 @@
 {
-    "short_name": "Kiva",
-    "name": "Kiva",
-    "icons": [
-        {
-            "src": "/assets/images/favicons/favicon-192x192.png",
-            "type": "image/png",
-            "sizes": "192x192"
-        },
-        {
-            "src": "/assets/images/favicons/favicon-512x512.png",
-            "type": "image/png",
-            "sizes": "512x512"
-        }
-    ],
-    "prefer_related_applications": true,
-    "related_applications": [
-        {
-            "platform": "play",
-            "id": "org.kiva.lendin"
-        }
-    ]
+	"short_name": "Kiva",
+	"name": "Kiva",
+	"display": "browser",
+	"start_url": "https://www.kiva.org",
+	"icons": [
+		{
+			"src": "/assets/images/favicons/favicon-192x192.png",
+			"type": "image/png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "/assets/images/favicons/favicon-512x512.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	],
+	"prefer_related_applications": true,
+	"related_applications": [
+		{
+			"platform": "play",
+			"id": "org.kiva.lendin"
+		}
+	]
 }
