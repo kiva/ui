@@ -89,15 +89,7 @@ export default {
 					name: 'twitter:image',
 					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-ogtwitter-image.jpg'
 				},
-			])
-				.concat([
-					// Apple specific meta tag to show native app install banner
-					{
-						name: 'apple-itunes-app',
-						content: 'app-id=1453093374'
-					},
-
-				]),
+			]),
 			link: [
 				// apple icons
 				{
