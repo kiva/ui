@@ -43,6 +43,10 @@ export default {
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
+			// exit if missing setting or fields
+			if (!uiGlobalPromoSetting || !uiGlobalPromoSetting.fields) {
+				return false;
+			}
 			// uiGlobalPromoSetting can contain an array of different banners with
 			// different start/end dates first determine if setting is enabled.
 			const isGlobalSettingEnabled = settingEnabled(
