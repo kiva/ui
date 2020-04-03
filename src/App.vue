@@ -10,6 +10,7 @@
 <script>
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import IntercomMessenger from '@/components/WwwFrame/IntercomMessenger';
+import webmanifest from '@/manifest.webmanifest';
 
 export default {
 	name: 'App',
@@ -88,7 +89,15 @@ export default {
 					name: 'twitter:image',
 					content: 'https://www-kiva-org.freetls.fastly.net/cms/kiva-ogtwitter-image.jpg'
 				},
-			]),
+			])
+				.concat([
+					// Apple specific meta tag to show native app install banner
+					{
+						name: 'apple-itunes-app',
+						content: 'app-id=1453093374'
+					},
+
+				]),
 			link: [
 				// apple icons
 				{
@@ -137,7 +146,13 @@ export default {
 					href: require('@/assets/images/favicons/favicon-196x196.png'),
 					sizes: '196x196'
 				},
-			])
+			].concat([
+				{
+					// Web Manifest. Required for promoting the Android App on our site with smart-banners.
+					rel: 'manifest',
+					href: webmanifest
+				}
+			]))
 		};
 	}
 };
