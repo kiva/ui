@@ -2,14 +2,22 @@ import { GraphQLJSONObject } from 'graphql-type-json';
 import { createApolloFetch } from 'apollo-fetch';
 import _get from 'lodash/get';
 
-const apolloFetch = createApolloFetch({
-	uri: 'https://marketplace-api.dk1.kiva.org/graphql',
-});
-
 /**
  * Contentful resolvers
  */
-export default () => {
+export default context => {
+	let apolloFetch;
+	if (_get(context, 'appConfig.contentful.useLocalResolver')) {
+		// Use the app config graphqlUri for the contentful request, except for the dev-vm
+		// in the dev-vm force the federation endpoint
+		apolloFetch = createApolloFetch({
+			uri: 'https://marketplace-api.dk1.kiva.org/graphql',
+		});
+	} else {
+		apolloFetch = createApolloFetch({
+			uri: context.appConfig.graphqlUri,
+		});
+	}
 	return {
 		resolvers: {
 			JSONObject: GraphQLJSONObject,
