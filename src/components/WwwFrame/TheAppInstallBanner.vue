@@ -32,7 +32,7 @@ export default {
 				'lend-by-category',
 				'about'
 			];
-			const queryParamsToExlude = [
+			const queryParamsToExclude = [
 				'upc',
 				'promo_code',
 				'lending_reward',
@@ -40,7 +40,7 @@ export default {
 
 			let isPromoUrl = false;
 			Object.keys(route.query).forEach(key => {
-				if (queryParamsToExlude.includes(key)) {
+				if (queryParamsToExclude.includes(key)) {
 					isPromoUrl = true;
 				}
 			});

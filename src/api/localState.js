@@ -1,5 +1,4 @@
 import _merge from 'lodash/merge';
-import _get from 'lodash/get';
 
 // require each local state resolver
 const requireLocalResolver = require.context('./localResolvers', true, /\.js$/);
@@ -16,9 +15,8 @@ export default options => {
 
 	let mergedResolvers = reqResolvers;
 
-	if (_get(options, 'appConfig.contentful.useLocalResolver')) {
-		mergedResolvers = _merge(mergedResolvers, contentfulResolver.default(options));
-	}
+	// not optional for now. Once we get federation working on the vm's maybe we can remove this resolver.
+	mergedResolvers = _merge(mergedResolvers, contentfulResolver.default(options));
 
 	return mergedResolvers;
 };
