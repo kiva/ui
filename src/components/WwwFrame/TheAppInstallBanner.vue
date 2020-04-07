@@ -1,9 +1,5 @@
 <template>
-	<div>
-		<button v-if="isPromptVisible" @click="showInstall">
-			Install our cool app
-		</button>
-	</div>
+	<div></div>
 </template>
 
 <script>
@@ -12,7 +8,8 @@ export default {
 		return {
 			meta: this.isAppInstallPage ? [
 				// Apple specific meta tag to show native app install banner
-				// This is all that we need to do for iOS
+				// eslint-disable-next-line
+				// https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/PromotingAppswithAppBanners/PromotingAppswithAppBanners.html
 				{
 					name: 'apple-itunes-app',
 					content: 'app-id=1453093374',
@@ -44,53 +41,20 @@ export default {
 					isPromoUrl = true;
 				}
 			});
-			const isGoodRoute = baseUrlsToInclude.includes(route.path.split('/')[1]) || route.path === '/';
+			const isWhitelistedRoute = baseUrlsToInclude.includes(route.path.split('/')[1]) || route.path === '/';
 
-			return isGoodRoute && !isPromoUrl;
-		}
-	},
-	data() {
-		return {
-			deferredPrompt: null,
-			isPromptVisible: false
-		};
-	},
-	methods: {
-		showInstall() {
-			// hide our user interface that shows our install app button
-			this.isPromptVisible = false;
-			// Show the prompt
-			this.deferredPrompt.prompt();
-			// Wait for the user to respond to the prompt
-			this.deferredPrompt.userChoice
-				.then(choiceResult => {
-					if (choiceResult.outcome === 'accepted') {
-						console.log('User accepted the intall prompt');
-					} else {
-						console.log('User dismissed the intall prompt');
-					}
-					this.deferredPrompt = null;
-				});
+			return isWhitelistedRoute && !isPromoUrl;
 		}
 	},
 	mounted() {
-		if (this.isAppInstallPage) {
-			// Chrome on Android specific code.
-			// https://developers.google.com/web/fundamentals/app-install-banners/native#prefer_related
-			window.addEventListener('beforeinstallprompt', e => {
-				console.log('beforeinstallprompt fired');
-				console.log(e);
-				// Prevent Chrome 67 and earlier from automatically showing the prompt
+		// Chrome on Android uses related_applications property of our manifest.webmanifest and their own hueristics
+		// to determine when to show an install banner.
+		// https://developers.google.com/web/fundamentals/app-install-banners/native#prefer_related
+		window.addEventListener('beforeinstallprompt', e => {
+			if (!this.isAppInstallPage) {
 				e.preventDefault();
-				// Stash the event so it can be triggered later.
-				this.deferredPrompt = e;
-				// Update UI notify the user they can add to home screen
-				this.isPromptVisible = true;
-			});
-		}
+			}
+		});
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
