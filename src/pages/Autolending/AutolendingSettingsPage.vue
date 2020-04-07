@@ -120,7 +120,7 @@ const pageQuery = gql`{
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'contentful'],
 	components: {
 		AttributeFilter,
 		CountryFilter,
@@ -222,7 +222,7 @@ export default {
 		},
 		getSetOptOutSetting() {
 			// get contentful setting for opt-out toggle visibility
-			this.apollo.query({
+			this.contentful.query({
 				query: contentful,
 				variables: {
 					contentType: 'uiSetting',

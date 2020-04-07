@@ -159,7 +159,7 @@ export default {
 			};
 		}
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'contentful'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {
@@ -187,8 +187,8 @@ export default {
 			);
 		},
 	},
-	mounted() {
-		this.apollo.query({
+	created() {
+		this.contentful.query({
 			query: contentful,
 			variables: {
 				contentType: 'page',

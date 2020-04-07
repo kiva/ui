@@ -33,9 +33,9 @@ export default {
 			promoContent: {}
 		};
 	},
-	inject: ['apollo'],
-	mounted() {
-		this.apollo.query({
+	inject: ['apollo', 'contentful'],
+	created() {
+		this.contentful.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',

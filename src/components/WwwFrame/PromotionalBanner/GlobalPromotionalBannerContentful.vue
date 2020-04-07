@@ -15,7 +15,7 @@ import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'contentful'],
 	components: {
 		GenericPromoBanner,
 	},
@@ -32,8 +32,8 @@ export default {
 			specialConditions: null
 		};
 	},
-	mounted() {
-		this.apollo.query({
+	created() {
+		this.contentful.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',
