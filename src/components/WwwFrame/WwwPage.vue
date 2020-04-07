@@ -1,6 +1,5 @@
 <template>
 	<div class="www-page">
-		<the-app-install-banner />
 		<the-banner-area />
 		<the-header
 			:hide-search-in-header="hideSearchInHeader"
@@ -22,8 +21,8 @@
 <script>
 import _get from 'lodash/get';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
+import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
-import TheAppInstallBanner from './TheAppInstallBanner';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
@@ -35,12 +34,14 @@ export default {
 	],
 	components: {
 		CookieBanner,
-		TheAppInstallBanner,
 		TheBannerArea,
 		TheBasketBar,
 		TheFooter,
 		TheHeader,
 	},
+	mixins: [
+		appInstallMixin
+	],
 	props: {
 		grayBackground: {
 			type: Boolean,
