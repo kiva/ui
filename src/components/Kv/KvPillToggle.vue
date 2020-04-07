@@ -1,9 +1,9 @@
 <template>
-	<div class="kv-pill-toggle">
+	<div :class="{ 'kv-pill-toggle': true, 'split-pills': splitPills }">
 		<div
 			v-for="option in options"
 			:key="option.key"
-			class="pill"
+			:class="{ 'pill': true, 'split-pill': splitPills }"
 		>
 			<input
 				class="radio"
@@ -15,7 +15,7 @@
 				@change="onChange(option.key)"
 			>
 			<label
-				class="label"
+				:class="{ 'label': true, 'split-pill-label': splitPills }"
 				:for="`${id}-${option.key}`"
 			>
 				{{ option.title }}
@@ -51,6 +51,10 @@ export default {
 			type: String,
 			default: '',
 		},
+		splitPills: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -147,6 +151,31 @@ $form-border-radius: rem-calc(3);
 		&[disabled] + .title:hover {
 			background: inherit;
 			color: $tab-pill-color;
+		}
+	}
+}
+
+.split-pills {
+	flex-wrap: wrap;
+
+	.split-pill {
+		flex: 1 1 auto;
+		margin: 0.5rem;
+
+		.split-pill-label {
+			border-radius: $form-border-radius;
+		}
+
+		&:first-child {
+			.split-pill-label {
+				border-radius: $form-border-radius;
+			}
+		}
+
+		&:last-child {
+			.split-pill-label {
+				border-radius: $form-border-radius;
+			}
 		}
 	}
 }
