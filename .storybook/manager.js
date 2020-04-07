@@ -2,7 +2,7 @@ import { addons } from '@storybook/addons';
 import { create } from '@storybook/theming/create';
 
 const theme = create({
-//   base: 'light',
+	base: 'light',
 
 //   colorPrimary: 'hotpink',
 //   colorSecondary: 'deepskyblue',
