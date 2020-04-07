@@ -1,8 +1,3 @@
-<template>
-	<div></div>
-</template>
-
-<script>
 export default {
 	metaInfo() {
 		return {
@@ -57,4 +52,3 @@ export default {
 		});
 	}
 };
-</script>
