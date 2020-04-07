@@ -126,7 +126,6 @@ $form-border-radius: rem-calc(3);
 		font-size: 1rem;
 		text-align: center;
 		min-height: 100%;
-		margin-left: rem-calc(-1);
 		line-height: 1.3;
 		background: $tab-pill-background;
 		min-width: rem-calc(85);
