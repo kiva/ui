@@ -122,9 +122,6 @@ $form-border-radius: rem-calc(3);
 		color: $tab-pill-color;
 		border: $tab-pill-border;
 		border-radius: $form-border-radius;
-		// display: flex;
-		// justify-content: center;
-		// align-items: stretch;
 		margin: 0;
 		font-size: 1rem;
 		text-align: center;
@@ -175,30 +172,4 @@ $form-border-radius: rem-calc(3);
 		}
 	}
 }
-
-.split-pills {
-	flex-wrap: wrap;
-
-	.split-pill {
-		flex: 1 1 auto;
-		margin: 0.5rem;
-
-		.split-pill-label {
-			border-radius: $form-border-radius;
-		}
-
-		&:first-child {
-			.split-pill-label {
-				border-radius: $form-border-radius;
-			}
-		}
-
-		&:last-child {
-			.split-pill-label {
-				border-radius: $form-border-radius;
-			}
-		}
-	}
-}
-
 </style>
