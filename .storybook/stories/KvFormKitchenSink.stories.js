@@ -42,7 +42,27 @@ export const KitchenSink = () => ({
 				},
 			],
 			kvPillSelected: 'o2',
+			kvSplitPillOptions: [
+				{
+					title: '$10',
+					key: 's1',
+				},
+				{
+					title: '$25',
+					key: 's2',
+				},
+				{
+					title: '$50',
+					key: 's3',
+				},
+				{
+					title: 'Other',
+					key: 's4',
+				},
+			],
+			kvSplitPillSelected: 's2',
 			kvRadioSelected: 'female',
+			kvRadioButtonsSelected: '2',
 			kvRangeSlider: 50,
 			kvToggle1: true,
 			kvToggle2: false,
@@ -62,6 +82,16 @@ export const KitchenSink = () => ({
 							id="pill"
 							:options="kvPillOptions"
 							:selected="kvPillSelected"
+						/>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>KvPillToggle (Split Pill Option)</legend>
+						<kv-pill-toggle
+							id="split-pill"
+							:options="kvSplitPillOptions"
+							:split-pills="true"
+							:selected="kvSplitPillSelected"
 						/>
 					</fieldset>
 
@@ -88,6 +118,35 @@ export const KitchenSink = () => ({
 							v-model="kvRadioSelected"
 						>
 							Men only
+						</kv-radio>
+					</fieldset>
+
+					<fieldset style="margin-bottom: 2rem;">
+						<legend>Kv Radio - Button Style</legend>
+						<kv-radio
+							id="radio-option-1"
+							radio-value="1"
+							v-model="kvRadioButtonsSelected"
+							:pill-style="true"
+							disabled
+						>
+							Option 1
+						</kv-radio>
+						<kv-radio
+							id="radio-option-2"
+							radio-value="2"
+							v-model="kvRadioButtonsSelected"
+							:pill-style="true"
+						>
+							Option 2
+						</kv-radio>
+						<kv-radio
+							id="radio-option-3"
+							radio-value="3"
+							v-model="kvRadioButtonsSelected"
+							:pill-style="true"
+						>
+							Option 3
 						</kv-radio>
 					</fieldset>
 
