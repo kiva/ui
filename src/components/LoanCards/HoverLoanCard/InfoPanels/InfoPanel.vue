@@ -95,11 +95,13 @@ export default {
 			line-height: 2rem;
 		}
 
-		.icon {
-			float: right;
-			height: 1.5rem;
-			width: rem-calc(25);
-			transition: transform 300ms ease;
+		.wrapper {
+			.icon {
+				float: right;
+				height: 1.5rem;
+				width: rem-calc(25);
+				transition: transform 300ms ease;
+			}
 		}
 
 		&:focus {
