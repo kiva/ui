@@ -103,6 +103,9 @@ export default {
 			}
 		}
 	},
+	mounted() {
+		this.isShown = this.visible;
+	},
 	methods: {
 		closeLightbox() {
 			this.isShown = false;
