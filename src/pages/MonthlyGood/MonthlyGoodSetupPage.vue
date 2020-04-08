@@ -293,6 +293,10 @@ export default {
 		category: {
 			type: String,
 			default: 'default'
+		},
+		onetime: {
+			type: String,
+			default: 'false'
 		}
 	},
 	components: {
@@ -452,11 +456,16 @@ export default {
 						$amount: Money!,
 						$donateAmount: Money!,
 						$dayOfMonth: Int!,
-						$category: MonthlyGoodCategoryEnum
+						$category: MonthlyGoodCategoryEnum,
+						$isOnetime: Boolean
 					) {
 						my {
 							createMonthlyGoodSubscription( autoDeposit: {
-								amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth
+								amount: $amount,
+								donateAmount:
+								$donateAmount,
+								dayOfMonth: $dayOfMonth,
+								isOnetime: $isOnetime
 							},
 							category: $category)
 						}
@@ -466,6 +475,7 @@ export default {
 					donateAmount: numeral(this.donation).format('0.00'),
 					dayOfMonth: numeral(this.dayOfMonth).value(),
 					category: this.selectedGroup,
+					isOnetime: this.isOnetime
 				}
 			}).then(data => {
 				if (data.errors) {
@@ -521,6 +531,10 @@ export default {
 				}
 			];
 		},
+		isOnetime() {
+			// ensure this is cast to a bool for use in Graphql mutation
+			return this.onetime === 'true';
+		}
 	},
 };
 
