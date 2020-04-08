@@ -35,7 +35,7 @@
 			</div>
 			<contentful-lightbox
 				v-if="promoEnabled"
-				:content="promoContent"
+				:content-group="contentGroup"
 				:visible="displayLightbox"
 				@lightbox-closed="displayLightbox = false"
 			/>
@@ -81,7 +81,7 @@ export default {
 			receipt: {},
 			displayLightbox: true,
 			promoEnabled: false,
-			promoContent: {}
+			contentGroup: {}
 		};
 	},
 	apollo: {
@@ -145,7 +145,8 @@ export default {
 				'startDate',
 				'endDate'
 			);
-			this.promoContent = processContent(uiPromoSetting.fields.content);
+
+			this.contentGroup = processContent(uiPromoSetting.fields.content).contentGroup;
 		});
 	},
 };

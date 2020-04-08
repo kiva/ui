@@ -22,7 +22,7 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		content: {
+		contentGroup: {
 			type: Object,
 			default() {
 				return {
@@ -37,7 +37,7 @@ export default {
 					'embedded-asset-block': node => `<img src="${node.data.target.fields.file.url}"/>`
 				}
 			};
-			return documentToHtmlString(this.content.richTextContent.richText, options);
+			return documentToHtmlString(this.contentGroup.content.fields.richText, options);
 		}
 	},
 	methods: {
