@@ -1,6 +1,6 @@
 {
-	"name": "Kiva",
-	"short_name": "Kiva",
+	"name": "Kiva.org",
+	"short_name": "Kiva.org",
 	"icons": [
 		{
 			"src": "/assets/images/favicons/favicon-36x36.png",
@@ -31,6 +31,11 @@
 			"src": "/assets/images/favicons/favicon-192x192.png",
 			"sizes": "192x192",
 			"type": "image/png"
+		},
+		{
+			"src": "/assets/images/favicons/favicon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
 		}
 	],
 	"prefer_related_applications": true,
@@ -41,5 +46,6 @@
 		}
 	],
 	"start_url": "/",
-	"display": "standalone"
+	"display": "standalone",
+	"gcm_sender_id": "291228074698"
 }
