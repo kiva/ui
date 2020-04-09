@@ -38,12 +38,14 @@ export default function createApp({
 	const apolloClient = createApolloClient({ ...apollo, kvAuth0, appConfig });
 
 	const contentfulApolloURI = appConfig.contentfulService ? appConfig.contentfulService.uri : apollo.uri;
+
 	const apolloContentfulClient = createApolloClient({
 		csrfToken: apollo.csrfToken,
 		types: apollo.types,
 		uri: contentfulApolloURI,
 		kvAuth0,
-		appConfig
+		appConfig,
+		existingCache: apolloClient.cache
 	});
 
 	const router = createRouter();

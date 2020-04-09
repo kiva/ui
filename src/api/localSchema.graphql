@@ -42,11 +42,6 @@ extend type Query {
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
 	autolending: Autolending
-	contentful: Contentful
-}
-
-type Contentful {
-	entries(contentType:String, contentKey:String): JSONObject
 }
 
 extend type My {

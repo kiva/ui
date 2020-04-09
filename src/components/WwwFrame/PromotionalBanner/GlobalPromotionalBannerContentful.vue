@@ -32,7 +32,7 @@ export default {
 			specialConditions: null
 		};
 	},
-	created() {
+	mounted() {
 		this.contentful.query({
 			query: contentful,
 			variables: {
@@ -40,6 +40,7 @@ export default {
 				contentKey: 'ui-global-promo',
 			}
 		}).then(({ data }) => {
+			console.log('data on client', data);
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
@@ -84,6 +85,15 @@ export default {
 						this.isPromoEnabled = true;
 					}
 				}
+			}
+		});
+	},
+	serverPrefetch() {
+		return this.contentful.query({
+			query: contentful,
+			variables: {
+				contentType: 'uiSetting',
+				contentKey: 'ui-global-promo',
 			}
 		});
 	},
