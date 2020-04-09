@@ -7,9 +7,10 @@
 					id="kv-toggle-deposit"
 					v-model="isRecurring"
 				>
-					<label for="kv-toggle-deposit">Monthly Deposit</label>
+					<label v-if="isRecurring" for="kv-toggle-deposit">Contribute monthly</label>
+					<label v-if="!isRecurring" for="kv-toggle-deposit">One-time contribution</label>
 				</kv-toggle>
-				<legend>Select an amount</legend>
+				<legend>Choose an amount to contribute</legend>
 				<transition name="kvfastfade">
 					<kv-pill-toggle
 						v-show="isRecurring"
@@ -106,6 +107,10 @@ export default {
 		return {
 			amountOptions: [
 				{
+					title: '$5',
+					key: '5',
+				},
+				{
 					title: '$10',
 					key: '10',
 				},
@@ -116,10 +121,6 @@ export default {
 				{
 					title: '$50',
 					key: '50',
-				},
-				{
-					title: '$100',
-					key: '100',
 				},
 				{
 					title: 'Other',
@@ -230,7 +231,6 @@ export default {
 
 	label {
 		font-weight: 400;
-		color: white;
 		display: inline;
 	}
 }

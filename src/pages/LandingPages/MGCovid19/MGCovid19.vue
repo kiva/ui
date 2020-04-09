@@ -1,20 +1,16 @@
 <template>
-	<www-page
-		id="co19-landing"
-		:header-theme="co19HeaderTheme"
-		:footer-theme="co19FooterTheme"
-	>
+	<www-page id="co19-landing">
 		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
 			<!-- TODO Update to handle new images and design -->
-			<!-- <template v-slot:images>
+			<template v-slot:images>
 				<kv-responsive-image
 					:images="heroImages"
 					alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
 				/>
-			</template> -->
+			</template>
 			<template v-slot:overlayContent>
 				<div class="row">
-					<div class="overlay-column columns medium-12 large-8">
+					<div class="overlay-column columns medium-12 large-6">
 						<p class="mg-headline" v-html="pageCopy.headline">
 						</p>
 						<p class="mg-subhead">
@@ -39,24 +35,40 @@
 			</template>
 		</kv-hero>
 
-		<div class="benefits row page-content">
+		<div class="benefits">
+			<m-g-covid-explained />
+		</div>
+
+		<div class="about-kiva row page-content">
 			<div class="columns">
-				<h2>
-					Set your commitment once, Kiva will do the rest to make sure every $ goes to help COVID-19
-					impacted individuals and businesses.
+				<h2 class="impact-text text-center">
+					Over $1.4 billion in impact in 70+ countries
 				</h2>
 				<p>
-					Support people impacted by the COVID-19: Kiva will automatically lend 100% of your funds
-					to borrowers who need help. This could be anyone on Kiva, from small business owners to
-					farmers to field partners.
+					Kiva is an international nonprofit, founded in 2005 in San Francisco, with a mission
+					to expand financial access to help underserved communities thrive and in some cases,
+					provide relief when crises may arise.
 				</p>
 				<p>
-					Stay informed: receive a monthly personalized impact report on COVID-19 support
+					We do this by crowdfunding loans and unlocking capital for the underserved, improving
+					the quality and cost of financial services, and addressing the underlying barriers to
+					financial access around the world. Through Kiva's work, students can pay for tuition,
+					women can start businesses, farmers are able to invest in equipment and families can
+					afford needed emergency care.
 				</p>
-				<p>
-					Grow your impact: as you get repaid, Kiva will continue to re-lend the
-					funds to multiply your impact.
+				<p class="featured-text text-center">
+					By lending as little as $25 on Kiva, you can be part of the solution and make a real
+					difference in someone’s life.
 				</p>
+				<h4 class="text-center">
+					100% of every dollar you lend on Kiva goes to funding loans.
+				</h4>
+			</div>
+		</div>
+
+		<div class="footnotes row page-content">
+			<div class="columns">
+				<h3>Footnotes:</h3>
 				<ul>
 					<li>
 						If you choose “One-time support”, the selected amount will only be deposited once.
@@ -75,31 +87,6 @@
 				</ul>
 			</div>
 		</div>
-
-		<div class="about-kiva row page-content">
-			<div class="columns">
-				<h3>Over $1.4 billion in impact in 70+ countries</h3>
-				<p>
-					Kiva is an international nonprofit, founded in 2005 in San Francisco, with a mission
-					to expand financial access to help underserved communities thrive and in some cases,
-					provide relief when crises may arise.
-				</p>
-				<p>
-					We do this by crowdfunding loans and unlocking capital for the underserved, improving
-					the quality and cost of financial services, and addressing the underlying barriers to
-					financial access around the world. Through Kiva's work, students can pay for tuition,
-					women can start businesses, farmers are able to invest in equipment and families can
-					afford needed emergency care.
-				</p>
-				<p>
-					By lending as little as $25 on Kiva, you can be part of the solution and make a real
-					difference in someone’s life.
-				</p>
-				<p>
-					100% of every dollar you lend on Kiva goes to funding loans.
-				</p>
-			</div>
-		</div>
 	</www-page>
 </template>
 
@@ -107,12 +94,10 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
-// import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import MGCovidExplained from './MGCovidExplained';
 
 import LandingForm from './CovidLandingForm';
 
@@ -120,12 +105,6 @@ const pageQuery = gql`{
 	my {
 		autoDeposit {
 			isSubscriber
-		}
-	}
-	general {
-		uiExperimentSetting(key: "mg_hero") {
-			key
-			value
 		}
 	}
 }`;
@@ -137,7 +116,8 @@ export default {
 		WwwPage,
 		LandingForm,
 		KvHero,
-		// KvResponsiveImage,
+		KvResponsiveImage,
+		MGCovidExplained,
 	},
 	props: {
 		category: {
@@ -147,20 +127,6 @@ export default {
 	},
 	data() {
 		return {
-			co19HeaderTheme: {
-				themeKey: 'CO19',
-				backgroundColor: '#fff',
-				linkColor: '#4faf4e',
-				linkHoverColor: '#efefef',
-				separatorColor: 'transparent'
-			},
-			co19FooterTheme: {
-				themeKey: 'CO19',
-				backgroundColor: '#fff',
-				textColor: '#484848',
-				linkColor: '#4faf4e',
-				separatorColor: '#8ccb8c'
-			},
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
@@ -168,6 +134,8 @@ export default {
 			heroImages: [
 				['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
 				['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],
+				// ['small', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
+				// ['small retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
 				['medium', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
 				['medium retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
 				['large', heroImagesRequire('./monthlygood-banner-lg-std_0.jpg')],
@@ -182,9 +150,9 @@ export default {
 	computed: {
 		pageCopy() {
 			return {
-				headline: 'Be a part of Kiva\'s Global COVID-19 Response',
-				subhead: 'Provide relief to entrepreneurs and small businesses impacted by the COVID-19, with contributions as little as $5/month or $25 for one-time contributions.', // eslint-disable-line max-len
-				button: 'Take action now'
+				headline: 'Join Kiva\'s Global COVID-19 Response',
+				subhead: 'Provide relief to entrepreneurs, small businesses, students, and families impacted by COVID-19 Coronavirus.', // eslint-disable-line max-len
+				button: 'Take action'
 			};
 		}
 	},
@@ -194,27 +162,10 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery
-			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'mg_hero' }
-				});
 			});
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			// TODO: Cleanup experiment queries
-			// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
-			// const mgHeroExperiment = this.apollo.readFragment({
-			// 	id: 'Experiment:mg_hero',
-			// 	fragment: experimentVersionFragment,
-			// }) || {};
-			// this.isExperimentActive = mgHeroExperiment.version === 'shown';
-			// // Fire Event for EXP-CASH-1774-Feb2020
-			// this.$kvTrackEvent(
-			// 	'MonthlyGood',
-			// 	'EXP-CASH-1774-Feb2020',
-			// 	mgHeroExperiment.version === 'shown' ? 'b' : 'a'
-			// );
 		},
 	},
 };
@@ -230,19 +181,84 @@ export default {
 	margin-top: 1.25rem;
 }
 
-.hero.mg-hero {
-	::v-deep .overlay-content {
-		.overlay-column {
-			max-width: none;
-			@include breakpoint(medium) {
-				max-width: 31.25rem;
+.mg-hero {
+	background-color: $kiva-green;
+	margin-bottom: 0;
+	padding-bottom: 1rem;
+	position: relative;
+
+	::v-deep .overlay-holder {
+		display: flex;
+		flex-direction: column-reverse;
+
+		picture {
+			@include breakpoint(large) {
+				position: absolute;
+				top: 0;
+			}
+		}
+
+		.overlay-content {
+			margin-top: -1rem;
+			z-index: 10;
+			position: relative;
+			top: auto;
+			width: auto;
+			transform: none;
+
+			@include breakpoint(large) {
+				margin-top: 1rem;
+				margin-left: 1rem;
+			}
+
+			.overlay-column {
+				max-width: none;
+				// @include breakpoint(medium) {
+				// 	max-width: 31.25rem;
+				// }
+				padding: 1.5rem 1rem 0.5rem;
+				background-color: $white;
+				border-radius: 1rem;
+
+				@include breakpoint(large) {
+					max-width: 31.25rem;
+					padding: 1.5rem 2rem 1.25rem 2rem;
+				}
+			}
+
+			@include breakpoint(large) {
+				// position: relative;
+				// bottom: 0;
+				// top: auto;
+				// transform: none;
+				// @include breakpoint(large) {
+				// top: 50%;
+				// bottom: auto;
+				// transform: translateY(-50%);
+				// }
+
+				.overlay-column {
+					max-width: none;
+					padding: 1.5rem 1rem 0.5rem;
+					@include breakpoint(large) {
+						max-width: 31.25rem;
+						padding: 1.5rem 2rem 1.25rem 2rem;
+					}
+				}
 			}
 		}
 	}
 
-	margin-bottom: 0;
+	::v-deep .images > div,
+	::v-deep .images img {
+		min-height: 18.75rem;
+	}
 
 	::v-deep form {
+		button {
+			width: 100%;
+			margin-top: 0.75rem;
+		}
 		// overwrite styles for error display over hero image
 		.validation-errors {
 			border: 1px solid $charcoal;
@@ -254,6 +270,7 @@ export default {
 	min-height: 6.25rem;
 	@include breakpoint(xlarge) {
 		min-height: 20rem;
+		flex-direction: column;
 	}
 	@include breakpoint(xxlarge) {
 		min-height: 24.65rem;
@@ -267,12 +284,12 @@ export default {
 	padding: 1.625rem 0;
 }
 
-.mg-headline,
-.mg-subhead {
-	color: white;
-	text-shadow: 1px 1px 3px #333;
-	margin: 0;
-}
+// .mg-headline,
+// .mg-subhead {
+// 	color: white;
+// 	text-shadow: 1px 1px 3px #333;
+// 	margin: 0;
+// }
 
 .mg-headline {
 	font-weight: bold;
@@ -300,56 +317,62 @@ export default {
 }
 
 // Experiment Styles - CASH-1774
-.mg-hero.experiment {
-	::v-deep .overlay-content {
-		position: relative;
-		bottom: 0;
-		top: auto;
-		transform: none;
-		@include breakpoint(large) {
-			// top: 50%;
-			// bottom: auto;
-			// transform: translateY(-50%);
-		}
+// .mg-hero.experiment {
+	// ::v-deep .overlay-content {
+	// 	// position: relative;
+	// 	bottom: 0;
+	// 	top: auto;
+	// 	transform: none;
+	// 	@include breakpoint(large) {
+	// 		top: 50%;
+	// 		bottom: auto;
+	// 		transform: translateY(-50%);
+	// 	}
 
-		.overlay-column {
-			max-width: none;
-			padding: 1.5rem 1rem 0.5rem;
-			background-color: rgba(0, 0, 0, 0.5);
-			@include breakpoint(large) {
-				max-width: 31.25rem;
-				padding: 1.5rem 2rem 1.25rem 2rem;
-			}
-		}
-	}
+	// 	.overlay-column {
+	// 		max-width: none;
+	// 		padding: 1.5rem 1rem 0.5rem;
+	// 		background-color: rgba(0, 0, 0, 0.5);
+	// 		@include breakpoint(large) {
+	// 			max-width: 31.25rem;
+	// 			padding: 1.5rem 2rem 1.25rem 2rem;
+	// 		}
+	// 	}
+	// }
 
-	::v-deep .images > div,
-	::v-deep .images img {
-		min-height: 18.75rem;
-	}
+	// ::v-deep .images > div,
+	// ::v-deep .images img {
+	// 	min-height: 18.75rem;
+	// }
 
-	.mg-headline,
-	.mg-subhead {
-		text-shadow: none;
-		padding-top: 0;
-	}
+	// .mg-headline,
+	// .mg-subhead {
+	// 	text-shadow: none;
+	// 	padding-top: 0;
+	// }
 
-	::v-deep form {
-		button {
-			width: 100%;
-			margin-top: 0.75rem;
-		}
-	}
+	// ::v-deep form {
+	// 	button {
+	// 		width: 100%;
+	// 		margin-top: 0.75rem;
+	// 	}
+	// }
 
-	.mg-subhead {
-		max-width: 28.125rem;
-		margin: 1rem 0 1.35rem 0;
-		font-size: 1.15rem;
-		line-height: 1.25rem;
-		@include breakpoint(xlarge) {
-			font-size: 1.25rem;
-			line-height: 1.5rem;
-		}
+	// .mg-subhead {
+	// 	max-width: 28.125rem;
+	// 	margin: 1rem 0 1.35rem 0;
+	// 	font-size: 1.15rem;
+	// 	line-height: 1.25rem;
+	// 	@include breakpoint(xlarge) {
+	// 		font-size: 1.25rem;
+	// 		line-height: 1.5rem;
+	// 	}
+	// }
+// }
+
+.about-kiva {
+	h2 {
+		color: $kiva-green;
 	}
 }
 </style>

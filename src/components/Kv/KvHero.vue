@@ -2,7 +2,7 @@
 	<div class="hero">
 		<div class="images">
 			<div class="images-placeholder" v-if="hasCarousel"></div>
-			<div :class="{ 'images-container' : hasCarousel }">
+			<div :class="{ 'images-container' : hasCarousel, 'overlay-holder': true }">
 				<div class="overlay-content" v-if="hasOverlayContent">
 					<slot name="overlayContent"></slot>
 				</div>
