@@ -227,16 +227,6 @@ export default {
 			}
 
 			@include breakpoint(large) {
-				// position: relative;
-				// bottom: 0;
-				// top: auto;
-				// transform: none;
-				// @include breakpoint(large) {
-				// top: 50%;
-				// bottom: auto;
-				// transform: translateY(-50%);
-				// }
-
 				.overlay-column {
 					max-width: none;
 					padding: 1.5rem 1rem 0.5rem;
@@ -284,13 +274,6 @@ export default {
 	padding: 1.625rem 0;
 }
 
-// .mg-headline,
-// .mg-subhead {
-// 	color: white;
-// 	text-shadow: 1px 1px 3px #333;
-// 	margin: 0;
-// }
-
 .mg-headline {
 	font-weight: bold;
 	font-size: 2rem;
@@ -315,60 +298,6 @@ export default {
 		margin-bottom: 1rem;
 	}
 }
-
-// Experiment Styles - CASH-1774
-// .mg-hero.experiment {
-	// ::v-deep .overlay-content {
-	// 	// position: relative;
-	// 	bottom: 0;
-	// 	top: auto;
-	// 	transform: none;
-	// 	@include breakpoint(large) {
-	// 		top: 50%;
-	// 		bottom: auto;
-	// 		transform: translateY(-50%);
-	// 	}
-
-	// 	.overlay-column {
-	// 		max-width: none;
-	// 		padding: 1.5rem 1rem 0.5rem;
-	// 		background-color: rgba(0, 0, 0, 0.5);
-	// 		@include breakpoint(large) {
-	// 			max-width: 31.25rem;
-	// 			padding: 1.5rem 2rem 1.25rem 2rem;
-	// 		}
-	// 	}
-	// }
-
-	// ::v-deep .images > div,
-	// ::v-deep .images img {
-	// 	min-height: 18.75rem;
-	// }
-
-	// .mg-headline,
-	// .mg-subhead {
-	// 	text-shadow: none;
-	// 	padding-top: 0;
-	// }
-
-	// ::v-deep form {
-	// 	button {
-	// 		width: 100%;
-	// 		margin-top: 0.75rem;
-	// 	}
-	// }
-
-	// .mg-subhead {
-	// 	max-width: 28.125rem;
-	// 	margin: 1rem 0 1.35rem 0;
-	// 	font-size: 1.15rem;
-	// 	line-height: 1.25rem;
-	// 	@include breakpoint(xlarge) {
-	// 		font-size: 1.25rem;
-	// 		line-height: 1.5rem;
-	// 	}
-	// }
-// }
 
 .about-kiva {
 	h2 {
