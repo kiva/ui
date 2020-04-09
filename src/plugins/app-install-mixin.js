@@ -1,7 +1,7 @@
 export default {
 	metaInfo() {
 		return {
-			meta: this.isAppInstallPage ? [
+			meta: this.showBanner ? [
 				// Apple specific meta tag to show native app install banner
 				// eslint-disable-next-line
 				// https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/PromotingAppswithAppBanners/PromotingAppswithAppBanners.html
@@ -13,42 +13,44 @@ export default {
 		};
 	},
 	computed: {
-		isAppInstallPage() {
+		showBanner() {
+			// Show Android and iOS app install banners if user is on a whitelisted page but not coming from a promo
 			const route = this.$route;
-			const baseUrlsToInclude = [
+			const whitelistedRoutes = [
 				'start',
 				'portfolio',
-				'login',
-				'register',
 				'lend',
 				'lend-by-category',
 				'about'
 			];
-			const queryParamsToExclude = [
+			const blacklistedParams = [
 				'upc',
 				'promo_code',
 				'lending_reward',
 			];
 
-			let isPromoUrl = false;
-			Object.keys(route.query).forEach(key => {
-				if (queryParamsToExclude.includes(key)) {
-					isPromoUrl = true;
-				}
-			});
-			const isWhitelistedRoute = baseUrlsToInclude.includes(route.path.split('/')[1]) || route.path === '/';
+			let show = false;
+			if (whitelistedRoutes.includes(route.path.split('/')[1]) || route.path === '/') {
+				show = true;
 
-			return isWhitelistedRoute && !isPromoUrl;
+				Object.keys(route.query).forEach(key => {
+					if (blacklistedParams.includes(key)) {
+						show = false;
+					}
+				});
+			}
+
+			return show;
 		}
 	},
 	mounted() {
-		// Chrome on Android uses related_applications property of our manifest.webmanifest and their own hueristics
-		// to determine when to show an install banner.
+		// Chrome Android uses manifest.webmanifest and their hueristics to display android install banner on all pages
+		// Blacklisted pages need to prevent that behavior
 		// https://developers.google.com/web/fundamentals/app-install-banners/native#prefer_related
-		window.addEventListener('beforeinstallprompt', e => {
-			if (!this.isAppInstallPage) {
+		if (!this.showBanner) {
+			window.addEventListener('beforeinstallprompt', e => {
 				e.preventDefault();
-			}
-		});
+			});
+		}
 	}
 };
