@@ -9,6 +9,9 @@ module.exports = merge(base, {
 		auth0: {
 			enable: false,
 		},
+		contentfulService: {
+			uri: 'https://api.kivaws.org/graphql',
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.kivaws.org/graphql',
