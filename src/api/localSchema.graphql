@@ -1,8 +1,6 @@
  # declare the @client directive to appease KnownDirectives rule
 directive @client on FIELD
 
-scalar JSONObject
-
 type Experiment {
 	id: String
 	version: String
