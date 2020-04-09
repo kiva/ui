@@ -159,7 +159,7 @@ export default {
 			};
 		}
 	},
-	inject: ['apollo', 'contentful'],
+	inject: ['apollo', 'federation'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {
@@ -188,7 +188,7 @@ export default {
 		},
 	},
 	created() {
-		this.contentful.query({
+		this.federation.query({
 			query: contentful,
 			variables: {
 				contentType: 'page',

@@ -33,9 +33,9 @@ export default {
 			promoContent: {}
 		};
 	},
-	inject: ['apollo', 'contentful'],
+	inject: ['apollo', 'federation'],
 	created() {
-		this.contentful.query({
+		this.federation.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',

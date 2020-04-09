@@ -37,12 +37,12 @@ export default function createApp({
 } = {}) {
 	const apolloClient = createApolloClient({ ...apollo, kvAuth0, appConfig });
 
-	const contentfulApolloURI = appConfig.contentfulService ? appConfig.contentfulService.uri : apollo.uri;
+	const federationApolloURI = appConfig.federationService ? appConfig.federationService.uri : apollo.uri;
 
-	const apolloContentfulClient = createApolloClient({
+	const apolloFederationClient = createApolloClient({
 		csrfToken: apollo.csrfToken,
 		types: apollo.types,
-		uri: contentfulApolloURI,
+		uri: federationApolloURI,
 		kvAuth0,
 		appConfig,
 		existingCache: apolloClient.cache
@@ -66,7 +66,7 @@ export default function createApp({
 		render: h => h(App),
 		provide: {
 			apollo: apolloClient,
-			contentful: apolloContentfulClient,
+			federation: apolloFederationClient,
 			kvAuth0,
 		}
 	});

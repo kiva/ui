@@ -49,7 +49,7 @@ module.exports = merge(base, {
 			serverCallbackUri: 'https://dev-vm-01.kiva.org/process-ssr-auth',
 			domain: 'login.dev.kiva.org',
 		},
-		contentfulService: {
+		federationService: {
 			uri: 'https://marketplace-api.dk1.kiva.org/graphql'
 		},
 		intercom: {
