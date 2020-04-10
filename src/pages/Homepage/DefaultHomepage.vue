@@ -45,6 +45,10 @@ export default {
 			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-promo'); // eslint-disable-line max-len
+			// exit if missing setting or fields
+			if (!uiPromoSetting || !uiPromoSetting.fields) {
+				return false;
+			}
 			this.promoEnabled = settingEnabled(
 				uiPromoSetting.fields,
 				'active',
