@@ -1,6 +1,6 @@
 <template>
 	<www-page id="co19-landing">
-		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
+		<kv-hero class="mg-hero">
 			<!-- TODO Update to handle new images and design -->
 			<template v-slot:images>
 				<kv-responsive-image
@@ -16,9 +16,7 @@
 						<p class="mg-subhead">
 							{{ pageCopy.subhead }}
 						</p>
-						<landing-form
-							:amount.sync="monthlyGoodAmount"
-							:selected-group.sync="selectedGroup"
+						<covid-landing-form
 							:key="1"
 							:button-text="pageCopy.button"
 							v-if="!isMonthlyGoodSubscriber"
@@ -99,7 +97,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import MGCovidExplained from './MGCovidExplained';
 
-import LandingForm from './CovidLandingForm';
+import CovidLandingForm from './CovidLandingForm';
 
 const pageQuery = gql`{
 	my {
@@ -114,7 +112,7 @@ const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', tru
 export default {
 	components: {
 		WwwPage,
-		LandingForm,
+		CovidLandingForm,
 		KvHero,
 		KvResponsiveImage,
 		MGCovidExplained,
@@ -130,12 +128,9 @@ export default {
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
-			selectedGroup: this.category || 'default',
 			heroImages: [
 				['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
 				['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],
-				// ['small', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
-				// ['small retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
 				['medium', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
 				['medium retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
 				['large', heroImagesRequire('./monthlygood-banner-lg-std_0.jpg')],

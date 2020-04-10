@@ -94,10 +94,6 @@ export default {
 		},
 	},
 	props: {
-		selectedGroup: {
-			type: String,
-			default: 'default'
-		},
 		buttonText: {
 			type: String,
 			default: 'Contribute monthly'
@@ -180,11 +176,8 @@ export default {
 			}
 		},
 		updateAmount(value) {
-			// updates local var
+			// updates local var from various changes in the form
 			this.mgAmount = numeral(value).value();
-			// Emits values to parent for synchronization of 2 landing form instances
-			// TODO: Remove if duplicate instances are included in this design
-			this.$emit('update:amount', numeral(value).value());
 		},
 		submit() {
 			this.$router.push({
@@ -239,12 +232,8 @@ export default {
 }
 
 input[type="text"] {
-	// styles to match KvDropDownRounded
-	// border-radius: $button-radius;
 	border-radius: 0.1875rem;
 	color: $charcoal;
-	// font-size: $medium-text-font-size;
-	// font-weight: $global-weight-highlight;
 	margin: 0;
 }
 

@@ -21,7 +21,6 @@ export default [
 	{
 		path: '/covid19response',
 		component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19'),
-		props: route => ({ category: route.query.category })
 	},
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
