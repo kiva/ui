@@ -58,6 +58,7 @@ export default [
 			amount: Number(route.query.amount),
 			category: route.query.category,
 			onetime: String(route.query.onetime),
+			source: route.query.source,
 		})
 	},
 	{ path: '/monthlygood/thanks', component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage') },

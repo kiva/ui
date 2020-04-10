@@ -2,6 +2,7 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
 			<fieldset class="small-12 columns input-wrapper recurring-amounts">
+				<legend>Choose an amount to contribute</legend>
 				<!-- TODO: Create full width toggle to replace this -->
 				<kv-toggle
 					id="kv-toggle-deposit"
@@ -10,7 +11,6 @@
 					<label v-if="isRecurring" for="kv-toggle-deposit">Contribute monthly</label>
 					<label v-if="!isRecurring" for="kv-toggle-deposit">One-time contribution</label>
 				</kv-toggle>
-				<legend>Choose an amount to contribute</legend>
 				<transition name="kvfastfade">
 					<kv-pill-toggle
 						v-show="isRecurring"
@@ -191,8 +191,9 @@ export default {
 				path: '/monthlygood/setup',
 				query: {
 					amount: this.mgAmount,
-					category: 'covid-relief',
-					onetime: !this.isRecurring
+					category: 'disaster_relief_covid',
+					onetime: !this.isRecurring,
+					source: 'covid19response'
 				}
 			});
 		}
@@ -206,6 +207,8 @@ export default {
 // Pill Overrides
 ::v-deep .kv-pill-toggle {
 	margin-bottom: 0.5rem;
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
 
 	.pill {
 		border-radius: 0.1875rem;
@@ -217,7 +220,7 @@ export default {
 }
 
 .custom-amount-holder {
-	margin: 0 0.5rem 0.5rem;
+	margin: 0 0 0.5rem;
 
 	#custom-amount-input,
 	#onetime-amount-input {
@@ -227,7 +230,7 @@ export default {
 }
 
 .kv-toggle {
-	margin: 0.5rem;
+	margin: 0.5rem 0;
 
 	label {
 		font-weight: 400;
@@ -255,12 +258,9 @@ label:not(.error) + input {
 }
 
 .input-wrapper {
-	padding-bottom: 1rem;
-
 	legend {
-		color: white;
 		font-weight: 400;
-		margin: 0 0 0 0.5rem;
+		margin: 0;
 	}
 
 	.input-element {

@@ -5,7 +5,7 @@
 				<h1 class="text-center impact-text">
 					Confirm your Good
 				</h1>
-				<h3 class="text-center featured-text">
+				<h3 class="text-center featured-text" v-if="!isOnetime">
 					Review and set up your monthly contribution
 				</h3>
 				<form
@@ -16,7 +16,7 @@
 					<div class="panel zigzag-bottom">
 						<div class="row align-center text-center">
 							<div class="medium-10 small-12 columns">
-								<div class="row column">
+								<div class="row column" v-if="!isOnetime">
 									<strong>Each month on the</strong>
 									<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="dayOfMonth">
 										Day of the Month
@@ -158,7 +158,7 @@
 									</div>
 								</div>
 
-								<div class="row text-left">
+								<div class="row text-left" v-if="showCategorySelector">
 									<div class="small-12 columns">
 										<div class="additional-left-pad-spans">
 											Select a category to focus your lending
@@ -175,7 +175,7 @@
 									</div>
 								</div>
 
-								<div class="row small-collapse">
+								<div class="row small-collapse" v-if="!isOnetime">
 									<div class="small-12 columns">
 										<em class="text-center">Rest easy, you can cancel anytime.</em>
 									</div>
@@ -187,14 +187,15 @@
 						<div class="large-9 medium-10 small-12 columns">
 							<p>
 								<!-- eslint-disable-next-line max-len -->
-								<strong><em>We'll charge your PayPal account each month, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
+								<strong><em>We'll charge your PayPal account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
 							</p>
 							<p v-if="hasAutoDeposits">
-								<em>* Your new Monthly Good contribution will replace your existing auto deposit.</em>
+								<!-- eslint-disable-next-line max-len -->
+								<em>* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution will replace your existing auto deposit.</em>
 							</p>
 							<p v-if="hasAutoLending">
 								<!-- eslint-disable-next-line max-len -->
-								<em>* Enrolling in Monthly Good will also disable your current auto lending settings.</em>
+								<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
 							</p>
 							<div v-if="hasBillingAgreement">
 								<kv-button
@@ -207,7 +208,8 @@
 									Confirm <kv-loading-spinner v-if="submitting" />
 								</kv-button>
 								<p>
-									<em>We'll charge your PayPal account for your Monthly Good</em>
+									<!-- eslint-disable-next-line max-len -->
+									<em>We'll charge your PayPal account for your {{ isOnetime ? 'Contribution' : 'Monthly Good' }}</em>
 								</p>
 							</div>
 
@@ -297,6 +299,10 @@ export default {
 		onetime: {
 			type: String,
 			default: 'false'
+		},
+		source: {
+			type: String,
+			default: ''
 		}
 	},
 	components: {
@@ -329,6 +335,7 @@ export default {
 			hasAutoLending: false,
 			hasBillingAgreement: false,
 			hasLegacySubscription: false,
+			showCategorySelector: true,
 		};
 	},
 	mixins: [
@@ -399,6 +406,11 @@ export default {
 		if (this.lendingCategories.find(category => category.value === this.category)) {
 			this.selectedGroup = this.category;
 		}
+		// ingress from specific routes assumes pre-selected category
+		if (this.source === 'covid19response') {
+			this.showCategorySelector = false;
+		}
+
 		if (!Number.isNaN(Number(this.amount))) {
 			this.mgAmount = this.amount;
 			this.donation = this.amount * 0.15;

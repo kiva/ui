@@ -10,7 +10,7 @@
 			</template>
 			<template v-slot:overlayContent>
 				<div class="row">
-					<div class="overlay-column columns medium-12 large-6">
+					<div class="overlay-column columns medium-10 medium-offset-1 large-6 large-offset-0 xlarge-5">
 						<p class="mg-headline" v-html="pageCopy.headline">
 						</p>
 						<p class="mg-subhead">
@@ -77,9 +77,9 @@
 						If there is no longer a need for this fund, we’ll get in touch with you to ask
 						you to change your settings.
 					</li>
-					<li>
+					<!-- <li>
 						We will record prior category settings for previous Monthly Good subscribers.
-					</li>
+					</li> -->
 					<li>
 						Deposited funds for COVID-19 relief may be withdrawn or relent after they have
 						gone through 1 full loan cycle.
@@ -186,6 +186,7 @@ export default {
 	margin-bottom: 0;
 	padding-bottom: 1rem;
 	position: relative;
+	overflow: hidden;
 
 	::v-deep .overlay-holder {
 		display: flex;
@@ -216,24 +217,13 @@ export default {
 				// @include breakpoint(medium) {
 				// 	max-width: 31.25rem;
 				// }
-				padding: 1.5rem 1rem 0.5rem;
+				padding: 1.5rem 1.5rem 1.25rem;
 				background-color: $white;
 				border-radius: 1rem;
 
 				@include breakpoint(large) {
 					max-width: 31.25rem;
-					padding: 1.5rem 2rem 1.25rem 2rem;
-				}
-			}
-
-			@include breakpoint(large) {
-				.overlay-column {
-					max-width: none;
-					padding: 1.5rem 1rem 0.5rem;
-					@include breakpoint(large) {
-						max-width: 31.25rem;
-						padding: 1.5rem 2rem 1.25rem 2rem;
-					}
+					padding: 1.5rem 1.5rem 1.25rem;
 				}
 			}
 		}
@@ -278,11 +268,6 @@ export default {
 	font-weight: bold;
 	font-size: 2rem;
 	line-height: 2rem;
-
-	@include breakpoint(xlarge) {
-		font-size: 2.375rem;
-		line-height: 2.375rem;
-	}
 }
 
 .mg-subhead {
@@ -290,13 +275,6 @@ export default {
 	font-size: 1.2rem;
 	line-height: 1.35rem;
 	margin-bottom: 0.65rem;
-
-	@include breakpoint(xlarge) {
-		padding-top: 0.875rem;
-		font-size: 1.5rem;
-		line-height: 1.75rem;
-		margin-bottom: 1rem;
-	}
 }
 
 .about-kiva {
