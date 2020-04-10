@@ -9,6 +9,9 @@ module.exports = merge(base, {
 		auth0: {
 			enable: false,
 		},
+		federationService: {
+			uri: 'https://marketplace-api.k1.kiva.org/graphql',
+		},
 	},
 	server: {
 		graphqlUri: 'https://api.kivaws.org/graphql',

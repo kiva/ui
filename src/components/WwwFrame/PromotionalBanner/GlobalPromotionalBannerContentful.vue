@@ -15,7 +15,7 @@ import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'federation'],
 	components: {
 		GenericPromoBanner,
 	},
@@ -33,7 +33,7 @@ export default {
 		};
 	},
 	mounted() {
-		this.apollo.query({
+		this.federation.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',
@@ -88,6 +88,15 @@ export default {
 						this.isPromoEnabled = true;
 					}
 				}
+			}
+		});
+	},
+	serverPrefetch() {
+		return this.federation.query({
+			query: contentful,
+			variables: {
+				contentType: 'uiSetting',
+				contentKey: 'ui-global-promo',
 			}
 		});
 	},

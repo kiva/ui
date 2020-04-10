@@ -68,7 +68,7 @@ export default {
 		WwwPage,
 		ContentfulLightbox
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'federation'],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -125,7 +125,7 @@ export default {
 			spread: 200,
 			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'] // misc. kiva colors
 		});
-		this.apollo.query({
+		this.federation.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',
