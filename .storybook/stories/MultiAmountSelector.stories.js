@@ -1,3 +1,4 @@
+import { number } from '@storybook/addon-knobs';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 
 export default {
@@ -37,12 +38,22 @@ export const multiAmountSelector = () => ({
 			customAmount: 5,
 		};
 	},
+	props: {
+		minCustomAmount: {
+			default: number('minCustomAmount', 5)
+		},
+		maxCustomAmount: {
+			default: number('maxCustomAmount', 10000)
+		}
+	},
 	template: `
 		<multi-amount-selector
 			id="amount-selector"
 			:options="amountOptions"
 			:selected="amountSelected"
 			@pill-toggled="pillToggled"
+			:min-custom-amount="minCustomAmount"
+			:max-custom-amount="maxCustomAmount"
 			@custom-amount-updated="customAmountUpdated"
 			:split-pills="true"
 		/>

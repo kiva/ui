@@ -88,6 +88,14 @@ export default {
 		customAmount: {
 			type: Number,
 			default: 25,
+		},
+		minCustomAmount: {
+			type: Number,
+			default: 25,
+		},
+		maxCustomAmount: {
+			type: Number,
+			default: 10000,
 		}
 	},
 	data() {
@@ -96,12 +104,14 @@ export default {
 			customAmountModel: this.customAmount,
 		};
 	},
-	validations: {
-		customAmountModel: {
-			required,
-			minValue: minValue(5),
-			maxValue: maxValue(10000)
-		},
+	validations() {
+		return {
+			customAmountModel: {
+				required,
+				minValue: minValue(this.minCustomAmount),
+				maxValue: maxValue(this.maxCustomAmount)
+			},
+		};
 	},
 	watch: {
 		customAmountModel(newVal) {
@@ -116,7 +126,7 @@ export default {
 			// to prevent unnecessary validations from showing
 			if (newVal !== 'custom' && this.$v.$invalid) {
 				// reset to valid default value
-				this.customAmountModel = 5;
+				this.customAmountModel = this.minCustomAmount;
 			}
 		},
 	},
@@ -267,8 +277,13 @@ $form-border-radius: rem-calc(3);
 }
 
 .validation-errors {
-	flex: 1 1 auto;
+	flex: 0 0 100%;
 	text-align: right;
-	margin: 0 0.5rem 0.5rem;
+	margin: 0 0 0.5rem;
+	padding: 0.15rem 0.5rem 0;
+
+	li {
+		line-height: 1.15rem;
+	}
 }
 </style>
