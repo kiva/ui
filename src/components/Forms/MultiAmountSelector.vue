@@ -160,8 +160,6 @@ $form-border-radius: rem-calc(3);
 		margin: 0;
 		font-size: 1em;
 		text-align: center;
-		// background: $tab-pill-active-background;
-		// color: $white;
 		cursor: default;
 		border-color: $kiva-green;
 	}

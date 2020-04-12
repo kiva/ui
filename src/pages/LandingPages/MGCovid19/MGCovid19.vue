@@ -234,11 +234,6 @@ export default {
 			width: 100%;
 			margin-top: 0.75rem;
 		}
-		// overwrite styles for error display over hero image
-		.validation-errors {
-			border: 1px solid $charcoal;
-			background-color: rgba(255, 255, 255, 0.7);
-		}
 	}
 
 	//set min height to improve sizing when image has not loaded yet
@@ -269,7 +264,7 @@ export default {
 	padding: 0;
 	font-size: 1.2rem;
 	line-height: 1.35rem;
-	margin-bottom: 0.65rem;
+	margin-bottom: 1rem;
 }
 
 .about-kiva {
