@@ -27,8 +27,9 @@
 				>
 					<kv-currency-input
 						id="custom-amount-input"
+						ref="kvCurrencyRef"
 						class="input-element"
-						:class="{'custom-input-element': true, 'error': $v.$invalid }"
+						:class="{'custom-input-element': true, 'error': $v.$invalid}"
 						v-model="customAmountModel"
 						:aria-disabled="!selected === 'custom'"
 						:disabled="!selected === 'custom'"
@@ -115,14 +116,21 @@ export default {
 	},
 	watch: {
 		customAmountModel(newVal) {
-			// emit a custom amount updated event only if valid
-			if (!this.$v.$invalid) {
-				// Implementation Required in Parent Component
-				// Enables tracking of custom option/key associated value
-				this.$emit('custom-amount-updated', newVal);
-			}
+			// Implementation Required in Parent Component
+			// Enables tracking of custom option/key associated value
+			this.$emit('custom-amount-updated', newVal);
 		},
 		selected(newVal) {
+			// to focus custom amount input element
+			if (newVal === 'custom') {
+				this.$nextTick(() => {
+					try {
+						this.$refs.kvCurrencyRef[0].$refs.kvCurrencyInputRef.focus();
+					} catch (e) {
+						// noop
+					}
+				});
+			}
 			// to prevent unnecessary validations from showing
 			if (newVal !== 'custom' && this.$v.$invalid) {
 				// reset to valid default value
@@ -131,12 +139,17 @@ export default {
 		},
 	},
 	methods: {
+		/**
+		 * The key of the currently selected item
+		 * @event pill-toggled
+		 * @type {Event}
+		 */
 		onChange(key) {
 			// Implementation Required in Parent Component
 			// Enables tracking of selected option/key
 			this.$emit('pill-toggled', key);
 		},
-	}
+	},
 };
 
 </script>
@@ -160,8 +173,6 @@ $form-border-radius: rem-calc(3);
 		margin: 0;
 		font-size: 1em;
 		text-align: center;
-		// background: $tab-pill-active-background;
-		// color: $white;
 		cursor: default;
 		border-color: $kiva-green;
 	}
