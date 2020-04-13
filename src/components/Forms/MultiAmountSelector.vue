@@ -115,12 +115,9 @@ export default {
 	},
 	watch: {
 		customAmountModel(newVal) {
-			// emit a custom amount updated event only if valid
-			if (!this.$v.$invalid) {
-				// Implementation Required in Parent Component
-				// Enables tracking of custom option/key associated value
-				this.$emit('custom-amount-updated', newVal);
-			}
+			// Implementation Required in Parent Component
+			// Enables tracking of custom option/key associated value
+			this.$emit('custom-amount-updated', newVal);
 		},
 		selected(newVal) {
 			// to prevent unnecessary validations from showing

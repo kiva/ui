@@ -19,7 +19,7 @@
 					:options="recurringAmountOptions"
 					:selected="recurringAmountSelection"
 					:custom-amount="recurringCustomAmount"
-					:min-custom-amount="5"
+					:min-custom-amount="minRecurringAmount"
 					@pill-toggled="recurringAmountSelected"
 					@custom-amount-updated="recurringCustomAmountUpdated"
 					:split-pills="true"
@@ -32,7 +32,7 @@
 					:options="onetimeAmountOptions"
 					:selected="onetimeAmountSelection"
 					:custom-amount="onetimeCustomAmount"
-					:min-custom-amount="25"
+					:min-custom-amount="minOnetimeAmount"
 					@pill-toggled="onetimeAmountSelected"
 					@custom-amount-updated="onetimeCustomAmountUpdated"
 					:split-pills="true"
@@ -49,6 +49,8 @@
 
 <script>
 import numeral from 'numeral';
+import { validationMixin } from 'vuelidate';
+import { minValue, maxValue } from 'vuelidate/lib/validators';
 
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
@@ -59,6 +61,25 @@ export default {
 		KvButton,
 		KvPillToggle,
 		MultiAmountSelector,
+	},
+	mixins: [
+		validationMixin
+	],
+	validations() {
+		if (this.isRecurring) {
+			return {
+				selectedAmount: {
+					minValue: minValue(this.minRecurringAmount),
+					maxValue: maxValue(this.maxDepositAmount)
+				}
+			};
+		}
+		return {
+			selectedAmount: {
+				minValue: minValue(this.minOnetimeAmount),
+				maxValue: maxValue(this.maxDepositAmount)
+			}
+		};
 	},
 	props: {
 		buttonText: {
@@ -106,6 +127,7 @@ export default {
 			recurringAmountSelection: '25',
 			recurringCustomAmount: 5,
 			recurringAmount: 25,
+			minRecurringAmount: 5,
 			// Onetime Deposit Config
 			onetimeAmountOptions: [
 				{
@@ -132,6 +154,8 @@ export default {
 			onetimeAmountSelection: '25',
 			onetimeCustomAmount: 25,
 			onetimeAmount: 25,
+			minOnetimeAmount: 25,
+			maxDepositAmount: 10000,
 		};
 	},
 	computed: {
