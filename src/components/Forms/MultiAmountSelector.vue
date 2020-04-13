@@ -150,7 +150,7 @@ export default {
 			// Enables tracking of selected option/key
 			this.$emit('pill-toggled', key);
 		},
-	}
+	},
 };
 
 </script>

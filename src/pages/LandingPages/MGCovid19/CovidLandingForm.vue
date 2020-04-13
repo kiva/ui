@@ -16,6 +16,7 @@
 					v-show="isRecurring"
 					id="amount-selector"
 					class="recurring-amount-selector"
+					ref="recurringAmountSelectorRef"
 					:options="recurringAmountOptions"
 					:selected="recurringAmountSelection"
 					:custom-amount="recurringCustomAmount"
@@ -29,6 +30,7 @@
 					v-show="!isRecurring"
 					id="onetime-amount-selector"
 					class="onetime-amount-selector"
+					ref="onetimeAmountSelectorRef"
 					:options="onetimeAmountOptions"
 					:selected="onetimeAmountSelection"
 					:custom-amount="onetimeCustomAmount"
@@ -164,6 +166,28 @@ export default {
 				return this.recurringAmount;
 			}
 			return this.onetimeAmount;
+		}
+	},
+	watch: {
+		isRecurring(newVal) {
+			if (newVal && this.recurringAmountSelection === 'custom') {
+				this.$nextTick(() => {
+					try {
+						this.$refs.recurringAmountSelectorRef.$refs.kvCurrencyRef[0].$refs.kvCurrencyInputRef.focus();
+					} catch (e) {
+						// noop
+					}
+				});
+			}
+			if (!newVal && this.onetimeAmountSelection === 'custom') {
+				this.$nextTick(() => {
+					try {
+						this.$refs.onetimeAmountSelectorRef.$refs.kvCurrencyRef[0].$refs.kvCurrencyInputRef.focus();
+					} catch (e) {
+						// noop
+					}
+				});
+			}
 		}
 	},
 	methods: {
