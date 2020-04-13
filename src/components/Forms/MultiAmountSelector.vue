@@ -27,11 +27,13 @@
 				>
 					<kv-currency-input
 						id="custom-amount-input"
+						ref="kvCurrencyRef"
 						class="input-element"
-						:class="{'custom-input-element': true, 'error': $v.$invalid }"
+						:class="{'custom-input-element': true, 'error': $v.$invalid}"
 						v-model="customAmountModel"
 						:aria-disabled="!selected === 'custom'"
 						:disabled="!selected === 'custom'"
+						@focus.native="$event.target.select()"
 					/>
 				</div>
 			</transition>
@@ -120,6 +122,16 @@ export default {
 			this.$emit('custom-amount-updated', newVal);
 		},
 		selected(newVal) {
+			// to focus custom amount input element
+			if (newVal === 'custom') {
+				this.$nextTick(() => {
+					try {
+						this.$refs.kvCurrencyRef[0].$refs.kvCurrencyInputRef.focus();
+					} catch (e) {
+						// noop
+					}
+				});
+			}
 			// to prevent unnecessary validations from showing
 			if (newVal !== 'custom' && this.$v.$invalid) {
 				// reset to valid default value
@@ -128,6 +140,11 @@ export default {
 		},
 	},
 	methods: {
+		/**
+		 * The key of the currently selected item
+		 * @event pill-toggled
+		 * @type {Event}
+		 */
 		onChange(key) {
 			// Implementation Required in Parent Component
 			// Enables tracking of selected option/key
