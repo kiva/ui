@@ -33,7 +33,6 @@
 						v-model="customAmountModel"
 						:aria-disabled="!selected === 'custom'"
 						:disabled="!selected === 'custom'"
-						@focus.native="$event.target.select()"
 					/>
 				</div>
 			</transition>
