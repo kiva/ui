@@ -40,7 +40,6 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
-import { number } from '@storybook/addon-knobs';
 import KvButton from '@/components/Kv/KvButton';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
@@ -104,11 +103,11 @@ export default {
 		},
 		minCustomAmount: {
 			type: Number,
-			default: number('minCustomAmount', 5)
+			default: 5
 		},
 		maxCustomAmount: {
 			type: Number,
-			default: number('maxCustomAmount', 10000)
+			default: 10000
 		}
 	},
 	computed: {
