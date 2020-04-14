@@ -168,7 +168,7 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.isExperimentActive = mgAmountSelectorExperiment.version === 'shown';
-			// Fire Event for EXP-CASH-1775-Feb2020
+			// Fire Event for EXP-GROW-11-Apr2020
 			this.$kvTrackEvent(
 				'MonthlyGood',
 				'EXP-GROW-11-Apr2020',
