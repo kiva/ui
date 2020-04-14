@@ -14,30 +14,15 @@
 				</span>
 				<mg-step-one class="mg-image" />
 				<h3>
-					Contribute automatically
+					Choose
 				</h3>
 				<div class="description-text">
-					Choose a monthly amount to go toward COVID-19 relief that works for you
+					a monthly amount to go toward COVID-19 relief that works for you.
 				</div>
 			</div>
 			<div class="column small-12 medium-6 large-3 step-wrapper">
 				<span class="number">
 					2
-				</span>
-				<mg-step-two class="mg-image" />
-				<h3>
-					Support people impacted by COVID-19
-				</h3>
-				<div class="description-text">
-					Kiva will automatically lend 100% of your funds to
-					borrowers who need help.
-					<!-- This could be anyone on Kiva, from small business
-					owners to farmers to field partners. -->
-				</div>
-			</div>
-			<div class="column small-12 medium-6 large-3 step-wrapper">
-				<span class="number">
-					3
 				</span>
 				<mg-step-three class="mg-image" />
 				<h3>
@@ -49,7 +34,7 @@
 			</div>
 			<div class="column small-12 medium-6 large-3 step-wrapper">
 				<span class="number">
-					4
+					3
 				</span>
 				<mg-step-four class="mg-image" />
 				<h3>
@@ -64,15 +49,15 @@
 </template>
 
 <script>
-import MgStepOne from '@/assets/inline-svgs/hp-mg-1-signup.svg';
-import MgStepTwo from '@/assets/inline-svgs/hp-mg-2-choose.svg';
+// import MgStepOne from '@/assets/inline-svgs/hp-mg-1-signup.svg';
+import MgStepOne from '@/assets/inline-svgs/hp-mg-2-choose.svg';
 import MgStepThree from '@/assets/inline-svgs/hp-mg-3-receive.svg';
 import MgStepFour from '@/assets/inline-svgs/hp-mg-4-multiply.svg';
 
 export default {
 	components: {
 		MgStepOne,
-		MgStepTwo,
+		// MgStepTwo,
 		MgStepThree,
 		MgStepFour
 	},
