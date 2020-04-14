@@ -1,6 +1,6 @@
 <template>
 	<www-page>
-		<kv-hero class="mg-hero overlay-bg" :class="{'experiment':isExperimentActive}">
+		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
 			<template v-slot:images>
 				<kv-responsive-image
 					:images="heroImages"
@@ -23,11 +23,11 @@
 							v-if="!isMonthlyGoodSubscriber && !isExperimentActive"
 						/>
 						<landing-form-experiment
-								:amount.sync="monthlyGoodAmount"
-								:selected-group.sync="selectedGroup"
-								:key="1"
-								:button-text="pageCopy.button"
-								v-if="!isMonthlyGoodSubscriber && isExperimentActive"
+							:amount.sync="monthlyGoodAmount"
+							:selected-group.sync="selectedGroup"
+							:key="1"
+							:button-text="pageCopy.button"
+							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
 						/>
 						<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
 							<h4>
@@ -191,75 +191,6 @@ export default {
 
 .hero.mg-hero {
 	::v-deep .overlay-content {
-		.overlay-column {
-			max-width: none;
-			@include breakpoint(medium) {
-				max-width: 31.25rem;
-			}
-		}
-	}
-
-	margin-bottom: 0;
-
-	::v-deep form {
-		// overwrite styles for error display over hero image
-		.validation-errors {
-			border: 1px solid $charcoal;
-			background-color: rgba(255, 255, 255, 0.7);
-		}
-	}
-
-	//set min height to improve sizing when image has not loaded yet
-	min-height: 6.25rem;
-	@include breakpoint(xlarge) {
-		min-height: 20rem;
-	}
-	@include breakpoint(xxlarge) {
-		min-height: 24.65rem;
-	}
-	@include breakpoint(xga) {
-		min-height: 27rem;
-	}
-}
-
-.page-content {
-	padding: 1.625rem 0;
-}
-
-.mg-headline,
-.mg-subhead {
-	color: white;
-	text-shadow: 1px 1px 3px #333;
-	margin: 0;
-}
-
-.mg-headline {
-	font-weight: bold;
-	font-size: 2rem;
-	line-height: 2rem;
-
-	@include breakpoint(xlarge) {
-		font-size: 2.375rem;
-		line-height: 2.375rem;
-	}
-}
-
-.mg-subhead {
-	padding: 0;
-	font-size: 1.2rem;
-	line-height: 1.35rem;
-	margin-bottom: 0.65rem;
-
-	@include breakpoint(xlarge) {
-		padding-top: 0.875rem;
-		font-size: 1.5rem;
-		line-height: 1.75rem;
-		margin-bottom: 1rem;
-	}
-}
-
-.overlay-bg {
-	::v-deep .overlay-content {
 		bottom: 0;
 		top: auto;
 		transform: none;
@@ -277,47 +208,85 @@ export default {
 				max-width: 31.25rem;
 				padding: 1.5rem 2rem 1.25rem 2rem;
 			}
+			@include breakpoint(medium) {
+				max-width: 31.25rem;
+			}
 		}
 	}
 
-	::v-deep .images > div,
-	::v-deep .images img {
-		min-height: 18.75rem;
-	}
-
-	.mg-headline,
-	.mg-subhead {
-		text-shadow: none;
-		padding-top: 0;
-	}
+	margin-bottom: 0;
 
 	::v-deep form {
+		// overwrite styles for error display over hero image
+		.validation-errors {
+			border: 1px solid $charcoal;
+			background-color: rgba(255, 255, 255, 0.7);
+		}
+
 		button {
 			width: 100%;
 			margin-top: 0.75rem;
 		}
 	}
 
-	.mg-subhead {
-		max-width: 28.125rem;
-		margin: 1rem 0 1.35rem 0;
-		font-size: 1.15rem;
-		line-height: 1.25rem;
-		@include breakpoint(xlarge) {
-			font-size: 1.25rem;
-			line-height: 1.5rem;
-		}
+	//set min height to improve sizing when image has not loaded yet
+	min-height: 6.25rem;
+	@include breakpoint(xlarge) {
+		min-height: 20rem;
+	}
+	@include breakpoint(xxlarge) {
+		min-height: 24.65rem;
+	}
+	@include breakpoint(xga) {
+		min-height: 27rem;
+	}
+
+	::v-deep .images > div,
+	::v-deep .images img {
+		min-height: 18.75rem;
+	}
+}
+
+.page-content {
+	padding: 1.625rem 0;
+}
+
+.mg-headline,
+.mg-subhead {
+	color: white;
+	text-shadow: none;
+	padding-top: 0;
+	margin: 0;
+}
+
+.mg-headline {
+	font-weight: bold;
+	font-size: 2rem;
+	line-height: 2rem;
+
+	@include breakpoint(xlarge) {
+		font-size: 2.375rem;
+		line-height: 2.375rem;
+	}
+}
+
+.mg-subhead {
+	padding: 0;
+	max-width: 28.125rem;
+	margin: 1rem 0 1.35rem 0;
+	font-size: 1.15rem;
+	line-height: 1.25rem;
+
+	@include breakpoint(xlarge) {
+		padding-top: 0.875rem;
+		font-size: 1.25rem;
+		line-height: 1.5rem;
+		margin-bottom: 1rem;
 	}
 }
 
 // Experiment Styles - GROW-11
-.experiment {
-
-	.mg-headline,
-	.mg-subhead {
-		color: #484848;
-	}
-
+.mg-hero.experiment {
 	::v-deep .overlay-content {
 		.overlay-column {
 			background-color: white;
@@ -325,9 +294,13 @@ export default {
 		}
 	}
 
-	form {
-		max-width: 23rem;
+	.mg-headline,
+	.mg-subhead {
+		color: #484848;
 	}
 
+	::v-deep form {
+		max-width: 23rem;
+	}
 }
 </style>

@@ -16,13 +16,13 @@
 			</span>
 			<span class="large-7 medium-7 small-12 columns select-category">
 				<select
-						class="loan-price medium-text-font-size"
-						@change="updateSelected"
+					class="loan-price medium-text-font-size"
+					@change="updateSelected"
 				>
 					<option
-							v-for="(option, index) in lendingCategories"
-							:value="option.value"
-							:key="index"
+						v-for="(option, index) in lendingCategories"
+						:value="option.value"
+						:key="index"
 					>
 						{{ option.label }}
 					</option>
@@ -156,14 +156,16 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-	.kv-pill-toggle{
+	.kv-pill-toggle {
 		margin-bottom: 1rem;
 	}
-	.select-category{
+
+	.select-category {
 		padding-left: 0;
 	}
-	.select-category-label{
+
+	.select-category-label {
 		padding-right: 0;
-		padding-top: .5rem;
+		padding-top: 0.5rem;
 	}
 </style>
