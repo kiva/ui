@@ -171,7 +171,7 @@ export default {
 			// Fire Event for EXP-CASH-1775-Feb2020
 			this.$kvTrackEvent(
 				'MonthlyGood',
-				'EXP-CASH-1775-Feb2020',
+				'EXP-GROW-11-Apr2020',
 				mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
 			);
 		},
