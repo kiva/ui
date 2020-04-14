@@ -162,16 +162,16 @@ export default {
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			// Monthly Good Hero Experiment - EXP-GROW-11-Apr2020
+			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
 			const mgAmountSelectorExperiment = this.apollo.readFragment({
 				id: 'Experiment:mg_amount_selector',
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.isExperimentActive = mgAmountSelectorExperiment.version === 'shown';
-			// Fire Event for EXP-GROW-11-Apr2020
+			// Fire Event for EXP-CASH-1775-Feb2020
 			this.$kvTrackEvent(
 				'MonthlyGood',
-				'EXP-GROW-11-Apr2020',
+				'EXP-CASH-1775-Feb2020',
 				mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
 			);
 		},
