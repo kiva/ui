@@ -1,4 +1,5 @@
 import _map from 'lodash/map';
+import _filter from 'lodash/filter';
 import algoliasearch from 'algoliasearch/lite';
 import { history as historyRouter } from 'instantsearch.js/es/lib/routers';
 import { stateToRoute, routeToState, fundraisingIndices } from '@/util/algoliaUtils';
@@ -87,7 +88,8 @@ export default {
 			}, (err, data) => {
 				if (err) throw err;
 				if (data.facetHits) {
-					this[facetDestinationKey] = _map(data.facetHits, facet => {
+					// Map our facets to the location object structure
+					const mappedFacets = _map(data.facetHits, facet => {
 						return {
 							count: 0,
 							isRefined: false,
@@ -95,6 +97,12 @@ export default {
 							label: facet.value,
 							value: facet.value,
 						};
+					});
+					// filter out any undefined or malformed facets ref. VUE-271
+					this[facetDestinationKey] = _filter(mappedFacets, facet => {
+						if (typeof facet !== 'undefined' && facet.value !== '>') {
+							return facet;
+						}
 					});
 				}
 			});
