@@ -143,7 +143,7 @@ serverCompiler.watch({
 app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
-app.use('/', timesyncRouter);
+app.use('/', timesyncRouter());
 
 // install dev/hot middleware
 app.use(devMiddleware);

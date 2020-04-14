@@ -52,7 +52,7 @@ if (argv.mock) {
 app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
-app.use('/', timesyncRouter);
+app.use('/', timesyncRouter());
 
 // Configure session
 app.set('trust proxy', 1);
