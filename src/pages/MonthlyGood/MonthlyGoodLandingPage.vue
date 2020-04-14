@@ -1,6 +1,6 @@
 <template>
 	<www-page>
-		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
+		<kv-hero class="mg-hero bg-overlay" :class="{'experiment':isExperimentActive}">
 			<template v-slot:images>
 				<kv-responsive-image
 					:images="heroImages"
@@ -20,7 +20,14 @@
 							:selected-group.sync="selectedGroup"
 							:key="1"
 							:button-text="pageCopy.button"
-							v-if="!isMonthlyGoodSubscriber"
+							v-if="!isMonthlyGoodSubscriber && !isExperimentActive"
+						/>
+						<landing-form-experiment
+							:amount.sync="monthlyGoodAmount"
+							:selected-group.sync="selectedGroup"
+							:key="1"
+							:button-text="pageCopy.button"
+							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
 						/>
 						<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
 							<h4>
@@ -70,6 +77,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 import LandingForm from './LandingForm';
+import LandingFormExperiment from './LandingFormExperiment';
 import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
@@ -83,7 +91,7 @@ const pageQuery = gql`{
 		}
 	}
 	general {
-		uiExperimentSetting(key: "mg_hero") {
+		uiExperimentSetting(key: "mg_amount_selector") {
 			key
 			value
 		}
@@ -102,7 +110,8 @@ export default {
 		EmailPreview,
 		MoreAboutKiva,
 		KivaAsExpert,
-		FrequentlyAskedQuestions
+		FrequentlyAskedQuestions,
+		LandingFormExperiment
 	},
 	props: {
 		category: {
@@ -132,17 +141,10 @@ export default {
 	},
 	computed: {
 		pageCopy() {
-			if (this.isExperimentActive) {
-				return {
-					headline: 'It\'s easy to do good.',
-					subhead: 'Support borrowers worldwide with monthly contributions as little as $5.',
-					button: 'Start Monthly Good'
-				};
-			}
 			return {
-				headline: 'Invest in people,<br/> be a force for good',
-				subhead: 'Join our Monthly Good program — the simplest way to help entrepreneurs around the world achieve their dreams.', // eslint-disable-line max-len
-				button: 'Contribute monthly'
+				headline: 'It\'s easy to do good.',
+				subhead: 'Support borrowers worldwide with monthly contributions as little as $5.',
+				button: 'Start Monthly Good'
 			};
 		}
 	},
@@ -154,23 +156,23 @@ export default {
 				query: pageQuery
 			}).then(() => {
 				return client.query({
-					query: experimentQuery, variables: { id: 'mg_hero' }
+					query: experimentQuery, variables: { id: 'mg_amount_selector' }
 				});
 			});
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
-			const mgHeroExperiment = this.apollo.readFragment({
-				id: 'Experiment:mg_hero',
+			// Monthly Good Amount Selector Experiment - EXP-GROW-11-Apr2020
+			const mgAmountSelectorExperiment = this.apollo.readFragment({
+				id: 'Experiment:mg_amount_selector',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.isExperimentActive = mgHeroExperiment.version === 'shown';
-			// Fire Event for EXP-CASH-1774-Feb2020
+			this.isExperimentActive = mgAmountSelectorExperiment.version === 'shown';
+			// Fire Event for EXP-GROW-11-Apr2020
 			this.$kvTrackEvent(
 				'MonthlyGood',
-				'EXP-CASH-1774-Feb2020',
-				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
+				'EXP-GROW-11-Apr2020',
+				mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
 			);
 		},
 	},
@@ -257,7 +259,7 @@ export default {
 }
 
 // Experiment Styles - CASH-1774
-.mg-hero.experiment {
+.mg-hero.bg-overlay {
 	::v-deep .overlay-content {
 		bottom: 0;
 		top: auto;
@@ -305,6 +307,29 @@ export default {
 		@include breakpoint(xlarge) {
 			font-size: 1.25rem;
 			line-height: 1.5rem;
+		}
+	}
+}
+
+// Experiment Styles - GROW-11
+.mg-hero.experiment {
+	::v-deep .overlay-content {
+		.overlay-column {
+			background-color: white;
+			@include breakpoint(large) {
+				max-width: 28rem !important;
+			}
+		}
+	}
+
+	.mg-headline,
+	.mg-subhead {
+		color: #484848;
+	}
+
+	::v-deep form {
+		@include breakpoint(large) {
+			max-width: 23rem;
 		}
 	}
 }
