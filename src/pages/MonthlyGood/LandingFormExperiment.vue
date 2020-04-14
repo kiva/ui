@@ -1,16 +1,16 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
-			<multi-amount-selector
-					id="amount-selector"
-					:options="amountOptions"
-					:selected="amountSelected"
-					@pill-toggled="pillToggled"
-					:min-custom-amount="minCustomAmount"
-					:max-custom-amount="maxCustomAmount"
-					@custom-amount-updated="customAmountUpdated"
-					:split-pills="true"
-			/>
+		<multi-amount-selector
+			id="amount-selector"
+			:options="amountOptions"
+			:selected="amountSelected"
+			@pill-toggled="pillToggled"
+			:min-custom-amount="minCustomAmount"
+			:max-custom-amount="maxCustomAmount"
+			@custom-amount-updated="customAmountUpdated"
+			:split-pills="true"
+		/>
 			<span class="large-4 medium-4 small-12 columns select-category-label">
 				Loan monthly to
 			</span>
@@ -40,12 +40,9 @@
 <script>
 	import { validationMixin } from 'vuelidate';
 	import { required, minValue, maxValue } from 'vuelidate/lib/validators';
-
-	import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
-	import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+	import { number } from '@storybook/addon-knobs';
 	import KvButton from '@/components/Kv/KvButton';
 	import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
-	import { number } from '@storybook/addon-knobs';
 	import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 
 	export default {
@@ -55,8 +52,6 @@
 		],
 		components: {
 			KvButton,
-			KvCurrencyInput,
-			KvDropdownRounded,
 			MultiAmountSelector
 		},
 		validations: {
@@ -108,9 +103,11 @@
 				default: 'Contribute monthly'
 			},
 			minCustomAmount: {
+				type: Number,
 				default: number('minCustomAmount', 5)
 			},
 			maxCustomAmount: {
+				type: Number,
 				default: number('maxCustomAmount', 10000)
 			}
 		},
@@ -160,38 +157,6 @@
 
 </script>
 <style lang="scss" scoped>
-	@import 'settings';
-
-	// styles to match KvDropDownRounded
-	input[type="text"] {
-		border-radius: $button-radius;
-		color: $charcoal;
-		font-size: $medium-text-font-size;
-		font-weight: $global-weight-highlight;
-		margin: 0;
-	}
-
-	// When label is error, validation styles overwrite this
-	label:not(.error) + input {
-		border: 1px solid $charcoal;
-	}
-
-	::v-deep .dropdown-wrapper select.dropdown {
-		width: 100%;
-	}
-
-	.input-wrapper {
-		padding-bottom: 1rem;
-	}
-
-	.validation-errors {
-		padding: 0.15rem 0 0 0;
-		margin-bottom: 0;
-
-		li {
-			line-height: 1.15rem;
-		}
-	}
 	.kv-pill-toggle{
 		margin-bottom: 1rem;
 	}
