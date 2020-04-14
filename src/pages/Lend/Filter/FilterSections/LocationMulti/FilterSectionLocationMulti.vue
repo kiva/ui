@@ -30,6 +30,7 @@
 import _forEach from 'lodash/forEach';
 import _find from 'lodash/find';
 import _sortBy from 'lodash/sortBy';
+import _filter from 'lodash/filter';
 import { AisRefinementList } from 'vue-instantsearch';
 import FilterMenuSection from '@/pages/Lend/Filter/FilterComponents/FilterMenuSection';
 import LocationMultiRefinements from './LocationMultiRefinements';
@@ -54,14 +55,20 @@ export default {
 	},
 	methods: {
 		transformItems(items) {
+			// filter out any undefined or malformed facets ref. VUE-271
+			const filteredItems = _filter(items, item => {
+				if (typeof item !== 'undefined' && item.value !== '>') {
+					return item;
+				}
+			});
 			// new container for location items
 			let sourceItems = [];
 			if (this.allLocationsLvl1.length > 0) {
 				// if we have source data, use for location item foundation
-				sourceItems = this.mergeLocationData(items);
+				sourceItems = this.mergeLocationData(filteredItems);
 			} else {
 				// otherwise just use filtered location data
-				sourceItems = items;
+				sourceItems = filteredItems;
 			}
 			const newItems = [];
 			const computedRegionList = {};
