@@ -6,7 +6,7 @@ const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
-const timesyncMiddleware = require('./timesync-middleware');
+const timesyncRouter = require('./timesync-router');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
@@ -52,7 +52,7 @@ if (argv.mock) {
 app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
-app.use('/timesync', timesyncMiddleware);
+app.use('/', timesyncRouter);
 
 // Configure session
 app.set('trust proxy', 1);
