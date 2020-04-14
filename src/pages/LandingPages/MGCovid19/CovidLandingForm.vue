@@ -106,10 +106,6 @@ export default {
 			// Recurring Deposit Config
 			recurringAmountOptions: [
 				{
-					title: '$5',
-					key: '5',
-				},
-				{
 					title: '$10',
 					key: '10',
 				},
@@ -118,17 +114,21 @@ export default {
 					key: '25',
 				},
 				{
-					title: '$50',
-					key: '50',
+					title: '$75',
+					key: '75',
+				},
+				{
+					title: '$100',
+					key: '100',
 				},
 				{
 					title: 'Other',
 					key: 'custom'
 				}
 			],
-			recurringAmountSelection: '25',
-			recurringCustomAmount: 5,
-			recurringAmount: 25,
+			recurringAmountSelection: '75',
+			recurringCustomAmount: 75,
+			recurringAmount: 75,
 			minRecurringAmount: 5,
 			// Onetime Deposit Config
 			onetimeAmountOptions: [
@@ -145,17 +145,17 @@ export default {
 					key: '100',
 				},
 				{
-					title: '$200',
-					key: '200',
+					title: '$250',
+					key: '250',
 				},
 				{
 					title: 'Other',
 					key: 'custom'
 				}
 			],
-			onetimeAmountSelection: '25',
-			onetimeCustomAmount: 25,
-			onetimeAmount: 25,
+			onetimeAmountSelection: '50',
+			onetimeCustomAmount: 50,
+			onetimeAmount: 50,
 			minOnetimeAmount: 25,
 			maxDepositAmount: 10000,
 		};
