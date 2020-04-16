@@ -1,34 +1,32 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
-		<div class="row">
-			<multi-amount-selector
-				id="amount-selector"
-				:options="amountOptions"
-				:selected="amountSelected"
-				@pill-toggled="pillToggled"
-				:min-custom-amount="minCustomAmount"
-				:max-custom-amount="maxCustomAmount"
-				@custom-amount-updated="customAmountUpdated"
-				:split-pills="true"
-			/>
-			<span class="large-4 medium-4 small-12 columns select-category-label">
-				Loan monthly to
-			</span>
-			<span class="large-7 medium-7 small-12 columns select-category">
-				<select
-					class="loan-price medium-text-font-size"
-					@change="updateSelected"
+		<multi-amount-selector
+			id="amount-selector"
+			:options="amountOptions"
+			:selected="amountSelected"
+			@pill-toggled="pillToggled"
+			:min-custom-amount="minCustomAmount"
+			:max-custom-amount="maxCustomAmount"
+			@custom-amount-updated="customAmountUpdated"
+			:split-pills="true"
+		/>
+		<span>
+			Loan monthly to
+		</span>
+		<span>
+			<select
+				class="loan-price medium-text-font-size select-category"
+				@change="updateSelected"
+			>
+				<option
+					v-for="(option, index) in lendingCategories"
+					:value="option.value"
+					:key="index"
 				>
-					<option
-						v-for="(option, index) in lendingCategories"
-						:value="option.value"
-						:key="index"
-					>
-						{{ option.label }}
-					</option>
-				</select>
-			</span>
-		</div>
+					{{ option.label }}
+				</option>
+			</select>
+		</span>
 
 		<kv-button class="smaller" type="submit" :disabled="$v.$invalid">
 			{{ buttonText }}
@@ -160,11 +158,6 @@ export default {
 	}
 
 	.select-category {
-		padding-left: 0;
-	}
-
-	.select-category-label {
-		padding-right: 0;
-		padding-top: 0.5rem;
+		max-width: 14rem;
 	}
 </style>

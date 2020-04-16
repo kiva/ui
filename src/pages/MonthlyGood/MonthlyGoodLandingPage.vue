@@ -40,7 +40,9 @@
 				</div>
 			</template>
 		</kv-hero>
-		<how-it-works />
+		<how-it-works
+			:is-experiment-active="isExperimentActive"
+		/>
 		<email-preview />
 		<kiva-as-expert>
 			<template v-slot:form>
@@ -313,11 +315,37 @@ export default {
 
 // Experiment Styles - GROW-11
 .mg-hero.experiment {
+	::v-deep .overlay-holder {
+		picture {
+			height: 32rem;
+			overflow: hidden;
+			background: #4faf4e;
+		}
+	}
+
 	::v-deep .overlay-content {
+		top: 17rem;
+		bottom: auto;
+		transform: none;
+		@include breakpoint(large) {
+			top: 2rem;
+			margin-left: 1rem;
+		}
+
 		.overlay-column {
 			background-color: white;
+			padding: 2rem 2rem 1.25rem;
+			border-radius: 1rem;
+			max-width: 26rem !important;
+			margin: 0 auto;
+
 			@include breakpoint(large) {
-				max-width: 28rem !important;
+				max-width: 22rem !important;
+				margin: 0;
+			}
+
+			@include breakpoint(xlarge) {
+				max-width: 26rem !important;
 			}
 		}
 	}
