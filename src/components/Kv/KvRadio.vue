@@ -1,5 +1,5 @@
 <template>
-	<div :class="pillStyle ? 'kv-radio-pill' : 'kv-radio'">
+	<div class="kv-radio">
 		<input
 			class="input"
 			type="radio"
@@ -10,10 +10,10 @@
 			v-bind="$attrs"
 		>
 		<label
-			:class="pillStyle ? 'pill-label' : 'label'"
+			class="label"
 			:for="id"
 		>
-			<div v-if="!pillStyle" class="disc"></div>
+			<div class="disc"></div>
 			<div>
 				<slot></slot>
 			</div>
@@ -34,10 +34,6 @@ export default {
 			type: String,
 			required: true
 		},
-		pillStyle: {
-			type: Boolean,
-			default: false
-		}
 	},
 	mixins: [inputWrapperMixin]
 };
@@ -66,7 +62,7 @@ export default {
 		top: 0.125em;
 		flex-shrink: 0;
 		background-color: #fff;
-		border: 0.125em solid $subtle-gray;
+		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
 		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
 		position: relative;
@@ -89,8 +85,8 @@ export default {
 
 		&:checked + .label {
 			.disc {
-				background-color: $kiva-light-green;
-				border-color: $kiva-light-green;
+				background-color: $input-checked-color;
+				border-color: $input-checked-color;
 
 				&::after {
 					transform: translate(0.25em, 0.25em);
@@ -107,67 +103,15 @@ export default {
 			}
 		}
 
+		&:active + .label {
+			.disc {
+				background-color: $input-active-color;
+				border-color: $input-active-color;
+			}
+		}
+
 		&[disabled] + .label {
 			@include disabled();
-		}
-	}
-}
-
-$form-border-radius: rem-calc(3);
-
-.kv-radio-pill {
-	.pill-label {
-		flex: 1;
-		padding: rem-calc(6) rem-calc(13);
-		color: $tab-pill-color;
-		border: $tab-pill-border;
-		border-radius: $form-border-radius;
-		margin: 0;
-		font-size: 1rem;
-		text-align: center;
-		min-height: 100%;
-		line-height: 1.3;
-		background: $tab-pill-background;
-		min-width: rem-calc(85);
-
-		&:hover {
-			background: $white;
-			color: $kiva-text-dark;
-		}
-	}
-
-	.input {
-		position: absolute;
-		opacity: 0;
-		width: 0;
-
-		&:focus + .pill-label {
-			border: $input-border-focus;
-			background-color: $input-background-focus;
-			box-shadow: $input-shadow-focus;
-		}
-
-		&:checked + .pill-label {
-			background: $tab-pill-active-background;
-			color: $white;
-			cursor: default;
-			border-color: $kiva-green;
-			position: relative;
-		}
-
-		&:active + .pill-label {
-			background: $kiva-green;
-			color: $white;
-		}
-
-		&[disabled] + .pill-label {
-			@include disabled();
-		}
-
-		&[disabled]:active + .pill-label,
-		&[disabled] + .title:hover {
-			background: inherit;
-			color: $tab-pill-color;
 		}
 	}
 }

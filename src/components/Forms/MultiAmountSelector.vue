@@ -157,8 +157,6 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-$form-border-radius: rem-calc(3);
-
 .custom-amount-holder {
 	position: absolute;
 	top: 0;
@@ -169,7 +167,7 @@ $form-border-radius: rem-calc(3);
 
 	.custom-input-element {
 		height: 2.125rem;
-		border-radius: $form-border-radius;
+		border-radius: $input-border-radius;
 		margin: 0;
 		font-size: 1em;
 		text-align: center;
@@ -188,8 +186,7 @@ $form-border-radius: rem-calc(3);
 	.label {
 		flex: 1;
 		padding: rem-calc(6) rem-calc(13);
-		color: $tab-pill-color;
-		border: $tab-pill-border;
+		border: rem-calc(1) solid $input-border-color;
 		display: flex;
 		justify-content: center;
 		align-items: stretch;
@@ -198,30 +195,30 @@ $form-border-radius: rem-calc(3);
 		text-align: center;
 		min-height: 100%;
 		line-height: 1.3;
+		transition: border-color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 
 		&:hover {
 			background: $white;
-			color: $kiva-text-dark;
 		}
 	}
 
 	.pill {
 		position: relative;
-		background: $tab-pill-background;
+		background: $platinum;
 		min-width: rem-calc(85);
 
 		&:first-child {
 			.label {
-				border-bottom-left-radius: $form-border-radius;
-				border-top-left-radius: $form-border-radius;
+				border-bottom-left-radius: $input-border-radius;
+				border-top-left-radius: $input-border-radius;
 				margin-left: 0;
 			}
 		}
 
 		&:last-child {
 			.label {
-				border-bottom-right-radius: $form-border-radius;
-				border-top-right-radius: $form-border-radius;
+				border-bottom-right-radius: $input-border-radius;
+				border-top-right-radius: $input-border-radius;
 			}
 		}
 	}
@@ -232,21 +229,19 @@ $form-border-radius: rem-calc(3);
 		width: 0;
 
 		&:focus + .label {
-			border: $input-border-focus;
-			background-color: $input-background-focus;
-			box-shadow: $input-shadow-focus;
+			@include input-focus();
 		}
 
 		&:checked + .label {
-			background: $tab-pill-active-background;
+			background: $input-checked-color;
 			color: $white;
 			cursor: default;
-			border-color: $kiva-green;
+			border-color: $input-checked-border-color;
 			position: relative;
 		}
 
 		&:active + .label {
-			background: $kiva-green;
+			background: $input-active-color;
 			color: $white;
 		}
 
@@ -257,7 +252,7 @@ $form-border-radius: rem-calc(3);
 		&[disabled]:active + .label,
 		&[disabled] + .title:hover {
 			background: inherit;
-			color: $tab-pill-color;
+			color: #fff;
 		}
 	}
 }
@@ -270,18 +265,18 @@ $form-border-radius: rem-calc(3);
 		margin: 0.5rem;
 
 		.split-pill-label {
-			border-radius: $form-border-radius;
+			border-radius: $input-border-radius;
 		}
 
 		&:first-child {
 			.split-pill-label {
-				border-radius: $form-border-radius;
+				border-radius: $input-border-radius;
 			}
 		}
 
 		&:last-child {
 			.split-pill-label {
-				border-radius: $form-border-radius;
+				border-radius: $input-border-radius;
 			}
 		}
 	}

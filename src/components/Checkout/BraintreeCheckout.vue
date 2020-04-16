@@ -751,7 +751,6 @@ export default {
 <style lang="scss">
 @import "settings";
 
-$form-border-radius: rem-calc(3);
 $error-red: #fdeceb;
 
 // Utility class passed to Braintree Config
@@ -780,7 +779,6 @@ $error-red: #fdeceb;
 
 		label {
 			font-size: 1rem;
-			color: $charcoal;
 			text-align: left;
 		}
 
@@ -802,7 +800,7 @@ $error-red: #fdeceb;
 			color: $kiva-text-dark;
 			margin: 0 0 0.25rem;
 			padding: 0 rem-calc(8);
-			border-radius: $form-border-radius;
+			border-radius: $input-border-radius;
 
 			[type=number],
 			[type=text] {
@@ -847,11 +845,6 @@ $error-red: #fdeceb;
 			margin-left: 1rem;
 		}
 
-		.card-last-four-digits,
-		.use-new-card-text {
-			color: $tab-pill-color;
-		}
-
 		.new-payment-radio-label,
 		.saved-payment-radio-label {
 			display: flex;
@@ -872,7 +865,6 @@ $error-red: #fdeceb;
 		.saved-payment-radio[type="radio"]:checked ~ .card-last-four-digits,
 		#new-payment-radio[type="radio"]:checked + .use-new-card-text {
 			font-weight: 500;
-			color: $charcoal;
 		}
 
 		.vault-checkbox-wrapper {
