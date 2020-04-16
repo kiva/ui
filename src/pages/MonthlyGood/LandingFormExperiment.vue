@@ -11,10 +11,10 @@
 				@custom-amount-updated="customAmountUpdated"
 				:split-pills="true"
 			/>
-			<span class="large-4 medium-4 small-12 columns select-category-label">
+			<span class="xlarge-5 columns select-category-label">
 				Loan monthly to
 			</span>
-			<span class="large-7 medium-7 small-12 columns select-category">
+			<span class="xlarge-7 columns select-category">
 				<select
 					class="loan-price medium-text-font-size"
 					@change="updateSelected"
@@ -159,12 +159,9 @@ export default {
 		margin-bottom: 1rem;
 	}
 
-	.select-category {
-		padding-left: 0;
-	}
-
 	.select-category-label {
-		padding-right: 0;
 		padding-top: 0.5rem;
+		max-width: 8.25rem;
+		padding-right: 0;
 	}
 </style>

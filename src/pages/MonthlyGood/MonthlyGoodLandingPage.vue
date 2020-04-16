@@ -40,7 +40,12 @@
 				</div>
 			</template>
 		</kv-hero>
-		<how-it-works />
+		<how-it-works
+				v-if="!isExperimentActive"
+		/>
+		<how-it-works-experiment
+				v-if="isExperimentActive"
+		/>
 		<email-preview />
 		<kiva-as-expert>
 			<template v-slot:form>
@@ -83,6 +88,7 @@ import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions';
+import HowItWorksExperiment from "./HowItWorksExperiment";
 
 const pageQuery = gql`{
 	my {
@@ -102,6 +108,7 @@ const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', tru
 
 export default {
 	components: {
+		HowItWorksExperiment,
 		WwwPage,
 		LandingForm,
 		KvHero,
@@ -314,12 +321,45 @@ export default {
 // Experiment Styles - GROW-11
 .mg-hero.experiment {
 	::v-deep .overlay-content {
+		top: 2rem;
+		bottom: auto;
+		transform: none;
+		@include breakpoint(large) {
+			margin-left: 1rem;
+		}
+
+		@include breakpoint(medium only) {
+			top: 17rem;
+		}
+
+		@include breakpoint(small only) {
+			top: 17rem;
+		}
+
 		.overlay-column {
 			background-color: white;
-			@include breakpoint(large) {
-				max-width: 28rem !important;
+			padding: 2rem 2rem 1.25rem;
+			border-radius: 1rem;
+			max-width: 26rem !important;
+
+			@include breakpoint(large only) {
+				max-width: 22rem !important;
+			}
+
+			@include breakpoint(medium only) {
+				margin: 0 auto;
+			}
+
+			@include breakpoint(small only) {
+				margin: 0 auto;
 			}
 		}
+	}
+
+	::v-deep .images > div {
+		height: 32rem;
+		overflow: hidden;
+		background: #4faf4e;
 	}
 
 	.mg-headline,
