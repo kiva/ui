@@ -100,7 +100,7 @@ export default {
 
 		&:focus + .label {
 			.circle {
-				@include input-focus();
+				@include form-focus();
 			}
 		}
 

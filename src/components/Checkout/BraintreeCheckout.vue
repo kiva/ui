@@ -751,7 +751,6 @@ export default {
 <style lang="scss">
 @import "settings";
 
-$form-border-radius: rem-calc(3);
 $error-red: #fdeceb;
 
 // Utility class passed to Braintree Config

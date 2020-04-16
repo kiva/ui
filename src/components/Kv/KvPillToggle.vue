@@ -73,16 +73,13 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-$form-border-radius: rem-calc(3);
-
 .kv-pill-toggle {
 	display: flex;
 
 	.label {
 		flex: 1;
 		padding: rem-calc(6) rem-calc(13);
-		color: $tab-pill-color;
-		border: $tab-pill-border;
+		border: rem-calc(1) solid $form-border-color;
 		display: flex;
 		justify-content: center;
 		align-items: stretch;
@@ -100,7 +97,7 @@ $form-border-radius: rem-calc(3);
 	}
 
 	.pill {
-		background: $tab-pill-background;
+		background: $platinum;
 		min-width: rem-calc(85);
 
 		&:first-child {
@@ -131,8 +128,8 @@ $form-border-radius: rem-calc(3);
 		}
 
 		&:checked + .label {
-			background: $tab-pill-active-background;
 			color: $white;
+			background: $form-checked-color;
 			cursor: default;
 			border-color: $kiva-green;
 			position: relative;
@@ -150,7 +147,7 @@ $form-border-radius: rem-calc(3);
 		&[disabled]:active + .label,
 		&[disabled] + .title:hover {
 			background: inherit;
-			color: $tab-pill-color;
+			color: #fff;
 		}
 	}
 }

@@ -197,15 +197,15 @@ $track-fill: $kiva-light-green;
 			}
 
 			&::-webkit-slider-thumb {
-				@include input-focus();
+				@include form-focus();
 			}
 
 			&::-moz-range-thumb {
-				@include input-focus();
+				@include form-focus();
 			}
 
 			&::-ms-thumb {
-				@include input-focus();
+				@include form-focus();
 			}
 		}
 

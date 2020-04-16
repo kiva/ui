@@ -157,8 +157,6 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-$form-border-radius: rem-calc(3);
-
 .custom-amount-holder {
 	position: absolute;
 	top: 0;
@@ -188,8 +186,7 @@ $form-border-radius: rem-calc(3);
 	.label {
 		flex: 1;
 		padding: rem-calc(6) rem-calc(13);
-		color: $tab-pill-color;
-		border: $tab-pill-border;
+		border: rem-calc(1) solid $form-border-color;
 		display: flex;
 		justify-content: center;
 		align-items: stretch;
@@ -207,7 +204,7 @@ $form-border-radius: rem-calc(3);
 
 	.pill {
 		position: relative;
-		background: $tab-pill-background;
+		background: $platinum;
 		min-width: rem-calc(85);
 
 		&:first-child {
@@ -232,13 +229,11 @@ $form-border-radius: rem-calc(3);
 		width: 0;
 
 		&:focus + .label {
-			border: $input-border-focus;
-			background-color: $input-background-focus;
-			box-shadow: $input-shadow-focus;
+			@include form-focus();
 		}
 
 		&:checked + .label {
-			background: $tab-pill-active-background;
+			background: $form-checked-color;
 			color: $white;
 			cursor: default;
 			border-color: $kiva-green;
@@ -257,7 +252,7 @@ $form-border-radius: rem-calc(3);
 		&[disabled]:active + .label,
 		&[disabled] + .title:hover {
 			background: inherit;
-			color: $tab-pill-color;
+			color: #fff;
 		}
 	}
 }

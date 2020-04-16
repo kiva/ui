@@ -103,7 +103,7 @@ export default {
 
 		&:focus + .label {
 			.disc {
-				@include input-focus();
+				@include form-focus();
 			}
 		}
 

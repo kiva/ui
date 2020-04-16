@@ -131,8 +131,6 @@ export default {
 <style lang="scss">
 @import "settings";
 
-$form-border-radius: rem-calc(3);
-
 .payment-holder {
 	position: relative;
 	display: inline-block;
