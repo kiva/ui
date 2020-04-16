@@ -779,7 +779,6 @@ $error-red: #fdeceb;
 
 		label {
 			font-size: 1rem;
-			color: $charcoal;
 			text-align: left;
 		}
 
@@ -846,11 +845,6 @@ $error-red: #fdeceb;
 			margin-left: 1rem;
 		}
 
-		.card-last-four-digits,
-		.use-new-card-text {
-			color: $tab-pill-color;
-		}
-
 		.new-payment-radio-label,
 		.saved-payment-radio-label {
 			display: flex;
@@ -871,7 +865,6 @@ $error-red: #fdeceb;
 		.saved-payment-radio[type="radio"]:checked ~ .card-last-four-digits,
 		#new-payment-radio[type="radio"]:checked + .use-new-card-text {
 			font-weight: 500;
-			color: $charcoal;
 		}
 
 		.vault-checkbox-wrapper {
