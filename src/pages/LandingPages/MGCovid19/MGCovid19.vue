@@ -64,27 +64,7 @@
 			</div>
 		</div>
 
-		<div class="footnotes row page-content">
-			<div class="columns">
-				<h3>Footnotes:</h3>
-				<ul>
-					<li>
-						If you choose “One-time support”, the selected amount will only be deposited once.
-					</li>
-					<li>
-						If there is no longer a need for this fund, we’ll get in touch with you to ask
-						you to change your settings.
-					</li>
-					<!-- <li>
-						We will record prior category settings for previous Monthly Good subscribers.
-					</li> -->
-					<li>
-						Deposited funds for COVID-19 relief may be withdrawn or relent after they have
-						gone through 1 full loan cycle.
-					</li>
-				</ul>
-			</div>
-		</div>
+		<m-g-covid-faq />
 	</www-page>
 </template>
 
@@ -96,6 +76,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import MGCovidExplained from './MGCovidExplained';
+import MGCovidFaq from './MGCovidFAQ';
 
 import CovidLandingForm from './CovidLandingForm';
 
@@ -116,6 +97,7 @@ export default {
 		KvHero,
 		KvResponsiveImage,
 		MGCovidExplained,
+		MGCovidFaq,
 	},
 	props: {
 		category: {

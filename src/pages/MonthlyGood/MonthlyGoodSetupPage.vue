@@ -137,7 +137,8 @@
 
 								<div class="row text-left">
 									<div class="columns">
-										<strong class="additional-left-pad-spans">Total/month</strong>
+										<strong v-if="!onetime" class="additional-left-pad-spans">Total/month</strong>
+										<strong v-else class="additional-left-pad-spans">Total</strong>
 									</div>
 
 									<div class="medium-5 small-6 columns">
