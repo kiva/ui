@@ -11,8 +11,8 @@
 			<template v-slot:overlayContent>
 				<div class="row">
 					<div class="overlay-column columns medium-10 medium-offset-1 large-6 large-offset-0 xlarge-5">
-						<p class="mg-headline" v-html="pageCopy.headline">
-						</p>
+						<h1 class="mg-headline" v-html="pageCopy.headline">
+						</h1>
 						<p class="mg-subhead">
 							{{ pageCopy.subhead }}
 						</p>
@@ -91,6 +91,9 @@ const pageQuery = gql`{
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
 export default {
+	metaInfo: {
+		title: "Join Kiva's Global COVID-19 Response"
+	},
 	components: {
 		WwwPage,
 		CovidLandingForm,
