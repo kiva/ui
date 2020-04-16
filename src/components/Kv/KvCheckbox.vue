@@ -136,6 +136,7 @@ export default {
 		&:active + .label {
 			.square {
 				background-color: $input-active-color;
+				border-color: $input-checked-border-color;
 			}
 		}
 
