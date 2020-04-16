@@ -4,11 +4,11 @@
 			<h1 class="column small-12 text-center">
 				Set your commitment once
 			</h1>
-			<h2 class="featured-text text-center">
+			<h2 class="small-10 small-offset-1 medium-8 medium-offset-2 featured-text text-center">
 				Kiva will do the rest to make sure every $ goes
 				to help COVID-19 impacted individuals and businesses.
 			</h2>
-			<div class="column small-12 medium-6 large-3 step-wrapper">
+			<div class="column small-12 medium-6 large-4 step-wrapper">
 				<span class="number">
 					1
 				</span>
@@ -20,7 +20,7 @@
 					a monthly amount to go toward COVID-19 relief that works for you.
 				</div>
 			</div>
-			<div class="column small-12 medium-6 large-3 step-wrapper">
+			<div class="column small-12 medium-6 large-4 step-wrapper">
 				<span class="number">
 					2
 				</span>
@@ -32,7 +32,7 @@
 					Receive a monthly impact report on your COVID-19 relief support
 				</div>
 			</div>
-			<div class="column small-12 medium-6 large-3 step-wrapper">
+			<div class="column small-12 medium-6 large-4 step-wrapper">
 				<span class="number">
 					3
 				</span>
@@ -84,10 +84,6 @@ export default {
 	h3,
 	.description-text {
 		text-align: center;
-
-		@include breakpoint(medium) {
-			text-align: unset;
-		}
 	}
 
 	h1 {
@@ -108,20 +104,12 @@ export default {
 		position: relative;
 		top: 0.625rem;
 		padding-left: 5.3rem;
-
-		@include breakpoint(medium) {
-			padding-left: unset;
-		}
 	}
 
 	.description-text {
 		max-width: 12.5rem;
 		margin: 0 auto;
 		line-height: 1.4;
-
-		@include breakpoint(medium) {
-			margin: unset;
-		}
 	}
 
 	.mg-image {
@@ -129,11 +117,6 @@ export default {
 		display: block;
 		margin: 0 auto 1rem auto;
 		min-height: 4.75rem;
-
-		@include breakpoint(medium) {
-			text-align: unset;
-			margin-left: 1.25rem;
-		}
 	}
 
 	.learn-more-wrapper {
