@@ -89,10 +89,11 @@ export default {
 		min-height: 100%;
 		margin-left: rem-calc(-1);
 		line-height: 1.3;
+		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
+		transition: border-color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 
 		&:hover {
 			background: $white;
-			color: $kiva-text-dark;
 		}
 	}
 
@@ -122,22 +123,20 @@ export default {
 		width: 0;
 
 		&:focus + .label {
-			border: $input-border-focus;
-			background-color: $input-background-focus;
-			box-shadow: $input-shadow-focus;
+			@include form-focus();
 		}
 
 		&:checked + .label {
 			color: $white;
 			background: $form-checked-color;
 			cursor: default;
-			border-color: $kiva-green;
+			border-color: $form-checked-border-color;
 			position: relative;
 		}
 
 		&:active + .label {
-			background: $kiva-green;
-			color: $white;
+			background: $form-active-color;
+			color: #fff;
 		}
 
 		&[disabled] + .label {

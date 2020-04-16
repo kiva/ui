@@ -195,10 +195,10 @@ export default {
 		text-align: center;
 		min-height: 100%;
 		line-height: 1.3;
+		transition: border-color 100ms ease-in-out, box-shadow 100ms ease-in-out;
 
 		&:hover {
 			background: $white;
-			color: $kiva-text-dark;
 		}
 	}
 
@@ -236,12 +236,12 @@ export default {
 			background: $form-checked-color;
 			color: $white;
 			cursor: default;
-			border-color: $kiva-green;
+			border-color: $form-checked-border-color;
 			position: relative;
 		}
 
 		&:active + .label {
-			background: $kiva-green;
+			background: $form-active-color;
 			color: $white;
 		}
 

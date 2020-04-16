@@ -78,11 +78,11 @@ export default {
 @import 'settings';
 
 $thumb-diameter: 1.25em;
-$thumb-fill: #60b75f;
-$thumb-fill-active: $kiva-green;
+$thumb-fill: $form-checked-color;
+$thumb-fill-active: $form-active-color;
 $track-height: 0.375em;
-$track-background: $kiva-stroke-gray;
-$track-fill: $kiva-light-green;
+$track-background: $form-border-color;
+$track-fill: $form-checked-color;
 
 @mixin thumb() {
 	box-sizing: border-box;

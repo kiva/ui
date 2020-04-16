@@ -58,12 +58,15 @@ export default {
 
 .kv-toggle {
 	position: relative;
-	cursor: pointer;
 
 	.label {
 		display: flex;
 		margin: 0;
 		font-size: 1em;
+
+		&:hover {
+			cursor: pointer;
+		}
 	}
 
 	.circle {
@@ -75,8 +78,8 @@ export default {
 		margin-right: 0.5em;
 		border-radius: 0.75em;
 		content: "";
-		background-color: $kiva-stroke-gray;
 		transition: background-color 0.1s ease;
+		background-color: $form-border-color;
 
 		&::after {
 			content: '';
@@ -106,7 +109,7 @@ export default {
 
 		&:checked + .label {
 			.circle {
-				background-color: $kiva-light-green;
+				background-color: $form-checked-color;
 
 				&::after {
 					left: 1em;
@@ -118,7 +121,7 @@ export default {
 
 		&:active + .label {
 			.circle {
-				background-color: $kiva-green;
+				background-color: $form-active-color;
 			}
 		}
 	}
