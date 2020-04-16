@@ -1,5 +1,5 @@
 <template>
-	<div class="how-works-section-wrapper">
+	<div class="how-works-section-wrapper" :class="{'experiment':isExperimentActive}">
 		<div class="row">
 			<h1 class="column small-12 text-center impact-text">
 				How it works
@@ -47,6 +47,11 @@ export default {
 		IconAutoDepositAlternate,
 		IconLend,
 		IconUpdatesAlternate,
+	},
+	props: {
+		isExperimentActive: {
+			type: Boolean
+		}
 	},
 };
 
@@ -98,6 +103,16 @@ export default {
 
 	.learn-more-wrapper {
 		margin-bottom: 2rem;
+	}
+}
+.how-works-section-wrapper.experiment {
+	padding-top: 12rem;
+	@include breakpoint(large) {
+		padding-top: 6rem;
+	}
+
+	@include breakpoint(xlarge) {
+		padding-top: 1rem;
 	}
 }
 </style>
