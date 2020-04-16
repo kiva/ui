@@ -57,7 +57,7 @@ export default {
 
 .how-works-section-wrapper {
 	@include breakpoint(medium only) {
-		padding-top: 14rem;
+		padding-top: 12rem;
 	}
 
 	@include breakpoint(small only) {
