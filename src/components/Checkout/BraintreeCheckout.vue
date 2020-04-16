@@ -801,7 +801,7 @@ $error-red: #fdeceb;
 			color: $kiva-text-dark;
 			margin: 0 0 0.25rem;
 			padding: 0 rem-calc(8);
-			border-radius: $form-border-radius;
+			border-radius: $input-border-radius;
 
 			[type=number],
 			[type=text] {

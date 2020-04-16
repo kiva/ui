@@ -138,7 +138,7 @@ export default {
 	text-align: center;
 	border: 1px solid $subtle-gray; //#c3c3c3
 	padding: 0 0.6rem 1.25rem;
-	border-radius: $form-border-radius;
+	border-radius: $input-border-radius;
 	margin: 3rem auto 0 auto;
 	min-width: rem-calc(300);
 	width: 100%;
@@ -157,7 +157,7 @@ export default {
 		top: -1.2rem;
 		background: $ghost;
 		display: inline-block;
-		border-radius: $form-border-radius;
+		border-radius: $input-border-radius;
 	}
 
 	.card-title {

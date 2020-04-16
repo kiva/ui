@@ -78,11 +78,11 @@ export default {
 @import 'settings';
 
 $thumb-diameter: 1.25em;
-$thumb-fill: $form-checked-color;
-$thumb-fill-active: $form-active-color;
+$thumb-fill: $input-checked-color;
+$thumb-fill-active: $input-active-color;
 $track-height: 0.375em;
-$track-background: $form-border-color;
-$track-fill: $form-checked-color;
+$track-background: $input-border-color;
+$track-fill: $input-checked-color;
 
 @mixin thumb() {
 	box-sizing: border-box;
@@ -197,15 +197,15 @@ $track-fill: $form-checked-color;
 			}
 
 			&::-webkit-slider-thumb {
-				@include form-focus();
+				@include input-focus();
 			}
 
 			&::-moz-range-thumb {
-				@include form-focus();
+				@include input-focus();
 			}
 
 			&::-ms-thumb {
-				@include form-focus();
+				@include input-focus();
 			}
 		}
 

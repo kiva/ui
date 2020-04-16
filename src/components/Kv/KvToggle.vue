@@ -79,7 +79,7 @@ export default {
 		border-radius: 0.75em;
 		content: "";
 		transition: background-color 0.1s ease;
-		background-color: $form-border-color;
+		background-color: $input-border-color;
 
 		&::after {
 			content: '';
@@ -103,13 +103,13 @@ export default {
 
 		&:focus + .label {
 			.circle {
-				@include form-focus();
+				@include input-focus();
 			}
 		}
 
 		&:checked + .label {
 			.circle {
-				background-color: $form-checked-color;
+				background-color: $input-checked-color;
 
 				&::after {
 					left: 1em;
@@ -121,7 +121,7 @@ export default {
 
 		&:active + .label {
 			.circle {
-				background-color: $form-active-color;
+				background-color: $input-active-color;
 			}
 		}
 	}

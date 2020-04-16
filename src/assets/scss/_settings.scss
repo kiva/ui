@@ -574,13 +574,13 @@ $closebutton-color-hover: $black;
 
 // 15.1 Form Styling - vars added by Kiva
 // -------------
-$form-border-radius: rem-calc(3);
-$form-checked-color: $kiva-green;
-$form-active-color: $kiva-light-green;
-$form-border-color: $subtle-gray;
-$form-checked-border-color: $kiva-green;
+$input-border-radius: rem-calc(3);
+$input-checked-color: $kiva-green;
+$input-active-color: $kiva-light-green;
+$input-border-color: $subtle-gray;
+$input-checked-border-color: $kiva-green;
 
-@mixin form-focus() {
+@mixin input-focus() {
 	box-shadow: 0 0 0 0.25em rgba($kiva-accent-green, 0.4);
 }
 

@@ -359,7 +359,7 @@ $loan-triangle-size: rem-calc(12);
 		margin: 0 $loan-circle-margin 0 0;
 
 		&:focus {
-			@include form-focus();
+			@include input-focus();
 
 			outline: 0;
 		}

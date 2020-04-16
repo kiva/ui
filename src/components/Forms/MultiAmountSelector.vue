@@ -167,7 +167,7 @@ export default {
 
 	.custom-input-element {
 		height: 2.125rem;
-		border-radius: $form-border-radius;
+		border-radius: $input-border-radius;
 		margin: 0;
 		font-size: 1em;
 		text-align: center;
@@ -186,7 +186,7 @@ export default {
 	.label {
 		flex: 1;
 		padding: rem-calc(6) rem-calc(13);
-		border: rem-calc(1) solid $form-border-color;
+		border: rem-calc(1) solid $input-border-color;
 		display: flex;
 		justify-content: center;
 		align-items: stretch;
@@ -209,16 +209,16 @@ export default {
 
 		&:first-child {
 			.label {
-				border-bottom-left-radius: $form-border-radius;
-				border-top-left-radius: $form-border-radius;
+				border-bottom-left-radius: $input-border-radius;
+				border-top-left-radius: $input-border-radius;
 				margin-left: 0;
 			}
 		}
 
 		&:last-child {
 			.label {
-				border-bottom-right-radius: $form-border-radius;
-				border-top-right-radius: $form-border-radius;
+				border-bottom-right-radius: $input-border-radius;
+				border-top-right-radius: $input-border-radius;
 			}
 		}
 	}
@@ -229,19 +229,19 @@ export default {
 		width: 0;
 
 		&:focus + .label {
-			@include form-focus();
+			@include input-focus();
 		}
 
 		&:checked + .label {
-			background: $form-checked-color;
+			background: $input-checked-color;
 			color: $white;
 			cursor: default;
-			border-color: $form-checked-border-color;
+			border-color: $input-checked-border-color;
 			position: relative;
 		}
 
 		&:active + .label {
-			background: $form-active-color;
+			background: $input-active-color;
 			color: $white;
 		}
 
@@ -265,18 +265,18 @@ export default {
 		margin: 0.5rem;
 
 		.split-pill-label {
-			border-radius: $form-border-radius;
+			border-radius: $input-border-radius;
 		}
 
 		&:first-child {
 			.split-pill-label {
-				border-radius: $form-border-radius;
+				border-radius: $input-border-radius;
 			}
 		}
 
 		&:last-child {
 			.split-pill-label {
-				border-radius: $form-border-radius;
+				border-radius: $input-border-radius;
 			}
 		}
 	}

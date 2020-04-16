@@ -83,7 +83,7 @@ export default {
 		flex-shrink: 0;
 		border-radius: 0.125em;
 		background-color: #fff;
-		border: 0.125em solid $form-border-color;
+		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
 		position: relative;
 		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
@@ -115,8 +115,8 @@ export default {
 
 		&:checked + .label {
 			.square {
-				background-color: $form-checked-color;
-				border-color: $form-checked-border-color;
+				background-color: $input-checked-color;
+				border-color: $input-checked-border-color;
 				border-width: 0.0625em;
 
 				&::after {
@@ -129,13 +129,13 @@ export default {
 
 		&:focus + .label {
 			.square {
-				@include form-focus();
+				@include input-focus();
 			}
 		}
 
 		&:active + .label {
 			.square {
-				background-color: $form-active-color;
+				background-color: $input-active-color;
 			}
 		}
 
