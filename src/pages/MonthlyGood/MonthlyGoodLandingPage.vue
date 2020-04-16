@@ -41,10 +41,10 @@
 			</template>
 		</kv-hero>
 		<how-it-works
-				v-if="!isExperimentActive"
+			v-if="!isExperimentActive"
 		/>
 		<how-it-works-experiment
-				v-if="isExperimentActive"
+			v-if="isExperimentActive"
 		/>
 		<email-preview />
 		<kiva-as-expert>
@@ -88,7 +88,7 @@ import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions';
-import HowItWorksExperiment from "./HowItWorksExperiment";
+import HowItWorksExperiment from './HowItWorksExperiment';
 
 const pageQuery = gql`{
 	my {
