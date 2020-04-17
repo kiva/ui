@@ -75,14 +75,23 @@ describe('Autolending Page Spec', () => {
 
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
+
+			// Assert that toggle displays 'OFF'
+			cy.get('[data-test=autolending-status]').contains('on');
+			// Show the modal
+			cy.get('[data-test=autolending-status]').click();
+
+			// Wait for modal
+			// Select the radio
+			cy.get('.autolending-status-lightbox')
+				.should('be.visible')
+				.find('[data-test=is-enabled-false] + label')
+				.click();
+
+			// Hit save button
+			cy.get('[data-test=status-save-button]').first().click();
 			// Assert that toggle displays 'on'
-			cy.get('[data-test=main-toggle]').contains('Auto-lending on');
-			// Flip the toggle
-			cy.get('[data-test=main-toggle]').click();
-			// Save the profile settings
-			saveSettings();
-			// Assert that toggle displays 'off'
-			cy.get('[data-test=main-toggle]').contains('Auto-lending off');
+			cy.get('[data-test=autolending-status]').contains('off');
 		});
 
 		it('Can be turned from off to on', () => {
@@ -99,14 +108,22 @@ describe('Autolending Page Spec', () => {
 
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
-			// Assert that toggle displays 'off'
-			cy.get('[data-test=main-toggle]').contains('Auto-lending off');
-			// Flip the toggle
-			cy.get('[data-test=main-toggle]').click();
-			// Save the profile settings
-			saveSettings();
+			// Assert that toggle displays 'OFF'
+			cy.get('[data-test=autolending-status]').contains('off');
+			// Show the modal
+			cy.get('[data-test=autolending-status]').click();
+
+			// Wait for modal
+			// Select the radio
+			cy.get('.autolending-status-lightbox')
+				.should('be.visible')
+				.find('[data-test=is-enabled-true] + label')
+				.click();
+
+			// Hit save button
+			cy.get('[data-test=status-save-button]').first().click();
 			// Assert that toggle displays 'on'
-			cy.get('[data-test=main-toggle]').contains('Auto-lending on');
+			cy.get('[data-test=autolending-status]').contains('on');
 		});
 	});
 
