@@ -1,5 +1,9 @@
 <template>
-	<www-page id="co19-landing">
+	<www-page
+		id="co19-landing"
+		:header-theme="co19HeaderTheme"
+		:footer-theme="co19FooterTheme"
+	>
 		<kv-hero class="mg-hero">
 			<!-- TODO Update to handle new images and design -->
 			<template v-slot:images>
@@ -110,6 +114,20 @@ export default {
 	},
 	data() {
 		return {
+			co19HeaderTheme: {
+				themeKey: 'CO19',
+				backgroundColor: '#fff',
+				linkColor: '#4faf4e',
+				linkHoverColor: '#efefef',
+				separatorColor: 'transparent'
+			},
+			co19FooterTheme: {
+				themeKey: 'CO19',
+				backgroundColor: '#fff',
+				textColor: '#484848',
+				linkColor: '#4faf4e',
+				separatorColor: '#8ccb8c'
+			},
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
@@ -162,7 +180,7 @@ export default {
 }
 
 .mg-hero {
-	background-color: $kiva-green;
+	background-color: $white;
 	margin-bottom: 0;
 	padding-bottom: 1rem;
 	position: relative;
@@ -194,12 +212,11 @@ export default {
 
 			.overlay-column {
 				max-width: none;
-				// @include breakpoint(medium) {
-				// 	max-width: 31.25rem;
-				// }
 				padding: 1.5rem 1.5rem 1.25rem;
 				background-color: $white;
 				border-radius: 1rem;
+				// initial idea for giving some definition to the form over a white bg
+				box-shadow: 0 0 rem-calc(4) rgba(0, 0, 0, 0.2);
 
 				@include breakpoint(large) {
 					max-width: 31.25rem;

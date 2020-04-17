@@ -16,7 +16,7 @@
 					<div class="panel zigzag-bottom">
 						<div class="row align-center text-center">
 							<div class="medium-10 small-12 columns">
-								<div class="row column" v-if="!isOnetime">
+								<div class="row column" v-if="!fromCovidLanding">
 									<strong>Each month on the</strong>
 									<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="dayOfMonth">
 										Day of the Month
@@ -159,7 +159,7 @@
 									</div>
 								</div>
 
-								<div class="row text-left" v-if="showCategorySelector">
+								<div class="row text-left" v-if="!fromCovidLanding">
 									<div class="small-12 columns">
 										<div class="additional-left-pad-spans">
 											Select a category to focus your lending
@@ -336,7 +336,6 @@ export default {
 			hasAutoLending: false,
 			hasBillingAgreement: false,
 			hasLegacySubscription: false,
-			showCategorySelector: true,
 		};
 	},
 	mixins: [
@@ -406,10 +405,6 @@ export default {
 		// Sanitize and set initial form values.
 		if (this.lendingCategories.find(category => category.value === this.category)) {
 			this.selectedGroup = this.category;
-		}
-		// ingress from specific routes assumes pre-selected category
-		if (this.source === 'covid19response') {
-			this.showCategorySelector = false;
 		}
 
 		if (!Number.isNaN(Number(this.amount))) {
@@ -547,6 +542,9 @@ export default {
 		isOnetime() {
 			// ensure this is cast to a bool for use in Graphql mutation
 			return this.onetime === 'true';
+		},
+		fromCovidLanding() {
+			return this.source === 'covid19response';
 		}
 	},
 };
