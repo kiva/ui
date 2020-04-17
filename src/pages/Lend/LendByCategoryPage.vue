@@ -11,18 +11,6 @@
 			:show-category-description="showCategoryDescription"
 		/>
 
-		<recommended-loans-row
-			v-if="showRecommendedLoansRow"
-			:category-row-type="categoryRowType"
-			:is-logged-in="isLoggedIn"
-			:items-in-basket="itemsInBasket"
-			:loan-channel="recommendedLoansChannel"
-			:set-id="categorySetId"
-			:show-category-description="showCategoryDescription"
-			:show-expandable-loan-cards="showExpandableLoanCards"
-			@scrolling-row="handleScrollingRow"
-		/>
-
 		<div v-if="showFavoriteCountryRow">
 			<favorite-country-loans
 				:items-in-basket="itemsInBasket"
@@ -98,6 +86,8 @@
 <script>
 import _drop from 'lodash/drop';
 import _each from 'lodash/each';
+import _filter from 'lodash/filter';
+import _find from 'lodash/find';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _take from 'lodash/take';
@@ -124,12 +114,6 @@ import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
 import FavoriteCountryLoans from '@/components/LoansByCategory/FavoriteCountryLoans';
-import RecommendedLoansRow from './RecommendedLoansRow';
-
-// Insert Loan Channel Ids here
-// They should also be added to the possibleCategories in CategoryAdminControls
-// You'll need use the same id when you push data into customCategories
-const customCategoryIds = [];
 
 // Row Limiter
 // > This controls how may rows are loaded on the server
@@ -146,7 +130,6 @@ export default {
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,
 		FavoriteCountryLoans,
-		RecommendedLoansRow,
 	},
 	inject: ['apollo', 'kvAuth0'],
 	mixins: [
@@ -160,12 +143,12 @@ export default {
 			isAdmin: false,
 			isLoggedIn: false,
 			userId: null,
+			firstName: 'you',
 			categorySetting: [],
 			categorySetId: '',
 			itemsInBasket: [],
 			showFeaturedHeroLoan: true,
 			realCategories: [],
-			customCategories: [],
 			clientCategories: [],
 			rowLazyLoadComplete: false,
 			showCategoryDescription: false,
@@ -179,9 +162,8 @@ export default {
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
 			featuredSectorExpVersion: null,
-			recommendedLoansRowExpVersion: null,
-			recommendedLoansChannel: null,
 			recommendedLoans: [],
+			categoryRowHillclimbExpVersion: null,
 		};
 	},
 	computed: {
@@ -197,8 +179,34 @@ export default {
 				// and re-order to match the setting
 			}).sort(indexIn(this.categoryIds, 'id'));
 		},
+		// Define any categories that need extra handling
+		customCategories() {
+			const categories = [];
+			// Add recommended loans category row
+			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
+			if (recLoanChannel) {
+				const channel = {
+					id: recLoanChannel.id,
+					loans: this.recommendedLoans,
+					url: '',
+				};
+				if (this.userId) {
+					channel.name = `Recommended for ${this.firstName}`;
+					channel.description = 'Loans we think you\'ll love based on your lending history.';
+				} else {
+					channel.name = 'Recommended by others';
+					channel.description = 'Log in for personalized recommendations.';
+				}
+				categories.push(channel);
+			}
+			// @TODO: Add MLLoanChannel type categories
+			return categories;
+		},
+		customCategoryIds() {
+			return _map(this.customCategories, 'id');
+		},
 		realCategoryIds() {
-			return _without(this.categoryIds, ...customCategoryIds);
+			return _without(this.categoryIds, ...this.customCategoryIds);
 		},
 		leadHeaderFilterLink() {
 			return this.lendFilterExpVersion === 'b' ? '/lend/filter' : '/lend';
@@ -208,9 +216,6 @@ export default {
 				return true;
 			}
 			return false;
-		},
-		showRecommendedLoansRow() {
-			return this.recommendedLoansRowExpVersion === 'shown' && this.recommendedLoansChannel;
 		},
 		categoryRowType() {
 			return this.showHoverLoanCards ? CategoryRowHover : CategoryRow;
@@ -247,21 +252,6 @@ export default {
 				}
 			}
 
-			// track recommended loans row
-			if (this.showRecommendedLoansRow && this.showRecommendedLoansRow.id) {
-				if (this.recommendedLoans && this.recommendedLoans.values && this.recommendedLoans.values.length > 0) {
-					const recommendedLoanValues = _get(this.recommendedLoans, 'values');
-					_each(recommendedLoanValues, (loan, loanIndex) => {
-						loanIds.push({
-							r: -2,
-							p: loanIndex + 1,
-							c: 95,
-							l: loan.id
-						});
-					});
-				}
-			}
-
 			_each(categories, (category, catIndex) => {
 				_each(category.loans.values, (loan, loanIndex) => {
 					loanIds.push({
@@ -276,34 +266,15 @@ export default {
 			return pageViewTrackData;
 		},
 		setRows(data) {
-			const rowData = readJSONSetting(data, 'general.rows.value') || [];
-			const expData = readJSONSetting(data, 'general.rowsExp.value') || {};
-
-			// Read the assigned category rows experiment version from the cache
-			const versionData = this.apollo.readFragment({
-				id: 'Experiment:category_rows',
-				fragment: experimentVersionFragment,
-			}) || {};
-			const variantRows = _get(expData, `variants.${versionData.version}.categories`);
-
-			// Set from the ids for the variant, or the default if that is undefined
-			this.categorySetting = variantRows || rowData;
-			this.categorySetId = versionData.version || _get(expData, 'control.key');
-		},
-		setCustomRowData(data) { // eslint-disable-line
-			this.customCategories = [];
-			// check for loans before pushing this as we won't want to show an empty row
-			// const otherLoans = _get(data, 'lend.otherLoans.values') || [];
-			// if (otherLoans.length) {
-			// 	this.customCategories.push({
-			// 		id: 65,
-			// 		name: 'Other Custom category',
-			// 		url: '', // required field
-			// 		loans: {
-			// 			values: otherLoans,
-			// 		},
-			// 	});
-			// }
+			if (this.categoryRowHillclimbExpVersion === 'variant-a') {
+				// Get the array of channel objects from the ml multi-armed bandit
+				this.categorySetting = _get(data, 'ml.orderedLoanChannels') || [];
+				this.categorySetId = 'variant-a';
+			} else {
+				// Get the array of channel objects from settings
+				this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
+				this.categorySetId = 'control';
+			}
 		},
 		fetchRemainingLoanChannels() {
 			const ssrLoanIds = [];
@@ -314,18 +285,13 @@ export default {
 				});
 			});
 			// Client Fetch the remaining category rows
-			const hoverLoanCardExperiment = this.apollo.readFragment({
-				id: 'Experiment:hover_loan_cards',
-				fragment: experimentVersionFragment,
-			}) || {};
-			const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 			return this.apollo.query({
 				query: loanChannelQuery,
 				variables: {
 					ids: _drop(this.realCategoryIds, ssrRowLimiter),
 					excludeIds: ssrLoanIds,
-					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
+					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 					// @todo variables for fetching data for custom channels
 				},
 			}).then(({ data }) => {
@@ -335,17 +301,16 @@ export default {
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
-			const hoverLoanCardExperiment = this.apollo.readFragment({
-				id: 'Experiment:hover_loan_cards',
-				fragment: experimentVersionFragment,
-			}) || {};
-			const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 			this.apollo.watchQuery({
 				query: loanChannelQuery,
 				variables: {
 					ids: this.realCategoryIds,
-					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
+					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+				},
+			}).subscribe({
+				next: ({ data }) => {
+					this.realCategories = _get(data, 'lend.loanChannelsById') || this.realCategories;
 				},
 			});
 			this.apollo.watchQuery({ query: lendByCategoryQuery }).subscribe({
@@ -353,6 +318,7 @@ export default {
 					this.isAdmin = !!_get(data, 'my.isAdmin');
 					this.isLoggedIn = !!_get(data, 'my');
 					this.userId = _get(data, 'my.userAccount.id') || null;
+					this.firstName = _get(data, 'my.userAccount.firstName') || 'you';
 					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 					// CASH-794 Favorite Country Row
 					this.hasFavoriteCountry = !!_get(data, 'my.recommendations.topCountry');
@@ -427,90 +393,38 @@ export default {
 				);
 			}
 		},
-		initializeRecommendedLoansRowExp() {
-			// experiment: CASH-1807 "Loans For You" Recommendation Row
-			// get assignment
-			const recommendationChannel = 0;
-			const recommendedLoansRowEXP = this.apollo.readFragment({
-				id: 'Experiment:recommendation_channel',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.recommendedLoansRowExpVersion = recommendedLoansRowEXP.version;
-
+		initializeRecommendedLoansRow() {
 			// Load recommended loan data
-			if (recommendedLoansRowEXP.version === 'shown') {
-				try {
-					const variables = {
-						basketId: cookieStore.get('kvbskt'),
-						channelId: recommendationChannel,
-						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-						loginId: numeral(this.userId).value() || 0,
-					};
-					const data = this.apollo.readQuery({
-						query: recommendedLoansQuery,
-						variables,
-					});
+			try {
+				const variables = {
+					basketId: cookieStore.get('kvbskt'),
+					channelId: 0,
+					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					loginId: numeral(this.userId).value() || 0,
+				};
+				const data = this.apollo.readQuery({
+					query: recommendedLoansQuery,
+					variables,
+				});
 
-					// Filter out funded loans
-					const initialLoanSet = _get(data, 'ml.recommendationChannel.loans');
-					const filteredLoanSet = this.filterFundedLoans(_get(initialLoanSet, 'values'));
+				// Filter out funded loans
+				const initialLoanSet = _get(data, 'ml.recommendationChannel.loans');
+				const filteredLoanSet = this.filterFundedLoans(_get(initialLoanSet, 'values'));
 
-					// share out results of loan query for row analytics
-					this.recommendedLoans = {
-						values: filteredLoanSet,
-						__typename: 'LoanBasicCollection'
-					};
-
-					if (filteredLoanSet && filteredLoanSet.length > 0) {
-						const channel = {
-							id: 95,
-							loans: this.recommendedLoans,
-							url: '',
-						};
-						if (this.userId) {
-							const firstName = _get(data, 'my.userAccount.firstName') || 'you';
-							channel.name = `Recommended for ${firstName}`;
-							channel.description = 'Loans we think you\'ll love based on your lending history.';
-						} else {
-							channel.name = 'Recommended by others';
-							channel.description = 'Log in for personalized recommendations.';
-						}
-						this.recommendedLoansChannel = channel;
-					}
-				} catch (e) {
-					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
-				}
+				// share out results of loan query for row analytics
+				this.recommendedLoans = {
+					values: filteredLoanSet,
+					__typename: 'LoanBasicCollection'
+				};
+			} catch (e) {
+				logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
 			}
-
-			// Determine tracking label
-			let label;
-			if (this.showRecommendedLoansRow) {
-				if (this.kvAuth0.user) {
-					label = 'd'; // variant logged in
-				} else {
-					label = 'b'; // variant logged out
-				}
-			} else if (this.kvAuth0.user) {
-				label = 'c'; // control logged in
-			} else {
-				label = 'a'; // control logged out
-			}
-
-			// Logged in user and non-users are included in this experiment,
-			// logged-in users are automatically tracked with their id
-			// Fire Event for Exp CASH-1807
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-1807-Mar2020',
-				label,
-				this.showRecommendedLoansRow ? recommendationChannel : null,
-			);
 		},
 		fetchRecommendedLoans() {
 			// once the initial loan set is filtered and loaded, we query for more loans if there are too few
 			// if there are 6 or fewer recommended loans we'll fetch 20 more
-			if (this.testForLowRecommendedLoans(6)) {
+			if (_get(this, 'recommendedLoans.values.length') < 6) {
 				const variables = {
 					basketId: cookieStore.get('kvbskt'),
 					channelId: 0,
@@ -530,22 +444,10 @@ export default {
 					// add new loans to row
 					if (filteredBackfillLoans.length > 0) {
 						this.recommendedLoans.values = this.recommendedLoans.values.concat(filteredBackfillLoans);
-						Promise.resolve();
 					}
 				});
 			}
 			return Promise.resolve();
-		},
-		testForLowRecommendedLoans(threshold) {
-			if (this.showRecommendedLoansRow && this.showRecommendedLoansRow.id) {
-				if (this.recommendedLoans
-					&& this.recommendedLoans.values
-					&& this.recommendedLoans.values.length < threshold) {
-					return true;
-				}
-				return false;
-			}
-			return false;
 		},
 		initializeCategoryRowHillclimb() {
 			// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
@@ -570,19 +472,19 @@ export default {
 	apollo: {
 		preFetch(config, client, { kvAuth0 }) {
 			let rowData;
-			let expData;
+			let expRowData;
 
 			return client.query({
 				query: lendByCategoryQuery
 			}).then(({ data }) => {
 				// Get the array of channel objects from settings
 				rowData = readJSONSetting(data, 'general.rows.value') || [];
-				// Get the category rows experiment object from settings
-				expData = readJSONSetting(data, 'general.rowsExp.value') || {};
+				// Get the array of channel objects from the ml multi-armed bandit
+				expRowData = _get(data, 'ml.orderedLoanChannels') || [];
 
 				return Promise.all([
-					// Get the assigned category rows experiment version
-					client.query({ query: experimentQuery, variables: { id: 'category_rows' } }),
+					// experiment: CASH-970 Category Row Sort by MultiArmed Bandit algorithm experiment
+					client.query({ query: experimentQuery, variables: { id: 'category_row_hillclimb' } }),
 					// experiment: category description
 					client.query({ query: experimentQuery, variables: { id: 'category_description' } }),
 					// experiment: add to basket interstitial
@@ -593,14 +495,21 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
 					// experiment: CASH-1113 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'featured_sector' } }),
-					// experiment: CASH-1807 Recommendation Channel Experiment (forthcoming)
-					client.query({ query: experimentQuery, variables: { id: 'recommendation_channel' } }),
 				]);
 			}).then(expResults => {
-				const version = _get(expResults, '[0].data.experiment.version');
-				const variantRows = _get(expData, `variants.${version}.categories`);
-				// get the ids for the variant, or the default if that is undefined
-				const ids = _map(variantRows || rowData, 'id');
+				// Set category ids and custom category ids based on whether the user is in the
+				// control group or the variant group for CASH-970 Category row hill climb experiment
+				if (_get(expResults, '[0].data.experiment.version') !== 'control') {
+					rowData = expRowData;
+				}
+				// Get all channel ids for the row data
+				const ids = _map(rowData, 'id');
+				// Filter other channel types as custom categories
+				// @TODO: perform data fetching for MLLoanChannel type categories
+				const mlChannels = _filter(rowData, { __typename: 'MLLoanChannel' });
+				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
+				const hasRecRow = recChannels.length > 0;
+				const customCategoryIds = _map(mlChannels, 'id').concat(_map(recChannels, 'id'));
 
 				// Read hover loan card experiment version assignment
 				const hoverLoanCardExperiment = client.readFragment({
@@ -608,13 +517,6 @@ export default {
 					fragment: experimentVersionFragment,
 				}) || {};
 				const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
-
-				// Read recommended loans row experiment version assignment
-				const recommendedLoansRowEXP = client.readFragment({
-					id: 'Experiment:recommendation_channel',
-					fragment: experimentVersionFragment,
-				}) || {};
-				const recommendedRow = recommendedLoansRowEXP.version === 'shown';
 
 				const imgDefaultSize = hoverCards ? 'w480h300' : 'w480h360';
 				const imgRetinaSize = hoverCards ? 'w960h600' : 'w960h720';
@@ -628,10 +530,9 @@ export default {
 							ids: _take(_without(ids, ...customCategoryIds), ssrRowLimiter),
 							imgDefaultSize,
 							imgRetinaSize,
-							// @todo variables for fetching data for custom channels
 						},
 					}),
-					recommendedRow ? client.query({
+					hasRecRow ? client.query({
 						query: recommendedLoansQuery,
 						variables: {
 							channelId: 0,
@@ -658,10 +559,21 @@ export default {
 			logReadQueryError(e, 'LendByCategory lendByCategoryQuery');
 		}
 
+		// Initialize CASH-521: Hover loan card experiment
+		this.initializeHoverLoanCard();
+
+		// Initialize CASH-970: Category row hill climb experiment assignment and tracking
+		this.initializeCategoryRowHillclimb();
+
+		// Initialize Recommended Loans Row
+		this.initializeRecommendedLoansRow();
+
+		// Copy basic data from query into instance variables
 		this.setRows(baseData);
 		this.isAdmin = !!_get(baseData, 'my.isAdmin');
 		this.isLoggedIn = !!_get(baseData, 'my');
 		this.userId = _get(baseData, 'my.userAccount.id') || null;
+		this.firstName = _get(baseData, 'my.userAccount.firstName') || 'you';
 
 		// CASH-794 Favorite Country Row
 		this.hasFavoriteCountry = !!_get(baseData, 'my.recommendations.topCountry');
@@ -669,29 +581,20 @@ export default {
 		this.itemsInBasket = _map(_get(baseData, 'shop.basket.items.values'), 'id');
 
 		// Read the SSR ready loan channels from the cache
-		const hoverLoanCardExperiment = this.apollo.readFragment({
-			id: 'Experiment:hover_loan_cards',
-			fragment: experimentVersionFragment,
-		}) || {};
-		const hoverCards = hoverLoanCardExperiment.version === 'variant-b';
 		try {
 			const categoryData = this.apollo.readQuery({
 				query: loanChannelQuery,
 				variables: {
 					ids: _take(this.realCategoryIds, ssrRowLimiter),
 					basketId: cookieStore.get('kvbskt'),
-					imgDefaultSize: hoverCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: hoverCards ? 'w960h600' : 'w960h720',
-					// @todo variables for fetching data for custom channels
+					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
 				},
 			});
 			this.realCategories = _get(categoryData, 'lend.loanChannelsById') || [];
 		} catch (e) {
 			logReadQueryError(e, 'LendByCategory loanChannelQuery');
 		}
-
-		// If active, update our custom categories prior to render
-		// this.setCustomRowData(categoryData);
 
 		// Initialize CASH-794 Favorite Country Row
 		this.initializeFavoriteCountryRowExp();
@@ -751,12 +654,6 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.featuredSectorExpVersion = featuredSectorExperiment.version;
-
-		// Initialize CASH-521: Hover loan card experiment
-		this.initializeHoverLoanCard();
-
-		// Initialize CASH-1807: Recommended Loans Row experiment
-		this.initializeRecommendedLoansRowExp();
 	},
 	mounted() {
 		Promise.all([
