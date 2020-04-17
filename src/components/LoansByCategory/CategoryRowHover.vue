@@ -242,13 +242,13 @@ export default {
 			return this.cardsInWindow * this.cardWidth;
 		},
 		showCategory() {
-			let isVisible = true;
-
 			if (this.isLoggedIn === false && this.url.includes('new-countries-for-you') === true) {
-				isVisible = false;
+				return false;
 			}
-
-			return isVisible;
+			if (this.loans.length === 0) {
+				return false;
+			}
+			return true;
 		},
 		showViewAllLink() {
 			let isVisible = true;
