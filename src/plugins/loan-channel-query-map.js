@@ -345,7 +345,7 @@ export default {
 					id: 96,
 					url: 'covid-19',
 					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&tag=41',
-					algoliaParams: 'query=covid&sortBy=popularity'
+					algoliaParams: 'tags=reserved_disaster_relief_covid&sortBy=popularity'
 				},
 				{
 					id: 65,
