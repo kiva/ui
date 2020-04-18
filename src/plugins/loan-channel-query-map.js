@@ -342,6 +342,12 @@ export default {
 				// Misc Promotional or Unsupported URLS
 
 				{
+					id: 96,
+					url: 'covid-19',
+					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner',
+					algoliaParams: 'query=covid&sortBy=popularity'
+				},
+				{
 					id: 65,
 					url: 'new-countries-for-you',
 					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner',
