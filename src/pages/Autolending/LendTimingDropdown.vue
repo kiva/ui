@@ -219,7 +219,6 @@ export default {
 
 .lend-timing-dropdown {
 	margin-bottom: 1rem;
-	margin-left: 3rem;
 
 	.text-notice {
 		color: $kiva-text-light;
@@ -229,6 +228,11 @@ export default {
 	.autolend-explanation-text {
 		color: $kiva-green;
 		max-width: 30rem;
+	}
+
+	// Temporary fix, remove after redesign & copy change.
+	::v-deep .dropdown {
+		width: 100%;
 	}
 }
 </style>

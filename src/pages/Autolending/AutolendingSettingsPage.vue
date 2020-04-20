@@ -1,74 +1,88 @@
 <template>
 	<div>
-		<div class="row column">
-			<opt-in-status-controls
-				:idle-credit-opt-in="idleCreditOptIn"
-				:is-enabled="isEnabled"
-				:show-opt-out-controls="showOptOutControls"
-			/>
-			<main-toggle />
-		</div>
-		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
-			<!-- main toggles -->
-			<div class="main-settings setting-group">
-				<lend-timing-dropdown />
-				<donation-dropdown />
-				<kiva-chooses-radios />
+		<autolending-status>
+			<!-- TODO remove this slot when content has been incorporated into new design -->
+			<div slot="tempContentWrapper" class="tempContentWrapper">
+				<div class="row column">
+					<span v-if="isEnabled" class="toggle-sub-text">
+						Kiva will automatically lend my balance
+					</span>
+					<span v-else class="toggle-sub-text">
+						I’ll lend my balance myself
+					</span>
+				</div>
+				<div class="row column settings-area" :class="{ obscure: !isEnabled }">
+					<!-- main toggles -->
+					<div class="main-settings setting-group">
+						<lend-timing-dropdown />
+						<donation-dropdown />
+						<kiva-chooses-radios />
+					</div>
+					<hr>
+				</div>
 			</div>
+		</autolending-status>
+		<div class="row column">
 			<!-- basic criteria -->
 			<div class="setting-group" v-show="!kivaChooses">
-				<h2 class="criteria-title">
-					Auto-lending criteria
-				</h2>
 				<floating-counter class="show-for-large" />
-				<!-- row for criteria components -->
 				<div class="row">
-					<div class="small-12 large-6 columns setting-column">
-						<gender-radios />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<group-radios />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<country-filter />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<sector-filter />
+					<div class="criteria-wrapper column large-8">
+						<h3 class="criteria-title">
+							Auto-lending criteria
+						</h3>
+						<!-- row for criteria components -->
+						<div class="row">
+							<div class="small-12 large-6 columns setting-column">
+								<gender-radios />
+							</div>
+							<div class="small-12 large-6 columns setting-column">
+								<group-radios />
+							</div>
+							<div class="small-12 large-6 columns setting-column">
+								<country-filter />
+							</div>
+							<div class="small-12 large-6 columns setting-column">
+								<sector-filter />
+							</div>
+						</div>
+						<!-- advanced settings -->
+						<div class="row column" v-show="!kivaChooses">
+							<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
+								{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
+							</button>
+							<hr>
+						</div>
+						<kv-expandable>
+							<div class="row" v-show="showAdvanced && !kivaChooses">
+								<div class="small-12 large-6 columns setting-column">
+									<loan-increment-radios />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<attribute-filter />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<loan-term-dropdown />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<partner-filter />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<partner-del-rate-dropdown />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<risk-rating-dropdown />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<default-rate-dropdown />
+								</div>
+							</div>
+						</kv-expandable>
 					</div>
 				</div>
 			</div>
-			<!-- advanced settings -->
-			<div class="row column" v-show="!kivaChooses">
-				<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
-					{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
-				</button>
-			</div>
-			<kv-expandable>
-				<div class="row" v-show="showAdvanced && !kivaChooses">
-					<div class="small-12 large-6 columns setting-column">
-						<loan-increment-radios />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<attribute-filter />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<loan-term-dropdown />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<partner-filter />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<partner-del-rate-dropdown />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<risk-rating-dropdown />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<default-rate-dropdown />
-					</div>
-				</div>
-			</kv-expandable>
 		</div>
+
 		<div class="row column save-button-area">
 			<save-button class="show-for-large" />
 		</div>
@@ -93,10 +107,8 @@ import CountryFilter from './CountryFilter';
 import DonationDropdown from './DonationDropdown';
 import LendTimingDropdown from './LendTimingDropdown';
 import FloatingCounter from './FloatingCounter';
-import MainToggle from './MainToggle';
 import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
-import OptInStatusControls from './OptInStatusControls';
 import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
@@ -107,6 +119,8 @@ import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import LoanIncrementRadios from './LoanIncrementRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
 import KivaChoosesRadios from './KivaChoosesRadios';
+import AutolendingStatus from './AutolendingStatus';
+
 
 const pageQuery = gql`{
 	autolending @client {
@@ -123,6 +137,7 @@ export default {
 	inject: ['apollo', 'federation'],
 	components: {
 		AttributeFilter,
+		AutolendingStatus,
 		CountryFilter,
 		DonationDropdown,
 		FloatingCounter,
@@ -130,9 +145,7 @@ export default {
 		GroupRadios,
 		KvExpandable,
 		LendTimingDropdown,
-		MainToggle,
 		MobileCounter,
-		OptInStatusControls,
 		PartnerFilter,
 		SaveButton,
 		SectorFilter,
@@ -253,13 +266,17 @@ export default {
 
 $autolending-font-size: rem-calc(18.8);
 
-.autolending {
-	.title-area {
-		padding: 1.625rem 0;
-		margin-bottom: 2rem;
-		background-color: $white;
-	}
+.tempContentWrapper {
+	padding-top: 1rem;
+}
 
+.toggle-sub-text {
+	font-size: $normal-text-font-size;
+	display: block;
+	color: $kiva-text-light;
+}
+
+.autolending {
 	.settings-area.obscure {
 		opacity: 0.2;
 		pointer-events: none;
@@ -272,7 +289,6 @@ $autolending-font-size: rem-calc(18.8);
 	.setting-group {
 		position: relative;
 		margin: 2rem 0;
-		border-bottom: 1px solid $kiva-stroke-gray;
 
 		&.main-settings {
 			margin-top: 0;
@@ -281,6 +297,7 @@ $autolending-font-size: rem-calc(18.8);
 
 	.criteria-title {
 		margin-bottom: 2rem;
+		font-weight: $global-weight-bold;
 	}
 
 	.setting-column {
@@ -290,7 +307,6 @@ $autolending-font-size: rem-calc(18.8);
 	.advanced-settings-toggle {
 		color: $kiva-textlink;
 		font-weight: 300;
-		margin-bottom: 2rem;
 	}
 
 	.save-button-area {
@@ -316,6 +332,21 @@ $autolending-font-size: rem-calc(18.8);
 
 	.basket-bar {
 		display: none;
+	}
+
+	//NEW
+	.settings-card {
+		background: $white;
+		padding: 1.95rem;
+	}
+
+	.criteria-wrapper {
+		background: $white;
+		padding: 1.95rem 1.95rem 1.95rem 4.7rem;
+	}
+
+	.status-area {
+		margin-bottom: 1.5rem;
 	}
 }
 </style>

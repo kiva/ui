@@ -74,7 +74,6 @@ export default {
 
 .donation-dropdown {
 	margin-bottom: 1rem;
-	margin-left: 3rem;
 
 	.filter-title {
 		font-size: 1rem;
