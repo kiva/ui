@@ -1,24 +1,26 @@
 #import '../../fragments/loanCardFields.graphql'
 
 query recommendedLoans(
-	$channelId: Int = 0,
+	$ids: [Int!],
 	$imgDefaultSize: String = "w480h360",
 	$imgRetinaSize: String = "w960h720",
-	$loginId: Int = 0,
 	$numberOfLoans: Int = 20,
 	$offset: Int = 0,
 ) {
 	ml {
-		recommendationChannel(channelId: $channelId, loginId: $loginId, limit: $numberOfLoans, offset: $offset) {
-			id
-			loans {
-				values {
-					...loanCardFields
-					image {
-						id
-						default: url(customSize: $imgDefaultSize)
-						retina: url(customSize: $imgRetinaSize)
-						hash
+		getOrderedChannelsByIds(channelIds: $ids) {
+			__typename
+			... on RecLoanChannel {
+				id
+				loans(limit: $numberOfLoans, offset: $offset) {
+					values {
+						...loanCardFields
+						image {
+							id
+							default: url(customSize: $imgDefaultSize)
+							retina: url(customSize: $imgRetinaSize)
+							hash
+						}
 					}
 				}
 			}

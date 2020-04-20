@@ -93,7 +93,6 @@ import _map from 'lodash/map';
 import _take from 'lodash/take';
 import _uniqBy from 'lodash/uniqBy';
 import _without from 'lodash/without';
-import numeral from 'numeral';
 import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
@@ -173,11 +172,12 @@ export default {
 		categories() {
 			// merge realCategories & customCategories
 			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
-			// fiter our any empty categories and categories with 0 loans
-			return categories.filter(channel => {
-				return channel.loans !== null && channel.loans.values.length;
+
+			return categories
+				// fiter our any empty categories and categories with 0 loans
+				.filter(channel => _get(channel, 'loans.values.length') > 0)
 				// and re-order to match the setting
-			}).sort(indexIn(this.categoryIds, 'id'));
+				.sort(indexIn(this.categoryIds, 'id'));
 		},
 		// Define any categories that need extra handling
 		customCategories() {
@@ -199,7 +199,6 @@ export default {
 				}
 				categories.push(channel);
 			}
-			// @TODO: Add MLLoanChannel type categories
 			return categories;
 		},
 		customCategoryIds() {
@@ -394,43 +393,44 @@ export default {
 			}
 		},
 		initializeRecommendedLoansRow() {
-			// Load recommended loan data
-			try {
-				const variables = {
-					basketId: cookieStore.get('kvbskt'),
-					channelId: 0,
-					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
-					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-					loginId: numeral(this.userId).value() || 0,
-				};
-				const data = this.apollo.readQuery({
-					query: recommendedLoansQuery,
-					variables,
-				});
+			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
+			if (recLoanChannel) {
+				// Load recommended loan data
+				try {
+					const variables = {
+						basketId: cookieStore.get('kvbskt'),
+						ids: [recLoanChannel.id],
+						imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
+						imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
+					};
+					const data = this.apollo.readQuery({
+						query: recommendedLoansQuery,
+						variables,
+					});
 
-				// Filter out funded loans
-				const initialLoanSet = _get(data, 'ml.recommendationChannel.loans');
-				const filteredLoanSet = this.filterFundedLoans(_get(initialLoanSet, 'values'));
+					// Filter out funded loans
+					const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds.loans.values');
+					const filteredLoanSet = this.filterFundedLoans(initialLoanSet);
 
-				// share out results of loan query for row analytics
-				this.recommendedLoans = {
-					values: filteredLoanSet,
-					__typename: 'LoanBasicCollection'
-				};
-			} catch (e) {
-				logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
+					// share out results of loan query for row analytics
+					this.recommendedLoans = {
+						values: filteredLoanSet,
+						__typename: 'LoanBasicCollection'
+					};
+				} catch (e) {
+					logReadQueryError(e, 'LendByCategory recommendedLoansQuery');
+				}
 			}
 		},
 		fetchRecommendedLoans() {
 			// once the initial loan set is filtered and loaded, we query for more loans if there are too few
 			// if there are 6 or fewer recommended loans we'll fetch 20 more
-			if (_get(this, 'recommendedLoans.values.length') < 6) {
+			const recLoanChannel = _find(this.categorySetting, { __typename: 'RecLoanChannel' });
+			if (recLoanChannel && _get(this, 'recommendedLoans.values.length') < 6) {
 				const variables = {
-					basketId: cookieStore.get('kvbskt'),
-					channelId: 0,
+					ids: [recLoanChannel.id],
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
-					loginId: numeral(this.userId).value() || 0,
 					offset: 20
 				};
 				return this.apollo.query({
@@ -438,12 +438,16 @@ export default {
 					variables,
 				}).then(({ data }) => {
 					// filter and update recommended loans
-					const backfillLoanSet = _get(data, 'ml.recommendationChannel.loans.values');
+					const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds.loans.values');
 					const filteredBackfillLoans = this.filterFundedLoans(backfillLoanSet);
 
 					// add new loans to row
 					if (filteredBackfillLoans.length > 0) {
-						this.recommendedLoans.values = this.recommendedLoans.values.concat(filteredBackfillLoans);
+						const values = _get(this, 'recommendedLoans.values') || [];
+						this.recommendedLoans = {
+							values: values.concat(filteredBackfillLoans),
+							__typename: 'LoanBasicCollection'
+						};
 					}
 				});
 			}
@@ -470,7 +474,7 @@ export default {
 		},
 	},
 	apollo: {
-		preFetch(config, client, { kvAuth0 }) {
+		preFetch(config, client) {
 			let rowData;
 			let expRowData;
 
@@ -505,11 +509,9 @@ export default {
 				// Get all channel ids for the row data
 				const ids = _map(rowData, 'id');
 				// Filter other channel types as custom categories
-				// @TODO: perform data fetching for MLLoanChannel type categories
-				const mlChannels = _filter(rowData, { __typename: 'MLLoanChannel' });
 				const recChannels = _filter(rowData, { __typename: 'RecLoanChannel' });
+				const recChannelIds = _map(recChannels, 'id');
 				const hasRecRow = recChannels.length > 0;
-				const customCategoryIds = _map(mlChannels, 'id').concat(_map(recChannels, 'id'));
 
 				// Read hover loan card experiment version assignment
 				const hoverLoanCardExperiment = client.readFragment({
@@ -527,7 +529,7 @@ export default {
 						query: loanChannelQuery,
 						variables: {
 							// exclude custom rows + limit for ssr
-							ids: _take(_without(ids, ...customCategoryIds), ssrRowLimiter),
+							ids: _take(_without(ids, ...recChannelIds), ssrRowLimiter),
 							imgDefaultSize,
 							imgRetinaSize,
 						},
@@ -535,11 +537,10 @@ export default {
 					hasRecRow ? client.query({
 						query: recommendedLoansQuery,
 						variables: {
-							channelId: 0,
+							ids: recChannelIds,
 							imgDefaultSize,
 							imgRetinaSize,
-							loginId: numeral(kvAuth0.getKivaId()).value() || 0,
-						},
+						}
 					}) : Promise.resolve(),
 				]);
 			});
@@ -564,9 +565,6 @@ export default {
 
 		// Initialize CASH-970: Category row hill climb experiment assignment and tracking
 		this.initializeCategoryRowHillclimb();
-
-		// Initialize Recommended Loans Row
-		this.initializeRecommendedLoansRow();
 
 		// Copy basic data from query into instance variables
 		this.setRows(baseData);
@@ -654,6 +652,9 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		this.featuredSectorExpVersion = featuredSectorExperiment.version;
+
+		// Initialize Recommended Loans Row
+		this.initializeRecommendedLoansRow();
 	},
 	mounted() {
 		Promise.all([

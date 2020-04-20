@@ -24,10 +24,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		recommendationCategoryRow: uiExperimentSetting(key: "recommendation_channel") {
-			key
-			value
-		}
 		categoryRowHillclimb: uiExperimentSetting(key: "category_row_hillclimb") {
 			key
 			value
@@ -37,9 +33,6 @@ query lendByCategory($basketId: String) {
 		orderedLoanChannels(platform:marketplace) {
 			__typename
 			... on LoanChannel {
-				id
-			}
-			... on MLLoanChannel {
 				id
 			}
 			... on RecLoanChannel {
