@@ -23,6 +23,6 @@ jobs:
           node-version: '12.x'
 
       - run: npm install
-      - run: npm run deploy-storybook -- --ci --out=storybook
+      - run: npm run deploy-storybook -- --ci
         env:
           GH_TOKEN: Kiva:${{ secrets.GITHUB_TOKEN }}
