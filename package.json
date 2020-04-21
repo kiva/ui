@@ -29,7 +29,8 @@
 		"lint:css": "stylelint \"src/**/*.{vue,scss}\"",
 		"lint:graphql": "eslint --ext .graphql src/graphql",
 		"storybook": "start-storybook -p 6006",
-		"build-storybook": "build-storybook"
+		"build-storybook": "build-storybook -s ui",
+		"deploy-storybook": "storybook-to-ghpages"
 	},
 	"husky": {
 		"hooks": {
@@ -121,6 +122,7 @@
 		"@storybook/addon-storysource": "^5.3.6",
 		"@storybook/addon-viewport": "^5.3.6",
 		"@storybook/addons": "^5.3.6",
+		"@storybook/storybook-deployer": "^2.8.5",
 		"@storybook/vue": "^5.3.6",
 		"@vue/test-utils": "^1.0.0-beta.29",
 		"app-manifest-loader": "^2.4.1",

@@ -5,10 +5,8 @@ name: Deploy Storybook to GitHub Pages
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-#    push:
-#      branches: [ master ]
-  schedule:
-    - cron:  '30 * * * *'
+  push:
+    branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,12 +23,6 @@ jobs:
           node-version: '12.x'
 
       - run: npm install
-      - run: npm run build-storybook
-
-      - uses: appleboy/gh-pages-action@v0.0.2
-        with:
-          remote_url: https://github.com/kiva/ui.git
-          target_branch: master
-          pages_directory: storybook-static
-          target_directory: storybook
-        
+      - run: npm run deploy-storybook -- --ci --out=storybook
+        env:
+          GH_TOKEN: Kiva:${{ secrets.GITHUB_TOKEN }}
