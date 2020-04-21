@@ -29,7 +29,7 @@ jobs:
 
       - uses: appleboy/gh-pages-action@v0.0.2
         with:
-          remote_url: https://github.com:kiva/ui.git
+          remote_url: https://github.com/kiva/ui.git
           target_branch: master
           pages_directory: storybook-static
           target_directory: storybook
