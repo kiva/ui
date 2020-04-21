@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Deploy Storybook to GitHub Pages
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -28,8 +28,7 @@ jobs:
       - run: npm install
       - run: npm run build-storybook
 
-      - name: GitHub Pages Deploy
-        uses: appleboy/gh-pages-action@v0.0.2
+      - uses: appleboy/gh-pages-action@v0.0.2
         with:
           target_branch: master
           pages_directory: storybook-static
