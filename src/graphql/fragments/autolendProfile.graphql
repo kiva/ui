@@ -6,6 +6,7 @@ fragment autolendProfileFragment on AutolendProfile {
 	lendAfterDaysIdle
 	idleCreditOptIn
 	cIdleStartTime
+	pauseUntil
 	kivaChooses
 	loanSearchCriteria {
 		queryString
