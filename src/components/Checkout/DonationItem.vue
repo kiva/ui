@@ -198,7 +198,7 @@ export default {
 						// eslint-disable-next-line max-len
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'specific_donation_use_text' } }),
 						// Get the assigned experiment version for GROW-74
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }),
+						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }), // eslint-disable-line max-len
 					]).then(resolve).catch(reject);
 				}).catch(reject);
 			});
@@ -234,7 +234,7 @@ export default {
 			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
 
 			if (this.donationTagLineExperiment) {
-				coverOurCosts = `During the COVID-19 pandemic, Kiva is working with lenders, Field Partners, borrowers and more to ensure a rapid and impactful global response. Your donations help us fight this global crisis.`; // eslint-disable-line max-len
+				coverOurCosts = 'During the COVID-19 pandemic, Kiva is working with lenders, Field Partners, borrowers and more to ensure a rapid and impactful global response. Your donations help us fight this global crisis.'; // eslint-disable-line max-len
 			} else if (this.specificDonationUseTextExperiment) {
 				coverOurCosts += ` more than ${loanCost} to facilitate. Our generous supporters are donating $1 for every $3 you donate.`; // eslint-disable-line max-len
 			} else {
@@ -326,7 +326,7 @@ export default {
 					id: 'Experiment:checkout_donation_tag_line',
 					fragment: experimentVersionFragment,
 				}) || {};
-				if(donationTagLineExperiment.version === 'shown') {
+				if (donationTagLineExperiment.version === 'shown') {
 					this.$kvTrackEvent('Checkout', 'EXP-GROW-74-Apr2020', 'b');
 					this.donationTagLineExperiment = true;
 				}
