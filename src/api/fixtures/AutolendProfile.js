@@ -52,6 +52,7 @@ export function profilesAreEqual(a, b) {
 	if (!a || !b) return false; // if only one is undefined, return false
 	if (a.isEnabled !== b.isEnabled) return false;
 	if (a.enableAfter !== b.enableAfter) return false;
+	if (a.pauseUntil !== b.pauseUntil) return false;
 	if (a.idleCreditOptIn !== b.idleCreditOptIn) return false;
 	if (a.donationPercentage !== b.donationPercentage) return false;
 	if (a.lendAfterDaysIdle !== b.lendAfterDaysIdle) return false;

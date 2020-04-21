@@ -85,7 +85,7 @@ describe('Autolending Page Spec', () => {
 			// Select the radio
 			cy.get('.autolending-status-lightbox')
 				.should('be.visible')
-				.find('[data-test=is-enabled-false] + label')
+				.find('[data-test=is-autolending-off] + label')
 				.click();
 
 			// Hit save button
@@ -117,13 +117,36 @@ describe('Autolending Page Spec', () => {
 			// Select the radio
 			cy.get('.autolending-status-lightbox')
 				.should('be.visible')
-				.find('[data-test=is-enabled-true] + label')
+				.find('[data-test=is-autolending-on] + label')
 				.click();
 
 			// Hit save button
 			cy.get('[data-test=status-save-button]').first().click();
 			// Assert that toggle displays 'on'
 			cy.get('[data-test=autolending-status]').contains('on');
+		});
+	});
+
+	describe('Display Autolending Status correctly', () => {
+		it('Display pause status correctly', () => {
+			cy.mock({
+				AutolendProfile: (obj, args) => {
+					// When arguments are provided, mock isEnabled with the same value that is passed in
+					if (args && args.profile && typeof args.profile.isEnabled === 'boolean') {
+						return { isEnabled: args.profile.isEnabled };
+					}
+					// Mock autolending as enabled when no arguments are provided
+					return { isEnabled: true, pauseUntil: '2020-07-20T10:57:26-07:00' };
+				},
+			});
+
+			// Visit autolending settings
+			cy.visit('/settings/autolending');
+
+			// Assert the status is correct
+			cy.get('[data-test=autolending-status]').contains('paused');
+			// Assert date is formatted correctly
+			cy.get('[data-test=autolending-status]').contains('until 07/20/2020');
 		});
 	});
 
