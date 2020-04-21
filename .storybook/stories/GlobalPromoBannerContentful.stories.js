@@ -56,7 +56,7 @@ export default {
 
 export const Default = () => ({
 	provide: {
-		apollo: {
+		federation: {
 			query() {
 				return Promise.resolve(mockedContentfulAPIResponse);
 			}
