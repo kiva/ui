@@ -175,7 +175,6 @@ export default {
 			donationNudgeExperimentalDescription: false,
 			loanHistoryCount: null,
 			donationNudgeBorrowerImageExperiment: false,
-			specificDonationUseTextExperiment: false,
 			donationDetailsLink: 'How Kiva uses donations',
 			showCharityOverheadFooter: false,
 			donationNudgeFellows: false,
@@ -194,9 +193,6 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'charity_overhead' } }),
 						// Get the assigned experiment version for Donation nudge fellows experiment
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'donation_nudge_fellows' } }),
-						// Get the assigned experiment version for more Specific Donation Use Text experiment cash-1282
-						// eslint-disable-next-line max-len
-						client.query({ query: experimentAssignmentQuery, variables: { id: 'specific_donation_use_text' } }),
 						// Get the assigned experiment version for GROW-74
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }), // eslint-disable-line max-len
 					]).then(resolve).catch(reject);
@@ -215,9 +211,6 @@ export default {
 	},
 	computed: {
 		donationTitle() {
-			if (this.specificDonationUseTextExperiment) {
-				return 'Your donations are amplified today!';
-			}
 			return 'Donation to Kiva';
 		},
 		hasLoans() {
@@ -235,8 +228,6 @@ export default {
 
 			if (this.donationTagLineExperiment) {
 				coverOurCosts = 'During the COVID-19 pandemic, Kiva is working with lenders, Field Partners, borrowers and more to ensure a rapid and impactful global response. Your donations help us fight this global crisis.'; // eslint-disable-line max-len
-			} else if (this.specificDonationUseTextExperiment) {
-				coverOurCosts += ` more than ${loanCost} to facilitate. Our generous supporters are donating $1 for every $3 you donate.`; // eslint-disable-line max-len
 			} else {
 				coverOurCosts += ` Kiva more than ${loanCost} to facilitate. Will you help us cover our costs?`;
 			}
@@ -312,21 +303,15 @@ export default {
 					this.donationNudgeFellows = true;
 				}
 			}
-			// CASH-1855 Using experiment setting to change wording for matched donations
-			if (this.hasLoans) {
-				const specificDonationUseTextExperiment = this.apollo.readFragment({
-					id: 'Experiment:specific_donation_use_text',
-					fragment: experimentVersionFragment,
-				}) || {};
-				this.specificDonationUseTextExperiment = specificDonationUseTextExperiment.version === 'shown';
-			}
 			// GROW-74: Donation tag line
 			if (this.hasLoans) {
 				const donationTagLineExperiment = this.apollo.readFragment({
 					id: 'Experiment:checkout_donation_tag_line',
 					fragment: experimentVersionFragment,
 				}) || {};
-				if (donationTagLineExperiment.version === 'shown') {
+				if (donationTagLineExperiment.version === 'control') {
+					this.$kvTrackEvent('Checkout', 'EXP-GROW-74-Apr2020', 'a');
+				} else if (donationTagLineExperiment.version === 'shown') {
 					this.$kvTrackEvent('Checkout', 'EXP-GROW-74-Apr2020', 'b');
 					this.donationTagLineExperiment = true;
 				}
