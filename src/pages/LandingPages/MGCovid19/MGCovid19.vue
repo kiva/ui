@@ -262,9 +262,9 @@ export default {
 }
 
 .mg-subhead {
+	@include medium-text();
+
 	padding: 0;
-	font-size: $medium-text-font-size;
-	line-height: $medium-text-line-height;
 	margin-bottom: 1rem;
 }
 
