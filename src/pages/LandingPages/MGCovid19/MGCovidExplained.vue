@@ -1,65 +1,77 @@
 <template>
-	<div class="monthly-good-explained page-content">
-		<div class="row">
-			<h1 class="column small-12 text-center">
-				Set your commitment once
-			</h1>
-			<h2 class="small-10 small-offset-1 medium-8 medium-offset-2 featured-text text-center">
-				Kiva will do the rest to make sure every $ goes
-				to help COVID-19 impacted individuals and businesses.
+	<div>
+		<div class="mg-explained row">
+			<h2 class="mg-explained__title text-center small-12 columns">
+				Three Steps to Impact
 			</h2>
-			<div class="column small-12 medium-6 large-4 step-wrapper">
-				<span class="number">
-					1
-				</span>
-				<mg-step-one class="mg-image" />
-				<h3>
-					Choose
-				</h3>
-				<div class="description-text">
-					a monthly amount to go toward COVID-19 relief that works for you.
-				</div>
-			</div>
-			<div class="column small-12 medium-6 large-4 step-wrapper">
-				<span class="number">
-					2
-				</span>
-				<mg-step-three class="mg-image" />
-				<h3>
-					Stay informed
-				</h3>
-				<div class="description-text">
-					Receive a monthly impact report on your COVID-19 relief support
-				</div>
-			</div>
-			<div class="column small-12 medium-6 large-4 step-wrapper">
-				<span class="number">
-					3
-				</span>
-				<mg-step-four class="mg-image" />
-				<h3>
-					Grow your impact
-				</h3>
-				<div class="description-text">
-					As you get repaid, Kiva will continue to re-lend the funds to multiply your impact.
-				</div>
-			</div>
+			<p class="mg-explained__body small-12 columns text-center">
+				Set your commitment once, Kiva will do the rest to make sure
+				every dollar is lent to COVID-19 impacted individuals and businesses.
+			</p>
 		</div>
+		<ol class="three-steps row">
+			<li class="three-steps__step-wrapper column small-12 large-4">
+				<div class="three-steps__step">
+					<div class="three-steps__icon-wrapper">
+						<span class="three-steps__number three-steps__number--1">
+							1
+						</span>
+						<mg-step-one class="three-steps__icon" />
+					</div>
+					<h3 class="three-steps__title">
+						Choose
+					</h3>
+					<div class="three-steps__description">
+						a monthly amount to go toward COVID-19 relief that works for you
+					</div>
+				</div>
+			</li>
+			<li class="three-steps__step-wrapper column small-12 large-4">
+				<div class="three-steps__step">
+					<div class="three-steps__icon-wrapper">
+						<span class="three-steps__number three-steps__number--2">
+							2
+						</span>
+						<mg-step-two class="three-steps__icon three-steps__icon--inbox" />
+					</div>
+					<h3 class="three-steps__title">
+						Stay informed:
+					</h3>
+					<div class="three-steps__description">
+						receive a monthly impact report on your COVID-19 relief support
+					</div>
+				</div>
+			</li>
+			<li class="three-steps__step-wrapper column small-12 large-4">
+				<div class="three-steps__step">
+					<div class="three-steps__icon-wrapper">
+						<span class="three-steps__number three-steps__number--3">
+							3
+						</span>
+						<mg-step-three class="three-steps__icon" />
+					</div>
+					<h3 class="three-steps__title">
+						Grow your impact:
+					</h3>
+					<div class="three-steps__description">
+						as you get repaid, Kiva will continue to re-lend the funds to multiply your impact.
+					</div>
+				</div>
+			</li>
+		</ol>
 	</div>
 </template>
 
 <script>
-// import MgStepOne from '@/assets/inline-svgs/hp-mg-1-signup.svg';
-import MgStepOne from '@/assets/inline-svgs/hp-mg-2-choose.svg';
-import MgStepThree from '@/assets/inline-svgs/hp-mg-3-receive.svg';
-import MgStepFour from '@/assets/inline-svgs/hp-mg-4-multiply.svg';
+import MgStepOne from '@/assets/inline-svgs/covid-response/choose-checkmark.svg';
+import MgStepTwo from '@/assets/inline-svgs/covid-response/inbox-notification.svg';
+import MgStepThree from '@/assets/inline-svgs/covid-response/grow.svg';
 
 export default {
 	components: {
 		MgStepOne,
-		// MgStepTwo,
+		MgStepTwo,
 		MgStepThree,
-		MgStepFour
 	},
 };
 
@@ -68,59 +80,95 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.monthly-good-explained {
-	background-color: $kiva-green;
-	margin-bottom: 1rem;
+.three-steps {
+	list-style: none;
+	margin-bottom: 0;
+	padding: 0;
 
-	h1,
-	h2,
-	h3,
-	.learn-more-text,
-	.number,
-	.description-text {
-		color: $white;
+	&__step-wrapper {
+		margin-bottom: 2rem;
 	}
 
-	h3,
-	.description-text {
+	&__step {
+		border-radius: rem-calc(10);
+		box-shadow: $platinum 0 rem-calc(1) rem-calc(5) rem-calc(2);
+		height: 100%;
+		padding: 2rem;
 		text-align: center;
 	}
 
-	h1 {
-		padding: 1.6rem 0;
-	}
-
-	h3 {
-		margin-bottom: 0.325rem;
-		font-weight: 400;
-		line-height: 1.5rem;
-	}
-
-	.step-wrapper {
-		margin-bottom: 2.5rem;
-	}
-
-	.number {
+	&__icon-wrapper {
 		position: relative;
-		top: 0.625rem;
-		padding-left: 5.3rem;
+		display: flex;
+		justify-content: center;
+		margin-bottom: 0.5rem;
 	}
 
-	.description-text {
-		max-width: 12.5rem;
-		margin: 0 auto;
+	&__icon {
+		height: 6.25rem;
+		display: block;
+
+		&--inbox {
+			margin-right: -0.65rem; // pull it keep it visually centered since the red notification dot takes up space
+			width: 7rem;
+		}
+	}
+
+	&__number {
+		$num-size: 2.25rem;
+
+		background-color: $kiva-green;
+		border: rem-calc(4) solid #fff;
+		color: #fff;
+		border-radius: 50%;
+		font-weight: 700;
+		width: $num-size;
+		height: $num-size;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		top: calc(50% - #{$num-size / 2});
+
+		&--1 {
+			left: calc(50% - #{$num-size / 2} - 3rem);
+		}
+
+		&--2 {
+			left: calc(50% - #{$num-size / 2} - 3.5rem);
+		}
+
+		&--3 {
+			left: calc(50% - #{$num-size / 2} - 1.65rem);
+		}
+	}
+
+	&__title {
+		@include featured-text();
+
+		line-height: 1.2;
+		margin-bottom: 0.5rem;
+		font-weight: 700;
+	}
+
+	&__description {
+		text-align: center;
 		line-height: 1.4;
 	}
+}
 
-	.mg-image {
-		max-height: 6.25rem;
-		display: block;
-		margin: 0 auto 1rem auto;
-		min-height: 4.75rem;
+.mg-explained {
+	&__title {
+		@include large-text();
+
+		margin-bottom: 1rem;
 	}
 
-	.learn-more-wrapper {
-		margin-bottom: 2rem;
+	&__body {
+		@include medium-text();
+
+		max-width: 30rem;
+		margin: 0 auto 2.5rem auto;
 	}
 }
 

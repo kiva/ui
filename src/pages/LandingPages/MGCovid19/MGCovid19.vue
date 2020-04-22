@@ -4,17 +4,20 @@
 		:header-theme="co19HeaderTheme"
 		:footer-theme="co19FooterTheme"
 	>
-		<kv-hero class="mg-hero">
+		<kv-hero class="mg-hero section">
 			<!-- TODO Update to handle new images and design -->
 			<template v-slot:images>
 				<kv-responsive-image
 					:images="heroImages"
-					alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
+					alt=""
 				/>
 			</template>
 			<template v-slot:overlayContent>
 				<div class="row">
-					<div class="overlay-column columns medium-10 medium-offset-1 large-6 large-offset-0 xlarge-5">
+					<div class="
+						overlay-column columns
+						medium-10 medium-offset-1 large-6 large-offset-0 xlarge-6 xxlarge-5"
+					>
 						<h1 class="mg-headline" v-html="pageCopy.headline">
 						</h1>
 						<p class="mg-subhead">
@@ -37,38 +40,17 @@
 			</template>
 		</kv-hero>
 
-		<div class="benefits">
-			<m-g-covid-explained />
+		<div class="row">
+			<m-g-covid-explained class="small-12 columns mg-explained section" />
+			<div class="separator section"></div>
+			<m-g-covid-faq class="small-12 columns section" />
 		</div>
 
-		<div class="about-kiva row page-content">
-			<div class="columns">
-				<h2 class="impact-text text-center">
-					Over $1.4 billion in impact in 70+ countries
-				</h2>
-				<p>
-					Kiva is an international nonprofit, founded in 2005 in San Francisco, with a mission
-					to expand financial access to help underserved communities thrive and in some cases,
-					provide relief when crises may arise.
-				</p>
-				<p>
-					We do this by crowdfunding loans and unlocking capital for the underserved, improving
-					the quality and cost of financial services, and addressing the underlying barriers to
-					financial access around the world. Through Kiva's work, students can pay for tuition,
-					women can start businesses, farmers are able to invest in equipment and families can
-					afford needed emergency care.
-				</p>
-				<p class="featured-text text-center">
-					By lending as little as $25 on Kiva, you can be part of the solution and make a real
-					difference in someone’s life.
-				</p>
-				<h4 class="text-center">
-					100% of every dollar you lend on Kiva goes to funding loans.
-				</h4>
+		<div class="about-wrapper section ">
+			<div class="row">
+				<m-g-covid-about class="about small-12 columns" />
 			</div>
 		</div>
-
-		<m-g-covid-faq />
 	</www-page>
 </template>
 
@@ -79,6 +61,7 @@ import gql from 'graphql-tag';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import MGCovidAbout from './MGCovidAbout';
 import MGCovidExplained from './MGCovidExplained';
 import MGCovidFaq from './MGCovidFAQ';
 
@@ -92,7 +75,7 @@ const pageQuery = gql`{
 	}
 }`;
 
-const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
+// const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
 export default {
 	metaInfo: {
@@ -103,6 +86,7 @@ export default {
 		CovidLandingForm,
 		KvHero,
 		KvResponsiveImage,
+		MGCovidAbout,
 		MGCovidExplained,
 		MGCovidFaq,
 	},
@@ -131,18 +115,32 @@ export default {
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
+			// heroImages: [
+			// 	['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
+			// 	['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],
+			// 	['medium', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
+			// 	['medium retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
+			// 	['large', heroImagesRequire('./monthlygood-banner-lg-std_0.jpg')],
+			// 	['large retina', heroImagesRequire('./monthlygood-banner-lg-retina_0.jpg')],
+			// 	['xga', heroImagesRequire('./monthlygood-banner-xl-std_0.jpg')],
+			// 	['xga retina', heroImagesRequire('./monthlygood-banner-xl-retina_0.jpg')],
+			// 	['wxga', heroImagesRequire('./monthlygood-banner-xxl-std.jpg')],
+			// 	['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
+			// ],
 			heroImages: [
-				['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
-				['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],
-				['medium', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
-				['medium retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
-				['large', heroImagesRequire('./monthlygood-banner-lg-std_0.jpg')],
-				['large retina', heroImagesRequire('./monthlygood-banner-lg-retina_0.jpg')],
-				['xga', heroImagesRequire('./monthlygood-banner-xl-std_0.jpg')],
-				['xga retina', heroImagesRequire('./monthlygood-banner-xl-retina_0.jpg')],
-				['wxga', heroImagesRequire('./monthlygood-banner-xxl-std.jpg')],
-				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
-			],
+				['small', 'https://via.placeholder.com/480x390'],
+				['small retina', 'https://via.placeholder.com/960x780'],
+				['medium', 'https://via.placeholder.com/680x375'],
+				['medium retina', 'https://via.placeholder.com/1360x750'],
+				['large', 'https://via.placeholder.com/1024x850'],
+				['large retina', 'https://via.placeholder.com/2048x1700'],
+				['xxlarge', 'https://via.placeholder.com/1320x760'],
+				['xxlarge retina', 'https://via.placeholder.com/2640x1520'],
+				['xga', 'https://via.placeholder.com/1440x710'],
+				['xga retina', 'https://via.placeholder.com/2880x1420'],
+				['wxga', 'https://via.placeholder.com/1920x740'],
+				['wga retina', 'https://via.placeholder.com/3840x1480'],
+			]
 		};
 	},
 	computed: {
@@ -199,6 +197,8 @@ export default {
 
 		.overlay-content {
 			margin-top: -1rem;
+			margin-left: 1rem;
+			margin-right: 1rem;
 			z-index: 10;
 			position: relative;
 			top: auto;
@@ -207,7 +207,6 @@ export default {
 
 			@include breakpoint(large) {
 				margin-top: 1rem;
-				margin-left: 1rem;
 			}
 
 			.overlay-column {
@@ -226,20 +225,9 @@ export default {
 		}
 	}
 
-	::v-deep .images > div,
-	::v-deep .images img {
-		min-height: 18.75rem;
-	}
-
-	::v-deep form {
-		button {
-			width: 100%;
-			margin-top: 0.75rem;
-		}
-	}
-
 	//set min height to improve sizing when image has not loaded yet
 	min-height: 6.25rem;
+
 	@include breakpoint(xlarge) {
 		min-height: 20rem;
 		flex-direction: column;
@@ -256,22 +244,50 @@ export default {
 	padding: 1.625rem 0;
 }
 
+.section {
+	margin-bottom: 2rem;
+
+	@include breakpoint(xlarge) {
+		margin-bottom: 5rem;
+	}
+}
+
+.separator {
+	width: 100%;
+	border-top: rem-calc(1) solid $kiva-stroke-gray;
+}
+
 .mg-headline {
-	font-weight: bold;
-	font-size: 2rem;
-	line-height: 2rem;
+	@include large-text();
 }
 
 .mg-subhead {
 	padding: 0;
-	font-size: 1.2rem;
-	line-height: 1.35rem;
+	font-size: $medium-text-font-size;
+	line-height: $medium-text-line-height;
 	margin-bottom: 1rem;
 }
 
-.about-kiva {
-	h2 {
-		color: $kiva-green;
+.mg-explained {
+	margin-bottom: 1rem;
+
+	@include breakpoint(xlarge) {
+		margin-bottom: 4rem;
 	}
 }
+
+.about-wrapper {
+	background: $kiva-bg-lightgray;
+}
+
+.about {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+
+	@include breakpoint(xlarge) {
+		margin-top: 5rem;
+		margin-bottom: 5rem;
+	}
+}
+
 </style>

@@ -153,6 +153,7 @@ export default {
 
 .split-pills {
 	flex-wrap: wrap;
+	margin: -0.5rem;
 
 	.split-pill {
 		flex: 1 1 auto;
