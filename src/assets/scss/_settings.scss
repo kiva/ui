@@ -249,10 +249,13 @@ $small-text-font-size: 0.875rem;
 $small-text-line-height: 1.357rem;
 
 $medium-text-font-size: 1.25rem;
-$medium-text-line-height: 1.125;
+$medium-text-line-height: 1.35;
 
 $featured-text-font-size: 1.5rem;
 $featured-text-line-height: 2.25rem;
+
+$large-text-font-size: 2.25rem;
+$large-text-line-height: 1.222222;
 
 $impact-text-font-size: rem-calc(32);
 $impact-text-line-height: rem-calc(40);
@@ -283,6 +286,17 @@ $huge-headline-line-height-medium: rem-calc(70);
 	@include text-shadow();
 
 	color: $white;
+}
+
+@mixin medium-text() {
+	font-size: $medium-text-font-size;
+	line-height: $medium-text-line-height;
+}
+
+@mixin large-text() {
+	font-size: $large-text-font-size;
+	line-height: $large-text-line-height;
+	font-weight: 700;
 }
 
 @mixin impact-text() {
