@@ -103,9 +103,6 @@
 						</kv-button>
 					</template>
 				</kv-lightbox>
-				<!-- TODO remove this slot when content has been incorporated into new design -->
-				<slot name="tempContentWrapper">
-				</slot>
 			</div>
 		</div>
 	</div>
@@ -292,48 +289,8 @@ export default {
 	}
 }
 
-.status-area {
-	.loading-spinner {
-		vertical-align: middle;
-		width: 1rem;
-		height: 1rem;
-
-		& >>> .line {
-			background-color: $white;
-		}
-	}
-
-	.settings-card {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		grid-template-rows: auto 1fr;
-		gap: 1rem 1rem;
-		grid-template-areas: "icon-wrapper title-wrapper" "icon-wrapper content-wrapper";
-	}
-
-	.icon-wrapper {
-		grid-area: icon-wrapper;
-
-		.icon {
-			margin-top: 1px;
-			height: 1.75rem;
-			width: 1.75rem;
-		}
-	}
-
-	.title-wrapper {
-		grid-area: title-wrapper;
-
-		h3 {
-			font-weight: $global-weight-bold;
-		}
-	}
-
-	.content-wrapper { grid-area: content-wrapper; }
-
-	.uppercase {
-		text-transform: uppercase;
-	}
+.uppercase {
+	text-transform: uppercase;
 }
 
 .kv-radio {

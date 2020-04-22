@@ -1,10 +1,8 @@
 <template>
-	<figure class="floating-counter" :class="classNames" :style="style">
-		<figcaption class="count-caption">
-			Current loans that match your criteria:
-		</figcaption>
-		<loan-count-span class="count-value" :count="count" :counting="counting" />
-	</figure>
+	<h4>
+		<!-- eslint-disable-next-line max-len  -->
+		Currently, <loan-count-span class="count-value" :count="count" :counting="counting" /> loans match your criteria.
+	</h4>
 </template>
 
 <script>
@@ -107,58 +105,15 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
-.floating-counter {
-	$border-radius: rem-calc(3);
+h4 {
+	margin-bottom: 1.25rem;
+}
 
-	position: absolute;
-	top: 0;
-	right: 0;
-	z-index: 10;
-	width: rem-calc(202);
-	border-radius: $border-radius;
-	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
-	text-align: center;
-	overflow: hidden;
-
-	.count-caption {
-		padding: rem-calc(10) 1rem;
-		background-color: $white;
-		color: $kiva-text-light;
-		font-size: rem-calc(18);
-		line-height: 1.33;
-		border: 1px solid $kiva-stroke-gray;
-		border-radius: $border-radius $border-radius 0 0;
-		border-bottom: none;
-	}
-
-	.count-value {
-		display: block;
-		margin: 0;
-		color: $white;
-		font-size: rem-calc(36);
-		font-weight: 500;
-		line-height: rem-calc(54);
-		background-color: $kiva-green;
-	}
-
-	.loading-spinner {
-		vertical-align: middle;
-		width: 2.5rem;
-		height: 2.5rem;
-		margin-top: -0.25rem;
-
-		& >>> .line {
-			background-color: $white;
-		}
-	}
-
-	&.low {
-		.count-value {
-			background-color: $kiva-accent-red;
-		}
-	}
+::v-deep .loading-spinner {
+	height: 1rem;
+	width: 1rem;
 }
 </style>

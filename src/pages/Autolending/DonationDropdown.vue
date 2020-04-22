@@ -73,7 +73,7 @@ export default {
 @import 'settings';
 
 .donation-dropdown {
-	margin-bottom: 1rem;
+	.dropdown { margin-bottom: 0; }
 
 	.filter-title {
 		font-size: 1rem;
