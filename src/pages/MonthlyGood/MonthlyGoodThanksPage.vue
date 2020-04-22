@@ -3,15 +3,15 @@
 		<div class="row align-center monthly-good-thanks-page">
 			<div class="small-12 medium-11 large-8 column">
 				<h1 class="text-center impact-text">
-					<kv-icon name="confirmation" class="icon-confirmation" /> You joined Monthly Good!
+					<kv-icon name="confirmation" class="icon-confirmation" /> {{ headline }}
 				</h1>
 
 				<p class="text-center">
-					${{ mgAmount }}/month
+					${{ mgAmount }}<span v-if="!isOnetime">/month</span>
 					<span v-if="donation > 0">(along with a ${{ donation }} donation)</span>
 				</p>
 
-				<div class="panel">
+				<div class="panel" v-if="!isOnetime">
 					<p class="text-center">
 						<strong>
 							Based on your contribution, you'll support your first borrower {{ monthWording }}.
@@ -19,6 +19,13 @@
 					</p>
 					<p class="text-center">
 						<strong><em>This is our best guess but loan lengths and repayment rates vary.</em></strong>
+					</p>
+				</div>
+				<div class="panel" v-else>
+					<p class="text-center">
+						<strong>
+							Thank you for choosing to support someone who has been impacted by COVID‑19 coronavirus.
+						</strong>
 					</p>
 				</div>
 			</div>
@@ -52,6 +59,16 @@ export default {
 	components: {
 		KvIcon,
 		WwwPage,
+	},
+	props: {
+		onetime: {
+			type: String,
+			default: 'false'
+		},
+		source: {
+			type: String,
+			default: ''
+		}
 	},
 	data() {
 		return {
@@ -106,6 +123,12 @@ export default {
 		},
 	},
 	computed: {
+		headline() {
+			if (this.fromCovidLanding) {
+				return 'You joined the Global COVID‑19 Response Fund!';
+			}
+			return 'You joined Monthly Good!';
+		},
 		monthWording() {
 			let numOfMonthUntilLoan = Math.ceil(25 / this.mgAmount);
 			if (this.dayOfMonth < new Date().getDate()) {
@@ -118,6 +141,13 @@ export default {
 			}
 			const dateOfFirstLoan = addMonths(new Date(), numOfMonthUntilLoan);
 			return `in ${formatDistanceToNow(dateOfFirstLoan)}`;
+		},
+		isOnetime() {
+			// ensure this is cast to a bool for use in Graphql mutation
+			return this.onetime === 'true';
+		},
+		fromCovidLanding() {
+			return this.source === 'covid19response';
 		}
 	},
 };
