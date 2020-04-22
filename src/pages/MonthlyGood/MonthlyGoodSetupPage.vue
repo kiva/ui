@@ -492,7 +492,13 @@ export default {
 				} else {
 					this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 					// Send to thanks page
-					this.$router.push({ path: '/monthlygood/thanks' });
+					this.$router.push({
+						path: '/monthlygood/thanks',
+						query: {
+							onetime: this.isOnetime,
+							source: this.source,
+						}
+					});
 				}
 			}).catch(error => {
 				this.$showTipMsg(error, 'error');

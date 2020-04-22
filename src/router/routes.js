@@ -60,7 +60,14 @@ export default [
 			source: route.query.source,
 		})
 	},
-	{ path: '/monthlygood/thanks', component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage') },
+	{
+		path: '/monthlygood/thanks',
+		component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage'),
+		props: route => ({
+			onetime: String(route.query.onetime),
+			source: route.query.source,
+		}),
+	},
 
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
