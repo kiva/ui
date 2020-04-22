@@ -11,7 +11,7 @@
 					<span v-if="donation > 0">(along with a ${{ donation }} donation)</span>
 				</p>
 
-				<div class="panel" v-if="!isOnetime">
+				<div class="panel" v-if="!fromCovidLanding">
 					<p class="text-center">
 						<strong>
 							Based on your contribution, you'll support your first borrower {{ monthWording }}.

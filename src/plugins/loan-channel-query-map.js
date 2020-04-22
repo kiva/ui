@@ -344,8 +344,11 @@ export default {
 				{
 					id: 96,
 					url: 'covid-19',
-					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner&tag=41',
-					algoliaParams: 'tags=reserved_disaster_relief_covid&sortBy=popularity'
+					queryParams: 'status=fundRaising&tag=41',
+					// algoliaParams: 'tags=reserved_disaster_relief_covid&sortBy=popularity'
+					// eslint-disable-next-line
+					// fallbackUrl: '/lend?status=fundRaising&tag=41&kexpn=lend_filter.lend_filter_versions&kexpv=c'
+					fallbackUrl: '/lend?status=fundRaising&tag=41&covid=bypass'
 				},
 				{
 					id: 65,
