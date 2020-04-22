@@ -263,6 +263,18 @@ export default {
 		display: none;
 	}
 
+	.button {
+		.loading-spinner {
+			vertical-align: middle;
+			width: 1rem;
+			height: 1rem;
+
+			& >>> .line {
+				background-color: $white;
+			}
+		}
+	}
+
 	.mobile-footer {
 		position: fixed;
 		left: 0;
