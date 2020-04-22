@@ -409,7 +409,7 @@ export default {
 					});
 
 					// Filter out funded loans
-					const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds.loans.values');
+					const initialLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
 					const filteredLoanSet = this.filterFundedLoans(initialLoanSet);
 
 					// share out results of loan query for row analytics
@@ -438,7 +438,7 @@ export default {
 					variables,
 				}).then(({ data }) => {
 					// filter and update recommended loans
-					const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds.loans.values');
+					const backfillLoanSet = _get(data, 'ml.getOrderedChannelsByIds[0].loans.values');
 					const filteredBackfillLoans = this.filterFundedLoans(backfillLoanSet);
 
 					// add new loans to row
