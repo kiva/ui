@@ -332,16 +332,6 @@ label {
 	margin-bottom: 1.5rem;
 }
 
-.loading-spinner {
-	vertical-align: middle;
-	width: 1rem;
-	height: 1rem;
-
-	& >>> .line {
-		background-color: $white;
-	}
-}
-
 ::v-deep .settings-card {
 	background: $white;
 	padding: 1.95rem;
