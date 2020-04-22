@@ -2,51 +2,86 @@
 	<section>
 		<h1>Typography</h1>
 
-		<label class="elem-desc">Level 1 header</label>
+		<div class="elem-desc">
+			Level 1 header
+		</div>
 		<h1>{{ shortLorem }}</h1>
 
-		<label class="elem-desc">Level 2 header</label>
+		<div class="elem-desc">
+			Level 2 header
+		</div>
 		<h2>{{ shortLorem }}</h2>
 
-		<label class="elem-desc">Level 3 header</label>
+		<div class="elem-desc">
+			Level 3 header
+		</div>
 		<h3>{{ shortLorem }}</h3>
 
-		<label class="elem-desc">Level 4 header</label>
+		<div class="elem-desc">
+			Level 4 header
+		</div>
 		<h4>{{ shortLorem }}</h4>
 
-		<label class="elem-desc">Level 5 header</label>
+		<div class="elem-desc">
+			Level 5 header
+		</div>
 		<h5>{{ shortLorem }}</h5>
 
-		<label class="elem-desc">Level 6 header</label>
+		<div class="elem-desc">
+			Level 6 header
+		</div>
 		<h6>{{ shortLorem }}</h6>
 
-		<label class="elem-desc">Body text</label>
+		<div class="elem-desc">
+			Body text
+		</div>
 		<p>{{ lorem }}</p>
 
-		<label class="elem-desc">Small text (.small-text)</label>
+		<div class="elem-desc">
+			Small text (.small-text)
+		</div>
 		<p class="small-text">
 			{{ lorem }}
 		</p>
 
-		<label class="elem-desc">Featured text (.featured-text)</label>
+		<div class="elem-desc">
+			Featured text (.featured-text, @include featred-text())
+		</div>
 		<p class="featured-text">
 			{{ lorem }}
 		</p>
 
-		<label class="elem-desc">Overlay text (.overlay-text)</label>
+		<div class="elem-desc">
+			Overlay text (.overlay-text, @include overlay-text())
+		</div>
 		<p class="overlay-text">
 			{{ lorem }}
 		</p>
 
-		<label class="elem-desc">Impact text (.impact-text)</label>
+		<div class="elem-desc">
+			Medium text (.medium-text, @include medium-text())
+		</div>
+		<p class="medium-text">
+			{{ shortLorem }}
+		</p>
+
+		<div class="elem-desc">
+			Large text (.large-text, @include large-text())
+		</div>
+		<p class="large-text">
+			{{ shortLorem }}
+		</p>
+
+		<div class="elem-desc">
+			Impact text (.impact-text, @include impact-text())
+		</div>
 		<p class="impact-text">
 			{{ shortLorem }}
 		</p>
 
-		<label class="elem-desc">Huge level 1 header (h1.huge)</label>
-		<h1 class="huge">
-			{{ shortLorem }}
-		</h1>
+		<div class="elem-desc">
+			Huge level 1 header (h1.huge, @include huge-headline())
+		</div>
 	</section>
 </template>
 
