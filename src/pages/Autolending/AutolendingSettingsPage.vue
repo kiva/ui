@@ -3,7 +3,7 @@
 		<autolending-status />
 
 		<!-- When your balance will be lent -->
-		<div class="row when-area">
+		<div class="row when-area" :class="{ obscure: !isEnabled }">
 			<div class="column large-8 settings-card">
 				<div class="icon-wrapper">
 					<kv-icon
@@ -24,7 +24,7 @@
 							I’ll lend my balance myself
 						</span>
 					</div>
-					<div class="row column" :class="{ obscure: !isEnabled }">
+					<div class="row column">
 						<!-- main toggles -->
 						<lend-timing-dropdown />
 						<donation-dropdown />
@@ -34,7 +34,7 @@
 		</div>
 
 		<!-- Who you'll support-->
-		<div class="row who-area">
+		<div class="row who-area" :class="{ obscure: !isEnabled }">
 			<div class="column large-8 settings-card">
 				<div class="icon-wrapper">
 					<kv-icon
@@ -295,7 +295,7 @@ $autolending-font-size: rem-calc(18.8);
 }
 
 .obscure {
-	opacity: 0.2;
+	opacity: 0.4;
 	pointer-events: none;
 }
 
