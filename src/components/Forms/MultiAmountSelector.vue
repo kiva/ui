@@ -205,7 +205,7 @@ export default {
 	.pill {
 		position: relative;
 		background: $platinum;
-		min-width: rem-calc(85);
+		min-width: rem-calc(95);
 
 		&:first-child {
 			.label {

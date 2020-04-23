@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="small-12 columns input-wrapper recurring-amounts">
 				<fieldset>
-					<legend class="deposit-options-label" for="deposit-type">
+					<legend class="visually-hidden">
 						Choose how often to contribute
 					</legend>
 					<kv-pill-toggle
@@ -15,7 +15,7 @@
 					/>
 				</fieldset>
 				<fieldset>
-					<legend class="amount-options-label">
+					<legend class="visually-hidden">
 						Choose an amount to contribute
 					</legend>
 					<multi-amount-selector
@@ -258,7 +258,7 @@ export default {
 
 .recurring-amount-selector,
 .onetime-amount-selector {
-	margin-bottom: 0.5rem;
+	margin-bottom: 1rem;
 }
 
 .submit-btn {
@@ -268,21 +268,23 @@ export default {
 
 // Monthly or Onetime Toggle
 ::v-deep .deposit-options-toggle {
-	margin-bottom: 1rem;
+	margin-bottom: 2rem;
 
 	.pill {
 		flex-grow: 1;
 	}
 }
 
+::v-deep label,
+::v-deep input {
+	font-weight: 700;
+}
+
 ::v-deep .validation-errors {
 	margin-bottom: 0;
 }
 
-.input-wrapper {
-	.deposit-options-label,
-	.amount-options-label {
-		font-weight: 400;
-	}
+.visually-hidden {
+	@include visually-hidden();
 }
 </style>

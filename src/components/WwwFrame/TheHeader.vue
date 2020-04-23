@@ -378,6 +378,7 @@ export default {
 			if (this.theme) {
 				return {
 					'--kv-header-background-color': this.theme.backgroundColor || '',
+					'--kv-header-logo-color': this.theme.logoColor || '',
 					'--kv-header-link-color': this.theme.linkColor || '',
 					'--kv-header-link-hover-color': this.theme.linkHoverColor || '',
 					'--kv-header-separator-color': this.theme.separatorColor || '',
@@ -467,6 +468,7 @@ $top-nav-font-size: 1.125rem;
 $header-height: rem-calc(45);
 $header-height-large: rem-calc(64);
 $header-background-color: $kiva-green;
+$header-logo-color: $white;
 $header-link-color: $white;
 $header-link-hover-color: $kiva-navdivider-green;
 $header-separator-color: $kiva-navdivider-green;
@@ -567,8 +569,8 @@ $close-search-button-size: 2.5rem;
 		width: rem-calc(57);
 		height: 100%;
 		margin: rem-calc(-3) auto 0;
-		fill: $header-link-color; // IE11 fallback
-		fill: var(--kv-header-link-color, $header-link-color);
+		fill: $header-logo-color; // IE11 fallback
+		fill: var(--kv-header-logo-color, $header-logo-color);
 		max-height: $header-height;
 
 		@include breakpoint(large) {
