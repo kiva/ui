@@ -1,50 +1,55 @@
 <template>
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
-			<fieldset class="small-12 columns input-wrapper recurring-amounts">
-				<label class="deposit-options-label" for="deposit-type">Choose how often to contribute</label>
-				<kv-pill-toggle
-					id="deposit-type"
-					class="deposit-options-toggle"
-					:options="depositOptions"
-					:selected="depositSelected"
-					@pill-toggled="depositTypeChanged"
-				/>
-
-				<label class="amount-options-label">Choose an amount to contribute</label>
-				<multi-amount-selector
-					v-show="isRecurring"
-					id="amount-selector"
-					class="recurring-amount-selector"
-					ref="recurringAmountSelectorRef"
-					:options="recurringAmountOptions"
-					:selected="recurringAmountSelection"
-					:custom-amount="recurringCustomAmount"
-					:min-custom-amount="minRecurringAmount"
-					@pill-toggled="recurringAmountSelected"
-					@custom-amount-updated="recurringCustomAmountUpdated"
-					:split-pills="true"
-				/>
-
-				<multi-amount-selector
-					v-show="!isRecurring"
-					id="onetime-amount-selector"
-					class="onetime-amount-selector"
-					ref="onetimeAmountSelectorRef"
-					:options="onetimeAmountOptions"
-					:selected="onetimeAmountSelection"
-					:custom-amount="onetimeCustomAmount"
-					:min-custom-amount="minOnetimeAmount"
-					@pill-toggled="onetimeAmountSelected"
-					@custom-amount-updated="onetimeCustomAmountUpdated"
-					:split-pills="true"
-				/>
-			</fieldset>
+			<div class="small-12 columns input-wrapper recurring-amounts">
+				<fieldset>
+					<legend class="deposit-options-label" for="deposit-type">
+						Choose how often to contribute
+					</legend>
+					<kv-pill-toggle
+						id="deposit-type"
+						class="deposit-options-toggle"
+						:options="depositOptions"
+						:selected="depositSelected"
+						@pill-toggled="depositTypeChanged"
+					/>
+				</fieldset>
+				<fieldset>
+					<legend class="amount-options-label">
+						Choose an amount to contribute
+					</legend>
+					<multi-amount-selector
+						v-show="isRecurring"
+						id="amount-selector"
+						class="recurring-amount-selector"
+						ref="recurringAmountSelectorRef"
+						:options="recurringAmountOptions"
+						:selected="recurringAmountSelection"
+						:custom-amount="recurringCustomAmount"
+						:min-custom-amount="minRecurringAmount"
+						@pill-toggled="recurringAmountSelected"
+						@custom-amount-updated="recurringCustomAmountUpdated"
+						:split-pills="true"
+					/>
+					<multi-amount-selector
+						v-show="!isRecurring"
+						id="onetime-amount-selector"
+						class="onetime-amount-selector"
+						ref="onetimeAmountSelectorRef"
+						:options="onetimeAmountOptions"
+						:selected="onetimeAmountSelection"
+						:custom-amount="onetimeCustomAmount"
+						:min-custom-amount="minOnetimeAmount"
+						@pill-toggled="onetimeAmountSelected"
+						@custom-amount-updated="onetimeCustomAmountUpdated"
+						:split-pills="true"
+					/>
+				</fieldset>
+				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
+					{{ buttonText }}
+				</kv-button>
+			</div>
 		</div>
-
-		<kv-button class="smaller" type="submit" :disabled="$v.$invalid">
-			{{ buttonText }}
-		</kv-button>
 	</form>
 </template>
 
@@ -251,18 +256,23 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.recurring-amount-selector,
+.onetime-amount-selector {
+	margin-bottom: 0.5rem;
+}
+
+.submit-btn {
+	width: 100%;
+	margin: 0.5rem 0;
+}
+
 // Monthly or Onetime Toggle
 ::v-deep .deposit-options-toggle {
-	margin: 0.5rem 0 1rem;
+	margin-bottom: 1rem;
 
 	.pill {
 		flex-grow: 1;
 	}
-}
-// Split Pill Amount Selector Overrides
-::v-deep .recurring-amount-selector,
-::v-deep .onetime-amount-selector {
-	margin: 0.5rem -0.5rem 0.5rem;
 }
 
 ::v-deep .validation-errors {
@@ -273,8 +283,6 @@ export default {
 	.deposit-options-label,
 	.amount-options-label {
 		font-weight: 400;
-		margin: 0;
-		line-height: 1;
 	}
 }
 </style>

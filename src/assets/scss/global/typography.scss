@@ -29,6 +29,14 @@ h1.huge {
 	@include overlay-text();
 }
 
+.medium-text {
+	@include medium-text();
+}
+
+.large-text {
+	@include large-text();
+}
+
 .impact-text {
 	@include impact-text();
 }
