@@ -75,7 +75,7 @@ const pageQuery = gql`{
 	}
 }`;
 
-// const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
+const heroImagesRequire = require.context('@/assets/images/covid-response', true);
 
 export default {
 	metaInfo: {
@@ -115,32 +115,20 @@ export default {
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 			monthlyGoodAmount: 25,
-			// heroImages: [
-			// 	['small', heroImagesRequire('./monthlygood-banner-sm-std.jpg')],
-			// 	['small retina', heroImagesRequire('./monthlygood-banner-sm-retina.jpg')],
-			// 	['medium', heroImagesRequire('./monthlygood-banner-med-std_0.jpg')],
-			// 	['medium retina', heroImagesRequire('./monthlygood-banner-med-retina_0.jpg')],
-			// 	['large', heroImagesRequire('./monthlygood-banner-lg-std_0.jpg')],
-			// 	['large retina', heroImagesRequire('./monthlygood-banner-lg-retina_0.jpg')],
-			// 	['xga', heroImagesRequire('./monthlygood-banner-xl-std_0.jpg')],
-			// 	['xga retina', heroImagesRequire('./monthlygood-banner-xl-retina_0.jpg')],
-			// 	['wxga', heroImagesRequire('./monthlygood-banner-xxl-std.jpg')],
-			// 	['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
-			// ],
 			heroImages: [
-				['small', 'https://via.placeholder.com/480x390'],
-				['small retina', 'https://via.placeholder.com/960x780'],
-				['medium', 'https://via.placeholder.com/680x375'],
-				['medium retina', 'https://via.placeholder.com/1360x750'],
-				['large', 'https://via.placeholder.com/1024x850'],
-				['large retina', 'https://via.placeholder.com/2048x1700'],
-				['xxlarge', 'https://via.placeholder.com/1320x760'],
-				['xxlarge retina', 'https://via.placeholder.com/2640x1520'],
-				['xga', 'https://via.placeholder.com/1440x710'],
-				['xga retina', 'https://via.placeholder.com/2880x1420'],
-				['wxga', 'https://via.placeholder.com/1920x740'],
-				['wga retina', 'https://via.placeholder.com/3840x1480'],
-			]
+				['small', heroImagesRequire('./hero_480x390.jpg')],
+				['small retina', heroImagesRequire('./hero_960x780.jpg')],
+				['medium', heroImagesRequire('./hero_680x375.jpg')],
+				['medium retina', heroImagesRequire('./hero_1360x750.jpg')],
+				['large', heroImagesRequire('./hero_1024x850.jpg')],
+				['large retina', heroImagesRequire('./hero_2048x1700.jpg')],
+				['xxlarge', heroImagesRequire('./hero_1320x760.jpg')],
+				['xxlarge retina', heroImagesRequire('./hero_2640x1520.jpg')],
+				['xga', heroImagesRequire('./hero_1440x710.jpg')],
+				['xga retina', heroImagesRequire('./hero_2880x1420.jpg')],
+				['wxga', heroImagesRequire('./hero_1920x740.jpg')],
+				['wga retina', heroImagesRequire('./hero_3840x1480.jpg')],
+			],
 		};
 	},
 	computed: {
