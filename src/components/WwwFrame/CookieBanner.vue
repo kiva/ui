@@ -69,6 +69,9 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$banner-padding-mobile: 0.75rem;
+$banner-padding-desktop: 1.5rem;
+
 .cookie-banner-container {
 	position: fixed;
 	bottom: 0;
@@ -78,8 +81,6 @@ export default {
 	z-index: 1000;
 
 	.cookie-banner {
-		$banner-padding-mobile: 1.125rem;
-
 		position: relative;
 		background: #f4f4f4;
 		font-size: rem-calc(14);
@@ -87,37 +88,24 @@ export default {
 		border-radius: rem-calc(2);
 		color: $charcoal;
 		padding: $banner-padding-mobile;
+		line-height: 1.6;
 
 		.close-button {
 			cursor: pointer;
 			display: block;
-			margin: 15px auto 0 auto;
+			margin: 0.25rem auto 0;
+			padding: 0.55rem 1rem;
 		}
 
 		.cookie-banner-content {
 			text-align: center;
 			margin: 0 auto;
-			max-width: 29.75rem;
 		}
 	}
 
-	@include breakpoint(medium) {
-		padding: 1rem;
-
+	@include breakpoint(large) {
 		.cookie-banner {
-			$banner-padding-tablet: 1.5rem;
-
-			padding: $banner-padding-tablet;
-		}
-	}
-
-	@include breakpoint(xga) {
-		padding: rem-calc(20);
-
-		.cookie-banner {
-			$banner-padding-desktop: 1.875rem;
-
-			padding: $banner-padding-desktop;
+			padding-right: 10rem;
 
 			.close-button {
 				display: flex;
@@ -128,6 +116,16 @@ export default {
 				top: 50%;
 				transform: translateY(-50%);
 				margin: unset;
+			}
+		}
+	}
+
+	@include breakpoint(xga) {
+		.cookie-banner {
+			padding-right: 10rem;
+
+			.cookie-banner-content {
+				max-width: 49rem;
 			}
 		}
 	}
