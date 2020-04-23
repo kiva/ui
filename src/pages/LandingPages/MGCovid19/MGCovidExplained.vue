@@ -22,7 +22,8 @@
 						Choose
 					</h3>
 					<div class="three-steps__description">
-						a monthly amount to go toward COVID-19 relief that works for you
+						Choose a monthly amount to go toward COVID-19 relief that
+						works <span class="no-wrap">for you.</span>
 					</div>
 				</div>
 			</li>
@@ -35,10 +36,10 @@
 						<mg-step-two class="three-steps__icon three-steps__icon--inbox" />
 					</div>
 					<h3 class="three-steps__title">
-						Stay informed:
+						Check
 					</h3>
 					<div class="three-steps__description">
-						receive a monthly impact report on your COVID-19 relief support
+						Receive a monthly impact report on your COVID-19 <span class="no-wrap">relief support.</span>
 					</div>
 				</div>
 			</li>
@@ -51,10 +52,11 @@
 						<mg-step-three class="three-steps__icon" />
 					</div>
 					<h3 class="three-steps__title">
-						Grow your impact:
+						Grow
 					</h3>
 					<div class="three-steps__description">
-						as you get repaid, Kiva will continue to re-lend the funds to multiply your impact.
+						As you get repaid, Kiva will re-lend you money and
+						multiply <span class="no-wrap">your impact.</span>
 					</div>
 				</div>
 			</li>

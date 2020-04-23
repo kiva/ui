@@ -56,11 +56,6 @@ export default {
 					content: 'If there is no longer a need for this fund, we’ll get in touch with you to ask you to change your settings.'
 				},
 				{
-					title: 'What if I was previously a Monthly Good subscriber and I want to switch my category to COVID-19?',
-					content: 'We will record prior category settings for previous Monthly Good subscribers.'
-				},
-
-				{
 					title: 'Interested in a corporate partnership with Kiva?',
 					content: 'If you’re a company that wants to partner with us on these efforts, please reach out to us at partnerships@kiva.org.'
 				},

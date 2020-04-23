@@ -6,7 +6,7 @@
 			</div>
 			<div class="small-12 large-6 columns">
 				<h2 class="about__header">
-					About Kiva
+					Over $1.4 billion in impact in <span class="no-wrap">70+ countries</span>
 				</h2>
 				<p>
 					Kiva is an international nonprofit, founded in 2005 in San Francisco, with a mission

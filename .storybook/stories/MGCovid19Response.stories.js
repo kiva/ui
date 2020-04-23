@@ -24,6 +24,9 @@ export const Default = () => ({
 					subscribe() {}
 				}
 			},
+			readQuery() {
+				return Promise.resolve({});
+			},
 		},
 		federation: {
 			query() {

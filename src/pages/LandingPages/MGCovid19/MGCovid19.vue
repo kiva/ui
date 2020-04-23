@@ -8,6 +8,7 @@
 			<!-- TODO Update to handle new images and design -->
 			<template v-slot:images>
 				<kv-responsive-image
+					class="mg-hero-picture"
 					:images="heroImages"
 					alt=""
 				/>
@@ -16,13 +17,10 @@
 				<div class="row">
 					<div class="
 						overlay-column columns
-						medium-10 medium-offset-1 large-6 large-offset-0 xlarge-6 xxlarge-5"
+						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
 					>
-						<h1 class="mg-headline" v-html="pageCopy.headline">
-						</h1>
-						<p class="mg-subhead">
-							{{ pageCopy.subhead }}
-						</p>
+						<h1 class="mg-headline" v-html="pageCopy.headline"></h1>
+						<p class="mg-subhead" v-html="pageCopy.subhead"></p>
 						<covid-landing-form
 							:key="1"
 							:button-text="pageCopy.button"
@@ -43,7 +41,7 @@
 		<div class="row">
 			<m-g-covid-explained class="small-12 columns mg-explained section" />
 			<div class="separator section"></div>
-			<m-g-covid-faq class="small-12 columns section" />
+			<m-g-covid-faq class="small-12 xlarge-10 xxlarge-9 columns section" />
 		</div>
 
 		<div class="about-wrapper section ">
@@ -101,7 +99,8 @@ export default {
 			co19HeaderTheme: {
 				themeKey: 'CO19',
 				backgroundColor: '#fff',
-				linkColor: '#4faf4e',
+				logoColor: '#4faf4e',
+				linkColor: '#767676',
 				linkHoverColor: '#efefef',
 				separatorColor: 'transparent'
 			},
@@ -134,8 +133,8 @@ export default {
 	computed: {
 		pageCopy() {
 			return {
-				headline: 'Join Kiva\'s Global COVID-19 Response',
-				subhead: 'Provide relief to entrepreneurs, small businesses, students, and families impacted by COVID-19 Coronavirus.', // eslint-disable-line max-len
+				headline: 'Join Kiva\'s global <span class="no-wrap">COVID-19 response</span>', // eslint-disable-line max-len
+				subhead: 'Lend as little as $25 and provide relief to entrepreneurs and small businesses impacted <span class="no-wrap">by COVID-19.</span>', // eslint-disable-line max-len
 				button: 'Take action'
 			};
 		}
@@ -176,10 +175,20 @@ export default {
 		display: flex;
 		flex-direction: column-reverse;
 
-		picture {
+		.mg-hero-picture {
 			@include breakpoint(large) {
 				position: absolute;
 				top: 0;
+				bottom: 0;
+			}
+
+			// Prevent whitespace below the image in browsers that understand object-fit. (IE11 will see some whitepace)
+			@supports (object-fit: cover) {
+				img {
+					object-fit: cover;
+					height: 100%;
+					width: 100%;
+				}
 			}
 		}
 
@@ -194,7 +203,8 @@ export default {
 			transform: none;
 
 			@include breakpoint(large) {
-				margin-top: 1rem;
+				margin-top: 2.5rem;
+				margin-bottom: 1.5rem;
 			}
 
 			.overlay-column {
@@ -207,7 +217,7 @@ export default {
 
 				@include breakpoint(large) {
 					max-width: 31.25rem;
-					padding: 1.5rem 1.5rem 1.25rem;
+					padding: 2.5rem 2.5rem 2.25rem;
 				}
 			}
 		}
@@ -247,13 +257,15 @@ export default {
 
 .mg-headline {
 	@include large-text();
+
+	margin-bottom: 0.25rem;
 }
 
 .mg-subhead {
 	@include medium-text();
 
 	padding: 0;
-	margin-bottom: 1rem;
+	margin-bottom: 1.5rem;
 }
 
 .mg-explained {
