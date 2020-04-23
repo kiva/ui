@@ -126,6 +126,8 @@ export const Themed = () => ({
 			default() {
 				return object('theme', {
 					backgroundColor: '#060f9f',
+					textColor: 'orangered',
+					logoColor: 'cyan',
 					linkColor: 'yellow',
 					linkHoverColor: 'pink',
 					separatorColor: 'hsl(178, 97%, 35%)'
