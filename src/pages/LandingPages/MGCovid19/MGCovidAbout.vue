@@ -37,6 +37,8 @@
 <script>
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
+const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
+
 export default {
 	components: {
 		KvResponsiveImage
@@ -44,12 +46,8 @@ export default {
 	data() {
 		return {
 			aboutImageSet: [
-				['small', 'https://via.placeholder.com/430x350'],
-				['small retina', 'https://via.placeholder.com/860x700'],
-				['medium', 'https://via.placeholder.com/635x350'],
-				['medium retina', 'https://via.placeholder.com/1270x700'],
-				['large', 'https://via.placeholder.com/465x470'],
-				['large retina', 'https://via.placeholder.com/930x940'],
+				['small', billionImpactImagesRequire('./10-years-billion-impact_ghost.jpg')],
+				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x_ghost.jpg')],
 			]
 		};
 	}
@@ -63,10 +61,11 @@ export default {
 .about {
 	&__img {
 		width: 100%;
-		margin-bottom: 2em;
+		margin-bottom: 2rem;
 
 		@include breakpoint(large) {
 			margin-bottom: 0;
+			padding-right: 2rem;
 		}
 	}
 
