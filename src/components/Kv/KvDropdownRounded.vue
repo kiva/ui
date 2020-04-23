@@ -30,7 +30,7 @@ export default {
 		border: 1px solid $charcoal;
 		width: inherit;
 		border-radius: $button-radius;
-		line-height: $medium-text-line-height;
+		line-height: 1.125;
 		background-image: url('~@/assets/images/customDropdown.png');
 		background-size: rem-calc(23) rem-calc(20);
 		color: $charcoal;
