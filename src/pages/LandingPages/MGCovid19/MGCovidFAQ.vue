@@ -25,10 +25,10 @@ export default {
 			faqs: [
 				{
 					title: 'Are my contributions loans or donations?',
-					content: 'All contributions to the Global COVID-19 Response Fund are loans.'
+					content: 'All contributions to the Global COVID-19 response fund are loans.'
 				},
 				{
-					title: 'Can I just contribute to the Response Fund once, rather than monthly?',
+					title: 'Can I just contribute to the response fund once, rather than monthly?',
 					content: 'Yes. If you choose “One-time support”, the selected amount will only be deposited once.'
 				},
 				{
@@ -52,8 +52,8 @@ export default {
 					content: 'You may withdraw or re-lend funds for COVID-19 relief after your funds have been used toward a loan and returned to you as repayments.'
 				},
 				{
-					title: 'What will happen to the Response Fund once borrowers no longer need funds to address the impact of COVID-19?',
-					content: 'If there is no longer a need for this fund, we’ll get in touch with you to ask you to change your settings.'
+					title: 'What will happen to allocated COVID-19 response funds once borrowers no longer need resources to address the impact of the pandemic?',
+					content: 'If there are no longer COVID-19 specific needs to address, we’ll get in touch with you to ask you to change your settings.'
 				},
 				{
 					title: 'Interested in a partnership with Kiva?',

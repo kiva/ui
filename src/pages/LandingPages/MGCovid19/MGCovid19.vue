@@ -133,7 +133,7 @@ export default {
 		pageCopy() {
 			return {
 				headline: 'Join Kiva\'s global <span class="no-wrap">COVID-19 response</span>', // eslint-disable-line max-len
-				subhead: 'Lend as little as $25 and provide relief to entrepreneurs and small businesses impacted <span class="no-wrap">by COVID-19.</span>', // eslint-disable-line max-len
+				subhead: 'Lend a hand to provide relief to entrepreneurs and small businesses impacted <span class="no-wrap">by COVID-19.</span>', // eslint-disable-line max-len
 				button: 'Take action'
 			};
 		}
