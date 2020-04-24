@@ -49,43 +49,41 @@
 						<hr>
 					</template>
 					<div class="status-radio-wrapper">
-						<div class="is-enabled-radios">
-							<kv-radio
-								data-test="is-autolending-on"
-								id="is-autolending-on"
-								radio-value="on"
-								v-model="autolendingStatus"
-							>
-								ON
-							</kv-radio>
-							<kv-radio
-								data-test="is-autolending-paused"
-								id="is-autolending-paused"
-								radio-value="paused"
-								v-model="autolendingStatus"
-							>
-								PAUSED for
-								<kv-dropdown-rounded v-model="daysToPause" @change="triggerWatcher">
-									<option value="30">
-										1 Month
-									</option>
-									<option value="90">
-										3 Months
-									</option>
-									<option value="180">
-										6 Months
-									</option>
-								</kv-dropdown-rounded>
-							</kv-radio>
-							<kv-radio
-								data-test="is-autolending-off"
-								id="is-autolending-off"
-								radio-value="off"
-								v-model="autolendingStatus"
-							>
-								OFF
-							</kv-radio>
-						</div>
+						<kv-radio
+							data-test="is-autolending-on"
+							id="is-autolending-on"
+							radio-value="on"
+							v-model="autolendingStatus"
+						>
+							ON
+						</kv-radio>
+						<kv-radio
+							data-test="is-autolending-paused"
+							id="is-autolending-paused"
+							radio-value="paused"
+							v-model="autolendingStatus"
+						>
+							PAUSED for
+							<kv-dropdown-rounded v-model="daysToPause" @change="triggerWatcher">
+								<option value="30">
+									1 Month
+								</option>
+								<option value="90">
+									3 Months
+								</option>
+								<option value="180">
+									6 Months
+								</option>
+							</kv-dropdown-rounded>
+						</kv-radio>
+						<kv-radio
+							data-test="is-autolending-off"
+							id="is-autolending-off"
+							radio-value="off"
+							v-model="autolendingStatus"
+						>
+							OFF
+						</kv-radio>
 					</div>
 					<template slot="controls">
 						<hr>
@@ -145,6 +143,7 @@ export default {
 	apollo: {
 		query: gql`{
 			autolending @client {
+				profileChanged
 				currentProfile {
 					isEnabled
 					pauseUntil
@@ -155,6 +154,7 @@ export default {
 		result({ data }) {
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.pauseUntil = _get(data, 'autolending.currentProfile.pauseUntil');
+			this.isChanged = !!_get(data, 'autolending.profileChanged');
 
 			this.autolendingStatus = this.setAutolendingStatus({
 				isEnabled: this.isEnabled,
@@ -175,7 +175,6 @@ export default {
 	},
 	methods: {
 		watchAutolendingStatus() {
-			this.isChanged = true;
 			switch (this.autolendingStatus) {
 				case 'paused': {
 					const pauseUntilDate = `${formatISO(addDays(new Date(), this.daysToPause))}`;

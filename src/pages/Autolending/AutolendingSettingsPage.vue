@@ -3,35 +3,7 @@
 		<autolending-status />
 
 		<!-- When your balance will be lent -->
-		<div class="row when-area" :class="{ obscure: !isEnabled }">
-			<div class="column large-8 settings-card">
-				<div class="icon-wrapper">
-					<kv-icon
-						class="icon"
-						title="When your balance will be lent"
-						name="auto-icon-when"
-					/>
-				</div>
-				<div class="title-wrapper">
-					<h3>When your balance will be lent</h3>
-				</div>
-				<div class="content-wrapper">
-					<div class="row column">
-						<span v-if="isEnabled" class="toggle-sub-text">
-							Kiva will automatically lend my balance
-						</span>
-						<span v-else class="toggle-sub-text">
-							I’ll lend my balance myself
-						</span>
-					</div>
-					<div class="row column">
-						<!-- main toggles -->
-						<lend-timing-dropdown />
-						<donation-dropdown />
-					</div>
-				</div>
-			</div>
-		</div>
+		<autolending-when />
 
 		<!-- Who you'll support-->
 		<div class="row who-area" :class="{ obscure: !isEnabled }">
@@ -127,8 +99,6 @@ import initAutolending from '@/graphql/mutation/autolending/initAutolending.grap
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
 import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
-import DonationDropdown from './DonationDropdown';
-import LendTimingDropdown from './LendTimingDropdown';
 import InlineCounter from './InlineCounter';
 import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
@@ -143,6 +113,7 @@ import LoanIncrementRadios from './LoanIncrementRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
 import KivaChoosesRadios from './KivaChoosesRadios';
 import AutolendingStatus from './AutolendingStatus';
+import AutolendingWhen from './AutolendingWhen';
 
 
 const pageQuery = gql`{
@@ -160,24 +131,23 @@ export default {
 	components: {
 		AttributeFilter,
 		AutolendingStatus,
+		AutolendingWhen,
 		CountryFilter,
-		DonationDropdown,
-		InlineCounter,
+		DefaultRateDropdown,
 		GenderRadios,
 		GroupRadios,
+		InlineCounter,
+		KivaChoosesRadios,
 		KvExpandable,
-		LendTimingDropdown,
+		KvIcon,
+		LoanIncrementRadios,
+		LoanTermDropdown,
 		MobileCounter,
+		PartnerDelRateDropdown,
 		PartnerFilter,
+		RiskRatingDropdown,
 		SaveButton,
 		SectorFilter,
-		RiskRatingDropdown,
-		LoanTermDropdown,
-		PartnerDelRateDropdown,
-		LoanIncrementRadios,
-		DefaultRateDropdown,
-		KivaChoosesRadios,
-		KvIcon
 	},
 	data() {
 		return {
@@ -300,13 +270,7 @@ export default {
 
 $autolending-font-size: rem-calc(18.8);
 
-.toggle-sub-text {
-	font-size: $normal-text-font-size;
-	display: block;
-	color: $kiva-text-light;
-}
-
-.obscure {
+::v-deep .obscure {
 	opacity: 0.4;
 	pointer-events: none;
 }
