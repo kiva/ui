@@ -56,8 +56,8 @@ export default {
 					content: 'If there is no longer a need for this fund, we’ll get in touch with you to ask you to change your settings.'
 				},
 				{
-					title: 'Interested in a corporate partnership with Kiva?',
-					content: 'If you’re a company that wants to partner with us on these efforts, please reach out to us at partnerships@kiva.org.'
+					title: 'Interested in a partnership with Kiva?',
+					content: 'If you\'re an organization that wants to partner with us on these efforts, please reach out to us at partnerships@kiva.org.'
 				},
 			]
 		};

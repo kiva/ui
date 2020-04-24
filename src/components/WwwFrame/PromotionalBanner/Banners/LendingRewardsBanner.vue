@@ -12,7 +12,9 @@
 
 .lending-rewards-banner {
 	background-color: $kiva-green;
-	color: $kiva-darkgreen;
+	background-color: var(--kv-header-background-color, $kiva-green);
+	color: #fff;
+	color: var(--kv-header-text-color, #fff);
 
 	@include breakpoint(medium) {
 		.promo-banner-small &.content {

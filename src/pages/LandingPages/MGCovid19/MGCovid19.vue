@@ -5,7 +5,6 @@
 		:footer-theme="co19FooterTheme"
 	>
 		<kv-hero class="mg-hero section">
-			<!-- TODO Update to handle new images and design -->
 			<template v-slot:images>
 				<kv-responsive-image
 					class="mg-hero-picture"
@@ -41,7 +40,7 @@
 		<div class="row">
 			<m-g-covid-explained class="small-12 columns mg-explained section" />
 			<div class="separator section"></div>
-			<m-g-covid-faq class="small-12 xlarge-10 xxlarge-9 columns section" />
+			<m-g-covid-faq class="small-12 large-9 xlarge-8 xxlarge-7 columns section" />
 		</div>
 
 		<div class="about-wrapper section ">

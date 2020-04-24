@@ -55,7 +55,7 @@
 						Grow
 					</h3>
 					<div class="three-steps__description">
-						As you get repaid, Kiva will re-lend you money and
+						As you get repaid, Kiva will re-lend your money and
 						multiply <span class="no-wrap">your impact.</span>
 					</div>
 				</div>
