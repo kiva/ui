@@ -1,41 +1,32 @@
 <template>
 	<div class="lend-timing-dropdown">
+		<span>Lend my balance for me</span>
 		<kv-dropdown-rounded :value="lendAfterDaysIdle" @input="updateLendAfterDaysIdle">
 			<option value="0">
 				As soon as possible
 			</option>
 			<option value="7">
-				If I haven’t made a loan myself after 7 days
+				If I haven’t made a loan after 7 days
 			</option>
 			<option value="14">
-				If I haven’t made a loan myself after 14 days
+				If I haven’t made a loan after 14 days
 			</option>
 			<option value="45">
-				If I haven’t made a loan myself after 45 days
+				If I haven’t made a loan after 45 days
 			</option>
 			<option value="90">
-				If I haven’t made a loan myself after 90 days
+				If I haven’t made a loan after 90 days
 			</option>
 			<option value="120">
-				If I haven’t made a loan myself after 120 days
+				If I haven’t made a loan after 120 days
 			</option>
 		</kv-dropdown-rounded>
-		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
-		<div
-			data-test="timing-explanation"
-			class="autolend-explanation-text"
-			v-if="isEnabled && this.cIdleStartTime !== null"
-		>
-			{{ autolendExplanationText }}
-		</div>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import { differenceInCalendarDays } from 'date-fns';
-import numeral from 'numeral';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 export default {
@@ -54,89 +45,6 @@ export default {
 			userBalance: 0,
 			donationPercentage: 15
 		};
-	},
-	computed: {
-		// returns legacy setting descriptions based on legacy enableAfter setting value
-		autoLendNotice() {
-			let legacyAutoLendDescription;
-			switch (this.enableAfter) {
-				case 0:
-					legacyAutoLendDescription = 'Whenever I have credit available';
-					break;
-				case 1:
-					legacyAutoLendDescription = 'If I don\'t log in for 1 Month';
-					break;
-				case 2:
-					legacyAutoLendDescription = 'If I don\'t log in for 2 Months';
-					break;
-				case 3:
-					legacyAutoLendDescription = 'If I don\'t log in for 3 Months';
-					break;
-				case 6:
-					legacyAutoLendDescription = 'If I don\'t log in for 6 Months';
-					break;
-				case 12:
-					legacyAutoLendDescription = 'If I don\'t log in for 1 Year';
-					break;
-				case 18:
-					legacyAutoLendDescription = 'If I don\'t log in for 1.5 Years';
-					break;
-				default:
-					return '';
-			}
-
-			let notice = `Notice: Your previous setting was '${legacyAutoLendDescription}'`;
-			notice += this.changedTiming ? '.' : ', the closest matching setting above will be applied upon save.';
-			return notice;
-		},
-		autolendExplanationText() {
-			const userBalance = numeral(this.userBalance).value();
-			const loanAndDonationAmount = numeral((1 + this.donationPercentage / 100) * 25).value();
-			const loanAndDonationAmountFormatted = numeral((1 + this.donationPercentage / 100) * 25).format('0,0.00');
-
-			// Lender's balance is lower that the amount of a loan share + their chosen donation percentage
-			if (!this.cIdleStartTime || userBalance < loanAndDonationAmount) {
-				// eslint-disable-next-line max-len
-				return `Your current balance is lower than the minimum loan share amount. The auto-lending timer will begin once your balance reaches $${loanAndDonationAmountFormatted} through repayments or additional deposits.`;
-			}
-
-			const idleStartTime = Date.parse(this.cIdleStartTime);
-			const daysIdle = differenceInCalendarDays(new Date(), idleStartTime);
-			const daysUntilLend = this.lendAfterDaysIdle - daysIdle > 0 ? this.lendAfterDaysIdle - daysIdle : 0;
-			const daysUntilMay = differenceInCalendarDays(new Date('5/21/2020'), new Date());
-
-			// cash-1883
-			if (daysIdle === 0) {
-				// eslint-disable-next-line max-len
-				return `You're currently active! You'll be eligible for auto-lending if you don't make a loan yourself in the next ${this.lendAfterDaysIdle} days.`;
-			}
-
-			// TEMPORARY - Remove after 5/21/2020
-			// Special launch conditions for Autolenders with unchanged default of 90 days
-			if (this.lendAfterDaysIdle === 90 && daysUntilMay >= 0) {
-				// lender has a qualifying credit change after 2/20/2020 thus resetting their 90 days beyond 5/21/2020
-				if (daysUntilLend > daysUntilMay) {
-					// eslint-disable-next-line max-len
-					return `You haven’t made a loan yourself in ${daysIdle} days – your balance will be eligible for auto-lending in ${daysUntilLend} days.`;
-				}
-				// lender's 90 eligible window falls between now and 5/21/2020
-				if (daysUntilLend > 0 && daysUntilLend <= daysUntilMay) {
-					// eslint-disable-next-line max-len
-					return `You haven’t made a loan yourself in ${daysIdle} days – your balance will be eligible for auto-lending on May 21, 2020.`;
-				}
-				// lender is already eligible to autolend, but delayed until program launch
-				// eslint-disable-next-line max-len
-				return `Since you haven’t made a loan yourself in ${daysIdle} days, you will be eligible for auto-lending on May 21, 2020 when the first 90-day auto-loans are made.`;
-			}
-
-			// R1: User balance > $25 + the user's , # of days within dropdown - cIdleStartTime is greater than 0
-			if (daysUntilLend > 0) {
-				// eslint-disable-next-line max-len
-				return `Since you haven’t made a loan yourself for ${daysIdle} days, we will auto-lend your eligible balance after ${daysUntilLend} days—timing may vary based on loan supply.`;
-			}
-			// eslint-disable-next-line max-len
-			return `Since you haven’t made a loan yourself in over ${daysIdle} days, you will be eligible for auto-lending immediately—timing may vary based on loan supply.`;
-		}
 	},
 	methods: {
 		convertEnableAfterToNewSetting(value) {
@@ -220,19 +128,8 @@ export default {
 .lend-timing-dropdown {
 	margin-bottom: 1rem;
 
-	.text-notice {
-		color: $kiva-text-light;
-		font-style: italic;
-	}
-
-	.autolend-explanation-text {
-		color: $kiva-green;
-		max-width: 30rem;
-	}
-
-	// Temporary fix, remove after redesign & copy change.
-	::v-deep .dropdown {
-		width: 100%;
+	.dropdown-wrapper {
+		display: inline;
 	}
 }
 </style>
