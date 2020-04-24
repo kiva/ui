@@ -259,6 +259,7 @@ export default {
 .recurring-amount-selector,
 .onetime-amount-selector {
 	margin-bottom: 1rem;
+	position: relative;
 }
 
 .submit-btn {
@@ -281,6 +282,9 @@ export default {
 }
 
 ::v-deep .validation-errors {
+	position: absolute;
+	bottom: -1rem;
+	right: 0;
 	margin-bottom: 0;
 }
 

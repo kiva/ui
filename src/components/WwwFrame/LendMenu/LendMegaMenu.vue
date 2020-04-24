@@ -234,6 +234,7 @@ export default {
 	h2 {
 		font-size: $section-header-font-size;
 		font-weight: normal;
+		color: $kiva-text-dark;
 	}
 
 	li {

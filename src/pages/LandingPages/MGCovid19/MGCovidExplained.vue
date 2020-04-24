@@ -5,8 +5,8 @@
 				Three Steps to Impact
 			</h2>
 			<p class="mg-explained__body small-12 columns text-center">
-				Set your commitment once, Kiva will do the rest to make sure
-				every dollar is lent to COVID-19 impacted individuals and businesses.
+				Set your commitment once, Kiva will make sure every dollar
+				is lent to COVID-19 impacted individuals and businesses.
 			</p>
 		</div>
 		<ol class="three-steps row">
@@ -39,7 +39,7 @@
 						Check
 					</h3>
 					<div class="three-steps__description">
-						Receive a monthly impact report on your COVID-19 <span class="no-wrap">relief support.</span>
+						Receive a monthly impact report explaining how <span class="no-wrap">your money helped.</span>
 					</div>
 				</div>
 			</li>
