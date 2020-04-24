@@ -32,6 +32,10 @@ export default {
 					content: 'Yes. If you choose “One-time support”, the selected amount will only be deposited once.'
 				},
 				{
+					title: 'If I already have a balance with Kiva, will those funds be used toward this fund?',
+					content: 'Yes, signing up for the Global COVID-19 Response fund will deploy available credit as well as future repayments toward COVID-19 loans.',
+				},
+				{
 					title: 'Will I know who my funds are helping?',
 					content: 'Yes. We’ll send you an update email every time your funds have been used to support someone.'
 				},
