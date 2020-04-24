@@ -23,13 +23,19 @@
 						<covid-landing-form
 							:key="1"
 							:button-text="pageCopy.button"
-							v-if="!isMonthlyGoodSubscriber"
+							v-if="!isMonthlyGoodSubscriber && covidLandingActive"
 						/>
-						<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
+						<div class="already-subscribed-msg-wrapper" v-else-if="isMonthlyGoodSubscriber">
 							<h4>
 								You're already signed up for Monthly Good.
 								Changes to this contribution can be made in your
 								<a href="/settings/credit">credit settings</a>.
+							</h4>
+						</div>
+						<div class="campaign-inactive" v-else-if="!covidLandingActive">
+							<h4>
+								Please use the <a href="/monthlygood">Monthly Good signup form</a> to
+								activate a monthly lending contribution.
 							</h4>
 						</div>
 					</div>
@@ -65,6 +71,12 @@ import MGCovidFaq from './MGCovidFAQ';
 import CovidLandingForm from './CovidLandingForm';
 
 const pageQuery = gql`{
+	general {
+		mg_covid_active: uiConfigSetting(key: "covid_landing_active") {
+			key
+			value
+		}
+	}
 	my {
 		autoDeposit {
 			isSubscriber
@@ -95,6 +107,7 @@ export default {
 	},
 	data() {
 		return {
+			covidLandingActive: false,
 			co19HeaderTheme: {
 				themeKey: 'CO19',
 				backgroundColor: '#fff',
@@ -132,8 +145,8 @@ export default {
 	computed: {
 		pageCopy() {
 			return {
-				headline: 'Join Kiva\'s global <span class="no-wrap">COVID-19 response</span>', // eslint-disable-line max-len
-				subhead: 'Lend a hand to provide relief to entrepreneurs and small businesses impacted <span class="no-wrap">by COVID-19.</span>', // eslint-disable-line max-len
+				headline: 'Join Kiva\'s global <span class="no-wrap">COVID—19</span> response', // eslint-disable-line max-len
+				subhead: 'Lend a hand to provide relief to entrepreneurs and small businesses impacted <span class="no-wrap">by COVID—19.</span>', // eslint-disable-line max-len
 				button: 'Take action'
 			};
 		}
@@ -147,6 +160,7 @@ export default {
 			});
 		},
 		result({ data }) {
+			this.covidLandingActive = _get(data, 'general.mg_covid_active.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 		},
 	},
