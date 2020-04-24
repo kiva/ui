@@ -176,7 +176,6 @@ export default {
 	},
 	methods: {
 		watchAutolendingStatus() {
-			console.log('watch is triggered');
 			switch (this.autolendingStatus) {
 				case 'paused': {
 					const pauseUntilDate = `${formatISO(addDays(new Date(), this.daysToPause))}`;
