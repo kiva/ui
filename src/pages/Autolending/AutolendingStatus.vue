@@ -160,9 +160,6 @@ export default {
 				isEnabled: this.isEnabled,
 				pauseUntil: this.pauseUntil
 			});
-
-			// After initial value is loaded, setup watch
-			this.$watch('autolendingStatus', this.watchAutolendingStatus);
 		},
 	},
 	computed: {
@@ -173,8 +170,13 @@ export default {
 			return '';
 		}
 	},
+	mounted() {
+		// After initial value is loaded, setup watch
+		this.$watch('autolendingStatus', this.watchAutolendingStatus);
+	},
 	methods: {
 		watchAutolendingStatus() {
+			console.log('watch is triggered');
 			switch (this.autolendingStatus) {
 				case 'paused': {
 					const pauseUntilDate = `${formatISO(addDays(new Date(), this.daysToPause))}`;

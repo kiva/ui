@@ -157,35 +157,37 @@ export default {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 			this.donation = _isFinite(donationPercentage) ? donationPercentage : 15;
 			this.donationToggle = this.donation !== 0 ? 'on' : 'off';
-			// After initial value is loaded, setup watch
-			this.$watch('donation', (donation, previousDonation) => {
-				if (donation !== previousDonation) {
-					if (donation === 0) {
-						this.donationToggle = 'off';
-					}
-					this.apollo.mutate({
-						mutation: gql`mutation {
+		},
+	},
+	mounted() {
+		// After initial value is loaded, setup watch
+		this.$watch('donation', (donation, previousDonation) => {
+			if (donation !== previousDonation) {
+				if (donation === 0) {
+					this.donationToggle = 'off';
+				}
+				this.apollo.mutate({
+					mutation: gql`mutation {
 						autolending @client {
 							editProfile(profile: { donationPercentage: ${donation} })
 						}
 					}`,
-					});
+				});
+			}
+		});
+		// After initial value is loaded, setup watch
+		// Set donation accordingly when flipping donationToggle
+		this.$watch('donationToggle', (donationToggle, previousDonationToggle) => {
+			if (donationToggle !== previousDonationToggle) {
+				if (donationToggle === 'on' && this.donation === 0) {
+					// set default donation if 0
+					this.donation = 15;
+				} else if (donationToggle === 'off') {
+					// set to 0 when toggleing to off
+					this.donation = 0;
 				}
-			});
-			// After initial value is loaded, setup watch
-			// Set donation accordingly when flipping donationToggle
-			this.$watch('donationToggle', (donationToggle, previousDonationToggle) => {
-				if (donationToggle !== previousDonationToggle) {
-					if (donationToggle === 'on' && this.donation === 0) {
-						// set default donation if 0
-						this.donation = 15;
-					} else if (donationToggle === 'off') {
-						// set to 0 when toggleing to off
-						this.donation = 0;
-					}
-				}
-			});
-		},
+			}
+		});
 	},
 	methods: {
 		save() {
