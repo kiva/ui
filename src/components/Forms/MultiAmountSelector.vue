@@ -39,7 +39,7 @@
 		</div>
 		<ul class="validation-errors" v-if="$v.$invalid">
 			<li v-if="!$v.customAmountModel.minValue || !$v.customAmountModel.maxValue">
-				Enter an amount of $5-$10,000
+				Enter an amount of ${{ minCustomAmount }}&ndash;${{ maxCustomAmount }}
 			</li>
 		</ul>
 	</div>
