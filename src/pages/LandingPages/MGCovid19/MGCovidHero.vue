@@ -1,5 +1,5 @@
 <template>
-	<kv-hero class="mg-hero section">
+	<kv-hero class="mg-hero">
 		<template v-slot:images>
 			<kv-responsive-image
 				class="mg-hero-picture"
