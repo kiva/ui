@@ -262,6 +262,7 @@ form.search-form {
 	position: relative;
 	z-index: 10;
 	background-color: $white;
+	color: $kiva-text-dark;
 	border: 1px solid $gray;
 	padding: $spacing;
 
