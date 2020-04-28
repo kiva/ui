@@ -4,8 +4,9 @@
 			<div class="columns">
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
-						<div class="checkout-steps-wrapper">
+						<div class="checkout-steps-wrapper hide-for-print">
 							<kv-checkout-steps :steps="checkoutSteps" :current-step-index="currentStep" />
+							<hr>
 						</div>
 
 						<basket-items-list
@@ -590,6 +591,10 @@ export default {
 			}
 		}
 	}
+}
+
+.checkout-steps-wrapper {
+	padding-bottom: 1.2rem;
 }
 
 .display-align {

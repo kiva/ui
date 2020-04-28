@@ -2,7 +2,10 @@
 	<www-page :gray-background="true">
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
-				<kv-checkout-steps :steps="checkoutSteps" current-step-index="3" />
+				<div class="thanks__checkout-steps-wrapper hide-for-print">
+					<kv-checkout-steps :steps="checkoutSteps" current-step-index="3" />
+					<hr>
+				</div>
 
 				<template v-if="loans.length > 0">
 					<div class="thanks__header hide-for-print">
@@ -178,6 +181,10 @@ export default {
 
 	&__header-subhead {
 		@include featured-text();
+	}
+
+	&__checkout-steps-wrapper {
+		padding-bottom: 1.2rem;
 	}
 
 	&__social-share {

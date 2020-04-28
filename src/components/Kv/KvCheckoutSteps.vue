@@ -1,5 +1,5 @@
 <template>
-	<div class="kv-checkout-steps hide-for-print">
+	<div class="kv-checkout-steps">
 		<ul class="checkout-step-list">
 			<li
 				v-for="(step, index) in steps"
@@ -54,9 +54,7 @@ export default {
 @import 'settings';
 
 .kv-checkout-steps {
-	display: block;
 	width: 100%;
-	padding: 0  0 1.2rem;
 
 	.checkout-step-list {
 		list-style: none;
