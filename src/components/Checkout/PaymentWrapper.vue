@@ -36,7 +36,7 @@
 			/>
 		</div>
 		<div class="attribution-text small-12 medium-7 large-6">
-			Thanks to PayPal powered by Braintree,
+			Thanks to PayPal,
 			Kiva receives free payment processing for all loans.
 		</div>
 	</div>
@@ -131,8 +131,6 @@ export default {
 <style lang="scss">
 @import "settings";
 
-$form-border-radius: rem-calc(3);
-
 .payment-holder {
 	position: relative;
 	display: inline-block;
@@ -140,7 +138,7 @@ $form-border-radius: rem-calc(3);
 	text-align: center;
 	border: 1px solid $subtle-gray; //#c3c3c3
 	padding: 0 0.6rem 1.25rem;
-	border-radius: $form-border-radius;
+	border-radius: $input-border-radius;
 	margin: 3rem auto 0 auto;
 	min-width: rem-calc(300);
 	width: 100%;
@@ -159,7 +157,7 @@ $form-border-radius: rem-calc(3);
 		top: -1.2rem;
 		background: $ghost;
 		display: inline-block;
-		border-radius: $form-border-radius;
+		border-radius: $input-border-radius;
 	}
 
 	.card-title {

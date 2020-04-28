@@ -10,6 +10,7 @@
 <script>
 import TheTipMessage from '@/components/WwwFrame/TheTipMessage';
 import IntercomMessenger from '@/components/WwwFrame/IntercomMessenger';
+import webmanifest from '@/manifest.webmanifest';
 
 export default {
 	name: 'App',
@@ -137,7 +138,13 @@ export default {
 					href: require('@/assets/images/favicons/favicon-196x196.png'),
 					sizes: '196x196'
 				},
-			])
+			].concat([
+				{
+					// Web Manifest. Required for promoting the Android App on our site with smart-banners.
+					rel: 'manifest',
+					href: webmanifest
+				}
+			]))
 		};
 	}
 };

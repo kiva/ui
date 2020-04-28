@@ -21,6 +21,7 @@
 <script>
 import _get from 'lodash/get';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
+import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
@@ -38,6 +39,9 @@ export default {
 		TheFooter,
 		TheHeader,
 	},
+	mixins: [
+		appInstallMixin
+	],
 	props: {
 		grayBackground: {
 			type: Boolean,

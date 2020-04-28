@@ -4,10 +4,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		rowsExp: uiExperimentSetting(key: "category_rows") {
-			key
-			value
-		}
 		categoryDescriptionExperiment: uiExperimentSetting(key: "category_description") {
 			key
 			value
@@ -28,13 +24,20 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		recommendationCategoryRow: uiExperimentSetting(key: "recommendation_channel") {
-			key
-			value
-		}
 		categoryRowHillclimb: uiExperimentSetting(key: "category_row_hillclimb") {
 			key
 			value
+		}
+	}
+	ml {
+		orderedLoanChannels(platform:marketplace) {
+			__typename
+			... on LoanChannel {
+				id
+			}
+			... on RecLoanChannel {
+				id
+			}
 		}
 	}
 	my {
@@ -44,6 +47,7 @@ query lendByCategory($basketId: String) {
 		}
 		userAccount {
 			id
+			firstName
 		}
 	}
 	shop (basketId: $basketId) {

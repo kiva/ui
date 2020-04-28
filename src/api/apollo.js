@@ -16,27 +16,33 @@ export default function createApolloClient({
 	kvAuth0,
 	types = [],
 	uri,
-	appConfig
+	appConfig,
+	existingCache
 }) {
-	const cache = new InMemoryCache({
-		fragmentMatcher: new IntrospectionFragmentMatcher({
-			introspectionQueryResultData: {
-				__schema: { types }
-			}
-		}),
-		// Return a custom cache id for types that don't have an id field
-		dataIdFromObject: object => {
-			if (object.__typename === 'Setting' && object.key) return `Setting:${object.key}`;
-			if (object.__typename === 'Shop') return 'Shop';
-			if (object.__typename === 'ShopMutation') return 'ShopMutation';
-			return defaultDataIdFromObject(object);
-		},
-		// Use a simpler underlying cache for server renders
-		resultCaching: typeof window !== 'undefined',
-		// Block modifying cache results outside of normal operations
-		// see https://github.com/apollographql/apollo-client/pull/4543
-		freezeResults: true,
-	});
+	let cache;
+	if (!existingCache) {
+		cache = new InMemoryCache({
+			fragmentMatcher: new IntrospectionFragmentMatcher({
+				introspectionQueryResultData: {
+					__schema: { types }
+				}
+			}),
+			// Return a custom cache id for types that don't have an id field
+			dataIdFromObject: object => {
+				if (object.__typename === 'Setting' && object.key) return `Setting:${object.key}`;
+				if (object.__typename === 'Shop') return 'Shop';
+				if (object.__typename === 'ShopMutation') return 'ShopMutation';
+				return defaultDataIdFromObject(object);
+			},
+			// Use a simpler underlying cache for server renders
+			resultCaching: typeof window !== 'undefined',
+			// Block modifying cache results outside of normal operations
+			// see https://github.com/apollographql/apollo-client/pull/4543
+			freezeResults: true,
+		});
+	} else {
+		cache = existingCache;
+	}
 
 	// initialize local state resolvers
 	const { resolvers, defaults } = initState({ kvAuth0, appConfig });
@@ -65,9 +71,11 @@ export default function createApolloClient({
 		assumeImmutableResults: true,
 	});
 
-	// set default local state
-	cache.writeData({ data: defaults });
-	client.onResetStore(() => cache.writeData({ data: defaults }));
+	if (!existingCache) {
+		// set default local state
+		cache.writeData({ data: defaults });
+		client.onResetStore(() => cache.writeData({ data: defaults }));
+	}
 
 	return client;
 }

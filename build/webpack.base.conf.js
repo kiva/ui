@@ -50,6 +50,20 @@ module.exports = {
 				}
 			},
 			{
+				test: /(manifest\.webmanifest|manifest\.json|browserconfig\.xml)$/,
+				use: [
+					{
+						loader: "file-loader",
+						options: {
+							name: assetsPath('manifest/[name].[hash:7].[ext]'),
+						}
+					},
+					{
+						loader: "app-manifest-loader",
+					}
+				],
+			},
+			{
 				// Inject styles from the /pages/ directory as <style> tags
 				test: /\/pages\/.+\.scss$/,
 				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)

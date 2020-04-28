@@ -342,6 +342,15 @@ export default {
 				// Misc Promotional or Unsupported URLS
 
 				{
+					id: 96,
+					url: 'covid-19',
+					// queryParams is from initial Loan Channel setup on 4.27.2020 around 3pm
+					// eslint-disable-next-line
+					queryParams: 'distributionModel=both&riskRating=0,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
+					// this will cause legacy lend to load up and apply all params for the Loan Channel
+					fallbackUrl: '/lend/covid-19?filter=bypass'
+				},
+				{
 					id: 65,
 					url: 'new-countries-for-you',
 					queryParams: 'status=fundRaising&riskRating=0,5&distributionModel=field_partner',

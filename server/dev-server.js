@@ -12,13 +12,13 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const threadLoader = require('thread-loader');
-const timesyncServer = require('timesync/server');
 
 // Import Middleware for Exposing server routes
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
+const timesyncRouter = require('./timesync-router');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
@@ -143,7 +143,7 @@ serverCompiler.watch({
 app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
-app.use('/timesync', timesyncServer.requestHandler);
+app.use('/', timesyncRouter());
 
 // install dev/hot middleware
 app.use(devMiddleware);

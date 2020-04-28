@@ -1,6 +1,7 @@
 <template>
 	<input
 		type="text"
+		ref="kvCurrencyInputRef"
 		v-model="displayValue"
 		@blur="isInputActive = false"
 		@focus="isInputActive = true"

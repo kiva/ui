@@ -72,9 +72,9 @@ export default {
 			],
 		};
 	},
-	inject: ['apollo'],
-	mounted() {
-		this.apollo.query({
+	inject: ['apollo', 'federation'],
+	created() {
+		this.federation.query({
 			query: contentful,
 			variables: {
 				contentType: 'uiSetting',

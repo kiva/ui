@@ -1,77 +1,87 @@
 <template>
 	<div>
-		<div class="row column">
-			<opt-in-status-controls
-				:idle-credit-opt-in="idleCreditOptIn"
-				:is-enabled="isEnabled"
-				:show-opt-out-controls="showOptOutControls"
-			/>
-			<main-toggle />
-		</div>
-		<div class="row column settings-area" :class="{ obscure: !isEnabled }">
-			<!-- main toggles -->
-			<div class="main-settings setting-group">
-				<lend-timing-dropdown />
-				<donation-dropdown />
-				<kiva-chooses-radios />
-			</div>
-			<!-- basic criteria -->
-			<div class="setting-group" v-show="!kivaChooses">
-				<h2 class="criteria-title">
-					Auto-lending criteria
-				</h2>
-				<floating-counter class="show-for-large" />
-				<!-- row for criteria components -->
-				<div class="row">
-					<div class="small-12 large-6 columns setting-column">
-						<gender-radios />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<group-radios />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<country-filter />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<sector-filter />
+		<autolending-status />
+
+		<!-- When your balance will be lent -->
+		<autolending-when />
+
+		<!-- Who you'll support-->
+		<div class="row who-area" :class="{ obscure: !isEnabled }">
+			<div class="column large-8 settings-card">
+				<div class="icon-wrapper">
+					<kv-icon
+						class="icon"
+						title="Who you’ll support"
+						name="auto-icon-who"
+					/>
+				</div>
+				<div class="title-wrapper">
+					<h3>Who you’ll support</h3>
+				</div>
+				<div class="content-wrapper">
+					<kiva-chooses-radios />
+
+					<!-- basic criteria -->
+					<div class="row" v-show="!kivaChooses">
+						<div class="column">
+							<inline-counter class="show-for-large" />
+
+							<!-- row for criteria components -->
+							<div class="row">
+								<div class="small-12 large-6 columns setting-column">
+									<gender-radios />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<group-radios />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<country-filter />
+								</div>
+								<div class="small-12 large-6 columns setting-column">
+									<sector-filter />
+								</div>
+							</div>
+							<!-- advanced settings -->
+							<div class="row column">
+								<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
+									{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
+								</button>
+							</div>
+							<kv-expandable>
+								<div class="row" v-show="showAdvanced">
+									<div class="small-12 large-6 columns setting-column">
+										<loan-increment-radios />
+									</div>
+									<div class="small-12 large-6 columns setting-column">
+										<attribute-filter />
+									</div>
+									<div class="small-12 large-6 columns setting-column">
+										<loan-term-dropdown />
+									</div>
+									<div class="small-12 large-6 columns setting-column">
+										<partner-filter />
+									</div>
+									<div class="small-12 large-6 columns setting-column">
+										<partner-del-rate-dropdown />
+									</div>
+									<div class="small-12 large-6 columns setting-column">
+										<risk-rating-dropdown />
+									</div>
+									<div class="small-12 large-6 columns setting-column">
+										<default-rate-dropdown />
+									</div>
+								</div>
+							</kv-expandable>
+						</div>
 					</div>
 				</div>
 			</div>
-			<!-- advanced settings -->
-			<div class="row column" v-show="!kivaChooses">
-				<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
-					{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
-				</button>
-			</div>
-			<kv-expandable>
-				<div class="row" v-show="showAdvanced && !kivaChooses">
-					<div class="small-12 large-6 columns setting-column">
-						<loan-increment-radios />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<attribute-filter />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<loan-term-dropdown />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<partner-filter />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<partner-del-rate-dropdown />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<risk-rating-dropdown />
-					</div>
-					<div class="small-12 large-6 columns setting-column">
-						<default-rate-dropdown />
-					</div>
-				</div>
-			</kv-expandable>
 		</div>
+
 		<div class="row column save-button-area">
 			<save-button class="show-for-large" />
 		</div>
+
 		<!-- mobile-only footer -->
 		<div class="mobile-footer hide-for-large" v-show="isEnabled || isChanged">
 			<mobile-counter />
@@ -83,20 +93,15 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import { settingEnabled } from '@/util/settingsUtils';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-import contentful from '@/graphql/query/contentful.graphql';
 import AttributeFilter from './AttributeFilter';
 import CountryFilter from './CountryFilter';
-import DonationDropdown from './DonationDropdown';
-import LendTimingDropdown from './LendTimingDropdown';
-import FloatingCounter from './FloatingCounter';
-import MainToggle from './MainToggle';
+import InlineCounter from './InlineCounter';
 import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
-import OptInStatusControls from './OptInStatusControls';
 import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
@@ -107,49 +112,48 @@ import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import LoanIncrementRadios from './LoanIncrementRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
 import KivaChoosesRadios from './KivaChoosesRadios';
+import AutolendingStatus from './AutolendingStatus';
+import AutolendingWhen from './AutolendingWhen';
+
 
 const pageQuery = gql`{
 	autolending @client {
 		profileChanged
 		currentProfile {
 			isEnabled
-			idleCreditOptIn
 			kivaChooses
 		}
 	}
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'federation'],
 	components: {
 		AttributeFilter,
+		AutolendingStatus,
+		AutolendingWhen,
 		CountryFilter,
-		DonationDropdown,
-		FloatingCounter,
+		DefaultRateDropdown,
 		GenderRadios,
 		GroupRadios,
+		InlineCounter,
+		KivaChoosesRadios,
 		KvExpandable,
-		LendTimingDropdown,
-		MainToggle,
+		KvIcon,
+		LoanIncrementRadios,
+		LoanTermDropdown,
 		MobileCounter,
-		OptInStatusControls,
+		PartnerDelRateDropdown,
 		PartnerFilter,
+		RiskRatingDropdown,
 		SaveButton,
 		SectorFilter,
-		RiskRatingDropdown,
-		LoanTermDropdown,
-		PartnerDelRateDropdown,
-		LoanIncrementRadios,
-		DefaultRateDropdown,
-		KivaChoosesRadios,
 	},
 	data() {
 		return {
 			isChanged: false,
 			isEnabled: false,
 			showAdvanced: false,
-			idleCreditOptIn: false,
-			showOptOutControls: false,
 			kivaChooses: true,
 		};
 	},
@@ -201,14 +205,11 @@ export default {
 		result({ data }) {
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
-			this.idleCreditOptIn = !!_get(data, 'autolending.currentProfile.idleCreditOptIn');
 			this.kivaChooses = !!_get(data, 'autolending.currentProfile.kivaChooses');
 		},
 	},
 	mounted() {
 		window.addEventListener('beforeunload', this.onLeave);
-		// fetch opt out setting
-		this.getSetOptOutSetting();
 	},
 	beforeDestroy() {
 		window.removeEventListener('beforeunload', this.onLeave);
@@ -220,30 +221,6 @@ export default {
 				event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
 			}
 		},
-		getSetOptOutSetting() {
-			// get contentful setting for opt-out toggle visibility
-			this.apollo.query({
-				query: contentful,
-				variables: {
-					contentType: 'uiSetting',
-					contentKey: 'ui-autolend-opt-out-toggle',
-				}
-			}).then(({ data }) => {
-				const uiOptOutSetting = _get(
-					data,
-					'contentful.entries.items',
-					[]
-				).find(item => item.fields.key === 'ui-autolend-opt-out-toggle');
-
-				// set opt out control visibility based on it's properties
-				this.showOptOutControls = settingEnabled(
-					uiOptOutSetting.fields,
-					'active',
-					'startDate',
-					'endDate'
-				);
-			});
-		}
 	},
 };
 </script>
@@ -251,50 +228,21 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-$autolending-font-size: rem-calc(18.8);
-
 .autolending {
-	.title-area {
-		padding: 1.625rem 0;
-		margin-bottom: 2rem;
-		background-color: $white;
+	.basket-bar {
+		display: none;
 	}
 
-	.settings-area.obscure {
-		opacity: 0.2;
-		pointer-events: none;
-	}
+	.button {
+		.loading-spinner {
+			vertical-align: middle;
+			width: 1rem;
+			height: 1rem;
 
-	label {
-		font-size: $autolending-font-size;
-	}
-
-	.setting-group {
-		position: relative;
-		margin: 2rem 0;
-		border-bottom: 1px solid $kiva-stroke-gray;
-
-		&.main-settings {
-			margin-top: 0;
+			& >>> .line {
+				background-color: $white;
+			}
 		}
-	}
-
-	.criteria-title {
-		margin-bottom: 2rem;
-	}
-
-	.setting-column {
-		margin-bottom: 1.25rem;
-	}
-
-	.advanced-settings-toggle {
-		color: $kiva-textlink;
-		font-weight: 300;
-		margin-bottom: 2rem;
-	}
-
-	.save-button-area {
-		margin-bottom: 5rem;
 	}
 
 	.mobile-footer {
@@ -313,9 +261,68 @@ $autolending-font-size: rem-calc(18.8);
 			}
 		}
 	}
+}
 
-	.basket-bar {
-		display: none;
+</style>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+$autolending-font-size: rem-calc(18.8);
+
+::v-deep .obscure {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+label {
+	font-size: $autolending-font-size;
+}
+
+.setting-column {
+	margin-bottom: 1.25rem;
+}
+
+.advanced-settings-toggle {
+	color: $kiva-textlink;
+	font-weight: 300;
+}
+
+.save-button-area {
+	margin-bottom: 5rem;
+}
+
+[class*="-area"] {
+	margin-bottom: 1.5rem;
+}
+
+::v-deep .settings-card {
+	background: $white;
+	padding: 1.95rem;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto 1fr;
+	gap: 1rem 1rem;
+	grid-template-areas: "icon-wrapper title-wrapper" "icon-wrapper content-wrapper";
+}
+
+::v-deep .icon-wrapper {
+	grid-area: icon-wrapper;
+
+	.icon {
+		margin-top: 1px;
+		height: 1.75rem;
+		width: 1.75rem;
 	}
 }
+
+::v-deep .title-wrapper {
+	grid-area: title-wrapper;
+
+	h3 {
+		font-weight: $global-weight-bold;
+	}
+}
+
+::v-deep .content-wrapper { grid-area: content-wrapper; }
 </style>

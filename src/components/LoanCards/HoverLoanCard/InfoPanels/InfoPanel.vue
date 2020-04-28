@@ -9,7 +9,7 @@
 			<h3 class="panel-title">
 				<slot name="title"></slot>
 			</h3>
-			<kv-icon v-if="expandable" name="small-chevron-mobile" :from-sprite="true" />
+			<kv-icon class="panel-icon" v-if="expandable" name="small-chevron-mobile" :from-sprite="true" />
 		</button>
 		<kv-expandable>
 			<div
@@ -89,14 +89,13 @@ export default {
 		padding-right: 0.5rem;
 
 		.panel-title {
-			display: inline-block;
 			font-size: rem-calc(26);
 			font-weight: 500;
 			line-height: 2rem;
+			flex: 1;
 		}
 
-		.icon {
-			float: right;
+		.panel-icon {
 			height: 1.5rem;
 			width: rem-calc(25);
 			transition: transform 300ms ease;
@@ -108,7 +107,7 @@ export default {
 	}
 
 	.title-button[aria-expanded="true"] {
-		.icon {
+		.panel-icon {
 			transform: rotate(-180deg);
 		}
 	}

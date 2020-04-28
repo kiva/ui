@@ -18,6 +18,10 @@ export default [
 	{ path: '/checkout/post-purchase', component: () => import('@/pages/Checkout/PostPurchase') },
 	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/ThanksPage') },
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
+	{
+		path: '/covid19response',
+		component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19'),
+	},
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
@@ -49,9 +53,21 @@ export default [
 	{
 		path: '/monthlygood/setup',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
-		props: route => ({ amount: Number(route.query.amount), category: route.query.category })
+		props: route => ({
+			amount: Number(route.query.amount),
+			category: route.query.category,
+			onetime: String(route.query.onetime),
+			source: route.query.source,
+		})
 	},
-	{ path: '/monthlygood/thanks', component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage') },
+	{
+		path: '/monthlygood/thanks',
+		component: () => import('@/pages/MonthlyGood/MonthlyGoodThanksPage'),
+		props: route => ({
+			onetime: String(route.query.onetime),
+			source: route.query.source,
+		}),
+	},
 
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },

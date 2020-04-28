@@ -209,3 +209,42 @@ export const LongTitles = () => ({
 	`
 });
 
+export const SplitPills = () => ({
+	components: {
+		KvPillToggle
+	},
+	data() {
+		return {
+			options: [
+				{
+					title: '$10',
+					key: 'o1',
+				},
+				{
+					title: '$25',
+					key: 'o2',
+				},
+				{
+					title: '$50',
+					key: 'o3',
+				},
+				{
+					title: '$100',
+					key: 'o4',
+				},
+				{
+					title: 'Other',
+					key: 'o5',
+				},
+			],
+		}
+	},
+	template: `
+		<kv-pill-toggle
+			:options="options"
+			:split-pills="true"
+			selected="o2"
+		/>
+	`
+});
+

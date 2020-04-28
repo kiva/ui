@@ -33,6 +33,12 @@
 					:receipt="receipt"
 				/>
 			</div>
+			<contentful-lightbox
+				v-if="promoEnabled"
+				:content-group="contentGroup"
+				:visible="displayLightbox"
+				@lightbox-closed="displayLightbox = false"
+			/>
 		</div>
 	</www-page>
 </template>
@@ -41,11 +47,18 @@
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
+import _get from 'lodash/get';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutReceiptQuery from '@/graphql/query/checkoutReceipt.graphql';
+
+import ContentfulLightbox from '@/components/Lightboxes/ContentfulLightbox';
+import contentful from '@/graphql/query/contentful.graphql';
+
+import { settingEnabled } from '@/util/settingsUtils';
+import { processContent } from '@/util/contentfulUtils';
 
 export default {
 	components: {
@@ -53,8 +66,9 @@ export default {
 		CheckoutSteps,
 		SocialShare,
 		WwwPage,
+		ContentfulLightbox
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'federation'],
 	metaInfo() {
 		return {
 			title: 'Thank you!'
@@ -65,6 +79,9 @@ export default {
 			lender: {},
 			loans: [],
 			receipt: {},
+			displayLightbox: true,
+			promoEnabled: false,
+			contentGroup: {}
 		};
 	},
 	apollo: {
@@ -107,6 +124,29 @@ export default {
 			particleCount: 150,
 			spread: 200,
 			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'] // misc. kiva colors
+		});
+		this.federation.query({
+			query: contentful,
+			variables: {
+				contentType: 'uiSetting',
+				contentKey: 'ui-thanks-lightbox',
+			}
+		}).then(({ data }) => {
+			// returns the contentful content of the uiSetting key ui-thanks-lightbox or empty object
+			// it should always be the first and only item in the array, since we pass the variable to the query above
+			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-thanks-lightbox'); // eslint-disable-line max-len
+			// exit if missing setting or fields
+			if (!uiPromoSetting || !uiPromoSetting.fields) {
+				return false;
+			}
+			this.promoEnabled = settingEnabled(
+				uiPromoSetting.fields,
+				'active',
+				'startDate',
+				'endDate'
+			);
+
+			this.contentGroup = processContent(uiPromoSetting.fields.content).contentGroup;
 		});
 	},
 };

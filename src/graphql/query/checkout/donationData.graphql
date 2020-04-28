@@ -8,7 +8,7 @@ query donationData {
 			key
 			value
 		}
-		specificDonationUseTextExperiment: uiExperimentSetting(key: "specific_donation_use_text") {
+		specificDonationUseTextExperiment: uiExperimentSetting(key: "checkout_donation_tag_line") {
 			key
 			value
 		}

@@ -30,7 +30,11 @@ export default {
 				{
 					value: 'us_borrowers',
 					label: 'Support US borrowers'
-				}
+				},
+				{
+					value: 'disaster_relief_covid',
+					label: 'COVID-19 Coronavirus'
+				},
 			],
 		};
 	}

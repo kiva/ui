@@ -249,10 +249,13 @@ $small-text-font-size: 0.875rem;
 $small-text-line-height: 1.357rem;
 
 $medium-text-font-size: 1.25rem;
-$medium-text-line-height: 1.125;
+$medium-text-line-height: 1.35;
 
 $featured-text-font-size: 1.5rem;
 $featured-text-line-height: 2.25rem;
+
+$large-text-font-size: 2.25rem;
+$large-text-line-height: 1.222222;
 
 $impact-text-font-size: rem-calc(32);
 $impact-text-line-height: rem-calc(40);
@@ -283,6 +286,17 @@ $huge-headline-line-height-medium: rem-calc(70);
 	@include text-shadow();
 
 	color: $white;
+}
+
+@mixin medium-text() {
+	font-size: $medium-text-font-size;
+	line-height: $medium-text-line-height;
+}
+
+@mixin large-text() {
+	font-size: $large-text-font-size;
+	line-height: $large-text-line-height;
+	font-weight: 700;
 }
 
 @mixin impact-text() {
@@ -493,10 +507,6 @@ $button-smaller-medium-shadow: 0 2px $button-background-hover;
 	}
 }
 
-@mixin input-focus() {
-	box-shadow: 0 0 0 0.25em rgba($kiva-accent-green, 0.4);
-}
-
 @mixin disabled() {
 	cursor: not-allowed;
 	opacity: 0.3;
@@ -575,6 +585,18 @@ $closebutton-size: (
 $closebutton-lineheight: 1;
 $closebutton-color: $dark-gray;
 $closebutton-color-hover: $black;
+
+// 15.1 Form Styling - vars added by Kiva
+// -------------
+$input-border-radius: rem-calc(3);
+$input-checked-color: $kiva-green;
+$input-active-color: $kiva-light-green;
+$input-border-color: $subtle-gray;
+$input-checked-border-color: $kiva-green;
+
+@mixin input-focus() {
+	box-shadow: 0 0 0 0.25em rgba($kiva-accent-green, 0.4);
+}
 
 // 16. Drilldown
 // -------------
@@ -1023,13 +1045,6 @@ $tab-content-background: $white;
 $tab-content-border: $light-gray;
 $tab-content-color: $body-font-color;
 $tab-content-padding: 1rem;
-
-// 51.1 Tabs - Pill - vars added by Kiva
-// ------------------
-$tab-pill-border: rem-calc(1) solid #c4c1c6;
-$tab-pill-background: #f7f7f7;
-$tab-pill-color: #808080;
-$tab-pill-active-background: #8ccb8c;
 
 // 52. Thumbnail
 // -------------

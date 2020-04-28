@@ -62,7 +62,7 @@ export default {
 		top: 0.125em;
 		flex-shrink: 0;
 		background-color: #fff;
-		border: 0.125em solid $subtle-gray;
+		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
 		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
 		position: relative;
@@ -85,8 +85,8 @@ export default {
 
 		&:checked + .label {
 			.disc {
-				background-color: $kiva-light-green;
-				border-color: $kiva-light-green;
+				background-color: $input-checked-color;
+				border-color: $input-checked-color;
 
 				&::after {
 					transform: translate(0.25em, 0.25em);
@@ -103,10 +103,16 @@ export default {
 			}
 		}
 
+		&:active + .label {
+			.disc {
+				background-color: $input-active-color;
+				border-color: $input-active-color;
+			}
+		}
+
 		&[disabled] + .label {
 			@include disabled();
 		}
 	}
 }
-
 </style>

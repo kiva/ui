@@ -9,6 +9,7 @@
 					<del>Kiva credit:</del> <span class="total-value"><del>({{ kivaCredit }})</del></span>
 				</span>
 				<button
+					v-if="showRemoveKivaCredit"
 					class="remove-credit"
 					@click="removeCredit('kiva_credit')"
 				>

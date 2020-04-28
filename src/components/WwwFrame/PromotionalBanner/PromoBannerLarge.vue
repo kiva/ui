@@ -3,6 +3,7 @@
 		<promotional-banner />
 	</div>
 </template>
+
 <script>
 import PromotionalBanner from './PromotionalBanner';
 
@@ -12,6 +13,7 @@ export default {
 	}
 };
 </script>
+
 <style lang='scss'>
 @import 'settings';
 
@@ -30,6 +32,7 @@ export default {
 
 		padding: 0;
 		color: $kiva-darkgreen;
+		color: var(--kv-header-text-color, $kiva-darkgreen);
 		text-align: center;
 
 		.call-to-action-text {

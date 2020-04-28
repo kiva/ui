@@ -22,11 +22,13 @@ a.bonus-banner:hover {
 
 a.bonus-banner .content {
 	color: $kiva-darkgreen;
+	color: var(--kv-header-link-color, $kiva-darkgreen); // If we have a theme passed in to the header, use it.
 	height: rem-calc(45);
 
 	&:hover,
 	&:active {
 		color: $kiva-darkgreen;
+		color: var(--kv-header-link-color, $kiva-darkgreen);
 	}
 
 	@include breakpoint(medium) {
@@ -45,6 +47,7 @@ a.bonus-banner .content {
 
 	.call-to-action-text {
 		color: $white;
+		color: var(--kv-header-link-color, $white);
 	}
 }
 </style>

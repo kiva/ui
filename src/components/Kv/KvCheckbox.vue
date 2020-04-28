@@ -83,10 +83,10 @@ export default {
 		flex-shrink: 0;
 		border-radius: 0.125em;
 		background-color: #fff;
-		border: 0.125em solid $subtle-gray;
+		border: 0.125em solid $input-border-color;
 		margin-right: 0.5em;
-		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
 		position: relative;
+		box-shadow: 0 0 0 0 rgba(79, 175, 78, 0.2);
 		transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
 
 		&::after {
@@ -115,8 +115,8 @@ export default {
 
 		&:checked + .label {
 			.square {
-				background-color: $kiva-light-green;
-				border-color: $kiva-green;
+				background-color: $input-checked-color;
+				border-color: $input-checked-border-color;
 				border-width: 0.0625em;
 
 				&::after {
@@ -130,6 +130,13 @@ export default {
 		&:focus + .label {
 			.square {
 				@include input-focus();
+			}
+		}
+
+		&:active + .label {
+			.square {
+				background-color: $input-active-color;
+				border-color: $input-checked-border-color;
 			}
 		}
 

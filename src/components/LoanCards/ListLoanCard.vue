@@ -243,7 +243,7 @@ export default {
 
 	.list-loan-card-desktop-column {
 		padding: 0;
-		background: $tab-pill-background;
+		background: $platinum;
 
 		.list-loan-card-desktop-column-container {
 			height: 100%;
