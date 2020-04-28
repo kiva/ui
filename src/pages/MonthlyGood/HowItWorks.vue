@@ -107,7 +107,10 @@ export default {
 }
 
 .how-works-section-wrapper.experiment {
-	padding-top: 12rem;
+	@include breakpoint(medium) {
+		padding-top: 12rem;
+	}
+
 	@include breakpoint(large) {
 		padding-top: 6rem;
 	}
