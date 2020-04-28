@@ -2,7 +2,10 @@
 	<www-page :gray-background="true">
 		<div class="row page-content">
 			<div class="small-12 columns thanks">
-				<checkout-steps current-step="thanks" />
+				<div class="thanks__checkout-steps-wrapper hide-for-print">
+					<kv-checkout-steps :steps="checkoutSteps" :current-step-index="3" />
+					<hr>
+				</div>
 
 				<template v-if="loans.length > 0">
 					<div class="thanks__header hide-for-print">
@@ -49,7 +52,7 @@ import numeral from 'numeral';
 
 import _get from 'lodash/get';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
-import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
+import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import checkoutReceiptQuery from '@/graphql/query/checkoutReceipt.graphql';
@@ -63,10 +66,10 @@ import { processContent } from '@/util/contentfulUtils';
 export default {
 	components: {
 		CheckoutReceipt,
-		CheckoutSteps,
+		ContentfulLightbox,
+		KvCheckoutSteps,
 		SocialShare,
 		WwwPage,
-		ContentfulLightbox
 	},
 	inject: ['apollo', 'federation'],
 	metaInfo() {
@@ -81,7 +84,13 @@ export default {
 			receipt: {},
 			displayLightbox: true,
 			promoEnabled: false,
-			contentGroup: {}
+			contentGroup: {},
+			checkoutSteps: [
+				'Basket',
+				'Account',
+				'Payment',
+				'Thank You!'
+			]
 		};
 	},
 	apollo: {
@@ -172,6 +181,10 @@ export default {
 
 	&__header-subhead {
 		@include featured-text();
+	}
+
+	&__checkout-steps-wrapper {
+		padding-bottom: 1.2rem;
 	}
 
 	&__social-share {
