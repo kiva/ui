@@ -315,18 +315,30 @@ export default {
 
 // Experiment Styles - GROW-11
 .mg-hero.experiment {
+	min-height: 52rem;
+	background: #4faf4e;
+
+	@include breakpoint(medium) {
+		min-height: 8rem;
+	}
+
 	::v-deep .overlay-holder {
 		picture {
 			height: 32rem;
 			overflow: hidden;
-			background: #4faf4e;
 		}
 	}
 
 	::v-deep .overlay-content {
-		top: 17rem;
-		bottom: auto;
+		top: auto;
+		bottom: 0;
 		transform: none;
+
+		@include breakpoint(medium) {
+			top: 17rem;
+			bottom: auto;
+		}
+
 		@include breakpoint(large) {
 			top: 2rem;
 			margin-left: 1rem;
