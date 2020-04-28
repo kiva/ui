@@ -1,9 +1,21 @@
 <template>
 	<div>
-		<hero-slideshow v-if="showSlideShow"
-			:promo-enabled="promoEnabled" :promo-content="promoContent"
+		<hero-slideshow
+			v-if="showSlideShow && !isExperimentActive"
+			:promo-enabled="promoEnabled"
+			:promo-content="promoContent"
 		/>
-		<monthly-good-explained v-if="isMonthlyGoodPromoActive" />
+		<monthly-good-explained v-if="isMonthlyGoodPromoActive && !isExperimentActive" />
+		<m-g-covid-hero
+			class="section"
+			v-if="isExperimentActive"
+			:is-experiment-active="isExperimentActive"
+		/>
+		<m-g-covid-explained
+			class="small-12 columns mg-explained section"
+			:class="{'experiment':isExperimentActive}"
+			v-if="isExperimentActive"
+		/>
 		<why-kiva />
 		<category-grid />
 	</div>
@@ -11,13 +23,34 @@
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
+
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import WhyKiva from '@/components/Homepage/WhyKiva';
 import HeroSlideshow from './HeroSlideshow';
 import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
+import MGCovidExplained from '@/pages/LandingPages/MGCovid19/MGCovidExplained';
+import MGCovidHero from '@/pages/LandingPages/MGCovid19/MGCovidHero';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
 import { processContent } from '@/util/contentfulUtils';
+
+const pageQuery = gql`{
+	my {
+		autoDeposit {
+			isSubscriber
+		}
+	}
+	general {
+		uiExperimentSetting(key: "homepage_mg_hero") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -25,15 +58,44 @@ export default {
 		HeroSlideshow,
 		MonthlyGoodExplained,
 		CategoryGrid,
+		MGCovidExplained,
+		MGCovidHero,
 	},
 	data() {
 		return {
+			isExperimentActive: false,
 			promoEnabled: false,
 			showSlideShow: null,
 			promoContent: {}
 		};
 	},
 	inject: ['apollo', 'federation'],
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return client.query({
+					query: experimentQuery, variables: { id: 'homepage_mg_hero' }
+				});
+			});
+		},
+		result() {
+			// GROW-79 Experiment
+			const homepageMGHero = this.apollo.readFragment({
+				id: 'Experiment:homepage_mg_hero',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isExperimentActive = homepageMGHero.version === 'shown';
+			// Fire Event for GROW-79
+			this.$kvTrackEvent(
+				'Home',
+				'EXP-GROW-79-Apr2020',
+				homepageMGHero.version === 'shown' ? 'b' : 'a'
+			);
+		},
+	},
 	created() {
 		this.federation.query({
 			query: contentful,
@@ -77,5 +139,15 @@ export default {
 
 .page-content {
 	padding: 1.625rem 0;
+}
+
+// Experiment Styles - GROW-79
+.section.experiment {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	@include breakpoint(xlarge) {
+		margin-top: 5rem;
+		margin-bottom: 5rem;
+	}
 }
 </style>
