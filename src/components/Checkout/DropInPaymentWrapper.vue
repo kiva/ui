@@ -285,11 +285,11 @@ export default {
 
 // $form-border-radius: rem-calc(3);
 $form-border-radius: 0.125rem;
-$active-border-color: $tab-pill-active-background;
+$active-border-color: $input-checked-color;
 $active-background-color: $white;
-$inactive-border-color: $tab-pill-border;
-$inactive-background-color: $tab-pill-background;
-$icon-background-color: $tab-pill-active-background;
+$inactive-border-color: rem-calc(1) solid $input-border-color;
+$inactive-background-color: $platinum;
+$icon-background-color: $input-checked-color;
 $border-width: 1px;
 
 .payment-holder {
