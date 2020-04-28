@@ -5,7 +5,7 @@
 				<div v-if="!emptyBasket" class="basket-wrap" :class="{'pre-login': !preCheckoutStep}">
 					<div>
 						<div class="checkout-steps-wrapper">
-							<checkout-steps :current-step="currentStep" />
+							<kv-checkout-steps :steps="checkoutSteps" :current-step-index="currentStep" />
 						</div>
 
 						<basket-items-list
@@ -153,7 +153,7 @@ import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUse
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import CheckoutSteps from '@/components/Checkout/CheckoutSteps';
+import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
@@ -170,9 +170,9 @@ import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelect
 export default {
 	components: {
 		WwwPage,
-		CheckoutSteps,
 		KivaCreditPayment,
 		KvButton,
+		KvCheckoutSteps,
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
@@ -213,6 +213,12 @@ export default {
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
+			checkoutSteps: [
+				'Basket',
+				'Account',
+				'Payment',
+				'Thank You!'
+			]
 		};
 	},
 	apollo: {
@@ -329,7 +335,7 @@ export default {
 			return false;
 		},
 		currentStep() {
-			return this.isLoggedIn ? 'payment' : 'basket';
+			return this.isLoggedIn ? 2 : 0;
 		},
 		creditNeeded() {
 			return this.totals.creditAmountNeeded || '0.00';
