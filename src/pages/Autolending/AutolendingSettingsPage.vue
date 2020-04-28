@@ -6,77 +6,7 @@
 		<autolending-when />
 
 		<!-- Who you'll support-->
-		<div class="row who-area" :class="{ obscure: !isEnabled }">
-			<div class="column large-8 settings-card">
-				<div class="icon-wrapper">
-					<kv-icon
-						class="icon"
-						title="Who you’ll support"
-						name="auto-icon-who"
-					/>
-				</div>
-				<div class="title-wrapper">
-					<h3>Who you’ll support</h3>
-				</div>
-				<div class="content-wrapper">
-					<kiva-chooses-radios />
-
-					<!-- basic criteria -->
-					<div class="row" v-show="!kivaChooses">
-						<div class="column">
-							<inline-counter class="show-for-large" />
-
-							<!-- row for criteria components -->
-							<div class="row">
-								<div class="small-12 large-6 columns setting-column">
-									<gender-radios />
-								</div>
-								<div class="small-12 large-6 columns setting-column">
-									<group-radios />
-								</div>
-								<div class="small-12 large-6 columns setting-column">
-									<country-filter />
-								</div>
-								<div class="small-12 large-6 columns setting-column">
-									<sector-filter />
-								</div>
-							</div>
-							<!-- advanced settings -->
-							<div class="row column">
-								<button @click="showAdvanced = !showAdvanced" class="advanced-settings-toggle">
-									{{ showAdvanced ? 'Hide' : 'Show' }} advanced settings
-								</button>
-							</div>
-							<kv-expandable>
-								<div class="row" v-show="showAdvanced">
-									<div class="small-12 large-6 columns setting-column">
-										<loan-increment-radios />
-									</div>
-									<div class="small-12 large-6 columns setting-column">
-										<attribute-filter />
-									</div>
-									<div class="small-12 large-6 columns setting-column">
-										<loan-term-dropdown />
-									</div>
-									<div class="small-12 large-6 columns setting-column">
-										<partner-filter />
-									</div>
-									<div class="small-12 large-6 columns setting-column">
-										<partner-del-rate-dropdown />
-									</div>
-									<div class="small-12 large-6 columns setting-column">
-										<risk-rating-dropdown />
-									</div>
-									<div class="small-12 large-6 columns setting-column">
-										<default-rate-dropdown />
-									</div>
-								</div>
-							</kv-expandable>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<autolending-who />
 
 		<div class="row column save-button-area">
 			<save-button class="show-for-large" />
@@ -93,27 +23,13 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvExpandable from '@/components/Kv/KvExpandable';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-import AttributeFilter from './AttributeFilter';
-import CountryFilter from './CountryFilter';
-import InlineCounter from './InlineCounter';
-import GenderRadios from './GenderRadios';
 import MobileCounter from './MobileCounter';
-import PartnerFilter from './PartnerFilter';
 import SaveButton from './SaveButton';
-import SectorFilter from './SectorFilter';
-import RiskRatingDropdown from './RiskRatingDropdown';
-import LoanTermDropdown from './LoanTermDropdown';
-import GroupRadios from './GroupRadios';
-import PartnerDelRateDropdown from './PartnerDelRateDropdown';
-import LoanIncrementRadios from './LoanIncrementRadios';
-import DefaultRateDropdown from './DefaultRateDropdown';
-import KivaChoosesRadios from './KivaChoosesRadios';
 import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
+import AutolendingWho from './AutolendingWho';
 
 
 const pageQuery = gql`{
@@ -121,7 +37,6 @@ const pageQuery = gql`{
 		profileChanged
 		currentProfile {
 			isEnabled
-			kivaChooses
 		}
 	}
 }`;
@@ -129,25 +44,11 @@ const pageQuery = gql`{
 export default {
 	inject: ['apollo', 'federation'],
 	components: {
-		AttributeFilter,
+		AutolendingWho,
 		AutolendingStatus,
 		AutolendingWhen,
-		CountryFilter,
-		DefaultRateDropdown,
-		GenderRadios,
-		GroupRadios,
-		InlineCounter,
-		KivaChoosesRadios,
-		KvExpandable,
-		KvIcon,
-		LoanIncrementRadios,
-		LoanTermDropdown,
 		MobileCounter,
-		PartnerDelRateDropdown,
-		PartnerFilter,
-		RiskRatingDropdown,
 		SaveButton,
-		SectorFilter,
 	},
 	data() {
 		return {
@@ -277,15 +178,6 @@ $autolending-font-size: rem-calc(18.8);
 
 label {
 	font-size: $autolending-font-size;
-}
-
-.setting-column {
-	margin-bottom: 1.25rem;
-}
-
-.advanced-settings-toggle {
-	color: $kiva-textlink;
-	font-weight: 300;
 }
 
 .save-button-area {

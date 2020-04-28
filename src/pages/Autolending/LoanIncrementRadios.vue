@@ -75,11 +75,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
-
-.filter-title {
-	font-size: 1rem;
-	color: $kiva-text-light;
-}
-
 </style>

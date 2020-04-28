@@ -1,5 +1,5 @@
 <template>
-	<h4>
+	<h4 :class="{'bold' : strong, 'normal': !strong }">
 		<!-- eslint-disable-next-line max-len  -->
 		Currently, <loan-count-span class="count-value" :count="count" :counting="counting" /> loans match your criteria.
 	</h4>
@@ -14,6 +14,12 @@ import LoanCountSpan from './LoanCountSpan';
 
 export default {
 	inject: ['apollo'],
+	props: {
+		strong: {
+			type: Boolean,
+			default: false
+		},
+	},
 	components: {
 		LoanCountSpan,
 	},
@@ -109,7 +115,15 @@ export default {
 @import 'settings';
 
 h4 {
-	margin-bottom: 1.25rem;
+	margin-top: 1rem;
+
+	&.normal {
+		font-weight: $global-weight-normal;
+	}
+
+	&.bold {
+		font-weight: $global-weight-bold;
+	}
 }
 
 ::v-deep .loading-spinner {

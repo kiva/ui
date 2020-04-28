@@ -174,11 +174,6 @@ export default {
 @import 'settings';
 
 .lightbox-filter {
-	.filter-title {
-		font-size: 1rem;
-		color: $kiva-text-light;
-	}
-
 	.edit-button {
 		color: $kiva-textlink;
 		font-weight: 300;
