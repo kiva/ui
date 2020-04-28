@@ -39,11 +39,6 @@ import CategoryGrid from '@/components/Homepage/CategoryGrid';
 import { processContent } from '@/util/contentfulUtils';
 
 const pageQuery = gql`{
-	my {
-		autoDeposit {
-			isSubscriber
-		}
-	}
 	general {
 		uiExperimentSetting(key: "homepage_mg_hero") {
 			key
@@ -145,7 +140,7 @@ export default {
 .section.experiment {
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-	@include breakpoint(xlarge) {
+	@include breakpoint(large) {
 		margin-top: 5rem;
 		margin-bottom: 5rem;
 	}
