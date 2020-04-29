@@ -9,7 +9,6 @@
 		<m-g-covid-hero
 			class="section"
 			v-if="isExperimentActive"
-			:is-experiment-active="isExperimentActive"
 		/>
 		<m-g-covid-explained
 			class="small-12 columns mg-explained section"
