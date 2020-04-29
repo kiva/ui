@@ -119,7 +119,7 @@ export default {
 	computed: {
 		pageCopy() {
 			return {
-				headline: 'Join Kiva\'s global <span class="no-wrap">COVID—19</span> response', // eslint-disable-line max-len
+				headline: 'Join Kiva\'s Global <span class="no-wrap">COVID—19</span> Response', // eslint-disable-line max-len
 				subhead: 'Lend a hand to provide relief to entrepreneurs and small businesses impacted <span class="no-wrap">by COVID—19.</span>', // eslint-disable-line max-len
 				button: 'Take action'
 			};
