@@ -96,9 +96,6 @@ export default {
 			type: String,
 			default: 'covid-relief'
 		},
-		isExperimentActive: {
-			type: Boolean
-		}
 	},
 	data() {
 		return {
