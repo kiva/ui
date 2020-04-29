@@ -441,6 +441,24 @@ export default {
 				}
 			}
 		},
+		// monitor mgAmount for changes
+		mgAmount() {
+			this.$nextTick(() => {
+				if (this.donationOptionSelected !== 'other' && !this.isDonationOptionsDirty) {
+					this.donation = this.mgAmount * (Number(this.donationOptionSelected) / 100);
+				} else if (this.donationOptionSelected !== 'other' && this.isDonationOptionsDirty) {
+					const selectedFrozenOption = frozenDropdownOptions.filter(dropdownOption => {
+						if (dropdownOption.value === this.donationOptionSelected) {
+							return true;
+						}
+						return false;
+					});
+					if (selectedFrozenOption.length) {
+						this.donation = numeral(selectedFrozenOption[0].label).value();
+					}
+				}
+			});
+		},
 	},
 	methods: {
 		hideDayInput() {
