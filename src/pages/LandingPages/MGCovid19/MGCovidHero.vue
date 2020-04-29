@@ -84,10 +84,6 @@ export default {
 		},
 		result({ data }) {
 			this.covidLandingActive = _get(data, 'general.mg_covid_active.value') === 'true' || false;
-			// Force the covid landing form to show when running the GROW-79 experiment
-			if (!this.covidLandingActive && this.isExperimentActive) {
-				this.covidLandingActive = true;
-			}
 			this.isMonthlyGoodSubscriber = _get(
 				data,
 				'my.autoDeposit.isSubscriber',
