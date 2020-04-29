@@ -443,12 +443,21 @@ export default {
 		},
 		// monitor mgAmount for changes
 		mgAmount() {
+			// handle pre-computed donation options based update
 			if (this.donationOptionSelected !== 'other' && !this.isDonationOptionsDirty) {
 				// get selected amount in donation
 				const selectedDonationAmount = this.calculatedDonationOptions.find(
 					donationSelect => donationSelect.value === this.donationOptionSelected
 				);
 				this.donation = selectedDonationAmount.monetaryValue;
+			} else if (this.donationOptionSelected !== 'other' && this.isDonationOptionsDirty) {
+				// handle user selected donation options based update
+				const selectedFrozenOption = frozenDropdownOptions.find(
+					donationSelect => donationSelect.value === this.donationOptionSelected
+				);
+				if (selectedFrozenOption) {
+					this.donation = selectedFrozenOption.monetaryValue;
+				}
 			}
 		},
 	},
