@@ -432,7 +432,7 @@ export default {
 			// flag donation options as dirty, which stops the recalculation of the drop down values.
 			this.isDonationOptionsDirty = true;
 			if (newVal !== 'other') {
-				this.donation = this.mgAmount * (Number(newVal) / 100);
+				this.donation = Math.round(this.mgAmount * Number(newVal)) / 100;
 				// sync the checkbox with the dropdown.
 				if (newVal !== '0') {
 					this.donationCheckbox = true;
@@ -441,6 +441,19 @@ export default {
 				}
 			}
 		},
+<<<<<<< HEAD
+=======
+		// monitor mgAmount for changes
+		mgAmount() {
+			if (this.donationOptionSelected !== 'other' && !this.isDonationOptionsDirty) {
+				// get selected amount in donation
+				const selectedDonationAmount = this.calculatedDonationOptions.find(
+					donationSelect => donationSelect.value === this.donationOptionSelected
+				);
+				this.donation = selectedDonationAmount.monetaryValue;
+			}
+		},
+>>>>>>> 67a4b890... possible fix for mg reactivity issues
 	},
 	methods: {
 		hideDayInput() {
@@ -522,22 +535,30 @@ export default {
 			return this.calculatedDonationOptions;
 		},
 		calculatedDonationOptions() {
+			// If mgAmount isn't valid, just set these values on the amount prop.
+			const amountToBasePercentageOn = this.$v.mgAmount.$invalid ? this.amount : this.mgAmount;
 			return [
 				{
 					value: '20',
-					label: `${numeral(this.mgAmount * 0.20).format('$0,0.00')}`
+					label: `${numeral(amountToBasePercentageOn * 0.20).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * 0.20 * 100) / 100
 				},
 				{
 					value: '15',
-					label: `${numeral(this.mgAmount * 0.15).format('$0,0.00')}`
+					label: `${numeral(amountToBasePercentageOn * 0.15).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * 0.15 * 100) / 100
+
 				},
 				{
 					value: '8',
-					label: `${numeral(this.mgAmount * 0.08).format('$0,0.00')}`
+					label: `${numeral(amountToBasePercentageOn * 0.08).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * 0.08 * 100) / 100
 				},
 				{
 					value: '0',
-					label: '$0.00'
+					label: '$0.00',
+					monetaryValue: '0'
+
 				},
 				{
 					value: 'other',
