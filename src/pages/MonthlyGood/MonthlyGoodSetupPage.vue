@@ -459,8 +459,6 @@ export default {
 				}
 			}
 		},
-<<<<<<< HEAD
-=======
 		// monitor mgAmount for changes
 		mgAmount() {
 			// handle pre-computed donation options based update
@@ -480,7 +478,6 @@ export default {
 				}
 			}
 		},
->>>>>>> 67a4b890... possible fix for mg reactivity issues
 	},
 	methods: {
 		hideDayInput() {
