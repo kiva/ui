@@ -177,4 +177,9 @@ export default {
 		margin: 2rem auto;
 	}
 }
+
+// Hide global promo bar (this is the promo landing page!!!)
+::v-deep .generic-banner {
+	display: none;
+}
 </style>
