@@ -642,7 +642,7 @@ export default {
 	display: none;
 }
 
-.global-promo-bar {
+.generic-banner {
 	display: none;
 }
 </style>
