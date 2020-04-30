@@ -432,7 +432,25 @@ export default {
 			// flag donation options as dirty, which stops the recalculation of the drop down values.
 			this.isDonationOptionsDirty = true;
 			if (newVal !== 'other') {
-				this.donation = Math.round(this.mgAmount * Number(newVal)) / 100;
+				// handle pre-computed donation options based update
+				if (!this.isDonationOptionsDirty) {
+					// get selected amount in donation
+					const selectedDonationAmount = this.calculatedDonationOptions.find(
+						donationSelect => donationSelect.value === newVal
+					);
+					this.donation = selectedDonationAmount.monetaryValue;
+				} else if (this.isDonationOptionsDirty) {
+					// handle user selected donation options based update
+					this.$nextTick(() => {
+						const selectedFrozenOption = frozenDropdownOptions.find(
+							donationSelect => donationSelect.value === newVal
+						);
+						if (selectedFrozenOption) {
+							this.donation = selectedFrozenOption.monetaryValue;
+						}
+					});
+				}
+
 				// sync the checkbox with the dropdown.
 				if (newVal !== '0') {
 					this.donationCheckbox = true;
@@ -563,7 +581,7 @@ export default {
 				{
 					value: '0',
 					label: '$0.00',
-					monetaryValue: '0'
+					monetaryValue: 0
 
 				},
 				{
