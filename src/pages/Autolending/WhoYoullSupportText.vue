@@ -4,31 +4,38 @@
 		<template v-if="kivaChooses">
 			<a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>borrowers</a>,
 			<a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>countries</a>, and
 			<a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>sectors</a> based on your lending history.
 		</template>
 		<template v-if="!kivaChooses">
 			<a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>{{ borrowersText }}</a>, in
 			<a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>{{ countriesText }}</a>,
 			and <a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>{{ sectorText }}</a><span v-if="advancedText"> and <a
 				role="button"
+				data-test="autolending-who"
 				@click.prevent="$emit('click', $event)"
 			>{{ advancedText }}</a></span>.
 		</template>
