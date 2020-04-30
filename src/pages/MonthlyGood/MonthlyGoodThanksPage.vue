@@ -130,17 +130,22 @@ export default {
 			return 'You joined Monthly Good!';
 		},
 		monthWording() {
-			let numOfMonthUntilLoan = Math.ceil(25 / this.mgAmount);
-			if (this.dayOfMonth < new Date().getDate()) {
-				numOfMonthUntilLoan += 1;
+			try {
+				let numOfMonthUntilLoan = Math.ceil(25 / this.mgAmount);
+				if (this.dayOfMonth < new Date().getDate()) {
+					numOfMonthUntilLoan += 1;
+				}
+				if (numOfMonthUntilLoan === 1) {
+					return 'this month';
+				} if (numOfMonthUntilLoan === 2) {
+					return 'next month';
+				}
+				const dateOfFirstLoan = addMonths(new Date(), numOfMonthUntilLoan);
+				return `in ${formatDistanceToNow(dateOfFirstLoan)}`;
+			} catch {
+				// This catch avoids a 500 error if this url is reached in an erroneous state
+				return '';
 			}
-			if (numOfMonthUntilLoan === 1) {
-				return 'this month';
-			} if (numOfMonthUntilLoan === 2) {
-				return 'next month';
-			}
-			const dateOfFirstLoan = addMonths(new Date(), numOfMonthUntilLoan);
-			return `in ${formatDistanceToNow(dateOfFirstLoan)}`;
 		},
 		isOnetime() {
 			// ensure this is cast to a bool for use in Graphql mutation
