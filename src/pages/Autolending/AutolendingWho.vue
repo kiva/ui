@@ -242,11 +242,6 @@ export default {
 	}
 }
 
-.kv-radio {
-	min-height: 2.7rem;
-	line-height: 2.7rem;
-}
-
 ::v-deep .dropdown {
 	margin-bottom: 0;
 }

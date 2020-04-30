@@ -176,16 +176,12 @@ $autolending-font-size: rem-calc(18.8);
 	pointer-events: none;
 }
 
-label {
-	font-size: $autolending-font-size;
+[class*="-area"] {
+	margin-bottom: 1.5rem;
 }
 
 .save-button-area {
 	margin-bottom: 5rem;
-}
-
-[class*="-area"] {
-	margin-bottom: 1.5rem;
 }
 
 ::v-deep .settings-card {
