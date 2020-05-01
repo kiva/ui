@@ -303,12 +303,19 @@ describe('Autolending Page Spec', () => {
 
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
+			// Show the modal
+			cy.get('[data-test=autolending-who]').first().click();
+			// Wait for modal
+			// Select the radio
+			cy.get('.autolending-who-lightbox')
+				.should('be.visible');
+
 			// Assert that 'Let Kiva select the best loans for me' is selected
 			cy.get('[data-test=kiva-chooses-true]').should('be.checked');
 			// Select 'I want to set my own auto-lending criteria'
 			cy.get('[data-test=kiva-chooses-false] + label').click();
-			// Save the profile settings
-			saveSettings();
+			// Hit save button
+			cy.get('[data-test=who-save-button]').first().click();
 			// Assert that 'I want to set my own auto-lending criteria' is selected
 			cy.get('[data-test=kiva-chooses-false]').should('be.checked');
 		});
@@ -333,12 +340,19 @@ describe('Autolending Page Spec', () => {
 
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
+			// Show the modal
+			cy.get('[data-test=autolending-who]').first().click();
+			// Wait for modal
+			// Select the radio
+			cy.get('.autolending-who-lightbox')
+				.should('be.visible');
+
 			// Assert that 'I want to set my own auto-lending criteria' is selected
 			cy.get('[data-test=kiva-chooses-false]').should('be.checked');
 			// Select 'Let Kiva select the best loans for me'
 			cy.get('[data-test=kiva-chooses-true] + label').click();
-			// Save the profile settings
-			saveSettings();
+			// Hit save button
+			cy.get('[data-test=who-save-button]').first().click();
 			// Assert that 'Let Kiva select the best loans for me' is selected
 			cy.get('[data-test=kiva-chooses-true]').should('be.checked');
 		});

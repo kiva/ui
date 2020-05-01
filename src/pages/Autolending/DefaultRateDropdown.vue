@@ -99,12 +99,4 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
-
-.filter-title {
-	font-size: 1rem;
-	color: $kiva-text-light;
-	margin-bottom: 0.5rem;
-}
-
 </style>
