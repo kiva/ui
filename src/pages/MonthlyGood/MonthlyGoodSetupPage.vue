@@ -94,7 +94,7 @@
 										/>
 										<span
 											class="additional-left-pad-spans display-inline-block"
-										>Optional donation to support Kiva</span>
+										>{{ donationTagLine }}</span>
 									</div>
 
 									<div class="medium-5 small-6 columns">
@@ -261,6 +261,10 @@ import KvButton from '@/components/Kv/KvButton';
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
+import contentful from '@/graphql/query/contentful.graphql';
+import { settingEnabled } from '@/util/settingsUtils';
+import { processContent } from '@/util/contentfulUtils';
+
 const pageQuery = gql`{
 	my {
 		subscriptions {
@@ -336,6 +340,7 @@ export default {
 			hasAutoLending: false,
 			hasBillingAgreement: false,
 			hasLegacySubscription: false,
+			donationTagLine: 'Optional donation to support Kiva',
 		};
 	},
 	mixins: [
@@ -365,7 +370,7 @@ export default {
 		},
 
 	},
-	inject: ['apollo'],
+	inject: ['apollo', 'federation'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client, { route }) {
@@ -400,6 +405,33 @@ export default {
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 		},
+	},
+	mounted() {
+		this.federation.query({
+			query: contentful,
+			variables: {
+				contentType: 'uiSetting',
+				contentKey: 'ui-mgsetup-donationtagline',
+			}
+		}).then(({ data }) => {
+			const donationTagLineSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-mgsetup-donationtagline'); // eslint-disable-line max-len
+			if (!donationTagLineSetting || !donationTagLineSetting.fields) {
+				return false;
+			}
+
+			const taglineSettingEnabled = settingEnabled(
+				donationTagLineSetting.fields,
+				'active',
+				'startDate',
+				'endDate'
+			);
+
+			if (!taglineSettingEnabled) {
+				return false;
+			}
+
+			this.donationTagLine = processContent(donationTagLineSetting.fields.content).donationTagLine.text;
+		});
 	},
 	created() {
 		// Sanitize and set initial form values.
