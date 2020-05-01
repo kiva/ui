@@ -372,7 +372,7 @@ export default {
 		},
 
 	},
-	inject: ['apollo', 'federation'],
+	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client, { route }) {
