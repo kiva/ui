@@ -63,7 +63,7 @@ const pageQuery = gql`
   }
 `;
 
-const heroImagesRequire = require.context('@/assets/images/covid-response', true);
+const heroImagesRequire = require.context('@/assets/images/covid-hero-v2', true);
 
 export default {
 	metaInfo: {
