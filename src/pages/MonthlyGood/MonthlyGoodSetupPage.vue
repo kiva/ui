@@ -261,11 +261,13 @@ import KvButton from '@/components/Kv/KvButton';
 import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
-import contentful from '@/graphql/query/contentful.graphql';
-import { settingEnabled } from '@/util/settingsUtils';
-import { processContent } from '@/util/contentfulUtils';
-
 const pageQuery = gql`{
+    general {
+      mg_tagline_active: uiConfigSetting(key: "mg_tagline_active") {
+        key
+        value
+      }
+    }
 	my {
 		subscriptions {
 			values {
@@ -340,7 +342,7 @@ export default {
 			hasAutoLending: false,
 			hasBillingAgreement: false,
 			hasLegacySubscription: false,
-			donationTagLine: 'Optional donation to support Kiva',
+			isMGTaglineActive: false,
 		};
 	},
 	mixins: [
@@ -397,6 +399,7 @@ export default {
 				});
 		},
 		result({ data }) {
+			this.isMGTaglineActive = _get(data, 'general.mg_tagline_active.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
@@ -405,33 +408,6 @@ export default {
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 		},
-	},
-	mounted() {
-		this.federation.query({
-			query: contentful,
-			variables: {
-				contentType: 'uiSetting',
-				contentKey: 'ui-mgsetup-donationtagline',
-			}
-		}).then(({ data }) => {
-			const donationTagLineSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-mgsetup-donationtagline'); // eslint-disable-line max-len
-			if (!donationTagLineSetting || !donationTagLineSetting.fields) {
-				return false;
-			}
-
-			const taglineSettingEnabled = settingEnabled(
-				donationTagLineSetting.fields,
-				'active',
-				'startDate',
-				'endDate'
-			);
-
-			if (!taglineSettingEnabled) {
-				return false;
-			}
-
-			this.donationTagLine = processContent(donationTagLineSetting.fields.content).donationTagLine.text;
-		});
 	},
 	created() {
 		// Sanitize and set initial form values.
@@ -579,6 +555,12 @@ export default {
 	computed: {
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
+		},
+		donationTagLine() {
+			if (!this.isMGTaglineActive) {
+				return 'Optional donation to support Kiva';
+			}
+			return 'Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.'; // eslint-disable-next-line max-len
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
