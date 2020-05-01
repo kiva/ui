@@ -160,6 +160,7 @@ export default {
 			@supports (object-fit: cover) {
 				img {
 					object-fit: cover;
+					object-position: 50% 25%; // keep the illustrations heads visible
 					height: 100%;
 					width: 100%;
 				}
