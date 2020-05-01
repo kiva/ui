@@ -1,10 +1,16 @@
 <template>
-	<div class="save-button-wrapper" v-show="isChanged">
-		<kv-button data-test="save-button" class="smaller" v-if="!saving" @click.native="checkSave">
-			Save settings
+	<div class="save-button-wrapper">
+		<kv-button
+			data-test="save-button"
+			class="smaller"
+			v-if="!saving"
+			@click.native="checkSave"
+			:disabled="!isChanged"
+		>
+			Save
 		</kv-button>
 		<kv-button data-test="save-button" class="smaller" v-else>
-			Saving settings <kv-loading-spinner />
+			Saving <kv-loading-spinner />
 		</kv-button>
 		<kv-lightbox
 			:visible="warningVisible"

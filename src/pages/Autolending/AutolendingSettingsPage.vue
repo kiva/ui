@@ -9,7 +9,7 @@
 		<autolending-who />
 
 		<div class="row column save-button-area">
-			<save-button />
+			<save-button v-if="isChanged" />
 		</div>
 	</div>
 </template>
