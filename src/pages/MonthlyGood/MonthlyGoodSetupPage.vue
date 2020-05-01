@@ -432,12 +432,49 @@ export default {
 			// flag donation options as dirty, which stops the recalculation of the drop down values.
 			this.isDonationOptionsDirty = true;
 			if (newVal !== 'other') {
-				this.donation = this.mgAmount * (Number(newVal) / 100);
+				// handle pre-computed donation options based update
+				if (!this.isDonationOptionsDirty) {
+					// get selected amount in donation
+					const selectedDonationAmount = this.calculatedDonationOptions.find(
+						donationSelect => donationSelect.value === newVal
+					);
+					this.donation = selectedDonationAmount.monetaryValue;
+				} else if (this.isDonationOptionsDirty) {
+					// handle user selected donation options based update
+					this.$nextTick(() => {
+						const selectedFrozenOption = frozenDropdownOptions.find(
+							donationSelect => donationSelect.value === newVal
+						);
+						if (selectedFrozenOption) {
+							this.donation = selectedFrozenOption.monetaryValue;
+						}
+					});
+				}
+
 				// sync the checkbox with the dropdown.
 				if (newVal !== '0') {
 					this.donationCheckbox = true;
 				} else {
 					this.donationCheckbox = false;
+				}
+			}
+		},
+		// monitor mgAmount for changes
+		mgAmount() {
+			// handle pre-computed donation options based update
+			if (this.donationOptionSelected !== 'other' && !this.isDonationOptionsDirty) {
+				// get selected amount in donation
+				const selectedDonationAmount = this.calculatedDonationOptions.find(
+					donationSelect => donationSelect.value === this.donationOptionSelected
+				);
+				this.donation = selectedDonationAmount.monetaryValue;
+			} else if (this.donationOptionSelected !== 'other' && this.isDonationOptionsDirty) {
+				// handle user selected donation options based update
+				const selectedFrozenOption = frozenDropdownOptions.find(
+					donationSelect => donationSelect.value === this.donationOptionSelected
+				);
+				if (selectedFrozenOption) {
+					this.donation = selectedFrozenOption.monetaryValue;
 				}
 			}
 		},
@@ -522,22 +559,30 @@ export default {
 			return this.calculatedDonationOptions;
 		},
 		calculatedDonationOptions() {
+			// If mgAmount isn't valid, just set these values on the amount prop.
+			const amountToBasePercentageOn = this.$v.mgAmount.$invalid ? this.amount : this.mgAmount;
 			return [
 				{
 					value: '20',
-					label: `${numeral(this.mgAmount * 0.20).format('$0,0.00')}`
+					label: `${numeral(amountToBasePercentageOn * 0.20).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * 0.20 * 100) / 100
 				},
 				{
 					value: '15',
-					label: `${numeral(this.mgAmount * 0.15).format('$0,0.00')}`
+					label: `${numeral(amountToBasePercentageOn * 0.15).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * 0.15 * 100) / 100
+
 				},
 				{
 					value: '8',
-					label: `${numeral(this.mgAmount * 0.08).format('$0,0.00')}`
+					label: `${numeral(amountToBasePercentageOn * 0.08).format('$0,0.00')}`,
+					monetaryValue: Math.round(amountToBasePercentageOn * 0.08 * 100) / 100
 				},
 				{
 					value: '0',
-					label: '$0.00'
+					label: '$0.00',
+					monetaryValue: 0
+
 				},
 				{
 					value: 'other',
@@ -692,5 +737,10 @@ export default {
 		background: rgba(255, 255, 255, 0.8);
 		z-index: 10000;
 	}
+}
+
+// Hide global promo bar (this is the promo landing page!!!)
+::v-deep .generic-banner {
+	display: none;
 }
 </style>

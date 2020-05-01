@@ -344,11 +344,11 @@ export default {
 				{
 					id: 96,
 					url: 'covid-19',
-					queryParams: 'status=fundRaising&tag=41',
-					// algoliaParams: 'tags=reserved_disaster_relief_covid&sortBy=popularity'
+					// queryParams is from initial Loan Channel setup on 4.27.2020 around 3pm
 					// eslint-disable-next-line
-					// fallbackUrl: '/lend?status=fundRaising&tag=41&kexpn=lend_filter.lend_filter_versions&kexpv=c'
-					fallbackUrl: '/lend?status=fundRaising&tag=41&covid=bypass'
+					queryParams: 'distributionModel=both&riskRating=0,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
+					// this will cause legacy lend to load up and apply all params for the Loan Channel
+					fallbackUrl: '/lend/covid-19?filter=bypass'
 				},
 				{
 					id: 65,
