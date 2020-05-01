@@ -1,21 +1,21 @@
 <template>
 	<div class="loan-increment-radios">
 		<h3 class="filter-title">
-			Loan increment
+			Loan sizes
 		</h3>
 		<kv-radio
 			id="loan-increment-any"
 			radio-value="any"
 			v-model="loanIncrement"
 		>
-			Any amount
+			Any amounts
 		</kv-radio>
 		<kv-radio
 			id="loan-increment-25"
 			radio-value="25"
 			v-model="loanIncrement"
 		>
-			Limit my loans to $25 increments
+			Limit amounts to $25 per borrower
 		</kv-radio>
 	</div>
 </template>

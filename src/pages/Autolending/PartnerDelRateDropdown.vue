@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Partner delinquency rate
+			Field Partner delinquency rates
 		</h3>
 		<kv-dropdown-rounded v-model="delinquencyRate">
 			<option value="0">

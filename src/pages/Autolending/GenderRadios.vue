@@ -1,7 +1,7 @@
 <template>
 	<div class="gender-radios">
 		<h3 class="filter-title">
-			Gender
+			Genders
 		</h3>
 		<kv-radio
 			id="gender-radio-both"
