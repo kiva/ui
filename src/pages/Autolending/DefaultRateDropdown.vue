@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Partner default rate
+			Field Partner default rates
 		</h3>
 		<kv-dropdown-rounded v-model="defaultRate">
 			<option value="0">

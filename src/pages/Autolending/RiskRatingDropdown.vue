@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Partner risk rating
+			Field Partner risk ratings
 		</h3>
 		<kv-dropdown-rounded v-model="riskRating">
 			<option value="0">

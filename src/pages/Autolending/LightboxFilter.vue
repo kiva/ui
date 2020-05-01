@@ -8,14 +8,14 @@
 			radio-value="all"
 			v-model="radio"
 		>
-			All {{ name }}
+			Any {{ name }}
 		</kv-radio>
 		<kv-radio
 			:id="`filter-some-${name}`"
 			radio-value="some"
 			v-model="radio"
 		>
-			Specific {{ name }} only
+			Selected {{ name }} only
 			<button
 				v-if="selectedItems.length > 0"
 				class="edit-button"

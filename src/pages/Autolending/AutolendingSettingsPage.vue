@@ -9,13 +9,7 @@
 		<autolending-who />
 
 		<div class="row column save-button-area">
-			<save-button class="show-for-large" />
-		</div>
-
-		<!-- mobile-only footer -->
-		<div class="mobile-footer hide-for-large" v-show="isEnabled || isChanged">
-			<mobile-counter />
-			<save-button :show-warning="false" />
+			<save-button />
 		</div>
 	</div>
 </template>
@@ -25,7 +19,6 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
 import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
-import MobileCounter from './MobileCounter';
 import SaveButton from './SaveButton';
 import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
@@ -47,7 +40,6 @@ export default {
 		AutolendingWho,
 		AutolendingStatus,
 		AutolendingWhen,
-		MobileCounter,
 		SaveButton,
 	},
 	data() {
@@ -130,10 +122,6 @@ export default {
 @import 'settings';
 
 .autolending {
-	.basket-bar {
-		display: none;
-	}
-
 	.button {
 		.loading-spinner {
 			vertical-align: middle;
@@ -142,23 +130,6 @@ export default {
 
 			& >>> .line {
 				background-color: $white;
-			}
-		}
-	}
-
-	.mobile-footer {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		width: 100%;
-		background-color: $white;
-		box-shadow: 0 -2px 9px 0 rgba(0, 0, 0, 0.1);
-
-		.save-button-wrapper {
-			padding: 0 1rem 0.5rem;
-
-			.button {
-				width: 100%;
 			}
 		}
 	}

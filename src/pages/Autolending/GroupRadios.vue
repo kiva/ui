@@ -1,7 +1,7 @@
 <template>
 	<div class="group-radios">
 		<h3 class="filter-title">
-			Individuals/groups
+			Individuals or groups
 		</h3>
 		<kv-radio
 			id="group-radio-both"

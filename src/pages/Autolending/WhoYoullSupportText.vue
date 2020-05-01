@@ -45,7 +45,6 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import _map from 'lodash/map';
 
 export default {
 	inject: ['apollo'],
@@ -53,7 +52,6 @@ export default {
 		return {
 			gender: 'both',
 			isGroup: 'both',
-			allCountries: [],
 			currentIsoCodes: [],
 			currentSectorIds: [],
 			activatedAdvancedFilters: [],
@@ -89,22 +87,12 @@ export default {
 					}
 				}
 			}
-			lend {
-				countryFacets {
-					country {
-						name
-						region
-						isoCode
-					}
-				}
-			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.kivaChooses = !!_get(data, 'autolending.currentProfile.kivaChooses');
 			this.gender = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.gender') || 'both';
 			this.isGroup = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.isGroup');
-			this.allCountries = _map(_get(data, 'lend.countryFacets'), 'country') || [];
 			this.currentIsoCodes = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.country') || [];
 			this.currentSectorIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.sector') || [];
 			// AdvancedFilters
@@ -130,9 +118,6 @@ export default {
 		}
 	},
 	computed: {
-		selectedCountries() {
-			return this.allCountries.filter(country => this.currentIsoCodes.includes(country.isoCode));
-		},
 		groupText() {
 			if (this.isGroup === true) {
 				return 'groups only';
@@ -153,12 +138,7 @@ export default {
 		},
 		countriesText() {
 			if (this.currentIsoCodes.length !== 0) {
-				// Array of all selected country names
-				const arrayOfSelectedCountryNames = this.selectedCountries.map(country => country.name);
-				// String of country names, separated by commas and insert the word 'or' before last country name
-				const formattedStringOfSelectedCountries = arrayOfSelectedCountryNames
-					.reduce((text, value, i, array) => text + (i < array.length - 1 ? ', ' : ' or ') + value);
-				return `${formattedStringOfSelectedCountries}`;
+				return `${this.currentIsoCodes.length} countries`;
 			}
 			return 'any countries';
 		},
@@ -185,5 +165,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Loan term
+			Loan terms
 		</h3>
 		<kv-dropdown-rounded v-model="loanTerm">
 			<option value="0">
