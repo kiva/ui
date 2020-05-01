@@ -262,8 +262,8 @@ import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const pageQuery = gql`{
-    ui {
-      mg_donationtagline_active: uiConfigSetting(key: "mg_donationtagline_active") {
+    general {
+      mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
         key
         value
       }
@@ -399,7 +399,7 @@ export default {
 				});
 		},
 		result({ data }) {
-			this.isMGTaglineActive = _get(data, 'ui.mg_donationtagline_active.value') === 'true' || false;
+			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
