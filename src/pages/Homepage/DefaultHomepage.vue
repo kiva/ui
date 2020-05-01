@@ -82,12 +82,6 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.isExperimentActive = homepageMGHero.version === 'shown';
-			// Fire Event for GROW-79
-			this.$kvTrackEvent(
-				'Home',
-				'EXP-GROW-79-Apr2020',
-				homepageMGHero.version === 'shown' ? 'b' : 'a'
-			);
 		},
 	},
 	created() {
@@ -115,6 +109,14 @@ export default {
 		}).finally(() => {
 			this.showSlideShow = true;
 		});
+	},
+	mounted() {
+		// Fire Event for GROW-79
+		this.$kvTrackEvent(
+			'Home',
+			'EXP-GROW-79-Apr2020',
+			this.isExperimentActive ? 'b' : 'a'
+		);
 	},
 	computed: {
 		isMonthlyGoodPromoActive() {
