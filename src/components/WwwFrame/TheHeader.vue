@@ -1,6 +1,6 @@
 <template>
-	<header class="top-nav" :style="cssVars">
-		<nav aria-label="Primary navigation">
+	<header class="top-nav">
+		<nav aria-label="Primary navigation" :style="cssVars">
 			<div class="header-row row">
 				<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
 					<kiva-logo class="icon" />
