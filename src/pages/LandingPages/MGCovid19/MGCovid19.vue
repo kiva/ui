@@ -9,7 +9,7 @@
 		/>
 
 		<div class="row">
-			<m-g-covid-explained class="small-12 columns mg-explained section" />
+			<m-g-covid-explained class="small-12 columns mg-explained" />
 			<div class="separator section"></div>
 			<m-g-covid-faq class="small-12 large-9 xlarge-8 xxlarge-7 columns section" />
 		</div>
@@ -92,10 +92,11 @@ export default {
 }
 
 .mg-explained {
-	margin-bottom: 1rem;
-
-	@include breakpoint(xlarge) {
-		margin-bottom: 4rem;
+	margin-top: 1rem;
+	margin-bottom: 2rem;
+	@include breakpoint(large) {
+		margin-top: 5rem;
+		margin-bottom: 5rem;
 	}
 }
 
