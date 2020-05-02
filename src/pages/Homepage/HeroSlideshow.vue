@@ -5,20 +5,42 @@
 			<template v-slot:carousel>
 				<kv-carousel @change="slideChange">
 					<kv-carousel-slide v-for="(imageSet, index) in promoContent.responsiveImageSet" :key="index">
+						<!-- eslint-disable max-len -->
+						<router-link
+							v-if="!promoContent.genericContentBlock.primaryCtaText && promoContent.genericContentBlock.primaryCtaLink"
+							:to="promoContent.genericContentBlock.primaryCtaLink"
+							:v-kv-track-event="[promoContent.genericContentBlock.primaryCtaKvTrackEvent]"
+						>
+							<kv-responsive-image
+								:images="promoImages(imageSet.images)"
+								:alt="imageSet.description"
+							/>
+						</router-link>
+						<!-- eslint-enable max-len -->
 						<kv-responsive-image
+							v-else
 							:images="promoImages(imageSet.images)"
 							:alt="imageSet.description"
 						/>
 					</kv-carousel-slide>
 				</kv-carousel>
 			</template>
-			<template v-slot:headlineTitle>
+			<template
+				v-if="promoContent.genericContentBlock.headline"
+				v-slot:headlineTitle
+			>
 				{{ promoContent.genericContentBlock.headline }}
 			</template>
-			<template v-slot:headlineBody>
+			<template
+				v-if="promoContent.genericContentBlock.subHeadline"
+				v-slot:headlineBody
+			>
 				{{ promoContent.genericContentBlock.subHeadline }}
 			</template>
-			<template v-slot:action>
+			<template
+				v-if="promoContent.genericContentBlock.primaryCtaText"
+				v-slot:action
+			>
 				<kv-button
 					:to="promoContent.genericContentBlock.primaryCtaLink"
 					:v-kv-track-event="[promoContent.genericContentBlock.primaryCtaKvTrackEvent]"
