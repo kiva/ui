@@ -12,13 +12,22 @@
 					</kv-carousel-slide>
 				</kv-carousel>
 			</template>
-			<template v-slot:headlineTitle>
+			<template
+				v-if="promoContent.genericContentBlock.headline"
+				v-slot:headlineTitle
+			>
 				{{ promoContent.genericContentBlock.headline }}
 			</template>
-			<template v-slot:headlineBody>
+			<template
+				v-if="promoContent.genericContentBlock.subHeadline"
+				v-slot:headlineBody
+			>
 				{{ promoContent.genericContentBlock.subHeadline }}
 			</template>
-			<template v-slot:action>
+			<template
+				v-if="promoContent.genericContentBlock.primaryCtaText"
+				v-slot:action
+			>
 				<kv-button
 					:to="promoContent.genericContentBlock.primaryCtaLink"
 					:v-kv-track-event="[promoContent.genericContentBlock.primaryCtaKvTrackEvent]"
