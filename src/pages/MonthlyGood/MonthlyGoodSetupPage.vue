@@ -94,7 +94,7 @@
 										/>
 										<span
 											class="additional-left-pad-spans display-inline-block"
-										>Optional donation to support Kiva</span>
+										>{{ donationTagLine }}</span>
 									</div>
 
 									<div class="medium-5 small-6 columns">
@@ -262,6 +262,12 @@ import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const pageQuery = gql`{
+    general {
+      mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
+        key
+        value
+      }
+    }
 	my {
 		subscriptions {
 			values {
@@ -336,6 +342,7 @@ export default {
 			hasAutoLending: false,
 			hasBillingAgreement: false,
 			hasLegacySubscription: false,
+			isMGTaglineActive: false,
 		};
 	},
 	mixins: [
@@ -392,6 +399,7 @@ export default {
 				});
 		},
 		result({ data }) {
+			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
@@ -547,6 +555,12 @@ export default {
 	computed: {
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
+		},
+		donationTagLine() {
+			if (!this.isMGTaglineActive) {
+				return 'Optional donation to support Kiva';
+			}
+			return 'Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.'; // eslint-disable-line max-len
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
