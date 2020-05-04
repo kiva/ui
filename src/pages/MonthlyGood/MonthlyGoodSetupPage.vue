@@ -57,7 +57,7 @@
 
 								<div class="row text-left align-middle">
 									<div class="columns">
-										<span class="additional-left-pad-spans">
+										<span class="additional-left-pad-spans strong">
 											Deposit for lending
 										</span>
 									</div>
@@ -92,9 +92,13 @@
 											v-model="donationCheckbox"
 											@change="donationCheckboxChange()"
 										/>
-										<span
-											class="additional-left-pad-spans display-inline-block"
-										>{{ donationTagLine }}</span>
+										<div class="additional-left-pad-spans display-inline-block">
+											<span class="strong">
+												Monthly donation to Kiva (optional)
+											</span>
+											<!-- eslint-disable-next-line max-len -->
+											<div class="small-text" v-if="isMGTaglineActive">Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.</div>
+										</div>
 									</div>
 
 									<div class="medium-5 small-6 columns">
@@ -555,12 +559,6 @@ export default {
 	computed: {
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
-		},
-		donationTagLine() {
-			if (!this.isMGTaglineActive) {
-				return 'Optional donation to support Kiva';
-			}
-			return 'Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.'; // eslint-disable-line max-len
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
