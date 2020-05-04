@@ -560,9 +560,10 @@ export default {
 			return this.donation + this.mgAmount;
 		},
 		donationTagLine() {
-			if (this.isMGTaglineActive) {
-				return 'Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.'; // eslint-disable-line max-len
+			if (!this.isMGTaglineActive) {
+				return false;
 			}
+			return 'Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.'; // eslint-disable-line max-len
 		},
 		dropdownOptions() {
 			if (this.isDonationOptionsDirty) {
