@@ -88,20 +88,9 @@
 						<hr>
 						<div class="row">
 							<div class="columns shrink">
-								<kv-button
-									data-test="who-save-button"
-									class="smaller button"
-									v-if="!isSaving"
-									@click.native="save"
-									:disabled="!isChanged"
-								>
-									Save
-								</kv-button>
-								<kv-button data-test="who-save-button" class="smaller button" v-else>
-									Saving <kv-loading-spinner />
-								</kv-button>
+								<save-button />
 							</div>
-							<div class="columns">
+							<div class="columns" v-show="!kivaChooses">
 								<inline-counter />
 							</div>
 						</div>
@@ -117,8 +106,6 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import AttributeFilter from './AttributeFilter';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import CountryFilter from './CountryFilter';
@@ -134,37 +121,34 @@ import LoanIncrementRadios from './LoanIncrementRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
 import KivaChoosesRadios from './KivaChoosesRadios';
 import WhoYoullSupportText from './WhoYoullSupportText';
-
+import SaveButton from './SaveButton';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		AttributeFilter,
+		CountryFilter,
+		DefaultRateDropdown,
+		GenderRadios,
+		GroupRadios,
+		InlineCounter,
+		KivaChoosesRadios,
+		KvExpandable,
 		KvIcon,
 		KvLightbox,
-		KvButton,
-		KvLoadingSpinner,
-		KvExpandable,
-		CountryFilter,
-		InlineCounter,
-		GenderRadios,
-		PartnerFilter,
-		SectorFilter,
-		RiskRatingDropdown,
-		LoanTermDropdown,
-		GroupRadios,
-		PartnerDelRateDropdown,
 		LoanIncrementRadios,
-		DefaultRateDropdown,
-		KivaChoosesRadios,
+		LoanTermDropdown,
+		PartnerDelRateDropdown,
+		PartnerFilter,
+		RiskRatingDropdown,
+		SaveButton,
+		SectorFilter,
 		WhoYoullSupportText,
 	},
 	data() {
 		return {
-			isSaving: false,
 			isEnabled: false,
 			showLightbox: false,
-			isChanged: false,
 			showAdvanced: false,
 			kivaChooses: true,
 		};
@@ -183,27 +167,6 @@ export default {
 		result({ data }) {
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
 			this.kivaChooses = !!_get(data, 'autolending.currentProfile.kivaChooses');
-			this.isChanged = !!_get(data, 'autolending.profileChanged');
-		},
-	},
-	methods: {
-		save() {
-			this.isSaving = true;
-			this.apollo.mutate({
-				mutation: gql`mutation {
-					autolending @client {
-						saveProfile
-					}
-				}`
-			}).then(() => {
-				this.$showTipMsg('Settings saved!');
-			}).catch(e => {
-				console.error(e);
-				this.$showTipMsg('There was a problem saving your settings', 'error');
-			}).finally(() => {
-				this.isSaving = false;
-				this.showLightbox = false;
-			});
 		},
 	},
 };

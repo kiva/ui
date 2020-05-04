@@ -315,7 +315,7 @@ describe('Autolending Page Spec', () => {
 			// Select 'I want to set my own auto-lending criteria'
 			cy.get('[data-test=kiva-chooses-false] + label').click();
 			// Hit save button
-			cy.get('[data-test=who-save-button]').first().click();
+			cy.get('[data-test=save-button]').first().click();
 			// Assert that 'I want to set my own auto-lending criteria' is selected
 			cy.get('[data-test=kiva-chooses-false]').should('be.checked');
 		});
@@ -352,7 +352,7 @@ describe('Autolending Page Spec', () => {
 			// Select 'Let Kiva select the best loans for me'
 			cy.get('[data-test=kiva-chooses-true] + label').click();
 			// Hit save button
-			cy.get('[data-test=who-save-button]').first().click();
+			cy.get('[data-test=save-button]').first().click();
 			// Assert that 'Let Kiva select the best loans for me' is selected
 			cy.get('[data-test=kiva-chooses-true]').should('be.checked');
 		});
