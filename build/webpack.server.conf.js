@@ -18,7 +18,8 @@ module.exports = merge.smart(baseWebpackConfig, {
 			{
 				// Ignore styles not from the /pages/ directory, since it's extracted in the client
 				test: /\.scss$/,
-				exclude: /\pages\//,
+				// exclude: /\pages\//,
+				exclude: /\/(pages|WwwFrame)/,
 				loader: 'null-loader'
 			},
 		]

@@ -19,7 +19,7 @@ module.exports = merge.smart(baseWebpackConfig, {
 			{
 				// Extract styles, excluding the /pages/ directory as those are injected
 				test: /\.scss$/,
-				exclude: /\pages\//,
+				exclude: /\/(pages|WwwFrame)\//,
 				use: [
 					{
 						loader: MiniCssExtractPlugin.loader,
