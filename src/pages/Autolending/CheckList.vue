@@ -4,22 +4,19 @@
 			:key="id"
 			v-for="{ id, name, selected } in items"
 		>
-			<kv-toggle
-				class="list-item"
+			<kv-checkbox
 				:id="`${name}-${id}` | changeCase('paramCase')"
-				:value="selected"
-				@change="$emit('change', $event, id)"
+				:checked="selected"
+				@change="$emit('change', $event, id);"
 			>
-				<div class="list-item-label">
-					{{ name }}
-				</div>
-			</kv-toggle>
+				{{ name }}
+			</kv-checkbox>
 		</li>
 	</ul>
 </template>
 
 <script>
-import KvToggle from '@/components/Kv/KvToggle';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 
 export default {
 	props: {
@@ -33,7 +30,7 @@ export default {
 		},
 	},
 	components: {
-		KvToggle,
+		KvCheckbox,
 	},
 };
 </script>
@@ -52,14 +49,6 @@ export default {
 
 		@include breakpoint(large) {
 			column-count: 3;
-		}
-	}
-
-	.list-item {
-		font-size: 1rem;
-
-		@include breakpoint(large) {
-			font-size: rem-calc(18);
 		}
 	}
 }

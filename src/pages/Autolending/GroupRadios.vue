@@ -1,5 +1,5 @@
 <template>
-	<div class="group-radios">
+	<div>
 		<h3 class="filter-title">
 			Individuals or groups
 		</h3>
