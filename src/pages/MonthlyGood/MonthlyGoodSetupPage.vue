@@ -92,13 +92,13 @@
 											v-model="donationCheckbox"
 											@change="donationCheckboxChange()"
 										/>
-										<span class="additional-left-pad-spans display-inline-block">
+										<div class="additional-left-pad-spans display-inline-block">
 											<span class="strong">
 												Monthly donation to Kiva (optional)
 											</span>
 											<!-- eslint-disable-next-line max-len -->
 											<div class="small-text" v-if="isMGTaglineActive">Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.</div>
-										</span>
+										</div>
 									</div>
 
 									<div class="medium-5 small-6 columns">
