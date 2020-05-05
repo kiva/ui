@@ -96,8 +96,8 @@ export default class KvAuth0 {
 				resolve();
 			} else {
 				// Successful authentication
-				cookieStore.set('kvls', 'i', { path: '/', secure: true });
 				this[setAuthData](result);
+				cookieStore.set('kvls', this.getKivaId(), { path: '/', secure: true });
 				resolve(result);
 			}
 		});
