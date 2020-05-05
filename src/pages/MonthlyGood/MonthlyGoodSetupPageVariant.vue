@@ -17,13 +17,16 @@
 						</div>
 						<div class="section">
 							<h1 class="h2">
-								Monthly Good
+								{{ pageTitle }}
 							</h1>
 							<div class="row">
 								<div class="small-12 large-7 xlarge-8 xxlarge-9 columns">
 									<p>
-										{{ selectedCategory }} on Kiva.<br>
-										Deposits every  month on the {{ dayOfMonth }}th, cancel any time.
+										<span class="quiet">
+											Your subscription will support {{ selectedCategory }} on Kiva.
+										</span><br>
+										It will deposit every month on the {{ dayOfMonth }}th,
+										and you can cancel any time.
 									</p>
 								</div>
 								<div class="small-12 large-4 xlarge-3 xxlarge-2 large-offset-1 columns text-right">
@@ -41,7 +44,7 @@
 								<label for="donation" class="h2">
 									Monthly Donation to Kiva (optional)
 								</label>
-								<p class="inline">
+								<p class="inline quiet">
 									{{ donationTagLine }}
 								</p>
 								<!-- TODO: What is the correct tracking event? -->
@@ -92,22 +95,16 @@
 							<div>
 								<p>
 									Your current auto lending settings will be
-									updated to the <strong>Monthly Good Lending Setting</strong>
+									updated to the <strong>Monthly Good Lending Setting</strong>.
 								</p>
-								<p>
-									We'll charge your PayPal account{{ isOnetime ? '' : ' each month' }}, and any credit
-									in your Kiva account will be automatically re-lent for you.
+								<p class="quiet">
+									Eligible credit in your Kiva account will be automatically re-lent
+									for you to support {{ selectedCategory }} on Kiva.
 								</p>
-								<p v-if="hasAutoDeposits">
+								<p v-if="hasAutoDeposits" class="quiet">
 									<em>
 										* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution
 										will replace your existing auto deposit.
-									</em>
-								</p>
-								<p v-if="hasAutoLending">
-									<em>
-										* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will
-										also disable your current auto lending settings.
 									</em>
 								</p>
 							</div>
@@ -137,7 +134,6 @@
 									Subscribe <kv-loading-spinner v-if="submitting" />
 								</kv-button>
 								<p>
-									<!-- TODO: This is not in the comp, do we want it still? -->
 									<em>
 										We'll charge your PayPal account for your
 										{{ isOnetime ? 'Contribution' : 'Monthly Good' }}
@@ -154,7 +150,6 @@
 										@complete-transaction="submitMonthlyGood()"
 									/>
 									<p class="small-text">
-										<!-- TODO: This is not in the comp, do we want it still? -->
 										Thanks to PayPal, Kiva receives free payment processing.
 									</p>
 								</div>
@@ -325,10 +320,9 @@ export default {
 			isNewUserRegistration: true,
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
-			hasAutoLending: false,
 			hasBillingAgreement: false,
 			hasLegacySubscription: false,
-			isMGTaglineActive: false,
+			isMGDonationTaglineActive: false,
 		};
 	},
 	mixins: [
@@ -379,10 +373,9 @@ export default {
 				});
 		},
 		result({ data }) {
-			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
+			this.isMGDonationTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
-			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
 			this.hasBillingAgreement = _get(data,
 				'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
@@ -426,6 +419,11 @@ export default {
 				}
 			}
 		}
+	},
+	metaInfo() {
+		return {
+			title: `${this.pageTitle} - Review`,
+		};
 	},
 	methods: {
 		triggerDefaultLightbox() {
@@ -490,18 +488,20 @@ export default {
 		},
 	},
 	computed: {
+		pageTitle() {
+			return this.category === 'disaster_relief_covid' ? 'COVID-19 relief' : 'Monthly Good';
+		},
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
 		},
 		donationTagLine() {
-			if (!this.isMGTaglineActive) {
-				// return 'Each $25 loan costs Kiva more than $3 to facilitate. Will you help us cover our costs?';
-				return 'Optional donation to support Kiva.';
+			if (!this.isMGDonationTaglineActive) {
+				return 'Each $25 loan costs Kiva more than $3 to facilitate. Will you help us cover our costs?';
 			}
 			return 'Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.'; // eslint-disable-line max-len
 		},
 		selectedCategory() {
-			return this.lendingCategories.find(category => category.value === this.category).label;
+			return this.lendingCategories.find(category => category.value === this.category).shortName;
 		},
 		dropdownOptions() {
 			return this.calculatedDonationOptions;
@@ -691,6 +691,10 @@ export default {
 
 .inline {
 	display: inline;
+}
+
+.quiet {
+	color: $kiva-text-light;
 }
 
 // overrides
