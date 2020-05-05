@@ -63,8 +63,7 @@ export default {
 		list-style: none;
 		display: flex;
 		align-items: center;
-		max-width: 40rem;
-		margin: 0 auto 2rem;
+		margin: 0 auto;
 	}
 
 	.step {
