@@ -28,13 +28,13 @@ module.exports = merge.smart(baseWebpackConfig, {
 						}
 					}
 				].concat(styleLoaders),
-
 			},
 		]
 	},
 	optimization: {
 		splitChunks: {
-			chunks: 'all'
+			chunks: 'all',
+			maxAsyncRequests: 8, // default is 6
 		}
 	},
 	plugins: [
