@@ -52,8 +52,6 @@ module.exports = function createMiddleware({
 		inject: false,
 		// don't prefetch anything
 		shouldPrefetch: () => false,
-		// only preload scripts @TODO: try to only skipping preloading of app.*.css
-		shouldPreload: (file, type) => type === 'script'
 	});
 
 	return function middleware(req, res, next) {
