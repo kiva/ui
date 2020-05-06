@@ -2,6 +2,7 @@
 	<www-page>
 		<div v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription">
 			<kv-responsive-image
+				class="hero-images"
 				:images="heroImages"
 				alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
 			/>
@@ -552,6 +553,27 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.hero-images {
+	height: 0;
+	padding-bottom: 540/480 * 100%;
+
+	@include breakpoint(medium) {
+		padding-bottom: 372/680 * 100%;
+	}
+
+	@include breakpoint(large) {
+		padding-bottom: 441/1024 * 100%;
+	}
+
+	@include breakpoint(xga) {
+		padding-bottom: 620/1440 * 100%;
+	}
+
+	@include breakpoint(wxga) {
+		padding-bottom: 750/1920 * 100%;
+	}
+}
 
 .section {
 	padding-bottom: 2rem;
