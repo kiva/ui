@@ -123,9 +123,11 @@ export default {
 					}
 				}`
 			}).then(() => {
+				this.$emit('autolendingSaved', 'success');
 				this.$showTipMsg('Your settings have been saved');
 			}).catch(e => {
 				console.error(e);
+				this.$emit('autolendingSaved', 'error');
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 				// TODO: handle api.authenticationRequired (delay then send to login)
 			});

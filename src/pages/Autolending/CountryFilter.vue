@@ -1,45 +1,37 @@
 <template>
-	<lightbox-filter
-		class="country-filter"
-		plural-name="countries"
-		:all-items="countriesWithSelected"
-		:current-ids="currentIsoCodes"
-		@change="changeCountries"
-	>
-		<template #default="{ onChange }">
-			<h2 class="lightbox-title">
-				Select countries
-			</h2>
-			<div class="row collapse">
-				<div class="small-6 columns region-list">
-					<ul>
-						<li v-for="(region, name) in regions" :key="name">
-							<button
-								class="region-button"
-								@click="openRegion = name"
-								:aria-pressed="openRegion === name ? 'true' : 'false'"
-							>
-								{{ name }}
-							</button>
-						</li>
-					</ul>
-				</div>
-				<div class="small-6 columns country-list">
-					<kv-expandable :skip-leave="true">
-						<check-list
-							v-if="currentRegion && currentRegion.length"
-							:key="openRegion"
-							:items="currentRegion"
-							@change="onChange"
-						/>
-						<p v-else key="none">
-							Pick a region
-						</p>
-					</kv-expandable>
-				</div>
+	<div>
+		<h3 class="specific-filter-title">
+			Countries
+		</h3>
+		<div class="row collapse">
+			<div class="small-6 columns region-list">
+				<ul>
+					<li v-for="(region, name) in regions" :key="name">
+						<button
+							class="region-button"
+							@click="openRegion = name"
+							:aria-pressed="openRegion === name ? 'true' : 'false'"
+						>
+							{{ name }}
+						</button>
+					</li>
+				</ul>
 			</div>
-		</template>
-	</lightbox-filter>
+			<div class="small-6 columns">
+				<kv-expandable :skip-leave="true">
+					<check-list
+						v-if="currentRegion && currentRegion.length"
+						:key="openRegion"
+						:items="currentRegion"
+						@change="onChange"
+					/>
+					<p v-else key="none">
+						Pick a region
+					</p>
+				</kv-expandable>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -47,18 +39,18 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
+import _union from 'lodash/union';
+import _without from 'lodash/without';
 import gql from 'graphql-tag';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
 import CheckList from './CheckList';
-import LightboxFilter from './LightboxFilter';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		CheckList,
 		KvExpandable,
-		LightboxFilter,
 	},
 	data() {
 		return {
@@ -94,6 +86,16 @@ export default {
 		},
 	},
 	methods: {
+		onChange(checked, values) {
+			const codes = Array.isArray(values) ? values : [values];
+			if (checked) {
+				// Add the values to the current ids
+				this.changeCountries(_union(this.currentIsoCodes, codes));
+			} else {
+				// Remove the values from the current ids
+				this.changeCountries(_without(this.currentIsoCodes, ...codes));
+			}
+		},
 		changeCountries(countries) {
 			this.apollo.mutate({
 				mutation: gql`mutation($countries: [String]) {
@@ -116,80 +118,40 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
-.country-filter {
-	$section-padding: 0.4rem 0.5rem;
-	$desktop-section-padding: 0.2rem 1.5rem;
+$section-padding: 0.4rem 0.5rem;
+$desktop-section-padding: 0.2rem 1.5rem;
 
-	.kv-lightbox-wrap .kv-lightbox .lightbox-row .lightbox-columns {
-		max-width: 32rem;
+.specific-filter-title {
+	font-size: 1rem;
+	margin: 0 auto 0.5rem;
+	font-weight: $global-weight-highlight;
+}
 
-		.lightbox-content {
-			padding: 1rem 0;
-		}
+.region-list {
+	ul {
+		list-style: none;
+		margin: 0;
+	}
+}
+
+.region-button {
+	padding: $section-padding;
+	color: $kiva-textlink;
+	line-height: 1.8;
+	font-size: 1rem;
+	text-align: left;
+
+	&:hover {
+		color: $kiva-textlink-hover;
+		text-decoration: underline;
 	}
 
-	.lightbox-title {
-		padding: $section-padding;
-	}
-
-	.region-list {
-		border-right: 1px solid $kiva-stroke-gray;
-
-		ul {
-			list-style: none;
-			margin: 0;
-		}
-	}
-
-	.region-button {
-		width: 100%;
-		padding: $section-padding;
-		color: $kiva-textlink;
-		line-height: 1.8;
-		font-size: 1rem;
-		text-align: left;
-
-		&:hover {
-			color: $kiva-textlink-hover;
-			text-decoration: underline;
-		}
-
-		&[aria-pressed="true"] {
-			color: $kiva-text-light;
-			text-decoration: none;
-			background-color: $kiva-bg-darkgray;
-		}
-	}
-
-	.country-list {
-		p {
-			color: $kiva-text-light;
-			padding: $section-padding;
-		}
-
-		label {
-			padding: $section-padding;
-		}
-
-		input {
-			margin-bottom: 0;
-		}
-	}
-
-	@include breakpoint(large) {
-		.lightbox-title,
-		.country-list p,
-		.country-list label {
-			padding: $desktop-section-padding;
-		}
-
-		.region-button {
-			padding: $desktop-section-padding;
-			font-size: rem-calc(18);
-		}
+	&[aria-pressed="true"] {
+		color: $kiva-text-light;
+		text-decoration: none;
 	}
 }
 </style>
