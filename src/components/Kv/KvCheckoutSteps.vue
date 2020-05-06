@@ -18,7 +18,7 @@
 					{{ index + 1 }}
 				</span>
 				<span v-else class="step-icon checkmark">
-					<kv-icon name="confirmation" />
+					<kv-icon class="checkmark-icon" name="confirmation" />
 				</span>
 			</li>
 		</ul>
@@ -36,7 +36,10 @@ export default {
 		},
 		currentStepIndex: {
 			type: Number,
-			default: 0
+			default: 0,
+			validator(value) {
+				return value >= 0 && Number.isInteger(value);
+			}
 		}
 	},
 	components: {
@@ -50,7 +53,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .kv-checkout-steps {
@@ -60,8 +63,7 @@ export default {
 		list-style: none;
 		display: flex;
 		align-items: center;
-		max-width: 40rem;
-		margin: 0 auto 2rem;
+		margin: 0 auto;
 	}
 
 	.step {
@@ -99,40 +101,38 @@ export default {
 			margin: 0 auto;
 			width: 1.5rem;
 			height: 1.5rem;
+			border-radius: 50%;
 
 			&.number-icon {
 				background: $kiva-bg-lightgray;
 				color: $kiva-stroke-gray;
 				border: 1px solid $kiva-stroke-gray;
-				border-radius: 0.8rem;
 				font-size: 1rem;
 				text-align: center;
 				line-height: 1.325rem;
 				font-weight: 700;
 			}
 
-			.icon {
-				width: 1.4rem;
-				height: 1.4rem;
-				fill: $kiva-bg-lightgray;
+			&.checkmark {
+				width: 1.5rem;
+				height: 1.5rem;
+				background: #fff;
+				border: 1px solid $kiva-stroke-gray;
+				overflow: hidden;
 			}
-		}
 
-		.checkmark {
-			background: $kiva-stroke-gray;
-			border-radius: 1.5rem;
-			border: 1px solid $kiva-stroke-gray;
+			.checkmark-icon {
+				background: $kiva-stroke-gray;
+				fill: $kiva-bg-lightgray;
+				width: 100%;
+			}
 		}
 
 		&.active {
 			color: $kiva-green;
 
 			.step-icon {
-				.icon {
-					width: 2rem;
-					height: 2rem;
-					fill: $kiva-green;
-				}
+				fill: $kiva-green;
 
 				&.number-icon {
 					background: $kiva-green;
@@ -141,13 +141,12 @@ export default {
 				}
 
 				&.checkmark {
-					background: #fff;
 					border: 0;
+				}
 
-					.icon {
-						width: 1.5rem;
-						height: 1.5rem;
-					}
+				.checkmark-icon {
+					background: #fff;
+					fill: $kiva-green;
 				}
 			}
 		}
