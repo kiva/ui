@@ -92,6 +92,9 @@ export default {
 				currentLoanCount
 				profileChanged
 				savingProfile
+				currentProfile {
+					kivaChooses
+				}
 			}
 		}`,
 		preFetch: true,
@@ -99,12 +102,13 @@ export default {
 			this.isChanged = _get(data, 'autolending.profileChanged');
 			this.loanCount = _get(data, 'autolending.currentLoanCount');
 			this.saving = _get(data, 'autolending.savingProfile');
+			this.kivaChooses = !!_get(data, 'autolending.currentProfile.kivaChooses');
 		},
 	},
 	methods: {
 		checkSave() {
 			if (!this.saving) {
-				if (this.showWarning && this.loanCount < this.warningThreshold) {
+				if (this.showWarning && this.loanCount < this.warningThreshold && !this.kivaChooses) {
 					this.warningVisible = true;
 				} else {
 					this.save();

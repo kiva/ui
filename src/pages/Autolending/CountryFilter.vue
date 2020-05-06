@@ -122,7 +122,6 @@ export default {
 @import 'settings';
 
 $section-padding: 0.4rem 0.5rem;
-$desktop-section-padding: 0.2rem 1.5rem;
 
 .specific-filter-title {
 	font-size: 1rem;

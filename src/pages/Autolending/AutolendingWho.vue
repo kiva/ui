@@ -48,7 +48,7 @@
 							<div v-if="!showSelectedFilterOptions" key="allFilters">
 								<kiva-chooses-radios />
 								<!-- basic criteria -->
-								<div class="row">
+								<div class="row" v-show="!kivaChooses">
 									<div class="small-12 large-6 columns setting-column">
 										<gender-radios />
 									</div>
@@ -114,7 +114,7 @@
 						<hr>
 						<div class="row">
 							<div class="columns shrink">
-								<save-button @autolendingSaved="showLightbox = false" />
+								<save-button @autolendingSaved="settingsSaved" />
 							</div>
 							<div class="columns" v-show="!kivaChooses">
 								<inline-counter />
@@ -207,6 +207,10 @@ export default {
 		}
 	},
 	methods: {
+		settingsSaved() {
+			this.showLightbox = false;
+			this.showSelectedFilterOptions = false;
+		},
 		backToAllOptions() {
 			this.showSelectedFilterOptions = false;
 		},
