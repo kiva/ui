@@ -1,20 +1,18 @@
 <template>
-	<div>
-		<monthly-good-setup-page-control
-			v-if="showMGSetupControl"
-			:amount="amount"
-			:category="category"
-			:onetime="onetime"
-			:source="source"
-		/>
-		<monthly-good-setup-page-variant
-			v-else
-			:amount="amount"
-			:category="category"
-			:onetime="onetime"
-			:source="source"
-		/>
-	</div>
+	<monthly-good-setup-page-control
+		v-if="showMGSetupControl"
+		:amount="amount"
+		:category="category"
+		:onetime="onetime"
+		:source="source"
+	/>
+	<monthly-good-setup-page-variant
+		v-else
+		:amount="amount"
+		:category="category"
+		:onetime="onetime"
+		:source="source"
+	/>
 </template>
 
 <script>
