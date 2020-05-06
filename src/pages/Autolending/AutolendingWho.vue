@@ -62,7 +62,10 @@
 										/>
 									</div>
 									<div class="small-12 large-6 columns setting-column">
-										<sector-filter />
+										<sector-radios
+											@change="filterRadioChange"
+											:selector-shown="showSelectedFilterOptions"
+										/>
 									</div>
 								</div>
 								<div class="row" v-show="!kivaChooses">
@@ -107,6 +110,7 @@
 							</div>
 							<div v-if="showSelectedFilterOptions" key="specificFilter">
 								<country-filter v-if="selectedFilterGroup =='countries'" />
+								<sector-filter v-if="selectedFilterGroup =='sectors'" />
 							</div>
 						</transition>
 					</div>
@@ -150,6 +154,7 @@ import PartnerFilter from './PartnerFilter';
 import RiskRatingDropdown from './RiskRatingDropdown';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
+import SectorRadios from './SectorRadios';
 import WhoYoullSupportText from './WhoYoullSupportText';
 
 export default {
@@ -173,6 +178,7 @@ export default {
 		RiskRatingDropdown,
 		SaveButton,
 		SectorFilter,
+		SectorRadios,
 		WhoYoullSupportText,
 	},
 	data() {
