@@ -48,12 +48,11 @@
 								<p class="inline quiet">
 									{{ donationTagLine }}
 								</p>
-								<!-- TODO: What is the correct tracking event? -->
 								<button
 									class="small-text donation__info-btn inline"
 									@click="triggerDefaultLightbox"
 									type="button"
-									v-kv-track-event="['basket', 'Donation Info Lightbox', 'Open Lightbox']"
+									v-kv-track-event="['Registration', 'Donation Info Lightbox', 'Open Lightbox']"
 								>
 									How Kiva uses donations
 								</button>
