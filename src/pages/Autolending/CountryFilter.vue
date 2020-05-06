@@ -18,17 +18,15 @@
 				</ul>
 			</div>
 			<div class="small-6 columns">
-				<kv-expandable :skip-leave="true">
-					<check-list
-						v-if="currentRegion && currentRegion.length"
-						:key="openRegion"
-						:items="currentRegion"
-						@change="onChange"
-					/>
-					<p v-else key="none">
-						Pick a region
-					</p>
-				</kv-expandable>
+				<check-list
+					v-if="currentRegion && currentRegion.length"
+					:key="openRegion"
+					:items="currentRegion"
+					@change="onChange"
+				/>
+				<p v-else key="none">
+					Pick a region
+				</p>
 			</div>
 		</div>
 	</div>
@@ -42,7 +40,6 @@ import _sortBy from 'lodash/sortBy';
 import _union from 'lodash/union';
 import _without from 'lodash/without';
 import gql from 'graphql-tag';
-import KvExpandable from '@/components/Kv/KvExpandable';
 import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
 import CheckList from './CheckList';
 
@@ -50,7 +47,6 @@ export default {
 	inject: ['apollo'],
 	components: {
 		CheckList,
-		KvExpandable,
 	},
 	data() {
 		return {
