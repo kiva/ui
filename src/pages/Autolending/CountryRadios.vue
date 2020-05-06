@@ -7,6 +7,7 @@
 			:id="`filter-all-countries`"
 			radio-value="all"
 			v-model="radio"
+			@click="saveAny"
 		>
 			Any countries
 		</kv-radio>
@@ -34,6 +35,7 @@
 <script>
 import _map from 'lodash/map';
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
 
 import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -73,6 +75,24 @@ export default {
 		},
 	},
 	methods: {
+		saveAny() {
+			this.apollo.mutate({
+				mutation: gql`mutation($countries: [String]) {
+							autolending @client {
+								editProfile(profile: {
+									loanSearchCriteria: {
+										filters: {
+											country: $countries
+										}
+									}
+								})
+							}
+						}`,
+				variables: {
+					countries: null,
+				}
+			});
+		},
 		emitChangeEvent(value) {
 			this.$emit('change', {
 				radioKey: 'countries',
