@@ -31,7 +31,7 @@
 									</p>
 								</div>
 								<div class="small-12 large-4 xlarge-3 xxlarge-2 large-offset-1 columns text-right">
-									<span class="h2 strong">${{ mgAmount }}</span>
+									<span class="h2">${{ mgAmount }}</span>
 								</div>
 							</div>
 						</div>
@@ -95,8 +95,8 @@
 							<kv-icon name="bell" class="notice__icon" />
 							<div>
 								<p>
-									Your current auto lending settings will be
-									updated to the <strong>Monthly Good Lending Setting</strong>.
+									Your current auto-lending settings will be
+									updated to the Monthly Good lending setting.
 								</p>
 								<p class="quiet">
 									Eligible credit in your Kiva account will be automatically re-lent
