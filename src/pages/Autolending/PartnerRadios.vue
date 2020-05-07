@@ -101,7 +101,7 @@ export default {
 	},
 	computed: {
 		selectedPartners() {
-			return this.allPartners.filter(partner => this.currentPartnerIds.includes(partner.name));
+			return this.allPartners.filter(partner => this.currentPartnerIds.includes(partner.id));
 		},
 		// the selected items limited to 10
 		selectedPartnersShortList() {
