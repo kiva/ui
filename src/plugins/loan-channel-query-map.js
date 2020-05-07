@@ -344,11 +344,30 @@ export default {
 				{
 					id: 96,
 					url: 'covid-19',
-					// queryParams is from initial Loan Channel setup on 4.27.2020 around 3pm
+					// queryParams are from initial Loan Channel setup on 4.27.2020 around 3pm
 					// eslint-disable-next-line
 					queryParams: 'distributionModel=both&riskRating=0,5&sector=1,9,5,14,17,12,6,8,7,4,3,13&status=fundRaising&attribute=5,6,7,8,9,10,11,12,13,14,15,17,20,24,28,29&sortBy=popularity',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/covid-19?filter=bypass'
+				},
+				{
+					id: 97,
+					url: 'hitachi-employees-helping-c-o-v-i-d-impacted-businesses',
+					// queryParams are from initial Loan Channel setup on 5.3.2020
+					// eslint-disable-next-line
+					queryParams: 'dafEligible=true&distributionModel=field_partner&excludeNonRated=true&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&status=fundRaising&attribute=36,29,28,20,5,6,8,7,9,10,11,13,12,15,17,14,24',
+					// this will cause legacy lend to load up and apply all params for the Loan Channel
+					fallbackUrl: '/lend/hitachi-employees-helping-c-o-v-i-d-impacted-businesses?filter=bypass'
+				},
+				{
+					id: 98,
+					url: 'crisis-support-loans',
+					// queryParams are from initial Loan Channel setup on 5.06.2020
+					// eslint-disable-next-line
+					queryParams: 'status=fundRaising&riskRating=0,5&attribute=36&distributionModel=field_partner',
+					// this will cause legacy lend to load up and apply all params for the Loan Channel
+					// fallbackUrl: '/lend/crisis-support-loans?filter=bypass'
+					algoliaParams: 'attributes=Crisis%20Support%20Loans&sortBy=popularity'
 				},
 				{
 					id: 65,

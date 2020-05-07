@@ -53,6 +53,7 @@ export default {
 				'social enterprise': true,
 				'water and sanitation': true,
 				'higher education': true,
+				'crisis support loans': true,
 				youth: true,
 			},
 		};
