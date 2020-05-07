@@ -1,47 +1,76 @@
 <template>
-	<lightbox-filter
-		plural-name="partners"
-		:all-items="validPartners"
-		:current-ids="currentIds"
-		@change="changePartners"
-	/>
+	<div>
+		<h3 class="specific-filter-title">
+			Field Partners
+		</h3>
+		<div class="row collapse">
+			<div class="small-12 columns">
+				<check-list
+					key="partners"
+					:items="partnersWithSelected"
+					:use-columns="true"
+					@change="onChange"
+				/>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import _filter from 'lodash/filter';
 import _get from 'lodash/get';
+import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
+import _union from 'lodash/union';
+import _without from 'lodash/without';
 import gql from 'graphql-tag';
 import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
-import LightboxFilter from './LightboxFilter';
+import CheckList from './CheckList';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		LightboxFilter,
+		CheckList,
 	},
 	data() {
 		return {
-			allPartners: [],
-			currentIds: [],
+			partnersToDisplay: [],
+			currentPartnerIds: [],
 		};
-	},
-	computed: {
-		// Filter out the "N/A direct to ..." non-partners and sort by name
-		validPartners() {
-			const filtered = _filter(this.allPartners, partner => partner.name.indexOf('direct to') === -1);
-			return _sortBy(filtered, 'name');
-		},
 	},
 	apollo: {
 		query: partnerListQuery,
 		preFetch: true,
 		result({ data }) {
-			this.allPartners = _get(data, 'general.partners.values') || [];
-			this.currentIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.partner') || [];
+			// Filter out the "N/A direct to ..." non-partners and sort by name
+			const allPartners = _get(data, 'general.partners.values') || [];
+			const nonDirectPartners = allPartners.filter(partner => partner.name.indexOf('direct to') === -1);
+
+			this.partnersToDisplay = _sortBy(nonDirectPartners, 'name');
+			this.currentPartnerIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.partner') || [];
+		},
+	},
+	computed: {
+		partnersWithSelected() {
+			return _map(this.partnersToDisplay, ({ id, name }) => {
+				return {
+					id,
+					name,
+					selected: this.currentPartnerIds.indexOf(id) > -1,
+				};
+			});
 		},
 	},
 	methods: {
+		onChange(checked, values) {
+			const codes = Array.isArray(values) ? values : [values];
+			if (checked) {
+				// Add the values to the current ids
+				this.changePartners(_union(this.currentPartnerIds, codes));
+			} else {
+				// Remove the values from the current ids
+				this.changePartners(_without(this.currentPartnerIds, ...codes));
+			}
+		},
 		changePartners(partners) {
 			this.apollo.mutate({
 				mutation: gql`mutation($partners: [Int]) {
@@ -63,3 +92,13 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.specific-filter-title {
+	font-size: 1rem;
+	margin: 0 auto 0.5rem;
+	font-weight: $global-weight-highlight;
+}
+</style>

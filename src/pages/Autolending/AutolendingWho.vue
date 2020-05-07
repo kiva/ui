@@ -95,7 +95,10 @@
 													<loan-term-dropdown />
 												</div>
 												<div class="small-12 large-6 columns setting-column">
-													<partner-filter />
+													<partner-radios
+														@change="filterRadioChange"
+														:selector-shown="showSelectedFilterOptions"
+													/>
 												</div>
 												<div class="small-12 large-6 columns setting-column">
 													<partner-del-rate-dropdown />
@@ -115,6 +118,7 @@
 								<country-filter v-if="selectedFilterGroup =='countries'" />
 								<sector-filter v-if="selectedFilterGroup =='sectors'" />
 								<attribute-filter v-if="selectedFilterGroup =='attributes'" />
+								<partner-filter v-if="selectedFilterGroup =='partners'" />
 							</div>
 						</transition>
 					</div>
@@ -156,6 +160,7 @@ import LoanIncrementRadios from './LoanIncrementRadios';
 import LoanTermDropdown from './LoanTermDropdown';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import PartnerFilter from './PartnerFilter';
+import PartnerRadios from './PartnerRadios';
 import RiskRatingDropdown from './RiskRatingDropdown';
 import SaveButton from './SaveButton';
 import SectorFilter from './SectorFilter';
@@ -181,6 +186,7 @@ export default {
 		LoanTermDropdown,
 		PartnerDelRateDropdown,
 		PartnerFilter,
+		PartnerRadios,
 		RiskRatingDropdown,
 		SaveButton,
 		SectorFilter,
