@@ -7,6 +7,20 @@ export default [
 			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
 		]
 	},
+	{
+		path: '/borrow/pre-application',
+		component: () => import('@/pages/Borrow/BorrowIndex'),
+		children: [
+			{
+				path: 'community',
+				component: () => import('@/pages/Borrow/BorrowCommunity')
+			},
+			{
+				path: 'how-long',
+				component: () => import('@/pages/Borrow/BorrowHowLong')
+			},
+		]
+	},
 	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
 	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
 	{ path: '/build/data-snapshots', component: () => import('@/pages/Build/DataPage') },

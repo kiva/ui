@@ -1,8 +1,8 @@
 <template>
 	<www-page
 		id="co19-landing"
-		:header-theme="co19HeaderTheme"
-		:footer-theme="co19FooterTheme"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
 	>
 		<m-g-covid-hero
 			class="section"
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { lightHeader, lightFooter } from '@/util/siteThemes';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import MGCovidAbout from './MGCovidAbout';
@@ -49,21 +51,8 @@ export default {
 	},
 	data() {
 		return {
-			co19HeaderTheme: {
-				themeKey: 'CO19',
-				backgroundColor: '#fff',
-				logoColor: '#4faf4e',
-				linkColor: '#767676',
-				linkHoverColor: '#efefef',
-				separatorColor: 'transparent'
-			},
-			co19FooterTheme: {
-				themeKey: 'CO19',
-				backgroundColor: '#fff',
-				textColor: '#484848',
-				linkColor: '#4faf4e',
-				separatorColor: '#8ccb8c'
-			},
+			headerTheme: lightHeader,
+			footerTheme: lightFooter,
 			isExperimentActive: true,
 			isMonthlyGoodSubscriber: false,
 		};
