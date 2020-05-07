@@ -82,7 +82,7 @@ export default {
 	background-color: #fdf7eb;
 	background-image: url('~@/assets/images/covid-response/background-texture.png');
 	background-position-y: 100%;
-	background-repeat: repeat-x;
+	background-size: cover;
 	padding-top: 3rem;
 	padding-bottom: 2rem;
 	margin-bottom: 2rem;
