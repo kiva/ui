@@ -86,7 +86,10 @@
 													<loan-increment-radios />
 												</div>
 												<div class="small-12 large-6 columns setting-column">
-													<attribute-filter />
+													<attribute-radios
+														@change="filterRadioChange"
+														:selector-shown="showSelectedFilterOptions"
+													/>
 												</div>
 												<div class="small-12 large-6 columns setting-column">
 													<loan-term-dropdown />
@@ -111,6 +114,7 @@
 							<div v-if="showSelectedFilterOptions" key="specificFilter">
 								<country-filter v-if="selectedFilterGroup =='countries'" />
 								<sector-filter v-if="selectedFilterGroup =='sectors'" />
+								<attribute-filter v-if="selectedFilterGroup =='attributes'" />
 							</div>
 						</transition>
 					</div>
@@ -140,6 +144,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 import AttributeFilter from './AttributeFilter';
+import AttributeRadios from './AttributeRadios';
 import CountryFilter from './CountryFilter';
 import CountryRadios from './CountryRadios';
 import DefaultRateDropdown from './DefaultRateDropdown';
@@ -161,6 +166,7 @@ export default {
 	inject: ['apollo'],
 	components: {
 		AttributeFilter,
+		AttributeRadios,
 		CountryFilter,
 		CountryRadios,
 		DefaultRateDropdown,
