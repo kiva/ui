@@ -40,13 +40,6 @@ export default {
 			footerTheme: lightFooter
 		};
 	},
-	watch: {
-		$route(to, from) {
-			const toDepth = to.path.split('/').length;
-			const fromDepth = from.path.split('/').length;
-			this.transitionName = toDepth < fromDepth ? 'kvfade' : 'kvfade';
-		}
-	},
 	computed: {
 		isIntro() {
 			return this.$route.path === '/borrow/pre-application';
