@@ -31,7 +31,7 @@
 									</p>
 								</div>
 								<div class="small-12 large-4 xlarge-3 xxlarge-2 large-offset-1 columns text-right">
-									<span class="h2">${{ mgAmount }}</span>
+									<span class="h3">${{ mgAmount }}</span>
 								</div>
 							</div>
 						</div>
@@ -631,6 +631,7 @@ export default {
 		display: flex;
 		text-align: right;
 		margin-top: 1rem;
+		justify-content: flex-end;
 	}
 
 	&__pricing-other {
@@ -708,6 +709,11 @@ export default {
 
 .h2 {
 	font-size: 1.75rem;
+}
+
+.h3 {
+	font-size: 1.25rem;
+	font-weight: $global-weight-highlight;
 }
 
 .inline {
