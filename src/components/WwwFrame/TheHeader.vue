@@ -383,6 +383,7 @@ export default {
 					'--kv-header-link-color': this.theme.linkColor || '',
 					'--kv-header-link-hover-color': this.theme.linkHoverColor || '',
 					'--kv-header-separator-color': this.theme.separatorColor || '',
+					'--kv-header-shadow': this.theme.shadow || '',
 				};
 			}
 			return {};
@@ -485,6 +486,7 @@ $close-search-button-size: 2.5rem;
 	color: var(--kv-header-text-color, $header-text-color);
 	font-size: $top-nav-font-size;
 	font-weight: $global-weight-highlight;
+	box-shadow: var(--kv-header-shadow, 'none');
 	z-index: 1000;
 
 	.amount {
