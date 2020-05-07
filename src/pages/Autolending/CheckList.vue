@@ -43,6 +43,12 @@ export default {
 	margin: 0;
 
 	&.use-columns {
+		li {
+			-webkit-column-break-inside: avoid;
+			page-break-inside: avoid;
+			break-inside: avoid;
+		}
+
 		@include breakpoint(medium) {
 			column-count: 2;
 		}
