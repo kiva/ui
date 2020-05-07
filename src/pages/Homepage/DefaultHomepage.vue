@@ -6,15 +6,18 @@
 			:promo-content="promoContent"
 		/>
 		<monthly-good-explained v-if="isMonthlyGoodPromoActive && !isExperimentActive" />
+
 		<m-g-covid-hero
-			class="section"
 			v-if="isExperimentActive"
 		/>
-		<m-g-covid-explained
-			class="small-12 columns mg-explained section"
-			:class="{'experiment':isExperimentActive}"
+		<div
 			v-if="isExperimentActive"
-		/>
+			class="mg-explained-wrapper"
+		>
+			<m-g-covid-explained
+				class="small-12 columns"
+			/>
+		</div>
 		<why-kiva />
 		<category-grid />
 	</div>
@@ -137,12 +140,19 @@ export default {
 	padding: 1.625rem 0;
 }
 
-// Experiment Styles - GROW-79
-.section.experiment {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+.mg-explained-wrapper {
+	background-color: #fdf7eb;
+	background-image: url('~@/assets/images/covid-response/background-texture.png');
+	background-position-y: 100%;
+	background-repeat: repeat-x;
+	padding-top: 3rem;
+	padding-bottom: 2rem;
+	margin-bottom: 2rem;
+
 	@include breakpoint(large) {
-		margin-top: 5rem;
+		padding-top: 5rem;
+		padding-bottom: 3rem;
+		margin-top: 0;
 		margin-bottom: 5rem;
 	}
 }
