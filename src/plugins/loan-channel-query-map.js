@@ -355,7 +355,7 @@ export default {
 					url: 'hitachi-employees-helping-c-o-v-i-d-impacted-businesses',
 					// queryParams are from initial Loan Channel setup on 5.3.2020
 					// eslint-disable-next-line
-					queryParams: 'status=fundRaising&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&theme=Islamic Finance,Youth,Start-Up,Water and Sanitation,Vulnerable Groups,Fair Trade,Rural Exclusion,Mobile Technology,Underfunded Areas,Conflict Zones,Job Creation,Growing Businesses,Disaster recovery,Innovative Loans,Refugees/Displaced,Social Enterprise,Crisis Support Loans&distributionModel=field_partner',
+					queryParams: 'dafEligible=true&distributionModel=field_partner&excludeNonRated=true&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&status=fundRaising&attribute=36,29,28,20,5,6,8,7,9,10,11,13,12,15,17,14,24',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/hitachi-employees-helping-c-o-v-i-d-impacted-businesses?filter=bypass'
 				},
@@ -364,7 +364,7 @@ export default {
 					url: 'crisis-support-loans',
 					// queryParams are from initial Loan Channel setup on 5.06.2020
 					// eslint-disable-next-line
-					queryParams: 'status=fundRaising&riskRating=0,5&theme=Crisis Support Loans&distributionModel=field_partner',
+					queryParams: 'status=fundRaising&riskRating=0,5&attribute=36&distributionModel=field_partner',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					// fallbackUrl: '/lend/crisis-support-loans?filter=bypass'
 					algoliaParams: 'attributes=Crisis%20Support%20Loans&sortBy=popularity'
