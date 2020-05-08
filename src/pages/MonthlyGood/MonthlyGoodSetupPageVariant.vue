@@ -191,12 +191,13 @@
 			class="row align-center other-notices"
 		>
 			<already-subscribed-notice
-				v-if="isMonthlyGoodSubscriber"
 				class="small-12 medium-11 large-8 columns"
+				v-if="isMonthlyGoodSubscriber"
+				:onetime="isOnetime"
 			/>
 			<legacy-subscriber-notice
-				v-if="hasLegacySubscription"
 				class="small-12 medium-11 large-8 columns"
+				v-if="hasLegacySubscription"
 				:legacy-subscriptions="legacySubs"
 			/>
 		</div>
