@@ -236,7 +236,11 @@
 					</div>
 				</form>
 			</div>
-			<already-subscribed-notice class="small-12 medium-11 large-8 column" v-if="isMonthlyGoodSubscriber" />
+			<already-subscribed-notice
+				class="small-12 medium-11 large-8 column"
+				v-if="isMonthlyGoodSubscriber"
+				:onetime="isOnetime"
+			/>
 			<legacy-subscriber-notice
 				class="small-12 medium-11 large-8 column"
 				:legacy-subscriptions="legacySubs"

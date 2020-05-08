@@ -7,8 +7,8 @@
 				</h1>
 
 				<p class="text-center">
-					${{ mgAmount }}<span v-if="!isOnetime">/month</span>
-					<span v-if="donation > 0">(along with a ${{ donation }} donation)</span>
+					Your contribution: ${{ mgAmount }}<span v-if="!isOnetime">/month</span>
+					<span v-if="donation > 0">(including your ${{ donation }} donation)</span>
 				</p>
 
 				<div class="panel" v-if="!fromCovidLanding">
