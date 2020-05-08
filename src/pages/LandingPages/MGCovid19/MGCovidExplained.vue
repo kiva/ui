@@ -13,10 +13,15 @@
 			<li class="three-steps__step-wrapper column small-12 large-4">
 				<div class="three-steps__step">
 					<div class="three-steps__icon-wrapper">
-						<span class="three-steps__number three-steps__number--1">
-							1
-						</span>
-						<mg-step-one class="three-steps__icon" />
+						<img
+							class="three-steps__icon"
+							src="@/assets/images/covid-response/choose.png"
+							srcset="@/assets/images/covid-response/choose_2x.png 2x"
+							alt=""
+							width="102"
+							height="151"
+							loading="lazy"
+						>
 					</div>
 					<h3 class="three-steps__title">
 						Choose
@@ -30,10 +35,15 @@
 			<li class="three-steps__step-wrapper column small-12 large-4">
 				<div class="three-steps__step">
 					<div class="three-steps__icon-wrapper">
-						<span class="three-steps__number three-steps__number--2">
-							2
-						</span>
-						<mg-step-two class="three-steps__icon three-steps__icon--inbox" />
+						<img
+							class="three-steps__icon"
+							src="@/assets/images/covid-response/check.png"
+							srcset="@/assets/images/covid-response/check_2x.png 2x"
+							alt=""
+							width="119"
+							height="150"
+							loading="lazy"
+						>
 					</div>
 					<h3 class="three-steps__title">
 						Check
@@ -46,10 +56,15 @@
 			<li class="three-steps__step-wrapper column small-12 large-4">
 				<div class="three-steps__step">
 					<div class="three-steps__icon-wrapper">
-						<span class="three-steps__number three-steps__number--3">
-							3
-						</span>
-						<mg-step-three class="three-steps__icon" />
+						<img
+							class="three-steps__icon"
+							src="@/assets/images/covid-response/grow.png"
+							srcset="@/assets/images/covid-response/grow_2x.png 2x"
+							alt=""
+							width="105"
+							height="150"
+							loading="lazy"
+						>
 					</div>
 					<h3 class="three-steps__title">
 						Grow
@@ -64,21 +79,6 @@
 	</div>
 </template>
 
-<script>
-import MgStepOne from '@/assets/inline-svgs/covid-response/choose-checkmark.svg';
-import MgStepTwo from '@/assets/inline-svgs/covid-response/inbox-notification.svg';
-import MgStepThree from '@/assets/inline-svgs/covid-response/grow.svg';
-
-export default {
-	components: {
-		MgStepOne,
-		MgStepTwo,
-		MgStepThree,
-	},
-};
-
-</script>
-
 <style lang="scss" scoped>
 @import 'settings';
 
@@ -92,10 +92,7 @@ export default {
 	}
 
 	&__step {
-		border-radius: rem-calc(10);
-		box-shadow: $platinum 0 rem-calc(1) rem-calc(5) rem-calc(2);
 		height: 100%;
-		padding: 2rem;
 		text-align: center;
 	}
 
@@ -103,46 +100,12 @@ export default {
 		position: relative;
 		display: flex;
 		justify-content: center;
-		margin-bottom: 0.5rem;
+		margin-bottom: 1rem;
 	}
 
 	&__icon {
-		height: 6.25rem;
+		height: rem-calc(150);
 		display: block;
-
-		&--inbox {
-			margin-right: -0.65rem; // pull it keep it visually centered since the red notification dot takes up space
-			width: 7rem;
-		}
-	}
-
-	&__number {
-		$num-size: 2.25rem;
-
-		background-color: $kiva-green;
-		border: rem-calc(4) solid #fff;
-		color: #fff;
-		border-radius: 50%;
-		font-weight: 700;
-		width: $num-size;
-		height: $num-size;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		position: absolute;
-		top: calc(50% - #{$num-size / 2});
-
-		&--1 {
-			left: calc(50% - #{$num-size / 2} - 3rem);
-		}
-
-		&--2 {
-			left: calc(50% - #{$num-size / 2} - 3.5rem);
-		}
-
-		&--3 {
-			left: calc(50% - #{$num-size / 2} - 1.65rem);
-		}
 	}
 
 	&__title {

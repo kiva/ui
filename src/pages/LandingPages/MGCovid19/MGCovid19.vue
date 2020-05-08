@@ -4,13 +4,15 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<m-g-covid-hero
-			class="section"
-		/>
+		<m-g-covid-hero />
+
+		<div class="mg-explained-wrapper">
+			<div class="row">
+				<m-g-covid-explained class="small-12 columns" />
+			</div>
+		</div>
 
 		<div class="row">
-			<m-g-covid-explained class="small-12 columns mg-explained" />
-			<div class="separator section"></div>
 			<m-g-covid-faq class="small-12 large-9 xlarge-8 xxlarge-7 columns section" />
 		</div>
 
@@ -76,16 +78,19 @@ export default {
 	}
 }
 
-.separator {
-	width: 100%;
-	border-top: rem-calc(1) solid $kiva-stroke-gray;
-}
-
-.mg-explained {
-	margin-top: 1rem;
+.mg-explained-wrapper {
+	background-color: #fdf7eb;
+	background-image: url('~@/assets/images/covid-response/background-texture.png');
+	background-position-y: 100%;
+	background-size: cover;
+	padding-top: 3rem;
+	padding-bottom: 2rem;
 	margin-bottom: 2rem;
+
 	@include breakpoint(large) {
-		margin-top: 5rem;
+		padding-top: 5rem;
+		padding-bottom: 3rem;
+		margin-top: 0;
 		margin-bottom: 5rem;
 	}
 }
