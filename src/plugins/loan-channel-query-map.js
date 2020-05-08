@@ -355,7 +355,7 @@ export default {
 					url: 'hitachi-employees-helping-c-o-v-i-d-impacted-businesses',
 					// queryParams are from initial Loan Channel setup on 5.3.2020
 					// eslint-disable-next-line
-					queryParams: 'dafEligible=true&distributionModel=field_partner&excludeNonRated=true&riskRating=3,5&sector=1,9,5,14,17,12,8,7,4,3,13&status=fundRaising&attribute=36,29,28,20,5,6,8,7,9,10,11,13,12,15,17,14,24',
+					queryParams: 'dafEligible=true&loanLimit=25&sector=1,9,5,14,17,12,8,7,4,3,13&distributionModel=field_partner&noTrustee=true&sortBy=popularity',
 					// this will cause legacy lend to load up and apply all params for the Loan Channel
 					fallbackUrl: '/lend/hitachi-employees-helping-c-o-v-i-d-impacted-businesses?filter=bypass'
 				},
