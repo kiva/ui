@@ -19,7 +19,7 @@
 		>
 			Selected sectors only
 			<button
-				v-if="currentSectorIds.length > 0"
+				v-if="currentFilterValues.length > 0"
 				class="edit-button"
 				@click="emitChangeEvent('some')"
 			>
@@ -27,18 +27,18 @@
 			</button>
 		</kv-radio>
 		<p class="sector-list">
-			{{ selectedSectorsString }}
+			{{ selectedFiltersFormattedString(selectedSectors) }}
 		</p>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 
 import sectorListQuery from '@/graphql/query/autolending/sectorList.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvRadio from '@/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	inject: ['apollo'],
@@ -46,17 +46,13 @@ export default {
 		KvIcon,
 		KvRadio,
 	},
-	props: {
-		selectorShown: {
-			type: Boolean,
-			default: false
-		}
-	},
+	mixins: [
+		anyOrSelectedAutolendingRadio
+	],
 	data() {
 		return {
 			allSectors: [],
-			currentSectorIds: [],
-			radio: 'all',
+			radioKey: 'sector',
 		};
 	},
 	apollo: {
@@ -64,68 +60,20 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.allSectors = _get(data, 'lend.sector') || [];
-			this.currentSectorIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.sector') || [];
+			this.currentFilterValues = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.sector') || [];
 
-			if (this.currentSectorIds.length) {
+			if (this.currentFilterValues.length) {
 				this.radio = 'some';
 			} else {
 				this.radio = 'all';
 			}
 		},
 	},
-	methods: {
-		saveAny() {
-			this.apollo.mutate({
-				mutation: gql`mutation($sectors: [Int]) {
-							autolending @client {
-								editProfile(profile: {
-									loanSearchCriteria: {
-										filters: {
-											sector: $sectors
-										}
-									}
-								})
-							}
-						}`,
-				variables: {
-					sectors: null,
-				}
-			});
-		},
-		emitChangeEvent(value) {
-			this.$emit('change', {
-				radioKey: 'sectors',
-				value
-			});
-		}
-	},
 	computed: {
 		selectedSectors() {
-			return this.allSectors.filter(sector => this.currentSectorIds.includes(sector.id));
-		},
-		// the selected items limited to 10
-		selectedSectorsShortList() {
-			return this.selectedSectors.slice(0, 10);
-		},
-		// the count of items that aren't being displayed
-		sectorsRemaining() {
-			return this.selectedSectors.length - this.selectedSectorsShortList.length;
-		},
-		// string of names of selected items
-		selectedSectorsString() {
-			const arrayOfSelectedSectorNames = this.selectedSectorsShortList.map(sector => sector.name).join(', ');
-			const extra = this.sectorsRemaining > 0 ? `, +${this.sectorsRemaining} more` : '';
-			return `${arrayOfSelectedSectorNames}${extra}`;
+			return this.allSectors.filter(sector => this.currentFilterValues.includes(sector.id));
 		},
 	},
-	watch: {
-		selectorShown(value) {
-			// If going 'back to all options' and no sectors are selected, set value back to any
-			if (!value && this.currentSectorIds.length === 0) {
-				this.radio = 'all';
-			}
-		}
-	}
 };
 </script>
 

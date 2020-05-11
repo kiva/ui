@@ -115,10 +115,10 @@
 								</div>
 							</div>
 							<div v-if="showSelectedFilterOptions" key="specificFilter">
-								<country-filter v-if="selectedFilterGroup =='countries'" />
-								<sector-filter v-if="selectedFilterGroup =='sectors'" />
-								<attribute-filter v-if="selectedFilterGroup =='attributes'" />
-								<partner-filter v-if="selectedFilterGroup =='partners'" />
+								<country-filter v-if="selectedFilterGroup =='country'" />
+								<sector-filter v-if="selectedFilterGroup =='sector'" />
+								<attribute-filter v-if="selectedFilterGroup =='theme'" />
+								<partner-filter v-if="selectedFilterGroup =='partner'" />
 							</div>
 						</transition>
 					</div>

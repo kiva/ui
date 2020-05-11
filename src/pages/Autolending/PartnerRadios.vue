@@ -19,7 +19,7 @@
 		>
 			Selected FIeld Partners only
 			<button
-				v-if="currentPartnerIds.length > 0"
+				v-if="currentFilterValues.length > 0"
 				class="edit-button"
 				@click="emitChangeEvent('some')"
 			>
@@ -27,18 +27,18 @@
 			</button>
 		</kv-radio>
 		<p class="partner-list">
-			{{ selectedPartnersString }}
+			{{ selectedFiltersFormattedString(selectedPartners) }}
 		</p>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 
 import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvRadio from '@/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	inject: ['apollo'],
@@ -46,17 +46,13 @@ export default {
 		KvIcon,
 		KvRadio,
 	},
-	props: {
-		selectorShown: {
-			type: Boolean,
-			default: false
-		}
-	},
+	mixins: [
+		anyOrSelectedAutolendingRadio
+	],
 	data() {
 		return {
 			allPartners: [],
-			currentPartnerIds: [],
-			radio: 'all',
+			radioKey: 'partner',
 		};
 	},
 	apollo: {
@@ -64,68 +60,22 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.allPartners = _get(data, 'general.partners.values') || [];
-			this.currentPartnerIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.partner') || [];
+			this.currentFilterValues = _get(
+				data, 'autolending.currentProfile.loanSearchCriteria.filters.partner'
+			) || [];
 
-			if (this.currentPartnerIds.length) {
+			if (this.currentFilterValues.length) {
 				this.radio = 'some';
 			} else {
 				this.radio = 'all';
 			}
 		},
 	},
-	methods: {
-		saveAny() {
-			this.apollo.mutate({
-				mutation: gql`mutation($partners: [Int]) {
-							autolending @client {
-								editProfile(profile: {
-									loanSearchCriteria: {
-										filters: {
-											partner: $partners
-										}
-									}
-								})
-							}
-						}`,
-				variables: {
-					partners: null,
-				}
-			});
-		},
-		emitChangeEvent(value) {
-			this.$emit('change', {
-				radioKey: 'partners',
-				value
-			});
-		}
-	},
 	computed: {
 		selectedPartners() {
-			return this.allPartners.filter(partner => this.currentPartnerIds.includes(partner.id));
-		},
-		// the selected items limited to 10
-		selectedPartnersShortList() {
-			return this.selectedPartners.slice(0, 10);
-		},
-		// the count of items that aren't being displayed
-		partnersRemaining() {
-			return this.selectedPartners.length - this.selectedPartnersShortList.length;
-		},
-		// string of names of selected items
-		selectedPartnersString() {
-			const arrayOfSelectedPartnerNames = this.selectedPartnersShortList.map(partner => partner.name).join(', ');
-			const extra = this.partnersRemaining > 0 ? `, +${this.partnersRemaining} more` : '';
-			return `${arrayOfSelectedPartnerNames}${extra}`;
+			return this.allPartners.filter(partner => this.currentFilterValues.includes(partner.id));
 		},
 	},
-	watch: {
-		selectorShown(value) {
-			// If going 'back to all options' and no partners are selected, set value back to any
-			if (!value && this.currentPartnerIds.length === 0) {
-				this.radio = 'all';
-			}
-		}
-	}
 };
 </script>
 
