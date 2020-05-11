@@ -19,7 +19,7 @@
 		>
 			Selected attributes only
 			<button
-				v-if="currentThemeIds.length > 0"
+				v-if="currentFilterValues.length > 0"
 				class="edit-button"
 				@click="emitChangeEvent('some')"
 			>
@@ -27,18 +27,18 @@
 			</button>
 		</kv-radio>
 		<p class="attribute-list">
-			{{ selectedThemesString }}
+			{{ selectedFiltersFormattedString(selectedThemes) }}
 		</p>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 
 import themeListQuery from '@/graphql/query/autolending/themeList.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvRadio from '@/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	inject: ['apollo'],
@@ -46,17 +46,13 @@ export default {
 		KvIcon,
 		KvRadio,
 	},
-	props: {
-		selectorShown: {
-			type: Boolean,
-			default: false
-		}
-	},
+	mixins: [
+		anyOrSelectedAutolendingRadio
+	],
 	data() {
 		return {
 			allThemes: [],
-			currentThemeIds: [],
-			radio: 'all',
+			radioKey: 'theme',
 		};
 	},
 	apollo: {
@@ -64,68 +60,20 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.allThemes = _get(data, 'lend.loanThemeFilter') || [];
-			this.currentThemeIds = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.theme') || [];
+			this.currentFilterValues = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.theme') || [];
 
-			if (this.currentThemeIds.length) {
+			if (this.currentFilterValues.length) {
 				this.radio = 'some';
 			} else {
 				this.radio = 'all';
 			}
 		},
 	},
-	methods: {
-		saveAny() {
-			this.apollo.mutate({
-				mutation: gql`mutation($themes: [String]) {
-							autolending @client {
-								editProfile(profile: {
-									loanSearchCriteria: {
-										filters: {
-											theme: $themes
-										}
-									}
-								})
-							}
-						}`,
-				variables: {
-					themes: null,
-				}
-			});
-		},
-		emitChangeEvent(value) {
-			this.$emit('change', {
-				radioKey: 'attributes',
-				value
-			});
-		}
-	},
 	computed: {
 		selectedThemes() {
-			return this.allThemes.filter(theme => this.currentThemeIds.includes(theme.name));
-		},
-		// the selected items limited to 10
-		selectedThemesShortList() {
-			return this.selectedThemes.slice(0, 10);
-		},
-		// the count of items that aren't being displayed
-		themesRemaining() {
-			return this.selectedThemes.length - this.selectedThemesShortList.length;
-		},
-		// string of names of selected items
-		selectedThemesString() {
-			const arrayOfSelectedThemeNames = this.selectedThemesShortList.map(theme => theme.name).join(', ');
-			const extra = this.themesRemaining > 0 ? `, +${this.themesRemaining} more` : '';
-			return `${arrayOfSelectedThemeNames}${extra}`;
+			return this.allThemes.filter(theme => this.currentFilterValues.includes(theme.name));
 		},
 	},
-	watch: {
-		selectorShown(value) {
-			// If going 'back to all options' and no themes are selected, set value back to any
-			if (!value && this.currentThemeIds.length === 0) {
-				this.radio = 'all';
-			}
-		}
-	}
 };
 </script>
 

@@ -19,7 +19,7 @@
 		>
 			Selected countries only
 			<button
-				v-if="currentIsoCodes.length > 0"
+				v-if="currentFilterValues.length > 0"
 				class="edit-button"
 				@click="emitChangeEvent('some')"
 			>
@@ -27,7 +27,7 @@
 			</button>
 		</kv-radio>
 		<p class="country-list">
-			{{ selectedCountriesString }}
+			{{ selectedFiltersFormattedString(selectedCountries) }}
 		</p>
 	</div>
 </template>
@@ -35,11 +35,11 @@
 <script>
 import _map from 'lodash/map';
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 
 import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvRadio from '@/components/Kv/KvRadio';
+import anyOrSelectedAutolendingRadio from '@/plugins/any-or-selected-autolending-radio-mixin';
 
 export default {
 	inject: ['apollo'],
@@ -47,86 +47,36 @@ export default {
 		KvIcon,
 		KvRadio,
 	},
-	props: {
-		selectorShown: {
-			type: Boolean,
-			default: false
-		}
-	},
+	mixins: [
+		anyOrSelectedAutolendingRadio
+	],
 	data() {
 		return {
 			allCountries: [],
-			currentIsoCodes: [],
-			radio: 'all',
+			radioKey: 'country'
 		};
 	},
 	apollo: {
 		query: countryListQuery,
 		preFetch: true,
 		result({ data }) {
-			this.currentIsoCodes = _get(data, 'autolending.currentProfile.loanSearchCriteria.filters.country') || [];
+			this.currentFilterValues = _get(
+				data, 'autolending.currentProfile.loanSearchCriteria.filters.country'
+			) || [];
 			this.allCountries = _map(_get(data, 'lend.countryFacets'), 'country') || [];
 
-			if (this.currentIsoCodes.length) {
+			if (this.currentFilterValues.length) {
 				this.radio = 'some';
 			} else {
 				this.radio = 'all';
 			}
 		},
 	},
-	methods: {
-		saveAny() {
-			this.apollo.mutate({
-				mutation: gql`mutation($countries: [String]) {
-							autolending @client {
-								editProfile(profile: {
-									loanSearchCriteria: {
-										filters: {
-											country: $countries
-										}
-									}
-								})
-							}
-						}`,
-				variables: {
-					countries: null,
-				}
-			});
-		},
-		emitChangeEvent(value) {
-			this.$emit('change', {
-				radioKey: 'countries',
-				value
-			});
-		}
-	},
 	computed: {
 		selectedCountries() {
-			return this.allCountries.filter(country => this.currentIsoCodes.includes(country.isoCode));
-		},
-		// the selected items limited to 10
-		selectedCountriesShortList() {
-			return this.selectedCountries.slice(0, 10);
-		},
-		// the count of items that aren't being displayed
-		countriesRemaining() {
-			return this.selectedCountries.length - this.selectedCountriesShortList.length;
-		},
-		// string of names of selected items
-		selectedCountriesString() {
-			const arrayOfSelectedCountryNames = this.selectedCountriesShortList.map(country => country.name).join(', ');
-			const extra = this.countriesRemaining > 0 ? `, +${this.countriesRemaining} more` : '';
-			return `${arrayOfSelectedCountryNames}${extra}`;
+			return this.allCountries.filter(country => this.currentFilterValues.includes(country.isoCode));
 		},
 	},
-	watch: {
-		selectorShown(value) {
-			// If going 'back to all options' and no countries are selected, set value back to any
-			if (!value && this.currentIsoCodes.length === 0) {
-				this.radio = 'all';
-			}
-		}
-	}
 };
 </script>
 

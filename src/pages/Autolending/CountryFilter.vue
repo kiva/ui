@@ -24,7 +24,7 @@
 					:items="currentRegion"
 					@change="onChange"
 				/>
-				<p v-else key="none">
+				<p v-else key="none" class="region-message">
 					Pick a region
 				</p>
 			</div>
@@ -130,6 +130,10 @@ $section-padding: 0.4rem 0.5rem;
 		list-style: none;
 		margin: 0;
 	}
+}
+
+p.region-message {
+	color: $kiva-text-light;
 }
 
 .region-button {
