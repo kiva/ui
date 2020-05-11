@@ -10,12 +10,17 @@
 			@custom-amount-updated="customAmountUpdated"
 			:split-pills="true"
 		/>
-		<span>
-			Loan monthly to
-		</span>
-		<span>
-			<select
-				class="loan-price medium-text-font-size select-category"
+		<div class="select-category-wrapper">
+			<label
+				class="select-category-label"
+				for="select-category"
+			>
+				Loan monthly to
+			</label>
+			<kv-dropdown-rounded
+				class="select-category"
+				id="select-category"
+				:value="selectedGroup"
 				@change="updateSelected"
 			>
 				<option
@@ -25,8 +30,8 @@
 				>
 					{{ option.label }}
 				</option>
-			</select>
-		</span>
+			</kv-dropdown-rounded>
+		</div>
 
 		<kv-button class="smaller" type="submit" :disabled="$v.$invalid">
 			{{ buttonText }}
@@ -39,6 +44,7 @@
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import KvButton from '@/components/Kv/KvButton';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 
@@ -49,6 +55,7 @@ export default {
 	],
 	components: {
 		KvButton,
+		KvDropdownRounded,
 		MultiAmountSelector
 	},
 	validations: {
@@ -157,7 +164,18 @@ export default {
 		margin-bottom: 1rem;
 	}
 
+	.select-category-wrapper {
+		display: flex;
+		align-items: baseline;
+	}
+
+	.select-category-label {
+		flex-shrink: 0;
+		margin-right: 0.5rem;
+		font-size: 1rem;
+	}
+
 	.select-category {
-		max-width: 14rem;
+		width: 100%;
 	}
 </style>
