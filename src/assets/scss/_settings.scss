@@ -281,13 +281,6 @@ $huge-headline-line-height-medium: rem-calc(70);
 	line-height: $featured-text-line-height;
 }
 
-@mixin overlay-text() {
-	@include featured-text();
-	@include text-shadow();
-
-	color: $white;
-}
-
 @mixin medium-text() {
 	font-size: $medium-text-font-size;
 	line-height: $medium-text-line-height;
