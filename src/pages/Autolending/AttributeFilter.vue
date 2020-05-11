@@ -20,17 +20,19 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import _union from 'lodash/union';
-import _without from 'lodash/without';
 import gql from 'graphql-tag';
 import themeListQuery from '@/graphql/query/autolending/themeList.graphql';
 import CheckList from './CheckList';
+import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		CheckList,
 	},
+	mixins: [
+		anyOrSelectedAutolendingFilter
+	],
 	data() {
 		return {
 			allThemes: [],
@@ -58,14 +60,8 @@ export default {
 	},
 	methods: {
 		onChange(checked, values) {
-			const codes = Array.isArray(values) ? values : [values];
-			if (checked) {
-				// Add the values to the current ids
-				this.changeThemes(_union(this.currentThemeIds, codes));
-			} else {
-				// Remove the values from the current ids
-				this.changeThemes(_without(this.currentThemeIds, ...codes));
-			}
+			// Filter mixin function that calls mutation function
+			this.changeThemes(this.getValues(checked, values, this.currentThemeIds));
 		},
 		changeThemes(themes) {
 			this.apollo.mutate({
