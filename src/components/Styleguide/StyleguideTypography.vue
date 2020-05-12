@@ -2,86 +2,74 @@
 	<section>
 		<h1>Typography</h1>
 
-		<div class="elem-desc">
-			Level 1 header
-		</div>
-		<h1>{{ shortLorem }}</h1>
+		<dl class="glossary">
+			<dt>h1.huge, <br>@include huge-headline()</dt>
+			<dd>
+				<h1 class="huge">
+					{{ shortLorem }}
+				</h1>
+			</dd>
 
-		<div class="elem-desc">
-			Level 2 header
-		</div>
-		<h2>{{ shortLorem }}</h2>
+			<dt>.impact-text, <br>@include impact-text()</dt>
+			<dd>
+				<p class="impact-text">
+					{{ shortLorem }}
+				</p>
+			</dd>
 
-		<div class="elem-desc">
-			Level 3 header
-		</div>
-		<h3>{{ shortLorem }}</h3>
+			<dt>.large-text, <br>@include large-text()</dt>
+			<dd>
+				<p class="large-text">
+					{{ shortLorem }}
+				</p>
+			</dd>
 
-		<div class="elem-desc">
-			Level 4 header
-		</div>
-		<h4>{{ shortLorem }}</h4>
+			<dt>h1, .h1</dt>
+			<dd>
+				<h1>{{ shortLorem }}</h1>
+			</dd>
 
-		<div class="elem-desc">
-			Level 5 header
-		</div>
-		<h5>{{ shortLorem }}</h5>
+			<dt>h2, .h2</dt>
+			<dd>
+				<h2>{{ shortLorem }}</h2>
+			</dd>
 
-		<div class="elem-desc">
-			Level 6 header
-		</div>
-		<h6>{{ shortLorem }}</h6>
+			<dt>.featured-text, <br>@include featured-text()</dt>
+			<dd>
+				<p class="featured-text">
+					{{ shortLorem }}
+				</p>
+			</dd>
 
-		<div class="elem-desc">
-			Body text
-		</div>
-		<p>{{ lorem }}</p>
+			<dt>.medium-text, <br>@include medium-text()</dt>
+			<dd>
+				<p class="medium-text">
+					{{ shortLorem }}
+				</p>
+			</dd>
 
-		<div class="elem-desc">
-			Small text (.small-text)
-		</div>
-		<p class="small-text">
-			{{ lorem }}
-		</p>
+			<dt>h3, .h3</dt>
+			<dd>
+				<h3>{{ shortLorem }}</h3>
+			</dd>
 
-		<div class="elem-desc">
-			Featured text (.featured-text, @include featred-text())
-		</div>
-		<p class="featured-text">
-			{{ lorem }}
-		</p>
+			<dt>h4, .h4</dt>
+			<dd>
+				<h4>{{ shortLorem }}</h4>
+			</dd>
 
-		<div class="elem-desc">
-			Overlay text (.overlay-text, @include overlay-text())
-		</div>
-		<p class="overlay-text">
-			{{ lorem }}
-		</p>
+			<dt>Body text</dt>
+			<dd>
+				<p>{{ shortLorem }}</p>
+			</dd>
 
-		<div class="elem-desc">
-			Medium text (.medium-text, @include medium-text())
-		</div>
-		<p class="medium-text">
-			{{ shortLorem }}
-		</p>
-
-		<div class="elem-desc">
-			Large text (.large-text, @include large-text())
-		</div>
-		<p class="large-text">
-			{{ shortLorem }}
-		</p>
-
-		<div class="elem-desc">
-			Impact text (.impact-text, @include impact-text())
-		</div>
-		<p class="impact-text">
-			{{ shortLorem }}
-		</p>
-
-		<div class="elem-desc">
-			Huge level 1 header (h1.huge, @include huge-headline())
-		</div>
+			<dt>.small-text, <br>@include small-text()</dt>
+			<dd>
+				<p class="small-text">
+					{{ shortLorem }}
+				</p>
+			</dd>
+		</dl>
 	</section>
 </template>
 
@@ -96,3 +84,20 @@ export default {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+.glossary {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-gap: 2rem;
+
+	dt {
+		text-align: right;
+		font-weight: normal;
+	}
+
+	dd * {
+		outline: 1px solid pink;
+	}
+}
+</style>

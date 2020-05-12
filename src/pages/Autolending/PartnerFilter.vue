@@ -20,17 +20,19 @@
 import _get from 'lodash/get';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import _union from 'lodash/union';
-import _without from 'lodash/without';
 import gql from 'graphql-tag';
 import partnerListQuery from '@/graphql/query/autolending/partnerList.graphql';
 import CheckList from './CheckList';
+import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		CheckList,
 	},
+	mixins: [
+		anyOrSelectedAutolendingFilter
+	],
 	data() {
 		return {
 			partnersToDisplay: [],
@@ -62,14 +64,8 @@ export default {
 	},
 	methods: {
 		onChange(checked, values) {
-			const codes = Array.isArray(values) ? values : [values];
-			if (checked) {
-				// Add the values to the current ids
-				this.changePartners(_union(this.currentPartnerIds, codes));
-			} else {
-				// Remove the values from the current ids
-				this.changePartners(_without(this.currentPartnerIds, ...codes));
-			}
+			// Filter mixin function that calls mutation function
+			this.changePartners(this.getValues(checked, values, this.currentPartnerIds));
 		},
 		changePartners(partners) {
 			this.apollo.mutate({

@@ -37,17 +37,19 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
-import _union from 'lodash/union';
-import _without from 'lodash/without';
 import gql from 'graphql-tag';
 import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
 import CheckList from './CheckList';
+import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
 
 export default {
 	inject: ['apollo'],
 	components: {
 		CheckList,
 	},
+	mixins: [
+		anyOrSelectedAutolendingFilter
+	],
 	data() {
 		return {
 			allCountries: [],
@@ -83,14 +85,8 @@ export default {
 	},
 	methods: {
 		onChange(checked, values) {
-			const codes = Array.isArray(values) ? values : [values];
-			if (checked) {
-				// Add the values to the current ids
-				this.changeCountries(_union(this.currentIsoCodes, codes));
-			} else {
-				// Remove the values from the current ids
-				this.changeCountries(_without(this.currentIsoCodes, ...codes));
-			}
+			// Filter mixin function that calls mutation function
+			this.changeCountries(this.getValues(checked, values, this.currentIsoCodes));
 		},
 		changeCountries(countries) {
 			this.apollo.mutate({
