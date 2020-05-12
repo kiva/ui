@@ -55,6 +55,7 @@ export default {
 			currentIsoCodes: [],
 			currentSectorIds: [],
 			activatedAdvancedFilters: [],
+			kivaChooses: true,
 		};
 	},
 	apollo: {
