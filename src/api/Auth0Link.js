@@ -36,6 +36,14 @@ export default kvAuth0 => {
 		// Return previousContext if on a server process before checkSession block
 		if (kvAuth0.isServer) return getAuthContext(previousContext);
 
+		// Return previousContext if on a blacklisted page
+		const pathBlacklist = [
+			'/register/social',
+		];
+		if (pathBlacklist.indexOf(window.location.pathname) > -1) {
+			return getAuthContext(previousContext);
+		}
+
 		// Otherwise, check to see if the user has a session on Auth0 and then add that info to the context
 		return new Promise((resolve, reject) => {
 			kvAuth0.checkSession().then(() => {
