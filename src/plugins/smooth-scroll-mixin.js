@@ -5,6 +5,12 @@ export default {
 			const endTime = (new Date()).getTime() + millisecondsToAnimate;
 			const yDifference = startingPosition - yPosition;
 
+			// use basic scrollTo instead of animation if request animation frame is undefined
+			if (!window.requestAnimationFrame) {
+				window.scrollTo(0, yPosition);
+				return true;
+			}
+
 			const scroll = () => {
 				const currentTime = (new Date()).getTime();
 
