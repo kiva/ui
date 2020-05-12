@@ -73,10 +73,6 @@ const pageQuery = gql`{
 			key
 			value
 		}
-		covid19response_exp_active: uiConfigSetting(key: "covid19response_exp_active") {
-			key
-			value
-      }
 	}
 }`;
 
