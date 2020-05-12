@@ -37,36 +37,19 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
-import _get from 'lodash/get';
-
 import IntroGraphic from '@/assets/inline-svgs/borrow/howlong.svg';
 import KvButton from '@/components/Kv/KvButton';
 
 
 export default {
-	inject: ['apollo'],
 	components: {
 		IntroGraphic,
 		KvButton,
 	},
-	data() {
-		return {
-			trusteeId: ''
-		};
-	},
-	apollo: {
-		query: gql`{
-			my {
-				trustee {
-					id
-				}
-			}
-		}`,
-		preFetch: true,
-		result({ data }) {
-			this.trusteeId = _get(data, 'my.trustee.id', '');
-		},
+	computed: {
+		trusteeId() {
+			return this.$route.query.refid || '';
+		}
 	},
 };
 </script>
