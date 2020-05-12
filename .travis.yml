@@ -17,10 +17,5 @@ branches:
   only:
     - master
     - /^release-.*$/
-before_install:
-  - npm install -g greenkeeper-lockfile@1
-before_script:
-  - greenkeeper-lockfile-update
 after_script:
-  - greenkeeper-lockfile-upload
   - cat test/unit/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
