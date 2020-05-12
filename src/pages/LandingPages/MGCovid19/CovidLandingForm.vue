@@ -59,11 +59,9 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
 
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import logReadQueryError from '@/util/logReadQueryError';
 
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
@@ -182,8 +180,7 @@ export default {
 			onetimeAmount: 50,
 			minOnetimeAmount: 25,
 			maxDepositAmount: 10000,
-			isExperimentActive: false,
-			isExperimentEnabled: false
+			experimentVersion: null
 		};
 	},
 	inject: ['apollo'],
@@ -199,35 +196,25 @@ export default {
 			});
 		},
 		result() {
-			try {
-				// GROW-96 Experiment
-				const data = this.apollo.readQuery({ query: pageQuery });
-				this.isExperimentEnabled = _get(data, 'general.covid19response_exp_active.value') === 'true' || false;
-
-				if (this.isExperimentEnabled) {
-					const covid19responseDefaultAmount = this.apollo.readFragment({
-						id: 'Experiment:covid19response_default_amount',
-						fragment: experimentVersionFragment,
-					}) || {};
-					this.isExperimentActive = covid19responseDefaultAmount.version === 'shown';
-					if (this.isExperimentActive) {
-						this.recurringAmountSelection = '25';
-						this.recurringCustomAmount = 25;
-						this.recurringAmount = 25;
-					}
-				}
-			} catch (e) {
-				logReadQueryError(e, 'CovidLandingForm pageQuery');
+			const covid19responseDefaultAmount = this.apollo.readFragment({
+				id: 'Experiment:covid19response_default_amount',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.experimentVersion = covid19responseDefaultAmount.version;
+			if (this.experimentVersion === 'shown') {
+				this.recurringAmountSelection = '25';
+				this.recurringCustomAmount = 25;
+				this.recurringAmount = 25;
 			}
 		},
 	},
 	mounted() {
-		if (this.isExperimentEnabled) {
+		if (this.experimentVersion !== null) {
 			// Fire Event for GROW-96
 			this.$kvTrackEvent(
 				'Monthly Good',
 				'EXP-GROW-96-May2020',
-				this.isExperimentActive ? 'b' : 'a'
+				this.experimentVersion === 'shown' ? 'b' : 'a'
 			);
 		}
 	},
