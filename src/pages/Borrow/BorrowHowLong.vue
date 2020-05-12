@@ -27,7 +27,7 @@
 		</div>
 		<!-- eslint-disable max-len -->
 		<kv-button
-			href="https://kivaportal.force.com/portal/secur/CommunitiesSelfRegUi?startURL=%2Fportal%2Fs%2F%3Fref%3Dbam%26refid%3D"
+			:href="`https://kivaportal.force.com/portal/secur/CommunitiesSelfRegUi?startURL=%2Fportal%2Fs%2F%3Fref%3Dbam%26refid%3D${trusteeId}`"
 			class="cta-btn"
 		>
 			I understand, let’s create an account
@@ -37,14 +37,37 @@
 </template>
 
 <script>
-import IntroGraphic from '@/assets/inline-svgs/borrow/howlong.svg';
+import gql from 'graphql-tag';
+import _get from 'lodash/get';
 
+import IntroGraphic from '@/assets/inline-svgs/borrow/howlong.svg';
 import KvButton from '@/components/Kv/KvButton';
 
+
 export default {
+	inject: ['apollo'],
 	components: {
 		IntroGraphic,
 		KvButton,
+	},
+	data() {
+		return {
+			trusteeId: ''
+		};
+	},
+	apollo: {
+		query: gql`{
+			my {
+				trustee {
+					id
+				}
+			}
+		}`,
+		preFetch: true,
+		result({ data }) {
+			console.log(data);
+			this.trusteeId = _get(data, 'my.trustee.id', '');
+		},
 	},
 };
 </script>
