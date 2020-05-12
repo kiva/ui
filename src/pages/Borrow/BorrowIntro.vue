@@ -69,7 +69,15 @@
 				</kv-button>
 			</div>
 			<div class="small-6 columns">
-				<kv-button to="/borrow/pre-application/community" class="smaller cta-btn">
+				<kv-button
+					:to="{
+						path: '/borrow/pre-application/community',
+						query: {
+							refid: this.$route.query.refid
+						}
+					}"
+					class="smaller cta-btn"
+				>
 					Start Pre-check
 				</kv-button>
 			</div>

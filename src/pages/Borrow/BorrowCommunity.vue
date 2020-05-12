@@ -19,7 +19,15 @@
 				</p>
 			</div>
 		</div>
-		<kv-button to="/borrow/pre-application/how-long" class="cta-btn">
+		<kv-button
+			:to="{
+				path: '/borrow/pre-application/how-long',
+				query: {
+					refid: this.$route.query.refid
+				}
+			}"
+			class="cta-btn"
+		>
 			Got it
 		</kv-button>
 	</div>
