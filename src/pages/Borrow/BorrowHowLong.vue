@@ -65,7 +65,6 @@ export default {
 		}`,
 		preFetch: true,
 		result({ data }) {
-			console.log(data);
 			this.trusteeId = _get(data, 'my.trustee.id', '');
 		},
 	},
