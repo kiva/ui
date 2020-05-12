@@ -2,11 +2,13 @@
 	<div>
 		<div class="intro">
 			<community-graphic class="intro__graphic" />
-			<h2 class="intro__title text-center small-12 columns">
+			<p class="intro__subtitle">
+				Step 1: Pre-check
+			</p>
+			<h1 class="intro__title text-center small-12 columns">
 				Start with your community
-			</h2>
-
-			<div class="intro__body small-12 columns text-center">
+			</h1>
+			<div class="intro__body small-12 large-8 columns text-center">
 				<p>
 					To receive your Kiva loan, you’ll need a small amount
 					of funding from your community first.

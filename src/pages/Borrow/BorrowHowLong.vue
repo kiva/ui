@@ -2,11 +2,13 @@
 	<div>
 		<div class="intro">
 			<intro-graphic class="intro__graphic" />
-			<h2 class="intro__title text-center small-12 columns">
+			<p class="intro__subtitle">
+				Step 1: Pre-check
+			</p>
+			<h1 class="intro__title text-center small-12 columns">
 				How long and how much?
-			</h2>
-
-			<div class="intro__body small-12 columns text-center">
+			</h1>
+			<div class="intro__body small-12 large-8 columns text-center">
 				<p>
 					We're often asked, "How much can I borrow and how long will it take to fund?"
 					It’s different for everyone, as loans can range from $1,000 - $15,000. We’ve seen
@@ -18,7 +20,8 @@
 					preparation, you can get funded very quickly on our platform.
 				</p>
 				<p>
-					Need help getting started? Check out this useful guide.
+					Need help getting started?
+					<a href="https://www.kivaushub.org/borrowers">Check out this useful guide</a>.
 				</p>
 			</div>
 		</div>
@@ -27,7 +30,7 @@
 			href="https://kivaportal.force.com/portal/secur/CommunitiesSelfRegUi?startURL=%2Fportal%2Fs%2F%3Fref%3Dbam%26refid%3D"
 			class="cta-btn"
 		>
-			I understand
+			I understand, let’s create an account
 		</kv-button>
 		<!-- eslint-enable max-len -->
 	</div>
