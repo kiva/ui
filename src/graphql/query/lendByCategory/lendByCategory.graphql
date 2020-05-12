@@ -20,10 +20,6 @@ query lendByCategory($basketId: String) {
 			key
 			value
 		}
-		favoriteSectorFeature: uiExperimentSetting(key: "featured_sector") {
-			key
-			value
-		}
 		categoryRowHillclimb: uiExperimentSetting(key: "category_row_hillclimb") {
 			key
 			value

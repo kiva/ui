@@ -5,7 +5,6 @@
 		<featured-hero-loan-wrapper
 			v-if="showFeaturedHeroLoan"
 			ref="featured"
-			:featured-sector-exp-version="featuredSectorExpVersion"
 			:is-logged-in="isLoggedIn"
 			:items-in-basket="itemsInBasket"
 			:show-category-description="showCategoryDescription"
@@ -160,7 +159,6 @@ export default {
 			hasFavoriteCountry: false,
 			favoriteCountryExpVersion: 'control',
 			showHoverLoanCards: false,
-			featuredSectorExpVersion: null,
 			recommendedLoans: [],
 			categoryRowHillclimbExpVersion: null,
 		};
@@ -497,8 +495,6 @@ export default {
 					client.query({ query: experimentQuery, variables: { id: 'favorite_country' } }),
 					// experiment: CASH-521 Hover Loan Card Experiment
 					client.query({ query: experimentQuery, variables: { id: 'hover_loan_cards' } }),
-					// experiment: CASH-1113 Hover Loan Card Experiment
-					client.query({ query: experimentQuery, variables: { id: 'featured_sector' } }),
 				]);
 			}).then(expResults => {
 				// Set category ids and custom category ids based on whether the user is in the
@@ -645,13 +641,6 @@ export default {
 				'b',
 			);
 		}
-
-		// Read the SSR ready featured_sector exp cache
-		const featuredSectorExperiment = this.apollo.readFragment({
-			id: 'Experiment:featured_sector',
-			fragment: experimentVersionFragment,
-		}) || {};
-		this.featuredSectorExpVersion = featuredSectorExperiment.version;
 
 		// Initialize Recommended Loans Row
 		this.initializeRecommendedLoansRow();

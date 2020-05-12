@@ -3,13 +3,7 @@
 		<div class="row">
 			<div class="column small-12">
 				<h2 class="section-name">
-					Featured:
-					<template v-if="featuredSectorExpVersion === 'shown'">
-						{{ loanChannel.name }}
-					</template>
-					<template v-else>
-						Research-backed impact
-					</template>
+					Featured: {{ loanChannel.name }}
 				</h2>
 				<p v-if="showCategoryDescription" class="section-description show-for-large">
 					{{ loanChannel.description }}
@@ -42,14 +36,13 @@ import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import numeral from 'numeral';
 
-import myRecommendations from '@/graphql/query/myRecommendations.graphql';
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
 
 // DEFAULT category research-backed impact
-const featuredCategoryIds = [56];
+const featuredCategoryIds = [98];
 const initialLoanCount = 4;
 
 export default {
@@ -71,16 +64,11 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		featuredSectorExpVersion: {
-			type: String,
-			default: null
-		}
 	},
 	data() {
 		return {
 			experimentData: {},
-			favoriteSectorId: null,
-			featuredCategoryIds: [56],
+			featuredCategoryIds: [98],
 			loan: null,
 			loanChannel: null,
 			loans: [],
@@ -92,18 +80,12 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: myRecommendations
-			}).then(({ data }) => {
-				const topSectorId = _get(data, 'my.recommendations.topSectorId');
-				return client.query({
-					query: featuredLoansQuery,
-					variables: {
-						ids: featuredCategoryIds,
-						numberOfLoans: initialLoanCount,
-						sector: topSectorId ? [numeral(topSectorId).value()] : null
-					},
-					fetchPolicy: 'network-only',
-				});
+				query: featuredLoansQuery,
+				variables: {
+					ids: featuredCategoryIds,
+					numberOfLoans: initialLoanCount,
+				},
+				fetchPolicy: 'network-only',
 			});
 		},
 	},
@@ -113,57 +95,29 @@ export default {
 		// fetch cached query data
 		let allLoanData = {};
 		try {
-			const recData = this.apollo.readQuery({ query: myRecommendations });
-			this.favoriteSectorId = _get(recData, 'my.recommendations.topSectorId') || null;
-
 			allLoanData = this.apollo.readQuery({
 				query: featuredLoansQuery,
 				variables: {
 					ids: featuredCategoryIds,
 					numberOfLoans: initialLoanCount,
-					sector: this.favoriteSectorId ? [numeral(this.favoriteSectorId).value()] : null,
 				}
 			});
 		} catch (e) {
 			logReadQueryError(e, 'FeatureHeroLoanWrapper featuredLoansQuery');
 		}
 
-		if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
-			// set initial loan data so we ssr with a loan if possible
-			const loanArray = _get(allLoanData, 'lend.loans.values');
-			this.setInitialLoan(loanArray);
-			// display custom channel data
-			const sectorName = _get(loanArray, '[0].sector.name');
-			const sectorDescription = `You’ve made more loans to ${sectorName} than any other sector!`;
-			this.loanChannel = {
-				id: 999,
-				description: sectorName !== null ? sectorDescription : '',
-				name: sectorName !== null ? sectorName : '',
-			};
-			this.featuredCategoryIds = [999];
-		} else {
-			// set initial loan data so we ssr with a loan if possible
-			const loanChannelArray = _filter(
-				_get(allLoanData, 'lend.loanChannelsById'),
-				['id', featuredCategoryIds[0]]
-			);
-			this.loanChannel = _get(loanChannelArray, '[0]');
-			this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
-		}
+		// set initial loan data so we ssr with a loan if possible
+		const loanChannelArray = _filter(
+			_get(allLoanData, 'lend.featuredLoanChannel'),
+			['id', featuredCategoryIds[0]]
+		);
+		this.loanChannel = _get(loanChannelArray, '[0]');
+		this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
 	},
 	mounted() {
 		// if we have no loans due to being funded, fetch some in the client
 		if (this.loans && this.loans.length <= 0) {
 			this.fetchMoreLoans();
-		}
-
-		if (this.featuredSectorExpVersion !== null) {
-			// fire tracking for active exp here
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-1113-Sept2019',
-				this.featuredSectorExpVersion === 'shown' ? 'b' : 'a',
-			);
 		}
 	},
 	methods: {
@@ -232,18 +186,13 @@ export default {
 				variables: {
 					ids: featuredCategoryIds,
 					offset: this.queryOffset,
-					sector: this.favoriteSectorId ? [numeral(this.favoriteSectorId).value()] : null,
 				}
 			}).then(({ data }) => {
-				if (this.favoriteSectorId !== null && this.featuredSectorExpVersion === 'shown') {
-					this.loans = _get(data, 'lend.loans.values');
-				} else {
-					const loanArray = _filter(data.lend.loanChannelsById, ['id', featuredCategoryIds[0]]);
-					this.loans = _get(
-						loanArray,
-						'[0].loans.values'
-					);
-				}
+				const loanArray = _filter(data.lend.featuredLoanChannel, ['id', featuredCategoryIds[0]]);
+				this.loans = _get(
+					loanArray,
+					'[0].loans.values'
+				);
 
 				this.filterFundedLoans();
 			});
