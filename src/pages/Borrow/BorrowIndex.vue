@@ -1,19 +1,10 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
+	<www-page>
 		<div class="row">
 			<div class="container">
 				<div class="small-12 columns">
-					<kv-checkout-steps
-						class="checkout-steps"
-						:steps="['Pre-check', 'New Account', 'Application']"
-						v-if="!isIntro"
-					/>
-
 					<borrow-intro v-if="isIntro" />
-					<router-view v-if="!isIntro" />
+					<router-view v-else />
 				</div>
 			</div>
 		</div>
@@ -24,21 +15,13 @@
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import BorrowIntro from '@/pages/Borrow/BorrowIntro';
 
-import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
-
-import { lightHeader, lightFooter } from '@/util/siteThemes';
-
 export default {
 	components: {
 		BorrowIntro,
-		KvCheckoutSteps,
 		WwwPage
 	},
-	data() {
-		return {
-			headerTheme: lightHeader,
-			footerTheme: lightFooter
-		};
+	metaInfo: {
+		title: 'Borrow Pre-application',
 	},
 	computed: {
 		isIntro() {
@@ -78,7 +61,7 @@ export default {
 		display: block;
 		width: 100%;
 		max-width: rem-calc(505);
-		margin: 2rem auto;
+		margin: 0 auto 3rem;
 	}
 
 	&__title {
@@ -87,10 +70,19 @@ export default {
 		margin-bottom: 1rem;
 	}
 
+	&__subtitle {
+		@include featured-text();
+
+		line-height: 1.2;
+		margin-bottom: 0.5rem;
+		font-weight: 700;
+		text-align: center;
+		color: $kiva-text-light;
+	}
+
 	&__body {
 		@include medium-text();
 
-		max-width: 43rem;
 		margin: 0 auto 2.5rem auto;
 	}
 }
