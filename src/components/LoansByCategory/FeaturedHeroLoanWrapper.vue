@@ -35,15 +35,24 @@
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import numeral from 'numeral';
+import gql from 'graphql-tag';
 
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
 
-// DEFAULT category research-backed impact
+// Fallback featured_loan_channel id
 const featuredCategoryIds = [98];
 const initialLoanCount = 4;
+const pageQuery = gql`{
+	general {
+		uiConfigSetting(key: "featured_loan_channel") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -68,6 +77,7 @@ export default {
 	data() {
 		return {
 			experimentData: {},
+			// Fallback featured_loan_channel id
 			featuredCategoryIds: [98],
 			loan: null,
 			loanChannel: null,
@@ -80,17 +90,40 @@ export default {
 	apollo: {
 		preFetch(config, client) {
 			return client.query({
-				query: featuredLoansQuery,
-				variables: {
-					ids: featuredCategoryIds,
-					numberOfLoans: initialLoanCount,
-				},
-				fetchPolicy: 'network-only',
+				query: pageQuery
+			}).then(({ data }) => {
+				// use setting based id if available
+				const featuredChannelIdSetting = _get(data, 'general.uiConfigSetting.value');
+				const featuredChannelId = featuredChannelIdSetting
+					? [parseInt(featuredChannelIdSetting, 10)] : featuredCategoryIds;
+				// query for featued loan channel
+				return client.query({
+					query: featuredLoansQuery,
+					variables: {
+						ids: featuredChannelId,
+						numberOfLoans: initialLoanCount,
+					},
+					fetchPolicy: 'network-only',
+				});
 			});
 		},
 	},
 	created() {
 		this.loading = true;
+
+		try {
+			// get setting driven featured loan channel
+			const featuredChannelIdSettingData = this.apollo.readQuery({
+				query: pageQuery
+			});
+			// use setting based id if available
+			const featuredChannelIdSetting = _get(featuredChannelIdSettingData, 'general.uiConfigSetting.value');
+			if (featuredChannelIdSetting) {
+				this.featuredCategoryIds = [parseInt(featuredChannelIdSetting, 10)];
+			}
+		} catch (e) {
+			logReadQueryError(e, 'FeatureHeroLoanWrapper featureLoanChannelSetting');
+		}
 
 		// fetch cached query data
 		let allLoanData = {};
@@ -98,7 +131,7 @@ export default {
 			allLoanData = this.apollo.readQuery({
 				query: featuredLoansQuery,
 				variables: {
-					ids: featuredCategoryIds,
+					ids: this.featuredCategoryIds,
 					numberOfLoans: initialLoanCount,
 				}
 			});
@@ -109,7 +142,7 @@ export default {
 		// set initial loan data so we ssr with a loan if possible
 		const loanChannelArray = _filter(
 			_get(allLoanData, 'lend.featuredLoanChannel'),
-			['id', featuredCategoryIds[0]]
+			['id', this.featuredCategoryIds[0]]
 		);
 		this.loanChannel = _get(loanChannelArray, '[0]');
 		this.setInitialLoan(_get(loanChannelArray, '[0].loans.values'));
@@ -184,7 +217,7 @@ export default {
 			this.apollo.query({
 				query: featuredLoansQuery,
 				variables: {
-					ids: featuredCategoryIds,
+					ids: this.featuredCategoryIds,
 					offset: this.queryOffset,
 				}
 			}).then(({ data }) => {
