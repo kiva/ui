@@ -73,7 +73,7 @@
 					:to="{
 						path: '/borrow/pre-application/community',
 						query: {
-							refid: this.$route.query.refid
+							refid: $route.query.refid
 						}
 					}"
 					class="smaller cta-btn"
