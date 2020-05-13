@@ -499,9 +499,11 @@ export default {
 			}).then(expResults => {
 				// Set category ids and custom category ids based on whether the user is in the
 				// control group or the variant group for CASH-970 Category row hill climb experiment
-				if (_get(expResults, '[0].data.experiment.version') !== 'control') {
+				const hillClimbExpVersion = _get(expResults, '[0].data.experiment.version');
+				if (hillClimbExpVersion !== 'control' && hillClimbExpVersion !== null) {
 					rowData = expRowData;
 				}
+
 				// Get all channel ids for the row data
 				const ids = _map(rowData, 'id');
 				// Filter other channel types as custom categories
