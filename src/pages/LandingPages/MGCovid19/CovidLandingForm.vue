@@ -59,9 +59,22 @@ import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
 
+import gql from 'graphql-tag';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 import KvButton from '@/components/Kv/KvButton';
+
+const pageQuery = gql`{
+	general {
+		uiExperimentSetting(key: "covid19response_default_amount") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -163,7 +176,43 @@ export default {
 			onetimeAmount: 50,
 			minOnetimeAmount: 25,
 			maxDepositAmount: 10000,
+			experimentVersion: null
 		};
+	},
+	inject: ['apollo'],
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			}).then(() => {
+				return client.query({
+					query: experimentQuery, variables: { id: 'covid19response_default_amount' }
+				});
+			});
+		},
+		result() {
+			const covid19responseDefaultAmount = this.apollo.readFragment({
+				id: 'Experiment:covid19response_default_amount',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.experimentVersion = covid19responseDefaultAmount.version;
+			if (this.experimentVersion === 'shown') {
+				this.recurringAmountSelection = '25';
+				this.recurringCustomAmount = 25;
+				this.recurringAmount = 25;
+			}
+		},
+	},
+	mounted() {
+		if (this.experimentVersion !== null) {
+			// Fire Event for GROW-96
+			this.$kvTrackEvent(
+				'Monthly Good',
+				'EXP-GROW-96-May2020',
+				this.experimentVersion === 'shown' ? 'b' : 'a'
+			);
+		}
 	},
 	computed: {
 		selectedAmount() {
