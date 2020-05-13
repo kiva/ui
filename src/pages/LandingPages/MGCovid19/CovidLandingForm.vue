@@ -2,12 +2,12 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
 			<div class="small-12 columns input-wrapper recurring-amounts">
-				<fieldset>
+				<fieldset v-if="!oneTimeOnly && expRecurringOnly !== 'shown'">
 					<legend class="visually-hidden">
 						Choose how often to contribute
 					</legend>
 					<kv-pill-toggle
-						id="deposit-type"
+						:id="`${id}-deposit-type`"
 						class="deposit-options-toggle"
 						:options="depositOptions"
 						:selected="depositSelected"
@@ -15,12 +15,18 @@
 					/>
 				</fieldset>
 				<fieldset>
-					<legend class="visually-hidden">
+					<legend v-if="oneTimeOnly" class="recurring-only-legend">
+						Choose a one-time amount to contribute
+					</legend>
+					<legend v-else-if="expRecurringOnly === 'shown'" class="recurring-only-legend">
+						Contribute monthly:
+					</legend>
+					<legend v-else class="visually-hidden">
 						Choose an amount to contribute
 					</legend>
 					<multi-amount-selector
 						v-show="isRecurring"
-						id="amount-selector"
+						:id="`${id}-amount-selector`"
 						class="recurring-amount-selector"
 						ref="recurringAmountSelectorRef"
 						:options="recurringAmountOptions"
@@ -33,7 +39,7 @@
 					/>
 					<multi-amount-selector
 						v-show="!isRecurring"
-						id="onetime-amount-selector"
+						:id="`${id}-onetime-amount-selector`"
 						class="onetime-amount-selector"
 						ref="onetimeAmountSelectorRef"
 						:options="onetimeAmountOptions"
@@ -69,7 +75,11 @@ import KvButton from '@/components/Kv/KvButton';
 
 const pageQuery = gql`{
 	general {
-		uiExperimentSetting(key: "covid19response_default_amount") {
+		covDefaultAmountExp: uiExperimentSetting(key: "covid19response_default_amount") {
+			key
+			value
+		}
+		mgRecurringOnlyExp: uiExperimentSetting(key: "mg_recurring_only") {
 			key
 			value
 		}
@@ -106,6 +116,14 @@ export default {
 			type: String,
 			default: 'Contribute monthly'
 		},
+		oneTimeOnly: { // force a one-time donation regardless of experiment
+			type: Boolean,
+			default: false
+		},
+		id: { // used when you have multiple instances of this form on one page.
+			type: String,
+			default: 'instance1',
+		}
 	},
 	data() {
 		return {
@@ -176,7 +194,8 @@ export default {
 			onetimeAmount: 50,
 			minOnetimeAmount: 25,
 			maxDepositAmount: 10000,
-			experimentVersion: null
+			expDefaultAmount: null,
+			expRecurringOnly: null,
 		};
 	},
 	inject: ['apollo'],
@@ -186,9 +205,10 @@ export default {
 			return client.query({
 				query: pageQuery
 			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'covid19response_default_amount' }
-				});
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'covid19response_default_amount' } }),
+					client.query({ query: experimentQuery, variables: { id: 'mg_recurring_only' } })
+				]);
 			});
 		},
 		result() {
@@ -196,22 +216,41 @@ export default {
 				id: 'Experiment:covid19response_default_amount',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.experimentVersion = covid19responseDefaultAmount.version;
-			if (this.experimentVersion === 'shown') {
+			this.expDefaultAmount = covid19responseDefaultAmount.version;
+			if (this.expDefaultAmount === 'shown') {
 				this.recurringAmountSelection = '25';
 				this.recurringCustomAmount = 25;
 				this.recurringAmount = 25;
 			}
+
+			const mgRecurringOnlyExp = this.apollo.readFragment({
+				id: 'Experiment:mg_recurring_only',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.expRecurringOnly = mgRecurringOnlyExp.version;
+			this.isRecurring = this.expRecurringOnly === 'shown';
 		},
 	},
 	mounted() {
-		if (this.experimentVersion !== null) {
+		if (this.expDefaultAmount !== null) {
 			// Fire Event for GROW-96
 			this.$kvTrackEvent(
 				'Monthly Good',
 				'EXP-GROW-96-May2020',
-				this.experimentVersion === 'shown' ? 'b' : 'a'
+				this.expDefaultAmount === 'shown' ? 'b' : 'a'
 			);
+		}
+
+		if (this.expRecurringOnly !== null) {
+			this.$kvTrackEvent(
+				'MonthlyGood',
+				'EXP-GROW-104-May2020',
+				this.expRecurringOnly === 'shown' ? 'b' : 'a'
+			);
+		}
+
+		if (this.oneTimeOnly) {
+			this.isRecurring = false;
 		}
 	},
 	computed: {
@@ -309,6 +348,11 @@ export default {
 .onetime-amount-selector {
 	margin-bottom: 1rem;
 	position: relative;
+}
+
+.recurring-only-legend {
+	font-size: 1rem;
+	font-weight: 700;
 }
 
 .submit-btn {

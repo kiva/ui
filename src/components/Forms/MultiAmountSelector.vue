@@ -26,8 +26,8 @@
 					v-if="selected === 'custom' && option.key === 'custom'"
 				>
 					<kv-currency-input
-						id="custom-amount-input"
-						ref="kvCurrencyRef"
+						:id="`${id}-custom-amount-input`"
+						:ref="`${id}-kvCurrencyRef`"
 						class="input-element"
 						:class="{'custom-input-element': true, 'error': $v.$invalid}"
 						v-model="customAmountModel"
@@ -125,7 +125,7 @@ export default {
 			if (newVal === 'custom') {
 				this.$nextTick(() => {
 					try {
-						this.$refs.kvCurrencyRef[0].$refs.kvCurrencyInputRef.focus();
+						this.$refs[`${this.id}-kvCurrencyRef`][0].$refs.kvCurrencyInputRef.focus();
 					} catch (e) {
 						// noop
 					}

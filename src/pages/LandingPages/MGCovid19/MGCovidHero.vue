@@ -95,7 +95,7 @@ export default {
 		category: {
 			type: String,
 			default: 'covid-relief'
-		}
+		},
 	},
 	data() {
 		return {
