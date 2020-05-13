@@ -23,7 +23,7 @@
 			:to="{
 				path: '/borrow/pre-application/how-long',
 				query: {
-					refid: this.$route.query.refid
+					refid: $route.query.refid
 				}
 			}"
 			class="cta-btn"
