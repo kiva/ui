@@ -186,11 +186,17 @@ export default {
 		// that wide if it isn't, due to the flexbox bug mentioned above.
 		checkCategoryWidth() {
 			this.categoriesWidth = null;
-			this.$nextTick(() => {
-				const firstColumnWidth = this.getRefWidth('categories[0]');
-				const secondColumnWidth = this.getRefWidth('allLoans');
-				this.categoriesWidth = `${firstColumnWidth + secondColumnWidth}px`;
-			});
+			if (this.categories.length === 0) {
+				// sensible default for categories while they load
+				// avoids resizing the menu too much since the other parts will have loaded already
+				this.categoriesWidth = '257px';
+			} else {
+				this.$nextTick(() => {
+					const firstColumnWidth = this.getRefWidth('categories[0]');
+					const secondColumnWidth = this.getRefWidth('allLoans');
+					this.categoriesWidth = `${firstColumnWidth + secondColumnWidth}px`;
+				});
+			}
 		},
 		getRefWidth(refPath) {
 			const ref = _get(this.$refs, refPath);
