@@ -13,5 +13,13 @@ query categoryRows {
 				}
 			}
 		}
+		countryFacets {
+			count
+			country {
+				name
+				region
+				isoCode
+			}
+		}
   	}
 }

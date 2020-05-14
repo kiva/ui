@@ -9,6 +9,9 @@
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
+				<li v-if="isLoading">
+					<kv-loading-spinner />
+				</li>
 				<li v-for="(category, index) in categories" :key="index">
 					<a
 						:href="category.url"
@@ -86,6 +89,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import CountryList from './CountryList';
 import ExpandableListItem from './ExpandableListItem';
 import SearchList from './SearchList';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
@@ -93,6 +97,7 @@ export default {
 		ExpandableListItem,
 		KvIcon,
 		SearchList,
+		KvLoadingSpinner
 	},
 	props: {
 		categories: {
@@ -114,6 +119,10 @@ export default {
 		searches: {
 			type: Array,
 			default: () => [],
+		},
+		isLoading: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	computed: {

@@ -1,25 +1,24 @@
 <template>
 	<div class="the-lend-menu">
-		<kv-loading-spinner v-if="isLoading" />
 		<lend-list-menu
 			ref="list"
 			class="hide-for-large"
-			v-show="!isLoading"
 			:categories="computedCategories"
 			:regions="regions"
 			:searches="savedSearches"
 			:favorites="favoritesCount"
 			:user-id="userId"
+			:is-loading="isApolloLoading"
 		/>
 		<lend-mega-menu
 			ref="mega"
 			class="show-for-large"
-			v-show="!isLoading"
 			:categories="computedCategories"
 			:regions="regions"
 			:searches="savedSearches"
 			:favorites="favoritesCount"
 			:user-id="userId"
+			:is-loading="isApolloLoading"
 		/>
 	</div>
 </template>
@@ -29,16 +28,34 @@ import _get from 'lodash/get';
 import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
+import gql from 'graphql-tag';
+
 import { indexIn } from '@/util/comparators';
 import publicLendMenuQuery from '@/graphql/query/lendMenuData.graphql';
 import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
+const pageQuery = gql`{
+		my {
+			userAccount {
+				id
+			}
+		}
+		lend {
+			countryFacets {
+				count
+				country {
+					name
+					region
+					isoCode
+				}
+			}
+		}
+	}`;
+
 export default {
 	components: {
-		KvLoadingSpinner,
 		LendListMenu,
 		LendMegaMenu,
 	},
@@ -61,7 +78,16 @@ export default {
 				'Oceania'
 			],
 			loadingSemaphore: 0,
+			isApolloLoading: true
 		};
+	},
+	apollo: {
+		query: pageQuery,
+		preFetch: true,
+		result({ data }) {
+			this.userId = _get(data, 'my.userAccount.id');
+			this.countryFacets = _get(data, 'lend.countryFacets');
+		},
 	},
 	computed: {
 		regions() {
@@ -89,9 +115,6 @@ export default {
 				return updatedCat;
 			});
 		},
-		isLoading() {
-			return this.loadingSemaphore > 0 || this.categories.length === 0;
-		},
 		hasUserId() {
 			return !!this.userId;
 		},
@@ -107,48 +130,30 @@ export default {
 		onLoad() {
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
-					this.userId = _get(data, 'my.userAccount.id');
 					this.categories = _get(data, 'lend.loanChannels.values');
-					this.countryFacets = _get(data, 'lend.countryFacets');
+					this.isApolloLoading = false;
 				}
 			});
 		},
-		startLoading() {
-			this.loadingSemaphore += 1;
-		},
-		stopLoading() {
-			if (this.loadingSemaphore > 0) {
-				this.loadingSemaphore -= 1;
-			} else {
-				this.loadingSemaphore = 0;
-			}
-		},
 	},
-	watch: {
-		hasUserId(hasUserId) {
-			if (hasUserId) {
-				this.startLoading();
-				this.apollo.query({
-					query: privateLendMenuQuery,
-					variables: {
-						userId: this.userId,
-					}
-				}).then(({ data, errors }) => {
-					if (!errors) {
-						this.favoritesCount = _get(data, 'lend.loans.totalCount');
-						this.savedSearches = _get(data, 'my.savedSearches.values');
-					} else {
-						this.favoritesCount = 0;
-						this.savedSearches = [];
-					}
-				}).finally(() => {
-					this.stopLoading();
-
-					// data might have changed since the initial render, so trigger any needed updates
-					this.onOpen();
-				});
+	mounted() {
+		this.apollo.query({
+			query: privateLendMenuQuery,
+			variables: {
+				userId: this.userId,
 			}
-		}
+		}).then(({ data, errors }) => {
+			if (!errors) {
+				this.favoritesCount = _get(data, 'lend.loans.totalCount');
+				this.savedSearches = _get(data, 'my.savedSearches.values');
+			} else {
+				this.favoritesCount = 0;
+				this.savedSearches = [];
+			}
+		}).finally(() => {
+			// data might have changed since the initial render, so trigger any needed updates
+			this.onOpen();
+		});
 	}
 };
 </script>
