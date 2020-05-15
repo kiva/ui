@@ -51,7 +51,9 @@ const pageQuery = gql`{
 			donateAmount
 			dayOfMonth
 			isSubscriber
+			isOnetime
 		}
+		monthlyGoodCategory
 	}
 }`;
 
@@ -74,9 +76,13 @@ export default {
 		return {
 			mgAmount: 0,
 			donation: 0,
+			autoDepositAmount: 0,
 			dayOfMonth: new Date().getDate(),
 			// user flags
 			isMonthlyGoodSubscriber: false,
+			isOnetimePayment: null,
+			autoDepositId: null,
+			category: null
 		};
 	},
 	inject: ['apollo'],
@@ -116,11 +122,30 @@ export default {
 			if (!this.isMonthlyGoodSubscriber) {
 				this.$router.push({ path: '/monthlygood' });
 			}
-			const totalAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
+			this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
 			this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
-			this.mgAmount = totalAmount - this.donation;
+			this.mgAmount = this.autoDepositAmount - this.donation;
 			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
+			this.category = _get(data, 'my.monthlyGoodCategory');
+			this.isOnetimePayment = _get(data, 'my.autoDeposit.isOnetime');
+			this.autoDepositId = _get(data, 'my.autoDeposit.id');
 		},
+	},
+	mounted() {
+		// eslint-disable-next-line max-len
+		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_0.json#';
+		const mgSubscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
+		const checkoutEventData = {
+			schema,
+			data: {
+				id: this.autoDepositId,
+				subscriptionType: mgSubscriptionType,
+				category: this.category,
+				depositAmount: this.autoDepositAmount,
+				donationAmount: this.donation
+			},
+		};
+		this.$kvTrackSelfDescribingEvent(checkoutEventData);
 	},
 	computed: {
 		headline() {
