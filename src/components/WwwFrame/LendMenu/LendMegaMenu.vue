@@ -2,7 +2,7 @@
 	<div class="lend-mega-menu">
 		<div class="categories-section" :style="{ marginLeft: categoriesMargin }">
 			<h2>Categories</h2>
-			<kv-loading-spinner v-if="isLoading" />
+			<kv-loading-spinner v-if="isChannelsLoading" />
 			<ul :style="categoriesStyle">
 				<li
 					v-for="(category, index) in categories"
@@ -44,6 +44,7 @@
 		</kv-expandable>
 		<div class="middle-section">
 			<h2>Regions</h2>
+			<kv-loading-spinner v-if="isRegionsLoading" />
 			<ul>
 				<li v-for="region in regions" :key="region.name">
 					<button
@@ -131,7 +132,11 @@ export default {
 			type: Number,
 			default: 0,
 		},
-		isLoading: {
+		isRegionsLoading: {
+			type: Boolean,
+			default: true,
+		},
+		isChannelsLoading: {
 			type: Boolean,
 			default: true,
 		},

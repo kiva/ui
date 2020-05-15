@@ -9,7 +9,7 @@
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
-				<li v-if="isLoading">
+				<li v-if="isChannelsLoading">
 					<kv-loading-spinner />
 				</li>
 				<li v-for="(category, index) in categories" :key="index">
@@ -28,6 +28,9 @@
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
+				<li v-if="isRegionsLoading">
+					<kv-loading-spinner />
+				</li>
 				<expandable-list-item
 					v-for="region in regions"
 					:key="region.name"
@@ -120,7 +123,11 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		isLoading: {
+		isRegionsLoading: {
+			type: Boolean,
+			default: true,
+		},
+		isChannelsLoading: {
 			type: Boolean,
 			default: true,
 		},

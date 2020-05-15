@@ -8,7 +8,8 @@
 			:searches="savedSearches"
 			:favorites="favoritesCount"
 			:user-id="userId"
-			:is-loading="isApolloLoading"
+			:is-regions-loading="isRegionsLoading"
+			:is-channels-loading="isChannelsLoading"
 		/>
 		<lend-mega-menu
 			ref="mega"
@@ -18,7 +19,8 @@
 			:searches="savedSearches"
 			:favorites="favoritesCount"
 			:user-id="userId"
-			:is-loading="isApolloLoading"
+			:is-regions-loading="isRegionsLoading"
+			:is-channels-loading="isChannelsLoading"
 		/>
 	</div>
 </template>
@@ -36,20 +38,10 @@ import privateLendMenuQuery from '@/graphql/query/lendMenuPrivateData.graphql';
 import LendListMenu from './LendListMenu';
 import LendMegaMenu from './LendMegaMenu';
 
-const pageQuery = gql`{
+const pageQuery = gql`query lendMenu {
 		my {
 			userAccount {
 				id
-			}
-		}
-		lend {
-			countryFacets {
-				count
-				country {
-					name
-					region
-					isoCode
-				}
 			}
 		}
 	}`;
@@ -78,7 +70,8 @@ export default {
 				'Oceania'
 			],
 			loadingSemaphore: 0,
-			isApolloLoading: true
+			isRegionsLoading: true,
+			isChannelsLoading: true
 		};
 	},
 	apollo: {
@@ -86,7 +79,6 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			this.userId = _get(data, 'my.userAccount.id');
-			this.countryFacets = _get(data, 'lend.countryFacets');
 		},
 	},
 	computed: {
@@ -128,10 +120,30 @@ export default {
 			this.$refs.mega.onClose();
 		},
 		onLoad() {
+			this.apollo.watchQuery({
+				query: gql`{
+					lend {
+						countryFacets {
+							count
+							country {
+								name
+								region
+								isoCode
+							}
+						}
+					}
+
+				}`
+			}).subscribe({
+				next: ({ data }) => {
+					this.countryFacets = _get(data, 'lend.countryFacets');
+					this.isRegionsLoading = false;
+				}
+			});
 			this.apollo.watchQuery({ query: publicLendMenuQuery }).subscribe({
 				next: ({ data }) => {
 					this.categories = _get(data, 'lend.loanChannels.values');
-					this.isApolloLoading = false;
+					this.isChannelsLoading = false;
 				}
 			});
 		},
