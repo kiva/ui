@@ -134,12 +134,12 @@ export default {
 	mounted() {
 		// eslint-disable-next-line max-len
 		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_0.json#';
-		const subscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
+		const mgSubscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
 		const checkoutEventData = {
 			schema,
 			data: {
 				id: this.autoDepositId,
-				subscriptionType: subscriptionType,
+				subscriptionType: mgSubscriptionType,
 				category: this.category,
 				depositAmount: this.autoDepositAmount,
 				donationAmount: this.donation
