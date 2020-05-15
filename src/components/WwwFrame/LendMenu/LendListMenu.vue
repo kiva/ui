@@ -9,6 +9,9 @@
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
+				<li v-if="isChannelsLoading">
+					<kv-loading-spinner />
+				</li>
 				<li v-for="(category, index) in categories" :key="index">
 					<a
 						:href="category.url"
@@ -25,6 +28,9 @@
 				<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 			</template>
 			<ul>
+				<li v-if="isRegionsLoading">
+					<kv-loading-spinner />
+				</li>
 				<expandable-list-item
 					v-for="region in regions"
 					:key="region.name"
@@ -86,6 +92,7 @@ import KvIcon from '@/components/Kv/KvIcon';
 import CountryList from './CountryList';
 import ExpandableListItem from './ExpandableListItem';
 import SearchList from './SearchList';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
@@ -93,6 +100,7 @@ export default {
 		ExpandableListItem,
 		KvIcon,
 		SearchList,
+		KvLoadingSpinner
 	},
 	props: {
 		categories: {
@@ -114,6 +122,14 @@ export default {
 		searches: {
 			type: Array,
 			default: () => [],
+		},
+		isRegionsLoading: {
+			type: Boolean,
+			default: true,
+		},
+		isChannelsLoading: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	computed: {
