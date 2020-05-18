@@ -32,7 +32,7 @@ export default {
 			specialConditions: null
 		};
 	},
-	mounted() {
+	created() {
 		this.federation.query({
 			query: contentful,
 			variables: {
@@ -66,12 +66,25 @@ export default {
 						'endDate'
 					);
 				});
+
 				if (activePromoBanner) {
+					// always hide the promo banner on the checkout page.
+					if (this.$route.path === '/checkout') {
+						return false;
+					}
+
+					// check for visibility based on current route and hiddenUrls field
+					const hiddenUrls = _get(activePromoBanner, 'fields.hiddenUrls', []);
+					if (hiddenUrls.includes(this.$route.path)) {
+						return false;
+					}
+
 					// check for visibility on promo session override
 					const showForPromo = _get(activePromoBanner, 'fields.showForPromo', false);
 					if (this.hasPromoSession && !showForPromo) {
 						return false;
 					}
+
 					// parse the contentful richText into an html string
 					this.promoBannerContent = {
 						kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
@@ -88,15 +101,6 @@ export default {
 						this.isPromoEnabled = true;
 					}
 				}
-			}
-		});
-	},
-	serverPrefetch() {
-		return this.federation.query({
-			query: contentful,
-			variables: {
-				contentType: 'uiSetting',
-				contentKey: 'ui-global-promo',
 			}
 		});
 	},
