@@ -11,6 +11,7 @@ export default function wwwPageMock({ UserAccount = null } = {}) {
 		Manifest: {
 			hasFreeCredits: false,
 		},
+		Money: '',
 		Setting: (parent, args) => ({
 			key: args.key,
 			value: '',
@@ -22,6 +23,7 @@ export default function wwwPageMock({ UserAccount = null } = {}) {
 		ShopTotals: {
 			redemptionCodeAvailableTotal: '0.00',
 		},
+		Url: '',
 		UserAccount,
 		UserSession: (parent, args) => ({
 			sessionKey: args.sessionKey,
