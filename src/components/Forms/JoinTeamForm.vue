@@ -21,7 +21,6 @@
 			<p v-if="showError" class="error">
 				Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
 			</p>
-			<loading-overlay id="loading-overlay-teams" v-if="loading" />
 		</div>
 		<div v-if="showSuccess">
 			<div v-if="isMember">
@@ -38,6 +37,7 @@
 			</div>
 			<p><a :href="doneUrl">Continue</a></p>
 		</div>
+		<loading-overlay id="loading-overlay-teams" v-if="loading" />
 	</div>
 </template>
 
@@ -164,9 +164,34 @@ export default {
 		handleRejectTeam() {
 			this.showError = false;
 			window.location.href = `/declineInvitationToJoinTeam?team_id=${this.teamId}&doneUrl=${this.doneUrl}`;
+		},
+		handleAlreadyJoined() {
+			const teamId = this.$route.query.team_id ? numeral(this.$route.query.team_id).value() : null;
+			if (teamId) {
+				this.loading = true;
+				this.apollo.query({
+					query: myTeamsQuery,
+					variables: {
+						teamIds: [teamId]
+					}
+				}).then(({ data }) => {
+					this.isMember = _get(data, 'my.teams.values', []).length;
+					// if lender is a member proceed
+					if (this.isMember) {
+						window.location = '/authenticate/redirect&team_id=278842&promo_id=286';
+					}
+					if (!this.isMember) {
+						this.loading = false;
+					}
+				});
+			}
 		}
 	},
 	created() {
+		// in the browser check if the lender has already joined the team
+		if (typeof window !== 'undefined') {
+			this.handleAlreadyJoined();
+		}
 	}
 };
 </script>
