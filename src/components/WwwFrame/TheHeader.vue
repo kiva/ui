@@ -11,7 +11,7 @@
 					class="header-button"
 					v-kv-track-event="['TopNav','click-Lend']"
 				>
-					<span>Lend <kv-icon name="triangle" :from-sprite="true" /></span>
+					<span>Lend <kv-icon class="triangle-icon" name="triangle" :from-sprite="true" /></span>
 				</router-link>
 				<button class="search-toggler header-button"
 					:class="{'show-for-large': isVisitor}"
@@ -76,7 +76,7 @@
 					class="header-button"
 					v-kv-track-event="['TopNav','click-About']"
 				>
-					<span>About <kv-icon name="triangle" :from-sprite="true" /></span>
+					<span>About <kv-icon class="triangle-icon" name="triangle" :from-sprite="true" /></span>
 				</router-link>
 				<router-link
 					v-show="showBasket"
@@ -639,7 +639,7 @@ $close-search-button-size: 2.5rem;
 		padding: 0 1rem;
 	}
 
-	.icon-triangle {
+	.triangle-icon {
 		fill: $header-link-color; // IE11 fallback
 		fill: var(--kv-header-link-color, $header-link-color);
 		width: 0.5rem;
@@ -653,13 +653,15 @@ $close-search-button-size: 2.5rem;
 		}
 	}
 
+	&[aria-expanded="true"] {
+		.triangle-icon {
+			transform: rotate(0);
+		}
+	}
+
 	@media print {
 		border: none;
 	}
-}
-
-.header-button[aria-expanded="true"] .icon-triangle {
-	transform: rotate(0);
 }
 
 .search-toggler {
@@ -671,14 +673,10 @@ $close-search-button-size: 2.5rem;
 		flex-grow: 0;
 	}
 
-	.icon {
-		height: 1.125rem;
-		width: 1.125rem;
-		margin: 0 auto;
-	}
-
 	.search-icon,
 	.close-icon {
+		height: 1.125rem;
+		width: 1.125rem;
 		fill: $header-link-color; // IE11 fallback
 		fill: var(--kv-header-link-color, $header-link-color);
 	}
