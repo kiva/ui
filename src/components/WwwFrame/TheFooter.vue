@@ -45,6 +45,7 @@
 						v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 					>
 						<img
+							class="download-app-ios"
 							src="@/assets/icons/app-store.svg"
 							loading="lazy"
 							alt="Check out our new app on the App Store"
@@ -59,6 +60,7 @@
 						v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
 					>
 						<img
+							class="download-app-android"
 							src="@/assets/icons/play-store.svg"
 							loading="lazy"
 							alt="Check out our new app on the Play Store"
@@ -209,6 +211,7 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'App Store']"
 							>
 								<img
+									class="download-app-ios"
 									src="@/assets/icons/app-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the App Store"
@@ -223,6 +226,7 @@
 								v-kv-track-event="['global', 'click-app-badge-footer', 'Google Store']"
 							>
 								<img
+									class="download-app-android"
 									src="@/assets/icons/play-store.svg"
 									loading="lazy"
 									alt="Check out our new app on the Play Store"
@@ -379,12 +383,22 @@ $footer-separator-color: $light-green;
 		line-height: 1.6;
 	}
 
-	ul.download-app-icons li {
+	.download-app-icons li {
 		display: inline-block;
 	}
 
-	ul.download-app-icons img {
-		height: 2rem;
+	.download-app-android,
+	.download-app-ios {
+		height: rem-calc(40);
+	}
+
+	.download-app-android {
+		width: rem-calc(135);
+	}
+
+	.download-app-ios {
+		width: rem-calc(120);
+		margin-right: 0.5rem;
 	}
 
 	.small-footer {
@@ -404,8 +418,8 @@ $footer-separator-color: $light-green;
 			}
 		}
 
-		ul.download-app-icons {
-			max-width: 15rem;
+		.download-app-icons {
+			max-width: 16.5rem;
 			margin: 0 auto;
 			padding-top: 0.7rem;
 			border-bottom: none;
