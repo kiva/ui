@@ -151,7 +151,7 @@ export default {
 		}
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		query: pageQuery,
 		preFetch(config, client) {
 			return client.query({

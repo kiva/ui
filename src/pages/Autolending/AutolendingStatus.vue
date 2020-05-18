@@ -140,7 +140,7 @@ export default {
 			autolendingStatus: 'off'
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				profileChanged

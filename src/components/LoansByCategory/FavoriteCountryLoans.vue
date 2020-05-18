@@ -56,7 +56,7 @@ export default {
 			isLoaded: false
 		};
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return client.query({
 				query: favoriteCountryQuery

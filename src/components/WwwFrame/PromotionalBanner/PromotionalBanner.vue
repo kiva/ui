@@ -28,7 +28,7 @@ export default {
 			return null;
 		}
 	},
-	apollo: {
+	kvapollo: {
 		query: promoQuery,
 		preFetch: true,
 		result({ data }) {

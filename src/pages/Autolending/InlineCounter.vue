@@ -33,7 +33,7 @@ export default {
 			warningThreshold: 0,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentLoanCount

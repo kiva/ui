@@ -92,7 +92,7 @@ export default {
 			totalPartners: 0,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: lendingStatsQuery,
 		preFetch: true,
 		result({ data }) {

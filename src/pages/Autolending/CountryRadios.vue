@@ -56,7 +56,7 @@ export default {
 			radioKey: 'country'
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: countryListQuery,
 		preFetch: true,
 		result({ data }) {

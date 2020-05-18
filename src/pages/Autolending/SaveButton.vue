@@ -86,7 +86,7 @@ export default {
 			return this.loanCount === 1 ? 'matches' : 'match';
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentLoanCount

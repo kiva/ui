@@ -34,7 +34,7 @@ export default {
 			kivaChooses: 'true',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentProfile {

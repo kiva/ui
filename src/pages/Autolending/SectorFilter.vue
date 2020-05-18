@@ -39,7 +39,7 @@ export default {
 			currentSectorIds: [],
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: sectorListQuery,
 		preFetch: true,
 		result({ data }) {

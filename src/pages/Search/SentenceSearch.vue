@@ -205,7 +205,7 @@ export default {
 	mixins: [
 		algoliaInit
 	],
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return client.query({
 				query: itemsInBasketQuery

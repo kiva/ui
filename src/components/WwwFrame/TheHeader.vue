@@ -389,7 +389,7 @@ export default {
 			return {};
 		}
 	},
-	apollo: {
+	kvapollo: {
 		query: headerQuery,
 		preFetch: true,
 		result({ data }) {

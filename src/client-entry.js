@@ -34,8 +34,9 @@ if (config.auth0.enable) {
 const {
 	app,
 	router,
-	apolloClient,
+	apolloProvider,
 } = createApp({
+	ssr: false,
 	appConfig: config,
 	apollo: {
 		csrfToken: cookieStore.has('kvis') && cookieStore.get('kvis').substr(6),
@@ -44,7 +45,7 @@ const {
 	},
 	kvAuth0,
 });
-
+const apolloClient = apolloProvider.defaultClient;
 // Show a tip message when there is an unhandled auth0 error
 kvAuth0.onError(({ eventId, user }) => {
 	let message = 'We\'re sorry, something went wrong.';
@@ -65,11 +66,6 @@ kvAuth0.onError(({ eventId, user }) => {
 		},
 	});
 });
-
-// Apply Server state to Client Store
-if (window.__APOLLO_STATE__) {
-	apolloClient.cache.restore(window.__APOLLO_STATE__);
-}
 
 // Extract user id from apollo cache
 let userId = null;

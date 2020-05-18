@@ -50,7 +50,7 @@ export default {
 			defaultRate: 0,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentProfile {

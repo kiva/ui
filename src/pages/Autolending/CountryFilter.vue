@@ -75,7 +75,7 @@ export default {
 			return _sortBy(_get(this.regions, this.openRegion), 'name');
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: countryListQuery,
 		preFetch: true,
 		result({ data }) {

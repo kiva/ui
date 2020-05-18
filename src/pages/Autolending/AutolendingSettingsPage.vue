@@ -50,7 +50,7 @@ export default {
 			kivaChooses: true,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: pageQuery,
 		preFetch(config, client, { route, kvAuth0 }) {
 			return new Promise((resolve, reject) => {

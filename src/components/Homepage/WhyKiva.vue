@@ -89,7 +89,7 @@ export default {
 			numLenders: '',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: whyKivaQuery,
 		preFetch: true,
 		result({ data }) {

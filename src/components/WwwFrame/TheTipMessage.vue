@@ -12,7 +12,7 @@ export default {
 		KvTipMessage,
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		query: tipMessageData,
 		preFetch: true,
 		result({ data }) {

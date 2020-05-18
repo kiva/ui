@@ -8,7 +8,7 @@ export default Vue => {
 // export default {
 	Vue.mixin({
 		created() {
-			if (this.$options.apollo) {
+			if (this.$options.kvapollo) {
 				checkApolloInject(this);
 
 				const {
@@ -17,7 +17,7 @@ export default Vue => {
 					preFetchVariables = () => {},
 					variables = () => {},
 					result = () => {},
-				} = this.$options.apollo;
+				} = this.$options.kvapollo;
 
 				if (query) {
 					const basketId = cookieStore.get('kvbskt');

@@ -134,7 +134,7 @@ export default {
 			}
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			my {
 				userAccount {

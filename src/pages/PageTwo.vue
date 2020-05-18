@@ -1,41 +1,6 @@
 <template>
 	<!-- This is a sample page which recreates the monthly good landing page but with content from contentful -->
 	<www-page>
-		<kv-hero class="mg-hero" :class="{'experiment':isExperimentActive}">
-			<template v-slot:images>
-				<kv-responsive-image
-					:images="heroImages"
-					alt="A woman in a yellow dress with a look of pride and satisfaction on her face "
-				/>
-			</template>
-			<template v-slot:overlayContent>
-				<div class="row">
-					<div class="overlay-column columns medium-12 large-8">
-						<p class="mg-headline" v-html="pageCopy.headline">
-						</p>
-						<p class="mg-subhead">
-							{{ pageCopy.subhead }}
-						</p>
-						<landing-form
-							:amount.sync="monthlyGoodAmount"
-							:selected-group.sync="selectedGroup"
-							:key="1"
-							:button-text="pageCopy.button"
-							v-if="!isMonthlyGoodSubscriber"
-						/>
-						<div class="already-subscribed-msg-wrapper" v-if="isMonthlyGoodSubscriber">
-							<h4>
-								You're already signed up for Monthly Good.
-								Changes to this contribution can be made in your
-								<a href="/settings/credit">credit settings</a>.
-							</h4>
-						</div>
-					</div>
-				</div>
-			</template>
-		</kv-hero>
-		<how-it-works />
-
 		<div v-for="(contentGroup, index) in contentGroups" :key="index">
 			<!-- KivaAsExpertContentful Component -->
 			<component
@@ -78,15 +43,15 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import contentful from '@/graphql/query/contentful.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+// import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvHero from '@/components/Kv/KvHero';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+// import KvHero from '@/components/Kv/KvHero';
+// import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 import LandingForm from '@/pages/MonthlyGood/LandingForm';
-import HowItWorks from '@/pages/MonthlyGood/HowItWorks';
+// import HowItWorks from '@/pages/MonthlyGood/HowItWorks';
 import EmailPreviewContentful from '@/pages/MonthlyGood/EmailPreviewContentful';
 
 import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
@@ -113,9 +78,9 @@ export default {
 	components: {
 		WwwPage,
 		LandingForm,
-		KvHero,
-		KvResponsiveImage,
-		HowItWorks,
+		// KvHero,
+		// KvResponsiveImage,
+		// HowItWorks,
 		MoreAboutKiva,
 		KivaAsExpertContentful,
 		FrequentlyAskedQuestions,
@@ -140,7 +105,7 @@ export default {
 				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
 			],
 			// contentful data
-			contentGroups: []
+			contentGroups: [],
 		};
 	},
 	computed: {
@@ -161,51 +126,73 @@ export default {
 	},
 	inject: ['apollo', 'federation'],
 	apollo: {
-		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery,
-			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'mg_hero' }
-				});
-			});
-		},
-		result({ data }) {
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
-			const mgHeroExperiment = this.apollo.readFragment({
-				id: 'Experiment:mg_hero',
-				fragment: experimentVersionFragment,
-			}) || {};
-			this.isExperimentActive = mgHeroExperiment.version === 'shown';
-			// Fire Event for EXP-CASH-1774-Feb2020
-			this.$kvTrackEvent(
-				'MonthlyGood',
-				'EXP-CASH-1774-Feb2020',
-				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
-			);
-		},
-	},
-	created() {
-		this.federation.query({
+		contentfulQuery: {
+			client: 'federation',
 			query: contentful,
 			variables: {
 				contentType: 'page',
 				contentKey: 'monthlygood',
 			},
-		}).then(({ data }) => {
-			// Process Contentful Content
-			// Page Layout
-			const pageMonthlyGood = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'monthlygood'); // eslint-disable-line max-len
-			console.log('pageMonthlyGood', pageMonthlyGood);
-			// Choose Page Layout here
-			const { pageLayout } = pageMonthlyGood.fields;
-			console.log('pageLayout', pageLayout);
-			// Pass content groups to components
-			this.contentGroups = pageLayout.fields.contentGroups.map(contentGroup => contentGroup.fields);
-			console.log('contentGroups', this.contentGroups);
-		});
+			manual: true,
+			result({ data, loading }) {
+				console.log('data fetched - contentful', this.$apollo);
+				if (!loading) {
+					// Process Contentful Content
+					// Page Layout
+					const pageMonthlyGood = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'monthlygood'); // eslint-disable-line max-len
+					console.log('pageMonthlyGood', pageMonthlyGood);
+					// Choose Page Layout here
+					const { pageLayout } = pageMonthlyGood.fields;
+					console.log('pageLayout', pageLayout);
+					// Pass content groups to components
+					this.contentGroups = pageLayout.fields.contentGroups.map(contentGroup => contentGroup.fields);
+					console.log('contentGroups', this.contentGroups);
+				}
+			},
+			// Error handling
+			error(error) {
+				console.error('We\'ve got an error!', error);
+			},
+		},
+		experimentQuery: {
+			query: experimentQuery,
+			variables: { id: 'mg_hero' },
+			manual: true,
+			result({ data, loading }) {
+				if (!loading) {
+					console.log('experiment', data);
+					// Monthly Good Hero Experiment - EXP-CASH-1774-Feb2020
+					const mgHeroExperiment = _get(data, 'experiment');
+
+					this.isExperimentActive = mgHeroExperiment.version === 'shown';
+					// Fire Event for EXP-CASH-1774-Feb2020
+					this.$kvTrackEvent(
+						'MonthlyGood',
+						'EXP-CASH-1774-Feb2020',
+						mgHeroExperiment.version === 'shown' ? 'b' : 'a'
+					);
+				}
+			},
+			// Error handling
+			error(error) {
+				console.error('We\'ve got an error!', error);
+			},
+		},
+		pageQuery: {
+			query: pageQuery,
+			variables: {
+				contentType: 'page',
+				contentKey: 'monthlygood',
+			},
+			manual: true,
+			result({ data }) {
+				this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			},
+			// Error handling
+			error(error) {
+				console.error('We\'ve got an error!', error);
+			},
+		}
 	},
 };
 

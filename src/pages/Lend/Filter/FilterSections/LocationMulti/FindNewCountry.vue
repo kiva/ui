@@ -81,7 +81,7 @@ export default {
 			return this.state ? this.state.getURL(this.attribute, this.countriesNotLentTo) : '';
 		},
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
 				// query for the user id first, and only query for more data if the user is logged in

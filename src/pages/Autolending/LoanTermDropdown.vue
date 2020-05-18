@@ -38,7 +38,7 @@ export default {
 			loanTerm: 0,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentProfile {

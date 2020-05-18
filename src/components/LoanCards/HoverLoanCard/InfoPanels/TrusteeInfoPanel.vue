@@ -145,7 +145,7 @@ export default {
 			endorsement: '',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: loanPartnerQuery,
 		variables() {
 			return {

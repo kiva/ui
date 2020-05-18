@@ -8,7 +8,7 @@ export default {
 		return '<div></div>';
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return client.query({ query: userInfoQuery });
 		},

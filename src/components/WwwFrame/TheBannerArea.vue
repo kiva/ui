@@ -27,7 +27,7 @@ export default {
 			hasFreeCredits: false,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {

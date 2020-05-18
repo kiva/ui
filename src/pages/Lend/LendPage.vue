@@ -102,7 +102,7 @@ export default {
 			});
 		}
 	},
-	apollo: {
+	kvapollo: {
 		query: loanCardQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {

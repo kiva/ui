@@ -79,7 +79,7 @@ export default {
 			required: true,
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: usingTouchClient,
 		preFetch: true,
 		result({ data }) {

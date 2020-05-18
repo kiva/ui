@@ -82,7 +82,7 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
 				// Get the experiment object from settings

@@ -203,7 +203,7 @@ export default {
 			selectedFilterGroup: '',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				profileChanged

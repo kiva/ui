@@ -58,7 +58,7 @@ export default {
 		LoadingOverlay,
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		query: TeamInfoFromId,
 		preFetch: true,
 		variables() {

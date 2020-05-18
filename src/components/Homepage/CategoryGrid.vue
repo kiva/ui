@@ -85,7 +85,7 @@ export default {
 		KvResponsiveImage,
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		query: categoryRowsQuery,
 		preFetch: true,
 		result({ data }) {

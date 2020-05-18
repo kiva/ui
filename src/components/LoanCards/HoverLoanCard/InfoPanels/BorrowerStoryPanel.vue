@@ -62,7 +62,7 @@ export default {
 			loanStory: ''
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: loanDescriptionQuery,
 		variables() {
 			return {

@@ -163,7 +163,7 @@ export default {
 			}
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: featuredLoansQuery,
 		preFetch: true,
 		preFetchVariables() {

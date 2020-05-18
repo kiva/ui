@@ -87,7 +87,7 @@ export default {
 			loading: false,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery

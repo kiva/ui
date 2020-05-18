@@ -93,7 +93,7 @@ export default {
 			]
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: checkoutReceiptQuery,
 		preFetch: true,
 		preFetchVariables({ route }) {

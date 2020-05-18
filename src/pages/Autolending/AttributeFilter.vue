@@ -39,7 +39,7 @@ export default {
 			currentThemeIds: [],
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: themeListQuery,
 		preFetch: true,
 		result({ data }) {

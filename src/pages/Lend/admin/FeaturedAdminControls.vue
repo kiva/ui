@@ -93,7 +93,7 @@ export default {
 			return Number(this.groupWeight) / 100;
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: expDataQuery,
 		result({ data }) {
 			this.experimentData = readJSONSetting(data, 'general.experiment.value');

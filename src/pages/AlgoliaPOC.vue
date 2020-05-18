@@ -281,7 +281,7 @@ export default {
 		// 	return _map(this.customCategories, (category, categoryId) => ({ ...category, categoryId }));
 		// },
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return client.query({
 				query: itemsInBasketQuery

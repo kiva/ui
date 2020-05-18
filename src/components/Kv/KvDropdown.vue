@@ -39,7 +39,7 @@ export default {
 			return document.getElementById(this.controller);
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: dropdownQuery,
 		result({ data }) {
 			this.usingTouch = data.usingTouch;

@@ -39,7 +39,7 @@ export default {
 			currentPartnerIds: [],
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: partnerListQuery,
 		preFetch: true,
 		result({ data }) {

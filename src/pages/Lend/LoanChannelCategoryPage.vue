@@ -224,7 +224,7 @@ export default {
 			return title;
 		},
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client, args) {
 			return client.query({
 				query: loanChannelPageQuery

@@ -55,7 +55,7 @@ export default {
 			radioKey: 'partner',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: partnerListQuery,
 		preFetch: true,
 		result({ data }) {

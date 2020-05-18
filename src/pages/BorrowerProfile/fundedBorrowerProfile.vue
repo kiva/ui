@@ -125,7 +125,7 @@ export default {
 			lymlCustomSort: 'random',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client, args) {
 			const fundedLoanId = numeral(_get(args, 'route.params.id')).value();
 

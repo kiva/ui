@@ -138,7 +138,7 @@ export default {
 			donationToggle: 'on',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				profileChanged

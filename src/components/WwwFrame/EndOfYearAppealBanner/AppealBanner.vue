@@ -116,7 +116,7 @@ export default {
 			percentTowardGoal: null,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {

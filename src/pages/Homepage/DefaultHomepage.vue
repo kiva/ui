@@ -67,7 +67,7 @@ export default {
 		};
 	},
 	inject: ['apollo', 'federation'],
-	apollo: {
+	kvapollo: {
 		query: pageQuery,
 		preFetch(config, client) {
 			return client.query({

@@ -226,7 +226,7 @@ export default {
 			]
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: initializeCheckout,
 		// using the prefetch function form allows us to act on data before the page loads
 		preFetch(config, client) {

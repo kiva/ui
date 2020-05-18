@@ -60,7 +60,7 @@ export default {
 			default() {},
 		}
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client, args) {
 			return fetchAllExpSettings(config, client, {
 				query: _get(args, 'route.query'),

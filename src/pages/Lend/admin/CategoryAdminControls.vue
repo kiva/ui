@@ -134,7 +134,7 @@ export default {
 			return _fromPairs(pairs);
 		},
 	},
-	apollo: {
+	kvapollo: {
 		query: categoryAdminQuery,
 		result({ data }) {
 			this.possibleCategories = _map(_get(data, 'lend.loanChannels.values'), category => {

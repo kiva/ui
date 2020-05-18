@@ -70,6 +70,6 @@ export function preFetchAll(components, apolloClient, { ...args }) {
 	// update basketId before preFetch cycle
 	basketId = cookieStore.get('kvbskt');
 	const allComponents = getDeepComponents(components);
-	const apolloComponents = _filter(allComponents, 'apollo.preFetch');
-	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.apollo, apolloClient, args)));
+	const apolloComponents = _filter(allComponents, 'kvapollo.preFetch');
+	return Promise.all(_map(apolloComponents, c => preFetchApolloQuery(c.kvapollo, apolloClient, args)));
 }

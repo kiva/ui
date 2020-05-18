@@ -6,10 +6,12 @@ import Meta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
 import Vue2TouchEvents from 'vue2-touch-events';
 
+import VueApollo from 'vue-apollo';
 import App from '@/App';
 import createRouter from '@/router';
 import createApolloClient from '@/api/apollo';
 import kivaPlugins from '@/plugins';
+
 
 Vue.config.productionTip = false;
 
@@ -27,6 +29,8 @@ Vue.use(VueProgressBar, {
 	},
 	autoFinish: false,
 });
+// Install the vue plugin
+Vue.use(VueApollo);
 
 // App Instance Factory
 // - Allows us to create new instance of app, store + router on each render
@@ -34,8 +38,11 @@ export default function createApp({
 	apollo = {},
 	appConfig = {},
 	kvAuth0,
+	ssr
 } = {}) {
-	const apolloClient = createApolloClient({ ...apollo, kvAuth0, appConfig });
+	const apolloClient = createApolloClient({
+		...apollo, kvAuth0, appConfig, ssr, clientId: 'default',
+	});
 
 	const federationApolloURI = appConfig.federationService ? appConfig.federationService.uri : apollo.uri;
 
@@ -45,7 +52,8 @@ export default function createApp({
 		uri: federationApolloURI,
 		kvAuth0,
 		appConfig,
-		existingCache: apolloClient.cache
+		ssr,
+		clientId: 'federation',
 	});
 
 	const router = createRouter();
@@ -61,19 +69,29 @@ export default function createApp({
 	// Provide application config to all components
 	Vue.prototype.$appConfig = appConfig;
 
+	// Apollo
+	const apolloProvider = new VueApollo({
+		clients: {
+			default: apolloClient,
+			federation: apolloFederationClient
+		},
+		defaultClient: apolloClient,
+	});
+
 	const app = new Vue({
 		router,
-		render: h => h(App),
 		provide: {
-			apollo: apolloClient,
-			federation: apolloFederationClient,
+			apollo: apolloProvider.clients.default,
+			federation: apolloProvider.clients.federation,
 			kvAuth0,
-		}
+		},
+		apolloProvider,
+		render: h => h(App),
 	});
 
 	return {
 		app,
 		router,
-		apolloClient,
+		apolloProvider,
 	};
 }

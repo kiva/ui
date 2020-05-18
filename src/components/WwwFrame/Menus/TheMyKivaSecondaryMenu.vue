@@ -146,7 +146,7 @@ export default {
 			usingTouch: false,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: myKivaMenuQuery,
 		preFetch: true,
 		result({ data }) {

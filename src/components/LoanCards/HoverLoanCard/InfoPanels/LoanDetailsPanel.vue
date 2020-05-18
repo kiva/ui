@@ -165,7 +165,7 @@ export default {
 			currencyExchangeLoss: '',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: loanDetailsQuery,
 		variables() {
 			return {

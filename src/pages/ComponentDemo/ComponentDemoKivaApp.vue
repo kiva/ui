@@ -38,7 +38,7 @@ export default {
 			assignedVersion: null,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		// example prefetch function to get an experiment setting and then an assigned version
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {

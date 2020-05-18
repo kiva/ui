@@ -348,7 +348,7 @@ export default {
 		},
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		query: pageQuery,
 		preFetch(config, client, { route }) {
 			return client.query({ query: userInfoQuery })

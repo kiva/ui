@@ -55,7 +55,7 @@ export default {
 			radioKey: 'theme',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: themeListQuery,
 		preFetch: true,
 		result({ data }) {

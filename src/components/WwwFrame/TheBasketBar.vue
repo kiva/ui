@@ -15,7 +15,7 @@ export default {
 			count: 0
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: countQuery,
 		preFetch: true,
 		result({ data }) {

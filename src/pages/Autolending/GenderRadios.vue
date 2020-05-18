@@ -42,7 +42,7 @@ export default {
 			gender: 'both',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentProfile {

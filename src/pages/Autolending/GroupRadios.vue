@@ -42,7 +42,7 @@ export default {
 			isGroup: 'both',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: gql`{
 			autolending @client {
 				currentProfile {

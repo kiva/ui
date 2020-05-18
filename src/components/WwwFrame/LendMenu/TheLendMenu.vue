@@ -74,7 +74,7 @@ export default {
 			isChannelsLoading: true
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {

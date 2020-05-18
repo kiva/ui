@@ -181,7 +181,7 @@ export default {
 			donationNudgeFellowsHeader: 'Donations enable Kiva Fellows to reach the people who need it most',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
 				// Get the experiment object from settings

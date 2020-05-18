@@ -128,7 +128,7 @@ export default {
 			loanAlertText: '',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: loanPartnerQuery,
 		variables() {
 			return {

@@ -471,7 +471,7 @@ export default {
 			);
 		},
 	},
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			let rowData;
 			let expRowData;

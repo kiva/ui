@@ -222,7 +222,7 @@ export default {
 	inject: [
 		'apollo',
 	],
-	apollo: {
+	kvapollo: {
 		preFetch(config, client) {
 			// prefetch page data + experiment settings
 			return client.query({

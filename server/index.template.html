@@ -19,7 +19,8 @@
 		{{{ renderedNoscript }}}
 		{{{ meta.inject().noscript.text() }}}
 		<!--vue-ssr-outlet-->
-		{{{ renderedState }}}
+		{{{ renderState() }}}
+		{{{ renderState({ contextKey: 'apolloState', windowKey: '__APOLLO_STATE__' }) }}}
 		{{{ renderScripts() }}}
 	</body>
 </html>

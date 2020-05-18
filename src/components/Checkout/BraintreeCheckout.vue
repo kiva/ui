@@ -245,7 +245,7 @@ export default {
 			btDeleteFailed: false,
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: braintreeConfig,
 		preFetch: true,
 		result({ data }) {

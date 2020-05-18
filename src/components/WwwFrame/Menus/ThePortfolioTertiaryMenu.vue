@@ -138,7 +138,7 @@ export default {
 			};
 		}
 	},
-	apollo: {
+	kvapollo: {
 		query: portfolioTertiaryMenuQuery,
 		preFetch: true,
 		result({ data }) {

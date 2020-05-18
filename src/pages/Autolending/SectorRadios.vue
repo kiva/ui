@@ -55,7 +55,7 @@ export default {
 			radioKey: 'sector',
 		};
 	},
-	apollo: {
+	kvapollo: {
 		query: sectorListQuery,
 		preFetch: true,
 		result({ data }) {

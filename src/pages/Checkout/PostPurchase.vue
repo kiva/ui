@@ -9,7 +9,7 @@ export default {
 		return h('div');
 	},
 	inject: ['apollo'],
-	apollo: {
+	kvapollo: {
 		preFetch(config, client, { route }) {
 			return new Promise((resolve, reject) => {
 				if (typeof window !== 'undefined') {
