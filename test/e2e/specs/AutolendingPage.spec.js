@@ -1,16 +1,12 @@
 import { subDays } from 'date-fns';
 import wwwPageMock from '../fixtures/wwwPageMock';
 
-function saveSettings() {
-	cy.get('[data-test=save-button]').first().click();
-	cy.get('[data-test=tip-message]').contains('have been saved');
-}
-
 describe('Autolending Page Spec', () => {
 	beforeEach(() => {
 		cy.mock(wwwPageMock({
 			UserAccount: {
 				id: 42,
+				balance: '50'
 			}
 		}));
 		// Mock loan count
@@ -161,8 +157,10 @@ describe('Autolending Page Spec', () => {
 					isEnabled: true,
 					enableAfter: 0,
 				},
-				// This is setting the user's balance
-				Money: '3.00'
+				UserAccount: {
+					// This is setting the user's balance
+					balance: '3.00'
+				}
 			});
 
 			// Visit autolending settings
@@ -201,8 +199,6 @@ describe('Autolending Page Spec', () => {
 					lendAfterDaysIdle: 7,
 					donationPercentage: 5
 				},
-				// This is setting the user's balance
-				Money: '40.05'
 			});
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
@@ -222,8 +218,6 @@ describe('Autolending Page Spec', () => {
 					lendAfterDaysIdle: 45,
 					donationPercentage: 15
 				},
-				// This is setting the user's balance
-				Money: '40.90'
 			});
 
 			// Visit autolending settings
@@ -249,8 +243,6 @@ describe('Autolending Page Spec', () => {
 						lendAfterDaysIdle: 90,
 						donationPercentage: 15
 					},
-					// This is setting the user's balance
-					Money: '40.90'
 				});
 
 				// Visit autolending settings
@@ -273,8 +265,6 @@ describe('Autolending Page Spec', () => {
 						lendAfterDaysIdle: 90,
 						donationPercentage: 15
 					},
-					// This is setting the user's balance
-					Money: '40.90'
 				});
 
 				// Visit autolending settings
