@@ -76,7 +76,7 @@
 					class="header-button"
 					v-kv-track-event="['TopNav','click-About']"
 				>
-					<span>About <kv-icon name="triangle" :from-sprite="true" /></span>
+					<span>About <kv-icon class="triangle-icon" name="triangle" :from-sprite="true" /></span>
 				</router-link>
 				<router-link
 					v-show="showBasket"
