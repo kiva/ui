@@ -735,9 +735,4 @@ export default {
 ::v-deep .loading-spinner .line {
 	background-color: $white;
 }
-
-// Hide global promo bar (this is the promo landing page!!!)
-::v-deep .generic-banner {
-	display: none;
-}
 </style>
