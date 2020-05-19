@@ -1,4 +1,4 @@
-query teamInfoFromId($team_id: Int, $team_recruitment_id: Int) {
+query teamInfoFromId($team_id: Int, $team_recruitment_id: Int, $team_ids: [Int]) {
 	community {
 		team(id: $team_id) {
 			name
@@ -8,6 +8,13 @@ query teamInfoFromId($team_id: Int, $team_recruitment_id: Int) {
 	my {
 		teamRecruitment(id: $team_recruitment_id) {
 			recruiterDisplayName
+		}
+		teams(teamIds: $team_ids) {
+			values {
+				team {
+	  				id
+				}
+			}
 		}
 	}
 }
