@@ -159,7 +159,7 @@ export default {
 
 			.lightbox-columns {
 				position: relative;
-				// width: 100%;
+				width: 100%;
 				max-width: 900px;
 				padding-right: 0.0625rem;
 				padding-left: 0.0625rem;
