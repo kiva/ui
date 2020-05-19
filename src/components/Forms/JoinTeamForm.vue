@@ -21,6 +21,7 @@
 			<p v-if="showError" class="error">
 				Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
 			</p>
+			<loading-overlay id="loading-overlay-teams" v-if="loading" />
 		</div>
 		<div v-if="showSuccess">
 			<div v-if="isMember">
@@ -37,7 +38,6 @@
 			</div>
 			<p><a :href="doneUrl">Continue</a></p>
 		</div>
-		<loading-overlay id="loading-overlay-teams" v-if="loading" />
 	</div>
 </template>
 
@@ -59,29 +59,28 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		query: TeamInfoFromId,
-		preFetch: true,
-		variables() {
-			return {
-				team_id: this.teamId,
-				team_recruitment_id: this.teamRecruitmentId
-			};
-		},
-		preFetchVariables({ route }) {
-			return {
-				team_id: numeral(route.query.team_id).value(),
-				team_recruitment_id: numeral(route.query.id).value(),
-				promo_id: numeral(route.query.promo_id).value(),
-			};
-		},
-		result({ data }) {
-			this.teamName = _get(data, 'community.team.name');
-			if (!this.inviterDisplayName) {
-				this.inviterDisplayName = _get(data, 'my.teamRecruitment.recruiterDisplayName');
-			}
-			if (this.inviterDisplayName === 'Anonymous') {
-				this.inviterDisplayName = null;
-			}
+		preFetch(config, client, { route }) {
+			return client.query({
+				query: TeamInfoFromId,
+				variables: {
+					team_id: numeral(route.query.team_id).value(),
+					team_recruitment_id: numeral(route.query.id).value(),
+					team_ids: [numeral(route.query.team_id).value()],
+				}
+			}).then(({ data }) => {
+				const isMember = _get(data, 'my.teams.values', []).length;
+				// if lender is a member proceed to authenticate/redirect
+				// this route will handle the redirect to basket/payment or checkout
+				if (isMember) {
+					return Promise.reject({
+						path: '/authenticate/redirect',
+						query: {
+							team_id: numeral(route.query.team_id).value(),
+							promo_id: numeral(route.query.promo_id).value(),
+						}
+					});
+				}
+			});
 		},
 	},
 	data() {
@@ -165,34 +164,25 @@ export default {
 			this.showError = false;
 			window.location.href = `/declineInvitationToJoinTeam?team_id=${this.teamId}&doneUrl=${this.doneUrl}`;
 		},
-		handleAlreadyJoined() {
-			const teamId = this.$route.query.team_id ? numeral(this.$route.query.team_id).value() : null;
-			if (teamId) {
-				this.loading = true;
-				this.apollo.query({
-					query: myTeamsQuery,
-					variables: {
-						teamIds: [teamId]
-					}
-				}).then(({ data }) => {
-					this.isMember = _get(data, 'my.teams.values', []).length;
-					// if lender is a member proceed
-					if (this.isMember) {
-						window.location = '/authenticate/redirect&team_id=278842&promo_id=286';
-					}
-					if (!this.isMember) {
-						this.loading = false;
-					}
-				});
-			}
-		}
 	},
 	created() {
-		// in the browser check if the lender has already joined the team
-		if (typeof window !== 'undefined') {
-			this.handleAlreadyJoined();
+		const teamInfo = this.apollo.readQuery({
+			query: TeamInfoFromId,
+			variables: {
+				team_id: numeral(this.$route.query.team_id).value(),
+				team_recruitment_id: numeral(this.$route.query.id).value(),
+				team_ids: [numeral(this.$route.query.team_id).value()],
+			},
+		});
+		// handle pending team and invite information
+		this.teamName = _get(teamInfo, 'community.team.name');
+		if (!this.inviterDisplayName) {
+			this.inviterDisplayName = _get(teamInfo, 'my.teamRecruitment.recruiterDisplayName');
 		}
-	}
+		if (this.inviterDisplayName === 'Anonymous') {
+			this.inviterDisplayName = null;
+		}
+	},
 };
 </script>
 
