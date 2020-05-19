@@ -651,7 +651,4 @@ export default {
 	display: none;
 }
 
-.generic-banner {
-	display: none;
-}
 </style>

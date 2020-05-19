@@ -1,22 +1,9 @@
 query lendMenuData {
-	my {
-		userAccount {
-			id
-		}
-	}
 	lend {
 		loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
 			values {
 				name
 				url
-			}
-		}
-		countryFacets {
-			count
-			country {
-				name
-				region
-				isoCode
 			}
 		}
 	}

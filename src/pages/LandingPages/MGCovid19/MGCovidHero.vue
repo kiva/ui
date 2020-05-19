@@ -171,7 +171,7 @@ export default {
 			margin-top: -1rem;
 			margin-left: 1rem;
 			margin-right: 1rem;
-			z-index: 10;
+			z-index: 1;
 			position: relative;
 			top: auto;
 			width: auto;

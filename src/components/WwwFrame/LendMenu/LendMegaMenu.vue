@@ -2,6 +2,7 @@
 	<div class="lend-mega-menu">
 		<div class="categories-section" :style="{ marginLeft: categoriesMargin }">
 			<h2>Categories</h2>
+			<kv-loading-spinner v-if="isChannelsLoading" />
 			<ul :style="categoriesStyle">
 				<li
 					v-for="(category, index) in categories"
@@ -43,6 +44,7 @@
 		</kv-expandable>
 		<div class="middle-section">
 			<h2>Regions</h2>
+			<kv-loading-spinner v-if="isRegionsLoading" />
 			<ul>
 				<li v-for="region in regions" :key="region.name">
 					<button
@@ -88,14 +90,11 @@
 			</ul>
 		</div>
 		<kv-expandable property="width" :skip-leave="true">
-			<!-- eslint-disable -->
 			<div
-				v-for="region in regions"
+				v-for="region in openRegions"
 				:key="region.name"
-				v-if="isOpenSection(region.name)"
 				class="right-section"
 			>
-			<!-- eslint-enable -->
 				<h2>{{ region.name }}</h2>
 				<country-list :countries="region.countries" />
 			</div>
@@ -114,9 +113,11 @@ import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
+		KvLoadingSpinner,
 		CountryList,
 		KvExpandable,
 		KvIcon,
@@ -130,6 +131,14 @@ export default {
 		favorites: {
 			type: Number,
 			default: 0,
+		},
+		isRegionsLoading: {
+			type: Boolean,
+			default: true,
+		},
+		isChannelsLoading: {
+			type: Boolean,
+			default: true,
 		},
 		userId: {
 			type: Number,
@@ -166,6 +175,9 @@ export default {
 		},
 		sectionOpen() {
 			return this.openedSection !== '';
+		},
+		openRegions() {
+			return this.regions.filter(region => this.isOpenSection(region.name));
 		}
 	},
 	watch: {
@@ -179,11 +191,17 @@ export default {
 		// that wide if it isn't, due to the flexbox bug mentioned above.
 		checkCategoryWidth() {
 			this.categoriesWidth = null;
-			this.$nextTick(() => {
-				const firstColumnWidth = this.getRefWidth('categories[0]');
-				const secondColumnWidth = this.getRefWidth('allLoans');
-				this.categoriesWidth = `${firstColumnWidth + secondColumnWidth}px`;
-			});
+			if (this.categories.length === 0) {
+				// sensible default for categories while they load
+				// avoids resizing the menu too much since the other parts will have loaded already
+				this.categoriesWidth = '257px';
+			} else {
+				this.$nextTick(() => {
+					const firstColumnWidth = this.getRefWidth('categories[0]');
+					const secondColumnWidth = this.getRefWidth('allLoans');
+					this.categoriesWidth = `${firstColumnWidth + secondColumnWidth}px`;
+				});
+			}
 		},
 		getRefWidth(refPath) {
 			const ref = _get(this.$refs, refPath);
