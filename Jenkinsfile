@@ -53,8 +53,22 @@ pipeline {
             sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE} --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8sdev"
           }
         }
-        }
+	  }
+    }
+
+    stage('Kubernetes_Test_Deployment') {
+      when {
+        branch 'master'
       }
+      steps {
+        echo "Deploying to development Kubernetes cluster..."
+        withKubeConfig([credentialsId: "jenkins-ci-kubeconfig"]) {
+          withAWS([credentials: "jenkins-ci"]) {
+            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE} --values ./deploy/test/values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8stest"
+          }
+        }
+	  }
+    }
 
   }
 }
