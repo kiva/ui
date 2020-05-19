@@ -141,7 +141,8 @@ export default {
 						query: myTeamsQuery,
 						variables: {
 							teamIds: [this.teamId]
-						}
+						},
+						fetchPolicy: 'network-only',
 					});
 				}
 			}).then(result => {
