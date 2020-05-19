@@ -128,7 +128,7 @@
 		"app-manifest-loader": "^2.4.1",
 		"autoprefixer": "^9.6.1",
 		"babel-core": "^7.0.0-bridge.0",
-		"babel-eslint": "^10.0.3",
+		"babel-eslint": "^10.1.0",
 		"babel-jest": "^23.4.2",
 		"babel-loader": "^8.0.0",
 		"babel-preset-vue": "^2.0.2",
