@@ -106,6 +106,9 @@ export default {
 	mounted() {
 		this.isShown = this.visible;
 	},
+	beforeDestroy() {
+		this.closeLightbox();
+	},
 	methods: {
 		closeLightbox() {
 			this.isShown = false;
