@@ -1,0 +1,37 @@
+# Default values for kiva-ui service.
+
+image:
+  repository: kiva/ui
+  tag: "" # Expected be set by Jenkins
+  pullPolicy: Always
+
+deployenv:
+  environment: "" # set either by jenkins or manually
+
+secretName: kiva-ui
+
+replicaCount: 2
+
+strategy:
+  type: "RollingUpdate"
+
+service:
+  type: ClusterIP
+  port: 8888
+  portName: &servicePortName "http"
+
+ingress:
+  host: "ui-test.dk1.kiva.org"
+  spec:
+    rules:
+      - host: "ui-test.dk1.kiva.org"
+        http:
+          paths:
+          - backend:
+              serviceName: "kiva-ui"
+              servicePort: *servicePortName
+            path: /
+  tls:
+    - hosts:
+      - ui-test.dk1.kiva.org
+      secretName: "kiva-ui-tls"
