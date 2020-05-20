@@ -10,7 +10,7 @@
 			role="dialog"
 		>
 			<focus-lock>
-				<div class="kv-lightbox">
+				<div class="kv-lightbox" role="document">
 					<div class="row lightbox-row">
 						<div class="columns lightbox-columns">
 							<!-- eslint-disable max-len -->
