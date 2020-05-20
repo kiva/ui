@@ -4,11 +4,6 @@
 		:footer-theme="footerTheme"
 	>
 		<component :is="activeHomepage" />
-		<router-link
-			:to="`/page-two`"
-		>
-			PAGE TWO TEST
-		</router-link>
 	</www-page>
 </template>
 
