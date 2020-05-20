@@ -63,8 +63,8 @@ pipeline {
       }
       steps {
         echo "Deploying to development Kubernetes cluster..."
-        withKubeConfig([credentialsId: "jenkins-ci-kubeconfig"]) {
-          withAWS([credentials: "jenkins-ci"]) {
+        withKubeConfig([credentialsId: "kivadev-k8s-config"]) {
+          withAWS([credentials: "jenkins-ci-marketplace-dev"]) {
             sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_TEST_NAMESPACE} --values ./deploy/test/values.yaml --set image.tag=${TAG_NAME} --set deployenv.environment=k8stest"
           }
         }
