@@ -12,10 +12,11 @@
 			<li>
 				<h4>Can I just contribute to the response fund once, rather than monthly?</h4>
 				<p>
-					Yes. If you choose “One-time support”, the selected amount will only be deposited once.
+					Yes. If you choose “One-time support”
 					<button class="show-form-btn" @click="showLightbox">
-						Show form
+						using this form
 					</button>
+					, the selected amount will only be deposited once.
 				</p>
 			</li>
 			<li>
@@ -86,8 +87,8 @@ export default {
 			this.isLightboxVisible = true;
 			this.$kvTrackEvent(
 				'Monthly Good',
-				'EXP-GROW-104-May2020',
-				'onetime-lightbox-opened' // TODO: Verify this is the event we want
+				'click-FAQ-onetime-lightbox-open',
+				'using this form'
 			);
 		},
 		hideLightbox() {
