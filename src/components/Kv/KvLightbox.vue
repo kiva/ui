@@ -112,6 +112,11 @@ export default {
 	},
 	mounted() {
 		this.isShown = this.visible;
+
+		if (this.$slots.title) {
+			this.$slots.title[0].elm.id = 'title';
+			this.$refs.kvlightbox.ariaLabelledby = 'title';
+		}
 	},
 	beforeDestroy() {
 		this.closeLightbox();
