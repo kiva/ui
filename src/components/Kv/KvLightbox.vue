@@ -115,7 +115,7 @@ export default {
 
 		if (this.$slots.title) {
 			this.$slots.title[0].elm.id = 'title';
-			this.$refs.kvlightbox.ariaLabelledby = 'title';
+			this.$refs.kvlightbox.setAttribute('aria-labelledby', 'title');
 		}
 	},
 	beforeDestroy() {
