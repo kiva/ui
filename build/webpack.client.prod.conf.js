@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'production'
+
 var merge = require('webpack-merge');
 var baseWebpackConfig = require('./webpack.client.base.conf');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
