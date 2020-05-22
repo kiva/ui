@@ -100,6 +100,13 @@ export default {
 			message: ''
 		};
 	},
+	computed: {
+		// when declining to Join the Team extract the final destination
+		// this prevents us from a proxy error or landing back on join-team with no action to take
+		extractedDoneUrl() {
+			return this.doneUrl.replace('join-team?doneUrl=', '');
+		},
+	},
 	methods: {
 		handleJoinTeam() {
 			this.loading = true;
@@ -163,7 +170,8 @@ export default {
 		},
 		handleRejectTeam() {
 			this.showError = false;
-			window.location.href = `/declineInvitationToJoinTeam?team_id=${this.teamId}&doneUrl=${this.doneUrl}`;
+			// eslint-disable-next-line max-len
+			window.location.href = `/declineInvitationToJoinTeam?team_id=${this.teamId}&doneUrl=${this.extractedDoneUrl}`;
 		},
 	},
 	created() {
