@@ -7,44 +7,52 @@
 			ref="kvlightbox"
 			@keyup.esc="closeLightbox"
 			@click.stop.prevent="closeLightbox"
-			tabindex="500"
+			role="dialog"
 		>
-			<div class="kv-lightbox">
-				<div class="row lightbox-row">
-					<div class="columns lightbox-columns">
-						<!-- eslint-disable max-len -->
-						<div
-							class="lightbox-content"
-							:class="`${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingSides ? 'no-padding-sides': ''}`"
-							@click.stop
-						>
-							<!-- eslint-enable max-len -->
-							<button @click.stop.prevent="closeLightbox" class="close-lightbox" aria-label="Close">
-								<kv-icon name="small-x" :from-sprite="true" />
-							</button>
-							<slot name="title"></slot>
-							<slot>Lightbox content</slot>
-							<br v-if="!noPaddingBottom">
-							<slot name="controls">
-								<kv-button v-if="showCloseButton" @click.native="closeLightbox">
-									Close
-								</kv-button>
-							</slot>
+			<focus-lock>
+				<div class="kv-lightbox" role="document">
+					<div class="row lightbox-row">
+						<div class="columns lightbox-columns">
+							<!-- eslint-disable max-len -->
+							<div
+								class="lightbox-content"
+								:class="`${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingSides ? 'no-padding-sides': ''}`"
+								@click.stop
+							>
+								<!-- eslint-enable max-len -->
+								<button
+									@click.stop.prevent="closeLightbox"
+									class="close-lightbox"
+									aria-label="Close"
+								>
+									<kv-icon name="small-x" :from-sprite="true" />
+								</button>
+								<slot name="title"></slot>
+								<slot>Lightbox content</slot>
+								<br v-if="!noPaddingBottom">
+								<slot name="controls">
+									<kv-button v-if="showCloseButton" @click.native="closeLightbox">
+										Close
+									</kv-button>
+								</slot>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</focus-lock>
 		</div>
 	</transition>
 </template>
 
 <script>
+import FocusLock from 'vue-focus-lock';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
 	components: {
+		FocusLock,
 		KvIcon,
 		KvButton
 	},
@@ -95,7 +103,6 @@ export default {
 			// this ensures the esc functionality works
 			if (this.isShown) {
 				this.$nextTick(() => {
-					this.$refs.kvlightbox.focus();
 					this.lockScroll();
 				});
 			} else {
