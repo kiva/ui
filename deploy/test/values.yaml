@@ -35,8 +35,6 @@ ingress:
               servicePort: *servicePortName
             path: /
   tls:
-	- hosts:
-      - ui-test.dk1.kiva.org
-      secretName: "kiva-ui-no-secret"
-      #- ui-test.dk1.kiva.org
-      #secretName: "kiva-ui-tls"
+    - hosts:
+      - ui-test.dk1.kiva.org #- ui-test.dk1.kiva.org
+      secretName: "kiva-ui-no-secret" #secretName: "kiva-ui-tls"
