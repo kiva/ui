@@ -5,10 +5,28 @@
 				class="mg-hero-picture"
 				:images="heroImages"
 				alt=""
+				v-if="!expVideoActive"
 			/>
 		</template>
 		<template v-slot:overlayContent>
 			<div class="row">
+				<div class="
+						video-column
+						columns
+						small-12 xlarge-5 xxlarge-6
+						align-self-middle"
+					v-if="expVideoActive"
+				>
+					<div class="video-container">
+						<iframe
+							src="https://www.youtube-nocookie.com/embed/WCraaM6PAos?autoplay=1&mute=1&modestbranding=1"
+							frameborder="0"
+							allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+							allowfullscreen
+						></iframe>
+					</div>
+				</div>
+
 				<div class="
 						overlay-column columns
 						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
@@ -114,6 +132,7 @@ export default {
 				['wxga', heroImagesRequire('./hero_1920x740.jpg')],
 				['wga retina', heroImagesRequire('./hero_3840x1480.jpg')],
 			],
+			expVideoActive: true,
 		};
 	},
 	computed: {
@@ -139,7 +158,8 @@ export default {
 }
 
 .mg-hero {
-	background-color: #fdf7eb;
+	// background-color: #fdf7eb;
+	background-color: #EEEFE9;
 	margin-bottom: 0;
 	padding-bottom: 1rem;
 	position: relative;
@@ -224,5 +244,30 @@ export default {
 
 	padding: 0;
 	margin-bottom: 1.5rem;
+}
+
+.video-column {
+	margin: 2rem auto;
+
+	@include breakpoint('xlarge') {
+		order: 2;
+	}
+}
+
+.video-container {
+	position: relative;
+	padding-bottom: 56.25%; // 16:9 ratio
+	height: 0;
+	overflow: hidden;
+
+	iframe,
+	object,
+	embed {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
 }
 </style>
