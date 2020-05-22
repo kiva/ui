@@ -10,7 +10,7 @@ deployenv:
 
 secretName: kiva-ui
 
-replicaCount: 2
+replicaCount: 1
 
 strategy:
   type: "RollingUpdate"
@@ -21,7 +21,10 @@ service:
   portName: &servicePortName "http"
 
 ingress:
+  name: "kiva-ui-temp"
   host: "ui-test.dk1.kiva.org"
+  annotations:
+    cert-manager.io/cluster-issuer: ""
   spec:
     rules:
       - host: "ui-test.dk1.kiva.org"
@@ -32,6 +35,8 @@ ingress:
               servicePort: *servicePortName
             path: /
   tls:
-    - hosts:
+	- hosts:
       - ui-test.dk1.kiva.org
-      secretName: "kiva-ui-tls"
+      secretName: "kiva-ui-no-secret"
+      #- ui-test.dk1.kiva.org
+      #secretName: "kiva-ui-tls"
