@@ -27,7 +27,7 @@ ingress:
     cert-manager.io/cluster-issuer: ""
   spec:
     rules:
-      - host: "ui-test.dk1.kiva.org"
+      - host: "a660dcce1f7d94e26bb5028c32267824-828904537.us-west-2.elb.amazonaws.com" # "ui-test.dk1.kiva.org"
         http:
           paths:
           - backend:
