@@ -94,7 +94,7 @@
 		"title-case": "^3.0.2",
 		"vue": "^2.6.11",
 		"vue-focus-lock": "^1.4.0",
-		"vue-instantsearch": "^2.4.0",
+		"vue-instantsearch": "^2.7.0",
 		"vue-meta": "^2.3.3",
 		"vue-progressbar": "^0.7.3",
 		"vue-router": "^3.1.6",
