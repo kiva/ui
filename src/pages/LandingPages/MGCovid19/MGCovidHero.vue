@@ -61,6 +61,8 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import CovidLandingForm from './CovidLandingForm';
@@ -69,6 +71,10 @@ const pageQuery = gql`
   {
     general {
       mg_covid_active: uiConfigSetting(key: "covid_landing_active") {
+        key
+        value
+      }
+      video_exp: uiExperimentSetting(key: "covid_landing_video") {
         key
         value
       }
@@ -98,6 +104,8 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery
+			}).then(() => {
+				return client.query({ query: experimentAssignmentQuery, variables: { id: 'covid_landing_video' } });
 			});
 		},
 		result({ data }) {
@@ -107,6 +115,15 @@ export default {
 				'my.autoDeposit.isSubscriber',
 				false
 			);
+			const covidVideoExp = this.apollo.readFragment({
+				id: 'Experiment:covid_landing_video',
+				fragment: experimentVersionFragment,
+			}) || {};
+			const { version } = covidVideoExp;
+			this.expVideoActive = version === 'shown';
+			if (version === 'control' || version === 'shown') {
+				this.$kvTrackEvent('Home', 'EXP-GROW-112-May2020', this.expVideoActive ? 'b' : 'a');
+			}
 		}
 	},
 	props: {
