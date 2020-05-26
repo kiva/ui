@@ -106,7 +106,7 @@
 		"winston": "^3.2.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.0.0",
+		"@babel/core": "^7.9.6",
 		"@babel/plugin-syntax-dynamic-import": "^7.0.0",
 		"@babel/plugin-syntax-import-meta": "^7.0.0",
 		"@babel/plugin-transform-modules-commonjs": "^7.0.0",
