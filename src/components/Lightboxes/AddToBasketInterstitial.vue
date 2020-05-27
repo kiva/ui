@@ -7,7 +7,7 @@
 			:no-padding-bottom="true"
 			@lightbox-closed="closeLightbox"
 		>
-			<h1 class="lightbox-title" slot="title">
+			<h1 class="lightbox-title">
 				Thanks for your commitment to make an impact
 			</h1>
 			<div class="lightbox-loan-wrapper">

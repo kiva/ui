@@ -30,17 +30,10 @@
 
 				<kv-lightbox
 					class="autolending-when-lightbox"
-					:no-padding-bottom="true"
-					:no-padding-top="true"
 					:visible="showLightbox"
+					title="Choose when your balance will be auto-lent"
 					@lightbox-closed="showLightbox = false"
 				>
-					<template slot="title">
-						<h3>
-							Choose when your balance will be auto-lent
-						</h3>
-						<hr>
-					</template>
 					<div class="when-inputs-wrapper">
 						<lend-timing-dropdown />
 						<kv-radio
@@ -78,7 +71,6 @@
 						</kv-radio>
 					</div>
 					<template slot="controls">
-						<hr>
 						<kv-button
 							data-test="when-save-button"
 							class="smaller button"
@@ -216,22 +208,8 @@ export default {
 @import 'settings';
 
 .autolending-when-lightbox {
-	::v-deep .kv-lightbox {
-		max-width: 680px;
-	}
-
-	h3 {
-		margin-top: 1.75rem;
-		display: inline-block;
-		font-weight: $global-weight-bold;
-	}
-
 	.when-inputs-wrapper {
 		padding: 1.5rem 0;
-	}
-
-	.button {
-		margin-bottom: 1.75rem;
 	}
 
 	.dropdown-wrapper {

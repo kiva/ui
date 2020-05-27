@@ -37,17 +37,10 @@
 
 				<kv-lightbox
 					class="autolending-status-lightbox"
-					:no-padding-bottom="true"
-					:no-padding-top="true"
 					:visible="showLightbox"
+					title="Change your auto-lending status"
 					@lightbox-closed="showLightbox = false"
 				>
-					<template slot="title">
-						<h3>
-							Change your auto-lending status
-						</h3>
-						<hr>
-					</template>
 					<div class="status-radio-wrapper">
 						<kv-radio
 							data-test="is-autolending-on"
@@ -86,7 +79,6 @@
 						</kv-radio>
 					</div>
 					<template slot="controls">
-						<hr>
 						<kv-button
 							data-test="status-save-button"
 							class="smaller button"
@@ -266,22 +258,8 @@ export default {
 @import 'settings';
 
 .autolending-status-lightbox {
-	::v-deep .kv-lightbox {
-		max-width: 520px;
-	}
-
-	h3 {
-		margin-top: 1.75rem;
-		display: inline-block;
-		font-weight: $global-weight-bold;
-	}
-
 	.status-radio-wrapper {
 		padding: 1.5rem 0;
-	}
-
-	.button {
-		margin-bottom: 1.75rem;
 	}
 
 	.dropdown-wrapper {

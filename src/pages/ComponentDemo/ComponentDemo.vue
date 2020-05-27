@@ -25,11 +25,9 @@
 
 				<kv-lightbox
 					:visible="defaultLbVisible"
+					title="What is an Experimental Field Partner?"
 					@lightbox-closed="lightboxClosed"
 				>
-					<h2 slot="title">
-						What is an Experimental Field Partner?
-					</h2>
 					<p>
 						If a Field Partner is labeled as Experimental, this means that Kiva has required
 						only a comparatively light level of due diligence and monitoring, in exchange for
@@ -54,12 +52,9 @@
 				<kv-lightbox
 					:visible="invertedLbVisible"
 					:inverted="true"
-					:show-close-button="true"
+					title="What is an Experimental Field Partner?"
 					@lightbox-closed="lightboxClosed"
 				>
-					<h2 slot="title">
-						What is an Experimental Field Partner?
-					</h2>
 					<p>
 						If a Field Partner is labeled as Experimental, this means that Kiva has required
 						only a comparatively light level of due diligence and monitoring, in exchange for

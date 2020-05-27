@@ -17,30 +17,22 @@
 
 				<kv-lightbox
 					class="autolending-who-lightbox"
-					:no-padding-bottom="true"
-					:no-padding-top="true"
 					:visible="showLightbox"
+					title="Choose who you’ll support"
 					@lightbox-closed="showLightbox = false; showSelectedFilterOptions = false;"
 				>
-					<template slot="title">
-						<div class="who-titles-wrapper">
-							<transition :name="slideTransition" mode="out-in">
-								<h3 v-if="!showSelectedFilterOptions">
-									Choose who you’ll support
-								</h3>
-								<a
-									v-if="showSelectedFilterOptions"
-									role="button"
-									class="back-to-options"
-									@click.prevent="backToAllOptions"
-								>
-									<kv-icon class="arrow back-arrow" name="small-chevron" :from-sprite="true" />
-									Back to all options</a>
-							</transition>
-							<hr>
-						</div>
-					</template>
 					<div class="who-inputs-wrapper">
+						<transition :name="slideTransition" mode="out-in">
+							<span v-if="!showSelectedFilterOptions"></span>
+							<a
+								v-if="showSelectedFilterOptions"
+								role="button"
+								class="back-to-options"
+								@click.prevent="backToAllOptions"
+							>
+								<kv-icon class="arrow back-arrow" name="small-chevron" :from-sprite="true" />
+								Back to all options</a>
+						</transition>
 						<transition
 							:name="slideTransition"
 							mode="out-in"
@@ -123,7 +115,6 @@
 						</transition>
 					</div>
 					<template slot="controls">
-						<hr>
 						<div class="row">
 							<div class="columns shrink">
 								<save-button @autolendingSaved="settingsSaved" />
@@ -246,33 +237,37 @@ export default {
 @import 'settings';
 
 .autolending-who-lightbox {
-	::v-deep .kv-lightbox {
-		max-width: 680px;
-
-		.filter-title {
-			font-size: 1rem;
-			margin: 1rem auto 0.5rem auto;
-			font-weight: $global-weight-highlight;
-		}
-	}
-
 	h3 {
-		margin-top: 1.75rem;
-		display: inline-block;
 		font-weight: $global-weight-bold;
 	}
 
 	.who-inputs-wrapper {
 		padding: 1.5rem 0 1.5rem 0.15rem;
 		overflow: hidden;
+
+		span, // placeholder span and a set to same width so animation is smoother
+		a {
+			width: 100%;
+		}
 	}
 
-	.who-titles-wrapper {
-		overflow: hidden;
+	::v-deep .kv-lightbox {
+		.who-inputs-wrapper {
+			max-width: 100%;
 
-		h3,
-		a {
-			width: 80%; // sets h3 and a to same width so animation is smoother
+			@include breakpoint('large') {
+				width: rem-calc(530);
+			}
+
+			@include breakpoint('xxlarge') {
+				width: rem-calc(680);
+			}
+		}
+
+		.filter-title {
+			font-size: 1rem;
+			margin: 1rem auto 0.5rem auto;
+			font-weight: $global-weight-highlight;
 		}
 	}
 
@@ -285,9 +280,8 @@ export default {
 	}
 
 	.back-to-options {
-		margin-top: 1.75rem;
-		line-height: rem-calc(32);
-		display: inline-block;
+		margin-bottom: 1.75rem;
+		display: block;
 	}
 
 	.arrow {
