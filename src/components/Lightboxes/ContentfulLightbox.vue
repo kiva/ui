@@ -47,10 +47,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-// allows narrower lightboxes that aren't necessarily the full width of the page
-.kv-lightbox-wrap ::v-deep .kv-lightbox .lightbox-row .lightbox-columns {
-	width: auto;
-}
-</style>

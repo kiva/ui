@@ -102,24 +102,24 @@
 		<kv-lightbox
 			:visible="defaultLbVisible"
 			@lightbox-closed="lightboxClosed"
+			title="How does Kiva use donations?"
 		>
-			<h2 slot="title">
-				How does Kiva use donations?
-			</h2>
-			<div>
+			<p>
 				100% of every dollar you lend on Kiva goes directly to funding loans.
 				We rely on small optional donations from you and others to keep Kiva running.
 				Every $1 donated to Kiva makes $8 in loans possible around the world.
 				Your donation will enable us to:
-				<ul style="list-style-type: disc;">
-					<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
-					<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
-					<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
-					<li>Train and support hundreds of volunteers -- 4 for every 1 staff member at Kiva.</li>
-				</ul>
+			</p>
+			<ul style="margin-bottom: 1rem;">
+				<li>Send expert staff to over 60 countries to vet and monitor loans and partners.</li>
+				<li>Build and maintain a website that facilitates over $1 million in loans each week.</li>
+				<li>Provide comprehensive customer support to thousands of lenders worldwide.</li>
+				<li>Train and support hundreds of volunteers -- 4 for every 1 staff member at Kiva.</li>
+			</ul>
+			<p>
 				If you live in the United States, your donation is tax-deductible.
 				Thank you for considering a donation to Kiva.
-			</div>
+			</p>
 		</kv-lightbox>
 	</div>
 </template>

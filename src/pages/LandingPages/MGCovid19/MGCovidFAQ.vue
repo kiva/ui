@@ -56,6 +56,7 @@
 
 		<kv-lightbox
 			:visible="isLightboxVisible"
+			title="Contribute"
 			@lightbox-closed="hideLightbox"
 		>
 			<covid-landing-form

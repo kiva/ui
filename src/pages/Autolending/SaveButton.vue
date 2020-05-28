@@ -14,27 +14,23 @@
 		</kv-button>
 		<kv-lightbox
 			:visible="warningVisible"
-			:no-padding-top="true"
-			:no-padding-sides="true"
-			:no-padding-bottom="true"
 			@lightbox-closed="closeWarning"
+			title="Criteria too narrow"
+			class="lightbox"
 		>
-			<template #title>
-				<h2 class="warning-title">
-					Criteria too narrow
-				</h2>
-			</template>
 			<p class="warning-text">
 				There {{ beVerb }} {{ loansLeft }} that {{ matchVerb }} your criteria -
 				we may not be able to lend your funds.
 			</p>
-			<template #controls>
-				<kv-button class="smallest warning-button" @click.native="closeWarning">
-					Add more categories
-				</kv-button>
-				<kv-button class="smallest secondary warning-button" @click.native="save">
-					Continue anyway
-				</kv-button>
+			<template v-slot:controls>
+				<div class="warning-buttons">
+					<kv-button class="smallest secondary" @click.native="save">
+						Continue anyway
+					</kv-button>
+					<kv-button class="smallest" @click.native="closeWarning">
+						Add more categories
+					</kv-button>
+				</div>
 			</template>
 		</kv-lightbox>
 	</div>
@@ -154,29 +150,24 @@ export default {
 		}
 	}
 
-	.kv-lightbox-wrap .kv-lightbox .lightbox-row .lightbox-columns {
-		max-width: rem-calc(524);
-
-		.lightbox-content {
-			text-align: center;
-			padding: 1rem 1.5rem 0.5rem;
-		}
-	}
-
-	.warning-title {
-		color: $kiva-accent-red;
-		font-weight: 500;
-		margin-bottom: 1rem;
-	}
-
 	.warning-text {
 		font-size: rem-calc(18);
 		margin-bottom: 1.5rem;
 	}
 
-	.warning-button {
-		display: block;
-		margin: 0 auto 1rem;
+	.warning-buttons {
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-rows: auto auto;
+
+		@include breakpoint('large') {
+			grid-template-rows: auto;
+			grid-template-columns: max-content max-content;
+		}
 	}
+}
+
+.lightbox {
+	--kv-lightbox-title-color: #{$kiva-accent-red};
 }
 </style>

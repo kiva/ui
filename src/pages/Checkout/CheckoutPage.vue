@@ -88,30 +88,24 @@
 
 				<kv-lightbox
 					:visible="redirectLightboxVisible"
+					title="This checkout is being tested right now, but doesn't support some functions yet."
 					@lightbox-closed="redirectLightboxClosed"
 				>
-					<section>
-						<h1>
-							This checkout is being tested right now, but doesn't support some functions yet.
-						</h1>
-
-						<p>
-							We'll redirect you so you can get back to changing lives, or click here if you aren't
-							automatically redirected.
-						</p>
-
-						<p>Thank you for minding our dust.</p>
-					</section>
-
-					<kv-button slot="controls"
-						class="smaller checkout-button"
-						id="Continue-to-legacy-button"
-						v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-						title="Continue"
-						@click.prevent.native="redirectToLegacy"
-					>
-						Continue
-					</kv-button>
+					<p>
+						We'll redirect you so you can get back to changing lives, or click here if you aren't
+						automatically redirected.
+					</p>
+					<p>Thank you for minding our dust.</p>
+					<template v-slot:controls>
+						<kv-button
+							class="smaller checkout-button"
+							id="Continue-to-legacy-button"
+							v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
+							@click.prevent.native="redirectToLegacy"
+						>
+							Continue
+						</kv-button>
+					</template>
 				</kv-lightbox>
 			</div>
 		</div>

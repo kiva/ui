@@ -8,8 +8,9 @@
 			@keyup.esc="closeLightbox"
 			@click.stop.prevent="closeLightbox"
 			role="dialog"
+			:aria-labelledby="title ? 'lightbox-title' : null"
 		>
-			<focus-lock>
+			<focus-lock :disabled="!isShown">
 				<div class="kv-lightbox" role="document">
 					<div class="row lightbox-row">
 						<div class="columns lightbox-columns">
@@ -20,21 +21,24 @@
 								@click.stop
 							>
 								<!-- eslint-enable max-len -->
+								<h2 v-if="title"
+									class="lightbox-title"
+									id="lightbox-title"
+								>
+									{{ title }}
+								</h2>
 								<button
 									@click.stop.prevent="closeLightbox"
 									class="close-lightbox"
 									aria-label="Close"
 								>
-									<kv-icon name="small-x" :from-sprite="true" />
+									<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" />
 								</button>
-								<slot name="title"></slot>
 								<slot>Lightbox content</slot>
-								<br v-if="!noPaddingBottom">
-								<slot name="controls">
-									<kv-button v-if="showCloseButton" @click.native="closeLightbox">
-										Close
-									</kv-button>
-								</slot>
+
+								<div class="lightbox-controls">
+									<slot name="controls"></slot>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -47,14 +51,12 @@
 <script>
 import FocusLock from 'vue-focus-lock';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvButton from '@/components/Kv/KvButton';
 import lockScrollUtils from '@/plugins/lock-scroll';
 
 export default {
 	components: {
 		FocusLock,
 		KvIcon,
-		KvButton
 	},
 	mixins: [
 		lockScrollUtils,
@@ -69,11 +71,11 @@ export default {
 			type: Boolean,
 			default: false
 		},
-		inverted: {
-			type: Boolean,
-			default: false
+		title: {
+			type: String,
+			default: '',
 		},
-		showCloseButton: {
+		inverted: {
 			type: Boolean,
 			default: false
 		},
@@ -99,8 +101,6 @@ export default {
 		// Create and set our internal visibility property
 		visible() {
 			this.isShown = this.visible;
-			// if the lightbox is shown give it focus
-			// this ensures the esc functionality works
 			if (this.isShown) {
 				this.$nextTick(() => {
 					this.lockScroll();
@@ -129,10 +129,9 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
-/* Background, Structure + Close Button Styles */
 .kv-lightbox-wrap {
 	display: block;
 	position: fixed;
@@ -161,13 +160,10 @@ export default {
 			padding: 0;
 			align-items: center;
 			flex-direction: column;
-			margin-right: -0.0625rem;
-			margin-left: -0.0625rem;
 
 			.lightbox-columns {
 				position: relative;
-				width: 100%;
-				max-width: 900px;
+				max-width: rem-calc(900);
 				padding-right: 0.0625rem;
 				padding-left: 0.0625rem;
 			}
@@ -177,23 +173,35 @@ export default {
 		.lightbox-content {
 			display: block;
 			position: relative;
-			padding: 2.625rem 1.5rem 1.5rem 1.5rem;
+			padding: 1.5rem;
+			margin: 1rem;
 			max-width: 61rem;
 			background: $white;
 			border-radius: rem-calc(4);
 
 			@include breakpoint(medium) {
-				padding: 4rem 2.8125rem 2.8125rem 2.8125rem;
+				padding: 2.8125rem;
+				margin: 1.5rem;
 			}
 
 			@include breakpoint(large) {
-				padding: 4.75rem 2.8125rem 2.8125rem 2.8125rem;
+				padding: 2.8125rem;
+			}
+
+			.lightbox-title {
+				color: inherit;
+				color: var(--kv-lightbox-title-color, inherit);
+				padding-right: 1rem;
 			}
 
 			.close-lightbox {
+				width: 2.5rem;
+				height: 2.5rem;
+				padding-left: 0.25rem;
+				padding-top: 0.375rem;
 				position: absolute;
-				top: 1rem;
-				right: 1rem;
+				top: 0.75rem;
+				right: 0.75rem;
 
 				.icon-small-x {
 					height: 1.5rem;
@@ -206,16 +214,6 @@ export default {
 					.icon-small-x {
 						fill: $charcoal;
 					}
-				}
-
-				@include breakpoint(medium) {
-					top: 1.5rem;
-					right: 1.5rem;
-				}
-
-				@include breakpoint(large) {
-					top: 2rem;
-					right: 2rem;
 				}
 			}
 
@@ -257,6 +255,10 @@ export default {
 				}
 			}
 		}
+	}
+
+	.lightbox-controls ::v-deep button {
+		margin-bottom: 0;
 	}
 }
 </style>

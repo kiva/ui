@@ -1,5 +1,6 @@
 import { boolean } from '@storybook/addon-knobs';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '@/components/Kv/KvButton';
 
 const loremIpsum = `
 	<p>
@@ -22,7 +23,7 @@ export default {
 };
 
 export const Default = () => ({
-	components: { KvLightbox },
+	components: { KvLightbox, KvButton },
 	data: () => ({
 		lightboxVisible: false,
 	}),
@@ -36,9 +37,9 @@ export const Default = () => ({
 	},
 	template: `
 		<div>
-			<button @click="showLightbox">
+			<kv-button @click.native.prevent="showLightbox">
 				Show Lightbox
-			</button>
+			</kv-button>
 
 			<kv-lightbox
 				:visible="lightboxVisible"
@@ -51,7 +52,7 @@ export const Default = () => ({
 });
 
 export const TitleSlotControlsSlot = () => ({
-	components: { KvLightbox },
+	components: { KvLightbox, KvButton },
 	data: () => ({
 		lightboxVisible: false,
 	}),
@@ -65,24 +66,27 @@ export const TitleSlotControlsSlot = () => ({
 	},
 	template: `
 		<div>
-			<button @click="showLightbox">
-				Show Lightbox - Use Title and Controls Slots
-			</button>
+			<kv-button @click.native.prevent="showLightbox">
+				Show Lightbox - Use Header and Controls Slot
+			</kv-button>
 
 			<kv-lightbox
 				:visible="lightboxVisible"
 				@lightbox-closed="hideLightbox"
+				title="Title"
 			>
-				<h2 slot="title">Title</h2>
 				${loremIpsum}
-				<template slot="controls">Controls Here</template>
+				<template slot="controls">
+					<kv-button>Button 1</kv-button>
+					<kv-button>Button 2</kv-button>
+				</template>
 			</kv-lightbox>
 		</div>
 	`,
 });
 
 export const Inverted = () => ({
-	components: { KvLightbox },
+	components: { KvLightbox, KvButton },
 	data: () => ({
 		lightboxVisible: false,
 	}),
@@ -96,16 +100,26 @@ export const Inverted = () => ({
 	},
 	template: `
 		<div>
-			<button @click="showLightbox">
-				Show Lightbox - Inverted
-			</button>
+			<kv-button @click.native.prevent="showLightbox">
+				Show Lightbox Inverted
+			</kv-button>
 
 			<kv-lightbox
 				:visible="lightboxVisible"
 				:inverted="true"
 				@lightbox-closed="hideLightbox"
+				title="Title"
 			>
-				<h2 slot="title">Title</h2>
+				${loremIpsum}
+				<template slot="controls">Controls Here</template>
+			</kv-lightbox>
+
+			<kv-lightbox
+				:visible="false"
+				:inverted="true"
+				@lightbox-closed="hideLightbox"
+				title="Title"
+			>
 				${loremIpsum}
 				<template slot="controls">Controls Here</template>
 			</kv-lightbox>
@@ -113,8 +127,8 @@ export const Inverted = () => ({
 	`,
 });
 
-export const ShowCloseButton = () => ({
-	components: { KvLightbox },
+export const CustomTitleColor = () => ({
+	components: { KvLightbox, KvButton },
 	data: () => ({
 		lightboxVisible: false,
 	}),
@@ -128,16 +142,16 @@ export const ShowCloseButton = () => ({
 	},
 	template: `
 		<div>
-			<button @click="showLightbox">
-				Show Lightbox - showCloseButton = true
-			</button>
+			<kv-button @click.native.prevent="showLightbox">
+				Show Lightbox Custom Title Color
+			</kv-button>
 
 			<kv-lightbox
 				:visible="lightboxVisible"
-				:show-close-button="true"
 				@lightbox-closed="hideLightbox"
+				title="Custom Title Color"
+				style="--kv-lightbox-title-color: blue"
 			>
-				<h2 slot="title">Title</h2>
 				${loremIpsum}
 			</kv-lightbox>
 		</div>
@@ -145,7 +159,7 @@ export const ShowCloseButton = () => ({
 });
 
 export const NoPadding = () => ({
-	components: { KvLightbox },
+	components: { KvLightbox, KvButton },
 	props: {
 		noPaddingTop: {
 			default: boolean('noPaddingTop', true)
@@ -170,9 +184,9 @@ export const NoPadding = () => ({
 	},
 	template: `
 		<div>
-			<button @click="showLightbox">
-				Show Lightbox - noPadding
-			</button>
+			<kv-button @click.native.prevent="showLightbox">
+				Show Lightbox no padding
+			</kv-button>
 
 			<kv-lightbox
 				:visible="lightboxVisible"
@@ -180,8 +194,8 @@ export const NoPadding = () => ({
 				:no-padding-bottom="noPaddingBottom"
 				:no-padding-sides="noPaddingSides"
 				@lightbox-closed="hideLightbox"
+				title="Title"
 			>
-				<h2 slot="title">Title</h2>
 				${loremIpsum}
 			</kv-lightbox>
 		</div>

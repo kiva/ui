@@ -140,8 +140,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-$autolending-font-size: rem-calc(18.8);
-
 ::v-deep .obscure {
 	opacity: 0.4;
 	pointer-events: none;

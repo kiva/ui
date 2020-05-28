@@ -25,14 +25,14 @@
 				class="loanNotReservedLightbox"
 				:visible="defaultLbVisible"
 				@lightbox-closed="lightboxClosed"
+				title="What does it mean that my loan is not reserved?"
 			>
-				<h2 slot="title">What does it mean that my loan is not reserved?</h2>
-				<div>
+				<p>
 					Loans will not be reserved if they've been in your basket for more than 45
 					minutes or have less than 6 hours left to fundraise. This means there's a chance this loan may be
 					funded by other lenders even though it's in your basket. To make this loan, please proceed through
 					the checkout process.
-				</div>
+				</p>
 			</kv-lightbox>
 		</span>
 	</div>

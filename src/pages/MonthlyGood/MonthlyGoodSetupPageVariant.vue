@@ -158,10 +158,8 @@
 						<kv-lightbox
 							:visible="donationLbVisible"
 							@lightbox-closed="lightboxClosed"
+							title="How does Kiva use donations?"
 						>
-							<h2 slot="title">
-								How does Kiva use donations?
-							</h2>
 							<p>
 								100% of every dollar you lend on Kiva goes directly to funding loans.
 								We rely on small optional donations from you and others to keep Kiva running.
