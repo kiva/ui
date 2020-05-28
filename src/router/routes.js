@@ -122,6 +122,13 @@ export default [
 			},
 		]
 	},
+	{
+		path: '/settings/subscriptions',
+		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),
+		children: [
+			{ path: '', component: () => import('@/pages/Subscriptions/SubscriptionsSettingsPage') },
+		]
+	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
 		path: '/styleguide',
