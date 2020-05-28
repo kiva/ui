@@ -228,7 +228,9 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.expRecurringOnly = mgRecurringOnlyExp.version;
-			this.isRecurring = this.expRecurringOnly === 'shown';
+			if (this.expRecurringOnly === 'shown') {
+				this.isRecurring = true;
+			}
 		},
 	},
 	mounted() {
