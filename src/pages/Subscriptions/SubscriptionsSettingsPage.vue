@@ -1,10 +1,8 @@
 <template>
 	<div>
-		<div class="row subscription-settings-area">
-			<div class="column large-8 settings-card">
-				Subscription Settings
-			</div>
-		</div>
+		<!-- Monthly Good Settings -->
+		<subscriptions-monthly-good />
+
 		<!-- <div class="row column save-button-area">
 			<save-button v-if="isChanged" />
 		</div> -->
@@ -12,8 +10,12 @@
 </template>
 
 <script>
+// ! TODO implement save from this component
+import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
+
 export default {
 	components: {
+		SubscriptionsMonthlyGood
 	},
 	data() {
 		return {
@@ -37,7 +39,7 @@ export default {
 };
 </script>
 
-// !TODO clean up CSS
+// ! TODO clean up CSS
 <style lang="scss">
 @import 'settings';
 

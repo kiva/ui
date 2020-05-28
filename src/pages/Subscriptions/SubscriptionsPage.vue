@@ -3,7 +3,6 @@
 		<div class="title-area">
 			<div class="row column">
 				<h2>Subscription preferences</h2>
-				<!-- <h3>Make the impact you want even if you’re away from your account for a while</h3> -->
 			</div>
 		</div>
 		<router-view />
