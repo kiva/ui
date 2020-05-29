@@ -126,10 +126,10 @@
 							</ul>
 							<div v-if="hasBillingAgreement">
 								<kv-button
-									type="submit"
 									data-test="confirm-monthly-good-button"
 									class="subscribe-btn"
 									:disabled="$v.$invalid || submitting"
+									@click.native="submitMonthlyGood()"
 								>
 									Subscribe <kv-loading-spinner v-if="submitting" />
 								</kv-button>
