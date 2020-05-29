@@ -75,7 +75,7 @@
 										<kv-expandable>
 											<div class="row" v-show="showAdvanced">
 												<div class="small-12 large-6 columns setting-column">
-													<loan-increment-radios />
+													<loan-increment-dropdown />
 												</div>
 												<div class="small-12 large-6 columns setting-column">
 													<attribute-radios
@@ -147,7 +147,7 @@ import GenderRadios from './GenderRadios';
 import GroupRadios from './GroupRadios';
 import InlineCounter from './InlineCounter';
 import KivaChoosesRadios from './KivaChoosesRadios';
-import LoanIncrementRadios from './LoanIncrementRadios';
+import LoanIncrementDropdown from './LoanIncrementDropdown';
 import LoanTermDropdown from './LoanTermDropdown';
 import PartnerDelRateDropdown from './PartnerDelRateDropdown';
 import PartnerFilter from './PartnerFilter';
@@ -173,7 +173,7 @@ export default {
 		KvExpandable,
 		KvIcon,
 		KvLightbox,
-		LoanIncrementRadios,
+		LoanIncrementDropdown,
 		LoanTermDropdown,
 		PartnerDelRateDropdown,
 		PartnerFilter,
