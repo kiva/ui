@@ -72,7 +72,7 @@ describe('Autolending Page Spec', () => {
 			// Visit autolending settings
 			cy.visit('/settings/autolending');
 
-			// Assert that toggle displays 'OFF'
+			// Assert that toggle displays 'ON'
 			cy.get('[data-test=autolending-status]').contains('on');
 			// Show the modal
 			cy.get('[data-test=autolending-status]').click();
