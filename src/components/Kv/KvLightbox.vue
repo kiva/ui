@@ -11,7 +11,11 @@
 			:aria-labelledby="title ? 'lightbox-title' : null"
 		>
 			<focus-lock :disabled="!isShown">
-				<div class="kv-lightbox" role="document">
+				<div
+					class="kv-lightbox"
+					:class="`${fullWidth ? 'full-width' : ''}`"
+					role="document"
+				>
 					<div class="row lightbox-row">
 						<div class="columns lightbox-columns">
 							<!-- eslint-disable max-len -->
@@ -76,6 +80,10 @@ export default {
 			default: '',
 		},
 		inverted: {
+			type: Boolean,
+			default: false
+		},
+		fullWidth: {
 			type: Boolean,
 			default: false
 		},
@@ -156,6 +164,12 @@ export default {
 		z-index: 1502;
 		padding: 0;
 
+		&.full-width {
+			.lightbox-columns {
+				width: 100%;
+			}
+		}
+
 		.lightbox-row {
 			padding: 0;
 			align-items: center;
@@ -180,11 +194,6 @@ export default {
 			border-radius: rem-calc(4);
 
 			@include breakpoint(medium) {
-				padding: 2.8125rem;
-				margin: 1.5rem;
-			}
-
-			@include breakpoint(large) {
 				padding: 2.8125rem;
 			}
 
