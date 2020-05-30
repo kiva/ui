@@ -2,14 +2,10 @@
 	<div class="basket-add-interstitial row small-collapse">
 		<kv-lightbox
 			:visible="showInterstitial"
-			:no-padding-top="true"
-			:no-padding-sides="true"
-			:no-padding-bottom="true"
+			:full-width="true"
 			@lightbox-closed="closeLightbox"
+			title="Thanks for your commitment to make an impact"
 		>
-			<h1 class="lightbox-title">
-				Thanks for your commitment to make an impact
-			</h1>
 			<div class="lightbox-loan-wrapper">
 				<div class="loan-preview columns small-12 large-8 large-offset-4" v-if="loan.loan">
 					<div class="row">
@@ -82,9 +78,11 @@
 				</div>
 			</div>
 
-			<kv-checkbox id="user-pref-hide-interstitial" v-model="userPrefHideInterstitial">
-				Don't show me this again
-			</kv-checkbox>
+			<template v-slot:controls>
+				<kv-checkbox id="user-pref-hide-interstitial" v-model="userPrefHideInterstitial">
+					Don't show me this again
+				</kv-checkbox>
+			</template>
 		</kv-lightbox>
 	</div>
 </template>
@@ -232,18 +230,8 @@ export default {
 @import 'settings';
 
 .basket-add-interstitial {
-	.lightbox-title {
-		padding: 1rem 2.5rem 0.8rem 1rem;
-		border-bottom: 1px solid $subtle-gray;
-		font-size: 1.75rem;
-
-		@include breakpoint(medium) {
-			padding: 1rem 2rem 0.8rem;
-		}
-	}
-
 	.lightbox-loan-wrapper {
-		padding: 0.5rem;
+		margin: 1rem -0.875rem;
 		position: relative;
 		min-height: 12rem;
 
@@ -258,7 +246,7 @@ export default {
 		.loan-image-wrapper {
 			@include breakpoint(large) {
 				position: absolute;
-				left: 1rem;
+				left: 0;
 			}
 		}
 
@@ -299,6 +287,15 @@ export default {
 		padding: 1.5rem 0;
 		background: $platinum;
 		border-radius: 0 0 rem-calc(4) rem-calc(4);
+		margin-bottom: 1.5rem;
+		margin-left: -1.5rem;
+		margin-right: -1.5rem;
+
+		@include breakpoint(medium) {
+			margin-left: -2.8125rem;
+			margin-right: -2.8125rem;
+			padding: 2.25rem 0.875rem;
+		}
 
 		h2 {
 			padding: 0 1rem;
@@ -314,10 +311,6 @@ export default {
 </style>
 
 <style lang="scss">
-.basket-add-interstitial .kv-lightbox-wrap .kv-lightbox .lightbox-content .close-lightbox {
-	top: 1.5rem;
-}
-
 #loading-preview-overlay {
 	position: absolute;
 	width: auto;
