@@ -81,6 +81,10 @@
 					/>
 				</div>
 			</div>
+
+			<kv-checkbox id="user-pref-hide-interstitial" v-model="userPrefHideInterstitial">
+				Don't show me this again
+			</kv-checkbox>
 		</kv-lightbox>
 	</div>
 </template>
@@ -93,24 +97,27 @@ import cookieStore from '@/util/cookieStore';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
 import updateAddToBasketInterstitial from '@/graphql/mutation/updateAddToBasketInterstitial.graphql';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanReservation from '@/components/Checkout/LoanReservation';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
-		KvLightbox,
 		KvButton,
+		KvCheckbox,
+		KvLightbox,
+		KvLoadingSpinner,
 		LoanReservation,
 		LYML,
-		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	data() {
 		return {
 			showInterstitial: false,
+			userPrefHideInterstitial: false,
 			basketInterstitialState: {},
 			loan: {},
 			loans: () => [],
@@ -124,11 +131,23 @@ export default {
 			return this.basketInterstitialState.active || false;
 		}
 	},
+	watch: {
+		userPrefHideInterstitial() {
+			try {
+				localStorage.setItem('userPrefHideInterstitial', this.userPrefHideInterstitial);
+			} catch (err) {
+				console.error(err);
+			}
+		}
+	},
 	mounted() {
 		this.apollo.watchQuery({ query: basketAddInterstitial }).subscribe({
 			next: ({ data }) => {
 				const interstitialState = _get(data, 'basketAddInterstitial');
-				this.showInterstitial = interstitialState.active ? interstitialState.visible : false;
+				if (interstitialState.active) {
+					this.userPrefHideInterstitial = localStorage.getItem('userPrefHideInterstitial') === 'true';
+					this.showInterstitial = interstitialState.visible && !this.userPrefHideInterstitial;
+				}
 
 				this.basketInterstitialState = {
 					...this.basketInterstitialState,
