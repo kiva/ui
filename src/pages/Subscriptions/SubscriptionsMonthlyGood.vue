@@ -9,11 +9,8 @@
 				/>
 			</div>
 			<div class="title-wrapper">
-				<h3 v-if="!isOnetime">
+				<h3>
 					Monthly Good
-				</h3>
-				<h3 v-if="isOnetime">
-					Global COVID-19 Response Lending
 				</h3>
 			</div>
 			<div class="content-wrapper">
@@ -22,19 +19,193 @@
 				>
 					Sign up for a Kiva Monthly Good subscription
 				</router-link>
-				<div v-if="isMonthlyGoodSubscriber && !isOnetime">
+				<div v-if="isMonthlyGoodSubscriber">
 					<p>
-						On the {{ dayOfMonth | numeral('Oo') }} of each month ${{ autoDepositAmount }} will be
-						transferred from PayPal <span v-if="selectedGroupDescriptor">to support
-							{{ selectedGroupDescriptor }}</span>.
+						On the <a
+							role="button"
+							@click.prevent="showLightbox = true;"
+						>{{ dayOfMonth | numeral('Oo') }}</a> of each month <a
+							role="button"
+							@click.prevent="showLightbox = true;"
+						>${{ autoDepositAmount }}</a> will be
+						transferred from PayPal <a
+							role="button"
+							@click.prevent="showLightbox = true;"
+						>to support
+							{{ selectedGroupDescriptor }}</a>.
 					</p>
-				</div>
-				<div v-if="isMonthlyGoodSubscriber && isOnetime">
-					<p class="one-time-message">
-						Thank you for supporting those affected by COVID-19. Your deposit will occur within one hour,
-						after which you will be unable to cancel.
-						<!-- ! TODO <a>Cancel contribution</a> -->
+					<p>
+						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Monthly Good</a>
 					</p>
+					<kv-lightbox
+						class="monthly-good-settings-lightbox"
+						:visible="showLightbox"
+						title="Change your monthly good"
+						@lightbox-closed="showLightbox = false"
+					>
+						<form
+							@submit.prevent="null"
+							novalidate
+						>
+							<div class="row align-center text-left">
+								<div class="small-12 columns">
+									<div class="row column">
+										<strong>Each month on the</strong>
+										<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="dayOfMonth">
+											Day of the Month
+										</label>
+										<input v-if="isDayInputShown"
+											@blur="hideDayInput()"
+											class="text-input__day"
+											id="dayOfMonth"
+											type="number"
+											placeholder=""
+											required
+											min="1"
+											max="31"
+											v-model="dayOfMonth"
+										>
+										<button
+											class="button--ordinal-day"
+											@click="isDayInputShown = true"
+											v-if="!isDayInputShown"
+										>
+											<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+											<icon-pencil class="icon-pencil" />
+										</button>
+										<strong>we'll process the following:</strong>
+										<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
+											<li v-if="!$v.dayOfMonth.required">
+												Field is required
+											</li>
+											<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+												Enter day of month between 1 and 31
+											</li>
+										</ul>
+										<div class="additional-day-info">
+											<small v-if="dayOfMonth > 28">
+												(note - may be processed on the last day of the month)</small>
+										</div>
+									</div>
+
+									<div class="row align-middle">
+										<div class="columns">
+											<span>
+												Deposit for lending
+											</span>
+										</div>
+
+										<div class="small-6 medium-4 columns">
+											<label
+												class="show-for-sr"
+												:class="{ 'error': $v.mgAmount.$invalid }"
+												for="amount"
+											>
+												Amount
+											</label>
+											<kv-currency-input
+												class="text-input"
+												id="amount"
+												v-model="mgAmount"
+											/>
+										</div>
+									</div>
+									<div class="row columns align-middle">
+										<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
+											<li v-if="!$v.mgAmount.required">
+												Field is required
+											</li>
+											<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+												Enter an amount of $5-$10,000
+											</li>
+										</ul>
+									</div>
+
+									<div class="row align-middle">
+										<div class="columns">
+											<span>
+												Optional donation to support Kiva
+											</span>
+										</div>
+
+										<div class="small-6 medium-4 columns">
+											<label
+												class="show-for-sr"
+												:class="{ 'error': $v.donation.$invalid }"
+												for="amount"
+											>
+												Donation
+											</label>
+											<kv-currency-input
+												class="text-input"
+												id="donation"
+												v-model="donation"
+											/>
+										</div>
+									</div>
+									<div class="row column align-middle">
+										<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
+											<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
+												Enter an amount of $0-$10,000
+											</li>
+										</ul>
+									</div>
+
+									<div class="row">
+										<div class="columns">
+											<strong>Total/month</strong>
+										</div>
+
+										<div class="small-6 medium-4 columns">
+											<strong
+												class="additional-left-pad-currency"
+											>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+										</div>
+									</div>
+									<div class="row column">
+										<ul class="text-center validation-errors"
+											v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+										>
+											<li>
+												The maximum Monthly Good total is $10,000.<br>
+												Please try again by entering in a smaller amount.
+											</li>
+										</ul>
+									</div>
+
+									<div class="row column text-center">
+										Select a category to focus your lending
+										<kv-dropdown-rounded
+											v-model="category"
+											class="group-dropdown"
+										>
+											<option
+												v-for="(option, index) in lendingCategories"
+												:value="option.value"
+												:key="index"
+											>
+												{{ option.label }}
+											</option>
+										</kv-dropdown-rounded>
+									</div>
+								</div>
+							</div>
+						</form>
+						<template slot="controls">
+							<kv-button
+								data-test="monthly-good-save-button"
+								class="smaller button"
+								v-if="!isSaving"
+								@click.native="saveMonthlyGood"
+								:disabled="!isChanged || $v.$invalid"
+							>
+								Save
+							</kv-button>
+							<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+								Saving <kv-loading-spinner />
+							</kv-button>
+						</template>
+					</kv-lightbox>
 				</div>
 			</div>
 		</div>
@@ -44,9 +215,18 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
-import numeral from 'numeral';
-import KvIcon from '@/components/Kv/KvIcon';
+import { validationMixin } from 'vuelidate';
+import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+import KvIcon from '@/components/Kv/KvIcon';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '@/components/Kv/KvButton';
+
+import IconPencil from '@/assets/icons/inline/pencil.svg';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 const pageQuery = gql`{
 	my {
@@ -55,7 +235,6 @@ const pageQuery = gql`{
 			donateAmount
 			dayOfMonth
 			isSubscriber
-			isOnetime
 		}
 		monthlyGoodCategory
 	}
@@ -64,23 +243,57 @@ const pageQuery = gql`{
 export default {
 	inject: ['apollo'],
 	components: {
+		IconPencil,
+		KvButton,
+		KvCurrencyInput,
+		KvDropdownRounded,
 		KvIcon,
+		KvLightbox,
+		KvLoadingSpinner,
 	},
 	data() {
 		return {
+			isSaving: false,
 			autoDepositAmount: 0,
-			autoDepositId: null,
 			category: null,
 			dayOfMonth: new Date().getDate(),
 			donation: 0,
+			mgAmount: 0,
 			isMonthlyGoodSubscriber: false,
-			isOnetime: false,
-			selectedGroupDescriptor: ''
+			selectedGroupDescriptor: '',
+			showLightbox: false,
+			isDayInputShown: false,
 		};
 	},
 	mixins: [
+		validationMixin,
 		loanGroupCategoriesMixin
 	],
+	validations: {
+		mgAmount: {
+			required,
+			minValue: minValue(5),
+			maxValue: maxValue(10000),
+			maxTotal(value) {
+				return value + this.donation < 10000;
+			}
+		},
+		donation: {
+			minValue: minValue(0),
+			maxValue: maxValue(10000),
+			maxTotal(value) {
+				return value + this.mgAmount < 10000;
+			}
+		},
+		dayOfMonth: {
+			required,
+			minValue: minValue(1),
+			maxValue: maxValue(31)
+		},
+		category: {
+			required,
+		}
+	},
 	apollo: {
 		query: pageQuery,
 		preFetch(config, client) {
@@ -91,21 +304,139 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			if (this.isMonthlyGoodSubscriber) {
-				this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
-				this.autoDepositAmount = numeral(_get(data, 'my.autoDeposit.amount', 0)).format('0.00');
-				this.donation = numeral(_get(data, 'my.autoDeposit.donateAmount', 0)).format('0.00');
+				this.autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
+				this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
 				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
 				this.category = _get(data, 'my.monthlyGoodCategory');
 
 				// eslint-disable-next-line max-len
 				const selectedCategory = this.lendingCategories.find(category => category.value === this.category) || {};
 				// Sanitize and set initial form values.
-				this.selectedGroupDescriptor = selectedCategory ? selectedCategory.shortName : '';
+				this.selectedGroupDescriptor = selectedCategory ? selectedCategory.shortName : 'all borrowers';
+				this.mgAmount = this.autoDepositAmount - this.donation;
 			}
+		},
+	},
+	mounted() {
+		// After initial value is loaded, setup watch to make form dirty on value changes
+		this.$watch('mgAmount', () => {
+			this.$v.$touch();
+		});
+		this.$watch('donation', () => {
+			this.$v.$touch();
+		});
+		this.$watch('dayOfMonth', () => {
+			this.$v.$touch();
+		});
+		this.$watch('category', () => {
+			this.$v.$touch();
+		});
+	},
+	computed: {
+		totalCombinedDeposit() {
+			return this.donation + this.mgAmount;
+		},
+		isChanged() {
+			return this.$v.$dirty;
+		}
+	},
+	methods: {
+		hideDayInput() {
+			if (!this.$v.dayOfMonth.$invalid) {
+				this.isDayInputShown = false;
+			}
+		},
+		saveMonthlyGood() {
+			this.isSaving = true;
+			//! TODO add mutation to update MG settings
+			this.apollo.mutate({
+				// mutation: gql`mutation {
+				// 	autolending @client {
+				// 		saveProfile
+				// 	}
+				// }`
+			}).then(() => {
+				this.$showTipMsg('Settings saved!');
+			}).catch(e => {
+				console.error(e);
+				this.$showTipMsg('There was a problem saving your settings', 'error');
+			}).finally(() => {
+				this.isSaving = false;
+				this.showLightbox = false;
+			});
 		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
+@import 'settings';
+
+form {
+	margin-top: 2rem;
+
+	.row {
+		margin-bottom: 0.25em;
+	}
+
+	// styles to match KvDropDownRounded
+	input.text-input {
+		border: 1px solid $charcoal;
+		border-radius: $button-radius;
+		color: $charcoal;
+		font-size: $medium-text-font-size;
+		font-weight: $global-weight-highlight;
+		margin: 0;
+	}
+
+	.additional-left-pad-currency {
+		padding-left: 0.65rem;
+	}
+
+	.button--ordinal-day {
+		color: $kiva-accent-blue;
+		fill: $kiva-accent-blue;
+		cursor: pointer;
+	}
+
+	.icon-pencil {
+		height: 1rem;
+	}
+
+	.text-input__day {
+		display: inline-block;
+		width: 3.5rem;
+		padding: 0.25rem 0.5rem;
+		margin: 0 0 0 0.25rem;
+		height: 2rem;
+	}
+
+	.text-input,
+	.validation-errors {
+		margin: 0;
+	}
+
+	.additional-day-info {
+		margin-bottom: 1.25rem;
+
+		small,
+		strong {
+			display: block;
+		}
+	}
+
+	::v-deep .loading-spinner {
+		vertical-align: middle;
+		width: 1rem;
+		height: 1rem;
+	}
+
+	::v-deep .loading-spinner .line {
+		background-color: $white;
+	}
+
+	::v-deep .dropdown-wrapper.group-dropdown .dropdown {
+		margin-top: 0.65rem;
+	}
+}
 </style>
