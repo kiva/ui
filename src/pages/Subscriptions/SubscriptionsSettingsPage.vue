@@ -1,7 +1,15 @@
 <template>
 	<div>
+		<!-- One Time Settings -->
+		<subscriptions-one-time v-if="isMonthlyGoodSubscriber && isOnetime" @cancel-subscription="cancelSubscription" />
+
 		<!-- Monthly Good Settings -->
-		<subscriptions-monthly-good />
+		<subscriptions-monthly-good v-if="!isOnetime" @cancel-subscription="cancelSubscription" />
+
+
+		<!-- Auto Deposit Settings -->
+		<!-- TODO -->
+		<!-- <subscriptions-autodeposit /> -->
 
 		<!-- <div class="row column save-button-area">
 			<save-button v-if="isChanged" />
@@ -10,17 +18,50 @@
 </template>
 
 <script>
-// ! TODO implement save from this component
+// ! TODO
+// * Implement behavior when edit modals are opened, values changed, then modal closed without saving
+// * Implement possible 'are you sure you want to leave' warnings
+import _get from 'lodash/get';
+import gql from 'graphql-tag';
+
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
+import SubscriptionsOneTime from './SubscriptionsOneTime';
+
+const pageQuery = gql`{
+	my {
+		autoDeposit {
+			isSubscriber
+			isOnetime
+		}
+	}
+}`;
 
 export default {
 	components: {
-		SubscriptionsMonthlyGood
+		SubscriptionsMonthlyGood,
+		SubscriptionsOneTime
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			isChanged: false,
+			isMonthlyGoodSubscriber: false,
+			isOnetime: false,
 		};
+	},
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			});
+		},
+		result({ data }) {
+			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			if (this.isMonthlyGoodSubscriber) {
+				this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
+			}
+		},
 	},
 	mounted() {
 		window.addEventListener('beforeunload', this.onLeave);
@@ -29,6 +70,10 @@ export default {
 		window.removeEventListener('beforeunload', this.onLeave);
 	},
 	methods: {
+		cancelSubscription() {
+			// ! TODO cancel subscription here
+			console.log('subscription cancelled');
+		},
 		onLeave(event) {
 			if (this.isChanged) {
 				// eslint-disable-next-line no-param-reassign
