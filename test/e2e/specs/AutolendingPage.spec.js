@@ -227,54 +227,6 @@ describe('Autolending Page Spec', () => {
 			cy.get('[data-test=timing-explanation]').contains('over 55 days').contains('immediately');
 		});
 
-		// only run these test until the day before may 21
-		const may21 = new Date('5/21/2020');
-		const today = new Date();
-		if (may21.getDate() > today.getDate()) {
-			// Special Conditions for Lenders with 90 day term at launch
-			it('Explains that autolending will start on May 21th 2020 if user already eligible and idle', () => {
-				const now = new Date();
-
-				cy.mock({
-					AutolendProfile: {
-						isEnabled: true,
-						enableAfter: 0,
-						cIdleStartTime: subDays(now, 155),
-						lendAfterDaysIdle: 90,
-						donationPercentage: 15
-					},
-				});
-
-				// Visit autolending settings
-				cy.visit('/settings/autolending');
-
-				// Assert the message says the user will be eligible on May 21, 2020
-				cy.get('[data-test=timing-explanation]')
-					.contains('May 21, 2020').contains('when the first 90-day auto-loans are made');
-			});
-
-			// Special Conditions for Lenders with 90 day term at launch
-			it('Explains that autolending will start in May if user becomes eligible before May 21th 2020', () => {
-				const now = new Date();
-
-				cy.mock({
-					AutolendProfile: {
-						isEnabled: true,
-						enableAfter: 0,
-						cIdleStartTime: subDays(now, 89),
-						lendAfterDaysIdle: 90,
-						donationPercentage: 15
-					},
-				});
-
-				// Visit autolending settings
-				cy.visit('/settings/autolending');
-
-				// Assert the message says the user will be eligible on May 21, 2020
-				cy.get('[data-test=timing-explanation]')
-					.contains('your balance will be eligible').contains('May 21, 2020');
-			});
-		}
 	});
 
 	describe('Kiva Chooses toggle', () => {
