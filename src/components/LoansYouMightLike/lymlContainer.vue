@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
 import _uniqBy from 'lodash/uniqBy';
@@ -63,10 +64,23 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
 import basketCount from '@/graphql/query/basketCount.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
 const largeCardWidthPlusPadding = 190;
+
+const expMlLoanToLoanQuery = gql`
+	{
+		general {
+			ml_loan_to_loan: uiExperimentSetting(key: "ml_loan_to_loan") {
+				key
+				value
+			}
+		}
+	}
+`;
 
 export default {
 	components: {
@@ -130,9 +144,24 @@ export default {
 			scrollPos: 0,
 			windowWidth: 0,
 			wrapperWidth: 0,
+			expMlLoanToLoan: false
 		};
 	},
 	inject: ['apollo'],
+	apollo: {
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				// Get the experiment object from settings
+				client.query({
+					query: expMlLoanToLoanQuery
+				}).then(() => {
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'ml_loan_to_loan' } })
+						.then(resolve)
+						.catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
 	watch: {
 		// this watch lets us respond once we have loans and the proper DOM elements
 		showLYML() {
@@ -148,6 +177,9 @@ export default {
 				this.getLoansYouMightLike();
 			});
 		},
+	},
+	created() {
+		this.setupExperimentState();
 	},
 	mounted() {
 		// we're doing this all client side
@@ -257,7 +289,20 @@ export default {
 					fetchPolicy: 'network-only',
 				});
 			}
-		}
+		},
+		setupExperimentState() {
+			// read the experiment version from the client cache
+			const localExperiment = this.apollo.readFragment({
+				id: 'Experiment:ml_loan_to_loan',
+				fragment: experimentVersionFragment,
+			}) || {};
+			if (localExperiment.version === 'control') {
+				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', 'a');
+			} else if (localExperiment.version === 'shown') {
+				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', 'b');
+				this.expMlLoanToLoan = true;
+			}
+		},
 	},
 };
 
