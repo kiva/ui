@@ -1,5 +1,6 @@
 import _isUndefined from 'lodash/isUndefined';
 import _pick from 'lodash/pick';
+import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
 import { readJSONSetting, hashCode } from '@/util/settingsUtils';
@@ -25,24 +26,40 @@ export default () => {
 					const experimentSubset = _pick(experiment, ['name', 'distribution', 'variants', 'control']);
 					// get the hash for our current experiment setting
 					const settingHash = hashCode(JSON.stringify(experimentSubset));
+					const population = _get(experiment, 'population') || 1;
 
 					// Add hash to exisitng cookie exps if it's missing
 					if (typeof currentAssignment.hash === 'undefined') {
 						currentAssignment.hash = settingHash;
 					}
 
+					// Add population to existing cookie experiments if it's missing
+					if (typeof currentAssignment.population === 'undefined') {
+						currentAssignment.population = population;
+					}
+
 					// assign an experiment version if:
 					// - we have an experiment
 					// - and the experiment is enabled
 					// - and currentAssignment.version is undefined or the hashes don't match
+					// - current version is 'unassigned' and the population value has changed
 					if (experiment !== null
 						&& experiment.enabled
-						&& (_isUndefined(currentAssignment.version) || settingHash !== currentAssignment.hash)) {
+						&& (
+							_isUndefined(currentAssignment.version)
+							|| settingHash !== currentAssignment.hash
+							|| (
+								population !== currentAssignment.population
+								&& currentAssignment.version === 'unassigned'
+							)
+						)
+					) {
 						// assign the version using the experiment data (undefined if experiment disabled)
 						currentAssignment = {
 							id,
-							version: assignVersion(experiment || {}),
+							version: assignVersion(experiment),
 							hash: settingHash,
+							population,
 						};
 
 						// only update assignments and set cookie if the version is set
