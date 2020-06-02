@@ -63,6 +63,7 @@ import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
+import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
 import basketCount from '@/graphql/query/basketCount.graphql';
 import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
@@ -192,40 +193,57 @@ export default {
 	methods: {
 		getLoansYouMightLike() {
 			this.loading = true;
-			const queryTypes = [
-				{
-					gender: this.gender,
-					sortBy: this.sortBy
-				},
-				{
-					country: this.country,
-					sortBy: this.sortBy
-				},
-				{
-					sector: this.sector,
-					sortBy: this.sortBy
-				},
-				{
-					partner: this.partner,
-					sortBy: this.sortBy
-				},
-				{
-					sortBy: this.sortBy
-				}
-			];
-			let loansYouMightLike = [];
 
-			Promise.all(_map(queryTypes, variables => {
-				return this.apollo.query({
-					query: loansYouMightLikeData,
-					variables
+			if (this.expMlLoanToLoan) {
+				console.log('ml');
+				this.apollo.query({
+					query: mlLoansYouMightLikeData,
+					variables: {
+						loanId: parseInt(this.targetLoan.id, 10)
+					}
 				}).then(data => {
-					const loans = _get(data, 'data.lend.loans.values');
-					loansYouMightLike = loansYouMightLike.concat(loans);
+					const loans = _get(data, 'data.ml.relatedLoansByTopics[0].values');
+					console.log(loans);
+					// TODO: need to verify data in loans. Currently unable to do so on dry-run.
+					this.parseLoansYouMightLike(loans);
 				});
-			})).then(() => {
-				this.parseLoansYouMightLike(loansYouMightLike);
-			});
+			} else {
+				console.log('not ml');
+				const queryTypes = [
+					{
+						gender: this.gender,
+						sortBy: this.sortBy
+					},
+					{
+						country: this.country,
+						sortBy: this.sortBy
+					},
+					{
+						sector: this.sector,
+						sortBy: this.sortBy
+					},
+					{
+						partner: this.partner,
+						sortBy: this.sortBy
+					},
+					{
+						sortBy: this.sortBy
+					}
+				];
+				let loansYouMightLike = [];
+
+				Promise.all(_map(queryTypes, variables => {
+					return this.apollo.query({
+						query: loansYouMightLikeData,
+						variables
+					}).then(data => {
+						const loans = _get(data, 'data.lend.loans.values');
+						loansYouMightLike = loansYouMightLike.concat(loans);
+					});
+				})).then(() => {
+					this.parseLoansYouMightLike(loansYouMightLike);
+				});
+			}
 		},
 		parseLoansYouMightLike(loansYouMightLike) {
 			const withoutBasketedLoans = _filter(
