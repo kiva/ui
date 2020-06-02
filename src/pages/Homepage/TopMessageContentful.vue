@@ -23,7 +23,7 @@ export default {
 
 .homepage-top-message {
 	padding: rem-calc(120) 0;
-	background-color: #1E251D;
+	background-color: #141413;
 	color: $white;
 	text-align: center;
 
