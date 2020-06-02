@@ -3,23 +3,30 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<component :is="activeHomepage" />
+		<component :is="activeHomepage" :content="takeOverContent" />
 	</www-page>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+import { settingEnabled } from '@/util/settingsUtils';
+import { lightHeader, lightFooter } from '@/util/siteThemes';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
+import TopMessageContentful from './TopMessageContentful';
 
-const iwdSwitchQuery = gql`query homepageFrame {
+const activePageQuery = gql`query homepageFrame {
 	general {
 		iwd_homepage_active: uiConfigSetting(key: "iwd_homepage_active") {
 			key
 			value
 		}
+	}
+	contentful {
+		entries(contentType: "uiSetting", contentKey: "ui-homepage-top")
 	}
 }`;
 
@@ -29,6 +36,7 @@ export default {
 		WwwPage,
 		DefaultHomePage,
 		IWDHomePage,
+		TopMessageContentful,
 	},
 	data() {
 		return {
@@ -47,24 +55,53 @@ export default {
 				linkColor: '#060f9f',
 				separatorColor: '#a0e2ba'
 			},
+			takeOverActive: false,
+			takeOverContent: '',
 		};
 	},
 	computed: {
 		activeHomepage() {
-			return this.isIwdActive ? IWDHomePage : DefaultHomePage;
+			if (this.takeOverActive) return TopMessageContentful;
+			if (this.isIwdActive) return IWDHomePage;
+			return DefaultHomePage;
 		},
 		headerTheme() {
-			return this.activeHomepage !== DefaultHomePage ? this.iwdHeaderTheme : null;
+			if (this.takeOverActive) return lightHeader;
+			if (this.isIwdActive) return this.iwdHeaderTheme;
+			return null;
 		},
 		footerTheme() {
-			return this.activeHomepage !== DefaultHomePage ? this.iwdFooterTheme : null;
+			if (this.takeOverActive) return lightFooter;
+			if (this.isIwdActive) return this.iwdFooterTheme;
+			return null;
 		}
 	},
 	apollo: {
-		query: iwdSwitchQuery,
+		query: activePageQuery,
 		preFetch: true,
 		result({ data }) {
+			// determine if IWD is active
 			this.isIwdActive = _get(data, 'general.iwd_homepage_active.value') === 'true' || false;
+
+			// determine if take-over message content is active
+			const contentSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-top'); // eslint-disable-line max-len
+			if (!contentSetting || !contentSetting.fields) {
+				this.takeOverActive = false;
+			} else {
+				const isContentEnabled = settingEnabled(
+					contentSetting.fields,
+					'active',
+					'startDate',
+					'endDate'
+				);
+				if (isContentEnabled) {
+					const activeContent = _get(contentSetting, 'fields.content[0]');
+					if (activeContent) {
+						this.takeOverActive = true;
+						this.takeOverContent = documentToHtmlString(activeContent.fields.bodyCopy);
+					}
+				}
+			}
 		}
 	}
 };
