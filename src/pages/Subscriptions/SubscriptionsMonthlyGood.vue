@@ -28,10 +28,11 @@
 							role="button"
 							@click.prevent="showLightbox = true;"
 						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
-						transferred from PayPal <a
+						transferred from PayPal<a
 							role="button"
 							@click.prevent="showLightbox = true;"
-						>to support
+							v-if="selectedGroupDescriptor"
+						> to support
 							{{ selectedGroupDescriptor }}</a>.
 					</p>
 					<p>
@@ -305,12 +306,19 @@ export default {
 				const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
 				this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
 				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-				this.category = _get(data, 'my.monthlyGoodCategory');
+				this.category = _get(data, 'my.monthlyGoodCategory') || '';
 				this.mgAmount = autoDepositAmount - this.donation;
 			}
 		},
 	},
 	mounted() {
+		// accomodate for special cases where MG category might be legacy or null.
+		if (!this.category) {
+			this.lendingCategories.push(
+				{ label: 'Preserve existing settings', value: '', shortName: '' }
+			);
+		}
+
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('mgAmount', () => {
 			this.$v.$touch();
@@ -327,10 +335,10 @@ export default {
 	},
 	computed: {
 		selectedGroupDescriptor() {
-			// eslint-disable-next-line max-len
-			const selectedCategory = this.lendingCategories.find(category => category.value === this.category) || {};
-			// Sanitize and set initial form values.
-			return selectedCategory ? selectedCategory.shortName : 'all borrowers';
+			const selectedCategory = this.lendingCategories.find(category => category.value === this.category);
+
+			// Set group descriptor. There can be cases where this is undefined, and returns empty string.
+			return selectedCategory ? selectedCategory.shortName : '';
 		},
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;

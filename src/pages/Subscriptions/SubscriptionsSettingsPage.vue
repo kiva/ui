@@ -37,6 +37,7 @@
 				</kv-button>
 			</template>
 		</kv-lightbox>
+
 		<!-- Auto Deposit Settings -->
 		<!-- TODO -->
 		<!-- <subscriptions-autodeposit /> -->
@@ -93,12 +94,10 @@ export default {
 			});
 		},
 		result({ data }) {
-			console.log(data, 'data');
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			if (this.isMonthlyGoodSubscriber) {
 				this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
 			}
-			console.log(this.apollo);
 		},
 	},
 	// mounted() {
