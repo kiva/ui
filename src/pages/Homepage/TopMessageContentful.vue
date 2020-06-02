@@ -1,65 +1,61 @@
 <template>
-	<div v-if="contentRichText" v-html="contentRichText">
+	<div v-if="content" class="homepage-top-message">
+		<div class="row align-center">
+			<div class="columns small-12" v-html="content">
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
-import _get from 'lodash/get';
-import contentful from '@/graphql/query/contentful.graphql';
-import { settingEnabled } from '@/util/settingsUtils';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-
 export default {
-	inject: ['apollo'],
-	data() {
-		return {
-			contentRichText: '',
-		};
+	props: {
+		content: {
+			type: String,
+			default: '',
+		},
 	},
-	apollo: {
-		query: contentful,
-		preFetch: true,
-		preFetchVariables() {
-			return {
-				contentType: 'uiSetting',
-				contentKey: 'ui-homepage-top',
-			};
-		},
-		variables() {
-			return {
-				contentType: 'uiSetting',
-				contentKey: 'ui-homepage-top',
-			};
-		},
-		result({ data }) {
-			const contentSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-top'); // eslint-disable-line max-len
-
-			if (!contentSetting || !contentSetting.fields) {
-				return false;
-			}
-
-			const isContentEnabled = settingEnabled(
-				contentSetting.fields,
-				'active',
-				'startDate',
-				'endDate'
-			);
-
-			if (isContentEnabled) {
-				const activeContent = contentSetting.fields.content.find(content => {
-					return settingEnabled(
-						content.fields,
-						'active',
-						'startDate',
-						'endDate'
-					);
-				});
-
-				if (activeContent) {
-					this.contentRichText = documentToHtmlString(activeContent.fields.richText);
-				}
-			}
-		},
-	}
 };
 </script>
+
+<style lang="scss">
+@import 'settings';
+
+.homepage-top-message {
+	padding: rem-calc(120) 0;
+	background-color: #1E251D;
+	color: $white;
+	text-align: center;
+
+	.columns {
+		max-width: rem-calc(550);
+	}
+
+	h1 {
+		font-weight: bold;
+		font-size: 2.75rem;
+		margin-bottom: 3.5rem;
+	}
+
+	p {
+		font-size: 1.4rem;
+		line-height: 1.2;
+		text-align: justify;
+		margin-bottom: 1.5rem;
+	}
+
+	a,
+	a:hover,
+	a:focus,
+	a:visited,
+	a:active {
+		color: $kiva-green;
+		text-decoration: underline;
+	}
+
+	a:hover,
+	a:focus {
+		color: $kiva-light-green;
+	}
+}
+</style>
