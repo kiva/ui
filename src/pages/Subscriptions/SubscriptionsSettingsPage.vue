@@ -2,8 +2,10 @@
 	<div>
 		<!-- One Time Settings -->
 		<subscriptions-one-time
-			v-if="isMonthlyGoodSubscriber && isOnetime"
+			v-if="isOnetime"
 			@cancel-subscription="showConfirmationPrompt('Contribution')"
+			@unsaved-changes="setUnsavedChanges"
+			ref="subscriptionsOneTimeComponent"
 		/>
 
 		<!-- Monthly Good Settings -->
@@ -15,8 +17,12 @@
 		/>
 
 		<!-- Auto Deposit Settings -->
-		<!-- TODO -->
-		<!-- <subscriptions-autodeposit /> -->
+		<subscriptions-auto-deposit
+			v-if="!isOnetime && !isMonthlyGoodSubscriber"
+			@cancel-subscription="showConfirmationPrompt('Auto Deposit')"
+			@unsaved-changes="setUnsavedChanges"
+			ref="subscriptionsAutoDepositComponent"
+		/>
 
 		<!-- Are you sure? -->
 		<kv-lightbox
@@ -54,7 +60,7 @@
 				data-test="subscriptions-save-button"
 				class="smaller"
 				v-if="!isSaving"
-				@click.native="saveMonthlyGood"
+				@click.native="saveSubscription"
 			>
 				Save
 			</kv-button>
@@ -71,6 +77,8 @@ import gql from 'graphql-tag';
 
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
+import SubscriptionsAutoDeposit from './SubscriptionsAutoDeposit';
+
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -89,6 +97,7 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvLoadingSpinner,
+		SubscriptionsAutoDeposit,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
 	},
@@ -97,7 +106,6 @@ export default {
 		return {
 			isChanged: false,
 			isSaving: false,
-			isMonthlyGoodSubscriber: false,
 			isOnetime: false,
 			confirmationText: '',
 			showLightbox: false,
@@ -111,10 +119,8 @@ export default {
 			});
 		},
 		result({ data }) {
+			this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			if (this.isMonthlyGoodSubscriber) {
-				this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
-			}
 		},
 	},
 	mounted() {
@@ -153,11 +159,24 @@ export default {
 				event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
 			}
 		},
-		saveMonthlyGood() {
+		saveSubscription() {
 			this.isSaving = true;
-			this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
-				this.isSaving = false;
-			});
+			// Calls the save methods in the component if component is being shown.
+			if (this.$refs.subscriptionsOneTimeComponent) {
+				this.$refs.subscriptionsOneTimeComponent.saveOneTime().finally(() => {
+					this.isSaving = false;
+				});
+			}
+			if (this.$refs.subscriptionsMonthlyGoodComponent) {
+				this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
+					this.isSaving = false;
+				});
+			}
+			if (this.$refs.subscriptionsAutoDepositComponent) {
+				this.$refs.subscriptionsAutoDepositComponent.saveAutoDeposit().finally(() => {
+					this.isSaving = false;
+				});
+			}
 		}
 
 	},
