@@ -72,6 +72,7 @@
 						v-if="loans && loan.id"
 						:basketed-loans="loans"
 						:target-loan="loan"
+						:visible="showInterstitial"
 						@add-to-basket="handleAddToBasket"
 						@processing-add-to-basket="processingAddToBasket"
 					/>
@@ -114,14 +115,14 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			showInterstitial: false,
-			userPrefHideInterstitial: false,
 			basketInterstitialState: {},
 			loan: {},
 			loans: () => [],
 			loanCount: 0,
 			loanTotals: '0.00',
 			loading: true,
+			showInterstitial: false,
+			userPrefHideInterstitial: false,
 		};
 	},
 	computed: {
@@ -133,6 +134,11 @@ export default {
 		userPrefHideInterstitial() {
 			try {
 				localStorage.setItem('userPrefHideInterstitial', this.userPrefHideInterstitial);
+				this.$kvTrackEvent(
+					'Lending',
+					'click-hide-add-to-basket-interstitial',
+					this.userPrefHideInterstitial ? 'selected' : 'unselected'
+				);
 			} catch (err) {
 				console.error(err);
 			}
@@ -142,17 +148,15 @@ export default {
 		this.apollo.watchQuery({ query: basketAddInterstitial }).subscribe({
 			next: ({ data }) => {
 				const interstitialState = _get(data, 'basketAddInterstitial');
-				if (interstitialState.active) {
-					this.userPrefHideInterstitial = localStorage.getItem('userPrefHideInterstitial') === 'true';
-					this.showInterstitial = interstitialState.visible && !this.userPrefHideInterstitial;
-				}
-
 				this.basketInterstitialState = {
 					...this.basketInterstitialState,
 					active: interstitialState.active,
 					visible: interstitialState.visible,
 					loanId: interstitialState.loanId,
 				};
+
+				this.userPrefHideInterstitial = localStorage.getItem('userPrefHideInterstitial') === 'true';
+				this.showInterstitial = interstitialState.visible && !this.userPrefHideInterstitial;
 
 				// check for loan id + fetch loan
 				if (interstitialState.loanId !== 0) {

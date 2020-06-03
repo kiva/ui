@@ -100,6 +100,10 @@ export default {
 		sortBy: {
 			type: String,
 			default: 'random'
+		},
+		visible: {
+			type: Boolean,
+			default: true
 		}
 	},
 	computed: {
@@ -175,16 +179,23 @@ export default {
 		// watch for change to targetLoan and refetch loans
 		targetLoan() {
 			this.$nextTick(() => {
-				this.getLoansYouMightLike();
+				if (this.visible) {
+					this.getLoansYouMightLike();
+				}
 			});
 		},
-	},
-	created() {
-		this.setupExperimentState();
+		visible: {
+			immediate: true,
+			handler() {
+				if (this.visible) {
+					this.setupExperimentState();
+					this.getLoansYouMightLike();
+				}
+			}
+		}
 	},
 	mounted() {
 		// we're doing this all client side
-		this.getLoansYouMightLike();
 		window.addEventListener('resize', this.throttledResize());
 	},
 	beforeDestroy() {
