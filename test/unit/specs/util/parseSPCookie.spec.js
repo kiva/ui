@@ -3,7 +3,7 @@ import parseSPCookie from '@/util/parseSPCookie';
 
 describe('parseSPCookie.js', () => {
 	afterEach(() => {
-		cookieStore.reset();
+		cookieStore.reset({});
 	});
 
 	it('returns the user id and session id from the Snowplow cookie', () => {

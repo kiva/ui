@@ -3,7 +3,7 @@ import parseGACookie from '@/util/parseGACookie';
 
 describe('parseGACookie.js', () => {
 	afterEach(() => {
-		cookieStore.reset();
+		cookieStore.reset({});
 	});
 
 	it('returns the campaign, campaign content, gclid, medium, and source from the GA cookie', () => {

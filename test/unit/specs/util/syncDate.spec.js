@@ -54,7 +54,7 @@ describe('syncDate.js', () => {
 			expect(syncTime).not.toBe(initialSyncTime);
 			// Expect that the lastSyncTime has been updated to now (approximately)
 			const differenceFromNow = Math.abs(realNow() - syncTime);
-			expect(differenceFromNow).toBeLessThan(20);
+			expect(differenceFromNow).toBeLessThan(30);
 			// Expect that the calculated delay has been saved
 			expect(store2.get('timesync.lastOffset')).toBe(delay);
 		});
