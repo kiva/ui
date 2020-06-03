@@ -42,7 +42,7 @@
 						class="monthly-good-settings-lightbox"
 						:visible="showLightbox"
 						title="Change your monthly good"
-						@lightbox-closed="showLightbox = false"
+						@lightbox-closed="closeLightbox"
 					>
 						<form
 							@submit.prevent="null"
@@ -306,7 +306,7 @@ export default {
 				const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
 				this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
 				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-				this.category = _get(data, 'my.monthlyGoodCategory') || '';
+				this.category = _get(data, 'my.monthlyGoodCategory', '');
 				this.mgAmount = autoDepositAmount - this.donation;
 			}
 		},
@@ -348,6 +348,12 @@ export default {
 		}
 	},
 	methods: {
+		closeLightbox() {
+			// this will trigger only when the lightbox is closed manually
+			// not when it is closed via outside click or close button click
+			this.$emit('unsaved-changes', true);
+			this.showLightbox = false;
+		},
 		hideDayInput() {
 			if (!this.$v.dayOfMonth.$invalid) {
 				this.isDayInputShown = false;
@@ -381,13 +387,14 @@ export default {
 					dayOfMonth: this.dayOfMonth,
 				}
 			});
-			Promise.all([updateMGCategory, updateMGSettings]).then(() => {
+			return Promise.all([updateMGCategory, updateMGSettings]).then(() => {
 				this.$showTipMsg('Settings saved!');
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 			}).finally(() => {
 				this.isSaving = false;
+				this.$emit('unsaved-changes', false);
 				this.showLightbox = false;
 			});
 		},
