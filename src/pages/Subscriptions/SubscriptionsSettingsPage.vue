@@ -7,8 +7,18 @@
 		/>
 
 		<!-- Monthly Good Settings -->
-		<subscriptions-monthly-good v-if="!isOnetime" @cancel-subscription="showConfirmationPrompt('Monthly Good')" />
+		<subscriptions-monthly-good
+			v-if="!isOnetime"
+			@cancel-subscription="showConfirmationPrompt('Monthly Good')"
+			@unsaved-changes="setUnsavedChanges"
+			ref="subscriptionsMonthlyGoodComponent"
+		/>
 
+		<!-- Auto Deposit Settings -->
+		<!-- TODO -->
+		<!-- <subscriptions-autodeposit /> -->
+
+		<!-- Are you sure? -->
 		<kv-lightbox
 			class="cancel-confirmation-lightbox"
 			:visible="showLightbox"
@@ -38,20 +48,24 @@
 			</template>
 		</kv-lightbox>
 
-		<!-- Auto Deposit Settings -->
-		<!-- TODO -->
-		<!-- <subscriptions-autodeposit /> -->
-
-		<!-- <div class="row column save-button-area">
-			<save-button v-if="isChanged" />
-		</div> -->
+		<!-- Save button  -->
+		<div class="row column save-button-area" v-if="isChanged">
+			<kv-button
+				data-test="subscriptions-save-button"
+				class="smaller"
+				v-if="!isSaving"
+				@click.native="saveMonthlyGood"
+			>
+				Save
+			</kv-button>
+			<kv-button data-test="subscriptions-save-button" class="smaller" v-else>
+				Saving <kv-loading-spinner />
+			</kv-button>
+		</div>
 	</div>
 </template>
 
 <script>
-// ! TODO
-// * Implement behavior when edit modals are opened, values changed, then modal closed without saving
-// * Implement possible 'are you sure you want to leave' warnings
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
@@ -59,6 +73,7 @@ import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 const pageQuery = gql`{
 	my {
@@ -73,6 +88,7 @@ export default {
 	components: {
 		KvButton,
 		KvLightbox,
+		KvLoadingSpinner,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
 	},
@@ -80,6 +96,7 @@ export default {
 	data() {
 		return {
 			isChanged: false,
+			isSaving: false,
 			isMonthlyGoodSubscriber: false,
 			isOnetime: false,
 			confirmationText: '',
@@ -100,13 +117,16 @@ export default {
 			}
 		},
 	},
-	// mounted() {
-	// 	window.addEventListener('beforeunload', this.onLeave);
-	// },
-	// beforeDestroy() {
-	// 	window.removeEventListener('beforeunload', this.onLeave);
-	// },
+	mounted() {
+		window.addEventListener('beforeunload', this.onLeave);
+	},
+	beforeDestroy() {
+		window.removeEventListener('beforeunload', this.onLeave);
+	},
 	methods: {
+		setUnsavedChanges(state) {
+			this.isChanged = state;
+		},
 		cancelSubscription() {
 			this.apollo.mutate({
 				mutation: gql`mutation { my { cancelAutoDeposit } }`,
@@ -115,7 +135,7 @@ export default {
 					{ query: pageQuery }
 				]
 			}).then(() => {
-				this.$showTipMsg('Subscription Cancelled');
+				this.$showTipMsg('Your subscription has been cancelled');
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
@@ -127,12 +147,19 @@ export default {
 			this.confirmationText = confirmationText;
 			this.showLightbox = true;
 		},
-		// onLeave(event) {
-		// 	if (this.isChanged) {
-		// 		// eslint-disable-next-line no-param-reassign
-		// 		event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
-		// 	}
-		// },
+		onLeave(event) {
+			if (this.isChanged) {
+				// eslint-disable-next-line no-param-reassign
+				event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
+			}
+		},
+		saveMonthlyGood() {
+			this.isSaving = true;
+			this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
+				this.isSaving = false;
+			});
+		}
+
 	},
 };
 </script>
@@ -160,12 +187,6 @@ export default {
 
 #cancel-subscription-yes {
 	margin-right: 2rem;
-}
-
-// ! TODO clean up CSS below this line
-::v-deep .obscure {
-	opacity: 0.4;
-	pointer-events: none;
 }
 
 [class*="-area"] {
