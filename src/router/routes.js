@@ -36,6 +36,7 @@ export default [
 		path: '/covid19response',
 		component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19'),
 	},
+	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/Donate') },
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
