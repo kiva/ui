@@ -32,10 +32,7 @@ export default [
 	{ path: '/checkout/post-purchase', component: () => import('@/pages/Checkout/PostPurchase') },
 	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/ThanksPage') },
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
-	{
-		path: '/covid19response',
-		component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19'),
-	},
+	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/Donate') },
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
