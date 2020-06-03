@@ -27,11 +27,12 @@
 						>{{ dayOfMonth | numeral('Oo') }}</a> of each month <a
 							role="button"
 							@click.prevent="showLightbox = true;"
-						>${{ autoDepositAmount }}</a> will be
-						transferred from PayPal <a
+						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
+						transferred from PayPal<a
 							role="button"
 							@click.prevent="showLightbox = true;"
-						>to support
+							v-if="selectedGroupDescriptor"
+						> to support
 							{{ selectedGroupDescriptor }}</a>.
 					</p>
 					<p>
@@ -254,13 +255,11 @@ export default {
 	data() {
 		return {
 			isSaving: false,
-			autoDepositAmount: 0,
 			category: null,
 			dayOfMonth: new Date().getDate(),
 			donation: 0,
 			mgAmount: 0,
 			isMonthlyGoodSubscriber: false,
-			selectedGroupDescriptor: '',
 			showLightbox: false,
 			isDayInputShown: false,
 		};
@@ -304,20 +303,22 @@ export default {
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			if (this.isMonthlyGoodSubscriber) {
-				this.autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
+				const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
 				this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
 				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-				this.category = _get(data, 'my.monthlyGoodCategory');
-
-				// eslint-disable-next-line max-len
-				const selectedCategory = this.lendingCategories.find(category => category.value === this.category) || {};
-				// Sanitize and set initial form values.
-				this.selectedGroupDescriptor = selectedCategory ? selectedCategory.shortName : 'all borrowers';
-				this.mgAmount = this.autoDepositAmount - this.donation;
+				this.category = _get(data, 'my.monthlyGoodCategory') || '';
+				this.mgAmount = autoDepositAmount - this.donation;
 			}
 		},
 	},
 	mounted() {
+		// accomodate for special cases where MG category might be legacy or null.
+		if (!this.category) {
+			this.lendingCategories.push(
+				{ label: 'Preserve existing settings', value: '', shortName: '' }
+			);
+		}
+
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('mgAmount', () => {
 			this.$v.$touch();
@@ -333,6 +334,12 @@ export default {
 		});
 	},
 	computed: {
+		selectedGroupDescriptor() {
+			const selectedCategory = this.lendingCategories.find(category => category.value === this.category);
+
+			// Set group descriptor. There can be cases where this is undefined, and returns empty string.
+			return selectedCategory ? selectedCategory.shortName : '';
+		},
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
 		},
@@ -348,14 +355,33 @@ export default {
 		},
 		saveMonthlyGood() {
 			this.isSaving = true;
-			//! TODO add mutation to update MG settings
-			this.apollo.mutate({
-				// mutation: gql`mutation {
-				// 	autolending @client {
-				// 		saveProfile
-				// 	}
-				// }`
-			}).then(() => {
+			const updateMGCategory = this.apollo.mutate({
+				mutation: gql`mutation($category: MonthlyGoodCategoryEnum!) {
+					my {
+						updateMonthlyGoodCategory(category: $category)
+					}
+				}`,
+				variables: {
+					category: this.category,
+				}
+			});
+			const updateMGSettings = this.apollo.mutate({
+				mutation: gql`mutation($amount: Money, $donateAmount: Money, $dayOfMonth: Int) {
+					my {
+						updateAutoDeposit( autoDeposit: {
+							amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth
+						}) {
+							amount donateAmount dayOfMonth
+						}
+					}
+				}`,
+				variables: {
+					amount: this.totalCombinedDeposit,
+					donateAmount: this.donation,
+					dayOfMonth: this.dayOfMonth,
+				}
+			});
+			Promise.all([updateMGCategory, updateMGSettings]).then(() => {
 				this.$showTipMsg('Settings saved!');
 			}).catch(e => {
 				console.error(e);

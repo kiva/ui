@@ -1,11 +1,42 @@
 <template>
 	<div>
 		<!-- One Time Settings -->
-		<subscriptions-one-time v-if="isMonthlyGoodSubscriber && isOnetime" @cancel-subscription="cancelSubscription" />
+		<subscriptions-one-time
+			v-if="isMonthlyGoodSubscriber && isOnetime"
+			@cancel-subscription="showConfirmationPrompt('Contribution')"
+		/>
 
 		<!-- Monthly Good Settings -->
-		<subscriptions-monthly-good v-if="!isOnetime" @cancel-subscription="cancelSubscription" />
+		<subscriptions-monthly-good v-if="!isOnetime" @cancel-subscription="showConfirmationPrompt('Monthly Good')" />
 
+		<kv-lightbox
+			class="cancel-confirmation-lightbox"
+			:visible="showLightbox"
+			title="Are you sure?"
+			@lightbox-closed="showLightbox = false"
+		>
+			<template>
+				&nbsp;
+			</template>
+			<template slot="controls">
+				<kv-button
+					value="Yes"
+					id="cancel-subscription-yes"
+					class="button smallest"
+					@click.prevent.native="cancelSubscription"
+				>
+					Yes, cancel my {{ confirmationText }}
+				</kv-button>
+				<kv-button
+					value="No"
+					id="cancel-subscription-no"
+					class="button smallest secondary"
+					@click.prevent.native="showLightbox = false"
+				>
+					No, keep it
+				</kv-button>
+			</template>
+		</kv-lightbox>
 
 		<!-- Auto Deposit Settings -->
 		<!-- TODO -->
@@ -26,6 +57,8 @@ import gql from 'graphql-tag';
 
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '@/components/Kv/KvButton';
 
 const pageQuery = gql`{
 	my {
@@ -38,8 +71,10 @@ const pageQuery = gql`{
 
 export default {
 	components: {
+		KvButton,
+		KvLightbox,
 		SubscriptionsMonthlyGood,
-		SubscriptionsOneTime
+		SubscriptionsOneTime,
 	},
 	inject: ['apollo'],
 	data() {
@@ -47,6 +82,8 @@ export default {
 			isChanged: false,
 			isMonthlyGoodSubscriber: false,
 			isOnetime: false,
+			confirmationText: '',
+			showLightbox: false,
 		};
 	},
 	apollo: {
@@ -63,28 +100,43 @@ export default {
 			}
 		},
 	},
-	mounted() {
-		window.addEventListener('beforeunload', this.onLeave);
-	},
-	beforeDestroy() {
-		window.removeEventListener('beforeunload', this.onLeave);
-	},
+	// mounted() {
+	// 	window.addEventListener('beforeunload', this.onLeave);
+	// },
+	// beforeDestroy() {
+	// 	window.removeEventListener('beforeunload', this.onLeave);
+	// },
 	methods: {
 		cancelSubscription() {
-			// ! TODO cancel subscription here
-			console.log('subscription cancelled');
+			this.apollo.mutate({
+				mutation: gql`mutation { my { cancelAutoDeposit } }`,
+				awaitRefetchQueries: true,
+				refetchQueries: [
+					{ query: pageQuery }
+				]
+			}).then(() => {
+				this.$showTipMsg('Subscription Cancelled');
+			}).catch(e => {
+				console.error(e);
+				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
+			}).finally(() => {
+				this.showLightbox = false;
+			});
 		},
-		onLeave(event) {
-			if (this.isChanged) {
-				// eslint-disable-next-line no-param-reassign
-				event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
-			}
+		showConfirmationPrompt(confirmationText) {
+			this.confirmationText = confirmationText;
+			this.showLightbox = true;
 		},
+		// onLeave(event) {
+		// 	if (this.isChanged) {
+		// 		// eslint-disable-next-line no-param-reassign
+		// 		event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
+		// 	}
+		// },
 	},
 };
 </script>
 
-// ! TODO clean up CSS
 <style lang="scss">
 @import 'settings';
 
@@ -106,6 +158,11 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+#cancel-subscription-yes {
+	margin-right: 2rem;
+}
+
+// ! TODO clean up CSS below this line
 ::v-deep .obscure {
 	opacity: 0.4;
 	pointer-events: none;
