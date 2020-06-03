@@ -1,25 +1,25 @@
 <template>
-	<div class="row mg-area">
+	<div class="row autodeposits-area">
 		<div class="column large-8 settings-card">
 			<div class="icon-wrapper">
 				<kv-icon
 					class="icon"
-					title="Monthly Good"
+					title="Auto Deposits"
 					name="auto-icon-when"
 				/>
 			</div>
 			<div class="title-wrapper">
 				<h3>
-					Monthly Good
+					Auto Deposits
 				</h3>
 			</div>
 			<div class="content-wrapper">
-				<router-link v-if="!isMonthlyGoodSubscriber"
-					to="/monthlygood"
+				<router-link v-if="!isAutoDepositSubscriber"
+					to="/auto-deposit"
 				>
-					Sign up for a Kiva Monthly Good subscription
+					Add money to your account every month
 				</router-link>
-				<div v-if="isMonthlyGoodSubscriber">
+				<div v-if="isAutoDepositSubscriber">
 					<p>
 						On the <a
 							role="button"
@@ -28,20 +28,15 @@
 							role="button"
 							@click.prevent="showLightbox = true;"
 						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
-						transferred from PayPal<a
-							role="button"
-							@click.prevent="showLightbox = true;"
-							v-if="selectedGroupDescriptor"
-						> to support
-							{{ selectedGroupDescriptor }}</a>.
+						transferred from PayPal.
 					</p>
 					<p>
-						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Monthly Good</a>
+						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel auto deposit</a>
 					</p>
 					<kv-lightbox
-						class="monthly-good-settings-lightbox"
+						class="auto-deposit-settings-lightbox"
 						:visible="showLightbox"
-						title="Change your monthly good"
+						title="Change your auto deposit"
 						@lightbox-closed="closeLightbox"
 					>
 						<form
@@ -168,41 +163,25 @@
 											v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
 										>
 											<li>
-												The maximum Monthly Good total is $10,000.<br>
+												The maximum Auto Deposit total is $10,000.<br>
 												Please try again by entering in a smaller amount.
 											</li>
 										</ul>
-									</div>
-
-									<div class="row column text-center">
-										Select a category to focus your lending
-										<kv-dropdown-rounded
-											v-model="category"
-											class="group-dropdown"
-										>
-											<option
-												v-for="(option, index) in lendingCategories"
-												:value="option.value"
-												:key="index"
-											>
-												{{ option.label }}
-											</option>
-										</kv-dropdown-rounded>
 									</div>
 								</div>
 							</div>
 						</form>
 						<template slot="controls">
 							<kv-button
-								data-test="monthly-good-save-button"
+								data-test="auto-deposit-save-button"
 								class="smaller button"
 								v-if="!isSaving"
-								@click.native="saveMonthlyGood"
+								@click.native="saveAutoDeposit"
 								:disabled="!isChanged || $v.$invalid"
 							>
 								Save
 							</kv-button>
-							<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+							<kv-button data-test="auto-deposit-save-button" class="smaller button" v-else>
 								Saving <kv-loading-spinner />
 							</kv-button>
 						</template>
@@ -218,7 +197,6 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
-import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -227,7 +205,6 @@ import KvButton from '@/components/Kv/KvButton';
 import IconPencil from '@/assets/icons/inline/pencil.svg';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
 const pageQuery = gql`{
 	my {
@@ -237,7 +214,6 @@ const pageQuery = gql`{
 			dayOfMonth
 			isSubscriber
 		}
-		monthlyGoodCategory
 	}
 }`;
 
@@ -247,7 +223,6 @@ export default {
 		IconPencil,
 		KvButton,
 		KvCurrencyInput,
-		KvDropdownRounded,
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
@@ -255,18 +230,16 @@ export default {
 	data() {
 		return {
 			isSaving: false,
-			category: null,
 			dayOfMonth: new Date().getDate(),
 			donation: 0,
 			mgAmount: 0,
-			isMonthlyGoodSubscriber: false,
+			isAutoDepositSubscriber: false,
 			showLightbox: false,
 			isDayInputShown: false,
 		};
 	},
 	mixins: [
 		validationMixin,
-		loanGroupCategoriesMixin
 	],
 	validations: {
 		mgAmount: {
@@ -289,9 +262,6 @@ export default {
 			minValue: minValue(1),
 			maxValue: maxValue(31)
 		},
-		category: {
-			required,
-		}
 	},
 	apollo: {
 		query: pageQuery,
@@ -301,24 +271,14 @@ export default {
 			});
 		},
 		result({ data }) {
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			if (this.isMonthlyGoodSubscriber) {
-				const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
-				this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
-				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-				this.category = _get(data, 'my.monthlyGoodCategory', '');
-				this.mgAmount = autoDepositAmount - this.donation;
-			}
+			this.isAutoDepositSubscriber = !_get(data, 'my.autoDeposit.isSubscriber', false);
+			const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
+			this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
+			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
+			this.mgAmount = autoDepositAmount - this.donation;
 		},
 	},
 	mounted() {
-		// accomodate for special cases where MG category might be legacy or null.
-		if (!this.category) {
-			this.lendingCategories.push(
-				{ label: 'Preserve existing settings', value: '', shortName: '' }
-			);
-		}
-
 		// After initial value is loaded, setup watch to make form dirty on value changes
 		this.$watch('mgAmount', () => {
 			this.$v.$touch();
@@ -329,17 +289,8 @@ export default {
 		this.$watch('dayOfMonth', () => {
 			this.$v.$touch();
 		});
-		this.$watch('category', () => {
-			this.$v.$touch();
-		});
 	},
 	computed: {
-		selectedGroupDescriptor() {
-			const selectedCategory = this.lendingCategories.find(category => category.value === this.category);
-
-			// Set group descriptor. There can be cases where this is undefined, and returns empty string.
-			return selectedCategory ? selectedCategory.shortName : '';
-		},
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
 		},
@@ -349,7 +300,8 @@ export default {
 	},
 	methods: {
 		closeLightbox() {
-			// This will not trigger when lightbox is closed after saving
+			// this will trigger only when the lightbox is closed manually
+			// not when it is closed via outside click or close button click
 			this.$emit('unsaved-changes', true);
 			this.showLightbox = false;
 		},
@@ -358,19 +310,9 @@ export default {
 				this.isDayInputShown = false;
 			}
 		},
-		saveMonthlyGood() {
+		saveAutoDeposit() {
 			this.isSaving = true;
-			const updateMGCategory = this.apollo.mutate({
-				mutation: gql`mutation($category: MonthlyGoodCategoryEnum!) {
-					my {
-						updateMonthlyGoodCategory(category: $category)
-					}
-				}`,
-				variables: {
-					category: this.category,
-				}
-			});
-			const updateMGSettings = this.apollo.mutate({
+			const updateAutoDepositSettings = this.apollo.mutate({
 				mutation: gql`mutation($amount: Money, $donateAmount: Money, $dayOfMonth: Int) {
 					my {
 						updateAutoDeposit( autoDeposit: {
@@ -386,7 +328,7 @@ export default {
 					dayOfMonth: this.dayOfMonth,
 				}
 			});
-			return Promise.all([updateMGCategory, updateMGSettings]).then(() => {
+			return updateAutoDepositSettings.then(() => {
 				this.$showTipMsg('Settings saved!');
 			}).catch(e => {
 				console.error(e);
@@ -465,10 +407,6 @@ form {
 
 	::v-deep .loading-spinner .line {
 		background-color: $white;
-	}
-
-	::v-deep .dropdown-wrapper.group-dropdown .dropdown {
-		margin-top: 0.65rem;
 	}
 }
 </style>
