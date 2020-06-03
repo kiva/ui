@@ -23,11 +23,12 @@ export function parseExpCookie(cookie) {
 	const assignments = {};
 	expStrings.forEach(exp => {
 		const expValues = exp.split(':');
-		if (typeof expValues[0] === 'string') {
+		if (expValues[0]) {
 			assignments[expValues[0]] = {
 				id: expValues[0],
 				version: expValues[1],
 				hash: parseInt(expValues[2], 10),
+				population: parseFloat(expValues[3]),
 			};
 		}
 	});
@@ -47,8 +48,13 @@ export function parseExpCookie(cookie) {
 export function serializeExpCookie(assignments) {
 	if (!assignments) return '';
 
-	const expStrings = _map(assignments, exp => {
-		return `${exp.id}:${exp.version}:${exp.hash ? exp.hash : 'no-hash'}`;
+	const expStrings = _map(assignments, ({
+		id,
+		version,
+		hash,
+		population,
+	}) => {
+		return `${id}:${version}:${hash || 'no-hash'}:${population || 'no-pop'}`;
 	});
 	// filter out strings that end with a ':', as they have no assignment
 	const filteredStrings = _filter(expStrings, s => s.slice(-1) !== ':');
@@ -99,6 +105,7 @@ export function matchTargets(targets) {
  *         "a": 0.2,
  *         "b": 0.3
  *     },
+ *     "population": 0.5,
  *     "targets": {
  * 			"users": ["cookied"]
  *     }
@@ -110,6 +117,8 @@ export function matchTargets(targets) {
  * @param {string} experiment.endTime - A date string for the ending time of the experiment
  * @param {object} experiment.distribution - An object of the variant weights, where each key is the
  *     variant id and the value is the weight of the variant. The weight must be a number between 0 and 1.
+ * @param {number} experiment.population - A number between 0 and 1 representing the fraction of the population
+ *     that should be included in the experiment.
  * @returns {string|number|undefined} Returns a variant id or undefined if the experiment is not enabled
  */
 export function assignVersion({
@@ -117,6 +126,7 @@ export function assignVersion({
 	startTime,
 	endTime,
 	distribution,
+	population,
 	targets
 }) {
 	// only try to assign a version if the experiment is enabled
@@ -136,10 +146,17 @@ export function assignVersion({
 		for (let i = 0; i < weights.length; i += 1) {
 			const [key, weight] = weights[i];
 			// add the current distribution to our cutoff
-			cutoff += weight;
+			if (_isUndefined(population)) {
+				cutoff += weight;
+			} else {
+				cutoff += weight * population;
+			}
 			// exit the loop and return the current version
 			if (marker <= cutoff) return key;
 		}
+		// if no version was selected, mark them as 'unassigned' so that they will be re-assigned
+		// if/when the population percent changes.
+		return 'unassigned';
 	}
 	// doing nothing here returns undefined, indicating that the experiment is not active
 }
