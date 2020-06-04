@@ -80,7 +80,11 @@
 			</div>
 
 			<template v-slot:controls>
-				<kv-checkbox id="user-pref-hide-interstitial" v-model="userPrefHideInterstitial">
+				<kv-checkbox
+					id="user-pref-hide-interstitial"
+					:checked="userPrefHideInterstitial"
+					@change="handleChangeUserPref"
+				>
 					Don't show me this again
 				</kv-checkbox>
 			</template>
@@ -92,6 +96,7 @@
 import _filter from 'lodash/filter';
 import _find from 'lodash/find';
 import _get from 'lodash/get';
+import store2 from 'store2';
 import cookieStore from '@/util/cookieStore';
 import basketAddInterstitial from '@/graphql/query/basketAddInterstitialClient.graphql';
 import basketAddInterstitialData from '@/graphql/query/basketAddInterstitialData.graphql';
@@ -130,23 +135,9 @@ export default {
 			return this.basketInterstitialState.active || false;
 		}
 	},
-	watch: {
-		userPrefHideInterstitial() {
-			try {
-				localStorage.setItem('userPrefHideInterstitial', this.userPrefHideInterstitial);
-
-				console.log(`TRACK: Lending, click-hide-add-to-basket-interstitial, ${this.userPrefHideInterstitial ? 'selected' : 'unselected'}`); // eslint-disable-line max-len
-				this.$kvTrackEvent(
-					'Lending',
-					'click-hide-add-to-basket-interstitial',
-					this.userPrefHideInterstitial ? 'selected' : 'unselected'
-				);
-			} catch (err) {
-				console.error(err);
-			}
-		}
-	},
 	mounted() {
+		this.userPrefHideInterstitial = store2('userPrefHideInterstitial') === true; // read from localstorage
+
 		this.apollo.watchQuery({ query: basketAddInterstitial }).subscribe({
 			next: ({ data }) => {
 				const interstitialState = _get(data, 'basketAddInterstitial');
@@ -157,7 +148,6 @@ export default {
 					loanId: interstitialState.loanId,
 				};
 
-				this.userPrefHideInterstitial = localStorage.getItem('userPrefHideInterstitial') === 'true';
 				this.showInterstitial = interstitialState.visible && !this.userPrefHideInterstitial;
 
 				// check for loan id + fetch loan
@@ -224,6 +214,17 @@ export default {
 				this.fetchLoan();
 			}
 		},
+		handleChangeUserPref(val) {
+			this.userPrefHideInterstitial = val;
+			store2('userPrefHideInterstitial', this.userPrefHideInterstitial); // store userpref in localstorage
+
+			console.log(`TRACK: Lending, click-hide-add-to-basket-interstitial, ${this.userPrefHideInterstitial ? 'selected' : 'unselected'}`); // eslint-disable-line max-len
+			this.$kvTrackEvent(
+				'Lending',
+				'click-hide-add-to-basket-interstitial',
+				this.userPrefHideInterstitial ? 'selected' : 'unselected'
+			);
+		}
 	},
 	destroyed() {
 		clearTimeout(this.loadingOnTimeout);
