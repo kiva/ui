@@ -18,10 +18,15 @@
 
 		<!-- Auto Deposit Settings -->
 		<subscriptions-auto-deposit
-			v-if="!isOnetime && !isMonthlyGoodSubscriber"
+			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber"
 			@cancel-subscription="showConfirmationPrompt('Auto Deposit')"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsAutoDepositComponent"
+		/>
+
+		<!-- Legacy Subscriptions-->
+		<subscriptions-legacy
+			v-if="!isOnetime && !isMonthlyGoodSubscriber && isLegacySubscriber"
 		/>
 
 		<!-- Are you sure? -->
@@ -78,6 +83,8 @@ import gql from 'graphql-tag';
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from './SubscriptionsAutoDeposit';
+import SubscriptionsLegacy from './SubscriptionsLegacy';
+
 
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
@@ -90,6 +97,11 @@ const pageQuery = gql`{
 			isOnetime
 		}
 		lastLoginTimestamp @client
+		subscriptions {
+			values {
+				id
+			}
+		}
 	}
 	general {
 		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
@@ -107,6 +119,7 @@ export default {
 		SubscriptionsAutoDeposit,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
+		SubscriptionsLegacy,
 	},
 	inject: ['apollo'],
 	data() {
@@ -154,6 +167,9 @@ export default {
 		result({ data }) {
 			this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+
+			const legacySubs = _get(data, 'my.subscriptions.values', []);
+			this.isLegacySubscriber = legacySubs.length > 0;
 		},
 	},
 	mounted() {
