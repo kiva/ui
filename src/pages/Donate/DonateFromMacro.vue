@@ -4,12 +4,13 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<!-- Replicate <m-g-covid-hero /> -->
+		<donate-from-macro-hero />
 	</www-page>
 </template>
 <script>
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
 
 export default {
 	metaInfo: {
@@ -17,6 +18,7 @@ export default {
 	},
 	components: {
 		WwwPage,
+		DonateFromMacroHero,
 	},
 	data() {
 		return {
