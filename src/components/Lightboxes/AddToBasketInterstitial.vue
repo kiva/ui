@@ -134,6 +134,8 @@ export default {
 		userPrefHideInterstitial() {
 			try {
 				localStorage.setItem('userPrefHideInterstitial', this.userPrefHideInterstitial);
+
+				console.log(`TRACK: Lending, click-hide-add-to-basket-interstitial, ${this.userPrefHideInterstitial ? 'selected' : 'unselected'}`); // eslint-disable-line max-len
 				this.$kvTrackEvent(
 					'Lending',
 					'click-hide-add-to-basket-interstitial',
