@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import _get from 'lodash/get';
 import _shuffle from 'lodash/shuffle';
 import _uniqBy from 'lodash/uniqBy';
@@ -62,11 +63,25 @@ import _filter from 'lodash/filter';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loansYouMightLikeData from '@/graphql/query/loansYouMightLike/loansYouMightLikeData.graphql';
+import mlLoansYouMightLikeData from '@/graphql/query/loansYouMightLike/mlLoansYouMightLikeData.graphql';
 import basketCount from '@/graphql/query/basketCount.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 const minWidthToShowLargeCards = 0;
 const smallCardWidthPlusPadding = 190;
 const largeCardWidthPlusPadding = 190;
+
+const expMlLoanToLoanQuery = gql`
+	{
+		general {
+			ml_loan_to_loan: uiExperimentSetting(key: "ml_loan_to_loan") {
+				key
+				value
+			}
+		}
+	}
+`;
 
 export default {
 	components: {
@@ -85,6 +100,10 @@ export default {
 		sortBy: {
 			type: String,
 			default: 'random'
+		},
+		visible: {
+			type: Boolean,
+			default: true
 		}
 	},
 	computed: {
@@ -130,9 +149,24 @@ export default {
 			scrollPos: 0,
 			windowWidth: 0,
 			wrapperWidth: 0,
+			expMlLoanToLoan: false
 		};
 	},
 	inject: ['apollo'],
+	apollo: {
+		preFetch(config, client) {
+			return new Promise((resolve, reject) => {
+				// Get the experiment object from settings
+				client.query({
+					query: expMlLoanToLoanQuery
+				}).then(() => {
+					client.query({ query: experimentAssignmentQuery, variables: { id: 'ml_loan_to_loan' } })
+						.then(resolve)
+						.catch(reject);
+				}).catch(reject);
+			});
+		}
+	},
 	watch: {
 		// this watch lets us respond once we have loans and the proper DOM elements
 		showLYML() {
@@ -145,13 +179,23 @@ export default {
 		// watch for change to targetLoan and refetch loans
 		targetLoan() {
 			this.$nextTick(() => {
-				this.getLoansYouMightLike();
+				if (this.visible) {
+					this.getLoansYouMightLike();
+				}
 			});
 		},
+		visible: {
+			immediate: true,
+			handler() {
+				if (this.visible) {
+					this.setupExperimentState();
+					this.getLoansYouMightLike();
+				}
+			}
+		}
 	},
 	mounted() {
 		// we're doing this all client side
-		this.getLoansYouMightLike();
 		window.addEventListener('resize', this.throttledResize());
 	},
 	beforeDestroy() {
@@ -160,40 +204,53 @@ export default {
 	methods: {
 		getLoansYouMightLike() {
 			this.loading = true;
-			const queryTypes = [
-				{
-					gender: this.gender,
-					sortBy: this.sortBy
-				},
-				{
-					country: this.country,
-					sortBy: this.sortBy
-				},
-				{
-					sector: this.sector,
-					sortBy: this.sortBy
-				},
-				{
-					partner: this.partner,
-					sortBy: this.sortBy
-				},
-				{
-					sortBy: this.sortBy
-				}
-			];
-			let loansYouMightLike = [];
 
-			Promise.all(_map(queryTypes, variables => {
-				return this.apollo.query({
-					query: loansYouMightLikeData,
-					variables
+			if (this.expMlLoanToLoan) {
+				this.apollo.query({
+					query: mlLoansYouMightLikeData,
+					variables: {
+						loanId: parseInt(this.targetLoan.id, 10)
+					}
 				}).then(data => {
-					const loans = _get(data, 'data.lend.loans.values');
-					loansYouMightLike = loansYouMightLike.concat(loans);
+					const loans = _get(data, 'data.ml.relatedLoansByTopics[0].values');
+					this.parseLoansYouMightLike(loans);
 				});
-			})).then(() => {
-				this.parseLoansYouMightLike(loansYouMightLike);
-			});
+			} else {
+				const queryTypes = [
+					{
+						gender: this.gender,
+						sortBy: this.sortBy
+					},
+					{
+						country: this.country,
+						sortBy: this.sortBy
+					},
+					{
+						sector: this.sector,
+						sortBy: this.sortBy
+					},
+					{
+						partner: this.partner,
+						sortBy: this.sortBy
+					},
+					{
+						sortBy: this.sortBy
+					}
+				];
+				let loansYouMightLike = [];
+
+				Promise.all(_map(queryTypes, variables => {
+					return this.apollo.query({
+						query: loansYouMightLikeData,
+						variables
+					}).then(data => {
+						const loans = _get(data, 'data.lend.loans.values');
+						loansYouMightLike = loansYouMightLike.concat(loans);
+					});
+				})).then(() => {
+					this.parseLoansYouMightLike(loansYouMightLike);
+				});
+			}
 		},
 		parseLoansYouMightLike(loansYouMightLike) {
 			const withoutBasketedLoans = _filter(
@@ -211,13 +268,12 @@ export default {
 			this.showLYML = true;
 			this.loading = false;
 
+			this.fireExperimentTracking();
+
 			// update window width once loans are loaded
 			this.$nextTick(() => {
 				this.saveWindowWidth();
 			});
-
-			// track loans shown
-			this.$kvTrackEvent('Lending', 'lyml-loans-shown', _map(this.loansYouMightLike, 'id'));
 		},
 		saveWindowWidth() {
 			// console.log(window.innerWidth);
@@ -256,6 +312,33 @@ export default {
 					query: basketCount,
 					fetchPolicy: 'network-only',
 				});
+			}
+		},
+		setupExperimentState() {
+			// read the experiment version from the client cache
+			const localExperiment = this.apollo.readFragment({
+				id: 'Experiment:ml_loan_to_loan',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			if (localExperiment.version === 'control' || localExperiment.version === 'shown') {
+				this.expMlLoanToLoan = localExperiment.version === 'shown';
+			}
+		},
+		fireExperimentTracking() {
+			// track loans shown
+			console.log(`TRACK: Lending, lyml-loans-shown, ${this.loansYouMightLike.map(loan => loan.id)}`);
+			this.$kvTrackEvent('Lending', 'lyml-loans-shown', this.loansYouMightLike.map(loan => loan.id));
+
+			// track ML experiment
+			if (this.$route.path.split('/')[1] === 'funded') {
+				// we're on the funded loan page
+				console.log(`TRACK: Lending, EXP-GROW-110-Jun2020, ${this.expMlLoanToLoan ? 'b' : 'a'}`);
+				this.$kvTrackEvent('Lending', 'EXP-GROW-110-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
+			} else {
+				// we're on one of the various lend pages
+				console.log(`TRACK: Lending, EXP-GROW-111-Jun2020, ${this.expMlLoanToLoan ? 'b' : 'a'}`);
+				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
 			}
 		}
 	},

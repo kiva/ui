@@ -158,6 +158,43 @@ export const CustomTitleColor = () => ({
 	`,
 });
 
+export const FullWidth = () => ({
+	components: { KvLightbox, KvButton },
+	props: {
+		fullWidth: {
+			default: boolean('fullWidth', true)
+		},
+	},
+	data: () => ({
+		lightboxVisible: false,
+	}),
+	methods: {
+		showLightbox() {
+			this.lightboxVisible = true;
+		},
+		hideLightbox() {
+			this.lightboxVisible = false;
+		}
+	},
+	template: `
+		<div>
+			<kv-button @click.native.prevent="showLightbox">
+				Show Lightbox Full Width
+			</kv-button>
+
+			<kv-lightbox
+				:visible="lightboxVisible"
+				:full-width="fullWidth"
+				@lightbox-closed="hideLightbox"
+				title="Title"
+			>
+				This is small content, but the lightbox takes all the space it can.
+			</kv-lightbox>
+		</div>
+	`,
+});
+
+
 export const NoPadding = () => ({
 	components: { KvLightbox, KvButton },
 	props: {

@@ -1,0 +1,23 @@
+#import '../../fragments/loanCardFields.graphql'
+
+query mlLoansYouMightLikeData(
+	$loanId: Int!,
+	$offset: Int = 0,
+	$limit: Int = 8,
+	$imgDefaultSize: String = "w480h360",
+	$imgRetinaSize: String = "w480h360"
+) {
+	ml {
+    	relatedLoansByTopics(limit: $limit, loanId: $loanId, offset: $offset, topics: [story]) {
+      		values {
+				...loanCardFields
+				image {
+					id
+					default: url(customSize: $imgDefaultSize)
+					retina: url(customSize: $imgRetinaSize)
+					hash
+				}
+			}
+		}
+	}
+}
