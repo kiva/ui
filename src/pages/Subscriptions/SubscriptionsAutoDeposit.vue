@@ -271,8 +271,9 @@ export default {
 			});
 		},
 		result({ data }) {
-			this.isAutoDepositSubscriber = !_get(data, 'my.autoDeposit.isSubscriber', false);
 			const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
+			// eslint-disable-next-line max-len
+			this.isAutoDepositSubscriber = !_get(data, 'my.autoDeposit.isSubscriber', false) && _get(data, 'my.autoDeposit.status', false);
 			this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
 			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
 			this.mgAmount = autoDepositAmount - this.donation;
