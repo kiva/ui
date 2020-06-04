@@ -8,14 +8,13 @@
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
-	inject: ['apollo', 'federation'],
+	inject: ['federation'],
 	components: {
 		GenericPromoBanner,
 	},
@@ -29,7 +28,6 @@ export default {
 		return {
 			isPromoEnabled: false,
 			promoBannerContent: {},
-			specialConditions: null
 		};
 	},
 	created() {
@@ -95,52 +93,16 @@ export default {
 					// check for special conditions and allow that process to control enabled
 					const specialConditions = _get(activePromoBanner, 'fields.specialConditions', null);
 					if (specialConditions) {
-						this.specialConditions = specialConditions;
-						this.processSpecialConditions();
-					} else {
-						this.isPromoEnabled = true;
+						// check for and operate on autolending opt in condition
+						// if special conditions exist, for example:
+						// specialConditions.includes('autolending-opted-in')
+						// process them and set this.isPromoEnabled = true accordingly
+						return false;
 					}
+					this.isPromoEnabled = true;
 				}
 			}
 		});
 	},
-	methods: {
-		processSpecialConditions() {
-			// check for and operate on autolending opt in condition
-			if (this.specialConditions.includes('autolending-opted-in')) {
-				this.verifyAutoLendingOptin();
-			}
-		},
-		verifyAutoLendingOptin() {
-			const query = gql`{
-				my {
-					autolendProfile	{
-						isEnabled
-						idleCreditOptIn
-					}
-					userAccount {
-						id
-						inactiveAccountSetting
-					}
-				}
-			}`;
-			// check this lender's autolend opt-out state
-			// - show the banner if they are currently opted in
-			// - and we are not on the /settings/autolending page
-			this.apollo.query({
-				query
-			}).then(({ data }) => {
-				if (_get(data, 'my.autolendProfile.isEnabled')) {
-					return false;
-				}
-				const optedIn = _get(data, 'my.autolendProfile.idleCreditOptIn', false);
-				const inactiveAccountSetting = _get(data, 'my.userAccount.inactiveAccountSetting', null);
-				if ((optedIn || inactiveAccountSetting === 'email_address')
-					&& this.$route.path !== '/settings/autolending') {
-					this.isPromoEnabled = true;
-				}
-			});
-		}
-	}
 };
 </script>
