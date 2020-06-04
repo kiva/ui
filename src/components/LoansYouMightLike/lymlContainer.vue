@@ -206,7 +206,6 @@ export default {
 			this.loading = true;
 
 			if (this.expMlLoanToLoan) {
-				console.log('ml');
 				this.apollo.query({
 					query: mlLoansYouMightLikeData,
 					variables: {
@@ -214,12 +213,9 @@ export default {
 					}
 				}).then(data => {
 					const loans = _get(data, 'data.ml.relatedLoansByTopics[0].values');
-					console.log(loans);
-					// TODO: need to verify data in loans. Currently unable to do so on dry-run.
 					this.parseLoansYouMightLike(loans);
 				});
 			} else {
-				console.log('not ml');
 				const queryTypes = [
 					{
 						gender: this.gender,
@@ -272,13 +268,12 @@ export default {
 			this.showLYML = true;
 			this.loading = false;
 
+			this.fireExperimentTracking();
+
 			// update window width once loans are loaded
 			this.$nextTick(() => {
 				this.saveWindowWidth();
 			});
-
-			// track loans shown
-			this.$kvTrackEvent('Lending', 'lyml-loans-shown', _map(this.loansYouMightLike, 'id'));
 		},
 		saveWindowWidth() {
 			// console.log(window.innerWidth);
@@ -325,13 +320,27 @@ export default {
 				id: 'Experiment:ml_loan_to_loan',
 				fragment: experimentVersionFragment,
 			}) || {};
-			if (localExperiment.version === 'control') {
-				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', 'a');
-			} else if (localExperiment.version === 'shown') {
-				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', 'b');
-				this.expMlLoanToLoan = true;
+
+			if (localExperiment.version === 'control' || localExperiment.version === 'shown') {
+				this.expMlLoanToLoan = localExperiment.version === 'shown';
 			}
 		},
+		fireExperimentTracking() {
+			// track loans shown
+			console.log(`TRACK: Lending, lyml-loans-shown, ${this.loansYouMightLike.map(loan => loan.id)}`);
+			this.$kvTrackEvent('Lending', 'lyml-loans-shown', this.loansYouMightLike.map(loan => loan.id));
+
+			// track ML experiment
+			if (this.$route.path.split('/')[1] === 'funded') {
+				// we're on the funded loan page
+				console.log(`TRACK: Lending, EXP-GROW-110-Jun2020, ${this.expMlLoanToLoan ? 'b' : 'a'}`);
+				this.$kvTrackEvent('Lending', 'EXP-GROW-110-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
+			} else {
+				// we're on one of the various lend pages
+				console.log(`TRACK: Lending, EXP-GROW-111-Jun2020, ${this.expMlLoanToLoan ? 'b' : 'a'}`);
+				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
+			}
+		}
 	},
 };
 
