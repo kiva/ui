@@ -18,6 +18,9 @@
 				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
 					{{ buttonText }}
 				</kv-button>
+				<div class="attribution-text text-center">
+					Thanks to PayPal, Kiva receives free payment processing
+				</div>
 			</div>
 		</div>
 	</form>
@@ -94,10 +97,10 @@ export default {
 		}
 	},
 	methods: {
-		depositTypeChanged(value) {
-			this.depositSelected = value;
-			this.isRecurring = value === 'recurring';
-		},
+		// depositTypeChanged(value) {
+		// 	this.depositSelected = value;
+		// 	this.isRecurring = value === 'recurring';
+		// },
 		donationAmountSelected(value) {
 			if (value === 'custom') {
 				this.updateAmount(numeral(this.donationCustomAmount).value(), 'donation');
@@ -114,7 +117,7 @@ export default {
 
 		updateAmount(value) {
 			// updates local var from various changes in the form
-			// update for onetime
+			// update donation
 			this.donationAmount = numeral(value).value();
 		},
 		submit() {
@@ -137,6 +140,12 @@ export default {
 .donation-amount-selector {
 	margin-bottom: 1rem;
 	position: relative;
+}
+
+.attribution-text {
+	color: $kiva-text-light;
+	margin-top: 1.5625rem;
+	font-size: 1rem;
 }
 
 .submit-btn {

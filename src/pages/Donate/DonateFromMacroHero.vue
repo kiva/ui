@@ -1,9 +1,9 @@
 <template>
 	<kv-hero class="donation-hero">
 		<template v-slot:images>
-			<!-- :images="heroImages" -->
 			<kv-responsive-image
 				class="donation-hero-picture"
+				:images="heroImages"
 				alt=""
 			/>
 		</template>
@@ -19,19 +19,6 @@
 						:key="1"
 						:button-text="pageCopy.button"
 					/>
-					<!-- <div class="already-subscribed-msg-wrapper" v-else-if="isMonthlyGoodSubscriber">
-						<h4>
-							You're already signed up for Monthly Good.
-							Changes to this contribution can be made in your
-							<a href="/settings/credit">credit settings</a>.
-						</h4>
-					</div> -->
-					<!-- <div class="campaign-inactive" v-else-if="!covidLandingActive">
-						<h4>
-							Please use the <a href="/monthlygood">Monthly Good signup form</a> to
-							activate a monthly lending contribution.
-						</h4>
-					</div> -->
 				</div>
 			</div>
 		</template>
@@ -41,6 +28,8 @@
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import DonateForm from './DonateForm';
+
+const heroImagesRequire = require.context('@/assets/images/covid-hero-v2', true);
 
 export default {
 	metaInfo: {
@@ -54,14 +43,30 @@ export default {
 	data() {
 		return {
 			donationAmount: 25,
+			// THESE NEED TO BE HOOKED UP TO THE FILES IN CONTENTFUL
+			heroImages: [
+				['small', heroImagesRequire('./hero_480x390.jpg')],
+				['small retina', heroImagesRequire('./hero_960x780.jpg')],
+				['medium', heroImagesRequire('./hero_680x375.jpg')],
+				['medium retina', heroImagesRequire('./hero_1360x750.jpg')],
+				['large', heroImagesRequire('./hero_1024x850.jpg')],
+				['large retina', heroImagesRequire('./hero_2048x1700.jpg')],
+				['xxlarge', heroImagesRequire('./hero_1320x760.jpg')],
+				['xxlarge retina', heroImagesRequire('./hero_2640x1520.jpg')],
+				['xga', heroImagesRequire('./hero_1440x710.jpg')],
+				['xga retina', heroImagesRequire('./hero_2880x1420.jpg')],
+				['wxga', heroImagesRequire('./hero_1920x740.jpg')],
+				['wga retina', heroImagesRequire('./hero_3840x1480.jpg')],
+			],
 		};
 	},
 	computed: {
 		pageCopy() {
 			return {
-				headline: 'Donate to Kiva',
-				subhead: '100% of money lent on Kiva goes to funding loans, so we rely on donations to continue this important work. More that two-thirds of our donations come from individual lenders like you.', // eslint-disable-line max-len
-				button: 'Donate'
+				// THESE NEED TO BE HOOKED UP TO CONTENTFUL FIELDS
+				headline: 'Invest in a world where all people hold the power to improve their lives.',
+				subhead: 'Your support is essential in helping us bring economic agency to those who need it most. Together, we can transform the global financial system so that every person has access to the capital and resources they need to flourish.', // eslint-disable-line max-len
+				button: 'Donate with Kiva'
 			};
 		}
 	},
