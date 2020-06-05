@@ -39,7 +39,7 @@
 		}
 	},
 	"dependencies": {
-		"@babel/polyfill": "^7.0.0",
+		"@babel/polyfill": "^7.10.1",
 		"@contentful/rich-text-html-renderer": "^13.4.0",
 		"@sentry/browser": "^5.16.0",
 		"@sentry/integrations": "^5.15.5",
