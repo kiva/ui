@@ -90,7 +90,7 @@
 		"serialize-javascript": "^3.0.0",
 		"set-cookie-parser": "^2.4.0",
 		"store2": "^2.11.2",
-		"timesync": "^1.0.4",
+		"timesync": "^1.0.5",
 		"title-case": "^3.0.2",
 		"vue": "^2.6.11",
 		"vue-focus-lock": "^1.4.0",
