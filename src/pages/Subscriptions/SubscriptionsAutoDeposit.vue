@@ -213,6 +213,7 @@ const pageQuery = gql`{
 			donateAmount
 			dayOfMonth
 			isSubscriber
+			status
 		}
 	}
 }`;
