@@ -2,8 +2,10 @@
 	<div>
 		<!-- One Time Settings -->
 		<subscriptions-one-time
-			v-if="isMonthlyGoodSubscriber && isOnetime"
+			v-if="isOnetime"
 			@cancel-subscription="showConfirmationPrompt('Contribution')"
+			@unsaved-changes="setUnsavedChanges"
+			ref="subscriptionsOneTimeComponent"
 		/>
 
 		<!-- Monthly Good Settings -->
@@ -15,8 +17,17 @@
 		/>
 
 		<!-- Auto Deposit Settings -->
-		<!-- TODO -->
-		<!-- <subscriptions-autodeposit /> -->
+		<subscriptions-auto-deposit
+			v-if="!isOnetime && !isMonthlyGoodSubscriber && !isLegacySubscriber"
+			@cancel-subscription="showConfirmationPrompt('Auto Deposit')"
+			@unsaved-changes="setUnsavedChanges"
+			ref="subscriptionsAutoDepositComponent"
+		/>
+
+		<!-- Legacy Subscriptions-->
+		<subscriptions-legacy
+			v-if="!isOnetime && !isMonthlyGoodSubscriber && isLegacySubscriber"
+		/>
 
 		<!-- Are you sure? -->
 		<kv-lightbox
@@ -54,7 +65,7 @@
 				data-test="subscriptions-save-button"
 				class="smaller"
 				v-if="!isSaving"
-				@click.native="saveMonthlyGood"
+				@click.native="saveSubscription"
 			>
 				Save
 			</kv-button>
@@ -71,6 +82,10 @@ import gql from 'graphql-tag';
 
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
+import SubscriptionsAutoDeposit from './SubscriptionsAutoDeposit';
+import SubscriptionsLegacy from './SubscriptionsLegacy';
+
+
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -81,6 +96,18 @@ const pageQuery = gql`{
 			isSubscriber
 			isOnetime
 		}
+		lastLoginTimestamp @client
+		subscriptions {
+			values {
+				id
+			}
+		}
+	}
+	general {
+		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
+			value
+			key
+		}
 	}
 }`;
 
@@ -89,15 +116,16 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvLoadingSpinner,
+		SubscriptionsAutoDeposit,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
+		SubscriptionsLegacy,
 	},
 	inject: ['apollo'],
 	data() {
 		return {
 			isChanged: false,
 			isSaving: false,
-			isMonthlyGoodSubscriber: false,
 			isOnetime: false,
 			confirmationText: '',
 			showLightbox: false,
@@ -105,16 +133,43 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
+		preFetch(config, client, { route, kvAuth0 }) {
+			return new Promise((resolve, reject) => {
+				client.query({
+					query: pageQuery
+				}).then(({ data }) => {
+					const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
+					const duration = 1000 * (parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600);
+					if (kvAuth0.getKivaId() && Date.now() > lastLogin + duration) {
+						throw new Error('activeLoginRequired');
+					}
+				}).then(resolve).catch(e => {
+					if (e.message.indexOf('activeLoginRequired') > -1) {
+						// Force a login when active login is required
+						reject({
+							path: '/ui-login',
+							query: { force: true, doneUrl: route.fullPath }
+						});
+					} else if (e.message.indexOf('api.authenticationRequired') > -1) {
+						// Redirect to login upon authentication error
+						reject({
+							path: '/ui-login',
+							query: { doneUrl: route.fullPath }
+						});
+					} else {
+						// Log other errors
+						console.error(e);
+						resolve();
+					}
+				});
 			});
 		},
 		result({ data }) {
+			this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			if (this.isMonthlyGoodSubscriber) {
-				this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
-			}
+
+			const legacySubs = _get(data, 'my.subscriptions.values', []);
+			this.isLegacySubscriber = legacySubs.length > 0;
 		},
 	},
 	mounted() {
@@ -136,6 +191,7 @@ export default {
 				]
 			}).then(() => {
 				this.$showTipMsg('Your subscription has been cancelled');
+				this.isChanged = false;
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
@@ -153,11 +209,24 @@ export default {
 				event.returnValue = 'You have unsaved settings! Are you sure you want to leave?';
 			}
 		},
-		saveMonthlyGood() {
+		saveSubscription() {
 			this.isSaving = true;
-			this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
-				this.isSaving = false;
-			});
+			// Calls the save method in the component if component isChanged is true.
+			if (_get(this.$refs, 'subscriptionsOneTimeComponent.isChanged', false)) {
+				this.$refs.subscriptionsOneTimeComponent.saveOneTime().finally(() => {
+					this.isSaving = false;
+				});
+			}
+			if (_get(this.$refs, 'subscriptionsMonthlyGoodComponent.isChanged', false)) {
+				this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
+					this.isSaving = false;
+				});
+			}
+			if (_get(this.$refs, 'subscriptionsAutoDepositComponent.isChanged', false)) {
+				this.$refs.subscriptionsAutoDepositComponent.saveAutoDeposit().finally(() => {
+					this.isSaving = false;
+				});
+			}
 		}
 
 	},
