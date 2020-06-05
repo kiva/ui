@@ -191,6 +191,7 @@ export default {
 				]
 			}).then(() => {
 				this.$showTipMsg('Your subscription has been cancelled');
+				this.isChanged = false;
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
@@ -210,18 +211,18 @@ export default {
 		},
 		saveSubscription() {
 			this.isSaving = true;
-			// Calls the save methods in the component if component is being shown.
-			if (this.$refs.subscriptionsOneTimeComponent) {
+			// Calls the save method in the component if component isChanged is true.
+			if (_get(this.$refs, 'subscriptionsOneTimeComponent.isChanged', false)) {
 				this.$refs.subscriptionsOneTimeComponent.saveOneTime().finally(() => {
 					this.isSaving = false;
 				});
 			}
-			if (this.$refs.subscriptionsMonthlyGoodComponent) {
+			if (_get(this.$refs, 'subscriptionsMonthlyGoodComponent.isChanged', false)) {
 				this.$refs.subscriptionsMonthlyGoodComponent.saveMonthlyGood().finally(() => {
 					this.isSaving = false;
 				});
 			}
-			if (this.$refs.subscriptionsAutoDepositComponent) {
+			if (_get(this.$refs, 'subscriptionsAutoDepositComponent.isChanged', false)) {
 				this.$refs.subscriptionsAutoDepositComponent.saveAutoDeposit().finally(() => {
 					this.isSaving = false;
 				});
