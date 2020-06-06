@@ -30,6 +30,7 @@
 
 <script>
 import numeral from 'numeral';
+import _forEach from 'lodash/forEach';
 import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
@@ -86,8 +87,8 @@ export default {
 					title: `$${option}`,
 					key: option,
 				};
-			})
-			values.push({title: 'Other', key: 'custom'});
+			});
+			values.push({ title: 'Other', key: 'custom' });
 			return values;
 		},
 	},

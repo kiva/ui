@@ -83,10 +83,13 @@ export default {
 		},
 		// Will be used once images are coming through from contentful
 		zeroImages() {
+			// eslint-disable-next-line
 			const donationImages = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[0].fields.images');
 			return donationImages;
 		},
 		donationValues() {
+			// defining the donation dollar amount to pass down for button values
+			// eslint-disable-next-line
 			const donationAmounts = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[2].fields.dataObject.amounts');
 			return donationAmounts;
 		},

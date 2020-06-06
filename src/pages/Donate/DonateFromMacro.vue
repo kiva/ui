@@ -10,7 +10,9 @@
 
 		<div class="FAQ-wrapper section">
 			<div class="row">
-				<h2 class="strong">Frequently Asked Questions</h2>
+				<h2 class="strong">
+					Frequently Asked Questions
+				</h2>
 				<div v-html="bodyCopy"></div>
 			</div>
 		</div>
@@ -66,9 +68,8 @@ export default {
 				return false;
 			}
 			// Processing the contentful data
+			// eslint-disable-next-line
 			this.promoContent = processContent(contentfulPageData);
-			// defining the donation dollar amount to pass down for button values
-			const donationDollarAmounts = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[0].fields.contents[2].fields.dataObject.amounts');
 			// pulling the FAQs off the data for use in bodyCopy computed function
 			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
 		}).finally(() => {
