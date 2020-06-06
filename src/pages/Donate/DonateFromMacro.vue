@@ -71,6 +71,7 @@ export default {
 			// eslint-disable-next-line
 			this.promoContent = processContent(contentfulPageData);
 			// pulling the FAQs off the data for use in bodyCopy computed function
+			// eslint-disable-next-line
 			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
 		}).finally(() => {
 			this.showSlideShow = true;
