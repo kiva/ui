@@ -13,11 +13,12 @@
 						overlay-column columns
 						medium-10 medium-offset-1 large-8 large-offset-0 xlarge-7 xxlarge-6"
 				>
-					<h1 class="donate-headline" v-html="pageCopy.headline"></h1>
-					<p class="donate-subhead" v-html="pageCopy.subhead"></p>
+					<h1 class="donate-headline" v-html="headlineCopy"></h1>
+					<p class="donate-subhead" v-html="subheadCopy"></p>
 					<donate-form
 						:key="1"
-						:button-text="pageCopy.button"
+						:button-text="buttonCopy"
+						:data="donationValues"
 					/>
 				</div>
 			</div>
@@ -25,6 +26,7 @@
 	</kv-hero>
 </template>
 <script>
+import _get from 'lodash/get';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import DonateForm from './DonateForm';
@@ -32,6 +34,12 @@ import DonateForm from './DonateForm';
 const heroImagesRequire = require.context('@/assets/images/covid-hero-v2', true);
 
 export default {
+	props: {
+		data: {
+			type: Object,
+			default: null,
+		},
+	},
 	metaInfo: {
 		title: 'Donate to Kiva today!'
 	},
@@ -42,8 +50,8 @@ export default {
 	},
 	data() {
 		return {
-			donationAmount: 25,
-			// THESE NEED TO BE HOOKED UP TO THE FILES IN CONTENTFUL
+			// TODO: These need to be hooked up to the files in contentful still
+			// https://app.contentful.com/spaces/j0p9a6ql0rn7/environments/development/entries/6pXrrPQucbeNLqf47tW3wh
 			heroImages: [
 				['small', heroImagesRequire('./hero_480x390.jpg')],
 				['small retina', heroImagesRequire('./hero_960x780.jpg')],
@@ -61,15 +69,28 @@ export default {
 		};
 	},
 	computed: {
-		pageCopy() {
-			return {
-				// THESE NEED TO BE HOOKED UP TO CONTENTFUL FIELDS
-				headline: 'Invest in a world where all people hold the power to improve their lives.',
-				subhead: 'Your support is essential in helping us bring economic agency to those who need it most. Together, we can transform the global financial system so that every person has access to the capital and resources they need to flourish.', // eslint-disable-line max-len
-				button: 'Donate with Kiva'
-			};
-		}
-	},
+		donationHeroContent() {
+			return _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[1].fields');
+		},
+		headlineCopy() {
+			return _get(this.donationHeroContent, 'headline');
+		},
+		subheadCopy() {
+			return _get(this.donationHeroContent, 'subHeadline');
+		},
+		buttonCopy() {
+			return _get(this.donationHeroContent, 'primaryCtaText');
+		},
+		// Will be used once images are coming through from contentful
+		zeroImages() {
+			const donationImages = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[0].fields.images');
+			return donationImages;
+		},
+		donationValues() {
+			const donationAmounts = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[2].fields.dataObject.amounts');
+			return donationAmounts;
+		},
+	}
 };
 </script>
 
@@ -152,13 +173,13 @@ export default {
 	}
 }
 
-.mg-headline {
+.donation-headline {
 	@include large-text();
 
 	margin-bottom: 0.25rem;
 }
 
-.mg-subhead {
+.donation-subhead {
 	@include medium-text();
 
 	padding: 0;

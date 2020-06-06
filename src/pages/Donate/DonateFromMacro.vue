@@ -4,18 +4,20 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<donate-from-macro-hero />
+		<donate-from-macro-hero
+			:data="promoContent"
+		/>
 
 		<div class="FAQ-wrapper section">
 			<div class="row">
+				<h2 class="strong">Frequently Asked Questions</h2>
 				<div v-html="bodyCopy"></div>
 			</div>
 		</div>
-		<!-- <donate-from-macro-F-A-Q /> -->
 
 		<div class="impact-wrapper section">
 			<div class="row">
-				<kiva-impact class="impact small-12 columns" />
+				<m-g-covid-about class="impact small-12 columns" />
 			</div>
 		</div>
 	</www-page>
@@ -30,7 +32,7 @@ import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
 import contentful from '@/graphql/query/contentful.graphql';
 import { processContent } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import KivaImpact from '@/pages/LandingPages/MGCovid19/KivaImpact';
+import MGCovidAbout from '@/pages/LandingPages/MGCovid19/MGCovidAbout';
 
 export default {
 	metaInfo: {
@@ -39,15 +41,17 @@ export default {
 	components: {
 		WwwPage,
 		DonateFromMacroHero,
-		KivaImpact,
+		MGCovidAbout,
 	},
 	data() {
 		return {
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
+			donationFAQs: null,
+			promoContent: () => {},
 		};
 	},
-	inject: ['apollo', 'federation'],
+	inject: ['federation'],
 
 	created() {
 		this.federation.query({
@@ -57,43 +61,16 @@ export default {
 				contentKey: 'support-kiva',
 			}
 		}).then(({ data }) => {
-			// eslint-disable-next-line max-len
-			// const contentfulPageData = _get(data, 'contentful.entries.items[0].fields.pageLayout.fields.contentGroups');
 			const contentfulPageData = _get(data, 'contentful.entries.items');
 			if (!contentfulPageData) {
 				return false;
 			}
-
+			// Processing the contentful data
 			this.promoContent = processContent(contentfulPageData);
-			console.log('this.promoContent', this.promoContent);
-
-
-			// eslint-disable-next-line max-len
-			const donationImages = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[0].fields.contents[0].fields.images');
-			// eslint-disable-next-line max-len
+			// defining the donation dollar amount to pass down for button values
 			const donationDollarAmounts = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[0].fields.contents[2].fields.dataObject.amounts');
-			// eslint-disable-next-line max-len
-			const donationPageText = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[0].fields.contents[1].fields');
-			const donationHeadline = _get(donationPageText, 'headline');
-			const donationSubHeadline = _get(donationPageText, 'subHeadline');
-			const donationCTA = _get(donationPageText, 'primaryCtaText');
-			// eslint-disable-next-line max-len
-			const donationFAQs = _get(data, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
-
-			// console.log(data);
-			console.log('images', donationImages);
-			console.log('page text', donationPageText);
-			console.log('headline', donationHeadline);
-			console.log('subheadline', donationSubHeadline);
-			console.log('donation CTA', donationCTA);
-			console.log('FAQ', donationFAQs);
-			console.log('dollar amounts', donationDollarAmounts);
-
-			// returns the contentful content of the page key ui-homepage-promo or empty object
-			// it should always be the first and only item in the array, since we pass the variable to the query above
-			// eslint-disable-next-line max-len
-			// const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-promo'); // eslint-disable-line max-len
-			// this.promoContent = processContent(contentfulPageData.fields.content);
+			// pulling the FAQs off the data for use in bodyCopy computed function
+			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
 		}).finally(() => {
 			this.showSlideShow = true;
 		});
@@ -103,7 +80,6 @@ export default {
 			return documentToHtmlString(this.donationFAQs);
 		}
 	}
-
 };
 </script>
 
@@ -119,6 +95,18 @@ export default {
 
 	@include breakpoint(xlarge) {
 		margin-bottom: 5rem;
+	}
+}
+
+.FAQ-wrapper {
+	margin-top: 2rem;
+
+	@include breakpoint(xlarge) {
+		margin-top: 5rem;
+	}
+
+	h2 {
+		margin-bottom: 1rem;
 	}
 }
 

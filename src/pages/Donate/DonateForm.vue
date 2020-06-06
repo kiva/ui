@@ -13,6 +13,7 @@
 						:min-custom-amount="minDonationAmount"
 						@custom-amount-updated="donationCustomAmountUpdated"
 						:split-pills="true"
+						@pill-toggled="pillToggled"
 					/>
 				</fieldset>
 				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
@@ -33,6 +34,7 @@ import { validationMixin } from 'vuelidate';
 import { minValue, maxValue } from 'vuelidate/lib/validators';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 import KvButton from '@/components/Kv/KvButton';
+import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 export default {
 	components: {
@@ -58,35 +60,18 @@ export default {
 		id: { // used when you have multiple instances of this form on one page.
 			type: String,
 			default: 'instance1',
+		},
+		data: {
+			type: Array,
+			default: () => [],
 		}
 	},
+	inject: ['apollo'],
 	data() {
 		return {
-			donationAmountOptions: [
-				{
-					title: '$25',
-					key: '25',
-				},
-				{
-					title: '$50',
-					key: '50',
-				},
-				{
-					title: '$100',
-					key: '100',
-				},
-				{
-					title: '$250',
-					key: '250',
-				},
-				{
-					title: 'Other',
-					key: 'custom'
-				}
-			],
-			donationAmountSelection: '50',
-			donationCustomAmount: 50,
-			donationAmount: 50,
+			donationAmountSelection: '500',
+			donationCustomAmount: 500,
+			donationAmount: 500,
 			minDonationAmount: 25,
 			maxDonationAmount: 10000
 		};
@@ -94,13 +79,19 @@ export default {
 	computed: {
 		selectedAmount() {
 			return this.donationAmount;
-		}
+		},
+		donationAmountOptions() {
+			const values = this.data.map(option => {
+				return {
+					title: `$${option}`,
+					key: option,
+				};
+			})
+			values.push({title: 'Other', key: 'custom'});
+			return values;
+		},
 	},
 	methods: {
-		// depositTypeChanged(value) {
-		// 	this.depositSelected = value;
-		// 	this.isRecurring = value === 'recurring';
-		// },
 		donationAmountSelected(value) {
 			if (value === 'custom') {
 				this.updateAmount(numeral(this.donationCustomAmount).value(), 'donation');
@@ -116,18 +107,43 @@ export default {
 		},
 
 		updateAmount(value) {
-			// updates local var from various changes in the form
-			// update donation
 			this.donationAmount = numeral(value).value();
 		},
+		pillToggled(value) {
+			if (value === 'custom') {
+				this.updateAmount(numeral(this.donationCustomAmount).value());
+				this.donationAmountSelection = 'custom';
+			} else {
+				this.updateAmount(numeral(value).value());
+				this.donationAmountSelection = value;
+			}
+		},
 		submit() {
-			this.$router.push({
-				path: '/checkout',
-				query: {
-					amount: this.selectedAmount,
-					onetime: !this.isRecurring,
-					source: 'donateMacroForm'
+			this.apollo.mutate({
+				mutation: updateDonation,
+				variables: {
+					price: numeral(this.selectedAmount).format('0.00'),
+					isTip: true
 				}
+			}).then(data => {
+				if (data.errors) {
+					_forEach(data.errors, ({ message }) => {
+						this.$showTipMsg(message, 'error');
+					});
+				} else {
+					this.$kvTrackEvent(
+						'/support-kiva',
+						'Donate from Macro',
+						'Donation from Macro',
+						// pass donation amount as whole number
+						numeral(this.selectedAmount).value() * 100
+					);
+					this.$router.push({
+						path: '/checkout',
+					});
+				}
+			}).catch(error => {
+				console.error(error);
 			});
 		}
 	},

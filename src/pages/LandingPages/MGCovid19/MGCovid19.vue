@@ -18,7 +18,7 @@
 
 		<div class="about-wrapper section ">
 			<div class="row">
-				<kiva-impact class="about small-12 columns" />
+				<m-g-covid-about class="about small-12 columns" />
 			</div>
 		</div>
 	</www-page>
@@ -29,7 +29,7 @@ import { lightHeader, lightFooter } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
-import KivaImpact from './KivaImpact';
+import MGCovidAbout from './MGCovidAbout';
 import MGCovidExplained from './MGCovidExplained';
 import MGCovidFaq from './MGCovidFAQ';
 import MGCovidHero from './MGCovidHero';
@@ -40,7 +40,7 @@ export default {
 	},
 	components: {
 		WwwPage,
-		KivaImpact,
+		MGCovidAbout,
 		MGCovidExplained,
 		MGCovidFaq,
 		MGCovidHero,
