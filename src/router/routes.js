@@ -125,7 +125,11 @@ export default [
 		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),
 		children: [
 			{ path: '', component: () => import('@/pages/Subscriptions/SubscriptionsSettingsPage') },
-		]
+		],
+		meta: {
+			activeLoginRequired: true,
+			authenticationRequired: true
+		}
 	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
