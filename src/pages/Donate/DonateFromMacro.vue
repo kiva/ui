@@ -4,24 +4,22 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<div>
-			<donate-from-macro-hero
-				:data="promoContent"
-			/>
+		<donate-from-macro-hero
+			:data="promoContent"
+		/>
 
-			<div class="FAQ-wrapper section">
-				<div class="row">
-					<h2 class="strong">
-						Frequently Asked Questions
-					</h2>
-					<div v-html="bodyCopy"></div>
-				</div>
+		<div class="FAQ-wrapper section">
+			<div class="row">
+				<h2 class="strong">
+					Frequently Asked Questions
+				</h2>
+				<div v-html="bodyCopy"></div>
 			</div>
+		</div>
 
-			<div class="impact-wrapper section">
-				<div class="row">
-					<m-g-covid-about class="impact small-12 columns" />
-				</div>
+		<div class="impact-wrapper section">
+			<div class="row">
+				<m-g-covid-about class="impact small-12 columns" />
 			</div>
 		</div>
 	</www-page>
@@ -70,12 +68,11 @@ export default {
 			});
 		},
 		result({ data }) {
-			console.log('data', data);
 			const contentfulPageData = _get(data, 'contentful.entries.items');
 			if (!contentfulPageData) {
 				return false;
 			}
-			// Processing the contentful data
+			// Processing data from contentful
 			// eslint-disable-next-line
 			this.promoContent = processContent(contentfulPageData);
 			// pulling the FAQs off the data for use in bodyCopy computed function
