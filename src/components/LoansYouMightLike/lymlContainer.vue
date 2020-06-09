@@ -138,7 +138,7 @@ export default {
 		},
 		carouselActive() {
 			return this.windowWidth > 480;
-		}
+		},
 	},
 	data() {
 		return {
@@ -149,7 +149,8 @@ export default {
 			scrollPos: 0,
 			windowWidth: 0,
 			wrapperWidth: 0,
-			expMlLoanToLoan: false
+			expMlLoanToLoan: false,
+			expMlLoanToLoanVersion: null,
 		};
 	},
 	inject: ['apollo'],
@@ -320,25 +321,22 @@ export default {
 				id: 'Experiment:ml_loan_to_loan',
 				fragment: experimentVersionFragment,
 			}) || {};
-
-			if (localExperiment.version === 'control' || localExperiment.version === 'shown') {
-				this.expMlLoanToLoan = localExperiment.version === 'shown';
-			}
+			this.expMlLoanToLoanVersion = localExperiment.version;
+			this.expMlLoanToLoan = localExperiment.version === 'shown';
 		},
 		fireExperimentTracking() {
 			// track loans shown
-			console.log(`TRACK: Lending, lyml-loans-shown, ${this.loansYouMightLike.map(loan => loan.id)}`);
 			this.$kvTrackEvent('Lending', 'lyml-loans-shown', this.loansYouMightLike.map(loan => loan.id));
 
 			// track ML experiment
-			if (this.$route.path.split('/')[1] === 'funded') {
-				// we're on the funded loan page
-				console.log(`TRACK: Lending, EXP-GROW-110-Jun2020, ${this.expMlLoanToLoan ? 'b' : 'a'}`);
-				this.$kvTrackEvent('Lending', 'EXP-GROW-110-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
-			} else {
-				// we're on one of the various lend pages
-				console.log(`TRACK: Lending, EXP-GROW-111-Jun2020, ${this.expMlLoanToLoan ? 'b' : 'a'}`);
-				this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
+			if (this.expMlLoanToLoanVersion && this.expMlLoanToLoanVersion !== 'unassigned') {
+				if (this.$route.path.split('/')[1] === 'funded') {
+					// we're on the funded loan page
+					this.$kvTrackEvent('Lending', 'EXP-GROW-110-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
+				} else {
+					// we're on one of the various lend pages
+					this.$kvTrackEvent('Lending', 'EXP-GROW-111-Jun2020', this.expMlLoanToLoan ? 'b' : 'a');
+				}
 			}
 		}
 	},

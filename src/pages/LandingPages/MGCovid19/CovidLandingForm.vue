@@ -234,7 +234,7 @@ export default {
 		},
 	},
 	mounted() {
-		if (this.expDefaultAmount !== null) {
+		if (this.expDefaultAmount && this.expDefaultAmount !== 'unassigned') {
 			// Fire Event for GROW-96
 			this.$kvTrackEvent(
 				'Monthly Good',
@@ -243,7 +243,7 @@ export default {
 			);
 		}
 
-		if (this.expRecurringOnly !== null) {
+		if (this.expRecurringOnly && this.expRecurringOnly !== 'unassigned') {
 			this.$kvTrackEvent(
 				'MonthlyGood',
 				'EXP-GROW-104-May2020',
