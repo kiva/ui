@@ -177,7 +177,7 @@ export default {
 .mg-hero {
 	// background-color: #fdf7eb;
 	background-color: #EEEFE9;
-	margin-bottom: 0;
+	margin-bottom: 0 !important;
 	padding-bottom: 1rem;
 	position: relative;
 	overflow: hidden;
