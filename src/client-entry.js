@@ -7,7 +7,10 @@ import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import userIdQuery from '@/graphql/query/userId.graphql';
 import usingTouchMutation from '@/graphql/mutation/updateUsingTouch.graphql';
 import showTipMessage from '@/graphql/mutation/tipMessage/showTipMessage.graphql';
+
 import { preFetchAll } from '@/util/apolloPreFetch';
+import { authenticationGuard } from '@/util/authenticationGuard';
+
 import createApp from '@/main';
 import '@/assets/iconLoader';
 
@@ -112,11 +115,14 @@ router.onReady(() => {
 		const prevMatched = router.getMatchedComponents(from);
 		const activated = _dropWhile(matched, (c, i) => prevMatched[i] === c);
 
-		// Pre-fetch graphql queries from activated components
-		preFetchAll(activated, apolloClient, {
-			route: to,
-			kvAuth0,
-		}).then(next).catch(next);
+		authenticationGuard({ route: to, apolloClient, kvAuth0 })
+			.then(() => {
+			// Pre-fetch graphql queries from activated components
+				return preFetchAll(activated, apolloClient, {
+					route: to,
+					kvAuth0,
+				});
+			}).then(next).catch(next);
 	});
 
 	router.beforeEach((to, from, next) => {

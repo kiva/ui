@@ -114,14 +114,6 @@ export default {
 			this.partnersNotLentTo = _differenceBy(allPartners, this.partnersLentTo, 'id');
 			this.totalPartners = _get(data, 'general.partners.totalCount');
 		},
-		errorHandlers: {
-			'api.authenticationRequired': ({ route }) => {
-				return Promise.reject({
-					path: '/ui-login',
-					query: { doneUrl: route.fullPath }
-				});
-			}
-		}
 	},
 	methods: {
 		iconForSector(sector) {

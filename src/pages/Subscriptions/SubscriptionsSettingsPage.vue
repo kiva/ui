@@ -96,17 +96,10 @@ const pageQuery = gql`{
 			isSubscriber
 			isOnetime
 		}
-		lastLoginTimestamp @client
 		subscriptions {
 			values {
 				id
 			}
-		}
-	}
-	general {
-		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
-			value
-			key
 		}
 	}
 }`;
@@ -133,37 +126,7 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route, kvAuth0 }) {
-			return new Promise((resolve, reject) => {
-				client.query({
-					query: pageQuery
-				}).then(({ data }) => {
-					const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
-					const duration = 1000 * (parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600);
-					if (kvAuth0.getKivaId() && Date.now() > lastLogin + duration) {
-						throw new Error('activeLoginRequired');
-					}
-				}).then(resolve).catch(e => {
-					if (e.message.indexOf('activeLoginRequired') > -1) {
-						// Force a login when active login is required
-						reject({
-							path: '/ui-login',
-							query: { force: true, doneUrl: route.fullPath }
-						});
-					} else if (e.message.indexOf('api.authenticationRequired') > -1) {
-						// Redirect to login upon authentication error
-						reject({
-							path: '/ui-login',
-							query: { doneUrl: route.fullPath }
-						});
-					} else {
-						// Log other errors
-						console.error(e);
-						resolve();
-					}
-				});
-			});
-		},
+		preFetch: true,
 		result({ data }) {
 			this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);

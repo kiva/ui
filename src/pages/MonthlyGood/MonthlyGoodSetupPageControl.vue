@@ -268,7 +268,6 @@ import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvButton from '@/components/Kv/KvButton';
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const pageQuery = gql`{
@@ -385,29 +384,7 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route }) {
-			return client.query({ query: userInfoQuery })
-				.then(({ data }) => {
-					const userId = _get(data, 'my.userAccount.id');
-					if (!userId) {
-						throw new Error('activeLoginRequired');
-					}
-				})
-				.then(() => {
-					return client.query({ query: pageQuery });
-				})
-				.catch(e => {
-					if (e.message.indexOf('activeLoginRequired') > -1) {
-						// Force a login when active login is required
-						return Promise.reject({
-							path: '/ui-login',
-							query: { doneUrl: route.fullPath }
-						});
-					}
-					// Log other errors
-					console.error(e);
-				});
-		},
+		preFetch: true,
 		result({ data }) {
 			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);

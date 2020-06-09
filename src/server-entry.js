@@ -7,6 +7,7 @@ import renderGlobals from '@/util/renderGlobals';
 import createApp from '@/main';
 import headScript from '@/head/script';
 import noscriptTemplate from '@/head/noscript.html';
+import { authenticationGuard } from '@/util/authenticationGuard';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -77,13 +78,18 @@ export default context => {
 				// TODO: Check for + redirect to kiva php app external route
 				return reject({ code: 404 });
 			}
-
-			// Pre-fetch graphql queries from the components (and all of their child components) matched by the route
-			// preFetchAll dispatches the queries with Apollo and returns a Promise,
-			// which is resolved when the action is complete and apollo cache has been updated.
-			return preFetchAll(matchedComponents, apolloClient, {
-				route: router.currentRoute,
-				kvAuth0,
+			// Use route meta property to determine if route needs authentication
+			// authenticationGuard will reject promise with a redirect to login if
+			// required authentication query fails
+			return authenticationGuard({ route: router.currentRoute, apolloClient, kvAuth0 }).then(() => {
+				// Pre-fetch graphql queries from the components (and all of their child components)
+				// matched by the route
+				// preFetchAll dispatches the queries with Apollo and returns a Promise,
+				// which is resolved when the action is complete and apollo cache has been updated.
+				return preFetchAll(matchedComponents, apolloClient, {
+					route: router.currentRoute,
+					kvAuth0,
+				});
 			}).then(() => {
 				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now

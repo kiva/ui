@@ -1,9 +1,6 @@
-query autolendingPage {
+query authenticationQuery {
 	my {
 		lastLoginTimestamp @client
-		autoDeposit {
-			isSubscriber
-		}
 	}
 	general {
 		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
