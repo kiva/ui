@@ -405,11 +405,13 @@ export default {
 				});
 			}
 			// Fire Event for Exp CASH-612 Status
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-612-Apr2019',
-				this.addToBasketExpActive ? 'b' : 'a'
-			);
+			if (addToBasketPopupEXP.version && addToBasketPopupEXP.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-612-Apr2019',
+					this.addToBasketExpActive ? 'b' : 'a'
+				);
+			}
 		},
 		initializeLendFilterRedirects() {
 			const lendFilterEXP = this.apollo.readFragment({
@@ -452,11 +454,13 @@ export default {
 				this.mgCategoryExpVersion = mgCategoryPromo.version;
 				[this.mgTargetCategory] = matchedRoutes;
 				// Fire Event for Exp CASH-1426 MG Category Experiment
-				this.$kvTrackEvent(
-					'Lending',
-					'EXP-CASH-1426-Dec2019',
-					mgCategoryPromo.version === 'shown' ? 'b' : 'a'
-				);
+				if (mgCategoryPromo.version && mgCategoryPromo.version !== 'unassigned') {
+					this.$kvTrackEvent(
+						'Lending',
+						'EXP-CASH-1426-Dec2019',
+						mgCategoryPromo.version === 'shown' ? 'b' : 'a'
+					);
+				}
 			}
 		},
 	},

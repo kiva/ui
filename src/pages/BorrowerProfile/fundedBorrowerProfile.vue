@@ -183,7 +183,7 @@ export default {
 			fragment: experimentVersionFragment,
 		}) || {};
 		// set custom sort on component and track exp version
-		if (customSortExpVersion.version) {
+		if (customSortExpVersion.version && customSortExpVersion.version !== 'unassigned') {
 			this.lymlCustomSort = customSortExpVersion.version === 'shown' ? 'amountLeft' : 'random';
 			this.$kvTrackEvent('basket', 'EXP-CASH-1030-Aug2019', customSortExpVersion.version === 'shown' ? 'b' : 'a');
 		}

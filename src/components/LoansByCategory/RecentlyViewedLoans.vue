@@ -105,12 +105,14 @@ export default {
 		// Track Assignment + Number of Loans
 		// > Only fire if there are recent loans available to show.
 		if (recentLoanIds.length) {
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-348-Recently-Viewed-Loans-Update',
-				this.showRecentlyViewed ? 'b' : 'a',
-				recentLoanIds.length
-			);
+			if (recentlyViewedEXP.version && recentlyViewedEXP.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-348-Recently-Viewed-Loans-Update',
+					this.showRecentlyViewed ? 'b' : 'a',
+					recentLoanIds.length
+				);
+			}
 		}
 	},
 };

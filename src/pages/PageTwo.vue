@@ -180,11 +180,13 @@ export default {
 			}) || {};
 			this.isExperimentActive = mgHeroExperiment.version === 'shown';
 			// Fire Event for EXP-CASH-1774-Feb2020
-			this.$kvTrackEvent(
-				'MonthlyGood',
-				'EXP-CASH-1774-Feb2020',
-				mgHeroExperiment.version === 'shown' ? 'b' : 'a'
-			);
+			if (mgHeroExperiment.version && mgHeroExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'MonthlyGood',
+					'EXP-CASH-1774-Feb2020',
+					mgHeroExperiment.version === 'shown' ? 'b' : 'a'
+				);
+			}
 		},
 	},
 	created() {
