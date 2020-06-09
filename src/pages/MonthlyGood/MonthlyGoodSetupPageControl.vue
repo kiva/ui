@@ -384,9 +384,7 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({ query: pageQuery });
-		},
+		preFetch: true,
 		result({ data }) {
 			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);

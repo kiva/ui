@@ -126,11 +126,7 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			});
-		},
+		preFetch: true,
 		result({ data }) {
 			this.isOnetime = _get(data, 'my.autoDeposit.isOnetime', false);
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);

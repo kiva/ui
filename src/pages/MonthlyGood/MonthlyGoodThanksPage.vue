@@ -87,9 +87,7 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({ query: pageQuery, fetchPolicy: 'network-only' });
-		},
+		preFetch: true,
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			if (!this.isMonthlyGoodSubscriber) {
