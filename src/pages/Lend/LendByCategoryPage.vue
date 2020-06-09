@@ -357,7 +357,11 @@ export default {
 			}) || {};
 			this.favoriteCountryExpVersion = favoriteCountryRowEXP.version;
 			// Only track and activate if these conditions exist
-			if (this.hasFavoriteCountry && this.isLoggedIn && this.favoriteCountryExpVersion) {
+			if (this.hasFavoriteCountry
+				&& this.isLoggedIn
+				&& this.favoriteCountryExpVersion
+				&& this.favoriteCountryExpVersion !== 'unassigned'
+			) {
 				// Fire Event for Exp CASH-794
 				this.$kvTrackEvent(
 					'Lending',
@@ -463,12 +467,14 @@ export default {
 			// Logged in user and non-users are included in this experiment,
 			// logged-in users are automatically tracked with their id
 			// Fire Event for Exp CASH-970
-			this.$kvTrackEvent(
-				'Lending',
-				'EXP-CASH-970-Mar2020',
-				this.categoryRowHillclimbExpVersion === 'variant-a' ? 'b' : 'a',
-				this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null,
-			);
+			if (this.categoryRowHillclimbExpVersion && this.categoryRowHillclimbExpVersion !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Lending',
+					'EXP-CASH-970-Mar2020',
+					this.categoryRowHillclimbExpVersion === 'variant-a' ? 'b' : 'a',
+					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null,
+				);
+			}
 		},
 	},
 	apollo: {
@@ -611,11 +617,13 @@ export default {
 			});
 		}
 		// Fire Event for Exp CASH-612 Status
-		this.$kvTrackEvent(
-			'Lending',
-			'EXP-CASH-612-Apr2019',
-			this.addToBasketExpActive ? 'b' : 'a'
-		);
+		if (addToBasketPopupEXP.version && addToBasketPopupEXP.version !== 'unassigned') {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-CASH-612-Apr2019',
+				this.addToBasketExpActive ? 'b' : 'a'
+			);
+		}
 
 		const lendFilterEXP = this.apollo.readFragment({
 			id: 'Experiment:lend_filter_v2',

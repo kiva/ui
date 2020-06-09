@@ -171,11 +171,13 @@ export default {
 			}) || {};
 			this.isExperimentActive = mgAmountSelectorExperiment.version === 'shown';
 			// Fire Event for EXP-GROW-11-Apr2020
-			this.$kvTrackEvent(
-				'MonthlyGood',
-				'EXP-GROW-11-Apr2020',
-				mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
-			);
+			if (mgAmountSelectorExperiment.version && mgAmountSelectorExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'MonthlyGood',
+					'EXP-GROW-11-Apr2020',
+					mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
+				);
+			}
 		},
 	},
 };

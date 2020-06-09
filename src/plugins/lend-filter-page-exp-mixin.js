@@ -33,7 +33,7 @@ export default {
 			this.lendFilterExpActive = this.lendFilterExpVersion === 'b';
 		},
 		updateLendFilterExp() {
-			if (this.lendFilterExpActive || this.lendFilterExpVersion === 'c') {
+			if (this.lendFilterExpVersion && this.lendFilterExpVersion !== 'unassigned') {
 				this.$kvTrackEvent(
 					'Lending',
 					'EXP-CASH-545-Apr2019',

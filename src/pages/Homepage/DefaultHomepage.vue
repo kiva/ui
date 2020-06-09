@@ -64,6 +64,7 @@ export default {
 	data() {
 		return {
 			isExperimentActive: false,
+			experimentVersion: null,
 			promoEnabled: false,
 			showSlideShow: null,
 			promoContent: {}
@@ -87,6 +88,7 @@ export default {
 				id: 'Experiment:homepage_mg_hero',
 				fragment: experimentVersionFragment,
 			}) || {};
+			this.experimentVersion = homepageMGHero.version;
 			this.isExperimentActive = homepageMGHero.version === 'shown';
 		},
 	},
@@ -118,11 +120,13 @@ export default {
 	},
 	mounted() {
 		// Fire Event for GROW-79
-		this.$kvTrackEvent(
-			'Home',
-			'EXP-GROW-79-Apr2020',
-			this.isExperimentActive ? 'b' : 'a'
-		);
+		if (this.experimentVersion && this.experimentVersion !== 'unassigned') {
+			this.$kvTrackEvent(
+				'Home',
+				'EXP-GROW-79-Apr2020',
+				this.isExperimentActive ? 'b' : 'a'
+			);
+		}
 	},
 	computed: {
 		isMonthlyGoodPromoActive() {
