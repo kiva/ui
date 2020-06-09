@@ -106,14 +106,6 @@ export default {
 				checkoutId: numeral(this.$route.query.kiva_transaction_id).value()
 			};
 		},
-		errorHandlers: {
-			'api.authenticationRequired': ({ route }) => {
-				return Promise.reject({
-					path: '/ui-login',
-					query: { doneUrl: route.fullPath }
-				});
-			}
-		},
 		result({ data }) {
 			this.lender = {
 				...data.my.userAccount,

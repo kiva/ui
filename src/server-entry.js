@@ -78,12 +78,14 @@ export default context => {
 				// TODO: Check for + redirect to kiva php app external route
 				return reject({ code: 404 });
 			}
-			console.log('server router ready', router.currentRoute);
-
-			// Pre-fetch graphql queries from the components (and all of their child components) matched by the route
-			// preFetchAll dispatches the queries with Apollo and returns a Promise,
-			// which is resolved when the action is complete and apollo cache has been updated.
+			// Use route meta property to determine if route needs authentication
+			// authenticationGuard will reject promise with a redirect to login if
+			// required authentication query fails
 			return authenticationGuard({ route: router.currentRoute, apolloClient, kvAuth0 }).then(() => {
+				// Pre-fetch graphql queries from the components (and all of their child components)
+				// matched by the route
+				// preFetchAll dispatches the queries with Apollo and returns a Promise,
+				// which is resolved when the action is complete and apollo cache has been updated.
 				return preFetchAll(matchedComponents, apolloClient, {
 					route: router.currentRoute,
 					kvAuth0,

@@ -30,7 +30,13 @@ export default [
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
 	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutPage') },
 	{ path: '/checkout/post-purchase', component: () => import('@/pages/Checkout/PostPurchase') },
-	{ path: '/checkout/thanks', component: () => import('@/pages/Thanks/ThanksPage') },
+	{
+		path: '/checkout/thanks',
+		component: () => import('@/pages/Thanks/ThanksPage'),
+		meta: {
+			authenticationRequired: true,
+		}
+	},
 	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
@@ -82,7 +88,13 @@ export default [
 	},
 
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
-	{ path: '/portfolio/lending-stats', component: () => import('@/pages/LendingStats/LendingStatsPage') },
+	{
+		path: '/portfolio/lending-stats',
+		component: () => import('@/pages/LendingStats/LendingStatsPage'),
+		meta: {
+			authenticationRequired: true,
+		}
+	},
 	{
 		path: '/possibility',
 		component: () => import('@/pages/Possibility/Possibility'),
@@ -108,7 +120,13 @@ export default [
 		path: '/settings/autolending',
 		component: () => import('@/pages/Autolending/AutolendingPage'),
 		children: [
-			{ path: '', component: () => import('@/pages/Autolending/AutolendingSettingsPage') },
+			{
+				path: '',
+				component: () => import('@/pages/Autolending/AutolendingSettingsPage'),
+				meta: {
+					activeLoginRequired: true,
+				}
+			},
 			{
 				path: ':action',
 				component: () => import('@/pages/Autolending/AutolendingMessagingPage'),
@@ -118,18 +136,22 @@ export default [
 					days: Number(route.query.days)
 				})
 			},
-		]
+		],
+
 	},
 	{
 		path: '/settings/subscriptions',
 		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),
 		children: [
-			{ path: '', component: () => import('@/pages/Subscriptions/SubscriptionsSettingsPage') },
+			{
+				path: '',
+				component: () => import('@/pages/Subscriptions/SubscriptionsSettingsPage'),
+				meta: {
+					activeLoginRequired: true,
+				}
+			},
 		],
-		meta: {
-			activeLoginRequired: true,
-			authenticationRequired: true
-		}
+
 	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{

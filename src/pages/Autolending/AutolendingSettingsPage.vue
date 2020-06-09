@@ -18,7 +18,6 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import initAutolending from '@/graphql/mutation/autolending/initAutolending.graphql';
-import autolendingQuery from '@/graphql/query/autolending/autolendingPage.graphql';
 import SaveButton from './SaveButton';
 import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
@@ -32,10 +31,15 @@ const pageQuery = gql`{
 			isEnabled
 		}
 	}
+	my {
+		autoDeposit {
+			isSubscriber
+		}
+	}
 }`;
 
 export default {
-	inject: ['apollo', 'federation'],
+	inject: ['apollo'],
 	components: {
 		AutolendingWho,
 		AutolendingStatus,
@@ -52,37 +56,19 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route, kvAuth0 }) {
+		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
-				client.query({ query: autolendingQuery })
+				client.query({ query: pageQuery })
 					.then(({ data }) => {
-						const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
-						const duration = 1000 * (parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600);
-						if (kvAuth0.getKivaId() && Date.now() > lastLogin + duration) {
-							throw new Error('activeLoginRequired');
-						}
 						const isSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 						if (isSubscriber) {
 							throw new Error('monthlyGoodSubscriber');
 						}
 					})
 					.then(() => client.mutate({ mutation: initAutolending }))
-					.then(() => client.query({ query: pageQuery }))
 					.then(resolve)
 					.catch(e => {
-						if (e.message.indexOf('activeLoginRequired') > -1) {
-							// Force a login when active login is required
-							reject({
-								path: '/ui-login',
-								query: { force: true, doneUrl: route.fullPath }
-							});
-						} else if (e.message.indexOf('api.authenticationRequired') > -1) {
-							// Redirect to login upon authentication error
-							reject({
-								path: '/ui-login',
-								query: { doneUrl: route.fullPath }
-							});
-						} else if (e.message.indexOf('monthlyGoodSubscriber') > -1) {
+						if (e.message.indexOf('monthlyGoodSubscriber') > -1) {
 							// Redirect to legacy Monthly Good Settins page
 							reject({
 								path: '/settings/credit'
