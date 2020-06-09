@@ -222,7 +222,6 @@ import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
@@ -348,28 +347,8 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route }) {
-			return client.query({ query: userInfoQuery })
-				.then(({ data }) => {
-					const userId = _get(data, 'my.userAccount.id');
-					if (!userId) {
-						throw new Error('activeLoginRequired');
-					}
-				})
-				.then(() => {
-					return client.query({ query: pageQuery });
-				})
-				.catch(e => {
-					if (e.message.indexOf('activeLoginRequired') > -1) {
-						// Force a login when active login is required
-						return Promise.reject({
-							path: '/ui-login',
-							query: { doneUrl: route.fullPath }
-						});
-					}
-					// Log other errors
-					console.error(e);
-				});
+		preFetch(config, client) {
+			return client.query({ query: pageQuery });
 		},
 		result({ data }) {
 			this.isMGDonationTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;

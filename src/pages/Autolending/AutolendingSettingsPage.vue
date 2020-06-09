@@ -31,15 +31,11 @@ const pageQuery = gql`{
 			isEnabled
 		}
 	}
-	my {
-		autoDeposit {
-			isSubscriber
-		}
-	}
+
 }`;
 
 export default {
-	inject: ['apollo'],
+	inject: ['apollo', 'federation'],
 	components: {
 		AutolendingWho,
 		AutolendingStatus,
@@ -58,7 +54,15 @@ export default {
 		query: pageQuery,
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
-				client.query({ query: pageQuery })
+				client.query({
+					query: gql`{
+							my {
+								autoDeposit {
+									isSubscriber
+								}
+							}
+						}`
+				})
 					.then(({ data }) => {
 						const isSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 						if (isSubscriber) {
@@ -66,15 +70,16 @@ export default {
 						}
 					})
 					.then(() => client.mutate({ mutation: initAutolending }))
+					.then(() => client.query({ query: pageQuery }))
 					.then(resolve)
 					.catch(e => {
 						if (e.message.indexOf('monthlyGoodSubscriber') > -1) {
-							// Redirect to legacy Monthly Good Settins page
+						// Redirect to legacy Monthly Good Settins page
 							reject({
 								path: '/settings/credit'
 							});
 						} else {
-							// Log other errors
+						// Log other errors
 							console.error(e);
 							resolve();
 						}

@@ -76,7 +76,10 @@ export default [
 			category: route.query.category,
 			onetime: String(route.query.onetime),
 			source: route.query.source,
-		})
+		}),
+		meta: {
+			activeLoginRequired: true,
+		}
 	},
 	{
 		path: '/monthlygood/thanks',
@@ -85,6 +88,9 @@ export default [
 			onetime: String(route.query.onetime),
 			source: route.query.source,
 		}),
+		meta: {
+			activeLoginRequired: true,
+		}
 	},
 
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },

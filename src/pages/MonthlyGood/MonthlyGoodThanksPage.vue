@@ -41,7 +41,6 @@ import numeral from 'numeral';
 import { addMonths, formatDistanceToNow } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import userInfoQuery from '@/graphql/query/userInfo.graphql';
 
 const pageQuery = gql`{
 	my {
@@ -88,34 +87,8 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client, { route }) {
-			return client.query({ query: userInfoQuery })
-				.then(({ data }) => {
-					const userId = _get(data, 'my.userAccount.id');
-					if (!userId) {
-						throw new Error('activeLoginRequired');
-					}
-				})
-				.then(() => {
-					return client.query({ query: pageQuery, fetchPolicy: 'network-only' });
-				})
-				.catch(e => {
-					if (e.message.indexOf('activeLoginRequired') > -1) {
-						// Force a login when active login is required
-						return Promise.reject({
-							path: '/ui-login',
-							query: { doneUrl: route.fullPath }
-						});
-					}
-					if (e.message.indexOf('notMonthlyGoodSubscriber') > -1) {
-						// Force a login when active login is required
-						return Promise.reject({
-							path: '/monthlygood',
-						});
-					}
-					// Log other errors
-					console.error(e);
-				});
+		preFetch(config, client) {
+			return client.query({ query: pageQuery, fetchPolicy: 'network-only' });
 		},
 		result({ data }) {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
