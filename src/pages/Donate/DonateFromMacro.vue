@@ -4,22 +4,24 @@
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
 	>
-		<donate-from-macro-hero
-			:data="promoContent"
-		/>
+		<div>
+			<donate-from-macro-hero
+				:data="promoContent"
+			/>
 
-		<div class="FAQ-wrapper section">
-			<div class="row">
-				<h2 class="strong">
-					Frequently Asked Questions
-				</h2>
-				<div v-html="bodyCopy"></div>
+			<div class="FAQ-wrapper section">
+				<div class="row">
+					<h2 class="strong">
+						Frequently Asked Questions
+					</h2>
+					<div v-html="bodyCopy"></div>
+				</div>
 			</div>
-		</div>
 
-		<div class="impact-wrapper section">
-			<div class="row">
-				<m-g-covid-about class="impact small-12 columns" />
+			<div class="impact-wrapper section">
+				<div class="row">
+					<m-g-covid-about class="impact small-12 columns" />
+				</div>
 			</div>
 		</div>
 	</www-page>
@@ -27,14 +29,20 @@
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
 
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
-import contentful from '@/graphql/query/contentful.graphql';
 import { processContent } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import MGCovidAbout from '@/pages/LandingPages/MGCovid19/MGCovidAbout';
+
+const pageQuery = gql`{
+	contentful {
+		entries (contentType: "page", contentKey: "support-kiva")
+	}
+}`;
 
 export default {
 	metaInfo: {
@@ -53,16 +61,16 @@ export default {
 			promoContent: () => {},
 		};
 	},
-	inject: ['federation'],
-
-	created() {
-		this.federation.query({
-			query: contentful,
-			variables: {
-				contentType: 'page',
-				contentKey: 'support-kiva',
-			}
-		}).then(({ data }) => {
+	inject: ['apollo', 'federation'],
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			});
+		},
+		result({ data }) {
+			console.log('data', data);
 			const contentfulPageData = _get(data, 'contentful.entries.items');
 			if (!contentfulPageData) {
 				return false;
@@ -73,9 +81,7 @@ export default {
 			// pulling the FAQs off the data for use in bodyCopy computed function
 			// eslint-disable-next-line
 			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
-		}).finally(() => {
-			this.showSlideShow = true;
-		});
+		},
 	},
 	computed: {
 		bodyCopy() {
