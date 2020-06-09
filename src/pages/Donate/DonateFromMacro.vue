@@ -27,14 +27,20 @@
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
 
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
-import contentful from '@/graphql/query/contentful.graphql';
 import { processContent } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import MGCovidAbout from '@/pages/LandingPages/MGCovid19/MGCovidAbout';
+
+const pageQuery = gql`{
+	contentful {
+		entries (contentType: "page", contentKey: "support-kiva")
+	}
+}`;
 
 export default {
 	metaInfo: {
@@ -53,29 +59,26 @@ export default {
 			promoContent: () => {},
 		};
 	},
-	inject: ['federation'],
-
-	created() {
-		this.federation.query({
-			query: contentful,
-			variables: {
-				contentType: 'page',
-				contentKey: 'support-kiva',
-			}
-		}).then(({ data }) => {
+	inject: ['apollo'],
+	apollo: {
+		query: pageQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			});
+		},
+		result({ data }) {
 			const contentfulPageData = _get(data, 'contentful.entries.items');
 			if (!contentfulPageData) {
 				return false;
 			}
-			// Processing the contentful data
+			// Processing data from contentful
 			// eslint-disable-next-line
 			this.promoContent = processContent(contentfulPageData);
 			// pulling the FAQs off the data for use in bodyCopy computed function
 			// eslint-disable-next-line
 			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
-		}).finally(() => {
-			this.showSlideShow = true;
-		});
+		},
 	},
 	computed: {
 		bodyCopy() {
