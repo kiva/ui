@@ -93,11 +93,11 @@ export default {
 			link: [
 				// apple icons
 				{
-					link: 'apple-touch-icon',
+					rel: 'apple-touch-icon',
 					href: require('@/assets/images/favicons/apple-touch-icon-120x120.png')
 				},
 				{
-					link: 'apple-touch-icon',
+					rel: 'apple-touch-icon',
 					sizes: '152x152',
 					href: require('@/assets/images/favicons/apple-touch-icon-152x152.png')
 				},
