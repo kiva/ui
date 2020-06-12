@@ -1,3 +1,4 @@
+const cookie = require('cookie');
 const express = require('express');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
@@ -62,12 +63,17 @@ module.exports = function authRouter(config = {}) {
 
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
+		const cookies = cookie.parse(req.headers.cookie || '');
 		const options = {
 			audience: config.auth0.apiAudience,
 			scope: config.auth0.scope,
 		};
 		if (req.query.force === 'true') {
 			options.prompt = 'login';
+		}
+		// Go to register instead of login if the user has not logged in before
+		if (!cookies.kvu) {
+			options.login_hint = 'signUp';
 		}
 		// Store url to redirect to after successful login
 		if (req.query.doneUrl) {
