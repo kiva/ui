@@ -1,5 +1,6 @@
 import _map from 'lodash/map';
 import _get from 'lodash/get';
+import minimatch from 'minimatch';
 // import { handleApolloErrors } from '@/util/apolloPreFetch';
 import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
@@ -15,6 +16,38 @@ let activeExperiments = [
 	'intercom_messenger',
 ];
 
+const activeExperiments2 = [
+	{
+		id: 'lend_filter_v2',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'expandable_loan_cards',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'intercom_messenger',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'home_only',
+		routes: [
+			'/'
+		]
+	},
+	{
+		id: 'exp_lend_by_category',
+		routes: [
+			'/lend-by-category/*'
+		]
+	},
+];
 // TODO: Enhance Error handling
 // export function settingErrorHandler(errors, ...args) {
 // 	console.log(errors);
@@ -98,7 +131,7 @@ export function fetchActiveExperiments(apolloClient) {
 		a. All "active" experiment settings are now in the cache
 		b. All "active" experiments with no route or the current route are give assignments
 */
-export function fetchAllExpSettings(config, apolloClient, route) {
+export function fetchAllExpSettings(apolloClient, route) {
 	return fetchActiveExperiments(apolloClient).then(results => {
 		// Check for active experiments listing
 		const activeExperimentsSettings = _get(results, 'data.general.activeExperiments');
@@ -137,8 +170,19 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 			}
 			return true;
 		})
-		// prefetch all active experiment settings and assignments
+		// prefetch all active experiment settings and assignments if the current route matches their glob
 		.then(() => {
-			return Promise.all(_map(activeExperiments, settingId => fetchExperimentSettings(settingId, apolloClient)));
+			const currentRouteExperiments = activeExperiments2.filter(experiment => {
+				let expInRoute = false;
+				experiment.routes.forEach(expRoute => {
+					if (minimatch(route.path, expRoute)) {
+						expInRoute = true;
+					}
+				});
+				return expInRoute;
+			});
+			console.log('Experiments for the current route:');
+			console.log(currentRouteExperiments);
+			return Promise.all(_map(currentRouteExperiments, exp => fetchExperimentSettings(exp.id, apolloClient)));
 		});
 }

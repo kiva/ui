@@ -10,6 +10,7 @@ import App from '@/App';
 import createRouter from '@/router';
 import createApolloClient from '@/api/apollo';
 import kivaPlugins from '@/plugins';
+import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 
 Vue.config.productionTip = false;
 
@@ -57,6 +58,19 @@ export default function createApp({
 			release: UI_COMMIT
 		});
 	}
+
+	router.beforeEach((to, from, next) => {
+		// console.log('main.js router beforeEach');
+		fetchAllExpSettings(apolloClient, {
+			query: to.query,
+			path: to.path
+		}).then(() => {
+			next();
+		}).catch(err => {
+			console.error(err);
+			next();
+		});
+	});
 
 	// Provide application config to all components
 	Vue.prototype.$appConfig = appConfig;

@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-import { fetchAllExpSettings } from '@/util/experimentPreFetch';
+// import _get from 'lodash/get';
+// import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
@@ -61,12 +61,12 @@ export default {
 		}
 	},
 	apollo: {
-		preFetch(config, client, args) {
-			return fetchAllExpSettings(config, client, {
-				query: _get(args, 'route.query'),
-				path: _get(args, 'route.path')
-			});
-		}
+		// preFetch(config, client, args) {
+		// 	return fetchAllExpSettings(client, {
+		// 		query: _get(args, 'route.query'),
+		// 		path: _get(args, 'route.path')
+		// 	});
+		// }
 	}
 };
 </script>
