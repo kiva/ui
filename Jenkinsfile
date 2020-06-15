@@ -61,7 +61,7 @@ pipeline {
 
     stage('Kubernetes_Test_Deployment') {
       when {
-        branch 'master'
+        branch 'test'
       }
       steps {
         echo "Deploying to development Kubernetes cluster..."
