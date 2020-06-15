@@ -2,6 +2,10 @@
 FROM node:12-alpine as build-stage
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
+RUN apk add --no-cache tini
+
+# Use Tini for entrypoint, available at /sbin/tini
+ENTRYPOINT ["/sbin/tini", "--"]
 
 RUN mkdir /ui
 COPY ./ /ui/
