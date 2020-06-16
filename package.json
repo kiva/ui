@@ -50,7 +50,7 @@
 		"apollo-link-batch-http": "^1.2.13",
 		"apollo-link-context": "^1.0.19",
 		"apollo-link-http": "^1.5.16",
-		"apollo-server-express": "^2.14.2",
+		"apollo-server-express": "^2.14.4",
 		"auth0-js": "^9.13.2",
 		"body-parser": "^1.19.0",
 		"canvas-confetti": "^1.0.3",
