@@ -41,3 +41,11 @@ ingress:
     - hosts:
       - ui-test.dk1.kiva.org
       secretName: "kiva-ui-tls"
+
+configmap:
+  data:
+  - key: DD_TRACE_GLOBAL_TAGS
+    value: "env:test,app:kiva-ui"
+  - key: DD_ENV
+    value: "test"
+

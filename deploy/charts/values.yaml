@@ -11,6 +11,8 @@ deployenv:
   environment: "" # set either by jenkins or manually
 
 replicaCount: 2
+# minReplicas: 2
+# maxReplicas: 4
 
 strategy:
   type: "RollingUpdate"
@@ -23,3 +25,14 @@ ingress:
     kubernetes.io/ingress.class: nginx-ingress-external
     kubernetes.io/ingress.ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+configmap:
+  name: kiva-ui
+  all:
+  - key: DD_AGENT_HOST
+    value: "datadog-statsd.datadog"
+  - key: DD_TRACE_AGENT_PORT
+    value: 8126
+  - key: DD_SERVICE_NAME
+    value: "kiva-ui"
+

@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const cluster = require('cluster');
+const ddTrace = require('dd-trace');
 const express = require('express');
 const helmet = require('helmet');
 const serverRoutes = require('./available-routes-middleware');
@@ -14,6 +15,11 @@ const argv = require('./util/argv');
 const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
+
+// Initialize tracing
+if (config.server.enableDDTrace) {
+	ddTrace.init();
+}
 
 // Initialize a Cache instance, Should Only be called once!
 const cache = initCache(config.server);
