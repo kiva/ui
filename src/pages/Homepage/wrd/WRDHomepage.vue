@@ -220,31 +220,18 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			// ! TODO temporary image set, to be replaced when assets are received.
 			heroImageSet: [
-				['small', wrdImagesRequire('./TopBannerMobile@3x.png')],
-				['small retina', wrdImagesRequire('./TopBannerMobile@3x.png')],
-				['medium', wrdImagesRequire('./TopBannerMobile@3x.png')],
-				['medium retina', wrdImagesRequire('./TopBannerMobile@3x.png')],
-				['large', wrdImagesRequire('./TopBannerDesktop@3x.png')],
-				['large retina', wrdImagesRequire('./TopBannerDesktop@3x.png')],
-				['xga', wrdImagesRequire('./TopBannerDesktop@3x.png')],
-				['xga retina', wrdImagesRequire('./TopBannerDesktop@3x.png')],
-				['wxga', wrdImagesRequire('./TopBannerDesktop@3x.png')],
-				['wxga retina', wrdImagesRequire('./TopBannerDesktop@3x.png')],
+				['small', wrdImagesRequire('./banner_sm.jpg')],
+				['small retina', wrdImagesRequire('./banner_sm_2x.jpg')],
+				['medium', wrdImagesRequire('./banner_md.jpg')],
+				['medium retina', wrdImagesRequire('./banner_md_2x.jpg')],
+				['large', wrdImagesRequire('./banner_lg.jpg')],
+				['large retina', wrdImagesRequire('./banner_lg_2x.jpg')],
+				['xga', wrdImagesRequire('./banner_xga.jpg')],
+				['xga retina', wrdImagesRequire('./banner_xga_2x.jpg')],
+				['wxga', wrdImagesRequire('./banner_wxga.jpg')],
+				['wxga retina', wrdImagesRequire('./banner_wxga_2x.jpg')],
 			],
-			// heroImageSet: [
-			// 	['small', wrdImagesRequire('./banner_sm.png')],
-			// 	['small retina', wrdImagesRequire('./banner_sm_2x.png')],
-			// 	['medium', wrdImagesRequire('./banner_md.png')],
-			// 	['medium retina', wrdImagesRequire('./banner_md_2x.png')],
-			// 	['large', wrdImagesRequire('./banner_lg.png')],
-			// 	['large retina', wrdImagesRequire('./banner_lg_2x.png')],
-			// 	['xga', wrdImagesRequire('./banner_xga.png')],
-			// 	['xga retina', wrdImagesRequire('./banner_xga_2x.png')],
-			// 	['wxga', wrdImagesRequire('./banner_wxga.png')],
-			// 	['wxga retina', wrdImagesRequire('./banner_wxga_2x.png')],
-			// ],
 			primaryCtaUrl: '/lend-by-category/refugees-and-i-d-ps',
 			featuredStory: [
 				{
@@ -477,6 +464,10 @@ $divider-height: 2.5rem;
 
 	&__tagline-head {
 		color: black;
+		text-align: center;
+		@include breakpoint('large') {
+			text-align: left;
+		}
 	}
 
 	&__cta {
@@ -646,6 +637,10 @@ $divider-height: 2.5rem;
 
 	.text-block {
 		max-width: 45rem;
+		margin-bottom: 1rem;
+		@include breakpoint('large') {
+			margin-bottom: 4rem;
+		}
 	}
 
 	&__headline {
