@@ -10,7 +10,7 @@ import _get from 'lodash/get';
 import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
 
-const getExpressCheckoutToken = gql`{
+const getExpressCheckoutToken = gql`query expressCheckoutToken {
 	my {
 		payPalBillingAgreement {
 			getExpressCheckoutToken
@@ -100,7 +100,7 @@ export default {
 						return new paypal.Promise((resolve, reject) => {
 							return this.apollo.mutate({
 								mutation: gql`
-									mutation (
+									mutation createBillingAgreement(
 										$token: String!,
 									) {
 										my {

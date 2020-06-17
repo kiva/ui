@@ -34,7 +34,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileLoanCount {
 			autolending @client {
 				currentLoanCount
 				countingLoans

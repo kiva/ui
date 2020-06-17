@@ -68,7 +68,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import CovidLandingForm from './CovidLandingForm';
 
 const pageQuery = gql`
-  {
+  query monthlyGoodCovidHero {
     general {
       mg_covid_active: uiConfigSetting(key: "covid_landing_active") {
         key

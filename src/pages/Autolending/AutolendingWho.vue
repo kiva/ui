@@ -195,7 +195,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileWho {
 			autolending @client {
 				profileChanged
 				currentProfile {

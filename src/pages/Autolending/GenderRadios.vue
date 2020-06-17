@@ -43,7 +43,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileGender {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
@@ -63,17 +63,20 @@ export default {
 		gender(gender, previousGender) {
 			if (gender !== previousGender) {
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateGender($gender: GenderEnum) {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										gender: ${gender === 'both' ? null : gender}
+										gender: $gender
 									}
 								}
 							})
 						}
 					}`,
+					variables: {
+						gender: gender === 'both' ? null : gender,
+					},
 				});
 			}
 		}

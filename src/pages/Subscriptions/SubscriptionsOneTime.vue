@@ -156,7 +156,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
-const pageQuery = gql`{
+const pageQuery = gql`query oneTimeSubscription {
 	my {
 		autoDeposit {
 			amount
@@ -241,7 +241,7 @@ export default {
 		saveOneTime() {
 			this.isSaving = true;
 			const updateOneTimeSettings = this.apollo.mutate({
-				mutation: gql`mutation($amount: Money, $donateAmount: Money) {
+				mutation: gql`mutation updateAutoDeposit($amount: Money, $donateAmount: Money) {
 					my {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount

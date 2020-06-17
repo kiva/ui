@@ -116,7 +116,7 @@ export default {
 		},
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query LendTimingMessaging {
 			my {
 				userAccount {
 					id

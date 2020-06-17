@@ -24,7 +24,7 @@ import AutolendingWhen from './AutolendingWhen';
 import AutolendingWho from './AutolendingWho';
 
 
-const pageQuery = gql`{
+const pageQuery = gql`query autolendProfileEnabled {
 	autolending @client {
 		profileChanged
 		currentProfile {
@@ -55,7 +55,7 @@ export default {
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
 				client.query({
-					query: gql`{
+					query: gql`query userIsMonthlyGoodSubscriber {
 							my {
 								autoDeposit {
 									isSubscriber

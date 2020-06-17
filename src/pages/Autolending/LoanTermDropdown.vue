@@ -39,7 +39,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileLoanTerm {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
@@ -61,20 +61,23 @@ export default {
 		loanTerm(loanTermMax, previousLoanTermMax) {
 			if (loanTermMax !== previousLoanTermMax) {
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateLoamTerm($max: Float) {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
 										lenderTerm: {
 											min: 0
-											max: ${loanTermMax || null}
+											max: $max
 										}
 									}
 								}
 							})
 						}
 					}`,
+					variables: {
+						max: Number(loanTermMax) || null,
+					},
 				});
 			}
 		}

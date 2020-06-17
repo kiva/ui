@@ -121,7 +121,7 @@ export default {
 		},
 		onLoad() {
 			this.apollo.watchQuery({
-				query: gql`{
+				query: gql`query countryFacets {
 					lend {
 						countryFacets {
 							count

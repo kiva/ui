@@ -59,7 +59,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query whoYoullSupport {
 			autolending @client {
 				currentProfile {
 					kivaChooses

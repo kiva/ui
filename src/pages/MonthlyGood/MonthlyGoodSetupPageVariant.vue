@@ -226,7 +226,7 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodSetupPageVariant {
     general {
       mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
         key
@@ -417,7 +417,7 @@ export default {
 
 			this.apollo.mutate({
 				mutation: gql`
-					mutation (
+					mutation registerMonthlyGood(
 						$amount: Money!,
 						$donateAmount: Money!,
 						$dayOfMonth: Int!,

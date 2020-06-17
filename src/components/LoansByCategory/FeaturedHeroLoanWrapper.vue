@@ -45,7 +45,7 @@ import logReadQueryError from '@/util/logReadQueryError';
 // Fallback featured_loan_channel id
 const featuredCategoryIds = [98];
 const initialLoanCount = 4;
-const pageQuery = gql`{
+const pageQuery = gql`query featuredLoanHero {
 	general {
 		uiConfigSetting(key: "featured_loan_channel") {
 			key

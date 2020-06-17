@@ -23,7 +23,7 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import MonthlyGoodSetupPageControl from '@/pages/MonthlyGood/MonthlyGoodSetupPageControl';
 import MonthlyGoodSetupPageVariant from '@/pages/MonthlyGood/MonthlyGoodSetupPageVariant';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodSetupPage {
 	general {
 		uiExperimentSetting(key: "mg_setup") {
 			key

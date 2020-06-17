@@ -51,7 +51,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileDefaultRate {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
@@ -75,22 +75,25 @@ export default {
 		defaultRate(defaultRateMax, previousDefaultRateMax) {
 			let defaultRate = null;
 			if (defaultRateMax !== previousDefaultRateMax) {
-				defaultRate = defaultRateMax;
+				defaultRate = Number(defaultRateMax) || null;
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateDefaultRate($defaultRate: Float) {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
 										defaultRate: {
 											min: 0
-											max: ${defaultRate || null}
+											max: $defaultRate
 										}
 									}
 								}
 							})
 						}
 					}`,
+					variables: {
+						defaultRate,
+					},
 				});
 			}
 		}

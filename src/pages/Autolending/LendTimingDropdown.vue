@@ -68,20 +68,23 @@ export default {
 		updateLendAfterDaysIdle(value) {
 			if (value !== this.lendAfterDaysIdle) {
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateLendAfterDaysIdle($value: Int) {
 						autolending @client {
 							editProfile(profile: {
 								enableAfter: 0
-								lendAfterDaysIdle: ${value}
+								lendAfterDaysIdle: $value
 							})
 						}
 					}`,
+					variables: {
+						value: Number(value),
+					},
 				});
 			}
 		},
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query lendTimingDropdown {
 			my {
 				userAccount {
 					id

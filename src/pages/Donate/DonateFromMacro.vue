@@ -36,7 +36,7 @@ import { processContent } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import MGCovidAbout from '@/pages/LandingPages/MGCovid19/MGCovidAbout';
 
-const pageQuery = gql`{
+const pageQuery = gql`query donateContent {
 	contentful {
 		entries (contentType: "page", contentKey: "support-kiva")
 	}
