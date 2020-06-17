@@ -17,17 +17,20 @@ export default {
 		saveAny() {
 			const filter = this.radioKey;
 			this.apollo.mutate({
-				mutation: gql`mutation {
+				mutation: gql`mutation saveAny($filters: LoanSearchFiltersInput!) {
 							autolending @client {
 								editProfile(profile: {
 									loanSearchCriteria: {
-										filters: {
-											${filter}: null
-										}
+										filters: $filters
 									}
 								})
 							}
 						}`,
+				variables: {
+					filters: {
+						[filter]: null
+					}
+				}
 			});
 		},
 		emitChangeEvent(value) {

@@ -90,7 +90,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
-const pageQuery = gql`{
+const pageQuery = gql`query subscriptionSettingsPage {
 	my {
 		autoDeposit {
 			isSubscriber
@@ -147,7 +147,7 @@ export default {
 		},
 		cancelSubscription() {
 			this.apollo.mutate({
-				mutation: gql`mutation { my { cancelAutoDeposit } }`,
+				mutation: gql`mutation cancelAutoDeposit { my { cancelAutoDeposit } }`,
 				awaitRefetchQueries: true,
 				refetchQueries: [
 					{ query: pageQuery }

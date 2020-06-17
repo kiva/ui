@@ -206,7 +206,7 @@ import IconPencil from '@/assets/icons/inline/pencil.svg';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
-const pageQuery = gql`{
+const pageQuery = gql`query autoDepositPage {
 	my {
 		autoDeposit {
 			amount
@@ -315,7 +315,7 @@ export default {
 		saveAutoDeposit() {
 			this.isSaving = true;
 			const updateAutoDepositSettings = this.apollo.mutate({
-				mutation: gql`mutation($amount: Money, $donateAmount: Money, $dayOfMonth: Int) {
+				mutation: gql`mutation updateAutoDeposit($amount: Money, $donateAmount: Money, $dayOfMonth: Int) {
 					my {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth

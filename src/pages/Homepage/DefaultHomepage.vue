@@ -42,7 +42,7 @@ import CategoryGrid from '@/components/Homepage/CategoryGrid';
 import TopMessageContentful from './TopMessageContentful';
 import { processContent } from '@/util/contentfulUtils';
 
-const pageQuery = gql`{
+const pageQuery = gql`query homepageMGHeroExperiment {
 	general {
 		uiExperimentSetting(key: "homepage_mg_hero") {
 			key

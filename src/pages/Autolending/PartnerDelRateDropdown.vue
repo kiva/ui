@@ -42,7 +42,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileArrearsRate {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
@@ -65,20 +65,23 @@ export default {
 		delinquencyRate(delinquencyRateMax, previousDelinquencyRateMax) {
 			if (delinquencyRateMax !== previousDelinquencyRateMax) {
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateArrearsRate($max: Float) {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
 										arrearsRate: {
 											min: 0
-											max: ${delinquencyRateMax || null}
+											max: $max
 										}
 									}
 								}
 							})
 						}
 					}`,
+					variables: {
+						max: Number(delinquencyRateMax) || null,
+					},
 				});
 			}
 		}

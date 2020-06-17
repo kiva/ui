@@ -39,7 +39,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileRiskRating {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
@@ -65,13 +65,13 @@ export default {
 			if (riskRatingMin !== previousRiskRatingMin) {
 				riskRating = riskRatingMin;
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateRiskRating($min: Float) {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
 										riskRating: {
-											min: ${riskRating || null}
+											min: $min
 											max: 5
 										}
 									}
@@ -79,6 +79,9 @@ export default {
 							})
 						}
 					}`,
+					variables: {
+						min: Number(riskRating) || null,
+					},
 				});
 			}
 		}

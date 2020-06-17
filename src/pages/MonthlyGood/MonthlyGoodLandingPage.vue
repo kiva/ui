@@ -86,7 +86,7 @@ import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodLandingPage {
 	my {
 		autoDeposit {
 			isSubscriber

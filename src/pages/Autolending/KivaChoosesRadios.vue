@@ -35,7 +35,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileKivaChooses {
 			autolending @client {
 				currentProfile {
 					kivaChooses
@@ -51,13 +51,16 @@ export default {
 		kivaChooses(kivaChooses, previousKivaChooses) {
 			if (kivaChooses !== previousKivaChooses) {
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateKivaChooses($kivaChooses: Boolean!) {
 						autolending @client {
 							editProfile(profile: {
-								kivaChooses: ${kivaChooses === 'true'}
+								kivaChooses: $kivaChooses
 							})
 						}
 					}`,
+					variables: {
+						kivaChooses: kivaChooses === 'true'
+					},
 				});
 			}
 		}

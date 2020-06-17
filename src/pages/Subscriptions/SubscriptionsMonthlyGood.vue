@@ -229,7 +229,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		autoDeposit {
 			amount
@@ -361,7 +361,7 @@ export default {
 		saveMonthlyGood() {
 			this.isSaving = true;
 			const updateMGCategory = this.apollo.mutate({
-				mutation: gql`mutation($category: MonthlyGoodCategoryEnum!) {
+				mutation: gql`mutation updateCategory($category: MonthlyGoodCategoryEnum!) {
 					my {
 						updateMonthlyGoodCategory(category: $category)
 					}
@@ -371,7 +371,7 @@ export default {
 				}
 			});
 			const updateMGSettings = this.apollo.mutate({
-				mutation: gql`mutation($amount: Money, $donateAmount: Money, $dayOfMonth: Int) {
+				mutation: gql`mutation updateAutoDeposit($amount: Money, $donateAmount: Money, $dayOfMonth: Int) {
 					my {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth

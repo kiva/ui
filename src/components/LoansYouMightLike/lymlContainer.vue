@@ -73,7 +73,7 @@ const smallCardWidthPlusPadding = 190;
 const largeCardWidthPlusPadding = 190;
 
 const expMlLoanToLoanQuery = gql`
-	{
+	query expMlLoanToLoan {
 		general {
 			ml_loan_to_loan: uiExperimentSetting(key: "ml_loan_to_loan") {
 				key
