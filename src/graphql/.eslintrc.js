@@ -6,12 +6,16 @@ let schema;
 
 // Use build/schema.graphql as the schema definition. That file only exists after running node build/fetch-schema.js
 try {
-	const contents = fs.readFileSync(path.join(__dirname, '../../build/schema.graphql'));
-	schema = contents.toString();
+	schema = fs.readFileSync(path.join(__dirname, '../../build/schema.graphql')).toString();
 } catch (e) {
-	console.error(e);
+	console.warn(e);
 	schema = 'type Query { hello: String }';
 }
+
+const graphqlOptions = {
+	env: 'literal',
+	schemaString: schema,
+};
 
 module.exports = {
 	plugins: [
@@ -19,17 +23,8 @@ module.exports = {
 	],
 	rules: {
 		// configure graphql schema checking
-		'graphql/template-strings': ['warn', {
-			env: 'literal',
-			schemaString: schema,
-		}],
-		'graphql/no-deprecated-fields': ['warn', {
-			env: 'literal',
-			schemaString: schema,
-		}],
-		"graphql/named-operations": ['error', {
-			env: 'literal',
-			schemaString: schema,
-		}],
+		'graphql/template-strings': ['warn', graphqlOptions],
+		'graphql/no-deprecated-fields': ['warn', graphqlOptions],
+		'graphql/named-operations': ['error', graphqlOptions],
 	}
 }
