@@ -11,7 +11,6 @@
 		>
 			<kv-responsive-image
 				:images="heroImageSet"
-				alt=""
 			/>
 			<div class="hero__text-wrapper">
 				<iwd-flag class="hero__iwd-flag" />
@@ -342,7 +341,6 @@ export default {
 		NumberCountries,
 		WavyDivider,
 	},
-	inject: ['apollo'],
 	data() {
 		return {
 			heroImageSet: [
