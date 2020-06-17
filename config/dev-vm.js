@@ -6,6 +6,8 @@ module.exports = merge(base, {
 		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// Run federation
+		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		// Use this to debug graphql calls in PHPStorm
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?XDEBUG_SESSION_START=PHPSTORM',
 		// use this to override authentication
@@ -62,6 +64,8 @@ module.exports = merge(base, {
 	},
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// Run federation
+		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		sessionUri: 'https://dev-vm-01.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',
