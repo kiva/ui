@@ -1,18 +1,19 @@
 <template>
 	<div class="page-content">
-		<a
-			class="hero"
-			:href="primaryCtaUrl"
-			v-kv-track-event="[
-				'homepage',
-				'click-WRD2020-hero',
-				'homepage-WRD2020-hero-banner-image'
-			]"
-		>
-			<kv-responsive-image
-				:images="heroImageSet"
-				alt="World Refugee Day"
-			/>
+		<div class="hero">
+			<a
+				:href="primaryCtaUrl"
+				v-kv-track-event="[
+					'homepage',
+					'click-WRD2020-hero',
+					'homepage-WRD2020-hero-banner-image'
+				]"
+				target="_self"
+			>
+				<kv-responsive-image
+					:images="heroImageSet"
+				/>
+			</a>
 			<div class="hero__text-wrapper">
 				<img
 					class="hero__wrd-logo"
@@ -36,7 +37,7 @@
 				</div>
 			</div>
 			<line-divider-1 class="divider divider--bottom divider--sand" />
-		</a>
+		</div>
 
 		<section class="section stats">
 			<p class="text-block">
@@ -140,6 +141,7 @@
 				<li class="handup__li" v-for="(step, index) in loanSteps" :key="index">
 					<img
 						class="handup__img"
+						:class="step.title | changeCase('paramCase')"
 						:src="step.img[0]"
 						:srcset="`${step.img[0]} 2x`"
 						:alt="step.title"
@@ -215,9 +217,7 @@ export default {
 		LineDivider3,
 		LineDivider4,
 		LineDivider5,
-
 	},
-	inject: ['apollo'],
 	data() {
 		return {
 			heroImageSet: [
@@ -688,6 +688,12 @@ $divider-height: 2.5rem;
 	&__img {
 		@include breakpoint('large') {
 			margin-bottom: 1.5rem;
+		}
+
+		&.choose-a-borrower {
+			// this png image is not centered like the others. Adjust it manually.
+			bottom: 1.5rem;
+			position: relative;
 		}
 	}
 
