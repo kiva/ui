@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<top-message-contentful />
 		<hero-slideshow
 			v-if="showSlideShow && !isExperimentActive"
 			:promo-enabled="promoEnabled"
@@ -39,10 +38,9 @@ import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import MGCovidExplained from '@/pages/LandingPages/MGCovid19/MGCovidExplained';
 import MGCovidHero from '@/pages/LandingPages/MGCovid19/MGCovidHero';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
-import TopMessageContentful from './TopMessageContentful';
 import { processContent } from '@/util/contentfulUtils';
 
-const pageQuery = gql`{
+const pageQuery = gql`query homepageMGHeroExperiment {
 	general {
 		uiExperimentSetting(key: "homepage_mg_hero") {
 			key
@@ -59,7 +57,6 @@ export default {
 		CategoryGrid,
 		MGCovidExplained,
 		MGCovidHero,
-		TopMessageContentful,
 	},
 	data() {
 		return {
