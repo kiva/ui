@@ -54,7 +54,7 @@ export default {
 			// https://app.contentful.com/spaces/j0p9a6ql0rn7/environments/development/entries/6pXrrPQucbeNLqf47tW3wh
 			heroImages: [
 				['small', heroImagesRequire('./donate-1-sm-standard.jpg')],
-				['small retina', heroImagesRequire('.donate-1-sm-retina.jpg')],
+				['small retina', heroImagesRequire('./donate-1-sm-retina.jpg')],
 				['medium', heroImagesRequire('./donate-2-med-standard.jpg')],
 				['medium retina', heroImagesRequire('./donate-2-med-retina.jpg')],
 				['large', heroImagesRequire('./donate-3-lg-standard.jpg')],
