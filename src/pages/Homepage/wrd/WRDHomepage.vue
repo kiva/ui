@@ -1,18 +1,19 @@
 <template>
 	<div class="page-content">
-		<a
-			class="hero"
-			:href="primaryCtaUrl"
-			v-kv-track-event="[
-				'homepage',
-				'click-WRD2020-hero',
-				'homepage-WRD2020-hero-banner-image'
-			]"
-		>
-			<kv-responsive-image
-				:images="heroImageSet"
-				alt="World Refugee Day"
-			/>
+		<div class="hero">
+			<a
+				:href="primaryCtaUrl"
+				v-kv-track-event="[
+					'homepage',
+					'click-WRD2020-hero',
+					'homepage-WRD2020-hero-banner-image'
+				]"
+				target="_self"
+			>
+				<kv-responsive-image
+					:images="heroImageSet"
+				/>
+			</a>
 			<div class="hero__text-wrapper">
 				<img
 					class="hero__wrd-logo"
@@ -21,7 +22,9 @@
 				>
 				<div class="hero__tagline">
 					<!-- eslint-disable-next-line max-len -->
-					<h2 class="hero__tagline-head">Fund a dream to build <span class="no-wrap">a <strong>new life.</strong></span></h2>
+					<h2 class="hero__tagline-head">
+						Fund a dream to build <span class="no-wrap">a <strong>new life.</strong></span>
+					</h2>
 					<kv-button
 						:href="primaryCtaUrl"
 						class="hero__cta cta"
@@ -36,7 +39,7 @@
 				</div>
 			</div>
 			<line-divider-1 class="divider divider--bottom divider--sand" />
-		</a>
+		</div>
 
 		<section class="section stats">
 			<p class="text-block">
@@ -140,6 +143,7 @@
 				<li class="handup__li" v-for="(step, index) in loanSteps" :key="index">
 					<img
 						class="handup__img"
+						:class="step.title | changeCase('paramCase')"
 						:src="step.img[0]"
 						:srcset="`${step.img[0]} 2x`"
 						:alt="step.title"
@@ -215,9 +219,7 @@ export default {
 		LineDivider3,
 		LineDivider4,
 		LineDivider5,
-
 	},
-	inject: ['apollo'],
 	data() {
 		return {
 			heroImageSet: [
@@ -334,8 +336,7 @@ $divider-height: 2.5rem;
 	width: rem-calc(255);
 	max-width: 100%;
 	margin-top: 0.5rem;
-	padding-left: 0.5rem;
-	padding-right: 0.5rem;
+	padding: 1.25rem 0.5rem;
 }
 
 .text-block {
@@ -413,6 +414,9 @@ $divider-height: 2.5rem;
 	// end copypasta
 
 	&__text-wrapper {
+		max-width: 61.875rem;
+		margin-right: auto;
+		margin-left: auto;
 		position: absolute;
 		top: 0;
 		bottom: 0;
@@ -431,7 +435,7 @@ $divider-height: 2.5rem;
 		@include breakpoint('large') {
 			bottom: auto;
 			top: 7%;
-			left: 15.25%;
+			left: 0.65rem;
 			width: 25.5%;
 			height: 42%; // IE11
 			right: 4.2%;
@@ -441,28 +445,25 @@ $divider-height: 2.5rem;
 	&__tagline {
 		display: flex;
 		flex-direction: column;
-		width: 68%;
+		width: 100%;
 		position: absolute;
-		left: 16%;
 		bottom: -57.125%;
 		height: 30%; // IE11
 		z-index: 900;
 
 		@include breakpoint('large') {
+			left: 0.95rem;
 			right: auto;
 			bottom: auto;
 			top: 55%;
 			width: 41.5%;
 			height: 34%; // IE11
-			max-width: 18rem;
-		}
-
-		@include breakpoint('xlarge') {
-			left: 19%;
+			max-width: 19.25rem;
 		}
 	}
 
 	&__tagline-head {
+		font-size: 2rem;
 		color: black;
 		text-align: center;
 		@include breakpoint('large') {
@@ -476,6 +477,9 @@ $divider-height: 2.5rem;
 		box-shadow: 0 2px darken($wrd-salmon, 10%); // override foundation box-shadow
 		margin-left: auto;
 		margin-right: auto;
+		@include breakpoint('large') {
+			margin-left: 0;
+		}
 	}
 }
 
@@ -515,10 +519,10 @@ $divider-height: 2.5rem;
 		margin: 0 auto;
 
 		&--plain-text {
-			font-size: 5rem;
+			font-size: 3.75rem;
 			font-weight: $global-weight-bold;
 			color: $wrd-purple;
-			line-height: 5rem;
+			line-height: 4.5rem;
 		}
 	}
 
@@ -606,7 +610,7 @@ $divider-height: 2.5rem;
 	&__text {
 		font-weight: $global-weight-normal;
 		font-size: $small-text-font-size;
-		padding: 0.75rem 1rem;
+		padding: 0.75rem 2.65rem;
 		line-height: 1.3;
 		display: block;
 		max-width: 24rem;
@@ -662,7 +666,7 @@ $divider-height: 2.5rem;
 		flex-flow: row wrap;
 		max-width: 48rem;
 		@include breakpoint('xxlarge') {
-			max-width: 82rem;
+			max-width: 70rem;
 		}
 	}
 
@@ -680,14 +684,15 @@ $divider-height: 2.5rem;
 		@include breakpoint('xxlarge') {
 			flex-direction: column;
 			width: 25%;
-			padding-right: 1.5rem;
-			padding-left: 1.5rem;
 		}
 	}
 
 	&__img {
-		@include breakpoint('large') {
-			margin-bottom: 1.5rem;
+		&.choose-a-borrower {
+			// this png image is not centered like the others. Adjust it manually.
+			bottom: 2.25rem;
+			right: 1rem;
+			position: relative;
 		}
 	}
 
