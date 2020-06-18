@@ -11,22 +11,20 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
+import {
+	lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderTheme, wrdFooterTheme
+} from '@/util/siteThemes';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
+import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
+
 import TopMessageContentful from './TopMessageContentful';
 
 const activePageQuery = gql`query homepageFrame {
-	general {
-		iwd_homepage_active: uiConfigSetting(key: "iwd_homepage_active") {
-			key
-			value
-		}
-	}
 	contentful {
-		entries(contentType: "uiSetting", contentKey: "ui-homepage-top")
+		entries(contentType: "uiSetting", contentKey: "ui-homepage-takeover")
 	}
 }`;
 
@@ -36,43 +34,34 @@ export default {
 		WwwPage,
 		DefaultHomePage,
 		IWDHomePage,
+		WRDHomePage,
 		TopMessageContentful,
 	},
 	data() {
 		return {
 			isIwdActive: false,
-			iwdHeaderTheme: {
-				themeKey: 'IWD',
-				backgroundColor: '#fff',
-				linkColor: '#060f9f',
-				linkHoverColor: '#a0e2ba',
-				separatorColor: 'transparent'
-			},
-			iwdFooterTheme: {
-				themeKey: 'IWD',
-				backgroundColor: '#fff',
-				textColor: '#484848',
-				linkColor: '#060f9f',
-				separatorColor: '#a0e2ba'
-			},
-			takeOverActive: false,
+			isWrdActive: false,
+			isMessageActive: false,
 			takeOverContent: '',
 		};
 	},
 	computed: {
 		activeHomepage() {
-			if (this.takeOverActive) return TopMessageContentful;
+			if (this.isMessageActive) return TopMessageContentful;
 			if (this.isIwdActive) return IWDHomePage;
+			if (this.isWrdActive) return WRDHomePage;
 			return DefaultHomePage;
 		},
 		headerTheme() {
-			if (this.takeOverActive) return lightHeader;
-			if (this.isIwdActive) return this.iwdHeaderTheme;
+			if (this.isMessageActive) return lightHeader;
+			if (this.isIwdActive) return iwdHeaderTheme;
+			if (this.isWrdActive) return wrdHeaderTheme;
 			return null;
 		},
 		footerTheme() {
-			if (this.takeOverActive) return lightFooter;
-			if (this.isIwdActive) return this.iwdFooterTheme;
+			if (this.isMessageActive) return lightFooter;
+			if (this.isIwdActive) return iwdFooterTheme;
+			if (this.isWrdActive) return wrdFooterTheme;
 			return null;
 		}
 	},
@@ -80,14 +69,9 @@ export default {
 		query: activePageQuery,
 		preFetch: true,
 		result({ data }) {
-			// determine if IWD is active
-			this.isIwdActive = _get(data, 'general.iwd_homepage_active.value') === 'true' || false;
-
-			// determine if take-over message content is active
-			const contentSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-top'); // eslint-disable-line max-len
-			if (!contentSetting || !contentSetting.fields) {
-				this.takeOverActive = false;
-			} else {
+			// determine if take-over setting is active
+			const contentSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-takeover'); // eslint-disable-line max-len
+			if (_get(contentSetting, 'fields')) {
 				const isContentEnabled = settingEnabled(
 					contentSetting.fields,
 					'active',
@@ -95,9 +79,23 @@ export default {
 					'endDate'
 				);
 				if (isContentEnabled) {
+					const takeOverKey = _get(contentSetting, 'fields.dataObject.takeOverKey');
+
+					switch (takeOverKey) {
+						case 'WRD':
+							this.isWrdActive = true;
+							break;
+						case 'IWD':
+							this.isIwdActive = true;
+							break;
+						case 'BLM':
+							this.isMessageActive = true;
+							break;
+						default:
+							break;
+					}
 					const activeContent = _get(contentSetting, 'fields.content[0]');
 					if (activeContent) {
-						this.takeOverActive = true;
 						this.takeOverContent = documentToHtmlString(activeContent.fields.bodyCopy);
 					}
 				}
