@@ -5,7 +5,7 @@
 				<kv-icon
 					class="icon"
 					title="Monthly Good"
-					name="auto-icon-when"
+					name="subscriptions-monthly-good"
 				/>
 			</div>
 			<div class="title-wrapper">
