@@ -1,17 +1,19 @@
 <template>
 	<div class="page-content">
-		<a
-			class="hero"
-			:href="primaryCtaUrl"
-			v-kv-track-event="[
-				'homepage',
-				'click-WRD2020-hero',
-				'homepage-WRD2020-hero-banner-image'
-			]"
-		>
-			<kv-responsive-image
-				:images="heroImageSet"
-			/>
+		<div class="hero">
+			<a
+				:href="primaryCtaUrl"
+				v-kv-track-event="[
+					'homepage',
+					'click-WRD2020-hero',
+					'homepage-WRD2020-hero-banner-image'
+				]"
+				target="_self"
+			>
+				<kv-responsive-image
+					:images="heroImageSet"
+				/>
+			</a>
 			<div class="hero__text-wrapper">
 				<img
 					class="hero__wrd-logo"
@@ -35,7 +37,7 @@
 				</div>
 			</div>
 			<line-divider-1 class="divider divider--bottom divider--sand" />
-		</a>
+		</div>
 
 		<section class="section stats">
 			<p class="text-block">
