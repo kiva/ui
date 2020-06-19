@@ -5,7 +5,7 @@
 				<kv-icon
 					class="icon"
 					title="Auto Deposits"
-					name="auto-icon-when"
+					name="subscriptions-auto-deposit"
 				/>
 			</div>
 			<div class="title-wrapper">
