@@ -19,7 +19,6 @@
 			</div>
 		</div>
 
-		<!-- Can put this in a new component -->
 		<div class="impact-wrapper section">
 			<div class="row">
 				<div class="small-12 large-6 columns">
@@ -27,11 +26,9 @@
 				</div>
 				<div class="small-12 large-6 columns">
 					<h2 class="impact-wrapper__header" v-html="this.impactHeadline">
-					<!-- Over $1.4 billion in impact in <span class="no-wrap">70+ countries</span> -->
 					</h2>
 					<div v-html="impactBodyCopy"></div>
 				</div>
-				<!-- <m-g-covid-about class="impact small-12 columns" /> -->
 			</div>
 		</div>
 	</www-page>
