@@ -2,7 +2,7 @@
 	<kv-hero class="donation-hero">
 		<template v-slot:images>
 			<kv-responsive-image
-				class="donation-hero-picture"
+				class="donation-hero-picture show-for-large"
 				:images="heroImages"
 				alt=""
 			/>
@@ -59,12 +59,12 @@ export default {
 				['medium retina', heroImagesRequire('./donate-2-med-retina.jpg')],
 				['large', heroImagesRequire('./donate-3-lg-standard.jpg')],
 				['large retina', heroImagesRequire('./donate-3-lg-retina.jpg')],
-				['xxlarge', heroImagesRequire('./donate-4-xga-standard.jpg')],
-				['xxlarge retina', heroImagesRequire('./donate-4-xga-retina.jpg')],
-				['xga', heroImagesRequire('./donate-4-xga-standard.jpg')],
-				['xga retina', heroImagesRequire('./donate-4-xga-retina.jpg')],
-				['wxga', heroImagesRequire('./donate-5-wxga-standard.jpg')],
-				['wga retina', heroImagesRequire('./donate-5-wxga-retina.jpg')],
+				['xxlarge', heroImagesRequire('./donate-4-xxl-standard.jpg')],
+				['xxlarge retina', heroImagesRequire('./donate-4-xxl-retina.jpg')],
+				['xga', heroImagesRequire('./donate-5-xga-standard.jpg')],
+				['xga retina', heroImagesRequire('./donate-5-xga-retina.jpg')],
+				['wxga', heroImagesRequire('./donate-6-wxga-standard.jpg')],
+				['wga retina', heroImagesRequire('./donate-6-wxga-retina.jpg')],
 			],
 		};
 	},
@@ -131,7 +131,7 @@ export default {
 		}
 
 		.overlay-content {
-			margin-top: -1rem;
+			margin-top: 1rem;
 			margin-left: 1rem;
 			margin-right: 1rem;
 			z-index: 1;

@@ -10,10 +10,12 @@
 
 		<div class="FAQ-wrapper section">
 			<div class="row">
-				<h2 class="strong">
-					Frequently Asked Questions
-				</h2>
-				<div v-html="bodyCopy"></div>
+				<div class="columns">
+					<h2 class="strong">
+						Frequently Asked Questions
+					</h2>
+					<div v-html="bodyCopy"></div>
+				</div>
 			</div>
 		</div>
 
