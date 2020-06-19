@@ -270,7 +270,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvButton from '@/components/Kv/KvButton';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodSetupPageControl {
     general {
       mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
         key
@@ -492,7 +492,7 @@ export default {
 
 			this.apollo.mutate({
 				mutation: gql`
-					mutation (
+					mutation registerMonthlyGood(
 						$amount: Money!,
 						$donateAmount: Money!,
 						$dayOfMonth: Int!,

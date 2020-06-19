@@ -73,7 +73,7 @@ import KvPillToggle from '@/components/Kv/KvPillToggle';
 import MultiAmountSelector from '@/components/Forms/MultiAmountSelector';
 import KvButton from '@/components/Kv/KvButton';
 
-const pageQuery = gql`{
+const pageQuery = gql`query covidLandingPage {
 	general {
 		covDefaultAmountExp: uiExperimentSetting(key: "covid19response_default_amount") {
 			key

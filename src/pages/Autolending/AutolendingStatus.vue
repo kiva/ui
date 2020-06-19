@@ -133,7 +133,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileStatus {
 			autolending @client {
 				profileChanged
 				currentProfile {
@@ -172,7 +172,7 @@ export default {
 				case 'paused': {
 					const pauseUntilDate = `${formatISO(addDays(new Date(), this.daysToPause))}`;
 					this.apollo.mutate({
-						mutation: gql`mutation($pauseUntilDate: [String]) {
+						mutation: gql`mutation pauseAutolending($pauseUntilDate: Date) {
 							autolending @client {
 								editProfile(profile: {
 									isEnabled: true,
@@ -188,7 +188,7 @@ export default {
 				}
 				case 'on': {
 					this.apollo.mutate({
-						mutation: gql`mutation {
+						mutation: gql`mutation enableAutolending {
 							autolending @client {
 								editProfile(profile: { isEnabled: true, pauseUntil: null })
 							}
@@ -198,7 +198,7 @@ export default {
 				}
 				case 'off': {
 					this.apollo.mutate({
-						mutation: gql`mutation {
+						mutation: gql`mutation disableAutolending {
 							autolending @client {
 								editProfile(profile: { isEnabled: false, pauseUntil: null })
 							}
@@ -234,7 +234,7 @@ export default {
 		save() {
 			this.isSaving = true;
 			this.apollo.mutate({
-				mutation: gql`mutation {
+				mutation: gql`mutation saveAutolendProfile {
 					autolending @client {
 						saveProfile
 					}

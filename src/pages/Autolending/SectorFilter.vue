@@ -65,7 +65,7 @@ export default {
 		},
 		changeSectors(sectors) {
 			this.apollo.mutate({
-				mutation: gql`mutation($sectors: [Int]) {
+				mutation: gql`mutation updateSectors($sectors: [Int]) {
 					autolending @client {
 						editProfile(profile: {
 							loanSearchCriteria: {

@@ -131,7 +131,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileWhen {
 			autolending @client {
 				profileChanged
 				currentProfile {
@@ -159,11 +159,14 @@ export default {
 					this.donationToggle = 'off';
 				}
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation editDonation($donation: Int) {
 						autolending @client {
-							editProfile(profile: { donationPercentage: ${donation} })
+							editProfile(profile: { donationPercentage: $donation })
 						}
 					}`,
+					variables: {
+						donation,
+					},
 				});
 			}
 		});
@@ -185,7 +188,7 @@ export default {
 		save() {
 			this.isSaving = true;
 			this.apollo.mutate({
-				mutation: gql`mutation {
+				mutation: gql`mutation saveProfile {
 					autolending @client {
 						saveProfile
 					}

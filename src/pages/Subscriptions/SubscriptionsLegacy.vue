@@ -34,7 +34,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import KvIcon from '@/components/Kv/KvIcon';
 
-const pageQuery = gql`{
+const pageQuery = gql`query legacySubscription {
 	my {
 		subscriptions {
 			values {

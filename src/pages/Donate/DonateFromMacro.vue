@@ -10,10 +10,12 @@
 
 		<div class="FAQ-wrapper section">
 			<div class="row">
-				<h2 class="strong">
-					Frequently Asked Questions
-				</h2>
-				<div v-html="bodyCopy"></div>
+				<div class="columns">
+					<h2 class="strong">
+						Frequently Asked Questions
+					</h2>
+					<div v-html="bodyCopy"></div>
+				</div>
 			</div>
 		</div>
 
@@ -36,7 +38,7 @@ import { processContent } from '@/util/contentfulUtils';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import MGCovidAbout from '@/pages/LandingPages/MGCovid19/MGCovidAbout';
 
-const pageQuery = gql`{
+const pageQuery = gql`query donateContent {
 	contentful {
 		entries (contentType: "page", contentKey: "support-kiva")
 	}

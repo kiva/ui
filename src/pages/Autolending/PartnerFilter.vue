@@ -69,7 +69,7 @@ export default {
 		},
 		changePartners(partners) {
 			this.apollo.mutate({
-				mutation: gql`mutation($partners: [Int]) {
+				mutation: gql`mutation updatePartners($partners: [Int]) {
 					autolending @client {
 						editProfile(profile: {
 							loanSearchCriteria: {

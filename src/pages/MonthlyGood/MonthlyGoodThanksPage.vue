@@ -42,7 +42,7 @@ import { addMonths, formatDistanceToNow } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodThanksPage {
 	my {
 		autoDeposit {
 			id

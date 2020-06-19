@@ -18,12 +18,14 @@
 					v-if="expVideoActive"
 				>
 					<div class="video-container">
+						<!-- eslint-disable max-len -->
 						<iframe
-							src="https://www.youtube-nocookie.com/embed/WCraaM6PAos?autoplay=1&mute=1&modestbranding=1"
+							src="https://www.youtube-nocookie.com/embed/WCraaM6PAos?autoplay=1&mute=1&modestbranding=1&rel=0"
 							frameborder="0"
 							allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 							allowfullscreen
 						></iframe>
+						<!-- eslint-enable max-len -->
 					</div>
 				</div>
 
@@ -68,7 +70,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import CovidLandingForm from './CovidLandingForm';
 
 const pageQuery = gql`
-  {
+  query monthlyGoodCovidHero {
     general {
       mg_covid_active: uiConfigSetting(key: "covid_landing_active") {
         key

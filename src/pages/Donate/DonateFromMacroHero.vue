@@ -2,7 +2,7 @@
 	<kv-hero class="donation-hero">
 		<template v-slot:images>
 			<kv-responsive-image
-				class="donation-hero-picture"
+				class="donation-hero-picture show-for-large"
 				:images="heroImages"
 				alt=""
 			/>
@@ -31,7 +31,7 @@ import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import DonateForm from './DonateForm';
 
-const heroImagesRequire = require.context('@/assets/images/covid-hero-v2', true);
+const heroImagesRequire = require.context('@/assets/images/donate-macro-hero', true);
 
 export default {
 	props: {
@@ -53,18 +53,18 @@ export default {
 			// TODO: These need to be hooked up to the files in contentful still
 			// https://app.contentful.com/spaces/j0p9a6ql0rn7/environments/development/entries/6pXrrPQucbeNLqf47tW3wh
 			heroImages: [
-				['small', heroImagesRequire('./hero_480x390.jpg')],
-				['small retina', heroImagesRequire('./hero_960x780.jpg')],
-				['medium', heroImagesRequire('./hero_680x375.jpg')],
-				['medium retina', heroImagesRequire('./hero_1360x750.jpg')],
-				['large', heroImagesRequire('./hero_1024x850.jpg')],
-				['large retina', heroImagesRequire('./hero_2048x1700.jpg')],
-				['xxlarge', heroImagesRequire('./hero_1320x760.jpg')],
-				['xxlarge retina', heroImagesRequire('./hero_2640x1520.jpg')],
-				['xga', heroImagesRequire('./hero_1440x710.jpg')],
-				['xga retina', heroImagesRequire('./hero_2880x1420.jpg')],
-				['wxga', heroImagesRequire('./hero_1920x740.jpg')],
-				['wga retina', heroImagesRequire('./hero_3840x1480.jpg')],
+				['small', heroImagesRequire('./donate-1-sm-standard.jpg')],
+				['small retina', heroImagesRequire('./donate-1-sm-retina.jpg')],
+				['medium', heroImagesRequire('./donate-2-med-standard.jpg')],
+				['medium retina', heroImagesRequire('./donate-2-med-retina.jpg')],
+				['large', heroImagesRequire('./donate-3-lg-standard.jpg')],
+				['large retina', heroImagesRequire('./donate-3-lg-retina.jpg')],
+				['xxlarge', heroImagesRequire('./donate-4-xxl-standard.jpg')],
+				['xxlarge retina', heroImagesRequire('./donate-4-xxl-retina.jpg')],
+				['xga', heroImagesRequire('./donate-5-xga-standard.jpg')],
+				['xga retina', heroImagesRequire('./donate-5-xga-retina.jpg')],
+				['wxga', heroImagesRequire('./donate-6-wxga-standard.jpg')],
+				['wga retina', heroImagesRequire('./donate-6-wxga-retina.jpg')],
 			],
 		};
 	},
@@ -131,7 +131,7 @@ export default {
 		}
 
 		.overlay-content {
-			margin-top: -1rem;
+			margin-top: 1rem;
 			margin-left: 1rem;
 			margin-right: 1rem;
 			z-index: 1;
