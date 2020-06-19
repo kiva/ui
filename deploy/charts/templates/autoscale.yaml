@@ -1,0 +1,25 @@
+{{- $fullName := include "ui-helm.fullname" . -}}
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "ui-helm.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "ui-helm.name" . }}
+    helm.sh/chart: {{ include "ui-helm.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "ui-helm.fullname" . }}
+  minReplicas: {{ .Values.minReplicas }}
+  maxReplicas: {{ .Values.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: AverageValue
+          averageValue: 320Mi
