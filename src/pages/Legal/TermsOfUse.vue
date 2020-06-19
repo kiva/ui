@@ -616,7 +616,7 @@
 						By Mail:<br>
 						Kiva Microfunds<br>
 						Legal Department<br>
-						986 Mission Street, Suite #400<br>
+						986 Mission Street, 4th Floor<br>
 						San Francisco, CA 94103<br>
 						&nbsp;<br>
 						By Fax:<br>
