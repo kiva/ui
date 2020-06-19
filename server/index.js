@@ -18,7 +18,9 @@ const logger = require('./util/errorLogger');
 
 // Initialize tracing
 if (config.server.enableDDTrace) {
-	ddTrace.init();
+	// TODO: consider where it's useful to active plugins and do so via env configs
+	// REF: https://docs.datadoghq.com/tracing/runtime_metrics/nodejs/
+	ddTrace.init({ runtimeMetrics: true });
 }
 
 // Initialize a Cache instance, Should Only be called once!
