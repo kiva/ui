@@ -97,6 +97,10 @@ export default {
 			type: Object,
 			default: () => {}
 		},
+		sortBy: {
+			type: String,
+			default: 'random'
+		},
 		visible: {
 			type: Boolean,
 			default: true
@@ -108,6 +112,13 @@ export default {
 		},
 		hasLoansInBasket() {
 			return this.basketedLoans.length || false;
+		},
+		sameCountry() {
+			// this.loans[0];
+			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.geocode.country.isoCode') : ['US'];
+		},
+		sameSector() {
+			return this.hasLoansInBasket ? _get(this.targetLoan, 'loan.sector.id') : [1];
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
@@ -206,14 +217,39 @@ export default {
 					this.parseLoansYouMightLike(loans);
 				});
 			} else {
-				this.apollo.query({
-					query: loansYouMightLikeData,
-					variables: {
-						sortBy: 'random'
+				const queryTypes = [
+					{
+						gender: this.gender,
+						sortBy: this.sortBy
 					},
-				}).then(data => {
-					const loans = _get(data, 'data.lend.loans.values');
-					this.parseLoansYouMightLike(loans);
+					{
+						country: this.country,
+						sortBy: this.sortBy
+					},
+					{
+						sector: this.sector,
+						sortBy: this.sortBy
+					},
+					{
+						partner: this.partner,
+						sortBy: this.sortBy
+					},
+					{
+						sortBy: this.sortBy
+					}
+				];
+				let loansYouMightLike = [];
+
+				Promise.all(_map(queryTypes, variables => {
+					return this.apollo.query({
+						query: loansYouMightLikeData,
+						variables
+					}).then(data => {
+						const loans = _get(data, 'data.lend.loans.values');
+						loansYouMightLike = loansYouMightLike.concat(loans);
+					});
+				})).then(() => {
+					this.parseLoansYouMightLike(loansYouMightLike);
 				});
 			}
 		},

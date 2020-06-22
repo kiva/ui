@@ -61,6 +61,7 @@
 					<l-y-m-l
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
+						:sort-by="lymlCustomSort"
 						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
@@ -101,6 +102,8 @@ import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
+import experimentAssignment from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
@@ -119,6 +122,7 @@ export default {
 		return {
 			loan: () => {},
 			itemsInBasket: [],
+			lymlCustomSort: 'random',
 		};
 	},
 	apollo: {
@@ -139,6 +143,8 @@ export default {
 						path: `/lend/${fundedLoanId}?minimal=false`,
 					});
 				}
+
+				return client.query({ query: experimentAssignment, variables: { id: 'funded_lyml_sort' } });
 			});
 		},
 	},
@@ -169,6 +175,17 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
+		}
+
+		// Read assigned version of lyml custom sort exp
+		const customSortExpVersion = this.apollo.readFragment({
+			id: 'Experiment:funded_lyml_sort',
+			fragment: experimentVersionFragment,
+		}) || {};
+		// set custom sort on component and track exp version
+		if (customSortExpVersion.version && customSortExpVersion.version !== 'unassigned') {
+			this.lymlCustomSort = customSortExpVersion.version === 'shown' ? 'amountLeft' : 'random';
+			this.$kvTrackEvent('basket', 'EXP-CASH-1030-Aug2019', customSortExpVersion.version === 'shown' ? 'b' : 'a');
 		}
 	},
 	methods: {
