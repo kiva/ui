@@ -65,7 +65,7 @@ export default {
 		},
 		changeThemes(themes) {
 			this.apollo.mutate({
-				mutation: gql`mutation($themes: [String]) {
+				mutation: gql`mutation updateThemes($themes: [String]) {
 					autolending @client {
 						editProfile(profile: {
 							loanSearchCriteria: {

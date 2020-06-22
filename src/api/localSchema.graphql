@@ -14,6 +14,7 @@ type Autolending {
 	loadingProfile: Boolean
 	countingLoans: Boolean
 	savingProfile: Boolean
+	warningThreshold: Int
 }
 
 type AutolendingMutation {

@@ -23,7 +23,7 @@ query loanPartnerTrustee(
 			... on LoanDirect {
 				endorsement
 				trustee {
-					title
+					organizationName
 					trusteeType
 					contactRecord {
 						state

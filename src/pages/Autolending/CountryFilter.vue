@@ -90,7 +90,7 @@ export default {
 		},
 		changeCountries(countries) {
 			this.apollo.mutate({
-				mutation: gql`mutation($countries: [String]) {
+				mutation: gql`mutation updateCountries($countries: [String]) {
 					autolending @client {
 						editProfile(profile: {
 							loanSearchCriteria: {

@@ -93,7 +93,7 @@ import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
 import KivaAsExpertContentful from '@/pages/MonthlyGood/KivaAsExpertContentful';
 import FrequentlyAskedQuestions from '@/pages/MonthlyGood/FrequentlyAskedQuestions';
 
-const pageQuery = gql`{
+const pageQuery = gql`query pageTwo {
 		my {
 			autoDeposit {
 				isSubscriber

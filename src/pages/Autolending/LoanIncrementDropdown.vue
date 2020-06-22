@@ -48,7 +48,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileLoanLimit {
 			autolending @client {
 				currentProfile {
 					loanSearchCriteria {
@@ -68,17 +68,20 @@ export default {
 		loanIncrement(loanIncrement, previousLoanIncrement) {
 			if (loanIncrement !== previousLoanIncrement) {
 				this.apollo.mutate({
-					mutation: gql`mutation {
+					mutation: gql`mutation updateLoanLimit($loanLimit: Int) {
 						autolending @client {
 							editProfile(profile: {
 								loanSearchCriteria: {
 									filters: {
-										loanLimit: ${loanIncrement === 'any' ? null : loanIncrement}
+										loanLimit: $loanLimit
 									}
 								}
 							})
 						}
 					}`,
+					variables: {
+						loanLimit: loanIncrement === 'any' ? null : Number(loanIncrement),
+					},
 				});
 			}
 		}

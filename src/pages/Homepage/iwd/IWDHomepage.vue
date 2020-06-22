@@ -342,7 +342,6 @@ export default {
 		NumberCountries,
 		WavyDivider,
 	},
-	inject: ['apollo'],
 	data() {
 		return {
 			heroImageSet: [

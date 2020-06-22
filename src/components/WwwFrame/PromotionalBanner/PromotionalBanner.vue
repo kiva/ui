@@ -1,5 +1,5 @@
 <template>
-	<component :is="currentActivePromo" :bonus-balance="bonusBalance" class="legacy-promo" />
+	<component :is="currentActivePromo" :bonus-balance="bonusBalance" />
 </template>
 
 <script>
