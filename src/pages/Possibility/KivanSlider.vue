@@ -28,10 +28,10 @@
 		>
 			<div class="row">
 				<div class="small-12 large-6">
-					<kv-responsive-image :images="slide.left" alt="Images of possibility" />
+					<kv-responsive-image :images="slide.left" alt="" />
 				</div>
 				<div class="small-12 large-6 show-for-large">
-					<kv-responsive-image :images="slide.right" alt="Images of possibility" />
+					<kv-responsive-image :images="slide.right" alt="" />
 				</div>
 			</div>
 		</kv-carousel-slide>
