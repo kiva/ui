@@ -39,7 +39,7 @@
 		}
 	},
 	"dependencies": {
-		"@babel/polyfill": "^7.0.0",
+		"@babel/polyfill": "^7.10.1",
 		"@contentful/rich-text-html-renderer": "^13.4.0",
 		"@sentry/browser": "^5.16.0",
 		"@sentry/integrations": "^5.15.5",
@@ -106,12 +106,12 @@
 		"winston": "^3.2.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.0.0",
-		"@babel/plugin-syntax-dynamic-import": "^7.0.0",
-		"@babel/plugin-syntax-import-meta": "^7.0.0",
-		"@babel/plugin-transform-modules-commonjs": "^7.0.0",
+		"@babel/core": "^7.10.2",
+		"@babel/plugin-syntax-dynamic-import": "^7.8.3",
+		"@babel/plugin-syntax-import-meta": "^7.10.1",
+		"@babel/plugin-transform-modules-commonjs": "^7.10.1",
 		"@babel/plugin-transform-runtime": "^7.10.1",
-		"@babel/preset-env": "^7.0.0",
+		"@babel/preset-env": "^7.10.1",
 		"@storybook/addon-a11y": "^5.3.19",
 		"@storybook/addon-actions": "^5.3.19",
 		"@storybook/addon-docs": "^5.3.19",
@@ -128,7 +128,7 @@
 		"babel-core": "^7.0.0-bridge.0",
 		"babel-eslint": "^10.1.0",
 		"babel-jest": "^23.4.2",
-		"babel-loader": "^8.0.0",
+		"babel-loader": "^8.1.0",
 		"babel-preset-vue": "^2.0.2",
 		"chalk": "^4.0.0",
 		"chokidar": "^3.4.0",
