@@ -8,7 +8,7 @@
 		>
 			<div class="row">
 				<div class="columns small-12 hide-for-large small-image text-center">
-					<kv-responsive-image :images="images" />
+					<kv-responsive-image :images="images" alt="" />
 				</div>
 				<div class="columns small-12 large-7">
 					<h1 class="headline">
@@ -28,7 +28,7 @@
 					</div>
 				</div>
 				<div class="columns large-5 show-for-large">
-					<kv-responsive-image :images="images" />
+					<kv-responsive-image :images="images" alt="Images of possibility" />
 				</div>
 			</div>
 		</kv-carousel-slide>

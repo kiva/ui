@@ -12,6 +12,7 @@
 			>
 				<kv-responsive-image
 					:images="heroImageSet"
+					alt=""
 				/>
 			</a>
 			<div class="hero__text-wrapper">
