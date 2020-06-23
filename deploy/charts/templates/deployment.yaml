@@ -33,10 +33,10 @@ spec:
         args: ["--", "npm", "start", "--", "--port={{ .Values.service.port }}", "--config={{ .Values.deployenv.environment }}"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-         - name: {{ .Values.service.portName }}
-           containerPort: {{ .Values.service.port }}
-        {{- if .Values.secretName }}
+          - name: {{ .Values.service.portName }}
+            containerPort: {{ .Values.service.port }}
         envFrom:
           - secretRef:
               name: {{ .Values.secretName }}
-        {{- end }}
+          - configMapRef:
+              name: {{ .Values.configmap.name }}
