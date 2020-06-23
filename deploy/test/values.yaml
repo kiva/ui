@@ -6,11 +6,17 @@ image:
   pullPolicy: Always
 
 deployenv:
-  environment: "" # set either by jenkins or manually
+  environment: "k8stest" # injected into deployment template
 
 secretName: kiva-ui
 
 replicaCount: 2
+# minReplicas: 2
+# maxReplicas: 4
+
+# resources:
+#   limits:
+#     cpu: 600m
 
 strategy:
   type: "RollingUpdate"
