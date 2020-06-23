@@ -6,6 +6,7 @@ var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = merge.smart(baseWebpackConfig, {
+	mode: isProd ? 'production' : baseWebpackConfig.mode,
 	entry: './src/server-entry.js',
 	target: 'node',
 	devtool: isProd ? 'source-map' : 'eval',
