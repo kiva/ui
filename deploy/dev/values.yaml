@@ -1,4 +1,5 @@
-# Default values for kiva-ui service.
+# Values for kiva-ui Dev deployment
+# - refer to /deploy/charts/values.yaml for defaults and commentary
 
 image:
   repository: kiva/ui
@@ -10,9 +11,10 @@ deployenv:
 
 secretName: kiva-ui
 
-replicaCount: 1
-minReplicas: 1
-maxReplicas: 4
+service:
+  type: ClusterIP
+  port: 8888
+  portName: &servicePortName "http"
 
 resources:
   requests:
@@ -22,13 +24,15 @@ resources:
     cpu: 200m
     memory: 400Mi
 
-strategy:
-  type: "RollingUpdate"
+replicaCount: 1
+minReplicas: 1
+maxReplicas: 4
 
-service:
-  type: ClusterIP
-  port: 8888
-  portName: &servicePortName "http"
+metrics:
+  name: memory
+  target:
+    type: AverageValue
+    averageValue: 270Mi
 
 ingress:
   host: "ui-dev.dk1.kiva.org"
