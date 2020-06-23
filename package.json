@@ -140,7 +140,7 @@
 		"dart-sass": "^1.25.0",
 		"eslint": "^6.8.0",
 		"eslint-config-airbnb-base": "^14.0.0",
-		"eslint-import-resolver-webpack": "^0.12.1",
+		"eslint-import-resolver-webpack": "^0.12.2",
 		"eslint-plugin-cypress": "^2.11.1",
 		"eslint-plugin-graphql": "^4.0.0",
 		"eslint-plugin-import": "^2.18.2",
