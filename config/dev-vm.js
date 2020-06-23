@@ -69,5 +69,6 @@ module.exports = merge(base, {
 		sessionUri: 'https://dev-vm-01.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',
+		// disableCluster: true,
 	}
 })

@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const cluster = require('cluster');
+const http = require('http');
 const ddTrace = require('dd-trace');
 const express = require('express');
 const helmet = require('helmet');
@@ -15,6 +16,7 @@ const argv = require('./util/argv');
 const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
+const initializeTerminus = require('./util/terminusConfig');
 
 // Initialize tracing
 if (config.server.enableDDTrace) {
@@ -82,29 +84,40 @@ app.use(logger.errorLogger);
 // Final Error Handler
 app.use(logger.fallbackErrorHandler);
 
-// Cluster Activation
-// See: https://nodejs.org/docs/latest-v8.x/api/cluster.html
+if (config.server.disableCluster) {
+	// initialize http server instance
+	const server = http.createServer(app);
 
-// Number of CPUs for pool
-const numCPUs = 2;
+	// initialize terminus with the http server + cache instance
+	initializeTerminus(server, cache);
 
-// Start the cluster master process
-if (cluster.isMaster && !argv.mock) {
-	console.log(`Master ${process.pid} is running`); // eslint-disable-line
-
-	// Fork workers.
-	for (let i = 0; i < numCPUs; i++) { // eslint-disable-line
-		cluster.fork();
-	}
-
-	// Check if work id is died
-	cluster.on('exit', (worker, code, signal) => {
-		console.log(`worker ${worker.process.pid} died`); // eslint-disable-line
-	});
+	// listen for requests
+	server.listen(port, () => console.log(`server (pid: ${process.pid}) started at localhost:${port}`));
 } else {
-	// Start the worker processes
-	// - these can share any TCP connection
-	console.log(`Worker ${process.pid} started`); // eslint-disable-line
+	// Cluster Activation
+	// See: https://nodejs.org/docs/latest-v8.x/api/cluster.html
 
-	app.listen(port, () => console.log(`server started at localhost:${port}`));
+	// Number of CPUs for pool
+	const numCPUs = 2;
+
+	// Start the cluster master process
+	if (cluster.isMaster && !argv.mock) {
+		console.log(`Master ${process.pid} is running`); // eslint-disable-line
+
+		// Fork workers.
+		for (let i = 0; i < numCPUs; i++) { // eslint-disable-line
+			cluster.fork();
+		}
+
+		// Check if work id is died
+		cluster.on('exit', (worker, code, signal) => {
+			console.log(`worker ${worker.process.pid} died`); // eslint-disable-line
+		});
+	} else {
+		// Start the worker processes
+		// - these can share any TCP connection
+		console.log(`Worker ${process.pid} started`); // eslint-disable-line
+
+		app.listen(port, () => console.log(`server started at localhost:${port}`));
+	}
 }
