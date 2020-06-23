@@ -6,11 +6,21 @@ image:
   pullPolicy: Always
 
 deployenv:
-  environment: "" # set either by jenkins or manually
+  environment: "k8sdev" # injected into deployment template
 
 secretName: kiva-ui
 
-replicaCount: 2
+replicaCount: 1
+minReplicas: 1
+maxReplicas: 4
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 400Mi
 
 strategy:
   type: "RollingUpdate"
@@ -35,3 +45,10 @@ ingress:
     - hosts:
       - ui-dev.dk1.kiva.org
       secretName: "kiva-ui-tls"
+
+configmap:
+  data:
+  - key: DD_TRACE_GLOBAL_TAGS
+    value: "env:dev,app:kiva-ui"
+  - key: DD_ENV
+    value: "dev"
