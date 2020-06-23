@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<div class="payment-holder small-12 medium-7 large-6">
+	<div class="row">
+		<div class="payment-holder small-12 medium-8 large-7 columns">
 			<div id="dropin-container"></div>
 			<div id="dropin-button" v-if="showCheckoutButton">
 				<kv-button
@@ -19,10 +19,10 @@
 				id="payment-updating-overlay"
 				class="updating-totals-overlay"
 			/>
-		</div>
-		<div class="attribution-text small-12 medium-7 large-6">
-			Thanks to PayPal powered by Braintree,
-			Kiva receives free payment processing for all loans.
+			<p class="attribution-text">
+				Thanks to PayPal powered by Braintree,
+				Kiva receives free payment processing for all loans.
+			</p>
 		</div>
 	</div>
 </template>
@@ -43,7 +43,11 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 // TODO: Verify proper error handling and user feedback
 // TODO: Audit and implement useful Sentry Error collection
 // TODO: Add analytics for all actions within DropIn Ui
-// TODO: Continue interface refinements + style cleanup
+// doNoncePaymentDepositAndCheckout
+// amount: Money!
+// nonce: String!
+// savePaymentMethod: Boolean
+// deviceData: String
 
 export default {
 	components: {
@@ -124,8 +128,8 @@ export default {
 					amount: numeral(this.amount).format('0.00'),
 					currency: 'USD',
 					buttonStyle: {
-						color: 'blue',
-						shape: 'rect',
+						color: 'gold',
+						shape: 'pill',
 						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
 					}
 				},
@@ -280,11 +284,11 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "settings";
 
-// $form-border-radius: rem-calc(3);
-$form-border-radius: 0.125rem;
+$form-border-radius: rem-calc(2);
+
 $active-border-color: $input-checked-color;
 $active-background-color: $white;
 $inactive-border-color: rem-calc(1) solid $input-border-color;
@@ -292,95 +296,154 @@ $inactive-background-color: $platinum;
 $icon-background-color: $input-checked-color;
 $border-width: 1px;
 
-.payment-holder {
-	position: relative;
-	display: inline-block;
-	white-space: nowrap;
-	text-align: center;
-	border: none;
-	// border: 1px solid $subtle-gray; //#c3c3c3
-	padding: 0 0.6rem 1.25rem;
-	// border-radius: $form-border-radius;
-	margin: 3rem auto 0 auto;
-	min-width: rem-calc(300);
-	width: 100%;
+.row {
+	justify-content: flex-end;
+}
 
-	@include breakpoint(medium) {
-		float: right;
-		display: block;
-	}
+.payment-holder {
+	text-align: left;
+	padding: 0 0.6rem 1.25rem;
+	margin-top: 3rem;
 
 	@include breakpoint(large) {
 		padding: 0 2rem 1.5rem;
 	}
 
-	.braintree-dropin {
-		font-family: inherit;
+	.attribution-text {
+		color: $kiva-text-light;
+		text-align: center;
+		margin-top: rem-calc(24);
 	}
 
-	.braintree-heading {
-		color: $charcoal;
+	::v-deep [data-braintree-id="choose-a-way-to-pay"],
+	.attribution-text {
+		font-size: $small-text-font-size;
 	}
 
-	[data-braintree-id="methods-label"] {
-		display: none;
-	}
-
-	[data-braintree-id="methods-container"] {
-		.braintree-method {
-			border-radius: $form-border-radius;
-			border-color: $inactive-border-color;
-			border-width: $border-width;
-			// color: $tab-pill-color;
-			// background: $tab-pill-background;
-			// border: $tab-pill-border;
+	::v-deep {
+		.braintree-dropin {
+			font-family: inherit;
 		}
 
-		.braintree-method--active {
-			border-color: $active-border-color;
+		[data-braintree-id="choose-a-way-to-pay"],
+		[data-braintree-id="methods-label"],
+		[data-braintree-id="other-ways-to-pay"] {
+			color: $kiva-text-light;
+			width: 100%;
+			text-align: center;
+		}
 
-			.braintree-method__check {
-				background-color: $icon-background-color;
+		.braintree-option,
+		.braintree-sheet__header,
+		.braintree-method.braintree-method--active {
+			background-color: $kiva-bg-lightgray;
+			border-color: $subtle-gray;
+			color: $kiva-text-dark;
+		}
+
+		.braintree-option {
+			padding: 12px 16px;
+
+			&:first-child {
+				border-radius: $form-border-radius $form-border-radius 0 0;
+			}
+
+			&:last-child {
+				border-radius: 0 0 $form-border-radius $form-border-radius;
 			}
 		}
 
-		.braintree-method__label {
-			color: $charcoal;
+		.braintree-sheet__text,
+		.braintree-method__label,
+		.braintree-option__label,
+		.braintree-form__label,
+		.braintree-methods--active .braintree-method__label,
+		.braintree-method .braintree-method__label .braintree-method__label--small {
+			color: $kiva-text-dark;
+			font-weight: $global-weight-normal;
 		}
-	}
 
-	[data-braintree-id="lower-container"] {
-		// [data-braintree-id="other-ways-to-pay"] {}
-		[data-braintree-id="payment-options-container"] {
-			.braintree-option {
-				border-radius: $form-border-radius;
-				border-color: $inactive-border-color;
-				background: $inactive-background-color;
+		.braintree-sheet {
+			border-radius: $form-border-radius;
+			border-color: $subtle-gray;
 
-				.braintree-option__label {
-					color: $charcoal;
-					text-align: left;
+			.braintree-sheet__header {
+				padding: 12px 16px 0  12px;
+
+				.braintree-sheet__text {
+					margin-left: 12px;
 				}
+			}
+		}
 
+		[data-braintree-id="card-view-icons"] {
+			padding-left: 1rem;
+
+			& > div {
+				padding-left: 0;
+			}
+		}
+
+		[data-braintree-id="toggle"] {
+			color: $kiva-accent-blue;
+			background: none;
+			padding-bottom: rem-calc(2);
+
+			&:hover {
+				background: none;
+				font-weight: $global-weight-normal;
+			}
+
+			& span {
+				border: none;
+
+				&:focus,
 				&:hover {
-					background: $active-background-color;
+					text-decoration: underline;
+					color: $highlight-blue;
 				}
 			}
 		}
-	}
 
-	[data-braintree-id="sheet-container"] {
-		[data-braintree-id="paypal"],
-		[data-braintree-id="card"] {
-			border-radius: $form-border-radius;
-			border-color: $inactive-border-color;
-			background: $active-background-color;
+		// Hides credit card icon in number field until credit card type is known
+		[data-braintree-id="number-field-group"]:not(.braintree-form__field-group--card-type-known) svg {
+			display: none;
+		}
+
+		// Braintree Iframe is type number and inheriting some styles from kiva number input.
+		iframe[type=number] {
+			box-shadow: none;
+			padding: 0;
+			background-color: transparent;
+		}
+
+		.braintree-sheet__content--form .braintree-form__field-group {
+			.braintree-form__field {
+				color: $kiva-text-light;
+				background-color: $kiva-bg-lightgray;
+			}
+		}
+
+		[data-braintree-id="methods-container"] {
+			.braintree-method {
+				border-radius: $form-border-radius;
+				border-width: $border-width;
+			}
+
+			.braintree-method--active {
+				border-color: $active-border-color;
+
+				.braintree-method__check {
+					background-color: $icon-background-color;
+				}
+			}
 		}
 	}
 
 	#dropin-submit {
 		width: 100%;
 		font-size: 1.25rem;
+		margin-top: 1.25rem;
 
 		.icon-lock {
 			height: rem-calc(20);
@@ -390,23 +453,6 @@ $border-width: 1px;
 			position: relative;
 			margin-right: rem-calc(8);
 		}
-	}
-
-	.card-header {
-		position: relative;
-		top: -1.2rem;
-		background: $ghost;
-		display: inline-block;
-		border-radius: $form-border-radius;
-	}
-
-	.card-title {
-		padding: rem-calc(5) rem-calc(10);
-	}
-
-	.paypal-button {
-		text-align: center;
-		margin-top: rem-calc(25);
 	}
 
 	#payment-updating-overlay {
@@ -433,11 +479,4 @@ $border-width: 1px;
 	}
 }
 
-.attribution-text {
-	color: $gray;
-	float: right;
-	clear: both;
-	text-align: center;
-	margin-top: rem-calc(25);
-}
 </style>

@@ -128,7 +128,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "settings";
 
 .payment-holder {
@@ -160,13 +160,11 @@ export default {
 		border-radius: $input-border-radius;
 	}
 
-	.card-title {
-		padding: rem-calc(5) rem-calc(10);
-	}
-
-	.paypal-button {
-		text-align: center;
-		margin-top: rem-calc(25);
+	::v-deep {
+		.paypal-button {
+			text-align: center;
+			margin-top: rem-calc(25);
+		}
 	}
 
 	#payment-updating-overlay {
