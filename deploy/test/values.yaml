@@ -10,13 +10,17 @@ deployenv:
 
 secretName: kiva-ui
 
-replicaCount: 2
-# minReplicas: 2
-# maxReplicas: 4
+replicaCount: 1
+minReplicas: 1
+maxReplicas: 4
 
-# resources:
-#   limits:
-#     cpu: 600m
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 400Mi
 
 strategy:
   type: "RollingUpdate"

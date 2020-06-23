@@ -40,3 +40,5 @@ spec:
               name: {{ .Values.secretName }}
           - configMapRef:
               name: {{ .Values.configmap.name }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
