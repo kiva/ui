@@ -30,7 +30,8 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}" # In Jenkins, need to call helm with --set image.tag=master-XY
         command: ["tini"]
-        args: ["--", "npm", "start", "--", "--port={{ .Values.service.port }}", "--config={{ .Values.deployenv.environment }}"]
+        # args: ["--", "npm", "start", "--", "--port={{ .Values.service.port }}", "--config={{ .Values.deployenv.environment }}"]
+        args: ["--", "node", "server/index.js", "--port={{ .Values.service.port }}", "--config={{ .Values.deployenv.environment }}"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
           - name: {{ .Values.service.portName }}
@@ -42,3 +43,15 @@ spec:
               name: {{ .Values.configmap.name }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: 6
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
