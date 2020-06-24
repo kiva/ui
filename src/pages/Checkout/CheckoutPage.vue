@@ -59,7 +59,15 @@
 								</form>
 
 								<payment-wrapper
-									v-else
+									v-else-if="!showDropInPayments"
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+									@complete-transaction="completeTransaction"
+								/>
+
+								<drop-in-payment-wrapper
+									v-else-if="showDropInPayments"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
@@ -164,6 +172,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
+import DropInPaymentWrapper from '@/components/Checkout/DropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
 export default {
@@ -179,6 +188,7 @@ export default {
 		LoadingOverlay,
 		CheckoutHolidayPromo,
 		PaymentWrapper,
+		DropInPaymentWrapper,
 		RandomLoanSelector,
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -217,7 +227,8 @@ export default {
 				'Account',
 				'Payment',
 				'Thank You!'
-			]
+			],
+			showDropInPayments: false,
 		};
 	},
 	apollo: {
@@ -272,6 +283,8 @@ export default {
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+			// TODO active drop in via experiment
+			// this.showDropInPayments = _get(data, 'general.showDropInPayments.value') === 'true' || false;
 		}
 	},
 	created() {
