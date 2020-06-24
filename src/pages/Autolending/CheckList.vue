@@ -1,18 +1,32 @@
 <template>
-	<ul class="check-list" :class="{ 'use-columns': useColumns }">
-		<li
-			:key="id"
-			v-for="{ id, name, selected } in items"
+	<div>
+		<button
+			v-if="items.some(x => !x.selected)"
+			@click="emitAll(true)"
 		>
-			<kv-checkbox
-				:id="`${name}-${id}` | changeCase('paramCase')"
-				:checked="selected"
-				@change="$emit('change', $event, id);"
+			Select All
+		</button>
+		<button
+			v-if="items.some(x => x.selected)"
+			@click="emitAll(false)"
+		>
+			Deselect All
+		</button>
+		<ul class="check-list" :class="{ 'use-columns': useColumns }">
+			<li
+				:key="id"
+				v-for="{ id, name, selected } in items"
 			>
-				{{ name }}
-			</kv-checkbox>
-		</li>
-	</ul>
+				<kv-checkbox
+					:id="`${name}-${id}` | changeCase('paramCase')"
+					:checked="selected"
+					@change="$emit('change', $event, id);"
+				>
+					{{ name }}
+				</kv-checkbox>
+			</li>
+		</ul>
+	</div>
 </template>
 
 <script>
@@ -31,6 +45,12 @@ export default {
 	},
 	components: {
 		KvCheckbox,
+	},
+	methods: {
+		emitAll(checked) {
+			const ids = this.items.map(x => x.id);
+			this.$emit('change', checked, ids);
+		},
 	},
 };
 </script>
