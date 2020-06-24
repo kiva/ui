@@ -19,7 +19,6 @@ spec:
   metrics:
     - type: Resource
       resource:
-        name: memory
+        name: {{ .Values.metrics.name }}
         target:
-          type: AverageValue
-          averageValue: 150Mi
+          {{- toYaml .Values.metrics.target | nindent 12 }}
