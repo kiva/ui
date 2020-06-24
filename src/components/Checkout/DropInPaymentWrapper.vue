@@ -1,6 +1,6 @@
 <template>
-	<div class="row">
-		<div class="payment-holder small-12 medium-8 large-7 columns">
+	<div class="row align-right">
+		<div class="payment-holder small-12 medium-10 medium-offset-1 large-offset-5 large-7 columns">
 			<div id="dropin-container"></div>
 			<div id="dropin-button" v-if="showCheckoutButton">
 				<kv-button
@@ -15,9 +15,8 @@
 			</div>
 
 			<loading-overlay
-				v-show="updatingPaymentWrapper"
+				v-if="updatingPaymentWrapper"
 				id="payment-updating-overlay"
-				class="updating-totals-overlay"
 			/>
 			<p class="attribution-text">
 				Thanks to PayPal powered by Braintree,
@@ -288,17 +287,9 @@ export default {
 @import "settings";
 
 $form-border-radius: rem-calc(2);
-
 $active-border-color: $input-checked-color;
-$active-background-color: $white;
-$inactive-border-color: rem-calc(1) solid $input-border-color;
-$inactive-background-color: $platinum;
 $icon-background-color: $input-checked-color;
 $border-width: 1px;
-
-.row {
-	justify-content: flex-end;
-}
 
 .payment-holder {
 	text-align: left;
@@ -313,6 +304,7 @@ $border-width: 1px;
 		color: $kiva-text-light;
 		text-align: center;
 		margin-top: rem-calc(24);
+		padding: 0 0.75rem;
 	}
 
 	::v-deep [data-braintree-id="choose-a-way-to-pay"],
@@ -456,7 +448,6 @@ $border-width: 1px;
 	}
 
 	#payment-updating-overlay {
-		margin-top: 1rem;
 		z-index: 1000;
 		width: auto;
 		height: auto;

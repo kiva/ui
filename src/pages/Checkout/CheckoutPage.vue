@@ -283,7 +283,8 @@ export default {
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-			this.showDropInPayments = _get(data, 'general.showDropInPayments.value') === 'true' || false;
+			// TODO active drop in via experiment
+			// this.showDropInPayments = _get(data, 'general.showDropInPayments.value') === 'true' || false;
 		}
 	},
 	created() {
