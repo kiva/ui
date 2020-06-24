@@ -19,7 +19,6 @@ const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
-const loanCardImgRouter = require('./get-loan-card-img');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
@@ -145,9 +144,6 @@ app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
-
-// dynamic personalized loan image route
-app.use('/lend/get-loan-card-img', loanCardImgRouter());
 
 // install dev/hot middleware
 app.use(devMiddleware);
