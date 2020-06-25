@@ -1,0 +1,58 @@
+# Values for kiva-ui Qa deployment
+# - refer to /deploy/charts/values.yaml for defaults and commentary
+
+image:
+  repository: kiva/ui
+  tag: "" # Expected be set by Jenkins
+  pullPolicy: Always
+
+deployenv:
+  environment: "k8sqa" # injected into deployment template
+
+secretName: kiva-ui
+
+service:
+  type: ClusterIP
+  port: 8888
+  portName: &servicePortName "http"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 120Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+replicaCount: 1
+minReplicas: 1
+maxReplicas: 4
+
+metrics:
+  name: memory
+  target:
+    type: AverageValue
+    averageValue: 140Mi
+
+ingress:
+  host: "ui-qa.dk1.kiva.org"
+  spec:
+    rules:
+      - host: "ui-qa.dk1.kiva.org"
+        http:
+          paths:
+          - backend:
+              serviceName: "kiva-ui"
+              servicePort: *servicePortName
+            path: /
+  tls:
+    - hosts:
+      - ui-qa.dk1.kiva.org
+      secretName: "kiva-ui-tls"
+
+configmap:
+  data:
+  - key: DD_TRACE_GLOBAL_TAGS
+    value: "env:qa,app:kiva-ui"
+  - key: DD_ENV
+    value: "qa"
