@@ -12,7 +12,7 @@ pipeline {
     TAGGED_IMAGE_NAME = "${DOCKER_REPO_NAME}:${TAG_NAME}"
     // simple when { tag matches "v*" } won't work due to current conflict with core and github plugin
     // Using env var string to boolean conversion works for now, but can be simpler if this issue is resolved
-    QA_DEPLOY = env.TAG_NAME.toString().matches("^release-*")
+    QA_DEPLOY = env.TAG_NAME.toString().matches("^release-.*")
     PROD_DEPLOY = env.TAG_NAME.toString().matches("^v.*")
   }
 
