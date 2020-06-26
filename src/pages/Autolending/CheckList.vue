@@ -1,15 +1,10 @@
 <template>
 	<div>
-		<button
-			v-if="items.some(x => !x.selected)"
-			@click="emitAll(true)"
-		>
+		<button class="toggle-all" @click="emitAll(true)">
 			Select All
 		</button>
-		<button
-			v-if="items.some(x => x.selected)"
-			@click="emitAll(false)"
-		>
+		&nbsp;
+		<button class="toggle-all" @click="emitAll(false)">
 			Deselect All
 		</button>
 		<ul class="check-list" :class="{ 'use-columns': useColumns }">
@@ -76,6 +71,14 @@ export default {
 		@include breakpoint(large) {
 			column-count: 3;
 		}
+	}
+}
+
+.toggle-all {
+	color: $kiva-textlink;
+
+	&:hover {
+		color: $kiva-textlink-hover;
 	}
 }
 </style>
