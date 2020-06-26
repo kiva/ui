@@ -17,7 +17,7 @@
 			v-model="radio"
 			@click="emitChangeEvent('some')"
 		>
-			Selected FIeld Partners only
+			Selected Field Partners only
 			<button
 				v-if="currentFilterValues.length > 0"
 				class="edit-button"
