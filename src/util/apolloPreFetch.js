@@ -3,9 +3,15 @@ import _groupBy from 'lodash/groupBy';
 import _map from 'lodash/map';
 import cookieStore from '@/util/cookieStore';
 import getDeepComponents from './getDeepComponents';
+import logFormatter from './logFormatter';
 
 // initial basketId from cookie
 let basketId = cookieStore.get('kvbskt');
+
+// harmless or known responses from our graphql api
+const wellKnownErrorCodes = [
+	'api.authenticationRequired'
+];
 
 export function handleApolloErrors(handlers = {}, errors, args) {
 	// Get the error code for each error from either error.code or error.extensions.code
@@ -24,7 +30,12 @@ export function handleApolloErrors(handlers = {}, errors, args) {
 		const handler = handlers[code];
 		// Warn about errors being unhandled if a handler wasn't found
 		if (!handler) {
-			console.warn(`Warning: No error handler for error code '${code}': ${graphQLErrors[0].message}`);
+			// skip logging well known error codes
+			if (wellKnownErrorCodes.indexOf(code) !== -1) {
+				return Promise.resolve();
+			}
+
+			logFormatter(`Warning: No error handler for error code '${code}': ${graphQLErrors[0].message}`, 'warn');
 			return Promise.resolve();
 		}
 		// Call the error handler with the errors and any additional args passed in from the top function
