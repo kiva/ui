@@ -38,15 +38,9 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
-// TODO: Wire up deviceData
 // TODO: Verify proper error handling and user feedback
 // TODO: Audit and implement useful Sentry Error collection
 // TODO: Add analytics for all actions within DropIn Ui
-// doNoncePaymentDepositAndCheckout
-// amount: Money!
-// nonce: String!
-// savePaymentMethod: Boolean
-// deviceData: String
 
 export default {
 	components: {
@@ -69,17 +63,6 @@ export default {
 			showCheckoutButton: false,
 			btDropinInstance: () => {},
 			clientToken: null,
-			options: [
-				{
-					title: 'Pay with card',
-					key: 'bt'
-				},
-				{
-					title: 'Pay with PayPal',
-					key: 'pp',
-				},
-			],
-			selectedOption: 'bt',
 			updatingPaymentWrapper: false,
 		};
 	},
@@ -116,7 +99,10 @@ export default {
 		initializeDropIn() {
 			Dropin.create({
 				authorization: this.clientToken,
-				selector: '#dropin-container',
+				container: '#dropin-container',
+				dataCollector: {
+					kount: true // Required if Kount fraud data collection is enabled
+				},
 				card: {
 					vault: {
 						allowVaultCardOverride: true,
@@ -179,22 +165,23 @@ export default {
 				.then(btSubmitResponse => {
 					console.log(btSubmitResponse);
 					const transactionNonce = _get(btSubmitResponse, 'nonce');
+					const deviceData = _get(btSubmitResponse, 'deviceData');
 					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeCheckout(transactionNonce);
+						this.doBraintreeCheckout(transactionNonce, deviceData);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
 				});
 		},
-		doBraintreeCheckout(nonce) {
+		doBraintreeCheckout(nonce, deviceData) {
 			// Apollo call to the query mutation
 			this.apollo.mutate({
 				mutation: braintreeDepositAndCheckout,
 				variables: {
 					amount: numeral(this.amount).format('0.00'),
 					nonce,
+					deviceData,
 					// savePaymentMethod: this.storePaymentMethod,
-					// deviceData: this.dataCollectorDeviceData,
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction
@@ -419,15 +406,20 @@ $border-width: 1px;
 		[data-braintree-id="methods-container"] {
 			.braintree-method {
 				border-radius: $form-border-radius;
-				border-width: $border-width;
+				width: 100%;
 			}
 
 			.braintree-method--active {
 				border-color: $active-border-color;
+				border-width: $border-width;
+			}
 
-				.braintree-method__check {
-					background-color: $icon-background-color;
-				}
+			.braintree-method__check {
+				background-color: $icon-background-color;
+				padding: rem-calc(5);
+				height: 1.95rem;
+				width: 1.95rem;
+				margin-right: rem-calc(4);
 			}
 		}
 	}
