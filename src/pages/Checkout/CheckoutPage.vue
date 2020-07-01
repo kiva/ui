@@ -407,7 +407,9 @@ export default {
 							route: this.$route,
 							kvAuth0: this.kvAuth0,
 						}).catch(error => {
-							this.$router.push(error);
+							if (error.path) {
+								this.$router.push(error);
+							}
 						});
 					}
 					return false;
