@@ -426,6 +426,8 @@ export default {
 						return preFetchAll(matched, this.apollo, {
 							route: this.$route,
 							kvAuth0: this.kvAuth0,
+						}).catch(error => {
+							this.$router.push(error);
 						});
 					}
 				});
