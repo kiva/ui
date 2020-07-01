@@ -19,6 +19,7 @@ const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
+const liveLoanRouter = require('./live-loan-router');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
@@ -144,6 +145,9 @@ app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
+
+// dynamic personalized loan routes
+app.use('/live-loan', liveLoanRouter());
 
 // install dev/hot middleware
 app.use(devMiddleware);

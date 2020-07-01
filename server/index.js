@@ -7,6 +7,7 @@ const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
+const liveLoanRouter = require('./live-loan-router');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
@@ -53,6 +54,9 @@ app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
+
+// dynamic personalized loan routes
+app.use('/live-loan', liveLoanRouter());
 
 // Configure session
 app.set('trust proxy', 1);
