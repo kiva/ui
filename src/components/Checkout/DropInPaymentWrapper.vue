@@ -38,8 +38,6 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
-// TODO: Verify proper error handling and user feedback
-// TODO: Audit and implement useful Sentry Error collection
 // TODO: Add analytics for all actions within DropIn Ui
 
 export default {
@@ -86,7 +84,7 @@ export default {
 					const errorMessage = _get(response, 'errors[0].message');
 
 					Sentry.withScope(scope => {
-						scope.setTag('bt_stage', 'btGetClientTokenError');
+						scope.setTag('bt_stage_dropin', 'btGetClientTokenError');
 						scope.setTag('bt_get_client_token_error', errorMessage);
 						Sentry.captureException(errorCode);
 					});
@@ -122,13 +120,16 @@ export default {
 				this.btDropinInstance = btCreateInstance;
 				this.initializeDropInActions();
 				this.setUpdatingPaymentWrapper(false);
-				console.log(btCreateInstance);
 			}).catch(btCreateError => {
 				console.error(btCreateError);
+				Sentry.withScope(scope => {
+					scope.setTag('bt_stage_dropin', 'btCreateError');
+					scope.setTag('bt_client_create_error', btCreateError.message);
+					Sentry.captureException(btCreateError.code);
+				});
 			});
 		},
 		validateBasketAndCheckout() {
-			console.log('clicked button');
 			this.$emit('updating-totals', true);
 			// Validate Basket prior to starting
 			this.validateBasket()
@@ -146,24 +147,21 @@ export default {
 				})
 				.catch(error => {
 					this.$emit('updating-totals', false);
-					// const errorCode = _get(error, 'errors[0].code');
-					// const errorMessage = _get(error, 'errors[0].message');
-					console.error(error);
+					const errorCode = _get(error, 'errors[0].code');
+					const errorMessage = _get(error, 'errors[0].message');
 
 					// Fire specific exception to Sentry/Raven
-					// Sentry.withScope(scope => {
-					// 	scope.setTag('bt_stage', 'btSubmitValidationCatch');
-					// 	scope.setTag('bt_basket_validation_error', errorMessage);
-					// 	Sentry.captureException(errorCode);
-					// });
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage_dropin', 'btSubmitValidationCatch');
+						scope.setTag('bt_basket_validation_error', errorMessage);
+						Sentry.captureException(errorCode);
+					});
 				});
 		},
 		submitDropInPayment() {
 			// request payment method
-			console.log('attempting bt payment');
 			this.btDropinInstance.requestPaymentMethod()
 				.then(btSubmitResponse => {
-					console.log(btSubmitResponse);
 					const transactionNonce = _get(btSubmitResponse, 'nonce');
 					const deviceData = _get(btSubmitResponse, 'deviceData');
 					if (typeof transactionNonce !== 'undefined') {
@@ -171,6 +169,12 @@ export default {
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
+					// Fire specific exception to Sentry/Raven
+					Sentry.withScope(scope => {
+						scope.setTag('bt_stage_dropin', 'btRequestPaymentMethodCatch');
+						scope.setTag('bt_basket_validation_error', btSubmitError);
+						Sentry.captureException(btSubmitError);
+					});
 				});
 		},
 		doBraintreeCheckout(nonce, deviceData) {
@@ -181,7 +185,7 @@ export default {
 					amount: numeral(this.amount).format('0.00'),
 					nonce,
 					deviceData,
-					// savePaymentMethod: this.storePaymentMethod,
+					savePaymentMethod: false, // save payment methods handled by braintree drop in UI
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction
@@ -201,7 +205,7 @@ export default {
 
 					// Fire specific exception to Sentry/Raven
 					Sentry.withScope(scope => {
-						scope.setTag('bt_stage', 'btDepositAndCheckout');
+						scope.setTag('bt_stage_dropin', 'btDepositAndCheckout');
 						scope.setTag('bt_kv_transaction_error', errorMessage);
 						Sentry.captureException(errorCode);
 					});
@@ -240,31 +244,32 @@ export default {
 			}
 
 			// listen for "requestable" payment method (ex. completing PayPal signin)
-			// From the Docs:
-			// - If your Drop-in integration has the postal code field, it will be considered valid after 3 characters
-			// - (some international postal codes are 3 characters in length).
+			// eslint-disable-next-line no-unused-vars
 			this.btDropinInstance.on('paymentMethodRequestable', event => {
-				console.log('payment method requestable - returns event');
-				console.log(event);
+				// Returns event object { paymentMethodIsSelected, type}
 				// TODO: add additional check for Postal Code validation during during new card input
+				// From the Docs:
+				// - If your Drop-in integration has the postal code field,
+				// - it will be considered valid after 3 characters
+				// - (some international postal codes are 3 characters in length).
 				this.showCheckoutButton = true;
 			});
 
 			// listen for "non-requestable" payment method (ex. PayPal sign in flow)
 			this.btDropinInstance.on('noPaymentMethodRequestable', () => {
-				console.log('NO payment method requestable - returns nothing');
+				// Returns nothing
 				this.showCheckoutButton = false;
 			});
 
 			// listen for "selected" payment option (ex. completion of PayPal sign in)
-			this.btDropinInstance.on('paymentOptionSelected', event => {
-				console.log('payment option selected - returns option');
-				console.log(event);
-			});
+			// could be useful later
+			// this.btDropinInstance.on('paymentOptionSelected', event => {
+			// 	console.log('payment option selected - returns option');
+			// 	console.log(event);
+			// });
 		}
 	},
 	mounted() {
-		console.log(Dropin);
 		this.initializePaymentOptions();
 	}
 };
