@@ -62,7 +62,6 @@ export default [
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
-	{ path: '/lend/loan-card-img', component: () => import('@/pages/Lend/LoanCardImg') },
 
 	{
 		path: '/monthlygood',
