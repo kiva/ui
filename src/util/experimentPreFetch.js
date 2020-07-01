@@ -14,6 +14,7 @@ let activeExperiments = [
 	'lend_filter_v2',
 	'expandable_loan_cards',
 	'intercom_messenger',
+	'add_to_basket_redirect',
 ];
 
 // TODO: Enhance Error handling

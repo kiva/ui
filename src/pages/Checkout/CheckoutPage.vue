@@ -10,9 +10,19 @@
 								:steps="checkoutSteps"
 								:current-step-index="currentStep"
 							/>
+							<div class="text-center continue-browsing"
+								v-if="addToBasketRedirectExperimentShown && !userPrefContinueBrowsing"
+							>
+								<span>Want to add more loans? </span>
+								<router-link
+									to="/lend-by-category"
+									@click.native="handleChangeUserPref"
+								>
+									Continue browsing
+								</router-link>
+							</div>
 							<hr>
 						</div>
-
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -148,6 +158,7 @@ import _filter from 'lodash/filter';
 import _map from 'lodash/map';
 import _pick from 'lodash/pick';
 import numeral from 'numeral';
+import store2 from 'store2';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
@@ -230,6 +241,8 @@ export default {
 				'Thank You!'
 			],
 			showDropInPayments: false,
+			userPrefContinueBrowsing: false,
+			addToBasketRedirectExperimentShown: false,
 		};
 	},
 	apollo: {
@@ -326,6 +339,18 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'CheckoutPage promoQuery');
 		}
+
+		// GROW-127 Add to basket redirect experiment
+		const addToBasketRedirectExperiment = this.apollo.readFragment({
+			id: 'Experiment:add_to_basket_redirect',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (addToBasketRedirectExperiment.version === 'control') {
+			this.addToBasketRedirectExperimentShown = false;
+		} else if (addToBasketRedirectExperiment.version === 'shown') {
+			this.addToBasketRedirectExperimentShown = true;
+		}
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time
@@ -345,6 +370,8 @@ export default {
 				this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 			});
 		});
+
+		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
 	},
 	computed: {
 		isLoggedIn() {
@@ -507,6 +534,9 @@ export default {
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
 		},
+		handleChangeUserPref() {
+			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
+		}
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
@@ -624,6 +654,10 @@ export default {
 
 .checkout-steps-wrapper {
 	padding-bottom: 1.2rem;
+
+	.continue-browsing {
+		font-weight: $global-weight-highlight;
+	}
 }
 
 .checkout-steps {
