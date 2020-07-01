@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import _get from 'lodash/get';
+import logFormatter from '@/util/logFormatter';
 import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql';
 import loanCountQuery from '@/graphql/query/loanCount.graphql';
 import serverProfileQuery from '@/graphql/query/autolending/profileFromServer.graphql';
@@ -63,7 +64,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 			},
 			// Log any errors
 			error(e) {
-				console.error(e);
+				logFormatter(e, 'error');
 				writeAutolendingData(cache, { countingLoans: false });
 				resolve(0);
 			},

@@ -12,6 +12,7 @@
 
 import store2 from 'store2';
 import { create } from 'timesync';
+import logFormatter from '@/util/logFormatter';
 
 // Grab Date.now before the Date prototype is replaced
 const systemNow = Date.now;
@@ -58,7 +59,7 @@ export default function sync() {
 		});
 		// Start listening for error events
 		time.on('error', err => {
-			console.error(err);
+			logFormatter(err, 'error');
 			time.off('error'); // Removes this promise's error event handler
 			syncPromise = null;
 			resolve();

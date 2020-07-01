@@ -41,7 +41,11 @@ module.exports = function authRouter(config = {}) {
 
 	// If no server-side auth0 secret is provided, skip setting up auth routes
 	if (!process.env.UI_AUTH0_CLIENT_SECRET) {
-		console.warn('UI server-side authentication setup skipped because UI_AUTH0_CLIENT_SECRET is not defined!');
+		console.warn(JSON.stringify({
+			meta: {},
+			level: 'warn',
+			message: 'UI server-side authentication setup skipped because UI_AUTH0_CLIENT_SECRET is not defined!'
+		}));
 		return router;
 	}
 
@@ -79,13 +83,21 @@ module.exports = function authRouter(config = {}) {
 		if (req.query.doneUrl) {
 			req.session.doneUrl = req.query.doneUrl;
 		}
-		console.log(`LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}`); // eslint-disable-line max-len
+		console.log(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `LoginUI: attempt login, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, done url:${req.query.doneUrl}` // eslint-disable-line max-len
+		}));
 		passport.authenticate('auth0', options)(req, res, next);
 	});
 
 	// Handle logout request
 	router.get('/ui-logout', (req, res) => {
-		console.log(`LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}`); // eslint-disable-line max-len
+		console.log(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `LoginUI: execute logout, session id:${req.sessionID}, cookie:${getSyncCookie(req)}, user id:${req.user && req.user.id}` // eslint-disable-line max-len
+		}));
 		const returnUrl = encodeURIComponent(`https://${config.host}`);
 		const logoutUrl = `https://${config.auth0.domain}/v2/logout?returnTo=${returnUrl}`;
 		req.logout(); // removes req.user
@@ -97,7 +109,11 @@ module.exports = function authRouter(config = {}) {
 	router.get('/process-ssr-auth', (req, res, next) => {
 		passport.authenticate('auth0', (authErr, user, info) => {
 			if (authErr) {
-				console.log(`LoginUI: auth error, session id:${req.sessionID}, error:${authErr}`);
+				console.log(JSON.stringify({
+					meta: {},
+					level: 'log',
+					message: `LoginUI: auth error, session id:${req.sessionID}, error:${authErr}`
+				}));
 				return next(authErr);
 			}
 
@@ -119,16 +135,28 @@ module.exports = function authRouter(config = {}) {
 
 			if (!user) {
 				if (req.user) {
-					console.warn(`LoginSyncUI: login was attempted despite already having user, user id:${req.user.id}, session id:${req.sessionID}, state:${req.query.state}, last state:${req.session.lastUsedState}`); // eslint-disable-line max-len
+					console.warn(JSON.stringify({
+						meta: {},
+						level: 'warn',
+						message: `LoginSyncUI: login was attempted despite already having user, user id:${req.user.id}, session id:${req.sessionID}, state:${req.query.state}, last state:${req.session.lastUsedState}` // eslint-disable-line max-len
+					}));
 					doneUrl = req.session.lastUsedDoneUrl;
 				} else {
 					clearNotedLoginState(res);
 				}
-				console.log(`LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${JSON.stringify(info)}`); // eslint-disable-line max-len
+				console.log(JSON.stringify({
+					meta: {},
+					level: 'log',
+					message: `LoginSyncUI: user failed to login, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, info:${JSON.stringify(info)}` // eslint-disable-line max-len
+				}));
 				return res.redirect(doneUrl || '/');
 			}
 
-			console.log(`LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}`); // eslint-disable-line max-len
+			console.log(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: `LoginSyncUI: user logged in, session id:${req.sessionID}, previous cookie:${getSyncCookie(req)}, user id:${user.id}` // eslint-disable-line max-len
+			}));
 			noteLoggedIn(res, user);
 			req.session.lastUsedDoneUrl = doneUrl;
 			req.session.lastUsedState = req.query && req.query.state;
@@ -150,15 +178,27 @@ module.exports = function authRouter(config = {}) {
 		if (bypassPaths.includes(req.path)) {
 			next();
 		} else if (isNotedLoggedIn(req) && !req.user) {
-			console.log(`LoginSyncUI: attempt silent login, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user}`); // eslint-disable-line max-len
+			console.log(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: `LoginSyncUI: attempt silent login, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user}` // eslint-disable-line max-len
+			}));
 			attemptSilentAuth(req, res, next);
 		} else if (isNotedLoggedIn(req) && !isNotedUserRequestUser(req)) {
-			console.log(`LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user.id}`); // eslint-disable-line max-len
+			console.log(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: `LoginSyncUI: user id mismatch, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user:${req.user.id}` // eslint-disable-line max-len
+			}));
 			req.logout(); // removes req.user
 			attemptSilentAuth(req, res, next);
 		} else {
 			if (isNotedLoggedOut(req) && req.user) {
-				console.log(`LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}`); // eslint-disable-line max-len
+				console.log(JSON.stringify({
+					meta: {},
+					level: 'log',
+					message: `LoginSyncUI: execute logout, session id:${req.sessionID}, uri:${req.originalUrl}, cookie:${getSyncCookie(req)}, user id:${req.user.id}` // eslint-disable-line max-len
+				}));
 				req.logout(); // removes req.user
 			}
 			next();

@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/browser';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
 import cookieStore from '@/util/cookieStore';
+import logFormatter from '@/util/logFormatter';
 
 export default {
 	methods: {
@@ -31,7 +32,7 @@ export default {
 						resolve(validationResult);
 					}
 				}).catch(errorResponse => {
-					console.error(errorResponse);
+					logFormatter(errorResponse, 'error');
 					Sentry.captureException(errorResponse);
 					reject(errorResponse);
 				});
@@ -57,7 +58,7 @@ export default {
 					// checkout failed
 					resolve(data);
 				}).catch(errorResponse => {
-					console.error(errorResponse);
+					logFormatter(errorResponse, 'error');
 					Sentry.captureException(errorResponse);
 					reject(errorResponse);
 				});

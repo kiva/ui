@@ -4,6 +4,7 @@ import _over from 'lodash/over';
 import * as Sentry from '@sentry/browser';
 import cookieStore from './cookieStore';
 import syncDate from './syncDate';
+import logFormatter from './logFormatter';
 
 const isServer = typeof window === 'undefined';
 // only require auth0-js if we are not in a server environment
@@ -219,7 +220,7 @@ export default class KvAuth0 {
 
 	// Call error callbacks with error information
 	[handleUnknownError](error) {
-		console.error(error);
+		logFormatter(error, 'error');
 		_over(this[errorCallbacks])({
 			error,
 			errorString: getErrorString(error),
