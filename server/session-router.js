@@ -10,7 +10,7 @@ module.exports = function sessionRouter(config = {}) {
 	if (!secret) {
 		console.warn(JSON.stringify({
 			meta: {},
-			level: 'info',
+			level: 'warn',
 			message: 'UI session setup skipped because UI_SESSION_SECRET is not defined!'
 		}));
 		return router;
