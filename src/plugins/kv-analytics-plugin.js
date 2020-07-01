@@ -1,3 +1,5 @@
+import logFormatter from '@/util/logFormatter';
+
 // install method for plugin
 export default Vue => {
 	const inBrowser = typeof window !== 'undefined';
@@ -169,7 +171,7 @@ export default Vue => {
 					try {
 						kvActions.parseEventProperties(binding.value);
 					} catch (e) {
-						console.error(e);
+						logFormatter(e, 'error');
 					}
 				});
 			}

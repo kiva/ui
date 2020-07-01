@@ -89,7 +89,11 @@ const readFile = (fs, file) => {
 let resolveHandlerReady;
 const handlerReady = new Promise(resolve => { resolveHandlerReady = resolve; });
 
-let handler = () => console.error('dev-server handler was called before it was ready');
+let handler = () => console.info(JSON.stringify({
+	meta: {},
+	level: 'error',
+	message: 'dev-server handler was called before it was ready'
+}));
 let clientManifest;
 let serverBundle;
 
@@ -108,7 +112,11 @@ const updateHandler = () => {
 
 // update on template change
 chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () => {
-	console.log('index.template.html updated.');
+	console.info(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: 'index.template.html updated.'
+	}));
 	updateHandler();
 });
 
@@ -166,4 +174,8 @@ app.use(logger.errorLogger);
 app.use(logger.fallbackErrorHandler);
 
 // start server
-app.listen(port, () => console.log(`dev-server started at localhost:${port}`));
+app.listen(port, () => 	console.info(JSON.stringify({
+	meta: {},
+	level: 'log',
+	message: `dev-server started at localhost:${port}`
+})));

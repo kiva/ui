@@ -77,8 +77,16 @@ module.exports = function createMiddleware({
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
 
 		if (!isProd) {
-			typesPromise.then(() => console.log(`fragment fetch: ${Date.now() - s}ms`));
-			cookiePromise.then(() => console.log(`session fetch: ${Date.now() - s}ms`));
+			typesPromise.then(() => console.info(JSON.stringify({
+				meta: {},
+				level: 'info',
+				message: `fragment fetch: ${Date.now() - s}ms`
+			})));
+			cookiePromise.then(() => console.info(JSON.stringify({
+				meta: {},
+				level: 'info',
+				message: `session fetch: ${Date.now() - s}ms`
+			})));
 		}
 
 		Promise.all([typesPromise, cookiePromise])
@@ -99,7 +107,11 @@ module.exports = function createMiddleware({
 				// send the final rendered html
 				res.send(html);
 				if (!isProd) {
-					console.log(`whole request: ${Date.now() - s}ms`);
+					console.info(JSON.stringify({
+						meta: {},
+						level: 'info',
+						message: `whole request: ${Date.now() - s}ms`
+					}));
 				}
 			}).catch(err => {
 				if (err.url) {

@@ -4,7 +4,11 @@ let cache = null;
 function disconnectCache() {
 	return new Promise(resolve => {
 		if (cache && cache.close) {
-			console.log('Closing connection with cache');
+			console.log(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: 'Closing connection with cache'
+			}));
 			cache.close();
 		}
 		resolve(true);
@@ -12,7 +16,11 @@ function disconnectCache() {
 }
 
 function onSignal() {
-	console.log('Server is starting cleanup');
+	console.log(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: 'Server is starting cleanup'
+	}));
 	return Promise.all([
 		// TODO: add any additional shutdown methods
 		disconnectCache()
@@ -27,7 +35,11 @@ function beforeShutdown() {
 }
 
 function onShutdown() {
-	console.log('Cleanup finished, server is shutting down');
+	console.log(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: 'Cleanup finished, server is shutting down'
+	}));
 }
 
 function healthCheck() {

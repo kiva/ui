@@ -92,7 +92,11 @@ if (config.server.disableCluster) {
 	initializeTerminus(server, cache);
 
 	// listen for requests
-	server.listen(port, () => console.log(`server (pid: ${process.pid}) started at localhost:${port}`));
+	server.listen(port, () => console.info(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: `server (pid: ${process.pid}) started at localhost:${port}`
+	})));
 } else {
 	// Cluster Activation
 	// See: https://nodejs.org/docs/latest-v8.x/api/cluster.html
@@ -102,7 +106,11 @@ if (config.server.disableCluster) {
 
 	// Start the cluster master process
 	if (cluster.isMaster && !argv.mock) {
-		console.log(`Master ${process.pid} is running`); // eslint-disable-line
+		console.log(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `Master ${process.pid} is running`
+		}));
 
 		// Fork workers.
 		for (let i = 0; i < numCPUs; i++) { // eslint-disable-line
@@ -111,13 +119,25 @@ if (config.server.disableCluster) {
 
 		// Check if work id is died
 		cluster.on('exit', (worker, code, signal) => {
-			console.log(`worker ${worker.process.pid} died`); // eslint-disable-line
+			console.info(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: `worker ${worker.process.pid} died`
+			}));
 		});
 	} else {
 		// Start the worker processes
 		// - these can share any TCP connection
-		console.log(`Worker ${process.pid} started`); // eslint-disable-line
+		console.info(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `Worker ${process.pid} started`
+		}));
 
-		app.listen(port, () => console.log(`server started at localhost:${port}`));
+		app.listen(port, () => console.info(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `server started at localhost:${port}`
+		})));
 	}
 }
