@@ -1,4 +1,4 @@
-# Default values for kiva-ui service.
+# Default values for kiva-ui service
 
 image:
   repository: kiva/ui
@@ -7,14 +7,63 @@ image:
 
 imagePullSecretName: marketplace-regcred
 
-deployenv:
-  environment: "" # set either by jenkins or manually
-
-replicaCount: 2
-
 strategy:
   type: "RollingUpdate"
 
+deployenv:
+  environment: "" # injected into deployment template from environment specific values.yaml
+
+# Container resource allocation
+resources:
+  # allot requests values at startup
+  requests:
+    cpu: 80m
+    memory: 120Mi
+  # limits signal a need to shutdown the instance
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+# initial number of instances
+# - Note: our "RollingUpdate" strategy will start with the previous number of live instances
+replicaCount: 1
+# minimum allowed
+minReplicas: 1
+# maximum allowed
+maxReplicas: 4
+
+# Our Autoscaler (HPA) configs are better placed in each environment
+# as they blend poorly when the utilization type/value differs per environment
+# - Either The following sample values work well for our lower environments
+# metrics:
+# Sample memory based autoscale config
+#   name: memory
+#   target:
+#     type: AverageValue
+#     averageValue: 140Mi
+# Sample cpu based autoscale config
+#    name: cpu
+#    target:
+#      type: Utilization
+#      averageUtilization: 85
+
+# Defaults for our readiness probe
+readinessProbe:
+  path: /healthcheck
+  # wait this long to check readiness
+  initialDelaySeconds: 6
+  # repeat check at this interval
+  periodSeconds: 5
+
+# Defaults for our liveness probe
+livenessProbe:
+  path: /healthcheck
+  # wait this long to check liveness
+  initialDelaySeconds: 10
+  # repeat check at this interval
+  periodSeconds: 5
+
+# Global defaults for Ingress server + Cert management
 ingress:
   enabled: true
   name: "kiva-ui-ingress"
@@ -23,3 +72,17 @@ ingress:
     kubernetes.io/ingress.class: nginx-ingress-external
     kubernetes.io/ingress.ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+# Global defaults for NODE_ENV + DataDog config
+configmap:
+  name: kiva-ui
+  all:
+  - key: NODE_ENV
+    value: "production"
+  - key: DD_AGENT_HOST
+    value: "datadog-statsd.datadog"
+  - key: DD_TRACE_AGENT_PORT
+    value: 8126
+  - key: DD_SERVICE_NAME
+    value: "kiva-ui"
+

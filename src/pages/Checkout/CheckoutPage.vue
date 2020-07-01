@@ -59,7 +59,15 @@
 								</form>
 
 								<payment-wrapper
-									v-else
+									v-else-if="!showDropInPayments"
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+									@complete-transaction="completeTransaction"
+								/>
+
+								<drop-in-payment-wrapper
+									v-else-if="showDropInPayments"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
@@ -151,6 +159,7 @@ import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql'
 import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUser.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -164,6 +173,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
+import DropInPaymentWrapper from '@/components/Checkout/DropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
 export default {
@@ -179,6 +189,7 @@ export default {
 		LoadingOverlay,
 		CheckoutHolidayPromo,
 		PaymentWrapper,
+		DropInPaymentWrapper,
 		RandomLoanSelector,
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -217,7 +228,8 @@ export default {
 				'Account',
 				'Payment',
 				'Thank You!'
-			]
+			],
+			showDropInPayments: false,
 		};
 	},
 	apollo: {
@@ -270,8 +282,23 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+
+			// Braintree drop-in UI data
+			//
+			// This experiment is for testing the Braintree Drop in UI.
+			// It should be removed when testing is complete.
+			// It is queried in initializeCheckout
+			const braintreeDropInExp = this.apollo.readFragment({
+				id: 'Experiment:braintree_dropin',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// if experiment and feature flag are BOTH on, show UI
+			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
+			this.showDropInPayments = braintreeDropInFeatureFlag && braintreeDropInExp.version === 'shown';
 		}
 	},
 	created() {
@@ -379,6 +406,10 @@ export default {
 						return preFetchAll(matched, this.apollo, {
 							route: this.$route,
 							kvAuth0: this.kvAuth0,
+						}).catch(error => {
+							if (error.path) {
+								this.$router.push(error);
+							}
 						});
 					}
 					return false;

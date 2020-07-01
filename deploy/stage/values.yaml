@@ -1,4 +1,4 @@
-# Values for kiva-ui Test deployment
+# Values for kiva-ui Stage deployment
 # - refer to /deploy/charts/values.yaml for defaults and commentary
 
 image:
@@ -7,7 +7,7 @@ image:
   pullPolicy: Always
 
 deployenv:
-  environment: "k8stest" # injected into deployment template
+  environment: "k8sstage" # injected into deployment template
 
 secretName: kiva-ui
 
@@ -18,7 +18,7 @@ service:
 
 resources:
   requests:
-    cpu: 80m
+    cpu: 50m
     memory: 120Mi
   limits:
     cpu: 200m
@@ -35,10 +35,10 @@ metrics:
     averageUtilization: 85
 
 ingress:
-  host: "ui-test.dk1.kiva.org"
+  host: "ui-stage.dk1.kiva.org"
   spec:
     rules:
-      - host: "ui-test.dk1.kiva.org"
+      - host: "ui-stage.dk1.kiva.org"
         http:
           paths:
           - backend:
@@ -47,12 +47,12 @@ ingress:
             path: /
   tls:
     - hosts:
-      - ui-test.dk1.kiva.org
+      - ui-stage.dk1.kiva.org
       secretName: "kiva-ui-tls"
 
 configmap:
   data:
   - key: DD_TRACE_GLOBAL_TAGS
-    value: "env:test,app:kiva-ui"
+    value: "env:stage,app:kiva-ui"
   - key: DD_ENV
-    value: "test"
+    value: "stage"

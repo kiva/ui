@@ -19,6 +19,7 @@
 						:key="1"
 						:button-text="buttonCopy"
 						:data="donationValues"
+						:form-disclaimer="formDisclaimer"
 					/>
 				</div>
 			</div>
@@ -27,6 +28,7 @@
 </template>
 <script>
 import _get from 'lodash/get';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import DonateForm from './DonateForm';
@@ -92,6 +94,14 @@ export default {
 			// eslint-disable-next-line
 			const donationAmounts = _get(this.data, 'page.pageLayout.fields.contentGroups[0].fields.contents[2].fields.dataObject.amounts');
 			return donationAmounts;
+		},
+		formDisclaimer() {
+			// extracting form disclaimer from contentful to pass into form
+			const formDisclaimerContent = _get(
+				this.data,
+				'page.pageLayout.fields.contentGroups[0].fields.contents[3].fields.richText'
+			);
+			return documentToHtmlString(formDisclaimerContent);
 		},
 	}
 };

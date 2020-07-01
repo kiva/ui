@@ -1,5 +1,6 @@
 import _map from 'lodash/map';
 import _get from 'lodash/get';
+import logFormatter from '@/util/logFormatter';
 // import { handleApolloErrors } from '@/util/apolloPreFetch';
 import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
 import experimentSettingQuery from '@/graphql/query/experimentSetting.graphql';
@@ -55,7 +56,7 @@ export function fetchExperimentSettings(settingId, client) {
 			fetchPolicy: 'network-only', // This is used to force re-fetch of queries after new auth
 		}).then(result => {
 			if (result.errors) {
-				console.error(result.errors);
+				logFormatter(result.errors, 'error');
 				resolve(result.errors);
 			}
 			// TODO: Make Active Exp list a map including a flag for pre-fetch assignment
@@ -63,7 +64,7 @@ export function fetchExperimentSettings(settingId, client) {
 			return assignExperiments(settingId, client);
 		}).then(result => {
 			if (result.errors) {
-				console.error(result.errors);
+				logFormatter(result.errors, 'error');
 				resolve(result.errors);
 				// TODO: Handle Apollo errors with custom code
 				// handleApolloErrors(settingErrorHandler, result.errors).then(resolve).catch(reject);
@@ -81,7 +82,7 @@ export function fetchActiveExperiments(apolloClient) {
 			fetchPolicy: 'network-only',
 		}).then(results => {
 			if (results.errors) {
-				console.error(results.errors);
+				logFormatter(results.errors, 'error');
 				resolve(results.errors);
 			}
 			resolve(results);

@@ -8,6 +8,7 @@ import createApp from '@/main';
 import headScript from '@/head/script';
 import noscriptTemplate from '@/head/noscript.html';
 import { authenticationGuard } from '@/util/authenticationGuard';
+import logFormatter from '@/util/logFormatter';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -91,7 +92,7 @@ export default context => {
 					kvAuth0,
 				});
 			}).then(() => {
-				if (isDev) console.log(`data pre-fetch: ${Date.now() - s}ms`);
+				if (isDev) logFormatter(`data pre-fetch: ${Date.now() - s}ms`);
 				// After all preFetch hooks are resolved, our store is now
 				// filled with the state needed to render the app.
 				// Expose the state on the render context, and let the request handler

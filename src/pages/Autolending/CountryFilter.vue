@@ -39,8 +39,8 @@ import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import countryListQuery from '@/graphql/query/autolending/countryList.graphql';
-import CheckList from './CheckList';
 import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import CheckList from './CheckList';
 
 export default {
 	inject: ['apollo'],

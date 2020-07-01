@@ -5,7 +5,7 @@
 		:footer-theme="footerTheme"
 	>
 		<donate-from-macro-hero
-			:data="promoContent"
+			:data="donateFromMacroContent"
 		/>
 
 		<div class="FAQ-wrapper section">
@@ -69,7 +69,7 @@ export default {
 			donationFAQs: null,
 			impactHeadline: '',
 			impactBody: '',
-			promoContent: () => {},
+			donateFromMacroContent: () => {},
 			impactImageSet: [
 				['small', billionImpactImagesRequire('./10-years-billion-impact_ghost.jpg')],
 				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x_ghost.jpg')],
@@ -91,12 +91,12 @@ export default {
 			}
 			// Processing data from contentful
 			// eslint-disable-next-line
-			this.promoContent = processContent(contentfulPageData);
+			this.donateFromMacroContent = processContent(contentfulPageData);
 			// pulling the FAQs off the data for use in faqCopy computed function
 			// eslint-disable-next-line
-			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
+			this.donationFAQs = _get(this.donateFromMacroContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
 			// eslint-disable-next-line max-len
-			this.allDonationImpactText = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[2].fields.content.fields');
+			this.allDonationImpactText = _get(this.donateFromMacroContent, 'page.pageLayout.fields.contentGroups[2].fields.content.fields');
 			this.impactHeadline = _get(this.allDonationImpactText, 'headline');
 			this.impactBody = _get(this.allDonationImpactText, 'bodyCopy');
 		},
