@@ -155,7 +155,7 @@ app.use('/ui-routes', serverRoutes);
 app.use('/', timesyncRouter());
 
 // dynamic personalized loan routes
-app.use('/live-loan', liveLoanRouter());
+app.use('/live-loan', liveLoanRouter(cache));
 
 // install dev/hot middleware
 app.use(devMiddleware);
