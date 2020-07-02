@@ -32,9 +32,9 @@ module.exports = {
 			loginRedirectUrls: {
 				X6gQsD1f3Y4dvCQK8LGxYPc84UZ9Svts: 'https://admin.kiva.org/login',
 				hIkkBL8POL6hCBp3uOI0bLMlz6nt2jW2: 'https://partners.kiva.org/login',
-				PErQOIgS2YLVyBwtaK4eGcmHhIdC186g: 'https://www.kiva.org/authenticate',
-				xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd: 'https://www.kiva.org/ui-login',
-				AEnMbebwn6LBvxg1iMYczZKoAgdUt37K: 'https://www.kiva.org/ui-login',
+				PErQOIgS2YLVyBwtaK4eGcmHhIdC186g: 'https://www.kiva.org/authenticate?authLevel=recent',
+				xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd: 'https://www.kiva.org/ui-login?force=true',
+				AEnMbebwn6LBvxg1iMYczZKoAgdUt37K: 'https://www.kiva.org/ui-login?force=true',
 			},
 			enable: true,
 			apiAudience: 'https://api.kivaws.org/graphql',

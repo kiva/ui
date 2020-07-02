@@ -29,16 +29,6 @@ module.exports = function authRouter(config = {}) {
 		})(req, res, next);
 	}
 
-	// Handle recoverable Auth0 errors
-	router.use('/error', (req, res, next) => {
-		if (req.query.error === 'access_denied') {
-			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
-			res.redirect(loginRedirectUrl);
-		} else {
-			next();
-		}
-	});
-
 	// If no server-side auth0 secret is provided, skip setting up auth routes
 	if (!process.env.UI_AUTH0_CLIENT_SECRET) {
 		console.warn('UI server-side authentication setup skipped because UI_AUTH0_CLIENT_SECRET is not defined!');
@@ -104,14 +94,20 @@ module.exports = function authRouter(config = {}) {
 			const { silentAuth } = req.session;
 			delete req.session.silentAuth;
 
-			// Re-attempt login with the login form forced to display if unauthorized error happened
-			if (info === 'unauthorized' && !silentAuth) {
-				req.query = {}; // Remove query params from previous auth attempt
-				return passport.authenticate('auth0', {
-					audience: config.auth0.apiAudience,
-					scope: config.auth0.scope,
-					prompt: 'login',
-				})(req, res, next);
+			// Handle errors
+			if (req.query.error && !silentAuth) {
+				// Re-attempt login with the login form forced to display if unauthorized error happened
+				if (req.query.error === 'unauthorized') {
+					req.query = {}; // Remove query params from previous auth attempt
+					return passport.authenticate('auth0', {
+						audience: config.auth0.apiAudience,
+						scope: config.auth0.scope,
+						prompt: 'login',
+					})(req, res, next);
+				}
+				// Redirect to error page to inform user of issue
+				// eslint-disable-next-line max-len
+				return res.redirect(`/error?error=${req.query.error}&error_description=${req.query.error_description}&client_id=${config.auth0.serverClientID}`);
 			}
 
 			let { doneUrl } = req.session;

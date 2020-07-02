@@ -38,6 +38,7 @@ export default kvAuth0 => {
 
 		// Return previousContext if on a blacklisted page
 		const pathBlacklist = [
+			'/error',
 			'/register/social',
 		];
 		if (pathBlacklist.indexOf(window.location.pathname) > -1) {
