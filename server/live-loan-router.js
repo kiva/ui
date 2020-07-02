@@ -6,7 +6,7 @@ const fetch = require('./util/fetch');
 
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 
-function getRecommendedLoans(type, loginId, offset = 0, limit = 1) {
+function getRecommendedLoans(type, loginId, offset = 1) {
 	return new Promise((resolve, reject) => {
 		const endpoint = config.app.graphqlUri;
 		let query;
@@ -31,8 +31,8 @@ function getRecommendedLoans(type, loginId, offset = 0, limit = 1) {
 					recommendationsByLoginId(
 						segment: all
 						  loginId: ${loginId}
-						  offset: ${offset}
-						  limit: ${limit}
+						  offset: 0
+						  limit: ${offset}
 					) {
 						values {
 							name
@@ -95,8 +95,8 @@ module.exports = function liveLoanRouter() {
 	urlRouter.get('/:offset', async (req, res) => {
 		const { userId, offset } = req.params;
 		try {
-			const loanData = await getRecommendedLoans('url', userId/* , offset */);
-			const offsetLoanId = loanData[0].id;
+			const loanData = await getRecommendedLoans('url', userId, offset);
+			const offsetLoanId = loanData[offset - 1].id;
 			res.redirect(302, `/lend/${offsetLoanId}`);
 		} catch (err) {
 			console.error(err);
@@ -110,8 +110,8 @@ module.exports = function liveLoanRouter() {
 	imgRouter.get('/:offset', async (req, res) => {
 		const { userId, offset } = req.params;
 		try {
-			const loanData = await getRecommendedLoans('img', userId/* , offset */);
-			const loanCardImgBuffer = await drawLoanCard(loanData[0]); // TODO: offset?
+			const loanData = await getRecommendedLoans('img', userId, offset);
+			const loanCardImgBuffer = await drawLoanCard(loanData[offset - 1]); // TODO: offset?
 			// TODO: Add loanCard img to memcache?
 			res.contentType('image/jpeg');
 			res.send(loanCardImgBuffer);
