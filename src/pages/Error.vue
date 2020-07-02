@@ -2,13 +2,26 @@
 	<www-page class="ui-error-page">
 		<div class="page-content row align-center">
 			<div class="columns shrink">
-				<h1>Oh no, something went wrong!</h1>
-				<h2 v-if="description">
-					{{ description }}
-				</h2>
-				<p class="message" v-if="loginRedirectUrl">
-					Please <a :href="`${loginRedirectUrl}`">try again.</a>
-				</p>
+				<template v-if="errorDescription === 'force_password_reset'">
+					<h1>New password required</h1>
+					<p>
+						It's been a while since we've seen you, so we need you to reset your password.
+					</p>
+					<p class="message" v-if="loginRedirectUrl">
+						Please
+						<a :href="`${loginRedirectUrl}`">return to login</a>
+						and click "Forgot your password?" to continue.
+					</p>
+				</template>
+				<template v-else>
+					<h1>Oh no, something went wrong!</h1>
+					<h2 v-if="description">
+						{{ description }}
+					</h2>
+					<p class="message" v-if="loginRedirectUrl">
+						Please <a :href="`${loginRedirectUrl}`">try again.</a>
+					</p>
+				</template>
 				<p>
 					If you need us, we're always available at
 					<a href="mailto:contactus@kiva.org">contactus@kiva.org</a>
@@ -19,6 +32,7 @@
 </template>
 
 <script>
+import sanitize from 'sanitize-html';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
@@ -29,7 +43,7 @@ export default {
 	data() {
 		return {
 			errorCode: this.$route.query.error,
-			errorDescription: this.$route.query.error_description,
+			errorDescription: sanitize(this.$route.query.error_description),
 			clientId: this.$route.query.client_id,
 		};
 	},
