@@ -14,6 +14,7 @@ pipeline {
     // Using env var string to boolean conversion works for now, but can be simpler if this issue is resolved
     QA_DEPLOY = env.TAG_NAME.toString().matches("^release-.*")
     PROD_DEPLOY = env.TAG_NAME.toString().matches("^v.*")
+	TIMESTAMP = "${currentBuild.startTimeInMillis}"
   }
 
   stages {
@@ -56,7 +57,7 @@ pipeline {
         echo "Deploying to development Kubernetes cluster..."
         withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
           withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
-            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-dev --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME}"
+            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-dev --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME},timestamp=${TIMESTAMP}"
           }
         }
       }
@@ -99,6 +100,20 @@ pipeline {
         withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
           withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
             sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-qa --values ./deploy/qa/values.yaml --set image.tag=${TAG_NAME}"
+          }
+        }
+      }
+    }
+
+    stage('UI Kubernetes PROD Deployment') {
+      when {
+         expression { PROD_DEPLOY.toBoolean() }
+      }
+      steps {
+        echo "Deploying to Production Kubernetes cluster..."
+        withKubeConfig([credentialsId: "kiva-k8s-config", contextName: "marketplace-prod"]) {
+          withAWS([credentials: "jenkins-ci-marketplace-prod"]) {
+            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX} --values ./deploy/prod/values.yaml --set image.tag=${TAG_NAME}"
           }
         }
       }
