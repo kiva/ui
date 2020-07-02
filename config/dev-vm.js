@@ -39,9 +39,9 @@ module.exports = merge(base, {
 			loginRedirectUrls: {
 				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin-vm.kiva.org/login',
 				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners-vm.kiva.org/login',
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://dev-vm-01.kiva.org/authenticate',
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'https://dev-vm-01.kiva.org/ui-login',
-				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'https://dev-vm-01.kiva.org/ui-login',
+				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://dev-vm-01.kiva.org/authenticate?authLevel=recent',
+				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'https://dev-vm-01.kiva.org/ui-login?force=true',
+				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'https://dev-vm-01.kiva.org/ui-login?force=true',
 			},
 			enable: true,
 			apiAudience: 'https://api.dev.kivaws.org/graphql',

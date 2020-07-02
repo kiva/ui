@@ -104,7 +104,9 @@ module.exports = function createMiddleware({
 			}).catch(err => {
 				if (err.url) {
 					// since this error is a redirect, set any cookies created during the app render
-					context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+					if (context && context.setCookies) {
+						context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+					}
 				}
 				handleError(err, req, res, next);
 			});

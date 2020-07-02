@@ -32,9 +32,9 @@ module.exports = merge(base, {
 			loginRedirectUrls: {
 				iHNp5rV3XxaozU7B50oXpNye6RCAE5OD: 'https://admin.stage.kiva.org/login',
 				fNYmJqpKX6mWiz1Evk8b1eqbM9KoeQ45: 'https://partners.stage.kiva.org/login',
-				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'https://www.stage.kiva.org/authenticate',
-				Ch7rwGop9lctGpm5KfEl6VTVMrqKoWZ4: 'https://www.stage.kiva.org/ui-login',
-				pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe: 'https://www.stage.kiva.org/ui-login',
+				'5NP78k662QLODpkk4VzMyKxP0QWTcVmB': 'https://www.stage.kiva.org/authenticate?authLevel=recent',
+				Ch7rwGop9lctGpm5KfEl6VTVMrqKoWZ4: 'https://www.stage.kiva.org/ui-login?force=true',
+				pK7XVUBouUjPEFm9bz5MN7sjU5HACqqe: 'https://www.stage.kiva.org/ui-login?force=true',
 			},
 			enable: true,
 			apiAudience: 'https://api.stage.kivaws.org/graphql',
