@@ -113,7 +113,7 @@ pipeline {
         echo "Deploying to Production Kubernetes cluster..."
         withKubeConfig([credentialsId: "kiva-k8s-config", contextName: "marketplace-prod"]) {
           withAWS([credentials: "jenkins-ci-marketplace-prod"]) {
-            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX} --values ./deploy/prod/values.yaml --set image.tag=${TAG_NAME}"
+            sh "helm3 upgrade --install --wait ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX} --values ./deploy/prod/values.yaml --set image.tag=${TAG_NAME}"
           }
         }
       }
