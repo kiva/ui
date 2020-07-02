@@ -113,21 +113,9 @@ function fetchRecommendedLoans(loginId, cache) {
 
 module.exports = function liveLoanRouter(cache) {
 	const router = express.Router();
-	const userRouter = express.Router({ mergeParams: true });
-	const urlRouter = express.Router({ mergeParams: true });
-	const imgRouter = express.Router({ mergeParams: true });
-
-	router.get('/', (req, res) => { res.sendStatus(500); });
-
-	router.use('/u', userRouter);
-	userRouter.get('/', (req, res) => { res.sendStatus(500); });
-	userRouter.get('/:userId', (req, res) => { res.sendStatus(500); });
-	userRouter.use('/:userId/url', urlRouter);
-	userRouter.use('/:userId/img', imgRouter);
 
 	// URL Router
-	urlRouter.get('/', (req, res) => { res.sendStatus(500); });
-	urlRouter.get('/:offset', async (req, res) => {
+	router.use('/u/:userId/url/:offset', async (req, res) => {
 		const { userId, offset } = req.params;
 		try {
 			const loanData = await fetchRecommendedLoans(userId, cache);
@@ -136,13 +124,11 @@ module.exports = function liveLoanRouter(cache) {
 		} catch (err) {
 			console.error(err);
 			res.redirect(302, '/lend-by-category/');
-			// res.sendStatus(500); // TODO, do we want 500 error here instead?
 		}
 	});
 
 	// IMG Router
-	imgRouter.get('/', (req, res) => { res.sendStatus(500); });
-	imgRouter.get('/:offset', async (req, res) => {
+	router.use('/u/:userId/img/:offset', async (req, res) => {
 		const { userId, offset } = req.params;
 		try {
 			const loanData = await fetchRecommendedLoans(userId, cache);
@@ -153,6 +139,11 @@ module.exports = function liveLoanRouter(cache) {
 			console.error(err);
 			res.sendStatus(500);
 		}
+	});
+
+	// 404 any /live-loan/* routes that don't match above
+	router.use((req, res) => {
+		res.sendStatus(404);
 	});
 
 	return router;
