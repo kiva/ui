@@ -102,7 +102,7 @@ module.exports = loanData => {
 				ctx.shadowColor = 'transparent';
 				ctx.fillStyle = kivaColors.white;
 				ctx.font = `700 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
-				ctx.fillText('Learn more', cardWidth / 2, btnYPos + btnHeight / 2 - btnFontSize);
+				ctx.fillText('Lend now', cardWidth / 2, btnYPos + btnHeight / 2 - btnFontSize);
 
 				// Borrower Image
 				const borrowerImg = await loadImage(loanData.image.retina);
