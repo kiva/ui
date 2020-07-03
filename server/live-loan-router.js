@@ -27,8 +27,6 @@ function getLoansFromCache(loginId, cache) {
 
 function setLoansToCache(loginId, loans, cache) {
 	return new Promise((resolve, reject) => {
-		const cacheTime = 30 * 60; // 30 minutes
-		cache.set(`recommendations-by-login-id-${loginId}`, JSON.stringify(loans), cacheTime, (error, success) => {
 		const expires = 10 * 60; // 10 minutes
 		cache.set(`recommendations-by-login-id-${loginId}`, JSON.stringify(loans), { expires }, (error, success) => {
 			if (error) {
