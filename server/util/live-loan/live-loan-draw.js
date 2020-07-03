@@ -1,7 +1,7 @@
 const path = require('path');
 const { createCanvas, registerFont, loadImage } = require('canvas');
 const { ellipsisLine, wrapText, roundRect } = require('./canvas-utils');
-const loanUseFilter = require('../../../src/plugins/loan-use-filter.common'); // Duplicate of the es module version
+const loanUseFilter = require('../../../src/plugins/loan-use-filter');
 
 module.exports = loanData => {
 	return new Promise((resolve, reject) => {
