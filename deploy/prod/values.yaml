@@ -6,6 +6,8 @@ image:
   tag: "" # Expected be set by Jenkins
   pullPolicy: Always
 
+imagePullSecretName: regcred
+
 deployenv:
   environment: "k8sprod" # injected into deployment template
 
