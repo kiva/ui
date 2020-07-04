@@ -1,19 +1,19 @@
-import numeral from 'numeral';
-
+// This file uses common JS imports/exports so our express router can use it as well.
+const numeral = require('numeral');
 /**
  * Uses the loan status to return the proper verbiage and tense for 'helped'
  *
  * @param {string} loan status
  * @returns {string}
  */
-export function helpedLanguage(status) {
+const helpedLanguage = status => {
 	if (status === 'fundraising'
 	|| status === 'inactive'
 	|| status === 'reviewed') {
 		return 'helps';
 	}
 	return 'helped';
-}
+};
 
 /**
  * Uses the borrowerCount to `a member` or empty string.
@@ -21,12 +21,12 @@ export function helpedLanguage(status) {
  * @param {string} borrowerCount
  * @returns {string}
  */
-export function borrowerCountLanguage(borrowerCount) {
+const borrowerCountLanguage = borrowerCount => {
 	if (borrowerCount > 1) {
 		return 'a member ';
 	}
 	return '';
-}
+};
 /**
  * Uses the borrowerCount to `a member` or empty string.
  *
@@ -34,7 +34,7 @@ export function borrowerCountLanguage(borrowerCount) {
  * @param {number} loanUseMaxLength required
  * @returns {string}
  */
-export function shortenedLoanUse(loanUse, loanName, loanUseMaxLength) {
+const shortenedLoanUse = (loanUse, loanName, loanUseMaxLength) => {
 	const lowerCaseUse = loanUse.toString().charAt(0).toLowerCase() + loanUse.toString().slice(1);
 	const convertedUse = (loanUse.substring(0, loanName.length) === loanName) ? loanUse : lowerCaseUse;
 
@@ -45,7 +45,7 @@ export function shortenedLoanUse(loanUse, loanName, loanUseMaxLength) {
 		return `${convertedUse.substring(0, loanUseMaxLength)}...`;
 	}
 	return convertedUse;
-}
+};
 
 /**
  * Combines all of the above in a filter that returns a string to present to the UI
@@ -55,7 +55,7 @@ export function shortenedLoanUse(loanUse, loanName, loanUseMaxLength) {
  * @param {number} loanAmount, loanBorrowerCount, loanUseMaxLength  optional
  * @returns {string}
  */
-export default (loanUse,
+const loanUseFilter = (loanUse,
 	loanName = '',
 	loanStatus = '',
 	loanAmount = 0,
@@ -67,3 +67,8 @@ export default (loanUse,
 		+ `${borrowerCountLanguage(loanBorrowerCount)}`
 		+ `${shortenedLoanUse(loanUse, loanName, loanUseMaxLength)}`;
 };
+
+module.exports = loanUseFilter;
+module.exports.borrowerCountLanguage = borrowerCountLanguage;
+module.exports.shortenedLoanUse = shortenedLoanUse;
+module.exports.helpedLanguage = helpedLanguage;
