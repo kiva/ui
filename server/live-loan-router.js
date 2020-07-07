@@ -10,34 +10,29 @@ function isNumeric(value) {
 	return /^\d+$/.test(value);
 }
 
-function getLoansFromCache(loginId, cache) {
+function getFromCache(key, cache) {
 	return new Promise(resolve => {
-		cache.get(`recommendations-by-login-id-${loginId}`, (error, data) => {
-			let parsedData = [];
+		cache.get(key, (error, data) => {
 			if (error) {
 				console.error(JSON.stringify({
 					meta: {},
 					level: 'error',
-					message: `MemJS Error Getting recommendations-by-login-id-${loginId}, Error: ${error}`
+					message: `MemJS Error Getting ${key}, Error: ${error}`
 				}));
 			}
-			if (data) {
-				parsedData = JSON.parse(data);
-			}
-			resolve(parsedData);
+			resolve(data);
 		});
 	});
 }
 
-function setLoansToCache(loginId, loans, cache) {
+function setToCache(key, value, expires, cache) {
 	return new Promise((resolve, reject) => {
-		const expires = 10 * 60; // 10 minutes
-		cache.set(`recommendations-by-login-id-${loginId}`, JSON.stringify(loans), { expires }, (error, success) => {
+		cache.set(key, value, { expires }, (error, success) => {
 			if (error) {
 				console.error(JSON.stringify({
 					meta: {},
 					level: 'error',
-					message: `MemJS Error Setting Cache for recommendations-by-login-id-${loginId}, Error: ${error}`
+					message: `MemJS Error Setting Cache for ${key}, Error: ${error}`
 				}));
 				reject();
 			}
@@ -45,7 +40,7 @@ function setLoansToCache(loginId, loans, cache) {
 				console.info(JSON.stringify({
 					meta: {},
 					level: 'info',
-					message: `MemJS Success Setting Cache for recommendations-by-login-id-${loginId}, Success: ${success}`
+					message: `MemJS Success Setting Cache for ${key}, Success: ${success}`
 				}));
 				resolve();
 			}
@@ -55,9 +50,10 @@ function setLoansToCache(loginId, loans, cache) {
 
 function fetchRecommendedLoans(loginId, cache) {
 	return new Promise((resolve, reject) => {
-		getLoansFromCache(loginId, cache).then(data => {
-			if (data.length) {
-				resolve(data);
+		getFromCache(`recommendations-by-login-id-${loginId}`, cache).then(data => {
+			if (data) {
+				const jsonData = JSON.parse(data);
+				resolve(jsonData);
 			} else {
 				const endpoint = config.app.graphqlUri;
 				const query = `{
@@ -102,10 +98,16 @@ function fetchRecommendedLoans(loginId, cache) {
 					.then(result => {
 						const loanData = get(result, 'data.ml.recommendationsByLoginId.values');
 						if (loanData) {
-							setLoansToCache(loginId, loanData, cache).then(() => {
-								console.log('setLoansToCache completed');
-								resolve(loanData);
-							});
+							const expires = 10 * 60; // 10 minutes
+							setToCache(
+								`recommendations-by-login-id-${loginId}`,
+								JSON.stringify(loanData),
+								expires,
+								cache
+							)
+								.then(() => {
+									resolve(loanData);
+								});
 						} else {
 							throw new Error('No loans returned');
 						}
@@ -146,9 +148,18 @@ module.exports = function liveLoanRouter(cache) {
 		if (isNumeric(userId) && isNumeric(offset)) {
 			try {
 				const loanData = await fetchRecommendedLoans(userId, cache);
-				const loanCardImgBuffer = await drawLoanCard(loanData[offset - 1]);
+				const loan = loanData[offset - 1];
+				let loanImg;
+				const cachedLoanImg = await getFromCache(`loan-card-img-${loan.id}`, cache);
+				if (cachedLoanImg) {
+					loanImg = cachedLoanImg;
+				} else {
+					loanImg = await drawLoanCard(loan);
+					const expires = 10 * 60; // 10 minutes
+					await setToCache(`loan-card-img-${loan.id}`, loanImg, expires, cache);
+				}
 				res.contentType('image/jpeg');
-				res.send(loanCardImgBuffer);
+				res.send(loanImg);
 			} catch (err) {
 				console.error(err);
 				res.sendStatus(500);
