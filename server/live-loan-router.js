@@ -6,6 +6,10 @@ const fetch = require('./util/fetch');
 
 const drawLoanCard = require('./util/live-loan/live-loan-draw');
 
+function isNumeric(value) {
+	return /^\d+$/.test(value);
+}
+
 function getLoansFromCache(loginId, cache) {
 	return new Promise(resolve => {
 		cache.get(`recommendations-by-login-id-${loginId}`, (error, data) => {
@@ -97,9 +101,14 @@ function fetchRecommendedLoans(loginId, cache) {
 					.then(result => result.json())
 					.then(result => {
 						const loanData = get(result, 'data.ml.recommendationsByLoginId.values');
-						setLoansToCache(loginId, loanData, cache).then(() => {
-							resolve(loanData);
-						});
+						if (loanData) {
+							setLoansToCache(loginId, loanData, cache).then(() => {
+								console.log('setLoansToCache completed');
+								resolve(loanData);
+							});
+						} else {
+							throw new Error('No loans returned');
+						}
 					}).catch(err => {
 						console.error(err);
 						reject(err);
@@ -117,27 +126,35 @@ module.exports = function liveLoanRouter(cache) {
 	// URL Router
 	router.use('/u/:userId/url/:offset', async (req, res) => {
 		const { userId, offset } = req.params;
-		try {
-			const loanData = await fetchRecommendedLoans(userId, cache);
-			const offsetLoanId = loanData[offset - 1].id;
-			res.redirect(302, `/lend/${offsetLoanId}`);
-		} catch (err) {
-			console.error(err);
-			res.redirect(302, '/lend-by-category/');
+		if (isNumeric(userId) && isNumeric(offset)) {
+			try {
+				const loanData = await fetchRecommendedLoans(userId, cache);
+				const offsetLoanId = loanData[offset - 1].id;
+				res.redirect(302, `/lend/${offsetLoanId}`);
+			} catch (err) {
+				console.error(err);
+				res.redirect(302, '/lend-by-category/');
+			}
+		} else {
+			res.status(500).send('Invalid Parameters');
 		}
 	});
 
 	// IMG Router
 	router.use('/u/:userId/img/:offset', async (req, res) => {
 		const { userId, offset } = req.params;
-		try {
-			const loanData = await fetchRecommendedLoans(userId, cache);
-			const loanCardImgBuffer = await drawLoanCard(loanData[offset - 1]);
-			res.contentType('image/jpeg');
-			res.send(loanCardImgBuffer);
-		} catch (err) {
-			console.error(err);
-			res.sendStatus(500);
+		if (isNumeric(userId) && isNumeric(offset)) {
+			try {
+				const loanData = await fetchRecommendedLoans(userId, cache);
+				const loanCardImgBuffer = await drawLoanCard(loanData[offset - 1]);
+				res.contentType('image/jpeg');
+				res.send(loanCardImgBuffer);
+			} catch (err) {
+				console.error(err);
+				res.sendStatus(500);
+			}
+		} else {
+			res.status(500).send('Invalid Parameters');
 		}
 	});
 
