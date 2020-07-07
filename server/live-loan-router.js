@@ -138,7 +138,7 @@ module.exports = function liveLoanRouter(cache) {
 				res.redirect(302, '/lend-by-category/');
 			}
 		} else {
-			res.status(500).send('Invalid Parameters');
+			res.status(400).send('Invalid Parameters');
 		}
 	});
 
@@ -165,7 +165,7 @@ module.exports = function liveLoanRouter(cache) {
 				res.sendStatus(500);
 			}
 		} else {
-			res.status(500).send('Invalid Parameters');
+			res.status(400).send('Invalid Parameters');
 		}
 	});
 
