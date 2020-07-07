@@ -6,7 +6,7 @@ module.exports = merge(prod, {
 		publicPath: 'https://www-kiva-org.freetls.fastly.net/',
 	},
 	server: {
-		memcachedServers: 'memcached-ui-01:11211,memcached-ui-02:11211',
+		memcachedServers: 'awsprod-ui-memcached-cluster.xd6r4x.0001.usw2.cache.amazonaws.com:11211,awsprod-ui-memcached-cluster.xd6r4x.0002.usw2.cache.amazonaws.com:11211',
 		enableDDTrace: true,
 		disableCluster: true,
 	}
