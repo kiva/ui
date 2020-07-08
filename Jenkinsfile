@@ -71,7 +71,9 @@ pipeline {
         echo "Deploying to development Kubernetes cluster..."
         withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
           withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
-            sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-test --values ./deploy/test/values.yaml --set image.tag=${TAG_NAME}"
+			  withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
+            	sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-test --values ./deploy/test/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
+			  }
           }
         }
       }
