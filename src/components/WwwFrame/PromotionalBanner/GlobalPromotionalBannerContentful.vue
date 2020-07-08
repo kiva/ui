@@ -67,7 +67,8 @@ export default {
 
 				if (activePromoBanner) {
 					// always hide the promo banner on the checkout page.
-					if (this.$route.path === '/checkout') {
+					// TODO move these paths into array to check against
+					if (this.$route.path === '/checkout' || this.$route.path === '/donate/support-kiva') {
 						return false;
 					}
 
