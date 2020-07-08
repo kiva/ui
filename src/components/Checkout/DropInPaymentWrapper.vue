@@ -164,8 +164,9 @@ export default {
 				.then(btSubmitResponse => {
 					const transactionNonce = _get(btSubmitResponse, 'nonce');
 					const deviceData = _get(btSubmitResponse, 'deviceData');
+					const paymentType = _get(btSubmitResponse, 'type');
 					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeCheckout(transactionNonce, deviceData);
+						this.doBraintreeCheckout(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
@@ -177,7 +178,7 @@ export default {
 					});
 				});
 		},
-		doBraintreeCheckout(nonce, deviceData) {
+		doBraintreeCheckout(nonce, deviceData, paymentType) {
 			// Apollo call to the query mutation
 			this.apollo.mutate({
 				mutation: braintreeDepositAndCheckout,
@@ -203,12 +204,8 @@ export default {
 
 					this.$showTipMsg(standardError, 'error');
 
-					// Fire specific exception to Sentry/Raven
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btDepositAndCheckout');
-						scope.setTag('bt_kv_transaction_error', errorMessage);
-						Sentry.captureException(errorCode);
-					});
+					// Fire specific exception to Snowplow
+					this.$kvTrackEvent('basket', 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
 
 					// exit
 					return kivaBraintreeResponse;
@@ -224,7 +221,7 @@ export default {
 					// fire BT Success event
 					this.$kvTrackEvent(
 						'basket',
-						'Braintree Payment',
+						`${paymentType} Braintree DropIn Payment`,
 						'Success',
 						transactionId
 					);
