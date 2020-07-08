@@ -1,6 +1,6 @@
 <template>
 	<div class="row align-right">
-		<div class="payment-holder small-12 medium-10 medium-offset-1 large-offset-5 large-7 columns">
+		<div class="payment-holder small-12 medium-8 large-7 columns">
 			<div id="dropin-container"></div>
 			<div id="dropin-button" v-if="showCheckoutButton">
 				<kv-button
@@ -112,8 +112,8 @@ export default {
 					currency: 'USD',
 					buttonStyle: {
 						color: 'gold',
-						shape: 'pill',
-						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
+						shape: 'rect',
+						size: 'responsive',
 					}
 				},
 			}).then(btCreateInstance => {
@@ -289,7 +289,7 @@ $border-width: 1px;
 	margin-top: 3rem;
 
 	@include breakpoint(large) {
-		padding: 0 2rem 1.5rem;
+		padding: 0 1.5rem 1.5rem;
 	}
 
 	.attribution-text {
@@ -425,6 +425,15 @@ $border-width: 1px;
 				height: 1.95rem;
 				width: 1.95rem;
 				margin-right: rem-calc(4);
+			}
+		}
+
+		// responsive paypal button
+		// prevents bug causing button to get slightly cut off in mobile
+		[data-braintree-id="paypal-button"] {
+			width: 99%;
+			@include breakpoint(medium) {
+				width: 250px;
 			}
 		}
 	}
