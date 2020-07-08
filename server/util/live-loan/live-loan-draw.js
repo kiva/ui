@@ -22,13 +22,16 @@ module.exports = loanData => {
 			};
 
 			function fontFile(name) {
-				return path.join(__dirname, '../../../src/assets/fonts', name);
+				return path.join(__dirname, './fonts', name);
 			}
-			registerFont(fontFile('PostGrotesk-Medium.ttf'), { family: 'Kiva Post Grot', weight: '400' });
-			registerFont(fontFile('PostGrotesk-MediumItalic.ttf'), { family: 'Kiva Post Grot', weight: '400', style: 'italic' });
-			registerFont(fontFile('PostGrotesk-Light.ttf'), { family: 'Kiva Post Grot', weight: '100' });
-			registerFont(fontFile('PostGrotesk-Book.ttf'), { family: 'Kiva Post Grot', weight: '300' });
-			registerFont(fontFile('PostGrotesk-Bold.ttf'), { family: 'Kiva Post Grot', weight: '700' });
+			// registerFont(fontFile('PostGrotesk-Light.ttf'), { family: 'Kiva Post Grot', weight: '300' });
+			// registerFont(fontFile('PostGrotesk-LightItalic.ttf'), { family: 'Kiva Post Grot', weight: '300', style: 'italic' });
+			registerFont(fontFile('PostGrotesk-Book.ttf'), { family: 'Kiva Post Grot', weight: '400' });
+			// registerFont(fontFile('PostGrotesk-BookItalic.ttf'), { family: 'Kiva Post Grot', weight: '400', style: 'italic' });
+			registerFont(fontFile('PostGrotesk-Medium.ttf'), { family: 'Kiva Post Grot', weight: '500' });
+			registerFont(fontFile('PostGrotesk-MediumItalic.ttf'), { family: 'Kiva Post Grot', weight: '500', style: 'italic' });
+			// registerFont(fontFile('PostGrotesk-Bold.ttf'), { family: 'Kiva Post Grot', weight: '700' });
+			// registerFont(fontFile('PostGrotesk-BoldItalic.ttf'), { family: 'Kiva Post Grot', weight: '700', style: 'italic' });
 
 			try {
 				// Canvas prep
@@ -43,16 +46,16 @@ module.exports = loanData => {
 				const nameXPos = cardWidth / 2;
 				const nameYPos = 245 * resizeFactor;
 				ctx.fillStyle = kivaColors.blue;
-				ctx.font = `700 ${24 * resizeFactor}px "Kiva Post Grot"`;
 				ctx.fillText(ellipsisLine(ctx, loanData.name, cardWidth * 0.95), nameXPos, nameYPos);
+				ctx.font = `500 ${24 * resizeFactor}px "Kiva Post Grot"`;
 
 				// Borrower country
 				const countryXPos = cardWidth / 2;
 				const countryYPos = 280 * resizeFactor;
 				const countryWidth = cardWidth * 0.9;
 				ctx.fillStyle = kivaColors.textLight;
-				ctx.font = `700 ${16 * resizeFactor}px "Kiva Post Grot"`;
 				ctx.fillText(ellipsisLine(ctx, loanData.geocode.country.name, countryWidth), countryXPos, countryYPos);
+				ctx.font = `500 ${16 * resizeFactor}px "Kiva Post Grot"`;
 
 				// Borrower use
 				const useXPos = cardWidth / 2;
@@ -82,7 +85,7 @@ module.exports = loanData => {
 				ctx.fillStyle = kivaColors.green;
 				ctx.fill();
 				// Fundraising info - text
-				ctx.font = `italic 400 ${14 * resizeFactor}px "Kiva Post Grot"`;
+				ctx.font = `italic 500 ${14 * resizeFactor}px "Kiva Post Grot"`;
 				ctx.fillText(`$${fundraisingRemaining} to go`, cardWidth / 2, fundingTextYPos);
 
 				// Button
@@ -101,7 +104,7 @@ module.exports = loanData => {
 				ctx.fill();
 				ctx.shadowColor = 'transparent';
 				ctx.fillStyle = kivaColors.white;
-				ctx.font = `700 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
+				ctx.font = `500 ${btnFontSize * resizeFactor}px "Kiva Post Grot"`;
 				ctx.fillText('Lend now', cardWidth / 2, btnYPos + btnHeight / 2 - btnFontSize);
 
 				// Borrower Image
