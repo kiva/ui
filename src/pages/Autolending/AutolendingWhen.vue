@@ -36,39 +36,44 @@
 				>
 					<div class="when-inputs-wrapper">
 						<lend-timing-dropdown />
-						<kv-radio
-							data-test="is-autolending-donation-on"
-							id="is-autolending-donation-on"
-							radio-value="on"
-							v-model="donationToggle"
-						>
-							Include a donation to Kiva of
-							<kv-dropdown-rounded v-model="donation">
-								<option :value="0">
-									0%
-								</option>
-								<option :value="5">
-									5%
-								</option>
-								<option :value="10">
-									10%
-								</option>
-								<option :value="15">
-									15%
-								</option>
-								<option :value="20">
-									20%
-								</option>
-							</kv-dropdown-rounded>
-						</kv-radio>
-						<kv-radio
-							data-test="is-autolending-donation-off"
-							id="is-autolending-donation-off"
-							radio-value="off"
-							v-model="donationToggle"
-						>
-							No donation to Kiva
-						</kv-radio>
+						<p v-if="hasAutoDepositDonation && donation === 0">
+							Your auto-deposit includes a donation, so auto-lending donations are disabled.
+						</p>
+						<div v-else>
+							<kv-radio
+								data-test="is-autolending-donation-on"
+								id="is-autolending-donation-on"
+								radio-value="on"
+								v-model="donationToggle"
+							>
+								Include a donation to Kiva of
+								<kv-dropdown-rounded v-model="donation">
+									<option :value="0">
+										0%
+									</option>
+									<option :value="5">
+										5%
+									</option>
+									<option :value="10">
+										10%
+									</option>
+									<option :value="15">
+										15%
+									</option>
+									<option :value="20">
+										20%
+									</option>
+								</kv-dropdown-rounded>
+							</kv-radio>
+							<kv-radio
+								data-test="is-autolending-donation-off"
+								id="is-autolending-donation-off"
+								radio-value="off"
+								v-model="donationToggle"
+							>
+								No donation to Kiva.
+							</kv-radio>
+						</div>
 					</div>
 					<template slot="controls">
 						<kv-button
@@ -128,6 +133,7 @@ export default {
 			lendAfterDaysIdle: 0,
 			donation: 15,
 			donationToggle: 'on',
+			hasAutoDepositDonation: false,
 		};
 	},
 	apollo: {
@@ -140,15 +146,21 @@ export default {
 					lendAfterDaysIdle
 				}
 			}
+			my {
+				autoDeposit {
+					donateAmount
+				}
+			}
 		}`,
 		preFetch: true,
 		result({ data }) {
 			this.isEnabled = !!_get(data, 'autolending.currentProfile.isEnabled');
-			const donationPercentage = _get(data, 'autolending.currentProfile.donationPercentage');
 			this.lendAfterDaysIdle = _get(data, 'autolending.currentProfile.lendAfterDaysIdle');
 			this.isChanged = !!_get(data, 'autolending.profileChanged');
+			const donationPercentage = _get(data, 'autolending.currentProfile.donationPercentage');
 			this.donation = _isFinite(donationPercentage) ? donationPercentage : 15;
 			this.donationToggle = this.donation !== 0 ? 'on' : 'off';
+			this.hasAutoDepositDonation = _get(data, 'my.autoDeposit.donateAmount') > 0;
 		},
 	},
 	mounted() {
