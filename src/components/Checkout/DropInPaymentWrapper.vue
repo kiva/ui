@@ -1,6 +1,6 @@
 <template>
 	<div class="row align-right">
-		<div class="payment-holder small-12 medium-10 medium-offset-1 large-offset-5 large-7 columns">
+		<div class="payment-holder small-12 medium-8 large-7 columns">
 			<div id="dropin-container"></div>
 			<div id="dropin-button" v-if="showCheckoutButton">
 				<kv-button
@@ -112,8 +112,8 @@ export default {
 					currency: 'USD',
 					buttonStyle: {
 						color: 'gold',
-						shape: 'pill',
-						size: (typeof window === 'object' && window.innerWidth > 480) ? 'medium' : 'responsive',
+						shape: 'rect',
+						size: 'responsive',
 					}
 				},
 			}).then(btCreateInstance => {
@@ -164,8 +164,9 @@ export default {
 				.then(btSubmitResponse => {
 					const transactionNonce = _get(btSubmitResponse, 'nonce');
 					const deviceData = _get(btSubmitResponse, 'deviceData');
+					const paymentType = _get(btSubmitResponse, 'type');
 					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeCheckout(transactionNonce, deviceData);
+						this.doBraintreeCheckout(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
@@ -177,7 +178,7 @@ export default {
 					});
 				});
 		},
-		doBraintreeCheckout(nonce, deviceData) {
+		doBraintreeCheckout(nonce, deviceData, paymentType) {
 			// Apollo call to the query mutation
 			this.apollo.mutate({
 				mutation: braintreeDepositAndCheckout,
@@ -203,12 +204,8 @@ export default {
 
 					this.$showTipMsg(standardError, 'error');
 
-					// Fire specific exception to Sentry/Raven
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btDepositAndCheckout');
-						scope.setTag('bt_kv_transaction_error', errorMessage);
-						Sentry.captureException(errorCode);
-					});
+					// Fire specific exception to Snowplow
+					this.$kvTrackEvent('basket', 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
 
 					// exit
 					return kivaBraintreeResponse;
@@ -224,7 +221,7 @@ export default {
 					// fire BT Success event
 					this.$kvTrackEvent(
 						'basket',
-						'Braintree Payment',
+						`${paymentType} Braintree DropIn Payment`,
 						'Success',
 						transactionId
 					);
@@ -289,7 +286,7 @@ $border-width: 1px;
 	margin-top: 3rem;
 
 	@include breakpoint(large) {
-		padding: 0 2rem 1.5rem;
+		padding: 0 1.5rem 1.5rem;
 	}
 
 	.attribution-text {
@@ -425,6 +422,15 @@ $border-width: 1px;
 				height: 1.95rem;
 				width: 1.95rem;
 				margin-right: rem-calc(4);
+			}
+		}
+
+		// responsive paypal button
+		// prevents bug causing button to get slightly cut off in mobile
+		[data-braintree-id="paypal-button"] {
+			width: 99%;
+			@include breakpoint(medium) {
+				width: 250px;
 			}
 		}
 	}
