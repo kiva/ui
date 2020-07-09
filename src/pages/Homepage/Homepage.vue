@@ -17,6 +17,7 @@ import {
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
+import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
 import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 
@@ -33,12 +34,14 @@ export default {
 	components: {
 		WwwPage,
 		DefaultHomePage,
+		LendByCategoryHomepage,
 		IWDHomePage,
 		WRDHomePage,
 		TopMessageContentful,
 	},
 	data() {
 		return {
+			isLendByCategoryActive: false,
 			isIwdActive: false,
 			isWrdActive: false,
 			isMessageActive: false,
@@ -47,12 +50,14 @@ export default {
 	},
 	computed: {
 		activeHomepage() {
+			if (this.isLendByCategoryActive) return LendByCategoryHomepage;
 			if (this.isMessageActive) return TopMessageContentful;
 			if (this.isIwdActive) return IWDHomePage;
 			if (this.isWrdActive) return WRDHomePage;
 			return DefaultHomePage;
 		},
 		headerTheme() {
+			if (this.isLendByCategoryActive) return lightHeader;
 			if (this.isMessageActive) return lightHeader;
 			if (this.isIwdActive) return iwdHeaderTheme;
 			if (this.isWrdActive) return wrdHeaderTheme;
