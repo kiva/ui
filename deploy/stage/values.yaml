@@ -49,6 +49,8 @@ ingress:
     - hosts:
       - ui-stage.dk1.kiva.org
       secretName: "kiva-ui-tls"
+  whitelist:
+    enabled: true
 
 configmap:
   data:
