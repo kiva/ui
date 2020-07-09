@@ -72,6 +72,8 @@ ingress:
     kubernetes.io/ingress.class: nginx-ingress-external
     kubernetes.io/ingress.ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  whitelist:
+    enabled: false
 
 # Global defaults for NODE_ENV + DataDog config
 configmap:
