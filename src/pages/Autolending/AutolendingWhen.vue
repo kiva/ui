@@ -36,6 +36,11 @@
 				>
 					<div class="when-inputs-wrapper">
 						<lend-timing-dropdown />
+						<!--
+							While lenders with an auto-deposit donation should not have an auto-lending donation after
+							the fixes for AUTO-44 and AUTO-206, the check below includes donation===0
+							for graceful degradation, so that users with both donations still see the actual value.
+						-->
 						<p v-if="hasAutoDepositDonation && donation === 0">
 							Your auto-deposit includes a donation, so auto-lending donations are disabled.
 						</p>
