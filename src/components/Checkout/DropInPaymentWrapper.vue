@@ -2,11 +2,12 @@
 	<div class="row align-right">
 		<div class="payment-holder small-12 medium-8 large-7 columns">
 			<div id="dropin-container"></div>
-			<div id="dropin-button" v-if="showCheckoutButton">
+			<div id="dropin-button">
 				<kv-button
 					value="submit"
 					id="dropin-submit"
 					class="button"
+					:disabled="!enableCheckoutButton"
 					@click.native="validateBasketAndCheckout"
 				>
 					<kv-icon name="lock" />
@@ -38,8 +39,6 @@ import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
-// TODO: Add analytics for all actions within DropIn Ui
-
 export default {
 	components: {
 		KvButton,
@@ -58,7 +57,7 @@ export default {
 	},
 	data() {
 		return {
-			showCheckoutButton: false,
+			enableCheckoutButton: false,
 			btDropinInstance: () => {},
 			clientToken: null,
 			updatingPaymentWrapper: false,
@@ -237,7 +236,7 @@ export default {
 
 			// initial check for a "requestable" vaulted payment method
 			if (this.btDropinInstance.isPaymentMethodRequestable()) {
-				this.showCheckoutButton = true;
+				this.enableCheckoutButton = true;
 			}
 
 			// listen for "requestable" payment method (ex. completing PayPal signin)
@@ -249,13 +248,13 @@ export default {
 				// - If your Drop-in integration has the postal code field,
 				// - it will be considered valid after 3 characters
 				// - (some international postal codes are 3 characters in length).
-				this.showCheckoutButton = true;
+				this.enableCheckoutButton = true;
 			});
 
 			// listen for "non-requestable" payment method (ex. PayPal sign in flow)
 			this.btDropinInstance.on('noPaymentMethodRequestable', () => {
 				// Returns nothing
-				this.showCheckoutButton = false;
+				this.enableCheckoutButton = false;
 			});
 
 			// listen for "selected" payment option (ex. completion of PayPal sign in)
@@ -283,7 +282,6 @@ $border-width: 1px;
 .payment-holder {
 	text-align: left;
 	padding: 0 0.6rem 1.25rem;
-	margin-top: 3rem;
 
 	@include breakpoint(large) {
 		padding: 0 1.5rem 1.5rem;
@@ -354,12 +352,14 @@ $border-width: 1px;
 				.braintree-sheet__text {
 					margin-left: 12px;
 				}
+
+				.braintree-sheet__header-label {
+					padding-right: 2px;
+				}
 			}
 		}
 
 		[data-braintree-id="card-view-icons"] {
-			padding-left: 1rem;
-
 			& > div {
 				padding-left: 0;
 			}
@@ -399,7 +399,7 @@ $border-width: 1px;
 		}
 
 		.braintree-sheet__content--form .braintree-form__field-group {
-			.braintree-form__field {
+			.braintree-form__field:not(.braintree-form__checkbox) {
 				color: $kiva-text-light;
 				background-color: $kiva-bg-lightgray;
 			}
@@ -433,20 +433,20 @@ $border-width: 1px;
 				width: 250px;
 			}
 		}
-	}
 
-	#dropin-submit {
-		width: 100%;
-		font-size: 1.25rem;
-		margin-top: 1.25rem;
+		#dropin-submit {
+			width: 100%;
+			font-size: 1.25rem;
+			margin-top: 1.25rem;
 
-		.icon-lock {
-			height: rem-calc(20);
-			width: rem-calc(20);
-			fill: white;
-			top: rem-calc(3);
-			position: relative;
-			margin-right: rem-calc(8);
+			.icon-lock {
+				height: rem-calc(20);
+				width: rem-calc(20);
+				fill: white;
+				top: rem-calc(3);
+				position: relative;
+				margin-right: rem-calc(8);
+			}
 		}
 	}
 
