@@ -139,7 +139,7 @@
 		"coveralls": "^3.1.0",
 		"css-loader": "^3.6.0",
 		"cssnano": "^4.1.10",
-		"cypress": "^4.8.0",
+		"cypress": "^4.10.0",
 		"dart-sass": "^1.25.0",
 		"eslint": "^6.8.0",
 		"eslint-config-airbnb-base": "^14.0.0",
