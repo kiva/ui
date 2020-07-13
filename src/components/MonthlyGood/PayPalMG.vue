@@ -1,6 +1,9 @@
 <template>
 	<div class="paypal-holder">
 		<div class="text-center" id="paypal-button" ref="paypalbutton"></div>
+		<p class="small-text">
+			Thanks to PayPal, Kiva receives free payment processing.
+		</p>
 	</div>
 </template>
 

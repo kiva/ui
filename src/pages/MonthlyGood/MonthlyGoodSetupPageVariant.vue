@@ -211,8 +211,8 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
-import PayPalMg from './PayPalMG';
 
+import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';

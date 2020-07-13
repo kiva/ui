@@ -305,7 +305,7 @@ export default {
 			// It should be removed when testing is complete.
 			// It is queried in initializeCheckout
 			const braintreeDropInExp = this.apollo.readFragment({
-				id: 'Experiment:braintree_dropin',
+				id: 'Experiment:braintree_dropin_checkout',
 				fragment: experimentVersionFragment,
 			}) || {};
 
