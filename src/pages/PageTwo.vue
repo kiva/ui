@@ -27,7 +27,7 @@
 							<h4>
 								You're already signed up for Monthly Good.
 								Changes to this contribution can be made in your
-								<a href="/settings/credit">credit settings</a>.
+								<a href="/settings/subscriptions">subscription settings</a>.
 							</h4>
 						</div>
 					</div>
@@ -55,7 +55,7 @@
 						<h4>
 							You're already signed up for Monthly Good.
 							Changes to this contribution can be made in your
-							<a href="/settings/credit">credit settings</a>.
+							<a href="/settings/subscriptions">subscription settings</a>.
 						</h4>
 					</div>
 				</template>
