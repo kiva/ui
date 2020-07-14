@@ -194,7 +194,7 @@
 						<div class="large-9 medium-10 small-12 columns">
 							<p>
 								<!-- eslint-disable-next-line max-len -->
-								<strong><em>We'll charge your PayPal account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
+								<strong><em>We'll charge your {{ !showDropInPayments ? 'PayPal' : '' }} account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
 							</p>
 							<p v-if="hasAutoDeposits">
 								<!-- eslint-disable-next-line max-len -->
@@ -204,7 +204,7 @@
 								<!-- eslint-disable-next-line max-len -->
 								<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
 							</p>
-							<div v-if="hasBillingAgreement">
+							<div v-if="hasBillingAgreement && !showDropInPayments">
 								<kv-button
 									type="submit"
 									data-test="confirm-monthly-good-button"
@@ -220,17 +220,25 @@
 								</p>
 							</div>
 
-							<div v-if="!hasBillingAgreement">
-								<div class="paypal-wrapper">
-									<div class="paypal-cover" v-if="$v.$invalid"></div>
-									<pay-pal-mg
-										:amount="totalCombinedDeposit"
-										@complete-transaction="submitMonthlyGood()"
-									/>
-									<p class="small-text">
-										Thanks to PayPal, Kiva receives free payment processing.
-									</p>
-								</div>
+							<div class="payment-dropin-wrapper" v-if="showDropInPayments">
+								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+								<drop-in-payment-wrapper-MG
+									:amount="this.totalCombinedDeposit"
+									:donate-amount="this.donation"
+									:day-of-month="this.dayOfMonth"
+									:category="this.selectedGroup"
+									:is-onetime="this.isOnetime"
+									@complete-transaction="completeMGBraintree()"
+								/>
+							</div>
+
+							<div class="payment-dropin-wrapper" v-if="!hasBillingAgreement && !showDropInPayments">
+								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+								<pay-pal-mg
+									v-if="!showDropInPayments"
+									:amount="totalCombinedDeposit"
+									@complete-transaction="submitMonthlyGood()"
+								/>
 							</div>
 						</div>
 					</div>
@@ -259,24 +267,36 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
-import PayPalMg from './PayPalMG';
 
+import PayPalMg from '@/components/MonthlyGood/PayPalMG';
+import DropInPaymentWrapperMG from '@/components/MonthlyGood/DropInPaymentWrapperMG';
 import IconPencil from '@/assets/icons/inline/pencil.svg';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '@/components/Kv/KvButton';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvButton from '@/components/Kv/KvButton';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
     general {
-      mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
-        key
-        value
-      }
-    }
+		mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
+			key
+			value
+		}
+		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
+			value
+			key
+		}
+		braintreeDropInExperimentMG: uiExperimentSetting(key: "braintree_dropin_mg") {
+			key
+			value
+		}
+	}
 	my {
 		subscriptions {
 			values {
@@ -323,6 +343,7 @@ export default {
 	},
 	components: {
 		AlreadySubscribedNotice,
+		DropInPaymentWrapperMG,
 		IconPencil,
 		KvButton,
 		KvCheckbox,
@@ -345,6 +366,7 @@ export default {
 			isDonationOptionsDirty: false,
 			submitting: false,
 			legacySubs: [],
+			showDropInPayments: false,
 			// user flags
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
@@ -394,6 +416,20 @@ export default {
 				'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
+
+			// Braintree drop-in UI data
+			//
+			// This experiment is for testing the Braintree Drop in UI.
+			// It should be removed when testing is complete.
+			// It is queried in initializeCheckout
+			const braintreeDropInExp = this.apollo.readFragment({
+				id: 'Experiment:braintree_dropin_mg',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// if experiment and feature flag are BOTH on, show UI
+			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
+			this.showDropInPayments = braintreeDropInFeatureFlag && braintreeDropInExp.version === 'shown';
 		},
 	},
 	created() {
@@ -485,6 +521,17 @@ export default {
 				// when box is unchecked, change donation amount to zero.
 				this.donationOptionSelected = '0';
 			}
+		},
+		completeMGBraintree() {
+			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
+			// Send to thanks page
+			this.$router.push({
+				path: '/monthlygood/thanks',
+				query: {
+					onetime: this.isOnetime,
+					source: this.source,
+				}
+			});
 		},
 		submitMonthlyGood() {
 			this.submitting = true;
@@ -721,9 +768,9 @@ export default {
 	}
 
 	// cover and disallow clicking if form is invalid
-	.paypal-wrapper { position: relative; }
+	.payment-dropin-wrapper { position: relative; }
 
-	.paypal-cover {
+	.payment-dropin-invalid-cover {
 		position: absolute;
 		top: 0;
 		right: 0;
