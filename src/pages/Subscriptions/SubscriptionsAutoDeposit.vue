@@ -28,7 +28,7 @@
 							role="button"
 							@click.prevent="showLightbox = true;"
 						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
-						transferred from PayPal.
+						transferred.
 					</p>
 					<p>
 						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel auto deposit</a>

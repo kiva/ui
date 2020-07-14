@@ -28,7 +28,7 @@
 							role="button"
 							@click.prevent="showLightbox = true;"
 						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
-						transferred from PayPal<a
+						transferred<a
 							role="button"
 							@click.prevent="showLightbox = true;"
 							v-if="selectedGroupDescriptor"
