@@ -37,7 +37,7 @@ describe('Autolending Page Spec', () => {
 			cy.visit('/settings/autolending');
 
 			// Assert that key elements of the page are visible
-			cy.contains('Auto-lending preferences');
+			cy.contains('Auto-lending settings');
 		});
 
 		it('Redirects to credit/settings if visitor isSubscriber', () => {
