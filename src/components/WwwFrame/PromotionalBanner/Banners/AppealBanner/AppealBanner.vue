@@ -4,9 +4,9 @@
 			<div class="row"
 				@click="toggleAccordion"
 			>
-				<div class="appeal-header small-12 columns sitewide-header">
+				<div class="appeal-header small-12 columns sitewide-header strong">
 					<h2>
-						<span>Love making a difference with Kiva? Your donations keep us running.</span>
+						<span>48 hours to donate, years of impact.</span>
 						<kv-icon
 							@click="toggleAccordion"
 							:class="{ flipped: open }"
@@ -35,11 +35,9 @@
 					<div class="small-12 medium-10 columns sitewide-body">
 						<div class="appeal-copy">
 							<p>
-								Thank you for the impact you’ve made this year! Together we’ve funded more
-								than 170,000 loans and raised more than $120 million for financially
-								excluded people around the world. It costs us more than $3 to facilitate
-								each $25 loan, and we rely on optional donations from individuals like
-								you to cover our costs.
+								Each loan posted on Kiva costs us more than $3 to facilitate so when
+								you donate - you help us cover costs, grow our impact, and develop
+								innovative programs. Your donation of any amount makes a difference!
 								<strong v-if="appealMatchEnabled">Your donations are matched while funds last!</strong>
 							</p>
 						</div>
@@ -87,9 +85,9 @@ import numeral from 'numeral';
 import _forEach from 'lodash/forEach';
 import _get from 'lodash/get';
 import store2 from 'store2';
+import AppealThermometer from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealThermometer';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import AppealThermometer from '@/components/WwwFrame/EndOfYearAppealBanner/AppealThermometer';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
@@ -196,7 +194,7 @@ export default {
 @import 'settings';
 
 .sitewide-appeal-wrapper {
-	background: $kiva-alert-yellow;
+	// background: $kiva-alert-yellow;
 
 	.sitewide-appeal {
 		padding-right: rem-calc(10);

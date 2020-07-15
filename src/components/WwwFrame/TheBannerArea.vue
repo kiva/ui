@@ -9,7 +9,7 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
-import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
+import AppealBanner from './PromotionalBanner/Banners/AppealBanner/AppealBanner';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 
 export default {
@@ -32,6 +32,7 @@ export default {
 		preFetch: true,
 		result({ data }) {
 			try {
+				// this.appealEnabled = false;
 				this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
 			} catch (e) {
 				this.appealEnabled = false;
