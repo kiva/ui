@@ -8,13 +8,23 @@
 
 <script>
 import _get from 'lodash/get';
+import gql from 'graphql-tag';
+
+import { processContent } from '@/util/contentfulUtils';
+
+
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
+const bannerContentQuery = gql`query bannerContent {
+	contentful {
+		entries (contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+}`;
+
 export default {
-	inject: ['federation'],
 	components: {
 		GenericPromoBanner,
 	},
@@ -30,6 +40,23 @@ export default {
 			promoBannerContent: {},
 		};
 	},
+	inject: ['federation', 'apollo'],
+	apollo: {
+		query: bannerContentQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: bannerContentQuery
+			});
+		},
+		result({ data }) {
+			const contentfulBannerData = _get(data, 'contentful.entries.items');
+			if (!contentfulBannerData) {
+				return false;
+			}
+			this.bannerContent = processContent(contentfulBannerData);
+			console.log('this.bannerContent', this.bannerContent);
+		},
+	},
 	created() {
 		this.federation.query({
 			query: contentful,
@@ -41,6 +68,7 @@ export default {
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
+			console.log('uiGlobalPromoSettings', uiGlobalPromoSetting);
 			// exit if missing setting or fields
 			if (!uiGlobalPromoSetting || !uiGlobalPromoSetting.fields) {
 				return false;
