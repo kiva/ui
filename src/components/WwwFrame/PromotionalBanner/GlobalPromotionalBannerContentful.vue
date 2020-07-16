@@ -1,32 +1,30 @@
 <template>
-	<generic-promo-banner
-		v-if="isPromoEnabled"
-		:icon-key="promoBannerContent.iconKey"
-		:promo-banner-content="promoBannerContent"
-	/>
+	<div>
+		<generic-promo-banner
+			v-if="isPromoEnabled && !showAppeal"
+			:icon-key="promoBannerContent.iconKey"
+			:promo-banner-content="promoBannerContent"
+		/>
+		<appeal-banner
+			v-if="showAppeal && !hasPromoSession"
+			:appeal-banner-content="appealBannerContent.fields"
+			:appeal-match-enabled="appealMatchEnabled"
+		/>
+	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
-
-import { processContent } from '@/util/contentfulUtils';
-
-
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-
-const bannerContentQuery = gql`query bannerContent {
-	contentful {
-		entries (contentType: "uiSetting", contentKey: "ui-global-promo")
-	}
-}`;
+import AppealBanner from './Banners/AppealBanner/AppealBanner';
 
 export default {
 	components: {
 		GenericPromoBanner,
+		AppealBanner
 	},
 	props: {
 		hasPromoSession: {
@@ -38,23 +36,28 @@ export default {
 		return {
 			isPromoEnabled: false,
 			promoBannerContent: {},
+			appealEnabled: false,
 		};
 	},
-	inject: ['federation', 'apollo'],
-	apollo: {
-		query: bannerContentQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: bannerContentQuery
-			});
-		},
-		result({ data }) {
-			const contentfulBannerData = _get(data, 'contentful.entries.items');
-			if (!contentfulBannerData) {
-				return false;
+	inject: ['federation'],
+	computed: {
+		showAppeal() {
+			// make sure the appeal is enable + we're not on certain blacklisted pages
+			const blacklist = [
+				'/checkout',
+				'/error',
+				'/join-team',
+				'/register/social',
+				'/possibility/giving-tuesday',
+				'/possibility/12-days-of-lending',
+				'/possibility/year-end'
+			];
+			// First check if Appeal Banner or Appeal Banner Matching
+			// is active and the user is not on a blacklisted page URL
+			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
+				return true;
 			}
-			this.bannerContent = processContent(contentfulBannerData);
-			console.log('this.bannerContent', this.bannerContent);
+			return false;
 		},
 	},
 	created() {
@@ -68,7 +71,6 @@ export default {
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
-			console.log('uiGlobalPromoSettings', uiGlobalPromoSetting);
 			// exit if missing setting or fields
 			if (!uiGlobalPromoSetting || !uiGlobalPromoSetting.fields) {
 				return false;
@@ -94,6 +96,12 @@ export default {
 				});
 
 				if (activePromoBanner) {
+					// Check banner type
+					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
+						this.appealEnabled = true;
+						this.appealBannerContent = activePromoBanner;
+					}
+
 					// always hide the promo banner on the checkout page.
 					// TODO move these paths into array to check against
 					if (this.$route.path === '/checkout' || this.$route.path === '/donate/support-kiva') {
@@ -119,6 +127,7 @@ export default {
 						richText: documentToHtmlString(activePromoBanner.fields.richText),
 						iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
 					};
+
 					// check for special conditions and allow that process to control enabled
 					const specialConditions = _get(activePromoBanner, 'fields.specialConditions', null);
 					if (specialConditions) {
