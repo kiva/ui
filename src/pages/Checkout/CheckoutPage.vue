@@ -535,6 +535,11 @@ export default {
 			this.redirectLightboxVisible = false;
 		},
 		handleChangeUserPref() {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-GROW-127-Jul2020',
+				'click-continue-browsing'
+			);
 			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
 		}
 	},
