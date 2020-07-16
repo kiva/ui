@@ -26,8 +26,9 @@ import LoanExpiredText from './LoanExpiredText';
 
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
-const freeCreditQuery = gql`query hasFreeCredits($basketId: String) {
+const freeCreditBasketCountQuery = gql`query hasFreeCreditsAndBasketCount($basketId: String) {
 	shop (basketId: $basketId) {
+		nonTrivialItemCount
 		basket {
 			hasFreeCredits
 		}
@@ -84,7 +85,6 @@ export default {
 	data() {
 		return {
 			addToBasketRedirectExperimentShown: false,
-			hasFreeCredits: false,
 			userPrefContinueBrowsing: false,
 		};
 	},
@@ -108,16 +108,6 @@ export default {
 
 			return this.isSimpleLendButton ? Lend25Button : LendIncrementButton;
 		},
-		canParticipateInExperiment() {
-			// Determines if a user is eligible to be part of the experiment.
-			// - If they added first loan to basket
-			// - If they do not have promo credits (this is handled below in the add to basket event)
-			// - If they have not clicked on "continue browsing" on the checkout page
-			if (this.itemsInBasket.length === 1 && !this.userPrefContinueBrowsing) {
-				return true;
-			}
-			return false;
-		}
 	},
 	mounted() {
 		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
@@ -127,35 +117,43 @@ export default {
 			this.$emit('add-to-basket', payload);
 
 			if (payload.success) {
-				if (this.canParticipateInExperiment) {
-					// If user can participate, make query for hasFreeCredits
-					// By gating this, it avoids unnecessarily calling this query.
-					this.apollo.query({
-						query: freeCreditQuery,
-					}).then(data => {
-						this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+				// A user is eligible to be part of the experiment to redirect if:
+				// - If they added first loan to basket
+				// - If they do not have promo credits
+				// - If they have not clicked on "continue browsing" on the checkout page
 
-						// Users with free credits go to legacy basket.
-						if (!this.hasFreeCredits) {
+				// User hasn't opted out by clicking "continue browsing"
+				if (!this.userPrefContinueBrowsing) {
+					// Make query for hasFreeCredits & basketCount
+					this.apollo.query({
+						query: freeCreditBasketCountQuery,
+					}).then(response => {
+						const hasFreeCredits = _get(response, 'data.shop.basket.hasFreeCredits', false);
+						// Only reliable way to check basketCount.
+						// When handleAddToBasketEvent is triggered, itemsInBasket may not be accurate
+						const basketCount = _get(response, 'data.shop.nonTrivialItemCount', 0);
+
+						if (!hasFreeCredits) {
 							// User is eligible for experiment, track event
 							this.$kvTrackEvent(
 								'Lending',
 								'EXP-GROW-127-Jul2020',
 								this.addToBasketRedirectExperimentShown === true ? 'b' : 'a'
 							);
-
-							if (this.addToBasketRedirectExperimentShown) {
-								// User is part of shown group
-								this.$router.push({
-									path: '/basket',
-								});
-							} else {
-								// User is part of control group
-								this.triggerAddToBasketInterstitial(payload.loanId);
-							}
-						} else {
-							this.triggerAddToBasketInterstitial(payload.loanId);
 						}
+
+						// User is eligible and in experiment group and 1 item in basket
+						if (!hasFreeCredits && this.addToBasketRedirectExperimentShown && basketCount === 1) {
+							// User is part of shown group
+							this.$router.push({
+								path: '/basket',
+							});
+							return;
+						}
+
+						// User is part of control group or has free credits
+						// Users with free credits go to legacy basket.
+						this.triggerAddToBasketInterstitial(payload.loanId);
 					}).catch(() => {
 						// In case something happens
 						this.triggerAddToBasketInterstitial(payload.loanId);
