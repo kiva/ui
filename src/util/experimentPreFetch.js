@@ -127,15 +127,21 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 		.then(() => {
 			const routeQuery = _get(route, 'query.setuiab');
 			if (routeQuery !== undefined) {
+				// Convert both a single string and an array of strings to an array of strings.
+				const arrayOfSetuiabValues = [].concat(routeQuery);
+
+				// Iterate through all setuiab values in query and updateExperimentVersion
 				// TODO: Check for experiment setting + enable = true from server before running mutation
-				const forcedExp = routeQuery.split('.');
-				return apolloClient.mutate({
-					mutation: updateExperimentVersion,
-					variables: {
-						id: encodeURIComponent(forcedExp[0]),
-						version: encodeURIComponent(forcedExp[1])
-					}
-				});
+				return Promise.all(arrayOfSetuiabValues.map(uiabvalue => {
+					const forcedExp = uiabvalue.split('.');
+					return apolloClient.mutate({
+						mutation: updateExperimentVersion,
+						variables: {
+							id: encodeURIComponent(forcedExp[0]),
+							version: encodeURIComponent(forcedExp[1])
+						}
+					});
+				}));
 			}
 			return true;
 		})
