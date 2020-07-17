@@ -160,7 +160,7 @@ export default {
 	watch: {
 		// this watch lets us respond once we have loans and the proper DOM elements
 		showLYML() {
-			if (this.showLYML === true) {
+			if (this.showLYML === true && typeof window !== 'undefined') {
 				this.$nextTick(() => {
 					this.saveWindowWidth();
 				});
@@ -169,7 +169,7 @@ export default {
 		// watch for change to targetLoan and refetch loans
 		targetLoan() {
 			this.$nextTick(() => {
-				if (this.visible) {
+				if (this.visible && typeof window !== 'undefined') {
 					this.getLoansYouMightLike();
 				}
 			});
@@ -187,6 +187,10 @@ export default {
 	mounted() {
 		// we're doing this all client side
 		window.addEventListener('resize', this.throttledResize());
+
+		this.$nextTick(() => {
+			this.saveWindowWidth();
+		});
 	},
 	beforeDestroy() {
 		window.removeEventListener('resize', this.throttledResize());
@@ -237,7 +241,9 @@ export default {
 
 			// update window width once loans are loaded
 			this.$nextTick(() => {
-				this.saveWindowWidth();
+				if (typeof window !== 'undefined') {
+					this.saveWindowWidth();
+				}
 			});
 		},
 		saveWindowWidth() {
