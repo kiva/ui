@@ -95,12 +95,6 @@ export default {
 				});
 
 				if (activePromoBanner) {
-					// Check banner type
-					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
-						this.appealEnabled = true;
-						this.appealBannerContent = activePromoBanner;
-					}
-
 					// always hide the promo banner on the checkout page.
 					// TODO move these paths into array to check against
 					if (this.$route.path === '/checkout' || this.$route.path === '/donate/support-kiva') {
@@ -119,14 +113,6 @@ export default {
 						return false;
 					}
 
-					// parse the contentful richText into an html string
-					this.promoBannerContent = {
-						kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
-						link: activePromoBanner.fields.link,
-						richText: documentToHtmlString(activePromoBanner.fields.richText),
-						iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
-					};
-
 					// check for special conditions and allow that process to control enabled
 					const specialConditions = _get(activePromoBanner, 'fields.specialConditions', null);
 					if (specialConditions) {
@@ -136,7 +122,22 @@ export default {
 						// process them and set this.isPromoEnabled = true accordingly
 						return false;
 					}
-					this.isPromoEnabled = true;
+
+					// Check banner type
+					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
+						this.appealEnabled = true;
+						this.appealBannerContent = activePromoBanner;
+					} else {
+						// parse the contentful richText into an html string
+						this.promoBannerContent = {
+							kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
+							link: activePromoBanner.fields.link,
+							richText: documentToHtmlString(activePromoBanner.fields.richText),
+							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
+						};
+
+						this.isPromoEnabled = true;
+					}
 				}
 			}
 		});
