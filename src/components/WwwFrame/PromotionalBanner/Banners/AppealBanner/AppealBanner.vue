@@ -129,11 +129,9 @@ export default {
 			return documentToHtmlString(appealBody);
 		},
 		buttonAmounts(props) {
-			// check not working still
-			console.log('props', props);
-			const defaultAmounts = [30, 45, 56];
-			console.log('props.donationAmounts', props.donationAmounts);
-			return props.donationAmounts && props.donationAmounts.length ? props.donationAmounts : defaultAmounts;
+			const defaultAmounts = [20, 35, 50];
+			// eslint-disable-next-line max-len
+			return props.appealBannerContent.dataObject.donationAmounts && props.appealBannerContent.dataObject.donationAmounts.length ? props.appealBannerContent.dataObject.donationAmounts : defaultAmounts;
 		},
 		// NOT YET HOOKED UP
 		// bannerMatchingText(props) {
