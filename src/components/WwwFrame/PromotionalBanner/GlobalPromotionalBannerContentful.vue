@@ -1,12 +1,12 @@
 <template>
 	<div>
 		<generic-promo-banner
-			v-if="isPromoEnabled && !showAppeal"
+			v-if="isPromoEnabled"
 			:icon-key="promoBannerContent.iconKey"
 			:promo-banner-content="promoBannerContent"
 		/>
 		<appeal-banner
-			v-if="showAppeal && !hasPromoSession"
+			v-if="showAppeal"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
 	</div>

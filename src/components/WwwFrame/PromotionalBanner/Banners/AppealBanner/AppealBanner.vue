@@ -129,7 +129,18 @@ export default {
 			return documentToHtmlString(appealBody);
 		},
 		buttonAmounts(props) {
-			const { donationAmounts } = props.appealBannerContent.dataObject;
+			// Setting default donation amounts for buttons (using off numbers for development)
+			const donationAmounts = [22, 33, 56];
+			console.log('donation Amounts', donationAmounts);
+			console.log(props.appealBannerContent.dataObject);
+			// Trying to check if props.appealBannerContent.dataObject.donationAmounts exists
+			// get new values from contentful
+			// THIS CHECK ISN'T WORKING CORRECTLY
+			// Having issues figuring out the right check to see if these values are present or not
+			if (props.appealBannerContent.dataObject.donationAmounts) {
+				const dynamicDonationAmounts = props.appealBannerContent.dataObject;
+				return dynamicDonationAmounts;
+			}
 			return donationAmounts;
 		},
 		// NOT YET HOOKED UP
