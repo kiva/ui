@@ -14,7 +14,7 @@
 		<div class="thermometer meter-fg">
 			<span
 				class="inner-meter"
-				:style="`width: ${ props.percentTowardGoal }%;`"
+				:style="`width:${ 5 + props.percentTowardGoal }%;`"
 			></span>
 		</div>
 		<span class="thermometer-bulb"></span>

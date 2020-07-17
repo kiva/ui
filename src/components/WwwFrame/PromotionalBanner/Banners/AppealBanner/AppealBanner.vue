@@ -40,25 +40,36 @@
 									:percent-toward-goal="percentTowardGoal"
 								/>
 							</div>
+							<!-- <div v-html="buttonAmounts"></div> -->
 							<div class="donation-buttons">
-								<kv-button
-									class="mini custom-width"
-									@click.native.prevent.stop="updateDonationTo(20)"
-								>
-									$20
-								</kv-button>
-								<kv-button
-									class="mini custom-width"
-									@click.native.prevent.stop="updateDonationTo(35)"
-								>
-									$35
-								</kv-button>
-								<kv-button
-									class="mini custom-width"
-									@click.native.prevent.stop="updateDonationTo(50)"
-								>
-									$50
-								</kv-button>
+								<ul>
+									<li v-for="(amount, index) in buttonAmounts"
+										:key="index"
+									>
+										<kv-button
+											class="mini custom-width"
+											@click.native.prevent.stop="updateDonationTo(amount)"
+										>
+											${{ amount }}
+										</kv-button>
+									</li>
+									<!-- <li>
+										<kv-button
+											class="mini custom-width"
+											@click.native.prevent.stop="updateDonationTo(35)"
+										>
+											$35
+										</kv-button>
+									</li>
+									<li>
+										<kv-button
+											class="mini custom-width"
+											@click.native.prevent.stop="updateDonationTo(50)"
+										>
+											$50
+										</kv-button>
+									</li> -->
+								</ul>
 								<a
 									class="other-amount"
 									href="/donate/supportus"
@@ -135,6 +146,10 @@ export default {
 			const appealBody = props.appealBannerContent.additionalContent[0].fields.richText;
 			return documentToHtmlString(appealBody);
 		},
+		buttonAmounts(props) {
+			const { donationAmounts } = props.appealBannerContent.dataObject;
+			return donationAmounts;
+		},
 		// NOT YET HOOKED UP
 		// bannerMatchingText(props) {
 		// 	let matchingText = props.appealBannerContent.dataObject.matchingTextReplacement;
@@ -156,6 +171,9 @@ export default {
 	},
 	methods: {
 		toggleAccordion() {
+			// Hook into therometer
+			// Drop the top value
+			// fade out the therometer
 			this.setIsShrunkSession(this.open);
 			this.open = !this.open;
 		},
@@ -218,28 +236,21 @@ export default {
 .sitewide-appeal-wrapper {
 	background-color: $kiva-bg-lightgray;
 
-	// .sitewide-appeal-loading {
-	// 	display: block;
-	// 	text-align: center;
-
-	// 	.loading-spinner {
-	// 		width: 2rem;
-	// 		height: 2rem;
-	// 		margin: 0.5rem;
-	// 	}
-	// }
-
 	.sitewide-appeal {
+		padding: 0.75rem 0.625rem 0.75rem;
+
 		.sitewide-header {
 			top: rem-calc(8);
 			position: relative;
 
 			h2 {
-				font-weight: 700;
-				position: relative;
-				padding-right: 2.5rem;
-				line-height: 1.825rem;
-				font-size: rem-calc(25);
+				::v-deep p {
+					font-weight: 700;
+					position: relative;
+					padding-right: 2.5rem;
+					line-height: 1.825rem;
+					font-size: rem-calc(25);
+				}
 
 				.toggle-arrow.flipped {
 					transform: rotate(180deg);
@@ -247,7 +258,7 @@ export default {
 
 				.toggle-arrow {
 					position: absolute;
-					top: rem-calc(11);
+					top: rem-calc(5);
 					right: 0;
 					height: rem-calc(25);
 					width: rem-calc(25);
@@ -272,10 +283,13 @@ export default {
 
 				// NOT WORKING YET
 				.message {
-					overflow: hidden;
-					line-height: 1.325rem !important;
-					margin-bottom: 1.5rem !important;
-					font-weight: 300;
+					::v-deep p {
+						// contentful rich text content is wrapped in a p tag, this removes all styles from it
+						overflow: hidden;
+						line-height: 1.325rem;
+						margin-bottom: 1.5rem;
+						font-weight: 300;
+					}
 				}
 
 				.donation-buttons {
@@ -283,18 +297,38 @@ export default {
 					display: table;
 
 					@include breakpoint(medium) {
-						margin-bottom: rem-calc(33);
-						// margin: 0;
+						margin: unset;
+						margin-bottom: rem-calc(20);
 					}
 
-					// Overriding .mini button class, not ideal, but text is too small otherwise
-					.mini {
-						margin: rem-calc(9);
-						margin-bottom: 0;
-						font-size: 0.875rem;
-						height: 2rem;
-						line-height: 0.2rem;
-						padding: 1.125rem;
+					ul {
+						list-style: none;
+						display: flex;
+
+						@include breakpoint(medium) {
+							margin-left: 0;
+						}
+
+						li {
+							width: inherit;
+							padding-bottom: 0;
+
+							@include breakpoint(medium) {
+								width: unset;
+							}
+
+							// Overriding .mini button class, not ideal, but text is too small otherwise
+							.mini {
+								margin-right: rem-calc(20);
+								margin-bottom: 0;
+								font-size: 0.875rem;
+								height: rem-calc(36);
+								line-height: 0.2rem;
+								padding: 1.125rem;
+								box-shadow: none;
+								border-radius: 0;
+							}
+						}
 					}
 
 					.other-amount {
@@ -303,12 +337,16 @@ export default {
 						width: 100%;
 						text-align: center;
 						line-height: 2.5;
+						margin: 0 auto rem-calc(12) auto;
+						display: block;
+						white-space: nowrap;
 
 						@include breakpoint(medium) {
 							width: rem-calc(112);
 							padding: 0;
-							top: rem-calc(7);
-							position: relative;
+							margin: unset;
+							display: table-cell;
+							font-weight: 400;
 						}
 
 						a:visited {
