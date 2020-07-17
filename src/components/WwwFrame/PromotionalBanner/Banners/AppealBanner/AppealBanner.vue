@@ -19,8 +19,8 @@
 					v-show="open"
 				>
 					<div class="row">
-						<div
-							class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
+						<!-- eslint-disable-next-line max-len -->
+						<div class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
 							:title="`${ percentTowardGoal }% raised`"
 						>
 							<appeal-thermometer
