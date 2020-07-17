@@ -1,29 +1,10 @@
 <template>
-	<div class="row align-right">
-		<div class="payment-holder small-12 medium-8 large-7 columns">
-			<div id="dropin-container"></div>
-			<div id="dropin-button">
-				<kv-button
-					value="submit"
-					id="dropin-submit"
-					class="button"
-					:disabled="!enableCheckoutButton"
-					@click.native="validateBasketAndCheckout"
-				>
-					<kv-icon name="lock" />
-					Checkout
-				</kv-button>
-			</div>
-
-			<loading-overlay
-				v-if="updatingPaymentWrapper"
-				id="payment-updating-overlay"
-			/>
-			<p class="attribution-text">
-				Thanks to PayPal powered by Braintree,
-				Kiva receives free payment processing for all loans.
-			</p>
-		</div>
+	<div>
+		<div id="dropin-container"></div>
+		<loading-overlay
+			v-if="updatingPaymentWrapper"
+			id="payment-updating-overlay"
+		/>
 	</div>
 </template>
 
@@ -32,32 +13,26 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/browser';
 import Dropin from 'braintree-web-drop-in';
-import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
-import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
-import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 export default {
 	components: {
-		KvButton,
-		KvIcon,
 		LoadingOverlay,
 	},
 	inject: ['apollo'],
-	mixins: [
-		checkoutUtils
-	],
 	props: {
 		amount: {
+			type: String,
+			default: ''
+		},
+		flow: {
 			type: String,
 			default: ''
 		}
 	},
 	data() {
 		return {
-			enableCheckoutButton: false,
 			btDropinInstance: () => {},
 			clientToken: null,
 			updatingPaymentWrapper: false,
@@ -100,13 +75,14 @@ export default {
 				dataCollector: {
 					kount: true // Required if Kount fraud data collection is enabled
 				},
+				paymentOptionPriority: ['paypal', 'card'],
 				card: {
 					vault: {
 						allowVaultCardOverride: true,
 					},
 				},
 				paypal: {
-					flow: 'checkout',
+					flow: this.flow,
 					amount: numeral(this.amount).format('0.00'),
 					currency: 'USD',
 					buttonStyle: {
@@ -128,115 +104,13 @@ export default {
 				});
 			});
 		},
-		validateBasketAndCheckout() {
-			this.$emit('updating-totals', true);
-			// Validate Basket prior to starting
-			this.validateBasket()
-				.then(validationStatus => {
-					if (validationStatus === true) {
-						// request payment method
-						this.submitDropInPayment();
-					} else {
-						// validation failed
-						this.setUpdating(false);
-						this.showCheckoutError(validationStatus);
-						this.$emit('refreshtotals');
-					}
-					return validationStatus;
-				})
-				.catch(error => {
-					this.$emit('updating-totals', false);
-					const errorCode = _get(error, 'errors[0].code');
-					const errorMessage = _get(error, 'errors[0].message');
-
-					// Fire specific exception to Sentry/Raven
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btSubmitValidationCatch');
-						scope.setTag('bt_basket_validation_error', errorMessage);
-						Sentry.captureException(errorCode);
-					});
-				});
-		},
-		submitDropInPayment() {
-			// request payment method
-			this.btDropinInstance.requestPaymentMethod()
-				.then(btSubmitResponse => {
-					const transactionNonce = _get(btSubmitResponse, 'nonce');
-					const deviceData = _get(btSubmitResponse, 'deviceData');
-					const paymentType = _get(btSubmitResponse, 'type');
-					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeCheckout(transactionNonce, deviceData, paymentType);
-					}
-				}).catch(btSubmitError => {
-					console.error(btSubmitError);
-					// Fire specific exception to Sentry/Raven
-					Sentry.withScope(scope => {
-						scope.setTag('bt_stage_dropin', 'btRequestPaymentMethodCatch');
-						scope.setTag('bt_basket_validation_error', btSubmitError);
-						Sentry.captureException(btSubmitError);
-					});
-				});
-		},
-		doBraintreeCheckout(nonce, deviceData, paymentType) {
-			// Apollo call to the query mutation
-			this.apollo.mutate({
-				mutation: braintreeDepositAndCheckout,
-				variables: {
-					amount: numeral(this.amount).format('0.00'),
-					nonce,
-					deviceData,
-					savePaymentMethod: false, // save payment methods handled by braintree drop in UI
-				}
-			}).then(kivaBraintreeResponse => {
-				// Check for errors in transaction
-				if (kivaBraintreeResponse.errors) {
-					this.$emit('updating-totals', false);
-					const errorCode = _get(kivaBraintreeResponse, 'errors[0].code');
-					const errorMessage = _get(kivaBraintreeResponse, 'errors[0].message');
-					const standardErrorCode = `(Braintree error: ${errorCode})`;
-					const standardError = `There was an error processing your payment.
-						Please try again. ${standardErrorCode}`;
-
-					// Payment method failed, unselect attempted payment method
-					this.btDropinInstance.clearSelectedPaymentMethod();
-					// Potential error message: 'Transaction failed. Please select a different payment method.';
-
-					this.$showTipMsg(standardError, 'error');
-
-					// Fire specific exception to Snowplow
-					this.$kvTrackEvent('basket', 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
-
-					// exit
-					return kivaBraintreeResponse;
-				}
-
-				// Transaction is complete
-				const transactionId = _get(
-					kivaBraintreeResponse,
-					'data.shop.doNoncePaymentDepositAndCheckout'
-				);
-				// redirect to thanks with KIVA transaction id
-				if (transactionId) {
-					// fire BT Success event
-					this.$kvTrackEvent(
-						'basket',
-						`${paymentType} Braintree DropIn Payment`,
-						'Success',
-						transactionId
-					);
-					// Complete transaction handles additional analytics + redirect
-					this.$emit('complete-transaction', transactionId);
-				}
-				return kivaBraintreeResponse;
-			});
-		},
 		initializeDropInActions() {
 			// more info: https://developers.braintreepayments.com/guides/drop-in/customization/javascript/v3#events
 			// https://braintree.github.io/braintree-web-drop-in/docs/current/Dropin.html#on
 
 			// initial check for a "requestable" vaulted payment method
 			if (this.btDropinInstance.isPaymentMethodRequestable()) {
-				this.enableCheckoutButton = true;
+				this.$emit('transactions-enabled', true);
 			}
 
 			// listen for "requestable" payment method (ex. completing PayPal signin)
@@ -248,13 +122,13 @@ export default {
 				// - If your Drop-in integration has the postal code field,
 				// - it will be considered valid after 3 characters
 				// - (some international postal codes are 3 characters in length).
-				this.enableCheckoutButton = true;
+				this.$emit('transactions-enabled', true);
 			});
 
 			// listen for "non-requestable" payment method (ex. PayPal sign in flow)
 			this.btDropinInstance.on('noPaymentMethodRequestable', () => {
 				// Returns nothing
-				this.enableCheckoutButton = false;
+				this.$emit('transactions-enabled', false);
 			});
 
 			// listen for "selected" payment option (ex. completion of PayPal sign in)
@@ -263,7 +137,7 @@ export default {
 			// 	console.log('payment option selected - returns option');
 			// 	console.log(event);
 			// });
-		}
+		},
 	},
 	mounted() {
 		this.initializePaymentOptions();
@@ -279,23 +153,8 @@ $active-border-color: $input-checked-color;
 $icon-background-color: $input-checked-color;
 $border-width: 1px;
 
-.payment-holder {
-	text-align: left;
-	padding: 0 0.6rem 1.25rem;
-
-	@include breakpoint(large) {
-		padding: 0 1.5rem 1.5rem;
-	}
-
-	.attribution-text {
-		color: $kiva-text-light;
-		text-align: center;
-		margin-top: rem-calc(24);
-		padding: 0 0.75rem;
-	}
-
-	::v-deep [data-braintree-id="choose-a-way-to-pay"],
-	.attribution-text {
+#dropin-container {
+	::v-deep [data-braintree-id="choose-a-way-to-pay"] {
 		font-size: $small-text-font-size;
 	}
 
@@ -433,44 +292,12 @@ $border-width: 1px;
 				width: 250px;
 			}
 		}
-
-		#dropin-submit {
-			width: 100%;
-			font-size: 1.25rem;
-			margin-top: 1.25rem;
-
-			.icon-lock {
-				height: rem-calc(20);
-				width: rem-calc(20);
-				fill: white;
-				top: rem-calc(3);
-				position: relative;
-				margin-right: rem-calc(8);
-			}
-		}
 	}
+}
 
-	#payment-updating-overlay {
-		z-index: 1000;
-		width: auto;
-		height: auto;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		top: 0;
-		background-color: rgba($white, 0.7);
-
-		.spinner-wrapper {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			position: initial;
-			height: 100%;
-			top: auto;
-			left: auto;
-			transform: none;
-		}
-	}
+#payment-updating-overlay {
+	background-color: rgba(255, 255, 255, 0.7);
+	z-index: 500;
 }
 
 </style>

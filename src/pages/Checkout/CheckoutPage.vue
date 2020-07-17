@@ -76,7 +76,7 @@
 									@complete-transaction="completeTransaction"
 								/>
 
-								<drop-in-payment-wrapper
+								<checkout-drop-in-payment-wrapper
 									v-else-if="showDropInPayments"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
@@ -184,8 +184,9 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
-import DropInPaymentWrapper from '@/components/Checkout/DropInPaymentWrapper';
+import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+
 
 export default {
 	components: {
@@ -200,7 +201,7 @@ export default {
 		LoadingOverlay,
 		CheckoutHolidayPromo,
 		PaymentWrapper,
-		DropInPaymentWrapper,
+		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -404,7 +405,8 @@ export default {
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
-				&& parseFloat(_get(this.donations, '[0].price')) === 0) {
+				&& (!this.donations.length
+				|| parseFloat(_get(this.donations, '[0].price')) === 0)) {
 				return true;
 			}
 			return false;

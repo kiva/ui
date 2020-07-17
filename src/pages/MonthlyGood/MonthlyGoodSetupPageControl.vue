@@ -222,7 +222,7 @@
 
 							<div class="payment-dropin-wrapper" v-if="showDropInPayments">
 								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
-								<drop-in-payment-wrapper-MG
+								<monthly-good-drop-in-payment-wrapper
 									:amount="this.totalCombinedDeposit"
 									:donate-amount="this.donation"
 									:day-of-month="this.dayOfMonth"
@@ -269,7 +269,7 @@ import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
 
 import PayPalMg from '@/components/MonthlyGood/PayPalMG';
-import DropInPaymentWrapperMG from '@/components/MonthlyGood/DropInPaymentWrapperMG';
+import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import IconPencil from '@/assets/icons/inline/pencil.svg';
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
@@ -343,7 +343,7 @@ export default {
 	},
 	components: {
 		AlreadySubscribedNotice,
-		DropInPaymentWrapperMG,
+		MonthlyGoodDropInPaymentWrapper,
 		IconPencil,
 		KvButton,
 		KvCheckbox,

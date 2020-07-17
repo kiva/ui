@@ -9,7 +9,7 @@ const processErrors = (error, route) => {
 		// Force a login when active login is required
 		return {
 			path: '/ui-login',
-			query: { force: true, doneUrl: route.path }
+			query: { force: true, doneUrl: route.fullPath }
 		};
 	}
 
@@ -17,7 +17,7 @@ const processErrors = (error, route) => {
 		// Redirect to login upon authentication error
 		return {
 			path: '/ui-login',
-			query: { doneUrl: route.path }
+			query: { doneUrl: route.fullPath }
 		};
 	}
 	// Log other errors to Sentry
@@ -30,7 +30,7 @@ const processErrors = (error, route) => {
 	// catch all redirect to login
 	return {
 		path: '/ui-login',
-		query: { doneUrl: route.path }
+		query: { doneUrl: route.fullPath }
 	};
 };
 
