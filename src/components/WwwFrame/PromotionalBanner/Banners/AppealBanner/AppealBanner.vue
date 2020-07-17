@@ -17,7 +17,6 @@
 			<kv-expandable
 				easing="ease-in-out"
 			>
-				<!-- :class="[{ thermometerStart: open }, 'sitewide-body small-12 columns']" -->
 				<div class="sitewide-body small-12 columns"
 					v-show="open"
 				>
@@ -44,7 +43,6 @@
 									:percent-toward-goal="percentTowardGoal"
 								/>
 							</div>
-							<!-- <div v-html="buttonAmounts"></div> -->
 							<div class="donation-buttons">
 								<ul>
 									<li v-for="(buttonAmount, index) in buttonAmounts"
@@ -122,10 +120,6 @@ export default {
 		},
 	},
 	computed: {
-		isMatchedEnabled(props) {
-			console.log(props.appealMatchEnabled);
-			return true;
-		},
 		bannerHeadline(props) {
 			const appealHeadline = props.appealBannerContent.richText;
 			return documentToHtmlString(appealHeadline);
