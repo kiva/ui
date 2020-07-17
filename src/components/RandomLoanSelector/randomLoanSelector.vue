@@ -76,9 +76,6 @@ export default {
 			const cardCount = 15;
 			return (cardCount - this.cardsInWindow) * -this.cardWidth;
 		},
-		throttledResize() {
-			return _throttle(this.saveWindowWidth, 100);
-		},
 		shiftIncrement() {
 			// multiple number of cards by card width to shift a full set ie. this.cardsInWindow * this.cardWidth;
 			return this.cardWidth;
@@ -130,6 +127,9 @@ export default {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
 			}
+		},
+		throttledResize() {
+			return _throttle(this.saveWindowWidth, 100);
 		},
 	},
 };

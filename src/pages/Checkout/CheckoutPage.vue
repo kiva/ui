@@ -405,7 +405,8 @@ export default {
 		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
-				&& parseFloat(_get(this.donations, '[0].price')) === 0) {
+				&& (!this.donations.length
+				|| parseFloat(_get(this.donations, '[0].price')) === 0)) {
 				return true;
 			}
 			return false;
