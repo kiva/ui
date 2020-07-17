@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<global-promo-contentful
-			v-if="!showAppeal"
 			:has-promo-session="hasPromoSession"
 			:appeal-match-enabled="appealMatchEnabled"
 		/>

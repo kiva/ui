@@ -8,7 +8,6 @@
 		<appeal-banner
 			v-if="showAppeal && !hasPromoSession"
 			:appeal-banner-content="appealBannerContent.fields"
-			:appeal-match-enabled="appealMatchEnabled"
 		/>
 	</div>
 </template>
