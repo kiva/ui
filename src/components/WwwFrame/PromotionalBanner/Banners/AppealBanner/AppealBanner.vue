@@ -14,7 +14,10 @@
 				</h2>
 			</div>
 
-			<kv-expandable easing="ease-in-out">
+			<kv-expandable
+				easing="ease-in-out"
+			>
+				<!-- :class="[{ thermometerStart: open }, 'sitewide-body small-12 columns']" -->
 				<div class="sitewide-body small-12 columns"
 					v-show="open"
 				>
@@ -25,6 +28,7 @@
 						>
 							<appeal-thermometer
 								:percent-toward-goal="percentTowardGoal"
+								:open="open"
 							/>
 						</div>
 						<div class="small-12 medium-9 large-8 xlarge-7 columns">
@@ -43,32 +47,16 @@
 							<!-- <div v-html="buttonAmounts"></div> -->
 							<div class="donation-buttons">
 								<ul>
-									<li v-for="(amount, index) in buttonAmounts"
+									<li v-for="(buttonAmount, index) in buttonAmounts"
 										:key="index"
 									>
 										<kv-button
 											class="mini custom-width"
-											@click.native.prevent.stop="updateDonationTo(amount)"
+											@click.native.prevent.stop="updateDonationTo(buttonAmount)"
 										>
-											${{ amount }}
+											${{ buttonAmount }}
 										</kv-button>
 									</li>
-									<!-- <li>
-										<kv-button
-											class="mini custom-width"
-											@click.native.prevent.stop="updateDonationTo(35)"
-										>
-											$35
-										</kv-button>
-									</li>
-									<li>
-										<kv-button
-											class="mini custom-width"
-											@click.native.prevent.stop="updateDonationTo(50)"
-										>
-											$50
-										</kv-button>
-									</li> -->
 								</ul>
 								<a
 									class="other-amount"
@@ -171,9 +159,6 @@ export default {
 	},
 	methods: {
 		toggleAccordion() {
-			// Hook into therometer
-			// Drop the top value
-			// fade out the therometer
 			this.setIsShrunkSession(this.open);
 			this.open = !this.open;
 		},
@@ -245,6 +230,7 @@ export default {
 
 			h2 {
 				::v-deep p {
+					// contentful rich text content is wrapped in a p tag, this removes all styles from it
 					font-weight: 700;
 					position: relative;
 					padding-right: 2.5rem;
@@ -281,7 +267,6 @@ export default {
 			.row {
 				padding-top: 0.75rem;
 
-				// NOT WORKING YET
 				.message {
 					::v-deep p {
 						// contentful rich text content is wrapped in a p tag, this removes all styles from it
@@ -356,6 +341,10 @@ export default {
 				}
 			}
 		}
+
+		// .sitewide-body.thermometerStart {
+		// 	overflow: visible;
+		// }
 	}
 }
 </style>

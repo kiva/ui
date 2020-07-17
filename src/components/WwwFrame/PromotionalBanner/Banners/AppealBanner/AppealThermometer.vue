@@ -1,5 +1,7 @@
 <template functional>
-	<span class="thermometer-wrap">
+	<span
+		:class="[{ open: props.open }, 'thermometer-wrap']"
+	>
 		<!-- grey meter background -->
 		<div class="thermometer meter-bg">
 			<span class="inner-meter"></span>
@@ -31,8 +33,14 @@
 		padding: 0;
 		position: absolute;
 		right: rem-calc(-85);
-		top: rem-calc(-51);
+		top: 0;
+		opacity: 0;
 		transition: top 500ms ease-in-out, opacity 500ms ease-in-out;
+
+		&.open {
+			top: rem-calc(-51);
+			opacity: 1;
+		}
 	}
 
 	.thermometer {
@@ -152,6 +160,11 @@
 			}
 		}
 	}
+}
+
+.thermometer-wrap.closed {
+	top: 0;
+	opacity: 0;
 }
 
 </style>
