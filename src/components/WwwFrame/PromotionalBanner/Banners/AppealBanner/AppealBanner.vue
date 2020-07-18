@@ -51,6 +51,7 @@
 										<kv-button
 											class="mini custom-width"
 											@click.native.prevent.stop="updateDonationTo(buttonAmount)"
+											v-kv-track-event="['promo', 'click-amount-btn', 'AppealBanner', buttonAmount]"
 										>
 											${{ buttonAmount }}
 										</kv-button>
@@ -60,7 +61,7 @@
 									class="other-amount"
 									href="/donate/supportus"
 									@blur="validateInput"
-									v-kv-track-event="['promo', 'click', 'EOYBanner', 'other-button']"
+									v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0]"
 								>Other amount
 								</a>
 							</div>
