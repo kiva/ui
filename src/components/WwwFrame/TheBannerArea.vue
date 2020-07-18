@@ -1,7 +1,9 @@
 <template>
 	<div>
-		<appeal-banner v-if="showAppeal && !hasPromoSession" :appeal-match-enabled="appealMatchEnabled" />
-		<global-promo-contentful :has-promo-session="hasPromoSession" v-if="!showAppeal" />
+		<global-promo-contentful
+			:has-promo-session="hasPromoSession"
+			:appeal-match-enabled="appealMatchEnabled"
+		/>
 	</div>
 </template>
 
@@ -9,19 +11,15 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
-import AppealBanner from './EndOfYearAppealBanner/AppealBanner';
 import GlobalPromoContentful from './PromotionalBanner/GlobalPromotionalBannerContentful';
 
 export default {
 	inject: ['apollo'],
 	components: {
-		AppealBanner,
 		GlobalPromoContentful,
 	},
 	data() {
 		return {
-			appealEnabled: false,
-			appealMatchEnabled: false,
 			lendingRewardOffered: false,
 			bonusBalance: 0,
 			hasFreeCredits: false,
@@ -57,24 +55,6 @@ export default {
 			// (lending reward credit, bonus credit, or free credit)
 			// If the have any of the above, we hide the banner area
 			if (this.lendingRewardOffered || this.bonusBalance > 0 || this.hasFreeCredits) {
-				return true;
-			}
-			return false;
-		},
-		showAppeal() {
-			// make sure the appeal is enable + we're not on certain blacklisted pages
-			const blacklist = [
-				'/checkout',
-				'/error',
-				'/join-team',
-				'/register/social',
-				'/possibility/giving-tuesday',
-				'/possibility/12-days-of-lending',
-				'/possibility/year-end'
-			];
-			// First check if Appeal Banner or Appeal Banner Matching
-			// is active and the user is not on a blacklisted page URL
-			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
 				return true;
 			}
 			return false;

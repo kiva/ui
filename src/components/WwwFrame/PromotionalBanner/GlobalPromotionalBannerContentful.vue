@@ -1,9 +1,15 @@
 <template>
-	<generic-promo-banner
-		v-if="isPromoEnabled"
-		:icon-key="promoBannerContent.iconKey"
-		:promo-banner-content="promoBannerContent"
-	/>
+	<div>
+		<generic-promo-banner
+			v-if="isPromoEnabled"
+			:icon-key="promoBannerContent.iconKey"
+			:promo-banner-content="promoBannerContent"
+		/>
+		<appeal-banner
+			v-if="showAppeal"
+			:appeal-banner-content="appealBannerContent.fields"
+		/>
+	</div>
 </template>
 
 <script>
@@ -12,11 +18,12 @@ import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+import AppealBanner from './Banners/AppealBanner/AppealBanner';
 
 export default {
-	inject: ['federation'],
 	components: {
 		GenericPromoBanner,
+		AppealBanner
 	},
 	props: {
 		hasPromoSession: {
@@ -28,7 +35,29 @@ export default {
 		return {
 			isPromoEnabled: false,
 			promoBannerContent: {},
+			appealEnabled: false,
 		};
+	},
+	inject: ['federation'],
+	computed: {
+		showAppeal() {
+			// make sure the appeal is enable + we're not on certain blacklisted pages
+			const blacklist = [
+				'/checkout',
+				'/error',
+				'/join-team',
+				'/register/social',
+				'/possibility/giving-tuesday',
+				'/possibility/12-days-of-lending',
+				'/possibility/year-end'
+			];
+			// First check if Appeal Banner or Appeal Banner Matching
+			// is active and the user is not on a blacklisted page URL
+			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
+				return true;
+			}
+			return false;
+		},
 	},
 	created() {
 		this.federation.query({
@@ -84,13 +113,6 @@ export default {
 						return false;
 					}
 
-					// parse the contentful richText into an html string
-					this.promoBannerContent = {
-						kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
-						link: activePromoBanner.fields.link,
-						richText: documentToHtmlString(activePromoBanner.fields.richText),
-						iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
-					};
 					// check for special conditions and allow that process to control enabled
 					const specialConditions = _get(activePromoBanner, 'fields.specialConditions', null);
 					if (specialConditions) {
@@ -100,7 +122,22 @@ export default {
 						// process them and set this.isPromoEnabled = true accordingly
 						return false;
 					}
-					this.isPromoEnabled = true;
+
+					// Check banner type
+					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
+						this.appealEnabled = true;
+						this.appealBannerContent = activePromoBanner;
+					} else {
+						// parse the contentful richText into an html string
+						this.promoBannerContent = {
+							kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
+							link: activePromoBanner.fields.link,
+							richText: documentToHtmlString(activePromoBanner.fields.richText),
+							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
+						};
+
+						this.isPromoEnabled = true;
+					}
 				}
 			}
 		});
