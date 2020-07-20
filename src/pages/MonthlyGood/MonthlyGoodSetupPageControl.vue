@@ -223,11 +223,11 @@
 							<div class="payment-dropin-wrapper" v-if="showDropInPayments">
 								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 								<monthly-good-drop-in-payment-wrapper
-									:amount="this.totalCombinedDeposit"
-									:donate-amount="this.donation"
-									:day-of-month="this.dayOfMonth"
-									:category="this.selectedGroup"
-									:is-one-time="this.isOnetime"
+									:amount="totalCombinedDeposit"
+									:donate-amount="donation"
+									:day-of-month="dayOfMonth"
+									:category="selectedGroup"
+									:is-one-time="isOnetime"
 									@complete-transaction="completeMGBraintree()"
 								/>
 							</div>

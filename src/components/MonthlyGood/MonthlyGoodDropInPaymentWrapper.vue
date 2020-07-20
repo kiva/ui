@@ -3,7 +3,7 @@
 		<div class="payment-holder small-12 medium-8 columns">
 			<braintree-drop-in-interface
 				ref="braintreeDropInInterface"
-				:amount="amount"
+				:amount="amount | numeral('0.00')"
 				flow="vault"
 				@transactions-enabled="enableConfirmButton = $event"
 			/>
