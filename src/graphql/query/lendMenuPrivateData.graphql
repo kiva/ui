@@ -1,6 +1,6 @@
 query lendMenuPrivateData($userId: Int) {
 	lend {
-		loans(limit: 0, filters: {
+		loans(limit: 1, filters: {
 			lenderFavorite: $userId
 		}) {
 			totalCount
