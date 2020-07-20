@@ -227,7 +227,7 @@
 									:donate-amount="this.donation"
 									:day-of-month="this.dayOfMonth"
 									:category="this.selectedGroup"
-									:is-onetime="this.isOnetime"
+									:is-one-time="this.isOnetime"
 									@complete-transaction="completeMGBraintree()"
 								/>
 							</div>
