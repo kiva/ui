@@ -16,15 +16,7 @@
 				</div>
 			</div>
 		</section>
-		<section class="loan-categories section">
-			<div class="row">
-				<div class="columns">
-					<h2 class="large-text text-center">
-						It's easy to find and fund a cause that matters to you.
-					</h2>
-				</div>
-			</div>
-		</section>
+		<loan-categories-section class="section" />
 		<section class="loan-not-donation section text-center">
 			<div class="row">
 				<kv-responsive-image
@@ -86,13 +78,15 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
 		KvButton,
-		KvResponsiveImage
+		KvResponsiveImage,
+		LoanCategoriesSection
 	},
 	props: {
 	},
@@ -122,10 +116,6 @@ export default {
 .featured-loans {
 	background: $dark-charcoal;
 	color: #fff;
-}
-
-.loan-categories {
-	background: hsl(100, 100, 90);
 }
 
 .loan-not-donation {
