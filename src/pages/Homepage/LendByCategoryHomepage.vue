@@ -17,7 +17,14 @@
 			</div>
 		</section>
 		<section class="loan-categories section">
-			<loan-categories-section />
+			<div class="row">
+				<div class="columns">
+					<h2 class="large-text text-center">
+						Kiva makes it easy to support causes you care about.
+					</h2>
+					<loan-categories-section />
+				</div>
+			</div>
 		</section>
 		<section class="loan-not-donation section text-center">
 			<div class="row">

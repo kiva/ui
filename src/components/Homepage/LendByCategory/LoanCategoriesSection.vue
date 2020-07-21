@@ -1,48 +1,39 @@
 <template>
-	<div class="row">
-		<div class="columns">
-			<h2 class="large-text text-center">
-				Kiva makes it easy to support causes you care about.
-			</h2>
-
-			<div>
-				<span
-					v-for="(category) in categories"
-					:key="category.id + '-link'"
-				>
-					<a
-						role="button"
-						@click.prevent="setActiveCategory(category.id)"
-						:class="{'active': category.id === activeCategory}"
-					>
-						{{ category.name }}
-					</a>
-				</span>
-				<div
-					class="loan-category-row"
-					v-for="(category, index) in categories"
-					v-show="category.id === activeCategory"
-					:key="category.id + '-row'"
-				>
-					<loan-category
-						:loan-channel="category"
-						:items-in-basket="itemsInBasket"
-						:row-number="index + 1"
-						:is-logged-in="isLoggedIn"
-						:is-visible="category.id === activeCategory"
-						ref="categoryRow"
-					/>
-				</div>
-			</div>
-
-			<div class="row pre-footer">
-				<div class="column small-12">
-					<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
-						<loading-overlay id="updating-overlay" />
-						<h3 class="text-center">
-							Loading more rows...
-						</h3>
-					</div>
+	<div>
+		<span
+			v-for="(category) in categories"
+			:key="category.id + '-link'"
+		>
+			<a
+				role="button"
+				@click.prevent="setActiveCategory(category.id)"
+				:class="{'active': category.id === activeCategory}"
+			>
+				{{ category.name }}
+			</a>
+		</span>
+		<div
+			class="loan-category-row"
+			v-for="(category, index) in categories"
+			v-show="category.id === activeCategory"
+			:key="category.id + '-row'"
+		>
+			<loan-category
+				:loan-channel="category"
+				:items-in-basket="itemsInBasket"
+				:row-number="index + 1"
+				:is-logged-in="isLoggedIn"
+				:is-visible="category.id === activeCategory"
+				ref="categoryRow"
+			/>
+		</div>
+		<div class="row pre-footer">
+			<div class="column small-12">
+				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
+					<loading-overlay id="updating-overlay" />
+					<h3 class="text-center">
+						Loading more rows...
+					</h3>
 				</div>
 			</div>
 		</div>
