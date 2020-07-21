@@ -27,6 +27,12 @@
 		</section>
 		<section class="loan-not-donation section text-center">
 			<div class="row">
+				<kv-responsive-image
+					class="loan-not-donation__img"
+					:images="loanNotDonationImg"
+					loading="lazy"
+					alt=""
+				/>
 				<h2 class="large-text small-12 columns">
 					A loan, not a donation.
 				</h2>
@@ -79,15 +85,24 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+
+const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
 		KvButton,
+		KvResponsiveImage
 	},
 	props: {
 	},
 	data() {
-		return {};
+		return {
+			loanNotDonationImg: [
+				['small', imgRequire('./loan-not-donation.png')],
+				['small retina', imgRequire('./loan-not-donation_2x.png')],
+			],
+		};
 	},
 	computed: {
 	},
@@ -114,7 +129,12 @@ export default {
 }
 
 .loan-not-donation {
-	background: hsl(80, 100, 90);
+	background: hsl(80, 100, 90); // temp during dev to show the section
+
+	&__img {
+		margin: 0 auto;
+		width: rem-calc(134);
+	}
 }
 
 .how-kiva-works {
