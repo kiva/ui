@@ -16,7 +16,9 @@
 				</div>
 			</div>
 		</section>
-		<loan-categories-section class="section" />
+		<section class="loan-categories section">
+			<loan-categories-section />
+		</section>
 		<section class="loan-not-donation section text-center">
 			<div class="row">
 				<kv-responsive-image

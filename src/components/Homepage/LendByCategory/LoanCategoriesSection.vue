@@ -1,54 +1,52 @@
 <template>
-	<section class="loan-categories">
-		<div class="row">
-			<div class="columns">
-				<h2 class="large-text text-center">
-					Kiva makes it easy to support causes you care about.
-				</h2>
+	<div class="row">
+		<div class="columns">
+			<h2 class="large-text text-center">
+				Kiva makes it easy to support causes you care about.
+			</h2>
 
-				<div>
-					<span
-						v-for="(category) in categories"
-						:key="category.id + '-link'"
+			<div>
+				<span
+					v-for="(category) in categories"
+					:key="category.id + '-link'"
+				>
+					<a
+						role="button"
+						@click.prevent="setActiveCategory(category.id)"
+						:class="{'active': category.id === activeCategory}"
 					>
-						<a
-							role="button"
-							@click.prevent="setActiveCategory(category.id)"
-							:class="{'active': category.id === activeCategory}"
-						>
-							{{ category.name }}
-						</a>
-					</span>
-					<div
-						class="loan-category-row"
-						v-for="(category, index) in categories"
-						v-show="category.id === activeCategory"
-						:key="category.id + '-row'"
-					>
-						<loan-category
-							:loan-channel="category"
-							:items-in-basket="itemsInBasket"
-							:row-number="index + 1"
-							:is-logged-in="isLoggedIn"
-							:is-visible="category.id === activeCategory"
-							ref="categoryRow"
-						/>
-					</div>
+						{{ category.name }}
+					</a>
+				</span>
+				<div
+					class="loan-category-row"
+					v-for="(category, index) in categories"
+					v-show="category.id === activeCategory"
+					:key="category.id + '-row'"
+				>
+					<loan-category
+						:loan-channel="category"
+						:items-in-basket="itemsInBasket"
+						:row-number="index + 1"
+						:is-logged-in="isLoggedIn"
+						:is-visible="category.id === activeCategory"
+						ref="categoryRow"
+					/>
 				</div>
+			</div>
 
-				<div class="row pre-footer">
-					<div class="column small-12">
-						<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
-							<loading-overlay id="updating-overlay" />
-							<h3 class="text-center">
-								Loading more rows...
-							</h3>
-						</div>
+			<div class="row pre-footer">
+				<div class="column small-12">
+					<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
+						<loading-overlay id="updating-overlay" />
+						<h3 class="text-center">
+							Loading more rows...
+						</h3>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 </template>
 
 <script>
@@ -268,86 +266,84 @@ export default {
 	border-bottom: 1px solid green;
 }
 
-.loan-categories {
-	.loan-category-row {
-		margin: 0 0 rem-calc(20);
+.loan-category-row {
+	margin: 0 0 rem-calc(20);
 
-		@include breakpoint(medium) {
-			margin: 0 0 rem-calc(40);
-		}
+	@include breakpoint(medium) {
+		margin: 0 0 rem-calc(40);
+	}
 
+	&:last-of-type {
+		margin-bottom: 0;
+	}
+
+	@media (hover: none) {
 		&:last-of-type {
 			margin-bottom: 0;
 		}
+	}
+}
 
-		@media (hover: none) {
-			&:last-of-type {
-				margin-bottom: 0;
-			}
+.pre-footer {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+
+	.cat-row-loader {
+		display: flex;
+		justify-content: center;
+		position: relative;
+		z-index: 5;
+		height: 9rem;
+		margin: 0 0 3rem;
+
+		// loading overlay overrides
+		#updating-overlay {
+			background: transparent;
+			z-index: 6;
+		}
+
+		h3 {
+			display: flex;
+			align-items: flex-end;
 		}
 	}
 
-	.pre-footer {
-		margin-top: 2rem;
-		margin-bottom: 2rem;
+	h2 {
+		margin: 0 1.875rem;
 
-		.cat-row-loader {
-			display: flex;
-			justify-content: center;
-			position: relative;
-			z-index: 5;
-			height: 9rem;
-			margin: 0 0 3rem;
-
-			// loading overlay overrides
-			#updating-overlay {
-				background: transparent;
-				z-index: 6;
-			}
-
-			h3 {
-				display: flex;
-				align-items: flex-end;
-			}
+		@include breakpoint(medium) {
+			margin-left: 1.625rem;
+		}
+		@include breakpoint(xxlarge) {
+			margin-left: 0.625rem;
 		}
 
-		h2 {
-			margin: 0 1.875rem;
+		@media (hover: none) {
+			margin: 0;
+		}
+	}
+
+	a.view-all-link {
+		display: inline;
+		position: relative;
+
+		.view-all-arrow {
+			position: absolute;
+			top: -1rem;
+			right: -1.4rem;
+			padding: 0 0.3rem;
+			font-weight: $global-weight-normal;
+			font-size: 2.5rem;
 
 			@include breakpoint(medium) {
-				margin-left: 1.625rem;
-			}
-			@include breakpoint(xxlarge) {
-				margin-left: 0.625rem;
-			}
-
-			@media (hover: none) {
-				margin: 0;
+				font-size: 3rem;
+				right: -1.6rem;
 			}
 		}
 
-		a.view-all-link {
-			display: inline;
-			position: relative;
-
-			.view-all-arrow {
-				position: absolute;
-				top: -1rem;
-				right: -1.4rem;
-				padding: 0 0.3rem;
-				font-weight: $global-weight-normal;
-				font-size: 2.5rem;
-
-				@include breakpoint(medium) {
-					font-size: 3rem;
-					right: -1.6rem;
-				}
-			}
-
-			&:hover {
-				text-decoration: none;
-				cursor: pointer;
-			}
+		&:hover {
+			text-decoration: none;
+			cursor: pointer;
 		}
 	}
 }
