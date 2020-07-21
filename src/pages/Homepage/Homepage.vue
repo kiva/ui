@@ -12,6 +12,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
 	lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderTheme, wrdFooterTheme
 } from '@/util/siteThemes';
@@ -79,7 +80,15 @@ export default {
 	},
 	apollo: {
 		query: activePageQuery,
-		preFetch: true,
+		preFetch(config, client) {
+			return client.query({
+				query: activePageQuery
+			}).then(() => {
+				return client.query({
+					query: experimentQuery, variables: { id: 'home_lendbycategory' }
+				});
+			});
+		},
 		result({ data }) {
 			// lend-by-category as homepage experiment - EXP-GROW-138-Jul2020
 			const lendByCategoryExperiment = this.apollo.readFragment({
