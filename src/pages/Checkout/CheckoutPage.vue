@@ -171,6 +171,7 @@ import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUse
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -278,6 +279,9 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' })
 					]);
+				})
+				.then(() => {
+					return client.query({ query: experimentQuery, variables: { id: 'braintree_dropin_checkout' } });
 				});
 		},
 		result({ data }) {
