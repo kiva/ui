@@ -129,7 +129,12 @@ export default {
 }
 
 .loan-not-donation {
-	background: hsl(80, 100, 90);
+	background: hsl(80, 100, 90); // temp during dev to show the section
+
+	&__img {
+		margin: 0 auto;
+		width: rem-calc(134);
+	}
 }
 
 .how-kiva-works {
