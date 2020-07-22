@@ -18,10 +18,6 @@ import {
 } from '@/util/siteThemes';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
-import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
-import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
-import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 
 import TopMessageContentful from './TopMessageContentful';
 
@@ -41,10 +37,6 @@ export default {
 	inject: ['apollo'],
 	components: {
 		WwwPage,
-		DefaultHomePage,
-		LendByCategoryHomepage,
-		IWDHomePage,
-		WRDHomePage,
 		TopMessageContentful,
 	},
 	data() {
@@ -58,11 +50,19 @@ export default {
 	},
 	computed: {
 		activeHomepage() {
-			if (this.isLendByCategoryActive) return LendByCategoryHomepage;
-			if (this.isMessageActive) return TopMessageContentful;
-			if (this.isIwdActive) return IWDHomePage;
-			if (this.isWrdActive) return WRDHomePage;
-			return DefaultHomePage;
+			// dynamically import the homepage we want so we're not bundling unused assets.
+			return () => {
+				if (this.isWrdActive) {
+					return import('@/pages/Homepage/wrd/WRDHomepage');
+				}
+				if (this.isIwdActive) {
+					return import('@/pages/Homepage/iwd/IWDHomepage');
+				}
+				if (this.isLendByCategoryActive) {
+					return import('@/pages/Homepage/LendByCategoryHomepage');
+				}
+				return import('@/pages/Homepage/DefaultHomepage');
+			};
 		},
 		headerTheme() {
 			if (this.isLendByCategoryActive) return lightHeader;
