@@ -24,7 +24,9 @@
 				@click="scrollRowLeft"
 			>&lsaquo;</span>
 			<div class="cards-display-window" ref="innerWrapper">
+				<loading-overlay v-if="isLoading" id="updating-overlay" />
 				<div
+					v-else
 					class="cards-holder"
 					:style="{ marginLeft: scrollPos + 'px' }"
 					v-touch:swipe.left="scrollRowRight"
@@ -46,6 +48,7 @@
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 					/>
+
 					<!--
 						Blocks of attributes above:
 						1) Props for implemented loan cards
@@ -62,7 +65,6 @@
 							<div
 								class="see-all-card"
 								:class="seeAllCardClass"
-								@mouseenter="updateHoverLoanIndex(null)"
 							>
 								<div class="link">
 									{{ viewAllLoansCategoryTitle }}
@@ -83,13 +85,13 @@
 </template>
 
 <script>
-import _filter from 'lodash/filter';
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
 const cardWidth = 320;
 const cardRightMargin = 10;
@@ -97,7 +99,7 @@ const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
 	components: {
-		LoanCardController,
+		LoanCardController, LoadingOverlay
 	},
 	mixins: [
 		categoryRowArrowsVisibleMixin,
@@ -146,6 +148,9 @@ export default {
 		};
 	},
 	computed: {
+		isLoading() {
+			return this.loans.length === 0 && this.isVisible;
+		},
 		showViewAllLink() {
 			let isVisible = true;
 
@@ -159,7 +164,6 @@ export default {
 			return isVisible;
 		},
 		cardsInWindow() {
-			console.log('cards in window', Math.floor(this.wrapperWidth / this.cardWidth));
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
 		cleanName() {
@@ -241,16 +245,15 @@ export default {
 	watch: {
 		isVisible: {
 			handler() {
-				console.log('visibility changed');
 				this.saveWindowWidth();
 			},
 			immediate: true,
 		},
 		loanChannel: {
 			handler(channel) {
-				this.name = _get(channel, 'name');
-				this.url = _get(channel, 'url');
-				this.loans = _filter(_get(channel, 'loans.values'));
+				this.name = _get(channel, 'name', '');
+				this.url = _get(channel, 'url', '');
+				this.loans = _get(channel, 'loans.values', []);
 			},
 			immediate: true,
 			deep: true,
@@ -284,10 +287,8 @@ export default {
 			this.windowWidth = window.innerWidth;
 			// TODO: New Countries for You code is getting executed even for NON Logged in lenders (no loans, no width)
 			this.wrapperWidth = this.$refs.innerWrapper ? this.$refs.innerWrapper.clientWidth : 0;
-			console.log('save window width', this.wrapperWidth, this.$refs.innerWrapper);
 		},
 		scrollRowLeft() {
-			console.log('scrolling left', this.scrollPos, this.shiftIncrement);
 			if (this.scrollPos < 0) {
 				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
 				this.scrollPos = newLeftMargin;
@@ -295,11 +296,9 @@ export default {
 			}
 		},
 		scrollRowRight() {
-			console.log('scrolling right', this.scrollPos, this.minLeftMargin);
 			if (this.scrollPos > this.minLeftMargin) {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
-				console.log('new scroll position', this.scrollPos);
 				this.$emit('scrolling-row');
 			}
 		},
@@ -508,6 +507,20 @@ a.view-all-link {
 		height: 100%;
 		justify-content: center;
 		text-align: center;
+	}
+}
+// loading overlay overrides
+#updating-overlay {
+	background-color: rgba($kiva-bg-darkgray, 0.7);
+	z-index: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.spinner-wrapper {
+		position: relative;
+		left: auto;
+		transform: none;
 	}
 }
 </style>

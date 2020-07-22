@@ -1,84 +1,70 @@
 <template>
 	<div>
-		<span
-			v-for="(category) in categories"
-			:key="category.id + '-link'"
-		>
+		<div>
 			<a
+				v-for="(category) in prefetchedCategoryInfo"
+				:key="category.id + '-link'"
 				role="button"
 				@click.prevent="setActiveCategory(category.id)"
 				:class="{'active': category.id === activeCategory}"
 			>
 				{{ category.name }}
 			</a>
-		</span>
+			<router-link
+				:to="`/lend-by-category`"
+			>
+				More
+			</router-link>
+		</div>
+
 		<div
 			class="loan-category-row"
-			v-for="(category, index) in categories"
+			v-for="(category, index) in prefetchedCategoryInfo"
 			v-show="category.id === activeCategory"
 			:key="category.id + '-row'"
 		>
 			<loan-category
-				:loan-channel="category"
+				:loan-channel="getCategoryLoans(category.id)"
 				:items-in-basket="itemsInBasket"
 				:row-number="index + 1"
 				:is-logged-in="isLoggedIn"
 				:is-visible="category.id === activeCategory"
-				ref="categoryRow"
 			/>
-		</div>
-		<div class="row pre-footer">
-			<div class="column small-12">
-				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
-					<loading-overlay id="updating-overlay" />
-					<h3 class="text-center">
-						Loading more rows...
-					</h3>
-				</div>
-			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import _drop from 'lodash/drop';
-import _each from 'lodash/each';
 import _get from 'lodash/get';
 import _map from 'lodash/map';
-import _take from 'lodash/take';
-import _uniqBy from 'lodash/uniqBy';
-// import cookieStore from '@/util/cookieStore';
+
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
-import { indexIn } from '@/util/comparators';
-// import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHomepageCategories.graphql';
-import loanChannelQuery from '@/graphql/query/loanChannelData.graphql';
+import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
+import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
-
-// Row Limiter
-// > This controls how may rows are loaded on the server
-const ssrRowLimiter = 2;
 
 export default {
 	components: {
 		LoanCategory,
-		LoadingOverlay,
 	},
-	inject: ['apollo', 'kvAuth0'],
+	inject: ['apollo'],
 	data() {
 		return {
-			categorySetting: [],
+			categoryIds: [52, 96, 93, 89, 87], // fallback category ids
 			itemsInBasket: [],
-			prefetchedCategories: [],
-			clientCategories: [],
-			rowLazyLoadComplete: false,
-			rightArrowPosition: undefined,
-			leftArrowPosition: undefined,
+			prefetchedCategoryInfo: [],
+			categoriesWithLoans: [],
+			activeCategory: null,
 			isLoggedIn: false,
-			activeCategory: ''
+
+			// clientCategories: [],
+			// rowLazyLoadComplete: false,
+			// rightArrowPosition: undefined,
+			// leftArrowPosition: undefined,
 		};
 	},
 	apollo: {
@@ -88,124 +74,97 @@ export default {
 				query: lendByCategoryHomepageCategories
 			}).then(({ data }) => {
 				// Get the array of channel objects from settings
-				const rowData = readJSONSetting(data, 'general.rows.value') || [];
+				const loanChannelsSetting = readJSONSetting(data, 'general.rows.value') || [];
 				// Get all channel ids for the row data
-				const ids = _map(rowData, 'id');
-
-				// Pre-fetch all the data for SSR targeted channels
+				const channelIds = _map(loanChannelsSetting, 'id');
+				// Pre-fetch loan channel information, but no loans
 				return 	client.query({
-					query: loanChannelQuery,
+					query: loanChannelInfoQuery,
 					variables: {
-						ids: _take(ids, ssrRowLimiter),
-						imgDefaultSize: 'w480h300',
-						imgRetinaSize: 'w960h600',
+						ids: channelIds,
 					},
+					fetchPolicy: 'network-only',
 				});
 			});
 		},
 		result({ data }) {
-			console.log('data results', data);
 			this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
 
-			// Get the array of channel objects from settings
-			this.categorySetting = readJSONSetting(data, 'general.rows.value') || [];
+			// Get the array of channel objects from settings,
+			// if successful set to categoryIds
+			const categorySettingsArray = readJSONSetting(data, 'general.rows.value');
+			if (categorySettingsArray) {
+				this.categoryIds = categorySettingsArray.map(setting => setting.id);
+			}
 
 			this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
 
-			// set initial active category
-			this.activeCategory = this.categorySetting[0].id || null;
-
-			// Read the SSR ready loan channels from the cache
+			// Read the SSR ready loan channel info from the cache
 			try {
 				const categoryData = this.apollo.readQuery({
-					query: loanChannelQuery,
+					query: loanChannelInfoQuery,
 					variables: {
-						ids: _take(this.categoryIds, ssrRowLimiter),
-						imgDefaultSize: 'w480h300',
-						imgRetinaSize: 'w960h600',
+						ids: this.categoryIds,
 					},
 				});
-				this.prefetchedCategories = _get(categoryData, 'lend.loanChannelsById') || [];
+				this.prefetchedCategoryInfo = _get(categoryData, 'data.lend.loanChannelsById') || [];
 			} catch (e) {
-				logReadQueryError(e, 'LendByCategory loanChannelQuery');
+				logReadQueryError(e, 'LoanCategoriesSection loanChannelInfoQuery');
 			}
 		}
 	},
+	created() {
+		// set initial active category
+		this.setActiveCategory(this.categoryIds[0]);
+	},
 	computed: {
-		categoryIds() {
-			return _map(this.categorySetting, 'id');
-		},
-		categories() {
-			// merge prefetchedCategories & clientCategories
-			const categories = _uniqBy(this.prefetchedCategories.concat(this.clientCategories), 'id');
-			return categories
-				// fiter our any empty categories and categories with 0 loans
-				.filter(channel => _get(channel, 'loans.values.length') > 0)
-				// and re-order to match the setting
-				.sort(indexIn(this.categoryIds, 'id'));
-		},
+		allLoanIdsCurrentlyVisible() {
+			// returns array of all loan ids in this.categoriesWithLoans
+			const loanIds = this.categoriesWithLoans.map(category => {
+				return category.loans.values.map(loan => loan.id);
+			});
+			// reduces array of arrays into single array
+			return [].concat(...loanIds);
+		}
 	},
 	methods: {
+		// sets category as active and fetches loans for that channel
 		setActiveCategory(categoryId) {
 			this.activeCategory = categoryId;
-		},
-		assemblePageViewData(categories) {
-			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
-			const loanIds = [];
-			const pageViewTrackData = { schema, data: {} };
-
-			pageViewTrackData.data.categorySetIdentifier = 'control';
-
-			_each(categories, (category, catIndex) => {
-				_each(category.loans.values, (loan, loanIndex) => {
-					loanIds.push({
-						r: catIndex + 1,
-						p: loanIndex + 1,
-						c: category.id,
-						l: loan.id
-					});
+			// if category does not have loans, get loans
+			if (!this.categoriesWithLoans.find(category => category.id === categoryId)) {
+				// fetch query data
+				this.apollo.query({
+					query: loanChannelData,
+					variables: {
+						ids: [categoryId],
+						excludeIds: this.allLoanIdsCurrentlyVisible,
+						imgDefaultSize: 'w480h300',
+						imgRetinaSize: 'w960h600',
+						numberOfLoans: 8,
+					}
+				}).then(({ data }) => {
+					const channelData = _get(data, 'lend.loanChannelsById')
+						.filter(channel => channel.id === categoryId);
+					const channelLoans = channelData[0];
+					this.categoriesWithLoans.push(channelLoans);
 				});
-			});
-			pageViewTrackData.data.loansDisplayed = loanIds;
-			return pageViewTrackData;
+			}
 		},
-		fetchRemainingLoanChannels() {
-			// const ssrLoanIds = [];
-			// pick loan ids from each
-			// _each(this.categories, category => {
-			// 	_each(category.loans.values, loan => {
-			// 		ssrLoanIds.push(loan.id);
-			// 	});
-			// });
-			// Client Fetch the remaining category rows
-			return this.apollo.query({
-				query: loanChannelQuery,
-				variables: {
-					ids: _drop(this.categoryIds, ssrRowLimiter),
-					// excludeIds: ssrLoanIds,
-					imgDefaultSize: 'w480h300',
-					imgRetinaSize: 'w960h600',
-					// @todo variables for fetching data for custom channels
-				},
-			}).then(({ data }) => {
-				console.log('lend', data);
-				// add our remaining loan channels
-				this.clientCategories = _get(data, 'lend.loanChannelsById') || [];
-			});
+		// get category loans for a given category id
+		getCategoryLoans(categoryId) {
+			return this.categoriesWithLoans.filter(category => category.id === categoryId)[0] || {};
 		},
 		activateWatchers() {
 			// Create an observer for changes to the categories (and their loans)
 			this.apollo.watchQuery({
-				query: loanChannelQuery,
+				query: loanChannelInfoQuery,
 				variables: {
 					ids: this.categoryIds,
-					imgDefaultSize: 'w480h300',
-					imgRetinaSize: 'w960h600',
 				},
 			}).subscribe({
 				next: ({ data }) => {
-					this.prefetchedCategories = _get(data, 'lend.loanChannelsById') || this.prefetchedCategories;
+					this.prefetchedCategoryInfo = _get(data, 'lend.loanChannelsById') || this.prefetchedCategoryInfo;
 				},
 			});
 			this.apollo.watchQuery({ query: lendByCategoryHomepageCategories }).subscribe({
@@ -214,35 +173,9 @@ export default {
 				},
 			});
 		},
-		setRightArrowPosition() {
-			if (this.$refs.categoryRow && this.$refs.categoryRow.length) {
-				this.rightArrowPosition = this.$refs.categoryRow
-					.find(row => row.hasRightArrow)
-					.getRightArrowPosition();
-			}
-		},
-		setLeftArrowPosition() {
-			if (this.$refs.categoryRow && this.$refs.categoryRow.length) {
-				this.leftArrowPosition = this.$refs.categoryRow
-					.find(row => row.hasLeftArrow)
-					.getLeftArrowPosition();
-			}
-		},
-		handleResize() {
-			this.setRightArrowPosition();
-			this.setLeftArrowPosition();
-		},
 	},
-
 	mounted() {
-		this.fetchRemainingLoanChannels().then(() => {
-			this.rowLazyLoadComplete = true;
-
-			this.activateWatchers();
-
-			const pageViewTrackData = this.assemblePageViewData(this.categories);
-			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-		});
+		this.activateWatchers();
 	},
 };
 
@@ -252,6 +185,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+//TODO Clean up this CSS
 //temp
 .active {
 	border-bottom: 1px solid green;
