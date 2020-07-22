@@ -6,75 +6,164 @@
 					carousel here
 				</div>
 				<div class="small-12 large-6 columns">
-					<h1 class="huge">
-						Make a loan, change a life.
+					<h1 class="featured-loans__header">
+						Make a loan, <br class="so mo"> change a life.
 					</h1>
-					<p class="featured-text">
+					<p class="featured-loans__body">
 						Kiva empowers underserved people to achieve their
 						dreams by crowdfunding loans and unlocking capital.
 					</p>
 				</div>
 			</div>
+			<kv-responsive-image
+				class="featured-loans__flourish"
+				:images="flourishImgs.redRight"
+				loading="lazy"
+				alt=""
+			/>
 		</section>
+
 		<section class="loan-categories section">
 			<div class="row">
 				<div class="columns">
-					<h2 class="large-text text-center">
-						It's easy to find and fund a cause that matters to you.
+					<h2 class="loan-categories__header text-center">
+						Kiva makes it easy to support causes you care about.
 					</h2>
 				</div>
 			</div>
 		</section>
+
 		<section class="loan-not-donation section text-center">
 			<div class="row">
 				<kv-responsive-image
 					class="loan-not-donation__img"
-					:images="loanNotDonationImg"
+					:images="loanNotDonationImgs.header"
 					loading="lazy"
 					alt=""
 				/>
-				<h2 class="large-text small-12 columns">
-					A loan, not a donation.
+				<h2 class="loan-not-donation__header small-12 columns">
+					It's a loan, not a donation
 				</h2>
-				<p class="featured-text large-6 large-offset-3 columns">
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-					vel alias molestias aliquam sequi voluptates, perferendis possimus hic quibusdam
-					soluta. Rerum debitis voluptas tenetur, possimus vel provident.
+				<p class="loan-not-donation__body large-6 large-offset-3 columns">
+					Kiva is a loan, not a donation, allowing you to cycle your money and
+					create a personal impact across the world. Plus, you can withdraw your funds at any time.
 				</p>
 			</div>
+			<kv-responsive-image
+				class="loan-not-donation__flourish"
+				:images="flourishImgs.greenLeft"
+				loading="lazy"
+				alt=""
+			/>
 		</section>
-		<section class="how-kiva-works section text-center">
+
+		<section class="how-it-works section text-center">
 			<div class="row">
-				<h2 class="large-text small-12 columns">
-					How Kiva works
+				<h2 class="how-it-works__header small-12 columns">
+					How it works
 				</h2>
+				<p class="large-6 large-offset-3 columns">
+					By lending as little as $25 on Kiva, you can support the causes you care
+					about and make a real personal impact.
+				</p>
 			</div>
+			<ol class="how-it-works__list row">
+				<li class="how-it-works__li small-12 xxlarge-3 columns">
+					<kv-responsive-image
+						class="how-it-works__img how-it-works__img--borrower"
+						:images="howItWorksImgs.borrower"
+						loading="lazy"
+						alt=""
+					/>
+					<h3 class="how-it-works__subtitle">
+						Choose a borrower
+					</h3>
+					<p>Browse by category and find an entrepeneur to support</p>
+				</li>
+				<li class="how-it-works__li small-12 xxlarge-3 columns">
+					<kv-responsive-image
+						class="how-it-works__img how-it-works__img--loan"
+						:images="howItWorksImgs.loan"
+						loading="lazy"
+						alt=""
+					/>
+					<h3 class="how-it-works__subtitle">
+						Make a loan
+					</h3>
+					<p>
+						Help fund a loan <br class="xxlu"> with as little as $25.
+					</p>
+				</li>
+				<li class="how-it-works__li small-12 xxlarge-3 columns">
+					<kv-responsive-image
+						class="how-it-works__img how-it-works__img--repaid"
+						:images="howItWorksImgs.repaid"
+						loading="lazy"
+						alt=""
+					/>
+					<h3 class="how-it-works__subtitle">
+						Get repaid
+					</h3>
+					<p>Kiva borrowers have a 96% repayment rate historically.</p>
+				</li>
+				<li class="how-it-works__li small-12 xxlarge-3 columns">
+					<kv-responsive-image
+						class="how-it-works__img how-it-works__img--repeat"
+						:images="howItWorksImgs.repeat"
+						loading="lazy"
+						alt=""
+					/>
+					<h3 class="how-it-works__subtitle">
+						Repeat
+					</h3>
+					<p>Relend your money or withdraw your funds.</p>
+				</li>
+			</ol>
 		</section>
+
 		<section class="statistics section text-center">
 			<div class="row">
-				<h2 class="large-text small-12 columns">
+				<h2 class="statistics__header small-12 columns">
 					Statistics
 				</h2>
 			</div>
+			<kv-responsive-image
+				class="statistics__flourish"
+				:images="flourishImgs.pinkRight"
+				loading="lazy"
+				alt=""
+			/>
 		</section>
+
 		<section class="lender-quotes section">
 			<div class="row">
-				<h2 class="large-text text-center small-12 columns">
-					What our lending community thinks
+				<h2 class="lender-quotes__header text-center small-12 columns">
+					What our lending <br class="so mo"> community thinks
 				</h2>
 			</div>
+			<kv-responsive-image
+				class="lender-quotes__flourish"
+				:images="flourishImgs.yellowLeft"
+				loading="lazy"
+				alt=""
+			/>
 		</section>
+
 		<section class="final-cta section text-center">
 			<div class="row">
 				<div class="columns">
-					<p class="final-cta__text impact-text">
-						By lending as little as $25, you can help people around the world
-						create opportunity for themselves and their communities.
+					<p class="final-cta__body">
+						Make a loan today!
 					</p>
 					<kv-button
 						:to="`/lend-by-category`"
+						v-kv-track-event="[
+							'homepage',
+							'click-Get started',
+							'lend-by-category-homepage-redirect',
+							'true'
+						]"
 					>
-						<!-- TODO: add tracking -->
 						Get started
 					</kv-button>
 				</div>
@@ -98,10 +187,52 @@ export default {
 	},
 	data() {
 		return {
-			loanNotDonationImg: [
-				['small', imgRequire('./loan-not-donation.png')],
-				['small retina', imgRequire('./loan-not-donation_2x.png')],
-			],
+			loanNotDonationImgs: {
+				header: [
+					['small', imgRequire('./loan-not-donation.png')],
+					['small retina', imgRequire('./loan-not-donation_2x.png')],
+				],
+			},
+			howItWorksImgs: {
+				borrower: [
+					['small', imgRequire('./how-it-works-borrower.png')],
+					['small retina', imgRequire('./how-it-works-borrower_2x.png')],
+				],
+				loan: [
+					['small', imgRequire('./how-it-works-loan.png')],
+					['small retina', imgRequire('./how-it-works-loan_2x.png')],
+				],
+				repaid: [
+					['small', imgRequire('./how-it-works-repaid.png')],
+					['small retina', imgRequire('./how-it-works-repaid_2x.png')],
+				],
+				repeat: [
+					['small', imgRequire('./how-it-works-repeat.png')],
+					['small retina', imgRequire('./how-it-works-repeat_2x.png')],
+				],
+			},
+			flourishImgs: {
+				greenLeft: [
+					['small', imgRequire('./flourish-green-left.png')],
+					['large', imgRequire('./flourish-green-left.png')],
+					['large retina', imgRequire('./flourish-green-left_2x.png')],
+				],
+				redRight: [
+					['small', imgRequire('./flourish-red-right.png')],
+					['large', imgRequire('./flourish-red-right.png')],
+					['large retina', imgRequire('./flourish-red-right_2x.png')],
+				],
+				pinkRight: [
+					['small', imgRequire('./flourish-pink-right.png')],
+					['large', imgRequire('./flourish-pink-right.png')],
+					['large retina', imgRequire('./flourish-pink-right_2x.png')],
+				],
+				yellowLeft: [
+					['small', imgRequire('./flourish-yellow-left.png')],
+					['large', imgRequire('./flourish-yellow-left.png')],
+					['large retina', imgRequire('./flourish-yellow-left_2x.png')],
+				],
+			},
 		};
 	},
 	computed: {
@@ -118,48 +249,204 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-// Individual blocks, BEM it up from here
 .featured-loans {
-	background: $dark-charcoal;
-	color: #fff;
+	&__header {
+		@include large-text();
+
+		@include breakpoint(xlarge) {
+			@include huge-headline();
+		}
+	}
+
+	&__body {
+		@include medium-text();
+
+		@include breakpoint(xlarge) {
+			@include featured-text();
+		}
+	}
+
+	&__flourish {
+		position: absolute;
+		width: 40%;
+		max-width: rem-calc(436);
+		bottom: -5%;
+		right: 0;
+		pointer-events: none;
+
+		@include breakpoint(xlarge) {
+			width: 31%;
+		}
+	}
 }
 
 .loan-categories {
-	background: hsl(100, 100, 90);
+	&__header {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
 }
 
 .loan-not-donation {
-	background: hsl(80, 100, 90); // temp during dev to show the section
+	&__header {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
+
+	&__body {
+		@include breakpoint(large) {
+			@include featured-text();
+		}
+	}
+
+	&__flourish {
+		position: absolute;
+		width: 20%;
+		max-width: 17rem;
+		top: 0;
+		left: -3%;
+		pointer-events: none;
+
+		@include breakpoint(large) {
+			left: 0;
+			top: -10%;
+		}
+	}
 
 	&__img {
-		margin: 0 auto;
+		margin: 0 auto 1rem;
 		width: rem-calc(134);
 	}
 }
 
-.how-kiva-works {
-	background: hsl(60, 100, 90);
+.how-it-works {
+	&__header {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
+
+	&__list {
+		list-style: none;
+		margin-top: 1rem;
+		margin-bottom: 0;
+		padding: 0;
+	}
+
+	&__li {
+		margin-bottom: 1rem;
+	}
+
+	&__img {
+		width: rem-calc(81);
+		height: rem-calc(100);
+		margin: 0 auto 1rem;
+
+		&--borrower {
+			width: rem-calc(81);
+		}
+
+		&--loan {
+			width: rem-calc(124);
+		}
+
+		&--repaid {
+			width: rem-calc(87);
+		}
+
+		&--repeat {
+			width: rem-calc(94);
+		}
+	}
+
+	&__subtitle {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include featured-text();
+		}
+	}
 }
 
 .statistics {
-	background: hsl(40, 100, 90);
+	&__header {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
+
+	&__flourish {
+		position: absolute;
+		width: 18%;
+		max-width: rem-calc(213);
+		top: -100%;
+		right: 0;
+		pointer-events: none;
+
+		@include breakpoint(xlarge) {
+			top: -50%;
+			width: 25%;
+		}
+	}
 }
 
 .lender-quotes {
-	background: hsl(20, 100, 90);
+	&__header {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
+
+	&__flourish {
+		display: none;
+
+		@include breakpoint(large) {
+			display: block;
+			position: absolute;
+			width: 13%;
+			max-width: 17rem;
+			top: -30%;
+			left: 0;
+			pointer-events: none;
+		}
+	}
 }
 
 .final-cta {
-	background: hsl(0, 100, 90);
+	&__body {
+		@include featured-text();
 
-	&__text {
-		font-weight: 300;
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
+
+		@include breakpoint(large) {
+			@include impact-text();
+
+			font-weight: 300;
+			margin-bottom: 2rem;
+		}
 	}
 }
 
 // utils
 .section {
-	padding: 5rem 0;
+	position: relative;
+	padding: 3rem 0;
+	outline: 1px solid pink; // TODO: remove before prod
+
+	@include breakpoint(large) {
+		padding: 6rem 0;
+	}
 }
 </style>
