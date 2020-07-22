@@ -249,6 +249,10 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+.lend-by-category-homepage {
+	overflow: hidden;
+}
+
 .featured-loans {
 	&__header {
 		@include large-text();
