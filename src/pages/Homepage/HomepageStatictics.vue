@@ -48,13 +48,20 @@ export default {
 @import 'settings';
 
 .stats-box {
-	margin: 0 rem-calc(10);
+	// margin: 0 rem-calc(10);
+	margin: 0 auto;
 	border-radius: rem-calc(25);
 	background-color: $kiva-accent-blue;
 	color: $white;
+	padding: 50px 0;
 
 	&__group {
-		border-right: 3px solid black;
+		margin-bottom: 40px;
+		border-right: 3px solid rgba(0, 0, 0, 0.2);
+
+		@include breakpoint(medium) {
+			margin-bottom: 0;
+		}
 	}
 
 	&__stat {
