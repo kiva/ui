@@ -43,7 +43,10 @@ import gql from 'graphql-tag';
 
 const statsQuery = gql`query homepageStatistics {
 	general {
-
+		testing(key: "test") {
+			key
+			value
+		}
 	}
 }`;
 
