@@ -39,33 +39,33 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
 
-const statsQuery = gql`query homepageStatistics {
-	general {
-		testing(key: "test") {
-			key
-			value
-		}
-	}
-}`;
+// const statsQuery = gql`query homepageStatistics {
+// 	general {
+// 		testing(key: "test") {
+// 			key
+// 			value
+// 		}
+// 	}
+// }`;
 
 export default {
 	inject: ['apollo', 'federation'],
-	apollo: {
-		query: statsQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: statsQuery
-			}).then(() => {
-				return client.query({
-					query: statsQuery, variables: { id: '' }
-				});
-			});
-		},
-		result() {
-		}
-	}
+	// apollo: {
+	// 	query: statsQuery,
+	// 	preFetch(config, client) {
+	// 		return client.query({
+	// 			query: statsQuery
+	// 		}).then(() => {
+	// 			return client.query({
+	// 				query: statsQuery, variables: { id: '' }
+	// 			});
+	// 		});
+	// 	},
+	// 	result() {
+	// 	}
+	// }
 };
 </script>
 

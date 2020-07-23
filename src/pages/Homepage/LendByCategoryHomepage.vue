@@ -205,11 +205,8 @@ export default {
 	components: {
 		KvButton,
 		KvResponsiveImage,
-<<<<<<< HEAD
 		HomepageStatistics,
-=======
 		LoanCategoriesSection,
->>>>>>> master
 	},
 	props: {
 	},
