@@ -51,7 +51,7 @@
 		"apollo-link-batch-http": "^1.2.14",
 		"apollo-link-context": "^1.0.19",
 		"apollo-link-error": "^1.1.13",
-		"apollo-link-http": "^1.5.16",
+		"apollo-link-http": "^1.5.17",
 		"apollo-server-express": "^2.14.4",
 		"auth0-js": "^9.13.2",
 		"body-parser": "^1.19.0",
