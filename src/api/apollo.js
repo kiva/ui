@@ -9,6 +9,7 @@ import {
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
 import HttpLinkCreator from './HttpLink';
+import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
 import initState from './localState';
 
@@ -50,6 +51,7 @@ export default function createApolloClient({
 
 	const client = new ApolloClient({
 		link: ApolloLink.from([
+			NetworkErrorLink(),
 			SnowplowSessionLink(),
 			Auth0LinkCreator(kvAuth0),
 			BasketLinkCreator(),
