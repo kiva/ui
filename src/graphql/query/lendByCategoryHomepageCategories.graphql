@@ -1,0 +1,22 @@
+query lendByCategoryHomepageCategories($basketId: String) {
+	general {
+		rows: uiConfigSetting(key: "homepage_category_rows") {
+			key
+			value
+		}
+	}
+	my {
+		userAccount {
+			id
+		}
+	}
+	shop (basketId: $basketId) {
+		basket {
+			items {
+				values {
+					id
+				}
+			}
+		}
+	}
+}

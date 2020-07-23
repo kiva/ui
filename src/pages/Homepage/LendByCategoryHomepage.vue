@@ -29,6 +29,7 @@
 					<h2 class="loan-categories__header text-center">
 						Kiva makes it easy to support causes you care about.
 					</h2>
+					<loan-categories-section />
 				</div>
 			</div>
 		</section>
@@ -176,12 +177,15 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
+import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
+
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
 		KvButton,
-		KvResponsiveImage
+		KvResponsiveImage,
+		LoanCategoriesSection,
 	},
 	props: {
 	},
