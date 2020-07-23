@@ -43,12 +43,10 @@
 						:items-in-basket="itemsInBasket"
 						:category-id="loanChannel.id"
 						:category-set-id="setId"
-						:row-number="rowNumber"
 						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 					/>
-
 					<!--
 						Blocks of attributes above:
 						1) Props for implemented loan cards
@@ -130,11 +128,14 @@ export default {
 		isVisible: {
 			type: Boolean,
 			default: false
-		}
+		},
+		loans: {
+			type: Array,
+			default: () => [],
+		},
 	},
 	data() {
 		return {
-			loans: [],
 			name: '',
 			offset: null,
 			scrollPos: 0,
@@ -253,10 +254,8 @@ export default {
 			handler(channel) {
 				this.name = _get(channel, 'name', '');
 				this.url = _get(channel, 'url', '');
-				this.loans = _get(channel, 'loans.values', []);
 			},
 			immediate: true,
-			deep: true,
 		},
 		detailedLoanIndex(newValue, oldValue) {
 			if (this.$isServer) {

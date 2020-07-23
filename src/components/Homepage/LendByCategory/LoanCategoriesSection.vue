@@ -1,16 +1,24 @@
 <template>
-	<div>
-		<div>
+	<div class="loan-category-section-wrapper">
+		<div class="category-options"
+			v-touch:swipe.left="scrollRowRight"
+			v-touch:swipe.right="scrollRowLeft"
+			ref="categoryOptions"
+			:style="{ left: scrollPos + 'px' }"
+		>
 			<a
+				href="#"
+				role="button"
+				class="category-options__link"
+				:class="{'active': category.id === activeCategory}"
 				v-for="(category) in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
-				role="button"
 				@click.prevent="setActiveCategory(category.id)"
-				:class="{'active': category.id === activeCategory}"
 			>
-				{{ category.name }}
+				{{ cleanCategoryName(category) }}
 			</a>
 			<router-link
+				class="category-options__link"
 				:to="`/lend-by-category`"
 			>
 				More
@@ -19,14 +27,14 @@
 
 		<div
 			class="loan-category-row"
-			v-for="(category, index) in prefetchedCategoryInfo"
+			v-for="category in prefetchedCategoryInfo"
 			v-show="category.id === activeCategory"
 			:key="category.id + '-row'"
 		>
 			<loan-category
-				:loan-channel="getCategoryLoans(category.id)"
+				:loans="getCategoryLoans(category.id)"
+				:loan-channel="category"
 				:items-in-basket="itemsInBasket"
-				:row-number="index + 1"
 				:is-logged-in="isLoggedIn"
 				:is-visible="category.id === activeCategory"
 			/>
@@ -36,9 +44,9 @@
 
 <script>
 import _get from 'lodash/get';
-import _map from 'lodash/map';
+import numeral from 'numeral';
 
-import logReadQueryError from '@/util/logReadQueryError';
+import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 
 import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHomepageCategories.graphql';
@@ -60,74 +68,92 @@ export default {
 			categoriesWithLoans: [],
 			activeCategory: null,
 			isLoggedIn: false,
-
-			// clientCategories: [],
-			// rowLazyLoadComplete: false,
-			// rightArrowPosition: undefined,
-			// leftArrowPosition: undefined,
+			scrollPos: 0,
 		};
 	},
-	apollo: {
-		query: lendByCategoryHomepageCategories,
-		preFetch(config, client) {
-			return client.query({
-				query: lendByCategoryHomepageCategories
-			}).then(({ data }) => {
-				// Get the array of channel objects from settings
-				const loanChannelsSetting = readJSONSetting(data, 'general.rows.value') || [];
-				// Get all channel ids for the row data
-				const channelIds = _map(loanChannelsSetting, 'id');
-				// Pre-fetch loan channel information, but no loans
-				return 	client.query({
-					query: loanChannelInfoQuery,
-					variables: {
-						ids: channelIds,
-					},
-					fetchPolicy: 'network-only',
-				});
-			});
-		},
-		result({ data }) {
-			this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
-
-			// Get the array of channel objects from settings,
-			// if successful set to categoryIds
-			const categorySettingsArray = readJSONSetting(data, 'general.rows.value');
-			if (categorySettingsArray) {
-				this.categoryIds = categorySettingsArray.map(setting => setting.id);
-			}
-
-			this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-
-			// Read the SSR ready loan channel info from the cache
-			try {
-				const categoryData = this.apollo.readQuery({
-					query: loanChannelInfoQuery,
-					variables: {
-						ids: this.categoryIds,
-					},
-				});
-				this.prefetchedCategoryInfo = _get(categoryData, 'data.lend.loanChannelsById') || [];
-			} catch (e) {
-				logReadQueryError(e, 'LoanCategoriesSection loanChannelInfoQuery');
-			}
-		}
-	},
 	created() {
-		// set initial active category
-		this.setActiveCategory(this.categoryIds[0]);
+		// TODO
+		// Get these queries in preFetch without causing an invariant error.
+		this.apollo.query({
+			query: lendByCategoryHomepageCategories,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		}).then(({ data }) => {
+			this.processData(data);
+		}).then(() => {
+			return this.apollo.query({
+				query: loanChannelInfoQuery,
+				variables: {
+					ids: this.categoryIds,
+				},
+			});
+		}).then(({ data }) => {
+			this.prefetchedCategoryInfo = _get(data, 'lend.loanChannelsById') || [];
+			// set initial active category
+			this.setActiveCategory(this.categoryIds[0]);
+		});
 	},
 	computed: {
-		allLoanIdsCurrentlyVisible() {
+		allFetchedLoanIds() {
 			// returns array of all loan ids in this.categoriesWithLoans
+			// includes loans that have been filtered out for fundraising etc.
+			// We can then exclude them in followup queries.
 			const loanIds = this.categoriesWithLoans.map(category => {
 				return category.loans.values.map(loan => loan.id);
 			});
 			// reduces array of arrays into single array
 			return [].concat(...loanIds);
-		}
+		},
+		minLeftMargin() {
+			// min left margin based on width of client and width of category options with 20px padding.
+			return -(this.$refs.categoryOptions.clientWidth - document.documentElement.clientWidth + 20);
+		},
+		isLargeBreakpoint() {
+			return document.documentElement.clientWidth < 681;
+		},
 	},
 	methods: {
+		scrollRowLeft() {
+			if (this.scrollPos < 0 && this.isLargeBreakpoint) {
+				const newLeftMargin = Math.min(0, this.scrollPos + 200);
+				this.scrollPos = newLeftMargin;
+			}
+		},
+		scrollRowRight() {
+			if (this.scrollPos > this.minLeftMargin && this.isLargeBreakpoint) {
+				const newLeftMargin = Math.max(this.minLeftMargin, this.scrollPos - 200);
+				this.scrollPos = newLeftMargin;
+			}
+		},
+		cleanCategoryName(category) {
+			switch (category.id) {
+				case 52:
+					return 'women';
+				case 96:
+					return 'COVID-19';
+				case 93:
+					return 'shelter';
+				case 89:
+					return 'arts';
+				case 87:
+					return 'agriculture';
+				default:
+					// remove any text contained within square brackets, including the brackets
+					return String(category.name).replace(/\s\[.*\]/g, '');
+			}
+		},
+		processData(data) {
+			// sets up component data from lendByCategoryHomepageCategories query
+			this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
+			// Get the array of channel objects from settings,
+			const categorySettingsArray = readJSONSetting(data, 'general.homepage_category_rows.value');
+			if (categorySettingsArray) {
+				// if successful set to categoryIds
+				this.categoryIds = categorySettingsArray.map(setting => setting.id);
+			}
+			this.itemsInBasket = _get(data, 'shop.basket.items.values', []).map(itemInBasket => itemInBasket.id);
+		},
 		// sets category as active and fetches loans for that channel
 		setActiveCategory(categoryId) {
 			this.activeCategory = categoryId;
@@ -138,41 +164,74 @@ export default {
 					query: loanChannelData,
 					variables: {
 						ids: [categoryId],
-						excludeIds: this.allLoanIdsCurrentlyVisible,
+						excludeIds: this.allFetchedLoanIds, // exclude loans that have already been fetched
 						imgDefaultSize: 'w480h300',
 						imgRetinaSize: 'w960h600',
 						numberOfLoans: 8,
 					}
 				}).then(({ data }) => {
-					const channelData = _get(data, 'lend.loanChannelsById')
-						.filter(channel => channel.id === categoryId);
-					const channelLoans = channelData[0];
+					const channelLoans = _get(data, 'lend.loanChannelsById')[0];
 					this.categoriesWithLoans.push(channelLoans);
+
+					// TODO
+					// if we have less than 8 loans left after filtering:
+					// this.getCategoryLoans(categoryId)
+					// fetch more loans
 				});
 			}
 		},
-		// get category loans for a given category id
+		// get filtered loans for a given category id
 		getCategoryLoans(categoryId) {
-			return this.categoriesWithLoans.filter(category => category.id === categoryId)[0] || {};
+			let filteredLoansArray = [];
+
+			const allLoansForCategory = this.categoriesWithLoans
+				.filter(category => category.id === categoryId)[0] || {};
+
+			const testFilter = loan => loan.loanAmount.includes('2');
+
+			if (allLoansForCategory.loans) {
+				filteredLoansArray = allLoansForCategory.loans.values
+					.filter(loan => testFilter(loan) && this.testFundedStatus(loan));
+				console.log('filteredLoansArray', filteredLoansArray);
+			}
+			return filteredLoansArray;
+		},
+		// TODO
+		// This method is very similar to the one in:
+		// src/components/LoansByCategory/FeaturedHeroLoanWrapper.vue
+		testFundedStatus(loan) {
+			// check status, store if funded
+			if (_get(loan, 'status') !== 'fundraising') {
+				return false;
+			}
+			// check fundraising information, store if funded
+			const loanAmount = numeral(_get(loan, 'loanAmount'));
+			const fundedAmount = numeral(_get(loan, 'loanFundraisingInfo.fundedAmount'));
+			const reservedAmount = numeral(_get(loan, 'loanFundraisingInfo.reservedAmount'));
+			// loan amount vs funded amount
+			if (loanAmount.value() === fundedAmount.value()) {
+				return false;
+			}
+			// loan amount vs funded + reserved amount
+			if (loanAmount.value() === (fundedAmount.value() + reservedAmount.value())) {
+				return false;
+			}
+			// all clear
+			return true;
 		},
 		activateWatchers() {
-			// Create an observer for changes to the categories (and their loans)
+			// Create an observer, this will react to changes to the basket and pass that data into the components.
 			this.apollo.watchQuery({
-				query: loanChannelInfoQuery,
+				query: lendByCategoryHomepageCategories,
 				variables: {
-					ids: this.categoryIds,
+					basketId: cookieStore.get('kvbskt'),
 				},
 			}).subscribe({
 				next: ({ data }) => {
-					this.prefetchedCategoryInfo = _get(data, 'lend.loanChannelsById') || this.prefetchedCategoryInfo;
+					this.processData(data);
 				},
 			});
-			this.apollo.watchQuery({ query: lendByCategoryHomepageCategories }).subscribe({
-				next: ({ data }) => {
-					this.itemsInBasket = _map(_get(data, 'shop.basket.items.values'), 'id');
-				},
-			});
-		},
+		}
 	},
 	mounted() {
 		this.activateWatchers();
@@ -185,91 +244,63 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-//TODO Clean up this CSS
-//temp
-.active {
-	border-bottom: 1px solid green;
+.loan-category-section-wrapper {
+	position: relative;
 }
 
 .loan-category-row {
-	margin: 0 0 rem-calc(20);
-
+	margin-top: 4.5rem;
 	@include breakpoint(medium) {
-		margin: 0 0 rem-calc(40);
-	}
-
-	&:last-of-type {
-		margin-bottom: 0;
-	}
-
-	@media (hover: none) {
-		&:last-of-type {
-			margin-bottom: 0;
-		}
+		margin-top: 0;
 	}
 }
 
-.pre-footer {
-	margin-top: 2rem;
-	margin-bottom: 2rem;
+.category-options {
+	margin: 1.35rem auto;
+	top: -4.5rem;
+	position: absolute;
+	white-space: nowrap;
 
-	.cat-row-loader {
-		display: flex;
-		justify-content: center;
-		position: relative;
-		z-index: 5;
-		height: 9rem;
-		margin: 0 0 3rem;
-
-		// loading overlay overrides
-		#updating-overlay {
-			background: transparent;
-			z-index: 6;
-		}
-
-		h3 {
-			display: flex;
-			align-items: flex-end;
-		}
-	}
-
-	h2 {
-		margin: 0 1.875rem;
+	&__link {
+		color: $charcoal;
+		font-weight: $global-weight-normal;
+		font-size: $featured-text-font-size;
+		line-height: 1.5rem;
+		text-transform: capitalize;
+		margin-right: 1rem;
 
 		@include breakpoint(medium) {
-			margin-left: 1.625rem;
-		}
-		@include breakpoint(xxlarge) {
-			margin-left: 0.625rem;
+			line-height: 3rem;
 		}
 
-		@media (hover: none) {
-			margin: 0;
+		@include breakpoint(large) {
+			margin-right: 0;
+		}
+
+		&.active,
+		&:hover {
+			text-decoration: none;
+			color: $kiva-green;
+		}
+
+		&.active {
+			font-weight: $global-weight-bold;
+			border-bottom: 3px solid $kiva-green;
 		}
 	}
 
-	a.view-all-link {
-		display: inline;
-		position: relative;
+	@include breakpoint(medium) {
+		position: initial;
+		white-space: initial;
+	}
 
-		.view-all-arrow {
-			position: absolute;
-			top: -1rem;
-			right: -1.4rem;
-			padding: 0 0.3rem;
-			font-weight: $global-weight-normal;
-			font-size: 2.5rem;
-
-			@include breakpoint(medium) {
-				font-size: 3rem;
-				right: -1.6rem;
-			}
-		}
-
-		&:hover {
-			text-decoration: none;
-			cursor: pointer;
-		}
+	// for breakpoint under large, don't use flex
+	// so that overflow touch scrolling works better
+	@include breakpoint(large) {
+		display: flex;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		min-width: 100%;
 	}
 }
 </style>

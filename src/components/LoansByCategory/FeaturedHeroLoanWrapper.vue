@@ -190,6 +190,9 @@ export default {
 				this.loading = false;
 			}
 		},
+		// TODO
+		// This method is very similar to the one in:
+		// src/components/Homepage/LendByCategory/LoanCategoriesSection.vue.vue
 		testFundedStatus(loan) {
 			// check status, store if funded
 			if (_get(loan, 'status') !== 'fundraising') {
