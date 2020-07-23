@@ -40,6 +40,11 @@ export const Setting = () => ({
 	template: '<kv-button class="setting">Setting</kv-button>'
 });
 
+export const TextLink = () => ({
+	components: { KvButton },
+	template: '<kv-button class="text-link">Text Link Button</kv-button>'
+});
+
 export const Disabled = () => ({
 	components: { KvButton },
 	template: '<kv-button disabled>Button</kv-button>'

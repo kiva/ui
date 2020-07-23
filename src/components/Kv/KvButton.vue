@@ -50,8 +50,7 @@ export default {
 	}
 }
 
-.button,
-button.button {
+.button:not(.text-link) {
 	@include button();
 	@include button-primary-styles();
 
@@ -93,6 +92,18 @@ button.button {
 	&.disabled,
 	&[disabled] {
 		@include button-disabled();
+	}
+}
+
+.text-link {
+	color: $anchor-color;
+	text-decoration: $anchor-text-decoration;
+	line-height: inherit;
+
+	&:hover,
+	&:focus {
+		color: $anchor-color-hover;
+		text-decoration: $anchor-text-decoration-hover;
 	}
 }
 
