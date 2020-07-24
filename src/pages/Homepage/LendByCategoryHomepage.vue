@@ -124,15 +124,12 @@
 
 		<section class="statistics section text-center">
 			<div class="row">
-				<!-- <h2 class="statistics__header small-12 columns">
-					Statistics
-				</h2> -->
 				<div class="small-12 columns">
 					<kv-responsive-image
 						class="statistics__img"
 						:images="statistics"
 						loading="lazy"
-						alt=""
+						alt="statistics image"
 					/>
 				</div>
 				<div class="small-12 columns">
@@ -421,7 +418,7 @@ export default {
 	}
 
 	&__body {
-		margin-bottom: 30px;
+		margin-bottom: rem-calc(30);
 		@include featured-text();
 	}
 
