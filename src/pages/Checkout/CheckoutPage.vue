@@ -556,11 +556,12 @@ export default {
 			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
 		},
 		logBasketState() {
+			const creditNeededInt = numeral(this.creditNeeded).value();
 			this.$kvTrackEvent(
 				'Checkout',
 				'Payment Required',
-				this.creditNeeded > 0 || false,
-				numeral(this.creditNeeded).value() * 100
+				creditNeededInt > 0 || false,
+				creditNeededInt * 100
 			);
 		},
 	},
