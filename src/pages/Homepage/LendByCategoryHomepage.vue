@@ -421,6 +421,7 @@ export default {
 	}
 
 	&__body {
+		margin-bottom: 30px;
 		@include featured-text();
 	}
 
