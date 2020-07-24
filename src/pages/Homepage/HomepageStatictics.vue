@@ -56,28 +56,16 @@ import { differenceInYears } from 'date-fns';
 import homepageStatistics from '@/graphql/query/homepage/homepageStatistics.graphql';
 
 export default {
-	inject: ['apollo', 'federation'],
+	inject: ['apollo'],
 	apollo: {
-		preFetch(config, client) {
-			return client.query({
-				query: homepageStatistics,
-			}).then(({ data }) => {
-				console.log('data', data);
-			});
+		query: homepageStatistics,
+		preFetch: true,
+		result({ data }) {
+			this.amountFunded = _get(data, 'general.kivaStats.amountFunded');
+			this.numLenders = _get(data, 'general.kivaStats.numLenders');
+			this.repaymentRate = _get(data, 'general.kivaStats.repaymentRate') / 100;
+			this.numCountries = _get(data, 'general.kivaStats.numCountries');
 		},
-	},
-	created() {
-		try {
-			const statisticData = this.apollo.readQuery({
-				query: homepageStatistics,
-			});
-			this.amountFunded = _get(statisticData, 'general.kivaStats.amountFunded');
-			this.numLenders = _get(statisticData, 'general.kivaStats.numLenders');
-			this.repaymentRate = _get(statisticData, 'general.kivaStats.repaymentRate') / 100;
-			this.numCountries = _get(statisticData, 'general.kivaStats.numCountries');
-		} catch (e) {
-			// catch error
-		}
 	},
 	computed: {
 		yearsSinceStartCalc() {
