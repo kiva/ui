@@ -187,11 +187,9 @@ export default {
 			const allLoansForCategory = this.categoriesWithLoans
 				.filter(category => category.id === categoryId)[0] || {};
 
-			const testFilter = loan => loan.loanAmount.includes('2');
-
 			if (allLoansForCategory.loans) {
 				filteredLoansArray = allLoansForCategory.loans.values
-					.filter(loan => testFilter(loan) && this.testFundedStatus(loan));
+					.filter(loan => this.testFundedStatus(loan));
 				console.log('filteredLoansArray', filteredLoansArray);
 			}
 			return filteredLoansArray;
