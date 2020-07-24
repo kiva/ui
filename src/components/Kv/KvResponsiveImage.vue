@@ -4,7 +4,7 @@
 		<!-- So start with the largest window sizes first -->
 		<source
 			v-for="image in standardImages"
-			:key="image[1]"
+			:key="`${image[0]}-${image[1]}`"
 			:media="`(min-width: ${getPxSizeForImage(image[0])}px)`"
 			:srcset="getSrcsetForImage(image)"
 		>
