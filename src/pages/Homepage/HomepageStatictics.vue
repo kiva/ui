@@ -56,6 +56,14 @@ import { differenceInYears } from 'date-fns';
 import homepageStatistics from '@/graphql/query/homepage/homepageStatistics.graphql';
 
 export default {
+	data() {
+		return {
+			amountFunded: 1.4,
+			numLenders: 1.9,
+			repaymentRate: 0.96,
+			numCountries: 77,
+		};
+	},
 	inject: ['apollo'],
 	apollo: {
 		query: homepageStatistics,
