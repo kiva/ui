@@ -376,6 +376,11 @@ export default {
 			});
 		});
 
+		// cover ssr or spa page load
+		if (this.isLoggedIn) {
+			this.logBasketState();
+		}
+
 		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
 	},
 	computed: {
@@ -462,6 +467,8 @@ export default {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
 				this.myId = userState['https://www.kiva.org/kiva_id'];
 			}
+			// covers popup login
+			this.logBasketState();
 		},
 		/* Validate the Entire Basket on mounted */
 		validatePreCheckout() {
@@ -547,7 +554,15 @@ export default {
 				'click-continue-browsing'
 			);
 			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
-		}
+		},
+		logBasketState() {
+			this.$kvTrackEvent(
+				'Checkout',
+				'Payment Required',
+				this.creditNeeded > 0 || false,
+				numeral(this.creditNeeded).value() * 100
+			);
+		},
 	},
 	destroyed() {
 		clearInterval(this.currentTimeInterval);
