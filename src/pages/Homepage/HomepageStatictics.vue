@@ -1,49 +1,51 @@
 <template>
-	<div class="small-10 small-offset-1 large-10 large-offset-1 columns stats-box">
-		<div class="row">
-			<!-- loans funded -->
-			<div class="small-6 large-2 large-offset-1 columns stats-box__group stats-box__group--even">
-				<div class="stats-box__stat">
-					${{ amountFunded | numeral('0.0a') }}
+	<div class="small-12 large-10 large-offset-1 columns">
+		<div class="stats-box">
+			<div class="row">
+				<!-- loans funded -->
+				<div class="small-6 large-2 large-offset-1 columns stats-box__group stats-box__group--even">
+					<div class="stats-box__stat">
+						${{ amountFunded | numeral('0.0a') }}
+					</div>
+					<div class="stats-box__stat-label">
+						loans funded
+					</div>
 				</div>
-				<div class="stats-box__stat-label">
-					loans funded
+				<!-- # lenders  -->
+				<div class="small-6 large-2 columns stats-box__group stats-box__group--odd">
+					<div class="stats-box__stat">
+						{{ numLenders | numeral('0.0a') }}
+					</div>
+					<div class="stats-box__stat-label">
+						lenders
+					</div>
 				</div>
-			</div>
-			<!-- # lenders  -->
-			<div class="small-6 large-2 columns stats-box__group stats-box__group--odd">
-				<div class="stats-box__stat">
-					{{ numLenders | numeral('0.0a') }}
+				<!-- repayment rate -->
+				<div class="small-6 large-2 columns stats-box__group stats-box__group--even">
+					<div class="stats-box__stat">
+						{{ repaymentRate | numeral('0%') }}
+					</div>
+					<div class="stats-box__stat-label">
+						repayment rate
+					</div>
 				</div>
-				<div class="stats-box__stat-label">
-					lenders
+				<!-- # countries  -->
+				<div class="small-6 large-2 columns stats-box__group stats-box__group--odd">
+					<div class="stats-box__stat">
+						{{ numCountries }}
+					</div>
+					<div class="stats-box__stat-label">
+						countries
+					</div>
 				</div>
-			</div>
-			<!-- repayment rate -->
-			<div class="small-6 large-2 columns stats-box__group stats-box__group--even">
-				<div class="stats-box__stat">
-					{{ repaymentRate | numeral('0%') }}
-				</div>
-				<div class="stats-box__stat-label">
-					repayment rate
-				</div>
-			</div>
-			<!-- # countries  -->
-			<div class="small-6 large-2 columns stats-box__group stats-box__group--odd">
-				<div class="stats-box__stat">
-					{{ numCountries }}
-				</div>
-				<div class="stats-box__stat-label">
-					countries
-				</div>
-			</div>
-			<!-- # years -->
-			<div class="small-12 large-2 columns">
-				<div class="stats-box__stat">
-					{{ yearsSinceStartCalc }}
-				</div>
-				<div class="stats-box__stat-label">
-					years
+				<!-- # years -->
+				<div class="small-12 large-2 columns">
+					<div class="stats-box__stat">
+						{{ yearsSinceStartCalc }}
+					</div>
+					<div class="stats-box__stat-label">
+						years
+					</div>
 				</div>
 			</div>
 		</div>
@@ -119,6 +121,10 @@ export default {
 
 	&__stat-label {
 		line-height: 1.3;
+
+		@include breakpoint(xxlarge) {
+			white-space: nowrap;
+		}
 	}
 }
 </style>
