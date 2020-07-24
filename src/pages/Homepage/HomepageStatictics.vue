@@ -116,6 +116,7 @@ export default {
 	}
 
 	&__stat {
+		text-transform: uppercase;
 		line-height: 0.8;
 		font-size: 1.5rem;
 	}
