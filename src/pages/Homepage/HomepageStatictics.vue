@@ -2,7 +2,7 @@
 	<div class="small-10 small-offset-1 large-10 large-offset-1 columns stats-box">
 		<div class="row">
 			<!-- loans funded -->
-			<div class="small-6 large-2 large-offset-1 columns stats-box__group even">
+			<div class="small-6 large-2 large-offset-1 columns stats-box__group stats-box__group--even">
 				<div class="stats-box__stat">
 					${{ amountFunded | numeral('0.0a') }}
 				</div>
@@ -11,7 +11,7 @@
 				</div>
 			</div>
 			<!-- # lenders  -->
-			<div class="small-6 large-2 columns stats-box__group odd">
+			<div class="small-6 large-2 columns stats-box__group stats-box__group--odd">
 				<div class="stats-box__stat">
 					{{ numLenders | numeral('0.0a') }}
 				</div>
@@ -20,7 +20,7 @@
 				</div>
 			</div>
 			<!-- repayment rate -->
-			<div class="small-6 large-2 columns stats-box__group even">
+			<div class="small-6 large-2 columns stats-box__group stats-box__group--even">
 				<div class="stats-box__stat">
 					{{ repaymentRate | numeral('0%') }}
 				</div>
@@ -29,7 +29,7 @@
 				</div>
 			</div>
 			<!-- # countries  -->
-			<div class="small-6 large-2 columns stats-box__group odd">
+			<div class="small-6 large-2 columns stats-box__group stats-box__group--odd">
 				<div class="stats-box__stat">
 					{{ numCountries }}
 				</div>
@@ -98,14 +98,14 @@ export default {
 	&__group {
 		margin-bottom: rem-calc(40);
 
-		&.even {
+		&--even {
 			border-right: 3px solid rgba(0, 0, 0, 0.2);
 		}
 
 		@include breakpoint(large) {
 			margin-bottom: 0;
 
-			&.odd {
+			&--odd {
 				border-right: 3px solid rgba(0, 0, 0, 0.2);
 			}
 		}

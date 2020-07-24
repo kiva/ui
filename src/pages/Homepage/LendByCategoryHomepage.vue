@@ -129,7 +129,7 @@
 						class="statistics__img"
 						:images="statistics"
 						loading="lazy"
-						alt="statistics image"
+						alt=""
 					/>
 				</div>
 				<div class="small-12 columns">
