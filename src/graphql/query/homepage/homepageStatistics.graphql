@@ -1,0 +1,10 @@
+query homepageStatictics {
+	general {
+		kivaStats {
+			amountFunded
+			repaymentRate
+			numCountries
+			numLenders
+		}
+	}
+}

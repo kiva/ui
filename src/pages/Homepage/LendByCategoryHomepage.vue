@@ -124,16 +124,32 @@
 
 		<section class="statistics section text-center">
 			<div class="row">
-				<h2 class="statistics__header small-12 columns">
-					Statistics
-				</h2>
+				<div class="small-12 columns">
+					<kv-responsive-image
+						class="statistics__img"
+						:images="statistics"
+						loading="lazy"
+						alt=""
+					/>
+				</div>
+				<div class="small-12 columns">
+					<h1 class="statistics__header">
+						100%
+					</h1>
+					<p class="statistics__body">
+						<span>of your loan goes to the field.</span>
+						<br>
+						<span>We don't take a penny.</span>
+					</p>
+				</div>
+				<homepage-statistics />
+				<kv-responsive-image
+					class="statistics__flourish"
+					:images="flourishImgs.pinkRight"
+					loading="lazy"
+					alt=""
+				/>
 			</div>
-			<kv-responsive-image
-				class="statistics__flourish"
-				:images="flourishImgs.pinkRight"
-				loading="lazy"
-				alt=""
-			/>
 		</section>
 
 		<section class="lender-quotes section">
@@ -176,6 +192,7 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import HomepageStatistics from './HomepageStatictics';
 
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 
@@ -185,6 +202,7 @@ export default {
 	components: {
 		KvButton,
 		KvResponsiveImage,
+		HomepageStatistics,
 		LoanCategoriesSection,
 	},
 	props: {
@@ -215,6 +233,10 @@ export default {
 					['small retina', imgRequire('./how-it-works-repeat_2x.png')],
 				],
 			},
+			statistics: [
+				['small', imgRequire('./stats.png')],
+				['small retina', imgRequire('./stats_2x.png')],
+			],
 			flourishImgs: {
 				greenLeft: [
 					['small', imgRequire('./flourish-green-left.png')],
@@ -385,12 +407,19 @@ export default {
 }
 
 .statistics {
-	&__header {
-		font-weight: bold;
+	&__img {
+		width: rem-calc(235);
+		margin: 0 auto 1rem;
+	}
 
-		@include breakpoint(large) {
-			@include large-text();
-		}
+	&__header {
+		font-size: 6rem;
+		font-weight: bold;
+	}
+
+	&__body {
+		margin-bottom: rem-calc(30);
+		@include featured-text();
 	}
 
 	&__flourish {
