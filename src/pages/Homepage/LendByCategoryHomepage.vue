@@ -157,6 +157,47 @@
 				<h2 class="lender-quotes__header text-center small-12 columns">
 					What our lending <br class="so mo"> community thinks
 				</h2>
+				<div
+					class="lender-quotes__lender-quote--card small-10 medium-8 large-5 xlarge-4 columns"
+					v-for="lenderQuote in lenderQuotes"
+					:key="lenderQuote.name"
+				>
+					<kv-responsive-image
+						class="lender-quotes__lender-quote--lender-img"
+						:images="[
+							['small', lenderQuote.image],
+						]"
+						loading="lazy"
+						alt=""
+					/>
+					<div
+						v-html="lenderQuote.quote"
+						class="lender-quotes__lender-quote--quote"
+					>
+					</div>
+					<div
+						v-html="lenderQuote.attribution"
+						class="lender-quotes__lender-quote--attribution"
+					>
+					</div>
+					<div
+						v-html="lenderQuote.title"
+						class="lender-quotes__lender-quote--title"
+					>
+					</div>
+					<!-- TODO:
+					This is a little tricky, need to put more thought in here
+					Cards are generated dynamically based on data, but there
+					are 2 different background images. -->
+					<!-- <kv-responsive-image
+						class="lender-quotes__lender-quote--background"
+						:images="[
+							['small', lenderQuote.background],
+						]"
+						loading="lazy"
+						alt=""
+					/> -->
+				</div>
 			</div>
 			<kv-responsive-image
 				class="lender-quotes__flourish"
@@ -236,6 +277,24 @@ export default {
 			statistics: [
 				['small', imgRequire('./stats.png')],
 				['small retina', imgRequire('./stats_2x.png')],
+			],
+			lenderQuotes: [
+				{
+					image: imgRequire('./lender-quote-heather.svg'),
+					// eslint-disable-next-line max-len
+					quote: 'Being able to lend, then get repaid, and lend over and over again gives great satisfaction. My funds have been lent 12 times over.',
+					attribution: 'Heather McLaughlin,',
+					title: 'Kiva lender',
+					background: imgRequire('./lender-quote-card-texture-yellow.svg'),
+				},
+				{
+					image: imgRequire('./lender-quote-jenae.svg'),
+					// eslint-disable-next-line max-len
+					quote: 'Just made my 11th loan to a single mother in Nicaragua. Constantly blown away by the impact from the same $25 being lent over and over again.',
+					attribution: 'Jenae Journot,',
+					title: 'Kiva lender',
+					background: imgRequire('./lender-quote-card-texture-red.svg'),
+				},
 			],
 			flourishImgs: {
 				greenLeft: [
@@ -439,6 +498,7 @@ export default {
 
 .lender-quotes {
 	&__header {
+		margin-bottom: 2rem;
 		font-weight: bold;
 
 		@include breakpoint(large) {
@@ -458,6 +518,47 @@ export default {
 			left: 0;
 			pointer-events: none;
 		}
+	}
+
+	&__lender-quote {
+		&--card {
+			@include featured-text();
+
+			line-height: 1.3;
+			margin: 0 auto rem-calc(25) auto;
+			text-align: center;
+			border-radius: 1rem;
+			box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+
+			@include breakpoint(large) {
+				@include medium-text();
+			}
+		}
+
+		&--lender-img {
+			margin: rem-calc(30) auto rem-calc(30) auto;
+			width: 5.5rem;
+
+			@include breakpoint(large) {
+				width: 4rem;
+			}
+		}
+
+		&--quote {
+			margin-bottom: rem-calc(30);
+		}
+
+		&--attribution {
+			font-weight: bold;
+		}
+
+		&--title {
+			margin-bottom: rem-calc(30);
+		}
+
+		// &--background {
+
+		// }
 	}
 }
 
