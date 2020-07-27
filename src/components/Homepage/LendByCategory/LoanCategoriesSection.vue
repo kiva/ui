@@ -1,8 +1,8 @@
 <template>
 	<div class="loan-category-section-wrapper">
 		<div class="category-options"
-			v-touch:swipe.left="scrollRowRight"
-			v-touch:swipe.right="scrollRowLeft"
+			v-touch:swipe.left="scrollCategoryNamesRight"
+			v-touch:swipe.right="scrollCategoryNamesLeft"
 			ref="categoryOptions"
 			:style="{ left: scrollPos + 'px' }"
 		>
@@ -39,6 +39,7 @@
 				:items-in-basket="itemsInBasket"
 				:is-logged-in="isLoggedIn"
 				:is-visible="category.id === activeCategory"
+				:key="category.id + '-category'"
 			/>
 		</div>
 	</div>
@@ -96,13 +97,13 @@ export default {
 		},
 	},
 	methods: {
-		scrollRowLeft() {
+		scrollCategoryNamesLeft() {
 			if (this.scrollPos < 0 && this.isLargeBreakpoint) {
 				const newLeftMargin = Math.min(0, this.scrollPos + 200);
 				this.scrollPos = newLeftMargin;
 			}
 		},
-		scrollRowRight() {
+		scrollCategoryNamesRight() {
 			if (this.scrollPos > this.minLeftMargin && this.isLargeBreakpoint) {
 				const newLeftMargin = Math.max(this.minLeftMargin, this.scrollPos - 200);
 				this.scrollPos = newLeftMargin;

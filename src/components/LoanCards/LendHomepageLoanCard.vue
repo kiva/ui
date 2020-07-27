@@ -302,7 +302,7 @@ export default {
 }
 
 .hover-loan-card {
-	padding: rem-calc(87) rem-calc($hover-card-right-margin) rem-calc(109) rem-calc($hover-card-right-margin);
+	padding: 0 rem-calc($hover-card-right-margin) 0 rem-calc($hover-card-right-margin);
 
 	$transition1: padding-bottom $card-expansion-duration $card-expansion-curve;
 
