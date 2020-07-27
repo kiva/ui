@@ -158,45 +158,31 @@
 					What our lending <br class="so mo"> community thinks
 				</h2>
 				<div
-					class="lender-quotes__lender-quote--card small-10 medium-8 large-5 xlarge-4 columns"
 					v-for="lenderQuote in lenderQuotes"
 					:key="lenderQuote.name"
+					:class="`quote-card small-10 medium-8 large-5 xlarge-4 columns`"
 				>
 					<kv-responsive-image
-						class="lender-quotes__lender-quote--lender-img"
-						:images="[
-							['small', lenderQuote.image],
-						]"
-						loading="lazy"
-						alt=""
-					/>
-					<div
-						v-html="lenderQuote.quote"
-						class="lender-quotes__lender-quote--quote"
-					>
-					</div>
-					<div
-						v-html="lenderQuote.attribution"
-						class="lender-quotes__lender-quote--attribution"
-					>
-					</div>
-					<div
-						v-html="lenderQuote.title"
-						class="lender-quotes__lender-quote--title"
-					>
-					</div>
-					<!-- TODO:
-					This is a little tricky, need to put more thought in here
-					Cards are generated dynamically based on data, but there
-					are 2 different background images. -->
-					<!-- <kv-responsive-image
-						class="lender-quotes__lender-quote--background"
+						class="quote-card__flourish"
 						:images="[
 							['small', lenderQuote.background],
 						]"
 						loading="lazy"
 						alt=""
-					/> -->
+					/>
+					<img
+						:src="lenderQuote.image"
+						class="quote-card__lender-img"
+					>
+					<p class="quote-card__quote">
+						{{ lenderQuote.quote }}
+					</p>
+					<p class="quote-card__attribution">
+						{{ lenderQuote.attribution }}
+					</p>
+					<p class="quote-card__title">
+						{{ lenderQuote.title }}
+					</p>
 				</div>
 			</div>
 			<kv-responsive-image
@@ -280,20 +266,21 @@ export default {
 			],
 			lenderQuotes: [
 				{
-					image: imgRequire('./lender-quote-heather.svg'),
+
+					image: imgRequire('./lender-quote-heather.jpg'),
 					// eslint-disable-next-line max-len
 					quote: 'Being able to lend, then get repaid, and lend over and over again gives great satisfaction. My funds have been lent 12 times over.',
 					attribution: 'Heather McLaughlin,',
 					title: 'Kiva lender',
-					background: imgRequire('./lender-quote-card-texture-yellow.svg'),
+					background: imgRequire('./lender-quote-card-texture-yellow.png'),
 				},
 				{
-					image: imgRequire('./lender-quote-jenae.svg'),
+					image: imgRequire('./lender-quote-jenae.jpg'),
 					// eslint-disable-next-line max-len
 					quote: 'Just made my 11th loan to a single mother in Nicaragua. Constantly blown away by the impact from the same $25 being lent over and over again.',
 					attribution: 'Jenae Journot,',
 					title: 'Kiva lender',
-					background: imgRequire('./lender-quote-card-texture-red.svg'),
+					background: imgRequire('./lender-quote-card-texture-red.png'),
 				},
 			],
 			flourishImgs: {
@@ -520,45 +507,70 @@ export default {
 		}
 	}
 
-	&__lender-quote {
-		&--card {
-			@include featured-text();
+	.quote-card {
+		@include featured-text();
 
-			line-height: 1.3;
-			margin: 0 auto rem-calc(25) auto;
-			text-align: center;
-			border-radius: 1rem;
-			box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+		margin: 0 auto rem-calc(25) auto;
+		text-align: center;
+		border-radius: 1rem;
+		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+		position: relative;
+		overflow: hidden;
 
-			@include breakpoint(large) {
-				@include medium-text();
-			}
+		@include breakpoint(large) {
+			@include medium-text();
 		}
 
-		&--lender-img {
+		&__lender-img {
 			margin: rem-calc(30) auto rem-calc(30) auto;
 			width: 5.5rem;
+			border-radius: 50%;
 
 			@include breakpoint(large) {
 				width: 4rem;
 			}
 		}
 
-		&--quote {
+		&__quote {
+			line-height: 1.3;
 			margin-bottom: rem-calc(30);
 		}
 
-		&--attribution {
+		&__attribution {
+			line-height: 1.3;
 			font-weight: bold;
+			margin-bottom: 0;
+			z-index: 100;
+			position: relative;
 		}
 
-		&--title {
+		&__title {
+			z-index: 100;
+			position: relative;
 			margin-bottom: rem-calc(30);
 		}
 
-		// &--background {
+		&__flourish {
+			position: absolute;
+			z-index: 0;
+		}
+	}
 
-		// }
+	// Couldn't get BEM working in here
+	.quote-card:nth-child(even) {
+		.quote-card__flourish {
+			top: 0;
+			left: 0;
+			width: 8rem;
+		}
+	}
+
+	.quote-card:nth-child(odd) {
+		.quote-card__flourish {
+			bottom: 2rem;
+			right: 0;
+			width: 5.5rem;
+		}
 	}
 }
 
