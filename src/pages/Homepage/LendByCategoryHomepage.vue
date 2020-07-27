@@ -178,7 +178,7 @@
 						{{ lenderQuote.quote }}
 					</p>
 					<p class="quote-card__attribution">
-						{{ lenderQuote.attribution }}
+						{{ lenderQuote.attribution }},
 					</p>
 					<p class="quote-card__title">
 						{{ lenderQuote.title }}
@@ -270,7 +270,7 @@ export default {
 					image: imgRequire('./lender-quote-heather.jpg'),
 					// eslint-disable-next-line max-len
 					quote: 'Being able to lend, then get repaid, and lend over and over again gives great satisfaction. My funds have been lent 12 times over.',
-					attribution: 'Heather McLaughlin,',
+					attribution: 'Heather McLaughlin',
 					title: 'Kiva lender',
 					background: imgRequire('./lender-quote-card-texture-yellow.png'),
 				},
@@ -278,7 +278,7 @@ export default {
 					image: imgRequire('./lender-quote-jenae.jpg'),
 					// eslint-disable-next-line max-len
 					quote: 'Just made my 11th loan to a single mother in Nicaragua. Constantly blown away by the impact from the same $25 being lent over and over again.',
-					attribution: 'Jenae Journot,',
+					attribution: 'Jenae Journot',
 					title: 'Kiva lender',
 					background: imgRequire('./lender-quote-card-texture-red.png'),
 				},
@@ -561,15 +561,23 @@ export default {
 		.quote-card__flourish {
 			top: 0;
 			left: 0;
-			width: 8rem;
+			width: 10rem;
+
+			@include breakpoint(large) {
+				width: 8rem;
+			}
 		}
 	}
 
 	.quote-card:nth-child(odd) {
 		.quote-card__flourish {
-			bottom: 2rem;
+			bottom: 4rem;
 			right: 0;
-			width: 5.5rem;
+			width: 7.5rem;
+
+			@include breakpoint(large) {
+				width: 5.5rem;
+			}
 		}
 	}
 }
