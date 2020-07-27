@@ -6,12 +6,13 @@
 			ref="categoryOptions"
 			:style="{ left: scrollPos + 'px' }"
 		>
+			<kv-loading-spinner v-if="!categoriesLoaded" />
 			<a
 				href="#"
 				role="button"
 				class="category-options__link"
 				:class="{'active': category.id === activeCategory}"
-				v-for="(category) in prefetchedCategoryInfo"
+				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
 				@click.prevent="setActiveCategory(category.id)"
 			>
@@ -20,6 +21,7 @@
 			<router-link
 				class="category-options__link"
 				:to="`/lend-by-category`"
+				v-if="prefetchedCategoryInfo.length > 0"
 			>
 				More
 			</router-link>
@@ -54,10 +56,12 @@ import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
 import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
 		LoanCategory,
+		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	data() {
@@ -69,30 +73,8 @@ export default {
 			activeCategory: null,
 			isLoggedIn: false,
 			scrollPos: 0,
+			categoriesLoaded: false,
 		};
-	},
-	created() {
-		// TODO
-		// Get these queries in preFetch without causing an invariant error.
-		this.apollo.query({
-			query: lendByCategoryHomepageCategories,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
-		}).then(({ data }) => {
-			this.processData(data);
-		}).then(() => {
-			return this.apollo.query({
-				query: loanChannelInfoQuery,
-				variables: {
-					ids: this.categoryIds,
-				},
-			});
-		}).then(({ data }) => {
-			this.prefetchedCategoryInfo = _get(data, 'lend.loanChannelsById') || [];
-			// set initial active category
-			this.setActiveCategory(this.categoryIds[0]);
-		});
 	},
 	computed: {
 		allFetchedLoanIds() {
@@ -190,7 +172,6 @@ export default {
 			if (allLoansForCategory.loans) {
 				filteredLoansArray = allLoansForCategory.loans.values
 					.filter(loan => this.testFundedStatus(loan));
-				console.log('filteredLoansArray', filteredLoansArray);
 			}
 			return filteredLoansArray;
 		},
@@ -232,7 +213,29 @@ export default {
 		}
 	},
 	mounted() {
-		this.activateWatchers();
+		// TODO
+		// Get these queries in preFetch without causing an invariant error.
+		this.apollo.query({
+			query: lendByCategoryHomepageCategories,
+			variables: {
+				basketId: cookieStore.get('kvbskt'),
+			},
+		}).then(({ data }) => {
+			this.processData(data);
+		}).then(() => {
+			return this.apollo.query({
+				query: loanChannelInfoQuery,
+				variables: {
+					ids: this.categoryIds,
+				},
+			});
+		}).then(({ data }) => {
+			this.prefetchedCategoryInfo = _get(data, 'lend.loanChannelsById') || [];
+			this.categoriesLoaded = true;
+			// set initial active category
+			this.setActiveCategory(this.categoryIds[0]);
+			this.activateWatchers();
+		});
 	},
 };
 
@@ -254,7 +257,7 @@ export default {
 }
 
 .category-options {
-	margin: 1.35rem auto;
+	margin: 1.35rem auto 0;
 	top: -4.5rem;
 	position: absolute;
 	white-space: nowrap;
@@ -268,7 +271,8 @@ export default {
 		margin-right: 1rem;
 
 		@include breakpoint(medium) {
-			line-height: 3rem;
+			margin-bottom: 1rem;
+			display: inline-block;
 		}
 
 		@include breakpoint(large) {
@@ -300,5 +304,9 @@ export default {
 		justify-content: space-between;
 		min-width: 100%;
 	}
+}
+
+.loading-spinner {
+	margin: 0 auto;
 }
 </style>
