@@ -221,7 +221,7 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import HomepageStatistics from './HomepageStatictics';
+import HomepageStatistics from './HomepageStatistics';
 
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 
