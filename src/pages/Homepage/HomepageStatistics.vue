@@ -55,7 +55,7 @@
 <script>
 import _get from 'lodash/get';
 import { differenceInYears } from 'date-fns';
-import homepageStatistics from '@/graphql/query/homepage/homepageStatistics.graphql';
+import homepageStatistics from '@/graphql/query/whyKivaData.graphql';
 
 export default {
 	data() {
