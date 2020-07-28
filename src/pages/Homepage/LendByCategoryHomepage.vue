@@ -173,6 +173,8 @@
 					<img
 						:src="lenderQuote.image"
 						class="quote-card__lender-img"
+						loading="lazy"
+						:alt="lenderQuote.attribution"
 					>
 					<p class="quote-card__quote">
 						{{ lenderQuote.quote }}
@@ -556,7 +558,6 @@ export default {
 		}
 	}
 
-	// Couldn't get BEM working in here
 	.quote-card:nth-child(even) {
 		.quote-card__flourish {
 			top: 0;
