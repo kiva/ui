@@ -516,6 +516,7 @@ export default {
 		margin: 0 auto rem-calc(25) auto;
 		text-align: center;
 		border-radius: 1rem;
+		background: $white;
 		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
 		position: relative;
 		overflow: hidden;
