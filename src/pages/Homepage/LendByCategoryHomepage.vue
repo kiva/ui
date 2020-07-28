@@ -157,6 +157,35 @@
 				<h2 class="lender-quotes__header text-center small-12 columns">
 					What our lending <br class="so mo"> community thinks
 				</h2>
+				<div
+					v-for="lenderQuote in lenderQuotes"
+					:key="lenderQuote.name"
+					:class="`quote-card small-10 medium-8 large-5 columns`"
+				>
+					<kv-responsive-image
+						class="quote-card__flourish"
+						:images="[
+							['small', lenderQuote.background],
+						]"
+						loading="lazy"
+						alt=""
+					/>
+					<img
+						:src="lenderQuote.image"
+						class="quote-card__lender-img"
+						loading="lazy"
+						:alt="lenderQuote.attribution"
+					>
+					<p class="quote-card__quote">
+						{{ lenderQuote.quote }}
+					</p>
+					<p class="quote-card__attribution">
+						{{ lenderQuote.attribution }},
+					</p>
+					<p class="quote-card__title">
+						{{ lenderQuote.title }}
+					</p>
+				</div>
 			</div>
 			<kv-responsive-image
 				class="lender-quotes__flourish"
@@ -236,6 +265,25 @@ export default {
 			statistics: [
 				['small', imgRequire('./stats.png')],
 				['small retina', imgRequire('./stats_2x.png')],
+			],
+			lenderQuotes: [
+				{
+
+					image: imgRequire('./lender-quote-heather.jpg'),
+					// eslint-disable-next-line max-len
+					quote: 'Being able to lend, then get repaid, and lend over and over again gives great satisfaction. My funds have been lent 12 times over.',
+					attribution: 'Heather McLaughlin',
+					title: 'Kiva lender',
+					background: imgRequire('./lender-quote-card-texture-yellow.png'),
+				},
+				{
+					image: imgRequire('./lender-quote-jenae.jpg'),
+					// eslint-disable-next-line max-len
+					quote: 'Just made my 11th loan to a single mother in Nicaragua. Constantly blown away by the impact from the same $25 being lent over and over again.',
+					attribution: 'Jenae Journot',
+					title: 'Kiva lender',
+					background: imgRequire('./lender-quote-card-texture-red.png'),
+				},
 			],
 			flourishImgs: {
 				greenLeft: [
@@ -439,6 +487,7 @@ export default {
 
 .lender-quotes {
 	&__header {
+		margin-bottom: 2rem;
 		font-weight: bold;
 
 		@include breakpoint(large) {
@@ -457,6 +506,88 @@ export default {
 			top: -30%;
 			left: 0;
 			pointer-events: none;
+			z-index: -1;
+		}
+	}
+
+	.quote-card {
+		@include featured-text();
+
+		margin: 0 auto rem-calc(25) auto;
+		text-align: center;
+		border-radius: 1rem;
+		background: $white;
+		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+		position: relative;
+		overflow: hidden;
+		z-index: 1;
+
+		@include breakpoint(large) {
+			@include medium-text();
+		}
+
+		&__lender-img {
+			margin: rem-calc(30) auto rem-calc(30) auto;
+			width: 5.5rem;
+			border-radius: 50%;
+
+			@include breakpoint(large) {
+				width: 4rem;
+			}
+		}
+
+		&__quote {
+			line-height: 1.3;
+			margin-bottom: rem-calc(30);
+		}
+
+		&__attribution {
+			line-height: 1.3;
+			font-weight: bold;
+			margin-bottom: 0;
+			position: relative;
+		}
+
+		&__title {
+			position: relative;
+			margin-bottom: rem-calc(30);
+		}
+
+		&__flourish {
+			position: absolute;
+			z-index: -1;
+		}
+	}
+
+	.quote-card:nth-child(even) {
+		@include breakpoint(large) {
+			margin-right: 0.9rem;
+		}
+
+		.quote-card__flourish {
+			top: 0;
+			left: 0;
+			width: 10rem;
+
+			@include breakpoint(large) {
+				width: 8rem;
+			}
+		}
+	}
+
+	.quote-card:nth-child(odd) {
+		@include breakpoint(large) {
+			margin-left: 0.9rem;
+		}
+
+		.quote-card__flourish {
+			bottom: 4rem;
+			right: 0;
+			width: 7.5rem;
+
+			@include breakpoint(large) {
+				width: 5.5rem;
+			}
 		}
 	}
 }
