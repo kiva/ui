@@ -160,7 +160,7 @@
 				<div
 					v-for="lenderQuote in lenderQuotes"
 					:key="lenderQuote.name"
-					:class="`quote-card small-10 medium-8 large-5 xlarge-4 columns`"
+					:class="`quote-card small-10 medium-8 large-5 columns`"
 				>
 					<kv-responsive-image
 						class="quote-card__flourish"
