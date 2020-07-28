@@ -7,17 +7,15 @@
 			:style="{ left: scrollPos + 'px' }"
 		>
 			<kv-loading-spinner v-if="!categoriesLoaded" />
-			<a
-				href="#"
-				role="button"
-				class="category-options__link"
+			<kv-button
+				class="text-link category-options__link"
 				:class="{'active': category.id === activeCategory}"
 				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
 				@click.prevent="setActiveCategory(category.id)"
 			>
 				{{ cleanCategoryName(category) }}
-			</a>
+			</kv-button>
 			<router-link
 				class="category-options__link"
 				:to="`/lend-by-category`"
@@ -58,11 +56,13 @@ import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		LoanCategory,
 		KvLoadingSpinner,
+		KvButton
 	},
 	inject: ['apollo'],
 	data() {

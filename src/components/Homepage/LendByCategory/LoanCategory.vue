@@ -11,6 +11,7 @@
 				@click="scrollRowLeft"
 			>
 				&lsaquo;
+				<span class="show-for-sr">Previous Loans</span>
 			</button>
 			<div class="cards-display-window">
 				<div
@@ -61,6 +62,7 @@
 				@click="scrollRowRight"
 			>
 				&rsaquo;
+				<span class="show-for-sr">Next Loans</span>
 			</button>
 		</div>
 	</div>
