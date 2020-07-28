@@ -489,6 +489,7 @@ export default {
 	&__header {
 		margin-bottom: 2rem;
 		font-weight: bold;
+		z-index: 1;
 
 		@include breakpoint(large) {
 			@include large-text();
