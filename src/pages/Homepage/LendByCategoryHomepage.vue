@@ -489,7 +489,6 @@ export default {
 	&__header {
 		margin-bottom: 2rem;
 		font-weight: bold;
-		z-index: 1;
 
 		@include breakpoint(large) {
 			@include large-text();
@@ -507,6 +506,7 @@ export default {
 			top: -30%;
 			left: 0;
 			pointer-events: none;
+			z-index: -1;
 		}
 	}
 
@@ -545,12 +545,10 @@ export default {
 			line-height: 1.3;
 			font-weight: bold;
 			margin-bottom: 0;
-			z-index: 100;
 			position: relative;
 		}
 
 		&__title {
-			z-index: 100;
 			position: relative;
 			margin-bottom: rem-calc(30);
 		}
