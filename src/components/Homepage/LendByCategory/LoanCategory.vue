@@ -1,42 +1,27 @@
 <template>
-	<div
-		class="category-row-hover"
-	>
-		<div class="row title-row">
-			<div class="column small-12">
-				<h2 class="category-name">
-					{{ cleanName }}
-				</h2>
-				<p class="category-description show-for-large">
-					{{ loanChannel.description }}
-				</p>
-			</div>
-		</div>
-
+	<div class="component-wrapper" ref="componentWrapper">
+		<kv-loading-spinner v-if="isLoading" />
 		<div
+			v-else
 			class="cards-and-arrows-wrapper"
-			ref="outerWrapper"
 		>
-			<span
+			<button
 				class="arrow left-arrow"
 				:class="{inactive: scrollPos === 0}"
-				ref="leftArrow"
 				@click="scrollRowLeft"
-			>&lsaquo;</span>
-			<div class="cards-display-window" ref="innerWrapper">
-				<loading-overlay v-if="isLoading" id="updating-overlay" />
+			>
+				&lsaquo;
+				<span class="show-for-sr">Previous Loans</span>
+			</button>
+			<div class="cards-display-window">
 				<div
-					v-else
 					class="cards-holder"
 					:style="{ marginLeft: scrollPos + 'px' }"
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
-
-					ref="hoverCardsHolder"
 				>
 					<loan-card-controller
 						loan-card-type="LendHomepageLoanCard"
-						class="is-in-category-row"
 						v-for="(loan, index) in loans"
 						:key="loan.id"
 						:loan="loan"
@@ -51,7 +36,7 @@
 						Blocks of attributes above:
 						1) Props for implemented loan cards
 					-->
-					<div v-if="showViewAllLink" class="column column-block is-in-category-row view-all-loans-category">
+					<div class="column view-all-loans-category">
 						<router-link
 							:to="cleanUrl"
 							:title="`${viewAllLoansCategoryTitle}`"
@@ -62,7 +47,6 @@
 						>
 							<div
 								class="see-all-card"
-								:class="seeAllCardClass"
 							>
 								<div class="link">
 									{{ viewAllLoansCategoryTitle }}
@@ -72,12 +56,14 @@
 					</div>
 				</div>
 			</div>
-			<span
+			<button
 				class="arrow right-arrow"
 				:class="{inactive: scrollPos <= minLeftMargin}"
-				ref="rightArrow"
 				@click="scrollRowRight"
-			>&rsaquo;</span>
+			>
+				&rsaquo;
+				<span class="show-for-sr">Next Loans</span>
+			</button>
 		</div>
 	</div>
 </template>
@@ -87,23 +73,21 @@ import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
-import detailedLoanCardFragment from '@/graphql/fragments/detailedLoanCard.graphql';
-import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
+// TODO change card component used in this component and these values to fit 3 cards in row.
 const cardWidth = 320;
 const cardRightMargin = 10;
 const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
 	components: {
-		LoanCardController, LoadingOverlay
+		LoanCardController,
+		KvLoadingSpinner,
 	},
 	mixins: [
 		categoryRowArrowsVisibleMixin,
-		smoothScrollMixin,
 	],
-	inject: ['apollo'],
 	props: {
 		isLoggedIn: {
 			type: Boolean,
@@ -116,10 +100,6 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
-		},
-		rowNumber: {
-			type: Number,
-			default: null
 		},
 		setId: {
 			type: String,
@@ -137,13 +117,10 @@ export default {
 	data() {
 		return {
 			name: '',
-			offset: null,
 			scrollPos: 0,
 			url: '',
 			windowWidth: 0,
 			wrapperWidth: 0,
-			detailedLoanIndex: null,
-			hoverLoanIndex: null,
 			cardWidth: cardWidthTotal,
 			preventUpdatingDetailedCard: false,
 		};
@@ -151,18 +128,6 @@ export default {
 	computed: {
 		isLoading() {
 			return this.loans.length === 0 && this.isVisible;
-		},
-		showViewAllLink() {
-			let isVisible = true;
-
-			if (
-				this.url.includes('loans-with-research-backed-impact') === true
-				|| this.url.includes('recently-viewed-loans') === true
-				|| this.url === '') {
-				isVisible = false;
-			}
-
-			return isVisible;
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
@@ -203,52 +168,17 @@ export default {
 		minLeftMargin() {
 			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
 		},
-		throttledResize() {
-			return _throttle(this.saveWindowWidth, 100);
-		},
 		shiftIncrement() {
 			return this.cardsInWindow * this.cardWidth;
 		},
 		viewAllLoansCategoryTitle() {
 			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
 		},
-		hasRightArrow() {
-			return this.$refs.rightArrow;
-		},
-		hasLeftArrow() {
-			return this.$refs.leftArrow;
-		},
-		noHoverLoan() {
-			return this.hoverLoanIndex === null;
-		},
-		detailedLoan() {
-			return this.apollo.readFragment({
-				id: this.detailedLoanCacheId,
-				fragment: detailedLoanCardFragment,
-			}) || {};
-		},
-		hoverLoanIsLeftMost() {
-			if (this.noHoverLoan) {
-				return false;
-			}
-
-			const hoverCardDistanceFromLeft = (this.hoverLoanIndex * cardWidthTotal) + this.scrollPos;
-
-			return hoverCardDistanceFromLeft === 0;
-		},
-		seeAllCardClass() {
-			if (this.noHoverLoan) {
-				return '';
-			}
-			return this.hoverLoanIsLeftMost ? 'shift-2x' : 'shift-1x';
-		},
 	},
 	watch: {
-		isVisible: {
-			handler() {
-				this.saveWindowWidth();
-			},
-			immediate: true,
+		loans() {
+			// When the amount of loans changes, save window width to calculate scrolling
+			this.saveWindowWidth();
 		},
 		loanChannel: {
 			handler(channel) {
@@ -257,58 +187,31 @@ export default {
 			},
 			immediate: true,
 		},
-		detailedLoanIndex(newValue, oldValue) {
-			if (this.$isServer) {
-				return;
-			}
-
-			const isMobile = document.documentElement.clientWidth < 480;
-			const detailedLoanIsOpening = oldValue === null && newValue !== null;
-
-			if (isMobile) {
-				this.$nextTick(() => {
-					this.smoothScrollToDetailedPanel();
-				});
-			} else if (detailedLoanIsOpening) {
-				this.smoothScrollToLoanRow();
-			}
-		},
 	},
 	mounted() {
-		this.saveWindowWidth();
-		window.addEventListener('resize', this.throttledResize);
+		window.addEventListener('resize', _throttle(() => {
+			this.saveWindowWidth();
+		}, 200));
 	},
 	beforeDestroy() {
-		window.removeEventListener('resize', this.throttledResize);
+		window.removeEventListener('resize', _throttle(() => {
+			this.saveWindowWidth();
+		}, 200));
 	},
 	methods: {
 		saveWindowWidth() {
-			this.windowWidth = window.innerWidth;
-			// TODO: New Countries for You code is getting executed even for NON Logged in lenders (no loans, no width)
-			this.wrapperWidth = this.$refs.innerWrapper ? this.$refs.innerWrapper.clientWidth : 0;
+			this.wrapperWidth = this.$refs.componentWrapper ? this.$refs.componentWrapper.clientWidth : 0;
 		},
 		scrollRowLeft() {
 			if (this.scrollPos < 0) {
 				const newLeftMargin = Math.min(0, this.scrollPos + this.shiftIncrement);
 				this.scrollPos = newLeftMargin;
-				this.$emit('scrolling-row');
 			}
 		},
 		scrollRowRight() {
 			if (this.scrollPos > this.minLeftMargin) {
 				const newLeftMargin = this.scrollPos - this.shiftIncrement;
 				this.scrollPos = newLeftMargin;
-				this.$emit('scrolling-row');
-			}
-		},
-		getRightArrowPosition() {
-			if (this.hasRightArrow) {
-				return this.$refs.rightArrow.getBoundingClientRect().right;
-			}
-		},
-		getLeftArrowPosition() {
-			if (this.hasLeftArrow) {
-				return this.$refs.leftArrow.getBoundingClientRect().left;
 			}
 		},
 	},
@@ -317,138 +220,72 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-@import "components/loan-cards/hover-loan-card";
 
-$row-max-width: 63.75rem;
-
-.category-row-hover {
-	padding-bottom: 0;
-	transition: padding-bottom $card-expansion-duration $card-expansion-curve;
-
-	&.displaying-detailed-loan {
-		padding-bottom: 2rem;
-	}
+.component-wrapper {
+	text-align: center;
 }
 
 .cards-and-arrows-wrapper {
-	max-width: $row-max-width;
-	margin: rem-calc(-67) auto 0;
 	align-items: center;
 	display: flex;
 	position: relative;
 	justify-content: center;
+	margin: 0 2.5rem; // leave 2.5rem spacing for arrows
 }
 
 .arrow {
-	display: flex;
-	position: absolute;
-	top: 0;
-	background: rgba(255, 255, 255, 0.8);
-	width: 2.5rem;
-	margin: 0;
-	text-align: center;
-	height: 100%;
-	z-index: 20;
-	color: $kiva-text-light;
-	cursor: pointer;
-	font-size: rem-calc(70);
-	justify-content: center;
 	align-items: center;
+	background: $subtle-gray;
+	border-radius: 50%;
+	color: $white;
+	cursor: pointer;
+	display: flex;
+	font-size: 3.25rem;
+	height: 2.5rem;
+	justify-content: center;
+	overflow: hidden;
+	padding-bottom: 0.5rem;
+	position: absolute;
+	text-align: center;
+	width: 2.5rem;
 
 	&:hover,
 	&:active {
 		color: $kiva-text-medium;
 	}
 
+	&.left-arrow {
+		left: -3.25rem;
+		padding-right: 0.25rem;// center chevron
+	}
+
+	&.right-arrow {
+		right: -3.25rem;
+		padding-left: 0.25rem;
+	}
+
 	&.inactive,
 	&.inactive:hover,
 	&.inactive:active {
-		color: $kiva-stroke-gray;
 		cursor: not-allowed;
+
+		.icon {
+			fill: $kiva-text-dark;
+		}
 	}
-}
-
-.left-arrow {
-	left: 0;
-}
-
-.right-arrow {
-	right: 0;
 }
 
 .cards-display-window {
 	overflow-x: hidden;
 	width: 100%;
-	z-index: 10;
+	text-align: center;
 }
 
 .cards-holder {
 	display: flex;
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
-	padding-left: 2.5rem;
 	overflow: hidden;
-}
-
-.row.title-row {
-	max-width: $row-max-width;
-}
-
-.expanded-card-row {
-	max-width: $row-max-width;
-}
-
-.category-text {
-	font-weight: $global-weight-highlight;
-	margin: 0 1.875rem;
-	margin-bottom: 0.5rem;
-
-	@include breakpoint(medium) {
-		margin-left: 1.5625rem;
-	}
-}
-
-.category-name {
-	@extend .category-text;
-
-	z-index: 11;
-	position: relative;
-}
-
-.category-description {
-	@extend .category-text;
-
-	font-weight: $global-weight-normal;
-	margin-top: rem-calc(12);
-	margin-bottom: 0;
-	min-height: rem-calc(56);
-}
-
-a.view-all-link {
-	display: inline;
-	position: relative;
-	color: $kiva-text-dark;
-
-	.view-all-arrow {
-		position: absolute;
-		bottom: -0.7rem;
-		right: -1.4rem;
-		padding: 0 0.3rem;
-		font-weight: $global-weight-normal;
-		font-size: 2.5rem;
-
-		@include breakpoint(medium) {
-			font-size: 3rem;
-			bottom: -0.75rem;
-			right: -1.6rem;
-		}
-	}
-
-	&:hover {
-		text-decoration: none;
-		color: $kiva-text-dark;
-		cursor: pointer;
-	}
 }
 
 // Customize styles for touch screens ie. No Arrows
@@ -457,20 +294,13 @@ a.view-all-link {
 		display: none;
 	}
 
-	.category-name {
-		margin-left: 0.375rem;
-
-		@include breakpoint(medium) {
-			margin-left: 0.175rem;
-		}
-	}
-
 	.cards-holder {
 		padding-left: 1rem;
 	}
 }
 
 // view all loans category card
+// TODO style this view all card
 .view-all-loans-category {
 	padding-right: 0.625rem;
 	padding-left: 0.625rem;
@@ -484,18 +314,9 @@ a.view-all-link {
 		width: 13.75rem;
 		height: 14.25rem;
 		margin-top: 5.4375rem;
-		transition: $hover-card-transition-transform, box-shadow $card-expansion-duration $card-expansion-curve;
 
 		&:hover {
 			box-shadow: 0 0 rem-calc(6) rgba(0, 0, 0, 0.2);
-		}
-
-		&.shift-1x {
-			transform: translateX($hover-card-width-difference / 2);
-		}
-
-		&.shift-2x {
-			transform: translateX($hover-card-width-difference);
 		}
 	}
 
@@ -508,18 +329,8 @@ a.view-all-link {
 		text-align: center;
 	}
 }
-// loading overlay overrides
-#updating-overlay {
-	background-color: rgba($kiva-bg-darkgray, 0.7);
-	z-index: 500;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 
-	.spinner-wrapper {
-		position: relative;
-		left: auto;
-		transform: none;
-	}
+.loading-spinner {
+	margin: 9rem auto; // Top margin prevents content shifting when loading
 }
 </style>

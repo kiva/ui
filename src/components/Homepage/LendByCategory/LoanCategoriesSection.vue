@@ -1,23 +1,21 @@
 <template>
 	<div class="loan-category-section-wrapper">
 		<div class="category-options"
-			v-touch:swipe.left="scrollRowRight"
-			v-touch:swipe.right="scrollRowLeft"
+			v-touch:swipe.left="scrollCategoryNamesRight"
+			v-touch:swipe.right="scrollCategoryNamesLeft"
 			ref="categoryOptions"
 			:style="{ left: scrollPos + 'px' }"
 		>
 			<kv-loading-spinner v-if="!categoriesLoaded" />
-			<a
-				href="#"
-				role="button"
-				class="category-options__link"
+			<kv-button
+				class="text-link category-options__link"
 				:class="{'active': category.id === activeCategory}"
 				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
 				@click.prevent="setActiveCategory(category.id)"
 			>
 				{{ cleanCategoryName(category) }}
-			</a>
+			</kv-button>
 			<router-link
 				class="category-options__link"
 				:to="`/lend-by-category`"
@@ -39,6 +37,7 @@
 				:items-in-basket="itemsInBasket"
 				:is-logged-in="isLoggedIn"
 				:is-visible="category.id === activeCategory"
+				:key="category.id + '-category'"
 			/>
 		</div>
 	</div>
@@ -57,11 +56,13 @@ import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		LoanCategory,
 		KvLoadingSpinner,
+		KvButton
 	},
 	inject: ['apollo'],
 	data() {
@@ -96,13 +97,13 @@ export default {
 		},
 	},
 	methods: {
-		scrollRowLeft() {
+		scrollCategoryNamesLeft() {
 			if (this.scrollPos < 0 && this.isLargeBreakpoint) {
 				const newLeftMargin = Math.min(0, this.scrollPos + 200);
 				this.scrollPos = newLeftMargin;
 			}
 		},
-		scrollRowRight() {
+		scrollCategoryNamesRight() {
 			if (this.scrollPos > this.minLeftMargin && this.isLargeBreakpoint) {
 				const newLeftMargin = Math.max(this.minLeftMargin, this.scrollPos - 200);
 				this.scrollPos = newLeftMargin;
