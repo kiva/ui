@@ -160,7 +160,7 @@
 				<div
 					v-for="lenderQuote in lenderQuotes"
 					:key="lenderQuote.name"
-					:class="`quote-card small-10 medium-8 large-5 xlarge-4 columns`"
+					:class="`quote-card small-10 medium-8 large-5 columns`"
 				>
 					<kv-responsive-image
 						class="quote-card__flourish"
@@ -518,6 +518,7 @@ export default {
 		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
 		position: relative;
 		overflow: hidden;
+		z-index: 1;
 
 		@include breakpoint(large) {
 			@include medium-text();
@@ -554,11 +555,15 @@ export default {
 
 		&__flourish {
 			position: absolute;
-			z-index: 0;
+			z-index: -1;
 		}
 	}
 
 	.quote-card:nth-child(even) {
+		@include breakpoint(large) {
+			margin-right: 0.9rem;
+		}
+
 		.quote-card__flourish {
 			top: 0;
 			left: 0;
@@ -571,6 +576,10 @@ export default {
 	}
 
 	.quote-card:nth-child(odd) {
+		@include breakpoint(large) {
+			margin-left: 0.9rem;
+		}
+
 		.quote-card__flourish {
 			bottom: 4rem;
 			right: 0;
