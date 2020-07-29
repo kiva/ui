@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import StoryRouter from 'storybook-vue-router';
 import { select, text, number, boolean } from '@storybook/addon-knobs';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 import GridLoanCard from '@/components/LoanCards/GridLoanCard';
 
@@ -15,21 +16,7 @@ export default {
 };
 
 export const Default = () => ({
-	provide: {
-		apollo: {
-			mutate() {
-				return Promise.resolve({});
-			},
-			watchQuery() {
-				return {
-					subscribe() {}
-				}
-			},
-			query() {
-				return Promise.resolve({});
-			}
-		},
-	},
+	mixins: [apolloStoryMixin],
 	components: {
 		GridLoanCard,
 	},
