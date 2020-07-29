@@ -6,6 +6,7 @@ Vue.use(kivaPlugins)
 
 import StoryRouter from 'storybook-vue-router';
 import MGCovid19 from '@/pages/LandingPages/MGCovid19/MGCovid19.vue';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {
 	title: 'Promos/MGCovid19Response',
@@ -17,17 +18,8 @@ export const Default = () => ({
 	components: {
 		MGCovid19,
 	},
+	mixins: [apolloStoryMixin],
 	provide: {
-		apollo: {
-			watchQuery() {
-				return {
-					subscribe() {}
-				}
-			},
-			readQuery() {
-				return Promise.resolve({});
-			},
-		},
 		federation: {
 			query() {
 				return Promise.resolve({});
