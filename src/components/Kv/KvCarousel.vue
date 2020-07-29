@@ -22,7 +22,7 @@
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
-					name="small-chevron"
+					name="fat-chevron"
 					:from-sprite="true"
 					title="Show previous slide"
 				/>
@@ -33,7 +33,7 @@
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
-					name="small-chevron"
+					name="fat-chevron"
 					:from-sprite="true"
 					title="Show next slide"
 				/>
@@ -47,7 +47,10 @@
 				v-for="(slide, index) in slides"
 				:key="`indicator-${index}`"
 				class="kv-carousel__indicator-btn"
-				:class="currentIndex === index ? 'kv-carousel__indicator-btn--active' : ''"
+				:class="[
+					currentIndex === index ? 'kv-carousel__indicator-btn--active' : '',
+					index < currentIndex ? 'kv-carousel__indicator-btn--viewed' : ''
+				]"
 				@click="goToSlide(index)"
 			>
 				<span class="show-for-sr">Show slide {{ index + 1 }}</span>
@@ -269,7 +272,6 @@ $bar-indicator-margin: rem-calc(4);
 		bottom: #{$circle-indicator-height + $circle-indicator-margin * 2};
 		left: #{$arrow-width + $arrow-margin};
 		flex: 1;
-		background: green; // TODO: colors
 		overflow: hidden;
 	}
 
@@ -290,8 +292,9 @@ $bar-indicator-margin: rem-calc(4);
 		border-radius: 50%;
 		width: $arrow-width;
 		height: $arrow-width;
-		padding: 0.75rem;
+		padding: 0.6rem 0.6rem 0.5rem;
 		pointer-events: auto;
+		overflow: hidden; // prevents a weird chrome twitch on click
 
 		&--right {
 			transform: rotate(270deg);
@@ -303,7 +306,7 @@ $bar-indicator-margin: rem-calc(4);
 
 		&:hover,
 		&:focus {
-			background: $dark-charcoal;
+			background: $anchor-color-hover;
 		}
 	}
 
@@ -327,14 +330,14 @@ $bar-indicator-margin: rem-calc(4);
 		width: 1rem;
 		height: 1rem;
 		border-radius: 50%;
-		background: $kiva-text-dark;
+		background: $kiva-text-light;
 		pointer-events: auto;
 		position: relative;
 		overflow: hidden;
 
 		&:hover,
 		&:focus {
-			background: yellow; // TODO: colors
+			background: $anchor-color-hover;
 		}
 
 		&:first-child {
@@ -346,8 +349,6 @@ $bar-indicator-margin: rem-calc(4);
 		}
 
 		&--active {
-			background: orange; // TODO: colors
-
 			@keyframes scaleX {
 				0% {
 					transform: scaleX(0);
@@ -361,7 +362,7 @@ $bar-indicator-margin: rem-calc(4);
 			&::after {
 				display: block;
 				content: '';
-				background: purple; // TODO: colors
+				background: hsla(0, 0, 100, 0.5);
 				width: 100%;
 				height: 100%;
 				transform-origin: left;
@@ -428,6 +429,16 @@ $bar-indicator-margin: rem-calc(4);
 
 			&:last-child {
 				margin-right: 0;
+			}
+
+			&--viewed {
+				&::after {
+					display: block;
+					content: '';
+					background: hsla(0, 0, 100, 0.5);
+					width: 100%;
+					height: 100%;
+				}
 			}
 		}
 

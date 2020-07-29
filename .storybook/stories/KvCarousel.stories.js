@@ -10,16 +10,16 @@ Vue.use(Vue2TouchEvents);
 
 const defaultCarouselSlides = `
 	<template slot="default" slot-scope="props">
-		<kv-carousel-slide :transition-name="props.transitionName">
+		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/e8f0f6/000000" style="width: 100%;">
 		</kv-carousel-slide>
-		<kv-carousel-slide :transition-name="props.transitionName">
+		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/a87c7c/000000" style="width: 100%;">
 		</kv-carousel-slide>
-		<kv-carousel-slide :transition-name="props.transitionName">
+		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/f6dbb8/000000" style="width: 100%;">
 		</kv-carousel-slide>
-		<kv-carousel-slide :transition-name="props.transitionName">
+		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/b39696/000000" style="width: 100%;">
 		</kv-carousel-slide>
 	</template>
