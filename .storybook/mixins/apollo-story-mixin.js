@@ -1,21 +1,20 @@
 export default {
 	provide: {
-        apollo: {
+		apollo: {
 			mutate() {
 				return Promise.resolve({});
 			},
 			watchQuery() {
 				return {
-					subscribe() {}
-				}
+			subscribe() {}
+			}
 			},
 			query() {
 				return Promise.resolve({});
-            },
-            readFragment() {
-                return {}
-            }
-
+			},
+			readFragment() {
+				return {}
+			}
 		},
 	}
 };
