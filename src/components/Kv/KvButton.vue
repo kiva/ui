@@ -50,7 +50,7 @@ export default {
 	}
 }
 
-.button:not(.text-link) {
+.button {
 	@include button();
 	@include button-primary-styles();
 
@@ -96,14 +96,24 @@ export default {
 }
 
 .text-link {
+	display: inline-block;
 	color: $anchor-color;
 	text-decoration: $anchor-text-decoration;
 	line-height: inherit;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+	font-size: 1em;
+	transition: none;
 
 	&:hover,
 	&:focus {
 		color: $anchor-color-hover;
 		text-decoration: $anchor-text-decoration-hover;
+		background: transparent;
 	}
 }
 
