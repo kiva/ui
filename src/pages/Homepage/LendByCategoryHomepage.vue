@@ -615,7 +615,6 @@ export default {
 .section {
 	position: relative;
 	padding: 3rem 0;
-	outline: 1px solid pink; // TODO: remove before prod
 
 	@include breakpoint(large) {
 		padding: 6rem 0;

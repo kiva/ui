@@ -5,22 +5,22 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import loanDataPropStoryMixin from '../mixins/loan-data-prop-story-mixin';
 
 
-import GridLoanCard from '@/components/LoanCards/GridLoanCard';
+import LendHomepageLoanCard from '@/components/LoanCards/LendHomepageLoanCard';
 
 // import plugins
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
 export default {
-	title: 'Loan Cards/Grid Loan Card',
-	component: GridLoanCard,
+	title: 'Loan Cards/Lend Homepage Loan Card',
+	component: LendHomepageLoanCard,
 	decorators: [StoryRouter()],
 };
 
 export const Default = () => ({
 	mixins: [apolloStoryMixin, loanDataPropStoryMixin],
 	components: {
-		GridLoanCard,
+		LendHomepageLoanCard,
 	},
 	props: {
 		amountLeft: {
@@ -31,9 +31,9 @@ export const Default = () => ({
 			type: String,
 			default: `${text('Expiring Soon Message', 'Only 3 Days Left!')}`
 		},
-		isFavorite: {
+		isExpired: {
 			type: Boolean,
-			default: boolean('Favorite', false)
+			default: boolean('isExpired', false)
 		},
 		isFunded: {
 			type: Boolean,
@@ -60,23 +60,18 @@ export const Default = () => ({
 				step: .1,
 			 }),
 		},
-		title: {
-			type: String,
-			default: `${text('Loan Title', '')}`
-		},
 	},
 	template: `
-		<grid-loan-card
-			:items-in-basket="itemsInBasket"
-			:loan="loan"
+		<lend-homepage-loan-card
 			:amount-left="amountLeft"
 			:expiring-soon-message="expiringSoonMessage"
-			:is-favorite="isFavorite"
+			:is-expired="isExpired"
 			:is-funded="isFunded"
 			:is-selected-by-another="isSelectedByAnother"
 			:is-visitor="isVisitor"
+			:items-in-basket="itemsInBasket"
+			:loan="loan"
 			:percent-raised="percentRaised"
-			:title="title"
 		/>
 	`,
 });
