@@ -40,9 +40,7 @@
 			</button>
 		</div>
 
-		<div
-			class="kv-carousel__indicator"
-		>
+		<div class="kv-carousel__indicator">
 			<button
 				v-for="(slide, index) in slides"
 				:key="`indicator-${index}`"
@@ -249,7 +247,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
+@import 'settings';
+@import 'foundation';
 
 $arrow-width: rem-calc(41);
 $arrow-margin: rem-calc(8);
@@ -307,6 +306,12 @@ $bar-indicator-margin: rem-calc(4);
 		&:hover,
 		&:focus {
 			background: $anchor-color-hover;
+		}
+
+		&[disabled] {
+			@include button-disabled();
+
+			background: $kiva-text-light;
 		}
 	}
 
