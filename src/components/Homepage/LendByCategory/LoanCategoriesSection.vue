@@ -12,7 +12,7 @@
 				:class="{'active': category.id === activeCategory}"
 				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
-				@click.prevent="setActiveCategory(category.id)"
+				@click.prevent.native="setActiveCategory(category.id)"
 			>
 				{{ cleanCategoryName(category) }}
 			</kv-button>
@@ -262,6 +262,8 @@ export default {
 	top: -4.5rem;
 	position: absolute;
 	white-space: nowrap;
+	text-align: center;
+	padding: 0 2rem;
 
 	&__link {
 		color: $charcoal;
@@ -305,9 +307,9 @@ export default {
 		justify-content: space-between;
 		min-width: 100%;
 	}
-}
 
-.loading-spinner {
-	margin: 0 auto;
+	.loading-spinner {
+		margin: 0 auto;
+	}
 }
 </style>

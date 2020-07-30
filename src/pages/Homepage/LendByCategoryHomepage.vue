@@ -359,6 +359,10 @@ export default {
 }
 
 .loan-categories {
+	& .row {
+		max-width: 69.15rem;
+	}
+
 	&__header {
 		font-weight: bold;
 

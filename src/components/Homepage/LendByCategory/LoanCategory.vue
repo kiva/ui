@@ -22,13 +22,12 @@
 				>
 					<loan-card-controller
 						loan-card-type="LendHomepageLoanCard"
-						v-for="(loan, index) in loans"
+						v-for="loan in loans"
 						:key="loan.id"
 						:loan="loan"
 						:items-in-basket="itemsInBasket"
 						:category-id="loanChannel.id"
 						:category-set-id="setId"
-						:card-number="index + 1"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 					/>
@@ -49,7 +48,7 @@
 								class="see-all-card"
 							>
 								<div class="link">
-									{{ viewAllLoansCategoryTitle }}
+									<h3>{{ viewAllLoansCategoryTitle }}</h3>
 								</div>
 							</div>
 						</router-link>
@@ -72,12 +71,11 @@
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
-// TODO change card component used in this component and these values to fit 3 cards in row.
-const cardWidth = 320;
-const cardRightMargin = 10;
+// These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
+const cardWidth = 305;
+const cardRightMargin = 14;
 const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
@@ -85,9 +83,6 @@ export default {
 		LoanCardController,
 		KvLoadingSpinner,
 	},
-	mixins: [
-		categoryRowArrowsVisibleMixin,
-	],
 	props: {
 		isLoggedIn: {
 			type: Boolean,
@@ -293,40 +288,34 @@ export default {
 	.arrow {
 		display: none;
 	}
-
-	.cards-holder {
-		padding-left: 1rem;
-	}
 }
 
+// These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
+$card-width: rem-calc(305);
+$card-margin: rem-calc(14);
+$card-half-space: rem-calc(14/2);
+$card-height: rem-calc(388);
+
 // view all loans category card
-// TODO style this view all card
 .view-all-loans-category {
-	padding-right: 0.625rem;
-	padding-left: 0.625rem;
+	padding: 1rem $card-margin 2rem $card-margin;
 
 	.see-all-card {
-		background-color: $very-light-gray;
-		border: 1px solid $kiva-stroke-gray;
-		display: flex;
-		flex-direction: column;
-		padding: rem-calc(50);
-		width: 13.75rem;
-		height: 14.25rem;
-		margin-top: 5.4375rem;
+		width: $card-width;
+		height: $card-height;
+		border-radius: 0.75rem;
+		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 
 		&:hover {
-			box-shadow: 0 0 rem-calc(6) rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
 		}
 	}
 
 	.link {
 		align-items: center;
 		display: flex;
-		font-weight: 400;
 		height: 100%;
 		justify-content: center;
-		text-align: center;
 	}
 }
 
