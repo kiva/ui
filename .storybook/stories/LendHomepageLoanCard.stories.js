@@ -31,6 +31,10 @@ export const Default = () => ({
 			type: String,
 			default: `${text('Expiring Soon Message', 'Only 3 Days Left!')}`
 		},
+		isFavorite: {
+			type: Boolean,
+			default: boolean('Favorite', false)
+		},
 		isExpired: {
 			type: Boolean,
 			default: boolean('isExpired', false)
@@ -69,6 +73,7 @@ export const Default = () => ({
 			:is-funded="isFunded"
 			:is-selected-by-another="isSelectedByAnother"
 			:is-visitor="isVisitor"
+			:is-favorite="isFavorite"
 			:items-in-basket="itemsInBasket"
 			:loan="loan"
 			:percent-raised="percentRaised"

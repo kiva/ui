@@ -7,7 +7,9 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="isVisitor"
+			:is-favorite="isFavorite"
 			:use-default-styles="false"
+			@favorite-toggled="toggleFavorite"
 		/>
 		<div class="lend-homepage-loan-card__data-wrapper">
 			<div class="lend-homepage-loan-card__name-row">
@@ -110,6 +112,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		isFavorite: {
+			type: Boolean,
+			default: false
+		},
 		isExpired: {
 			type: Boolean,
 			default: false,
@@ -161,6 +167,9 @@ export default {
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
+		toggleFavorite() {
+			this.$emit('toggle-favorite');
+		},
 	},
 };
 </script>
@@ -189,6 +198,18 @@ $card-half-space: rem-calc(14/2);
 		border-radius: 0.65rem 0.65rem 0 0;
 		overflow: hidden;
 		flex-shrink: 0;
+
+		::v-deep a.borrower-image-link {
+			position: relative;
+			display: inline-block;
+			height: rem-calc(168);
+		}
+
+		::v-deep button.favorite-star {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+		}
 	}
 
 	&__data-wrapper {
