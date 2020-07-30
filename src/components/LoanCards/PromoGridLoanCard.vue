@@ -10,7 +10,7 @@
 						We’ll lend to {{ categoryData.label }} for you every month with a Monthly Good subscription.
 					</p>
 					<p v-else>
-						We’ll lend to for you every month with a Monthly Good subscription.
+						We’ll make a loan for you every month with a Monthly Good subscription.
 					</p>
 					<kv-button
 						class="small"
