@@ -7,7 +7,9 @@
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
 			:is-visitor="isVisitor"
+			:is-favorite="isFavorite"
 			:use-default-styles="false"
+			@favorite-toggled="toggleFavorite"
 		/>
 		<div class="lend-homepage-loan-card__data-wrapper">
 			<div class="lend-homepage-loan-card__name-row">
@@ -39,7 +41,7 @@
 				:status="loan.status"
 				:use="loan.use"
 				:loan-id="loan.id"
-				:max-use-length="65"
+				:max-use-length="62"
 				read-more-link-text="Learn more"
 				@track-loan-card-interaction="trackInteraction"
 			/>
@@ -102,33 +104,37 @@ export default {
 		BorrowerInfoName,
 	},
 	props: {
+		amountLeft: {
+			type: Number,
+			default: 0,
+		},
 		expiringSoonMessage: {
 			type: String,
 			default: ''
 		},
-		isSelectedByAnother: {
+		isFavorite: {
 			type: Boolean,
 			default: false
-		},
-		itemsInBasket: {
-			type: Array,
-			default: () => [],
-		},
-		isVisitor: {
-			type: Boolean,
-			required: true,
 		},
 		isExpired: {
 			type: Boolean,
 			default: false,
 		},
-		amountLeft: {
-			type: Number,
-			default: 0,
-		},
 		isFunded: {
 			type: Boolean,
 			default: false,
+		},
+		isSelectedByAnother: {
+			type: Boolean,
+			default: false
+		},
+		isVisitor: {
+			type: Boolean,
+			required: true,
+		},
+		itemsInBasket: {
+			type: Array,
+			default: () => [],
 		},
 		loan: {
 			type: Object,
@@ -161,6 +167,9 @@ export default {
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
+		toggleFavorite() {
+			this.$emit('toggle-favorite');
+		},
 	},
 };
 </script>
@@ -172,7 +181,6 @@ export default {
 $card-width: rem-calc(305);
 $card-margin: rem-calc(14);
 $card-half-space: rem-calc(14/2);
-$card-height: rem-calc(388);
 
 .lend-homepage-loan-card {
 	margin: 1rem $card-margin 2rem $card-margin;
@@ -182,7 +190,6 @@ $card-height: rem-calc(388);
 	justify-content: space-between;
 	flex-shrink: 0;
 	width: $card-width;
-	height: $card-height;
 	border-radius: 0.65rem;
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 
@@ -191,11 +198,22 @@ $card-height: rem-calc(388);
 		border-radius: 0.65rem 0.65rem 0 0;
 		overflow: hidden;
 		flex-shrink: 0;
+
+		::v-deep a.borrower-image-link {
+			position: relative;
+			display: inline-block;
+			height: rem-calc(168);
+		}
+
+		::v-deep button.favorite-star {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+		}
 	}
 
 	&__data-wrapper {
-		height: rem-calc(220);
-		padding: rem-calc(5) 0.95rem 1rem;
+		padding: rem-calc(5) 0.95rem 1.5rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -221,7 +239,7 @@ $card-height: rem-calc(388);
 
 	&__borrower-info {
 		text-align: left;
-		margin: 0.85rem 0;
+		margin: 0.65rem 0;
 	}
 
 	&__fundraising-status {
@@ -239,7 +257,7 @@ $card-height: rem-calc(388);
 	}
 
 	&__action-button-container {
-		width: rem-calc(137);
+		width: rem-calc(150);
 		flex-shrink: 0;
 
 		&.full-width {
@@ -248,13 +266,16 @@ $card-height: rem-calc(388);
 
 		.action-button {
 			margin: 0;
-			font-size: rem-calc(20);
 			padding: 0.75rem 1rem;
+		}
+
+		.action-button:not(.loan-funded-text):not(.loan-expired-text):not(.loan-selected-text) {
+			font-size: rem-calc(20);
 		}
 	}
 
 	&__matching-text-container {
-		padding: 0.5rem 0.65rem 0;
+		padding: 0.5rem 0 0 0.65rem;
 	}
 }
 </style>

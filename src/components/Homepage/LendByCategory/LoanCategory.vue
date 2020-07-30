@@ -294,7 +294,6 @@ export default {
 $card-width: rem-calc(305);
 $card-margin: rem-calc(14);
 $card-half-space: rem-calc(14/2);
-$card-height: rem-calc(388);
 
 // view all loans category card
 .view-all-loans-category {
@@ -302,7 +301,7 @@ $card-height: rem-calc(388);
 
 	.see-all-card {
 		width: $card-width;
-		height: $card-height;
+		height: 100%;
 		border-radius: 0.75rem;
 		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 
