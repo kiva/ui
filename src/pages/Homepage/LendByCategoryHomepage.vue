@@ -394,6 +394,7 @@ export default {
 		top: 0;
 		left: -3%;
 		pointer-events: none;
+		z-index: -1;
 
 		@include breakpoint(large) {
 			left: 0;
