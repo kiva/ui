@@ -7,12 +7,16 @@
 		>
 			<button
 				class="arrow left-arrow"
-				:class="{inactive: scrollPos === 0}"
+				:disabled="scrollPos === 0"
 				@click="scrollRowLeft"
 			>
-				&lsaquo;
-				<span class="show-for-sr">Previous Loans</span>
+				<kv-icon
+					name="fat-chevron"
+					:from-sprite="true"
+					title="Previous Loans"
+				/>
 			</button>
+
 			<div class="cards-display-window">
 				<div
 					class="cards-holder"
@@ -57,11 +61,14 @@
 			</div>
 			<button
 				class="arrow right-arrow"
-				:class="{inactive: scrollPos <= minLeftMargin}"
+				:disabled="scrollPos <= minLeftMargin"
 				@click="scrollRowRight"
 			>
-				&rsaquo;
-				<span class="show-for-sr">Next Loans</span>
+				<kv-icon
+					name="fat-chevron"
+					:from-sprite="true"
+					title="Next Loans"
+				/>
 			</button>
 		</div>
 	</div>
@@ -70,8 +77,9 @@
 <script>
 import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 
 // These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
 const cardWidth = 305;
@@ -80,8 +88,9 @@ const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
 	components: {
-		LoanCardController,
+		KvIcon,
 		KvLoadingSpinner,
+		LoanCardController,
 	},
 	props: {
 		isLoggedIn: {
@@ -215,6 +224,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+@import 'foundation';
 
 .component-wrapper {
 	text-align: center;
@@ -228,45 +238,37 @@ export default {
 	margin: 0 2.5rem; // leave 2.5rem spacing for arrows
 }
 
-.arrow {
-	align-items: center;
-	background: $subtle-gray;
-	border-radius: 50%;
-	color: $white;
-	cursor: pointer;
-	display: flex;
-	font-size: 3.25rem;
-	height: 2.5rem;
-	justify-content: center;
-	overflow: hidden;
-	padding-bottom: 0.5rem;
+.arrow { // similar styles to KvCarousel
+	$arrow-width: rem-calc(41);
+
 	position: absolute;
-	text-align: center;
-	width: 2.5rem;
+	background: $kiva-text-light;
+	border-radius: 50%;
+	width: $arrow-width;
+	height: $arrow-width;
+	padding: 0.6rem 0.6rem 0.5rem;
+	overflow: hidden; // prevents a weird chrome twitch on click
+	fill: #fff;
 
 	&:hover,
-	&:active {
-		color: $kiva-text-medium;
+	&:focus {
+		background: $anchor-color-hover;
 	}
 
 	&.left-arrow {
 		left: -3.25rem;
-		padding-right: 0.25rem;// center chevron
+		transform: rotate(90deg);
 	}
 
 	&.right-arrow {
 		right: -3.25rem;
-		padding-left: 0.25rem;
+		transform: rotate(270deg);
 	}
 
-	&.inactive,
-	&.inactive:hover,
-	&.inactive:active {
-		cursor: not-allowed;
+	&[disabled] {
+		@include button-disabled();
 
-		.icon {
-			fill: $kiva-text-dark;
-		}
+		background: $kiva-text-light;
 	}
 }
 
