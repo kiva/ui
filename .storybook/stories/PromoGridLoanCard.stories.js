@@ -16,13 +16,9 @@ const promoCategories = {
 	KivaUS1: { route: 'kiva-u-s', id: 'us_borrowers' , label: 'U.S. borrowers'},
 	KivaUS2: { route: 'loans-to-u-s-small-businesses', id: 'us_borrowers', label: 'U.S. borrowers' },
 	KivaUS3: { route: 'united-states-loans', id: 'us_borrowers', label: 'U.S. borrowers' },
+	none: {}
 };
 const promoDefaultValue = { route: 'women', id: 'women', label: 'women' };
-
-const expOptions = {
-      Shown: 'shown',
-      Control: 'control'
-};
 
 export default {
 	title: 'Promos/MG Grid Loan Card',
@@ -35,21 +31,16 @@ export const Default = () => ({
 		PromoGridLoanCard,
 	},
 	props: {
-		experimentData: {
+		categoryData: {
 			type: Object,
 			default() {
 				return select('Promo Category', promoCategories, promoDefaultValue);
 			}
 		},
-		experimentVersion: {
-			type: String,
-			default: radios('Experiment Version', expOptions, 'shown')
-		},
 	},
 	template: `
 		<promo-grid-loan-card
-			:experiment-data="experimentData"
-			:experiment-version="experimentVersion"
+			:category-data="categoryData"
 		/>
 	`,
 });
@@ -58,15 +49,11 @@ export const GridView = () => ({
 		PromoGridLoanCard,
 	},
 	props: {
-		experimentData: {
+		categoryData: {
 			type: Object,
 			default() {
 				return select('Promo Category', promoCategories, promoDefaultValue);
 			}
-		},
-		experimentVersion: {
-			type: String,
-			default: radios('Experiment Version', expOptions, 'shown')
 		},
 		loanCardStyle: {
 			type: Object,
@@ -95,8 +82,7 @@ export const GridView = () => ({
 					</div>
 				</div>
 				<promo-grid-loan-card
-					:experiment-data="experimentData"
-					:experiment-version="experimentVersion"
+					:category-data="categoryData"
 				/>
 				<div category-set-id="" shift-increment="0" time-left-message="Ending now!" class="column column-block loan-card-controller" :style="loanCardStyle">
 					<div class="grid-loan-card">
