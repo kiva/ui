@@ -5,7 +5,7 @@
 				<div class="small-12 large-6 columns">
 					<featured-loans-carousel />
 				</div>
-				<div class="small-12 large-6 columns">
+				<div class="small-12 large-6 align-self-middle columns">
 					<h1 class="featured-loans__header">
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
