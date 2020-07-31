@@ -9,6 +9,7 @@ const promoCategories = {
 	Education2: { route: 'loans-for-education', id: 'education', label: 'students' },
 	Refugees1: { route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
 	Refugees2: { route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
+	Covid19: { route: 'covid-19', id: 'disaster_relief_covid', label: 'COVID-19' },
 	Eco1: { route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly loans' },
 	Eco2: { route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
 	Agriculture1: { route: 'agriculture', id: 'agriculture', label: 'farmers' },
@@ -21,7 +22,7 @@ const promoCategories = {
 const promoDefaultValue = { route: 'women', id: 'women', label: 'women' };
 
 export default {
-	title: 'Promos/MG Grid Loan Card',
+	title: 'Loan Cards/MG Grid Loan Card',
 	component: PromoGridLoanCard,
 	decorators: [StoryRouter()],
 };
