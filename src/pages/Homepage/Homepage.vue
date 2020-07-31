@@ -20,8 +20,8 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
-import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
-import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
+// import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
+// import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 
 import TopMessageContentful from './TopMessageContentful';
 
@@ -43,8 +43,8 @@ export default {
 		WwwPage,
 		DefaultHomePage,
 		LendByCategoryHomepage,
-		IWDHomePage,
-		WRDHomePage,
+		// IWDHomePage,
+		// WRDHomePage,
 		TopMessageContentful,
 	},
 	data() {
@@ -60,8 +60,8 @@ export default {
 		activeHomepage() {
 			if (this.isLendByCategoryActive) return LendByCategoryHomepage;
 			if (this.isMessageActive) return TopMessageContentful;
-			if (this.isIwdActive) return IWDHomePage;
-			if (this.isWrdActive) return WRDHomePage;
+			// if (this.isIwdActive) return IWDHomePage;
+			// if (this.isWrdActive) return WRDHomePage;
 			return DefaultHomePage;
 		},
 		headerTheme() {
