@@ -9,6 +9,12 @@
 				class="arrow left-arrow"
 				:disabled="scrollPos === 0"
 				@click="scrollRowLeft"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-horizontal-scroll',
+					'left',
+					'true'
+				]"
 			>
 				<kv-icon
 					name="fat-chevron"
@@ -63,6 +69,12 @@
 				class="arrow right-arrow"
 				:disabled="scrollPos <= minLeftMargin"
 				@click="scrollRowRight"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-horizontal-scroll',
+					'right',
+					'true'
+				]"
 			>
 				<kv-icon
 					name="fat-chevron"

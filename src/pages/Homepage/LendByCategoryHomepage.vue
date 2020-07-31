@@ -17,8 +17,8 @@
 							href="/lend-by-category"
 							v-kv-track-event="[
 								'homepage',
-								'click-Get started',
-								'lend-by-category-homepage-redirect',
+								'click-hero-cta',
+								'Get started',
 								'true'
 							]"
 						>
@@ -217,8 +217,8 @@
 						:to="`/lend-by-category`"
 						v-kv-track-event="[
 							'homepage',
-							'click-Get started',
-							'lend-by-category-homepage-redirect',
+							'click-bottom-cta',
+							'Get started',
 							'true'
 						]"
 					>

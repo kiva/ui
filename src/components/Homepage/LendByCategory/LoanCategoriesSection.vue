@@ -13,6 +13,12 @@
 				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
 				@click.prevent.native="setActiveCategory(category.id)"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-category',
+					cleanCategoryName(category),
+					'true'
+				]"
 			>
 				{{ cleanCategoryName(category) }}
 			</kv-button>
