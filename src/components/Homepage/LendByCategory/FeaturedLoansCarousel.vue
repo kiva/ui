@@ -92,6 +92,7 @@ export default {
 						client.query({
 							query: loanChannelData,
 							variables: {
+								ids: [categoryIds[0]],
 								numberOfLoans: 1,
 							}
 						})
@@ -125,11 +126,10 @@ export default {
 					basketId: cookieStore.get('kvbskt'),
 				},
 			});
+			this.processData(pageData);
 		} catch (e) {
 			logReadQueryError(e, 'FeaturedLoansCarousel lendByCategoryHomepageCategories');
 		}
-		this.processData(pageData);
-
 		// Read the loanChannel info from the cache
 		let categoryInfo = {};
 		try {
@@ -144,21 +144,25 @@ export default {
 		}
 		this.prefetchedCategoryInfo = _get(categoryInfo, 'lend.loanChannelsById') || [];
 
-		// Read the first loan from the cache
-		let loanInfo = {};
-		try {
-			loanInfo = this.apollo.readQuery({
-				query: loanChannelData,
-				variables: {
-					ids: [this.prefetchedCategoryInfo[0].id],
-					numberOfLoans: 1,
-				},
-			});
-		} catch (e) {
-			logReadQueryError(e, 'FeaturedLoansCarousel loanChannelData');
+		const firstChannelId = _get(this.prefetchedCategoryInfo[0], 'id');
+		if (firstChannelId) {
+			// Read the first loan from the cache
+			let loanInfo = {};
+			try {
+				loanInfo = this.apollo.readQuery({
+					query: loanChannelData,
+					variables: {
+						ids: [firstChannelId],
+						numberOfLoans: 1,
+						basketId: cookieStore.get('kvbskt'),
+					},
+				});
+				const channelLoans = _get(loanInfo, 'lend.loanChannelsById')[0];
+				this.featuredLoans.push(channelLoans);
+			} catch (e) {
+				logReadQueryError(e, 'FeaturedLoansCarousel loanChannelData');
+			}
 		}
-		const channelLoans = _get(loanInfo, 'lend.loanChannelsById')[0];
-		this.featuredLoans.push(channelLoans);
 	},
 	mounted() {
 		this.activateWatchers();
