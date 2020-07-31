@@ -6,13 +6,12 @@
 			<div class="promo-content-wrapper">
 				<div class="promo-content">
 					<h1>Make a<br class="su">monthly impact</h1>
-					<p v-if="experimentVersion === 'control'">
+					<p v-if="categoryData.label">
+						We’ll lend to {{ categoryData.label }} for you every month with a Monthly Good subscription.
+					</p>
+					<p v-else>
 						We’ll make a loan for you every month with a Monthly Good subscription.
 					</p>
-					<p v-if="experimentVersion === 'shown'">
-						We’ll lend to {{ experimentData.label }} for you every month with a Monthly Good subscription.
-					</p>
-
 					<kv-button
 						class="small"
 						:href="targetUrl"
@@ -42,13 +41,9 @@ export default {
 		};
 	},
 	props: {
-		experimentData: {
+		categoryData: {
 			type: Object,
 			default: () => {},
-		},
-		experimentVersion: {
-			type: String,
-			default: 'control'
 		},
 	},
 	computed: {
@@ -56,17 +51,15 @@ export default {
 			return this.isRetina ? 'retina' : 'std';
 		},
 		targetUrl() {
-			return `/monthlygood?category=${this.experimentData.id}`;
+			if (this.categoryData.id !== undefined) {
+				return `/monthlygood?category=${this.categoryData.id}`;
+			}
+			return '/monthlygood';
 		},
 		backgroundImage() {
-			try {
-				if (this.experimentVersion === 'shown') {
-					return promoLoanImageRequire(`./mg-promo-${this.experimentData.id}-${this.imageDensity}.jpg`);
-				}
-			} catch {
-				// noop, go to default return
+			if (this.categoryData.id !== undefined) {
+				return promoLoanImageRequire(`./mg-promo-${this.categoryData.id}-${this.imageDensity}.jpg`);
 			}
-			// if this.experimentVersion === 'control' or theres some error, return default
 			return promoLoanImageRequire(`./mg-promo-default-${this.imageDensity}.jpg`);
 		}
 	},

@@ -44,7 +44,7 @@
 						loan-card-type="GridLoanCard"
 					/>
 					<promo-grid-loan-card
-						:experiment-data="mgTargetCategory" :experiment-version="mgCategoryExpVersion"
+						:category-data="mgTargetCategory"
 					/>
 					<loan-card-controller
 						v-for="loan in remainingLoans"
@@ -169,7 +169,6 @@ export default {
 			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
-			mgCategoryExpVersion: ''
 		};
 	},
 	computed: {
@@ -250,8 +249,6 @@ export default {
 					}),
 					// experiment: add to basket interstitial
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
-					// experiment: mg_promo_category
-					client.query({ query: experimentQuery, variables: { id: 'mg_promo_category' } }),
 				]);
 			});
 		}
@@ -424,12 +421,6 @@ export default {
 			this.getLendFilterExpVersion();
 		},
 		initializeMonthlyGoodPromo() {
-			// get assignment for monthly good promo exp
-			const mgCategoryPromo = this.apollo.readFragment({
-				id: 'Experiment:mg_promo_category',
-				fragment: experimentVersionFragment,
-			}) || {};
-
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const targetRoutes = [
 				{ route: 'women', id: 'women', label: 'women' },
@@ -449,18 +440,8 @@ export default {
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 
 			if (matchedRoutes.length) {
-				// match active category urls before activating experiment
 				this.displayLoanPromoCard = true;
-				this.mgCategoryExpVersion = mgCategoryPromo.version;
 				[this.mgTargetCategory] = matchedRoutes;
-				// Fire Event for Exp CASH-1426 MG Category Experiment
-				if (mgCategoryPromo.version && mgCategoryPromo.version !== 'unassigned') {
-					this.$kvTrackEvent(
-						'Lending',
-						'EXP-CASH-1426-Dec2019',
-						mgCategoryPromo.version === 'shown' ? 'b' : 'a'
-					);
-				}
 			}
 		},
 	},
