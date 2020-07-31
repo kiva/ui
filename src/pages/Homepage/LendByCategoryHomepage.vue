@@ -5,7 +5,7 @@
 				<div class="small-12 large-6 columns">
 					carousel here
 				</div>
-				<div class="small-12 large-6 columns">
+				<div class="small-12 large-6 align-self-middle columns">
 					<h1 class="featured-loans__header">
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
@@ -14,7 +14,7 @@
 						dreams by crowdfunding loans and unlocking capital.
 						<router-link
 							class="show-for-large featured-loans__body-link"
-							href="/lend-by-category"
+							:to="'/lend-by-category'"
 							v-kv-track-event="[
 								'homepage',
 								'click-Get started',
