@@ -194,7 +194,7 @@ $card-half-space: rem-calc(14/2);
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 
 	&__image-wrapper {
-		height: rem-calc(168);
+		height: rem-calc(165);
 		border-radius: 0.65rem 0.65rem 0 0;
 		overflow: hidden;
 		flex-shrink: 0;
@@ -202,7 +202,7 @@ $card-half-space: rem-calc(14/2);
 		::v-deep a.borrower-image-link {
 			position: relative;
 			display: inline-block;
-			height: rem-calc(168);
+			height: 100%;
 		}
 
 		::v-deep button.favorite-star {
@@ -213,7 +213,7 @@ $card-half-space: rem-calc(14/2);
 	}
 
 	&__data-wrapper {
-		padding: rem-calc(5) 0.95rem 1.5rem;
+		padding: rem-calc(7) 0.95rem 1.5rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -249,6 +249,7 @@ $card-half-space: rem-calc(14/2);
 			text-align: left;
 			font-size: 1rem;
 			height: 1.25rem;
+			margin-bottom: 0.15rem;
 		}
 	}
 

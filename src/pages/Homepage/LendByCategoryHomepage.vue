@@ -3,7 +3,7 @@
 		<section class="featured-loans section">
 			<div class="row">
 				<div class="small-12 large-6 columns">
-					carousel here
+					<featured-loans-carousel />
 				</div>
 				<div class="small-12 large-6 columns">
 					<h1 class="featured-loans__header">
@@ -14,7 +14,7 @@
 						dreams by crowdfunding loans and unlocking capital.
 						<router-link
 							class="show-for-large featured-loans__body-link"
-							href="/lend-by-category"
+							:to="'/lend-by-category'"
 							v-kv-track-event="[
 								'homepage',
 								'click-Get started',
@@ -236,14 +236,16 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import HomepageStatistics from './HomepageStatistics';
 
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
+import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
+		FeaturedLoansCarousel,
+		HomepageStatistics,
 		KvButton,
 		KvResponsiveImage,
-		HomepageStatistics,
 		LoanCategoriesSection,
 	},
 	props: {
@@ -335,11 +337,27 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+// utils
+.section {
+	position: relative;
+	padding: 3rem 0;
+
+	@include breakpoint(large) {
+		padding: 6rem 0;
+	}
+}
+
 .lend-by-category-homepage {
 	overflow: hidden;
 }
 
 .featured-loans {
+	padding: 2rem 0 1rem;
+
+	@include breakpoint(large) {
+		padding: 4rem 0 2rem;
+	}
+
 	&__header {
 		@include large-text();
 
@@ -375,6 +393,12 @@ export default {
 }
 
 .loan-categories {
+	padding: 1rem 0 3rem;
+
+	@include breakpoint(large) {
+		padding: 2rem 0 6rem;
+	}
+
 	& .row {
 		max-width: 69.15rem;
 	}
@@ -628,13 +652,4 @@ export default {
 	}
 }
 
-// utils
-.section {
-	position: relative;
-	padding: 3rem 0;
-
-	@include breakpoint(large) {
-		padding: 6rem 0;
-	}
-}
 </style>
