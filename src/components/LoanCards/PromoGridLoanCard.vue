@@ -5,7 +5,9 @@
 			<div class="image-overlay"></div>
 			<div class="promo-content-wrapper">
 				<div class="promo-content">
-					<h1>Make a<br class="su">monthly impact</h1>
+					<h3 class="h1">
+						Make a<br class="su">monthly impact
+					</h3>
 					<p v-if="categoryData.label">
 						We’ll lend to {{ categoryData.label }} for you every month with a Monthly Good subscription.
 					</p>
@@ -127,7 +129,7 @@ export default {
 	bottom: 2rem;
 	color: white;
 
-	h1 {
+	.h1 {
 		font-weight: 600;
 	}
 
