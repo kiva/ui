@@ -24,17 +24,25 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<loan-card-controller
-						loan-card-type="LendHomepageLoanCard"
-						v-for="loan in loans"
+					<div v-for="(loan, index) in loans"
 						:key="loan.id"
-						:loan="loan"
-						:items-in-basket="itemsInBasket"
-						:category-id="loanChannel.id"
-						:category-set-id="setId"
-						:enable-tracking="true"
-						:is-visitor="!isLoggedIn"
-					/>
+					>
+						<promo-grid-loan-card
+							v-if="index === 2 && monthlyGoodPromoData"
+							class="cards-mg-promo"
+							:category-data="monthlyGoodPromoData"
+						/>
+						<loan-card-controller
+							v-else
+							loan-card-type="LendHomepageLoanCard"
+							:loan="loan"
+							:items-in-basket="itemsInBasket"
+							:category-id="loanChannel.id"
+							:category-set-id="setId"
+							:enable-tracking="true"
+							:is-visitor="!isLoggedIn"
+						/>
+					</div>
 					<!--
 						Blocks of attributes above:
 						1) Props for implemented loan cards
@@ -80,6 +88,7 @@ import _throttle from 'lodash/throttle';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 // These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
 const cardWidth = 305;
@@ -91,6 +100,7 @@ export default {
 		KvIcon,
 		KvLoadingSpinner,
 		LoanCardController,
+		PromoGridLoanCard,
 	},
 	props: {
 		isLoggedIn: {
@@ -100,6 +110,10 @@ export default {
 		loanChannel: {
 			type: Object,
 			default: () => {},
+		},
+		categoryName: {
+			type: String,
+			default: '',
 		},
 		itemsInBasket: {
 			type: Array,
@@ -139,6 +153,16 @@ export default {
 		cleanName() {
 			// remove any text contained within square brackets, including the brackets
 			return String(this.name).replace(/\s\[.*\]/g, '');
+		},
+		monthlyGoodPromoData() {
+			if (this.categoryName === 'agriculture') {
+				return { id: 'agriculture', label: 'farmers' };
+			} if (this.categoryName === 'women') {
+				return { id: 'women', label: 'women' };
+			} if (this.categoryName === 'COVID-19') {
+				return { id: 'disaster_relief_covid', label: 'COVID-19' };
+			}
+			return null;
 		},
 		cleanUrl() {
 			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend

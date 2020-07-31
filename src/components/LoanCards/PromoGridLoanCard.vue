@@ -51,13 +51,13 @@ export default {
 			return this.isRetina ? 'retina' : 'std';
 		},
 		targetUrl() {
-			if (this.categoryData.id !== undefined) {
+			if (typeof this.categoryData.id !== 'undefined') {
 				return `/monthlygood?category=${this.categoryData.id}`;
 			}
 			return '/monthlygood';
 		},
 		backgroundImage() {
-			if (this.categoryData.id !== undefined) {
+			if (typeof this.categoryData.id !== 'undefined') {
 				return promoLoanImageRequire(`./mg-promo-${this.categoryData.id}-${this.imageDensity}.jpg`);
 			}
 			return promoLoanImageRequire(`./mg-promo-default-${this.imageDensity}.jpg`);
