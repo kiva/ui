@@ -152,6 +152,8 @@ export default {
 				['wga retina', heroImagesRequire('./hero_3840x1480.jpg')],
 			],
 			expVideoActive: true,
+			isMonthlyGoodSubscriber: false,
+			covidLandingActive: false,
 		};
 	},
 	computed: {
