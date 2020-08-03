@@ -95,9 +95,8 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
-// These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
-const cardWidth = 305;
-const cardRightMargin = 14;
+const cardWidth = 303;
+const cardRightMargin = 15;
 const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
@@ -315,7 +314,7 @@ export default {
 	padding: 1rem 0;
 }
 
-$card-width: rem-calc(305);
+$card-width: rem-calc(303);
 $card-margin: rem-calc(14);
 $card-half-space: rem-calc(14/2);
 
@@ -346,11 +345,6 @@ $card-half-space: rem-calc(14/2);
 	.arrow {
 		display: none;
 	}
-}
-
-// view all loans category card
-.view-all-loans-category {
-	// padding: 1rem $card-margin 2rem $card-margin;
 }
 
 .see-all-card {
