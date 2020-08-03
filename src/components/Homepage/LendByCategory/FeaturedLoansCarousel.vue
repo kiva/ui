@@ -276,6 +276,32 @@ h3 {
 .featured-loans-carousel {
 	height: 0;
 	padding-bottom: 110%;
+
+	// Overwrite styles for loan card to make it responsive.
+	::v-deep .lend-homepage-loan-card {
+		width: 93%;
+	}
+
+	::v-deep .lend-homepage-loan-card__image-wrapper {
+		height: 12rem;
+	}
+
+	// Increase white space on card
+	::v-deep .lend-homepage-loan-card__data-wrapper {
+		padding: rem-calc(9) 1.25rem 2rem;
+	}
+
+	::v-deep .lend-homepage-loan-card__borrower-info {
+		margin: 1rem 0 1.5rem;
+	}
+
+	::v-deep .lend-homepage-loan-card__fundraising-status {
+		margin-top: 0.65rem;
+	}
+
+	::v-deep .fundraising-status.left-and-to-go-on-top .left-and-to-go-line {
+		margin-bottom: 0.55rem;
+	}
 }
 
 .featured-loans-carousel__loading-div {
@@ -287,31 +313,5 @@ h3 {
 	bottom: 0;
 	right: 0;
 	left: 0;
-}
-
-// Overwrite styles for loan card to make it responsive.
-::v-deep .lend-homepage-loan-card {
-	width: 93%;
-}
-
-::v-deep .lend-homepage-loan-card__image-wrapper {
-	height: 12rem;
-}
-
-// Increase white space on card
-::v-deep .lend-homepage-loan-card__data-wrapper {
-	padding: rem-calc(9) 1.25rem 2rem;
-}
-
-::v-deep .lend-homepage-loan-card__borrower-info {
-	margin: 1rem 0 1.5rem;
-}
-
-::v-deep .lend-homepage-loan-card__fundraising-status {
-	margin-top: 0.65rem;
-}
-
-::v-deep .fundraising-status.left-and-to-go-on-top .left-and-to-go-line {
-	margin-bottom: 0.55rem;
 }
 </style>
