@@ -1,27 +1,25 @@
 <template>
-	<div class="column column-block">
-		<div class="grid-loan-card promo-grid-card">
-			<div class="promo-image-wrapper" :style="{ 'background-image': 'url(' + backgroundImage + ')' }"></div>
-			<div class="image-overlay"></div>
-			<div class="promo-content-wrapper">
-				<div class="promo-content">
-					<h3 class="h1">
-						Make a<br class="su">monthly impact
-					</h3>
-					<p v-if="categoryData.label">
-						We’ll lend to {{ categoryData.label }} for you every month with a Monthly Good subscription.
-					</p>
-					<p v-else>
-						We’ll make a loan for you every month with a Monthly Good subscription.
-					</p>
-					<kv-button
-						class="small"
-						:href="targetUrl"
-						v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
-					>
-						Learn more
-					</kv-button>
-				</div>
+	<div class="grid-loan-card promo-grid-card">
+		<div class="promo-image-wrapper" :style="{ 'background-image': 'url(' + backgroundImage + ')' }"></div>
+		<div class="image-overlay"></div>
+		<div class="promo-content-wrapper">
+			<div class="promo-content">
+				<h3 class="h1">
+					Make a<br class="su">monthly impact
+				</h3>
+				<p v-if="categoryData.label">
+					We’ll lend to {{ categoryData.label }} for you every month with a Monthly Good subscription.
+				</p>
+				<p v-else>
+					We’ll make a loan for you every month with a Monthly Good subscription.
+				</p>
+				<kv-button
+					class="small"
+					:href="targetUrl"
+					v-kv-track-event="['Lending', 'PromoGridCard-click-Learn more', 'CASH-1426 Dec2019']"
+				>
+					Learn more
+				</kv-button>
 			</div>
 		</div>
 	</div>
@@ -98,7 +96,7 @@ export default {
 .promo-grid-card {
 	position: relative;
 	overflow: hidden;
-	min-height: 30rem;
+	min-height: auto;
 	background-color: rgb(61, 61, 61);
 }
 

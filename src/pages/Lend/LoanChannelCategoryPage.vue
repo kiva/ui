@@ -43,9 +43,11 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
-					<promo-grid-loan-card
-						:category-data="mgTargetCategory"
-					/>
+					<div class="column column-block">
+						<promo-grid-loan-card
+							:category-data="mgTargetCategory"
+						/>
+					</div>
 					<loan-card-controller
 						v-for="loan in remainingLoans"
 						:items-in-basket="itemsInBasket"

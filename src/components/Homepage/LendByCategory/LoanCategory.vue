@@ -26,14 +26,20 @@
 				>
 					<div v-for="(loan, index) in loans"
 						:key="loan.id"
+						class="column cards-wrap"
 					>
-						<promo-grid-loan-card
+						<div
 							v-if="index === 2 && monthlyGoodPromoData"
-							class="cards-mg-promo"
-							:category-data="monthlyGoodPromoData"
-						/>
+							style="height: 100%;"
+						>
+							<promo-grid-loan-card
+								class="cards-mg-promo"
+								:category-data="monthlyGoodPromoData"
+							/>
+						</div>
 						<loan-card-controller
 							v-else
+							class="cards-loan-card"
 							loan-card-type="LendHomepageLoanCard"
 							:loan="loan"
 							:items-in-basket="itemsInBasket"
@@ -47,8 +53,11 @@
 						Blocks of attributes above:
 						1) Props for implemented loan cards
 					-->
-					<div class="column view-all-loans-category">
+					<div
+						class="column cards-wrap"
+					>
 						<router-link
+							class="view-all-loans-category see-all-card"
 							:to="cleanUrl"
 							:title="`${viewAllLoansCategoryTitle}`"
 							v-kv-track-event="[
@@ -56,12 +65,8 @@
 								'click-View all',
 								`Loan card`]"
 						>
-							<div
-								class="see-all-card"
-							>
-								<div class="link">
-									<h3>{{ viewAllLoansCategoryTitle }}</h3>
-								</div>
+							<div class="link">
+								<h3>{{ viewAllLoansCategoryTitle }}</h3>
 							</div>
 						</router-link>
 					</div>
@@ -307,6 +312,33 @@ export default {
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 	overflow: hidden;
+	padding: 1rem 0;
+}
+
+$card-width: rem-calc(305);
+$card-margin: rem-calc(14);
+$card-half-space: rem-calc(14/2);
+
+.cards-wrap {
+	flex-basis: auto;
+	flex-shrink: 0;
+}
+
+.cards-mg-promo {
+	border: 0;
+	display: flex;
+}
+
+.cards-loan-card,
+.cards-mg-promo,
+.see-all-card {
+	border-radius: 0.65rem;
+	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+	width: $card-width;
+}
+
+.column-block {
+	background: pink;
 }
 
 // Customize styles for touch screens ie. No Arrows
@@ -316,24 +348,17 @@ export default {
 	}
 }
 
-// These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
-$card-width: rem-calc(305);
-$card-margin: rem-calc(14);
-$card-half-space: rem-calc(14/2);
-
 // view all loans category card
 .view-all-loans-category {
-	padding: 1rem $card-margin 2rem $card-margin;
+	// padding: 1rem $card-margin 2rem $card-margin;
+}
 
-	.see-all-card {
-		width: $card-width;
-		height: 100%;
-		border-radius: 0.75rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+.see-all-card {
+	display: block;
+	height: 100%;
 
-		&:hover {
-			box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
-		}
+	&:hover {
+		box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
 	}
 
 	.link {
