@@ -3,7 +3,7 @@ import { select, radios } from '@storybook/addon-knobs';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 const promoCategories = {
-	Women: { url: '/monthlygood?category=education', label: 'women' },
+	Women: { url: '/monthlygood?category=women', label: 'women' },
 	Education: { url: '/monthlygood?category=education', label: 'students' },
 	Refugees: { url: '/monthlygood?category=refugees', label: 'refugees' },
 	Covid19: { url: '/covid19response', label: 'COVID-19' },
@@ -12,7 +12,7 @@ const promoCategories = {
 	KivaUS: { url: '/monthlygood?category=us_borrowers' , label: 'U.S. borrowers'},
 };
 
-const promoDefaultValue = { url: '/monthlygood?category=education', label: 'women' };
+const promoDefaultValue = { url: '/monthlygood?category=women', label: 'women' };
 
 export default {
 	title: 'Loan Cards/MG Grid Loan Card',
