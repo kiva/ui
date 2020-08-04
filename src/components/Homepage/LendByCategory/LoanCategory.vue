@@ -31,7 +31,6 @@
 						:loan="loan"
 						:items-in-basket="itemsInBasket"
 						:category-id="loanChannel.id"
-						:category-set-id="setId"
 						:enable-tracking="true"
 						:is-visitor="!isLoggedIn"
 					/>
@@ -104,10 +103,6 @@ export default {
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
-		},
-		setId: {
-			type: String,
-			default: 'Control'
 		},
 		isVisible: {
 			type: Boolean,
