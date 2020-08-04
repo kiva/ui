@@ -18,6 +18,7 @@
 				>
 					<div v-if="categoryHasFeaturedLoan(category.id)">
 						<loan-card-controller
+							class="featured-loans-carousel__loan"
 							loan-card-type="LendHomepageLoanCard"
 							:loan="featuredLoanForCategory(category.id)"
 							:items-in-basket="itemsInBasket"
@@ -298,7 +299,7 @@ h3 {
 
 	// Overwrite styles for loan card to make it responsive.
 	::v-deep .lend-homepage-loan-card {
-		width: 93%;
+		margin: 1rem;
 	}
 
 	::v-deep .lend-homepage-loan-card__image-wrapper {
@@ -321,16 +322,23 @@ h3 {
 	::v-deep .fundraising-status.left-and-to-go-on-top .left-and-to-go-line {
 		margin-bottom: 0.55rem;
 	}
-}
 
-.featured-loans-carousel__loading-div {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
+	$card-margin: rem-calc(14);
+	$card-half-space: rem-calc(14/2);
+
+	&__loan {
+		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+	}
+
+	&__loading-div {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+	}
 }
 </style>

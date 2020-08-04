@@ -112,10 +112,6 @@ export default {
 			type: Object,
 			default: () => {},
 		},
-		categoryName: {
-			type: String,
-			default: '',
-		},
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
@@ -149,14 +145,16 @@ export default {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
 		monthlyGoodPromoData() {
-			if (this.categoryName === 'agriculture') {
-				return { url: '/monthlygood?category=agriculture', label: 'farmers' };
-			} if (this.categoryName === 'women') {
-				return { url: '/monthlygood?category=women', label: 'women' };
-			} if (this.categoryName === 'COVID-19') {
-				return { url: '/covid19response', label: 'COVID-19-affected businesses' };
+			switch (this.id) {
+				case 52:
+					return { url: '/monthlygood?category=women', label: 'women' };
+				case 96:
+					return { url: '/covid19response', label: 'COVID-19-affected businesses' };
+				case 87:
+					return { url: '/monthlygood?category=agriculture', label: 'farmers' };
+				default:
+					return null;
 			}
-			return null;
 		},
 		cleanUrl() {
 			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
@@ -349,6 +347,7 @@ $card-half-space: rem-calc(14/2);
 
 .cards-mg-promo {
 	height: calc(100% - 2rem);
+	border: 0;
 }
 
 .column-block {

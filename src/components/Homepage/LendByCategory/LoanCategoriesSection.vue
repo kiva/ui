@@ -33,7 +33,6 @@
 		>
 			<loan-category
 				:loans="getCategoryLoans(category.id)"
-				:category-name="cleanCategoryName(category)"
 				:loan-channel="category"
 				:items-in-basket="itemsInBasket"
 				:is-logged-in="isLoggedIn"
