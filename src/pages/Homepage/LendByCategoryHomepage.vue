@@ -231,6 +231,9 @@
 </template>
 
 <script>
+import _each from 'lodash/each';
+// import _get from 'lodash/get';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import HomepageStatistics from './HomepageStatistics';
@@ -328,8 +331,41 @@ export default {
 	created() {
 	},
 	mounted() {
+		const pageViewTrackData = this.assemblePageViewData(this.categories);
+		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 	},
 	methods: {
+		assemblePageViewData(categories) {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
+			const loanIds = [];
+			const pageViewTrackData = { schema, data: {} };
+
+			console.log('pageViewData', pageViewTrackData);
+			// const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
+
+			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
+
+			// if (this.showFeaturedHeroLoan) {
+			// 	loanIds.push({
+			// 		r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
+			// 	});
+			// }
+			console.log('categories', categories);
+
+			_each(categories, (category, catIndex) => {
+				_each(category.loans.values, (loan, loanIndex) => {
+					loanIds.push({
+						r: catIndex + 1,
+						p: loanIndex + 1,
+						c: category.id,
+						l: loan.id
+					});
+				});
+			});
+			pageViewTrackData.data.loansDisplayed = loanIds;
+			return pageViewTrackData;
+		},
 	}
 };
 </script>

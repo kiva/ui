@@ -4,6 +4,12 @@
 			{{ categoryPreLink(currentSlideCategory.id) }}
 			<router-link
 				:to="currentSlideCategory.url"
+				v-kv-track-event="[
+					'homepage',
+					'click-hero-category',
+					cleanCategoryName(currentSlideCategory),
+					'true'
+				]"
 			>
 				{{ cleanCategoryName(currentSlideCategory) }}
 			</router-link>
