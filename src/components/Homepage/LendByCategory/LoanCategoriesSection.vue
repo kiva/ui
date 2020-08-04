@@ -45,11 +45,11 @@
 
 <script>
 import _get from 'lodash/get';
-import numeral from 'numeral';
 
 import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
 import logReadQueryError from '@/util/logReadQueryError';
+import { isLoanFundraising } from '@/util/loanUtils';
 
 import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHomepageCategories.graphql';
 import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
@@ -189,32 +189,9 @@ export default {
 
 			if (allLoansForCategory.loans) {
 				filteredLoansArray = allLoansForCategory.loans.values
-					.filter(loan => this.testFundedStatus(loan));
+					.filter(loan => isLoanFundraising(loan));
 			}
 			return filteredLoansArray;
-		},
-		// TODO
-		// This method is very similar to the one in:
-		// src/components/LoansByCategory/FeaturedHeroLoanWrapper.vue
-		testFundedStatus(loan) {
-			// check status, store if funded
-			if (_get(loan, 'status') !== 'fundraising') {
-				return false;
-			}
-			// check fundraising information, store if funded
-			const loanAmount = numeral(_get(loan, 'loanAmount'));
-			const fundedAmount = numeral(_get(loan, 'loanFundraisingInfo.fundedAmount'));
-			const reservedAmount = numeral(_get(loan, 'loanFundraisingInfo.reservedAmount'));
-			// loan amount vs funded amount
-			if (loanAmount.value() === fundedAmount.value()) {
-				return false;
-			}
-			// loan amount vs funded + reserved amount
-			if (loanAmount.value() === (fundedAmount.value() + reservedAmount.value())) {
-				return false;
-			}
-			// all clear
-			return true;
 		},
 		activateWatchers() {
 			// Create an observer, this will react to changes to the basket and pass that data into the components.

@@ -36,11 +36,12 @@
 </template>
 
 <script>
-import numeral from 'numeral';
 import _get from 'lodash/get';
 
 import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
+import { isLoanFundraising } from '@/util/loanUtils';
+
 import logReadQueryError from '@/util/logReadQueryError';
 
 import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHomepageCategories.graphql';
@@ -181,9 +182,9 @@ export default {
 		// eligible to be featured and ineligible to be featured
 		processAPIResponse(channelLoans) {
 			const ineligibleLoans = channelLoans.loans.values
-				.filter(loan => !this.testFundedStatus(loan));
+				.filter(loan => !isLoanFundraising(loan));
 			const eligibleLoans = channelLoans.loans.values
-				.filter(loan => this.testFundedStatus(loan));
+				.filter(loan => isLoanFundraising(loan));
 			const categoryId = channelLoans.id;
 
 			// Keep track of the ineligible loans so we can exclude them later.
@@ -197,27 +198,6 @@ export default {
 					loan: eligibleLoans[0]
 				});
 			}
-		},
-		// TODO extract this filter
-		testFundedStatus(loan) {
-			// check status
-			if (_get(loan, 'status') !== 'fundraising') {
-				return false;
-			}
-			// check fundraising information
-			const loanAmount = numeral(_get(loan, 'loanAmount'));
-			const fundedAmount = numeral(_get(loan, 'loanFundraisingInfo.fundedAmount'));
-			const reservedAmount = numeral(_get(loan, 'loanFundraisingInfo.reservedAmount'));
-			// loan amount vs funded amount
-			if (loanAmount.value() === fundedAmount.value()) {
-				return false;
-			}
-			// loan amount vs funded + reserved amount
-			if (loanAmount.value() === (fundedAmount.value() + reservedAmount.value())) {
-				return false;
-			}
-			// all clear
-			return true;
 		},
 		categoryHasFeaturedLoan(categoryId) {
 			return !!this.featuredLoans.find(loanCat => loanCat.id === categoryId);
