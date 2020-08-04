@@ -116,6 +116,7 @@ export default {
 	data() {
 		return {
 			name: '',
+			id: 0,
 			scrollPos: 0,
 			url: '',
 			windowWidth: 0,
@@ -130,10 +131,6 @@ export default {
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
-		},
-		cleanName() {
-			// remove any text contained within square brackets, including the brackets
-			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		cleanUrl() {
 			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
@@ -171,7 +168,7 @@ export default {
 			return this.cardsInWindow * this.cardWidth;
 		},
 		viewAllLoansCategoryTitle() {
-			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
+			return `View all ${this.cleanCategoryName(this.id)}`;
 		},
 	},
 	watch: {
@@ -183,6 +180,7 @@ export default {
 			handler(channel) {
 				this.name = _get(channel, 'name', '');
 				this.url = _get(channel, 'url', '');
+				this.id = _get(channel, 'id', '');
 			},
 			immediate: true,
 		},
@@ -213,6 +211,23 @@ export default {
 				this.scrollPos = newLeftMargin;
 			}
 		},
+		cleanCategoryName(categoryId) {
+			switch (categoryId) {
+				case 52:
+					return 'loans to women';
+				case 96:
+					return 'COVID-19 loans';
+				case 93:
+					return 'shelter loans';
+				case 89:
+					return 'arts loans';
+				case 87:
+					return 'agriculture loans';
+				default:
+					// remove any text contained within square brackets, including the brackets
+					return String(this.name).replace(/\s\[.*\]/g, '');
+			}
+		},
 	},
 };
 </script>
@@ -230,7 +245,11 @@ export default {
 	display: flex;
 	position: relative;
 	justify-content: center;
-	margin: 0 2.5rem; // leave 2.5rem spacing for arrows
+	margin: 0 1rem; // fit as much of the card as possible in mobile
+
+	@include breakpoint(medium) {
+		margin: 0 2.5rem; // leave 2.5rem spacing for arrows
+	}
 }
 
 .arrow { // similar styles to KvCarousel
