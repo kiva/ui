@@ -294,8 +294,7 @@ h3 {
 }
 
 .featured-loans-carousel {
-	height: 0;
-	padding-bottom: 110%;
+	min-height: rem-calc(548);
 
 	// Overwrite styles for loan card to make it responsive.
 	::v-deep .lend-homepage-loan-card {
