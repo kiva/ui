@@ -287,7 +287,8 @@ export default {
 		}
 
 		&.active,
-		&:hover {
+		&:hover,
+		&:focus {
 			text-decoration: none;
 			color: $kiva-green;
 		}
@@ -295,6 +296,10 @@ export default {
 		&.active {
 			font-weight: $global-weight-bold;
 			border-bottom: 3px solid $kiva-green;
+		}
+
+		&:focus {
+			outline: 0;
 		}
 	}
 

@@ -12,8 +12,9 @@
 					<p class="featured-loans__body">
 						Kiva empowers underserved people to achieve their
 						dreams by crowdfunding loans and unlocking capital.
+						<br>
 						<router-link
-							class="show-for-large featured-loans__body-link"
+							class="show-for-large"
 							:to="'/lend-by-category'"
 							v-kv-track-event="[
 								'homepage',
@@ -372,10 +373,6 @@ export default {
 		@include breakpoint(xlarge) {
 			@include featured-text();
 		}
-	}
-
-	&__body-link {
-		display: block;
 	}
 
 	&__flourish {
