@@ -42,7 +42,6 @@
 							:loan="loan"
 							:items-in-basket="itemsInBasket"
 							:category-id="loanChannel.id"
-							:category-set-id="setId"
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
 						/>
@@ -121,10 +120,6 @@ export default {
 			type: Array,
 			default: () => [],
 		},
-		setId: {
-			type: String,
-			default: 'Control'
-		},
 		isVisible: {
 			type: Boolean,
 			default: false
@@ -137,6 +132,7 @@ export default {
 	data() {
 		return {
 			name: '',
+			id: 0,
 			scrollPos: 0,
 			url: '',
 			windowWidth: 0,
@@ -151,10 +147,6 @@ export default {
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
-		},
-		cleanName() {
-			// remove any text contained within square brackets, including the brackets
-			return String(this.name).replace(/\s\[.*\]/g, '');
 		},
 		monthlyGoodPromoData() {
 			if (this.categoryName === 'agriculture') {
@@ -202,7 +194,7 @@ export default {
 			return this.cardsInWindow * this.cardWidth;
 		},
 		viewAllLoansCategoryTitle() {
-			return `View all ${this.cleanName.charAt(0).toLowerCase()}${this.cleanName.slice(1)}`;
+			return `View all ${this.cleanCategoryName(this.id)}`;
 		},
 	},
 	watch: {
@@ -214,6 +206,7 @@ export default {
 			handler(channel) {
 				this.name = _get(channel, 'name', '');
 				this.url = _get(channel, 'url', '');
+				this.id = _get(channel, 'id', '');
 			},
 			immediate: true,
 		},
@@ -244,6 +237,23 @@ export default {
 				this.scrollPos = newLeftMargin;
 			}
 		},
+		cleanCategoryName(categoryId) {
+			switch (categoryId) {
+				case 52:
+					return 'loans to women';
+				case 96:
+					return 'COVID-19 loans';
+				case 93:
+					return 'shelter loans';
+				case 89:
+					return 'arts loans';
+				case 87:
+					return 'agriculture loans';
+				default:
+					// remove any text contained within square brackets, including the brackets
+					return String(this.name).replace(/\s\[.*\]/g, '');
+			}
+		},
 	},
 };
 </script>
@@ -261,7 +271,11 @@ export default {
 	display: flex;
 	position: relative;
 	justify-content: center;
-	margin: 0 2.5rem; // leave 2.5rem spacing for arrows
+	margin: 0 1rem; // fit as much of the card as possible in mobile
+
+	@include breakpoint(medium) {
+		margin: 0 2.5rem; // leave 2.5rem spacing for arrows
+	}
 }
 
 .arrow { // similar styles to KvCarousel
@@ -276,8 +290,12 @@ export default {
 	overflow: hidden; // prevents a weird chrome twitch on click
 	fill: #fff;
 
-	&:hover,
 	&:focus {
+		outline: 0;
+		background: #000;
+	}
+
+	&:hover {
 		background: $anchor-color-hover;
 	}
 
