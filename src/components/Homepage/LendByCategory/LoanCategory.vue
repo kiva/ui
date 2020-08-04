@@ -245,8 +245,12 @@ export default {
 	overflow: hidden; // prevents a weird chrome twitch on click
 	fill: #fff;
 
-	&:hover,
 	&:focus {
+		outline: 0;
+		background: #000;
+	}
+
+	&:hover {
 		background: $anchor-color-hover;
 	}
 
