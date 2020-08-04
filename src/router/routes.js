@@ -93,6 +93,11 @@ export default [
 		}
 	},
 
+	{
+		path: '/josh',
+		component: () => import('@/pages/Homepage/LendByCategoryHomepage.vue')
+	},
+
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{
 		path: '/portfolio/lending-stats',

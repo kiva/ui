@@ -303,8 +303,12 @@ $bar-indicator-margin: rem-calc(4);
 			transform: rotate(90deg);
 		}
 
-		&:hover,
 		&:focus {
+			outline: 0;
+			background: #000;
+		}
+
+		&:hover {
 			background: $anchor-color-hover;
 		}
 
@@ -340,8 +344,12 @@ $bar-indicator-margin: rem-calc(4);
 		position: relative;
 		overflow: hidden;
 
-		&:hover,
 		&:focus {
+			outline: 0;
+			background: #000;
+		}
+
+		&:hover {
 			background: $anchor-color-hover;
 		}
 

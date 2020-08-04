@@ -240,6 +240,7 @@ $card-half-space: rem-calc(14/2);
 	&__borrower-info {
 		text-align: left;
 		margin: 0.65rem 0;
+		min-height: rem-calc(66);
 	}
 
 	&__fundraising-status {

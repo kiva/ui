@@ -1,19 +1,21 @@
 <template>
 	<div class="lend-by-category-homepage">
 		<section class="featured-loans section">
-			<div class="row">
-				<div class="small-12 large-6 columns">
+			<div class="row align-center">
+				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
 					<featured-loans-carousel />
 				</div>
-				<div class="small-12 large-6 align-self-middle columns">
+				<!-- eslint-disable-next-line max-len -->
+				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
 					<h1 class="featured-loans__header">
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
 					<p class="featured-loans__body">
 						Kiva empowers underserved people to achieve their
 						dreams by crowdfunding loans and unlocking capital.
+						<br>
 						<router-link
-							class="show-for-large featured-loans__body-link"
+							class="show-for-large"
 							:to="'/lend-by-category'"
 							v-kv-track-event="[
 								'homepage',
@@ -251,8 +253,6 @@ export default {
 		KvResponsiveImage,
 		LoanCategoriesSection,
 	},
-	props: {
-	},
 	data() {
 		return {
 			loanNotDonationImgs: {
@@ -345,7 +345,6 @@ export default {
 			// const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
 
 			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-
 			// if (this.showFeaturedHeroLoan) {
 			// 	loanIds.push({
 			// 		r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
@@ -388,10 +387,14 @@ export default {
 }
 
 .featured-loans {
-	padding: 2rem 0 1rem;
+	padding: 2rem 0 0;
 
 	@include breakpoint(large) {
-		padding: 4rem 0 2rem;
+		padding: 4rem 0 0;
+	}
+
+	&__cta_wrapper {
+		padding: 1.5rem 2rem 3rem;
 	}
 
 	&__header {
@@ -410,20 +413,20 @@ export default {
 		}
 	}
 
-	&__body-link {
-		display: block;
-	}
-
 	&__flourish {
 		position: absolute;
 		width: 40%;
 		max-width: rem-calc(436);
-		bottom: -5%;
+		top: 28%;
 		right: 0;
+		bottom: auto;
 		pointer-events: none;
+		z-index: -1;
 
-		@include breakpoint(xlarge) {
+		@include breakpoint(medium) {
 			width: 31%;
+			bottom: -5%;
+			top: auto;
 		}
 	}
 }

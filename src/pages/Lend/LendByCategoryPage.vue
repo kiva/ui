@@ -96,7 +96,7 @@ import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import { readJSONSetting } from '@/util/settingsUtils';
 import { indexIn } from '@/util/comparators';
-import fundedLoanFilterMixin from '@/plugins/funded-loans-mixin';
+import { isLoanFundraising } from '@/util/loanUtils';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import lendByCategoryQuery from '@/graphql/query/lendByCategory/lendByCategory.graphql';
@@ -130,9 +130,6 @@ export default {
 		FavoriteCountryLoans,
 	},
 	inject: ['apollo', 'kvAuth0'],
-	mixins: [
-		fundedLoanFilterMixin
-	],
 	metaInfo: {
 		title: 'Loans by category'
 	},
@@ -170,6 +167,7 @@ export default {
 		categories() {
 			// merge realCategories & customCategories
 			const categories = _uniqBy(this.realCategories.concat(this.customCategories, this.clientCategories), 'id');
+			console.log('lbc categories', categories);
 
 			return categories
 				// fiter our any empty categories and categories with 0 loans
@@ -219,6 +217,13 @@ export default {
 		},
 	},
 	methods: {
+		// Initial set of loans (represented in the 'values' field)
+		filterFundedLoans(loans) {
+			// remove loans that are funded
+			return _filter(loans, loan => {
+				return isLoanFundraising(loan);
+			});
+		},
 		assemblePageViewData(categories) {
 			// eslint-disable-next-line max-len
 			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';

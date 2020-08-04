@@ -30,7 +30,7 @@ export default config => {
 				appId: 'kiva' ,
 				cookieDomain: '.kiva.org',
 				// uncomment this option to examine context information in your vm
-				// encodeBase64: false,
+				encodeBase64: false,
 			});
 			/* eslint-enable */
 		}
