@@ -45,7 +45,8 @@
 					/>
 					<div class="column column-block">
 						<promo-grid-loan-card
-							:category-data="mgTargetCategory"
+							:category-url="mgTargetCategory.url"
+							:category-label="mgTargetCategory.label"
 						/>
 					</div>
 					<loan-card-controller
@@ -425,19 +426,19 @@ export default {
 		initializeMonthlyGoodPromo() {
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const targetRoutes = [
-				{ route: 'women', id: 'women', label: 'women' },
-				{ route: 'loans-to-women', id: 'women', label: 'women' },
-				{ route: 'education', id: 'education', label: 'students' },
-				{ route: 'loans-for-education', id: 'education', label: 'students' },
-				{ route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-				{ route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-				{ route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'agriculture', id: 'agriculture', label: 'farmers' },
-				{ route: 'loans-to-farmers', id: 'agriculture', label: 'farmers' },
-				{ route: 'kiva-u-s', id: 'us_borrowers', label: 'U.S. borrowers' },
-				{ route: 'loans-to-u-s-small-businesses', id: 'us_borrowers', label: 'U.S. borrowers' },
-				{ route: 'united-states-loans', id: 'us_borrowers', label: 'U.S. borrowers' },
+				{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
+				{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
+				{ route: 'education', url: '/monthlygood?category=education', label: 'students' },
+				{ route: 'loans-for-education', url: '/monthlygood?category=education', label: 'students' },
+				{ route: 'refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+				{ route: 'loans-to-refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+				{ route: 'eco-friendly', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+				{ route: 'eco-friendly-loans', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+				{ route: 'agriculture', url: '/monthlygood?category=agriculture', label: 'farmers' },
+				{ route: 'loans-to-farmers', url: '/monthlygood?category=agriculture', label: 'farmers' },
+				{ route: 'kiva-u-s', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
+				{ route: 'loans-to-u-s-small-businesses', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' }, // eslint-disable-line max-len
+				{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
 			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 

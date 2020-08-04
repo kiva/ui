@@ -28,15 +28,13 @@
 						:key="loan.id"
 						class="column cards-wrap"
 					>
-						<div
+						<promo-grid-loan-card
 							v-if="index === 2 && monthlyGoodPromoData"
-							style="height: 100%;"
-						>
-							<promo-grid-loan-card
-								class="cards-mg-promo"
-								:category-data="monthlyGoodPromoData"
-							/>
-						</div>
+							class="cards-mg-promo"
+							:category-url="monthlyGoodPromoData.url"
+							:category-label="monthlyGoodPromoData.label"
+							compact
+						/>
 						<loan-card-controller
 							v-else
 							class="cards-loan-card"
@@ -160,11 +158,11 @@ export default {
 		},
 		monthlyGoodPromoData() {
 			if (this.categoryName === 'agriculture') {
-				return { id: 'agriculture', label: 'farmers' };
+				return { url: '/monthlygood?category=agriculture', label: 'farmers' };
 			} if (this.categoryName === 'women') {
-				return { id: 'women', label: 'women' };
+				return { url: '/monthlygood?category=women', label: 'women' };
 			} if (this.categoryName === 'COVID-19') {
-				return { id: 'disaster_relief_covid', label: 'COVID-19' };
+				return { url: '/covid19response', label: 'COVID-19-affected businesses' };
 			}
 			return null;
 		},
@@ -323,17 +321,16 @@ $card-half-space: rem-calc(14/2);
 	flex-shrink: 0;
 }
 
-.cards-mg-promo {
-	border: 0;
-	display: flex;
-}
-
 .cards-loan-card,
 .cards-mg-promo,
 .see-all-card {
 	border-radius: 0.65rem;
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
+}
+
+.cards-mg-promo {
+	height: calc(100% - 2rem);
 }
 
 .column-block {
@@ -349,7 +346,7 @@ $card-half-space: rem-calc(14/2);
 
 .see-all-card {
 	display: block;
-	height: 100%;
+	height: calc(100% - 2rem);
 
 	&:hover {
 		box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);

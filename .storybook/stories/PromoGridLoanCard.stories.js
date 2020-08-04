@@ -3,23 +3,16 @@ import { select, radios } from '@storybook/addon-knobs';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 const promoCategories = {
-	Women1: { route: 'women', id: 'women', label: 'women' },
-	Women2: { route: 'loans-to-women', id: 'women', label: 'women' },
-	Education1: { route: 'education', id: 'education', label: 'students' },
-	Education2: { route: 'loans-for-education', id: 'education', label: 'students' },
-	Refugees1: { route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-	Refugees2: { route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-	Covid19: { route: 'covid-19', id: 'disaster_relief_covid', label: 'COVID-19' },
-	Eco1: { route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly loans' },
-	Eco2: { route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
-	Agriculture1: { route: 'agriculture', id: 'agriculture', label: 'farmers' },
-	Agriculture2: { route: 'loans-to-farmers', id: 'agriculture' , label: 'farmers'},
-	KivaUS1: { route: 'kiva-u-s', id: 'us_borrowers' , label: 'U.S. borrowers'},
-	KivaUS2: { route: 'loans-to-u-s-small-businesses', id: 'us_borrowers', label: 'U.S. borrowers' },
-	KivaUS3: { route: 'united-states-loans', id: 'us_borrowers', label: 'U.S. borrowers' },
-	none: {}
+	Women: { url: '/monthlygood?category=education', label: 'women' },
+	Education: { url: '/monthlygood?category=education', label: 'students' },
+	Refugees: { url: '/monthlygood?category=refugees', label: 'refugees' },
+	Covid19: { url: '/covid19response', label: 'COVID-19' },
+	EcoFriendly: { url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+	Agriculture: { url: '/monthlygood?category=agriculture' , label: 'farmers'},
+	KivaUS: { url: '/monthlygood?category=us_borrowers' , label: 'U.S. borrowers'},
 };
-const promoDefaultValue = { route: 'women', id: 'women', label: 'women' };
+
+const promoDefaultValue = { url: '/monthlygood?category=education', label: 'women' };
 
 export default {
 	title: 'Loan Cards/MG Grid Loan Card',
@@ -40,11 +33,38 @@ export const Default = () => ({
 		},
 	},
 	template: `
-		<promo-grid-loan-card
-			:category-data="categoryData"
-		/>
+		<div style="height: 36rem;">
+			<promo-grid-loan-card
+				:category-label="categoryData.label"
+				:category-url="categoryData.url"
+			/>
+		</div>
 	`,
 });
+
+export const Compact = () => ({
+	components: {
+		PromoGridLoanCard,
+	},
+	props: {
+		categoryData: {
+			type: Object,
+			default() {
+				return select('Promo Category', promoCategories, promoDefaultValue);
+			}
+		},
+	},
+	template: `
+	<div style="height: 20rem;">
+		<promo-grid-loan-card
+			:compact="true"
+			:category-label="categoryData.label"
+			:category-url="categoryData.url"
+		/>
+	</div>
+	`,
+});
+
 export const GridView = () => ({
 	components: {
 		PromoGridLoanCard,
@@ -61,35 +81,25 @@ export const GridView = () => ({
 			default() {
 			return {
 				border: '1px solid #d8d8d8',
-				display: 'flex',
-				flexDirection: 'column',
-				height: '100%',
-				minWidth: '17.5rem',
-				maxWidth: '30rem',
-				position: 'relative',
-				margin: 'auto',
-				overflow: 'hidden',
-				minHeight: '30rem',
+				height: '36rem',
 				backgroundColor: '#3d3d3d',
-				marginTop: '0'
 			}}
 		}
 	},
 	template: `
-		<div class="columns small-12">
-			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-				<div category-set-id="" shift-increment="0" time-left-message="Ending now!" class="column column-block loan-card-controller" :style="loanCardStyle">
-					<div class="grid-loan-card">
-					</div>
+			<div class="row small-up-1 large-up-2 xxlarge-up-3">
+				<div class="column column-block">
+					<div class="grid-loan-card" :style="loanCardStyle"></div>
 				</div>
-				<promo-grid-loan-card
-					:category-data="categoryData"
-				/>
-				<div category-set-id="" shift-increment="0" time-left-message="Ending now!" class="column column-block loan-card-controller" :style="loanCardStyle">
-					<div class="grid-loan-card">
-					</div>
+				<div class="column column-block">
+					<promo-grid-loan-card
+						:category-label="categoryData.label"
+						:category-url="categoryData.url"
+					/>
+				</div>
+				<div class="column column-block">
+					<div class="grid-loan-card" :style="loanCardStyle"></div>
 				</div>
 			</div>
-		</div>
 	`,
 });
