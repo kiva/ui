@@ -3,7 +3,7 @@
 		<section class="featured-loans section">
 			<div class="row align-center">
 				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
-					<featured-loans-carousel />
+					<featured-loans-carousel ref="featuredLoansCarousel" />
 				</div>
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
@@ -19,9 +19,8 @@
 							:to="'/lend-by-category'"
 							v-kv-track-event="[
 								'homepage',
-								'click-Get started',
-								'lend-by-category-homepage-redirect',
-								'true'
+								'click-hero-cta',
+								'Get started',
 							]"
 						>
 							Get started
@@ -43,7 +42,10 @@
 					<h2 class="loan-categories__header text-center">
 						Kiva makes it easy to support causes you care about.
 					</h2>
-					<loan-categories-section />
+					<loan-categories-section
+						ref="loanCategoriesSection"
+						@loans-loaded="trackLoansLoaded"
+					/>
 				</div>
 			</div>
 		</section>
@@ -219,9 +221,8 @@
 						:to="`/lend-by-category`"
 						v-kv-track-event="[
 							'homepage',
-							'click-Get started',
-							'lend-by-category-homepage-redirect',
-							'true'
+							'click-bottom-cta',
+							'Get started'
 						]"
 					>
 						Get started
@@ -233,6 +234,9 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import _each from 'lodash/each';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import HomepageStatistics from './HomepageStatistics';
@@ -252,6 +256,7 @@ export default {
 	},
 	data() {
 		return {
+			pageViewTracked: false,
 			loanNotDonationImgs: {
 				header: [
 					['small', imgRequire('./loan-not-donation.png')],
@@ -323,6 +328,51 @@ export default {
 			},
 		};
 	},
+	methods: {
+		assemblePageViewData() {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
+			const loanIds = [];
+			const pageViewTrackData = { schema, data: {} };
+
+			// Gathering the category id and loan id from the Featured Loans section to pass through for tracking
+			const featuredCategoryId = _get(this, '$refs.featuredLoansCarousel.prefetchedCategoryInfo[0].id');
+			const featuredCategoryLoan = this.$refs.featuredLoansCarousel.featuredLoanForCategory(featuredCategoryId);
+
+			// The schema we're using requires a categorySetIdentifer to be set,
+			// hardcoding to default because there is no experiment A/B for this
+			pageViewTrackData.data.categorySetIdentifier = 'default';
+
+			// Formatting and pushing featured loans info into loanIds
+			loanIds.push({
+				r: 0, p: 1, c: featuredCategoryId, l: featuredCategoryLoan.id
+			});
+
+			// Gathering the category ids and loan ids from the Loan Category section to pass through for tracking
+			const loanCategoryId = _get(this, '$refs.loanCategoriesSection.prefetchedCategoryInfo[0].id');
+			const categoryLoans = this.$refs.loanCategoriesSection.getCategoryLoans(loanCategoryId);
+
+			// Formatting and pushing Loan Category info into loanIds
+			_each(categoryLoans, (loan, loanIndex) => {
+				loanIds.push({
+					r: 1,
+					p: loanIndex + 1,
+					c: loanCategoryId,
+					l: loan.id
+				});
+			});
+
+			pageViewTrackData.data.loansDisplayed = loanIds;
+			return pageViewTrackData;
+		},
+		trackLoansLoaded() {
+			if (!this.pageViewTracked) {
+				const pageViewTrackData = this.assemblePageViewData();
+				this.pageViewTracked = true;
+				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+			}
+		}
+	}
 };
 </script>
 

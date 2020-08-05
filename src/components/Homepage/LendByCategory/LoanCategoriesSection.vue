@@ -13,6 +13,11 @@
 				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
 				@click.prevent.native="setActiveCategory(category.id)"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-category',
+					cleanCategoryName(category),
+				]"
 			>
 				{{ cleanCategoryName(category) }}
 			</kv-button>
@@ -20,6 +25,11 @@
 				class="category-options__link"
 				:to="`/lend-by-category`"
 				v-if="prefetchedCategoryInfo.length > 0"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-category',
+					'more',
+				]"
 			>
 				More
 			</router-link>
@@ -172,6 +182,9 @@ export default {
 				}).then(({ data }) => {
 					const channelLoans = _get(data, 'lend.loanChannelsById')[0];
 					this.categoriesWithLoans.push(channelLoans);
+
+					// emitting event to be caught in LendByCategoryHomepage.vue
+					this.$emit('loans-loaded');
 
 					// TODO
 					// if we have less than 8 loans left after filtering:

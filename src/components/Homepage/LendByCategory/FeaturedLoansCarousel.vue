@@ -1,7 +1,14 @@
 <template>
 	<div>
 		<h3>
-			<a :href="currentSlideCategory.url">
+			<a
+				:href="currentSlideCategory.url"
+				v-kv-track-event="[
+					'homepage',
+					'click-hero-category',
+					cleanCategoryLink(currentSlideCategory),
+				]"
+			>
 				{{ cleanCategoryLink(currentSlideCategory) }}
 			</a>
 		</h3>
@@ -9,6 +16,7 @@
 			indicator-style="bar"
 			@change="onCarouselSlideChange"
 			class="featured-loans-carousel"
+			@interact-carousel="onInteractCarousel"
 		>
 			<template slot="default" slot-scope="props">
 				<kv-carousel-slide
@@ -282,7 +290,10 @@ export default {
 					this.processData(data);
 				},
 			});
-		}
+		},
+		onInteractCarousel(interactionType) {
+			this.$kvTrackEvent('homepage', 'click-hero-carousel', interactionType);
+		},
 	}
 };
 </script>
