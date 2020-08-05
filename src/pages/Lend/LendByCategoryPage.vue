@@ -662,7 +662,7 @@ export default {
 	},
 	mounted() {
 		Promise.all([
-			// this.fetchRemainingLoanChannels(),
+			this.fetchRemainingLoanChannels(),
 			this.fetchRecommendedLoans()
 		]).then(() => {
 			this.rowLazyLoadComplete = true;
