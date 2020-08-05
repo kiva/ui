@@ -3,7 +3,11 @@
 		<h3>
 			<a
 				:href="currentSlideCategory.url"
-				v-kv-track-event="['homepage', 'click-hero-category', cleanCategoryLink(currentSlideCategory), 'true']"
+				v-kv-track-event="[
+					'homepage',
+					'click-hero-category',
+					cleanCategoryLink(currentSlideCategory),
+					'true']"
 			>
 				{{ cleanCategoryLink(currentSlideCategory) }}
 			</a>
