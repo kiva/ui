@@ -185,7 +185,6 @@ export default {
 	flex-shrink: 0;
 
 	&__image-wrapper {
-		height: rem-calc(165);
 		border-radius: 0.65rem 0.65rem 0 0;
 		overflow: hidden;
 		flex-shrink: 0;
