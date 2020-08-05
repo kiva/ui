@@ -9,8 +9,8 @@
 			@touchstart="pauseOnHover ? paused = true : paused = false"
 			@mouseleave="paused = false"
 			@touchend="paused = false"
-			v-touch:swipe.left="previous"
-			v-touch:swipe.right="advance"
+			v-touch:swipe.left="previousClick"
+			v-touch:swipe.right="advanceClick"
 		>
 			<slot :transitionName="transitionName"></slot>
 		</div>
@@ -18,7 +18,7 @@
 		<div class="kv-carousel__arrows">
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--left"
-				@click="previous"
+				@click="previousClick"
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
@@ -29,7 +29,7 @@
 			</button>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--right"
-				@click="advance"
+				@click="advanceClick"
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
@@ -193,12 +193,30 @@ export default {
 	},
 	methods: {
 		/**
+		 * The index of the carousel after the advance carousel button is clicked
+		 * @event advance-carousel
+		 * @type {Event}
+		 */
+		advanceClick() {
+			this.advance();
+			this.$emit('advance-carousel', this.nextIndex);
+		},
+		/**
 		 * Move forward one slide
 		 *
 		 * @public This is a public method
 		 */
 		advance() {
 			this.goToSlide(this.nextIndex);
+		},
+		/**
+		 * The index of the carousel after the previous carousel button is clicked
+		 * @event previous-carousel
+		 * @type {Event}
+		 */
+		previousClick() {
+			this.previous();
+			this.$emit('previous-carousel', this.previousIndex);
 		},
 		/**
 		 * Move backward one slide
