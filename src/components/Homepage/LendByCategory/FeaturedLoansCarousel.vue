@@ -16,8 +16,7 @@
 			indicator-style="bar"
 			@change="onCarouselSlideChange"
 			class="featured-loans-carousel"
-			@advance-carousel="trackCarouselAdvanceClicks"
-			@previous-carousel="trackCarouselPreviousClicks"
+			@interact-carousel="onInteractCarousel"
 		>
 			<template slot="default" slot-scope="props">
 				<kv-carousel-slide
@@ -292,11 +291,8 @@ export default {
 				},
 			});
 		},
-		trackCarouselAdvanceClicks() {
-			this.$kvTrackEvent('homepage', 'click-hero-horizontal-scroll', 'right');
-		},
-		trackCarouselPreviousClicks() {
-			this.$kvTrackEvent('homepage', 'click-hero-horizontal-scroll', 'left');
+		onInteractCarousel(interactionType) {
+			this.$kvTrackEvent('homepage', 'click-hero-carousel', interactionType);
 		},
 	}
 };

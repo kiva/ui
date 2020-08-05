@@ -9,8 +9,8 @@
 			@touchstart="pauseOnHover ? paused = true : paused = false"
 			@mouseleave="paused = false"
 			@touchend="paused = false"
-			v-touch:swipe.left="previousClick"
-			v-touch:swipe.right="advanceClick"
+			v-touch:swipe.left="handleUserInteraction(previousIndex, 'swipe-left')"
+			v-touch:swipe.right="handleUserInteraction(nextIndex, 'swipe-right')"
 		>
 			<slot :transitionName="transitionName"></slot>
 		</div>
@@ -18,7 +18,7 @@
 		<div class="kv-carousel__arrows">
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--left"
-				@click="previousClick"
+				@click="handleUserInteraction(previousIndex, 'click-left-arrow')"
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
@@ -29,7 +29,7 @@
 			</button>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--right"
-				@click="advanceClick"
+				@click="handleUserInteraction(nextIndex, 'click-right-arrow')"
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
@@ -49,7 +49,7 @@
 					currentIndex === index ? 'kv-carousel__indicator-btn--active' : '',
 					index < currentIndex ? 'kv-carousel__indicator-btn--viewed' : ''
 				]"
-				@click="goToSlide(index)"
+				@click="handleUserInteraction(index, 'click-indicator-button')"
 			>
 				<span class="show-for-sr">Show slide {{ index + 1 }}</span>
 			</button>
@@ -181,7 +181,7 @@ export default {
 				}
 				if (this.intervalTimerCurrentTime >= this.autoplayInterval) {
 					this.intervalTimerCurrentTime = 0;
-					this.advance();
+					this.goToSlide(this.nextIndex);
 				}
 			}, refreshRate * 1000); // 100 milliseconds
 		}
@@ -192,39 +192,16 @@ export default {
 		}
 	},
 	methods: {
-		/**
+		/** TODO
 		 * The index of the carousel after the advance carousel button is clicked
 		 * @event advance-carousel
 		 * @type {Event}
 		 */
-		advanceClick() {
-			this.advance();
-			this.$emit('advance-carousel', this.nextIndex);
-		},
-		/**
-		 * Move forward one slide
-		 *
-		 * @public This is a public method
-		 */
-		advance() {
-			this.goToSlide(this.nextIndex);
-		},
-		/**
-		 * The index of the carousel after the previous carousel button is clicked
-		 * @event previous-carousel
-		 * @type {Event}
-		 */
-		previousClick() {
-			this.previous();
-			this.$emit('previous-carousel', this.previousIndex);
-		},
-		/**
-		 * Move backward one slide
-		 *
-		 * @public This is a public method
-		 */
-		previous() {
-			this.goToSlide(this.previousIndex);
+		handleUserInteraction(index, interactionType) {
+			return () => {
+				this.goToSlide(index);
+				this.$emit('interact-carousel', interactionType);
+			};
 		},
 		/**
 		 * Jump to a specific slide index
@@ -244,6 +221,8 @@ export default {
 				direction = 'left';
 			}
 			this.transitionName = `kv-slide-${direction}`;
+
+			console.log('currentIndex', this.currentIndex);
 
 			// wait for the transition to be applied
 			this.$nextTick(() => {
