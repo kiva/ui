@@ -7,7 +7,7 @@
 					'homepage',
 					'click-hero-category',
 					cleanCategoryLink(currentSlideCategory),
-					'true']"
+				]"
 			>
 				{{ cleanCategoryLink(currentSlideCategory) }}
 			</a>

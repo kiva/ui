@@ -17,7 +17,6 @@
 					'homepage',
 					'click-carousel-category',
 					cleanCategoryName(category),
-					'true'
 				]"
 			>
 				{{ cleanCategoryName(category) }}
@@ -30,7 +29,6 @@
 					'homepage',
 					'click-carousel-category',
 					'more',
-					'true'
 				]"
 			>
 				More
@@ -184,6 +182,8 @@ export default {
 				}).then(({ data }) => {
 					const channelLoans = _get(data, 'lend.loanChannelsById')[0];
 					this.categoriesWithLoans.push(channelLoans);
+
+					// emitting event to be caught in LendByCategoryHomepage.vue
 					this.$emit('loans-loaded');
 
 					// TODO

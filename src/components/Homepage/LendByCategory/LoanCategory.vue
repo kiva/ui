@@ -12,8 +12,7 @@
 				v-kv-track-event="[
 					'homepage',
 					'click-carousel-horizontal-scroll',
-					'left',
-					'true'
+					'left'
 				]"
 			>
 				<kv-icon
@@ -59,22 +58,14 @@
 					<div
 						class="column cards-wrap"
 					>
-						<!-- TODO:
-						---
-						---
-						This is the only piece of tracking that needs to be fixed
-						for the lend by category homepage
-						---
-						---
-						-->
 						<router-link
 							class="view-all-loans-category see-all-card"
 							:to="cleanUrl"
 							:title="`${viewAllLoansCategoryTitle}`"
 							v-kv-track-event="[
-								'Lending',
-								'click-View all',
-								`Loan card`]"
+								'Homepage',
+								'click-carousel-view-all-category-loans',
+								`${viewAllLoansCategoryTitle}`]"
 						>
 							<div class="link">
 								<h3>{{ viewAllLoansCategoryTitle }}</h3>
@@ -90,8 +81,7 @@
 				v-kv-track-event="[
 					'homepage',
 					'click-carousel-horizontal-scroll',
-					'right',
-					'true'
+					'right'
 				]"
 			>
 				<kv-icon

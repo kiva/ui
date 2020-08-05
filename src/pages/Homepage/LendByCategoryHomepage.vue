@@ -3,7 +3,7 @@
 		<section class="featured-loans section">
 			<div class="row align-center">
 				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
-					<featured-loans-carousel />
+					<featured-loans-carousel ref="featuredLoansCarousel" />
 				</div>
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
@@ -21,7 +21,6 @@
 								'homepage',
 								'click-hero-cta',
 								'Get started',
-								'true'
 							]"
 						>
 							Get started
@@ -43,7 +42,10 @@
 					<h2 class="loan-categories__header text-center">
 						Kiva makes it easy to support causes you care about.
 					</h2>
-					<loan-categories-section />
+					<loan-categories-section
+						ref="loanCategoriesSection"
+						@loans-loaded="trackLoansLoaded"
+					/>
 				</div>
 			</div>
 		</section>
@@ -220,7 +222,6 @@
 						v-kv-track-event="[
 							'homepage',
 							'click-bottom-cta',
-							'lend-by-category-homepage-redirect',
 							'Get started'
 						]"
 					>
