@@ -9,8 +9,8 @@
 			@touchstart="pauseOnHover ? paused = true : paused = false"
 			@mouseleave="paused = false"
 			@touchend="paused = false"
-			v-touch:swipe.left="handleUserInteraction(previousIndex, 'swipe-left')"
-			v-touch:swipe.right="handleUserInteraction(nextIndex, 'swipe-right')"
+			v-touch:swipe.left="() => handleCarouselInteraction(nextIndex, 'swipe-left')"
+			v-touch:swipe.right="() => handleCarouselInteraction(previousIndex, 'swipe-right')"
 		>
 			<slot :transitionName="transitionName"></slot>
 		</div>
@@ -198,10 +198,8 @@ export default {
 		 * @type {Event}
 		 */
 		handleUserInteraction(index, interactionType) {
-			return () => {
-				this.goToSlide(index);
-				this.$emit('interact-carousel', interactionType);
-			};
+			this.goToSlide(index);
+			this.$emit('interact-carousel', interactionType);
 		},
 		/**
 		 * Jump to a specific slide index
@@ -221,8 +219,6 @@ export default {
 				direction = 'left';
 			}
 			this.transitionName = `kv-slide-${direction}`;
-
-			console.log('currentIndex', this.currentIndex);
 
 			// wait for the transition to be applied
 			this.$nextTick(() => {
