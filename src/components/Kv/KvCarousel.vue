@@ -192,9 +192,10 @@ export default {
 		}
 	},
 	methods: {
-		/** TODO
-		 * The index of the carousel after the advance carousel button is clicked
-		 * @event advance-carousel
+		/**
+		 * Fires when the user interacts with the carousel.
+		 * Contains the interaction type (swipe-left, click-left-arrow, etc.)
+		 * @event interact-carousel
 		 * @type {Event}
 		 */
 		handleUserInteraction(index, interactionType) {
