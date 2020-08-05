@@ -24,22 +24,37 @@
 					v-touch:swipe.left="scrollRowRight"
 					v-touch:swipe.right="scrollRowLeft"
 				>
-					<loan-card-controller
-						loan-card-type="LendHomepageLoanCard"
-						v-for="loan in loans"
+					<div v-for="(loan, index) in loans"
 						:key="loan.id"
-						:loan="loan"
-						:items-in-basket="itemsInBasket"
-						:category-id="loanChannel.id"
-						:enable-tracking="true"
-						:is-visitor="!isLoggedIn"
-					/>
+						class="column cards-wrap"
+					>
+						<promo-grid-loan-card
+							v-if="index === 2 && monthlyGoodPromoData"
+							class="cards-mg-promo"
+							:category-url="monthlyGoodPromoData.url"
+							:category-label="monthlyGoodPromoData.label"
+							compact
+						/>
+						<loan-card-controller
+							v-else
+							class="cards-loan-card"
+							loan-card-type="LendHomepageLoanCard"
+							:loan="loan"
+							:items-in-basket="itemsInBasket"
+							:category-id="loanChannel.id"
+							:enable-tracking="true"
+							:is-visitor="!isLoggedIn"
+						/>
+					</div>
 					<!--
 						Blocks of attributes above:
 						1) Props for implemented loan cards
 					-->
-					<div class="column view-all-loans-category">
+					<div
+						class="column cards-wrap"
+					>
 						<router-link
+							class="view-all-loans-category see-all-card"
 							:to="cleanUrl"
 							:title="`${viewAllLoansCategoryTitle}`"
 							v-kv-track-event="[
@@ -47,12 +62,8 @@
 								'click-View all',
 								`Loan card`]"
 						>
-							<div
-								class="see-all-card"
-							>
-								<div class="link">
-									<h3>{{ viewAllLoansCategoryTitle }}</h3>
-								</div>
+							<div class="link">
+								<h3>{{ viewAllLoansCategoryTitle }}</h3>
 							</div>
 						</router-link>
 					</div>
@@ -79,10 +90,10 @@ import _throttle from 'lodash/throttle';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
+import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
-// These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
-const cardWidth = 305;
-const cardRightMargin = 14;
+const cardWidth = 303;
+const cardRightMargin = 15;
 const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
@@ -90,6 +101,7 @@ export default {
 		KvIcon,
 		KvLoadingSpinner,
 		LoanCardController,
+		PromoGridLoanCard,
 	},
 	props: {
 		isLoggedIn: {
@@ -131,6 +143,18 @@ export default {
 		},
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
+		},
+		monthlyGoodPromoData() {
+			switch (this.id) {
+				case 52:
+					return { url: '/monthlygood?category=women', label: 'women' };
+				case 96:
+					return { url: '/covid19response', label: 'COVID-19-affected businesses' };
+				case 87:
+					return { url: '/monthlygood?category=agriculture', label: 'farmers' };
+				default:
+					return null;
+			}
 		},
 		cleanUrl() {
 			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
@@ -301,6 +325,33 @@ export default {
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 	overflow: hidden;
+	padding: 1rem 0;
+}
+
+$card-width: rem-calc(303);
+$card-margin: rem-calc(14);
+$card-half-space: rem-calc(14/2);
+
+.cards-wrap {
+	flex-basis: auto;
+	flex-shrink: 0;
+}
+
+.cards-loan-card,
+.cards-mg-promo,
+.see-all-card {
+	border-radius: 0.65rem;
+	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+	width: $card-width;
+}
+
+.cards-mg-promo {
+	height: calc(100% - 2rem);
+	border: 0;
+}
+
+.column-block {
+	background: pink;
 }
 
 // Customize styles for touch screens ie. No Arrows
@@ -310,24 +361,12 @@ export default {
 	}
 }
 
-// These values have to be the same as the values in src/components/LoanCards/LendHomepageLoanCard.vue
-$card-width: rem-calc(305);
-$card-margin: rem-calc(14);
-$card-half-space: rem-calc(14/2);
+.see-all-card {
+	display: block;
+	height: calc(100% - 2rem);
 
-// view all loans category card
-.view-all-loans-category {
-	padding: 1rem $card-margin 2rem $card-margin;
-
-	.see-all-card {
-		width: $card-width;
-		height: 100%;
-		border-radius: 0.75rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
-
-		&:hover {
-			box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
-		}
+	&:hover {
+		box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
 	}
 
 	.link {

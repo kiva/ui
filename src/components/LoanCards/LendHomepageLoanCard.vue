@@ -177,21 +177,12 @@ export default {
 <style lang="scss" scoped>
 @import "settings";
 
-// These values have to be the same as the values in src/components/Homepage/LendByCategory/LoanCategory.vue
-$card-width: rem-calc(305);
-$card-margin: rem-calc(14);
-$card-half-space: rem-calc(14/2);
-
 .lend-homepage-loan-card {
-	margin: 1rem $card-margin 2rem $card-margin;
 	background: $white;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	flex-shrink: 0;
-	width: $card-width;
-	border-radius: 0.65rem;
-	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 
 	&__image-wrapper {
 		height: rem-calc(165);
