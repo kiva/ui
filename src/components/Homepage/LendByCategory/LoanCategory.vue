@@ -335,6 +335,7 @@ $card-half-space: rem-calc(14/2);
 .cards-wrap {
 	flex-basis: auto;
 	flex-shrink: 0;
+	display: flex;
 }
 
 .cards-loan-card,
@@ -343,10 +344,10 @@ $card-half-space: rem-calc(14/2);
 	border-radius: 0.65rem;
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
+	flex: 1;
 }
 
 .cards-mg-promo {
-	height: calc(100% - 2rem);
 	border: 0;
 }
 
@@ -363,7 +364,6 @@ $card-half-space: rem-calc(14/2);
 
 .see-all-card {
 	display: block;
-	height: calc(100% - 2rem);
 
 	&:hover {
 		box-shadow: 0 0 $card-half-space rgba(0, 0, 0, 0.2);
