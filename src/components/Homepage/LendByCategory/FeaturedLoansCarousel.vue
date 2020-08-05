@@ -295,7 +295,7 @@ h3 {
 }
 
 .featured-loans-carousel {
-	min-height: rem-calc(548);
+	min-height: rem-calc(555);
 
 	// Overwrite styles for loan card to make it responsive.
 	::v-deep .lend-homepage-loan-card {
@@ -308,11 +308,15 @@ h3 {
 
 	// Increase white space on card
 	::v-deep .lend-homepage-loan-card__data-wrapper {
-		padding: rem-calc(9) 1.25rem 2rem;
+		padding: rem-calc(9) 1.25rem 1.25rem;
 	}
 
 	::v-deep .lend-homepage-loan-card__borrower-info {
 		margin: 1rem 0 1.5rem;
+	}
+
+	::v-deep .lend-homepage-loan-card__action-button-container {
+		margin-bottom: 1rem;
 	}
 
 	::v-deep .lend-homepage-loan-card__fundraising-status {
@@ -327,6 +331,7 @@ h3 {
 	$card-half-space: rem-calc(14/2);
 
 	&__loan {
+		border-radius: 0.65rem;
 		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	}
 
