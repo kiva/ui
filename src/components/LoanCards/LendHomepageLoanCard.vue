@@ -183,6 +183,7 @@ export default {
 	flex-direction: column;
 	justify-content: space-between;
 	flex-shrink: 0;
+	border-radius: 0.65rem;
 
 	&__image-wrapper {
 		height: rem-calc(165);
@@ -247,19 +248,20 @@ export default {
 
 	&__action-row {
 		display: flex;
+		flex-wrap: wrap;
 	}
 
 	&__action-button-container {
 		width: rem-calc(150);
-		flex-shrink: 0;
+		flex-grow: 1;
 
 		&.full-width {
 			width: 100%;
 		}
 
-		.action-button {
+		.button.action-button {
 			margin: 0;
-			padding: 0.75rem 1rem;
+			padding: 0.95rem 1rem;
 		}
 
 		.action-button:not(.loan-funded-text):not(.loan-expired-text):not(.loan-selected-text) {
@@ -268,7 +270,10 @@ export default {
 	}
 
 	&__matching-text-container {
-		padding: 0.5rem 0 0 0.65rem;
+		flex-grow: 1;
+		padding: 0 0 0 0.65rem;
+		text-align: center;
+		width: rem-calc(110);
 	}
 }
 </style>
