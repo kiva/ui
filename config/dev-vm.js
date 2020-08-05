@@ -5,16 +5,16 @@ module.exports = merge(base, {
 	app: {
 		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
-		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// graphqlUri: 'https://api-vm.kiva.org/graphql',
 		// Run federation
-		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
+		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		// Use this to debug graphql calls in PHPStorm
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?XDEBUG_SESSION_START=PHPSTORM',
 		// use this to override authentication
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?user_id=<user id>&app_id=org.kiva.www&scopes=access',
-		enablePerimeterx: false,
+		enablePerimeterx: true,
 		perimeterxAppId: '###',
-		enableAnalytics: false,
+		enableAnalytics: true,
 		enableGTM: false,
 		googleTagmanagerId: 'GTM-PXFRMT',
 		enableGA: false,
@@ -63,9 +63,9 @@ module.exports = merge(base, {
 		},
 	},
 	server: {
-		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// graphqlUri: 'https://api-vm.kiva.org/graphql',
 		// Run federation
-		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
+		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		sessionUri: 'https://dev-vm-01.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',

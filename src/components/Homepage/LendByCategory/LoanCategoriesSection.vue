@@ -178,6 +178,7 @@ export default {
 				}).then(({ data }) => {
 					const channelLoans = _get(data, 'lend.loanChannelsById')[0];
 					this.categoriesWithLoans.push(channelLoans);
+					this.$emit('loans-loaded');
 
 					// TODO
 					// if we have less than 8 loans left after filtering:

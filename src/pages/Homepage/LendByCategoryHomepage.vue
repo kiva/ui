@@ -3,7 +3,7 @@
 		<section class="featured-loans section">
 			<div class="row align-center">
 				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
-					<featured-loans-carousel />
+					<featured-loans-carousel ref="featuredLoansCarousel" />
 				</div>
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
@@ -43,7 +43,10 @@
 					<h2 class="loan-categories__header text-center">
 						Kiva makes it easy to support causes you care about.
 					</h2>
-					<loan-categories-section />
+					<loan-categories-section
+						ref="loanCategoriesSection"
+						@loans-loaded="trackLoansLoaded"
+					/>
 				</div>
 			</div>
 		</section>
@@ -233,8 +236,8 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
 import _each from 'lodash/each';
-// import _get from 'lodash/get';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
@@ -255,6 +258,7 @@ export default {
 	},
 	data() {
 		return {
+			pageViewTracked: false,
 			loanNotDonationImgs: {
 				header: [
 					['small', imgRequire('./loan-not-donation.png')],
@@ -326,45 +330,43 @@ export default {
 			},
 		};
 	},
-	computed: {
-	},
-	created() {
-	},
-	mounted() {
-		const pageViewTrackData = this.assemblePageViewData(this.categories);
-		this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-	},
 	methods: {
-		assemblePageViewData(categories) {
+		assemblePageViewData() {
 			// eslint-disable-next-line max-len
 			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
 			const loanIds = [];
 			const pageViewTrackData = { schema, data: {} };
+			const featuredCategoryId = _get(this, '$refs.featuredLoansCarousel.prefetchedCategoryInfo[0].id');
+			const featuredCategoryLoan = this.$refs.featuredLoansCarousel.featuredLoanForCategory(featuredCategoryId);
 
-			console.log('pageViewData', pageViewTrackData);
-			// const featuredCategoryIds = _get(this, '$refs.featured.featuredCategoryIds');
+			// Hardcoded to default because there is no experiment A/B for this
+			pageViewTrackData.data.categorySetIdentifier = 'default';
+			loanIds.push({
+				r: 0, p: 1, c: featuredCategoryId, l: featuredCategoryLoan.id
+			});
 
-			pageViewTrackData.data.categorySetIdentifier = this.categorySetId || 'default';
-			// if (this.showFeaturedHeroLoan) {
-			// 	loanIds.push({
-			// 		r: 0, p: 1, c: featuredCategoryIds[0], l: _get(this, '$refs.featured.loan.id')
-			// 	});
-			// }
-			console.log('categories', categories);
+			const loanCategoryId = _get(this, '$refs.loanCategoriesSection.prefetchedCategoryInfo[0].id');
+			const categoryLoans = this.$refs.loanCategoriesSection.getCategoryLoans(loanCategoryId);
 
-			_each(categories, (category, catIndex) => {
-				_each(category.loans.values, (loan, loanIndex) => {
-					loanIds.push({
-						r: catIndex + 1,
-						p: loanIndex + 1,
-						c: category.id,
-						l: loan.id
-					});
+			_each(categoryLoans, (loan, loanIndex) => {
+				loanIds.push({
+					r: 1,
+					p: loanIndex + 1,
+					c: loanCategoryId,
+					l: loan.id
 				});
 			});
+
 			pageViewTrackData.data.loansDisplayed = loanIds;
 			return pageViewTrackData;
 		},
+		trackLoansLoaded() {
+			if (!this.pageViewTracked) {
+				const pageViewTrackData = this.assemblePageViewData();
+				this.pageViewTracked = true;
+				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+			}
+		}
 	}
 };
 </script>
