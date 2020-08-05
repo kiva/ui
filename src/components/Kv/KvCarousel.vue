@@ -9,8 +9,8 @@
 			@touchstart="pauseOnHover ? paused = true : paused = false"
 			@mouseleave="paused = false"
 			@touchend="paused = false"
-			v-touch:swipe.left="() => handleCarouselInteraction(nextIndex, 'swipe-left')"
-			v-touch:swipe.right="() => handleCarouselInteraction(previousIndex, 'swipe-right')"
+			v-touch:swipe.left="() => handleUserInteraction(nextIndex, 'swipe-left')"
+			v-touch:swipe.right="() => handleUserInteraction(previousIndex, 'swipe-right')"
 		>
 			<slot :transitionName="transitionName"></slot>
 		</div>
