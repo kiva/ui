@@ -70,25 +70,6 @@ export const HideSearchInHeader = () => ({
 	`,
 });
 
-export const MinimalHeader = () => ({
-	components: {
-		WwwPage
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	props: {
-		minimalHeader: {
-			default: boolean('minimalHeader', true)
-		},
-	},
-	template: `
-		<www-page :minimal-header="minimalHeader">
-			<div class="row" style="padding: 1.625rem 0;">
-				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
-			</div>
-		</www-page>
-	`,
-});
-
 export const Themed = () => ({
 	components: {
 		WwwPage
@@ -108,6 +89,32 @@ export const Themed = () => ({
 		<wwwPage
 			:header-theme="headerTheme"
 			:footer-theme="footerTheme"
+		>
+			<div class="row" style="padding: 1.625rem 0;">
+				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+			</div>
+		</www-page>
+	`,
+});
+
+export const MinimalHeader = () => ({
+	components: {
+		WwwPage
+	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	props: {
+		minimalHeader: {
+			default: boolean('minimalHeader', true)
+		},
+		headerTheme: {
+			type: Object,
+			default() { return select('headerTheme', { lightHeader, iwdHeaderTheme, wrdHeaderTheme, none: {} }, lightHeader) }
+		},
+	},
+	template: `
+		<www-page
+			:minimal-header="minimalHeader"
+			:header-theme="headerTheme"
 		>
 			<div class="row" style="padding: 1.625rem 0;">
 				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
