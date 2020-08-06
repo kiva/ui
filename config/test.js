@@ -32,7 +32,7 @@ module.exports = merge(base, {
 		auth0: {
 			loginRedirectUrls: {
 				PbZJxDWw2uO1j4K6lzC9Yjd5v6yGfLUE: 'https://admin.test.kiva.org/admin/login',
-				Z23BzhhZr3cNhHvu62tQPrhzpsmqyDkD: 'https://partners.test.kiva.org/pa2/login',
+				Z23BzhhZr3cNhHvu62tQPrhzpsmqyDkD: 'https://partners.test.kiva.org/pa2/login/login',
 				OIAxYkR4698ovGuJA0aXE8Hp1tPYaz45: 'https://www.test.kiva.org/authenticate?authLevel=recent',
 				m0gkCWRIS0kiu2q0oFNRijUVPgY1MjCn: 'https://www.test.kiva.org/ui-login?force=true',
 				DgnxRxp8t0ei27KpwCkQDj6hMrHPheFr: 'https://www.test.kiva.org/ui-login?force=true',
