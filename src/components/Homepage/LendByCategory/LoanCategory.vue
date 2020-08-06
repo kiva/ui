@@ -361,7 +361,7 @@ $card-half-space: rem-calc(14/2);
 	border-radius: 0.65rem;
 	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 	width: $card-width;
-	flex: 1;
+	flex: 1 0 auto;
 }
 
 .cards-mg-promo {
