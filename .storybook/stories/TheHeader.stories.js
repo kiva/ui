@@ -48,6 +48,16 @@ export const Default = () => ({
 	`,
 });
 
+export const MinimalHeader = () => ({
+	components: {
+		TheHeader
+	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	template: `
+		<the-header :minimal="true" />
+	`,
+});
+
 export const LoggedInWithCart = () => ({
 	components: {
 		TheHeader

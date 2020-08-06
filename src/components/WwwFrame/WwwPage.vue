@@ -4,6 +4,7 @@
 		<the-header
 			:hide-search-in-header="hideSearchInHeader"
 			:theme="headerTheme"
+			:minimal="minimalHeader"
 		/>
 		<slot name="secondary"></slot>
 		<main :class="{'gray-background': grayBackground}">
@@ -51,6 +52,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		minimalHeader: {
+			type: Boolean,
+			default: false
+		},
 		headerTheme: {
 			type: Object,
 			default() {},
@@ -58,7 +63,7 @@ export default {
 		footerTheme: {
 			type: Object,
 			default() {},
-		}
+		},
 	},
 	apollo: {
 		preFetch(config, client, args) {
