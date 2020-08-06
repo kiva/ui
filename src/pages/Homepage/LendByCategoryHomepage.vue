@@ -149,13 +149,12 @@
 					/>
 				</div>
 				<div class="small-12 columns">
-					<h1 class="statistics__header">
-						100%
-					</h1>
+					<h2 class="statistics__header">
+						<span>100%</span>
+						<span class="statistics__header-small">of your loan goes to the field.</span>
+					</h2>
 					<p class="statistics__body">
-						<span>of your loan goes to the field.</span>
-						<br>
-						<span>We don't take a penny.</span>
+						We don't take a penny.
 					</p>
 				</div>
 				<homepage-statistics />
@@ -554,11 +553,23 @@ export default {
 	&__header {
 		font-size: 6rem;
 		font-weight: bold;
+		margin-bottom: 0;
+
+		span {
+			display: block;
+		}
+	}
+
+	&__header-small {
+		@include featured-text();
+
+		font-weight: $global-weight-normal;
 	}
 
 	&__body {
-		margin-bottom: rem-calc(30);
 		@include featured-text();
+
+		margin-bottom: rem-calc(30);
 	}
 
 	&__flourish {
