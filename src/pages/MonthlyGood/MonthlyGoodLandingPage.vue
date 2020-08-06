@@ -103,6 +103,9 @@ const pageQuery = gql`query monthlyGoodLandingPage {
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
 export default {
+	metaInfo: {
+		title: 'Start Monthly Good',
+	},
 	components: {
 		WwwPage,
 		LandingForm,

@@ -9,8 +9,8 @@
 			@touchstart="pauseOnHover ? paused = true : paused = false"
 			@mouseleave="paused = false"
 			@touchend="paused = false"
-			v-touch:swipe.left="previous"
-			v-touch:swipe.right="advance"
+			v-touch:swipe.left="() => handleUserInteraction(nextIndex, 'swipe-left')"
+			v-touch:swipe.right="() => handleUserInteraction(previousIndex, 'swipe-right')"
 		>
 			<slot :transitionName="transitionName"></slot>
 		</div>
@@ -18,7 +18,7 @@
 		<div class="kv-carousel__arrows">
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--left"
-				@click="previous"
+				@click="handleUserInteraction(previousIndex, 'click-left-arrow')"
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
@@ -29,7 +29,7 @@
 			</button>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--right"
-				@click="advance"
+				@click="handleUserInteraction(nextIndex, 'click-right-arrow')"
 			>
 				<kv-icon
 					class="kv-carousel__arrows-icon"
@@ -49,7 +49,7 @@
 					currentIndex === index ? 'kv-carousel__indicator-btn--active' : '',
 					index < currentIndex ? 'kv-carousel__indicator-btn--viewed' : ''
 				]"
-				@click="goToSlide(index)"
+				@click="handleUserInteraction(index, 'click-indicator-button')"
 			>
 				<span class="show-for-sr">Show slide {{ index + 1 }}</span>
 			</button>
@@ -181,7 +181,7 @@ export default {
 				}
 				if (this.intervalTimerCurrentTime >= this.autoplayInterval) {
 					this.intervalTimerCurrentTime = 0;
-					this.advance();
+					this.goToSlide(this.nextIndex);
 				}
 			}, refreshRate * 1000); // 100 milliseconds
 		}
@@ -193,20 +193,14 @@ export default {
 	},
 	methods: {
 		/**
-		 * Move forward one slide
-		 *
-		 * @public This is a public method
+		 * Fires when the user interacts with the carousel.
+		 * Contains the interaction type (swipe-left, click-left-arrow, etc.)
+		 * @event interact-carousel
+		 * @type {Event}
 		 */
-		advance() {
-			this.goToSlide(this.nextIndex);
-		},
-		/**
-		 * Move backward one slide
-		 *
-		 * @public This is a public method
-		 */
-		previous() {
-			this.goToSlide(this.previousIndex);
+		handleUserInteraction(index, interactionType) {
+			this.goToSlide(index);
+			this.$emit('interact-carousel', interactionType);
 		},
 		/**
 		 * Jump to a specific slide index
@@ -303,8 +297,12 @@ $bar-indicator-margin: rem-calc(4);
 			transform: rotate(90deg);
 		}
 
-		&:hover,
 		&:focus {
+			outline: 0;
+			background: #000;
+		}
+
+		&:hover {
 			background: $anchor-color-hover;
 		}
 
@@ -317,6 +315,8 @@ $bar-indicator-margin: rem-calc(4);
 
 	&__arrows-icon {
 		fill: #fff;
+		width: rem-calc(21);
+		height: rem-calc(23);
 	}
 
 	&__indicator {
@@ -340,8 +340,12 @@ $bar-indicator-margin: rem-calc(4);
 		position: relative;
 		overflow: hidden;
 
-		&:hover,
 		&:focus {
+			outline: 0;
+			background: #000;
+		}
+
+		&:hover {
 			background: $anchor-color-hover;
 		}
 

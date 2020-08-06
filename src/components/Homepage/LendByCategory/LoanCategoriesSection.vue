@@ -13,6 +13,11 @@
 				v-for="category in prefetchedCategoryInfo"
 				:key="category.id + '-link'"
 				@click.prevent.native="setActiveCategory(category.id)"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-category',
+					cleanCategoryName(category),
+				]"
 			>
 				{{ cleanCategoryName(category) }}
 			</kv-button>
@@ -20,6 +25,11 @@
 				class="category-options__link"
 				:to="`/lend-by-category`"
 				v-if="prefetchedCategoryInfo.length > 0"
+				v-kv-track-event="[
+					'homepage',
+					'click-carousel-category',
+					'more',
+				]"
 			>
 				More
 			</router-link>
@@ -45,10 +55,11 @@
 
 <script>
 import _get from 'lodash/get';
-import numeral from 'numeral';
 
 import cookieStore from '@/util/cookieStore';
 import { readJSONSetting } from '@/util/settingsUtils';
+import logReadQueryError from '@/util/logReadQueryError';
+import { isLoanFundraising } from '@/util/loanUtils';
 
 import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHomepageCategories.graphql';
 import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
@@ -64,7 +75,6 @@ export default {
 		KvLoadingSpinner,
 		KvButton
 	},
-	inject: ['apollo'],
 	data() {
 		return {
 			categoryIds: [52, 96, 93, 89, 87], // fallback category ids
@@ -76,6 +86,23 @@ export default {
 			scrollPos: 0,
 			categoriesLoaded: false,
 		};
+	},
+	inject: ['apollo'],
+	apollo: {
+		preFetch(config, client) {
+			// Get the experiment object from settings with category ids
+			return client.query({
+				query: lendByCategoryHomepageCategories
+			}).then(({ data }) => {
+				// Get the array of channel objects from settings,
+				const categorySettingsArray = readJSONSetting(data, 'general.homepage_category_rows.value');
+				if (categorySettingsArray) {
+					// if successful set to categoryIds
+					const categoryIds = categorySettingsArray.map(setting => setting.id);
+					return client.query({ query: loanChannelInfoQuery, variables: { ids: categoryIds } });
+				}
+			});
+		},
 	},
 	computed: {
 		allFetchedLoanIds() {
@@ -156,6 +183,9 @@ export default {
 					const channelLoans = _get(data, 'lend.loanChannelsById')[0];
 					this.categoriesWithLoans.push(channelLoans);
 
+					// emitting event to be caught in LendByCategoryHomepage.vue
+					this.$emit('loans-loaded');
+
 					// TODO
 					// if we have less than 8 loans left after filtering:
 					// this.getCategoryLoans(categoryId)
@@ -172,32 +202,9 @@ export default {
 
 			if (allLoansForCategory.loans) {
 				filteredLoansArray = allLoansForCategory.loans.values
-					.filter(loan => this.testFundedStatus(loan));
+					.filter(loan => isLoanFundraising(loan));
 			}
 			return filteredLoansArray;
-		},
-		// TODO
-		// This method is very similar to the one in:
-		// src/components/LoansByCategory/FeaturedHeroLoanWrapper.vue
-		testFundedStatus(loan) {
-			// check status, store if funded
-			if (_get(loan, 'status') !== 'fundraising') {
-				return false;
-			}
-			// check fundraising information, store if funded
-			const loanAmount = numeral(_get(loan, 'loanAmount'));
-			const fundedAmount = numeral(_get(loan, 'loanFundraisingInfo.fundedAmount'));
-			const reservedAmount = numeral(_get(loan, 'loanFundraisingInfo.reservedAmount'));
-			// loan amount vs funded amount
-			if (loanAmount.value() === fundedAmount.value()) {
-				return false;
-			}
-			// loan amount vs funded + reserved amount
-			if (loanAmount.value() === (fundedAmount.value() + reservedAmount.value())) {
-				return false;
-			}
-			// all clear
-			return true;
 		},
 		activateWatchers() {
 			// Create an observer, this will react to changes to the basket and pass that data into the components.
@@ -213,30 +220,40 @@ export default {
 			});
 		}
 	},
-	mounted() {
-		// TODO
-		// Get these queries in preFetch without causing an invariant error.
-		this.apollo.query({
-			query: lendByCategoryHomepageCategories,
-			variables: {
-				basketId: cookieStore.get('kvbskt'),
-			},
-		}).then(({ data }) => {
-			this.processData(data);
-		}).then(() => {
-			return this.apollo.query({
+	created() {
+		// Read the page data from the cache
+		let pageData = {};
+		try {
+			pageData = this.apollo.readQuery({
+				query: lendByCategoryHomepageCategories,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+			this.processData(pageData);
+		} catch (e) {
+			logReadQueryError(e, 'LoanCategoriesSection lendByCategoryHomepageCategories');
+		}
+
+		// Read the loanChannel info from the cache
+		let categoryInfo = {};
+		try {
+			categoryInfo = this.apollo.readQuery({
 				query: loanChannelInfoQuery,
 				variables: {
 					ids: this.categoryIds,
 				},
 			});
-		}).then(({ data }) => {
-			this.prefetchedCategoryInfo = _get(data, 'lend.loanChannelsById') || [];
-			this.categoriesLoaded = true;
-			// set initial active category
-			this.setActiveCategory(this.categoryIds[0]);
-			this.activateWatchers();
-		});
+		} catch (e) {
+			logReadQueryError(e, 'LoanCategoriesSection loanChannelInfoQuery');
+		}
+		this.prefetchedCategoryInfo = _get(categoryInfo, 'lend.loanChannelsById') || [];
+		this.categoriesLoaded = true;
+	},
+	mounted() {
+		// set initial active category
+		this.setActiveCategory(this.categoryIds[0]);
+		this.activateWatchers();
 	},
 };
 
@@ -283,7 +300,8 @@ export default {
 		}
 
 		&.active,
-		&:hover {
+		&:hover,
+		&:focus {
 			text-decoration: none;
 			color: $kiva-green;
 		}
@@ -291,6 +309,10 @@ export default {
 		&.active {
 			font-weight: $global-weight-bold;
 			border-bottom: 3px solid $kiva-green;
+		}
+
+		&:focus {
+			outline: 0;
 		}
 	}
 

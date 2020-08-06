@@ -1,25 +1,26 @@
 <template>
 	<div class="lend-by-category-homepage">
 		<section class="featured-loans section">
-			<div class="row">
-				<div class="small-12 large-6 columns">
-					<featured-loans-carousel />
+			<div class="row align-center">
+				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
+					<featured-loans-carousel ref="featuredLoansCarousel" />
 				</div>
-				<div class="small-12 large-6 align-self-middle columns">
+				<!-- eslint-disable-next-line max-len -->
+				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
 					<h1 class="featured-loans__header">
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
 					<p class="featured-loans__body">
 						Kiva empowers underserved people to achieve their
 						dreams by crowdfunding loans and unlocking capital.
+						<br>
 						<router-link
-							class="show-for-large featured-loans__body-link"
+							class="show-for-large"
 							:to="'/lend-by-category'"
 							v-kv-track-event="[
 								'homepage',
-								'click-Get started',
-								'lend-by-category-homepage-redirect',
-								'true'
+								'click-hero-cta',
+								'Get started',
 							]"
 						>
 							Get started
@@ -41,7 +42,10 @@
 					<h2 class="loan-categories__header text-center">
 						Kiva makes it easy to support causes you care about.
 					</h2>
-					<loan-categories-section />
+					<loan-categories-section
+						ref="loanCategoriesSection"
+						@loans-loaded="trackLoansLoaded"
+					/>
 				</div>
 			</div>
 		</section>
@@ -217,9 +221,8 @@
 						:to="`/lend-by-category`"
 						v-kv-track-event="[
 							'homepage',
-							'click-Get started',
-							'lend-by-category-homepage-redirect',
-							'true'
+							'click-bottom-cta',
+							'Get started'
 						]"
 					>
 						Get started
@@ -231,6 +234,9 @@
 </template>
 
 <script>
+import _get from 'lodash/get';
+import _each from 'lodash/each';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import HomepageStatistics from './HomepageStatistics';
@@ -248,10 +254,9 @@ export default {
 		KvResponsiveImage,
 		LoanCategoriesSection,
 	},
-	props: {
-	},
 	data() {
 		return {
+			pageViewTracked: false,
 			loanNotDonationImgs: {
 				header: [
 					['small', imgRequire('./loan-not-donation.png')],
@@ -323,13 +328,50 @@ export default {
 			},
 		};
 	},
-	computed: {
-	},
-	created() {
-	},
-	mounted() {
-	},
 	methods: {
+		assemblePageViewData() {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
+			const loanIds = [];
+			const pageViewTrackData = { schema, data: {} };
+
+			// Gathering the category id and loan id from the Featured Loans section to pass through for tracking
+			const featuredCategoryId = _get(this, '$refs.featuredLoansCarousel.prefetchedCategoryInfo[0].id');
+			const featuredCategoryLoan = this.$refs.featuredLoansCarousel.featuredLoanForCategory(featuredCategoryId);
+
+			// The schema we're using requires a categorySetIdentifer to be set,
+			// hardcoding to default because there is no experiment A/B for this
+			pageViewTrackData.data.categorySetIdentifier = 'default';
+
+			// Formatting and pushing featured loans info into loanIds
+			loanIds.push({
+				r: 0, p: 1, c: featuredCategoryId, l: featuredCategoryLoan.id
+			});
+
+			// Gathering the category ids and loan ids from the Loan Category section to pass through for tracking
+			const loanCategoryId = _get(this, '$refs.loanCategoriesSection.prefetchedCategoryInfo[0].id');
+			const categoryLoans = this.$refs.loanCategoriesSection.getCategoryLoans(loanCategoryId);
+
+			// Formatting and pushing Loan Category info into loanIds
+			_each(categoryLoans, (loan, loanIndex) => {
+				loanIds.push({
+					r: 1,
+					p: loanIndex + 1,
+					c: loanCategoryId,
+					l: loan.id
+				});
+			});
+
+			pageViewTrackData.data.loansDisplayed = loanIds;
+			return pageViewTrackData;
+		},
+		trackLoansLoaded() {
+			if (!this.pageViewTracked) {
+				const pageViewTrackData = this.assemblePageViewData();
+				this.pageViewTracked = true;
+				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+			}
+		}
 	}
 };
 </script>
@@ -352,10 +394,14 @@ export default {
 }
 
 .featured-loans {
-	padding: 2rem 0 1rem;
+	padding: 2rem 0 0;
 
 	@include breakpoint(large) {
-		padding: 4rem 0 2rem;
+		padding: 4rem 0 0;
+	}
+
+	&__cta_wrapper {
+		padding: 1.5rem 2rem 3rem;
 	}
 
 	&__header {
@@ -374,20 +420,20 @@ export default {
 		}
 	}
 
-	&__body-link {
-		display: block;
-	}
-
 	&__flourish {
 		position: absolute;
 		width: 40%;
 		max-width: rem-calc(436);
-		bottom: -5%;
+		top: 28%;
 		right: 0;
+		bottom: auto;
 		pointer-events: none;
+		z-index: -1;
 
-		@include breakpoint(xlarge) {
+		@include breakpoint(medium) {
 			width: 31%;
+			bottom: -5%;
+			top: auto;
 		}
 	}
 }

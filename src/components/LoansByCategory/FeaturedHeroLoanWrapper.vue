@@ -34,13 +34,13 @@
 <script>
 import _filter from 'lodash/filter';
 import _get from 'lodash/get';
-import numeral from 'numeral';
 import gql from 'graphql-tag';
 
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
+import { isLoanFundraising } from '@/util/loanUtils';
 
 // Fallback featured_loan_channel id
 const featuredCategoryIds = [98];
@@ -190,31 +190,11 @@ export default {
 				this.loading = false;
 			}
 		},
-		// TODO
-		// This method is very similar to the one in:
-		// src/components/Homepage/LendByCategory/LoanCategoriesSection.vue.vue
 		testFundedStatus(loan) {
-			// check status, store if funded
-			if (_get(loan, 'status') !== 'fundraising') {
+			if (!isLoanFundraising(loan)) {
 				this.fundedLoans.push(loan);
-				return false;
 			}
-			// check fundraising information, store if funded
-			const loanAmount = numeral(_get(loan, 'loanAmount'));
-			const fundedAmount = numeral(_get(loan, 'loanFundraisingInfo.fundedAmount'));
-			const reservedAmount = numeral(_get(loan, 'loanFundraisingInfo.reservedAmount'));
-			// loan amount vs funded amount
-			if (loanAmount.value() === fundedAmount.value()) {
-				this.fundedLoans.push(loan);
-				return false;
-			}
-			// loan amount vs funded + reserved amount
-			if (loanAmount.value() === (fundedAmount.value() + reservedAmount.value())) {
-				this.fundedLoans.push(loan);
-				return false;
-			}
-			// all clear
-			return true;
+			return isLoanFundraising(loan);
 		},
 		fetchMoreLoans() {
 			this.apollo.query({
