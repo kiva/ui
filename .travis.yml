@@ -7,7 +7,7 @@ addons:
   apt:
     packages:
     - libgconf-2-4
-matrix:
+jobs:
   fast_finish: true
   include:
     - node_js: '12.14'
@@ -15,6 +15,7 @@ matrix:
       if: head_branch = master
   allow_failures:
     - node_js: 'node'
+      if: head_branch = master
 branches:
   only:
     - master
