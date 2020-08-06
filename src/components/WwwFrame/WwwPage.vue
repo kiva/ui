@@ -1,6 +1,6 @@
 <template>
 	<div class="www-page">
-		<the-banner-area />
+		<the-banner-area v-if="!minimalHeader" />
 		<the-header
 			:hide-search-in-header="hideSearchInHeader"
 			:theme="headerTheme"
