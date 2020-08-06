@@ -100,6 +100,8 @@ export default {
 							query: loanChannelData,
 							variables: {
 								ids: [categoryIds[0]],
+								imgDefaultSize: 'w480h300',
+								imgRetinaSize: 'w960h600',
 								numberOfLoans: 3,
 							}
 						})
@@ -164,6 +166,8 @@ export default {
 					variables: {
 						ids: [firstChannelId],
 						numberOfLoans: 3,
+						imgDefaultSize: 'w480h300',
+						imgRetinaSize: 'w960h600',
 						basketId: cookieStore.get('kvbskt'),
 					},
 				});
@@ -244,6 +248,8 @@ export default {
 					variables: {
 						ids: [category.id],
 						excludeIds: this.loansToExclude,
+						imgDefaultSize: 'w480h300',
+						imgRetinaSize: 'w960h600',
 						numberOfLoans: 3,
 					}
 				}).then(({ data }) => {
