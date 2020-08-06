@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import { object } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
-import { MockKvAuth0 } from '@/util/KvAuth0';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
@@ -41,18 +42,7 @@ export const Default = () => ({
 	components: {
 		TheHeader
 	},
-	provide: {
-		apollo: {
-			readQuery() {},
-			query() {},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	template: `
 		<the-header />
 	`,
@@ -62,13 +52,14 @@ export const LoggedInWithCart = () => ({
 	components: {
 		TheHeader
 	},
+	mixins: [kvAuth0StoryMixin],
 	provide: {
 		apollo: {
 			readQuery() {
-				return mockedApolloResponse;
+				return Promise.resolve(mockedApolloResponse);
 			},
 			query() {
-				return mockedApolloResponse;
+				return Promise.resolve(mockedApolloResponse);
 			},
 			watchQuery() {
 				return {
@@ -76,7 +67,6 @@ export const LoggedInWithCart = () => ({
 				}
 			},
 		},
-		kvAuth0: MockKvAuth0
 	},
 	template: `
 		<the-header />
@@ -87,18 +77,7 @@ export const HideSearchInHeader = () => ({
 	components: {
 		TheHeader
 	},
-	provide: {
-		apollo: {
-			readQuery() {},
-			query() {},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	template: `
 		<the-header :hide-search-in-header="true" />
 	`,
@@ -108,18 +87,7 @@ export const Themed = () => ({
 	components: {
 		TheHeader
 	},
-	provide: {
-		apollo: {
-			readQuery() {},
-			query() {},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	props: {
 		theme: {
 			type: Object,

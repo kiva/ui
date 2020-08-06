@@ -2,7 +2,8 @@ import Vue from 'vue'
 import { boolean, select } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import { MockKvAuth0 } from '@/util/KvAuth0';
+import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
+
 import { lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderTheme, wrdFooterTheme } from '@/util/siteThemes';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -21,10 +22,7 @@ export const Default = () => ({
 	components: {
 		WwwPage
 	},
-	mixins: [apolloStoryMixin],
-	provide: {
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	template: `
 		<www-page>
 			<div class="row" style="padding: 1.625rem 0;">
@@ -38,10 +36,7 @@ export const GreyBackground = () => ({
 	components: {
 		WwwPage
 	},
-	mixins: [apolloStoryMixin],
-	provide: {
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	props: {
 		greyBackground: {
 			default: boolean('greyBackground', true)
@@ -60,10 +55,7 @@ export const HideSearchInHeader = () => ({
 	components: {
 		WwwPage
 	},
-	mixins: [apolloStoryMixin],
-	provide: {
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	props: {
 		hideSearchInHeader: {
 			default: boolean('hideSearchInHeader', true)
