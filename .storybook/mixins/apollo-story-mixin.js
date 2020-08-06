@@ -4,6 +4,9 @@ export default {
 			mutate() {
 				return Promise.resolve({});
 			},
+			readQuery() {
+				return Promise.resolve({});
+			},
 			watchQuery() {
 				return {
 					subscribe() {}
@@ -18,6 +21,9 @@ export default {
 		},
 		apollo: {
 			mutate() {
+				return Promise.resolve({});
+			},
+			readQuery() {
 				return Promise.resolve({});
 			},
 			watchQuery() {
