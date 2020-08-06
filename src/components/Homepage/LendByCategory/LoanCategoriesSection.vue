@@ -184,9 +184,10 @@ export default {
 					this.categoriesWithLoans.push(channelLoans);
 
 					// emitting event to be caught in LendByCategoryHomepage.vue
+					// TODO: pass up the category id so you have the right one + don't have to fetch it manually
 					this.$emit('loans-loaded');
 
-					// TODO
+					// TODO: future work
 					// if we have less than 8 loans left after filtering:
 					// this.getCategoryLoans(categoryId)
 					// fetch more loans

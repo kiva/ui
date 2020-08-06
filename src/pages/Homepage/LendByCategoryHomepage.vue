@@ -341,7 +341,7 @@ export default {
 
 			// The schema we're using requires a categorySetIdentifer to be set,
 			// hardcoding to default because there is no experiment A/B for this
-			pageViewTrackData.data.categorySetIdentifier = 'default';
+			pageViewTrackData.data.categorySetIdentifier = 'page-load';
 
 			// Formatting and pushing featured loans info into loanIds
 			loanIds.push({
@@ -366,13 +366,30 @@ export default {
 			return pageViewTrackData;
 		},
 		trackLoansLoaded() {
+			// Adapt this component to accept the category id
+			// isolate tracking of async category sections that are selected by the visitor
+			// - you could keep the pageViewTracked flag and let it fire the first time
+			// - then on following instances of this event you can call a NEW method
+			// - the new method will set the categorySetIdentifier
+			// - then compile Only the newly shown category loans data
+			// - then fire it's own kvTrackSelfDescribingEvent
 			if (!this.pageViewTracked) {
 				const pageViewTrackData = this.assemblePageViewData();
 				this.pageViewTracked = true;
 				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 			}
-		}
-	}
+		},
+		onLeave() {
+			// This will fire before exiting the page
+			// collect and track current state of featured loans here
+		},
+	},
+	mounted() {
+		window.addEventListener('beforeunload', this.onLeave);
+	},
+	beforeDestroy() {
+		window.removeEventListener('beforeunload', this.onLeave);
+	},
 };
 </script>
 
