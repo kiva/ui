@@ -315,6 +315,8 @@ $bar-indicator-margin: rem-calc(4);
 
 	&__arrows-icon {
 		fill: #fff;
+		width: rem-calc(21);
+		height: rem-calc(23);
 	}
 
 	&__indicator {

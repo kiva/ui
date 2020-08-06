@@ -16,6 +16,7 @@
 				]"
 			>
 				<kv-icon
+					class="arrow-icon"
 					name="fat-chevron"
 					:from-sprite="true"
 					title="Previous Loans"
@@ -85,6 +86,7 @@
 				]"
 			>
 				<kv-icon
+					class="arrow-icon"
 					name="fat-chevron"
 					:from-sprite="true"
 					title="Next Loans"
@@ -322,6 +324,11 @@ export default {
 
 		background: $kiva-text-light;
 	}
+}
+
+.arrow-icon {
+	width: rem-calc(21);
+	height: rem-calc(23);
 }
 
 .cards-display-window {
