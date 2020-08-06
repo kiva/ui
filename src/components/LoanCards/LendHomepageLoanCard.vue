@@ -194,6 +194,12 @@ export default {
 			position: relative;
 			display: inline-block;
 			height: 100%;
+
+			.borrower-image {
+				width: 100%;
+				max-width: none;
+				height: auto;
+			}
 		}
 
 		::v-deep button.favorite-star {
