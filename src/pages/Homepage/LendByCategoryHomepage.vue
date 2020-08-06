@@ -441,7 +441,7 @@ export default {
 	padding: 1rem 0 3rem;
 
 	@include breakpoint(large) {
-		padding: 2rem 0 6rem;
+		padding: 2rem 0 5rem;
 	}
 
 	& .row {

@@ -342,7 +342,7 @@ export default {
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 	overflow: hidden;
-	padding: 1rem 0;
+	padding: 1rem 0 2rem;
 }
 
 $card-width: rem-calc(303);
