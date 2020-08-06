@@ -312,15 +312,11 @@ h3 {
 }
 
 .featured-loans-carousel {
-	min-height: rem-calc(555);
+	min-height: rem-calc(610);
 
 	// Overwrite styles for loan card to make it responsive.
 	::v-deep .lend-homepage-loan-card {
 		margin: 1rem;
-	}
-
-	::v-deep .lend-homepage-loan-card__image-wrapper {
-		height: 12rem;
 	}
 
 	// Increase white space on card
