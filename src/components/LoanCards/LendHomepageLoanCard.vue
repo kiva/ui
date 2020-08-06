@@ -182,7 +182,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	flex-shrink: 0;
+	flex: 1 0 auto;
 	border-radius: 0.65rem;
 
 	&__image-wrapper {
