@@ -1,19 +1,14 @@
 <template>
 	<div class="row autodeposits-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="Auto Deposits">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="Auto Deposits"
 					name="auto-icon-when"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>
-					Auto Deposits
-				</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				<div v-for="(sub, index) in legacySubscriptions" :key="index">
 					<p>
 						<!-- eslint-disable-next-line max-len -->
@@ -24,15 +19,17 @@
 						Because you have an existing auto deposit, to make changes you'll need to <a :href="subscriptionCancelLink(sub)">cancel your current auto deposit via PayPal</a> and then return to Kiva to set up a new one.
 					</p>
 				</div>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+
 import KvIcon from '@/components/Kv/KvIcon';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query legacySubscription {
 	my {
@@ -52,6 +49,7 @@ export default {
 	inject: ['apollo'],
 	components: {
 		KvIcon,
+		KvSettingsCard,
 	},
 	data() {
 		return {

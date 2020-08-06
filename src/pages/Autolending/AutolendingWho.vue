@@ -1,17 +1,14 @@
 <template>
 	<div class="row who-area" :class="{ obscure: !isEnabled }">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="Who you’ll support">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="Who you’ll support"
 					name="auto-icon-who"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>Who you’ll support</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				<who-youll-support-text @click="showLightbox = true" />
 				<inline-counter :strong="true" v-show="!kivaChooses" />
 
@@ -125,8 +122,8 @@
 						</div>
 					</template>
 				</kv-lightbox>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -137,6 +134,7 @@ import gql from 'graphql-tag';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 import AttributeFilter from './AttributeFilter';
 import AttributeRadios from './AttributeRadios';
@@ -173,6 +171,7 @@ export default {
 		KvExpandable,
 		KvIcon,
 		KvLightbox,
+		KvSettingsCard,
 		LoanIncrementDropdown,
 		LoanTermDropdown,
 		PartnerDelRateDropdown,

@@ -1,17 +1,14 @@
 <template>
 	<div class="row when-area" :class="{ obscure: !isEnabled }">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="When your balance will be lent">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="When your balance will be lent"
 					name="auto-icon-when"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>When your balance will be lent</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				Your balance will be automatically lent
 				<span v-if="lendAfterDaysIdle === 0"><a
 					role="button"
@@ -97,8 +94,8 @@
 				</kv-lightbox>
 
 				<lend-timing-messaging />
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -106,12 +103,14 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import _isFinite from 'lodash/isFinite';
+
+import KvButton from '@/components/Kv/KvButton';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvRadio from '@/components/Kv/KvRadio';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvRadio from '@/components/Kv/KvRadio';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 import LendTimingDropdown from './LendTimingDropdown';
 import LendTimingMessaging from './LendTimingMessaging';
@@ -120,12 +119,13 @@ import LendTimingMessaging from './LendTimingMessaging';
 export default {
 	inject: ['apollo'],
 	components: {
+		KvButton,
+		KvDropdownRounded,
 		KvIcon,
 		KvLightbox,
-		KvButton,
-		KvRadio,
 		KvLoadingSpinner,
-		KvDropdownRounded,
+		KvRadio,
+		KvSettingsCard,
 		LendTimingDropdown,
 		LendTimingMessaging,
 	},

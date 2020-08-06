@@ -1,19 +1,14 @@
 <template>
 	<div class="row mg-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="Monthly Good"
 					name="auto-icon-when"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>
-					Global COVID-19 Response Lending
-				</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				<p>
 					Thank you for supporting those affected by COVID-19. Your deposit of <a
 						role="button"
@@ -138,8 +133,8 @@
 						</kv-button>
 					</template>
 				</kv-lightbox>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -149,12 +144,12 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
+import KvButton from '@/components/Kv/KvButton';
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query oneTimeSubscription {
 	my {
@@ -173,6 +168,7 @@ export default {
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
+		KvSettingsCard,
 	},
 	data() {
 		return {
