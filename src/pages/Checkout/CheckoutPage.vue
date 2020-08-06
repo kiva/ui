@@ -241,7 +241,7 @@ export default {
 				'Payment',
 				'Thank You!'
 			],
-			showDropInPayments: false,
+			showDropInPayments: true,
 			userPrefContinueBrowsing: false,
 			addToBasketRedirectExperimentShown: false,
 		};
