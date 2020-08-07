@@ -1,6 +1,6 @@
-import { mockedReceiptData } from './CheckoutReceipt.stories';
 import SocialShare from '@/components/Checkout/SocialShare';
 import StoryRouter from 'storybook-vue-router';
+import mockedReceiptData from '../mock-data/receipt-data-mock';
 
 export default {
 	title: 'Components/SocialShare',
