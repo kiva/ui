@@ -3,7 +3,7 @@
 		<section class="featured-loans section">
 			<div class="row align-center">
 				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
-					<featured-loans-carousel ref="featuredLoansCarousel" />
+					<featured-loans-carousel />
 				</div>
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
@@ -42,10 +42,7 @@
 					<h2 class="loan-categories__header text-center">
 						Kiva makes it easy to support causes you care about.
 					</h2>
-					<loan-categories-section
-						ref="loanCategoriesSection"
-						@loans-loaded="trackLoansLoaded"
-					/>
+					<loan-categories-section />
 				</div>
 			</div>
 		</section>
@@ -327,141 +324,6 @@ export default {
 				],
 			},
 		};
-	},
-	methods: {
-		assemblePageViewData() {
-			// eslint-disable-next-line max-len
-			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
-			const loanIds = [];
-			const pageViewTrackData = { schema, data: {} };
-
-			console.log('loanIds', loanIds);
-			console.log('pageViewTrackData', pageViewTrackData);
-
-			// Gathering the category id and loan id from the Featured Loans section to pass through for tracking
-			const featuredCategoryId = _get(this, '$refs.featuredLoansCarousel.prefetchedCategoryInfo[0].id');
-			const featuredCategoryLoan = this.$refs.featuredLoansCarousel.featuredLoanForCategory(featuredCategoryId);
-
-			console.log('featuredCategoryId', featuredCategoryId);
-			console.log('featureCategoryLoan', featuredCategoryLoan);
-
-			// The schema we're using requires a categorySetIdentifer to be set,
-			// hardcoding to default because there is no experiment A/B for this
-			pageViewTrackData.data.categorySetIdentifier = 'page-load';
-
-			// Formatting and pushing featured loans info into loanIds
-			loanIds.push({
-				r: 0, p: 1, c: featuredCategoryId, l: featuredCategoryLoan.id
-			});
-
-			// Gathering the category ids and loan ids from the Loan Category section to pass through for tracking
-			const loanCategoryId = _get(this, '$refs.loanCategoriesSection.prefetchedCategoryInfo[0].id');
-			const categoryLoans = this.$refs.loanCategoriesSection.getCategoryLoans(loanCategoryId);
-
-			// Formatting and pushing Loan Category info into loanIds
-			_each(categoryLoans, (loan, loanIndex) => {
-				loanIds.push({
-					r: 1,
-					p: loanIndex + 1,
-					c: loanCategoryId,
-					l: loan.id
-				});
-			});
-
-			pageViewTrackData.data.loansDisplayed = loanIds;
-			return pageViewTrackData;
-		},
-		// Adapt this component to accept the category id
-		trackLoansLoaded(categoryId) {
-			if (!categoryId) {
-				console.log('trackLoansLoaded categoryId', categoryId);
-			}
-			// isolate tracking of async category sections that are selected by the visitor
-			// HOW DO THIS?
-
-
-			// DONE you could keep the pageViewTracked flag and let it fire the first time
-			// DONE then on following instances of this event you can call a NEW method
-			// DONE LINE 392 the new method will set the categorySetIdentifier
-			// DON'T THINK THIS IS WORKING line 402 then compile Only the newly shown category loans data
-			// DONE LINE 414 then fire it's own kvTrackSelfDescribingEvent
-			if (!this.pageViewTracked) {
-				const pageViewTrackData = this.assemblePageViewData();
-				this.pageViewTracked = true;
-				this.$kvTrackSelfDescribingEvent(pageViewTrackData);
-			}
-
-			this.setCategoryIdentifier(this.pageViewTrackData);
-		},
-		setCategoryIdentifier() {
-			// the new method will set the categorySetIdentifier
-			this.pageViewTrackData.data.categorySetIdentifier = 'category loaded';
-
-			// then compile Only the newly shown category loans data
-			// Gathering the category ids and loan ids from the Loan Category section to pass through for tracking
-			const loanCategoryId = _get(this, '$refs.loanCategoriesSection.prefetchedCategoryInfo[1].id');
-			const categoryLoans = this.$refs.loanCategoriesSection.getCategoryLoans(loanCategoryId);
-			console.log('loanCategoryId', loanCategoryId);
-			console.log('categoryLoans', categoryLoans);
-
-			// Formatting and pushing Loan Category info into loanIds
-			// _each(categoryLoans, (loan, loanIndex) => {
-			// 	loanIds.push({
-			// 		r: 1,
-			// 		p: loanIndex + 1,
-			// 		c: loanCategoryId,
-			// 		l: loan.id
-			// 	});
-			// });
-
-			// console.log('loanIds', loanIds);
-
-			// then fire it's own kvTrackSelfDescribingEvent
-			// this.$kvTrackSelfDescribingEvent(this.assemblePageViewData());
-		},
-		// DONE fires from the onLeave method, (only working when you leave from the featured loans section)
-		// collects all featured loans at row 0,
-		// formats and calls the kvTrackSelfDescribingEvent
-		trackAllFeaturedLoans(loanIds) {
-			console.log('trackAllFeaturedLoans triggered');
-
-			const featuredCategoryIds = _get(this, '$refs.featuredLoansCarousel.prefetchedCategoryInfo[1].id');
-			// eslint-disable-next-line max-len
-			const featuredLoansCategoryLoans = this.$refs.featuredLoansCarousel.featuredLoanForCategory(featuredCategoryIds.id);
-			console.log('featuredLoansCategoryLoans', featuredLoansCategoryLoans);
-
-			_each(featuredLoansCategoryLoans, (loan, loanIndex) => {
-				loanIds.push({
-					r: 1,
-					p: loanIndex + 1,
-					c: featuredCategoryIds.id,
-					l: loan.id
-				});
-			});
-			// then fire it's own kvTrackSelfDescribingEvent
-			this.$kvTrackSelfDescribingEvent();
-		},
-
-		// reusable method that fires from trackLoansLoaded.
-		// doesn’t fire for first page-load though.
-		// collects loans from individual category row at an index
-		// that matches it’s placement in the list of cateogries,
-		// formats the data and fires it’s own kvTrackSelfDescribingEvent
-		trackCategoryRow() {
-
-
-		},
-		onLeave() {
-			// This will fire before exiting the page
-			// collect and track current state of featured loans here
-			this.trackAllFeaturedLoans();
-		},
-	},
-	mounted() {
-		window.addEventListener('beforeunload', this.onLeave);
-	},
-	beforeDestroy() {
-		window.removeEventListener('beforeunload', this.onLeave);
 	},
 };
 </script>
