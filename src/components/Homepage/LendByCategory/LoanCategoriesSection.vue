@@ -48,7 +48,7 @@
 				:is-logged-in="isLoggedIn"
 				:is-visible="category.id === activeCategory"
 				:key="category.id + '-category'"
-				:row-number="categoryIds.indexOf(category.id) + 1 || null"
+				:row-number="getCategoryRowNumber(category.id)"
 			/>
 		</div>
 	</div>
@@ -235,7 +235,7 @@ export default {
 			// Formatting and pushing Loan Category info into loanIds
 			categoryLoans.forEach((loan, loanIndex) => {
 				loanIds.push({
-					r: this.categoryIds.indexOf(categoryData.id) + 1 || null,
+					r: this.getCategoryRowNumber(categoryData.id),
 					p: loanIndex + 1,
 					c: categoryData.id,
 					l: loan.id
@@ -246,6 +246,10 @@ export default {
 			// pass formatted data in this call
 			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
 		},
+		getCategoryRowNumber(categoryId) {
+			const categoryRowIndex = this.categoryIds.indexOf(categoryId);
+			return categoryRowIndex !== -1 ? categoryRowIndex + 1 : null;
+		}
 	},
 	created() {
 		// Read the page data from the cache
