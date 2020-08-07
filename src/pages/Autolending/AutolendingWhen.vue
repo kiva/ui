@@ -1,6 +1,6 @@
 <template>
-	<div class="row when-area" :class="{ obscure: !isEnabled }">
-		<kv-settings-card class="column large-8" title="When your balance will be lent">
+	<div class="row when-area">
+		<kv-settings-card class="column large-8" title="When your balance will be lent" :disabled="!isEnabled">
 			<template v-slot:icon>
 				<kv-icon
 					class="icon"

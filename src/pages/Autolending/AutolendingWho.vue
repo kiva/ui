@@ -1,6 +1,6 @@
 <template>
-	<div class="row who-area" :class="{ obscure: !isEnabled }">
-		<kv-settings-card class="column large-8" title="Who you’ll support">
+	<div class="row who-area">
+		<kv-settings-card class="column large-8" title="Who you’ll support" :disabled="!isEnabled">
 			<template v-slot:icon>
 				<kv-icon
 					class="icon"

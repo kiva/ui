@@ -131,11 +131,6 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-::v-deep .obscure {
-	opacity: 0.4;
-	pointer-events: none;
-}
-
 [class*="-area"] {
 	margin-bottom: 1.5rem;
 }
