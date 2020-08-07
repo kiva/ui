@@ -42,7 +42,7 @@
 				:status="loan.status"
 				:use="loan.use"
 				:loan-id="loan.id"
-				:max-use-length="62"
+				:max-use-length="59"
 				read-more-link-text="Learn more"
 				@track-loan-card-interaction="trackInteraction"
 			/>
