@@ -231,9 +231,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-import _each from 'lodash/each';
-
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import HomepageStatistics from './HomepageStatistics';
