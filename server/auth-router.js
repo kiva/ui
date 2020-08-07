@@ -55,6 +55,16 @@ module.exports = function authRouter(config = {}) {
 	router.use(passport.initialize());
 	router.use(passport.session());
 
+	// Handle recoverable Auth0 errors
+	router.use('/error', (req, res, next) => {
+		if (req.query.error_description && req.query.error_description.indexOf('OIDC-conformant') > -1) {
+			const loginRedirectUrl = config.auth0.loginRedirectUrls[req.query.client_id];
+			res.redirect(loginRedirectUrl);
+		} else {
+			next();
+		}
+	});
+
 	// Handle login request
 	router.get('/ui-login', (req, res, next) => {
 		const cookies = cookie.parse(req.headers.cookie || '');

@@ -78,14 +78,13 @@ export default {
 		submitDropInMonthlyGood() {
 			this.submitting = true;
 
-			this.$kvTrackEvent('Registration', 'click-confirm-monthly-good', 'register-monthly-good');
-
 			// request payment method
 			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
 				.then(btSubmitResponse => {
 					const transactionNonce = _get(btSubmitResponse, 'nonce');
+					const paymentType = _get(btSubmitResponse, 'type');
 					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeMonthlyGood(transactionNonce);
+						this.doBraintreeMonthlyGood(transactionNonce, paymentType);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
@@ -97,7 +96,7 @@ export default {
 					});
 				});
 		},
-		doBraintreeMonthlyGood(nonce) {
+		doBraintreeMonthlyGood(nonce, paymentType) {
 			// Apollo call to the query mutation
 			this.apollo.mutate({
 				mutation: braintreeCreateMonthlyGoodSubscription,
@@ -125,7 +124,7 @@ export default {
 					this.$showTipMsg(standardError, 'error');
 
 					// Fire specific exception to Snowplow
-					this.$kvTrackEvent('registration', 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
+					this.$kvTrackEvent('Registration', 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
 
 					// exit
 					return kivaBraintreeResponse;
@@ -138,6 +137,13 @@ export default {
 				);
 				// redirect to thanks with KIVA transaction id
 				if (subscriptionCreatedSuccessfully) {
+					// fire BT Success event
+					this.$kvTrackEvent(
+						'Registration',
+						`${paymentType} Braintree DropIn Subscription Payment`,
+						'register-monthly-good-submit'
+					);
+
 					// Complete transaction handles additional analytics + redirect
 					this.$emit('complete-transaction');
 				}

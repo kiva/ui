@@ -10,6 +10,7 @@
 			:is-favorite="isFavorite"
 			:use-default-styles="false"
 			@favorite-toggled="toggleFavorite"
+			@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 		/>
 		<div class="lend-homepage-loan-card__data-wrapper">
 			<div class="lend-homepage-loan-card__name-row">
@@ -41,7 +42,7 @@
 				:status="loan.status"
 				:use="loan.use"
 				:loan-id="loan.id"
-				:max-use-length="62"
+				:max-use-length="59"
 				read-more-link-text="Learn more"
 				@track-loan-card-interaction="trackInteraction"
 			/>
@@ -194,6 +195,12 @@ export default {
 			position: relative;
 			display: inline-block;
 			height: 100%;
+
+			.borrower-image {
+				width: 100%;
+				max-width: none;
+				height: auto;
+			}
 		}
 
 		::v-deep button.favorite-star {
