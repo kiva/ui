@@ -48,6 +48,7 @@
 				:is-logged-in="isLoggedIn"
 				:is-visible="category.id === activeCategory"
 				:key="category.id + '-category'"
+				:row-number="categoryIds.indexOf(category.id) + 1 || null"
 			/>
 		</div>
 	</div>
@@ -183,10 +184,11 @@ export default {
 					const channelLoans = _get(data, 'lend.loanChannelsById')[0];
 					this.categoriesWithLoans.push(channelLoans);
 
-					// emitting event to be caught in LendByCategoryHomepage.vue
-					this.$emit('loans-loaded');
+					if (data) {
+						this.trackCategoryRow(channelLoans);
+					}
 
-					// TODO
+					// TODO: future work
 					// if we have less than 8 loans left after filtering:
 					// this.getCategoryLoans(categoryId)
 					// fetch more loans
@@ -218,7 +220,32 @@ export default {
 					this.processData(data);
 				},
 			});
-		}
+		},
+		trackCategoryRow(categoryData) {
+			const pageViewTrackData = {
+				// eslint-disable-next-line max-len
+				schema: 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#',
+				data: {}
+			};
+			const loanIds = [];
+			// dynamic row identifer
+			pageViewTrackData.data.categorySetIdentifier = `lbc-hp-v1-category-${categoryData.id}`;
+			// loan collection
+			const categoryLoans = _get(categoryData, 'loans.values');
+			// Formatting and pushing Loan Category info into loanIds
+			categoryLoans.forEach((loan, loanIndex) => {
+				loanIds.push({
+					r: this.categoryIds.indexOf(categoryData.id) + 1 || null,
+					p: loanIndex + 1,
+					c: categoryData.id,
+					l: loan.id
+				});
+			});
+			// assign loan data
+			pageViewTrackData.data.loansDisplayed = loanIds;
+			// pass formatted data in this call
+			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+		},
 	},
 	created() {
 		// Read the page data from the cache

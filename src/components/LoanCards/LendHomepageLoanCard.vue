@@ -10,6 +10,7 @@
 			:is-favorite="isFavorite"
 			:use-default-styles="false"
 			@favorite-toggled="toggleFavorite"
+			@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 		/>
 		<div class="lend-homepage-loan-card__data-wrapper">
 			<div class="lend-homepage-loan-card__name-row">
