@@ -6,7 +6,7 @@
 		</h1>
 
 		<h3 class="twoLineHeader">
-			(Last updated February 19, 2020)*
+			(Last updated August 8, 2020)*
 		</h3>
 
 		<div class="row summary-row">
