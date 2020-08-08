@@ -857,10 +857,6 @@ export default {
 @import 'settings';
 
 // This CSS came from original terms page.
-// .highlight {
-// 	background-color: #ff0;
-// }
-
 ul.light li {
 	font-weight: 300;
 }
