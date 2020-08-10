@@ -19,6 +19,7 @@ export const lightFooter = {
 export const iwdHeaderTheme = {
 	themeKey: 'IWD',
 	backgroundColor: '#fff',
+	logoColor: '#060f9f',
 	linkColor: '#060f9f',
 	linkHoverColor: '#a0e2ba',
 	separatorColor: 'transparent'

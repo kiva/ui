@@ -42,6 +42,20 @@ export default [
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
 	{ path: '/error', component: () => import('@/pages/Error') },
 	{ path: '/funded/:id', component: () => import('@/pages/BorrowerProfile/fundedBorrowerProfile') },
+	{
+		path: '/get-started',
+		component: () => import('@/pages/GetStarted/GetStarted'),
+		children: [
+			{
+				path: 'places',
+				component: () => import('@/pages/GetStarted/GetStartedPlaces')
+			},
+			{
+				path: 'results',
+				component: () => import('@/pages/GetStarted/GetStartedResults')
+			},
+		]
+	},
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
 	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
 	{

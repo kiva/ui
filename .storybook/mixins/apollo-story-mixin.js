@@ -1,7 +1,10 @@
 export default {
 	provide: {
-		apollo: {
+		federation: {
 			mutate() {
+				return Promise.resolve({});
+			},
+			readQuery() {
 				return Promise.resolve({});
 			},
 			watchQuery() {
@@ -9,8 +12,24 @@ export default {
 					subscribe() {}
 				}
 			},
-			readQuery() {
+			query() {
+				return Promise.resolve({});
+			},
+			readFragment() {
 				return {}
+			}
+		},
+		apollo: {
+			mutate() {
+				return Promise.resolve({});
+			},
+			readQuery() {
+				return Promise.resolve({});
+			},
+			watchQuery() {
+				return {
+					subscribe() {}
+				}
 			},
 			query() {
 				return Promise.resolve({});

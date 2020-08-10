@@ -1,13 +1,10 @@
 <template>
 	<div class="www-page">
-		<the-banner-area />
 		<the-header
-			:hide-search-in-header="hideSearchInHeader"
 			:theme="headerTheme"
+			:minimal="true"
 		/>
-		<slot name="secondary"></slot>
-		<main :class="{'gray-background': grayBackground}">
-			<slot name="tertiary"></slot>
+		<main>
 			<slot></slot>
 		</main>
 		<the-footer
@@ -26,7 +23,6 @@ import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
 import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
-import TheBannerArea from './TheBannerArea';
 
 export default {
 	inject: [
@@ -34,7 +30,6 @@ export default {
 	],
 	components: {
 		CookieBanner,
-		TheBannerArea,
 		TheBasketBar,
 		TheFooter,
 		TheHeader,
@@ -43,13 +38,9 @@ export default {
 		appInstallMixin
 	],
 	props: {
-		grayBackground: {
+		minimalHeader: {
 			type: Boolean,
-			default: false,
-		},
-		hideSearchInHeader: {
-			type: Boolean,
-			default: false,
+			default: false
 		},
 		headerTheme: {
 			type: Object,
