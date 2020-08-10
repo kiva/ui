@@ -74,6 +74,7 @@ export const Default = () => ({
 	template: `
 		<div :style="styling">
 			<lend-homepage-loan-card
+				class="lend-homepage-loan-card"
 				:amount-left="amountLeft"
 				:expiring-soon-message="expiringSoonMessage"
 				:is-expired="isExpired"
