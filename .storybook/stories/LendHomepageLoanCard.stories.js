@@ -4,7 +4,6 @@ import { text, number, boolean } from '@storybook/addon-knobs';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import loanDataPropStoryMixin from '../mixins/loan-data-prop-story-mixin';
 
-
 import LendHomepageLoanCard from '@/components/LoanCards/LendHomepageLoanCard';
 
 // import plugins
@@ -65,18 +64,27 @@ export const Default = () => ({
 			 }),
 		},
 	},
+	computed: {
+		styling: function() {
+			return {
+				maxWidth: '476px',
+			}
+		}
+	},
 	template: `
-		<lend-homepage-loan-card
-			:amount-left="amountLeft"
-			:expiring-soon-message="expiringSoonMessage"
-			:is-expired="isExpired"
-			:is-funded="isFunded"
-			:is-selected-by-another="isSelectedByAnother"
-			:is-visitor="isVisitor"
-			:is-favorite="isFavorite"
-			:items-in-basket="itemsInBasket"
-			:loan="loan"
-			:percent-raised="percentRaised"
-		/>
+		<div :style="styling">
+			<lend-homepage-loan-card
+				:amount-left="amountLeft"
+				:expiring-soon-message="expiringSoonMessage"
+				:is-expired="isExpired"
+				:is-funded="isFunded"
+				:is-selected-by-another="isSelectedByAnother"
+				:is-visitor="isVisitor"
+				:is-favorite="isFavorite"
+				:items-in-basket="itemsInBasket"
+				:loan="loan"
+				:percent-raised="percentRaised"
+			/>
+		</div>
 	`,
 });

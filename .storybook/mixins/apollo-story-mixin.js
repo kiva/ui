@@ -6,8 +6,11 @@ export default {
 			},
 			watchQuery() {
 				return {
-			subscribe() {}
-			}
+					subscribe() {}
+				}
+			},
+			readQuery() {
+				return {}
 			},
 			query() {
 				return Promise.resolve({});

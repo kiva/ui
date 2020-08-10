@@ -94,6 +94,12 @@ import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
+/**
+ * LendHomepageLoanCard
+ * Should be used with a drop shadow or distinction for the border.
+ * To some extent this component is responsive, as long as the max
+ * width is set to the effective width of the loan image
+ */
 export default {
 	components: {
 		BorrowerInfoBody,
