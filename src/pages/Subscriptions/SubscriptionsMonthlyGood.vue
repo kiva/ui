@@ -1,19 +1,14 @@
 <template>
 	<div class="row mg-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="Monthly Good">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="Monthly Good"
 					name="subscriptions-monthly-good"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>
-					Monthly Good
-				</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				<router-link v-if="!isMonthlyGoodSubscriber"
 					to="/monthlygood"
 				>
@@ -208,8 +203,8 @@
 						</template>
 					</kv-lightbox>
 				</div>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -218,16 +213,19 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
-import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
-
-import IconPencil from '@/assets/icons/inline/pencil.svg';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvIcon from '@/components/Kv/KvIcon';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+
+import IconPencil from '@/assets/icons/inline/pencil.svg';
+
 
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
@@ -251,6 +249,7 @@ export default {
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
+		KvSettingsCard,
 	},
 	data() {
 		return {

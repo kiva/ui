@@ -1,7 +1,7 @@
 <template>
 	<div class="row status-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="Auto-lending status">
+			<template v-slot:icon>
 				<kv-icon
 					v-show="autolendingStatus == 'on'"
 					class="icon"
@@ -20,11 +20,8 @@
 					title="Auto-lending Paused"
 					name="auto-icon-pause"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>Auto-lending status</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				Your auto-lending setting is currently
 				<a
 					data-test="autolending-status"
@@ -93,8 +90,8 @@
 						</kv-button>
 					</template>
 				</kv-lightbox>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -104,12 +101,14 @@ import gql from 'graphql-tag';
 import {
 	format, addDays, parseISO, formatISO
 } from 'date-fns';
+
+import KvButton from '@/components/Kv/KvButton';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvRadio from '@/components/Kv/KvRadio';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvRadio from '@/components/Kv/KvRadio';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 export default {
 	inject: ['apollo'],
@@ -119,7 +118,8 @@ export default {
 		KvButton,
 		KvRadio,
 		KvLoadingSpinner,
-		KvDropdownRounded
+		KvDropdownRounded,
+		KvSettingsCard
 	},
 	data() {
 		return {
