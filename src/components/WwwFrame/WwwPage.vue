@@ -1,10 +1,9 @@
 <template>
 	<div class="www-page">
-		<the-banner-area v-if="!minimalHeader" />
+		<the-banner-area />
 		<the-header
 			:hide-search-in-header="hideSearchInHeader"
 			:theme="headerTheme"
-			:minimal="minimalHeader"
 		/>
 		<slot name="secondary"></slot>
 		<main :class="{'gray-background': grayBackground}">
@@ -51,10 +50,6 @@ export default {
 		hideSearchInHeader: {
 			type: Boolean,
 			default: false,
-		},
-		minimalHeader: {
-			type: Boolean,
-			default: false
 		},
 		headerTheme: {
 			type: Object,

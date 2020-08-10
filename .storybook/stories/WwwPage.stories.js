@@ -8,10 +8,6 @@ import { lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderThem
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
-// import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins);
-
 export default {
 	title: 'WwwFrame/WwwPage',
 	component: WwwPage,
