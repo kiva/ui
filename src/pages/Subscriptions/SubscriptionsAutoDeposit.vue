@@ -1,19 +1,14 @@
 <template>
 	<div class="row autodeposits-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+		<kv-settings-card class="column large-8" title="Auto Deposits">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="Auto Deposits"
 					name="subscriptions-auto-deposit"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>
-					Auto Deposits
-				</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				<router-link v-if="!isAutoDepositSubscriber"
 					to="/auto-deposit"
 				>
@@ -187,8 +182,8 @@
 						</template>
 					</kv-lightbox>
 				</div>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -198,13 +193,14 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
+import KvButton from '@/components/Kv/KvButton';
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 import IconPencil from '@/assets/icons/inline/pencil.svg';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
 const pageQuery = gql`query autoDepositPage {
 	my {
@@ -227,6 +223,7 @@ export default {
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
+		KvSettingsCard,
 	},
 	data() {
 		return {

@@ -5,13 +5,9 @@
 			Kiva Terms of Use Agreement
 		</h1>
 
-		<h3>
+		<h3 class="twoLineHeader">
 			(Last updated February 19, 2020)*
 		</h3>
-
-		<p class="light">
-			<em>*Substantive changes from the prior version will generally be highlighted below for at least one month.</em>
-		</p>
 
 		<div class="row summary-row">
 			<div class="small-12 xlarge-8 columns">
@@ -88,7 +84,7 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						You may participate in the Program as a Lender by creating an online account on the Website registered to your email address. All transactions between Lenders and Borrowers or Field Partners (“Loans”) must be conducted through a Kiva account - technically speaking, Kiva may, in certain circumstances, be considered the "lender" on your behalf when you make Loans on the Website. The funds you have available in your Kiva account – whether deposited from your personal funds, value from a Kiva Card (as defined below in Section 1.11), or repayments on previously made Loans – which are freely available to be lent are referred to as your "Kiva Credit." If you make a Loan through the Website, <span class="highlight">whether manually or via Kiva’s Auto-Lending feature (as defined below)</span>, you are instructing Kiva to apply your Kiva Credit to fund a Borrower and/or Field Partner through the Website. All Kiva Credit in your Kiva account must be lent and repaid to your account before you can withdraw it, and you must have a PayPal account to withdraw funds from Kiva’s system.
+						You may participate in the Program as a Lender by creating an online account on the Website registered to your email address. All transactions between Lenders and Borrowers or Field Partners (“Loans”) must be conducted through a Kiva account - technically speaking, Kiva may, in certain circumstances, be considered the "lender" on your behalf when you make Loans on the Website. The funds you have available in your Kiva account – whether deposited from your personal funds, value from a Kiva Card (as defined below in Section 1.11), or repayments on previously made Loans – which are freely available to be lent are referred to as your "Kiva Credit." If you make a Loan through the Website, whether manually or via Kiva’s Auto-Lending feature (as defined below), you are instructing Kiva to apply your Kiva Credit to fund a Borrower and/or Field Partner through the Website. All Kiva Credit in your Kiva account must be lent and repaid to your account before you can withdraw it, and you must have a PayPal account to withdraw funds from Kiva’s system.
 					</p>
 				</div>
 
@@ -136,18 +132,15 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						<span class="highlight">
-							<strong>1.1<span class="long-tab"></span>Lending Through Kiva’s Website.</strong> The Website displays Loan requests from Borrowers seeking funding from Kiva Lenders. You can log into your Kiva account and manually fund specific Loan requests on the Website. Alternatively, you can let Kiva automatically apply your Kiva Credit toward Loans (“Auto-Lend”) based on preferences in your account settings. Unless you instruct Kiva not to Auto-Lend from your account, up to the full balance of your Kiva Credit may be Auto-Lent if the following circumstances are met: (a) you have not manually made a Loan for at least 45 days prior; (b) there are available Loan requests on the Website that meet the criteria you have designated in your account settings, if applicable; and (c) your Kiva account either (i) contains at least the minimum amount of Kiva Credit required to make a Loan manually, or (ii) no future repayments to your account are expected (in which case amounts less than the minimum manual Loan amount may be Auto-Lent). When you make a Loan, Kiva may ask you to simultaneously make a small donation to support Kiva’s operations; by default you will make a donation to Kiva with each Auto-Loan.  You may change your account settings to, for example, give Kiva the option to Auto-Lend your Kiva Credit without waiting at least 45 days, designate criteria for the types of Loans to be automatically made from your Kiva Account, or change the amount of the donation made to Kiva with each Auto-Loan. If you do not designate Loan criteria for Auto-Lending in your account settings, Kiva may apply your funds toward any available Loan request. Unless you opt-out of Auto-Lending, any and all available Kiva Credit in your account may be automatically applied toward Loans and accompanying donations to Kiva. However, you understand and acknowledge that Kiva shall have no obligation to lend your Kiva Credit via Auto-Lending at any particular time, or at all. You acknowledge and agree that any Loans transacted pursuant to Auto-Lending are in all respects Loans voluntarily made by you as the Lender, and in no event will such Loans be cancellable or refundable to you. Kiva may modify or terminate the Auto-Lending functionality at any time or from time to time.</span>
+						<strong>1.1<span class="long-tab"></span>Lending Through Kiva’s Website.</strong> The Website displays Loan requests from Borrowers seeking funding from Kiva Lenders. You can log into your Kiva account and manually fund specific Loan requests on the Website. Alternatively, you can let Kiva automatically apply your Kiva Credit toward Loans (“Auto-Lend”) based on preferences in your account settings. Unless you instruct Kiva not to Auto-Lend from your account, up to the full balance of your Kiva Credit may be Auto-Lent if the following circumstances are met: (a) you have not manually made a Loan for at least 45 days prior; (b) there are available Loan requests on the Website that meet the criteria you have designated in your account settings, if applicable; and (c) your Kiva account either (i) contains at least the minimum amount of Kiva Credit required to make a Loan manually, or (ii) no future repayments to your account are expected (in which case amounts less than the minimum manual Loan amount may be Auto-Lent). When you make a Loan, Kiva may ask you to simultaneously make a small donation to support Kiva’s operations; by default you will make a donation to Kiva with each Auto-Loan.  You may change your account settings to, for example, give Kiva the option to Auto-Lend your Kiva Credit without waiting at least 45 days, designate criteria for the types of Loans to be automatically made from your Kiva Account, or change the amount of the donation made to Kiva with each Auto-Loan. If you do not designate Loan criteria for Auto-Lending in your account settings, Kiva may apply your funds toward any available Loan request. Unless you opt-out of Auto-Lending, any and all available Kiva Credit in your account may be automatically applied toward Loans and accompanying donations to Kiva. However, you understand and acknowledge that Kiva shall have no obligation to lend your Kiva Credit via Auto-Lending at any particular time, or at all. You acknowledge and agree that any Loans transacted pursuant to Auto-Lending are in all respects Loans voluntarily made by you as the Lender, and in no event will such Loans be cancellable or refundable to you. Kiva may modify or terminate the Auto-Lending functionality at any time or from time to time.
 					</p>
 				</div>
 
 				<div class="small-12 xlarge-4 columns">
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
-						<span class="highlight">
-							<strong>Basically,</strong><br>
-							You can choose specific loans to make through Kiva’s website. If you do not lend your Kiva credit yourself, Kiva will automatically lend it for you (unless you tell us not to). By default, you will also make a small donation to Kiva with each automatic loan. You have the option to select criteria in your account settings to tell Kiva what types of loans to make on your behalf.
-						</span>
+						<strong>Basically,</strong><br>
+						You can choose specific loans to make through Kiva’s website. If you do not lend your Kiva credit yourself, Kiva will automatically lend it for you (unless you tell us not to). By default, you will also make a small donation to Kiva with each automatic loan. You have the option to select criteria in your account settings to tell Kiva what types of loans to make on your behalf.
 					</p>
 				</div>
 			</div>
@@ -401,23 +394,19 @@
 			<div class="row summary-row">
 				<div class="small-12 xlarge-8 columns">
 					<p>
-						<span class="highlight">
-							<strong>1.10<span class="long-tab"></span>Promotional Products.</strong> Kiva may offer certain promotions and promotional products to Users, including but not limited to features that allow a User to make a Loan on the Website without spending his or her own personal funds or Kiva Credit. This Agreement, Kiva’s <router-link to="/legal/promo-terms-of-use-february-2020">
-								Promotional Lending Terms and Conditions
-							</router-link>, and any other specific terms posted by Kiva with respect to such promotions and promotional products, shall apply to all Users’ participation in the promotions and use of promotional products.
-						</span>
+						<strong>1.10<span class="long-tab"></span>Promotional Products.</strong> Kiva may offer certain promotions and promotional products to Users, including but not limited to features that allow a User to make a Loan on the Website without spending his or her own personal funds or Kiva Credit. This Agreement, Kiva’s <router-link to="/legal/promo-terms-of-use-february-2020">
+							Promotional Lending Terms and Conditions
+						</router-link>, and any other specific terms posted by Kiva with respect to such promotions and promotional products, shall apply to all Users’ participation in the promotions and use of promotional products.
 					</p>
 				</div>
 
 				<div class="small-12 xlarge-4 columns">
 					<svg class="icon arrow"><use xlink:href="#icon-small-chevron" xmlns:xlink="http://www.w3.org/1999/xlink" /></svg>
 					<p>
-						<span class="highlight">
-							<strong>Basically,</strong><br>
-							If we offer any special promotions to you (like the ability to make a loan without using your own money), additional terms may apply. You can read our <router-link to="/legal/promo-terms-of-use-february-2020">
-								standard promotional terms here
-							</router-link>.
-						</span>
+						<strong>Basically,</strong><br>
+						If we offer any special promotions to you (like the ability to make a loan without using your own money), additional terms may apply. You can read our <router-link to="/legal/promo-terms-of-use-february-2020">
+							standard promotional terms here
+						</router-link>.
 					</p>
 				</div>
 			</div>
@@ -616,8 +605,8 @@
 						By Mail:<br>
 						Kiva Microfunds<br>
 						Legal Department<br>
-						986 Mission Street, 4th Floor<br>
-						San Francisco, CA 94103<br>
+						986 Mission Street, Suite #400<br>
+						San Francisco, CA 94103 USA<br>
 						&nbsp;<br>
 						By Fax:<br>
 						Attn: Legal Department, Kiva<br>
@@ -868,10 +857,6 @@ export default {
 @import 'settings';
 
 // This CSS came from original terms page.
-.highlight {
-	background-color: #ff0;
-}
-
 ul.light li {
 	font-weight: 300;
 }

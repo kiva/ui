@@ -48,6 +48,9 @@
 							:loan="loan"
 							:items-in-basket="itemsInBasket"
 							:category-id="loanChannel.id"
+							:category-set-id="`lbc-hp-v1-category-${loanChannel.id}`"
+							:row-number="rowNumber"
+							:card-number="index + 1"
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
 						/>
@@ -136,6 +139,10 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		rowNumber: {
+			type: Number,
+			default: null
+		}
 	},
 	data() {
 		return {
@@ -342,7 +349,7 @@ export default {
 	flex-wrap: nowrap;
 	transition: margin 0.5s;
 	overflow: hidden;
-	padding: 1rem 0;
+	padding: 1rem 0 2rem;
 }
 
 $card-width: rem-calc(303);

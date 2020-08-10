@@ -21,7 +21,7 @@
 			<template slot="default" slot-scope="props">
 				<kv-carousel-slide
 					:transition-name="props.transitionName"
-					v-for="category in prefetchedCategoryInfo"
+					v-for="(category, index) in prefetchedCategoryInfo"
 					:key="category.id"
 				>
 					<div v-if="categoryHasFeaturedLoan(category.id)">
@@ -31,6 +31,9 @@
 							:loan="featuredLoanForCategory(category.id)"
 							:items-in-basket="itemsInBasket"
 							:category-id="category.id"
+							category-set-id="lbc-hp-v1-featured-loans"
+							:row-number="0"
+							:card-number="index + 1"
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
 						/>
@@ -211,6 +214,9 @@ export default {
 					loan: eligibleLoans[0]
 				});
 			}
+
+			// fire analytics
+			this.trackVisibleFeaturedLoan(categoryId, eligibleLoans);
 		},
 		categoryHasFeaturedLoan(categoryId) {
 			return !!this.featuredLoans.find(loanCat => loanCat.id === categoryId);
@@ -300,6 +306,31 @@ export default {
 		onInteractCarousel(interactionType) {
 			this.$kvTrackEvent('homepage', 'click-hero-carousel', interactionType);
 		},
+		trackVisibleFeaturedLoan(categoryId, eligibleLoans) {
+			// eslint-disable-next-line max-len
+			const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_category_row_page_load_event_schema_1_0_4.json#';
+			const pageViewTrackData = { schema, data: {} };
+			const loanIds = [];
+
+			pageViewTrackData.data.categorySetIdentifier = 'lbc-hp-v1-featured-loans';
+
+			const firstEligibleLoan = eligibleLoans[0];
+
+			loanIds.push({
+				r: 0,
+				p: this.getLoanPosition(categoryId),
+				c: categoryId,
+				l: firstEligibleLoan.id
+			});
+
+			// assign loan data + fire event
+			pageViewTrackData.data.loansDisplayed = loanIds;
+			this.$kvTrackSelfDescribingEvent(pageViewTrackData);
+		},
+		getLoanPosition(categoryId) {
+			const categoryRowIndex = this.categoryIds.indexOf(categoryId);
+			return categoryRowIndex !== -1 ? categoryRowIndex + 1 : null;
+		}
 	}
 };
 </script>

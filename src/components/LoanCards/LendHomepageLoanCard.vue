@@ -10,6 +10,7 @@
 			:is-favorite="isFavorite"
 			:use-default-styles="false"
 			@favorite-toggled="toggleFavorite"
+			@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 		/>
 		<div class="lend-homepage-loan-card__data-wrapper">
 			<div class="lend-homepage-loan-card__name-row">
@@ -41,7 +42,7 @@
 				:status="loan.status"
 				:use="loan.use"
 				:loan-id="loan.id"
-				:max-use-length="62"
+				:max-use-length="59"
 				read-more-link-text="Learn more"
 				@track-loan-card-interaction="trackInteraction"
 			/>
@@ -93,6 +94,12 @@ import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
+/**
+ * LendHomepageLoanCard
+ * Should be used with a drop shadow or distinction for the border.
+ * To some extent this component is responsive, as long as the max
+ * width is set to the effective width of the loan image
+ */
 export default {
 	components: {
 		BorrowerInfoBody,
