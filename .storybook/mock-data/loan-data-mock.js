@@ -1,3 +1,6 @@
+/** Mock Data
+* Array of 3 distinct loans
+*/
 export default [
 		{
 			"id": 1975833,

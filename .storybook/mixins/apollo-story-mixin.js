@@ -36,7 +36,7 @@ export default {
 			},
 			readFragment() {
 				return {}
-			}
+			},
 		},
 	}
 };

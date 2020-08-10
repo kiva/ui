@@ -69,11 +69,12 @@ export const Default = () => ({
 			return {
 				maxWidth: '476px',
 			}
-		}
+		},
 	},
 	template: `
 		<div :style="styling">
 			<lend-homepage-loan-card
+				class="lend-homepage-loan-card"
 				:amount-left="amountLeft"
 				:expiring-soon-message="expiringSoonMessage"
 				:is-expired="isExpired"
@@ -85,6 +86,12 @@ export const Default = () => ({
 				:loan="loan"
 				:percent-raised="percentRaised"
 			/>
+			<component is="style">
+				.lend-homepage-loan-card {
+					border-radius: 0.65rem;
+					box-shadow: 0 0.65rem 0.875rem 0.4375rem hsla(0,0%,60%,.1);
+				}
+   			 </component>
 		</div>
 	`,
 });

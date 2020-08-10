@@ -6,7 +6,7 @@ import loanData from './mock-data/loan-data-mock';
  * @param {number} length
  * @returns {array}
  */
-export function returnArrayOfLoans (length) {
+export function mockLoansArray (length) {
 	// returns an array of length filled with loanData
 	return [].concat(...Array(length).fill(loanData))
 }
