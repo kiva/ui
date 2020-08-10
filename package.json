@@ -49,7 +49,7 @@
 		"apollo-client": "2.6.10",
 		"apollo-link": "^1.2.14",
 		"apollo-link-batch-http": "^1.2.14",
-		"apollo-link-context": "^1.0.19",
+		"apollo-link-context": "^1.0.20",
 		"apollo-link-error": "^1.1.13",
 		"apollo-link-http": "^1.5.17",
 		"apollo-server-express": "^2.14.4",
