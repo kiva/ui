@@ -171,7 +171,6 @@ import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUse
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
@@ -242,7 +241,7 @@ export default {
 				'Payment',
 				'Thank You!'
 			],
-			showDropInPayments: false,
+			showDropInPayments: true,
 			userPrefContinueBrowsing: false,
 			addToBasketRedirectExperimentShown: false,
 		};
@@ -279,9 +278,6 @@ export default {
 					return Promise.all([
 						client.query({ query: initializeCheckout, fetchPolicy: 'network-only' })
 					]);
-				})
-				.then(() => {
-					return client.query({ query: experimentQuery, variables: { id: 'braintree_dropin_checkout' } });
 				});
 		},
 		result({ data }) {
@@ -304,19 +300,10 @@ export default {
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
 
-			// Braintree drop-in UI data
-			//
-			// This experiment is for testing the Braintree Drop in UI.
-			// It should be removed when testing is complete.
-			// It is queried in initializeCheckout
-			const braintreeDropInExp = this.apollo.readFragment({
-				id: 'Experiment:braintree_dropin_checkout',
-				fragment: experimentVersionFragment,
-			}) || {};
-
-			// if experiment and feature flag are BOTH on, show UI
+			// Braintree drop-in UI
+			// if feature flag are in ON, show drop-in UI
 			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
-			this.showDropInPayments = braintreeDropInFeatureFlag && braintreeDropInExp.version === 'shown';
+			this.showDropInPayments = braintreeDropInFeatureFlag;
 		}
 	},
 	created() {
