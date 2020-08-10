@@ -24,12 +24,16 @@ export default {
 @import 'settings';
 
 .kv-progress-bar {
-	$background-color: $kiva-stroke-gray;
-	$foreground-color: $kiva-accent-darkblue;
+	$background-color: #fff;
+	$foreground-color: $kiva-accent-blue;
 
+	display: block;
 	width: 100%;
-	height: rem-calc(20);
+	height: rem-calc(9);
 	background-color: $background-color;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 
 	/* firefox */
 	&::-moz-progress-bar {
