@@ -93,9 +93,9 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { differenceInCalendarMonths, parseISO } from 'date-fns';
-import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import InfoPanel from './InfoPanel';
 
 export default {
 	components: {

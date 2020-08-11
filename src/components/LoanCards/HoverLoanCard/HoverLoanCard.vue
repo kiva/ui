@@ -51,11 +51,11 @@
 </template>
 
 <script>
+import KvIcon from '@/components/Kv/KvIcon';
+import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 import HoverLoanCardSmall from './HoverLoanCardSmall';
 import HoverLoanCardLarge from './HoverLoanCardLarge';
 import hoverLoanCardMixin from './hoverLoanCardMixin';
-import KvIcon from '@/components/Kv/KvIcon';
-import categoryRowArrowsVisibleMixin from '@/plugins/category-row-arrows-visible-mixin';
 
 export default {
 	components: {

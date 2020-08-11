@@ -323,10 +323,10 @@ import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import cookieStore from '@/util/cookieStore';
+import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
-import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
 
 export default {
 	components: {

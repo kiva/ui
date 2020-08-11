@@ -232,10 +232,9 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import HomepageStatistics from './HomepageStatistics';
-
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
+import HomepageStatistics from './HomepageStatistics';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 

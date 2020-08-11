@@ -111,9 +111,9 @@ import _get from 'lodash/get';
 import numeral from 'numeral';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import CountryList from './CountryList';
 import SearchList from './SearchList';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {

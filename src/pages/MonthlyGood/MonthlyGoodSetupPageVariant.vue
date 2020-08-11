@@ -209,9 +209,6 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import AlreadySubscribedNotice from './AlreadySubscribedNotice';
-import LegacySubscriberNotice from './LegacySubscriberNotice';
-
 import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
@@ -223,6 +220,9 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+import AlreadySubscribedNotice from './AlreadySubscribedNotice';
+import LegacySubscriberNotice from './LegacySubscriberNotice';
 
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
