@@ -166,11 +166,6 @@
 
 <script>
 import _get from 'lodash/get';
-import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
-import InfoPanel from './InfoPanels/InfoPanel';
-import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
-import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
-import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
 import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -180,6 +175,11 @@ import KvFlag from '@/components/Kv/KvFlag';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import FundraisingStatusLarge from '@/components/LoanCards/FundraisingStatus/FundraisingStatusLarge';
+import BorrowerStoryPanel from './InfoPanels/BorrowerStoryPanel';
+import InfoPanel from './InfoPanels/InfoPanel';
+import LoanDetailsPanel from './InfoPanels/LoanDetailsPanel';
+import PartnerInfoPanel from './InfoPanels/PartnerInfoPanel';
+import TrusteeInfoPanel from './InfoPanels/TrusteeInfoPanel';
 
 export default {
 	props: {

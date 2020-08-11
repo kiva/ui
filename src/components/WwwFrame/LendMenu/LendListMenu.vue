@@ -89,10 +89,10 @@
 
 <script>
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import CountryList from './CountryList';
 import ExpandableListItem from './ExpandableListItem';
 import SearchList from './SearchList';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {

@@ -28,9 +28,9 @@
 </template>
 <script>
 import _get from 'lodash/get';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import DonateForm from './DonateForm';
 
 const heroImagesRequire = require.context('@/assets/images/donate-macro-hero', true);

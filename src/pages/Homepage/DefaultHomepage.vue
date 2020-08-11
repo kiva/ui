@@ -33,12 +33,12 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import WhyKiva from '@/components/Homepage/WhyKiva';
-import HeroSlideshow from './HeroSlideshow';
 import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import MGCovidExplained from '@/pages/LandingPages/MGCovid19/MGCovidExplained';
 import MGCovidHero from '@/pages/LandingPages/MGCovid19/MGCovidHero';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
 import { processContent } from '@/util/contentfulUtils';
+import HeroSlideshow from './HeroSlideshow';
 
 const pageQuery = gql`query homepageMGHeroExperiment {
 	general {

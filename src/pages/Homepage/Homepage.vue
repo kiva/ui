@@ -16,12 +16,12 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
 	lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderTheme, wrdFooterTheme
 } from '@/util/siteThemes';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import TopMessageContentful from './TopMessageContentful';
 

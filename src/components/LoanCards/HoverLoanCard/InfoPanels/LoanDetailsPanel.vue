@@ -125,9 +125,9 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { format, parseISO } from 'date-fns';
-import InfoPanel from './InfoPanel';
 import loanDetailsQuery from '@/graphql/query/loanDetails.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import InfoPanel from './InfoPanel';
 
 export default {
 	components: {

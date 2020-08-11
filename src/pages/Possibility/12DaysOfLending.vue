@@ -40,8 +40,8 @@ import _get from 'lodash/get';
 import contentful from '@/graphql/query/contentful.graphql';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import TwelveDaysCalendar from './TwelveDaysCalendar';
 import KivaContentBlock from '@/pages/Possibility/KivaContentBlock';
+import TwelveDaysCalendar from './TwelveDaysCalendar';
 
 const possibilitiesImageRequire = require.context('@/assets/images/possibilities-banners/', true);
 

@@ -93,8 +93,8 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import LoadingOverlay from './LoadingOverlay';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+import LoadingOverlay from './LoadingOverlay';
 
 const loansPerPage = 12;
 

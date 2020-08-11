@@ -70,8 +70,8 @@
 </template>
 
 <script>
-import CovidLandingForm from './CovidLandingForm';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import CovidLandingForm from './CovidLandingForm';
 
 export default {
 	components: {

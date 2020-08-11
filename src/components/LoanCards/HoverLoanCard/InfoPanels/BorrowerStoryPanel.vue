@@ -33,9 +33,9 @@
 
 <script>
 import _get from 'lodash/get';
-import InfoPanel from './InfoPanel';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import loanDescriptionQuery from '@/graphql/query/loanDescription.graphql';
+import InfoPanel from './InfoPanel';
 
 export default {
 	components: {

@@ -265,9 +265,6 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import AlreadySubscribedNotice from './AlreadySubscribedNotice';
-import LegacySubscriberNotice from './LegacySubscriberNotice';
-
 import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import IconPencil from '@/assets/icons/inline/pencil.svg';
@@ -282,6 +279,9 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+
+import AlreadySubscribedNotice from './AlreadySubscribedNotice';
+import LegacySubscriberNotice from './LegacySubscriberNotice';
 
 const pageQuery = gql`query monthlyGoodSetupPageControl {
     general {

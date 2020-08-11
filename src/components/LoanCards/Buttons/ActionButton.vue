@@ -16,6 +16,7 @@ import store2 from 'store2';
 import _includes from 'lodash/includes';
 import _get from 'lodash/get';
 import addToBasketInsterstitial from '@/plugins/add-to-basket-show-interstitial';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import Lend25Button from './Lend25Button';
 import LendIncrementButton from './LendIncrementButton';
 import CheckoutNowButton from './CheckoutNowButton';
@@ -23,8 +24,6 @@ import LendAgainButton from './LendAgainButton';
 import LoanFundedText from './LoanFundedText';
 import LoanSelectedText from './LoanSelectedText';
 import LoanExpiredText from './LoanExpiredText';
-
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 const freeCreditBasketCountQuery = gql`query hasFreeCreditsAndBasketCount($basketId: String) {
 	shop (basketId: $basketId) {

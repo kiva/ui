@@ -80,15 +80,14 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '@/components/Kv/KvButton';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from './SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from './SubscriptionsLegacy';
-
-
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {

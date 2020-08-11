@@ -42,8 +42,8 @@ import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
 import { processContent } from '@/util/contentfulUtils';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
 
