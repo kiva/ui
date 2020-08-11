@@ -5,6 +5,7 @@
 				ref="braintreeDropInInterface"
 				:amount="amount"
 				flow="checkout"
+				:payment-types="paymentTypes"
 				@transactions-enabled="enableCheckoutButton = $event"
 			/>
 			<div id="dropin-button">
@@ -30,12 +31,26 @@
 <script>
 import _get from 'lodash/get';
 import numeral from 'numeral';
+import gql from 'graphql-tag';
+
 import * as Sentry from '@sentry/browser';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import braintreeDepositAndCheckout from '@/graphql/mutation/braintreeDepositAndCheckout.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterface';
+
+const componentQuery = gql`query componentQueryCheckoutDropInPaymentWrapper {
+	general {
+		uiExperimentSetting(key: "braintree_dropin_apple_google") {
+			key
+			value
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -53,9 +68,40 @@ export default {
 			default: ''
 		}
 	},
+	apollo: {
+		query: componentQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: componentQuery
+			}).then(() => {
+				return client.query({
+					query: experimentAssignmentQuery, variables: { id: 'braintree_dropin_apple_google' }
+				});
+			});
+		},
+		result() {
+			// applePay & googlePay payment methods experiment - EXP-GROW-168-Aug2020
+			const paymentMethodsExperiment = this.apollo.readFragment({
+				id: 'Experiment:braintree_dropin_apple_google',
+				fragment: experimentVersionFragment,
+			}) || {};
+			if (paymentMethodsExperiment.version === 'shown') {
+				this.paymentTypes = ['paypal', 'card', 'googlePay'];
+			}
+			// Fire Event for EXP-GROW-168-Aug2020
+			if (paymentMethodsExperiment.version && paymentMethodsExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Basket',
+					'EXP-GROW-168-Aug2020',
+					paymentMethodsExperiment.version === 'shown' ? 'b' : 'a'
+				);
+			}
+		}
+	},
 	data() {
 		return {
 			enableCheckoutButton: false,
+			paymentTypes: ['paypal', 'card'],
 		};
 	},
 	methods: {
