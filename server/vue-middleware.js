@@ -66,6 +66,28 @@ module.exports = function createMiddleware({
 			user: req.user || {},
 		};
 
+		const targetCookies = ['kvbskt', 'kvls', 'kvu', 'kv'];
+		let cookieMessage = 'Cookie info:';
+		targetCookies.forEach(cookieKey => {
+			if (typeof cookies[cookieKey] !== 'string') {
+				cookieMessage += ` missing ${cookieKey} cookie,`;
+			} else {
+				cookieMessage += ` ${cookieKey} cookie: ${cookies[cookieKey]},`;
+			}
+		});
+		console.info(cookieMessage);
+
+		const targetReqUser = ['id', 'user_id', 'accessToken'];
+		let reqUserMessage = 'req.user info:';
+		targetReqUser.forEach(reqUserKey => {
+			if (typeof req.user[reqUserKey] !== 'string') {
+				reqUserMessage += ` missing req.user ${reqUserKey},`;
+			} else {
+				reqUserMessage += ` req.user ${reqUserKey}: ${req.user[reqUserKey].substring(0, 25)},`;
+			}
+		});
+		console.info(reqUserMessage);
+
 		// set html response headers
 		res.setHeader('Content-Type', 'text/html');
 		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
