@@ -102,7 +102,7 @@ module.exports = {
 			},
 			{
 				test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
-				exclude: [resolve('src/assets/icons/inline/'), resolve('src/assets/inline-svgs/')],
+				exclude: [resolve('src/assets/icons/inline/'), resolve('src/assets/inline-svgs/'), resolve('node_modules/flag-icon-css/flags/')],
 				loader: 'url-loader',
 				options: {
 					limit: 1, // 10000 is default but we'd need to exclude apple-touch-icons,
@@ -112,7 +112,7 @@ module.exports = {
 			},
 			{
 				test: /\.svg$/,
-				include: [resolve('src/assets/icons/inline/'), resolve('src/assets/inline-svgs/')],
+				include: [resolve('src/assets/icons/inline/'), resolve('src/assets/inline-svgs/'), resolve('node_modules/flag-icon-css/flags/')],
 				use: [
 					'babel-loader',
 					{
