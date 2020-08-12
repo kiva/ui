@@ -43,7 +43,7 @@
 		"@contentful/rich-text-html-renderer": "^13.4.0",
 		"@godaddy/terminus": "^4.4.1",
 		"@sentry/browser": "^5.16.0",
-		"@sentry/integrations": "^5.15.5",
+		"@sentry/integrations": "^5.20.1",
 		"algoliasearch": "^3.34.0",
 		"apollo-cache-inmemory": "^1.6.5",
 		"apollo-client": "2.6.10",
