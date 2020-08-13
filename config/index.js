@@ -55,6 +55,9 @@ module.exports = {
 			url: 'www.paypal.com',
 			environment: 'production'
 		},
+		googlePay: {
+			merchantId: 'f5swrg87wym8bx37'
+		}
 	},
 	server: {
 		port: 8888,

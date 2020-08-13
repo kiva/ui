@@ -16,6 +16,11 @@ import Dropin from 'braintree-web-drop-in';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 
+/**
+* Displays the Braintree Drop In Interface
+* For reference see:
+* https://braintree.github.io/braintree-web-drop-in/docs/current/module-braintree-web-drop-in.html
+* */
 export default {
 	components: {
 		LoadingOverlay,
@@ -26,10 +31,24 @@ export default {
 			type: String,
 			default: ''
 		},
+		/**
+		 * Paypal flow options.
+		 * Must be 'checkout' or 'vault'
+		* */
 		flow: {
 			type: String,
-			default: ''
-		}
+			default: 'checkout'
+		},
+		/**
+		 * Payment type options to be displayed.
+		 * Also controls the order to display them in.
+		 * All options in default order:
+		 * ['card', 'paypal', 'paypalCredit', 'venmo', 'applePay', 'googlePay']
+		* */
+		paymentTypes: {
+			type: Array,
+			default: () => ['paypal', 'card'],
+		},
 	},
 	data() {
 		return {
@@ -75,7 +94,7 @@ export default {
 				dataCollector: {
 					kount: true // Required if Kount fraud data collection is enabled
 				},
-				paymentOptionPriority: ['paypal', 'card'],
+				paymentOptionPriority: this.paymentTypes,
 				card: {
 					vault: {
 						allowVaultCardOverride: true,
@@ -91,6 +110,24 @@ export default {
 						size: 'responsive',
 					}
 				},
+				googlePay: {
+					googlePayVersion: 2,
+					merchantId: this.$appConfig.googlePay.merchantId,
+					transactionInfo: {
+						totalPriceStatus: 'FINAL',
+						totalPrice: numeral(this.amount).format('0.00'),
+						currencyCode: 'USD'
+					},
+					allowedPaymentMethods: [{
+						type: 'CARD',
+						parameters: {
+							billingAddressRequired: true,
+							billingAddressParameters: {
+								format: 'FULL'
+							}
+						}
+					}]
+				}
 			}).then(btCreateInstance => {
 				this.btDropinInstance = btCreateInstance;
 				this.initializeDropInActions();

@@ -5,6 +5,7 @@
 				ref="braintreeDropInInterface"
 				:amount="amount | numeral('0.00')"
 				flow="vault"
+				:payment-types="['paypal', 'card']"
 				@transactions-enabled="enableConfirmButton = $event"
 			/>
 			<div id="dropin-button">
