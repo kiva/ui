@@ -87,7 +87,7 @@ export default {
 		}) || {};
 
 		if (paymentMethodsExperiment.version === 'shown') {
-			this.paymentTypes = ['paypal', 'card', 'googlePay'];
+			this.paymentTypes = ['paypal', 'card', 'applePay', 'googlePay'];
 		}
 		// Fire Event for EXP-GROW-168-Aug2020
 		if (paymentMethodsExperiment.version && paymentMethodsExperiment.version !== 'unassigned') {

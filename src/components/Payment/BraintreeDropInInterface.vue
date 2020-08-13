@@ -127,6 +127,16 @@ export default {
 							}
 						}
 					}]
+				},
+				applePay: {
+					displayName: 'Kiva',
+					paymentRequest: {
+						total: {
+							label: 'Kiva',
+							amount: numeral(this.amount).format('0.00'),
+						},
+						requiredBillingContactFields: ['postalAddress']
+					}
 				}
 			}).then(btCreateInstance => {
 				this.btDropinInstance = btCreateInstance;
@@ -198,6 +208,10 @@ $border-width: 1px;
 	::v-deep {
 		.braintree-dropin {
 			font-family: inherit;
+		}
+
+		[data-braintree-id="sheet-error"] {
+			background-color: $white;
 		}
 
 		[data-braintree-id="choose-a-way-to-pay"],
