@@ -69,7 +69,6 @@ export default {
 		}
 	},
 	apollo: {
-		query: componentQuery,
 		preFetch(config, client) {
 			return client.query({
 				query: componentQuery
@@ -79,23 +78,24 @@ export default {
 				});
 			});
 		},
-		result() {
-			// applePay & googlePay payment methods experiment - EXP-GROW-168-Aug2020
-			const paymentMethodsExperiment = this.apollo.readFragment({
-				id: 'Experiment:braintree_dropin_apple_google',
-				fragment: experimentVersionFragment,
-			}) || {};
-			if (paymentMethodsExperiment.version === 'shown') {
-				this.paymentTypes = ['paypal', 'card', 'googlePay'];
-			}
-			// Fire Event for EXP-GROW-168-Aug2020
-			if (paymentMethodsExperiment.version && paymentMethodsExperiment.version !== 'unassigned') {
-				this.$kvTrackEvent(
-					'Basket',
-					'EXP-GROW-168-Aug2020',
-					paymentMethodsExperiment.version === 'shown' ? 'b' : 'a'
-				);
-			}
+	},
+	mounted() {
+		// applePay & googlePay payment methods experiment - EXP-GROW-168-Aug2020
+		const paymentMethodsExperiment = this.apollo.readFragment({
+			id: 'Experiment:braintree_dropin_apple_google',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (paymentMethodsExperiment.version === 'shown') {
+			this.paymentTypes = ['paypal', 'card', 'googlePay'];
+		}
+		// Fire Event for EXP-GROW-168-Aug2020
+		if (paymentMethodsExperiment.version && paymentMethodsExperiment.version !== 'unassigned') {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-GROW-168-Aug2020',
+				paymentMethodsExperiment.version === 'shown' ? 'b' : 'a'
+			);
 		}
 	},
 	data() {
