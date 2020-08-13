@@ -32,7 +32,7 @@ export default {
 	props: {
 		iconKey: {
 			type: String,
-			default: ''
+			default: 'info'
 		},
 		promoBannerContent: {
 			type: Object,
