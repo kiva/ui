@@ -14,11 +14,17 @@
 
 <script>
 import _get from 'lodash/get';
-import contentful from '@/graphql/query/contentful.graphql';
+import gql from 'graphql-tag';
 import { settingEnabled } from '@/util/settingsUtils';
 import GenericPromoBanner from './Banners/GenericPromoBanner';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 import AppealBanner from './Banners/AppealBanner/AppealBanner';
+
+const contentfulContent = gql`query contentfulContent {
+	contentful {
+		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+}`;
 
 export default {
 	components: {
@@ -38,35 +44,11 @@ export default {
 			appealEnabled: false,
 		};
 	},
-	inject: ['federation'],
-	computed: {
-		showAppeal() {
-			// make sure the appeal is enable + we're not on certain blacklisted pages
-			const blacklist = [
-				'/checkout',
-				'/error',
-				'/join-team',
-				'/register/social',
-				'/possibility/giving-tuesday',
-				'/possibility/12-days-of-lending',
-				'/possibility/year-end'
-			];
-			// First check if Appeal Banner or Appeal Banner Matching
-			// is active and the user is not on a blacklisted page URL
-			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
-				return true;
-			}
-			return false;
-		},
-	},
-	created() {
-		this.federation.query({
-			query: contentful,
-			variables: {
-				contentType: 'uiSetting',
-				contentKey: 'ui-global-promo',
-			}
-		}).then(({ data }) => {
+	inject: ['apollo'],
+	apollo: {
+		query: contentfulContent,
+		preFetch: true,
+		result({ data }) {
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
@@ -140,7 +122,27 @@ export default {
 					}
 				}
 			}
-		});
+		}
+	},
+	computed: {
+		showAppeal() {
+			// make sure the appeal is enable + we're not on certain blacklisted pages
+			const blacklist = [
+				'/checkout',
+				'/error',
+				'/join-team',
+				'/register/social',
+				'/possibility/giving-tuesday',
+				'/possibility/12-days-of-lending',
+				'/possibility/year-end'
+			];
+			// First check if Appeal Banner or Appeal Banner Matching
+			// is active and the user is not on a blacklisted page URL
+			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
+				return true;
+			}
+			return false;
+		},
 	},
 };
 </script>
