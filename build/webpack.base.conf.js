@@ -65,7 +65,7 @@ module.exports = {
 			},
 			{
 				// Inject styles from the /pages/ directory as <style> tags
-				test: /\/pages\/.+\.scss$|\/banners\/GenericPromoBanner\.scss$/,
+				test: /\/pages\/.+\.scss$/,
 				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)
 			},
 			{
