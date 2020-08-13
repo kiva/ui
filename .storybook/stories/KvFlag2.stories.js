@@ -127,7 +127,7 @@ export const AllCountries = () => ({
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('@/assets/inline-svgs/flags/4x3', true, /\.svg$/))
+			iconNames: getFilenames(require.context('~/flag-icon-css/flags/4x3', true, /\.svg$/))
 		}
 	},
 	template: `
@@ -150,7 +150,7 @@ export const AllCountriesFromSprite = () => ({
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('@/assets/inline-svgs/flags/4x3', true, /\.svg$/))
+			iconNames: getFilenames(require.context('~/flag-icon-css/flags/4x3', true, /\.svg$/))
 		}
 	},
 	template: `
