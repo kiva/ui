@@ -13,9 +13,9 @@
 					class="kv-flag__img"
 				/>
 			</template>
+			<span class="show-for-sr">{{ countryName }}</span>
 		</div>
 	</div>
-	<!-- TODO: Maybe add the country name. Either as screenreader only text or use KvTooltip. -->
 </template>
 
 <script>
@@ -40,6 +40,9 @@ export default {
 		}
 	},
 	computed: {
+		countryName() {
+			return `Flag of ${getName(this.country.toUpperCase())}`;
+		},
 		flagSVG() {
 			return () => import(`~/flag-icon-css/flags/${this.aspectRatio}/${this.country.toLowerCase()}.svg`);
 		},
