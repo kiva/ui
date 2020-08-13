@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<generic-promo-banner
-			v-if="isPromoEnabled"
+			:is-enabled="isPromoEnabled"
 			:icon-key="promoBannerContent.iconKey"
 			:promo-banner-content="promoBannerContent"
 		/>
