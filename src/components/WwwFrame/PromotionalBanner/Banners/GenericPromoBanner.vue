@@ -1,7 +1,6 @@
 <template>
 	<div class="row align-center generic-banner">
 		<component
-			v-if="isEnabled"
 			:is="currentWrapperComponent"
 			:to="promoBannerContent.link"
 			:class="{ 'banner-link' : promoBannerContent.link, 'banner-wrapper' : !promoBannerContent.link}"
@@ -33,7 +32,7 @@ export default {
 	props: {
 		iconKey: {
 			type: String,
-			default: ''
+			default: 'info'
 		},
 		promoBannerContent: {
 			type: Object,
@@ -45,10 +44,6 @@ export default {
 				};
 			}
 		},
-		isEnabled: {
-			type: Boolean,
-			default: false,
-		}
 	},
 };
 </script>
