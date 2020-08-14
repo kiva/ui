@@ -3,14 +3,13 @@
 		<div class="kv-flag__wrapper">
 			<template v-if="fromSprite">
 				<div
-					class="kv-flag__img kv-flag__img--sprite"
+					class="kv-flag__img-sprite"
 					:style="{ backgroundPositionY: spriteYPosition + '%' }"
 				></div>
 			</template>
 			<template v-else>
 				<component
 					:is="flagSVG"
-					class="kv-flag__img"
 				/>
 			</template>
 			<span class="show-for-sr">{{ countryName }}</span>
@@ -67,35 +66,30 @@ export default {
 
 .kv-flag {
 	width: 100%;
-	height: 0;
-	position: relative;
-	overflow: hidden;
 
 	&__wrapper {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		position: relative;
+		overflow: hidden;
+		height: 0;
+		width: 100%;
 		background-color: $kiva-bg-lightgray;
 	}
 
-	&__img {
-		display: block;
+	&__img-sprite {
+		background-repeat: no-repeat;
+		background-size: 100%;
+		background-position-x: 0;
+		position: absolute;
 		width: 100%;
 		height: 100%;
-
-		&--sprite {
-			background-repeat: no-repeat;
-			background-size: 100%;
-			background-position-x: 0;
-		}
 	}
 
 	&--4x3 {
-		padding-bottom: 75%;
+		.kv-flag__wrapper {
+			padding-bottom: 75%;
+		}
 
-		.kv-flag__img--sprite {
+		.kv-flag__img-sprite {
 			background-image: url('~flag-icon-css/flags/sprite/4x3/flag-sprite-32.png');
 
 			@include breakpoint(retina) {
@@ -105,9 +99,11 @@ export default {
 	}
 
 	&--1x1 {
-		padding-bottom: 100%;
+		.kv-flag__wrapper {
+			padding-bottom: 100%;
+		}
 
-		.kv-flag__img--sprite {
+		.kv-flag__img-sprite {
 			background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32.png');
 
 			@include breakpoint(retina) {
