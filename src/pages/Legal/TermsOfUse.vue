@@ -9,6 +9,10 @@
 			(Last updated August 8, 2020)*
 		</h3>
 
+		<p class="light">
+			<em>*Substantive changes from the prior version will generally be highlighted below for at least one month.</em>
+		</p>
+
 		<div class="row summary-row">
 			<div class="small-12 xlarge-8 columns">
 				<p>
@@ -603,11 +607,16 @@
 
 					<p>
 						By Mail:<br>
+					</p>
+					<p>
 						Kiva Microfunds<br>
 						Legal Department<br>
-						986 Mission Street, Suite #400<br>
-						San Francisco, CA 94103 USA<br>
-						&nbsp;<br>
+						<span class="highlight">
+							986 Mission Street, Suite #400<br>
+							San Francisco, CA 94103 USA<br>
+						</span>
+					</p>
+					<p>
 						By Fax:<br>
 						Attn: Legal Department, Kiva<br>
 						(415) 552-5780<br>
@@ -857,6 +866,11 @@ export default {
 @import 'settings';
 
 // This CSS came from original terms page.
+.highlight {
+	background-color: #ff0;
+	width: fit-content;
+}
+
 ul.light li {
 	font-weight: 300;
 }
