@@ -432,6 +432,7 @@ export default {
 	text-decoration: $anchor-text-decoration;
 
 	&__icon {
+		height: rem-calc(16);
 		width: rem-calc(16);
 		margin-right: 0.5rem;
 		fill: $anchor-color;
