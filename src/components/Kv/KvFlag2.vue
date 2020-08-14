@@ -1,16 +1,16 @@
 <template>
 	<div :class="`kv-flag kv-flag--${aspectRatio}`">
 		<div class="kv-flag__wrapper">
-			<template v-if="fromSprite">
+			<template v-if="inlineSvg">
+				<component
+					:is="flagSVG"
+				/>
+			</template>
+			<template v-else>
 				<div
 					class="kv-flag__img-sprite"
 					:style="{ backgroundPositionY: spriteYPosition + '%' }"
 				></div>
-			</template>
-			<template v-else>
-				<component
-					:is="flagSVG"
-				/>
 			</template>
 			<span class="show-for-sr">{{ countryName }}</span>
 		</div>
@@ -25,15 +25,26 @@ const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
 
 export default {
 	props: {
+		/**
+		 * 2 letter ISO country code of the flag to show
+		* */
 		country: {
 			type: String,
 			required: true,
 		},
+		/**
+		 * Aspect Ratio of the flag image
+		 * `4x3, 1x1`
+		* */
 		aspectRatio: {
 			type: String,
-			default: '4x3', // 4x3 or 1x1
+			default: '4x3',
 		},
-		fromSprite: {
+		/**
+		 * Inline the flag SVG into the markup instead of using a background image sprite
+		 * Use when showing a small amount of flags per page or if you need a larger flag than 32px wide.
+		* */
+		inlineSvg: {
 			type: Boolean,
 			default: false
 		}
@@ -46,7 +57,7 @@ export default {
 			return () => import(`~/flag-icon-css/flags/${this.aspectRatio}/${this.country.toLowerCase()}.svg`);
 		},
 		spriteYPosition() {
-			if (this.fromSprite) {
+			if (!this.inlineSvg) {
 				// Determine what percentage down the flag is in the sprite
 				// depending on its position in the country list.
 				const countryIndex = COUNTRY_LIST.indexOf(this.country.toUpperCase());
@@ -66,6 +77,7 @@ export default {
 
 .kv-flag {
 	width: 100%;
+	border: 1px solid $kiva-text-light;
 
 	&__wrapper {
 		position: relative;
