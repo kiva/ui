@@ -69,6 +69,10 @@ export default {
 		source: {
 			type: String,
 			default: ''
+		},
+		paymentType: {
+			type: String,
+			default: ''
 		}
 	},
 	data() {
@@ -104,7 +108,7 @@ export default {
 	},
 	mounted() {
 		// eslint-disable-next-line max-len
-		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_0.json#';
+		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_1.json#';
 		const mgSubscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
 		const checkoutEventData = {
 			schema,
@@ -113,7 +117,8 @@ export default {
 				subscriptionType: mgSubscriptionType,
 				category: this.category,
 				depositAmount: this.autoDepositAmount,
-				donationAmount: this.donation
+				donationAmount: this.donation,
+				paymentType: this.paymentType
 			},
 		};
 		this.$kvTrackSelfDescribingEvent(checkoutEventData);

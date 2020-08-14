@@ -228,7 +228,7 @@
 									:day-of-month="dayOfMonth"
 									:category="selectedGroup"
 									:is-one-time="isOnetime"
-									@complete-transaction="completeMGBraintree()"
+									@complete-transaction="completeMGBraintree"
 								/>
 							</div>
 
@@ -237,7 +237,7 @@
 								<pay-pal-mg
 									v-if="!showDropInPayments"
 									:amount="totalCombinedDeposit"
-									@complete-transaction="submitMonthlyGood()"
+									@complete-transaction="submitMonthlyGood"
 								/>
 							</div>
 						</div>
@@ -527,7 +527,7 @@ export default {
 				this.donationOptionSelected = '0';
 			}
 		},
-		completeMGBraintree() {
+		completeMGBraintree(paymentType) {
 			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 			// Send to thanks page
 			this.$router.push({
@@ -535,6 +535,7 @@ export default {
 				query: {
 					onetime: this.isOnetime,
 					source: this.source,
+					paymentType: paymentType || 'UnknownBraintree',
 				}
 			});
 		},
@@ -581,6 +582,7 @@ export default {
 						query: {
 							onetime: this.isOnetime,
 							source: this.source,
+							paymentType: 'LegacyPaypal',
 						}
 					});
 				}

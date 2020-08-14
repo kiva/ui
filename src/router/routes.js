@@ -101,6 +101,7 @@ export default [
 		props: route => ({
 			onetime: String(route.query.onetime),
 			source: route.query.source,
+			paymentType: route.query.paymentType,
 		}),
 		meta: {
 			activeLoginRequired: true,
