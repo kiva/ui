@@ -146,7 +146,7 @@ export default {
 					);
 
 					// Complete transaction handles additional analytics + redirect
-					this.$emit('complete-transaction');
+					this.$emit('complete-transaction', paymentType);
 				}
 				return kivaBraintreeResponse;
 			}).finally(() => {
