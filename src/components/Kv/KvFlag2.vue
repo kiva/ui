@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getCodes, getName } from 'country-list';
+import { getCodes, getNameByCode } from 'flag-icon-css';
 
 const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
@@ -41,7 +41,7 @@ export default {
 	},
 	computed: {
 		countryName() {
-			return `Flag of ${getName(this.country.toUpperCase())}`;
+			return `Flag of ${getNameByCode(this.country)}`;
 		},
 		flagSVG() {
 			return () => import(`~/flag-icon-css/flags/${this.aspectRatio}/${this.country.toLowerCase()}.svg`);

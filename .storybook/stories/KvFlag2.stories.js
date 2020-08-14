@@ -1,19 +1,11 @@
 import KvFlag2 from '@/components/Kv/KvFlag2';
 
-function getFilenames(r) {
-	return r.keys().map((filename) => {
-		let str = filename;
-		str = str.substring(2); // remove ./
-		str = str.substring(0, str.length - 4); // remove .svg
-		return str;
-	});
-}
+import { getCountryList } from '~/flag-icon-css';
 
 export default {
 	title: 'Kv/KvFlag2',
 	component: KvFlag2,
  };
-
 
 export const Default = () => ({
 	components: {
@@ -127,18 +119,19 @@ export const AllCountries = () => ({
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('~/flag-icon-css/flags/4x3', true, /\.svg$/))
+			countryList: getCountryList()
 		}
 	},
 	template: `
 		<div>
 			<div
-				v-for="iconName in iconNames"
-				:key="iconName"
-				style="width: 10rem;"
+				v-for="country in countryList"
+				:key="code"
 			>
-				{{iconName}}
-				<kv-flag2 :country="iconName" />
+				<div>{{ country.code }} - {{ country.name }}<div>
+				<div style="width: 10rem;">
+					<kv-flag2 :country="country.code" />
+				</div>
 			</div>
 		</div>
 	`,
@@ -150,18 +143,19 @@ export const AllCountriesFromSprite = () => ({
 	},
 	data() {
 		return {
-			iconNames: getFilenames(require.context('~/flag-icon-css/flags/4x3', true, /\.svg$/))
+			countryList: getCountryList()
 		}
 	},
 	template: `
 		<div>
 			<div
-				v-for="iconName in iconNames"
-				:key="iconName"
-				style="width: 32px;"
+				v-for="country in countryList"
+				:key="code"
 			>
-				{{iconName}}
-				<kv-flag2 :country="iconName" :from-sprite="true" />
+				<div>{{ country.code }} - {{ country.name }}</div>
+				<div style="width: 32px;">
+					<kv-flag2 :country="country.code" :from-sprite="true" />
+				</div>
 			</div>
 		</div>
 	`,
