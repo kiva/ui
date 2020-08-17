@@ -40,7 +40,6 @@
 import IntroGraphic from '@/assets/inline-svgs/borrow/howlong.svg';
 import KvButton from '@/components/Kv/KvButton';
 
-
 export default {
 	components: {
 		IntroGraphic,
@@ -53,7 +52,6 @@ export default {
 	},
 };
 </script>
-
 
 <style lang="scss" scoped>
 

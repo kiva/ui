@@ -23,7 +23,6 @@ import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
 import AutolendingWho from './AutolendingWho';
 
-
 const pageQuery = gql`query autolendProfileEnabled {
 	autolending @client {
 		profileChanged

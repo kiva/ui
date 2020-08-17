@@ -226,7 +226,6 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 import IconPencil from '@/assets/icons/inline/pencil.svg';
 
-
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		autoDeposit {

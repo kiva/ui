@@ -30,7 +30,6 @@
 	</form>
 </template>
 
-
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';

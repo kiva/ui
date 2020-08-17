@@ -59,7 +59,6 @@
 	</form>
 </template>
 
-
 <script>
 import numeral from 'numeral';
 import { validationMixin } from 'vuelidate';

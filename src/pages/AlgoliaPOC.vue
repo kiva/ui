@@ -29,7 +29,6 @@
 							</div> -->
 						</ais-configure>
 
-
 						<!-- Add instantSearchInstance.helper object with methods :connector="true" -->
 						<!-- <ais-state-results>
 							<template slot-scope="{ index }">
