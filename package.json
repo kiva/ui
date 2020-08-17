@@ -40,7 +40,7 @@
 	},
 	"dependencies": {
 		"@babel/polyfill": "^7.10.1",
-		"@contentful/rich-text-html-renderer": "^13.4.0",
+		"@contentful/rich-text-html-renderer": "^14.1.1",
 		"@godaddy/terminus": "^4.4.1",
 		"@sentry/browser": "^5.16.0",
 		"@sentry/integrations": "^5.15.5",
