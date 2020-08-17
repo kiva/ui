@@ -42,7 +42,7 @@ export default {
 				},
 				{
 					title: 'Can I cancel anytime?',
-					content: '<p>Yes. Monthly Good can be canceled or edited at any time.</p>'
+					content: '<p>Yes. Monthly Good can be canceled or edited at any time. To do so, go to your <a href="/settings/subscriptions">subscription settings</a></p>'
 				},
 				{
 					title: 'What happens if I cancel?',
