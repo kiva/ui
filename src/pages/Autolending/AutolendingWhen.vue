@@ -115,7 +115,6 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import LendTimingDropdown from './LendTimingDropdown';
 import LendTimingMessaging from './LendTimingMessaging';
 
-
 export default {
 	inject: ['apollo'],
 	components: {

@@ -13,7 +13,6 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import getPaymentToken from '@/graphql/query/checkout/getPaymentToken.graphql';
 import depositAndCheckout from '@/graphql/mutation/depositAndCheckout.graphql';
 
-
 export default {
 	inject: ['apollo'],
 	mixins: [

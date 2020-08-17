@@ -25,7 +25,6 @@
 	</form>
 </template>
 
-
 <script>
 import numeral from 'numeral';
 import _forEach from 'lodash/forEach';

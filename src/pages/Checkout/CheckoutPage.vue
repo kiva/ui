@@ -187,7 +187,6 @@ import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
-
 export default {
 	components: {
 		WwwPage,
