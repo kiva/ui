@@ -19,11 +19,13 @@
 
 <script>
 import { getCodes, getNameByCode } from 'flag-icon-css';
+import getCacheKey from '@/util/getCacheKey';
 
 const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
 
 export default {
+	serverCacheKey: props => getCacheKey(`KvFlag-${props.country}-${props.aspectRatio}-${props.inlineSvg}`),
 	props: {
 		/**
 		 * 2 letter ISO country code of the flag to show
