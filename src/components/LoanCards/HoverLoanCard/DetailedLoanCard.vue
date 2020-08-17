@@ -45,7 +45,6 @@
 						<kv-flag
 							v-if="loan.geocode.country.isoCode"
 							class="flag"
-							:width="20"
 							:country="loan.geocode.country.isoCode"
 						/>
 						<div>
@@ -449,7 +448,9 @@ $row-arrow-width: 2.5rem;
 				line-height: rem-calc(22);
 
 				.flag {
+					width: rem-calc(20);
 					margin-right: rem-calc(14);
+					align-self: center;
 				}
 			}
 		}

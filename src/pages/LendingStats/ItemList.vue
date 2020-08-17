@@ -1,8 +1,16 @@
 <template>
 	<ul class="lending-stats-item-list">
 		<li v-for="item in items" :key="item[itemKey]">
-			<kv-flag v-if="isCountry" :country="item.isoCode" :custom-height="14" />
-			<kv-icon v-else :name="iconKey(item)" class="item-icon" />
+			<kv-flag
+				v-if="isCountry"
+				:country="item.isoCode"
+				class="item-flag"
+			/>
+			<kv-icon
+				v-else
+				:name="iconKey(item)"
+				class="item-icon"
+			/>
 			<router-link :to="{ path: '/lend', query: { [param]: item[itemKey] }}">
 				{{ item.name }}
 			</router-link>
@@ -68,10 +76,15 @@ export default {
 		text-overflow: ellipsis;
 	}
 
+	.item-flag,
 	.item-icon {
-		width: 1.5rem;
-		height: 0.7777rem;
+		width: rem-calc(16);
+		margin-right: 0.25rem;
 		flex-shrink: 0;
+	}
+
+	.item-icon {
+		height: rem-calc(12);
 	}
 }
 </style>

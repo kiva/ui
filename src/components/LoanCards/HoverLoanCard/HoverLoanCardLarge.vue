@@ -16,7 +16,11 @@
 		<div class="hover-loan-card-data-wrap">
 			<div>
 				<div class="name-row">
-					<kv-flag v-if="loan.geocode.country.isoCode" :country="loan.geocode.country.isoCode" :width="20" />
+					<kv-flag
+						v-if="loan.geocode.country.isoCode"
+						:country="loan.geocode.country.isoCode"
+						class="flag"
+					/>
 					<borrower-info-name
 						:name="loan.name"
 						:loan-id="loan.id"
@@ -199,6 +203,11 @@ export default {
 				/* Next line prevents a weird visual bug on chrome */
 				margin-top: rem-calc(1);
 			}
+		}
+
+		.flag {
+			width: rem-calc(20);
+			margin-right: 0.25rem;
 		}
 
 		.hover-borrower-info-body {

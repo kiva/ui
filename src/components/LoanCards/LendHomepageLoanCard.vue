@@ -16,7 +16,8 @@
 			<div class="lend-homepage-loan-card__name-row">
 				<kv-flag
 					v-if="loan.geocode.country.isoCode"
-					:country="loan.geocode.country.isoCode" :width="30"
+					:country="loan.geocode.country.isoCode"
+					class="lend-homepage-loan-card__flag"
 				/>
 				<borrower-info-name
 					:name="loan.name"
@@ -228,10 +229,6 @@ export default {
 		display: flex;
 		align-items: center;
 
-		.kv-flag {
-			margin-right: 0.95rem;
-		}
-
 		.borrower-name {
 			white-space: nowrap;
 			overflow: hidden;
@@ -239,6 +236,12 @@ export default {
 			margin-top: 0.15rem;
 			line-height: 1.375rem;
 		}
+	}
+
+	&__flag {
+		width: rem-calc(30);
+		flex-shrink: 0;
+		margin-right: 0.95rem;
 	}
 
 	&__borrower-info {
