@@ -14,7 +14,7 @@ pipeline {
     // Using env var string to boolean conversion works for now, but can be simpler if this issue is resolved
     QA_DEPLOY = env.TAG_NAME.toString().matches("^release-.*")
     PROD_DEPLOY = env.TAG_NAME.toString().matches("^v.*")
-	TIMESTAMP = "${currentBuild.startTimeInMillis}"
+    TIMESTAMP = "${currentBuild.startTimeInMillis}"
   }
 
   stages {
@@ -62,6 +62,14 @@ pipeline {
             }
           }
         }
+        echo "Deploying to stage Kubernetes cluster..."
+        withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
+          withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
+            withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
+              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-stage --values ./deploy/stage/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
+            }
+          }
+        }
       }
     }
 
@@ -81,7 +89,9 @@ pipeline {
       }
     }
 
-    stage('UI Kubernetes Stage Deployment') {
+    // Stage is automatically deployed with each master merge
+    // This additional "stage" allows us to override Ui with the contents of a branch named "stage"
+    stage('UI Kubernetes Stage OVERRIDE Deployment') {
       when {
         branch 'stage'
       }
@@ -100,6 +110,24 @@ pipeline {
     stage('UI Kubernetes QA Deployment') {
       when {
          expression { QA_DEPLOY.toBoolean() }
+      }
+      steps {
+        echo "Deploying to development Kubernetes cluster..."
+        withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
+          withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
+            withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
+              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-qa --values ./deploy/qa/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
+            }
+          }
+        }
+      }
+    }
+
+    // QA is automatically deployed with alterations to the current release-* branch
+    // This additional qa stage allows us to override Ui with the contents of a branch named "qa"
+    stage('UI Kubernetes QA OVERRIDE Deployment') {
+      when {
+         branch 'qa'
       }
       steps {
         echo "Deploying to development Kubernetes cluster..."
