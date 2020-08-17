@@ -69,6 +69,7 @@
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
 		"express-winston": "^4.0.3",
+		"flag-icon-css": "git+https://github.com/kiva/flag-icon-css.git#sprite",
 		"foundation-sites": "6.6.3",
 		"fuse.js": "^5.2.3",
 		"graphql": "^14.6.0",
