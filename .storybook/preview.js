@@ -26,6 +26,23 @@ addParameters({
 	},
 	docs: {
 		inlineStories: true,
+	},
+	backgrounds: {
+		default: 'white',
+		values: [
+			{
+				name: 'white',
+				value: '#ffffff'
+			},
+			{
+				name: 'kiva-bg-lightgray',
+				value: '#fafafa'
+			},
+			{
+				name: 'black',
+				value: '#000000'
+			},
+		],
 	}
 });
 
