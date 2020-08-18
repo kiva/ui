@@ -32,17 +32,18 @@ describe('SearchBar', () => {
 		});
 	});
 
-	it('should fetch suggestions when it gains focus', () => {
+	it('should fetch suggestions when it gains focus', done => {
 		const input = wrapper.find({ ref: 'input' });
 		input.trigger('focus');
 		input.trigger('blur');
-		wrapper.vm.focus();
+		input.trigger('focus');
 		expect(apollo.query.mock.calls.length).toBe(2);
 		expect(apollo.query.mock.calls[0][0]).toEqual({ query: suggestionsQuery });
 		expect(apollo.query.mock.calls[1][0]).toEqual({ query: suggestionsQuery });
+		done();
 	});
 
-	it('should show filtered results when a serch term is entered', done => {
+	it('should show filtered results when a search term is entered', done => {
 		const input = wrapper.find({ ref: 'input' });
 		input.trigger('focus');
 		input.element.value = 'ak';
