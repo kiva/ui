@@ -33,9 +33,7 @@
 					<h1> {{ loan.name }} </h1>
 					<!-- Borrower location -->
 					<div>
-						<span class="country-image">
-							<kv-flag :country="`${ loan.geocode.country.isoCode }`" :custom-height="14" />
-						</span>
+						<kv-flag class="loan-location-flag" :country="`${ loan.geocode.country.isoCode }`" />
 						<span class="loan-location-text">
 							{{ loan.geocode.city }}, {{ loan.geocode.state }}, {{ loan.geocode.country.name }}
 							/ {{ loan.sector.name }}
@@ -207,6 +205,12 @@ export default {
 .loan-location-text,
 .lyml-text {
 	font-weight: $button-font-weight;
+}
+
+.loan-location-flag {
+	display: inline-block;
+	width: rem-calc(16);
+	margin-right: 0.25rem;
 }
 
 .loan-description-wrapper {
