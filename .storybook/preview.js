@@ -1,5 +1,4 @@
-import { addDecorator, addParameters } from '@storybook/vue';
-import { withA11y } from '@storybook/addon-a11y';
+import { addParameters } from '@storybook/vue';
 import Vue from 'vue';
 
 //load all the svg icon sprites
@@ -7,6 +6,9 @@ import '@/assets/iconLoader';
 
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
+
+// css for storybook overrides like background color
+import './storybookStyles.scss';
 
 // import config file for storybook environment
 import config from '../config/local';
@@ -27,13 +29,3 @@ addParameters({
 	}
 });
 
-const GlobalDecorator = () => ({
-	template: `
-		<div style="padding: 2rem">
-			<story />
-		</div>
-	  `
-});
-
-addDecorator(withA11y);
-addDecorator(GlobalDecorator);
