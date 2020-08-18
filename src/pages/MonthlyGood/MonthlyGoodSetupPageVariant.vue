@@ -150,7 +150,7 @@
 										@complete-transaction="submitMonthlyGood()"
 									/>
 									<p class="small-text">
-										Thanks to PayPal, Kiva receives free payment processing.
+										Thanks to PayPal, Kiva receives free payment processing for all loans.
 									</p>
 								</div>
 							</div>
