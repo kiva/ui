@@ -1,6 +1,6 @@
 import KvFlag from '@/components/Kv/KvFlag';
 
-import { getCountryList } from '~/flag-icon-css';
+import { getCountryList } from 'flag-icon-css';
 
 export default {
 	title: 'Kv/KvFlag',
