@@ -14,6 +14,7 @@
 				>
 					Sign up for a Kiva Monthly Good subscription
 				</router-link>
+
 				<div v-if="isMonthlyGoodSubscriber">
 					<p>
 						On the <a
@@ -33,33 +34,117 @@
 					<p>
 						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Monthly Good</a>
 					</p>
+
+					<!-- Edit MG Lightbox -->
 					<kv-lightbox
-						class="monthly-good-settings-lightbox"
+						class="mg-update-lightbox"
 						:visible="showLightbox"
 						title="Change your monthly good"
 						@lightbox-closed="closeLightbox"
 					>
-						<monthly-good-update-form
-							:donation="donation"
-							:day-of-month="dayOfMonth"
-							:category="category"
-							:mg-amount="mgAmount"
-							:disabled="isSaving"
-							@form-update="formUpdated"
-						/>
+						<div class="mg-update-lightbox__content">
+							<template v-if="showDropInPaymentUpdate">
+								<transition :name="slideTransition" mode="out-in">
+									<!-- Deposit Settings -->
+									<div
+										v-if="settingsOpen"
+										class="row column" key="depositSettings"
+									>
+										<monthly-good-update-form
+											:donation="donation"
+											:day-of-month="dayOfMonth"
+											:category="category"
+											:mg-amount="mgAmount"
+											:disabled="isSaving"
+											@form-update="formUpdated"
+											class="mg-update-lightbox__form"
+										/>
+										<div class="mg-update-lightbox__payment-method">
+											<div class="row align-middle">
+												<div class="column medium-12 large-6" v-if="paymentMethod">
+													<strong>Current payment method:</strong><br>
+													<img :src="paymentMethod.imageUrl">
+													{{ paymentMethod.description }}
+												</div>
+												<div class="column medium-12 large-6 text-right">
+													<button
+														class="button--link"
+														@click="toggleSections"
+													>
+														<strong>Update Payment Method</strong>
+														<icon-pencil class="icon-pencil" />
+													</button>
+												</div>
+											</div>
+										</div>
+										<kv-button
+											data-test="monthly-good-save-button"
+											class="smaller button"
+											v-if="!isSaving"
+											@click.native="saveMonthlyGood"
+											:disabled="!isChanged || !isFormValid"
+										>
+											Save Settings
+										</kv-button>
+										<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+											Saving <kv-loading-spinner />
+										</kv-button>
+									</div>
+									<!-- Payment Methods -->
+									<div
+										v-if="!settingsOpen"
+										class="row column" key="paymentSettings"
+									>
+										<a
+											role="button"
+											@click.prevent="toggleSections"
+										>
+											<kv-icon
+												class="arrow back-arrow"
+												name="small-chevron"
+												:from-sprite="true"
+											/>
+											Back to deposit settings</a>
+										<div class="mg-update-lightbox__dropin-payment-wrapper">
+											<strong>Update payment method:</strong>
+											<monthly-good-drop-in-payment-wrapper
+												:amount="totalCombinedDeposit"
+												:donate-amount="donation"
+												:day-of-month="dayOfMonth"
+												:category="category"
+												action="Update"
+												@complete-transaction="completeMGBraintree"
+											/>
+										</div>
+									</div>
+								</transition>
+							</template>
+
+							<template v-if="!showDropInPaymentUpdate">
+								<monthly-good-update-form
+									:donation="donation"
+									:day-of-month="dayOfMonth"
+									:category="category"
+									:mg-amount="mgAmount"
+									:disabled="isSaving"
+									@form-update="formUpdated"
+								/>
+								<kv-button
+									data-test="monthly-good-save-button"
+									class="smaller button"
+									v-if="!isSaving"
+									@click.native="saveMonthlyGood"
+									:disabled="!isChanged || !isFormValid"
+								>
+									Save
+								</kv-button>
+								<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+									Saving <kv-loading-spinner />
+								</kv-button>
+							</template>
+						</div>
+
 						<template slot="controls">
-							<kv-button
-								data-test="monthly-good-save-button"
-								class="smaller button"
-								v-if="!isSaving"
-								@click.native="saveMonthlyGood"
-								:disabled="!isChanged || !isFormValid"
-							>
-								Save
-							</kv-button>
-							<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
-								Saving <kv-loading-spinner />
-							</kv-button>
 						</template>
 					</kv-lightbox>
 				</div>
@@ -74,12 +159,18 @@ import gql from 'graphql-tag';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
+import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
+
+import IconPencil from '@/assets/icons/inline/pencil.svg';
 
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
@@ -88,19 +179,37 @@ const pageQuery = gql`query monthlyGoodSubscription {
 			donateAmount
 			dayOfMonth
 			isSubscriber
+			paymentMethod {
+				methodType
+				imageUrl
+				description
+				nonce
+			}
 		}
 		monthlyGoodCategory
+	}
+	general {
+		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
+			value
+			key
+		}
+		uiExperimentSetting(key: "braintree_dropin_mg_update") {
+			key
+			value
+		}
 	}
 }`;
 
 export default {
 	inject: ['apollo'],
 	components: {
+		IconPencil,
 		KvButton,
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvSettingsCard,
+		MonthlyGoodDropInPaymentWrapper,
 		MonthlyGoodUpdateForm,
 	},
 	data() {
@@ -112,8 +221,10 @@ export default {
 			mgAmount: 0,
 			isMonthlyGoodSubscriber: false,
 			showLightbox: false,
+			settingsOpen: true, // if settingsOpen is false, payment update section is shown
 			isChanged: false,
 			isFormValid: true,
+			showDropInPaymentUpdate: false,
 		};
 	},
 	mixins: [
@@ -124,6 +235,10 @@ export default {
 		preFetch(config, client) {
 			return client.query({
 				query: pageQuery
+			}).then(() => {
+				return client.query({
+					query: experimentAssignmentQuery, variables: { id: 'braintree_dropin_mg_update' }
+				});
 			});
 		},
 		result({ data }) {
@@ -134,8 +249,26 @@ export default {
 				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
 				this.category = _get(data, 'my.monthlyGoodCategory', '');
 				this.mgAmount = autoDepositAmount - this.donation;
+				this.paymentMethod = _get(data, 'my.autoDeposit.paymentMethod', {});
 			}
+
+			// Braintree drop-in UI data
+			const braintreeDropInExp = this.apollo.readFragment({
+				id: 'Experiment:braintree_dropin_mg_update',
+				fragment: experimentVersionFragment,
+			}) || {};
+
+			// if experiment and feature flag are BOTH on, show UI
+			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
+			this.showDropInPaymentUpdate = braintreeDropInFeatureFlag && braintreeDropInExp.version === 'shown';
 		},
+	},
+	mounted() {
+		// Check route params (string) for payment method reset case
+		if (this.$route.query.updatePayment === 'true' && this.showDropInPaymentUpdate) {
+			this.settingsOpen = false;
+			this.showLightbox = true;
+		}
 	},
 	computed: {
 		selectedGroupDescriptor() {
@@ -146,6 +279,9 @@ export default {
 		},
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
+		},
+		slideTransition() {
+			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
 		},
 	},
 	methods: {
@@ -168,6 +304,9 @@ export default {
 			this.category = category;
 			this.isChanged = isChanged;
 			this.isFormValid = isFormValid;
+		},
+		toggleSections() {
+			this.settingsOpen = !this.settingsOpen;
 		},
 		closeLightbox() {
 			/** If form is changed, let parent component know so save button can be displayed
@@ -221,10 +360,71 @@ export default {
 				this.showLightbox = false;
 			});
 		},
+		completeMGBraintree() {
+			this.$kvTrackEvent('MonthlyGood', 'successful-update-mg-payment', 'update-monthly-good-payment');
+			this.showLightbox = false;
+			// reset lightbox state
+			this.settingsOpen = true;
+			// refetch page query with updated information
+			this.apollo.query({ query: pageQuery, fetchPolicy: 'network-only' });
+			this.$showTipMsg('Payment method updated');
+		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
+
+.mg-update-lightbox {
+	&__content {
+		overflow: hidden;
+		max-width: 100%;
+		margin: 1.5rem 0 0;
+
+		@include breakpoint('large') {
+			width: rem-calc(530);
+		}
+
+		@include breakpoint('xxlarge') {
+			width: rem-calc(620);
+		}
+	}
+
+	&__form,
+	&__payment-method {
+		padding-left: 0.5rem;
+	}
+
+	&__payment-method {
+		padding-right: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	&__dropin-payment-wrapper {
+		margin: 1rem 0 0;
+		padding-left: 0.5rem;
+	}
+
+	.arrow {
+		stroke: $blue;
+		width: rem-calc(13);
+		height: rem-calc(9);
+
+		&.back-arrow {
+			transform: rotate(90deg);
+		}
+	}
+
+	.button--link {
+		color: $kiva-accent-blue;
+		fill: $kiva-accent-blue;
+		cursor: pointer;
+		padding: 0.5rem;
+	}
+
+	.icon-pencil {
+		height: 1rem;
+	}
+}
 </style>

@@ -66,6 +66,14 @@ export default {
 		isOneTime: {
 			type: Boolean,
 			default: false
+		},
+		/**
+		 * Context that this payment wrapper is used in:
+		 * Must be one of 2 strings 'Registration' or 'Update'
+		* */
+		action: {
+			type: String,
+			default: 'Registration'
 		}
 	},
 	data() {
@@ -124,7 +132,7 @@ export default {
 					this.$showTipMsg(standardError, 'error');
 
 					// Fire specific exception to Snowplow
-					this.$kvTrackEvent('Registration', 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
+					this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
 
 					// exit
 					return kivaBraintreeResponse;
@@ -135,13 +143,13 @@ export default {
 					kivaBraintreeResponse,
 					'data.my.createMonthlyGoodSubscription'
 				);
-				// redirect to thanks with KIVA transaction id
+
 				if (subscriptionCreatedSuccessfully) {
 					// fire BT Success event
 					this.$kvTrackEvent(
-						'Registration',
+						this.action,
 						`${paymentType} Braintree DropIn Subscription Payment`,
-						'register-monthly-good-submit'
+						`${this.action.toLowerCase()}-monthly-good-submit`
 					);
 
 					// Complete transaction handles additional analytics + redirect
