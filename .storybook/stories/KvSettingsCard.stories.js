@@ -5,6 +5,11 @@ import { text } from '@storybook/addon-knobs';
 export default {
 	title: 'Kv/KvSettingsCard',
 	component: KvSettingsCard,
+	parameters: {
+		backgrounds: {
+			default: 'kiva-bg-lightgray',
+		},
+	}
 };
 
 export const Default = () => ({
@@ -23,28 +28,18 @@ export const Default = () => ({
 		},
 	},
 	template: `
-		<div :style="styling">
-			<kv-settings-card class="column large-8" :title="title">
-				<template v-slot:icon>
-					<kv-icon
-						class="icon"
-						title="Monthly Good"
-						name="subscriptions-monthly-good"
-					/>
-				</template>
-				<template v-slot:content>
-					<p>{{content}}</p>
-				</template>
-			</kv-settings-card>
-		</div>
+		<kv-settings-card class="column large-8" :title="title">
+			<template v-slot:icon>
+				<kv-icon
+					class="icon"
+					title="Monthly Good"
+					name="subscriptions-monthly-good"
+				/>
+			</template>
+			<template v-slot:content>
+				<p>{{content}}</p>
+			</template>
+		</kv-settings-card>
 	`,
-	computed: {
-		styling: function() {
-			return {
-				backgroundColor: '#fafafa',
-				padding: '2rem'
-			}
-		}
-	}
 });
 

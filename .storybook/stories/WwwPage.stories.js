@@ -1,5 +1,3 @@
-import Vue from 'vue'
-import { boolean, select } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
@@ -12,110 +10,73 @@ export default {
 	title: 'WwwFrame/WwwPage',
 	component: WwwPage,
 	decorators: [StoryRouter()],
-};
-
-export const Default = () => ({
-	components: {
-		WwwPage
+	args: {
+		grayBackground: false,
+		hideSearchInHeader: false,
+		headerTheme: null,
+		footerTheme: null
 	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	template: `
-		<www-page>
-			<div class="row" style="padding: 1.625rem 0;">
-				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
-			</div>
-		</www-page>
-	`,
-});
-
-export const GreyBackground = () => ({
-	components: {
-		WwwPage
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	props: {
-		greyBackground: {
-			default: boolean('greyBackground', true)
-		},
-	},
-	template: `
-		<www-page :gray-background="greyBackground">
-			<div class="row" style="padding: 1.625rem 0;">
-				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
-			</div>
-		</www-page>
-	`,
-});
-
-export const HideSearchInHeader = () => ({
-	components: {
-		WwwPage
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	props: {
-		hideSearchInHeader: {
-			default: boolean('hideSearchInHeader', true)
-		},
-	},
-	template: `
-		<www-page :hide-search-in-header="hideSearchInHeader">
-			<div class="row" style="padding: 1.625rem 0;">
-				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
-			</div>
-		</www-page>
-	`,
-});
-
-export const Themed = () => ({
-	components: {
-		WwwPage
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	props: {
+	argTypes: {
 		headerTheme: {
-			type: Object,
-			default() { return select('headerTheme', { lightHeader, iwdHeaderTheme, wrdHeaderTheme, none: {} }, lightHeader) }
+			control: {
+				type: 'select',
+				options: {
+					'none': null,
+					'lightHeader':lightHeader,
+					'iwdHeaderTheme': iwdHeaderTheme,
+					'wrdHeaderTheme': wrdHeaderTheme,
+				},
+			}
 		},
 		footerTheme: {
-			type: Object,
-			default() { return select('footerTheme', { lightFooter, iwdFooterTheme, wrdFooterTheme, none: {} }, lightFooter) }
-		}
+			control: {
+				type: 'select',
+				options: {
+					'none': null,
+					'lightFooter':lightFooter,
+					'iwdFooterTheme': iwdFooterTheme,
+					'wrdFooterTheme': wrdFooterTheme,
+				},
+				selected: 'none'
+			}
+		},
 	},
-	template: `
-		<wwwPage
-			:header-theme="headerTheme"
-			:footer-theme="footerTheme"
-		>
-			<div class="row" style="padding: 1.625rem 0;">
-				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
-			</div>
-		</www-page>
-	`,
-});
+};
 
-export const MinimalHeader = () => ({
+export const Default = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		WwwPage
 	},
 	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	props: {
-		minimalHeader: {
-			default: boolean('minimalHeader', true)
-		},
-		headerTheme: {
-			type: Object,
-			default() { return select('headerTheme', { lightHeader, iwdHeaderTheme, wrdHeaderTheme, none: {} }, lightHeader) }
-		},
-	},
 	template: `
-		<www-page
-			:minimal-header="minimalHeader"
-			:header-theme="headerTheme"
-		>
-			<div class="row" style="padding: 1.625rem 0;">
-				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
-			</div>
-		</www-page>
+	<www-page
+		:gray-background="grayBackground"
+		:hide-search-in-header="hideSearchInHeader"
+		:header-theme="headerTheme"
+		:footer-theme="footerTheme"
+	>
+		<div class="row" style="padding: 1.625rem 0;">
+			<div class="small-12 columns"><h1>Lorem ipsum</h1></div>
+		</div>
+	</www-page>
 	`,
 });
+
+
+export const GrayBackground = Default.bind({});
+GrayBackground.args = {
+	grayBackground: true,
+};
+
+export const HideSearchInHeader = Default.bind({});
+HideSearchInHeader.args = {
+	hideSearchInHeader: true,
+};
+
+export const Themed = Default.bind({});
+Themed.args = {
+	headerTheme: lightHeader,
+	footerTheme: lightFooter
+};
 

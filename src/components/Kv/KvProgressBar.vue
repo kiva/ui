@@ -9,11 +9,11 @@
 export default {
 	props: {
 		max: {
-			type: Number,
-			default: 100,
+			type: String,
+			default: '100',
 		},
 		value: {
-			type: Number,
+			type: String,
 			required: true
 		},
 	},

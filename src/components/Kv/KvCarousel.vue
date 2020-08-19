@@ -192,14 +192,14 @@ export default {
 		}
 	},
 	methods: {
-		/**
-		 * Fires when the user interacts with the carousel.
-		 * Contains the interaction type (swipe-left, click-left-arrow, etc.)
-		 * @event interact-carousel
-		 * @type {Event}
-		 */
 		handleUserInteraction(index, interactionType) {
 			this.goToSlide(index);
+			/**
+			 * Fires when the user interacts with the carousel.
+			 * Contains the interaction type (swipe-left, click-left-arrow, etc.)
+			 * @event interact-carousel
+			 * @type {Event}
+			 */
 			this.$emit('interact-carousel', interactionType);
 		},
 		/**

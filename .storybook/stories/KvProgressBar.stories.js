@@ -1,5 +1,5 @@
 import KvProgressBar from '@/components/Kv/KvProgressBar';
-import { number } from '@storybook/addon-knobs';
+import { text } from '@storybook/addon-knobs';
 
 export default {
 	title: 'Kv/KvProgressBar',
@@ -12,12 +12,12 @@ export const Default = () => ({
 	},
 	props: {
 		value: {
-			type: Number,
-			default() { return number('value', 20) }
+			type: String,
+			default() { return text('value', '20') }
 		},
 		max: {
-			type: Number,
-			default() { return number('max', 100) }
+			type: String,
+			default() { return text('max', '100') }
 		}
 	},
 	template: `

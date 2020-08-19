@@ -87,6 +87,7 @@ export default {
 		height: 0;
 		width: 100%;
 		background-color: $kiva-bg-lightgray;
+		line-height: 0;
 	}
 
 	&__img-sprite {

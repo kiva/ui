@@ -33,7 +33,7 @@ const theme = create({
 //   inputBorderRadius: 4,
 
 	brandTitle: 'Kiva.org',
-	brandUrl: 'https://kiva.org',
+	brandUrl: '/',
 	brandImage: '//www-kiva-org.global.ssl.fastly.net/cms/kiva_logo_2.png',
 });
 
