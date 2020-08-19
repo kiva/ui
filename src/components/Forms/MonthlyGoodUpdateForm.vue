@@ -1,0 +1,364 @@
+<template>
+	<form
+		@submit.prevent="null"
+		novalidate
+	>
+		<fieldset :disabled="this.disabled">
+			<div class="row column">
+				<strong>Each month on the</strong>
+				<label
+					class="show-for-sr"
+					:class="{ 'error': $v.$invalid }" :for="form.dayOfMonth"
+				>
+					Day of the Month
+				</label>
+				<input v-if="isDayInputShown"
+					@blur="hideDayInput()"
+					class="text-input__day"
+					id="dayOfMonth"
+					type="number"
+					placeholder=""
+					required
+					min="1"
+					max="31"
+					v-model.number="form.dayOfMonth"
+				>
+				<button
+					class="button--ordinal-day"
+					@click="isDayInputShown = true"
+					v-if="!isDayInputShown"
+				>
+					<strong>{{ form.dayOfMonth | numeral('Oo') }}</strong>
+					<icon-pencil class="icon-pencil" />
+				</button>
+				<strong>we'll process the following:</strong>
+				<ul class="validation-errors" v-if="$v.form.dayOfMonth.$invalid">
+					<li v-if="!$v.form.dayOfMonth.required">
+						Field is required
+					</li>
+					<li v-if="!$v.form.dayOfMonth.minValue || !$v.form.dayOfMonth.maxValue">
+						Enter day of month between 1 and 31
+					</li>
+				</ul>
+				<div class="additional-day-info">
+					<small v-if="form.dayOfMonth > 28">
+						(note - may be processed on the last day of the month)
+					</small>
+				</div>
+			</div>
+			<div class="row align-middle">
+				<div class="columns">
+					<span>
+						Deposit for lending
+					</span>
+				</div>
+
+				<div class="small-6 medium-4 columns">
+					<label
+						class="show-for-sr"
+						:class="{ 'error': $v.form.mgAmount.$invalid }"
+						for="amount"
+					>
+						Amount
+					</label>
+					<kv-currency-input
+						class="text-input"
+						id="amount"
+						v-model="form.mgAmount"
+					/>
+				</div>
+			</div>
+			<div class="row columns align-middle">
+				<ul class="text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
+					<li v-if="!$v.form.mgAmount.required">
+						Field is required
+					</li>
+					<li v-if="!$v.form.mgAmount.minValue || !$v.form.mgAmount.maxValue">
+						Enter an amount of $5-$10,000
+					</li>
+				</ul>
+			</div>
+			<div class="row align-middle">
+				<div class="columns">
+					<span>
+						Optional donation to support Kiva
+					</span>
+				</div>
+
+				<div class="small-6 medium-4 columns">
+					<label
+						class="show-for-sr"
+						:class="{ 'error': $v.form.donation.$invalid }"
+						for="amount"
+					>
+						Donation
+					</label>
+					<kv-currency-input
+						class="text-input"
+						id="donation"
+						v-model="form.donation"
+					/>
+				</div>
+			</div>
+			<div class="row column align-middle">
+				<ul class="text-right validation-errors" v-if="$v.form.donation.$invalid">
+					<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
+						Enter an amount of $0-$10,000
+					</li>
+				</ul>
+			</div>
+			<div class="row">
+				<div class="columns">
+					<strong>Total/month</strong>
+				</div>
+
+				<div class="small-6 medium-4 columns">
+					<strong
+						class="additional-left-pad-currency"
+					>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+				</div>
+			</div>
+			<div class="row column">
+				<ul class="text-center validation-errors"
+					v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
+				>
+					<li>
+						The maximum Monthly Good total is $10,000.<br>
+						Please try again by entering in a smaller amount.
+					</li>
+				</ul>
+			</div>
+			<div class="row column text-center">
+				Select a category to focus your lending
+				<kv-dropdown-rounded
+					v-model="form.category"
+					class="group-dropdown"
+				>
+					<option
+						v-for="(option, index) in lendingCategories"
+						:value="option.value"
+						:key="index"
+					>
+						{{ option.label }}
+					</option>
+				</kv-dropdown-rounded>
+			</div>
+		</fieldset>
+	</form>
+</template>
+
+<script>
+import { validationMixin } from 'vuelidate';
+import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+
+import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+
+import IconPencil from '@/assets/icons/inline/pencil.svg';
+
+/**
+ * This form contains all the fields and validation to modify a MG Subscription
+ * It accepts values as props and sets those to initial data values.
+ * When values are changed it emits the validity state and the values
+ * so a parent component can access them.
+ */
+export default {
+	components: {
+		IconPencil,
+		KvCurrencyInput,
+		KvDropdownRounded,
+	},
+	data() {
+		return {
+			form: {
+				category: this.category,
+				dayOfMonth: this.dayOfMonth,
+				donation: this.donation,
+				mgAmount: this.mgAmount,
+			},
+			isDayInputShown: false,
+		};
+	},
+	props: {
+		/**
+		 * Should all inputs on the form be disabled
+		* */
+		disabled: {
+			type: Boolean,
+			default: false
+		},
+		/**
+		 * Monthly Good Donation to Kiva
+		* */
+		donation: {
+			type: Number,
+			default: 0
+		},
+		/**
+		 * Monthly Good Amount to go to loans
+		* */
+		mgAmount: {
+			type: Number,
+			default: 0
+		},
+		/**
+		 * Day of month Monthly Good will take effect
+		* */
+		dayOfMonth: {
+			type: Number,
+			default: new Date().getDate()
+		},
+		/**
+		 * Category to lend to.
+		 * Should be Category short name found in loanGroupCategoriesMixin
+		* */
+		category: {
+			type: String,
+			default: ''
+		},
+	},
+	mixins: [
+		validationMixin,
+		loanGroupCategoriesMixin
+	],
+	validations: {
+		form: {
+			mgAmount: {
+				required,
+				minValue: minValue(5),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return value + this.donation < 10000;
+				}
+			},
+			donation: {
+				minValue: minValue(0),
+				maxValue: maxValue(10000),
+				maxTotal(value) {
+					return value + this.mgAmount < 10000;
+				}
+			},
+			dayOfMonth: {
+				required,
+				minValue: minValue(1),
+				maxValue: maxValue(31)
+			},
+			category: {
+				required,
+			}
+		}
+	},
+	mounted() {
+		/** Accomodate for special cases where MG category might be legacy or null.
+		 */
+		if (!this.category) {
+			this.lendingCategories.push(
+				{ label: 'Preserve existing settings', value: '', shortName: '' }
+			);
+		}
+		/** After initial value is loaded, setup watch to make form dirty on value changes
+		 * and emit values on value changes. Setting this in mounted prevents the form
+		 * from being dirty on initial load
+		 */
+		this.$watch('form', () => {
+			console.log('watch fired');
+			this.$v.$touch();
+			/**
+			 * Event emitted whenever a form value changes.
+			 * @type {Event}
+			 */
+			this.$emit('form-update', {
+				...this.form,
+				isChanged: this.$v.$dirty,
+				isFormValid: !this.$v.$invalid,
+			});
+		}, { deep: true });
+	},
+	computed: {
+		totalCombinedDeposit() {
+			return this.form.donation + this.form.mgAmount;
+		},
+	},
+	methods: {
+		hideDayInput() {
+			if (!this.$v.form.dayOfMonth.$invalid) {
+				this.isDayInputShown = false;
+			}
+		},
+	},
+};
+</script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+form {
+	margin: 1rem 0;
+
+	.row {
+		margin-bottom: 0.25em;
+	}
+
+	// styles to match KvDropDownRounded
+	input.text-input {
+		border: 1px solid $charcoal;
+		border-radius: $button-radius;
+		color: $charcoal;
+		font-size: $medium-text-font-size;
+		font-weight: $global-weight-highlight;
+		margin: 0;
+	}
+
+	.additional-left-pad-currency {
+		padding-left: 0.65rem;
+	}
+
+	.button--ordinal-day {
+		color: $kiva-accent-blue;
+		fill: $kiva-accent-blue;
+		cursor: pointer;
+	}
+
+	.icon-pencil {
+		height: 1rem;
+	}
+
+	.text-input__day {
+		display: inline-block;
+		width: 3.5rem;
+		padding: 0.25rem 0.5rem;
+		margin: 0 0 0 0.25rem;
+		height: 2rem;
+	}
+
+	.text-input,
+	.validation-errors {
+		margin: 0;
+	}
+
+	.additional-day-info {
+		margin-bottom: 1.25rem;
+
+		small,
+		strong {
+			display: block;
+		}
+	}
+
+	::v-deep .loading-spinner {
+		vertical-align: middle;
+		width: 1rem;
+		height: 1rem;
+	}
+
+	::v-deep .loading-spinner .line {
+		background-color: $white;
+	}
+
+	::v-deep .dropdown-wrapper.group-dropdown .dropdown {
+		margin-top: 0.65rem;
+	}
+}
+</style>
