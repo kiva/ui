@@ -38,10 +38,6 @@ export default {
 		appInstallMixin
 	],
 	props: {
-		minimalHeader: {
-			type: Boolean,
-			default: false
-		},
 		headerTheme: {
 			type: Object,
 			default() {},
