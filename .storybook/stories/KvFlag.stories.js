@@ -5,85 +5,64 @@ import { getCountryList } from 'flag-icon-css';
 export default {
 	title: 'Kv/KvFlag',
 	component: KvFlag,
+	args: {
+		country: 'us',
+		inlineSvg: false,
+		aspectRatio: '4x3'
+	},
+	argTypes: {
+		country: {
+			control: {
+				type: 'select',
+				options: getCountryList().map(country => country.code)
+			}
+		},
+		aspectRatio: {
+			control: {
+				type: 'radio',
+				options: ['4x3', '1x1'],
+			},
+		}
+	},
 };
 
-export const Default = () => ({
+export const Default = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		KvFlag
 	},
 	template: `
 		<div>
 			<div style="width: 32px">
-				<kv-flag country="us" />
-				<kv-flag country="au" />
-				<kv-flag country="cn" />
-				<kv-flag country="kr" />
-				<kv-flag country="zw" />
+				<kv-flag
+					:country="country"
+					:inline-svg="inlineSvg"
+					:aspect-ratio="aspectRatio"
+				/>
 			</div>
 			<br />
-			<kv-flag country="bz" style="width: 20px;" />
+			<kv-flag
+				:country="country"
+				:inline-svg="inlineSvg"
+				:aspect-ratio="aspectRatio"
+				style="width: 20px;"
+			 />
 		</div>
 	`,
 });
 
-export const DefaultInlineSvg = () => ({
-	components: {
-		KvFlag
-	},
-	template: `
-		<div>
-			<div style="width: 10rem;">
-				<kv-flag :inline-svg="true" country="us" />
-				<kv-flag :inline-svg="true" country="au" />
-				<kv-flag :inline-svg="true" country="cn" />
-				<kv-flag :inline-svg="true" country="kr" />
-				<kv-flag :inline-svg="true" country="zw" />
-			</div>
-			<br />
-			<kv-flag :inline-svg="true" country="bz" style="width: 5rem;" />
-		</div>
-	`,
-});
+export const InlineSvg = Default.bind({});
+InlineSvg.args = {
+	inlineSvg: true,
+};
 
-export const Square = () => ({
-	components: {
-		KvFlag
-	},
-	template: `
-		<div>
-			<div style="width: 32px">
-				<kv-flag aspect-ratio="1x1" country="us" />
-				<kv-flag aspect-ratio="1x1" country="au" />
-				<kv-flag aspect-ratio="1x1" country="cn" />
-				<kv-flag aspect-ratio="1x1" country="kr" />
-				<kv-flag aspect-ratio="1x1" country="zw" />
-			</div>
-			<br />
-			<kv-flag aspect-ratio="1x1" country="bz" style="width: 20px;" />
-		</div>
-	`,
-});
+export const Square = Default.bind({});
+Square.args = {
+	aspectRatio: '1x1'
+};
 
-export const SquareInlineSvg = () => ({
-	components: {
-		KvFlag
-	},
-	template: `
-		<div>
-			<div style="width: 10rem;">
-				<kv-flag aspect-ratio="1x1" :inline-svg="true" country="us" />
-				<kv-flag aspect-ratio="1x1" :inline-svg="true" country="au" />
-				<kv-flag aspect-ratio="1x1" :inline-svg="true" country="cn" />
-				<kv-flag aspect-ratio="1x1" :inline-svg="true" country="kr" />
-				<kv-flag aspect-ratio="1x1" :inline-svg="true" country="zw" />
-			</div>
-			<br />
-			<kv-flag aspect-ratio="1x1" :inline-svg="true" country="bz" style="width: 5rem;" />
-		</div>
-	`,
-});
-
-export const Circular = () => ({
+export const Circular = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		KvFlag
 	},
@@ -97,38 +76,27 @@ export const Circular = () => ({
 					box-sizing: content-box;
 				}
 			</component>
-			<kv-flag country="us" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="au" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="cn" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="kr" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="zw" aspect-ratio="1x1" class="circular" />
+			<kv-flag
+				:country="country"
+				:inline-svg="inlineSvg"
+				:aspect-ratio="aspectRatio"
+				class="circular"
+			/>
 		</div>
 	`,
 });
+Circular.args = {
+	aspectRatio: '1x1'
+};
 
-export const CircularInlineSvg = () => ({
-	components: {
-		KvFlag
-	},
-	template: `
-		<div style="width: 10rem;">
-			<component is="style">
-				.circular {
-					border-radius: 50%;
-					overflow: hidden;
-					border: 1px solid #ccc;
-				}
-			</component>
-			<kv-flag country="us" :inline-svg="true" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="au" :inline-svg="true" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="cn" :inline-svg="true" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="kr" :inline-svg="true" aspect-ratio="1x1" class="circular" />
-			<kv-flag country="zw" :inline-svg="true" aspect-ratio="1x1" class="circular" />
-		</div>
-	`,
-});
+export const CircularInlineSvg = Circular.bind({});
+CircularInlineSvg.args = {
+	...Circular.args,
+	inlineSvg: true
+}
 
-export const AllCountries = () => ({
+export const AllCountries = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		KvFlag
 	},
@@ -141,33 +109,30 @@ export const AllCountries = () => ({
 		<div>
 			<div
 				v-for="country in countryList"
-				:key="code"
+				:key="country.code"
 			>
 				<div>{{ country.code }} - {{ country.name }}</div>
-				<kv-flag :country="country.code" style="width: 32px;" />
+				<kv-flag
+					:country="country.code"
+					:inline-svg="inlineSvg"
+					:aspect-ratio="aspectRatio"
+					style="width: 32px;"
+				/>
 			</div>
 		</div>
 	`,
 });
 
-export const AllCountriesInlineSvg = () => ({
-	components: {
-		KvFlag
-	},
-	data() {
-		return {
-			countryList: getCountryList()
-		}
-	},
-	template: `
-		<div>
-			<div
-				v-for="country in countryList"
-				:key="code"
-			>
-				<div>{{ country.code }} - {{ country.name }}<div>
-				<kv-flag :country="country.code" :inline-svg="true" style="width: 10rem;" />
-			</div>
-		</div>
-	`,
-});
+AllCountries.argTypes = {
+	country: { control: { disable: true } },
+	inlineSvg: { control: { disable: true } }
+}
+
+export const AllCountriesInlineSvg = AllCountries.bind({});
+AllCountriesInlineSvg.args = {
+	...AllCountries.args,
+	inlineSvg: true
+}
+AllCountriesInlineSvg.argTypes = {
+	...AllCountries.argTypes,
+}
