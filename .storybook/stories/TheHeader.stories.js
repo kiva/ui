@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import { object } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
+import { lightHeader, iwdHeaderTheme, wrdHeaderTheme } from '@/util/siteThemes';
 
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
@@ -36,29 +36,57 @@ export default {
 	title: 'WwwFrame/TheHeader',
 	component: TheHeader,
 	decorators: [StoryRouter()],
+	args: {
+		hideSearchInHeader: false,
+		minimal: false,
+		theme: null,
+	},
+	argTypes: {
+		theme: {
+			control: {
+				type: 'select',
+				options: {
+					'none': null,
+					'lightHeader':lightHeader,
+					'iwdHeaderTheme': iwdHeaderTheme,
+					'wrdHeaderTheme': wrdHeaderTheme,
+				},
+			}
+		},
+	}
 };
 
-export const Default = () => ({
+export const Default = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		TheHeader
 	},
 	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	template: `
-		<the-header />
+		<the-header
+			:minimal="minimal"
+			:theme="theme"
+			:hide-search-in-header="hideSearchInHeader"
+		/>
 	`,
 });
 
-export const MinimalHeader = () => ({
-	components: {
-		TheHeader
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	template: `
-		<the-header :minimal="true" />
-	`,
-});
+export const HideSearchInHeader = Default.bind({});
+HideSearchInHeader.args = {
+	hideSearchInHeader: true,
+};
 
-export const LoggedInWithCart = () => ({
+export const Minimal = Default.bind({});
+Minimal.args = {
+	minimal: true,
+};
+
+export const Themed = Default.bind({});
+Themed.args = {
+	theme: lightHeader,
+};
+
+export const LoggedInWithCart = (args, { argTypes }) => ({
 	components: {
 		TheHeader
 	},
@@ -82,39 +110,3 @@ export const LoggedInWithCart = () => ({
 		<the-header />
 	`,
 });
-
-export const HideSearchInHeader = () => ({
-	components: {
-		TheHeader
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	template: `
-		<the-header :hide-search-in-header="true" />
-	`,
-});
-
-export const Themed = () => ({
-	components: {
-		TheHeader
-	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
-	props: {
-		theme: {
-			type: Object,
-			default() {
-				return object('theme', {
-					backgroundColor: '#060f9f',
-					textColor: 'orangered',
-					logoColor: 'cyan',
-					linkColor: 'yellow',
-					linkHoverColor: 'pink',
-					separatorColor: 'hsl(178, 97%, 35%)'
-				});
-			}
-		}
-	},
-	template: `
-		<the-header :theme="theme" />
-	`,
-});
-
