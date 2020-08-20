@@ -59,7 +59,7 @@
 											required
 											min="1"
 											max="31"
-											v-model="dayOfMonth"
+											v-model.number="dayOfMonth"
 										>
 										<button
 											class="button--ordinal-day"
@@ -226,7 +226,6 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 import IconPencil from '@/assets/icons/inline/pencil.svg';
 
-
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		autoDeposit {
@@ -385,8 +384,12 @@ export default {
 					dayOfMonth: this.dayOfMonth,
 				}
 			});
-			return Promise.all([updateMGCategory, updateMGSettings]).then(() => {
-				this.$showTipMsg('Settings saved!');
+			return Promise.all([updateMGCategory, updateMGSettings]).then(data => {
+				if (data.find(response => response.errors)) {
+					this.$showTipMsg('There was a problem saving your settings', 'error');
+				} else {
+					this.$showTipMsg('Settings saved!');
+				}
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem saving your settings', 'error');
