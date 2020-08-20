@@ -263,7 +263,6 @@ export default {
 		 * from being dirty on initial load
 		 */
 		this.$watch('form', () => {
-			console.log('watch fired');
 			this.$v.$touch();
 			/**
 			 * Event emitted whenever a form value changes.

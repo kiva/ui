@@ -155,7 +155,7 @@ export default {
 		* @param {number} form.mgAmount - MG amount.
 		* @param {number} form.donation - MG donation amount.
 		* @param {number} form.dayOfMonth - MG day of month.
-		* @param {number} form.category - MG category short name.
+		* @param {string} form.category - MG category short name.
 		* @param {boolean} form.isChanged - is the form dirty.
 		* @param {boolean} form.isFormValid - is the form valid.
 		*/
@@ -206,8 +206,12 @@ export default {
 					dayOfMonth: this.dayOfMonth,
 				}
 			});
-			return Promise.all([updateMGCategory, updateMGSettings]).then(() => {
-				this.$showTipMsg('Settings saved!');
+			return Promise.all([updateMGCategory, updateMGSettings]).then(data => {
+				if (data.find(response => response.errors)) {
+					this.$showTipMsg('There was a problem saving your settings', 'error');
+				} else {
+					this.$showTipMsg('Settings saved!');
+				}
 			}).catch(e => {
 				console.error(e);
 				this.$showTipMsg('There was a problem saving your settings', 'error');
