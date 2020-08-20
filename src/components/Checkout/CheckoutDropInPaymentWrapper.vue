@@ -21,8 +21,7 @@
 				</kv-button>
 			</div>
 			<p class="attribution-text">
-				Thanks to PayPal powered by Braintree,
-				Kiva receives free payment processing for all loans.
+				Thanks to PayPal, Kiva receives free payment processing for all loans.
 			</p>
 		</div>
 	</div>
