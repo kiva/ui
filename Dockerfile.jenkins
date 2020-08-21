@@ -8,7 +8,7 @@ RUN mkdir /ui
 COPY ./ /ui/
 WORKDIR /ui
 
-RUN npm i --no-save
+RUN npm i --no-save --no-audit
 RUN npm run build
 # Prune to only PROD dependencies
 RUN npm prune --production
@@ -34,13 +34,14 @@ COPY --from=build-stage /ui/dist ./dist
 COPY --from=build-stage /ui/server ./server
 COPY --from=build-stage /ui/src ./src
 COPY --from=build-stage /ui/package.json .
-COPY --from=build-stage /ui/package-lock.json .
+# COPY --from=build-stage /ui/package-lock.json .
 # Copy over pruned prod modules from above
 COPY --from=build-stage /ui/node_modules .
 
 # Install required startup script packages
-RUN npm i cross-env --no-save
-RUN npm i dotenv --no-save
+# !!! with package-lock not present there are even more other deps that need to be installed again :(
+RUN npm i cross-env --no-save --no-package-lock
+RUN npm i dotenv --no-save --no-package-lock
 
 # Expose API port to the outside
 EXPOSE 8888
