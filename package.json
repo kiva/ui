@@ -122,7 +122,7 @@
 		"@storybook/addon-essentials": "^6.0.12",
 		"@storybook/addon-knobs": "^6.0.12",
 		"@storybook/addon-links": "^6.0.12",
-		"@storybook/addon-storysource": "^6.0.12",
+		"@storybook/addon-storysource": "^6.0.16",
 		"@storybook/addons": "^6.0.12",
 		"@storybook/storybook-deployer": "^2.8.6",
 		"@storybook/vue": "^6.0.12",
