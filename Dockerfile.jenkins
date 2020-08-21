@@ -10,6 +10,8 @@ WORKDIR /ui
 
 RUN npm i --no-save
 RUN npm run build
+# Prune to only PROD dependencies
+RUN npm prune --production
 
 # run stage
 FROM node:12-alpine as run-stage
@@ -33,9 +35,12 @@ COPY --from=build-stage /ui/server ./server
 COPY --from=build-stage /ui/src ./src
 COPY --from=build-stage /ui/package.json .
 COPY --from=build-stage /ui/package-lock.json .
+# Copy over pruned prod modules from above
+COPY --from=build-stage /ui/node_modules .
 
-# Install PROD dependencies only
-RUN npm install --production
+# Install required startup script packages
+RUN npm i cross-env --no-save
+RUN npm i dotenv --no-save
 
 # Expose API port to the outside
 EXPOSE 8888
