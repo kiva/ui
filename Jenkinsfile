@@ -29,17 +29,18 @@ pipeline {
       }
     }
 
-    stage('Run_Tests') {
-      environment {
-        foo = "bar"
-        blah = "blahblah"
-      }
-      steps {
-        echo "Add tests here.  Verify docker image functions as expected"
-        echo "May need to add some additional containers, etc. to run memcached or other dependencies"
-        echo "Or possibly run dependencies on jenkins nodes"
-      }
-    }
+    // TODO: What addition tests/validations would we like in this flow?
+    // stage('Run_Tests') {
+    //   environment {
+    //     foo = "bar"
+    //     blah = "blahblah"
+    //   }
+    //   steps {
+    //     echo "Add tests here.  Verify docker image functions as expected"
+    //     echo "May need to add some additional containers, etc. to run memcached or other dependencies"
+    //     echo "Or possibly run dependencies on jenkins nodes"
+    //   }
+    // }
 
     stage('Publish_Docker_Image') {
       steps {
@@ -49,6 +50,7 @@ pipeline {
       }
     }
 
+    // Primary automated Dev Deployment
     stage('UI Kubernetes Dev Deployment') {
       when {
         branch 'master'
@@ -62,27 +64,38 @@ pipeline {
             }
           }
         }
-        echo "Deploying to stage Kubernetes cluster..."
-        withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
-          withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
-            withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
-              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-stage --values ./deploy/stage/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
-            }
-          }
-        }
       }
     }
 
-    stage('UI Kubernetes Test Deployment') {
+    // Dev is automatically deployed with each master merge
+    // This additional "dev" stage allows us to override Ui with the contents of a branch named "dev"
+    stage('UI Kubernetes Dev OVERRIDE Deployment') {
       when {
-        branch 'test'
+        branch 'dev'
       }
       steps {
         echo "Deploying to development Kubernetes cluster..."
         withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
           withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
             withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
-              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-test --values ./deploy/test/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
+              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-dev --values ./deploy/dev/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
+            }
+          }
+        }
+      }
+    }
+
+    // Primary automated Stage Deployment
+    stage('UI Kubernetes Stage Deployment') {
+      when {
+        branch 'master'
+      }
+      steps {
+        echo "Deploying to stage Kubernetes cluster..."
+        withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
+          withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
+            withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
+              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-stage --values ./deploy/stage/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
             }
           }
         }
@@ -107,6 +120,24 @@ pipeline {
       }
     }
 
+    // This "test" allows us to manually control deployments to the test env by updating the "test" branch
+    stage('UI Kubernetes Test OVERRIDE Deployment') {
+      when {
+        branch 'test'
+      }
+      steps {
+        echo "Deploying to development Kubernetes cluster..."
+        withKubeConfig([credentialsId: "${K8S_CREDENTIALS_PREPROD}"]) {
+          withAWS([credentials: "${AWS_CREDENTIALS_PREPROD}"]) {
+            withCredentials([string(credentialsId: 'vpn-ips', variable: 'ALLOWED_IPS')]) {
+              sh "helm3 upgrade --install ${K8S_RELEASE_NAME} ./deploy/charts --namespace ${K8S_NAMESPACE_PREFIX}-test --values ./deploy/test/values.yaml --set image.tag=${TAG_NAME} --set-string allowed_ips=\"${ALLOWED_IPS}\""
+            }
+          }
+        }
+      }
+    }
+
+    // Primary Automated QA Deployment
     stage('UI Kubernetes QA Deployment') {
       when {
          expression { QA_DEPLOY.toBoolean() }
@@ -141,6 +172,7 @@ pipeline {
       }
     }
 
+    // Primary Automated PROD Deployment
     stage('UI Kubernetes PROD Deployment') {
       when {
          expression { PROD_DEPLOY.toBoolean() }
