@@ -108,7 +108,7 @@
 		"vue2-touch-events": "^2.2.1",
 		"vuedraggable": "^2.23.0",
 		"vuelidate": "^0.7.5",
-		"webpack-merge": "^4.2.2",
+		"webpack-merge": "^5.1.2",
 		"winston": "^3.2.1"
 	},
 	"devDependencies": {
