@@ -263,13 +263,6 @@ export default {
 			this.showDropInPaymentUpdate = braintreeDropInFeatureFlag && braintreeDropInExp.version === 'shown';
 		},
 	},
-	mounted() {
-		// Check route params (string) for payment method reset case
-		if (this.$route.query.updatePayment === 'true' && this.showDropInPaymentUpdate) {
-			this.settingsOpen = false;
-			this.showLightbox = true;
-		}
-	},
 	computed: {
 		selectedGroupDescriptor() {
 			const selectedCategory = this.lendingCategories.find(category => category.value === this.category);
