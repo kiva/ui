@@ -304,6 +304,7 @@ export default {
 	.advanced-options-toggle {
 		color: $kiva-textlink;
 		font-weight: 300;
+		padding: 0.5rem;
 	}
 }
 
