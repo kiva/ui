@@ -1,80 +1,100 @@
 <template>
-	<div class="sitewide-appeal-wrapper">
-		<div class="sitewide-appeal row" @click="toggleAccordion">
-			<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
-				<h2>
-					<span v-html="bannerHeadline" class="strong"></span>
-					<kv-icon
-						@click="toggleAccordion"
-						:class="{ flipped: open }"
-						class="toggle-arrow"
-						name="medium-chevron"
-						:from-sprite="true"
-					/>
-				</h2>
-			</div>
+	<div>
+		<div class="sitewide-appeal-wrapper">
+			<div class="sitewide-appeal row" @click="toggleAccordion">
+				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
+					<h2>
+						<span v-html="bannerHeadline" class="strong"></span>
+						<kv-icon
+							@click="toggleAccordion"
+							:class="{ flipped: open }"
+							class="toggle-arrow"
+							name="medium-chevron"
+							:from-sprite="true"
+						/>
+					</h2>
+				</div>
 
-			<kv-expandable
-				easing="ease-in-out"
-			>
-				<div class="sitewide-body small-12 columns"
-					v-show="open"
+				<kv-expandable
+					easing="ease-in-out"
 				>
-					<div class="row">
-						<!-- eslint-disable-next-line max-len -->
-						<div class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
-							:title="`${ percentTowardGoal }% raised`"
-						>
-							<appeal-thermometer
-								:percent-toward-goal="percentTowardGoal"
-								:open="open"
-							/>
-						</div>
-						<div class="small-12 medium-9 large-8 xlarge-7 columns">
-							<div>
-								<span
-									v-html="bannerBody"
-									class="message"
-								></span>
-								<!-- <span class="strong" v-html="bannerMatchingText"></span> -->
-							</div>
-							<div class="show-for-small hide-for-medium small-12 columns thermometer-holder">
+					<div class="sitewide-body small-12 columns"
+						v-show="open"
+					>
+						<div class="row">
+							<!-- eslint-disable-next-line max-len -->
+							<div class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
+								:title="`${ percentTowardGoal }% raised`"
+							>
 								<appeal-thermometer
 									:percent-toward-goal="percentTowardGoal"
+									:open="open"
 								/>
 							</div>
-							<div class="donation-buttons">
-								<ul>
-									<li v-for="(buttonAmount, index) in buttonAmounts"
-										:key="index"
-									>
-										<kv-button
-											class="mini custom-width"
-											@click.native.prevent.stop="updateDonationTo(buttonAmount)"
-											v-kv-track-event="[
-												'promo',
-												'click-amount-btn',
-												'AppealBanner',
-												buttonAmount
-											]"
+							<div class="small-12 medium-9 large-8 xlarge-7 columns">
+								<div>
+									<span
+										v-html="bannerBody"
+										class="message"
+									></span>
+									<!-- <span class="strong" v-html="bannerMatchingText"></span> -->
+								</div>
+								<div class="show-for-small hide-for-medium small-12 columns thermometer-holder">
+									<appeal-thermometer
+										:percent-toward-goal="percentTowardGoal"
+									/>
+								</div>
+								<div class="donation-buttons">
+									<ul>
+										<li v-for="(buttonAmount, index) in buttonAmounts"
+											:key="index"
 										>
-											${{ buttonAmount }}
-										</kv-button>
-									</li>
-								</ul>
-								<a
-									class="other-amount"
-									href="/donate/supportus"
-									@blur="validateInput"
-									v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0]"
-								>Other amount
-								</a>
+											<kv-button
+												class="mini custom-width"
+												@click.native.prevent.stop="updateDonationTo(buttonAmount)"
+												v-kv-track-event="[
+													'promo',
+													'click-amount-btn',
+													'AppealBanner',
+													buttonAmount
+												]"
+											>
+												${{ buttonAmount }}
+											</kv-button>
+										</li>
+									</ul>
+									<a
+										class="other-amount"
+										href="/donate/supportus"
+										@blur="validateInput"
+										v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0]"
+									>Other amount
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</kv-expandable>
+				</kv-expandable>
+			</div>
 		</div>
+		<div class="sitewide-overlay">
+			<div class="overlay-content">
+				<h3>
+					Continue to site
+				</h3>
+			</div>
+		</div>
+		<kv-button
+			class="smaller dismiss-button"
+			@click.native.prevent.stop=""
+			v-kv-track-event="[
+				'promo',
+				'homepage',
+				'DismissOverlay'
+			]"
+		>
+			Remind me later
+		</kv-button>
 	</div>
 </template>
 
@@ -347,5 +367,44 @@ export default {
 		// 	overflow: visible;
 		// }
 	}
+}
+
+.overlay-content,
+.dismiss-button {
+	display: none;
+}
+
+#homepage .sitewide-appeal-wrapper {
+	z-index: 2000;
+	position: relative;
+}
+
+#homepage .sitewide-overlay {
+	background: rgba(0, 0, 0, 0.7);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1001;
+	display: flex;
+
+	.overlay-content {
+		position: absolute;
+		top: 75%;
+		display: block;
+		left: 50%;
+		margin-left: rem-calc(-63.75);
+		color: white;
+	}
+}
+
+#homepage .dismiss-button {
+	display: block;
+	z-index: 2002;
+	position: absolute;
+	top: 6px;
+	right: 30px;
+	font-size: 1rem;
 }
 </style>
