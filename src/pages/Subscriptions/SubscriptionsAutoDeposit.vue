@@ -1,5 +1,5 @@
 <template>
-	<div class="row autodeposits-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto Deposits">
 			<template v-slot:icon>
 				<kv-icon
@@ -16,17 +16,23 @@
 				</router-link>
 				<div v-if="isAutoDepositSubscriber">
 					<p>
-						On the <a
-							role="button"
-							@click.prevent="showLightbox = true;"
-						>{{ dayOfMonth | numeral('Oo') }}</a> of each month <a
-							role="button"
-							@click.prevent="showLightbox = true;"
-						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
+						On the <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>
+							{{ dayOfMonth | numeral('Oo') }}
+						</kv-button> of each month <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>
+							{{ totalCombinedDeposit | numeral('$0,0.00') }}
+						</kv-button> will be
 						transferred.
 					</p>
 					<p>
-						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel auto deposit</a>
+						<kv-button class="text-link"
+							@click.native.prevent="$emit('cancel-subscription')"
+						>
+							Cancel auto deposit
+						</kv-button>
 					</p>
 					<kv-lightbox
 						class="auto-deposit-settings-lightbox"

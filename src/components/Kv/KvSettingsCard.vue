@@ -53,6 +53,7 @@ export default {
 	background: $white;
 	padding: 1.95rem;
 	display: flex;
+	margin-bottom: 1.5rem;
 
 	&__icon-wrapper {
 		.icon {

@@ -1,5 +1,5 @@
 <template>
-	<div class="row who-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="Who you’ll support" :disabled="!isEnabled">
 			<template v-slot:icon>
 				<kv-icon
@@ -21,14 +21,13 @@
 					<div class="who-inputs-wrapper">
 						<transition :name="slideTransition" mode="out-in">
 							<span v-if="!showSelectedFilterOptions"></span>
-							<a
+							<kv-button class="text-link back-to-options"
 								v-if="showSelectedFilterOptions"
-								role="button"
-								class="back-to-options"
-								@click.prevent="backToAllOptions"
+								@click.native.prevent="backToAllOptions"
 							>
 								<kv-icon class="arrow back-arrow" name="small-chevron" :from-sprite="true" />
-								Back to all options</a>
+								Back to all options
+							</kv-button>
 						</transition>
 						<transition
 							:name="slideTransition"
@@ -38,19 +37,19 @@
 								<kiva-chooses-radios />
 								<!-- basic criteria -->
 								<div class="row" v-show="!kivaChooses">
-									<div class="small-12 large-6 columns setting-column">
+									<div class="small-12 large-6 columns">
 										<gender-radios />
 									</div>
-									<div class="small-12 large-6 columns setting-column">
+									<div class="small-12 large-6 columns">
 										<group-radios />
 									</div>
-									<div class="small-12 large-6 columns setting-column">
+									<div class="small-12 large-6 columns">
 										<country-radios
 											@change="filterRadioChange"
 											:selector-shown="showSelectedFilterOptions"
 										/>
 									</div>
-									<div class="small-12 large-6 columns setting-column">
+									<div class="small-12 large-6 columns">
 										<sector-radios
 											@change="filterRadioChange"
 											:selector-shown="showSelectedFilterOptions"
@@ -71,31 +70,31 @@
 										</div>
 										<kv-expandable>
 											<div class="row" v-show="showAdvanced">
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<loan-increment-dropdown />
 												</div>
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<attribute-radios
 														@change="filterRadioChange"
 														:selector-shown="showSelectedFilterOptions"
 													/>
 												</div>
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<loan-term-dropdown />
 												</div>
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<partner-radios
 														@change="filterRadioChange"
 														:selector-shown="showSelectedFilterOptions"
 													/>
 												</div>
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<partner-del-rate-dropdown />
 												</div>
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<risk-rating-dropdown />
 												</div>
-												<div class="small-12 large-6 columns setting-column">
+												<div class="small-12 large-6 columns">
 													<default-rate-dropdown />
 												</div>
 											</div>
@@ -131,6 +130,7 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import KvButton from '@/components/Kv/KvButton';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -168,6 +168,7 @@ export default {
 		GroupRadios,
 		InlineCounter,
 		KivaChoosesRadios,
+		KvButton,
 		KvExpandable,
 		KvIcon,
 		KvLightbox,
@@ -236,10 +237,6 @@ export default {
 @import 'settings';
 
 .autolending-who-lightbox {
-	h3 {
-		font-weight: $global-weight-bold;
-	}
-
 	.who-inputs-wrapper {
 		padding: 1.5rem 0 1.5rem 0.15rem;
 		overflow: hidden;

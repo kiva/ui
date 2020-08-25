@@ -1,5 +1,5 @@
 <template>
-	<div class="row when-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="When your balance will be lent" :disabled="!isEnabled">
 			<template v-slot:icon>
 				<kv-icon
@@ -9,22 +9,20 @@
 				/>
 			</template>
 			<template v-slot:content>
-				Your balance will be automatically lent
-				<span v-if="lendAfterDaysIdle === 0"><a
-					role="button"
-					@click.prevent="showLightbox = true;"
-				>as soon as possible</a>
-				</span><span v-if="lendAfterDaysIdle !== 0">
-					if you haven’t made a loan
-					<a
-						role="button"
-						@click.prevent="showLightbox = true;"
-					>after {{ lendAfterDaysIdle }} days</a>
-				</span>, and will include a <a
-					role="button"
-					@click.prevent="showLightbox = true;"
-				>{{ donation }}% donation</a> to Kiva.
-
+				<span>
+					Your balance will be automatically lent
+					<span v-if="lendAfterDaysIdle === 0">
+						<kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>as soon as possible</kv-button>
+					</span><span v-if="lendAfterDaysIdle !== 0">
+						if you haven’t made a loan <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>after {{ lendAfterDaysIdle }} days</kv-button>
+					</span><span>, and will include a <kv-button class="text-link"
+						@click.native.prevent="showLightbox = true;"
+					>{{ donation }}% donation</kv-button> to Kiva.</span>
+				</span>
 				<kv-lightbox
 					class="autolending-when-lightbox"
 					:visible="showLightbox"

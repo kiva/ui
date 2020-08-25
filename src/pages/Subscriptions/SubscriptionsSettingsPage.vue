@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="subscriptions-settings-page">
 		<!-- One Time Settings -->
 		<subscriptions-one-time
 			v-if="isOnetime"
@@ -60,7 +60,7 @@
 		</kv-lightbox>
 
 		<!-- Save button  -->
-		<div class="row column save-button-area" v-if="isChanged">
+		<div class="row column" v-if="isChanged">
 			<kv-button
 				data-test="subscriptions-save-button"
 				class="smaller"
@@ -220,11 +220,7 @@ export default {
 	margin-right: 2rem;
 }
 
-[class*="-area"] {
-	margin-bottom: 1.5rem;
-}
-
-.save-button-area {
-	margin-bottom: 5rem;
+.subscriptions-settings-page {
+	padding-bottom: 5rem;
 }
 </style>

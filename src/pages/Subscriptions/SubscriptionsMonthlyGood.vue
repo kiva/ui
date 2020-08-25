@@ -1,5 +1,5 @@
 <template>
-	<div class="row mg-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="Monthly Good">
 			<template v-slot:icon>
 				<kv-icon
@@ -17,22 +17,29 @@
 
 				<div v-if="isMonthlyGoodSubscriber">
 					<p>
-						On the <a
-							role="button"
-							@click.prevent="showLightbox = true;"
-						>{{ dayOfMonth | numeral('Oo') }}</a> of each month <a
-							role="button"
-							@click.prevent="showLightbox = true;"
-						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
-						transferred<a
-							role="button"
-							@click.prevent="showLightbox = true;"
+						On the <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>
+							{{ dayOfMonth | numeral('Oo') }}
+						</kv-button> of each month <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>
+							{{ totalCombinedDeposit | numeral('$0,0.00') }}
+						</kv-button> will be
+						transferred<kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
 							v-if="selectedGroupDescriptor"
-						> to support
-							{{ selectedGroupDescriptor }}</a>.
+						>
+							to support
+							{{ selectedGroupDescriptor }}
+						</kv-button>.
 					</p>
 					<p>
-						<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Monthly Good</a>
+						<kv-button class="text-link"
+							@click.native.prevent="$emit('cancel-subscription')"
+						>
+							Cancel Monthly Good
+						</kv-button>
 					</p>
 
 					<!-- Edit MG Lightbox -->
@@ -95,16 +102,16 @@
 										v-if="!settingsOpen"
 										class="row column" key="paymentSettings"
 									>
-										<a
-											role="button"
-											@click.prevent="toggleSections"
+										<kv-button class="text-link"
+											@click.native.prevent="toggleSections"
 										>
 											<kv-icon
 												class="arrow back-arrow"
 												name="small-chevron"
 												:from-sprite="true"
 											/>
-											Back to deposit settings</a>
+											Back to deposit settings
+										</kv-button>
 										<div class="mg-update-lightbox__dropin-payment-wrapper">
 											<strong>Update payment method:</strong>
 											<monthly-good-drop-in-payment-wrapper

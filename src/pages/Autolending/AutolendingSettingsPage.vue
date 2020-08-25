@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="autolending-settings-page">
 		<autolending-status />
 
 		<!-- When your balance will be lent -->
@@ -8,7 +8,7 @@
 		<!-- Who you'll support-->
 		<autolending-who />
 
-		<div class="row column save-button-area">
+		<div class="row column">
 			<save-button v-if="isChanged" />
 		</div>
 	</div>
@@ -130,12 +130,8 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-[class*="-area"] {
-	margin-bottom: 1.5rem;
-}
-
-.save-button-area {
-	margin-bottom: 5rem;
+.autolending-settings-page {
+	padding-bottom: 5rem;
 }
 
 </style>

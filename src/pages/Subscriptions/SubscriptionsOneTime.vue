@@ -1,5 +1,5 @@
 <template>
-	<div class="row mg-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
 			<template v-slot:icon>
 				<kv-icon
@@ -10,14 +10,19 @@
 			</template>
 			<template v-slot:content>
 				<p>
-					Thank you for supporting those affected by COVID-19. Your deposit of <a
-						role="button"
-						@click.prevent="showLightbox = true;"
-					>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will occur within one hour,
+					Thank you for supporting those affected by COVID-19. Your deposit of <kv-button class="text-link"
+						@click.native.prevent="showLightbox = true;"
+					>
+						{{ totalCombinedDeposit | numeral('$0,0.00') }}
+					</kv-button> will occur within one hour,
 					after which you will be unable to cancel.
 				</p>
 				<p>
-					<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Contribution</a>
+					<kv-button class="text-link"
+						@click.native.prevent="$emit('cancel-subscription')"
+					>
+						Cancel Contribution
+					</kv-button>
 				</p>
 				<kv-lightbox
 					class="one-time-settings-lightbox"
