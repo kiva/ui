@@ -1,25 +1,27 @@
 <template>
-	<kv-settings-card title="Auto Deposits">
-		<template v-slot:icon>
-			<kv-icon
-				class="icon"
-				title="Auto Deposits"
-				name="auto-icon-when"
-			/>
-		</template>
-		<template v-slot:content>
-			<div v-for="(sub, index) in legacySubscriptions" :key="index">
-				<p>
-					<!-- eslint-disable-next-line max-len -->
-					Each month <strong>{{ sub.amount | numeral('$0,0.00') }}</strong> will be transferred from PayPal. This includes a <strong>{{ sub.amount - sub.autoDonate | numeral('$0,0.00') }}</strong> deposit for lending and a <strong>{{ sub.autoDonate | numeral('$0,0.00') }}</strong> optional donation to support Kiva.
-				</p>
-				<p class="legacy_notice">
-					<!-- eslint-disable-next-line max-len -->
-					Because you have an existing auto deposit, to make changes you'll need to <a :href="subscriptionCancelLink(sub)">cancel your current auto deposit via PayPal</a> and then return to Kiva to set up a new one.
-				</p>
-			</div>
-		</template>
-	</kv-settings-card>
+	<div class="row">
+		<kv-settings-card class="column large-8" title="Auto Deposits">
+			<template v-slot:icon>
+				<kv-icon
+					class="icon"
+					title="Auto Deposits"
+					name="auto-icon-when"
+				/>
+			</template>
+			<template v-slot:content>
+				<div v-for="(sub, index) in legacySubscriptions" :key="index">
+					<p>
+						<!-- eslint-disable-next-line max-len -->
+						Each month <strong>{{ sub.amount | numeral('$0,0.00') }}</strong> will be transferred from PayPal. This includes a <strong>{{ sub.amount - sub.autoDonate | numeral('$0,0.00') }}</strong> deposit for lending and a <strong>{{ sub.autoDonate | numeral('$0,0.00') }}</strong> optional donation to support Kiva.
+					</p>
+					<p class="legacy_notice">
+						<!-- eslint-disable-next-line max-len -->
+						Because you have an existing auto deposit, to make changes you'll need to <a :href="subscriptionCancelLink(sub)">cancel your current auto deposit via PayPal</a> and then return to Kiva to set up a new one.
+					</p>
+				</div>
+			</template>
+		</kv-settings-card>
+	</div>
 </template>
 
 <script>

@@ -1,154 +1,163 @@
 <template>
-	<kv-settings-card title="Monthly Good">
-		<template v-slot:icon>
-			<kv-icon
-				class="icon"
-				title="Monthly Good"
-				name="subscriptions-monthly-good"
-			/>
-		</template>
-		<template v-slot:content>
-			<router-link v-if="!isMonthlyGoodSubscriber"
-				to="/monthlygood"
-			>
-				Sign up for a Kiva Monthly Good subscription
-			</router-link>
-
-			<div v-if="isMonthlyGoodSubscriber">
-				<p>
-					On the <a
-						role="button"
-						@click.prevent="showLightbox = true;"
-					>{{ dayOfMonth | numeral('Oo') }}</a> of each month <a
-						role="button"
-						@click.prevent="showLightbox = true;"
-					>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will be
-					transferred<a
-						role="button"
-						@click.prevent="showLightbox = true;"
-						v-if="selectedGroupDescriptor"
-					> to support
-						{{ selectedGroupDescriptor }}</a>.
-				</p>
-				<p>
-					<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Monthly Good</a>
-				</p>
-
-				<!-- Edit MG Lightbox -->
-				<kv-lightbox
-					class="mg-update-lightbox"
-					:visible="showLightbox"
-					title="Change your monthly good"
-					@lightbox-closed="closeLightbox"
+	<div class="row">
+		<kv-settings-card class="column large-8" title="Monthly Good">
+			<template v-slot:icon>
+				<kv-icon
+					class="icon"
+					title="Monthly Good"
+					name="subscriptions-monthly-good"
+				/>
+			</template>
+			<template v-slot:content>
+				<router-link v-if="!isMonthlyGoodSubscriber"
+					to="/monthlygood"
 				>
-					<div class="mg-update-lightbox__content">
-						<template v-if="showDropInPaymentUpdate">
-							<transition :name="slideTransition" mode="out-in">
-								<!-- Deposit Settings -->
-								<div
-									v-if="settingsOpen"
-									class="row column" key="depositSettings"
-								>
-									<monthly-good-update-form
-										:donation="donation"
-										:day-of-month="dayOfMonth"
-										:category="category"
-										:mg-amount="mgAmount"
-										:disabled="isSaving"
-										@form-update="formUpdated"
-										class="mg-update-lightbox__form"
-									/>
-									<div class="mg-update-lightbox__payment-method">
-										<div class="row align-middle">
-											<div class="column medium-12 large-6" v-if="paymentMethod">
-												<strong>Current payment method:</strong><br>
-												<img :src="paymentMethod.imageUrl">
-												{{ paymentMethod.description }}
-											</div>
-											<div class="column medium-12 large-6 text-right">
-												<button
-													class="button--link"
-													@click="toggleSections"
-												>
-													<strong>Update Payment Method</strong>
-													<icon-pencil class="icon-pencil" />
-												</button>
-											</div>
-										</div>
-									</div>
-									<kv-button
-										data-test="monthly-good-save-button"
-										class="smaller button"
-										v-if="!isSaving"
-										@click.native="saveMonthlyGood"
-										:disabled="!isChanged || !isFormValid"
+					Sign up for a Kiva Monthly Good subscription
+				</router-link>
+
+				<div v-if="isMonthlyGoodSubscriber">
+					<p>
+						On the <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>
+							{{ dayOfMonth | numeral('Oo') }}
+						</kv-button> of each month <kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+						>
+							{{ totalCombinedDeposit | numeral('$0,0.00') }}
+						</kv-button> will be
+						transferred<kv-button class="text-link"
+							@click.native.prevent="showLightbox = true;"
+							v-if="selectedGroupDescriptor"
+						>
+							to support
+							{{ selectedGroupDescriptor }}
+						</kv-button>.
+					</p>
+					<p>
+						<kv-button class="text-link"
+							@click.native.prevent="$emit('cancel-subscription')"
+						>
+							Cancel Monthly Good
+						</kv-button>
+					</p>
+
+					<!-- Edit MG Lightbox -->
+					<kv-lightbox
+						class="mg-update-lightbox"
+						:visible="showLightbox"
+						title="Change your monthly good"
+						@lightbox-closed="closeLightbox"
+					>
+						<div class="mg-update-lightbox__content">
+							<template v-if="showDropInPaymentUpdate">
+								<transition :name="slideTransition" mode="out-in">
+									<!-- Deposit Settings -->
+									<div
+										v-if="settingsOpen"
+										class="row column" key="depositSettings"
 									>
-										Save Settings
-									</kv-button>
-									<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
-										Saving <kv-loading-spinner />
-									</kv-button>
-								</div>
-								<!-- Payment Methods -->
-								<div
-									v-if="!settingsOpen"
-									class="row column" key="paymentSettings"
-								>
-									<a
-										role="button"
-										@click.prevent="toggleSections"
-									>
-										<kv-icon
-											class="arrow back-arrow"
-											name="small-chevron"
-											:from-sprite="true"
-										/>
-										Back to deposit settings</a>
-									<div class="mg-update-lightbox__dropin-payment-wrapper">
-										<strong>Update payment method:</strong>
-										<monthly-good-drop-in-payment-wrapper
-											:amount="totalCombinedDeposit"
-											:donate-amount="donation"
+										<monthly-good-update-form
+											:donation="donation"
 											:day-of-month="dayOfMonth"
 											:category="category"
-											action="Update"
-											@complete-transaction="completeMGBraintree"
+											:mg-amount="mgAmount"
+											:disabled="isSaving"
+											@form-update="formUpdated"
+											class="mg-update-lightbox__form"
 										/>
+										<div class="mg-update-lightbox__payment-method">
+											<div class="row align-middle">
+												<div class="column medium-12 large-6" v-if="paymentMethod">
+													<strong>Current payment method:</strong><br>
+													<img :src="paymentMethod.imageUrl">
+													{{ paymentMethod.description }}
+												</div>
+												<div class="column medium-12 large-6 text-right">
+													<button
+														class="button--link"
+														@click="toggleSections"
+													>
+														<strong>Update Payment Method</strong>
+														<icon-pencil class="icon-pencil" />
+													</button>
+												</div>
+											</div>
+										</div>
+										<kv-button
+											data-test="monthly-good-save-button"
+											class="smaller button"
+											v-if="!isSaving"
+											@click.native="saveMonthlyGood"
+											:disabled="!isChanged || !isFormValid"
+										>
+											Save Settings
+										</kv-button>
+										<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+											Saving <kv-loading-spinner />
+										</kv-button>
 									</div>
-								</div>
-							</transition>
-						</template>
+									<!-- Payment Methods -->
+									<div
+										v-if="!settingsOpen"
+										class="row column" key="paymentSettings"
+									>
+										<kv-button class="text-link"
+											@click.native.prevent="toggleSections"
+										>
+											<kv-icon
+												class="arrow back-arrow"
+												name="small-chevron"
+												:from-sprite="true"
+											/>
+											Back to deposit settings
+										</kv-button>
+										<div class="mg-update-lightbox__dropin-payment-wrapper">
+											<strong>Update payment method:</strong>
+											<monthly-good-drop-in-payment-wrapper
+												:amount="totalCombinedDeposit"
+												:donate-amount="donation"
+												:day-of-month="dayOfMonth"
+												:category="category"
+												action="Update"
+												@complete-transaction="completeMGBraintree"
+											/>
+										</div>
+									</div>
+								</transition>
+							</template>
 
-						<template v-if="!showDropInPaymentUpdate">
-							<monthly-good-update-form
-								:donation="donation"
-								:day-of-month="dayOfMonth"
-								:category="category"
-								:mg-amount="mgAmount"
-								:disabled="isSaving"
-								@form-update="formUpdated"
-							/>
-							<kv-button
-								data-test="monthly-good-save-button"
-								class="smaller button"
-								v-if="!isSaving"
-								@click.native="saveMonthlyGood"
-								:disabled="!isChanged || !isFormValid"
-							>
-								Save
-							</kv-button>
-							<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
-								Saving <kv-loading-spinner />
-							</kv-button>
-						</template>
-					</div>
+							<template v-if="!showDropInPaymentUpdate">
+								<monthly-good-update-form
+									:donation="donation"
+									:day-of-month="dayOfMonth"
+									:category="category"
+									:mg-amount="mgAmount"
+									:disabled="isSaving"
+									@form-update="formUpdated"
+								/>
+								<kv-button
+									data-test="monthly-good-save-button"
+									class="smaller button"
+									v-if="!isSaving"
+									@click.native="saveMonthlyGood"
+									:disabled="!isChanged || !isFormValid"
+								>
+									Save
+								</kv-button>
+								<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+									Saving <kv-loading-spinner />
+								</kv-button>
+							</template>
+						</div>
 
-					<template slot="controls">
-					</template>
-				</kv-lightbox>
-			</div>
-		</template>
-	</kv-settings-card>
+						<template slot="controls">
+						</template>
+					</kv-lightbox>
+				</div>
+			</template>
+		</kv-settings-card>
+	</div>
 </template>
 
 <script>

@@ -1,134 +1,136 @@
 <template>
-	<kv-settings-card title="Who you’ll support" :disabled="!isEnabled">
-		<template v-slot:icon>
-			<kv-icon
-				class="icon"
-				title="Who you’ll support"
-				name="auto-icon-who"
-			/>
-		</template>
-		<template v-slot:content>
-			<who-youll-support-text @click="showLightbox = true" />
-			<inline-counter :strong="true" v-show="!kivaChooses" />
+	<div class="row">
+		<kv-settings-card class="column large-8" title="Who you’ll support" :disabled="!isEnabled">
+			<template v-slot:icon>
+				<kv-icon
+					class="icon"
+					title="Who you’ll support"
+					name="auto-icon-who"
+				/>
+			</template>
+			<template v-slot:content>
+				<who-youll-support-text @click="showLightbox = true" />
+				<inline-counter :strong="true" v-show="!kivaChooses" />
 
-			<kv-lightbox
-				class="autolending-who-lightbox"
-				:visible="showLightbox"
-				title="Choose who you’ll support"
-				@lightbox-closed="showLightbox = false; showSelectedFilterOptions = false;"
-			>
-				<div class="who-inputs-wrapper">
-					<transition :name="slideTransition" mode="out-in">
-						<span v-if="!showSelectedFilterOptions"></span>
-						<a
-							v-if="showSelectedFilterOptions"
-							role="button"
-							class="back-to-options"
-							@click.prevent="backToAllOptions"
+				<kv-lightbox
+					class="autolending-who-lightbox"
+					:visible="showLightbox"
+					title="Choose who you’ll support"
+					@lightbox-closed="showLightbox = false; showSelectedFilterOptions = false;"
+				>
+					<div class="who-inputs-wrapper">
+						<transition :name="slideTransition" mode="out-in">
+							<span v-if="!showSelectedFilterOptions"></span>
+							<kv-button class="text-link back-to-options"
+								v-if="showSelectedFilterOptions"
+								@click.native.prevent="backToAllOptions"
+							>
+								<kv-icon class="arrow back-arrow" name="small-chevron" :from-sprite="true" />
+								Back to all options
+							</kv-button>
+						</transition>
+						<transition
+							:name="slideTransition"
+							mode="out-in"
 						>
-							<kv-icon class="arrow back-arrow" name="small-chevron" :from-sprite="true" />
-							Back to all options</a>
-					</transition>
-					<transition
-						:name="slideTransition"
-						mode="out-in"
-					>
-						<div v-if="!showSelectedFilterOptions" key="allFilters">
-							<kiva-chooses-radios />
-							<!-- basic criteria -->
-							<div class="row" v-show="!kivaChooses">
-								<div class="small-12 large-6 columns">
-									<gender-radios />
-								</div>
-								<div class="small-12 large-6 columns">
-									<group-radios />
-								</div>
-								<div class="small-12 large-6 columns">
-									<country-radios
-										@change="filterRadioChange"
-										:selector-shown="showSelectedFilterOptions"
-									/>
-								</div>
-								<div class="small-12 large-6 columns">
-									<sector-radios
-										@change="filterRadioChange"
-										:selector-shown="showSelectedFilterOptions"
-									/>
-								</div>
-							</div>
-							<div class="row" v-show="!kivaChooses">
-								<div class="column ">
-									<!-- advanced settings -->
-									<div class="row column">
-										<button
-											@click="showAdvanced = !showAdvanced"
-											class="advanced-options-toggle"
-										>
-											<!-- eslint-disable-next-line max-len -->
-											{{ showAdvanced ? 'Hide' : 'Show' }} advanced options <kv-icon class="arrow more-options-arrow" :class="{'down': !showAdvanced, 'up': showAdvanced}" name="small-chevron" :from-sprite="true" />
-										</button>
+							<div v-if="!showSelectedFilterOptions" key="allFilters">
+								<kiva-chooses-radios />
+								<!-- basic criteria -->
+								<div class="row" v-show="!kivaChooses">
+									<div class="small-12 large-6 columns">
+										<gender-radios />
 									</div>
-									<kv-expandable>
-										<div class="row" v-show="showAdvanced">
-											<div class="small-12 large-6 columns">
-												<loan-increment-dropdown />
-											</div>
-											<div class="small-12 large-6 columns">
-												<attribute-radios
-													@change="filterRadioChange"
-													:selector-shown="showSelectedFilterOptions"
-												/>
-											</div>
-											<div class="small-12 large-6 columns">
-												<loan-term-dropdown />
-											</div>
-											<div class="small-12 large-6 columns">
-												<partner-radios
-													@change="filterRadioChange"
-													:selector-shown="showSelectedFilterOptions"
-												/>
-											</div>
-											<div class="small-12 large-6 columns">
-												<partner-del-rate-dropdown />
-											</div>
-											<div class="small-12 large-6 columns">
-												<risk-rating-dropdown />
-											</div>
-											<div class="small-12 large-6 columns">
-												<default-rate-dropdown />
-											</div>
+									<div class="small-12 large-6 columns">
+										<group-radios />
+									</div>
+									<div class="small-12 large-6 columns">
+										<country-radios
+											@change="filterRadioChange"
+											:selector-shown="showSelectedFilterOptions"
+										/>
+									</div>
+									<div class="small-12 large-6 columns">
+										<sector-radios
+											@change="filterRadioChange"
+											:selector-shown="showSelectedFilterOptions"
+										/>
+									</div>
+								</div>
+								<div class="row" v-show="!kivaChooses">
+									<div class="column ">
+										<!-- advanced settings -->
+										<div class="row column">
+											<button
+												@click="showAdvanced = !showAdvanced"
+												class="advanced-options-toggle"
+											>
+												<!-- eslint-disable-next-line max-len -->
+												{{ showAdvanced ? 'Hide' : 'Show' }} advanced options <kv-icon class="arrow more-options-arrow" :class="{'down': !showAdvanced, 'up': showAdvanced}" name="small-chevron" :from-sprite="true" />
+											</button>
 										</div>
-									</kv-expandable>
+										<kv-expandable>
+											<div class="row" v-show="showAdvanced">
+												<div class="small-12 large-6 columns">
+													<loan-increment-dropdown />
+												</div>
+												<div class="small-12 large-6 columns">
+													<attribute-radios
+														@change="filterRadioChange"
+														:selector-shown="showSelectedFilterOptions"
+													/>
+												</div>
+												<div class="small-12 large-6 columns">
+													<loan-term-dropdown />
+												</div>
+												<div class="small-12 large-6 columns">
+													<partner-radios
+														@change="filterRadioChange"
+														:selector-shown="showSelectedFilterOptions"
+													/>
+												</div>
+												<div class="small-12 large-6 columns">
+													<partner-del-rate-dropdown />
+												</div>
+												<div class="small-12 large-6 columns">
+													<risk-rating-dropdown />
+												</div>
+												<div class="small-12 large-6 columns">
+													<default-rate-dropdown />
+												</div>
+											</div>
+										</kv-expandable>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div v-if="showSelectedFilterOptions" key="specificFilter">
-							<country-filter v-if="selectedFilterGroup =='country'" />
-							<sector-filter v-if="selectedFilterGroup =='sector'" />
-							<attribute-filter v-if="selectedFilterGroup =='theme'" />
-							<partner-filter v-if="selectedFilterGroup =='partner'" />
-						</div>
-					</transition>
-				</div>
-				<template slot="controls">
-					<div class="row">
-						<div class="columns shrink">
-							<save-button @autolendingSaved="settingsSaved" />
-						</div>
-						<div class="columns" v-show="!kivaChooses">
-							<inline-counter />
-						</div>
+							<div v-if="showSelectedFilterOptions" key="specificFilter">
+								<country-filter v-if="selectedFilterGroup =='country'" />
+								<sector-filter v-if="selectedFilterGroup =='sector'" />
+								<attribute-filter v-if="selectedFilterGroup =='theme'" />
+								<partner-filter v-if="selectedFilterGroup =='partner'" />
+							</div>
+						</transition>
 					</div>
-				</template>
-			</kv-lightbox>
-		</template>
-	</kv-settings-card>
+					<template slot="controls">
+						<div class="row">
+							<div class="columns shrink">
+								<save-button @autolendingSaved="settingsSaved" />
+							</div>
+							<div class="columns" v-show="!kivaChooses">
+								<inline-counter />
+							</div>
+						</div>
+					</template>
+				</kv-lightbox>
+			</template>
+		</kv-settings-card>
+	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import KvButton from '@/components/Kv/KvButton';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -166,6 +168,7 @@ export default {
 		GroupRadios,
 		InlineCounter,
 		KivaChoosesRadios,
+		KvButton,
 		KvExpandable,
 		KvIcon,
 		KvLightbox,

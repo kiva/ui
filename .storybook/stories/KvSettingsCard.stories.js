@@ -28,7 +28,7 @@ export const Default = () => ({
 		},
 	},
 	template: `
-		<kv-settings-card :title="title">
+		<kv-settings-card class="column large-8" :title="title">
 			<template v-slot:icon>
 				<kv-icon
 					class="icon"

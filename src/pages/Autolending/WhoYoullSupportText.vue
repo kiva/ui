@@ -2,42 +2,47 @@
 	<div>
 		You’ll automatically lend to
 		<template v-if="kivaChooses">
-			<a
-				role="button"
+			<kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>borrowers</a>,
-			<a
-				role="button"
+				@click.native.prevent="$emit('click', $event)"
+			>
+				borrowers
+			</kv-button>,
+			<kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>countries</a>, and
-			<a
-				role="button"
+				@click.native.prevent="$emit('click', $event)"
+			>
+				countries
+			</kv-button>, and
+			<kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>sectors</a> based on your lending history.
+				@click.native.prevent="$emit('click', $event)"
+			>
+				sectors
+			</kv-button> based on your lending history.
 		</template>
 		<template v-if="!kivaChooses">
-			<a
-				role="button"
+			<kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>{{ borrowersText }}</a>, in
-			<a
-				role="button"
+				@click.native.prevent="$emit('click', $event)"
+			>
+				{{ borrowersText }}
+			</kv-button>, in
+			<kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>{{ countriesText }}</a>,
-			and <a
-				role="button"
+				@click.native.prevent="$emit('click', $event)"
+			>
+				{{ countriesText }}
+			</kv-button>,
+			and <kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>{{ sectorText }}</a><span v-if="advancedText"> and <a
-				role="button"
+				@click.native.prevent="$emit('click', $event)"
+			>
+				{{ sectorText }}
+			</kv-button><span v-if="advancedText"> and <kv-button class="text-link"
 				data-test="autolending-who"
-				@click.prevent="$emit('click', $event)"
-			>{{ advancedText }}</a></span>.
+				@click.native.prevent="$emit('click', $event)"
+			>{{ advancedText }}</kv-button></span>.
 		</template>
 	</div>
 </template>
@@ -45,9 +50,13 @@
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	inject: ['apollo'],
+	components: {
+		KvButton,
+	},
 	data() {
 		return {
 			gender: 'both',
