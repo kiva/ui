@@ -1,141 +1,139 @@
 <template>
-	<div class="row mg-area">
-		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
-			<template v-slot:icon>
-				<kv-icon
-					class="icon"
-					title="Monthly Good"
-					name="auto-icon-when"
-				/>
-			</template>
-			<template v-slot:content>
-				<p>
-					Thank you for supporting those affected by COVID-19. Your deposit of <a
-						role="button"
-						@click.prevent="showLightbox = true;"
-					>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will occur within one hour,
-					after which you will be unable to cancel.
-				</p>
-				<p>
-					<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Contribution</a>
-				</p>
-				<kv-lightbox
-					class="one-time-settings-lightbox"
-					:visible="showLightbox"
-					title="Change your contribution"
-					@lightbox-closed="closeLightbox"
+	<kv-settings-card title="Global COVID-19 Response Lending">
+		<template v-slot:icon>
+			<kv-icon
+				class="icon"
+				title="Monthly Good"
+				name="auto-icon-when"
+			/>
+		</template>
+		<template v-slot:content>
+			<p>
+				Thank you for supporting those affected by COVID-19. Your deposit of <a
+					role="button"
+					@click.prevent="showLightbox = true;"
+				>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will occur within one hour,
+				after which you will be unable to cancel.
+			</p>
+			<p>
+				<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Contribution</a>
+			</p>
+			<kv-lightbox
+				class="one-time-settings-lightbox"
+				:visible="showLightbox"
+				title="Change your contribution"
+				@lightbox-closed="closeLightbox"
+			>
+				<form
+					@submit.prevent="null"
+					novalidate
 				>
-					<form
-						@submit.prevent="null"
-						novalidate
-					>
-						<div class="row align-center text-left">
-							<div class="small-12 columns">
-								<div class="row align-middle">
-									<div class="columns">
-										<span>
-											Deposit for lending
-										</span>
-									</div>
-
-									<div class="small-6 medium-4 columns">
-										<label
-											class="show-for-sr"
-											:class="{ 'error': $v.mgAmount.$invalid }"
-											for="amount"
-										>
-											Amount
-										</label>
-										<kv-currency-input
-											class="text-input"
-											id="amount"
-											v-model="mgAmount"
-										/>
-									</div>
-								</div>
-								<div class="row columns align-middle">
-									<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
-										<li v-if="!$v.mgAmount.required">
-											Field is required
-										</li>
-										<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
-											Enter an amount of $5-$10,000
-										</li>
-									</ul>
+					<div class="row align-center text-left">
+						<div class="small-12 columns">
+							<div class="row align-middle">
+								<div class="columns">
+									<span>
+										Deposit for lending
+									</span>
 								</div>
 
-								<div class="row align-middle">
-									<div class="columns">
-										<span>
-											Optional donation to support Kiva
-										</span>
-									</div>
-
-									<div class="small-6 medium-4 columns">
-										<label
-											class="show-for-sr"
-											:class="{ 'error': $v.donation.$invalid }"
-											for="amount"
-										>
-											Donation
-										</label>
-										<kv-currency-input
-											class="text-input"
-											id="donation"
-											v-model="donation"
-										/>
-									</div>
-								</div>
-								<div class="row column align-middle">
-									<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
-										<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
-											Enter an amount of $0-$10,000
-										</li>
-									</ul>
-								</div>
-
-								<div class="row">
-									<div class="columns">
-										<strong>Total</strong>
-									</div>
-
-									<div class="small-6 medium-4 columns">
-										<strong
-											class="additional-left-pad-currency"
-										>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
-									</div>
-								</div>
-								<div class="row column">
-									<ul class="text-center validation-errors"
-										v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+								<div class="small-6 medium-4 columns">
+									<label
+										class="show-for-sr"
+										:class="{ 'error': $v.mgAmount.$invalid }"
+										for="amount"
 									>
-										<li>
-											The maximum Contribution total is $10,000.<br>
-											Please try again by entering in a smaller amount.
-										</li>
-									</ul>
+										Amount
+									</label>
+									<kv-currency-input
+										class="text-input"
+										id="amount"
+										v-model="mgAmount"
+									/>
 								</div>
 							</div>
+							<div class="row columns align-middle">
+								<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
+									<li v-if="!$v.mgAmount.required">
+										Field is required
+									</li>
+									<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+										Enter an amount of $5-$10,000
+									</li>
+								</ul>
+							</div>
+
+							<div class="row align-middle">
+								<div class="columns">
+									<span>
+										Optional donation to support Kiva
+									</span>
+								</div>
+
+								<div class="small-6 medium-4 columns">
+									<label
+										class="show-for-sr"
+										:class="{ 'error': $v.donation.$invalid }"
+										for="amount"
+									>
+										Donation
+									</label>
+									<kv-currency-input
+										class="text-input"
+										id="donation"
+										v-model="donation"
+									/>
+								</div>
+							</div>
+							<div class="row column align-middle">
+								<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
+									<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
+										Enter an amount of $0-$10,000
+									</li>
+								</ul>
+							</div>
+
+							<div class="row">
+								<div class="columns">
+									<strong>Total</strong>
+								</div>
+
+								<div class="small-6 medium-4 columns">
+									<strong
+										class="additional-left-pad-currency"
+									>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+								</div>
+							</div>
+							<div class="row column">
+								<ul class="text-center validation-errors"
+									v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+								>
+									<li>
+										The maximum Contribution total is $10,000.<br>
+										Please try again by entering in a smaller amount.
+									</li>
+								</ul>
+							</div>
 						</div>
-					</form>
-					<template slot="controls">
-						<kv-button
-							data-test="one-time-save-button"
-							class="smaller button"
-							v-if="!isSaving"
-							@click.native="saveOneTime"
-							:disabled="!isChanged || $v.$invalid"
-						>
-							Save
-						</kv-button>
-						<kv-button data-test="one-time-save-button" class="smaller button" v-else>
-							Saving <kv-loading-spinner />
-						</kv-button>
-					</template>
-				</kv-lightbox>
-			</template>
-		</kv-settings-card>
-	</div>
+					</div>
+				</form>
+				<template slot="controls">
+					<kv-button
+						data-test="one-time-save-button"
+						class="smaller button"
+						v-if="!isSaving"
+						@click.native="saveOneTime"
+						:disabled="!isChanged || $v.$invalid"
+					>
+						Save
+					</kv-button>
+					<kv-button data-test="one-time-save-button" class="smaller button" v-else>
+						Saving <kv-loading-spinner />
+					</kv-button>
+				</template>
+			</kv-lightbox>
+		</template>
+	</kv-settings-card>
 </template>
 
 <script>

@@ -1,98 +1,96 @@
 <template>
-	<div class="row status-area">
-		<kv-settings-card class="column large-8" title="Auto-lending status">
-			<template v-slot:icon>
-				<kv-icon
-					v-show="autolendingStatus == 'on'"
-					class="icon"
-					title="Auto-lending On"
-					name="auto-icon-on"
-				/>
-				<kv-icon
-					v-show="autolendingStatus == 'off'"
-					class="icon"
-					title="Auto-lending Off"
-					name="auto-icon-off"
-				/>
-				<kv-icon
-					v-show="autolendingStatus == 'paused'"
-					class="icon"
-					title="Auto-lending Paused"
-					name="auto-icon-pause"
-				/>
-			</template>
-			<template v-slot:content>
-				Your auto-lending setting is currently
-				<a
-					data-test="autolending-status"
-					role="button"
-					@click.prevent="showLightbox = true; triggerWatcher()"
-				>
-					<span class="uppercase">{{ autolendingStatus }}</span>
-					<span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
-				</a>.
+	<kv-settings-card title="Auto-lending status">
+		<template v-slot:icon>
+			<kv-icon
+				v-show="autolendingStatus == 'on'"
+				class="icon"
+				title="Auto-lending On"
+				name="auto-icon-on"
+			/>
+			<kv-icon
+				v-show="autolendingStatus == 'off'"
+				class="icon"
+				title="Auto-lending Off"
+				name="auto-icon-off"
+			/>
+			<kv-icon
+				v-show="autolendingStatus == 'paused'"
+				class="icon"
+				title="Auto-lending Paused"
+				name="auto-icon-pause"
+			/>
+		</template>
+		<template v-slot:content>
+			Your auto-lending setting is currently
+			<a
+				data-test="autolending-status"
+				role="button"
+				@click.prevent="showLightbox = true; triggerWatcher()"
+			>
+				<span class="uppercase">{{ autolendingStatus }}</span>
+				<span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
+			</a>.
 
-				<kv-lightbox
-					class="autolending-status-lightbox"
-					:visible="showLightbox"
-					title="Change your auto-lending status"
-					@lightbox-closed="showLightbox = false"
-				>
-					<div class="status-radio-wrapper">
-						<kv-radio
-							data-test="is-autolending-on"
-							id="is-autolending-on"
-							radio-value="on"
-							v-model="autolendingStatus"
-						>
-							ON
-						</kv-radio>
-						<kv-radio
-							data-test="is-autolending-paused"
-							id="is-autolending-paused"
-							radio-value="paused"
-							v-model="autolendingStatus"
-						>
-							PAUSED for
-							<kv-dropdown-rounded v-model="daysToPause" @change="triggerWatcher">
-								<option value="30">
-									1 Month
-								</option>
-								<option value="90">
-									3 Months
-								</option>
-								<option value="180">
-									6 Months
-								</option>
-							</kv-dropdown-rounded>
-						</kv-radio>
-						<kv-radio
-							data-test="is-autolending-off"
-							id="is-autolending-off"
-							radio-value="off"
-							v-model="autolendingStatus"
-						>
-							OFF
-						</kv-radio>
-					</div>
-					<template slot="controls">
-						<kv-button
-							data-test="status-save-button"
-							class="smaller button"
-							v-if="!isSaving"
-							@click.native="save"
-							:disabled="!isChanged"
-						>
-							Save
-						</kv-button>
-						<kv-button data-test="status-save-button" class="smaller button" v-else>
-							Saving <kv-loading-spinner />
-						</kv-button>
-					</template>
-				</kv-lightbox>
-			</template>
-		</kv-settings-card>
-	</div>
+			<kv-lightbox
+				class="autolending-status-lightbox"
+				:visible="showLightbox"
+				title="Change your auto-lending status"
+				@lightbox-closed="showLightbox = false"
+			>
+				<div class="status-radio-wrapper">
+					<kv-radio
+						data-test="is-autolending-on"
+						id="is-autolending-on"
+						radio-value="on"
+						v-model="autolendingStatus"
+					>
+						ON
+					</kv-radio>
+					<kv-radio
+						data-test="is-autolending-paused"
+						id="is-autolending-paused"
+						radio-value="paused"
+						v-model="autolendingStatus"
+					>
+						PAUSED for
+						<kv-dropdown-rounded v-model="daysToPause" @change="triggerWatcher">
+							<option value="30">
+								1 Month
+							</option>
+							<option value="90">
+								3 Months
+							</option>
+							<option value="180">
+								6 Months
+							</option>
+						</kv-dropdown-rounded>
+					</kv-radio>
+					<kv-radio
+						data-test="is-autolending-off"
+						id="is-autolending-off"
+						radio-value="off"
+						v-model="autolendingStatus"
+					>
+						OFF
+					</kv-radio>
+				</div>
+				<template slot="controls">
+					<kv-button
+						data-test="status-save-button"
+						class="smaller button"
+						v-if="!isSaving"
+						@click.native="save"
+						:disabled="!isChanged"
+					>
+						Save
+					</kv-button>
+					<kv-button data-test="status-save-button" class="smaller button" v-else>
+						Saving <kv-loading-spinner />
+					</kv-button>
+				</template>
+			</kv-lightbox>
+		</template>
+	</kv-settings-card>
 </template>
 
 <script>
