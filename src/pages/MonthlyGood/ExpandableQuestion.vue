@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { paramCase } from 'change-case';
+
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -49,6 +51,17 @@ export default {
 		return {
 			open: false,
 		};
+	},
+	computed: {
+		/** Returns title as a url friendly slug */
+		titleSlugified() {
+			return paramCase(this.title);
+		}
+	},
+	mounted() {
+		if (this.$route.hash === `#${this.titleSlugified}`) {
+			this.open = true;
+		}
 	},
 };
 
