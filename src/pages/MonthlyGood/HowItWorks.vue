@@ -1,5 +1,5 @@
 <template>
-	<div class="how-works-section-wrapper" :class="{'experiment':isExperimentActive}">
+	<div class="how-works-section-wrapper" :class="{'experiment':isExperimentActive}" id="how-it-works">
 		<div class="row">
 			<h1 class="column small-12 text-center impact-text">
 				How it works

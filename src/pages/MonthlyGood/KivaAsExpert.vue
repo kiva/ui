@@ -1,5 +1,5 @@
 <template>
-	<div class="kiva-as-expert-section-wrapper">
+	<div class="kiva-as-expert-section-wrapper" id="kiva-as-expert">
 		<div class="row">
 			<div class="small-12 columns">
 				<h2 class="impact-text">
