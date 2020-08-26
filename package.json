@@ -67,6 +67,7 @@
 		"date-fns": "^2.11.0",
 		"dd-trace": "^0.22.0",
 		"dotenv": "^8.1.0",
+		"embla-carousel": "^3.0.28",
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
 		"express-winston": "^4.0.3",

@@ -1,25 +1,20 @@
-import Vue from 'vue'
-import Vue2TouchEvents from 'vue2-touch-events';
-
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-
-Vue.use(Vue2TouchEvents);
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 
 const defaultCarouselSlides = `
-	<template slot="default" slot-scope="props">
-		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
+	<template slot="default">
+		<kv-carousel-slide style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/e8f0f6/000000" style="width: 100%;">
 		</kv-carousel-slide>
-		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
+		<kv-carousel-slide style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/a87c7c/000000" style="width: 100%;">
 		</kv-carousel-slide>
-		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
+		<kv-carousel-slide style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/f6dbb8/000000" style="width: 100%;">
 		</kv-carousel-slide>
-		<kv-carousel-slide :transition-name="props.transitionName" style="background-color: green;">
+		<kv-carousel-slide style="background-color: green;">
 			<img src="https://via.placeholder.com/300x220/b39696/000000" style="width: 100%;">
 		</kv-carousel-slide>
 	</template>
@@ -36,7 +31,7 @@ export const Default = () => ({
 		KvCarouselSlide
 	},
 	template: `
-		<kv-carousel style="width: 400px; height: 250px;">
+		<kv-carousel style="width: 400px;">
 			${defaultCarouselSlides}
 		</kv-carousel>
 	`,
@@ -50,7 +45,7 @@ export const PauseOnHoverFalse = () => ({
 	template: `
 		<kv-carousel
 			:pause-on-hover="false"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -65,7 +60,7 @@ export const AutoplayFalse = () => ({
 	template: `
 		<kv-carousel
 			:autoplay="false"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -80,7 +75,7 @@ export const HideArrows = () => ({
 	template: `
 		<kv-carousel
 			:hide-arrows="true"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -95,7 +90,7 @@ export const IndicatorStyleNone = () => ({
 	template: `
 		<kv-carousel
 			indicator-style="none"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -111,7 +106,7 @@ export const HideArrowsTrueIndicatorNone = () => ({
 		<kv-carousel
 			:hide-arrows="true"
 			indicator-style="none"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -126,7 +121,7 @@ export const indicatorStyleBar = () => ({
 	template: `
 		<kv-carousel
 			indicator-style="bar"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -142,7 +137,7 @@ export const indicatorStyleBarControlsInside = () => ({
 		<kv-carousel
 			indicator-style="bar"
 			:controls-inside="true"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -158,7 +153,7 @@ export const indicatorStyleBarHideArrowsTrue = () => ({
 		<kv-carousel
 			indicator-style="bar"
 			:hide-arrows="true"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
 		</kv-carousel>
@@ -173,9 +168,48 @@ export const controlsInside = () => ({
 	template: `
 		<kv-carousel
 			:controls-inside="true"
-			style="width: 400px; height: 250px;"
+			style="width: 400px;"
 		>
 			${defaultCarouselSlides}
+		</kv-carousel>
+	`,
+});
+
+export const MultipleLoanCards = () => ({
+	components: {
+		KvCarousel,
+		KvCarouselSlide,
+	},
+	template: `
+		<kv-carousel
+			:embla-options="{ loop: false }"
+			style="width: 30rem;"
+		>
+			<kv-carousel-slide
+				style="min-width: 10rem;"
+			>
+				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
+			</kv-carousel-slide>
+			<kv-carousel-slide
+				style="min-width: 15rem;"
+			>
+				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
+			</kv-carousel-slide>
+			<kv-carousel-slide
+				style="min-width: 15rem;"
+			>
+				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
+			</kv-carousel-slide>
+			<kv-carousel-slide
+				style="min-width: 7rem;"
+			>
+				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
+			</kv-carousel-slide>
+			<kv-carousel-slide
+				style="min-width: 15rem;"
+			>
+				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
+			</kv-carousel-slide>
 		</kv-carousel>
 	`,
 });
@@ -198,33 +232,32 @@ export const loanCardExample = () => ({
 				<kv-carousel
 					indicator-style="bar"
 					@change="onCarouselSlideChange"
-					style="height: 0; padding-bottom: 135%;"
 				>
-					<template slot="default" slot-scope="props">
-						<kv-carousel-slide :transition-name="props.transitionName">
-							<div>Prefetched Loan card goes here</div>
-						</kv-carousel-slide>
-						<kv-carousel-slide :transition-name="props.transitionName">
-							<div v-if="loan2Loaded">
-								Loan card goes here
-							</div>
-							<div v-else
-								style="display: flex; align-items: center; justify-content: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0;"
-							>
-								<kv-loading-spinner />
-							</div>
-						</kv-carousel-slide>
-						<kv-carousel-slide :transition-name="props.transitionName">
-							<div v-if="loan3Loaded">
-								Loan card goes here
-							</div>
-							<div v-else
-								style="display: flex; align-items: center; justify-content: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0;"
-							>
-								<kv-loading-spinner />
-							</div>
-						</kv-carousel-slide>
-					</template>
+					<kv-carousel-slide
+						style="height: 0; padding-bottom: 135%;"
+					>
+						<div>Prefetched Loan card goes here</div>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<div v-if="loan2Loaded">
+							Loan card goes here
+						</div>
+						<div v-else
+							style="display: flex; align-items: center; justify-content: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0;"
+						>
+							<kv-loading-spinner />
+						</div>
+					</kv-carousel-slide>
+					<kv-carousel-slide>
+						<div v-if="loan3Loaded">
+							Loan card goes here
+						</div>
+						<div v-else
+							style="display: flex; align-items: center; justify-content: center; position: absolute; top: 0; bottom: 0; right: 0; left: 0;"
+						>
+							<kv-loading-spinner />
+						</div>
+					</kv-carousel-slide>
 				</kv-carousel>
 			</div>
 		</div>
@@ -284,17 +317,16 @@ export const KivanSlider = () => ({
 		}
 	},
 	template: `
-		<div class="row">
+		<div>
 			<kv-carousel
 				:autoplay="false"
 				:controls-inside="true"
-				style="height: 0; padding-bottom: 41%;"
 			>
 				<kv-carousel-slide
 					v-for="(slide, index) in slidesData"
 					:class="slide-index"
 				>
-					<div class="row">
+					<div style="display: flex;">
 						<div class="small-12 large-6">
 							<kv-responsive-image :images="slide.left" alt="" />
 						</div>
@@ -348,10 +380,10 @@ export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 			<kv-carousel
 				:hide-arrows="true"
 				:slide-interval="5"
+				:emblaOptions="{draggable: false}"
 				:pause-on-hover="false"
 				indicator-style="none"
 				@change="slideChange"
-				style="height: 0; padding-bottom: 50%;"
 			>
 				<!-- eslint-disable max-len -->
 				<kv-carousel-slide>
