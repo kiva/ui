@@ -1,7 +1,5 @@
-import _isUndefined from 'lodash/isUndefined';
 import _filter from 'lodash/filter';
 import _map from 'lodash/map';
-// import _pick from 'lodash/pick';
 import _toPairs from 'lodash/toPairs';
 import { isWithinInterval } from 'date-fns';
 import cookieStore from '@/util/cookieStore';
@@ -69,13 +67,13 @@ export function serializeExpCookie(assignments) {
  */
 export function matchTargets(targets) {
 	// return true if no targets are set, aka everyone matches!!!
-	if (_isUndefined(targets)) return true;
+	if (typeof targets === 'undefined') return true;
 
 	// re-start if targets are present
 	let matched = false;
 
 	// User Segment Targets
-	if (!_isUndefined(targets.users)) {
+	if (typeof targets.users !== 'undefined') {
 		const kvu = cookieStore.get('kvu');
 		// target cookied users only - kvu cookie is present
 		if (kvu && targets.users.indexOf('cookied') > -1) {
@@ -146,7 +144,7 @@ export function assignVersion({
 		for (let i = 0; i < weights.length; i += 1) {
 			const [key, weight] = weights[i];
 			// add the current distribution to our cutoff
-			if (_isUndefined(population)) {
+			if (typeof population === 'undefined') {
 				cutoff += weight;
 			} else {
 				cutoff += weight * population;
