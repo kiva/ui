@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import _filter from 'lodash/filter';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
 
 export default {
@@ -41,9 +40,9 @@ export default {
 	},
 	computed: {
 		genderOptionSelected() {
-			const refinedOption = _filter(this.items, { isRefined: true });
-			if (refinedOption.length) {
-				return refinedOption[0].value;
+			const refinedOption = this.items.find(genderOptionObj => genderOptionObj.isRefined);
+			if (refinedOption) {
+				return refinedOption.value;
 			}
 			return 'all_genders';
 		}
