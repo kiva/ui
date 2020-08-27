@@ -8,6 +8,17 @@ export default [
 		]
 	},
 	{
+		path: '/auto-deposit-new', // ! TODO temporary route
+		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
+	},
+	{
+		path: '/auto-deposit-new/thanks', // ! TODO temporary route
+		component: () => import('@/pages/AutoDeposit/AutoDepositThanksPage'),
+		meta: {
+			activeLoginRequired: true,
+		}
+	},
+	{
 		path: '/borrow/pre-application',
 		component: () => import('@/pages/Borrow/BorrowIndex'),
 		children: [
@@ -76,7 +87,6 @@ export default [
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
-
 	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
@@ -107,7 +117,6 @@ export default [
 			activeLoginRequired: true,
 		}
 	},
-
 	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{
 		path: '/portfolio/lending-stats',
