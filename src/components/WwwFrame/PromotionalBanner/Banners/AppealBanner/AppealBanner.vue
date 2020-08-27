@@ -1,5 +1,5 @@
 <template>
-	<div ref="pageOverlay" class="test">
+	<div ref="pageOverlay">
 		<div class="sitewide-appeal-wrapper">
 			<div class="sitewide-appeal row" @click="toggleAccordion">
 				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
@@ -80,9 +80,9 @@
 		<div :class="this.open ? 'sitewide-overlay' : ''"
 			@click="toggleAccordion();"
 			v-kv-track-event="[
-				'promo',
-				'homepage-overlay',
-				'continue-to-site-dismiss'
+				'Homepage',
+				'EXP-GROW-230-Sept2020',
+				'homepage-overlay-click-dismiss',
 			]"
 		>
 			<div class="overlay-content">
@@ -94,13 +94,7 @@
 		<kv-button
 			class="smaller dismiss-button"
 			:class="this.open ? 'white-button' : ''"
-			ref=""
-			@click.native="toggleAccordion();"
-			v-kv-track-event="[
-				'promo',
-				'homepage-overlay',
-				'remind-me-later-dismiss'
-			]"
+			@click.native="donateButtonToggle();"
 		>
 			{{ this.open ? 'Donate later' : 'Donate' }}
 		</kv-button>
@@ -149,6 +143,8 @@ export default {
 			amount: 0,
 			donationAmount: null,
 			percentTowardGoal: null,
+			// GROW-230
+			forceDismissOverlayExperiment: { id: 'homepage_force_dismiss_overlay', version: 'variant-a' },
 		};
 	},
 	apollo: {
@@ -192,33 +188,36 @@ export default {
 		}
 		this.calculateAmountRaised();
 
-		// Grow-230
-		// Set dynamic class to override css on homepage only
-		if (this.$route.name === 'homepage') {
+		// GROW-230
+		// if on homepage and EXP-GROW-230-Sept2020 is on,
+		// set a dynamic class to use for css overrides
+		if (this.$route.name === 'homepage' && this.forceDismissOverlayExperiment.version === 'variant-b') {
 			this.$refs.pageOverlay.classList.add('overlay-shown');
 		}
 	},
 	created() {
+		// GROW-230
 		if (this.$route.name === 'homepage') {
 			// read experiment fragment to get experiment version
-			const forceDismissOverlayExperiment = this.apollo.readFragment({
+			this.forceDismissOverlayExperiment = this.apollo.readFragment({
 				id: 'Experiment:homepage_force_dismiss_overlay',
 				fragment: experimentVersionFragment,
 			});
+			console.log('test', this.forceDismissOverlayExperiment);
 			// fire analytics with exp version
-			if (forceDismissOverlayExperiment.version === 'variant-a') {
+			if (this.forceDismissOverlayExperiment.version === 'variant-a') {
 				this.$kvTrackEvent(
 					'Homepage',
 					'EXP-GROW-230-Sept2020',
 					'a',
 				);
-			} else if (forceDismissOverlayExperiment.version === 'variant-b') {
+			} else if (this.forceDismissOverlayExperiment.version === 'variant-b') {
 				this.$kvTrackEvent(
 					'Homepage',
 					'EXP-GROW-230-Sept2020',
 					'b',
 				);
-				// if EXP is active and banner is open/expaned lock the scroll
+				// if EXP-GROW-230-Sept2020 is active and banner is open/expaned lock the scroll
 				if (this.open) {
 					// Lock scroll
 					this.$nextTick(() => {
@@ -233,7 +232,7 @@ export default {
 			this.setIsShrunkSession(this.open);
 			this.open = !this.open;
 
-			// Grow-230
+			// GROW-230
 			// Locking/unlocking scroll on homepage as banner opens/closes
 			if (this.$route.name === 'homepage') {
 				if (this.open) {
@@ -242,6 +241,16 @@ export default {
 					this.unlockScroll();
 				}
 			}
+		},
+		// GROW-230
+		donateButtonToggle() {
+			this.toggleAccordion();
+			// Tracking event for the dismiss-button
+			this.$kvTrackEvent(
+				'Homepage',
+				'EXP-GROW-230-Sept2020',
+				this.open ? 'homepage-overlay-donate-open' : 'homepage-overlay-donate-close'
+			);
 		},
 		setIsShrunkSession(isShrunk) {
 			if (isShrunk) {
@@ -298,15 +307,16 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
+
+// GROW-230 changes
 // Hide dismiss button on all pages
 .dismiss-button,
 .overlay-content {
 	display: none;
 }
 
-// Overriding styles for homepage changes
+// Overriding styles for GROW-230 changes
 .overlay-shown .toggle-arrow {
-	// .overlay-content {
 	display: none;
 }
 
@@ -323,6 +333,8 @@ export default {
 		max-width: 65%;
 	}
 }
+
+// GROW-230 changes END
 
 .sitewide-appeal-wrapper {
 	background-color: $kiva-bg-lightgray;
@@ -454,6 +466,7 @@ export default {
 	}
 }
 
+// GROW-230 changes
 .overlay-shown .sitewide-appeal-wrapper {
 	z-index: 2000;
 	position: relative;
@@ -468,6 +481,7 @@ export default {
 	left: 0;
 	z-index: 1001;
 	display: flex;
+	cursor: pointer;
 
 	.overlay-content {
 		position: absolute;
@@ -519,4 +533,5 @@ export default {
 		box-shadow: none;
 	}
 }
+// GROW-230 changes END
 </style>
