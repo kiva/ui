@@ -15,6 +15,7 @@ export default {
 
 .kv-carousel-slide {
 	position: relative;
-	min-width: 100%;
+	flex: 0 0 auto;
+	width: 100%;
 }
 </style>

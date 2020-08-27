@@ -186,27 +186,27 @@ export const MultipleLoanCards = () => ({
 			style="width: 30rem;"
 		>
 			<kv-carousel-slide
-				style="min-width: 10rem;"
+				style="width: 10rem;"
 			>
 				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
 			</kv-carousel-slide>
 			<kv-carousel-slide
-				style="min-width: 15rem;"
+				style="width: 15rem;"
 			>
 				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
 			</kv-carousel-slide>
 			<kv-carousel-slide
-				style="min-width: 15rem;"
+				style="width: 15rem;"
 			>
 				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
 			</kv-carousel-slide>
 			<kv-carousel-slide
-				style="min-width: 7rem;"
+				style="width: 7rem;"
 			>
 				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
 			</kv-carousel-slide>
 			<kv-carousel-slide
-				style="min-width: 15rem;"
+				style="width: 15rem;"
 			>
 				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
 			</kv-carousel-slide>

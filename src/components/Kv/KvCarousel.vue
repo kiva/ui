@@ -184,6 +184,7 @@ export default {
 		// initialize Embla
 		this.embla = EmblaCarousel(this.$refs.KvCarousel, {
 			loop: true,
+			containScroll: 'trimSnaps',
 			...this.emblaOptions,
 		});
 
