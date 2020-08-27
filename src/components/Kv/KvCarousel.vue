@@ -220,10 +220,6 @@ export default {
 				 */
 			this.$emit('change', this.currentIndex);
 		});
-
-		this.embla.on('pointerUp', () => {
-			this.handleUserInteraction(null, 'swipe');
-		});
 	},
 	beforeDestroy() {
 		if (this.autoplay) {
@@ -231,7 +227,6 @@ export default {
 		}
 		// clean up event listeners
 		this.embla.off('select');
-		this.embla.off('pointerUp');
 		this.embla.destroy();
 	},
 	methods: {
