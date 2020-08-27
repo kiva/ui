@@ -7,7 +7,7 @@
 		</div>
 		<div class="small-12 columns">
 			<div class="row collapse">
-				<expandable-question
+				<kv-expandable-question
 					v-for="(question, index) in faqs"
 					:key="index"
 					:title="question.title"
@@ -21,16 +21,15 @@
 </template>
 
 <script>
-import ExpandableQuestion from './ExpandableQuestion';
+import KvExpandableQuestion from '@/components/Kv/KvExpandableQuestion';
 
 export default {
 	components: {
-		ExpandableQuestion
+		KvExpandableQuestion
 	},
 	data() {
 		/* eslint-disable max-len */
 		return {
-			open: false,
 			faqs: [
 				{
 					title: 'How will Kiva decide which loans my Monthly Good supports?',

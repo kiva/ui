@@ -77,6 +77,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
 
 import LandingForm from './LandingForm';
 import LandingFormExperiment from './LandingFormExperiment';
@@ -84,7 +85,6 @@ import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
-import FrequentlyAskedQuestions from './FrequentlyAskedQuestions';
 
 const pageQuery = gql`query monthlyGoodLandingPage {
 	my {

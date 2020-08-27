@@ -91,7 +91,7 @@ import EmailPreviewContentful from '@/pages/MonthlyGood/EmailPreviewContentful';
 
 import MoreAboutKiva from '@/pages/MonthlyGood/MoreAboutKiva';
 import KivaAsExpertContentful from '@/pages/MonthlyGood/KivaAsExpertContentful';
-import FrequentlyAskedQuestions from '@/pages/MonthlyGood/FrequentlyAskedQuestions';
+import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
 
 const pageQuery = gql`query pageTwo {
 		my {

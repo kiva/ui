@@ -38,10 +38,16 @@ export default {
 		KvIcon
 	},
 	props: {
+		/**
+		 * Question Title
+		* */
 		title: {
 			type: String,
 			default: ''
 		},
+		/**
+		 * Question Content - can accept raw html
+		* */
 		content: {
 			type: String,
 			default: ''
@@ -59,6 +65,7 @@ export default {
 		}
 	},
 	mounted() {
+		/** Allows directly linking to the question via a hash equal to slugified title */
 		if (this.$route.hash === `#${this.titleSlugified}`) {
 			this.open = true;
 		}
