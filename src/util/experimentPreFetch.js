@@ -15,6 +15,7 @@ let activeExperiments = [
 	'expandable_loan_cards',
 	'intercom_messenger',
 	'add_to_basket_redirect',
+	'homepage_force_dismiss_overlay',
 ];
 
 // TODO: Enhance Error handling

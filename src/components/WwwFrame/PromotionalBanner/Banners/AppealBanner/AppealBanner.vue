@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div ref="pageOverlay" class="overlay-shown">
 		<div class="sitewide-appeal-wrapper">
 			<div class="sitewide-appeal row" @click="toggleAccordion">
 				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
@@ -77,7 +77,14 @@
 				</kv-expandable>
 			</div>
 		</div>
-		<div class="sitewide-overlay">
+		<div :class="this.open ? 'sitewide-overlay' : ''"
+			@click="toggleAccordion();"
+			v-kv-track-event="[
+				'promo',
+				'homepage-overlay',
+				'continue-to-site-dismiss'
+			]"
+		>
 			<div class="overlay-content">
 				<h3>
 					Continue to site
@@ -86,14 +93,16 @@
 		</div>
 		<kv-button
 			class="smaller dismiss-button"
-			@click.native.prevent.stop=""
+			:class="this.open ? 'white-button' : ''"
+			ref=""
+			@click.native="toggleAccordion();"
 			v-kv-track-event="[
 				'promo',
-				'homepage',
-				'DismissOverlay'
+				'homepage-overlay',
+				'remind-me-later-dismiss'
 			]"
 		>
-			Remind me later
+			{{ this.open ? 'Donate later' : 'Donate' }}
 		</kv-button>
 	</div>
 </template>
@@ -109,6 +118,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import lockScrollUtils from '@/plugins/lock-scroll';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
@@ -118,6 +129,9 @@ export default {
 		AppealThermometer,
 		KvExpandable,
 	},
+	mixins: [
+		lockScrollUtils,
+	],
 	inject: ['apollo'],
 	props: {
 		appealMatchEnabled: {
@@ -177,6 +191,39 @@ export default {
 			this.open = true;
 		}
 		this.calculateAmountRaised();
+	},
+	created() {
+		if (this.$route.name === 'homepage') {
+			// read experiment fragment to get experiment version
+			const forceDismissOverlayExperiment = this.apollo.readFragment({
+				id: 'Experiment:homepage_force_dismiss_overlay',
+				fragment: experimentVersionFragment,
+			});
+			// fire analytics with exp version
+			if (forceDismissOverlayExperiment.version === 'variant-a') {
+				this.$kvTrackEvent(
+					'Homepage',
+					'EXP-GROW-230-Sept2020',
+					'a',
+				);
+			} else if (forceDismissOverlayExperiment.version === 'variant-b') {
+				// set dynamic class
+				console.log('refs', this.$refs.pageOverlay);
+				this.$refs.pageOverlay.classList.value = 'overlay-shown';
+				this.$kvTrackEvent(
+					'Homepage',
+					'EXP-GROW-230-Sept2020',
+					'b',
+				);
+				// if EXP is active and banner is open/expaned lock the scroll
+				if (this.open) {
+					// Lock scroll
+					this.$nextTick(() => {
+						this.lockScroll();
+					});
+				}
+			}
+		}
 	},
 	methods: {
 		toggleAccordion() {
@@ -238,6 +285,27 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
+
+// Overriding styles for homepage changes
+.overlay-shown .toggle-arrow,
+.overlay-shown .overlay-content,
+.overlay-shown.dismiss-button {
+	display: none;
+}
+
+.overlay-shown .sitewide-header {
+	padding-top: 50px;
+	max-width: inherit;
+
+	@include breakpoint(medium) {
+		padding-top: inherit;
+		max-width: 60%;
+	}
+
+	@include breakpoint(xlarge) {
+		max-width: 65%;
+	}
+}
 
 .sitewide-appeal-wrapper {
 	background-color: $kiva-bg-lightgray;
@@ -369,17 +437,12 @@ export default {
 	}
 }
 
-.overlay-content,
-.dismiss-button {
-	display: none;
-}
-
-#homepage .sitewide-appeal-wrapper {
+.overlay-shown .sitewide-appeal-wrapper {
 	z-index: 2000;
 	position: relative;
 }
 
-#homepage .sitewide-overlay {
+.overlay-shown .sitewide-overlay {
 	background: rgba(0, 0, 0, 0.7);
 	position: absolute;
 	top: 0;
@@ -399,12 +462,44 @@ export default {
 	}
 }
 
-#homepage .dismiss-button {
+.overlay-shown .dismiss-button {
 	display: block;
 	z-index: 2002;
 	position: absolute;
-	top: 6px;
-	right: 30px;
-	font-size: 1rem;
+	top: rem-calc(19);
+	font-size: 0.9rem;
+	padding: rem-calc(10) rem-calc(20);
+	right: rem-calc(10);
+	width: 94%;
+
+	@include breakpoint(375px) {
+		width: 95%;
+	}
+
+	@include breakpoint(medium) {
+		top: rem-calc(33);
+		right: rem-calc(30);
+		width: inherit;
+	}
+
+	@include breakpoint(958px) {
+		top: rem-calc(21);
+	}
+
+	@include breakpoint(xga) {
+		right: 13%;
+	}
+
+	@include breakpoint(1400px) {
+		right: 20%;
+	}
+
+	&.white-button {
+		// Overriding button styles
+		background-color: white;
+		color: $kiva-accent-blue;
+		border: 1px solid gray;
+		box-shadow: none;
+	}
 }
 </style>
