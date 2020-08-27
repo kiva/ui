@@ -1,5 +1,5 @@
 <template>
-	<div ref="pageOverlay" class="overlay-shown">
+	<div ref="pageOverlay" class="test">
 		<div class="sitewide-appeal-wrapper">
 			<div class="sitewide-appeal row" @click="toggleAccordion">
 				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
@@ -191,6 +191,12 @@ export default {
 			this.open = true;
 		}
 		this.calculateAmountRaised();
+
+		// Grow-230
+		// Set dynamic class to override css on homepage only
+		if (this.$route.name === 'homepage') {
+			this.$refs.pageOverlay.classList.add('overlay-shown');
+		}
 	},
 	created() {
 		if (this.$route.name === 'homepage') {
@@ -207,9 +213,6 @@ export default {
 					'a',
 				);
 			} else if (forceDismissOverlayExperiment.version === 'variant-b') {
-				// set dynamic class
-				console.log('refs', this.$refs.pageOverlay);
-				this.$refs.pageOverlay.classList.value = 'overlay-shown';
 				this.$kvTrackEvent(
 					'Homepage',
 					'EXP-GROW-230-Sept2020',
@@ -285,11 +288,15 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
+// Hide dismiss button on all pages
+.dismiss-button,
+.overlay-content {
+	display: none;
+}
 
 // Overriding styles for homepage changes
-.overlay-shown .toggle-arrow,
-.overlay-shown .overlay-content,
-.overlay-shown.dismiss-button {
+.overlay-shown .toggle-arrow {
+	// .overlay-content {
 	display: none;
 }
 
