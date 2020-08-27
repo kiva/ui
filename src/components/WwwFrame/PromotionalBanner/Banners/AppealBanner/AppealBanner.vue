@@ -232,6 +232,16 @@ export default {
 		toggleAccordion() {
 			this.setIsShrunkSession(this.open);
 			this.open = !this.open;
+
+			// Grow-230
+			// Locking/unlocking scroll on homepage as banner opens/closes
+			if (this.$route.name === 'homepage') {
+				if (this.open) {
+					this.lockScroll();
+				} else {
+					this.unlockScroll();
+				}
+			}
 		},
 		setIsShrunkSession(isShrunk) {
 			if (isShrunk) {
