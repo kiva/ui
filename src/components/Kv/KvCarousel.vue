@@ -12,7 +12,7 @@
 		>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--left"
-				:disabled="!emblaOptions.loop && currentIndex === 0"
+				:disabled="embla && !embla.canScrollPrev()"
 				@click="handleUserInteraction(previousIndex, 'click-left-arrow')"
 			>
 				<kv-icon
@@ -24,7 +24,7 @@
 			</button>
 			<button
 				class="kv-carousel__arrows-btn kv-carousel__arrows-btn--right"
-				:disabled="!emblaOptions.loop && currentIndex === slideIndicatorList.length - 1"
+				:disabled="embla && !embla.canScrollNext()"
 				@click="handleUserInteraction(nextIndex, 'click-right-arrow')"
 			>
 				<kv-icon
