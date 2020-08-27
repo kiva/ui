@@ -1,4 +1,3 @@
-import _pick from 'lodash/pick';
 import LoanSearchFilters, {
 	filtersAreEqual,
 	getCacheableFilters,
@@ -29,22 +28,15 @@ export function getCacheableCriteria(criteria) {
 
 // Return a cleaned criteria suitable for a query variable
 export function getInputCriteria({ filters, ...criteria }) {
-	const cleanCriteria = _pick(criteria, [
-		'queryString'
-	]);
 	return {
-		...cleanCriteria,
+		queryString: criteria.queryString,
 		filters: getInputFilters(filters),
 	};
 }
 
 // Return criteria that can be used in a loan search
-export function getSearchableCriteria({ filters, ...criteria }) {
-	const cleanCriteria = _pick(criteria, [
-		'queryString'
-	]);
+export function getSearchableCriteria({ filters }) {
 	return {
-		...cleanCriteria,
 		filters: getSearchableFilters(filters),
 	};
 }

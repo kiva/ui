@@ -155,8 +155,6 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-import _map from 'lodash/map';
-import _pick from 'lodash/pick';
 import numeral from 'numeral';
 import store2 from 'store2';
 import cookieStore from '@/util/cookieStore';
@@ -547,11 +545,13 @@ export default {
 			const transactionData = {
 				transactionId: numeral(transactionId).value(),
 				itemTotal: this.totals.itemTotal,
-				loans: _map(this.loans, loan => {
-					return _pick(loan, ['__typename', 'id', 'price']);
+				loans: this.loans.map(loan => {
+					const { __typename, id, price } = loan;
+					return { __typename, id, price };
 				}),
-				donations: _map(this.donations, donation => {
-					return _pick(donation, ['__typename', 'id', 'price']);
+				donations: this.donations.map(donation => {
+					const { __typename, id, price } = donation;
+					return { __typename, id, price };
 				}),
 			};
 			// fire transaction events
