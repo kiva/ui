@@ -1,80 +1,109 @@
 <template>
-	<div class="sitewide-appeal-wrapper">
-		<div class="sitewide-appeal row" @click="toggleAccordion">
-			<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
-				<h2>
-					<span v-html="bannerHeadline" class="strong"></span>
-					<kv-icon
-						@click="toggleAccordion"
-						:class="{ flipped: open }"
-						class="toggle-arrow"
-						name="medium-chevron"
-						:from-sprite="true"
-					/>
-				</h2>
-			</div>
-
-			<kv-expandable
-				easing="ease-in-out"
+	<div ref="pageOverlay">
+		<div class="sitewide-appeal-wrapper">
+			<div
+				class="sitewide-appeal row"
+				@click="toggleAccordion"
+				@keyup.esc="toggleAccordion"
 			>
-				<div class="sitewide-body small-12 columns"
-					v-show="open"
+				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
+					<h2>
+						<span v-html="bannerHeadline" class="strong"></span>
+						<kv-icon
+							@click="toggleAccordion"
+							:class="{ flipped: open }"
+							class="toggle-arrow"
+							name="medium-chevron"
+							:from-sprite="true"
+						/>
+					</h2>
+				</div>
+
+				<kv-expandable
+					easing="ease-in-out"
 				>
-					<div class="row">
-						<!-- eslint-disable-next-line max-len -->
-						<div class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
-							:title="`${ percentTowardGoal }% raised`"
-						>
-							<appeal-thermometer
-								:percent-toward-goal="percentTowardGoal"
-								:open="open"
-							/>
-						</div>
-						<div class="small-12 medium-9 large-8 xlarge-7 columns">
-							<div>
-								<span
-									v-html="bannerBody"
-									class="message"
-								></span>
-								<!-- <span class="strong" v-html="bannerMatchingText"></span> -->
-							</div>
-							<div class="show-for-small hide-for-medium small-12 columns thermometer-holder">
+					<div class="sitewide-body small-12 columns"
+						v-show="open"
+					>
+						<div class="row">
+							<!-- eslint-disable-next-line max-len -->
+							<div class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
+								:title="`${ percentTowardGoal }% raised`"
+							>
 								<appeal-thermometer
 									:percent-toward-goal="percentTowardGoal"
+									:open="open"
 								/>
 							</div>
-							<div class="donation-buttons">
-								<ul>
-									<li v-for="(buttonAmount, index) in buttonAmounts"
-										:key="index"
-									>
-										<kv-button
-											class="mini custom-width"
-											@click.native.prevent.stop="updateDonationTo(buttonAmount)"
-											v-kv-track-event="[
-												'promo',
-												'click-amount-btn',
-												'AppealBanner',
-												buttonAmount
-											]"
+							<div class="small-12 medium-9 large-8 xlarge-7 columns">
+								<div>
+									<span
+										v-html="bannerBody"
+										class="message"
+									></span>
+									<!-- <span class="strong" v-html="bannerMatchingText"></span> -->
+								</div>
+								<div class="show-for-small hide-for-medium small-12 columns thermometer-holder">
+									<appeal-thermometer
+										:percent-toward-goal="percentTowardGoal"
+									/>
+								</div>
+								<div class="donation-buttons">
+									<ul>
+										<li v-for="(buttonAmount, index) in buttonAmounts"
+											:key="index"
 										>
-											${{ buttonAmount }}
-										</kv-button>
-									</li>
-								</ul>
-								<a
-									class="other-amount"
-									href="/donate/supportus"
-									@blur="validateInput"
-									v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0]"
-								>Other amount
-								</a>
+											<kv-button
+												class="mini custom-width"
+												@click.native.prevent.stop="updateDonationTo(buttonAmount)"
+												v-kv-track-event="[
+													'promo',
+													'click-amount-btn',
+													'AppealBanner',
+													buttonAmount
+												]"
+											>
+												${{ buttonAmount }}
+											</kv-button>
+										</li>
+									</ul>
+									<a
+										class="other-amount"
+										href="/donate/supportus"
+										@blur="validateInput"
+										v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0]"
+									>Other amount
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</kv-expandable>
+				</kv-expandable>
+			</div>
 		</div>
+
+		<!-- GROW-230 -->
+		<div :class="this.open ? 'sitewide-overlay' : ''"
+			@click="toggleAccordion();"
+			v-kv-track-event="[
+				'Homepage',
+				'EXP-GROW-230-Sept2020',
+				'homepage-overlay-click-dismiss',
+			]"
+		>
+			<div class="overlay-content">
+				<h3>
+					Continue to site
+				</h3>
+			</div>
+		</div>
+		<kv-button
+			class="smaller dismiss-button"
+			:class="this.open ? 'white-button' : ''"
+			@click.native="donateButtonToggle();"
+		>
+			{{ this.open ? 'Donate later' : 'Donate' }}
+		</kv-button>
 	</div>
 </template>
 
@@ -89,6 +118,8 @@ import KvIcon from '@/components/Kv/KvIcon';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import lockScrollUtils from '@/plugins/lock-scroll';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
@@ -98,6 +129,9 @@ export default {
 		AppealThermometer,
 		KvExpandable,
 	},
+	mixins: [
+		lockScrollUtils,
+	],
 	inject: ['apollo'],
 	props: {
 		appealMatchEnabled: {
@@ -115,6 +149,8 @@ export default {
 			amount: 0,
 			donationAmount: null,
 			percentTowardGoal: null,
+			// GROW-230
+			forceDismissOverlayExperiment: { id: 'homepage_force_dismiss_overlay', version: 'variant-a' },
 		};
 	},
 	apollo: {
@@ -157,11 +193,69 @@ export default {
 			this.open = true;
 		}
 		this.calculateAmountRaised();
+
+		// GROW-230
+		// if on homepage and EXP-GROW-230-Sept2020 is on,
+		// set a dynamic class to use for css overrides
+		if (this.$route.name === 'homepage' && this.forceDismissOverlayExperiment.version === 'variant-b') {
+			this.$refs.pageOverlay.classList.add('overlay-shown');
+		}
+	},
+	created() {
+		// GROW-230
+		if (this.$route.name === 'homepage') {
+			// read experiment fragment to get experiment version
+			this.forceDismissOverlayExperiment = this.apollo.readFragment({
+				id: 'Experiment:homepage_force_dismiss_overlay',
+				fragment: experimentVersionFragment,
+			});
+
+			// fire analytics with EXP version
+			if (this.forceDismissOverlayExperiment.version === 'variant-a') {
+				this.$kvTrackEvent(
+					'Homepage',
+					'EXP-GROW-230-Sept2020',
+					'a',
+				);
+			} else if (this.forceDismissOverlayExperiment.version === 'variant-b') {
+				this.$kvTrackEvent(
+					'Homepage',
+					'EXP-GROW-230-Sept2020',
+					'b',
+				);
+				// if EXP-GROW-230-Sept2020 is active and banner is open/expaned lock the page scroll
+				if (this.open) {
+					this.$nextTick(() => {
+						this.lockScroll();
+					});
+				}
+			}
+		}
 	},
 	methods: {
 		toggleAccordion() {
 			this.setIsShrunkSession(this.open);
 			this.open = !this.open;
+
+			// GROW-230
+			// Locking/unlocking scroll on homepage as banner opens/closes
+			if (this.$route.name === 'homepage') {
+				if (this.open) {
+					this.lockScroll();
+				} else {
+					this.unlockScroll();
+				}
+			}
+		},
+		// GROW-230
+		donateButtonToggle() {
+			this.toggleAccordion();
+			// Tracking event for the dismiss-button
+			this.$kvTrackEvent(
+				'Homepage',
+				'EXP-GROW-230-Sept2020',
+				this.open ? 'homepage-overlay-donate-open' : 'homepage-overlay-donate-close'
+			);
 		},
 		setIsShrunkSession(isShrunk) {
 			if (isShrunk) {
@@ -218,6 +312,33 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
+
+// GROW-230 changes
+// Hide experiment on all pages
+.dismiss-button,
+.overlay-content {
+	display: none;
+}
+
+// Hiding normal accordion chevron on experiment pages
+.overlay-shown .toggle-arrow {
+	display: none;
+}
+
+.overlay-shown .sitewide-header {
+	padding-top: rem-calc(50);
+	max-width: inherit;
+
+	@include breakpoint(medium) {
+		padding-top: inherit;
+		max-width: 60%;
+	}
+
+	@include breakpoint(xlarge) {
+		max-width: 65%;
+	}
+}
+// GROW-230 changes END (more below)
 
 .sitewide-appeal-wrapper {
 	background-color: $kiva-bg-lightgray;
@@ -346,6 +467,74 @@ export default {
 		// .sitewide-body.thermometerStart {
 		// 	overflow: visible;
 		// }
+	}
+}
+
+// GROW-230 changes
+.overlay-shown .sitewide-appeal-wrapper {
+	z-index: 1002;
+	position: relative;
+}
+
+.overlay-shown .sitewide-overlay {
+	background: rgba(0, 0, 0, 0.7);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1001;
+	display: flex;
+	cursor: pointer;
+
+	.overlay-content {
+		position: absolute;
+		top: 75%;
+		display: block;
+		left: 50%;
+		margin-left: rem-calc(-63.75);
+		color: white;
+	}
+}
+
+.overlay-shown .dismiss-button {
+	display: block;
+	z-index: 2002;
+	position: absolute;
+	top: rem-calc(19);
+	font-size: 0.9rem;
+	padding: rem-calc(10) rem-calc(20);
+	right: rem-calc(10);
+	width: 94%;
+
+	@include breakpoint(375) {
+		width: 95%;
+	}
+
+	@include breakpoint(medium) {
+		top: rem-calc(33);
+		right: rem-calc(30);
+		width: inherit;
+	}
+
+	@include breakpoint(958) {
+		top: rem-calc(21);
+	}
+
+	@include breakpoint(xga) {
+		right: 13%;
+	}
+
+	@include breakpoint(1400) {
+		right: 20%;
+	}
+
+	&.white-button {
+		// Overriding button styles
+		background-color: white;
+		color: $kiva-accent-blue;
+		border: 1px solid gray;
+		box-shadow: none;
 	}
 }
 </style>
