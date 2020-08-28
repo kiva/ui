@@ -77,6 +77,8 @@
 				</kv-expandable>
 			</div>
 		</div>
+
+		<!-- GROW-230 -->
 		<div :class="this.open ? 'sitewide-overlay' : ''"
 			@click="toggleAccordion();"
 			v-kv-track-event="[
@@ -203,8 +205,8 @@ export default {
 				id: 'Experiment:homepage_force_dismiss_overlay',
 				fragment: experimentVersionFragment,
 			});
-			console.log('test', this.forceDismissOverlayExperiment);
-			// fire analytics with exp version
+
+			// fire analytics with EXP version
 			if (this.forceDismissOverlayExperiment.version === 'variant-a') {
 				this.$kvTrackEvent(
 					'Homepage',
@@ -217,9 +219,8 @@ export default {
 					'EXP-GROW-230-Sept2020',
 					'b',
 				);
-				// if EXP-GROW-230-Sept2020 is active and banner is open/expaned lock the scroll
+				// if EXP-GROW-230-Sept2020 is active and banner is open/expaned lock the page scroll
 				if (this.open) {
-					// Lock scroll
 					this.$nextTick(() => {
 						this.lockScroll();
 					});
@@ -309,19 +310,19 @@ export default {
 @import 'settings';
 
 // GROW-230 changes
-// Hide dismiss button on all pages
+// Hide experiment on all pages
 .dismiss-button,
 .overlay-content {
 	display: none;
 }
 
-// Overriding styles for GROW-230 changes
+// Hiding normal accordion chevron on experiment pages
 .overlay-shown .toggle-arrow {
 	display: none;
 }
 
 .overlay-shown .sitewide-header {
-	padding-top: 50px;
+	padding-top: rem-calc(50);
 	max-width: inherit;
 
 	@include breakpoint(medium) {
@@ -333,8 +334,7 @@ export default {
 		max-width: 65%;
 	}
 }
-
-// GROW-230 changes END
+// GROW-230 changes END (more below)
 
 .sitewide-appeal-wrapper {
 	background-color: $kiva-bg-lightgray;
@@ -503,7 +503,7 @@ export default {
 	right: rem-calc(10);
 	width: 94%;
 
-	@include breakpoint(375px) {
+	@include breakpoint(375) {
 		width: 95%;
 	}
 
@@ -513,7 +513,7 @@ export default {
 		width: inherit;
 	}
 
-	@include breakpoint(958px) {
+	@include breakpoint(958) {
 		top: rem-calc(21);
 	}
 
@@ -521,7 +521,7 @@ export default {
 		right: 13%;
 	}
 
-	@include breakpoint(1400px) {
+	@include breakpoint(1400) {
 		right: 20%;
 	}
 
@@ -533,5 +533,4 @@ export default {
 		box-shadow: none;
 	}
 }
-// GROW-230 changes END
 </style>
