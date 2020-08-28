@@ -1,5 +1,5 @@
 <template>
-	<div ref="pageOverlay">
+	<div :class="{ 'overlay-shown': isUserInExp }">
 		<div class="sitewide-appeal-wrapper">
 			<div
 				class="sitewide-appeal row"
@@ -162,6 +162,16 @@ export default {
 		},
 	},
 	computed: {
+		// GROW-230
+		// Checking to see if user is in experiment
+		// Boolean value determins a dynamic class being applied
+		// to be used for css overrides
+		isUserInExp() {
+			if (this.$route.name === 'homepage' && this.forceDismissOverlayExperiment.version === 'variant-b') {
+				return true;
+			}
+			return false;
+		},
 		bannerHeadline(props) {
 			const appealHeadline = props.appealBannerContent.richText;
 			return documentToHtmlString(appealHeadline);
@@ -193,13 +203,6 @@ export default {
 			this.open = true;
 		}
 		this.calculateAmountRaised();
-
-		// GROW-230
-		// if on homepage and EXP-GROW-230-Sept2020 is on,
-		// set a dynamic class to use for css overrides
-		if (this.$route.name === 'homepage' && this.forceDismissOverlayExperiment.version === 'variant-b') {
-			this.$refs.pageOverlay.classList.add('overlay-shown');
-		}
 	},
 	created() {
 		// GROW-230
