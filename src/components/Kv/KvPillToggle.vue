@@ -61,6 +61,15 @@ export default {
 			checked: this.selected
 		};
 	},
+	/**
+	* Allows the pill toggle to be programatically changed by
+	* changing the selected prop without any user interaction
+	*/
+	watch: {
+		selected(newValue) {
+			this.checked = newValue;
+		},
+	},
 	methods: {
 		onChange(key) {
 			this.$emit('pill-toggled', key);

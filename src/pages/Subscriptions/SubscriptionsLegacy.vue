@@ -1,5 +1,5 @@
 <template>
-	<div class="row autodeposits-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto Deposits">
 			<template v-slot:icon>
 				<kv-icon

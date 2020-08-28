@@ -46,102 +46,108 @@
 					</small>
 				</div>
 			</div>
+			<div class="middle-wrapper">
+				<div class="row align-middle">
+					<div class="columns">
+						<span>
+							Deposit for lending
+						</span>
+					</div>
+
+					<div class="small-6 medium-4 columns">
+						<label
+							class="show-for-sr"
+							:class="{ 'error': $v.form.mgAmount.$invalid }"
+							for="amount"
+						>
+							Amount
+						</label>
+						<kv-currency-input
+							class="text-input"
+							id="amount"
+							v-model="form.mgAmount"
+						/>
+					</div>
+				</div>
+				<div class="row columns align-middle">
+					<ul class="text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
+						<li v-if="!$v.form.mgAmount.required">
+							Field is required
+						</li>
+						<li v-if="!$v.form.mgAmount.minValue || !$v.form.mgAmount.maxValue">
+							Enter an amount of $5-$10,000
+						</li>
+					</ul>
+				</div>
+				<div class="row align-middle">
+					<div class="columns">
+						<span>
+							Optional donation to support Kiva
+						</span>
+					</div>
+
+					<div class="small-6 medium-4 columns">
+						<label
+							class="show-for-sr"
+							:class="{ 'error': $v.form.donation.$invalid }"
+							for="amount"
+						>
+							Donation
+						</label>
+						<kv-currency-input
+							class="text-input"
+							id="donation"
+							v-model="form.donation"
+						/>
+					</div>
+				</div>
+				<div class="row column align-middle">
+					<ul class="text-right validation-errors" v-if="$v.form.donation.$invalid">
+						<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
+							Enter an amount of $0-$10,000
+						</li>
+					</ul>
+				</div>
+				<div class="row">
+					<div class="columns">
+						<strong>Total/month</strong>
+					</div>
+
+					<div class="small-6 medium-4 columns">
+						<strong
+							class="additional-left-pad-currency"
+						>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+					</div>
+				</div>
+				<div class="row column">
+					<ul class="text-center validation-errors"
+						v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
+					>
+						<li>
+							The maximum Monthly Good total is $10,000.<br>
+							Please try again by entering in a smaller amount.
+						</li>
+					</ul>
+				</div>
+			</div>
 			<div class="row align-middle">
-				<div class="columns">
-					<span>
-						Deposit for lending
-					</span>
+				<div class="column">
+					<strong>Your contribution will:</strong>
 				</div>
-
-				<div class="small-6 medium-4 columns">
-					<label
-						class="show-for-sr"
-						:class="{ 'error': $v.form.mgAmount.$invalid }"
-						for="amount"
+				<div class="column">
+					<kv-dropdown-rounded
+						v-model="form.category"
+						class="group-dropdown"
 					>
-						Amount
-					</label>
-					<kv-currency-input
-						class="text-input"
-						id="amount"
-						v-model="form.mgAmount"
-					/>
+						<option
+							v-for="(option, index) in lendingCategories"
+							:value="option.value"
+							:key="index"
+						>
+							{{ option.label }}
+						</option>
+					</kv-dropdown-rounded>
 				</div>
-			</div>
-			<div class="row columns align-middle">
-				<ul class="text-right validation-errors" v-if="$v.form.mgAmount.$invalid">
-					<li v-if="!$v.form.mgAmount.required">
-						Field is required
-					</li>
-					<li v-if="!$v.form.mgAmount.minValue || !$v.form.mgAmount.maxValue">
-						Enter an amount of $5-$10,000
-					</li>
-				</ul>
-			</div>
-			<div class="row align-middle">
-				<div class="columns">
-					<span>
-						Optional donation to support Kiva
-					</span>
-				</div>
-
-				<div class="small-6 medium-4 columns">
-					<label
-						class="show-for-sr"
-						:class="{ 'error': $v.form.donation.$invalid }"
-						for="amount"
-					>
-						Donation
-					</label>
-					<kv-currency-input
-						class="text-input"
-						id="donation"
-						v-model="form.donation"
-					/>
-				</div>
-			</div>
-			<div class="row column align-middle">
-				<ul class="text-right validation-errors" v-if="$v.form.donation.$invalid">
-					<li v-if="!$v.form.donation.minValue || !$v.form.donation.maxValue">
-						Enter an amount of $0-$10,000
-					</li>
-				</ul>
-			</div>
-			<div class="row">
-				<div class="columns">
-					<strong>Total/month</strong>
-				</div>
-
-				<div class="small-6 medium-4 columns">
-					<strong
-						class="additional-left-pad-currency"
-					>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
-				</div>
-			</div>
-			<div class="row column">
-				<ul class="text-center validation-errors"
-					v-if="!$v.form.mgAmount.maxTotal || !$v.form.donation.maxTotal"
-				>
-					<li>
-						The maximum Monthly Good total is $10,000.<br>
-						Please try again by entering in a smaller amount.
-					</li>
-				</ul>
-			</div>
-			<div class="row column text-center">
-				Select a category to focus your lending
-				<kv-dropdown-rounded
-					v-model="form.category"
-					class="group-dropdown"
-				>
-					<option
-						v-for="(option, index) in lendingCategories"
-						:value="option.value"
-						:key="index"
-					>
-						{{ option.label }}
-					</option>
-				</kv-dropdown-rounded>
 			</div>
 		</fieldset>
 	</form>
@@ -294,8 +300,6 @@ export default {
 @import 'settings';
 
 form {
-	margin: 1rem 0;
-
 	.row {
 		margin-bottom: 0.25em;
 	}
@@ -358,6 +362,16 @@ form {
 
 	::v-deep .dropdown-wrapper.group-dropdown .dropdown {
 		margin-top: 0.65rem;
+		margin-bottom: 0;
+	}
+
+	.middle-wrapper {
+		padding-left: 2rem;
+		padding-right: 2rem;
+	}
+
+	.group-dropdown {
+		margin-right: 2rem;
 	}
 }
 </style>

@@ -1,33 +1,12 @@
 <template>
-	<transition :name="transitionName">
-		<div v-show="display" class="kv-carousel-slide">
-			<slot></slot>
-		</div>
-	</transition>
+	<div class="kv-carousel-slide">
+		<slot></slot>
+	</div>
 </template>
 
 <script>
 export default {
 	name: 'KvCarouselSlide',
-	props: {
-		transitionName: {
-			type: String,
-			default: 'kv-slide-left'
-		}
-	},
-	data() {
-		return {
-			display: false,
-		};
-	},
-	methods: {
-		hide() {
-			this.display = false;
-		},
-		show() {
-			this.display = true;
-		},
-	},
 };
 </script>
 
@@ -35,10 +14,8 @@ export default {
 @import 'settings';
 
 .kv-carousel-slide {
-	position: absolute;
-	left: 0;
-	top: 0;
-	bottom: 0;
-	right: 0;
+	position: relative;
+	flex: 0 0 auto;
+	width: 100%;
 }
 </style>

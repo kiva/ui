@@ -1,6 +1,8 @@
 <template>
 	<div class="lend-timing-messaging">
-		<span class="text-notice" v-if="legacyAutoLender">{{ autoLendNotice }}</span>
+		<div v-if="legacyAutoLender">
+			<span class="text-notice">{{ autoLendNotice }}</span>
+		</div>
 		<div
 			data-test="timing-explanation"
 			class="autolend-explanation-text"
@@ -160,7 +162,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.lend-timing-messaging {
+.lend-timing-messaging > div {
 	margin-top: 1.5rem;
 }
 

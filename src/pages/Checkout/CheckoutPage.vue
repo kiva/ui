@@ -95,7 +95,7 @@
 									@click.prevent.native="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
-									Login to Continue
+									{{ loginContinueButtonText }}
 								</kv-button>
 							</div>
 						</div>
@@ -155,8 +155,6 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-import _map from 'lodash/map';
-import _pick from 'lodash/pick';
 import numeral from 'numeral';
 import store2 from 'store2';
 import cookieStore from '@/util/cookieStore';
@@ -234,15 +232,10 @@ export default {
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
-			checkoutSteps: [
-				'Basket',
-				'Account',
-				'Payment',
-				'Thank You!'
-			],
 			showDropInPayments: true,
 			userPrefContinueBrowsing: false,
 			addToBasketRedirectExperimentShown: false,
+			loginButtonExperimentVersion: null,
 		};
 	},
 	apollo: {
@@ -342,6 +335,21 @@ export default {
 		} else if (addToBasketRedirectExperiment.version === 'shown') {
 			this.addToBasketRedirectExperimentShown = true;
 		}
+
+		// GROW-203 login/registration CTA experiment
+		const loginButtonExperiment = this.apollo.readFragment({
+			id: 'Experiment:checkout_login_cta',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.loginButtonExperimentVersion = loginButtonExperiment.version;
+		if (this.loginButtonExperimentVersion && !this.emptyBasket) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-GROW-203-Aug2020',
+				this.loginButtonExperimentVersion,
+			);
+		}
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time
@@ -383,7 +391,25 @@ export default {
 			}
 			return false;
 		},
+		checkoutSteps() {
+			if (this.loginButtonExperimentShown) {
+				return [
+					'Basket',
+					'Payment',
+					'Thank You!'
+				];
+			}
+			return [
+				'Basket',
+				'Account',
+				'Payment',
+				'Thank You!'
+			];
+		},
 		currentStep() {
+			if (this.loginButtonExperimentShown) {
+				return this.isLoggedIn ? 1 : 0;
+			}
 			return this.isLoggedIn ? 2 : 0;
 		},
 		creditNeeded() {
@@ -398,6 +424,9 @@ export default {
 			}
 			return false;
 		},
+		loginContinueButtonText() {
+			return this.loginButtonExperimentShown ? 'Continue' : 'Login to Continue';
+		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
 				&& (!this.donations.length
@@ -406,6 +435,9 @@ export default {
 			}
 			return false;
 		},
+		loginButtonExperimentShown() {
+			return this.loginButtonExperimentVersion === 'b';
+		}
 	},
 	methods: {
 		loginToContinue() {
@@ -416,6 +448,18 @@ export default {
 				if (!this.isActivelyLoggedIn) {
 					authorizeOptions.prompt = 'login';
 				}
+
+				if (this.loginButtonExperimentShown) {
+					// Pass custom JSON configuration to Auth0 login page
+					const kvConfig = JSON.stringify({ socialExp: true });
+					// Choose register as initial screen if no user has logged in on this browser before
+					if (!cookieStore.get('kvu')) {
+						authorizeOptions.login_hint = `signUp|${kvConfig}`;
+					} else {
+						authorizeOptions.login_hint = `login|${kvConfig}`;
+					}
+				}
+
 				this.kvAuth0.popupLogin(authorizeOptions).then(result => {
 					// Only refetch data if login was successful
 					if (result) {
@@ -501,11 +545,13 @@ export default {
 			const transactionData = {
 				transactionId: numeral(transactionId).value(),
 				itemTotal: this.totals.itemTotal,
-				loans: _map(this.loans, loan => {
-					return _pick(loan, ['__typename', 'id', 'price']);
+				loans: this.loans.map(loan => {
+					const { __typename, id, price } = loan;
+					return { __typename, id, price };
 				}),
-				donations: _map(this.donations, donation => {
-					return _pick(donation, ['__typename', 'id', 'price']);
+				donations: this.donations.map(donation => {
+					const { __typename, id, price } = donation;
+					return { __typename, id, price };
 				}),
 			};
 			// fire transaction events

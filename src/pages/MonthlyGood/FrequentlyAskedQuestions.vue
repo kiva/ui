@@ -1,5 +1,5 @@
 <template>
-	<div class="frequently-asked-questions-section-wrapper row">
+	<div class="frequently-asked-questions-section-wrapper row" id="frequently-asked-questions">
 		<div class="small-12 columns">
 			<h2 class="impact-text">
 				Frequently asked questions
@@ -13,6 +13,7 @@
 					:title="question.title"
 					:content="question.content"
 					class="small-12 columns"
+					:id="question.title | changeCase('paramCase')"
 				/>
 			</div>
 		</div>
@@ -69,6 +70,15 @@ export default {
 		};
 		/* eslint-enable max-len */
 	},
+	mounted() {
+		/** Scroll expandable question into view. */
+		this.$nextTick(() => {
+			const el = document.querySelector(this.$route.hash);
+			if (el) {
+				el.scrollIntoView();
+			}
+		});
+	}
 };
 
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<div class="more-about-kiva-section-wrapper row">
+	<div class="more-about-kiva-section-wrapper row" id="more-about-kiva">
 		<div class="small-12 columns">
 			<h2 class="impact-text">
 				More about Kiva

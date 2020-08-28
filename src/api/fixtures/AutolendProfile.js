@@ -1,4 +1,3 @@
-import _omit from 'lodash/omit';
 import LoanSearchCriteria, {
 	criteriaAreEqual,
 	getCacheableCriteria,
@@ -35,11 +34,9 @@ export function getCacheableProfile(profile) {
 
 // Return a cleaned profile suitable for a query variable
 export function getInputProfile({ loanSearchCriteria, ...profile }) {
-	const cleanProfile = _omit(profile, [
-		'id',
-		'__typename',
-		'cIdleStartTime',
-	]);
+	const {
+		id, cIdleStartTime, __typename, ...cleanProfile
+	} = profile;
 	return {
 		...cleanProfile,
 		loanSearchCriteria: getInputCriteria(loanSearchCriteria),

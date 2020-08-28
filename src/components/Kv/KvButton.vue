@@ -108,6 +108,7 @@ export default {
 	background: transparent;
 	font-size: 1em;
 	transition: none;
+	vertical-align: baseline;
 
 	&:hover,
 	&:focus {

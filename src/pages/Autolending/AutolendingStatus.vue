@@ -1,5 +1,5 @@
 <template>
-	<div class="row status-area">
+	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto-lending status">
 			<template v-slot:icon>
 				<kv-icon
@@ -23,14 +23,13 @@
 			</template>
 			<template v-slot:content>
 				Your auto-lending setting is currently
-				<a
+				<kv-button class="text-link"
+					@click.native.prevent="showLightbox = true; triggerWatcher()"
 					data-test="autolending-status"
-					role="button"
-					@click.prevent="showLightbox = true; triggerWatcher()"
 				>
 					<span class="uppercase">{{ autolendingStatus }}</span>
 					<span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
-				</a>.
+				</kv-button>.
 
 				<kv-lightbox
 					class="autolending-status-lightbox"
