@@ -4,6 +4,7 @@
 		<!-- Auto Deposit Form -->
 		<!-- Auto Deposit What To Expect -->
 		<!-- Auto Deposit Frequently Asked Questions -->
+		<frequently-asked-questions />
 	</www-page>
 </template>
 
@@ -12,6 +13,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import FrequentlyAskedQuestions from '@/components/AutoDeposit/FrequentlyAskedQuestions';
 
 const pageQuery = gql`query autoDepositLandingPage {
 	my {
@@ -27,7 +29,7 @@ export default {
 	},
 	components: {
 		WwwPage,
-
+		FrequentlyAskedQuestions,
 	},
 	data() {
 		return {
