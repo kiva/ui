@@ -1,7 +1,11 @@
 <template>
 	<div ref="pageOverlay">
 		<div class="sitewide-appeal-wrapper">
-			<div class="sitewide-appeal row" @click="toggleAccordion">
+			<div
+				class="sitewide-appeal row"
+				@click="toggleAccordion"
+				@keyup.esc="toggleAccordion"
+			>
 				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2  columns">
 					<h2>
 						<span v-html="bannerHeadline" class="strong"></span>
@@ -468,7 +472,7 @@ export default {
 
 // GROW-230 changes
 .overlay-shown .sitewide-appeal-wrapper {
-	z-index: 2000;
+	z-index: 1002;
 	position: relative;
 }
 
