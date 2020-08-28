@@ -60,7 +60,7 @@ export default {
 	},
 	created() {
 		// eslint-disable-next-line no-console
-		console.warn('Auth0 error:', this.$route.query);
+		console.warn('Auth0 error:', JSON.stringify(this.$route.query));
 	},
 };
 </script>
