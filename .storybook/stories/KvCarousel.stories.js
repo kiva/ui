@@ -1,7 +1,10 @@
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvCauseSelector from '@/components/Kv/KvCauseSelector';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+
+import causeList from '../mock-data/cause-selector-data-mock';
 
 const defaultCarouselSlides = `
 	<template slot="default">
@@ -209,6 +212,49 @@ export const MultipleLoanCards = () => ({
 				style="width: 15rem;"
 			>
 				<img width="100%" src="https://p11.f2.n0.cdn.getcloudapp.com/items/X6uNbg4d/Image%202020-08-24%20at%205.07.14%20PM.png?source=viewer&v=3a6ddf2dda936b41b04674cffc556b8b" />
+			</kv-carousel-slide>
+		</kv-carousel>
+	`,
+});
+
+export const CauseSelectorCarousel = () => ({
+	components: {
+		KvCarousel,
+		KvCarouselSlide,
+		KvCauseSelector,
+	},
+	data() {
+		return {
+			causeList
+		}
+	},
+	methods: {
+		onChangeCause(e) {
+			console.log(e);
+		}
+	},
+	template: `
+		<kv-carousel
+			:controls-inside="true"
+			:autoplay="false"
+			indicator-style="none"
+			:embla-options="{
+				loop: false,
+				containScroll: 'keepSnaps',
+
+			}"
+		>
+			<kv-carousel-slide
+				v-for="cause in causeList"
+				:key="cause"
+				style="width: auto; padding-top: .75rem;"
+			>
+				<kv-cause-selector
+					:cause="cause"
+					:as-radio="true"
+					style="margin: 2rem 2rem 0"
+					@change="onChangeCause"
+				/>
 			</kv-carousel-slide>
 		</kv-carousel>
 	`,
