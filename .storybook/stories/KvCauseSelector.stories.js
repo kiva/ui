@@ -1,21 +1,10 @@
 import KvCauseSelector from '@/components/Kv/KvCauseSelector';
 
-export const causeList = [
-	'Women',
-	'Shelter',
-	'Education',
-	'Technology',
-	'Agriculture',
-	'COVID-19',
-	'Health',
-	'Refugees',
-	'Arts'
-]
+import causeList from '../mock-data/cause-selector-data-mock';
 
 export default {
 	title: 'Kv/KvCauseSelector',
 	component: KvCauseSelector,
-	excludeStories: ['causeList'],
 	args: {
 		cause: 'COVID-19',
 		asRadio: false,
