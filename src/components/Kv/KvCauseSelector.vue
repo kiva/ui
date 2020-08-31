@@ -61,10 +61,6 @@ export default {
 	components: {
 		KvIcon
 	},
-	model: {
-		prop: 'checked',
-		event: 'change'
-	},
 	props: {
 		/**
 		 * The cause to display
