@@ -1,7 +1,7 @@
 <template>
 	<div class="frequently-asked-questions-section-wrapper row" id="frequently-asked-questions">
 		<div class="small-12 columns">
-			<h2 class="impact-text">
+			<h2>
 				Frequently asked questions
 			</h2>
 		</div>
@@ -71,8 +71,12 @@ export default {
 	margin-bottom: 4rem;
 
 	h2 {
-		color: $kiva-green;
 		margin-bottom: 1.85rem;
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
 	}
 }
 </style>
