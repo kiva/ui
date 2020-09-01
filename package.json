@@ -104,7 +104,7 @@
 		"vue-instantsearch": "^2.4.0",
 		"vue-meta": "^2.4.0",
 		"vue-progressbar": "^0.7.3",
-		"vue-router": "^3.3.4",
+		"vue-router": "^3.4.3",
 		"vue-server-renderer": "^2.6.11",
 		"vue2-touch-events": "^2.2.1",
 		"vuedraggable": "^2.23.0",
