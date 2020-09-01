@@ -28,7 +28,7 @@ module.exports = merge(baseWebpackConfig, {
 	// https://github.com/liady/webpack-node-externals
 	externals: nodeExternals({
 		// do not externalize style files in case we need to import it from a dep
-		whitelist: [
+		allowlist: [
 			/\.css$/,
 			/\.scss$/,
 			/\.vue$/,
