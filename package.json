@@ -45,7 +45,7 @@
 		"@graphql-tools/load": "^6.0.18",
 		"@graphql-tools/url-loader": "^6.0.18",
 		"@sentry/browser": "^5.21.1",
-		"@sentry/integrations": "^5.21.1",
+		"@sentry/integrations": "^5.21.3",
 		"algoliasearch": "^3.34.0",
 		"apollo-cache-inmemory": "^1.6.6",
 		"apollo-client": "2.6.10",
