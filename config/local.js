@@ -1,4 +1,4 @@
-var merge = require('webpack-merge')
+const { merge } = require('webpack-merge');
 var base = require('./dev-vm.js')
 
 module.exports = merge(base, {

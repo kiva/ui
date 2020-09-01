@@ -1,4 +1,4 @@
-var merge = require('webpack-merge')
+const { merge } = require('webpack-merge');
 var qa  = require('./qa.js')
 
 module.exports = merge(qa, {

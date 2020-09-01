@@ -1,4 +1,4 @@
-var merge = require('webpack-merge')
+const { merge } = require('webpack-merge');
 var stage  = require('./stage.js')
 
 module.exports = merge(stage, {

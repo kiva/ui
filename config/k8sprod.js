@@ -1,4 +1,4 @@
-var merge = require('webpack-merge')
+const { merge } = require('webpack-merge');
 var prod = require('./index.js')
 
 module.exports = merge(prod, {

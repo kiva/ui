@@ -1,11 +1,11 @@
 var webpack = require('webpack');
-var merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 var config = require('../config');
 var assetsPath = require('./assets-path.js');
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 var baseWebpackConfig = require('./webpack.client.base.conf');
 
-module.exports = merge.smart(baseWebpackConfig, {
+module.exports = merge(baseWebpackConfig, {
 	name: 'client',
 	mode: 'development',
 	entry: {
