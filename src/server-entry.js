@@ -1,5 +1,6 @@
 /* eslint-disable no-console, no-param-reassign */
 import serialize from 'serialize-javascript';
+import { v4 as uuidv4 } from 'uuid';
 import cookieStore from '@/util/cookieStore';
 import KvAuth0, { MockKvAuth0 } from '@/util/KvAuth0';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -27,7 +28,22 @@ export default context => {
 			user,
 		} = context;
 		const { accessToken, ...profile } = user;
+
+		// Reset cookie store with cookies passed from express middleware
 		cookieStore.reset(cookies);
+
+		// Create random visitor id if none is set
+		if (!cookieStore.get('uiv')) {
+			// Set visitor id cookie expiration for 2 years from now
+			const expires = new Date();
+			expires.setFullYear(expires.getFullYear() + 2);
+			// Store visitor id as 'uiv' cookie
+			cookieStore.set('uiv', uuidv4(), {
+				expires,
+				sameSite: true,
+				secure: true,
+			});
+		}
 
 		let kvAuth0;
 		if (config.auth0.enable) {
