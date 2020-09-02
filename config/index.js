@@ -56,7 +56,7 @@ module.exports = {
 			environment: 'production'
 		},
 		googlePay: {
-			merchantId: 'f5swrg87wym8bx37'
+			merchantId: '10620948091453922228'
 		}
 	},
 	server: {
