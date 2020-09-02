@@ -18,7 +18,7 @@ import {
 } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
-import lenderPreferencesHomepage from '@/pages/Homepage/LenderPreferencesHomepage';
+import LenderPreferencesHomepage from '@/pages/Homepage/LenderPreferencesHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -42,7 +42,7 @@ export default {
 	components: {
 		WwwPage,
 		DefaultHomePage,
-		lenderPreferencesHomepage,
+		LenderPreferencesHomepage,
 		// IWDHomePage,
 		// WRDHomePage,
 		TopMessageContentful,
@@ -58,7 +58,7 @@ export default {
 	},
 	computed: {
 		activeHomepage() {
-			if (this.isLenderPreferencesActive) return lenderPreferencesHomepage;
+			if (this.isLenderPreferencesActive) return LenderPreferencesHomepage;
 			if (this.isMessageActive) return TopMessageContentful;
 			// if (this.isIwdActive) return IWDHomePage;
 			// if (this.isWrdActive) return WRDHomePage;
