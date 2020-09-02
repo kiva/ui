@@ -155,9 +155,9 @@ export default {
 			const userCauseIds = this.selectedCauses.map(cause => cause.id);
 			console.log(userCauseIds);
 
-			const saveLendingPreferencesMutation = gql`mutation testing($visitorId: String!, $causes: [Int]) {
+			const saveLendingPreferences = gql`mutation savePrefs($visitorId: String!, $causes: [Int]) {
 				my {
-					saveLendingPreferefnces(visitorId: $visitorId, causes: $causes) {
+					saveLendingPreferences(visitorId: $visitorId, causes: $causes) {
 						id
 						causes {
 							values {
@@ -171,7 +171,7 @@ export default {
 
 			try {
 				const result = await this.apollo.mutate({
-					mutation: saveLendingPreferencesMutation,
+					mutation: saveLendingPreferences,
 					variables: {
 						visitorId: uiv,
 						causes: userCauseIds
