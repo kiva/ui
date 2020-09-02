@@ -26,7 +26,7 @@
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
 						</kv-button> will be
-						transferred<kv-button class="text-link"
+						transferred <kv-button class="text-link"
 							@click.native.prevent="showLightbox = true;"
 							v-if="selectedGroupDescriptor"
 						>

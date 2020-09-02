@@ -31,7 +31,7 @@
 						<kv-button class="text-link"
 							@click.native.prevent="$emit('cancel-subscription')"
 						>
-							Cancel auto deposit
+							Cancel Auto Deposit
 						</kv-button>
 					</p>
 					<kv-lightbox
