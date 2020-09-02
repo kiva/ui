@@ -8,7 +8,7 @@
 						Set up an Auto Deposit
 					</h2>
 				</div>
-				<div class="small-12 large-7 columns">
+				<div class="small-12 large-8 columns">
 					<p class="auto-deposit-setup__subhead">
 						<!-- eslint-disable-next-line max-len -->
 						Automatically add money to your Kiva account every month so it'll be available for you to lend to the borrowers that inspire you the most.
@@ -18,6 +18,39 @@
 		</div>
 
 		<!-- Auto Deposit Form -->
+		<div class="auto-deposit-form" v-if="canDisplayForm">
+			<div class="row">
+				<div class="small-12 large-8 columns">
+					<!-- TODO inset form here -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Already Subscribed Notice -->
+		<div class="row" v-if="hasAutoDeposits || hasLegacySubscription">
+			<div class="small-12 large-6 columns">
+				<div class="already-subscribed-msg-wrapper">
+					<h3>
+						You already have an existing auto deposit.
+						Changes can be made in your
+						<a href="/settings/subscriptions">subscription settings</a>.
+					</h3>
+				</div>
+			</div>
+		</div>
+
+		<!-- Monthly Good Notice -->
+		<div class="row" v-if="isMonthlyGoodSubscriber">
+			<div class="small-12 large-6 columns">
+				<div class="already-subscribed-msg-wrapper">
+					<h3>
+						Auto Deposit is not available to Monthly Good subscribers.
+						Changes can be made in your
+						<a href="/settings/subscriptions">subscription settings</a>.
+					</h3>
+				</div>
+			</div>
+		</div>
 
 		<!-- Auto Deposit What To Expect -->
 		<div class="auto-deposit-what-to-expect">
@@ -71,8 +104,13 @@ import IconUpdatesAlternate from '@/assets/icons/inline/updates-alternate.svg';
 
 const pageQuery = gql`query autoDepositLandingPage {
 	my {
-		userAccount {
-			id
+		subscriptions {
+			values {
+				subscrId
+			}
+		}
+		autoDeposit {
+			isSubscriber
 		}
 	}
 }`;
@@ -82,15 +120,17 @@ export default {
 		title: 'Auto Deposit',
 	},
 	components: {
-		WwwPage,
 		FrequentlyAskedQuestions,
 		IconAutoDepositAlternate,
 		IconLend,
 		IconUpdatesAlternate,
+		WwwPage,
 	},
 	data() {
 		return {
-			isLoggedIn: false,
+			isMonthlyGoodSubscriber: false,
+			hasAutoDeposits: false,
+			hasLegacySubscription: false
 		};
 	},
 	inject: ['apollo'],
@@ -98,10 +138,16 @@ export default {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
+			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			this.hasAutoDeposits = !!_get(data, 'my.autoDeposit') && !this.isMonthlyGoodSubscriber;
+			const legacySubs = _get(data, 'my.subscriptions.values', []);
+			this.hasLegacySubscription = legacySubs.length > 0;
 		},
 	},
 	computed: {
+		canDisplayForm() {
+			return !this.isMonthlyGoodSubscriber && !this.hasAutoDeposits && !this.hasLegacySubscription;
+		}
 	},
 };
 
@@ -111,7 +157,7 @@ export default {
 @import 'settings';
 
 .auto-deposit-setup {
-	padding: 4rem 0 5rem;
+	padding: 4rem 0 0;
 
 	h2 {
 		margin-bottom: 3rem;
@@ -128,7 +174,7 @@ export default {
 
 .auto-deposit-what-to-expect {
 	background-color: $ghost;
-	margin-bottom: 3rem;
+	margin: 5rem 0 3rem;
 	padding: 1rem 0 3.5rem;
 
 	h2 {
@@ -164,5 +210,11 @@ export default {
 		margin: 0 auto 1rem auto;
 		color: $kiva-green;
 	}
+}
+
+.already-subscribed-msg-wrapper {
+	background-color: $vivid-yellow;
+	padding: 1rem;
+	margin-top: 1.25rem;
 }
 </style>
