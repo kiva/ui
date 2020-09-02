@@ -102,7 +102,7 @@
 		"uuid": "^8.3.0",
 		"vue": "^2.6.11",
 		"vue-focus-lock": "^1.4.0",
-		"vue-instantsearch": "^2.4.0",
+		"vue-instantsearch": "^3.2.0",
 		"vue-meta": "^2.4.0",
 		"vue-progressbar": "^0.7.3",
 		"vue-router": "^3.4.3",
