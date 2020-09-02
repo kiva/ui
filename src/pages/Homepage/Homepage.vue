@@ -18,7 +18,7 @@ import {
 } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
-import lenderPreferencesHomepage from '@/pages/Homepage/lenderPreferencesHomepage';
+import lenderPreferencesHomepage from '@/pages/Homepage/LenderPreferencesHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
