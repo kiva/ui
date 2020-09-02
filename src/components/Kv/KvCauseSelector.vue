@@ -45,7 +45,7 @@
 						alt=""
 					>
 				</div>
-				<div class="kv-cause-selector__text">{{ cause }}</div>
+				<div class="kv-cause-selector__text">{{ capitalizeFirstLetter(cause) }}</div>
 			</label>
 		</template>
 	</div>
@@ -54,6 +54,10 @@
 <script>
 import { paramCase } from 'change-case';
 import KvIcon from '@/components/Kv/KvIcon';
+
+const capitalizeFirstLetter = str => {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 const imageRequire = require.context('@/assets/images/cause-selector/', true);
 
@@ -64,15 +68,15 @@ export default {
 	props: {
 		/**
 		 * The cause to display
-		 * 	`Women,
-			Shelter,
-			Education,
-			Technology,
-			Agriculture,
+		 * 	`women,
+			shelter,
+			education,
+			technology,
+			agriculture,
 			COVID-19,
-			Health,
-			Refugees,
-			Art`
+			health,
+			refugees,
+			art`
 		* */
 		cause: {
 			type: String,
@@ -125,6 +129,9 @@ export default {
 			const { checked, value } = event.target;
 			this.$emit('change', this.asRadio ? value : checked);
 		},
+		capitalizeFirstLetter(str) {
+			return capitalizeFirstLetter(str);
+		}
 	},
 };
 </script>

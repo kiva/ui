@@ -2,13 +2,13 @@
 * Array of possible causes for KvCauseSelector
 */
 export default [
-	'Women',
-	'Shelter',
-	'Education',
-	'Technology',
-	'Agriculture',
+	'women',
+	'shelter',
+	'education',
+	'technology',
+	'agriculture',
 	'COVID-19',
-	'Health',
-	'Refugees',
-	'Arts'
+	'health',
+	'refugees',
+	'arts'
 ]
