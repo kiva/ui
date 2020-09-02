@@ -74,7 +74,7 @@
 		"flag-icon-css": "kiva/flag-icon-css.git#sprite",
 		"foundation-sites": "6.6.3",
 		"fuse.js": "^5.2.3",
-		"graphql": "^14.6.0",
+		"graphql": "^14.7.0",
 		"graphql-tag": "^2.11.0",
 		"helmet": "^3.21.0",
 		"https": "^1.0.0",
