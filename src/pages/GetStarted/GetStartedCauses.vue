@@ -195,14 +195,6 @@ export default {
 	padding: 1.625rem 0;
 }
 
-.progress-bar {
-	height: rem-calc(4);
-
-	@include breakpoint(xlarge) {
-		height: auto;
-	}
-}
-
 .causes {
 	&__intro {
 		text-align: center;
