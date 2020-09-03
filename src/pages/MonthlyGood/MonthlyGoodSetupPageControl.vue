@@ -30,7 +30,7 @@
 										required
 										min="1"
 										max="31"
-										v-model="dayOfMonth"
+										v-model.number="dayOfMonth"
 									>
 									<button
 										class="button--ordinal-day"
