@@ -18,7 +18,7 @@ import {
 } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
-import LenderPreferencesHomepage from '@/pages/Homepage/LenderPreferencesHomepage';
+import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -30,7 +30,11 @@ const activePageQuery = gql`query homepageFrame {
 		entries(contentType: "uiSetting", contentKey: "ui-homepage-takeover")
 	}
 	general {
-		uiExperimentSetting(key: "home_lenderpreferences") {
+		lendByCategoryExp: uiExperimentSetting(key: "home_lendbycategory") {
+			key
+			value
+		}
+		lenderPreferencesExp: uiExperimentSetting(key: "home_lenderpreferences") {
 			key
 			value
 		}
@@ -42,13 +46,14 @@ export default {
 	components: {
 		WwwPage,
 		DefaultHomePage,
-		LenderPreferencesHomepage,
+		LendByCategoryHomepage,
 		// IWDHomePage,
 		// WRDHomePage,
 		TopMessageContentful,
 	},
 	data() {
 		return {
+			isLendByCategoryActive: false,
 			isLenderPreferencesActive: false,
 			isIwdActive: false,
 			isWrdActive: false,
@@ -58,14 +63,14 @@ export default {
 	},
 	computed: {
 		activeHomepage() {
-			if (this.isLenderPreferencesActive) return LenderPreferencesHomepage;
+			if (this.isLendByCategoryActive) return LendByCategoryHomepage;
 			if (this.isMessageActive) return TopMessageContentful;
 			// if (this.isIwdActive) return IWDHomePage;
 			// if (this.isWrdActive) return WRDHomePage;
 			return DefaultHomePage;
 		},
 		headerTheme() {
-			if (this.isLenderPreferencesActive) return lightHeader;
+			if (this.isLendByCategoryActive) return lightHeader;
 			if (this.isMessageActive) return lightHeader;
 			if (this.isIwdActive) return iwdHeaderTheme;
 			if (this.isWrdActive) return wrdHeaderTheme;
@@ -84,28 +89,45 @@ export default {
 			return client.query({
 				query: activePageQuery
 			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'home_lenderpreferences' }
-				});
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'home_lendbycategory' } }),
+					client.query({ query: experimentQuery, variables: { id: 'home_lenderpreferences' } })
+				]);
 			});
 		},
 		result({ data }) {
+			// lend-by-category as homepage experiment - EXP-GROW-138-Jul2020
+			const lendByCategoryExperiment = this.apollo.readFragment({
+				id: 'Experiment:home_lendbycategory',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isLendByCategoryActive = lendByCategoryExperiment.version === 'shown';
+			// Fire Event for EXP-GROW-138-Jul2020
+			if (lendByCategoryExperiment.version && lendByCategoryExperiment.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'Home',
+					'EXP-GROW-138-Jul2020',
+					lendByCategoryExperiment.version === 'shown' ? 'b' : 'a'
+				);
+			}
+
 			// Explicit lender preferences experiment - EXP-GROW-166-Aug2020
-			const lenderPreferencesExperiment = this.apollo.readFragment({
+			const lenderPreferencesExp = this.apollo.readFragment({
 				id: 'Experiment:home_lenderpreferences',
 				fragment: experimentVersionFragment,
 			}) || {};
-			this.isLenderPreferencesActive = lenderPreferencesExperiment.version === 'shown';
+			this.isLenderPreferencesActive = lenderPreferencesExp.version === 'shown';
 			// Fire Event for EXP-GROW-166-Aug2020
-			if (lenderPreferencesExperiment.version && lenderPreferencesExperiment.version !== 'unassigned') {
+			if (lenderPreferencesExp.version && lenderPreferencesExp.version !== 'unassigned') {
 				this.$kvTrackEvent(
 					'homepage',
 					'EXP-GROW-166-Aug2020',
-					lenderPreferencesExperiment.version === 'shown' ? 'b' : 'a'
+					lenderPreferencesExp.version === 'shown' ? 'b' : 'a'
 				);
 			}
-			// GROW-166 (if shown) takes precedence over "take-over settings"
-			if (!this.isLenderPreferencesActive) {
+
+			// GROW-138 or GROW-166 (if shown) takes precedence over "take-over settings"
+			if (!this.isLendByCategoryActive && !this.isLenderPreferencesActive) {
 				// determine if take-over setting is active
 				const contentSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-takeover'); // eslint-disable-line max-len
 				if (_get(contentSetting, 'fields')) {
