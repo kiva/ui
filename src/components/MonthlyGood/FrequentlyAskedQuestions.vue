@@ -72,9 +72,11 @@ export default {
 	mounted() {
 		/** Scroll expandable question into view. */
 		this.$nextTick(() => {
-			const el = document.querySelector(this.$route.hash);
-			if (el) {
-				el.scrollIntoView();
+			if (this.$route.hash) {
+				const el = document.querySelector(this.$route.hash);
+				if (el) {
+					el.scrollIntoView();
+				}
 			}
 		});
 	}

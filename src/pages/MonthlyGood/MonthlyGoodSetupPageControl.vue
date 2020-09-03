@@ -277,9 +277,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
-
 import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
 
@@ -292,10 +289,6 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
 			value
 			key
-		}
-		braintreeDropInExperimentMG: uiExperimentSetting(key: "braintree_dropin_mg") {
-			key
-			value
 		}
 	}
 	my {
@@ -367,7 +360,7 @@ export default {
 			isDonationOptionsDirty: false,
 			submitting: false,
 			legacySubs: [],
-			showDropInPayments: false,
+			showDropInPayments: true,
 			// user flags
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
@@ -407,15 +400,7 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: pageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: pageQuery
-			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'braintree_dropin_mg' }
-				});
-			});
-		},
+		preFetch: true,
 		result({ data }) {
 			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
@@ -426,15 +411,9 @@ export default {
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
 
-			// Braintree drop-in UI data
-			const braintreeDropInExp = this.apollo.readFragment({
-				id: 'Experiment:braintree_dropin_mg',
-				fragment: experimentVersionFragment,
-			}) || {};
-
 			// if experiment and feature flag are BOTH on, show UI
 			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
-			this.showDropInPayments = braintreeDropInFeatureFlag && braintreeDropInExp.version === 'shown';
+			this.showDropInPayments = braintreeDropInFeatureFlag;
 		},
 	},
 	created() {

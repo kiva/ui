@@ -30,7 +30,11 @@ const activePageQuery = gql`query homepageFrame {
 		entries(contentType: "uiSetting", contentKey: "ui-homepage-takeover")
 	}
 	general {
-		uiExperimentSetting(key: "home_lendbycategory") {
+		lendByCategoryExp: uiExperimentSetting(key: "home_lendbycategory") {
+			key
+			value
+		}
+		lenderPreferencesExp: uiExperimentSetting(key: "home_lenderpreferences") {
 			key
 			value
 		}
@@ -50,6 +54,7 @@ export default {
 	data() {
 		return {
 			isLendByCategoryActive: false,
+			isLenderPreferencesActive: false,
 			isIwdActive: false,
 			isWrdActive: false,
 			isMessageActive: false,
@@ -84,9 +89,10 @@ export default {
 			return client.query({
 				query: activePageQuery
 			}).then(() => {
-				return client.query({
-					query: experimentQuery, variables: { id: 'home_lendbycategory' }
-				});
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'home_lendbycategory' } }),
+					client.query({ query: experimentQuery, variables: { id: 'home_lenderpreferences' } })
+				]);
 			});
 		},
 		result({ data }) {
@@ -104,8 +110,24 @@ export default {
 					lendByCategoryExperiment.version === 'shown' ? 'b' : 'a'
 				);
 			}
-			// GROW-138 (if shown) takes precedence over "take-over settings"
-			if (!this.isLendByCategoryActive) {
+
+			// Explicit lender preferences experiment - EXP-GROW-166-Aug2020
+			const lenderPreferencesExp = this.apollo.readFragment({
+				id: 'Experiment:home_lenderpreferences',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.isLenderPreferencesActive = lenderPreferencesExp.version === 'shown';
+			// Fire Event for EXP-GROW-166-Aug2020
+			if (lenderPreferencesExp.version && lenderPreferencesExp.version !== 'unassigned') {
+				this.$kvTrackEvent(
+					'homepage',
+					'EXP-GROW-166-Aug2020',
+					lenderPreferencesExp.version === 'shown' ? 'b' : 'a'
+				);
+			}
+
+			// GROW-138 or GROW-166 (if shown) takes precedence over "take-over settings"
+			if (!this.isLendByCategoryActive && !this.isLenderPreferencesActive) {
 				// determine if take-over setting is active
 				const contentSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-takeover'); // eslint-disable-line max-len
 				if (_get(contentSetting, 'fields')) {
