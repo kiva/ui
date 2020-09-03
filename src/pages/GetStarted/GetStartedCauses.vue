@@ -8,7 +8,7 @@
 			<div class="page-content">
 				<fieldset>
 					<div class="row">
-						<div class="small-12 xlarge-5 columns causes__intro">
+						<div class="small-12 xlarge-5 columns get-started__intro">
 							<h1>Choose causes <br class="xlu">you care about</h1>
 							<p>
 								With Kiva, you can choose causes you care about and borrowers to support.
@@ -16,14 +16,14 @@
 							</p>
 						</div>
 						<div class="small-12 xlarge-7 columns">
-							<ul class="causes__list">
+							<ul class="get-started__list">
 								<li
-									class="causes__list-item"
+									class="get-started__list-item"
 									v-for="cause in causeList"
 									:key="`cause-${cause.id}`"
 								>
 									<kv-cause-selector
-										class="causes__cause-selector"
+										class="get-started__cause-selector"
 										:cause="cause.name"
 										:checked="cause.checked"
 										@change="onChangeCauseSelection($event, cause.id)"
@@ -31,12 +31,12 @@
 								</li>
 							</ul>
 							<p
-								class="causes__summary text-center"
+								class="get-started__summary text-center"
 								v-html="summaryText"
 							></p>
 						</div>
 						<kv-button
-							class="causes__submit-btn"
+							class="get-started__submit-btn"
 							type="submit"
 							:disabled="selectedCauses.length === 0"
 						>
@@ -124,7 +124,7 @@ export default {
 		},
 		summaryText() {
 			if (this.selectedCauses.length === 0) {
-				return `<b>Pick up to ${this.causeList.length} causes to lend to.`;
+				return `<b>Pick up to ${this.causeList.length} causes to lend to.</b>`;
 			}
 
 			let text = 'We\'ll show you loans for ';
@@ -195,7 +195,7 @@ export default {
 	padding: 1.625rem 0;
 }
 
-.causes {
+.get-started {
 	&__intro {
 		text-align: center;
 		margin-bottom: 1rem;
