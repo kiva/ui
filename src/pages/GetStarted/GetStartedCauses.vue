@@ -51,7 +51,7 @@
 
 <script>
 import cookieStore from '@/util/cookieStore';
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCauseSelector from '@/components/Kv/KvCauseSelector';
@@ -155,29 +155,30 @@ export default {
 			const userCauseIds = this.selectedCauses.map(cause => cause.id);
 			console.log(userCauseIds);
 
-			const saveLendingPreferences = gql`mutation savePrefs($visitorId: String!, $causes: [Int]) {
-				my {
-					saveLendingPreferences(visitorId: $visitorId, causes: $causes) {
-						id
-						causes {
-							values {
-								name
-								id
-							}
-						}
-					}
-				}
-			}`;
-
 			try {
-				const result = await this.apollo.mutate({
-					mutation: saveLendingPreferences,
-					variables: {
-						visitorId: uiv,
-						causes: userCauseIds
-					}
-				});
-				console.log(result);
+				// TODO: Once the backend is ready, test out this query
+				// const saveLendingPreferences = gql`mutation savePrefs($visitorId: String!, $causes: [Int]) {
+				// 	my {
+				// 		saveLendingPreferences(visitorId: $visitorId, causes: $causes) {
+				// 			id
+				// 			causes {
+				// 				values {
+				// 					name
+				// 					id
+				// 				}
+				// 			}
+				// 		}
+				// 	}
+				// }`;
+				//
+				// const result = await this.apollo.mutate({
+				// 	mutation: saveLendingPreferences,
+				// 	variables: {
+				// 		visitorId: uiv,
+				// 		causes: userCauseIds
+				// 	}
+				// });
+				// console.log(result);
 				this.$router.push('get-started/places');
 			} catch (err) {
 				console.error(err);
