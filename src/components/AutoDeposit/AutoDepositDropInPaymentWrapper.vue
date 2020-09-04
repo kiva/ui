@@ -14,7 +14,7 @@
 					id="dropin-submit"
 					class="button"
 					:disabled="!enableConfirmButton || submitting"
-					@click.native="submitDropInMonthlyGood"
+					@click.native="submitDropInAutoDeposit"
 				>
 					<kv-icon name="lock" />
 					Confirm <kv-loading-spinner v-if="submitting" />
@@ -32,7 +32,7 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/browser';
-import braintreeCreateMonthlyGoodSubscription from '@/graphql/mutation/braintreeCreateMonthlyGoodSubscription.graphql';
+import braintreeCreateAutoDepositSubscription from '@/graphql/mutation/braintreeCreateAutoDepositSubscription.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -59,14 +59,6 @@ export default {
 			type: Number,
 			default: 0
 		},
-		category: {
-			type: String,
-			default: ''
-		},
-		isOneTime: {
-			type: Boolean,
-			default: false
-		},
 		/**
 		 * Context that this payment wrapper is used in:
 		 * Must be one of 2 strings 'Registration' or 'Update'
@@ -83,7 +75,7 @@ export default {
 		};
 	},
 	methods: {
-		submitDropInMonthlyGood() {
+		submitDropInAutoDeposit() {
 			this.submitting = true;
 
 			// request payment method
@@ -92,7 +84,7 @@ export default {
 					const transactionNonce = _get(btSubmitResponse, 'nonce');
 					const paymentType = _get(btSubmitResponse, 'type');
 					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeMonthlyGood(transactionNonce, paymentType);
+						this.doBraintreeAutoDeposit(transactionNonce, paymentType);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
@@ -104,17 +96,15 @@ export default {
 					});
 				});
 		},
-		doBraintreeMonthlyGood(nonce, paymentType) {
+		doBraintreeAutoDeposit(nonce, paymentType) {
 			// Apollo call to the query mutation
 			this.apollo.mutate({
-				mutation: braintreeCreateMonthlyGoodSubscription,
+				mutation: braintreeCreateAutoDepositSubscription,
 				variables: {
 					paymentMethodNonce: nonce,
 					amount: numeral(this.amount).format('0.00'),
 					donateAmount: numeral(this.donateAmount).format('0.00'),
 					dayOfMonth: numeral(this.dayOfMonth).value(),
-					category: this.category,
-					isOnetime: this.isOneTime
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction
@@ -141,15 +131,15 @@ export default {
 				// Transaction is complete
 				const subscriptionCreatedSuccessfully = _get(
 					kivaBraintreeResponse,
-					'data.my.createMonthlyGoodSubscription'
+					'data.my.createAutoDeposit.status'
 				);
 
-				if (subscriptionCreatedSuccessfully) {
+				if (subscriptionCreatedSuccessfully === 'active') {
 					// fire BT Success event
 					this.$kvTrackEvent(
 						this.action,
 						`${paymentType} Braintree DropIn Subscription Payment`,
-						`${this.action.toLowerCase()}-monthly-good-submit`
+						`${this.action.toLowerCase()}-auto-deposit-submit`
 					);
 
 					// Complete transaction handles additional analytics + redirect

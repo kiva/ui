@@ -728,15 +728,16 @@ export default {
 			display: inline-block;
 		}
 
-		::v-deep .loading-spinner {
-			vertical-align: middle;
-			width: 1rem;
-			height: 1rem;
-		}
+		// These styles are only needed for non Drop-In payment wrapper
+		// ::v-deep .loading-spinner {
+		// 	vertical-align: middle;
+		// 	width: 1rem;
+		// 	height: 1rem;
+		// }
 
-		::v-deep .loading-spinner .line {
-			background-color: $white;
-		}
+		// ::v-deep .loading-spinner .line {
+		// 	background-color: $white;
+		// }
 
 		::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
 			margin-bottom: 0;
