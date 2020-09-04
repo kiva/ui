@@ -1,10 +1,7 @@
 <template>
-	<div>
+	<div class="drop-in-wrapper">
 		<div id="dropin-container"></div>
-		<loading-overlay
-			v-if="updatingPaymentWrapper"
-			id="payment-updating-overlay"
-		/>
+		<kv-loading-spinner v-if="updatingPaymentWrapper" />
 	</div>
 </template>
 
@@ -14,7 +11,7 @@ import numeral from 'numeral';
 import * as Sentry from '@sentry/browser';
 import Dropin from 'braintree-web-drop-in';
 import getClientToken from '@/graphql/query/checkout/getClientToken.graphql';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 /**
 * Displays the Braintree Drop In Interface
@@ -23,7 +20,7 @@ import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 * */
 export default {
 	components: {
-		LoadingOverlay,
+		KvLoadingSpinner,
 	},
 	inject: ['apollo'],
 	props: {
@@ -54,7 +51,7 @@ export default {
 		return {
 			btDropinInstance: () => {},
 			clientToken: null,
-			updatingPaymentWrapper: false,
+			updatingPaymentWrapper: true,
 		};
 	},
 	methods: {
@@ -351,4 +348,7 @@ $border-width: 1px;
 	z-index: 500;
 }
 
+.drop-in-wrapper {
+	text-align: center;
+}
 </style>

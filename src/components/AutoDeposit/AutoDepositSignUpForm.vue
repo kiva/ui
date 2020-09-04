@@ -139,12 +139,12 @@
 		<div class="row column">
 			<div class="payment-dropin-wrapper">
 				<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
-				<!-- <auto-deposit-drop-in-payment-wrapper
+				<auto-deposit-drop-in-payment-wrapper
 					:amount="totalCombinedDeposit"
 					:donate-amount="donation"
 					:day-of-month="dayOfMonth"
-					@complete-transaction="completeMGBraintree"
-				/> -->
+					@complete-transaction="completeADBraintree"
+				/>
 			</div>
 			<!-- ! TODO -->
 			<!-- If not logged in, display "Sign in to setup" - button -->
@@ -158,7 +158,7 @@ import _get from 'lodash/get';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-// import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
 import IconPencil from '@/assets/icons/inline/pencil.svg';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
@@ -170,7 +170,7 @@ let frozenDropdownOptions;
 
 export default {
 	components: {
-		// AutoDepositDropInPaymentWrapper,
+		AutoDepositDropInPaymentWrapper,
 		IconPencil,
 		KvCheckbox,
 		KvCurrencyInput,
@@ -295,7 +295,7 @@ export default {
 			}
 		},
 		// TODO
-		completeMGBraintree() {
+		completeADBraintree() {
 			// console.log(paymentType);
 			// should take in param: completeMGBraintree(paymentType) {
 			// this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
