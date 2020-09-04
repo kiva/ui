@@ -45,7 +45,7 @@
 						alt=""
 					>
 				</div>
-				<div class="kv-cause-selector__text">{{ capitalizeFirstLetter(cause) }}</div>
+				<div class="kv-cause-selector__text">{{ cause }}</div>
 			</label>
 		</template>
 	</div>
@@ -54,10 +54,6 @@
 <script>
 import { paramCase } from 'change-case';
 import KvIcon from '@/components/Kv/KvIcon';
-
-const capitalizeFirstLetter = str => {
-	return str.charAt(0).toUpperCase() + str.slice(1);
-};
 
 const imageRequire = require.context('@/assets/images/cause-selector/', true);
 
@@ -129,9 +125,6 @@ export default {
 			const { checked, value } = event.target;
 			this.$emit('change', this.asRadio ? value : checked);
 		},
-		capitalizeFirstLetter(str) {
-			return capitalizeFirstLetter(str);
-		}
 	},
 };
 </script>
@@ -187,6 +180,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		font-size: 1rem;
 		font-weight: normal;
 		text-align: center;
+		text-transform: capitalize;
 	}
 
 	&__label {
@@ -194,6 +188,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		margin: 0;
 		line-height: 1;
 		color: $kiva-text-dark;
+		text-align: center;
 
 		&:hover {
 			color: $kiva-textlink-hover;
