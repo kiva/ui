@@ -19,10 +19,8 @@
 
 		<!-- Auto Deposit Form -->
 		<div class="auto-deposit-form" v-if="canDisplayForm">
-			<div class="row">
-				<div class="small-12 large-8 columns">
-					<!-- TODO inset form here -->
-				</div>
+			<div class="row column">
+				<auto-deposit-sign-up-form />
 			</div>
 		</div>
 
@@ -97,6 +95,7 @@ import gql from 'graphql-tag';
 
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import FrequentlyAskedQuestions from '@/components/AutoDeposit/FrequentlyAskedQuestions';
+import AutoDepositSignUpForm from '@/components/AutoDeposit/AutoDepositSignUpForm';
 
 import IconAutoDepositAlternate from '@/assets/icons/inline/auto-deposit-alternate.svg';
 import IconLend from '@/assets/icons/inline/lend.svg';
@@ -120,6 +119,7 @@ export default {
 		title: 'Auto Deposit',
 	},
 	components: {
+		AutoDepositSignUpForm,
 		FrequentlyAskedQuestions,
 		IconAutoDepositAlternate,
 		IconLend,
@@ -130,7 +130,7 @@ export default {
 		return {
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
-			hasLegacySubscription: false
+			hasLegacySubscription: false,
 		};
 	},
 	inject: ['apollo'],
@@ -174,7 +174,7 @@ export default {
 
 .auto-deposit-what-to-expect {
 	background-color: $ghost;
-	margin: 5rem 0 3rem;
+	margin: 2rem 0 3rem;
 	padding: 1rem 0 3.5rem;
 
 	h2 {
