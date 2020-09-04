@@ -125,7 +125,7 @@
 		<!-- General Errors & Messaging-->
 		<div class="row column text-center">
 			<ul class="validation-errors"
-				v-if="!$v.adAmount.maxTotal || !$v.donation.maxTotal"
+				v-if="!$v.adAmount.combinedTotal || !$v.donation.combinedTotal"
 			>
 				<li>
 					To set up an Auto Deposit, please enter a total amount between $0 and $10,000.
@@ -155,7 +155,6 @@
 <script>
 import numeral from 'numeral';
 import _get from 'lodash/get';
-import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
@@ -165,19 +164,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 
-const pageQuery = gql`query monthlyGoodSetupPageControl {
-    general {
-		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
-			value
-			key
-		}
-	}
-	my {
-		userAccount {
-			id
-		}
-	}
-}`;
+import userIdQuery from '@/graphql/query/userId.graphql';
 
 let frozenDropdownOptions;
 
@@ -198,7 +185,6 @@ export default {
 			donationCheckbox: true,
 			donationOptionSelected: '15',
 			isDonationOptionsDirty: false,
-			showDropInPayments: true,
 			isLoggedIn: false,
 		};
 	},
@@ -210,14 +196,14 @@ export default {
 			required,
 			minValue: minValue(0),
 			maxValue: maxValue(10000),
-			maxTotal(value) {
+			combinedTotal(value) {
 				return value + this.donation < 10000 && value + this.donation > 0;
 			}
 		},
 		donation: {
 			minValue: minValue(0),
 			maxValue: maxValue(10000),
-			maxTotal(value) {
+			combinedTotal(value) {
 				return value + this.adAmount < 10000 && value + this.adAmount > 0;
 			}
 		},
@@ -230,14 +216,10 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		query: pageQuery,
+		query: userIdQuery,
 		preFetch: true,
 		result({ data }) {
 			this.isLoggedIn = _get(data, 'my.userAccount.id') !== undefined || false;
-
-			// if feature flag is on, show Drop In UI
-			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
-			this.showDropInPayments = braintreeDropInFeatureFlag;
 		},
 	},
 	watch: {
