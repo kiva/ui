@@ -20,7 +20,7 @@
 			<span class="ad-sign-up-form__deposit-text">
 				each month on the
 			</span>
-			<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="dayOfMonth">
+			<label class="show-for-sr" :class="{ 'error': $v.dayOfMonth.$invalid }" :for="dayOfMonth">
 				Day of the Month
 			</label>
 			<input v-if="isDayInputShown"
@@ -40,7 +40,7 @@
 				v-if="!isDayInputShown"
 			>
 				<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-				<icon-pencil class="icon-pencil" />
+				<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 			</button>
 		</div>
 
@@ -159,10 +159,10 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
-import IconPencil from '@/assets/icons/inline/pencil.svg';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvIcon from '@/components/Kv/KvIcon';
 
 import userIdQuery from '@/graphql/query/userId.graphql';
 
@@ -171,10 +171,10 @@ let frozenDropdownOptions;
 export default {
 	components: {
 		AutoDepositDropInPaymentWrapper,
-		IconPencil,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
+		KvIcon,
 	},
 	data() {
 		return {
@@ -393,10 +393,6 @@ export default {
 		cursor: pointer;
 		font-size: $featured-text-font-size;
 		padding: 0.25rem;
-
-		.icon-pencil {
-			height: 1.25rem;
-		}
 	}
 
 	::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
@@ -453,5 +449,10 @@ label:not(.error) + .text-input {
 	left: 0;
 	background: rgba(255, 255, 255, 0.8);
 	z-index: 10000;
+}
+
+.icon-pencil {
+	height: 1.25rem;
+	width: 1.25rem;
 }
 </style>

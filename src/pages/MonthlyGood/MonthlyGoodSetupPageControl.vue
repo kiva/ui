@@ -18,7 +18,10 @@
 							<div class="medium-10 small-12 columns">
 								<div class="row column" v-if="!fromCovidLanding">
 									<strong>Each month on the</strong>
-									<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="dayOfMonth">
+									<label class="show-for-sr"
+										:class="{ 'error': $v.dayOfMonth.$invalid }"
+										:for="dayOfMonth"
+									>
 										Day of the Month
 									</label>
 									<input v-if="isDayInputShown"
@@ -38,7 +41,7 @@
 										v-if="!isDayInputShown"
 									>
 										<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-										<icon-pencil class="icon-pencil" />
+										<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 									</button>
 									<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
 										<li v-if="!$v.dayOfMonth.required">
@@ -265,14 +268,14 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import PayPalMg from '@/components/MonthlyGood/PayPalMG';
-import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
-import IconPencil from '@/assets/icons/inline/pencil.svg';
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
+import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
@@ -337,14 +340,14 @@ export default {
 	},
 	components: {
 		AlreadySubscribedNotice,
-		MonthlyGoodDropInPaymentWrapper,
-		IconPencil,
 		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
+		KvIcon,
 		KvLoadingSpinner,
 		LegacySubscriberNotice,
+		MonthlyGoodDropInPaymentWrapper,
 		PayPalMg,
 		WwwPage,
 	},
@@ -700,6 +703,7 @@ export default {
 
 		.icon-pencil {
 			height: 1rem;
+			width: 1rem;
 		}
 
 		.text-input__day {

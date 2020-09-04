@@ -79,7 +79,7 @@
 														@click="toggleSections"
 													>
 														<strong>Update Payment Method</strong>
-														<icon-pencil class="icon-pencil" />
+														<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 													</button>
 												</div>
 											</div>
@@ -174,8 +174,6 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 
-import IconPencil from '@/assets/icons/inline/pencil.svg';
-
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		autoDeposit {
@@ -203,7 +201,6 @@ const pageQuery = gql`query monthlyGoodSubscription {
 export default {
 	inject: ['apollo'],
 	components: {
-		IconPencil,
 		KvButton,
 		KvIcon,
 		KvLightbox,
@@ -404,6 +401,7 @@ export default {
 
 	.icon-pencil {
 		height: 1rem;
+		width: 1rem;
 	}
 }
 </style>

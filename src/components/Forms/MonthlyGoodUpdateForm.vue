@@ -8,7 +8,7 @@
 				<strong>Each month on the</strong>
 				<label
 					class="show-for-sr"
-					:class="{ 'error': $v.$invalid }" :for="form.dayOfMonth"
+					:class="{ 'error': $v.form.dayOfMonth.$invalid }" :for="form.dayOfMonth"
 				>
 					Day of the Month
 				</label>
@@ -29,7 +29,7 @@
 					v-if="!isDayInputShown"
 				>
 					<strong>{{ form.dayOfMonth | numeral('Oo') }}</strong>
-					<icon-pencil class="icon-pencil" />
+					<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 				</button>
 				<strong>we'll process the following:</strong>
 				<ul class="validation-errors" v-if="$v.form.dayOfMonth.$invalid">
@@ -161,8 +161,7 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
-
-import IconPencil from '@/assets/icons/inline/pencil.svg';
+import KvIcon from '@/components/Kv/KvIcon';
 
 /**
  * This form contains all the fields and validation to modify a MG Subscription
@@ -172,7 +171,7 @@ import IconPencil from '@/assets/icons/inline/pencil.svg';
  */
 export default {
 	components: {
-		IconPencil,
+		KvIcon,
 		KvCurrencyInput,
 		KvDropdownRounded,
 	},
@@ -326,6 +325,7 @@ form {
 
 	.icon-pencil {
 		height: 1rem;
+		width: 1rem;
 	}
 
 	.text-input__day {
