@@ -33,7 +33,9 @@
 					<h1> {{ loan.name }} </h1>
 					<!-- Borrower location -->
 					<div>
-						<kv-flag class="loan-location-flag" :country="`${ loan.geocode.country.isoCode }`" />
+						<div class="loan-location-flag">
+							<kv-flag :country="`${ loan.geocode.country.isoCode }`" />
+						</div>
 						<span class="loan-location-text">
 							{{ loan.geocode.city }}, {{ loan.geocode.state }}, {{ loan.geocode.country.name }}
 							/ {{ loan.sector.name }}
