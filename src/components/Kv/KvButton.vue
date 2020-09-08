@@ -57,6 +57,10 @@ export default {
 	font-weight: $button-font-weight;
 	box-shadow: $button-primary-shadow;
 
+	&.rounded {
+		border-radius: rem-calc(10);
+	}
+
 	&.smaller {
 		@include button-smaller-styles();
 		@include breakpoint(medium) {

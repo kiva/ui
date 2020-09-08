@@ -20,6 +20,11 @@ export const DefaultSmallest = () => ({
 	template: '<kv-button class="smallest">Button Smallest</kv-button>'
 });
 
+export const Rounded = () => ({
+	components: { KvButton },
+	template: '<kv-button class="rounded">Button</kv-button>'
+});
+
 export const Secondary = () => ({
 	components: { KvButton },
 	template: '<kv-button class="secondary">Secondary</kv-button>'
