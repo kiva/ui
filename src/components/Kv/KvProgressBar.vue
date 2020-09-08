@@ -29,11 +29,15 @@ export default {
 
 	display: block;
 	width: 100%;
-	height: rem-calc(9);
 	background-color: $background-color;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	height: rem-calc(4);
+
+	@include breakpoint(large) {
+		height: rem-calc(9);
+	}
 
 	/* firefox */
 	&::-moz-progress-bar {
