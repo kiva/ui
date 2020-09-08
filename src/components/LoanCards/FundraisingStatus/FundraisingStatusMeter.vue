@@ -16,6 +16,7 @@
 <style lang="scss" scoped>
 @import 'settings';
 $loan-card-meter-height-short: rem-calc(4);
+$loan-card-meter-height-medium: rem-calc(6);
 $loan-card-meter-height: rem-calc(8);
 
 .fundraising-status-meter {
@@ -37,6 +38,20 @@ $loan-card-meter-height: rem-calc(8);
 
 		.meter {
 			border-radius: $loan-card-meter-height-short;
+		}
+	}
+
+	&.medium {
+		height: $loan-card-meter-height-medium;
+
+		.meter {
+			border-radius: $loan-card-meter-height-medium;
+		}
+	}
+
+	&.square {
+		.meter {
+			border-radius: 0;
 		}
 	}
 }
