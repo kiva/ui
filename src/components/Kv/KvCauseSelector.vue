@@ -64,15 +64,15 @@ export default {
 	props: {
 		/**
 		 * The cause to display
-		 * 	`Women,
-			Shelter,
-			Education,
-			Technology,
-			Agriculture,
+		 * 	`women,
+			shelter,
+			education,
+			technology,
+			agriculture,
 			COVID-19,
-			Health,
-			Refugees,
-			Art`
+			health,
+			refugees,
+			art`
 		* */
 		cause: {
 			type: String,
@@ -180,6 +180,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		font-size: 1rem;
 		font-weight: normal;
 		text-align: center;
+		text-transform: capitalize;
 	}
 
 	&__label {
@@ -187,6 +188,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		margin: 0;
 		line-height: 1;
 		color: $kiva-text-dark;
+		text-align: center;
 
 		&:hover {
 			color: $kiva-textlink-hover;

@@ -34,3 +34,4 @@ export const Places = () => ({
 		<get-started-places />
 	`,
 });
+
