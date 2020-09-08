@@ -24,3 +24,14 @@ export const Causes = () => ({
 		<get-started-causes />
 	`,
 });
+
+export const Places = () => ({
+	components: {
+		GetStartedPlaces
+	},
+	mixins: [apolloStoryMixin],
+	template: `
+		<get-started-places />
+	`,
+});
+

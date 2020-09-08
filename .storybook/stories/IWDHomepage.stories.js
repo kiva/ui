@@ -9,7 +9,7 @@ import IWDHomepage from '@/pages/Homepage/iwd/IWDHomepage';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {
-	title: 'Promos/IWD',
+	title: 'Pages/IWD',
 	component: IWDHomepage,
 	decorators: [StoryRouter()],
 };

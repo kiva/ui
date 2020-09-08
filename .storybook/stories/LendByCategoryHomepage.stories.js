@@ -24,7 +24,7 @@ const mockedAPIResponse = {
 	}
 }
 export default {
-	title: 'Promos/LendByCategoryHomepage',
+	title: 'Pages/LendByCategoryHomepage',
 	component: LendByCategoryHomepage,
 	decorators: [StoryRouter()],
 };

@@ -1,0 +1,11 @@
+query countryList {
+	lend {
+		countryFacets {
+			country {
+				name
+				region
+				isoCode
+			}
+		}
+	}
+}
