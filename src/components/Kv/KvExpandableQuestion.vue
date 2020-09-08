@@ -80,6 +80,10 @@ export default {
 .expandable-faq {
 	border-top: 1px solid $charcoal;
 
+	&:first-child {
+		border-top: 0;
+	}
+
 	.toggle-arrow {
 		height: 1rem;
 		width: 1.563rem;

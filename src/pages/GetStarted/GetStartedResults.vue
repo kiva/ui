@@ -19,7 +19,7 @@
 				</section>
 
 				<section>
-					<h2>Frequently asked questions</h2>
+					<frequently-asked-questions />
 				</section>
 			</div>
 		</div>
@@ -28,10 +28,12 @@
 
 <script>
 import KvProgressBar from '@/components/Kv/KvProgressBar';
+import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 
 export default {
 	components: {
 		KvProgressBar,
+		FrequentlyAskedQuestions,
 	},
 	metaInfo: {
 		title: 'Results - Get Started'
