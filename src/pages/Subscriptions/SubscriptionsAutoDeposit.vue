@@ -50,7 +50,7 @@
 										<div class="row column">
 											<strong>Each month on the</strong>
 											<label class="show-for-sr"
-												:class="{ 'error': $v.$invalid }"
+												:class="{ 'error': $v.dayOfMonth.$invalid }"
 												:for="dayOfMonth"
 											>
 												Day of the Month
@@ -72,7 +72,7 @@
 												v-if="!isDayInputShown"
 											>
 												<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-												<icon-pencil class="icon-pencil" />
+												<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 											</button>
 											<strong>we'll process the following:</strong>
 											<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
@@ -212,8 +212,6 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
-import IconPencil from '@/assets/icons/inline/pencil.svg';
-
 const pageQuery = gql`query autoDepositPage {
 	my {
 		autoDeposit {
@@ -229,7 +227,6 @@ const pageQuery = gql`query autoDepositPage {
 export default {
 	inject: ['apollo'],
 	components: {
-		IconPencil,
 		KvButton,
 		KvCurrencyInput,
 		KvIcon,
@@ -386,6 +383,7 @@ form {
 
 	.icon-pencil {
 		height: 1rem;
+		width: 1rem;
 	}
 
 	.text-input__day {
