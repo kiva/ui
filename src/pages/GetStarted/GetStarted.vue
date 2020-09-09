@@ -39,6 +39,8 @@ export default {
 
 .page-wrap {
 	background: #fff;
+	position: relative;
+	overflow: hidden;
 
 	@include breakpoint(large) {
 		background: $kiva-bg-lightgray;
