@@ -37,13 +37,12 @@
 				</h2>
 				<p class="rec-loan-card__loan-use">
 					{{ loanUse }}
-					&nbsp;
-					<!-- <router-link
+					<router-link class="rec-loan-card__learn-more"
 						:to="`/lend/${loanId}`"
 						v-kv-track-event="['Lending', 'click-Read more', 'loan-use-learn-more', loanId, 'true']"
 					>
 						Learn more &rarr;
-					</router-link> -->
+					</router-link>
 				</p>
 				<why-special :text="whySpecial" />
 				<lend-button class="rec-loan-card__button rounded"
@@ -291,6 +290,10 @@ export default {
 
 	&__loan-use {
 		line-height: rem-calc(22);
+	}
+
+	&__learn-more {
+		white-space: nowrap;
 	}
 
 	&__button {
