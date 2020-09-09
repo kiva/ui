@@ -1,3 +1,4 @@
+import StoryRouter from 'storybook-vue-router';
 import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
 
 const queryData = {
@@ -53,6 +54,7 @@ const apolloMockMixin = {
 export default {
 	title: 'Loan Cards/Recommended Loan Card',
 	component: RecommendedLoanCard,
+	decorators: [StoryRouter()],
 };
 
 export const Default = () => ({
