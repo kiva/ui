@@ -86,7 +86,7 @@ export default {
 					checked: false,
 				},
 				{
-					id: 0, // TODO: Couldn't find an id for technology
+					id: 102,
 					name: 'technology',
 					checked: false,
 				},
