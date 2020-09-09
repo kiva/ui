@@ -108,19 +108,27 @@ export default context => {
 					kvAuth0,
 				});
 			}).then(() => {
-				if (isDev) logFormatter(`data pre-fetch: ${Date.now() - s}ms`);
-				// After all preFetch hooks are resolved, our store is now
-				// filled with the state needed to render the app.
-				// Expose the state on the render context, and let the request handler
-				// inline the state in the HTML response. This allows the client-side
-				// store to pick-up the server-side state without having to duplicate
-				// the initial data fetching on the client.
-				context.templateConfig = config;
-				context.meta = app.$meta();
-				context.renderedState = renderGlobals({
-					__APOLLO_STATE__: apolloClient.cache.extract(),
-				});
-				context.setCookies = cookieStore.getSetCookies();
+				let sp; // Vue serverPrefetch timing start
+				if (isDev) {
+					logFormatter(`data pre-fetch: ${Date.now() - s}ms`);
+					sp = new Date();
+				}
+				// This `rendered` hook is called when the app has finished rendering
+				context.rendered = () => {
+					if (isDev) logFormatter(`vue serverPrefetch: ${Date.now() - sp}ms`);
+					// After all preFetch hooks are resolved, our store is now
+					// filled with the state needed to render the app.
+					// Expose the state on the render context, and let the request handler
+					// inline the state in the HTML response. This allows the client-side
+					// store to pick-up the server-side state without having to duplicate
+					// the initial data fetching on the client.
+					context.templateConfig = config;
+					context.meta = app.$meta();
+					context.renderedState = renderGlobals({
+						__APOLLO_STATE__: apolloClient.cache.extract(),
+					});
+					context.setCookies = cookieStore.getSetCookies();
+				};
 				resolve(app);
 			}).catch(error => {
 				if (error instanceof Error) {
