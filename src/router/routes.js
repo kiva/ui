@@ -32,6 +32,7 @@ export default [
 			},
 		]
 	},
+	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
 	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
 	{ path: '/build/data-snapshots', component: () => import('@/pages/Build/DataPage') },

@@ -50,3 +50,20 @@ export const wrdFooterTheme = {
 	linkColor: '#b9ddb8',
 	separatorColor: '#fff'
 };
+
+export const fifteenYearHeaderTheme = {
+	themeKey: '15year',
+	backgroundColor: 'hsla(0, 0%, 100%, 0.8)',
+	logoColor: '#3E4653',
+	linkColor: '#3E4653',
+	linkHoverColor: '#9EEBD5',
+	separatorColor: 'transparent'
+};
+
+export const fifteenYearFooterTheme = {
+	themeKey: '15year',
+	backgroundColor: '#3e4653',
+	textColor: '#F8F8F8',
+	linkColor: '#fff',
+	separatorColor: '#F8F8F8'
+};
