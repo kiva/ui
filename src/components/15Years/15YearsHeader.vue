@@ -8,7 +8,6 @@
 				<p>
 					Rally Interactive will be handling this entire module
 				</p>
-				<kv-button>Button</kv-button>
 				<a href="#">Link text</a>
 			</div>
 
