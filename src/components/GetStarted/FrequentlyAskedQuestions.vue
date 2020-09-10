@@ -101,6 +101,10 @@ export default {
 .frequently-asked-questions-section-wrapper {
 	margin-bottom: 4rem;
 
+	// Allows the questions to overlap the flourish
+	position: relative;
+	z-index: 1;
+
 	h2 {
 		margin-bottom: 1.85rem;
 		font-weight: bold;

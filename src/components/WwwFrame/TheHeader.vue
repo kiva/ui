@@ -472,7 +472,7 @@ export default {
 	},
 	watch: {
 		isVisitor(newVal, oldVal) {
-			if (newVal !== oldVal && !newVal) {
+			if (newVal !== oldVal && !newVal && this.$refs.userDropdown) {
 				this.$nextTick(() => {
 					this.$refs.userDropdown.remakeDropdown();
 				});
