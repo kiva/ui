@@ -7,16 +7,16 @@ Vue.use(kivaPlugins)
 
 import FifteenYears from '@/pages/15Years/15Years';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
+import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
 import FifteenYearsSponsors from '@/components/15Years/15YearsSponsors';
-import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
 import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
-// This decorator applies the 15 year style wraps the individual components in storybook
-// so they can be viewedin the same way that they're applied in the 15Year page.
+// This decorator applies the 15 year styles to the individual components in storybook
+// so they can be viewed in the same way they're applied in the 15Year page.
 const FifteenYearsDecorator = () => ({
 	components: {
 		FifteenYearsStyles
