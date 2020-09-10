@@ -59,6 +59,10 @@ export default [
 		component: () => import('@/pages/GetStarted/GetStarted'),
 		children: [
 			{
+				path: '',
+				component: () => import('@/pages/GetStarted/GetStartedCauses'),
+			},
+			{
 				path: 'places',
 				component: () => import('@/pages/GetStarted/GetStartedPlaces')
 			},
