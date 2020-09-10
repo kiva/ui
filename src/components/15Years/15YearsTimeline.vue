@@ -1,7 +1,11 @@
 <template>
-	<div class="timeline">
-		<h2>15 years of flourishing</h2>
-		timeline goes here
+	<div class="timeline section">
+		<div class="row">
+			<div class="columns">
+				<h2>15 years of flourishing</h2>
+				timeline goes here
+			</div>
+		</div>
 	</div>
 </template>
 

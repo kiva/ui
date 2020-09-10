@@ -1,5 +1,5 @@
 <template>
-	<div class="individuals">
+	<div class="individuals section">
 		<div class="row">
 			<div class="columns">
 				<h2>15 at 15</h2>

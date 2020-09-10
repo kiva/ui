@@ -1,7 +1,11 @@
 <template>
-	<div class="works">
-		<h2>How Kiva Works</h2>
-		goes here
+	<div class="works section">
+		<div class="row">
+			<div class="columns">
+				<h2>How Kiva Works</h2>
+				goes here
+			</div>
+		</div>
 	</div>
 </template>
 

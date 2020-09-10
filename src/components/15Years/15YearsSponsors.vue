@@ -1,8 +1,11 @@
 <template>
-	<div class="sponsors">
+	<div class="sponsors section">
 		<div class="row">
 			<div class="columns">
-				<h2>Sponsors go here</h2>
+				<h2>Sponsors</h2>
+				<p>main section goes here</p>
+
+				<h3>Our Selected Partners</h3>
 				<ul class="sponsors__list row">
 					<li class="sponsors__li small-6 large-4 columns">
 						<img
