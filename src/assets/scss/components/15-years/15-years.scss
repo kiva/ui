@@ -1,0 +1,25 @@
+$tomato: #DF5D4F;
+$mint: #9EEBD5;
+$sky: #B8CEF8;
+$twighlight: #3E4653;
+$offwhite: #F8F8F8;
+
+@mixin huge-headline() {
+	font-weight: bold;
+	font-size: rem-calc(96);
+	line-height: 1;
+	letter-spacing: rem-calc(-5);
+}
+
+.section {
+	padding-top: 5rem;
+	padding-bottom: 5rem;
+}
+
+.row { // the width of the comp is larger than our normal 990px
+	max-width: rem-calc(1152);
+}
+
+// @mixin h1() {
+
+// }

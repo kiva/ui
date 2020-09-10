@@ -7,6 +7,7 @@ Vue.use(kivaPlugins)
 import StoryRouter from 'storybook-vue-router';
 import GetStartedCauses from '@/pages/GetStarted/GetStartedCauses';
 import GetStartedPlaces from '@/pages/GetStarted/GetStartedPlaces';
+import GetStartedResults from '@/pages/GetStarted/GetStartedResults';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {
@@ -35,3 +36,12 @@ export const Places = () => ({
 	`,
 });
 
+export const Results = () => ({
+	components: {
+		GetStartedResults
+	},
+	mixins: [apolloStoryMixin],
+	template: `
+		<get-started-results />
+	`,
+});
