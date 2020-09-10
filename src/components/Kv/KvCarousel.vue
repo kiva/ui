@@ -327,9 +327,7 @@ $bar-indicator-margin: rem-calc(4);
 		}
 
 		&[disabled] {
-			@include button-disabled();
-
-			background: $kiva-text-light;
+			visibility: hidden;
 		}
 	}
 
