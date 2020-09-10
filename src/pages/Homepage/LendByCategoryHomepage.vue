@@ -296,12 +296,10 @@ export default {
 					['small retina', imgRequire('./loan-not-donation_2x.png')],
 				],
 			},
-			// TODO: add the right asset
-			// --
 			takeQuizImgs: {
 				header: [
-					['small', imgRequire('./loan-not-donation.png')],
-					['small retina', imgRequire('./loan-not-donation_2x.png')],
+					['small', imgRequire('./potters.png')],
+					['small retina', imgRequire('./potters_2x.png')],
 				]
 			},
 			howItWorksImgs: {
@@ -366,12 +364,8 @@ export default {
 					['large', imgRequire('./flourish-yellow-left.png')],
 					['large retina', imgRequire('./flourish-yellow-left_2x.png')],
 				],
-				// TODO: add the right asset
-				// --
 				leafRight: [
-					['small', imgRequire('./flourish-yellow-left.png')],
-					['large', imgRequire('./flourish-yellow-left.png')],
-					['large retina', imgRequire('./flourish-yellow-left_2x.png')],
+					['small', imgRequire('./leaf.svg')],
 				],
 			},
 		};
@@ -470,10 +464,10 @@ export default {
 
 	&__img {
 		margin: rem-calc(30) auto;
-		width: 12rem;
+		width: 15rem;
 
 		@include breakpoint(large) {
-			width: rem-calc(275);
+			width: 21rem;
 		}
 	}
 
@@ -510,16 +504,16 @@ export default {
 
 	&__flourish {
 		position: absolute;
-		width: 20%;
+		width: 10rem;
 		max-width: 17rem;
-		top: 0;
-		right: -3%;
+		bottom: 2rem;
+		right: -1.5rem;
 		pointer-events: none;
 		z-index: -1;
 
 		@include breakpoint(large) {
-			right: 0;
-			top: -10%;
+			width: 17rem;
+			bottom: 1rem;
 		}
 	}
 }
