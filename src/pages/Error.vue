@@ -10,7 +10,7 @@
 					<p class="message" v-if="loginRedirectUrl">
 						Please
 						<a :href="`${loginRedirectUrl}`">return to login</a>
-						and click "Forgot your password?" to continue.
+						and click "{{ forgotPasswordText }}" to continue.
 					</p>
 				</template>
 				<template v-else>
@@ -45,6 +45,7 @@ export default {
 			errorCode: this.$route.query.error,
 			errorDescription: sanitize(this.$route.query.error_description),
 			clientId: this.$route.query.client_id,
+			lenderLogin: this.$route.query.lender_login !== '0'
 		};
 	},
 	computed: {
@@ -57,6 +58,9 @@ export default {
 		loginRedirectUrl() {
 			return this.$appConfig.auth0.loginRedirectUrls[this.clientId];
 		},
+		forgotPasswordText() {
+			return this.lenderLogin ? 'Forgot your password?' : 'Don\'t remember your password?';
+		}
 	},
 	created() {
 		// eslint-disable-next-line no-console
