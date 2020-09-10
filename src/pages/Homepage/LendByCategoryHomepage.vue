@@ -47,6 +47,47 @@
 			</div>
 		</section>
 
+		<!-- GROW-72 associated to the GROW-165 explicit lender preferences epic -->
+		<section class="take-quiz section">
+			<div class="row take-quiz__border">
+				<div class="small-12 large-6 columns ">
+					<kv-responsive-image
+						class="take-quiz__img"
+						:images="takeQuizImgs.header"
+						loading="lazy"
+						alt=""
+					/>
+				</div>
+				<div class="small-12 large-6 columns take-quiz__text-container">
+					<h2 class="take-quiz__header">
+						Find your first <br>borrower
+					</h2>
+					<p class="take-quiz__body">
+						Take our 1-minute quiz based on causes you care about and
+						we'll find the ideal person to support!
+					</p>
+					<kv-button
+						:to="`/get-started`"
+						class="smaller take-quiz__button"
+						v-kv-track-event="[
+							'homepage',
+							'click-take-quiz-cta',
+							'Take quiz button'
+						]"
+					>
+						Take quiz
+					</kv-button>
+				</div>
+			</div>
+
+			<kv-responsive-image
+				class="take-quiz__flourish"
+				:images="flourishImgs.leafRight"
+				loading="lazy"
+				alt=""
+			/>
+		</section>
+
 		<section class="loan-not-donation section text-center">
 			<div class="row">
 				<kv-responsive-image
@@ -255,6 +296,14 @@ export default {
 					['small retina', imgRequire('./loan-not-donation_2x.png')],
 				],
 			},
+			// TODO: add the right asset
+			// --
+			takeQuizImgs: {
+				header: [
+					['small', imgRequire('./loan-not-donation.png')],
+					['small retina', imgRequire('./loan-not-donation_2x.png')],
+				]
+			},
 			howItWorksImgs: {
 				borrower: [
 					['small', imgRequire('./how-it-works-borrower.png')],
@@ -313,6 +362,13 @@ export default {
 					['large retina', imgRequire('./flourish-pink-right_2x.png')],
 				],
 				yellowLeft: [
+					['small', imgRequire('./flourish-yellow-left.png')],
+					['large', imgRequire('./flourish-yellow-left.png')],
+					['large retina', imgRequire('./flourish-yellow-left_2x.png')],
+				],
+				// TODO: add the right asset
+				// --
+				leafRight: [
 					['small', imgRequire('./flourish-yellow-left.png')],
 					['large', imgRequire('./flourish-yellow-left.png')],
 					['large retina', imgRequire('./flourish-yellow-left_2x.png')],
@@ -401,6 +457,69 @@ export default {
 
 		@include breakpoint(large) {
 			@include large-text();
+		}
+	}
+}
+
+.take-quiz {
+	&__border {
+		border-radius: 1rem;
+		z-index: 1;
+		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+	}
+
+	&__img {
+		margin: rem-calc(30) auto;
+		width: 12rem;
+
+		@include breakpoint(large) {
+			width: rem-calc(275);
+		}
+	}
+
+	&__text-container {
+		text-align: center;
+		@include breakpoint(large) {
+			text-align: unset;
+			margin: auto;
+		}
+	}
+
+	&__header {
+		font-weight: bold;
+		margin-top: rem-calc(20);
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
+	}
+
+	&__body {
+		@include breakpoint(large) {
+			padding-right: rem-calc(50);
+			@include featured-text();
+		}
+	}
+
+	&__button {
+		border-radius: rem-calc(10);
+		padding-left: rem-calc(50);
+		padding-right: rem-calc(50);
+		margin-bottom: rem-calc(40);
+	}
+
+	&__flourish {
+		position: absolute;
+		width: 20%;
+		max-width: 17rem;
+		top: 0;
+		right: -3%;
+		pointer-events: none;
+		z-index: -1;
+
+		@include breakpoint(large) {
+			right: 0;
+			top: -10%;
 		}
 	}
 }
