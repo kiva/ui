@@ -4,26 +4,23 @@
 		:footer-theme="footerTheme"
 	>
 		<div class="page-wrap">
-			<section>
-				<fifteen-years-header class="section" />
-			</section>
-			<section>
-				<fifteen-years-timeline class="section" />
-			</section>
-			<section>
-				<fifteen-years-individuals class="section" />
-			</section>
-			<section>
-				<h2>Sponsors</h2>
-				<h3>Our Selected Partners</h3>
-				<fifteen-years-sponsors class="section" />
-			</section>
-			<section>
-				<h2>How Kiva Works</h2>
-			</section>
-			<section class="section section--join">
-				<h2>Join over 1.9 million fellow changemakers</h2>
-			</section>
+			<fifteen-years-styles>
+				<section>
+					<fifteen-years-header />
+				</section>
+				<section>
+					<fifteen-years-timeline />
+				</section>
+				<section>
+					<fifteen-years-individuals />
+				</section>
+				<section>
+					<fifteen-years-sponsors />
+				</section>
+				<section>
+					<fifteen-years-how-kiva-works />
+				</section>
+			</fifteen-years-styles>
 		</div>
 	</www-page>
 </template>
@@ -32,16 +29,20 @@
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
 
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
+import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
 import FifteenYearsSponsors from '@/components/15Years/15YearsSponsors';
+import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
 import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
 		FifteenYearsHeader,
+		FifteenYearsHowKivaWorks,
 		FifteenYearsIndividuals,
 		FifteenYearsSponsors,
+		FifteenYearsStyles,
 		FifteenYearsTimeline,
 		WwwPage,
 	},
@@ -53,8 +54,6 @@ export default {
 			headerTheme: fifteenYearHeaderTheme,
 			footerTheme: fifteenYearFooterTheme
 		};
-	},
-	computed: {
 	},
 };
 </script>
@@ -69,5 +68,14 @@ export default {
 	@include breakpoint(large) {
 		margin-top: rem-calc(-64);
 	}
+}
+
+.row { // the width of the comp is larger than our normal 990px
+	max-width: rem-calc(1152);
+}
+
+.dropdown-pane a, // top nav overrides
+.dropdown-pane button {
+	@include link();
 }
 </style>

@@ -4,6 +4,8 @@ $sky: #B8CEF8;
 $twighlight: #3E4653;
 $offwhite: #F8F8F8;
 
+$font-family-monospace: 'Roboto Mono', monospace;
+
 @mixin huge-headline() {
 	font-weight: bold;
 	font-size: rem-calc(96);
@@ -11,15 +13,43 @@ $offwhite: #F8F8F8;
 	letter-spacing: rem-calc(-5);
 }
 
-.section {
-	padding-top: 5rem;
-	padding-bottom: 5rem;
+@mixin h2() {
+	font-size: rem-calc(72);
+	line-height: 83/72;
+	font-weight: 700;
+	letter-spacing: rem-calc(-1);
 }
 
-.row { // the width of the comp is larger than our normal 990px
-	max-width: rem-calc(1152);
+@mixin h3() {
+	font-size: rem-calc(48);
+	font-weight: 500;
+	line-height: 55/48;
+	letter-spacing: rem-calc(-1);
 }
 
-// @mixin h1() {
+@mixin h4() {
+	font-size: rem-calc(36);
+	font-weight: 500;
+	line-height: 41/36;
+	letter-spacing: rem-calc(-1);
+}
 
-// }
+@mixin h5() {
+	font-family: $font-family-monospace;
+	font-size: rem-calc(14);
+	line-height: 1.5;
+	text-transform: uppercase;
+}
+
+@mixin link() {
+	@include h5();
+
+	text-decoration: underline;
+	color: $twighlight;
+
+	&:hover,
+	&:focus {
+		background-color: $twighlight;
+		color: $offwhite;
+	}
+}
