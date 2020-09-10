@@ -1,5 +1,29 @@
 <template>
 	<div class="loan-category-section-wrapper">
+		<kv-carousel
+			:controls-inside="true"
+			:autoplay="false"
+			indicator-style="none"
+			:embla-options="{
+				loop: false,
+				containScroll: 'keepSnaps',
+
+			}"
+		>
+			<kv-carousel-slide
+				v-for="category in prefetchedCategoryInfo"
+				:key="category.id + '-carousel-link'"
+				style="width: auto; padding-top: 0.75rem;"
+			>
+				<kv-cause-selector
+					:cause="cleanCategoryName(category)"
+					:as-radio="true"
+					style="margin: 2rem 2rem 0;"
+					@change="setActiveCategory(category.id)"
+				/>
+			</kv-carousel-slide>
+		</kv-carousel>
+
 		<div class="category-options"
 			v-touch:swipe.left="scrollCategoryNamesRight"
 			v-touch:swipe.right="scrollCategoryNamesLeft"
@@ -67,17 +91,24 @@ import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
 import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
+import KvCarousel from '@/components/Kv/KvCarousel';
+import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
+import KvCauseSelector from '@/components/Kv/KvCauseSelector';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		LoanCategory,
+		KvCarousel,
+		KvCarouselSlide,
+		KvCauseSelector,
 		KvLoadingSpinner,
 		KvButton
 	},
 	data() {
 		return {
+
 			categoryIds: [52, 96, 93, 89, 87], // fallback category ids
 			itemsInBasket: [],
 			prefetchedCategoryInfo: [],
