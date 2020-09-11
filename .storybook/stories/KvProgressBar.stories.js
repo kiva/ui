@@ -1,32 +1,20 @@
 import KvProgressBar from '@/components/Kv/KvProgressBar';
-import { text } from '@storybook/addon-knobs';
 
 export default {
 	title: 'Kv/KvProgressBar',
 	component: KvProgressBar,
+	args: {
+		value: '20',
+		max: '100',
+	}
 };
 
-export const Default = () => ({
+export const Default = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
-		KvProgressBar,
-	},
-	props: {
-		value: {
-			type: String,
-			default() { return text('value', '20') }
-		},
-		max: {
-			type: String,
-			default() { return text('max', '100') }
-		}
+		KvProgressBar
 	},
 	template: `
-		<div>
-			<kv-progress-bar :value="value" :max="max" />
-		</div>
-	`
+		<kv-progress-bar :value="value" :max="max" />
+	`,
 });
-
-
-
-
