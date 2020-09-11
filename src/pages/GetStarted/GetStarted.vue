@@ -30,7 +30,6 @@ export default {
 @import 'settings';
 
 .page-wrap {
-	background: #fff;
 	position: relative;
 	overflow: hidden;
 

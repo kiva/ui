@@ -1,50 +1,48 @@
 <template>
 	<div class="causes">
 		<kv-progress-bar class="progress-bar" value="33" max="100" />
-		<form
+		<form class="get-started__form"
 			@submit.prevent="onSubmitForm"
 			:disabled="selectedCauses.length === 0"
 		>
-			<div class="page-content">
-				<fieldset>
-					<div class="row">
-						<div class="small-12 xlarge-5 columns get-started__intro">
-							<h1>Choose causes <br class="xlu">you care about</h1>
-							<p>
-								With Kiva, you can choose causes you care about and borrowers to support.
-								You’ll get updates from borrowers as they repay their loan.
-							</p>
-						</div>
-						<div class="small-12 xlarge-7 columns">
-							<ul class="get-started__list">
-								<li
-									class="get-started__list-item"
-									v-for="cause in causeList"
-									:key="`cause-${cause.id}`"
-								>
-									<kv-cause-selector
-										class="get-started__cause-selector"
-										:cause="cause.name"
-										:checked="cause.checked"
-										@change="onChangeCauseSelection($event, cause.id)"
-									/>
-								</li>
-							</ul>
-							<p
-								class="get-started__summary text-center"
-								v-html="summaryText"
-							></p>
-						</div>
-						<kv-button
-							class="get-started__submit-btn"
-							type="submit"
-							:disabled="selectedCauses.length === 0"
-						>
-							Next
-						</kv-button>
+			<fieldset>
+				<div class="row align-middle collapse">
+					<div class="small-12 xlarge-5 columns get-started__intro">
+						<h1>Choose causes <br class="xlu">you care about</h1>
+						<p>
+							With Kiva, you can choose causes you care about and borrowers to support.<br class="xlu">
+							You’ll receive regular updates from borrowers as they receive and repay each loan.
+						</p>
 					</div>
-				</fieldset>
-			</div>
+					<div class="small-12 xlarge-7 columns">
+						<ul class="get-started__list">
+							<li
+								class="get-started__list-item"
+								v-for="cause in causeList"
+								:key="`cause-${cause.id}`"
+							>
+								<kv-cause-selector
+									class="get-started__cause-selector"
+									:cause="cause.name"
+									:checked="cause.checked"
+									@change="onChangeCauseSelection($event, cause.id)"
+								/>
+							</li>
+						</ul>
+						<p
+							class="get-started__summary text-center"
+							v-html="summaryText"
+						></p>
+					</div>
+					<kv-button
+						class="get-started__submit-btn"
+						type="submit"
+						:disabled="selectedCauses.length === 0"
+					>
+						Next
+					</kv-button>
+				</div>
+			</fieldset>
 		</form>
 	</div>
 </template>
@@ -184,17 +182,49 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.page-content {
-	padding: 1.625rem 0;
-}
-
 .get-started {
+	&__form {
+		padding: 1.5rem;
+		margin: 2rem auto;
+		background-color: $white;
+		border-radius: 1rem;
+		width: 98%;
+		max-width: rem-calc(1088);
+
+		@include breakpoint(medium) {
+			box-shadow: 0 2px 100px 0 rgba(0, 0, 0, 0.1);
+		}
+
+		@include breakpoint(large) {
+			margin: 4.5rem auto;
+			padding: 0.75rem 2.65rem 0.75rem 3.75rem;
+		}
+	}
+
 	&__intro {
 		text-align: center;
 		margin-bottom: 1rem;
 
 		@include breakpoint(xlarge) {
 			text-align: left;
+		}
+
+		h1 {
+			font-weight: bold;
+			margin-bottom: 1.5rem;
+
+			@include breakpoint(large) {
+				@include large-text();
+			}
+		}
+
+		p {
+			font-size: $medium-text-font-size;
+			line-height: $medium-text-line-height;
+
+			@include breakpoint(xlarge) {
+				padding: 1rem 1.5rem 1rem 0;
+			}
 		}
 	}
 
@@ -205,7 +235,11 @@ export default {
 		justify-items: center;
 		justify-content: center;
 		max-width: 30.5rem;
-		margin: 0 auto 1.5rem auto;
+		margin: 0 auto;
+
+		@include breakpoint(xlarge) {
+			margin: 2rem 0 1.5rem auto;
+		}
 	}
 
 	&__list-item {
@@ -225,12 +259,13 @@ export default {
 	}
 
 	&__summary {
-		margin: 0 0 2.5rem 0;
+		max-width: 30.5rem;
+		margin: 0 0 2.5rem auto;
 	}
 
 	&__submit-btn {
 		display: block;
-		margin-left: auto;
+		margin: 0 1.25rem 3rem auto;
 	}
 }
 </style>
