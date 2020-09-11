@@ -1,10 +1,18 @@
 <template>
 	<div class="rec-loan-card" :id="`${loanId}-loan-card`">
-		<div class="rec-loan-card__sector">
+		<kv-loading-placeholder
+			class="rec-loan-card__sector rec-loan-card__sector--loading"
+			v-if="isLoading"
+		/>
+		<div class="rec-loan-card__sector" v-show="!isLoading">
 			A loan for <strong>{{ sectorName }}</strong> in <strong>{{ countryName }}</strong>
 		</div>
 		<div class="rec-loan-card__card">
-			<div class="rec-loan-card__image-wrapper">
+			<kv-loading-placeholder
+				class="rec-loan-card__image-wrapper rec-loan-card__image-wrapper--loading"
+				v-if="isLoading"
+			/>
+			<div class="rec-loan-card__image-wrapper" v-show="!isLoading">
 				<img class="rec-loan-card__image"
 					v-if="imageUrl"
 					:srcset="imageRetinaUrl + ' 2x'"
@@ -20,7 +28,7 @@
 						:inline-svg="true"
 					/>
 					<span class="rec-loan-card__time-left">
-						{{ expiringSoonMessage }}
+						{{ timeLeftMessage }}
 					</span>
 					<span class="rec-loan-card__amount-left">
 						{{ amountLeftWithoutReservation | numeral('$0,0') }} to go
@@ -32,10 +40,18 @@
 				:percent-raised="percentRaised"
 			/>
 			<div class="rec-loan-card__summary">
-				<h2 class="rec-loan-card__name">
+				<kv-loading-placeholder
+					class="rec-loan-card__name rec-loan-card__name--loading"
+					v-if="isLoading"
+				/>
+				<h2 class="rec-loan-card__name" v-show="!isLoading">
 					{{ borrowerName }}
 				</h2>
-				<p class="rec-loan-card__loan-use">
+				<kv-loading-paragraph
+					class="rec-loan-card__loan-use rec-loan-card__loan-use--loading"
+					v-if="isLoading"
+				/>
+				<p class="rec-loan-card__loan-use" v-show="!isLoading">
 					{{ loanUse }}
 					<router-link class="rec-loan-card__learn-more"
 						:to="`/lend/${loanId}`"
@@ -44,8 +60,17 @@
 						Learn more &rarr;
 					</router-link>
 				</p>
-				<why-special :text="whySpecial" />
+				<kv-loading-placeholder
+					class="rec-loan-card__why-special rec-loan-card__why-special--loading"
+					v-if="isLoading"
+				/>
+				<why-special :text="whySpecial" v-show="!isLoading" />
+				<kv-loading-placeholder
+					class="rec-loan-card__button rec-loan-card__button--loading"
+					v-if="isLoading"
+				/>
 				<lend-button class="rec-loan-card__button rounded"
+					v-show="!isLoading"
 					:loan-id="loanId"
 					:is-in-basket="isInBasket"
 					:is-lent-to="isLentTo"
@@ -65,6 +90,8 @@ import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
 import FundraisingStatusMeter from '@/components/LoanCards/FundraisingStatus/FundraisingStatusMeter';
 import KvFlag from '@/components/Kv/KvFlag';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
+import KvLoadingParagraph from '@/components/Kv/KvLoadingParagraph';
 import LendButton from '@/components/LoanCards/Buttons/LendButton2';
 import WhySpecial from '@/components/LoanCards/WhySpecial';
 
@@ -113,7 +140,6 @@ const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 			loanFundraisingInfo {
 				fundedAmount
 				reservedAmount
-				isExpiringSoon
 			}
 
 			# for time-left-mixin
@@ -126,7 +152,7 @@ export default {
 	props: {
 		loanId: {
 			type: Number,
-			default: 1998250, // TODO: change to required?
+			required: true,
 		}
 	},
 	inject: ['apollo'],
@@ -134,6 +160,8 @@ export default {
 	components: {
 		FundraisingStatusMeter,
 		KvFlag,
+		KvLoadingPlaceholder,
+		KvLoadingParagraph,
 		LendButton,
 		WhySpecial,
 	},
@@ -141,6 +169,7 @@ export default {
 		return {
 			loan: null,
 			basketItems: null,
+			isLoading: false,
 		};
 	},
 	computed: {
@@ -179,23 +208,30 @@ export default {
 		},
 	},
 	methods: {
-		async fetchLoanData() {
-			const result = await this.apollo.query({
+		fetchLoanData() {
+			if (!this.loan) {
+				this.isLoading = true;
+			}
+			this.apollo.query({
 				variables: {
 					loanId: this.loanId,
 				},
 				query: loanQuery,
+			}).then(result => {
+				this.isLoading = false;
+				this.loan = result.data?.lend?.loan || null;
+				this.basketItems = result.data?.shop?.basket?.items?.values || null;
 			});
-
-			this.loan = result.data?.lend?.loan || null;
-			this.basketItems = result.data?.shop?.basket?.items?.values || null;
+			// TODO: error handling
 		},
 	},
-	async serverPrefetch() {
+	serverPrefetch() {
 		return this.fetchLoanData();
 	},
 	mounted() {
 		this.fetchLoanData();
+		// TODO: use a watch query to catch changes to loan data?
+		// TODO: update variables for query when loan id changes?
 	},
 };
 </script>
@@ -203,8 +239,15 @@ export default {
 <style lang="scss">
 @import 'settings';
 
+%nested-column-flex {
+	display: flex;
+	flex-flow: column nowrap;
+	flex-grow: 1;
+}
+
 .rec-loan-card {
-	max-width: rem-calc(320);
+	@extend %nested-column-flex;
+	max-width: rem-calc(384);
 
 	&__sector {
 		margin-left: 1rem;
@@ -213,9 +256,16 @@ export default {
 			color: $kiva-green;
 			font-weight: $global-weight-normal;
 		}
+
+		&--loading {
+			width: 60%;
+			height: 1rem;
+			margin: rem-calc(6) 1rem;
+		}
 	}
 
 	&__card {
+		@extend %nested-column-flex;
 		border-radius: rem-calc(20);
 		overflow: hidden;
 		box-shadow: 0 rem-calc(8) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
@@ -226,6 +276,10 @@ export default {
 		background-color: $kiva-bg-darkgray;
 		width: 100%;
 		padding-bottom: 200/320 * 100%;
+
+		&--loading {
+			flex-basis: 0;
+		}
 	}
 
 	&__image {
@@ -280,27 +334,65 @@ export default {
 	}
 
 	&__summary {
+		@extend %nested-column-flex;
 		margin: rem-calc(16);
 	}
 
 	&__name {
 		font-size: rem-calc(22);
 		font-weight: $global-weight-bold;
+
+		&--loading {
+			height: rem-calc(22);
+			width: 60%;
+			margin-bottom: 1rem;
+		}
 	}
 
 	&__loan-use {
-		line-height: rem-calc(22);
+		$line-height: rem-calc(22);
+
+		flex-grow: 1;
+		line-height: $line-height;
+
+		&--loading {
+			margin-bottom: 1rem;
+
+			.loading-placeholder {
+				margin-bottom: rem-calc(6);
+			}
+		}
 	}
 
 	&__learn-more {
 		white-space: nowrap;
 	}
 
+	&__why-special--loading {
+		flex-grow: 1;
+		border-radius: rem-calc(10);
+		overflow: hidden;
+		height: 5rem;
+		margin-bottom: 1rem;
+	}
+
 	&__button {
-		font-size: 1.25rem;
-		padding: 1.25rem;
-		margin: 0;
-		width: 100%;
+		$font-size: 1.25rem;
+		$padding: 1.25rem;
+
+		&.button {
+			font-size: $font-size;
+			padding: $padding;
+			margin: 0;
+			width: 100%;
+		}
+
+		&--loading {
+			border-radius: rem-calc(10);
+			overflow: hidden;
+			height: $font-size + 2 * $padding;
+			padding: 0;
+		}
 	}
 }
 </style>

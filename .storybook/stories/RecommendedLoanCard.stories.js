@@ -45,7 +45,19 @@ const apolloMockMixin = {
 			mutate: () => Promise.resolve({}),
 			query: () => Promise.resolve(queryData),
 			readFragment: () => ({}),
-			readQuery: () => Promise.resolve(queryData),
+			readQuery: () => ({}),
+			watchQuery: () => ({ subscribe() {} }),
+		},
+	},
+};
+
+const apolloLoadingMixin = {
+	provide: {
+		apollo: {
+			mutate: () => new Promise(() => {}),
+			query: () => new Promise(() => {}),
+			readFragment: () => ({}),
+			readQuery: () => ({}),
 			watchQuery: () => ({ subscribe() {} }),
 		},
 	},
@@ -60,5 +72,11 @@ export default {
 export const Default = () => ({
 	mixins: [apolloMockMixin],
 	components: { RecommendedLoanCard },
-	template: '<recommended-loan-card />'
+	template: '<recommended-loan-card :loan-id="1998250" />'
+});
+
+export const Loading = () => ({
+	mixins: [apolloLoadingMixin],
+	components: { RecommendedLoanCard },
+	template: '<recommended-loan-card :loan-id="1998250" />'
 });
