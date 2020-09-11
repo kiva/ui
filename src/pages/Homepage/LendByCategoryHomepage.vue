@@ -50,7 +50,7 @@
 		<!-- GROW-72 associated to the GROW-165 explicit lender preferences epic -->
 		<section class="take-quiz section">
 			<div class="row take-quiz__border">
-				<div class="small-12 large-6 columns ">
+				<div class="small-12 large-6 columns">
 					<kv-responsive-image
 						class="take-quiz__img"
 						:images="takeQuizImgs.header"
@@ -70,9 +70,9 @@
 						:to="`/get-started`"
 						class="smaller take-quiz__button"
 						v-kv-track-event="[
-							'homepage',
-							'click-take-quiz-cta',
-							'Take quiz button'
+							'Home',
+							'click-quiz-card-cta',
+							'Take quiz'
 						]"
 					>
 						Take quiz
@@ -460,14 +460,23 @@ export default {
 		border-radius: 1rem;
 		z-index: 1;
 		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+		margin: 0 rem-calc(10);
+
+		@include breakpoint(xga) {
+			margin: 0 auto;
+		}
 	}
 
 	&__img {
 		margin: rem-calc(30) auto;
-		width: 15rem;
+		width: rem-calc(240);
 
 		@include breakpoint(large) {
-			width: 21rem;
+			width: rem-calc(304);
+		}
+
+		@include breakpoint(xlarge) {
+			width: rem-calc(345);
 		}
 	}
 
