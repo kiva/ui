@@ -55,6 +55,8 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 
+						<basket-verification />
+
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
@@ -175,6 +177,7 @@ import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -194,6 +197,7 @@ export default {
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
+		BasketVerification,
 		KivaCardRedemption,
 		LoadingOverlay,
 		CheckoutHolidayPromo,
