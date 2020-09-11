@@ -249,6 +249,7 @@ $largest: rem-calc(1250);
 
 .rec-loan-card {
 	@extend %nested-column-flex;
+
 	flex-shrink: 0;
 	min-width: rem-calc(230);
 	width: 230/320 * 100%;
@@ -292,6 +293,7 @@ $largest: rem-calc(1250);
 
 	&__card {
 		@extend %nested-column-flex;
+
 		border-radius: rem-calc(20);
 		overflow: hidden;
 		box-shadow: 0 rem-calc(8) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
@@ -361,6 +363,7 @@ $largest: rem-calc(1250);
 
 	&__summary {
 		@extend %nested-column-flex;
+
 		margin: rem-calc(16);
 	}
 

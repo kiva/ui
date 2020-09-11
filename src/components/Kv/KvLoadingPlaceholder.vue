@@ -21,7 +21,7 @@
 		top: 0;
 		left: -100%;
 		background: linear-gradient(to right, transparent 0%, $kiva-bg-lightgray 50%, transparent 100%);
-		animation: loading-placeholder 1.5s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+		animation: loading-placeholder 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
 	}
 }
 
