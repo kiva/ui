@@ -47,7 +47,7 @@
 			</div>
 		</section>
 
-		<!-- GROW-72 associated to the GROW-165 explicit lender preferences epic -->
+		<!-- GROW-172 associated to the GROW-165 explicit lender preferences epic -->
 		<section class="take-quiz section">
 			<div class="row take-quiz__border">
 				<div class="small-12 large-6 columns">
