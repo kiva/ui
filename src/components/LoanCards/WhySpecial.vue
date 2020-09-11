@@ -47,18 +47,27 @@ $bg-color: #fff;
 		background-color: $color;
 		color: $bg-color;
 		fill: $color;
-		padding: rem-calc(12);
+		padding: rem-calc(7);
 		flex-shrink: 0;
 		align-items: center;
 
 		.icon {
-			width: rem-calc(23);
-			height: rem-calc(23);
+			width: rem-calc(13);
+			height: rem-calc(13);
+		}
+
+		@include breakpoint(large up) {
+			padding: rem-calc(12);
+
+			.icon {
+				width: rem-calc(23);
+				height: rem-calc(23);
+			}
 		}
 	}
 
 	&__text {
-		line-height: rem-calc(22);
+		line-height: (22 / 16);
 		margin: rem-calc(14) rem-calc(10);
 		flex-grow: 1;
 	}

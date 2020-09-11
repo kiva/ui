@@ -255,15 +255,18 @@ $largest: rem-calc(1250);
 	width: 230/320 * 100%;
 	max-width: rem-calc(280);
 	margin: 0 rem-calc(10);
+	font-size: rem-calc(12);
 
 	@include breakpoint(medium up) {
 		width: 280/480 * 100%;
 		max-width: rem-calc(357);
+		font-size: rem-calc(14);
 	}
 
 	@include breakpoint(large up) {
 		width: 357/680 * 100%;
 		max-width: rem-calc(384);
+		font-size: 1rem;
 	}
 
 	@include breakpoint(xlarge up) {
@@ -327,29 +330,63 @@ $largest: rem-calc(1250);
 
 		.rec-loan-card__country-flag {
 			position: absolute;
-			top: 1rem;
-			right: 1rem;
-			width: 2rem;
-			height: 2rem;
+			top: rem-calc(12);
+			right: rem-calc(12);
+			width: rem-calc(24);
+			height: rem-calc(24);
 			border: none;
 			border-radius: 50%;
 			overflow: hidden;
+
+			@include breakpoint(medium up) {
+				top: rem-calc(14);
+				right: rem-calc(14);
+				width: rem-calc(28);
+				height: rem-calc(28);
+			}
+
+			@include breakpoint(large up) {
+				top: rem-calc(16);
+				right: rem-calc(16);
+				width: rem-calc(32);
+				height: rem-calc(32);
+			}
 		}
 	}
 
 	&__time-left {
 		position: absolute;
-		left: 1rem;
-		bottom: rem-calc(8);
+		left: rem-calc(10);
+		bottom: rem-calc(5);
 		color: $white;
+
+		@include breakpoint(medium up) {
+			left: rem-calc(12);
+			bottom: rem-calc(6);
+		}
+
+		@include breakpoint(large up) {
+			left: rem-calc(16);
+			bottom: rem-calc(8);
+		}
 	}
 
 	&__amount-left {
 		position: absolute;
-		right: 1rem;
+		right: rem-calc(10);
 		bottom: rem-calc(8);
 		color: $white;
 		opacity: 0.6;
+
+		@include breakpoint(medium up) {
+			right: rem-calc(12);
+			bottom: rem-calc(6);
+		}
+
+		@include breakpoint(large up) {
+			right: rem-calc(16);
+			bottom: rem-calc(8);
+		}
 	}
 
 	.fundraising-status-meter {
@@ -364,25 +401,47 @@ $largest: rem-calc(1250);
 	&__summary {
 		@extend %nested-column-flex;
 
-		margin: rem-calc(16);
+		margin: rem-calc(10);
+
+		@include breakpoint(medium up) {
+			margin: rem-calc(12);
+		}
+
+		@include breakpoint(large up) {
+			margin: rem-calc(16);
+		}
 	}
 
 	&__name {
-		font-size: rem-calc(22);
+		font-size: rem-calc(16);
 		font-weight: $global-weight-bold;
 
 		&--loading {
-			height: rem-calc(22);
+			height: rem-calc(16);
 			width: 60%;
 			margin-bottom: 1rem;
+		}
+
+		@include breakpoint(medium up) {
+			font-size: rem-calc(20);
+
+			&--loading {
+				height: rem-calc(20);
+			}
+		}
+
+		@include breakpoint(large up) {
+			font-size: rem-calc(22);
+
+			&--loading {
+				height: rem-calc(22);
+			}
 		}
 	}
 
 	&__loan-use {
-		$line-height: rem-calc(22);
-
 		flex-grow: 1;
-		line-height: $line-height;
+		line-height: (22 / 16);
 
 		&--loading {
 			margin-bottom: 1rem;
