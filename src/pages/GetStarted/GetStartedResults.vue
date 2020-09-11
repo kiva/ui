@@ -1,14 +1,41 @@
 <template>
-	<div>
+	<div class="get-started-results-page">
 		<kv-progress-bar value="100" max="100" />
+		<div class="loan-results">
+			<template v-if="totalCount > 0">
+				<h1 class="loan-results__headline">
+					Here {{ countVerb }} {{ countNumber }} {{ countPeople }} you can support!
+				</h1>
+				<p class="loan-results__tagline">
+					In fact, we found {{ totalCount }} {{ countPeople }} that we think you’ll love to lend to.
+					<router-link>
+						View all loans
+					</router-link>
+				</p>
+			</template>
+			<template v-else>
+				<h1 class="loan-results__headline">
+					Sorry, we couldn't find any loans matching your preferences
+				</h1>
+				<p class="loan-results__tagline">
+					<!-- eslint-disable-next-line max-len -->
+					But here {{ countVerb }} {{ countNumber }} {{ countPeople }} who still {{ countNeed }} your support!
+					<router-link to="/lend-by-category">
+						Explore more loans
+					</router-link>
+				</p>
+			</template>
+			<div class="loan-results__loans">
+				<div class="loan-results__loan-spacer"></div>
+				<recommended-loan-card
+					v-for="loanId in loanIds"
+					:key="loanId"
+					:loan-id="loanId"
+				/>
+				<div class="loan-results__loan-spacer"></div>
+			</div>
+		</div>
 		<div class="row column page-content">
-			<h1>Here are X people you can support!</h1>
-			<p>
-				In fact, we found X people that we think you’ll love to lend to.
-				<!-- <router-link>View all loans</router-link> -->
-			</p>
-			<div>loans here</div>
-
 			<section>
 				<h2>Looking for different loans?</h2>
 			</section>
@@ -78,20 +105,27 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
+import cookieStore from '@/util/cookieStore';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
+	inject: ['apollo'],
 	components: {
 		FrequentlyAskedQuestions,
 		KvProgressBar,
 		KvResponsiveImage,
+		RecommendedLoanCard,
 	},
 	data() {
 		return {
+			loanIds: [],
+			totalCount: 0,
 			howItWorksImgs: {
 				loan: [
 					['small', imgRequire('./how-it-works-loan.png')],
@@ -118,14 +152,113 @@ export default {
 	metaInfo: {
 		title: 'Results - Get Started'
 	},
+	computed: {
+		countVerb() {
+			return this.loanIds.length === 1 ? 'is' : 'are';
+		},
+		countNumber() {
+			switch (this.loanIds.length) {
+				case 1:
+					return 'one';
+				case 2:
+					return 'two';
+				default:
+					return 'three';
+			}
+		},
+		countPeople() {
+			return this.loanIds.length === 1 ? 'person' : 'people';
+		},
+		countNeed() {
+			return this.loanIds.length === 1 ? 'needs' : 'need';
+		},
+	},
+	apollo: {
+		preFetch: true,
+		preFetchVariables() {
+			return {
+				limit: 3,
+				visitorId: cookieStore.get('uiv') || null
+			};
+		},
+		variables() {
+			return {
+				limit: 3,
+				visitorId: cookieStore.get('uiv') || null
+			};
+		},
+		query: gql`query getStartedResults($limit: Int, $visitorId: String) {
+			general {
+				lendingPreferences(visitorId: $visitorId) {
+					loans(limit: $limit) {
+						totalCount
+						values {
+							id
+						}
+					}
+				}
+			}
+			# TODO: might do this in a follow-up query instead of in the initial query
+			lend {
+				loans(limit: $limit) {
+					values {
+						id
+					}
+				}
+			}
+		}`,
+		result(result) {
+			// TODO: error handling
+			let loanValues = result.data?.general?.lendingPreferences?.loans?.values || [];
+			this.totalCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
+
+			if (this.totalCount === 0) {
+				loanValues = result.data?.lend?.loans?.values || [];
+			}
+
+			this.loanIds = loanValues.filter(loan => !!loan.id).map(loan => loan.id);
+		},
+	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
 
-.page-content {
+.get-started-results-page {
+	background-color: $white;
+}
+
+.loan-results {
 	padding-top: 6rem;
+
+	&__headline {
+		text-align: center;
+		font-weight: bold;
+		margin-bottom: 1rem;
+	}
+
+	&__tagline {
+		text-align: center;
+		font-size: rem-calc(20);
+		line-height: 1.35;
+		max-width: 24rem;
+		margin: 0 auto 2rem;
+	}
+
+	&__loans {
+		display: flex;
+		overflow: auto;
+		padding-bottom: 2rem;
+	}
+
+	&__loan-spacer {
+		flex-grow: 1;
+	}
+}
+
+.page-content {
+	padding-top: 9rem;
 }
 
 // utils

@@ -245,9 +245,35 @@ export default {
 	flex-grow: 1;
 }
 
+$largest: rem-calc(1250);
+
 .rec-loan-card {
 	@extend %nested-column-flex;
-	max-width: rem-calc(384);
+	flex-shrink: 0;
+	min-width: rem-calc(230);
+	width: 230/320 * 100%;
+	max-width: rem-calc(280);
+	margin: 0 rem-calc(10);
+
+	@include breakpoint(medium up) {
+		width: 280/480 * 100%;
+		max-width: rem-calc(357);
+	}
+
+	@include breakpoint(large up) {
+		width: 357/680 * 100%;
+		max-width: rem-calc(384);
+	}
+
+	@include breakpoint(xlarge up) {
+		width: rem-calc(320);
+		max-width: rem-calc(320);
+	}
+
+	@include breakpoint($largest up) {
+		width: rem-calc(384);
+		max-width: rem-calc(384);
+	}
 
 	&__sector {
 		margin-left: 1rem;
