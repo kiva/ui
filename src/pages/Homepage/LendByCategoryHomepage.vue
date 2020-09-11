@@ -499,7 +499,7 @@ export default {
 
 	&__body {
 		@include breakpoint(large) {
-			padding-right: rem-calc(50);
+			padding-right: 1rem;
 			@include featured-text();
 		}
 	}
