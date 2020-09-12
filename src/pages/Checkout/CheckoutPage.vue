@@ -60,7 +60,7 @@
 						/>
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
-							<div v-if="isLoggedIn" class="small-12">
+							<div v-if="isLoggedIn && !verificationRequired" class="small-12">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
@@ -89,9 +89,8 @@
 								/>
 							</div>
 
-							<div v-else class="small-12">
+							<div v-else-if="!isActivelyLoggedIn && showLoginContinueButton" class="small-12">
 								<kv-button
-									v-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="checkout-button smallest"
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
