@@ -55,7 +55,9 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 
-						<basket-verification />
+						<basket-verification
+							@verification-required="verificationRequired = $event"
+						/>
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn" class="small-12">
@@ -221,6 +223,7 @@ export default {
 			kivaCards: [],
 			redemption_credits: [],
 			hasFreeCredits: false,
+			verificationRequired: false,
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
