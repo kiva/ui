@@ -3,7 +3,7 @@
 		<div class="row align-middle">
 			<div class="header__text large-4 columns">
 				<h1 class="header__headline">
-					<span class="header__headline-stroked">Power in</span><br> Numbers
+					<span class="header__headline-stroked one-line">Power in</span>Numbers
 				</h1>
 				<p>
 					Rally Interactive will be handling this entire module
@@ -13,7 +13,6 @@
 
 			<div class="header__globe large-offset-2 large-6 columns">
 				<img
-					class="header__globe-img"
 					width="503"
 					height="503"
 					src="@/assets/images/15-years/temp/globe.png"
@@ -25,7 +24,9 @@
 </template>
 
 <script>
+export default {
 
+};
 </script>
 
 <style lang="scss" scoped>
@@ -44,10 +45,6 @@
 	&__headline-stroked {
 		-webkit-text-stroke: 1px $body-font-color;
 		-webkit-text-fill-color: $offwhite;
-	}
-
-	&__globe-img {
-		margin: 4rem 0;
 	}
 }
 </style>

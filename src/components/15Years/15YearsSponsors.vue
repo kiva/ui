@@ -2,84 +2,88 @@
 	<div class="sponsors section">
 		<div class="row">
 			<div class="columns">
-				<h2>Sponsors</h2>
-				<p>main section goes here</p>
-
-				<h3>Our Selected Partners</h3>
-				<ul class="sponsors__list row">
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-fossil.svg"
-							alt="Fossil Foundation"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo sponsors__logo--ebay"
-							src="@/assets/images/iwd/partner-ebay.svg"
-							alt="eBay"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-boa.svg"
-							alt="Bank of America"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-wage.svg"
-							alt="Women and Girls Empowered"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo sponsors__logo--visa"
-							src="@/assets/images/iwd/partner-visa.png"
-							alt="Visa Foundation"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-cartier.svg"
-							alt="Cartier"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-sp-global.svg"
-							alt="S&amp;P Global Foundation"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-grameen.svg"
-							alt="Grameen Foundation"
-							loading="lazy"
-						>
-					</li>
-					<li class="sponsors__li small-6 large-4 columns">
-						<img
-							class="sponsors__logo"
-							src="@/assets/images/iwd/partner-principle.svg"
-							alt="Principle Foundation"
-							loading="lazy"
-						>
-					</li>
-				</ul>
+				<section>
+					<h2>Sponsors</h2>
+					<p>main section goes here</p>
+				</section>
+				<section>
+					<h3>Our Selected Partners</h3>
+					<p>Below taken from IWD homepage</p>
+					<ul class="sponsors__list row">
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-fossil.svg"
+								alt="Fossil Foundation"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo sponsors__logo--ebay"
+								src="@/assets/images/iwd/partner-ebay.svg"
+								alt="eBay"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-boa.svg"
+								alt="Bank of America"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-wage.svg"
+								alt="Women and Girls Empowered"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo sponsors__logo--visa"
+								src="@/assets/images/iwd/partner-visa.png"
+								alt="Visa Foundation"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-cartier.svg"
+								alt="Cartier"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-sp-global.svg"
+								alt="S&amp;P Global Foundation"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-grameen.svg"
+								alt="Grameen Foundation"
+								loading="lazy"
+							>
+						</li>
+						<li class="sponsors__li small-6 large-4 columns">
+							<img
+								class="sponsors__logo"
+								src="@/assets/images/iwd/partner-principle.svg"
+								alt="Principle Foundation"
+								loading="lazy"
+							>
+						</li>
+					</ul>
+				</section>
 			</div>
 		</div>
 	</div>
