@@ -1,9 +1,9 @@
 <template>
 	<div class="header section">
 		<div class="row align-middle">
-			<div class="header__text large-4 columns">
+			<div class="header__text small-12 large-4 columns">
 				<h1 class="header__headline">
-					<span class="header__headline-stroked one-line">Power in</span>Numbers
+					<span class="header__headline-stroked no-wrap">Power in</span> Numbers
 				</h1>
 				<p>
 					Rally Interactive will be handling this entire module
@@ -11,7 +11,7 @@
 				<a href="#">Link text</a>
 			</div>
 
-			<div class="header__globe large-offset-2 large-6 columns">
+			<div class="header__globe small-12 large-offset-2 large-6 columns">
 				<img
 					width="503"
 					height="503"
