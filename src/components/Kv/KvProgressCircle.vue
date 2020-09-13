@@ -1,7 +1,7 @@
 <template>
 	<div class="kv-progress-circle">
 		<!-- visually hidden, here for accessibility purposes -->
-		<progress class="kv-progress-circle__native-el" max="100" :value="progress"></progress>
+		<progress class="kv-progress-circle__native-el" max="100" :value="value"></progress>
 
 		<div class="kv-progress-circle__wrapper">
 			<svg
@@ -10,21 +10,21 @@
 				xmlns="http://www.w3.org/2000/svg"
 				:viewBox="`0 0 ${radius * 2} ${radius * 2}`"
 			>
-				<!-- progress ring background -->
+				<!-- ring background -->
 				<circle
 					class="kv-progress-circle__ring-background"
-					:stroke-width="stroke"
+					:stroke-width="strokeWidth"
 					:r="normalizedRadius"
 					:cx="radius"
 					:cy="radius"
 				/>
 
-				<!-- progress ring foreground -->
+				<!-- ring foreground -->
 				<circle
 					class="kv-progress-circle__ring-foreground"
 					:stroke-dasharray="circumference + ' ' + circumference"
 					:style="`stroke-dashoffset: ${strokeDashoffset}`"
-					:stroke-width="stroke"
+					:stroke-width="strokeWidth"
 					:r="normalizedRadius"
 					:cx="radius"
 					:cy="radius"
@@ -63,7 +63,11 @@
 					class="kv-progress-circle__ring-text"
 					:dy="-5"
 				>
-					<textPath :xlink:href="`#text_circle${progress > 75 || progress < 25 ? '_flipped' : ''}`">{{ progress }}</textPath>
+					<textPath
+						:xlink:href="`#text_circle${value > 75 || value < 25 ? '_flipped' : ''}`"
+					>
+						{{ value }}
+					</textPath>
 				</text>
 			</svg>
 		</div>
@@ -75,41 +79,37 @@
 export default {
 	name: 'KvProgressCircle',
 	props: {
-		progress: {
+		value: {
 			default: 10,
 			type: Number,
 			validator(val) {
 				return val >= 0 && val <= 100;
 			}
 		},
-		stroke: {
-			default: 1,
+		strokeWidth: {
+			default: 5,
 			type: Number
 		},
 	},
 	data() {
 		return {
 			radius: 100,
-			isMounted: false, // trick to get some computed properties that require $refs to refresh on mount.
 		};
 	},
 	computed: {
 		normalizedRadius() {
-			return this.radius - (this.stroke / 2);
+			return this.radius - (this.strokeWidth / 2);
 		},
 		circumference() {
 			return this.normalizedRadius * 2 * Math.PI;
 		},
 		strokeDashoffset() {
-			return this.circumference - (this.progress / 100) * this.circumference;
+			return this.circumference - (this.value / 100) * this.circumference;
 		},
 		textCircleTransform() {
 			const offset = -90 + 4;
-			return `rotate(${(this.progress * (360 / 100)) + offset} ${this.radius} ${this.radius})`;
+			return `rotate(${(this.value * (360 / 100)) + offset} ${this.radius} ${this.radius})`;
 		},
-	},
-	mounted() {
-		this.isMounted = true;
 	},
 };
 </script>
@@ -118,6 +118,9 @@ export default {
 @import 'settings';
 
 .kv-progress-circle {
+	$foreground-color: $kiva-accent-blue;
+	$background-color: $kiva-bg-lightgray;
+
 	&__wrapper {
 		width: 100%;
 	}
@@ -140,13 +143,16 @@ export default {
 		fill: transparent;
 		transform: rotate(90deg);
 		transform-origin: center center;
-		stroke: green;
+		stroke: $kiva-accent-blue;
+		stroke: var(--kv-progress-circle-foreground-color, $foreground-color);
+		stroke-linecap: round;
 		transition: stroke-dashoffset 0.35s;
 	}
 
 	&__ring-background {
 		fill: transparent;
 		stroke: $kiva-bg-lightgray;
+		stroke: var(--kv-progress-circle-background-color, $background-color);
 	}
 }
 </style>

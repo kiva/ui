@@ -4,8 +4,18 @@ export default {
 	title: 'Kv/KvProgressCircle',
 	component: KvProgressCircle,
 	args: {
-		progress: 10,
-		stroke: 10
+		value: 10,
+		strokeWidth: 5
+	},
+	argTypes: {
+		value: {
+			control: 'range',
+			options: {
+				min: 0,
+				max: 100,
+				step: 1,
+			}
+		}
 	}
 };
 
@@ -15,21 +25,28 @@ export const Default = (args, { argTypes }) => ({
 		KvProgressCircle
 	},
 	template: `
-		<kv-progress-circle :progress="progress" :stroke="stroke" style="width: 200px;" />
+		<kv-progress-circle
+			:value="value"
+			:stroke-width="strokeWidth"
+			style="width: 200px;"
+		/>
 	`,
 });
 
-export const FiftyPercent = Default.bind({});
-FiftyPercent.args = {
-	progress: 50,
-};
-
-export const EightyPercent = Default.bind({});
-EightyPercent.args = {
-	progress: 80,
-};
-
-export const OneHundredPercent = Default.bind({});
-OneHundredPercent.args = {
-	progress: 100,
-};
+export const Styled = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvProgressCircle
+	},
+	template: `
+		<kv-progress-circle
+			:value="value"
+			:stroke-width="strokeWidth"
+			style="
+				--kv-progress-circle-foreground-color: purple;
+				--kv-progress-circle-background-color: orange;
+				width: 4rem;
+			"
+		/>
+	`,
+});
