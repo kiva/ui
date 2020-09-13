@@ -19,8 +19,7 @@
 						>
 							<div class="row">
 								<!-- eslint-disable-next-line max-len -->
-								<div
-									class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
+								<div class="hide-for-small show-for-medium medium-2 large-1 large-offset-1 columms thermometer-holder"
 									:title="`${ percentTowardGoal }% raised`"
 								>
 								</div>
@@ -109,7 +108,7 @@ import updateDonation from '@/graphql/mutation/updateDonation.graphql';
 
 import AppealThermometer from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealThermometer';
 import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
+// import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 import SwashieFace from '@/components/15Years/SwashieFace';
@@ -121,7 +120,7 @@ export default {
 	components: {
 		AppealThermometer,
 		KvButton,
-		KvIcon,
+		// KvIcon,
 		KvExpandable,
 		KvProgressCircle,
 		SwashieFace
@@ -342,7 +341,6 @@ export default {
 
 .sitewide-appeal-wrapper {
 	background-color: #FFF;
-	box-shadow: 0 rem-calc(4) rem-calc(4) rgba(0, 0, 0, 0.25);
 
 	.sitewide-appeal {
 		padding: rem-calc(70) 0.625rem;
@@ -472,12 +470,6 @@ export default {
 }
 
 // GROW-230 changes
-.overlay-shown {
-	box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
-	position: relative;
-	z-index: 2;
-}
-
 .overlay-shown .sitewide-appeal-wrapper {
 	z-index: 1002;
 	position: relative;
