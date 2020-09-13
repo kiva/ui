@@ -4,10 +4,10 @@ export default {
 	title: 'components/SwashieFace',
 	component: SwashieFace,
 	args: {
-		percentLoaded: 25
+		percentFull: 25
 	},
 	argTypes: {
-		percentLoaded: {
+		percentFull: {
 			control: 'range',
 			options: {
 				min: 0,
@@ -24,23 +24,23 @@ export const Default = (args, { argTypes }) => ({
 		SwashieFace
 	},
 	template: `
-		<swashie-face :percent-loaded="percentLoaded" style="width: 10rem;" />
+		<swashie-face :percent-full="percentFull" style="width: 10rem;" />
 	`,
 });
 
 export const FiftyPercent = Default.bind({});
 FiftyPercent.args = {
-	percentLoaded: 50,
+	percentFull: 50,
 };
 
 export const EightyPercent = Default.bind({});
 EightyPercent.args = {
-	percentLoaded: 80,
+	percentFull: 80,
 };
 
 export const OneHundredPercent = Default.bind({});
 OneHundredPercent.args = {
-	percentLoaded: 100,
+	percentFull: 100,
 };
 
 export const Scaled = (args, { argTypes }) => ({
@@ -50,15 +50,15 @@ export const Scaled = (args, { argTypes }) => ({
 	},
 	template: `
 		<div style="display: flex; flex-wrap: wrap;">
-			<swashie-face :percent-loaded="percentLoaded" style="width: 2rem;" />
-			<swashie-face :percent-loaded="percentLoaded" style="width: 3rem;" />
-			<swashie-face :percent-loaded="percentLoaded" style="width: 5rem;" />
-			<swashie-face :percent-loaded="percentLoaded" style="width: 8rem;" />
-			<swashie-face :percent-loaded="percentLoaded" style="width: 13rem;" />
-			<swashie-face :percent-loaded="percentLoaded" style="width: 21rem;" />
+			<swashie-face :percent-full="percentFull" style="width: 2rem;" />
+			<swashie-face :percent-full="percentFull" style="width: 3rem;" />
+			<swashie-face :percent-full="percentFull" style="width: 5rem;" />
+			<swashie-face :percent-full="percentFull" style="width: 8rem;" />
+			<swashie-face :percent-full="percentFull" style="width: 13rem;" />
+			<swashie-face :percent-full="percentFull" style="width: 21rem;" />
 		</div>
 	`,
 });
 Scaled.args = {
-	percentLoaded: 100
+	percentFull: 100
 }

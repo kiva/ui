@@ -63,7 +63,7 @@
 
 export default {
 	props: {
-		percentLoaded: {
+		percentFull: {
 			type: Number,
 			default: 0,
 			validator(val) {
@@ -88,27 +88,27 @@ export default {
 		}
 	},
 	watch: {
-		percentLoaded() {
+		percentFull() {
 			if (!this.timer) {
-				this.fillItUp();
+				this.fillErUp();
 			}
 		}
 	},
 	mounted() {
-		this.fillItUp();
+		this.fillErUp();
 	},
 	beforeDestroy() {
 		clearInterval(this.timer);
 		this.timer = null;
 	},
 	methods: {
-		fillItUp() {
+		fillErUp() {
 			const fill = () => {
-				if (this.fillLevel === this.percentLoaded) {
+				if (this.fillLevel === this.percentFull) {
 					clearInterval(this.timer);
 					this.timer = null;
 				} else {
-					this.fillLevel += this.fillLevel < this.percentLoaded ? 1 : -1; // add or remove fluid
+					this.fillLevel += this.fillLevel < this.percentFull ? 1 : -1; // add or remove fluid
 				}
 			};
 			this.timer = setInterval(fill, 50);

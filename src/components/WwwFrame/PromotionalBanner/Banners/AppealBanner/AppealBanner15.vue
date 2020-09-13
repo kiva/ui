@@ -7,7 +7,7 @@
 				</div>
 				<div class="swashie">
 					<kv-progress-circle class="swashie__progress-circle" :value="50" />
-					<swashie-face class="swashie__face" :percent-loaded="50" />
+					<swashie-face class="swashie__face" :percent-full="50" />
 				</div>
 				<!-- hiding everything with this template right now -->
 				<template v-if="false">
@@ -311,6 +311,7 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
+@import 'components/15-years/15-years';
 
 // GROW-230 changes
 // Hide experiment on all pages
@@ -551,7 +552,7 @@ export default {
 	}
 
 	&__progress-circle {
-		--kv-progress-circle-foreground-color: #3E4653;
+		--kv-progress-circle-foreground-color: #{$twighlight};
 	}
 
 	&__face {
