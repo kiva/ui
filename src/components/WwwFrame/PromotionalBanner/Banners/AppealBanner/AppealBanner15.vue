@@ -6,7 +6,7 @@
 					<h2 class="strong" v-html="bannerHeadline"></h2>
 				</div>
 				<div class="swashie">
-					<kv-progress-circle class="swashie__progress-circle" :value="50" />
+					<kv-progress-circle class="swashie__progress-circle" :value="50" :show-number="true" />
 					<swashie-face class="swashie__face" :percent-full="50" />
 				</div>
 				<!-- hiding everything with this template right now -->
