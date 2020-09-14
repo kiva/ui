@@ -5,6 +5,7 @@ import StoryRouter from 'storybook-vue-router';
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
+import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
 import FifteenYears from '@/pages/15Years/15Years';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
@@ -12,6 +13,7 @@ import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
 import FifteenYearsSponsors from '@/components/15Years/15YearsSponsors';
 import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
 import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
+
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
@@ -41,9 +43,21 @@ export const Combined = (args, { argTypes }) => ({
 	layout: 'fullscreen',
 	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
 	template: `
-		<fifteen-years />
+		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
 });
+
+export const AppealBanner = (args, { argTypes }) => ({
+	components: {
+		AppealBanner15
+	},
+	props: Object.keys(argTypes),
+	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	template: `
+		<appeal-banner-15 :appeal-banner-content="{}" />
+	`,
+});
+AppealBanner.decorators = [FifteenYearsDecorator];
 
 export const Header = (args, { argTypes }) => ({
 	components: {

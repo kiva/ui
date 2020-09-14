@@ -1,33 +1,34 @@
 <template>
-	<www-page
-		:header-theme="headerTheme"
-		:footer-theme="footerTheme"
-	>
-		<div class="page-wrap">
-			<fifteen-years-styles>
-				<section>
-					<fifteen-years-header />
-				</section>
-				<section>
-					<fifteen-years-timeline />
-				</section>
-				<section>
-					<fifteen-years-individuals />
-				</section>
-				<section>
-					<fifteen-years-sponsors />
-				</section>
-				<section>
-					<fifteen-years-how-kiva-works />
-				</section>
-			</fifteen-years-styles>
-		</div>
-	</www-page>
+	<div>
+		<www-page
+			:header-theme="headerTheme"
+			:footer-theme="footerTheme"
+		>
+			<div class="page-wrap">
+				<fifteen-years-styles>
+					<section>
+						<fifteen-years-header />
+					</section>
+					<section>
+						<fifteen-years-timeline />
+					</section>
+					<section>
+						<fifteen-years-individuals />
+					</section>
+					<section>
+						<fifteen-years-sponsors />
+					</section>
+					<section>
+						<fifteen-years-how-kiva-works />
+					</section>
+				</fifteen-years-styles>
+			</div>
+		</www-page>
+	</div>
 </template>
 
 <script>
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
-
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';

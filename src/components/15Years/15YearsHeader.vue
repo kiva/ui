@@ -1,9 +1,9 @@
 <template>
 	<div class="header section">
 		<div class="row align-middle">
-			<div class="header__text large-4 columns">
+			<div class="header__text small-12 large-4 columns">
 				<h1 class="header__headline">
-					<span class="header__headline-stroked">Power in</span><br> Numbers
+					<span class="header__headline-stroked no-wrap">Power in</span> Numbers
 				</h1>
 				<p>
 					Rally Interactive will be handling this entire module
@@ -11,7 +11,7 @@
 				<a href="#">Link text</a>
 			</div>
 
-			<div class="header__globe large-offset-2 large-6 columns">
+			<div class="header__globe small-12 large-offset-2 large-6 columns">
 				<img
 					class="header__globe-img"
 					width="503"
@@ -25,7 +25,9 @@
 </template>
 
 <script>
+export default {
 
+};
 </script>
 
 <style lang="scss" scoped>
@@ -41,13 +43,15 @@
 		@include huge-headline();
 	}
 
+	&__globe-img {
+		width: 100%;
+		max-width: rem-calc(615);
+		margin: 2rem auto 0;
+	}
+
 	&__headline-stroked {
 		-webkit-text-stroke: 1px $body-font-color;
 		-webkit-text-fill-color: $offwhite;
-	}
-
-	&__globe-img {
-		margin: 4rem 0;
 	}
 }
 </style>
