@@ -131,7 +131,6 @@ export default {
 		height: 100%;
 		overflow: hidden;
 		border-radius: 50%;
-		background: #fff;
 		line-height: 0;
 		position: relative;
 		z-index: 2;

@@ -13,6 +13,7 @@
 
 			<div class="header__globe small-12 large-offset-2 large-6 columns">
 				<img
+					class="header__globe-img"
 					width="503"
 					height="503"
 					src="@/assets/images/15-years/temp/globe.png"
@@ -40,6 +41,12 @@ export default {
 
 	&__headline {
 		@include huge-headline();
+	}
+
+	&__globe-img {
+		width: 100%;
+		max-width: rem-calc(615);
+		margin: 2rem auto 0;
 	}
 
 	&__headline-stroked {
