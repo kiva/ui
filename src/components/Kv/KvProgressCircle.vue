@@ -40,6 +40,7 @@
 							a ${radius},${radius} 0 1,1 ${radius * 2},0
 							a ${radius},${radius} 0 1,1 -${radius * 2},0
 						`"
+						class="kv-progress-circle__ring-text-path"
 						id="text_circle"
 						fill="transparent"
 						:transform="textCircleTransform"
@@ -53,23 +54,42 @@
 							a ${radius},${radius} 0 1,0 ${radius * 2},0
 							a ${radius},${radius} 0 1,0 -${radius * 2},0
 						`"
+						class="kv-progress-circle__ring-text-path"
 						id="text_circle_flipped"
 						fill="transparent"
 						:transform="textCircleTransform"
 					/>
 				</defs>
-				<!-- TODO dy should be related to font size and maybe normalizedradius -->
-				<text
-					v-if="showNumber"
-					class="kv-progress-circle__ring-text"
-					:dy="-5"
-				>
-					<textPath
-						:xlink:href="`#text_circle${value > 75 || value < 25 ? '_flipped' : ''}`"
+
+				<template v-if="showNumber">
+					<!-- text background which acts as a stroke -->
+					<text
+						class="kv-progress-circle__ring-text-backdrop"
+						:dy="textDy"
+						:dx="textDx"
+						:font-size="fontSize"
 					>
-						{{ value }}
-					</textPath>
-				</text>
+						<textPath
+							:xlink:href="`#text_circle${flipText ? '_flipped' : ''}`"
+						>
+							{{ value }}
+						</textPath>
+					</text>
+
+					<!-- text foreground -->
+					<text
+						class="kv-progress-circle__ring-text"
+						:dy="textDy"
+						:dx="textDx"
+						:font-size="fontSize"
+					>
+						<textPath
+							:xlink:href="`#text_circle${flipText ? '_flipped' : ''}`"
+						>
+							{{ value }}
+						</textPath>
+					</text>
+				</template>
 			</svg>
 		</div>
 	</div>
@@ -108,6 +128,9 @@ export default {
 		};
 	},
 	computed: {
+		fontSize() {
+			return this.strokeWidth * 3;
+		},
 		normalizedRadius() {
 			return this.radius - (this.strokeWidth / 2);
 		},
@@ -118,9 +141,24 @@ export default {
 			return this.circumference - (this.value / 100) * this.circumference;
 		},
 		textCircleTransform() {
-			const offset = -90 + 4;
-			return `rotate(${(this.value * (360 / 100)) + offset} ${this.radius} ${this.radius})`;
+			const offset = -90;
+			return `rotate(${offset})`;
 		},
+		flipText() {
+			return this.value > 75 || this.value < 25;
+		},
+		textDx() {
+			if (this.flipText) {
+				return this.circumference - (this.value / 100) * this.circumference;
+			}
+			return (this.value / 100) * this.circumference;
+		},
+		textDy() {
+			if (this.flipText) {
+				return 0;
+			}
+			return this.fontSize * 0.625;
+		}
 	},
 };
 </script>
@@ -142,12 +180,28 @@ export default {
 
 	&__svg {
 		display: block;
+		overflow: visible;
 	}
 
-	&__ring-text {
-		font-size: 1rem;
+	&__ring-text-path {
+		transform-origin: center;
+	}
+
+	&__ring-text,
+	&__ring-text-backdrop {
+		font-family: $body-font-family;
 		font-weight: 900;
-		text-transform: uppercase;
+		text-anchor: start;
+		letter-spacing: 0.1em;
+	}
+
+	&__ring-text-backdrop {
+		paint-order: stroke;
+		fill: #fff;
+		stroke: #fff;
+		stroke-width: 0.5em;
+		stroke-linecap: butt;
+		stroke-linejoin: round;
 	}
 
 	&__ring-foreground {
@@ -157,7 +211,7 @@ export default {
 		stroke: $kiva-accent-blue;
 		stroke: var(--kv-progress-circle-foreground-color, $foreground-color);
 		stroke-linecap: round;
-		transition: stroke-dashoffset 0.35s;
+		transition: stroke-dashoffset 0.125s;
 	}
 
 	&__ring-background {
