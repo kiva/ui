@@ -231,20 +231,34 @@ export default {
 }
 
 .loan-results {
-	padding-top: 6rem;
+	padding-top: 1.5rem;
+
+	@include breakpoint(large up) {
+		padding-top: 6rem;
+	}
 
 	&__headline {
 		text-align: center;
 		font-weight: bold;
 		margin-bottom: 1rem;
+		padding: 0 1rem;
+
+		@include breakpoint(medium down) {
+			font-size: rem-calc(18);
+		}
 	}
 
 	&__tagline {
 		text-align: center;
-		font-size: rem-calc(20);
+		font-size: rem-calc(12);
 		line-height: 1.35;
-		max-width: 24rem;
+		max-width: 14rem;
 		margin: 0 auto 2rem;
+
+		@include breakpoint(large up) {
+			font-size: rem-calc(20);
+			max-width: 24rem;
+		}
 	}
 
 	&__loans {
