@@ -60,6 +60,7 @@
 				</defs>
 				<!-- TODO dy should be related to font size and maybe normalizedradius -->
 				<text
+					v-if="showNumber"
 					class="kv-progress-circle__ring-text"
 					:dy="-5"
 				>
@@ -86,10 +87,20 @@ export default {
 				return val >= 0 && val <= 100;
 			}
 		},
+		/**
+		 * Stroke width as a percent of the circle
+		* */
 		strokeWidth: {
 			default: 5,
 			type: Number
 		},
+		/**
+		 * Whether to show the value as a number
+		* */
+		showNumber: {
+			default: false,
+			type: Boolean
+		}
 	},
 	data() {
 		return {

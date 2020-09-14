@@ -5,7 +5,8 @@ export default {
 	component: KvProgressCircle,
 	args: {
 		value: 10,
-		strokeWidth: 5
+		strokeWidth: 5,
+		showNumber: false
 	},
 	argTypes: {
 		value: {
@@ -28,6 +29,7 @@ export const Default = (args, { argTypes }) => ({
 		<kv-progress-circle
 			:value="value"
 			:stroke-width="strokeWidth"
+			:show-number="showNumber"
 			style="width: 200px;"
 		/>
 	`,
@@ -42,6 +44,7 @@ export const Styled = (args, { argTypes }) => ({
 		<kv-progress-circle
 			:value="value"
 			:stroke-width="strokeWidth"
+			:show-number="showNumber"
 			style="
 				--kv-progress-circle-foreground-color: purple;
 				--kv-progress-circle-background-color: orange;
