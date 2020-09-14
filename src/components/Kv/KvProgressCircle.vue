@@ -81,8 +81,8 @@ export default {
 	name: 'KvProgressCircle',
 	props: {
 		value: {
-			default: 10,
 			type: Number,
+			required: true,
 			validator(val) {
 				return val >= 0 && val <= 100;
 			}

@@ -1,4 +1,5 @@
 import SwashieFace from '@/components/15Years/SwashieFace';
+import KvProgressCircle from '@/components/Kv/KvProgressCircle'
 
 export default {
 	title: 'components/SwashieFace',
@@ -61,4 +62,46 @@ export const Scaled = (args, { argTypes }) => ({
 });
 Scaled.args = {
 	percentFull: 100
+}
+
+export const WithKvProgressCircle = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvProgressCircle,
+		SwashieFace
+	},
+	template: `
+	<div>
+		<component is="style">
+			.swashie {
+				position: relative;
+				width: 9.5rem;
+				height: 9.5rem;
+			}
+
+			.swashie__progress-circle,
+			.swashie__face {
+				position: absolute;
+				z-index: 1;
+				width: 100%;
+				height: 100%;
+			}
+
+			.swashie__progress-circle {
+				--kv-progress-circle-foreground-color: #3E4653;
+			}
+
+			.swashie__face {
+				padding: 7%;
+			}
+		</component>
+		<div class="swashie">
+			<kv-progress-circle class="swashie__progress-circle" :value="percentFull" />
+			<swashie-face class="swashie__face" :percent-full="percentFull" />
+		</div>
+	</div>
+	`,
+});
+WithKvProgressCircle.args = {
+	percentFull: 80
 }
