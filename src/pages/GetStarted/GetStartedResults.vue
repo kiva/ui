@@ -26,13 +26,14 @@
 				</p>
 			</template>
 			<div class="loan-results__loans">
-				<div class="loan-results__loan-spacer"></div>
-				<recommended-loan-card
-					v-for="loanId in loanIds"
-					:key="loanId"
-					:loan-id="loanId"
-				/>
-				<div class="loan-results__loan-spacer"></div>
+				<div class="row align-stretch">
+					<recommended-loan-card
+						class="small-4 columns"
+						v-for="loanId in loanIds"
+						:key="loanId"
+						:loan-id="loanId"
+					/>
+				</div>
 			</div>
 		</div>
 		<div class="row column page-content">
@@ -247,13 +248,39 @@ export default {
 	}
 
 	&__loans {
-		display: flex;
 		overflow: auto;
 		padding-bottom: 2rem;
-	}
 
-	&__loan-spacer {
-		flex-grow: 1;
+		.row {
+			@mixin row-max-width($card-width, $gutter) {
+				max-width: rem-calc((3 * $card-width) + (4 * $gutter));
+			}
+
+			flex-flow: row nowrap;
+			padding: 0 0.5rem;
+			width: 245%;
+			@include row-max-width(230, 16);
+
+			@include breakpoint(medium up) {
+				@include row-max-width(350, 16);
+			}
+
+			@include breakpoint(large up) {
+				padding: 0 rem-calc(10);
+				width: 135%;
+				@include row-max-width(384, 20);
+			}
+
+			@include breakpoint(xxlarge up) {
+				width: auto;
+			}
+		}
+
+		@include breakpoint(medium down) {
+			.columns {
+				padding: 0 0.5rem;
+			}
+		}
 	}
 }
 
