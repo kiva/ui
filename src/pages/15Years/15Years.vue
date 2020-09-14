@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<appeal-banner-15 :appeal-banner-content="{}" />
 		<www-page
 			:header-theme="headerTheme"
 			:footer-theme="footerTheme"
@@ -30,7 +29,6 @@
 
 <script>
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
-import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
@@ -41,7 +39,6 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
-		AppealBanner15,
 		FifteenYearsHeader,
 		FifteenYearsHowKivaWorks,
 		FifteenYearsIndividuals,
