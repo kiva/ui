@@ -215,6 +215,8 @@ export default {
 
 			@include breakpoint(large) {
 				@include large-text();
+
+				margin-bottom: 0;
 			}
 		}
 
