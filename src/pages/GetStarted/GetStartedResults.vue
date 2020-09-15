@@ -107,6 +107,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import * as Sentry from '@sentry/browser';
 import cookieStore from '@/util/cookieStore';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
@@ -208,6 +209,19 @@ export default {
 			}
 		}`,
 		result(result) {
+			if (result.error) {
+				console.error(result.error);
+				this.$showTipMsg('There was a problem finding your loan recommendations', 'error');
+				try {
+					Sentry.withScope(scope => {
+						scope.setTag('wizard_stage', 'results');
+						Sentry.captureException(result.error);
+					});
+				} catch (e) {
+					// no-op
+				}
+			}
+
 			let loanValues = result.data?.general?.lendingPreferences?.loans?.values || [];
 			this.totalCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
 

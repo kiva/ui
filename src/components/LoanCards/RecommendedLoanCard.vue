@@ -85,6 +85,7 @@
 
 <script>
 import gql from 'graphql-tag';
+import * as Sentry from '@sentry/browser';
 import cookieStore from '@/util/cookieStore';
 import logReadQueryError from '@/util/logReadQueryError';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
@@ -253,9 +254,24 @@ export default {
 			// Subscribe to the observer to see each result
 			this.queryObserver.subscribe({
 				next: result => this.processQueryResult(result),
+				error: error => this.processQueryResult({ error }),
 			});
 		},
 		processQueryResult(result) {
+			if (result.error) {
+				console.error(result.error);
+				this.$showTipMsg('There was a problem loading your loan recommendations', 'error');
+				try {
+					Sentry.withScope(scope => {
+						scope.setTag('wizard_stage', 'results');
+						scope.setTag('loan_id', this.loanId);
+						Sentry.captureException(result.error);
+					});
+				} catch (e) {
+					// no-op
+				}
+			}
+
 			this.isLoading = false;
 			this.loan = result.data?.lend?.loan || null;
 			this.basketItems = result.data?.shop?.basket?.items?.values || null;
