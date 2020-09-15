@@ -42,7 +42,7 @@
 						`"
 							class="kv-progress-circle__ring-text-path"
 							id="text_circle"
-							:transform="textCircleTransform"
+							:style="textCircleTransform"
 						/>
 
 						<!-- flipped path -->
@@ -55,7 +55,7 @@
 						`"
 							class="kv-progress-circle__ring-text-path"
 							id="text_circle_flipped"
-							:transform="textCircleTransform"
+							:style="textCircleTransform"
 						/>
 					</defs>
 
@@ -139,7 +139,7 @@ export default {
 		},
 		textCircleTransform() {
 			const offset = -90;
-			return `rotate(${offset} ${this.radius} ${this.radius})`;
+			return { transform: `rotate(${offset}deg)` };
 		},
 		flipText() {
 			return this.value > 75 || this.value < 25;
@@ -221,6 +221,15 @@ export default {
 		fill: transparent;
 		stroke: $kiva-bg-lightgray;
 		stroke: var(--kv-progress-circle-background-color, $background-color);
+	}
+}
+
+// Sadly firefox doesn't support transforms on SVG in the same way that Chrome and Safari do.
+// Hide the percent text in FF for now since it appears broken otherwise.
+@supports (-moz-appearance:none) {
+	.kv-progress-circle__ring-text,
+	.kv-progress-circle__ring-text-backdrop {
+		display: none;
 	}
 }
 </style>
