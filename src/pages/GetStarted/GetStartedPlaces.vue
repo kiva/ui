@@ -171,7 +171,7 @@ export default {
 	data() {
 		return {
 			countryList: [],
-			filteredCountryList: [],
+			fuseCountryList: [],
 			filterTerm: '',
 			selectAll: false,
 		};
@@ -215,11 +215,15 @@ export default {
 			}
 			// eslint-disable-next-line max-len
 			return `<strong>${arrayOfOtherCountryNames}</strong>, <strong>${lastCountry.name}</strong> and ${countriesRemaining} more.`;
+		},
+		filteredCountryList() {
+			// eslint-disable-next-line max-len
+			return this.countryList.filter(country => this.fuseCountryList.find(fuseCountry => fuseCountry.code === country.code));
 		}
 	},
 	mounted() {
+		this.fuseCountryList = this.countryList;
 		// After we have a countryList, prep for filtering
-		this.filteredCountryList = this.countryList;
 		this.fuse = new Fuse(this.countryList, {
 			threshold: 0.25,
 			distance: 100000,
@@ -230,9 +234,9 @@ export default {
 	watch: {
 		filterTerm() {
 			if (this.filterTerm === '') {
-				this.filteredCountryList = this.countryList;
+				this.fuseCountryList = this.countryList;
 			} else {
-				this.filteredCountryList = this.fuse.search(this.filterTerm).map(result => result.item);
+				this.fuseCountryList = this.fuse.search(this.filterTerm).map(result => result.item);
 			}
 		}
 	},
@@ -242,13 +246,14 @@ export default {
 		},
 		toggleAllCountries(state) {
 			this.selectAll = state;
-			this.filteredCountryList.forEach(country => {
-				this.$set(country, 'checked', this.selectAll);
+			this.fuseCountryList.forEach(fuseCountry => {
+				this.countryList.find(country => country.code === fuseCountry.code).checked = this.selectAll;
 			});
 		},
 		onChangeCountrySelection(event, countryCode) {
+			// check item in countryList
 			const item = this.countryList.find(country => country.code === countryCode);
-			this.$set(item, 'checked', event.target.checked);
+			item.checked = event.target.checked;
 		},
 		async onSubmitForm() {
 			const uiv = cookieStore.get('uiv');
