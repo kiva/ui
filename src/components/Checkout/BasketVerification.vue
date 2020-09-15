@@ -64,6 +64,7 @@ export default {
 		query: getVerificationState,
 		result({ data }) {
 			this.setState(data?.shop?.basketVerificationState || this.verificationState);
+			this.email = data?.my?.userAccount?.email || this.email || '';
 		},
 	},
 	computed: {
@@ -79,7 +80,6 @@ export default {
 		},
 		send() {
 			this.setState('pending');
-			// TODO: Set this.email!!!
 			this.apollo.mutate({ mutation: startBasketVerificationMutation });
 		},
 	},
