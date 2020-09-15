@@ -1,6 +1,10 @@
 <template>
 	<div class="loading-paragraph">
-		<kv-loading-placeholder v-for="n in numLines" :key="n" />
+		<kv-loading-placeholder
+			class="loading-paragraph__line"
+			v-for="n in numLines"
+			:key="n"
+		/>
 	</div>
 </template>
 
@@ -24,16 +28,12 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'settings';
+.loading-paragraph__line {
+	height: 1rem;
+	margin-bottom: 0.5rem;
 
-.loading-paragraph {
-	.loading-placeholder {
-		height: 1rem;
-		margin-bottom: 0.5rem;
-
-		&:last-of-type {
-			width: 70%;
-		}
+	&:last-of-type {
+		width: 70%;
 	}
 }
 </style>

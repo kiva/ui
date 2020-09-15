@@ -1,5 +1,5 @@
 <template functional>
-	<div :class="['loading-placeholder', data.class, data.staticClass]"></div>
+	<div :class="['loading-placeholder', data.class, data.staticClass]" :style="[data.style, data.staticStyle]"></div>
 </template>
 
 <style lang="scss">
