@@ -235,10 +235,17 @@ export default {
 						loanId: this.loanId,
 					},
 				});
-				this.processQueryResult({ data });
+				if (data.lend) {
+					this.processQueryResult({ data });
+				} else {
+					// Show loading state while watchQuery completes
+					this.isLoading = true;
+				}
 			} catch (e) {
 				// if there's an error, skip reading from the cache and just wait for the watch query
 				logReadQueryError(e, 'RecommendedLoanCard');
+				// Show loading state while watchQuery completes
+				this.isLoading = true;
 			}
 		},
 		watchQueryLoanData() {

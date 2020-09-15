@@ -10,7 +10,7 @@ export default ({
 				return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
 			},
 			readQuery() {
-				return queryResult;
+				return queryResult.data;
 			},
 			watchQuery() {
 				return {
@@ -29,7 +29,7 @@ export default ({
 				return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
 			},
 			readQuery() {
-				return queryResult;
+				return queryResult.data;
 			},
 			watchQuery() {
 				return {
