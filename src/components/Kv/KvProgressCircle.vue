@@ -30,38 +30,35 @@
 					:cy="radius"
 				/>
 
-				<!-- text -->
-				<defs>
-					<!-- path the text should follow -->
-					<path
-						:d="`
+				<template v-if="showNumber">
+					<defs>
+						<!-- path the text should follow -->
+						<path
+							:d="`
 							M ${radius}, ${radius}
 							m -${radius}, 0
 							a ${radius},${radius} 0 1,1 ${radius * 2},0
 							a ${radius},${radius} 0 1,1 -${radius * 2},0
 						`"
-						class="kv-progress-circle__ring-text-path"
-						id="text_circle"
-						fill="transparent"
-						:transform="textCircleTransform"
-					/>
+							class="kv-progress-circle__ring-text-path"
+							id="text_circle"
+							:transform="textCircleTransform"
+						/>
 
-					<!-- flipped path -->
-					<path
-						:d="`
+						<!-- flipped path -->
+						<path
+							:d="`
 							M ${radius}, ${radius}
 							m -${radius}, 0
 							a ${radius},${radius} 0 1,0 ${radius * 2},0
 							a ${radius},${radius} 0 1,0 -${radius * 2},0
 						`"
-						class="kv-progress-circle__ring-text-path"
-						id="text_circle_flipped"
-						fill="transparent"
-						:transform="textCircleTransform"
-					/>
-				</defs>
+							class="kv-progress-circle__ring-text-path"
+							id="text_circle_flipped"
+							:transform="textCircleTransform"
+						/>
+					</defs>
 
-				<template v-if="showNumber">
 					<!-- text background which acts as a stroke -->
 					<text
 						class="kv-progress-circle__ring-text-backdrop"
@@ -72,7 +69,7 @@
 						<textPath
 							:xlink:href="`#text_circle${flipText ? '_flipped' : ''}`"
 						>
-							{{ value }}
+							{{ value }}%
 						</textPath>
 					</text>
 
@@ -86,7 +83,7 @@
 						<textPath
 							:xlink:href="`#text_circle${flipText ? '_flipped' : ''}`"
 						>
-							{{ value }}
+							{{ value }}%
 						</textPath>
 					</text>
 				</template>
@@ -142,7 +139,7 @@ export default {
 		},
 		textCircleTransform() {
 			const offset = -90;
-			return `rotate(${offset})`;
+			return `rotate(${offset} ${this.radius} ${this.radius})`;
 		},
 		flipText() {
 			return this.value > 75 || this.value < 25;
@@ -184,6 +181,7 @@ export default {
 	}
 
 	&__ring-text-path {
+		fill: transparent;
 		transform-origin: center;
 	}
 
@@ -195,11 +193,16 @@ export default {
 		letter-spacing: 0.1em;
 	}
 
+	&__ring-text {
+		fill: $kiva-accent-blue;
+		fill: var(--kv-progress-circle-foreground-color, $foreground-color);
+	}
+
 	&__ring-text-backdrop {
 		paint-order: stroke;
 		fill: #fff;
 		stroke: #fff;
-		stroke-width: 0.5em;
+		stroke-width: 0.675em;
 		stroke-linecap: butt;
 		stroke-linejoin: round;
 	}
