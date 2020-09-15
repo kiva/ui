@@ -18,7 +18,7 @@ export default {
 };
 
 export const Default = () => ({
-	mixins: [apolloStoryMixin, loanDataPropStoryMixin],
+	mixins: [apolloStoryMixin(), loanDataPropStoryMixin],
 	components: {
 		GridLoanCard,
 	},

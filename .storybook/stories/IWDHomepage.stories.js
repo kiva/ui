@@ -18,7 +18,7 @@ export const Default = () => ({
 	components: {
 		'iwd-homepage': IWDHomepage,
 	},
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	template: `
 		<iwd-homepage style="margin: -2rem" />
 	`,

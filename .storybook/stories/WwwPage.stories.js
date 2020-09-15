@@ -48,7 +48,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		WwwPage
 	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 	<www-page
 		:gray-background="grayBackground"

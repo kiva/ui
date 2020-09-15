@@ -1,7 +1,8 @@
 import StoryRouter from 'storybook-vue-router';
 import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
-const queryData = {
+const queryResult = {
 	data: {
 		lend: {
 			loan: {
@@ -39,30 +40,6 @@ const queryData = {
 	}
 };
 
-const apolloMockMixin = {
-	provide: {
-		apollo: {
-			mutate: () => Promise.resolve({}),
-			query: () => Promise.resolve(queryData),
-			readFragment: () => ({}),
-			readQuery: () => ({}),
-			watchQuery: () => ({ subscribe() {} }),
-		},
-	},
-};
-
-const apolloLoadingMixin = {
-	provide: {
-		apollo: {
-			mutate: () => new Promise(() => {}),
-			query: () => new Promise(() => {}),
-			readFragment: () => ({}),
-			readQuery: () => ({}),
-			watchQuery: () => ({ subscribe() {} }),
-		},
-	},
-};
-
 export default {
 	title: 'Loan Cards/Recommended Loan Card',
 	component: RecommendedLoanCard,
@@ -70,13 +47,25 @@ export default {
 };
 
 export const Default = () => ({
-	mixins: [apolloMockMixin],
+	mixins: [apolloStoryMixin({ queryResult })],
 	components: { RecommendedLoanCard },
-	template: '<recommended-loan-card :loan-id="1998250" />'
+	template: `
+		<div class="row">
+			<div class="small-4 columns">
+				<recommended-loan-card :loan-id="1998250" />
+			</div>
+		</div>
+	`,
 });
 
 export const Loading = () => ({
-	mixins: [apolloLoadingMixin],
+	mixins: [apolloStoryMixin({ loading: true })],
 	components: { RecommendedLoanCard },
-	template: '<recommended-loan-card :loan-id="1998250" />'
+	template: `
+		<div class="row">
+			<div class="small-4 columns">
+				<recommended-loan-card :loan-id="1998250" />
+			</div>
+		</div>
+	`,
 });

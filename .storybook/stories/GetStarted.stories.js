@@ -20,7 +20,7 @@ export const Causes = () => ({
 	components: {
 		GetStartedCauses
 	},
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	template: `
 		<get-started-causes />
 	`,
@@ -30,7 +30,7 @@ export const Places = () => ({
 	components: {
 		GetStartedPlaces
 	},
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	template: `
 		<get-started-places />
 	`,
@@ -40,7 +40,7 @@ export const Results = () => ({
 	components: {
 		GetStartedResults
 	},
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	template: `
 		<get-started-results />
 	`,
