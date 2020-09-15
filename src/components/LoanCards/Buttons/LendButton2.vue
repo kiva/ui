@@ -30,11 +30,14 @@
 </template>
 
 <script>
-// import gql from 'graphql-tag';
+import gql from 'graphql-tag';
+import numeral from 'numeral';
+import * as Sentry from '@sentry/browser';
+import basketItemsQuery from '@/graphql/query/basketItems.graphql';
+import cookieStore from '@/util/cookieStore';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-// cookieStore
 
 export default {
 	inject: ['apollo'],
@@ -94,9 +97,65 @@ export default {
 	},
 	methods: {
 		addToBasket() {
-			// get basket id from cookie store?
-			// call mutation to add loanId at price to basketId
-			// re-fetch basket info query I guess?
+			const price = numeral(this.price).format('0.00');
+			this.adding = true;
+			this.apollo.mutate({
+				mutation: gql`mutation addToBasket($loanId: Int!, $price: Money!, $basketId: String) {
+					shop (basketId: $basketId) {
+						updateLoanReservation (loanReservation: {
+							id: $loanId
+							price: $price
+						}) {
+							id
+							price
+						}
+					}
+				}`,
+				variables: {
+					loanId: this.loanId,
+					price,
+				},
+				optimisticResponse: {
+					__typename: 'Mutation',
+					shop: {
+						__typename: 'ShopMutation',
+						updateLoanReservation: {
+							__typename: 'LoanReservation',
+							id: this.loanId,
+							price,
+						},
+					},
+				},
+				awaitRefetchQueries: true,
+				refetchQueries: [
+					{
+						query: basketItemsQuery,
+						variables: {
+							basketId: cookieStore.get('kvbskt'),
+						}
+					},
+				]
+			}).then(result => {
+				this.adding = false;
+				if (result.error) {
+					this.handleError(result.error);
+				}
+			}).catch(error => {
+				this.adding = false;
+				this.handleError(error);
+			});
+		},
+		handleError(err) {
+			console.error(err);
+			this.$showTipMsg('There was a problem adding the loan to your basket', 'error');
+			try {
+				Sentry.withScope(scope => {
+					scope.setTag('loan_id', this.loanId);
+					Sentry.captureException(err);
+				});
+			} catch (e) {
+				// no-op
+			}
 		}
 	},
 };
