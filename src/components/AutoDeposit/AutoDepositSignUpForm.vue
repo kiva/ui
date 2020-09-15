@@ -294,20 +294,13 @@ export default {
 				this.donationOptionSelected = '0';
 			}
 		},
-		// TODO
 		completeADBraintree() {
-			// console.log(paymentType);
-			// should take in param: completeMGBraintree(paymentType) {
-			// this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
-			// // Send to thanks page
-			// this.$router.push({
-			// 	path: '/monthlygood/thanks',
-			// 	query: {
-			// 		onetime: this.isOnetime,
-			// 		source: this.source,
-			// 		paymentType: paymentType || 'UnknownBraintree',
-			// 	}
-			// });
+			this.$kvTrackEvent('Registration', 'successful-auto-deposit-reg', 'register-auto-deposit');
+			// Send to thanks page
+			// ! TODO change this route 'auto-deposit-new' becomes 'auto-deposit'
+			this.$router.push({
+				path: '/auto-deposit-new/thanks',
+			});
 		},
 	},
 	computed: {
