@@ -199,7 +199,6 @@ export default {
 					}
 				}
 			}
-			# TODO: might do this in a follow-up query instead of in the initial query
 			lend {
 				loans(limit: $limit) {
 					values {
@@ -209,7 +208,6 @@ export default {
 			}
 		}`,
 		result(result) {
-			// TODO: error handling
 			let loanValues = result.data?.general?.lendingPreferences?.loans?.values || [];
 			this.totalCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
 

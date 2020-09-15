@@ -85,6 +85,8 @@
 
 <script>
 import gql from 'graphql-tag';
+import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -170,6 +172,7 @@ export default {
 			loan: null,
 			basketItems: null,
 			isLoading: false,
+			queryObserver: null,
 		};
 	},
 	computed: {
@@ -208,30 +211,75 @@ export default {
 		},
 	},
 	methods: {
-		fetchLoanData() {
+		prefetchLoanData() {
 			if (!this.loan) {
 				this.isLoading = true;
 			}
-			this.apollo.query({
+			return this.apollo.query({
 				variables: {
 					loanId: this.loanId,
 				},
 				query: loanQuery,
 			}).then(result => {
-				this.isLoading = false;
-				this.loan = result.data?.lend?.loan || null;
-				this.basketItems = result.data?.shop?.basket?.items?.values || null;
+				this.processQueryResult(result);
 			});
-			// TODO: error handling
 		},
+		readLoanData() {
+			// Read loan data from the cache (synchronus)
+			try {
+				const data = this.apollo.readQuery({
+					query: loanQuery,
+					variables: {
+						basketId: cookieStore.get('kvbskt'),
+						loanId: this.loanId,
+					},
+				});
+				this.processQueryResult({ data });
+			} catch (e) {
+				// if there's an error, skip reading from the cache and just wait for the watch query
+				logReadQueryError(e, 'RecommendedLoanCard');
+			}
+		},
+		watchQueryLoanData() {
+			// Setup query observer to watch for changes to the loan data (async)
+			this.queryObserver = this.apollo.watchQuery({
+				query: loanQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+					loanId: this.loanId,
+				},
+			});
+
+			// Subscribe to the observer to see each result
+			this.queryObserver.subscribe({
+				next: result => this.processQueryResult(result),
+			});
+		},
+		processQueryResult(result) {
+			this.isLoading = false;
+			this.loan = result.data?.lend?.loan || null;
+			this.basketItems = result.data?.shop?.basket?.items?.values || null;
+		}
 	},
 	serverPrefetch() {
-		return this.fetchLoanData();
+		return this.prefetchLoanData();
 	},
-	mounted() {
-		this.fetchLoanData();
-		// TODO: use a watch query to catch changes to loan data?
-		// TODO: update variables for query when loan id changes?
+	created() {
+		if (!this.$isServer) {
+			this.readLoanData();
+			this.watchQueryLoanData();
+		}
+	},
+	watch: {
+		// When loan id changes, update watch query variables
+		loanId(loanId) {
+			if (this.queryObserver) {
+				this.queryObserver.setVariables({
+					basketId: cookieStore.get('kvbskt'),
+					loanId,
+				});
+			}
+		},
 	},
 };
 </script>
