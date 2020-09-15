@@ -40,10 +40,9 @@
 							a ${radius},${radius} 0 1,1 ${radius * 2},0
 							a ${radius},${radius} 0 1,1 -${radius * 2},0
 						`"
-							:style="textCircleTransform"
 							class="kv-progress-circle__ring-text-path"
 							id="text_circle"
-							fill="transparent"
+							:transform="textCircleTransform"
 						/>
 
 						<!-- flipped path -->
@@ -54,10 +53,9 @@
 							a ${radius},${radius} 0 1,0 ${radius * 2},0
 							a ${radius},${radius} 0 1,0 -${radius * 2},0
 						`"
-							:style="textCircleTransform"
 							class="kv-progress-circle__ring-text-path"
 							id="text_circle_flipped"
-							fill="transparent"
+							:transform="textCircleTransform"
 						/>
 					</defs>
 
@@ -141,7 +139,7 @@ export default {
 		},
 		textCircleTransform() {
 			const offset = -90;
-			return { transform: `rotate(${offset}deg)` };
+			return `rotate(${offset} ${this.radius} ${this.radius})`;
 		},
 		flipText() {
 			return this.value > 75 || this.value < 25;
@@ -183,6 +181,7 @@ export default {
 	}
 
 	&__ring-text-path {
+		fill: transparent;
 		transform-origin: center;
 	}
 
