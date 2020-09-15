@@ -2,115 +2,141 @@
 	<div>
 		<kv-progress-bar class="progress-bar" value="66" max="100" />
 		<form
+			class="get-started__form"
 			@submit.prevent="onSubmitForm"
 			:disabled="selectedCountries.length === 0"
 		>
-			<div class="page-content">
-				<fieldset>
-					<div class="row">
-						<div class="small-12 xlarge-5 columns get-started__intro">
-							<h1>Choose places <span class="no-wrap">you care about</span></h1>
-							<p>
-								You can lend to people in 6 continents and 77 countries thanks to our
-								Field Partners — local banks, NGOs, and social enterprises in each region.
-							</p>
+			<fieldset>
+				<div class="row align-middle collapse">
+					<div class="small-12 xlarge-6 columns get-started__intro">
+						<h1>
+							Choose places <br class="xlu">you want to support
+						</h1>
+						<p>
+							<!-- eslint-disable-next-line max-len -->
+							You can lend to people in 6 continents and 77 countries thanks to our Field Partners — local banks, NGOs, and social enterprises in each region. 100% of your loan goes into the field, where our global community of borrowers lives and works.
+						</p>
+					</div>
+					<div class="small-12 xlarge-6 columns">
+						<div class="country-filter">
+							<label
+								class="country-filter__label"
+								for="country_filter"
+							>
+								Filter
+							</label>
+							<kv-icon
+								class="country-filter__search-icon"
+								name="magnify-glass"
+								:from-sprite="true"
+							/>
+							<input
+								class="country-filter__input"
+								type="text"
+								id="country_filter"
+								placeholder="Search continents or countries"
+								autocomplete="off"
+								name="country_filter"
+								v-model="filterTerm"
+							>
+							<button
+								v-if="filterTerm"
+								class="country-filter__clear-btn"
+								type="button"
+								@click="clearFilter"
+							>
+								<kv-icon
+									class="country-filter__clear-icon"
+									name="small-x"
+									:from-sprite="true"
+								/>
+							</button>
 						</div>
-						<div class="small-12 xlarge-7 columns">
-							<div class="country-filter">
-								<label
-									class="country-filter__label"
-									for="country_filter"
+						<div class="get-started__list-wrapper">
+							<ul class="get-started__list">
+								<li
+									class="get-started__list-item country"
+									v-for="country in filteredCountryList"
+									:key="`country-${country.code}`"
 								>
-									Filter
-								</label>
-								<input
-									class="country-filter__input"
-									type="text"
-									id="country_filter"
-									placeholder="Search continents or countries"
-									autocomplete="off"
-									name="country_filter"
-									v-model="filterTerm"
-								>
-								<button
-									v-if="filterTerm"
-									class="country-filter__clear-btn"
-									type="button"
-									@click="clearFilter"
-								>
-									<kv-icon
-										class="country-filter__clear-icon"
-										name="small-x"
-										:from-sprite="true"
-									/>
-								</button>
-							</div>
-							<div class="get-started__list-wrapper">
-								<ul class="get-started__list">
-									<li
-										class="get-started__list-item country"
-										v-for="country in filteredCountryList"
-										:key="`country-${country.code}`"
+									<input
+										class="country__checkbox"
+										type="checkbox"
+										:id="`country-${country.code}`"
+										:value="country.code"
+										:checked="country.checked"
+										@change="onChangeCountrySelection($event, country.code)"
 									>
-										<input
-											class="country__checkbox"
-											type="checkbox"
-											:id="`country-${country.code}`"
-											:value="country.code"
-											:checked="country.checked"
-											@change="onChangeCountrySelection($event, country.code)"
-										>
-										<label
-											class="country__label"
-											:for="`country-${country.code}`"
-										>
+									<label
+										class="country__label"
+										:for="`country-${country.code}`"
+									>
 
-											<span class="country__circle">
-												<span class="country__check-icon-wrapper">
-													<kv-icon
-														class="country__check-icon"
-														name="checkmark"
-													/>
-												</span>
-												<kv-flag
-													class="country__img"
-													:country="country.code"
-													aspect-ratio="1x1"
+										<span class="country__circle">
+											<span class="country__check-icon-wrapper">
+												<kv-icon
+													class="country__check-icon"
+													name="checkmark"
 												/>
 											</span>
+											<kv-flag
+												class="country__img"
+												:country="country.code"
+												aspect-ratio="1x1"
+											/>
+										</span>
 
-											<span class="country__name">{{ country.name }}</span>
-											<span class="country__region">{{ country.region }}</span>
-										</label>
-									</li>
-								</ul>
-							</div>
-							<button
-								class="get-started__select-all-btn"
-								@click="selectAllCountries"
-								type="button"
+										<span class="country__name">{{ country.name }}</span>
+										<span class="country__region">{{ country.region }}</span>
+									</label>
+								</li>
+							</ul>
+						</div>
+						<button
+							class="get-started__select-all-btn"
+							@click.prevent="toggleAllCountries(!selectAll)"
+						>
+							<span class="get-started__select-all-icon-wrapper"
+								:class="{'selected': selectAll }"
 							>
 								<kv-icon
 									class="get-started__select-all-icon"
+									:class="{'selected': selectAll }"
 									name="checkmark"
 								/>
-								<span>{{ selectAll ? 'Deselect All' : 'Select All' }}</span>
-							</button>
-							<p
-								class="get-started__summary text-center"
-								v-html="summaryText"
-							></p>
-						</div>
-						<kv-button
-							class="get-started__submit-btn"
-							type="submit"
-							:disabled="selectedCountries.length === 0"
+							</span>
+							<span>{{ selectAll ? 'deselect all' : 'select all' }}</span>
+						</button>
+						<p
+							class="get-started__summary text-center"
+							v-if="selectedCountries.length === 0"
 						>
-							Next
-						</kv-button>
+							<strong>Pick as many places to lend to.</strong>
+						</p>
+						<p
+							class="get-started__summary text-center"
+							v-if="selectedCountries.length !== 0"
+						>
+							We'll show you loans in
+							<span v-html="selectedCountriesString"></span>
+							<kv-button
+								class="text-link"
+								v-if="selectedCountries.length !== 0"
+								@click.prevent.native="toggleAllCountries(false)"
+							>
+								Clear
+							</kv-button>
+						</p>
 					</div>
-				</fieldset>
-			</div>
+					<kv-button
+						class="get-started__submit-btn"
+						type="submit"
+						:disabled="selectedCountries.length === 0"
+					>
+						Next
+					</kv-button>
+				</div>
+			</fieldset>
 		</form>
 	</div>
 </template>
@@ -122,7 +148,7 @@ import gql from 'graphql-tag';
 import Fuse from 'fuse.js/dist/fuse.common';
 // import Fuse from 'fuse.js'; // re-enabled after https://github.com/krisk/Fuse/pull/383 is merged
 
-// import countryListQuery from '@/graphql/query/countryList.graphql';
+import countryListQuery from '@/graphql/query/countryList.graphql';
 
 import cookieStore from '@/util/cookieStore';
 
@@ -130,9 +156,6 @@ import KvButton from '@/components/Kv/KvButton';
 import KvFlag from '@/components/Kv/KvFlag';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
-
-// TODO: remove once you're pulling countries from Apollo
-import countryListMock from './GetStartedPlacesMock';
 
 export default {
 	components: {
@@ -148,52 +171,59 @@ export default {
 	data() {
 		return {
 			countryList: [],
-			filteredCountryList: [],
+			fuseCountryList: [],
 			filterTerm: '',
 			selectAll: false,
 		};
 	},
-	// apollo: { // TODO: this query should be close, uncomment to pull countries from Apollo
-	// 	query: countryListQuery,
-	// 	preFetch: true,
-	// 	result({ data }) {
-	// 		const countries = _get(data, 'data.lend.countryFacets');
-	// 		this.countryList = _orderBy(countries, ['country.name'], ['asc']).map(countryObj => {
-	// 			return {
-	// 				name: countryObj.country.name,
-	// 				code: countryObj.country.isoCode,
-	// 				region: countryObj.country.region,
-	// 				checked: false
-	// 			};
-	// 		});
-	// 	}
-	// },
+	apollo: {
+		query: countryListQuery,
+		preFetch: true,
+		result({ data }) {
+			const countries = _get(data, 'lend.countryFacets') || [];
+
+			this.countryList = _orderBy(countries, ['country.name'], ['asc']).map(countryObj => {
+				return {
+					name: countryObj.country.name,
+					code: countryObj.country.isoCode,
+					region: countryObj.country.region,
+					checked: false
+				};
+			});
+		}
+	},
 	computed: {
 		selectedCountries() {
 			return this.countryList.filter(country => country.checked);
 		},
-		summaryText() {
-			if (this.selectedCountries.length === 0) {
-				return '<b>Pick places to lend to.<?b>';
+		selectedCountriesString() {
+			if (this.selectedCountries.length === 1) {
+				return `<strong>${this.selectedCountries[0].name}<strong>`;
 			}
-			return ''; // TODO: Figure out what text to display here
+			const lengthOfCountriesToList = 6;
+			// the selected items limited to 6
+			const selectedCountriesShortList = this.selectedCountries.slice(0, lengthOfCountriesToList);
+			// the count of countries that aren't being displayed
+			const countriesRemaining = this.selectedCountries.length - lengthOfCountriesToList;
+
+			const lastCountry = selectedCountriesShortList.slice(-1)[0];
+			const otherCountries = selectedCountriesShortList.slice(0, -1);
+			const arrayOfOtherCountryNames = otherCountries.map(country => country.name).join(', ');
+
+			if (this.selectedCountries.length <= 6) {
+				return `<strong>${arrayOfOtherCountryNames}</strong> and <strong>${lastCountry.name}</strong>`;
+			}
+			// eslint-disable-next-line max-len
+			return `<strong>${arrayOfOtherCountryNames}</strong>, <strong>${lastCountry.name}</strong> and ${countriesRemaining} more.`;
+		},
+		filteredCountryList() {
+			// eslint-disable-next-line max-len
+			return this.countryList.filter(country => this.fuseCountryList.find(fuseCountry => fuseCountry.code === country.code));
 		}
 	},
 	mounted() {
-		// TODO: remove the below once you're pulling countries from Apollo
-		const countries = _get(countryListMock, 'data.lend.countryFacets');
-		this.countryList = _orderBy(countries, ['country.name'], ['asc']).map(countryObj => {
-			return {
-				name: countryObj.country.name,
-				code: countryObj.country.isoCode,
-				region: countryObj.country.region,
-				checked: false
-			};
-		});
-		// TODO: remove the above once you're pulling countries from Apollo
-
+		this.fuseCountryList = this.countryList;
 		// After we have a countryList, prep for filtering
-		this.filteredCountryList = this.countryList;
 		this.fuse = new Fuse(this.countryList, {
 			threshold: 0.25,
 			distance: 100000,
@@ -204,9 +234,9 @@ export default {
 	watch: {
 		filterTerm() {
 			if (this.filterTerm === '') {
-				this.filteredCountryList = this.countryList;
+				this.fuseCountryList = this.countryList;
 			} else {
-				this.filteredCountryList = this.fuse.search(this.filterTerm).map(result => result.item);
+				this.fuseCountryList = this.fuse.search(this.filterTerm).map(result => result.item);
 			}
 		}
 	},
@@ -214,52 +244,44 @@ export default {
 		clearFilter() {
 			this.filterTerm = '';
 		},
-		selectAllCountries() {
-			this.selectAll = !this.selectAll;
-			this.countryList.forEach(country => {
-				this.$set(country, 'checked', this.selectAll);
+		toggleAllCountries(state) {
+			this.selectAll = state;
+			this.fuseCountryList.forEach(fuseCountry => {
+				this.countryList.find(country => country.code === fuseCountry.code).checked = this.selectAll;
 			});
 		},
 		onChangeCountrySelection(event, countryCode) {
+			// check item in countryList
 			const item = this.countryList.find(country => country.code === countryCode);
-			this.$set(item, 'checked', event.target.checked);
+			item.checked = event.target.checked;
 		},
 		async onSubmitForm() {
-			// TODO: This whole method is untested
-
 			const uiv = cookieStore.get('uiv');
-			console.log(uiv);
 
 			const userCountryCodes = this.selectedCountries.map(country => country.code);
-			console.log(userCountryCodes);
-
-			const saveLendingPreferences = gql`mutation savePrefs($visitorId: String!, $countries: [String]) {
-				my {
-					saveLendingPreferences(visitorId: $visitorId, countries: $countries) {
-						id
-						countries {
-							values {
-								name
-								isoCode
-							}
+			try {
+				const saveLendingPreferences = gql`mutation savePrefs($visitorId: String!, $countries: [String]) {
+					general {
+						saveLendingPreferences(visitorId: $visitorId, countries: $countries) {
+							id
 						}
 					}
-				}
-			}`;
+				}`;
 
-			try {
-				const result = await this.apollo.mutate({
+				await this.apollo.mutate({
 					mutation: saveLendingPreferences,
 					variables: {
 						visitorId: uiv,
 						countries: userCountryCodes
 					}
 				});
-				console.log(result);
-				this.$router.push('get-started/results');
+
+				this.$router.push({
+					path: '/get-started/results'
+				});
 			} catch (err) {
 				console.error(err);
-				// TODO: Show error message to user?
+				this.$showTipMsg('There was a problem saving your places', 'error');
 			}
 		}
 	}
@@ -271,11 +293,25 @@ export default {
 $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 
-.page-content {
-	padding: 1.625rem 0;
-}
-
 .get-started {
+	&__form {
+		padding: 1.5rem;
+		margin: 2rem auto;
+		background-color: $white;
+		border-radius: 1rem;
+		width: 98%;
+		max-width: rem-calc(1088);
+
+		@include breakpoint(medium) {
+			box-shadow: 0 2px 100px 0 rgba(0, 0, 0, 0.1);
+		}
+
+		@include breakpoint(large) {
+			margin: 4.5rem auto;
+			padding: 3.75rem 3.25rem 0.75rem 3.75rem;
+		}
+	}
+
 	&__intro {
 		text-align: center;
 		margin-bottom: 1rem;
@@ -283,10 +319,30 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		@include breakpoint(xlarge) {
 			text-align: left;
 		}
+
+		h1 {
+			font-weight: bold;
+			margin-bottom: 1.5rem;
+
+			@include breakpoint(large) {
+				@include large-text();
+
+				margin-bottom: 0;
+			}
+		}
+
+		p {
+			font-size: $medium-text-font-size;
+			line-height: $medium-text-line-height;
+
+			@include breakpoint(xlarge) {
+				padding: 1rem 25% 1rem 0;
+			}
+		}
 	}
 
 	&__list-wrapper {
-		height: calc(90vh - #{rem-calc(450)}); // TODO: play with these to make sure they're good
+		height: calc(90vh - #{rem-calc(450)});
 		min-height: 15rem;
 		margin: 0 auto;
 		padding-bottom: 1rem;
@@ -294,7 +350,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		overflow: hidden;
 
 		@include breakpoint(xlarge) {
-			height: calc(90vh - #{rem-calc(250)}); // TODO: play with these to make sure they're good
+			height: calc(90vh - #{rem-calc(250)});
 		}
 
 		&::after {
@@ -326,29 +382,54 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		display: flex;
 	}
 
-	/* TODO: Style this button and icon
 	&__select-all-btn {
-
+		display: flex;
+		align-items: center;
+		margin: 0.5rem 0 1rem 1.15rem;
+		padding: 0.25rem;
+		font-size: 1rem;
 	}
 
 	&__select-all-icon {
+		width: rem-calc(25);
+		height: rem-calc(25);
 
+		&.selected {
+			fill: $white;
+		}
 	}
-	*/
+
+	&__select-all-icon-wrapper {
+		display: flex;
+		width: rem-calc(25);
+		height: rem-calc(25);
+		padding: 0.2rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		border: rem-calc(2) solid $charcoal;
+		margin-right: 0.5rem;
+
+		&.selected {
+			border: rem-calc(2) solid $white;
+			background-color: $charcoal;
+		}
+	}
 
 	&__summary {
-		margin: 0 0 2.5rem 0;
+		font-size: 1.15rem;
+		margin: 0 0 2.5rem auto;
 	}
 
 	&__submit-btn {
 		display: block;
-		margin-left: auto;
+		margin: 0 1.25rem 3rem auto;
 	}
 }
 
 .country-filter {
 	position: relative;
-	margin: 0 0.5rem;
+	margin: 0.5rem;
 
 	&__label {
 		@include visually-hidden();
@@ -357,7 +438,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 	&__input {
 		background-color: $kiva-bg-darkgray;
 		border-radius: 10rem;
-		padding-left: rem-calc(16);
+		padding-left: rem-calc(42);
 		padding-right: rem-calc(32);
 
 		&:focus {
@@ -386,6 +467,20 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		width: 1rem;
 		height: 1rem;
 	}
+
+	&__search-icon {
+		position: absolute;
+		left: 1rem;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		fill: $kiva-text-light;
+		width: 1rem;
+		height: 1rem;
+	}
 }
 
 .country {
@@ -397,7 +492,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 		display: flex;
 		align-items: center;
 		width: 100%;
-		padding: 0.75rem;
+		padding: rem-calc(9) rem-calc(11);
 		margin: 0;
 		line-height: 1;
 		color: $kiva-text-dark;
@@ -412,13 +507,13 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 
 	&__check-icon-wrapper {
 		display: flex;
-		width: rem-calc(32);
-		height: rem-calc(32);
+		width: rem-calc(25);
+		height: rem-calc(25);
 		padding: 0.2rem;
 		align-items: center;
 		justify-content: center;
 		border-radius: 50%;
-		border: rem-calc(3) solid #fff;
+		border: rem-calc(2) solid #fff;
 		opacity: 0;
 		z-index: 2;
 		position: absolute;
@@ -431,8 +526,8 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 	}
 
 	&__img {
-		width: rem-calc(34);
-		height: rem-calc(34);
+		width: rem-calc(25);
+		height: rem-calc(25);
 		overflow: hidden;
 		border-radius: 50%;
 	}
@@ -440,6 +535,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 	&__name {
 		margin: 0 0.75rem;
 		flex: 1;
+		font-size: 1.25rem;
 	}
 
 	&__region {
@@ -463,7 +559,7 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 			}
 
 			.country__name {
-				font-weight: $global-weight-bold;
+				font-weight: $global-weight-highlight;
 			}
 		}
 
