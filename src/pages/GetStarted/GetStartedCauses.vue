@@ -263,6 +263,10 @@ export default {
 	&__summary {
 		max-width: 30.5rem;
 		margin: 0 0 2.5rem auto;
+
+		::v-deep b {
+			text-transform: capitalize;
+		}
 	}
 
 	&__submit-btn {
