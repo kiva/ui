@@ -127,6 +127,7 @@ query initializeCheckout($basketId: String) {
 				...shopTotals
 			}
 		}
+		basketVerificationState
 		lendingRewardOffered
 	}
 }

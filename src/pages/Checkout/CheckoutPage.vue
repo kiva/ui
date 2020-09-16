@@ -55,8 +55,12 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 
+						<basket-verification
+							@verification-required="verificationRequired = $event"
+						/>
+
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
-							<div v-if="isLoggedIn" class="small-12">
+							<div v-if="isLoggedIn && !verificationRequired" class="small-12">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
@@ -85,9 +89,8 @@
 								/>
 							</div>
 
-							<div v-else class="small-12">
+							<div v-else-if="!isActivelyLoggedIn && showLoginContinueButton" class="small-12">
 								<kv-button
-									v-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="checkout-button smallest"
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
@@ -175,6 +178,7 @@ import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -194,6 +198,7 @@ export default {
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
+		BasketVerification,
 		KivaCardRedemption,
 		LoadingOverlay,
 		CheckoutHolidayPromo,
@@ -217,6 +222,7 @@ export default {
 			kivaCards: [],
 			redemption_credits: [],
 			hasFreeCredits: false,
+			verificationRequired: false,
 			totals: {},
 			updatingTotals: false,
 			showReg: true,

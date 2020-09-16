@@ -1,0 +1,11 @@
+query basketVerificationState($basketId: String) {
+	shop (basketId: $basketId) {
+		basketVerificationState
+	}
+	my {
+		userAccount {
+			id
+			email
+		}
+	}
+}
