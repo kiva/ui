@@ -21,7 +21,7 @@
 					<div class="edit-preferences__content-wrapper">
 						<div class="row collapse text-left align-middle">
 							<div class="small-6 large-7 xlarge-6 columns">
-								<h2 class="edit-preferences__content-wrapper--title">
+								<h2 class="edit-preferences__card-header">
 									Your {{ causes.length }} causes
 								</h2>
 								<router-link
@@ -59,7 +59,7 @@
 					</div>
 					<div class="edit-preferences__content-wrapper">
 						<div class="row collapse text-left align-middle column">
-							<h2 class="edit-preferences__content-wrapper--title">
+							<h2 class="edit-preferences__card-header">
 								All Causes
 							</h2>
 							<router-link
@@ -86,7 +86,7 @@
 					<div class="edit-preferences__content-wrapper">
 						<div class="row collapse text-left align-middle">
 							<div class="small-6 large-7 xlarge-6 columns">
-								<h2 class="edit-preferences__content-wrapper--title">
+								<h2 class="edit-preferences__card-header">
 									Your {{ countries.length }} places
 								</h2>
 								<router-link
@@ -126,12 +126,12 @@
 					</div>
 					<div class="edit-preferences__content-wrapper">
 						<div class="row collapse text-left align-middle column">
-							<h2 class="edit-preferences__content-wrapper--title">
+							<h2 class="edit-preferences__card-header">
 								Everywhere
 							</h2>
 							<router-link
 								class="smallest"
-								to="/get-started"
+								to="/get-started/places"
 							>
 								Choose places you want to support &#8594;
 							</router-link>
@@ -208,6 +208,12 @@ $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 		align-items: stretch;
 	}
 
+	&__card-header {
+		margin-bottom: 0;
+		font-size: 2rem;
+		font-weight: $global-weight-highlight;
+	}
+
 	&__icon-wrapper {
 		background-color: $kiva-stroke-gray;
 		border-radius: 1rem 0 0 1rem;
@@ -225,12 +231,6 @@ $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 		padding-left: 1.25rem;
 		width: 100%;
 		& > .row { width: 100%; }
-
-		&--title {
-			margin-bottom: 0;
-			font-size: 2rem;
-			font-weight: $global-weight-highlight;
-		}
 	}
 
 	&__icon-background {
