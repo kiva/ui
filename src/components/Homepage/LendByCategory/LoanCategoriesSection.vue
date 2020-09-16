@@ -152,9 +152,10 @@ export default {
 		categoryImageSrc(category) {
 			// not yet working
 			console.log('category', category.id);
-			const categoryName = cleanCategoryName(category.id);
-			console.log('categoryName', categoryName);
-			return imageRequire(`./${categoryName}.png`);
+			// const categoryName = cleanCategoryName(category.id);
+			// console.log('categoryName', categoryName);
+			// return imageRequire(`./${categoryName}.png`);
+			return imageRequire('./technology.png');
 		},
 		// categoryImage2xSrc() {
 		// 	return imageRequire(`./${categoryName}_2x.png`);
