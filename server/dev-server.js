@@ -6,6 +6,7 @@ require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const chokidar = require('chokidar');
 const express = require('express');
 const helmet = require('helmet');
+const locale = require('locale');
 const MFS = require('memory-fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -147,6 +148,9 @@ serverCompiler.watch({
 	serverBundle = JSON.parse(readFile(mfs, 'vue-ssr-server-bundle.json'));
 	updateHandler();
 });
+
+// Read locale from request
+app.use(locale(config.app.locale.supported, config.app.locale.default));
 
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);

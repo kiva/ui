@@ -26,6 +26,7 @@ export default context => {
 			config,
 			cookies,
 			user,
+			locale,
 		} = context;
 		const { accessToken, ...profile } = user;
 
@@ -69,6 +70,7 @@ export default context => {
 				types: config.graphqlFragmentTypes
 			},
 			kvAuth0,
+			locale,
 		});
 
 		// redirect to the resolved url if it does not match the requested url

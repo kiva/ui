@@ -4,6 +4,7 @@ const http = require('http');
 const ddTrace = require('dd-trace');
 const express = require('express');
 const helmet = require('helmet');
+const locale = require('locale');
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
@@ -58,6 +59,9 @@ if (argv.mock) {
 	config.app.graphqlUri = `http://localhost:${port}/graphql`;
 	config.app.auth0.enable = false;
 }
+
+// Read locale from request
+app.use(locale(config.app.locale.supported, config.app.locale.default));
 
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);

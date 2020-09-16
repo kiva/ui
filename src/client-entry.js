@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import '@babel/polyfill';
+import { getUserLocale } from 'get-user-locale';
 import _dropWhile from 'lodash/dropWhile';
 import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
@@ -46,6 +47,7 @@ const {
 		types: config.graphqlFragmentTypes,
 	},
 	kvAuth0,
+	locale: getUserLocale(),
 });
 
 // Show a tip message when there is an unhandled auth0 error
