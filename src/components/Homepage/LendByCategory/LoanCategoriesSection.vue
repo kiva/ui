@@ -7,6 +7,27 @@
 			:style="{ left: scrollPos + 'px' }"
 		>
 			<kv-loading-spinner v-if="!categoriesLoaded" />
+
+			<ul class="category-options__ul">
+				<li
+					class="category-options__li"
+					v-for="category in prefetchedCategoryInfo"
+					:key="category.id + '-link'"
+				>
+					<kv-cause-selector
+						:cause="cleanCategoryName(category.id)"
+						:as-radio="true"
+						@change="setActiveCategory(category.id)"
+						v-kv-track-event="[
+							'Lending',
+							'click-cause-selector',
+							cleanCategoryName(category),
+						]"
+					/>
+				</li>
+			</ul>
+
+			<!-- Category name text -->
 			<kv-button
 				class="text-link category-options__link"
 				:class="{'active': category.id === activeCategory}"
@@ -70,11 +91,16 @@ import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvButton from '@/components/Kv/KvButton';
 
+import KvCauseSelector from '@/components/Kv/KvCauseSelector';
+
+const imageRequire = require.context('@/assets/images/cause-selector/', true);
+
 export default {
 	components: {
 		LoanCategory,
 		KvLoadingSpinner,
-		KvButton
+		KvButton,
+		KvCauseSelector
 	},
 	data() {
 		return {
@@ -123,6 +149,16 @@ export default {
 		isLargeBreakpoint() {
 			return document.documentElement.clientWidth < 681;
 		},
+		categoryImageSrc(category) {
+			console.log('category', category.id);
+			// const categoryName = this.cleanCategoryName(category.id);
+			// console.log('categoryName', categoryName);
+			return imageRequire('./technology.png');
+			// return imageRequire(`./${categoryName}_2x.png`);
+		},
+		// categoryImage2xSrc() {
+		// 	return imageRequire(`./${paramCase(this.cleanCategoryName(category.name))}_2x.png`);
+		// },
 	},
 	methods: {
 		scrollCategoryNamesLeft() {
@@ -146,10 +182,15 @@ export default {
 				case 93:
 					return 'shelter';
 				case 89:
-					return 'arts';
+					return 'art';
 				case 87:
 					return 'agriculture';
+				case 102:
+					return 'technology';
+				case 4:
+					return 'education';
 				default:
+					console.log(String(category.name).replace(/\s\[.*\]/g, ''));
 					// remove any text contained within square brackets, including the brackets
 					return String(category.name).replace(/\s\[.*\]/g, '');
 			}
@@ -293,6 +334,9 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
+$box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
+
 .loan-category-section-wrapper {
 	position: relative;
 }
@@ -312,39 +356,150 @@ export default {
 	text-align: center;
 	padding: 0 2rem;
 
-	&__link {
-		color: $charcoal;
-		font-weight: $global-weight-normal;
-		font-size: $featured-text-font-size;
-		line-height: 1.5rem;
-		text-transform: capitalize;
-		margin-right: 1rem;
-
-		@include breakpoint(medium) {
-			margin-bottom: 1rem;
-			display: inline-block;
-		}
-
-		@include breakpoint(large) {
-			margin-right: 0;
-		}
-
-		&.active,
-		&:hover,
-		&:focus {
-			text-decoration: none;
-			color: $kiva-green;
-		}
-
-		&.active {
-			font-weight: $global-weight-bold;
-			border-bottom: 3px solid $kiva-green;
-		}
-
-		&:focus {
-			outline: 0;
-		}
+	&__ul {
+		list-style: none;
+		display: flex;
 	}
+
+	&__li {
+		margin: 0;
+		padding: 0;
+		margin-right: 2.75rem;
+	}
+
+	// &__circle {
+	// 	width: 100%;
+	// 	display: flex;
+	// 	align-items: center;
+	// 	justify-content: center;
+	// 	overflow: hidden;
+	// 	border-radius: 50%;
+	// 	background: #fff;
+	// 	box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
+	// 	margin-bottom: 1rem;
+	// 	user-select: none;
+	// }
+
+	// &__img {
+	// 	width: 100%;
+	// 	height: 100%;
+	// }
+
+	// &__link {
+	// 	color: $charcoal;
+	// 	font-weight: $global-weight-normal;
+	// 	font-size: $featured-text-font-size;
+	// 	line-height: 1.5rem;
+	// 	text-transform: capitalize;
+	// 	margin-right: 1rem;
+
+	// 	@include breakpoint(medium) {
+	// 		margin-bottom: 1rem;
+	// 		display: inline-block;
+	// 	}
+
+	// 	@include breakpoint(large) {
+	// 		margin-right: 0;
+	// 	}
+
+	// 	&.active,
+	// 	&:hover,
+	// 	&:focus {
+	// 		text-decoration: none;
+	// 		color: $kiva-green;
+	// 	}
+
+	// 	&.active {
+	// 		font-weight: $global-weight-bold;
+	// 		border-bottom: 3px solid $kiva-green;
+	// 	}
+
+	// 	&:focus {
+	// 		outline: 0;
+	// 	}
+	// }
+
+	// &__label {
+	// 	width: 100%;
+	// 	margin: 0;
+	// 	line-height: 1;
+	// 	color: $kiva-text-dark;
+	// 	text-align: center;
+
+	// 	&:hover {
+	// 		color: $kiva-textlink-hover;
+
+	// 		.category-options__circle {
+	// 			// background: $kiva-bg-lightgray;
+	// 			box-shadow: $box-shadow-hover;
+	// 		}
+	// 	}
+	// }
+
+	// &__check-icon-wrapper {
+	// 	display: flex;
+	// 	width: rem-calc(45);
+	// 	height: rem-calc(45);
+	// 	padding: 0.2rem;
+	// 	align-items: center;
+	// 	justify-content: center;
+	// 	border-radius: 50%;
+	// 	border: rem-calc(3) solid #fff;
+	// 	opacity: 0;
+	// 	z-index: 2;
+	// 	position: absolute;
+	// }
+
+	// &__check-icon {
+	// 	width: rem-calc(20);
+	// 	height: rem-calc(15);
+	// 	fill: #fff;
+	// }
+
+	// &__checkbox {
+	// 	@include visually-hidden();
+
+	// 	&:focus + .category-options__label {
+	// 		outline: 0;
+
+	// 		.category-options__circle {
+	// 			box-shadow: $box-shadow, 0 0 0 rem-calc(2) $kiva-accent-darkblue;
+	// 		}
+
+	// 		.category-options__text {
+	// 			font-weight: $global-weight-bold;
+	// 		}
+	// 	}
+
+	// 	&:checked + .category-options__label {
+	// 		.category-options__img {
+	// 			opacity: 0;
+	// 		}
+
+	// 		.category-options__check-icon-wrapper {
+	// 			opacity: 1;
+	// 		}
+
+	// 		.category-options__text {
+	// 			font-weight: $global-weight-bold;
+	// 			color: $kiva-textlink-hover;
+	// 		}
+
+	// 		.category-options__circle {
+	// 			background: $kiva-accent-blue;
+	// 		}
+	// 	}
+
+	// 	&[disabled] + .category-options__label {
+	// 		@include disabled();
+
+	// 		&:hover {
+	// 			.category-options__circle {
+	// 				background: #fff;
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	@include breakpoint(medium) {
 		position: initial;
