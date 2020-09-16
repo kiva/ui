@@ -15,7 +15,7 @@
 					:key="category.id + '-link'"
 				>
 					<kv-cause-selector
-						:cause="cleanCategoryName(category.id)"
+						:cause="cleanCategoryName(category)"
 						:as-radio="true"
 						@change="setActiveCategory(category.id)"
 						v-kv-track-event="[
