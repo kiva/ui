@@ -61,7 +61,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		TheHeader
 	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<the-header
 			:minimal="minimal"

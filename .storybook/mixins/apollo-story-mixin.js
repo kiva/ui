@@ -1,11 +1,16 @@
-export default {
+export default ({
+	queryResult = {},
+	mutationResult = {},
+	fragmentResult = {},
+	loading = false,
+} = {}) => ({
 	provide: {
 		federation: {
 			mutate() {
-				return Promise.resolve({});
+				return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
 			},
 			readQuery() {
-				return Promise.resolve({});
+				return queryResult.data;
 			},
 			watchQuery() {
 				return {
@@ -13,18 +18,18 @@ export default {
 				}
 			},
 			query() {
-				return Promise.resolve({});
+				return loading ? new Promise(() => {}) : Promise.resolve(queryResult);
 			},
 			readFragment() {
-				return {}
+				return fragmentResult
 			}
 		},
 		apollo: {
 			mutate() {
-				return Promise.resolve({});
+				return loading ? new Promise(() => {}) : Promise.resolve(mutationResult);
 			},
 			readQuery() {
-				return Promise.resolve({});
+				return queryResult.data;
 			},
 			watchQuery() {
 				return {
@@ -32,11 +37,11 @@ export default {
 				}
 			},
 			query() {
-				return Promise.resolve({});
+				return loading ? new Promise(() => {}) : Promise.resolve(queryResult);
 			},
 			readFragment() {
-				return {}
+				return fragmentResult
 			},
 		},
 	}
-};
+});

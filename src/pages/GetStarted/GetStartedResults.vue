@@ -1,14 +1,42 @@
 <template>
-	<div>
+	<div class="get-started-results-page">
 		<kv-progress-bar value="100" max="100" />
+		<div class="loan-results">
+			<template v-if="totalCount > 0">
+				<h1 class="loan-results__headline">
+					Here {{ countVerb }} {{ countNumber }} {{ countPeople }} you can support!
+				</h1>
+				<p class="loan-results__tagline">
+					In fact, we found {{ totalCount }} {{ countPeople }} that we think you’ll love to lend to.
+					<router-link>
+						View all loans
+					</router-link>
+				</p>
+			</template>
+			<template v-else>
+				<h1 class="loan-results__headline">
+					Sorry, we couldn't find any loans matching your preferences
+				</h1>
+				<p class="loan-results__tagline">
+					<!-- eslint-disable-next-line max-len -->
+					But here {{ countVerb }} {{ countNumber }} {{ countPeople }} who still {{ countNeed }} your support!
+					<router-link to="/lend-by-category">
+						Explore more loans
+					</router-link>
+				</p>
+			</template>
+			<div class="loan-results__loans">
+				<div class="row align-stretch">
+					<recommended-loan-card
+						class="small-4 columns"
+						v-for="loanId in loanIds"
+						:key="loanId"
+						:loan-id="loanId"
+					/>
+				</div>
+			</div>
+		</div>
 		<div class="row column page-content">
-			<h1>Here are X people you can support!</h1>
-			<p>
-				In fact, we found X people that we think you’ll love to lend to.
-				<!-- <router-link>View all loans</router-link> -->
-			</p>
-			<div>loans here</div>
-
 			<section>
 				<h2>Looking for different loans?</h2>
 			</section>
@@ -78,20 +106,28 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
+import * as Sentry from '@sentry/browser';
+import cookieStore from '@/util/cookieStore';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
+	inject: ['apollo'],
 	components: {
 		FrequentlyAskedQuestions,
 		KvProgressBar,
 		KvResponsiveImage,
+		RecommendedLoanCard,
 	},
 	data() {
 		return {
+			loanIds: [],
+			totalCount: 0,
 			howItWorksImgs: {
 				loan: [
 					['small', imgRequire('./how-it-works-loan.png')],
@@ -118,14 +154,164 @@ export default {
 	metaInfo: {
 		title: 'Results - Get Started'
 	},
+	computed: {
+		countVerb() {
+			return this.loanIds.length === 1 ? 'is' : 'are';
+		},
+		countNumber() {
+			switch (this.loanIds.length) {
+				case 1:
+					return 'one';
+				case 2:
+					return 'two';
+				default:
+					return 'three';
+			}
+		},
+		countPeople() {
+			return this.loanIds.length === 1 ? 'person' : 'people';
+		},
+		countNeed() {
+			return this.loanIds.length === 1 ? 'needs' : 'need';
+		},
+	},
+	apollo: {
+		preFetch: true,
+		preFetchVariables() {
+			return {
+				limit: 3,
+				visitorId: cookieStore.get('uiv') || null
+			};
+		},
+		variables() {
+			return {
+				limit: 3,
+				visitorId: cookieStore.get('uiv') || null
+			};
+		},
+		query: gql`query getStartedResults($limit: Int, $visitorId: String) {
+			general {
+				lendingPreferences(visitorId: $visitorId) {
+					loans(limit: $limit) {
+						totalCount
+						values {
+							id
+						}
+					}
+				}
+			}
+			lend {
+				loans(limit: $limit) {
+					values {
+						id
+					}
+				}
+			}
+		}`,
+		result(result) {
+			if (result.error) {
+				console.error(result.error);
+				this.$showTipMsg('There was a problem finding your loan recommendations', 'error');
+				try {
+					Sentry.withScope(scope => {
+						scope.setTag('wizard_stage', 'results');
+						Sentry.captureException(result.error);
+					});
+				} catch (e) {
+					// no-op
+				}
+			}
+
+			let loanValues = result.data?.general?.lendingPreferences?.loans?.values || [];
+			this.totalCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
+
+			if (this.totalCount === 0) {
+				loanValues = result.data?.lend?.loans?.values || [];
+			}
+
+			this.loanIds = loanValues.filter(loan => !!loan.id).map(loan => loan.id);
+		},
+	}
 };
 </script>
 
 <style lang="scss" scoped>
 @import 'settings';
 
+.get-started-results-page {
+	background-color: $white;
+}
+
+.loan-results {
+	padding-top: 1.5rem;
+
+	@include breakpoint(large up) {
+		padding-top: 6rem;
+	}
+
+	&__headline {
+		text-align: center;
+		font-weight: bold;
+		margin-bottom: 1rem;
+		padding: 0 1rem;
+
+		@include breakpoint(medium down) {
+			font-size: rem-calc(18);
+		}
+	}
+
+	&__tagline {
+		text-align: center;
+		font-size: rem-calc(12);
+		line-height: 1.35;
+		max-width: 14rem;
+		margin: 0 auto 2rem;
+
+		@include breakpoint(large up) {
+			font-size: rem-calc(20);
+			max-width: 24rem;
+		}
+	}
+
+	&__loans {
+		overflow: auto;
+		padding-bottom: 2rem;
+
+		.row {
+			@mixin row-max-width($card-width, $gutter) {
+				max-width: rem-calc((3 * $card-width) + (4 * $gutter));
+			}
+
+			flex-flow: row nowrap;
+			padding: 0 0.5rem;
+			width: 245%;
+			@include row-max-width(230, 16);
+
+			@include breakpoint(medium up) {
+				@include row-max-width(350, 16);
+			}
+
+			@include breakpoint(large up) {
+				padding: 0 rem-calc(10);
+				width: 135%;
+				@include row-max-width(384, 20);
+			}
+
+			@include breakpoint(xxlarge up) {
+				width: auto;
+			}
+		}
+
+		@include breakpoint(medium down) {
+			.columns {
+				padding: 0 0.5rem;
+			}
+		}
+	}
+}
+
 .page-content {
-	padding-top: 6rem;
+	padding-top: 9rem;
 }
 
 // utils

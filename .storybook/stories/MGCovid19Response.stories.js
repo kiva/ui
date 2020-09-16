@@ -18,7 +18,7 @@ export const Default = () => ({
 	components: {
 		MGCovid19,
 	},
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	provide: {
 		federation: {
 			query() {

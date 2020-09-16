@@ -41,7 +41,7 @@ export const Combined = (args, { argTypes }) => ({
 		FifteenYears,
 	},
 	layout: 'fullscreen',
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
@@ -64,7 +64,7 @@ export const Header = (args, { argTypes }) => ({
 		FifteenYearsHeader
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<fifteen-years-header />
 	`,
@@ -76,7 +76,7 @@ export const Timeline = (args, { argTypes }) => ({
 		FifteenYearsTimeline
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<fifteen-years-timeline />
 	`,
@@ -88,7 +88,7 @@ export const Individuals = (args, { argTypes }) => ({
 		FifteenYearsIndividuals
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
 	template: `
 		<fifteen-years-individuals />
@@ -101,7 +101,7 @@ export const Sponsors = (args, { argTypes }) => ({
 		FifteenYearsSponsors
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
 	template: `
 		<fifteen-years-sponsors />
@@ -114,7 +114,7 @@ export const HowKivaWorks = (args, { argTypes }) => ({
 		FifteenYearsHowKivaWorks
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
 	template: `
 		<fifteen-years-how-kiva-works />

@@ -33,7 +33,7 @@ export const Default = () => ({
 	components: {
 		'lend-by-category-homepage': LendByCategoryHomepage,
 	},
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	provide: {
 		apollo: {
 			readQuery() {

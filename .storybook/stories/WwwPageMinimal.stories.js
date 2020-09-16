@@ -45,7 +45,7 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		WwwPageMinimal
 	},
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<www-page-minimal
 			:header-theme="headerTheme"

@@ -40,7 +40,7 @@ export default {
 };
 
 export const Default = () => ({
-	mixins: [apolloStoryMixin],
+	mixins: [apolloStoryMixin()],
 	components: {
 		SocialShare,
 	},

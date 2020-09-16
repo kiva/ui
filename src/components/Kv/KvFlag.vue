@@ -25,6 +25,7 @@ const COUNTRY_LIST = getCodes();
 const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
 
 export default {
+	name: 'KvFlag',
 	serverCacheKey: props => getCacheKey(`KvFlag-${props.country}-${props.aspectRatio}-${props.inlineSvg}`),
 	props: {
 		/**
@@ -56,7 +57,12 @@ export default {
 			return `Flag of ${getNameByCode(this.country)}`;
 		},
 		flagSVG() {
-			return () => import(`~/flag-icon-css/flags/${this.aspectRatio}/${this.country.toLowerCase()}.svg`);
+			// Pulling these out here so that Vue registers them as reactive.
+			// Because the import() call happens in an arrow function, the usage of 'this' is not
+			// registerd by Vue, and so any changes to the country are not picked up, which leads to
+			// the flag not being rendered when the country isn't provided until after the first render.
+			const { aspectRatio, country } = this;
+			return () => import(`~/flag-icon-css/flags/${aspectRatio}/${country.toLowerCase()}.svg`);
 		},
 		spriteYPosition() {
 			if (!this.inlineSvg) {
