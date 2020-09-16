@@ -1,59 +1,35 @@
 <template>
 	<div class="loan-category-section-wrapper">
-		<div class="category-options"
-			v-touch:swipe.left="scrollCategoryNamesRight"
-			v-touch:swipe.right="scrollCategoryNamesLeft"
-			ref="categoryOptions"
-			:style="{ left: scrollPos + 'px' }"
-		>
+		<div class="category-options">
 			<kv-loading-spinner v-if="!categoriesLoaded" />
-
-			<ul class="category-options__ul">
-				<li
-					class="category-options__li"
+			<kv-carousel
+				class="loan-category-section__carousel"
+				:controls-inside="false"
+				:autoplay="false"
+				indicator-style="none"
+				:embla-options="{
+					loop: false,
+					containScroll: 'trimSnaps',
+				}"
+			>
+				<kv-carousel-slide
+					class="loan-category-section__carousel-slide"
 					v-for="category in prefetchedCategoryInfo"
 					:key="category.id + '-link'"
 				>
 					<kv-cause-selector
+						class="loan-category-section__cause-selector"
 						:cause="cleanCategoryName(category)"
 						:as-radio="true"
 						@change="setActiveCategory(category.id)"
 						v-kv-track-event="[
-							'Lending',
-							'click-cause-selector',
+							'homepage',
+							'click-carousel-selector',
 							cleanCategoryName(category),
 						]"
 					/>
-				</li>
-			</ul>
-
-			<!-- Category name text -->
-			<kv-button
-				class="text-link category-options__link"
-				:class="{'active': category.id === activeCategory}"
-				v-for="category in prefetchedCategoryInfo"
-				:key="category.id + '-link'"
-				@click.prevent.native="setActiveCategory(category.id)"
-				v-kv-track-event="[
-					'homepage',
-					'click-carousel-category',
-					cleanCategoryName(category),
-				]"
-			>
-				{{ cleanCategoryName(category) }}
-			</kv-button>
-			<router-link
-				class="category-options__link"
-				:to="`/lend-by-category`"
-				v-if="prefetchedCategoryInfo.length > 0"
-				v-kv-track-event="[
-					'homepage',
-					'click-carousel-category',
-					'more',
-				]"
-			>
-				More
-			</router-link>
+				</kv-carousel-slide>
+			</kv-carousel>
 		</div>
 
 		<div
@@ -87,20 +63,19 @@ import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHome
 import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
 import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
-import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvButton from '@/components/Kv/KvButton';
-
+import KvCarousel from '@/components/Kv/KvCarousel';
+import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvCauseSelector from '@/components/Kv/KvCauseSelector';
-
-const imageRequire = require.context('@/assets/images/cause-selector/', true);
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
 
 export default {
 	components: {
-		LoanCategory,
+		KvCarousel,
+		KvCarouselSlide,
+		KvCauseSelector,
 		KvLoadingSpinner,
-		KvButton,
-		KvCauseSelector
+		LoanCategory,
 	},
 	data() {
 		return {
@@ -142,38 +117,8 @@ export default {
 			// reduces array of arrays into single array
 			return [].concat(...loanIds);
 		},
-		minLeftMargin() {
-			// min left margin based on width of client and width of category options with 20px padding.
-			return -(this.$refs.categoryOptions.clientWidth - document.documentElement.clientWidth + 20);
-		},
-		isLargeBreakpoint() {
-			return document.documentElement.clientWidth < 681;
-		},
-		categoryImageSrc(category) {
-			// not yet working
-			console.log('category', category.id);
-			// const categoryName = cleanCategoryName(category.id);
-			// console.log('categoryName', categoryName);
-			// return imageRequire(`./${categoryName}.png`);
-			return imageRequire('./technology.png');
-		},
-		// categoryImage2xSrc() {
-		// 	return imageRequire(`./${categoryName}_2x.png`);
-		// },
 	},
 	methods: {
-		scrollCategoryNamesLeft() {
-			if (this.scrollPos < 0 && this.isLargeBreakpoint) {
-				const newLeftMargin = Math.min(0, this.scrollPos + 200);
-				this.scrollPos = newLeftMargin;
-			}
-		},
-		scrollCategoryNamesRight() {
-			if (this.scrollPos > this.minLeftMargin && this.isLargeBreakpoint) {
-				const newLeftMargin = Math.max(this.minLeftMargin, this.scrollPos - 200);
-				this.scrollPos = newLeftMargin;
-			}
-		},
 		cleanCategoryName(category) {
 			switch (category.id) {
 				case 52:
@@ -183,7 +128,7 @@ export default {
 				case 93:
 					return 'shelter';
 				case 89:
-					return 'art';
+					return 'arts';
 				case 87:
 					return 'agriculture';
 				case 102:
@@ -346,40 +291,22 @@ export default {
 }
 
 .category-options {
-	margin: 1.35rem auto 0;
-	top: -4.5rem;
-	position: absolute;
-	white-space: nowrap;
-	text-align: center;
-	padding: 0 2rem;
-
-	&__ul {
-		list-style: none;
-		display: flex;
-	}
-
-	&__li {
-		margin: 0;
-		padding: 0;
-		margin-right: 2.75rem;
-	}
-
-	@include breakpoint(medium) {
-		position: initial;
-		white-space: initial;
-	}
-
-	// for breakpoint under large, don't use flex
-	// so that overflow touch scrolling works better
-	@include breakpoint(large) {
-		display: flex;
-		flex-wrap: nowrap;
-		justify-content: space-between;
-		min-width: 100%;
-	}
+	max-width: rem-calc(737);
+	margin: 0 auto;
 
 	.loading-spinner {
 		margin: 0 auto;
+	}
+}
+
+.loan-category-section {
+	&__carousel-slide {
+		width: rem-calc(160);
+		padding-top: 0.75rem;
+	}
+
+	&__cause-selector {
+		margin: 1rem 1.25rem;
 	}
 }
 </style>
