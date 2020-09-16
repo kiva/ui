@@ -57,7 +57,11 @@ module.exports = {
 		},
 		googlePay: {
 			merchantId: '10620948091453922228'
-		}
+		},
+		locale: {
+			default: 'en',
+			supported: ['en', 'es', 'fr'],
+		},
 	},
 	server: {
 		port: 8888,

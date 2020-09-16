@@ -64,6 +64,7 @@ module.exports = function createMiddleware({
 			config: config.app,
 			cookies,
 			user: req.user || {},
+			locale: req.locale,
 		};
 
 		// set html response headers
