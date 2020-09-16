@@ -63,6 +63,7 @@ export default function createApp({
 	Vue.prototype.$appConfig = appConfig;
 
 	// Provide locale to all components
+	// TODO: use this to set locale in VueI18n
 	Vue.prototype.$locale = locale;
 
 	const app = new Vue({
