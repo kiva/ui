@@ -1,6 +1,7 @@
 <template>
 	<div class="get-started-results-page">
-		<kv-progress-bar value="100" max="100" />
+		<kv-progress-bar class="progress-bar" value="100" max="100" />
+
 		<div class="loan-results">
 			<template v-if="totalCount > 0">
 				<h1 class="loan-results__headline">
@@ -8,9 +9,9 @@
 				</h1>
 				<p class="loan-results__tagline">
 					In fact, we found {{ totalCount }} {{ countPeople }} that we think you’ll love to lend to.
-					<router-link>
+					<!-- <router-link>
 						View all loans
-					</router-link>
+					</router-link> -->
 				</p>
 			</template>
 			<template v-else>
@@ -36,11 +37,14 @@
 				</div>
 			</div>
 		</div>
-		<div class="row column page-content">
-			<section>
-				<h2>Looking for different loans?</h2>
-			</section>
 
+		<div class="row column edit-preferences-row">
+			<section class="edit-preferences section text-center">
+				<edit-preferences :causes="causeValues" :countries="countriesValues" />
+			</section>
+		</div>
+
+		<div class="row column">
 			<section class="how-it-works section text-center">
 				<h2 class="how-it-works__header">
 					Here's how it works
@@ -110,6 +114,7 @@ import gql from 'graphql-tag';
 import * as Sentry from '@sentry/browser';
 import cookieStore from '@/util/cookieStore';
 import FrequentlyAskedQuestions from '@/components/GetStarted/FrequentlyAskedQuestions';
+import EditPreferences from '@/components/GetStarted/EditPreferences';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import RecommendedLoanCard from '@/components/LoanCards/RecommendedLoanCard';
@@ -120,6 +125,7 @@ export default {
 	inject: ['apollo'],
 	components: {
 		FrequentlyAskedQuestions,
+		EditPreferences,
 		KvProgressBar,
 		KvResponsiveImage,
 		RecommendedLoanCard,
@@ -149,6 +155,8 @@ export default {
 					['large retina', imgRequire('./flourish-green-left_2x.png')],
 				],
 			},
+			causeValues: [],
+			countriesValues: []
 		};
 	},
 	metaInfo: {
@@ -198,6 +206,16 @@ export default {
 							id
 						}
 					}
+					causes {
+						values {
+							name
+						}
+					}
+					countries {
+						values {
+							isoCode
+						}
+					}
 				}
 			}
 			lend {
@@ -224,6 +242,8 @@ export default {
 
 			let loanValues = result.data?.general?.lendingPreferences?.loans?.values || [];
 			this.totalCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
+			this.causeValues = result.data?.general?.lendingPreferences?.causes?.values || [];
+			this.countriesValues = result.data?.general?.lendingPreferences?.countries?.values || [];
 
 			if (this.totalCount === 0) {
 				loanValues = result.data?.lend?.loans?.values || [];
@@ -471,5 +491,10 @@ export default {
 	p {
 		line-height: 1rem;
 	}
+}
+
+.edit-preferences-row {
+	margin-top: 3rem;
+	max-width: rem-calc(1190);
 }
 </style>
