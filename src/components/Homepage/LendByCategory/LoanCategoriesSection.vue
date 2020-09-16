@@ -150,14 +150,14 @@ export default {
 			return document.documentElement.clientWidth < 681;
 		},
 		categoryImageSrc(category) {
+			// not yet working
 			console.log('category', category.id);
-			// const categoryName = this.cleanCategoryName(category.id);
-			// console.log('categoryName', categoryName);
-			return imageRequire('./technology.png');
-			// return imageRequire(`./${categoryName}_2x.png`);
+			const categoryName = cleanCategoryName(category.id);
+			console.log('categoryName', categoryName);
+			return imageRequire(`./${categoryName}.png`);
 		},
 		// categoryImage2xSrc() {
-		// 	return imageRequire(`./${paramCase(this.cleanCategoryName(category.name))}_2x.png`);
+		// 	return imageRequire(`./${categoryName}_2x.png`);
 		// },
 	},
 	methods: {
@@ -190,7 +190,6 @@ export default {
 				case 4:
 					return 'education';
 				default:
-					console.log(String(category.name).replace(/\s\[.*\]/g, ''));
 					// remove any text contained within square brackets, including the brackets
 					return String(category.name).replace(/\s\[.*\]/g, '');
 			}
@@ -333,9 +332,6 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-
-$box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
-$box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 
 .loan-category-section-wrapper {
 	position: relative;
