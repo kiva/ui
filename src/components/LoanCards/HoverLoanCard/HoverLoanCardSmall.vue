@@ -69,8 +69,10 @@ export default {
 
 	width: $small-hover-card-width;
 	height: $small-hover-card-height;
+
 	// Re-enable to add card opacity transition
 	// transition: $hover-card-transition-transform, $hover-card-transition-opacity-out;
+
 	transition: $hover-card-transition-transform;
 
 	.hover-loan-card-image {
