@@ -23,7 +23,7 @@
 							:key="`slide-${slide.year}`"
 						>
 							<div class="carousel__slide">
-								<div class="carousel__body-header-wrap">
+								<div class="carousel__body-wrap">
 									<div class="carousel__body-img-wrapper">
 										<img
 											class="carousel__body-img"
@@ -37,17 +37,18 @@
 										<h3>{{ slide.year }}</h3>
 										<h4>{{ slide.title }}</h4>
 									</div>
-								</div>
-								<div class="carousel__body-content">
-									<p>
-										{{ slide.blurb }}
-									</p>
-									<router-link
-										class="carousel__body-cta"
-										:to="slide.link"
-									>
-										{{ slide.cta }}
-									</router-link>
+
+									<div class="carousel__body-content">
+										<p>
+											{{ slide.blurb }}
+										</p>
+										<router-link
+											class="carousel__body-cta"
+											:to="slide.link"
+										>
+											{{ slide.cta }}
+										</router-link>
+									</div>
 								</div>
 							</div>
 						</kv-carousel-slide>
@@ -322,9 +323,9 @@ export default {
 		display: flex;
 		flex-direction: column;
 
-		// @include breakpoint('xxlarge') {
-		// 	flex-direction: row;
-		// }
+		@include breakpoint('xxlarge') {
+			@include clearfix();
+		}
 	}
 
 	/*
@@ -353,22 +354,23 @@ export default {
 									</router-link>
 								</div>
 								*/
-	&__body-header-wrap {
+	&__body-wrap {
 		display: flex;
+		flex-wrap: wrap;
 
 		@include breakpoint('large') {
 			flex-direction: column;
 		}
 
 		@include breakpoint('xxlarge') {
-			flex-direction: row;
+			display: block;
 		}
 	}
 
 	&__body-img-wrapper {
 		height: rem-calc(176);
+		width: 50%;
 		padding: 1rem;
-		flex: 1;
 		display: flex;
 		align-items: center;
 
@@ -378,6 +380,7 @@ export default {
 
 		@include breakpoint('xxlarge') {
 			flex: unset;
+			float: left;
 			width: rem-calc(280);
 			height: rem-calc(310);
 			margin-right: rem-calc(45);
@@ -398,15 +401,20 @@ export default {
 
 	&__body-header {
 		padding: 1rem;
-		flex: 1;
-
+		width: 50%;
 		@include breakpoint('large') {
 			padding: 0;
+			width: 100%;
 		}
 	}
 
 	&__body-content {
 		flex: 1;
+
+		@include breakpoint('xxlarge') {
+			float: left;
+			width: calc(100% - 20.5rem);
+		}
 	}
 
 	&__body-cta {
