@@ -27,6 +27,7 @@
 								<router-link
 									class="smallest"
 									to="/get-started"
+									v-kv-track-event="['Lending', 'click-results-change-causes', 'Change causes']"
 								>
 									Change causes &#8594;
 								</router-link>
@@ -65,6 +66,7 @@
 							<router-link
 								class="smallest"
 								to="/get-started"
+								v-kv-track-event="['Lending', 'click-results-choose-causes', 'choose causes']"
 							>
 								Choose causes you care about &#8594;
 							</router-link>
@@ -92,6 +94,7 @@
 								<router-link
 									class="smallest"
 									to="/get-started/places"
+									v-kv-track-event="['Lending', 'click-results-change-places', 'Change places']"
 								>
 									Change places &#8594;
 								</router-link>
@@ -132,6 +135,7 @@
 							<router-link
 								class="smallest"
 								to="/get-started/places"
+								v-kv-track-event="['Lending', 'click-results-choose-places', 'Choose places']"
 							>
 								Choose places you want to support &#8594;
 							</router-link>
@@ -142,7 +146,10 @@
 		</div>
 		<p class="edit-preferences__outro">
 			Want to dive even deeper? There are {{ totalCount | numeral(0,0) }} borrowers on Kiva,
-			<router-link to="/lend/filter">
+			<router-link
+				to="/lend/filter"
+				v-kv-track-event="['Lending', 'click-dive-deeper', 'Start exploring today']"
+			>
 				start exploring today.
 			</router-link>
 		</p>

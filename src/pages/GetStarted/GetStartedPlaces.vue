@@ -38,6 +38,7 @@
 								autocomplete="off"
 								name="country_filter"
 								v-model="filterTerm"
+								@focus="focusSearchInput"
 							>
 							<button
 								v-if="filterTerm"
@@ -95,6 +96,11 @@
 						<button
 							class="get-started__select-all-btn"
 							@click.prevent="toggleAllCountries(!selectAll)"
+							v-kv-track-event="[
+								'Lending',
+								'click-country-all',
+								'select all'
+							]"
 						>
 							<span class="get-started__select-all-icon-wrapper"
 								:class="{'selected': selectAll }"
@@ -111,7 +117,7 @@
 							class="get-started__summary text-center"
 							v-if="selectedCountries.length === 0"
 						>
-							<strong>Pick as many places to lend to.</strong>
+							<strong>Pick as many places as you'd like.</strong>
 						</p>
 						<p
 							class="get-started__summary text-center"
@@ -123,6 +129,7 @@
 								class="text-link"
 								v-if="selectedCountries.length !== 0"
 								@click.prevent.native="toggleAllCountries(false)"
+								v-kv-track-event="['Lending', 'click-place-clear', 'clear']"
 							>
 								Clear
 							</kv-button>
@@ -254,11 +261,21 @@ export default {
 			// check item in countryList
 			const item = this.countryList.find(country => country.code === countryCode);
 			item.checked = event.target.checked;
+			if (event.target.checked) {
+				this.$kvTrackEvent(
+					'Lending',
+					'click-place-country',
+					this.countryList.find(country => country.code === countryCode).name
+				);
+			}
 		},
 		async onSubmitForm() {
 			const uiv = cookieStore.get('uiv');
 
 			const userCountryCodes = this.selectedCountries.map(country => country.code);
+
+			this.$kvTrackEvent('Lending', 'click-place-next', userCountryCodes.join());
+
 			try {
 				const saveLendingPreferences = gql`mutation savePrefs($visitorId: String!, $countries: [String]) {
 					general {
@@ -283,6 +300,9 @@ export default {
 				console.error(err);
 				this.$showTipMsg('There was a problem saving your places', 'error');
 			}
+		},
+		focusSearchInput() {
+			this.$kvTrackEvent('Lending', 'click-place-search');
 		}
 	}
 };
