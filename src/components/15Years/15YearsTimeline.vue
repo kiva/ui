@@ -410,13 +410,43 @@ export default {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		transition: transform 1s ease-in-out;
+		transition: transform 1s ease-in;
 	}
 
 	&__item {
 		flex-shrink: 0;
 		text-align: center;
-		transition: width 1s ease-in-out;
+		transition: width 1s ease-in;
+		position: relative;
+
+		&::before,
+		&::after {
+			content: '';
+			width: 50%;
+			height: rem-calc(2);
+			background: $offwhite;
+			display: block;
+			position: absolute;
+			top: rem-calc(39);
+			left: 0;
+			z-index: -1;
+		}
+
+		&::after {
+			left: 50%;
+		}
+
+		&:first-child {
+			&::before {
+				display: none;
+			}
+		}
+
+		&:last-child {
+			&::after {
+				display: none;
+			}
+		}
 
 		@include breakpoint(medium down) {
 			width: 50% !important; // override the inline styles
@@ -434,7 +464,7 @@ export default {
 				height: rem-calc(80);
 				border-radius: 50%;
 				background-color: $offwhite;
-				transform: scale(0.1);
+				transform: scale(0.15);
 			}
 
 			.bottom-nav__img {
@@ -450,7 +480,16 @@ export default {
 
 	&__btn {
 		transform: scale(1);
-		transition: transform 2s lienar;
+		transition: transform 2s ease-in-out;
+
+		&:hover,
+		&:focus {
+			outline: 0;
+
+			.bottom-nav__img {
+				animation: wiggle 2 0.25s ease-in-out;
+			}
+		}
 
 		&[disabled] {
 			pointer-events: none;
@@ -499,6 +538,17 @@ export default {
 		@include breakpoint('xxlarge') {
 			display: block;
 		}
+	}
+}
+
+@keyframes wiggle {
+	0%,
+	100% {
+		transform: rotate(0deg);
+	}
+
+	50% {
+		transform: rotate(15deg);
 	}
 }
 </style>
