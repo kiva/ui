@@ -14,6 +14,7 @@
 					:content="question.content"
 					class="small-12 columns"
 					:id="question.title | changeCase('paramCase')"
+					:analytics-category="`Lending`"
 				/>
 			</div>
 		</div>

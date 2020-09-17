@@ -18,7 +18,10 @@
 				<p class="loan-results__tagline">
 					<!-- eslint-disable-next-line max-len -->
 					But here {{ countVerb }} {{ countNumber }} {{ countPeople }} who still {{ countNeed }} your support!
-					<router-link to="/lend-by-category">
+					<router-link
+						to="/lend-by-category"
+						v-kv-track-event="['Lending', 'click-results-explore-more-loans', 'Explore more loans']"
+					>
 						Explore more loans
 					</router-link>
 				</p>
@@ -255,6 +258,9 @@ export default {
 
 			this.loanIds = loanValues.filter(loan => !!loan.id).map(loan => loan.id);
 		},
+	},
+	mounted() {
+		this.$kvTrackEvent('Lending', 'view-results-count', this.totalPreferredCount);
 	}
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<div class="expandable-faq">
 		<button class="expandable-faq__header"
-			@click="open = !open"
+			@click="toggleFaq"
 		>
 			<h4>{{ title }}</h4>
 			<kv-icon
@@ -51,6 +51,13 @@ export default {
 		content: {
 			type: String,
 			default: ''
+		},
+		/**
+		 * Analytics Category
+		* */
+		analyticsCategory: {
+			type: String,
+			default: 'Faq'
 		}
 	},
 	data() {
@@ -70,6 +77,14 @@ export default {
 			this.open = true;
 		}
 	},
+	methods: {
+		toggleFaq() {
+			if (!this.open) {
+				this.$kvTrackEvent(this.analyticsCategory, 'click-faq-expand', this.title);
+			}
+			this.open = !this.open;
+		}
+	}
 };
 
 </script>
