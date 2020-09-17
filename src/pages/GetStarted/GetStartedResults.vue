@@ -3,15 +3,12 @@
 		<kv-progress-bar class="progress-bar" value="100" max="100" />
 
 		<div class="loan-results">
-			<template v-if="totalCount > 0">
+			<template v-if="totalPreferredCount > 0">
 				<h1 class="loan-results__headline">
 					Here {{ countVerb }} {{ countNumber }} {{ countPeople }} you can support!
 				</h1>
 				<p class="loan-results__tagline">
-					In fact, we found {{ totalCount }} {{ countPeople }} that we think you’ll love to lend to.
-					<!-- <router-link>
-						View all loans
-					</router-link> -->
+					Out of {{ totalFundRaisingCount | numeral(0,0) }} borrowers, these are your perfect matches.
 				</p>
 			</template>
 			<template v-else>
@@ -40,7 +37,11 @@
 
 		<div class="row column edit-preferences-row">
 			<section class="edit-preferences section text-center">
-				<edit-preferences :causes="causeValues" :countries="countriesValues" />
+				<edit-preferences
+					:causes="causeValues"
+					:countries="countriesValues"
+					:total-count="totalFundRaisingCount"
+				/>
 			</section>
 		</div>
 
@@ -133,7 +134,8 @@ export default {
 	data() {
 		return {
 			loanIds: [],
-			totalCount: 0,
+			totalPreferredCount: 0,
+			totalFundRaisingCount: 0,
 			howItWorksImgs: {
 				loan: [
 					['small', imgRequire('./how-it-works-loan.png')],
@@ -220,6 +222,7 @@ export default {
 			}
 			lend {
 				loans(limit: $limit) {
+					totalCount
 					values {
 						id
 					}
@@ -241,11 +244,12 @@ export default {
 			}
 
 			let loanValues = result.data?.general?.lendingPreferences?.loans?.values || [];
-			this.totalCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
+			this.totalPreferredCount = result.data?.general?.lendingPreferences?.loans?.totalCount || 0;
+			this.totalFundRaisingCount = result.data?.lend?.loans?.totalCount || 0;
 			this.causeValues = result.data?.general?.lendingPreferences?.causes?.values || [];
 			this.countriesValues = result.data?.general?.lendingPreferences?.countries?.values || [];
 
-			if (this.totalCount === 0) {
+			if (this.totalPreferredCount === 0) {
 				loanValues = result.data?.lend?.loans?.values || [];
 			}
 

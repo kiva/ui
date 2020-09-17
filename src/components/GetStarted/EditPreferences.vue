@@ -140,6 +140,12 @@
 				</div>
 			</div>
 		</div>
+		<p class="edit-preferences__outro">
+			Want to dive even deeper? There are {{ totalCount | numeral(0,0) }} borrowers on Kiva,
+			<router-link to="/lend/filter">
+				start exploring today.
+			</router-link>
+		</p>
 	</div>
 </template>
 
@@ -162,6 +168,10 @@ export default {
 		countries: {
 			type: Array,
 			default: () => [],
+		},
+		totalCount: {
+			type: Number,
+			default: 0,
 		},
 	},
 	computed: {
@@ -290,6 +300,12 @@ $box-shadow: 0 rem-calc(2) rem-calc(30) 0 rgba(0, 0, 0, 0.15);
 		border-radius: 50%;
 		box-shadow: $box-shadow;
 		border: 0;
+	}
+
+	&__outro {
+		font-size: $medium-text-font-size;
+		max-width: 30rem;
+		margin: 2rem auto 0;
 	}
 }
 </style>
