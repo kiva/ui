@@ -94,6 +94,7 @@
 							:key="`bottom-nav-${navSlide.year}`"
 							class="bottom-nav__item"
 							:class="navIndex <= currentIndex ? 'bottom-nav__item--past' : ''"
+							:style="{ width: `${50 / (navIndex - currentIndex + .5) }%` }"
 						>
 							<button
 								class="bottom-nav__btn"
@@ -108,7 +109,8 @@
 										loading="lazy"
 									>
 								</span>
-								<span class="bottom-nav__btn-text">{{ navIndex }} - {{ navSlide.year }}</span>
+								<span class="bottom-nav__btn-year">{{ navSlide.year }}</span>
+								<span class="bottom-nav__btn-title">{{ navSlide.title }}</span>
 							</button>
 						</li>
 					</ul>
@@ -364,7 +366,7 @@ export default {
 		max-height: 100%;
 		transform: scale(0);
 		opacity: 0;
-		transition: transform 2s linear, opacity 2s linear;
+		transition: transform 1s ease-in-out, opacity 1s ease-in-out;
 
 		&--svg {
 			display: block;
@@ -408,17 +410,20 @@ export default {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		transition: transform 2s linear;
+		transition: transform 1s ease-in-out;
 	}
 
 	&__item {
 		flex-shrink: 0;
-		width: 15%;
-		transition: width 2s linear;
+		text-align: center;
+		transition: width 1s ease-in-out;
+
+		@include breakpoint(medium down) {
+			width: 50% !important; // override the inline styles
+		}
 
 		&--past {
-			width: 50%;
-			text-align: center;
+			width: 50% !important; // override the inline styles
 
 			.bottom-nav__btn {
 				pointer-events: none;
@@ -436,7 +441,8 @@ export default {
 				opacity: 0;
 			}
 
-			.bottom-nav__btn-text {
+			.bottom-nav__btn-year,
+			.bottom-nav__btn-title {
 				display: none;
 			}
 		}
@@ -454,13 +460,14 @@ export default {
 	&__btn-img-wrap {
 		width: rem-calc(80);
 		height: rem-calc(80);
+		margin: 0 auto;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		background-color: transparent;
 		border-radius: 50%;
 		transform: scale(1);
-		transition: transform 2s linear, background-color 2s linear;
+		transition: transform 1s ease-in-out, background-color 1s ease-in-out;
 	}
 
 	&__img {
@@ -469,11 +476,29 @@ export default {
 		max-width: 100%;
 		max-height: 100%;
 		opacity: 1;
-		transition: opacity 2s linear;
+		transition: opacity 1s ease-in-out;
 	}
 
-	&__btn-text {
+	&__btn-year,
+	&__btn-title {
+		@include h5();
 
+		margin-top: 0.5rem;
+		color: $offwhite;
+		display: none;
+		width: 8rem;
+	}
+
+	&__btn-year {
+		@include breakpoint('large') {
+			display: block;
+		}
+	}
+
+	&__btn-title {
+		@include breakpoint('xxlarge') {
+			display: block;
+		}
 	}
 }
 </style>
