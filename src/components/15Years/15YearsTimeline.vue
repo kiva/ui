@@ -21,34 +21,33 @@
 						<kv-carousel-slide
 							v-for="slide in slides"
 							:key="`slide-${slide.year}`"
+							class="carousel__slide"
 						>
-							<div class="carousel__slide">
-								<div class="carousel__body-wrap">
-									<div class="carousel__body-img-wrapper">
-										<img
-											class="carousel__body-img"
-											:class="stickerClasses(slide)"
-											:src="getImage(`./stickers/${slide.sticker}`)"
-											alt=""
-											loading="lazy"
-										>
-									</div>
-									<div class="carousel__body-header">
-										<h3>{{ slide.year }}</h3>
-										<h4>{{ slide.title }}</h4>
-									</div>
+							<div class="carousel__body-wrap">
+								<div class="carousel__body-img-wrapper">
+									<img
+										class="carousel__body-img"
+										:class="stickerClasses(slide)"
+										:src="getImage(`./stickers/${slide.sticker}`)"
+										alt=""
+										loading="lazy"
+									>
+								</div>
+								<div class="carousel__body-header">
+									<h3>{{ slide.year }}</h3>
+									<h4>{{ slide.title }}</h4>
+								</div>
 
-									<div class="carousel__body-content">
-										<p>
-											{{ slide.blurb }}
-										</p>
-										<router-link
-											class="carousel__body-cta"
-											:to="slide.link"
-										>
-											{{ slide.cta }}
-										</router-link>
-									</div>
+								<div class="carousel__body-content">
+									<p>
+										{{ slide.blurb }}
+									</p>
+									<router-link
+										class="carousel__body-cta"
+										:to="slide.link"
+									>
+										{{ slide.cta }}
+									</router-link>
 								</div>
 							</div>
 						</kv-carousel-slide>
@@ -88,30 +87,32 @@
 				</div>
 
 				<!-- NAV -->
-				<ul class="bottom-nav" v-if="false">
-					<li
-						v-for="(navSlide, navIndex) in slides"
-						:key="`bottom-nav-${navSlide.year}`"
-						class="bottom-nav__item"
-						:class="navIndex <= currentIndex ? 'bottom-nav__item--past' : ''"
-					>
-						<button
-							class="bottom-nav__btn"
-							@click="goToSlide(navIndex)"
-							:disabled="navIndex < currentIndex"
+				<div class="bottom-nav">
+					<ul class="bottom-nav__list" :style="{ transform: `translateX(${-50 * this.currentIndex}%`}">
+						<li
+							v-for="(navSlide, navIndex) in slides"
+							:key="`bottom-nav-${navSlide.year}`"
+							class="bottom-nav__item"
+							:class="navIndex <= currentIndex ? 'bottom-nav__item--past' : ''"
 						>
-							<span class="bottom-nav__btn-img-wrap">
-								<img
-									class="bottom-nav__img"
-									:src="getImage(`./stickers/${navSlide.sticker}.png`)"
-									alt=""
-									loading="lazy"
-								>
-							</span>
-							<span class="bottom-nav__btn-text">{{ navIndex }} - {{ navSlide.year }}</span>
-						</button>
-					</li>
-				</ul>
+							<button
+								class="bottom-nav__btn"
+								@click="goToSlide(navIndex)"
+								:disabled="navIndex <= currentIndex"
+							>
+								<span class="bottom-nav__btn-img-wrap">
+									<img
+										class="bottom-nav__img"
+										:src="getImage(`./stickers/${navSlide.sticker}`)"
+										alt=""
+										loading="lazy"
+									>
+								</span>
+								<span class="bottom-nav__btn-text">{{ navIndex }} - {{ navSlide.year }}</span>
+							</button>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -201,9 +202,9 @@ export default {
 	width: 100%;
 	overflow-x: hidden;
 
-	&__header {
+	// &__header {
 
-	}
+	// }
 
 	a {
 		@include timeline-link();
@@ -225,6 +226,20 @@ export default {
 			top: calc(50% - #{$prev-next-size / 2});
 			width: 100%;
 		}
+	}
+
+	&__prevnext-btn-year {
+		@include breakpoint('large') {
+			background: $offwhite;
+			color: $twighlight;
+			border-radius: rem-calc(16);
+			padding: rem-calc(2) rem-calc(8);
+		}
+	}
+
+	&__prevnext-btn-icon {
+		width: rem-calc(18);
+		height: rem-calc(8);
 	}
 
 	&__prevnext-btn {
@@ -280,20 +295,6 @@ export default {
 		}
 	}
 
-	&__prevnext-btn-year {
-		@include breakpoint('large') {
-			background: $offwhite;
-			color: $twighlight;
-			border-radius: rem-calc(16);
-			padding: rem-calc(2) rem-calc(8);
-		}
-	}
-
-	&__prevnext-btn-icon {
-		width: rem-calc(18);
-		height: rem-calc(8);
-	}
-
 	&__body { // this is kv-carousel
 		overflow: visible;
 
@@ -302,58 +303,28 @@ export default {
 			margin: 0 auto;
 		}
 
-		// carousel hacks to make the viewport match design
+		// carousel hack to make the viewport match design
 		&::v-deep {
 			.kv-carousel__viewport {
 				overflow: visible;
-			}
-
-			.kv-carousel-slide {
-				opacity: 0.1;
-
-				&.is-selected {
-					opacity: 1;
-				}
 			}
 		}
 	}
 
 	&__slide {
-		padding: 1rem;
-		display: flex;
-		flex-direction: column;
+		opacity: 0.1;
+		padding: 0 1rem;
 
-		@include breakpoint('xxlarge') {
-			@include clearfix();
+		&.is-selected {
+			opacity: 1;
+
+			.carousel__body-img {
+				transform: scale(1);
+				opacity: 1;
+			}
 		}
 	}
 
-	/*
-								<div class="carousel__body-header-wrap">
-									<div class="carousel__body-img-wrapper">
-										<img
-											class="carousel__body-img"
-											:class="stickerClasses(slide)"
-											:src="getImage(`./stickers/${slide.sticker}`)"
-											alt=""
-											loading="lazy"
-										>
-									</div>
-									<div class="carousel__body-header">
-										<h3>{{ slide.year }}</h3>
-										<h4>{{ slide.title }}</h4>
-									</div>
-									<p class="carousel__body-content">
-										{{ slide.blurb }}
-									</p>
-									<router-link
-										class="carousel__body-cta"
-										:to="slide.link"
-									>
-										{{ slide.cta }}
-									</router-link>
-								</div>
-								*/
 	&__body-wrap {
 		display: flex;
 		flex-wrap: wrap;
@@ -363,6 +334,8 @@ export default {
 		}
 
 		@include breakpoint('xxlarge') {
+			@include clearfix();
+
 			display: block;
 		}
 	}
@@ -374,14 +347,11 @@ export default {
 		display: flex;
 		align-items: center;
 
-		// @include breakpoint('large') {
-		// 	height: rem-calc(155);
-		// }
-
 		@include breakpoint('xxlarge') {
 			flex: unset;
-			float: left;
-			width: rem-calc(280);
+			float: left; // BOOM!
+			width: rem-calc(270);
+			width: 33%;
 			height: rem-calc(310);
 			margin-right: rem-calc(45);
 		}
@@ -392,9 +362,13 @@ export default {
 		height: auto;
 		max-width: 100%;
 		max-height: 100%;
+		transform: scale(0);
+		opacity: 0;
+		transition: transform 2s linear, opacity 2s linear;
 
 		&--svg {
 			display: block;
+			width: 100%;
 			// flex: 1;
 		}
 	}
@@ -402,6 +376,7 @@ export default {
 	&__body-header {
 		padding: 1rem;
 		width: 50%;
+
 		@include breakpoint('large') {
 			padding: 0;
 			width: 100%;
@@ -410,6 +385,7 @@ export default {
 
 	&__body-content {
 		flex: 1;
+		margin-bottom: 0;
 
 		@include breakpoint('xxlarge') {
 			float: left;
@@ -425,25 +401,41 @@ export default {
 }
 
 .bottom-nav {
-	display: flex;
-	list-style: none;
-	margin: 0;
-	padding: 0;
+	width: 100%;
+
+	&__list {
+		display: flex;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		transition: transform 2s linear;
+	}
 
 	&__item {
-		transition: transform 2s linear;
+		flex-shrink: 0;
+		width: 15%;
+		transition: width 2s linear;
 
 		&--past {
-			// transform: scale(0.1);
+			width: 50%;
+			text-align: center;
 
 			.bottom-nav__btn {
+				pointer-events: none;
+			}
+
+			.bottom-nav__btn-img-wrap {
 				width: rem-calc(80);
 				height: rem-calc(80);
 				border-radius: 50%;
-				background: orange;
+				background-color: $offwhite;
+				transform: scale(0.1);
 			}
 
-			.bottom-nav__btn-img-wrap,
+			.bottom-nav__img {
+				opacity: 0;
+			}
+
 			.bottom-nav__btn-text {
 				display: none;
 			}
@@ -451,6 +443,9 @@ export default {
 	}
 
 	&__btn {
+		transform: scale(1);
+		transition: transform 2s lienar;
+
 		&[disabled] {
 			pointer-events: none;
 		}
@@ -462,6 +457,10 @@ export default {
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		background-color: transparent;
+		border-radius: 50%;
+		transform: scale(1);
+		transition: transform 2s linear, background-color 2s linear;
 	}
 
 	&__img {
@@ -469,6 +468,8 @@ export default {
 		height: auto;
 		max-width: 100%;
 		max-height: 100%;
+		opacity: 1;
+		transition: opacity 2s linear;
 	}
 
 	&__btn-text {
