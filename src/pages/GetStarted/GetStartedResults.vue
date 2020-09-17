@@ -8,7 +8,7 @@
 					Here {{ countVerb }} {{ countNumber }} {{ countPeople }} you can support!
 				</h1>
 				<p class="loan-results__tagline">
-					Out of {{ totalFundRaisingCount }} borrowers, these are your perfect matches.
+					Out of {{ totalFundRaisingCount | numeral(0,0) }} borrowers, these are your perfect matches.
 				</p>
 			</template>
 			<template v-else>
