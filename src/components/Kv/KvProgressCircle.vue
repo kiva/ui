@@ -108,7 +108,7 @@ export default {
 		 * Stroke width as a percent of the circle
 		* */
 		strokeWidth: {
-			default: 5,
+			default: 8,
 			type: Number
 		},
 		/**

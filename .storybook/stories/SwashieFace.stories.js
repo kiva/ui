@@ -96,7 +96,7 @@ export const WithKvProgressCircle = (args, { argTypes }) => ({
 			}
 		</component>
 		<div class="swashie">
-			<kv-progress-circle class="swashie__progress-circle" :value="percentFull" :show-number="true" />
+			<kv-progress-circle :stroke-width="5" class="swashie__progress-circle" :value="percentFull" :show-number="true" />
 			<swashie-face class="swashie__face" :percent-full="percentFull" />
 		</div>
 	</div>
