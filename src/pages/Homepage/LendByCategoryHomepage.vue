@@ -40,7 +40,7 @@
 			<div class="row">
 				<div class="columns">
 					<h2 class="loan-categories__header text-center">
-						Kiva makes it easy to support causes you care about.
+						Support causes you care about.
 					</h2>
 					<loan-categories-section />
 				</div>

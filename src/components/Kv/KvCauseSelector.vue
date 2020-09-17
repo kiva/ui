@@ -72,7 +72,7 @@ export default {
 			COVID-19,
 			health,
 			refugees,
-			art`
+			arts`
 		* */
 		cause: {
 			type: String,
