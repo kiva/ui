@@ -17,7 +17,10 @@
 							You can lend to people in 6 continents and 77 countries thanks to our Field Partners — local banks, NGOs, and social enterprises in each region. 100% of your loan goes into the field, where our global community of borrowers lives and works.
 						</p>
 					</div>
-					<div class="small-12 xlarge-6 columns">
+					<div class="text-center small-12 xlarge-6 columns" v-if="countryList.length === 0">
+						<kv-loading-spinner />
+					</div>
+					<div v-else class="small-12 xlarge-6 columns">
 						<div class="country-filter">
 							<label
 								class="country-filter__label"
@@ -149,7 +152,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import _orderBy from 'lodash/orderBy';
 import gql from 'graphql-tag';
 import Fuse from 'fuse.js/dist/fuse.common';
@@ -158,11 +160,25 @@ import Fuse from 'fuse.js/dist/fuse.common';
 import countryListQuery from '@/graphql/query/countryList.graphql';
 
 import cookieStore from '@/util/cookieStore';
+import logReadQueryError from '@/util/logReadQueryError';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvFlag from '@/components/Kv/KvFlag';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+
+const lendingPreferencesPlaces = gql`query lendingPreferences($visitorId: String) {
+	general {
+		lendingPreferences(visitorId: $visitorId) {
+			countries {
+				values {
+					isoCode
+				}
+			}
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -170,6 +186,7 @@ export default {
 		KvFlag,
 		KvIcon,
 		KvProgressBar,
+		KvLoadingSpinner,
 	},
 	metaInfo: {
 		title: 'Places - Get Started'
@@ -184,19 +201,22 @@ export default {
 		};
 	},
 	apollo: {
-		query: countryListQuery,
-		preFetch: true,
-		result({ data }) {
-			const countries = _get(data, 'lend.countryFacets') || [];
-
-			this.countryList = _orderBy(countries, ['country.name'], ['asc']).map(countryObj => {
-				return {
-					name: countryObj.country.name,
-					code: countryObj.country.isoCode,
-					region: countryObj.country.region,
-					checked: false
-				};
+		preFetch(config, client) {
+			const lendingPrefs = client.query({
+				variables: {
+					visitorId: cookieStore.get('uiv') || null,
+				},
+				query: lendingPreferencesPlaces,
 			});
+
+			const countryList = client.query({
+				query: countryListQuery,
+			});
+
+			return Promise.all([
+				lendingPrefs,
+				countryList
+			]);
 		}
 	},
 	computed: {
@@ -304,7 +324,44 @@ export default {
 		focusSearchInput() {
 			this.$kvTrackEvent('Lending', 'click-place-search');
 		}
-	}
+	},
+	created() {
+		let countryList;
+		let lendingPrefs;
+
+		try {
+			lendingPrefs = this.apollo.readQuery({
+				variables: {
+					visitorId: cookieStore.get('uiv') || null,
+				},
+				query: lendingPreferencesPlaces,
+			});
+		} catch (e) {
+			logReadQueryError(e, 'LendingPreferencesPlaces lendingPreferencesQuery');
+		}
+
+		try {
+			countryList = this.apollo.readQuery({
+				query: countryListQuery,
+			});
+		} catch (e) {
+			logReadQueryError(e, 'LendingPreferencesPlaces countryListQuery');
+		}
+
+		const countryValues = lendingPrefs?.general?.lendingPreferences?.countries?.values || [];
+		const previouslySelectedPlaces = countryValues.map(countryObj => countryObj.isoCode);
+
+		const countries = countryList?.lend?.countryFacets || [];
+
+		this.countryList = _orderBy(countries, ['country.name'], ['asc']).map(countryObj => {
+			return {
+				name: countryObj.country.name,
+				code: countryObj.country.isoCode,
+				region: countryObj.country.region,
+				checked: !!previouslySelectedPlaces.includes(countryObj.country.isoCode),
+			};
+		});
+	},
 };
 </script>
 
@@ -523,6 +580,11 @@ $box-shadow-hover: 0 rem-calc(2) rem-calc(10) 0 rgba(0, 0, 0, 0.35);
 			color: $kiva-textlink-hover;
 			box-shadow: $box-shadow-hover;
 		}
+	}
+
+	&__circle {
+		width: rem-calc(25);
+		height: rem-calc(25);
 	}
 
 	&__check-icon-wrapper {

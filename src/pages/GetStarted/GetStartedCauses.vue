@@ -56,6 +56,18 @@ import KvButton from '@/components/Kv/KvButton';
 import KvCauseSelector from '@/components/Kv/KvCauseSelector';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
 
+const lendingPreferencesCauses = gql`query lendingPreferences($visitorId: String) {
+	general {
+		lendingPreferences(visitorId: $visitorId) {
+			causes {
+				values {
+					id
+				}
+			}
+		}
+	}
+}`;
+
 export default {
 	components: {
 		KvButton,
@@ -66,6 +78,33 @@ export default {
 		title: 'Get Started'
 	},
 	inject: ['apollo'],
+	apollo: {
+		query: lendingPreferencesCauses,
+		preFetch: true,
+		preFetchVariables() {
+			return {
+				visitorId: cookieStore.get('uiv') || null
+			};
+		},
+		variables() {
+			return {
+				visitorId: cookieStore.get('uiv') || null
+			};
+		},
+		result({ data }) {
+			const causesValues = data?.general?.lendingPreferences?.causes?.values || [];
+			const previouslySelectedCauses = causesValues.map(causeObj => {
+				return causeObj.id;
+			});
+			this.causeList.forEach((causeObj, index) => {
+				if (previouslySelectedCauses.includes(causeObj.id)) {
+					console.log('checking', causeObj.id);
+					this.causeList[index].checked = true;
+				}
+			});
+		}
+
+	},
 	data() {
 		return {
 			causeList: [
@@ -193,7 +232,7 @@ export default {
 				this.selectedCausesIds.join()
 			);
 		}
-	}
+	},
 };
 </script>
 
