@@ -87,7 +87,6 @@
 import gql from 'graphql-tag';
 import * as Sentry from '@sentry/browser';
 import cookieStore from '@/util/cookieStore';
-import logReadQueryError from '@/util/logReadQueryError';
 import loanUseMixin from '@/plugins/loan/loan-use-mixin';
 import percentRaisedMixin from '@/plugins/loan/percent-raised-mixin';
 import timeLeftMixin from '@/plugins/loan/time-left-mixin';
@@ -198,7 +197,8 @@ export default {
 			}
 			// eslint-disable-next-line no-underscore-dangle
 			const loanItems = this.basketItems.filter(item => item.__typename === 'LoanReservation');
-			return loanItems.indexOf(this.loanId) > -1;
+			const loanIds = loanItems.map(loan => loan.id);
+			return loanIds.indexOf(this.loanId) > -1;
 		},
 		isLentTo() {
 			return this.loan?.userProperties?.lentTo;
@@ -242,9 +242,8 @@ export default {
 					this.isLoading = true;
 				}
 			} catch (e) {
-				// if there's an error, skip reading from the cache and just wait for the watch query
-				logReadQueryError(e, 'RecommendedLoanCard');
-				// Show loading state while watchQuery completes
+				// if there's an error it means there's no loan data in the cache yet, which means the page
+				// was not server rendered, so just show a loading state and wait for the watchQuery to complete
 				this.isLoading = true;
 			}
 		},
@@ -307,7 +306,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 %nested-column-flex {
@@ -442,7 +441,7 @@ export default {
 		}
 	}
 
-	.fundraising-status-meter {
+	& ::v-deep .fundraising-status-meter {
 		height: rem-calc(6);
 		border-radius: 0;
 
