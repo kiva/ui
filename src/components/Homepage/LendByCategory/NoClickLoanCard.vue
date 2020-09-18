@@ -263,10 +263,12 @@ export default {
 		align-items: center;
 		font-size: rem-calc(22);
 		font-weight: $global-weight-highlight;
-		padding-bottom: 0.25rem;
+		line-height: 1.35;
+		padding-bottom: 0.5rem;
 	}
 
 	&__country-flag {
+		flex-shrink: 0;
 		overflow: hidden;
 		border: none;
 		border-radius: 50%;
