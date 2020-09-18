@@ -114,8 +114,14 @@
 										loading="lazy"
 									>
 								</span>
-								<span class="bottom-nav__btn-year">{{ navSlide.year }}</span>
-								<span class="bottom-nav__btn-title">{{ navSlide.title }}</span>
+								<span
+									class="bottom-nav__btn-year"
+									:class="navIndex <= currentIndex ? 'show-for-sr' : ''"
+								>{{ navSlide.year }}</span>
+								<span
+									class="bottom-nav__btn-title"
+									:class="navIndex <= currentIndex ? 'show-for-sr' : ''"
+								>{{ navSlide.title }}</span>
 							</button>
 						</li>
 					</ul>
@@ -205,7 +211,7 @@ export default {
 	background: $twighlight;
 	color: $offwhite;
 
-	/* hides the scrollbar created by hacking the carousel below */
+	/* hides the horizontal scrollbar created by hacking the carousel below */
 	width: 100%;
 	overflow-x: hidden;
 
@@ -502,7 +508,7 @@ export default {
 		transition: width 0.75s ease-in;
 		position: relative;
 
-		&::before,
+		&::before, // thin white line in the background of the timeline
 		&::after {
 			content: '';
 			width: 50%;
@@ -553,11 +559,6 @@ export default {
 			.bottom-nav__img {
 				opacity: 0;
 			}
-
-			.bottom-nav__btn-year,
-			.bottom-nav__btn-title {
-				display: none;
-			}
 		}
 	}
 
@@ -582,7 +583,7 @@ export default {
 	&__btn-img-wrap {
 		width: rem-calc(80);
 		height: rem-calc(80);
-		margin: 0 auto;
+		margin: 0 auto 0.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -605,21 +606,23 @@ export default {
 	&__btn-title {
 		@include h5();
 
-		margin-top: 0.5rem;
+		display: block;
 		color: $offwhite;
-		display: none;
 		width: 8rem;
+		height: 0;
+		overflow: hidden;
 	}
 
 	&__btn-year {
+		margin-bottom: 0.5rem;
+
 		@include breakpoint(large) {
-			display: block;
+			height: auto;
 		}
 	}
 
 	&__btn-title {
 		@include breakpoint(xxlarge) {
-			display: block;
 			height: 5rem;
 		}
 	}
