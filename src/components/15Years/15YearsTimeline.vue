@@ -207,6 +207,8 @@ export default {
 	}
 }
 
+/* stylelint-disable no-descending-specificity */
+
 .timeline {
 	background: $twighlight;
 	color: $offwhite;
@@ -216,14 +218,12 @@ export default {
 	overflow-x: hidden;
 
 	&__header-wrap {
-		margin-bottom: 1rem;
 
 		@include breakpoint(xxlarge) {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			text-align: right;
-			margin-bottom: 4.5rem;
 		}
 	}
 
@@ -268,10 +268,6 @@ export default {
 
 	position: relative;
 
-	@include breakpoint(xxlarge) {
-		margin-bottom: 2rem;
-	}
-
 	&__prevnext {
 		display: flex;
 		justify-content: space-between;
@@ -300,7 +296,7 @@ export default {
 	}
 
 	&__prevnext-btn {
-		@include timeline-link();
+		@include h5();
 
 		pointer-events: auto;
 		display: flex;
@@ -389,7 +385,12 @@ export default {
 
 	&__slide {
 		opacity: 0.1;
-		padding: 0 1rem 1rem;
+		padding: 1rem;
+
+		@include breakpoint(xxlarge) {
+			padding-top: 4.5rem;
+			padding-bottom: 2rem;
+		}
 
 		&.is-selected {
 			opacity: 1;
@@ -490,7 +491,6 @@ export default {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		// overflow: hidden;
 		transition: transform 0.75s ease-in;
 
 		@include breakpoint(large) {
