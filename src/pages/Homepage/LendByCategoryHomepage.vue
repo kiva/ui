@@ -19,7 +19,7 @@
 						class="featured-loans__cta"
 						to="/get-started"
 						v-kv-track-event="[
-							'homepage',
+							'Home',
 							'click-hero-cta',
 							'Find someone to lend to',
 						]"

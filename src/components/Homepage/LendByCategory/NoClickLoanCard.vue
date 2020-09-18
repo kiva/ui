@@ -1,5 +1,11 @@
 <template>
-	<div class="no-click-loan">
+	<div class="no-click-loan"
+		v-kv-track-event="[
+			'Home',
+			'click-hero-loan-card',
+			loanId,
+		]"
+	>
 		<h3 class="no-click-loan__headline">
 			{{ categoryName }}
 		</h3>
@@ -153,6 +159,9 @@ export default {
 		},
 		isFunded() {
 			return this.loan?.status === 'funded';
+		},
+		loanId() {
+			return this.loan?.id || 0;
 		},
 	},
 	apollo: {
