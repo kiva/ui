@@ -17,27 +17,20 @@ export default {
 	title: 'Components/Generic Global Promo Banner',
 	component: GenericPromoBanner,
 	decorators: [StoryRouter()],
+	args: {
+		iconKey: 'present',
+		promoBannerContent: {
+			kvTrackEvent: [],
+			link: 'http://kiva.org',
+			richText: decodeHTML('Amazing! Thanks to you, we funded <u>ALL U.S. loans</u> today! Click here to support others who need your help.'),
+		}
+	},
 };
 
-export const Default = () => ({
+export const Default = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		GenericPromoBanner,
-	},
-	props: {
-		iconKey: {
-			type: String,
-			default: 'present'
-		},
-		promoBannerContent: {
-			type: Object,
-			default() {
-				return {
-					kvTrackEvent: [],
-					link: `${text('Link', 'http://kiva.org')}`,
-					richText: decodeHTML(`${text('Banner Text', 'Amazing! Thanks to you, we funded <u>ALL U.S. loans</u> today! Click here to support others who need your help.')}`),
-				};
-			}
-		},
 	},
 	template: `
 		<div>
@@ -51,26 +44,10 @@ export const Default = () => ({
 	`,
 });
 
-
-export const AllIcons = () => ({
+export const AllIcons = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		GenericPromoBanner,
-	},
-	props: {
-		iconKey: {
-			type: String,
-			default: 'present'
-		},
-		promoBannerContent: {
-			type: Object,
-			default() {
-				return {
-					kvTrackEvent: [],
-					link: `${text('Link', 'http://kiva.org')}`,
-					richText: decodeHTML(`${text('Banner Text', 'Amazing! Thanks to you, we funded <u>ALL U.S. loans</u> today! Click here to support others who need your help.')}`),
-				};
-			}
-		},
 	},
 	data() {
 		return {
@@ -88,9 +65,10 @@ export const AllIcons = () => ({
 	template: `
 		<div>
 			<generic-promo-banner
-				v-for="icon in icons"
+				v-for="(icon, index) in icons"
 				:icon-key="icon"
 				:promo-banner-content="promoBannerContent"
+				:key="index"
 			/>
 			<br/>
 			<p class="subheader">Banner text supports basic html tags</p>

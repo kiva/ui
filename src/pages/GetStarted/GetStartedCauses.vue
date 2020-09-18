@@ -38,6 +38,7 @@
 						class="get-started__submit-btn"
 						type="submit"
 						:disabled="selectedCauses.length === 0"
+						@click.native="trackTransition"
 					>
 						Next
 					</kv-button>
@@ -120,6 +121,9 @@ export default {
 		selectedCauses() {
 			return this.causeList.filter(cause => cause.checked);
 		},
+		selectedCausesIds() {
+			return this.selectedCauses.map(cause => cause.id);
+		},
 		summaryText() {
 			if (this.selectedCauses.length === 0) {
 				return `<b>Pick up to ${this.causeList.length} causes to lend to.</b>`;
@@ -145,6 +149,13 @@ export default {
 	methods: {
 		onChangeCauseSelection(value, causeId) {
 			this.causeList.find(cause => cause.id === causeId).checked = value;
+			if (value === true) {
+				this.$kvTrackEvent(
+					'Lending',
+					'click-cause-selector',
+					this.causeList.find(cause => cause.id === causeId).name
+				);
+			}
 		},
 		async onSubmitForm() {
 			const uiv = cookieStore.get('uiv');
@@ -174,6 +185,13 @@ export default {
 				console.error(err);
 				this.$showTipMsg('There was a problem saving your causes', 'error');
 			}
+		},
+		trackTransition() {
+			this.$kvTrackEvent(
+				'Lending',
+				'click-cause-next',
+				this.selectedCausesIds.join()
+			);
 		}
 	}
 };

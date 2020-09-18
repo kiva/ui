@@ -137,7 +137,7 @@
 
 		<!-- Payment Wrapper-->
 		<div class="row column">
-			<div class="payment-dropin-wrapper">
+			<div class="payment-dropin-wrapper" v-if="isLoggedIn">
 				<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 				<auto-deposit-drop-in-payment-wrapper
 					:amount="totalCombinedDeposit"
@@ -146,8 +146,15 @@
 					@complete-transaction="completeADBraintree"
 				/>
 			</div>
-			<!-- ! TODO -->
-			<!-- If not logged in, display "Sign in to setup" - button -->
+			<div class="text-center" v-else>
+				<kv-button
+					class="sign-in-button"
+					title="Sign in to set up"
+					:href="`/ui-login?force=true&doneUrl=${$route.path}`"
+				>
+					Sign in to set up
+				</kv-button>
+			</div>
 		</div>
 	</form>
 </template>
@@ -159,6 +166,7 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
+import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
@@ -171,6 +179,7 @@ let frozenDropdownOptions;
 export default {
 	components: {
 		AutoDepositDropInPaymentWrapper,
+		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
@@ -297,9 +306,8 @@ export default {
 		completeADBraintree() {
 			this.$kvTrackEvent('Registration', 'successful-auto-deposit-reg', 'register-auto-deposit');
 			// Send to thanks page
-			// ! TODO change this route 'auto-deposit-new' becomes 'auto-deposit'
 			this.$router.push({
-				path: '/auto-deposit-new/thanks',
+				path: `${this.$route.path}/thanks`,
 			});
 		},
 	},
@@ -426,6 +434,10 @@ export default {
 
 label:not(.error) + .text-input {
 	border: 1px solid $charcoal;
+}
+
+.sign-in-button {
+	margin-top: 3rem;
 }
 
 .payment-dropin-wrapper {

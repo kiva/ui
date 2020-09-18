@@ -11,7 +11,7 @@
 			Lend again
 		</slot>
 	</kv-button>
-	<kv-button v-else-if="showAdding">
+	<kv-button v-else-if="showAdding" class="lend-button__adding">
 		<slot name="adding">
 			<kv-loading-spinner />
 			<span>Adding to Basket</span>
@@ -98,7 +98,7 @@ export default {
 	methods: {
 		addToBasket() {
 			const price = numeral(this.price).format('0.00');
-			this.adding = true;
+			this.isAdding = true;
 			this.apollo.mutate({
 				mutation: gql`mutation addToBasket($loanId: Int!, $price: Money!, $basketId: String) {
 					shop (basketId: $basketId) {
@@ -136,12 +136,12 @@ export default {
 					},
 				]
 			}).then(result => {
-				this.adding = false;
+				this.isAdding = false;
 				if (result.error) {
 					this.handleError(result.error);
 				}
 			}).catch(error => {
-				this.adding = false;
+				this.isAdding = false;
 				this.handleError(error);
 			});
 		},
@@ -161,6 +161,19 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
+
+.lend-button__adding {
+	.loading-spinner {
+		width: 1rem;
+		height: 1rem;
+		vertical-align: middle;
+		margin-right: 3px;
+	}
+
+	.loading-spinner ::v-deep .line {
+		background-color: $white;
+	}
+}
 </style>
