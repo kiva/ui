@@ -5,7 +5,7 @@ export default {
 	component: KvProgressCircle,
 	args: {
 		value: 10,
-		strokeWidth: 5,
+		strokeWidth: 8,
 		showNumber: false
 	},
 	argTypes: {
