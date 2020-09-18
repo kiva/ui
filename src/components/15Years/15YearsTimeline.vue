@@ -2,9 +2,14 @@
 	<div class="timeline section">
 		<div class="row">
 			<div class="columns">
-				<div class="timeline__header">
-					<h2>15 Years of Impact</h2>
-					<p>The history of Kiva, year by year</p>
+				<div class="timeline__header-wrap">
+					<h2 class="timeline__header">
+						15 Years of Impact
+					</h2>
+					<div class="timeline__header-line"></div>
+					<p class="timeline__header-subhead">
+						The history of Kiva,<br class="smo"><br class="xxlu"> year by year
+					</p>
 				</div>
 
 				<!-- CAROUSEL -->
@@ -38,8 +43,8 @@
 									<h4>{{ slide.title }}</h4>
 								</div>
 
-								<div class="carousel__body-content">
-									<p>
+								<div class="carousel__body-content-wrap">
+									<p class="carousel__body-content">
 										{{ slide.blurb }}
 									</p>
 									<router-link
@@ -62,7 +67,7 @@
 						>
 							<kv-icon
 								class="carousel__prevnext-btn-icon"
-								name="small-chevron"
+								name="fat-chevron"
 								:from-sprite="true"
 							/>
 							<span class="carousel__prevnext-btn-year">
@@ -79,7 +84,7 @@
 							</span>
 							<kv-icon
 								class="carousel__prevnext-btn-icon"
-								name="small-chevron"
+								name="fat-chevron"
 								:from-sprite="true"
 							/>
 						</button>
@@ -204,9 +209,48 @@ export default {
 	width: 100%;
 	overflow-x: hidden;
 
-	// &__header {
+	&__header-wrap {
+		margin-bottom: 1rem;
 
-	// }
+		@include breakpoint(xxlarge) {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			text-align: right;
+			margin-bottom: 4.5rem;
+		}
+	}
+
+	&__header {
+		flex-shrink: 0;
+	}
+
+	&__header-line {
+		display: inline-block;
+		background-color: $offwhite;
+		width: rem-calc(1);
+		height: 2.125em;
+		margin-right: 0.5rem;
+		vertical-align: top;
+
+		@include breakpoint(large) {
+			display: none;
+		}
+
+		@include breakpoint(xxlarge) {
+			display: block;
+			background-color: $offwhite;
+			width: 100%;
+			height: rem-calc(1);
+			margin: 0 1.5rem;
+		}
+	}
+
+	&__header-subhead {
+		margin-bottom: 0;
+		flex-shrink: 0;
+		display: inline-block;
+	}
 
 	a {
 		@include timeline-link();
@@ -218,12 +262,16 @@ export default {
 
 	position: relative;
 
+	@include breakpoint(xxlarge) {
+		margin-bottom: 2rem;
+	}
+
 	&__prevnext {
 		display: flex;
 		justify-content: space-between;
 		pointer-events: none;
 
-		@include breakpoint('large') {
+		@include breakpoint(large) {
 			position: absolute;
 			top: calc(50% - #{$prev-next-size / 2});
 			width: 100%;
@@ -231,17 +279,18 @@ export default {
 	}
 
 	&__prevnext-btn-year {
-		@include breakpoint('large') {
+		border-radius: rem-calc(16);
+		padding: rem-calc(2) rem-calc(8);
+		border: rem-calc(2) solid transparent;
+		@include breakpoint(large) {
 			background: $offwhite;
 			color: $twighlight;
-			border-radius: rem-calc(16);
-			padding: rem-calc(2) rem-calc(8);
 		}
 	}
 
 	&__prevnext-btn-icon {
-		width: rem-calc(18);
-		height: rem-calc(8);
+		width: rem-calc(35);
+		height: rem-calc(18);
 	}
 
 	&__prevnext-btn {
@@ -256,14 +305,33 @@ export default {
 		border-radius: 50%;
 		fill: $offwhite;
 		color: $offwhite;
-		// background: #000; // TODO: remove
+
+		&:hover {
+			.carousel__prevnext-btn-year {
+				background: #000;
+				color: $offwhite;
+				border: rem-calc(2) solid #fff;
+			}
+
+			.carousel__prevnext-btn-icon {
+				fill: $mint;
+			}
+		}
+
+		&:focus {
+			outline: 0;
+
+			.carousel__prevnext-btn-year {
+				border: rem-calc(2) solid $mint;
+			}
+		}
 
 		&--prev {
 			.carousel__prevnext-btn-icon {
 				transform: rotate(90deg);
 			}
 
-			@include breakpoint('large') {
+			@include breakpoint(large) {
 				.carousel__prevnext-btn-year {
 					order: 0;
 					transform: rotate(-90deg);
@@ -280,7 +348,7 @@ export default {
 				transform: rotate(-90deg);
 			}
 
-			@include breakpoint('large') {
+			@include breakpoint(large) {
 				.carousel__prevnext-btn-year {
 					order: 1;
 					transform: rotate(90deg);
@@ -300,7 +368,7 @@ export default {
 	&__body { // this is kv-carousel
 		overflow: visible;
 
-		@include breakpoint('large') {
+		@include breakpoint(large) {
 			width: calc(90% - #{$prev-next-size * 2});
 			margin: 0 auto;
 		}
@@ -308,14 +376,14 @@ export default {
 		// carousel hack to make the viewport match design
 		&::v-deep {
 			.kv-carousel__viewport {
-				overflow: visible;
+				overflow: visible; // TODO: this seems to cause a bug when tabbing through the carousel
 			}
 		}
 	}
 
 	&__slide {
 		opacity: 0.1;
-		padding: 0 1rem;
+		padding: 0 1rem 1rem;
 
 		&.is-selected {
 			opacity: 1;
@@ -331,11 +399,11 @@ export default {
 		display: flex;
 		flex-wrap: wrap;
 
-		@include breakpoint('large') {
+		@include breakpoint(large) {
 			flex-direction: column;
 		}
 
-		@include breakpoint('xxlarge') {
+		@include breakpoint(xxlarge) {
 			@include clearfix();
 
 			display: block;
@@ -349,7 +417,7 @@ export default {
 		display: flex;
 		align-items: center;
 
-		@include breakpoint('xxlarge') {
+		@include breakpoint(xxlarge) {
 			flex: unset;
 			float: left; // BOOM!
 			width: rem-calc(270);
@@ -367,10 +435,12 @@ export default {
 		transform: scale(0);
 		opacity: 0;
 		transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+		filter: opacity(0.4) drop-shadow(0 0 0 red); // TODO: Remove once SVG assets are in
 
 		&--svg {
 			display: block;
 			width: 100%;
+			filter: none; // TODO: Remove once SVG assets are in
 			// flex: 1;
 		}
 	}
@@ -379,20 +449,24 @@ export default {
 		padding: 1rem;
 		width: 50%;
 
-		@include breakpoint('large') {
+		@include breakpoint(large) {
 			padding: 0;
 			width: 100%;
 		}
 	}
 
-	&__body-content {
+	&__body-content-wrap {
 		flex: 1;
 		margin-bottom: 0;
 
-		@include breakpoint('xxlarge') {
+		@include breakpoint(xxlarge) {
 			float: left;
 			width: calc(100% - 20.5rem);
 		}
+	}
+
+	&__body-content {
+		margin-bottom: 0;
 	}
 
 	&__body-cta {
@@ -410,13 +484,22 @@ export default {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		transition: transform 1s ease-in;
+		// overflow: hidden;
+		transition: transform 0.75s ease-in;
+
+		@include breakpoint(large) {
+			height: rem-calc(109);
+		}
+
+		@include breakpoint(xxlarge) {
+			height: rem-calc(208);
+		}
 	}
 
 	&__item {
 		flex-shrink: 0;
 		text-align: center;
-		transition: width 1s ease-in;
+		transition: width 0.75s ease-in;
 		position: relative;
 
 		&::before,
@@ -506,7 +589,7 @@ export default {
 		background-color: transparent;
 		border-radius: 50%;
 		transform: scale(1);
-		transition: transform 1s ease-in-out, background-color 1s ease-in-out;
+		transition: transform 1s ease-in-out, background-color 0.75s ease-in-out;
 	}
 
 	&__img {
@@ -529,14 +612,15 @@ export default {
 	}
 
 	&__btn-year {
-		@include breakpoint('large') {
+		@include breakpoint(large) {
 			display: block;
 		}
 	}
 
 	&__btn-title {
-		@include breakpoint('xxlarge') {
+		@include breakpoint(xxlarge) {
 			display: block;
+			height: 5rem;
 		}
 	}
 }
