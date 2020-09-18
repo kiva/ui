@@ -84,7 +84,6 @@ export default {
 @import 'settings';
 
 .kv-flag {
-	width: 100%;
 	border: 1px solid $kiva-bg-darkgray;
 
 	&__wrapper {
