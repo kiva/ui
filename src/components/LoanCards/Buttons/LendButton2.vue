@@ -2,6 +2,7 @@
 	<kv-button
 		v-if="showLend || showLendAgain"
 		@click.native="addToBasket"
+		:class="{ secondary: showLendAgain }"
 		v-kv-track-event="['Lending', 'Add to basket', 'lend-button-click', loanId, 'true']"
 	>
 		<slot v-if="showLend">
@@ -18,6 +19,7 @@
 		</slot>
 	</kv-button>
 	<kv-button
+		class="secondary"
 		v-else-if="showCheckout"
 		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, 'true']"
 		to="/basket"
