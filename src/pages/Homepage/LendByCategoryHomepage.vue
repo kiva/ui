@@ -2,30 +2,30 @@
 	<div class="lend-by-category-homepage">
 		<section class="featured-loans section">
 			<div class="row align-center">
-				<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
-					<featured-loans-carousel />
+				<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
+					<!-- <featured-loans-carousel /> -->
+					<no-click-loan-card />
 				</div>
 				<!-- eslint-disable-next-line max-len -->
-				<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
+				<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
 					<h1 class="featured-loans__header">
-						Make a loan, <br class="so mo"> change a life.
+						The smarter <br> way to do good
 					</h1>
 					<p class="featured-loans__body">
-						Kiva empowers underserved people to achieve their
-						dreams by crowdfunding loans and unlocking capital.
-						<br>
-						<router-link
-							class="show-for-large"
-							:to="'/lend-by-category'"
-							v-kv-track-event="[
-								'homepage',
-								'click-hero-cta',
-								'Get started',
-							]"
-						>
-							Get started
-						</router-link>
+						With Kiva you can lend a small amount of money and make big
+						change in someone's life. It's fast and easy to get started.
 					</p>
+					<router-link
+						class="featured-loans__cta"
+						to="/get-started"
+						v-kv-track-event="[
+							'Home',
+							'click-hero-cta',
+							'Find someone to lend to',
+						]"
+					>
+						Find someone to lend to &xrarr;
+					</router-link>
 				</div>
 			</div>
 			<kv-responsive-image
@@ -274,14 +274,16 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
-import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
+// import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
+import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import HomepageStatistics from './HomepageStatistics';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
-		FeaturedLoansCarousel,
+		// FeaturedLoansCarousel,
+		NoClickLoanCard,
 		HomepageStatistics,
 		KvButton,
 		KvResponsiveImage,
@@ -391,14 +393,22 @@ export default {
 }
 
 .featured-loans {
-	padding: 2rem 0 0;
+	padding: 2rem 0 6rem;
 
 	@include breakpoint(large) {
-		padding: 4rem 0 0;
+		padding: 4rem 0 11rem;
 	}
 
 	&__cta_wrapper {
-		padding: 1.5rem 2rem 3rem;
+		padding: 0 0 2rem;
+
+		@include breakpoint(medium) {
+			padding: 0 2rem 2rem;
+		}
+
+		@include breakpoint(large) {
+			padding: 0 2rem;
+		}
 	}
 
 	&__header {
@@ -409,7 +419,8 @@ export default {
 		}
 	}
 
-	&__body {
+	&__body,
+	&__cta {
 		@include medium-text();
 
 		@include breakpoint(xlarge) {
@@ -421,16 +432,13 @@ export default {
 		position: absolute;
 		width: 40%;
 		max-width: rem-calc(436);
-		top: 28%;
 		right: 0;
-		bottom: auto;
+		bottom: 0;
 		pointer-events: none;
 		z-index: -1;
 
 		@include breakpoint(medium) {
 			width: 31%;
-			bottom: -5%;
-			top: auto;
 		}
 	}
 }
