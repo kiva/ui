@@ -31,7 +31,7 @@
 				<fundraising-status
 					class="no-click-loan__progress"
 					:percent-raised="percentRaised"
-					:expiring-soon-message="timeLeftMessage"
+					:expiring-soon-message="timeLeftString"
 					:amount-left="amountLeft"
 					:is-funded="isFunded"
 					:left-and-to-go-on-top="true"
@@ -162,6 +162,9 @@ export default {
 		},
 		loanId() {
 			return this.loan?.id || 0;
+		},
+		timeLeftString() {
+			return this.isFunded ? '' : this.timeLeftMessage;
 		},
 	},
 	apollo: {
