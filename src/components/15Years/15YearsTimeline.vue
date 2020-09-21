@@ -136,7 +136,7 @@ import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
 
-import slideData from './15YearsSlideData';
+import slideData from './15YearsTimelineData';
 
 const fifteenYearsImagesRequire = require.context('@/assets/images/15-years/', true);
 
