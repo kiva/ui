@@ -55,9 +55,9 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 
-						<basket-verification
+						<!-- <basket-verification
 							@verification-required="verificationRequired = $event"
-						/>
+						/> -->
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
 							<div v-if="isLoggedIn && !verificationRequired" class="small-12">
@@ -178,7 +178,7 @@ import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
-import BasketVerification from '@/components/Checkout/BasketVerification';
+// import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -198,7 +198,7 @@ export default {
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
-		BasketVerification,
+		// BasketVerification,
 		KivaCardRedemption,
 		LoadingOverlay,
 		CheckoutHolidayPromo,
