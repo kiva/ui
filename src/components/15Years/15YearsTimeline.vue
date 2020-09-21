@@ -116,11 +116,9 @@
 								</span>
 								<span
 									class="bottom-nav__btn-year"
-									:class="navIndex <= currentIndex ? 'show-for-sr' : ''"
 								>{{ navSlide.year }}</span>
 								<span
 									class="bottom-nav__btn-title"
-									:class="navIndex <= currentIndex ? 'show-for-sr' : ''"
 								>{{ navSlide.title }}</span>
 							</button>
 						</li>
@@ -548,6 +546,11 @@ export default {
 				pointer-events: none;
 			}
 
+			.bottom-nav__btn-year,
+			.bottom-nav__btn-title {
+				opacity: 0;
+			}
+
 			.bottom-nav__btn-img-wrap {
 				width: rem-calc(80);
 				height: rem-calc(80);
@@ -611,6 +614,8 @@ export default {
 		width: 8rem;
 		height: 0;
 		overflow: hidden;
+		opacity: 1;
+		transition: opacity 0.3s ease-in-out;
 	}
 
 	&__btn-year {
