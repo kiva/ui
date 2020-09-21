@@ -48,8 +48,13 @@ describe('contentfulUtils.js', () => {
 		test('should return a Generic Content Block specific object', () => {
 			const expectedObject = {
 				key: 'header-area',
-				name: 'Test Campaign Title',
-				bodyCopy: {},
+				name: 'Test Campaign Title GCB',
+				bodyCopy: expect.any(Object),
+				headline: expect.any(String),
+				subHeadline: expect.any(String),
+				primaryCtaLink: expect.any(String),
+				primaryCtaKvTrackEvent: expect.any(Array),
+				primaryCtaText: expect.any(String)
 			};
 			expect(formatGenericContentBlock(genericContentBlockRaw)).toMatchObject(expectedObject);
 		});

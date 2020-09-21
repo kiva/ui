@@ -75,7 +75,11 @@ export function formatGenericContentBlock(contentfulContent) {
 		key: contentfulContent.fields?.key,
 		name: contentfulContent.fields?.name,
 		bodyCopy: contentfulContent.fields?.bodyCopy,
-		// TODO: Add other GCB fields
+		headline: contentfulContent.fields?.headline,
+		subHeadline: contentfulContent.fields?.subHeadline,
+		primaryCtaLink: contentfulContent.fields?.primaryCtaLink,
+		primaryCtaKvTrackEvent: contentfulContent.fields?.primaryCtaKvTrackEvent,
+		primaryCtaText: contentfulContent.fields?.primaryCtaText,
 	};
 }
 
@@ -272,8 +276,6 @@ export function processPageContentFlat(entryItem) {
 		const contentGroupsFlat = {};
 
 		contentGroups.forEach((item, index) => {
-			// console.log('content group item', item);
-			// const contents = formatContentTypes(item.fields?.contents);
 			const contentGroupFields = {
 				key: item.fields?.key,
 				name: item.fields?.name,
@@ -284,9 +286,7 @@ export function processPageContentFlat(entryItem) {
 			const cgName = item.fields?.key.replace(/-/g, '_');
 			contentGroupsFlat[cgName || `cg-${index}`] = contentGroupFields;
 		});
-		// , index
 
-		// contentfulContentObject.page.pageLayout.contentGroups = cleanedContentGroups;
 		contentfulContentObject.page.contentGroups = contentGroupsFlat;
 	}
 
