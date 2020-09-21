@@ -9,7 +9,7 @@
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
 					<h1 class="featured-loans__header">
-						The smarter <br> way to do good
+						Make a loan, <br class="so mo"> change a life.
 					</h1>
 					<p class="featured-loans__body">
 						With Kiva you can lend a small amount of money and make big
