@@ -2,7 +2,9 @@ import Vue from 'vue'
 
 // import plugins
 import kivaPlugins from '@/plugins';
+import Vue2TouchEvents from 'vue2-touch-events';
 Vue.use(kivaPlugins)
+Vue.use(Vue2TouchEvents);
 
 import StoryRouter from 'storybook-vue-router';
 import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
@@ -15,7 +17,7 @@ const mockedAPIResponse = {
 		general: {
 			homepage_category_rows: {
 				key: "ui.homepage_category_rows",
-				value: "[{\"id\":52},{\"id\":96},{\"id\":93},{\"id\":89},{\"id\":87}]",
+				value: "[{\"id\":52},{\"id\":96},{\"id\":93},{\"id\":89},{\"id\":87},{\"id\":4},{\"id\":102},{\"id\":25}]"
 			}
 		},
 		lend: {
