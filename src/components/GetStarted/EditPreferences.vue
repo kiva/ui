@@ -181,12 +181,67 @@ export default {
 			default: 0,
 		},
 	},
+	data() {
+		return {
+			causeList: [
+				{
+					id: 5,
+					name: 'women',
+					checked: false,
+				},
+				{
+					id: 6,
+					name: 'shelter',
+					checked: false,
+				},
+				{
+					id: 4,
+					name: 'education',
+					checked: false,
+				},
+				{
+					id: 102,
+					name: 'technology',
+					checked: false,
+				},
+				{
+					id: 8,
+					name: 'agriculture',
+					checked: false,
+				},
+				{
+					id: 96,
+					name: 'COVID-19',
+					checked: false,
+				},
+				{
+					id: 25,
+					name: 'health',
+					checked: false,
+				},
+				{
+					id: 32,
+					name: 'refugees',
+					checked: false,
+				},
+				{
+					id: 29,
+					name: 'arts',
+					checked: false
+				}
+			]
+		};
+	},
 	computed: {
 		causesTrimmed() {
-			if (this.causes.length <= 3) {
-				return this.causes;
+			const causeIds = this.causes.map(cause => cause.id);
+			const filteredCauses = this.causeList.filter(cause => {
+				return causeIds.includes(cause.id);
+			});
+			if (this.filteredCauses <= 3) {
+				return filteredCauses;
 			}
-			return this.causes.slice(0, 2);
+			return filteredCauses.slice(0, 2);
 		},
 		countriesTrimmed() {
 			if (this.countries.length <= 3) {
