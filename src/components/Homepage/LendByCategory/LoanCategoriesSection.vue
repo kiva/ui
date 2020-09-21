@@ -135,6 +135,10 @@ export default {
 					return 'technology';
 				case 4:
 					return 'education';
+				case 25:
+					return 'health';
+				case 32:
+					return 'refugees';
 				default:
 					// remove any text contained within square brackets, including the brackets
 					return String(category.name).replace(/\s\[.*\]/g, '');

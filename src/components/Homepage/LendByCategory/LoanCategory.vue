@@ -266,6 +266,14 @@ export default {
 					return 'arts loans';
 				case 87:
 					return 'agriculture loans';
+				case 102:
+					return 'technology loans';
+				case 4:
+					return 'education loans';
+				case 25:
+					return 'health loans';
+				case 32:
+					return 'loans to refugees and IDPs';
 				default:
 					// remove any text contained within square brackets, including the brackets
 					return String(this.name).replace(/\s\[.*\]/g, '');
