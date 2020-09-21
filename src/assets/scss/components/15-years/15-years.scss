@@ -76,7 +76,8 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	white-space: nowrap;
 
 	&:hover {
-		background-color: $twighlight;
-		color: $offwhite;
+		text-decoration: none;
+		// background-color: $twighlight;
+		// color: $offwhite;
 	}
 }

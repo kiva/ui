@@ -199,10 +199,10 @@ export default {
 
 	color: $mint;
 
-	&:hover {
-		background-color: $offwhite;
-		color: $twighlight;
-	}
+	// &:hover {
+	// 	background-color: $offwhite;
+	// 	color: $twighlight;
+	// }
 }
 
 /* stylelint-disable no-descending-specificity */
@@ -573,6 +573,15 @@ export default {
 		&:focus {
 			outline: 0;
 
+			.bottom-nav__btn-year {
+				background: $offwhite;
+				color: $twighlight;
+			}
+
+			.bottom-nav__btn-title {
+				color: $mint;
+			}
+
 			.bottom-nav__img {
 				animation: wiggle 2 0.25s ease-in-out;
 			}
@@ -619,7 +628,12 @@ export default {
 	}
 
 	&__btn-year {
+		display: inline-block;
+		width: auto;
 		margin-bottom: 0.5rem;
+		border-radius: rem-calc(16);
+		padding: rem-calc(2) rem-calc(8);
+		border: rem-calc(2) solid transparent;
 
 		@include breakpoint(large) {
 			height: auto;
