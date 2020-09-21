@@ -5,11 +5,8 @@
 		<div class="loan-results">
 			<template v-if="totalPreferredCount > 0">
 				<h1 class="loan-results__headline">
-					Here {{ countVerb }} {{ countNumber }} {{ countPeople }} you can support!
-				</h1>
-				<p class="loan-results__tagline">
 					Out of {{ totalFundRaisingCount | numeral(0,0) }} borrowers, these are your perfect matches.
-				</p>
+				</h1>
 			</template>
 			<template v-else>
 				<h1 class="loan-results__headline">
@@ -283,24 +280,11 @@ export default {
 	&__headline {
 		text-align: center;
 		font-weight: bold;
-		margin-bottom: 1rem;
+		margin-bottom: 2rem;
 		padding: 0 1rem;
 
 		@include breakpoint(medium down) {
 			font-size: rem-calc(18);
-		}
-	}
-
-	&__tagline {
-		text-align: center;
-		font-size: rem-calc(12);
-		line-height: 1.35;
-		max-width: 14rem;
-		margin: 0 auto 2rem;
-
-		@include breakpoint(large up) {
-			font-size: rem-calc(20);
-			max-width: 24rem;
 		}
 	}
 
