@@ -4,12 +4,12 @@
 			<kv-loading-spinner v-if="!categoriesLoaded" />
 			<kv-carousel
 				class="loan-category-section__carousel"
-				:controls-inside="false"
+				:controls-inside="true"
 				:autoplay="false"
+				slides-to-scroll="visible"
 				indicator-style="none"
 				:embla-options="{
 					loop: false,
-					containScroll: 'trimSnaps',
 				}"
 			>
 				<kv-carousel-slide
@@ -79,7 +79,7 @@ export default {
 	},
 	data() {
 		return {
-			categoryIds: [52, 96, 93, 89, 87], // fallback category ids
+			categoryIds: [52, 96, 93, 89, 87, 4, 102, 25], // fallback category ids
 			itemsInBasket: [],
 			prefetchedCategoryInfo: [],
 			categoriesWithLoans: [],
@@ -288,14 +288,14 @@ export default {
 }
 
 .loan-category-row {
-	margin-top: 4.5rem;
+	margin-top: 1rem;
 	@include breakpoint(medium) {
 		margin-top: 0;
 	}
 }
 
 .category-options {
-	max-width: rem-calc(737);
+	max-width: rem-calc(797px);
 	margin: 0 auto;
 
 	.loading-spinner {
@@ -305,7 +305,7 @@ export default {
 
 .loan-category-section {
 	&__carousel-slide {
-		width: rem-calc(160);
+		width: auto;
 		padding-top: 0.75rem;
 	}
 

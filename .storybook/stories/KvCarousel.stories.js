@@ -471,3 +471,45 @@ export const ImagesOnlyLazyLoadLikeHomepage = () => ({
 	`,
 
 });
+
+export const VisibleSlides = () => ({
+	components: {
+		KvCarousel,
+		KvCarouselSlide,
+		KvCauseSelector,
+	},
+	data() {
+		return {
+			causeList
+		}
+	},
+	methods: {
+		onChangeCause(e) {
+			console.log(e);
+		}
+	},
+	template: `
+		<kv-carousel
+			:controls-inside="true"
+			:autoplay="false"
+			indicator-style="none"
+			slides-to-scroll="visible"
+			:embla-options="{
+				loop: false,
+			}"
+		>
+			<kv-carousel-slide
+				v-for="cause in causeList"
+				:key="cause"
+				style="width: auto; padding-top: .75rem;"
+			>
+				<kv-cause-selector
+					:cause="cause"
+					:as-radio="true"
+					style="margin: 2rem 2rem 0"
+					@change="onChangeCause"
+				/>
+			</kv-carousel-slide>
+		</kv-carousel>
+	`,
+});
