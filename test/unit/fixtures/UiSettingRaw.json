@@ -1,0 +1,102 @@
+{
+	"sys": {
+	  "space": {
+		"sys": {
+		  "type": "Link",
+		  "linkType": "Space",
+		  "id": "j0p9a6ql0rn7"
+		}
+	  },
+	  "id": "2Q0Kcg4jkeliUZiSgDxEw",
+	  "type": "Entry",
+	  "createdAt": "2020-09-15T03:03:50.545Z",
+	  "updatedAt": "2020-09-15T03:03:50.545Z",
+	  "environment": {
+		"sys": {
+		  "id": "development",
+		  "type": "Link",
+		  "linkType": "Environment"
+		}
+	  },
+	  "revision": 1,
+	  "contentType": {
+		"sys": {
+		  "type": "Link",
+		  "linkType": "ContentType",
+		  "id": "uiSetting"
+		}
+	  },
+	  "locale": "en-US"
+	},
+	"fields": {
+	  "key": "campaign-test-setting",
+	  "active": true,
+	  "startDate": "2020-09-16T00:00-07:00",
+	  "endDate": "2020-10-21T00:00-07:00",
+	  "content": [
+		{
+		  "sys": {
+			"space": {
+			  "sys": {
+				"type": "Link",
+				"linkType": "Space",
+				"id": "j0p9a6ql0rn7"
+			  }
+			},
+			"id": "L8dUyiSb3z2lFZIbfkUO9",
+			"type": "Entry",
+			"createdAt": "2020-02-19T21:34:26.968Z",
+			"updatedAt": "2020-07-20T15:42:55.871Z",
+			"environment": {
+			  "sys": {
+				"id": "development",
+				"type": "Link",
+				"linkType": "Environment"
+			  }
+			},
+			"revision": 30,
+			"contentType": {
+			  "sys": {
+				"type": "Link",
+				"linkType": "ContentType",
+				"id": "globalPromoBanner"
+			  }
+			},
+			"locale": "en-US"
+		  },
+		  "fields": {
+			"bannerName": "Global Site Maintenance",
+			"richText": {
+			  "data": {},
+			  "content": [
+				{
+				  "data": {},
+				  "content": [
+					{
+					  "data": {},
+					  "marks": [],
+					  "value": "Our website will be down for a few hours of scheduled maintenance starting at 4pm PST on February 21st—thanks for your patience!",
+					  "nodeType": "text"
+					}
+				  ],
+				  "nodeType": "paragraph"
+				}
+			  ],
+			  "nodeType": "document"
+			},
+			"startDate": "2020-02-19T00:00-08:00",
+			"endDate": "2020-07-20T00:00-08:00",
+			"active": true,
+			"iconKey": "info",
+			"hiddenUrls": [
+			  "/",
+			  "/lend"
+			]
+		  }
+		}
+	  ],
+	  "dataObject": {
+		"campaign-data": "data value field"
+	  }
+	}
+}
