@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import _throttle from 'lodash/throttle';
 import EmblaCarousel from 'embla-carousel';
 
 import KvIcon from '@/components/Kv/KvIcon';
@@ -124,7 +125,16 @@ export default {
 		controlsInside: {
 			type: Boolean,
 			default: false
-		}
+		},
+		/**
+		 * The type of logic to implement when deciding how many slides
+		 * to scroll when pressing the next/prev button
+		 * `visible, auto`
+		* */
+		slidesToScroll: {
+			type: String,
+			default: 'auto'
+		},
 	},
 	data() {
 		return {
@@ -188,6 +198,20 @@ export default {
 			...this.emblaOptions,
 		});
 
+		if (this.slidesToScroll === 'visible') {
+			this.embla.reInit({
+				slidesToScroll: this.embla.slidesInView(true).length,
+				inViewThreshold: 0.90,
+			});
+
+			this.embla.on('resize', _throttle(() => {
+				this.embla.reInit({
+					slidesToScroll: this.embla.slidesInView(true).length,
+					inViewThreshold: 0.90,
+				});
+			}, 250));
+		}
+
 		// get slide components
 		this.slides = this.embla.slideNodes();
 
@@ -215,10 +239,10 @@ export default {
 			this.currentIndex = this.embla.selectedScrollSnap();
 
 			/**
-				 * The index of the slide that the carousel has changed to
-				 * @event change
-				 * @type {Event}
-				 */
+			 * The index of the slide that the carousel has changed to
+			 * @event change
+			 * @type {Event}
+			 */
 			this.$emit('change', this.currentIndex);
 		});
 	},

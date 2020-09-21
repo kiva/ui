@@ -36,5 +36,26 @@ export default [
 		"description": "Farmers face many challenges like unpredictable weather and market prices, and are often forced to choose between investing in their crops and fulfilling basic needs for their families. Your support keeps their crops growing and their livelihoods stable.",
 		"url": "https://dev-vm-01.kiva.org/lend/agriculture-loans",
 		"__typename": "LoanChannel"
+	},
+	{
+		"id": 4,
+		"name": "Education",
+		"description": "Help underprivileged and marginalized students attend vocational school, university or other higher education institutions and give them a chance to reach their full potential. The economic returns for higher education graduates are a 17% increase in earnings.",
+		"url": "https://dev-vm-01.kiva.org/lend/education",
+		"__typename": "LoanChannel"
+	},
+	{
+		"id": 102,
+		"name": "Technology",
+		"description": "Loans tagged with #Technology",
+		"url": "https://dev-vm-01.kiva.org/lend/technology",
+		"__typename": "LoanChannel"
+	},
+	{
+		"id": 25,
+		"name": "Health",
+		"description": "Help families and communities access the medicine, surgeries and healthcare services they need.",
+		"url": "https://dev-vm-01.kiva.org/lend/health",
+		"__typename": "LoanChannel"
 	}
 ]
