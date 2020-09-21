@@ -3,8 +3,14 @@
 		<div class="row">
 			<div class="columns">
 				<section>
-					<h2>Sponsors</h2>
-					<p>main section goes here</p>
+					<fifteen-years-section-header class="sponsors__header">
+						<template v-slot:header>
+							Strategic Partners
+						</template>
+						<template v-slot:subhead>
+							Individuals and Organizations <br class="smo"><br class="xxlu"> making a difference
+						</template>
+					</fifteen-years-section-header>
 				</section>
 				<section>
 					<h3>Our Selected Partners</h3>
@@ -92,8 +98,12 @@
 </template>
 
 <script>
-export default {
+import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
+export default {
+	components: {
+		FifteenYearsSectionHeader
+	}
 };
 </script>
 
@@ -103,6 +113,10 @@ export default {
 
 .sponsors {
 	background-color: $offwhite;
+
+	&__header {
+		--section-header-line-color: #{$twighlight};
+	}
 
 	&__selected {
 		max-width: 30rem;
