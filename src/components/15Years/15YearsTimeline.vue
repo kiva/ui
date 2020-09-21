@@ -116,11 +116,9 @@
 								</span>
 								<span
 									class="bottom-nav__btn-year"
-									:class="navIndex <= currentIndex ? 'show-for-sr' : ''"
 								>{{ navSlide.year }}</span>
 								<span
 									class="bottom-nav__btn-title"
-									:class="navIndex <= currentIndex ? 'show-for-sr' : ''"
 								>{{ navSlide.title }}</span>
 							</button>
 						</li>
@@ -136,7 +134,7 @@ import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
 
-import slideData from './15YearsSlideData';
+import slideData from './15YearsTimelineData';
 
 const fifteenYearsImagesRequire = require.context('@/assets/images/15-years/', true);
 
@@ -201,10 +199,10 @@ export default {
 
 	color: $mint;
 
-	&:hover {
-		background-color: $offwhite;
-		color: $twighlight;
-	}
+	// &:hover {
+	// 	background-color: $offwhite;
+	// 	color: $twighlight;
+	// }
 }
 
 /* stylelint-disable no-descending-specificity */
@@ -548,6 +546,11 @@ export default {
 				pointer-events: none;
 			}
 
+			.bottom-nav__btn-year,
+			.bottom-nav__btn-title {
+				opacity: 0;
+			}
+
 			.bottom-nav__btn-img-wrap {
 				width: rem-calc(80);
 				height: rem-calc(80);
@@ -569,6 +572,15 @@ export default {
 		&:hover,
 		&:focus {
 			outline: 0;
+
+			.bottom-nav__btn-year {
+				background: $offwhite;
+				color: $twighlight;
+			}
+
+			.bottom-nav__btn-title {
+				color: $mint;
+			}
 
 			.bottom-nav__img {
 				animation: wiggle 2 0.25s ease-in-out;
@@ -611,10 +623,17 @@ export default {
 		width: 8rem;
 		height: 0;
 		overflow: hidden;
+		opacity: 1;
+		transition: opacity 0.3s ease-in-out;
 	}
 
 	&__btn-year {
+		display: inline-block;
+		width: auto;
 		margin-bottom: 0.5rem;
+		border-radius: rem-calc(16);
+		padding: rem-calc(2) rem-calc(8);
+		border: rem-calc(2) solid transparent;
 
 		@include breakpoint(large) {
 			height: auto;

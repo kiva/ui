@@ -51,7 +51,9 @@ const FifteenYearsDecorator = () => ({
 			]]></symbol>
 			</svg>
 			<fifteen-years-styles>
-				<story/>
+				<div style="margin: -1rem;">
+					<story/>
+				</div>
 			</fifteen-years-styles>
 		</div>`,
 });
