@@ -238,7 +238,7 @@ export default {
 			const filteredCauses = this.causeList.filter(cause => {
 				return causeIds.includes(cause.id);
 			});
-			if (this.filteredCauses <= 3) {
+			if (this.filteredCauses.length <= 3) {
 				return filteredCauses;
 			}
 			return filteredCauses.slice(0, 2);
