@@ -407,7 +407,15 @@ export default {
 }
 
 .strategic-partners {
-	margin-top: rem-calc(110);
+	margin-top: rem-calc(12);
+
+	@include breakpoint(large) {
+		margin-top: rem-calc(24);
+	}
+
+	@include breakpoint(xlarge) {
+		margin-top: rem-calc(53);
+	}
 
 	h2 {
 		color: black;
