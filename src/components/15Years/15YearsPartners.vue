@@ -187,7 +187,7 @@
 										<h3>
 											1
 										</h3>
-										<span>Years of <br class="xlu">partnership</span>
+										<span>Year of <br class="xlu">partnership</span>
 									</li>
 									<li>
 										<h3>
@@ -531,7 +531,7 @@ export default {
 
 		p.expanded {
 			transition: max-height 0.5s ease-out;
-			max-height: 540px;
+			max-height: 800px; // just used for animation since we can't animate to height auto.
 			height: auto;
 
 			&::before {
