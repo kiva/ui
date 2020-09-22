@@ -10,16 +10,22 @@
 						The people who<br class="smo"><br class="xxlu"> make it happen
 					</template>
 				</fifteen-years-section-header>
+
+				<fifteen-years-button variant="white">
+					button
+				</fifteen-years-button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
+import FifteenYearsButton from './15YearsButton';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 export default {
 	components: {
+		FifteenYearsButton,
 		FifteenYearsSectionHeader,
 	}
 };

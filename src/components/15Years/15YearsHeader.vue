@@ -8,7 +8,9 @@
 				<p>
 					Rally Interactive will be handling this entire module
 				</p>
-				<a href="#">Link text</a>
+				<fifteen-years-button to="/help/">
+					button
+				</fifteen-years-button>
 			</div>
 
 			<div class="header__globe small-12 large-offset-2 large-6 columns">
@@ -25,8 +27,12 @@
 </template>
 
 <script>
-export default {
+import FifteenYearsButton from './15YearsButton';
 
+export default {
+	components: {
+		FifteenYearsButton
+	}
 };
 </script>
 

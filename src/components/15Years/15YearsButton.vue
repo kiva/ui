@@ -1,0 +1,105 @@
+<script>
+export default {
+	render(createElement) {
+		const options = {
+			class: ['fifteen-yr-button', this.variant ? `fifteen-yr-button--${this.variant}` : ''],
+			props: {},
+			attrs: {},
+			on: { click: this.onClick },
+		};
+		if (this.to) {
+			options.props.to = this.to;
+		}
+		if (this.href) {
+			options.attrs.href = this.href;
+		}
+		return createElement(this.tag, options, this.$slots.default);
+	},
+	props: {
+		to: {
+			type: String,
+			default: null
+		},
+		href: {
+			type: String,
+			default: null
+		},
+		/**
+		 * Styling variant
+		 * `'', white, black`
+		* */
+		variant: {
+			type: String,
+			default: '' // default appears as mint
+		}
+	},
+	computed: {
+		tag() {
+			if (this.to) {
+				return 'router-link';
+			}
+			return this.href ? 'a' : 'button';
+		}
+	},
+	methods: {
+		onClick(e) {
+			if (this.tag === 'button' && this.$attrs.type !== 'submit') {
+				// emit a vue event and prevent native event
+				// so we don't have to write @click.native in our templates
+				e.preventDefault();
+				this.$emit('click', e);
+			}
+		},
+	}
+};
+</script>
+
+<style lang="scss" scoped>
+@import 'settings';
+@import 'components/15-years/15-years';
+
+.fifteen-yr-button {
+	@include h5();
+
+	border-radius: rem-calc(20);
+	text-decoration: none;
+	background-color: $mint;
+	color: $twighlight;
+	border: rem-calc(2) solid $mint;
+	padding: rem-calc(16) rem-calc(32);
+
+	@include breakpoint('large') {
+		padding: rem-calc(20) rem-calc(40);
+	}
+
+	&:hover {
+		text-decoration: none;
+		background-color: $twighlight;
+		color: $mint;
+		border-color: $twighlight;
+	}
+
+	&--white {
+		background-color: transparent;
+		color: $offwhite;
+		border-color: $offwhite;
+
+		&:hover {
+			background-color: $offwhite;
+			color: $tomato;
+			border-color: $offwhite;
+		}
+	}
+
+	&--black {
+		background-color: transparent;
+		color: $twighlight;
+		border-color: $twighlight;
+
+		&:hover {
+			background-color: $twighlight;
+			color: $offwhite;
+		}
+	}
+}
+</style>
