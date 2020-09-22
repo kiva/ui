@@ -202,14 +202,14 @@ export default {
 
 	// &:hover {
 	// 	background-color: $offwhite;
-	// 	color: $twighlight;
+	// 	color: $twilight;
 	// }
 }
 
 /* stylelint-disable no-descending-specificity */
 
 .timeline {
-	background: $twighlight;
+	background: $twilight;
 	color: $offwhite;
 
 	/* hides the horizontal scrollbar created by hacking the carousel below */
@@ -244,7 +244,7 @@ export default {
 		border: rem-calc(2) solid transparent;
 		@include breakpoint(large) {
 			background: $offwhite;
-			color: $twighlight;
+			color: $twilight;
 		}
 	}
 
@@ -535,7 +535,7 @@ export default {
 
 			.bottom-nav__btn-year {
 				background: $offwhite;
-				color: $twighlight;
+				color: $twilight;
 			}
 
 			.bottom-nav__btn-title {

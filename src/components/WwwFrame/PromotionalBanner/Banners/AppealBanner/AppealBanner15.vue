@@ -555,7 +555,7 @@ export default {
 	}
 
 	&__progress-circle {
-		--kv-progress-circle-foreground-color: #{$twighlight};
+		--kv-progress-circle-foreground-color: #{$twilight};
 	}
 
 	&__face {
