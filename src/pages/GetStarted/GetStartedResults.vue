@@ -9,7 +9,7 @@
 				</h1>
 			</template>
 			<template v-else>
-				<h1 class="loan-results__headline">
+				<h1 class="loan-results__headline loan-results__headline--no-results">
 					Sorry, we couldn't find any loans matching your preferences
 				</h1>
 				<p class="loan-results__tagline">
@@ -285,6 +285,22 @@ export default {
 
 		@include breakpoint(medium down) {
 			font-size: rem-calc(18);
+		}
+
+		&--no-results {
+			margin-bottom: 1rem;
+		}
+	}
+
+	&__tagline {
+		text-align: center;
+		font-size: rem-calc(12);
+		line-height: 1.35;
+		max-width: 14rem;
+		margin: 0 auto 2rem;
+		@include breakpoint(large up) {
+			font-size: rem-calc(20);
+			max-width: 24rem;
 		}
 	}
 
