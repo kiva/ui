@@ -15,6 +15,8 @@
 @import 'components/15-years/15-years';
 
 .section-header {
+	--section-header-line-color: #{$offwhite};
+
 	@include breakpoint(xxlarge) {
 		display: flex;
 		align-items: center;
