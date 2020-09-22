@@ -61,6 +61,7 @@ export default {
 .fifteen-yr-button {
 	@include h5();
 
+	display: inline-block;
 	border-radius: rem-calc(20);
 	text-decoration: none;
 	background-color: $mint;
