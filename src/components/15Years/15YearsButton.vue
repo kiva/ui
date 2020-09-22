@@ -64,7 +64,7 @@ export default {
 	border-radius: rem-calc(20);
 	text-decoration: none;
 	background-color: $mint;
-	color: $twighlight;
+	color: $twilight;
 	border: rem-calc(2) solid $mint;
 	padding: rem-calc(16) rem-calc(32);
 
@@ -74,9 +74,9 @@ export default {
 
 	&:hover {
 		text-decoration: none;
-		background-color: $twighlight;
+		background-color: $twilight;
 		color: $mint;
-		border-color: $twighlight;
+		border-color: $twilight;
 	}
 
 	&--white {
@@ -93,11 +93,11 @@ export default {
 
 	&--black {
 		background-color: transparent;
-		color: $twighlight;
-		border-color: $twighlight;
+		color: $twilight;
+		border-color: $twilight;
 
 		&:hover {
-			background-color: $twighlight;
+			background-color: $twilight;
 			color: $offwhite;
 		}
 	}
