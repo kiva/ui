@@ -2,15 +2,14 @@
 	<div class="timeline section">
 		<div class="row">
 			<div class="columns">
-				<div class="timeline__header-wrap">
-					<h2 class="timeline__header">
-						15 Years of Impact
-					</h2>
-					<div class="timeline__header-line"></div>
-					<p class="timeline__header-subhead">
+				<fifteen-years-section-header>
+					<template v-slot:header>
+						15 years of impact
+					</template>
+					<template v-slot:subhead>
 						The history of Kiva,<br class="smo"><br class="xxlu"> year by year
-					</p>
-				</div>
+					</template>
+				</fifteen-years-section-header>
 
 				<!-- CAROUSEL -->
 				<div class="carousel">
@@ -133,6 +132,7 @@
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
+import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 import slideData from './15YearsTimelineData';
 
@@ -143,6 +143,7 @@ export default {
 		KvCarousel,
 		KvCarouselSlide,
 		KvIcon,
+		FifteenYearsSectionHeader,
 	},
 	data() {
 		return {
@@ -214,47 +215,6 @@ export default {
 	/* hides the horizontal scrollbar created by hacking the carousel below */
 	width: 100%;
 	overflow-x: hidden;
-
-	&__header-wrap {
-
-		@include breakpoint(xxlarge) {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			text-align: right;
-		}
-	}
-
-	&__header {
-		flex-shrink: 0;
-	}
-
-	&__header-line {
-		display: inline-block;
-		background-color: $offwhite;
-		width: rem-calc(1);
-		height: 2.125em;
-		margin-right: 0.5rem;
-		vertical-align: top;
-
-		@include breakpoint(large) {
-			display: none;
-		}
-
-		@include breakpoint(xxlarge) {
-			display: block;
-			background-color: $offwhite;
-			width: 100%;
-			height: rem-calc(1);
-			margin: 0 1.5rem;
-		}
-	}
-
-	&__header-subhead {
-		margin-bottom: 0;
-		flex-shrink: 0;
-		display: inline-block;
-	}
 
 	a {
 		@include timeline-link();

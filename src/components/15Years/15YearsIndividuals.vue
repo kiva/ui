@@ -2,16 +2,26 @@
 	<div class="individuals section">
 		<div class="row">
 			<div class="columns">
-				<h2>15 at 15</h2>
-				individuals go here
+				<fifteen-years-section-header>
+					<template v-slot:header>
+						The World of Kiva
+					</template>
+					<template v-slot:subhead>
+						The people who<br class="smo"><br class="xxlu"> make it happen
+					</template>
+				</fifteen-years-section-header>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-export default {
+import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
+export default {
+	components: {
+		FifteenYearsSectionHeader,
+	}
 };
 </script>
 
