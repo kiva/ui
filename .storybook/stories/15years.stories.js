@@ -10,7 +10,7 @@ import FifteenYears from '@/pages/15Years/15Years';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
-import FifteenYearsSponsors from '@/components/15Years/15YearsSponsors';
+import FifteenYearsPartners from '@/components/15Years/15YearsPartners';
 import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
 import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
 
@@ -128,18 +128,18 @@ export const Individuals = (args, { argTypes }) => ({
 });
 Individuals.decorators = [FifteenYearsDecorator];
 
-export const Sponsors = (args, { argTypes }) => ({
+export const Partners = (args, { argTypes }) => ({
 	components: {
-		FifteenYearsSponsors
+		FifteenYearsPartners
 	},
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	decorators: [FifteenYearsDecorator],
 	template: `
-		<fifteen-years-sponsors />
+		<fifteen-years-partners />
 	`,
 });
-Sponsors.decorators = [FifteenYearsDecorator];
+Partners.decorators = [FifteenYearsDecorator];
 
 export const HowKivaWorks = (args, { argTypes }) => ({
 	components: {
