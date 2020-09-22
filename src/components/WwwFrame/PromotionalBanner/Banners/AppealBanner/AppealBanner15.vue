@@ -4,6 +4,7 @@
 			<div class="sitewide-appeal row">
 				<div class="sitewide-header small-12 medium-9 medium-offset-2 large-9 large-offset-2 columns">
 					<h2 class="strong" v-html="bannerHeadline"></h2>
+					<fifteen-years-button>Button</fifteen-years-button>
 				</div>
 				<div class="swashie">
 					<kv-progress-circle class="swashie__progress-circle" :value="50" :show-number="true" />
@@ -111,6 +112,7 @@ import KvButton from '@/components/Kv/KvButton';
 // import KvIcon from '@/components/Kv/KvIcon';
 import KvExpandable from '@/components/Kv/KvExpandable';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+import FifteenYearsButton from '@/components/15Years/15YearsButton';
 import SwashieFace from '@/components/15Years/SwashieFace';
 
 import lockScrollUtils from '@/plugins/lock-scroll';
@@ -119,6 +121,7 @@ import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 export default {
 	components: {
 		AppealThermometer,
+		FifteenYearsButton,
 		KvButton,
 		// KvIcon,
 		KvExpandable,

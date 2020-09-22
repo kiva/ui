@@ -14,6 +14,9 @@
 				</section>
 				<section>
 					<h3>Our Selected Partners</h3>
+					<fifteen-years-button variant="black">
+						button
+					</fifteen-years-button>
 					<p>Below taken from IWD homepage</p>
 					<div class="sponsors__selected">
 						<ul class="sponsors__list row">
@@ -98,10 +101,12 @@
 </template>
 
 <script>
+import FifteenYearsButton from './15YearsButton';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 export default {
 	components: {
+		FifteenYearsButton,
 		FifteenYearsSectionHeader
 	}
 };
