@@ -54,7 +54,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-paypal.png"
+										src="@/assets/images/15-years/stickers/Partner-paypal.svg"
 										alt="PayPal"
 										loading="lazy"
 									>
@@ -86,7 +86,7 @@
 									empowering entrepreneurs around the
 								</p>
 								<fifteen-years-button variant="black">
-									read more
+									read
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -97,7 +97,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-mastercard.png"
+										src="@/assets/images/15-years/stickers/Partner-mastercard.svg"
 										alt="Mastercard Foundation"
 										loading="lazy"
 									>
@@ -129,7 +129,7 @@
 									empowering entrepreneurs around the
 								</p>
 								<fifteen-years-button variant="black">
-									read more
+									read
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -215,7 +215,7 @@
 									empowering entrepreneurs around the
 								</p>
 								<fifteen-years-button variant="black">
-									read more
+									read
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -226,7 +226,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-skoll.png"
+										src="@/assets/images/15-years/stickers/Partner-skoll.svg"
 										alt="Skoll + DFC"
 										loading="lazy"
 									>
@@ -258,7 +258,7 @@
 									empowering entrepreneurs around the
 								</p>
 								<fifteen-years-button variant="black">
-									read more
+									read
 								</fifteen-years-button>
 							</div>
 						</li>
