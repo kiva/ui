@@ -118,11 +118,13 @@ const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 				}
 			}
 			image {
+				id
 				default: url(customSize: "w480h300")
 				retina: url(customSize: "w960h600")
 			}
 			name
 			sector {
+				id
 				name
 			}
 			whySpecial
