@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="columns">
 				<section>
-					<fifteen-years-section-header class="sponsors__header">
+					<fifteen-years-section-header class="partners__header">
 						<template v-slot:header>
 							Strategic Partners
 						</template>
@@ -59,7 +59,7 @@
 										loading="lazy"
 									>
 								</div>
-								<ul class="strategic-partners__stats">
+								<ul class="strategic-partners__stats" v-if="paypal.showStats">
 									<li>
 										<h3>
 											15
@@ -79,14 +79,12 @@
 										<span>From 38k+ customers <br class="xlu">and employees</span>
 									</li>
 								</ul>
-								<p>
+								<p :class="{'expanded': !paypal.showStats}">
 									<!-- eslint-disable-next-line max-len -->
-									Kiva and PayPal have a unique and deep
-									collaboration, unified by a shared purpose of
-									empowering entrepreneurs around the
+									Kiva and PayPal have a unique and deep collaboration, unified by a shared purpose of empowering entrepreneurs around the world by democratizing financial services. The connection is not surprising: Kiva was co-founded by Premal Shah, a former PayPal employee, and has been powered from the beginning with free payment processing from PayPal, ensuring that 100% of every dollar goes to fund loans on Kiva.org, which has resulted in over $1.45 billion in loans to support entrepreneurs from around the world. In addition to this, PayPal engages customers and employees to lend on Kiva.org every year.
 								</p>
-								<fifteen-years-button variant="black">
-									read
+								<fifteen-years-button variant="black" @click="togglePartner('paypal')">
+									{{ paypal.showStats ? 'read more' : 'back to stats' }}
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -102,7 +100,7 @@
 										loading="lazy"
 									>
 								</div>
-								<ul class="strategic-partners__stats">
+								<ul class="strategic-partners__stats" v-if="mastercard.showStats">
 									<li>
 										<h3>
 											4
@@ -122,14 +120,12 @@
 										<span>Borrowers</span>
 									</li>
 								</ul>
-								<p>
+								<p :class="{'expanded': !mastercard.showStats}">
 									<!-- eslint-disable-next-line max-len -->
-									Kiva and PayPal have a unique and deep
-									collaboration, unified by a shared purpose of
-									empowering entrepreneurs around the
+									Kiva and the Mastercard Foundation have partnered to test, develop, and scale high-impact loans serving the unique needs of smallholder farmers and rural populations across Africa. The Mastercard Foundation is supporting the Kiva Labs approach to push the boundaries of microcredit and deepen our commitment to impact measurement and management. As part of this partnership, Kiva has been able to bring together over 50 of our partners at the Kiva Labs Innovation Conference, design and deploy technical assistance to over 30 lending partners, and deepen our commitment to impact measurement and management.
 								</p>
-								<fifteen-years-button variant="black">
-									read
+								<fifteen-years-button variant="black" @click="togglePartner('mastercard')">
+									{{ mastercard.showStats ? 'read more' : 'back to stats' }}
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -140,12 +136,12 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-ebay.png"
+										src="@/assets/images/15-years/stickers/Partner-ebay.svg"
 										alt="Ebay"
 										loading="lazy"
 									>
 								</div>
-								<ul class="strategic-partners__stats">
+								<ul class="strategic-partners__stats" v-if="ebay.showStats">
 									<li>
 										<h3>
 											3
@@ -165,14 +161,12 @@
 										<span>Lent</span>
 									</li>
 								</ul>
-								<p>
+								<p :class="{'expanded': !ebay.showStats}">
 									<!-- eslint-disable-next-line max-len -->
-									Kiva and PayPal have a unique and deep
-									collaboration, unified by a shared purpose of
-									empowering entrepreneurs around the
+									Kiva and eBay share a belief that the internet can be an empowering force that helps create opportunities for people across the globe. The partnership advances eBay Foundation’s mission to unleash the power of entrepreneurship to build economically vibrant and sustainable communities and connects eBay’s employees to direct impact in the lives of others. Through four employee lending campaigns, as well as matching funds on Kiva.org, the eBay Foundation has lent $1M to nearly 30,000 entrepreneurs across 70 countries. Additionally, the San Jose, California-based company has funded 250 small businesses locally through grants to Kiva, driving sustainable local economic growth.
 								</p>
-								<fifteen-years-button variant="black">
-									Read More
+								<fifteen-years-button variant="black" @click="togglePartner('ebay')">
+									{{ ebay.showStats ? 'read more' : 'back to stats' }}
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -183,12 +177,12 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-visa.png"
+										src="@/assets/images/15-years/stickers/Partner-visa.svg"
 										alt="Visa"
 										loading="lazy"
 									>
 								</div>
-								<ul class="strategic-partners__stats">
+								<ul class="strategic-partners__stats" v-if="visa.showStats">
 									<li>
 										<h3>
 											1
@@ -208,14 +202,12 @@
 										<span>In loans</span>
 									</li>
 								</ul>
-								<p>
+								<p :class="{'expanded': !visa.showStats}">
 									<!-- eslint-disable-next-line max-len -->
-									Kiva and PayPal have a unique and deep
-									collaboration, unified by a shared purpose of
-									empowering entrepreneurs around the
+									At the heart of the Visa Foundation’s mission is the belief that small businesses are the backbone of the global economy. In support of this mission, Visa Foundation granted $1M to Kiva to increase financial access for underserved small businesses around the globe. Through this 5 year program, Visa employees around the globe help direct loans with a long-term goal to help more than 50,000 small businesses. Visa’s recent launch of the Rebuilding Matters program in the US deepened the partnership: Kiva is one of 5 nonprofits to whom Visa will donate when cardholders make an eligible transaction at small businesses.
 								</p>
-								<fifteen-years-button variant="black">
-									read
+								<fifteen-years-button variant="black" @click="togglePartner('visa')">
+									{{ visa.showStats ? 'read more' : 'back to stats' }}
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -231,7 +223,7 @@
 										loading="lazy"
 									>
 								</div>
-								<ul class="strategic-partners__stats">
+								<ul class="strategic-partners__stats" v-if="skoll.showStats">
 									<li>
 										<h3>
 											99k
@@ -251,14 +243,12 @@
 										<span>Countries</span>
 									</li>
 								</ul>
-								<p>
+								<p :class="{'expanded': !skoll.showStats}">
 									<!-- eslint-disable-next-line max-len -->
-									Kiva and PayPal have a unique and deep
-									collaboration, unified by a shared purpose of
-									empowering entrepreneurs around the
+									In 2017, Kiva embarked on an innovative collaboration to accelerate Kiva.org lending. Grant funding from Skoll Foundation and a loan loss commitment from Kiva.org lender enabled Kiva to secure $10M in funding from U.S. International Development Finance Corporation (DFC, then the Overseas Private Investment Corporation OPIC). With this collaboration, Kiva deployed $26.8M of funds from the $10M DFC loan and $49.9M from over 1M Kiva.org lenders. This translated to 99,000 loans to 211,000 borrowers across 30 countries and demonstrated the significant impact that can be achieved when different forms of capital are blended together.
 								</p>
-								<fifteen-years-button variant="black">
-									read
+								<fifteen-years-button variant="black" @click="togglePartner('skoll')">
+									{{ skoll.showStats ? 'read more' : 'back to stats' }}
 								</fifteen-years-button>
 							</div>
 						</li>
@@ -377,7 +367,33 @@ export default {
 	components: {
 		FifteenYearsButton,
 		FifteenYearsSectionHeader
-	}
+	},
+	data() {
+		return {
+			paypal: {
+				showStats: true
+			},
+			mastercard: {
+				showStats: true
+			},
+			ebay: {
+				showStats: true
+			},
+			visa: {
+				showStats: true
+			},
+			skoll: {
+				showStats: true
+			}
+
+		};
+	},
+	methods: {
+		togglePartner(partner) {
+			console.log(partner, this[partner].showStats);
+			this[partner].showStats = !this[partner].showStats;
+		}
+	},
 };
 </script>
 
@@ -391,6 +407,8 @@ export default {
 }
 
 .strategic-partners {
+	margin-top: rem-calc(110);
+
 	h2 {
 		color: black;
 	}
@@ -439,7 +457,7 @@ export default {
 	}
 
 	&__logo-wrapper {
-		height: rem-calc(119);
+		height: rem-calc(150);
 		display: flex;
 		align-items: center;
 	}
@@ -494,6 +512,11 @@ export default {
 		p {
 			margin-top: 1.5rem;
 			position: relative;
+			font-size: $medium-text-font-size;
+			line-height: $medium-text-line-height;
+			transition: max-height 0.5s ease-out;
+			overflow: hidden;
+			max-height: 108px;
 
 			&::before {
 				content: '';
@@ -502,6 +525,19 @@ export default {
 				bottom: 0;
 				width: 100%;
 				background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 62%, rgba($offwhite, 1) 100%);
+				opacity: 1;
+			}
+		}
+
+		p.expanded {
+			transition: max-height 0.5s ease-out;
+			max-height: 540px;
+			height: auto;
+
+			&::before {
+				transition: opacity 0.5s ease-out;
+				opacity: 0;
+				content: none;
 			}
 		}
 	}
@@ -551,6 +587,12 @@ export default {
 			width: 45%;
 			opacity: 0.7;
 		}
+	}
+}
+
+.partners__header {
+	::v-deep .section-header__line {
+		background-color: $twilight;
 	}
 }
 </style>
