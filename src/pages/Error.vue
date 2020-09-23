@@ -68,7 +68,7 @@ export default {
 			switch (language) {
 				case 'es':
 					return {
-						headline: 'Nueva contraseña Requerida',
+						headline: 'Nueva contraseña requerida',
 						reason: 'Ha pasado un tiempo desde que lo hemos visto, entonces necesitamos que usted restablezca su contraseña.',
 						please: 'Por favor,',
 						login: 'vuelva a iniciar la sesión',
