@@ -84,9 +84,9 @@ export const AppealBanner = (args, { argTypes }) => ({
 		AppealBanner15
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin, kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<appeal-banner-15 :appeal-banner-content="{}" />
+		<appeal-banner-15 />
 	`,
 });
 AppealBanner.decorators = [FifteenYearsDecorator];
