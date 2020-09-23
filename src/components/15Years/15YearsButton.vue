@@ -102,5 +102,11 @@ export default {
 			color: $offwhite;
 		}
 	}
+
+	&--mint {
+		background-color: $mint;
+		color: $twilight;
+		border-color: $offwhite;
+	}
 }
 </style>
