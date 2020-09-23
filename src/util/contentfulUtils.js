@@ -1,4 +1,5 @@
 import _get from 'lodash/get';
+import { camelCase } from 'change-case';
 
 function determineResponsiveSizeFromFileName(filename) {
 	// retina
@@ -122,6 +123,29 @@ export function formatGlobalPromoBanner(contentfulContent) {
 }
 
 /**
+ * Format Media Asset (contentful Native type id: Asset)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} mediaArray data
+ * @returns {object}
+ */
+export function formatMediaAssetArray(mediaArray) {
+	if (!mediaArray.length) return [];
+
+	const mediaAssets = [];
+
+	mediaArray.forEach(media => {
+		const mediaEntry = {
+			title: media.fields?.title,
+			description: media.fields?.description,
+			file: media.fields?.file,
+		};
+		mediaAssets.push(mediaEntry);
+	});
+	return mediaAssets;
+}
+
+/**
  * Format ResponsiveImageSet (contentful type id: responsiveImageSet)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -135,15 +159,44 @@ export function formatResponsiveImageSet(contentfulContent) {
 		images: []
 	};
 	const rawImages = contentfulContent.fields?.images;
-	rawImages.forEach(image => {
-		const imageEntry = {
-			title: image.fields?.title,
-			description: image.fields?.description,
-			file: image.fields?.file,
-		};
-		imageSet.images.push(imageEntry);
-	});
+	imageSet.images = formatMediaAssetArray(rawImages);
+
 	return imageSet;
+}
+
+/**
+ * Format ContentGroup (contentful type id: contentGroup)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatContentGroupsFlat(contentfulContent) {
+	const contentGroupsFlat = {};
+	const cleanedContentGroups = [];
+
+	contentfulContent.forEach((entry, index) => {
+		const isContentGroup = entry.sys?.contentType?.sys?.id === 'contentGroup';
+		if (!isContentGroup) {
+			cleanedContentGroups.push({
+				error: 'Entry is not a Content Group'
+			});
+		} else {
+			const contentGroupFields = {
+				key: entry.fields?.key,
+				name: entry.fields?.name,
+				// eslint-disable-next-line no-use-before-define
+				contents: formatContentTypes(entry.fields?.contents)
+			};
+			if (entry.fields?.media?.length) {
+				contentGroupFields.media = formatMediaAssetArray(entry.fields?.media);
+			}
+			cleanedContentGroups.push(contentGroupFields);
+			contentGroupsFlat[camelCase(entry.fields?.key) || `cg${index}`] = contentGroupFields;
+		}
+	});
+
+	return contentGroupsFlat;
 }
 
 /**
@@ -211,8 +264,6 @@ export function processPageContent(entryItem) {
 			? formatContentTypes(entryItem.fields?.settings) : []
 	};
 
-	// TODO: Create Isolated Page Layout processor
-	// TODO: Create Isolated Content Group processor
 	// extract content groups for parsing
 	const contentGroups = entryItem.fields?.pageLayout?.fields?.contentGroups;
 	const cleanedContentGroups = [];
@@ -262,32 +313,15 @@ export function processPageContentFlat(entryItem) {
 			? formatContentTypes(entryItem.fields?.settings) : []
 	};
 
-	// TODO: Create Isolated Page Layout processor
-	// TODO: Create Isolated Content Group processor
 	// extract content groups for parsing
 	const contentGroups = entryItem.fields?.pageLayout?.fields?.contentGroups;
-	const cleanedContentGroups = [];
 
 	if (contentGroups.length <= 0) {
 		contentfulContentObject.page.pageLayout.contentGroups = {
-			error: 'Non-Page Type Contentful Response'
+			error: 'Missing Content Groups in Contentful Response'
 		};
 	} else {
-		const contentGroupsFlat = {};
-
-		contentGroups.forEach((item, index) => {
-			const contentGroupFields = {
-				key: item.fields?.key,
-				name: item.fields?.name,
-				contents: formatContentTypes(item.fields?.contents)
-			};
-			cleanedContentGroups.push(contentGroupFields);
-			// TODO: Camelcase
-			const cgName = item.fields?.key.replace(/-/g, '_');
-			contentGroupsFlat[cgName || `cg-${index}`] = contentGroupFields;
-		});
-
-		contentfulContentObject.page.contentGroups = contentGroupsFlat;
+		contentfulContentObject.page.contentGroups = formatContentGroupsFlat(contentGroups);
 	}
 
 	return contentfulContentObject;
