@@ -72,7 +72,7 @@ export default {
 						reason: 'Ha pasado un tiempo desde que lo hemos visto, entonces necesitamos que usted restablezca su contraseña.',
 						please: 'Por favor,',
 						login: 'vuelva a iniciar la sesión',
-						clickForgot: 'y haga clic en "¿No recuerda su contraseña?" para continuar.',
+						clickForgot: 'y haga clic en "¿Olvidó su contraseña?" para continuar.',
 						contact: 'Si nos necesita, siempre estamos disponibles en',
 					};
 				case 'fr':
@@ -81,7 +81,7 @@ export default {
 						reason: 'Cela fait un moment que nous ne vous avons pas vu. Donc, nous avons besoin de vous pour réinitialiser votre mot de passe.',
 						please: 'Veuillez',
 						login: 'revenir à la connexion',
-						clickForgot: 'et cliquez sur "Vous ne vous souvenez pas de votre mot de passe?" pour continuer.',
+						clickForgot: 'et cliquez sur "Mot de passe oublié?" pour continuer.',
 						contact: 'Si vous avez besoin de nous, nous sommes toujours disponibles à',
 					};
 				default:
