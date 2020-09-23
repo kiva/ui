@@ -252,9 +252,9 @@ export default {
 		this.fuseCountryList = this.countryList;
 		// After we have a countryList, prep for filtering
 		this.fuse = new Fuse(this.countryList, {
-			threshold: 0.25,
-			distance: 100000,
+			threshold: 0.20,
 			includeMatches: true,
+			ignoreLocation: true,
 			keys: ['name', 'region'],
 		});
 	},
