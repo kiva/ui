@@ -301,7 +301,7 @@
 								>
 							</li>
 						</ul>
-						<fifteen-years-button variant="mint" href="https://kiva.global/partner-with-us/">
+						<fifteen-years-button href="https://kiva.global/partner-with-us/">
 							Partner with us
 						</fifteen-years-button>
 					</div>
