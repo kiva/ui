@@ -400,13 +400,10 @@ export default {
 		transform: scale(0);
 		opacity: 0;
 		transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-		filter: opacity(0.4) drop-shadow(0 0 0 red); // TODO: Remove once SVG assets are in
 
 		&--svg {
 			display: block;
 			width: 100%;
-			filter: none; // TODO: Remove once SVG assets are in
-			// flex: 1;
 		}
 	}
 
