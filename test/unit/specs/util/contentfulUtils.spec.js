@@ -1,6 +1,7 @@
 import {
 	formatGenericContentBlock,
 	formatResponsiveImageSet,
+	formatMediaAssetArray,
 	formatUiSetting,
 	processPageContent,
 	processPageContentFlat
@@ -25,6 +26,13 @@ describe('contentfulUtils.js', () => {
 				dataObject: { 'campaign-data': 'data value field' },
 			};
 			expect(formatUiSetting(uiSettingRaw)).toMatchObject(expectedObject);
+		});
+	});
+
+	describe('formatMediaAssetArray', () => {
+		test('should return an array of media assets', () => {
+			console.log(responsiveImageSetRaw.fields.images);
+			expect(formatMediaAssetArray(responsiveImageSetRaw.fields.images)).toMatchObject(expect.any(Array));
 		});
 	});
 
@@ -176,7 +184,7 @@ describe('contentfulUtils.js', () => {
 				},
 				settings: expect.any(Array),
 				contentGroups: {
-					promo_campaign_test_cg: {
+					promoCampaignTestCg: {
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
 						contents: [{
@@ -243,7 +251,7 @@ describe('contentfulUtils.js', () => {
 				}),
 				settings: expect.any(Array),
 				contentGroups: expect.objectContaining({
-					promo_campaign_test_cg: expect.objectContaining({
+					promoCampaignTestCg: expect.objectContaining({
 						key: expect.any(String),
 						name: expect.any(String),
 						contents: [{
