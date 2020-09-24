@@ -32,7 +32,42 @@
 				</div>
 			</section>
 
-			<section class="campaign-status row align-center"></section>
+			<section class="campaign-status section">
+				<div class="row campaign-status__border">
+					<div v-if="loadingPromotion" class="campaign-status__validating-promo">
+						<loading-overlay />
+						<p>Validating Promotion...</p>
+					</div>
+
+					<div v-if="promoErrorMessage" class="small-12 columns campaign-status__error-text-container">
+						<span class="message-content text-center">
+							<div class="icon-wrapper">
+								<kv-icon name="error" />
+							</div>
+							<p class="message">{{ promoErrorMessage }}</p>
+						</span>
+					</div>
+
+					<div v-if="promoApplied" class="small-12 large-6 columns campaign-status__text-container">
+						<h3 class="campaign-status__header">
+							How it works:
+						</h3>
+						<ul>
+							<li>Choose your borrower below.</li>
+							<li>Click "Add to basket"</li>
+							<li>Click "Checkout" to complete your loan</li>
+						</ul>
+					</div>
+					<div v-if="promoApplied" class="small-12 large-6 columns campaign-status__text-container">
+						<h3 class="campaign-status__header">
+							Find your first <br>borrower
+						</h3>
+						<p class="campaign-status__body">
+							You have ... to lend...
+						</p>
+					</div>
+				</div>
+			</section>
 
 			<section class="campaign-loans row align-center"></section>
 
@@ -45,10 +80,12 @@
 import gql from 'graphql-tag';
 
 import { processPageContentFlat } from '@/util/contentfulUtils';
-import { applyUpcCode, applyRedemptionCode, applyLendingReward } from '@/util/campaignUtils';
+import { validateQueryParams } from '@/util/campaignUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
+import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvIcon from '@/components/Kv/KvIcon';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
@@ -68,6 +105,8 @@ export default {
 	components: {
 		WwwPageMinimal,
 		NoClickLoanCard,
+		LoadingOverlay,
+		KvIcon,
 	},
 	props: {
 		dynamicRoute: {
@@ -91,11 +130,19 @@ export default {
 		return {
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
-			pageTitle: 'Welcome',
 			rawPageData: null,
 			pageData: null,
 			hasFreeCredits: null,
 			lendingRewardOffered: null,
+			promoApplied: null,
+			promoErrorMessage: null,
+			promoData: null,
+			loadingPromotion: false,
+		};
+	},
+	metaInfo() {
+		return {
+			title: `${this.pageTitle}`,
 		};
 	},
 	apollo: {
@@ -129,19 +176,32 @@ export default {
 		// console.log('page data: ', this.pageData);
 
 		// TODO: Apply promotions with some type of loading state
-		this.validateQueryParams();
+		if (this.$route.query) {
+			this.applyPromotion();
+		}
+
 		// TODO: Fetch promo campaign information
 		// TODO: Translate LSC and Fetch loans
 	},
 	computed: {
+		pageTitle() {
+			// TODO: add field on Contentful Page for this
+			return this.pageData?.page?.pageLayout?.name;
+		},
 		headerAreaContent() {
 			return this.pageData?.page?.contentGroups?.promoCampaignTestCg;
 		},
 		headerLogo() {
-			const mediaObject = this.headerAreaContent.media[0];
+			const mediaObject = this.headerAreaContent?.media[0];
+			if (mediaObject) {
+				return {
+					title: mediaObject.title,
+					url: mediaObject.file?.url
+				};
+			}
 			return {
-				title: mediaObject.title,
-				url: mediaObject.file?.url
+				title: '',
+				url: ''
 			};
 		},
 		headline() {
@@ -158,39 +218,26 @@ export default {
 		},
 	},
 	methods: {
-		validateQueryParams() {
-			console.log(this.$route.query);
-			const { upc, promoCode, lendingReward } = this.$route.query;
-			console.log(upc, promoCode, lendingReward);
-			if (upc) {
-				this.handleUpcCode(upc);
-			} else if (promoCode) {
-				this.handlePromoCode(promoCode);
-			} else if (lendingReward) {
-				this.handleLendingReward(lendingReward);
-			}
-		},
-		handleUpcCode(upc) {
-			applyUpcCode(upc, this.apollo).then(result => {
+		applyPromotion() {
+			this.loadingPromotion = true;
+			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
+			console.log(applyPromo);
+			applyPromo.then(result => {
 				console.log(result);
+				// failed to apply promotion
+				if (result.errors) {
+					this.promoErrorMessage = result.errors[0].message;
+					this.promoApplied = false;
+				} else {
+					this.promoApplied = true;
+					this.promoData = result.data;
+				}
+				this.loadingPromotion = false;
 			}).catch(error => {
 				console.error(error);
+				this.loadingPromotion = false;
 			});
-		},
-		handlePromoCode(promoCode) {
-			applyRedemptionCode(promoCode, this.apollo).then(result => {
-				console.log(result);
-			}).catch(error => {
-				console.error(error);
-			});
-		},
-		handleLendingReward(lendingReward) {
-			applyLendingReward(lendingReward, this.apollo).then(result => {
-				console.log(result);
-			}).catch(error => {
-				console.error(error);
-			});
-		},
+		}
 	}
 };
 </script>
@@ -198,20 +245,11 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.section {
-	position: relative;
-	padding: 3rem 0;
-
-	@include breakpoint(large) {
-		padding: 6rem 0;
-	}
-}
-
 .campaign-header {
-	padding: 2rem 0 6rem;
+	padding: 2rem 0 2rem;
 
 	@include breakpoint(large) {
-		padding: 4rem 0 11rem;
+		padding: 4rem 0 2rem;
 	}
 
 	&__cta_wrapper {
@@ -248,20 +286,60 @@ export default {
 			@include featured-text();
 		}
 	}
+}
 
-	&__flourish {
-		position: absolute;
-		width: 40%;
-		max-width: rem-calc(436);
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
-		z-index: -1;
+.campaign-status {
+	padding: 2rem;
 
-		@include breakpoint(medium) {
-			width: 31%;
+	&__border {
+		min-height: 10rem;
+		position: relative;
+		border-radius: 1rem;
+		z-index: 1;
+		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
+		margin: 0 rem-calc(10);
+		padding: 1rem;
+
+		@include breakpoint(xga) {
+			margin: 0 auto;
 		}
 	}
+
+	&__validating-promo {
+		text-align: center;
+		width: 100%;
+
+		p {
+			position: relative;
+		}
+	}
+
+	&__error-text-container {
+		.icon-wrapper {
+			padding: 1rem 1rem 0.3rem;
+
+			.wrapper {
+				height: rem-calc(30);
+				width: rem-calc(30);
+
+				::v-deep .icon {
+					fill: $kiva-accent-red;
+				}
+			}
+		}
+	}
+
+	&__header {
+		font-weight: bold;
+		margin-top: rem-calc(20);
+	}
+
+	// &__body {
+	// 	@include breakpoint(large) {
+	// 		padding-right: 1rem;
+	// 		@include featured-text();
+	// 	}
+	// }
 }
 
 </style>
