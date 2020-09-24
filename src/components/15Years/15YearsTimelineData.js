@@ -6,7 +6,7 @@ export default [
 		year: '2005',
 		title: 'Humble but strong beginnings',
 		blurb: 'Kiva lenders make Kiva’s first loan to a woman named Elizabeth, who expanded her fishing business in Uganda. PayPal joins Kiva, providing free payment processing and ensuring 100% of every dollar lent goes to funding loans.',
-		sticker: '2005-2.png',
+		sticker: '2005-2.svg',
 		cta: 'Lend now',
 		link: '/lend',
 	},
@@ -14,7 +14,7 @@ export default [
 		year: '2006',
 		title: 'Supporting women everywhere',
 		blurb: 'After a year as an organization, the Kiva community has funded over $1 million in loans to women.',
-		sticker: 'Repaid.png',
+		sticker: 'Repaid.svg',
 		cta: 'Lend to women',
 		link: '/lend-by-category/women'
 	},
@@ -30,7 +30,7 @@ export default [
 		year: '2008',
 		title: 'Recognized as one of the best',
 		blurb: 'The Skoll Foundation grants Kiva $1 million, recognizing Kiva as one of the world’s best social enterprises.',
-		sticker: 'Partner-1.png',
+		sticker: 'Partner-1.svg',
 		cta: 'Our partners',
 		link: '/partner-with-us/our-partners'
 	},
@@ -38,7 +38,7 @@ export default [
 		year: '2009',
 		title: 'Lending a hand to 300,000 people',
 		blurb: 'After four years, Kiva has funded nearly 300,000 borrowers and distributed over $112 million in loans.',
-		sticker: 'BorrowerWeb.png',
+		sticker: 'BorrowerWeb.svg',
 		cta: 'Lend now',
 		link: '/lend'
 	},
@@ -62,7 +62,7 @@ export default [
 		year: '2012',
 		title: 'Half a million helped',
 		blurb: 'After seven years, Kiva has funded 500,000 borrowers in 73 different countries, thanks to a large network of Field Partners and lenders.',
-		sticker: 'BorrowerWeb-2.png',
+		sticker: 'BorrowerWeb-2.svg',
 		cta: 'Lend now',
 		link: '/lend'
 	},
@@ -102,7 +102,7 @@ export default [
 		year: '2017',
 		title: '2.8 million borrowers funded',
 		blurb: '1.4 million loans have been funded around the world after 12 years as an organization with a 96% repayment rate.',
-		sticker: 'Repayment-2.png',
+		sticker: 'Repayment-2.svg',
 		cta: 'Lend now',
 		link: '/lend'
 	},
