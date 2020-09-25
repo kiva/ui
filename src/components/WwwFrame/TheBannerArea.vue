@@ -2,7 +2,6 @@
 	<div>
 		<global-promo-contentful
 			:has-promo-session="hasPromoSession"
-			:appeal-match-enabled="appealMatchEnabled"
 		/>
 	</div>
 </template>
@@ -29,18 +28,6 @@ export default {
 		query: appealBannerQuery,
 		preFetch: true,
 		result({ data }) {
-			try {
-				this.appealEnabled = JSON.parse(_get(data, 'general.appeal_enabled.value', false));
-			} catch (e) {
-				this.appealEnabled = false;
-			}
-
-			try {
-				this.appealMatchEnabled = JSON.parse(_get(data, 'general.appeal_match_enabled.value', false));
-			} catch (e) {
-				this.appealMatchEnabled = false;
-			}
-
 			// Used for calculating if the user has a promotional balance
 			const promoBalance = numeral(_get(data, 'my.userAccount.promoBalance')).value();
 			const basketPromoBalance = numeral(_get(data, 'shop.totals.redemptionCodeAvailableTotal')).value();
