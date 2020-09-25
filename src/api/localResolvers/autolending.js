@@ -104,7 +104,7 @@ function convertLegacyProfile(profile) {
 	const defaultRiskRating = riskRating ? {
 		...riskRating,
 		min: integerRiskRating,
-	} : null;
+	} : riskRating;
 
 	// Convert legacy loan term value to 6, 12, 18, or 24
 	let termMax = _get(lenderTerm, 'max');
