@@ -80,7 +80,7 @@ export default config => {
 	}
 
 	// PerimeterX snippet
-	if (config.enablePerimeterx && !optout) {
+	if (config.enablePerimeterx) {
 		/* eslint-disable */
 		(function(){
 			window._pxAppId = config.perimeterxAppId;

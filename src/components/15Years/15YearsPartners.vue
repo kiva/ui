@@ -54,7 +54,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-paypal.svg"
+										src="@/assets/images/15-years/partners/Partner-paypal.svg"
 										alt="PayPal"
 										loading="lazy"
 									>
@@ -95,7 +95,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-mastercard.svg"
+										src="@/assets/images/15-years/partners/Partner-mastercard.svg"
 										alt="Mastercard Foundation"
 										loading="lazy"
 									>
@@ -136,7 +136,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-ebay.svg"
+										src="@/assets/images/15-years/partners/Partner-ebay.svg"
 										alt="Ebay"
 										loading="lazy"
 									>
@@ -177,7 +177,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-visa.svg"
+										src="@/assets/images/15-years/partners/Partner-visa.svg"
 										alt="Visa"
 										loading="lazy"
 									>
@@ -218,7 +218,7 @@
 								<div class="strategic-partners__logo-wrapper">
 									<img
 										class="strategic-partners__logo"
-										src="@/assets/images/15-years/stickers/Partner-skoll.svg"
+										src="@/assets/images/15-years/partners/Partner-skoll.svg"
 										alt="Skoll + DFC"
 										loading="lazy"
 									>
@@ -254,20 +254,19 @@
 						</li>
 					</ul>
 				</section>
-				<!-- TODO This section is copied from the IWD page. -->
 				<section class="matching-partners text-center">
 					<div class="matching-partners__selected">
 						<h4>
-							Strategic partners matching your loans this month
+							Strategic partners supporting this celebration
 						</h4>
-						<ul class="matching-partners__list row">
+						<ul class="matching-partners__list row align-center">
 							<li
 								class="matching-partners__li small-6 large-4 columns"
 							>
 								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-fossil.svg"
-									alt="Fossil Foundation"
+									class="matching-partners__logo matching-partners__logo--chess"
+									src="@/assets/images/15-years/partners/Partner-chess24.svg"
+									alt="Chess24"
 									loading="lazy"
 								>
 							</li>
@@ -275,9 +274,9 @@
 								class="matching-partners__li small-6 large-4 columns"
 							>
 								<img
-									class="matching-partners__logo matching-partners__logo--ebay"
-									src="@/assets/images/iwd/partner-ebay.svg"
-									alt="eBay"
+									class="matching-partners__logo matching-partners__logo--cisco"
+									src="@/assets/images/15-years/partners/Partner-cisco.svg"
+									alt="Cisco"
 									loading="lazy"
 								>
 							</li>
@@ -285,9 +284,9 @@
 								class="matching-partners__li small-6 large-4 columns"
 							>
 								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-boa.svg"
-									alt="Bank of America"
+									class="matching-partners__logo matching-partners__logo--paypal"
+									src="@/assets/images/15-years/partners/Partner-paypal-bw.svg"
+									alt="Paypal"
 									loading="lazy"
 								>
 							</li>
@@ -295,63 +294,16 @@
 								class="matching-partners__li small-6 large-4 columns"
 							>
 								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-wage.svg"
+									class="matching-partners__logo matching-partners__logo--women"
+									src="@/assets/images/15-years/partners/Partner-women.svg"
 									alt="Women and Girls Empowered"
 									loading="lazy"
 								>
 							</li>
-							<li
-								class="matching-partners__li small-6 large-4 columns"
-							>
-								<img
-									class="matching-partners__logo matching-partners__logo--visa"
-									src="@/assets/images/iwd/partner-visa.png"
-									alt="Visa Foundation"
-									loading="lazy"
-								>
-							</li>
-							<li
-								class="matching-partners__li small-6 large-4 columns"
-							>
-								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-cartier.svg"
-									alt="Cartier"
-									loading="lazy"
-								>
-							</li>
-							<li
-								class="matching-partners__li small-6 large-4 columns"
-							>
-								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-sp-global.svg"
-									alt="S&amp;P Global Foundation"
-									loading="lazy"
-								>
-							</li>
-							<li
-								class="matching-partners__li small-6 large-4 columns"
-							>
-								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-grameen.svg"
-									alt="Grameen Foundation"
-									loading="lazy"
-								>
-							</li>
-							<li
-								class="matching-partners__li small-6 large-4 columns"
-							>
-								<img
-									class="matching-partners__logo"
-									src="@/assets/images/iwd/partner-principle.svg"
-									alt="Principle Foundation"
-									loading="lazy"
-								>
-							</li>
 						</ul>
+						<fifteen-years-button href="https://kiva.global/partner-with-us/">
+							Partner with us
+						</fifteen-years-button>
 					</div>
 				</section>
 			</div>
@@ -406,7 +358,8 @@ export default {
 	padding: rem-calc(105) 0;
 }
 
-.strategic-partners {
+.strategic-partners,
+.matching-partners {
 	margin-top: rem-calc(12);
 
 	@include breakpoint(large) {
@@ -416,7 +369,9 @@ export default {
 	@include breakpoint(xlarge) {
 		margin-top: rem-calc(53);
 	}
+}
 
+.strategic-partners {
 	h2 {
 		color: black;
 	}
@@ -552,48 +507,45 @@ export default {
 }
 
 .matching-partners {
+	h4 {
+		margin-top: 7rem;
+	}
+
 	&__selected {
-		max-width: 33rem;
+		max-width: 30rem;
 		margin: 0 auto;
 	}
 
 	&__list {
 		list-style: none;
-		margin-bottom: 2rem;
-		filter: grayscale(100%); // TODO: If we're positive we're grayscaling all the logos we should do so in SVG
+		margin: 5rem 0 3.5rem 0;
 	}
 
 	&__li {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding-top: 1rem;
-		padding-bottom: 1rem;
-
-		@include breakpoint("large") {
-			&:nth-of-type(3n + 1) {
-				// first column
-				justify-content: flex-start;
-			}
-
-			&:nth-of-type(3n + 3) {
-				// last column
-				justify-content: flex-end;
-			}
-		}
+		padding: 0 1rem 3rem 1rem;
 	}
 
 	&__logo {
-		width: 66%;
+		width: 100%;
 		height: auto;
 
-		&--ebay {
-			width: 50%;
+		&--women {
+			width: rem-calc(112);
 		}
 
-		&--visa {
-			width: 45%;
-			opacity: 0.7;
+		&--cisco {
+			width: rem-calc(112);
+		}
+
+		&--paypal {
+			width: rem-calc(140);
+		}
+
+		&--chess {
+			width: rem-calc(141);
 		}
 	}
 }

@@ -67,16 +67,16 @@ export default {
 	background-color: $mint;
 	color: $twilight;
 	border: rem-calc(2) solid $mint;
-	padding: rem-calc(16) rem-calc(32);
+	padding: rem-calc(16) rem-calc(36);
 
 	@include breakpoint('large') {
-		padding: rem-calc(20) rem-calc(40);
+		padding: rem-calc(20) rem-calc(48);
 	}
 
 	&:hover {
 		text-decoration: none;
 		background-color: $twilight;
-		color: $mint;
+		color: $offwhite;
 		border-color: $twilight;
 	}
 

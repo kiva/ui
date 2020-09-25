@@ -93,6 +93,16 @@ export default [
 	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
 	{
+		path: '/cc/:dynamicRoute',
+		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
+		props: route => ({
+			dynamicRoute: route.params.dynamicRoute,
+			upc: route.query.upc,
+			promoCode: route.query.promoCode,
+			lendingReward: route.query.lendingReward
+		})
+	},
+	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
 		props: route => ({ category: route.query.category })

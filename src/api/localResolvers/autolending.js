@@ -101,6 +101,10 @@ function convertLegacyProfile(profile) {
 	const riskRatingMin = _get(riskRating, 'min') || 0;
 	const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
 	const integerRiskRating = Math.ceil(boundedRiskRating);
+	const defaultRiskRating = riskRating ? {
+		...riskRating,
+		min: integerRiskRating,
+	} : riskRating;
 
 	// Convert legacy loan term value to 6, 12, 18, or 24
 	let termMax = _get(lenderTerm, 'max');
@@ -127,10 +131,7 @@ function convertLegacyProfile(profile) {
 					min: 0,
 					max: termMax,
 				},
-				riskRating: {
-					...riskRating,
-					min: integerRiskRating,
-				}
+				riskRating: defaultRiskRating
 			},
 			// Fix keyword to be null
 			queryString: null,
