@@ -165,9 +165,9 @@ export default {
 		}
 	}
 
-	&--has-video {
+	// &--has-video {
 
-	}
+	// }
 
 	&__portrait-wrapper {
 		position: absolute;
