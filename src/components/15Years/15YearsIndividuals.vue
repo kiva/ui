@@ -1,10 +1,11 @@
 <template>
 	<div class="individuals section">
 		<div class="row">
-			<div class="columns">
-				<fifteen-years-section-header>
+			<div class="columns individuals__wrapper">
+				<fifteen-years-popcorn class="individuals__popcorn" />
+				<fifteen-years-section-header class="individuals__header">
 					<template v-slot:header>
-						The World of Kiva
+						The World <br class="lo xlo"> of Kiva
 					</template>
 					<template v-slot:subhead>
 						The people who<br class="smo"><br class="xxlu"> make it happen
@@ -12,48 +13,15 @@
 				</fifteen-years-section-header>
 
 				<div class="individuals__profile-nav-wrap">
-					<!-- TODO: hide from screenreaders while lightbox is open -->
-					<fifteen-years-individuals-profile
-						:person="selectedPerson"
-						class="individuals__profile"
-					/>
-					<fifteen-years-lightbox
-						:visible="isShowingFullProfile"
-						title="The World of Kiva"
-						@lightbox-closed="isShowingFullProfile = false"
-					>
+					<div class="individuals__profile">
+						<!-- TODO: hide from screenreaders while lightbox is open -->
 						<fifteen-years-individuals-profile
 							:person="selectedPerson"
-							:expanded="true"
+							class="individuals__profile"
+							@show-next-person="showPerson(nextIndex)"
+							@show-full-profile="isShowingFullProfile = true"
 						/>
-
-						<template v-slot:controls>
-							<fifteen-years-button
-								@click="showPerson(previousIndex)"
-								variant="white"
-							>
-								Prev
-							</fifteen-years-button>
-
-							<span>
-								{{ currentIndex + 1 }} of {{ people.length }}
-							</span>
-
-							<fifteen-years-button
-								@click="showPerson(nextIndex)"
-								variant="white"
-							>
-								Next
-							</fifteen-years-button>
-						</template>
-					</fifteen-years-lightbox>
-
-					<fifteen-years-button
-						class="individuals__read-more-btn"
-						@click="isShowingFullProfile = true"
-					>
-						Read More
-					</fifteen-years-button>
+					</div>
 
 					<div class="individuals__nav">
 						<ul class="individuals__nav-names name-nav">
@@ -66,57 +34,128 @@
 									class="name-nav__btn"
 									:class="index === currentIndex ? 'name-nav__btn--selected' : ''"
 									@click="showPerson(index)"
+									@mouseenter="preloadPortrait(index)"
 								>
 									<span class="name-nav__index">{{ doubleDigit(index) }}</span>
-									<span>{{ person.name }}</span>
+									<span class="name-nav__name">{{ person.name }}</span>
 								</button>
 							</li>
 						</ul>
 
-						<fifteen-years-button
-							@click="showPerson(previousIndex)"
-							variant="white"
-						>
-							Prev
-						</fifteen-years-button>
+						<div class="prevnext prevnext--odd-desktop">
+							<button
+								class="prevnext__btn prevnext__btn--prev"
+								@click="showPerson(previousIndex)"
+							>
+								<kv-icon
+									class="prevnext__btn-icon"
+									name="fat-chevron"
+									:from-sprite="true"
+								/>
+								<span class="prevnext__btn-text">
+									Prev
+								</span>
+							</button>
 
-						<span class="name-nav__1of">
-							{{ currentIndex + 1 }} of {{ people.length }}
-						</span>
+							<span class="prevnext__indicator">
+								{{ currentIndex + 1 }} of {{ people.length }}
+							</span>
 
-						<fifteen-years-button
-							@click="showPerson(nextIndex)"
-							variant="white"
-						>
-							Next
-						</fifteen-years-button>
+							<button
+								class="prevnext__btn prevnext__btn--next"
+								@click="showPerson(nextIndex)"
+							>
+								<span class="prevnext__btn-text">
+									Next
+								</span>
+								<kv-icon
+									class="prevnext__btn-icon"
+									name="fat-chevron"
+									:from-sprite="true"
+								/>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<fifteen-years-lightbox
+			:visible="isShowingFullProfile"
+			title="The World of Kiva"
+			ref="lightbox"
+			@lightbox-closed="isShowingFullProfile = false"
+		>
+			<fifteen-years-individuals-profile
+				:person="selectedPerson"
+				:expanded="true"
+			/>
+
+			<template v-slot:controls>
+				<div class="prevnext">
+					<button
+						class="prevnext__btn prevnext__btn--prev"
+						@click="showPerson(previousIndex)"
+					>
+						<kv-icon
+							class="prevnext__btn-icon"
+							name="fat-chevron"
+							:from-sprite="true"
+						/>
+						<span class="prevnext__btn-text">
+							Prev
+						</span>
+					</button>
+
+					<span class="prevnext__indicator">
+						{{ currentIndex + 1 }} of {{ people.length }}
+					</span>
+
+					<button
+						class="prevnext__btn prevnext__btn--next"
+						@click="showPerson(nextIndex)"
+					>
+						<span class="prevnext__btn-text">
+							Next
+						</span>
+						<kv-icon
+							class="prevnext__btn-icon"
+							name="fat-chevron"
+							:from-sprite="true"
+						/>
+					</button>
+				</div>
+			</template>
+		</fifteen-years-lightbox>
 	</div>
 </template>
 
 <script>
-import FifteenYearsButton from './15YearsButton';
+import { checkWebpSupport, checkAvifSupport, preloadImage } from '@/util/imageUtils';
+
+import KvIcon from '@/components/Kv/KvIcon';
 import FifteenYearsIndividualsProfile from './15YearsIndividualsProfile';
 import FifteenYearsLightbox from './15YearsLightbox';
+import FifteenYearsPopcorn from './15YearsPopcorn';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
 import peopleData from './15YearsIndividualsData';
 
+const imageRequire = require.context('@/assets/images/15-years/profiles', true);
+
 export default {
 	components: {
-		FifteenYearsButton,
 		FifteenYearsIndividualsProfile,
 		FifteenYearsLightbox,
+		FifteenYearsPopcorn,
 		FifteenYearsSectionHeader,
+		KvIcon
 	},
 	data() {
 		return {
 			people: peopleData,
 			currentIndex: 0,
-			isShowingFullProfile: false
+			isShowingFullProfile: false,
 		};
 	},
 	computed: {
@@ -141,10 +180,32 @@ export default {
 	methods: {
 		showPerson(index) {
 			this.currentIndex = index;
+			this.$refs.lightbox.resetContentScroll();
+
+			this.preloadPortrait(this.previousIndex);
+			this.preloadPortrait(this.nextIndex);
 		},
 		doubleDigit(num) {
 			return num < 10 ? `0${num}` : num;
+		},
+		preloadPortrait(personIndex) {
+			const personImg = this.people[personIndex].img;
+
+			if (this.browserSupportsAvif) {
+				preloadImage(imageRequire(`./${personImg}.avif`));
+			} else if (this.browserSupportsWebp) {
+				preloadImage(imageRequire(`./${personImg}.webp`));
+			} else {
+				preloadImage(imageRequire(`./${personImg}.png`));
+			}
 		}
+	},
+	async mounted() {
+		this.browserSupportsWebp = await checkWebpSupport();
+		this.browserSupportsAvif = await checkAvifSupport();
+
+		this.preloadPortrait(this.previousIndex);
+		this.preloadPortrait(this.nextIndex);
 	}
 };
 </script>
@@ -154,8 +215,26 @@ export default {
 @import 'components/15-years/15-years';
 
 .individuals {
+	$prev-next-size: rem-calc(75);
+
 	background: $tomato;
 	color: #fff;
+
+	@include breakpoint('xxlarge') {
+		padding-bottom: 0 !important; // make sure the outer css doesn't win
+	}
+
+	&__wrapper {
+		position: relative;
+	}
+
+	&__header {
+		margin-bottom: 2rem;
+
+		@include breakpoint('xxlarge') {
+			margin-bottom: 4rem;
+		}
+	}
 
 	&__profile-nav-wrap {
 		@include breakpoint('xxlarge') {
@@ -164,18 +243,21 @@ export default {
 	}
 
 	&__profile {
-		max-height: 20rem;
-		overflow: hidden;
+		flex: 1;
+	}
 
+	&__learn-more-btn {
 		@include breakpoint('xxlarge') {
-			max-height: auto;
-			flex: 1;
+			display: none;
 		}
 	}
 
-	&__read-more-btn {
+	&__next-story-btn {
+		display: none;
+
 		@include breakpoint('xxlarge') {
-			display: none;
+			display: inline-block;
+			margin-left: auto;
 		}
 	}
 
@@ -183,7 +265,8 @@ export default {
 		@include breakpoint('xxlarge') {
 			flex-shrink: 0;
 			order: -1;
-			margin-right: 1rem;
+			margin-right: 2rem;
+			margin-bottom: 5.5rem;
 		}
 	}
 
@@ -192,13 +275,122 @@ export default {
 
 		@include breakpoint('xxlarge') {
 			display: block;
+			padding-bottom: 1.5rem;
+			border-bottom: 1px solid $offwhite;
+			margin-bottom: 1.5rem;
+		}
+	}
+
+	&__popcorn {
+		display: none;
+
+		@include breakpoint('large') {
+			display: block;
+			width: 12.5rem;
+			position: absolute;
+			right: -10%;
+			top: 1rem;
+		}
+
+		@include breakpoint('xxlarge') {
+			right: -20%;
+			top: 5rem;
+		}
+	}
+}
+
+/* begin prevnext: TODO dedupe */
+.prevnext {
+	@include h5();
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	&__btn-text {
+		border-radius: rem-calc(16);
+		padding: rem-calc(2) rem-calc(8);
+		border: rem-calc(2) solid transparent;
+	}
+
+	&__btn-icon {
+		width: rem-calc(20);
+		height: rem-calc(11);
+	}
+
+	&__btn {
+		@include h5();
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		fill: $offwhite;
+		color: $offwhite;
+
+		&--prev {
+			.prevnext__btn-icon {
+				transform: rotate(90deg);
+			}
+		}
+
+		&--next {
+			.prevnext__btn-icon {
+				transform: rotate(-90deg);
+			}
+		}
+
+		&:hover {
+			.prevnext__btn-text {
+				background: #000;
+				color: $offwhite;
+				border: rem-calc(2) solid #fff;
+			}
+
+			.prevnext__btn-icon {
+				fill: $mint;
+			}
+		}
+
+		&:focus {
+			outline: 0;
+
+			.prevnext__btn-text {
+				border: rem-calc(2) solid $mint;
+			}
+		}
+
+		&[disabled] {
+			visibility: hidden;
+		}
+	}
+
+	&--odd-desktop {
+		@include breakpoint('xxlarge') {
+			justify-content: space-evenly;
+
+			.prevnext__btn-text,
+			.prevnext__indicator {
+				display: none;
+			}
+
+			.prevnext__btn--next .prevnext__btn-icon {
+				transform: rotate(0deg);
+			}
+
+			.prevnext__btn--prev .prevnext__btn-icon {
+				transform: rotate(180deg);
+			}
 		}
 	}
 }
 
 .name-nav {
 	&__li {
-		margin: 0 0 1rem 0;
+		margin: 0 0 0.675rem 0;
+
+		&:last-child {
+			margin: 0;
+		}
 	}
 
 	&__btn {
@@ -217,9 +409,12 @@ export default {
 	}
 
 	&__index {
-		display: inline-block;
 		font-variant-numeric: tabular-nums;
 		margin-right: 1rem;
+	}
+
+	&__name {
+		flex: 1;
 	}
 
 	&__1of {

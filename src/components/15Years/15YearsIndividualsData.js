@@ -129,7 +129,7 @@ export default [
 		title: 'Lending Power Couple',
 		img: 'drew-allie',
 		body: `<p>
-			Lorem ipsum cillum eiusmod culpa minim do adipisicing labore nisi in veniam excepteur amet eu. Aliquip veniam ut ea do nulla commodo. Eu in qui aute id ex culpa id eiusmod nostrud sunt. Proident laboris amet consequat aliquip nostrud do reprehenderit. Labore occaecat occaecat sint consectetur sunt. Veniam sint do reprehenderit proident ut veniam minim amet sint sit.
+		Need content
 		</p>
 		`,
 		videoId: null,
@@ -165,7 +165,7 @@ export default [
 		title: 'The Local Changemaker',
 		img: 'need-content',
 		body: `<p>
-			Lorem ipsum cillum eiusmod culpa minim do adipisicing labore nisi in veniam excepteur amet eu. Aliquip veniam ut ea do nulla commodo. Eu in qui aute id ex culpa id eiusmod nostrud sunt. Proident laboris amet consequat aliquip nostrud do reprehenderit. Labore occaecat occaecat sint consectetur sunt. Veniam sint do reprehenderit proident ut veniam minim amet sint sit.
+		Need content
 		</p>
 		`,
 		videoId: null,
@@ -179,7 +179,7 @@ export default [
 		title: 'Protocol Practitioner',
 		img: 'rachel',
 		body: `<p>
-			Lorem ipsum cillum eiusmod culpa minim do adipisicing labore nisi in veniam excepteur amet eu. Aliquip veniam ut ea do nulla commodo. Eu in qui aute id ex culpa id eiusmod nostrud sunt. Proident laboris amet consequat aliquip nostrud do reprehenderit. Labore occaecat occaecat sint consectetur sunt. Veniam sint do reprehenderit proident ut veniam minim amet sint sit.
+		Need content
 		</p>
 		`,
 		videoId: null,
@@ -193,7 +193,7 @@ export default [
 		title: 'Refugee Advocate',
 		img: 'need-content',
 		body: `<p>
-			Lorem ipsum cillum eiusmod culpa minim do adipisicing labore nisi in veniam excepteur amet eu. Aliquip veniam ut ea do nulla commodo. Eu in qui aute id ex culpa id eiusmod nostrud sunt. Proident laboris amet consequat aliquip nostrud do reprehenderit. Labore occaecat occaecat sint consectetur sunt. Veniam sint do reprehenderit proident ut veniam minim amet sint sit.
+		Need content
 		</p>
 		`,
 		videoId: null,
@@ -235,7 +235,7 @@ export default [
 		title: 'Cross-Cultural Connector',
 		img: 'need-content',
 		body: `<p>
-			Lorem ipsum cillum eiusmod culpa minim do adipisicing labore nisi in veniam excepteur amet eu. Aliquip veniam ut ea do nulla commodo. Eu in qui aute id ex culpa id eiusmod nostrud sunt. Proident laboris amet consequat aliquip nostrud do reprehenderit. Labore occaecat occaecat sint consectetur sunt. Veniam sint do reprehenderit proident ut veniam minim amet sint sit.
+		Need content
 		</p>
 		`,
 		videoId: null,

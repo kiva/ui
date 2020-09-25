@@ -1,7 +1,7 @@
 <template>
 	<div
 		v-show="isShown"
-		class="kv-lightbox-wrap"
+		class="lightbox-wrap"
 		:class="{'inverted': inverted}"
 		ref="kvlightbox"
 		@keyup.esc="closeLightbox"
@@ -11,35 +11,35 @@
 	>
 		<focus-lock :disabled="!isShown">
 			<div
-				class="kv-lightbox row"
+				class="lightbox"
 				role="document"
 			>
 				<div
-					class="lightbox-content columns"
+					class="lightbox-container"
 					@click.stop
 				>
-					<div class="section">
-						<div class="lightbox-header">
-							<strong
-								class="lightbox-title"
-								id="lightbox-title"
-							>
-								{{ title }}
-							</strong>
-							<button
-								@click.stop.prevent="closeLightbox"
-								class="lightbox-close-btn"
-								aria-label="Close"
-							>
-								<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" />
-							</button>
-						</div>
+					<div class="lightbox-header">
+						<strong
+							class="lightbox-title"
+							id="lightbox-title"
+						>
+							{{ title }}
+						</strong>
+						<button
+							@click.stop.prevent="closeLightbox"
+							class="lightbox-close-btn"
+							aria-label="Close"
+						>
+							<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" />
+						</button>
+					</div>
+					<div class="lightbox-body-wrap" ref="content">
 						<div class="lightbox-body">
 							<slot>Lightbox content</slot>
 						</div>
-						<div class="lightbox-controls">
-							<slot name="controls"></slot>
-						</div>
+					</div>
+					<div class="lightbox-controls">
+						<slot name="controls"></slot>
 					</div>
 				</div>
 			</div>
@@ -97,6 +97,7 @@ export default {
 			this.isShown = this.visible;
 			if (this.isShown) {
 				this.$nextTick(() => {
+					this.resetContentScroll();
 					this.lockScroll();
 				});
 			} else {
@@ -119,6 +120,9 @@ export default {
 			// remove scroll lock class from body
 			this.unlockScroll();
 		},
+		resetContentScroll() {
+			this.$refs.content.scrollTop = 0;
+		}
 	}
 };
 </script>
@@ -127,7 +131,7 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
-.kv-lightbox-wrap {
+.lightbox-wrap {
 	display: block;
 	position: fixed;
 	top: 0;
@@ -135,60 +139,91 @@ export default {
 	left: 0;
 	bottom: 0;
 	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
 	z-index: 1500;
 	max-height: 100vh;
 	background: $tomato;
 	color: #fff;
+}
 
-	.kv-lightbox {
-		z-index: 1502;
+.lightbox {
+	z-index: 1502;
+}
 
-		.lightbox-content {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			display: flex;
-			flex-direction: column;
-		}
+.lightbox-container {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+}
 
-		.lightbox-body {
-			flex: 1;
-			overflow: auto;
-		}
+.lightbox-body-wrap {
+	flex: 1;
+	height: 100%;
+	overflow: auto;
+	position: relative;
 
-		.lightbox-controls,
-		.lightbox-header {
-			flex-shrink: 0;
-		}
+	&::after {
+		content: '';
+		display: block;
+		position: sticky;
+		height: rem-calc(100);
+		bottom: 0;
+		width: 100%;
+		background: linear-gradient(to bottom, rgba($tomato, 0), rgba($tomato, 1));
+		pointer-events: none;
+	}
+}
 
-		.lightbox-header {
-			display: flex;
-		}
+.lightbox-body {
+	padding: 0 rem-calc(23) rem-calc(23);
 
-		.lightbox-title {
-			padding-right: 1rem;
-			flex: 1;
-		}
+	@include breakpoint('large') {
+		padding: 0 rem-calc(71) rem-calc(23);
+	}
+}
 
-		.lightbox-close-btn {
-			flex-shrink: 0;
+.lightbox-controls,
+.lightbox-header {
+	padding: rem-calc(23);
+	flex-shrink: 0;
 
-			.icon-small-x {
-				height: 1.5rem;
-				width: 1.5rem;
-				fill: $offwhite;
-				transition: fill 0.16s linear;
-			}
+	@include breakpoint('large') {
+		padding: rem-calc(23) rem-calc(71);
+	}
+}
 
-			&:hover {
-				.icon-small-x {
-					fill: #fff;
-				}
-			}
+.lightbox-header {
+	display: flex;
+	border-bottom: rem-calc(1) solid $offwhite;
+}
+
+.lightbox-controls {
+	border-top: rem-calc(1) solid $offwhite;
+}
+
+.lightbox-title {
+	padding-right: 1rem;
+	flex: 1;
+}
+
+.lightbox-close-btn {
+	flex-shrink: 0;
+
+	.icon-small-x {
+		height: 1.5rem;
+		width: 1.5rem;
+		fill: $offwhite;
+		transition: fill 0.16s linear;
+	}
+
+	&:hover {
+		.icon-small-x {
+			fill: #fff;
 		}
 	}
 }
+
 </style>
