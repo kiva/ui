@@ -1,27 +1,28 @@
-import Vue from 'vue'
-import StoryRouter from 'storybook-vue-router';
+import Vue from "vue";
+import StoryRouter from "storybook-vue-router";
+import { withKnobs, text, object } from "@storybook/addon-knobs";
 
 // import plugins
-import kivaPlugins from '@/plugins';
-Vue.use(kivaPlugins)
+import kivaPlugins from "@/plugins";
+Vue.use(kivaPlugins);
 
-import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
-import FifteenYears from '@/pages/15Years/15Years';
-import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
-import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
-import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
-import FifteenYearsPartners from '@/components/15Years/15YearsPartners';
-import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
-import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
+import AppealBanner15 from "@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15";
+import FifteenYears from "@/pages/15Years/15Years";
+import FifteenYearsHeader from "@/components/15Years/15YearsHeader";
+import FifteenYearsHowKivaWorks from "@/components/15Years/15YearsHowKivaWorks";
+import FifteenYearsIndividuals from "@/components/15Years/15YearsIndividuals";
+import FifteenYearsPartners from "@/components/15Years/15YearsPartners";
+import FifteenYearsStyles from "@/components/15Years/15YearsStyles";
+import FifteenYearsTimeline from "@/components/15Years/15YearsTimeline";
 
-import apolloStoryMixin from '../mixins/apollo-story-mixin';
-import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
+import apolloStoryMixin from "../mixins/apollo-story-mixin";
+import kvAuth0StoryMixin from "../mixins/kv-auth0-story-mixin";
 
 // This decorator applies the 15 year styles to the individual components in storybook
 // so they can be viewed in the same way they're applied in the 15Year page.
 const FifteenYearsDecorator = () => ({
 	components: {
-		FifteenYearsStyles
+		FifteenYearsStyles,
 	},
 	template: `
 		<div>
@@ -59,12 +60,12 @@ const FifteenYearsDecorator = () => ({
 });
 
 export default {
-	title: 'Pages/15Years',
+	title: "Pages/15Years",
 	component: FifteenYears,
 	args: {},
 	argTypes: {},
-	layout: 'fullscreen',
-	decorators: [StoryRouter()]
+	layout: "fullscreen",
+	decorators: [StoryRouter(), withKnobs],
 };
 
 export const Combined = (args, { argTypes }) => ({
@@ -72,16 +73,52 @@ export const Combined = (args, { argTypes }) => ({
 	components: {
 		FifteenYears,
 	},
-	layout: 'fullscreen',
+	props: {
+		mainTextSubtitle: {
+			default: text(
+				"Main Text Subtitle",
+				"Join us in celebrating 15 years of impact by supporting 15,000 people around the world."
+			),
+		},
+		buttonCTAText: {
+			default: text("Button CTA Text", "Lend now"),
+		},
+		cardData: {
+			default: object("Card Data", [
+				{
+					title: "15 Years of Impact",
+					subtitle: "The history of Kiva, year by year",
+					href: "String",
+					imgSrc:
+						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
+				},
+				{
+					title: "The World of Kiva",
+					subtitle: "The people who make it happen",
+					href: "String",
+					imgSrc:
+						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
+				},
+				{
+					title: "Partners",
+					subtitle: "Organizations making a difference",
+					href: "String",
+					imgSrc:
+						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
+				},
+			]),
+		},
+	},
+	layout: "fullscreen",
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<div style="margin: -1rem;"><fifteen-years /></div>
+		<div style="margin: -1rem;"><fifteen-years :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/></div>
 	`,
 });
 
 export const AppealBanner = (args, { argTypes }) => ({
 	components: {
-		AppealBanner15
+		AppealBanner15,
 	},
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
@@ -93,19 +130,55 @@ AppealBanner.decorators = [FifteenYearsDecorator];
 
 export const Header = (args, { argTypes }) => ({
 	components: {
-		FifteenYearsHeader
+		FifteenYearsHeader,
 	},
-	props: Object.keys(argTypes),
+	// props: Object.keys(argTypes),
+	props: {
+		mainTextSubtitle: {
+			default: text(
+				"Main Text Subtitle",
+				"Join us in celebrating 15 years of impact by supporting 15,000 people around the world."
+			),
+		},
+		buttonCTAText: {
+			default: text("Button CTA Text", "Lend now"),
+		},
+		cardData: {
+			default: object("Card Data", [
+				{
+					title: "15 Years of Impact",
+					subtitle: "The history of Kiva, year by year",
+					href: "String",
+					imgSrc:
+						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
+				},
+				{
+					title: "The World of Kiva",
+					subtitle: "The people who make it happen",
+					href: "String",
+					imgSrc:
+						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
+				},
+				{
+					title: "Partners",
+					subtitle: "Organizations making a difference",
+					href: "String",
+					imgSrc:
+						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
+				},
+			]),
+		},
+	},
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<fifteen-years-header />
+		<fifteen-years-header :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/>
 	`,
 });
 Header.decorators = [FifteenYearsDecorator];
 
 export const Timeline = (args, { argTypes }) => ({
 	components: {
-		FifteenYearsTimeline
+		FifteenYearsTimeline,
 	},
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
@@ -117,7 +190,7 @@ Timeline.decorators = [FifteenYearsDecorator];
 
 export const Individuals = (args, { argTypes }) => ({
 	components: {
-		FifteenYearsIndividuals
+		FifteenYearsIndividuals,
 	},
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
@@ -130,7 +203,7 @@ Individuals.decorators = [FifteenYearsDecorator];
 
 export const Partners = (args, { argTypes }) => ({
 	components: {
-		FifteenYearsPartners
+		FifteenYearsPartners,
 	},
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
@@ -143,7 +216,7 @@ Partners.decorators = [FifteenYearsDecorator];
 
 export const HowKivaWorks = (args, { argTypes }) => ({
 	components: {
-		FifteenYearsHowKivaWorks
+		FifteenYearsHowKivaWorks,
 	},
 	props: Object.keys(argTypes),
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],

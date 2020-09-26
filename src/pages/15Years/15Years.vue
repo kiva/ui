@@ -1,13 +1,14 @@
 <template>
 	<div>
-		<www-page
-			:header-theme="headerTheme"
-			:footer-theme="footerTheme"
-		>
+		<www-page :header-theme="headerTheme" :footer-theme="footerTheme">
 			<div class="page-wrap">
 				<fifteen-years-styles>
 					<section>
-						<fifteen-years-header />
+						<fifteen-years-header
+							:mainTextSubtitle="mainTextSubtitle"
+							:buttonCTAText="buttonCTAText"
+							:cardData="cardData"
+						/>
 					</section>
 					<section>
 						<fifteen-years-timeline />
@@ -28,14 +29,17 @@
 </template>
 
 <script>
-import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
-import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
-import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
-import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
-import FifteenYearsPartners from '@/components/15Years/15YearsPartners';
-import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
-import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
-import WwwPage from '@/components/WwwFrame/WwwPage';
+import {
+	fifteenYearHeaderTheme,
+	fifteenYearFooterTheme,
+} from "@/util/siteThemes";
+import FifteenYearsHeader from "@/components/15Years/15YearsHeader";
+import FifteenYearsHowKivaWorks from "@/components/15Years/15YearsHowKivaWorks";
+import FifteenYearsIndividuals from "@/components/15Years/15YearsIndividuals";
+import FifteenYearsPartners from "@/components/15Years/15YearsPartners";
+import FifteenYearsStyles from "@/components/15Years/15YearsStyles";
+import FifteenYearsTimeline from "@/components/15Years/15YearsTimeline";
+import WwwPage from "@/components/WwwFrame/WwwPage";
 
 export default {
 	components: {
@@ -48,22 +52,28 @@ export default {
 		WwwPage,
 	},
 	metaInfo: {
-		title: '15 Years'
+		title: "15 Years",
+	},
+	props: {
+		mainTextSubtitle: String,
+		buttonCTAText: String,
+		cardData: Object,
 	},
 	data() {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
-			footerTheme: fifteenYearFooterTheme
+			footerTheme: fifteenYearFooterTheme,
 		};
 	},
 };
 </script>
 
 <style lang="scss">
-@import 'settings';
-@import 'components/15-years/15-years';
+@import "settings";
+@import "components/15-years/15-years";
 
-.page-wrap { // scootch the page behind the semi-transparent top nav
+.page-wrap {
+	// scootch the page behind the semi-transparent top nav
 	margin-top: rem-calc(-45);
 
 	@include breakpoint(large) {
@@ -71,7 +81,8 @@ export default {
 	}
 }
 
-.row { // the width of the comp is larger than our normal 990px
+.row {
+	// the width of the comp is larger than our normal 990px
 	max-width: rem-calc(1152);
 }
 </style>

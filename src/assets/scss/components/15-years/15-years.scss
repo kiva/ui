@@ -1,16 +1,28 @@
-$tomato: #CD4A3D;
-$mint: #9EEBD5;
-$sky: #B8CEF8;
-$twilight: #3E4653;
-$offwhite: #F8F8F8;
+$tomato: #cd4a3d;
+$mint: #9eebd5;
+$sky: #b8cef8;
+$twilight: #3e4653;
+$offwhite: #f8f8f8;
 
-$font-family-monospace: 'Roboto Mono', monospace;
+$font-family-monospace: "Roboto Mono", monospace;
 
 @mixin huge-headline() {
 	font-weight: bold;
 	font-size: rem-calc(96);
 	line-height: 1;
 	letter-spacing: rem-calc(-5);
+
+	@include breakpoint(small) {
+		font-size: rem-calc(68);
+	}
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(82);
+	}
+
+	@include breakpoint(xga) {
+		font-size: rem-calc(96);
+	}
 }
 
 @mixin h2() {
@@ -19,7 +31,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	font-weight: 700;
 	letter-spacing: -0.02em;
 
-	@include breakpoint('large') {
+	@include breakpoint("large") {
 		font-size: rem-calc(72);
 	}
 }
@@ -30,7 +42,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	line-height: 1.45;
 	letter-spacing: -0.02em;
 
-	@include breakpoint('large') {
+	@include breakpoint("large") {
 		font-size: rem-calc(48);
 	}
 }
@@ -42,7 +54,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	letter-spacing: -0.02em;
 	margin-bottom: 0.5em;
 
-	@include breakpoint('large') {
+	@include breakpoint("large") {
 		font-size: rem-calc(36);
 	}
 }
@@ -53,7 +65,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	line-height: 1.5;
 	text-transform: uppercase;
 
-	@include breakpoint('large') {
+	@include breakpoint("large") {
 		font-size: rem-calc(14);
 	}
 }
@@ -63,21 +75,44 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	letter-spacing: -0.02em;
 	line-height: 1.35;
 
-	@include breakpoint('large') {
+	@include breakpoint("large") {
 		font-size: rem-calc(16);
 	}
 }
 
 @mixin link() {
 	@include h5();
-
-	text-decoration: underline;
 	color: $twilight;
-	white-space: nowrap;
+	cursor: pointer;
+
+	img {
+		transition: transform 0.2s ease-in-out;
+	}
+
+	p {
+		text-decoration: underline;
+	}
+
+	h4 {
+		text-decoration: none;
+		font-style: normal;
+		font-weight: bold;
+		text-transform: none;
+	}
+
+	img {
+		transform: rotate(15deg);
+	}
 
 	&:hover {
 		text-decoration: none;
-		// background-color: $twilight;
-		// color: $offwhite;
+
+		p {
+			text-decoration: none;
+		}
+
+		img {
+			transform: rotate(0deg);
+		}
 	}
 }

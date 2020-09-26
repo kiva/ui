@@ -5,10 +5,10 @@
 </template>
 
 <style lang="scss">
-@import 'settings';
-@import 'components/15-years/15-years';
+@import "settings";
+@import "components/15-years/15-years";
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
 
 .fifteen-year-styled {
 	h2 {
@@ -31,23 +31,32 @@
 		@include body-text();
 	}
 
-	a {
-		@include link();
-	}
-
 	.section {
-		padding: rem-calc(36) rem-calc(8);
+		padding: rem-calc(96) rem-calc(8);
+		padding-bottom: 0;
+		min-height: 900px;
+		display: flex;
+		flex: 1;
+		flex-direction: column;
 
-		@include breakpoint('large') {
-			padding: rem-calc(52) rem-calc(56);
+		@include breakpoint("medium") {
+			padding: rem-calc(96) rem-calc(8);
+			padding-bottom: 0;
 		}
 
-		@include breakpoint('xxlarge') {
+		@include breakpoint("large") {
+			padding: rem-calc(96) rem-calc(56);
+			padding-bottom: 0;
+		}
+
+		@include breakpoint("xxlarge") {
 			padding: rem-calc(88) 0;
+			padding-bottom: 0;
 		}
 	}
 
-	.row { // the width of the comp is larger than our normal 990px
+	.row {
+		// the width of the comp is larger than our normal 990px
 		max-width: rem-calc(1152);
 	}
 }
