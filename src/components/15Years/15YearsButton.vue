@@ -55,8 +55,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
-@import "components/15-years/15-years";
+@import 'settings';
+@import 'components/15-years/15-years';
 
 .fifteen-yr-button {
 	@include h5();
@@ -71,7 +71,7 @@ export default {
 	transition: background-color 0.2s ease-out, color 0.2s ease-out,
 		border-color 0.2s ease-out;
 
-	@include breakpoint("large") {
+	@include breakpoint('large') {
 		padding: rem-calc(20) rem-calc(48);
 	}
 

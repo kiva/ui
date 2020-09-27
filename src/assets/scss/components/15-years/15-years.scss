@@ -1,19 +1,18 @@
-$tomato: #cd4a3d;
-$mint: #9eebd5;
-$sky: #b8cef8;
-$twilight: #3e4653;
-$offwhite: #f8f8f8;
+$tomato: #CD4A3D;
+$mint: #9EEBD5;
+$sky: #B8CEF8;
+$twilight: #3E4653;
+$offwhite: #F8F8F8;
 
-$font-family-monospace: "Roboto Mono", monospace;
+$font-family-monospace: 'Roboto Mono', monospace;
 
 @mixin huge-headline() {
 	font-weight: bold;
 	font-size: rem-calc(96);
 	line-height: 1;
 	letter-spacing: rem-calc(-5);
-
-	@include breakpoint(small) {
-		font-size: rem-calc(68);
+@include breakpoint(small) {
+	font-size: rem-calc(68);
 	}
 
 	@include breakpoint(medium) {
@@ -23,7 +22,7 @@ $font-family-monospace: "Roboto Mono", monospace;
 	@include breakpoint(xga) {
 		font-size: rem-calc(96);
 	}
-}
+	}
 
 @mixin h2() {
 	font-size: rem-calc(48);
@@ -31,7 +30,7 @@ $font-family-monospace: "Roboto Mono", monospace;
 	font-weight: 700;
 	letter-spacing: -0.02em;
 
-	@include breakpoint("large") {
+	@include breakpoint('large') {
 		font-size: rem-calc(72);
 	}
 }
@@ -42,7 +41,7 @@ $font-family-monospace: "Roboto Mono", monospace;
 	line-height: 1.45;
 	letter-spacing: -0.02em;
 
-	@include breakpoint("large") {
+	@include breakpoint('large') {
 		font-size: rem-calc(48);
 	}
 }
@@ -54,7 +53,7 @@ $font-family-monospace: "Roboto Mono", monospace;
 	letter-spacing: -0.02em;
 	margin-bottom: 0.5em;
 
-	@include breakpoint("large") {
+	@include breakpoint('large') {
 		font-size: rem-calc(36);
 	}
 }
@@ -65,7 +64,7 @@ $font-family-monospace: "Roboto Mono", monospace;
 	line-height: 1.5;
 	text-transform: uppercase;
 
-	@include breakpoint("large") {
+	@include breakpoint('large') {
 		font-size: rem-calc(14);
 	}
 }
@@ -75,7 +74,7 @@ $font-family-monospace: "Roboto Mono", monospace;
 	letter-spacing: -0.02em;
 	line-height: 1.35;
 
-	@include breakpoint("large") {
+	@include breakpoint('large') {
 		font-size: rem-calc(16);
 	}
 }
@@ -106,13 +105,12 @@ $font-family-monospace: "Roboto Mono", monospace;
 
 	&:hover {
 		text-decoration: none;
+p {
+	text-decoration: none;
+}
 
-		p {
-			text-decoration: none;
-		}
-
-		img {
-			transform: rotate(0deg);
-		}
+img {
+	transform: rotate(0deg);
+}
 	}
 }

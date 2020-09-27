@@ -4,10 +4,7 @@
 			<div class="row align-middle">
 				<div class="header__text small-12 large-4 columns">
 					<h1 class="header__headline">
-						<span class="header__headline-stroked no-wrap"
-							>Power in</span
-						>
-						Numbers
+						<span class="header__headline-stroked no-wrap">Power in</span> Numbers
 					</h1>
 					<p>
 						{{ mainTextSubtitle }}
@@ -17,9 +14,7 @@
 					</fifteen-years-button>
 				</div>
 
-				<div
-					class="header__globe small-12 large-offset-2 large-6 columns"
-				>
+				<div class="header__globe small-12 large-offset-2 large-6 columns">
 					<img
 						class="header__globe-img"
 						width="503"
@@ -50,8 +45,8 @@
 </template>
 
 <script>
-import FifteenYearsButton from "./15YearsButton";
-import FifteenYearsHeaderCard from "./15YearsHeaderCard.vue";
+import FifteenYearsButton from './15YearsButton';
+import FifteenYearsHeaderCard from "./15YearsHeaderCard";
 
 export default {
 	components: {
@@ -67,8 +62,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "settings";
-@import "components/15-years/15-years";
+@import 'settings';
+@import 'components/15-years/15-years';
 
 .header {
 	background: $offwhite;

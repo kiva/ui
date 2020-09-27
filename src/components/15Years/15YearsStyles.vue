@@ -5,10 +5,10 @@
 </template>
 
 <style lang="scss">
-@import "settings";
-@import "components/15-years/15-years";
+@import 'settings';
+@import 'components/15-years/15-years';
 
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
 
 .fifteen-year-styled {
 	h2 {
@@ -39,17 +39,17 @@
 		flex: 1;
 		flex-direction: column;
 
-		@include breakpoint("medium") {
+		@include breakpoint('medium') {
 			padding: rem-calc(96) rem-calc(8);
 			padding-bottom: 0;
 		}
 
-		@include breakpoint("large") {
+		@include breakpoint('large') {
 			padding: rem-calc(96) rem-calc(56);
 			padding-bottom: 0;
 		}
 
-		@include breakpoint("xxlarge") {
+		@include breakpoint('xxlarge') {
 			padding: rem-calc(88) 0;
 			padding-bottom: 0;
 		}
