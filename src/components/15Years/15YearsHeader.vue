@@ -1,5 +1,6 @@
 <template>
 	<div class="header section">
+		<oily-background />
 		<div class="row align-middle">
 			<div class="header__text small-12 large-4 columns">
 				<h1 class="header__headline">
@@ -28,10 +29,12 @@
 
 <script>
 import FifteenYearsButton from './15YearsButton';
+import OilyBackground from './Header/OilyBackground';
 
 export default {
 	components: {
-		FifteenYearsButton
+		FifteenYearsButton,
+		OilyBackground
 	}
 };
 </script>
@@ -59,5 +62,9 @@ export default {
 		-webkit-text-stroke: 1px $body-font-color;
 		-webkit-text-fill-color: $offwhite;
 	}
+}
+
+.header.section {
+	padding: 0;
 }
 </style>
