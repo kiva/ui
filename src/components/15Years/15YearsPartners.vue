@@ -487,7 +487,7 @@ export default {
 				height: 200px;
 				bottom: 0;
 				width: 100%;
-				background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 62%, rgba($offwhite, 1) 100%);
+				background: linear-gradient(to bottom, rgba($offwhite, 0) 62%, rgba($offwhite, 1) 100%);
 				opacity: 1;
 			}
 		}
