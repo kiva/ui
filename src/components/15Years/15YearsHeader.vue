@@ -15,16 +15,6 @@
 						{{ buttonCTAText }}
 					</fifteen-years-button>
 				</div>
-
-				<div class="header__globe small-12 large-offset-2 large-6 columns">
-					<img
-						class="header__globe-img"
-						width="503"
-						height="503"
-						src="@/assets/images/15-years/temp/globe.png"
-						alt=""
-					/>
-				</div>
 			</div>
 		</div>
 		<div class="header__cards-section">
