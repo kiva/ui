@@ -7,7 +7,11 @@
 			<div class="page-wrap">
 				<fifteen-years-styles>
 					<section>
-						<fifteen-years-header />
+						<fifteen-years-header
+							:mainTextSubtitle="mainTextSubtitle"
+							:buttonCTAText="buttonCTAText"
+							:cardData="cardData"
+						/>
 					</section>
 					<section>
 						<fifteen-years-timeline />
@@ -50,6 +54,11 @@ export default {
 	metaInfo: {
 		title: '15 Years'
 	},
+	props: {
+		mainTextSubtitle: String,
+		buttonCTAText: String,
+		cardData: Object,
+	},
 	data() {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
@@ -63,7 +72,8 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
-.page-wrap { // scootch the page behind the semi-transparent top nav
+.page-wrap {
+	// scootch the page behind the semi-transparent top nav
 	margin-top: rem-calc(-45);
 
 	@include breakpoint(large) {
@@ -71,7 +81,8 @@ export default {
 	}
 }
 
-.row { // the width of the comp is larger than our normal 990px
+.row {
+	// the width of the comp is larger than our normal 990px
 	max-width: rem-calc(1152);
 }
 </style>
