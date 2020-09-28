@@ -10,7 +10,7 @@ import {
 	GlobeKitView,
 	Lowpoly,
 	GKUtils,
-} from '../../../util/globe/globekit.esm';
+} from '../../util/globe/globekit.esm';
 
 // class DotCallout extends Callout {
 // 	createElement() {
@@ -33,7 +33,7 @@ import {
 // }
 
 export default {
-	name: 'Globe',
+	name: 'FifteenYearsGlobe',
 	mounted() {
 		console.log(this.$el);
 

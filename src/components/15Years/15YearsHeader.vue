@@ -1,7 +1,7 @@
 <template>
 	<div class="header section">
-		<globe />
-		<oily-background />
+		<fifteen-years-globe />
+		<fifteen-years-oily-background />
 		<div class="header__main-section">
 			<div class="row align-middle">
 				<div class="header__text small-12 large-6 xxlarge-5 columns">
@@ -36,15 +36,15 @@
 <script>
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
-import OilyBackground from './Header/OilyBackground';
-import Globe from './Header/Globe';
+import FifteenYearsOilyBackground from './15YearsOilyBackground';
+import FifteenYearsGlobe from './15YearsGlobe';
 
 export default {
 	components: {
 		FifteenYearsButton,
 		FifteenYearsHeaderCard,
-		OilyBackground,
-		Globe,
+		FifteenYearsOilyBackground,
+		FifteenYearsGlobe,
 	},
 	props: {
 		mainTextSubtitle: String,
