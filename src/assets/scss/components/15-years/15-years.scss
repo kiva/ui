@@ -83,34 +83,4 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	@include h5();
 	color: $twilight;
 	cursor: pointer;
-
-	img {
-		transition: transform 0.2s ease-in-out;
-	}
-
-	p {
-		text-decoration: underline;
-	}
-
-	h4 {
-		text-decoration: none;
-		font-style: normal;
-		font-weight: bold;
-		text-transform: none;
-	}
-
-	img {
-		transform: rotate(15deg);
-	}
-
-	&:hover {
-		text-decoration: none;
-p {
-	text-decoration: none;
-}
-
-img {
-	transform: rotate(0deg);
-}
-	}
 }

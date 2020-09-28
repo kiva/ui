@@ -32,7 +32,7 @@
 	}
 
 	.section {
-		padding: rem-calc(96) rem-calc(8);
+		padding: rem-calc(96) 0;
 		padding-bottom: 0;
 		min-height: 900px;
 		display: flex;
@@ -40,7 +40,7 @@
 		flex-direction: column;
 
 		@include breakpoint('medium') {
-			padding: rem-calc(96) rem-calc(8);
+			padding: rem-calc(96) 0;
 			padding-bottom: 0;
 		}
 

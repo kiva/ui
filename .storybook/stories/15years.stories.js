@@ -69,52 +69,52 @@ export default {
 };
 
 export const Combined = (args, { argTypes }) => ({
-	props: Object.keys(argTypes),
-	components: {
-		FifteenYears,
-	},
-	props: {
-		mainTextSubtitle: {
-			default: text(
-				"Main Text Subtitle",
-				"Join us in celebrating 15 years of impact by supporting 15,000 people around the world."
-			),
-		},
-		buttonCTAText: {
-			default: text("Button CTA Text", "Lend now"),
-		},
-		cardData: {
-			default: object("Card Data", [
-				{
-					title: "15 Years of Impact",
-					subtitle: "The history of Kiva, year by year",
-					href: "String",
-					imgSrc:
-						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
-				},
-				{
-					title: "The World of Kiva",
-					subtitle: "The people who make it happen",
-					href: "String",
-					imgSrc:
-						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
-				},
-				{
-					title: "Partners",
-					subtitle: "Organizations making a difference",
-					href: "String",
-					imgSrc:
-						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
-				},
-			]),
-		},
-	},
-	layout: "fullscreen",
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
-	template: `
+							props: Object.keys(argTypes),
+							components: {
+								FifteenYears,
+							},
+							props: {
+								mainTextSubtitle: {
+									default: text(
+										"Main Text Subtitle",
+										"Join us in celebrating 15 years of impact by supporting 15,000 people around the world."
+									),
+								},
+								buttonCTAText: {
+									default: text("Button CTA Text", "Lend now"),
+								},
+								cardData: {
+									default: object("Card Data", [
+										{
+											title: "15 Years of Impact",
+											subtitle: "The history of Kiva, year by year",
+											href: "String",
+											imgSrc: require("@/assets/images/15-years/stickers/Hearts02.svg"),
+											imgTilt:  5
+										},
+										{
+											title: "The World of Kiva",
+											subtitle: "The people who make it happen",
+											href: "String",
+											imgSrc: require("@/assets/images/15-years/stickers/Handshake.svg"),
+											imgTilt:  10
+										},
+										{
+											title: "Partners",
+											subtitle: "Organizations making a difference",
+											href: "String",
+											imgSrc: require("@/assets/images/15-years/stickers/PlanetEarth.svg"),
+											imgTilt:  15
+										},
+									]),
+								},
+							},
+							layout: "fullscreen",
+							mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+							template: `
 		<div style="margin: -1rem;"><fifteen-years :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/></div>
 	`,
-});
+						});
 
 export const AppealBanner = (args, { argTypes }) => ({
 	components: {
@@ -129,51 +129,51 @@ export const AppealBanner = (args, { argTypes }) => ({
 AppealBanner.decorators = [FifteenYearsDecorator];
 
 export const Header = (args, { argTypes }) => ({
-	components: {
-		FifteenYearsHeader,
-	},
-	// props: Object.keys(argTypes),
-	props: {
-		mainTextSubtitle: {
-			default: text(
-				"Main Text Subtitle",
-				"Join us in celebrating 15 years of impact by supporting 15,000 people around the world."
-			),
-		},
-		buttonCTAText: {
-			default: text("Button CTA Text", "Lend now"),
-		},
-		cardData: {
-			default: object("Card Data", [
-				{
-					title: "15 Years of Impact",
-					subtitle: "The history of Kiva, year by year",
-					href: "String",
-					imgSrc:
-						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
-				},
-				{
-					title: "The World of Kiva",
-					subtitle: "The people who make it happen",
-					href: "String",
-					imgSrc:
-						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
-				},
-				{
-					title: "Partners",
-					subtitle: "Organizations making a difference",
-					href: "String",
-					imgSrc:
-						"https://whereimfrom.com/wp-content/uploads/2019/03/BM-Logo-Sticker.png",
-				},
-			]),
-		},
-	},
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
-	template: `
+							components: {
+								FifteenYearsHeader,
+							},
+							// props: Object.keys(argTypes),
+							props: {
+								mainTextSubtitle: {
+									default: text(
+										"Main Text Subtitle",
+										"Join us in celebrating 15 years of impact by supporting 15,000 people around the world."
+									),
+								},
+								buttonCTAText: {
+									default: text("Button CTA Text", "Lend now"),
+								},
+								cardData: {
+									default: object("Card Data", [
+										{
+											title: "15 Years of Impact",
+											subtitle: "The history of Kiva, year by year",
+											href: "String",
+											imgSrc: require("@/assets/images/15-years/stickers/Hearts02.svg"),
+											imgTilt:  5
+										},
+										{
+											title: "The World of Kiva",
+											subtitle: "The people who make it happen",
+											href: "String",
+											imgSrc: require("@/assets/images/15-years/stickers/Handshake.svg"),
+											imgTilt:  10
+										},
+										{
+											title: "Partners",
+											subtitle: "Organizations making a difference",
+											href: "String",
+											imgSrc: require("@/assets/images/15-years/stickers/PlanetEarth.svg"),
+											imgTilt:  15
+										},
+									]),
+								},
+							},
+							mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+							template: `
 		<fifteen-years-header :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/>
 	`,
-});
+						});
 Header.decorators = [FifteenYearsDecorator];
 
 export const Timeline = (args, { argTypes }) => ({
