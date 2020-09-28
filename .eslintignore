@@ -3,4 +3,3 @@ config/*.js
 config/env/*.js
 server/index.template.html
 test/unit/karma.conf.js
-src/assets/js/*.js
