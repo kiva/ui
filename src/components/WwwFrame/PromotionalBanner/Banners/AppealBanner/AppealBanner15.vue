@@ -1,5 +1,5 @@
 <template>
-	<fifteen-years-styles class="appeal-15-wrapper">
+	<div class="appeal-15-wrapper">
 		<transition name="kvfastfade">
 			<!-- open banner -->
 			<div class="appeal-15-row appeal-15-row--open row align-center" v-if="open" key="openBanner">
@@ -43,17 +43,17 @@
 				</div>
 			</div>
 		</transition>
-	</fifteen-years-styles>
+	</div>
 </template>
 
 <script>
 import store2 from 'store2';
 import gql from 'graphql-tag';
+import { expand, collapse } from '@/util/expander';
 
 import FifteenYearsButton from '@/components/15Years/15YearsButton';
 import KvProgressCircle from '@/components/Kv/KvProgressCircle';
 import SwashieFace from '@/components/15Years/SwashieFace';
-import FifteenYearsStyles from '@/components/15Years/15YearsStyles';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -67,7 +67,6 @@ const recentFundedLoans = gql`query recentFundedLoans($start: Date!) {
 
 export default {
 	components: {
-		FifteenYearsStyles,
 		FifteenYearsButton,
 		KvProgressCircle,
 		SwashieFace
@@ -81,7 +80,7 @@ export default {
 	},
 	data() {
 		return {
-			open: true,
+			open: false,
 			fifteenYearGoalPercent: 0
 		};
 	},
@@ -94,10 +93,12 @@ export default {
 			};
 		},
 		result({ data }) {
+			// Default to 1 to avoid division by 0
+			const fundedGoal = this.appealBannerContent?.dataObject?.kiva15FundedLoansGoal || 1;
 			const numRecentFundedLoans = data?.general?.kivaStats?.numRecentFundedLoans || 0;
 			if (numRecentFundedLoans !== 0) {
 				this.fifteenYearGoalPercent = Math.round(
-					(numRecentFundedLoans / 15000) * 100
+					(numRecentFundedLoans / fundedGoal) * 100
 				);
 			}
 		},
@@ -131,11 +132,14 @@ export default {
 			return buttonText;
 		},
 	},
-	mounted() {
-		if (store2.session.get('appeal_banner_15_shrunk')) {
-			this.open = false;
-		} else {
-			this.open = true;
+	created() {
+		// Check to make sure we're on the client to prevent flash of unwanted banner state
+		if (!this.$isServer) {
+			if (store2.session.get('appeal_banner_15_shrunk')) {
+				this.open = false;
+			} else {
+				this.open = true;
+			}
 		}
 	},
 	methods: {
@@ -145,7 +149,24 @@ export default {
 		},
 		truncateStringToNumberOfWords(string, numberOfWords) {
 			return string.split(' ').splice(0, numberOfWords).join(' ');
-		}
+		},
+		// slide up / down transitions
+		enter(el, done) {
+			expand(el, {
+				property: 'height',
+				delay: 500,
+				easing: 'ease',
+				done,
+			});
+		},
+		leave(el, done) {
+			collapse(el, {
+				property: 'height',
+				delay: 500,
+				easing: 'ease',
+				done,
+			});
+		},
 	},
 };
 </script>
@@ -153,6 +174,20 @@ export default {
 <style lang='scss' scoped>
 @import 'settings';
 @import 'components/15-years/15-years';
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+h4 {
+	@include h4();
+}
+
+p {
+	@include body-text();
+}
+
+a {
+	@include link();
+}
 
 .appeal-15-wrapper {
 	border-bottom: 1px solid $twilight;

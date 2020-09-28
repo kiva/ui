@@ -120,7 +120,6 @@ export default {
 					}
 
 					// Check banner type
-
 					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
 						// Appeal Banner
 						this.appealEnabled = true;
