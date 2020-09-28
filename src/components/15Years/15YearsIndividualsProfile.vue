@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import gsap from 'gsap';
 import FifteenYearsButton from './15YearsButton';
 
 const imageRequire = require.context('@/assets/images/15-years/profiles', true);
