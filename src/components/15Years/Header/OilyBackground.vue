@@ -40,7 +40,7 @@ export default {
 					},
 					{
 						morphSVG: {
-							shape: p1.shape, shapeIndex: 0, type: (p.type || 'linear') 
+							shape: p1.shape, shapeIndex: 0, type: (p.type || 'linear')
 						},
 						ease: (p1.ease || standardEase),
 						duration: duration * p1.position
