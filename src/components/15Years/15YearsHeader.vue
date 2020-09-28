@@ -217,6 +217,7 @@ export default {
 			background-color 0.1s ease-out,
 			color 0.1s ease-out,
 			border-color 0.1s ease-out;
+
 	}
 }
 
