@@ -18,17 +18,17 @@
 </template>
 
 <script>
-import * as gsap from '../../../assets/js/components/15-years/gsap-core';
-import * as CustomEase from '../../../assets/js/components/15-years/CustomEase';
-import * as MorphSVGPlugin from '../../../assets/js/components/15-years/MorphSVGPlugin';
+import { gsap } from 'gsap';
+import * as CustomEase from '../../../util/animation/CustomEase';
+import * as MorphSVGPlugin from '../../../util/animation/MorphSVGPlugin';
 
 export default {
 	name: 'OilyBackground',
 	mounted() {
-		gsap.gsap.registerPlugin(MorphSVGPlugin, CustomEase);
+		gsap.registerPlugin(MorphSVGPlugin, CustomEase);
 		const standardEase = CustomEase.CustomEase.create('custom', 'M0,0,C0.025,0,0.975,1,1,1');
 		const createTimeline = function (id, path, duration) {
-			let tl = gsap.gsap.timeline({ repeat: -1 });
+			let tl = gsap.timeline({ repeat: -1 });
 			path.forEach((p, i) => {
 				if (i === 1) {
 					const p0 = path[0];
