@@ -28,6 +28,9 @@
 </template>
 
 <script>
+import Hearts02 from '@/assets/images/15-years/stickers/Hearts02.svg';
+import Handshake from '@/assets/images/15-years/stickers/Handshake.svg';
+import PlanetEarth from '@/assets/images/15-years/stickers/PlanetEarth.svg';
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
@@ -53,7 +56,32 @@ export default {
 	data() {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
-			footerTheme: fifteenYearFooterTheme
+			footerTheme: fifteenYearFooterTheme,
+			mainTextSubtitle: 'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.',
+			buttonCtaText: 'Lend now',
+			cardData: [
+				{
+					title: '15 Years of Impact',
+					subtitle: 'The history of Kiva, year by year',
+					href: '#15-years-of-impact',
+					imgSrc: Hearts02,
+					imgTilt: 5,
+				},
+				{
+					title: 'The World of Kiva',
+					subtitle: 'The people who make it happen',
+					href: '#world-of-kiva',
+					imgSrc: Handshake,
+					imgTilt: 10,
+				},
+				{
+					title: 'Partners',
+					subtitle: 'Organizations making a difference',
+					href: '#orgs-making-difference',
+					imgSrc: PlanetEarth,
+					imgTilt: 15,
+				},
+			],
 		};
 	},
 };

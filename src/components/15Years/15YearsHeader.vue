@@ -12,7 +12,7 @@
 						{{ mainTextSubtitle }}
 					</p>
 					<fifteen-years-button to="/help/">
-						{{ buttonCTAText }}
+						{{ buttonCtaText }}
 					</fifteen-years-button>
 				</div>
 			</div>
@@ -217,6 +217,7 @@ export default {
 			background-color 0.1s ease-out,
 			color 0.1s ease-out,
 			border-color 0.1s ease-out;
+
 	}
 }
 
