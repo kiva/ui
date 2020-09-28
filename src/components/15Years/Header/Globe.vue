@@ -83,14 +83,14 @@ export default {
 	left: calc(50% - 50vw + 24px);
 	top: 383px;
 
-	@include breakpoint(medium) {
+	@include breakpoint(large) {
 		width: 610px;
 		height: 610px;
 		left: calc(90.0480% - 305px);
 		top: 242px;
 	}
 
-	@include breakpoint(large) {
+	@include breakpoint(xxlarge) {
 		width: 540px;
 		height: 540px;
 		left: calc(69.3056% - 270px);
