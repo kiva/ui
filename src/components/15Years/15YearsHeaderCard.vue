@@ -50,8 +50,12 @@ a {
 	position: relative;
 	padding: 0 rem-calc(16);
 
+	@include breakpoint(large) {
+		padding: 0;
+	}
+
 	img {
-		transition: transform 0.2s ease-in-out;
+		transition: transform 0.15s ease-in-out;
 	}
 
 	p {
@@ -85,7 +89,7 @@ a {
 	&__card-content {
 		padding: 0;
 
-		@include breakpoint(large) {
+		@include breakpoint(xxlarge) {
 			padding: 0 rem-calc(48);
 		}
 	}
@@ -102,7 +106,7 @@ a {
 		}
 
 		// Desktop
-		@include breakpoint(xga) {
+		@include breakpoint(xxlarge) {
 			display: block;
 		}
 	}
@@ -110,7 +114,31 @@ a {
 	&__card-text {
 
 		h4 {
-			font-size: rem-calc(28);
+			@include breakpoint(small) {
+				font-size: calc(18px / 320 * 100vw);
+			}
+			
+			@include breakpoint(large) {
+				font-size: calc(14px / 1000 * 100vw);
+			}
+
+			@include breakpoint(xxlarge) {
+				font-size: calc(24px / 1440 * 100vw);
+			}
+		}
+
+		p {
+			@include breakpoint(small) {
+				font-size: calc(11px / 320 * 100vw);
+			}
+			
+			@include breakpoint(large) {
+				font-size: calc(11px / 1000 * 100vw);
+			}
+
+			@include breakpoint(xxlarge) {
+				font-size: calc(14px / 1440 * 100vw);
+			}
 		}
 	}
 }

@@ -88,21 +88,21 @@ export const Combined = (args, { argTypes }) => ({
 										{
 											title: "15 Years of Impact",
 											subtitle: "The history of Kiva, year by year",
-											href: "String",
+											href: "#15-years-of-impact",
 											imgSrc: require("@/assets/images/15-years/stickers/Hearts02.svg"),
 											imgTilt:  5
 										},
 										{
 											title: "The World of Kiva",
 											subtitle: "The people who make it happen",
-											href: "String",
+											href: "#world-of-kiva",
 											imgSrc: require("@/assets/images/15-years/stickers/Handshake.svg"),
 											imgTilt:  10
 										},
 										{
 											title: "Partners",
 											subtitle: "Organizations making a difference",
-											href: "String",
+											href: "#orgs-making-difference",
 											imgSrc: require("@/assets/images/15-years/stickers/PlanetEarth.svg"),
 											imgTilt:  15
 										},
@@ -148,21 +148,21 @@ export const Header = (args, { argTypes }) => ({
 										{
 											title: "15 Years of Impact",
 											subtitle: "The history of Kiva, year by year",
-											href: "String",
+											href: "#15-years-of-impact",
 											imgSrc: require("@/assets/images/15-years/stickers/Hearts02.svg"),
 											imgTilt:  5
 										},
 										{
 											title: "The World of Kiva",
 											subtitle: "The people who make it happen",
-											href: "String",
+											href: "#world-of-kiva",
 											imgSrc: require("@/assets/images/15-years/stickers/Handshake.svg"),
 											imgTilt:  10
 										},
 										{
 											title: "Partners",
 											subtitle: "Organizations making a difference",
-											href: "String",
+											href: "#orgs-making-difference",
 											imgSrc: require("@/assets/images/15-years/stickers/PlanetEarth.svg"),
 											imgTilt:  15
 										},

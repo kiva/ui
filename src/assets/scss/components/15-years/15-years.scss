@@ -53,9 +53,9 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	letter-spacing: -0.02em;
 	margin-bottom: 0.5em;
 
-	@include breakpoint('large') {
-		font-size: rem-calc(36);
-	}
+	// @include breakpoint('large') {
+	// 	font-size: rem-calc(36);
+	// }
 }
 
 @mixin h5() {
@@ -70,12 +70,24 @@ $font-family-monospace: 'Roboto Mono', monospace;
 }
 
 @mixin body-text() {
-	font-size: rem-calc(14);
+	font-size: calc(18px / 320 * 100vw);
 	letter-spacing: -0.02em;
 	line-height: 1.35;
 
-	@include breakpoint('large') {
-		font-size: rem-calc(16);
+	// @include breakpoint('large') {
+	// 	font-size: rem-calc(16);
+	// }
+
+	@include breakpoint(small) {
+		font-size: calc(18px / 320 * 100vw);
+	}
+
+	@include breakpoint(large) {
+		font-size: calc(24px / 1000 * 100vw);
+	}
+
+	@include breakpoint(xxlarge) {
+		font-size: calc(24px / 1440 * 100vw);
 	}
 }
 

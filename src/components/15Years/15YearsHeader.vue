@@ -4,7 +4,7 @@
 		<oily-background />
 		<div class="header__main-section">
 			<div class="row align-middle">
-				<div class="header__text small-12 large-4 columns">
+				<div class="header__text small-12 large-6 xxlarge-5 columns">
 					<h1 class="header__headline">
 						<span class="header__headline-stroked no-wrap">Power in</span> Numbers
 					</h1>
@@ -19,7 +19,7 @@
 		</div>
 		<div class="header__cards-section">
 			<div class="row">
-				<div class="small-12 large-4 column header__card" v-for="item in cardData" v-bind:key="item.href">
+				<div class="header__card small-12 xxlarge-4 columns" v-for="item in cardData" v-bind:key="item.href">
 					<FifteenYearsHeaderCard
 						:title="item.title"
 						:subtitle="item.subtitle"
@@ -86,6 +86,22 @@ export default {
 		flex: 1;
 		flex-direction: row;
 		pointer-events: none;
+
+		.row {
+			padding-top: rem-calc(96);
+			padding-left: rem-calc(16);
+			margin: 0;
+
+			@include breakpoint(large) {
+				padding-top: rem-calc(64);
+				padding-left: rem-calc(64);
+			}
+
+			@include breakpoint(xxlarge) {
+				padding-top: rem-calc(64);
+				padding-left: rem-calc(128);
+			}
+		}
 	}
 
 	&__text {
@@ -96,17 +112,35 @@ export default {
 		position: relative;
 		margin-top: auto;
 		padding: rem-calc(24) 0;
-		background-color: $mint;
+
+		@include breakpoint(small) {
+			background-color: $mint;
+			margin-top: rem-calc(calc(100vw - 48px));
+		}
 
 		@include breakpoint(large) {
+			background-color: transparent;
+			padding: rem-calc(24) 0;
+			margin: 0;
+		}
+
+		@include breakpoint(xxlarge) {
 			background-color: rgba(255, 255, 255, 0.5);
 		}
 
 		.row {
 
-			@include breakpoint(small) {
-				max-width: 95%;
-				width: 95%;
+			max-width: 95%;
+			width: 95%;
+
+			@include breakpoint(large) {
+				max-width: 300px;
+				margin: 0;
+				padding-left: rem-calc(82);
+			}
+
+			@include breakpoint(xxlarge) {
+				max-width: 99%;
 			}
 
 		}
@@ -121,6 +155,11 @@ export default {
 		}
 
 		@include breakpoint(large) {
+			padding: rem-calc(12) 0;
+			padding-top: rem-calc(16);
+		}
+
+		@include breakpoint(xxlarge) {
 			padding: 0;
 		}
 
@@ -133,7 +172,7 @@ export default {
 				}
 
 				// Desktop and above
-				@include breakpoint(large) {
+				@include breakpoint(xxlarge) {
 					border-top: none;
 					&:after {
 						content: "";
