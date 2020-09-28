@@ -104,7 +104,7 @@ export default {
 		}
 	}
 
-	&__text {
+	&__text > * {
 		pointer-events: painted;
 	}
 
@@ -112,6 +112,7 @@ export default {
 		position: relative;
 		margin-top: auto;
 		padding: rem-calc(24) 0;
+		pointer-events: none;
 
 		@include breakpoint(small) {
 			background-color: $mint;
@@ -129,7 +130,7 @@ export default {
 		}
 
 		.row {
-
+			pointer-events: painted;
 			max-width: 95%;
 			width: 95%;
 

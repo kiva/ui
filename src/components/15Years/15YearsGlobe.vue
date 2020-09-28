@@ -47,6 +47,7 @@ export default {
 		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
 		this.gkview.setMovementModelTo(0, 0, 3.4);
 		this.gkview.userDefinedSelection = () => {};
+		this.gkview.interactionController.movementModel.hasAmbient = true;
 
 		fetch('/geo/19-15.bin')
 			.then(res => res.arrayBuffer())
