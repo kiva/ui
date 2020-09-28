@@ -81,12 +81,19 @@ export default {
 	}
 
 	&__main-section {
+		position: relative;
 		display: flex;
 		flex: 1;
 		flex-direction: row;
+		pointer-events: none;
+	}
+
+	&__text {
+		pointer-events: painted;
 	}
 
 	&__cards-section {
+		position: relative;
 		margin-top: auto;
 		padding: rem-calc(24) 0;
 		background-color: $mint;
