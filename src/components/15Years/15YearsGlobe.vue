@@ -75,9 +75,9 @@ export default {
 	overflow: hidden;
 }
 
-.gk-canvas, .gk-callout-manager {
+.gk-canvas,
+.gk-callout-manager {
 	position: absolute;
-
 	width: calc(100vw - 48px);
 	height: calc(100vw - 48px);
 	left: calc(50% - 50vw + 24px);
@@ -86,7 +86,7 @@ export default {
 	@include breakpoint(large) {
 		width: 610px;
 		height: 610px;
-		left: calc(90.0480% - 305px);
+		left: calc(90.048% - 305px);
 		top: 242px;
 	}
 

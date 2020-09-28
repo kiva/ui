@@ -62,6 +62,7 @@ a {
 
 .card {
 	@include link();
+
 	position: relative;
 	padding: 0 rem-calc(16);
 
@@ -71,6 +72,7 @@ a {
 
 	img {
 		transition: transform 0.15s ease-in-out;
+		transform: var(--image-tilt);
 	}
 
 	p {
@@ -84,12 +86,9 @@ a {
 		text-transform: none;
 	}
 
-	img {
-		transform: var(--image-tilt);
-	}
-
 	&:hover {
 		text-decoration: none;
+
 		p {
 			text-decoration: none;
 		}
@@ -127,34 +126,35 @@ a {
 	}
 
 	&__card-text {
-
 		h4 {
 			@include breakpoint(small) {
-				font-size: calc(18px / 320 * 100vw);
+				font-size: calc(18 / 320 * 100vw);
 			}
 
 			@include breakpoint(large) {
-				font-size: calc(14px / 1000 * 100vw);
+				font-size: calc(14 / 1000 * 100vw);
 			}
 
 			@include breakpoint(xxlarge) {
-				font-size: calc(24px / 1440 * 100vw);
+				font-size: calc(24 / 1440 * 100vw);
 			}
 		}
 
+		/* stylelint-disable no-descending-specificity */
 		p {
 			@include breakpoint(small) {
-				font-size: calc(11px / 320 * 100vw);
+				font-size: calc(11 / 320 * 100vw);
 			}
 
 			@include breakpoint(large) {
-				font-size: calc(11px / 1000 * 100vw);
+				font-size: calc(11 / 1000 * 100vw);
 			}
 
 			@include breakpoint(xxlarge) {
-				font-size: calc(14px / 1440 * 100vw);
+				font-size: calc(14 / 1440 * 100vw);
 			}
 		}
+		/* stylelint-enable no-descending-specificity */
 	}
 }
 

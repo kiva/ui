@@ -138,7 +138,6 @@ export default {
 		}
 
 		.row {
-
 			max-width: 95%;
 			width: 95%;
 
@@ -151,13 +150,11 @@ export default {
 			@include breakpoint(xxlarge) {
 				max-width: 99%;
 			}
-
 		}
-
 	}
 
 	&__card {
-		position:relative;
+		position: relative;
 
 		@include breakpoint(small) {
 			padding: rem-calc(32) 0;
@@ -172,40 +169,36 @@ export default {
 			padding: 0;
 		}
 
-			// TODO: Vertical line separator between info cards via pseudo-selector
-			&:not(:first-child) {
-
-				// Phones only
-				@include breakpoint(small) {
-					border-top: 1px solid black;
-				}
-
-				// Desktop and above
-				@include breakpoint(xxlarge) {
-					border-top: none;
-					&:after {
-						content: "";
-						border-left: solid 1px black;
-						height: 75%;
-						position:absolute;
-						top:0;
-						bottom:0;
-						margin-top: auto;
-						margin-bottom: auto;
-					}
-				}
-
+		// TODO: Vertical line separator between info cards via pseudo-selector
+		&:not(:first-child) {
+			// Phones only
+			@include breakpoint(small) {
+				border-top: 1px solid black;
 			}
 
+			// Desktop and above
+			@include breakpoint(xxlarge) {
+				border-top: none;
+
+				&::after {
+					content: "";
+					border-left: solid 1px black;
+					height: 75%;
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					margin-top: auto;
+					margin-bottom: auto;
+				}
+			}
+		}
 	}
 
 	.fifteen-yr-button {
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
-		transition: background-color 0.1s ease-out, color 0.1s ease-out,
-			border-color 0.1s ease-out;
+		transition: background-color 0.1s ease-out, color 0.1s ease-out, border-color 0.1s ease-out;
 	}
-
 }
 
 .header.section {
