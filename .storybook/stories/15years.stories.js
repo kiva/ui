@@ -73,42 +73,6 @@ export const Combined = (args, { argTypes }) => ({
 	components: {
 		FifteenYears,
 	},
-	props: {
-		mainTextSubtitle: {
-			default: text(
-				'Main Text Subtitle',
-				'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.'
-			),
-		},
-		buttonCTAText: {
-			default: text('Button CTA Text', 'Lend now'),
-		},
-		cardData: {
-			default: object('Card Data', [
-				{
-					title: '15 Years of Impact',
-					subtitle: 'The history of Kiva, year by year',
-					href: '#15-years-of-impact',
-					imgSrc: require('@/assets/images/15-years/stickers/Hearts02.svg'),
-					imgTilt:  5
-				},
-				{
-					title: 'The World of Kiva',
-					subtitle: 'The people who make it happen',
-					href: '#world-of-kiva',
-					imgSrc: require('@/assets/images/15-years/stickers/Handshake.svg'),
-					imgTilt:  10
-				},
-				{
-					title: 'Partners',
-					subtitle: 'Organizations making a difference',
-					href: '#orgs-making-difference',
-					imgSrc: require('@/assets/images/15-years/stickers/PlanetEarth.svg'),
-					imgTilt:  15
-				},
-			]),
-		},
-	},
 	layout: 'fullscreen',
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
