@@ -3,7 +3,7 @@
 		<a class="header__card-link" :href="href"> </a>
 		<div class="row header__card-content align-justify">
 			<div class="small-3 header__card-img">
-				<img :src="imgSrc" >
+				<img :src="imgSrc">
 			</div>
 			<div class="column header__card-text">
 				<h4>{{ title }}</h4>
@@ -16,11 +16,26 @@
 <script>
 export default {
 	props: {
-		title: String,
-		subtitle: String,
-		href: String,
-		imgSrc: String,
-		imgTilt: Number
+		title: {
+			type: String,
+			required: true,
+		},
+		subtitle: {
+			type: String,
+			required: true,
+		},
+		href: {
+			type: String,
+			required: true,
+		},
+		imgSrc: {
+			type: String,
+			required: true,
+		},
+		imgTilt: {
+			type: Number,
+			required: true,
+		},
 	},
 	computed: {
 		cssProps() {
@@ -117,7 +132,7 @@ a {
 			@include breakpoint(small) {
 				font-size: calc(18px / 320 * 100vw);
 			}
-			
+
 			@include breakpoint(large) {
 				font-size: calc(14px / 1000 * 100vw);
 			}
@@ -131,7 +146,7 @@ a {
 			@include breakpoint(small) {
 				font-size: calc(11px / 320 * 100vw);
 			}
-			
+
 			@include breakpoint(large) {
 				font-size: calc(11px / 1000 * 100vw);
 			}

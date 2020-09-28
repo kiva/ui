@@ -12,20 +12,20 @@
 						{{ mainTextSubtitle }}
 					</p>
 					<fifteen-years-button to="/help/">
-						{{ buttonCTAText }}
+						{{ buttonCtaText }}
 					</fifteen-years-button>
 				</div>
 			</div>
 		</div>
 		<div class="header__cards-section">
 			<div class="row">
-				<div class="header__card small-12 xxlarge-4 columns" v-for="item in cardData" v-bind:key="item.href">
+				<div class="header__card small-12 xxlarge-4 columns" v-for="item in cardData" :key="item.href">
 					<FifteenYearsHeaderCard
 						:title="item.title"
 						:subtitle="item.subtitle"
 						:href="item.href"
-						:imgSrc="item.imgSrc"
-						:imgTilt="item.imgTilt"
+						:img-src="item.imgSrc"
+						:img-tilt="item.imgTilt"
 					/>
 				</div>
 			</div>
@@ -47,9 +47,18 @@ export default {
 		FifteenYearsGlobe,
 	},
 	props: {
-		mainTextSubtitle: String,
-		buttonCTAText: String,
-		cardData: Object,
+		mainTextSubtitle: {
+			type: String,
+			required: true,
+		},
+		buttonCtaText: {
+			type: String,
+			required: true,
+		},
+		cardData: {
+			type: Object,
+			required: true,
+		},
 	},
 };
 </script>
