@@ -7,11 +7,7 @@
 			<div class="page-wrap">
 				<fifteen-years-styles>
 					<section>
-						<fifteen-years-header
-							:mainTextSubtitle="mainTextSubtitle"
-							:buttonCTAText="buttonCTAText"
-							:cardData="cardData"
-						/>
+						<fifteen-years-header />
 					</section>
 					<section>
 						<fifteen-years-timeline />
@@ -53,11 +49,6 @@ export default {
 	},
 	metaInfo: {
 		title: '15 Years'
-	},
-	props: {
-		mainTextSubtitle: String,
-		buttonCTAText: String,
-		cardData: Object,
 	},
 	data() {
 		return {

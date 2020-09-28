@@ -46,11 +46,35 @@ export default {
 		FifteenYearsOilyBackground,
 		FifteenYearsGlobe,
 	},
-	props: {
-		mainTextSubtitle: String,
-		buttonCTAText: String,
-		cardData: Object,
-	},
+	data() {
+		return {
+			mainTextSubtitle: 'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.',
+			buttonCtaText: 'Lend now',
+			cardData: [
+				{
+					title: '15 Years of Impact',
+					subtitle: 'The history of Kiva, year by year',
+					href: '#15-years-of-impact',
+					imgSrc: 'static/img/Hearts02.ba8510a.svg',
+					imgTilt: 5
+				},
+				{
+					title: 'The World of Kiva',
+					subtitle: 'The people who make it happen',
+					href: '#world-of-kiva',
+					imgSrc: 'static/img/Handshake.fb4c78a.svg',
+					imgTilt: 10
+				},
+				{
+					title: 'Partners',
+					subtitle: 'Organizations making a difference',
+					href: '#orgs-making-difference',
+					imgSrc: 'static/img/PlanetEarth.45c4090.svg',
+					imgTilt: 15
+				}
+			]
+		};
+	}
 };
 </script>
 
