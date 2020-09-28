@@ -11,8 +11,9 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	font-size: rem-calc(96);
 	line-height: 1;
 	letter-spacing: rem-calc(-5);
-@include breakpoint(small) {
-	font-size: rem-calc(68);
+
+	@include breakpoint(small) {
+		font-size: rem-calc(68);
 	}
 
 	@include breakpoint(medium) {
@@ -22,7 +23,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	@include breakpoint(xga) {
 		font-size: rem-calc(96);
 	}
-	}
+}
 
 @mixin h2() {
 	font-size: rem-calc(48);
@@ -70,7 +71,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 }
 
 @mixin body-text() {
-	font-size: calc(18px / 320 * 100vw);
+	font-size: calc(18 / 320 * 100vw);
 	letter-spacing: -0.02em;
 	line-height: 1.35;
 
@@ -79,20 +80,21 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	// }
 
 	@include breakpoint(small) {
-		font-size: calc(18px / 320 * 100vw);
+		font-size: calc(18 / 320 * 100vw);
 	}
 
 	@include breakpoint(large) {
-		font-size: calc(24px / 1000 * 100vw);
+		font-size: calc(24 / 1000 * 100vw);
 	}
 
 	@include breakpoint(xxlarge) {
-		font-size: calc(24px / 1440 * 100vw);
+		font-size: calc(24 / 1440 * 100vw);
 	}
 }
 
 @mixin link() {
 	@include h5();
+
 	color: $twilight;
 	cursor: pointer;
 }
