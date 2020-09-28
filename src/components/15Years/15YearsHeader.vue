@@ -1,5 +1,6 @@
 <template>
 	<div class="header section">
+		<globe />
 		<oily-background />
 		<div class="row align-middle">
 			<div class="header__text small-12 large-4 columns">
@@ -13,16 +14,6 @@
 					button
 				</fifteen-years-button>
 			</div>
-
-			<div class="header__globe small-12 large-offset-2 large-6 columns">
-				<img
-					class="header__globe-img"
-					width="503"
-					height="503"
-					src="@/assets/images/15-years/temp/globe.png"
-					alt=""
-				>
-			</div>
 		</div>
 	</div>
 </template>
@@ -30,11 +21,13 @@
 <script>
 import FifteenYearsButton from './15YearsButton';
 import OilyBackground from './Header/OilyBackground';
+import Globe from './Header/Globe';
 
 export default {
 	components: {
 		FifteenYearsButton,
-		OilyBackground
+		OilyBackground,
+		Globe
 	}
 };
 </script>
@@ -47,6 +40,7 @@ export default {
 	background: $offwhite;
 	position: relative;
 	z-index: 1;
+	min-height: 900px;
 
 	&__headline {
 		@include huge-headline();
