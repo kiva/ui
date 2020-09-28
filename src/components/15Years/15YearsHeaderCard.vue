@@ -3,7 +3,7 @@
 		<a class="header__card-link" :href="href"> </a>
 		<div class="row header__card-content align-justify">
 			<div class="small-3 header__card-img">
-				<img :src="imgSrc" />
+				<img :src="imgSrc" >
 			</div>
 			<div class="column header__card-text">
 				<h4>{{ title }}</h4>
@@ -26,7 +26,7 @@ export default {
 		cssProps() {
 			return {
 				'--image-tilt': `rotate(${this.imgTilt}deg)`,
-			}
+			};
 		}
 	}
 };
@@ -49,7 +49,6 @@ a {
 	@include link();
 	position: relative;
 	padding: 0 rem-calc(16);
-	
 
 	img {
 		transition: transform 0.2s ease-in-out;
@@ -113,7 +112,6 @@ a {
 		h4 {
 			font-size: rem-calc(28);
 		}
-		
 	}
 }
 
