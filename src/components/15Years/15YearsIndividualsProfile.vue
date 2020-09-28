@@ -253,7 +253,7 @@ export default {
 	&__video,
 	&__portrait {
 		height: 0;
-		padding-bottom: 100%; // 16:9
+		padding-bottom: 100%; // 1:1
 		position: relative;
 		margin-bottom: 2rem;
 
