@@ -9,16 +9,24 @@
 			v-if="showAppeal"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
+		<appeal-banner-15
+			v-if="show15YearAppeal"
+			:appeal-banner-content="appealBannerContent.fields"
+		/>
 	</div>
 </template>
 
 <script>
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
+
 import { settingEnabled } from '@/util/settingsUtils';
-import GenericPromoBanner from './Banners/GenericPromoBanner';
+
+import AppealBanner from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner';
+import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
+import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
+
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import AppealBanner from './Banners/AppealBanner/AppealBanner';
 
 const contentfulContent = gql`query contentfulContent {
 	contentful {
@@ -29,7 +37,8 @@ const contentfulContent = gql`query contentfulContent {
 export default {
 	components: {
 		GenericPromoBanner,
-		AppealBanner
+		AppealBanner,
+		AppealBanner15
 	},
 	props: {
 		hasPromoSession: {
@@ -41,7 +50,13 @@ export default {
 		return {
 			isPromoEnabled: false,
 			promoBannerContent: {},
+			appealBannerContent: {},
 			appealEnabled: false,
+			appeal15Enabled: false,
+			globalBannerBlacklist: [
+				'/checkout',
+				'/donate/support-kiva'
+			]
 		};
 	},
 	inject: ['apollo'],
@@ -49,6 +64,11 @@ export default {
 		query: contentfulContent,
 		preFetch: true,
 		result({ data }) {
+			// Hide ALL banners on these pages
+			if (this.globalBannerBlacklist.includes(this.$route.path)) {
+				return false;
+			}
+
 			// returns the contentful content of the uiSetting key ui-global-promo or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
 			const uiGlobalPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-global-promo'); // eslint-disable-line max-len
@@ -77,12 +97,6 @@ export default {
 				});
 
 				if (activePromoBanner) {
-					// always hide the promo banner on the checkout page.
-					// TODO move these paths into array to check against
-					if (this.$route.path === '/checkout' || this.$route.path === '/donate/support-kiva') {
-						return false;
-					}
-
 					// check for visibility based on current route and hiddenUrls field
 					const hiddenUrls = _get(activePromoBanner, 'fields.hiddenUrls', []);
 					if (hiddenUrls.includes(this.$route.path)) {
@@ -107,9 +121,16 @@ export default {
 
 					// Check banner type
 					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
+						// Appeal Banner
 						this.appealEnabled = true;
 						this.appealBannerContent = activePromoBanner;
+					} else if (activePromoBanner.fields.bannerType === 'Custom Appeal') {
+						// Custom Banner
+						// Currently the only custom appeal banner is the 15 year appeal
+						this.appeal15Enabled = true;
+						this.appealBannerContent = activePromoBanner;
 					} else {
+						// Promo Banner
 						// parse the contentful richText into an html string
 						this.promoBannerContent = {
 							kvTrackEvent: activePromoBanner.fields.kvTrackEvent,
@@ -117,7 +138,6 @@ export default {
 							richText: documentToHtmlString(activePromoBanner.fields.richText),
 							iconKey: _get(activePromoBanner, 'fields.iconKey', 'present')
 						};
-
 						this.isPromoEnabled = true;
 					}
 				}
@@ -125,9 +145,22 @@ export default {
 		}
 	},
 	computed: {
+		show15YearAppeal() {
+			// only show the 15 year appeal on these pages
+			const whitelist = [
+				'/',
+				'/15',
+			];
+			// First check if Appeal 15 Banner
+			// is active and the user is on a whitelist URL
+			if (this.appeal15Enabled && whitelist.includes(this.$route.path)) {
+				return true;
+			}
+			return false;
+		},
 		showAppeal() {
-			// make sure the appeal is enable + we're not on certain blacklisted pages
-			const blacklist = [
+			// make sure the appeal is enabled + we're not on certain blacklisted pages
+			const appealBlacklist = [
 				'/checkout',
 				'/error',
 				'/join-team',
@@ -136,9 +169,9 @@ export default {
 				'/possibility/12-days-of-lending',
 				'/possibility/year-end'
 			];
-			// First check if Appeal Banner or Appeal Banner Matching
+			// First check if Appeal Banner
 			// is active and the user is not on a blacklisted page URL
-			if ((this.appealEnabled || this.appealMatchEnabled) && !blacklist.includes(this.$route.path)) {
+			if (this.appealEnabled && !appealBlacklist.includes(this.$route.path)) {
 				return true;
 			}
 			return false;
