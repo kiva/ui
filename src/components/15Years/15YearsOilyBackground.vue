@@ -1,6 +1,5 @@
-/* eslint-disable max-len */
-
 <template>
+	<!-- eslint-disable max-len -->
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1268.27 793.15" preserveAspectRatio="xMinYMin slice">
 		<path id="mint-small" class="mint" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
 		<path id="sky-extra" class="sky" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
@@ -15,6 +14,7 @@
 		<path id="white-knockout" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
 		<path id="white-knockout-2" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
 	</svg>
+	<!-- eslint-enable max-len -->
 </template>
 
 <script>
@@ -27,7 +27,7 @@ export default {
 	mounted() {
 		gsap.registerPlugin(MorphSVGPlugin, CustomEase);
 		const standardEase = CustomEase.CustomEase.create('custom', 'M0,0,C0.025,0,0.975,1,1,1');
-		const createTimeline = function (id, path, duration) {
+		const createTimeline = (id, path, duration) => {
 			let tl = gsap.timeline({ repeat: -1 });
 			path.forEach((p, i) => {
 				if (i === 1) {
@@ -62,7 +62,7 @@ export default {
 
 		const startingOffset = Math.random();
 		const duration = 240;
-		const timelines = this.desktopTimelineDefs.map(p => {
+		this.desktopTimelineDefs.map(p => {
 			const tl = createTimeline(`#${p.id}`, p.path, duration);
 			tl.seek(duration * ((p.startOffset + startingOffset) % 1));
 			// tl.pause();
@@ -70,6 +70,7 @@ export default {
 		});
 	},
 	data() {
+		/* eslint-disable max-len */
 		const desktopPaths = {
 			bigPath: [
 				{ position: 0, shape: 'M155.29,0C379.23,0,640.77-36.1,818.4-126c194.81-98.6,401.81-87.35,530.17,29.42,172.92,157.32,103.18,751.93,45.77,889.73l23.93,295.38,63.25-7.09v-1421L166.73-363Z' },
@@ -118,6 +119,7 @@ export default {
 				{ position: 1, shape: 'M1396.5,101.64c-8.8,16.83-32.67,39.29-81.32,15-32.67-16.31-15.35-41.55-1.59-55.07,10.21-10,20.88-28.72,46.46-26.28C1427.73,41.77,1402.94,89.32,1396.5,101.64Z' },
 			],
 		};
+		/* eslint-enable max-len */
 		return {
 			desktopTimelineDefs: [
 				{ id: 'mint-large', path: desktopPaths.bigPath, startOffset: 0.75 },

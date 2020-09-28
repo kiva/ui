@@ -8,9 +8,9 @@
 				<fifteen-years-styles>
 					<section>
 						<fifteen-years-header
-							:mainTextSubtitle="mainTextSubtitle"
-							:buttonCTAText="buttonCTAText"
-							:cardData="cardData"
+							:main-text-subtitle="mainTextSubtitle"
+							:button-cta-text="buttonCtaText"
+							:card-data="cardData"
 						/>
 					</section>
 					<section>
@@ -55,9 +55,18 @@ export default {
 		title: '15 Years'
 	},
 	props: {
-		mainTextSubtitle: String,
-		buttonCTAText: String,
-		cardData: Object,
+		mainTextSubtitle: {
+			type: String,
+			default: '',
+		},
+		buttonCTAText: {
+			type: String,
+			default: '',
+		},
+		cardData: {
+			type: Object,
+			default: () => {}
+		},
 	},
 	data() {
 		return {
