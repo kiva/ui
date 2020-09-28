@@ -221,6 +221,10 @@ export default {
 		.profile__body-wrapper {
 			height: 100%;
 		}
+
+		.profile__portrait {
+			padding-bottom: 56.25%; // 16:9
+		}
 	}
 
 	// &--has-video {
@@ -249,9 +253,13 @@ export default {
 	&__video,
 	&__portrait {
 		height: 0;
-		padding-bottom: 56.25%; // 16:9
+		padding-bottom: 100%; // 1:1
 		position: relative;
 		margin-bottom: 2rem;
+
+		@include breakpoint(large) {
+			padding-bottom: 56.25%; // 16:9
+		}
 	}
 
 	&__portrait {
