@@ -11,7 +11,18 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	font-size: rem-calc(96);
 	line-height: 1;
 	letter-spacing: rem-calc(-5);
-}
+@include breakpoint(small) {
+	font-size: rem-calc(68);
+	}
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(82);
+	}
+
+	@include breakpoint(xga) {
+		font-size: rem-calc(96);
+	}
+	}
 
 @mixin h2() {
 	font-size: rem-calc(48);
@@ -70,14 +81,6 @@ $font-family-monospace: 'Roboto Mono', monospace;
 
 @mixin link() {
 	@include h5();
-
-	text-decoration: underline;
 	color: $twilight;
-	white-space: nowrap;
-
-	&:hover {
-		text-decoration: none;
-		// background-color: $twilight;
-		// color: $offwhite;
-	}
+	cursor: pointer;
 }

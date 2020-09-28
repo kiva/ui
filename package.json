@@ -28,7 +28,7 @@
 		"lint:js": "eslint --ext .js,.vue --ignore-pattern 'src/graphql' src test/unit/specs",
 		"lint:css": "stylelint \"src/**/*.{vue,scss}\"",
 		"lint:graphql": "eslint --ext .graphql src/graphql",
-		"storybook": "start-storybook -p 6006",
+		"storybook": "start-storybook -s ./public -p 6006",
 		"build-storybook": "build-storybook -s ui",
 		"deploy-storybook": "storybook-to-ghpages"
 	},

@@ -68,6 +68,8 @@ export default {
 	color: $twilight;
 	border: rem-calc(2) solid $mint;
 	padding: rem-calc(16) rem-calc(36);
+	transition: background-color 0.2s ease-out, color 0.2s ease-out,
+		border-color 0.2s ease-out;
 
 	@include breakpoint('large') {
 		padding: rem-calc(20) rem-calc(48);
