@@ -155,34 +155,38 @@ export default {
 			} else {
 				const { profileBodyWrapper, profileBodyWrapperWrapper, portraitImg } = this.$refs;
 
+				const timeline = gsap.timeline({ defaults: { ease: 'power2.in' } });
+				const animateOut = async () => {
+					portraitImg.style.filter = 'blur(100px)'; // gsap doesnt do blur without a plugin, using css instead
+					profileBodyWrapperWrapper.style.filter = 'blur(100px)';
+
+					timeline.fromTo(profileBodyWrapperWrapper, { opacity: 1 }, { opacity: 0, duration: 0.25 });
+					timeline.fromTo(portraitImg, { opacity: 1, y: 0 }, { opacity: 0, y: 5, duration: 0.25 });
+					await timeline.play();
+				};
+
+				const animateIn = async () => {
+					portraitImg.style.filter = 'blur(0)';
+					profileBodyWrapperWrapper.style.filter = 'blur(0)';
+					await timeline.reverse();
+				};
+
 				// animate the old person out
-				portraitImg.style.filter = 'blur(100px)'; // gsap doesnt do blur without a plugin, so using css instead
-				profileBodyWrapperWrapper.style.filter = 'blur(100px)';
-				const tl = gsap.timeline({ defaults: { ease: 'power2.in' } });
-				tl.fromTo(profileBodyWrapperWrapper, { opacity: 1 }, { opacity: 0, duration: 0.25 });
-				tl.fromTo(portraitImg, { opacity: 1, y: 0 }, { opacity: 0, y: 5, duration: 0.25 });
-				await tl.play();
+				await animateOut(timeline);
 
 				// swap the person data
 				this.person = personObj;
+				await this.$nextTick();
 
 				// reset the scroll container
 				profileBodyWrapper.scrollTop = 0;
 
-				await this.$nextTick();
-
-				const reverseAnimation = async () => {
-					portraitImg.style.filter = 'blur(0)';
-					profileBodyWrapperWrapper.style.filter = 'blur(0)';
-					await tl.reverse();
-				};
-
 				// animate the new person in once their image is loaded
 				if (portraitImg.complete) {
-					reverseAnimation();
+					animateIn(timeline);
 				} else {
 					portraitImg.addEventListener('load', async () => {
-						reverseAnimation();
+						animateIn(timeline);
 					});
 				}
 			}
