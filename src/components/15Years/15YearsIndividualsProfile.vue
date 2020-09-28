@@ -19,6 +19,7 @@
 					>
 					<img
 						class="profile__portrait-img"
+						ref="portraitImg"
 						:src="portraitSrc.png"
 						:alt="`Portrait of ${person.name}`"
 						width="923"
@@ -44,8 +45,14 @@
 			</div>
 		</div>
 
-		<div class="profile__body-wrapper-wrapper">
-			<div class="profile__body-wrapper" ref="profilebody">
+		<div
+			class="profile__body-wrapper-wrapper"
+			ref="profileBodyWrapperWrapper"
+		>
+			<div
+				class="profile__body-wrapper"
+				ref="profileBodyWrapper"
+			>
 				<div class="profile__body">
 					<h3>{{ person.name }}</h3>
 					<h4>{{ person.title }}</h4>
@@ -96,6 +103,7 @@
 </template>
 
 <script>
+import gsap from 'gsap';
 import FifteenYearsButton from './15YearsButton';
 
 const imageRequire = require.context('@/assets/images/15-years/profiles', true);
@@ -105,19 +113,25 @@ export default {
 		FifteenYearsButton,
 	},
 	props: {
-		person: {
-			type: Object,
-			default() { return {}; }
-		},
 		expanded: {
 			type: Boolean,
 			default: false
 		}
 	},
-	watch: {
-		person() {
-			this.$refs.profilebody.scrollTop = 0;
-		}
+	data() {
+		return {
+			person: {
+				name: null,
+				title: null,
+				img: 'zaaqi',
+				body: null,
+				videoId: null,
+				cta1: null,
+				cta2: null,
+				link1: null,
+				link2: null,
+			},
+		};
 	},
 	computed: {
 		cta() {
@@ -134,6 +148,50 @@ export default {
 			};
 		}
 	},
+	methods: {
+		async setPerson(personObj) {
+			if (!this.person.name) { // if this is the initial load, don't animate
+				this.person = personObj;
+			} else {
+				const { profileBodyWrapper, profileBodyWrapperWrapper, portraitImg } = this.$refs;
+
+				const timeline = gsap.timeline({ defaults: { ease: 'power2.in' } });
+				const animateOut = async () => {
+					portraitImg.style.filter = 'blur(100px)'; // gsap doesnt do blur without a plugin, using css instead
+					profileBodyWrapperWrapper.style.filter = 'blur(100px)';
+
+					timeline.fromTo(profileBodyWrapperWrapper, { opacity: 1 }, { opacity: 0, duration: 0.25 });
+					timeline.fromTo(portraitImg, { opacity: 1, y: 0 }, { opacity: 0, y: 5, duration: 0.25 });
+					await timeline.play();
+				};
+
+				const animateIn = async () => {
+					portraitImg.style.filter = 'blur(0)';
+					profileBodyWrapperWrapper.style.filter = 'blur(0)';
+					await timeline.reverse();
+				};
+
+				// animate the old person out
+				await animateOut(timeline);
+
+				// swap the person data
+				this.person = personObj;
+				await this.$nextTick();
+
+				// reset the scroll container
+				profileBodyWrapper.scrollTop = 0;
+
+				// animate the new person in once their image is loaded
+				if (portraitImg.complete) {
+					animateIn(timeline);
+				} else {
+					portraitImg.addEventListener('load', async () => {
+						animateIn(timeline);
+					});
+				}
+			}
+		}
+	}
 };
 </script>
 
@@ -216,6 +274,8 @@ export default {
 		width: auto;
 		max-height: calc(100% - 1rem);
 		margin: 1rem auto 0;
+		filter: blur(0);
+		transition: filter 0.25s ease-in;
 	}
 
 	&__portrait-background {
@@ -239,6 +299,8 @@ export default {
 
 	&__body-wrapper-wrapper { // lol
 		flex: 1;
+		filter: blur(0);
+		transition: filter 0.25s ease-in;
 	}
 
 	&__body-wrapper {
@@ -283,6 +345,15 @@ export default {
 			display: block;
 			margin-left: auto;
 		}
+	}
+}
+
+// Firefox looks like crap when animating blurs + transforms
+// https://bugzilla.mozilla.org/show_bug.cgi?id=925025
+@-moz-document url-prefix() {
+	.profile__portrait-img,
+	.profile__body-wrapper-wrapper {
+		filter: blur(0) !important;
 	}
 }
 </style>

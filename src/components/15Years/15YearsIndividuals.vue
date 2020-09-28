@@ -16,7 +16,7 @@
 					<div class="individuals__profile">
 						<!-- TODO: hide from screenreaders while lightbox is open -->
 						<fifteen-years-individuals-profile
-							:person="selectedPerson"
+							ref="profile1"
 							class="individuals__profile"
 							@show-next-person="showPerson(nextIndex)"
 							@show-full-profile="isShowingFullProfile = true"
@@ -87,7 +87,7 @@
 			@lightbox-closed="isShowingFullProfile = false"
 		>
 			<fifteen-years-individuals-profile
-				:person="selectedPerson"
+				ref="profile2"
 				:expanded="true"
 			/>
 
@@ -177,6 +177,15 @@ export default {
 			return this.people[this.currentIndex];
 		},
 	},
+	watch: {
+		selectedPerson() {
+			if (this.selectedPerson) {
+				// we call a method instead of setting prop so we can fine-tune animation timing.
+				this.$refs.profile1.setPerson(this.selectedPerson);
+				this.$refs.profile2.setPerson(this.selectedPerson);
+			}
+		}
+	},
 	methods: {
 		showPerson(index) {
 			this.currentIndex = index;
@@ -204,6 +213,9 @@ export default {
 		this.browserSupportsWebp = await checkWebpSupport();
 		this.browserSupportsAvif = await checkAvifSupport();
 
+		this.$refs.profile1.setPerson(this.selectedPerson);
+		this.$refs.profile2.setPerson(this.selectedPerson);
+
 		this.preloadPortrait(this.previousIndex);
 		this.preloadPortrait(this.nextIndex);
 	}
@@ -219,6 +231,7 @@ export default {
 
 	background: $tomato;
 	color: #fff;
+	overflow: hidden;
 
 	@include breakpoint('xxlarge') {
 		padding-bottom: 0 !important; // make sure the outer css doesn't win
@@ -385,6 +398,8 @@ export default {
 }
 
 .name-nav {
+	list-style: none;
+
 	&__li {
 		margin: 0 0 0.675rem 0;
 
@@ -397,10 +412,17 @@ export default {
 		color: #fff;
 		opacity: 0.5;
 		display: flex;
+		transition: opacity 0.25s ease-in;
 
 		&:hover,
 		&:focus {
 			opacity: 1;
+			transition: opacity 0s ease-in;
+			outline: 0;
+		}
+
+		&:focus {
+			text-decoration: underline;
 		}
 
 		&--selected {

@@ -5,7 +5,7 @@ export default [
 	{
 		name: 'Zaaqi',
 		title: 'Burger Magician',
-		img: 'need-content',
+		img: 'zaaqi',
 		body: `<p>
 		Need content
 		</p>
@@ -30,7 +30,7 @@ export default [
 	{
 		name: 'Nilda',
 		title: 'Architect on Stilts',
-		img: 'need-content',
+		img: 'nilda',
 		body: `<p>
 		Meet Nilda! As a married mother of six children, she works hard to support her family. Nilda lives in the Philippines, where she owns a nipa – a stilt house indigenous to the Philippines – roofing business and earns additional income from raising pigs.
 		</p><p>
@@ -163,7 +163,7 @@ export default [
 	{
 		name: 'David Kitusa',
 		title: 'The Local Changemaker',
-		img: 'need-content',
+		img: 'david',
 		body: `<p>
 		Need content
 		</p>
@@ -233,7 +233,7 @@ export default [
 	{
 		name: 'Busie',
 		title: 'Cross-Cultural Connector',
-		img: 'need-content',
+		img: 'busie',
 		body: `<p>
 		Need content
 		</p>
