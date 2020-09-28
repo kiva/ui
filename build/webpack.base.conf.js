@@ -16,6 +16,14 @@ function resolve (dir) {
 	return path.join(__dirname, '..', dir);
 }
 
+// When webpack encounters an .SVG in one of these directories, it will inline it as a vue component using vue-svg-loader
+const inlineSvgDirs = [
+	resolve('src/assets/icons/inline/'),
+	resolve('src/assets/inline-svgs/'),
+	resolve('node_modules/flag-icon-css/flags/4x3/'),
+	resolve('node_modules/flag-icon-css/flags/1x1/')
+];
+
 module.exports = {
 	mode: 'none',
 	output: {
@@ -101,8 +109,8 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
-				exclude: [resolve('src/assets/icons/inline/'), resolve('src/assets/inline-svgs/'), resolve('node_modules/flag-icon-css/flags/4x3/'), resolve('node_modules/flag-icon-css/flags/1x1/')],
+				test: /\.(png|jpe?g|gif|webp|avif|svg|ico)(\?.*)?$/,
+				exclude: inlineSvgDirs,
 				loader: 'url-loader',
 				options: {
 					limit: 1, // 10000 is default but we'd need to exclude apple-touch-icons,
@@ -112,7 +120,7 @@ module.exports = {
 			},
 			{
 				test: /\.svg$/,
-				include: [resolve('src/assets/icons/inline/'), resolve('src/assets/inline-svgs/'), resolve('node_modules/flag-icon-css/flags/4x3/'), resolve('node_modules/flag-icon-css/flags/1x1/')],
+				include: inlineSvgDirs,
 				use: [
 					'babel-loader',
 					{

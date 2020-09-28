@@ -23,7 +23,7 @@
 						@change="onCarouselChange"
 					>
 						<kv-carousel-slide
-							v-for="slide in slides"
+							v-for="(slide, index) in slides"
 							:key="`slide-${slide.year}`"
 							class="carousel__slide"
 						>
@@ -48,9 +48,9 @@
 									</p>
 									<router-link
 										class="carousel__body-cta"
-										:to="slide.link"
+										:to="getSlideLink(index)"
 									>
-										{{ slide.cta }}
+										{{ getSlideCta(index) }}
 									</router-link>
 								</div>
 							</div>
@@ -186,6 +186,12 @@ export default {
 				classNames += ' carousel__body-img--svg';
 			}
 			return classNames;
+		},
+		getSlideCta(index) {
+			return this.slides[index].cta1; // will likely be powered by an experiment later
+		},
+		getSlideLink(index) {
+			return this.slides[index].link1; // will likely be powered by an experiment later
 		},
 	}
 };

@@ -256,7 +256,6 @@ export default {
 			padding-bottom: rem-calc(65);
 			background-color: rgba(255, 255, 255, 1);
 			transition: opacity $filter-transition;
-			-webkit-overflow-scrolling: touch;
 
 			.filter-section {
 				@extend .basic-filter-section;
