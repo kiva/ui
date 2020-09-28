@@ -10,7 +10,7 @@ import {
 	GlobeKitView,
 	Lowpoly,
 	GKUtils,
-} from '../../util/globe/globekit.esm';
+} from '@/lib/globekit/globekit.esm';
 
 // class DotCallout extends Callout {
 // 	createElement() {
