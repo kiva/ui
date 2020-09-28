@@ -43,9 +43,10 @@ export default {
 		};
 
 		this.gkview = new GlobeKitView(canvas, { wasmPath: '/wasm/gkweb_bg.wasm' }, () => {});
-		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#F8F8F8', 1.0);
-		this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
-		this.gkview.setMovementModelTo(0, 0, 3.275);
+		this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#F8F8F8', 1.0);
+		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
+		this.gkview.setMovementModelTo(0, 0, 3.4);
+		this.gkview.userDefinedSelection = () => {};
 
 		fetch('/geo/19-15.bin')
 			.then(res => res.arrayBuffer())
@@ -62,20 +63,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'settings';
+@import 'components/15-years/15-years';
+
 .globe-container {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
 
 .gk-canvas, .gk-callout-manager {
 	position: absolute;
-	width: 540px;
-	height: 540px;
-	left: calc(69.3056% - 270px);
-	top: 147px;
+
+	width: calc(100vw - 48px);
+	height: calc(100vw - 48px);
+	left: calc(50% - 50vw + 24px);
+	top: 383px;
+
+	@include breakpoint(medium) {
+		width: 610px;
+		height: 610px;
+		left: calc(90.0480% - 305px);
+		top: 242px;
+	}
+
+	@include breakpoint(large) {
+		width: 540px;
+		height: 540px;
+		left: calc(69.3056% - 270px);
+		top: 147px;
+	}
 }
 
 .gk-callout-manager {
