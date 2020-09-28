@@ -12,7 +12,7 @@
 						{{ mainTextSubtitle }}
 					</p>
 					<fifteen-years-button to="/help/">
-						{{ buttonCTAText }}
+						{{ buttonCtaText }}
 					</fifteen-years-button>
 				</div>
 			</div>
