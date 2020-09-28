@@ -1,6 +1,11 @@
 <template>
 	<div class="appeal-15-wrapper">
-		<transition name="kvfastfade">
+		<transition
+			@enter="enter"
+			@leave="leave"
+			appear
+			mode="out-in"
+		>
 			<!-- open banner -->
 			<div class="appeal-15-row appeal-15-row--open row align-center" v-if="open" key="openBanner">
 				<div class="shrink small-12 medium-expand columns">
@@ -151,20 +156,14 @@ export default {
 			return string.split(' ').splice(0, numberOfWords).join(' ');
 		},
 		// slide up / down transitions
-		enter(el, done) {
+		enter(el) {
 			expand(el, {
-				property: 'height',
-				delay: 500,
-				easing: 'ease',
-				done,
+				easing: 'ease-in-out',
 			});
 		},
-		leave(el, done) {
+		leave(el) {
 			collapse(el, {
-				property: 'height',
-				delay: 500,
-				easing: 'ease',
-				done,
+				easing: 'ease-in-out',
 			});
 		},
 	},
@@ -196,21 +195,31 @@ a {
 
 .appeal-15-row {
 	&--open {
-		padding: rem-calc(16) 0;
+		& > div {
+			padding-top: rem-calc(16);
+			padding-bottom: rem-calc(16);
 
-		@include breakpoint(large) {
-			padding: rem-calc(54) 0;
+			@include breakpoint(large) {
+				padding-top: rem-calc(54);
+				padding-bottom: rem-calc(54);
+			}
 		}
 	}
 
 	&--closed {
-		padding: rem-calc(16) 0;
 
 		@include breakpoint(small only) {
 			background-color: $mint;
 		}
-		@include breakpoint(large) {
-			padding: rem-calc(24) 0;
+
+		& > div {
+			padding-top: rem-calc(16);
+			padding-bottom: rem-calc(16);
+
+			@include breakpoint(large) {
+				padding-top: rem-calc(24);
+				padding-bottom: rem-calc(24);
+			}
 		}
 	}
 }
