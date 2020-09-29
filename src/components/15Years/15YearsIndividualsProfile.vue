@@ -31,14 +31,14 @@
 					<svg
 						class="profile__portrait-blob"
 						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 182 188"
+						viewBox="0 0 381 357"
 					>
-						<path
-							d="M97.71 5.04c24.35 3.46 46.22 14.01 61.85 32.93 15.99 19.35 25.3 43.33
-							21.65 68.12-4.05 27.53-17.43 53.76-41.64 67.6-26.35 15.07-59.82 20.24-86.44
-							5.65-25.45-13.94-29.94-45.63-37.53-73.56C7.38 75.49-10.93 40.9 8.92 16.56
-							28.72-7.73 66.62.62 97.72 5.04z"
-							fill="#F8F8F8"
+						<path ref="portraitBlob"
+							d="M203.32 15.27c44.68 6.37 84.82 25.8 113.5 60.6 29.34 35.61 46.43 79.75
+							39.73 125.39-7.44 50.65-31.99 98.92-76.42
+							124.41-48.35 27.73-109.78 37.24-158.63
+							10.4-46.7-25.67-54.94-83.98-68.87-135.4-15.1-55.73-48.7-119.37-12.26-164.2
+							36.33-44.7 105.9-29.33 162.95-21.2z"
 						/>
 					</svg>
 				</div>
@@ -104,9 +104,16 @@
 
 <script>
 import gsap from 'gsap';
+import * as MorphSVGPlugin from '../../util/animation/MorphSVGPlugin';
 import FifteenYearsButton from './15YearsButton';
 
 const imageRequire = require.context('@/assets/images/15-years/profiles', true);
+
+const getRandomInt = (minimum, maximum) => {
+	const min = Math.ceil(minimum);
+	const max = Math.floor(maximum);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 export default {
 	components: {
@@ -131,6 +138,15 @@ export default {
 				link1: null,
 				link2: null,
 			},
+			/* eslint-disable max-len */
+			blobShapes: [
+				'M203.32 15.27c44.68 6.37 84.82 25.8 113.5 60.6 29.34 35.61 46.43 79.75 39.73 125.39-7.44 50.65-31.99 98.92-76.42 124.41-48.35 27.73-109.78 37.24-158.63 10.4-46.7-25.67-54.94-83.98-68.87-135.4-15.1-55.73-48.7-119.37-12.26-164.2 36.33-44.7 105.9-29.33 162.95-21.2z',
+				'M202.78 7.58c-42.07 2.5-86.43.22-118.45 27.65-34.06 29.19-47.54 73.88-52.13 118.5-5.23 50.95-8.11 106.6 25 145.66 34.92 41.2 92.38 64.87 145.58 55.62 48.58-8.45 75.04-57.77 102.49-98.75 20.73-30.94 27.48-65.59 32.32-102.52 6.01-45.86 29.96-99.48-1.4-133.47-31.49-34.14-87.05-15.45-133.4-12.7z',
+				'M201.44 10.98c57.6.74 125-10.17 160.46 35.14 35.28 45.09 14.57 109.4-5.35 163.05-16.25 43.77-50.52 74.1-91.23 97.06-45.75 25.81-95.73 53.72-145.33 36.4C64.86 323.4 26.3 273.46 10.57 217.32-6.21 157.48-6.52 87.58 35.7 41.92c40.11-43.35 106.6-31.7 165.73-30.94z',
+				'M199.96 8.23c30.67 4.96 56 23.24 80.32 42.54 23.26 18.46 43.1 39.53 56.5 66.01 15.52 30.7 37.46 64.8 26.06 97.25-11.4 32.41-54.8 37.41-81.14 59.5-29.41 24.64-44.32 68.39-81.74 77-39.6 9.11-81.53-8.22-114.6-31.82-33.24-23.72-58.85-58.54-67.81-98.34-8.53-37.87 5.91-75.75 20.48-111.74 13.6-33.58 29.33-68.25 60.15-87.36C127.97 2.8 165.35 2.62 199.96 8.23z',
+			],
+			/* eslint-enable max-len */
+			blobIndex: 0,
 		};
 	},
 	computed: {
@@ -148,13 +164,40 @@ export default {
 			};
 		}
 	},
+	mounted() {
+		gsap.registerPlugin(MorphSVGPlugin);
+	},
 	methods: {
 		async setPerson(personObj) {
 			if (!this.person.name) { // if this is the initial load, don't animate
 				this.person = personObj;
 			} else {
-				const { profileBodyWrapper, profileBodyWrapperWrapper, portraitImg } = this.$refs;
+				const {
+					profileBodyWrapper,
+					profileBodyWrapperWrapper,
+					portraitImg,
+					portraitBlob
+				} = this.$refs;
 
+				// blob animation
+				const currentBlobIndex = this.blobIndex;
+				this.blobIndex = getRandomInt(0, 3);
+				while (currentBlobIndex === this.blobIndex) { // ensure we always have a different blob
+					this.blobIndex = getRandomInt(0, 3);
+				}
+				gsap.fromTo(
+					portraitBlob,
+					{
+						morphSVG: { shape: this.blobShapes[currentBlobIndex] }
+					},
+					{
+						morphSVG: { shape: this.blobShapes[this.blobIndex] },
+						ease: 'back.in',
+						duration: 0.75
+					}
+				);
+
+				// people and content animations
 				const timeline = gsap.timeline({ defaults: { ease: 'power2.in' } });
 				const animateOut = async () => {
 					portraitImg.style.filter = 'blur(100px)'; // gsap doesnt do blur without a plugin, using css instead
@@ -299,6 +342,8 @@ export default {
 	&__portrait-blob {
 		flex: 1;
 		margin: 1rem 3rem;
+		fill: $offwhite;
+		overflow: visible;
 
 		@include breakpoint('xxlarge') {
 			align-self: flex-start;
