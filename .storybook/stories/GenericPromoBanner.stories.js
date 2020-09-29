@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import StoryRouter from 'storybook-vue-router';
-import { text } from '@storybook/addon-knobs';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 
 // import plugins

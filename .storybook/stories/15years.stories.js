@@ -17,6 +17,7 @@ import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
 
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
+import {appealBanner} from '../mock-data/contentful-data-mock';
 
 // This decorator applies the 15 year styles to the individual components in storybook
 // so they can be viewed in the same way they're applied in the 15Year page.
@@ -59,10 +60,24 @@ const FifteenYearsDecorator = () => ({
 		</div>`,
 });
 
+const minFundedLoans = 0;
+const maxFundedLoans = 15000
+const recentFundedLoans = {
+	data: {
+		general: {
+			kivaStats: {
+				numRecentFundedLoans: Math.floor(Math.random() * (maxFundedLoans - minFundedLoans + 1) + minFundedLoans),
+			}
+		}
+	}
+};
+
 export default {
 	title: 'Pages/15Years',
 	component: FifteenYears,
-	args: {},
+	args: {
+		appealBannerContent: appealBanner,
+	},
 	argTypes: {},
 	layout: 'fullscreen',
 	decorators: [StoryRouter(), withKnobs],
@@ -85,9 +100,9 @@ export const AppealBanner = (args, { argTypes }) => ({
 		AppealBanner15,
 	},
 	props: Object.keys(argTypes),
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: recentFundedLoans}), kvAuth0StoryMixin],
 	template: `
-		<appeal-banner-15 />
+		<appeal-banner-15 :appeal-banner-content="appealBannerContent"  />
 	`,
 });
 AppealBanner.decorators = [FifteenYearsDecorator];
