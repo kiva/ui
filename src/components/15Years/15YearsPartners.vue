@@ -16,6 +16,10 @@
 					<ul class="strategic-partners__list row collapse">
 						<li
 							class="strategic-partners__li small-12 medium-6 large-4 columns"
+							v-observe-visibility="{
+								callback: animateTotalImpact,
+								once: true,
+							}"
 						>
 							<div class="strategic-partners__total-impact">
 								<h3
@@ -32,7 +36,7 @@
 								>
 									<li class="row align-bottom collapse">
 										<h3 class="shrink column">
-											$101M
+											${{ totalImpactDonations }}M
 										</h3>
 										<h5 class="column">
 											In donations
@@ -40,7 +44,7 @@
 									</li>
 									<li class="row align-bottom collapse">
 										<h3 class="shrink column">
-											$130M
+											${{ totalImpactDisbursed }}M
 										</h3>
 										<h5 class="column">
 											disbursed to borrowers
@@ -48,7 +52,7 @@
 									</li>
 									<li class="row align-bottom collapse">
 										<h3 class="shrink column">
-											2.5M
+											{{ totalImpactBorrowersFunded }}M
 										</h3>
 										<h5 class="column">
 											Borrowers funded
@@ -125,6 +129,8 @@
 </template>
 
 <script>
+import gsap from 'gsap';
+
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
 
@@ -137,6 +143,9 @@ export default {
 	},
 	data() {
 		return {
+			totalImpactDonations: 101,
+			totalImpactDisbursed: 130,
+			totalImpactBorrowersFunded: 2.5,
 			strategicPartners: [
 				{
 					key: 'paypal',
@@ -234,13 +243,46 @@ export default {
 			const targetPartner = this.strategicPartners.find(partner => partner.key === partnerKey);
 			// if showStats is false, scroll partner information before shrinking
 			if (!targetPartner.showStats) {
-				console.log(this.$refs[partnerKey]);
 				this.$refs[partnerKey][0].scrollTop = 0;
 			}
 			// toggle showStats
 			targetPartner.showStats = !targetPartner.showStats;
+		},
+		animateTotalImpact(isVisible) {
+			if (isVisible) {
+				const vm = this;
+				const donations = { val: 0 };
+				const disbursed = { val: 0 };
+				const funded = { val: 0 };
+
+				// totalImpactDonations
+				gsap.to(donations, 3, {
+					val: 101,
+					roundProps: 'val',
+					onUpdate() {
+						vm.totalImpactDonations = donations.val;
+					}
+				});
+
+				// totalImpactDisbursed
+				gsap.to(disbursed, 3, {
+					val: 130,
+					roundProps: 'val',
+					onUpdate() {
+						vm.totalImpactDisbursed = disbursed.val;
+					}
+				});
+
+				// totalImpactBorrowersFunded
+				gsap.to(funded, 3, {
+					val: 2.5,
+					onUpdate() {
+						vm.totalImpactBorrowersFunded = funded.val.toFixed(1);
+					}
+				});
+			}
 		}
-	},
+	}
 };
 </script>
 
