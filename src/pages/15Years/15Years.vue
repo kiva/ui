@@ -7,11 +7,7 @@
 			<div class="page-wrap">
 				<fifteen-years-styles>
 					<section>
-						<fifteen-years-header
-							:main-text-subtitle="mainTextSubtitle"
-							:button-cta-text="buttonCtaText"
-							:card-data="cardData"
-						/>
+						<fifteen-years-header />
 					</section>
 					<section>
 						<fifteen-years-timeline />
@@ -32,6 +28,7 @@
 </template>
 
 <script>
+
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
@@ -54,24 +51,10 @@ export default {
 	metaInfo: {
 		title: '15 Years'
 	},
-	props: {
-		mainTextSubtitle: {
-			type: String,
-			default: '',
-		},
-		buttonCTAText: {
-			type: String,
-			default: '',
-		},
-		cardData: {
-			type: Object,
-			default: () => {}
-		},
-	},
 	data() {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
-			footerTheme: fifteenYearFooterTheme
+			footerTheme: fifteenYearFooterTheme,
 		};
 	},
 };
