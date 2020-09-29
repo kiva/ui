@@ -1,4 +1,5 @@
 import { addParameters } from '@storybook/vue';
+import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import Vue from 'vue';
 
 //load all the svg icon sprites
@@ -15,6 +16,18 @@ import config from '../config/local';
 
 // provide global application config
 Vue.prototype.$appConfig = config.app;
+
+// add custom viewports
+const customViewports = {
+  largeDesktop: {
+    name: 'Large desktop',
+    styles: {
+      width: '1540px',
+      height: '1000px',
+    },
+  },
+};
+
 
 addParameters({
 	options: {
@@ -43,6 +56,12 @@ addParameters({
 				value: '#000000'
 			},
 		],
-	}
+	},
+	viewport: {
+    viewports: {
+			...MINIMAL_VIEWPORTS,
+			...customViewports,
+    },
+  },
 });
 

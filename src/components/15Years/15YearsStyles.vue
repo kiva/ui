@@ -36,18 +36,11 @@
 	}
 
 	.section {
-		padding: rem-calc(36) rem-calc(8);
-
-		@include breakpoint('large') {
-			padding: rem-calc(52) rem-calc(56);
-		}
-
-		@include breakpoint('xxlarge') {
-			padding: rem-calc(88) 0;
-		}
+		padding: rem-calc(96) 0;
 	}
 
-	.row { // the width of the comp is larger than our normal 990px
+	.row {
+		// the width of the comp is larger than our normal 990px
 		max-width: rem-calc(1152);
 	}
 }

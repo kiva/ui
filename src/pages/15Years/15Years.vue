@@ -28,6 +28,7 @@
 </template>
 
 <script>
+
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
@@ -53,7 +54,7 @@ export default {
 	data() {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
-			footerTheme: fifteenYearFooterTheme
+			footerTheme: fifteenYearFooterTheme,
 		};
 	},
 };
@@ -63,7 +64,8 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
-.page-wrap { // scootch the page behind the semi-transparent top nav
+.page-wrap {
+	// scootch the page behind the semi-transparent top nav
 	margin-top: rem-calc(-45);
 
 	@include breakpoint(large) {
@@ -71,7 +73,8 @@ export default {
 	}
 }
 
-.row { // the width of the comp is larger than our normal 990px
+.row {
+	// the width of the comp is larger than our normal 990px
 	max-width: rem-calc(1152);
 }
 </style>
