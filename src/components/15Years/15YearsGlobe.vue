@@ -77,7 +77,6 @@ export default {
 
 		this.gkview.onTap = (screen, world) => {
 			console.log(screen, world);
-			console.log();
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
@@ -168,6 +167,7 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+
 .callout {
 	display: inline-block;
 	box-sizing: border-box;
