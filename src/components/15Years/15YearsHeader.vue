@@ -1,7 +1,7 @@
 <template>
 	<div class="header section">
 		<fifteen-years-oily-background />
-		<fifteen-years-globe />
+		<fifteen-years-globe ref="globe" @selectcountry="onCountrySelect" />
 		<div class="header__main-section">
 			<div class="row align-middle">
 				<div class="header__text small-12 large-6 xxlarge-5 columns">
@@ -77,6 +77,11 @@ export default {
 				},
 			],
 		};
+	},
+	methods: {
+		onCountrySelect(event) {
+			console.log('!!!', event);
+		}
 	}
 };
 </script>

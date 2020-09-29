@@ -8462,6 +8462,8 @@ var Renderer = /*#__PURE__*/function () {
 
     _defineProperty(this, "isWebGL2", null);
 
+    _defineProperty(this, "instancedEnabled", false);
+
     _defineProperty(this, "init", function () {
       var gl = _this.gl;
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -8470,7 +8472,6 @@ var Renderer = /*#__PURE__*/function () {
       gl.enable(gl.CULL_FACE);
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     });
 
     _defineProperty(this, "resize", function (width, height) {
@@ -8478,11 +8479,19 @@ var Renderer = /*#__PURE__*/function () {
     });
 
     _defineProperty(this, "prepareRenderFrame", function () {
+      // eslint-disable-next-line no-bitwise
       _this.gl.clear(_this.gl.COLOR_BUFFER_BIT | _this.gl.DEPTH_BUFFER_BIT);
     });
 
     this.gl = getWebGLContext(htmlCanvas, attributes);
-    this.isWebGL2 = isWebGL2(this.gl) && isWebGL1(this.gl);
+    this.isWebGL2 = isWebGL2(this.gl) && isWebGL1(this.gl); // Add all availible extentions to context...could be messy but works for now.
+
+    addExtensionsToContext(this.gl);
+
+    if (this.gl.drawElementsInstanced) {
+      this.instancedEnabled = true;
+    }
+
     resizeCanvasToDisplaySize(htmlCanvas);
   }
   /**
@@ -13443,6 +13452,7 @@ var GlobeKitView = /*#__PURE__*/function () {
 
       _this.renderer.init();
 
+      if (_this.gkOptions.clearColor) _this.renderer.clearColor = _this.gkOptions.clearColor;
       _this.scene = new Scene(canvas.width, canvas.height);
       _this.interactionController = new InteractionController(canvas, _this.scene.camera);
       _this.interactionController.onTapCB = _this.onTapCB;
@@ -13452,8 +13462,6 @@ var GlobeKitView = /*#__PURE__*/function () {
 
     _defineProperty(this, "_onInitCB", function () {
       _this.onInitCB(_this);
-
-      _this.shouldDraw = true;
 
       _this.renderloop(0);
     });
@@ -13514,6 +13522,16 @@ var GlobeKitView = /*#__PURE__*/function () {
       }
 
       return true;
+    });
+
+    _defineProperty(this, "startDrawing", function () {
+      _this.shouldDraw = true;
+
+      _this.renderloop(0);
+    });
+
+    _defineProperty(this, "stopDrawing", function () {
+      _this.shouldDraw = false;
     });
 
     _defineProperty(this, "renderloop", function (time) {

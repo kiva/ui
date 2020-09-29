@@ -34,7 +34,7 @@ export default {
 				alpha: true, antialias: true,
 			}
 		}, () => {});
-		this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#F8F8F8', 0.0);
+		this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#000000', 0.0);
 		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
 		this.gkview.setMovementModelTo(0, 0, 3.4);
 		this.gkview.userDefinedSelection = () => {};
@@ -50,17 +50,6 @@ export default {
 		};
 		this.gkview.registerCalloutManager(this.calloutManager);
 
-		fetch('/geo/35-10.bin')
-			.then(res => res.arrayBuffer())
-			.then(data => {
-				this.lowpoly = new Lowpoly(textures, data);
-				this.lowpoly.setInteractive(true, true, true);
-			})
-			.then(() => {
-				this.gkview.addDrawable(this.lowpoly);
-				// this.lowpoly.shouldDraw = true;
-			});
-
 		const callouts = [];
 		geojson.features.forEach(feature => {
 			const latlng = feature.geometry.coordinates;
@@ -69,7 +58,19 @@ export default {
 			callout.altitude = 0.035;
 			callouts.push(callout);
 		});
-		this.calloutManager.replaceCallouts(callouts);
+
+		fetch('/geo/35-10.bin')
+			.then(res => res.arrayBuffer())
+			.then(data => {
+				this.lowpoly = new Lowpoly(textures, data);
+				this.lowpoly.setInteractive(true, true, true);
+			})
+			.then(() => {
+				this.gkview.addDrawable(this.lowpoly, () => {
+					this.gkview.startDrawing();
+					this.calloutManager.replaceCallouts(callouts);
+				});
+			});
 
 		this.datastore = new DataStore();
 		this.datastore.addGeojson(geojson);
@@ -77,12 +78,17 @@ export default {
 		this.gkview.onTap = (screen, world) => {
 			console.log(screen, world);
 			console.log();
-			const results = this.datastore.getNearest(world.lat, world.lon, 250, 1);
+			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
 				console.log(result);
 				const callout = new CalloutDefinition(result.lat, result.lon, PinCallout, result.properties);
+				callout.altitude = 0.035;
 				this.calloutManager.replaceCallouts([...callouts, callout]);
+				this.$emit('selectcountry', result.properties);
+			} else {
+				this.calloutManager.replaceCallouts(callouts);
+				this.$emit('selectcountry', null);
 			}
 		};
 
@@ -184,6 +190,7 @@ export default {
 .pin-callout {
 	width: 27px;
 	height: 37px;
-	background: red;
+	background: url('~@/assets/images/15-years/globe/pin@2x.png') top left no-repeat;
+	background-size: 100% 100%;
 }
 </style>
