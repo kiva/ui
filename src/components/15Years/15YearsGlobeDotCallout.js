@@ -6,7 +6,7 @@ class DotCallout extends Callout {
 	createElement() {
 		const div = document.createElement('div');
 		div.className = 'callout dot-callout';
-		div.dataset.code = this.definition.data.code;
+		div.dataset.code = this.definition.data.iso3;
 		return div;
 	}
 
