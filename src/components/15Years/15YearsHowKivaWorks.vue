@@ -225,7 +225,7 @@ export default {
 		display: flex;
 		justify-content: space-between;
 		pointer-events: none;
-		margin-top: -3.75rem;
+		margin-top: -3.5rem;
 
 		@include breakpoint(large) {
 			position: absolute;
@@ -324,19 +324,25 @@ export default {
 	&__body { // this is kv-carousel
 		overflow: visible;
 
-		@include breakpoint(large) {
-			width: calc(90% - #{$prev-next-size * 2});
-			margin: 0 auto;
-		}
-
 		&::v-deep {
 			// carousel hack to make the viewport match design
 			.kv-carousel__viewport {
 				overflow: visible; // TODO: this seems to cause a bug when tabbing through the carousel
 			}
 
-			.kv-carousel--hide-arrows .kv-carousel__indicator {
-				margin-top: 1rem;
+			.kv-carousel__indicator {
+				margin-top: 2rem;
+			}
+		}
+
+		@include breakpoint(large) {
+			width: calc(90% - #{$prev-next-size * 2});
+			margin: 0 auto;
+
+			&::v-deep {
+				.kv-carousel__indicator {
+					margin-top: 0;
+				}
 			}
 		}
 	}
@@ -350,6 +356,7 @@ export default {
 	&__body-title {
 		@include h3();
 
+		line-height: 1;
 		margin-bottom: 0.5rem;
 	}
 
@@ -390,7 +397,6 @@ export default {
 	&__body-img-wrapper {
 		height: rem-calc(176);
 		width: 50%;
-		padding: 1rem;
 		display: flex;
 		align-items: center;
 
