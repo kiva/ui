@@ -27,7 +27,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 @mixin h3() {
 	font-size: rem-calc(36);
 	font-weight: 500;
-	line-height: 1.45;
+	line-height: 1.38;
 	letter-spacing: -0.02em;
 
 	@include breakpoint('large') {
