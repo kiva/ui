@@ -88,7 +88,7 @@ export default {
 			});
 
 		const callouts = [];
-		geojson.features.forEach((feature, index) => {
+		geojson.features.forEach(feature => {
 			const latlng = feature.geometry.coordinates;
 			const country = feature.properties;
 			const callout = new CalloutDefinition(latlng[1], latlng[0], DotCallout, country);
@@ -99,7 +99,6 @@ export default {
 
 		this.gkview.onTap = (screen, world) => {
 			console.log(screen, world);
-
 		};
 
 		// this.points = new Points({ maxDataPoints: 100 });
