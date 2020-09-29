@@ -76,7 +76,7 @@ export const Combined = (args, { argTypes }) => ({
 	layout: 'fullscreen',
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<div style="margin: -1rem;"><fifteen-years :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/></div>
+		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
 });
 

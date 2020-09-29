@@ -34,6 +34,9 @@
 </template>
 
 <script>
+import Hearts02 from '@/assets/images/15-years/stickers/Hearts02.svg';
+import Handshake from '@/assets/images/15-years/stickers/Handshake.svg';
+import PlanetEarth from '@/assets/images/15-years/stickers/PlanetEarth.svg';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
@@ -46,20 +49,35 @@ export default {
 		FifteenYearsOilyBackground,
 		FifteenYearsGlobe,
 	},
-	props: {
-		mainTextSubtitle: {
-			type: String,
-			required: true,
-		},
-		buttonCtaText: {
-			type: String,
-			required: true,
-		},
-		cardData: {
-			type: Object,
-			required: true,
-		},
-	},
+	data() {
+		return {
+			mainTextSubtitle: 'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.',
+			buttonCtaText: 'Lend now',
+			cardData: [
+				{
+					title: '15 Years of Impact',
+					subtitle: 'The history of Kiva, year by year',
+					href: '#15-years-of-impact',
+					imgSrc: Hearts02,
+					imgTilt: 5,
+				},
+				{
+					title: 'The World of Kiva',
+					subtitle: 'The people who make it happen',
+					href: '#world-of-kiva',
+					imgSrc: Handshake,
+					imgTilt: 10,
+				},
+				{
+					title: 'Partners',
+					subtitle: 'Organizations making a difference',
+					href: '#orgs-making-difference',
+					imgSrc: PlanetEarth,
+					imgTilt: 15,
+				},
+			],
+		};
+	}
 };
 </script>
 
@@ -171,6 +189,7 @@ export default {
 
 		// TODO: Vertical line separator between info cards via pseudo-selector
 		&:not(:first-child) {
+
 			// Phones only
 			@include breakpoint(small) {
 				border-top: 1px solid black;
@@ -197,11 +216,17 @@ export default {
 	.fifteen-yr-button {
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
-		transition: background-color 0.1s ease-out, color 0.1s ease-out, border-color 0.1s ease-out;
+		transition:
+			background-color 0.1s ease-out,
+			color 0.1s ease-out,
+			border-color 0.1s ease-out;
 	}
 }
 
 .header.section {
 	padding: 0;
+	min-height: rem-calc(900);
+	display: flex;
+	flex-direction: column;
 }
 </style>
