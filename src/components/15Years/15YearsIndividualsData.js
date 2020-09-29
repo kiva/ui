@@ -141,7 +141,7 @@ export default [
 	{
 		name: 'Apollo Ag',
 		title: 'Small Farm Funder',
-		img: 'need-content',
+		img: 'apollo',
 		body: null,
 		videoId: 174878843,
 		cta1: 'Support groups like Apollo Agriculture',
@@ -161,7 +161,7 @@ export default [
 		link2: '/monthlygood?category=us_borrowers',
 	},
 	{
-		name: 'David Kitusa',
+		name: 'David',
 		title: 'The Local Changemaker',
 		img: 'david',
 		body: `<p>
@@ -175,7 +175,7 @@ export default [
 		link2: 'Africa filtered loans', // TODO: find url.
 	},
 	{
-		name: 'Rachel Chang',
+		name: 'Rachel',
 		title: 'Protocol Practitioner',
 		img: 'rachel',
 		body: `<p>
