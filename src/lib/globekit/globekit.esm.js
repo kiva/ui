@@ -13457,6 +13457,7 @@ var GlobeKitView = /*#__PURE__*/function () {
       _this.interactionController = new InteractionController(canvas, _this.scene.camera);
       _this.interactionController.onTapCB = _this.onTapCB;
       window.onresize = _this.onResizeCB;
+      window.onscroll = _this.onResizeCB;
       _this.isInit = true;
     });
 
