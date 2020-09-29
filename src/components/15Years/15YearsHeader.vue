@@ -34,6 +34,9 @@
 </template>
 
 <script>
+import Hearts02 from '@/assets/images/15-years/stickers/Hearts02.svg';
+import Handshake from '@/assets/images/15-years/stickers/Handshake.svg';
+import PlanetEarth from '@/assets/images/15-years/stickers/PlanetEarth.svg';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
@@ -55,24 +58,24 @@ export default {
 					title: '15 Years of Impact',
 					subtitle: 'The history of Kiva, year by year',
 					href: '#15-years-of-impact',
-					imgSrc: 'static/img/Hearts02.ba8510a.svg',
-					imgTilt: 5
+					imgSrc: Hearts02,
+					imgTilt: 5,
 				},
 				{
 					title: 'The World of Kiva',
 					subtitle: 'The people who make it happen',
 					href: '#world-of-kiva',
-					imgSrc: 'static/img/Handshake.fb4c78a.svg',
-					imgTilt: 10
+					imgSrc: Handshake,
+					imgTilt: 10,
 				},
 				{
 					title: 'Partners',
 					subtitle: 'Organizations making a difference',
 					href: '#orgs-making-difference',
-					imgSrc: 'static/img/PlanetEarth.45c4090.svg',
-					imgTilt: 15
-				}
-			]
+					imgSrc: PlanetEarth,
+					imgTilt: 15,
+				},
+			],
 		};
 	}
 };
@@ -217,7 +220,6 @@ export default {
 			background-color 0.1s ease-out,
 			color 0.1s ease-out,
 			border-color 0.1s ease-out;
-
 	}
 }
 
