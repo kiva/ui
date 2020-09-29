@@ -475,8 +475,8 @@ export default {
 		p {
 			margin-top: 1.5rem;
 			position: relative;
-			font-size: $medium-text-font-size;
-			line-height: $medium-text-line-height;
+			// font-size: $medium-text-font-size;
+			// line-height: $medium-text-line-height;
 			transition: max-height 0.5s ease-out;
 			overflow: hidden;
 			max-height: 108px;
