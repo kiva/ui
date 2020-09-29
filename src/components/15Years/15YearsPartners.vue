@@ -251,18 +251,15 @@ export default {
 .partners {
 	background-color: $offwhite;
 	padding: rem-calc(105) 0;
-}
 
-.strategic-partners,
-.supporting-partners {
-	margin-top: rem-calc(12);
+	&__header {
+		--section-header-line-color: #{$twilight};
 
-	@include breakpoint(large) {
-		margin-top: rem-calc(24);
-	}
+		margin-bottom: 2rem;
 
-	@include breakpoint(xlarge) {
-		margin-top: rem-calc(53);
+		@include breakpoint('xxlarge') {
+			margin-bottom: 7.5rem;
+		}
 	}
 }
 
@@ -378,10 +375,6 @@ export default {
 		height: 100%;
 
 		p {
-			font-size: rem-calc(14);
-			letter-spacing: -0.02em;
-			line-height: 1.35;
-
 			@include breakpoint('large') {
 				font-size: rem-calc(18);
 			}
@@ -452,12 +445,6 @@ export default {
 		&--chess {
 			width: rem-calc(141);
 		}
-	}
-}
-
-.partners__header {
-	::v-deep .section-header__line {
-		background-color: $twilight;
 	}
 }
 </style>
