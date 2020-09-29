@@ -76,6 +76,7 @@ export default {
 		this.datastore.addGeojson(geojson);
 
 		this.gkview.onTap = (screen, world) => {
+			if (!world) return;
 			console.log(screen, world);
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
@@ -91,22 +92,9 @@ export default {
 			}
 		};
 
-		// this.points = new Points({ maxDataPoints: 100 });
-		// this.gkview.addDrawable(this.points);
-		// const pointColor = GKUtils.hexToRGBA('#F8F8F8', 0.0);
-		// this.points.applyTransform = (element, p) => {
-		// 	const point = p;
-		// 	point.alt = 1;
-		// 	point.size = 48;
-
-		// 	// console.log(GKUtils.hexToRGBA);
-		// 	// point.color = GKUtils.hexToRGBA('#F8F8F8', 0.0);
-		// 	point.color = pointColor;
-
-		// 	return point;
-		// };
-
-		// this.points.addGeojson(geojson);
+		this.calloutManager.onAutoRemove = () => {
+			this.$emit('selectcountry', null);
+		};
 	},
 };
 </script>
