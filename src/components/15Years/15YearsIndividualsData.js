@@ -116,7 +116,7 @@ export default [
 	{
 		name: 'Julia',
 		title: 'High School Hero',
-		img: 'need-content',
+		img: 'julia',
 		body: null,
 		videoId: 174878843,
 		cta1: 'Lend like Julia',
@@ -205,7 +205,7 @@ export default [
 	{
 		name: 'Eduardo',
 		title: 'Kiva\'s Chronicler',
-		img: 'need-content',
+		img: 'eduardo',
 		body: `<p>
 		Growing up in Peru and now living in the United Kingdom, Eduardo has come full circle. He now explores his home country, and many others, through the Spanish loans that he translates as a volunteer with Kiva.
 		</p><p>
