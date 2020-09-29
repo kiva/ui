@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import Hearts02 from '@/assets/images/15-years/stickers/Hearts02.svg';
-import Handshake from '@/assets/images/15-years/stickers/Handshake.svg';
-import PlanetEarth from '@/assets/images/15-years/stickers/PlanetEarth.svg';
+import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
+import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
+import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
@@ -61,21 +61,21 @@ export default {
 					title: '15 Years of Impact',
 					subtitle: 'The history of Kiva, year by year',
 					href: '#15-years-of-impact',
-					imgSrc: Hearts02,
+					imgSrc: ThirtyEightMillion,
 					imgTilt: 5,
 				},
 				{
 					title: 'The World of Kiva',
 					subtitle: 'The people who make it happen',
 					href: '#world-of-kiva',
-					imgSrc: Handshake,
+					imgSrc: TShirt,
 					imgTilt: 10,
 				},
 				{
-					title: 'Partners',
-					subtitle: 'Organizations making a difference',
+					title: 'Strategic Partners',
+					subtitle: 'INDIVIDUALS AND ORGANIZATIONS MAKING A DIFFERENCE',
 					href: '#orgs-making-difference',
-					imgSrc: PlanetEarth,
+					imgSrc: DreamTeam,
 					imgTilt: 15,
 				},
 			],
@@ -146,7 +146,6 @@ export default {
 	&__cards-section {
 		position: relative;
 		margin-top: auto;
-		padding: rem-calc(24) 0;
 		pointer-events: none;
 
 		@include breakpoint(small) {
@@ -156,7 +155,6 @@ export default {
 
 		@include breakpoint(large) {
 			background-color: transparent;
-			padding: rem-calc(24) 0;
 			margin: 0;
 		}
 
@@ -172,7 +170,8 @@ export default {
 			@include breakpoint(large) {
 				max-width: 300px;
 				margin: 0;
-				padding-left: rem-calc(82);
+				/* padding-left: rem-calc(82); */
+				margin-left: auto;
 			}
 
 			@include breakpoint(xxlarge) {
@@ -195,6 +194,10 @@ export default {
 
 		@include breakpoint(xxlarge) {
 			padding: 0;
+		}
+
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.8);
 		}
 
 		// TODO: Vertical line separator between info cards via pseudo-selector
