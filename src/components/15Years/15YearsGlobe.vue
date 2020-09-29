@@ -12,39 +12,13 @@ import {
 	GlobeKitView,
 	Lowpoly,
 	GKUtils,
+	DataStore,
 	CalloutManager,
-	CalloutDefinition,
-	Callout
+	CalloutDefinition
 } from '@/lib/globekit/globekit.esm';
+import DotCallout from './15YearsGlobeDotCallout';
+import PinCallout from './15YearsGlobePinCallout';
 import geojson from '../../assets/data/components/15-years/geojson.json';
-
-class DotCallout extends Callout {
-	createElement() {
-		const div = document.createElement('div');
-		div.className = 'dot-callout';
-		div.style.display = 'inline-block';
-		div.style.boxSizing = 'border-box';
-		div.style.position = 'absolute';
-		div.style.background = 'white';
-		div.style.width = '9px';
-		div.style.height = '9px';
-		div.style.borderRadius = '50%';
-		div.style.boxShadow = '4px 4px 8px rgba(0, 0, 0, 0.25)';
-		div.dataset.code = this.definition.data.code;
-		return div;
-	}
-
-	setPosition(position) {
-		const nx = position.screen.x - ((this.size.left + this.size.right) / 2);
-		const ny = position.screen.y - ((this.size.left + this.size.right) / 2);
-		this.element.style.transform = `translate(${nx}px, ${ny}px)`;
-		this.element.style.zIndex = Math.round(10000 * position.world.similarityToCameraVector);
-		if (position.world.similarityToCameraVector < 0.7) {
-			const scale = Math.max((position.world.similarityToCameraVector - 0.4) / 0.3, 0);
-			this.element.style.transform += ` scale(${scale}, ${scale})`;
-		}
-	}
-}
 
 export default {
 	name: 'FifteenYearsGlobe',
@@ -97,8 +71,19 @@ export default {
 		});
 		this.calloutManager.replaceCallouts(callouts);
 
+		this.datastore = new DataStore();
+		this.datastore.addGeojson(geojson);
+
 		this.gkview.onTap = (screen, world) => {
 			console.log(screen, world);
+			console.log();
+			const results = this.datastore.getNearest(world.lat, world.lon, 250, 1);
+			if (results) {
+				const result = results[0][0];
+				console.log(result);
+				const callout = new CalloutDefinition(result.lat, result.lon, PinCallout, result.properties);
+				this.calloutManager.replaceCallouts([...callouts, callout]);
+			}
 		};
 
 		// this.points = new Points({ maxDataPoints: 100 });
@@ -172,16 +157,33 @@ export default {
 
 .gk-callout-manager {
 	pointer-events: none;
+}
+</style>
 
-	.dot-callout {
-		display: inline-block;
-		box-sizing: border-box;
-		position: absolute;
-		background: red;
-		width: 9px;
-		height: 9px;
-		border-radius: 50%;
-		box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+<style lang="scss">
+@import 'settings';
+.callout {
+	display: inline-block;
+	box-sizing: border-box;
+	position: absolute;
+}
+
+.dot-callout {
+	background: white;
+	width: calc(4 / 320 * 100vw);
+	height: calc(4 / 320 * 100vw);
+	border-radius: 50%;
+	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+
+	@include breakpoint(large) {
+		width: 7px;
+		height: 7px;
 	}
+}
+
+.pin-callout {
+	width: 27px;
+	height: 37px;
+	background: red;
 }
 </style>
