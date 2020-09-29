@@ -1,0 +1,788 @@
+{
+  "countries": [
+    {
+      "centroid": {
+        "lat": 33.83523073,
+        "lng": 66.00473366
+      },
+      "code": "AFG",
+      "name": "Afghanistan"
+    },
+    {
+      "centroid": {
+        "lat": 41.14244989,
+        "lng": 20.04983396
+      },
+      "code": "ALB",
+      "name": "Albania"
+    },
+    {
+      "centroid": {
+        "lat": 40.28952569,
+        "lng": 44.92993276
+      },
+      "code": "ARM",
+      "name": "Armenia"
+    },
+    {
+      "centroid": {
+        "lat": 40.28827235,
+        "lng": 47.54599879
+      },
+      "code": "AZE",
+      "name": "Azerbaijan"
+    },
+    {
+      "centroid": {
+        "lat": 23.86731158,
+        "lng": 90.23812743
+      },
+      "code": "BGD",
+      "name": "Bangladesh"
+    },
+    {
+      "centroid": {
+        "lat": 17.20027509,
+        "lng": -88.71010486
+      },
+      "code": "BLZ",
+      "name": "Belize"
+    },
+    {
+      "centroid": {
+        "lat": 9.6417597,
+        "lng": 2.32785254
+      },
+      "code": "BEN",
+      "name": "Benin"
+    },
+    {
+      "centroid": {
+        "lat": 27.41106589,
+        "lng": 90.40188155
+      },
+      "code": "BTN",
+      "name": "Bhutan"
+    },
+    {
+      "centroid": {
+        "lat": -16.70814787,
+        "lng": -64.68538645
+      },
+      "code": "BOL",
+      "name": "Bolivia"
+    },
+    {
+      "centroid": {
+        "lat": 44.17450125,
+        "lng": 17.76876733
+      },
+      "code": "BIH",
+      "name": "Bosnia and Herzegovina"
+    },
+    {
+      "centroid": {
+        "lat": -22.18403213,
+        "lng": 23.79853368
+      },
+      "code": "BWA",
+      "name": "Botswana"
+    },
+    {
+      "centroid": {
+        "lat": -10.78777702,
+        "lng": -53.09783113
+      },
+      "code": "BRA",
+      "name": "Brazil"
+    },
+    {
+      "centroid": {
+        "lat": 42.76890318,
+        "lng": 25.21552909
+      },
+      "code": "BGR",
+      "name": "Bulgaria"
+    },
+    {
+      "centroid": {
+        "lat": 12.26953846,
+        "lng": -1.75456601
+      },
+      "code": "BFA",
+      "name": "Burkina Faso"
+    },
+    {
+      "centroid": {
+        "lat": -3.35939666,
+        "lng": 29.87512156
+      },
+      "code": "BDI",
+      "name": "Burundi"
+    },
+    {
+      "centroid": {
+        "lat": 12.72004786,
+        "lng": 104.90694325
+      },
+      "code": "KHM",
+      "name": "Cambodia"
+    },
+    {
+      "centroid": {
+        "lat": 5.69109849,
+        "lng": 12.73964156
+      },
+      "code": "CMR",
+      "name": "Cameroon"
+    },
+    {
+      "centroid": {
+        "lat": 61.36206324,
+        "lng": -98.30777028
+      },
+      "code": "CAN",
+      "name": "Canada"
+    },
+    {
+      "centroid": {
+        "lat": 15.33333758,
+        "lng": 18.64492513
+      },
+      "code": "TCD",
+      "name": "Chad"
+    },
+    {
+      "centroid": {
+        "lat": -33.45,
+        "lng": -70.666667
+      },
+      "code": "CHL",
+      "name": "Chile"
+    },
+    {
+      "centroid": {
+        "lat": 36.56176546,
+        "lng": 103.81907349
+      },
+      "code": "CHN",
+      "name": "China"
+    },
+    {
+      "centroid": {
+        "lat": 3.91383431,
+        "lng": -73.08114582
+      },
+      "code": "COL",
+      "name": "Colombia"
+    },
+    {
+      "centroid": {
+        "lat": -0.83787463,
+        "lng": 15.21965762
+      },
+      "code": "COG",
+      "name": "Congo"
+    },
+    {
+      "centroid": {
+        "lat": 9.97634464,
+        "lng": -84.19208768
+      },
+      "code": "CRI",
+      "name": "Costa Rica"
+    },
+    {
+      "centroid": {
+        "lat": 7.6284262,
+        "lng": -5.5692157
+      },
+      "code": "CIV",
+      "name": "Cote D'Ivoire"
+    },
+    {
+      "centroid": {
+        "lat": 18.89433082,
+        "lng": -70.50568896
+      },
+      "code": "DOM",
+      "name": "Dominican Republic"
+    },
+    {
+      "centroid": {
+        "lat": -1.42381612,
+        "lng": -78.75201922
+      },
+      "code": "ECU",
+      "name": "Ecuador"
+    },
+    {
+      "centroid": {
+        "lat": 26.49593311,
+        "lng": 29.86190099
+      },
+      "code": "EGY",
+      "name": "Egypt"
+    },
+    {
+      "centroid": {
+        "lat": 13.73943744,
+        "lng": -88.87164469
+      },
+      "code": "SLV",
+      "name": "El Salvador"
+    },
+    {
+      "centroid": {
+        "lat": -17.8309,
+        "lng": 177.979339
+      },
+      "code": "FJI",
+      "name": "Fiji"
+    },
+    {
+      "centroid": {
+        "lat": 31.3547,
+        "lng": 34.3088
+      },
+      "code": "GZA",
+      "name": "Gaza"
+    },
+    {
+      "centroid": {
+        "lat": 42.16855755,
+        "lng": 43.50780252
+      },
+      "code": "GEO",
+      "name": "Georgia"
+    },
+    {
+      "centroid": {
+        "lat": 7.95345644,
+        "lng": -1.21676566
+      },
+      "code": "GHA",
+      "name": "Ghana"
+    },
+    {
+      "centroid": {
+        "lat": 13.44165626,
+        "lng": 144.76791022
+      },
+      "code": "GUM",
+      "name": "Guam"
+    },
+    {
+      "centroid": {
+        "lat": 15.69403664,
+        "lng": -90.36482009
+      },
+      "code": "GTM",
+      "name": "Guatemala"
+    },
+    {
+      "centroid": {
+        "lat": 18.93502563,
+        "lng": -72.68527509
+      },
+      "code": "HTI",
+      "name": "Haiti"
+    },
+    {
+      "centroid": {
+        "lat": 14.82688165,
+        "lng": -86.6151661
+      },
+      "code": "HND",
+      "name": "Honduras"
+    },
+    {
+      "centroid": {
+        "lat": 22.88578212,
+        "lng": 79.6119761
+      },
+      "code": "IND",
+      "name": "India"
+    },
+    {
+      "centroid": {
+        "lat": -2.21505456,
+        "lng": 117.24011366
+      },
+      "code": "IDN",
+      "name": "Indonesia"
+    },
+    {
+      "centroid": {
+        "lat": 33.03970582,
+        "lng": 43.74353149
+      },
+      "code": "IRQ",
+      "name": "Iraq"
+    },
+    {
+      "centroid": {
+        "lat": 31.46110101,
+        "lng": 35.00444693
+      },
+      "code": "ISR",
+      "name": "Israel"
+    },
+    {
+      "centroid": {
+        "lat": 31.24579091,
+        "lng": 36.77136104
+      },
+      "code": "JOR",
+      "name": "Jordan"
+    },
+    {
+      "centroid": {
+        "lat": 0.59988022,
+        "lng": 37.79593973
+      },
+      "code": "KEN",
+      "name": "Kenya"
+    },
+    {
+      "centroid": {
+        "lat": 42.57078707,
+        "lng": 20.87249811
+      },
+      "code": "XKS",
+      "name": "Kosovo"
+    },
+    {
+      "centroid": {
+        "lat": 41.46221943,
+        "lng": 74.54165513
+      },
+      "code": "KGZ",
+      "name": "Kyrgyzstan"
+    },
+    {
+      "centroid": {
+        "lat": 18.50217433,
+        "lng": 103.73772412
+      },
+      "code": "LAO",
+      "name": "Lao People's Democratic Republic"
+    },
+    {
+      "centroid": {
+        "lat": 33.92306631,
+        "lng": 35.88016072
+      },
+      "code": "LBN",
+      "name": "Lebanon"
+    },
+    {
+      "centroid": {
+        "lat": -29.58003188,
+        "lng": 28.22723131
+      },
+      "code": "LSO",
+      "name": "Lesotho"
+    },
+    {
+      "centroid": {
+        "lat": 6.45278492,
+        "lng": -9.32207573
+      },
+      "code": "LBR",
+      "name": "Liberia"
+    },
+    {
+      "centroid": {
+        "lat": -19.37189587,
+        "lng": 46.70473674
+      },
+      "code": "MDG",
+      "name": "Madagascar"
+    },
+    {
+      "centroid": {
+        "lat": -13.21808088,
+        "lng": 34.28935599
+      },
+      "code": "MWI",
+      "name": "Malawi"
+    },
+    {
+      "centroid": {
+        "lat": 17.34581581,
+        "lng": -3.54269065
+      },
+      "code": "MLI",
+      "name": "Mali"
+    },
+    {
+      "centroid": {
+        "lat": 20.25736706,
+        "lng": -10.34779815
+      },
+      "code": "MRT",
+      "name": "Mauritania"
+    },
+    {
+      "centroid": {
+        "lat": 23.94753724,
+        "lng": -102.52345169
+      },
+      "code": "MEX",
+      "name": "Mexico"
+    },
+    {
+      "centroid": {
+        "lat": 47.19498804,
+        "lng": 28.45673372
+      },
+      "code": "MDA",
+      "name": "Moldova"
+    },
+    {
+      "centroid": {
+        "lat": 46.82681544,
+        "lng": 103.05299765
+      },
+      "code": "MNG",
+      "name": "Mongolia"
+    },
+    {
+      "centroid": {
+        "lat": -17.27381643,
+        "lng": 35.53367543
+      },
+      "code": "MOZ",
+      "name": "Mozambique"
+    },
+    {
+      "centroid": {
+        "lat": 21.18566599,
+        "lng": 96.48843321
+      },
+      "code": "MMR",
+      "name": "Myanmar (Burma)"
+    },
+    {
+      "centroid": {
+        "lat": -22.13032568,
+        "lng": 17.20963567
+      },
+      "code": "NAM",
+      "name": "Namibia"
+    },
+    {
+      "centroid": {
+        "lat": 28.24891365,
+        "lng": 83.9158264
+      },
+      "code": "NPL",
+      "name": "Nepal"
+    },
+    {
+      "centroid": {
+        "lat": 12.84709429,
+        "lng": -85.0305297
+      },
+      "code": "NIC",
+      "name": "Nicaragua"
+    },
+    {
+      "centroid": {
+        "lat": 9.59411452,
+        "lng": 8.08943895
+      },
+      "code": "NGA",
+      "name": "Nigeria"
+    },
+    {
+      "centroid": {
+        "lat": 29.9497515,
+        "lng": 69.33957937
+      },
+      "code": "PAK",
+      "name": "Pakistan"
+    },
+    {
+      "centroid": {
+        "lat": 31.91613893,
+        "lng": 35.19628705
+      },
+      "code": "PSE",
+      "name": "Palestine"
+    },
+    {
+      "centroid": {
+        "lat": 8.51750797,
+        "lng": -80.11915156
+      },
+      "code": "PAN",
+      "name": "Panama"
+    },
+    {
+      "centroid": {
+        "lat": -6.46416646,
+        "lng": 145.20744752
+      },
+      "code": "PNG",
+      "name": "Papua New Guinea"
+    },
+    {
+      "centroid": {
+        "lat": -23.22823913,
+        "lng": -58.40013703
+      },
+      "code": "PRY",
+      "name": "Paraguay"
+    },
+    {
+      "centroid": {
+        "lat": -9.15280381,
+        "lng": -74.38242685
+      },
+      "code": "PER",
+      "name": "Peru"
+    },
+    {
+      "centroid": {
+        "lat": 11.77536778,
+        "lng": 122.88393253
+      },
+      "code": "PHL",
+      "name": "Philippines"
+    },
+    {
+      "centroid": {
+        "lat": 18.22813055,
+        "lng": -66.47307604
+      },
+      "code": "PRI",
+      "name": "Puerto Rico"
+    },
+    {
+      "centroid": {
+        "lat": -1.99033832,
+        "lng": 29.91988515
+      },
+      "code": "RWA",
+      "name": "Rwanda"
+    },
+    {
+      "centroid": {
+        "lat": 13.22472269,
+        "lng": -61.20129695
+      },
+      "code": "VCT",
+      "name": "Saint Vincent and the Grenadines"
+    },
+    {
+      "centroid": {
+        "lat": -13.75324346,
+        "lng": -172.16485064
+      },
+      "code": "WSM",
+      "name": "Samoa"
+    },
+    {
+      "centroid": {
+        "lat": 14.36624173,
+        "lng": -14.4734924
+      },
+      "code": "SEN",
+      "name": "Senegal"
+    },
+    {
+      "centroid": {
+        "lat": 8.56329593,
+        "lng": -11.79271247
+      },
+      "code": "SLE",
+      "name": "Sierra Leone"
+    },
+    {
+      "centroid": {
+        "lat": -8.92178022,
+        "lng": 159.63287668
+      },
+      "code": "SLB",
+      "name": "Solomon Islands"
+    },
+    {
+      "centroid": {
+        "lat": 4.75062876,
+        "lng": 45.70714487
+      },
+      "code": "SOM",
+      "name": "Somalia"
+    },
+    {
+      "centroid": {
+        "lat": -29.00034095,
+        "lng": 25.08390093
+      },
+      "code": "ZAF",
+      "name": "South Africa"
+    },
+    {
+      "centroid": {
+        "lat": 7.30877945,
+        "lng": 30.24790002
+      },
+      "code": "SSD",
+      "name": "South Sudan"
+    },
+    {
+      "centroid": {
+        "lat": 7.61266509,
+        "lng": 80.70108238
+      },
+      "code": "LKA",
+      "name": "Sri Lanka"
+    },
+    {
+      "centroid": {
+        "lat": 4.13055413,
+        "lng": -55.9123457
+      },
+      "code": "SUR",
+      "name": "Suriname"
+    },
+    {
+      "centroid": {
+        "lat": 38.5304539,
+        "lng": 71.01362631
+      },
+      "code": "TJK",
+      "name": "Tajikistan"
+    },
+    {
+      "centroid": {
+        "lat": -6.27565408,
+        "lng": 34.81309981
+      },
+      "code": "TZA",
+      "name": "Tanzania"
+    },
+    {
+      "centroid": {
+        "lat": 15.11815794,
+        "lng": 101.0028813
+      },
+      "code": "THA",
+      "name": "Thailand"
+    },
+    {
+      "centroid": {
+        "lat": -2.87746289,
+        "lng": 23.64396107
+      },
+      "code": "COD",
+      "name": "The Democratic Republic of the Congo"
+    },
+    {
+      "centroid": {
+        "lat": -8.82889162,
+        "lng": 125.84438982
+      },
+      "code": "TLS",
+      "name": "Timor-Leste"
+    },
+    {
+      "centroid": {
+        "lat": 8.52531356,
+        "lng": 0.96232845
+      },
+      "code": "TGO",
+      "name": "Togo"
+    },
+    {
+      "centroid": {
+        "lat": -20.42843174,
+        "lng": -174.80987341
+      },
+      "code": "TON",
+      "name": "Tonga"
+    },
+    {
+      "centroid": {
+        "lat": 39.0616029,
+        "lng": 35.16895346
+      },
+      "code": "TUR",
+      "name": "Turkey"
+    },
+    {
+      "centroid": {
+        "lat": 1.27469299,
+        "lng": 32.36907971
+      },
+      "code": "UGA",
+      "name": "Uganda"
+    },
+    {
+      "centroid": {
+        "lat": 48.99656673,
+        "lng": 31.38326469
+      },
+      "code": "UKR",
+      "name": "Ukraine"
+    },
+    {
+      "centroid": {
+        "lat": 39.833333,
+        "lng": -98.583333
+      },
+      "code": "USA",
+      "name": "United States"
+    },
+    {
+      "centroid": {
+        "lat": -32.79951534,
+        "lng": -56.01807053
+      },
+      "code": "URY",
+      "name": "Uruguay"
+    },
+    {
+      "centroid": {
+        "lat": -16.22640909,
+        "lng": 167.68644636
+      },
+      "code": "VUT",
+      "name": "Vanuatu"
+    },
+    {
+      "centroid": {
+        "lat": 16.6460167,
+        "lng": 106.29914698
+      },
+      "code": "VNM",
+      "name": "Vietnam"
+    },
+    {
+      "centroid": {
+        "lat": 15.90928005,
+        "lng": 47.58676189
+      },
+      "code": "YEM",
+      "name": "Yemen"
+    },
+    {
+      "centroid": {
+        "lat": -13.45824152,
+        "lng": 27.77475946
+      },
+      "code": "ZMB",
+      "name": "Zambia"
+    },
+    {
+      "centroid": {
+        "lat": -19.00420419,
+        "lng": 29.8514412
+      },
+      "code": "ZWE",
+      "name": "Zimbabwe"
+    }
+  ]
+}
