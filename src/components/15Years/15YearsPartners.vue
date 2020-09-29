@@ -53,7 +53,7 @@
 							<div class="strategic-partners__partner">
 								<div class="strategic-partners__logo-wrapper">
 									<img
-										class="strategic-partners__logo"
+										class="strategic-partners__logo strategic-partners__logo--paypal"
 										src="@/assets/images/15-years/partners/Partner-paypal.svg"
 										alt="PayPal"
 										loading="lazy"
@@ -94,7 +94,7 @@
 							<div class="strategic-partners__partner">
 								<div class="strategic-partners__logo-wrapper">
 									<img
-										class="strategic-partners__logo"
+										class="strategic-partners__logo strategic-partners__logo--mastercard"
 										src="@/assets/images/15-years/partners/Partner-mastercard.svg"
 										alt="Mastercard Foundation"
 										loading="lazy"
@@ -135,7 +135,7 @@
 							<div class="strategic-partners__partner">
 								<div class="strategic-partners__logo-wrapper">
 									<img
-										class="strategic-partners__logo"
+										class="strategic-partners__logo strategic-partners__logo--ebay"
 										src="@/assets/images/15-years/partners/Partner-ebay.svg"
 										alt="Ebay"
 										loading="lazy"
@@ -176,7 +176,7 @@
 							<div class="strategic-partners__partner">
 								<div class="strategic-partners__logo-wrapper">
 									<img
-										class="strategic-partners__logo"
+										class="strategic-partners__logo strategic-partners__logo--visa"
 										src="@/assets/images/15-years/partners/Partner-visa.svg"
 										alt="Visa"
 										loading="lazy"
@@ -217,7 +217,7 @@
 							<div class="strategic-partners__partner">
 								<div class="strategic-partners__logo-wrapper">
 									<img
-										class="strategic-partners__logo"
+										class="strategic-partners__logo strategic-partners__logo--skoll"
 										src="@/assets/images/15-years/partners/Partner-skoll.svg"
 										alt="Skoll + DFC"
 										loading="lazy"
@@ -417,12 +417,56 @@ export default {
 
 	&__logo {
 		display: block;
+
+		&--mastercard {
+			width: rem-calc(77);
+
+			@include breakpoint(xlarge) {
+				width: rem-calc(99);
+			}
+		}
+
+		&--paypal {
+			width: rem-calc(185);
+
+			@include breakpoint(xlarge) {
+				width: rem-calc(236);
+			}
+		}
+
+		&--visa {
+			width: rem-calc(152);
+
+			@include breakpoint(xlarge) {
+				width: rem-calc(195);
+			}
+		}
+
+		&--ebay {
+			width: rem-calc(157);
+
+			@include breakpoint(xlarge) {
+				width: rem-calc(213);
+			}
+		}
+
+		&--skoll {
+			width: rem-calc(261);
+
+			@include breakpoint(xlarge) {
+				width: rem-calc(338);
+			}
+		}
 	}
 
 	&__logo-wrapper {
-		height: rem-calc(150);
+		height: rem-calc(70);
 		display: flex;
 		align-items: center;
+
+		@include breakpoint(xlarge) {
+			height: rem-calc(150);
+		}
 	}
 
 	&__stats {
@@ -479,12 +523,12 @@ export default {
 			// line-height: $medium-text-line-height;
 			transition: max-height 0.5s ease-out;
 			overflow: hidden;
-			max-height: 108px;
+			max-height: rem-calc(108);
 
 			&::before {
 				content: '';
 				position: absolute;
-				height: 200px;
+				height: rem-calc(200);
 				bottom: 0;
 				width: 100%;
 				background: linear-gradient(to bottom, rgba($offwhite, 0) 62%, rgba($offwhite, 1) 100%);
@@ -494,7 +538,7 @@ export default {
 
 		p.expanded {
 			transition: max-height 0.5s ease-out;
-			max-height: 800px; // just used for animation since we can't animate to height auto.
+			max-height: rem-calc(800); // just used for animation since we can't animate to height auto.
 			height: auto;
 
 			&::before {
