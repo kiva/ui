@@ -7,7 +7,7 @@
 						How Kiva Works
 					</template>
 					<template v-slot:subhead>
-						A Step by Step<br class="smo"><br class="xxlu"> Guide
+						A Step-by-Step<br class="smo"><br class="xxlu"> Guide
 					</template>
 				</fifteen-years-section-header>
 
@@ -168,11 +168,11 @@ export default {
 	methods: {
 		goToSlide(slideIndex) {
 			this.$refs.carousel_component.goToSlide(slideIndex);
-			this.$refs[`video${slideIndex}`].currentTime = 0;
 			this.currentIndex = slideIndex;
 		},
 		onCarouselChange(e) {
 			this.currentIndex = e;
+			this.$refs[`video${this.currentIndex}`][0].currentTime = 0;
 		},
 	}
 };
