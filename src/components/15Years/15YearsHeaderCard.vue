@@ -74,7 +74,7 @@ a {
 	}
 
 	img {
-		transition: transform 0.2s cubic-bezier(0.240, 0.015, 0.250, 1.355);
+		transition: transform 0.2s cubic-bezier(0.24, 0.015, 0.25, 1.355);
 		transform: var(--image-tilt);
 	}
 

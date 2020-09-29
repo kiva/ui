@@ -170,7 +170,7 @@ export default {
 			@include breakpoint(large) {
 				max-width: 300px;
 				margin: 0;
-				/* padding-left: rem-calc(82); */
+/* padding-left: rem-calc(82); */
 				margin-left: auto;
 			}
 
