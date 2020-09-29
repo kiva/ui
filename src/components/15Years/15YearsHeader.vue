@@ -19,14 +19,16 @@
 		</div>
 		<div class="header__cards-section">
 			<div class="row">
-				<div class="header__card small-12 xxlarge-4 columns" v-for="item in cardData" :key="item.href">
-					<FifteenYearsHeaderCard
-						:title="item.title"
-						:subtitle="item.subtitle"
-						:href="item.href"
-						:img-src="item.imgSrc"
-						:img-tilt="item.imgTilt"
-					/>
+				<div class="small-12 xxlarge-4 columns header__card-wrap" v-for="item in cardData" :key="item.href">
+					<div class="header__card">
+						<FifteenYearsHeaderCard
+							:title="item.title"
+							:subtitle="item.subtitle"
+							:href="item.href"
+							:img-src="item.imgSrc"
+							:img-tilt="item.imgTilt"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -89,7 +91,7 @@ export default {
 	background: $offwhite;
 	position: relative;
 	z-index: 1;
-	min-height: 900px;
+	min-height: rem-calc(900);
 	padding: 0;
 
 	&__headline {
@@ -115,18 +117,15 @@ export default {
 		pointer-events: none;
 
 		.row {
+			flex: 1;
 			padding-top: rem-calc(96);
-			padding-left: rem-calc(16);
-			margin: 0;
 
 			@include breakpoint(large) {
 				padding-top: rem-calc(64);
-				padding-left: rem-calc(64);
 			}
 
 			@include breakpoint(xxlarge) {
 				padding-top: rem-calc(64);
-				padding-left: rem-calc(128);
 			}
 		}
 	}
@@ -154,60 +153,41 @@ export default {
 		@include breakpoint(xxlarge) {
 			background-color: rgba(255, 255, 255, 0.5);
 		}
-
-		.row {
-			max-width: 95%;
-			width: 95%;
-
-			@include breakpoint(large) {
-				max-width: 300px;
-				margin: 0;
-				padding-left: rem-calc(82);
-			}
-
-			@include breakpoint(xxlarge) {
-				max-width: 99%;
-			}
-		}
 	}
 
 	&__card {
 		position: relative;
-
-		@include breakpoint(small) {
-			padding: rem-calc(32) 0;
-		}
+		padding-top: rem-calc(32);
+		padding-bottom: rem-calc(32);
 
 		@include breakpoint(large) {
-			padding: rem-calc(12) 0;
-			padding-top: rem-calc(16);
+			max-width: rem-calc(300);
 		}
 
 		@include breakpoint(xxlarge) {
-			padding: 0;
+			max-width: 99%;
 		}
+	}
 
-		// TODO: Vertical line separator between info cards via pseudo-selector
+	&__card-wrap {
 		&:not(:first-child) {
+			.header__card {
+				border-top: 1px solid $twilight;
 
-			// Phones only
-			@include breakpoint(small) {
-				border-top: 1px solid black;
-			}
+				@include breakpoint(xxlarge) {
+					border-top: none;
 
-			// Desktop and above
-			@include breakpoint(xxlarge) {
-				border-top: none;
-
-				&::after {
-					content: "";
-					border-left: solid 1px black;
-					height: 75%;
-					position: absolute;
-					top: 0;
-					bottom: 0;
-					margin-top: auto;
-					margin-bottom: auto;
+					&::after {
+						content: "";
+						border-left: solid 1px $twilight;
+						height: 75%;
+						position: absolute;
+						top: 0;
+						left: 0;
+						bottom: 0;
+						margin-top: auto;
+						margin-bottom: auto;
+					}
 				}
 			}
 		}

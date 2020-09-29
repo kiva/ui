@@ -1,15 +1,19 @@
 <template>
 	<div class="card" :style="cssProps">
-		<a class="header__card-link" :href="href"> </a>
-		<div class="row header__card-content align-justify">
-			<div class="small-3 header__card-img">
-				<img :src="imgSrc">
+		<a
+			class="card__link"
+			:href="href"
+		>
+			<div class="row align-justify">
+				<div class="small-3 card__img">
+					<img :src="imgSrc">
+				</div>
+				<div class="column card__content">
+					<h4 class="card__title">{{ title }}</h4>
+					<p class="card__text">{{ subtitle }}</p>
+				</div>
 			</div>
-			<div class="column header__card-text">
-				<h4>{{ title }}</h4>
-				<p>{{ subtitle }}</p>
-			</div>
-		</div>
+		</a>
 	</div>
 </template>
 
@@ -51,20 +55,9 @@ export default {
 @import "settings";
 @import "components/15-years/15-years";
 
-a {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 3;
-}
-
 .card {
-	@include link();
-
 	position: relative;
-	padding: 0 rem-calc(16);
+	padding: 0;
 
 	@include breakpoint(large) {
 		padding: 0;
@@ -75,49 +68,27 @@ a {
 		transform: var(--image-tilt);
 	}
 
-	p {
-		text-decoration: underline;
-	}
-
-	h4 {
-		text-decoration: none;
-		font-style: normal;
-		font-weight: bold;
-		text-transform: none;
-	}
-
-	&:hover {
-		text-decoration: none;
-
-		p {
-			text-decoration: none;
-		}
-
-		img {
-			transform: rotate(0deg);
-		}
-	}
-}
-
-.header {
-	&__card-content {
-		padding: 0;
-
-		@include breakpoint(xxlarge) {
-			padding: 0 rem-calc(48);
-		}
-	}
-
-	&__card-img {
-		max-width: 90px;
+	&__link {
 		display: block;
-		margin-left: auto;
-		margin-right: auto;
+		text-decoration: none;
+		white-space: normal;
 
-		// Phones
-		@include breakpoint(small) {
-			display: none;
+		&:hover,
+		&:focus {
+			img {
+				transform: rotate(0deg);
+			}
 		}
+	}
+
+	&__content {
+		padding-right: 0;
+	}
+
+	&__img {
+		max-width: rem-calc(90);
+		margin-left: 1.25rem;
+		display: none;
 
 		// Desktop
 		@include breakpoint(xxlarge) {
@@ -125,36 +96,20 @@ a {
 		}
 	}
 
-	&__card-text {
-		h4 {
-			@include breakpoint(small) {
-				font-size: calc(18 / 320 * 100vw);
-			}
+	&__title {
+		@include h4();
 
-			@include breakpoint(large) {
-				font-size: calc(14 / 1000 * 100vw);
-			}
+		text-transform: none;
 
-			@include breakpoint(xxlarge) {
-				font-size: calc(24 / 1440 * 100vw);
-			}
+		@include breakpoint(large) {
+			font-size: rem-calc(24);
 		}
+	}
 
-		/* stylelint-disable no-descending-specificity */
-		p {
-			@include breakpoint(small) {
-				font-size: calc(11 / 320 * 100vw);
-			}
+	&__text {
+		@include link();
 
-			@include breakpoint(large) {
-				font-size: calc(11 / 1000 * 100vw);
-			}
-
-			@include breakpoint(xxlarge) {
-				font-size: calc(14 / 1440 * 100vw);
-			}
-		}
-		/* stylelint-enable no-descending-specificity */
+		white-space: normal;
 	}
 }
 
