@@ -193,7 +193,7 @@ export default {
 					{
 						morphSVG: { shape: this.blobShapes[this.blobIndex] },
 						ease: 'back.in',
-						duration: 0.675
+						duration: 0.75
 					}
 				);
 
