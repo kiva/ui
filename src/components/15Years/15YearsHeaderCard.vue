@@ -64,14 +64,17 @@ a {
 	@include link();
 
 	position: relative;
-	padding: 0 rem-calc(16);
+	padding: rem-calc(24) rem-calc(16);
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: block;
 
 	@include breakpoint(large) {
-		padding: 0;
+		padding: rem-calc(24) 0;
 	}
 
 	img {
-		transition: transform 0.15s ease-in-out;
+		transition: transform 0.2s cubic-bezier(0.24, 0.015, 0.25, 1.355);
 		transform: var(--image-tilt);
 	}
 
