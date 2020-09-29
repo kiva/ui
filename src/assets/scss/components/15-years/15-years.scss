@@ -54,9 +54,9 @@ $font-family-monospace: 'Roboto Mono', monospace;
 	letter-spacing: -0.02em;
 	margin-bottom: 0.5em;
 
-	// @include breakpoint('large') {
-	// 	font-size: rem-calc(36);
-	// }
+	@include breakpoint('large') {
+		font-size: rem-calc(36);
+	}
 }
 
 @mixin h5() {
@@ -85,7 +85,7 @@ $font-family-monospace: 'Roboto Mono', monospace;
 
 	text-decoration: underline;
 	color: $twilight;
-	white-space: nowrap;
+	// white-space: nowrap;
 
 	&:hover {
 		text-decoration: none;
