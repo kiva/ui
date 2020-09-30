@@ -2,7 +2,7 @@
 	<div class="header section">
 		<fifteen-years-oily-background />
 		<div class="header__main-section">
-			<div class="header__main-section-row row align-middle">
+			<div class="header__main-section-row row align-bottom">
 				<div v-if="!isCountrySelected" class="main_cta">
 					<div class="header__text small-12 large-6 columns">
 						<h1 class="header__headline">
@@ -377,10 +377,9 @@ export default {
 
 	&__main-section {
 		position: absolute;
-		height: 400px;
+		height: 432px;
 		display: flex;
-
-		// height: 100vh;
+		width: 100%;
 
 		.row {
 			flex: 1;
@@ -389,7 +388,6 @@ export default {
 		@include breakpoint(small) {
 			margin: 0 auto;
 			padding-top: rem-calc(48);
-			max-width: 85vw;
 		}
 
 		@include breakpoint(large) {
