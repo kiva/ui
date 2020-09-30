@@ -9,16 +9,16 @@
 					<section>
 						<fifteen-years-header />
 					</section>
-					<section>
+					<section id="years-of-impact">
 						<fifteen-years-timeline />
 					</section>
-					<section>
+					<section id="world-of-kiva">
 						<fifteen-years-individuals />
 					</section>
-					<section>
+					<section id="orgs-making-difference">
 						<fifteen-years-partners />
 					</section>
-					<section>
+					<section id="how-kiva-works">
 						<fifteen-years-how-kiva-works />
 					</section>
 				</fifteen-years-styles>

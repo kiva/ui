@@ -1,15 +1,18 @@
 <template>
 	<div class="card" :style="cssProps">
-		<a class="header__card-link" :href="href"> </a>
-		<div class="row header__card-content align-justify">
-			<div class="small-3 header__card-img">
-				<img :src="imgSrc">
+		<a
+			class="card__link"
+			:href="href"
+			@click.prevent="onClickCardLink(href)"
+		>
+			<div class="card__img">
+				<img :src="imgSrc" alt="">
 			</div>
-			<div class="column header__card-text">
-				<h4>{{ title }}</h4>
-				<p>{{ subtitle }}</p>
+			<div class="card__content">
+				<h4 class="card__title">{{ title }}</h4>
+				<p class="card__text">{{ subtitle }}</p>
 			</div>
-		</div>
+		</a>
 	</div>
 </template>
 
@@ -43,6 +46,11 @@ export default {
 				'--image-tilt': `rotate3d(0,0,1,${this.imgTilt}deg)`,
 			};
 		}
+	},
+	methods: {
+		onClickCardLink(href) {
+			this.$emit('card-clicked', href);
+		}
 	}
 };
 </script>
@@ -51,82 +59,39 @@ export default {
 @import "settings";
 @import "components/15-years/15-years";
 
-a {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 3;
-}
-
 .card {
-	@include link();
-
 	position: relative;
-	padding: rem-calc(24) rem-calc(16);
-	text-overflow: ellipsis;
-	text-decoration: none;
-	overflow: hidden;
-	display: block;
-
-	@include breakpoint(large) {
-		padding-top: 0;
-		padding-bottom: 0;
-	}
-
-	@include breakpoint(xxlarge) {
-		padding: rem-calc(24) 0;
-	}
 
 	img {
 		transition: transform 1s cubic-bezier(0.05, 2.5, 0.52, 0.5);
 		transform: var(--image-tilt);
 	}
 
-	p {
-		text-decoration: underline;
-	}
-
-	h4 {
+	&__link {
+		display: flex;
 		text-decoration: none;
-		font-style: normal;
-		font-weight: bold;
-		text-transform: none;
-	}
+		white-space: normal;
 
-	&:hover {
-		text-decoration: none;
-
-		p {
-			text-decoration: none;
+		&:hover,
+		&:focus {
+			img {
+				transform: rotate3d(0, 0, 0.1, 1deg);
+			}
 		}
 
-		img {
-			transform: rotate3d(0, 0, 0.1, 1deg);
-		}
-	}
-}
-
-.header {
-	&__card-content {
-		padding: 0;
-
-		@include breakpoint(xxlarge) {
-			padding: 0 rem-calc(48);
+		@include breakpoint(large) {
+			padding: rem-calc(24) 0;
 		}
 	}
 
-	&__card-img {
-		max-width: 90px;
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
+	&__content {
+		padding-right: 0;
+	}
 
-		// Phones
-		@include breakpoint(small) {
-			display: none;
-		}
+	&__img {
+		max-width: rem-calc(81);
+		margin-right: rem-calc(16);
+		display: none;
 
 		// Desktop
 		@include breakpoint(xxlarge) {
@@ -134,36 +99,20 @@ a {
 		}
 	}
 
-	&__card-text {
-		h4 {
-			@include breakpoint(small) {
-				font-size: calc(18 / 320 * 100vw);
-			}
+	&__title {
+		@include h4();
 
-			@include breakpoint(large) {
-				font-size: calc(14 / 1000 * 100vw);
-			}
+		text-transform: none;
 
-			@include breakpoint(xxlarge) {
-				font-size: calc(24 / 1440 * 100vw);
-			}
+		@include breakpoint(large) {
+			font-size: rem-calc(24);
 		}
+	}
 
-		/* stylelint-disable no-descending-specificity */
-		p {
-			@include breakpoint(small) {
-				font-size: calc(11 / 320 * 100vw);
-			}
+	&__text {
+		@include link();
 
-			@include breakpoint(large) {
-				font-size: calc(11 / 1000 * 100vw);
-			}
-
-			@include breakpoint(xxlarge) {
-				font-size: calc(14 / 1440 * 100vw);
-			}
-		}
-		/* stylelint-enable no-descending-specificity */
+		white-space: normal;
 	}
 }
 
