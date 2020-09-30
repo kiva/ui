@@ -11,7 +11,15 @@
 						<p>
 							{{ mainTextSubtitle }}
 						</p>
-						<fifteen-years-button class="header__cta-button" to="/lend-by-category">
+						<fifteen-years-button
+							class="header__cta-button"
+							to="/lend-by-category"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-hero-CTA',
+								buttonCtaText
+							]"
+						>
 							{{ buttonCtaText }}
 						</fifteen-years-button>
 					</div>
@@ -59,7 +67,15 @@
 						</div>
 					</div>
 					<div class="row header__cta-button">
-						<fifteen-years-button :to="getCountryLink(globekitCountrySelected)">
+						<fifteen-years-button
+							:to="getCountryLink(globekitCountrySelected)"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-hero-lend-in-country-CTA',
+								globekitCountrySelected.active > 0 ?
+									`Lend in ${globekitCountrySelected.button}` : 'Find a borrower'
+							]"
+						>
 							{{ globekitCountrySelected.active > 0 ?
 								`Lend in ${globekitCountrySelected.button}` : 'Find a borrower' }}
 						</fifteen-years-button>
@@ -67,6 +83,11 @@
 							<button
 								class="prevnext__btn prevnext__btn--prev"
 								@click="prevClickHandler"
+								v-kv-track-event="[
+									'Kiva15',
+									'click-hero-country-nav',
+									'Previous'
+								]"
 							>
 								<kv-icon
 									class="prevnext__btn-icon"
@@ -80,17 +101,17 @@
 								<kv-progress-bar
 									:value="previousCountries.length.toString()"
 									:max="countryList.length.toString()"
-									style="
-										min-width: 50px;
-
-										--kv-progress-bar-foreground-color: black;
-										--kv-progress-bar-background-color: #C4C4C4;"
 								/>
 							</span>
 
 							<button
 								class="prevnext__btn prevnext__btn--next"
 								@click="nextClickHandler"
+								v-kv-track-event="[
+									'Kiva15',
+									'click-hero-country-nav',
+									'Next'
+								]"
 							>
 								<span class="name-nav__index">Next</span>
 								<kv-icon
@@ -108,7 +129,7 @@
 			<div class="row">
 				<div class="small-12 xxlarge-4 columns header__card-wrap" v-for="item in cardData" :key="item.href">
 					<div class="header__card">
-						<FifteenYearsHeaderCard
+						<fifteen-years-header-card
 							:title="item.title"
 							:subtitle="item.subtitle"
 							:href="item.href"
@@ -217,15 +238,12 @@ export default {
 	},
 	methods: {
 		onCardClicked(id) {
-			// TODO: analytics handler for card click
 			const element = document.querySelector(id);
 			if (element) {
 				element.scrollIntoView({ behavior: 'smooth' });
 			}
 		},
 		onCountrySelect(selection) {
-			// TODO: maybe - callback from user clicking the globe. could include
-			// analytics here, or could be put in 15YearsGlobe
 			if (selection === null) {
 				this.isCountrySelected = false;
 				this.globekitCountrySelected = {};
@@ -233,6 +251,7 @@ export default {
 				this.clearAutoplay();
 			} else {
 				const country = this.countries[selection.iso2];
+				this.$kvTrackEvent('Kiva15', 'click-hero-globe', selection.iso2);
 				if (this.isCountrySelected) {
 					const prevIndex = this.previousCountries.indexOf(country);
 					if (prevIndex !== -1) {
@@ -249,7 +268,6 @@ export default {
 		},
 		nextClickHandler(event) {
 			if (event) {
-				// TODO: analytics handler for clicking next button
 				// (autoplay function calls this method w/out event payload)
 			}
 			if (this.previousCountries.length !== this.countryList.length) {
@@ -267,7 +285,6 @@ export default {
 			this.queueAutoplay();
 		},
 		prevClickHandler() {
-			// TODO: analytics handler for clicking the previous button
 			if (this.previousCountries.length > 1) {
 				this.previousCountries.pop();
 				const country = this.previousCountries[this.previousCountries.length - 1];
@@ -283,9 +300,6 @@ export default {
 			this.queueAutoplay();
 		},
 		onGlobePan() {
-			// TODO: maybe - callback from user panning the globe. could include
-			// analytics here, or could be put in 15YearsGlobe. Will be fired continuously
-			// while interacting
 			if (this.isCountrySelected) {
 				this.queueAutoplay();
 			}
@@ -660,6 +674,10 @@ export default {
 
 		progress {
 			height: 3px;
+			min-width: 50px;
+
+			--kv-progress-bar-foreground-color: black;
+			--kv-progress-bar-background-color: #C4C4C4;
 		}
 
 		progress::-webkit-progress-bar {

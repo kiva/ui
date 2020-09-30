@@ -77,6 +77,11 @@
 				<fifteen-years-button
 					class="profile__cta"
 					:to="link"
+					v-kv-track-event="[
+						'Kiva15',
+						'click-world-of-kiva-CTA',
+						cta
+					]"
 				>
 					{{ cta }}
 				</fifteen-years-button>
@@ -87,6 +92,11 @@
 				class="profile__learn-more-btn"
 				variant="white"
 				@click="$emit('show-full-profile')"
+				v-kv-track-event="[
+					'Kiva15',
+					'click-world-of-kiva-CTA',
+					'Learn More'
+				]"
 			>
 				Learn More
 			</fifteen-years-button>
@@ -95,6 +105,11 @@
 				class="profile__next-person-btn"
 				variant="white"
 				@click="$emit('show-next-person')"
+				v-kv-track-event="[
+					'Kiva15',
+					'click-world-of-kiva-CTA',
+					'Next Story'
+				]"
 			>
 				Next Story
 			</fifteen-years-button>

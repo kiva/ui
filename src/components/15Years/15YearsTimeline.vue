@@ -49,6 +49,11 @@
 									<router-link
 										class="carousel__body-cta"
 										:to="getSlideLink(index)"
+										v-kv-track-event="[
+											'Kiva15',
+											'click-timeline-CTA',
+											getSlideCta(index)
+										]"
 									>
 										{{ getSlideCta(index) }}
 									</router-link>
@@ -63,6 +68,11 @@
 							class="carousel__prevnext-btn carousel__prevnext-btn--prev"
 							@click="goToSlide(prevIndex)"
 							:disabled="currentIndex === 0"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-timeline-year-nav',
+								'Previous'
+							]"
 						>
 							<kv-icon
 								class="carousel__prevnext-btn-icon"
@@ -77,6 +87,11 @@
 							class="carousel__prevnext-btn carousel__prevnext-btn--next"
 							@click="goToSlide(nextIndex)"
 							:disabled="currentIndex === slides.length - 1"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-timeline-year-nav',
+								'Next'
+							]"
 						>
 							<span class="carousel__prevnext-btn-year">
 								{{ slides[nextIndex].year }}
@@ -104,6 +119,11 @@
 								class="bottom-nav__btn"
 								@click="goToSlide(navIndex)"
 								:disabled="navIndex <= currentIndex"
+								v-kv-track-event="[
+									'Kiva15',
+									'click-timeline-year-nav',
+									`${navSlide.year} ${navSlide.title}`
+								]"
 							>
 								<span class="bottom-nav__btn-img-wrap">
 									<img

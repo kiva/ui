@@ -35,6 +35,11 @@
 									:class="index === currentIndex ? 'name-nav__btn--selected' : ''"
 									@click="showPerson(index)"
 									@mouseenter="preloadPortrait(index)"
+									v-kv-track-event="[
+										'Kiva15',
+										'click-world-of-kiva-name',
+										`${doubleDigit(index)} ${person.name}`
+									]"
 								>
 									<span class="name-nav__index">{{ doubleDigit(index) }}</span>
 									<span class="name-nav__name">{{ person.name }}</span>
@@ -46,6 +51,11 @@
 							<button
 								class="prevnext__btn prevnext__btn--prev"
 								@click="showPerson(previousIndex)"
+								v-kv-track-event="[
+									'Kiva15',
+									'click-world-of-kiva-CTA',
+									'Previous Story'
+								]"
 							>
 								<kv-icon
 									class="prevnext__btn-icon"
@@ -64,6 +74,11 @@
 							<button
 								class="prevnext__btn prevnext__btn--next"
 								@click="showPerson(nextIndex)"
+								v-kv-track-event="[
+									'Kiva15',
+									'click-world-of-kiva-CTA',
+									'Next Story'
+								]"
 							>
 								<span class="prevnext__btn-text">
 									Next
@@ -96,6 +111,11 @@
 					<button
 						class="prevnext__btn prevnext__btn--prev"
 						@click="showPerson(previousIndex)"
+						v-kv-track-event="[
+							'Kiva15',
+							'click-world-of-kiva-CTA',
+							'Previous Story'
+						]"
 					>
 						<kv-icon
 							class="prevnext__btn-icon"
@@ -114,6 +134,11 @@
 					<button
 						class="prevnext__btn prevnext__btn--next"
 						@click="showPerson(nextIndex)"
+						v-kv-track-event="[
+							'Kiva15',
+							'click-world-of-kiva-CTA',
+							'Next Story'
+						]"
 					>
 						<span class="prevnext__btn-text">
 							Next
