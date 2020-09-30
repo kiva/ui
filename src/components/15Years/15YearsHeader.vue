@@ -351,7 +351,10 @@ export default {
 		},
 		getCountryLink(country) {
 			const countryParam = `${country.region} > ${country.originalName}`;
-			return `/lend/filter?countries=${encodeURIComponent(countryParam)}`;
+			if (country.active > 0) {
+				return `/lend/filter?countries=${encodeURIComponent(countryParam)}`;
+			}
+			return '/lend-by-category';
 		}
 	},
 };
