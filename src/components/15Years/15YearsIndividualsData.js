@@ -6,7 +6,7 @@ export default [
 		name: 'Johnny',
 		title: 'Master of the Hammer',
 		location: 'Peru',
-		img: 'need-content',
+		img: 'johnny',
 		body: `
 		<p>“When we learned there was a possibility that they could lend us [money], a world of possibilities opened up.”
 		Meet Johnny Jimenez, a Peruvian artisan and Kiva borrower whose beautiful work can be purchased on <a href="https://store.kiva.org/" target="_blank">Kiva’s online store, hosted by Novica!</a>
@@ -35,7 +35,7 @@ export default [
 		name: 'Howard',
 		title: 'Voice of Compassion',
 		location: 'California',
-		img: 'need-content',
+		img: 'howard',
 		body: `
 		<p>
 		Howard Zugman was reading the newspaper on New Year’s Day in 2008 when he came upon an article sharing better ways to make a New Year’s resolution. For those tired of joining a gym only to stop going a couple of months later, the article instead suggested, among other options, lending money to the world’s most financially excluded individuals on Kiva.org. But Howard was skeptical.
@@ -67,7 +67,7 @@ export default [
 		name: 'Apollo Agriculture',
 		title: 'Small Farm Funder',
 		location: 'Kenya',
-		img: 'apollo',
+		img: 'wilson',
 		body: `
 		<p>Wilson’s harvest yield increased by 600% thanks to a Kiva loan and support from Apollo Agriculture. Apollo is just one of 300+ Kiva Field Partners that work with us toward global financial inclusion.</p>
 		`,
@@ -124,7 +124,7 @@ export default [
 		name: 'WWBIC',
 		title: 'Heartland Supporters',
 		location: 'Wisconsin',
-		img: 'need-content',
+		img: 'wwbic',
 		body: `
 		<p>Over 230, 000 U.S. entrepreneurs have benefited from Kiva loans since 2011. Discover one of the many local organizations nationwide that connects local businesses with Kiva: Wisconsin Women’s Business Initiative Corporation(WWBIC).
 		</p>
@@ -280,7 +280,7 @@ export default [
 		name: 'Lev',
 		title: 'Refugee Advocate',
 		location: 'California',
-		img: 'need-content',
+		img: 'lev',
 		body: `<p>Lev Plaves was working with youth in Palestine when he learned about Kiva. While there, he found that one of the biggest obstacles youth faced to pursuing their dreams was a lack of access to formal financial services, like bank accounts and lines of credit. Recalling his introduction to Kiva, Lev says, “It seemed like this perfect bridge between the work that I had been doing and what I saw as this financial gap.”
 		</p>
 

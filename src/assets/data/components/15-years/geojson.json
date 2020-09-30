@@ -1,0 +1,1769 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          66.00473366,
+          33.83523073
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 33.83523073,
+          "lng": 66.00473366
+        },
+        "code": "AFG",
+        "name": "Afghanistan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          20.04983396,
+          41.14244989
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 41.14244989,
+          "lng": 20.04983396
+        },
+        "code": "ALB",
+        "name": "Albania"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          44.92993276,
+          40.28952569
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 40.28952569,
+          "lng": 44.92993276
+        },
+        "code": "ARM",
+        "name": "Armenia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          47.54599879,
+          40.28827235
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 40.28827235,
+          "lng": 47.54599879
+        },
+        "code": "AZE",
+        "name": "Azerbaijan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          90.23812743,
+          23.86731158
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 23.86731158,
+          "lng": 90.23812743
+        },
+        "code": "BGD",
+        "name": "Bangladesh"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -88.71010486,
+          17.20027509
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 17.20027509,
+          "lng": -88.71010486
+        },
+        "code": "BLZ",
+        "name": "Belize"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          2.32785254,
+          9.6417597
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 9.6417597,
+          "lng": 2.32785254
+        },
+        "code": "BEN",
+        "name": "Benin"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          90.40188155,
+          27.41106589
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 27.41106589,
+          "lng": 90.40188155
+        },
+        "code": "BTN",
+        "name": "Bhutan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -64.68538645,
+          -16.70814787
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -16.70814787,
+          "lng": -64.68538645
+        },
+        "code": "BOL",
+        "name": "Bolivia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          17.76876733,
+          44.17450125
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 44.17450125,
+          "lng": 17.76876733
+        },
+        "code": "BIH",
+        "name": "Bosnia and Herzegovina"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          23.79853368,
+          -22.18403213
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -22.18403213,
+          "lng": 23.79853368
+        },
+        "code": "BWA",
+        "name": "Botswana"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -53.09783113,
+          -10.78777702
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -10.78777702,
+          "lng": -53.09783113
+        },
+        "code": "BRA",
+        "name": "Brazil"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          25.21552909,
+          42.76890318
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 42.76890318,
+          "lng": 25.21552909
+        },
+        "code": "BGR",
+        "name": "Bulgaria"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -1.75456601,
+          12.26953846
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 12.26953846,
+          "lng": -1.75456601
+        },
+        "code": "BFA",
+        "name": "Burkina Faso"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          29.87512156,
+          -3.35939666
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -3.35939666,
+          "lng": 29.87512156
+        },
+        "code": "BDI",
+        "name": "Burundi"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          104.90694325,
+          12.72004786
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 12.72004786,
+          "lng": 104.90694325
+        },
+        "code": "KHM",
+        "name": "Cambodia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          12.73964156,
+          5.69109849
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 5.69109849,
+          "lng": 12.73964156
+        },
+        "code": "CMR",
+        "name": "Cameroon"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -98.30777028,
+          61.36206324
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 61.36206324,
+          "lng": -98.30777028
+        },
+        "code": "CAN",
+        "name": "Canada"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          18.64492513,
+          15.33333758
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 15.33333758,
+          "lng": 18.64492513
+        },
+        "code": "TCD",
+        "name": "Chad"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -70.666667,
+          -33.45
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -33.45,
+          "lng": -70.666667
+        },
+        "code": "CHL",
+        "name": "Chile"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          103.81907349,
+          36.56176546
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 36.56176546,
+          "lng": 103.81907349
+        },
+        "code": "CHN",
+        "name": "China"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -73.08114582,
+          3.91383431
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 3.91383431,
+          "lng": -73.08114582
+        },
+        "code": "COL",
+        "name": "Colombia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          15.21965762,
+          -0.83787463
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -0.83787463,
+          "lng": 15.21965762
+        },
+        "code": "COG",
+        "name": "Congo"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -84.19208768,
+          9.97634464
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 9.97634464,
+          "lng": -84.19208768
+        },
+        "code": "CRI",
+        "name": "Costa Rica"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -5.5692157,
+          7.6284262
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 7.6284262,
+          "lng": -5.5692157
+        },
+        "code": "CIV",
+        "name": "Cote D'Ivoire"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -70.50568896,
+          18.89433082
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 18.89433082,
+          "lng": -70.50568896
+        },
+        "code": "DOM",
+        "name": "Dominican Republic"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -78.75201922,
+          -1.42381612
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -1.42381612,
+          "lng": -78.75201922
+        },
+        "code": "ECU",
+        "name": "Ecuador"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          29.86190099,
+          26.49593311
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 26.49593311,
+          "lng": 29.86190099
+        },
+        "code": "EGY",
+        "name": "Egypt"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -88.87164469,
+          13.73943744
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 13.73943744,
+          "lng": -88.87164469
+        },
+        "code": "SLV",
+        "name": "El Salvador"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          177.979339,
+          -17.8309
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -17.8309,
+          "lng": 177.979339
+        },
+        "code": "FJI",
+        "name": "Fiji"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          34.3088,
+          31.3547
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 31.3547,
+          "lng": 34.3088
+        },
+        "code": "GZA",
+        "name": "Gaza"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          43.50780252,
+          42.16855755
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 42.16855755,
+          "lng": 43.50780252
+        },
+        "code": "GEO",
+        "name": "Georgia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -1.21676566,
+          7.95345644
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 7.95345644,
+          "lng": -1.21676566
+        },
+        "code": "GHA",
+        "name": "Ghana"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          144.76791022,
+          13.44165626
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 13.44165626,
+          "lng": 144.76791022
+        },
+        "code": "GUM",
+        "name": "Guam"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -90.36482009,
+          15.69403664
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 15.69403664,
+          "lng": -90.36482009
+        },
+        "code": "GTM",
+        "name": "Guatemala"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -72.68527509,
+          18.93502563
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 18.93502563,
+          "lng": -72.68527509
+        },
+        "code": "HTI",
+        "name": "Haiti"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -86.6151661,
+          14.82688165
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 14.82688165,
+          "lng": -86.6151661
+        },
+        "code": "HND",
+        "name": "Honduras"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          79.6119761,
+          22.88578212
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 22.88578212,
+          "lng": 79.6119761
+        },
+        "code": "IND",
+        "name": "India"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          117.24011366,
+          -2.21505456
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -2.21505456,
+          "lng": 117.24011366
+        },
+        "code": "IDN",
+        "name": "Indonesia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          43.74353149,
+          33.03970582
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 33.03970582,
+          "lng": 43.74353149
+        },
+        "code": "IRQ",
+        "name": "Iraq"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          35.00444693,
+          31.46110101
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 31.46110101,
+          "lng": 35.00444693
+        },
+        "code": "ISR",
+        "name": "Israel"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          36.77136104,
+          31.24579091
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 31.24579091,
+          "lng": 36.77136104
+        },
+        "code": "JOR",
+        "name": "Jordan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          37.79593973,
+          0.59988022
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 0.59988022,
+          "lng": 37.79593973
+        },
+        "code": "KEN",
+        "name": "Kenya"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          20.87249811,
+          42.57078707
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 42.57078707,
+          "lng": 20.87249811
+        },
+        "code": "XKS",
+        "name": "Kosovo"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          74.54165513,
+          41.46221943
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 41.46221943,
+          "lng": 74.54165513
+        },
+        "code": "KGZ",
+        "name": "Kyrgyzstan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          103.73772412,
+          18.50217433
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 18.50217433,
+          "lng": 103.73772412
+        },
+        "code": "LAO",
+        "name": "Lao People's Democratic Republic"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          35.88016072,
+          33.92306631
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 33.92306631,
+          "lng": 35.88016072
+        },
+        "code": "LBN",
+        "name": "Lebanon"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          28.22723131,
+          -29.58003188
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -29.58003188,
+          "lng": 28.22723131
+        },
+        "code": "LSO",
+        "name": "Lesotho"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -9.32207573,
+          6.45278492
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 6.45278492,
+          "lng": -9.32207573
+        },
+        "code": "LBR",
+        "name": "Liberia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          46.70473674,
+          -19.37189587
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -19.37189587,
+          "lng": 46.70473674
+        },
+        "code": "MDG",
+        "name": "Madagascar"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          34.28935599,
+          -13.21808088
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -13.21808088,
+          "lng": 34.28935599
+        },
+        "code": "MWI",
+        "name": "Malawi"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -3.54269065,
+          17.34581581
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 17.34581581,
+          "lng": -3.54269065
+        },
+        "code": "MLI",
+        "name": "Mali"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -10.34779815,
+          20.25736706
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 20.25736706,
+          "lng": -10.34779815
+        },
+        "code": "MRT",
+        "name": "Mauritania"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -102.52345169,
+          23.94753724
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 23.94753724,
+          "lng": -102.52345169
+        },
+        "code": "MEX",
+        "name": "Mexico"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          28.45673372,
+          47.19498804
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 47.19498804,
+          "lng": 28.45673372
+        },
+        "code": "MDA",
+        "name": "Moldova"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          103.05299765,
+          46.82681544
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 46.82681544,
+          "lng": 103.05299765
+        },
+        "code": "MNG",
+        "name": "Mongolia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          35.53367543,
+          -17.27381643
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -17.27381643,
+          "lng": 35.53367543
+        },
+        "code": "MOZ",
+        "name": "Mozambique"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          96.48843321,
+          21.18566599
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 21.18566599,
+          "lng": 96.48843321
+        },
+        "code": "MMR",
+        "name": "Myanmar (Burma)"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          17.20963567,
+          -22.13032568
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -22.13032568,
+          "lng": 17.20963567
+        },
+        "code": "NAM",
+        "name": "Namibia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          83.9158264,
+          28.24891365
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 28.24891365,
+          "lng": 83.9158264
+        },
+        "code": "NPL",
+        "name": "Nepal"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -85.0305297,
+          12.84709429
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 12.84709429,
+          "lng": -85.0305297
+        },
+        "code": "NIC",
+        "name": "Nicaragua"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          8.08943895,
+          9.59411452
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 9.59411452,
+          "lng": 8.08943895
+        },
+        "code": "NGA",
+        "name": "Nigeria"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          69.33957937,
+          29.9497515
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 29.9497515,
+          "lng": 69.33957937
+        },
+        "code": "PAK",
+        "name": "Pakistan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          35.19628705,
+          31.91613893
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 31.91613893,
+          "lng": 35.19628705
+        },
+        "code": "PSE",
+        "name": "Palestine"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -80.11915156,
+          8.51750797
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 8.51750797,
+          "lng": -80.11915156
+        },
+        "code": "PAN",
+        "name": "Panama"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          145.20744752,
+          -6.46416646
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -6.46416646,
+          "lng": 145.20744752
+        },
+        "code": "PNG",
+        "name": "Papua New Guinea"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -58.40013703,
+          -23.22823913
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -23.22823913,
+          "lng": -58.40013703
+        },
+        "code": "PRY",
+        "name": "Paraguay"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -74.38242685,
+          -9.15280381
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -9.15280381,
+          "lng": -74.38242685
+        },
+        "code": "PER",
+        "name": "Peru"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          122.88393253,
+          11.77536778
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 11.77536778,
+          "lng": 122.88393253
+        },
+        "code": "PHL",
+        "name": "Philippines"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -66.47307604,
+          18.22813055
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 18.22813055,
+          "lng": -66.47307604
+        },
+        "code": "PRI",
+        "name": "Puerto Rico"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          29.91988515,
+          -1.99033832
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -1.99033832,
+          "lng": 29.91988515
+        },
+        "code": "RWA",
+        "name": "Rwanda"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -61.20129695,
+          13.22472269
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 13.22472269,
+          "lng": -61.20129695
+        },
+        "code": "VCT",
+        "name": "Saint Vincent and the Grenadines"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -172.16485064,
+          -13.75324346
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -13.75324346,
+          "lng": -172.16485064
+        },
+        "code": "WSM",
+        "name": "Samoa"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -14.4734924,
+          14.36624173
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 14.36624173,
+          "lng": -14.4734924
+        },
+        "code": "SEN",
+        "name": "Senegal"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -11.79271247,
+          8.56329593
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 8.56329593,
+          "lng": -11.79271247
+        },
+        "code": "SLE",
+        "name": "Sierra Leone"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          159.63287668,
+          -8.92178022
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -8.92178022,
+          "lng": 159.63287668
+        },
+        "code": "SLB",
+        "name": "Solomon Islands"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          45.70714487,
+          4.75062876
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 4.75062876,
+          "lng": 45.70714487
+        },
+        "code": "SOM",
+        "name": "Somalia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          25.08390093,
+          -29.00034095
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -29.00034095,
+          "lng": 25.08390093
+        },
+        "code": "ZAF",
+        "name": "South Africa"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          30.24790002,
+          7.30877945
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 7.30877945,
+          "lng": 30.24790002
+        },
+        "code": "SSD",
+        "name": "South Sudan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          80.70108238,
+          7.61266509
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 7.61266509,
+          "lng": 80.70108238
+        },
+        "code": "LKA",
+        "name": "Sri Lanka"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -55.9123457,
+          4.13055413
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 4.13055413,
+          "lng": -55.9123457
+        },
+        "code": "SUR",
+        "name": "Suriname"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          71.01362631,
+          38.5304539
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 38.5304539,
+          "lng": 71.01362631
+        },
+        "code": "TJK",
+        "name": "Tajikistan"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          34.81309981,
+          -6.27565408
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -6.27565408,
+          "lng": 34.81309981
+        },
+        "code": "TZA",
+        "name": "Tanzania"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          101.0028813,
+          15.11815794
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 15.11815794,
+          "lng": 101.0028813
+        },
+        "code": "THA",
+        "name": "Thailand"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          23.64396107,
+          -2.87746289
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -2.87746289,
+          "lng": 23.64396107
+        },
+        "code": "COD",
+        "name": "The Democratic Republic of the Congo"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          125.84438982,
+          -8.82889162
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -8.82889162,
+          "lng": 125.84438982
+        },
+        "code": "TLS",
+        "name": "Timor-Leste"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.96232845,
+          8.52531356
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 8.52531356,
+          "lng": 0.96232845
+        },
+        "code": "TGO",
+        "name": "Togo"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -174.80987341,
+          -20.42843174
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -20.42843174,
+          "lng": -174.80987341
+        },
+        "code": "TON",
+        "name": "Tonga"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          35.16895346,
+          39.0616029
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 39.0616029,
+          "lng": 35.16895346
+        },
+        "code": "TUR",
+        "name": "Turkey"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          32.36907971,
+          1.27469299
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 1.27469299,
+          "lng": 32.36907971
+        },
+        "code": "UGA",
+        "name": "Uganda"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          31.38326469,
+          48.99656673
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 48.99656673,
+          "lng": 31.38326469
+        },
+        "code": "UKR",
+        "name": "Ukraine"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -98.583333,
+          39.833333
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 39.833333,
+          "lng": -98.583333
+        },
+        "code": "USA",
+        "name": "United States"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -56.01807053,
+          -32.79951534
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -32.79951534,
+          "lng": -56.01807053
+        },
+        "code": "URY",
+        "name": "Uruguay"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          167.68644636,
+          -16.22640909
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -16.22640909,
+          "lng": 167.68644636
+        },
+        "code": "VUT",
+        "name": "Vanuatu"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          106.29914698,
+          16.6460167
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 16.6460167,
+          "lng": 106.29914698
+        },
+        "code": "VNM",
+        "name": "Vietnam"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          47.58676189,
+          15.90928005
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": 15.90928005,
+          "lng": 47.58676189
+        },
+        "code": "YEM",
+        "name": "Yemen"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          27.77475946,
+          -13.45824152
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -13.45824152,
+          "lng": 27.77475946
+        },
+        "code": "ZMB",
+        "name": "Zambia"
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          29.8514412,
+          -19.00420419
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "centroid": {
+          "lat": -19.00420419,
+          "lng": 29.8514412
+        },
+        "code": "ZWE",
+        "name": "Zimbabwe"
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

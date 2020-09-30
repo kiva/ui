@@ -1,7 +1,10 @@
 <template>
 	<div class="header section">
-		<fifteen-years-globe />
 		<fifteen-years-oily-background />
+		<fifteen-years-globe
+			ref="globe"
+			@selectcountry="onCountrySelect"
+		/>
 		<div class="header__main-section">
 			<div class="row align-middle">
 				<div class="header__text small-12 large-6 xxlarge-5 columns">
@@ -37,9 +40,9 @@
 </template>
 
 <script>
-import Hearts02 from '@/assets/images/15-years/stickers/Hearts02.svg';
-import Handshake from '@/assets/images/15-years/stickers/Handshake.svg';
-import PlanetEarth from '@/assets/images/15-years/stickers/PlanetEarth.svg';
+import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
+import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
+import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
@@ -61,21 +64,21 @@ export default {
 					title: '15 Years of Impact',
 					subtitle: 'The history of Kiva, year by year',
 					href: '#years-of-impact',
-					imgSrc: Hearts02,
+					imgSrc: ThirtyEightMillion,
 					imgTilt: 5,
 				},
 				{
 					title: 'The World of Kiva',
 					subtitle: 'The people who make it happen',
 					href: '#world-of-kiva',
-					imgSrc: Handshake,
+					imgSrc: TShirt,
 					imgTilt: 10,
 				},
 				{
-					title: 'Partners',
-					subtitle: 'Organizations making a difference',
+					title: 'Strategic Partners',
+					subtitle: 'INDIVIDUALS AND ORGANIZATIONS MAKING A DIFFERENCE',
 					href: '#orgs-making-difference',
-					imgSrc: PlanetEarth,
+					imgSrc: DreamTeam,
 					imgTilt: 15,
 				},
 			],
@@ -87,6 +90,9 @@ export default {
 			if (element) {
 				element.scrollIntoView({ behavior: 'smooth' });
 			}
+		},
+		onCountrySelect(event) {
+			console.log('!!!', event);
 		}
 	}
 };
@@ -139,14 +145,13 @@ export default {
 		}
 	}
 
-	&__text {
+	&__text > * {
 		pointer-events: painted;
 	}
 
 	&__cards-section {
 		position: relative;
 		margin-top: auto;
-		padding: rem-calc(24) 0;
 
 		@include breakpoint(small) {
 			background-color: $mint;
@@ -155,7 +160,6 @@ export default {
 
 		@include breakpoint(large) {
 			background-color: transparent;
-			padding: rem-calc(24) 0;
 			margin: 0;
 		}
 
@@ -166,19 +170,34 @@ export default {
 
 	&__card {
 		position: relative;
-		padding-top: rem-calc(32);
-		padding-bottom: rem-calc(32);
+		padding: rem-calc(32) rem-calc(16);
+
+		&:hover {
+			background: hsla(0, 0%, 100%, 0.8);
+		}
 
 		@include breakpoint(large) {
 			max-width: rem-calc(300);
+			padding: 0 rem-calc(16);
 		}
 
 		@include breakpoint(xxlarge) {
 			max-width: 99%;
+			padding: 0;
+
+			&:hover {
+				background: transparent;
+			}
 		}
 	}
 
 	&__card-wrap {
+		@include breakpoint(xxlarge) {
+			&:hover {
+				background: hsla(0, 0%, 100%, 0.8);
+			}
+		}
+
 		&:not(:first-child) {
 			.header__card {
 				border-top: 1px solid $twilight;
@@ -192,7 +211,7 @@ export default {
 						height: 75%;
 						position: absolute;
 						top: 0;
-						left: 0;
+						left: -1rem;
 						bottom: 0;
 						margin-top: auto;
 						margin-bottom: auto;

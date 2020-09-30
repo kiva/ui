@@ -5,14 +5,12 @@
 			:href="href"
 			@click.prevent="onClickCardLink(href)"
 		>
-			<div class="row align-justify">
-				<div class="small-3 card__img">
-					<img :src="imgSrc">
-				</div>
-				<div class="column card__content">
-					<h4 class="card__title">{{ title }}</h4>
-					<p class="card__text">{{ subtitle }}</p>
-				</div>
+			<div class="card__img">
+				<img :src="imgSrc" alt="">
+			</div>
+			<div class="card__content">
+				<h4 class="card__title">{{ title }}</h4>
+				<p class="card__text">{{ subtitle }}</p>
 			</div>
 		</a>
 	</div>
@@ -63,19 +61,14 @@ export default {
 
 .card {
 	position: relative;
-	padding: 0;
-
-	@include breakpoint(large) {
-		padding: 0;
-	}
 
 	img {
-		transition: transform 0.15s ease-in-out;
+		transition: transform 0.2s cubic-bezier(0.24, 0.015, 0.25, 1.355);
 		transform: var(--image-tilt);
 	}
 
 	&__link {
-		display: block;
+		display: flex;
 		text-decoration: none;
 		white-space: normal;
 
@@ -85,6 +78,10 @@ export default {
 				transform: rotate(0deg);
 			}
 		}
+
+		@include breakpoint(large) {
+			padding: rem-calc(24) 0;
+		}
 	}
 
 	&__content {
@@ -92,8 +89,8 @@ export default {
 	}
 
 	&__img {
-		max-width: rem-calc(90);
-		margin-left: 1.25rem;
+		max-width: rem-calc(81);
+		margin-right: rem-calc(16);
 		display: none;
 
 		// Desktop
