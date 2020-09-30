@@ -122,6 +122,7 @@
 		<fifteen-years-globe
 			ref="globe"
 			@selectcountry="onCountrySelect"
+			@pan="onGlobePan"
 		/>
 	</div>
 </template>
@@ -271,7 +272,9 @@ export default {
 			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 		},
 		onGlobePan() {
-
+			if (this.isCountrySelected) {
+				this.queueAutoplay();
+			}
 		},
 		queueAutoplay() {
 			this.clearAutoplay();
@@ -333,7 +336,7 @@ export default {
 
 		@include breakpoint(large) {
 			max-width: 72rem;
-			width: 72rem;
+			width: 100%;
 			margin: 0 auto;
 		}
 	}
@@ -413,6 +416,7 @@ export default {
 
 	&__card {
 		position: relative;
+		transition: background 0.125s linear;
 
 		@include breakpoint(small) {
 			padding: rem-calc(32) 0;

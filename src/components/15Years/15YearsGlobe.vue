@@ -82,7 +82,8 @@ export default {
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
-				this.gkview.animateToLatLon(result.lat, result.lon);
+				const offset = window.innerWidth < 681 ? -20 : 0;
+				this.gkview.animateToLatLon(result.lat + offset, result.lon);
 				const callout = new CalloutDefinition(result.lat, result.lon, PinCallout, result.properties);
 				callout.altitude = 0.035;
 				this.calloutManager.replaceCallouts([...this.callouts, callout]);
@@ -93,6 +94,10 @@ export default {
 				this.gkview.interactionController.movementModel.setAmbientAnimated(true, 1000);
 				this.gkview.interactionController.movementModel.interacting = false;
 			}
+		};
+
+		this.gkview.interactionController.onPan = () => {
+			this.$emit('pan', null);
 		};
 
 		this.calloutManager.onAutoRemove = () => {
@@ -110,7 +115,8 @@ export default {
 			}, 1000);
 
 			const { centroid } = country;
-			this.gkview.animateToLatLon(centroid.lat, centroid.lng);
+			const offset = window.innerWidth < 681 ? -20 : 0;
+			this.gkview.animateToLatLon(centroid.lat + offset, centroid.lng);
 			const callout = new CalloutDefinition(centroid.lat, centroid.lng, PinCallout, country);
 			callout.altitude = 0.035;
 			this.calloutManager.replaceCallouts([...this.callouts, callout]);
