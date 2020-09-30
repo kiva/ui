@@ -24,6 +24,8 @@
 									{{ globekitCountrySelected.name }}
 								</h2>
 							</div>
+						</div>
+						<div class="row">
 							<div>
 								<div class="country-sticker">
 									<kv-flag
@@ -33,6 +35,42 @@
 										class="circular-country"
 									/>
 								</div>
+							</div>
+							<div class="prevnext prevnext-large">
+								<button
+									class="prevnext__btn prevnext__btn--prev"
+									@click="prevClickHandler"
+								>
+									<kv-icon
+										class="prevnext__btn-icon"
+										name="fat-chevron"
+										:from-sprite="true"
+									/>
+									<span class="name-nav__index">Back</span>
+								</button>
+
+								<span class="prevnext__indicator">
+									<kv-progress-bar
+										:value="previousCountries.length.toString()"
+										:max="countryList.length.toString()"
+										style="
+											min-width: 50px;
+											--kv-progress-bar-foreground-color: black;
+											--kv-progress-bar-background-color: #C4C4C4;"
+									/>
+								</span>
+
+								<button
+									class="prevnext__btn prevnext__btn--next"
+									@click="nextClickHandler"
+								>
+									<span class="name-nav__index">Next</span>
+									<kv-icon
+										class="prevnext__btn-icon"
+										name="fat-chevron"
+										:from-sprite="true"
+									/>
+								</button>
 							</div>
 						</div>
 					</div>
@@ -61,7 +99,7 @@
 							{{ globekitCountrySelected.active > 0 ?
 								`Lend in ${globekitCountrySelected.button}` : 'Find a borrower' }}
 						</fifteen-years-button>
-						<div class="prevnext">
+						<div class="prevnext prevnext-mobile">
 							<button
 								class="prevnext__btn prevnext__btn--prev"
 								@click="prevClickHandler"
@@ -71,9 +109,7 @@
 									name="fat-chevron"
 									:from-sprite="true"
 								/>
-								<span class="name-nav__index">{{
-									this.previousCountries.length | numeral('00')
-								}}</span>
+								<span class="name-nav__index">Back</span>
 							</button>
 
 							<span class="prevnext__indicator">
@@ -82,7 +118,6 @@
 									:max="countryList.length.toString()"
 									style="
 										min-width: 50px;
-
 										--kv-progress-bar-foreground-color: black;
 										--kv-progress-bar-background-color: #C4C4C4;"
 								/>
@@ -92,9 +127,7 @@
 								class="prevnext__btn prevnext__btn--next"
 								@click="nextClickHandler"
 							>
-								<span class="name-nav__index">{{
-									this.countryList.length | numeral('00')
-								}}</span>
+								<span class="name-nav__index">Next</span>
 								<kv-icon
 									class="prevnext__btn-icon"
 									name="fat-chevron"
@@ -332,26 +365,33 @@ export default {
 	}
 
 	&__main-section {
-		position: relative;
-		display: flex;
-		flex: 1;
-		flex-direction: row;
-		// max-width: 40vw;
-		max-width: none;
+		/* position: absolute; */
+		height: 100vh;
 
 		.row {
 			flex: 1;
 		}
 
+		@include breakpoint(small) {
+			margin: 0 auto;
+			padding-top: rem-calc(48);
+			max-width: 85vw;
+		}
+
 		@include breakpoint(large) {
+			height: 400px;
+			position: relative;
 			max-width: 72rem;
 			width: 100%;
 			margin: 0 auto;
+			padding: 0;
+			padding-left: rem-calc(32);
+			margin-top: rem-calc(128);
 		}
 	}
 
 	.header__main-section-row {
-		padding-top: rem-calc(96);
+		/* padding-top: rem-calc(96); */
 		padding-left: 0;
 		margin: 0;
 		min-height: rem-calc(340px);
@@ -359,7 +399,7 @@ export default {
 		width: 100%;
 
 		@include breakpoint(large) {
-			padding-top: rem-calc(64);
+			/* padding-top: rem-calc(64); */
 			padding-left: 0;
 		}
 	}
@@ -394,31 +434,32 @@ export default {
 	}
 
 	&__cards-section {
-		position: relative;
-		margin-top: auto;
+		/* position: absolute; */
+		/* margin-top: auto; */
 
 		@include breakpoint(small) {
 			background-color: $mint;
-			margin-top: calc(100vw - #{rem-calc(72)});
-			z-index: -1;
-			padding-top: rem-calc(32);
+			padding-top: calc((100vw - 48px)*0.5);
+			// The oily background viewport on mobile is 0 0 320 450 and it's full width
+			margin-top: calc(0 - 100vh + (120px + (100vw / 320 * 450)));
 		}
 
 		@include breakpoint(large) {
+			position: relative;
 			background-color: transparent;
-			margin: 0;
-			z-index: 1;
 			padding-top: 0;
-			padding-left: 0;
+			margin-top: rem-calc(48);
+			padding-left: rem-calc(32);
 		}
 
 		@include breakpoint(xxlarge) {
 			background-color: rgba(255, 255, 255, 0.5);
+			margin-top: auto;
 		}
 	}
 
 	&__cta-button {
-		margin-top: rem-calc(48);
+		margin-top: rem-calc(16);
 		padding-right: 0.625rem;
 		padding-left: 0.625rem;
 	}
@@ -528,10 +569,13 @@ export default {
 
 .loan-number-group {
 
-	@include breakpoint(large) {
-		margin-top: rem-calc(48);
+	@include breakpoint(small) {
 		padding-left: rem-calc(32);
 		border-left: 2px solid $twilight;
+	}
+
+	@include breakpoint(large) {
+		margin-top: rem-calc(48);
 	}
 }
 
@@ -550,13 +594,41 @@ export default {
 
 	display: flex;
 	margin: 0 auto;
-	justify-content: middle;
+	justify-content: space-between;
 	align-items: center;
-	padding: 24px rem-calc(16) 0;
+	padding-top: 24px;
+	width: 100%;
 
 	@include breakpoint(large) {
 		margin: 0;
 		padding-top: 0;
+		justify-content: flex-start;
+	}
+
+	&-large {
+
+		width: auto;
+		padding: 0 rem-calc(16);
+
+		@include breakpoint(small) {
+			display: none;
+		}
+
+		@include breakpoint(large) {
+			display: flex;
+		}
+	}
+
+	&-mobile {
+
+		@include breakpoint(small) {
+			display: flex;
+		}
+
+		@include breakpoint(large) {
+			display: none;
+		}
+
 	}
 
 	&__indicator {
