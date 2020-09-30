@@ -71,7 +71,9 @@
 									name="fat-chevron"
 									:from-sprite="true"
 								/>
-								<span class="name-nav__index">{{ this.previousCountries.length.toString().padStart(2, "0") }}</span>
+								<span class="name-nav__index">{{
+									this.previousCountries.length.toString().padStart(2, "0")
+								}}</span>
 							</button>
 
 							<span class="prevnext__indicator">
@@ -90,7 +92,9 @@
 								class="prevnext__btn prevnext__btn--next"
 								@click="nextClickHandler"
 							>
-								<span class="name-nav__index">{{ this.countryList.length.toString().padStart(2, "0") }}</span>
+								<span class="name-nav__index">{{
+									this.countryList.length.toString().padStart(2, "0")
+								}}</span>
 								<kv-icon
 									class="prevnext__btn-icon"
 									name="fat-chevron"
