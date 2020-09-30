@@ -55,6 +55,7 @@
 										:max="countryList.length.toString()"
 										style="
 											min-width: 50px;
+
 											--kv-progress-bar-foreground-color: black;
 											--kv-progress-bar-background-color: #C4C4C4;"
 									/>
@@ -118,6 +119,7 @@
 									:max="countryList.length.toString()"
 									style="
 										min-width: 50px;
+
 										--kv-progress-bar-foreground-color: black;
 										--kv-progress-bar-background-color: #C4C4C4;"
 								/>
@@ -444,12 +446,13 @@ export default {
 	}
 
 	&__cards-section {
+
 		/* position: absolute; */
 		/* margin-top: auto; */
 
 		@include breakpoint(small) {
 			background-color: $mint;
-			padding-top: calc((100vw - 48px)*0.5);
+			padding-top: calc((100vw - 48px) * 0.5);
 			// The oily background viewport on mobile is 0 0 320 450 and it's full width
 			margin-top: calc(0 - 100vh + (120px + (100vw / 320 * 450)));
 		}
@@ -624,7 +627,6 @@ export default {
 	}
 
 	&-large {
-
 		width: auto;
 		padding: 0 rem-calc(16);
 
@@ -638,7 +640,6 @@ export default {
 	}
 
 	&-mobile {
-
 		@include breakpoint(small) {
 			display: flex;
 		}
@@ -646,7 +647,6 @@ export default {
 		@include breakpoint(large) {
 			display: none;
 		}
-
 	}
 
 	&__indicator {
