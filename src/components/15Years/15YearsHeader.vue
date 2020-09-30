@@ -17,7 +17,7 @@
 					</div>
 				</div>
 				<div v-else class="country_cta">
-					<div class="header__text columns">
+					<div class="columns country-name-container">
 						<div class="row">
 							<div>
 								<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
@@ -35,43 +35,6 @@
 										class="circular-country"
 									/>
 								</div>
-							</div>
-							<div class="prevnext prevnext-large">
-								<button
-									class="prevnext__btn prevnext__btn--prev"
-									@click="prevClickHandler"
-								>
-									<kv-icon
-										class="prevnext__btn-icon"
-										name="fat-chevron"
-										:from-sprite="true"
-									/>
-									<span class="name-nav__index">Back</span>
-								</button>
-
-								<span class="prevnext__indicator">
-									<kv-progress-bar
-										:value="previousCountries.length.toString()"
-										:max="countryList.length.toString()"
-										style="
-											min-width: 50px;
-
-											--kv-progress-bar-foreground-color: black;
-											--kv-progress-bar-background-color: #C4C4C4;"
-									/>
-								</span>
-
-								<button
-									class="prevnext__btn prevnext__btn--next"
-									@click="nextClickHandler"
-								>
-									<span class="name-nav__index">Next</span>
-									<kv-icon
-										class="prevnext__btn-icon"
-										name="fat-chevron"
-										:from-sprite="true"
-									/>
-								</button>
 							</div>
 						</div>
 					</div>
@@ -100,7 +63,7 @@
 							{{ globekitCountrySelected.active > 0 ?
 								`Lend in ${globekitCountrySelected.button}` : 'Find a borrower' }}
 						</fifteen-years-button>
-						<div class="prevnext prevnext-mobile">
+						<div class="prevnext">
 							<button
 								class="prevnext__btn prevnext__btn--prev"
 								@click="prevClickHandler"
@@ -458,6 +421,15 @@ export default {
 	.country_cta {
 		width: 100%;
 
+		@include breakpoint(small) {
+			padding-bottom: rem-calc(48);
+
+			.row {
+				margin-left: 0;
+				margin-right: 0;
+			}
+		}
+
 		.fifteen-yr-button {
 			padding: rem-calc(14) rem-calc(10);
 			width: 100%;
@@ -470,6 +442,12 @@ export default {
 	}
 
 	&__text {
+
+		@include breakpoint(small) {
+			padding: 0 rem-calc(24);
+			padding-bottom: rem-calc(86);
+		}
+
 		@include breakpoint(xxlarge) {
 			max-width: 35vw;
 		}
@@ -488,16 +466,25 @@ export default {
 		}
 
 		@include breakpoint(large) {
-			position: relative;
+			position: absolute;
+			bottom: 0px;
 			background-color: transparent;
 			padding-top: 0;
 			margin-top: rem-calc(48);
 			padding-left: rem-calc(32);
+			padding-bottom: rem-calc(16);
 		}
 
 		@include breakpoint(xxlarge) {
 			background-color: rgba(255, 255, 255, 0.5);
-			margin-top: auto;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+
+			.row {
+				margin-left: auto;
+				margin-right: auto;
+			}
 		}
 	}
 
@@ -562,11 +549,6 @@ export default {
 			}
 		}
 	}
-
-	.row .row {
-		margin-left: 0;
-		margin-right: 0;
-	}
 }
 
 .header.section {
@@ -581,6 +563,10 @@ export default {
 	overflow: hidden;
 	border: 1px solid #ccc;
 	box-sizing: content-box;
+}
+
+.country-name-container {
+	padding: 0 rem-calc(24);
 }
 
 .country-sticker {
@@ -604,16 +590,6 @@ export default {
 	}
 }
 
-.country-name {
-	&.short {
-		color: red;
-	}
-
-	&.long {
-		color: blue;
-	}
-}
-
 .loan-number {
 	margin-right: rem-calc(16);
 }
@@ -621,8 +597,10 @@ export default {
 .loan-number-group {
 
 	@include breakpoint(small) {
-		padding-left: rem-calc(32);
+		padding-left: rem-calc(24);
 		border-left: 2px solid $twilight;
+		margin-left: rem-calc(24) !important;
+		margin-top: rem-calc(16);
 	}
 
 	@include breakpoint(large) {
@@ -647,36 +625,17 @@ export default {
 	margin: 0 auto;
 	justify-content: space-between;
 	align-items: center;
-	padding-top: 24px;
 	width: 100%;
+	padding: 0 rem-calc(16);
+	padding-top: rem-calc(24);
 
 	@include breakpoint(large) {
 		margin: 0;
 		padding-top: 0;
-		justify-content: flex-start;
-	}
-
-	&-large {
-		width: auto;
-		padding: 0 rem-calc(16);
-
-		@include breakpoint(small) {
-			display: none;
-		}
-
-		@include breakpoint(large) {
-			display: flex;
-		}
-	}
-
-	&-mobile {
-		@include breakpoint(small) {
-			display: flex;
-		}
-
-		@include breakpoint(large) {
-			display: none;
-		}
+		position: absolute;
+		bottom: 302px;
+		left: 100px;
+		max-width: 180px;
 	}
 
 	&__indicator {
