@@ -520,11 +520,13 @@ export default {
 		@include breakpoint(large) {
 			max-width: rem-calc(300);
 			padding: 0 rem-calc(16);
+			background-color: $offwhite;
 		}
 
 		@include breakpoint(xxlarge) {
 			max-width: 99%;
 			padding: 0;
+			background-color: transparent;
 
 			&:hover {
 				background: transparent;
