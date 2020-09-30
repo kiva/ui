@@ -38,10 +38,14 @@ app.use(helmet());
 
 // Set headers for static files
 function setHeaders(res, path) {
-	if (/\/fonts\/|\/binary\/|\/wasm\//.test(path)) {
+	if (/\/fonts\//.test(path)) {
+		// Allow fonts to be loaded from anywhere
 		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	} else {
+		// All other static files should have same origin
+		res.header('Access-Control-Allow-Origin', `https://${config.app.host}`);
 	}
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 }
 
 app.use(express.static('dist', {
