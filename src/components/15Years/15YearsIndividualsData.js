@@ -124,7 +124,7 @@ export default [
 		name: 'WWBIC',
 		title: 'Heartland Supporters',
 		location: 'Wisconsin',
-		img: 'need-content',
+		img: 'wwbic',
 		body: `
 		<p>Over 230, 000 U.S. entrepreneurs have benefited from Kiva loans since 2011. Discover one of the many local organizations nationwide that connects local businesses with Kiva: Wisconsin Women’s Business Initiative Corporation(WWBIC).
 		</p>
