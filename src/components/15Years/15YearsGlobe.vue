@@ -13,7 +13,6 @@ import geojson from '@/assets/data/components/15-years/geojson.json';
 import geoData from '@/assets/binary/geo/35-10.bin';
 import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
 import textureKiva from '@/assets/images/15-years/texture-kiva.png';
-import { el } from 'date-fns/locale';
 
 export default {
 	name: 'FifteenYearsGlobe',
