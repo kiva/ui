@@ -111,13 +111,13 @@ export default {
 
 	&__text {
 		@include link();
+
 		white-space: normal;
 
 		@include breakpoint(large) {
 			font-size: rem-calc(11);
 			margin: 0;
 		}
-
 	}
 }
 
