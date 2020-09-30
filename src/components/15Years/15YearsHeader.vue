@@ -566,7 +566,6 @@ export default {
 }
 
 .country-name {
-
 	line-height: 1;
 
 	&.long {
@@ -578,7 +577,6 @@ export default {
 		@include breakpoint(large) {
 			font-size: rem-calc(40);
 		}
-
 	}
 }
 
