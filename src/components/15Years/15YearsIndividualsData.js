@@ -67,7 +67,7 @@ export default [
 		name: 'Apollo Agriculture',
 		title: 'Small Farm Funder',
 		location: 'Kenya',
-		img: 'apollo',
+		img: 'wilson',
 		body: `
 		<p>Wilson’s harvest yield increased by 600% thanks to a Kiva loan and support from Apollo Agriculture. Apollo is just one of 300+ Kiva Field Partners that work with us toward global financial inclusion.</p>
 		`,
@@ -124,7 +124,7 @@ export default [
 		name: 'WWBIC',
 		title: 'Heartland Supporters',
 		location: 'Wisconsin',
-		img: 'wilson',
+		img: 'need-content',
 		body: `
 		<p>Over 230, 000 U.S. entrepreneurs have benefited from Kiva loans since 2011. Discover one of the many local organizations nationwide that connects local businesses with Kiva: Wisconsin Women’s Business Initiative Corporation(WWBIC).
 		</p>
