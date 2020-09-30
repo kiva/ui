@@ -43,7 +43,7 @@ export default {
 	computed: {
 		cssProps() {
 			return {
-				'--image-tilt': `rotate(${this.imgTilt}deg)`,
+				'--image-tilt': `rotate3d(0,0,1,${this.imgTilt}deg)`,
 			};
 		}
 	},
@@ -63,7 +63,7 @@ export default {
 	position: relative;
 
 	img {
-		transition: transform 0.2s cubic-bezier(0.24, 0.015, 0.25, 1.355);
+		transition: transform 1s cubic-bezier(0.05, 2.5, 0.52, 0.5);
 		transform: var(--image-tilt);
 	}
 
@@ -75,7 +75,7 @@ export default {
 		&:hover,
 		&:focus {
 			img {
-				transform: rotate(0deg);
+				transform: rotate3d(0, 0, 0.1, 1deg);
 			}
 		}
 

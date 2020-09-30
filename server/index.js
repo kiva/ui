@@ -36,9 +36,9 @@ const port = argv.port || config.server.port;
 // Set sensible security headers for express
 app.use(helmet());
 
-// Set headers for fonts
+// Set headers for static files
 function setHeaders(res, path) {
-	if (path.indexOf('/fonts/') > -1) {
+	if (/\/fonts\/|\/binary\/|\/wasm\//.test(path)) {
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	}

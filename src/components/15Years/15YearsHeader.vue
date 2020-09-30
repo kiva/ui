@@ -1,22 +1,108 @@
 <template>
 	<div class="header section">
 		<fifteen-years-oily-background />
-		<fifteen-years-globe
-			ref="globe"
-			@selectcountry="onCountrySelect"
-		/>
 		<div class="header__main-section">
-			<div class="row align-middle">
-				<div class="header__text small-12 large-6 xxlarge-5 columns">
-					<h1 class="header__headline">
-						<span class="header__headline-stroked no-wrap">Power in</span> Numbers
-					</h1>
-					<p>
-						{{ mainTextSubtitle }}
-					</p>
-					<fifteen-years-button to="/help/">
-						{{ buttonCtaText }}
-					</fifteen-years-button>
+			<div class="header__main-section-row row align-middle">
+				<div v-if="!isCountrySelected" class="main_cta">
+					<div class="header__text small-12 large-6 columns">
+						<h1 class="header__headline">
+							<span class="header__headline-stroked no-wrap">Power in</span> Numbers
+						</h1>
+						<p>
+							{{ mainTextSubtitle }}
+						</p>
+						<fifteen-years-button class="header__cta-button" to="/help/">
+							{{ buttonCtaText }}
+						</fifteen-years-button>
+					</div>
+				</div>
+				<div v-else class="country_cta">
+					<div class="header__text columns">
+						<div class="row">
+							<div>
+								<h2 class="country-name truncate-overflow">
+									{{ globekitCountrySelected.name }}
+								</h2>
+							</div>
+							<div>
+								<div class="country-sticker">
+									<kv-flag
+										:country="globekitCountrySelected.iso2"
+										:aspect-ratio="'1x1'"
+										:inline-svg="true"
+										class="circular-country"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row loan-number-group">
+						<div class="columns">
+							<div class="row">
+								<div class="loan-number">
+									<h3>{{ numberWithCommas(globekitCountrySelected.total) }}</h3>
+								</div>
+								<div class="loan-label">
+									<h5>total <br>loans</h5>
+								</div>
+							</div>
+							<div class="row">
+								<div class="loan-number">
+									<h3>{{ numberWithCommas(globekitCountrySelected.active) }}</h3>
+								</div>
+								<div class="loan-label">
+									<h5>active <br>loans</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row header__cta-button">
+						<fifteen-years-button to="/help/">
+							{{ globekitCountrySelected.active > 0 ?
+								`Lend in ${globekitCountrySelected.button}` : 'Find a borrower' }}
+						</fifteen-years-button>
+						<div class="prevnext">
+							<button
+								class="prevnext__btn prevnext__btn--prev"
+								@click="prevClickHandler"
+							>
+								<kv-icon
+									class="prevnext__btn-icon"
+									name="fat-chevron"
+									:from-sprite="true"
+								/>
+								<span class="name-nav__index">{{
+									this.previousCountries.length.toString().padStart(2, "0")
+								}}</span>
+							</button>
+
+							<span class="prevnext__indicator">
+								<kv-progress-bar
+									:value="previousCountries.length.toString()"
+									:max="countryList.length.toString()"
+									style="
+										min-width: 50px;
+
+										--kv-progress-bar-foreground-color: black;
+										--kv-progress-bar-background-color: #C4C4C4;"
+								/>
+							</span>
+
+							<button
+								class="prevnext__btn prevnext__btn--next"
+								@click="nextClickHandler"
+							>
+								<span class="name-nav__index">{{
+									this.countryList.length.toString().padStart(2, "0")
+								}}</span>
+								<kv-icon
+									class="prevnext__btn-icon"
+									name="fat-chevron"
+									:from-sprite="true"
+								/>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -36,17 +122,41 @@
 				</div>
 			</div>
 		</div>
+		<fifteen-years-globe
+			ref="globe"
+			@selectcountry="onCountrySelect"
+			@pan="onGlobePan"
+		/>
 	</div>
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
 import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
 import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';
+import KvFlag from '@/components/Kv/KvFlag';
+import KvIcon from '@/components/Kv/KvIcon';
+import KvProgressBar from '@/components/Kv/KvProgressBar';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
 import FifteenYearsGlobe from './15YearsGlobe';
+import geojson from '../../assets/data/components/15-years/geojson.json';
+
+const countryQuery = gql`query featuredCountry {
+	lend {
+		countryFacets {
+			count
+			country {
+				name
+				numLoansFundraising
+				fundsLentInCountry
+				isoCode
+			}
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -54,11 +164,23 @@ export default {
 		FifteenYearsHeaderCard,
 		FifteenYearsOilyBackground,
 		FifteenYearsGlobe,
+		KvFlag,
+		KvIcon,
+		KvProgressBar
 	},
 	data() {
+		const countryList = geojson.features.map(feature => {
+			const active = Math.floor(feature.properties.total * Math.random() * 0.01);
+			return { ...feature.properties, active };
+		});
+		const countries = countryList.reduce((accumulator, currentValue) => {
+			accumulator[currentValue.iso2] = currentValue;
+			return accumulator;
+		}, {});
+
 		return {
 			mainTextSubtitle: 'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.',
-			buttonCtaText: 'Lend now',
+			buttonCtaText: 'Find a borrower',
 			cardData: [
 				{
 					title: '15 Years of Impact',
@@ -72,7 +194,7 @@ export default {
 					subtitle: 'The people who make it happen',
 					href: '#world-of-kiva',
 					imgSrc: TShirt,
-					imgTilt: 10,
+					imgTilt: -10,
 				},
 				{
 					title: 'Strategic Partners',
@@ -82,7 +204,15 @@ export default {
 					imgTilt: 15,
 				},
 			],
+			isCountrySelected: false,
+			globekitCountrySelected: {},
+			countryList,
+			countries,
+			previousCountries: [],
 		};
+	},
+	mounted() {
+		console.log(geojson);
 	},
 	methods: {
 		onCardClicked(id) {
@@ -91,10 +221,90 @@ export default {
 				element.scrollIntoView({ behavior: 'smooth' });
 			}
 		},
-		onCountrySelect(event) {
-			console.log('!!!', event);
-		}
-	}
+		onCountrySelect(selection) {
+			if (selection === null) {
+				this.isCountrySelected = false;
+				this.globekitCountrySelected = {};
+				this.previousCountries = [];
+				this.clearAutoplay();
+			} else {
+				const country = this.countries[selection.iso2];
+				if (this.isCountrySelected) {
+					const prevIndex = this.previousCountries.indexOf(country);
+					if (prevIndex !== -1) {
+						this.previousCountries = this.previousCountries.slice(0, prevIndex);
+					}
+					this.previousCountries.push(country);
+				} else {
+					this.previousCountries = [country];
+				}
+				this.isCountrySelected = true;
+				this.globekitCountrySelected = country;
+				this.queueAutoplay();
+			}
+		},
+		nextClickHandler() {
+			if (this.previousCountries.length !== this.countryList.length) {
+				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
+				const country = this.countries[c.iso2];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+				this.previousCountries.push(country);
+			} else {
+				const country = this.previousCountries[0];
+				this.previousCountries = [country];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+			}
+			this.queueAutoplay();
+		},
+		prevClickHandler() {
+			if (this.previousCountries.length > 1) {
+				this.previousCountries.pop();
+				const country = this.previousCountries[this.previousCountries.length - 1];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+			} else {
+				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
+				const country = this.countries[c.iso2];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+				this.previousCountries = [country];
+			}
+			this.queueAutoplay();
+		},
+		clickHandler(event) {
+			console.log(event);
+		},
+		numberWithCommas(x) {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		},
+		onGlobePan() {
+			if (this.isCountrySelected) {
+				this.queueAutoplay();
+			}
+		},
+		queueAutoplay() {
+			this.clearAutoplay();
+			this.advanceTimeout = setTimeout(() => {
+				this.nextClickHandler();
+			}, 7000);
+		},
+		clearAutoplay() {
+			if (this.advanceTimeout) {
+				clearTimeout(this.advanceTimeout);
+			}
+			this.advanceTimeout = null;
+		},
+	},
+	inject: ['apollo'],
+	apollo: {
+		query: countryQuery,
+		preFetch: true,
+		result({ data }) {
+			console.log('Fetched data from graphql~!', data);
+		},
+	},
 };
 </script>
 
@@ -129,7 +339,8 @@ export default {
 		display: flex;
 		flex: 1;
 		flex-direction: row;
-		pointer-events: none;
+		// max-width: 40vw;
+		max-width: none;
 
 		.row {
 			flex: 1;
@@ -138,15 +349,56 @@ export default {
 			@include breakpoint(large) {
 				padding-top: rem-calc(64);
 			}
+		}
 
-			@include breakpoint(xxlarge) {
-				padding-top: rem-calc(64);
+		@include breakpoint(large) {
+			max-width: 72rem;
+			width: 100%;
+			margin: 0 auto;
+		}
+	}
+
+	.header__main-section-row {
+		padding-top: rem-calc(96);
+		padding-left: 0;
+		margin: 0;
+		min-height: rem-calc(340px);
+		max-width: none;
+		width: 100%;
+
+		@include breakpoint(large) {
+			padding-top: rem-calc(64);
+			padding-left: 0;
+		}
+	}
+
+	.fifteen-yr-button {
+		padding: rem-calc(14) rem-calc(50);
+		height: rem-calc(52);
+		transition:
+			background-color 0.1s ease-out,
+			color 0.1s ease-out,
+			border-color 0.1s ease-out;
+	}
+
+	.country_cta {
+		width: 100%;
+
+		.fifteen-yr-button {
+			padding: rem-calc(14) rem-calc(10);
+			width: 100%;
+			text-align: center;
+
+			@include breakpoint(large) {
+				width: 203px;
 			}
 		}
 	}
 
-	&__text > * {
-		pointer-events: painted;
+	&__text {
+		@include breakpoint(xxlarge) {
+			max-width: 35vw;
+		}
 	}
 
 	&__cards-section {
@@ -155,12 +407,17 @@ export default {
 
 		@include breakpoint(small) {
 			background-color: $mint;
-			margin-top: rem-calc(calc(100vw - 48px));
+			margin-top: rem-calc(calc(100vw - 72px));
+			z-index: -1;
+			padding-top: rem-calc(32);
 		}
 
 		@include breakpoint(large) {
 			background-color: transparent;
 			margin: 0;
+			z-index: 1;
+			padding-top: 0;
+			padding-left: 0;
 		}
 
 		@include breakpoint(xxlarge) {
@@ -168,9 +425,16 @@ export default {
 		}
 	}
 
+	&__cta-button {
+		margin-top: rem-calc(48);
+		padding-right: 0.625rem;
+		padding-left: 0.625rem;
+	}
+
 	&__card {
 		position: relative;
 		padding: rem-calc(32) rem-calc(16);
+		transition: background 0.125s linear;
 
 		&:hover {
 			background: hsla(0, 0%, 100%, 0.8);
@@ -221,13 +485,9 @@ export default {
 		}
 	}
 
-	.fifteen-yr-button {
-		padding: rem-calc(14) rem-calc(50);
-		height: rem-calc(52);
-		transition:
-			background-color 0.1s ease-out,
-			color 0.1s ease-out,
-			border-color 0.1s ease-out;
+	.row .row {
+		margin-left: 0;
+		margin-right: 0;
 	}
 }
 
@@ -237,4 +497,150 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
+
+.circular-country {
+	border-radius: 50%;
+	overflow: hidden;
+	border: 1px solid #ccc;
+	box-sizing: content-box;
+}
+
+.country-sticker {
+	display: block;
+	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+	border-radius: 50%;
+	padding: 5px;
+	max-width: 65px;
+	max-height: 65px;
+	min-width: 65px;
+	min-height: 65px;
+
+	// Phones
+	@include breakpoint(small) {
+		display: none;
+	}
+
+	// Desktop
+	@include breakpoint(large) {
+		display: block;
+	}
+}
+
+.country-name {
+	--lh: 3.45rem;
+}
+
+.loan-number {
+	margin-right: rem-calc(16);
+}
+
+.loan-number-group {
+
+	@include breakpoint(large) {
+		margin-top: rem-calc(48);
+		padding-left: rem-calc(32);
+		border-left: 2px solid $twilight;
+	}
+}
+
+.loan-label {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.name-nav__index {
+	padding: 0 rem-calc(8);
+}
+
+/* taken from 15YearsIndividuals */
+.prevnext {
+	@include h5();
+
+	display: flex;
+	margin: 0 auto;
+	justify-content: middle;
+	align-items: center;
+	padding: 24px rem-calc(16) 0;
+
+	@include breakpoint(large) {
+		margin: 0;
+		padding-top: 0;
+	}
+
+	&__indicator {
+		margin: 0 rem-calc(16);
+
+		progress {
+			height: 3px;
+		}
+
+		progress::-webkit-progress-bar {
+			border-radius: 1.5px;
+			background-color: #C4C4C4;
+		}
+
+		progress::-webkit-progress-value {
+			border-radius: 1.5px;
+			background-color: $twilight;
+		}
+	}
+
+	&__btn-text {
+		border-radius: rem-calc(16);
+		padding: rem-calc(2) rem-calc(8);
+		border: rem-calc(2) solid transparent;
+	}
+
+	&__btn-icon {
+		width: rem-calc(20);
+		height: rem-calc(11);
+	}
+
+	&__btn {
+		@include h5();
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		fill: $twilight;
+		color: $twilight;
+
+		&--prev {
+			.prevnext__btn-icon {
+				transform: rotate(90deg);
+			}
+		}
+
+		&--next {
+			.prevnext__btn-icon {
+				transform: rotate(-90deg);
+			}
+		}
+
+		&:hover {
+			.prevnext__btn-text {
+				background: #000;
+				color: $twilight;
+				border: rem-calc(2) solid #fff;
+			}
+
+			.prevnext__btn-icon {
+				fill: $mint;
+			}
+		}
+
+		&:focus {
+			outline: 0;
+
+			.prevnext__btn-text {
+				border: rem-calc(2) solid $mint;
+			}
+		}
+
+		&[disabled] {
+			visibility: hidden;
+		}
+	}
+}
+
 </style>

@@ -1,19 +1,24 @@
 <template>
 	<!-- eslint-disable max-len -->
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1268.27 793.15" preserveAspectRatio="xMinYMin slice">
-		<path id="mint-small" class="mint" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
-		<path id="sky-extra" class="sky" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
-		<path id="white-knockout-4" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
-		<path id="mint-large" class="mint" d="M785.46,0C841.16,34.25,948.38,74.66,1039,142.91c84.87,63.92,155.17,152.27,154.93,282.88-.45,233.77-151.78,309.68-191,367.36l-5.26,288.29h483.85v-1421H785.46Z" />
-		<path id="twilight-small" class="twilight" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
-		<path id="tomato-extra" class="tomato" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
-		<path id="white-knockout-3" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
-		<path id="twilight-large" class="twilight" d="M785.46,0C841.16,34.25,948.38,74.66,1039,142.91c84.87,63.92,155.17,152.27,154.93,282.88-.45,233.77-151.78,309.68-191,367.36l-5.26,288.29h483.85v-1421H785.46Z" />
-		<path id="sky-medium" class="sky" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
-		<path id="tomato-medium" class="tomato" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
-		<path id="white-knockout" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
-		<path id="white-knockout-2" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
-	</svg>
+	<div class="oily-background">
+		<svg class="oily-desktop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1268.27 793.15" preserveAspectRatio="xMinYMin slice">
+			<path id="mint-small" class="mint" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
+			<path id="sky-extra" class="sky" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
+			<path id="white-knockout-4" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
+			<path id="mint-large" class="mint" d="M785.46,0C841.16,34.25,948.38,74.66,1039,142.91c84.87,63.92,155.17,152.27,154.93,282.88-.45,233.77-151.78,309.68-191,367.36l-5.26,288.29h483.85v-1421H785.46Z" />
+			<path id="twilight-small" class="twilight" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
+			<path id="tomato-extra" class="tomato" d="M677.55-24.65C704.8-12.12,760.87,27.93,749.18,44S667.76,46.46,624,28.75,537.25-.41,552.78-30.92,642-41,677.55-24.65Z" />
+			<path id="white-knockout-3" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
+			<path id="twilight-large" class="twilight" d="M785.46,0C841.16,34.25,948.38,74.66,1039,142.91c84.87,63.92,155.17,152.27,154.93,282.88-.45,233.77-151.78,309.68-191,367.36l-5.26,288.29h483.85v-1421H785.46Z" />
+			<path id="sky-medium" class="sky" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
+			<path id="tomato-medium" class="tomato" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
+			<path id="white-knockout" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
+			<path id="white-knockout-2" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
+		</svg>
+		<svg class="oily-mobile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 450">
+			<path id="mint-bottom" class="mint" d="M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z" />
+		</svg>
+	</div>
 	<!-- eslint-enable max-len -->
 </template>
 
@@ -65,12 +70,18 @@ export default {
 		this.desktopTimelineDefs.map(p => {
 			const tl = createTimeline(`#${p.id}`, p.path, duration);
 			tl.seek(duration * ((p.startOffset + startingOffset) % 1));
-			// tl.pause();
+			return tl;
+		});
+
+		this.mobileTimelineDefs.map(p => {
+			const tl = createTimeline(`#${p.id}`, p.path, duration);
+			tl.seek(duration * ((p.startOffset + startingOffset) % 1));
 			return tl;
 		});
 	},
 	data() {
 		/* eslint-disable max-len */
+
 		const desktopPaths = {
 			bigPath: [
 				{ position: 0, shape: 'M155.29,0C379.23,0,640.77-36.1,818.4-126c194.81-98.6,401.81-87.35,530.17,29.42,172.92,157.32,103.18,751.93,45.77,889.73l23.93,295.38,63.25-7.09v-1421L166.73-363Z' },
@@ -119,6 +130,17 @@ export default {
 				{ position: 1, shape: 'M1396.5,101.64c-8.8,16.83-32.67,39.29-81.32,15-32.67-16.31-15.35-41.55-1.59-55.07,10.21-10,20.88-28.72,46.46-26.28C1427.73,41.77,1402.94,89.32,1396.5,101.64Z' },
 			],
 		};
+		const mobilePaths = {
+			bottomPath: [
+				{ position: 0, shape: 'M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z' },
+				{ position: 0.167, shape: 'M-29,339.57s74.21,92.59,179.23,66.32c99.68-24.94,188.19-5,188.19-5L374,489H-50Z' },
+				{ position: 0.333, shape: 'M-29,344.57c-.2.08,61.57,99.68,184.35,47.22,103.41-44.19,183.07,33.07,183.07,33.07L374,489H-50Z' },
+				{ position: 0.5, shape: 'M-29,414.57c97.86,2.22,104.53-45.11,189-45.21s106.13,59.73,178.42,61.5L374,489H-50Z' },
+				{ position: 0.667, shape: 'M-29,414.57c-.2.08,58.91-59.54,184.35-13.78,113.27,41.31,183.07-65.93,183.07-65.93L374,489H-50Z' },
+				{ position: 0.833, shape: 'M-29,377.57c81.47-13.76,116,36.86,216.11,34.22,108.22-2.86,151.31-71.93,151.31-71.93L374,489H-50Z' },
+				{ position: 1, shape: 'M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z' },
+			]
+		};
 		/* eslint-enable max-len */
 		return {
 			desktopTimelineDefs: [
@@ -135,6 +157,9 @@ export default {
 				{ id: 'white-knockout-3', path: desktopPaths.knockoutPath2, startOffset: 0 },
 				{ id: 'white-knockout-4', path: desktopPaths.knockoutPath2, startOffset: 0.5 },
 			],
+			mobileTimelineDefs: [
+				{ id: 'mint-bottom', path: mobilePaths.bottomPath, startOffset: 0 },
+			],
 		};
 	},
 };
@@ -144,11 +169,37 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
+.oily-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
 svg {
 	position: absolute;
-	height: 100%;
 	pointer-events: none;
+}
+
+.oily-desktop {
+	display: none;
+	height: 100%;
 	right: 0;
+
+	@include breakpoint(large) {
+		display: block;
+	}
+}
+
+.oily-mobile {
+	display: block;
+	width: 100%;
+	top: 120px;
+
+	@include breakpoint(large) {
+		display: none;
+	}
 }
 
 path.mint {
