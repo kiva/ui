@@ -376,8 +376,11 @@ export default {
 	}
 
 	&__main-section {
-		/* position: absolute; */
-		height: 100vh;
+		position: absolute;
+		height: 400px;
+		display: flex;
+
+		// height: 100vh;
 
 		.row {
 			flex: 1;
@@ -447,10 +450,11 @@ export default {
 
 	&__cards-section {
 		@include breakpoint(small) {
+			position: relative;
 			background-color: $mint;
-			padding-top: calc((100vw - 48px) * 0.5);
-			// The oily background viewport on mobile is 0 0 320 450 and it's full width
-			margin-top: calc(0 - 100vh + (120px + (100vw / 320 * 450)));
+			margin-top: calc(100vw + 404px);
+
+			// margin-top: calc(100vw - 48px + 432px + 20px);
 		}
 
 		@include breakpoint(large) {

@@ -195,7 +195,7 @@ svg {
 .oily-mobile {
 	display: block;
 	width: 100%;
-	top: 120px;
+	top: calc(2rem + 410px - 40.625vw);
 
 	@include breakpoint(large) {
 		display: none;
