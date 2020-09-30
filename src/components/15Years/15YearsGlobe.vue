@@ -38,7 +38,7 @@ export default {
 		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
 		this.gkview.setMovementModelTo(0, 0, 3.4);
 		this.gkview.userDefinedSelection = () => {};
-		this.gkview.interactionController.movementModel.hasAmbient = true;
+		this.gkview.interactionController.movementModel.setAmbient(true);
 
 		this.calloutManager = new CalloutManager(this.$el.getElementsByClassName('gk-callout-manager')[0]);
 		this.calloutManager.autoRemoveThreshholdSimilarity = 0.25;

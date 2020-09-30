@@ -12632,8 +12632,6 @@ var hammerMin = createCommonjsModule(function (module) {
   }(window, document, "Hammer");
 });
 
-//TODO: Refactor this
-//TODO: Ambient movement
 var MovementModel = /*#__PURE__*/function () {
   function MovementModel() {
     var _this = this;
@@ -12718,9 +12716,10 @@ var MovementModel = /*#__PURE__*/function () {
         // TODO: this sucks and is a hack. This basically increases the size of the sphere
         // that the input is acting on. This linearaly modifies the speed to feel "right"
         var scale = 6.0;
-        var t = [event.deltaY * scale, event.deltaX * scale];
+        var t = [event.deltaY / devicePixelRatio * scale, event.deltaX / devicePixelRatio * scale];
 
-        var d = _this._rotForDelta([_this.panStart[0] - t[0], _this.panStart[1] - t[1]]);
+        var d = _this._rotForDelta([_this.panStart[0] - t[0], _this.panStart[1] - t[1]]); // console.log(d);
+
 
         _this.rotTarget = _this._rotBounded([_this.rotStart[0] + d[0], _this.rotStart[1] + d[1]]);
         _this.lastGestureChange = event.timeStamp;
@@ -12755,17 +12754,16 @@ var MovementModel = /*#__PURE__*/function () {
 
     _defineProperty(this, "_updateRot", function () {
       if (!_this.interacting) {
-        var ambientPitchY = 0;
+        var ambientPitchY = 0; // if (this.hasAmbient) {
+        // this.ambientPitch = Math.min(this.ambientPitch + (1.0 / 120.0), 1);
 
-        if (_this.hasAmbient) {
-          _this.ambientPitch = Math.min(_this.ambientPitch + 1.0 / 120.0, 1);
-          ambientPitchY = Math.sin(_this.ambientPitchX) * (Math.PI / 2) * 0.5;
-          _this.ambientPitchX += 0.001 * _this.ambientPitchDir;
-        } else {
-          _this.ambientPitch = 0;
-          _this.ambientPitchX = 0;
-          ambientPitchY = 0;
-        }
+        ambientPitchY = Math.sin(_this.ambientPitchX) * (Math.PI / 2) * 0.5;
+        _this.ambientPitchX += 0.001 * _this.ambientPitchDir * _this.ambientPitch; // } else {
+        //   this.ambientPitch = 0;
+        //   this.ambientPitchX = 0;
+        //   ambientPitchY = 0;
+        // }
+        // console.log(this.ambientPitch);
 
         _this.rotTarget = [_this.rotTarget[0] * (1 - _this.ambientPitch) + ambientPitchY * _this.ambientPitch, _this.rotTarget[1]];
         var targetBounded = [Math.max(Math.min(_this.rotTarget[0], _this.settings.CAM_PITCH_SPRING_MAX), _this.settings.CAM_PITCH_SPRING_MIN), _this.rotTarget[1]];
@@ -12774,8 +12772,9 @@ var MovementModel = /*#__PURE__*/function () {
         _this.rotVelocity = [_this.rotVelocity[0] * _this.settings.FRICTION, _this.rotVelocity[1] * _this.settings.FRICTION];
         var camP = _this.zCurrent / _this.settings.CAM_Z_MAX;
 
-        if (_this.hasAmbient) {
-          _this.ambientYaw = Math.min(_this.ambientYaw + _this.settings.YAW_MIN_VELOCITY / 120.0, _this.settings.YAW_MIN_VELOCITY);
+        if (_this.hasAmbient && _this.ambientYaw === 0 && !_this.ambientTween) {
+          // this.ambientYaw = Math.min(this.ambientYaw + (this.settings.YAW_MIN_VELOCITY / 120.0), this.settings.YAW_MIN_VELOCITY);
+          _this.setAmbientAnimated(true, 5000);
         }
 
         var yawMin = _this.ambientYaw * (camP * camP);
@@ -12786,6 +12785,12 @@ var MovementModel = /*#__PURE__*/function () {
       } else {
         _this.ambientYaw = 0;
         _this.ambientPitch = 0;
+
+        if (_this.ambientTween) {
+          _this.ambientTween.stop();
+
+          _this.ambientTween = null;
+        }
       }
 
       var rotDelta = [_this.rotTarget[0] - _this.rotCurrent[0], _this.rotTarget[1] - _this.rotCurrent[1]];
@@ -12819,6 +12824,50 @@ var MovementModel = /*#__PURE__*/function () {
 
     _defineProperty(this, "getAltitude", function () {
       return (_this.zCurrent - 1.0) * _this.settings.EARTH_RADIUS;
+    });
+
+    _defineProperty(this, "setAmbient", function (ambient) {
+      if (_this.ambientTween) {
+        _this.ambientTween.stop();
+
+        _this.ambientTween = null;
+      }
+
+      _this.hasAmbient = ambient;
+
+      if (ambient) {
+        _this.ambientYaw = 1 * _this.settings.YAW_MIN_VELOCITY;
+        _this.ambientPitch = 1;
+      } else {
+        _this.ambientYaw = 0;
+        _this.ambientPitch = 0;
+      }
+    });
+
+    _defineProperty(this, "setAmbientAnimated", function (ambient, duration) {
+      _this.hasAmbient = ambient;
+      var startValue = ambient ? 0 : 1;
+      var endValue = ambient ? 1 : 0;
+
+      if (_this.ambientTween) {
+        startValue = _this.tween.currentValue();
+
+        _this.ambientTween.stop();
+      }
+
+      var d = (duration || 250) * Math.abs(endValue - startValue);
+      console.log('duration', d);
+      _this.ambientTween = new Tween(startValue, endValue, d, {
+        onUpdate: function onUpdate(value) {
+          _this.ambientYaw = value * _this.settings.YAW_MIN_VELOCITY;
+          _this.ambientPitch = value;
+        },
+        onComplete: function onComplete(didFinish) {
+          if (didFinish) {
+            _this.ambientTween = null;
+          }
+        }
+      });
     });
 
     _defineProperty(this, "reset", function () {
@@ -12911,7 +12960,7 @@ var MovementModel = /*#__PURE__*/function () {
     this.settings.CAM_PITCH_SPRING_MAX = this.settings.CAM_PITCH_MAX * this.settings.CAM_PITCH_SPRING_BND;
     this.settings.CAM_PITCH_SPRING_MIN = this.settings.CAM_PITCH_MIN * this.settings.CAM_PITCH_SPRING_BND; // General config
 
-    this.settings.FRICTION = 0.1;
+    this.settings.FRICTION = 0.99;
     this.settings.SPRING_STR = 0.16;
     this.settings.YAW_MIN_VELOCITY = 0.01;
     this.zStart = 0.0;
@@ -12927,6 +12976,7 @@ var MovementModel = /*#__PURE__*/function () {
     this.ambientPitch = 0.0;
     this.ambientPitchX = 0.0;
     this.ambientPitchDir = -1.0;
+    this.ambientTween = null;
     this.interacting = false;
 
     this.getInteractionState = function () {
@@ -12966,7 +13016,7 @@ var MovementModel = /*#__PURE__*/function () {
     value: function _onPanStart(event) {
       this.interacting = true;
       this.rotStart = this.rotCurrent;
-      this.panStart = [event.deltaX, event.deltaY];
+      this.panStart = [event.deltaX / devicePixelRatio, event.deltaY / devicePixelRatio];
       this.rotVelocity = [0, 0]; // Kill Velocity
     }
   }, {
@@ -12983,17 +13033,7 @@ var MovementModel = /*#__PURE__*/function () {
     key: "camPitch",
     get: function get() {
       return this.rotCurrent[0];
-    } // var camFov: Float {
-    //     didSet { // Assumption: sphere has a radius of 1
-    //         zFullWidth = frustumDist(height: 2.0 * (1.0 / camAspect), fov: camFov)
-    //     }
-    // }
-    // var camAspect: Float {
-    //     didSet {
-    //         zFullWidth = frustumDist(height: 2.0 * (1.0 / camAspect), fov: camFov)
-    //     }
-    // }
-
+    }
   }]);
 
   return MovementModel;
@@ -13109,7 +13149,9 @@ var InteractionController = /*#__PURE__*/function () {
     });
 
     _defineProperty(this, "onPanContinue", function (event) {
-      _this.movementModel._onPanContinue(event);
+      if (event.center.x !== 0 && event.center.y !== 0) {
+        _this.movementModel._onPanContinue(event);
+      }
     });
 
     _defineProperty(this, "onPanEnd", function (event) {
