@@ -3,7 +3,7 @@
 		<a
 			class="card__link"
 			:href="href"
-			@click.prevent="onClickCardLink(href)"
+			@click.prevent="onClickCardLink(href, title)"
 		>
 			<div class="card__img">
 				<img :src="imgSrc" alt="">
@@ -48,7 +48,8 @@ export default {
 		}
 	},
 	methods: {
-		onClickCardLink(href) {
+		onClickCardLink(href, title) {
+			this.$kvTrackEvent('Kiva15', 'click-hero-secondary-CTA', title);
 			this.$emit('card-clicked', href);
 		}
 	}
