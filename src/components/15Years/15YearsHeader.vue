@@ -16,7 +16,7 @@
 						</fifteen-years-button>
 					</div>
 				</div>
-				<div v-else class="country_cta">
+				<div v-else class="country_cta small-12 large-8">
 					<div class="columns country-name-container">
 						<div class="row">
 							<div>
@@ -419,7 +419,7 @@ export default {
 	}
 
 	.country_cta {
-		width: 100%;
+		// width: 100%;
 
 		@include breakpoint(small) {
 			padding-bottom: rem-calc(48);
@@ -548,6 +548,23 @@ export default {
 				}
 			}
 		}
+	}
+}
+
+.country-name {
+
+	line-height: 1;
+
+	&.long {
+
+		@include breakpoint(small) {
+			font-size: rem-calc(32);
+		}
+
+		@include breakpoint(large) {
+			font-size: rem-calc(40);
+		}
+
 	}
 }
 
