@@ -374,7 +374,6 @@ $bar-indicator-margin: rem-calc(4);
 
 	&__indicator-btn {
 		margin: 0.5rem;
-		margin-left: 0;
 		width: 1rem;
 		height: 1rem;
 		border-radius: 50%;

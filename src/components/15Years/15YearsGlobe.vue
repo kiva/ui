@@ -17,20 +17,23 @@ import {
 	CalloutDefinition
 } from '@/lib/globekit/globekit.esm';
 import { gsap } from 'gsap';
+import geojson from '@/assets/data/components/15-years/geojson.json';
+import geoData from '@/assets/binary/geo/35-10.bin';
+import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
+import textureKiva from '@/assets/images/15-years/texture-kiva.png';
 import DotCallout from './15YearsGlobeDotCallout';
 import PinCallout from './15YearsGlobePinCallout';
-import geojson from '../../assets/data/components/15-years/geojson.json';
 
 export default {
 	name: 'FifteenYearsGlobe',
 	mounted() {
 		const canvas = this.$el.getElementsByClassName('gk-canvas')[0];
 		const textures = {
-			surface: '/images/texture-kiva.png'
+			surface: textureKiva
 		};
 
 		this.gkview = new GlobeKitView(canvas, {
-			wasmPath: '/wasm/gkweb_bg.wasm',
+			wasmPath: gkWasm,
 			attributes: {
 				alpha: true, antialias: true,
 			}
@@ -62,7 +65,7 @@ export default {
 			return callout;
 		});
 
-		fetch('/geo/35-10.bin')
+		fetch(geoData)
 			.then(res => res.arrayBuffer())
 			.then(data => {
 				this.lowpoly = new Lowpoly(textures, data);
