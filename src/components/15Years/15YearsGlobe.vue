@@ -17,6 +17,11 @@ import textureKiva from '@/assets/images/15-years/texture-kiva.png';
 export default {
 	name: 'FifteenYearsGlobe',
 	async mounted() {
+		if (!this.checkSupport()) {
+			this.$el.classList.add('fallback');
+			return;
+		}
+
 		const {
 			GlobeKitView,
 			Lowpoly,
@@ -136,6 +141,20 @@ export default {
 		}
 	},
 	methods: {
+		checkSupport() {
+			try {
+				if (typeof WebAssembly === 'object'
+					&& typeof WebAssembly.instantiate === 'function') {
+					const module = new WebAssembly.Module(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+					if (module instanceof WebAssembly.Module) {
+						return true;
+					}
+				}
+			// eslint-disable-next-line no-empty
+			} catch (e) {
+			}
+			return false;
+		},
 		async selectCountry(country) {
 			const { CalloutDefinition } = await import('@/lib/globekit/globekit.esm');
 			const { default: PinCallout } = await import('./15YearsGlobePinCallout');
@@ -224,6 +243,18 @@ export default {
 
 .gk-callout-manager {
 	pointer-events: none;
+}
+
+.globe-component.fallback {
+	.globe-container::before {
+		background: white url('~@/assets/images/15-years/globe/fallback.jpg') top left no-repeat;
+		background-size: 100% 100%;
+	}
+
+	.gk-canvas,
+	.gk-callout-manager {
+		display: none;
+	}
 }
 </style>
 
