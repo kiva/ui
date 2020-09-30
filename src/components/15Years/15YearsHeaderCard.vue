@@ -3,6 +3,7 @@
 		<a
 			class="card__link"
 			:href="href"
+			@click.prevent="onClickCardLink(href)"
 		>
 			<div class="row align-justify">
 				<div class="small-3 card__img">
@@ -46,6 +47,11 @@ export default {
 			return {
 				'--image-tilt': `rotate(${this.imgTilt}deg)`,
 			};
+		}
+	},
+	methods: {
+		onClickCardLink(href) {
+			this.$emit('card-clicked', href);
 		}
 	}
 };

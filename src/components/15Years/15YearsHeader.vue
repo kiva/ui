@@ -27,6 +27,7 @@
 							:href="item.href"
 							:img-src="item.imgSrc"
 							:img-tilt="item.imgTilt"
+							@card-clicked="onCardClicked"
 						/>
 					</div>
 				</div>
@@ -59,7 +60,7 @@ export default {
 				{
 					title: '15 Years of Impact',
 					subtitle: 'The history of Kiva, year by year',
-					href: '#15-years-of-impact',
+					href: '#years-of-impact',
 					imgSrc: Hearts02,
 					imgTilt: 5,
 				},
@@ -79,6 +80,14 @@ export default {
 				},
 			],
 		};
+	},
+	methods: {
+		onCardClicked(id) {
+			const element = document.querySelector(id);
+			if (element) {
+				element.scrollIntoView({ behavior: 'smooth' });
+			}
+		}
 	}
 };
 </script>
