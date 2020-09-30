@@ -216,6 +216,7 @@ export default {
 				this.isCountrySelected = false;
 				this.globekitCountrySelected = {};
 				this.previousCountries = [];
+				this.clearAutoplay();
 			} else {
 				const country = this.countries[selection.iso2];
 				if (this.isCountrySelected) {
@@ -229,6 +230,7 @@ export default {
 				}
 				this.isCountrySelected = true;
 				this.globekitCountrySelected = country;
+				this.queueAutoplay();
 			}
 		},
 		nextClickHandler() {
@@ -245,6 +247,7 @@ export default {
 				this.globekitCountrySelected = country;
 				this.$refs.globe.selectCountry(country);
 			}
+			this.queueAutoplay();
 		},
 		prevClickHandler() {
 			if (this.previousCountries.length > 1) {
@@ -259,13 +262,29 @@ export default {
 				this.$refs.globe.selectCountry(country);
 				this.previousCountries = [country];
 			}
+			this.queueAutoplay();
 		},
 		clickHandler(event) {
 			console.log(event);
 		},
 		numberWithCommas(x) {
 			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-		}
+		},
+		onGlobePan() {
+
+		},
+		queueAutoplay() {
+			this.clearAutoplay();
+			this.advanceTimeout = setTimeout(() => {
+				this.nextClickHandler();
+			}, 7000);
+		},
+		clearAutoplay() {
+			if (this.advanceTimeout) {
+				clearTimeout(this.advanceTimeout);
+			}
+			this.advanceTimeout = null;
+		},
 	},
 	inject: ['apollo'],
 	apollo: {

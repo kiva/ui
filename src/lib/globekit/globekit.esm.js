@@ -13168,11 +13168,19 @@ var InteractionController = /*#__PURE__*/function () {
       if (!_this.isOverTarget(event.center.x, event.center.y)) return;
 
       _this.movementModel._onPanStart(event);
+
+      if (_this.onPan) {
+        _this.onPan(event);
+      }
     });
 
     _defineProperty(this, "onPanContinue", function (event) {
       if (event.center.x !== 0 && event.center.y !== 0) {
         _this.movementModel._onPanContinue(event);
+
+        if (_this.onPan) {
+          _this.onPan(event);
+        }
       }
     });
 
@@ -14107,7 +14115,9 @@ var DataStore = /*#__PURE__*/function () {
       var nearest = _this.kdtree.nearest({
         lat: lat,
         lon: lon
-      }, maxCount, maxDistance);
+      }, maxCount, maxDistance).sort(function (a, b) {
+        return a[1] - b[1];
+      });
 
       if (nearest[0] !== undefined) {
         return nearest;

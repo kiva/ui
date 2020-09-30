@@ -79,11 +79,9 @@ export default {
 
 		this.gkview.onTap = (screen, world) => {
 			if (!world) return;
-			console.log(screen, world);
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
-				console.log(result);
 				this.gkview.animateToLatLon(result.lat, result.lon);
 				const callout = new CalloutDefinition(result.lat, result.lon, PinCallout, result.properties);
 				callout.altitude = 0.035;
@@ -99,11 +97,11 @@ export default {
 
 		this.calloutManager.onAutoRemove = () => {
 			this.$emit('selectcountry', null);
+			this.gkview.interactionController.movementModel.setAmbient(true);
 		};
 	},
 	methods: {
 		selectCountry(country) {
-			console.log(country);
 			this.automatedSelection = country;
 			setTimeout(() => {
 				if (this.automatedSelection === country) {
@@ -118,13 +116,10 @@ export default {
 			this.calloutManager.replaceCallouts([...this.callouts, callout]);
 		},
 		nextClosest(country, exclude) {
-			console.log(country, exclude);
 			const excludeCodes = exclude.map(c => c.iso3);
 			const { centroid } = country;
 			const results = this.datastore.getNearest(centroid.lat, centroid.lng, 999999999, 100);
-			console.log(results.sort((a, b) => a[1] - b[1]));
 			return results
-				.sort((a, b) => a[1] - b[1])
 				.map(result => result[0].properties)
 				.filter(c => !excludeCodes.includes(c.iso3))[0];
 		},
