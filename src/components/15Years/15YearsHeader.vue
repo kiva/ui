@@ -446,10 +446,6 @@ export default {
 	}
 
 	&__cards-section {
-
-		/* position: absolute; */
-		/* margin-top: auto; */
-
 		@include breakpoint(small) {
 			background-color: $mint;
 			padding-top: calc((100vw - 48px) * 0.5);
