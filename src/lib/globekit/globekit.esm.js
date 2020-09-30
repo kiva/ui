@@ -13124,7 +13124,7 @@ var InteractionController = /*#__PURE__*/function () {
 
     _defineProperty(this, "isInteractive", false);
 
-    _defineProperty(this, "targetElement", window);
+    _defineProperty(this, "targetElement", null);
 
     _defineProperty(this, "targetDrawable", null);
 
@@ -13201,6 +13201,8 @@ var InteractionController = /*#__PURE__*/function () {
     if (targetElement) {
       this.targetElement = targetElement;
       this.boundingRect = this.targetElement.getBoundingClientRect();
+    } else {
+      targetElement = window;
     }
 
     this.camera = camera;
