@@ -139,7 +139,7 @@ export default {
 				{ position: 0.833, shape: 'M-29,377.57c81.47-13.76,116,36.86,216.11,34.22,108.22-2.86,151.31-71.93,151.31-71.93L374,489H-50Z' },
 				{ position: 1, shape: 'M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z' },
 			]
-		}
+		};
 		/* eslint-enable max-len */
 		return {
 			desktopTimelineDefs: [
