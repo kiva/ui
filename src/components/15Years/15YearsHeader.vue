@@ -361,6 +361,16 @@ export default {
 
 	.country_cta {
 		width: 100%;
+
+		.fifteen-yr-button {
+			padding: rem-calc(14) rem-calc(10);
+			width: 100%;
+			text-align: center;
+
+			@include breakpoint(large) {
+				width: 203px;
+			}
+		}
 	}
 
 	&__text {
@@ -476,18 +486,6 @@ export default {
 			border-color 0.1s ease-out;
 	}
 
-	.country_cta {
-		.fifteen-yr-button {
-			padding: rem-calc(14) rem-calc(10);
-			width: 100%;
-			text-align: center;
-
-			@include breakpoint(large) {
-				width: 203px;
-			}
-		}
-	}
-
 	.row .row {
 		margin-left: 0;
 		margin-right: 0;
@@ -581,6 +579,7 @@ export default {
 			border-radius: 1.5px;
 			background-color: #C4C4C4;
 		}
+
 		progress::-webkit-progress-value {
 			border-radius: 1.5px;
 			background-color: $twilight;
