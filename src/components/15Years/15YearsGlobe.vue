@@ -119,7 +119,7 @@ export default {
 		};
 
 		this.calloutManager.onAutoRemove = callout => {
-			if (callout.def === this.currentCallout) {
+			if (callout === this.currentCallout) {
 				this.$emit('selectcountry', null);
 				this.gkview.interactionController.movementModel.setAmbient(true);
 				this.currentCallout = null;
