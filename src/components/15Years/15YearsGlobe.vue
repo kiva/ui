@@ -11,6 +11,9 @@ import {
 	Lowpoly,
 	GKUtils,
 } from '@/lib/globekit/globekit.esm';
+import geoData from '@/assets/binary/geo/19-15.bin';
+import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
+import textureKiva from '@/assets/images/15-years/texture-kiva.png';
 
 // class DotCallout extends Callout {
 // 	createElement() {
@@ -39,16 +42,16 @@ export default {
 
 		const canvas = this.$el.getElementsByClassName('gk-canvas')[0];
 		const textures = {
-			surface: '/images/texture-kiva.png'
+			surface: textureKiva
 		};
 
-		this.gkview = new GlobeKitView(canvas, { wasmPath: '/wasm/gkweb_bg.wasm' }, () => {});
+		this.gkview = new GlobeKitView(canvas, { wasmPath: gkWasm }, () => {});
 		this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#F8F8F8', 1.0);
 		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
 		this.gkview.setMovementModelTo(0, 0, 3.4);
 		this.gkview.userDefinedSelection = () => {};
 
-		fetch('/geo/19-15.bin')
+		fetch(geoData)
 			.then(res => res.arrayBuffer())
 			.then(data => {
 				this.lowpoly = new Lowpoly(textures, data);
