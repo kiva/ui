@@ -116,7 +116,6 @@ export default {
 		};
 
 		this.gkview.interactionController.onPan = () => {
-			// TODO: maybe - analytics event. Triggered continuously when panning.
 			this.$emit('pan', null);
 		};
 
