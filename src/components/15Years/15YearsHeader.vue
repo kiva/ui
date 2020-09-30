@@ -467,7 +467,7 @@ export default {
 
 		@include breakpoint(large) {
 			position: absolute;
-			bottom: 0px;
+			bottom: 0;
 			background-color: transparent;
 			padding-top: 0;
 			margin-top: rem-calc(48);
