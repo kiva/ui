@@ -20,7 +20,7 @@
 					<div class="header__text columns">
 						<div class="row">
 							<div>
-								<h2 class="country-name truncate-overflow">
+								<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
 									{{ globekitCountrySelected.name }}
 								</h2>
 							</div>
@@ -171,7 +171,8 @@ export default {
 	data() {
 		const countryList = geojson.features.map(feature => {
 			const active = Math.floor(feature.properties.total * Math.random() * 0.01);
-			return { ...feature.properties, active };
+			const nameClass = feature.properties.name.length > 12 ? 'long' : 'short';
+			return { ...feature.properties, active, nameClass };
 		});
 		const countries = countryList.reduce((accumulator, currentValue) => {
 			accumulator[currentValue.iso2] = currentValue;
