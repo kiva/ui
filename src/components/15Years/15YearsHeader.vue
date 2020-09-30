@@ -368,9 +368,9 @@ export default {
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
 		transition:
-			background-color 0.1s ease-out,
-			color 0.1s ease-out,
-			border-color 0.1s ease-out;
+			background-color 0.3s ease-out,
+			color 0.3s ease-out,
+			border-color 0.3s ease-out;
 	}
 
 	.country_cta {
@@ -426,7 +426,7 @@ export default {
 	&__card {
 		position: relative;
 		padding: rem-calc(32) rem-calc(16);
-		transition: background 0.125s linear;
+		transition: background 0.3s ease-out;
 
 		&:hover {
 			background: hsla(0, 0%, 100%, 0.8);
@@ -449,6 +449,8 @@ export default {
 
 	&__card-wrap {
 		@include breakpoint(xxlarge) {
+			transition: background 0.3s ease-out;
+
 			&:hover {
 				background: hsla(0, 0%, 100%, 0.8);
 			}
