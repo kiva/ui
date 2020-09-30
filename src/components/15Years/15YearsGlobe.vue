@@ -224,7 +224,7 @@ export default {
 	div {
 		width: 100%;
 		height: 100%;
-		transition: transform 0.5s cubic-bezier(0.265, 1.850, 0.420, 0.750);
+		transition: transform 0.5s cubic-bezier(0.265, 1.85, 0.42, 0.75);
 		transform-origin: 50% 89.1892%;
 	}
 
@@ -235,8 +235,7 @@ export default {
 		height: 100%;
 		background: url('~@/assets/images/15-years/globe/pin@2x.png') top left no-repeat;
 		background-size: 100% 100%;
-
-		animation: pin-wiggle 1.5s infinite alternate cubic-bezier(0.5, 0, 0.5, 1)
+		animation: pin-wiggle 1.5s infinite alternate cubic-bezier(0.5, 0, 0.5, 1);
 	}
 }
 
