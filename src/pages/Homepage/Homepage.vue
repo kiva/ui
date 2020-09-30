@@ -47,6 +47,11 @@ export default {
 		// WRDHomePage,
 		TopMessageContentful,
 	},
+	metaInfo: {
+		meta: [
+			{ 'google-site-verification': 'vpxnq5XBGa1PgE4hhyEollJr4uEzN7mrC30iJxzuW_M' }, // for Google Search Console
+		],
+	},
 	data() {
 		return {
 			isLenderPreferencesActive: false,
