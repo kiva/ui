@@ -143,7 +143,24 @@ module.exports = {
 					name: assetsPath('media/[name].[hash:7].[ext]'),
 					esModule: false,
 				}
-			}
+			},
+			{
+				test: /assets\/binary\//,
+				loader: 'file-loader',
+				options: {
+					name: assetsPath('binary/[name].[hash:7].[ext]'),
+					esModule: false,
+				}
+			},
+			{
+				test: /assets\/wasm\//,
+				loader: 'file-loader',
+				type: 'javascript/auto',
+				options: {
+					name: assetsPath('wasm/[name].[hash:7].[ext]'),
+					esModule: false,
+				}
+			},
 		]
 	},
 	plugins: [
