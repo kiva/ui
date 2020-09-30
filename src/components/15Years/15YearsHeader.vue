@@ -82,6 +82,7 @@
 									:max="`'${countryList.length}'`"
 									style="--kv-progress-bar-foreground-color: black;
 										--kv-progress-bar-background-color: #C4C4C4;
+
 										min-width: 50px;"
 								/>
 							</span>
@@ -511,7 +512,6 @@ export default {
 	@include breakpoint(large) {
 		display: block;
 	}
-
 }
 
 .country-name {
