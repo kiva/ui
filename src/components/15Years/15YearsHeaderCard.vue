@@ -106,7 +106,7 @@ export default {
 		text-transform: none;
 
 		@include breakpoint(large) {
-			font-size: rem-calc(24);
+			font-size: rem-calc(18);
 		}
 	}
 
@@ -114,6 +114,11 @@ export default {
 		@include link();
 
 		white-space: normal;
+
+		@include breakpoint(large) {
+			font-size: rem-calc(11);
+			margin: 0;
+		}
 	}
 }
 

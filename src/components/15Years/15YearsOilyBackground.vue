@@ -16,6 +16,8 @@
 			<path id="white-knockout-2" class="white" d="M1184.79-13.44c-5.5,13.08-12.4,12-31.29,13.44s-25.06-10-20.34-24.45,22.33-18,37-15.87S1190.29-26.52,1184.79-13.44Z" />
 		</svg>
 		<svg class="oily-mobile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 450">
+			<path id="sky-mlarge" class="sky" d="M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z" />
+			<path id="twilight-mlarge" class="twilight" d="M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z" />
 			<path id="mint-bottom" class="mint" d="M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z" />
 		</svg>
 	</div>
@@ -139,7 +141,15 @@ export default {
 				{ position: 0.667, shape: 'M-29,414.57c-.2.08,58.91-59.54,184.35-13.78,113.27,41.31,183.07-65.93,183.07-65.93L374,489H-50Z' },
 				{ position: 0.833, shape: 'M-29,377.57c81.47-13.76,116,36.86,216.11,34.22,108.22-2.86,151.31-71.93,151.31-71.93L374,489H-50Z' },
 				{ position: 1, shape: 'M-29,334.57s80.82,87.93,189,83.79,178.42-73.5,178.42-73.5L374,489H-50Z' },
-			]
+			],
+			largePath: [
+				{ position: 0, shape: 'M368.28,85C234.52,98.57,218.72,213.89,186.52,288.23c-30.35,70.08-76.39,141.8-252.88,101l-35.56,133H394.62Z' },
+				{ position: 0.2, shape: 'M368.28,255C226.91,255,174.86,290.7,138,340.75,92.67,402.23,68.86,422.57-66.36,409.2l-35.56,113H394.62Z' },
+				{ position: 0.4, shape: 'M368.28,325c-96.59,23-149,60.15-216,48C77.13,359.26,68.86,282.57-66.36,269.2l-35.56,253H394.62Z' },
+				{ position: 0.6, shape: 'M381.45,388.32c-120.3,28.1-186.15,37.76-266.24-16C29.91,315.07,46,196.91-48.18,183.63l-53.74,338.6H394.62Z' },
+				{ position: 0.8, shape: 'M381.45,388.32c-138.73,93.08-336.15,37.76-416.24-16C-120.09,315.07-174,236.91-268.18,223.63l166.26,298.6H394.62Z' },
+				{ position: 1, shape: 'M368.28,85C234.52,98.57,218.72,213.89,186.52,288.23c-30.35,70.08-76.39,141.8-252.88,101l-35.56,133H394.62Z' },
+			],
 		};
 		/* eslint-enable max-len */
 		return {
@@ -158,6 +168,8 @@ export default {
 				{ id: 'white-knockout-4', path: desktopPaths.knockoutPath2, startOffset: 0.5 },
 			],
 			mobileTimelineDefs: [
+				{ id: 'sky-mlarge', path: mobilePaths.largePath, startOffset: 0.4 },
+				{ id: 'twilight-mlarge', path: mobilePaths.largePath, startOffset: 0 },
 				{ id: 'mint-bottom', path: mobilePaths.bottomPath, startOffset: 0 },
 			],
 		};
@@ -195,7 +207,7 @@ svg {
 .oily-mobile {
 	display: block;
 	width: 100%;
-	top: 120px;
+	top: calc(2rem + 410px - 40.625vw);
 
 	@include breakpoint(large) {
 		display: none;

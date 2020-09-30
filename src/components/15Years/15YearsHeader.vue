@@ -2,7 +2,7 @@
 	<div class="header section">
 		<fifteen-years-oily-background />
 		<div class="header__main-section">
-			<div class="header__main-section-row row align-middle">
+			<div class="header__main-section-row row align-bottom">
 				<div v-if="!isCountrySelected" class="main_cta">
 					<div class="header__text small-12 large-6 columns">
 						<h1 class="header__headline">
@@ -25,13 +25,15 @@
 					</div>
 				</div>
 				<div v-else class="country_cta">
-					<div class="header__text columns">
+					<div class="columns country-name-container">
 						<div class="row">
 							<div>
 								<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
 									{{ globekitCountrySelected.name }}
 								</h2>
 							</div>
+						</div>
+						<div class="row">
 							<div>
 								<div class="country-sticker">
 									<kv-flag
@@ -92,9 +94,7 @@
 									name="fat-chevron"
 									:from-sprite="true"
 								/>
-								<span class="name-nav__index">{{
-									this.previousCountries.length | numeral('00')
-								}}</span>
+								<span class="name-nav__index">Back</span>
 							</button>
 
 							<span class="prevnext__indicator">
@@ -113,9 +113,7 @@
 									'Next'
 								]"
 							>
-								<span class="name-nav__index">{{
-									this.countryList.length | numeral('00')
-								}}</span>
+								<span class="name-nav__index">Next</span>
 								<kv-icon
 									class="prevnext__btn-icon"
 									name="fat-chevron"
@@ -387,26 +385,35 @@ export default {
 	}
 
 	&__main-section {
-		position: relative;
+		position: absolute;
+		height: 432px;
 		display: flex;
-		flex: 1;
-		flex-direction: row;
-		// max-width: 40vw;
-		max-width: none;
+		width: 100%;
 
 		.row {
 			flex: 1;
 		}
 
+		@include breakpoint(small) {
+			margin: 0 auto;
+			padding-top: rem-calc(48);
+		}
+
 		@include breakpoint(large) {
+			height: auto;
+			position: absolute;
+			bottom: 310px;
 			max-width: 72rem;
 			width: 100%;
 			margin: 0 auto;
+			padding: 0;
+			padding-left: rem-calc(32);
+			margin-top: rem-calc(128);
 		}
 	}
 
 	.header__main-section-row {
-		padding-top: rem-calc(96);
+		/* padding-top: rem-calc(96); */
 		padding-left: 0;
 		margin: 0;
 		min-height: rem-calc(340px);
@@ -414,7 +421,7 @@ export default {
 		width: 100%;
 
 		@include breakpoint(large) {
-			padding-top: rem-calc(64);
+			/* padding-top: rem-calc(64); */
 			padding-left: 0;
 		}
 	}
@@ -426,6 +433,15 @@ export default {
 
 	.country_cta {
 		width: 100%;
+
+		@include breakpoint(small) {
+			padding-bottom: rem-calc(48);
+
+			.row {
+				margin-left: 0;
+				margin-right: 0;
+			}
+		}
 
 		.fifteen-yr-button {
 			padding: rem-calc(14) rem-calc(10);
@@ -439,37 +455,54 @@ export default {
 	}
 
 	&__text {
+
+		@include breakpoint(small) {
+			padding: 0 rem-calc(24);
+			padding-bottom: rem-calc(86);
+		}
+
 		@include breakpoint(xxlarge) {
 			max-width: 35vw;
 		}
 	}
 
 	&__cards-section {
-		position: relative;
-		margin-top: auto;
-
 		@include breakpoint(small) {
+			position: relative;
 			background-color: $mint;
-			margin-top: calc(100vw - #{rem-calc(72)});
-			z-index: 0;
-			padding-top: rem-calc(32);
+			margin-top: calc(100vw + 404px);
+
+			// margin-top: calc(100vw - 48px + 432px + 20px);
+			// margin-top: calc(100vw - #{rem-calc(72)});
+			// z-index: 0;
+			// padding-top: rem-calc(32);
 		}
 
 		@include breakpoint(large) {
+			position: absolute;
+			bottom: 0;
 			background-color: transparent;
-			margin: 0;
-			z-index: 1;
 			padding-top: 0;
-			padding-left: 0;
+			margin-top: rem-calc(48);
+			padding-left: rem-calc(32);
+			padding-bottom: rem-calc(16);
 		}
 
 		@include breakpoint(xxlarge) {
 			background-color: rgba(255, 255, 255, 0.5);
+			padding: 0;
+			margin: 0;
+			width: 100%;
+
+			.row {
+				margin-left: auto;
+				margin-right: auto;
+			}
 		}
 	}
 
 	&__cta-button {
-		margin-top: rem-calc(48);
+		margin-top: rem-calc(16);
 		padding-right: 0.625rem;
 		padding-left: 0.625rem;
 	}
@@ -529,11 +562,6 @@ export default {
 			}
 		}
 	}
-
-	.row .row {
-		margin-left: 0;
-		margin-right: 0;
-	}
 }
 
 .header.section {
@@ -550,15 +578,19 @@ export default {
 	box-sizing: content-box;
 }
 
+.country-name-container {
+	padding: 0 rem-calc(24);
+}
+
 .country-sticker {
 	display: block;
 	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
 	border-radius: 50%;
-	padding: 5px;
-	max-width: 65px;
-	max-height: 65px;
-	min-width: 65px;
-	min-height: 65px;
+	padding: 3px;
+	max-width: 40px;
+	max-height: 40px;
+	min-width: 40px;
+	min-height: 40px;
 
 	// Phones
 	@include breakpoint(small) {
@@ -571,20 +603,21 @@ export default {
 	}
 }
 
-.country-name {
-	--lh: 3.45rem;
-}
-
 .loan-number {
 	margin-right: rem-calc(16);
 }
 
 .loan-number-group {
 
+	@include breakpoint(small) {
+		padding-left: rem-calc(24);
+		border-left: 2px solid $twilight;
+		margin-left: rem-calc(24) !important;
+		margin-top: rem-calc(16);
+	}
+
 	@include breakpoint(large) {
 		margin-top: rem-calc(48);
-		padding-left: rem-calc(32);
-		border-left: 2px solid $twilight;
 	}
 }
 
@@ -603,13 +636,19 @@ export default {
 
 	display: flex;
 	margin: 0 auto;
-	justify-content: middle;
+	justify-content: space-between;
 	align-items: center;
-	padding: 24px rem-calc(16) 0;
+	width: 100%;
+	padding: 0 rem-calc(16);
+	padding-top: rem-calc(24);
 
 	@include breakpoint(large) {
 		margin: 0;
 		padding-top: 0;
+		position: absolute;
+		bottom: 302px;
+		left: 100px;
+		max-width: 180px;
 	}
 
 	&__indicator {

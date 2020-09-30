@@ -13142,6 +13142,10 @@ var InteractionController = /*#__PURE__*/function () {
       pinch: true
     });
 
+    _defineProperty(this, "release", function () {
+      _this.hammer.destroy();
+    });
+
     _defineProperty(this, "resize", function () {
       _this.boundingRect = _this.targetElement.getBoundingClientRect();
 
@@ -13233,15 +13237,15 @@ var InteractionController = /*#__PURE__*/function () {
     if (this.options.pinch) this.hammer.on('tap', this.onPinch);
     this.isInteractive = true;
   }
-  /**
-   * @description sets targetDrawable
-   * @memberof InteractionController#
-   * @member {Drawable} target
-   */
-
 
   _createClass(InteractionController, [{
     key: "target",
+
+    /**
+     * @description sets targetDrawable
+     * @memberof InteractionController#
+     * @member {Drawable} target
+     */
     set: function set(newTarget) {
       this.targetDrawable = newTarget;
     }
@@ -13649,6 +13653,18 @@ var GlobeKitView = /*#__PURE__*/function () {
       window.onresize = _this.onResizeCB;
       window.onscroll = _this.onResizeCB;
       _this.isInit = true;
+    });
+
+    _defineProperty(this, "release", function () {
+      _this.stopDrawing();
+
+      if (_this.calloutManager) {
+        _this.calloutManager.release();
+      }
+
+      if (_this.interactionController) {
+        _this.interactionController.release();
+      }
     });
 
     _defineProperty(this, "_onInitCB", function () {
