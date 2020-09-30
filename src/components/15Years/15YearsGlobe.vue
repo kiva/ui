@@ -242,8 +242,8 @@ export default {
 }
 
 @keyframes pin-wiggle {
-	from { transform: translateY(3%); }
-	to { transform: translateY(-3%); }
+	from { transform: translateY(-3.5%); }
+	to { transform: translateY(3.5%); }
 }
 
 .pin-callout {
