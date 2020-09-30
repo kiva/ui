@@ -359,6 +359,15 @@ export default {
 		}
 	}
 
+	.fifteen-yr-button {
+		padding: rem-calc(14) rem-calc(50);
+		height: rem-calc(52);
+		transition:
+			background-color 0.1s ease-out,
+			color 0.1s ease-out,
+			border-color 0.1s ease-out;
+	}
+
 	.country_cta {
 		width: 100%;
 
@@ -475,15 +484,6 @@ export default {
 				}
 			}
 		}
-	}
-
-	.fifteen-yr-button {
-		padding: rem-calc(14) rem-calc(50);
-		height: rem-calc(52);
-		transition:
-			background-color 0.1s ease-out,
-			color 0.1s ease-out,
-			border-color 0.1s ease-out;
 	}
 
 	.row .row {
