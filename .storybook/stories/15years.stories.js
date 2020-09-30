@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import StoryRouter from 'storybook-vue-router';
 import { withKnobs, text, object } from '@storybook/addon-knobs';
-import mockedCountryFacets from '../mock-data/country-facets-data-mock';
 
 // import plugins
 import kivaPlugins from '@/plugins';
@@ -91,7 +90,7 @@ export const Combined = (args, { argTypes }) => ({
 		FifteenYears,
 	},
 	layout: 'fullscreen',
-	mixins: [apolloStoryMixin({ queryResult: mockedCountryFacets}), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), kvAuth0StoryMixin],
 	template: `
 		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
@@ -150,7 +149,7 @@ export const Header = (args, { argTypes }) => ({
 			]),
 		},
 	},
-	mixins: [apolloStoryMixin({ queryResult: mockedCountryFacets}), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), kvAuth0StoryMixin],
 	template: `
 		<fifteen-years-header :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/>
 	`,
