@@ -168,6 +168,14 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
+.oily-background {
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 svg {
 	position: absolute;
 	pointer-events: none;

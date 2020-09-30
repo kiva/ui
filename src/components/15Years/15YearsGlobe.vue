@@ -41,22 +41,24 @@ export default {
 		this.gkview.interactionController.movementModel.setAmbient(true);
 
 		this.calloutManager = new CalloutManager(this.$el.getElementsByClassName('gk-callout-manager')[0]);
-		this.calloutManager.autoRemoveThreshholdSimilarity = 0.25;
+		this.calloutManager.autoRemoveThreshholdSimilarity = 0.5;
 		this.calloutManager.shouldAutoRemoveCallout = def => {
 			if (def.calloutClass === DotCallout) {
+				return false;
+			}
+			if (this.automatedSelection && this.automatedSelection.iso3 === def.data.iso3) {
 				return false;
 			}
 			return true;
 		};
 		this.gkview.registerCalloutManager(this.calloutManager);
 
-		const callouts = [];
-		geojson.features.forEach(feature => {
+		this.callouts = geojson.features.map(feature => {
 			const latlng = feature.geometry.coordinates;
 			const country = feature.properties;
 			const callout = new CalloutDefinition(latlng[1], latlng[0], DotCallout, country);
 			callout.altitude = 0.035;
-			callouts.push(callout);
+			return callout;
 		});
 
 		fetch('/geo/35-10.bin')
@@ -68,7 +70,7 @@ export default {
 			.then(() => {
 				this.gkview.addDrawable(this.lowpoly, () => {
 					this.gkview.startDrawing();
-					this.calloutManager.replaceCallouts(callouts);
+					this.calloutManager.replaceCallouts(this.callouts);
 				});
 			});
 
@@ -82,19 +84,50 @@ export default {
 			if (results) {
 				const result = results[0][0];
 				console.log(result);
+				this.gkview.animateToLatLon(result.lat, result.lon);
 				const callout = new CalloutDefinition(result.lat, result.lon, PinCallout, result.properties);
 				callout.altitude = 0.035;
-				this.calloutManager.replaceCallouts([...callouts, callout]);
+				this.calloutManager.replaceCallouts([...this.callouts, callout]);
 				this.$emit('selectcountry', result.properties);
 			} else {
-				this.calloutManager.replaceCallouts(callouts);
+				this.calloutManager.replaceCallouts(this.callouts);
 				this.$emit('selectcountry', null);
+				this.gkview.interactionController.movementModel.setAmbientAnimated(true, 1000);
+				this.gkview.interactionController.movementModel.interacting = false;
 			}
 		};
 
 		this.calloutManager.onAutoRemove = () => {
 			this.$emit('selectcountry', null);
 		};
+	},
+	methods: {
+		selectCountry(country) {
+			console.log(country);
+			this.automatedSelection = country;
+			setTimeout(() => {
+				if (this.automatedSelection === country) {
+					this.automatedSelection = null;
+				}
+			}, 1000);
+
+			const { centroid } = country;
+			this.gkview.animateToLatLon(centroid.lat, centroid.lng);
+			const callout = new CalloutDefinition(centroid.lat, centroid.lng, PinCallout, country);
+			callout.altitude = 0.035;
+			this.calloutManager.replaceCallouts([...this.callouts, callout]);
+		},
+		nextClosest(country, exclude) {
+			console.log(country, exclude);
+			const excludeCodes = exclude.map(c => c.iso3);
+			const { centroid } = country;
+			const results = this.datastore.getNearest(centroid.lat, centroid.lng, 999999999, 100);
+			console.log(results.sort((a, b) => a[1] - b[1]));
+			return results
+				.sort((a, b) => a[1] - b[1])
+				.map(result => result[0].properties)
+				.filter(c => !excludeCodes.includes(c.iso3))[0];
+		},
 	},
 };
 </script>
@@ -103,7 +136,12 @@ export default {
 @import 'settings';
 @import 'components/15-years/15-years';
 
+.globe-component {
+	pointer-events: none;
+}
+
 .globe-container {
+	pointer-events: all;
 	position: absolute;
 	width: calc(100vw - 48px);
 	height: calc(100vw - 48px);
@@ -175,10 +213,48 @@ export default {
 	}
 }
 
+@keyframes pin-wiggle {
+	from { transform: translateY(3%); }
+	to { transform: translateY(-3%); }
+}
+
 .pin-callout {
-	width: 27px;
-	height: 37px;
-	background: url('~@/assets/images/15-years/globe/pin@2x.png') top left no-repeat;
-	background-size: 100% 100%;
+	width: 20px;
+	height: 27px;
+	@include breakpoint(large) {
+		width: 27px;
+		height: 37px;
+	}
+
+	div {
+		width: 100%;
+		height: 100%;
+		transition: transform 0.5s cubic-bezier(0.265, 1.850, 0.420, 0.750);
+		transform-origin: 50% 89.1892%;
+	}
+
+	div::after {
+		content: '';
+		display: block;
+		width: 100%;
+		height: 100%;
+		background: url('~@/assets/images/15-years/globe/pin@2x.png') top left no-repeat;
+		background-size: 100% 100%;
+
+		animation: pin-wiggle 1.5s infinite alternate cubic-bezier(0.5, 0, 0.5, 1)
+	}
+}
+
+.pin-callout.hidden {
+	div {
+		transform: scale(0, 0);
+	}
+}
+
+.pin-callout.animate-out {
+	div {
+		transition: transform 0.2s linear;
+		transform: scale(0, 0);
+	}
 }
 </style>

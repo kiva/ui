@@ -15,8 +15,8 @@ class DotCallout extends Callout {
 		const ny = position.screen.y - ((this.size.left + this.size.right) / 2);
 		this.element.style.transform = `translate(${nx}px, ${ny}px)`;
 		this.element.style.zIndex = Math.round(10000 * position.world.similarityToCameraVector);
-		if (position.world.similarityToCameraVector < 0.7) {
-			const scale = Math.max((position.world.similarityToCameraVector - 0.4) / 0.3, 0);
+		if (position.world.similarityToCameraVector < 0.75) {
+			const scale = Math.max((position.world.similarityToCameraVector - 0.5) / (0.75 - 0.5), 0);
 			this.element.style.transform += ` scale(${scale}, ${scale})`;
 		}
 	}

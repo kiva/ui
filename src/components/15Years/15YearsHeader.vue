@@ -1,13 +1,9 @@
 <template>
 	<div class="header section">
 		<fifteen-years-oily-background />
-		<fifteen-years-globe
-			ref="globe"
-			@selectcountry="onCountrySelect"
-		/>
 		<div class="header__main-section">
 			<div class="header__main-section-row row align-middle">
-				<div v-if="!isCountrySelected">
+				<div v-if="!isCountrySelected" class="main_cta">
 					<div class="header__text small-12 large-6 columns">
 						<h1 class="header__headline">
 							<span class="header__headline-stroked no-wrap">Power in</span> Numbers
@@ -20,7 +16,7 @@
 						</fifteen-years-button>
 					</div>
 				</div>
-				<div v-else>
+				<div v-else class="country_cta">
 					<div class="header__text columns">
 						<div class="row">
 							<div>
@@ -44,43 +40,44 @@
 						<div class="columns">
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ numberWithCommas(10000000) }}</h3>
+									<h3>{{ numberWithCommas(globekitCountrySelected.total) }}</h3>
 								</div>
 								<div class="loan-label">
-									<h5>total<br>loans</h5>
+									<h5>total <br>loans</h5>
 								</div>
 							</div>
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ numberWithCommas(10000000) }}</h3>
+									<h3>{{ numberWithCommas(globekitCountrySelected.active) }}</h3>
 								</div>
 								<div class="loan-label">
-									<h5>active<br>loans</h5>
+									<h5>active <br>loans</h5>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="row header__cta-button">
 						<fifteen-years-button to="/help/">
-							{{ `Lend in ${globekitCountrySelected.name}` }}
+							{{ globekitCountrySelected.active > 0 ?
+								`Lend in ${globekitCountrySelected.button}` : 'Find a borrower' }}
 						</fifteen-years-button>
 						<div class="prevnext">
 							<button
 								class="prevnext__btn prevnext__btn--prev"
-								@click="clickHandler"
+								@click="prevClickHandler"
 							>
 								<kv-icon
 									class="prevnext__btn-icon"
 									name="fat-chevron"
 									:from-sprite="true"
 								/>
-								<span class="name-nav__index">{{ "i" }}</span>
+								<span class="name-nav__index">{{ this.previousCountries.length.toString().padStart(2, "0") }}</span>
 							</button>
 
 							<span class="prevnext__indicator">
 								<kv-progress-bar
-									:value="'20'"
-									:max="'100'"
+									:value="`'${previousCountries.length}'`"
+									:max="`'${countryList.length}'`"
 									style="
 										--kv-progress-bar-foreground-color: black;
 										--kv-progress-bar-background-color: #C4C4C4;
@@ -91,9 +88,9 @@
 
 							<button
 								class="prevnext__btn prevnext__btn--next"
-								@click="clickHandler"
+								@click="nextClickHandler"
 							>
-								<span class="name-nav__index">{{ "k" }}</span>
+								<span class="name-nav__index">{{ this.countryList.length.toString().padStart(2, "0") }}</span>
 								<kv-icon
 									class="prevnext__btn-icon"
 									name="fat-chevron"
@@ -118,6 +115,10 @@
 				</div>
 			</div>
 		</div>
+		<fifteen-years-globe
+			ref="globe"
+			@selectcountry="onCountrySelect"
+		/>
 	</div>
 </template>
 
@@ -133,6 +134,7 @@ import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
 import FifteenYearsGlobe from './15YearsGlobe';
+import geojson from '../../assets/data/components/15-years/geojson.json';
 
 const countryQuery = gql`query featuredCountry {
 	lend {
@@ -159,6 +161,15 @@ export default {
 		KvProgressBar
 	},
 	data() {
+		const countryList = geojson.features.map(feature => {
+			const active = Math.floor(feature.properties.total * Math.random() * 0.01);
+			return { ...feature.properties, active };
+		});
+		const countries = countryList.reduce((accumulator, currentValue) => {
+			accumulator[currentValue.iso2] = currentValue;
+			return accumulator;
+		}, {});
+
 		return {
 			mainTextSubtitle: 'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.',
 			buttonCtaText: 'Lend now',
@@ -186,19 +197,63 @@ export default {
 				},
 			],
 			isCountrySelected: false,
-			globekitCountrySelected: {}
+			globekitCountrySelected: {},
+			countryList,
+			countries,
+			previousCountries: [],
 		};
 	},
+	mounted() {
+		console.log(geojson);
+	},
 	methods: {
-		onCountrySelect(event) {
-			console.log('!!!', event);
-
-			if (event === null) {
+		onCountrySelect(selection) {
+			if (selection === null) {
 				this.isCountrySelected = false;
 				this.globekitCountrySelected = {};
+				this.previousCountries = [];
 			} else {
+				const country = this.countries[selection.iso2];
+				if (this.isCountrySelected) {
+					const prevIndex = this.previousCountries.indexOf(country);
+					if (prevIndex !== -1) {
+						this.previousCountries = this.previousCountries.slice(0, prevIndex);
+					}
+					this.previousCountries.push(country);
+				} else {
+					this.previousCountries = [country];
+				}
 				this.isCountrySelected = true;
-				this.globekitCountrySelected = event;
+				this.globekitCountrySelected = country;
+			}
+		},
+		nextClickHandler() {
+			if (this.previousCountries.length !== this.countryList.length) {
+				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
+				const country = this.countries[c.iso2];
+				console.log(c, country);
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+				this.previousCountries.push(country);
+			} else {
+				const country = this.previousCountries[0];
+				this.previousCountries = [country];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+			}
+		},
+		prevClickHandler() {
+			if (this.previousCountries.length > 1) {
+				this.previousCountries.pop();
+				const country = this.previousCountries[this.previousCountries.length - 1];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+			} else {
+				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
+				const country = this.countries[c.iso2];
+				this.globekitCountrySelected = country;
+				this.$refs.globe.selectCountry(country);
+				this.previousCountries = [country];
 			}
 		},
 		clickHandler(event) {
@@ -250,39 +305,43 @@ export default {
 		display: flex;
 		flex: 1;
 		flex-direction: row;
-		/* pointer-events: none; */
-		max-width: 40vw;
+		// max-width: 40vw;
+		max-width: none;
+
+		@include breakpoint(large) {
+			max-width: 72rem;
+			width: 72rem;
+			margin: 0 auto;
+		}
 	}
 
-	&__main-section-row {
+	.header__main-section-row {
 		padding-top: rem-calc(96);
-		padding-left: rem-calc(16);
+		padding-left: 0;
 		margin: 0;
 		min-height: rem-calc(340px);
+		max-width: none;
 
 		@include breakpoint(large) {
 			padding-top: rem-calc(64);
-			padding-left: rem-calc(64);
+			padding-left: 0;
 		}
 
 		@include breakpoint(xxlarge) {
 			padding-top: rem-calc(64);
-			padding-left: rem-calc(128);
+			padding-left: 0;
 		}
 	}
 
 	&__text {
-		max-width: 35vw;
-	}
-
-	&__text > * {
-		pointer-events: painted;
+		@include breakpoint(xxlarge) {
+			max-width: 35vw;
+		}
 	}
 
 	&__cards-section {
 		position: relative;
 		margin-top: auto;
-		pointer-events: none;
 
 		@include breakpoint(small) {
 			background-color: $mint;
@@ -296,7 +355,7 @@ export default {
 			margin: 0;
 			z-index: 1;
 			padding-top: 0;
-			padding-left: rem-calc(64);
+			padding-left: 0;
 		}
 
 		@include breakpoint(xxlarge) {
@@ -305,9 +364,8 @@ export default {
 		}
 
 		.row {
-			pointer-events: painted;
-			max-width: 95%;
-			width: 95%;
+			// max-width: 95%;
+			// width: 95%;
 
 			@include breakpoint(large) {
 				max-width: 225px;
@@ -377,12 +435,25 @@ export default {
 	}
 
 	.fifteen-yr-button {
+		width: 100%;
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
 		transition:
 			background-color 0.1s ease-out,
 			color 0.1s ease-out,
 			border-color 0.1s ease-out;
+
+		@include breakpoint(large) {
+			width: auto;
+		}
+	}
+
+	.country_cta {
+		.fifteen-yr-button {
+			padding: rem-calc(14) rem-calc(10);
+			width: 203px;
+			text-align: center;
+		}
 	}
 }
 
