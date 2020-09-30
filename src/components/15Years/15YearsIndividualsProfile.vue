@@ -379,6 +379,14 @@ export default {
 		}
 	}
 
+	&__body {
+		&::v-deep {
+			a {
+				color: $mint;
+			}
+		}
+	}
+
 	// &__cta {
 	// }
 
