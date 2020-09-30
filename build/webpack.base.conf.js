@@ -155,6 +155,8 @@ module.exports = {
 			{
 				test: /assets\/wasm\//,
 				loader: 'file-loader',
+				// This prevents webpack from trying to load these as modules, which
+				// avoids the "Module parse failed: magic header not detected" error
 				type: 'javascript/auto',
 				options: {
 					name: assetsPath('wasm/[name].[hash:7].[ext]'),
