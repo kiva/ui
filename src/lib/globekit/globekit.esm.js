@@ -12632,8 +12632,6 @@ var hammerMin = createCommonjsModule(function (module) {
   }(window, document, "Hammer");
 });
 
-//TODO: Refactor this
-//TODO: Ambient movement
 var MovementModel = /*#__PURE__*/function () {
   function MovementModel() {
     var _this = this;
@@ -12718,9 +12716,10 @@ var MovementModel = /*#__PURE__*/function () {
         // TODO: this sucks and is a hack. This basically increases the size of the sphere
         // that the input is acting on. This linearaly modifies the speed to feel "right"
         var scale = 6.0;
-        var t = [event.deltaY * scale, event.deltaX * scale];
+        var t = [event.deltaY / devicePixelRatio * scale, event.deltaX / devicePixelRatio * scale];
 
-        var d = _this._rotForDelta([_this.panStart[0] - t[0], _this.panStart[1] - t[1]]);
+        var d = _this._rotForDelta([_this.panStart[0] - t[0], _this.panStart[1] - t[1]]); // console.log(d);
+
 
         _this.rotTarget = _this._rotBounded([_this.rotStart[0] + d[0], _this.rotStart[1] + d[1]]);
         _this.lastGestureChange = event.timeStamp;
@@ -12755,17 +12754,16 @@ var MovementModel = /*#__PURE__*/function () {
 
     _defineProperty(this, "_updateRot", function () {
       if (!_this.interacting) {
-        var ambientPitchY = 0;
+        var ambientPitchY = 0; // if (this.hasAmbient) {
+        // this.ambientPitch = Math.min(this.ambientPitch + (1.0 / 120.0), 1);
 
-        if (_this.hasAmbient) {
-          _this.ambientPitch = Math.min(_this.ambientPitch + 1.0 / 120.0, 1);
-          ambientPitchY = Math.sin(_this.ambientPitchX) * (Math.PI / 2) * 0.5;
-          _this.ambientPitchX += 0.001 * _this.ambientPitchDir;
-        } else {
-          _this.ambientPitch = 0;
-          _this.ambientPitchX = 0;
-          ambientPitchY = 0;
-        }
+        ambientPitchY = Math.sin(_this.ambientPitchX) * (Math.PI / 2) * 0.5;
+        _this.ambientPitchX += 0.001 * _this.ambientPitchDir * _this.ambientPitch; // } else {
+        //   this.ambientPitch = 0;
+        //   this.ambientPitchX = 0;
+        //   ambientPitchY = 0;
+        // }
+        // console.log(this.ambientPitch);
 
         _this.rotTarget = [_this.rotTarget[0] * (1 - _this.ambientPitch) + ambientPitchY * _this.ambientPitch, _this.rotTarget[1]];
         var targetBounded = [Math.max(Math.min(_this.rotTarget[0], _this.settings.CAM_PITCH_SPRING_MAX), _this.settings.CAM_PITCH_SPRING_MIN), _this.rotTarget[1]];
@@ -12774,8 +12772,9 @@ var MovementModel = /*#__PURE__*/function () {
         _this.rotVelocity = [_this.rotVelocity[0] * _this.settings.FRICTION, _this.rotVelocity[1] * _this.settings.FRICTION];
         var camP = _this.zCurrent / _this.settings.CAM_Z_MAX;
 
-        if (_this.hasAmbient) {
-          _this.ambientYaw = Math.min(_this.ambientYaw + _this.settings.YAW_MIN_VELOCITY / 120.0, _this.settings.YAW_MIN_VELOCITY);
+        if (_this.hasAmbient && _this.ambientYaw === 0 && !_this.ambientTween) {
+          // this.ambientYaw = Math.min(this.ambientYaw + (this.settings.YAW_MIN_VELOCITY / 120.0), this.settings.YAW_MIN_VELOCITY);
+          _this.setAmbientAnimated(true, 2500);
         }
 
         var yawMin = _this.ambientYaw * (camP * camP);
@@ -12786,6 +12785,12 @@ var MovementModel = /*#__PURE__*/function () {
       } else {
         _this.ambientYaw = 0;
         _this.ambientPitch = 0;
+
+        if (_this.ambientTween) {
+          _this.ambientTween.stop();
+
+          _this.ambientTween = null;
+        }
       }
 
       var rotDelta = [_this.rotTarget[0] - _this.rotCurrent[0], _this.rotTarget[1] - _this.rotCurrent[1]];
@@ -12821,8 +12826,74 @@ var MovementModel = /*#__PURE__*/function () {
       return (_this.zCurrent - 1.0) * _this.settings.EARTH_RADIUS;
     });
 
+    _defineProperty(this, "setAmbient", function (ambient) {
+      if (_this.ambientTween) {
+        _this.ambientTween.stop();
+
+        _this.ambientTween = null;
+      }
+
+      _this.hasAmbient = ambient;
+
+      if (ambient) {
+        _this.ambientYaw = 1 * _this.settings.YAW_MIN_VELOCITY;
+        _this.ambientPitch = 1;
+      } else {
+        _this.ambientYaw = 0;
+        _this.ambientPitch = 0;
+      }
+
+      var pitchNorm = _this.rotTarget[0] / (Math.PI / 2) / 0.5;
+
+      if (Math.abs(pitchNorm) < 1) {
+        _this.ambientPitchX = Math.asin(pitchNorm);
+      } else {
+        _this.ambientPitchX = Math.PI / 2 * (pitchNorm / Math.abs(pitchNorm));
+      }
+    });
+
+    _defineProperty(this, "setAmbientAnimated", function (ambient, duration) {
+      _this.hasAmbient = ambient;
+      var startValue = ambient ? 0 : 1;
+      var endValue = ambient ? 1 : 0;
+
+      if (_this.ambientTween) {
+        startValue = _this.ambientTween.currentValue();
+
+        _this.ambientTween.stop();
+      }
+
+      var d = (duration || 250) * Math.abs(endValue - startValue);
+
+      if (d === 0) {
+        _this.setAmbient(ambient);
+
+        return;
+      }
+
+      var pitchNorm = _this.rotTarget[0] / (Math.PI / 2) / 0.5;
+
+      if (Math.abs(pitchNorm) < 1) {
+        _this.ambientPitchX = Math.asin(pitchNorm);
+      } else {
+        _this.ambientPitchX = Math.PI / 2 * (pitchNorm / Math.abs(pitchNorm));
+      }
+
+      _this.ambientTween = new Tween(startValue, endValue, d, {
+        onUpdate: function onUpdate(value) {
+          _this.ambientYaw = value * _this.settings.YAW_MIN_VELOCITY;
+          _this.ambientPitch = value;
+        },
+        onComplete: function onComplete(didFinish) {
+          if (didFinish) {
+            _this.ambientTween = null;
+          }
+        }
+      });
+    });
+
     _defineProperty(this, "reset", function () {
-      _this.zStart = _this.zBounded(_this.settings.CAM_Z_INI);
+      _this.zStart = _this._zBounded(_this.settings.CAM_Z_INI);
       _this.zCurrent = _this.zStart;
       _this.zTarget = _this.zStart;
       _this.rotStart = [0.0, 0.0];
@@ -12927,6 +12998,7 @@ var MovementModel = /*#__PURE__*/function () {
     this.ambientPitch = 0.0;
     this.ambientPitchX = 0.0;
     this.ambientPitchDir = -1.0;
+    this.ambientTween = null;
     this.interacting = false;
 
     this.getInteractionState = function () {
@@ -12966,7 +13038,7 @@ var MovementModel = /*#__PURE__*/function () {
     value: function _onPanStart(event) {
       this.interacting = true;
       this.rotStart = this.rotCurrent;
-      this.panStart = [event.deltaX, event.deltaY];
+      this.panStart = [event.deltaX / devicePixelRatio, event.deltaY / devicePixelRatio];
       this.rotVelocity = [0, 0]; // Kill Velocity
     }
   }, {
@@ -12983,17 +13055,7 @@ var MovementModel = /*#__PURE__*/function () {
     key: "camPitch",
     get: function get() {
       return this.rotCurrent[0];
-    } // var camFov: Float {
-    //     didSet { // Assumption: sphere has a radius of 1
-    //         zFullWidth = frustumDist(height: 2.0 * (1.0 / camAspect), fov: camFov)
-    //     }
-    // }
-    // var camAspect: Float {
-    //     didSet {
-    //         zFullWidth = frustumDist(height: 2.0 * (1.0 / camAspect), fov: camFov)
-    //     }
-    // }
-
+    }
   }]);
 
   return MovementModel;
@@ -13106,10 +13168,20 @@ var InteractionController = /*#__PURE__*/function () {
       if (!_this.isOverTarget(event.center.x, event.center.y)) return;
 
       _this.movementModel._onPanStart(event);
+
+      if (_this.onPan) {
+        _this.onPan(event);
+      }
     });
 
     _defineProperty(this, "onPanContinue", function (event) {
-      _this.movementModel._onPanContinue(event);
+      if (event.center.x !== 0 && event.center.y !== 0) {
+        _this.movementModel._onPanContinue(event);
+
+        if (_this.onPan) {
+          _this.onPan(event);
+        }
+      }
     });
 
     _defineProperty(this, "onPanEnd", function (event) {
@@ -13180,6 +13252,122 @@ var InteractionController = /*#__PURE__*/function () {
 
   return InteractionController;
 }();
+
+var CubicBezier = function CubicBezier() {
+  _classCallCheck(this, CubicBezier);
+};
+
+CubicBezier.create = function (p1x, p1y, p2x, p2y) {
+  // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
+  var cx = 3.0 * p1x;
+  var bx = 3.0 * (p2x - p1x) - cx;
+  var ax = 1.0 - cx - bx;
+  var cy = 3.0 * p1y;
+  var by = 3.0 * (p2y - p1y) - cy;
+  var ay = 1.0 - cy - by;
+
+  var sampleCurveX = function sampleCurveX(t) {
+    return ((ax * t + bx) * t + cx) * t;
+  };
+
+  var sampleCurveY = function sampleCurveY(t) {
+    return ((ay * t + by) * t + cy) * t;
+  };
+
+  var sampleCurveDerivativeX = function sampleCurveDerivativeX(t) {
+    return (3.0 * ax * t + 2.0 * bx) * t + cx;
+  };
+
+  var solveCurveX = function solveCurveX(x, epsilon) {
+    var t0;
+    var t1;
+    var t2;
+    var x2;
+    var d2; // First try a few iterations of Newton's method -- normally very fast.
+
+    t2 = x;
+
+    for (var i = 0; i < 8; i++) {
+      x2 = sampleCurveX(t2) - x;
+
+      if (Math.abs(x2) < epsilon) {
+        return t2;
+      }
+
+      d2 = sampleCurveDerivativeX(t2);
+
+      if (Math.abs(d2) < 1e-6) {
+        break;
+      }
+
+      t2 = t2 - x2 / d2;
+    } // Fall back to the bisection method for reliability.
+
+
+    t0 = 0.0;
+    t1 = 1.0;
+    t2 = x;
+
+    if (t2 < t0) {
+      return t0;
+    }
+
+    if (t2 > t1) {
+      return t1;
+    }
+
+    while (t0 < t1) {
+      x2 = sampleCurveX(t2);
+
+      if (Math.abs(x2 - x) < epsilon) {
+        return t2;
+      }
+
+      if (x > x2) {
+        t0 = t2;
+      } else {
+        t1 = t2;
+      }
+
+      t2 = (t1 - t0) * 0.5 + t0;
+    } // Failure.
+
+
+    return t2;
+  };
+
+  return function (x) {
+    return sampleCurveY(solveCurveX(x, 1e-9));
+  };
+};
+
+const asin = Math.asin;
+const cos = Math.cos;
+const sin = Math.sin;
+const sqrt = Math.sqrt;
+const PI = Math.PI;
+
+// equatorial mean radius of Earth (in meters)
+const R = 6378137;
+
+function squared (x) { return x * x }
+function toRad (x) { return x * PI / 180.0 }
+function hav (x) {
+  return squared(sin(x / 2))
+}
+
+// hav(theta) = hav(bLat - aLat) + cos(aLat) * cos(bLat) * hav(bLon - aLon)
+function haversineDistance (a, b) {
+  const aLat = toRad(Array.isArray(a) ? a[1] : a.latitude || a.lat);
+  const bLat = toRad(Array.isArray(b) ? b[1] : b.latitude || b.lat);
+  const aLng = toRad(Array.isArray(a) ? a[0] : a.longitude || a.lng || a.lon);
+  const bLng = toRad(Array.isArray(b) ? b[0] : b.longitude || b.lng || b.lon);
+
+  const ht = hav(bLat - aLat) + cos(aLat) * cos(bLat) * hav(bLng - aLng);
+  return 2 * R * asin(sqrt(ht))
+}
+
+var haversineDistance_1 = haversineDistance;
 
 /**
  * @class
@@ -13490,6 +13678,83 @@ var GlobeKitView = /*#__PURE__*/function () {
       if (alt !== undefined) _this._alt = alt;
     });
 
+    _defineProperty(this, "animateToLatLon", function (lat, lon, duration) {
+      _this.interactionController.movementModel.interacting = true;
+
+      _this.interactionController.movementModel.setAmbientAnimated(false, 100);
+
+      if (_this.currentTween) {
+        _this.currentTween.stop();
+      }
+
+      var startLat = _this.interactionController.movementModel.rotTarget[0] / (-Math.PI / 180.0);
+      var startLon = _this.interactionController.movementModel.rotTarget[1] / (Math.PI / 180.0);
+
+      while (startLon < -180) {
+        startLon += 360;
+      }
+
+      while (startLon > 180) {
+        startLon -= 360;
+      }
+
+      var distance = haversineDistance_1({
+        lat: startLat,
+        lon: startLon
+      }, {
+        lat: lat,
+        lon: lon
+      });
+      var baseDuration = Math.max(Math.round(distance / 10000), 350);
+      var endLat = lat;
+      var endLon = lon;
+      var latDelta = endLat - startLat;
+      var lonDelta = endLon - startLon;
+      var lonDelta0 = endLon + 360 - startLon;
+      var lonDelta1 = endLon - 360 - startLon;
+
+      if (Math.abs(lonDelta0) < Math.abs(lonDelta)) {
+        endLon = lon + 360;
+        lonDelta = lonDelta0;
+      }
+
+      if (Math.abs(lonDelta1) < Math.abs(lonDelta)) {
+        endLon = lon - 360;
+        lonDelta = lonDelta1;
+      }
+
+      var d = duration || baseDuration;
+      var hardEaseDuration = 450;
+      var softEaseDuration = 350;
+      var hardEaseX = 0.85;
+      var softEaseX = 0.55;
+      var deltaDuration = Math.min(Math.max(d - softEaseDuration, 0), 1) / (hardEaseDuration - softEaseDuration);
+      var eX = softEaseX + (hardEaseX - softEaseX) * deltaDuration;
+      var ease = CubicBezier.create(0.315, 0.015, 1 - eX, 1);
+      _this.currentTween = new Tween(0, 1, d, {
+        onUpdate: function onUpdate(value) {
+          var v = ease(value);
+          var lonV = startLon + lonDelta * v;
+          var latV = startLat + latDelta * v;
+
+          while (lonV < -180) {
+            lonV += 360;
+          }
+
+          while (lonV > 180) {
+            lonV -= 360;
+          }
+
+          _this.setAbsMovementModelTo(latV, lonV);
+        },
+        onComplete: function onComplete(didFinish) {
+          if (didFinish) {
+            _this.currentTween = null;
+          }
+        }
+      });
+    });
+
     _defineProperty(this, "setMovementModelTo", function (lat, lon, alt) {
       _this.interactionController.movementModel.rotTarget[0] = lat * (-Math.PI / 180.0);
       _this.interactionController.movementModel.rotTarget[1] = lon * (Math.PI / 180.0);
@@ -13599,8 +13864,8 @@ var GlobeKitView = /*#__PURE__*/function () {
       _this.drawqueue.forEach(function (el) {
         if (el.isInteractive && el.isSelectable) {
           var drawableEvent = {};
-          drawableEvent.obj = el;
-          console.log(el.hitTest(ray)); // This returns information about where the raycast hit.
+          drawableEvent.obj = el; // console.log(el.hitTest(ray));
+          // This returns information about where the raycast hit.
 
           var collision = el.rayCastFrom(ray);
 
@@ -13848,7 +14113,9 @@ var DataStore = /*#__PURE__*/function () {
       var nearest = _this.kdtree.nearest({
         lat: lat,
         lon: lon
-      }, maxCount, maxDistance);
+      }, maxCount, maxDistance).sort(function (a, b) {
+        return a[1] - b[1];
+      });
 
       if (nearest[0] !== undefined) {
         return nearest;

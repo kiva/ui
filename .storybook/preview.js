@@ -19,13 +19,27 @@ Vue.prototype.$appConfig = config.app;
 
 // add custom viewports
 const customViewports = {
-  largeDesktop: {
-    name: 'Large desktop',
-    styles: {
-      width: '1540px',
-      height: '1000px',
-    },
-  },
+	mediumBreakpoint: {
+		name: 'Medium breakpoint',
+		styles: {
+			width: '834px',
+			height: '720px',
+		},
+	},
+	largeBreakpoint: {
+		name: 'Large breakpoint',
+		styles: {
+			width: '1440px',
+			height: '900px',
+		},
+	},
+	oversizeDesktop: {
+		name: 'Oversize desktop',
+		styles: {
+			width: '1540px',
+			height: '1000px',
+		},
+	},
 };
 
 

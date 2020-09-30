@@ -40,7 +40,7 @@ export default {
 	computed: {
 		cssProps() {
 			return {
-				'--image-tilt': `rotate(${this.imgTilt}deg)`,
+				'--image-tilt': `rotate3d(0,0,1,${this.imgTilt}deg)`,
 			};
 		}
 	}
@@ -66,15 +66,21 @@ a {
 	position: relative;
 	padding: rem-calc(24) rem-calc(16);
 	text-overflow: ellipsis;
+	text-decoration: none;
 	overflow: hidden;
 	display: block;
 
 	@include breakpoint(large) {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	@include breakpoint(xxlarge) {
 		padding: rem-calc(24) 0;
 	}
 
 	img {
-		transition: transform 0.2s cubic-bezier(0.24, 0.015, 0.25, 1.355);
+		transition: transform 1s cubic-bezier(0.05, 2.5, 0.52, 0.5);
 		transform: var(--image-tilt);
 	}
 
@@ -97,7 +103,7 @@ a {
 		}
 
 		img {
-			transform: rotate(0deg);
+			transform: rotate3d(0, 0, 0.1, 1deg);
 		}
 	}
 }
