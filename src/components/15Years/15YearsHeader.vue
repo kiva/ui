@@ -438,7 +438,7 @@ export default {
 		@include breakpoint(small) {
 			background-color: $mint;
 			margin-top: calc(100vw - #{rem-calc(72)});
-			z-index: -1;
+			z-index: 0;
 			padding-top: rem-calc(32);
 		}
 
