@@ -176,6 +176,7 @@ export default {
 	height: calc(100vw - 48px);
 	left: calc(50% - 50vw + 24px);
 	top: 432px;
+	z-index: 3;
 
 	@include breakpoint(large) {
 		width: 610px;

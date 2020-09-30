@@ -320,6 +320,10 @@ export default {
 }
 
 .strategic-partners {
+	&__list {
+		list-style: none;
+	}
+
 	&__total-impact {
 		background-color: $twilight;
 		padding: rem-calc(24);
