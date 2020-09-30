@@ -70,9 +70,13 @@ export default {
 	padding: rem-calc(16) rem-calc(36);
 	white-space: normal;
 	text-align: center;
+	transition:
+		background-color 0.3s ease-out,
+		color 0.3s ease-out,
+		border-color 0.3s ease-out;
 
 	@include breakpoint('large') {
-		padding: rem-calc(20) rem-calc(48);
+		padding: rem-calc(18) rem-calc(48);
 	}
 
 	&:hover {
