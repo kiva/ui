@@ -153,7 +153,7 @@ export default {
 	},
 	methods: {
 		shrinkAppeal() {
-			cookieStore.set('appeal_banner_15_shrunk', true);
+			cookieStore.set('appeal_banner_15_shrunk', true, { path: '/' });
 			this.open = false;
 		},
 		truncateStringToNumberOfWords(string, numberOfWords) {
