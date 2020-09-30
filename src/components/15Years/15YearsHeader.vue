@@ -481,7 +481,6 @@ export default {
 		@include breakpoint(large) {
 			position: absolute;
 			bottom: 0;
-			background-color: transparent;
 			padding-top: 0;
 			margin-top: rem-calc(48);
 			padding-left: rem-calc(32);
@@ -522,6 +521,7 @@ export default {
 		@include breakpoint(xxlarge) {
 			max-width: 99%;
 			padding: 0;
+
 			&:hover {
 				background: transparent;
 			}
