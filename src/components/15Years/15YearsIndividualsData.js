@@ -15,7 +15,7 @@ export default [
 		videoId: 462763475,
 		cta1: 'Lend to a South American borrower',
 		cta2: 'Lend monthly to U.S. small businesses',
-		link1: 'S. Am filtered loans', // TODO: find url.
+		link1: '/lend?country=bo,br,co,ec,py,pe', // all countries in S. America
 		link2: 'https://store.kiva.org',
 	},
 	{
@@ -74,8 +74,8 @@ export default [
 		videoId: 462777675,
 		cta1: 'Support groups like Apollo Agriculture',
 		cta2: 'Support groups like Apollo Agriculture',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
+		link2: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
 	},
 	{
 		name: 'David',
@@ -117,8 +117,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to African borrowers',
 		cta2: 'Lend to African borrowers',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
+		link2: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
 	},
 	{
 		name: 'WWBIC',
@@ -216,7 +216,7 @@ export default [
 		videoId: null,
 		cta1: 'Lend like Drew and Alli',
 		cta2: 'Lend monthly',
-		link1: '/lend-by-category/kiva-u-s',
+		link1: '/lend-by-category',
 		link2: '/monthlygood',
 	},
 	{
@@ -248,8 +248,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to African borrowers',
 		cta2: 'Lend to African borrowers',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
+		link2: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
 	},
 	{
 		name: 'Eduardo',
@@ -273,8 +273,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to European borrowers',
 		cta2: 'Lend to European borrowers',
-		link1: 'Europe filtered loans', // TODO: find url.
-		link2: 'Europe filtered loans', // TODO: find url.
+		link1: '/lend?country=al,am,ge,xk,md', // All countries in Eastern Europe.
+		link2: '/lend?country=al,am,ge,xk,md', // All countries in Eastern Europe.
 	},
 	{
 		name: 'Lev',
@@ -317,8 +317,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to refugees',
 		cta2: 'Lend monthly to refugees',
-		link1: '/lend-by-category/education',
-		link2: '/monthlygood?category=education',
+		link1: '/lend-by-category/refugees-and-i-d-ps',
+		link2: '/monthlygood?category=refugees',
 	},
 	{
 		name: 'Lihn',
@@ -363,8 +363,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to a borrower like Nilda',
 		cta2: 'Lend to a borrower like Nilda',
-		link1: 'Asia filtered loans', // TODO: find url.
-		link2: 'Asia filtered loans', // TODO: find url.
+		link1: '/lend?country=bd,bt,kh,in,id,kg,la,mm,np,pk,ph,tj,th,vn', // All countries in Asia.
+		link2: '/lend?country=bd,bt,kh,in,id,kg,la,mm,np,pk,ph,tj,th,vn', // All countries in Asia.
 	},
 	{
 		name: 'Busie',
@@ -399,7 +399,7 @@ export default [
 		videoId: null,
 		cta1: 'Lend to African borrowers',
 		cta2: 'Lend to African borrowers',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
+		link2: '/lend?country=bf,cm,cd,eg,gh,ke,ls,lr,mg,mw,ml,mz,na,ng,rw,sn,sl,za,ss,tz,tg,ug,zm,zw', // all countries in Africa
 	},
 ];
