@@ -16,6 +16,7 @@ import {
 	CalloutManager,
 	CalloutDefinition
 } from '@/lib/globekit/globekit.esm';
+import { gsap } from 'gsap';
 import DotCallout from './15YearsGlobeDotCallout';
 import PinCallout from './15YearsGlobePinCallout';
 import geojson from '../../assets/data/components/15-years/geojson.json';
@@ -69,8 +70,20 @@ export default {
 			})
 			.then(() => {
 				this.gkview.addDrawable(this.lowpoly, () => {
+					const obj = { scale: 0.001 };
+					this.lowpoly.scale = [obj.scale, obj.scale, obj.scale];
+					gsap.to(obj, 0.5, {
+						scale: 1,
+						delay: 0.05,
+						ease: 'power3.out',
+						onUpdate: () => {
+							this.lowpoly.scale = [obj.scale, obj.scale, obj.scale];
+						},
+						onComplete: () => {
+							this.calloutManager.replaceCallouts(this.callouts);
+						}
+					});
 					this.gkview.startDrawing();
-					this.calloutManager.replaceCallouts(this.callouts);
 				});
 			});
 
@@ -88,11 +101,13 @@ export default {
 				callout.altitude = 0.035;
 				this.calloutManager.replaceCallouts([...this.callouts, callout]);
 				this.$emit('selectcountry', result.properties);
+				this.currentCallout = callout;
 			} else {
 				this.calloutManager.replaceCallouts(this.callouts);
 				this.$emit('selectcountry', null);
 				this.gkview.interactionController.movementModel.setAmbientAnimated(true, 1000);
 				this.gkview.interactionController.movementModel.interacting = false;
+				this.currentCallout = null;
 			}
 		};
 
@@ -100,9 +115,12 @@ export default {
 			this.$emit('pan', null);
 		};
 
-		this.calloutManager.onAutoRemove = () => {
-			this.$emit('selectcountry', null);
-			this.gkview.interactionController.movementModel.setAmbient(true);
+		this.calloutManager.onAutoRemove = callout => {
+			if (callout.def === this.currentCallout) {
+				this.$emit('selectcountry', null);
+				this.gkview.interactionController.movementModel.setAmbient(true);
+				this.currentCallout = null;
+			}
 		};
 	},
 	methods: {
@@ -112,7 +130,7 @@ export default {
 				if (this.automatedSelection === country) {
 					this.automatedSelection = null;
 				}
-			}, 1000);
+			}, 2000);
 
 			const { centroid } = country;
 			const offset = window.innerWidth < 681 ? -20 : 0;
@@ -120,6 +138,7 @@ export default {
 			const callout = new CalloutDefinition(centroid.lat, centroid.lng, PinCallout, country);
 			callout.altitude = 0.035;
 			this.calloutManager.replaceCallouts([...this.callouts, callout]);
+			this.currentCallout = callout;
 		},
 		nextClosest(country, exclude) {
 			const excludeCodes = exclude.map(c => c.iso3);
@@ -147,7 +166,7 @@ export default {
 	width: calc(100vw - 48px);
 	height: calc(100vw - 48px);
 	left: calc(50% - 50vw + 24px);
-	top: 383px;
+	top: 432px;
 
 	@include breakpoint(large) {
 		width: 610px;
@@ -202,6 +221,7 @@ export default {
 }
 
 .dot-callout {
+	transition: opacity 0.25s linear;
 	background: white;
 	width: calc(4 / 320 * 100vw);
 	height: calc(4 / 320 * 100vw);
@@ -212,6 +232,10 @@ export default {
 		width: 7px;
 		height: 7px;
 	}
+}
+
+.dot-callout.hidden {
+	opacity: 0;
 }
 
 @keyframes pin-wiggle {

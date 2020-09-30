@@ -4,8 +4,9 @@ import {
 
 class DotCallout extends Callout {
 	createElement() {
+		this.firstRun = true;
 		const div = document.createElement('div');
-		div.className = 'callout dot-callout';
+		div.className = 'callout dot-callout hidden';
 		div.dataset.code = this.definition.data.iso3;
 		return div;
 	}
@@ -18,6 +19,12 @@ class DotCallout extends Callout {
 		if (position.world.similarityToCameraVector < 0.75) {
 			const scale = Math.max((position.world.similarityToCameraVector - 0.5) / (0.75 - 0.5), 0);
 			this.element.style.transform += ` scale(${scale}, ${scale})`;
+		}
+		if (this.firstRun) {
+			setTimeout(() => {
+				this.element.className = 'callout dot-callout';
+			}, 50);
+			this.firstRun = false;
 		}
 	}
 }

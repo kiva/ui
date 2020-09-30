@@ -13705,7 +13705,7 @@ var GlobeKitView = /*#__PURE__*/function () {
         lat: lat,
         lon: lon
       });
-      var baseDuration = Math.max(distance / 10000, 350);
+      var baseDuration = Math.max(Math.round(distance / 10000), 350);
       var endLat = lat;
       var endLon = lon;
       var latDelta = endLat - startLat;
@@ -13714,13 +13714,11 @@ var GlobeKitView = /*#__PURE__*/function () {
       var lonDelta1 = endLon - 360 - startLon;
 
       if (Math.abs(lonDelta0) < Math.abs(lonDelta)) {
-        console.log(lonDelta, lonDelta0, lonDelta1);
         endLon = lon + 360;
         lonDelta = lonDelta0;
       }
 
       if (Math.abs(lonDelta1) < Math.abs(lonDelta)) {
-        console.log(lonDelta, lonDelta0, lonDelta1);
         endLon = lon - 360;
         lonDelta = lonDelta1;
       }
@@ -13730,10 +13728,10 @@ var GlobeKitView = /*#__PURE__*/function () {
       var softEaseDuration = 350;
       var hardEaseX = 0.85;
       var softEaseX = 0.55;
-      var deltaDuration = Math.max(d - softEaseDuration, 0) / (hardEaseDuration - softEaseDuration);
+      var deltaDuration = Math.min(Math.max(d - softEaseDuration, 0), 1) / (hardEaseDuration - softEaseDuration);
       var eX = softEaseX + (hardEaseX - softEaseX) * deltaDuration;
       var ease = CubicBezier.create(0.315, 0.015, 1 - eX, 1);
-      _this.currentTween = new Tween(0, 1, duration || baseDuration, {
+      _this.currentTween = new Tween(0, 1, d, {
         onUpdate: function onUpdate(value) {
           var v = ease(value);
           var lonV = startLon + lonDelta * v;
@@ -13751,7 +13749,7 @@ var GlobeKitView = /*#__PURE__*/function () {
         },
         onComplete: function onComplete(didFinish) {
           if (didFinish) {
-            _this.tween = null;
+            _this.currentTween = null;
           }
         }
       });

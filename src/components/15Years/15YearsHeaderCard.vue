@@ -103,7 +103,7 @@ a {
 		}
 
 		img {
-			transform: rotate3d(0,0,0.1,1deg);
+			transform: rotate3d(0, 0, 0.1, 1deg);
 		}
 	}
 }

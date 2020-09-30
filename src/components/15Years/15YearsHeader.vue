@@ -20,7 +20,7 @@
 					<div class="header__text columns">
 						<div class="row">
 							<div>
-								<h2 class="country-name">
+								<h2 class="country-name truncate-overflow">
 									{{ globekitCountrySelected.name }}
 								</h2>
 							</div>
@@ -78,8 +78,8 @@
 
 							<span class="prevnext__indicator">
 								<kv-progress-bar
-									:value="`'${previousCountries.length}'`"
-									:max="`'${countryList.length}'`"
+									:value="previousCountries.length.toString()"
+									:max="countryList.length.toString()"
 									style="
 										min-width: 50px;
 
@@ -177,7 +177,7 @@ export default {
 
 		return {
 			mainTextSubtitle: 'Join us in celebrating 15 years of impact by supporting 15,000 people around the world.',
-			buttonCtaText: 'Lend now',
+			buttonCtaText: 'Find a borrower',
 			cardData: [
 				{
 					title: '15 Years of Impact',
@@ -191,7 +191,7 @@ export default {
 					subtitle: 'The people who make it happen',
 					href: '#world-of-kiva',
 					imgSrc: TShirt,
-					imgTilt: 10,
+					imgTilt: -10,
 				},
 				{
 					title: 'Strategic Partners',
@@ -238,7 +238,6 @@ export default {
 			if (this.previousCountries.length !== this.countryList.length) {
 				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
 				const country = this.countries[c.iso2];
-				console.log(c, country);
 				this.globekitCountrySelected = country;
 				this.$refs.globe.selectCountry(country);
 				this.previousCountries.push(country);
@@ -347,6 +346,7 @@ export default {
 		margin: 0;
 		min-height: rem-calc(340px);
 		max-width: none;
+		width: 100%;
 
 		@include breakpoint(large) {
 			padding-top: rem-calc(64);
@@ -357,6 +357,10 @@ export default {
 			padding-top: rem-calc(64);
 			padding-left: 0;
 		}
+	}
+
+	.country_cta {
+		width: 100%;
 	}
 
 	&__text {
@@ -412,6 +416,8 @@ export default {
 
 	&__cta-button {
 		margin-top: rem-calc(48);
+		padding-right: 0.625rem;
+		padding-left: 0.625rem;
 	}
 
 	&__card {
@@ -462,25 +468,29 @@ export default {
 	}
 
 	.fifteen-yr-button {
-		width: 100%;
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
 		transition:
 			background-color 0.1s ease-out,
 			color 0.1s ease-out,
 			border-color 0.1s ease-out;
-
-		@include breakpoint(large) {
-			width: auto;
-		}
 	}
 
 	.country_cta {
 		.fifteen-yr-button {
 			padding: rem-calc(14) rem-calc(10);
-			width: 203px;
+			width: 100%;
 			text-align: center;
+
+			@include breakpoint(large) {
+				width: 203px;
+			}
 		}
+	}
+
+	.row .row {
+		margin-left: 0;
+		margin-right: 0;
 	}
 }
 
@@ -520,7 +530,7 @@ export default {
 }
 
 .country-name {
-	margin-right: rem-calc(64);
+	--lh: 3.45rem;
 }
 
 .loan-number {
@@ -550,12 +560,31 @@ export default {
 	@include h5();
 
 	display: flex;
+	margin: 0 auto;
 	justify-content: middle;
 	align-items: center;
-	padding: 0 rem-calc(16);
+	padding: 24px rem-calc(16) 0;
+
+	@include breakpoint(large) {
+		margin: 0;
+		padding-top: 0;
+	}
 
 	&__indicator {
 		margin: 0 rem-calc(16);
+
+		progress {
+			height: 3px;
+		}
+
+		progress::-webkit-progress-bar {
+			border-radius: 1.5px;
+			background-color: #C4C4C4;
+		}
+		progress::-webkit-progress-value {
+			border-radius: 1.5px;
+			background-color: $twilight;
+		}
 	}
 
 	&__btn-text {
