@@ -40,7 +40,6 @@ export default {
 			}
 		}, () => {});
 		this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#000000', 0.0);
-		// this.gkview.renderer.clearColor = GKUtils.hexToRGBA('#ff0000', 1.0);
 		this.gkview.setMovementModelTo(0, 0, 3.4);
 		this.gkview.userDefinedSelection = () => {};
 		this.gkview.interactionController.movementModel.setAmbient(true);
@@ -95,6 +94,7 @@ export default {
 		this.datastore.addGeojson(geojson);
 
 		this.gkview.onTap = (screen, world) => {
+			// TODO: maybe - analytics event. Triggered when clicking on the globe.
 			if (!world) return;
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
@@ -116,9 +116,12 @@ export default {
 		};
 
 		this.gkview.interactionController.onPan = () => {
+			// TODO: maybe - analytics event. Triggered continuously when panning.
 			this.$emit('pan', null);
 		};
 
+		// fired when a pin is removed by going around edge of globe. probably not valuable
+		// to track in analytics
 		this.calloutManager.onAutoRemove = callout => {
 			if (callout === this.currentCallout) {
 				this.$emit('selectcountry', null);

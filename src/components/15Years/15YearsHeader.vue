@@ -20,7 +20,7 @@
 					<div class="header__text columns">
 						<div class="row">
 							<div>
-								<h2 class="country-name truncate-overflow">
+								<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
 									{{ globekitCountrySelected.name }}
 								</h2>
 							</div>
@@ -171,7 +171,8 @@ export default {
 	data() {
 		const countryList = geojson.features.map(feature => {
 			const active = Math.floor(feature.properties.total * Math.random() * 0.01);
-			return { ...feature.properties, active };
+			const nameClass = feature.properties.name.length > 12 ? 'long' : 'short';
+			return { ...feature.properties, active, nameClass };
 		});
 		const countries = countryList.reduce((accumulator, currentValue) => {
 			accumulator[currentValue.iso2] = currentValue;
@@ -216,12 +217,15 @@ export default {
 	},
 	methods: {
 		onCardClicked(id) {
+			// TODO: analytics handler for card click
 			const element = document.querySelector(id);
 			if (element) {
 				element.scrollIntoView({ behavior: 'smooth' });
 			}
 		},
 		onCountrySelect(selection) {
+			// TODO: maybe - callback from user clicking the globe. could include
+			// analytics here, or could be put in 15YearsGlobe
 			if (selection === null) {
 				this.isCountrySelected = false;
 				this.globekitCountrySelected = {};
@@ -243,7 +247,11 @@ export default {
 				this.queueAutoplay();
 			}
 		},
-		nextClickHandler() {
+		nextClickHandler(event) {
+			if (event) {
+				// TODO: analytics handler for clicking next button
+				// (autoplay function calls this method w/out event payload)
+			}
 			if (this.previousCountries.length !== this.countryList.length) {
 				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
 				const country = this.countries[c.iso2];
@@ -259,6 +267,7 @@ export default {
 			this.queueAutoplay();
 		},
 		prevClickHandler() {
+			// TODO: analytics handler for clicking the previous button
 			if (this.previousCountries.length > 1) {
 				this.previousCountries.pop();
 				const country = this.previousCountries[this.previousCountries.length - 1];
@@ -273,10 +282,10 @@ export default {
 			}
 			this.queueAutoplay();
 		},
-		clickHandler(event) {
-			console.log(event);
-		},
 		onGlobePan() {
+			// TODO: maybe - callback from user panning the globe. could include
+			// analytics here, or could be put in 15YearsGlobe. Will be fired continuously
+			// while interacting
 			if (this.isCountrySelected) {
 				this.queueAutoplay();
 			}
@@ -368,9 +377,9 @@ export default {
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
 		transition:
-			background-color 0.1s ease-out,
-			color 0.1s ease-out,
-			border-color 0.1s ease-out;
+			background-color 0.3s ease-out,
+			color 0.3s ease-out,
+			border-color 0.3s ease-out;
 	}
 
 	.country_cta {
@@ -426,7 +435,7 @@ export default {
 	&__card {
 		position: relative;
 		padding: rem-calc(32) rem-calc(16);
-		transition: background 0.125s linear;
+		transition: background 0.3s ease-out;
 
 		&:hover {
 			background: hsla(0, 0%, 100%, 0.8);
@@ -449,6 +458,8 @@ export default {
 
 	&__card-wrap {
 		@include breakpoint(xxlarge) {
+			transition: background 0.3s ease-out;
+
 			&:hover {
 				background: hsla(0, 0%, 100%, 0.8);
 			}
