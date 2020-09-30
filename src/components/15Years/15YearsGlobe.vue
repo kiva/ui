@@ -129,6 +129,11 @@ export default {
 			}
 		};
 	},
+	beforeDestroy() {
+		if (this.gkview) {
+			this.gkview.release();
+		}
+	},
 	methods: {
 		selectCountry(country) {
 			this.automatedSelection = country;
