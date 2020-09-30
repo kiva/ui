@@ -349,7 +349,10 @@ export default {
 		},
 		getCountryLink(country) {
 			const countryParam = `${country.region} > ${country.originalName}`;
-			return `/lend/filter?countries=${encodeURIComponent(countryParam)}`;
+			if (country.active > 0) {
+				return `/lend/filter?countries=${encodeURIComponent(countryParam)}`;
+			}
+			return '/lend-by-category';
 		}
 	},
 };
@@ -426,10 +429,6 @@ export default {
 	.fifteen-yr-button {
 		padding: rem-calc(14) rem-calc(50);
 		height: rem-calc(52);
-		transition:
-			background-color 0.3s ease-out,
-			color 0.3s ease-out,
-			border-color 0.3s ease-out;
 	}
 
 	.country_cta {
