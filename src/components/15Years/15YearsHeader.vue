@@ -40,7 +40,7 @@
 						<div class="columns">
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ numberWithCommas(globekitCountrySelected.total) }}</h3>
+									<h3>{{ globekitCountrySelected.total | numeral('0,0') }}</h3>
 								</div>
 								<div class="loan-label">
 									<h5>total <br>loans</h5>
@@ -48,7 +48,7 @@
 							</div>
 							<div class="row">
 								<div class="loan-number">
-									<h3>{{ numberWithCommas(globekitCountrySelected.active) }}</h3>
+									<h3>{{ globekitCountrySelected.active | numeral('0,0') }}</h3>
 								</div>
 								<div class="loan-label">
 									<h5>active <br>loans</h5>
@@ -72,7 +72,7 @@
 									:from-sprite="true"
 								/>
 								<span class="name-nav__index">{{
-									this.previousCountries.length.toString().padStart(2, "0")
+									this.previousCountries.length | numeral('00')
 								}}</span>
 							</button>
 
@@ -93,7 +93,7 @@
 								@click="nextClickHandler"
 							>
 								<span class="name-nav__index">{{
-									this.countryList.length.toString().padStart(2, "0")
+									this.countryList.length | numeral('00')
 								}}</span>
 								<kv-icon
 									class="prevnext__btn-icon"
@@ -276,9 +276,6 @@ export default {
 		clickHandler(event) {
 			console.log(event);
 		},
-		numberWithCommas(x) {
-			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-		},
 		onGlobePan() {
 			if (this.isCountrySelected) {
 				this.queueAutoplay();
@@ -402,7 +399,7 @@ export default {
 
 		@include breakpoint(small) {
 			background-color: $mint;
-			margin-top: rem-calc(calc(100vw - 72px));
+			margin-top: calc(100vw - #{rem-calc(72)});
 			z-index: -1;
 			padding-top: rem-calc(32);
 		}
