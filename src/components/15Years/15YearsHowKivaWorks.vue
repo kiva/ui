@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import getCacheKey from '@/util/getCacheKey';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -112,6 +113,7 @@ const step3Video = require('@/assets/media/15-years/step3.mp4');
 const step4Video = require('@/assets/media/15-years/step4.mp4');
 
 export default {
+	serverCacheKey: () => getCacheKey('15YearsHowKivaWorks_20200930_1300'),
 	components: {
 		KvCarousel,
 		KvCarouselSlide,

@@ -31,8 +31,10 @@
 	<!-- eslint-enable max-len -->
 </template>
 <script>
+import getCacheKey from '@/util/getCacheKey';
 
 export default {
+	serverCacheKey: () => getCacheKey('15YearsPopcorn_20200930_1300'),
 	mounted() {
 		const getRandomInt = (minimum, maximum) => {
 			const min = Math.ceil(minimum);

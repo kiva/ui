@@ -129,6 +129,7 @@
 </template>
 
 <script>
+import getCacheKey from '@/util/getCacheKey';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -139,6 +140,7 @@ import slideData from './15YearsTimelineData';
 const fifteenYearsImagesRequire = require.context('@/assets/images/15-years/', true);
 
 export default {
+	serverCacheKey: () => getCacheKey('15YearsTimline_20200930_1300'),
 	components: {
 		KvCarousel,
 		KvCarouselSlide,

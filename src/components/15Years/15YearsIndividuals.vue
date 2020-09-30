@@ -131,6 +131,7 @@
 </template>
 
 <script>
+import getCacheKey from '@/util/getCacheKey';
 import { checkWebpSupport, checkAvifSupport, preloadImage } from '@/util/imageUtils';
 
 import KvIcon from '@/components/Kv/KvIcon';
@@ -144,6 +145,7 @@ import peopleData from './15YearsIndividualsData';
 const imageRequire = require.context('@/assets/images/15-years/profiles', true);
 
 export default {
+	serverCacheKey: () => getCacheKey('15YearsIndividuals_20200930_1300'),
 	components: {
 		FifteenYearsIndividualsProfile,
 		FifteenYearsLightbox,
