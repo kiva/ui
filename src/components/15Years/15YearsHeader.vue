@@ -388,8 +388,9 @@ export default {
 		}
 
 		@include breakpoint(large) {
-			height: 400px;
-			position: relative;
+			height: auto;
+			position: absolute;
+			bottom: 310px;
 			max-width: 72rem;
 			width: 100%;
 			margin: 0 auto;
@@ -553,11 +554,11 @@ export default {
 	display: block;
 	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
 	border-radius: 50%;
-	padding: 5px;
-	max-width: 65px;
-	max-height: 65px;
-	min-width: 65px;
-	min-height: 65px;
+	padding: 3px;
+	max-width: 40px;
+	max-height: 40px;
+	min-width: 40px;
+	min-height: 40px;
 
 	// Phones
 	@include breakpoint(small) {
@@ -571,7 +572,13 @@ export default {
 }
 
 .country-name {
-	--lh: 3.45rem;
+	&.short {
+		color: red;
+	}
+
+	&.long {
+		color: blue;
+	}
 }
 
 .loan-number {
