@@ -31,7 +31,6 @@ describe('contentfulUtils.js', () => {
 
 	describe('formatMediaAssetArray', () => {
 		test('should return an array of media assets', () => {
-			console.log(responsiveImageSetRaw.fields.images);
 			expect(formatMediaAssetArray(responsiveImageSetRaw.fields.images)).toMatchObject(expect.any(Array));
 		});
 	});
