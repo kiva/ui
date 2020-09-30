@@ -25,8 +25,8 @@ export default {
 			CalloutManager,
 			CalloutDefinition
 		} = await import('@/lib/globekit/globekit.esm');
-		const DotCallout = await import('./15YearsGlobeDotCallout');
-		const PinCallout = await import('./15YearsGlobePinCallout');
+		const { default: DotCallout } = await import('./15YearsGlobeDotCallout');
+		const { default: PinCallout } = await import('./15YearsGlobePinCallout');
 
 		const canvas = this.$el.getElementsByClassName('gk-canvas')[0];
 		const textures = {
@@ -130,7 +130,7 @@ export default {
 	methods: {
 		async selectCountry(country) {
 			const { CalloutDefinition } = await import('@/lib/globekit/globekit.esm');
-			const PinCallout = await import('./15YearsGlobePinCallout');
+			const { default: PinCallout } = await import('./15YearsGlobePinCallout');
 
 			this.automatedSelection = country;
 			setTimeout(() => {
