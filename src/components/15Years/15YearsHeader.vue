@@ -344,11 +344,6 @@ export default {
 
 		.row {
 			flex: 1;
-			padding-top: rem-calc(96);
-
-			@include breakpoint(large) {
-				padding-top: rem-calc(64);
-			}
 		}
 
 		@include breakpoint(large) {
