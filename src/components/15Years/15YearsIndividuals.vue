@@ -383,7 +383,7 @@ export default {
 
 			.prevnext__btn-text,
 			.prevnext__indicator {
-				display: none;
+				@include visually-hidden();
 			}
 
 			.prevnext__btn--next .prevnext__btn-icon {

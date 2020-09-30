@@ -306,6 +306,10 @@ export default {
 }
 
 .strategic-partners {
+	&__list {
+		list-style: none;
+	}
+
 	&__total-impact {
 		background-color: $twilight;
 		padding: rem-calc(24);
@@ -437,7 +441,7 @@ export default {
 		}
 
 		.fade {
-			background: linear-gradient(180deg, rgba(2, 0, 36, 0) 0%, rgba($offwhite, 1) 100%);
+			background: linear-gradient(to bottom, rgba($offwhite, 0), rgba($offwhite, 1));
 			height: rem-calc(70);
 			position: relative;
 			width: 100%;

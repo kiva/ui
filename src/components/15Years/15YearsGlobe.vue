@@ -8,25 +8,26 @@
 </template>
 
 <script>
-import {
-	GlobeKitView,
-	Lowpoly,
-	GKUtils,
-	DataStore,
-	CalloutManager,
-	CalloutDefinition
-} from '@/lib/globekit/globekit.esm';
 import { gsap } from 'gsap';
 import geojson from '@/assets/data/components/15-years/geojson.json';
 import geoData from '@/assets/binary/geo/35-10.bin';
 import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
 import textureKiva from '@/assets/images/15-years/texture-kiva.png';
-import DotCallout from './15YearsGlobeDotCallout';
-import PinCallout from './15YearsGlobePinCallout';
 
 export default {
 	name: 'FifteenYearsGlobe',
-	mounted() {
+	async mounted() {
+		const {
+			GlobeKitView,
+			Lowpoly,
+			GKUtils,
+			DataStore,
+			CalloutManager,
+			CalloutDefinition
+		} = await import('@/lib/globekit/globekit.esm');
+		const { default: DotCallout } = await import('./15YearsGlobeDotCallout');
+		const { default: PinCallout } = await import('./15YearsGlobePinCallout');
+
 		const canvas = this.$el.getElementsByClassName('gk-canvas')[0];
 		const textures = {
 			surface: textureKiva
@@ -135,7 +136,10 @@ export default {
 		}
 	},
 	methods: {
-		selectCountry(country) {
+		async selectCountry(country) {
+			const { CalloutDefinition } = await import('@/lib/globekit/globekit.esm');
+			const { default: PinCallout } = await import('./15YearsGlobePinCallout');
+
 			this.automatedSelection = country;
 			setTimeout(() => {
 				if (this.automatedSelection === country) {
@@ -178,6 +182,7 @@ export default {
 	height: calc(100vw - 48px);
 	left: calc(50% - 50vw + 24px);
 	top: 432px;
+	z-index: 3;
 
 	@include breakpoint(large) {
 		width: 610px;

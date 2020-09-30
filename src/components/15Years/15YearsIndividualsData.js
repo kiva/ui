@@ -15,7 +15,7 @@ export default [
 		videoId: 462763475,
 		cta1: 'Lend to a South American borrower',
 		cta2: 'Lend monthly to U.S. small businesses',
-		link1: 'S. Am filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=South%20America%20%3E%20Bolivia~South%20America%20%3E%20Brazil~South%20America%20%3E%20Colombia~South%20America%20%3E%20Ecuador~South%20America%20%3E%20Paraguay~South%20America%20%3E%20Peru&sortBy=popularity', // all countries in S. America
 		link2: 'https://store.kiva.org',
 	},
 	{
@@ -74,8 +74,8 @@ export default [
 		videoId: 462777675,
 		cta1: 'Support groups like Apollo Agriculture',
 		cta2: 'Support groups like Apollo Agriculture',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
+		link2: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
 	},
 	{
 		name: 'David',
@@ -117,8 +117,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to African borrowers',
 		cta2: 'Lend to African borrowers',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
+		link2: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
 	},
 	{
 		name: 'WWBIC',
@@ -216,7 +216,7 @@ export default [
 		videoId: null,
 		cta1: 'Lend like Drew and Alli',
 		cta2: 'Lend monthly',
-		link1: '/lend-by-category/kiva-u-s',
+		link1: '/lend-by-category',
 		link2: '/monthlygood',
 	},
 	{
@@ -248,8 +248,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to African borrowers',
 		cta2: 'Lend to African borrowers',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
+		link2: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
 	},
 	{
 		name: 'Eduardo',
@@ -273,8 +273,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to European borrowers',
 		cta2: 'Lend to European borrowers',
-		link1: 'Europe filtered loans', // TODO: find url.
-		link2: 'Europe filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=Eastern%20Europe%20%3E%20Albania~Eastern%20Europe%20%3E%20Armenia~Eastern%20Europe%20%3E%20Georgia~Eastern%20Europe%20%3E%20Kosovo~Eastern%20Europe%20%3E%20Moldova&sortBy=popularity', // All countries in Eastern Europe.
+		link2: '/lend/filter?countries=Eastern%20Europe%20%3E%20Albania~Eastern%20Europe%20%3E%20Armenia~Eastern%20Europe%20%3E%20Georgia~Eastern%20Europe%20%3E%20Kosovo~Eastern%20Europe%20%3E%20Moldova&sortBy=popularity', // All countries in Eastern Europe.
 	},
 	{
 		name: 'Lev',
@@ -317,8 +317,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to refugees',
 		cta2: 'Lend monthly to refugees',
-		link1: '/lend-by-category/education',
-		link2: '/monthlygood?category=education',
+		link1: '/lend-by-category/refugees-and-i-d-ps',
+		link2: '/monthlygood?category=refugees',
 	},
 	{
 		name: 'Lihn',
@@ -346,7 +346,7 @@ export default [
 		videoId: null,
 		cta1: 'Lend like Linh',
 		cta2: 'Lend monthly to refugees',
-		link1: '/lend-by-category/refugees-and-i-d-ps',
+		link1: '/lend-by-category/women',
 		link2: '/monthlygood?category=women',
 	},
 	{
@@ -363,8 +363,8 @@ export default [
 		videoId: null,
 		cta1: 'Lend to a borrower like Nilda',
 		cta2: 'Lend to a borrower like Nilda',
-		link1: 'Asia filtered loans', // TODO: find url.
-		link2: 'Asia filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=Asia%20%3E%20Cambodia~Asia%20%3E%20Indonesia~Asia%20%3E%20Kyrgyzstan~Asia%20%3E%20Philippines~Asia%20%3E%20Tajikistan~Asia%20%3E%20Vietnam~Asia%20%3E%20Bangladesh~Asia%20%3E%20Bhutan~Asia%20%3E%20India~Asia%20%3E%20Lao%20PDR~Asia%20%3E%20Myanmar~Asia%20%3E%20Nepal~Asia%20%3E%20Pakistan~Asia%20%3E%20Thailand&sortBy=popularity', // All countries in Asia.
+		link2: '/lend/filter?countries=Asia%20%3E%20Cambodia~Asia%20%3E%20Indonesia~Asia%20%3E%20Kyrgyzstan~Asia%20%3E%20Philippines~Asia%20%3E%20Tajikistan~Asia%20%3E%20Vietnam~Asia%20%3E%20Bangladesh~Asia%20%3E%20Bhutan~Asia%20%3E%20India~Asia%20%3E%20Lao%20PDR~Asia%20%3E%20Myanmar~Asia%20%3E%20Nepal~Asia%20%3E%20Pakistan~Asia%20%3E%20Thailand&sortBy=popularity', // All countries in Asia.
 	},
 	{
 		name: 'Busie',
@@ -399,7 +399,7 @@ export default [
 		videoId: null,
 		cta1: 'Lend to African borrowers',
 		cta2: 'Lend to African borrowers',
-		link1: 'Africa filtered loans', // TODO: find url.
-		link2: 'Africa filtered loans', // TODO: find url.
+		link1: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
+		link2: '/lend/filter?countries=Africa%20%3E%20Burkina%20Faso~Africa%20%3E%20Cameroon~Africa%20%3E%20Congo%20%28DRC%29~Africa%20%3E%20Egypt~Africa%20%3E%20Ghana~Africa%20%3E%20Kenya~Africa%20%3E%20Liberia~Africa%20%3E%20Madagascar~Africa%20%3E%20Mali~Africa%20%3E%20Mozambique~Africa%20%3E%20Nigeria~Africa%20%3E%20Rwanda~Africa%20%3E%20Senegal~Africa%20%3E%20Sierra%20Leone~Africa%20%3E%20Togo~Africa%20%3E%20Uganda~Africa%20%3E%20Lesotho~Africa%20%3E%20Malawi~Africa%20%3E%20Namibia~Africa%20%3E%20South%20Africa~Africa%20%3E%20South%20Sudan~Africa%20%3E%20Tanzania~Africa%20%3E%20Zambia~Africa%20%3E%20Zimbabwe&sortBy=popularity', // all countries in Africa
 	},
 ];

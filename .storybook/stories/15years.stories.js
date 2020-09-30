@@ -18,6 +18,7 @@ import FifteenYearsTimeline from '@/components/15Years/15YearsTimeline';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 import {appealBanner} from '../mock-data/contentful-data-mock';
+import countryFacetsDataMock from '../mock-data/country-facets-data-mock';
 
 // This decorator applies the 15 year styles to the individual components in storybook
 // so they can be viewed in the same way they're applied in the 15Year page.
@@ -89,7 +90,7 @@ export const Combined = (args, { argTypes }) => ({
 		FifteenYears,
 	},
 	layout: 'fullscreen',
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), kvAuth0StoryMixin],
 	template: `
 		<div style="margin: -1rem;"><fifteen-years /></div>
 	`,
@@ -148,7 +149,7 @@ export const Header = (args, { argTypes }) => ({
 			]),
 		},
 	},
-	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	mixins: [apolloStoryMixin({ queryResult: countryFacetsDataMock}), kvAuth0StoryMixin],
 	template: `
 		<fifteen-years-header :mainTextSubtitle="mainTextSubtitle" :buttonCTAText="buttonCTAText" :cardData="cardData"/>
 	`,

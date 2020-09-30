@@ -3,7 +3,6 @@
 		<transition
 			@enter="enter"
 			@leave="leave"
-			appear
 			mode="out-in"
 		>
 			<!-- open banner -->
@@ -52,7 +51,8 @@
 </template>
 
 <script>
-import store2 from 'store2';
+import gsap from 'gsap';
+import cookieStore from '@/util/cookieStore';
 import gql from 'graphql-tag';
 import { expand, collapse } from '@/util/expander';
 
@@ -85,28 +85,9 @@ export default {
 	},
 	data() {
 		return {
-			open: false,
+			open: true,
 			fifteenYearGoalPercent: 0
 		};
-	},
-	apollo: {
-		query: recentFundedLoans,
-		preFetch: true,
-		preFetchVariables() {
-			return {
-				start: '2020-10-01'
-			};
-		},
-		result({ data }) {
-			// Default to 1 to avoid division by 0
-			const fundedGoal = this.appealBannerContent?.dataObject?.kiva15FundedLoansGoal || 1;
-			const numRecentFundedLoans = data?.general?.kivaStats?.numRecentFundedLoans || 0;
-			if (numRecentFundedLoans !== 0) {
-				this.fifteenYearGoalPercent = Math.round(
-					(numRecentFundedLoans / fundedGoal) * 100
-				);
-			}
-		},
 	},
 	computed: {
 		bannerHeadline() {
@@ -138,18 +119,41 @@ export default {
 		},
 	},
 	created() {
-		// Check to make sure we're on the client to prevent flash of unwanted banner state
-		if (!this.$isServer) {
-			if (store2.session.get('appeal_banner_15_shrunk')) {
-				this.open = false;
-			} else {
-				this.open = true;
-			}
+		if (cookieStore.get('appeal_banner_15_shrunk')) {
+			this.open = false;
+		} else {
+			// open banner
+			this.open = true;
 		}
+	},
+	mounted() {
+		// Get recent funded loans data
+		this.apollo.query({
+			query: recentFundedLoans,
+			variables: {
+				start: '2020-10-01'
+			}
+		}).then(({ data }) => {
+			// Default to 1 to avoid division by 0
+			const fundedGoal = this.appealBannerContent?.dataObject?.kiva15FundedLoansGoal || 1;
+			const numRecentFundedLoans = data?.general?.kivaStats?.numRecentFundedLoans || 0;
+			if (numRecentFundedLoans !== 0) {
+				const vm = this;
+				const percentFull = { val: 0 };
+
+				gsap.to(percentFull, 1, {
+					val: (numRecentFundedLoans / fundedGoal) * 100,
+					roundProps: 'val',
+					onUpdate() {
+						vm.fifteenYearGoalPercent = percentFull.val;
+					}
+				});
+			}
+		});
 	},
 	methods: {
 		shrinkAppeal() {
-			store2.session.set('appeal_banner_15_shrunk', true);
+			cookieStore.set('appeal_banner_15_shrunk', true, { path: '/' });
 			this.open = false;
 		},
 		truncateStringToNumberOfWords(string, numberOfWords) {
