@@ -131,7 +131,7 @@ export default {
 		this.apollo.query({
 			query: recentFundedLoans,
 			variables: {
-				start: '2020-08-01'
+				start: '2020-10-01'
 			}
 		}).then(({ data }) => {
 			// Default to 1 to avoid division by 0
