@@ -21,6 +21,7 @@
 					<section id="how-kiva-works">
 						<fifteen-years-how-kiva-works />
 					</section>
+					<div class="footer"></div>
 				</fifteen-years-styles>
 			</div>
 		</www-page>
@@ -76,5 +77,21 @@ export default {
 .row {
 	// the width of the comp is larger than our normal 990px
 	max-width: rem-calc(1152);
+}
+
+.footer {
+	height: 11rem;
+	background-image: url('~@/assets/images/15-years/footer-background.svg');
+	background-size: 100%;
+	background-position: bottom;
+	background-repeat: no-repeat;
+
+	@include breakpoint(large) {
+		height: 20rem;
+	}
+
+	@include breakpoint(xxlarge) {
+		height: 25rem;
+	}
 }
 </style>
