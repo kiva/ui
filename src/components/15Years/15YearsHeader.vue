@@ -80,12 +80,9 @@
 								<kv-progress-bar
 									:value="`'${previousCountries.length}'`"
 									:max="`'${countryList.length}'`"
-									style="
-
-										--kv-progress-bar-foreground-color: black;
+									style="--kv-progress-bar-foreground-color: black;
 										--kv-progress-bar-background-color: #C4C4C4;
-										min-width: 50px;
-									"
+										min-width: 50px;"
 								/>
 							</span>
 
