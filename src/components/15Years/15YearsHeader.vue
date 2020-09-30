@@ -6,17 +6,102 @@
 			@selectcountry="onCountrySelect"
 		/>
 		<div class="header__main-section">
-			<div class="row align-middle">
-				<div class="header__text small-12 large-6 xxlarge-5 columns">
-					<h1 class="header__headline">
-						<span class="header__headline-stroked no-wrap">Power in</span> Numbers
-					</h1>
-					<p>
-						{{ mainTextSubtitle }}
-					</p>
-					<fifteen-years-button to="/help/">
-						{{ buttonCtaText }}
-					</fifteen-years-button>
+			<div class="header__main-section-row row align-middle">
+				<div v-if="!isCountrySelected">
+					<div class="header__text small-12 large-6 columns">
+						<h1 class="header__headline">
+							<span class="header__headline-stroked no-wrap">Power in</span> Numbers
+						</h1>
+						<p>
+							{{ mainTextSubtitle }}
+						</p>
+						<fifteen-years-button class="header__cta-button" to="/help/">
+							{{ buttonCtaText }}
+						</fifteen-years-button>
+					</div>
+				</div>
+				<div v-else>
+					<div class="header__text columns">
+						<div class="row">
+							<div>
+								<h2 class="country-name">
+									{{ globekitCountrySelected.name }}
+								</h2>
+							</div>
+							<div>
+								<div class="country-sticker">
+									<kv-flag
+										:country="globekitCountrySelected.iso2"
+										:aspect-ratio="'1x1'"
+										:inline-svg="true"
+										class="circular-country"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row loan-number-group">
+						<div class="columns">
+							<div class="row">
+								<div class="loan-number">
+									<h3>{{ numberWithCommas(10000000) }}</h3>
+								</div>
+								<div class="loan-label">
+									<h5>total<br>loans</h5>
+								</div>
+							</div>
+							<div class="row">
+								<div class="loan-number">
+									<h3>{{ numberWithCommas(10000000) }}</h3>
+								</div>
+								<div class="loan-label">
+									<h5>active<br>loans</h5>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row header__cta-button">
+						<fifteen-years-button to="/help/">
+							{{ `Lend in ${globekitCountrySelected.name}` }}
+						</fifteen-years-button>
+						<div class="prevnext">
+							<button
+								class="prevnext__btn prevnext__btn--prev"
+								@click="clickHandler"
+							>
+								<kv-icon
+									class="prevnext__btn-icon"
+									name="fat-chevron"
+									:from-sprite="true"
+								/>
+								<span class="name-nav__index">{{ "i" }}</span>
+							</button>
+
+							<span class="prevnext__indicator">
+								<kv-progress-bar
+									:value="'20'"
+									:max="'100'"
+									style="
+										--kv-progress-bar-foreground-color: black;
+										--kv-progress-bar-background-color: #C4C4C4;
+										min-width: 50px;
+									"
+								/>
+							</span>
+
+							<button
+								class="prevnext__btn prevnext__btn--next"
+								@click="clickHandler"
+							>
+								<span class="name-nav__index">{{ "k" }}</span>
+								<kv-icon
+									class="prevnext__btn-icon"
+									name="fat-chevron"
+									:from-sprite="true"
+								/>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -37,13 +122,31 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
 import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
 import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';
+import KvFlag from '@/components/Kv/KvFlag';
+import KvIcon from '@/components/Kv/KvIcon';
+import KvProgressBar from '@/components/Kv/KvProgressBar';
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsHeaderCard from './15YearsHeaderCard';
 import FifteenYearsOilyBackground from './15YearsOilyBackground';
 import FifteenYearsGlobe from './15YearsGlobe';
+
+const countryQuery = gql`query featuredCountry {
+	lend {
+		countryFacets {
+			count
+			country {
+				name
+				numLoansFundraising
+				fundsLentInCountry
+				isoCode
+			}
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -51,6 +154,9 @@ export default {
 		FifteenYearsHeaderCard,
 		FifteenYearsOilyBackground,
 		FifteenYearsGlobe,
+		KvFlag,
+		KvIcon,
+		KvProgressBar
 	},
 	data() {
 		return {
@@ -79,13 +185,37 @@ export default {
 					imgTilt: 15,
 				},
 			],
+			isCountrySelected: false,
+			globekitCountrySelected: {}
 		};
 	},
 	methods: {
 		onCountrySelect(event) {
 			console.log('!!!', event);
+
+			if (event === null) {
+				this.isCountrySelected = false;
+				this.globekitCountrySelected = {};
+			} else {
+				this.isCountrySelected = true;
+				this.globekitCountrySelected = event;
+			}
+		},
+		clickHandler(event) {
+			console.log(event);
+		},
+		numberWithCommas(x) {
+			return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 		}
-	}
+	},
+	inject: ['apollo'],
+	apollo: {
+		query: countryQuery,
+		preFetch: true,
+		result({ data }) {
+			console.log('Fetched data from graphql~!', data);
+		},
+	},
 };
 </script>
 
@@ -120,23 +250,29 @@ export default {
 		display: flex;
 		flex: 1;
 		flex-direction: row;
-		pointer-events: none;
+		/* pointer-events: none; */
+		max-width: 40vw;
+	}
 
-		.row {
-			padding-top: rem-calc(96);
-			padding-left: rem-calc(16);
-			margin: 0;
+	&__main-section-row {
+		padding-top: rem-calc(96);
+		padding-left: rem-calc(16);
+		margin: 0;
+		min-height: rem-calc(340px);
 
-			@include breakpoint(large) {
-				padding-top: rem-calc(64);
-				padding-left: rem-calc(64);
-			}
-
-			@include breakpoint(xxlarge) {
-				padding-top: rem-calc(64);
-				padding-left: rem-calc(128);
-			}
+		@include breakpoint(large) {
+			padding-top: rem-calc(64);
+			padding-left: rem-calc(64);
 		}
+
+		@include breakpoint(xxlarge) {
+			padding-top: rem-calc(64);
+			padding-left: rem-calc(128);
+		}
+	}
+
+	&__text {
+		max-width: 35vw;
 	}
 
 	&__text > * {
@@ -150,16 +286,22 @@ export default {
 
 		@include breakpoint(small) {
 			background-color: $mint;
-			margin-top: rem-calc(calc(100vw - 48px));
+			margin-top: rem-calc(calc(100vw - 72px));
+			z-index: -1;
+			padding-top: rem-calc(32);
 		}
 
 		@include breakpoint(large) {
 			background-color: transparent;
 			margin: 0;
+			z-index: 1;
+			padding-top: 0;
+			padding-left: rem-calc(64);
 		}
 
 		@include breakpoint(xxlarge) {
 			background-color: rgba(255, 255, 255, 0.5);
+			padding-left: 0;
 		}
 
 		.row {
@@ -168,17 +310,24 @@ export default {
 			width: 95%;
 
 			@include breakpoint(large) {
-				max-width: 300px;
+				max-width: 225px;
 				margin: 0;
-				margin-left: auto;
+				margin-right: auto;
 
 				/* padding-left: rem-calc(82); */
 			}
 
 			@include breakpoint(xxlarge) {
+				width: 95%;
 				max-width: 99%;
+				margin-left: auto;
+				margin-right: auto;
 			}
 		}
+	}
+
+	&__cta-button {
+		margin-top: rem-calc(48);
 	}
 
 	&__card {
@@ -243,4 +392,131 @@ export default {
 	display: flex;
 	flex-direction: column;
 }
+
+.circular-country {
+	border-radius: 50%;
+	overflow: hidden;
+	border: 1px solid #ccc;
+	box-sizing: content-box;
+}
+
+.country-sticker {
+	display: block;
+	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+	border-radius: 50%;
+	padding: 5px;
+	max-width: 65px;
+	max-height: 65px;
+	min-width: 65px;
+	min-height: 65px;
+
+	// Phones
+	@include breakpoint(small) {
+		display: none;
+	}
+
+	// Desktop
+	@include breakpoint(large) {
+		display: block;
+	}
+
+}
+
+.country-name {
+	margin-right: rem-calc(64);
+}
+
+.loan-number {
+	margin-right: rem-calc(16);
+}
+
+.loan-number-group {
+
+	@include breakpoint(large) {
+		margin-top: rem-calc(48);
+		padding-left: rem-calc(32);
+		border-left: 2px solid $twilight;
+	}
+}
+
+.loan-label {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.name-nav__index {
+	padding: 0 rem-calc(8);
+}
+
+/* taken from 15YearsIndividuals */
+.prevnext {
+	@include h5();
+
+	display: flex;
+	justify-content: middle;
+	align-items: center;
+	padding: 0 rem-calc(16);
+
+	&__indicator {
+		margin: 0 rem-calc(16);
+	}
+
+	&__btn-text {
+		border-radius: rem-calc(16);
+		padding: rem-calc(2) rem-calc(8);
+		border: rem-calc(2) solid transparent;
+	}
+
+	&__btn-icon {
+		width: rem-calc(20);
+		height: rem-calc(11);
+	}
+
+	&__btn {
+		@include h5();
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		fill: $twilight;
+		color: $twilight;
+
+		&--prev {
+			.prevnext__btn-icon {
+				transform: rotate(90deg);
+			}
+		}
+
+		&--next {
+			.prevnext__btn-icon {
+				transform: rotate(-90deg);
+			}
+		}
+
+		&:hover {
+			.prevnext__btn-text {
+				background: #000;
+				color: $twilight;
+				border: rem-calc(2) solid #fff;
+			}
+
+			.prevnext__btn-icon {
+				fill: $mint;
+			}
+		}
+
+		&:focus {
+			outline: 0;
+
+			.prevnext__btn-text {
+				border: rem-calc(2) solid $mint;
+			}
+		}
+
+		&[disabled] {
+			visibility: hidden;
+		}
+	}
+}
+
 </style>

@@ -70,6 +70,11 @@ a {
 	display: block;
 
 	@include breakpoint(large) {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	@include breakpoint(xxlarge) {
 		padding: rem-calc(24) 0;
 	}
 
