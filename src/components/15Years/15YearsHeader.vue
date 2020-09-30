@@ -11,7 +11,7 @@
 						<p>
 							{{ mainTextSubtitle }}
 						</p>
-						<fifteen-years-button class="header__cta-button" to="/help/">
+						<fifteen-years-button class="header__cta-button" to="/lend-by-category">
 							{{ buttonCtaText }}
 						</fifteen-years-button>
 					</div>
@@ -57,7 +57,7 @@
 						</div>
 					</div>
 					<div class="row header__cta-button">
-						<fifteen-years-button to="/help/">
+						<fifteen-years-button :to="getCountryLink(globekitCountrySelected)">
 							{{ globekitCountrySelected.active > 0 ?
 								`Lend in ${globekitCountrySelected.button}` : 'Find a borrower' }}
 						</fifteen-years-button>
@@ -147,12 +147,12 @@ import geojson from '../../assets/data/components/15-years/geojson.json';
 const countryQuery = gql`query featuredCountry {
 	lend {
 		countryFacets {
-			count
 			country {
 				name
 				numLoansFundraising
 				fundsLentInCountry
 				isoCode
+				region
 			}
 		}
 	}
@@ -168,6 +168,7 @@ export default {
 		KvIcon,
 		KvProgressBar
 	},
+	inject: ['apollo'],
 	data() {
 		const countryList = geojson.features.map(feature => {
 			const active = Math.floor(feature.properties.total * Math.random() * 0.01);
@@ -214,6 +215,7 @@ export default {
 	},
 	mounted() {
 		console.log(geojson);
+		this.fetchLiveCountryData();
 	},
 	methods: {
 		onCardClicked(id) {
@@ -302,14 +304,41 @@ export default {
 			}
 			this.advanceTimeout = null;
 		},
-	},
-	inject: ['apollo'],
-	apollo: {
-		query: countryQuery,
-		preFetch: true,
-		result({ data }) {
-			console.log('Fetched data from graphql~!', data);
+		fetchLiveCountryData() {
+			const query = this.apollo.query({
+				query: countryQuery,
+			});
+			query.then(({ data }) => {
+				// flatten country object and pass to list builder
+				const countries = data.lend?.countryFacets.map(obj => obj.country);
+				this.buildCountryList(countries);
+			});
 		},
+		buildCountryList(dynamicCountries) {
+			this.countryList = geojson.features.map(feature => {
+				const dynamicCountry = dynamicCountries.find(country => country.isoCode === feature.properties.iso2);
+				const nameClass = feature.properties.name.length > 12 ? 'long' : 'short';
+				const active = dynamicCountry ? dynamicCountry.numLoansFundraising : 0;
+				const originalName = dynamicCountry ? dynamicCountry.name : feature.properties.name;
+				const region = dynamicCountry ? dynamicCountry.region : null;
+				return {
+					...feature.properties,
+					nameClass,
+					active,
+					originalName,
+					region
+				};
+			});
+
+			this.countries = this.countryList.reduce((accumulator, currentValue) => {
+				accumulator[currentValue.iso2] = currentValue;
+				return accumulator;
+			}, {});
+		},
+		getCountryLink(country) {
+			const countryParam = `${country.region} > ${country.originalName}`;
+			return `/lend/filter?countries=${encodeURIComponent(countryParam)}`;
+		}
 	},
 };
 </script>
