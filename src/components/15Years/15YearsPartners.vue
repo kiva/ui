@@ -92,7 +92,10 @@
 									{{ partner.text }}
 								</p>
 								<div class="fade"></div>
-								<fifteen-years-button variant="black" @click="togglePartner(partner.key)">
+								<fifteen-years-button
+									variant="black"
+									@click="togglePartner(partner.key)"
+								>
 									{{ partner.showStats ? 'read more' : 'back to stats' }}
 								</fifteen-years-button>
 							</div>
@@ -118,7 +121,14 @@
 								>
 							</li>
 						</ul>
-						<fifteen-years-button href="https://kiva.global/partner-with-us/">
+						<fifteen-years-button
+							href="https://kiva.global/partner-with-us/"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-strategic-partners-CTA',
+								'Partner With Us'
+							]"
+						>
 							Partner with us
 						</fifteen-years-button>
 					</div>
@@ -241,9 +251,13 @@ export default {
 	methods: {
 		togglePartner(partnerKey) {
 			const targetPartner = this.strategicPartners.find(partner => partner.key === partnerKey);
-			// if showStats is false, scroll partner information before shrinking
+
 			if (!targetPartner.showStats) {
+				// if showStats is false, scroll partner information before shrinking
 				this.$refs[partnerKey][0].scrollTop = 0;
+			} else {
+				// on click 'read more' fire analytics event
+				this.$kvTrackEvent('Kiva15', `click-strategic-partners-${partnerKey}-CTA`, 'Read More');
 			}
 			// toggle showStats
 			targetPartner.showStats = !targetPartner.showStats;

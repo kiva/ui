@@ -69,6 +69,11 @@
 							class="carousel__prevnext-btn carousel__prevnext-btn--prev"
 							@click="goToSlide(prevIndex)"
 							:disabled="currentIndex === 0"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-how-kiva-works',
+								'Previous'
+							]"
 						>
 							<kv-icon
 								class="carousel__prevnext-btn-icon"
@@ -83,6 +88,11 @@
 							class="carousel__prevnext-btn carousel__prevnext-btn--next"
 							@click="goToSlide(nextIndex)"
 							:disabled="currentIndex === slides.length - 1"
+							v-kv-track-event="[
+								'Kiva15',
+								'click-how-kiva-works',
+								'Next'
+							]"
 						>
 							<span class="carousel__prevnext-btn-year">
 								0{{ nextIndex + 1 }}
