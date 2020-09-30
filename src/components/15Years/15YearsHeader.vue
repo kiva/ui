@@ -217,12 +217,15 @@ export default {
 	},
 	methods: {
 		onCardClicked(id) {
+			// TODO: analytics handler for card click
 			const element = document.querySelector(id);
 			if (element) {
 				element.scrollIntoView({ behavior: 'smooth' });
 			}
 		},
 		onCountrySelect(selection) {
+			// TODO: maybe - callback from user clicking the globe. could include
+			// analytics here, or could be put in 15YearsGlobe
 			if (selection === null) {
 				this.isCountrySelected = false;
 				this.globekitCountrySelected = {};
@@ -244,7 +247,11 @@ export default {
 				this.queueAutoplay();
 			}
 		},
-		nextClickHandler() {
+		nextClickHandler(event) {
+			if (event) {
+				// TODO: analytics handler for clicking next button
+				// (autoplay function calls this method w/out event payload)
+			}
 			if (this.previousCountries.length !== this.countryList.length) {
 				const c = this.$refs.globe.nextClosest(this.globekitCountrySelected, this.previousCountries);
 				const country = this.countries[c.iso2];
@@ -260,6 +267,7 @@ export default {
 			this.queueAutoplay();
 		},
 		prevClickHandler() {
+			// TODO: analytics handler for clicking the previous button
 			if (this.previousCountries.length > 1) {
 				this.previousCountries.pop();
 				const country = this.previousCountries[this.previousCountries.length - 1];
@@ -274,10 +282,10 @@ export default {
 			}
 			this.queueAutoplay();
 		},
-		clickHandler(event) {
-			console.log(event);
-		},
 		onGlobePan() {
+			// TODO: maybe - callback from user panning the globe. could include
+			// analytics here, or could be put in 15YearsGlobe. Will be fired continuously
+			// while interacting
 			if (this.isCountrySelected) {
 				this.queueAutoplay();
 			}
