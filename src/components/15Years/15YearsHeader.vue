@@ -65,8 +65,8 @@
 						</div>
 					</div>
 					<div class="row header__cta-button">
-						<fifteen-years-button 
-              :to="getCountryLink(globekitCountrySelected)"
+						<fifteen-years-button
+							:to="getCountryLink(globekitCountrySelected)"
 							v-kv-track-event="[
 								'Kiva15',
 								'click-hero-lend-in-country-CTA',
