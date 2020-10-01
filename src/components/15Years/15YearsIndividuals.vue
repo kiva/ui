@@ -281,7 +281,7 @@ export default {
 	}
 
 	&__profile {
-		flex: 1;
+		flex: 1 0 auto; // IE11;
 	}
 
 	&__learn-more-btn {
@@ -461,7 +461,7 @@ export default {
 	}
 
 	&__name {
-		flex: 1;
+		flex: 1 0 auto; // IE11;
 	}
 
 	&__1of {

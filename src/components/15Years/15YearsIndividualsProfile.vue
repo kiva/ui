@@ -355,7 +355,7 @@ export default {
 	}
 
 	&__portrait-blob {
-		flex: 1;
+		flex: 1 0 auto; // IE11;
 		margin: 1rem 3rem;
 		fill: $offwhite;
 		overflow: visible;
@@ -366,7 +366,7 @@ export default {
 	}
 
 	&__body-wrapper-wrapper { // lol
-		flex: 1;
+		flex: 1 0 auto; // IE11;
 		filter: blur(0);
 		transition: filter 0.25s ease-in;
 	}

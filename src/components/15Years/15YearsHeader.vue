@@ -391,7 +391,7 @@ export default {
 		width: 100%;
 
 		.row {
-			flex: 1;
+			flex: 1 0 auto; // IE11;
 		}
 
 		@include breakpoint(small) {
