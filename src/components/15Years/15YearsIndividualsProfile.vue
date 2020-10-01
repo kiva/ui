@@ -55,7 +55,10 @@
 			>
 				<div class="profile__body">
 					<h3>{{ person.name }}</h3>
-					<h4>{{ person.title }} - {{ person.location }}</h4>
+					<h4>
+						{{ person.title }}<br>
+						{{ person.location }}
+					</h4>
 
 					<template v-if="person.videoId">
 						<div class="profile__video">
@@ -314,10 +317,17 @@ export default {
 		padding-bottom: 100%; // 1:1
 		position: relative;
 		margin-bottom: 2rem;
+		margin-top: -1.5rem;
 
 		@include breakpoint(large) {
 			padding-bottom: 56.25%; // 16:9
+			margin-top: 0;
 		}
+	}
+
+	&__video {
+		padding-bottom: 56.25%; // 16:9
+		margin-top: 1rem;
 	}
 
 	&__portrait {

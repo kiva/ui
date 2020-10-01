@@ -160,7 +160,7 @@ export default {
 }
 
 .lightbox-body-wrap {
-	flex: 1 0 auto; // IE11;
+	flex: 1 1 auto; // IE11;
 	height: 100%;
 	overflow: auto;
 	position: relative;

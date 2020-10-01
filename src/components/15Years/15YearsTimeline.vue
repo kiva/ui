@@ -427,6 +427,7 @@ export default {
 		@include breakpoint(xxlarge) {
 			flex: unset;
 			float: left; // BOOM!
+			display: block;
 			width: rem-calc(270);
 			width: 33%;
 			height: rem-calc(310);

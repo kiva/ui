@@ -23,7 +23,6 @@
 						ref="carousel_component"
 						:hide-arrows="true"
 						:autoplay="false"
-						:embla-options="{ loop: false }"
 						indicator-style="circle"
 						@change="onCarouselChange"
 					>
