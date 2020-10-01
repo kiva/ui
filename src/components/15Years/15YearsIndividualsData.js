@@ -137,7 +137,7 @@ export default [
 	},
 	{
 		name: 'Danielle',
-		title: 'Father-Daughter Force',
+		title: 'Team Captain',
 		location: 'Canada',
 		img: 'danielle',
 		body: `
@@ -196,7 +196,7 @@ export default [
 	{
 		name: 'Drew + Allie',
 		title: 'Lending Power Couple',
-		location: 'US',
+		location: 'United States',
 		img: 'drew-allie',
 		body: `<p>During mission trips with their church, Drew and Allie witnessed the ability of small loans to create meaningful change in individuals’ lives. Then they learned about Kiva from a family member.
 		</p>
@@ -222,7 +222,7 @@ export default [
 	{
 		name: 'Rachel',
 		title: 'Protocol Practitioner',
-		location: 'Thailand / US',
+		location: 'US / Taiwan',
 		img: 'rachel',
 		body: `<p>According to the World Bank, <a href="https://globalfindex.worldbank.org/#data_sec_focus" target="_blank">1.7 billion adults worldwide</a> don’t have access to a bank that can provide loans, savings solutions, and financial security. This is because many of these individuals also lack the key that unlocks access to financial services – formal, verifiable identity, such as a government-issued ID. But Rachel Chang is determined to change that.
 		</p>
@@ -230,7 +230,7 @@ export default [
 		<p>Rachel is based in the Bay Area and is a Product Manager for Kiva Protocol – a technology platform that allows citizens to own and use their national identity, digitally. Using a thumbprint and a national ID number, citizens can open or access an account at any financial institution in their country, from national banks to local microfinance institutions. Over the past two years, Rachel has overseen Kiva Protocol from ideation, to prototype, to the first implementation in Sierra Leone in February of this year.
 		</p>
 
-		<p>Rachel highlights how the story of Nancy, a mother and teacher in Sierra Leone, demonstrates the power and potential of Kiva Protocol to change lives, “I think Nancy is a great example of Kiva’s impact. She has been rejected by banks because she did not have the formal identity that banks require to open a bank account. She had a record in Sierra Leone’s Civil Registry, it just needed to be in a format that the bank could consume and use. We were able to walk her through that process.”
+		<p> Rachel highlights how the story of Nancy, a mother and teacher in Sierra Leone, demonstrates the power and potential of Kiva Protocol to change lives, “I think Nancy is a great example of Kiva’ s impact. She had been rejected by a local community bank because she did not have a formal ID that the bank required to open an account for her. She had a record in Sierra Leone’ s Civil Registry, it just needed to be in a format that the bank could consume and use.We were able to walk her through that process.”
 		</p>
 
 		<p>She is incredibly proud of the milestones and impact that she and the Kiva Protocol team have achieved so far, “It was awesome to see how this platform is providing opportunities for Nancy to begin the banking process. And she was able to do this in front of the President of Sierra Leone, and in front of government officials. To see Nancy prove out the huge potential in a country that is trying to digitize its government, it’s very empowering for me to see that.”
@@ -299,7 +299,7 @@ export default [
 		<p>Lev feels particularly proud of how much Kiva’s impact on refugee and displaced communities has grown over the years, “In 2016, our lenders funded about $1 million dollars worth of loans to refugees. Fast forward to today, about 4 years later, we’ve loaned over $18 million to more than 22,000 refugees around the world.”
 		</p>
 
-		<p>One Syrian refugee had a distinctly profound impact on Lev.Samira fled Syria with her family and resettled in a small mountain region east of Beirut.Syrian refugees wanting to get married in their host country often could not afford the high cost of hosting a wedding, preventing them from marrying. However, this obstacle was no match for Samira’s ingenuity and entrepreneurial spirit.
+		<p>One Syrian refugee had a distinctly profound impact on Lev. Samira fled Syria with her family and resettled in a small mountain region east of Beirut. Syrian refugees wanting to get married in their host country often could not afford the high cost of hosting a wedding, preventing them from marrying. However, this obstacle was no match for Samira’s ingenuity and entrepreneurial spirit.
 		</p>
 
 		<p>“She had been a make-up artist and hair stylist in Syria, so she started a home-based business initially doing make-up work for brides who were getting ready for their wedding day. Then, to grow her business, she used her Kiva loan to buy wedding dresses she now rents out to women who can’t afford the cost of buying a dress themselves.”
