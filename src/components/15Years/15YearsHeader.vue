@@ -24,7 +24,7 @@
 						</fifteen-years-button>
 					</div>
 				</div>
-				<div v-else class="country_cta">
+				<div v-else class="country_cta small-12 large-8">
 					<div class="columns country-name-container">
 						<div class="row">
 							<div>
@@ -432,7 +432,7 @@ export default {
 	}
 
 	.country_cta {
-		width: 100%;
+		// width: 100%;
 
 		@include breakpoint(small) {
 			padding-bottom: rem-calc(48);
@@ -481,18 +481,19 @@ export default {
 		@include breakpoint(large) {
 			position: absolute;
 			bottom: 0;
-			background-color: transparent;
 			padding-top: 0;
 			margin-top: rem-calc(48);
 			padding-left: rem-calc(32);
 			padding-bottom: rem-calc(16);
+			background-color: rgba(248, 248, 248, 0.5);
+			// max-width: 40vw;
 		}
 
 		@include breakpoint(xxlarge) {
-			background-color: rgba(255, 255, 255, 0.5);
 			padding: 0;
 			margin: 0;
 			width: 100%;
+			max-width: 100%;
 
 			.row {
 				margin-left: auto;
@@ -512,10 +513,6 @@ export default {
 		padding: rem-calc(32) rem-calc(16);
 		transition: background 0.3s ease-out;
 
-		&:hover {
-			background: hsla(0, 0%, 100%, 0.8);
-		}
-
 		@include breakpoint(large) {
 			max-width: rem-calc(300);
 			padding: 0 rem-calc(16);
@@ -532,11 +529,12 @@ export default {
 	}
 
 	&__card-wrap {
+
 		@include breakpoint(xxlarge) {
 			transition: background 0.3s ease-out;
 
 			&:hover {
-				background: hsla(0, 0%, 100%, 0.8);
+				background: rgba(248, 248, 248, 0.8);
 			}
 		}
 
@@ -560,6 +558,21 @@ export default {
 					}
 				}
 			}
+		}
+	}
+}
+
+.country-name {
+	line-height: 1;
+
+	&.long {
+
+		@include breakpoint(small) {
+			font-size: rem-calc(32);
+		}
+
+		@include breakpoint(large) {
+			font-size: rem-calc(40);
 		}
 	}
 }
