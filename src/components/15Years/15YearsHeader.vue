@@ -411,6 +411,11 @@ export default {
 			padding-left: rem-calc(32);
 			margin-top: rem-calc(128);
 		}
+
+		@include breakpoint(xga) {
+			left: 50%;
+			margin-left: -34rem;
+		}
 	}
 
 	.header__main-section-row {
