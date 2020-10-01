@@ -46,7 +46,6 @@
 									<p class="carousel__body-content">
 										{{ slide.blurb }}
 									</p>
-									<!-- If Slide link is absoute render an achor link -->
 									<a
 										v-if="checkLink(index)"
 										class="carousel__body-cta"
@@ -57,7 +56,6 @@
 											getSlideCta(index)
 										]"
 									>{{ getSlideCta(index) }}</a>
-									<!-- If Slide link is relative render a router-link component -->
 									<router-link
 										v-else
 										class="carousel__body-cta"
@@ -227,6 +225,8 @@ export default {
 			return this.slides[index].link1; // will likely be powered by an experiment later
 		},
 		checkLink(index) {
+			// Checking if the link is relative or absolute, if it's absoulte we need to
+			// use an <a> in order for the link URL to be formed correctly
 			return !!this.getSlideLink(index).includes('http');
 		}
 	}
