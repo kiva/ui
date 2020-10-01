@@ -314,10 +314,17 @@ export default {
 		padding-bottom: 100%; // 1:1
 		position: relative;
 		margin-bottom: 2rem;
+		margin-top: -1.5rem;
 
 		@include breakpoint(large) {
 			padding-bottom: 56.25%; // 16:9
+			margin-top: 0;
 		}
+	}
+
+	&__video {
+		padding-bottom: 56.25%; // 16:9
+		margin-top: 1rem;
 	}
 
 	&__portrait {

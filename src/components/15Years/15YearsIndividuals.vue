@@ -267,8 +267,6 @@ export default {
 	}
 
 	&__header {
-		margin-bottom: 2rem;
-
 		@include breakpoint('xxlarge') {
 			margin-bottom: 4rem;
 		}
