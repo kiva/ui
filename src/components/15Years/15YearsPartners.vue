@@ -32,7 +32,7 @@
 									impact:
 								</h3>
 								<ul
-									class="strategic-partners__stats strategic-partners__stats--total-impact"
+									class="strategic-partners__stats strategic-partners__stats--total-impact shown"
 								>
 									<li class="row align-bottom collapse">
 										<h3 class="shrink column">
@@ -75,7 +75,7 @@
 										loading="lazy"
 									>
 								</div>
-								<ul class="strategic-partners__stats" v-if="partner.showStats">
+								<ul class="strategic-partners__stats" :class="{'shown': partner.showStats}">
 									<li class="row align-bottom collapse"
 										v-for="(partnerStats, index) in partner.stats"
 										:key="index"
@@ -393,10 +393,20 @@ export default {
 	}
 
 	&__stats {
-		padding-left: 1rem;
+		padding: 0 0 0 1rem;
 		color: $twilight;
 		border-left: 1px solid $twilight;
-		margin: 1rem 0 0 0;
+		margin: 0;
+		transition: max-height 0.5s linear 0.4s;
+		max-height: rem-calc(0);
+		overflow: hidden;
+		height: 0;
+
+		&.shown {
+			transition: max-height 0.5s linear 0.4s;
+			max-height: rem-calc(350);
+			height: auto;
+		}
 
 		h3 {
 			line-height: 1;
@@ -441,17 +451,18 @@ export default {
 
 			margin-top: 1.5rem;
 			position: relative;
-			transition: max-height 0.5s ease-out;
+			transition: max-height 0.5s linear;
 			overflow: hidden;
 			max-height: rem-calc(69);
 			padding: 0 0.75rem rem-calc(40) 0; // room for fade element and scroll bars
 		}
 
 		p.expanded {
-			transition: max-height 0.5s ease-out;
-			max-height: rem-calc(285);
+			transition: max-height 0.5s linear;
+			max-height: rem-calc(260);
 			height: auto;
 			overflow: scroll;
+			margin-top: 0;
 		}
 
 		.fade {
@@ -507,4 +518,5 @@ export default {
 		}
 	}
 }
+
 </style>
