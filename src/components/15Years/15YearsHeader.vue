@@ -470,6 +470,10 @@ export default {
 		@include breakpoint(xxlarge) {
 			max-width: 35vw;
 		}
+
+		@include breakpoint(xga) {
+			max-width: 30vw;
+		}
 	}
 
 	&__cards-section {
