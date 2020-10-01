@@ -49,7 +49,10 @@ export default {
 	},
 	metaInfo: {
 		meta: [
-			{ 'google-site-verification': 'vpxnq5XBGa1PgE4hhyEollJr4uEzN7mrC30iJxzuW_M' }, // for Google Search Console
+			{
+				name: 'google-site-verification', // for Google Search Console
+				content: 'vpxnq5XBGa1PgE4hhyEollJr4uEzN7mrC30iJxzuW_M'
+			},
 		],
 	},
 	data() {
