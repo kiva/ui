@@ -444,7 +444,7 @@ export default {
 	}
 
 	&__body-content-wrap {
-		flex: 1;
+		flex: 1 0 auto; // IE11;
 		margin-bottom: 0;
 
 		@include breakpoint(xxlarge) {

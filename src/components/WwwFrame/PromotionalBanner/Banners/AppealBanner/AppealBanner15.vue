@@ -7,7 +7,7 @@
 		>
 			<!-- open banner -->
 			<div class="appeal-15-row appeal-15-row--open row align-center" v-if="open" key="openBanner">
-				<div class="shrink small-12 medium-expand columns">
+				<div class="shrink small-12 columns">
 					<div class="swashie">
 						<kv-progress-circle
 							class="swashie__progress-circle"
@@ -17,7 +17,7 @@
 						<swashie-face class="swashie__face" :percent-full="fifteenYearGoalPercent" />
 					</div>
 				</div>
-				<div class="appeal-15-header small-12 medium-expand columns">
+				<div class="appeal-15-header small-12 columns">
 					<h4 v-html="bannerHeadline" class="appeal-15-header__title appeal-15-header__title--open">
 					</h4>
 					<div v-html="bannerBody">

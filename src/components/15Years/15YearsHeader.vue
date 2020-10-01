@@ -368,6 +368,7 @@ export default {
 	z-index: 1;
 	min-height: rem-calc(900);
 	padding: 0;
+	overflow: hidden;
 
 	&__headline {
 		@include huge-headline();
@@ -391,7 +392,7 @@ export default {
 		width: 100%;
 
 		.row {
-			flex: 1;
+			flex: 1 0 auto; // IE11;
 		}
 
 		@include breakpoint(small) {

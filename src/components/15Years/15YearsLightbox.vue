@@ -160,7 +160,7 @@ export default {
 }
 
 .lightbox-body-wrap {
-	flex: 1;
+	flex: 1 0 auto; // IE11;
 	height: 100%;
 	overflow: auto;
 	position: relative;
@@ -206,7 +206,7 @@ export default {
 
 .lightbox-title {
 	padding-right: 1rem;
-	flex: 1;
+	flex: 1 0 auto; // IE11;
 }
 
 .lightbox-close-btn {
