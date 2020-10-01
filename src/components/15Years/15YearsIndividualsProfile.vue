@@ -55,7 +55,10 @@
 			>
 				<div class="profile__body">
 					<h3>{{ person.name }}</h3>
-					<h4>{{ person.title }} - {{ person.location }}</h4>
+					<h4>
+						{{ person.title }}<br>
+						{{ person.location }}
+					</h4>
 
 					<template v-if="person.videoId">
 						<div class="profile__video">
