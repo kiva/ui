@@ -46,7 +46,20 @@
 									<p class="carousel__body-content">
 										{{ slide.blurb }}
 									</p>
+									<!-- If Slide link is absoute render an achor link -->
+									<a
+										v-if="checkLink(index)"
+										class="carousel__body-cta"
+										:href="getSlideLink(index)"
+										v-kv-track-event="[
+											'Kiva15',
+											'click-timeline-CTA',
+											getSlideCta(index)
+										]"
+									>{{ getSlideCta(index) }}</a>
+									<!-- If Slide link is relative render a router-link component -->
 									<router-link
+										v-else
 										class="carousel__body-cta"
 										:to="getSlideLink(index)"
 										v-kv-track-event="[
@@ -213,6 +226,9 @@ export default {
 		getSlideLink(index) {
 			return this.slides[index].link1; // will likely be powered by an experiment later
 		},
+		checkLink(index) {
+			return !!this.getSlideLink(index).includes('http');
+		}
 	}
 };
 </script>
