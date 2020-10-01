@@ -298,7 +298,7 @@ a {
 	}
 
 	&__face {
-		padding: 7%;
+		padding: 10%;
 	}
 }
 </style>
