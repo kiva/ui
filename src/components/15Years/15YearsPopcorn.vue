@@ -60,8 +60,10 @@ export default {
 			a.setAttributeNS(null, 'repeatCount', 'indefinite');
 			a.setAttributeNS(null, 'from', `0 ${cx} ${cy}`);
 			a.setAttributeNS(null, 'to', `${360 * dir} ${cx} ${cy}`);
-			myElement.appendChild(a);
-			a.beginElement();
+			if (a.beginElement) {
+				myElement.appendChild(a);
+				a.beginElement();
+			}
 		}
 	}
 };
