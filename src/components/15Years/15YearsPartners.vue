@@ -155,7 +155,7 @@ export default {
 		return {
 			totalImpactDonations: 101,
 			totalImpactDisbursed: 130,
-			totalImpactBorrowersFunded: 2.5,
+			totalImpactBorrowersFunded: 1.5,
 			strategicPartners: [
 				{
 					key: 'paypal',
@@ -289,7 +289,7 @@ export default {
 
 				// totalImpactBorrowersFunded
 				gsap.to(funded, 3, {
-					val: 2.5,
+					val: 1.5,
 					onUpdate() {
 						vm.totalImpactBorrowersFunded = funded.val.toFixed(1);
 					}
@@ -322,6 +322,14 @@ export default {
 .strategic-partners {
 	&__list {
 		list-style: none;
+	}
+
+	&__li {
+		margin-bottom: 2rem;
+
+		@include breakpoint(large) {
+			margin-bottom: 0;
+		}
 	}
 
 	&__total-impact {
