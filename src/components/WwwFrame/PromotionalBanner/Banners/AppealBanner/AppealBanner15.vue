@@ -22,7 +22,7 @@
 					</h4>
 					<div v-html="bannerBody">
 					</div>
-					<fifteen-years-button class="appeal-15-header__cta_button" to="get-started/">
+					<fifteen-years-button class="appeal-15-header__cta_button" :to="ctaLink">
 						{{ ctaButtonText }}
 					</fifteen-years-button>
 					<fifteen-years-button variant="black" @click.prevent.stop="shrinkAppeal">
@@ -40,7 +40,7 @@
 					<fifteen-years-button
 						variant="gray"
 						class="appeal-15-header__cta_button appeal-15-header__cta_button--closed-small"
-						to="get-started/"
+						:to="ctaLink"
 					>
 						{{ ctaButtonText }}
 					</fifteen-years-button>
@@ -81,7 +81,11 @@ export default {
 		appealBannerContent: {
 			type: Object,
 			default: () => {},
-		}
+		},
+		ctaLink: {
+			type: String,
+			default: '/get-started',
+		},
 	},
 	data() {
 		return {

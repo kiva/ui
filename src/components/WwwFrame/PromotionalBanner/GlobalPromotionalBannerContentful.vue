@@ -11,6 +11,7 @@
 		/>
 		<appeal-banner-15
 			v-if="show15YearAppeal"
+			:cta-link="appeal15link"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
 	</div>
@@ -22,15 +23,24 @@ import gql from 'graphql-tag';
 
 import { settingEnabled } from '@/util/settingsUtils';
 
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
+
 import AppealBanner from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner';
 import AppealBanner15 from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBanner15';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
-const contentfulContent = gql`query contentfulContent {
+const bannerQuery = gql`query bannerQuery {
 	contentful {
 		entries(contentType: "uiSetting", contentKey: "ui-global-promo")
+	}
+	general {
+		lenderPreferencesExp: uiExperimentSetting(key: "home_lenderpreferences") {
+			key
+			value
+		}
 	}
 }`;
 
@@ -53,6 +63,7 @@ export default {
 			appealBannerContent: {},
 			appealEnabled: false,
 			appeal15Enabled: false,
+			appeal15link: '/get-started',
 			globalBannerBlacklist: [
 				'/checkout',
 				'/donate/support-kiva'
@@ -61,8 +72,16 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		query: contentfulContent,
-		preFetch: true,
+		query: bannerQuery,
+		preFetch(config, client) {
+			return client.query({
+				query: bannerQuery
+			}).then(() => {
+				return Promise.all([
+					client.query({ query: experimentQuery, variables: { id: 'home_lenderpreferences' } })
+				]);
+			});
+		},
 		result({ data }) {
 			// Hide ALL banners on these pages
 			if (this.globalBannerBlacklist.includes(this.$route.path)) {
@@ -84,6 +103,17 @@ export default {
 				'startDate',
 				'endDate'
 			);
+
+			// Check if lender preferences experiment is active
+			const lenderPreferencesExp = this.apollo.readFragment({
+				id: 'Experiment:home_lenderpreferences',
+				fragment: experimentVersionFragment,
+			}) || {};
+			// If experiment version is 'control' and we're on the homepage, change the
+			// AppealBanner15 CTA link to be /lend-by-category instead of the default /get-started
+			if (lenderPreferencesExp.version === 'control' && this.$route.path === '/') {
+				this.appeal15link = '/lend-by-category';
+			}
 
 			// if setting is enabled determine which banner to display
 			if (isGlobalSettingEnabled) {
