@@ -8,7 +8,7 @@ export default [
 		]
 	},
 	{
-		path: '/auto-deposit-new', // ! TODO temporary route
+		path: '/auto-deposit-new', // ! TODO temporary route, do a search and replace
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
 	},
 	{
