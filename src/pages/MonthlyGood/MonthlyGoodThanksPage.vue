@@ -164,12 +164,13 @@ export default {
 @import 'settings';
 
 .monthly-good-thanks-page {
-	padding-top: 1rem;
+	padding-top: 4rem;
 
 	h1 { margin-bottom: 1rem; }
 
 	.icon-confirmation {
 		height: 3rem;
+		width: 3rem;
 		color: $kiva-green;
 		fill: $kiva-green;
 		vertical-align: middle;
