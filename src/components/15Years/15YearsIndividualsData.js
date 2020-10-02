@@ -321,26 +321,26 @@ export default [
 		link2: '/monthlygood?category=refugees',
 	},
 	{
-		name: 'Lihn',
+		name: 'Linh',
 		title: 'Community Campaigner',
 		location: 'Australia',
-		img: 'lihn-do',
+		img: 'Linh-do',
 		body: `<p>
-		Lihn Do's journey to becoming a Kiva lender began at a young age. "My parents came to Australia as refugees. Even though we didn't have a lot ourselves growing up, they always instilled in my brother and me that we could be doing something to help other people,” she said. Her family's background and values combined with her interest in the "idea that a dollar can go further than just what a dollar represents” sparked her interest in Kiva's model of crowdfunded microlending.
+		Linh Do's journey to becoming a Kiva lender began at a young age. "My parents came to Australia as refugees. Even though we didn't have a lot ourselves growing up, they always instilled in my brother and me that we could be doing something to help other people,” she said. Her family's background and values combined with her interest in the "idea that a dollar can go further than just what a dollar represents” sparked her interest in Kiva's model of crowdfunded microlending.
 		</p><p>
 		"I really love being a lender on Kiva because it makes me embrace and practice the values that I have.”
 		</p><p>
-		Lihn is based in Melbourne, Australia. However, before the COVID-19 pandemic, she traveled often for work. Her travels heightened her awareness to "the fact that when you're a tourist or in a specific location for work, you don't get to see everything that country has to offer. That includes the problems that exist there. So I tend to try to support [loans] in locations that I'm also working in or a place that I've read about, just to learn a bit more about the world.”
+		Linh is based in Melbourne, Australia. However, before the COVID-19 pandemic, she traveled often for work. Her travels heightened her awareness to "the fact that when you're a tourist or in a specific location for work, you don't get to see everything that country has to offer. That includes the problems that exist there. So I tend to try to support [loans] in locations that I'm also working in or a place that I've read about, just to learn a bit more about the world.”
 		</p><p>
-		Lihn prefers to lend to female entrepreneurs and small business owners. She recognizes that women typically have more difficulty accessing, or entirely lack access to, traditional funding sources, like banks. She wants to help Kiva bridge this gap, even if in a small way.
+		Linh prefers to lend to female entrepreneurs and small business owners. She recognizes that women typically have more difficulty accessing, or entirely lack access to, traditional funding sources, like banks. She wants to help Kiva bridge this gap, even if in a small way.
 		</p><p>
-		Lihn's favorite aspect of lending on Kiva.org? The short-term, tangible impact that lending as little as $25 can have on people's lives. "There's such a thrill about being able to browse a website, and rather than doing online shopping or something for yourself, knowing that every time you click to add a loan to your basket, you're actually helping someone else in the world. It feels like such a privilege to be able to do that.”
+		Linh's favorite aspect of lending on Kiva.org? The short-term, tangible impact that lending as little as $25 can have on people's lives. "There's such a thrill about being able to browse a website, and rather than doing online shopping or something for yourself, knowing that every time you click to add a loan to your basket, you're actually helping someone else in the world. It feels like such a privilege to be able to do that.”
 		</p><p>
 		She also enjoys sharing this passion for lending through Kiva with her community and often recruits new lenders. "One of the most impactful things that I've really enjoyed being able to do is telling other people about microfinance and expanding the number of people in my own community that have since joined Kiva.”
 		</p><p>
-		It's been particularly interesting for Lihn to have these conversations about Kiva and to see people realize that they, too, can have life-changing impact on people's lives without it requiring a large sum of money. "All of us can participate.”
+		It's been particularly interesting for Linh to have these conversations about Kiva and to see people realize that they, too, can have life-changing impact on people's lives without it requiring a large sum of money. "All of us can participate.”
 		</p><p>
-		In the future, Lihn is eager to see just how impactful Kiva can be, "Kiva turning 15 is pretty amazing. It proves all of the naysayers wrong that microfinance isn't something that works, isn't something that makes an impact, or isn't something that people would be interested in. I'm really excited to see how Kiva can continue to extend its impact.”
+		In the future, Linh is eager to see just how impactful Kiva can be, "Kiva turning 15 is pretty amazing. It proves all of the naysayers wrong that microfinance isn't something that works, isn't something that makes an impact, or isn't something that people would be interested in. I'm really excited to see how Kiva can continue to extend its impact.”
 		</p>
 		`,
 		videoId: null,
