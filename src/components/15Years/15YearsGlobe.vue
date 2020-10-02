@@ -104,13 +104,21 @@ export default {
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
-				const offset = window.innerWidth < 681 ? -20 : 0;
+				const isMobileLayout = window.innerWidth < 681;
+				const offset = isMobileLayout ? -20 : 0;
 				this.gkview.animateToLatLon(result.lat + offset, result.lon);
 				const callout = new CalloutDefinition(result.lat, result.lon, PinCallout, result.properties);
 				callout.altitude = 0.035;
 				this.calloutManager.replaceCallouts([...this.callouts, callout]);
 				this.$emit('selectcountry', result.properties);
 				this.currentCallout = callout;
+
+				if (isMobileLayout) {
+					console.log(window.scrollY, window.innerHeight);
+					if (window.scrollY > window.innerHeight * 0.45) {
+						this.$el.scrollIntoView({ behavior: 'smooth' });
+					}
+				}
 			} else {
 				this.calloutManager.replaceCallouts(this.callouts);
 				this.$emit('selectcountry', null);
@@ -166,7 +174,8 @@ export default {
 			}, 2000);
 
 			const { centroid } = country;
-			const offset = window.innerWidth < 681 ? -20 : 0;
+			const isMobileLayout = window.innerWidth < 681;
+			const offset = isMobileLayout ? -20 : 0;
 			this.gkview.animateToLatLon(centroid.lat + offset, centroid.lng);
 			const callout = new CalloutDefinition(centroid.lat, centroid.lng, PinCallout, country);
 			callout.altitude = 0.035;
