@@ -13,16 +13,6 @@
 				</fifteen-years-section-header>
 
 				<div class="individuals__profile-nav-wrap">
-					<div class="individuals__profile">
-						<!-- TODO: hide from screenreaders while lightbox is open -->
-						<fifteen-years-individuals-profile
-							ref="profile1"
-							class="individuals__profile"
-							@show-next-person="showPerson(nextIndex)"
-							@show-full-profile="isShowingFullProfile = true"
-						/>
-					</div>
-
 					<div class="individuals__nav">
 						<ul class="individuals__nav-names name-nav">
 							<li
@@ -90,6 +80,16 @@
 								/>
 							</button>
 						</div>
+					</div>
+
+					<div class="individuals__profile">
+						<!-- TODO: hide from screenreaders while lightbox is open -->
+						<fifteen-years-individuals-profile
+							ref="profile1"
+							class="individuals__profile"
+							@show-next-person="showPerson(nextIndex)"
+							@show-full-profile="isShowingFullProfile = true"
+						/>
 					</div>
 				</div>
 			</div>
@@ -252,8 +252,6 @@ export default {
 @import 'components/15-years/15-years';
 
 .individuals {
-	$prev-next-size: rem-calc(75);
-
 	background: $tomato;
 	color: #fff;
 	overflow: hidden;
@@ -267,6 +265,8 @@ export default {
 	}
 
 	&__header {
+		margin-bottom: 1rem;
+
 		@include breakpoint('xxlarge') {
 			margin-bottom: 4rem;
 		}
@@ -300,7 +300,6 @@ export default {
 	&__nav {
 		@include breakpoint('xxlarge') {
 			flex-shrink: 0;
-			order: -1;
 			margin-right: 2rem;
 			margin-bottom: 5.5rem;
 		}
@@ -342,6 +341,8 @@ export default {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	position: relative;
+	z-index: 2;
 
 	&__btn-text {
 		border-radius: rem-calc(16);
