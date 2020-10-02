@@ -324,7 +324,7 @@ export default [
 		name: 'Lihn',
 		title: 'Community Campaigner',
 		location: 'Australia',
-		img: 'Lihn-do',
+		img: 'lihn-do',
 		body: `<p>
 		Lihn Do's journey to becoming a Kiva lender began at a young age. "My parents came to Australia as refugees. Even though we didn't have a lot ourselves growing up, they always instilled in my brother and me that we could be doing something to help other people,” she said. Her family's background and values combined with her interest in the "idea that a dollar can go further than just what a dollar represents” sparked her interest in Kiva's model of crowdfunded microlending.
 		</p><p>
