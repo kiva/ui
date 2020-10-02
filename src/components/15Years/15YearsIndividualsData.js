@@ -344,7 +344,7 @@ export default [
 		</p>
 		`,
 		videoId: null,
-		cta1: 'Lend like Linh',
+		cta1: 'Lend like Lihn',
 		cta2: 'Lend monthly to refugees',
 		link1: '/lend-by-category/women',
 		link2: '/monthlygood?category=women',
