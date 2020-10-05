@@ -1,5 +1,5 @@
 <template>
-	<div class="kiva-as-expert-section-wrapper">
+	<div class="kiva-as-expert-section-wrapper" id="kiva-as-expert">
 		<div class="row">
 			<div class="small-12 columns">
 				<h2 class="impact-text">
@@ -14,7 +14,7 @@
 				<kv-responsive-image
 					:images="billionImpactImages"
 					class="hide-for-large community-image"
-					alt=""
+					alt="10 years and $1 billion in loans funded"
 				/>
 				<p class="join-the-movement">
 					<!-- eslint-disable-next-line max-len -->

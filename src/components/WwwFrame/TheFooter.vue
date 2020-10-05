@@ -440,20 +440,33 @@ $footer-separator-color: $light-green;
 		.groups {
 			display: flex;
 			flex-flow: column wrap;
-			justify-content: space-between;
-			height: rem-calc(330);
+			justify-content: flex-start;
+			height: rem-calc(413);
 			width: 100%;
 			text-align: left;
 			font-size: 0.875rem;
 
+			@include breakpoint('xlarge') {
+				height: rem-calc(400);
+			}
+
 			.narrow {
 				width: 25%;
 				padding: 0 0.9375rem;
+				min-height: rem-calc(110);
+
+				&:nth-child(even) {
+					padding-top: 1rem;
+				}
 			}
 
 			.wide {
 				width: 50%;
 				padding: 0 0.9375rem;
+
+				&:nth-child(even) {
+					padding-top: 1rem;
+				}
 			}
 
 			ul {

@@ -1,5 +1,5 @@
-import { addDecorator, addParameters } from '@storybook/vue';
-import { withA11y } from '@storybook/addon-a11y';
+import { addParameters } from '@storybook/vue';
+import { MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import Vue from 'vue';
 
 //load all the svg icon sprites
@@ -8,11 +8,40 @@ import '@/assets/iconLoader';
 // same styles that are in App.vue
 import '../src/assets/scss/app.scss';
 
+// css for storybook overrides like background color
+import './storybookStyles.scss';
+
 // import config file for storybook environment
 import config from '../config/local';
 
 // provide global application config
 Vue.prototype.$appConfig = config.app;
+
+// add custom viewports
+const customViewports = {
+	mediumBreakpoint: {
+		name: 'Medium breakpoint',
+		styles: {
+			width: '834px',
+			height: '720px',
+		},
+	},
+	largeBreakpoint: {
+		name: 'Large breakpoint',
+		styles: {
+			width: '1440px',
+			height: '900px',
+		},
+	},
+	oversizeDesktop: {
+		name: 'Oversize desktop',
+		styles: {
+			width: '1540px',
+			height: '1000px',
+		},
+	},
+};
+
 
 addParameters({
 	options: {
@@ -24,16 +53,29 @@ addParameters({
 	},
 	docs: {
 		inlineStories: true,
-	}
+	},
+	backgrounds: {
+		default: 'white',
+		values: [
+			{
+				name: 'white',
+				value: '#ffffff'
+			},
+			{
+				name: 'kiva-bg-lightgray',
+				value: '#fafafa'
+			},
+			{
+				name: 'black',
+				value: '#000000'
+			},
+		],
+	},
+	viewport: {
+    viewports: {
+			...MINIMAL_VIEWPORTS,
+			...customViewports,
+    },
+  },
 });
 
-const GlobalDecorator = () => ({
-	template: `
-		<div style="padding: 2rem">
-			<story />
-		</div>
-	  `
-});
-
-addDecorator(withA11y);
-addDecorator(GlobalDecorator);

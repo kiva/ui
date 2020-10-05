@@ -35,6 +35,7 @@ export default function createApp({
 	apollo = {},
 	appConfig = {},
 	kvAuth0,
+	locale,
 } = {}) {
 	const apolloClient = createApolloClient({ ...apollo, kvAuth0, appConfig });
 
@@ -74,6 +75,10 @@ export default function createApp({
 
 	// Provide application config to all components
 	Vue.prototype.$appConfig = appConfig;
+
+	// Provide locale to all components
+	// TODO: use this to set locale in VueI18n
+	Vue.prototype.$locale = locale;
 
 	const app = new Vue({
 		router,

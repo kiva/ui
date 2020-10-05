@@ -2,7 +2,7 @@
 	<www-page class="subscriptions" :gray-background="true">
 		<div class="title-area">
 			<div class="row column">
-				<h2>Subscription preferences</h2>
+				<h2>Subscription settings</h2>
 			</div>
 		</div>
 		<router-view />

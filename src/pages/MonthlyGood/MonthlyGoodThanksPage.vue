@@ -42,7 +42,7 @@ import { addMonths, formatDistanceToNow } from 'date-fns';
 import KvIcon from '@/components/Kv/KvIcon';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodThanksPage {
 	my {
 		autoDeposit {
 			id
@@ -67,6 +67,10 @@ export default {
 			default: 'false'
 		},
 		source: {
+			type: String,
+			default: ''
+		},
+		paymentType: {
 			type: String,
 			default: ''
 		}
@@ -104,7 +108,7 @@ export default {
 	},
 	mounted() {
 		// eslint-disable-next-line max-len
-		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_0.json#';
+		const schema = 'https://raw.githubusercontent.com/kiva/snowplow/master/conf/snowplow_monthlygood_checkout_event_schema_1_0_1.json#';
 		const mgSubscriptionType = this.isOnetimePayment ? 'one-time' : 'monthly';
 		const checkoutEventData = {
 			schema,
@@ -113,7 +117,8 @@ export default {
 				subscriptionType: mgSubscriptionType,
 				category: this.category,
 				depositAmount: this.autoDepositAmount,
-				donationAmount: this.donation
+				donationAmount: this.donation,
+				paymentType: this.paymentType
 			},
 		};
 		this.$kvTrackSelfDescribingEvent(checkoutEventData);
@@ -159,12 +164,13 @@ export default {
 @import 'settings';
 
 .monthly-good-thanks-page {
-	padding-top: 1rem;
+	padding-top: 4rem;
 
 	h1 { margin-bottom: 1rem; }
 
 	.icon-confirmation {
 		height: 3rem;
+		width: 3rem;
 		color: $kiva-green;
 		fill: $kiva-green;
 		vertical-align: middle;

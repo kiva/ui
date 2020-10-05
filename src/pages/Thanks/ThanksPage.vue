@@ -31,6 +31,7 @@
 				</p>
 
 				<checkout-receipt
+					v-if="receipt"
 					class="thanks__receipt"
 					:lender="lender"
 					:receipt="receipt"
@@ -111,10 +112,22 @@ export default {
 				...data.my.userAccount,
 				teams: data.my.teams.values.map(value => value.team)
 			};
-			this.receipt = data.shop.receipt;
-			this.loans = data.shop.receipt.items.values
+
+			// The default empty object and the v-if will prevent the
+			// receipt from rendering in the rare cases this query fails.
+			// But it will not throw a server error.
+			this.receipt = _get(data, 'shop.receipt');
+			const loansResponse = _get(this.receipt, 'items.values', []);
+			this.loans = loansResponse
 				.filter(item => item.basketItemType === 'loan_reservation')
 				.map(item => item.loan);
+
+			if (!_get(data, 'my.userAccount')) {
+				console.error(`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`);
+			}
+			if (!this.receipt) {
+				console.error(`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`);
+			}
 		}
 	},
 	mounted() {

@@ -1,5 +1,3 @@
-import _isUndefined from 'lodash/isUndefined';
-import _pick from 'lodash/pick';
 import _get from 'lodash/get';
 import cookieStore from '@/util/cookieStore';
 import { parseExpCookie, serializeExpCookie, assignVersion } from '@/util/experimentUtils';
@@ -23,7 +21,13 @@ export default () => {
 					const experiment = readJSONSetting(context, `cache.data.data['Setting:uiexp.${id}'].value`);
 					// create targeted subset of experiment setting to use in hash
 					// Changing the Name, Distribution, Variants or Control values will "reset" an experiment assignment
-					const experimentSubset = _pick(experiment, ['name', 'distribution', 'variants', 'control']);
+					const {
+						name, distribution, variants, control
+					} = experiment || {};
+					const experimentSubset = {
+						name, distribution, variants, control
+					};
+
 					// get the hash for our current experiment setting
 					const settingHash = hashCode(JSON.stringify(experimentSubset));
 					const population = _get(experiment, 'population') || 1;
@@ -46,7 +50,7 @@ export default () => {
 					if (experiment !== null
 						&& experiment.enabled
 						&& (
-							_isUndefined(currentAssignment.version)
+							typeof currentAssignment.version === 'undefined'
 							|| settingHash !== currentAssignment.hash
 							|| (
 								population !== currentAssignment.population
@@ -63,7 +67,7 @@ export default () => {
 						};
 
 						// only update assignments and set cookie if the version is set
-						if (!_isUndefined(currentAssignment.version) && experiment.enabled) {
+						if (typeof currentAssignment.version !== 'undefined' && experiment.enabled) {
 							// apply updates to assignments object
 							assignments[id] = currentAssignment;
 
@@ -109,7 +113,7 @@ export default () => {
 					return {
 						id,
 						// return null if undefined so that apollo saves the value
-						version: _isUndefined(version) ? null : version,
+						version: typeof version === 'undefined' ? null : version,
 						__typename: 'Experiment',
 					};
 				},

@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<top-message-contentful />
 		<hero-slideshow
 			v-if="showSlideShow && !isExperimentActive"
 			:promo-enabled="promoEnabled"
@@ -34,15 +33,14 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import contentful from '@/graphql/query/contentful.graphql';
 import { settingEnabled } from '@/util/settingsUtils';
 import WhyKiva from '@/components/Homepage/WhyKiva';
-import HeroSlideshow from './HeroSlideshow';
 import MonthlyGoodExplained from '@/components/Homepage/MonthlyGoodExplained';
 import MGCovidExplained from '@/pages/LandingPages/MGCovid19/MGCovidExplained';
 import MGCovidHero from '@/pages/LandingPages/MGCovid19/MGCovidHero';
 import CategoryGrid from '@/components/Homepage/CategoryGrid';
-import TopMessageContentful from './TopMessageContentful';
 import { processContent } from '@/util/contentfulUtils';
+import HeroSlideshow from './HeroSlideshow';
 
-const pageQuery = gql`{
+const pageQuery = gql`query homepageMGHeroExperiment {
 	general {
 		uiExperimentSetting(key: "homepage_mg_hero") {
 			key
@@ -59,7 +57,6 @@ export default {
 		CategoryGrid,
 		MGCovidExplained,
 		MGCovidHero,
-		TopMessageContentful,
 	},
 	data() {
 		return {

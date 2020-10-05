@@ -19,8 +19,6 @@ export default {
 .promo-banner-small {
 	text-align: center;
 	font-size: $small-text-font-size;
-	border-top: 1px solid $kiva-navdivider-green;
-	border-bottom: 1px solid $divider-green;
 
 	a {
 		text-decoration: none;
@@ -29,6 +27,8 @@ export default {
 	.content {
 		line-height: 1.25;
 		padding: rem-calc(3) 0;
+		border-top: 1px solid $kiva-navdivider-green;
+		border-bottom: 1px solid $divider-green;
 	}
 
 	.call-to-action-text {

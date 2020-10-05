@@ -36,8 +36,7 @@
 			/>
 		</div>
 		<div class="attribution-text small-12 medium-7 large-6">
-			Thanks to PayPal,
-			Kiva receives free payment processing for all loans.
+			Thanks to PayPal, Kiva receives free payment processing for all loans.
 		</div>
 	</div>
 </template>
@@ -128,7 +127,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "settings";
 
 .payment-holder {
@@ -160,13 +159,11 @@ export default {
 		border-radius: $input-border-radius;
 	}
 
-	.card-title {
-		padding: rem-calc(5) rem-calc(10);
-	}
-
-	.paypal-button {
-		text-align: center;
-		margin-top: rem-calc(25);
+	::v-deep {
+		.paypal-button {
+			text-align: center;
+			margin-top: rem-calc(25);
+		}
 	}
 
 	#payment-updating-overlay {

@@ -1,5 +1,4 @@
 import _isEqual from 'lodash/isEqual';
-import _pick from 'lodash/pick';
 import MinMaxRange, {
 	getCacheableRange,
 	getInputRange,
@@ -51,16 +50,14 @@ export function getCacheableFilters(filters) {
 
 // Return a cleaned filters object suitable for a query variable
 export function getInputFilters(filters) {
+	const {
+		theme, country, gender, isGroup, loanLimit, partner, sector
+	} = filters;
+	const filterSubset = {
+		theme, country, gender, isGroup, loanLimit, partner, sector
+	};
 	return {
-		..._pick(filters, [
-			'theme',
-			'country',
-			'gender',
-			'isGroup',
-			'loanLimit',
-			'partner',
-			'sector',
-		]),
+		...filterSubset,
 		arrearsRate: getInputRange(filters.arrearsRate),
 		defaultRate: getInputRange(filters.defaultRate),
 		lenderTerm: getInputRange(filters.lenderTerm),
@@ -70,14 +67,12 @@ export function getInputFilters(filters) {
 
 // Return filters that can be used in a loan search
 export function getSearchableFilters(filters) {
-	const result = _pick(filters, [
-		'theme',
-		'country',
-		'gender',
-		'isGroup',
-		'partner',
-		'sector',
-	]);
+	const {
+		theme, country, gender, isGroup, partner, sector
+	} = filters;
+	const result = {
+		theme, country, gender, isGroup, partner, sector
+	};
 	if (filters) {
 		const arrearsRate = getSearchableRange(filters.arrearsRate);
 		if (arrearsRate) {

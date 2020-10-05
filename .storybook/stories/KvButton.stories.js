@@ -20,6 +20,11 @@ export const DefaultSmallest = () => ({
 	template: '<kv-button class="smallest">Button Smallest</kv-button>'
 });
 
+export const Rounded = () => ({
+	components: { KvButton },
+	template: '<kv-button class="rounded">Button</kv-button>'
+});
+
 export const Secondary = () => ({
 	components: { KvButton },
 	template: '<kv-button class="secondary">Secondary</kv-button>'
@@ -38,6 +43,11 @@ export const SecondarySmallest = () => ({
 export const Setting = () => ({
 	components: { KvButton },
 	template: '<kv-button class="setting">Setting</kv-button>'
+});
+
+export const TextLink = () => ({
+	components: { KvButton },
+	template: '<kv-button class="text-link">Text Link Button</kv-button>'
 });
 
 export const Disabled = () => ({

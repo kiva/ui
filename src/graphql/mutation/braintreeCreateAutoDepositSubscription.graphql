@@ -1,0 +1,14 @@
+mutation braintreeCreateAutoDepositSubscription($paymentMethodNonce: String!, $amount: Money!, $donateAmount: Money!, $dayOfMonth: Int!) {
+	my {
+		createAutoDeposit (
+			autoDeposit: {
+				amount: $amount,
+				donateAmount:
+				$donateAmount,
+				dayOfMonth: $dayOfMonth,
+			},
+			paymentMethodNonce:$paymentMethodNonce) {
+				amount donateAmount dayOfMonth status
+			}
+	}
+}

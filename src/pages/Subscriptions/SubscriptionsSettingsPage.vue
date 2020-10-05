@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="subscriptions-settings-page">
 		<!-- One Time Settings -->
 		<subscriptions-one-time
 			v-if="isOnetime"
@@ -60,7 +60,7 @@
 		</kv-lightbox>
 
 		<!-- Save button  -->
-		<div class="row column save-button-area" v-if="isChanged">
+		<div class="row column" v-if="isChanged">
 			<kv-button
 				data-test="subscriptions-save-button"
 				class="smaller"
@@ -80,17 +80,16 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvButton from '@/components/Kv/KvButton';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
 import SubscriptionsAutoDeposit from './SubscriptionsAutoDeposit';
 import SubscriptionsLegacy from './SubscriptionsLegacy';
 
-
-import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-
-const pageQuery = gql`{
+const pageQuery = gql`query subscriptionSettingsPage {
 	my {
 		autoDeposit {
 			isSubscriber
@@ -147,7 +146,7 @@ export default {
 		},
 		cancelSubscription() {
 			this.apollo.mutate({
-				mutation: gql`mutation { my { cancelAutoDeposit } }`,
+				mutation: gql`mutation cancelAutoDeposit { my { cancelAutoDeposit } }`,
 				awaitRefetchQueries: true,
 				refetchQueries: [
 					{ query: pageQuery }
@@ -221,41 +220,7 @@ export default {
 	margin-right: 2rem;
 }
 
-[class*="-area"] {
-	margin-bottom: 1.5rem;
+.subscriptions-settings-page {
+	padding-bottom: 5rem;
 }
-
-.save-button-area {
-	margin-bottom: 5rem;
-}
-
-::v-deep .settings-card {
-	background: $white;
-	padding: 1.95rem;
-	display: grid;
-	grid-template-columns: auto 1fr;
-	grid-template-rows: auto 1fr;
-	gap: 1rem 1rem;
-	grid-template-areas: "icon-wrapper title-wrapper" "icon-wrapper content-wrapper";
-}
-
-::v-deep .icon-wrapper {
-	grid-area: icon-wrapper;
-
-	.icon {
-		margin-top: 1px;
-		height: 1.75rem;
-		width: 1.75rem;
-	}
-}
-
-::v-deep .title-wrapper {
-	grid-area: title-wrapper;
-
-	h3 {
-		font-weight: $global-weight-bold;
-	}
-}
-
-::v-deep .content-wrapper { grid-area: content-wrapper; }
 </style>

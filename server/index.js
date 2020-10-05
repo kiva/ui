@@ -1,12 +1,16 @@
 require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const cluster = require('cluster');
+const http = require('http');
+const ddTrace = require('dd-trace');
 const express = require('express');
 const helmet = require('helmet');
+const locale = require('locale');
 const serverRoutes = require('./available-routes-middleware');
 const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
+const liveLoanRouter = require('./live-loan-router');
 const vueMiddleware = require('./vue-middleware');
 const serverBundle = require('../dist/vue-ssr-server-bundle.json');
 const clientManifest = require('../dist/vue-ssr-client-manifest.json');
@@ -14,6 +18,14 @@ const argv = require('./util/argv');
 const config = require('../config/selectConfig')(argv.config);
 const initCache = require('./util/initCache');
 const logger = require('./util/errorLogger');
+const initializeTerminus = require('./util/terminusConfig');
+
+// Initialize tracing
+if (config.server.enableDDTrace) {
+	// TODO: consider where it's useful to active plugins and do so via env configs
+	// REF: https://docs.datadoghq.com/tracing/runtime_metrics/nodejs/
+	ddTrace.init({ runtimeMetrics: true });
+}
 
 // Initialize a Cache instance, Should Only be called once!
 const cache = initCache(config.server);
@@ -24,12 +36,16 @@ const port = argv.port || config.server.port;
 // Set sensible security headers for express
 app.use(helmet());
 
-// Set headers for fonts
+// Set headers for static files
 function setHeaders(res, path) {
-	if (path.indexOf('/fonts/') > -1) {
+	if (/\/fonts\//.test(path)) {
+		// Allow fonts to be loaded from anywhere
 		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	} else {
+		// All other static files should have same origin
+		res.header('Access-Control-Allow-Origin', `https://${config.app.host}`);
 	}
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 }
 
 app.use(express.static('dist', {
@@ -48,11 +64,17 @@ if (argv.mock) {
 	config.app.auth0.enable = false;
 }
 
+// Read locale from request
+app.use(locale(config.app.locale.supported, config.app.locale.default));
+
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
+
+// dynamic personalized loan routes
+app.use('/live-loan', liveLoanRouter(cache));
 
 // Configure session
 app.set('trust proxy', 1);
@@ -74,29 +96,60 @@ app.use(logger.errorLogger);
 // Final Error Handler
 app.use(logger.fallbackErrorHandler);
 
-// Cluster Activation
-// See: https://nodejs.org/docs/latest-v8.x/api/cluster.html
+if (config.server.disableCluster) {
+	// initialize http server instance
+	const server = http.createServer(app);
 
-// Number of CPUs for pool
-const numCPUs = 2;
+	// initialize terminus with the http server + cache instance
+	initializeTerminus(server, cache);
 
-// Start the cluster master process
-if (cluster.isMaster && !argv.mock) {
-	console.log(`Master ${process.pid} is running`); // eslint-disable-line
-
-	// Fork workers.
-	for (let i = 0; i < numCPUs; i++) { // eslint-disable-line
-		cluster.fork();
-	}
-
-	// Check if work id is died
-	cluster.on('exit', (worker, code, signal) => {
-		console.log(`worker ${worker.process.pid} died`); // eslint-disable-line
-	});
+	// listen for requests
+	server.listen(port, () => console.info(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: `server (pid: ${process.pid}) started at localhost:${port}`
+	})));
 } else {
-	// Start the worker processes
-	// - these can share any TCP connection
-	console.log(`Worker ${process.pid} started`); // eslint-disable-line
+	// Cluster Activation
+	// See: https://nodejs.org/docs/latest-v8.x/api/cluster.html
 
-	app.listen(port, () => console.log(`server started at localhost:${port}`));
+	// Number of CPUs for pool
+	const numCPUs = 2;
+
+	// Start the cluster master process
+	if (cluster.isMaster && !argv.mock) {
+		console.log(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `Master ${process.pid} is running`
+		}));
+
+		// Fork workers.
+		for (let i = 0; i < numCPUs; i++) { // eslint-disable-line
+			cluster.fork();
+		}
+
+		// Check if work id is died
+		cluster.on('exit', (worker, code, signal) => {
+			console.info(JSON.stringify({
+				meta: {},
+				level: 'log',
+				message: `worker ${worker.process.pid} died`
+			}));
+		});
+	} else {
+		// Start the worker processes
+		// - these can share any TCP connection
+		console.info(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `Worker ${process.pid} started`
+		}));
+
+		app.listen(port, () => console.info(JSON.stringify({
+			meta: {},
+			level: 'log',
+			message: `server started at localhost:${port}`
+		})));
+	}
 }

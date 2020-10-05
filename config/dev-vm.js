@@ -1,4 +1,4 @@
-var merge = require('webpack-merge')
+const { merge } = require('webpack-merge');
 var base = require('./index.js')
 
 module.exports = merge(base, {
@@ -6,6 +6,8 @@ module.exports = merge(base, {
 		host: 'dev-vm-01.kiva.org',
 		publicPath: 'https://dev-vm-01.kiva.org/ui/',
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// Run federation
+		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		// Use this to debug graphql calls in PHPStorm
 		// graphqlUri: 'https://api-vm.kiva.org/graphql?XDEBUG_SESSION_START=PHPSTORM',
 		// use this to override authentication
@@ -35,11 +37,11 @@ module.exports = merge(base, {
 		},
 		auth0: {
 			loginRedirectUrls: {
-				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin-vm.kiva.org/login',
-				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners-vm.kiva.org/login',
-				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://dev-vm-01.kiva.org/authenticate',
-				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'https://dev-vm-01.kiva.org/ui-login',
-				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'https://dev-vm-01.kiva.org/ui-login',
+				cNTV7eN5sBKgv9nQOxDpAz1pPfJGlBI5: 'http://admin-vm.kiva.org/login?force=1',
+				e6wSaTBDpKRkV5SV5cWw6zD6eJjd2DEk: 'http://partners-vm.kiva.org/pa2/login/login?authLevel=recent',
+				xOXldYg02WsLnlnn0D5xoPWI2i3aNsFD: 'https://dev-vm-01.kiva.org/authenticate?authLevel=recent',
+				KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH: 'https://dev-vm-01.kiva.org/ui-login?force=true',
+				ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF: 'https://dev-vm-01.kiva.org/ui-login?force=true',
 			},
 			enable: true,
 			apiAudience: 'https://api.dev.kivaws.org/graphql',
@@ -62,8 +64,11 @@ module.exports = merge(base, {
 	},
 	server: {
 		graphqlUri: 'https://api-vm.kiva.org/graphql',
+		// Run federation
+		// graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		sessionUri: 'https://dev-vm-01.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'localhost:11211',
+		// disableCluster: true,
 	}
 })

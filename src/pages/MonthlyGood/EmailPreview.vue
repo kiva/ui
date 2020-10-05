@@ -1,5 +1,5 @@
 <template>
-	<div class="email-preview-section-wrapper row">
+	<div class="email-preview-section-wrapper row" id="email-preview">
 		<div class="small-12 large-6 columns">
 			<kv-responsive-image
 				class="img"

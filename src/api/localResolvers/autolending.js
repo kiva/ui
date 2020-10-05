@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import _get from 'lodash/get';
+import logFormatter from '@/util/logFormatter';
 import bothProfilesQuery from '@/graphql/query/autolending/bothProfiles.graphql';
 import loanCountQuery from '@/graphql/query/loanCount.graphql';
 import serverProfileQuery from '@/graphql/query/autolending/profileFromServer.graphql';
@@ -63,7 +64,7 @@ function updateCurrentLoanCount({ cache, client, currentProfile }) {
 			},
 			// Log any errors
 			error(e) {
-				console.error(e);
+				logFormatter(e, 'error');
 				writeAutolendingData(cache, { countingLoans: false });
 				resolve(0);
 			},
@@ -100,6 +101,10 @@ function convertLegacyProfile(profile) {
 	const riskRatingMin = _get(riskRating, 'min') || 0;
 	const boundedRiskRating = Math.max(0, Math.min(4, riskRatingMin));
 	const integerRiskRating = Math.ceil(boundedRiskRating);
+	const defaultRiskRating = riskRating ? {
+		...riskRating,
+		min: integerRiskRating,
+	} : riskRating;
 
 	// Convert legacy loan term value to 6, 12, 18, or 24
 	let termMax = _get(lenderTerm, 'max');
@@ -126,10 +131,7 @@ function convertLegacyProfile(profile) {
 					min: 0,
 					max: termMax,
 				},
-				riskRating: {
-					...riskRating,
-					min: integerRiskRating,
-				}
+				riskRating: defaultRiskRating
 			},
 			// Fix keyword to be null
 			queryString: null,

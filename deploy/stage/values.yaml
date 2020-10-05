@@ -1,0 +1,60 @@
+# Values for kiva-ui Stage deployment
+# - refer to /deploy/charts/values.yaml for defaults and commentary
+
+image:
+  repository: kiva/ui
+  tag: "" # Expected be set by Jenkins
+  pullPolicy: Always
+
+deployenv:
+  environment: "k8sstage" # injected into deployment template
+
+secretName: kiva-ui
+
+service:
+  type: ClusterIP
+  port: 8888
+  portName: &servicePortName "http"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 120Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+replicaCount: 1
+minReplicas: 1
+maxReplicas: 4
+
+metrics:
+  name: cpu
+  target:
+    type: Utilization
+    averageUtilization: 85
+
+ingress:
+  host: "ui-stage.dk1.kiva.org"
+  spec:
+    rules:
+      - host: "ui-stage.dk1.kiva.org"
+        http:
+          paths:
+          - backend:
+              serviceName: "kiva-ui"
+              servicePort: *servicePortName
+            path: /
+  tls:
+    - hosts:
+      - ui-stage.dk1.kiva.org
+      secretName: "kiva-ui-tls"
+  whitelist:
+    enabled: true
+
+configmap:
+  data:
+  - key: DD_TRACE_GLOBAL_TAGS
+    value: "env:stage,app:kiva-ui"
+  - key: DD_ENV
+    value: "stage"

@@ -30,11 +30,11 @@ module.exports = {
 		},
 		auth0: {
 			loginRedirectUrls: {
-				X6gQsD1f3Y4dvCQK8LGxYPc84UZ9Svts: 'https://admin.kiva.org/login',
-				hIkkBL8POL6hCBp3uOI0bLMlz6nt2jW2: 'https://partners.kiva.org/login',
-				PErQOIgS2YLVyBwtaK4eGcmHhIdC186g: 'https://www.kiva.org/authenticate',
-				xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd: 'https://www.kiva.org/ui-login',
-				AEnMbebwn6LBvxg1iMYczZKoAgdUt37K: 'https://www.kiva.org/ui-login',
+				X6gQsD1f3Y4dvCQK8LGxYPc84UZ9Svts: 'https://admin.kiva.org/admin/login?force=1',
+				hIkkBL8POL6hCBp3uOI0bLMlz6nt2jW2: 'https://partners.kiva.org/pa2/login/login?authLevel=recent',
+				PErQOIgS2YLVyBwtaK4eGcmHhIdC186g: 'https://www.kiva.org/authenticate?authLevel=recent',
+				xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd: 'https://www.kiva.org/ui-login?force=true',
+				AEnMbebwn6LBvxg1iMYczZKoAgdUt37K: 'https://www.kiva.org/ui-login?force=true',
 			},
 			enable: true,
 			apiAudience: 'https://api.kivaws.org/graphql',
@@ -54,6 +54,13 @@ module.exports = {
 		paypal : {
 			url: 'www.paypal.com',
 			environment: 'production'
+		},
+		googlePay: {
+			merchantId: '10620948091453922228'
+		},
+		locale: {
+			default: 'en',
+			supported: ['en', 'es', 'fr'],
 		},
 	},
 	server: {

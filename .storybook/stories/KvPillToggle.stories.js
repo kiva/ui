@@ -204,6 +204,7 @@ export const LongTitles = () => ({
 	},
 	template: `
 		<kv-pill-toggle
+			id="pill"
 			:options="options"
 		/>
 	`
@@ -241,6 +242,7 @@ export const SplitPills = () => ({
 	},
 	template: `
 		<kv-pill-toggle
+			id="pill"
 			:options="options"
 			:split-pills="true"
 			selected="o2"

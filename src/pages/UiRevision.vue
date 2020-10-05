@@ -1,5 +1,5 @@
 <template>
-	<div v-once class="columns">
+	<div class="columns">
 		<p>
 			<strong>Current Git Hash:</strong> {{ UI_COMMIT }}
 			<br>

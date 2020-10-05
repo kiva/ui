@@ -18,12 +18,14 @@
 					v-if="expVideoActive"
 				>
 					<div class="video-container">
+						<!-- eslint-disable max-len -->
 						<iframe
-							src="https://www.youtube-nocookie.com/embed/WCraaM6PAos?autoplay=1&mute=1&modestbranding=1"
+							src="https://www.youtube-nocookie.com/embed/WCraaM6PAos?autoplay=1&mute=1&modestbranding=1&rel=0"
 							frameborder="0"
 							allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 							allowfullscreen
 						></iframe>
+						<!-- eslint-enable max-len -->
 					</div>
 				</div>
 
@@ -42,7 +44,7 @@
 						<h4>
 							You're already signed up for Monthly Good.
 							Changes to this contribution can be made in your
-							<a href="/settings/credit">credit settings</a>.
+							<a href="/settings/subscriptions">subscription settings</a>.
 						</h4>
 					</div>
 					<div class="campaign-inactive" v-else-if="!covidLandingActive">
@@ -68,7 +70,7 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import CovidLandingForm from './CovidLandingForm';
 
 const pageQuery = gql`
-  {
+  query monthlyGoodCovidHero {
     general {
       mg_covid_active: uiConfigSetting(key: "covid_landing_active") {
         key
@@ -150,6 +152,8 @@ export default {
 				['wga retina', heroImagesRequire('./hero_3840x1480.jpg')],
 			],
 			expVideoActive: true,
+			isMonthlyGoodSubscriber: false,
+			covidLandingActive: false,
 		};
 	},
 	computed: {

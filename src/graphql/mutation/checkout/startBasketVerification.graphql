@@ -1,0 +1,5 @@
+mutation startBasketVerification($basketId: String) {
+	shop (basketId: $basketId) {
+		startBasketVerification
+	}
+}

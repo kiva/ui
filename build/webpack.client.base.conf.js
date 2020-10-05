@@ -1,4 +1,4 @@
-var merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 var assetsPath = require('./assets-path');
 var baseWebpackConfig = require('./webpack.base.conf');
 var styleLoaders = require('./style-loaders');
@@ -9,7 +9,7 @@ var VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin-fixed-hashbug')
 const isProd = process.env.NODE_ENV === 'production';
 
-module.exports = merge.smart(baseWebpackConfig, {
+module.exports = merge(baseWebpackConfig, {
 	entry: {
 		app: './src/client-entry.js'
 	},

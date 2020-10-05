@@ -22,8 +22,8 @@ import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import sectorListQuery from '@/graphql/query/autolending/sectorList.graphql';
-import CheckList from './CheckList';
 import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import CheckList from './CheckList';
 
 export default {
 	inject: ['apollo'],
@@ -65,7 +65,7 @@ export default {
 		},
 		changeSectors(sectors) {
 			this.apollo.mutate({
-				mutation: gql`mutation($sectors: [Int]) {
+				mutation: gql`mutation updateSectors($sectors: [Int]) {
 					autolending @client {
 						editProfile(profile: {
 							loanSearchCriteria: {

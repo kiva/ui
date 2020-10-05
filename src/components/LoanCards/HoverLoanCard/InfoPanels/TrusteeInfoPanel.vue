@@ -107,9 +107,9 @@
 import _get from 'lodash/get';
 import numeral from 'numeral';
 import { differenceInCalendarMonths, parseISO } from 'date-fns';
-import InfoPanel from './InfoPanel';
 import loanPartnerQuery from '@/graphql/query/loanPartner.graphql';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import InfoPanel from './InfoPanel';
 
 export default {
 	components: {
@@ -154,7 +154,7 @@ export default {
 		},
 		result({ data }) {
 			// this.borrowerName = _get(data, 'lend.loan.name');
-			this.trusteeName = _get(data, 'lend.loan.trustee.title');
+			this.trusteeName = _get(data, 'lend.loan.trustee.organizationName');
 			this.trusteeType = _get(data, 'lend.loan.trustee.trusteeType');
 			this.trusteeLocation = _get(data, 'lend.loan.trustee.trusteeLocation');
 			this.timeOnKiva = _get(data, 'lend.loan.trustee.memberSince');

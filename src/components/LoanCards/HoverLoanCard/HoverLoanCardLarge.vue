@@ -16,7 +16,11 @@
 		<div class="hover-loan-card-data-wrap">
 			<div>
 				<div class="name-row">
-					<kv-flag v-if="loan.geocode.country.isoCode" :country="loan.geocode.country.isoCode" :width="20" />
+					<kv-flag
+						v-if="loan.geocode.country.isoCode"
+						:country="loan.geocode.country.isoCode"
+						class="flag"
+					/>
 					<borrower-info-name
 						:name="loan.name"
 						:loan-id="loan.id"
@@ -87,10 +91,10 @@ import KvFlag from '@/components/Kv/KvFlag';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import hoverLoanCardMixin from '@/components/LoanCards/HoverLoanCard/hoverLoanCardMixin';
-import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
+import BorrowerInfoBody from '../BorrowerInfo/BorrowerInfoBody';
 
 export default {
 	components: {
@@ -199,6 +203,11 @@ export default {
 				/* Next line prevents a weird visual bug on chrome */
 				margin-top: rem-calc(1);
 			}
+		}
+
+		.flag {
+			width: rem-calc(20);
+			margin-right: 0.25rem;
 		}
 
 		.hover-borrower-info-body {

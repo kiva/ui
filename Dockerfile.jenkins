@@ -2,6 +2,7 @@
 FROM node:12-alpine as build-stage
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
+RUN apk add --no-cache make gcc g++ python pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
 
 RUN mkdir /ui
 COPY ./ /ui/
@@ -12,6 +13,13 @@ RUN npm run build
 
 # run stage
 FROM node:12-alpine as run-stage
+RUN apk add --no-cache git
+RUN apk add --no-cache tini
+RUN apk add --no-cache make gcc g++ python pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
+
+# Use Tini for entrypoint, available at /sbin/tini
+# NOTE: Overridden when starting K8s pods
+ENTRYPOINT ["/sbin/tini", "--"]
 
 # Change working directory
 RUN mkdir /ui
@@ -33,4 +41,5 @@ RUN npm install --production
 EXPOSE 8888
 
 # Launch application
-# CMD [ "npm", "start", "--", "--port=8888", "--config=k8sdev", "--prefix", "/ui" ]
+# NOTE: Uses default Production config and is overridden when starting K8s pods
+CMD [ "npm", "start" ]

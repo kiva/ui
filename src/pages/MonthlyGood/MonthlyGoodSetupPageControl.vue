@@ -18,7 +18,10 @@
 							<div class="medium-10 small-12 columns">
 								<div class="row column" v-if="!fromCovidLanding">
 									<strong>Each month on the</strong>
-									<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="dayOfMonth">
+									<label class="show-for-sr"
+										:class="{ 'error': $v.dayOfMonth.$invalid }"
+										:for="dayOfMonth"
+									>
 										Day of the Month
 									</label>
 									<input v-if="isDayInputShown"
@@ -30,7 +33,7 @@
 										required
 										min="1"
 										max="31"
-										v-model="dayOfMonth"
+										v-model.number="dayOfMonth"
 									>
 									<button
 										class="button--ordinal-day"
@@ -38,7 +41,7 @@
 										v-if="!isDayInputShown"
 									>
 										<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-										<icon-pencil class="icon-pencil" />
+										<kv-icon class="icon-pencil" name="pencil" title="Edit" />
 									</button>
 									<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
 										<li v-if="!$v.dayOfMonth.required">
@@ -194,7 +197,7 @@
 						<div class="large-9 medium-10 small-12 columns">
 							<p>
 								<!-- eslint-disable-next-line max-len -->
-								<strong><em>We'll charge your PayPal account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
+								<strong><em>We'll charge your {{ !showDropInPayments ? 'PayPal' : '' }} account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
 							</p>
 							<p v-if="hasAutoDeposits">
 								<!-- eslint-disable-next-line max-len -->
@@ -204,7 +207,7 @@
 								<!-- eslint-disable-next-line max-len -->
 								<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
 							</p>
-							<div v-if="hasBillingAgreement">
+							<div v-if="hasBillingAgreement && !showDropInPayments">
 								<kv-button
 									type="submit"
 									data-test="confirm-monthly-good-button"
@@ -220,17 +223,25 @@
 								</p>
 							</div>
 
-							<div v-if="!hasBillingAgreement">
-								<div class="paypal-wrapper">
-									<div class="paypal-cover" v-if="$v.$invalid"></div>
-									<pay-pal-mg
-										:amount="totalCombinedDeposit"
-										@complete-transaction="submitMonthlyGood()"
-									/>
-									<p class="small-text">
-										Thanks to PayPal, Kiva receives free payment processing.
-									</p>
-								</div>
+							<div class="payment-dropin-wrapper" v-if="showDropInPayments">
+								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+								<monthly-good-drop-in-payment-wrapper
+									:amount="totalCombinedDeposit"
+									:donate-amount="donation"
+									:day-of-month="dayOfMonth"
+									:category="selectedGroup"
+									:is-one-time="isOnetime"
+									@complete-transaction="completeMGBraintree"
+								/>
+							</div>
+
+							<div class="payment-dropin-wrapper" v-if="!hasBillingAgreement && !showDropInPayments">
+								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+								<pay-pal-mg
+									v-if="!showDropInPayments"
+									:amount="totalCombinedDeposit"
+									@complete-transaction="submitMonthlyGood"
+								/>
 							</div>
 						</div>
 					</div>
@@ -257,26 +268,32 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import AlreadySubscribedNotice from './AlreadySubscribedNotice';
-import LegacySubscriberNotice from './LegacySubscriberNotice';
-import PayPalMg from './PayPalMG';
-
-import IconPencil from '@/assets/icons/inline/pencil.svg';
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvButton from '@/components/Kv/KvButton';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
-import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
+import PayPalMg from '@/components/MonthlyGood/PayPalMG';
+import WwwPage from '@/components/WwwFrame/WwwPage';
+
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
-const pageQuery = gql`{
+import AlreadySubscribedNotice from './AlreadySubscribedNotice';
+import LegacySubscriberNotice from './LegacySubscriberNotice';
+
+const pageQuery = gql`query monthlyGoodSetupPageControl {
     general {
-      mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
-        key
-        value
-      }
-    }
+		mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
+			key
+			value
+		}
+		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
+			value
+			key
+		}
+	}
 	my {
 		subscriptions {
 			values {
@@ -323,13 +340,14 @@ export default {
 	},
 	components: {
 		AlreadySubscribedNotice,
-		IconPencil,
 		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
+		KvIcon,
 		KvLoadingSpinner,
 		LegacySubscriberNotice,
+		MonthlyGoodDropInPaymentWrapper,
 		PayPalMg,
 		WwwPage,
 	},
@@ -345,6 +363,7 @@ export default {
 			isDonationOptionsDirty: false,
 			submitting: false,
 			legacySubs: [],
+			showDropInPayments: true,
 			// user flags
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
@@ -394,6 +413,10 @@ export default {
 				'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
+
+			// if experiment and feature flag are BOTH on, show UI
+			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
+			this.showDropInPayments = braintreeDropInFeatureFlag;
 		},
 	},
 	created() {
@@ -486,13 +509,25 @@ export default {
 				this.donationOptionSelected = '0';
 			}
 		},
+		completeMGBraintree(paymentType) {
+			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
+			// Send to thanks page
+			this.$router.push({
+				path: '/monthlygood/thanks',
+				query: {
+					onetime: this.isOnetime,
+					source: this.source,
+					paymentType: paymentType || 'UnknownBraintree',
+				}
+			});
+		},
 		submitMonthlyGood() {
 			this.submitting = true;
 			this.$kvTrackEvent('Registration', 'click-confirm-monthly-good', 'register-monthly-good');
 
 			this.apollo.mutate({
 				mutation: gql`
-					mutation (
+					mutation registerMonthlyGood(
 						$amount: Money!,
 						$donateAmount: Money!,
 						$dayOfMonth: Int!,
@@ -529,6 +564,7 @@ export default {
 						query: {
 							onetime: this.isOnetime,
 							source: this.source,
+							paymentType: 'LegacyPaypal',
 						}
 					});
 				}
@@ -667,6 +703,7 @@ export default {
 
 		.icon-pencil {
 			height: 1rem;
+			width: 1rem;
 		}
 
 		.text-input__day {
@@ -695,15 +732,16 @@ export default {
 			display: inline-block;
 		}
 
-		::v-deep .loading-spinner {
-			vertical-align: middle;
-			width: 1rem;
-			height: 1rem;
-		}
+		// These styles are only needed for non Drop-In payment wrapper
+		// ::v-deep .loading-spinner {
+		// 	vertical-align: middle;
+		// 	width: 1rem;
+		// 	height: 1rem;
+		// }
 
-		::v-deep .loading-spinner .line {
-			background-color: $white;
-		}
+		// ::v-deep .loading-spinner .line {
+		// 	background-color: $white;
+		// }
 
 		::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
 			margin-bottom: 0;
@@ -721,9 +759,9 @@ export default {
 	}
 
 	// cover and disallow clicking if form is invalid
-	.paypal-wrapper { position: relative; }
+	.payment-dropin-wrapper { position: relative; }
 
-	.paypal-cover {
+	.payment-dropin-invalid-cover {
 		position: absolute;
 		top: 0;
 		right: 0;

@@ -3,7 +3,7 @@
 		<div
 			v-show="isShown"
 			class="kv-lightbox-wrap"
-			:class="removeContentBg"
+			:class="{'inverted': inverted}"
 			ref="kvlightbox"
 			@keyup.esc="closeLightbox"
 			@click.stop.prevent="closeLightbox"
@@ -13,18 +13,21 @@
 			<focus-lock :disabled="!isShown">
 				<div
 					class="kv-lightbox"
-					:class="`${fullWidth ? 'full-width' : ''}`"
+					:class="{'full-width': fullWidth}"
 					role="document"
 				>
 					<div class="row lightbox-row">
 						<div class="columns lightbox-columns">
-							<!-- eslint-disable max-len -->
 							<div
 								class="lightbox-content"
-								:class="`${removeContentBg} ${noPaddingTop ? 'no-padding-top': ''} ${noPaddingBottom ? 'no-padding-bottom': ''} ${noPaddingSides ? 'no-padding-sides': ''}`"
+								:class="{
+									'inverted': inverted,
+									'no-padding-top': noPaddingTop,
+									'no-padding-bottom': noPaddingBottom,
+									'no-padding-sides': noPaddingSides,
+								}"
 								@click.stop
 							>
-								<!-- eslint-enable max-len -->
 								<h2 v-if="title"
 									class="lightbox-title"
 									id="lightbox-title"
@@ -100,11 +103,6 @@ export default {
 			default: false,
 		},
 	},
-	computed: {
-		removeContentBg() {
-			return this.inverted ? 'inverted' : '';
-		}
-	},
 	watch: {
 		// Create and set our internal visibility property
 		visible() {
@@ -149,7 +147,6 @@ export default {
 	bottom: 0;
 	padding: rem-calc(1);
 	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
 	z-index: 1500;
 	max-height: 100vh;
 	background: rgba(72, 72, 72, 0.6);

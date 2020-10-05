@@ -1,11 +1,12 @@
-var merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 var baseWebpackConfig = require('./webpack.base.conf');
 var nodeExternals = require('webpack-node-externals');
 var VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 var FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const isProd = process.env.NODE_ENV === 'production';
 
-module.exports = merge.smart(baseWebpackConfig, {
+module.exports = merge(baseWebpackConfig, {
+	mode: isProd ? 'production' : baseWebpackConfig.mode,
 	entry: './src/server-entry.js',
 	target: 'node',
 	devtool: isProd ? 'source-map' : 'eval',
@@ -27,7 +28,7 @@ module.exports = merge.smart(baseWebpackConfig, {
 	// https://github.com/liady/webpack-node-externals
 	externals: nodeExternals({
 		// do not externalize style files in case we need to import it from a dep
-		whitelist: [
+		allowlist: [
 			/\.css$/,
 			/\.scss$/,
 			/\.vue$/,

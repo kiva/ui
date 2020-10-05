@@ -1,3 +1,5 @@
+import logFormatter from './logFormatter';
+
 export default (error, queryType = 'undefined_query_error_type') => {
-	console.error(queryType, error);
+	logFormatter(`${queryType}: ${error.stack}`, 'error');
 };

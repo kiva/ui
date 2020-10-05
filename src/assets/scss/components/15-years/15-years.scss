@@ -1,0 +1,96 @@
+$tomato: #CD4A3D;
+$mint: #9EEBD5;
+$sky: #B8CEF8;
+$twilight: #3E4653;
+$offwhite: #F8F8F8;
+
+$font-family-monospace: 'Roboto Mono', monospace;
+
+@mixin huge-headline() {
+	font-weight: bold;
+	font-size: rem-calc(96);
+	line-height: 1;
+	letter-spacing: rem-calc(-5);
+
+	@include breakpoint(small) {
+		font-size: rem-calc(68);
+	}
+
+	@include breakpoint(medium) {
+		font-size: rem-calc(82);
+	}
+
+	@include breakpoint(xga) {
+		font-size: rem-calc(96);
+	}
+}
+
+@mixin h2() {
+	font-size: rem-calc(48);
+	line-height: 1.15;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+
+	@include breakpoint('large') {
+		font-size: rem-calc(72);
+	}
+}
+
+@mixin h3() {
+	font-size: rem-calc(36);
+	font-weight: 500;
+	line-height: 1.38;
+	letter-spacing: -0.02em;
+
+	@include breakpoint('large') {
+		font-size: rem-calc(48);
+	}
+}
+
+@mixin h4() {
+	font-size: rem-calc(18);
+	font-weight: 500;
+	line-height: 1.167;
+	letter-spacing: -0.02em;
+	margin-bottom: 0.5em;
+
+	@include breakpoint('large') {
+		font-size: rem-calc(36);
+	}
+}
+
+@mixin h5() {
+	font-size: rem-calc(12);
+	font-family: $font-family-monospace;
+	line-height: 1.5;
+	text-transform: uppercase;
+
+	@include breakpoint('large') {
+		font-size: rem-calc(14);
+	}
+}
+
+@mixin body-text() {
+	font-size: rem-calc(14);
+	letter-spacing: -0.02em;
+	line-height: 1.35;
+
+	@include breakpoint('large') {
+		font-size: rem-calc(16);
+	}
+}
+
+@mixin link() {
+	@include h5();
+
+	text-decoration: underline;
+	color: $twilight;
+	// white-space: nowrap;
+
+	&:hover {
+		text-decoration: none;
+		// background-color: $twilight;
+		// color: $offwhite;
+		cursor: pointer;
+	}
+}

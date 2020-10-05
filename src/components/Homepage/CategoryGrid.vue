@@ -85,6 +85,11 @@ export default {
 		KvResponsiveImage,
 	},
 	inject: ['apollo'],
+	data() {
+		return {
+			loanChannels: []
+		};
+	},
 	apollo: {
 		query: categoryRowsQuery,
 		preFetch: true,

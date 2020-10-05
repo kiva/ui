@@ -64,19 +64,22 @@ import ExpandableLoanCardCollapsed from '@/components/LoanCards/ExpandableLoanCa
 import ExpandableLoanCard from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCard';
 import ListLoanCard from '@/components/LoanCards/ListLoanCard';
 import HoverLoanCard from '@/components/LoanCards/HoverLoanCard/HoverLoanCard';
+import LendHomepageLoanCard from '@/components/LoanCards/LendHomepageLoanCard';
+
 import DetailedLoanCard from '@/components/LoanCards/HoverLoanCard/DetailedLoanCard';
 import loanFavoriteMutation from '@/graphql/mutation/updateLoanFavorite.graphql';
 
 export default {
 	components: {
 		AdaptiveMicroLoanCard,
-		FeaturedHeroLoan,
-		GridLoanCard,
+		DetailedLoanCard,
 		ExpandableLoanCard,
 		ExpandableLoanCardCollapsed,
-		ListLoanCard,
+		FeaturedHeroLoan,
+		GridLoanCard,
 		HoverLoanCard,
-		DetailedLoanCard,
+		LendHomepageLoanCard,
+		ListLoanCard,
 	},
 	props: {
 		loanCardType: {

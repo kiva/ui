@@ -43,9 +43,12 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
-					<promo-grid-loan-card
-						:experiment-data="mgTargetCategory" :experiment-version="mgCategoryExpVersion"
-					/>
+					<div class="column column-block">
+						<promo-grid-loan-card
+							:category-url="mgTargetCategory.url"
+							:category-label="mgTargetCategory.label"
+						/>
+					</div>
 					<loan-card-controller
 						v-for="loan in remainingLoans"
 						:items-in-basket="itemsInBasket"
@@ -90,8 +93,8 @@ import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
-import LoadingOverlay from './LoadingOverlay';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+import LoadingOverlay from './LoadingOverlay';
 
 const loansPerPage = 12;
 
@@ -169,7 +172,6 @@ export default {
 			lendFilterExpVersion: '',
 			displayLoanPromoCard: false,
 			mgTargetCategory: null,
-			mgCategoryExpVersion: ''
 		};
 	},
 	computed: {
@@ -250,8 +252,6 @@ export default {
 					}),
 					// experiment: add to basket interstitial
 					client.query({ query: experimentQuery, variables: { id: 'add_to_basket_v2' } }),
-					// experiment: mg_promo_category
-					client.query({ query: experimentQuery, variables: { id: 'mg_promo_category' } }),
 				]);
 			});
 		}
@@ -424,43 +424,27 @@ export default {
 			this.getLendFilterExpVersion();
 		},
 		initializeMonthlyGoodPromo() {
-			// get assignment for monthly good promo exp
-			const mgCategoryPromo = this.apollo.readFragment({
-				id: 'Experiment:mg_promo_category',
-				fragment: experimentVersionFragment,
-			}) || {};
-
 			const currentRoute = this.$route.path.replace('/lend-by-category/', '');
 			const targetRoutes = [
-				{ route: 'women', id: 'women', label: 'women' },
-				{ route: 'loans-to-women', id: 'women', label: 'women' },
-				{ route: 'education', id: 'education', label: 'students' },
-				{ route: 'loans-for-education', id: 'education', label: 'students' },
-				{ route: 'refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-				{ route: 'loans-to-refugees-and-i-d-ps', id: 'refugees', label: 'refugees' },
-				{ route: 'eco-friendly', id: 'eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'eco-friendly-loans', id: 'eco_friendly', label: 'eco-friendly loans' },
-				{ route: 'agriculture', id: 'agriculture', label: 'farmers' },
-				{ route: 'loans-to-farmers', id: 'agriculture', label: 'farmers' },
-				{ route: 'kiva-u-s', id: 'us_borrowers', label: 'U.S. borrowers' },
-				{ route: 'loans-to-u-s-small-businesses', id: 'us_borrowers', label: 'U.S. borrowers' },
-				{ route: 'united-states-loans', id: 'us_borrowers', label: 'U.S. borrowers' },
+				{ route: 'women', url: '/monthlygood?category=women', label: 'women' },
+				{ route: 'loans-to-women', url: '/monthlygood?category=women', label: 'women' },
+				{ route: 'education', url: '/monthlygood?category=education', label: 'students' },
+				{ route: 'loans-for-education', url: '/monthlygood?category=education', label: 'students' },
+				{ route: 'refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+				{ route: 'loans-to-refugees-and-i-d-ps', url: '/monthlygood?category=refugees', label: 'refugees' },
+				{ route: 'eco-friendly', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+				{ route: 'eco-friendly-loans', url: '/monthlygood?category=eco_friendly', label: 'eco-friendly loans' },
+				{ route: 'agriculture', url: '/monthlygood?category=agriculture', label: 'farmers' },
+				{ route: 'loans-to-farmers', url: '/monthlygood?category=agriculture', label: 'farmers' },
+				{ route: 'kiva-u-s', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
+				{ route: 'loans-to-u-s-small-businesses', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' }, // eslint-disable-line max-len
+				{ route: 'united-states-loans', url: '/monthlygood?category=us_borrowers', label: 'U.S. borrowers' },
 			];
 			const matchedRoutes = _filter(targetRoutes, route => route.route === currentRoute);
 
 			if (matchedRoutes.length) {
-				// match active category urls before activating experiment
 				this.displayLoanPromoCard = true;
-				this.mgCategoryExpVersion = mgCategoryPromo.version;
 				[this.mgTargetCategory] = matchedRoutes;
-				// Fire Event for Exp CASH-1426 MG Category Experiment
-				if (mgCategoryPromo.version && mgCategoryPromo.version !== 'unassigned') {
-					this.$kvTrackEvent(
-						'Lending',
-						'EXP-CASH-1426-Dec2019',
-						mgCategoryPromo.version === 'shown' ? 'b' : 'a'
-					);
-				}
 			}
 		},
 	},

@@ -19,14 +19,11 @@
 				<kv-button class="smaller submit-btn" type="submit" :disabled="$v.$invalid">
 					{{ buttonText }}
 				</kv-button>
-				<div class="attribution-text text-center">
-					Thanks to PayPal, Kiva receives free payment processing
-				</div>
+				<div class="attribution-text text-center" v-html="formDisclaimer"></div>
 			</div>
 		</div>
 	</form>
 </template>
-
 
 <script>
 import numeral from 'numeral';
@@ -65,6 +62,10 @@ export default {
 		data: {
 			type: Array,
 			default: () => [],
+		},
+		formDisclaimer: {
+			type: String,
+			default: '',
 		}
 	},
 	inject: ['apollo'],

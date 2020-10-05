@@ -1,5 +1,5 @@
 <template>
-	<div class="more-about-kiva-section-wrapper row">
+	<div class="more-about-kiva-section-wrapper row" id="more-about-kiva">
 		<div class="small-12 columns">
 			<h2 class="impact-text">
 				More about Kiva
@@ -13,7 +13,8 @@
 			<icon-kiva-promise class="icon-kiva-promise" />
 		</div>
 		<p class="small-12 columns">
-			100% of funds lent on Kiva go to funding loans. Optional donations fund Kiva’s operations.
+			<!-- eslint-disable-next-line max-len -->
+			100% of funds lent on Kiva go to the field. Optional donations and support from our partners fund Kiva’s operations.
 		</p>
 	</div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="autolending-settings-page">
 		<autolending-status />
 
 		<!-- When your balance will be lent -->
@@ -8,7 +8,7 @@
 		<!-- Who you'll support-->
 		<autolending-who />
 
-		<div class="row column save-button-area">
+		<div class="row column">
 			<save-button v-if="isChanged" />
 		</div>
 	</div>
@@ -23,8 +23,7 @@ import AutolendingStatus from './AutolendingStatus';
 import AutolendingWhen from './AutolendingWhen';
 import AutolendingWho from './AutolendingWho';
 
-
-const pageQuery = gql`{
+const pageQuery = gql`query autolendProfileEnabled {
 	autolending @client {
 		profileChanged
 		currentProfile {
@@ -55,7 +54,7 @@ export default {
 		preFetch(config, client) {
 			return new Promise((resolve, reject) => {
 				client.query({
-					query: gql`{
+					query: gql`query userIsMonthlyGoodSubscriber {
 							my {
 								autoDeposit {
 									isSubscriber
@@ -131,46 +130,8 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-::v-deep .obscure {
-	opacity: 0.4;
-	pointer-events: none;
+.autolending-settings-page {
+	padding-bottom: 5rem;
 }
 
-[class*="-area"] {
-	margin-bottom: 1.5rem;
-}
-
-.save-button-area {
-	margin-bottom: 5rem;
-}
-
-::v-deep .settings-card {
-	background: $white;
-	padding: 1.95rem;
-	display: grid;
-	grid-template-columns: auto 1fr;
-	grid-template-rows: auto 1fr;
-	gap: 1rem 1rem;
-	grid-template-areas: "icon-wrapper title-wrapper" "icon-wrapper content-wrapper";
-}
-
-::v-deep .icon-wrapper {
-	grid-area: icon-wrapper;
-
-	.icon {
-		margin-top: 1px;
-		height: 1.75rem;
-		width: 1.75rem;
-	}
-}
-
-::v-deep .title-wrapper {
-	grid-area: title-wrapper;
-
-	h3 {
-		font-weight: $global-weight-bold;
-	}
-}
-
-::v-deep .content-wrapper { grid-area: content-wrapper; }
 </style>

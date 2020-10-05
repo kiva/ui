@@ -5,21 +5,30 @@
 		:footer-theme="footerTheme"
 	>
 		<donate-from-macro-hero
-			:data="promoContent"
+			:data="donateFromMacroContent"
 		/>
 
 		<div class="FAQ-wrapper section">
 			<div class="row">
-				<h2 class="strong">
-					Frequently Asked Questions
-				</h2>
-				<div v-html="bodyCopy"></div>
+				<div class="columns">
+					<h2 class="strong">
+						Frequently Asked Questions
+					</h2>
+					<div v-html="faqCopy"></div>
+				</div>
 			</div>
 		</div>
 
 		<div class="impact-wrapper section">
 			<div class="row">
-				<m-g-covid-about class="impact small-12 columns" />
+				<div class="small-12 large-6 columns">
+					<kv-responsive-image class="impact-wrapper__img" :images="impactImageSet" alt="" />
+				</div>
+				<div class="small-12 large-6 columns">
+					<h2 class="impact-wrapper__header" v-html="this.impactHeadline">
+					</h2>
+					<div v-html="impactBodyCopy"></div>
+				</div>
 			</div>
 		</div>
 	</www-page>
@@ -33,10 +42,12 @@ import { lightHeader, lightFooter } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DonateFromMacroHero from '@/pages/Donate/DonateFromMacroHero';
 import { processContent } from '@/util/contentfulUtils';
+import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-import MGCovidAbout from '@/pages/LandingPages/MGCovid19/MGCovidAbout';
 
-const pageQuery = gql`{
+const billionImpactImagesRequire = require.context('@/assets/images/10-years-billion-impact', true);
+
+const pageQuery = gql`query donateContent {
 	contentful {
 		entries (contentType: "page", contentKey: "support-kiva")
 	}
@@ -49,14 +60,20 @@ export default {
 	components: {
 		WwwPage,
 		DonateFromMacroHero,
-		MGCovidAbout,
+		KvResponsiveImage,
 	},
 	data() {
 		return {
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
 			donationFAQs: null,
-			promoContent: () => {},
+			impactHeadline: '',
+			impactBody: '',
+			donateFromMacroContent: () => {},
+			impactImageSet: [
+				['small', billionImpactImagesRequire('./10-years-billion-impact_ghost.jpg')],
+				['small retina', billionImpactImagesRequire('./10-years-billion-impact_2x_ghost.jpg')],
+			]
 		};
 	},
 	inject: ['apollo'],
@@ -74,16 +91,23 @@ export default {
 			}
 			// Processing data from contentful
 			// eslint-disable-next-line
-			this.promoContent = processContent(contentfulPageData);
-			// pulling the FAQs off the data for use in bodyCopy computed function
+			this.donateFromMacroContent = processContent(contentfulPageData);
+			// pulling the FAQs off the data for use in faqCopy computed function
 			// eslint-disable-next-line
-			this.donationFAQs = _get(this.promoContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
+			this.donationFAQs = _get(this.donateFromMacroContent, 'page.pageLayout.fields.contentGroups[1].fields.content.fields.bodyCopy');
+			// eslint-disable-next-line max-len
+			this.allDonationImpactText = _get(this.donateFromMacroContent, 'page.pageLayout.fields.contentGroups[2].fields.content.fields');
+			this.impactHeadline = _get(this.allDonationImpactText, 'headline');
+			this.impactBody = _get(this.allDonationImpactText, 'bodyCopy');
 		},
 	},
 	computed: {
-		bodyCopy() {
+		faqCopy() {
 			return documentToHtmlString(this.donationFAQs);
-		}
+		},
+		impactBodyCopy() {
+			return documentToHtmlString(this.impactBody);
+		},
 	}
 };
 </script>
@@ -117,15 +141,28 @@ export default {
 
 .impact-wrapper {
 	background: $kiva-bg-lightgray;
-}
-
-.impact {
-	margin-top: 2rem;
-	margin-bottom: 2rem;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
 
 	@include breakpoint(xlarge) {
-		margin-top: 5rem;
-		margin-bottom: 5rem;
+		padding-top: 5rem;
+		padding-bottom: 5rem;
+	}
+
+	&__img {
+		width: 100%;
+		margin-bottom: 2rem;
+
+		@include breakpoint(large) {
+			margin-bottom: 0;
+			padding-right: 2rem;
+		}
+	}
+
+	&__header {
+		@include large-text();
+
+		margin-bottom: 1rem;
 	}
 }
 </style>

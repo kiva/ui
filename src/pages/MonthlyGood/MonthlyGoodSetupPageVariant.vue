@@ -150,7 +150,7 @@
 										@complete-transaction="submitMonthlyGood()"
 									/>
 									<p class="small-text">
-										Thanks to PayPal, Kiva receives free payment processing.
+										Thanks to PayPal, Kiva receives free payment processing for all loans.
 									</p>
 								</div>
 							</div>
@@ -209,10 +209,7 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
-import AlreadySubscribedNotice from './AlreadySubscribedNotice';
-import LegacySubscriberNotice from './LegacySubscriberNotice';
-import PayPalMg from './PayPalMG';
-
+import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
@@ -224,9 +221,12 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
+import AlreadySubscribedNotice from './AlreadySubscribedNotice';
+import LegacySubscriberNotice from './LegacySubscriberNotice';
+
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodSetupPageVariant {
     general {
       mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
         key
@@ -417,7 +417,7 @@ export default {
 
 			this.apollo.mutate({
 				mutation: gql`
-					mutation (
+					mutation registerMonthlyGood(
 						$amount: Money!,
 						$donateAmount: Money!,
 						$dayOfMonth: Int!,

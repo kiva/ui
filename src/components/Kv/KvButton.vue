@@ -50,13 +50,16 @@ export default {
 	}
 }
 
-.button,
-button.button {
+.button {
 	@include button();
 	@include button-primary-styles();
 
 	font-weight: $button-font-weight;
 	box-shadow: $button-primary-shadow;
+
+	&.rounded {
+		border-radius: rem-calc(10);
+	}
 
 	&.smaller {
 		@include button-smaller-styles();
@@ -93,6 +96,29 @@ button.button {
 	&.disabled,
 	&[disabled] {
 		@include button-disabled();
+	}
+}
+
+.text-link {
+	display: inline-block;
+	color: $anchor-color;
+	text-decoration: $anchor-text-decoration;
+	line-height: inherit;
+	margin: 0;
+	border: 0;
+	padding: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+	font-size: 1em;
+	transition: none;
+	vertical-align: baseline;
+
+	&:hover,
+	&:focus {
+		color: $anchor-color-hover;
+		text-decoration: $anchor-text-decoration-hover;
+		background: transparent;
 	}
 }
 

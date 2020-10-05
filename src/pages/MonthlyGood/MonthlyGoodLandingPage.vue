@@ -33,7 +33,7 @@
 							<h4>
 								You're already signed up for Monthly Good.
 								Changes to this contribution can be made in your
-								<a href="/settings/credit">credit settings</a>.
+								<a href="/settings/subscriptions">subscription settings</a>.
 							</h4>
 						</div>
 					</div>
@@ -57,7 +57,7 @@
 					<h4>
 						You're already signed up for Monthly Good.
 						Changes to this contribution can be made in your
-						<a href="/settings/credit">credit settings</a>.
+						<a href="/settings/subscriptions">subscription settings</a>.
 					</h4>
 				</div>
 			</template>
@@ -77,6 +77,7 @@ import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
 
 import LandingForm from './LandingForm';
 import LandingFormExperiment from './LandingFormExperiment';
@@ -84,9 +85,8 @@ import HowItWorks from './HowItWorks';
 import EmailPreview from './EmailPreview';
 import MoreAboutKiva from './MoreAboutKiva';
 import KivaAsExpert from './KivaAsExpert';
-import FrequentlyAskedQuestions from './FrequentlyAskedQuestions';
 
-const pageQuery = gql`{
+const pageQuery = gql`query monthlyGoodLandingPage {
 	my {
 		autoDeposit {
 			isSubscriber
@@ -103,6 +103,9 @@ const pageQuery = gql`{
 const heroImagesRequire = require.context('@/assets/images/mg-landing-hero', true);
 
 export default {
+	metaInfo: {
+		title: 'Start Monthly Good',
+	},
 	components: {
 		WwwPage,
 		LandingForm,

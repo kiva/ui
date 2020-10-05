@@ -1,0 +1,62 @@
+{
+	"sys": {
+		"space": {
+		  "sys": {
+			"type": "Link",
+			"linkType": "Space",
+			"id": "j0p9a6ql0rn7"
+		  }
+		},
+		"id": "1Oh3lpnz4PLa9197pxMfYR",
+		"type": "Entry",
+		"createdAt": "2020-08-27T20:46:54.262Z",
+		"updatedAt": "2020-09-21T16:03:10.396Z",
+		"environment": {
+		  "sys": {
+			"id": "development",
+			"type": "Link",
+			"linkType": "Environment"
+		  }
+		},
+		"revision": 3,
+		"contentType": {
+		  "sys": {
+			"type": "Link",
+			"linkType": "ContentType",
+			"id": "genericContentBlock"
+		  }
+		},
+		"locale": "en-US"
+	  },
+	  "fields": {
+		"key": "header-area",
+		"name": "Test Campaign Title GCB",
+		"bodyCopy": {
+		  "data": {},
+		  "content": [
+			{
+			  "data": {},
+			  "content": [
+				{
+				  "data": {},
+				  "marks": [],
+				  "value": "Thank you and welcome!\n\nCode in hand you can now lend below!",
+				  "nodeType": "text"
+				}
+			  ],
+			  "nodeType": "paragraph"
+			}
+		  ],
+		  "nodeType": "document"
+		},
+		"headline": "Test Campaign Headline Area GCB",
+		"subHeadline": "Test Campaign SUB Headline Area GCB",
+		"primaryCtaLink": "/ui-site-map",
+		"primaryCtaKvTrackEvent": [
+		  "Lending",
+		  "Campaign Action",
+		  "Event Label"
+		],
+		"primaryCtaText": "Primary CTA GCB"
+	  }
+}

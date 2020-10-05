@@ -6,9 +6,10 @@ Vue.use(kivaPlugins)
 
 import StoryRouter from 'storybook-vue-router';
 import IWDHomepage from '@/pages/Homepage/iwd/IWDHomepage';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
 
 export default {
-	title: 'Promos/IWD',
+	title: 'Pages/IWD',
 	component: IWDHomepage,
 	decorators: [StoryRouter()],
 };
@@ -17,24 +18,7 @@ export const Default = () => ({
 	components: {
 		'iwd-homepage': IWDHomepage,
 	},
-	provide: {
-		apollo: {
-			mutate() {
-				return Promise.resolve({});
-			},
-			watchQuery() {
-				return {
-					subscribe() {}
-				}
-			},
-			readQuery() {
-				return Promise.resolve({});
-			},
-			query() {
-				return Promise.resolve({});
-			}
-		},
-	},
+	mixins: [apolloStoryMixin()],
 	template: `
 		<iwd-homepage style="margin: -2rem" />
 	`,

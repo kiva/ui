@@ -33,9 +33,9 @@
 					<h1> {{ loan.name }} </h1>
 					<!-- Borrower location -->
 					<div>
-						<span class="country-image">
-							<kv-flag :country="`${ loan.geocode.country.isoCode }`" :custom-height="14" />
-						</span>
+						<div class="loan-location-flag">
+							<kv-flag :country="`${ loan.geocode.country.isoCode }`" />
+						</div>
 						<span class="loan-location-text">
 							{{ loan.geocode.city }}, {{ loan.geocode.state }}, {{ loan.geocode.country.name }}
 							/ {{ loan.sector.name }}
@@ -61,7 +61,6 @@
 					<l-y-m-l
 						:basketed-loans="itemsInBasket"
 						:target-loan="loan"
-						:sort-by="lymlCustomSort"
 						@add-to-basket="handleAddToBasket"
 					/>
 				</div>
@@ -102,8 +101,6 @@ import logReadQueryError from '@/util/logReadQueryError';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvFlag from '@/components/Kv/KvFlag';
 import fundedBorrowerProfile from '@/graphql/query/fundedBorrowerProfile.graphql';
-import experimentAssignment from '@/graphql/query/experimentAssignment.graphql';
-import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import basketItems from '@/graphql/query/basketItems.graphql';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import LYML from '@/components/LoansYouMightLike/lymlContainer';
@@ -122,7 +119,6 @@ export default {
 		return {
 			loan: () => {},
 			itemsInBasket: [],
-			lymlCustomSort: 'random',
 		};
 	},
 	apollo: {
@@ -143,8 +139,6 @@ export default {
 						path: `/lend/${fundedLoanId}?minimal=false`,
 					});
 				}
-
-				return client.query({ query: experimentAssignment, variables: { id: 'funded_lyml_sort' } });
 			});
 		},
 	},
@@ -175,17 +169,6 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'FundedBorrowerProfilePage fundedBorrowerProfile');
 			this.$router.push({ path: `/lend/${loanIdFromRoute}?minimal=false` });
-		}
-
-		// Read assigned version of lyml custom sort exp
-		const customSortExpVersion = this.apollo.readFragment({
-			id: 'Experiment:funded_lyml_sort',
-			fragment: experimentVersionFragment,
-		}) || {};
-		// set custom sort on component and track exp version
-		if (customSortExpVersion.version && customSortExpVersion.version !== 'unassigned') {
-			this.lymlCustomSort = customSortExpVersion.version === 'shown' ? 'amountLeft' : 'random';
-			this.$kvTrackEvent('basket', 'EXP-CASH-1030-Aug2019', customSortExpVersion.version === 'shown' ? 'b' : 'a');
 		}
 	},
 	methods: {
@@ -224,6 +207,12 @@ export default {
 .loan-location-text,
 .lyml-text {
 	font-weight: $button-font-weight;
+}
+
+.loan-location-flag {
+	display: inline-block;
+	width: rem-calc(16);
+	margin-right: 0.25rem;
 }
 
 .loan-description-wrapper {

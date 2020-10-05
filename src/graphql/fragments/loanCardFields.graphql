@@ -38,7 +38,7 @@ fragment loanCardFields on LoanBasic {
 		lentTo
 	}
 	# lenders added for DetailedLoanCard Query Cache
-	lenders {
+	lenders(limit: 0) {
 		totalCount
 	}
 	... on LoanPartner {

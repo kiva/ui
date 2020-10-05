@@ -6,7 +6,7 @@
 
 		<p class="text-center">
 			Changes to this contribution can be made in your
-			<a href="/settings/credit">credit settings</a>.
+			<a href="/settings/subscriptions">subscription settings</a>.
 		</p>
 	</div>
 	<div v-else>
@@ -16,7 +16,7 @@
 
 		<p class="text-center">
 			<!-- eslint-disable-next-line max-len -->
-			Instead, you can change your <a href="/settings/credit">credit settings</a> to direct your Monthly Good contribution to COVID-19 support loans?
+			Instead, you can change your <a href="/settings/subscriptions">subscription settings</a> to direct your Monthly Good contribution to COVID-19 support loans?
 		</p>
 	</div>
 </template>

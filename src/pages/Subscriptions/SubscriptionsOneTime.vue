@@ -1,28 +1,28 @@
 <template>
-	<div class="row mg-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+	<div class="row">
+		<kv-settings-card class="column large-8" title="Global COVID-19 Response Lending">
+			<template v-slot:icon>
 				<kv-icon
 					class="icon"
 					title="Monthly Good"
 					name="auto-icon-when"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>
-					Global COVID-19 Response Lending
-				</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				<p>
-					Thank you for supporting those affected by COVID-19. Your deposit of <a
-						role="button"
-						@click.prevent="showLightbox = true;"
-					>{{ totalCombinedDeposit | numeral('$0,0.00') }}</a> will occur within one hour,
+					Thank you for supporting those affected by COVID-19. Your deposit of <kv-button class="text-link"
+						@click.native.prevent="showLightbox = true;"
+					>
+						{{ totalCombinedDeposit | numeral('$0,0.00') }}
+					</kv-button> will occur within one hour,
 					after which you will be unable to cancel.
 				</p>
 				<p>
-					<a role="button" @click.prevent="$emit('cancel-subscription')">Cancel Contribution</a>
+					<kv-button class="text-link"
+						@click.native.prevent="$emit('cancel-subscription')"
+					>
+						Cancel Contribution
+					</kv-button>
 				</p>
 				<kv-lightbox
 					class="one-time-settings-lightbox"
@@ -138,8 +138,8 @@
 						</kv-button>
 					</template>
 				</kv-lightbox>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -149,14 +149,14 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
+import KvButton from '@/components/Kv/KvButton';
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
-const pageQuery = gql`{
+const pageQuery = gql`query oneTimeSubscription {
 	my {
 		autoDeposit {
 			amount
@@ -173,6 +173,7 @@ export default {
 		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
+		KvSettingsCard,
 	},
 	data() {
 		return {
@@ -241,7 +242,7 @@ export default {
 		saveOneTime() {
 			this.isSaving = true;
 			const updateOneTimeSettings = this.apollo.mutate({
-				mutation: gql`mutation($amount: Money, $donateAmount: Money) {
+				mutation: gql`mutation updateAutoDeposit($amount: Money, $donateAmount: Money) {
 					my {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount

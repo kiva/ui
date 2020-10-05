@@ -64,6 +64,7 @@ module.exports = function createMiddleware({
 			config: config.app,
 			cookies,
 			user: req.user || {},
+			locale: req.locale,
 		};
 
 		// set html response headers
@@ -77,8 +78,16 @@ module.exports = function createMiddleware({
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
 
 		if (!isProd) {
-			typesPromise.then(() => console.log(`fragment fetch: ${Date.now() - s}ms`));
-			cookiePromise.then(() => console.log(`session fetch: ${Date.now() - s}ms`));
+			typesPromise.then(() => console.info(JSON.stringify({
+				meta: {},
+				level: 'info',
+				message: `fragment fetch: ${Date.now() - s}ms`
+			})));
+			cookiePromise.then(() => console.info(JSON.stringify({
+				meta: {},
+				level: 'info',
+				message: `session fetch: ${Date.now() - s}ms`
+			})));
 		}
 
 		Promise.all([typesPromise, cookiePromise])
@@ -99,12 +108,18 @@ module.exports = function createMiddleware({
 				// send the final rendered html
 				res.send(html);
 				if (!isProd) {
-					console.log(`whole request: ${Date.now() - s}ms`);
+					console.info(JSON.stringify({
+						meta: {},
+						level: 'info',
+						message: `whole request: ${Date.now() - s}ms`
+					}));
 				}
 			}).catch(err => {
 				if (err.url) {
 					// since this error is a redirect, set any cookies created during the app render
-					context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+					if (context && context.setCookies) {
+						context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
+					}
 				}
 				handleError(err, req, res, next);
 			});

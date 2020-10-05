@@ -23,7 +23,11 @@ function setSyncCookie(res, value) {
 	if (value === DELETED) {
 		options.expires = subYears(new Date(), 1);
 	}
-	console.log(`LoginSyncUI: setting sync cookie, value:${value}`);
+	console.log(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: `LoginSyncUI: setting sync cookie, value:${value}`
+	}));
 	res.append('Set-Cookie', cookie.serialize(NAME, value, options));
 }
 

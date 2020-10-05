@@ -31,7 +31,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss">
 // These styles are used on all 3 slides
 

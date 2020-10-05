@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import { object } from '@storybook/addon-knobs';
 import StoryRouter from 'storybook-vue-router';
-import { MockKvAuth0 } from '@/util/KvAuth0';
+import apolloStoryMixin from '../mixins/apollo-story-mixin';
+import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
+import { lightHeader, iwdHeaderTheme, wrdHeaderTheme } from '@/util/siteThemes';
 
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
@@ -35,40 +36,68 @@ export default {
 	title: 'WwwFrame/TheHeader',
 	component: TheHeader,
 	decorators: [StoryRouter()],
+	args: {
+		hideSearchInHeader: false,
+		minimal: false,
+		theme: null,
+	},
+	argTypes: {
+		theme: {
+			control: {
+				type: 'select',
+				options: {
+					'none': null,
+					'lightHeader':lightHeader,
+					'iwdHeaderTheme': iwdHeaderTheme,
+					'wrdHeaderTheme': wrdHeaderTheme,
+				},
+			}
+		},
+	}
 };
 
-export const Default = () => ({
+export const Default = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
 	components: {
 		TheHeader
 	},
-	provide: {
-		apollo: {
-			readQuery() {},
-			query() {},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-		kvAuth0: MockKvAuth0
-	},
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
-		<the-header />
+		<the-header
+			:minimal="minimal"
+			:theme="theme"
+			:hide-search-in-header="hideSearchInHeader"
+		/>
 	`,
 });
 
-export const LoggedInWithCart = () => ({
+export const HideSearchInHeader = Default.bind({});
+HideSearchInHeader.args = {
+	hideSearchInHeader: true,
+};
+
+export const Minimal = Default.bind({});
+Minimal.args = {
+	minimal: true,
+};
+
+export const Themed = Default.bind({});
+Themed.args = {
+	theme: lightHeader,
+};
+
+export const LoggedInWithCart = (args, { argTypes }) => ({
 	components: {
 		TheHeader
 	},
+	mixins: [kvAuth0StoryMixin],
 	provide: {
 		apollo: {
 			readQuery() {
-				return mockedApolloResponse;
+				return Promise.resolve(mockedApolloResponse);
 			},
 			query() {
-				return mockedApolloResponse;
+				return Promise.resolve(mockedApolloResponse);
 			},
 			watchQuery() {
 				return {
@@ -76,67 +105,8 @@ export const LoggedInWithCart = () => ({
 				}
 			},
 		},
-		kvAuth0: MockKvAuth0
 	},
 	template: `
 		<the-header />
 	`,
 });
-
-export const HideSearchInHeader = () => ({
-	components: {
-		TheHeader
-	},
-	provide: {
-		apollo: {
-			readQuery() {},
-			query() {},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-		kvAuth0: MockKvAuth0
-	},
-	template: `
-		<the-header :hide-search-in-header="true" />
-	`,
-});
-
-export const Themed = () => ({
-	components: {
-		TheHeader
-	},
-	provide: {
-		apollo: {
-			readQuery() {},
-			query() {},
-			watchQuery() {
-				return {
-					subscribe() { }
-				}
-			},
-		},
-		kvAuth0: MockKvAuth0
-	},
-	props: {
-		theme: {
-			type: Object,
-			default() {
-				return object('theme', {
-					backgroundColor: '#060f9f',
-					textColor: 'orangered',
-					logoColor: 'cyan',
-					linkColor: 'yellow',
-					linkHoverColor: 'pink',
-					separatorColor: 'hsl(178, 97%, 35%)'
-				});
-			}
-		}
-	},
-	template: `
-		<the-header :theme="theme" />
-	`,
-});
-

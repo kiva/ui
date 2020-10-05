@@ -41,6 +41,8 @@ function buildRouteJSON() {
 	paths.push('/process-ssr-auth');
 	// add path for time synchronization
 	paths.push('/timesync');
+	// add paths for healthcheck
+	paths.push('/healthcheck');
 
 	return paths;
 }

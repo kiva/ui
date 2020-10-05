@@ -1,7 +1,7 @@
 <template>
-	<div class="row status-area">
-		<div class="column large-8 settings-card">
-			<div class="icon-wrapper">
+	<div class="row">
+		<kv-settings-card class="column large-8" title="Auto-lending status">
+			<template v-slot:icon>
 				<kv-icon
 					v-show="autolendingStatus == 'on'"
 					class="icon"
@@ -20,20 +20,16 @@
 					title="Auto-lending Paused"
 					name="auto-icon-pause"
 				/>
-			</div>
-			<div class="title-wrapper">
-				<h3>Auto-lending status</h3>
-			</div>
-			<div class="content-wrapper">
+			</template>
+			<template v-slot:content>
 				Your auto-lending setting is currently
-				<a
+				<kv-button class="text-link"
+					@click.native.prevent="showLightbox = true; triggerWatcher()"
 					data-test="autolending-status"
-					role="button"
-					@click.prevent="showLightbox = true; triggerWatcher()"
 				>
 					<span class="uppercase">{{ autolendingStatus }}</span>
 					<span v-if="autolendingStatus == 'paused'">until {{ pauseUntilDateFormatted }}</span>
-				</a>.
+				</kv-button>.
 
 				<kv-lightbox
 					class="autolending-status-lightbox"
@@ -93,8 +89,8 @@
 						</kv-button>
 					</template>
 				</kv-lightbox>
-			</div>
-		</div>
+			</template>
+		</kv-settings-card>
 	</div>
 </template>
 
@@ -104,12 +100,14 @@ import gql from 'graphql-tag';
 import {
 	format, addDays, parseISO, formatISO
 } from 'date-fns';
+
+import KvButton from '@/components/Kv/KvButton';
+import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import KvButton from '@/components/Kv/KvButton';
-import KvRadio from '@/components/Kv/KvRadio';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvRadio from '@/components/Kv/KvRadio';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 export default {
 	inject: ['apollo'],
@@ -119,7 +117,8 @@ export default {
 		KvButton,
 		KvRadio,
 		KvLoadingSpinner,
-		KvDropdownRounded
+		KvDropdownRounded,
+		KvSettingsCard
 	},
 	data() {
 		return {
@@ -133,7 +132,7 @@ export default {
 		};
 	},
 	apollo: {
-		query: gql`{
+		query: gql`query autolendProfileStatus {
 			autolending @client {
 				profileChanged
 				currentProfile {
@@ -172,7 +171,7 @@ export default {
 				case 'paused': {
 					const pauseUntilDate = `${formatISO(addDays(new Date(), this.daysToPause))}`;
 					this.apollo.mutate({
-						mutation: gql`mutation($pauseUntilDate: [String]) {
+						mutation: gql`mutation pauseAutolending($pauseUntilDate: Date) {
 							autolending @client {
 								editProfile(profile: {
 									isEnabled: true,
@@ -188,7 +187,7 @@ export default {
 				}
 				case 'on': {
 					this.apollo.mutate({
-						mutation: gql`mutation {
+						mutation: gql`mutation enableAutolending {
 							autolending @client {
 								editProfile(profile: { isEnabled: true, pauseUntil: null })
 							}
@@ -198,7 +197,7 @@ export default {
 				}
 				case 'off': {
 					this.apollo.mutate({
-						mutation: gql`mutation {
+						mutation: gql`mutation disableAutolending {
 							autolending @client {
 								editProfile(profile: { isEnabled: false, pauseUntil: null })
 							}
@@ -234,7 +233,7 @@ export default {
 		save() {
 			this.isSaving = true;
 			this.apollo.mutate({
-				mutation: gql`mutation {
+				mutation: gql`mutation saveAutolendProfile {
 					autolending @client {
 						saveProfile
 					}

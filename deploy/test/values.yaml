@@ -1,4 +1,5 @@
-# Default values for kiva-ui service.
+# Values for kiva-ui Test deployment
+# - refer to /deploy/charts/values.yaml for defaults and commentary
 
 image:
   repository: kiva/ui
@@ -6,19 +7,32 @@ image:
   pullPolicy: Always
 
 deployenv:
-  environment: "" # set either by jenkins or manually
+  environment: "k8stest" # injected into deployment template
 
 secretName: kiva-ui
-
-replicaCount: 2
-
-strategy:
-  type: "RollingUpdate"
 
 service:
   type: ClusterIP
   port: 8888
   portName: &servicePortName "http"
+
+resources:
+  requests:
+    cpu: 80m
+    memory: 120Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+
+replicaCount: 1
+minReplicas: 1
+maxReplicas: 4
+
+metrics:
+  name: cpu
+  target:
+    type: Utilization
+    averageUtilization: 85
 
 ingress:
   host: "ui-test.dk1.kiva.org"
@@ -35,3 +49,12 @@ ingress:
     - hosts:
       - ui-test.dk1.kiva.org
       secretName: "kiva-ui-tls"
+  whitelist:
+    enabled: true
+
+configmap:
+  data:
+  - key: DD_TRACE_GLOBAL_TAGS
+    value: "env:test,app:kiva-ui"
+  - key: DD_ENV
+    value: "test"

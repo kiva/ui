@@ -1,7 +1,7 @@
 <template>
 	<div class="about">
 		<div class="row">
-			<div class="mall-12 large-6 columns">
+			<div class="small-12 large-6 columns">
 				<kv-responsive-image class="about__img" :images="aboutImageSet" alt="" />
 			</div>
 			<div class="small-12 large-6 columns">

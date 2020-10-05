@@ -6,6 +6,7 @@ require('dotenv').config({ path: '/etc/kiva-ui-server/config.env' });
 const chokidar = require('chokidar');
 const express = require('express');
 const helmet = require('helmet');
+const locale = require('locale');
 const MFS = require('memory-fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -19,6 +20,7 @@ const authRouter = require('./auth-router');
 const mockGraphQLRouter = require('./mock-graphql-router');
 const sessionRouter = require('./session-router');
 const timesyncRouter = require('./timesync-router');
+const liveLoanRouter = require('./live-loan-router');
 const vueMiddleware = require('./vue-middleware');
 const serverConfig = require('../build/webpack.server.conf');
 const clientConfig = require('../build/webpack.client.dev.conf');
@@ -89,7 +91,11 @@ const readFile = (fs, file) => {
 let resolveHandlerReady;
 const handlerReady = new Promise(resolve => { resolveHandlerReady = resolve; });
 
-let handler = () => console.error('dev-server handler was called before it was ready');
+let handler = () => console.info(JSON.stringify({
+	meta: {},
+	level: 'error',
+	message: 'dev-server handler was called before it was ready'
+}));
 let clientManifest;
 let serverBundle;
 
@@ -108,7 +114,11 @@ const updateHandler = () => {
 
 // update on template change
 chokidar.watch(path.resolve(__dirname, 'index.template.html')).on('change', () => {
-	console.log('index.template.html updated.');
+	console.info(JSON.stringify({
+		meta: {},
+		level: 'log',
+		message: 'index.template.html updated.'
+	}));
 	updateHandler();
 });
 
@@ -139,11 +149,17 @@ serverCompiler.watch({
 	updateHandler();
 });
 
+// Read locale from request
+app.use(locale(config.app.locale.supported, config.app.locale.default));
+
 // Apply serverRoutes middleware to expose available routes
 app.use('/ui-routes', serverRoutes);
 
 // Handle time sychronization requests
 app.use('/', timesyncRouter());
+
+// dynamic personalized loan routes
+app.use('/live-loan', liveLoanRouter(cache));
 
 // install dev/hot middleware
 app.use(devMiddleware);
@@ -166,4 +182,8 @@ app.use(logger.errorLogger);
 app.use(logger.fallbackErrorHandler);
 
 // start server
-app.listen(port, () => console.log(`dev-server started at localhost:${port}`));
+app.listen(port, () => 	console.info(JSON.stringify({
+	meta: {},
+	level: 'log',
+	message: `dev-server started at localhost:${port}`
+})));

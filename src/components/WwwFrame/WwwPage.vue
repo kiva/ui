@@ -53,12 +53,12 @@ export default {
 		},
 		headerTheme: {
 			type: Object,
-			default() {},
+			default: null,
 		},
 		footerTheme: {
 			type: Object,
-			default() {},
-		}
+			default: null,
+		},
 	},
 	apollo: {
 		// preFetch(config, client, args) {

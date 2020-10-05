@@ -1,0 +1,557 @@
+{
+	"data": {
+	  "contentful": {
+		"entries": {
+		  "sys": {
+			"type": "Array"
+		  },
+		  "total": 1,
+		  "skip": 0,
+		  "limit": 100,
+		  "items": [
+			{
+			  "sys": {
+				"space": {
+				  "sys": {
+					"type": "Link",
+					"linkType": "Space",
+					"id": "j0p9a6ql0rn7"
+				  }
+				},
+				"id": "3sKh40INJkNhDYzh6FaCmz",
+				"type": "Entry",
+				"createdAt": "2019-11-12T19:13:31.375Z",
+				"updatedAt": "2020-09-02T16:46:03.077Z",
+				"environment": {
+				  "sys": {
+					"id": "development",
+					"type": "Link",
+					"linkType": "Environment"
+				  }
+				},
+				"revision": 97,
+				"contentType": {
+				  "sys": {
+					"type": "Link",
+					"linkType": "ContentType",
+					"id": "uiSetting"
+				  }
+				},
+				"locale": "en-US"
+			  },
+			  "fields": {
+				"key": "ui-global-promo",
+				"active": true,
+				"startDate": "2020-02-19T00:00-08:00",
+				"endDate": "2020-09-06T23:00-08:00",
+				"content": [
+				  {
+					"sys": {
+					  "space": {
+						"sys": {
+						  "type": "Link",
+						  "linkType": "Space",
+						  "id": "j0p9a6ql0rn7"
+						}
+					  },
+					  "id": "0WBT83nqMbQsFQdP1j7aa",
+					  "type": "Entry",
+					  "createdAt": "2020-07-10T23:53:30.999Z",
+					  "updatedAt": "2020-09-02T17:57:38.676Z",
+					  "environment": {
+						"sys": {
+						  "id": "development",
+						  "type": "Link",
+						  "linkType": "Environment"
+						}
+					  },
+					  "revision": 38,
+					  "contentType": {
+						"sys": {
+						  "type": "Link",
+						  "linkType": "ContentType",
+						  "id": "globalPromoBanner"
+						}
+					  },
+					  "locale": "en-US"
+					},
+					"fields": {
+					  "bannerName": "Mid-Year Appeal Banner",
+					  "link": "/donate/supportus",
+					  "richText": {
+						"data": {},
+						"content": [
+						  {
+							"data": {},
+							"content": [
+							  {
+								"data": {},
+								"marks": [],
+								"value": "Donate to Kiva for International Day of Charity.",
+								"nodeType": "text"
+							  }
+							],
+							"nodeType": "paragraph"
+						  }
+						],
+						"nodeType": "document"
+					  },
+					  "startDate": "2020-07-21T00:00-07:00",
+					  "endDate": "2020-08-30T00:00-07:00",
+					  "active": true,
+					  "bannerType": "Appeal Banner",
+					  "dataObject": {
+						"matchingText": "Your donations are matched while funds last!",
+						"donationAmounts": [
+						  20,
+						  35,
+						  50
+						],
+						"hideThermometer": false,
+						"matchingTextReplacement": "Your donation of any amount makes a difference!"
+					  },
+					  "additionalContent": [
+						{
+						  "sys": {
+							"space": {
+							  "sys": {
+								"type": "Link",
+								"linkType": "Space",
+								"id": "j0p9a6ql0rn7"
+							  }
+							},
+							"id": "3AVdIyCNXmn6YIyu9J07Ua",
+							"type": "Entry",
+							"createdAt": "2020-07-12T03:25:44.116Z",
+							"updatedAt": "2020-08-25T21:06:40.498Z",
+							"environment": {
+							  "sys": {
+								"id": "development",
+								"type": "Link",
+								"linkType": "Environment"
+							  }
+							},
+							"revision": 9,
+							"contentType": {
+							  "sys": {
+								"type": "Link",
+								"linkType": "ContentType",
+								"id": "richTextContent"
+							  }
+							},
+							"locale": "en-US"
+						  },
+						  "fields": {
+							"key": "midYearAppealCopy",
+							"name": "Mid Year Appeal Copy",
+							"richText": {
+							  "nodeType": "document",
+							  "data": {},
+							  "content": [
+								{
+								  "nodeType": "paragraph",
+								  "content": [
+									{
+									  "nodeType": "text",
+									  "value": "Each $25 Kiva loan costs us more than $3 to facilitate, so we rely on optional tips from lenders like you to cover our costs. ",
+									  "marks": [],
+									  "data": {}
+									},
+									{
+									  "nodeType": "text",
+									  "value": "Donate $50 and get $25 to fund a borrower today.",
+									  "marks": [
+										{
+										  "type": "bold"
+										}
+									  ],
+									  "data": {}
+									}
+								  ],
+								  "data": {}
+								}
+							  ]
+							}
+						  }
+						},
+						{
+						  "sys": {
+							"space": {
+							  "sys": {
+								"type": "Link",
+								"linkType": "Space",
+								"id": "j0p9a6ql0rn7"
+							  }
+							},
+							"id": "3fyucyiaY0vqPQW07aO08l",
+							"type": "Entry",
+							"createdAt": "2020-07-11T06:59:16.407Z",
+							"updatedAt": "2020-07-11T06:59:16.407Z",
+							"environment": {
+							  "sys": {
+								"id": "development",
+								"type": "Link",
+								"linkType": "Environment"
+							  }
+							},
+							"revision": 1,
+							"contentType": {
+							  "sys": {
+								"type": "Link",
+								"linkType": "ContentType",
+								"id": "richTextContent"
+							  }
+							},
+							"locale": "en-US"
+						  },
+						  "fields": {
+							"key": "midYearAppealMatchText",
+							"name": "Mid Year Appeal Match Text",
+							"richText": {
+							  "nodeType": "document",
+							  "data": {},
+							  "content": [
+								{
+								  "nodeType": "paragraph",
+								  "content": [
+									{
+									  "nodeType": "text",
+									  "value": "Your donations are matched while funds last!",
+									  "marks": [
+										{
+										  "type": "bold"
+										}
+									  ],
+									  "data": {}
+									}
+								  ],
+								  "data": {}
+								}
+							  ]
+							}
+						  }
+						}
+					  ]
+					}
+				  }
+				]
+			  }
+			}
+		  ],
+		  "includes": {
+			"Entry": [
+			  {
+				"sys": {
+				  "space": {
+					"sys": {
+					  "type": "Link",
+					  "linkType": "Space",
+					  "id": "j0p9a6ql0rn7"
+					}
+				  },
+				  "id": "0WBT83nqMbQsFQdP1j7aa",
+				  "type": "Entry",
+				  "createdAt": "2020-07-10T23:53:30.999Z",
+				  "updatedAt": "2020-09-02T17:57:38.676Z",
+				  "environment": {
+					"sys": {
+					  "id": "development",
+					  "type": "Link",
+					  "linkType": "Environment"
+					}
+				  },
+				  "revision": 38,
+				  "contentType": {
+					"sys": {
+					  "type": "Link",
+					  "linkType": "ContentType",
+					  "id": "globalPromoBanner"
+					}
+				  },
+				  "locale": "en-US"
+				},
+				"fields": {
+				  "bannerName": "Mid-Year Appeal Banner",
+				  "link": "/donate/supportus",
+				  "richText": {
+					"data": {},
+					"content": [
+					  {
+						"data": {},
+						"content": [
+						  {
+							"data": {},
+							"marks": [],
+							"value": "Donate to Kiva for International Day of Charity.",
+							"nodeType": "text"
+						  }
+						],
+						"nodeType": "paragraph"
+					  }
+					],
+					"nodeType": "document"
+				  },
+				  "startDate": "2020-07-21T00:00-07:00",
+				  "endDate": "2020-08-30T00:00-07:00",
+				  "active": true,
+				  "bannerType": "Appeal Banner",
+				  "dataObject": {
+					"matchingText": "Your donations are matched while funds last!",
+					"donationAmounts": [
+					  20,
+					  35,
+					  50
+					],
+					"hideThermometer": false,
+					"matchingTextReplacement": "Your donation of any amount makes a difference!"
+				  },
+				  "additionalContent": [
+					{
+					  "sys": {
+						"space": {
+						  "sys": {
+							"type": "Link",
+							"linkType": "Space",
+							"id": "j0p9a6ql0rn7"
+						  }
+						},
+						"id": "3AVdIyCNXmn6YIyu9J07Ua",
+						"type": "Entry",
+						"createdAt": "2020-07-12T03:25:44.116Z",
+						"updatedAt": "2020-08-25T21:06:40.498Z",
+						"environment": {
+						  "sys": {
+							"id": "development",
+							"type": "Link",
+							"linkType": "Environment"
+						  }
+						},
+						"revision": 9,
+						"contentType": {
+						  "sys": {
+							"type": "Link",
+							"linkType": "ContentType",
+							"id": "richTextContent"
+						  }
+						},
+						"locale": "en-US"
+					  },
+					  "fields": {
+						"key": "midYearAppealCopy",
+						"name": "Mid Year Appeal Copy",
+						"richText": {
+						  "nodeType": "document",
+						  "data": {},
+						  "content": [
+							{
+							  "nodeType": "paragraph",
+							  "content": [
+								{
+								  "nodeType": "text",
+								  "value": "Each $25 Kiva loan costs us more than $3 to facilitate, so we rely on optional tips from lenders like you to cover our costs. ",
+								  "marks": [],
+								  "data": {}
+								},
+								{
+								  "nodeType": "text",
+								  "value": "Donate $50 and get $25 to fund a borrower today.",
+								  "marks": [
+									{
+									  "type": "bold"
+									}
+								  ],
+								  "data": {}
+								}
+							  ],
+							  "data": {}
+							}
+						  ]
+						}
+					  }
+					},
+					{
+					  "sys": {
+						"space": {
+						  "sys": {
+							"type": "Link",
+							"linkType": "Space",
+							"id": "j0p9a6ql0rn7"
+						  }
+						},
+						"id": "3fyucyiaY0vqPQW07aO08l",
+						"type": "Entry",
+						"createdAt": "2020-07-11T06:59:16.407Z",
+						"updatedAt": "2020-07-11T06:59:16.407Z",
+						"environment": {
+						  "sys": {
+							"id": "development",
+							"type": "Link",
+							"linkType": "Environment"
+						  }
+						},
+						"revision": 1,
+						"contentType": {
+						  "sys": {
+							"type": "Link",
+							"linkType": "ContentType",
+							"id": "richTextContent"
+						  }
+						},
+						"locale": "en-US"
+					  },
+					  "fields": {
+						"key": "midYearAppealMatchText",
+						"name": "Mid Year Appeal Match Text",
+						"richText": {
+						  "nodeType": "document",
+						  "data": {},
+						  "content": [
+							{
+							  "nodeType": "paragraph",
+							  "content": [
+								{
+								  "nodeType": "text",
+								  "value": "Your donations are matched while funds last!",
+								  "marks": [
+									{
+									  "type": "bold"
+									}
+								  ],
+								  "data": {}
+								}
+							  ],
+							  "data": {}
+							}
+						  ]
+						}
+					  }
+					}
+				  ]
+				}
+			  },
+			  {
+				"sys": {
+				  "space": {
+					"sys": {
+					  "type": "Link",
+					  "linkType": "Space",
+					  "id": "j0p9a6ql0rn7"
+					}
+				  },
+				  "id": "3AVdIyCNXmn6YIyu9J07Ua",
+				  "type": "Entry",
+				  "createdAt": "2020-07-12T03:25:44.116Z",
+				  "updatedAt": "2020-08-25T21:06:40.498Z",
+				  "environment": {
+					"sys": {
+					  "id": "development",
+					  "type": "Link",
+					  "linkType": "Environment"
+					}
+				  },
+				  "revision": 9,
+				  "contentType": {
+					"sys": {
+					  "type": "Link",
+					  "linkType": "ContentType",
+					  "id": "richTextContent"
+					}
+				  },
+				  "locale": "en-US"
+				},
+				"fields": {
+				  "key": "midYearAppealCopy",
+				  "name": "Mid Year Appeal Copy",
+				  "richText": {
+					"nodeType": "document",
+					"data": {},
+					"content": [
+					  {
+						"nodeType": "paragraph",
+						"content": [
+						  {
+							"nodeType": "text",
+							"value": "Each $25 Kiva loan costs us more than $3 to facilitate, so we rely on optional tips from lenders like you to cover our costs. ",
+							"marks": [],
+							"data": {}
+						  },
+						  {
+							"nodeType": "text",
+							"value": "Donate $50 and get $25 to fund a borrower today.",
+							"marks": [
+							  {
+								"type": "bold"
+							  }
+							],
+							"data": {}
+						  }
+						],
+						"data": {}
+					  }
+					]
+				  }
+				}
+			  },
+			  {
+				"sys": {
+				  "space": {
+					"sys": {
+					  "type": "Link",
+					  "linkType": "Space",
+					  "id": "j0p9a6ql0rn7"
+					}
+				  },
+				  "id": "3fyucyiaY0vqPQW07aO08l",
+				  "type": "Entry",
+				  "createdAt": "2020-07-11T06:59:16.407Z",
+				  "updatedAt": "2020-07-11T06:59:16.407Z",
+				  "environment": {
+					"sys": {
+					  "id": "development",
+					  "type": "Link",
+					  "linkType": "Environment"
+					}
+				  },
+				  "revision": 1,
+				  "contentType": {
+					"sys": {
+					  "type": "Link",
+					  "linkType": "ContentType",
+					  "id": "richTextContent"
+					}
+				  },
+				  "locale": "en-US"
+				},
+				"fields": {
+				  "key": "midYearAppealMatchText",
+				  "name": "Mid Year Appeal Match Text",
+				  "richText": {
+					"nodeType": "document",
+					"data": {},
+					"content": [
+					  {
+						"nodeType": "paragraph",
+						"content": [
+						  {
+							"nodeType": "text",
+							"value": "Your donations are matched while funds last!",
+							"marks": [
+							  {
+								"type": "bold"
+							  }
+							],
+							"data": {}
+						  }
+						],
+						"data": {}
+					  }
+					]
+				  }
+				}
+			  }
+			]
+		  }
+		}
+	  }
+	}
+  }

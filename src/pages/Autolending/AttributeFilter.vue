@@ -22,8 +22,8 @@ import _map from 'lodash/map';
 import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import themeListQuery from '@/graphql/query/autolending/themeList.graphql';
-import CheckList from './CheckList';
 import anyOrSelectedAutolendingFilter from '@/plugins/any-or-selected-autolending-filter-mixin';
+import CheckList from './CheckList';
 
 export default {
 	inject: ['apollo'],
@@ -65,7 +65,7 @@ export default {
 		},
 		changeThemes(themes) {
 			this.apollo.mutate({
-				mutation: gql`mutation($themes: [String]) {
+				mutation: gql`mutation updateThemes($themes: [String]) {
 					autolending @client {
 						editProfile(profile: {
 							loanSearchCriteria: {

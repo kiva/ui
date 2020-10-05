@@ -10,9 +10,19 @@
 								:steps="checkoutSteps"
 								:current-step-index="currentStep"
 							/>
+							<div class="text-center continue-browsing"
+								v-if="addToBasketRedirectExperimentShown && !userPrefContinueBrowsing"
+							>
+								<span>Want to add more loans? </span>
+								<router-link
+									to="/lend-by-category"
+									@click.native="handleChangeUserPref"
+								>
+									Continue browsing
+								</router-link>
+							</div>
 							<hr>
 						</div>
-
 						<basket-items-list
 							:loans="loans"
 							:donations="donations"
@@ -45,8 +55,12 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 
+						<basket-verification
+							@verification-required="verificationRequired = $event"
+						/>
+
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
-							<div v-if="isLoggedIn" class="small-12">
+							<div v-if="isLoggedIn && !verificationRequired" class="small-12">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
@@ -59,7 +73,15 @@
 								</form>
 
 								<payment-wrapper
-									v-else
+									v-else-if="!showDropInPayments"
+									:amount="creditNeeded"
+									@refreshtotals="refreshTotals"
+									@updating-totals="setUpdatingTotals"
+									@complete-transaction="completeTransaction"
+								/>
+
+								<checkout-drop-in-payment-wrapper
+									v-else-if="showDropInPayments"
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
@@ -67,9 +89,8 @@
 								/>
 							</div>
 
-							<div v-else class="small-12">
+							<div v-else-if="!isActivelyLoggedIn && showLoginContinueButton" class="small-12">
 								<kv-button
-									v-if="!isActivelyLoggedIn && showLoginContinueButton"
 									class="checkout-button smallest"
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
@@ -77,7 +98,7 @@
 									@click.prevent.native="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
-									Login to Continue
+									{{ loginContinueButtonText }}
 								</kv-button>
 							</div>
 						</div>
@@ -137,9 +158,8 @@
 <script>
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
-import _map from 'lodash/map';
-import _pick from 'lodash/pick';
 import numeral from 'numeral';
+import store2 from 'store2';
 import cookieStore from '@/util/cookieStore';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import logReadQueryError from '@/util/logReadQueryError';
@@ -151,12 +171,14 @@ import shopBasketUpdate from '@/graphql/query/checkout/shopBasketUpdate.graphql'
 import setupBasketForUserMutation from '@/graphql/mutation/shopSetupBasketForUser.graphql';
 import validatePreCheckoutMutation from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import validationErrorsFragment from '@/graphql/fragments/checkoutValidationErrors.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import KvButton from '@/components/Kv/KvButton';
 import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
+import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -164,6 +186,7 @@ import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
+import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
 export default {
@@ -175,10 +198,12 @@ export default {
 		KvLightbox,
 		OrderTotals,
 		BasketItemsList,
+		BasketVerification,
 		KivaCardRedemption,
 		LoadingOverlay,
 		CheckoutHolidayPromo,
 		PaymentWrapper,
+		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -197,6 +222,7 @@ export default {
 			kivaCards: [],
 			redemption_credits: [],
 			hasFreeCredits: false,
+			verificationRequired: false,
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
@@ -212,12 +238,10 @@ export default {
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
-			checkoutSteps: [
-				'Basket',
-				'Account',
-				'Payment',
-				'Thank You!'
-			]
+			showDropInPayments: true,
+			userPrefContinueBrowsing: false,
+			addToBasketRedirectExperimentShown: false,
+			loginButtonExperimentVersion: null,
 		};
 	},
 	apollo: {
@@ -270,8 +294,14 @@ export default {
 				{ __typename: 'Credit', creditType: 'redemption_code' }
 			);
 			this.hasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
+
+			// Braintree drop-in UI
+			// if feature flag are in ON, show drop-in UI
+			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
+			this.showDropInPayments = braintreeDropInFeatureFlag;
 		}
 	},
 	created() {
@@ -299,6 +329,33 @@ export default {
 		} catch (e) {
 			logReadQueryError(e, 'CheckoutPage promoQuery');
 		}
+
+		// GROW-127 Add to basket redirect experiment
+		const addToBasketRedirectExperiment = this.apollo.readFragment({
+			id: 'Experiment:add_to_basket_redirect',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (addToBasketRedirectExperiment.version === 'control') {
+			this.addToBasketRedirectExperimentShown = false;
+		} else if (addToBasketRedirectExperiment.version === 'shown') {
+			this.addToBasketRedirectExperimentShown = true;
+		}
+
+		// GROW-203 login/registration CTA experiment
+		const loginButtonExperiment = this.apollo.readFragment({
+			id: 'Experiment:checkout_login_cta',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		this.loginButtonExperimentVersion = loginButtonExperiment.version;
+		if (this.loginButtonExperimentVersion && !this.emptyBasket) {
+			this.$kvTrackEvent(
+				'Basket',
+				'EXP-GROW-203-Aug2020',
+				this.loginButtonExperimentVersion,
+			);
+		}
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time
@@ -318,6 +375,13 @@ export default {
 				this.$kvTrackEvent('Checkout', 'EXP-Checkout-Loaded', userStatus);
 			});
 		});
+
+		// cover ssr or spa page load
+		if (this.isLoggedIn) {
+			this.logBasketState();
+		}
+
+		this.userPrefContinueBrowsing = store2('userPrefContinueBrowsing') === true; // read from localstorage
 	},
 	computed: {
 		isLoggedIn() {
@@ -333,7 +397,25 @@ export default {
 			}
 			return false;
 		},
+		checkoutSteps() {
+			if (this.loginButtonExperimentShown) {
+				return [
+					'Basket',
+					'Payment',
+					'Thank You!'
+				];
+			}
+			return [
+				'Basket',
+				'Account',
+				'Payment',
+				'Thank You!'
+			];
+		},
 		currentStep() {
+			if (this.loginButtonExperimentShown) {
+				return this.isLoggedIn ? 1 : 0;
+			}
 			return this.isLoggedIn ? 2 : 0;
 		},
 		creditNeeded() {
@@ -348,13 +430,20 @@ export default {
 			}
 			return false;
 		},
+		loginContinueButtonText() {
+			return this.loginButtonExperimentShown ? 'Continue' : 'Login to Continue';
+		},
 		emptyBasket() {
 			if (this.loans.length === 0 && this.kivaCards.length === 0
-				&& parseFloat(_get(this.donations, '[0].price')) === 0) {
+				&& (!this.donations.length
+				|| parseFloat(_get(this.donations, '[0].price')) === 0)) {
 				return true;
 			}
 			return false;
 		},
+		loginButtonExperimentShown() {
+			return this.loginButtonExperimentVersion === 'b';
+		}
 	},
 	methods: {
 		loginToContinue() {
@@ -365,6 +454,18 @@ export default {
 				if (!this.isActivelyLoggedIn) {
 					authorizeOptions.prompt = 'login';
 				}
+
+				if (this.loginButtonExperimentShown) {
+					// Pass custom JSON configuration to Auth0 login page
+					const kvConfig = JSON.stringify({ socialExp: true });
+					// Choose register as initial screen if no user has logged in on this browser before
+					if (!cookieStore.get('kvu')) {
+						authorizeOptions.login_hint = `signUp|${kvConfig}`;
+					} else {
+						authorizeOptions.login_hint = `login|${kvConfig}`;
+					}
+				}
+
 				this.kvAuth0.popupLogin(authorizeOptions).then(result => {
 					// Only refetch data if login was successful
 					if (result) {
@@ -379,6 +480,10 @@ export default {
 						return preFetchAll(matched, this.apollo, {
 							route: this.$route,
 							kvAuth0: this.kvAuth0,
+						}).catch(error => {
+							if (error.path) {
+								this.$router.push(error);
+							}
 						});
 					}
 					return false;
@@ -398,6 +503,8 @@ export default {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'];
 				this.myId = userState['https://www.kiva.org/kiva_id'];
 			}
+			// covers popup login
+			this.logBasketState();
 		},
 		/* Validate the Entire Basket on mounted */
 		validatePreCheckout() {
@@ -444,11 +551,13 @@ export default {
 			const transactionData = {
 				transactionId: numeral(transactionId).value(),
 				itemTotal: this.totals.itemTotal,
-				loans: _map(this.loans, loan => {
-					return _pick(loan, ['__typename', 'id', 'price']);
+				loans: this.loans.map(loan => {
+					const { __typename, id, price } = loan;
+					return { __typename, id, price };
 				}),
-				donations: _map(this.donations, donation => {
-					return _pick(donation, ['__typename', 'id', 'price']);
+				donations: this.donations.map(donation => {
+					const { __typename, id, price } = donation;
+					return { __typename, id, price };
 				}),
 			};
 			// fire transaction events
@@ -475,6 +584,23 @@ export default {
 		},
 		redirectLightboxClosed() {
 			this.redirectLightboxVisible = false;
+		},
+		handleChangeUserPref() {
+			this.$kvTrackEvent(
+				'Lending',
+				'EXP-GROW-127-Jul2020',
+				'click-continue-browsing'
+			);
+			store2('userPrefContinueBrowsing', true); // store userpref in localstorage
+		},
+		logBasketState() {
+			const creditNeededInt = numeral(this.creditNeeded).value();
+			this.$kvTrackEvent(
+				'Checkout',
+				'Payment Required',
+				creditNeededInt > 0 || false,
+				creditNeededInt * 100
+			);
 		},
 	},
 	destroyed() {
@@ -593,6 +719,10 @@ export default {
 
 .checkout-steps-wrapper {
 	padding-bottom: 1.2rem;
+
+	.continue-browsing {
+		font-weight: $global-weight-highlight;
+	}
 }
 
 .checkout-steps {

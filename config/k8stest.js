@@ -1,4 +1,4 @@
-var merge = require('webpack-merge')
+const { merge } = require('webpack-merge');
 var test  = require('./test.js')
 
 module.exports = merge(test, {
@@ -7,5 +7,7 @@ module.exports = merge(test, {
 	},
 	server: {
 		memcachedServers: 'marketplace-k8s-ui-test.knmtma.0001.usw2.cache.amazonaws.com:11211',
+		enableDDTrace: true,
+		disableCluster: true,
 	}
 })
