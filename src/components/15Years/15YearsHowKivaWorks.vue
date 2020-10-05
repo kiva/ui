@@ -7,7 +7,7 @@
 						How Kiva Works
 					</template>
 					<template v-slot:subhead>
-						A Step-by-Step<br class="smo"><br class="xxlu"> Guide
+						A step-by-step<br class="smo"><br class="xxlu"> guide
 					</template>
 				</fifteen-years-section-header>
 

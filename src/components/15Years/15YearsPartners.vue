@@ -8,7 +8,7 @@
 							Strategic Partners
 						</template>
 						<template v-slot:subhead>
-							Individuals and Organizations <br class="smo"><br class="xxlu"> making a difference
+							Individuals and organizations <br class="smo"><br class="xxlu"> making a difference
 						</template>
 					</fifteen-years-section-header>
 				</section>
