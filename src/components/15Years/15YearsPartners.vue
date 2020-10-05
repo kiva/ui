@@ -8,7 +8,7 @@
 							Strategic Partners
 						</template>
 						<template v-slot:subhead>
-							Individuals and Organizations <br class="smo"><br class="xxlu"> making a difference
+							Individuals and organizations <br class="smo"><br class="xxlu"> making a difference
 						</template>
 					</fifteen-years-section-header>
 				</section>
@@ -238,6 +238,11 @@ export default {
 					key: 'paypal',
 					logo: imgRequire('./Partner-paypal-bw.svg'),
 					alt: 'PayPal'
+				},
+				{
+					key: 'farfetch',
+					logo: imgRequire('./Partner-farfetch.svg'),
+					alt: 'Positively Farfetch'
 				},
 				{
 					key: 'women',
