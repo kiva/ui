@@ -240,6 +240,11 @@ export default {
 					alt: 'PayPal'
 				},
 				{
+					key: 'farfetch',
+					logo: imgRequire('./Partner-farfetch.svg'),
+					alt: 'Positively Farfetch'
+				},
+				{
 					key: 'women',
 					logo: imgRequire('./Partner-women.svg'),
 					alt: 'Women and Girls Empowered'
