@@ -83,7 +83,6 @@
 </template>
 
 <script>
-import _drop from 'lodash/drop';
 import _each from 'lodash/each';
 import _filter from 'lodash/filter';
 import _find from 'lodash/find';
@@ -289,7 +288,7 @@ export default {
 			return this.apollo.query({
 				query: loanChannelQuery,
 				variables: {
-					ids: _drop(this.realCategoryIds, ssrRowLimiter),
+					ids: this.realCategoryIds.slice(ssrRowLimiter),
 					excludeIds: ssrLoanIds,
 					imgDefaultSize: this.showHoverLoanCards ? 'w480h300' : 'w480h360',
 					imgRetinaSize: this.showHoverLoanCards ? 'w960h600' : 'w960h720',
