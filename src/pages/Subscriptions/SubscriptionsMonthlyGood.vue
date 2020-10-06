@@ -46,7 +46,7 @@
 					<kv-lightbox
 						class="mg-update-lightbox"
 						:visible="showLightbox"
-						title="Change your monthly good"
+						:title="settingsOpen ? 'Change your monthly good' : 'Update payment method'"
 						@lightbox-closed="closeLightbox"
 					>
 						<div class="mg-update-lightbox__content">
@@ -113,7 +113,11 @@
 											Back to deposit settings
 										</kv-button>
 										<div class="mg-update-lightbox__dropin-payment-wrapper">
-											<strong>Update payment method:</strong>
+											<div class="row column mg-update-lightbox__current-payment-method">
+												<strong>Current payment method:</strong>
+												<img :src="paymentMethod.imageUrl">
+												{{ paymentMethod.description }}
+											</div>
 											<monthly-good-drop-in-payment-wrapper
 												:amount="totalCombinedDeposit"
 												:donate-amount="donation"
@@ -380,6 +384,10 @@ export default {
 	&__dropin-payment-wrapper {
 		margin: 1rem 0 0;
 		padding-left: 0.5rem;
+	}
+
+	&__current-payment-method {
+		margin: 1rem 0 2rem;
 	}
 
 	.arrow {
