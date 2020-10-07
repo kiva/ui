@@ -381,29 +381,22 @@ export default {
 	}
 
 	&__headline-stroked {
-		-webkit-text-stroke: 1px $body-font-color;
+		-webkit-text-stroke: rem-calc(1) $body-font-color;
 		-webkit-text-fill-color: $offwhite;
 	}
 
 	&__main-section {
 		position: absolute;
-		height: 432px;
+		height: rem-calc(432);
 		display: flex;
 		width: 100%;
-
-		.row {
-			flex: 1 0 auto; // IE11;
-		}
-
-		@include breakpoint(small) {
-			margin: 0 auto;
-			padding-top: rem-calc(48);
-		}
+		margin: 0 auto;
+		padding-top: rem-calc(48);
 
 		@include breakpoint(large) {
 			height: auto;
 			position: absolute;
-			bottom: 310px;
+			bottom: rem-calc(310);
 			max-width: 72rem;
 			width: 100%;
 			margin: 0 auto;
@@ -416,13 +409,16 @@ export default {
 			left: 50%;
 			margin-left: -34rem;
 		}
+
+		.row {
+			flex: 1 0 auto; // IE11;
+		}
 	}
 
 	.header__main-section-row {
-		/* padding-top: rem-calc(96); */
 		padding-left: 0;
 		margin: 0;
-		min-height: rem-calc(340px);
+		min-height: rem-calc(340);
 		max-width: none;
 		width: 100%;
 
@@ -438,15 +434,11 @@ export default {
 	}
 
 	.country_cta {
-		// width: 100%;
+		padding-bottom: rem-calc(48);
 
-		@include breakpoint(small) {
-			padding-bottom: rem-calc(48);
-
-			.row {
-				margin-left: 0;
-				margin-right: 0;
-			}
+		.row {
+			margin-left: 0;
+			margin-right: 0;
 		}
 
 		.fifteen-yr-button {
@@ -455,17 +447,14 @@ export default {
 			text-align: center;
 
 			@include breakpoint(large) {
-				width: 203px;
+				width: rem-calc(203);
 			}
 		}
 	}
 
 	&__text {
-
-		@include breakpoint(small) {
-			padding: 0 rem-calc(24);
-			padding-bottom: rem-calc(86);
-		}
+		padding: 0 rem-calc(24);
+		padding-bottom: rem-calc(86);
 
 		@include breakpoint(xxlarge) {
 			max-width: 35vw;
@@ -477,16 +466,9 @@ export default {
 	}
 
 	&__cards-section {
-		@include breakpoint(small) {
-			position: relative;
-			background-color: $mint;
-			margin-top: calc(100vw + 404px);
-
-			// margin-top: calc(100vw - 48px + 432px + 20px);
-			// margin-top: calc(100vw - #{rem-calc(72)});
-			// z-index: 0;
-			// padding-top: rem-calc(32);
-		}
+		position: relative;
+		background-color: $mint;
+		margin-top: calc(100vw + #{rem-calc(404)});
 
 		@include breakpoint(large) {
 			position: absolute;
@@ -576,10 +558,7 @@ export default {
 	line-height: 1;
 
 	&.long {
-
-		@include breakpoint(small) {
-			font-size: rem-calc(32);
-		}
+		font-size: rem-calc(32);
 
 		@include breakpoint(large) {
 			font-size: rem-calc(40);
@@ -606,19 +585,13 @@ export default {
 }
 
 .country-sticker {
-	display: block;
-	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
 	border-radius: 50%;
-	padding: 3px;
-	max-width: 40px;
-	max-height: 40px;
-	min-width: 40px;
-	min-height: 40px;
-
-	// Phones
-	@include breakpoint(small) {
-		display: none;
-	}
+	padding: rem-calc(3);
+	max-width: rem-calc(40);
+	max-height: rem-calc(40);
+	min-width: rem-calc(40);
+	min-height: rem-calc(40);
 
 	// Desktop
 	@include breakpoint(large) {
@@ -631,13 +604,10 @@ export default {
 }
 
 .loan-number-group {
-
-	@include breakpoint(small) {
-		padding-left: rem-calc(24);
-		border-left: 2px solid $twilight;
-		margin-left: rem-calc(24) !important;
-		margin-top: rem-calc(16);
-	}
+	padding-left: rem-calc(24);
+	border-left: rem-calc(2) solid $twilight;
+	margin-left: rem-calc(24) !important;
+	margin-top: rem-calc(16);
 
 	@include breakpoint(large) {
 		margin-top: rem-calc(48);
@@ -669,29 +639,29 @@ export default {
 		margin: 0;
 		padding-top: 0;
 		position: absolute;
-		bottom: 302px;
-		left: 100px;
-		max-width: 180px;
+		bottom: rem-calc(302);
+		left: rem-calc(100);
+		max-width: rem-calc(180);
 	}
 
 	&__indicator {
 		margin: 0 rem-calc(16);
 
 		progress {
-			height: 3px;
-			min-width: 50px;
+			height: rem-calc(3);
+			min-width: rem-calc(50);
 
 			--kv-progress-bar-foreground-color: black;
 			--kv-progress-bar-background-color: #C4C4C4;
 		}
 
 		progress::-webkit-progress-bar {
-			border-radius: 1.5px;
+			border-radius: rem-calc(1.5);
 			background-color: #C4C4C4;
 		}
 
 		progress::-webkit-progress-value {
-			border-radius: 1.5px;
+			border-radius: rem-calc(1.5);
 			background-color: $twilight;
 		}
 	}
