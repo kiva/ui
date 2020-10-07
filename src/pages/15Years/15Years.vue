@@ -61,13 +61,14 @@ export default {
 			uiExpGROW166Shown: getExperimentVersion('intercom_messenger', this.apollo) === 'shown',
 		};
 	},
-	mounted() {
+	created() {
+		console.log(`this.uiExpGROW166: ${this.uiExpGROW166Shown}`);
 		this.$kvTrackEvent(
 			'homepage',
 			'EXP-GROW-166-Aug2020',
-			this.uiExpGROW166 === 'shown' ? 'b' : 'a'
+			this.uiExpGROW166Shown === 'shown' ? 'b' : 'a'
 		);
-	}
+	},
 };
 </script>
 
