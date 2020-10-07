@@ -247,6 +247,7 @@ $border-width: 1px;
 		.braintree-method .braintree-method__label .braintree-method__label--small {
 			color: $kiva-text-dark;
 			font-weight: $global-weight-normal;
+			text-align: left;
 		}
 
 		.braintree-sheet {
