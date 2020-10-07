@@ -268,6 +268,7 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+@import 'components/15-years/15-years';
 
 .callout {
 	display: inline-block;
@@ -277,16 +278,12 @@ export default {
 
 .dot-callout {
 	transition: opacity 0.25s linear;
-	background: white;
-	width: calc(4 / 320 * 100vw);
-	height: calc(4 / 320 * 100vw);
+	background: $tomato;
+	border: 2px solid white;
 	border-radius: 50%;
 	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
-
-	@include breakpoint(large) {
-		width: 7px;
-		height: 7px;
-	}
+	width: 16px;
+	height: 16px;
 }
 
 .dot-callout.hidden {
@@ -299,41 +296,42 @@ export default {
 }
 
 .pin-callout {
-	width: 20px;
-	height: 27px;
-	@include breakpoint(large) {
-		width: 27px;
-		height: 37px;
-	}
+	width: 40px;
+	height: 40px;
+}
 
-	div {
-		width: 100%;
-		height: 100%;
-		transition: transform 0.5s cubic-bezier(0.265, 1.85, 0.42, 0.75);
-		transform-origin: 50% 89.1892%;
-	}
-
-	div::after {
-		content: '';
-		display: block;
-		width: 100%;
-		height: 100%;
-		background: url('~@/assets/images/15-years/globe/pin@2x.png') top left no-repeat;
-		background-size: 100% 100%;
-		animation: pin-wiggle 1.5s infinite alternate cubic-bezier(0.5, 0, 0.5, 1);
-	}
+.pin-callout-flag {
+	width: 100%;
+	height: 100%;
+	transform-origin: 50% 100%;
+	transform: scale(1) translateY(20px); // centered vertically. Half the height.
+	border-radius: 50%;
+	border: 3px solid white;
+	overflow: hidden;
+	background-color: #fff;
+	background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
 }
 
 .pin-callout.hidden {
-	div {
-		transform: scale(0, 0);
+	.pin-callout-flag {
+		transform: scale(0) translateY(0);
+	}
+}
+
+.pin-callout.animate-in {
+	.pin-callout-flag {
+		transition: transform 0.2s linear;
+		transform: scale(1) translateY(20px);
 	}
 }
 
 .pin-callout.animate-out {
-	div {
+	.pin-callout-flag {
 		transition: transform 0.2s linear;
-		transform: scale(0, 0);
+		transform: scale(0) translateY(0);
 	}
 }
 </style>
