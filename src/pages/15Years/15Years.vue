@@ -58,15 +58,15 @@ export default {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
 			footerTheme: fifteenYearFooterTheme,
-			uiExpGROW166Shown: getExperimentVersion('intercom_messenger', this.apollo) === 'shown',
+			expGrow166Aug2020: getExperimentVersion('intercom_messenger', this.apollo) === 'shown',
 		};
 	},
 	created() {
-		console.log(`this.uiExpGROW166: ${this.uiExpGROW166Shown}`);
+		console.log(`this.expGrow166Aug2020: ${this.expGrow166Aug2020}`);
 		this.$kvTrackEvent(
 			'homepage',
 			'EXP-GROW-166-Aug2020',
-			this.uiExpGROW166Shown === 'shown' ? 'b' : 'a'
+			this.expGrow166Aug2020 === 'shown' ? 'b' : 'a'
 		);
 	},
 };
