@@ -205,24 +205,24 @@ export default {
 .globe-container {
 	pointer-events: all;
 	position: absolute;
-	width: calc(100vw - 48px);
-	height: calc(100vw - 48px);
-	left: calc(50% - 50vw + 24px);
-	top: 432px;
+	width: calc(100vw - #{rem-calc(48)});
+	height: calc(100vw - #{rem-calc(48)});
+	left: calc(50% - 50vw + #{rem-calc(24)});
+	top: rem-calc(432);
 	z-index: 3;
 
 	@include breakpoint(large) {
-		width: 610px;
-		height: 610px;
-		left: calc(90.048% - 305px);
-		top: 242px;
+		width: rem-calc(610);
+		height: rem-calc(610);
+		left: calc(90.048% - #{rem-calc(305)});
+		top: rem-calc(242);
 	}
 
 	@include breakpoint(xxlarge) {
-		width: 540px;
-		height: 540px;
-		left: calc(69.3056% - 270px);
-		top: 147px;
+		width: rem-calc(540);
+		height: rem-calc(540);
+		left: calc(69.3056% - #{rem-calc(270)});
+		top: rem-calc(147);
 	}
 
 	&::before {
@@ -234,7 +234,7 @@ export default {
 		height: 100%;
 		border-radius: 50%;
 		background: white;
-		box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+		box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
 	}
 }
 
@@ -279,11 +279,11 @@ export default {
 .dot-callout {
 	transition: opacity 0.25s linear;
 	background: $tomato;
-	border: 2px solid white;
+	border: rem-calc(2) solid white;
 	border-radius: 50%;
-	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
-	width: 16px;
-	height: 16px;
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
+	width: rem-calc(16);
+	height: rem-calc(16);
 }
 
 .dot-callout.hidden {
@@ -296,23 +296,23 @@ export default {
 }
 
 .pin-callout {
-	width: 40px;
-	height: 40px;
+	width: rem-calc(40);
+	height: rem-calc(40);
 }
 
 .pin-callout-flag {
 	width: 100%;
 	height: 100%;
 	transform-origin: 50% 100%;
-	transform: scale(1) translateY(20px); // centered vertically. Half the height.
+	transform: scale(1) translateY(rem-calc(20)); // centered vertically. Half the height.
 	border-radius: 50%;
-	border: 3px solid white;
+	border: rem-calc(3) solid white;
 	overflow: hidden;
 	background-color: #fff;
 	background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
 	background-size: 100%;
 	background-repeat: no-repeat;
-	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
 }
 
 .pin-callout.hidden {
@@ -324,7 +324,7 @@ export default {
 .pin-callout.animate-in {
 	.pin-callout-flag {
 		transition: transform 0.2s linear;
-		transform: scale(1) translateY(20px);
+		transform: scale(1) translateY(rem-calc(20));
 	}
 }
 
