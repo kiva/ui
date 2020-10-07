@@ -11,16 +11,7 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 
 // Pre-fetch pre-determined list of experiment settings
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
-let activeExperiments = [
-	'lend_filter_v2',
-	'expandable_loan_cards',
-	'intercom_messenger',
-	'add_to_basket_redirect',
-	'checkout_login_cta',
-	'homepage_force_dismiss_overlay',
-];
-
-const activeExperiments2 = [
+const activeExperiments = [
 	{
 		id: 'lend_filter_v2',
 		routes: [
@@ -40,18 +31,37 @@ const activeExperiments2 = [
 		]
 	},
 	{
-		id: 'home_only',
+		id: 'add_to_basket_redirect',
 		routes: [
-			'/'
+			'**'
 		]
 	},
 	{
-		id: 'exp_lend_by_category',
+		id: 'checkout_login_cta',
 		routes: [
-			'/lend-by-category/*'
+			'**'
+		]
+	},
+	{
+		id: 'homepage_force_dismiss_overlay',
+		routes: [
+			'/' // homepage only
+		]
+	},
+	{
+		id: 'home_only_test',
+		routes: [
+			'/' // homepage only
+		]
+	},
+	{
+		id: 'exp_lend_by_category_test',
+		routes: [
+			'/lend-by-category/*' // lend-by-category and children
 		]
 	},
 ];
+
 // TODO: Enhance Error handling
 // export function settingErrorHandler(errors, ...args) {
 // 	console.log(errors);
@@ -83,6 +93,7 @@ export function assignExperiments(settingId, client) {
 
 export function fetchExperimentSettings(settingId, client) {
 	// Fetch the query from the component's apollo options
+	console.log('fetchExperimentSettings');
 	return new Promise((resolve, reject) => {
 		client.query({
 			query: experimentSettingQuery,
@@ -112,6 +123,7 @@ export function fetchExperimentSettings(settingId, client) {
 }
 
 export function fetchActiveExperiments(apolloClient) {
+	console.log('fetchActiveExperiments');
 	return new Promise((resolve, reject) => {
 		apolloClient.query({
 			query: experimentIdsQuery,
@@ -136,17 +148,20 @@ export function fetchActiveExperiments(apolloClient) {
 		b. All "active" experiments with no route or the current route are give assignments
 */
 export function fetchAllExpSettings(apolloClient, route) {
+	console.log('fetchAllExpSettings');
+
 	return fetchActiveExperiments(apolloClient).then(results => {
 		// Check for active experiments listing
+		let experiments = [];
 		const activeExperimentsSettings = _get(results, 'data.general.activeExperiments');
 		if (typeof activeExperimentsSettings !== 'undefined' && activeExperimentsSettings !== null) {
 			try {
-				activeExperiments = JSON.parse(activeExperimentsSettings.value).split(',');
+				experiments = JSON.parse(activeExperimentsSettings.value).split(',');
 			} catch (e) {
 				// leave as defaults
 			}
 		}
-		return activeExperiments;
+		return experiments;
 	})
 
 	// COMING SOON!!!
@@ -182,7 +197,7 @@ export function fetchAllExpSettings(apolloClient, route) {
 		})
 		// prefetch all active experiment settings and assignments if the current route matches their glob
 		.then(() => {
-			const currentRouteExperiments = activeExperiments2.filter(experiment => {
+			const currentRouteExperiments = activeExperiments.filter(experiment => {
 				let expInRoute = false;
 				experiment.routes.forEach(expRoute => {
 					if (minimatch(route.path, expRoute)) {

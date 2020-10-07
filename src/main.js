@@ -61,7 +61,7 @@ export default function createApp({
 	}
 
 	router.beforeEach((to, from, next) => {
-		// console.log('main.js router beforeEach');
+		console.log('main.js router beforeEach');
 		fetchAllExpSettings(apolloClient, {
 			query: to.query,
 			path: to.path
