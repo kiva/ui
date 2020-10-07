@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import promoCampaign from '@/graphql/query/promoCampaign.graphql';
 
 /**
  * addCreditByType mutation
@@ -100,4 +101,21 @@ export function validateQueryParams(query, apollo) {
 	if (lendingReward) {
 		return applyLendingReward(lendingReward, apollo);
 	}
+}
+
+/**
+ * getPromoFromBasket
+ * Get promo information based on basket state
+ *
+ * @param {Object} query Query Object from Vue router
+ * @param {Object} apollo Apollo Client instance
+ * @returns {Promise}
+ */
+export function getPromoFromBasket(promoFundId, apollo) {
+	return apollo.query({
+		query: promoCampaign,
+		variables: {
+			promoFundId: String(promoFundId)
+		}
+	});
 }

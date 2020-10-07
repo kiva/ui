@@ -1,0 +1,58 @@
+query promoCampaign($basketId: String, $promoFundId: String) {
+	shop (basketId: $basketId) {
+		basket {
+			hasFreeCredits
+			items {
+				values {
+					id
+				}
+			}
+			credits {
+				values {
+					id
+					applied
+					available
+					creditType
+					promoFund {
+						id
+					}
+				}
+			}
+		}
+		promoCampaign (promoFundId: $promoFundId) {
+			promoFund {
+				displayName
+				displayDescription
+			}
+			promoGroup {
+				type
+				teamId
+			}
+			managedAccount {
+				managementType
+				audience
+				allowDonations
+				sendKivaNewsletter
+				id
+				isEmployee
+				loanSearchCriteria {
+					filters {
+						currencyLossPossible
+						dafEligible
+						distributionModel
+						status
+						excludeNonRated
+						expiringSoon
+						gender
+						hasResearchScore
+						isGroup
+						lenderFavorite
+						loanLimit
+						isMatched
+						sector
+					}
+				}
+			}
+		}
+	}
+}
