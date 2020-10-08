@@ -12,6 +12,11 @@ export default function createRouter() {
 		routes,
 		scrollBehavior(to, from, savedPosition) {
 			if (to.hash && !DISALLOW_SELECTOR_REGEX.test(to.hash)) {
+				const element = document.querySelector(to.hash);
+				if (element) {
+					element.scrollIntoView({ behavior: 'smooth' });
+					return null;
+				}
 				return { selector: to.hash };
 			}
 			if (savedPosition) {

@@ -135,7 +135,6 @@
 							:href="item.href"
 							:img-src="item.imgSrc"
 							:img-tilt="item.imgTilt"
-							@card-clicked="onCardClicked"
 						/>
 					</div>
 				</div>
@@ -206,21 +205,21 @@ export default {
 				{
 					title: '15 Years of Impact',
 					subtitle: 'The history of Kiva, year by year',
-					href: '#years-of-impact',
+					href: '/15#years-of-impact',
 					imgSrc: ThirtyEightMillion,
 					imgTilt: 5,
 				},
 				{
 					title: 'The World of Kiva',
 					subtitle: 'The people who make it happen',
-					href: '#world-of-kiva',
+					href: '/15#world-of-kiva',
 					imgSrc: TShirt,
 					imgTilt: -10,
 				},
 				{
 					title: 'Strategic Partners',
 					subtitle: 'INDIVIDUALS AND ORGANIZATIONS MAKING A DIFFERENCE',
-					href: '#orgs-making-difference',
+					href: '/15#orgs-making-difference',
 					imgSrc: DreamTeam,
 					imgTilt: 15,
 				},
@@ -233,16 +232,9 @@ export default {
 		};
 	},
 	mounted() {
-		console.log(geojson);
 		this.fetchLiveCountryData();
 	},
 	methods: {
-		onCardClicked(id) {
-			const element = document.querySelector(id);
-			if (element) {
-				element.scrollIntoView({ behavior: 'smooth' });
-			}
-		},
 		onCountrySelect(selection) {
 			if (selection === null) {
 				this.isCountrySelected = false;
@@ -369,6 +361,11 @@ export default {
 	min-height: rem-calc(900);
 	padding: 0;
 	overflow: hidden;
+	margin-top: rem-calc(-45); // scootch the page behind the semi-transparent top nav
+
+	@include breakpoint(large) {
+		margin-top: rem-calc(-64);
+	}
 
 	&__headline {
 		@include huge-headline();
