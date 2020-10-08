@@ -55,12 +55,10 @@
 							@updating-totals="setUpdatingTotals"
 						/>
 
-						<basket-verification
-							@verification-required="verificationRequired = $event"
-						/>
+						<basket-verification />
 
 						<div class="checkout-actions row" :class="{'small-collapse' : showLoginContinueButton}">
-							<div v-if="isLoggedIn && !verificationRequired" class="small-12">
+							<div v-if="isLoggedIn" class="small-12">
 								<form v-if="showKivaCreditButton" action="/checkout" method="GET">
 									<input type="hidden" name="js_loaded" value="false">
 									<kiva-credit-payment
@@ -222,7 +220,6 @@ export default {
 			kivaCards: [],
 			redemption_credits: [],
 			hasFreeCredits: false,
-			verificationRequired: false,
 			totals: {},
 			updatingTotals: false,
 			showReg: true,
