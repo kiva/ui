@@ -63,7 +63,7 @@
 							Find your first <br>borrower
 						</h3>
 						<p class="campaign-status__body">
-							You have ... to lend...
+							You have ${{ promoAmount | numeral }} to lend!
 						</p>
 					</div>
 				</div>
@@ -104,11 +104,12 @@ import gql from 'graphql-tag';
 import _invokeMap from 'lodash/invokeMap';
 import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
-import tempLoanQuery from '@/graphql/query/basicLoanData.graphql';
+import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
+// import paginationMixin from '@/plugins/pagination-mixin';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -155,28 +156,8 @@ const urlParamTransform = {
 
 // Turn an object of graphql variables into an object of url query parameters
 function toUrlParams(variables) {
-	console.log(Object.fromEntries(
-		Object.entries(urlParamTransform).map(([key, { to }]) => [key, to(variables)])
-	));
-
 	const loMap = _mapValues(urlParamTransform, ({ to }) => to(variables));
-	console.log(loMap);
 	return loMap;
-
-	// const page = {};
-	// Object.keys(urlParamTransform.page).forEach(key => {
-	// 	if (key === 'to') {
-	// 		page[key] = urlParamTransform.page[key](variables);
-	// 	}
-	// });
-
-	// page.to = urlParamTransform.page.to(variables);
-	// return page;
-	// return {
-	// 	page: {
-	// 		to: urlParamTransform.page.to(variables)
-	// 	}
-	// };
 }
 
 // Turn an object of url query parameters into an object of graphql variables
@@ -194,6 +175,7 @@ export default {
 		KvIcon,
 		KvPagination,
 	},
+	// mixins: [paginationMixin],
 	props: {
 		dynamicRoute: {
 			type: String,
@@ -214,6 +196,7 @@ export default {
 	},
 	data() {
 		return {
+			loansPerPage,
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
 			rawPageData: null,
@@ -276,7 +259,6 @@ export default {
 		// console.log('raw page data: ', this.rawPageData);
 		// console.log('page data: ', this.pageData);
 
-		// TODO: Apply promotions with some type of loading state
 		if (Object.keys(this.$route.query).length) {
 			this.applyPromotion();
 		}
@@ -314,6 +296,9 @@ export default {
 			}
 			return '';
 		},
+		promoAmount() {
+			return this.promoData?.promoFund?.promoPrice ?? null;
+		},
 		filters() {
 			const filters = this.promoData.managedAccount?.loanSearchCriteria?.filters ?? {};
 			return getSearchableFilters(filters);
@@ -341,17 +326,18 @@ export default {
 	methods: {
 		applyPromotion() {
 			this.loadingPromotion = true;
+			// establish promotion state
 			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
-			console.log(applyPromo);
+			// handle applied promo state
 			applyPromo.then(result => {
-				console.log(result);
 				// failed to apply promotion
 				if (result.errors) {
 					this.promoErrorMessage = result.errors[0].message;
 					this.promoApplied = false;
 				} else {
 					this.promoApplied = true;
-					this.getPromoFromBasket();
+					// gather promo info
+					this.getPromoInformationFromBasket();
 				}
 				this.loadingPromotion = false;
 			}).catch(error => {
@@ -359,10 +345,8 @@ export default {
 				this.loadingPromotion = false;
 			});
 		},
-		getPromoFromBasket(promoFundId) {
-			console.log(promoFundId);
-			console.log(cookieStore.get('kvbskt'));
-			// TEMP
+		getPromoInformationFromBasket() {
+			// TEMPORARY query to gather credits and promo id from latest basket state
 			const basketItemsQuery = gql`query basketItemsQuery(
 				$basketId: String!,
 			) {
@@ -389,44 +373,26 @@ export default {
 					basketId: cookieStore.get('kvbskt')
 				}
 			});
-			// get promo info from basket
+			// TEMPORARY Handling for patched in basket credits
+			// TODO Extract as utility to get promo id from basket credits
 			basketItems.then(({ data }) => {
-				console.log(data);
 				const credits = data.shop?.basket?.credits?.values;
 				const targetPromo = credits.filter(credit => {
 					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
 				});
-				console.log(targetPromo);
+				// Primary PromoCampaign Query
+				// Future usage will not require the promoFundId relying only on the basket id
 				return getPromoFromBasket(targetPromo[0].promoFund?.id, this.apollo);
 			}).then(response => {
-				console.log(response);
+				// TODO Handle response and any potential errors
 				this.promoData = response.data?.shop?.promoCampaign;
-				this.fetchLoans();
-			});
-		},
-		fetchLoans() {
-			// TODO: Fetch promo campaign information
-			// TODO: Translate LSC and Fetch loans
-			// TEMP Loan Query
-			const loanQuery = this.apollo.query({
-				query: tempLoanQuery,
-				variables: this.loanQueryVars
-				// variables: {
-				// 	offset: 0,
-				// 	limit: 9,
-				// 	filters: this.promoData.manangedAccount?.loanSearchCriteria?.filters || {}
-				// }
-			});
-			loanQuery.then(({ data }) => {
-				console.log(data);
-				this.loans = data.lend?.loans?.values ?? [];
-				this.totalCount = data.lend?.loans?.totalCount ?? 0;
+				// Initialize loan query + observer
 				this.activateLoanWatchQuery();
 			});
 		},
 		activateLoanWatchQuery() {
 			const observer = this.apollo.watchQuery({
-				query: tempLoanQuery,
+				query: basicLoanQuery,
 				variables: this.loanQueryVars
 			});
 			this.$watch(() => this.loanQueryVars, vars => {
@@ -442,7 +408,7 @@ export default {
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
 						const basketItems = data.shop?.basket?.items?.values ?? [];
 						this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
-						console.log(this.loans.length, this.pageQuery.page);
+						// console.log(this.loans.length, this.pageQuery.page);
 						this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
 						this.loadingLoans = false;
 					}
@@ -450,14 +416,18 @@ export default {
 			});
 		},
 		addToBasket(context) {
+			// TODO: Handle add-to-basket
 			console.log(context);
+			// TODO: validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
+			// TODO: Present embeded checkout completion option if baseline
 		},
 		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
 			// determines if the page query param is for a page that is out of bounds.
 			// if it is, changes page to the last page and displays a tip message
 			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
 			if (loansOutOfRange) {
-				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`); // eslint-disable-line max-len
+				// eslint-disable-next-line max-len
+				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`);
 				this.pageChange(this.lastLoanPage);
 			}
 		},
@@ -472,7 +442,6 @@ export default {
 		},
 		pushChangesToUrl() {
 			const { page } = this.$route?.query ?? { page: '0' };
-			// if (!this.matchObject(page, this.urlParams.page)) {
 			if (page !== this.urlParams.page) {
 				this.$router.push({
 					query: {
@@ -482,10 +451,6 @@ export default {
 				});
 			}
 		},
-		matchObject(obj, source) {
-			// eslint-disable-next-line no-prototype-builtins
-			return Object.keys(source).every(key => obj.hasOwnProperty(key) && obj[key] === source[key]);
-		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {

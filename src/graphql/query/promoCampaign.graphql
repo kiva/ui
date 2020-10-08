@@ -23,6 +23,7 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 			promoFund {
 				displayName
 				displayDescription
+				promoPrice
 			}
 			promoGroup {
 				type
