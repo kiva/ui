@@ -24,27 +24,11 @@
 						</fifteen-years-button>
 					</div>
 				</div>
-				<div v-else class="country_cta small-12 large-8 xlarge-7">
+				<div v-else class="country_cta small-12 large-8 xlarge-7 xxlarge-6">
 					<div class="columns country-name-container">
-						<div class="row">
-							<div>
-								<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
-									{{ globekitCountrySelected.name }}
-								</h2>
-							</div>
-						</div>
-						<div class="row">
-							<div>
-								<div class="country-sticker">
-									<kv-flag
-										:country="globekitCountrySelected.iso2"
-										:aspect-ratio="'1x1'"
-										:inline-svg="true"
-										class="circular-country"
-									/>
-								</div>
-							</div>
-						</div>
+						<h2 :class="'country-name ' + globekitCountrySelected.nameClass">
+							{{ globekitCountrySelected.name }}
+						</h2>
 					</div>
 					<div class="row loan-number-group">
 						<div class="columns">
@@ -154,7 +138,6 @@ import gql from 'graphql-tag';
 import ThirtyEightMillion from '@/assets/images/15-years/stickers/38MMBorrowers-1.png';
 import TShirt from '@/assets/images/15-years/stickers/T-shirt.png';
 import DreamTeam from '@/assets/images/15-years/stickers/DTeam2.png';
-import KvFlag from '@/components/Kv/KvFlag';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvProgressBar from '@/components/Kv/KvProgressBar';
 import FifteenYearsButton from './15YearsButton';
@@ -183,7 +166,6 @@ export default {
 		FifteenYearsHeaderCard,
 		FifteenYearsOilyBackground,
 		FifteenYearsGlobe,
-		KvFlag,
 		KvIcon,
 		KvProgressBar
 	},
@@ -573,30 +555,8 @@ export default {
 	flex-direction: column;
 }
 
-.circular-country {
-	border-radius: 50%;
-	overflow: hidden;
-	border: 1px solid #ccc;
-	box-sizing: content-box;
-}
-
 .country-name-container {
 	padding: 0 rem-calc(24);
-}
-
-.country-sticker {
-	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
-	border-radius: 50%;
-	padding: rem-calc(3);
-	max-width: rem-calc(40);
-	max-height: rem-calc(40);
-	min-width: rem-calc(40);
-	min-height: rem-calc(40);
-
-	// Desktop
-	@include breakpoint(large) {
-		display: block;
-	}
 }
 
 .loan-number {
@@ -610,7 +570,7 @@ export default {
 	margin-top: rem-calc(16);
 
 	@include breakpoint(large) {
-		margin-top: rem-calc(48);
+		margin-top: rem-calc(96);
 	}
 }
 
@@ -639,8 +599,8 @@ export default {
 		margin: 0;
 		padding-top: 0;
 		position: absolute;
-		bottom: rem-calc(302);
-		left: rem-calc(100);
+		bottom: rem-calc(300);
+		left: rem-calc(36);
 		max-width: rem-calc(180);
 	}
 
