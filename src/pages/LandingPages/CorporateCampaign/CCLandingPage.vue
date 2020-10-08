@@ -63,13 +63,36 @@
 							Find your first <br>borrower
 						</h3>
 						<p class="campaign-status__body">
-							You have ... to lend...
+							You have ${{ promoAmount | numeral }} to lend!
 						</p>
 					</div>
 				</div>
 			</section>
 
-			<section class="campaign-loans row align-center"></section>
+			<section class="campaign-loans row align-center">
+				<div v-if="loadingLoans" class="campaign-status__validating-promo">
+					<loading-overlay />
+					<p>Loading loans...</p>
+				</div>
+				<div class="columns small-12" v-if="loans.length > 0">
+					<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+						<loan-card-controller
+							v-for="loan in loans"
+							class="cards-loan-card"
+							:items-in-basket="itemsInBasket"
+							:is-visitor="isVisitor"
+							:key="loan.id"
+							:loan="loan"
+							loan-card-type="LendHomepageLoanCard"
+							@add-to-basket="addToBasket"
+						/>
+					</div>
+					<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
+					<div v-if="totalCount > 0" class="loan-count">
+						{{ totalCount }} loans
+					</div>
+				</div>
+			</section>
 
 			<section class="campaign-checkout row align-center"></section>
 		</div>
@@ -78,14 +101,22 @@
 
 <script>
 import gql from 'graphql-tag';
-
+import _invokeMap from 'lodash/invokeMap';
+import _mapValues from 'lodash/mapValues';
+import _merge from 'lodash/merge';
+import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
-import { validateQueryParams } from '@/util/campaignUtils';
+import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
+import cookieStore from '@/util/cookieStore';
+// import paginationMixin from '@/plugins/pagination-mixin';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvPagination from '@/components/Kv/KvPagination';
+import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
@@ -98,16 +129,53 @@ const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String)
 		}
 		lendingRewardOffered
 	}
+	my {
+		userAccount {
+			id
+		}
+	}
 }`;
+
+const loansPerPage = 9;
+
+// A map of functions to transform url query parameters to/from graphql variables.
+// Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
+// Each value is then an object with the to/from functions to write/read the url parameter.
+const urlParamTransform = {
+	page: {
+		to({ offset }) {
+			const page = Math.floor(offset / loansPerPage) + 1;
+			return page > 1 ? String(page) : undefined;
+		},
+		from({ page }) {
+			const pagenum = Number(page) - 1;
+			return { offset: pagenum > 0 ? loansPerPage * pagenum : 0 };
+		}
+	},
+};
+
+// Turn an object of graphql variables into an object of url query parameters
+function toUrlParams(variables) {
+	const loMap = _mapValues(urlParamTransform, ({ to }) => to(variables));
+	return loMap;
+}
+
+// Turn an object of url query parameters into an object of graphql variables
+function fromUrlParams(params) {
+	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
+}
 
 export default {
 	inject: ['apollo'],
 	components: {
 		WwwPageMinimal,
 		NoClickLoanCard,
+		LoanCardController,
 		LoadingOverlay,
 		KvIcon,
+		KvPagination,
 	},
+	// mixins: [paginationMixin],
 	props: {
 		dynamicRoute: {
 			type: String,
@@ -128,6 +196,7 @@ export default {
 	},
 	data() {
 		return {
+			loansPerPage,
 			headerTheme: lightHeader,
 			footerTheme: lightFooter,
 			rawPageData: null,
@@ -138,6 +207,14 @@ export default {
 			promoErrorMessage: null,
 			promoData: null,
 			loadingPromotion: false,
+			loadingLoans: false,
+			loans: [],
+			totalCount: 0,
+			itemsInBasket: [],
+			isVisitor: true,
+			offset: 0,
+			limit: loansPerPage,
+			pageQuery: { page: '1' },
 		};
 	},
 	metaInfo() {
@@ -164,24 +241,27 @@ export default {
 				this.$router.push('/');
 			}
 			this.rawPageData = data;
-			const pageEntry = data.contentful?.entries?.items[0] || null;
+			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
 
-			this.lendingRewardOffered = data.shop?.lendingRewardOffered;
-			this.hasFreeCredits = data.shop?.basket?.hasFreeCredits;
+			this.lendingRewardOffered = data.shop?.lendingRewardOffered ?? false;
+			this.hasFreeCredits = data.shop?.basket?.hasFreeCredits ?? false;
+			const basketItems = data.shop?.basket?.items?.values ?? [];
+			this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
+			this.isVisitor = !data.my?.userAccount?.id ?? true;
 		}
+	},
+	created() {
+		// extract query
+		this.pageQuery = this.$route.query;
 	},
 	mounted() {
 		// console.log('raw page data: ', this.rawPageData);
 		// console.log('page data: ', this.pageData);
 
-		// TODO: Apply promotions with some type of loading state
-		if (this.$route.query) {
+		if (Object.keys(this.$route.query).length) {
 			this.applyPromotion();
 		}
-
-		// TODO: Fetch promo campaign information
-		// TODO: Translate LSC and Fetch loans
 	},
 	computed: {
 		pageTitle() {
@@ -192,7 +272,7 @@ export default {
 			return this.pageData?.page?.contentGroups?.promoCampaignTestCg;
 		},
 		headerLogo() {
-			const mediaObject = this.headerAreaContent?.media[0];
+			const mediaObject = this.headerAreaContent?.media?.[0];
 			if (mediaObject) {
 				return {
 					title: mediaObject.title,
@@ -216,29 +296,171 @@ export default {
 			}
 			return '';
 		},
+		promoAmount() {
+			return this.promoData?.promoFund?.promoPrice ?? null;
+		},
+		filters() {
+			const filters = this.promoData.managedAccount?.loanSearchCriteria?.filters ?? {};
+			return getSearchableFilters(filters);
+		},
+		urlParams() {
+			return toUrlParams({
+				offset: this.offset,
+			});
+		},
+		lastLoanPage() {
+			return Math.ceil(this.totalCount / this.limit);
+		},
+		loanIds() {
+			// return this.loans.length ? this.loans.map(loan => loan.id) : [];
+			return this.loans.map(loan => loan.id) || [];
+		},
+		loanQueryVars() {
+			return {
+				limit: this.limit,
+				offset: this.offset,
+				filters: this.filters
+			};
+		},
 	},
 	methods: {
 		applyPromotion() {
 			this.loadingPromotion = true;
+			// establish promotion state
 			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
-			console.log(applyPromo);
+			// handle applied promo state
 			applyPromo.then(result => {
-				console.log(result);
 				// failed to apply promotion
 				if (result.errors) {
 					this.promoErrorMessage = result.errors[0].message;
 					this.promoApplied = false;
 				} else {
 					this.promoApplied = true;
-					this.promoData = result.data;
+					// gather promo info
+					this.getPromoInformationFromBasket();
 				}
 				this.loadingPromotion = false;
 			}).catch(error => {
 				console.error(error);
 				this.loadingPromotion = false;
 			});
-		}
-	}
+		},
+		getPromoInformationFromBasket() {
+			// TEMPORARY query to gather credits and promo id from latest basket state
+			const basketItemsQuery = gql`query basketItemsQuery(
+				$basketId: String!,
+			) {
+				shop(basketId: $basketId) {
+					basket {
+						hasFreeCredits
+						credits {
+							values {
+								id
+								applied
+								available
+								creditType
+								promoFund {
+									id
+								}
+							}
+						}
+					}
+				}
+			}`;
+			const basketItems = this.apollo.query({
+				query: basketItemsQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt')
+				}
+			});
+			// TEMPORARY Handling for patched in basket credits
+			// TODO Extract as utility to get promo id from basket credits
+			basketItems.then(({ data }) => {
+				const credits = data.shop?.basket?.credits?.values;
+				const targetPromo = credits.filter(credit => {
+					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
+				});
+				// Primary PromoCampaign Query
+				// Future usage will not require the promoFundId relying only on the basket id
+				return getPromoFromBasket(targetPromo[0].promoFund?.id, this.apollo);
+			}).then(response => {
+				// TODO Handle response and any potential errors
+				this.promoData = response.data?.shop?.promoCampaign;
+				// Initialize loan query + observer
+				this.activateLoanWatchQuery();
+			});
+		},
+		activateLoanWatchQuery() {
+			const observer = this.apollo.watchQuery({
+				query: basicLoanQuery,
+				variables: this.loanQueryVars
+			});
+			this.$watch(() => this.loanQueryVars, vars => {
+				observer.setVariables(vars);
+			}, { deep: true });
+			// Subscribe to the observer to see each result
+			observer.subscribe({
+				next: ({ data, loading }) => {
+					if (loading) {
+						this.loadingLoans = true;
+					} else {
+						this.loans = data.lend?.loans?.values ?? [];
+						this.totalCount = data.lend?.loans?.totalCount ?? 0;
+						const basketItems = data.shop?.basket?.items?.values ?? [];
+						this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
+						// console.log(this.loans.length, this.pageQuery.page);
+						this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
+						this.loadingLoans = false;
+					}
+				}
+			});
+		},
+		addToBasket(context) {
+			// TODO: Handle add-to-basket
+			console.log(context);
+			// TODO: validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
+			// TODO: Present embeded checkout completion option if baseline
+		},
+		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
+			// determines if the page query param is for a page that is out of bounds.
+			// if it is, changes page to the last page and displays a tip message
+			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
+			if (loansOutOfRange) {
+				// eslint-disable-next-line max-len
+				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`);
+				this.pageChange(this.lastLoanPage);
+			}
+		},
+		pageChange(number) {
+			const offset = loansPerPage * (number - 1);
+			this.offset = offset;
+			this.pushChangesToUrl();
+		},
+		updateFromParams(query) {
+			const { offset } = fromUrlParams(query);
+			this.offset = offset;
+		},
+		pushChangesToUrl() {
+			const { page } = this.$route?.query ?? { page: '0' };
+			if (page !== this.urlParams.page) {
+				this.$router.push({
+					query: {
+						...this.$route.query,
+						...this.urlParams
+					}
+				});
+			}
+		},
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.updateFromParams(to.query);
+		});
+	},
+	beforeRouteUpdate(to, from, next) {
+		this.updateFromParams(to.query);
+		next();
+	},
 };
 </script>
 
@@ -333,13 +555,29 @@ export default {
 		font-weight: bold;
 		margin-top: rem-calc(20);
 	}
+}
 
-	// &__body {
-	// 	@include breakpoint(large) {
-	// 		padding-right: 1rem;
-	// 		@include featured-text();
-	// 	}
-	// }
+$card-width: rem-calc(290);
+$max-card-width: rem-calc(330);
+$card-margin: rem-calc(14);
+$card-half-space: rem-calc(14/2);
+
+.loan-card-group {
+	display: flex;
+	justify-content: center;
+}
+
+.cards-loan-card {
+	border-radius: 0.65rem;
+	box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+	width: $card-width;
+	max-width: $max-card-width;
+	flex: 1 0 auto;
+	margin: $card-margin;
+}
+
+.loan-count {
+	text-align: center;
 }
 
 </style>
