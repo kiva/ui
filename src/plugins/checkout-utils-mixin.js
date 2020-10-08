@@ -2,6 +2,7 @@ import _get from 'lodash/get';
 import * as Sentry from '@sentry/browser';
 import shopValidateBasket from '@/graphql/mutation/shopValidatePreCheckout.graphql';
 import shopCheckout from '@/graphql/mutation/shopCheckout.graphql';
+import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import cookieStore from '@/util/cookieStore';
 import logFormatter from '@/util/logFormatter';
 
@@ -93,6 +94,12 @@ export default {
 
 				// Log validation errors
 				Sentry.captureException(`${error}:${value}`);
+
+				// Show the verificatoin lightbox if basket is not verified, and don't show a tip message
+				if (error === 'basket_requires_verification') {
+					this.apollo.mutate({ mutation: showVerificationLightbox });
+					return;
+				}
 
 				// Handle multiple errors
 				if (errorMessages !== '') {
