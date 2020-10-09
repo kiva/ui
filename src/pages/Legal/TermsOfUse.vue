@@ -6,7 +6,7 @@
 		</h1>
 
 		<h3 class="twoLineHeader">
-			(Last updated October 8, 2020)*
+			(Last updated October 12, 2020)*
 		</h3>
 
 		<p class="light">
