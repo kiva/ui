@@ -14,11 +14,19 @@ import { settingEnabled } from '@/util/settingsUtils';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 import {
-	lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderTheme, wrdFooterTheme
+	lightHeader,
+	lightFooter,
+	iwdHeaderTheme,
+	iwdFooterTheme,
+	wrdHeaderTheme,
+	wrdFooterTheme,
+	fifteenYearHeaderTheme,
+	fifteenYearFooterTheme,
 } from '@/util/siteThemes';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
+import FifteenYearHomepage from '@/pages/Homepage/15YearHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -43,6 +51,7 @@ export default {
 		WwwPage,
 		DefaultHomePage,
 		LendByCategoryHomepage,
+		FifteenYearHomepage,
 		// IWDHomePage,
 		// WRDHomePage,
 		TopMessageContentful,
@@ -57,6 +66,7 @@ export default {
 	},
 	data() {
 		return {
+			is15YearsActive: false,
 			isLenderPreferencesActive: false,
 			isIwdActive: false,
 			isWrdActive: false,
@@ -66,6 +76,7 @@ export default {
 	},
 	computed: {
 		activeHomepage() {
+			if (this.is15YearsActive) return FifteenYearHomepage;
 			if (this.isLenderPreferencesActive) return LendByCategoryHomepage;
 			if (this.isMessageActive) return TopMessageContentful;
 			// if (this.isIwdActive) return IWDHomePage;
@@ -73,6 +84,7 @@ export default {
 			return DefaultHomePage;
 		},
 		headerTheme() {
+			if (this.is15YearsActive) return fifteenYearHeaderTheme;
 			if (this.isLenderPreferencesActive) return lightHeader;
 			if (this.isMessageActive) return lightHeader;
 			if (this.isIwdActive) return iwdHeaderTheme;
@@ -80,6 +92,7 @@ export default {
 			return null;
 		},
 		footerTheme() {
+			if (this.is15YearsActive) return fifteenYearFooterTheme;
 			if (this.isMessageActive) return lightFooter;
 			if (this.isIwdActive) return iwdFooterTheme;
 			if (this.isWrdActive) return wrdFooterTheme;
@@ -104,6 +117,7 @@ export default {
 				fragment: experimentVersionFragment,
 			}) || {};
 			this.isLenderPreferencesActive = lenderPreferencesExp.version === 'shown';
+			this.is15YearsActive = lenderPreferencesExp.version === 'kiva15';
 			// Fire Event for EXP-GROW-166-Aug2020
 			if (lenderPreferencesExp.version && lenderPreferencesExp.version !== 'unassigned') {
 				this.$kvTrackEvent(
