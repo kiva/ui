@@ -95,7 +95,7 @@ export default {
 				// Log validation errors
 				Sentry.captureException(`${error}:${value}`);
 
-				// Show the verificatoin lightbox if basket is not verified, and don't show a tip message
+				// Show the verification lightbox if basket is not verified, and don't show a tip message
 				if (error === 'basket_requires_verification') {
 					this.apollo.mutate({ mutation: showVerificationLightbox });
 					return;
