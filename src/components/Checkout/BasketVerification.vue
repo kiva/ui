@@ -122,7 +122,4 @@ export default {
 .verification-required {
 	text-align: center;
 }
-
-.sending-spinner {
-}
 </style>
