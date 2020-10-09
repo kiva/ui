@@ -285,32 +285,32 @@ export default {
 
 .loan-category-section-wrapper {
 	position: relative;
-}
 
-.loan-category-row {
-	margin-top: 1rem;
-	@include breakpoint(medium) {
-		margin-top: 0;
+	.loan-category-row {
+		margin-top: 1rem;
+		@include breakpoint(medium) {
+			margin-top: 0;
+		}
 	}
-}
 
-.category-options {
-	max-width: rem-calc(797px);
-	margin: 0 auto;
-
-	.loading-spinner {
+	.category-options {
+		max-width: rem-calc(797px);
 		margin: 0 auto;
-	}
-}
 
-.loan-category-section {
-	&__carousel-slide {
-		width: auto;
-		padding-top: 0.75rem;
+		.loading-spinner {
+			margin: 0 auto;
+		}
 	}
 
-	&__cause-selector {
-		margin: 1rem 1.25rem;
+	.loan-category-section {
+		&__carousel-slide {
+			width: auto;
+			padding-top: 0.75rem;
+		}
+
+		&__cause-selector {
+			margin: 1rem 1.25rem;
+		}
 	}
 }
 </style>
