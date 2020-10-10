@@ -132,7 +132,7 @@ export default {
 				},
 				{
 					year: 2018,
-					author: 'Sun, Lu, Kraut, Robert, and Yang, Diyi,
+					author: 'Sun, Lu, Kraut, Robert, and Yang, Diyi',
 					title: 'Multi-level Modeling of Social Roles in Online Micro-lending Platforms',
 					/* eslint-disable max-len */
 					publication: 'Journal of Association for Computing Machinery',
