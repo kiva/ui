@@ -55,9 +55,36 @@ export default {
 	data() {
 		return {
 			topics: ['Creation of Synthetic Datasets', 'Recommendation systems', 'Social Good ML Applications',
-				'Pro-Social Behaviorial Pschology', 'Fairness Research', 'Social Impact Assessments'],
-			years: [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
+				'Pro-Social Behaviorial Psychology', 'Fairness Research', 'Social Impact Assessments'],
+			years: [2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
 			papers: [
+				{
+					year: 2020,
+					author: 'Burke, Robin, Voida, Amy, et al.',
+					title: 'Algorithmic Fairness, Institutional Logics, and Social Choice',
+					/* eslint-disable max-len */
+					publication: 'Harvard Center for Research on Computation and Society: AI for Social Good workshop.',
+					/* eslint-enable max-len */
+					url: 'https://crcs.seas.harvard.edu/files/crcs/files/ai4sg_2020_paper_29.pdf'
+				},
+				{
+					year: 2020,
+					author: 'Burke, Robin, Sonboli, Nasim, et al.',
+					/* eslint-disable max-len */
+					title: '“And the Winner Is...”: Dynamic Lotteries for Multi-group Fairness-Aware Recommendation',
+					/* eslint-enable max-len */
+					publication: '14th ACM Conference on Recommender Systems, 2020',
+					url: 'https://arxiv.org/pdf/2009.02590.pdf'
+				},
+				{
+					year: 2020,
+					author: 'Sonboli, Nasim, Burke, Robin,  et al.',
+					title: '“Opportunistic Multi-aspect Fairness through Personalized Re-ranking',
+					/* eslint-disable max-len */
+					publication: 'Proceedings of the 28th ACM Conference on User Modeling, Adaptation and Personalization',
+					/* eslint-enable max-len */
+					url: 'https://arxiv.org/pdf/2005.12974.pdf'
+				},
 				{
 					year: 2019,
 					author: 'Wang, Bin et al',
@@ -86,6 +113,15 @@ export default {
 					/* eslint-enable max-len */
 				},
 				{
+					year: 2019,
+					author: 'Zhao, Hongke et al',
+					/* eslint-disable max-len */
+					title: 'Voice of Charity: Prospecting the Donation Recurrence & Donor Retention in Crowdfunding',
+					/* eslint-enable max-len */
+					publication: 'IEEE Transactions on Knowledge and Data Engineering',
+					url: 'http://staff.ustc.edu.cn/~cheneh/paper_pdf/2019/Hongke-Zhao-TKDE.pdf',
+				},
+				{
 					year: 2018,
 					author: 'Jain, Lalit and Jamieson, Kevin',
 					title: 'Firing Bandits: Optimizing Crowdfunding',
@@ -93,6 +129,15 @@ export default {
 					publication: 'Proceedings of the 35th International Conference on Machine Learning, Stockholm, Sweden, PMLR 80.',
 					/* eslint-enable max-len */
 					url: 'http://proceedings.mlr.press/v80/jain18a/jain18a.pdf'
+				},
+				{
+					year: 2018,
+					author: 'Sun, Lu, Kraut, Robert, and Yang, Diyi',
+					/* eslint-disable max-len */
+					title: 'Multi-level Modeling of Social Roles in Online Micro-lending Platforms',
+					/* eslint-enable max-len */
+					publication: 'Journal of Association for Computing Machinery',
+					url: 'https://www.cc.gatech.edu/~dyang888/docs/cscw19_sun.pdf'
 				},
 				{
 					year: 2018,
@@ -138,7 +183,7 @@ export default {
 					publication: 'Proceedings of the ACM on Human-Computer Interaction Proceedings of the ACM on Human-Computer Interaction. DOI: 0.1145/3134749',
 					/* eslint-enable max-len */
 					/* eslint-disable max-len */
-					url: 'http://kraut.hciresearch.org/sites/kraut.hciresearch.org/files/articles/Yang17-PersuadingTeammatesToGive.pdf'
+					url: 'https://kraut.hciresearch.info/wp-content/uploads/Yang17-PersuadingTeammatesToGive.pdf'
 					/* eslint-enable max-len */
 				},
 				{
@@ -171,14 +216,14 @@ export default {
 					title: 'To Gather Together for a Better World: Understanding and Leveraging Communities in Micro-lending Recommendation',
 					/* eslint-enable max-len */
 					publication: '23rd International World Wide Web Conference',
-					url: 'http://davian.korea.ac.kr/filemanager/wl/?id=vHdYQ0qgoktBkmtpdfhY6fIxea3eSNQ3'
+					url: 'https://smartech.gatech.edu/bitstream/handle/1853/49249/GT-CSE-2013-05.pdf'
 				},
 				{
 					year: 2014,
 					author: 'Choo, Jaegul et al',
 					title: 'Understanding and Promoting Micro-finance Activities in Kiva.org',
 					publication: '7th ACM International Conference on Web Search and Data Mining',
-					url: 'http://davian.korea.ac.kr/filemanager/wl/?id=vpPIpVAYZAozQXhJoXvDf1TeVJFLjKkk'
+					url: 'https://www.cc.gatech.edu/~hpark/papers/wsdm_kiva.pdf'
 				},
 				{
 					year: 2013,
