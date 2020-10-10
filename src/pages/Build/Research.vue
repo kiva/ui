@@ -61,7 +61,7 @@ export default {
 				{
 					year: 2020,
 					author: 'Burke, Robin, Voida, Amy, et al.',
-					title: 'Algorithmic Fairness, Institutional Logics, and Social Choice',		
+					title: 'Algorithmic Fairness, Institutional Logics, and Social Choice',
 					/* eslint-disable max-len */
 					publication: 'Harvard Center for Research on Computation and Society: AI for Social Good workshop.',
 					/* eslint-enable max-len */
