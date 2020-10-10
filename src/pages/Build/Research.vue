@@ -61,10 +61,10 @@ export default {
 				{
 					year: 2020,
 					author: 'Burke, Robin, Voida, Amy, et al.',
+					title: 'Algorithmic Fairness, Institutional Logics, and Social Choice',					
 					/* eslint-disable max-len */
-					title: 'Algorithmic Fairness, Institutional Logics, and Social Choice',
-					/* eslint-enable max-len */
 					publication: 'Harvard Center for Research on Computation and Society: AI for Social Good workshop.',
+					/* eslint-enable max-len */
 					url: 'https://crcs.seas.harvard.edu/files/crcs/files/ai4sg_2020_paper_29.pdf'
 				},
 				{
@@ -79,10 +79,10 @@ export default {
 				{
 					year: 2020,
 					author: 'Sonboli, Nasim, Burke, Robin,  et al.',
-					/* eslint-disable max-len */
 					title: '“Opportunistic Multi-aspect Fairness through Personalized Re-ranking',
-					/* eslint-enable max-len */
+					/* eslint-disable max-len */
 					publication: 'Proceedings of the 28th ACM Conference on User Modeling, Adaptation and Personalization',
+					/* eslint-enable max-len */
 					url: 'https://arxiv.org/pdf/2005.12974.pdf'
 				},
 				{
@@ -115,11 +115,11 @@ export default {
 				{
 					year: 2019,
 					author: 'Zhao, Hongke et al',
-					title: 'Voice of Charity: Prospecting the Donation Recurrence & Donor Retention in Crowdfunding',
-					publication: 'IEEE Transactions on Knowledge and Data Engineering',
 					/* eslint-disable max-len */
-					url: 'http://staff.ustc.edu.cn/~cheneh/paper_pdf/2019/Hongke-Zhao-TKDE.pdf',
+					title: 'Voice of Charity: Prospecting the Donation Recurrence & Donor Retention in Crowdfunding',
 					/* eslint-enable max-len */
+					publication: 'IEEE Transactions on Knowledge and Data Engineering',
+					url: 'http://staff.ustc.edu.cn/~cheneh/paper_pdf/2019/Hongke-Zhao-TKDE.pdf',
 				},
 				{
 					year: 2018,
@@ -133,10 +133,10 @@ export default {
 				{
 					year: 2018,
 					author: 'Sun, Lu, Kraut, Robert, and Yang, Diyi',
-					title: 'Multi-level Modeling of Social Roles in Online Micro-lending Platforms',
 					/* eslint-disable max-len */
-					publication: 'Journal of Association for Computing Machinery',
+					title: 'Multi-level Modeling of Social Roles in Online Micro-lending Platforms',
 					/* eslint-enable max-len */
+					publication: 'Journal of Association for Computing Machinery',
 					url: 'https://www.cc.gatech.edu/~dyang888/docs/cscw19_sun.pdf'
 				},
 				{
