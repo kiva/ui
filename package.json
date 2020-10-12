@@ -56,7 +56,7 @@
 		"apollo-server-express": "^2.18.2",
 		"auth0-js": "^9.13.4",
 		"body-parser": "^1.19.0",
-		"braintree-web-drop-in": "^1.22.1",
+		"braintree-web-drop-in": "^1.24.0",
 		"canvas": "^2.6.1",
 		"canvas-confetti": "^1.2.0",
 		"change-case": "^4.1.1",
