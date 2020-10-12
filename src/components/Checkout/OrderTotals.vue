@@ -36,6 +36,7 @@
 import numeral from 'numeral';
 import addCreditByType from '@/graphql/mutation/shopAddCreditByType.graphql';
 import removeCreditByType from '@/graphql/mutation/shopRemoveCreditByType.graphql';
+import showVerificationLightbox from '@/graphql/mutation/checkout/showVerificationLightbox.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -83,6 +84,8 @@ export default {
 				variables: {
 					creditType: type
 				}
+			}).then(() => {
+				return this.apollo.mutate({ mutation: showVerificationLightbox });
 			}).then(() => {
 				this.setUpdating(false);
 				this.$kvTrackEvent('basket', 'Kiva Credit', 'Apply Credit Success');

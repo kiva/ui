@@ -1,0 +1,3 @@
+mutation closeVerificationLightbox {
+	closeVerificationLightbox @client
+}

@@ -8,4 +8,7 @@ query basketVerificationState($basketId: String) {
 			email
 		}
 	}
+	verificationLightbox @client {
+		visible
+	}
 }
