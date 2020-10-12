@@ -1,5 +1,6 @@
 query promoCampaign($basketId: String, $promoFundId: String) {
 	shop (basketId: $basketId) {
+		id
 		basket {
 			hasFreeCredits
 			items {
