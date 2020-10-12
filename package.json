@@ -115,7 +115,7 @@
 		"vuedraggable": "^2.23.0",
 		"vuelidate": "^0.7.5",
 		"webpack-merge": "^5.1.2",
-		"winston": "^3.2.1"
+		"winston": "^3.3.3"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.10.2",
