@@ -10,4 +10,3 @@ updates:
   - dependency-name: vue-instantsearch
     versions:
     - ">= 2.7.a"
-    - "< 2.8"
