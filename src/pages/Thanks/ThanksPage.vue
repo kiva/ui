@@ -10,25 +10,16 @@
 				<template v-if="loans.length > 0">
 					<div class="thanks__header hide-for-print">
 						<h1 class="thanks__header-h1">
-							{{ lender.firstName }}, thanks to you, {{ loans.length }}
-							{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
+							Thank you!
 						</h1>
 						<p class="thanks__header-subhead">
-							But the journey isn't over for them and many other borrowers.<br>
-							Please tell your friends and multiply your impact
+							Thanks for supporting {{ borrowerSupport }}.<br>
+							<span class="hide-for-print">
+								We've emailed your order confirmation to {{ lender.email }}
+							</span>
 						</p>
 					</div>
-
-					<social-share
-						class="thanks__social-share"
-						:lender="lender"
-						:loans="loans"
-					/>
 				</template>
-
-				<p class="thanks__confirmation hide-for-print">
-					Confirmation sent to: {{ lender.email }}.
-				</p>
 
 				<checkout-receipt
 					v-if="receipt"
@@ -36,7 +27,17 @@
 					:lender="lender"
 					:receipt="receipt"
 				/>
+				<hr>
 			</div>
+
+			<template v-if="loans.length > 0">
+				<social-share
+					class="thanks__social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
+			</template>
+
 			<contentful-lightbox
 				v-if="promoEnabled"
 				:content-group="contentGroup"
@@ -51,7 +52,6 @@
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
-import _get from 'lodash/get';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
 import SocialShare from '@/components/Checkout/SocialShare';
@@ -94,6 +94,40 @@ export default {
 			]
 		};
 	},
+	computed: {
+		borrowerSupport() {
+			// TODO Convert this to a mixin or plugin for reuse
+			// Takes an array of strings, joins them and inserts a delimiter before last item.
+			// Default last delimiter is 'and'
+			function joinArray(arr, last = ' and ') {
+				if (!Array.isArray(arr)) {
+					throw new Error('Passed value is not of array type.');
+				}
+				let processedArray = arr;
+
+				if (arr.length > 1) {
+					// Insert delimiter as part of the array
+					processedArray.splice(-1, 0, last);
+					// Make a per-letter array with commas between each item
+					processedArray = processedArray.join().split('');
+					// Remove last 2 commas
+					processedArray[processedArray.lastIndexOf(',')] = '';
+					processedArray[processedArray.lastIndexOf(',')] = '';
+					// Add a space after last comma
+					processedArray[processedArray.lastIndexOf(',')] = ', ';
+					return processedArray.join('');
+				}
+				// Return array of length 1 as string
+				return arr.join('');
+			}
+
+			const loanNames = this.loans.map(loan => loan.name);
+			if (loanNames.length > 3) {
+				return `these ${loanNames.length} borrowers`;
+			}
+			return joinArray(loanNames, ' and ');
+		}
+	},
 	apollo: {
 		query: checkoutReceiptQuery,
 		preFetch: true,
@@ -116,13 +150,13 @@ export default {
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
-			this.receipt = _get(data, 'shop.receipt');
-			const loansResponse = _get(this.receipt, 'items.values', []);
+			this.receipt = data?.shop?.receipt;
+			const loansResponse = this.receipt?.items?.values || [];
 			this.loans = loansResponse
 				.filter(item => item.basketItemType === 'loan_reservation')
 				.map(item => item.loan);
 
-			if (!_get(data, 'my.userAccount')) {
+			if (!data?.my?.userAccount) {
 				console.error(`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`);
 			}
 			if (!this.receipt) {
@@ -148,7 +182,8 @@ export default {
 		}).then(({ data }) => {
 			// returns the contentful content of the uiSetting key ui-thanks-lightbox or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
-			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-thanks-lightbox'); // eslint-disable-line max-len
+			const contentfulItems = data?.contentful?.entries?.items || [];
+			const uiPromoSetting =	contentfulItems.find(item => item.fields.key === 'ui-thanks-lightbox'); // eslint-disable-line max-len
 			// exit if missing setting or fields
 			if (!uiPromoSetting || !uiPromoSetting.fields) {
 				return false;
@@ -171,7 +206,7 @@ export default {
 @import 'settings';
 
 .page-content {
-	padding: 1.625rem 0;
+	padding: 1.625rem 0 5rem 0;
 }
 
 .thanks {
@@ -181,7 +216,9 @@ export default {
 	}
 
 	&__header-h1 {
-		@include impact-text();
+		@include large-text();
+
+		margin-bottom: 1.5rem;
 	}
 
 	&__header-subhead {
@@ -196,14 +233,9 @@ export default {
 		margin-bottom: 3rem;
 	}
 
-	&__confirmation {
-		text-align: center;
-		margin-bottom: 1rem;
-	}
-
 	&__receipt {
 		max-width: rem-calc(485);
-		margin: 0 auto;
+		margin: 0 auto 2rem;
 
 		@media print {
 			max-width: none;
