@@ -18,7 +18,7 @@
 		</section>
 
 		<fifteen-years-styles>
-			<fifteen-years-supporting-partners class="fifteen-year-section" />
+			<fifteen-years-supporting-partners class="fifteen-year-section fifteen-year-section__partners" />
 		</fifteen-years-styles>
 
 		<!-- GROW-172 associated to the GROW-165 explicit lender preferences epic -->
@@ -369,6 +369,14 @@ export default {
 
 	@include breakpoint(large) {
 		padding-bottom: 6rem;
+	}
+
+	&__partners {
+		padding-top: 1rem;
+
+		@include breakpoint(large) {
+			padding-top: 5rem;
+		}
 	}
 }
 

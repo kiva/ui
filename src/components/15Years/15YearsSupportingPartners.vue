@@ -79,9 +79,7 @@ export default {
 @import "settings";
 
 .supporting-partners {
-	h4 {
-		margin-top: 7rem;
-	}
+	padding-top: 7rem;
 
 	&__selected {
 		max-width: 30rem;
