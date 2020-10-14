@@ -257,6 +257,9 @@ $featured-text-line-height: 2.25rem;
 $large-text-font-size: 2.25rem;
 $large-text-line-height: 1.222222;
 
+$big-text-font-size: rem-calc(28);
+$big-text-line-height: rem-calc(36);
+
 $impact-text-font-size: rem-calc(32);
 $impact-text-line-height: rem-calc(40);
 $impact-text-font-size-medium: rem-calc(44);
@@ -296,6 +299,12 @@ $huge-headline-line-height-medium: rem-calc(70);
 @mixin large-text() {
 	font-size: $large-text-font-size;
 	line-height: $large-text-line-height;
+	font-weight: 700;
+}
+
+@mixin big-text() {
+	font-size: $big-text-font-size;
+	line-height: $big-text-line-height;
 	font-weight: 700;
 }
 
