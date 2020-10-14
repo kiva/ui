@@ -4,6 +4,7 @@
 			<canvas class="gk-canvas"></canvas>
 			<div class="gk-callout-manager"></div>
 		</div>
+		<fifteen-years-globe-c-t-a v-if="ctaVisible" />
 	</div>
 </template>
 
@@ -13,14 +14,24 @@ import geojson from '@/assets/data/components/15-years/geojson.json';
 import geoData from '@/assets/binary/geo/35-10.bin';
 import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
 import textureKiva from '@/assets/images/15-years/texture-kiva.png';
+import FifteenYearsGlobeCTA from '@/components/15Years/15YearsGlobeCTA';
 
 export default {
 	name: 'FifteenYearsGlobe',
+	components: {
+		FifteenYearsGlobeCTA,
+	},
+	data() {
+		return {
+			ctaVisible: false,
+		};
+	},
 	async mounted() {
 		if (!this.checkSupport()) {
 			this.$el.classList.add('fallback');
 			return;
 		}
+		this.ctaVisible = true;
 
 		const {
 			GlobeKitView,
@@ -101,6 +112,7 @@ export default {
 		this.gkview.onTap = (screen, world) => {
 			// TODO: maybe - analytics event. Triggered when clicking on the globe.
 			if (!world) return;
+			this.ctaVisible = false;
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
@@ -130,6 +142,7 @@ export default {
 
 		this.gkview.interactionController.onPan = () => {
 			this.$emit('pan', null);
+			this.ctaVisible = false;
 		};
 
 		// fired when a pin is removed by going around edge of globe. probably not valuable
