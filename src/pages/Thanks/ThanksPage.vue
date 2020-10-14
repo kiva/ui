@@ -151,7 +151,7 @@ export default {
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
 			this.receipt = data?.shop?.receipt;
-			const loansResponse = this.receipt?.items?.values || [];
+			const loansResponse = this.receipt?.items?.values ?? [];
 			this.loans = loansResponse
 				.filter(item => item.basketItemType === 'loan_reservation')
 				.map(item => item.loan);

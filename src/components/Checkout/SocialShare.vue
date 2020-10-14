@@ -182,7 +182,7 @@ export default {
 		},
 		suggestedMessage() {
 			if (this.selectedLoan.name) {
-				const location = this.selectedLoan?.geocode?.city || this.selectedLoan?.geocide?.country?.name;
+				const location = this.selectedLoan?.geocode?.city || this.selectedLoan?.geocode?.country?.name;
 				return `Kiva is an easy way to make a real difference in someone's life. Will you join me in helping ${this.selectedLoan.name} ${location ? `in ${location} ` : ''}to pursue their dream?`; // eslint-disable-line max-len
 			}
 			return '';
