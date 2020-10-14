@@ -92,6 +92,7 @@ import SubscriptionsLegacy from './SubscriptionsLegacy';
 const pageQuery = gql`query subscriptionSettingsPage {
 	my {
 		autoDeposit {
+			id
 			isSubscriber
 			isOnetime
 		}

@@ -17,6 +17,7 @@ function addCreditByType(type, code, apollo) {
 		$redemptionCode: String!
 	) {
 		shop(basketId: $basketId) {
+			id
 			addCreditByType(creditType: $creditType, redemptionCode: $redemptionCode)
 		}
 	}`;
@@ -44,6 +45,7 @@ export function applyLendingReward(promoFundId, apollo) {
 		$promoFundId: String!
 	) {
 		shop(basketId: $basketId) {
+			id
 			applyLendingReward(promoFundId: $promoFundId)
 		}
 	}`;

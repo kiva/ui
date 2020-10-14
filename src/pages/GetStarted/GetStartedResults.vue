@@ -202,6 +202,7 @@ export default {
 		query: gql`query getStartedResults($limit: Int, $visitorId: String) {
 			general {
 				lendingPreferences(visitorId: $visitorId) {
+					id
 					loans(limit: $limit) {
 						totalCount
 						values {

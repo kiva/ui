@@ -1,5 +1,6 @@
 mutation removeCreditByType($creditType: CreditTypeEnum!, $creditId: Int, $basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		removeCreditByType	(creditType: $creditType, creditId: $creditId)
 	}
 }

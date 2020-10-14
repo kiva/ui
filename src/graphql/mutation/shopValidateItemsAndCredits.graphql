@@ -1,5 +1,6 @@
 mutation shopValidateItemsAndCredits($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		validateItemsAndCredits {
 			success
 			error

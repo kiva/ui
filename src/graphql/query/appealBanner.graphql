@@ -6,7 +6,9 @@ query appealBanner($basketId: String) {
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			hasFreeCredits
 			totals {
 				redemptionCodeAvailableTotal

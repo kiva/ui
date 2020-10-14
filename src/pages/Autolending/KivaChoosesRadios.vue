@@ -38,6 +38,7 @@ export default {
 		query: gql`query autolendProfileKivaChooses {
 			autolending @client {
 				currentProfile {
+					id
 					kivaChooses
 				}
 			}

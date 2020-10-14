@@ -45,6 +45,7 @@ export default {
 		query: gql`query autolendProfileArrearsRate {
 			autolending @client {
 				currentProfile {
+					id
 					loanSearchCriteria {
 						filters {
 							arrearsRate {

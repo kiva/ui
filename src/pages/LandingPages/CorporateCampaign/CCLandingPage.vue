@@ -142,6 +142,7 @@ const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String)
 	shop(basketId: $basketId) {
 		id
 		basket {
+			id
 			hasFreeCredits
 		}
 		lendingRewardOffered
@@ -160,6 +161,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 	shop(basketId: $basketId) {
 		id
 		basket {
+			id
 			hasFreeCredits
 			items {
 				totalCount

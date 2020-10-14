@@ -171,6 +171,7 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 const lendingPreferencesPlaces = gql`query lendingPreferences($visitorId: String) {
 	general {
 		lendingPreferences(visitorId: $visitorId) {
+			id
 			countries {
 				values {
 					isoCode

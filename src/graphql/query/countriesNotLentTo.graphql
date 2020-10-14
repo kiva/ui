@@ -10,6 +10,7 @@ query countriesNotLentTo {
 	}
 	my {
 		lendingStats {
+			id
 			countriesLentTo {
 				isoCode
 			}

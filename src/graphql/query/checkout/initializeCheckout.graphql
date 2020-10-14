@@ -10,6 +10,7 @@ query initializeCheckout($basketId: String) {
 			donateRepayments
 		}
 		lender {
+			id
 			teams(limit: 100){
 				values {
 					name
@@ -29,7 +30,9 @@ query initializeCheckout($basketId: String) {
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			hasFreeCredits
 			credits {
 				totalCount

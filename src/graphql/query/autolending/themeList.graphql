@@ -1,6 +1,7 @@
 query themeList {
 	autolending @client {
 		currentProfile {
+			id
 			loanSearchCriteria {
 				filters {
 					theme
@@ -10,6 +11,7 @@ query themeList {
 	}
 	lend {
 		loanThemeFilter {
+			id
 			name
 		}
 	}

@@ -9,9 +9,11 @@ query categoryRows(
 				name
       			url
 				image {
+					id
 					url (customSize: $imgDefaultSize)
 				}
 				retinaImage {
+					id
 					url (customSize: $imgRetinaSize)
 				}
 			}

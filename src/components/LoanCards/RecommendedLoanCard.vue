@@ -99,7 +99,9 @@ import WhySpecial from '@/components/LoanCards/WhySpecial';
 
 const loanQuery = gql`query recLoanCard($basketId: String, $loanId: Int!) {
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			# for isInBasket
 			items {
 				values {

@@ -32,8 +32,6 @@ export default function createApolloClient({
 			// Return a custom cache id for types that don't have an id field
 			dataIdFromObject: object => {
 				if (object.__typename === 'Setting' && object.key) return `Setting:${object.key}`;
-				if (object.__typename === 'Shop') return 'Shop';
-				if (object.__typename === 'ShopMutation') return 'ShopMutation';
 				return defaultDataIdFromObject(object);
 			},
 			// Use a simpler underlying cache for server renders

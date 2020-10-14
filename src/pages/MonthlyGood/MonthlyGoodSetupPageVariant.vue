@@ -236,6 +236,7 @@ const pageQuery = gql`query monthlyGoodSetupPageVariant {
 	my {
 		subscriptions {
 			values {
+				id
 				subscrId
 			}
 		}
@@ -248,6 +249,7 @@ const pageQuery = gql`query monthlyGoodSetupPageVariant {
 			isSubscriber
 		}
 		autolendProfile {
+			id
 			isEnabled
 		}
 		loans {

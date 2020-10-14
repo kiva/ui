@@ -1,5 +1,6 @@
 query getClientToken($useCustomerId: Boolean = false) {
 	shop {
+		id
 		getClientToken(useCustomerId: $useCustomerId)
 	}
 }

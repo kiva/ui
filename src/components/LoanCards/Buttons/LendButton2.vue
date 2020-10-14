@@ -104,6 +104,7 @@ export default {
 			this.apollo.mutate({
 				mutation: gql`mutation addToBasket($loanId: Int!, $price: Money!, $basketId: String) {
 					shop (basketId: $basketId) {
+						id
 						updateLoanReservation (loanReservation: {
 							id: $loanId
 							price: $price

@@ -42,6 +42,7 @@ export default {
 		query: gql`query autolendProfileLoanTerm {
 			autolending @client {
 				currentProfile {
+					id
 					loanSearchCriteria {
 						filters {
 							lenderTerm {

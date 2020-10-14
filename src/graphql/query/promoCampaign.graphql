@@ -2,6 +2,7 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 	shop (basketId: $basketId) {
 		id
 		basket {
+			id
 			hasFreeCredits
 			items {
 				values {
@@ -22,11 +23,13 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 		}
 		promoCampaign (promoFundId: $promoFundId) {
 			promoFund {
+				id
 				displayName
 				displayDescription
 				promoPrice
 			}
 			promoGroup {
+				id
 				type
 				teamId
 			}

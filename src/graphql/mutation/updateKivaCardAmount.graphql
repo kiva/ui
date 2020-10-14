@@ -1,5 +1,6 @@
 mutation updateKivaCardReservation($idsInGroup: [Int], $individualPrice: Money!, $basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		updateKivaCard (kivaCard: {
 			idsInGroup: $idsInGroup
 			individualPrice: $individualPrice

@@ -8,6 +8,7 @@ mutation trackTransaction(
 	$transactionId: Int!
 ) {
 	shop {
+		id
 		trackTransaction(
 			campaign: $campaign
 			campaignContent: $campaignContent

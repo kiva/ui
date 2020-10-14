@@ -6,7 +6,9 @@ query basketAddInterstitialData(
 	$imgRetinaSize: String = "w960h720",
 ) {
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			items {
 				totalCount
 				values {
@@ -16,6 +18,7 @@ query basketAddInterstitialData(
 						expiryTime
 						isEndingSoon
 						loan {
+							id
 							...loanCardFields
 							image {
 								id

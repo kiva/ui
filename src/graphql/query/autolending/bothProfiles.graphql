@@ -3,9 +3,11 @@
 query autolendingProfiles {
 	autolending @client {
 		currentProfile {
+			id
 			...autolendProfileFragment
 		}
 		savedProfile {
+			id
 			...autolendProfileFragment
 		}
 	}

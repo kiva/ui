@@ -47,7 +47,9 @@ query lendByCategory($basketId: String) {
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			items {
 				values {
 					id

@@ -136,6 +136,7 @@ export default {
 			autolending @client {
 				profileChanged
 				currentProfile {
+					id
 					isEnabled
 					pauseUntil
 				}
