@@ -79,7 +79,7 @@ export default {
 	.faq-section {
 		border: 1px solid $kiva-bg-darkgray;
 		border-radius: rem-calc(8);
-		padding: rem-calc(20px);
+		padding: rem-calc(20);
 	}
 }
 
