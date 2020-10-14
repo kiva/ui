@@ -63,6 +63,7 @@ import contentful from '@/graphql/query/contentful.graphql';
 
 import { settingEnabled } from '@/util/settingsUtils';
 import { processContent } from '@/util/contentfulUtils';
+import { joinArray } from '@/util/joinArray';
 
 export default {
 	components: {
@@ -96,36 +97,11 @@ export default {
 	},
 	computed: {
 		borrowerSupport() {
-			// TODO Convert this to a mixin or plugin for reuse
-			// Takes an array of strings, joins them and inserts a delimiter before last item.
-			// Default last delimiter is 'and'
-			function joinArray(arr, last = ' and ') {
-				if (!Array.isArray(arr)) {
-					throw new Error('Passed value is not of array type.');
-				}
-				let processedArray = arr;
-
-				if (arr.length > 1) {
-					// Insert delimiter as part of the array
-					processedArray.splice(-1, 0, last);
-					// Make a per-letter array with commas between each item
-					processedArray = processedArray.join().split('');
-					// Remove last 2 commas
-					processedArray[processedArray.lastIndexOf(',')] = '';
-					processedArray[processedArray.lastIndexOf(',')] = '';
-					// Add a space after last comma
-					processedArray[processedArray.lastIndexOf(',')] = ', ';
-					return processedArray.join('');
-				}
-				// Return array of length 1 as string
-				return arr.join('');
-			}
-
 			const loanNames = this.loans.map(loan => loan.name);
 			if (loanNames.length > 3) {
 				return `these ${loanNames.length} borrowers`;
 			}
-			return joinArray(loanNames, ' and ');
+			return joinArray(loanNames, 'and');
 		}
 	},
 	apollo: {
