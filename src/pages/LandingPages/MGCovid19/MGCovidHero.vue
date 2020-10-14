@@ -83,6 +83,7 @@ const pageQuery = gql`
     }
     my {
       autoDeposit {
+        id
         isSubscriber
       }
     }

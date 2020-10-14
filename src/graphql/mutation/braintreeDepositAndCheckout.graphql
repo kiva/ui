@@ -1,5 +1,6 @@
 mutation doNoncePaymentDepositAndCheckout($basketId: String, $amount: Money!, $nonce: String!, $savePaymentMethod: Boolean, $deviceData: String) {
 	shop (basketId: $basketId) {
+		id
 		doNoncePaymentDepositAndCheckout (amount: $amount, nonce: $nonce, savePaymentMethod: $savePaymentMethod, deviceData: $deviceData)
 	}
 }

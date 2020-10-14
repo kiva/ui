@@ -15,6 +15,7 @@ query featuredLoansData(
 			url
 			loans(limit: $numberOfLoans, offset: $offset, unique: true) {
 				values {
+					id
 					...loanCardFields
 					image {
 						id

@@ -7,6 +7,7 @@ query loanPartnerTrustee(
 			name
 			... on LoanPartner {
 				partner {
+					id
 					avgBorrowerCost
 					avgBorrowerCostType
 					loansPosted
@@ -23,6 +24,7 @@ query loanPartnerTrustee(
 			... on LoanDirect {
 				endorsement
 				trustee {
+					id
 					organizationName
 					trusteeType
 					contactRecord {
@@ -30,6 +32,7 @@ query loanPartnerTrustee(
 					}
 					memberSince
 					stats {
+						id
 						numLoansEndorsedPublic
 						totalLoansValue
 						numFundraisingLoans

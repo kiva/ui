@@ -3,6 +3,7 @@
 query fullAutolendProfile {
 	my {
 		autolendProfile {
+			id
 			...autolendProfileFragment
 		}
 	}

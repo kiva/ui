@@ -1,6 +1,7 @@
 query sectorList {
 	autolending @client {
 		currentProfile {
+			id
 			loanSearchCriteria {
 				filters {
 					sector

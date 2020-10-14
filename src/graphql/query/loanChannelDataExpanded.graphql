@@ -24,6 +24,7 @@ query loanChannelDataExpanded (
 			) {
 				totalCount
 				values {
+					id
 					...loanCardFields
 					image {
 						id
@@ -35,7 +36,9 @@ query loanChannelDataExpanded (
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			items {
 				values {
 					id

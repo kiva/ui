@@ -127,6 +127,7 @@ export default {
 			}
 			autolending @client {
 				currentProfile {
+					id
 					isEnabled
 					enableAfter
 					lendAfterDaysIdle
@@ -134,6 +135,7 @@ export default {
 					donationPercentage
 				}
 				savedProfile {
+					id
 					enableAfter
 				}
 			}

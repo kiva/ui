@@ -22,6 +22,7 @@ query loanDetails(
 				disbursalDate
 				partnerName
 				partner {
+					id
 					chargesFeesInterest
 					riskRating
 					currencyExchangeLossRate
@@ -36,7 +37,9 @@ query loanDetails(
 				disbursalDate
 				trusteeName
 				trustee {
+					id
 					stats {
+						id
 						numFundraisingLoans
 					}
 				}

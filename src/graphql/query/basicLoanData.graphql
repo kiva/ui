@@ -15,6 +15,7 @@ query basicLoanData(
 			) {
 			totalCount
 			values {
+				id
 				...loanCardFields
 				image {
 					id

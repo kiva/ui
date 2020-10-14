@@ -1,9 +1,12 @@
 query checkoutReceipt($checkoutId: Int!) {
 	shop {
+		id
 		receipt(checkoutId: $checkoutId) {
+			id
 			transactionTime
 			credits {
 				values {
+					id
 					creditType
 					amount
 				}
@@ -56,6 +59,7 @@ query checkoutReceipt($checkoutId: Int!) {
 							name
 							id
 							image {
+								id
 								url
 							}
 							use
@@ -74,13 +78,16 @@ query checkoutReceipt($checkoutId: Int!) {
 	my {
 		teams {
 			values {
+				id
 				team {
+					id
 					teamPublicId
 					name
 				}
 			}
 		}
 		userAccount {
+			id
 			firstName
 			lastName
 			email

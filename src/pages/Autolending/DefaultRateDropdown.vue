@@ -54,6 +54,7 @@ export default {
 		query: gql`query autolendProfileDefaultRate {
 			autolending @client {
 				currentProfile {
+					id
 					loanSearchCriteria {
 						filters {
 							defaultRate {

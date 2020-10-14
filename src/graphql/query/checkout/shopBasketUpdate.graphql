@@ -10,9 +10,11 @@ query shopBasketUpdate($basketId: String) {
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		nonTrivialItemCount
 		basketVerificationState
 		basket {
+			id
 			hasFreeCredits
 			credits {
 				totalCount

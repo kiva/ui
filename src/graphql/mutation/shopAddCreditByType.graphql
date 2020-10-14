@@ -1,5 +1,6 @@
 mutation addCreditByType($creditType: CreditTypeEnum!, $redemptionCode: String, $basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		addCreditByType	(creditType: $creditType, redemptionCode: $redemptionCode)
 	}
 }

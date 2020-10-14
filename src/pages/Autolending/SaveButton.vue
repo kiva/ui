@@ -89,6 +89,7 @@ export default {
 				profileChanged
 				savingProfile
 				currentProfile {
+					id
 					kivaChooses
 				}
 			}

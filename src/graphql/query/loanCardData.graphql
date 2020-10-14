@@ -21,6 +21,7 @@ query loanCardData(
 			) {
 			totalCount
 			values {
+				id
 				...loanCardFields
 				image {
 					id
@@ -32,7 +33,9 @@ query loanCardData(
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			items {
 				values {
 					id

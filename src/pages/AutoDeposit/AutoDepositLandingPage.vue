@@ -105,10 +105,12 @@ const pageQuery = gql`query autoDepositLandingPage {
 	my {
 		subscriptions {
 			values {
+				id
 				subscrId
 			}
 		}
 		autoDeposit {
+			id
 			isSubscriber
 		}
 	}

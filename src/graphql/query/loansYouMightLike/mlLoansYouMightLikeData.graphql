@@ -8,8 +8,9 @@ query mlLoansYouMightLikeData(
 	$imgRetinaSize: String = "w480h360"
 ) {
 	ml {
-    	relatedLoansByTopics(limit: $limit, loanId: $loanId, offset: $offset, topics: [story]) {
-      		values {
+		relatedLoansByTopics(limit: $limit, loanId: $loanId, offset: $offset, topics: [story]) {
+			values {
+				id
 				...loanCardFields
 				image {
 					id

@@ -42,6 +42,7 @@ export default {
 		query: gql`query autolendProfileRiskRating {
 			autolending @client {
 				currentProfile {
+					id
 					loanSearchCriteria {
 						filters {
 							riskRating {

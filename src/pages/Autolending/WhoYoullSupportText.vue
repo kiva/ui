@@ -71,6 +71,7 @@ export default {
 		query: gql`query whoYoullSupport {
 			autolending @client {
 				currentProfile {
+					id
 					kivaChooses
 					loanSearchCriteria {
 						filters {

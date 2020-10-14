@@ -27,6 +27,7 @@ const pageQuery = gql`query autolendProfileEnabled {
 	autolending @client {
 		profileChanged
 		currentProfile {
+			id
 			isEnabled
 		}
 	}
@@ -57,6 +58,7 @@ export default {
 					query: gql`query userIsMonthlyGoodSubscriber {
 							my {
 								autoDeposit {
+									id
 									isSubscriber
 								}
 							}

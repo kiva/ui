@@ -1,5 +1,6 @@
 query basketCount($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		nonTrivialItemCount
 	}
 }

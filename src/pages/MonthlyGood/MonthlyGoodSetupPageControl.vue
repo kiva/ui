@@ -297,6 +297,7 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 	my {
 		subscriptions {
 			values {
+				id
 				subscrId
 			}
 		}
@@ -309,6 +310,7 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 			isSubscriber
 		}
 		autolendProfile {
+			id
 			isEnabled
 		}
 		payPalBillingAgreement {

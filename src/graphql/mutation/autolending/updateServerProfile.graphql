@@ -3,6 +3,7 @@
 mutation updateAutolendingProfile($profile: AutolendProfileUpdateInput!) {
 	my {
 		updateAutolendProfile(profile: $profile) {
+			id
 			...autolendProfileFragment
 		}
 	}

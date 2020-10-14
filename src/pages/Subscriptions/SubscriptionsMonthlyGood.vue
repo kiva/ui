@@ -181,6 +181,7 @@ import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoo
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		autoDeposit {
+			id
 			amount
 			donateAmount
 			dayOfMonth
@@ -315,7 +316,7 @@ export default {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth
 						}) {
-							amount donateAmount dayOfMonth
+							id amount donateAmount dayOfMonth
 						}
 					}
 				}`,

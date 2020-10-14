@@ -15,6 +15,7 @@ query loanChannelData(
 			url
 			loans(limit: $numberOfLoans, unique: true, exclude_ids: $excludeIds) {
 				values {
+					id
 					...loanCardFields
 					image {
 						id

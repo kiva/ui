@@ -10,6 +10,7 @@ query loansById(
 	lend {
 		loans(limit: $numberOfLoans, filters: {loanIds: $ids}) {
 			values {
+				id
 				...loanCardFields
 				image {
 					id

@@ -8,7 +8,7 @@ mutation braintreeCreateAutoDepositSubscription($paymentMethodNonce: String!, $a
 				dayOfMonth: $dayOfMonth,
 			},
 			paymentMethodNonce:$paymentMethodNonce) {
-				amount donateAmount dayOfMonth status
+				id amount donateAmount dayOfMonth status
 			}
 	}
 }

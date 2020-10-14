@@ -6,7 +6,9 @@ query checkoutSettings($basketId: String) {
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			hasFreeCredits
 		}
 		lendingRewardOffered
