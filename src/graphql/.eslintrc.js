@@ -26,5 +26,6 @@ module.exports = {
 		'graphql/template-strings': ['warn', graphqlOptions],
 		'graphql/no-deprecated-fields': ['warn', graphqlOptions],
 		'graphql/named-operations': ['error', graphqlOptions],
+		'graphql/required-fields': ['error', { ...graphqlOptions, requiredFields: ['id', 'key'] }],
 	}
 }
