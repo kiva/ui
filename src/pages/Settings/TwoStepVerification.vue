@@ -5,7 +5,7 @@
 				<h2 class="column small-12 strong page-heading">
 					2-step verification
 				</h2>
-				<div class="column small-12">
+				<div class="column small-12 large-8">
 					<hr>
 
 					<!-- Status section -->
