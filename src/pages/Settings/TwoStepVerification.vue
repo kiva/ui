@@ -55,9 +55,9 @@ export default {
 	}
 
 	hr {
-		margin-top: rem-calc(12);
+		margin-top: 0.75rem;
 		margin-bottom: 2rem;
-		border-color: #D8D8D8;
+		border-color: $light-gray;
 	}
 
 	.heading {
