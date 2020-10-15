@@ -7,6 +7,7 @@
 				</h2>
 				<div class="column small-12">
 					<hr>
+
 					<!-- Status section -->
 					<section>
 						<p class="medium-text heading">
@@ -55,14 +56,23 @@ export default {
 	}
 
 	hr {
-		margin-top: 0.75rem;
-		margin-bottom: 2rem;
 		border-color: $light-gray;
+		margin-top: 0;
+		margin-bottom: 1.5rem;
+
+		@include breakpoint(large) {
+			margin-top: 0.75rem;
+			margin-bottom: 2rem;
+		}
 	}
 
 	.heading {
 		font-weight: 700;
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.5rem;
+
+		@include breakpoint(large) {
+			margin-bottom: 0.75rem;
+		}
 	}
 
 	section {
