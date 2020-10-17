@@ -198,6 +198,20 @@ export default [
 		],
 
 	},
+	{
+		path: '/settings/security',
+		component: () => import('@/pages/Settings/TwoStepVerifyPage'),
+		children: [
+			{
+				path: '',
+				name: 'verification',
+				component: () => import('@/pages/Settings/TwoStepVerifyMethod'),
+				meta: {
+					activeLoginRequired: true,
+				}
+			},
+		]
+	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
 		path: '/styleguide',
