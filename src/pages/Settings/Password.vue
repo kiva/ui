@@ -1,7 +1,7 @@
 <template>
 	<div class="row">
 		<div class="column small-12 large-8">
-			<kv-settings-card title="2-Step verification">
+			<kv-settings-card title="Password">
 				<template v-slot:icon>
 					<!-- TODO: THIS ICON IS A PLACEHOLDER
 					Get correct icon assest from design, or remove this KvIcon -->
@@ -12,8 +12,7 @@
 					/>
 				</template>
 				<template v-slot:content>
-					<p>Status:</p>
-					<p>Lorum Ipsum etc.</p>
+					<p>Clicking this button will send you a verification...</p>
 				</template>
 			</kv-settings-card>
 		</div>

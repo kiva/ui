@@ -198,6 +198,25 @@ export default [
 		],
 
 	},
+	{
+		path: '/settings/security/mfa',
+		component: () => import('@/pages/Settings/MFASettings'),
+		children: [
+			{
+				path: '',
+				name: 'password',
+				component: () => import('@/pages/Settings/Password'),
+				// meta: {
+				// 	activeLoginRequired: true,
+				// }
+			},
+			{
+				path: '',
+				name: 'two-step-verification',
+				component: () => import('@/pages/Settings/TwoStepVerification'),
+			},
+		]
+	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
 		path: '/styleguide',
