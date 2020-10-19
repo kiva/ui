@@ -20,7 +20,13 @@
 						</p>
 					</div>
 				</template>
+			</div>
+		</div>
 
+		<monthly-good-c-t-a v-if="showMonthlyGoodCTA" />
+
+		<div class="row page-content">
+			<div class="small-12 columns thanks">
 				<checkout-receipt
 					v-if="receipt"
 					class="thanks__receipt"
@@ -53,13 +59,16 @@ import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
+import ContentfulLightbox from '@/components/Lightboxes/ContentfulLightbox';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
+import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import checkoutReceiptQuery from '@/graphql/query/checkoutReceipt.graphql';
 
-import ContentfulLightbox from '@/components/Lightboxes/ContentfulLightbox';
+import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import contentful from '@/graphql/query/contentful.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import { settingEnabled } from '@/util/settingsUtils';
 import { processContent } from '@/util/contentfulUtils';
@@ -70,6 +79,7 @@ export default {
 		CheckoutReceipt,
 		ContentfulLightbox,
 		KvCheckoutSteps,
+		MonthlyGoodCTA,
 		SocialShare,
 		WwwPage,
 	},
@@ -92,7 +102,9 @@ export default {
 				'Account',
 				'Payment',
 				'Thank You!'
-			]
+			],
+			showMonthlyGoodCTA: false,
+			isMonthlyGoodSubscriber: false
 		};
 	},
 	computed: {
@@ -105,8 +117,19 @@ export default {
 		}
 	},
 	apollo: {
-		query: checkoutReceiptQuery,
-		preFetch: true,
+		query: thanksPageQuery,
+		preFetch(config, client, { route }) {
+			return client.query({
+				query: thanksPageQuery,
+				variables: {
+					checkoutId: numeral(route.query.kiva_transaction_id).value()
+				}
+			}).then(() => {
+				return client.query({
+					query: experimentAssignmentQuery, variables: { id: 'mg_thanks_cta' }
+				});
+			});
+		},
 		preFetchVariables({ route }) {
 			return {
 				checkoutId: numeral(route.query.kiva_transaction_id).value()
@@ -122,6 +145,8 @@ export default {
 				...data.my.userAccount,
 				teams: data.my.teams.values.map(value => value.team)
 			};
+
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
@@ -149,6 +174,23 @@ export default {
 			spread: 200,
 			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'] // misc. kiva colors
 		});
+
+		// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
+		const mgCTAExperiment = this.apollo.readFragment({
+			id: 'Experiment:mg_thanks_cta',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (mgCTAExperiment.version === 'shown' && !this.isMonthlyGoodSubscriber) {
+			this.showMonthlyGoodCTA = true;
+			this.$kvTrackEvent(
+				'Thanks',
+				'EXP-SUBS-526-Oct2020',
+				mgCTAExperiment.version === 'shown' ? 'a' : 'b'
+			);
+		}
+
+		// Contentful Lightbox
 		this.federation.query({
 			query: contentful,
 			variables: {
@@ -182,7 +224,11 @@ export default {
 @import 'settings';
 
 .page-content {
-	padding: 1.625rem 0 5rem 0;
+	padding: 1.625rem 0 0 0;
+
+	&:last-child {
+		padding-bottom: 5rem;
+	}
 }
 
 .thanks {
