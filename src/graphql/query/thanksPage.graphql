@@ -76,6 +76,10 @@ query checkoutReceipt($checkoutId: Int!) {
 		}
 	}
 	my {
+		autoDeposit {
+			id
+			isSubscriber
+		}
 		teams {
 			values {
 				id
@@ -92,6 +96,12 @@ query checkoutReceipt($checkoutId: Int!) {
 			lastName
 			email
 			inviterName
+		}
+	}
+	general {
+		uiExperimentSetting(key: "mg_thanks_cta") {
+			key
+			value
 		}
 	}
 }

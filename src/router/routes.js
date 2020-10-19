@@ -184,6 +184,7 @@ export default [
 		],
 
 	},
+	{ path: '/settings/security/mfa', component: () => import('@/pages/Settings/TwoStepVerifyPage') },
 	{
 		path: '/settings/subscriptions',
 		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),
@@ -199,7 +200,7 @@ export default [
 
 	},
 	{
-		path: '/settings/security/mfa',
+		path: '/settings/security',
 		component: () => import('@/pages/Settings/MFASettings'),
 		children: [
 			{
@@ -210,11 +211,11 @@ export default [
 					activeLoginRequired: true,
 				}
 			},
-			{
-				path: '',
-				name: 'two-step-verification',
-				component: () => import('@/pages/Settings/TwoStepVerification'),
-			},
+			// {
+			// 	path: '',
+			// 	name: 'two-step-verification',
+			// 	component: () => import('@/pages/Settings/TwoStepVerification'),
+			// },
 		]
 	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
