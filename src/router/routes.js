@@ -184,6 +184,7 @@ export default [
 		],
 
 	},
+	{ path: '/settings/security/mfa', component: () => import('@/pages/Settings/TwoStepVerifyPage') },
 	{
 		path: '/settings/subscriptions',
 		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),
