@@ -206,9 +206,9 @@ export default [
 				path: '',
 				name: 'password',
 				component: () => import('@/pages/Settings/Password'),
-				// meta: {
-				// 	activeLoginRequired: true,
-				// }
+				meta: {
+					activeLoginRequired: true,
+				}
 			},
 			{
 				path: '',
