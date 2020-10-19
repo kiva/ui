@@ -28,8 +28,8 @@ export default {
 	},
 	data() {
 		return {
-			promoHasFreeCredits: false,
-			promoLendingRewardOffered: false,
+			appInstallHasFreeCredits: false,
+			appInstallLendingRewardOffered: false,
 		};
 	},
 	computed: {
