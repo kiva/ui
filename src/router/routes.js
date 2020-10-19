@@ -189,7 +189,6 @@ export default [
 		component: () => import('@/pages/Settings/SecuritySettings'),
 		children: [{
 			path: '',
-			name: 'password',
 			component: () => import('@/pages/Settings/SecuritySettingsPage'),
 			meta: {
 				activeLoginRequired: true,
