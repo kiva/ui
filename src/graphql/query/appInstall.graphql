@@ -1,0 +1,12 @@
+query appInstall($basketId: String) {
+	shop (basketId: $basketId) {
+		id
+		basket {
+			id
+			hasFreeCredits
+		}
+		lendingRewardOffered
+	}
+}
+
+
