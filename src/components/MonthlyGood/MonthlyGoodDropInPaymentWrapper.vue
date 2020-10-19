@@ -6,6 +6,7 @@
 				:amount="amount | numeral('0.00')"
 				flow="vault"
 				:payment-types="['paypal', 'card']"
+				:preselect-vaulted-payment-method="action === 'Registration'"
 				@transactions-enabled="enableConfirmButton = $event"
 			/>
 			<div id="dropin-button">
@@ -68,6 +69,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		currentNonce: {
+			type: String,
+			default: ''
+		},
 		/**
 		 * Context that this payment wrapper is used in:
 		 * Must be one of 2 strings 'Registration' or 'Update'
@@ -108,51 +113,57 @@ export default {
 		},
 		doBraintreeMonthlyGood(nonce, paymentType) {
 			if (this.action === 'Update') {
-				// Apollo call to the query mutation
-				this.apollo.mutate({
-					mutation: braintreeUpdateSubscriptionPaymentMethod,
-					variables: {
-						paymentMethodNonce: nonce,
-					}
-				}).then(kivaBraintreeResponse => {
+				// if nonce is the same, the payment method is the same and we do not need to call the update mutation
+				if (nonce === this.currentNonce) {
+					this.$emit('no-update');
+					this.submitting = false;
+				} else {
+					// Apollo call to the query mutation
+					this.apollo.mutate({
+						mutation: braintreeUpdateSubscriptionPaymentMethod,
+						variables: {
+							paymentMethodNonce: nonce,
+						}
+					}).then(kivaBraintreeResponse => {
 					// Check for errors in transaction
-					if (kivaBraintreeResponse.errors) {
-						const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
-						const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
-						const standardErrorCode = `(Braintree error: ${errorCode})`;
-						const standardError = `There was an error processing your payment.
+						if (kivaBraintreeResponse.errors) {
+							const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
+							const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
+							const standardErrorCode = `(Braintree error: ${errorCode})`;
+							const standardError = `There was an error processing your payment.
 						Please try again. ${standardErrorCode}`;
 
-						// Payment method failed, unselect attempted payment method
-						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
-						// Potential error message: 'Transaction failed. Please select a different payment method.';
+							// Payment method failed, unselect attempted payment method
+							this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+							// Potential error message: 'Transaction failed. Please select a different payment method.';
 
-						this.$showTipMsg(standardError, 'error');
+							this.$showTipMsg(standardError, 'error');
 
-						// Fire specific exception to Snowplow
-						this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
+							// Fire specific exception to Snowplow
+							this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
 
-						// exit
-						return kivaBraintreeResponse;
-					}
-					// Transaction is complete
-					const subscriptionUpdatedSuccessfully = kivaBraintreeResponse.data?.my?.updateAutoDeposit;
+							// exit
+							return kivaBraintreeResponse;
+						}
+						// Transaction is complete
+						const subscriptionUpdatedSuccessfully = kivaBraintreeResponse.data?.my?.updateAutoDeposit;
 
-					if (subscriptionUpdatedSuccessfully) {
+						if (subscriptionUpdatedSuccessfully) {
 						// fire BT Success event
-						this.$kvTrackEvent(
-							this.action,
-							`${paymentType} Braintree DropIn Subscription Payment Update`,
-							`${this.action.toLowerCase()}-monthly-good-update`
-						);
+							this.$kvTrackEvent(
+								this.action,
+								`${paymentType} Braintree DropIn Subscription Payment Update`,
+								`${this.action.toLowerCase()}-monthly-good-update`
+							);
 
-						// Complete transaction handles additional analytics + redirect
-						this.$emit('complete-transaction', paymentType);
-					}
-					return kivaBraintreeResponse;
-				}).finally(() => {
-					this.submitting = false;
-				});
+							// Complete transaction handles additional analytics + redirect
+							this.$emit('complete-transaction', paymentType);
+						}
+						return kivaBraintreeResponse;
+					}).finally(() => {
+						this.submitting = false;
+					});
+				}
 			}
 			if (this.action === 'Registration') {
 				// Apollo call to the query mutation
