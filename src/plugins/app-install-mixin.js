@@ -20,8 +20,6 @@ export default {
 		query: appInstallQuery,
 		preFetch: true,
 		result({ data }) {
-			console.log('data');
-			console.log(data);
 			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
 			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
 		},
@@ -34,8 +32,6 @@ export default {
 	},
 	computed: {
 		showBanner() {
-			console.log('computed');
-			console.log(this.appInstallHasFreeCredits, this.appInstallLendingRewardOffered);
 			if (this.appInstallHasFreeCredits || this.appInstallLendingRewardOffered) {
 				return false;
 			}
