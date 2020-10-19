@@ -1,3 +1,6 @@
+import appInstallQuery from '@/graphql/query/appInstall.graphql';
+import _get from 'lodash/get';
+
 export default {
 	metaInfo() {
 		return {
@@ -12,8 +15,31 @@ export default {
 			] : []
 		};
 	},
+	inject: ['apollo'],
+	apollo: {
+		query: appInstallQuery,
+		preFetch: true,
+		result({ data }) {
+			console.log('data');
+			console.log(data);
+			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+		},
+	},
+	data() {
+		return {
+			promoHasFreeCredits: false,
+			promoLendingRewardOffered: false,
+		};
+	},
 	computed: {
 		showBanner() {
+			console.log('computed');
+			console.log(this.appInstallHasFreeCredits, this.appInstallLendingRewardOffered);
+			if (this.appInstallHasFreeCredits || this.appInstallLendingRewardOffered) {
+				return false;
+			}
+
 			// Show Android and iOS app install banners if user is on a whitelisted page but not coming from a promo
 			const route = this.$route;
 			const whitelistedRoutes = [
