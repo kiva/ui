@@ -9,6 +9,10 @@
 </template>
 
 <script>
+/**
+ * This template is not currently in use.
+ * It only exists for reference.
+ */
 import MonthlyGoodSetupPageControl from '@/pages/MonthlyGood/MonthlyGoodSetupPageControl';
 // Variant template driven by experiment
 // import MonthlyGoodSetupPageVariant from '@/pages/MonthlyGood/MonthlyGoodSetupPageVariant';
