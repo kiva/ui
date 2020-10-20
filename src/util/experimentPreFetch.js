@@ -198,13 +198,7 @@ export function fetchAllExpSettings(apolloClient, route) {
 		// prefetch all active experiment settings and assignments if the current route matches their glob
 		.then(() => {
 			const currentRouteExperiments = activeExperiments.filter(experiment => {
-				let expInRoute = false;
-				experiment.routes.forEach(expRoute => {
-					if (minimatch(route.path, expRoute)) {
-						expInRoute = true;
-					}
-				});
-				return expInRoute;
+				return experiment.routes.some(expRoute => minimatch(route.path, expRoute));
 			});
 			console.log('Experiments for the current route:');
 			console.log(currentRouteExperiments);
