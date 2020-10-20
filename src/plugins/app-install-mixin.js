@@ -1,5 +1,6 @@
 import appInstallQuery from '@/graphql/query/appInstall.graphql';
 import _get from 'lodash/get';
+import cookieStore from '@/util/cookieStore';
 
 export default {
 	metaInfo() {
@@ -16,14 +17,6 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: appInstallQuery,
-		preFetch: true,
-		result({ data }) {
-			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
-		},
-	},
 	data() {
 		return {
 			appInstallHasFreeCredits: false,
@@ -63,6 +56,20 @@ export default {
 			}
 
 			return show;
+		}
+	},
+	created() {
+		try {
+			const data = this.apollo.readQuery({
+				query: appInstallQuery,
+				variables: {
+					basketId: cookieStore.get('kvbskt'),
+				},
+			});
+			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+		} catch (err) {
+			console.error(err);
 		}
 	},
 	mounted() {
