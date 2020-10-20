@@ -26,6 +26,14 @@
 		<monthly-good-c-t-a v-if="showMonthlyGoodCTA" />
 
 		<div class="row page-content">
+			<template v-if="loans.length > 0">
+				<social-share
+					class="thanks__social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
+			</template>
+
 			<div class="small-12 columns thanks">
 				<checkout-receipt
 					v-if="receipt"
@@ -35,14 +43,6 @@
 				/>
 				<hr>
 			</div>
-
-			<template v-if="loans.length > 0">
-				<social-share
-					class="thanks__social-share"
-					:lender="lender"
-					:loans="loans"
-				/>
-			</template>
 
 			<contentful-lightbox
 				v-if="promoEnabled"
