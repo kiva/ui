@@ -6,9 +6,11 @@ query categoryRows {
 				url
 				name
 				image {
+					id
 					url (customSize: "w313h176")
 				}
 				retinaImage {
+					id
 					url (customSize: "w626h352")
 				}
 			}

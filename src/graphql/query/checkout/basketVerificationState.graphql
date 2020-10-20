@@ -1,5 +1,6 @@
 query basketVerificationState($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		basketVerificationState
 	}
 	my {
@@ -7,5 +8,8 @@ query basketVerificationState($basketId: String) {
 			id
 			email
 		}
+	}
+	verificationLightbox @client {
+		visible
 	}
 }

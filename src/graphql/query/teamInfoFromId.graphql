@@ -1,16 +1,19 @@
 query teamInfoFromId($team_id: Int, $team_recruitment_id: Int, $team_ids: [Int]) {
 	community {
 		team(id: $team_id) {
+			id
 			name
 			membershipType
 		}
 	}
 	my {
 		teamRecruitment(id: $team_recruitment_id) {
+			id
 			recruiterDisplayName
 		}
 		teams(teamIds: $team_ids) {
 			values {
+				id
 				team {
 	  				id
 				}

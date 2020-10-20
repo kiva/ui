@@ -72,8 +72,7 @@ export default {
 			this.isAutoDepositSubscriber = !isMonthlyGoodSubscriber && autoDepositId;
 
 			if (!this.isAutoDepositSubscriber) {
-				// ! TODO change this when URL is finalized
-				this.$router.push({ path: '/auto-deposit-new' }).catch({});
+				this.$router.push({ path: '/auto-deposit' }).catch({});
 			}
 			this.totalAmount = numeral(data?.my?.autoDeposit?.amount || 0).format('0.00');
 			this.donationAmount = numeral(data?.my?.autoDeposit?.donateAmount || 0).format('0.00');

@@ -4,6 +4,7 @@
 			<canvas class="gk-canvas"></canvas>
 			<div class="gk-callout-manager"></div>
 		</div>
+		<fifteen-years-globe-c-t-a v-if="ctaVisible" />
 	</div>
 </template>
 
@@ -13,14 +14,24 @@ import geojson from '@/assets/data/components/15-years/geojson.json';
 import geoData from '@/assets/binary/geo/35-10.bin';
 import gkWasm from '@/assets/wasm/gkweb_bg.wasm';
 import textureKiva from '@/assets/images/15-years/texture-kiva.png';
+import FifteenYearsGlobeCTA from '@/components/15Years/15YearsGlobeCTA';
 
 export default {
 	name: 'FifteenYearsGlobe',
+	components: {
+		FifteenYearsGlobeCTA,
+	},
+	data() {
+		return {
+			ctaVisible: false,
+		};
+	},
 	async mounted() {
 		if (!this.checkSupport()) {
 			this.$el.classList.add('fallback');
 			return;
 		}
+		this.ctaVisible = true;
 
 		const {
 			GlobeKitView,
@@ -101,6 +112,7 @@ export default {
 		this.gkview.onTap = (screen, world) => {
 			// TODO: maybe - analytics event. Triggered when clicking on the globe.
 			if (!world) return;
+			this.ctaVisible = false;
 			const results = this.datastore.getNearest(world.lat, world.lon, 500, 1);
 			if (results) {
 				const result = results[0][0];
@@ -130,6 +142,7 @@ export default {
 
 		this.gkview.interactionController.onPan = () => {
 			this.$emit('pan', null);
+			this.ctaVisible = false;
 		};
 
 		// fired when a pin is removed by going around edge of globe. probably not valuable
@@ -205,24 +218,24 @@ export default {
 .globe-container {
 	pointer-events: all;
 	position: absolute;
-	width: calc(100vw - 48px);
-	height: calc(100vw - 48px);
-	left: calc(50% - 50vw + 24px);
-	top: 432px;
+	width: calc(100vw - #{rem-calc(48)});
+	height: calc(100vw - #{rem-calc(48)});
+	left: calc(50% - 50vw + #{rem-calc(24)});
+	top: rem-calc(432);
 	z-index: 3;
 
 	@include breakpoint(large) {
-		width: 610px;
-		height: 610px;
-		left: calc(90.048% - 305px);
-		top: 242px;
+		width: rem-calc(610);
+		height: rem-calc(610);
+		left: calc(90.048% - #{rem-calc(305)});
+		top: rem-calc(242);
 	}
 
 	@include breakpoint(xxlarge) {
-		width: 540px;
-		height: 540px;
-		left: calc(69.3056% - 270px);
-		top: 147px;
+		width: rem-calc(540);
+		height: rem-calc(540);
+		left: calc(69.3056% - #{rem-calc(270)});
+		top: rem-calc(147);
 	}
 
 	&::before {
@@ -234,7 +247,7 @@ export default {
 		height: 100%;
 		border-radius: 50%;
 		background: white;
-		box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+		box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
 	}
 }
 
@@ -268,6 +281,7 @@ export default {
 
 <style lang="scss">
 @import 'settings';
+@import 'components/15-years/15-years';
 
 .callout {
 	display: inline-block;
@@ -277,16 +291,12 @@ export default {
 
 .dot-callout {
 	transition: opacity 0.25s linear;
-	background: white;
-	width: calc(4 / 320 * 100vw);
-	height: calc(4 / 320 * 100vw);
+	background: $tomato;
+	border: rem-calc(2) solid white;
 	border-radius: 50%;
-	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
-
-	@include breakpoint(large) {
-		width: 7px;
-		height: 7px;
-	}
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
+	width: rem-calc(16);
+	height: rem-calc(16);
 }
 
 .dot-callout.hidden {
@@ -299,41 +309,42 @@ export default {
 }
 
 .pin-callout {
-	width: 20px;
-	height: 27px;
-	@include breakpoint(large) {
-		width: 27px;
-		height: 37px;
-	}
+	width: rem-calc(40);
+	height: rem-calc(40);
+}
 
-	div {
-		width: 100%;
-		height: 100%;
-		transition: transform 0.5s cubic-bezier(0.265, 1.85, 0.42, 0.75);
-		transform-origin: 50% 89.1892%;
-	}
-
-	div::after {
-		content: '';
-		display: block;
-		width: 100%;
-		height: 100%;
-		background: url('~@/assets/images/15-years/globe/pin@2x.png') top left no-repeat;
-		background-size: 100% 100%;
-		animation: pin-wiggle 1.5s infinite alternate cubic-bezier(0.5, 0, 0.5, 1);
-	}
+.pin-callout-flag {
+	width: 100%;
+	height: 100%;
+	transform-origin: 50% 100%;
+	transform: scale(1) translateY(rem-calc(20)); // centered vertically. Half the height.
+	border-radius: 50%;
+	border: rem-calc(3) solid white;
+	overflow: hidden;
+	background-color: #fff;
+	background-image: url('~flag-icon-css/flags/sprite/1x1/flag-sprite-32_2x.png');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	box-shadow: rem-calc(4) rem-calc(4) rem-calc(8) rgba(0, 0, 0, 0.25);
 }
 
 .pin-callout.hidden {
-	div {
-		transform: scale(0, 0);
+	.pin-callout-flag {
+		transform: scale(0) translateY(0);
+	}
+}
+
+.pin-callout.animate-in {
+	.pin-callout-flag {
+		transition: transform 0.2s linear;
+		transform: scale(1) translateY(rem-calc(20));
 	}
 }
 
 .pin-callout.animate-out {
-	div {
+	.pin-callout-flag {
 		transition: transform 0.2s linear;
-		transform: scale(0, 0);
+		transform: scale(0) translateY(0);
 	}
 }
 </style>

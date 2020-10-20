@@ -1,4 +1,5 @@
 fragment checkoutValidationErrors on ShopMutation {
+	id
 	validatePreCheckout {
 		error
 		success

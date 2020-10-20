@@ -1,6 +1,7 @@
 query myLendingStats {
 	my {
 		lendingStats {
+			id
 			countriesLentTo {
 				isoCode
 				name

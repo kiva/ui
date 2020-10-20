@@ -199,6 +199,7 @@ export default {
 			autolending @client {
 				profileChanged
 				currentProfile {
+					id
 					isEnabled
 					kivaChooses
 				}

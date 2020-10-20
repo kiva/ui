@@ -1,18 +1,22 @@
 <template>
 	<div class="card" :style="cssProps">
-		<a
+		<router-link
 			class="card__link"
-			:href="href"
-			@click.prevent="onClickCardLink(href, title)"
+			:to="href"
+			v-kv-track-event="['Kiva15', 'click-hero-secondary-CTA', title]"
 		>
 			<div class="card__img">
 				<img :src="imgSrc" alt="">
 			</div>
 			<div class="card__content">
-				<h4 class="card__title">{{ title }}</h4>
-				<p class="card__text">{{ subtitle }}</p>
+				<h4 class="card__title">
+					{{ title }}
+				</h4>
+				<p class="card__text">
+					{{ subtitle }}
+				</p>
 			</div>
-		</a>
+		</router-link>
 	</div>
 </template>
 
@@ -47,12 +51,6 @@ export default {
 			};
 		}
 	},
-	methods: {
-		onClickCardLink(href, title) {
-			this.$kvTrackEvent('Kiva15', 'click-hero-secondary-CTA', title);
-			this.$emit('card-clicked', href);
-		}
-	}
 };
 </script>
 

@@ -21,7 +21,7 @@
 				</p>
 				<p>
 					Need help getting started?
-					<a href="https://www.kivaushub.org/borrowers">Check out this useful guide</a>.
+					<a href="https://www.kivaushub.org/borrower">Check out this useful guide</a>.
 				</p>
 			</div>
 		</div>

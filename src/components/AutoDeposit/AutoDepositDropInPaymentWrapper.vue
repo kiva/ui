@@ -1,5 +1,5 @@
 <template>
-	<div class="row align-center">
+	<div class="row">
 		<div class="payment-holder small-12 medium-8 columns">
 			<braintree-drop-in-interface
 				ref="braintreeDropInInterface"
@@ -160,9 +160,11 @@ export default {
 .payment-holder {
 	text-align: left;
 	padding: 0 0.6rem 1.25rem;
+	margin: 0 auto;
 
 	@include breakpoint(large) {
 		padding: 0 1.5rem 1.5rem;
+		margin: 0;
 	}
 
 	.attribution-text {

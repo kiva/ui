@@ -1,5 +1,6 @@
 query wwwHeader($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		nonTrivialItemCount
 	}
 	my {
@@ -9,6 +10,7 @@ query wwwHeader($basketId: String) {
 			promoBalance
 		}
 		lender {
+			id
 			image {
 				id
 				url( presetSize:lender_default )

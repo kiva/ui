@@ -59,6 +59,7 @@ import KvProgressBar from '@/components/Kv/KvProgressBar';
 const lendingPreferencesCauses = gql`query lendingPreferences($visitorId: String) {
 	general {
 		lendingPreferences(visitorId: $visitorId) {
+			id
 			causes {
 				values {
 					id

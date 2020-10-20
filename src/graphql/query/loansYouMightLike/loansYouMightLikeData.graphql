@@ -13,6 +13,7 @@ query loansYouMightLikeData(
 	lend {
 		loans(filters: {country: $country, sector: $sector, partner: $partner, gender: $gender, status: fundraising}, limit: $limit, sortBy: $sortBy) {
 			values {
+				id
 				...loanCardFields
 				image {
 					id

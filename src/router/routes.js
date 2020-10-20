@@ -8,11 +8,11 @@ export default [
 		]
 	},
 	{
-		path: '/auto-deposit-new', // ! TODO temporary route, do a search and replace
+		path: '/auto-deposit',
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
 	},
 	{
-		path: '/auto-deposit-new/thanks', // ! TODO temporary route
+		path: '/auto-deposit/thanks',
 		component: () => import('@/pages/AutoDeposit/AutoDepositThanksPage'),
 		meta: {
 			activeLoginRequired: true,
@@ -184,6 +184,7 @@ export default [
 		],
 
 	},
+	{ path: '/settings/security/mfa', component: () => import('@/pages/Settings/TwoStepVerifyPage') },
 	{
 		path: '/settings/subscriptions',
 		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),

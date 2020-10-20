@@ -46,7 +46,7 @@
 					<kv-lightbox
 						class="mg-update-lightbox"
 						:visible="showLightbox"
-						title="Change your monthly good"
+						:title="settingsOpen ? 'Change your monthly good' : 'Update payment method'"
 						@lightbox-closed="closeLightbox"
 					>
 						<div class="mg-update-lightbox__content">
@@ -70,7 +70,9 @@
 											<div class="row align-middle">
 												<div class="column medium-12 large-6" v-if="paymentMethod">
 													<strong>Current payment method:</strong><br>
-													<img :src="paymentMethod.imageUrl">
+													<img class="mg-update-lightbox__cc-icon"
+														:src="paymentMethod.imageUrl"
+													>
 													{{ paymentMethod.description }}
 												</div>
 												<div class="column medium-12 large-6 text-right">
@@ -113,14 +115,26 @@
 											Back to deposit settings
 										</kv-button>
 										<div class="mg-update-lightbox__dropin-payment-wrapper">
-											<strong>Update payment method:</strong>
+											<div class="row column mg-update-lightbox__current-payment-method">
+												<strong>Current payment method:</strong><br>
+												<img class="mg-update-lightbox__cc-icon" :src="paymentMethod.imageUrl">
+												{{ paymentMethod.description }}
+											</div>
+											<p v-if="updateToCurrentPaymentMethod"
+												class="validation-error text-center"
+											>
+												<!-- eslint-disable-next-line max-len -->
+												This is your current payment method.<br> Please select or enter a new payment method to update your deposit.
+											</p>
 											<monthly-good-drop-in-payment-wrapper
 												:amount="totalCombinedDeposit"
 												:donate-amount="donation"
 												:day-of-month="dayOfMonth"
 												:category="category"
+												:current-nonce="paymentMethod.nonce"
 												action="Update"
 												@complete-transaction="completeMGBraintree"
+												@no-update="noUpdate"
 											/>
 										</div>
 									</div>
@@ -177,6 +191,7 @@ import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoo
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
 		autoDeposit {
+			id
 			amount
 			donateAmount
 			dayOfMonth
@@ -222,6 +237,7 @@ export default {
 			isChanged: false,
 			isFormValid: true,
 			showDropInPaymentUpdate: true,
+			updateToCurrentPaymentMethod: false,
 		};
 	},
 	mixins: [
@@ -311,7 +327,7 @@ export default {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth
 						}) {
-							amount donateAmount dayOfMonth
+							id amount donateAmount dayOfMonth
 						}
 					}
 				}`,
@@ -345,6 +361,9 @@ export default {
 			this.apollo.query({ query: pageQuery, fetchPolicy: 'network-only' });
 			this.$showTipMsg('Payment method updated');
 		},
+		noUpdate() {
+			this.updateToCurrentPaymentMethod = true;
+		}
 	},
 };
 </script>
@@ -380,6 +399,15 @@ export default {
 	&__dropin-payment-wrapper {
 		margin: 1rem 0 0;
 		padding-left: 0.5rem;
+	}
+
+	&__current-payment-method {
+		margin: 1rem 0;
+	}
+
+	&__cc-icon {
+		height: 1.5rem;
+		margin-top: -0.33rem;
 	}
 
 	.arrow {

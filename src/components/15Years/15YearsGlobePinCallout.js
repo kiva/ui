@@ -1,11 +1,26 @@
-import {
-	Callout
-} from '@/lib/globekit/globekit.esm';
+import { Callout } from '@/lib/globekit/globekit.esm';
+import { getCodes } from 'flag-icon-css';
+
+// Copied from KvFlag
+const COUNTRY_LIST = getCodes();
+const SPRITE_FLAG_WIDTH = 32; // Number of px wide that the sprite PNG is.
+const getFlagSpriteYPosition = countryCode => {
+	// Determine what percentage down the flag is in the sprite
+	// depending on its position in the country list.
+	const countryIndex = COUNTRY_LIST.indexOf(countryCode.toUpperCase());
+	const flagHeightInSprite = SPRITE_FLAG_WIDTH;
+	const totalSpriteHeight = flagHeightInSprite * (COUNTRY_LIST.length - 1);
+	return ((countryIndex * flagHeightInSprite) / totalSpriteHeight) * 100;
+};
+// End Copied from KvFlag
 
 class PinCallout extends Callout {
 	createElement() {
 		const div = document.createElement('div');
-		div.innerHTML = '<div></div>';
+		div.innerHTML = `<div
+			class="pin-callout-flag"
+			style="background-position-y: ${getFlagSpriteYPosition(this.definition.data.iso2)}%">
+		</div>`;
 		div.className = 'callout pin-callout hidden';
 		div.dataset.code = this.definition.data.iso3;
 		return div;
@@ -22,7 +37,7 @@ class PinCallout extends Callout {
 
 	animateIn() {
 		requestAnimationFrame(() => {
-			this.element.classList.add('animate-n');
+			this.element.classList.add('animate-in');
 			setTimeout(() => {
 				this.element.classList.remove('animate-in');
 			}, 500);

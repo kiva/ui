@@ -46,6 +46,7 @@ export default {
 		query: gql`query autolendProfileIsGroup {
 			autolending @client {
 				currentProfile {
+					id
 					loanSearchCriteria {
 						filters {
 							isGroup

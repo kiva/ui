@@ -37,6 +37,14 @@ export default {
 			default: 'checkout'
 		},
 		/**
+		 * Preselect Vaulted Payment Method
+		 * Braintree option to preselect payment method
+		* */
+		preselectVaultedPaymentMethod: {
+			type: Boolean,
+			default: true
+		},
+		/**
 		 * Payment type options to be displayed.
 		 * Also controls the order to display them in.
 		 * All options in default order:
@@ -92,6 +100,7 @@ export default {
 					kount: true // Required if Kount fraud data collection is enabled
 				},
 				paymentOptionPriority: this.paymentTypes,
+				preselectVaultedPaymentMethod: this.preselectVaultedPaymentMethod,
 				card: {
 					vault: {
 						allowVaultCardOverride: true,
@@ -247,6 +256,7 @@ $border-width: 1px;
 		.braintree-method .braintree-method__label .braintree-method__label--small {
 			color: $kiva-text-dark;
 			font-weight: $global-weight-normal;
+			text-align: left;
 		}
 
 		.braintree-sheet {

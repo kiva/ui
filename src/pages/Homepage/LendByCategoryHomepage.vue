@@ -15,17 +15,17 @@
 						With Kiva you can lend a small amount of money and make big
 						change in someone's life. It's fast and easy to get started.
 					</p>
-					<router-link
-						class="featured-loans__cta"
+					<kv-button
+						class="rounded"
 						to="/get-started"
 						v-kv-track-event="[
 							'Home',
 							'click-hero-cta',
-							'Find someone to lend to',
+							'Find a borrower'
 						]"
 					>
-						Find someone to lend to &xrarr;
-					</router-link>
+						Find a borrower
+					</kv-button>
 				</div>
 			</div>
 			<kv-responsive-image
@@ -419,8 +419,7 @@ export default {
 		}
 	}
 
-	&__body,
-	&__cta {
+	&__body {
 		@include medium-text();
 
 		@include breakpoint(xlarge) {

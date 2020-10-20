@@ -1,0 +1,10 @@
+mutation braintreeUpdateSubscriptionPaymentMethod($paymentMethodNonce: String!) {
+	my {
+		updateAutoDeposit (
+			autoDeposit: {
+			},
+			paymentMethodNonce:$paymentMethodNonce) {
+				id
+			}
+	}
+}

@@ -6,7 +6,9 @@ query promotionalBanner($basketId: String) {
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			hasFreeCredits
 			totals {
 				bonusAvailableTotal

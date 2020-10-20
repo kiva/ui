@@ -1,5 +1,6 @@
 mutation checkout($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		checkout
 	}
 }

@@ -46,6 +46,7 @@ export default {
 		query: gql`query autolendProfileGender {
 			autolending @client {
 				currentProfile {
+					id
 					loanSearchCriteria {
 						filters {
 							gender

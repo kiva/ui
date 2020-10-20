@@ -215,6 +215,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 const pageQuery = gql`query autoDepositPage {
 	my {
 		autoDeposit {
+			id
 			amount
 			donateAmount
 			dayOfMonth
@@ -326,7 +327,7 @@ export default {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount, dayOfMonth: $dayOfMonth
 						}) {
-							amount donateAmount dayOfMonth
+							id amount donateAmount dayOfMonth
 						}
 					}
 				}`,

@@ -1,5 +1,6 @@
 mutation updateLoanReservationDonateRepayments($loanid: Int!, $donateRepayments: Boolean, $basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		updateLoanReservationDonateRepayments (loanReservation: {
 			id: $loanid
 			donateRepayments: $donateRepayments

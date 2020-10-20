@@ -2,6 +2,7 @@ query lendMenuData {
 	lend {
 		loanChannels(popular: true, applyMinLoanCount: true, limit: 50) {
 			values {
+				id
 				name
 				url
 			}

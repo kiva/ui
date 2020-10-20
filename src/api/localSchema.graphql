@@ -32,6 +32,8 @@ extend type Mutation {
 	cleanExperimentCookie: Boolean
 	updateActiveLoan(xCoordinate: Int, yCoordinate: Int, hoverLoanId: Int, loan: String, tracking: String): ActiveLoan
 	autolending: AutolendingMutation
+	showVerificationLightbox: Boolean
+	closeVerificationLightbox: Boolean
 }
 
 extend type Query {
@@ -41,6 +43,7 @@ extend type Query {
 	basketAddInterstitial: BasketAddInterstitial
 	activeLoan: ActiveLoan
 	autolending: Autolending
+	verificationLightbox: VerificationLightbox
 }
 
 extend type My {
@@ -67,3 +70,7 @@ type ActiveLoan {
 	loan: String
 	tracking: String
  }
+
+type VerificationLightbox {
+	visible: Boolean
+}

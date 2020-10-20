@@ -159,6 +159,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 const pageQuery = gql`query oneTimeSubscription {
 	my {
 		autoDeposit {
+			id
 			amount
 			donateAmount
 		}
@@ -247,7 +248,7 @@ export default {
 						updateAutoDeposit( autoDeposit: {
 							amount: $amount, donateAmount: $donateAmount
 						}) {
-							amount donateAmount
+							id amount donateAmount
 						}
 					}
 				}`,

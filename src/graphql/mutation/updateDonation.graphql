@@ -1,5 +1,6 @@
 mutation updateDonation($price: Money!, $isTip: Boolean!, $basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		updateDonation (donation: {
 			price: $price,
 			isTip: $isTip

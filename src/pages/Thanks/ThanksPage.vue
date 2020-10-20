@@ -10,33 +10,40 @@
 				<template v-if="loans.length > 0">
 					<div class="thanks__header hide-for-print">
 						<h1 class="thanks__header-h1">
-							{{ lender.firstName }}, thanks to you, {{ loans.length }}
-							{{ loans.length > 1 ? 'borrowers are' : 'borrower is' }} closer to their dreams!
+							Thank you!
 						</h1>
 						<p class="thanks__header-subhead">
-							But the journey isn't over for them and many other borrowers.<br>
-							Please tell your friends and multiply your impact
+							Thanks for supporting {{ borrowerSupport }}.<br>
+							<span class="hide-for-print">
+								We've emailed your order confirmation to {{ lender.email }}
+							</span>
 						</p>
 					</div>
-
-					<social-share
-						class="thanks__social-share"
-						:lender="lender"
-						:loans="loans"
-					/>
 				</template>
+			</div>
+		</div>
 
-				<p class="thanks__confirmation hide-for-print">
-					Confirmation sent to: {{ lender.email }}.
-				</p>
+		<monthly-good-c-t-a v-if="showMonthlyGoodCTA" />
 
+		<div class="row page-content">
+			<div class="small-12 columns thanks">
 				<checkout-receipt
 					v-if="receipt"
 					class="thanks__receipt"
 					:lender="lender"
 					:receipt="receipt"
 				/>
+				<hr>
 			</div>
+
+			<template v-if="loans.length > 0">
+				<social-share
+					class="thanks__social-share"
+					:lender="lender"
+					:loans="loans"
+				/>
+			</template>
+
 			<contentful-lightbox
 				v-if="promoEnabled"
 				:content-group="contentGroup"
@@ -51,24 +58,28 @@
 import confetti from 'canvas-confetti';
 import numeral from 'numeral';
 
-import _get from 'lodash/get';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
+import ContentfulLightbox from '@/components/Lightboxes/ContentfulLightbox';
 import KvCheckoutSteps from '@/components/Kv/KvCheckoutSteps';
+import MonthlyGoodCTA from '@/components/Checkout/MonthlyGoodCTA';
 import SocialShare from '@/components/Checkout/SocialShare';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import checkoutReceiptQuery from '@/graphql/query/checkoutReceipt.graphql';
 
-import ContentfulLightbox from '@/components/Lightboxes/ContentfulLightbox';
+import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import contentful from '@/graphql/query/contentful.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import { settingEnabled } from '@/util/settingsUtils';
 import { processContent } from '@/util/contentfulUtils';
+import { joinArray } from '@/util/joinArray';
 
 export default {
 	components: {
 		CheckoutReceipt,
 		ContentfulLightbox,
 		KvCheckoutSteps,
+		MonthlyGoodCTA,
 		SocialShare,
 		WwwPage,
 	},
@@ -91,12 +102,34 @@ export default {
 				'Account',
 				'Payment',
 				'Thank You!'
-			]
+			],
+			showMonthlyGoodCTA: false,
+			isMonthlyGoodSubscriber: false
 		};
 	},
+	computed: {
+		borrowerSupport() {
+			const loanNames = this.loans.map(loan => loan.name);
+			if (loanNames.length > 3) {
+				return `these ${loanNames.length} borrowers`;
+			}
+			return joinArray(loanNames, 'and');
+		}
+	},
 	apollo: {
-		query: checkoutReceiptQuery,
-		preFetch: true,
+		query: thanksPageQuery,
+		preFetch(config, client, { route }) {
+			return client.query({
+				query: thanksPageQuery,
+				variables: {
+					checkoutId: numeral(route.query.kiva_transaction_id).value()
+				}
+			}).then(() => {
+				return client.query({
+					query: experimentAssignmentQuery, variables: { id: 'mg_thanks_cta' }
+				});
+			});
+		},
 		preFetchVariables({ route }) {
 			return {
 				checkoutId: numeral(route.query.kiva_transaction_id).value()
@@ -113,16 +146,18 @@ export default {
 				teams: data.my.teams.values.map(value => value.team)
 			};
 
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
+
 			// The default empty object and the v-if will prevent the
 			// receipt from rendering in the rare cases this query fails.
 			// But it will not throw a server error.
-			this.receipt = _get(data, 'shop.receipt');
-			const loansResponse = _get(this.receipt, 'items.values', []);
+			this.receipt = data?.shop?.receipt;
+			const loansResponse = this.receipt?.items?.values ?? [];
 			this.loans = loansResponse
 				.filter(item => item.basketItemType === 'loan_reservation')
 				.map(item => item.loan);
 
-			if (!_get(data, 'my.userAccount')) {
+			if (!data?.my?.userAccount) {
 				console.error(`Failed to get lender for transaction id: ${this.$route.query.kiva_transaction_id}`);
 			}
 			if (!this.receipt) {
@@ -139,6 +174,23 @@ export default {
 			spread: 200,
 			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'] // misc. kiva colors
 		});
+
+		// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
+		const mgCTAExperiment = this.apollo.readFragment({
+			id: 'Experiment:mg_thanks_cta',
+			fragment: experimentVersionFragment,
+		}) || {};
+
+		if (mgCTAExperiment.version === 'shown' && !this.isMonthlyGoodSubscriber) {
+			this.showMonthlyGoodCTA = true;
+			this.$kvTrackEvent(
+				'Thanks',
+				'EXP-SUBS-526-Oct2020',
+				mgCTAExperiment.version === 'shown' ? 'a' : 'b'
+			);
+		}
+
+		// Contentful Lightbox
 		this.federation.query({
 			query: contentful,
 			variables: {
@@ -148,7 +200,8 @@ export default {
 		}).then(({ data }) => {
 			// returns the contentful content of the uiSetting key ui-thanks-lightbox or empty object
 			// it should always be the first and only item in the array, since we pass the variable to the query above
-			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-thanks-lightbox'); // eslint-disable-line max-len
+			const contentfulItems = data?.contentful?.entries?.items || [];
+			const uiPromoSetting =	contentfulItems.find(item => item.fields.key === 'ui-thanks-lightbox'); // eslint-disable-line max-len
 			// exit if missing setting or fields
 			if (!uiPromoSetting || !uiPromoSetting.fields) {
 				return false;
@@ -171,7 +224,11 @@ export default {
 @import 'settings';
 
 .page-content {
-	padding: 1.625rem 0;
+	padding: 1.625rem 0 0 0;
+
+	&:last-child {
+		padding-bottom: 5rem;
+	}
 }
 
 .thanks {
@@ -181,7 +238,9 @@ export default {
 	}
 
 	&__header-h1 {
-		@include impact-text();
+		@include large-text();
+
+		margin-bottom: 1.5rem;
 	}
 
 	&__header-subhead {
@@ -196,14 +255,9 @@ export default {
 		margin-bottom: 3rem;
 	}
 
-	&__confirmation {
-		text-align: center;
-		margin-bottom: 1rem;
-	}
-
 	&__receipt {
 		max-width: rem-calc(485);
-		margin: 0 auto;
+		margin: 0 auto 2rem;
 
 		@media print {
 			max-width: none;

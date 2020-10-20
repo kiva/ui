@@ -27,8 +27,10 @@ import LoanExpiredText from './LoanExpiredText';
 
 const freeCreditBasketCountQuery = gql`query hasFreeCreditsAndBasketCount($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		nonTrivialItemCount
 		basket {
+			id
 			hasFreeCredits
 		}
 	}

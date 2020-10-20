@@ -35,12 +35,15 @@ query fundedBorrowerProfile(
 			use
 			description
 			sector {
+				id
 				name
 			}
 		}
 	}
 	shop (basketId: $basketId) {
+		id
 		basket {
+			id
 			items {
 				values {
 					id

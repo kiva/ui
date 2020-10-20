@@ -102,37 +102,7 @@
 						</li>
 					</ul>
 				</section>
-				<section class="supporting-partners text-center">
-					<div class="supporting-partners__selected">
-						<h4>
-							Strategic partners supporting this celebration
-						</h4>
-						<ul class="supporting-partners__list row align-center">
-							<li
-								class="supporting-partners__li small-6 large-4 columns"
-								v-for="partner in supportingPartners"
-								:key="partner.key"
-							>
-								<img
-									:class="`supporting-partners__logo supporting-partners__logo--${partner.key}`"
-									:src="partner.logo"
-									:alt="partner.alt"
-									loading="lazy"
-								>
-							</li>
-						</ul>
-						<fifteen-years-button
-							href="https://kiva.global/partner-with-us/"
-							v-kv-track-event="[
-								'Kiva15',
-								'click-strategic-partners-CTA',
-								'Partner With Us'
-							]"
-						>
-							Partner with us
-						</fifteen-years-button>
-					</div>
-				</section>
+				<fifteen-years-supporting-partners />
 			</div>
 		</div>
 	</div>
@@ -143,13 +113,15 @@ import gsap from 'gsap';
 
 import FifteenYearsButton from './15YearsButton';
 import FifteenYearsSectionHeader from './15YearsSectionHeader';
+import FifteenYearsSupportingPartners from './15YearsSupportingPartners';
 
 const imgRequire = require.context('@/assets/images/15-years/partners/', true);
 
 export default {
 	components: {
 		FifteenYearsButton,
-		FifteenYearsSectionHeader
+		FifteenYearsSectionHeader,
+		FifteenYearsSupportingPartners,
 	},
 	data() {
 		return {
@@ -223,34 +195,6 @@ export default {
 					text: 'In 2017, Kiva embarked on an innovative collaboration to accelerate Kiva.org lending. Grant funding from Skoll Foundation and a loan loss commitment from Kiva.org lender enabled Kiva to secure $10M in funding from U.S. International Development Finance Corporation (DFC, then the Overseas Private Investment Corporation OPIC). With this collaboration, Kiva deployed $26.8M of funds from the $10M DFC loan and $49.9M from over 1M Kiva.org lenders. This translated to 99,000 loans to 211,000 borrowers across 30 countries and demonstrated the significant impact that can be achieved when different forms of capital are blended together.'
 				},
 			],
-			supportingPartners: [
-				{
-					key: 'chess',
-					logo: imgRequire('./Partner-chess24.svg'),
-					alt: 'Chess24'
-				},
-				{
-					key: 'cisco',
-					logo: imgRequire('./Partner-cisco.svg'),
-					alt: 'Cisco'
-				},
-				{
-					key: 'paypal',
-					logo: imgRequire('./Partner-paypal-bw.svg'),
-					alt: 'PayPal'
-				},
-				{
-					key: 'farfetch',
-					logo: imgRequire('./Partner-farfetch.svg'),
-					alt: 'Positively Farfetch'
-				},
-				{
-					key: 'women',
-					logo: imgRequire('./Partner-women.svg'),
-					alt: 'Women and Girls Empowered'
-				}
-			]
-
 		};
 	},
 	methods: {
@@ -487,49 +431,4 @@ export default {
 		}
 	}
 }
-
-.supporting-partners {
-	h4 {
-		margin-top: 7rem;
-	}
-
-	&__selected {
-		max-width: 30rem;
-		margin: 0 auto;
-	}
-
-	&__list {
-		list-style: none;
-		margin: 5rem 0 3.5rem 0;
-	}
-
-	&__li {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 1rem 3rem 1rem;
-	}
-
-	&__logo {
-		width: 100%;
-		height: auto;
-
-		&--women {
-			width: rem-calc(112);
-		}
-
-		&--cisco {
-			width: rem-calc(112);
-		}
-
-		&--paypal {
-			width: rem-calc(140);
-		}
-
-		&--chess {
-			width: rem-calc(141);
-		}
-	}
-}
-
 </style>

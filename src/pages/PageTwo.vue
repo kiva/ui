@@ -96,6 +96,7 @@ import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQu
 const pageQuery = gql`query pageTwo {
 		my {
 			autoDeposit {
+				id
 				isSubscriber
 			}
 		}

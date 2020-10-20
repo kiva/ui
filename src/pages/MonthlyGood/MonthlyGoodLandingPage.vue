@@ -89,6 +89,7 @@ import KivaAsExpert from './KivaAsExpert';
 const pageQuery = gql`query monthlyGoodLandingPage {
 	my {
 		autoDeposit {
+			id
 			isSubscriber
 		}
 	}

@@ -57,11 +57,12 @@ label.error {
 
 .validation-errors {
 	margin-left: 0;
+}
 
-	li {
-		list-style: none;
-		color: $kiva-accent-red;
-		font-weight: $global-weight-highlight;
-		font-size: $small-text-font-size;
-	}
+.validation-errors li,
+.validation-error {
+	list-style: none;
+	color: $kiva-accent-red;
+	font-weight: $global-weight-highlight;
+	font-size: $small-text-font-size;
 }

@@ -81,6 +81,7 @@ const loanQuery = gql`query noClickLoanCard($channelId: Int!) {
 						}
 					}
 					image {
+						id
 						default: url(customSize: "w480h300")
 						retina: url(customSize: "w960h600")
 					}

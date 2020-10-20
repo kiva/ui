@@ -1,5 +1,6 @@
 mutation setupBasketForUser($basketId: String) {
 	shop (basketId: $basketId) {
+		id
 		setupBasketForUser
 	}
 }
