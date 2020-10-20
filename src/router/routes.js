@@ -109,12 +109,13 @@ export default [
 	},
 	{
 		path: '/monthlygood/setup',
-		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
+		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPageControl'),
 		props: route => ({
 			amount: Number(route.query.amount),
 			category: route.query.category,
 			onetime: String(route.query.onetime),
 			source: route.query.source,
+			nextmonth: route.query.nextmonth === 'true',
 		}),
 		meta: {
 			activeLoginRequired: true,
@@ -176,7 +177,7 @@ export default [
 				path: ':action',
 				component: () => import('@/pages/Autolending/AutolendingMessagingPage'),
 				props: route => ({
-					success: (route.query.success === 'true'),
+					success: route.query.success === 'true',
 					action: route.params.action,
 					days: Number(route.query.days)
 				})

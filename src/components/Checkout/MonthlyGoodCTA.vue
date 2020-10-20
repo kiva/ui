@@ -43,7 +43,8 @@
 								path: '/monthlygood/setup',
 								query: {
 									amount: this.mgAmount,
-									category: this.selectedGroup
+									category: this.selectedGroup,
+									nextmonth: true
 								}
 							}"
 							v-kv-track-event="['Thanks', 'EXP-SUBS-526-Oct2020', 'click-monthly-good-signup']"

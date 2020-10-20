@@ -267,6 +267,7 @@ import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+import { subDays } from 'date-fns';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
@@ -321,6 +322,16 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 
 let frozenDropdownOptions;
 
+/**
+ * Returns initial day of month to start monthly good
+ * @param {boolean} nextmonth Should MG start roughly a month from now?
+ * @returns {number} day of start date
+ */
+const startDay = nextmonth => {
+	const dayToStartMG = nextmonth ? subDays(new Date(), 1) : new Date();
+	return dayToStartMG.getDate();
+};
+
 export default {
 	props: {
 		amount: {
@@ -338,6 +349,10 @@ export default {
 		source: {
 			type: String,
 			default: ''
+		},
+		nextmonth: {
+			type: Boolean,
+			default: false
 		}
 	},
 	components: {
@@ -358,7 +373,7 @@ export default {
 			selectedGroup: 'default',
 			mgAmount: 25,
 			isDayInputShown: false,
-			dayOfMonth: new Date().getDate(),
+			dayOfMonth: startDay(this.nextmonth),
 			donation: 25 * 0.15,
 			donationCheckbox: true,
 			donationOptionSelected: '15',

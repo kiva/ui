@@ -203,6 +203,12 @@
 </template>
 
 <script>
+/**
+ * This template is not currently in use.
+ * It only exists for reference.
+ * There have been modifications to  MonthlyGoodSetupPageControl
+ * that have not been made here
+ */
 import numeral from 'numeral';
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
