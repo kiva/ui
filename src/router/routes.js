@@ -187,16 +187,17 @@ export default [
 	{
 		path: '/settings/security',
 		component: () => import('@/pages/Settings/SecuritySettings'),
-		children: [{
-			path: '',
-			component: () => import('@/pages/Settings/SecuritySettingsPage'),
-			meta: {
-				activeLoginRequired: true,
-			}
+		meta: {
+			activeLoginRequired: true,
 		},
-		]
 	},
-	{ path: '/settings/security/mfa', component: () => import('@/pages/Settings/TwoStepVerifyPage') },
+	{
+		path: '/settings/security/mfa',
+		component: () => import('@/pages/Settings/TwoStepVerificationPage'),
+		meta: {
+			activeLoginRequired: true,
+		},
+	},
 	{
 		path: '/settings/subscriptions',
 		component: () => import('@/pages/Subscriptions/SubscriptionsPage'),

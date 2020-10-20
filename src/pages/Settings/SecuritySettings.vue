@@ -7,21 +7,28 @@
 				</h2>
 			</div>
 		</div>
-		<router-view />
+		<div class="security-settings-page">
+			<password />
+			<two-step-verification />
+		</div>
 	</www-page>
 </template>
 
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import Password from './Password';
+import TwoStepVerification from './TwoStepVerification';
 
 export default {
 	components: {
 		WwwPage,
+		Password,
+		TwoStepVerification,
 	},
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .security-login {
