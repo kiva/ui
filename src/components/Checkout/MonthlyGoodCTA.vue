@@ -15,7 +15,11 @@
 			<form class="monthly-good-cta__form" @submit.prevent="null">
 				<div class="row">
 					<div class="small-12 large-4 column">
-						<kv-dropdown-rounded v-model="mgAmount" class="monthly-good-cta__dropdown">
+						<kv-dropdown-rounded
+							v-model="mgOptionSelected"
+							class="monthly-good-cta__dropdown"
+							v-if="mgOptionSelected !== 'other'"
+						>
 							<option
 								v-for="(option, index) in mgAmountOptions"
 								:value="option.value"
@@ -24,6 +28,14 @@
 								{{ option.label }}
 							</option>
 						</kv-dropdown-rounded>
+						<kv-currency-input
+							class="text-input"
+							:class="{ 'error': $v.mgAmount.$invalid }"
+							id="amount"
+							v-model="mgAmount"
+							v-if="mgOptionSelected === 'other'"
+							ref="kvCurrencyInputComponentRef"
+						/>
 					</div>
 					<div class="column">
 						<kv-dropdown-rounded v-model="selectedGroup" class="monthly-good-cta__dropdown">
@@ -37,6 +49,17 @@
 						</kv-dropdown-rounded>
 					</div>
 				</div>
+				<!-- Errors and Messaging -->
+				<div class="row column text-center">
+					<ul class="validation-errors" v-if="$v.mgAmount.$invalid">
+						<li v-if="!$v.mgAmount.required">
+							Amount field is required
+						</li>
+						<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+							Enter an amount of $5-$8,500
+						</li>
+					</ul>
+				</div>
 				<div class="row">
 					<div class="column">
 						<kv-button :to="{
@@ -49,6 +72,7 @@
 							}"
 							v-kv-track-event="['Thanks', 'EXP-SUBS-526-Oct2020', 'click-monthly-good-signup']"
 							class="monthly-good-cta__button smaller"
+							:disabled="$v.mgAmount.$invalid"
 						>
 							Sign me up
 						</kv-button>
@@ -61,26 +85,46 @@
 
 <script>
 import numeral from 'numeral';
+import { validationMixin } from 'vuelidate';
+import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+/**
+ * This CTA goes to the MG setup form
+ * To prevent an initial error state on max amount
+ * on the setup form we'll round this max amount to 8500
+ * */
+const maxAmount = 8500;
 
 export default {
 	components: {
 		KvButton,
-		KvIcon,
+		KvCurrencyInput,
 		KvDropdownRounded,
+		KvIcon,
 	},
 	mixins: [
-		loanGroupCategoriesMixin
+		loanGroupCategoriesMixin,
+		validationMixin
 	],
+	validations: {
+		mgAmount: {
+			required,
+			minValue: minValue(5),
+			maxValue: maxValue(maxAmount),
+		},
+	},
 	data() {
 		return {
 			selectedGroup: 'default',
 			mgAmount: 10,
+			mgOptionSelected: 10,
 			mgAmountOptions: [
 				{
 					value: 35,
@@ -110,9 +154,32 @@ export default {
 					value: 5,
 					label: `${numeral(5).format('$0,0.00')}`,
 				},
+				{
+					value: 'other',
+					label: 'Other',
+				},
 			]
 		};
 	},
+	watch: {
+		mgOptionSelected(newVal) {
+			if (newVal === 'other') {
+				// Focus on currency input
+				this.$nextTick(() => {
+					try {
+						const kvCurrencyComponent = this.$refs.kvCurrencyInputComponentRef;
+						const kvCurrencyInput = kvCurrencyComponent.$refs.kvCurrencyInputRef;
+						kvCurrencyInput.focus();
+					} catch (e) {
+						// noop
+					}
+				});
+			} else {
+				// set mgAmount to dropdown value
+				this.mgAmount = newVal;
+			}
+		}
+	}
 };
 </script>
 
@@ -155,5 +222,23 @@ export default {
 	height: 1.65rem;
 	width: 1.65rem;
 	margin-right: 1rem;
+}
+
+// styles to match KvDropDownRounded
+.text-input {
+	border-radius: $button-radius;
+	color: $charcoal;
+	font-size: $medium-text-font-size;
+	font-weight: $global-weight-highlight;
+	margin: 0;
+	display: inline-block;
+	// amount input
+	&#amount {
+		width: 100%;
+	}
+}
+
+.text-input:not(.error) {
+	border: 1px solid $charcoal;
 }
 </style>

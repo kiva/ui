@@ -11,7 +11,7 @@
 						Field is required
 					</li>
 					<li v-if="!$v.amount.minValue || !$v.amount.maxValue">
-						Enter an amount of $5-$10,000
+						Enter an amount of $5-$8,500
 					</li>
 				</ul>
 			</fieldset>
@@ -53,7 +53,7 @@ export default {
 		amount: {
 			required,
 			minValue: minValue(5),
-			maxValue: maxValue(10000)
+			maxValue: maxValue(8500)
 		},
 	},
 	props: {

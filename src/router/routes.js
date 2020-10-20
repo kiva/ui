@@ -109,7 +109,7 @@ export default [
 	},
 	{
 		path: '/monthlygood/setup',
-		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPageControl'),
+		component: () => import('@/pages/MonthlyGood/MonthlyGoodSetupPage'),
 		props: route => ({
 			amount: Number(route.query.amount),
 			category: route.query.category,
