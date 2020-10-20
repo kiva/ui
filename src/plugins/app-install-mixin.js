@@ -16,14 +16,6 @@ export default {
 		};
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: appInstallQuery,
-		preFetch: true,
-		result({ data }) {
-			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
-			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
-		},
-	},
 	data() {
 		return {
 			appInstallHasFreeCredits: false,
@@ -64,6 +56,14 @@ export default {
 
 			return show;
 		}
+	},
+	created() {
+		this.apollo.query({
+			query: appInstallQuery,
+		}).then(({ data }) => {
+			this.appInstallHasFreeCredits = _get(data, 'shop.basket.hasFreeCredits');
+			this.appInstallLendingRewardOffered = _get(data, 'shop.lendingRewardOffered');
+		});
 	},
 	mounted() {
 		// Chrome Android uses manifest.webmanifest and their hueristics to display android install banner on all pages
