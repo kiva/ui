@@ -1,4 +1,10 @@
-import { lightFooter, iwdFooterTheme, wrdFooterTheme } from '@/util/siteThemes';
+import {
+	lightFooter,
+	iwdFooterTheme,
+	wrdFooterTheme,
+	fifteenYearFooterTheme,
+	blueFooter
+} from '@/util/siteThemes';
 import StoryRouter from 'storybook-vue-router';
 
 import TheFooter from '@/components/WwwFrame/TheFooter';
@@ -19,6 +25,8 @@ export default {
 					'lightFooter':lightFooter,
 					'iwdFooterTheme': iwdFooterTheme,
 					'wrdFooterTheme': wrdFooterTheme,
+					'fifteenYearFooterTheme': fifteenYearFooterTheme,
+					'blueFooter': blueFooter,
 				},
 			}
 		},

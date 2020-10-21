@@ -16,6 +16,23 @@ export const lightFooter = {
 	separatorColor: '#8ccb8c'
 };
 
+export const blueHeader = {
+	themeKey: 'blueHeader',
+	backgroundColor: '#005CC4',
+	logoColor: '#fff',
+	linkColor: '#fff',
+	linkHoverColor: '#0b70e2',
+	separatorColor: '#0b70e2',
+};
+
+export const blueFooter = {
+	themeKey: 'blueFooter',
+	backgroundColor: '#005CC4',
+	textColor: '#fff',
+	linkColor: '#ededed',
+	separatorColor: '#0b70e2'
+};
+
 export const iwdHeaderTheme = {
 	themeKey: 'IWD',
 	backgroundColor: '#fff',

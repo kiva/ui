@@ -2,7 +2,13 @@ import Vue from 'vue'
 import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
-import { lightHeader, iwdHeaderTheme, wrdHeaderTheme } from '@/util/siteThemes';
+import {
+	lightHeader,
+	iwdHeaderTheme,
+	wrdHeaderTheme,
+	fifteenYearHeaderTheme,
+	blueHeader
+} from '@/util/siteThemes';
 
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
@@ -50,6 +56,8 @@ export default {
 					'lightHeader':lightHeader,
 					'iwdHeaderTheme': iwdHeaderTheme,
 					'wrdHeaderTheme': wrdHeaderTheme,
+					'fifteenYearHeaderTheme': fifteenYearHeaderTheme,
+					'blueHeader': blueHeader,
 				},
 			}
 		},
