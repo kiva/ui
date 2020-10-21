@@ -2,7 +2,18 @@ import StoryRouter from 'storybook-vue-router';
 import apolloStoryMixin from '../mixins/apollo-story-mixin';
 import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
-import { lightHeader, lightFooter, iwdHeaderTheme, iwdFooterTheme, wrdHeaderTheme, wrdFooterTheme } from '@/util/siteThemes';
+import {
+	lightHeader,
+	lightFooter,
+	iwdHeaderTheme,
+	iwdFooterTheme,
+	wrdHeaderTheme,
+	wrdFooterTheme,
+	fifteenYearHeaderTheme,
+	fifteenYearFooterTheme,
+	blueHeader,
+	blueFooter
+} from '@/util/siteThemes';
 
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 
@@ -23,6 +34,8 @@ export default {
 					'lightHeader':lightHeader,
 					'iwdHeaderTheme': iwdHeaderTheme,
 					'wrdHeaderTheme': wrdHeaderTheme,
+					'fifteenYearHeaderTheme': fifteenYearHeaderTheme,
+					'blueHeader': blueHeader,
 				},
 			}
 		},
@@ -34,6 +47,8 @@ export default {
 					'lightFooter':lightFooter,
 					'iwdFooterTheme': iwdFooterTheme,
 					'wrdFooterTheme': wrdFooterTheme,
+					'fifteenYearFooterTheme': fifteenYearFooterTheme,
+					'blueFooter': blueFooter,
 				},
 			}
 		},
