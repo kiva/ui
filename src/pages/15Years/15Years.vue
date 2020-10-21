@@ -31,6 +31,7 @@
 <script>
 
 import { fifteenYearHeaderTheme, fifteenYearFooterTheme } from '@/util/siteThemes';
+import { getExperimentVersion } from '@/util/experimentUtils';
 import FifteenYearsHeader from '@/components/15Years/15YearsHeader';
 import FifteenYearsHowKivaWorks from '@/components/15Years/15YearsHowKivaWorks';
 import FifteenYearsIndividuals from '@/components/15Years/15YearsIndividuals';
@@ -52,11 +53,21 @@ export default {
 	metaInfo: {
 		title: '15 Years'
 	},
+	inject: ['apollo'],
 	data() {
 		return {
 			headerTheme: fifteenYearHeaderTheme,
 			footerTheme: fifteenYearFooterTheme,
+			expGrow166Aug2020: getExperimentVersion('intercom_messenger', this.apollo) === 'shown',
 		};
+	},
+	created() {
+		console.log(`this.expGrow166Aug2020: ${this.expGrow166Aug2020}`);
+		this.$kvTrackEvent(
+			'homepage',
+			'EXP-GROW-166-Aug2020',
+			this.expGrow166Aug2020 === 'shown' ? 'b' : 'a'
+		);
 	},
 };
 </script>

@@ -16,8 +16,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
-import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import appInstallMixin from '@/plugins/app-install-mixin';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
 import TheHeader from './TheHeader';
@@ -25,9 +23,6 @@ import TheFooter from './TheFooter';
 import TheBasketBar from './TheBasketBar';
 
 export default {
-	inject: [
-		'apollo'
-	],
 	components: {
 		CookieBanner,
 		TheBasketBar,
@@ -47,14 +42,6 @@ export default {
 			default() {},
 		},
 	},
-	apollo: {
-		preFetch(config, client, args) {
-			return fetchAllExpSettings(config, client, {
-				query: _get(args, 'route.query'),
-				path: _get(args, 'route.path')
-			});
-		}
-	}
 };
 </script>
 

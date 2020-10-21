@@ -3,6 +3,8 @@ import _map from 'lodash/map';
 import _toPairs from 'lodash/toPairs';
 import { isWithinInterval } from 'date-fns';
 import cookieStore from '@/util/cookieStore';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
+
 // import { readJSONSetting, hashCode } from '@/util/settingsUtils';
 
 /**
@@ -157,4 +159,19 @@ export function assignVersion({
 		return 'unassigned';
 	}
 	// doing nothing here returns undefined, indicating that the experiment is not active
+}
+
+/**
+ * Reads the experiment from apollo client. Returns the experiment version.
+ *
+ * @param {string} experimentId,
+ * @param {Object} client
+ * @returns {string}
+ */
+export function getExperimentVersion(experimentId, client) {
+	const exp = client.readFragment({
+		id: `Experiment:${experimentId}`,
+		fragment: experimentVersionFragment,
+	}) || {};
+	return exp.version;
 }

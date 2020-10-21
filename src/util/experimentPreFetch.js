@@ -1,5 +1,6 @@
 import _map from 'lodash/map';
 import _get from 'lodash/get';
+import minimatch from 'minimatch';
 import logFormatter from '@/util/logFormatter';
 // import { handleApolloErrors } from '@/util/apolloPreFetch';
 import experimentIdsQuery from '@/graphql/query/experimentIds.graphql';
@@ -10,13 +11,55 @@ import updateExperimentVersion from '@/graphql/mutation/updateExperimentVersion.
 
 // Pre-fetch pre-determined list of experiment settings
 // TODO: Centralize this in Settings Manager or elsewhere, then Fetch it First
-let activeExperiments = [
-	'lend_filter_v2',
-	'expandable_loan_cards',
-	'intercom_messenger',
-	'add_to_basket_redirect',
-	'checkout_login_cta',
-	'homepage_force_dismiss_overlay',
+const activeExperiments = [
+	{
+		id: 'lend_filter_v2',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'expandable_loan_cards',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'intercom_messenger',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'add_to_basket_redirect',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'checkout_login_cta',
+		routes: [
+			'**'
+		]
+	},
+	{
+		id: 'homepage_force_dismiss_overlay',
+		routes: [
+			'/' // homepage only
+		]
+	},
+	{
+		id: 'home_only_test',
+		routes: [
+			'/' // homepage only
+		]
+	},
+	{
+		id: 'exp_lend_by_category_test',
+		routes: [
+			'/lend-by-category/*' // lend-by-category and children
+		]
+	},
 ];
 
 // TODO: Enhance Error handling
@@ -50,6 +93,7 @@ export function assignExperiments(settingId, client) {
 
 export function fetchExperimentSettings(settingId, client) {
 	// Fetch the query from the component's apollo options
+	console.log('fetchExperimentSettings');
 	return new Promise((resolve, reject) => {
 		client.query({
 			query: experimentSettingQuery,
@@ -79,6 +123,7 @@ export function fetchExperimentSettings(settingId, client) {
 }
 
 export function fetchActiveExperiments(apolloClient) {
+	console.log('fetchActiveExperiments');
 	return new Promise((resolve, reject) => {
 		apolloClient.query({
 			query: experimentIdsQuery,
@@ -102,18 +147,21 @@ export function fetchActiveExperiments(apolloClient) {
 		a. All "active" experiment settings are now in the cache
 		b. All "active" experiments with no route or the current route are give assignments
 */
-export function fetchAllExpSettings(config, apolloClient, route) {
+export function fetchAllExpSettings(apolloClient, route) {
+	console.log('fetchAllExpSettings');
+
 	return fetchActiveExperiments(apolloClient).then(results => {
 		// Check for active experiments listing
+		let experiments = [];
 		const activeExperimentsSettings = _get(results, 'data.general.activeExperiments');
 		if (typeof activeExperimentsSettings !== 'undefined' && activeExperimentsSettings !== null) {
 			try {
-				activeExperiments = JSON.parse(activeExperimentsSettings.value).split(',');
+				experiments = JSON.parse(activeExperimentsSettings.value).split(',');
 			} catch (e) {
 				// leave as defaults
 			}
 		}
-		return activeExperiments;
+		return experiments;
 	})
 
 	// COMING SOON!!!
@@ -147,8 +195,13 @@ export function fetchAllExpSettings(config, apolloClient, route) {
 			}
 			return true;
 		})
-		// prefetch all active experiment settings and assignments
+		// prefetch all active experiment settings and assignments if the current route matches their glob
 		.then(() => {
-			return Promise.all(_map(activeExperiments, settingId => fetchExperimentSettings(settingId, apolloClient)));
+			const currentRouteExperiments = activeExperiments.filter(experiment => {
+				return experiment.routes.some(expRoute => minimatch(route.path, expRoute));
+			});
+			console.log('Experiments for the current route:');
+			console.log(currentRouteExperiments);
+			return Promise.all(_map(currentRouteExperiments, exp => fetchExperimentSettings(exp.id, apolloClient)));
 		});
 }
