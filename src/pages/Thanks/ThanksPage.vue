@@ -35,13 +35,13 @@
 			</template>
 
 			<div class="small-12 columns thanks">
+				<hr>
 				<checkout-receipt
 					v-if="receipt"
 					class="thanks__receipt"
 					:lender="lender"
 					:receipt="receipt"
 				/>
-				<hr>
 			</div>
 
 			<contentful-lightbox
@@ -252,12 +252,12 @@ export default {
 	}
 
 	&__social-share {
-		margin-bottom: 3rem;
+		margin-bottom: 0.5rem;
 	}
 
 	&__receipt {
 		max-width: rem-calc(485);
-		margin: 0 auto 2rem;
+		margin: 1.75rem auto 2rem;
 
 		@media print {
 			max-width: none;
