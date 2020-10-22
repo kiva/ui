@@ -137,10 +137,10 @@ export default {
 			// request payment method
 			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
 				.then(btSubmitResponse => {
-					const transactionNonce = _get(btSubmitResponse, 'nonce');
-					const deviceData = _get(btSubmitResponse, 'deviceData');
-					const paymentType = _get(btSubmitResponse, 'type');
-					if (typeof transactionNonce !== 'undefined') {
+					const transactionNonce = btSubmitResponse?.nonce;
+					const deviceData = btSubmitResponse?.deviceData;
+					const paymentType = btSubmitResponse?.type;
+					if (transactionNonce) {
 						this.doBraintreeCheckout(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {

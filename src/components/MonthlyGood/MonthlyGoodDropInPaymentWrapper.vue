@@ -95,11 +95,11 @@ export default {
 			// request payment method
 			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
 				.then(btSubmitResponse => {
-					const transactionNonce = btSubmitResponse.nonce;
-					const paymentType = btSubmitResponse.type;
-
-					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeMonthlyGood(transactionNonce, paymentType);
+					const transactionNonce = btSubmitResponse?.nonce;
+					const deviceData = btSubmitResponse?.deviceData;
+					const paymentType = btSubmitResponse?.type;
+					if (transactionNonce) {
+						this.doBraintreeMonthlyGood(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
@@ -111,7 +111,7 @@ export default {
 					});
 				});
 		},
-		doBraintreeMonthlyGood(nonce, paymentType) {
+		doBraintreeMonthlyGood(nonce, deviceData, paymentType) {
 			if (this.action === 'Update') {
 				// if nonce is the same, the payment method is the same and we do not need to call the update mutation
 				if (nonce === this.currentNonce) {
@@ -123,6 +123,7 @@ export default {
 						mutation: braintreeUpdateSubscriptionPaymentMethod,
 						variables: {
 							paymentMethodNonce: nonce,
+							deviceData,
 						}
 					}).then(kivaBraintreeResponse => {
 					// Check for errors in transaction
@@ -175,7 +176,8 @@ export default {
 						donateAmount: numeral(this.donateAmount).format('0.00'),
 						dayOfMonth: numeral(this.dayOfMonth).value(),
 						category: this.category,
-						isOnetime: this.isOneTime
+						isOnetime: this.isOneTime,
+						deviceData,
 					}
 				}).then(kivaBraintreeResponse => {
 					// Check for errors in transaction
