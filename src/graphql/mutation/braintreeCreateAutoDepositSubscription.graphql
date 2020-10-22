@@ -1,4 +1,4 @@
-mutation braintreeCreateAutoDepositSubscription($paymentMethodNonce: String!, $deviceData: String!, $amount: Money!, $donateAmount: Money!, $dayOfMonth: Int!) {
+mutation braintreeCreateAutoDepositSubscription($paymentMethodNonce: String!, $deviceData: String, $amount: Money!, $donateAmount: Money!, $dayOfMonth: Int!) {
 	my {
 		createAutoDeposit (
 			autoDeposit: {
