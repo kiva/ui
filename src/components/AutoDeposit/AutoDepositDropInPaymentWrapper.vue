@@ -81,10 +81,11 @@ export default {
 			// request payment method
 			this.$refs.braintreeDropInInterface.btDropinInstance.requestPaymentMethod()
 				.then(btSubmitResponse => {
-					const transactionNonce = _get(btSubmitResponse, 'nonce');
-					const paymentType = _get(btSubmitResponse, 'type');
-					if (typeof transactionNonce !== 'undefined') {
-						this.doBraintreeAutoDeposit(transactionNonce, paymentType);
+					const transactionNonce = btSubmitResponse?.nonce;
+					const deviceData = btSubmitResponse?.deviceData;
+					const paymentType = btSubmitResponse?.type;
+					if (transactionNonce) {
+						this.doBraintreeAutoDeposit(transactionNonce, deviceData, paymentType);
 					}
 				}).catch(btSubmitError => {
 					console.error(btSubmitError);
@@ -96,7 +97,7 @@ export default {
 					});
 				});
 		},
-		doBraintreeAutoDeposit(nonce, paymentType) {
+		doBraintreeAutoDeposit(nonce, deviceData, paymentType) {
 			// Apollo call to the query mutation
 			this.apollo.mutate({
 				mutation: braintreeCreateAutoDepositSubscription,
@@ -105,6 +106,7 @@ export default {
 					amount: numeral(this.amount).format('0.00'),
 					donateAmount: numeral(this.donateAmount).format('0.00'),
 					dayOfMonth: numeral(this.dayOfMonth).value(),
+					deviceData,
 				}
 			}).then(kivaBraintreeResponse => {
 				// Check for errors in transaction
