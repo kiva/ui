@@ -8,14 +8,23 @@
 			<!-- open banner -->
 			<div class="appeal-15-row appeal-15-row--open row align-center" v-if="open" key="openBanner">
 				<div class="shrink small-12 columns">
-					<div class="swashie">
+					<!-- <div class="swashie">
 						<kv-progress-circle
 							class="swashie__progress-circle"
 							:value="fifteenYearGoalPercent"
 							:show-number="fifteenYearGoalPercent > 0"
 						/>
 						<swashie-face class="swashie__face" :percent-full="fifteenYearGoalPercent" />
-					</div>
+					</div> -->
+					<video
+						class="swashie"
+						src="@/assets/media/15-years/swashie-party.mp4"
+						autoplay
+						loop
+						muted
+						playsinline
+					>
+					</video>
 				</div>
 				<div class="appeal-15-header small-12 columns">
 					<h4 v-html="bannerHeadline" class="appeal-15-header__title appeal-15-header__title--open">
@@ -51,30 +60,30 @@
 </template>
 
 <script>
-import gsap from 'gsap';
+// import gsap from 'gsap';
+// import gql from 'graphql-tag';
 import cookieStore from '@/util/cookieStore';
-import gql from 'graphql-tag';
 import { expand, collapse } from '@/util/expander';
 
 import FifteenYearsButton from '@/components/15Years/15YearsButton';
-import KvProgressCircle from '@/components/Kv/KvProgressCircle';
-import SwashieFace from '@/components/15Years/SwashieFace';
+// import KvProgressCircle from '@/components/Kv/KvProgressCircle';
+// import SwashieFace from '@/components/15Years/SwashieFace';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
-const recentFundedLoans = gql`query recentFundedLoans($start: Date!) {
-	general {
-		kivaStats {
-			numRecentFundedLoans(start: $start)
-		}
-	}
-}`;
+// const recentFundedLoans = gql`query recentFundedLoans($start: Date!) {
+// 	general {
+// 		kivaStats {
+// 			numRecentFundedLoans(start: $start)
+// 		}
+// 	}
+// }`;
 
 export default {
 	components: {
 		FifteenYearsButton,
-		KvProgressCircle,
-		SwashieFace
+		// KvProgressCircle,
+		// SwashieFace
 	},
 	inject: ['apollo'],
 	props: {
@@ -130,31 +139,31 @@ export default {
 			this.open = true;
 		}
 	},
-	mounted() {
-		// Get recent funded loans data
-		this.apollo.query({
-			query: recentFundedLoans,
-			variables: {
-				start: '2020-10-01'
-			}
-		}).then(({ data }) => {
-			// Default to 1 to avoid division by 0
-			const fundedGoal = this.appealBannerContent?.dataObject?.kiva15FundedLoansGoal || 1;
-			const numRecentFundedLoans = data?.general?.kivaStats?.numRecentFundedLoans || 0;
-			if (numRecentFundedLoans !== 0) {
-				const vm = this;
-				const percentFull = { val: 0 };
+	// mounted() {
+	// 	// Get recent funded loans data
+	// 	this.apollo.query({
+	// 		query: recentFundedLoans,
+	// 		variables: {
+	// 			start: '2020-10-01'
+	// 		}
+	// 	}).then(({ data }) => {
+	// 		// Default to 1 to avoid division by 0
+	// 		const fundedGoal = this.appealBannerContent?.dataObject?.kiva15FundedLoansGoal || 1;
+	// 		const numRecentFundedLoans = data?.general?.kivaStats?.numRecentFundedLoans || 0;
+	// 		if (numRecentFundedLoans !== 0) {
+	// 			const vm = this;
+	// 			const percentFull = { val: 0 };
 
-				gsap.to(percentFull, 1, {
-					val: (numRecentFundedLoans / fundedGoal) * 100,
-					roundProps: 'val',
-					onUpdate() {
-						vm.fifteenYearGoalPercent = percentFull.val;
-					}
-				});
-			}
-		});
-	},
+	// 			gsap.to(percentFull, 1, {
+	// 				val: (numRecentFundedLoans / fundedGoal) * 100,
+	// 				roundProps: 'val',
+	// 				onUpdate() {
+	// 					vm.fifteenYearGoalPercent = percentFull.val;
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// },
 	methods: {
 		shrinkAppeal() {
 			cookieStore.set('appeal_banner_15_shrunk', true, { path: '/' });
@@ -284,25 +293,29 @@ a {
 }
 
 .swashie {
-	position: relative;
-	width: rem-calc(150);
-	height: rem-calc(150);
-	margin: 0.5rem 0 1rem 0;
+	// position: relative;
+	// width: rem-calc(150);
+	// height: rem-calc(150);
+	// margin: 0.5rem 0 1rem 0;
 
-	&__progress-circle,
-	&__face {
-		position: absolute;
-		z-index: 1;
-		width: 100%;
-		height: 100%;
-	}
+	// &__progress-circle,
+	// &__face {
+	// 	position: absolute;
+	// 	z-index: 1;
+	// 	width: 100%;
+	// 	height: 100%;
+	// }
 
-	&__progress-circle {
-		--kv-progress-circle-foreground-color: #{$twilight};
-	}
+	// &__progress-circle {
+	// 	--kv-progress-circle-foreground-color: #{$twilight};
+	// }
 
-	&__face {
-		padding: 10%;
-	}
+	// &__face {
+	// 	padding: 10%;
+	// }
+
+	width: rem-calc(250);
+	height: rem-calc(250);
+	margin: -2.25rem -1.75rem 1rem;
 }
 </style>
