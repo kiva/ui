@@ -113,7 +113,7 @@
 		"vue-server-renderer": "^2.6.12",
 		"vue2-touch-events": "^2.3.2",
 		"vuedraggable": "^2.23.0",
-		"vuelidate": "^0.7.5",
+		"vuelidate": "^0.7.6",
 		"webpack-merge": "^5.1.2",
 		"winston": "^3.3.3"
 	},
