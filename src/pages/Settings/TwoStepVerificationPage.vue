@@ -1,5 +1,6 @@
 <template>
 	<www-page class="two-step-verification" :gray-background="true">
+		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="title-area">
 			<div class="row column">
 				<h2 class="strong">
@@ -37,15 +38,17 @@
 </template>
 
 <script>
-import WwwPage from '@/components/WwwFrame/WwwPage';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
-		WwwPage,
-		KvSettingsCard,
 		KvIcon,
+		KvSettingsCard,
+		TheMyKivaSecondaryMenu,
+		WwwPage,
 	},
 };
 </script>

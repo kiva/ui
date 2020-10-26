@@ -4,10 +4,12 @@
 	</div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .tertiary-nav {
+	padding-top: 0.875rem;
+
 	ul {
 		list-style-type: none;
 		margin: 0;

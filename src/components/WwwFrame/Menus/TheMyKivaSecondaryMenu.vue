@@ -28,11 +28,19 @@
 				</li>
 				<li>
 					<router-link
+						id="settings-link"
 						to="/settings"
 						v-kv-track-event="['SecondaryNav','click-MyKiva-Settings']"
 					>
 						Settings
 					</router-link>
+					<kv-dropdown
+						controller="settings-link"
+					>
+						<the-settings-tertiary-menu
+							class="tertiary-menu"
+						/>
+					</kv-dropdown>
 				</li>
 				<li v-if="isBorrower">
 					<router-link
@@ -55,21 +63,34 @@
 		<div class="mobile-nav hide-for-large">
 			<button
 				@click="toggle"
-				aria-controls="portfolio-combo-nav"
+				aria-controls="tertiary-combo-nav"
 				:aria-expanded="open ? 'true' : 'false'"
 			>
-				<span>Portfolio</span>
+				<span class="mobile-nav-title">{{ myKivaCategory }}</span>
 				<kv-icon name="small-chevron-mobile" class="chevron-icon" :from-sprite="true" />
 			</button>
 			<kv-expandable easing="ease-in-out">
 				<div
-					id="portfolio-combo-nav"
+					id="tertiary-combo-nav"
 					v-show="open"
 					class="kv-expandable-pane sec-ter-combo-nav"
 					:aria-hidden="open ? 'false' : 'true'"
 				>
-					<the-portfolio-tertiary-menu />
+					<template v-if="myKivaCategory === 'portfolio'">
+						<the-portfolio-tertiary-menu />
+					</template>
+					<template v-else-if="myKivaCategory === 'settings'">
+						<the-settings-tertiary-menu />
+					</template>
 					<ul>
+						<li>
+							<router-link
+								to="/portfolio"
+								v-kv-track-event="['SecondaryNav','click-MyKiva-Portfolio']"
+							>
+								Portfolio
+							</router-link>
+						</li>
 						<li>
 							<router-link
 								to="/teams/my-teams"
@@ -125,17 +146,21 @@ import {
 	isTargetElement,
 } from '@/util/touchEvents';
 import myKivaMenuQuery from '@/graphql/query/myKivaSecondaryMenu.graphql';
+import KvDropdown from '@/components/Kv/KvDropdown';
+import KvExpandable from '@/components/Kv/KvExpandable';
 import KvIcon from '@/components/Kv/KvIcon';
 import SecondaryMenu from '@/components/WwwFrame/SecondaryMenu';
-import KvExpandable from '@/components/Kv/KvExpandable';
 import ThePortfolioTertiaryMenu from '@/components/WwwFrame/Menus/ThePortfolioTertiaryMenu';
+import TheSettingsTertiaryMenu from '@/components/WwwFrame/Menus/TheSettingsTertiaryMenu';
 
 export default {
 	components: {
+		KvDropdown,
+		KvExpandable,
 		KvIcon,
 		SecondaryMenu,
-		KvExpandable,
-		ThePortfolioTertiaryMenu
+		ThePortfolioTertiaryMenu,
+		TheSettingsTertiaryMenu
 	},
 	inject: ['apollo'],
 	data() {
@@ -154,6 +179,11 @@ export default {
 			this.isTrustee = !!_get(data, 'my.trustee.id');
 			this.usingTouch = _get(data, 'usingTouch');
 		},
+	},
+	computed: {
+		myKivaCategory() {
+			return this.$route.path.split('/')[1];
+		}
 	},
 	methods: {
 		toggle() {
@@ -190,6 +220,10 @@ export default {
 .mobile-nav {
 	background-color: $kiva-bg-lightgray;
 	margin: 0;
+
+	.mobile-nav-title {
+		text-transform: capitalize;
+	}
 
 	.sec-ter-combo-nav {
 		position: absolute;

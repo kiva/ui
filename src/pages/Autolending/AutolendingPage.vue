@@ -1,5 +1,6 @@
 <template>
 	<www-page class="autolending" :gray-background="true">
+		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="title-area">
 			<div class="row column">
 				<h2>Auto-lending settings</h2>
@@ -11,10 +12,12 @@
 </template>
 
 <script>
+import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
 	components: {
+		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
 };
