@@ -36,12 +36,12 @@ export default kvAuth0 => {
 		// Return previousContext if on a server process before checkSession block
 		if (kvAuth0.isServer) return getAuthContext(previousContext);
 
-		// Return previousContext if on a blacklisted page
-		const pathBlacklist = [
+		// Return previousContext if on a denied page
+		const deniedPathList = [
 			'/error',
 			'/register/social',
 		];
-		if (pathBlacklist.indexOf(window.location.pathname) > -1) {
+		if (deniedPathList.indexOf(window.location.pathname) > -1) {
 			return getAuthContext(previousContext);
 		}
 
