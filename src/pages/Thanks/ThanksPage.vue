@@ -35,7 +35,7 @@
 			</template>
 
 			<div class="small-12 columns thanks">
-				<hr>
+				<hr v-if="loans.length > 0 || showMonthlyGoodCTA">
 				<checkout-receipt
 					v-if="receipt"
 					class="thanks__receipt"
