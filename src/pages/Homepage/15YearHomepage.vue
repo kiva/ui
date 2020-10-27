@@ -267,7 +267,6 @@ export default {
 	},
 	data() {
 		return {
-			pageViewTracked: false,
 			loanNotDonationImgs: {
 				header: [
 					['small', imgRequire('./loan-not-donation.png')],

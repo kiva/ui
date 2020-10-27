@@ -308,7 +308,6 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			pageViewTracked: false,
 			flourishImgs: {
 				greenLeft: [
 					['small', imgRequire('./flourish-green-left.png')],
