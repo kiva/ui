@@ -1,5 +1,6 @@
 <template>
 	<www-page class="security-login" :gray-background="true">
+		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="title-area">
 			<div class="row column">
 				<h2 class="strong">
@@ -15,15 +16,17 @@
 </template>
 
 <script>
+import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import Password from './Password';
 import TwoStepVerification from './TwoStepVerification';
 
 export default {
 	components: {
-		WwwPage,
 		Password,
+		TheMyKivaSecondaryMenu,
 		TwoStepVerification,
+		WwwPage,
 	},
 };
 </script>

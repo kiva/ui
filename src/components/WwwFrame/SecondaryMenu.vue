@@ -9,7 +9,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .secondary-nav {
@@ -37,7 +37,8 @@ export default {
 					@extend .basic-secondary-menu-active;
 				}
 
-				&.router-link-exact-active {
+				&.router-link-exact-active,
+				&.router-link-active {
 					@extend .basic-secondary-menu-active;
 
 					text-shadow: 0.5px 0 $kiva-accent-green;
