@@ -2,7 +2,7 @@
 	<www-page class="subscriptions" :gray-background="true">
 		<div class="title-area">
 			<div class="row column">
-				<h2>Subscription settings</h2>
+				<h1>Subscription settings</h1>
 			</div>
 		</div>
 		<router-view />
@@ -15,6 +15,9 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 export default {
 	components: {
 		WwwPage,
+	},
+	metaInfo: {
+		title: 'Subscription settings',
 	},
 };
 </script>

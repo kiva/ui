@@ -2,9 +2,9 @@
 	<www-page class="two-step-verification" :gray-background="true">
 		<div class="title-area">
 			<div class="row column">
-				<h2 class="strong">
+				<h1>
 					2-step verification
-				</h2>
+				</h1>
 			</div>
 		</div>
 		<div class="row">
@@ -46,6 +46,9 @@ export default {
 		WwwPage,
 		KvSettingsCard,
 		KvIcon,
+	},
+	metaInfo: {
+		title: '2-step verification',
 	},
 };
 </script>

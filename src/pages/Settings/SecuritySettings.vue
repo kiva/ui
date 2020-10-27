@@ -2,9 +2,9 @@
 	<www-page class="security-login" :gray-background="true">
 		<div class="title-area">
 			<div class="row column">
-				<h2 class="strong">
+				<h1>
 					Security and login
-				</h2>
+				</h1>
 			</div>
 		</div>
 		<div class="security-settings-page">
@@ -24,6 +24,9 @@ export default {
 		WwwPage,
 		Password,
 		TwoStepVerification,
+	},
+	metaInfo: {
+		title: 'Security and login',
 	},
 };
 </script>
