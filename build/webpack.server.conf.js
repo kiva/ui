@@ -33,11 +33,11 @@ module.exports = merge(baseWebpackConfig, {
 			/\.scss$/,
 			/\.vue$/,
 			/\?vue&type=style/,
-			// whitelist algolia deps https://github.com/algolia/vue-instantsearch/issues/588
+			// allow algolia deps https://github.com/algolia/vue-instantsearch/issues/588
 			// TODO: remove once they have SSR enabled
 			/vue-instantsearch/,
 			/instantsearch.js/,
-			// whitelist timesync & promise to handle timesync calling require('promise')
+			// allow timesync & promise to handle timesync calling require('promise')
 			/timesync/,
 			/promise/,
 		]

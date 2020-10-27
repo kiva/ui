@@ -64,7 +64,7 @@ export default {
 			appealEnabled: false,
 			appeal15Enabled: false,
 			appeal15link: '/get-started',
-			globalBannerBlacklist: [
+			globalBannerDenyList: [
 				'/checkout',
 				'/donate/support-kiva'
 			]
@@ -84,7 +84,7 @@ export default {
 		},
 		result({ data }) {
 			// Hide ALL banners on these pages
-			if (this.globalBannerBlacklist.includes(this.$route.path)) {
+			if (this.globalBannerDenyList.includes(this.$route.path)) {
 				return false;
 			}
 
@@ -177,20 +177,20 @@ export default {
 	computed: {
 		show15YearAppeal() {
 			// only show the 15 year appeal on these pages
-			const whitelist = [
+			const allowList = [
 				'/',
 				'/15',
 			];
 			// First check if Appeal 15 Banner
-			// is active and the user is on a whitelist URL
-			if (this.appeal15Enabled && whitelist.includes(this.$route.path)) {
+			// is active and the user is on an allowList URL
+			if (this.appeal15Enabled && allowList.includes(this.$route.path)) {
 				return true;
 			}
 			return false;
 		},
 		showAppeal() {
-			// make sure the appeal is enabled + we're not on certain blacklisted pages
-			const appealBlacklist = [
+			// make sure the appeal is enabled + we're not on certain pages
+			const appealDenylist = [
 				'/checkout',
 				'/error',
 				'/join-team',
@@ -200,8 +200,8 @@ export default {
 				'/possibility/year-end'
 			];
 			// First check if Appeal Banner
-			// is active and the user is not on a blacklisted page URL
-			if (this.appealEnabled && !appealBlacklist.includes(this.$route.path)) {
+			// is active and the user is not on a denied page URL
+			if (this.appealEnabled && !appealDenylist.includes(this.$route.path)) {
 				return true;
 			}
 			return false;
