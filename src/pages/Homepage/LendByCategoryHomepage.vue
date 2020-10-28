@@ -1,6 +1,14 @@
 <template>
 	<div class="lend-by-category-homepage">
-		<section class="featured-loans section">
+		<hero-slideshow
+			v-if="promoEnabled && promoContent"
+			:promo-enabled="promoEnabled"
+			:promo-content="promoContent"
+		/>
+		<section
+			v-if="!promoEnabled || !promoContent"
+			class="featured-loans section"
+		>
 			<div class="row align-center">
 				<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
 					<!-- <featured-loans-carousel /> -->
@@ -271,80 +279,35 @@
 </template>
 
 <script>
+import contentful from '@/graphql/query/contentful.graphql';
+
+import _get from 'lodash/get';
+import { settingEnabled } from '@/util/settingsUtils';
+import { processContent } from '@/util/contentfulUtils';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 // import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import HomepageStatistics from './HomepageStatistics';
+import HeroSlideshow from './HeroSlideshow';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
 export default {
 	components: {
 		// FeaturedLoansCarousel,
-		NoClickLoanCard,
+		HeroSlideshow,
 		HomepageStatistics,
 		KvButton,
 		KvResponsiveImage,
 		LoanCategoriesSection,
+		NoClickLoanCard,
 	},
+	inject: ['apollo'],
 	data() {
 		return {
-			pageViewTracked: false,
-			loanNotDonationImgs: {
-				header: [
-					['small', imgRequire('./loan-not-donation.png')],
-					['small retina', imgRequire('./loan-not-donation_2x.png')],
-				],
-			},
-			takeQuizImgs: {
-				header: [
-					['small', imgRequire('./potters.png')],
-					['small retina', imgRequire('./potters_2x.png')],
-				]
-			},
-			howItWorksImgs: {
-				borrower: [
-					['small', imgRequire('./how-it-works-borrower.png')],
-					['small retina', imgRequire('./how-it-works-borrower_2x.png')],
-				],
-				loan: [
-					['small', imgRequire('./how-it-works-loan.png')],
-					['small retina', imgRequire('./how-it-works-loan_2x.png')],
-				],
-				repaid: [
-					['small', imgRequire('./how-it-works-repaid.png')],
-					['small retina', imgRequire('./how-it-works-repaid_2x.png')],
-				],
-				repeat: [
-					['small', imgRequire('./how-it-works-repeat.png')],
-					['small retina', imgRequire('./how-it-works-repeat_2x.png')],
-				],
-			},
-			statistics: [
-				['small', imgRequire('./stats.png')],
-				['small retina', imgRequire('./stats_2x.png')],
-			],
-			lenderQuotes: [
-				{
-
-					image: imgRequire('./lender-quote-heather.jpg'),
-					// eslint-disable-next-line max-len
-					quote: 'Being able to lend, then get repaid, and lend over and over again gives great satisfaction. My funds have been lent 12 times over.',
-					attribution: 'Heather McLaughlin',
-					title: 'Kiva lender',
-					background: imgRequire('./lender-quote-card-texture-yellow.png'),
-				},
-				{
-					image: imgRequire('./lender-quote-jenae.jpg'),
-					// eslint-disable-next-line max-len
-					quote: 'Just made my 11th loan to a single mother in Nicaragua. Constantly blown away by the impact from the same $25 being lent over and over again.',
-					attribution: 'Jenae Journot',
-					title: 'Kiva lender',
-					background: imgRequire('./lender-quote-card-texture-red.png'),
-				},
-			],
 			flourishImgs: {
 				greenLeft: [
 					['small', imgRequire('./flourish-green-left.png')],
@@ -370,7 +333,95 @@ export default {
 					['small', imgRequire('./leaf.svg')],
 				],
 			},
+			howItWorksImgs: {
+				borrower: [
+					['small', imgRequire('./how-it-works-borrower.png')],
+					['small retina', imgRequire('./how-it-works-borrower_2x.png')],
+				],
+				loan: [
+					['small', imgRequire('./how-it-works-loan.png')],
+					['small retina', imgRequire('./how-it-works-loan_2x.png')],
+				],
+				repaid: [
+					['small', imgRequire('./how-it-works-repaid.png')],
+					['small retina', imgRequire('./how-it-works-repaid_2x.png')],
+				],
+				repeat: [
+					['small', imgRequire('./how-it-works-repeat.png')],
+					['small retina', imgRequire('./how-it-works-repeat_2x.png')],
+				],
+			},
+			lenderQuotes: [
+				{
+
+					image: imgRequire('./lender-quote-heather.jpg'),
+					// eslint-disable-next-line max-len
+					quote: 'Being able to lend, then get repaid, and lend over and over again gives great satisfaction. My funds have been lent 12 times over.',
+					attribution: 'Heather McLaughlin',
+					title: 'Kiva lender',
+					background: imgRequire('./lender-quote-card-texture-yellow.png'),
+				},
+				{
+					image: imgRequire('./lender-quote-jenae.jpg'),
+					// eslint-disable-next-line max-len
+					quote: 'Just made my 11th loan to a single mother in Nicaragua. Constantly blown away by the impact from the same $25 being lent over and over again.',
+					attribution: 'Jenae Journot',
+					title: 'Kiva lender',
+					background: imgRequire('./lender-quote-card-texture-red.png'),
+				},
+			],
+			loanNotDonationImgs: {
+				header: [
+					['small', imgRequire('./loan-not-donation.png')],
+					['small retina', imgRequire('./loan-not-donation_2x.png')],
+				],
+			},
+			promoContent: null,
+			promoEnabled: null,
+			statistics: [
+				['small', imgRequire('./stats.png')],
+				['small retina', imgRequire('./stats_2x.png')],
+			],
+			takeQuizImgs: {
+				header: [
+					['small', imgRequire('./potters.png')],
+					['small retina', imgRequire('./potters_2x.png')],
+				]
+			},
+
 		};
+	},
+	apollo: {
+		preFetch: true,
+		query: contentful,
+		preFetchVariables() {
+			return {
+				contentType: 'uiSetting',
+				contentKey: 'ui-homepage-promo'
+			};
+		},
+		variables() {
+			return {
+				contentType: 'uiSetting',
+				contentKey: 'ui-homepage-promo'
+			};
+		},
+		result({ data }) {
+			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
+			// it should always be the first and only item in the array, since we pass the variable to the query above
+			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-promo'); // eslint-disable-line max-len
+			// exit if missing setting or fields
+			if (!uiPromoSetting || !uiPromoSetting.fields) {
+				return false;
+			}
+			this.promoEnabled = settingEnabled(
+				uiPromoSetting.fields,
+				'active',
+				'startDate',
+				'endDate'
+			);
+			this.promoContent = processContent(uiPromoSetting.fields.content);
+		},
 	},
 };
 </script>

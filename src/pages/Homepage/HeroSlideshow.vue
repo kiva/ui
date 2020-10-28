@@ -3,8 +3,18 @@
 		<!-- Promo -->
 		<kv-hero v-if="promoEnabled">
 			<template v-slot:carousel>
-				<kv-carousel @change="slideChange">
-					<kv-carousel-slide v-for="(imageSet, index) in promoContent.responsiveImageSet" :key="index">
+				<kv-carousel
+					@change="slideChange"
+					:hide-arrows="true"
+					:slide-interval="5"
+					:embla-options="{draggable: false}"
+					:pause-on-hover="false"
+					indicator-style="none"
+				>
+					<kv-carousel-slide
+						v-for="(imageSet, index) in promoContent.responsiveImageSet"
+						:key="index"
+					>
 						<!-- eslint-disable max-len -->
 						<router-link
 							v-if="!promoContent.genericContentBlock.primaryCtaText && promoContent.genericContentBlock.primaryCtaLink"
@@ -53,7 +63,14 @@
 		<!-- Default -->
 		<kv-hero v-else>
 			<template v-slot:carousel>
-				<kv-carousel @change="slideChange">
+				<kv-carousel
+					@change="slideChange"
+					:hide-arrows="true"
+					:slide-interval="5"
+					:embla-options="{draggable: false}"
+					:pause-on-hover="false"
+					indicator-style="none"
+				>
 					<!-- eslint-disable max-len -->
 					<kv-carousel-slide>
 						<kv-responsive-image
