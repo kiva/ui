@@ -3,7 +3,7 @@
 		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="title-area">
 			<div class="row column">
-				<h2>Auto-lending settings</h2>
+				<h1>Auto-lending settings</h1>
 				<h3>Make the impact you want even if you’re away from your account for a while</h3>
 			</div>
 		</div>
@@ -20,10 +20,13 @@ export default {
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
+	metaInfo: {
+		title: 'Auto-lending settings',
+	},
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import 'settings';
 
 .autolending {

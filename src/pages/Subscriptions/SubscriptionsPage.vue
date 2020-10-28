@@ -3,7 +3,7 @@
 		<the-my-kiva-secondary-menu slot="secondary" />
 		<div class="title-area">
 			<div class="row column">
-				<h2>Subscription settings</h2>
+				<h1>Subscription settings</h1>
 			</div>
 		</div>
 		<router-view />
@@ -18,6 +18,9 @@ export default {
 	components: {
 		WwwPage,
 		TheMyKivaSecondaryMenu
+	},
+	metaInfo: {
+		title: 'Subscription settings',
 	},
 };
 </script>
