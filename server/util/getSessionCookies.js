@@ -23,15 +23,16 @@ module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 					Cookie: getCookieString(requestCookies),
 				},
 			}).then(res => {
-				const setCookies = res.headers.getAll('set-cookie');
-				const parsed = setCookieParser(setCookies, { decodeValues: false });
+				const combinedCookieHeader = res.headers.get('set-cookie');
+				const splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader);
+				const parsed = setCookieParser.parse(splitCookieHeaders, { decodeValues: false });
 				const cookies = parsed.reduce((cookieObject, cookie) => {
 					if (cookie.value !== 'deleted') {
 						return Object.assign(cookieObject, { [cookie.name]: decodeCookieValue(cookie.value) });
 					}
 					return cookieObject;
 				}, {});
-				resolve({ setCookies, cookies });
+				resolve({ setCookies: splitCookieHeaders, cookies });
 			}).catch(err => reject(err));
 		} else {
 			resolve({
