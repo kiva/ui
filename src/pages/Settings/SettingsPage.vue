@@ -68,7 +68,7 @@
 							<p>Where you want your money to go if your account becomes inactive</p>
 						</li>
 						<li
-							v-if="isSubscriber"
+							v-if="!isSubscriber"
 							class="section__subsection"
 						>
 							<h3>Auto lending settings</h3>
