@@ -166,7 +166,7 @@ export default [
 		path: '/settings',
 		component: () => import('@/pages/Settings/SettingsPage'),
 		meta: {
-			activeLoginRequired: true,
+			authenticationRequired: true,
 		}
 	},
 	{
