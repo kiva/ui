@@ -10,16 +10,13 @@
 		</div>
 		<div class="security-settings-page">
 			<div class="row">
-				<div class="columns small-12 large-4 large-push-4">
+				<div class="columns small-12 large-4 large-order-2">
 					<two-step-faq />
 				</div>
-				<div class="columns small-12 large-7 large-pull-8">
+				<div class="columns small-12 large-8 large-order-1">
 					<password />
 					<two-step-verification />
 				</div>
-				<!-- <div class="column small-12 large-4">
-					<two-step-faq />
-				</div> -->
 			</div>
 		</div>
 	</www-page>
