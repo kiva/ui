@@ -5,9 +5,7 @@
 			<slot name="icon"></slot>
 		</div>
 		<div class="settings-card__content-wrapper">
-			<div class="settings-card__title">
-				<h3>{{ title }}</h3>
-			</div>
+			<h2>{{ title }}</h2>
 			<div class="settings-card__content">
 				<!-- @slot Content of the settings card. Should not be empty. -->
 				<slot name="content"></slot>
@@ -63,13 +61,5 @@ export default {
 	}
 
 	&__content-wrapper { padding: 0 0 1rem 1rem; }
-
-	&__title {
-		margin-bottom: 1rem;
-
-		h3 {
-			font-weight: $global-weight-bold;
-		}
-	}
 }
 </style>

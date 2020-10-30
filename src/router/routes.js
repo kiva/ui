@@ -163,6 +163,13 @@ export default [
 	{ path: '/protocol', component: () => import('@/pages/Protocol') },
 	{ path: '/register/social', component: () => import('@/pages/LoginAndRegister/RegisterSocial') },
 	{
+		path: '/settings',
+		component: () => import('@/pages/Settings/SettingsPage'),
+		meta: {
+			authenticationRequired: true,
+		}
+	},
+	{
 		path: '/settings/autolending',
 		component: () => import('@/pages/Autolending/AutolendingPage'),
 		children: [

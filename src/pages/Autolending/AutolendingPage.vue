@@ -4,7 +4,9 @@
 		<div class="title-area">
 			<div class="row column">
 				<h1>Auto-lending settings</h1>
-				<h3>Make the impact you want even if you’re away from your account for a while</h3>
+				<p class="h3">
+					Make the impact you want even if you’re away from your account for a while
+				</p>
 			</div>
 		</div>
 		<router-view />
