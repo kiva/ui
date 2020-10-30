@@ -157,7 +157,7 @@ const pageQuery = gql`query settingsQuery {
 		}
 	}
 	general {
-		featureSetting(key: "mfa.enabled") {
+		mfaEnabled: featureSetting(key: "mfa.enabled") {
 			key
 			value
 			description
@@ -185,7 +185,7 @@ export default {
 		prefetch: true,
 		result({ data }) {
 			this.isSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
-			this.isMfaActive = data?.general?.featureSetting?.value ?? false;
+			this.isMfaActive = data?.general?.mfaEnabled?.value === 'true';
 		},
 	},
 };
