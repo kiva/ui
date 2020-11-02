@@ -38,6 +38,7 @@ module.exports = {
 			},
 			enable: true,
 			apiAudience: 'https://api.kivaws.org/graphql',
+			mfaAudience: 'https://kiva-prod.auth0.com/mfa/',
 			browserClientID: 'AEnMbebwn6LBvxg1iMYczZKoAgdUt37K',
 			serverClientID: 'xRbi3nkuYZ2B8rjYg4VdyZb2EaI1fhPd',
 			browserCallbackUri: 'https://www.kiva.org/process-browser-auth',

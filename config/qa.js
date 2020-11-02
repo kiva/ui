@@ -39,6 +39,7 @@ module.exports = merge(base, {
 			},
 			enable: true,
 			apiAudience: 'https://api.qa.kivaws.org/graphql',
+			mfaAudience: 'https://kiva-qa.auth0.com/mfa/',
 			browserClientID: 'D4nisXFEuifQ8Am1WoJJpuneCBTBle3Q',
 			serverClientID: 'tZuDW6xKBP5WYgP8FEwNsl41T4fhjWhF',
 			browserCallbackUri: 'https://www.qa.kiva.org/process-browser-auth',

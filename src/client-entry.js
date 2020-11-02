@@ -25,6 +25,7 @@ let kvAuth0;
 if (config.auth0.enable) {
 	kvAuth0 = new KvAuth0({
 		audience: config.auth0.apiAudience,
+		mfaAudience: config.auth0.mfaAudience,
 		clientID: config.auth0.browserClientID,
 		domain: config.auth0.domain,
 		redirectUri: config.auth0.browserCallbackUri,

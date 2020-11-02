@@ -15,6 +15,7 @@ const auth0js = !isServer ? require('auth0-js') : null;
 const errorCallbacks = Symbol('errorCallbacks');
 const handleUnknownError = Symbol('handleUnknownError');
 const loginPromise = Symbol('loginPromise');
+const mfaTokenPromise = Symbol('mfaTokenPromise');
 const popupAuthorize = Symbol('authorize');
 const popupWindow = Symbol('popupWindow');
 const sessionPromise = Symbol('sessionPromise');
@@ -31,6 +32,7 @@ export default class KvAuth0 {
 		audience,
 		clientID,
 		domain,
+		mfaAudience,
 		redirectUri,
 		scope,
 		user = null,
@@ -41,6 +43,7 @@ export default class KvAuth0 {
 		this.accessToken = accessToken;
 		this.isServer = isServer;
 		if (!this.isServer) {
+			// Setup Auth0 WebAuth client for authentication
 			this.webAuth = new auth0js.WebAuth({
 				audience,
 				clientID,
@@ -48,6 +51,15 @@ export default class KvAuth0 {
 				redirectUri,
 				responseType: 'token id_token',
 				scope,
+			});
+			// Setup Auth0 WebAuth client for MFA management
+			this.mfaWebAuth = new auth0js.WebAuth({
+				audience: mfaAudience,
+				clientID,
+				domain,
+				redirectUri,
+				responseType: 'token',
+				scope: 'enroll read:authenticators remove:authenticators',
 			});
 		}
 	}
@@ -117,6 +129,57 @@ export default class KvAuth0 {
 		return _get(this, `user["${lastLoginKey}"]`)
 			|| _get(this, `user._json["${lastLoginKey}"]`)
 			|| 0;
+	}
+
+	// Silently fetch an access token for the MFA api to manage MFA factors
+	getMfaManagementToken() {
+		// only try this if in the browser
+		if (this.isServer) {
+			return Promise.reject(new Error('getMfaManagementToken called in server mode'));
+		}
+
+		// Ensure only one mfa token request at a time
+		if (this[mfaTokenPromise]) return this[mfaTokenPromise];
+
+		// Check for user before trying for token
+		if (!this.user) {
+			return Promise.reject(new Error('api.authenticationRequired'));
+		}
+
+		// Resolve with management token if we already have one
+		if (this.mfaManagementToken) {
+			return Promise.resolve(this.mfaManagementToken);
+		}
+
+		this[mfaTokenPromise] = new Promise((resolve, reject) => {
+			// Ensure browser clock is correct before fetching the token
+			syncDate().then(() => {
+				this.mfaWebAuth.checkSession({}, (err, result) => {
+					if (err) {
+						reject(err);
+					} else {
+						const { accessToken, expiresIn } = result;
+						// save access token as this.mfaEnrollToken
+						this.mfaManagementToken = accessToken;
+						// mfa management token expiration handling
+						if (expiresIn > 0) {
+							setTimeout(() => {
+								this.mfaManagementToken = '';
+							}, Number(expiresIn) * 1000);
+						}
+						// resolve with the mfa management token
+						resolve(this.mfaManagementToken);
+					}
+				});
+			});
+		});
+
+		// Once the promise completes, stop tracking it
+		this[mfaTokenPromise].finally(() => {
+			this[mfaTokenPromise] = null;
+		});
+
+		return this[mfaTokenPromise];
 	}
 
 	// Silently check for a logged in session with auth0 using hidden iframes
@@ -237,6 +300,7 @@ export const MockKvAuth0 = {
 	accessToken: '',
 	getKivaId: () => undefined,
 	getLastLogin: () => 0,
+	getMfaEnrollToken: () => Promise.resolve({}),
 	checkSession: () => Promise.resolve({}),
 	popupLogin: () => Promise.resolve({}),
 	popupCallback: () => Promise.resolve({}),
