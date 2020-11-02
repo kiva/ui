@@ -45,6 +45,7 @@ module.exports = merge(base, {
 			},
 			enable: true,
 			apiAudience: 'https://api.dev.kivaws.org/graphql',
+			mfaAudience: 'https://kiva-dev.auth0.com/mfa/',
 			browserClientID: 'ouGKxT4mE4wQEKqpfsHSE96c9rHXQqZF',
 			serverClientID: 'KIzjUBQjKZwMRgYSn6NvMxsUwNppwnLH',
 			browserCallbackUri: 'https://dev-vm-01.kiva.org/process-browser-auth',
