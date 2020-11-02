@@ -12,7 +12,17 @@
 					/>
 				</template>
 				<template v-slot:content>
-					<p>Clicking this button will send you a verification...</p>
+					<p>
+						Clicking this button will send you a verification email.
+						As a final step in this process, you'll need to click the
+						link in that email to successfully update your account password.
+					</p>
+					<kv-button
+						class="smaller"
+						@click.native="onClickChangePassword"
+					>
+						Send change password email {{ userEmail }}
+					</kv-button>
 				</template>
 			</kv-settings-card>
 		</div>
@@ -20,14 +30,64 @@
 </template>
 
 <script>
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import gql from 'graphql-tag';
+
+const userQuery = gql`query getUserEmail {
+	my {
+		userAccount {
+			id
+			email
+		}
+	}
+}`;
+
+const passwordResetMutation = gql`mutation passwordReset {
+	my {
+		sendChangePasswordEmail
+	}
+}`;
 
 export default {
 	components: {
-		KvSettingsCard,
+		KvButton,
 		KvIcon,
+		KvSettingsCard,
 	},
+	inject: ['kvAuth0', 'apollo'],
+	data() {
+		return {
+			userEmail: null
+		};
+	},
+	mounted() {
+		this.apollo.query({
+			query: userQuery
+		}).then(({ data }) => {
+			console.log(data);
+			this.userEmail = data?.my?.userAccount?.email;
+		}).catch(err => {
+			console.error(err);
+		});
+	},
+	methods: {
+		onClickChangePassword() {
+			console.log('change password');
+			// console.log(this.kvAuth0);
+			// const userEmail = this.kvAuth0.user.email;
+
+			this.apollo.mutate({
+				mutation: passwordResetMutation
+			}).then(({ data }) => {
+				console.log(data);
+				this.$showTipMsg(`Password has been sent to ${this.userEmail}`); // TODO: What's the text here?
+			}).catch(err => {
+				console.error(err);
+			});
+		}
+	}
 };
 </script>
 
