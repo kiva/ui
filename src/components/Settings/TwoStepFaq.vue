@@ -111,3 +111,12 @@ export default {
 	}
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+ul {
+	list-style-type: none;
+	margin-left: 0;
+}
+</style>
