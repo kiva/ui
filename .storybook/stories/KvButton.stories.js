@@ -55,6 +55,11 @@ export const Disabled = () => ({
 	template: '<kv-button disabled>Button</kv-button>'
 });
 
+export const Expanded = () => ({
+	components: { KvButton },
+	template: '<kv-button class="expanded">Button</kv-button>'
+});
+
 export const AsALink = () => ({
 	components: { KvButton },
 	template: '<kv-button href="http://www.google.com">Button</kv-button>'

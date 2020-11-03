@@ -11,7 +11,7 @@
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
 			v-if="!isOnetime"
-			@cancel-subscription="showConfirmationPrompt('Monthly Good')"
+			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
 		/>

@@ -18,16 +18,16 @@
 				<div v-if="isMonthlyGoodSubscriber">
 					<p>
 						On the <kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
+							@click.native.prevent="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
 						</kv-button> of each month <kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
+							@click.native.prevent="showEditLightbox = true;"
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
 						</kv-button> will be
 						transferred <kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
+							@click.native.prevent="showEditLightbox = true;"
 							v-if="selectedGroupDescriptor"
 						>
 							to support
@@ -36,7 +36,7 @@
 					</p>
 					<p>
 						<kv-button class="text-link"
-							@click.native.prevent="$emit('cancel-subscription')"
+							@click.native.prevent="showCancelLightbox = true"
 						>
 							Cancel Monthly Good
 						</kv-button>
@@ -45,7 +45,7 @@
 					<!-- Edit MG Lightbox -->
 					<kv-lightbox
 						class="mg-update-lightbox"
-						:visible="showLightbox"
+						:visible="showEditLightbox"
 						:title="settingsOpen ? 'Change your monthly good' : 'Update payment method'"
 						@lightbox-closed="closeLightbox"
 					>
@@ -168,6 +168,15 @@
 						<template slot="controls">
 						</template>
 					</kv-lightbox>
+
+					<!-- Monthly Good Cancellation Flow -->
+					<subscriptions-monthly-good-cancellation-flow
+						:show-cancel-lightbox="showCancelLightbox"
+						v-if="showCancelLightbox"
+						@confirm-cancel="$emit('cancel-subscription'); showCancelLightbox = false;"
+						@abort-cancel="showCancelLightbox = false"
+						@modify-cancel="showCancelLightbox = false; showEditLightbox = true"
+					/>
 				</div>
 			</template>
 		</kv-settings-card>
@@ -187,6 +196,8 @@ import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import MonthlyGoodUpdateForm from '@/components/Forms/MonthlyGoodUpdateForm';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
+import SubscriptionsMonthlyGoodCancellationFlow from
+	'@/components/Subscriptions/SubscriptionsMonthlyGoodCancellationFlow';
 
 const pageQuery = gql`query monthlyGoodSubscription {
 	my {
@@ -223,6 +234,7 @@ export default {
 		KvSettingsCard,
 		MonthlyGoodDropInPaymentWrapper,
 		MonthlyGoodUpdateForm,
+		SubscriptionsMonthlyGoodCancellationFlow,
 	},
 	data() {
 		return {
@@ -232,7 +244,8 @@ export default {
 			donation: 0,
 			mgAmount: 0,
 			isMonthlyGoodSubscriber: false,
-			showLightbox: false,
+			showEditLightbox: false,
+			showCancelLightbox: false,
 			settingsOpen: true, // if settingsOpen is false, payment update section is shown
 			isChanged: false,
 			isFormValid: true,
@@ -307,7 +320,7 @@ export default {
 			if (this.isChanged) {
 				this.$emit('unsaved-changes', true);
 			}
-			this.showLightbox = false;
+			this.showEditLightbox = false;
 		},
 		saveMonthlyGood() {
 			this.isSaving = true;
@@ -349,12 +362,12 @@ export default {
 			}).finally(() => {
 				this.isSaving = false;
 				this.$emit('unsaved-changes', false);
-				this.showLightbox = false;
+				this.showEditLightbox = false;
 			});
 		},
 		completeMGBraintree() {
 			this.$kvTrackEvent('MonthlyGood', 'successful-update-mg-payment', 'update-monthly-good-payment');
-			this.showLightbox = false;
+			this.showEditLightbox = false;
 			// reset lightbox state
 			this.settingsOpen = true;
 			// refetch page query with updated information
@@ -363,7 +376,7 @@ export default {
 		},
 		noUpdate() {
 			this.updateToCurrentPaymentMethod = true;
-		}
+		},
 	},
 };
 </script>
