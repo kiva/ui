@@ -64,7 +64,7 @@
 		</ol>
 		<div class="row">
 			<div class="small-6 columns">
-				<kv-button href="https://kivaportal.force.com/portal/" class="secondary cta-btn">
+				<kv-button href="/my/borrower/application" class="secondary cta-btn">
 					Continue my application
 				</kv-button>
 			</div>
