@@ -25,28 +25,23 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
+// import gql from 'graphql-tag';
 
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 
-const pageQuery = gql`query settingsQuery {
-	my {
-		autoDeposit {
-			id
-			status
-			isSubscriber
-		}
-	}
-	general {
-		featureSetting(key: "mfa.enabled") {
-			key
-			value
-			description
-		}
-	}
-}`;
+// TODO: This will be the query checking if user has
+// MFA enabled/disabled
+// const pageQuery = gql`query settingsQuery {
+// 	my {
+// 		autoDeposit {
+// 			id
+// 			status
+// 			isSubscriber
+// 		}
+// 	}
+// }`;
 
 export default {
 	components: {
@@ -66,18 +61,13 @@ export default {
 		}
 	},
 	inject: ['apollo'],
-	apollo: {
-		query: pageQuery,
-		preFetch: true,
-		result({ data }) {
-			console.log('data', data);
-			// this.isMFAActive = data.whatever
-		}
-	}
+	// apollo: {
+	// 	query: pageQuery,
+	// 	preFetch: true,
+	// 	result({ data }) {
+	// 		console.log('data', data);
+	// 		// this.isMFAActive = data.whatever
+	// 	}
+	// }
 };
 </script>
-
-<style lang="scss" scoped>
-@import 'settings';
-
-</style>
