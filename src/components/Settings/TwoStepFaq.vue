@@ -9,7 +9,7 @@
 					2-step verification protects your Kiva account by requiring an
 					additional code when you log in on a device we don't recognize.
 				</p>
-				<h3 class="strong">
+				<h3>
 					FAQ
 				</h3>
 				<ul>
@@ -114,6 +114,15 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+
+h2 {
+	font-size: 1.125rem;
+	font-weight: bold;
+}
+
+h3 {
+	font-weight: bold;
+}
 
 ul {
 	list-style-type: none;
