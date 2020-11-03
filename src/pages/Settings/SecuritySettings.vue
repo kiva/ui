@@ -25,9 +25,9 @@
 <script>
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
-import Password from './Password';
-import TwoStepVerification from './TwoStepVerification';
-import TwoStepFaq from './TwoStepFaq';
+import Password from '@/components/Settings/Password';
+import TwoStepVerification from '@/components/Settings/TwoStepVerification';
+import TwoStepFaq from '@/components/Settings/TwoStepFaq';
 
 export default {
 	components: {

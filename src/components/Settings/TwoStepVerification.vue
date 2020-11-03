@@ -10,7 +10,10 @@
 			/>
 		</template>
 		<template v-slot:content>
-			<h3> Status: <span v-html="MFAStatus"></span></h3>
+			<h3>
+				Status:
+				<span :class="`mfa-${MFAStatus}`">{{ MFAStatus }}</span>
+			</h3>
 			<p>
 				Protect your Kiva account with an extra layer of security by requiring access
 				to your phone. Once configured, you'll be required to enter
@@ -56,9 +59,12 @@ export default {
 	},
 	computed: {
 		MFAStatus() {
-			// eslint-disable-next-line max-len
-			return this.isMFAActive ? '<span style="color:#4faf4e;font-weight:500;">On</span>' : '<span style="color:#d74937;font-weight:500;">Off</span>';
+			if (this.isMFAActive) {
+				return 'on';
+			}
+			return 'off';
 		}
+
 	},
 	inject: ['apollo'],
 	// apollo: {
@@ -71,3 +77,17 @@ export default {
 	// }
 };
 </script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.mfa-off {
+	color: $kiva-accent-red;
+	text-transform: capitalize;
+}
+
+.mfa-on {
+	color: $kiva-green;
+	text-transform: capitalize;
+}
+</style>
