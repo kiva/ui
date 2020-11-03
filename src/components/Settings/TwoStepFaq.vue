@@ -2,17 +2,17 @@
 	<div>
 		<kv-settings-card>
 			<template v-slot:content>
-				<h2>
+				<h2 class="faq-header">
 					Level up your security with 2-step verfication
 				</h2>
 				<p>
 					2-step verification protects your Kiva account by requiring an
 					additional code when you log in on a device we don't recognize.
 				</p>
-				<h3>
+				<h3 class="faq-sub-header">
 					FAQ
 				</h3>
-				<ul>
+				<ul class="faq-list">
 					<li>
 						<kv-button
 							class="text-link"
@@ -115,16 +115,16 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-h2 {
+.faq-header {
 	font-size: 1.125rem;
 	font-weight: bold;
 }
 
-h3 {
+.faq-sub-header {
 	font-weight: bold;
 }
 
-ul {
+.faq-list {
 	list-style-type: none;
 	margin-left: 0;
 }
