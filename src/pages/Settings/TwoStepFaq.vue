@@ -2,25 +2,42 @@
 	<div>
 		<kv-settings-card>
 			<template v-slot:content>
-				<div class="strong">
+				<h2>
 					Level up your security with 2-step verfication
-				</div>
+				</h2>
 				<p>
 					2-step verification protects your Kiva account by requiring an
 					additional code when you log in on a device we don't recognize.
 				</p>
-				<div class="strong">
+				<h3 class="strong">
 					FAQ
-				</div>
-				<div>
-					<a @click="triggerWhatIsLightbox">What is 2-step Verification?</a>
-				</div>
-				<div>
-					<a @click="triggerHowItWorksLightbox">How does it work?</a>
-				</div>
-				<div>
-					<a @click="triggerHowItProtectsLightbox">How it protects you?</a>
-				</div>
+				</h3>
+				<ul>
+					<li>
+						<kv-button
+							class="text-link"
+							@click="triggerWhatIsLightbox"
+						>
+							What is 2-step Verification?
+						</kv-button>
+					</li>
+					<li>
+						<kv-button
+							class="text-link"
+							@click="triggerHowItWorksLightbox"
+						>
+							How does it work?
+						</kv-button>
+					</li>
+					<li>
+						<kv-button
+							class="text-link"
+							@click="triggerHowItProtectsLightbox"
+						>
+							How it protects you?
+						</kv-button>
+					</li>
+				</ul>
 			</template>
 		</kv-settings-card>
 		<kv-lightbox

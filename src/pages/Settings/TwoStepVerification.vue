@@ -10,7 +10,7 @@
 			/>
 		</template>
 		<template v-slot:content>
-			<div>Status: <span v-html="MFAStatus"></span></div>
+			<h3> Status: <span v-html="MFAStatus"></span></h3>
 			<p>
 				Protect your Kiva account with an extra layer of security by requiring access
 				to your phone. Once configured, you'll be required to enter
