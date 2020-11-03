@@ -19,9 +19,10 @@
 					</p>
 					<kv-button
 						class="smaller"
-						@click.native="onClickChangePassword"
+						@click.native="onClickRequestPassword"
+						:disabled="isPasswordRequestPending"
 					>
-						Send change password email {{ userEmail }}
+						Send change password email
 					</kv-button>
 				</template>
 			</kv-settings-card>
@@ -56,36 +57,46 @@ export default {
 		KvIcon,
 		KvSettingsCard,
 	},
-	inject: ['kvAuth0', 'apollo'],
+	inject: ['apollo'],
 	data() {
 		return {
-			userEmail: null
+			userEmail: null,
+			isPasswordRequestPending: false,
+			isPasswordRequestSuccess: false,
+			isPasswordRequestFailure: false
 		};
 	},
 	mounted() {
-		this.apollo.query({
-			query: userQuery
-		}).then(({ data }) => {
-			console.log(data);
-			this.userEmail = data?.my?.userAccount?.email;
-		}).catch(err => {
-			console.error(err);
-		});
+		this.loadUserEmail(); // load user email async since it's not crucial
 	},
 	methods: {
-		onClickChangePassword() {
-			console.log('change password');
-			// console.log(this.kvAuth0);
-			// const userEmail = this.kvAuth0.user.email;
-
-			this.apollo.mutate({
-				mutation: passwordResetMutation
+		loadUserEmail() {
+			this.apollo.query({
+				query: userQuery
 			}).then(({ data }) => {
-				console.log(data);
-				this.$showTipMsg(`Password has been sent to ${this.userEmail}`); // TODO: What's the text here?
+				this.userEmail = data?.my?.userAccount?.email;
 			}).catch(err => {
 				console.error(err);
 			});
+		},
+		async onClickRequestPassword() {
+			this.isPasswordRequestPending = true;
+			this.isPasswordRequestSuccess = false;
+			this.isPasswordRequestFailure = false;
+			try {
+				await this.apollo.mutate({
+					mutation: passwordResetMutation
+				});
+				const msg = this.userEmail // TODO: What's the text here?
+					? `Email has been sent to ${this.userEmail}`
+					: 'Email has been sent to the address on file';
+				this.isPasswordRequestSuccess = true;
+				this.$showTipMsg(msg);
+			} catch (err) {
+				console.error(err);
+				this.isPasswordRequestFailure = true; // TODO: Do we want an error message for the user?
+			}
+			this.isPasswordRequestPending = false;
 		}
 	}
 };
