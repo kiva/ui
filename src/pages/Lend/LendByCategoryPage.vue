@@ -476,6 +476,7 @@ export default {
 					'EXP-CASH-970-Mar2020',
 					this.categoryRowHillclimbExpVersion === 'variant-a' ? 'b' : 'a',
 					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null,
+					this.categoryRowHillclimbExpVersion === 'variant-a' ? categoryRowHillclimb : null
 				);
 			}
 		},

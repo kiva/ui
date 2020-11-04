@@ -596,6 +596,7 @@ export default {
 				'Checkout',
 				'Payment Required',
 				creditNeededInt > 0 || false,
+				creditNeededInt * 100,
 				creditNeededInt * 100
 			);
 		},

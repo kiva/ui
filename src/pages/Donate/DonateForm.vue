@@ -138,6 +138,7 @@ export default {
 						'Donate from Macro',
 						'Donation from Macro',
 						// pass donation amount as whole number
+						numeral(this.selectedAmount).value() * 100,
 						numeral(this.selectedAmount).value() * 100
 					);
 					this.$router.push({

@@ -71,13 +71,16 @@ export default Vue => {
 				window.fbq('track', 'PageView');
 			}
 		},
-		// TODO: Update to accept snowplow property as the 4th param, value moves to 5th param for trackStructEvent
-		trackEvent: (category, action, label, value) => {
+		trackEvent: (category, action, label, property, value) => {
 			const eventLabel = (label !== undefined && label !== null) ? String(label) : undefined;
 			const eventValue = (value !== undefined && value !== null) ? parseInt(value, 10) : undefined;
+			const eventProperty = (property !== undefined && property !== null) ? String(property) : undefined;
 
 			// Attempt GA event
 			if (gaLoaded) {
+				// GA API
+				// https://developers.google.com/analytics/devguides/collection/analyticsjs/events
+				// ga('send', 'event', [eventCategory], [eventAction], [eventLabel], [eventValue], [fieldsObject]);
 				window.ga('send', 'event', {
 					eventCategory: String(category),
 					eventAction: String(action),
@@ -88,7 +91,11 @@ export default Vue => {
 
 			// Attempt Snowplow event
 			if (snowplowLoaded) {
-				window.snowplow('trackStructEvent', category, action, eventLabel, eventValue);
+				// Snowplow API
+				// eslint-disable-next-line max-len
+				// https://github.com/snowplow/snowplow/wiki/2-Specific-event-tracking-with-the-Javascript-tracker#trackStructEvent
+				// snowplow_name_here('trackStructEvent', 'category','action','label','property','value');
+				window.snowplow('trackStructEvent', category, action, eventLabel, eventProperty, eventValue);
 			}
 
 			return true;
@@ -112,11 +119,8 @@ export default Vue => {
 		},
 		parseEventProperties: eventString => {
 			let params;
-			// TODO: consider deprecating the string format category|action|etc
 			if (typeof eventString === 'object' && eventString.length) {
 				params = eventString;
-			} else if (typeof eventString === 'string') {
-				params = eventString.split('|');
 			}
 			kvActions.trackEvent.apply(this, params);
 		},
@@ -224,8 +228,8 @@ export default Vue => {
 	};
 
 	// eslint-disable-next-line no-param-reassign
-	Vue.prototype.$kvTrackEvent = (category, action, label, value) => {
-		kvActions.trackEvent(category, action, label, value);
+	Vue.prototype.$kvTrackEvent = (category, action, label, property, value) => {
+		kvActions.trackEvent(category, action, label, property, value);
 	};
 
 	// eslint-disable-next-line no-param-reassign

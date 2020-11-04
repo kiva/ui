@@ -340,6 +340,7 @@ export default {
 						'Update Donation',
 						'Update Success',
 						// pass donation amount as whole number
+						numeral(this.amount).value() * 100,
 						numeral(this.amount).value() * 100
 					);
 					this.amount = numeral(this.amount).format('$0,0.00');

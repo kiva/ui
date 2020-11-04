@@ -2,15 +2,14 @@
 	<div>
 		<secondary-menu class="show-for-large">
 			<ul class="row">
-				<li v-for="{name, routerLink, url, eventTracking} in menuItems" :key="name">
+				<li v-for="{name, routerLink, url} in menuItems" :key="name">
 					<router-link
 						:to="routerLink"
-						v-kv-track-event="eventTracking"
 						v-if="routerLink"
 					>
 						{{ name }}
 					</router-link>
-					<a v-else :href="url" v-kv-track-event="eventTracking">{{ name }}</a>
+					<a v-else :href="url">{{ name }}</a>
 				</li>
 			</ul>
 		</secondary-menu>
@@ -31,15 +30,14 @@
 					:aria-hidden="open ? 'false' : 'true'"
 				>
 					<ul>
-						<li v-for="{name, routerLink, url, eventTracking} in menuItems" :key="name">
+						<li v-for="{name, routerLink, url} in menuItems" :key="name">
 							<router-link
 								:to="routerLink"
-								v-kv-track-event="eventTracking"
 								v-if="routerLink"
 							>
 								{{ name }}
 							</router-link>
-							<a v-else :href="url" v-kv-track-event="eventTracking">{{ name }}</a>
+							<a v-else :href="url">{{ name }}</a>
 						</li>
 					</ul>
 				</div>

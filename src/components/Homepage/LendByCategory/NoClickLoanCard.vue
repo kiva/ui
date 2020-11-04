@@ -4,6 +4,7 @@
 			'Home',
 			'click-hero-loan-card',
 			loanId,
+			loanId
 		]"
 	>
 		<h3 class="no-click-loan__headline">
