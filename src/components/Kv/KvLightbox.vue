@@ -203,8 +203,6 @@ export default {
 			.close-lightbox {
 				width: 2.5rem;
 				height: 2.5rem;
-				padding-left: 0.25rem;
-				padding-top: 0.375rem;
 				position: absolute;
 				top: 0.75rem;
 				right: 0.75rem;
