@@ -9,24 +9,33 @@
 			</div>
 		</div>
 		<div class="security-settings-page">
-			<password />
-			<two-step-verification />
+			<div class="row">
+				<div class="columns small-12 large-8">
+					<password />
+					<two-step-verification />
+				</div>
+				<div class="columns small-12 large-4">
+					<two-step-faq />
+				</div>
+			</div>
 		</div>
 	</www-page>
 </template>
 
 <script>
-import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import Password from './Password';
-import TwoStepVerification from './TwoStepVerification';
+import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
+import Password from '@/components/Settings/Password';
+import TwoStepVerification from '@/components/Settings/TwoStepVerification';
+import TwoStepFaq from '@/components/Settings/TwoStepFaq';
 
 export default {
 	components: {
-		Password,
-		TheMyKivaSecondaryMenu,
-		TwoStepVerification,
 		WwwPage,
+		TheMyKivaSecondaryMenu,
+		Password,
+		TwoStepVerification,
+		TwoStepFaq,
 	},
 	metaInfo: {
 		title: 'Security and login',
