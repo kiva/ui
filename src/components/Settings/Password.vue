@@ -31,7 +31,7 @@
 				variant="danger"
 				:can-close="true"
 			>
-				Error sending password
+				There was a problem sending the password reset email
 			</kv-alert>
 			<kv-button
 				class="smallest"
