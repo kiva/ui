@@ -55,7 +55,7 @@
 					<kv-button class="mg-cancel-lightbox__abort text-link"
 						@click.native="trackEvent({
 							label: `monthly good cancel ; Wait! I don't want to cancel`,
-							property: 'exit'}); closeLightbox"
+							property: 'exit'}); closeLightbox()"
 					>
 						Wait! I don't want to cancel
 					</kv-button>
@@ -158,9 +158,6 @@
 				</div>
 			</transition>
 		</div>
-
-		<template slot="controls">
-		</template>
 	</kv-lightbox>
 </template>
 

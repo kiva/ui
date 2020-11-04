@@ -164,9 +164,6 @@
 								</kv-button>
 							</template>
 						</div>
-
-						<template slot="controls">
-						</template>
 					</kv-lightbox>
 
 					<!-- Monthly Good Cancellation Flow -->
