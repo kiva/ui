@@ -60,6 +60,8 @@ export default {
 		}
 	}
 
-	&__content-wrapper { padding: 0 0 1rem 1rem; }
+	&__content-wrapper {
+		padding: 0 0 0 1rem;
+	}
 }
 </style>
