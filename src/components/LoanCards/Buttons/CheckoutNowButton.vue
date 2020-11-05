@@ -1,7 +1,7 @@
 <template>
 	<kv-button
 		class="checkout-now-button secondary"
-		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, 'true']"
+		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
 		to="/basket"
 	>
 		<kv-icon class="icon" name="checkmark" v-if="!minimalCheckoutButton" />

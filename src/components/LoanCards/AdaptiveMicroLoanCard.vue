@@ -156,6 +156,7 @@ export default {
 					'Lending',
 					'lend-button-loan-upsell',
 					this.loanType,
+					this.cardNumber,
 					this.cardNumber
 				);
 			}).catch(() => {
@@ -167,6 +168,7 @@ export default {
 				'Lending',
 				'lend-button-loan-profile',
 				this.loanType,
+				this.cardNumber,
 				this.cardNumber
 			);
 		}

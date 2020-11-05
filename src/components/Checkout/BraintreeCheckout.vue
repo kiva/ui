@@ -667,6 +667,7 @@ export default {
 						'basket',
 						'Braintree Payment',
 						'Success',
+						transactionId,
 						transactionId
 					);
 					// Complete transaction handles additional analytics + redirect

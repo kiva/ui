@@ -3,7 +3,7 @@
 		<span>{{ use | loanUse(name, status, amount, borrowerCount, maxUseLength) }}</span>
 		<router-link
 			:to="`/lend/${loanId}`"
-			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, 'true']"
+			v-kv-track-event="['Lending', 'click-Read more', 'Read more', loanId, loanId]"
 		>
 			<span
 				@click="handleReadMoreLink"

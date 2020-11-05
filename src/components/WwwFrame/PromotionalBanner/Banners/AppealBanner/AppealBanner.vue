@@ -60,6 +60,7 @@
 													'promo',
 													'click-amount-btn',
 													'AppealBanner',
+													buttonAmount,
 													buttonAmount
 												]"
 											>
@@ -71,7 +72,7 @@
 										class="other-amount"
 										href="/donate/supportus"
 										@blur="validateInput"
-										v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0]"
+										v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
 									>Other amount
 									</a>
 								</div>
@@ -274,10 +275,10 @@ export default {
 		updateDonationTo(amount, isCustom) {
 			if (isCustom) {
 				this.amount = this.donationAmount;
-				this.$kvTrackEvent('promo', 'clickOther', 'EOYBanner', this.amount);
+				this.$kvTrackEvent('promo', 'clickOther', 'EOYBanner', this.amount, this.amount);
 			} else {
 				this.amount = amount;
-				this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount);
+				this.$kvTrackEvent('promo', 'click', 'EOYBanner', this.amount, this.amount);
 			}
 			this.updateDonation();
 		},

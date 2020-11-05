@@ -28,7 +28,7 @@
 								<span>{{ loanUse }}</span>
 								<div v-if="showReadMore">
 									<!-- eslint-disable-next-line max-len -->
-									<router-link :to="`/lend/${loan.id}`" v-kv-track-event="['Lending', 'click-Read more', 'Read more', loan.id, 'true']">
+									<router-link :to="`/lend/${loan.id}`" v-kv-track-event="['Lending', 'click-Read more', 'Read more', loan.id, loan.id]">
 										<div
 											@click="$emit('track-interaction', {
 												interactionType: 'viewBorrowerPage',

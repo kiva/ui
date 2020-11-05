@@ -110,6 +110,7 @@ export default {
 					'Lending',
 					'EXP-CASH-348-Recently-Viewed-Loans-Update',
 					this.showRecentlyViewed ? 'b' : 'a',
+					recentLoanIds.length,
 					recentLoanIds.length
 				);
 			}

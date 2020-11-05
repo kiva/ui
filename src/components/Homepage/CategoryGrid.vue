@@ -11,8 +11,8 @@
 				v-kv-track-event="[
 					'homepage',
 					'click-Category-card',
-					`${loanChannel.name}-category-card`,
-					'true']"
+					`${loanChannel.name}-category-card`
+				]"
 			>
 				<div class="category-card-overlay">
 					<kv-responsive-image
@@ -39,8 +39,8 @@
 				v-kv-track-event="[
 					'homepage',
 					'click-View all categories',
-					'view-all-categories-homepage-card',
-					'true']"
+					'view-all-categories-homepage-card'
+				]"
 			>
 				<div class="solid-card-overlay">
 					<div class="view-all-card">
@@ -62,8 +62,7 @@
 				v-kv-track-event="[
 					'homepage',
 					'click-Get started',
-					'lend-by-category-homepage-redirect',
-					'true'
+					'lend-by-category-homepage-redirect'
 				]"
 			>
 				Get started
