@@ -14,7 +14,7 @@
 				/>
 			</div>
 		</div>
-		<loading-overlay v-if="!isLoaded && !zeroRecentLoans" id="updating-overlay" />
+		<kv-loading-overlay v-if="!isLoaded && !zeroRecentLoans" id="updating-overlay" />
 	</div>
 </template>
 
@@ -24,12 +24,12 @@ import WebStorage from 'store2';
 import loansByIDQuery from '@/graphql/query/loansById.graphql';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 export default {
 	components: {
 		CategoryRow,
-		LoadingOverlay
+		KvLoadingOverlay
 	},
 	inject: ['apollo'],
 	props: {

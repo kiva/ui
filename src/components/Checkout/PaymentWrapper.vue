@@ -29,7 +29,7 @@
 					@updating-payment-wrapper="setUpdatingPaymentWrapper"
 				/>
 			</div>
-			<loading-overlay
+			<kv-loading-overlay
 				v-show="updatingPaymentWrapper"
 				id="payment-updating-overlay"
 				class="updating-totals-overlay"
@@ -48,14 +48,14 @@ import experimentVersionFragment from '@/graphql/fragments/experimentVersion.gra
 import BraintreeCheckout from '@/components/Checkout/BraintreeCheckout';
 import PayPalExp from '@/components/Checkout/PayPalExpress';
 import KvPillToggle from '@/components/Kv/KvPillToggle';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 export default {
 	components: {
 		BraintreeCheckout,
 		PayPalExp,
 		KvPillToggle,
-		LoadingOverlay,
+		KvLoadingOverlay,
 	},
 	props: {
 		amount: {

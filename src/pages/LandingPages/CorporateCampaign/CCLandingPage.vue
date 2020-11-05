@@ -35,7 +35,7 @@
 			<section class="campaign-status section">
 				<div class="row campaign-status__border">
 					<div v-if="loadingPromotion" class="campaign-status__validating-promo">
-						<loading-overlay />
+						<kv-loading-overlay />
 						<p>Validating Promotion...</p>
 					</div>
 
@@ -89,7 +89,7 @@
 					</div>
 				</div>
 				<div v-if="loadingLoans" class="campaign-loans__loading-loans">
-					<loading-overlay />
+					<kv-loading-overlay />
 					<p>Loading loans...</p>
 				</div>
 			</section>
@@ -127,7 +127,7 @@ import InContextCheckout from '@/pages/LandingPages/CorporateCampaign/InContextC
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 // import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 // import KvLightbox from '@/components/Kv/KvLightbox';
@@ -315,7 +315,7 @@ export default {
 		WwwPageMinimal,
 		NoClickLoanCard,
 		LoanCardController,
-		LoadingOverlay,
+		KvLoadingOverlay,
 		// KvButton,
 		KvIcon,
 		// KvLightbox,

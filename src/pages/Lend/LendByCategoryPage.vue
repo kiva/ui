@@ -46,7 +46,7 @@
 		<div class="row pre-footer">
 			<div class="column small-12">
 				<div v-if="!rowLazyLoadComplete" class="cat-row-loader">
-					<loading-overlay id="updating-overlay" />
+					<kv-loading-overlay id="updating-overlay" />
 					<h3 class="text-center">
 						Loading more rows...
 					</h3>
@@ -106,7 +106,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 import CategoryRow from '@/components/LoansByCategory/CategoryRow';
 import CategoryRowHover from '@/components/LoansByCategory/CategoryRowHover';
 import FeaturedHeroLoanWrapper from '@/components/LoansByCategory/FeaturedHeroLoanWrapper';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import LendHeader from '@/pages/Lend/LendHeader';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import ExpandableLoanCardExpanded from '@/components/LoanCards/ExpandableLoanCard/ExpandableLoanCardExpanded';
@@ -122,7 +122,7 @@ export default {
 		CategoryRow,
 		FeaturedHeroLoanWrapper,
 		WwwPage,
-		LoadingOverlay,
+		KvLoadingOverlay,
 		LendHeader,
 		AddToBasketInterstitial,
 		ExpandableLoanCardExpanded,

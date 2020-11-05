@@ -101,7 +101,11 @@
 							</div>
 						</div>
 
-						<loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+						<kv-loading-overlay
+							v-if="updatingTotals"
+							id="updating-overlay"
+							class="updating-totals-overlay"
+						/>
 					</div>
 				</div>
 
@@ -147,7 +151,7 @@
 					@updating-totals="setUpdatingTotals"
 					@refreshtotals="refreshTotals"
 				/>
-				<loading-overlay v-show="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
+				<kv-loading-overlay v-if="updatingTotals" id="updating-overlay" class="updating-totals-overlay" />
 			</div>
 		</div>
 	</www-page>
@@ -178,7 +182,7 @@ import OrderTotals from '@/components/Checkout/OrderTotals';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import BasketVerification from '@/components/Checkout/BasketVerification';
 import KivaCardRedemption from '@/components/Checkout/KivaCardRedemption';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
@@ -198,7 +202,7 @@ export default {
 		BasketItemsList,
 		BasketVerification,
 		KivaCardRedemption,
-		LoadingOverlay,
+		KvLoadingOverlay,
 		CheckoutHolidayPromo,
 		PaymentWrapper,
 		CheckoutDropInPaymentWrapper,

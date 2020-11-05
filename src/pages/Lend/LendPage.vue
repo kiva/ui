@@ -19,7 +19,7 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
-					<loading-overlay v-if="loading" />
+					<kv-loading-overlay v-if="loading" />
 				</div>
 				<kv-pagination :total="totalCount" :limit="limit" @page-change="pageChange" />
 				<div v-if="totalCount > 0" class="loan-count">
@@ -42,7 +42,7 @@ import loanCardQuery from '@/graphql/query/loanCardData.graphql';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvPagination from '@/components/Kv/KvPagination';
-import LoadingOverlay from './LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 const loansPerPage = 12;
 
@@ -77,7 +77,7 @@ export default {
 		WwwPage,
 		LoanCardController,
 		KvPagination,
-		LoadingOverlay,
+		KvLoadingOverlay,
 	},
 	inject: ['apollo'],
 	metaInfo: {
