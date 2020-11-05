@@ -2,7 +2,7 @@
 	<div>
 		<kv-lightbox
 			:visible="lightboxClosed"
-			@lightbox-closed="emit('lightbox-closed')"
+			@lightbox-closed="exitLightBox"
 			title="Complete your loan"
 		>
 			<!-- :teams="teams" -->
@@ -118,11 +118,28 @@ export default {
 				800
 			);
 		},
+		exitLightBox() {
+			this.$emit('lightbox-closed');
+		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
+@import 'settings';
+
+::v-deep .basket-items-list > ul {
+	margin: 0 2.625 0 1rem;
+}
+
+@include breakpoint(large) {
+	::v-deep .basket-items-list {
+		.borrower-info-wrapper {
+			padding: 0 1.25rem;
+		}
+	}
+}
+
 ::v-deep .basket-donation-item {
 	display: none;
 }

@@ -4,71 +4,16 @@
 		:footer-theme="footerTheme"
 	>
 		<div class="corporate-campaign-landing">
-			<section class="campaign-header section row align-center">
-				<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
-					<no-click-loan-card />
-				</div>
-				<!-- eslint-disable-next-line max-len -->
-				<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns campaign-header__cta_wrapper">
-					<div v-if="headerLogo.url" class="campaign-header__logo">
-						<img :title="headerLogo.title" :src="headerLogo.url">
-					</div>
-					<hr v-if="headerLogo.url">
-					<h1 class="campaign-header__header">
-						{{ headline }}
-					</h1>
-					<div class="campaign-header__body" v-html="bodyCopy"></div>
-					<a
-						class="campaign-header__cta"
-						@click.prevent="jumpToLoans"
-						v-kv-track-event="[
-							'Campaign',
-							'click-hero-cta',
-							'Find someone to lend to',
-						]"
-					>
-						Find someone to lend to &xrarr;
-					</a>
-				</div>
-			</section>
+			<campaign-header :header-area-content="headerAreaContent" />
 
-			<section class="campaign-status section">
-				<div class="row campaign-status__border">
-					<div v-if="loadingPromotion" class="campaign-status__validating-promo">
-						<kv-loading-overlay />
-						<p>Validating Promotion...</p>
-					</div>
+			<campaign-status
+				:loading-promotion="loadingPromotion"
+				:promo-error-message="promoErrorMessage"
+				:promo-applied="promoApplied"
+				:promo-amount="promoAmount"
+			/>
 
-					<div v-if="promoErrorMessage" class="small-12 columns campaign-status__error-text-container">
-						<span class="message-content text-center">
-							<div class="icon-wrapper">
-								<kv-icon name="error" />
-							</div>
-							<p class="message">{{ promoErrorMessage }}</p>
-						</span>
-					</div>
-
-					<div v-if="promoApplied" class="small-12 large-6 columns campaign-status__text-container">
-						<h3 class="campaign-status__header">
-							How it works:
-						</h3>
-						<ul>
-							<li>Choose your borrower below.</li>
-							<li>Click "Add to basket"</li>
-							<li>Click "Checkout" to complete your loan</li>
-						</ul>
-					</div>
-					<div v-if="promoApplied" class="small-12 large-6 columns campaign-status__text-container">
-						<h3 class="campaign-status__header">
-							Find your first <br>borrower
-						</h3>
-						<p class="campaign-status__body">
-							You have ${{ promoAmount | numeral }} to lend!
-						</p>
-					</div>
-				</div>
-			</section>
-
+			<!-- TODO: Move to own component -->
 			<section class="campaign-loans row align-center">
 				<div class="columns small-12" v-if="loans.length > 0">
 					<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
@@ -83,7 +28,12 @@
 							@add-to-basket="addToBasket"
 						/>
 					</div>
-					<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
+					<kv-pagination
+						v-if="totalCount > 0"
+						:total="totalCount"
+						:limit="limit"
+						@page-change="pageChange"
+					/>
 					<div v-if="totalCount > 0" class="loan-count">
 						{{ totalCount }} loans
 					</div>
@@ -120,20 +70,17 @@ import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import { lightHeader, lightFooter } from '@/util/siteThemes';
+import { blueHeader, blueFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
 // import paginationMixin from '@/plugins/pagination-mixin';
+import CampaignHeader from '@/components/ContentGroups/CampaignHeader';
+import CampaignStatus from '@/components/ContentGroups/CampaignStatus';
 import InContextCheckout from '@/pages/LandingPages/CorporateCampaign/InContextCheckout';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
-import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-// import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
-// import KvLightbox from '@/components/Kv/KvLightbox';
 import KvPagination from '@/components/Kv/KvPagination';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
-import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
 	contentful {
@@ -311,14 +258,12 @@ function fromUrlParams(params) {
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
+		CampaignHeader,
+		CampaignStatus,
 		InContextCheckout,
 		WwwPageMinimal,
-		NoClickLoanCard,
 		LoanCardController,
 		KvLoadingOverlay,
-		// KvButton,
-		KvIcon,
-		// KvLightbox,
 		KvPagination,
 	},
 	mixins: [
@@ -346,8 +291,8 @@ export default {
 	data() {
 		return {
 			loansPerPage,
-			headerTheme: lightHeader,
-			footerTheme: lightFooter,
+			headerTheme: blueHeader,
+			footerTheme: blueFooter,
 			rawPageData: null,
 			pageData: null,
 			hasFreeCredits: null,
@@ -430,31 +375,6 @@ export default {
 		headerAreaContent() {
 			return this.pageData?.page?.contentGroups?.promoCampaignTestCg;
 		},
-		headerLogo() {
-			const mediaObject = this.headerAreaContent?.media?.[0];
-			if (mediaObject) {
-				return {
-					title: mediaObject.title,
-					url: mediaObject.file?.url
-				};
-			}
-			return {
-				title: '',
-				url: ''
-			};
-		},
-		headline() {
-			if (this.headerAreaContent) {
-				return this.headerAreaContent.contents[0].headline;
-			}
-			return '';
-		},
-		bodyCopy() {
-			if (this.headerAreaContent) {
-				return documentToHtmlString(this.headerAreaContent.contents[0].bodyCopy);
-			}
-			return '';
-		},
 		promoAmount() {
 			return this.promoData?.promoFund?.promoPrice ?? null;
 		},
@@ -478,7 +398,8 @@ export default {
 			return {
 				limit: this.limit,
 				offset: this.offset,
-				filters: this.filters
+				filters: this.filters,
+				promoOnly: { basketId: cookieStore.get('kvbskt') }
 			};
 		},
 		isActivelyLoggedIn() {
@@ -601,6 +522,7 @@ export default {
 				loanReservationTotal
 			} = this.basketTotals;
 
+			// TODO: Log or notify for any of the following conditions
 			if (numeral(donationTotal).value() > 0) {
 				return false;
 			}
@@ -609,6 +531,8 @@ export default {
 				return false;
 			}
 
+			// TODO: Refine and document narrow in-context checkout conditions
+			// TODO: Handle complex checkout scenarios
 			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()
 				|| numeral(itemTotal).value() !== numeral(loanReservationTotal).value()
 				|| numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
@@ -700,98 +624,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import 'settings';
-
-.campaign-header {
-	padding: 2rem 0 2rem;
-
-	@include breakpoint(large) {
-		padding: 4rem 0 2rem;
-	}
-
-	&__cta_wrapper {
-		padding: 0 0 2rem;
-
-		@include breakpoint(medium) {
-			padding: 0 2rem 2rem;
-		}
-
-		@include breakpoint(large) {
-			padding: 0 2rem;
-		}
-	}
-
-	&__logo {
-		image {
-			display: block;
-			outline: none;
-			width: 100%;
-		}
-	}
-
-	&__header {
-		@include large-text();
-
-		padding-top: 1rem;
-	}
-
-	&__body,
-	&__cta {
-		@include medium-text();
-
-		@include breakpoint(xlarge) {
-			@include featured-text();
-		}
-	}
-}
-
-.campaign-status {
-	padding: 2rem;
-
-	&__border {
-		min-height: 10rem;
-		position: relative;
-		border-radius: 1rem;
-		z-index: 1;
-		box-shadow: 0 0 1.2rem 1rem rgb(153, 153, 153, 0.1);
-		margin: 0 rem-calc(10);
-		padding: 1rem;
-
-		@include breakpoint(xga) {
-			margin: 0 auto;
-		}
-	}
-
-	&__validating-promo {
-		text-align: center;
-		width: 100%;
-
-		p {
-			position: relative;
-		}
-	}
-
-	&__error-text-container {
-		.icon-wrapper {
-			padding: 1rem 1rem 0.3rem;
-
-			.wrapper {
-				height: rem-calc(30);
-				width: rem-calc(30);
-
-				::v-deep .icon {
-					fill: $kiva-accent-red;
-				}
-			}
-		}
-	}
-
-	&__header {
-		font-weight: bold;
-		margin-top: rem-calc(20);
-	}
-}
 
 $card-width: rem-calc(290);
 $max-card-width: rem-calc(330);
@@ -800,6 +634,8 @@ $card-half-space: rem-calc(14/2);
 
 .campaign-loans {
 	position: relative;
+	background-color: rgba(0, 0, 0, 0.0125);
+	padding: 3rem 0;
 
 	.loan-card-group {
 		display: flex;
@@ -818,10 +654,6 @@ $card-half-space: rem-calc(14/2);
 	.loan-count {
 		text-align: center;
 	}
-
-	// .loading-loans {
-
-	// }
 }
 
 .basket-bar {
