@@ -57,7 +57,7 @@
 						:loan="loan"
 						loan-card-type="GridLoanCard"
 					/>
-					<loading-overlay v-if="loading" />
+					<kv-loading-overlay v-if="loading" />
 				</div>
 				<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
 				<div v-if="totalCount > 0" class="loan-count">
@@ -94,7 +94,7 @@ import KvPagination from '@/components/Kv/KvPagination';
 import ViewToggle from '@/components/LoansByCategory/ViewToggle';
 import AddToBasketInterstitial from '@/components/Lightboxes/AddToBasketInterstitial';
 import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
-import LoadingOverlay from './LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 const loansPerPage = 12;
 
@@ -142,7 +142,7 @@ export default {
 		WwwPage,
 		LoanCardController,
 		KvPagination,
-		LoadingOverlay,
+		KvLoadingOverlay,
 		ViewToggle,
 		AddToBasketInterstitial,
 		PromoGridLoanCard,

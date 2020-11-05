@@ -89,6 +89,8 @@ export default {
 				} else {
 					this.clientToken = _get(response, 'data.shop.getClientToken');
 					this.initializeDropIn();
+					// Replace our loader with the dropIn loader after a small delay
+					setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
 				}
 			});
 		},
@@ -147,7 +149,6 @@ export default {
 			}).then(btCreateInstance => {
 				this.btDropinInstance = btCreateInstance;
 				this.initializeDropInActions();
-				this.setUpdatingPaymentWrapper(false);
 			}).catch(btCreateError => {
 				console.error(btCreateError);
 				Sentry.withScope(scope => {

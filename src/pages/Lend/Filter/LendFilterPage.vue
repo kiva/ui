@@ -115,7 +115,7 @@ import AlgoliaTrackState from '@/pages/Lend/Filter/FilterComponents/AlgoliaTrack
 
 import cookieStore from '@/util/cookieStore';
 // TODO: Use this
-// import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+// import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import LendHeader from '@/pages/Lend/LendHeader';
 import KvMessage from '@/components/Kv/KvMessage';
@@ -129,7 +129,7 @@ export default {
 		KvMessage,
 		SelectedRefinements,
 		// TODO: Use this
-		// LoadingOverlay,
+		// KvLoadingOverlay,
 		WwwPage,
 		LendHeader,
 		LendFilterMenu,

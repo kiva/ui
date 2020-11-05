@@ -156,6 +156,9 @@
 				</kv-button>
 			</div>
 		</div>
+		<kv-loading-overlay
+			v-if="showLoadingOverlay"
+		/>
 	</form>
 </template>
 
@@ -171,6 +174,7 @@ import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvIcon from '@/components/Kv/KvIcon';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import userIdQuery from '@/graphql/query/userId.graphql';
 
@@ -184,6 +188,7 @@ export default {
 		KvCurrencyInput,
 		KvDropdownRounded,
 		KvIcon,
+		KvLoadingOverlay,
 	},
 	data() {
 		return {
@@ -195,6 +200,7 @@ export default {
 			donationOptionSelected: '15',
 			isDonationOptionsDirty: false,
 			isLoggedIn: false,
+			showLoadingOverlay: false,
 		};
 	},
 	mixins: [
@@ -304,10 +310,13 @@ export default {
 			}
 		},
 		completeADBraintree() {
+			this.showLoadingOverlay = true;
 			this.$kvTrackEvent('Registration', 'successful-auto-deposit-reg', 'register-auto-deposit');
 			// Send to thanks page
 			this.$router.push({
 				path: `${this.$route.path}/thanks`,
+			}).finally(() => {
+				this.showLoadingOverlay = false;
 			});
 		},
 	},
@@ -459,5 +468,10 @@ label:not(.error) + .text-input {
 .icon-pencil {
 	height: 1.25rem;
 	width: 1.25rem;
+}
+
+// Set z-index for loading overlay so that it is over drop in UI
+.loading-overlay {
+	z-index: 500;
 }
 </style>

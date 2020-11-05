@@ -74,7 +74,7 @@
 			</kv-button>
 		</div>
 
-		<loading-overlay
+		<kv-loading-overlay
 			v-if="showLoadingOverlay"
 		/>
 	</div>
@@ -87,7 +87,7 @@ import gql from 'graphql-tag';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
@@ -114,7 +114,7 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvLoadingSpinner,
-		LoadingOverlay,
+		KvLoadingOverlay,
 		SubscriptionsAutoDeposit,
 		SubscriptionsLegacy,
 		SubscriptionsMonthlyGood,

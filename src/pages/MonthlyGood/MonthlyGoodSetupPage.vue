@@ -1,261 +1,271 @@
 <template>
 	<www-page>
-		<div class="row align-center monthly-good-setup-page">
-			<div class="small-12 medium-11 large-10 column" v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription">
-				<h1 class="text-center impact-text">
-					Confirm your Good
-				</h1>
-				<h3 class="text-center featured-text" v-if="!isOnetime">
-					Review and set up your monthly contribution
-				</h3>
-				<form
-					class="monthly-good-form"
-					@submit.prevent="hasBillingAgreement ? submitMonthlyGood : null"
-					novalidate
+		<div class="monthly-good-setup-page">
+			<div class="row align-center ">
+				<div class="small-12 medium-11 large-10 column"
+					v-if="!isMonthlyGoodSubscriber && !hasLegacySubscription"
 				>
-					<div class="panel zigzag-bottom">
-						<div class="row align-center text-center">
-							<div class="medium-10 small-12 columns">
-								<div class="row column" v-if="!fromCovidLanding">
-									<strong>Each month on the</strong>
-									<label class="show-for-sr"
-										:class="{ 'error': $v.dayOfMonth.$invalid }"
-										:for="dayOfMonth"
-									>
-										Day of the Month
-									</label>
-									<input v-if="isDayInputShown"
-										@blur="hideDayInput()"
-										class="text-input__day"
-										id="dayOfMonth"
-										type="number"
-										placeholder=""
-										required
-										min="1"
-										max="31"
-										v-model.number="dayOfMonth"
-									>
-									<button
-										class="button--ordinal-day"
-										@click="isDayInputShown = true"
-										v-if="!isDayInputShown"
-									>
-										<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-										<kv-icon class="icon-pencil" name="pencil" title="Edit" />
-									</button>
-									<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
-										<li v-if="!$v.dayOfMonth.required">
-											Field is required
-										</li>
-										<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
-											Enter day of month - 1 to 31
-										</li>
-									</ul>
-									<div class="additional-day-info">
-										<strong>we'll process the following:</strong>
-										<small v-if="dayOfMonth > 28">
-											(note - may be processed on the last day of the month)</small>
-									</div>
-								</div>
-
-								<div class="row text-left align-middle">
-									<div class="columns">
-										<span class="additional-left-pad-spans strong">
-											Deposit for lending
-										</span>
-									</div>
-
-									<div class="medium-5 small-6 columns">
-										<label
-											class="show-for-sr"
-											:class="{ 'error': $v.mgAmount.$invalid }"
-											for="amount"
+					<h1 class="text-center impact-text">
+						Confirm your Good
+					</h1>
+					<h3 class="text-center featured-text" v-if="!isOnetime">
+						Review and set up your monthly contribution
+					</h3>
+					<form
+						class="monthly-good-form"
+						@submit.prevent="hasBillingAgreement ? submitMonthlyGood : null"
+						novalidate
+					>
+						<div class="panel zigzag-bottom">
+							<div class="row align-center text-center">
+								<div class="medium-10 small-12 columns">
+									<div class="row column" v-if="!fromCovidLanding">
+										<strong>Each month on the</strong>
+										<label class="show-for-sr"
+											:class="{ 'error': $v.dayOfMonth.$invalid }"
+											:for="dayOfMonth"
 										>
-											Amount
+											Day of the Month
 										</label>
-										<kv-currency-input class="text-input" id="amount" v-model="mgAmount" />
-									</div>
-
-									<div class="small-12 columns">
-										<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
-											<li v-if="!$v.mgAmount.required">
+										<input v-if="isDayInputShown"
+											@blur="hideDayInput()"
+											class="text-input__day"
+											id="dayOfMonth"
+											type="number"
+											placeholder=""
+											required
+											min="1"
+											max="31"
+											v-model.number="dayOfMonth"
+										>
+										<button
+											class="button--ordinal-day"
+											@click="isDayInputShown = true"
+											v-if="!isDayInputShown"
+										>
+											<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+											<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+										</button>
+										<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
+											<li v-if="!$v.dayOfMonth.required">
 												Field is required
 											</li>
-											<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
-												Enter an amount of $5-$10,000
+											<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
+												Enter day of month - 1 to 31
 											</li>
 										</ul>
-									</div>
-								</div>
-
-								<div class="row text-left align-middle">
-									<div class="columns">
-										<kv-checkbox
-											id="donation-checkbox"
-											v-model="donationCheckbox"
-											@change="donationCheckboxChange()"
-										/>
-										<div class="additional-left-pad-spans display-inline-block">
-											<span class="strong">
-												Monthly donation to Kiva (optional)
-											</span>
-											<div class="small-text" v-if="isMGTaglineActive">
-												<!-- eslint-disable-next-line max-len -->
-												Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.
-											</div>
+										<div class="additional-day-info">
+											<strong>we'll process the following:</strong>
+											<small v-if="dayOfMonth > 28">
+												(note - may be processed on the last day of the month)</small>
 										</div>
 									</div>
 
-									<div class="medium-5 small-6 columns">
-										<label
-											class="show-for-sr"
-											:class="{ 'error': $v.donation.$invalid }"
-											for="donation"
-										>
-											Donation
-										</label>
-										<kv-dropdown-rounded
-											class="donation-dropdown"
-											v-model="donationOptionSelected"
-											v-if="donationOptionSelected !== 'other'"
-										>
-											<option
-												v-for="(option, index) in dropdownOptions"
-												:value="option.value"
-												:key="index"
+									<div class="row text-left align-middle">
+										<div class="columns">
+											<span class="additional-left-pad-spans strong">
+												Deposit for lending
+											</span>
+										</div>
+
+										<div class="medium-5 small-6 columns">
+											<label
+												class="show-for-sr"
+												:class="{ 'error': $v.mgAmount.$invalid }"
+												for="amount"
 											>
-												{{ option.label }}
-											</option>
-										</kv-dropdown-rounded>
-										<kv-currency-input
-											class="text-input"
-											id="donation"
-											v-model="donation"
-											v-if="donationOptionSelected === 'other'"
-										/>
+												Amount
+											</label>
+											<kv-currency-input class="text-input" id="amount" v-model="mgAmount" />
+										</div>
+
+										<div class="small-12 columns">
+											<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
+												<li v-if="!$v.mgAmount.required">
+													Field is required
+												</li>
+												<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
+													Enter an amount of $5-$10,000
+												</li>
+											</ul>
+										</div>
 									</div>
 
-									<div class="small-12 columns">
-										<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
-											<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
-												Enter an amount of $0-$10,000
-											</li>
-										</ul>
-									</div>
-								</div>
+									<div class="row text-left align-middle">
+										<div class="columns">
+											<kv-checkbox
+												id="donation-checkbox"
+												v-model="donationCheckbox"
+												@change="donationCheckboxChange()"
+											/>
+											<div class="additional-left-pad-spans display-inline-block">
+												<span class="strong">
+													Monthly donation to Kiva (optional)
+												</span>
+												<div class="small-text" v-if="isMGTaglineActive">
+													<!-- eslint-disable-next-line max-len -->
+													Every $25 loan costs more than $3 to facilitate, and our generous supporters are donating $1 for every $3 you donate.
+												</div>
+											</div>
+										</div>
 
-								<div class="row text-left">
-									<div class="columns">
-										<strong v-if="!onetime" class="additional-left-pad-spans">Total/month</strong>
-										<strong v-else class="additional-left-pad-spans">Total</strong>
-									</div>
-
-									<div class="medium-5 small-6 columns">
-										<strong
-											class="additional-left-pad-currency"
-										>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
-									</div>
-
-									<div class="small-12 columns">
-										<ul class="text-center validation-errors"
-											v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
-										>
-											<li>
-												The maximum Monthly Good total is $10,000.<br>
-												Please try again by entering in a smaller amount.
-											</li>
-										</ul>
-									</div>
-								</div>
-
-								<div class="row text-left" v-if="!fromCovidLanding">
-									<div class="small-12 columns">
-										<div class="additional-left-pad-spans">
-											Select a category to focus your lending
-											<kv-dropdown-rounded v-model="selectedGroup" class="group-dropdown">
+										<div class="medium-5 small-6 columns">
+											<label
+												class="show-for-sr"
+												:class="{ 'error': $v.donation.$invalid }"
+												for="donation"
+											>
+												Donation
+											</label>
+											<kv-dropdown-rounded
+												class="donation-dropdown"
+												v-model="donationOptionSelected"
+												v-if="donationOptionSelected !== 'other'"
+											>
 												<option
-													v-for="(option, index) in lendingCategories"
+													v-for="(option, index) in dropdownOptions"
 													:value="option.value"
 													:key="index"
 												>
 													{{ option.label }}
 												</option>
 											</kv-dropdown-rounded>
+											<kv-currency-input
+												class="text-input"
+												id="donation"
+												v-model="donation"
+												v-if="donationOptionSelected === 'other'"
+											/>
+										</div>
+
+										<div class="small-12 columns">
+											<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
+												<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
+													Enter an amount of $0-$10,000
+												</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="row text-left">
+										<div class="columns">
+											<strong v-if="!onetime"
+												class="additional-left-pad-spans"
+											>Total/month</strong>
+											<strong v-else class="additional-left-pad-spans">Total</strong>
+										</div>
+
+										<div class="medium-5 small-6 columns">
+											<strong
+												class="additional-left-pad-currency"
+											>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
+										</div>
+
+										<div class="small-12 columns">
+											<ul class="text-center validation-errors"
+												v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+											>
+												<li>
+													The maximum Monthly Good total is $10,000.<br>
+													Please try again by entering in a smaller amount.
+												</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="row text-left" v-if="!fromCovidLanding">
+										<div class="small-12 columns">
+											<div class="additional-left-pad-spans">
+												Select a category to focus your lending
+												<kv-dropdown-rounded v-model="selectedGroup" class="group-dropdown">
+													<option
+														v-for="(option, index) in lendingCategories"
+														:value="option.value"
+														:key="index"
+													>
+														{{ option.label }}
+													</option>
+												</kv-dropdown-rounded>
+											</div>
+										</div>
+									</div>
+
+									<div class="row small-collapse" v-if="!isOnetime">
+										<div class="small-12 columns">
+											<em class="text-center">Rest easy, you can cancel anytime.</em>
 										</div>
 									</div>
 								</div>
+							</div>
+						</div>
+						<div class="row align-center text-center">
+							<div class="large-9 medium-10 small-12 columns">
+								<p>
+									<!-- eslint-disable-next-line max-len -->
+									<strong><em>We'll charge your {{ !showDropInPayments ? 'PayPal' : '' }} account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
+								</p>
+								<p v-if="hasAutoDeposits">
+									<!-- eslint-disable-next-line max-len -->
+									<em>* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution will replace your existing auto deposit.</em>
+								</p>
+								<p v-if="hasAutoLending">
+									<!-- eslint-disable-next-line max-len -->
+									<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
+								</p>
+								<div v-if="hasBillingAgreement && !showDropInPayments">
+									<kv-button
+										type="submit"
+										data-test="confirm-monthly-good-button"
+										class="smaller"
+										:disabled="$v.$invalid || submitting"
+										@click.native="submitMonthlyGood()"
+									>
+										Confirm <kv-loading-spinner v-if="submitting" />
+									</kv-button>
+									<p>
+										<!-- eslint-disable-next-line max-len -->
+										<em>We'll charge your PayPal account for your {{ isOnetime ? 'Contribution' : 'Monthly Good' }}</em>
+									</p>
+								</div>
 
-								<div class="row small-collapse" v-if="!isOnetime">
-									<div class="small-12 columns">
-										<em class="text-center">Rest easy, you can cancel anytime.</em>
-									</div>
+								<div class="payment-dropin-wrapper" v-if="showDropInPayments">
+									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+									<monthly-good-drop-in-payment-wrapper
+										:amount="totalCombinedDeposit"
+										:donate-amount="donation"
+										:day-of-month="dayOfMonth"
+										:category="selectedGroup"
+										:is-one-time="isOnetime"
+										@complete-transaction="completeMGBraintree"
+									/>
+								</div>
+
+								<div class="payment-dropin-wrapper" v-if="!hasBillingAgreement && !showDropInPayments">
+									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
+									<pay-pal-mg
+										v-if="!showDropInPayments"
+										:amount="totalCombinedDeposit"
+										@complete-transaction="submitMonthlyGood"
+									/>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row align-center text-center">
-						<div class="large-9 medium-10 small-12 columns">
-							<p>
-								<!-- eslint-disable-next-line max-len -->
-								<strong><em>We'll charge your {{ !showDropInPayments ? 'PayPal' : '' }} account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
-							</p>
-							<p v-if="hasAutoDeposits">
-								<!-- eslint-disable-next-line max-len -->
-								<em>* Your {{ isOnetime ? '' : 'new Monthly Good ' }}contribution will replace your existing auto deposit.</em>
-							</p>
-							<p v-if="hasAutoLending">
-								<!-- eslint-disable-next-line max-len -->
-								<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
-							</p>
-							<div v-if="hasBillingAgreement && !showDropInPayments">
-								<kv-button
-									type="submit"
-									data-test="confirm-monthly-good-button"
-									class="smaller"
-									:disabled="$v.$invalid || submitting"
-									@click.native="submitMonthlyGood()"
-								>
-									Confirm <kv-loading-spinner v-if="submitting" />
-								</kv-button>
-								<p>
-									<!-- eslint-disable-next-line max-len -->
-									<em>We'll charge your PayPal account for your {{ isOnetime ? 'Contribution' : 'Monthly Good' }}</em>
-								</p>
-							</div>
-
-							<div class="payment-dropin-wrapper" v-if="showDropInPayments">
-								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
-								<monthly-good-drop-in-payment-wrapper
-									:amount="totalCombinedDeposit"
-									:donate-amount="donation"
-									:day-of-month="dayOfMonth"
-									:category="selectedGroup"
-									:is-one-time="isOnetime"
-									@complete-transaction="completeMGBraintree"
-								/>
-							</div>
-
-							<div class="payment-dropin-wrapper" v-if="!hasBillingAgreement && !showDropInPayments">
-								<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
-								<pay-pal-mg
-									v-if="!showDropInPayments"
-									:amount="totalCombinedDeposit"
-									@complete-transaction="submitMonthlyGood"
-								/>
-							</div>
-						</div>
-					</div>
-				</form>
+					</form>
+				</div>
+				<already-subscribed-notice
+					class="small-12 medium-11 large-8 column"
+					v-if="isMonthlyGoodSubscriber"
+					:onetime="isOnetime"
+				/>
+				<legacy-subscriber-notice
+					class="small-12 medium-11 large-8 column"
+					:legacy-subscriptions="legacySubs"
+					v-if="hasLegacySubscription"
+				/>
 			</div>
-			<already-subscribed-notice
-				class="small-12 medium-11 large-8 column"
-				v-if="isMonthlyGoodSubscriber"
-				:onetime="isOnetime"
-			/>
-			<legacy-subscriber-notice
-				class="small-12 medium-11 large-8 column"
-				:legacy-subscriptions="legacySubs"
-				v-if="hasLegacySubscription"
+
+			<kv-loading-overlay
+				v-if="showLoadingOverlay"
 			/>
 		</div>
 	</www-page>
@@ -275,6 +285,7 @@ import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
 import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import WwwPage from '@/components/WwwFrame/WwwPage';
@@ -362,6 +373,7 @@ export default {
 		KvCurrencyInput,
 		KvDropdownRounded,
 		KvIcon,
+		KvLoadingOverlay,
 		KvLoadingSpinner,
 		LegacySubscriberNotice,
 		MonthlyGoodDropInPaymentWrapper,
@@ -381,6 +393,7 @@ export default {
 			submitting: false,
 			legacySubs: [],
 			showDropInPayments: true,
+			showLoadingOverlay: false,
 			// user flags
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
@@ -527,6 +540,7 @@ export default {
 			}
 		},
 		completeMGBraintree(paymentType) {
+			this.showLoadingOverlay = true;
 			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
 			// Send to thanks page
 			this.$router.push({
@@ -536,6 +550,8 @@ export default {
 					source: this.source,
 					paymentType: paymentType || 'UnknownBraintree',
 				}
+			}).finally(() => {
+				this.showLoadingOverlay = false;
 			});
 		},
 		submitMonthlyGood() {
@@ -654,7 +670,8 @@ export default {
 @import 'settings';
 
 .monthly-good-setup-page {
-	margin: 2rem auto 2rem;
+	position: relative;
+	padding: 2rem 0 2rem;
 
 	h1 { color: $kiva-green; }
 
@@ -787,5 +804,10 @@ export default {
 		background: rgba(255, 255, 255, 0.8);
 		z-index: 10000;
 	}
+}
+
+// Set z-index for loading overlay so that it is over drop in UI
+.loading-overlay {
+	z-index: 500;
 }
 </style>
