@@ -97,6 +97,10 @@ export default {
 	&[disabled] {
 		@include button-disabled();
 	}
+
+	&.expanded {
+		width: 100%;
+	}
 }
 
 .text-link {

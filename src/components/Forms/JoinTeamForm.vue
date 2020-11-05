@@ -21,7 +21,7 @@
 			<p v-if="showError" class="error">
 				Oh no! Something went wrong! Please try again or <a :href="doneUrl">leave and come back later</a>
 			</p>
-			<loading-overlay id="loading-overlay-teams" v-if="loading" />
+			<kv-loading-overlay id="loading-overlay-teams" v-if="loading" />
 		</div>
 		<div v-if="showSuccess">
 			<div v-if="isMember">
@@ -50,12 +50,12 @@ import TeamInfoFromId from '@/graphql/query/teamInfoFromId.graphql';
 import joinTeam from '@/graphql/mutation/joinTeam.graphql';
 import myTeamsQuery from '@/graphql/query/myTeams.graphql';
 import createTeamRecruitment from '@/graphql/mutation/createTeamRecruitment.graphql';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 export default {
 	components: {
 		KvButton,
-		LoadingOverlay,
+		KvLoadingOverlay,
 	},
 	inject: ['apollo'],
 	apollo: {

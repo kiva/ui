@@ -148,6 +148,7 @@
 						'Lending',
 						'click-Read full borrower details',
 						'Profile Link',
+						loan.id,
 						loan.id
 					]"
 				>

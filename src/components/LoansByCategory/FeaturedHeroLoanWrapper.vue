@@ -26,7 +26,7 @@
 				:position="1"
 				:row-number="0"
 			/>
-			<loading-overlay v-if="loading" id="updating-overlay" />
+			<kv-loading-overlay v-if="loading" id="updating-overlay" />
 		</div>
 	</div>
 </template>
@@ -38,7 +38,7 @@ import gql from 'graphql-tag';
 
 import featuredLoansQuery from '@/graphql/query/featuredLoansData.graphql';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import logReadQueryError from '@/util/logReadQueryError';
 import { isLoanFundraising } from '@/util/loanUtils';
 
@@ -57,7 +57,7 @@ const pageQuery = gql`query featuredLoanHero {
 export default {
 	components: {
 		LoanCardController,
-		LoadingOverlay,
+		KvLoadingOverlay,
 	},
 	inject: ['apollo'],
 	props: {

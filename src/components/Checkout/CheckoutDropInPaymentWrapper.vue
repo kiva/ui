@@ -156,6 +156,7 @@ export default {
 						'basket',
 						`${paymentType} Braintree DropIn Payment`,
 						'Success',
+						transactionId,
 						transactionId
 					);
 					// Complete transaction handles additional analytics + redirect

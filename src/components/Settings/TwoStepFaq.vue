@@ -1,45 +1,41 @@
 <template>
-	<div>
-		<kv-settings-card>
-			<template v-slot:content>
-				<h2 class="faq-header">
-					Level up your security with 2-step verfication
-				</h2>
-				<p>
-					2-step verification protects your Kiva account by requiring an
-					additional code when you log in on a device we don't recognize.
-				</p>
-				<h3 class="faq-sub-header">
-					FAQ
-				</h3>
-				<ul class="faq-list">
-					<li>
-						<kv-button
-							class="text-link"
-							@click="triggerWhatIsLightbox"
-						>
-							What is 2-step Verification?
-						</kv-button>
-					</li>
-					<li>
-						<kv-button
-							class="text-link"
-							@click="triggerHowItWorksLightbox"
-						>
-							How does it work?
-						</kv-button>
-					</li>
-					<li>
-						<kv-button
-							class="text-link"
-							@click="triggerHowItProtectsLightbox"
-						>
-							How it protects you?
-						</kv-button>
-					</li>
-				</ul>
-			</template>
-		</kv-settings-card>
+	<div class="faq">
+		<h2 class="h3 strong">
+			Level up your security with 2-step verfication
+		</h2>
+		<p>
+			2-step verification protects your Kiva account by requiring an
+			additional code when you log in on a device we don't recognize.
+		</p>
+		<h3 class="strong">
+			FAQ
+		</h3>
+		<ul class="faq-list">
+			<li>
+				<kv-button
+					class="text-link"
+					@click="triggerWhatIsLightbox"
+				>
+					What is 2-step Verification?
+				</kv-button>
+			</li>
+			<li>
+				<kv-button
+					class="text-link"
+					@click="triggerHowItWorksLightbox"
+				>
+					How does it work?
+				</kv-button>
+			</li>
+			<li>
+				<kv-button
+					class="text-link"
+					@click="triggerHowItProtectsLightbox"
+				>
+					How it protects you?
+				</kv-button>
+			</li>
+		</ul>
 		<kv-lightbox
 			:visible="whatIsLbVisible"
 			@lightbox-closed="lightboxClosed"
@@ -78,12 +74,10 @@
 </template>
 
 <script>
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
-		KvSettingsCard,
 		KvLightbox,
 	},
 	data() {
@@ -115,17 +109,13 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.faq-header {
-	font-size: 1.125rem;
-	font-weight: bold;
-}
-
-.faq-sub-header {
-	font-weight: bold;
+.faq {
+	background: $white;
+	padding: 1.95rem; // same as KvSettingsCard
 }
 
 .faq-list {
 	list-style-type: none;
-	margin-left: 0;
+	margin: 0;
 }
 </style>

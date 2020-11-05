@@ -10,7 +10,7 @@
 			/>
 		</template>
 		<template v-slot:content>
-			<h3>
+			<h3 class="strong">
 				Status:
 				<span :class="`mfa-${MFAStatus}`">{{ MFAStatus }}</span>
 			</h3>
@@ -20,7 +20,7 @@
 				<span class="strong">both your password and an authenication code from your mobile phone</span>
 				in order to access your account.
 			</p>
-			<kv-button class="secondary smallest">
+			<kv-button class="smallest">
 				Manage 2-step verification
 			</kv-button>
 		</template>

@@ -153,6 +153,7 @@ export default {
 								'Update Loan Amount',
 								updatedPrice === 0 ? 'Loan Removed' : 'Update Success',
 								// pass updated loan amount as whole number
+								numeral(updatedPrice).value(),
 								numeral(updatedPrice).value()
 							);
 							this.$emit('refreshtotals', this.changeType === 'remove' ? 'removeLoan' : '');

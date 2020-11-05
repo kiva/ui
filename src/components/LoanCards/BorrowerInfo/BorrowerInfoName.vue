@@ -6,7 +6,7 @@
 			data.class,
 			data.staticClass,
 		]"
-		v-kv-track-event="['Lending', 'click-Read more', 'Name', props.loanId, 'true']"
+		v-kv-track-event="['Lending', 'click-Read more', 'Name', props.loanId, props.loanId]"
 	>
 		<span
 			@click="listeners['track-loan-card-interaction']({

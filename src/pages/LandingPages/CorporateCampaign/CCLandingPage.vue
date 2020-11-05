@@ -39,7 +39,7 @@
 					</div>
 				</div>
 				<div v-if="loadingLoans" class="campaign-loans__loading-loans">
-					<loading-overlay />
+					<kv-loading-overlay />
 					<p>Loading loans...</p>
 				</div>
 			</section>
@@ -78,7 +78,7 @@ import CampaignStatus from '@/components/ContentGroups/CampaignStatus';
 import InContextCheckout from '@/pages/LandingPages/CorporateCampaign/InContextCheckout';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import LoadingOverlay from '@/pages/Lend/LoadingOverlay';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 
@@ -263,7 +263,7 @@ export default {
 		InContextCheckout,
 		WwwPageMinimal,
 		LoanCardController,
-		LoadingOverlay,
+		KvLoadingOverlay,
 		KvPagination,
 	},
 	mixins: [

@@ -207,7 +207,8 @@ export default {
 		margin-bottom: 1.5rem;
 		padding: 1.95rem 1.95rem 1.375rem;
 
-		&:hover {
+		&:hover,
+		&:focus {
 			text-decoration: none;
 
 			.section__title {

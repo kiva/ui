@@ -11,7 +11,7 @@
 		<!-- Monthly Good Settings -->
 		<subscriptions-monthly-good
 			v-if="!isOnetime"
-			@cancel-subscription="showConfirmationPrompt('Monthly Good')"
+			@cancel-subscription="cancelSubscription"
 			@unsaved-changes="setUnsavedChanges"
 			ref="subscriptionsMonthlyGoodComponent"
 		/>
@@ -73,6 +73,10 @@
 				Saving <kv-loading-spinner />
 			</kv-button>
 		</div>
+
+		<kv-loading-overlay
+			v-if="showLoadingOverlay"
+		/>
 	</div>
 </template>
 
@@ -83,6 +87,7 @@ import gql from 'graphql-tag';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
+import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 
 import SubscriptionsMonthlyGood from './SubscriptionsMonthlyGood';
 import SubscriptionsOneTime from './SubscriptionsOneTime';
@@ -109,10 +114,11 @@ export default {
 		KvButton,
 		KvLightbox,
 		KvLoadingSpinner,
+		KvLoadingOverlay,
 		SubscriptionsAutoDeposit,
+		SubscriptionsLegacy,
 		SubscriptionsMonthlyGood,
 		SubscriptionsOneTime,
-		SubscriptionsLegacy,
 	},
 	inject: ['apollo'],
 	data() {
@@ -122,6 +128,7 @@ export default {
 			isOnetime: false,
 			confirmationText: '',
 			showLightbox: false,
+			showLoadingOverlay: false,
 		};
 	},
 	apollo: {
@@ -146,6 +153,7 @@ export default {
 			this.isChanged = state;
 		},
 		cancelSubscription() {
+			this.showLoadingOverlay = true;
 			this.apollo.mutate({
 				mutation: gql`mutation cancelAutoDeposit { my { cancelAutoDeposit } }`,
 				awaitRefetchQueries: true,
@@ -160,6 +168,7 @@ export default {
 				this.$showTipMsg('There was a problem cancelling your subscription', 'error');
 			}).finally(() => {
 				this.showLightbox = false;
+				this.showLoadingOverlay = false;
 			});
 		},
 		showConfirmationPrompt(confirmationText) {
@@ -222,6 +231,7 @@ export default {
 }
 
 .subscriptions-settings-page {
+	position: relative;
 	padding-bottom: 5rem;
 }
 </style>

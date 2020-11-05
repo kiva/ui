@@ -55,7 +55,7 @@
 					{{ loanUse }}
 					<router-link class="rec-loan-card__learn-more"
 						:to="`/lend/${loanId}`"
-						v-kv-track-event="['Lending', 'click-Read more', 'loan-use-learn-more', loanId, 'true']"
+						v-kv-track-event="['Lending', 'click-Read more', 'loan-use-learn-more', loanId, loanId]"
 					>
 						Learn more &rarr;
 					</router-link>
