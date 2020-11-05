@@ -27,7 +27,7 @@
 		</div>
 		<!-- eslint-disable max-len -->
 		<kv-button
-			:href="`/my/borrower/minimum-eligibility?refid=${trusteeId}`"
+			:href="`https://kivaportal.force.com/portal/secur/CommunitiesSelfRegUi?startURL=%2Fportal%2Fs%2F%3Fref%3Dbam%26refid%3D${trusteeId}`"
 			class="cta-btn"
 		>
 			I understand, let’s create an account
