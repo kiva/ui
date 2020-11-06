@@ -79,7 +79,6 @@ export default {
 @import 'settings';
 
 .campaign-header {
-	max-width: inherit;
 	padding: 2rem 0 2rem;
 
 	@include breakpoint(large) {

@@ -13,48 +13,33 @@
 				:promo-amount="promoAmount"
 			/>
 
-			<!-- TODO: Move to own component -->
-			<section class="campaign-loans row align-center">
-				<div class="columns small-12" v-if="loans.length > 0">
-					<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
-						<loan-card-controller
-							v-for="loan in loans"
-							class="cards-loan-card"
-							:items-in-basket="itemsInBasket"
-							:is-visitor="isVisitor"
-							:key="loan.id"
-							:loan="loan"
-							loan-card-type="LendHomepageLoanCard"
-							@add-to-basket="addToBasket"
-						/>
-					</div>
-					<kv-pagination
-						v-if="totalCount > 0"
-						:total="totalCount"
-						:limit="limit"
-						@page-change="pageChange"
+			<campaign-loan-display
+				id="campaignLoanDisplay"
+				ref="loandisplayref"
+				:checkout-visible="checkoutVisible || showThanks"
+				:filters="filters"
+				:is-visitor="isVisitor"
+				:items-in-basket="itemsInBasket"
+				@add-to-basket="addToBasket"
+			/>
+
+			<section v-if="checkoutVisible" class="campaign-checkout section row align-center">
+				<div class="small-12 large-8 align-self-middle columns">
+					<in-context-checkout
+						:is-actively-logged-in="isActivelyLoggedIn"
+						:loans="basketLoans"
+						:donations="donations"
+						:kiva-cards="kivaCards"
+						:totals="basketTotals"
+						:show-donation="false"
+						:auto-redirect-to-thanks="false"
+						@transaction-complete="transactionComplete"
 					/>
-					<div v-if="totalCount > 0" class="loan-count">
-						{{ totalCount }} loans
-					</div>
-				</div>
-				<div v-if="loadingLoans" class="campaign-loans__loading-loans">
-					<kv-loading-overlay />
-					<p>Loading loans...</p>
 				</div>
 			</section>
 
-			<section class="campaign-checkout row align-center">
-				<in-context-checkout
-					:is-actively-logged-in="isActivelyLoggedIn"
-					:loans="basketLoans"
-					:donations="donations"
-					:kiva-cards="kivaCards"
-					:totals="basketTotals"
-					:lightbox-closed="checkoutLightboxVisible"
-					@complete-checkout="completeCheckout"
-					@lightbox-closed="checkoutLightboxClosed"
-				/>
+			<section v-if="showThanks" class="campaign-thanks section row align-center">
+				<campaign-thanks :transaction-id="transactionId" />
 			</section>
 		</div>
 	</www-page-minimal>
@@ -62,11 +47,7 @@
 
 <script>
 import gql from 'graphql-tag';
-import _invokeMap from 'lodash/invokeMap';
-import _mapValues from 'lodash/mapValues';
-import _merge from 'lodash/merge';
 import numeral from 'numeral';
-import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
@@ -75,11 +56,11 @@ import cookieStore from '@/util/cookieStore';
 // import paginationMixin from '@/plugins/pagination-mixin';
 import CampaignHeader from '@/components/ContentGroups/CampaignHeader';
 import CampaignStatus from '@/components/ContentGroups/CampaignStatus';
-import InContextCheckout from '@/pages/LandingPages/CorporateCampaign/InContextCheckout';
+import CampaignLoanDisplay from '@/components/ContentGroups/CampaignLoanDisplay';
+import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
+import CampaignThanks from '@/components/ContentGroups/CampaignThanks';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
-import LoanCardController from '@/components/LoanCards/LoanCardController';
-import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
-import KvPagination from '@/components/Kv/KvPagination';
+// import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 
 const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String) {
@@ -226,45 +207,15 @@ const basketItemsQuery = gql`query basketItemsQuery(
 	}
 }`;
 
-const loansPerPage = 9;
-
-// A map of functions to transform url query parameters to/from graphql variables.
-// Each key in urlParamTransform is a url query parameter (e.g. the 'page' in ?page=2).
-// Each value is then an object with the to/from functions to write/read the url parameter.
-const urlParamTransform = {
-	page: {
-		to({ offset }) {
-			const page = Math.floor(offset / loansPerPage) + 1;
-			return page > 1 ? String(page) : undefined;
-		},
-		from({ page }) {
-			const pagenum = Number(page) - 1;
-			return { offset: pagenum > 0 ? loansPerPage * pagenum : 0 };
-		}
-	},
-};
-
-// Turn an object of graphql variables into an object of url query parameters
-function toUrlParams(variables) {
-	const loMap = _mapValues(urlParamTransform, ({ to }) => to(variables));
-	return loMap;
-}
-
-// Turn an object of url query parameters into an object of graphql variables
-function fromUrlParams(params) {
-	return _merge({}, ..._invokeMap(urlParamTransform, 'from', params));
-}
-
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
 		CampaignHeader,
+		CampaignLoanDisplay,
 		CampaignStatus,
+		CampaignThanks,
 		InContextCheckout,
 		WwwPageMinimal,
-		LoanCardController,
-		KvLoadingOverlay,
-		KvPagination,
 	},
 	mixins: [
 		checkoutUtils
@@ -290,7 +241,6 @@ export default {
 	},
 	data() {
 		return {
-			loansPerPage,
 			headerTheme: blueHeader,
 			footerTheme: blueFooter,
 			rawPageData: null,
@@ -306,7 +256,7 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loadingPromotion: false,
-			loadingLoans: false,
+			// loadingLoans: false,
 			loans: [],
 			basketTotals: {},
 			basketLoans: [],
@@ -316,9 +266,10 @@ export default {
 			itemsInBasket: [],
 			isVisitor: true,
 			offset: 0,
-			limit: loansPerPage,
 			pageQuery: { page: '1' },
-			checkoutLightboxVisible: false,
+			checkoutVisible: false,
+			showThanks: false,
+			transactionId: null,
 		};
 	},
 	metaInfo() {
@@ -379,28 +330,8 @@ export default {
 			return this.promoData?.promoFund?.promoPrice ?? null;
 		},
 		filters() {
-			const filters = this.promoData.managedAccount?.loanSearchCriteria?.filters ?? {};
+			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
 			return getSearchableFilters(filters);
-		},
-		urlParams() {
-			return toUrlParams({
-				offset: this.offset,
-			});
-		},
-		lastLoanPage() {
-			return Math.ceil(this.totalCount / this.limit);
-		},
-		loanIds() {
-			// return this.loans.length ? this.loans.map(loan => loan.id) : [];
-			return this.loans.map(loan => loan.id) || [];
-		},
-		loanQueryVars() {
-			return {
-				limit: this.limit,
-				offset: this.offset,
-				filters: this.filters,
-				promoOnly: { basketId: cookieStore.get('kvbskt') }
-			};
 		},
 		isActivelyLoggedIn() {
 			const lastLogin = (parseInt(this.lastActiveLogin, 10)) || 0;
@@ -443,7 +374,8 @@ export default {
 			// TEMPORARY Handling for patched in basket credits
 			// TODO Extract as utility to get promo id from basket credits
 			basketItems.then(({ data }) => {
-				console.log(data);
+				// console.log(data);
+				// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
 
 				if (typeof data.shop === 'undefined') {
 					console.error('missing shop basket');
@@ -461,33 +393,9 @@ export default {
 				// TODO Handle response and any potential errors
 				this.promoData = response.data?.shop?.promoCampaign;
 				// Initialize loan query + observer
-				this.activateLoanWatchQuery();
+				// this.activateLoanWatchQuery();
+				this.$refs.loandisplayref.activateLoanWatchQuery();
 				this.updateBasketState();
-			});
-		},
-		activateLoanWatchQuery() {
-			const observer = this.apollo.watchQuery({
-				query: basicLoanQuery,
-				variables: this.loanQueryVars
-			});
-			this.$watch(() => this.loanQueryVars, vars => {
-				observer.setVariables(vars);
-			}, { deep: true });
-			// Subscribe to the observer to see each result
-			observer.subscribe({
-				next: ({ data, loading }) => {
-					if (loading) {
-						this.loadingLoans = true;
-					} else {
-						this.loans = data.lend?.loans?.values ?? [];
-						this.totalCount = data.lend?.loans?.totalCount ?? 0;
-						const basketItems = data.shop?.basket?.items?.values ?? [];
-						this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
-						// console.log(this.loans.length, this.pageQuery.page);
-						this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
-						this.loadingLoans = false;
-					}
-				}
 			});
 		},
 		addToBasket() {
@@ -505,10 +413,12 @@ export default {
 			basketItems.then(({ data }) => {
 				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
 				this.validatePromoBasketState(data);
+				const basketItemValues = data.shop?.basket?.items?.values ?? [];
+				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
 			});
 		},
 		validatePromoBasketState(basketState) {
-			console.log(basketState);
+			// console.log(basketState);
 			// TEMPORARY Simplified Validation
 			this.basketTotals = basketState.shop?.basket?.totals ?? {};
 			// Check number of items 1
@@ -556,19 +466,19 @@ export default {
 					}
 					// Present OVERLAY checkout completion option if baseline
 					// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
-					this.checkoutLightboxVisible = true;
+					this.checkoutVisible = true;
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 					return false;
 				});
 		},
-		checkoutLightboxClosed(context) {
-			console.log('checkout lightbox closed', context);
-			this.checkoutLightboxVisible = false;
-		},
-		completeCheckout() {
-			console.log('checkout');
+
+		transactionComplete(payload) {
+			// console.log('transaction complete', payload);
+			this.transactionId = payload.transactionId;
+			this.checkoutVisible = false;
+			this.showThanks = true;
 		},
 
 		setAuthStatus(userState) {
@@ -576,49 +486,15 @@ export default {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'] || 0;
 				this.myId = userState['https://www.kiva.org/kiva_id'] || null;
 			}
-			// covers popup login
-			// this.logBasketState();
-		},
-
-		// Pagination Related methods
-		checkIfPageIsOutOfRange(loansArrayLength, pageQueryParam) {
-			// determines if the page query param is for a page that is out of bounds.
-			// if it is, changes page to the last page and displays a tip message
-			const loansOutOfRange = loansArrayLength === 0 && pageQueryParam;
-			if (loansOutOfRange) {
-				// eslint-disable-next-line max-len
-				this.$showTipMsg(`There are currently ${this.lastLoanPage} pages of results. We’ve loaded the last page for you.`);
-				this.pageChange(this.lastLoanPage);
-			}
-		},
-		pageChange(number) {
-			const offset = loansPerPage * (number - 1);
-			this.offset = offset;
-			this.pushChangesToUrl();
-		},
-		updateFromParams(query) {
-			const { offset } = fromUrlParams(query);
-			this.offset = offset;
-		},
-		pushChangesToUrl() {
-			const { page } = this.$route?.query ?? { page: '0' };
-			if (page !== this.urlParams.page) {
-				this.$router.push({
-					query: {
-						...this.$route.query,
-						...this.urlParams
-					}
-				});
-			}
 		},
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {
-			vm.updateFromParams(to.query);
+			vm.$refs.loandisplayref.updateFromParams(to.query);
 		});
 	},
 	beforeRouteUpdate(to, from, next) {
-		this.updateFromParams(to.query);
+		this.$refs.loandisplayref.updateFromParams(to.query);
 		next();
 	},
 };
@@ -627,37 +503,14 @@ export default {
 <style lang="scss">
 @import 'settings';
 
-$card-width: rem-calc(290);
-$max-card-width: rem-calc(330);
-$card-margin: rem-calc(14);
-$card-half-space: rem-calc(14/2);
-
-.campaign-loans {
-	position: relative;
-	background-color: rgba(0, 0, 0, 0.0125);
-	padding: 3rem 0;
-
-	.loan-card-group {
-		display: flex;
-		justify-content: center;
-	}
-
-	.cards-loan-card {
-		border-radius: 0.65rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
-		width: $card-width;
-		max-width: $max-card-width;
-		flex: 1 0 auto;
-		margin: $card-margin;
-	}
-
-	.loan-count {
-		text-align: center;
+.corporate-campaign-landing {
+	.campaign-checkout,
+	.campaign-thanks {
+		padding: 3rem 0;
 	}
 }
 
 .basket-bar {
 	display: none;
 }
-
 </style>
