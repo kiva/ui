@@ -33,7 +33,7 @@
 						:totals="basketTotals"
 						:show-donation="false"
 						:auto-redirect-to-thanks="false"
-						@transaciton-complete="transactionComplete"
+						@transaction-complete="transactionComplete"
 					/>
 				</div>
 			</section>
@@ -331,7 +331,6 @@ export default {
 		},
 		filters() {
 			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
-			// if (!Object.keys(filters).length) return {};
 			return getSearchableFilters(filters);
 		},
 		isActivelyLoggedIn() {

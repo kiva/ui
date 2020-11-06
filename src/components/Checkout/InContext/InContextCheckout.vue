@@ -120,7 +120,7 @@ export default {
 				);
 			}
 
-			this.$emit('transaciton-complete', transactionData);
+			this.$emit('transaction-complete', transactionData);
 		},
 	}
 };
