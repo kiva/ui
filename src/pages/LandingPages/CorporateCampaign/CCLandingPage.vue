@@ -241,7 +241,6 @@ export default {
 	},
 	data() {
 		return {
-			// loansPerPage,
 			headerTheme: blueHeader,
 			footerTheme: blueFooter,
 			rawPageData: null,
@@ -267,7 +266,6 @@ export default {
 			itemsInBasket: [],
 			isVisitor: true,
 			offset: 0,
-			// limit: loansPerPage,
 			pageQuery: { page: '1' },
 			checkoutVisible: false,
 			showThanks: false,
@@ -377,7 +375,8 @@ export default {
 			// TEMPORARY Handling for patched in basket credits
 			// TODO Extract as utility to get promo id from basket credits
 			basketItems.then(({ data }) => {
-				console.log(data);
+				// console.log(data);
+				// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
 
 				if (typeof data.shop === 'undefined') {
 					console.error('missing shop basket');
@@ -420,7 +419,7 @@ export default {
 			});
 		},
 		validatePromoBasketState(basketState) {
-			console.log(basketState);
+			// console.log(basketState);
 			// TEMPORARY Simplified Validation
 			this.basketTotals = basketState.shop?.basket?.totals ?? {};
 			// Check number of items 1
@@ -477,7 +476,7 @@ export default {
 		},
 
 		transactionComplete(payload) {
-			console.log('transaction complete', payload);
+			// console.log('transaction complete', payload);
 			this.transactionId = payload.transactionId;
 			this.checkoutVisible = false;
 			this.showThanks = true;
@@ -488,8 +487,6 @@ export default {
 				this.lastActiveLogin = userState['https://www.kiva.org/last_login'] || 0;
 				this.myId = userState['https://www.kiva.org/kiva_id'] || null;
 			}
-			// covers popup login
-			// this.logBasketState();
 		},
 	},
 	beforeRouteEnter(to, from, next) {

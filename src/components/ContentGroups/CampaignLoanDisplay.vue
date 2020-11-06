@@ -130,7 +130,6 @@ export default {
 	},
 	methods: {
 		addToBasket(payload) {
-			console.log(payload);
 			this.$emit('add-to-basket', payload);
 		},
 
