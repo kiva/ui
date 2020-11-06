@@ -1,37 +1,29 @@
 <template>
-	<div>
-		<kv-lightbox
-			:visible="lightboxClosed"
-			@lightbox-closed="exitLightBox"
-			title="Complete your loan"
+	<div class="in-context-checkout">
+		<basket-items-list
+			:class="hideDonationClass"
+			:loans="loans"
+			:donations="donations"
+			:kiva-cards="kivaCards"
+			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+		/>
+		<hr>
+		<kv-button
+			v-if="!isActivelyLoggedIn"
+			class="smaller checkout-button"
+			id="Continue-to-legacy-button"
+			v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
+			:href="registerOrLoginHref"
 		>
-			<!-- :teams="teams" -->
-			<basket-items-list
-				:loans="loans"
-				:donations="donations"
-				:kiva-cards="kivaCards"
-				:loan-reservation-total="parseInt(totals.loanReservationTotal)"
-			/>
-			<hr>
-			<template v-slot:controls>
-				<kv-button
-					v-if="!isActivelyLoggedIn"
-					class="smaller checkout-button"
-					id="Continue-to-legacy-button"
-					v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-					:href="registerOrLoginHref"
-				>
-					Continue
-				</kv-button>
+			Continue
+		</kv-button>
 
-				<kiva-credit-payment
-					v-else
-					@complete-transaction="completeTransaction"
-					class=" checkout-button"
-					id="kiva-credit-payment-button"
-				/>
-			</template>
-		</kv-lightbox>
+		<kiva-credit-payment
+			v-else
+			@complete-transaction="completeTransaction"
+			class=" checkout-button"
+			id="kiva-credit-payment-button"
+		/>
 	</div>
 </template>
 
@@ -41,23 +33,17 @@ import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KvButton from '@/components/Kv/KvButton';
-import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
 		BasketItemsList,
 		KvButton,
-		KvLightbox,
 		KivaCreditPayment,
 	},
 	mixins: [
 		checkoutUtils
 	],
 	props: {
-		lightboxClosed: {
-			type: Boolean,
-			default: false
-		},
 		isActivelyLoggedIn: {
 			type: Boolean,
 			default: false
@@ -77,6 +63,14 @@ export default {
 		kivaCards: {
 			type: Array,
 			default: () => [],
+		},
+		showDonation: {
+			type: Boolean,
+			default: true,
+		},
+		autoRedirectToThanks: {
+			type: Boolean,
+			default: true,
 		}
 	},
 	data() {
@@ -91,7 +85,13 @@ export default {
 			}
 			// TODO: map using route for ssr
 			return '/ui-login?force=true';
-		}
+		},
+		hideDonationClass() {
+			if (!this.showDonation) {
+				return 'hide-donation';
+			}
+			return '';
+		},
 	},
 	methods: {
 		completeTransaction(transactionId) {
@@ -111,16 +111,17 @@ export default {
 			// fire transaction events
 			this.$kvTrackTransaction(transactionData);
 			// redirect to thanks
-			window.setTimeout(
-				() => {
-					this.redirectToThanks(transactionId);
-				},
-				800
-			);
+			if (this.autoRedirectToThanks) {
+				window.setTimeout(
+					() => {
+						this.redirectToThanks(transactionId);
+					},
+					800
+				);
+			}
+
+			this.$emit('transaciton-complete', transactionData);
 		},
-		exitLightBox() {
-			this.$emit('lightbox-closed');
-		}
 	}
 };
 </script>
@@ -140,7 +141,9 @@ export default {
 	}
 }
 
-::v-deep .basket-donation-item {
-	display: none;
+.hide-donation {
+	::v-deep .basket-donation-item {
+		display: none;
+	}
 }
 </style>
