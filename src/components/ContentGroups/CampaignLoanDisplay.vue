@@ -35,7 +35,6 @@ import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import cookieStore from '@/util/cookieStore';
-// import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -90,18 +89,6 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		// loadingLoans: {
-		// 	type: Boolean,
-		// 	default: false,
-		// },
-		// loans: {
-		// 	type: Array,
-		// 	default: () => [],
-		// },
-		// totalCount: {
-		// 	type: Number,
-		// 	default: 0
-		// },
 		itemsInBasket: {
 			type: Array,
 			default: () => [],
@@ -163,13 +150,7 @@ export default {
 					} else {
 						this.loans = data.lend?.loans?.values ?? [];
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
-						// const basketItems = data.shop?.basket?.items?.values ?? [];
-						// this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
-						// console.log(this.loans.length, this.pageQuery.page);
 						this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
-						// this.$refs.campaignLoanDisplayRef.checkIfPageIsOutOfRange(
-						// 	this.loans.length, this.pageQuery.page
-						// );
 						this.loadingLoans = false;
 					}
 				}
@@ -208,6 +189,7 @@ export default {
 			}
 		},
 	},
+	// TODO: determine if this logic will work at this level
 	// beforeRouteEnter(to, from, next) {
 	// 	next(vm => {
 	// 		vm.updateFromParams(to.query);
