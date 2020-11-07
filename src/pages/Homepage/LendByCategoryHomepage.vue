@@ -96,6 +96,10 @@
 			/>
 		</section>
 
+		<section class="section">
+			<kiva-card-promo />
+		</section>
+
 		<section class="loan-not-donation section text-center">
 			<div class="row">
 				<kv-responsive-image
@@ -287,8 +291,9 @@ import { processContent } from '@/util/contentfulUtils';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 // import FeaturedLoansCarousel from '@/components/Homepage/LendByCategory/FeaturedLoansCarousel';
+import KivaCardPromo from '@/components/Homepage/LendByCategory/KivaCardPromo';
+import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import HomepageStatistics from './HomepageStatistics';
 import HeroSlideshow from './HeroSlideshow';
@@ -300,6 +305,7 @@ export default {
 		// FeaturedLoansCarousel,
 		HeroSlideshow,
 		HomepageStatistics,
+		KivaCardPromo,
 		KvButton,
 		KvResponsiveImage,
 		LoanCategoriesSection,
