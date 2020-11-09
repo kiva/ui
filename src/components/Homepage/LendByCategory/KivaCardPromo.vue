@@ -39,20 +39,16 @@
 
 		<div class="small-12 large-7 columns">
 			<h2 class="kiva-card-promo__header">
-				Share the love️ with Kiva Cards
+				{{ headline }}
 			</h2>
 			<div class="kiva-card-promo__body" v-html="bodyCopy"></div>
 			<!-- TODO tracking -->
 			<kv-button
-				to="/gifts/kiva-cards"
+				:to="primaryCtaLink"
 				class="rounded"
-				v-kv-track-event="[
-					'Homepage',
-					'click-share-the-love',
-					'Previous'
-				]"
+				v-kv-track-event="''"
 			>
-				Share the love
+				{{ primaryCtaText }}
 			</kv-button>
 		</div>
 	</div>
@@ -85,15 +81,21 @@ export default {
 		},
 		result({ data }) {
 			const message = data?.contentful?.entries?.items[0];
-			const body = formatContentType(message, 'genericContentBlock');
-			if (body) {
-				this.bodyCopy = documentToHtmlString(body.bodyCopy);
+			const entry = formatContentType(message, 'genericContentBlock');
+			if (entry) {
+				this.bodyCopy = documentToHtmlString(entry.bodyCopy);
+				this.headline = entry.headline;
+				this.primaryCtaLink = entry.primaryCtaLink;
+				this.primaryCtaText = entry.primaryCtaText;
 			}
 		},
 	},
 	data() {
 		return {
 			bodyCopy: '',
+			headline: '',
+			primaryCtaLink: '',
+			primaryCtaText: '',
 		};
 	}
 };
