@@ -69,7 +69,7 @@ export default {
 	},
 	methods: {
 		jumpToLoans() {
-			// TODO: emit and scroll in page
+			this.$emit('jump-to-loans');
 		}
 	}
 };

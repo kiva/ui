@@ -80,11 +80,7 @@ export default {
 	},
 	computed: {
 		registerOrLoginHref() {
-			if (typeof window !== 'undefined') {
-				return `/ui-login?force=true&doneUrl=${window.location.href}`;
-			}
-			// TODO: map using route for ssr
-			return '/ui-login?force=true';
+			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
 		hideDonationClass() {
 			if (!this.showDonation) {

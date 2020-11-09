@@ -20,8 +20,13 @@
 						<kv-icon name="confirmation" /> Promotion applied
 					</p>
 					<h2 class="campaign-status__header">
-						<!-- eslint-disable-next-line max-len -->
-						You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
+						<template v-if="promoAmount === '$0.00'">
+							Calculating promotion...
+						</template>
+						<template v-else>
+							<!-- eslint-disable-next-line max-len -->
+							You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
+						</template>
 					</h2>
 					<ul>
 						<li>Choose your borrower below.</li>
