@@ -4,8 +4,13 @@
 		:footer-theme="footerTheme"
 	>
 		<div class="corporate-campaign-landing">
-			<campaign-header :header-area-content="headerAreaContent" />
+			<!-- TODO: Alter CTA if Checkout is ready -->
+			<campaign-header
+				:header-area-content="headerAreaContent"
+				@jump-to-loans="scrollToSection('campaignLoanDisplay')"
+			/>
 
+			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				:loading-promotion="loadingPromotion"
 				:promo-error-message="promoErrorMessage"
@@ -16,6 +21,7 @@
 			<campaign-loan-display
 				id="campaignLoanDisplay"
 				ref="loandisplayref"
+				:show-loans="showLoans"
 				:checkout-visible="checkoutVisible || showThanks"
 				:filters="filters"
 				:is-visitor="isVisitor"
@@ -23,7 +29,11 @@
 				@add-to-basket="addToBasket"
 			/>
 
-			<section v-if="checkoutVisible" class="campaign-checkout section row align-center">
+			<section
+				v-if="checkoutVisible"
+				id="campaignCheckout"
+				class="campaign-checkout section row align-center"
+			>
 				<div class="small-12 large-8 align-self-middle columns">
 					<in-context-checkout
 						:is-actively-logged-in="isActivelyLoggedIn"
@@ -38,7 +48,11 @@
 				</div>
 			</section>
 
-			<section v-if="showThanks" class="campaign-thanks section row align-center">
+			<section
+				v-if="showThanks"
+				id="campaignThanks"
+				class="campaign-thanks section row align-center"
+			>
 				<campaign-thanks :transaction-id="transactionId" />
 			</section>
 		</div>
@@ -72,6 +86,24 @@ const pageQuery = gql`query pageContent($basketId: String!, $contentKey: String)
 		basket {
 			id
 			hasFreeCredits
+			items {
+				totalCount
+				values {
+					id
+					basketItemType
+				}
+			}
+			credits {
+				values {
+					id
+					applied
+					available
+					creditType
+					promoFund {
+						id
+					}
+				}
+			}
 		}
 		lendingRewardOffered
 	}
@@ -267,6 +299,7 @@ export default {
 			isVisitor: true,
 			offset: 0,
 			pageQuery: { page: '1' },
+			showLoans: false,
 			checkoutVisible: false,
 			showThanks: false,
 			transactionId: null,
@@ -304,6 +337,9 @@ export default {
 			const basketItems = data.shop?.basket?.items?.values ?? [];
 			this.itemsInBasket = basketItems.length ? basketItems.map(item => item.id) : [];
 			this.isVisitor = !data.my?.userAccount?.id ?? true;
+			// are there loans in the basket?
+			// eslint-disable-next-line no-underscore-dangle
+			this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
 		}
 	},
 	created() {
@@ -311,12 +347,9 @@ export default {
 		this.pageQuery = this.$route.query;
 	},
 	mounted() {
-		// console.log('raw page data: ', this.rawPageData);
-		// console.log('page data: ', this.pageData);
-
-		if (Object.keys(this.$route.query).length) {
-			this.applyPromotion();
-		}
+		this.loadingPromotion = true;
+		// check for applied promo
+		this.verifyOrApplyPromotion();
 	},
 	computed: {
 		pageTitle() {
@@ -342,8 +375,26 @@ export default {
 		},
 	},
 	methods: {
+		verifyOrApplyPromotion() {
+			// TODO: Establish control flow for applied promotional state
+			// 1. Does route have a promo code? (done)
+			// 2. check basket for loan items with ANY promotional credit applied
+			// 	- applied promo credits reveal promotional state
+			//		- check available + promoId to know if promo is applied to basket
+			//		- check applied + promoId to know if promo is applied to a loan(s)
+			//		- if this exists get detailed promo info
+			// 	- loans in basket with credits applied reveal basket state
+			//		- if this exist skip loading loans and show "Find more loans" link
+			//		- Load and show Checkout
+			// handle previously applied promo
+			if (this.hasFreeCredits || this.lendingRewardOffered) {
+				this.getPromoInformationFromBasket();
+			} else if (Object.keys(this.$route.query).length) {
+				// apply promo
+				this.applyPromotion();
+			}
+		},
 		applyPromotion() {
-			this.loadingPromotion = true;
 			// establish promotion state
 			const applyPromo = validateQueryParams(this.$route.query, this.apollo);
 			// handle applied promo state
@@ -357,9 +408,9 @@ export default {
 					// gather promo info
 					this.getPromoInformationFromBasket();
 				}
-				this.loadingPromotion = false;
 			}).catch(error => {
 				console.error(error);
+				this.promoErrorMessage = error;
 				this.loadingPromotion = false;
 			});
 		},
@@ -392,15 +443,23 @@ export default {
 			}).then(response => {
 				// TODO Handle response and any potential errors
 				this.promoData = response.data?.shop?.promoCampaign;
-				// Initialize loan query + observer
-				// this.activateLoanWatchQuery();
-				this.$refs.loandisplayref.activateLoanWatchQuery();
+				this.promoApplied = true;
+				this.loadingPromotion = false;
+				// Initialize loan query + observer there are no loans in the basket
+				// TODO: Handle ability to add additional loans
+				if (!this.basketLoans.length) {
+					this.showLoans = true;
+					this.$refs.loandisplayref.activateLoanWatchQuery();
+					this.scrollToSection('campaignLoanDisplay');
+				}
 				this.updateBasketState();
 			});
 		},
 		addToBasket() {
 			// Query to update basket state
 			this.updateBasketState();
+			// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
+			this.$refs.loandisplayref.loadingLoans = true;
 		},
 		updateBasketState() {
 			const basketItems = this.apollo.query({
@@ -464,9 +523,12 @@ export default {
 						// validation failed
 						// this.showCheckoutError(validationStatus);
 					}
-					// Present OVERLAY checkout completion option if baseline
-					// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
+
+					// TEMPORARY: turn off loading loans
+					this.$refs.loandisplayref.loadingLoans = false;
+					// signify checkout is ready
 					this.checkoutVisible = true;
+					this.scrollToSection('campaignCheckout');
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
 				}).catch(errorResponse => {
 					console.error(errorResponse);
@@ -477,8 +539,9 @@ export default {
 		transactionComplete(payload) {
 			// console.log('transaction complete', payload);
 			this.transactionId = payload.transactionId;
-			this.checkoutVisible = false;
 			this.showThanks = true;
+			this.checkoutVisible = false;
+			this.scrollToSection('campaignThanks');
 		},
 
 		setAuthStatus(userState) {
@@ -487,6 +550,16 @@ export default {
 				this.myId = userState['https://www.kiva.org/kiva_id'] || null;
 			}
 		},
+
+		scrollToSection(section) {
+			this.$router.push({
+				query: {
+					...this.$route.query,
+					...this.urlParams
+				},
+				hash: section
+			});
+		}
 	},
 	beforeRouteEnter(to, from, next) {
 		next(vm => {

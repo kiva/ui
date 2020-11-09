@@ -1,10 +1,15 @@
 <template>
 	<section
 		v-if="!checkoutVisible"
-		id="#campaign-loans"
+		id="campaign-loans"
 		class="campaign-loans row align-center"
 	>
-		<div class="columns small-12 large-8 align-self-middle" v-if="loans.length > 0">
+		<!-- <div class="columns small-12 large-8 align-self-middle" v-if="!showLoans">
+			<kv-button @click="activateLoanWatchQuery">
+				Find a loan
+			</kv-button>
+		</div> -->
+		<div class="columns small-12 large-8 align-self-middle" v-if="showLoans && loans.length > 0">
 			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
 				<loan-card-controller
 					v-for="loan in loans"
@@ -23,8 +28,13 @@
 			</div>
 		</div>
 		<div v-if="loadingLoans" class="campaign-loans__loading-loans">
-			<kv-loading-overlay />
-			<p>Loading loans...</p>
+			<kv-loading-overlay
+				id="loadingLoansOverlay"
+				class="campaign-loans__loading-loans-overlay"
+			/>
+			<p class="campaign-loans__loading-loans-copy">
+				Loading loans...
+			</p>
 		</div>
 	</section>
 </template>
@@ -35,6 +45,7 @@ import _mapValues from 'lodash/mapValues';
 import _merge from 'lodash/merge';
 import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
 import cookieStore from '@/util/cookieStore';
+// import KvButton from '@/components/Kv/KvButton';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import KvPagination from '@/components/Kv/KvPagination';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
@@ -72,12 +83,17 @@ export default {
 	inject: ['apollo'],
 	components: {
 		// KvIcon,
+		// KvButton,
 		KvLoadingOverlay,
 		KvPagination,
 		LoanCardController,
 	},
 	props: {
 		checkoutVisible: {
+			type: Boolean,
+			default: false,
+		},
+		showLoans: {
 			type: Boolean,
 			default: false,
 		},
@@ -97,7 +113,7 @@ export default {
 	data() {
 		return {
 			limit: loansPerPage,
-			loadingLoans: false,
+			loadingLoans: true,
 			loans: [],
 			loansPerPage,
 			offset: 0,
@@ -183,21 +199,12 @@ export default {
 					query: {
 						...this.$route.query,
 						...this.urlParams
-					}
+					},
+					hash: 'campaignLoanDisplay'
 				});
 			}
 		},
 	},
-	// TODO: determine if this logic will work at this level
-	// beforeRouteEnter(to, from, next) {
-	// 	next(vm => {
-	// 		vm.updateFromParams(to.query);
-	// 	});
-	// },
-	// beforeRouteUpdate(to, from, next) {
-	// 	this.updateFromParams(to.query);
-	// 	next();
-	// },
 };
 </script>
 
@@ -231,6 +238,38 @@ $card-half-space: rem-calc(14/2);
 
 	.loan-count {
 		text-align: center;
+	}
+
+	&__loading-loans {
+		min-height: 8rem;
+
+		&__loading-loans-copy {
+			z-index: 1001;
+			position: relative;
+		}
+
+		#loadingLoansOverlay {
+			margin-top: 1rem;
+			z-index: 1000;
+			width: auto;
+			height: auto;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			top: 0;
+			background-color: rgba($white, 0.7);
+
+			::v-deep .spinner-wrapper {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: initial;
+				height: 100%;
+				top: auto;
+				left: auto;
+				transform: none;
+			}
+		}
 	}
 }
 </style>

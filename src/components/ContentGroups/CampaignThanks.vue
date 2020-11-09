@@ -27,7 +27,7 @@
 		<div class="small-12 columns thanks">
 			<hr v-if="loans.length > 0">
 			<checkout-receipt
-				v-if="showReciept"
+				v-if="showReceipt"
 				class="thanks__receipt"
 				:lender="lender"
 				:receipt="receipt"
@@ -66,7 +66,7 @@ export default {
 			lender: {},
 			loans: [],
 			receipt: {},
-			showReciept: false,
+			showReceipt: false,
 		};
 	},
 	computed: {
@@ -112,7 +112,7 @@ export default {
 					console.error(`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`);
 				}
 
-				this.showReciept = true;
+				this.showReceipt = true;
 				this.celebrate();
 			});
 		},
