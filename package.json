@@ -64,7 +64,7 @@
 		"connect-memjs": "^0.2.1",
 		"cookie": "^0.4.1",
 		"cross-env": "^7.0.2",
-		"date-fns": "^2.11.0",
+		"date-fns": "^2.16.1",
 		"dd-trace": "^0.22.0",
 		"dotenv": "^8.1.0",
 		"embla-carousel": "^4.0.6",
