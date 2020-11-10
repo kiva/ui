@@ -71,7 +71,7 @@ export default {
 	padding: 0.75rem 1rem;
 	border-radius: $input-border-radius;
 	display: flex;
-	align-items: start;
+	align-items: flex-start;
 
 	&--success {
 		background-color: lighten($kiva-green, 38%);
