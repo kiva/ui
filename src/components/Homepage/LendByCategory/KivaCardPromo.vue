@@ -51,48 +51,70 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import contentful from '@/graphql/query/contentful.graphql';
 import { formatContentType } from '@/util/contentfulUtils';
+import gql from 'graphql-tag';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+const promoContentQuery = gql`
+  query contentfulCache {
+    contentful {
+      part1: entries(
+        contentType: "genericContentBlock"
+        contentKey: "homepage-kiva-card-campaign-part-1"
+      )
+      part2: entries(
+        contentType: "genericContentBlock"
+        contentKey: "homepage-kiva-card-campaign-part-2"
+      )
+    }
+  }
+`;
 
 export default {
 	components: {
-		KvButton
+		KvButton,
 	},
 	inject: ['apollo'],
 	apollo: {
-		query: contentful,
-		preFetchVariables() {
-			return {
-				contentType: 'genericContentBlock',
-				contentKey: 'homepage-kiva-card-campaign-block'
-			};
-		},
-		variables() {
-			return {
-				contentType: 'genericContentBlock',
-				contentKey: 'homepage-kiva-card-campaign-block'
-			};
+		query: promoContentQuery,
+		preFetch(config, client) {
+			return client.query({ query: promoContentQuery });
 		},
 		result({ data }) {
-			const message = data?.contentful?.entries?.items[0];
-			const entry = formatContentType(message, 'genericContentBlock');
-			if (entry) {
-				this.bodyCopy = documentToHtmlString(entry.bodyCopy);
-				this.headline = entry.headline;
-				this.primaryCtaLink = entry.primaryCtaLink;
-				this.primaryCtaText = entry.primaryCtaText;
+			const showPart1 = true; // TODO: show part1 or part2 depending on other contentful query or date.
+			const contentfulContent = showPart1
+				? data?.contentful?.part1?.items[0]
+				: data?.contentful?.part2?.items[0];
+
+			if (contentfulContent) {
+				this.contentfulResponse = formatContentType(contentfulContent, 'genericContentBlock');
 			}
-		},
+		}
 	},
 	data() {
 		return {
-			bodyCopy: '',
-			headline: '',
-			primaryCtaLink: '',
-			primaryCtaText: '',
+			contentfulResponse: {
+				bodyCopy: null,
+				headline: null,
+				primaryCtaLink: null,
+				primaryCtaText: null,
+			},
 		};
-	}
+	},
+	computed: {
+		bodyCopy() {
+			return documentToHtmlString(this.contentfulResponse.bodyCopy);
+		},
+		headline() {
+			return this.contentfulResponse.headline;
+		},
+		primaryCtaLink() {
+			return this.contentfulResponse.primaryCtaLink;
+		},
+		primaryCtaText() {
+			return this.contentfulResponse.primaryCtaText;
+		},
+	},
 };
 </script>
 
