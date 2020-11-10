@@ -248,6 +248,7 @@ export default {
 			isFormValid: true,
 			showDropInPaymentUpdate: true,
 			updateToCurrentPaymentMethod: false,
+			paymentMethod: {}
 		};
 	},
 	mixins: [
@@ -367,6 +368,7 @@ export default {
 			this.showEditLightbox = false;
 			// reset lightbox state
 			this.settingsOpen = true;
+			this.updateToCurrentPaymentMethod = false;
 			// refetch page query with updated information
 			this.apollo.query({ query: pageQuery, fetchPolicy: 'network-only' });
 			this.$showTipMsg('Payment method updated');

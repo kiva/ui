@@ -17,11 +17,11 @@
 				<div v-if="isAutoDepositSubscriber">
 					<p>
 						On the <kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
+							@click.native.prevent="showEditLightbox = true;"
 						>
 							{{ dayOfMonth | numeral('Oo') }}
 						</kv-button> of each month <kv-button class="text-link"
-							@click.native.prevent="showLightbox = true;"
+							@click.native.prevent="showEditLightbox = true;"
 						>
 							{{ totalCombinedDeposit | numeral('$0,0.00') }}
 						</kv-button> will be
@@ -34,164 +34,248 @@
 							Cancel Auto Deposit
 						</kv-button>
 					</p>
+
+					<!-- Edit AD Lightbox -->
 					<kv-lightbox
-						class="auto-deposit-settings-lightbox"
-						:visible="showLightbox"
-						title="Change your auto deposit"
+						class="ad-update-lightbox"
+						:visible="showEditLightbox"
+						:title="settingsOpen ? 'Change your auto deposit' : 'Update payment method'"
 						@lightbox-closed="closeLightbox"
 					>
-						<form
-							@submit.prevent="null"
-							novalidate
-						>
-							<fieldset :disabled="isSaving">
-								<div class="row align-center text-left">
-									<div class="small-12 columns">
-										<div class="row column">
-											<strong>Each month on the</strong>
-											<label class="show-for-sr"
-												:class="{ 'error': $v.dayOfMonth.$invalid }"
-												:for="dayOfMonth"
-											>
-												Day of the Month
-											</label>
-											<input v-if="isDayInputShown"
-												@blur="hideDayInput()"
-												class="text-input__day"
-												id="dayOfMonth"
-												type="number"
-												placeholder=""
-												required
-												min="1"
-												max="31"
-												v-model.number="dayOfMonth"
-											>
-											<button
-												class="button--ordinal-day"
-												@click="isDayInputShown = true"
-												v-if="!isDayInputShown"
-											>
-												<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
-												<kv-icon class="icon-pencil" name="pencil" title="Edit" />
-											</button>
-											<strong>we'll process the following:</strong>
-											<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
-												<li v-if="!$v.dayOfMonth.required">
-													Field is required
-												</li>
-												<li v-if="!$v.dayOfMonth.minValue || !$v.dayOfMonth.maxValue">
-													Enter day of month between 1 and 31
-												</li>
-											</ul>
-											<div class="additional-day-info">
-												<small v-if="dayOfMonth > 28">
-													(note - may be processed on the last day of the month)</small>
-											</div>
-										</div>
-										<div class="middle-wrapper">
-											<div class="row align-middle">
-												<div class="columns">
-													<span>
-														Deposit for lending
-													</span>
-												</div>
+						<div class="ad-update-lightbox__content">
+							<transition :name="slideTransition" mode="out-in">
+								<!-- Deposit Settings -->
+								<div
+									v-if="settingsOpen"
+									class="row column" key="depositSettings"
+								>
+									<!-- TODO move this form to separate component  -->
+									<form
+										@submit.prevent="null"
+										novalidate
+										class="ad-update-lightbox__form"
+									>
+										<fieldset :disabled="isSaving">
+											<div class="row align-center text-left">
+												<div class="small-12 columns">
+													<div class="row column">
+														<strong>Each month on the</strong>
+														<label class="show-for-sr"
+															:class="{ 'error': $v.dayOfMonth.$invalid }"
+															:for="dayOfMonth"
+														>
+															Day of the Month
+														</label>
+														<input v-if="isDayInputShown"
+															@blur="hideDayInput()"
+															class="text-input__day"
+															id="dayOfMonth"
+															type="number"
+															placeholder=""
+															required
+															min="1"
+															max="31"
+															v-model.number="dayOfMonth"
+														>
+														<button
+															class="button--ordinal-day"
+															@click="isDayInputShown = true"
+															v-if="!isDayInputShown"
+														>
+															<strong>{{ dayOfMonth | numeral('Oo') }}</strong>
+															<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+														</button>
+														<strong>we'll process the following:</strong>
+														<ul class="validation-errors" v-if="$v.dayOfMonth.$invalid">
+															<li v-if="!$v.dayOfMonth.required">
+																Field is required
+															</li>
+															<li v-if="!$v.dayOfMonth.minValue
+																|| !$v.dayOfMonth.maxValue"
+															>
+																Enter day of month between 1 and 31
+															</li>
+														</ul>
+														<div class="additional-day-info">
+															<small v-if="dayOfMonth > 28">
+																(note - may be processed on the last day of the month)
+															</small>
+														</div>
+													</div>
+													<div class="middle-wrapper">
+														<div class="row align-middle">
+															<div class="columns">
+																<span>
+																	Deposit for lending
+																</span>
+															</div>
 
-												<div class="small-6 medium-4 columns">
-													<label
-														class="show-for-sr"
-														:class="{ 'error': $v.mgAmount.$invalid }"
-														for="amount"
-													>
-														Amount
-													</label>
-													<kv-currency-input
-														class="text-input"
-														id="amount"
-														v-model="mgAmount"
-													/>
-												</div>
-											</div>
-											<div class="row columns align-middle">
-												<ul class="text-right validation-errors" v-if="$v.mgAmount.$invalid">
-													<li v-if="!$v.mgAmount.required">
-														Field is required
-													</li>
-													<li v-if="!$v.mgAmount.minValue || !$v.mgAmount.maxValue">
-														Enter an amount of $5-$10,000
-													</li>
-												</ul>
-											</div>
+															<div class="small-6 medium-4 columns">
+																<label
+																	class="show-for-sr"
+																	:class="{ 'error': $v.mgAmount.$invalid }"
+																	for="amount"
+																>
+																	Amount
+																</label>
+																<kv-currency-input
+																	class="text-input"
+																	id="amount"
+																	v-model="mgAmount"
+																/>
+															</div>
+														</div>
+														<div class="row columns align-middle">
+															<ul
+																class="text-right validation-errors"
+																v-if="$v.mgAmount.$invalid"
+															>
+																<li v-if="!$v.mgAmount.required">
+																	Field is required
+																</li>
+																<li v-if="!$v.mgAmount.minValue
+																	|| !$v.mgAmount.maxValue"
+																>
+																	Enter an amount of $5-$10,000
+																</li>
+															</ul>
+														</div>
 
-											<div class="row align-middle">
-												<div class="columns">
-													<span>
-														Optional donation to support Kiva
-													</span>
-												</div>
+														<div class="row align-middle">
+															<div class="columns">
+																<span>
+																	Optional donation to support Kiva
+																</span>
+															</div>
 
-												<div class="small-6 medium-4 columns">
-													<label
-														class="show-for-sr"
-														:class="{ 'error': $v.donation.$invalid }"
-														for="amount"
-													>
-														Donation
-													</label>
-													<kv-currency-input
-														class="text-input"
-														id="donation"
-														v-model="donation"
-													/>
+															<div class="small-6 medium-4 columns">
+																<label
+																	class="show-for-sr"
+																	:class="{ 'error': $v.donation.$invalid }"
+																	for="amount"
+																>
+																	Donation
+																</label>
+																<kv-currency-input
+																	class="text-input"
+																	id="donation"
+																	v-model="donation"
+																/>
+															</div>
+														</div>
+														<div class="row column align-middle">
+															<ul
+																class="text-right validation-errors"
+																v-if="$v.donation.$invalid"
+															>
+																<li v-if="!$v.donation.minValue
+																	|| !$v.donation.maxValue"
+																>
+																	Enter an amount of $0-$10,000
+																</li>
+															</ul>
+														</div>
+
+														<div class="row">
+															<div class="columns">
+																<strong>Total/month</strong>
+															</div>
+
+															<div class="small-6 medium-4 columns">
+																<strong
+																	class="additional-left-pad-currency"
+																>{{ totalCombinedDeposit | numeral('$0,0.00') }}
+																</strong>
+															</div>
+														</div>
+														<div class="row column">
+															<ul class="text-center validation-errors"
+																v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+															>
+																<li>
+																	The maximum Auto Deposit total is $10,000.<br>
+																	Please try again by entering in a smaller amount.
+																</li>
+															</ul>
+														</div>
+													</div>
 												</div>
 											</div>
-											<div class="row column align-middle">
-												<ul class="text-right validation-errors" v-if="$v.donation.$invalid">
-													<li v-if="!$v.donation.minValue || !$v.donation.maxValue">
-														Enter an amount of $0-$10,000
-													</li>
-												</ul>
-											</div>
-
-											<div class="row">
-												<div class="columns">
-													<strong>Total/month</strong>
-												</div>
-
-												<div class="small-6 medium-4 columns">
-													<strong
-														class="additional-left-pad-currency"
-													>{{ totalCombinedDeposit | numeral('$0,0.00') }}</strong>
-												</div>
-											</div>
-											<div class="row column">
-												<ul class="text-center validation-errors"
-													v-if="!$v.mgAmount.maxTotal || !$v.donation.maxTotal"
+										</fieldset>
+									</form>
+									<div class="ad-update-lightbox__payment-method">
+										<div class="row align-middle">
+											<div class="column medium-12 large-6" v-if="paymentMethod">
+												<strong>Current payment method:</strong><br>
+												<img class="ad-update-lightbox__cc-icon"
+													:src="paymentMethod.imageUrl"
 												>
-													<li>
-														The maximum Auto Deposit total is $10,000.<br>
-														Please try again by entering in a smaller amount.
-													</li>
-												</ul>
+												{{ paymentMethod.description }}
+											</div>
+											<div class="column medium-12 large-6 text-right">
+												<button
+													class="button--link"
+													@click="toggleSections"
+												>
+													<strong>Update Payment Method</strong>
+													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+												</button>
 											</div>
 										</div>
 									</div>
+									<kv-button
+										data-test="auto-deposit-save-button"
+										class="smaller button"
+										v-if="!isSaving"
+										@click.native="saveAutoDeposit"
+										:disabled="!isChanged || $v.$invalid"
+									>
+										Save
+									</kv-button>
+									<kv-button data-test="auto-deposit-save-button" class="smaller button" v-else>
+										Saving <kv-loading-spinner />
+									</kv-button>
 								</div>
-							</fieldset>
-						</form>
-						<template slot="controls">
-							<kv-button
-								data-test="auto-deposit-save-button"
-								class="smaller button"
-								v-if="!isSaving"
-								@click.native="saveAutoDeposit"
-								:disabled="!isChanged || $v.$invalid"
-							>
-								Save
-							</kv-button>
-							<kv-button data-test="auto-deposit-save-button" class="smaller button" v-else>
-								Saving <kv-loading-spinner />
-							</kv-button>
-						</template>
+								<!-- Payment Methods -->
+								<div
+									v-if="!settingsOpen"
+									class="row column" key="paymentSettings"
+								>
+									<kv-button class="text-link"
+										@click.native.prevent="toggleSections"
+									>
+										<kv-icon
+											class="arrow back-arrow"
+											name="small-chevron"
+											:from-sprite="true"
+										/>
+										Back to deposit settings
+									</kv-button>
+									<div class="ad-update-lightbox__dropin-payment-wrapper">
+										<div class="row column ad-update-lightbox__current-payment-method">
+											<strong>Current payment method:</strong><br>
+											<img class="ad-update-lightbox__cc-icon" :src="paymentMethod.imageUrl">
+											{{ paymentMethod.description }}
+										</div>
+										<p v-if="updateToCurrentPaymentMethod"
+											class="validation-error text-center"
+										>
+											<!-- eslint-disable-next-line max-len -->
+											This is your current payment method.<br> Please select or enter a new payment method to update your deposit.
+										</p>
+										<auto-deposit-drop-in-payment-wrapper
+											:amount="totalCombinedDeposit"
+											:donate-amount="donation"
+											:day-of-month="dayOfMonth"
+											:current-nonce="paymentMethod.nonce"
+											action="Update"
+											@complete-transaction="completeADBraintree"
+											@no-update="noUpdate"
+										/>
+									</div>
+								</div>
+							</transition>
+						</div>
 					</kv-lightbox>
 				</div>
 			</template>
@@ -205,6 +289,7 @@ import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
+import AutoDepositDropInPaymentWrapper from '@/components/AutoDeposit/AutoDepositDropInPaymentWrapper';
 import KvButton from '@/components/Kv/KvButton';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -221,6 +306,12 @@ const pageQuery = gql`query autoDepositPage {
 			dayOfMonth
 			isSubscriber
 			status
+			paymentMethod {
+				methodType
+				imageUrl
+				description
+				nonce
+			}
 		}
 	}
 }`;
@@ -228,6 +319,7 @@ const pageQuery = gql`query autoDepositPage {
 export default {
 	inject: ['apollo'],
 	components: {
+		AutoDepositDropInPaymentWrapper,
 		KvButton,
 		KvCurrencyInput,
 		KvIcon,
@@ -242,8 +334,11 @@ export default {
 			donation: 0,
 			mgAmount: 0,
 			isAutoDepositSubscriber: false,
-			showLightbox: false,
+			showEditLightbox: false,
 			isDayInputShown: false,
+			settingsOpen: true, // if settingsOpen is false, payment update section is shown
+			updateToCurrentPaymentMethod: false,
+			paymentMethod: {}
 		};
 	},
 	mixins: [
@@ -285,6 +380,7 @@ export default {
 			this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
 			this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
 			this.mgAmount = autoDepositAmount - this.donation;
+			this.paymentMethod = _get(data, 'my.autoDeposit.paymentMethod', {});
 		},
 	},
 	mounted() {
@@ -305,14 +401,20 @@ export default {
 		},
 		isChanged() {
 			return this.$v.$dirty;
-		}
+		},
+		slideTransition() {
+			return this.settingsOpen ? 'kv-slide-right' : 'kv-slide-left';
+		},
 	},
 	methods: {
+		toggleSections() {
+			this.settingsOpen = !this.settingsOpen;
+		},
 		closeLightbox() {
 			// this will trigger only when the lightbox is closed manually
 			// not when it is closed via outside click or close button click
 			this.$emit('unsaved-changes', true);
-			this.showLightbox = false;
+			this.showEditLightbox = false;
 		},
 		hideDayInput() {
 			if (!this.$v.dayOfMonth.$invalid) {
@@ -345,8 +447,21 @@ export default {
 			}).finally(() => {
 				this.isSaving = false;
 				this.$emit('unsaved-changes', false);
-				this.showLightbox = false;
+				this.showEditLightbox = false;
 			});
+		},
+		completeADBraintree() {
+			this.$kvTrackEvent('AutoDeposit', 'successful-update-ad-payment', 'update-auto-deposit-payment');
+			this.showEditLightbox = false;
+			// reset lightbox state
+			this.settingsOpen = true;
+			this.updateToCurrentPaymentMethod = false;
+			// refetch page query with updated information
+			this.apollo.query({ query: pageQuery, fetchPolicy: 'network-only' });
+			this.$showTipMsg('Payment method updated');
+		},
+		noUpdate() {
+			this.updateToCurrentPaymentMethod = true;
 		},
 	},
 };
@@ -356,8 +471,6 @@ export default {
 @import 'settings';
 
 form {
-	margin-top: 2rem;
-
 	.row {
 		margin-bottom: 0.25em;
 	}
@@ -425,4 +538,67 @@ form {
 		margin-bottom: 2rem;
 	}
 }
+
+.ad-update-lightbox {
+	&__content {
+		overflow: hidden;
+		max-width: 100%;
+		margin: 1.5rem 0 0;
+
+		@include breakpoint('large') {
+			width: rem-calc(530);
+		}
+
+		@include breakpoint('xxlarge') {
+			width: rem-calc(620);
+		}
+	}
+
+	&__form,
+	&__payment-method {
+		padding-left: 0.5rem;
+	}
+
+	&__payment-method {
+		padding-right: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	&__dropin-payment-wrapper {
+		margin: 1rem 0 0;
+		padding-left: 0.5rem;
+	}
+
+	&__current-payment-method {
+		margin: 1rem 0;
+	}
+
+	&__cc-icon {
+		height: 1.5rem;
+		margin-top: -0.33rem;
+	}
+
+	.arrow {
+		stroke: $blue;
+		width: rem-calc(13);
+		height: rem-calc(9);
+
+		&.back-arrow {
+			transform: rotate(90deg);
+		}
+	}
+
+	.button--link {
+		color: $kiva-accent-blue;
+		fill: $kiva-accent-blue;
+		cursor: pointer;
+		padding: 0.5rem;
+	}
+
+	.icon-pencil {
+		height: 1rem;
+		width: 1rem;
+	}
+}
+
 </style>
