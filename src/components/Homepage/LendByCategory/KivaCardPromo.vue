@@ -16,8 +16,15 @@
 				{{ headline }}
 			</h2>
 			<div class="kiva-card-promo__body" v-html="bodyCopy"></div>
-			<!-- TODO tracking -->
-			<kv-button :to="primaryCtaLink" class="rounded" v-kv-track-event="''">
+			<kv-button
+				class="rounded"
+				:to="primaryCtaLink"
+				v-kv-track-event="[
+					'homepage',
+					'click-kiva-card-promo',
+					primaryCtaText
+				]"
+			>
 				{{ primaryCtaText }}
 			</kv-button>
 		</div>
