@@ -8,6 +8,22 @@
 				<!-- eslint-disable max-len -->
 				<div class="kv-swashie__face">
 					<svg viewBox="0 0 205 205" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<template v-if="excitementLevel === 'asleep'">
+							<g class="kv-swashie__face-asleep">
+								<path
+									class="kv-swashie__face-open-eyes"
+									d="M145.04 104.92C149.436 104.92 153 101.356 153 96.9602C153 92.5639 149.436 89 145.04 89C140.644 89 137.08 92.5639 137.08 96.9602C137.08 101.356 140.644 104.92 145.04 104.92Z" fill="#3E4653"
+								/>
+								<path
+									class="kv-swashie__face-open-eyes"
+									d="M59.9602 104.921C64.3565 104.921 67.9204 101.357 67.9204 96.9604C67.9204 92.5641 64.3565 89.0002 59.9602 89.0002C55.5639 89.0002 52 92.5641 52 96.9604C52 101.357 55.5639 104.921 59.9602 104.921Z" fill="#3E4653"
+								/>
+								<path
+									class="kv-swashie__face-flat-mouth"
+									d="M89.6187 113.421H115.382C115.828 113.421 116.182 113.103 116.409 112.699C116.642 112.287 116.778 111.735 116.778 111.138C116.778 110.541 116.642 109.989 116.409 109.577C116.182 109.173 115.828 108.855 115.382 108.855H89.6187C89.1715 108.855 88.8179 109.174 88.5903 109.578C88.3583 109.991 88.2228 110.543 88.2228 111.138C88.2228 111.735 88.3588 112.287 88.5911 112.699C88.819 113.103 89.1727 113.421 89.6187 113.421Z" fill="#2E495D" stroke="#2E495D" stroke-width=".5"
+								/>
+							</g>
+						</template>
 						<template v-if="excitementLevel === 'sleepy'">
 							<g class="kv-swashie__face-sleeping">
 								<path fill-rule="evenodd" clip-rule="evenodd" d="M137.08 96.0006C138.467 96.0006 139.591 97.1249 139.591 98.5117C139.591 101.52 142.031 103.961 145.04 103.961C148.048 103.961 150.489 101.52 150.489 98.5117C150.489 97.1249 151.613 96.0006 153 96.0006C154.387 96.0006 155.511 97.1249 155.511 98.5117C155.511 104.294 150.822 108.983 145.04 108.983C139.257 108.983 134.568 104.294 134.568 98.5117C134.568 97.1249 135.693 96.0006 137.08 96.0006Z" fill="#3E4653" />
@@ -81,11 +97,14 @@ export default {
 	},
 	data() {
 		return {
-			fillLevel: 0
+			fillLevel: null
 		};
 	},
 	computed: {
 		excitementLevel() {
+			if (!this.fillLevel) {
+				return 'asleep';
+			}
 			if (this.fillLevel > 0 && this.fillLevel < 50) {
 				return 'sleepy';
 			}
@@ -171,6 +190,22 @@ export default {
 		width: 225%;
 		animation: wave-motion 2.5s infinite linear;
 		transform-origin: bottom center;
+	}
+
+	&--asleep {
+		.kv-swashie__face {
+			transform: translateY(20%);
+
+			&-asleep {
+				transform-origin: center center;
+				animation: float 3.5s infinite ease-in-out;
+			}
+
+			&-open-eyes {
+				transform-origin: center center;
+				animation: blink 3.5s infinite linear;
+			}
+		}
 	}
 
 	&--sleepy {
