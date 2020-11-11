@@ -73,7 +73,6 @@
 
 <script>
 import _range from 'lodash/range';
-import _uniq from 'lodash/uniq';
 import smoothScrollMixin from '@/plugins/smooth-scroll-mixin';
 import KvIcon from '@/components/Kv/KvIcon';
 
@@ -143,7 +142,7 @@ export default {
 
 			// sort by number & remove duplicates
 			numbers.sort((a, b) => a - b);
-			numbers = _uniq(numbers, true);
+			numbers = [...new Set(numbers)];
 
 			// add a placeholder for first ellipsis, if needed
 			if (numbers[1] !== 2) {
