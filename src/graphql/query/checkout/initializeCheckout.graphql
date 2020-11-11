@@ -24,10 +24,6 @@ query initializeCheckout($basketId: String) {
 			value
 			key
 		}
-		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
-			value
-			key
-		}
 	}
 	shop (basketId: $basketId) {
 		id

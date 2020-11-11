@@ -70,16 +70,8 @@
 									/>
 								</form>
 
-								<payment-wrapper
-									v-else-if="!showDropInPayments"
-									:amount="creditNeeded"
-									@refreshtotals="refreshTotals"
-									@updating-totals="setUpdatingTotals"
-									@complete-transaction="completeTransaction"
-								/>
-
 								<checkout-drop-in-payment-wrapper
-									v-else-if="showDropInPayments"
+									v-else
 									:amount="creditNeeded"
 									@refreshtotals="refreshTotals"
 									@updating-totals="setUpdatingTotals"
@@ -187,7 +179,6 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import { settingEnabled } from '@/util/settingsUtils';
 import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
-import PaymentWrapper from '@/components/Checkout/PaymentWrapper';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
 
@@ -204,7 +195,6 @@ export default {
 		KivaCardRedemption,
 		KvLoadingOverlay,
 		CheckoutHolidayPromo,
-		PaymentWrapper,
 		CheckoutDropInPaymentWrapper,
 		RandomLoanSelector,
 	},
@@ -239,7 +229,6 @@ export default {
 			holidayModeEnabled: false,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
-			showDropInPayments: true,
 			userPrefContinueBrowsing: false,
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
@@ -298,11 +287,6 @@ export default {
 
 			// general data
 			this.activeLoginDuration = parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600;
-
-			// Braintree drop-in UI
-			// if feature flag are in ON, show drop-in UI
-			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
-			this.showDropInPayments = braintreeDropInFeatureFlag;
 		}
 	},
 	created() {

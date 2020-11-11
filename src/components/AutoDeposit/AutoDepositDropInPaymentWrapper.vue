@@ -6,6 +6,7 @@
 				:amount="amount | numeral('0.00')"
 				flow="vault"
 				:payment-types="['paypal', 'card']"
+				:preselect-vaulted-payment-method="action === 'Registration'"
 				@transactions-enabled="enableConfirmButton = $event"
 			/>
 			<div id="dropin-button">
@@ -29,10 +30,11 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import numeral from 'numeral';
 import * as Sentry from '@sentry/browser';
 import braintreeCreateAutoDepositSubscription from '@/graphql/mutation/braintreeCreateAutoDepositSubscription.graphql';
+import braintreeUpdateSubscriptionPaymentMethod from
+	'@/graphql/mutation/braintreeUpdateSubscriptionPaymentMethod.graphql';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -40,9 +42,9 @@ import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterf
 
 export default {
 	components: {
+		BraintreeDropInInterface,
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface,
 		KvLoadingSpinner
 	},
 	inject: ['apollo'],
@@ -58,6 +60,10 @@ export default {
 		dayOfMonth: {
 			type: Number,
 			default: 0
+		},
+		currentNonce: {
+			type: String,
+			default: ''
 		},
 		/**
 		 * Context that this payment wrapper is used in:
@@ -98,59 +104,112 @@ export default {
 				});
 		},
 		doBraintreeAutoDeposit(nonce, deviceData, paymentType) {
-			// Apollo call to the query mutation
-			this.apollo.mutate({
-				mutation: braintreeCreateAutoDepositSubscription,
-				variables: {
-					paymentMethodNonce: nonce,
-					amount: numeral(this.amount).format('0.00'),
-					donateAmount: numeral(this.donateAmount).format('0.00'),
-					dayOfMonth: numeral(this.dayOfMonth).value(),
-					deviceData,
+			if (this.action === 'Update') {
+				// if nonce is the same, the payment method is the same and we do not need to call the update mutation
+				if (nonce === this.currentNonce) {
+					this.$emit('no-update');
+					this.submitting = false;
+				} else {
+					// Apollo call to the query mutation
+					this.apollo.mutate({
+						mutation: braintreeUpdateSubscriptionPaymentMethod,
+						variables: {
+							paymentMethodNonce: nonce,
+							deviceData,
+						}
+					}).then(kivaBraintreeResponse => {
+					// Check for errors in transaction
+						if (kivaBraintreeResponse.errors) {
+							const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
+							const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
+							const standardErrorCode = `(Braintree error: ${errorCode})`;
+							// eslint-disable-next-line max-len
+							const standardError = `There was an error processing your payment. Please try again. ${standardErrorCode}`;
+
+							// Payment method failed, unselect attempted payment method
+							this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+							// Potential error message: 'Transaction failed. Please select a different payment method.';
+
+							this.$showTipMsg(standardError, 'error');
+
+							// Fire specific exception to Snowplow
+							this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
+
+							// exit
+							return kivaBraintreeResponse;
+						}
+						// Transaction is complete
+						const subscriptionUpdatedSuccessfully = kivaBraintreeResponse.data?.my?.updateAutoDeposit;
+
+						if (subscriptionUpdatedSuccessfully) {
+						// fire BT Success event
+							this.$kvTrackEvent(
+								this.action,
+								`${paymentType} Braintree DropIn Subscription Payment Update`,
+								`${this.action.toLowerCase()}-auto-deposit-update`
+							);
+
+							// Complete transaction handles additional analytics + redirect
+							this.$emit('complete-transaction', paymentType);
+						}
+						return kivaBraintreeResponse;
+					}).finally(() => {
+						this.submitting = false;
+					});
 				}
-			}).then(kivaBraintreeResponse => {
-				// Check for errors in transaction
-				if (kivaBraintreeResponse.errors) {
-					const errorCode = _get(kivaBraintreeResponse, 'errors[0].code');
-					const errorMessage = _get(kivaBraintreeResponse, 'errors[0].message');
-					const standardErrorCode = `(Braintree error: ${errorCode})`;
-					const standardError = `There was an error processing your payment.
+			}
+			if (this.action === 'Registration') {
+				// Apollo call to the query mutation
+				this.apollo.mutate({
+					mutation: braintreeCreateAutoDepositSubscription,
+					variables: {
+						paymentMethodNonce: nonce,
+						amount: numeral(this.amount).format('0.00'),
+						donateAmount: numeral(this.donateAmount).format('0.00'),
+						dayOfMonth: numeral(this.dayOfMonth).value(),
+						deviceData,
+					}
+				}).then(kivaBraintreeResponse => {
+					// Check for errors in transaction
+					if (kivaBraintreeResponse.errors) {
+						const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
+						const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
+						const standardErrorCode = `(Braintree error: ${errorCode})`;
+						const standardError = `There was an error processing your payment.
 						Please try again. ${standardErrorCode}`;
 
-					// Payment method failed, unselect attempted payment method
-					this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
-					// Potential error message: 'Transaction failed. Please select a different payment method.';
+						// Payment method failed, unselect attempted payment method
+						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
+						// Potential error message: 'Transaction failed. Please select a different payment method.';
 
-					this.$showTipMsg(standardError, 'error');
+						this.$showTipMsg(standardError, 'error');
 
-					// Fire specific exception to Snowplow
-					this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
+						// Fire specific exception to Snowplow
+						this.$kvTrackEvent(this.action, 'DropIn Payment Error', `${errorCode}: ${errorMessage}`);
 
-					// exit
+						// exit
+						return kivaBraintreeResponse;
+					}
+
+					// Transaction is complete
+					const subscriptionCreatedSuccessfully = kivaBraintreeResponse.data?.my?.createAutoDeposit?.status;
+
+					if (subscriptionCreatedSuccessfully === 'active') {
+						// fire BT Success event
+						this.$kvTrackEvent(
+							this.action,
+							`${paymentType} Braintree DropIn Subscription Payment`,
+							`${this.action.toLowerCase()}-auto-deposit-submit`
+						);
+
+						// Complete transaction handles additional analytics + redirect
+						this.$emit('complete-transaction', paymentType);
+					}
 					return kivaBraintreeResponse;
-				}
-
-				// Transaction is complete
-				const subscriptionCreatedSuccessfully = _get(
-					kivaBraintreeResponse,
-					'data.my.createAutoDeposit.status'
-				);
-
-				if (subscriptionCreatedSuccessfully === 'active') {
-					// fire BT Success event
-					this.$kvTrackEvent(
-						this.action,
-						`${paymentType} Braintree DropIn Subscription Payment`,
-						`${this.action.toLowerCase()}-auto-deposit-submit`
-					);
-
-					// Complete transaction handles additional analytics + redirect
-					this.$emit('complete-transaction', paymentType);
-				}
-				return kivaBraintreeResponse;
-			}).finally(() => {
-				this.submitting = false;
-			});
+				}).finally(() => {
+					this.submitting = false;
+				});
+			}
 		},
 	},
 };

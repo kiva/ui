@@ -42,9 +42,9 @@ import BraintreeDropInInterface from '@/components/Payment/BraintreeDropInInterf
 
 export default {
 	components: {
+		BraintreeDropInInterface,
 		KvButton,
 		KvIcon,
-		BraintreeDropInInterface,
 		KvLoadingSpinner
 	},
 	inject: ['apollo'],
@@ -131,8 +131,8 @@ export default {
 							const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
 							const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
 							const standardErrorCode = `(Braintree error: ${errorCode})`;
-							const standardError = `There was an error processing your payment.
-						Please try again. ${standardErrorCode}`;
+							// eslint-disable-next-line max-len
+							const standardError = `There was an error processing your payment. Please try again. ${standardErrorCode}`;
 
 							// Payment method failed, unselect attempted payment method
 							this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
@@ -185,8 +185,8 @@ export default {
 						const errorCode = kivaBraintreeResponse.errors?.[0]?.code;
 						const errorMessage = kivaBraintreeResponse.errors?.[0]?.message;
 						const standardErrorCode = `(Braintree error: ${errorCode})`;
-						const standardError = `There was an error processing your payment.
-						Please try again. ${standardErrorCode}`;
+						// eslint-disable-next-line max-len
+						const standardError = `There was an error processing your payment. Please try again. ${standardErrorCode}`;
 
 						// Payment method failed, unselect attempted payment method
 						this.$refs.braintreeDropInInterface.btDropinInstance.clearSelectedPaymentMethod();
