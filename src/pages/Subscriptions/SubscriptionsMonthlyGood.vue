@@ -50,119 +50,94 @@
 						@lightbox-closed="closeLightbox"
 					>
 						<div class="mg-update-lightbox__content">
-							<template v-if="showDropInPaymentUpdate">
-								<transition :name="slideTransition" mode="out-in">
-									<!-- Deposit Settings -->
-									<div
-										v-if="settingsOpen"
-										class="row column" key="depositSettings"
-									>
-										<monthly-good-update-form
-											:donation="donation"
-											:day-of-month="dayOfMonth"
-											:category="category"
-											:mg-amount="mgAmount"
-											:disabled="isSaving"
-											@form-update="formUpdated"
-											class="mg-update-lightbox__form"
-										/>
-										<div class="mg-update-lightbox__payment-method">
-											<div class="row align-middle">
-												<div class="column medium-12 large-6" v-if="paymentMethod">
-													<strong>Current payment method:</strong><br>
-													<img class="mg-update-lightbox__cc-icon"
-														:src="paymentMethod.imageUrl"
-													>
-													{{ paymentMethod.description }}
-												</div>
-												<div class="column medium-12 large-6 text-right">
-													<button
-														class="button--link"
-														@click="toggleSections"
-													>
-														<strong>Update Payment Method</strong>
-														<kv-icon class="icon-pencil" name="pencil" title="Edit" />
-													</button>
-												</div>
-											</div>
-										</div>
-										<kv-button
-											data-test="monthly-good-save-button"
-											class="smaller button"
-											v-if="!isSaving"
-											@click.native="saveMonthlyGood"
-											:disabled="!isChanged || !isFormValid"
-										>
-											Save Settings
-										</kv-button>
-										<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
-											Saving <kv-loading-spinner />
-										</kv-button>
-									</div>
-									<!-- Payment Methods -->
-									<div
-										v-if="!settingsOpen"
-										class="row column" key="paymentSettings"
-									>
-										<kv-button class="text-link"
-											@click.native.prevent="toggleSections"
-										>
-											<kv-icon
-												class="arrow back-arrow"
-												name="small-chevron"
-												:from-sprite="true"
-											/>
-											Back to deposit settings
-										</kv-button>
-										<div class="mg-update-lightbox__dropin-payment-wrapper">
-											<div class="row column mg-update-lightbox__current-payment-method">
+							<transition :name="slideTransition" mode="out-in">
+								<!-- Deposit Settings -->
+								<div
+									v-if="settingsOpen"
+									class="row column" key="depositSettings"
+								>
+									<monthly-good-update-form
+										:donation="donation"
+										:day-of-month="dayOfMonth"
+										:category="category"
+										:mg-amount="mgAmount"
+										:disabled="isSaving"
+										@form-update="formUpdated"
+										class="mg-update-lightbox__form"
+									/>
+									<div class="mg-update-lightbox__payment-method">
+										<div class="row align-middle">
+											<div class="column medium-12 large-6" v-if="paymentMethod">
 												<strong>Current payment method:</strong><br>
-												<img class="mg-update-lightbox__cc-icon" :src="paymentMethod.imageUrl">
+												<img class="mg-update-lightbox__cc-icon"
+													:src="paymentMethod.imageUrl"
+												>
 												{{ paymentMethod.description }}
 											</div>
-											<p v-if="updateToCurrentPaymentMethod"
-												class="validation-error text-center"
-											>
-												<!-- eslint-disable-next-line max-len -->
-												This is your current payment method.<br> Please select or enter a new payment method to update your deposit.
-											</p>
-											<monthly-good-drop-in-payment-wrapper
-												:amount="totalCombinedDeposit"
-												:donate-amount="donation"
-												:day-of-month="dayOfMonth"
-												:category="category"
-												:current-nonce="paymentMethod.nonce"
-												action="Update"
-												@complete-transaction="completeMGBraintree"
-												@no-update="noUpdate"
-											/>
+											<div class="column medium-12 large-6 text-right">
+												<button
+													class="button--link"
+													@click="toggleSections"
+												>
+													<strong>Update Payment Method</strong>
+													<kv-icon class="icon-pencil" name="pencil" title="Edit" />
+												</button>
+											</div>
 										</div>
 									</div>
-								</transition>
-							</template>
-
-							<template v-if="!showDropInPaymentUpdate">
-								<monthly-good-update-form
-									:donation="donation"
-									:day-of-month="dayOfMonth"
-									:category="category"
-									:mg-amount="mgAmount"
-									:disabled="isSaving"
-									@form-update="formUpdated"
-								/>
-								<kv-button
-									data-test="monthly-good-save-button"
-									class="smaller button"
-									v-if="!isSaving"
-									@click.native="saveMonthlyGood"
-									:disabled="!isChanged || !isFormValid"
+									<kv-button
+										data-test="monthly-good-save-button"
+										class="smaller button"
+										v-if="!isSaving"
+										@click.native="saveMonthlyGood"
+										:disabled="!isChanged || !isFormValid"
+									>
+										Save Settings
+									</kv-button>
+									<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
+										Saving <kv-loading-spinner />
+									</kv-button>
+								</div>
+								<!-- Payment Methods -->
+								<div
+									v-if="!settingsOpen"
+									class="row column" key="paymentSettings"
 								>
-									Save
-								</kv-button>
-								<kv-button data-test="monthly-good-save-button" class="smaller button" v-else>
-									Saving <kv-loading-spinner />
-								</kv-button>
-							</template>
+									<kv-button class="text-link"
+										@click.native.prevent="toggleSections"
+									>
+										<kv-icon
+											class="arrow back-arrow"
+											name="small-chevron"
+											:from-sprite="true"
+										/>
+										Back to deposit settings
+									</kv-button>
+									<div class="mg-update-lightbox__dropin-payment-wrapper">
+										<div class="row column mg-update-lightbox__current-payment-method">
+											<strong>Current payment method:</strong><br>
+											<img class="mg-update-lightbox__cc-icon" :src="paymentMethod.imageUrl">
+											{{ paymentMethod.description }}
+										</div>
+										<p v-if="updateToCurrentPaymentMethod"
+											class="validation-error text-center"
+										>
+											<!-- eslint-disable-next-line max-len -->
+											This is your current payment method.<br> Please select or enter a new payment method to update your deposit.
+										</p>
+										<monthly-good-drop-in-payment-wrapper
+											:amount="totalCombinedDeposit"
+											:donate-amount="donation"
+											:day-of-month="dayOfMonth"
+											:category="category"
+											:current-nonce="paymentMethod.nonce"
+											action="Update"
+											@complete-transaction="completeMGBraintree"
+											@no-update="noUpdate"
+										/>
+									</div>
+								</div>
+							</transition>
 						</div>
 					</kv-lightbox>
 
@@ -213,12 +188,6 @@ const pageQuery = gql`query monthlyGoodSubscription {
 		}
 		monthlyGoodCategory
 	}
-	general {
-		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
-			value
-			key
-		}
-	}
 }`;
 
 export default {
@@ -246,7 +215,6 @@ export default {
 			settingsOpen: true, // if settingsOpen is false, payment update section is shown
 			isChanged: false,
 			isFormValid: true,
-			showDropInPaymentUpdate: true,
 			updateToCurrentPaymentMethod: false,
 			paymentMethod: {}
 		};
@@ -267,10 +235,6 @@ export default {
 				this.mgAmount = autoDepositAmount - this.donation;
 				this.paymentMethod = _get(data, 'my.autoDeposit.paymentMethod', {});
 			}
-
-			// if experiment and feature flag are BOTH on, show UI
-			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
-			this.showDropInPaymentUpdate = braintreeDropInFeatureFlag;
 		},
 	},
 	computed: {
