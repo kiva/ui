@@ -1,6 +1,6 @@
 <template>
 	<div class="row kiva-card-promo">
-		<div class="small-12 xlarge-5 xxlarge-4 columns">
+		<div class="small-12 xlarge-5 columns">
 			<!-- eslint-disable max-len -->
 			<svg class="kiva-card-promo__img" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 237 336">
 				<defs />
