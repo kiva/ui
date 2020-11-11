@@ -1453,7 +1453,7 @@ const mockedAPIResponse = {
 					"id": "1lBB1uCt3E4S3cBWGVTSbx",
 					"type": "Entry",
 					"createdAt": "2020-11-10T22:47:25.202Z",
-					"updatedAt": "2020-11-11T00:28:04.357Z",
+					"updatedAt": "2020-11-11T00:41:47.189Z",
 					"environment": {
 					  "sys": {
 						"id": "development",
@@ -1461,7 +1461,7 @@ const mockedAPIResponse = {
 						"linkType": "Environment"
 					  }
 					},
-					"revision": 5,
+					"revision": 8,
 					"contentType": {
 					  "sys": {
 						"type": "Link",
@@ -1472,7 +1472,7 @@ const mockedAPIResponse = {
 					"locale": "en-US"
 				  },
 				  "fields": {
-					"key": "homepage-kiva-card-promo",
+					"key": "ui-homepage-kiva-card-promo",
 					"active": true,
 					"startDate": "2020-10-13T00:00-08:00",
 					"endDate": "2020-12-26T00:00-08:00",
@@ -1489,7 +1489,7 @@ const mockedAPIResponse = {
 						  "id": "3CapD9VOqn6SUEzSN4lsXJ",
 						  "type": "Entry",
 						  "createdAt": "2020-11-06T01:17:51.100Z",
-						  "updatedAt": "2020-11-10T00:29:27.031Z",
+						  "updatedAt": "2020-11-11T00:36:42.326Z",
 						  "environment": {
 							"sys": {
 							  "id": "development",
@@ -1497,7 +1497,7 @@ const mockedAPIResponse = {
 							  "linkType": "Environment"
 							}
 						  },
-						  "revision": 7,
+						  "revision": 8,
 						  "contentType": {
 							"sys": {
 							  "type": "Link",
@@ -1508,8 +1508,8 @@ const mockedAPIResponse = {
 						  "locale": "en-US"
 						},
 						"fields": {
-						  "key": "homepage-kiva-card-campaign-part-1",
-						  "name": "Homepage Kiva Card Campaign Part 1",
+						  "key": "homepage-kiva-card-promo-part-1",
+						  "name": "Homepage Kiva Card Promo Part 1",
 						  "bodyCopy": {
 							"data": {},
 							"content": [
@@ -1569,7 +1569,7 @@ const mockedAPIResponse = {
 						  "id": "6iBW6SSUNLzdmE2Owbohmn",
 						  "type": "Entry",
 						  "createdAt": "2020-11-10T00:18:59.891Z",
-						  "updatedAt": "2020-11-10T00:29:13.695Z",
+						  "updatedAt": "2020-11-11T00:36:53.517Z",
 						  "environment": {
 							"sys": {
 							  "id": "development",
@@ -1577,7 +1577,7 @@ const mockedAPIResponse = {
 							  "linkType": "Environment"
 							}
 						  },
-						  "revision": 2,
+						  "revision": 3,
 						  "contentType": {
 							"sys": {
 							  "type": "Link",
@@ -1588,8 +1588,8 @@ const mockedAPIResponse = {
 						  "locale": "en-US"
 						},
 						"fields": {
-						  "key": "homepage-kiva-card-campaign-part-2",
-						  "name": "Homepage Kiva Card Campaign Part 2",
+						  "key": "homepage-kiva-card-promo-part-2",
+						  "name": "Homepage Kiva Card Promo Part 2",
 						  "bodyCopy": {
 							"data": {},
 							"content": [
@@ -1634,7 +1634,7 @@ const mockedAPIResponse = {
 					  "id": "3CapD9VOqn6SUEzSN4lsXJ",
 					  "type": "Entry",
 					  "createdAt": "2020-11-06T01:17:51.100Z",
-					  "updatedAt": "2020-11-10T00:29:27.031Z",
+					  "updatedAt": "2020-11-11T00:36:42.326Z",
 					  "environment": {
 						"sys": {
 						  "id": "development",
@@ -1642,7 +1642,7 @@ const mockedAPIResponse = {
 						  "linkType": "Environment"
 						}
 					  },
-					  "revision": 7,
+					  "revision": 8,
 					  "contentType": {
 						"sys": {
 						  "type": "Link",
@@ -1653,8 +1653,8 @@ const mockedAPIResponse = {
 					  "locale": "en-US"
 					},
 					"fields": {
-					  "key": "homepage-kiva-card-campaign-part-1",
-					  "name": "Homepage Kiva Card Campaign Part 1",
+					  "key": "homepage-kiva-card-promo-part-1",
+					  "name": "Homepage Kiva Card Promo Part 1",
 					  "bodyCopy": {
 						"data": {},
 						"content": [
@@ -1714,7 +1714,7 @@ const mockedAPIResponse = {
 					  "id": "6iBW6SSUNLzdmE2Owbohmn",
 					  "type": "Entry",
 					  "createdAt": "2020-11-10T00:18:59.891Z",
-					  "updatedAt": "2020-11-10T00:29:13.695Z",
+					  "updatedAt": "2020-11-11T00:36:53.517Z",
 					  "environment": {
 						"sys": {
 						  "id": "development",
@@ -1722,7 +1722,7 @@ const mockedAPIResponse = {
 						  "linkType": "Environment"
 						}
 					  },
-					  "revision": 2,
+					  "revision": 3,
 					  "contentType": {
 						"sys": {
 						  "type": "Link",
@@ -1733,8 +1733,8 @@ const mockedAPIResponse = {
 					  "locale": "en-US"
 					},
 					"fields": {
-					  "key": "homepage-kiva-card-campaign-part-2",
-					  "name": "Homepage Kiva Card Campaign Part 2",
+					  "key": "homepage-kiva-card-promo-part-2",
+					  "name": "Homepage Kiva Card Promo Part 2",
 					  "bodyCopy": {
 						"data": {},
 						"content": [

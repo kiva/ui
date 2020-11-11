@@ -305,7 +305,7 @@ const promosQuery = gql`
 	query promos {
 		contentful {
 			heroPromo: entries(contentType: "uiSetting", contentKey: "ui-homepage-promo")
-			kivaCardPromo: entries(contentType: "uiSetting", contentKey: "homepage-kiva-card-promo")
+			kivaCardPromo: entries(contentType: "uiSetting", contentKey: "ui-homepage-kiva-card-promo")
 		}
 	}
 `;
