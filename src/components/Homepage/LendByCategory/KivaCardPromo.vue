@@ -51,68 +51,30 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import { formatContentType } from '@/util/contentfulUtils';
-import gql from 'graphql-tag';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
-
-const promoContentQuery = gql`
-  query contentfulCache {
-    contentful {
-      part1: entries(
-        contentType: "genericContentBlock"
-        contentKey: "homepage-kiva-card-campaign-part-1"
-      )
-      part2: entries(
-        contentType: "genericContentBlock"
-        contentKey: "homepage-kiva-card-campaign-part-2"
-      )
-    }
-  }
-`;
 
 export default {
 	components: {
 		KvButton,
 	},
-	inject: ['apollo'],
-	apollo: {
-		query: promoContentQuery,
-		preFetch(config, client) {
-			return client.query({ query: promoContentQuery });
-		},
-		result({ data }) {
-			const showPart1 = true; // TODO: show part1 or part2 depending on other contentful query or date.
-			const contentfulContent = showPart1
-				? data?.contentful?.part1?.items[0]
-				: data?.contentful?.part2?.items[0];
-
-			if (contentfulContent) {
-				this.contentfulResponse = formatContentType(contentfulContent, 'genericContentBlock');
-			}
+	props: {
+		promoContent: {
+			type: Object,
+			default() { return {}; }
 		}
-	},
-	data() {
-		return {
-			contentfulResponse: {
-				bodyCopy: null,
-				headline: null,
-				primaryCtaLink: null,
-				primaryCtaText: null,
-			},
-		};
 	},
 	computed: {
 		bodyCopy() {
-			return documentToHtmlString(this.contentfulResponse.bodyCopy);
+			return documentToHtmlString(this.promoContent.bodyCopy);
 		},
 		headline() {
-			return this.contentfulResponse.headline;
+			return this.promoContent.headline;
 		},
 		primaryCtaLink() {
-			return this.contentfulResponse.primaryCtaLink;
+			return this.promoContent.primaryCtaLink;
 		},
 		primaryCtaText() {
-			return this.contentfulResponse.primaryCtaText;
+			return this.promoContent.primaryCtaText;
 		},
 	},
 };

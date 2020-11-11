@@ -1,12 +1,12 @@
 <template>
 	<div class="lend-by-category-homepage">
 		<hero-slideshow
-			v-if="promoEnabled && promoContent"
-			:promo-enabled="promoEnabled"
-			:promo-content="promoContent"
+			v-if="heroPromoEnabled && heroPromoContent"
+			:promo-enabled="heroPromoEnabled"
+			:promo-content="heroPromoContent"
 		/>
 		<section
-			v-if="!promoEnabled || !promoContent"
+			v-if="!heroPromoEnabled || !heroPromoContent"
 			class="featured-loans section"
 		>
 			<div class="row align-center">
@@ -96,8 +96,11 @@
 			/>
 		</section>
 
-		<section class="section">
-			<kiva-card-promo />
+		<section
+			v-if="kivaCardPromoEnabled && kivaCardPromoContent"
+			class="section"
+		>
+			<kiva-card-promo :promo-content="kivaCardPromoContent" />
 		</section>
 
 		<section class="loan-not-donation section text-center">
@@ -283,11 +286,8 @@
 </template>
 
 <script>
-import contentful from '@/graphql/query/contentful.graphql';
-
-import _get from 'lodash/get';
 import { settingEnabled } from '@/util/settingsUtils';
-import { processContent } from '@/util/contentfulUtils';
+import { processContent, formatGenericContentBlock } from '@/util/contentfulUtils';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
@@ -295,10 +295,20 @@ import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import KivaCardPromo from '@/components/Homepage/LendByCategory/KivaCardPromo';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
+import gql from 'graphql-tag';
 import HomepageStatistics from './HomepageStatistics';
 import HeroSlideshow from './HeroSlideshow';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
+
+const promosQuery = gql`
+	query promos {
+		contentful {
+			heroPromo: entries(contentType: "uiSetting", contentKey: "ui-homepage-promo")
+			kivaCardPromo: entries(contentType: "uiSetting", contentKey: "homepage-kiva-card-promo")
+		}
+	}
+`;
 
 export default {
 	components: {
@@ -382,8 +392,10 @@ export default {
 					['small retina', imgRequire('./loan-not-donation_2x.png')],
 				],
 			},
-			promoContent: null,
-			promoEnabled: null,
+			heroPromoContent: null,
+			heroPromoEnabled: null,
+			kivaCardPromoEnabled: null,
+			kivaCardPromoContent: null,
 			statistics: [
 				['small', imgRequire('./stats.png')],
 				['small retina', imgRequire('./stats_2x.png')],
@@ -398,35 +410,46 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch: true,
-		query: contentful,
-		preFetchVariables() {
-			return {
-				contentType: 'uiSetting',
-				contentKey: 'ui-homepage-promo'
-			};
-		},
-		variables() {
-			return {
-				contentType: 'uiSetting',
-				contentKey: 'ui-homepage-promo'
-			};
+		query: promosQuery,
+		preFetch(config, client) {
+			return client.query({ query: promosQuery });
 		},
 		result({ data }) {
-			// returns the contentful content of the uiSetting key ui-homepage-promo or empty object
-			// it should always be the first and only item in the array, since we pass the variable to the query above
-			const uiPromoSetting = _get(data, 'contentful.entries.items', []).find(item => item.fields.key === 'ui-homepage-promo'); // eslint-disable-line max-len
-			// exit if missing setting or fields
-			if (!uiPromoSetting || !uiPromoSetting.fields) {
-				return false;
+			// Hero section promo
+			const heroPromoData = data?.contentful?.heroPromo?.items[0];
+			if (heroPromoData?.fields) {
+				this.heroPromoEnabled = settingEnabled(
+					heroPromoData.fields,
+					'active',
+					'startDate',
+					'endDate'
+				);
+				if (this.heroPromoEnabled) {
+					this.heroPromoContent = processContent(heroPromoData.fields.content);
+				}
 			}
-			this.promoEnabled = settingEnabled(
-				uiPromoSetting.fields,
-				'active',
-				'startDate',
-				'endDate'
-			);
-			this.promoContent = processContent(uiPromoSetting.fields.content);
+
+			// Kiva Card section promo
+			const kivaCardPromoData = data?.contentful?.kivaCardPromo?.items[0];
+			if (kivaCardPromoData?.fields) {
+				this.kivaCardPromoEnabled = settingEnabled(
+					kivaCardPromoData.fields,
+					'active',
+					'startDate',
+					'endDate'
+				);
+				if (this.kivaCardPromoEnabled) {
+					const part1Content = kivaCardPromoData.fields.content[0];
+					const part2Content = kivaCardPromoData.fields.content[1];
+
+					const today = new Date();
+					const part2ActivationDate = new Date(kivaCardPromoData.fields.dataObject.part2ActivationDate);
+
+					this.kivaCardPromoContent = today < part2ActivationDate
+						? formatGenericContentBlock(part1Content)
+						: formatGenericContentBlock(part2Content);
+				}
+			}
 		},
 	},
 };
