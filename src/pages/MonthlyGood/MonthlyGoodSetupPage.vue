@@ -13,7 +13,7 @@
 					</h3>
 					<form
 						class="monthly-good-form"
-						@submit.prevent="hasBillingAgreement ? submitMonthlyGood : null"
+						@submit.prevent="null"
 						novalidate
 					>
 						<div class="panel zigzag-bottom">
@@ -202,7 +202,7 @@
 							<div class="large-9 medium-10 small-12 columns">
 								<p>
 									<!-- eslint-disable-next-line max-len -->
-									<strong><em>We'll charge your {{ !showDropInPayments ? 'PayPal' : '' }} account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
+									<strong><em>We'll charge your account{{ isOnetime ? '' : ' each month' }}, and any credit in your Kiva account will be automatically re-lent for you.</em></strong>
 								</p>
 								<p v-if="hasAutoDeposits">
 									<!-- eslint-disable-next-line max-len -->
@@ -212,23 +212,8 @@
 									<!-- eslint-disable-next-line max-len -->
 									<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
 								</p>
-								<div v-if="hasBillingAgreement && !showDropInPayments">
-									<kv-button
-										type="submit"
-										data-test="confirm-monthly-good-button"
-										class="smaller"
-										:disabled="$v.$invalid || submitting"
-										@click.native="submitMonthlyGood()"
-									>
-										Confirm <kv-loading-spinner v-if="submitting" />
-									</kv-button>
-									<p>
-										<!-- eslint-disable-next-line max-len -->
-										<em>We'll charge your PayPal account for your {{ isOnetime ? 'Contribution' : 'Monthly Good' }}</em>
-									</p>
-								</div>
 
-								<div class="payment-dropin-wrapper" v-if="showDropInPayments">
+								<div class="payment-dropin-wrapper">
 									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 									<monthly-good-drop-in-payment-wrapper
 										:amount="totalCombinedDeposit"
@@ -237,15 +222,6 @@
 										:category="selectedGroup"
 										:is-one-time="isOnetime"
 										@complete-transaction="completeMGBraintree"
-									/>
-								</div>
-
-								<div class="payment-dropin-wrapper" v-if="!hasBillingAgreement && !showDropInPayments">
-									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
-									<pay-pal-mg
-										v-if="!showDropInPayments"
-										:amount="totalCombinedDeposit"
-										@complete-transaction="submitMonthlyGood"
 									/>
 								</div>
 							</div>
@@ -279,15 +255,12 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import { subDays } from 'date-fns';
 
-import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import MonthlyGoodDropInPaymentWrapper from '@/components/MonthlyGood/MonthlyGoodDropInPaymentWrapper';
-import PayPalMg from '@/components/MonthlyGood/PayPalMG';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
@@ -300,10 +273,6 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
 			key
 			value
-		}
-		braintreeDropInFeature: uiConfigSetting(key: "feature.braintree_dropin") {
-			value
-			key
 		}
 	}
 	my {
@@ -324,9 +293,6 @@ const pageQuery = gql`query monthlyGoodSetupPageControl {
 		autolendProfile {
 			id
 			isEnabled
-		}
-		payPalBillingAgreement {
-			hasPayPalBillingAgreement
 		}
 	}
 }`;
@@ -368,16 +334,13 @@ export default {
 	},
 	components: {
 		AlreadySubscribedNotice,
-		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
 		KvIcon,
 		KvLoadingOverlay,
-		KvLoadingSpinner,
 		LegacySubscriberNotice,
 		MonthlyGoodDropInPaymentWrapper,
-		PayPalMg,
 		WwwPage,
 	},
 	data() {
@@ -392,13 +355,11 @@ export default {
 			isDonationOptionsDirty: false,
 			submitting: false,
 			legacySubs: [],
-			showDropInPayments: true,
 			showLoadingOverlay: false,
 			// user flags
 			isMonthlyGoodSubscriber: false,
 			hasAutoDeposits: false,
 			hasAutoLending: false,
-			hasBillingAgreement: false,
 			hasLegacySubscription: false,
 			isMGTaglineActive: false,
 		};
@@ -439,14 +400,8 @@ export default {
 			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
 			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
 			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
-			this.hasBillingAgreement = _get(data,
-				'my.payPalBillingAgreement.hasPayPalBillingAgreement', false);
 			this.legacySubs = _get(data, 'my.subscriptions.values', []);
 			this.hasLegacySubscription = this.legacySubs.length > 0;
-
-			// if experiment and feature flag are BOTH on, show UI
-			const braintreeDropInFeatureFlag = _get(data, 'general.braintreeDropInFeature.value') === 'true' || false;
-			this.showDropInPayments = braintreeDropInFeatureFlag;
 		},
 	},
 	created() {
@@ -552,59 +507,6 @@ export default {
 				}
 			}).finally(() => {
 				this.showLoadingOverlay = false;
-			});
-		},
-		submitMonthlyGood() {
-			this.submitting = true;
-			this.$kvTrackEvent('Registration', 'click-confirm-monthly-good', 'register-monthly-good');
-
-			this.apollo.mutate({
-				mutation: gql`
-					mutation registerMonthlyGood(
-						$amount: Money!,
-						$donateAmount: Money!,
-						$dayOfMonth: Int!,
-						$category: MonthlyGoodCategoryEnum,
-						$isOnetime: Boolean
-					) {
-						my {
-							createMonthlyGoodSubscription( autoDeposit: {
-								amount: $amount,
-								donateAmount:
-								$donateAmount,
-								dayOfMonth: $dayOfMonth,
-								isOnetime: $isOnetime
-							},
-							category: $category)
-						}
-					}`,
-				variables: {
-					amount: numeral(this.totalCombinedDeposit).format('0.00'),
-					donateAmount: numeral(this.donation).format('0.00'),
-					dayOfMonth: numeral(this.dayOfMonth).value(),
-					category: this.selectedGroup,
-					isOnetime: this.isOnetime
-				}
-			}).then(data => {
-				if (data.errors) {
-					const errorMessage = _get(data, 'errors[0].message');
-					this.$showTipMsg(errorMessage, 'error');
-				} else {
-					this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
-					// Send to thanks page
-					this.$router.push({
-						path: '/monthlygood/thanks',
-						query: {
-							onetime: this.isOnetime,
-							source: this.source,
-							paymentType: 'LegacyPaypal',
-						}
-					});
-				}
-			}).catch(error => {
-				this.$showTipMsg(error, 'error');
-			}).finally(() => {
-				this.submitting = false;
 			});
 		},
 	},
