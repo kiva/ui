@@ -1,8 +1,0 @@
-query donationData {
-	general {
-		braintreePayWithExperiment: uiExperimentSetting(key: "braintree_pay_with") {
-			key
-			value
-		}
-	}
-}

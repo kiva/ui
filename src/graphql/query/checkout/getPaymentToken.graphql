@@ -1,6 +1,0 @@
-query getPaymentToken($amount: Money!) {
-	shop {
-		id
-		getPaymentToken(amount: $amount)
-	}
-}
