@@ -17,6 +17,7 @@ let activeExperiments = [
 	'add_to_basket_redirect',
 	'checkout_login_cta',
 	'homepage_force_dismiss_overlay',
+	'redirect_to_login',
 ];
 
 // TODO: Enhance Error handling
