@@ -1,4 +1,5 @@
 import { shallowMount, createLocalVue, RouterLinkStub } from '@vue/test-utils';
+import VueRouter from 'vue-router';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 import kvAnalytics from '@/plugins/kv-analytics-plugin';
 import { MockKvAuth0 } from '@/util/KvAuth0';
@@ -6,7 +7,9 @@ import numeralFilter from '@/plugins/numeral-filter';
 
 const localVue = createLocalVue();
 localVue.use(kvAnalytics);
+localVue.use(VueRouter);
 localVue.filter('numeral', numeralFilter);
+const router = new VueRouter();
 
 describe('TheHeader', () => {
 	it('should hide/show the search area when the search toggle button is clicked', async () => {
@@ -29,6 +32,7 @@ describe('TheHeader', () => {
 				apollo: {},
 				kvAuth0: MockKvAuth0,
 			},
+			router,
 		});
 		const toggle = wrapper.find('.search-toggler');
 		const area = wrapper.find('#top-nav-search-area');

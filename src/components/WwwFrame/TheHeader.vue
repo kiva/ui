@@ -101,11 +101,14 @@
 					</router-link>
 					<router-link
 						v-show="isVisitor"
-						to="/ui-login"
+						:to="loginUrl"
 						class="header-button"
 						:event="showPopupLogin ? '' : 'click'"
 						@click.native="auth0Login"
-						v-kv-track-event="['TopNav','click-Sign-in']"
+						v-kv-track-event="[
+							['TopNav','click-Sign-in'],
+							['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
+						]"
 					>
 						<span>Sign in</span>
 					</router-link>
@@ -319,6 +322,7 @@
 <script>
 import _get from 'lodash/get';
 import headerQuery from '@/graphql/query/wwwHeader.graphql';
+import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import KvDropdown from '@/components/Kv/KvDropdown';
 import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
@@ -352,7 +356,8 @@ export default {
 			aboutMenuId: 'about-header-dropdown',
 			lendMenuId: 'lend-header-dropdown',
 			myKivaMenuId: 'my-kiva-header-dropdown',
-			searchOpen: false
+			searchOpen: false,
+			redirectToLoginExperimentVersion: null,
 		};
 	},
 	props: {
@@ -387,7 +392,15 @@ export default {
 			return this.basketCount > 0 && !this.isFreeTrial;
 		},
 		showPopupLogin() {
-			return this.kvAuth0.enabled && this.$route.fullPath !== '/';
+			return this.kvAuth0.enabled
+				&& this.$route.fullPath !== '/'
+				&& this.redirectToLoginExperimentVersion !== 'b';
+		},
+		loginUrl() {
+			if (this.$route.path === '/') {
+				return '/ui-login';
+			}
+			return `/ui-login?doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
 		cssVars() {
 			if (this.theme) {
@@ -415,6 +428,13 @@ export default {
 			this.basketCount = _get(data, 'shop.nonTrivialItemCount');
 			this.balance = Math.floor(_get(data, 'my.userAccount.balance'));
 			this.profilePic = _get(data, 'my.lender.image.url');
+
+			// GROW-280 redirect to login instead of popup login experiment
+			const redirectToLoginExperiment = this.apollo.readFragment({
+				id: 'Experiment:redirect_to_login',
+				fragment: experimentVersionFragment,
+			}) || {};
+			this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 		},
 		errorHandlers: {
 			'shop.invalidBasketId': ({ route }) => {
