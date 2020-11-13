@@ -1,12 +1,6 @@
 export default [
 	{ path: '/', name: 'homepage', component: () => import('@/pages/Homepage/Homepage') },
-	{
-		path: '/algolia-vue',
-		component: () => import('@/pages/AlgoliaPOC'),
-		children: [
-			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
-		]
-	},
+	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{
 		path: '/auto-deposit',
 		component: () => import('@/pages/AutoDeposit/AutoDepositLandingPage'),
@@ -32,7 +26,6 @@ export default [
 			},
 		]
 	},
-	{ path: '/15', component: () => import('@/pages/15Years/15Years') },
 	{ path: '/build', component: () => import('@/pages/Build/BuildPage') },
 	{ path: '/build/code-of-conduct', component: () => import('@/pages/Build/CodeOfConductPage') },
 	{ path: '/build/data-snapshots', component: () => import('@/pages/Build/DataPage') },
@@ -40,6 +33,16 @@ export default [
 	{ path: '/build/getting-started', component: () => import('@/pages/Build/GettingStartedPage') },
 	{ path: '/build/research', component: () => import('@/pages/Build/Research') },
 	{ path: '/build/terms-of-service', component: () => import('@/pages/Build/TermsOfService') },
+	{
+		path: '/cc/:dynamicRoute',
+		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
+		props: route => ({
+			dynamicRoute: route.params.dynamicRoute,
+			upc: route.query.upc,
+			promoCode: route.query.promoCode,
+			lendingReward: route.query.lendingReward
+		})
+	},
 	{ path: '/checkout', component: () => import('@/pages/Checkout/CheckoutPage') },
 	{ path: '/checkout/post-purchase', component: () => import('@/pages/Checkout/PostPurchase') },
 	{
@@ -49,7 +52,6 @@ export default [
 			authenticationRequired: true,
 		}
 	},
-	{ path: '/component-demo', component: () => import('@/pages/ComponentDemo/ComponentDemo') },
 	{ path: '/covid19response', component: () => import('@/pages/LandingPages/MGCovid19/MGCovid19') },
 	{ path: '/donate/support-kiva', component: () => import('@/pages/Donate/DonateFromMacro') },
 	{ path: '/error', component: () => import('@/pages/Error') },
@@ -73,7 +75,6 @@ export default [
 		]
 	},
 	{ path: '/join-team', component: () => import('@/pages/LoginAndRegister/JoinTeam') },
-	{ path: '/kiva-app-components', component: () => import('@/pages/ComponentDemo/ComponentDemoKivaApp') },
 	{
 		path: '/legal',
 		component: () => import('@/pages/Legal/Legal'),
@@ -90,18 +91,7 @@ export default [
 	},
 	{ path: '/lend-by-category', component: () => import('@/pages/Lend/LendByCategoryPage') },
 	{ path: '/lend-by-category/:category', component: () => import('@/pages/Lend/LoanChannelCategoryPage') },
-	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 	{ path: '/lend/filter', component: () => import('@/pages/Lend/Filter/LendFilterPage') },
-	{
-		path: '/cc/:dynamicRoute',
-		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
-		props: route => ({
-			dynamicRoute: route.params.dynamicRoute,
-			upc: route.query.upc,
-			promoCode: route.query.promoCode,
-			lendingReward: route.query.lendingReward
-		})
-	},
 	{
 		path: '/monthlygood',
 		component: () => import('@/pages/MonthlyGood/MonthlyGoodLandingPage'),
@@ -133,7 +123,6 @@ export default [
 			activeLoginRequired: true,
 		}
 	},
-	{ path: '/page-two', component: () => import('@/pages/PageTwo') },
 	{
 		path: '/portfolio/lending-stats',
 		component: () => import('@/pages/LendingStats/LendingStatsPage'),
@@ -268,4 +257,13 @@ export default [
 	},
 	{ path: '/ui-site-map', component: () => import('@/pages/UiSiteMap/UiSiteMapPage') },
 	{ path: '/UI_REVISION', component: () => import('@/pages/UiRevision') },
+	// These are Demo Pages
+	{
+		path: '/algolia-vue',
+		component: () => import('@/pages/AlgoliaPOC'),
+		children: [
+			{ path: '*', component: () => import('@/pages/AlgoliaPOC') },
+		]
+	},
+	{ path: '/lend-vue', component: () => import('@/pages/Lend/LendPage') },
 ];
