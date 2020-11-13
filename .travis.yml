@@ -13,12 +13,12 @@ jobs:
     - node_js: '12.14'
     - node_js: 'node'
       if: head_branch = master
-    - node_js: '15.2.0'
+    - node_js: 15
       if: branch = node-v15
   allow_failures:
     - node_js: 'node'
       if: head_branch = master
-    - node_js: '15.2.0'
+    - node_js: 15
       if: branch = node-v15
 branches:
   only:
