@@ -1,3 +1,4 @@
+dist: bionic
 language: node_js
 cache:
   npm: true
