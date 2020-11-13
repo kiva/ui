@@ -118,7 +118,10 @@
 					>
 						<span>
 							<span class="amount">{{ balance | numeral('$0') }}</span>
-							<img :src="profilePic">
+							<img
+								:src="profilePic"
+								alt="My portfolio"
+							>
 						</span>
 					</router-link>
 				</div>
