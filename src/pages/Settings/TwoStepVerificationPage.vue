@@ -10,7 +10,7 @@
 		</div>
 		<div class="row">
 			<div class="column small-12 large-8">
-				<kv-settings-card :title="cardTitle">
+				<kv-settings-card>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
 						Get correct icon assest from design, or remove this KvIcon -->
@@ -22,9 +22,12 @@
 					</template>
 
 					<template v-slot:content>
-						<p>{{ cardSubhead }}</p>
+						<div v-if="!isMFAActive">
+							<h2>{{ cardTitle }}</h2>
+							<p>{{ cardSubhead }}</p>
+						</div>
 
-						<div v-if="MFA">
+						<div v-if="isMFAActive" class="section">
 							<h3 class="strong">
 								2-step verification is turned on
 							</h3>
@@ -35,7 +38,7 @@
 							<a>Turn off 2-step verification</a>
 						</div>
 
-						<div v-if="MFA">
+						<div v-if="isMFAActive" class="section">
 							<h3 class="strong">
 								Your security method(s)
 							</h3>
@@ -44,26 +47,37 @@
 							<a>REMOVE LINK</a>
 						</div>
 
-						<h3 class="strong">
-							Authentication app <span class="green">(Recommended)</span>
-						</h3>
-						<p>
-							Receive code from an authenticator app on your device,
-							like Google Authenticator, Duo, or Authy.
-						</p>
-						<kv-button class="smallest">
-							Use authentication app
-						</kv-button>
+						<div v-if="isMFAActive" class="section">
+							<h3 class="strong">
+								{{ cardTitle }}
+							</h3>
+							<p>{{ cardSubhead }}</p>
+						</div>
 
-						<h3 class="strong">
-							Text message or phone call
-						</h3>
-						<p>
-							Receive a code via text message on your mobile device.
-						</p>
-						<kv-button class="smallest">
-							Use text message or phone call
-						</kv-button>
+						<div class="sub-section">
+							<h3 class="strong">
+								Authentication app <span class="green">(Recommended)</span>
+							</h3>
+							<p>
+								Receive code from an authenticator app on your device,
+								like Google Authenticator, Duo, or Authy.
+							</p>
+							<kv-button class="smallest">
+								Use authentication app
+							</kv-button>
+						</div>
+
+						<div class="sub-section">
+							<h3 class="strong">
+								Text message or phone call
+							</h3>
+							<p>
+								Receive a code via text message on your mobile device.
+							</p>
+							<kv-button class="smallest">
+								Use text message or phone call
+							</kv-button>
+						</div>
 					</template>
 				</kv-settings-card>
 			</div>
@@ -72,16 +86,28 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
+
 import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '@/components/Kv/KvButton';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
+const pageQuery = gql`query mfaQuery($mfa_token: String!) {
+	my {
+		authenticatorEnrollments(mfa_token: $mfa_token) {
+			id
+			active
+			authenticator_type
+		}
+	}
+}`;
+
 export default {
 	data() {
 		return {
-			MFA: false,
+			isMFAActive: false,
 		};
 	},
 	components: {
@@ -94,15 +120,38 @@ export default {
 	metaInfo: {
 		title: '2-step verification',
 	},
+	mounted() {
+		if (this.kvAuth0.enabled) {
+			this.kvAuth0.getMfaManagementToken()
+				.then(token => {
+					return this.apollo.query({
+						query: pageQuery,
+						variables: {
+							mfa_token: token
+						}
+					});
+				}).then(result => {
+					const authEnrollments = result.data.my.authenticatorEnrollments;
+					for (let i = 0; i < authEnrollments.length; i += 1) {
+						// eslint-disable-next-line max-len
+						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
+							this.isMFAActive = true;
+							return;
+						}
+					}
+				});
+		}
+	},
+	inject: ['apollo', 'kvAuth0'],
 	computed: {
 		cardTitle() {
-			if (this.MFA) {
+			if (this.isMFAActive) {
 				return 'Add a backup method';
 			}
 			return 'How would you like your verification code?';
 		},
 		cardSubhead() {
-			if (this.MFA) {
+			if (this.isMFAActive) {
 				return "Set up additional backup steps so you can log in even if your other options aren't available";
 			}
 			return "You'll be asked for a verification code when accessing you Kiva account.";
@@ -123,6 +172,14 @@ export default {
 
 	.green {
 		color: $kiva-green;
+	}
+
+	.section {
+		margin-bottom: rem-calc(50);
+	}
+
+	.sub-section {
+		margin-bottom: 2rem;
 	}
 }
 
