@@ -28,23 +28,21 @@
 </template>
 
 <script>
-// import gql from 'graphql-tag';
+import gql from 'graphql-tag';
 
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 
-// TODO: This will be the query checking if user has
-// MFA enabled/disabled
-// const pageQuery = gql`query settingsQuery {
-// 	my {
-// 		autoDeposit {
-// 			id
-// 			status
-// 			isSubscriber
-// 		}
-// 	}
-// }`;
+const pageQuery = gql`query mfaQuery($mfa_token: String!) {
+	my {
+		authenticatorEnrollments(mfa_token: $mfa_token) {
+			id
+			active
+			authenticator_type
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -66,15 +64,29 @@ export default {
 		}
 
 	},
-	inject: ['apollo'],
-	// apollo: {
-	// 	query: pageQuery,
-	// 	preFetch: true,
-	// 	result({ data }) {
-	// 		console.log('data', data);
-	// 		// this.isMFAActive = data.whatever
-	// 	}
-	// }
+	inject: ['apollo', 'kvAuth0'],
+	mounted() {
+		if (this.kvAuth0.enabled) {
+			this.kvAuth0.getMfaManagementToken()
+				.then(token => {
+					return this.apollo.query({
+						query: pageQuery,
+						variables: {
+							mfa_token: token
+						}
+					});
+				}).then(result => {
+					const authEnrollments = result.data.my.authenticatorEnrollments;
+					for (let i = 0; i < authEnrollments.length; i += 1) {
+						// eslint-disable-next-line max-len
+						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
+							this.isMFAActive = true;
+							return;
+						}
+					}
+				});
+		}
+	}
 };
 </script>
 
