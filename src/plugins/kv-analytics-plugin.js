@@ -117,12 +117,18 @@ export default Vue => {
 
 			return true;
 		},
-		parseEventProperties: eventString => {
-			let params;
-			if (typeof eventString === 'object' && eventString.length) {
-				params = eventString;
+		parseEventProperties: eventValue => {
+			// Ensure we have a non-empty array to begin with
+			if (Array.isArray(eventValue) && eventValue.length) {
+				// Handle multiple events being pass as an array
+				if (Array.isArray(eventValue[0])) {
+					eventValue.forEach(params => kvActions.trackEvent.apply(this, params));
+				} else {
+					kvActions.trackEvent.apply(this, eventValue);
+				}
+			} else {
+				throw new TypeError(`Expected non-empty array, but got ${eventValue}`);
 			}
-			kvActions.trackEvent.apply(this, params);
 		},
 		trackTransaction: transactionData => {
 			// Nothing to track
