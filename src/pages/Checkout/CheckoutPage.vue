@@ -85,7 +85,7 @@
 									id="login-to-continue-button"
 									v-kv-track-event="['basket', 'Login to Continue Button']"
 									title="Login to Continue Button"
-									@click.prevent.native="loginToContinue"
+									@click.native="loginToContinue"
 									:href="'/ui-login?force=true&doneUrl=/checkout'"
 								>
 									{{ loginContinueButtonText }}
@@ -232,6 +232,7 @@ export default {
 			userPrefContinueBrowsing: false,
 			addToBasketRedirectExperimentShown: false,
 			loginButtonExperimentVersion: null,
+			redirectToLoginExperimentVersion: null,
 		};
 	},
 	apollo: {
@@ -341,6 +342,13 @@ export default {
 				this.loginButtonExperimentVersion,
 			);
 		}
+
+		// GROW-280 redirect to login instead of popup login experiment
+		const redirectToLoginExperiment = this.apollo.readFragment({
+			id: 'Experiment:redirect_to_login',
+			fragment: experimentVersionFragment,
+		}) || {};
+		this.redirectToLoginExperimentVersion = redirectToLoginExperiment.version;
 	},
 	mounted() {
 		// Ensure browser clock is correct before using current time
@@ -431,7 +439,23 @@ export default {
 		}
 	},
 	methods: {
-		loginToContinue() {
+		loginToContinue(event) {
+			if (this.redirectToLoginExperimentVersion) {
+				this.$kvTrackEvent(
+					'Basket',
+					'EXP-GROW-282-Oct2020',
+					this.redirectToLoginExperimentVersion,
+				);
+			}
+
+			if (this.redirectToLoginExperimentVersion !== 'b' && this.kvAuth0.enabled) {
+				event.preventDefault();
+				this.doPopupLogin();
+			}
+
+			// Doing nothing here allows the normal link handling to happen, which will send the user to /ui-login
+		},
+		doPopupLogin() {
 			if (this.kvAuth0.enabled) {
 				this.updatingTotals = true;
 				// we need to force show the login popup if not actively logged in
