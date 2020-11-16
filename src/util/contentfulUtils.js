@@ -85,6 +85,21 @@ export function formatGenericContentBlock(contentfulContent) {
 }
 
 /**
+ * Format Generic Content Block (contentful type id: richTextContent)
+ * Takes raw contentful content object and returns an object with targeted keys/values
+ *
+ * @param {array} contentfulContent data
+ * @returns {object}
+ */
+export function formatRichTextContent(contentfulContent) {
+	return {
+		key: contentfulContent.fields?.key,
+		name: contentfulContent.fields?.name,
+		richText: contentfulContent.fields?.richText,
+	};
+}
+
+/**
  * Format Ui Setting (contentful type id: uiSetting)
  * Takes raw contentful content object and returns an object with targeted keys/values
  *
@@ -217,6 +232,8 @@ export function formatContentType(contentfulContent, contentType) {
 			return formatGlobalPromoBanner(contentfulContent);
 		case 'responsiveImageSet':
 			return formatResponsiveImageSet(contentfulContent);
+		case 'richTextContent':
+			return formatRichTextContent(contentfulContent);
 		default:
 			return { error: 'Unrecognized Content Type' };
 	}
@@ -229,7 +246,7 @@ export function formatContentType(contentfulContent, contentType) {
  * @returns {array}
  */
 export function formatContentTypes(contentfulContent) {
-	const contents = contentfulContent.length ? contentfulContent : [];
+	const contents = contentfulContent?.length ? contentfulContent : [];
 	const formattedContent = [];
 
 	contents.forEach(item => {
@@ -252,7 +269,7 @@ export function processPageContent(entryItem) {
 	const isPage = entryItem.sys?.contentType?.sys?.id === 'page';
 	if (!isPage) return { error: 'Non-Page Type Contentful Response' };
 
-	// extract top level items in the Page, initialtize pageLayout and settings
+	// extract top level items in the Page, initialize pageLayout and settings
 	contentfulContentObject.page = {
 		key: entryItem.fields?.key,
 		path: entryItem.fields?.path,
@@ -260,7 +277,7 @@ export function processPageContent(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name
 		},
-		settings: entryItem.fields?.settings.length
+		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
 	};
 
@@ -301,7 +318,7 @@ export function processPageContentFlat(entryItem) {
 	const isPage = entryItem.sys?.contentType?.sys?.id === 'page';
 	if (!isPage) return { error: 'Non-Page Type Contentful Response' };
 
-	// extract top level items in the Page, initialtize pageLayout and settings
+	// extract top level items in the Page, initialize pageLayout and settings
 	contentfulContentObject.page = {
 		key: entryItem.fields?.key,
 		path: entryItem.fields?.path,
@@ -309,7 +326,7 @@ export function processPageContentFlat(entryItem) {
 		pageLayout: {
 			name: entryItem.fields?.pageLayout?.fields?.name
 		},
-		settings: entryItem.fields?.settings.length
+		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
 	};
 

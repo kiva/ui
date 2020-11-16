@@ -1,0 +1,667 @@
+			{
+			  "sys": {
+				"space": {
+				  "sys": {
+					"type": "Link",
+					"linkType": "Space",
+					"id": "j0p9a6ql0rn7"
+				  }
+				},
+				"id": "2AT4yRl97Od1Olx9REbrHZ",
+				"type": "Entry",
+				"createdAt": "2020-11-12T19:37:34.998Z",
+				"updatedAt": "2020-11-12T19:38:42.085Z",
+				"environment": {
+				  "sys": {
+					"id": "development",
+					"type": "Link",
+					"linkType": "Environment"
+				  }
+				},
+				"revision": 2,
+				"contentType": {
+				  "sys": {
+					"type": "Link",
+					"linkType": "ContentType",
+					"id": "page"
+				  }
+				},
+				"locale": "en-US"
+			  },
+			  "fields": {
+				"key": "auto-deposit",
+				"pageLayout": {
+				  "sys": {
+					"space": {
+					  "sys": {
+						"type": "Link",
+						"linkType": "Space",
+						"id": "j0p9a6ql0rn7"
+					  }
+					},
+					"id": "4kyb2icg3Qm6YRQ1PP6tzW",
+					"type": "Entry",
+					"createdAt": "2020-11-12T19:38:21.606Z",
+					"updatedAt": "2020-11-16T19:27:53.095Z",
+					"environment": {
+					  "sys": {
+						"id": "development",
+						"type": "Link",
+						"linkType": "Environment"
+					  }
+					},
+					"revision": 4,
+					"contentType": {
+					  "sys": {
+						"type": "Link",
+						"linkType": "ContentType",
+						"id": "pageLayout"
+					  }
+					},
+					"locale": "en-US"
+				  },
+				  "fields": {
+					"name": "autodeposit-standard",
+					"contentGroups": [
+					  {
+						"sys": {
+						  "space": {
+							"sys": {
+							  "type": "Link",
+							  "linkType": "Space",
+							  "id": "j0p9a6ql0rn7"
+							}
+						  },
+						  "id": "gEBPgV2ExxSKMrhIIF4VD",
+						  "type": "Entry",
+						  "createdAt": "2020-11-12T22:14:57.207Z",
+						  "updatedAt": "2020-11-12T23:30:38.888Z",
+						  "environment": {
+							"sys": {
+							  "id": "development",
+							  "type": "Link",
+							  "linkType": "Environment"
+							}
+						  },
+						  "revision": 4,
+						  "contentType": {
+							"sys": {
+							  "type": "Link",
+							  "linkType": "ContentType",
+							  "id": "contentGroup"
+							}
+						  },
+						  "locale": "en-US"
+						},
+						"fields": {
+						  "key": "autoDepositCta",
+						  "name": "Auto deposit cta section",
+						  "contents": [
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "bCXt9Oonc7wLTWZqouV1A",
+								"type": "Entry",
+								"createdAt": "2020-11-12T22:16:36.203Z",
+								"updatedAt": "2020-11-12T22:17:05.562Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 2,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "genericContentBlock"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "auto-deposit-cta",
+								"name": "auto-deposit-cta",
+								"bodyCopy": {
+								  "data": {},
+								  "content": [
+									{
+									  "data": {},
+									  "content": [
+										{
+										  "data": {},
+										  "marks": [],
+										  "value": "Automatically add money to your Kiva account every month so it'll be available for you to lend to the borrowers that inspire you the most.",
+										  "nodeType": "text"
+										}
+									  ],
+									  "nodeType": "paragraph"
+									}
+								  ],
+								  "nodeType": "document"
+								},
+								"headline": "Set up an Auto Deposit"
+							  }
+							}
+						  ]
+						}
+					  },
+					  {
+						"sys": {
+						  "space": {
+							"sys": {
+							  "type": "Link",
+							  "linkType": "Space",
+							  "id": "j0p9a6ql0rn7"
+							}
+						  },
+						  "id": "5bTAkE8H4TzflSwURVfSfu",
+						  "type": "Entry",
+						  "createdAt": "2020-11-13T18:33:48.428Z",
+						  "updatedAt": "2020-11-16T19:47:07.605Z",
+						  "environment": {
+							"sys": {
+							  "id": "development",
+							  "type": "Link",
+							  "linkType": "Environment"
+							}
+						  },
+						  "revision": 8,
+						  "contentType": {
+							"sys": {
+							  "type": "Link",
+							  "linkType": "ContentType",
+							  "id": "contentGroup"
+							}
+						  },
+						  "locale": "en-US"
+						},
+						"fields": {
+						  "key": "autoDepositFaqs",
+						  "name": "Frequently Asked Questions",
+						  "contents": [
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "4ususRLIqffT9mV1B7EqtR",
+								"type": "Entry",
+								"createdAt": "2020-11-13T18:43:23.916Z",
+								"updatedAt": "2020-11-13T18:46:29.366Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 2,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "faq-can i cancel anytime",
+								"name": "Can I cancel anytime?",
+								"richText": {
+								  "data": {},
+								  "content": [
+									{
+									  "data": {},
+									  "content": [
+										{
+										  "data": {},
+										  "marks": [],
+										  "value": "Yes. Auto deposits can be canceled or edited at any time. To do so, go to your ",
+										  "nodeType": "text"
+										},
+										{
+										  "data": {
+											"uri": "/settings/subscriptions"
+										  },
+										  "content": [
+											{
+											  "data": {},
+											  "marks": [],
+											  "value": "subscription settings",
+											  "nodeType": "text"
+											}
+										  ],
+										  "nodeType": "hyperlink"
+										},
+										{
+										  "data": {},
+										  "marks": [],
+										  "value": ".",
+										  "nodeType": "text"
+										}
+									  ],
+									  "nodeType": "paragraph"
+									}
+								  ],
+								  "nodeType": "document"
+								}
+							  }
+							},
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "1CYoTLlIlL697Z12kMHc6c",
+								"type": "Entry",
+								"createdAt": "2020-11-13T19:33:08.253Z",
+								"updatedAt": "2020-11-13T19:33:08.253Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 1,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "faq-Are my funds automatically lent after they’re deposited",
+								"name": "Are my funds automatically lent after they’re deposited?",
+								"richText": {
+								  "nodeType": "document",
+								  "data": {},
+								  "content": [
+									{
+									  "nodeType": "paragraph",
+									  "content": [
+										{
+										  "nodeType": "text",
+										  "value": "No. By default, when you set up an auto deposit, your funds will be added to your account and available for you to lend. If you want your funds to be automatically lent out according to your preferences, you can turn on ",
+										  "marks": [],
+										  "data": {}
+										},
+										{
+										  "nodeType": "hyperlink",
+										  "content": [
+											{
+											  "nodeType": "text",
+											  "value": "auto lending",
+											  "marks": [],
+											  "data": {}
+											}
+										  ],
+										  "data": {
+											"uri": "/settings/autolending"
+										  }
+										},
+										{
+										  "nodeType": "text",
+										  "value": ".",
+										  "marks": [],
+										  "data": {}
+										}
+									  ],
+									  "data": {}
+									}
+								  ]
+								}
+							  }
+							},
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "32rvzVhr3lrQuw0xaUXitf",
+								"type": "Entry",
+								"createdAt": "2020-11-16T17:23:30.463Z",
+								"updatedAt": "2020-11-16T17:23:30.463Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 1,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "faq- will I be notified when a deposit occurs",
+								"name": "Will I be notified when a deposit occurs?",
+								"richText": {
+								  "nodeType": "document",
+								  "data": {},
+								  "content": [
+									{
+									  "nodeType": "paragraph",
+									  "content": [
+										{
+										  "nodeType": "text",
+										  "value": "Yes. You’ll get a receipt from PayPal notifying you every time an auto deposit is made.",
+										  "marks": [],
+										  "data": {}
+										}
+									  ],
+									  "data": {}
+									}
+								  ]
+								}
+							  }
+							},
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "5oPawoyos8VbObiSLKutg5",
+								"type": "Entry",
+								"createdAt": "2020-11-16T17:35:53.046Z",
+								"updatedAt": "2020-11-16T17:35:53.046Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 1,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "faq-Can I make auto deposits on a weekly, quarterly or annual basis?",
+								"name": "Can I make auto deposits on a weekly, quarterly or annual basis?",
+								"richText": {
+								  "data": {},
+								  "content": [
+									{
+									  "data": {},
+									  "content": [
+										{
+										  "data": {},
+										  "marks": [],
+										  "value": "At this time we only offer auto deposits on a monthly basis. If you’re interested in being alerted as to when we launch other frequencies, please email ",
+										  "nodeType": "text"
+										},
+										{
+										  "data": {
+											"uri": "mailto:contactus@kiva.org?Subject=Auto-deposit"
+										  },
+										  "content": [
+											{
+											  "data": {},
+											  "marks": [],
+											  "value": "contactus@kiva.org",
+											  "nodeType": "text"
+											}
+										  ],
+										  "nodeType": "hyperlink"
+										},
+										{
+										  "data": {},
+										  "marks": [],
+										  "value": " and let us know.",
+										  "nodeType": "text"
+										}
+									  ],
+									  "nodeType": "paragraph"
+									}
+								  ],
+								  "nodeType": "document"
+								}
+							  }
+							}
+						  ]
+						}
+					  },
+					  {
+						"sys": {
+						  "space": {
+							"sys": {
+							  "type": "Link",
+							  "linkType": "Space",
+							  "id": "j0p9a6ql0rn7"
+							}
+						  },
+						  "id": "4HboCUG7nw3y7ycOLqi67R",
+						  "type": "Entry",
+						  "createdAt": "2020-11-16T18:28:27.714Z",
+						  "updatedAt": "2020-11-16T19:47:29.652Z",
+						  "environment": {
+							"sys": {
+							  "id": "development",
+							  "type": "Link",
+							  "linkType": "Environment"
+							}
+						  },
+						  "revision": 4,
+						  "contentType": {
+							"sys": {
+							  "type": "Link",
+							  "linkType": "ContentType",
+							  "id": "contentGroup"
+							}
+						  },
+						  "locale": "en-US"
+						},
+						"fields": {
+						  "key": "autoDepositWhatToExpect",
+						  "name": "What to expect with Auto Deposit",
+						  "contents": [
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "2HvUN8mc4nhLp0yt8IoO7Q",
+								"type": "Entry",
+								"createdAt": "2020-11-16T18:51:30.995Z",
+								"updatedAt": "2020-11-16T18:51:30.995Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 1,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "autoDeposit-never forget",
+								"name": "Never Forget",
+								"richText": {
+								  "data": {},
+								  "content": [
+									{
+									  "data": {},
+									  "content": [
+										{
+										  "data": {},
+										  "marks": [],
+										  "value": "You choose the frequency, then don't have to think about it. Money is automatically added to your account and available for you to lend.",
+										  "nodeType": "text"
+										}
+									  ],
+									  "nodeType": "paragraph"
+									}
+								  ],
+								  "nodeType": "document"
+								}
+							  }
+							},
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "1RSX8vj7D0RQXjkwKMMuyx",
+								"type": "Entry",
+								"createdAt": "2020-11-16T18:52:39.829Z",
+								"updatedAt": "2020-11-16T18:52:39.829Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 1,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "autoDeposit-Achieve Your Goals",
+								"name": "Achieve Your Goals",
+								"richText": {
+								  "nodeType": "document",
+								  "data": {},
+								  "content": [
+									{
+									  "nodeType": "paragraph",
+									  "content": [
+										{
+										  "nodeType": "text",
+										  "value": "Whether you want to make a loan every month or a hundred loans in a lifetime, auto deposit makes it easy to have that impact.",
+										  "marks": [],
+										  "data": {}
+										}
+									  ],
+									  "data": {}
+									}
+								  ]
+								}
+							  }
+							},
+							{
+							  "sys": {
+								"space": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "Space",
+									"id": "j0p9a6ql0rn7"
+								  }
+								},
+								"id": "23ZBxn5AxjptQPoDT7t0tv",
+								"type": "Entry",
+								"createdAt": "2020-11-16T18:53:18.677Z",
+								"updatedAt": "2020-11-16T18:53:18.677Z",
+								"environment": {
+								  "sys": {
+									"id": "development",
+									"type": "Link",
+									"linkType": "Environment"
+								  }
+								},
+								"revision": 1,
+								"contentType": {
+								  "sys": {
+									"type": "Link",
+									"linkType": "ContentType",
+									"id": "richTextContent"
+								  }
+								},
+								"locale": "en-US"
+							  },
+							  "fields": {
+								"key": "autoDeposit-Regular Updates",
+								"name": "Regular Updates",
+								"richText": {
+								  "nodeType": "document",
+								  "data": {},
+								  "content": [
+									{
+									  "nodeType": "paragraph",
+									  "content": [
+										{
+										  "nodeType": "text",
+										  "value": "We'll email after each deposit is made, with a reminder to lend those funds (or turn on auto lending and have it lent automatically).",
+										  "marks": [],
+										  "data": {}
+										}
+									  ],
+									  "data": {}
+									}
+								  ]
+								}
+							  }
+							}
+						  ]
+						}
+					  }
+					]
+				  }
+				},
+				"path": "/auto-deposit"
+			  }
+			}

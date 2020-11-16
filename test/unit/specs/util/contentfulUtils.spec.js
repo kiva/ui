@@ -9,6 +9,8 @@ import {
 
 import inactiveUiSetting from '../../fixtures/UiSettingTypeInactiveRaw.json';
 import ccPageRaw from '../../fixtures/CorporateCampaignContentfulPageRaw.json';
+import adPageRawNoSettings from '../../fixtures/AutoDepositPageRawNoSettings.json';
+
 import uiSettingRaw from '../../fixtures/UiSettingRaw.json';
 import genericContentBlockRaw from '../../fixtures/GenericContentBlockRaw.json';
 import responsiveImageSetRaw from '../../fixtures/ResponsiveImageSetRaw.json';
@@ -270,6 +272,116 @@ describe('contentfulUtils.js', () => {
 
 		test('should return flattened page, layout, and content group data', () => {
 			expect(processPageContentFlat(ccPageRaw)).toMatchObject(pageLevelLayoutAndContentGroups);
+		});
+	});
+
+	/**
+	*	This test group tests adPageRawNoSettings which includes:
+	*	- No page type
+	*	- An empty settings property
+	*	- Rich text fields
+	*/
+
+	describe('processPageContentFlattened with non specific data for adPageRawNoSettings', () => {
+		test('should return an error object if content is not a page', () => {
+			expect(processPageContentFlat(inactiveUiSetting)).toEqual({ error: 'Non-Page Type Contentful Response' });
+		});
+
+		const pageLevelData = {
+			page: {
+				key: expect.any(String),
+				path: expect.any(String),
+				pageType: undefined,
+			}
+		};
+
+		test('should return page level data', () => {
+			expect(processPageContentFlat(adPageRawNoSettings)).toMatchObject(pageLevelData);
+		});
+
+		const pageLevelAndLayoutData = {
+			page: {
+				key: expect.any(String),
+				path: expect.any(String),
+				pageType: undefined,
+				pageLayout: expect.objectContaining({
+					name: expect.any(String)
+				}),
+				settings: [],
+				contentGroups: expect.any(Object)
+			}
+		};
+
+		test('should return flattened page level + page layout, content groups and content data', () => {
+			expect(processPageContentFlat(adPageRawNoSettings)).toMatchObject(pageLevelAndLayoutData);
+		});
+
+		const pageLevelLayoutAndContentGroups = {
+			page: {
+				key: expect.any(String),
+				path: expect.any(String),
+				pageType: undefined,
+				pageLayout: expect.objectContaining({
+					name: expect.any(String)
+				}),
+				settings: [],
+				contentGroups: expect.objectContaining({
+					autoDepositCta: expect.objectContaining({
+						key: expect.any(String),
+						name: expect.any(String),
+						contents: [
+							{
+								key: expect.any(String),
+								name: expect.any(String),
+								bodyCopy: expect.any(Object),
+								headline: 'Set up an Auto Deposit',
+							}
+						],
+					}),
+					autoDepositFaqs: expect.objectContaining({
+						key: expect.any(String),
+						name: expect.any(String),
+						contents: [{
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}, {
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}, {
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}, {
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}],
+					}),
+					autoDepositWhatToExpect: expect.objectContaining({
+						key: expect.any(String),
+						name: expect.any(String),
+						contents: [{
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}, {
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}, {
+							key: expect.any(String),
+							name: expect.any(String),
+							richText: expect.any(Object)
+						}],
+					})
+				})
+			}
+		};
+
+		test('should return flattened page, layout, and content group data', () => {
+			expect(processPageContentFlat(adPageRawNoSettings)).toMatchObject(pageLevelLayoutAndContentGroups);
 		});
 	});
 });
