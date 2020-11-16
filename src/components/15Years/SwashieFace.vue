@@ -111,7 +111,10 @@ export default {
 			if (this.fillLevel >= 50 && this.fillLevel < 80) {
 				return 'content';
 			}
-			return 'elated';
+			if (this.fillLevel >= 80) {
+				return 'elated';
+			}
+			return 'asleep';
 		}
 	},
 	watch: {
