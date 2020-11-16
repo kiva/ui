@@ -11,8 +11,9 @@ export default {
 	component: AppealBannerSwashie,
 	decorators: [StoryRouter()],
 	args: {
-		goalTarget: 10000,
-		goalRaised: 2000,
+		targetAmount: 10000,
+		amountRaised: 2000,
+		buttonAmounts: [20, 35, 50],
 		headline: 'Donate $50, get $25 to lend.',
 		body: '<p>Your support has been essential this year. Donate today to keep Kiva possible.</p>',
 		isOpen: true,
@@ -27,8 +28,9 @@ export const Default = (args, { argTypes }) => ({
 	template: `
 		<div>
 			<appeal-banner-swashie
-				:goal-target="goalTarget"
-				:goal-raised="goalRaised"
+				:target-amount="targetAmount"
+				:amount-raised="amountRaised"
+				:button-amounts="buttonAmounts"
 				:headline="headline"
 				:body="body"
 				:is-open="isOpen"

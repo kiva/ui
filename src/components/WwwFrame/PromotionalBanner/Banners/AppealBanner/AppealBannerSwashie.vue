@@ -7,62 +7,67 @@
 	>
 		<!-- open banner -->
 		<div
-			class="appeal-banner appeal-banner--open row align-center"
+			class="appeal-banner appeal-banner--open"
 			v-if="isOpen"
 			key="openBanner"
 		>
-			<div class="appeal-banner__swashie shrink small-12 columns">
-				<div class="swashie">
-					<kv-progress-circle
-						class="swashie__progress-circle swashie__progress-circle--background"
-						:stroke-width="12"
-						:value="80"
-						:show-number="false"
-						aria-hidden="true"
-					/>
-					<kv-progress-circle
-						class="swashie__progress-circle swashie__progress-circle--foreground"
-						:stroke-width="12"
-						:value="parseInt(goalPercent * .8)"
-						:show-number="false"
-					/>
-					<swashie-face
-						class="swashie__face"
-						:percent-full="goalPercent"
-						:show-liquid="false"
-					/>
-					<div class="swashie__goal-status" v-html="goalStatus">
+			<div class="row align-center">
+				<div class="appeal-banner__swashie shrink small-12 columns">
+					<div class="swashie">
+						<kv-progress-circle
+							class="swashie__progress-circle swashie__progress-circle--background"
+							:stroke-width="12"
+							:value="80"
+							:show-number="false"
+							aria-hidden="true"
+						/>
+						<kv-progress-circle
+							class="swashie__progress-circle swashie__progress-circle--foreground"
+							:stroke-width="12"
+							:value="parseInt(goalPercent * .8)"
+							:show-number="false"
+						/>
+						<swashie-face
+							class="swashie__face"
+							:percent-full="goalPercent"
+							:show-liquid="false"
+						/>
+						<div class="swashie__goal-status" v-html="goalStatus">
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="appeal-banner__content small-12 columns">
-				<h3 class="appeal-banner__title strong" v-html="headline"></h3>
-				<div class="appeal-banner__body" v-html="body"></div>
-				<div class="appeal-banner__btn-wrapper">
-					<fifteen-years-button
-						class="appeal-banner__btn"
-						@click="onClickAmountBtn(20)"
-					>
-						$20
-					</fifteen-years-button>
-					<fifteen-years-button
-						class="appeal-banner__btn"
-						@click="onClickAmountBtn(50)"
-					>
-						$50
-					</fifteen-years-button>
-					<fifteen-years-button
-						class="appeal-banner__btn"
-						@click="onClickAmountBtn(70)"
-					>
-						$70
-					</fifteen-years-button>
-					<fifteen-years-button
-						class="appeal-banner__btn appeal-banner__btn--other"
-						to="/donate/supportus"
-					>
-						Other
-					</fifteen-years-button>
+				<div class="appeal-banner__content small-12 columns">
+					<h3 class="appeal-banner__title strong" v-html="headline"></h3>
+					<div class="appeal-banner__body" v-html="body"></div>
+					<ul class="appeal-banner__amount-list">
+						<li v-for="(buttonAmount, index) in buttonAmounts"
+							:key="`amount-${index}`"
+							class="appeal-banner__amount-item"
+						>
+							<fifteen-years-button
+								class="appeal-banner__btn"
+								@click="onClickAmountBtn(buttonAmount)"
+								v-kv-track-event="[
+									'promo',
+									'click-amount-btn',
+									'AppealBanner',
+									buttonAmount,
+									buttonAmount
+								]"
+							>
+								${{ buttonAmount }}
+							</fifteen-years-button>
+						</li>
+						<li class="appeal-banner__amount-item--other">
+							<fifteen-years-button
+								class="appeal-banner__btn"
+								to="/donate/supportus"
+								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
+							>
+								Other
+							</fifteen-years-button>
+						</li>
+					</ul>
 				</div>
 				<div class="small-12 columns text-right">
 					<button
@@ -74,7 +79,7 @@
 				</div>
 			</div>
 		</div>
-
+		</div>
 		<!-- closed banner -->
 		<div
 			class="appeal-banner appeal-banner--closed"
@@ -113,13 +118,17 @@ export default {
 		SwashieFace
 	},
 	props: {
-		goalTarget: {
+		targetAmount: {
 			type: Number,
 			default: null,
 		},
-		goalRaised: {
+		amountRaised: {
 			type: Number,
 			default: null,
+		},
+		buttonAmounts: {
+			type: Array,
+			default() { return [20, 35, 50]; },
 		},
 		headline: {
 			type: String,
@@ -136,20 +145,20 @@ export default {
 	},
 	computed: {
 		goalPercent() {
-			if (!this.goalTarget || !this.goalRaised) {
+			if (!this.targetAmount || !this.amountRaised) {
 				return 0;
 			}
-			const percent = Math.floor((this.goalRaised / this.goalTarget) * 100);
+			const percent = Math.floor((this.amountRaised / this.targetAmount) * 100);
 			return percent > 100 ? 100 : percent;
 		},
 		goalStatus() {
-			if (!this.goalRaised) {
+			if (!this.amountRaised) {
 				return 'loading...';
 			}
 			if (this.goalPercent === 100) {
 				return 'Goal <br />reached!';
 			}
-			const nearestThousand = numeral((this.goalTarget - this.goalRaised) / 1000).format('0.[00]');
+			const nearestThousand = numeral((this.targetAmount - this.amountRaised) / 1000).format('0.[00]');
 			return `$${nearestThousand}k <br />‘til goal`;
 		}
 	},
@@ -157,7 +166,7 @@ export default {
 		onClickAmountBtn(amount) {
 			this.$emit('amount-selected', Number(amount));
 		},
-		onClickToggleBanner(e) {
+		onClickToggleBanner() {
 			this.$emit('toggle-banner', !this.isOpen);
 		},
 		// slide up / down transitions
@@ -194,21 +203,25 @@ $beige: #FFFAF2;
 		max-width: rem-calc(490);
 	}
 
-	&__btn-wrapper {
+	&__amount-list {
 		display: flex;
 	}
 
-	&__btn {
+	&__amount-item {
 		flex-grow: 1;
 		margin-right: 1rem;
-		padding: 0.5rem;
-		background: transparent;
-		border: rem-calc(1) solid $twilight;
 
 		&--other {
 			margin-right: 0;
 			flex-grow: 2;
 		}
+	}
+
+	&__btn {
+		background: transparent;
+		border: rem-calc(1) solid $twilight;
+		padding: 0.5rem;
+		width: 100%;
 
 		&--toggle-open {
 			background: $teal;
