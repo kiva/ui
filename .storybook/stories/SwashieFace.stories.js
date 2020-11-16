@@ -121,3 +121,72 @@ export const WithKvProgressCircle = (args, { argTypes }) => ({
 WithKvProgressCircle.args = {
 	percentFull: 80
 }
+
+export const WithCShapeProgressCircle = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvProgressCircle,
+		SwashieFace
+	},
+	template: `
+	<div>
+		<component is="style">
+			.swashie {
+				position: relative;
+				width: 9.5rem;
+				height: 9.5rem;
+			}
+
+			.swashie__progress-circle,
+			.swashie__face {
+				position: absolute;
+				z-index: 1;
+				width: 100%;
+				height: 100%;
+			}
+
+			.swashie__progress-circle {
+				--kv-progress-circle-background-color: transparent;
+				transform: rotate(36deg);
+			}
+
+			.swashie__progress-circle--background {
+				--kv-progress-circle-foreground-color: #E1DBD2;
+			}
+
+			.swashie__progress-circle--foreground {
+				--kv-progress-circle-foreground-color: #319788;
+				z-index: 2;
+			}
+
+			.swashie__face {
+				padding: 10%;
+			}
+		</component>
+
+		<div class="swashie">
+			<kv-progress-circle
+				class="swashie__progress-circle swashie__progress-circle--background"
+				:stroke-width="12"
+				:value="80"
+				:show-number="false"
+				aria-hidden="true"
+			 />
+			<kv-progress-circle
+				class="swashie__progress-circle swashie__progress-circle--foreground"
+				:stroke-width="12"
+				:value="parseInt(percentFull * .8)"
+				:show-number="false"
+			 />
+			<swashie-face
+				class="swashie__face"
+				:percent-full="percentFull"
+				:show-liquid="showLiquid"
+			 />
+		</div>
+	</div>
+	`,
+});
+WithCShapeProgressCircle.args = {
+	percentFull: 80
+}
