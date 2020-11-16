@@ -205,6 +205,8 @@ $beige: #FFFAF2;
 
 	&__amount-list {
 		display: flex;
+		list-style: none;
+		margin: 0;
 	}
 
 	&__amount-item {
