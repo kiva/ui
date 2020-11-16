@@ -136,6 +136,9 @@ export default {
 	},
 	computed: {
 		goalPercent() {
+			if (!this.goalTarget || !this.goalRaised) {
+				return 0;
+			}
 			const percent = Math.floor((this.goalRaised / this.goalTarget) * 100);
 			return percent > 100 ? 100 : percent;
 		},
