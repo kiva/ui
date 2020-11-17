@@ -35,7 +35,9 @@
 								We'll ask you for your password and verification code from your
 								mobile phone in order to log into your Kiva account.
 							</p>
-							<a>Turn off 2-step verification</a>
+							<a
+								@click="turnOffMFA"
+							>Turn off 2-step verification</a>
 						</div>
 
 						<div v-if="isMFAActive" class="section">
@@ -96,6 +98,7 @@ import WwwPage from '@/components/WwwFrame/WwwPage';
 
 const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
+		lastLoginTimestamp @client
 		authenticatorEnrollments(mfa_token: $mfa_token) {
 			id
 			active
@@ -108,6 +111,7 @@ export default {
 	data() {
 		return {
 			isMFAActive: false,
+			lastLoginTime: 0,
 		};
 	},
 	components: {
@@ -132,6 +136,7 @@ export default {
 					});
 				}).then(result => {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
+					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						// eslint-disable-next-line max-len
 						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
@@ -140,6 +145,11 @@ export default {
 						}
 					}
 				});
+		}
+		if (this.$route.query.mfa === 'off') {
+			// User returns to page after successful login and are shown a window.confirm
+			window.confirm('Are you sure you want to turn off 2-step verification?');
+			// Upon confirm triggger mutation to turn off mfa
 		}
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -155,6 +165,26 @@ export default {
 				return "Set up additional backup steps so you can log in even if your other options aren't available";
 			}
 			return "You'll be asked for a verification code when accessing you Kiva account.";
+		}
+	},
+	methods: {
+		turnOffMFA() {
+			// Get current time in seconds
+			// Math.floor(Date.now() / 1000)
+			const timeSinceLastLogin = this.lastLoginTime - Math.floor(Date.now() / 1000);
+			console.log('lastLogintime', this.lastLoginTime);
+			console.log('now', Date.now());
+			console.log('timeSinceLastLogin', timeSinceLastLogin);
+
+			const doneUrl = encodeURIComponent(`${this.$route.path}?mfa=off`);
+			console.log('doneURL', doneUrl);
+
+			/* last login time is older than 5 minutes */
+			// if (timeSinceLastLogin > 300) {
+			// 	window.location = `/ui-login?force=true&doneUrl=${doneUrl}`;
+			// } else {
+			// 	window.location = `${doneUrl}`;
+			// }
 		}
 	}
 };
