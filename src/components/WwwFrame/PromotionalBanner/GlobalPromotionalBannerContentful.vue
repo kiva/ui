@@ -57,11 +57,7 @@ export default {
 	inject: ['apollo'],
 	apollo: {
 		query: bannerQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: bannerQuery
-			});
-		},
+		preFetch: true,
 		result({ data }) {
 			// Hide ALL banners on these pages
 			if (this.globalBannerDenyList.includes(this.$route.path)) {
