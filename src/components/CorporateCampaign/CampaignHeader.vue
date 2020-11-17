@@ -2,12 +2,12 @@
 	<section class="campaign-header section row align-center">
 		<!-- TODO: add optional Hero Image Presentation -->
 		<!-- eslint-disable-next-line max-len -->
-		<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns campaign-header__cta_wrapper">
+		<div class="small-10 large-5 xlarge-6 small-order-1 large-order-2 align-self-middle columns campaign-header__cta_wrapper">
 			<div v-if="headerLogo.url" class="campaign-header__logo">
 				<img :title="headerLogo.title" :src="headerLogo.url">
 			</div>
 		</div>
-		<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
+		<div class="small-12 medium-10 large-7 xlarge-6 small-order-2 large-order-1 columns">
 			<h1 class="campaign-header__header">
 				{{ headline }}
 			</h1>
