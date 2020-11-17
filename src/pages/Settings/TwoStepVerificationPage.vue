@@ -148,8 +148,12 @@ export default {
 		}
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after successful login and are shown a window.confirm
-			window.confirm('Are you sure you want to turn off 2-step verification?');
-			// Upon confirm triggger mutation to turn off mfa
+			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?');
+			if (mfaOffConfirm) {
+				// Upon confirm triggger mutation to turn off mfa
+			} else {
+				window.location = '/settings/security/mfa';
+			}
 		}
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -169,22 +173,17 @@ export default {
 	},
 	methods: {
 		turnOffMFA() {
-			// Get current time in seconds
-			// Math.floor(Date.now() / 1000)
-			const timeSinceLastLogin = this.lastLoginTime - Math.floor(Date.now() / 1000);
-			console.log('lastLogintime', this.lastLoginTime);
-			console.log('now', Date.now());
-			console.log('timeSinceLastLogin', timeSinceLastLogin);
-
+			const timeSinceLastLogin = (Math.floor(Date.now()) - this.lastLoginTime) / 60 / 1000;
 			const doneUrl = encodeURIComponent(`${this.$route.path}?mfa=off`);
-			console.log('doneURL', doneUrl);
 
-			/* last login time is older than 5 minutes */
-			// if (timeSinceLastLogin > 300) {
-			// 	window.location = `/ui-login?force=true&doneUrl=${doneUrl}`;
-			// } else {
-			// 	window.location = `${doneUrl}`;
-			// }
+			/* If last login was more than 5 minutes ago, send user to login
+				otherwise update the URL to include ?mfa=off, which triggers
+				a condition in the mounted hook */
+			if (timeSinceLastLogin >= 5) {
+				window.location = `/ui-login?force=true&doneUrl=${doneUrl}`;
+			} else {
+				window.location = `${doneUrl}`;
+			}
 		}
 	}
 };
