@@ -105,7 +105,7 @@ export default {
 			if (!this.fillLevel) {
 				return 'asleep';
 			}
-			if (this.fillLevel > 0 && this.fillLevel < 50) {
+			if (this.fillLevel >= 0 && this.fillLevel < 50) {
 				return 'sleepy';
 			}
 			if (this.fillLevel >= 50 && this.fillLevel < 80) {

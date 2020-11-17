@@ -152,7 +152,7 @@ export default {
 			return percent > 100 ? 100 : percent;
 		},
 		goalStatus() {
-			if (!this.amountRaised) {
+			if (this.amountRaised === null) {
 				return 'loading...';
 			}
 			if (this.goalPercent === 100) {
