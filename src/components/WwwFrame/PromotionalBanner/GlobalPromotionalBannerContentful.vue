@@ -6,7 +6,7 @@
 			:promo-banner-content="promoBannerContent"
 		/>
 		<appeal-banner-swashie-container
-			v-if="customAppealEnabled"
+			v-if="appealEnabled"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
 	</div>
