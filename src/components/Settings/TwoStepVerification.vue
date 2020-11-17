@@ -20,7 +20,10 @@
 				<span class="strong">both your password and an authenication code from your mobile phone</span>
 				in order to access your account.
 			</p>
-			<kv-button class="smallest">
+			<kv-button
+				href="/settings/security/mfa"
+				class="smallest"
+			>
 				Manage 2-step verification
 			</kv-button>
 		</template>

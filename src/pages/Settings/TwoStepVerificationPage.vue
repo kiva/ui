@@ -22,12 +22,12 @@
 					</template>
 
 					<template v-slot:content>
-						<div v-if="!isMFAActive">
+						<div v-if="!isMfaActive">
 							<h2>{{ cardTitle }}</h2>
 							<p>{{ cardSubhead }}</p>
 						</div>
 
-						<div v-if="isMFAActive" class="section">
+						<div v-if="isMfaActive" class="section">
 							<h3 class="strong">
 								2-step verification is turned on
 							</h3>
@@ -36,11 +36,11 @@
 								mobile phone in order to log into your Kiva account.
 							</p>
 							<a
-								@click="turnOffMFA"
+								@click="checkLastLoginTime"
 							>Turn off 2-step verification</a>
 						</div>
 
-						<div v-if="isMFAActive" class="section">
+						<div v-if="isMfaActive" class="section">
 							<h3 class="strong">
 								Your security method(s)
 							</h3>
@@ -49,7 +49,7 @@
 							<a>REMOVE LINK</a>
 						</div>
 
-						<div v-if="isMFAActive" class="section">
+						<div v-if="isMfaActive" class="section">
 							<h3 class="strong">
 								{{ cardTitle }}
 							</h3>
@@ -95,6 +95,7 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '@/components/Kv/KvButton';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import removeMfa from '@/graphql/mutation/removeMfa.graphql';
 
 const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
@@ -110,7 +111,7 @@ const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 export default {
 	data() {
 		return {
-			isMFAActive: false,
+			isMfaActive: false,
 			lastLoginTime: 0,
 		};
 	},
@@ -140,18 +141,21 @@ export default {
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						// eslint-disable-next-line max-len
 						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
-							this.isMFAActive = true;
+							this.isMfaActive = true;
 							return;
 						}
 					}
 				});
 		}
 		if (this.$route.query.mfa === 'off') {
-			// User returns to page after successful login and are shown a window.confirm
+			// User returns to page after login, or if has logged in within 5 minutes
+			// and is presented with a window.confirm
 			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?');
 			if (mfaOffConfirm) {
 				// Upon confirm triggger mutation to turn off mfa
+				this.turnOffMfa();
 			} else {
+				// Upon cancel return to the base URL of current page
 				window.location = '/settings/security/mfa';
 			}
 		}
@@ -159,33 +163,41 @@ export default {
 	inject: ['apollo', 'kvAuth0'],
 	computed: {
 		cardTitle() {
-			if (this.isMFAActive) {
+			if (this.isMfaActive) {
 				return 'Add a backup method';
 			}
 			return 'How would you like your verification code?';
 		},
 		cardSubhead() {
-			if (this.isMFAActive) {
+			if (this.isMfaActive) {
 				return "Set up additional backup steps so you can log in even if your other options aren't available";
 			}
 			return "You'll be asked for a verification code when accessing you Kiva account.";
 		}
 	},
 	methods: {
-		turnOffMFA() {
+		checkLastLoginTime() {
 			const timeSinceLastLogin = (Math.floor(Date.now()) - this.lastLoginTime) / 60 / 1000;
-			const doneUrl = encodeURIComponent(`${this.$route.path}?mfa=off`);
+			const doneUrl = `${this.$route.path}?mfa=off`;
+			const encodedDoneUrl = encodeURIComponent(doneUrl);
 
 			/* If last login was more than 5 minutes ago, send user to login
 				otherwise update the URL to include ?mfa=off, which triggers
 				a condition in the mounted hook */
 			if (timeSinceLastLogin >= 5) {
-				window.location = `/ui-login?force=true&doneUrl=${doneUrl}`;
+				window.location = `/ui-login?force=true&doneUrl=${encodedDoneUrl}`;
 			} else {
-				window.location = `${doneUrl}`;
+				window.location = doneUrl;
 			}
-		}
-	}
+		},
+		turnOffMfa() {
+			this.apollo.mutate({
+				mutation: removeMfa,
+			}).then(() => {
+				this.isMfaActive = false;
+			});
+		},
+	},
 };
 </script>
 

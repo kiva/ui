@@ -12,28 +12,28 @@
 		</h3>
 		<ul class="faq-list">
 			<li>
-				<!-- <kv-button
+				<kv-button
 					class="text-link"
 					@click="triggerWhatIsLightbox"
 				>
 					What is 2-step Verification?
-				</kv-button> -->
+				</kv-button>
 			</li>
 			<li>
-				<!-- <kv-button
+				<kv-button
 					class="text-link"
 					@click="triggerHowItWorksLightbox"
 				>
 					How does it work?
-				</kv-button> -->
+				</kv-button>
 			</li>
 			<li>
-				<!-- <kv-button
+				<kv-button
 					class="text-link"
 					@click="triggerHowItProtectsLightbox"
 				>
 					How it protects you?
-				</kv-button> -->
+				</kv-button>
 			</li>
 		</ul>
 		<kv-lightbox
