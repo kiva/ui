@@ -81,7 +81,6 @@ export default {
 			cookieStore.set('appeal_banner_is_open', isOpen, { path: '/' });
 		},
 		onAmountSelected(amount) {
-			console.log(amount);
 			this.apollo.mutate({
 				mutation: updateDonation,
 				variables: {
