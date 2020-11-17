@@ -36,7 +36,7 @@ export const Default = (args, { argTypes }) => ({
 
 export const Loading = Default.bind({});
 Loading.args = {
-	percentFull: 0,
+	percentFull: null,
 };
 
 export const FiftyPercent = Default.bind({});
