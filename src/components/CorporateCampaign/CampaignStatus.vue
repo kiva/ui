@@ -28,11 +28,11 @@
 							You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
 						</template>
 					</h2>
-					<ul>
+					<!-- <ul>
 						<li>Choose your borrower below.</li>
 						<li>Click "Add to basket"</li>
 						<li>Click "Checkout" to complete your loan</li>
-					</ul>
+					</ul> -->
 				</div>
 			</div>
 		</div>
@@ -83,7 +83,7 @@ export default {
 	background-color: rgba(0, 0, 0, 0.1);
 
 	&__border {
-		min-height: 10rem;
+		// min-height: 10rem;
 		position: relative;
 		z-index: 1;
 		margin: 0 rem-calc(10);

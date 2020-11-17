@@ -40,6 +40,8 @@ query promoCampaign($basketId: String, $promoFundId: String) {
 				sendKivaNewsletter
 				id
 				isEmployee
+				formId
+				pageId
 				loanSearchCriteria {
 					filters {
 						currencyLossPossible

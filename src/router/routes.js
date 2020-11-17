@@ -38,6 +38,7 @@ export default [
 		component: () => import('@/pages/LandingPages/CorporateCampaign/CCLandingPage'),
 		props: route => ({
 			dynamicRoute: route.params.dynamicRoute,
+			formComplete: route.query.formComplete,
 			upc: route.query.upc,
 			promoCode: route.query.promoCode,
 			lendingReward: route.query.lendingReward

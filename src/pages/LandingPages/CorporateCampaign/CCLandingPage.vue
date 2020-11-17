@@ -18,6 +18,8 @@
 				:promo-amount="promoAmount"
 			/>
 
+			<campaign-how-kiva-works />
+
 			<campaign-loan-display
 				id="campaignLoanDisplay"
 				ref="loandisplayref"
@@ -29,12 +31,18 @@
 				@add-to-basket="addToBasket"
 			/>
 
+			<campaign-verification-form
+				v-if="this.showVerification"
+				:form-id="this.externalFormId"
+				:user-id="this.myId"
+			/>
+
 			<section
 				v-if="checkoutVisible"
 				id="campaignCheckout"
 				class="campaign-checkout section row align-center"
 			>
-				<div class="small-12 large-8 align-self-middle columns">
+				<div class="small-10 large-8 align-self-middle columns">
 					<in-context-checkout
 						:is-actively-logged-in="isActivelyLoggedIn"
 						:loans="basketLoans"
@@ -67,12 +75,13 @@ import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { blueHeader, blueFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
-// import paginationMixin from '@/plugins/pagination-mixin';
-import CampaignHeader from '@/components/ContentGroups/CampaignHeader';
-import CampaignStatus from '@/components/ContentGroups/CampaignStatus';
-import CampaignLoanDisplay from '@/components/ContentGroups/CampaignLoanDisplay';
+import CampaignHeader from '@/components/CorporateCampaign/CampaignHeader';
+import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
+import CampaignLoanDisplay from '@/components/CorporateCampaign/CampaignLoanDisplay';
+import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
+import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
-import CampaignThanks from '@/components/ContentGroups/CampaignThanks';
+import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
@@ -243,22 +252,27 @@ export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
 		CampaignHeader,
+		CampaignHowKivaWorks,
 		CampaignLoanDisplay,
 		CampaignStatus,
 		CampaignThanks,
+		CampaignVerificationForm,
 		InContextCheckout,
 		WwwPageMinimal,
 	},
 	mixins: [
 		checkoutUtils
 	],
-	// mixins: [paginationMixin],
 	props: {
 		dynamicRoute: {
 			type: String,
 			default: ''
 		},
-		upc: {
+		formComplete: {
+			type: String,
+			default: ''
+		},
+		lendingReward: {
 			type: String,
 			default: ''
 		},
@@ -266,7 +280,7 @@ export default {
 			type: String,
 			default: ''
 		},
-		lendingReward: {
+		upc: {
 			type: String,
 			default: ''
 		},
@@ -288,7 +302,6 @@ export default {
 			currentTime: Date.now(),
 			currentTimeInterval: null,
 			loadingPromotion: false,
-			// loadingLoans: false,
 			loans: [],
 			basketTotals: {},
 			basketLoans: [],
@@ -301,6 +314,7 @@ export default {
 			pageQuery: { page: '1' },
 			showLoans: false,
 			checkoutVisible: false,
+			showVerification: false,
 			showThanks: false,
 			transactionId: null,
 		};
@@ -373,6 +387,27 @@ export default {
 			}
 			return false;
 		},
+		contentfulPageId() {
+			return this.promoData?.managedAccount?.pageid ?? null;
+		},
+		verificationRequired() {
+			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
+				return true;
+			}
+			return false;
+		},
+		isEmployee() {
+			return this.promoData?.managedAccount?.isEmployee ?? false;
+		},
+		externalFormId() {
+			return this.promoData?.managedAccount?.formId ?? null;
+		},
+		teamId() {
+			return this.promoData?.promoGroup?.teamId ?? null;
+		},
+		verificationSumbitted() {
+			return this.pageQuery?.formComplete === 'true' || false;
+		}
 	},
 	methods: {
 		verifyOrApplyPromotion() {
@@ -526,16 +561,36 @@ export default {
 
 					// TEMPORARY: turn off loading loans
 					this.$refs.loandisplayref.loadingLoans = false;
-					// signify checkout is ready
-					this.checkoutVisible = true;
-					this.scrollToSection('campaignCheckout');
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
+					// signify checkout is ready
+					this.handleBasketValidation();
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 					return false;
 				});
 		},
-
+		handleBasketValidation() {
+			// check for verification form requirement
+			// if (
+			// 	this.isActivelyLoggedIn
+			// 	&& this.verificationRequired
+			// 	&& this.externalFormId
+			// 	&& !this.verificationSumbitted
+			// ) {
+			// 	console.log('lender verification required');
+			// 	this.showVerification = true;
+			// // } else if (this.teamId) {
+			// // 	// check for team join optionality
+			// // 	console.log(this.teamId);
+			// } else {
+			// 	// signify checkout is ready
+			// 	this.checkoutVisible = true;
+			// 	this.scrollToSection('campaignCheckout');
+			// }
+			// signify checkout is ready
+			this.checkoutVisible = true;
+			this.scrollToSection('campaignCheckout');
+		},
 		transactionComplete(payload) {
 			// console.log('transaction complete', payload);
 			this.transactionId = payload.transactionId;
