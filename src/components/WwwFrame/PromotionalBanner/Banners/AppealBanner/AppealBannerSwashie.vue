@@ -68,8 +68,6 @@
 							</fifteen-years-button>
 						</li>
 					</ul>
-				</div>
-				<div class="small-12 columns text-right">
 					<button
 						class="appeal-banner__later-btn"
 						@click="onClickToggleBanner"
@@ -78,7 +76,6 @@
 					</button>
 				</div>
 			</div>
-		</div>
 		</div>
 		<!-- closed banner -->
 		<div
@@ -235,7 +232,9 @@ $beige: #FFFAF2;
 	&__later-btn {
 		@include link();
 
+		display: block;
 		margin-top: 2rem;
+		margin-left: auto;
 	}
 
 	&__body {
