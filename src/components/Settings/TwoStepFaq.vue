@@ -75,12 +75,12 @@
 
 <script>
 import KvLightbox from '@/components/Kv/KvLightbox';
-// import KvButton from '@/components/Kv/KvButton';
+import KvButton from '@/components/Kv/KvButton';
 
 export default {
 	components: {
 		KvLightbox,
-		// KvButton,
+		KvButton,
 	},
 	data() {
 		return {

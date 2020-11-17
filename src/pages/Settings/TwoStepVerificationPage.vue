@@ -97,7 +97,7 @@ import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSeconda
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import removeMfa from '@/graphql/mutation/removeMfa.graphql';
 
-const pageQuery = gql`query mfaQuery($mfa_token: String!) {
+const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
 		lastLoginTimestamp @client
 		authenticatorEnrollments(mfa_token: $mfa_token) {
@@ -130,7 +130,7 @@ export default {
 			this.kvAuth0.getMfaManagementToken()
 				.then(token => {
 					return this.apollo.query({
-						query: pageQuery,
+						query: mfaQuery,
 						variables: {
 							mfa_token: token
 						}
