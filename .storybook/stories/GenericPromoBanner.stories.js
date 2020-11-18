@@ -13,7 +13,7 @@ const decodeHTML = function(html) {
 }
 
 export default {
-	title: 'Components/Generic Global Promo Banner',
+	title: 'WwwFrame/Banners/GenericPromoBanner',
 	component: GenericPromoBanner,
 	decorators: [StoryRouter()],
 	args: {

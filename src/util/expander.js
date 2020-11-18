@@ -31,16 +31,17 @@ export function expand(el, {
 	// set the property to the 'from' value
 	el.style[property] = from;
 
+	el.addEventListener('transitionend', function listener() {
+		unsetStyles(el, { property });
+		el.removeEventListener('transitionend', listener, true);
+		// finally, call the done callback after the transition
+		done();
+	}, true);
+
 	// ...and set the property to the measured value on the next tick so it animates w/ css
 	window.setTimeout(() => {
 		el.style[property] = propValue;
-	}, 1);
-
-	// finally, call the done callback after the delay
-	window.setTimeout(() => {
-		unsetStyles(el, { property });
-		done();
-	}, delay);
+	});
 }
 
 export function collapse(el, {
@@ -56,14 +57,15 @@ export function collapse(el, {
 	// explicitly set the property value...
 	el.style[property] = window.getComputedStyle(el).getPropertyValue(property);
 
+	el.addEventListener('transitionend', function listener() {
+		unsetStyles(el, { property });
+		el.removeEventListener('transitionend', listener, true);
+		// finally, call the done callback after the transition
+		done();
+	}, true);
+
 	// ...and set the property to the 'to' value on the next tick so it animates w/ css
 	window.setTimeout(() => {
 		el.style[property] = to;
-	}, 1);
-
-	// finally, call the done callback after the delay
-	window.setTimeout(() => {
-		unsetStyles(el, { property });
-		done();
-	}, delay);
+	});
 }

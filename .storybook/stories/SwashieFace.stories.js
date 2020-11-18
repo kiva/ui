@@ -5,7 +5,8 @@ export default {
 	title: 'components/SwashieFace',
 	component: SwashieFace,
 	args: {
-		percentFull: 25
+		percentFull: 25,
+		showLiquid: true,
 	},
 	argTypes: {
 		percentFull: {
@@ -25,9 +26,18 @@ export const Default = (args, { argTypes }) => ({
 		SwashieFace
 	},
 	template: `
-		<swashie-face :percent-full="percentFull" style="width: 10rem;" />
+		<swashie-face
+			:percent-full="percentFull"
+			:show-liquid="showLiquid"
+			style="width: 10rem;"
+		 />
 	`,
 });
+
+export const Loading = Default.bind({});
+Loading.args = {
+	percentFull: null,
+};
 
 export const FiftyPercent = Default.bind({});
 FiftyPercent.args = {
@@ -44,6 +54,12 @@ OneHundredPercent.args = {
 	percentFull: 100,
 };
 
+export const NoLiquid = Default.bind({});
+NoLiquid.args = {
+	percentFull: 80,
+	showLiquid: false
+};
+
 export const Scaled = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
@@ -51,12 +67,12 @@ export const Scaled = (args, { argTypes }) => ({
 	},
 	template: `
 		<div style="display: flex; flex-wrap: wrap;">
-			<swashie-face :percent-full="percentFull" style="width: 2rem;" />
-			<swashie-face :percent-full="percentFull" style="width: 3rem;" />
-			<swashie-face :percent-full="percentFull" style="width: 5rem;" />
-			<swashie-face :percent-full="percentFull" style="width: 8rem;" />
-			<swashie-face :percent-full="percentFull" style="width: 13rem;" />
-			<swashie-face :percent-full="percentFull" style="width: 21rem;" />
+			<swashie-face :percent-full="percentFull" :show-liquid="showLiquid" style="width: 2rem;" />
+			<swashie-face :percent-full="percentFull" :show-liquid="showLiquid" style="width: 3rem;" />
+			<swashie-face :percent-full="percentFull" :show-liquid="showLiquid" style="width: 5rem;" />
+			<swashie-face :percent-full="percentFull" :show-liquid="showLiquid" style="width: 8rem;" />
+			<swashie-face :percent-full="percentFull" :show-liquid="showLiquid" style="width: 13rem;" />
+			<swashie-face :percent-full="percentFull" :show-liquid="showLiquid" style="width: 21rem;" />
 		</div>
 	`,
 });
@@ -97,11 +113,80 @@ export const WithKvProgressCircle = (args, { argTypes }) => ({
 		</component>
 		<div class="swashie">
 			<kv-progress-circle :stroke-width="5" class="swashie__progress-circle" :value="percentFull" :show-number="true" />
-			<swashie-face class="swashie__face" :percent-full="percentFull" />
+			<swashie-face class="swashie__face" :percent-full="percentFull" :show-liquid="showLiquid" />
 		</div>
 	</div>
 	`,
 });
 WithKvProgressCircle.args = {
+	percentFull: 80
+}
+
+export const WithCShapeProgressCircle = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvProgressCircle,
+		SwashieFace
+	},
+	template: `
+	<div>
+		<component is="style">
+			.swashie {
+				position: relative;
+				width: 9.5rem;
+				height: 9.5rem;
+			}
+
+			.swashie__progress-circle,
+			.swashie__face {
+				position: absolute;
+				z-index: 1;
+				width: 100%;
+				height: 100%;
+			}
+
+			.swashie__progress-circle {
+				--kv-progress-circle-background-color: transparent;
+				transform: rotate(36deg);
+			}
+
+			.swashie__progress-circle--background {
+				--kv-progress-circle-foreground-color: #E1DBD2;
+			}
+
+			.swashie__progress-circle--foreground {
+				--kv-progress-circle-foreground-color: #319788;
+				z-index: 2;
+			}
+
+			.swashie__face {
+				padding: 10%;
+			}
+		</component>
+
+		<div class="swashie">
+			<kv-progress-circle
+				class="swashie__progress-circle swashie__progress-circle--background"
+				:stroke-width="12"
+				:value="80"
+				:show-number="false"
+				aria-hidden="true"
+			 />
+			<kv-progress-circle
+				class="swashie__progress-circle swashie__progress-circle--foreground"
+				:stroke-width="12"
+				:value="parseInt(percentFull * .8)"
+				:show-number="false"
+			 />
+			<swashie-face
+				class="swashie__face"
+				:percent-full="percentFull"
+				:show-liquid="showLiquid"
+			 />
+		</div>
+	</div>
+	`,
+});
+WithCShapeProgressCircle.args = {
 	percentFull: 80
 }
