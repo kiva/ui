@@ -21,7 +21,7 @@
 				in order to access your account.
 			</p>
 			<kv-button
-				href="/settings/security/mfa"
+				to="/settings/security/mfa"
 				class="smallest"
 			>
 				Manage 2-step verification
