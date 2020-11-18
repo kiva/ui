@@ -1,7 +1,7 @@
 <template>
 	<www-page class="two-step-verification" :gray-background="true">
 		<the-my-kiva-secondary-menu slot="secondary" />
-		<div class="title-area">
+		<div class="two-step-verification__title-area">
 			<div class="row column">
 				<h1>
 					2-step verification
@@ -22,12 +22,10 @@
 					</template>
 
 					<template v-slot:content>
-						<div v-if="!isMfaActive">
-							<h2>{{ cardTitle }}</h2>
-							<p>{{ cardSubhead }}</p>
-						</div>
-
-						<div v-if="isMfaActive" class="section">
+						<div
+							v-if="isMfaActive"
+							class="two-step-verification__section"
+						>
 							<h3 class="strong">
 								2-step verification is turned on
 							</h3>
@@ -35,12 +33,18 @@
 								We'll ask you for your password and verification code from your
 								mobile phone in order to log into your Kiva account.
 							</p>
-							<a
+							<kv-button
+								class="text-link"
 								@click="checkLastLoginTime"
-							>Turn off 2-step verification</a>
+							>
+								Turn off 2-step verification
+							</kv-button>
 						</div>
 
-						<div v-if="isMfaActive" class="section">
+						<div
+							v-if="isMfaActive"
+							class="two-step-verification__section"
+						>
 							<h3 class="strong">
 								Your security method(s)
 							</h3>
@@ -49,36 +53,37 @@
 							<a>REMOVE LINK</a>
 						</div>
 
-						<div v-if="isMfaActive" class="section">
+						<div class="two-step-verification__section">
 							<h3 class="strong">
 								{{ cardTitle }}
 							</h3>
 							<p>{{ cardSubhead }}</p>
-						</div>
 
-						<div class="sub-section">
-							<h3 class="strong">
-								Authentication app <span class="green">(Recommended)</span>
-							</h3>
-							<p>
-								Receive code from an authenticator app on your device,
-								like Google Authenticator, Duo, or Authy.
-							</p>
-							<kv-button class="smallest">
-								Use authentication app
-							</kv-button>
-						</div>
+							<div class="two-step-verification__section-sub-section">
+								<h3 class="strong">
+									Authentication app
+									<span class="two-step-verification__section-sub-section-green">(Recommended)</span>
+								</h3>
+								<p>
+									Receive code from an authenticator app on your device,
+									like Google Authenticator, Duo, or Authy.
+								</p>
+								<kv-button class="smallest">
+									Use authentication app
+								</kv-button>
+							</div>
 
-						<div class="sub-section">
-							<h3 class="strong">
-								Text message or phone call
-							</h3>
-							<p>
-								Receive a code via text message on your mobile device.
-							</p>
-							<kv-button class="smallest">
-								Use text message or phone call
-							</kv-button>
+							<div class="two-step-verification__section-sub-section">
+								<h3 class="strong">
+									Text message or phone call
+								</h3>
+								<p>
+									Receive a code via text message on your mobile device.
+								</p>
+								<kv-button class="smallest">
+									Use text message or phone call
+								</kv-button>
+							</div>
 						</div>
 					</template>
 				</kv-settings-card>
@@ -89,7 +94,6 @@
 
 <script>
 import gql from 'graphql-tag';
-
 import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '@/components/Kv/KvButton';
@@ -170,9 +174,9 @@ export default {
 		},
 		cardSubhead() {
 			if (this.isMfaActive) {
-				return "Set up additional backup steps so you can log in even if your other options aren't available";
+				return 'Set up additional backup steps so you can log in even if your other options aren\'t available';
 			}
-			return "You'll be asked for a verification code when accessing you Kiva account.";
+			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
 		}
 	},
 	methods: {
@@ -205,22 +209,22 @@ export default {
 @import 'settings';
 
 .two-step-verification {
-	.title-area {
+	&__title-area {
 		padding: 1.625rem 0;
 		margin-bottom: 2rem;
 		background-color: $white;
 	}
 
-	.green {
-		color: $kiva-green;
-	}
-
-	.section {
+	&__section {
 		margin-bottom: rem-calc(50);
-	}
 
-	.sub-section {
-		margin-bottom: 2rem;
+		&-sub-section {
+			margin-top: 2rem;
+
+			&-green {
+				color: $kiva-green;
+			}
+		}
 	}
 }
 
