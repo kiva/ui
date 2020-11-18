@@ -10,8 +10,8 @@ import apolloStoryMixin from '../mixins/apollo-story-mixin';
 // import kvAuth0StoryMixin from '../mixins/kv-auth0-story-mixin';
 
 import CorporateCampaignLanding from '@/pages/LandingPages/CorporateCampaign/CCLandingPage';
-import CampaignHeader from '@/components/ContentGroups/CampaignHeader';
-import CampaignStatus from '@/components/ContentGroups/CampaignStatus';
+import CampaignHeader from '@/components/CorporateCampaign/CampaignHeader';
+import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 
 export default {
 	title: 'Pages/CorporateCampaignLanding',
