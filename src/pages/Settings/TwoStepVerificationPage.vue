@@ -35,7 +35,7 @@
 							</p>
 							<kv-button
 								class="text-link"
-								@click="checkLastLoginTime"
+								@click.native.prevent="checkLastLoginTime"
 							>
 								Turn off 2-step verification
 							</kv-button>
@@ -131,6 +131,7 @@ export default {
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
+			this.kvAuth0.checkSession();
 			this.kvAuth0.getMfaManagementToken()
 				.then(token => {
 					return this.apollo.query({
@@ -194,9 +195,12 @@ export default {
 				window.location = doneUrl;
 			}
 		},
-		turnOffMfa() {
+		turnOffMfa(token) {
 			this.apollo.mutate({
 				mutation: removeMfa,
+				variables: {
+					mfa_token: token
+				}
 			}).then(() => {
 				this.isMfaActive = false;
 			});

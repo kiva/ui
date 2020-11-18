@@ -10,7 +10,7 @@
 		<h3 class="strong">
 			FAQ
 		</h3>
-		<ul class="faq-list">
+		<ul class="faq__list">
 			<li>
 				<kv-button
 					class="text-link"
@@ -114,10 +114,10 @@ export default {
 .faq {
 	background: $white;
 	padding: 1.95rem; // same as KvSettingsCard
-}
 
-.faq-list {
-	list-style-type: none;
-	margin: 0;
+	&__list {
+		list-style-type: none;
+		margin: 0;
+	}
 }
 </style>
