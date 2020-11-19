@@ -62,7 +62,7 @@
 							<div class="two-step-verification__section-sub-section">
 								<h3 class="strong">
 									Authentication app
-									<span class="two-step-verification__section-sub-section-green">(Recommended)</span>
+									<span class="green">(Recommended)</span>
 								</h3>
 								<p>
 									Receive code from an authenticator app on your device,
@@ -131,8 +131,8 @@ export default {
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
-			this.kvAuth0.checkSession();
-			this.kvAuth0.getMfaManagementToken()
+			this.kvAuth0.checkSession()
+				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
 					return this.apollo.query({
 						query: mfaQuery,
@@ -195,17 +195,21 @@ export default {
 				window.location = doneUrl;
 			}
 		},
-		turnOffMfa(token) {
-			this.apollo.mutate({
-				mutation: removeMfa,
-				variables: {
-					mfa_token: token
-				}
-			}).then(() => {
-				this.isMfaActive = false;
-			});
+		turnOffMfa() {
+			this.kvAuth0.checkSession()
+				.then(() => this.kvAuth0.getMfaManagementToken())
+				.then(token => {
+					this.apollo.mutate({
+						mutation: removeMfa,
+						variables: {
+							mfa_token: token
+						}
+					}).then(() => {
+						this.isMfaActive = false;
+					});
+				});
 		},
-	},
+	}
 };
 </script>
 
@@ -225,7 +229,7 @@ export default {
 		&-sub-section {
 			margin-top: 2rem;
 
-			&-green {
+			.green {
 				color: $kiva-green;
 			}
 		}
