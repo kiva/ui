@@ -10,7 +10,13 @@
 		</div>
 		<div class="row">
 			<div class="column small-12 large-8">
-				<kv-settings-card>
+				<!--
+					Toggle MFA off settings card
+				-->
+				<kv-settings-card
+					title="2-step verification is turned on"
+					v-if="isMfaActive"
+				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
 						Get correct icon assest from design, or remove this KvIcon -->
@@ -22,13 +28,7 @@
 					</template>
 
 					<template v-slot:content>
-						<div
-							v-if="isMfaActive"
-							class="two-step-verification__section"
-						>
-							<h3 class="strong">
-								2-step verification is turned on
-							</h3>
+						<div>
 							<p>
 								We'll ask you for your password and verification code from your
 								mobile phone in order to log into your Kiva account.
@@ -40,26 +40,52 @@
 								Turn off 2-step verification
 							</kv-button>
 						</div>
+					</template>
+				</kv-settings-card>
 
-						<div
-							v-if="isMfaActive"
-							class="two-step-verification__section"
-						>
-							<h3 class="strong">
-								Your security method(s)
-							</h3>
+				<!--
+					Security methods settings card
+				-->
+				<kv-settings-card
+					title="Your security method(s)"
+					v-if="isMfaActive"
+				>
+					<template v-slot:icon>
+						<!-- TODO: THIS ICON IS A PLACEHOLDER
+						Get correct icon assest from design, or remove this KvIcon -->
+						<kv-icon
+							class="icon"
+							title="Auto-lending On"
+							name="auto-icon-on"
+						/>
+					</template>
+
+					<template v-slot:content>
+						<div>
 							<h4>Authenticator app</h4>
-							<p>Added:<span>DATE</span></p>
 							<a>REMOVE LINK</a>
 						</div>
+					</template>
+				</kv-settings-card>
 
-						<div class="two-step-verification__section">
-							<h3 class="strong">
-								{{ cardTitle }}
-							</h3>
+				<!--
+					Backup methods settings card
+				-->
+				<kv-settings-card :title="`${ cardTitle }`">
+					<template v-slot:icon>
+						<!-- TODO: THIS ICON IS A PLACEHOLDER
+						Get correct icon assest from design, or remove this KvIcon -->
+						<kv-icon
+							class="icon"
+							title="Auto-lending On"
+							name="auto-icon-on"
+						/>
+					</template>
+
+					<template v-slot:content>
+						<div>
 							<p>{{ cardSubhead }}</p>
-
-							<div class="two-step-verification__section-sub-section">
+							<div class="two-step-verification__sub-section">
 								<h3 class="strong">
 									Authentication app
 									<span class="green">(Recommended)</span>
@@ -73,7 +99,7 @@
 								</kv-button>
 							</div>
 
-							<div class="two-step-verification__section-sub-section">
+							<div class="two-step-verification__sub-section">
 								<h3 class="strong">
 									Text message or phone call
 								</h3>
@@ -223,15 +249,11 @@ export default {
 		background-color: $white;
 	}
 
-	&__section {
-		margin-bottom: rem-calc(50);
+	&__sub-section {
+		margin-top: 2rem;
 
-		&-sub-section {
-			margin-top: 2rem;
-
-			.green {
-				color: $kiva-green;
-			}
+		.green {
+			color: $kiva-green;
 		}
 	}
 }
