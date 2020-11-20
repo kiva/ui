@@ -193,7 +193,7 @@ $teal: #319788;
 $beige: #FFFAF2;
 
 .appeal-banner {
-	border-bottom: 1px solid $twilight;
+	// border-bottom: 1px solid $twilight;
 	background-color: $beige;
 
 	&__content {
