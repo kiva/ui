@@ -1,0 +1,5 @@
+mutation removeMfa($mfa_token: String!) {
+  my {
+		deleteAllAuthenticatorEnrollments(mfa_token: $mfa_token)
+	}
+}
