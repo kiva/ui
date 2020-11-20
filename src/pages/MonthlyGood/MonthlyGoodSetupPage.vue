@@ -497,6 +497,22 @@ export default {
 		completeMGBraintree(paymentType) {
 			this.showLoadingOverlay = true;
 			this.$kvTrackEvent('Registration', 'successful-monthly-good-reg', 'register-monthly-good');
+
+			try {
+				// Track Facebook Event For MG
+				if (typeof window !== 'undefined' && typeof fbq === 'function') {
+					window.fbq('trackCustom', 'MonthlyGoodSignUp', {
+						amount: this.totalCombinedDeposit,
+						donateAmount: this.donation,
+						dayOfMonth: this.dayOfMonth,
+						category: this.selectedGroup,
+						isOneTime: this.isOnetime
+					});
+				}
+			} catch (e) {
+				console.error(e);
+			}
+
 			// Send to thanks page
 			this.$router.push({
 				path: '/monthlygood/thanks',
