@@ -193,7 +193,7 @@ $teal: #319788;
 $beige: #FFFAF2;
 
 .appeal-banner {
-	border-bottom: 1px solid $twilight;
+	// border-bottom: 1px solid $twilight;
 	background-color: $beige;
 
 	&__content {
@@ -260,8 +260,8 @@ $beige: #FFFAF2;
 			padding-bottom: rem-calc(8);
 
 			@include breakpoint(large) {
-				padding-top: rem-calc(24);
-				padding-bottom: rem-calc(24);
+				padding-top: rem-calc(12);
+				padding-bottom: rem-calc(12);
 			}
 		}
 
