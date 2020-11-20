@@ -33,15 +33,15 @@ export function expand(el, {
 
 	el.addEventListener('transitionend', function listener() {
 		unsetStyles(el, { property });
-		el.removeEventListener('transitionend', listener, true);
 		// finally, call the done callback after the transition
 		done();
+		el.removeEventListener('transitionend', listener, true);
 	}, true);
 
+	// hack to cause the browser to reflow
+	void el.offsetWidth; // eslint-disable-line no-void
 	// ...and set the property to the measured value on the next tick so it animates w/ css
-	window.setTimeout(() => {
-		el.style[property] = propValue;
-	});
+	el.style[property] = propValue;
 }
 
 export function collapse(el, {
@@ -59,13 +59,13 @@ export function collapse(el, {
 
 	el.addEventListener('transitionend', function listener() {
 		unsetStyles(el, { property });
-		el.removeEventListener('transitionend', listener, true);
 		// finally, call the done callback after the transition
 		done();
+		el.removeEventListener('transitionend', listener, true);
 	}, true);
 
+	// hack to cause the browser to reflow
+	void el.offsetWidth; // eslint-disable-line no-void
 	// ...and set the property to the 'to' value on the next tick so it animates w/ css
-	window.setTimeout(() => {
-		el.style[property] = to;
-	});
+	el.style[property] = to;
 }
