@@ -260,8 +260,8 @@ $beige: #FFFAF2;
 			padding-bottom: rem-calc(8);
 
 			@include breakpoint(large) {
-				padding-top: rem-calc(24);
-				padding-bottom: rem-calc(24);
+				padding-top: rem-calc(12);
+				padding-bottom: rem-calc(12);
 			}
 		}
 
