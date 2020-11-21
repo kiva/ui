@@ -61,10 +61,21 @@
 					</template>
 
 					<template v-slot:content>
-						<div>
-							<h4>Authenticator app</h4>
-							<a>REMOVE LINK</a>
-						</div>
+						<ul class="methodsList">
+							<li
+								class="method"
+								v-for="(mfaMethod, index) in mfaMethods" :key="index"
+							>
+								<h4>{{ mfaMethod.authTypeName }}</h4>
+								<p>{{ mfaMethod.authNumber }}</p>
+								<kv-button
+									class="text-link"
+									@click.native.prevent="removeMfaMethod"
+								>
+									Remove
+								</kv-button>
+							</li>
+						</ul>
 					</template>
 				</kv-settings-card>
 
@@ -126,6 +137,7 @@ import KvButton from '@/components/Kv/KvButton';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import removeMfa from '@/graphql/mutation/removeMfa.graphql';
+import removeOneMfaMethod from '@/graphql/mutation/removeOneMfaMethod.graphql';
 
 const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
@@ -134,6 +146,8 @@ const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 			id
 			active
 			authenticator_type
+			oob_channel
+			name
 		}
 	}
 }`;
@@ -141,8 +155,9 @@ const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 export default {
 	data() {
 		return {
-			isMfaActive: false,
+			isMfaActive: true,
 			lastLoginTime: 0,
+			mfaMethods: [],
 		};
 	},
 	components: {
@@ -157,6 +172,7 @@ export default {
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
+			// move into it's own method and call it here.
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
@@ -168,14 +184,42 @@ export default {
 					});
 				}).then(result => {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
+					console.log('authEnrollments', authEnrollments);
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
+
+					// create gather enrollments method
+					// call it here
+
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						// eslint-disable-next-line max-len
 						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
 							this.isMfaActive = true;
-							return;
+						}
+						let authTypeName = {};
+						const authId = authEnrollments[i].id;
+						if (authEnrollments[i].authenticator_type === 'otp') {
+							authTypeName = 'Authenticator app';
+							if (authTypeName !== undefined) {
+								this.mfaMethods.push({ authId, authTypeName });
+							}
+						} else if (authEnrollments[i].authenticator_type === 'oob') {
+							let authNumber;
+							if (authEnrollments[i].oob_channel === 'sms') {
+								authTypeName = 'Text  message';
+								authNumber = authEnrollments[i].name;
+								if (authTypeName !== undefined) {
+									this.mfaMethods.push({ authId, authTypeName, authNumber });
+								}
+							} else {
+								authTypeName = 'Voice message';
+								authNumber = authEnrollments[i].name;
+								if (authTypeName !== undefined) {
+									this.mfaMethods.push({ authId, authTypeName, authNumber });
+								}
+							}
 						}
 					}
+					console.log('mfaMethods', this.mfaMethods);
 				});
 		}
 		if (this.$route.query.mfa === 'off') {
@@ -235,7 +279,22 @@ export default {
 					});
 				});
 		},
-	}
+		removeMfaMethod() {
+			this.kvAuth0.checkSession()
+				.then(() => this.kvAuth0.getMfaManagementToken())
+				.then(token => {
+					this.apollo.mutate({
+						mutation: removeOneMfaMethod,
+						variables: {
+							mfa_token: token,
+							id: this.authId
+						}
+					}).then(() => {
+						console.log('removeONEMfaMethod triggered');
+					});
+				}).then(() => console.log('this.authId', this.authId));
+		},
+	},
 };
 </script>
 
@@ -256,6 +315,10 @@ export default {
 			color: $kiva-green;
 		}
 	}
+}
+
+.method {
+	margin-top: 30px;
 }
 
 </style>
