@@ -178,6 +178,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		subscriptionId: {
+			type: Number,
+			default: null
+		},
 	},
 	data() {
 		return {
@@ -246,6 +250,7 @@ export default {
 					'select_action',
 					label,
 					property,
+					this.subscriptionId
 				);
 			}
 		}

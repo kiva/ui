@@ -144,6 +144,7 @@
 					<!-- Monthly Good Cancellation Flow -->
 					<subscriptions-monthly-good-cancellation-flow
 						:show-cancel-lightbox="showCancelLightbox"
+						:subscription-id="subscriptionId"
 						v-if="showCancelLightbox"
 						@confirm-cancel="$emit('cancel-subscription'); showCancelLightbox = false;"
 						@abort-cancel="showCancelLightbox = false"
@@ -156,7 +157,6 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
@@ -216,7 +216,8 @@ export default {
 			isChanged: false,
 			isFormValid: true,
 			updateToCurrentPaymentMethod: false,
-			paymentMethod: {}
+			paymentMethod: {},
+			subscriptionId: ''
 		};
 	},
 	mixins: [
@@ -226,14 +227,15 @@ export default {
 		query: pageQuery,
 		preFetch: true,
 		result({ data }) {
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
+			this.isMonthlyGoodSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 			if (this.isMonthlyGoodSubscriber) {
-				const autoDepositAmount = parseFloat(_get(data, 'my.autoDeposit.amount', 0));
-				this.donation = parseFloat(_get(data, 'my.autoDeposit.donateAmount', 0));
-				this.dayOfMonth = _get(data, 'my.autoDeposit.dayOfMonth');
-				this.category = _get(data, 'my.monthlyGoodCategory', '');
+				const autoDepositAmount = parseFloat(data?.my?.autoDeposit?.amount ?? 0);
+				this.donation = parseFloat(data?.my?.autoDeposit?.donateAmount ?? 0);
+				this.dayOfMonth = data?.my?.autoDeposit?.dayOfMonth;
+				this.category = data?.my?.monthlyGoodCategory ?? '';
 				this.mgAmount = autoDepositAmount - this.donation;
-				this.paymentMethod = _get(data, 'my.autoDeposit.paymentMethod', {});
+				this.paymentMethod = data?.my?.autoDeposit?.paymentMethod ?? {};
+				this.subscriptionId = data?.my?.autoDeposit?.id;
 			}
 		},
 	},
