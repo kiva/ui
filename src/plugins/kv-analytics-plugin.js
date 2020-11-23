@@ -117,6 +117,12 @@ export default Vue => {
 
 			return true;
 		},
+		// https://developers.facebook.com/docs/facebook-pixel/implementation/conversion-tracking#tracking-custom-events
+		trackFBCustomEvent: (eventName, eventData = null) => {
+			if (fbLoaded) {
+				window.fbq('trackCustom', eventName, eventData);
+			}
+		},
 		parseEventProperties: eventValue => {
 			// Ensure we have a non-empty array to begin with
 			if (Array.isArray(eventValue) && eventValue.length) {
@@ -146,7 +152,30 @@ export default Vue => {
 		trackFBTransaction: transactionData => {
 			const itemTotal = transactionData.itemTotal || '';
 			if (typeof window.fbq !== 'undefined' && typeof itemTotal !== 'undefined') {
-				window.fbq('track', 'Purchase', { currency: 'USD', value: itemTotal });
+				window.fbq('track', 'Purchase', {
+					currency: 'USD',
+					value: itemTotal,
+					content_type: transactionData.isFTD ? 'FirstTimeDepositor' : 'ReturningLender'
+				});
+			}
+
+			// signify transaction has kiva cards
+			if (transactionData.kivaCards.length) {
+				kvActions.trackFBCustomEvent(
+					'transactionContainsKivaCards',
+					{
+						kivaCardTotal: transactionData.kivaCardTotal
+					}
+				);
+			}
+			// signifiy transaction ftd status
+			if (transactionData.isFTD && typeof itemTotal !== 'undefined') {
+				kvActions.trackFBCustomEvent(
+					'firstTimeDepositorTransaction',
+					{
+						itemTotal
+					}
+				);
 			}
 		},
 		trackGATransaction: transactionData => {
@@ -246,5 +275,10 @@ export default Vue => {
 	// eslint-disable-next-line no-param-reassign
 	Vue.prototype.$kvTrackTransaction = transactionData => {
 		kvActions.trackTransaction(transactionData);
+	};
+
+	// eslint-disable-next-line no-param-reassign
+	Vue.prototype.$kvTrackFBCustomEvent = (eventName, eventData = null) => {
+		kvActions.trackFBCustomEvent(eventName, eventData);
 	};
 };

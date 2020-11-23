@@ -4,6 +4,7 @@ fragment shopTotals on ShopTotals {
 	creditAvailableTotal
 	donationTotal
 	itemTotal
+	kivaCardTotal
 	kivaCreditAvailableTotal
 	kivaCreditAppliedTotal
 	kivaCreditRemaining
