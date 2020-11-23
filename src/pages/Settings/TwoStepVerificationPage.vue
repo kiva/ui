@@ -70,7 +70,7 @@
 								<p>{{ mfaMethod.authNumber }}</p>
 								<kv-button
 									class="text-link"
-									@click.native.prevent="removeMfaMethod"
+									@click.native.prevent="removeMfaMethod(mfaMethod)"
 								>
 									Remove
 								</kv-button>
@@ -172,7 +172,38 @@ export default {
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
-			// move into it's own method and call it here.
+			this.gatherMfaEnrollments();
+		}
+		if (this.$route.query.mfa === 'off') {
+			// User returns to page after login, or if has logged in within 5 minutes
+			// and is presented with a window.confirm
+			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?');
+			if (mfaOffConfirm) {
+				// Upon confirm triggger mutation to turn off mfa
+				this.turnOffMfa();
+			} else {
+				// Upon cancel return to the base URL of current page
+				window.location = '/settings/security/mfa';
+			}
+		}
+	},
+	inject: ['apollo', 'kvAuth0'],
+	computed: {
+		cardTitle() {
+			if (this.isMfaActive) {
+				return 'Add a backup method';
+			}
+			return 'How would you like your verification code?';
+		},
+		cardSubhead() {
+			if (this.isMfaActive) {
+				return 'Set up additional backup steps so you can log in even if your other options aren\'t available';
+			}
+			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
+		}
+	},
+	methods: {
+		gatherMfaEnrollments() {
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
@@ -186,9 +217,7 @@ export default {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					console.log('authEnrollments', authEnrollments);
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
-
-					// create gather enrollments method
-					// call it here
+					this.mfaMethods = [];
 
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						// eslint-disable-next-line max-len
@@ -221,36 +250,7 @@ export default {
 					}
 					console.log('mfaMethods', this.mfaMethods);
 				});
-		}
-		if (this.$route.query.mfa === 'off') {
-			// User returns to page after login, or if has logged in within 5 minutes
-			// and is presented with a window.confirm
-			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?');
-			if (mfaOffConfirm) {
-				// Upon confirm triggger mutation to turn off mfa
-				this.turnOffMfa();
-			} else {
-				// Upon cancel return to the base URL of current page
-				window.location = '/settings/security/mfa';
-			}
-		}
-	},
-	inject: ['apollo', 'kvAuth0'],
-	computed: {
-		cardTitle() {
-			if (this.isMfaActive) {
-				return 'Add a backup method';
-			}
-			return 'How would you like your verification code?';
 		},
-		cardSubhead() {
-			if (this.isMfaActive) {
-				return 'Set up additional backup steps so you can log in even if your other options aren\'t available';
-			}
-			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
-		}
-	},
-	methods: {
 		checkLastLoginTime() {
 			const timeSinceLastLogin = (Math.floor(Date.now()) - this.lastLoginTime) / 60 / 1000;
 			const doneUrl = `${this.$route.path}?mfa=off`;
@@ -279,7 +279,7 @@ export default {
 					});
 				});
 		},
-		removeMfaMethod() {
+		removeMfaMethod(mfaMethod) {
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
@@ -287,12 +287,13 @@ export default {
 						mutation: removeOneMfaMethod,
 						variables: {
 							mfa_token: token,
-							id: this.authId
+							id: mfaMethod.authId
 						}
-					}).then(() => {
-						console.log('removeONEMfaMethod triggered');
 					});
-				}).then(() => console.log('this.authId', this.authId));
+				})
+				.then(() => {
+					this.gatherMfaEnrollments();
+				});
 		},
 	},
 };
