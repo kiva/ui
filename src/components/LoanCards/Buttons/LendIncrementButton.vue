@@ -68,7 +68,7 @@ export default {
 			return parseInt(remainingAmount, 10);
 		},
 		prices() {
-			const minAmount = this.loan.minNoteSize || 25; // 25_hard_coded
+			const minAmount = parseFloat(this.loan.minNoteSize || 25); // 25_hard_coded
 			// cap at 20 prices
 			return buildPriceArray(this.amountLeft, minAmount).slice(0, 20);
 		}
