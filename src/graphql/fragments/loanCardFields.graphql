@@ -26,6 +26,7 @@ fragment loanCardFields on LoanBasic {
 	whySpecial
 	lenderRepaymentTerm
 	loanAmount
+	minNoteSize
 	loanFundraisingInfo {
 		fundedAmount
 		reservedAmount

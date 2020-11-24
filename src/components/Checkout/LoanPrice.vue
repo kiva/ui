@@ -52,6 +52,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		minAmount: {
+			type: String,
+			default: '',
+		},
 		loanId: {
 			type: Number,
 			default: null
@@ -67,7 +71,7 @@ export default {
 		idsInGroup: {
 			type: Array,
 			default: () => []
-		}
+		},
 	},
 	data() {
 		return {
@@ -81,24 +85,28 @@ export default {
 		prices() {
 			if (this.type === 'loan') {
 				// determine how many (if any) overall additional shares are remaining
-				let remainingShares = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
+				let remainingAmount = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
 
 				// subtract reservedAmount shares (minus our own reserved shares)
 				// - only do this for loans that are not ending soon
 				// - for loans ending soon we just show remaining shares which are all un-reserved
 				if (!this.isExpiringSoon) {
-					remainingShares -= (parseFloat(this.reservedAmount) - parseInt(this.price, 10));
+					remainingAmount -= (parseFloat(this.reservedAmount) - parseFloat(this.price, 10));
 				}
 
-				// if we've met reserve ensure atleast this loan share is set
-				if (remainingShares < parseInt(this.price, 10)) remainingShares = parseInt(this.price, 10);
+				// if we've met reserve ensure at least this loan share is set
+				remainingAmount = Math.max(remainingAmount, parseFloat(this.price, 10));
 
-				// get count of shares based on available remaining shares
-				const sharesBelowReserve = parseInt(remainingShares, 10) / 25;
 				// convert this to formatted array for our select element
-				const reservePriceArray = this.buildShareArray(sharesBelowReserve);
-
-				return reservePriceArray;
+				const minAmount = parseFloat(this.minAmount || 25, 10); // 25_hard_coded
+				const numShares = remainingAmount / minAmount;
+				const priceArray = [];	// ex. priceArray = ['25', '50', '75']
+				// loop and build formatted array
+				// eslint-disable-next-line no-plusplus
+				for (let i = 1; i <= numShares; i++) {
+					priceArray.push(numeral(minAmount * i).format('0,0'));
+				}
+				return priceArray;
 			}
 			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element
@@ -206,15 +214,6 @@ export default {
 				}
 			}
 		},
-		buildShareArray(shares) {
-			// loop and build formatted array
-			const priceArray = [];
-			// ex. priceArray = ['25.00', '50.00', '75.00']
-			for (let i = 0; i < shares; i++) { // eslint-disable-line
-				priceArray.push(numeral(25 * (i + 1)).format('0,0'));
-			}
-			return priceArray;
-		}
 	}
 };
 
