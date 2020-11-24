@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import StoryRouter from 'storybook-vue-router';
-import AppealBannerSwashie from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerSwashie.vue';
+import AppealBannerCircular from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular.vue';
 
 // import plugins
 import kivaPlugins from '@/plugins';
 Vue.use(kivaPlugins)
 
 export default {
-	title: 'WwwFrame/Banners/AppealBannerSwashie',
-	component: AppealBannerSwashie,
+	title: 'WwwFrame/Banners/AppealBannerCircular',
+	component: AppealBannerCircular,
 	decorators: [StoryRouter()],
 	args: {
 		targetAmount: 10000,
@@ -23,11 +23,11 @@ export default {
 export const Default = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
-		AppealBannerSwashie,
+		AppealBannerCircular,
 	},
 	template: `
 		<div>
-			<appeal-banner-swashie
+			<appeal-banner-circular
 				:target-amount="targetAmount"
 				:amount-raised="amountRaised"
 				:button-amounts="buttonAmounts"

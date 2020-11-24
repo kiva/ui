@@ -1,5 +1,5 @@
 <template>
-	<appeal-banner-swashie
+	<appeal-banner-circular
 		:target-amount="targetAmount"
 		:amount-raised="amountRaised"
 		:button-amounts="buttonAmounts"
@@ -16,12 +16,12 @@ import cookieStore from '@/util/cookieStore';
 import numeral from 'numeral';
 import appealBannerQuery from '@/graphql/query/appealBanner.graphql';
 import updateDonation from '@/graphql/mutation/updateDonation.graphql';
-import AppealBannerSwashie from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerSwashie';
+import AppealBannerCircular from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircular';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
-		AppealBannerSwashie
+		AppealBannerCircular
 	},
 	inject: ['apollo'],
 	apollo: {
