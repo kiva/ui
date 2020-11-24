@@ -4,7 +4,6 @@
 			<kv-loading-spinner v-if="!categoriesLoaded" />
 			<kv-carousel
 				class="loan-category-section__carousel"
-				:controls-inside="true"
 				:autoplay="false"
 				slides-to-scroll="visible"
 				indicator-style="none"
@@ -17,7 +16,7 @@
 					v-for="category in prefetchedCategoryInfo"
 					:key="category.id + '-link'"
 				>
-					<kv-cause-selector
+					<!-- <kv-cause-selector
 						class="loan-category-section__cause-selector"
 						:cause="cleanCategoryName(category)"
 						:as-radio="true"
@@ -27,7 +26,19 @@
 							'click-carousel-selector',
 							cleanCategoryName(category),
 						]"
-					/>
+					/> -->
+					<kv-button
+						class="text-link category-options__link"
+						:class="{'active': category.id === activeCategory}"
+						@click.native="setActiveCategory(category.id)"
+						v-kv-track-event="[
+							'homepage',
+							'click-carousel-category',
+							cleanCategoryName(category),
+						]"
+					>
+						{{ cleanCategoryName(category) }}
+					</kv-button>
 				</kv-carousel-slide>
 			</kv-carousel>
 		</div>
@@ -63,17 +74,19 @@ import lendByCategoryHomepageCategories from '@/graphql/query/lendByCategoryHome
 import loanChannelInfoQuery from '@/graphql/query/loanChannelInfo.graphql';
 import loanChannelData from '@/graphql/query/loanChannelData.graphql';
 
+import KvButton from '@/components/Kv/KvButton';
 import KvCarousel from '@/components/Kv/KvCarousel';
 import KvCarouselSlide from '@/components/Kv/KvCarouselSlide';
-import KvCauseSelector from '@/components/Kv/KvCauseSelector';
+// import KvCauseSelector from '@/components/Kv/KvCauseSelector';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCategory from '@/components/Homepage/LendByCategory/LoanCategory';
 
 export default {
 	components: {
+		KvButton,
 		KvCarousel,
 		KvCarouselSlide,
-		KvCauseSelector,
+		// KvCauseSelector,
 		KvLoadingSpinner,
 		LoanCategory,
 	},
@@ -297,6 +310,26 @@ export default {
 		max-width: rem-calc(797px);
 		margin: 0 auto;
 
+		&__link {
+			color: $charcoal;
+			font-weight: $global-weight-normal;
+			font-size: $featured-text-font-size;
+			line-height: 1.5rem;
+			text-transform: capitalize;
+
+			&.active,
+			&:hover,
+			&:focus {
+				text-decoration: none;
+				color: $kiva-green;
+			}
+
+			&.active {
+				font-weight: $global-weight-bold;
+				border-bottom: 3px solid $kiva-green;
+			}
+		}
+
 		.loading-spinner {
 			margin: 0 auto;
 		}
@@ -305,7 +338,8 @@ export default {
 	.loan-category-section {
 		&__carousel-slide {
 			width: auto;
-			padding-top: 0.75rem;
+			padding: 0.5rem 1.5rem 0;
+			margin: 0.5rem 0 1rem;
 		}
 
 		&__cause-selector {
