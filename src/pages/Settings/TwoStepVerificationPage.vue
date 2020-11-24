@@ -226,6 +226,7 @@ export default {
 						}
 						let authTypeName = {};
 						const authId = authEnrollments[i].id;
+
 						if (authEnrollments[i].authenticator_type === 'otp') {
 							authTypeName = 'Authenticator app';
 							if (authTypeName !== undefined) {
@@ -293,6 +294,15 @@ export default {
 				})
 				.then(() => {
 					this.gatherMfaEnrollments();
+				})
+				// if this was the last mfaMethod user had configured,
+				// turn off mfa for user
+				.then(() => {
+					if (this.mfaMethods === []) {
+						// if there are no enrollments, turn off mfa
+						console.log('mfaMethods are empty, turning off mfa');
+						this.turnOffMfa();
+					}
 				});
 		},
 	},
