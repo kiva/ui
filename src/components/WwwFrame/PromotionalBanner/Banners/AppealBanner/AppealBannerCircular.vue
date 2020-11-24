@@ -18,13 +18,14 @@
 						:class="isLoading ? 'indicator--is-loading' : ''"
 					>
 						<kv-progress-circle
-							class="indicator__progress-circle indicator__progress-circle--foreground"
+							class="indicator__progress-circle"
 							:stroke-width="12"
 							:value="goalPercent"
-							:fraction=".8"
-							:rotate="20"
+							:arc-scale=".8"
+							:rotate="36"
 							:show-number="false"
 						/>
+						<!-- TODO: replace this svg with a contentful image -->
 						<svg
 							class="indicator__image"
 							fill="none"
@@ -325,18 +326,6 @@ export default {
 	}
 
 	&__progress-circle {
-		--kv-progress-circle-background-color: transparent;
-
-		transform: rotate(36deg);
-	}
-
-	&__progress-circle--background {
-		// --kv-progress-circle-foreground-color: #E1DBD2;
-	}
-
-	&__progress-circle--foreground {
-		// --kv-progress-circle-foreground-color: #{$teal};
-
 		z-index: 2;
 	}
 
