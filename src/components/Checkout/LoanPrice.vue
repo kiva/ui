@@ -90,13 +90,13 @@ export default {
 				// - only do this for loans that are not ending soon
 				// - for loans ending soon we just show remaining shares which are all un-reserved
 				if (!this.isExpiringSoon) {
-					remainingAmount -= (parseFloat(this.reservedAmount) - parseFloat(this.price, 10));
+					remainingAmount -= (parseFloat(this.reservedAmount) - parseFloat(this.price));
 				}
 
 				// if we've met reserve ensure at least this loan share is set
-				remainingAmount = Math.max(remainingAmount, parseFloat(this.price, 10));
+				remainingAmount = Math.max(remainingAmount, parseFloat(this.price));
 
-				const minAmount = parseFloat(this.minAmount || 25, 10); // 25_hard_coded
+				const minAmount = parseFloat(this.minAmount || 25); // 25_hard_coded
 				return buildPriceArray(remainingAmount, minAmount);
 			}
 			if (this.type === 'kivaCard') {
