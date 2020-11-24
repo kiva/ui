@@ -473,10 +473,10 @@ export default {
 }
 
 .featured-loans {
-	padding: 2rem 0 6rem;
+	padding: 2rem 0 rem-calc(46);
 
 	@include breakpoint(large) {
-		padding: 4rem 0 11rem;
+		padding: 4rem 0 rem-calc(126);
 	}
 
 	&__cta_wrapper {
