@@ -52,7 +52,19 @@
 					class="lend-homepage-loan-card__action-button-container"
 					:class="{'full-width': isFunded || isExpired}"
 				>
-					<action-button
+					<kv-button
+						class="action-button"
+						:to="`/lend/${loan.id}`"
+						v-kv-track-event="[
+							'Lending',
+							'click-Read more',
+							'View loan',
+							loan.id
+						]"
+					>
+						View loan
+					</kv-button>
+					<!-- <action-button
 						class="action-button"
 						:loan-id="loan.id"
 						:loan="loan"
@@ -71,7 +83,7 @@
 						})"
 
 						@add-to-basket="handleAddToBasket"
-					/>
+					/> -->
 				</div>
 				<div class="lend-homepage-loan-card__matching-text-container" :class="{hide: isFunded || isExpired}">
 					<matching-text
@@ -87,11 +99,12 @@
 </template>
 
 <script>
+import KvButton from '@/components/Kv/KvButton';
 import KvFlag from '@/components/Kv/KvFlag';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
-import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+// import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
@@ -107,7 +120,8 @@ export default {
 		KvFlag,
 		LoanCardImage,
 		FundraisingStatus,
-		ActionButton,
+		// ActionButton,
+		KvButton,
 		MatchingText,
 		BorrowerInfoName,
 	},
@@ -277,6 +291,7 @@ export default {
 		.button.action-button {
 			margin: 0;
 			padding: 0.95rem 1rem;
+			width: 100%;
 		}
 
 		.action-button:not(.loan-funded-text):not(.loan-expired-text):not(.loan-selected-text) {
