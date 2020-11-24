@@ -85,10 +85,8 @@ export default {
 	computed: {
 		prices() {
 			if (this.type === 'loan') {
-				// determine how many (if any) overall additional shares are remaining
 				let remainingAmount = parseFloat(this.loanAmount) - parseFloat(this.fundedAmount);
-
-				// subtract reservedAmount shares (minus our own reserved shares)
+				// subtract reservedAmount (minus our own reserved amount)
 				// - only do this for loans that are not ending soon
 				// - for loans ending soon we just show remaining shares which are all un-reserved
 				if (!this.isExpiringSoon) {

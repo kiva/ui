@@ -57,17 +57,15 @@ export default {
 			const { loanAmount, loanFundraisingInfo } = this.loan;
 			const { isExpiringSoon, fundedAmount, reservedAmount } = loanFundraisingInfo;
 
-			// determine how many (if any) overall additional shares are remaining
-			let remainingShares = parseFloat(loanAmount) - parseFloat(fundedAmount);
-
-			// subtract reservedAmount shares
+			let remainingAmount = parseFloat(loanAmount) - parseFloat(fundedAmount);
+			// subtract reservedAmount
 			// - only do this for loans that are not ending soon
 			// - for loans ending soon we just show remaining shares which are all un-reserved
 			if (!isExpiringSoon) {
-				remainingShares -= parseFloat(reservedAmount);
+				remainingAmount -= parseFloat(reservedAmount);
 			}
 
-			return parseInt(remainingShares, 10);
+			return parseInt(remainingAmount, 10);
 		},
 		prices() {
 			const minAmount = this.loan.minNoteSize || 25; // 25_hard_coded
