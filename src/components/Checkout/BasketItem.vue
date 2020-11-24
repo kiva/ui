@@ -32,8 +32,9 @@
 			<loan-price
 				:price="loan.price"
 				:loan-id="loan.id"
-				:loan-amount="loan.loan.loanAmount"
 				type="loan"
+				:loan-amount="loan.loan.loanAmount"
+				:min-amount="loan.loan.minNoteSize"
 				:funded-amount="loan.loan.loanFundraisingInfo.fundedAmount"
 				:reserved-amount="loan.loan.loanFundraisingInfo.reservedAmount"
 				:is-expiring-soon="loan.loan.loanFundraisingInfo.isExpiringSoon"

@@ -8,6 +8,7 @@ query emptyBasketData(
 				id
 				name
 				loanAmount
+				minNoteSize
 				loanFundraisingInfo {
 					fundedAmount
 					reservedAmount

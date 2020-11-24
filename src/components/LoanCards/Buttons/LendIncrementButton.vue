@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import numeral from 'numeral';
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
+import { buildPriceArray } from '@/util/loanUtils';
 
 export default {
 	components: {
@@ -57,36 +57,21 @@ export default {
 			const { loanAmount, loanFundraisingInfo } = this.loan;
 			const { isExpiringSoon, fundedAmount, reservedAmount } = loanFundraisingInfo;
 
-			// determine how many (if any) overall additional shares are remaining
-			let remainingShares = parseFloat(loanAmount) - parseFloat(fundedAmount);
-
-			// subtract reservedAmount shares
+			let remainingAmount = parseFloat(loanAmount) - parseFloat(fundedAmount);
+			// subtract reservedAmount
 			// - only do this for loans that are not ending soon
 			// - for loans ending soon we just show remaining shares which are all un-reserved
 			if (!isExpiringSoon) {
-				remainingShares -= parseFloat(reservedAmount);
+				remainingAmount -= parseFloat(reservedAmount);
 			}
 
-			return parseInt(remainingShares, 10);
+			return parseInt(remainingAmount, 10);
 		},
 		prices() {
-			// get count of shares based on available remaining shares
-			const sharesBelowReserve = this.amountLeft / 25;
-			// convert this to formatted array for our select element
-			return this.buildShareArray(sharesBelowReserve);
+			const minAmount = this.loan.minNoteSize || 25; // 25_hard_coded
+			// cap at 20 prices
+			return buildPriceArray(this.amountLeft, minAmount).slice(0, 20);
 		}
-	},
-	methods: {
-		buildShareArray(shares) {
-			// loop and build formatted array
-			const priceArray = [];
-			// ex. priceArray = ['25.00', '50.00', '75.00']
-			for (let i = 0; i < Math.min(shares, 20); i++) { // eslint-disable-line
-				priceArray.push(numeral(25 * (i + 1)).format('0,0'));
-			}
-
-			return priceArray;
-		},
 	},
 	watch: {
 		loan: {

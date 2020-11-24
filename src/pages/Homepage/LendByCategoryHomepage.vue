@@ -25,7 +25,7 @@
 					</p>
 					<kv-button
 						class="rounded"
-						to="/get-started"
+						to="/lend-by-category"
 						v-kv-track-event="[
 							'Home',
 							'click-hero-cta',
@@ -50,7 +50,7 @@
 		</section>
 
 		<!-- GROW-172 associated to the GROW-165 explicit lender preferences epic -->
-		<section class="take-quiz section">
+		<!-- <section class="take-quiz section">
 			<div class="row take-quiz__border">
 				<div class="small-12 large-6 columns">
 					<kv-responsive-image
@@ -81,7 +81,7 @@
 					</kv-button>
 				</div>
 			</div>
-		</section>
+		</section> -->
 
 		<section
 			v-if="kivaCardPromoEnabled && kivaCardPromoContent"

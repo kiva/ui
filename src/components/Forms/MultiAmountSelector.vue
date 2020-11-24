@@ -92,7 +92,7 @@ export default {
 		},
 		minCustomAmount: {
 			type: Number,
-			default: 25,
+			default: 25, // 25_hard_coded
 		},
 		maxCustomAmount: {
 			type: Number,
