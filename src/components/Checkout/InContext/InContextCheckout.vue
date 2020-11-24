@@ -6,6 +6,7 @@
 			:donations="donations"
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+			@refreshtotals="$emit('refresh-totals')"
 		/>
 		<hr>
 		<kv-button
