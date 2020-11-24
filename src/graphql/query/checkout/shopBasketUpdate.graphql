@@ -42,6 +42,7 @@ query shopBasketUpdate($basketId: String) {
 							status
 							matchingText
 							loanAmount
+							minNoteSize
 							plannedExpirationDate
 							sector {
 								id
