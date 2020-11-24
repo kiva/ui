@@ -9,7 +9,7 @@
 					:width="iFrameWidth"
 					frameborder="0"
 				></iframe>
-				<script src="//kiva.tfaforms.net/js/iframe_resize_helper.js"></script>
+				<script type="application/javascript" src="//kiva.tfaforms.net/js/iframe_resize_helper.js"></script>
 			</div>
 		</div>
 	</section>
