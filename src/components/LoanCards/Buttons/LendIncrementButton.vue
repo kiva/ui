@@ -26,8 +26,8 @@
 </template>
 
 <script>
-import numeral from 'numeral';
 import LendButton from '@/components/LoanCards/Buttons/LendButton';
+import { buildPriceArray } from '@/util/loanUtils';
 
 export default {
 	components: {
@@ -70,23 +70,10 @@ export default {
 			return parseInt(remainingShares, 10);
 		},
 		prices() {
-			// get count of shares based on available remaining shares
-			const sharesBelowReserve = this.amountLeft / 25;
-			// convert this to formatted array for our select element
-			return this.buildShareArray(sharesBelowReserve);
+			const minAmount = this.loan.minNoteSize || 25; // 25_hard_coded
+			// cap at 20 prices
+			return buildPriceArray(this.amountLeft, minAmount).slice(0, 20);
 		}
-	},
-	methods: {
-		buildShareArray(shares) {
-			// loop and build formatted array
-			const priceArray = [];
-			// ex. priceArray = ['25.00', '50.00', '75.00']
-			for (let i = 0; i < Math.min(shares, 20); i++) { // eslint-disable-line
-				priceArray.push(numeral(25 * (i + 1)).format('0,0'));
-			}
-
-			return priceArray;
-		},
 	},
 	watch: {
 		loan: {

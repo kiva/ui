@@ -29,6 +29,7 @@ import _forEach from 'lodash/forEach';
 import updateLoanReservation from '@/graphql/mutation/updateLoanReservation.graphql';
 import updateKivaCardAmount from '@/graphql/mutation/updateKivaCardAmount.graphql';
 import KvIcon from '@/components/Kv/KvIcon';
+import { buildPriceArray } from '@/util/loanUtils';
 
 export default {
 	components: {
@@ -97,16 +98,8 @@ export default {
 				// if we've met reserve ensure at least this loan share is set
 				remainingAmount = Math.max(remainingAmount, parseFloat(this.price, 10));
 
-				// convert this to formatted array for our select element
 				const minAmount = parseFloat(this.minAmount || 25, 10); // 25_hard_coded
-				const numShares = remainingAmount / minAmount;
-				const priceArray = [];	// ex. priceArray = ['25', '50', '75']
-				// loop and build formatted array
-				// eslint-disable-next-line no-plusplus
-				for (let i = 1; i <= numShares; i++) {
-					priceArray.push(numeral(minAmount * i).format('0,0'));
-				}
-				return priceArray;
+				return buildPriceArray(remainingAmount, minAmount);
 			}
 			if (this.type === 'kivaCard') {
 				// convert this to formatted array for our select element
