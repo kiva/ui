@@ -20,7 +20,7 @@
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
 					<p class="featured-loans__body">
-						With Kiva you can lend a small amount of money and make big
+						With Kiva you can lend a small amount of money and make a big
 						change in someone's life. It's fast and easy to get started.
 					</p>
 					<kv-button
@@ -397,10 +397,10 @@ export default {
 // utils
 .section {
 	position: relative;
-	padding: 3rem 0;
+	padding: 2rem 0;
 
 	@include breakpoint(large) {
-		padding: 6rem 0;
+		padding: 2rem 0;
 	}
 }
 
@@ -409,10 +409,10 @@ export default {
 }
 
 .featured-loans {
-	padding: 2rem 0 rem-calc(46);
+	padding: 2rem 0;
 
 	@include breakpoint(large) {
-		padding: 4rem 0 rem-calc(126);
+		padding: 4rem 0 2rem;
 	}
 
 	&__cta_wrapper {
@@ -445,12 +445,6 @@ export default {
 }
 
 .loan-categories {
-	padding: 1rem 0 3rem;
-
-	@include breakpoint(large) {
-		padding: 2rem 0 5rem;
-	}
-
 	& .row {
 		max-width: 69.15rem;
 	}
