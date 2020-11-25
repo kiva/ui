@@ -183,7 +183,7 @@ export default {
 			}
 			const nearestThousand = parseFloat(Number((this.targetAmount - this.amountRaised) / 1000).toPrecision(3));
 			// const nearestThousand = numeral((this.targetAmount - this.amountRaised) / 1000).format('0.[00]');
-			return `$${nearestThousand}k <br />‘til goal`;
+			return `$${nearestThousand}k <br />to goal`;
 		}
 	},
 	methods: {
@@ -259,8 +259,8 @@ export default {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
 		background: #fff;
-		color: $kiva-accent-darkblue;
-		border-color: $kiva-accent-darkblue;
+		color: $kiva-green;
+		border-color: $kiva-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
@@ -268,17 +268,17 @@ export default {
 		&:hover,
 		&:focus {
 			color: #fff;
-			background: $kiva-accent-darkblue;
+			background: $kiva-green;
 		}
 
 		&--toggle-open {
 			color: #fff;
-			background: $kiva-accent-darkblue;
+			background: $kiva-green;
 
 			&:hover,
 			&:focus {
 				background: #fff;
-				color: $kiva-accent-darkblue;
+				color: $kiva-green;
 			}
 		}
 	}
@@ -297,7 +297,7 @@ export default {
 
 		&:hover,
 		&:focus {
-			background-color: $kiva-accent-darkblue;
+			background-color: $kiva-green;
 		}
 	}
 
@@ -358,6 +358,8 @@ export default {
 
 	&__progress-circle {
 		z-index: 2;
+
+		--kv-progress-circle-foreground-color: #{$kiva-green};
 	}
 
 	&__goal-status {
