@@ -160,7 +160,7 @@ export default Vue => {
 			}
 
 			// signify transaction has kiva cards
-			if (transactionData.kivaCards.length) {
+			if (transactionData.kivaCards && transactionData.kivaCards.length) {
 				kvActions.trackFBCustomEvent(
 					'transactionContainsKivaCards',
 					{
