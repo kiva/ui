@@ -325,13 +325,11 @@ export default {
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
 			padding-bottom: rem-calc(8);
-			margin-bottom: 1rem;
 			text-align: left;
 
 			@include breakpoint(large) {
 				padding-top: rem-calc(12);
 				padding-bottom: rem-calc(12);
-				margin-bottom: 0;
 			}
 		}
 
