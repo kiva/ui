@@ -13,7 +13,6 @@
 					:width="iFrameWidth"
 					frameborder="0"
 				></iframe>
-				<script src="//kiva.tfaforms.net/js/iframe_resize_helper.js"></script>
 			</kv-lightbox>
 		</div>
 	</section>
@@ -23,6 +22,11 @@
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
+	metaInfo: {
+		script: [
+			{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
+		],
+	},
 	components: {
 		KvLightbox,
 	},
