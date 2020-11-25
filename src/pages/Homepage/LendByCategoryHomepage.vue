@@ -90,24 +90,6 @@
 			<kiva-card-promo :promo-content="kivaCardPromoContent" />
 		</section>
 
-		<section class="loan-not-donation section text-center">
-			<div class="row">
-				<kv-responsive-image
-					class="loan-not-donation__img"
-					:images="loanNotDonationImgs.header"
-					loading="lazy"
-					alt=""
-				/>
-				<h2 class="loan-not-donation__header small-12 columns">
-					It's a loan, not a donation
-				</h2>
-				<p class="loan-not-donation__body large-6 large-offset-3 columns">
-					Kiva is a loan, not a donation, allowing you to cycle your money and
-					create a personal impact across the world. Plus, you can withdraw your funds at any time.
-				</p>
-			</div>
-		</section>
-
 		<section class="how-it-works section text-center">
 			<div class="row">
 				<h2 class="how-it-works__header small-12 columns">
@@ -322,12 +304,6 @@ export default {
 					background: imgRequire('./lender-quote-card-texture-red.png'),
 				},
 			],
-			loanNotDonationImgs: {
-				header: [
-					['small', imgRequire('./loan-not-donation.png')],
-					['small retina', imgRequire('./loan-not-donation_2x.png')],
-				],
-			},
 			heroPromoContent: null,
 			heroPromoEnabled: null,
 			kivaCardPromoEnabled: null,
@@ -512,27 +488,6 @@ export default {
 		padding-left: rem-calc(50);
 		padding-right: rem-calc(50);
 		margin-bottom: rem-calc(40);
-	}
-}
-
-.loan-not-donation {
-	&__header {
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-
-	&__body {
-		@include breakpoint(large) {
-			@include featured-text();
-		}
-	}
-
-	&__img {
-		margin: 0 auto 1rem;
-		width: rem-calc(134);
 	}
 }
 
