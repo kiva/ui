@@ -1,10 +1,5 @@
 <template>
-	<transition
-		@enter="enter"
-		@leave="leave"
-		:css="false"
-		mode="out-in"
-	>
+	<div>
 		<!-- open banner -->
 		<div
 			class="appeal-banner appeal-banner--open"
@@ -125,12 +120,12 @@
 				</div>
 			</div>
 		</div>
-	</transition>
+	</div>
 </template>
 
 <script>
 // import numeral from 'numeral';
-import { expand, collapse } from '@/util/expander';
+import smoothReflow from 'vue-smooth-reflow';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -142,6 +137,7 @@ export default {
 		KvIcon,
 		KvProgressCircle,
 	},
+	mixins: [smoothReflow],
 	props: {
 		targetAmount: {
 			type: Number,
@@ -203,19 +199,9 @@ export default {
 		onClickToggleBanner() {
 			this.$emit('toggle-banner', !this.isOpen);
 		},
-		// slide up / down transitions
-		enter(el, done) {
-			expand(el, {
-				easing: 'ease-in-out',
-				done
-			});
-		},
-		leave(el, done) {
-			collapse(el, {
-				easing: 'ease-in-out',
-				done
-			});
-		},
+	},
+	mounted() {
+		this.$smoothReflow();
 	},
 };
 </script>
