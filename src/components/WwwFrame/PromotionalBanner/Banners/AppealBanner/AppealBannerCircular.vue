@@ -11,8 +11,8 @@
 			v-if="isOpen"
 			key="openBanner"
 		>
-			<div class="row align-center">
-				<div class="appeal-banner__swashie shrink small-12 columns">
+			<div class="row align-center align-middle relative">
+				<div class="appeal-banner__indicator shrink small-12 columns">
 					<div
 						class="indicator"
 						:class="isLoading ? 'indicator--is-loading' : ''"
@@ -22,7 +22,7 @@
 							:stroke-width="12"
 							:value="goalPercent"
 							:arc-scale=".8"
-							:rotate="36"
+							:rotate="37.5"
 							:show-number="false"
 						/>
 						<!-- TODO: replace this svg with a contentful image -->
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import numeral from 'numeral';
+// import numeral from 'numeral';
 import { expand, collapse } from '@/util/expander';
 
 import KvButton from '@/components/Kv/KvButton';
@@ -180,7 +180,6 @@ export default {
 				return 'Goal <br />reached!';
 			}
 			const nearestThousand = parseFloat(Number((this.targetAmount - this.amountRaised) / 1000).toPrecision(3));
-			// const nearestThousand = parseFloat(Number((this.targetAmount - this.amountRaised) / 1000).toFixed(3));
 			// const nearestThousand = numeral((this.targetAmount - this.amountRaised) / 1000).format('0.[00]');
 			return `$${nearestThousand}k <br />‘til goal`;
 		}
@@ -211,14 +210,29 @@ export default {
 
 <style lang='scss' scoped>
 @import 'settings';
-@import 'components/15-years/15-years';
 
 .appeal-banner {
 	// border-bottom: 1px solid $twilight;
+	letter-spacing: -0.02em;
+
+	&__indicator {
+		margin-bottom: rem-calc(32);
+		@include breakpoint('large') {
+			margin: 0;
+		}
+	}
 
 	&__content {
-		max-width: rem-calc(490);
-		position: relative;
+		max-width: rem-calc(381);
+		text-align: center;
+
+		@include breakpoint('large') {
+			text-align: left;
+		}
+	}
+
+	&__title {
+		margin-bottom: rem-calc(4);
 	}
 
 	&__amount-list {
@@ -228,12 +242,12 @@ export default {
 	}
 
 	&__amount-item {
-		flex-grow: 1;
+		flex: 1;
 		margin-right: rem-calc(8);
 
 		&--other {
 			margin-right: 0;
-			flex-grow: 3;
+			flex-grow: 2;
 		}
 	}
 
@@ -241,20 +255,25 @@ export default {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
 		background: #fff;
-		color: $kiva-accent-blue;
-		border-color: $kiva-accent-blue;
+		color: $kiva-accent-darkblue;
+		border-color: $kiva-accent-darkblue;
 		box-shadow: none;
 		width: 100%;
+		margin-bottom: 0;
 
 		&:hover {
 			color: #fff;
-			background: $kiva-accent-blue;
+			background: $kiva-accent-darkblue;
 		}
 
 		&--toggle-open {
-			/* background: blue;
 			color: #fff;
-			width: rem-calc(100); */
+			background: $kiva-accent-darkblue;
+
+			&:hover {
+				background: #fff;
+				color: $kiva-accent-darkblue;
+			}
 		}
 	}
 
@@ -279,10 +298,10 @@ export default {
 	}
 
 	&--open {
-		.appeal-banner__content,
-		.appeal-banner__swashie {
+		.appeal-banner {
 			padding-top: rem-calc(16);
 			padding-bottom: rem-calc(16);
+			margin-bottom: rem-calc(16);
 
 			@include breakpoint(large) {
 				padding-top: rem-calc(24);
@@ -295,6 +314,7 @@ export default {
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
 			padding-bottom: rem-calc(8);
+			text-align: left;
 
 			@include breakpoint(large) {
 				padding-top: rem-calc(12);
@@ -310,8 +330,8 @@ export default {
 
 .indicator {
 	position: relative;
-	width: 9.5rem;
-	height: 9.5rem;
+	width: rem-calc(164);
+	height: rem-calc(164);
 
 	&__progress-circle,
 	&__image {
@@ -348,5 +368,9 @@ export default {
 			opacity: 0.3;
 		}
 	}
+}
+
+.relative {
+	position: relative;
 }
 </style>

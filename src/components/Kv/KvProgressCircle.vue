@@ -198,7 +198,7 @@ export default {
 
 .kv-progress-circle {
 	$foreground-color: $kiva-accent-blue;
-	$background-color: $kiva-bg-lightgray;
+	$background-color: $kiva-bg-darkgray;
 
 	&__wrapper {
 		width: 100%;

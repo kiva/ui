@@ -11,8 +11,8 @@ export default {
 	component: AppealBannerCircular,
 	decorators: [StoryRouter()],
 	args: {
-		targetAmount: 10000,
-		amountRaised: 2000,
+		targetAmount: 450000,
+		amountRaised: null,
 		buttonAmounts: [20, 35, 50],
 		headline: 'Donate $50, get $25 to lend.',
 		body: '<p>Your support has been essential this year. Donate today to keep Kiva possible.</p>',
