@@ -309,6 +309,7 @@ export default {
 
 	&__body {
 		margin-bottom: 1rem;
+		white-space: pre-wrap;
 	}
 
 	&--open {
