@@ -13,6 +13,11 @@
 				<!-- ring background -->
 				<circle
 					class="kv-progress-circle__ring-background"
+					:stroke-dasharray="circumference + ' ' + circumference"
+					:style="{
+						'strokeDashoffset': backgroundStrokeDashoffset,
+						'transform': circleTransform
+					}"
 					:stroke-width="strokeWidth"
 					:r="normalizedRadius"
 					:cx="radius"
@@ -23,7 +28,10 @@
 				<circle
 					class="kv-progress-circle__ring-foreground"
 					:stroke-dasharray="circumference + ' ' + circumference"
-					:style="`stroke-dashoffset: ${strokeDashoffset}`"
+					:style="{
+						'strokeDashoffset': strokeDashoffset,
+						'transform': circleTransform
+					}"
 					:stroke-width="strokeWidth"
 					:r="normalizedRadius"
 					:cx="radius"
@@ -42,7 +50,9 @@
 						`"
 							class="kv-progress-circle__ring-text-path"
 							id="text_circle"
-							:style="textCircleTransform"
+							:style="{
+								'transform': `${textCircleTransform}`
+							}"
 						/>
 
 						<!-- flipped path -->
@@ -55,7 +65,9 @@
 						`"
 							class="kv-progress-circle__ring-text-path"
 							id="text_circle_flipped"
-							:style="textCircleTransform"
+							:style="{
+								'transform': `${textCircleTransform}`
+							}"
 						/>
 					</defs>
 
@@ -105,6 +117,20 @@ export default {
 			}
 		},
 		/**
+		 * Create an arc instead of a full circle. A percent.
+		* */
+		arcScale: {
+			type: Number,
+			default: 1,
+		},
+		/**
+		 * Degrees to rotate the circle, used in tandem with arcScale.
+		* */
+		rotate: {
+			type: Number,
+			default: 0,
+		},
+		/**
 		 * Stroke width as a percent of the circle
 		* */
 		strokeWidth: {
@@ -117,7 +143,7 @@ export default {
 		showNumber: {
 			default: false,
 			type: Boolean
-		}
+		},
 	},
 	data() {
 		return {
@@ -135,20 +161,27 @@ export default {
 			return this.normalizedRadius * 2 * Math.PI;
 		},
 		strokeDashoffset() {
-			return this.circumference - (this.value / 100) * this.circumference;
+			return this.circumference - (this.value / 100) * this.circumference * this.arcScale;
+		},
+		backgroundStrokeDashoffset() {
+			return this.circumference - 1 * this.circumference * this.arcScale;
+		},
+		circleTransform() {
+			const offset = 90;
+			return `rotate(${offset + this.rotate}deg)`;
 		},
 		textCircleTransform() {
 			const offset = -90;
-			return { transform: `rotate(${offset}deg)` };
+			return `rotate(${offset + this.rotate}deg)`;
 		},
 		flipText() {
 			return this.value > 75 || this.value < 25;
 		},
 		textDx() {
 			if (this.flipText) {
-				return this.circumference - (this.value / 100) * this.circumference;
+				return this.circumference - (this.value / 100) * this.circumference * this.arcScale;
 			}
-			return (this.value / 100) * this.circumference;
+			return (this.value / 100) * this.circumference * this.arcScale;
 		},
 		textDy() {
 			if (this.flipText) {
@@ -165,7 +198,7 @@ export default {
 
 .kv-progress-circle {
 	$foreground-color: $kiva-accent-blue;
-	$background-color: $kiva-bg-lightgray;
+	$background-color: $kiva-bg-darkgray;
 
 	&__wrapper {
 		width: 100%;
@@ -207,20 +240,22 @@ export default {
 		stroke-linejoin: round;
 	}
 
+	&__ring-background,
 	&__ring-foreground {
 		fill: transparent;
-		transform: rotate(90deg);
 		transform-origin: center center;
-		stroke: $kiva-accent-blue;
-		stroke: var(--kv-progress-circle-foreground-color, $foreground-color);
 		stroke-linecap: round;
 		transition: stroke-dashoffset 0.125s;
 	}
 
 	&__ring-background {
-		fill: transparent;
 		stroke: $kiva-bg-lightgray;
 		stroke: var(--kv-progress-circle-background-color, $background-color);
+	}
+
+	&__ring-foreground {
+		stroke: $kiva-accent-blue;
+		stroke: var(--kv-progress-circle-foreground-color, $foreground-color);
 	}
 }
 
