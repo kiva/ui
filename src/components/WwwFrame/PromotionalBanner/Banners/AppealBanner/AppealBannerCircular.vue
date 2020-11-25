@@ -259,8 +259,8 @@ export default {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
 		background: #fff;
-		color: $kiva-green;
-		border-color: $kiva-green;
+		color: $kiva-icon-green;
+		border-color: $kiva-icon-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
@@ -273,12 +273,12 @@ export default {
 
 		&--toggle-open {
 			color: #fff;
-			background: $kiva-green;
+			background: $kiva-icon-green;
 
 			&:hover,
 			&:focus {
 				background: #fff;
-				color: $kiva-green;
+				color: $kiva-icon-green;
 			}
 		}
 	}
@@ -290,21 +290,21 @@ export default {
 		position: absolute;
 		width: rem-calc(32);
 		height: rem-calc(32);
-		background-color: $subtle-gray;
 		top: 0;
 		right: 1rem;
 		border-radius: rem-calc(12);
+		fill: $kiva-text-medium;
 
 		&:hover,
 		&:focus {
-			background-color: $kiva-green;
+			background-color: $kiva-bg-darkgray;
+			fill: $dark-charcoal;
 		}
 	}
 
 	&__close-btn-icon {
 		width: rem-calc(16);
 		height: rem-calc(16);
-		fill: #fff;
 	}
 
 	&__body {
