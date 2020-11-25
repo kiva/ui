@@ -1,7 +1,11 @@
 <template>
 	<section class="campaign-status section row align-center">
 		<div class="small-12 large-8 align-self-middle columns">
-			<div v-if="iFrameVisible">
+			<kv-lightbox
+				:visible="iFrameVisible"
+				class="employee-verification"
+				@lightbox-closed="close"
+			>
 				<iframe
 					id="faForm"
 					:src="iFrameSrc"
@@ -9,14 +13,23 @@
 					:width="iFrameWidth"
 					frameborder="0"
 				></iframe>
-				<script src="//kiva.tfaforms.net/js/iframe_resize_helper.js"></script>
-			</div>
+			</kv-lightbox>
 		</div>
 	</section>
 </template>
 
 <script>
+import KvLightbox from '@/components/Kv/KvLightbox';
+
 export default {
+	metaInfo: {
+		script: [
+			{ src: '//kiva.tfaforms.net/js/iframe_resize_helper.js', async: true }
+		],
+	},
+	components: {
+		KvLightbox,
+	},
 	props: {
 		formId: {
 			type: String,
@@ -41,6 +54,9 @@ export default {
 		if (this.formId) {
 			this.iFrameVisible = true;
 		}
+		window.addEventListener('message', message => {
+			this.handleIFrameMessage(message);
+		});
 	},
 	methods: {
 		setFrameSrc() {
@@ -52,13 +68,33 @@ export default {
 			}
 		},
 		setIFrameDimensions() {
-			this.iFrameWidth = this.$el.clientWidth - 60;
+			this.iFrameWidth = this.$el.clientWidth - 90;
 			this.iFrameHeight = this.$el.clientHeight > 300 ? this.$el.clientHeight : 500;
+		},
+		handleIFrameMessage(message) {
+			const messageDataType = message?.data?.type;
+			// Events emitted via 'postMessage'
+			// 'form_submitted' form submitted (may or may not be valid)
+			// 'frame_loaded' form window loaded (may or may not be on form or thanks view)
+			// 'fa_form_closed' form completed and transitioned to thanks view
+			if (messageDataType && messageDataType === 'fa_form_closed') {
+				window.setTimeout(
+					() => {
+						this.iFrameVisible = false;
+						this.$emit('verification-complete');
+					},
+					800
+				);
+			}
 		},
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-
+::v-deep .kv-lightbox {
+	.close-lightbox {
+		display: none;
+	}
+}
 </style>

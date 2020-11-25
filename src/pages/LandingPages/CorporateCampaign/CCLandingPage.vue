@@ -35,6 +35,7 @@
 				v-if="this.showVerification"
 				:form-id="this.externalFormId"
 				:user-id="this.myId"
+				@verification-complete="verificationComplete"
 			/>
 
 			<section
@@ -52,6 +53,7 @@
 						:show-donation="false"
 						:auto-redirect-to-thanks="false"
 						@transaction-complete="transactionComplete"
+						@refresh-totals="refreshTotals"
 					/>
 				</div>
 			</section>
@@ -485,12 +487,18 @@ export default {
 				if (!this.basketLoans.length) {
 					this.showLoans = true;
 					this.$refs.loandisplayref.activateLoanWatchQuery();
-					this.scrollToSection('campaignLoanDisplay');
+					// this.scrollToSection('campaignLoanDisplay');
 				}
 				this.updateBasketState();
 			});
 		},
 		addToBasket() {
+			this.initializeBasketRefresh();
+		},
+		refreshTotals() {
+			this.initializeBasketRefresh();
+		},
+		initializeBasketRefresh() {
 			// Query to update basket state
 			this.updateBasketState();
 			// TEMPORARY: Obstruct ability to click the "Checkout" button on the loan card to prevent redirect
@@ -526,13 +534,15 @@ export default {
 				loanReservationTotal
 			} = this.basketTotals;
 
+			let simpleCheckoutEligible = true;
+
 			// TODO: Log or notify for any of the following conditions
 			if (numeral(donationTotal).value() > 0) {
-				return false;
+				simpleCheckoutEligible = false;
 			}
 
 			if (numeral(creditAmountNeeded).value() > 0) {
-				return false;
+				simpleCheckoutEligible = false;
 			}
 
 			// TODO: Refine and document narrow in-context checkout conditions
@@ -540,6 +550,14 @@ export default {
 			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()
 				|| numeral(itemTotal).value() !== numeral(loanReservationTotal).value()
 				|| numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
+				simpleCheckoutEligible = false;
+			}
+
+			// Basket is not eligible for simple incontext checkout
+			if (!simpleCheckoutEligible) {
+				// turn off loading state
+				this.$refs.loandisplayref.loadingLoans = false;
+				// exit method
 				return false;
 			}
 
@@ -564,6 +582,7 @@ export default {
 					this.setAuthStatus(this.kvAuth0?.user ?? {});
 					// signify checkout is ready
 					this.handleBasketValidation();
+					return true;
 				}).catch(errorResponse => {
 					console.error(errorResponse);
 					return false;
@@ -571,25 +590,22 @@ export default {
 		},
 		handleBasketValidation() {
 			// check for verification form requirement
-			// if (
-			// 	this.isActivelyLoggedIn
-			// 	&& this.verificationRequired
-			// 	&& this.externalFormId
-			// 	&& !this.verificationSumbitted
-			// ) {
-			// 	console.log('lender verification required');
-			// 	this.showVerification = true;
-			// // } else if (this.teamId) {
-			// // 	// check for team join optionality
-			// // 	console.log(this.teamId);
-			// } else {
-			// 	// signify checkout is ready
-			// 	this.checkoutVisible = true;
-			// 	this.scrollToSection('campaignCheckout');
-			// }
-			// signify checkout is ready
-			this.checkoutVisible = true;
-			this.scrollToSection('campaignCheckout');
+			if (
+				this.isActivelyLoggedIn
+				&& this.verificationRequired
+				&& this.externalFormId
+				&& !this.verificationSumbitted
+			) {
+				console.log('lender verification required');
+				this.showVerification = true;
+			// } else if (this.teamId) {
+			// 	// check for team join optionality
+			// 	console.log(this.teamId);
+			} else {
+				// signify checkout is ready
+				this.checkoutVisible = true;
+				this.scrollToSection('campaignCheckout');
+			}
 		},
 		transactionComplete(payload) {
 			// console.log('transaction complete', payload);
@@ -597,6 +613,12 @@ export default {
 			this.showThanks = true;
 			this.checkoutVisible = false;
 			this.scrollToSection('campaignThanks');
+		},
+
+		verificationComplete() {
+			// TODO: There is currently no way to know if someone has already submitted
+			// maybe use localstorage
+			this.checkoutVisible = true;
 		},
 
 		setAuthStatus(userState) {

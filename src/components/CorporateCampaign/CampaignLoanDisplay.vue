@@ -119,6 +119,8 @@ export default {
 			offset: 0,
 			pageQuery: { page: '1' },
 			totalCount: 0,
+			loanQueryVarsStack: [this.filters],
+			loanQueryFilters: () => {},
 		};
 	},
 	computed: {
@@ -135,14 +137,25 @@ export default {
 				limit: this.limit,
 				loans: () => [],
 				offset: this.offset,
-				filters: this.filters,
+				filters: this.loanQueryFilters,
 				promoOnly: { basketId: cookieStore.get('kvbskt') }
 			};
 		},
 	},
+	watch: {
+		loanQueryVars(next, prev) {
+			this.loanQueryVarsStack.push(prev);
+		},
+		filters(next, prev) {
+			if (next !== prev) {
+				this.loanQueryFilters = next;
+			}
+		}
+	},
 	created() {
 		// extract query
 		this.pageQuery = this.$route.query;
+		this.loanQueryFilters = this.filters;
 	},
 	methods: {
 		addToBasket(payload) {
@@ -170,6 +183,11 @@ export default {
 					}
 				}
 			});
+		},
+		setLoanQueryFilters(userSelection) {
+			if (!userSelection) {
+				this.loanQueryFilters = this.filters;
+			}
 		},
 
 		// Pagination Related methods
