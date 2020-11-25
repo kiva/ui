@@ -6,7 +6,9 @@ export default {
 	args: {
 		value: 10,
 		strokeWidth: 8,
-		showNumber: false
+		showNumber: false,
+		arcScale: 1,
+		rotate: 0,
 	},
 	argTypes: {
 		value: {
@@ -30,6 +32,8 @@ export const Default = (args, { argTypes }) => ({
 			:value="value"
 			:stroke-width="strokeWidth"
 			:show-number="showNumber"
+			:arc-scale="arcScale"
+			:rotate="rotate"
 			style="width: 200px;"
 		/>
 	`,
@@ -45,6 +49,8 @@ export const Styled = (args, { argTypes }) => ({
 			:value="value"
 			:stroke-width="strokeWidth"
 			:show-number="showNumber"
+			:arc-scale="arcScale"
+			:rotate="rotate"
 			style="
 				--kv-progress-circle-foreground-color: purple;
 				--kv-progress-circle-background-color: orange;
@@ -54,52 +60,9 @@ export const Styled = (args, { argTypes }) => ({
 	`,
 });
 
-export const CShape = (args, { argTypes }) => ({
-	props: Object.keys(argTypes),
-	components: {
-		KvProgressCircle
-	},
-	template: `
-		<div>
-			<component is="style">
-				.wrapper {
-					position: relative;
-				}
-				.circle {
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 10rem;
-					height: 10rem;
-					transform: rotate(36deg);
-				}
-				.circle--1 {
-					--kv-progress-circle-foreground-color: pink;
-					--kv-progress-circle-background-color: transparent;
-					z-index: 1;
-				}
-				.circle--2 {
-					--kv-progress-circle-foreground-color: teal;
-					--kv-progress-circle-background-color: transparent;
-					z-index: 2;
-				}
-			</component>
-			<div class="wrapper">
-				<kv-progress-circle
-					class="circle circle--1"
-					:value="80"
-					:stroke-width="strokeWidth"
-					:show-number="false"
-					aria-hidden="true"
-				/>
-				<kv-progress-circle
-					class="circle circle--2"
-					:value="value * .8"
-					:stroke-width="strokeWidth"
-					:show-number="showNumber"
-				/>
-			</div>
-		</div>
-	`,
-});
 
+export const CShape = Default.bind({});
+CShape.args = {
+	arcScale: .8,
+	rotate: 36,
+}
