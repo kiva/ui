@@ -34,15 +34,14 @@
 						:key="loan.id"
 						class="column cards-wrap"
 					>
-						<promo-grid-loan-card
+						<!-- <promo-grid-loan-card
 							v-if="index === 2 && monthlyGoodPromoData"
 							class="cards-mg-promo"
 							:category-url="monthlyGoodPromoData.url"
 							:category-label="monthlyGoodPromoData.label"
 							compact
-						/>
+						/> -->
 						<loan-card-controller
-							v-else
 							class="cards-loan-card"
 							loan-card-type="LendHomepageLoanCard"
 							:loan="loan"
@@ -105,7 +104,7 @@ import _throttle from 'lodash/throttle';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
+// import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 const cardWidth = 303;
 const cardRightMargin = 15;
@@ -116,7 +115,7 @@ export default {
 		KvIcon,
 		KvLoadingSpinner,
 		LoanCardController,
-		PromoGridLoanCard,
+		// PromoGridLoanCard,
 	},
 	props: {
 		isLoggedIn: {
