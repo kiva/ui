@@ -84,6 +84,11 @@
 					<button
 						class="appeal-banner__close-btn"
 						@click="onClickToggleBanner"
+						v-kv-track-event="[
+							'promo',
+							'click-appeal-banner-close',
+							'x',
+						]"
 					>
 						<kv-icon
 							class="appeal-banner__close-btn-icon"
@@ -109,6 +114,11 @@
 					<kv-button
 						class="appeal-banner__btn appeal-banner__btn--toggle-open smallest rounded"
 						@click.native="onClickToggleBanner"
+						v-kv-track-event="[
+							'promo',
+							'click-appeal-banner-open',
+							'Donate'
+						]"
 					>
 						Donate
 					</kv-button>
