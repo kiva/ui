@@ -150,6 +150,7 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
 import _get from 'lodash/get';
 import _filter from 'lodash/filter';
 import numeral from 'numeral';
@@ -181,6 +182,15 @@ import promoQuery from '@/graphql/query/promotionalBanner.graphql';
 import CheckoutHolidayPromo from '@/components/Checkout/CheckoutHolidayPromo';
 import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import RandomLoanSelector from '@/components/RandomLoanSelector/randomLoanSelector';
+
+const ftdQuery = gql`query ftdQuery {
+	my {
+		userAccount {
+			id
+			isFirstTimeDepositor
+		}
+	}
+}`;
 
 export default {
 	components: {
@@ -568,16 +578,35 @@ export default {
 					const { __typename, id, price } = donation;
 					return { __typename, id, price };
 				}),
+				kivaCardTotal: this.totals.kivaCardTotal,
+				kivaCards: this.kivaCards.map(kivaCard => {
+					const { __typename, id, price } = kivaCard;
+					return { __typename, id, price };
+				}),
+				isFTD: false,
 			};
-			// fire transaction events
-			this.$kvTrackTransaction(transactionData);
-			// redirect to thanks
-			window.setTimeout(
-				() => {
-					this.redirectToThanks(transactionId);
-				},
-				800
-			);
+
+			// Fetch FTD Status
+			const myFTDQuery = this.apollo.query({
+				query: ftdQuery,
+			});
+
+			myFTDQuery.then(({ data }) => {
+				// determine ftd status
+				const isFTD = data?.my?.userAccount?.isFirstTimeDepositor;
+				transactionData.isFTD = isFTD;
+
+				// fire transaction events
+				this.$kvTrackTransaction(transactionData);
+
+				// redirect to thanks
+				window.setTimeout(
+					() => {
+						this.redirectToThanks(transactionId);
+					},
+					800
+				);
+			});
 		},
 		setUpdatingTotals(state) {
 			this.updatingTotals = state;
