@@ -292,7 +292,7 @@ export default {
 		height: rem-calc(32);
 		background-color: $subtle-gray;
 		top: 0;
-		right: 0;
+		right: 1rem;
 		border-radius: rem-calc(12);
 
 		&:hover,
@@ -325,11 +325,13 @@ export default {
 		.appeal-banner__content {
 			padding-top: rem-calc(8);
 			padding-bottom: rem-calc(8);
+			margin-bottom: 1rem;
 			text-align: left;
 
 			@include breakpoint(large) {
 				padding-top: rem-calc(12);
 				padding-bottom: rem-calc(12);
+				margin-bottom: 0;
 			}
 		}
 
