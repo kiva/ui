@@ -20,12 +20,12 @@
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
 					<p class="featured-loans__body">
-						With Kiva you can lend a small amount of money and make big
+						With Kiva you can lend a small amount of money and make a big
 						change in someone's life. It's fast and easy to get started.
 					</p>
 					<kv-button
 						class="rounded"
-						to="/get-started"
+						to="/lend-by-category"
 						v-kv-track-event="[
 							'Home',
 							'click-hero-cta',
@@ -36,12 +36,6 @@
 					</kv-button>
 				</div>
 			</div>
-			<kv-responsive-image
-				class="featured-loans__flourish"
-				:images="flourishImgs.redRight"
-				loading="lazy"
-				alt=""
-			/>
 		</section>
 
 		<section class="loan-categories section">
@@ -56,7 +50,7 @@
 		</section>
 
 		<!-- GROW-172 associated to the GROW-165 explicit lender preferences epic -->
-		<section class="take-quiz section">
+		<!-- <section class="take-quiz section">
 			<div class="row take-quiz__border">
 				<div class="small-12 large-6 columns">
 					<kv-responsive-image
@@ -87,44 +81,13 @@
 					</kv-button>
 				</div>
 			</div>
-
-			<kv-responsive-image
-				class="take-quiz__flourish"
-				:images="flourishImgs.leafRight"
-				loading="lazy"
-				alt=""
-			/>
-		</section>
+		</section> -->
 
 		<section
 			v-if="kivaCardPromoEnabled && kivaCardPromoContent"
 			class="section"
 		>
 			<kiva-card-promo :promo-content="kivaCardPromoContent" />
-		</section>
-
-		<section class="loan-not-donation section text-center">
-			<div class="row">
-				<kv-responsive-image
-					class="loan-not-donation__img"
-					:images="loanNotDonationImgs.header"
-					loading="lazy"
-					alt=""
-				/>
-				<h2 class="loan-not-donation__header small-12 columns">
-					It's a loan, not a donation
-				</h2>
-				<p class="loan-not-donation__body large-6 large-offset-3 columns">
-					Kiva is a loan, not a donation, allowing you to cycle your money and
-					create a personal impact across the world. Plus, you can withdraw your funds at any time.
-				</p>
-			</div>
-			<kv-responsive-image
-				class="loan-not-donation__flourish"
-				:images="flourishImgs.greenLeft"
-				loading="lazy"
-				alt=""
-			/>
 		</section>
 
 		<section class="how-it-works section text-center">
@@ -211,12 +174,6 @@
 					</p>
 				</div>
 				<homepage-statistics />
-				<kv-responsive-image
-					class="statistics__flourish"
-					:images="flourishImgs.pinkRight"
-					loading="lazy"
-					alt=""
-				/>
 			</div>
 		</section>
 
@@ -230,14 +187,6 @@
 					:key="lenderQuote.name"
 					:class="`quote-card small-10 medium-8 large-5 columns`"
 				>
-					<kv-responsive-image
-						class="quote-card__flourish"
-						:images="[
-							['small', lenderQuote.background],
-						]"
-						loading="lazy"
-						alt=""
-					/>
 					<img
 						:src="lenderQuote.image"
 						class="quote-card__lender-img"
@@ -255,12 +204,6 @@
 					</p>
 				</div>
 			</div>
-			<kv-responsive-image
-				class="lender-quotes__flourish"
-				:images="flourishImgs.yellowLeft"
-				loading="lazy"
-				alt=""
-			/>
 		</section>
 
 		<section class="final-cta section text-center">
@@ -324,31 +267,6 @@ export default {
 	inject: ['apollo'],
 	data() {
 		return {
-			flourishImgs: {
-				greenLeft: [
-					['small', imgRequire('./flourish-green-left.png')],
-					['large', imgRequire('./flourish-green-left.png')],
-					['large retina', imgRequire('./flourish-green-left_2x.png')],
-				],
-				redRight: [
-					['small', imgRequire('./flourish-red-right.png')],
-					['large', imgRequire('./flourish-red-right.png')],
-					['large retina', imgRequire('./flourish-red-right_2x.png')],
-				],
-				pinkRight: [
-					['small', imgRequire('./flourish-pink-right.png')],
-					['large', imgRequire('./flourish-pink-right.png')],
-					['large retina', imgRequire('./flourish-pink-right_2x.png')],
-				],
-				yellowLeft: [
-					['small', imgRequire('./flourish-yellow-left.png')],
-					['large', imgRequire('./flourish-yellow-left.png')],
-					['large retina', imgRequire('./flourish-yellow-left_2x.png')],
-				],
-				leafRight: [
-					['small', imgRequire('./leaf.svg')],
-				],
-			},
 			howItWorksImgs: {
 				borrower: [
 					['small', imgRequire('./how-it-works-borrower.png')],
@@ -386,12 +304,6 @@ export default {
 					background: imgRequire('./lender-quote-card-texture-red.png'),
 				},
 			],
-			loanNotDonationImgs: {
-				header: [
-					['small', imgRequire('./loan-not-donation.png')],
-					['small retina', imgRequire('./loan-not-donation_2x.png')],
-				],
-			},
 			heroPromoContent: null,
 			heroPromoEnabled: null,
 			kivaCardPromoEnabled: null,
@@ -461,10 +373,10 @@ export default {
 // utils
 .section {
 	position: relative;
-	padding: 3rem 0;
+	padding: 2rem 0;
 
 	@include breakpoint(large) {
-		padding: 6rem 0;
+		padding: 2rem 0;
 	}
 }
 
@@ -473,10 +385,10 @@ export default {
 }
 
 .featured-loans {
-	padding: 2rem 0 6rem;
+	padding: 2rem 0;
 
 	@include breakpoint(large) {
-		padding: 4rem 0 11rem;
+		padding: 4rem 0 2rem;
 	}
 
 	&__cta_wrapper {
@@ -506,29 +418,9 @@ export default {
 			@include featured-text();
 		}
 	}
-
-	&__flourish {
-		position: absolute;
-		width: 40%;
-		max-width: rem-calc(436);
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
-		z-index: -1;
-
-		@include breakpoint(medium) {
-			width: 31%;
-		}
-	}
 }
 
 .loan-categories {
-	padding: 1rem 0 3rem;
-
-	@include breakpoint(large) {
-		padding: 2rem 0 5rem;
-	}
-
 	& .row {
 		max-width: 69.15rem;
 	}
@@ -596,57 +488,6 @@ export default {
 		padding-left: rem-calc(50);
 		padding-right: rem-calc(50);
 		margin-bottom: rem-calc(40);
-	}
-
-	&__flourish {
-		position: absolute;
-		width: 10rem;
-		max-width: 17rem;
-		bottom: 2rem;
-		right: -1.5rem;
-		pointer-events: none;
-		z-index: -1;
-
-		@include breakpoint(large) {
-			width: 17rem;
-			bottom: 1rem;
-		}
-	}
-}
-
-.loan-not-donation {
-	&__header {
-		font-weight: bold;
-
-		@include breakpoint(large) {
-			@include large-text();
-		}
-	}
-
-	&__body {
-		@include breakpoint(large) {
-			@include featured-text();
-		}
-	}
-
-	&__flourish {
-		position: absolute;
-		width: 20%;
-		max-width: 17rem;
-		top: 0;
-		left: -3%;
-		pointer-events: none;
-		z-index: -1;
-
-		@include breakpoint(large) {
-			left: 0;
-			top: -10%;
-		}
-	}
-
-	&__img {
-		margin: 0 auto 1rem;
-		width: rem-calc(134);
 	}
 }
 
@@ -728,20 +569,6 @@ export default {
 
 		margin-bottom: rem-calc(30);
 	}
-
-	&__flourish {
-		position: absolute;
-		width: 18%;
-		max-width: rem-calc(213);
-		top: -100%;
-		right: 0;
-		pointer-events: none;
-
-		@include breakpoint(xlarge) {
-			top: -50%;
-			width: 25%;
-		}
-	}
 }
 
 .lender-quotes {
@@ -751,21 +578,6 @@ export default {
 
 		@include breakpoint(large) {
 			@include large-text();
-		}
-	}
-
-	&__flourish {
-		display: none;
-
-		@include breakpoint(large) {
-			display: block;
-			position: absolute;
-			width: 13%;
-			max-width: 17rem;
-			top: -30%;
-			left: 0;
-			pointer-events: none;
-			z-index: -1;
 		}
 	}
 
@@ -811,42 +623,17 @@ export default {
 			position: relative;
 			margin-bottom: rem-calc(30);
 		}
-
-		&__flourish {
-			position: absolute;
-			z-index: -1;
-		}
 	}
 
 	.quote-card:nth-child(even) {
 		@include breakpoint(large) {
 			margin-right: 0.9rem;
 		}
-
-		.quote-card__flourish {
-			top: 0;
-			left: 0;
-			width: 10rem;
-
-			@include breakpoint(large) {
-				width: 8rem;
-			}
-		}
 	}
 
 	.quote-card:nth-child(odd) {
 		@include breakpoint(large) {
 			margin-left: 0.9rem;
-		}
-
-		.quote-card__flourish {
-			bottom: 4rem;
-			right: 0;
-			width: 7.5rem;
-
-			@include breakpoint(large) {
-				width: 5.5rem;
-			}
 		}
 	}
 }

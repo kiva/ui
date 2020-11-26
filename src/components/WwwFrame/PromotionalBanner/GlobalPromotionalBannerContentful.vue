@@ -5,7 +5,7 @@
 			:icon-key="promoBannerContent.iconKey"
 			:promo-banner-content="promoBannerContent"
 		/>
-		<appeal-banner-swashie-container
+		<appeal-banner-circular-container
 			v-if="appealEnabled"
 			:appeal-banner-content="appealBannerContent.fields"
 		/>
@@ -18,8 +18,8 @@ import gql from 'graphql-tag';
 
 import { settingEnabled } from '@/util/settingsUtils';
 
-import AppealBannerSwashieContainer
-	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerSwashieContainer';
+import AppealBannerCircularContainer
+	from '@/components/WwwFrame/PromotionalBanner/Banners/AppealBanner/AppealBannerCircularContainer';
 import GenericPromoBanner from '@/components/WwwFrame/PromotionalBanner/Banners/GenericPromoBanner';
 
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
@@ -32,7 +32,7 @@ const bannerQuery = gql`query bannerQuery {
 
 export default {
 	components: {
-		AppealBannerSwashieContainer,
+		AppealBannerCircularContainer,
 		GenericPromoBanner,
 	},
 	props: {
