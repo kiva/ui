@@ -186,6 +186,11 @@
 					v-for="lenderQuote in lenderQuotes"
 					:key="lenderQuote.name"
 					:class="`quote-card small-10 medium-8 large-5 columns`"
+					v-kv-track-event="[
+						'homepage',
+						'click-lender-testimonial',
+						lenderQuote.attribution
+					]"
 				>
 					<img
 						:src="lenderQuote.image"
