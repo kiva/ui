@@ -10,6 +10,7 @@
 				:embla-options="{
 					loop: false,
 				}"
+				@interact-carousel="onInteractCarouselCategories"
 			>
 				<kv-carousel-slide
 					class="loan-category-section__carousel-slide"
@@ -252,6 +253,9 @@ export default {
 		getCategoryRowNumber(categoryId) {
 			const categoryRowIndex = this.categoryIds.indexOf(categoryId);
 			return categoryRowIndex !== -1 ? categoryRowIndex + 1 : null;
+		},
+		onInteractCarouselCategories(interaction) {
+			this.$kvTrackEvent('homepage', 'click-category-horizontal-scroll', interaction);
 		}
 	},
 	created() {
