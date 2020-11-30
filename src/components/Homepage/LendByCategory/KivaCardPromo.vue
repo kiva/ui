@@ -15,7 +15,9 @@
 			<h2 class="kiva-card-promo__header">
 				{{ headline }}
 			</h2>
-			<div class="kiva-card-promo__body" v-html="bodyCopy"></div>
+			<div class="row">
+				<div class="xlarge-5 columns kiva-card-promo__body" v-html="bodyCopy"></div>
+			</div>
 			<kv-button
 				class="rounded"
 				:to="primaryCtaLink"
