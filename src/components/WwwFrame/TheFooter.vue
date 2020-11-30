@@ -5,7 +5,7 @@
 				<li>
 					<router-link
 						:to="applyUrl"
-						v-kv-track-event="['Footer', 'click-Borrow-mobile view']"
+						v-kv-track-event="['Footer', 'click-Borrow-Apply now']"
 					>
 						Borrow
 					</router-link>
@@ -13,7 +13,7 @@
 				<li>
 					<router-link
 						:to="aboutUrl"
-						v-kv-track-event="['Footer', 'click-About-mobile view']"
+						v-kv-track-event="['Footer', 'click-Get to know us-About us']"
 					>
 						About
 					</router-link>
@@ -21,7 +21,7 @@
 				<li>
 					<router-link
 						:to="helpUrl"
-						v-kv-track-event="['Footer', 'click-Help-mobile view']"
+						v-kv-track-event="['Footer', 'click-Get to know us-Help']"
 					>
 						Help
 					</router-link>
@@ -30,7 +30,7 @@
 					<a
 						:href="careersUrl"
 						target="_blank"
-						v-kv-track-event="['Footer', 'click-Careers-mobile view']"
+						v-kv-track-event="['Footer', 'click-Work with us-Careers']"
 					>
 						Careers
 					</a>
@@ -38,7 +38,7 @@
 				<li>
 					<router-link
 						:to="sitemapUrl"
-						v-kv-track-event="['Footer', 'click-Site map-mobile view']"
+						v-kv-track-event="['Footer', 'click-Explore-Site map']"
 					>
 						Site map
 					</router-link>
@@ -47,13 +47,13 @@
 			<div class="hide-for-print">
 				<router-link
 					:to="privacyUrl"
-					v-kv-track-event="['Footer', 'click-Privacy policy-mobile view']"
+					v-kv-track-event="['Footer', 'click-Explore-Privacy policy']"
 				>
 					Privacy policy
 				</router-link> |
 				<router-link
 					:to="termsUrl"
-					v-kv-track-event="['Footer', 'click-Terms of use-mobile view']"
+					v-kv-track-event="['Footer', 'click-Explore-Terms of use']"
 				>
 					Terms of use
 				</router-link>
