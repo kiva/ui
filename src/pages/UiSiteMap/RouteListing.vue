@@ -6,7 +6,8 @@
 				<li v-for="route in prodRoutes" :key="route.path">
 					<p>
 						<router-link :to="route.path">
-							{{ route.path.replace('/','') }}
+							<!-- eslint-disable-next-line -->
+							{{ route.path.replace('/','') }} <span v-if="route.name !== 'no-name'">({{ route.name }})</span>
 						</router-link>
 					</p>
 				</li>
@@ -18,7 +19,8 @@
 				<li v-for="route in devRoutes" :key="route.path">
 					<p>
 						<router-link :to="route.path">
-							{{ route.path.replace('/','') }}
+							<!-- eslint-disable-next-line -->
+							{{ route.path.replace('/','') }} <small v-if="route.name !== 'no-name'">({{ route.name }})</small>
 						</router-link>
 					</p>
 				</li>
