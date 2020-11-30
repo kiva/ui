@@ -16,7 +16,7 @@
 				{{ headline }}
 			</h2>
 			<div class="row">
-				<div class="xlarge-5 columns kiva-card-promo__body" v-html="bodyCopy"></div>
+				<div class="large-10 columns kiva-card-promo__body" v-html="bodyCopy"></div>
 			</div>
 			<kv-button
 				class="rounded"
@@ -78,7 +78,7 @@ export default {
 	}
 
 	&__body {
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
 	}
 
 	&__img {
