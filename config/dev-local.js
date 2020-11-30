@@ -4,9 +4,10 @@ var devVm  = require('./dev-vm.js')
 
 module.exports = merge(base, devVm, {
 	app: {
-		publicPath: 'https://dev-vm-01.kiva.org/uiext/',
+		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 	},
 	server: {
+		graphqlUri: 'https://api-vm.kiva.org/fed/graphql',
 		memcachedEnabled: false,
 	}
 })
