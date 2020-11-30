@@ -1,10 +1,5 @@
 <template>
-	<transition
-		@enter="enter"
-		@leave="leave"
-		:css="false"
-		mode="out-in"
-	>
+	<div>
 		<!-- open banner -->
 		<div
 			class="appeal-banner appeal-banner--open"
@@ -84,6 +79,11 @@
 					<button
 						class="appeal-banner__close-btn"
 						@click="onClickToggleBanner"
+						v-kv-track-event="[
+							'promo',
+							'click-appeal-banner-close',
+							'x',
+						]"
 					>
 						<kv-icon
 							class="appeal-banner__close-btn-icon"
@@ -109,18 +109,23 @@
 					<kv-button
 						class="appeal-banner__btn appeal-banner__btn--toggle-open smallest rounded"
 						@click.native="onClickToggleBanner"
+						v-kv-track-event="[
+							'promo',
+							'click-appeal-banner-open',
+							'Donate'
+						]"
 					>
 						Donate
 					</kv-button>
 				</div>
 			</div>
 		</div>
-	</transition>
+	</div>
 </template>
 
 <script>
 // import numeral from 'numeral';
-import { expand, collapse } from '@/util/expander';
+import smoothReflow from 'vue-smooth-reflow';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
@@ -132,6 +137,7 @@ export default {
 		KvIcon,
 		KvProgressCircle,
 	},
+	mixins: [smoothReflow],
 	props: {
 		targetAmount: {
 			type: Number,
@@ -183,7 +189,7 @@ export default {
 			}
 			const nearestThousand = parseFloat(Number((this.targetAmount - this.amountRaised) / 1000).toPrecision(3));
 			// const nearestThousand = numeral((this.targetAmount - this.amountRaised) / 1000).format('0.[00]');
-			return `$${nearestThousand}k <br />‘til goal`;
+			return `$${nearestThousand}k <br />to goal`;
 		}
 	},
 	methods: {
@@ -193,19 +199,9 @@ export default {
 		onClickToggleBanner() {
 			this.$emit('toggle-banner', !this.isOpen);
 		},
-		// slide up / down transitions
-		enter(el, done) {
-			expand(el, {
-				easing: 'ease-in-out',
-				done
-			});
-		},
-		leave(el, done) {
-			collapse(el, {
-				easing: 'ease-in-out',
-				done
-			});
-		},
+	},
+	mounted() {
+		this.$smoothReflow();
 	},
 };
 </script>
@@ -259,8 +255,8 @@ export default {
 		font-size: rem-calc(14);
 		border-radius: rem-calc(8);
 		background: #fff;
-		color: $kiva-accent-darkblue;
-		border-color: $kiva-accent-darkblue;
+		color: $kiva-icon-green;
+		border-color: $kiva-icon-green;
 		box-shadow: none;
 		width: 100%;
 		margin-bottom: 0;
@@ -268,17 +264,17 @@ export default {
 		&:hover,
 		&:focus {
 			color: #fff;
-			background: $kiva-accent-darkblue;
+			background: $kiva-green;
 		}
 
 		&--toggle-open {
 			color: #fff;
-			background: $kiva-accent-darkblue;
+			background: $kiva-icon-green;
 
 			&:hover,
 			&:focus {
 				background: #fff;
-				color: $kiva-accent-darkblue;
+				color: $kiva-icon-green;
 			}
 		}
 	}
@@ -290,25 +286,26 @@ export default {
 		position: absolute;
 		width: rem-calc(32);
 		height: rem-calc(32);
-		background-color: $subtle-gray;
 		top: 0;
 		right: 1rem;
 		border-radius: rem-calc(12);
+		fill: $kiva-text-medium;
 
 		&:hover,
 		&:focus {
-			background-color: $kiva-accent-darkblue;
+			background-color: $kiva-bg-darkgray;
+			fill: $dark-charcoal;
 		}
 	}
 
 	&__close-btn-icon {
 		width: rem-calc(16);
 		height: rem-calc(16);
-		fill: #fff;
 	}
 
 	&__body {
 		margin-bottom: 1rem;
+		white-space: pre-wrap;
 	}
 
 	&--open {
@@ -358,6 +355,8 @@ export default {
 
 	&__progress-circle {
 		z-index: 2;
+
+		--kv-progress-circle-foreground-color: #{$kiva-green};
 	}
 
 	&__goal-status {
