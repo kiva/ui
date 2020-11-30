@@ -3,36 +3,58 @@
 		<nav class="small-footer hide-for-large" aria-label="Footer navigation">
 			<ul class="hide-for-print">
 				<li>
-					<router-link :to="applyUrl">
+					<router-link
+						:to="applyUrl"
+						v-kv-track-event="['Footer', 'click-Borrow-mobile view']"
+					>
 						Borrow
 					</router-link>
 				</li>
 				<li>
-					<router-link :to="aboutUrl">
+					<router-link
+						:to="aboutUrl"
+						v-kv-track-event="['Footer', 'click-About-mobile view']"
+					>
 						About
 					</router-link>
 				</li>
 				<li>
-					<router-link :to="helpUrl">
+					<router-link
+						:to="helpUrl"
+						v-kv-track-event="['Footer', 'click-Help-mobile view']"
+					>
 						Help
 					</router-link>
 				</li>
 				<li>
-					<a :href="careersUrl" target="_blank">
+					<a
+						:href="careersUrl"
+						target="_blank"
+						v-kv-track-event="['Footer', 'click-Careers-mobile view']"
+					>
 						Careers
 					</a>
 				</li>
 				<li>
-					<router-link :to="sitemapUrl">
+					<router-link
+						:to="sitemapUrl"
+						v-kv-track-event="['Footer', 'click-Site map-mobile view']"
+					>
 						Site map
 					</router-link>
 				</li>
 			</ul>
 			<div class="hide-for-print">
-				<router-link :to="privacyUrl">
+				<router-link
+					:to="privacyUrl"
+					v-kv-track-event="['Footer', 'click-Privacy policy-mobile view']"
+				>
 					Privacy policy
 				</router-link> |
-				<router-link :to="termsUrl">
+				<router-link
+					:to="termsUrl"
+					v-kv-track-event="['Footer', 'click-Terms of use-mobile view']"
+				>
 					Terms of use
 				</router-link>
 			</div>
@@ -82,7 +104,10 @@
 					<p>Loans for entrepreneurs doing amazing things.</p>
 					<ul>
 						<li>
-							<router-link :to="applyUrl">
+							<router-link
+								:to="applyUrl"
+								v-kv-track-event="['Footer', 'click-Borrow-Apply now']"
+							>
 								Apply now
 							</router-link>
 						</li>
@@ -92,37 +117,58 @@
 					<h2>Explore</h2>
 					<ul>
 						<li>
-							<router-link to="/protocol">
+							<router-link
+								to="/protocol"
+								v-kv-track-event="['Footer', 'click-Explore-Protocol']"
+							>
 								Protocol
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/gifts">
+							<router-link
+								to="/gifts"
+								v-kv-track-event="['Footer', 'click-Explore-Gifts']"
+							>
 								Gifts
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/live">
+							<router-link
+								to="/live"
+								v-kv-track-event="['Footer', 'click-Explore-Happening now']"
+							>
 								Happening now
 							</router-link>
 						</li>
 						<li>
-							<router-link :to="sitemapUrl">
+							<router-link
+								:to="sitemapUrl"
+								v-kv-track-event="['Footer', 'click-Explore-Site map']"
+							>
 								Site map
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/build">
+							<router-link
+								to="/build"
+								v-kv-track-event="['Footer', 'click-Explore-Developer API']"
+							>
 								Developer API
 							</router-link>
 						</li>
 						<li>
-							<router-link :to="privacyUrl">
+							<router-link
+								:to="privacyUrl"
+								v-kv-track-event="['Footer', 'click-Explore-Privacy policy']"
+							>
 								Privacy policy
 							</router-link>
 						</li>
 						<li>
-							<router-link :to="termsUrl">
+							<router-link
+								:to="termsUrl"
+								v-kv-track-event="['Footer', 'click-Explore-Terms of use']"
+							>
 								Terms of use
 							</router-link>
 						</li>
@@ -132,42 +178,66 @@
 					<h2>Get to know us</h2>
 					<ul>
 						<li>
-							<router-link :to="aboutUrl">
+							<router-link
+								:to="aboutUrl"
+								v-kv-track-event="['Footer', 'click-Get to know us-About us']"
+							>
 								About us
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/about/how">
+							<router-link
+								to="/about/how"
+								v-kv-track-event="['Footer', 'click-Get to know us-How Kiva works']"
+							>
 								How Kiva works
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/about/how#faq-hkw-section">
+							<router-link
+								to="/about/how#faq-hkw-section"
+								v-kv-track-event="['Footer', 'click-Get to know us-FAQs']"
+							>
 								FAQs
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/about/where-kiva-works">
+							<router-link
+								to="/about/where-kiva-works"
+								v-kv-track-event="['Footer', 'click-Get to know us-Where Kiva works']"
+							>
 								Where Kiva works
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/blog">
+							<router-link
+								to="/blog"
+								v-kv-track-event="['Footer', 'click-Get to know us-Blog']"
+							>
 								Blog
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/partner-with-us">
+							<router-link
+								to="/partner-with-us"
+								v-kv-track-event="['Footer', 'click-Get to know us-Partner with us']"
+							>
 								Partner with us
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/help/contact-us">
+							<router-link
+								to="/help/contact-us"
+								v-kv-track-event="['Footer', 'click-Get to know us-Contact us']"
+							>
 								Contact us
 							</router-link>
 						</li>
 						<li>
-							<router-link :to="helpUrl">
+							<router-link
+								:to="helpUrl"
+								v-kv-track-event="['Footer', 'click-Get to know us-Help']"
+							>
 								Help
 							</router-link>
 						</li>
@@ -177,12 +247,18 @@
 					<h2>Community</h2>
 					<ul>
 						<li>
-							<router-link to="/teams">
+							<router-link
+								to="/teams"
+								v-kv-track-event="['Footer', 'click-Community-Teams']"
+							>
 								Teams
 							</router-link>
 						</li>
 						<li>
-							<router-link to="/kivau/intro">
+							<router-link
+								to="/kivau/intro"
+								v-kv-track-event="['Footer', 'click-Community-Students and educators']"
+							>
 								Students and educators
 							</router-link>
 						</li>
@@ -196,7 +272,10 @@
 					</div>
 					<ul class="siteFooter-links hide-for-print">
 						<li>
-							<router-link to="/donate/supportus">
+							<router-link
+								to="/donate/supportus"
+								v-kv-track-event="['Footer', 'click-Donate', 'Donate to Kiva here']"
+							>
 								Donate to Kiva here.
 							</router-link>
 						</li>
@@ -239,27 +318,45 @@
 					<h2>Work with us</h2>
 					<ul>
 						<li>
-							<a :href="careersUrl" target="_blank">
+							<a
+								:href="careersUrl"
+								target="_blank"
+								v-kv-track-event="['Footer', 'click-Work with us-Careers']"
+							>
 								Careers
 							</a>
 						</li>
 						<li>
-							<router-link to="/work-with-us/internvolunteers">
+							<router-link
+								to="/work-with-us/internvolunteers"
+								v-kv-track-event="['Footer', 'click-Work with us-Volunteer interships']"
+							>
 								Volunteer internships
 							</router-link>
 						</li>
 						<li>
-							<a href="https://www.careers.kiva.org/fellowships" target="_blank">
+							<a
+								href="https://www.careers.kiva.org/fellowships"
+								target="_blank"
+								v-kv-track-event="['Footer', 'click-Work with us-Kiva fellows']"
+							>
 								Kiva fellows
 							</a>
 						</li>
 						<li>
-							<router-link to="/work-with-us/reviewers">
+							<router-link
+								to="/work-with-us/reviewers"
+								v-kv-track-event="['Footer', 'click-Work with us-Review and translation']"
+							>
 								Review and translation
 							</router-link>
 						</li>
 						<li>
-							<a href="https://www.kivaushub.org/hubs" target="_blank">
+							<a
+								href="https://www.kivaushub.org/hubs"
+								target="_blank"
+								v-kv-track-event="['Footer', 'click-Work with us-US Hubs']"
+							>
 								US Hubs
 							</a>
 						</li>
