@@ -11,6 +11,7 @@
 		</div> -->
 		<div class="columns small-12 large-8 align-self-middle" v-if="showLoans && loans.length > 0">
 			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<!-- LendHomepageLoanCard -->
 				<loan-card-controller
 					v-for="loan in loans"
 					class="cards-loan-card"
@@ -18,7 +19,7 @@
 					:is-visitor="isVisitor"
 					:key="loan.id"
 					:loan="loan"
-					loan-card-type="LendHomepageLoanCard"
+					loan-card-type="GridLoanCard"
 					@add-to-basket="addToBasket"
 				/>
 			</div>

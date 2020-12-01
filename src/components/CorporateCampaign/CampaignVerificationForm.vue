@@ -4,7 +4,6 @@
 			<kv-lightbox
 				:visible="iFrameVisible"
 				class="employee-verification"
-				@lightbox-closed="close"
 			>
 				<iframe
 					id="faForm"
