@@ -420,6 +420,8 @@ export default {
 
 		@include breakpoint(xlarge) {
 			@include featured-text();
+
+			max-width: 27rem;
 		}
 	}
 }
