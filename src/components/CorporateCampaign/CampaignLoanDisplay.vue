@@ -11,6 +11,7 @@
 		</div> -->
 		<div class="columns small-12 large-8 align-self-middle" v-if="showLoans && loans.length > 0">
 			<div class="loan-card-group row small-up-1 large-up-2 xxlarge-up-3">
+				<!-- LendHomepageLoanCard -->
 				<loan-card-controller
 					v-for="loan in loans"
 					class="cards-loan-card"
@@ -18,7 +19,7 @@
 					:is-visitor="isVisitor"
 					:key="loan.id"
 					:loan="loan"
-					loan-card-type="LendHomepageLoanCard"
+					loan-card-type="GridLoanCard"
 					@add-to-basket="addToBasket"
 				/>
 			</div>
@@ -247,7 +248,7 @@ $card-half-space: rem-calc(14/2);
 
 	.cards-loan-card {
 		border-radius: 0.65rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+		// box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 		width: $card-width;
 		max-width: $max-card-width;
 		flex: 1 0 auto;

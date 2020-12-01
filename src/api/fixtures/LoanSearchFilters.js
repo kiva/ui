@@ -24,6 +24,7 @@ export default function LoanSearchFilters() {
 		partner: null,
 		riskRating,
 		sector: null,
+		loanTags: null,
 	};
 }
 
@@ -51,10 +52,10 @@ export function getCacheableFilters(filters) {
 // Return a cleaned filters object suitable for a query variable
 export function getInputFilters(filters) {
 	const {
-		theme, country, gender, isGroup, loanLimit, partner, sector
+		theme, country, gender, isGroup, loanLimit, partner, sector, loanTags
 	} = filters;
 	const filterSubset = {
-		theme, country, gender, isGroup, loanLimit, partner, sector
+		theme, country, gender, isGroup, loanLimit, partner, sector, loanTags
 	};
 	return {
 		...filterSubset,
@@ -68,10 +69,12 @@ export function getInputFilters(filters) {
 // Return filters that can be used in a loan search
 export function getSearchableFilters(filters) {
 	const {
-		theme, country, gender, isGroup, partner, sector
+		// eslint-disable-next-line max-len
+		theme, country, gender, isGroup, partner, sector, loanTags, distributionModel, dafEligible, status
 	} = filters;
 	const result = {
-		theme, country, gender, isGroup, partner, sector
+		// eslint-disable-next-line max-len
+		theme, country, gender, isGroup, partner, sector, loanTags, distributionModel, dafEligible, status
 	};
 	if (filters) {
 		const arrearsRate = getSearchableRange(filters.arrearsRate);

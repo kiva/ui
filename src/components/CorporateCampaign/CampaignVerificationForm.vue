@@ -1,10 +1,10 @@
 <template>
-	<section class="campaign-status section row align-center">
+	<section class="campaign-verification section row align-center">
 		<div class="small-12 large-8 align-self-middle columns">
 			<kv-lightbox
 				:visible="iFrameVisible"
 				class="employee-verification"
-				@lightbox-closed="close"
+				id="faFormLightbox"
 			>
 				<iframe
 					id="faForm"
@@ -68,7 +68,8 @@ export default {
 			}
 		},
 		setIFrameDimensions() {
-			this.iFrameWidth = this.$el.clientWidth - 90;
+			const maxFormWidth = 700;
+			this.iFrameWidth = this.$el.clientWidth < maxFormWidth ? this.$el.clientWidth - 90 : maxFormWidth;
 			this.iFrameHeight = this.$el.clientHeight > 300 ? this.$el.clientHeight : 500;
 		},
 		handleIFrameMessage(message) {

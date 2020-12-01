@@ -440,6 +440,7 @@ export default {
 				if (result.errors) {
 					this.promoErrorMessage = result.errors[0].message;
 					this.promoApplied = false;
+					this.loadingPromotion = false;
 				} else {
 					this.promoApplied = true;
 					// gather promo info
