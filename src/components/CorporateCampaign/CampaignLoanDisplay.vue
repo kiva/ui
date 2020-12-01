@@ -248,7 +248,7 @@ $card-half-space: rem-calc(14/2);
 
 	.cards-loan-card {
 		border-radius: 0.65rem;
-		box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
+		// box-shadow: 0 0.65rem $card-margin $card-half-space rgb(153, 153, 153, 0.1);
 		width: $card-width;
 		max-width: $max-card-width;
 		flex: 1 0 auto;
