@@ -7,6 +7,10 @@ module.exports = async ({ config, mode }) => {
 	const newConfig = {
 		...config,
 		devtool: false,
+		optimization: {
+			minimize: false,
+			minimizer: [],
+		},
 		resolve: {
 			...config.resolve,
 			alias: {
