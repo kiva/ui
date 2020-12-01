@@ -20,8 +20,7 @@
 						Make a loan, <br class="so mo"> change a life.
 					</h1>
 					<p class="featured-loans__body">
-						With Kiva you can lend a small amount of money and make a big
-						change in someone's life. It's fast and easy to get started.
+						With Kiva you can lend as little as $25 and make a big change in someone's life.
 					</p>
 					<kv-button
 						class="rounded"
