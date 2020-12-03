@@ -10,14 +10,40 @@ export const Default = (args, { argTypes }) => ({
 	components: {
 		KvPhoneInput
 	},
+	data() {
+		return {
+			myCoolPhoneNumber: '828-479-5482' // kiva voicemail
+		}
+	},
 	template: `
-		<kv-phone-input
-			@input="onInput"
-		/>
+		<div>
+			<label for="my_cool_input">Enter your phone number</label>
+			<kv-phone-input
+				id="my_cool_input"
+				v-model="myCoolPhoneNumber"
+			/>
+		</div>
+	`,
+});
+
+export const UsingEventsAndValue = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvPhoneInput
+	},
+	template: `
+		<div>
+			<label for="my_cool_input">Enter your phone number</label>
+			<kv-phone-input
+				id="my_cool_input"
+				value="828-479-5482"
+				@input="onInput"
+			/>
+		</div>
 	`,
 	methods: {
 		onInput(val) {
-			console.log(val);
+			console.log(`onInput: ${val}`);
 		}
 	}
 });

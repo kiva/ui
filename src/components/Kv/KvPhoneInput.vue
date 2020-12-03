@@ -7,8 +7,15 @@
 		}"
 	>
 		<div class="kv-phone-input__wrapper">
+			<label
+				class="show-for-sr"
+				:for="`country_select_${id}`"
+			>
+				Select your country
+			</label>
 			<kv-dropdown-rounded
 				class="kv-phone-input__country-select"
+				:id="`country_select_${id}`"
 				v-model="selectedCountryCode"
 				@input="onInputCountry"
 			>
@@ -27,6 +34,7 @@
 
 			<input type="tel"
 				class="kv-phone-input__input"
+				:id="id"
 				:placeholder="placeholderNumber"
 				:value="displayValue"
 				@input="onInputPhoneNumber"
@@ -60,11 +68,25 @@ export default {
 	components: {
 		KvDropdownRounded
 	},
+	model: {
+		prop: 'value',
+		event: 'input'
+	},
+	props: {
+		id: {
+			type: String,
+			required: true
+		},
+		value: {
+			type: String,
+			default: ''
+		},
+	},
 	data() {
 		return {
 			asYouTypeFormatter: new AsYouType('US'), // initial instance of the libphonenumber formatter class
 			countryList,
-			displayValue: '', // pretty display of the phone number
+			displayValue: this.value, // pretty display of the phone number
 			selectedCountryCode: 'US',
 		};
 	},
@@ -92,6 +114,12 @@ export default {
 		},
 		onInputPhoneNumber(e) {
 			this.displayValue = this.formatNumber(e.target.value);
+
+			/**
+			 * The value of the input in E.164 formatting
+			 * @event input
+			 * @type {Event}
+			 */
 			this.$emit('input', this.e164Value);
 		},
 		formatNumber(val) {
