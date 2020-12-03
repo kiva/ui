@@ -93,8 +93,7 @@ export default {
 	},
 	computed: {
 		countryCallingCode() {
-			return this.asYouTypeFormatter?.getNumber()?.countryCallingCode
-			|| getCountryCallingCode(this.selectedCountryCode);
+			return getCountryCallingCode(this.selectedCountryCode);
 		},
 		e164Value() { // E.164 formatted phone number
 			return this.asYouTypeFormatter?.getNumber()?.number || '';
@@ -110,6 +109,17 @@ export default {
 		},
 	},
 	methods: {
+		async init() {
+			// If we're passed in a non US number from the start, set the country and reformat the number.
+			this.asYouTypeFormatter.input(this.value);
+			const phoneNumber = this.asYouTypeFormatter.getNumber();
+
+			if (phoneNumber?.country) {
+				await this.$nextTick();
+				this.selectedCountryCode = phoneNumber.country;
+				this.displayValue = phoneNumber.format('NATIONAL');
+			}
+		},
 		formatNumber(val) {
 			this.asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
 			return this.asYouTypeFormatter.input(val);
@@ -128,6 +138,9 @@ export default {
 			this.$emit('input', this.e164Value);
 		},
 	},
+	created() {
+		this.init();
+	}
 };
 </script>
 
