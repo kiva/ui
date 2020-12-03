@@ -61,9 +61,9 @@
 					</template>
 
 					<template v-slot:content>
-						<ul class="methodsList">
+						<ul>
 							<li
-								class="method"
+								class="two-step-verification__method"
 								v-for="(mfaMethod, index) in mfaMethods" :key="index"
 							>
 								<h4>{{ mfaMethod.authTypeName }}</h4>
@@ -155,7 +155,7 @@ const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 export default {
 	data() {
 		return {
-			isMfaActive: true,
+			isMfaActive: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
 		};
@@ -312,6 +312,10 @@ export default {
 		background-color: $white;
 	}
 
+	&__method {
+		margin-top: 2rem;
+	}
+
 	&__sub-section {
 		margin-top: 2rem;
 
@@ -319,10 +323,6 @@ export default {
 			color: $kiva-green;
 		}
 	}
-}
-
-.method {
-	margin-top: 30px;
 }
 
 </style>
