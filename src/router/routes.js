@@ -211,6 +211,13 @@ export default [
 	},
 	{ path: '/start', component: () => import('@/pages/Search/SentenceSearch') },
 	{
+		path: '/start-verification',
+		component: () => import('@/pages/StartVerification'),
+		meta: {
+			activeLoginRequired: true,
+		}
+	},
+	{
 		path: '/styleguide',
 		component: () => import('@/pages/StyleGuide'),
 		children: [
