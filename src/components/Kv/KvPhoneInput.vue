@@ -13,6 +13,7 @@
 			>
 				Select your country
 			</label>
+
 			<kv-dropdown-rounded
 				class="kv-phone-input__country-select"
 				:id="`country_select_${id}`"
@@ -91,24 +92,28 @@ export default {
 		};
 	},
 	computed: {
+		countryCallingCode() {
+			return this.asYouTypeFormatter?.getNumber()?.countryCallingCode
+			|| getCountryCallingCode(this.selectedCountryCode);
+		},
+		e164Value() { // E.164 formatted phone number
+			return this.asYouTypeFormatter?.getNumber()?.number || '';
+		},
 		isEmpty() {
 			return this.displayValue.length === 0;
 		},
 		isValid() {
 			return this.asYouTypeFormatter?.isValid();
 		},
-		countryCallingCode() {
-			return this.asYouTypeFormatter?.getNumber()?.countryCallingCode
-			|| getCountryCallingCode(this.selectedCountryCode);
-		},
 		placeholderNumber() {
 			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
 		},
-		e164Value() { // E.164 formatted phone number
-			return this.asYouTypeFormatter?.getNumber()?.number || '';
-		}
 	},
 	methods: {
+		formatNumber(val) {
+			this.asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
+			return this.asYouTypeFormatter.input(val);
+		},
 		onInputCountry() {
 			this.displayValue = this.formatNumber(this.displayValue);
 		},
@@ -121,10 +126,6 @@ export default {
 			 * @type {Event}
 			 */
 			this.$emit('input', this.e164Value);
-		},
-		formatNumber(val) {
-			this.asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
-			return this.asYouTypeFormatter.input(val);
 		},
 	},
 };
