@@ -48,7 +48,7 @@
 				-->
 				<kv-settings-card
 					title="Your security method(s)"
-					v-if="isMfaActive"
+					v-if="isMfaActive & mfaMethods.length > 0"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -201,6 +201,7 @@ export default {
 			}
 			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
 		}
+
 	},
 	methods: {
 		gatherMfaEnrollments() {
@@ -215,7 +216,7 @@ export default {
 					});
 				}).then(result => {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
-					console.log('authEnrollments', authEnrollments);
+					// console.log('authEnrollments', authEnrollments);
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 					this.mfaMethods = [];
 
@@ -233,23 +234,22 @@ export default {
 								this.mfaMethods.push({ authId, authTypeName });
 							}
 						} else if (authEnrollments[i].authenticator_type === 'oob') {
-							let authNumber;
-							if (authEnrollments[i].oob_channel === 'sms') {
-								authTypeName = 'Text  message';
-								authNumber = authEnrollments[i].name;
-								if (authTypeName !== undefined) {
-									this.mfaMethods.push({ authId, authTypeName, authNumber });
-								}
-							} else {
-								authTypeName = 'Voice message';
-								authNumber = authEnrollments[i].name;
-								if (authTypeName !== undefined) {
-									this.mfaMethods.push({ authId, authTypeName, authNumber });
-								}
-							}
+							authTypeName = 'Text/Voice message';
+							let authNumber = authEnrollments[i].name;
+							this.mfaMethods.push({ authId, authTypeName, authNumber });
 						}
 					}
-					console.log('mfaMethods', this.mfaMethods);
+
+					function isDupe(authMethod) {
+						return authMethod.authNumber === authNumber;
+					}
+
+					if (isDupe) {
+						// text & voice auth methods show as seperate auth line items with matching ids,
+						// removing duplicate authMethods() from the mfaMethods array
+						this.mfaMethods.pop();
+					}
+					// console.log('mfaMethods', this.mfaMethods);
 				});
 		},
 		checkLastLoginTime() {
@@ -284,7 +284,7 @@ export default {
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
-					this.apollo.mutate({
+					return this.apollo.mutate({
 						mutation: removeOneMfaMethod,
 						variables: {
 							mfa_token: token,
@@ -293,16 +293,9 @@ export default {
 					});
 				})
 				.then(() => {
+					// ISSUE: This is not waiting for the mutaion to complete before firing.
+					// I thought the Return (line 288) above should be handling this, but isn't working
 					this.gatherMfaEnrollments();
-				})
-				// if this was the last mfaMethod user had configured,
-				// turn off mfa for user
-				.then(() => {
-					if (this.mfaMethods === []) {
-						// if there are no enrollments, turn off mfa
-						console.log('mfaMethods are empty, turning off mfa');
-						this.turnOffMfa();
-					}
 				});
 		},
 	},
