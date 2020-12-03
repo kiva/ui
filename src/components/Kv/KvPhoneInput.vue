@@ -92,6 +92,7 @@ export default {
 		},
 		onInputPhoneNumber(e) {
 			this.displayValue = this.formatNumber(e.target.value);
+			this.$emit('input', this.e164Value);
 		},
 		formatNumber(val) {
 			this.asYouTypeFormatter = new AsYouType(this.selectedCountryCode);

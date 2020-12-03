@@ -11,6 +11,13 @@ export const Default = (args, { argTypes }) => ({
 		KvPhoneInput
 	},
 	template: `
-		<kv-phone-input />
+		<kv-phone-input
+			@input="onInput"
+		/>
 	`,
+	methods: {
+		onInput(val) {
+			console.log(val);
+		}
+	}
 });
