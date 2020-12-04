@@ -3,6 +3,8 @@
 		<component
 			:is="currentWrapperComponent"
 			:to="promoBannerContent.link"
+			:href="promoBannerContent.link"
+			:target="isExternalLink ? '_blank' : '_self'"
 			:class="{ 'banner-link' : promoBannerContent.link, 'banner-wrapper' : !promoBannerContent.link}"
 			v-kv-track-event="promoBannerContent.kvTrackEvent"
 		>
@@ -20,15 +22,6 @@ export default {
 	components: {
 		KvIcon
 	},
-	computed: {
-		// if the promoBannerContent includes a link, render a router-link element, else render a plain div
-		currentWrapperComponent() {
-			if (this.promoBannerContent.link) {
-				return 'router-link';
-			}
-			return 'div';
-		}
-	},
 	props: {
 		iconKey: {
 			type: String,
@@ -44,6 +37,26 @@ export default {
 				};
 			}
 		},
+	},
+	computed: {
+		// if the promoBannerContent includes a link, render a router-link element, else render a plain div
+		currentWrapperComponent() {
+			if (this.promoBannerContent.link) {
+				if (!this.isExternalLink) {
+					return 'router-link';
+				}
+				if (this.isExternalLink) {
+					return 'a';
+				}
+			}
+			return 'div';
+		},
+		// Returns true if the link is an external link
+		// Relative links should start with '/' and will resolve at kiva.org
+		// External links should start with 'http' and will resolve outside in a new window
+		isExternalLink() {
+			return (this.promoBannerContent.link && this.promoBannerContent.link.substring(0, 4) === 'http');
+		}
 	},
 };
 </script>
