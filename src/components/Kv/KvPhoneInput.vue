@@ -56,6 +56,7 @@ import {
 	getCountryCallingCode,
 	getCountries as getSupportedCountryCodes,
 	getExampleNumber,
+	parsePhoneNumberFromString,
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
@@ -109,17 +110,6 @@ export default {
 		},
 	},
 	methods: {
-		async init() {
-			// If we're passed in a non US number from the start, set the country and reformat the number.
-			this.asYouTypeFormatter.input(this.value);
-			const phoneNumber = this.asYouTypeFormatter.getNumber();
-
-			if (phoneNumber?.country) {
-				await this.$nextTick();
-				this.selectedCountryCode = phoneNumber.country;
-				this.displayValue = phoneNumber.format('NATIONAL');
-			}
-		},
 		formatNumber(val) {
 			this.asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
 			return this.asYouTypeFormatter.input(val);
@@ -137,9 +127,17 @@ export default {
 			 */
 			this.$emit('input', this.e164Value);
 		},
+		setCountryFromNumber(num) {
+			const phoneNumber = parsePhoneNumberFromString(num);
+			if (phoneNumber?.country) {
+				this.selectedCountryCode = phoneNumber.country;
+				this.displayValue = phoneNumber.format('NATIONAL');
+			}
+		}
 	},
-	created() {
-		this.init();
+	async created() {
+		await this.$nextTick();
+		this.setCountryFromNumber(this.e164Value);
 	}
 };
 </script>

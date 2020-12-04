@@ -49,14 +49,14 @@ export const UsingEventsAndValue = (args, { argTypes }) => ({
 });
 
 
-export const InitializeWithVenuzalanNumber = (args, { argTypes }) => ({
+export const InitializeWithNonUSNumber = (args, { argTypes }) => ({
 	props: Object.keys(argTypes),
 	components: {
 		KvPhoneInput
 	},
 	data() {
 		return {
-			myCoolPhoneNumber: '+58 0412-1234567' // Venezuala sample number
+			myCoolPhoneNumber: '+58 0412-1234567' // Venezuela sample number
 		}
 	},
 	template: `
