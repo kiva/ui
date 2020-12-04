@@ -5,7 +5,9 @@
 				<div class="icon-wrapper">
 					<kv-icon :name="iconName" />
 				</div>
-				<p data-test="tip-message" class="message" v-html="safeMessage"></p>
+				<p data-test="tip-message" class="message">
+					{{ message }}
+				</p>
 			</span>
 			<button @click="close" class="close-tip-message" aria-label="Close">
 				<kv-icon name="x" :from-sprite="true" />
@@ -15,7 +17,6 @@
 </template>
 
 <script>
-import sanitize from 'sanitize-html';
 import KvIcon from '@/components/Kv/KvIcon';
 
 export default {
@@ -50,14 +51,6 @@ export default {
 			// default icon-confirmation
 			return 'confirmation';
 		},
-		safeMessage() {
-			return sanitize(this.message, {
-				allowedTags: ['b', 'i', 'em', 'strong', 'a'],
-				allowedAttributes: {
-					a: ['href'],
-				},
-			});
-		}
 	},
 	methods: {
 		show(message, type, persist) {
