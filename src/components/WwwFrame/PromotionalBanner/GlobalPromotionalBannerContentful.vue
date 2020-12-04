@@ -104,16 +104,6 @@ export default {
 						return false;
 					}
 
-					// check for special conditions and allow that process to control enabled
-					const specialConditions = _get(activePromoBanner, 'fields.specialConditions', null);
-					if (specialConditions) {
-						// check for and operate on autolending opt in condition
-						// if special conditions exist, for example:
-						// specialConditions.includes('autolending-opted-in')
-						// process them and set this.isPromoEnabled = true accordingly
-						return false;
-					}
-
 					// Check banner type
 					if (activePromoBanner.fields.bannerType === 'Appeal Banner') {
 						// Appeal Banner
