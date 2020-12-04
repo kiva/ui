@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import sanitize from 'sanitize-html';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
 export default {
@@ -41,7 +40,7 @@ export default {
 	data() {
 		return {
 			errorCode: this.$route.query.error,
-			errorDescription: sanitize(this.$route.query.error_description),
+			errorDescription: this.$route.query.error_description,
 			clientId: this.$route.query.client_id,
 			lenderLogin: this.$route.query.lender_login !== '0',
 		};
