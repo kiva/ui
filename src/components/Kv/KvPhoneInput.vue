@@ -49,12 +49,6 @@
 				@input="onInputPhoneNumber"
 			>
 		</div>
-		<div>
-			DEBUG:<br>
-			Valid: {{ isValid }}<br>
-			E.164 number: {{ e164Number }}<br>
-			Weird: Cyprus, Vanatu
-		</div>
 	</div>
 </template>
 
@@ -192,7 +186,7 @@ export default {
 		border-color: transparent;
 	}
 
-	&--is-invalid:not(.kv-phone-input--is-empty) {
+	/* &--is-invalid:not(.kv-phone-input--is-empty) {
 		.kv-phone-input__input {
 			border-color: red;
 		}
@@ -202,6 +196,6 @@ export default {
 		.kv-phone-input__input {
 			border-color: green;
 		}
-	}
+	} */
 }
 </style>
