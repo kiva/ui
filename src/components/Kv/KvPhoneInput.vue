@@ -86,9 +86,8 @@ export default {
 	},
 	data() {
 		return {
-			asYouTypeFormatter: new AsYouType('US'), // initial instance of the libphonenumber formatter class
 			countryList,
-			displayValue: this.value, // pretty display of the phone number
+			displayValue: this.formatNumber(this.value), // pretty display of the phone number
 			selectedCountryCode: 'US',
 		};
 	},
@@ -97,13 +96,15 @@ export default {
 			return getCountryCallingCode(this.selectedCountryCode);
 		},
 		e164Value() { // E.164 formatted phone number
-			return this.asYouTypeFormatter?.getNumber()?.number || '';
+			const phoneNumber = parsePhoneNumberFromString(this.displayValue, this.selectedCountryCode);
+			return phoneNumber?.number || '';
 		},
 		isEmpty() {
 			return this.displayValue.length === 0;
 		},
 		isValid() {
-			return this.asYouTypeFormatter?.isValid();
+			const phoneNumber = parsePhoneNumberFromString(this.displayValue, this.selectedCountryCode);
+			return phoneNumber?.isValid();
 		},
 		placeholderNumber() {
 			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
@@ -111,8 +112,13 @@ export default {
 	},
 	methods: {
 		formatNumber(val) {
-			this.asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
-			return this.asYouTypeFormatter.input(val);
+			// workaround for https://github.com/catamphetamine/libphonenumber-js/issues/225
+			if (val.includes('(') && !val.includes(')')) {
+				return val.replace('(', '');
+			}
+
+			const asYouTypeFormatter = new AsYouType(this.selectedCountryCode);
+			return asYouTypeFormatter.input(val);
 		},
 		onInputCountry() {
 			this.displayValue = this.formatNumber(this.displayValue);
