@@ -37,14 +37,14 @@
 				class="kv-phone-input__input"
 				:id="id"
 				:placeholder="placeholderNumber"
-				:value="displayValue"
+				:value="displayNumber"
 				@input="onInputPhoneNumber"
 			>
 		</div>
 		<div>
 			DEBUG:<br>
 			Valid: {{ isValid }}<br>
-			E.164 number: {{ e164Value }}
+			E.164 number: {{ e164Number }}
 		</div>
 	</div>
 </template>
@@ -87,7 +87,7 @@ export default {
 	data() {
 		return {
 			countryList,
-			displayValue: this.formatNumber(this.value), // pretty display of the phone number
+			displayNumber: this.formatPhoneNumber(this.value), // pretty display of the phone number
 			selectedCountryCode: 'US',
 		};
 	},
@@ -95,15 +95,15 @@ export default {
 		countryCallingCode() {
 			return getCountryCallingCode(this.selectedCountryCode);
 		},
-		e164Value() { // E.164 formatted phone number
-			const phoneNumber = parsePhoneNumberFromString(this.displayValue, this.selectedCountryCode);
+		e164Number() { // E.164 formatted phone number
+			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountryCode);
 			return phoneNumber?.number || '';
 		},
 		isEmpty() {
-			return this.displayValue.length === 0;
+			return this.displayNumber.length === 0;
 		},
 		isValid() {
-			const phoneNumber = parsePhoneNumberFromString(this.displayValue, this.selectedCountryCode);
+			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountryCode);
 			return phoneNumber?.isValid();
 		},
 		placeholderNumber() {
@@ -111,7 +111,7 @@ export default {
 		},
 	},
 	methods: {
-		formatNumber(val) {
+		formatPhoneNumber(val) {
 			// workaround for https://github.com/catamphetamine/libphonenumber-js/issues/225
 			if (val.includes('(') && !val.includes(')')) {
 				return val.replace('(', '');
@@ -121,11 +121,11 @@ export default {
 			return asYouTypeFormatter.input(val);
 		},
 		onInputCountry() {
-			this.displayValue = this.formatNumber(this.displayValue);
+			this.displayNumber = this.formatPhoneNumber(this.displayNumber);
 			this.emitUpdatedNumber();
 		},
 		onInputPhoneNumber(e) {
-			this.displayValue = this.formatNumber(e.target.value);
+			this.displayNumber = this.formatPhoneNumber(e.target.value);
 			this.emitUpdatedNumber();
 		},
 		emitUpdatedNumber() {
@@ -134,19 +134,19 @@ export default {
 			 * @event input
 			 * @type {Event}
 			 */
-			this.$emit('input', this.e164Value);
+			this.$emit('input', this.e164Number);
 		},
 		setCountryFromNumber(num) {
 			const phoneNumber = parsePhoneNumberFromString(num);
 			if (phoneNumber?.country) {
 				this.selectedCountryCode = phoneNumber.country;
-				this.displayValue = phoneNumber.format('NATIONAL');
+				this.displayNumber = phoneNumber.format('NATIONAL');
 			}
 		}
 	},
 	async created() {
 		await this.$nextTick();
-		this.setCountryFromNumber(this.e164Value);
+		this.setCountryFromNumber(this.e164Number);
 	}
 };
 </script>
