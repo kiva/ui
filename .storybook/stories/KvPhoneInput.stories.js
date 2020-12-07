@@ -1,7 +1,7 @@
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 
 export default {
-	title: 'Kv/KvPhoneInput',
+	title: 'Kv/Form Elements/KvPhoneInput',
 	component: KvPhoneInput,
 };
 
@@ -17,9 +17,9 @@ export const Default = (args, { argTypes }) => ({
 	},
 	template: `
 		<div>
-			<label for="my_cool_input">Enter your phone number</label>
+			<label for="my_default_input">Enter your phone number</label>
 			<kv-phone-input
-				id="my_cool_input"
+				id="my_default_input"
 				v-model="myCoolPhoneNumber"
 			/>
 		</div>
@@ -33,9 +33,9 @@ export const UsingEventsAndValue = (args, { argTypes }) => ({
 	},
 	template: `
 		<div>
-			<label for="my_cool_input">Enter your phone number</label>
+			<label for="events_input">Enter your phone number</label>
 			<kv-phone-input
-				id="my_cool_input"
+				id="events_input"
 				value="828-479-5482"
 				@input="onInput"
 			/>
@@ -61,9 +61,51 @@ export const InitializeWithNonUSNumber = (args, { argTypes }) => ({
 	},
 	template: `
 		<div>
-			<label for="my_cool_input">Enter your phone number</label>
+			<label for="int_number">Enter your phone number</label>
 			<kv-phone-input
-				id="my_cool_input"
+				id="int_number"
+				v-model="myCoolPhoneNumber"
+			/>
+		</div>
+	`,
+});
+
+export const InitializeWithInvalidNumber = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvPhoneInput
+	},
+	data() {
+		return {
+			myCoolPhoneNumber: '+58 123'
+		}
+	},
+	template: `
+		<div>
+			<label for="invalid_number">Enter your phone number</label>
+			<kv-phone-input
+				id="invalid_number"
+				v-model="myCoolPhoneNumber"
+			/>
+		</div>
+	`,
+});
+
+export const InitializeWithNothing = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvPhoneInput
+	},
+	data() {
+		return {
+			myCoolPhoneNumber: ''
+		}
+	},
+	template: `
+		<div>
+			<label for="empty">Enter your phone number</label>
+			<kv-phone-input
+				id="empty"
 				v-model="myCoolPhoneNumber"
 			/>
 		</div>
