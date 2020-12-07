@@ -140,7 +140,7 @@ export default {
 			const phoneNumber = parsePhoneNumberFromString(num);
 			if (phoneNumber?.country) {
 				this.selectedCountryCode = phoneNumber.country;
-				this.displayNumber = this.formatPhoneNumber(phoneNumber.number);
+				this.displayNumber = this.formatPhoneNumber(phoneNumber.formatNational());
 			}
 		}
 	},
