@@ -122,10 +122,13 @@ export default {
 		},
 		onInputCountry() {
 			this.displayValue = this.formatNumber(this.displayValue);
+			this.emitUpdatedNumber();
 		},
 		onInputPhoneNumber(e) {
 			this.displayValue = this.formatNumber(e.target.value);
-
+			this.emitUpdatedNumber();
+		},
+		emitUpdatedNumber() {
 			/**
 			 * The value of the input in E.164 formatting
 			 * @event input
