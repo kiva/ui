@@ -14,20 +14,28 @@
 				Select your country
 			</label>
 
-			<kv-dropdown-rounded
-				class="kv-phone-input__country-select"
-				:id="`country_select_${id}`"
-				v-model="selectedCountryCode"
-				@input="onInputCountry"
-			>
-				<option
-					v-for="country in countryList"
-					:key="`country-${country.code}`"
-					:value="country.code"
+			<div class="kv-phone-input__select-wrapper">
+				<kv-flag
+					class="kv-phone-input__select-flag"
+					:country="selectedCountryCode"
+					:inline-svg="true"
+				/>
+
+				<select
+					class="kv-phone-input__select-country"
+					:id="`country_select_${id}`"
+					v-model="selectedCountryCode"
+					@change="onInputCountry"
 				>
-					{{ country.name }}
-				</option>
-			</kv-dropdown-rounded>
+					<option
+						v-for="country in countryList"
+						:key="`country-${country.name}`"
+						:value="country.code"
+					>
+						{{ country.name }}
+					</option>
+				</select>
+			</div>
 
 			<span class="kv-phone-input__country-prefix">
 				+{{ countryCallingCode }}
@@ -44,7 +52,8 @@
 		<div>
 			DEBUG:<br>
 			Valid: {{ isValid }}<br>
-			E.164 number: {{ e164Number }}
+			E.164 number: {{ e164Number }}<br>
+			Weird: Cyprus, Vanatu
 		</div>
 	</div>
 </template>
@@ -59,7 +68,7 @@ import {
 	parsePhoneNumberFromString,
 } from 'libphonenumber-js';
 import exampleNumbers from 'libphonenumber-js/examples.mobile.json'; // used for populating placeholders
-import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
+import KvFlag from '@/components/Kv/KvFlag';
 
 const supportedCountryCodes = getSupportedCountryCodes();
 const countryList = getCountryList() // get all country names and codes
@@ -68,7 +77,7 @@ const countryList = getCountryList() // get all country names and codes
 
 export default {
 	components: {
-		KvDropdownRounded
+		KvFlag,
 	},
 	model: {
 		prop: 'value',
@@ -157,15 +166,30 @@ export default {
 .kv-phone-input {
 	&__wrapper {
 		display: flex;
-		align-items: baseline;
-	}
-
-	&__country-select {
-		width: rem-calc(200);
+		align-items: center;
 	}
 
 	&__country-prefix {
-		margin: 0 1rem;
+		margin: 0 0.5rem 1rem;
+	}
+
+	&__select-wrapper {
+		position: relative;
+	}
+
+	&__select-country {
+		width: rem-calc(80);
+		margin-bottom: 1rem;
+	}
+
+	&__select-flag {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: rem-calc(56);
+		margin: 0;
+		pointer-events: none;
+		border-color: transparent;
 	}
 
 	&--is-invalid:not(.kv-phone-input--is-empty) {
