@@ -107,11 +107,16 @@ export default {
 		},
 		isValid() {
 			const phoneNumber = parsePhoneNumberFromString(this.displayNumber, this.selectedCountryCode);
-			return phoneNumber?.isValid();
+			return phoneNumber?.isValid() || false;
 		},
 		placeholderNumber() {
 			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
 		},
+	},
+	watch: {
+		isValid() {
+			this.emitValidity();
+		}
 	},
 	methods: {
 		formatPhoneNumber(val) {
@@ -139,6 +144,14 @@ export default {
 			 */
 			this.$emit('input', this.e164Number);
 		},
+		emitValidity() {
+			/**
+			 * Whether the input number is a valid phone number
+			 * @event validity-changed
+			 * @type {Event}
+			 */
+			this.$emit('validity-changed', this.isValid);
+		},
 		setCountryFromNumber(num) {
 			const phoneNumber = parsePhoneNumberFromString(num);
 			if (phoneNumber?.country) {
@@ -150,6 +163,7 @@ export default {
 	async created() {
 		await this.$nextTick();
 		this.setCountryFromNumber(this.e164Number);
+		this.emitValidity();
 	}
 };
 </script>

@@ -111,3 +111,46 @@ export const InitializeWithNothing = (args, { argTypes }) => ({
 		</div>
 	`,
 });
+
+
+export const CheckingValidity = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		KvPhoneInput
+	},
+	data() {
+		return {
+			myCoolPhoneNumber: '(503) 555-55',
+			isValid: false,
+		}
+	},
+	template: `
+		<div>
+			<component is="style">
+				.valid::after {
+					content: 'valid';
+					color: green;
+				}
+
+				.invalid::after {
+					content: 'invalid';
+					color: red;
+				}
+			</component>
+
+			<label for="invalid_number">Enter your phone number</label>
+			<kv-phone-input
+				id="invalid_number"
+				v-model="myCoolPhoneNumber"
+				@validity-changed="onValidityChanged"
+				:class="{ valid: isValid, invalid: !isValid }"
+			/>
+		</div>
+	`,
+	methods: {
+		onValidityChanged(isValid) {
+			console.log(`onValidityChanged: ${isValid}`);
+			this.isValid = isValid;
+		}
+	}
+});
