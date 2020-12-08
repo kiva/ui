@@ -1,9 +1,14 @@
 query authenticationQuery {
 	my {
+		emailVerifiedRecently
 		lastLoginTimestamp @client
 	}
 	general {
 		activeLoginDuration: configSetting(key: "login_timeouts.www.active_login") {
+			value
+			key
+		}
+		recentLoginDuration: configSetting(key: "login_timeouts.www.recent_login") {
 			value
 			key
 		}
