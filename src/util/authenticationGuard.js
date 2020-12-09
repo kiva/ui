@@ -32,12 +32,13 @@ const processErrors = (error, route) => {
 	}
 
 	if (error.message.indexOf('verificationRequired') > -1) {
+		const lastMatchedRoute = route.matched[route.matched.length - 1];
 		// Redirect to email verification page
 		return {
 			path: '/start-verification',
 			query: {
 				doneUrl: route.fullPath,
-				process: route.matched[route.matched.length].meta.process || '',
+				process: lastMatchedRoute.meta.process || '',
 			}
 		};
 	}
