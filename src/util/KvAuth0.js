@@ -131,6 +131,13 @@ export default class KvAuth0 {
 			|| 0;
 	}
 
+	isMfaAuthenticated() {
+		const usedMfaKey = 'https://www.kiva.org/used_mfa';
+		return _get(this, `user["${usedMfaKey}"]`)
+			|| _get(this, `user._json["${usedMfaKey}"]`)
+			|| false;
+	}
+
 	// Silently fetch an access token for the MFA api to manage MFA factors
 	getMfaManagementToken() {
 		// only try this if in the browser

@@ -70,7 +70,8 @@ export default {
 	inject: ['apollo', 'kvAuth0'],
 	mounted() {
 		if (this.kvAuth0.enabled) {
-			this.kvAuth0.getMfaManagementToken()
+			this.kvAuth0.checkSession()
+				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
 					return this.apollo.query({
 						query: pageQuery,

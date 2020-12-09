@@ -4,9 +4,19 @@ import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 
 const isServer = typeof window === 'undefined';
 
+// Return true if user logged in recently enough and false otherwise
+const checkLastLoginTime = (data, durationKey, defaultDuration) => {
+	const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
+	const duration = 1000 * (parseInt(_get(data, `general.${durationKey}.value`), 10) || defaultDuration);
+	if (Date.now() > lastLogin + duration) {
+		return false;
+	}
+	return true;
+};
+
 const processErrors = (error, route) => {
-	if (error.message.indexOf('activeLoginRequired') > -1) {
-		// Force a login when active login is required
+	if (error.message.indexOf('activeLoginRequired') > -1 || error.message.indexOf('recentLoginRequired') > -1) {
+		// Force a login when active/recent login is required
 		return {
 			path: '/ui-login',
 			query: { force: true, doneUrl: route.fullPath }
@@ -20,6 +30,19 @@ const processErrors = (error, route) => {
 			query: { doneUrl: route.fullPath }
 		};
 	}
+
+	if (error.message.indexOf('verificationRequired') > -1) {
+		const lastMatchedRoute = route.matched[route.matched.length - 1];
+		// Redirect to email verification page
+		return {
+			path: '/start-verification',
+			query: {
+				doneUrl: route.fullPath,
+				process: lastMatchedRoute.meta.process || '',
+			}
+		};
+	}
+
 	// Log other errors to Sentry
 	if (!isServer) {
 		Sentry.withScope(scope => {
@@ -39,42 +62,46 @@ const processErrors = (error, route) => {
 // and return a resolved promise if the user has the right permissions
 // to visit route or a rejection with the appropriate redirect params
 // The two possible meta properties are activeLoginRequired, and authenticationRequired
-// activeLoginRequired takes priority since it implies authenticationRequired
+// activeLoginRequired takes priority over authenticationRequired since it implies authenticationRequired
+// and recentLoginRequired takes priority over activeLoginRequired since it implies activeLoginRequired
 // eslint-disable-next-line import/prefer-default-export
 export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
+	// Skip authentication checks if Auth0 usage is not enabled
+	if (!kvAuth0.enabled) {
+		return Promise.resolve();
+	}
 	return new Promise((resolve, reject) => {
-		// Route requires active login
-		if (route.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired)) {
+		const activeRequired = route.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
+		const authRequired = route.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
+		const mfaRequired = route.matched.some(matchedRoute => matchedRoute.meta.mfaRequired);
+		const recentRequired = route.matched.some(matchedRoute => matchedRoute.meta.recentLoginRequired);
+
+		// Route requires some sort of authentication
+		if (activeRequired || authRequired || mfaRequired || recentRequired) {
 			return apolloClient.query({
 				query: authenticationQuery
 			}).then(({ data }) => {
 				if (!data.my) {
 					throw new Error('api.authenticationRequired');
 				}
-				const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
-				const duration = 1000 * (parseInt(_get(data, 'general.activeLoginDuration.value'), 10) || 3600);
-				if (kvAuth0.getKivaId() && Date.now() > lastLogin + duration) {
+				// Route requires active login
+				if (activeRequired && !checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
 					throw new Error('activeLoginRequired');
 				}
-				resolve();
-			}).catch(e => {
-				reject(processErrors(e, route));
-			});
-		}
-		// Route requires authentication
-		if (route.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired)) {
-			return apolloClient.query({
-				query: authenticationQuery
-			}).then(({ data }) => {
-				if (!data.my) {
-					throw new Error('api.authenticationRequired');
+				// Route requires recent login
+				if (recentRequired && !checkLastLoginTime(data, 'recentLoginDuration', 300)) {
+					throw new Error('recentLoginRequired');
+				}
+				// Route requires multi factor authentication or email verification
+				if (mfaRequired && !kvAuth0.isMfaAuthenticated() && !_get(data, 'my.emailVerifiedRecently')) {
+					throw new Error('verificationRequired');
 				}
 				resolve();
 			}).catch(e => {
 				reject(processErrors(e, route));
 			});
 		}
-		// Route does not require login or active login
+		// Route does not require any authentication
 		resolve();
 	});
 }

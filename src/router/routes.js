@@ -186,14 +186,18 @@ export default [
 		path: '/settings/security',
 		component: () => import('@/pages/Settings/SecuritySettings'),
 		meta: {
-			activeLoginRequired: true,
+			recentLoginRequired: true,
+			mfaRequired: true,
+			process: 'managing your security settings',
 		},
 	},
 	{
 		path: '/settings/security/mfa',
 		component: () => import('@/pages/Settings/TwoStepVerificationPage'),
 		meta: {
-			activeLoginRequired: true,
+			recentLoginRequired: true,
+			mfaRequired: true,
+			process: 'managing your 2-step verification settings',
 		},
 	},
 	{

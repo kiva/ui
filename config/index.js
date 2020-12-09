@@ -44,9 +44,7 @@ module.exports = {
 			browserCallbackUri: 'https://www.kiva.org/process-browser-auth',
 			serverCallbackUri: 'https://www.kiva.org/process-ssr-auth',
 			domain: 'login.kiva.org',
-			scope: 'https://www.kiva.org/last_login ' +
-				'https://www.kiva.org/kiva_id ' +
-				'openid email profile',
+			scope: 'openid mfa',
 		},
 		intercom: {
 			enable: true,
