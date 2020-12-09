@@ -37,7 +37,10 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 
-function getFullPath(url) {
+function getFullPath(url = '/') {
+	if (url.startsWith('/')) {
+		return url;
+	}
 	const { pathname, search, hash } = new URL(url);
 	return `${pathname}${search}${hash}`;
 }
