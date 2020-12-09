@@ -48,7 +48,7 @@
 				-->
 				<kv-settings-card
 					title="Your security method(s)"
-					v-if="isMfaActive & mfaMethods.length > 0"
+					v-if="mfaMethods.length > 0"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -66,8 +66,8 @@
 								class="two-step-verification__method"
 								v-for="(mfaMethod, index) in mfaMethods" :key="index"
 							>
-								<h4>{{ mfaMethod.authTypeName }}</h4>
-								<p>{{ mfaMethod.authNumber }}</p>
+								<h4>{{ mfaMethod.authenticator_type === 'oob' ? 'Text/voice message' : 'Authenticator app' }}</h4>
+								<p>{{ mfaMethod.name }}</p>
 								<kv-button
 									class="text-link"
 									@click.native.prevent="removeMfaMethod(mfaMethod)"
@@ -200,8 +200,7 @@ export default {
 				return 'Set up additional backup steps so you can log in even if your other options aren\'t available';
 			}
 			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
-		}
-
+		},
 	},
 	methods: {
 		gatherMfaEnrollments() {
@@ -212,44 +211,15 @@ export default {
 						query: mfaQuery,
 						variables: {
 							mfa_token: token
-						}
+						},
+						fetchPolicy: 'network-only',
 					});
 				}).then(result => {
+					this.isMfaActive = true;
 					const authEnrollments = result.data.my.authenticatorEnrollments;
-					// console.log('authEnrollments', authEnrollments);
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
-					this.mfaMethods = [];
 
-					for (let i = 0; i < authEnrollments.length; i += 1) {
-						// eslint-disable-next-line max-len
-						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
-							this.isMfaActive = true;
-						}
-						let authTypeName = {};
-						const authId = authEnrollments[i].id;
-
-						if (authEnrollments[i].authenticator_type === 'otp') {
-							authTypeName = 'Authenticator app';
-							if (authTypeName !== undefined) {
-								this.mfaMethods.push({ authId, authTypeName });
-							}
-						} else if (authEnrollments[i].authenticator_type === 'oob') {
-							authTypeName = 'Text/Voice message';
-							let authNumber = authEnrollments[i].name;
-							this.mfaMethods.push({ authId, authTypeName, authNumber });
-						}
-					}
-
-					function isDupe(authMethod) {
-						return authMethod.authNumber === authNumber;
-					}
-
-					if (isDupe) {
-						// text & voice auth methods show as seperate auth line items with matching ids,
-						// removing duplicate authMethods() from the mfaMethods array
-						this.mfaMethods.pop();
-					}
-					// console.log('mfaMethods', this.mfaMethods);
+					this.formatMfaMethods(authEnrollments);
 				});
 		},
 		checkLastLoginTime() {
@@ -290,14 +260,57 @@ export default {
 							mfa_token: token,
 							id: mfaMethod.authId
 						}
-					});
-				})
+					})
 				.then(() => {
-					// ISSUE: This is not waiting for the mutaion to complete before firing.
-					// I thought the Return (line 288) above should be handling this, but isn't working
 					this.gatherMfaEnrollments();
-				});
+				})
+			});
 		},
+		formatMfaMethods(authEnrollments) {
+			console.log('formatMfaMethods(authEnrollments)', authEnrollments);
+
+			// When a user adds a text based recovery there are 2 new methods added to their authEnrollments
+			// 1) 1: {id: "sms|dev_tRkQzShZEIDAD0Q9", active: true, authenticator_type: "oob", oob_channel: "sms", name: "XXXXXXXX0367", …}
+			// 2) 2: {id: "voice|dev_tRkQzShZEIDAD0Q9", active: true, authenticator_type: "oob", oob_channel: "voice", name: "XXXXXXXX0367", …}
+			// Since the user only added 1 authentication method we only want to display 1 of these
+			// in their list of authentication methods
+
+			// My first thought was to remove one of the values based on the ID, since they come through with a similar ID
+			// ie. "sms|dev_tRkQzShZEIDAD0Q9" & "voice|dev_tRkQzShZEIDAD0Q9"
+			// BUT these aren't the same, one starts with sms, the other with voice, so I'm unable to filter
+			// based on the id.
+			// POSSIBLY: take off the last 4  digits and compare them, if the same only push one?
+
+			// My next thought was to filter based on the name field
+			// ie. "XXXXXXXX0367" Or "null" for non-number based auth methods
+
+			// attempted this filtering with .map and was unable to get it to work
+			// had issues comparing item.VALUE with authEnrollments.VALUE
+			// const filteredMethods = [...new Map(authEnrollments.map((item) => {
+			// 	console.log('item', item);
+			// 	console.log('itemvalue', Object.values([item.id]));
+			// 	console.log('authMethodsIINSIDE', authEnrollments.id);
+				// console.log([item.name, item].values());
+				// [item.name, item])).values()];
+			// }))]
+
+			// couple other things I tried:
+			// const filteredMethods = authEnrollments.filter((v, i, name) => name.findIndex(t => (t.name === v.name) === i);
+
+			// Console.logs to determine the info that I have available
+			// const filteredMethods = authEnrollments.filter((item, index) => {
+			// 		console.log(item.name, index, authEnrollments.indexOf(item.name), authEnrollments.indexOf(authEnrollments.name) === index);
+			// });
+
+			// console.log('filtedMethods', filteredMethods);
+
+			authEnrollments.forEach((ol) => {
+				if (ol.active === true && ol.authenticator_type !== 'recovery-code') {
+					this.mfaMethods.push(ol);
+				}
+			});
+			// console.log('this.mfaMethods', this.mfaMethods);
+		}
 	},
 };
 </script>
