@@ -76,7 +76,11 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		prefetch: true,
+		preFetch(config, client) {
+			return client.query({
+				query: pageQuery
+			});
+		},
 		result({ data }) {
 			this.isMfaActive = data?.general?.mfaEnabled?.value === 'true';
 		},
