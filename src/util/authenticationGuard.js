@@ -66,6 +66,10 @@ const processErrors = (error, route) => {
 // and recentLoginRequired takes priority over activeLoginRequired since it implies activeLoginRequired
 // eslint-disable-next-line import/prefer-default-export
 export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
+	// Skip authentication checks if Auth0 usage is not enabled
+	if (!kvAuth0.enabled) {
+		return Promise.resolve();
+	}
 	return new Promise((resolve, reject) => {
 		const activeRequired = route.matched.some(matchedRoute => matchedRoute.meta.activeLoginRequired);
 		const authRequired = route.matched.some(matchedRoute => matchedRoute.meta.authenticationRequired);
