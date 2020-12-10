@@ -138,6 +138,7 @@ import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSeconda
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import removeMfa from '@/graphql/mutation/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/removeOneMfaMethod.graphql';
+import _uniqBy from 'lodash/uniqBy';
 
 const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
@@ -267,49 +268,10 @@ export default {
 			});
 		},
 		formatMfaMethods(authEnrollments) {
-			console.log('formatMfaMethods(authEnrollments)', authEnrollments);
-
-			// When a user adds a text based recovery there are 2 new methods added to their authEnrollments
-			// 1) 1: {id: "sms|dev_tRkQzShZEIDAD0Q9", active: true, authenticator_type: "oob", oob_channel: "sms", name: "XXXXXXXX0367", …}
-			// 2) 2: {id: "voice|dev_tRkQzShZEIDAD0Q9", active: true, authenticator_type: "oob", oob_channel: "voice", name: "XXXXXXXX0367", …}
-			// Since the user only added 1 authentication method we only want to display 1 of these
-			// in their list of authentication methods
-
-			// My first thought was to remove one of the values based on the ID, since they come through with a similar ID
-			// ie. "sms|dev_tRkQzShZEIDAD0Q9" & "voice|dev_tRkQzShZEIDAD0Q9"
-			// BUT these aren't the same, one starts with sms, the other with voice, so I'm unable to filter
-			// based on the id.
-			// POSSIBLY: take off the last 4  digits and compare them, if the same only push one?
-
-			// My next thought was to filter based on the name field
-			// ie. "XXXXXXXX0367" Or "null" for non-number based auth methods
-
-			// attempted this filtering with .map and was unable to get it to work
-			// had issues comparing item.VALUE with authEnrollments.VALUE
-			// const filteredMethods = [...new Map(authEnrollments.map((item) => {
-			// 	console.log('item', item);
-			// 	console.log('itemvalue', Object.values([item.id]));
-			// 	console.log('authMethodsIINSIDE', authEnrollments.id);
-				// console.log([item.name, item].values());
-				// [item.name, item])).values()];
-			// }))]
-
-			// couple other things I tried:
-			// const filteredMethods = authEnrollments.filter((v, i, name) => name.findIndex(t => (t.name === v.name) === i);
-
-			// Console.logs to determine the info that I have available
-			// const filteredMethods = authEnrollments.filter((item, index) => {
-			// 		console.log(item.name, index, authEnrollments.indexOf(item.name), authEnrollments.indexOf(authEnrollments.name) === index);
-			// });
-
-			// console.log('filtedMethods', filteredMethods);
-
-			authEnrollments.forEach((ol) => {
-				if (ol.active === true && ol.authenticator_type !== 'recovery-code') {
-					this.mfaMethods.push(ol);
-				}
-			});
-			// console.log('this.mfaMethods', this.mfaMethods);
+			// Filtering authEnrollments to remove inactive and unusable methods ie. "recovery code"
+			const filteredMethods = authEnrollments.filter(authItem => authItem.active && authItem.authenticator_type !== 'recovery-code');
+			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
+			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split("|")[1]);
 		}
 	},
 };
