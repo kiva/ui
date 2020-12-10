@@ -5,6 +5,7 @@
 		:button-amounts="buttonAmounts"
 		:headline="headline"
 		:body="body"
+		:image-url="imageUrl"
 		:is-open="isOpen"
 		@toggle-banner="onToggleBanner"
 		@amount-selected="onAmountSelected"
@@ -66,6 +67,11 @@ export default {
 			const amountsArr = this.appealBannerContent?.dataObject?.donationAmounts || '';
 			return amountsArr;
 		},
+		imageUrl() {
+			return this.appealBannerContent?.additionalContent
+				?.find(content => content.fields.name === 'Progress Meter Image')
+				.fields?.images?.[0].fields?.file?.url || '';
+		}
 	},
 	created() {
 		const bannerIsOpen = cookieStore.get('appeal_banner_is_open');
