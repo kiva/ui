@@ -6,6 +6,7 @@ import KvPillToggle from '@/components/Kv/KvPillToggle';
 import KvRadio from '@/components/Kv/KvRadio';
 import KvRangeSlider from '@/components/Kv/KvRangeSlider';
 import KvToggle from '@/components/Kv/KvToggle';
+import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
 
 export default {
 	title: 'Kv/Form Elements',
@@ -21,6 +22,7 @@ export const KitchenSink = () => ({
 		KvRadio,
 		KvRangeSlider,
 		KvToggle,
+		KvVerificationCodeInput,
 	},
 	data() {
 		return {
@@ -71,6 +73,7 @@ export const KitchenSink = () => ({
 			kvToggle1: true,
 			kvToggle2: false,
 			kvToggle3: true,
+			KvVerificationCodeInput: 123456
 		}
 	},
 	template: `
@@ -240,6 +243,13 @@ export const KitchenSink = () => ({
 						KvPhoneInput
 					</label>
 					<kv-phone-input id="phone_number" v-model="KvPhoneInput" />
+				</fieldset>
+
+				<fieldset>
+					<label class="input-label" for="verification_code">
+						KvVerificationCodeInput
+					</label>
+					<kv-verification-code-input id="verification_code" v-model="KvVerificationCodeInput" />
 				</fieldset>
 
 				<fieldset>
