@@ -48,7 +48,7 @@
 				-->
 				<kv-settings-card
 					title="Your security method(s)"
-					v-if="isMfaActive"
+					v-if="mfaMethods.length > 0"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -61,10 +61,22 @@
 					</template>
 
 					<template v-slot:content>
-						<div>
-							<h4>Authenticator app</h4>
-							<a>REMOVE LINK</a>
-						</div>
+						<ul>
+							<li
+								class="two-step-verification__method"
+								v-for="(mfaMethod, index) in mfaMethods" :key="index"
+							>
+								<!-- eslint-disable-next-line max-len -->
+								<h4>{{ mfaMethod.authenticator_type === 'oob' ? 'Text/voice message' : 'Authenticator app' }}</h4>
+								<p>{{ mfaMethod.name }}</p>
+								<kv-button
+									class="text-link"
+									@click.native.prevent="removeMfaMethod(mfaMethod)"
+								>
+									Remove
+								</kv-button>
+							</li>
+						</ul>
 					</template>
 				</kv-settings-card>
 
@@ -126,6 +138,8 @@ import KvButton from '@/components/Kv/KvButton';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import removeMfa from '@/graphql/mutation/removeMfa.graphql';
+import removeOneMfaMethod from '@/graphql/mutation/removeOneMfaMethod.graphql';
+import _uniqBy from 'lodash/uniqBy';
 
 const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
@@ -134,6 +148,8 @@ const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 			id
 			active
 			authenticator_type
+			oob_channel
+			name
 		}
 	}
 }`;
@@ -143,6 +159,7 @@ export default {
 		return {
 			isMfaActive: false,
 			lastLoginTime: 0,
+			mfaMethods: [],
 		};
 	},
 	components: {
@@ -157,26 +174,7 @@ export default {
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
-			this.kvAuth0.checkSession()
-				.then(() => this.kvAuth0.getMfaManagementToken())
-				.then(token => {
-					return this.apollo.query({
-						query: mfaQuery,
-						variables: {
-							mfa_token: token
-						}
-					});
-				}).then(result => {
-					const authEnrollments = result.data.my.authenticatorEnrollments;
-					this.lastLoginTime = result.data.my.lastLoginTimestamp;
-					for (let i = 0; i < authEnrollments.length; i += 1) {
-						// eslint-disable-next-line max-len
-						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
-							this.isMfaActive = true;
-							return;
-						}
-					}
-				});
+			this.gatherMfaEnrollments();
 		}
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after login, or if has logged in within 5 minutes
@@ -204,9 +202,28 @@ export default {
 				return 'Set up additional backup steps so you can log in even if your other options aren\'t available';
 			}
 			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
-		}
+		},
 	},
 	methods: {
+		gatherMfaEnrollments() {
+			this.kvAuth0.checkSession()
+				.then(() => this.kvAuth0.getMfaManagementToken())
+				.then(token => {
+					return this.apollo.query({
+						query: mfaQuery,
+						variables: {
+							mfa_token: token
+						},
+						fetchPolicy: 'network-only',
+					});
+				}).then(result => {
+					this.isMfaActive = true;
+					const authEnrollments = result.data.my.authenticatorEnrollments;
+					this.lastLoginTime = result.data.my.lastLoginTimestamp;
+
+					this.formatMfaMethods(authEnrollments);
+				});
+		},
 		checkLastLoginTime() {
 			const timeSinceLastLogin = (Math.floor(Date.now()) - this.lastLoginTime) / 60 / 1000;
 			const doneUrl = `${this.$route.path}?mfa=off`;
@@ -235,7 +252,30 @@ export default {
 					});
 				});
 		},
-	}
+		removeMfaMethod(mfaMethod) {
+			this.kvAuth0.checkSession()
+				.then(() => this.kvAuth0.getMfaManagementToken())
+				.then(token => {
+					return this.apollo.mutate({
+						mutation: removeOneMfaMethod,
+						variables: {
+							mfa_token: token,
+							id: mfaMethod.authId
+						}
+					})
+						.then(() => {
+							this.gatherMfaEnrollments();
+						});
+				});
+		},
+		formatMfaMethods(authEnrollments) {
+			// Filtering authEnrollments to remove inactive and unusable methods ie. "recovery code"
+			// eslint-disable-next-line max-len
+			const filteredMethods = authEnrollments.filter(authItem => authItem.active && authItem.authenticator_type !== 'recovery-code');
+			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
+			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
+		}
+	},
 };
 </script>
 
@@ -247,6 +287,10 @@ export default {
 		padding: 1.625rem 0;
 		margin-bottom: 2rem;
 		background-color: $white;
+	}
+
+	&__method {
+		margin-top: 2rem;
 	}
 
 	&__sub-section {
