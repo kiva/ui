@@ -25,6 +25,6 @@ jobs:
       with:
         node-version: '14.x'
     - name: Install dependencies
-        run: npm ci
+      run: npm ci
     - name: Run Linter + Tests
-        run: npm test
+      run: npm test
