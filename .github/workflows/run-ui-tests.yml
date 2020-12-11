@@ -8,8 +8,9 @@ on:
       - github-actions-build-test
       # - master
       # - /^release-.*$/
-  # pull_request:
-    # branches:
+  pull_request:
+    branches:
+      - github-actions-build-test
       # - master
       # - /^release-.*$/
 
