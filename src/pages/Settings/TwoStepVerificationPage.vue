@@ -262,11 +262,11 @@ export default {
 							mfa_token: token,
 							id: mfaMethod.authId
 						}
-						})
-							.then(() => {
-						this.gatherMfaEnrollments();
+					})
+						.then(() => {
+							this.gatherMfaEnrollments();
+						});
 				});
-			});
 		},
 		formatMfaMethods(authEnrollments) {
 			// Filtering authEnrollments to remove inactive and unusable methods ie. "recovery code"
