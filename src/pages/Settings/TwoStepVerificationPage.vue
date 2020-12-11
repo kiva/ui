@@ -263,9 +263,9 @@ export default {
 							id: mfaMethod.authId
 						}
 					})
-					.then(() => {
-						this.gatherMfaEnrollments();
-					});
+						.then(() => {
+							this.gatherMfaEnrollments();
+						});
 				});
 		},
 		formatMfaMethods(authEnrollments) {
