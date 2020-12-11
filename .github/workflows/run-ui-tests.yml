@@ -35,6 +35,7 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: 'test/unit/coverage/lcov.info'
     - name: Run e2e Tests
       uses: cypress-io/github-action@v2
       with:
