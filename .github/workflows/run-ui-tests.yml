@@ -1,0 +1,30 @@
+name: Ui Tests
+
+# on: [push, pull_request]
+# pull_request
+on:
+  push:
+    branches:
+      - github-actions-build-test
+      # - master
+      # - /^release-.*$/
+  # pull_request:
+    # branches:
+      # - master
+      # - /^release-.*$/
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - name: Install dependencies
+        run: npm ci
+    - name: Run Linter + Tests
+        run: npm test
