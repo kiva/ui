@@ -7,6 +7,8 @@
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=kiva/ui)](https://dependabot.com)
 [![Known Vulnerabilities](https://snyk.io/test/github/kiva/ui/badge.svg)](https://snyk.io/test/github/kiva/ui)
 
+![Ui Tests](https://github.com/kiva/ui/workflows/Ui%20Tests/badge.svg?branch=ga-build-test-pr)
+
 ## Contribution Guidelines
 The Kiva UI project is bound by a [Code of Conduct](code_of_conduct.md).
 

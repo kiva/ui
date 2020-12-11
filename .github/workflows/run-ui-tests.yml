@@ -31,6 +31,10 @@ jobs:
       run: npm run lint
     - name: Run Unit Tests
       run: npm run unit
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - name: Run e2e Tests
       uses: cypress-io/github-action@v2
       with:
