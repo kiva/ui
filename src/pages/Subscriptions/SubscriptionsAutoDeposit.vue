@@ -51,7 +51,7 @@
 								>
 									<!-- TODO move this form to separate component  -->
 									<form
-										@submit.prevent="null"
+										@submit.prevent
 										novalidate
 										class="ad-update-lightbox__form"
 									>

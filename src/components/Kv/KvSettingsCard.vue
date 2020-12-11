@@ -62,6 +62,7 @@ export default {
 
 	&__content-wrapper {
 		padding: 0 0 0 1rem;
+		flex-grow: 1;
 	}
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<form
-		@submit.prevent="null"
+		@submit.prevent
 		novalidate
 	>
 		<fieldset :disabled="this.disabled">

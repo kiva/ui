@@ -31,7 +31,7 @@
 					@lightbox-closed="closeLightbox"
 				>
 					<form
-						@submit.prevent="null"
+						@submit.prevent
 						novalidate
 					>
 						<div class="row align-center text-left">

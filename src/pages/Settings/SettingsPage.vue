@@ -90,6 +90,20 @@
 			<section class="section">
 				<a
 					class="section__link"
+					href="/settings/payments"
+				>
+					<h2 class="section__title">Payment Settings</h2>
+					<ul class="section__list">
+						<li>
+							<h3>Payment methods</h3>
+							<p>Update your payment method details</p>
+						</li>
+					</ul>
+				</a>
+			</section>
+			<section class="section">
+				<a
+					class="section__link"
 					href="/settings/email"
 				>
 					<h2 class="section__title">Email preferences</h2>

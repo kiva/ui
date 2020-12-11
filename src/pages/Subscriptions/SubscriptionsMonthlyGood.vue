@@ -31,8 +31,8 @@
 							v-if="selectedGroupDescriptor"
 						>
 							to support
-							{{ selectedGroupDescriptor }}
-						</kv-button>.
+							{{ selectedGroupDescriptor }}.
+						</kv-button>
 					</p>
 					<p>
 						<kv-button class="text-link"
