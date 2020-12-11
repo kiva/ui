@@ -35,7 +35,8 @@ jobs:
       with:
         browser: chrome
         headless: true
+        # env: host=localhost,port=8888
         build: npm run build
         start: npm start -- --mock --config=local
-        wait-on: 'http-get://localhost:8888/ui-site-map'
+        wait-on: 'http://localhost:8888/ui-site-map'
         command: npm run e2e:headless
