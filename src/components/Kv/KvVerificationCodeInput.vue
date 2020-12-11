@@ -15,7 +15,7 @@
 				inputmode="numeric"
 				pattern="[0-9]*"
 				:value="valuesArray[i]"
-				@input="updateValuesArray($event.target.value, i)"
+				@input="updateValuesArrayAndRefocus($event.target.value, i)"
 			>
 			<input
 				type="hidden"

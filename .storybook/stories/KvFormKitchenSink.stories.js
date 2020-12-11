@@ -246,10 +246,10 @@ export const KitchenSink = () => ({
 				</fieldset>
 
 				<fieldset>
-					<label class="input-label" for="phone_number">
+					<label class="input-label" for="verification_code">
 						KvVerificationCodeInput
 					</label>
-					<kv-verification-code-input id="phone_number" v-model="KvVerificationCodeInput" />
+					<kv-verification-code-input id="verification_code" v-model="KvVerificationCodeInput" />
 				</fieldset>
 
 				<fieldset>
