@@ -66,6 +66,7 @@
 								class="two-step-verification__method"
 								v-for="(mfaMethod, index) in mfaMethods" :key="index"
 							>
+								<!-- eslint-disable-next-line max-len -->
 								<h4>{{ mfaMethod.authenticator_type === 'oob' ? 'Text/voice message' : 'Authenticator app' }}</h4>
 								<p>{{ mfaMethod.name }}</p>
 								<kv-button
@@ -261,17 +262,18 @@ export default {
 							mfa_token: token,
 							id: mfaMethod.authId
 						}
-					})
-				.then(() => {
-					this.gatherMfaEnrollments();
-				})
+						})
+							.then(() => {
+						this.gatherMfaEnrollments();
+				});
 			});
 		},
 		formatMfaMethods(authEnrollments) {
 			// Filtering authEnrollments to remove inactive and unusable methods ie. "recovery code"
+			// eslint-disable-next-line max-len
 			const filteredMethods = authEnrollments.filter(authItem => authItem.active && authItem.authenticator_type !== 'recovery-code');
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
-			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split("|")[1]);
+			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
 		}
 	},
 };
