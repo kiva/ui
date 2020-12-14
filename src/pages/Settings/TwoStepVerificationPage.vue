@@ -206,7 +206,7 @@ export default {
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after login, or if has logged in within 5 minutes
 			// and is presented with a window.confirm
-			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?');
+			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?'); // eslint-disable-line no-alert, max-len
 			if (mfaOffConfirm) {
 				// Upon confirm triggger mutation to turn off mfa
 				this.turnOffMfa();
