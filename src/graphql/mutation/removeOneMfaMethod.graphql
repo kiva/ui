@@ -1,0 +1,5 @@
+mutation removeOneMfaMethod($mfa_token: String!, $id: ID!) {
+  my {
+		deleteAuthenticatorEnrollment( mfa_token: $mfa_token, id: $id)
+	}
+}
