@@ -26,12 +26,14 @@
 			</kv-button>
 		</div>
 		<div>
-		<!-- Radio button required -->
-		<kv-radio
-			id="codeVerify"
-			radio-value="I have safely recorded this code"
-			v-model="verified"
-		>I have safely recorded this code</kv-radio>
+			<!-- Radio button required -->
+			<kv-radio
+				id="codeVerify"
+				radio-value="I have safely recorded this code"
+				v-model="verified"
+			>
+				I have safely recorded this code
+			</kv-radio>
 		</div>
 		<div>
 			<kv-button
@@ -43,7 +45,6 @@
 				Done
 			</kv-button>
 		</div>
-
 	</kv-lightbox>
 </template>
 
