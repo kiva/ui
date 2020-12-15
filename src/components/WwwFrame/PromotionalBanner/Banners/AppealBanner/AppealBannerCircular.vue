@@ -57,11 +57,11 @@
 						</li>
 						<li class="appeal-banner__amount-item--other">
 							<kv-button
-								class="appeal-banner__btn smallest rounded"
+								class="appeal-banner__btn smallest rounded text-link"
 								to="/donate/supportus"
 								v-kv-track-event="['promo', 'click-other', 'AppealBanner', 0, 0]"
 							>
-								Other
+								Other amount
 							</kv-button>
 						</li>
 					</ul>
@@ -236,25 +236,15 @@ export default {
 
 		&--other {
 			margin-right: 0;
-			flex-grow: 2;
+			align-self: center;
 		}
 	}
 
 	&__btn {
 		font-size: rem-calc(14);
-		border-radius: rem-calc(8);
-		background: #fff;
 		color: $kiva-icon-green;
-		border-color: $kiva-icon-green;
 		box-shadow: none;
-		width: 100%;
 		margin-bottom: 0;
-
-		&:hover,
-		&:focus {
-			color: #fff;
-			background: $kiva-green;
-		}
 
 		&--toggle-open {
 			color: #fff;
@@ -266,6 +256,24 @@ export default {
 				color: $kiva-icon-green;
 			}
 		}
+	}
+
+	&__btn:not(.text-link) {
+		border-radius: rem-calc(8);
+		background: #fff;
+		border-color: $kiva-icon-green;
+		width: 100%;
+
+		&:hover,
+		&:focus {
+			color: #fff;
+			background: $kiva-green;
+		}
+	}
+
+	&__btn.text-link {
+		width: auto;
+		padding: 0.25rem 0.5rem;
 	}
 
 	&__close-btn {
