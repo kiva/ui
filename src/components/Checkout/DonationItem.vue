@@ -10,8 +10,7 @@
 				{{ donationTitle }}
 			</span>
 			<div v-if="hasLoans">
-				<div class="donation-tagline small-text">
-					{{ donationTagLine }}
+				<div class="donation-tagline small-text" v-html="donationTagLine">
 				</div>
 				<button
 					class="small-text donation-help-text"
@@ -126,7 +125,10 @@
 
 <script>
 import numeral from 'numeral';
+import gql from 'graphql-tag';
 import _forEach from 'lodash/forEach';
+import { processPageContentFlat } from '@/util/contentfulUtils';
+
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -137,6 +139,13 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import DonationNudgeLightbox from '@/components/Checkout/DonationNudge/DonationNudgeLightbox';
 import DonationNudgeLightboxImage from '@/components/Checkout/DonationNudge/DonationNudgeLightboxImage';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
+
+const donationItemQuery = gql`query donationItemQuery {
+	contentful {
+		entries (contentType: "page", contentKey: "checkout")
+	}
+}`;
 
 export default {
 	components: {
@@ -179,6 +188,7 @@ export default {
 			showCharityOverheadFooter: false,
 			donationNudgeFellows: false,
 			donationNudgeFellowsHeader: 'Donations enable Kiva Fellows to reach the people who need it most',
+			dynamicDonationItem: ''
 		};
 	},
 	apollo: {
@@ -195,6 +205,8 @@ export default {
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'donation_nudge_fellows' } }),
 						// Get the assigned experiment version for GROW-74
 						client.query({ query: experimentAssignmentQuery, variables: { id: 'checkout_donation_tag_line' } }), // eslint-disable-line max-len
+						// Get contentful dynamic content
+						client.query({ query: donationItemQuery })
 					]).then(resolve).catch(reject);
 				}).catch(reject);
 			});
@@ -202,6 +214,7 @@ export default {
 	},
 	created() {
 		this.setupExperimentState();
+		this.setupContentfulContent();
 	},
 	watch: {
 		// watching the computed serverAmount property allows us to get set updates based on nested data props
@@ -223,6 +236,14 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
+			// if there is dynamic donation tagline from contentful, use that.
+			if (this.dynamicDonationItem) {
+				// process contentful content as rich text
+				const contentfulHTML = documentToHtmlString(this.dynamicDonationItem);
+				// replace magic variable ###loan_costs###
+				const newLoanCost = numeral(3 * this.loanCount).format('$0,0');
+				return contentfulHTML.replace(/###loan_costs###/g, newLoanCost);
+			}
 			const loanCost = numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0');
 			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
 
@@ -274,6 +295,17 @@ export default {
 		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
+		},
+		setupContentfulContent() {
+			if (this.hasLoans) {
+				const contentfulContentRaw = this.apollo.readQuery({
+					query: donationItemQuery,
+				});
+				const pageEntry = contentfulContentRaw?.contentful?.entries?.items?.[0] ?? null;
+				const pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+				// eslint-disable-next-line max-len
+				this.dynamicDonationItem = pageData?.page?.contentGroups?.checkoutDonationItem?.contents?.[0]?.richText ?? '';
+			}
 		},
 		setupExperimentState() {
 			// get experiment data from apollo cache
