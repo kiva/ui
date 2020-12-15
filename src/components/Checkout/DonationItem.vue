@@ -236,17 +236,16 @@ export default {
 			return numeral(this.amount).format('$0,0.00');
 		},
 		donationTagLine() {
+			const loanCost = numeral(Math.floor(this.loanReservationTotal * 0.12)).format('$0,0');
 			// if there is dynamic donation tagline from contentful, use that.
 			if (this.dynamicDonationItem) {
 				// process contentful content as rich text
 				const contentfulHTML = documentToHtmlString(this.dynamicDonationItem);
 				// replace magic variable ###loan_costs###
-				const newLoanCost = numeral(3 * this.loanCount).format('$0,0');
-				return contentfulHTML.replace(/###loan_costs###/g, newLoanCost);
+				return contentfulHTML.replace(/###loan_costs###/g, loanCost);
 			}
-			const loanCost = numeral(Math.floor(this.loanReservationTotal * 0.15)).format('$0,0');
-			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
 
+			let coverOurCosts = `${this.loanCount > 1 ? 'These loans cost' : 'This loan costs'}`;
 			if (this.donationTagLineExperiment) {
 				coverOurCosts = 'During the COVID-19 pandemic, Kiva is working with lenders, Field Partners, borrowers and more to ensure a rapid and impactful global response. Your donations help us fight this global crisis.'; // eslint-disable-line max-len
 			} else {
