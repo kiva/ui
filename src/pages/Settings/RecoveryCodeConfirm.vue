@@ -1,6 +1,6 @@
 <template>
 	<kv-lightbox
-		:visible="true"
+		:visible="visible"
 		title="2-step verification is on"
 		@lightbox-closed="closeLightbox"
 	>
@@ -18,16 +18,19 @@
 		</label>
 		<div>
 			<kv-button
-				class="secondary smaller expanded"
+				class="secondary smallest expanded copy-code"
 				@click.native.prevent="copyToClipboard(mfaVerificationCode)"
 			>
 				Copy code
 			</kv-button>
 		</div>
 		<div>
-			<!-- Radio button required -->
+			<!-- Radio button
+				This needs to be required before closing
+				Need to prevent background click from closing lightbox -->
 			<kv-radio
 				id="codeVerify"
+				class="verified-radio"
 				radio-value="I have safely recorded this code"
 				v-model="verified"
 			>
@@ -38,7 +41,7 @@
 			<kv-button
 				class="expanded smaller"
 				:disabled="isDisabled"
-				@click="closeLightbox"
+				@click.native.prevent="closeLightbox"
 				aria-label="Close"
 			>
 				Done
@@ -56,6 +59,8 @@ export default {
 	data() {
 		return {
 			verified: false,
+			isShown: false,
+			visible: true,
 		};
 	},
 	components: {
@@ -68,16 +73,19 @@ export default {
 			type: String,
 			required: true
 		},
+
 	},
 	computed: {
 		isDisabled() {
 			return !this.verified;
-		}
+		},
+	},
+	mounted() {
+		this.isShown = this.visible;
 	},
 	methods: {
 		closeLightbox() {
-			console.log('closed triggered');
-			this.isShown = false;
+			this.visible = false;
 			this.$emit('lightbox-closed');
 		},
 		copyToClipboard(string) {
@@ -97,6 +105,10 @@ export default {
 ::v-deep .kv-lightbox {
 	max-width: rem-calc(580);
 
+	.lightbox-title {
+		font-weight: bold;
+	}
+
 	.close-lightbox {
 		display: none;
 	}
@@ -105,7 +117,15 @@ export default {
 		font-weight: bold;
 		text-align: center;
 		background-color: $kiva-bg-darkgray;
-		border-radius: rem-calc(5);
+		border-radius: rem-calc(2);
+	}
+
+	.copy-code {
+		font-size: 1rem;
+	}
+
+	.verified-radio {
+		margin-bottom: 1rem;
 	}
 }
 
