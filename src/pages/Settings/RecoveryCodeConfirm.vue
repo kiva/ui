@@ -81,7 +81,6 @@ export default {
 			console.log('closed triggered');
 			this.isShown = false;
 			this.$emit('lightbox-closed');
-			this.$emit('lightbox-closed');
 		},
 		lightboxClosed() {
 			this.defaultLbVisible = false;
@@ -95,7 +94,7 @@ export default {
 			}
 		}
 	}
-}
+};
 </script>
 
 <style lang="scss" scoped>
