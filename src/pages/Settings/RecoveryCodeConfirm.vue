@@ -39,7 +39,7 @@
 			<kv-button
 				class="expanded smaller"
 				:disabled="isDisabled"
-				@click="closeLightbox"
+				@click="lightboxClosed"
 				aria-label="Close"
 			>
 				Done
@@ -107,6 +107,7 @@ export default {
 			background-color: $kiva-stroke-gray;
 			border-radius: 7px;
 		}
+
 		.close-lightbox {
 			display: none !important;
 		}
