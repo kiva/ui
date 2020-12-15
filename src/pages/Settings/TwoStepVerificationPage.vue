@@ -266,18 +266,11 @@ export default {
 			}
 		},
 		turnOffMfa() {
-			this.kvAuth0.checkSession()
-				.then(() => this.kvAuth0.getMfaManagementToken())
-				.then(token => {
-					this.apollo.mutate({
-						mutation: removeMfa,
-						variables: {
-							mfa_token: token
-						}
-					}).then(() => {
-						this.isMfaActive = false;
-					});
-				});
+			this.apollo.mutate({
+				mutation: removeMfa,
+			}).then(() => {
+				this.isMfaActive = false;
+			});
 		},
 		removeMfaMethod(mfaMethod) {
 			this.kvAuth0.checkSession()
