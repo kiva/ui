@@ -46,6 +46,8 @@
 				:id="id"
 				:placeholder="placeholderNumber"
 				:value="displayNumber"
+				v-bind="$attrs"
+				v-on="inputListeners"
 				@input="onInputPhoneNumber"
 			>
 		</div>
@@ -112,12 +114,22 @@ export default {
 		placeholderNumber() {
 			return getExampleNumber(this.selectedCountryCode, exampleNumbers)?.formatNational() || '';
 		},
+		inputListeners() {
+			return {
+				// Pass through any listeners from the parent to the input element, like blur, focus, etc. ...
+				// https://vuejs.org/v2/guide/components-custom-events.html#Binding-Native-Events-to-Components
+				...this.$listeners,
+				// ...except for the listener to the 'input' event which is emitted by this component
+				input: () => {},
+			};
+		},
 	},
 	watch: {
 		isValid() {
 			this.emitValidity();
 		}
 	},
+	inheritAttrs: false,
 	methods: {
 		formatPhoneNumber(val) {
 			// workaround for https://github.com/catamphetamine/libphonenumber-js/issues/225

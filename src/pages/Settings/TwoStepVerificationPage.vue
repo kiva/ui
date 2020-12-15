@@ -106,9 +106,19 @@
 									Receive code from an authenticator app on your device,
 									like Google Authenticator, Duo, or Authy.
 								</p>
-								<kv-button class="smallest">
+								<kv-button
+									class="smallest"
+									@click.native="onClickAuthenticator"
+								>
 									Use authentication app
 								</kv-button>
+								<kv-lightbox
+									:visible="isAuthenticatorLightboxVisible"
+									@lightbox-closed="closeLightbox"
+									title="Use an authenticator app"
+								>
+									app-authentication
+								</kv-lightbox>
 							</div>
 
 							<div class="two-step-verification__sub-section">
@@ -118,9 +128,20 @@
 								<p>
 									Receive a code via text message on your mobile device.
 								</p>
-								<kv-button class="smallest">
+								<kv-button class="smallest"
+									@click.native="onClickPhone"
+								>
 									Use text message or phone call
 								</kv-button>
+								<kv-lightbox
+									:visible="isPhoneLightboxVisible"
+									@lightbox-closed="closeLightbox"
+								>
+									<phone-authentication
+										ref="phoneAuthentication"
+										@verification-complete="closeLightbox"
+									/>
+								</kv-lightbox>
 							</div>
 						</div>
 					</template>
@@ -132,9 +153,11 @@
 
 <script>
 import gql from 'graphql-tag';
-import KvIcon from '@/components/Kv/KvIcon';
-import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
+import KvLightbox from '@/components/Kv/KvLightbox';
+import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import PhoneAuthentication from '@/components/Settings/PhoneAuthentication';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import removeMfa from '@/graphql/mutation/removeMfa.graphql';
@@ -157,15 +180,19 @@ const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
 export default {
 	data() {
 		return {
+			isAuthenticatorLightboxVisible: false,
+			isPhoneLightboxVisible: false,
 			isMfaActive: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
 		};
 	},
 	components: {
-		KvIcon,
-		KvSettingsCard,
 		KvButton,
+		KvIcon,
+		KvLightbox,
+		KvSettingsCard,
+		PhoneAuthentication,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
@@ -179,7 +206,7 @@ export default {
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after login, or if has logged in within 5 minutes
 			// and is presented with a window.confirm
-			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?');
+			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?'); // eslint-disable-line no-alert, max-len
 			if (mfaOffConfirm) {
 				// Upon confirm triggger mutation to turn off mfa
 				this.turnOffMfa();
@@ -267,8 +294,21 @@ export default {
 			const filteredMethods = authEnrollments.filter(authItem => authItem.active && authItem.authenticator_type !== 'recovery-code');
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
 			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
+		},
+		onClickAuthenticator() {
+		// TODO: check for screensize here, go to url if small
+			this.isAuthenticatorLightboxVisible = true;
+		},
+		onClickPhone() {
+		// TODO: check for screensize here, go to url if small
+			this.isPhoneLightboxVisible = true;
+		},
+		closeLightbox() {
+			this.isAuthenticatorLightboxVisible = false;
+			this.isPhoneLightboxVisible = false;
+			this.$refs.phoneAuthentication.reset();
 		}
-	},
+	}
 };
 </script>
 
