@@ -2,7 +2,7 @@
 	<kv-lightbox
 		:visible="true"
 		title="2-step verification is on"
-		@lightbox-closed="lightboxClosed"
+		@lightbox-closed="closeLightbox"
 	>
 		<p>
 			Copy this recovery code and keep it somewhere safe. You'll
@@ -13,14 +13,13 @@
 				type="text"
 				class="verification-code"
 				name="verificationCode"
-				maxlength="40"
 				:value="mfaVerificationCode"
 			>
 		</label>
 		<div>
 			<kv-button
 				class="secondary smaller expanded"
-				@click="copyToClipboard(mfaVerificationCode)"
+				@click.native.prevent="copyToClipboard(mfaVerificationCode)"
 			>
 				Copy code
 			</kv-button>
@@ -39,7 +38,7 @@
 			<kv-button
 				class="expanded smaller"
 				:disabled="isDisabled"
-				@click="lightboxClosed"
+				@click="closeLightbox"
 				aria-label="Close"
 			>
 				Done
@@ -57,7 +56,6 @@ export default {
 	data() {
 		return {
 			verified: false,
-			isShown: true
 		};
 	},
 	components: {
@@ -82,12 +80,8 @@ export default {
 			this.isShown = false;
 			this.$emit('lightbox-closed');
 		},
-		lightboxClosed() {
-			this.defaultLbVisible = false;
-		},
 		copyToClipboard(string) {
 			try {
-				console.log('copied to clipboard');
 				navigator.clipboard.writeText(string);
 			} catch (err) {
 				console.error(err);
@@ -100,17 +94,18 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.kv-lightbox-wrap {
-	.lightbox-content {
-		.verification-code {
-			text-align: center;
-			background-color: $kiva-stroke-gray;
-			border-radius: 7px;
-		}
+::v-deep .kv-lightbox {
+	max-width: rem-calc(580);
 
-		.close-lightbox {
-			display: none !important;
-		}
+	.close-lightbox {
+		display: none;
+	}
+
+	.verification-code {
+		font-weight: bold;
+		text-align: center;
+		background-color: $kiva-bg-darkgray;
+		border-radius: rem-calc(5);
 	}
 }
 
