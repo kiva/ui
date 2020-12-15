@@ -164,6 +164,21 @@ export default {
 		};
 	},
 	methods: {
+		getMFAToken() {
+			return new Promise((resolve, reject) => {
+				if (this.kvAuth0.enabled) {
+					this.kvAuth0.checkSession()
+						.then(() => this.kvAuth0.getMfaManagementToken())
+						.then(token => {
+							resolve(token);
+						}).catch(err => {
+							reject(err);
+						});
+				} else {
+					reject('Auth not enabled');
+				}
+			});
+		},
 		onValidityChanged(isValid) {
 			this.isPhoneNumberValid = isValid;
 		},
@@ -178,33 +193,29 @@ export default {
 				? enrollSMSAuthenticatorMutation
 				: enrollVoiceAuthenticatorMutation;
 
-			if (this.kvAuth0.enabled) {
-				this.kvAuth0.checkSession()
-					.then(() => this.kvAuth0.getMfaManagementToken())
-					.then(token => {
-						this.mfaToken = token;
-						return this.apollo.mutate({
-							mutation,
-							variables: {
-								mfa_token: token,
-								phone_number: this.phoneNumber
-							}
-						});
-					}).then(result => {
-						console.dir(result);
-						if (result.errors) {
-							console.error(result.errors);
-							// TODO: Show error to user
-						} else {
-							this.oobCode = this.verificationType === 'SMS'
-								? result?.data?.my?.enrollSMSAuthenticator?.oob_code
-								: result?.data?.my?.enrollVoiceAuthenticator?.oob_code;
-							if (this.oobCode) {
-								this.step = 1;
-							}
+			this.getMFAToken()
+				.then(token => {
+					return this.apollo.mutate({
+						mutation,
+						variables: {
+							mfa_token: token,
+							phone_number: this.phoneNumber
 						}
 					});
-			}
+				}).then(result => {
+					console.dir(result);
+					if (result.errors) {
+						console.error(result.errors);
+					// TODO: Show error to user
+					} else {
+						this.oobCode = this.verificationType === 'SMS'
+							? result?.data?.my?.enrollSMSAuthenticator?.oob_code
+							: result?.data?.my?.enrollVoiceAuthenticator?.oob_code;
+						if (this.oobCode) {
+							this.step = 1;
+						}
+					}
+				});
 		},
 		confirmAuthenticatorEnrollment() {
 			console.log(this.userVerificationCode);
@@ -215,39 +226,34 @@ export default {
 				? confirmSMSAuthenticatorEnrollmentMutation
 				: confirmVoiceAuthenticatorEnrollmentMutation;
 
-			if (this.kvAuth0.enabled) {
-				this.kvAuth0.checkSession()
-					.then(() => this.kvAuth0.getMfaManagementToken())
-					.then(token => {
-						this.mfaToken = token;
-						return this.apollo.mutate({
-							mutation,
-							variables: {
-								mfa_token: token,
-								oob_code: this.oobCode,
-								binding_code: this.userVerificationCode
-							}
-						});
-					}).then(result => {
-						console.dir(result);
-						console.dir(result);
-						if (result.errors) {
-							console.error(result.errors);
-							// TODO: Show error to user
-						} else {
-							// we're successful, move forward.
-							// if successful, close the lightbox
-							this.$emit('verification-complete');
+			this.getMFAToken()
+				.then(token => {
+					return this.apollo.mutate({
+						mutation,
+						variables: {
+							mfa_token: token,
+							oob_code: this.oobCode,
+							binding_code: this.userVerificationCode
 						}
 					});
-			}
+				}).then(result => {
+					console.dir(result);
+					console.dir(result);
+					if (result.errors) {
+						console.error(result.errors);
+						// TODO: Show error to user
+					} else {
+						// we're successful, move forward.
+						// if successful, close the lightbox
+						this.$emit('verification-complete');
+					}
+				});
 		},
 		reset() {
 			this.step = 0;
 			this.phoneNumber = '';
 			this.userVerificationCode = '';
 			this.oobCode = '';
-			this.mfaToken = null;
 		},
 	},
 };
