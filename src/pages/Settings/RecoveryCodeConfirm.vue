@@ -3,6 +3,7 @@
 		:visible="visible"
 		title="2-step verification is on"
 		@lightbox-closed="closeLightbox"
+		prevent-close="true"
 	>
 		<p>
 			Copy this recovery code and keep it somewhere safe. You'll
@@ -11,35 +12,42 @@
 		<label>
 			<input
 				type="text"
-				class="verification-code"
-				name="verificationCode"
-				:value="mfaVerificationCode"
+				class="recovery-code"
+				name="recoveryCode"
+				:value="mfaRecoveryCode"
+				disabled
 			>
 		</label>
 		<div>
 			<kv-button
 				class="secondary smallest expanded copy-code"
-				@click.native.prevent="copyToClipboard(mfaVerificationCode)"
+				@click.native.prevent="copyToClipboard(mfaRecoveryCode)"
 			>
 				Copy code
 			</kv-button>
 		</div>
 		<div>
-			<!-- Radio button
-				This needs to be required before closing
-				Need to prevent background click from closing lightbox -->
-			<kv-radio
+			<kv-checkbox
 				id="codeVerify"
-				class="verified-radio"
+				class="verified-checkbox"
 				radio-value="I have safely recorded this code"
 				v-model="verified"
 			>
 				I have safely recorded this code
-			</kv-radio>
+			</kv-checkbox>
 		</div>
 		<div>
 			<kv-button
-				class="expanded smaller"
+				class="expanded smaller show-for-small-only"
+				:disabled="isDisabled"
+				@click.native.prevent="closeLightbox"
+				aria-label="Close"
+			>
+				Continue
+			</kv-button>
+
+			<kv-button
+				class="expanded smaller show-for-medium"
 				:disabled="isDisabled"
 				@click.native.prevent="closeLightbox"
 				aria-label="Close"
@@ -52,7 +60,7 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import KvRadio from '@/components/Kv/KvRadio';
+import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
@@ -65,11 +73,11 @@ export default {
 	},
 	components: {
 		KvButton,
-		KvRadio,
+		KvCheckbox,
 		KvLightbox,
 	},
 	props: {
-		mfaVerificationCode: {
+		mfaRecoveryCode: {
 			type: String,
 			required: true
 		},
@@ -102,6 +110,7 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+// reaching into the KvLightbox component to apply custom styles
 ::v-deep .kv-lightbox {
 	max-width: rem-calc(580);
 
@@ -109,22 +118,19 @@ export default {
 		font-weight: bold;
 	}
 
-	.close-lightbox {
-		display: none;
-	}
-
-	.verification-code {
+	.recovery-code {
 		font-weight: bold;
 		text-align: center;
 		background-color: $kiva-bg-darkgray;
 		border-radius: rem-calc(2);
+		cursor: text;
 	}
 
 	.copy-code {
 		font-size: 1rem;
 	}
 
-	.verified-radio {
+	.verified-checkbox {
 		margin-bottom: 1rem;
 	}
 }
