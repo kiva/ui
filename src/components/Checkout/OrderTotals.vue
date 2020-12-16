@@ -180,6 +180,9 @@ export default {
 		display: inline-block;
 		margin-left: rem-calc(5);
 		margin-right: rem-calc(3);
+		@include breakpoint(small only) {
+			float: right;
+		}
 	}
 }
 </style>

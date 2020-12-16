@@ -84,8 +84,10 @@ export default {
 @import 'settings';
 
 .kv-verification-code-input {
+	font-size: 3em; // All sizing is relative to this. You could override this from the parent.
+
 	&__input {
-		font-size: 3rem; // All sizing is relative to this
+		font-size: 1em;
 		font-variant-numeric: tabular-nums;
 		letter-spacing: 0.5em;
 		padding: 1em 0 1em 1em;

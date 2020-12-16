@@ -1,6 +1,6 @@
 <template>
 	<div class="row align-right">
-		<div class="payment-holder small-12 medium-8 large-7 columns">
+		<div class="dropin-payment-holder small-12 columns">
 			<braintree-drop-in-interface
 				ref="braintreeDropInInterface"
 				:amount="amount"
@@ -20,7 +20,7 @@
 					Checkout
 				</kv-button>
 			</div>
-			<p class="attribution-text">
+			<p class="dropin-wrapper-attribution-text">
 				Thanks to PayPal, Kiva receives free payment processing for all loans.
 			</p>
 		</div>
@@ -171,38 +171,4 @@ export default {
 
 <style lang="scss" scoped>
 @import "settings";
-
-.payment-holder {
-	text-align: left;
-	padding: 0 0.6rem 1.25rem;
-
-	@include breakpoint(large) {
-		padding: 0 1.5rem 1.5rem;
-	}
-
-	.attribution-text {
-		color: $kiva-text-light;
-		text-align: center;
-		margin-top: rem-calc(24);
-		padding: 0 0.75rem;
-		font-size: $small-text-font-size;
-	}
-
-	::v-deep {
-		#dropin-submit {
-			width: 100%;
-			font-size: 1.25rem;
-			margin-top: 1.25rem;
-
-			.icon-lock {
-				height: rem-calc(20);
-				width: rem-calc(20);
-				fill: white;
-				top: rem-calc(3);
-				position: relative;
-				margin-right: rem-calc(8);
-			}
-		}
-	}
-}
 </style>

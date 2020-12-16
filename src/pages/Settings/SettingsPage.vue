@@ -182,7 +182,7 @@ export default {
 	},
 	apollo: {
 		query: pageQuery,
-		prefetch: true,
+		preFetch: true,
 		result({ data }) {
 			this.isSubscriber = data?.my?.autoDeposit?.isSubscriber ?? false;
 			this.isMfaActive = data?.general?.mfaEnabled?.value === 'true';
