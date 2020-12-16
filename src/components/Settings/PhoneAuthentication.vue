@@ -73,7 +73,7 @@
 				We just sent you a text message
 			</h2>
 			<h2 v-if="verificationType === 'voice'">
-				You’ll receive a call shortly'
+				You’ll receive a call shortly
 			</h2>
 			<form
 				@submit.prevent="confirmAuthenticatorEnrollment"
@@ -204,6 +204,7 @@ export default {
 						mutation,
 						variables: {
 							mfa_token: token,
+							phone_number: this.phoneNumber
 						}
 					});
 				}).then(result => {
