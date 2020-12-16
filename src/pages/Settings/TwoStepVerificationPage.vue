@@ -72,6 +72,7 @@
 								<kv-button
 									class="text-link"
 									@click.native.prevent="removeMfaMethod(mfaMethod)"
+									v-if="authEnrollments[i].authenticator_type !== 'recovery-code'"
 								>
 									Remove
 								</kv-button>
