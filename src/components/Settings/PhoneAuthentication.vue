@@ -124,46 +124,17 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
-import gql from 'graphql-tag';
+
+import enrollSMSAuthenticatorMutation from '@/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
+import enrollVoiceAuthenticatorMutation from '@/graphql/mutation/mfa/enrollVoiceAuthenticator.graphql';
+import confirmSMSAuthenticatorEnrollmentMutation from '@/graphql/mutation/mfa/confirmSMSAuthenticatorEnroll.graphql';
+import confirmVoiceAuthenticatorEnrollmentMutation from
+	'@/graphql/mutation/mfa/confirmVoiceAuthenticatorEnroll.graphql';
 
 import { validationMixin } from 'vuelidate';
 import {
 	required, minLength, maxLength, numeric
 } from 'vuelidate/lib/validators';
-
-const enrollSMSAuthenticatorMutation = gql`
-mutation enrollSMSAuthenticator($mfa_token: String!, $phone_number: String!) {
-  my {
-		enrollSMSAuthenticator( mfa_token: $mfa_token, phone_number: $phone_number) {
-			binding_method,
-			oob_code
-		}
-	}
-}`;
-
-const enrollVoiceAuthenticatorMutation = gql`
-mutation enrollVoiceAuthenticator($mfa_token: String!, $phone_number: String!) {
-	my {
-		enrollVoiceAuthenticator( mfa_token: $mfa_token, phone_number: $phone_number) {
-			binding_method,
-			oob_code
-		}
-	}
-}`;
-
-const confirmSMSAuthenticatorEnrollmentMutation = gql`
-mutation confirmSMSAuthenticatorEnrollment($mfa_token: String!, $oob_code: String!, $binding_code: String!) {
-	my {
-		confirmSMSAuthenticatorEnrollment( mfa_token: $mfa_token, oob_code: $oob_code, binding_code: $binding_code)
-	}
-}`;
-
-const confirmVoiceAuthenticatorEnrollmentMutation = gql`
-mutation confirmVoiceAuthenticatorEnrollment($mfa_token: String!, $oob_code: String!, $binding_code: String!) {
-	my {
-		confirmVoiceAuthenticatorEnrollment( mfa_token: $mfa_token, oob_code: $oob_code, binding_code: $binding_code)
-	}
-}`;
 
 export default {
 	components: {

@@ -1,0 +1,8 @@
+mutation enrollSMSAuthenticator($mfa_token: String!, $phone_number: String!) {
+	my {
+		enrollSMSAuthenticator( mfa_token: $mfa_token, phone_number: $phone_number) {
+			binding_method,
+			oob_code
+		}
+	}
+}
