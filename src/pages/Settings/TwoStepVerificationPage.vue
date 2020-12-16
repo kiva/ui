@@ -160,8 +160,8 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import PhoneAuthentication from '@/components/Settings/PhoneAuthentication';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
-import removeMfa from '@/graphql/mutation/removeMfa.graphql';
-import removeOneMfaMethod from '@/graphql/mutation/removeOneMfaMethod.graphql';
+import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
+import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
 import _uniqBy from 'lodash/uniqBy';
 
 const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
