@@ -221,7 +221,9 @@ export default {
 				})
 				.catch(err => {
 					console.error(err);
-					this.verificationError = err?.[0].message || err || 'Error. Please refresh the page and try again.';
+					this.verificationError = err?.[0]?.message
+						|| err
+						|| 'Error. Please refresh the page and try again.';
 				})
 				.finally(() => {
 					this.isVerificationPending = false;
@@ -255,7 +257,9 @@ export default {
 				})
 				.catch(err => {
 					console.error(err);
-					this.verificationError = err?.[0].message || err || 'Error. Please refresh the page and try again.';
+					this.verificationError = err?.[0]?.message
+						|| err
+						|| 'Error. Please refresh the page and try again.';
 				})
 				.finally(() => {
 					this.isVerificationPending = false;
