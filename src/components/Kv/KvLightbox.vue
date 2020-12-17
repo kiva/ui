@@ -12,7 +12,6 @@
 					'kv-lightbox--full-width': fullWidth,
 				}"
 				ref="kvlightbox"
-				@keyup.esc="closeLightbox"
 				@click.stop.prevent="closeLightbox"
 				role="dialog"
 				:aria-labelledby="title ? 'lightbox-title' : null"
@@ -112,10 +111,12 @@ export default {
 		visible() {
 			this.isShown = this.visible;
 			if (this.isShown) {
+				document.addEventListener('keyup', this.onKeyUp);
 				this.$nextTick(() => {
 					this.lockScroll();
 				});
 			} else {
+				document.removeEventListener('keyup', this.onKeyUp);
 				this.unlockScroll();
 			}
 		}
@@ -127,6 +128,11 @@ export default {
 		this.closeLightbox();
 	},
 	methods: {
+		onKeyUp(e) {
+			if (e.key === 'Escape') {
+				this.closeLightbox();
+			}
+		},
 		closeLightbox() {
 			if (!this.preventClose) {
 				// scroll any content inside the lightbox back to top
