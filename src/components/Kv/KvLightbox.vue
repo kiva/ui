@@ -190,6 +190,14 @@ export default {
 		flex: 0 1 auto; // ie11
 		overflow: auto;
 		position: relative;
+		// set a negative margin + padding to push the scrollbar to edge of the dialog.
+		margin: 0 -1.5rem;
+		padding: 0 1.5rem;
+
+		@include breakpoint(medium) {
+			margin: 0 -2.8125rem;
+			padding: 0 2.8125rem;
+		}
 	}
 
 	&__controls {
