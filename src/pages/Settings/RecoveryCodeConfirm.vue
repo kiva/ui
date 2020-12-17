@@ -9,15 +9,9 @@
 			Copy this recovery code and keep it somewhere safe. You'll
 			need it if you want to log in without your device.
 		</p>
-		<label>
-			<input
-				type="text"
-				class="recovery-code"
-				name="recoveryCode"
-				:value="mfaRecoveryCode"
-				disabled
-			>
-		</label>
+		<div class="recovery-code">
+			{{ mfaRecoveryCode }}
+		</div>
 		<div>
 			<kv-button
 				class="secondary smallest expanded copy-code"
@@ -41,7 +35,7 @@
 				class="expanded smaller show-for-small-only"
 				:disabled="isDisabled"
 				@click.native.prevent="closeLightbox"
-				aria-label="Close"
+				aria-label="Close small"
 			>
 				Continue
 			</kv-button>
@@ -50,7 +44,7 @@
 				class="expanded smaller show-for-medium"
 				:disabled="isDisabled"
 				@click.native.prevent="closeLightbox"
-				aria-label="Close"
+				aria-label="Close large"
 			>
 				Done
 			</kv-button>
@@ -119,11 +113,14 @@ export default {
 	}
 
 	.recovery-code {
-		font-weight: bold;
 		text-align: center;
+		font-weight: bold;
+		line-height: 2.5;
+		cursor: text;
 		background-color: $kiva-bg-darkgray;
 		border-radius: rem-calc(2);
-		cursor: text;
+		border: 1px solid black;
+		margin-bottom: rem-calc(15);
 	}
 
 	.copy-code {
