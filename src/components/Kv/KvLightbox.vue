@@ -150,7 +150,7 @@ export default {
 
 .kv-lightbox {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 	position: fixed;
 	top: 0;
@@ -176,7 +176,7 @@ export default {
 		@include breakpoint(medium) {
 			padding: 2.8125rem;
 			border-radius: rem-calc(4);
-			max-width: 61rem;
+			max-width: rem-calc(900);
 		}
 	}
 
@@ -187,6 +187,7 @@ export default {
 
 	&__body {
 		flex: 1;
+		flex: 0 1 auto; // ie11
 		overflow: auto;
 		position: relative;
 	}
@@ -204,7 +205,7 @@ export default {
 	&__title {
 		color: inherit;
 		color: var(--kv-lightbox-title-color, inherit);
-		padding-right: 1rem;
+		padding-right: 1.5rem;
 	}
 
 	&__close-btn-icon {
