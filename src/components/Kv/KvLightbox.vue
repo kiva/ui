@@ -129,7 +129,7 @@ export default {
 	methods: {
 		closeLightbox() {
 			if (!this.preventClose) {
-				// scroll any body content back to top
+				// scroll any content inside the lightbox back to top
 				this.$refs.kvLightboxBody.scrollTop = 0;
 
 				// remove scroll lock class from body
