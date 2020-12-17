@@ -341,6 +341,11 @@ $border-width: 1px;
 				color: $kiva-glyph-primary-black;
 				font-size: $medium-text-font-size;
 			}
+
+			// Moves credit card icons to new line.
+			.braintree-sheet__header-label {
+				width: 100%;
+			}
 		}
 
 		// Payment method 'sheet' or main content area

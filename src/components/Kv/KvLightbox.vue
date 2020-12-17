@@ -38,6 +38,7 @@
 									@click.stop.prevent="closeLightbox"
 									class="close-lightbox"
 									aria-label="Close"
+									v-if="!preventClose"
 								>
 									<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" />
 								</button>
@@ -74,6 +75,10 @@ export default {
 		};
 	},
 	props: {
+		preventClose: {
+			type: Boolean,
+			default: false
+		},
 		visible: {
 			type: Boolean,
 			default: false
@@ -124,12 +129,14 @@ export default {
 	},
 	methods: {
 		closeLightbox() {
-			this.isShown = false;
-			// listen for this event in parent components
-			// it gives notice of the lightbox being closed internally
-			this.$emit('lightbox-closed');
-			// remove scroll lock class from body
-			this.unlockScroll();
+			if (!this.preventClose) {
+				this.isShown = false;
+				// listen for this event in parent components
+				// it gives notice of the lightbox being closed internally
+				this.$emit('lightbox-closed');
+				// remove scroll lock class from body
+				this.unlockScroll();
+			}
 		},
 	}
 };

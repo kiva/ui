@@ -8,7 +8,7 @@ RUN mkdir /ui
 COPY ./ /ui/
 WORKDIR /ui
 
-RUN npm i --no-save
+RUN npm ci
 
 EXPOSE 8888
 

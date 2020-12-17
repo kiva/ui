@@ -1,0 +1,5 @@
+mutation confirmSMSAuthenticatorEnrollment($mfa_token: String!, $oob_code: String!, $binding_code: String!) {
+	my {
+		confirmSMSAuthenticatorEnrollment( mfa_token: $mfa_token, oob_code: $oob_code, binding_code: $binding_code)
+	}
+}
