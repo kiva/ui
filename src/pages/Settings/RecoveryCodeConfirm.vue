@@ -35,7 +35,6 @@
 				class="expanded smaller show-for-small-only"
 				:disabled="isDisabled"
 				@click.native.prevent="closeLightbox"
-				aria-label="Close small"
 			>
 				Continue
 			</kv-button>
@@ -44,7 +43,6 @@
 				class="expanded smaller show-for-medium"
 				:disabled="isDisabled"
 				@click.native.prevent="closeLightbox"
-				aria-label="Close large"
 			>
 				Done
 			</kv-button>
