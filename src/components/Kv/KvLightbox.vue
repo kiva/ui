@@ -1,6 +1,6 @@
 <template>
-	<transition name="kvfade">
-		<focus-lock :disabled="!isShown">
+	<focus-lock :disabled="!isShown">
+		<transition name="kvfade">
 			<div
 				v-show="isShown"
 				class="kv-lightbox"
@@ -51,8 +51,8 @@
 					</div>
 				</div>
 			</div>
-		</focus-lock>
-	</transition>
+		</transition>
+	</focus-lock>
 </template>
 
 <script>
