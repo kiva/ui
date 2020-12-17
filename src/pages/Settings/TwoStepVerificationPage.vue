@@ -66,12 +66,13 @@
 								class="two-step-verification__method"
 								v-for="(mfaMethod, index) in mfaMethods" :key="index"
 							>
-								<!-- eslint-disable-next-line max-len -->
-								<h4>{{ mfaMethod.authenticator_type === 'oob' ? 'Text/voice message' : 'Authenticator app' }}</h4>
+								<h4>{{ readableAuthName(mfaMethod.authenticator_type) }}</h4>
+								<!-- Phone number related to authentication method -->
 								<p>{{ mfaMethod.name }}</p>
 								<kv-button
 									class="text-link"
 									@click.native.prevent="removeMfaMethod(mfaMethod)"
+									v-if="mfaMethod.authenticator_type !== 'recovery-code'"
 								>
 									Remove
 								</kv-button>
@@ -291,9 +292,17 @@ export default {
 		formatMfaMethods(authEnrollments) {
 			// Filtering authEnrollments to remove inactive and unusable methods ie. "recovery code"
 			// eslint-disable-next-line max-len
-			const filteredMethods = authEnrollments.filter(authItem => authItem.active && authItem.authenticator_type !== 'recovery-code');
+			const filteredMethods = authEnrollments.filter(authItem => authItem.active);
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
 			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
+		},
+		readableAuthName(authType) {
+			if (authType === 'oob') {
+				return 'Text/voice message';
+			} if (authType === 'recovery-code') {
+				return 'Recovery code';
+			}
+			return 'Authenticator app';
 		},
 		onClickAuthenticator() {
 		// TODO: check for screensize here, go to url if small

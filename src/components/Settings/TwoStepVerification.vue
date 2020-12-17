@@ -82,8 +82,7 @@ export default {
 				}).then(result => {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					for (let i = 0; i < authEnrollments.length; i += 1) {
-						// eslint-disable-next-line max-len
-						if (authEnrollments[i].active === true && authEnrollments[i].authenticator_type !== 'recovery-code') {
+						if (authEnrollments[i].active === true) {
 							this.isMFAActive = true;
 							return;
 						}
