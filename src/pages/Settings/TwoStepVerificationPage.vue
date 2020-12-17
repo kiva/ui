@@ -66,8 +66,6 @@
 								class="two-step-verification__method"
 								v-for="(mfaMethod, index) in mfaMethods" :key="index"
 							>
-								<!-- eslint-disable-next-line max-len -->
-								<!-- <h4>{{ mfaMethod.authenticator_type === 'oob' ? 'Text/voice message' : 'Authenticator app' }}</h4> -->
 								<h4>{{ readableAuthName(mfaMethod.authenticator_type) }}</h4>
 								<!-- Phone number related to authentication method -->
 								<p>{{ mfaMethod.name }}</p>
@@ -250,7 +248,6 @@ export default {
 					this.isMfaActive = true;
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
-					console.log('authEnrollments', authEnrollments);
 
 					this.formatMfaMethods(authEnrollments);
 				});
