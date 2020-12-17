@@ -46,7 +46,7 @@
 					>
 						<slot>Lightbox body</slot>
 					</div>
-					<div class="kv-lightbox__controls">
+					<div class="kv-lightbox__controls" v-if="this.$slots.controls">
 						<slot name="controls"></slot>
 					</div>
 				</div>
