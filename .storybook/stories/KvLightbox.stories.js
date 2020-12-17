@@ -195,8 +195,53 @@ export const FullWidth = () => ({
 });
 
 
-export const NoPadding = () => ({
+export const preventClose = () => ({
 	components: { KvLightbox, KvButton },
+	props: {
+		preventClose: {
+			default: boolean('preventClose', true)
+		},
+	},
+	data: () => ({
+		lightboxVisible: false,
+	}),
+	methods: {
+		showLightbox() {
+			this.lightboxVisible = true;
+		},
+		hideLightbox() {
+			this.lightboxVisible = false;
+		}
+	},
+	template:`
+		<div>
+			<kv-button @click.native.prevent="showLightbox">
+				Show Lightbox prevent close
+			</kv-button>
+
+			<kv-lightbox
+				:visible="lightboxVisible"
+				:prevent-close="preventClose"
+				@lightbox-closed="hideLightbox"
+				title="Title"
+			>
+				${loremIpsum}
+
+				<kv-button
+					@click.native.prevent="hideLightbox"
+				>
+					Close lightbox
+				</kv-button>
+			</kv-lightbox>
+		</div>
+	`,
+});
+
+export const NoPadding = () => ({
+	components: {
+		KvLightbox,
+		KvButton
+	},
 	props: {
 		noPaddingTop: {
 			default: boolean('noPaddingTop', true)
