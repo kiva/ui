@@ -96,6 +96,7 @@ export default {
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			width: 100%;
 
 			.no-donation-x {
 				width: 0.75rem;
