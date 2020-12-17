@@ -169,6 +169,7 @@ export default {
 		flex-direction: column;
 		overflow: hidden;
 		padding: 1.5rem;
+		max-height: 100%;
 		background: $white;
 		position: relative;
 
