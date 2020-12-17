@@ -1,58 +1,57 @@
 <template>
 	<transition name="kvfade">
-		<div
-			v-show="isShown"
-			class="kv-lightbox-wrap"
-			:class="{'inverted': inverted}"
-			ref="kvlightbox"
-			@keyup.esc="closeLightbox"
-			@click.stop.prevent="closeLightbox"
-			role="dialog"
-			:aria-labelledby="title ? 'lightbox-title' : null"
-		>
-			<focus-lock :disabled="!isShown">
+		<focus-lock :disabled="!isShown">
+			<div
+				v-show="isShown"
+				class="kv-lightbox"
+				:class="{
+					'kv-lightbox--inverted': inverted,
+					'kv-lightbox--no-padding-top': noPaddingTop,
+					'kv-lightbox--no-padding-bottom': noPaddingBottom,
+					'kv-lightbox--no-padding-sides': noPaddingSides,
+					'kv-lightbox--full-width': fullWidth,
+				}"
+				ref="kvlightbox"
+				@keyup.esc="closeLightbox"
+				@click.stop.prevent="closeLightbox"
+				role="dialog"
+				:aria-labelledby="title ? 'lightbox-title' : null"
+			>
 				<div
-					class="kv-lightbox"
-					:class="{'full-width': fullWidth}"
-					role="document"
+					class="kv-lightbox__container"
+					@click.stop
 				>
-					<div class="row lightbox-row">
-						<div class="columns lightbox-columns">
-							<div
-								class="lightbox-content"
-								:class="{
-									'inverted': inverted,
-									'no-padding-top': noPaddingTop,
-									'no-padding-bottom': noPaddingBottom,
-									'no-padding-sides': noPaddingSides,
-								}"
-								@click.stop
-							>
-								<h2 v-if="title"
-									class="lightbox-title"
-									id="lightbox-title"
-								>
-									{{ title }}
-								</h2>
-								<button
-									@click.stop.prevent="closeLightbox"
-									class="close-lightbox"
-									aria-label="Close"
-									v-if="!preventClose"
-								>
-									<kv-icon class="icon-small-x" name="small-x" :from-sprite="true" />
-								</button>
-								<slot>Lightbox content</slot>
-
-								<div class="lightbox-controls">
-									<slot name="controls"></slot>
-								</div>
-							</div>
-						</div>
+					<div class="kv-lightbox__header">
+						<h2 v-if="title"
+							class="kv-lightbox__title"
+							id="lightbox-title"
+						>
+							{{ title }}
+						</h2>
+						<button
+							v-if="!preventClose"
+							class="kv-lightbox__close-btn"
+							@click.stop.prevent="closeLightbox"
+							aria-label="Close"
+						>
+							<kv-icon
+								class="kv-lightbox__close-btn-icon"
+								name="small-x"
+								:from-sprite="true"
+							/>
+						</button>
+					</div>
+					<div class="kv-lightbox__body"
+						ref="kvLightboxBody"
+					>
+						<slot>Lightbox body</slot>
+					</div>
+					<div class="kv-lightbox__controls">
+						<slot name="controls"></slot>
 					</div>
 				</div>
-			</focus-lock>
-		</div>
+			</div>
+		</focus-lock>
 	</transition>
 </template>
 
@@ -75,11 +74,11 @@ export default {
 		};
 	},
 	props: {
-		preventClose: {
+		visible: {
 			type: Boolean,
 			default: false
 		},
-		visible: {
+		preventClose: {
 			type: Boolean,
 			default: false
 		},
@@ -130,12 +129,16 @@ export default {
 	methods: {
 		closeLightbox() {
 			if (!this.preventClose) {
-				this.isShown = false;
+				// scroll any body content back to top
+				this.$refs.kvLightboxBody.scrollTop = 0;
+
+				// remove scroll lock class from body
+				this.unlockScroll();
+
 				// listen for this event in parent components
 				// it gives notice of the lightbox being closed internally
 				this.$emit('lightbox-closed');
-				// remove scroll lock class from body
-				this.unlockScroll();
+				this.isShown = false;
 			}
 		},
 	}
@@ -145,131 +148,137 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.kv-lightbox-wrap {
-	display: block;
+.kv-lightbox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	position: fixed;
 	top: 0;
 	right: 0;
 	left: 0;
 	bottom: 0;
-	padding: rem-calc(1);
-	overflow-y: auto;
 	z-index: 1500;
-	max-height: 100vh;
 	background: rgba(72, 72, 72, 0.6);
 
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
 	}
 
-	.kv-lightbox {
+	&__container {
+		flex: 1;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		padding: 1.5rem;
+		background: $white;
 		position: relative;
-		margin: 0 auto;
-		z-index: 1502;
-		padding: 0;
 
-		&.full-width {
-			.lightbox-columns {
-				width: 100%;
-			}
-		}
-
-		.lightbox-row {
-			padding: 0;
-			align-items: center;
-			flex-direction: column;
-
-			.lightbox-columns {
-				position: relative;
-				max-width: rem-calc(900);
-				padding-right: 0.0625rem;
-				padding-left: 0.0625rem;
-			}
-		}
-
-		/* Content Styles */
-		.lightbox-content {
-			display: block;
-			position: relative;
-			padding: 1.5rem;
-			margin: 1rem;
-			max-width: 61rem;
-			background: $white;
+		@include breakpoint(medium) {
+			padding: 2.8125rem;
 			border-radius: rem-calc(4);
+			max-width: 61rem;
+		}
+	}
 
-			@include breakpoint(medium) {
-				padding: 2.8125rem;
-			}
+	// layout
+	&__header {
+		flex-shrink: 0;
+	}
 
-			.lightbox-title {
-				color: inherit;
-				color: var(--kv-lightbox-title-color, inherit);
-				padding-right: 1rem;
-			}
+	&__body {
+		flex: 1;
+		overflow: auto;
+		position: relative;
+	}
 
-			.close-lightbox {
-				width: 2.5rem;
-				height: 2.5rem;
-				position: absolute;
-				top: 0.75rem;
-				right: 0.75rem;
+	&__controls {
+		flex-shrink: 0;
+		margin-top: 1rem;
 
-				.icon-small-x {
-					height: 1.5rem;
-					width: 1.5rem;
-					fill: $subtle-gray;
-					transition: fill 0.16s linear;
-				}
+		::v-deep button {
+			margin-bottom: 0;
+		}
+	}
 
-				&:hover {
-					.icon-small-x {
-						fill: $charcoal;
-					}
-				}
-			}
+	// content
+	&__title {
+		color: inherit;
+		color: var(--kv-lightbox-title-color, inherit);
+		padding-right: 1rem;
+	}
 
-			&.no-padding-top {
-				padding-top: 0;
-			}
+	&__close-btn-icon {
+		height: 1.5rem;
+		width: 1.5rem;
+		fill: $subtle-gray;
+		transition: fill 0.16s linear;
+	}
 
-			&.no-padding-bottom {
-				padding-bottom: 0;
-			}
+	&__close-btn {
+		width: 2.5rem;
+		height: 2.5rem;
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
 
-			&.no-padding-sides {
-				padding-left: 0;
-				padding-right: 0;
+		&:hover {
+			.kv-lightbox__close-btn-icon {
+				fill: $charcoal;
 			}
 		}
 	}
 
-	&.inverted {
+	// modifiers
+	&--full-width {
+		.kv-lightbox__container {
+			max-width: 100%;
+		}
+	}
+
+	&--no-padding-top {
+		.kv-lightbox__container {
+			padding-top: 0;
+		}
+	}
+
+	&--no-padding-bottom {
+		.kv-lightbox__container {
+			padding-bottom: 0;
+		}
+	}
+
+	&--no-padding-sides {
+		.kv-lightbox__container {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
+	&--inverted {
 		background: rgba(0, 0, 0, 0.9);
 
-		.kv-lightbox {
+		.kv-lightbox__container {
+			background: transparent;
 			color: $white;
 			font-weight: normal;
+		}
 
-			.lightbox-content {
-				background: transparent;
+		.kv-lightbox__content {
+			background: transparent;
+		}
 
-				.close-lightbox {
-					.icon-small-x {
-						fill: $kiva-green;
-					}
+		.kv-lightbox__close-btn-icon { /* stylelint-disable-line */
+			fill: $kiva-green;
+		}
 
-					&:hover {
-						.icon-small-x {
-							fill: $kiva-accent-green;
-						}
-					}
+		.kv-lightbox__close-btn {
+			&:hover {
+				.kv-lightbox__close-btn-icon {
+					fill: $kiva-accent-green;
 				}
 			}
 		}
-	}
-
-	.lightbox-controls ::v-deep button {
-		margin-bottom: 0;
 	}
 }
 </style>
