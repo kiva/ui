@@ -219,6 +219,9 @@ export default {
 		position: absolute;
 		top: 0.75rem;
 		right: 0.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
 		&:hover {
 			.kv-lightbox__close-btn-icon {
