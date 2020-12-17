@@ -26,6 +26,7 @@
 					:id="`country_select_${id}`"
 					v-model="selectedCountryCode"
 					@change="onInputCountry"
+					:disabled="disabled"
 				>
 					<option
 						v-for="country in countryList"
@@ -46,6 +47,7 @@
 				:id="id"
 				:placeholder="placeholderNumber"
 				:value="displayNumber"
+				:disabled="disabled"
 				v-bind="$attrs"
 				v-on="inputListeners"
 				@input="onInputPhoneNumber"
@@ -88,6 +90,10 @@ export default {
 			type: String,
 			default: ''
 		},
+		disabled: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
@@ -206,6 +212,7 @@ export default {
 		position: absolute;
 		top: 0;
 		left: 0;
+		z-index: 1;
 		width: rem-calc(56);
 		margin: 0;
 		pointer-events: none;
