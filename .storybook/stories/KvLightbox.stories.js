@@ -86,6 +86,31 @@ Padding.args = {
 	noPaddingSides: true,
 };
 
+export const SmallContent = (args, { argTypes }) => ({
+	components: { KvLightbox, KvButton },
+	props: Object.keys(argTypes),
+	template: `
+		<div>
+			<kv-lightbox
+				:visible="visible"
+				:inverted="inverted"
+				:full-width="fullWidth"
+				:prevent-close="preventClose"
+				:title="title"
+				:no-padding-top="noPaddingTop"
+				:no-padding-bottom="noPaddingBottom"
+				:no-padding-sides="noPaddingSides"
+			>
+				<p>Small amount of content</p>
+				<template slot="controls">
+					<kv-button>Button 1</kv-button>
+					<kv-button>Button 2</kv-button>
+				</template>
+			</kv-lightbox>
+		</div>
+	`,
+});
+
 export const WithControls = (args, { argTypes }) => ({
 	components: { KvLightbox, KvButton },
 	props: Object.keys(argTypes),
