@@ -199,6 +199,12 @@ export default [
 			mfaRequired: true,
 			process: 'managing your 2-step verification settings',
 		},
+		children: [
+			{
+				path: 'phone',
+				component: () => import('@/components/Settings/PhoneAuthentication'),
+			}
+		],
 	},
 	{
 		path: '/settings/subscriptions',

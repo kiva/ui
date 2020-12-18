@@ -96,55 +96,47 @@
 					</template>
 
 					<template v-slot:content>
-						<div>
+						<div class="two-step-verification__sub-section">
 							<p>{{ cardSubhead }}</p>
-							<div class="two-step-verification__sub-section">
-								<h3 class="strong">
-									Authentication app
-									<span class="green">(Recommended)</span>
-								</h3>
-								<p>
-									Receive code from an authenticator app on your device,
-									like Google Authenticator, Duo, or Authy.
-								</p>
-								<kv-button
-									class="smallest"
-									@click.native="onClickAuthenticator"
-								>
-									Use authentication app
-								</kv-button>
+							<h3 class="strong">
+								Authentication app
+								<span class="green">(Recommended)</span>
+							</h3>
+							<p>
+								Receive code from an authenticator app on your device,
+								like Google Authenticator, Duo, or Authy.
+							</p>
+							<kv-button
+								class="smallest"
+								@click.native="onClickAuthenticator"
+							>
+								Use authentication app
+							</kv-button>
+							<!--
 								<kv-lightbox
-									:visible="isAuthenticatorLightboxVisible"
-									@lightbox-closed="closeLightbox"
-									title="Use an authenticator app"
-								>
-									app-authentication
-								</kv-lightbox>
-							</div>
-
-							<div class="two-step-verification__sub-section">
-								<h3 class="strong">
-									Text message or phone call
-								</h3>
-								<p>
-									Receive a code via text message on your mobile device.
-								</p>
-								<kv-button class="smallest"
-									@click.native="onClickPhone"
-								>
-									Use text message or phone call
-								</kv-button>
-								<kv-lightbox
-									:visible="isPhoneLightboxVisible"
-									@lightbox-closed="closeLightbox"
-								>
-									<phone-authentication
-										ref="phoneAuthentication"
-										@verification-complete="closeLightbox"
-									/>
-								</kv-lightbox>
-							</div>
+								:visible="isAuthenticatorLightboxVisible"
+								@lightbox-closed="closeLightbox"
+								title="Use an authenticator app"
+							>
+								app-authentication
+							</kv-lightbox>
+							-->
 						</div>
+
+						<div class="two-step-verification__sub-section">
+							<h3 class="strong">
+								Text message or phone call
+							</h3>
+							<p>
+								Receive a code via text message on your mobile device.
+							</p>
+							<kv-button class="smallest"
+								to="/settings/security/mfa/phone"
+							>
+								Use text message or phone call
+							</kv-button>
+						</div>
+						<router-view />
 					</template>
 				</kv-settings-card>
 			</div>
@@ -156,9 +148,7 @@
 import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import PhoneAuthentication from '@/components/Settings/PhoneAuthentication';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
@@ -191,9 +181,7 @@ export default {
 	components: {
 		KvButton,
 		KvIcon,
-		KvLightbox,
 		KvSettingsCard,
-		PhoneAuthentication,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},
