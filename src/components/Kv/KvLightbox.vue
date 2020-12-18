@@ -11,6 +11,7 @@
 					'kv-lightbox--no-padding-sides': noPaddingSides,
 					'kv-lightbox--full-width': fullWidth,
 				}"
+				data-test="kv-lightbox"
 				ref="kvlightbox"
 				@click.stop.prevent="closeLightbox"
 				role="dialog"
