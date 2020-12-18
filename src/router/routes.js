@@ -199,6 +199,12 @@ export default [
 			mfaRequired: true,
 			process: 'managing your 2-step verification settings',
 		},
+		children: [
+			{
+				path: 'app',
+				component: () => import('@/components/Settings/AppAuthentication'),
+			}
+		],
 	},
 	{
 		path: '/settings/subscriptions',
