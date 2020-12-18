@@ -236,6 +236,7 @@ export default {
 		position: absolute;
 		top: 0.75rem;
 		right: 0.75rem;
+		z-index: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
