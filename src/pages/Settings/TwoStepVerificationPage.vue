@@ -95,55 +95,47 @@
 					</template>
 
 					<template v-slot:content>
-						<div>
-							<p>{{ cardSubhead }}</p>
-							<div class="two-step-verification__sub-section">
-								<h3 class="strong">
-									Authentication app
-									<span class="green">(Recommended)</span>
-								</h3>
-								<p>
-									Receive code from an authenticator app on your device,
-									like Google Authenticator, Duo, or Authy.
-								</p>
-								<kv-button
-									class="smallest"
-									@click.native="onClickAuthenticator"
-								>
-									Use authentication app
-								</kv-button>
-								<kv-lightbox
-									:visible="isAuthenticatorLightboxVisible"
-									@lightbox-closed="closeLightbox"
-									title="Use an authenticator app"
-								>
-									app-authentication
-								</kv-lightbox>
-							</div>
-
-							<div class="two-step-verification__sub-section">
-								<h3 class="strong">
-									Text message or phone call
-								</h3>
-								<p>
-									Receive a code via text message on your mobile device.
-								</p>
-								<kv-button class="smallest"
-									@click.native="onClickPhone"
-								>
-									Use text message or phone call
-								</kv-button>
-								<kv-lightbox
-									:visible="isPhoneLightboxVisible"
-									@lightbox-closed="closeLightbox"
-								>
-									<phone-authentication
-										ref="phoneAuthentication"
-										@verification-complete="closeLightbox"
-									/>
-								</kv-lightbox>
-							</div>
+						<p>{{ cardSubhead }}</p>
+						<div class="two-step-verification__sub-section">
+							<h3 class="strong">
+								Authenticator app
+								<span class="green">(Recommended)</span>
+							</h3>
+							<p>
+								Receive code from an authenticator app on your device,
+								like Google Authenticator, Duo, or Authy.
+							</p>
+							<kv-button
+								class="smallest"
+								to="/settings/security/mfa/app"
+							>
+								Use authenticator app
+							</kv-button>
 						</div>
+
+						<div class="two-step-verification__sub-section">
+							<h3 class="strong">
+								Text message or phone call
+							</h3>
+							<p>
+								Receive a code via text message on your mobile device.
+							</p>
+							<kv-button class="smallest"
+								@click.native="onClickPhone"
+							>
+								Use text message or phone call
+							</kv-button>
+							<kv-lightbox
+								:visible="isPhoneLightboxVisible"
+								@lightbox-closed="closeLightbox"
+							>
+								<phone-authentication
+									ref="phoneAuthentication"
+									@verification-complete="closeLightbox"
+								/>
+							</kv-lightbox>
+						</div>
+						<router-view />
 					</template>
 				</kv-settings-card>
 			</div>
@@ -152,7 +144,6 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
@@ -160,29 +151,16 @@ import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import PhoneAuthentication from '@/components/Settings/PhoneAuthentication';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
 import _uniqBy from 'lodash/uniqBy';
-
-const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
-	my {
-		lastLoginTimestamp @client
-		authenticatorEnrollments(mfa_token: $mfa_token) {
-			id
-			active
-			authenticator_type
-			oob_channel
-			name
-		}
-	}
-}`;
 
 export default {
 	data() {
 		return {
 			isAuthenticatorLightboxVisible: false,
 			isPhoneLightboxVisible: false,
-			isMfaActive: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
 		};
@@ -212,7 +190,7 @@ export default {
 				this.turnOffMfa();
 			} else {
 				// Upon cancel return to the base URL of current page
-				window.location = '/settings/security/mfa';
+				this.$router.push('/settings/security/mfa');
 			}
 		}
 	},
@@ -230,6 +208,9 @@ export default {
 			}
 			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
 		},
+		isMfaActive() {
+			return this.mfaMethods.length > 0;
+		},
 	},
 	methods: {
 		gatherMfaEnrollments() {
@@ -244,7 +225,6 @@ export default {
 						fetchPolicy: 'network-only',
 					});
 				}).then(result => {
-					this.isMfaActive = true;
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 
@@ -269,7 +249,8 @@ export default {
 			this.apollo.mutate({
 				mutation: removeMfa,
 			}).then(() => {
-				this.isMfaActive = false;
+				// Upon completion return to the base URL of current page
+				this.$router.push('/settings/security/mfa');
 			});
 		},
 		removeMfaMethod(mfaMethod) {
