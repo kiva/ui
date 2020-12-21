@@ -31,10 +31,13 @@
 							:items-in-basket="itemsInBasket"
 							:category-id="category.id"
 							category-set-id="lbc-hp-v1-featured-loans"
+							:disable-redirects="disableRedirects"
 							:row-number="0"
 							:card-number="index + 1"
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
+							:show-view-loan-cta="showViewLoanCta"
+							@add-to-basket="handleAddToBasket"
 						/>
 					</div>
 					<div v-else class="featured-loans-carousel__loading-div">
@@ -72,6 +75,14 @@ export default {
 		LoanCardController
 	},
 	props: {
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
+		showViewLoanCta: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -329,7 +340,10 @@ export default {
 		getLoanPosition(categoryId) {
 			const categoryRowIndex = this.categoryIds.indexOf(categoryId);
 			return categoryRowIndex !== -1 ? categoryRowIndex + 1 : null;
-		}
+		},
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
 	}
 };
 </script>

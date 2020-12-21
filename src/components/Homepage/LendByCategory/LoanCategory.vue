@@ -52,6 +52,7 @@
 							:card-number="index + 1"
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
+							:show-view-loan-cta="true"
 						/>
 					</div>
 					<!--
