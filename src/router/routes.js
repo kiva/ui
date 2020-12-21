@@ -203,7 +203,11 @@ export default [
 			{
 				path: 'app',
 				component: () => import('@/components/Settings/AppAuthentication'),
-			}
+			},
+			{
+				path: 'phone',
+				component: () => import('@/components/Settings/PhoneAuthentication'),
+			},
 		],
 	},
 	{

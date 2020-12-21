@@ -96,10 +96,10 @@
 					</template>
 
 					<template v-slot:content>
-						<p>{{ cardSubhead }}</p>
 						<div class="two-step-verification__sub-section">
+							<p>{{ cardSubhead }}</p>
 							<h3 class="strong">
-								Authenticator app
+								Authentication app
 								<span class="green">(Recommended)</span>
 							</h3>
 							<p>
@@ -122,19 +122,10 @@
 								Receive a code via text message on your mobile device.
 							</p>
 							<kv-button class="smallest"
-								@click.native="onClickPhone"
+								to="/settings/security/mfa/phone"
 							>
 								Use text message or phone call
 							</kv-button>
-							<kv-lightbox
-								:visible="isPhoneLightboxVisible"
-								@lightbox-closed="closeLightbox"
-							>
-								<phone-authentication
-									ref="phoneAuthentication"
-									@verification-complete="closeLightbox"
-								/>
-							</kv-lightbox>
 						</div>
 						<router-view />
 					</template>
@@ -147,9 +138,7 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
-import KvLightbox from '@/components/Kv/KvLightbox';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
-import PhoneAuthentication from '@/components/Settings/PhoneAuthentication';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
@@ -169,9 +158,7 @@ export default {
 	components: {
 		KvButton,
 		KvIcon,
-		KvLightbox,
 		KvSettingsCard,
-		PhoneAuthentication,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
 	},

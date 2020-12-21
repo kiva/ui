@@ -1,126 +1,128 @@
 <template>
 	<div class="phone-authentication">
-		<section v-if="step === 0">
-			<h2>Phone number</h2>
-			<form>
-				<legend class="phone-authentication__legend">
-					Enter a phone number that can be used to verify your identity with a text message or phone call.
-				</legend>
-				<div class="phone-authentication__phone">
-					<label
-						class="phone-authentication__label"
-						for="phone_input"
-					>
-						Enter your phone number here:
-					</label>
-					<kv-phone-input
-						class="phone-authentication__phone-input"
-						:class="{ 'phone-authentication__phone-input--error' : $v.phoneNumber.$error}"
-						:disabled="isVerificationPending"
-						id="phone_input"
-						ref="phoneInput"
-						v-model="phoneNumber"
-						@blur="$v.phoneNumber.$touch"
-						@validity-changed="onValidityChanged"
-					/>
-					<ul class="validation-errors" v-if="$v.phoneNumber.$error">
-						<li v-if="!$v.phoneNumber.required">
-							Field is required
-						</li>
-						<li v-if="$v.phoneNumber.required && $v.phoneNumber.$invalid">
-							Phone number is invalid
-						</li>
-					</ul>
-				</div>
-
-				<h3 class="phone-authentication__label">
-					How do you want to get codes?
-				</h3>
-				<kv-loading-spinner
-					v-if="isVerificationPending"
-				/>
-				<p class="phone-authentication__error" v-if="verificationError">
-					{{ verificationError }}
-				</p>
-				<template v-if="!isVerificationPending">
-					<kv-button
-						class="smallest expanded"
-						type="button"
-						:disabled="$v.phoneNumber.$invalid"
-						@click.native="sendVerificationCode('SMS')"
-					>
-						<div>
-							<span>Text message</span>
-							<kv-loading-spinner
-								v-if="isVerificationPending"
-							/>
-						</div>
-					</kv-button>
-					<kv-button
-						class="smallest expanded"
-						type="button"
-						:disabled="$v.phoneNumber.$invalid"
-						@click.native="sendVerificationCode('voice')"
-					>
-						Phone call
-					</kv-button>
-				</template>
-			</form>
-		</section>
-
-		<section v-if="step === 1">
-			<h2 v-if="verificationType === 'SMS'">
-				We just sent you a text message
-			</h2>
-			<h2 v-if="verificationType === 'voice'">
-				You’ll receive a call shortly
-			</h2>
-			<form
-				@submit.prevent="confirmAuthenticatorEnrollment"
+		<kv-lightbox
+			class="app-authentication__lightbox"
+			:visible="lightboxVisible"
+			@lightbox-closed="completeSetup"
+			:title="lightboxTitle"
+		>
+			<section
+				v-if="step === 0"
+				class="phone-authentication__body"
 			>
-				<p>Enter the code sent to {{ phoneNumber }}.</p>
-				<label
-					for="verification_code"
-					class="phone-authentication__label"
-				>
-					Enter your 6-digit code here:
-				</label>
-				<kv-verification-code-input
-					class="verification-code__input"
-					id="verification_code"
-					ref="userVerificationCodeInput"
-					v-model="userVerificationCode"
-				/>
+				<form>
+					<legend class="phone-authentication__legend">
+						Enter a phone number that can be used to verify your identity with a text message or phone call.
+					</legend>
+					<div class="phone-authentication__phone">
+						<label
+							class="phone-authentication__label"
+							for="phone_input"
+						>
+							Enter your phone number here:
+						</label>
+						<kv-phone-input
+							class="phone-authentication__phone-input"
+							:class="{ 'phone-authentication__phone-input--error' : $v.phoneNumber.$error}"
+							:disabled="enrollmentPending"
+							id="phone_input"
+							ref="phoneInput"
+							v-model="phoneNumber"
+							@blur="$v.phoneNumber.$touch"
+							@validity-changed="onValidityChanged"
+						/>
+						<ul class="validation-errors" v-if="$v.phoneNumber.$error">
+							<li v-if="!$v.phoneNumber.required">
+								Field is required
+							</li>
+							<li v-if="$v.phoneNumber.required && $v.phoneNumber.$invalid">
+								Phone number is invalid
+							</li>
+						</ul>
+					</div>
 
-				<kv-loading-spinner
-					v-if="isVerificationPending"
-				/>
-				<p class="phone-authentication__error" v-if="verificationError">
-					{{ verificationError }}
-				</p>
-				<template v-if="!isVerificationPending">
-					<kv-button
-						class="expanded"
-						type="submit"
-						:disabled="$v.userVerificationCode.$invalid"
+					<h3 class="phone-authentication__label">
+						How do you want to get codes?
+					</h3>
+					<kv-loading-spinner
+						v-if="enrollmentPending"
+					/>
+					<p class="phone-authentication__error" v-if="enrollmentError">
+						{{ enrollmentError }}
+					</p>
+					<template v-if="!enrollmentPending">
+						<kv-button
+							class="smallest expanded"
+							type="button"
+							:disabled="$v.phoneNumber.$invalid"
+							@click.native="startEnrollment('SMS')"
+						>
+							Text message
+						</kv-button>
+						<kv-button
+							class="smallest expanded"
+							type="button"
+							:disabled="$v.phoneNumber.$invalid"
+							@click.native="startEnrollment('voice')"
+						>
+							Phone call
+						</kv-button>
+					</template>
+				</form>
+			</section>
+
+			<section
+				v-if="step === 1"
+				class="phone-authentication__body"
+			>
+				<form
+					@submit.prevent="submitVerification"
+				>
+					<p>Enter the code sent to {{ phoneNumber }}.</p>
+					<label
+						for="verification_code"
+						class="phone-authentication__label"
 					>
-						Done
-					</kv-button>
-					<kv-button
-						class="text-link expanded"
-						type="button"
-						@click.native="sendVerificationCode(verificationType)"
-					>
-						Resend Code
-					</kv-button>
-				</template>
-			</form>
-		</section>
+						Enter your 6-digit code here:
+					</label>
+					<kv-verification-code-input
+						class="verification-code__input"
+						id="verification_code"
+						ref="userVerificationCodeInput"
+						v-model="userVerificationCode"
+					/>
+
+					<kv-loading-spinner
+						v-if="verificationPending"
+					/>
+					<p class="phone-authentication__error" v-if="verificationError">
+						{{ verificationError }}
+					</p>
+					<template v-if="!verificationPending">
+						<kv-button
+							class="expanded"
+							type="submit"
+							:disabled="$v.userVerificationCode.$invalid"
+						>
+							Done
+						</kv-button>
+						<kv-button
+							class="text-link expanded"
+							type="button"
+							@click.native="startEnrollment(enrollmentType)"
+						>
+							Resend Code
+						</kv-button>
+					</template>
+				</form>
+			</section>
+		</kv-lightbox>
 	</div>
 </template>
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
+import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
@@ -139,6 +141,7 @@ import {
 export default {
 	components: {
 		KvButton,
+		KvLightbox,
 		KvLoadingSpinner,
 		KvPhoneInput,
 		KvVerificationCodeInput,
@@ -159,15 +162,31 @@ export default {
 	},
 	data() {
 		return {
+			lightboxVisible: true,
 			phoneNumber: '',
 			isPhoneNumberValid: false,
-			verificationType: '', // SMS or voice
+			enrollmentType: '', // SMS or voice
 			userVerificationCode: '', // user entered number
 			oobCode: '',
-			isVerificationPending: false,
+			enrollmentPending: false,
+			enrollmentError: '',
+			verificationPending: false,
 			verificationError: '',
 			step: 0,
 		};
+	},
+	computed: {
+		lightboxTitle() {
+			if (this.step === 1) {
+				if (this.enrollmentType === 'SMS') {
+					return 'We just sent you a text message';
+				}
+				if (this.enrollmentType === 'voice') {
+					return 'You’ll receive a call shortly';
+				}
+			}
+			return 'Phone number';
+		}
 	},
 	methods: {
 		getMFAToken() {
@@ -188,13 +207,13 @@ export default {
 		onValidityChanged(isValid) {
 			this.isPhoneNumberValid = isValid;
 		},
-		sendVerificationCode(verificationType) {
-			this.verificationType = verificationType;
+		startEnrollment(enrollmentType) {
+			this.enrollmentType = enrollmentType;
+			this.enrollmentError = '';
+			this.enrollmentPending = true;
 			this.userVerificationCode = ''; // clear out any existing codes.
-			this.verificationError = '';
-			this.isVerificationPending = true;
 
-			const mutation = this.verificationType === 'SMS'
+			const mutation = this.enrollmentType === 'SMS'
 				? enrollSMSAuthenticatorMutation
 				: enrollVoiceAuthenticatorMutation;
 
@@ -211,7 +230,7 @@ export default {
 					if (result.errors) {
 						throw result.errors;
 					} else {
-						this.oobCode = this.verificationType === 'SMS'
+						this.oobCode = this.enrollmentType === 'SMS'
 							? result?.data?.my?.enrollSMSAuthenticator?.oob_code
 							: result?.data?.my?.enrollVoiceAuthenticator?.oob_code;
 						if (this.oobCode) {
@@ -226,14 +245,14 @@ export default {
 						|| 'Error. Please refresh the page and try again.';
 				})
 				.finally(() => {
-					this.isVerificationPending = false;
+					this.enrollmentPending = false;
 				});
 		},
-		confirmAuthenticatorEnrollment() {
+		submitVerification() {
 			this.verificationError = '';
-			this.isVerificationPending = true;
+			this.verificationPending = true;
 
-			const mutation = this.verificationType === 'SMS'
+			const mutation = this.enrollmentType === 'SMS'
 				? confirmSMSAuthenticatorEnrollmentMutation
 				: confirmVoiceAuthenticatorEnrollmentMutation;
 
@@ -251,8 +270,7 @@ export default {
 					if (result.errors) {
 						throw result.errors;
 					} else {
-						// We're successful, close the lightbox
-						this.$emit('verification-complete');
+						this.completeSetup();
 					}
 				})
 				.catch(err => {
@@ -262,14 +280,19 @@ export default {
 						|| 'Error. Please refresh the page and try again.';
 				})
 				.finally(() => {
-					this.isVerificationPending = false;
+					this.verificationPending = false;
 				});
 		},
-		reset() {
-			this.step = 0;
+		completeSetup() {
+			if (this.lightboxVisible) {
+				this.$router.push('/settings/security/mfa'); // return to MFA settings page
+				this.lightboxVisible = false;
+			}
 			this.phoneNumber = '';
-			this.userVerificationCode = '';
+			this.step = 0;
 			this.oobCode = '';
+			this.userVerificationCode = '';
+			this.enrollmentError = '';
 			this.verificationError = '';
 		},
 	},
@@ -280,7 +303,9 @@ export default {
 @import 'settings';
 
 .phone-authentication {
-	max-width: rem-calc(380);
+	&__body {
+		max-width: rem-calc(380);
+	}
 
 	&__legend,
 	&__phone {
