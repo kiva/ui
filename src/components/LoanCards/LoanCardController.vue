@@ -3,6 +3,7 @@
 		class="loan-card-controller"
 		:amount-left="amountLeft"
 		:card-number="cardNumber"
+		:disable-redirects="disableRedirects"
 		:experiment-data="experimentData"
 		:expiring-soon-message="expiringSoonMessage"
 		:is-favorite="isFavorite"
@@ -13,6 +14,7 @@
 		:key="loan.id"
 		:loan="loan"
 		:percent-raised="percentRaised"
+		:show-view-loan-cta="showViewLoanCta"
 		:title="title"
 		:is="loanCardType"
 
@@ -82,6 +84,10 @@ export default {
 		ListLoanCard,
 	},
 	props: {
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
 		loanCardType: {
 			type: String,
 			required: true,
@@ -160,6 +166,10 @@ export default {
 			default: 0,
 		},
 		preventUpdatingDetailedCard: {
+			type: Boolean,
+			default: false,
+		},
+		showViewLoanCta: {
 			type: Boolean,
 			default: false,
 		},
