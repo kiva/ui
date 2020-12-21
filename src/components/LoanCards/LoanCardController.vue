@@ -302,6 +302,7 @@ export default {
 		},
 		// the final outcome of adding a loan to basket
 		// payload is { loanId: ######, success: true/false }
+		// optionally payload may also contain an eventSource identifier
 		handleAddToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},

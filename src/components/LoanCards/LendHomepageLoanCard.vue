@@ -68,6 +68,7 @@
 					<action-button
 						v-else
 						class="action-button"
+						:disable-redirects="disableRedirects"
 						:loan-id="loan.id"
 						:loan="loan"
 						:items-in-basket="itemsInBasket"
