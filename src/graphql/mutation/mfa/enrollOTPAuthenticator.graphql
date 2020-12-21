@@ -1,0 +1,9 @@
+mutation enrollOTPAuthenticator($mfa_token: String!) {
+	my {
+		enrollOTPAuthenticator( mfa_token: $mfa_token) {
+			barcode_uri
+			recovery_codes
+			secret
+		}
+	}
+}

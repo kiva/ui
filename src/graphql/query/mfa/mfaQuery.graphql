@@ -1,0 +1,12 @@
+query mfaQuery($mfa_token: String!) {
+	my {
+		lastLoginTimestamp @client
+		authenticatorEnrollments(mfa_token: $mfa_token) {
+			id
+			active
+			authenticator_type
+			oob_channel
+			name
+		}
+	}
+}

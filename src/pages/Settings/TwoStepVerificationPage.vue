@@ -108,19 +108,10 @@
 							</p>
 							<kv-button
 								class="smallest"
-								@click.native="onClickAuthenticator"
+								to="/settings/security/mfa/app"
 							>
-								Use authentication app
+								Use authenticator app
 							</kv-button>
-							<!--
-								<kv-lightbox
-								:visible="isAuthenticatorLightboxVisible"
-								@lightbox-closed="closeLightbox"
-								title="Use an authenticator app"
-							>
-								app-authentication
-							</kv-lightbox>
-							-->
 						</div>
 
 						<div class="two-step-verification__sub-section">
@@ -145,35 +136,21 @@
 </template>
 
 <script>
-import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
+import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
 import removeMfa from '@/graphql/mutation/mfa/removeMfa.graphql';
 import removeOneMfaMethod from '@/graphql/mutation/mfa/removeOneMfaMethod.graphql';
 import _uniqBy from 'lodash/uniqBy';
-
-const mfaQuery = gql`query mfaQuery($mfa_token: String!) {
-	my {
-		lastLoginTimestamp @client
-		authenticatorEnrollments(mfa_token: $mfa_token) {
-			id
-			active
-			authenticator_type
-			oob_channel
-			name
-		}
-	}
-}`;
 
 export default {
 	data() {
 		return {
 			isAuthenticatorLightboxVisible: false,
 			isPhoneLightboxVisible: false,
-			isMfaActive: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
 		};
@@ -201,7 +178,7 @@ export default {
 				this.turnOffMfa();
 			} else {
 				// Upon cancel return to the base URL of current page
-				window.location = '/settings/security/mfa';
+				this.$router.push('/settings/security/mfa');
 			}
 		}
 	},
@@ -219,6 +196,9 @@ export default {
 			}
 			return 'You\'ll be asked for a verification code when accessing you Kiva account.';
 		},
+		isMfaActive() {
+			return this.mfaMethods.length > 0;
+		},
 	},
 	methods: {
 		gatherMfaEnrollments() {
@@ -233,7 +213,6 @@ export default {
 						fetchPolicy: 'network-only',
 					});
 				}).then(result => {
-					this.isMfaActive = true;
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 
@@ -258,7 +237,8 @@ export default {
 			this.apollo.mutate({
 				mutation: removeMfa,
 			}).then(() => {
-				this.isMfaActive = false;
+				// Upon completion return to the base URL of current page
+				this.$router.push('/settings/security/mfa');
 			});
 		},
 		removeMfaMethod(mfaMethod) {
