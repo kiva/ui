@@ -1,11 +1,9 @@
 <template>
-	<kv-lightbox
-		:visible="visible"
-		title="2-step verification is on"
-		@lightbox-closed="closeLightbox"
-		prevent-close="true"
-	>
-		<p>
+	<div class="recovery-code-confirm">
+		<h2 class="recovery-code-confirm__heading">
+			2-step verification is on
+		</h2>
+		<p class="recovery-code-confirm__description">
 			Copy this recovery code and keep it somewhere safe. You'll
 			need it if you want to log in without your device.
 		</p>
@@ -32,62 +30,42 @@
 		</div>
 		<div>
 			<kv-button
-				class="expanded smaller show-for-small-only"
+				class="expanded smaller"
 				:disabled="isDisabled"
-				@click.native.prevent="closeLightbox"
-			>
-				Continue
-			</kv-button>
-
-			<kv-button
-				class="expanded smaller show-for-medium"
-				:disabled="isDisabled"
-				@click.native.prevent="closeLightbox"
+				@click.native.prevent="$emit('done')"
 			>
 				Done
 			</kv-button>
 		</div>
-	</kv-lightbox>
+	</div>
 </template>
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
-import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	data() {
 		return {
 			verified: false,
-			isShown: false,
-			visible: true,
 		};
 	},
 	components: {
 		KvButton,
 		KvCheckbox,
-		KvLightbox,
 	},
 	props: {
 		mfaRecoveryCode: {
 			type: String,
 			required: true
 		},
-
 	},
 	computed: {
 		isDisabled() {
 			return !this.verified;
 		},
 	},
-	mounted() {
-		this.isShown = this.visible;
-	},
 	methods: {
-		closeLightbox() {
-			this.visible = false;
-			this.$emit('lightbox-closed');
-		},
 		copyToClipboard(string) {
 			try {
 				navigator.clipboard.writeText(string);
@@ -102,12 +80,14 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-// reaching into the KvLightbox component to apply custom styles
-::v-deep .kv-lightbox {
-	max-width: rem-calc(580);
-
-	.lightbox-title {
+.recovery-code-confirm {
+	&__heading {
 		font-weight: bold;
+		text-align: left;
+	}
+
+	&__description {
+		text-align: left;
 	}
 
 	.recovery-code {
@@ -129,5 +109,4 @@ export default {
 		margin-bottom: 1rem;
 	}
 }
-
 </style>

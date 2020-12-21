@@ -1,0 +1,5 @@
+mutation confirmOTPAuthenticatorEnrollment($mfa_token: String!, $binding_code: String!) {
+	my {
+		confirmOTPAuthenticatorEnrollment(mfa_token: $mfa_token, binding_code: $binding_code)
+	}
+}
