@@ -37,6 +37,7 @@
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
 							:show-view-loan-cta="showViewLoanCta"
+							@add-to-basket="handleAddToBasket"
 						/>
 					</div>
 					<div v-else class="featured-loans-carousel__loading-div">
@@ -339,7 +340,10 @@ export default {
 		getLoanPosition(categoryId) {
 			const categoryRowIndex = this.categoryIds.indexOf(categoryId);
 			return categoryRowIndex !== -1 ? categoryRowIndex + 1 : null;
-		}
+		},
+		handleAddToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
 	}
 };
 </script>
