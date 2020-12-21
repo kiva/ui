@@ -11,7 +11,7 @@
 		>
 			<div class="row align-center">
 				<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
-					<!-- <featured-loans-carousel /> -->
+					<!-- <featured-loans-carousel :show-view-loan-cta="true" /> -->
 					<no-click-loan-card />
 				</div>
 				<!-- eslint-disable-next-line max-len -->
