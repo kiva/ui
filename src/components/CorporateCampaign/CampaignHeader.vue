@@ -26,8 +26,8 @@
 					With Kiva you can lend as little as $25 and make a big change in someone's life.
 				</p>
 				<kv-button
-					class="rounded"
-					@click.prevent="jumpToLoans"
+					class="text-link"
+					@click.native.prevent="jumpToLoans"
 					v-kv-track-event="[
 						'Campaign',
 						'click-hero-cta',
