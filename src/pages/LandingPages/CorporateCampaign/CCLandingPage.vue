@@ -20,16 +20,61 @@
 				@jump-to-loans="scrollToSection('campaignLoanDisplay')"
 			/>
 
-			<campaign-loan-display
-				id="campaignLoanDisplay"
-				ref="loandisplayref"
-				:show-loans="showLoans"
-				:checkout-visible="checkoutVisible || showThanks"
-				:filters="filters"
-				:is-visitor="isVisitor"
-				:items-in-basket="itemsInBasket"
-				@add-to-basket="handleAddToBasket"
-			/>
+			<hr>
+
+			<section class="loan-categories section">
+				<div class="row">
+					<div class="columns">
+						<h2 class="loan-categories__header text-center">
+							Support causes you care about.
+						</h2>
+						<campaign-loan-row
+							v-show="showLoanRows"
+							id="campaignLoanRowDisplay"
+							:filters="filters"
+							:is-visitor="isVisitor"
+							:items-in-basket="itemsInBasket"
+							:is-logged-in="!isVisitor"
+							:is-visible="true"
+							:key="'one-category'"
+							:row-number="1"
+							@add-to-basket="handleAddToBasket"
+						/>
+
+						<campaign-loan-grid-display
+							v-show="!showLoanRows"
+							id="campaignLoanDisplay"
+							ref="loandisplayref"
+							:show-loans="showLoans"
+							:checkout-visible="checkoutVisible || showThanks"
+							:filters="filters"
+							:is-visitor="isVisitor"
+							:items-in-basket="itemsInBasket"
+							@add-to-basket="handleAddToBasket"
+						/>
+					</div>
+				</div>
+			</section>
+
+			<hr>
+			<section class="campaign-loan-view-selector section row align-center">
+				<div class="small-12 large-8 align-self-middle columns text-center">
+					<kv-button
+						class="text-link"
+						@click.native.prevent="showLoanRows = true"
+					>
+						Show loan rows
+					</kv-button>
+					&nbsp;&nbsp;|&nbsp;&nbsp;
+					<kv-button
+						class="text-link"
+						@click.native.prevent="showLoanRows = false"
+					>
+						Show loan grid
+					</kv-button>
+				</div>
+			</section>
+			<hr>
 
 			<campaign-how-kiva-works />
 
@@ -68,6 +113,7 @@
 				id="campaignThanks"
 				class="campaign-thanks section row align-center"
 			>
+				<hr>
 				<campaign-thanks :transaction-id="transactionId" />
 			</section>
 		</div>
@@ -84,11 +130,14 @@ import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
 import CampaignHeader from '@/components/CorporateCampaign/CampaignHeader';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
-import CampaignLoanDisplay from '@/components/CorporateCampaign/CampaignLoanDisplay';
+import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
+import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
+// import CampaignLoanRowsDisplay from '@/components/CorporateCampaign/CampaignLoanRowsDisplay';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
+import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
@@ -261,11 +310,13 @@ export default {
 	components: {
 		CampaignHeader,
 		CampaignHowKivaWorks,
-		CampaignLoanDisplay,
+		CampaignLoanGridDisplay,
+		CampaignLoanRow,
 		CampaignStatus,
 		CampaignThanks,
 		CampaignVerificationForm,
 		InContextCheckout,
+		KvButton,
 		KvLightbox,
 		WwwPageMinimal,
 	},
@@ -328,6 +379,7 @@ export default {
 			showVerification: false,
 			showThanks: false,
 			transactionId: null,
+			showLoanRows: true,
 		};
 	},
 	metaInfo() {
@@ -730,6 +782,20 @@ export default {
 	.campaign-checkout,
 	.campaign-thanks {
 		padding: 3rem 0;
+	}
+}
+
+.loan-categories {
+	& .row {
+		max-width: 69.15rem;
+	}
+
+	&__header {
+		font-weight: bold;
+
+		@include breakpoint(large) {
+			@include large-text();
+		}
 	}
 }
 
