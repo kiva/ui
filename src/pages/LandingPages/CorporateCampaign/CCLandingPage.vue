@@ -4,21 +4,21 @@
 		:footer-theme="footerTheme"
 	>
 		<div class="corporate-campaign-landing">
-			<!-- TODO: Alter CTA if Checkout is ready -->
-			<campaign-header
-				:header-area-content="headerAreaContent"
-				@jump-to-loans="scrollToSection('campaignLoanDisplay')"
-			/>
-
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
 				:loading-promotion="loadingPromotion"
 				:promo-error-message="promoErrorMessage"
 				:promo-applied="promoApplied"
 				:promo-amount="promoAmount"
+				@show-checkout="showCheckout"
 			/>
 
-			<campaign-how-kiva-works />
+			<!-- TODO: Alter CTA if Checkout is ready -->
+			<campaign-header
+				:header-area-content="headerAreaContent"
+				@add-to-basket="handleAddToBasket"
+				@jump-to-loans="scrollToSection('campaignLoanDisplay')"
+			/>
 
 			<campaign-loan-display
 				id="campaignLoanDisplay"
@@ -28,8 +28,10 @@
 				:filters="filters"
 				:is-visitor="isVisitor"
 				:items-in-basket="itemsInBasket"
-				@add-to-basket="addToBasket"
+				@add-to-basket="handleAddToBasket"
 			/>
+
+			<campaign-how-kiva-works />
 
 			<campaign-verification-form
 				v-if="this.showVerification"
@@ -38,10 +40,13 @@
 				@verification-complete="verificationComplete"
 			/>
 
-			<section
-				v-if="checkoutVisible"
+			<kv-lightbox
+				class="campaign-checkout"
 				id="campaignCheckout"
-				class="campaign-checkout section row align-center"
+				:no-padding-sides="true"
+				:prevent-close="preventLightboxClose"
+				:visible="checkoutVisible"
+				@lightbox-closed="checkoutVisible = false"
 			>
 				<div class="small-10 large-8 align-self-middle columns">
 					<in-context-checkout
@@ -56,7 +61,7 @@
 						@refresh-totals="refreshTotals"
 					/>
 				</div>
-			</section>
+			</kv-lightbox>
 
 			<section
 				v-if="showThanks"
@@ -75,15 +80,16 @@ import numeral from 'numeral';
 import { processPageContentFlat } from '@/util/contentfulUtils';
 import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
-import { blueHeader, blueFooter } from '@/util/siteThemes';
+import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
 import CampaignHeader from '@/components/CorporateCampaign/CampaignHeader';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignLoanDisplay from '@/components/CorporateCampaign/CampaignLoanDisplay';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
-import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
+import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
+import KvLightbox from '@/components/Kv/KvLightbox';
 import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
@@ -260,6 +266,7 @@ export default {
 		CampaignThanks,
 		CampaignVerificationForm,
 		InContextCheckout,
+		KvLightbox,
 		WwwPageMinimal,
 	},
 	mixins: [
@@ -289,12 +296,13 @@ export default {
 	},
 	data() {
 		return {
-			headerTheme: blueHeader,
-			footerTheme: blueFooter,
+			headerTheme: lightHeader,
+			footerTheme: lightFooter,
 			rawPageData: null,
 			pageData: null,
 			hasFreeCredits: null,
 			lendingRewardOffered: null,
+			preventLightboxClose: false,
 			promoApplied: null,
 			promoErrorMessage: null,
 			promoData: null,
@@ -306,6 +314,7 @@ export default {
 			loadingPromotion: false,
 			loans: [],
 			basketTotals: {},
+			basketTargetPromoCredit: () => [],
 			basketLoans: [],
 			donations: [],
 			kivaCards: [],
@@ -355,7 +364,7 @@ export default {
 			this.isVisitor = !data.my?.userAccount?.id ?? true;
 			// are there loans in the basket?
 			// eslint-disable-next-line no-underscore-dangle
-			this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
+			// this.basketLoans = basketItems.filter(item => item.__typename === 'LoanReservation');
 		}
 	},
 	created() {
@@ -366,17 +375,33 @@ export default {
 		this.loadingPromotion = true;
 		// check for applied promo
 		this.verifyOrApplyPromotion();
+		// update basket state if any loans are already in the basket
+		if (this.itemsInBasket.length) {
+			this.updateBasketState();
+		}
 	},
 	computed: {
 		pageTitle() {
 			// TODO: add field on Contentful Page for this
 			return this.pageData?.page?.pageLayout?.name;
 		},
+		// TODO: this needs to be standardized
 		headerAreaContent() {
-			return this.pageData?.page?.contentGroups?.promoCampaignTestCg;
+			const contentGroups = this.pageData?.page?.contentGroups;
+			// Expects a content group with key = `campaign-hero-cg`
+			const heroArea = contentGroups.campaignHeroCg;
+			return heroArea;
+			// return this.pageData?.page?.contentGroups?.promoCampaignTestCg;
 		},
 		promoAmount() {
-			return this.promoData?.promoFund?.promoPrice ?? null;
+			// TODO: get promoAmount from basket credit instead
+			// - The promoPrice is currently hard-coded to 25
+			// return this.promoData?.promoFund?.promoPrice ?? null;
+			if (this.basketTargetPromoCredit.length) {
+				const promoAmount = this.basketTargetPromoCredit[0]?.available ?? '0';
+				return promoAmount;
+			}
+			return '0';
 		},
 		filters() {
 			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
@@ -453,6 +478,8 @@ export default {
 			});
 		},
 		getPromoInformationFromBasket() {
+			console.log('getting promotion info from basket');
+
 			const basketItems = this.apollo.query({
 				query: basketItemsQuery,
 				variables: {
@@ -465,16 +492,22 @@ export default {
 			basketItems.then(({ data }) => {
 				// console.log(data);
 				// TODO: Handle success state (transition to checkout view, fallback to tipmsg)
-
 				if (typeof data.shop === 'undefined') {
 					console.error('missing shop basket');
 					return false;
 				}
 
+				// Validate baseline promo + basket state (1 loan, 1 credit, 0 donation)
+				this.validatePromoBasketState(data);
+				const basketItemValues = data.shop?.basket?.items?.values ?? [];
+				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
+
 				const credits = data.shop?.basket?.credits?.values;
+				// TODO: target this check on the promoFund.id or creditType when possible
 				const targetPromo = credits.filter(credit => {
 					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
 				});
+				this.basketTargetPromoCredit = targetPromo;
 				// Primary PromoCampaign Query
 				// Future usage will not require the promoFundId relying only on the basket id
 				return getPromoFromBasket(targetPromo[0].promoFund?.id, this.apollo);
@@ -485,16 +518,26 @@ export default {
 				this.loadingPromotion = false;
 				// Initialize loan query + observer there are no loans in the basket
 				// TODO: Handle ability to add additional loans
-				if (!this.basketLoans.length) {
-					this.showLoans = true;
-					this.$refs.loandisplayref.activateLoanWatchQuery();
-					// this.scrollToSection('campaignLoanDisplay');
-				}
+				// if (!this.basketLoans.length) {
+				this.showLoans = true;
+				this.$refs.loandisplayref.activateLoanWatchQuery();
+				// this.scrollToSection('campaignLoanDisplay');
+				// }
 				this.updateBasketState();
 			});
 		},
-		addToBasket() {
-			this.initializeBasketRefresh();
+		// addToBasket() {
+		// 	this.initializeBasketRefresh();
+		// },
+		handleAddToBasket(payload) {
+			console.log(payload);
+			// this.$emit('add-to-basket', payload);
+			if (payload.eventSource === 'checkoutBtnClick') {
+				console.log('checkout clicked');
+				// this.checkoutVisible = true;
+			} else {
+				this.initializeBasketRefresh();
+			}
 		},
 		refreshTotals() {
 			this.initializeBasketRefresh();
@@ -518,6 +561,13 @@ export default {
 				this.validatePromoBasketState(data);
 				const basketItemValues = data.shop?.basket?.items?.values ?? [];
 				this.itemsInBasket = basketItemValues.length ? basketItemValues.map(item => item.id) : [];
+
+				const credits = data.shop?.basket?.credits?.values;
+				// TODO: target this check on the promoFund.id or creditType when possible
+				const targetPromo = credits.filter(credit => {
+					return credit.promoFund ? Object.keys(credit.promoFund).length > 0 : false;
+				});
+				this.basketTargetPromoCredit = targetPromo;
 			});
 		},
 		validatePromoBasketState(basketState) {
@@ -536,30 +586,34 @@ export default {
 			} = this.basketTotals;
 
 			let simpleCheckoutEligible = true;
+			let simpleCheckoutRestrictedMessage = '';
 
 			// TODO: Log or notify for any of the following conditions
 			if (numeral(donationTotal).value() > 0) {
 				simpleCheckoutEligible = false;
+				simpleCheckoutRestrictedMessage = 'There is a donation present on the basket.';
 			}
 
 			if (numeral(creditAmountNeeded).value() > 0) {
 				simpleCheckoutEligible = false;
+				simpleCheckoutRestrictedMessage = 'Additional credit or funds are needed to complete the transaction';
 			}
 
 			// TODO: Refine and document narrow in-context checkout conditions
 			// TODO: Handle complex checkout scenarios
-			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()
-				|| numeral(itemTotal).value() !== numeral(loanReservationTotal).value()
-				|| numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
-				simpleCheckoutEligible = false;
+			if (numeral(creditAppliedTotal).value() !== numeral(loanReservationTotal).value()) {
+				// simpleCheckoutEligible = false;
+				simpleCheckoutRestrictedMessage = 'Promo Credit applied does not match loan reservation total';
 			}
 
-			// Basket is not eligible for simple incontext checkout
-			if (!simpleCheckoutEligible) {
-				// turn off loading state
-				this.$refs.loandisplayref.loadingLoans = false;
-				// exit method
-				return false;
+			if (numeral(itemTotal).value() !== numeral(loanReservationTotal).value()) {
+				// simpleCheckoutEligible = false;
+				simpleCheckoutRestrictedMessage = 'Item total does not match loan reservation total';
+			}
+
+			if (numeral(creditAvailableTotal).value() !== numeral(loanReservationTotal).value()) {
+				// simpleCheckoutEligible = false;
+				simpleCheckoutRestrictedMessage = 'Credit available total does not match loan reservation total.';
 			}
 
 			const basketItems = basketState.shop?.basket?.items?.values ?? [];
@@ -569,6 +623,20 @@ export default {
 			this.donations = basketItems.filter(item => item.__typename === 'Donation');
 			// eslint-disable-next-line no-underscore-dangle
 			this.kivaCards = basketItems.filter(item => item.__typename === 'KivaCard');
+
+			// Basket is not eligible for simple incontext checkout
+			if (!simpleCheckoutEligible) {
+				console.log('ineligible for incontext checkout');
+				// Temporary notice of failure condition that was hit
+				// TODO: Create lightbox or other notice with action options for resolution
+				if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
+					this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
+				}
+				// turn off loading state
+				this.$refs.loandisplayref.loadingLoans = false;
+				// exit method
+				return false;
+			}
 
 			this.validateBasket()
 				.then(validationStatus => {
@@ -599,13 +667,17 @@ export default {
 			) {
 				console.log('lender verification required');
 				this.showVerification = true;
-			// } else if (this.teamId) {
-			// 	// check for team join optionality
-			// 	console.log(this.teamId);
-			} else {
-				// signify checkout is ready
+			} else if (this.teamId) {
+				// check for team join optionality
+				console.log(this.teamId);
+			}
+
+			// signify checkout is ready
+			this.showCheckout();
+		},
+		showCheckout() {
+			if (this.basketLoans.length) {
 				this.checkoutVisible = true;
-				this.scrollToSection('campaignCheckout');
 			}
 		},
 		transactionComplete(payload) {
@@ -619,7 +691,7 @@ export default {
 		verificationComplete() {
 			// TODO: There is currently no way to know if someone has already submitted
 			// maybe use localstorage
-			this.checkoutVisible = true;
+			this.showCheckout();
 		},
 
 		setAuthStatus(userState) {
