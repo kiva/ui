@@ -16,23 +16,19 @@
 				</div>
 
 				<div v-if="promoApplied && !promoErrorMessage" class="columns campaign-status__text-container">
-					<p class="campaign-status__validated-message">
-						<kv-icon name="confirmation" /> Promotion applied
-					</p>
-					<h2 class="campaign-status__header">
+					<p class="campaign-status__header campaign-status__validated-message">
 						<template v-if="promoAmount === '$0.00'">
 							Calculating promotion...
 						</template>
 						<template v-else>
 							<!-- eslint-disable-next-line max-len -->
-							You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
+							<kv-icon name="confirmation" /> You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
 						</template>
-					</h2>
-					<!-- <ul>
-						<li>Choose your borrower below.</li>
-						<li>Click "Add to basket"</li>
-						<li>Click "Checkout" to complete your loan</li>
-					</ul> -->
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<kv-button @click.native="$emit('show-checkout')" class="text-link">
+							Show Checkout
+						</kv-button>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -40,11 +36,13 @@
 </template>
 
 <script>
+import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
+		KvButton,
 		KvIcon,
 		KvLoadingSpinner,
 	},
@@ -79,7 +77,7 @@ export default {
 
 .campaign-status {
 	max-width: inherit;
-	padding: 2rem;
+	padding: 1rem;
 	background-color: rgba(0, 0, 0, 0.1);
 
 	&__border {
@@ -87,7 +85,7 @@ export default {
 		position: relative;
 		z-index: 1;
 		margin: 0 rem-calc(10);
-		padding: 1rem;
+		padding: 0;
 
 		@include breakpoint(xga) {
 			margin: 0 auto;
@@ -96,7 +94,8 @@ export default {
 
 	&__validating-promo {
 		text-align: center;
-		width: 100%;
+		width: auto;
+		margin: 0;
 
 		::v-deep >>> .loading-overlay .spinner-wrapper {
 			position: relative;
@@ -115,6 +114,10 @@ export default {
 
 	&__validated-message,
 	&__error-message {
+		font-weight: bold;
+		margin: 0;
+		width: auto;
+
 		::v-deep .wrapper {
 			vertical-align: sub;
 		}
@@ -131,11 +134,6 @@ export default {
 		::v-deep .icon-confirmation {
 			fill: $kiva-green;
 		}
-	}
-
-	&__header {
-		font-weight: bold;
-		margin-top: rem-calc(20);
 	}
 }
 </style>
