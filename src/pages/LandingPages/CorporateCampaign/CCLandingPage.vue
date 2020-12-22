@@ -14,8 +14,8 @@
 			/>
 
 			<!-- TODO: Alter CTA if Checkout is ready -->
-			<campaign-header
-				:header-area-content="headerAreaContent"
+			<campaign-hero
+				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
 				@jump-to-loans="scrollToSection('campaignLoanDisplay')"
 			/>
@@ -128,7 +128,7 @@ import { validateQueryParams, getPromoFromBasket } from '@/util/campaignUtils';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
 import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
-import CampaignHeader from '@/components/CorporateCampaign/CampaignHeader';
+import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
@@ -308,7 +308,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
-		CampaignHeader,
+		CampaignHero,
 		CampaignHowKivaWorks,
 		CampaignLoanGridDisplay,
 		CampaignLoanRow,
@@ -438,12 +438,11 @@ export default {
 			return this.pageData?.page?.pageLayout?.name;
 		},
 		// TODO: this needs to be standardized
-		headerAreaContent() {
+		heroAreaContent() {
 			const contentGroups = this.pageData?.page?.contentGroups;
 			// Expects a content group with key = `campaign-hero-cg`
 			const heroArea = contentGroups.campaignHeroCg;
 			return heroArea;
-			// return this.pageData?.page?.contentGroups?.promoCampaignTestCg;
 		},
 		promoAmount() {
 			// TODO: get promoAmount from basket credit instead
