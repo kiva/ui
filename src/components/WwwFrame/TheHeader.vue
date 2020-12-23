@@ -26,47 +26,45 @@
 						</div>
 					</div>
 					<div class="flexible-center-area"></div>
-					<div>
-						<router-link
-							v-show="showBasket"
-							to="/basket"
-							class="header-button show-for-large"
-							v-kv-track-event="['TopNav','click-Basket']"
-						>
-							<span>
-								<span class="amount">{{ basketCount }}</span>
-								Basket
-							</span>
-						</router-link>
-						<router-link
-							v-show="isVisitor"
-							:to="loginUrl"
-							class="header-button"
-							:event="showPopupLogin ? '' : 'click'"
-							@click.native="auth0Login"
-							v-kv-track-event="[
-								['TopNav','click-Sign-in'],
-								['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
-							]"
-						>
-							<span>Sign in</span>
-						</router-link>
-						<router-link
-							v-show="!isVisitor"
-							:id="myKivaMenuId"
-							to="/portfolio"
-							class="header-button my-kiva"
-							v-kv-track-event="['TopNav','click-Portfolio']"
-						>
-							<span>
-								<span class="amount">{{ balance | numeral('$0') }}</span>
-								<img
-									:src="profilePic"
-									alt="My portfolio"
-								>
-							</span>
-						</router-link>
-					</div>
+					<router-link
+						v-show="showBasket"
+						to="/basket"
+						class="header-button show-for-large"
+						v-kv-track-event="['TopNav','click-Basket']"
+					>
+						<span>
+							<span class="amount">{{ basketCount }}</span>
+							Basket
+						</span>
+					</router-link>
+					<router-link
+						v-show="isVisitor"
+						:to="loginUrl"
+						class="header-button"
+						:event="showPopupLogin ? '' : 'click'"
+						@click.native="auth0Login"
+						v-kv-track-event="[
+							['TopNav','click-Sign-in'],
+							['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
+						]"
+					>
+						<span>Sign in</span>
+					</router-link>
+					<router-link
+						v-show="!isVisitor"
+						:id="myKivaMenuId"
+						to="/portfolio"
+						class="header-button my-kiva"
+						v-kv-track-event="['TopNav','click-Portfolio']"
+					>
+						<span>
+							<span class="amount">{{ balance | numeral('$0') }}</span>
+							<img
+								:src="profilePic"
+								alt="My portfolio"
+							>
+						</span>
+					</router-link>
 				</div>
 			</template>
 			<template v-else>
@@ -891,7 +889,7 @@ $close-search-button-size: 2.5rem;
 .top-nav--corporate {
 	.flexible-center-area {
 		flex: 1;
-		order: unset;
+		order: 0;
 	}
 
 	.header-logo {
