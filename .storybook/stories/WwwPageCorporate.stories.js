@@ -23,7 +23,8 @@ export default {
 	decorators: [StoryRouter()],
 	args: {
 		headerTheme: null,
-		footerTheme: null
+		footerTheme: null,
+		corporateLogoUrl: 'https://via.placeholder.com/1350x150'
 	},
 	argTypes: {
 		headerTheme: {
@@ -65,6 +66,7 @@ export const Default = (args, { argTypes }) => ({
 		<www-page-corporate
 			:header-theme="headerTheme"
 			:footer-theme="footerTheme"
+			:corporate-logo-url="corporateLogoUrl"
 		>
 			<div class="row" style="padding: 1.625rem 0;">
 				<div class="small-12 columns"><h1>Lorem ipsum</h1></div>

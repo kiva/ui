@@ -43,11 +43,10 @@ export default {
 			type: Object,
 			default() {},
 		},
-	},
-	data() {
-		return {
-			corporateLogoUrl: null
-		};
+		corporateLogoUrl: {
+			type: String,
+			default: ''
+		}
 	},
 	apollo: {
 		preFetch(config, client, args) {
@@ -56,11 +55,6 @@ export default {
 				path: _get(args, 'route.path')
 			});
 		}
-	},
-	mounted() {
-		console.log('mounted');
-		// TODO: fetch corporate logo url from contentful here.
-		this.corporateLogoUrl = 'https://via.placeholder.com/1350x150';
 	}
 };
 </script>
