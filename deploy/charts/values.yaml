@@ -82,7 +82,7 @@ configmap:
   - key: NODE_ENV
     value: "production"
   - key: DD_AGENT_HOST
-    value: "datadog-statsd.datadog"
+    value: "datadog-apm-cluster-agent-metrics-api.datadog.svc.cluster.local"
   - key: DD_TRACE_AGENT_PORT
     value: 8126
   - key: DD_SERVICE_NAME
