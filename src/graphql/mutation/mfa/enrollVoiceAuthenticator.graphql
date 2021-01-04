@@ -2,6 +2,7 @@ mutation enrollVoiceAuthenticator($mfa_token: String!, $phone_number: String!) {
 	my {
 		enrollVoiceAuthenticator( mfa_token: $mfa_token, phone_number: $phone_number) {
 			binding_method,
+			recovery_codes,
 			oob_code
 		}
 	}

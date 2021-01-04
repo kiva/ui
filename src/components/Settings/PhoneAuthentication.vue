@@ -116,6 +116,13 @@
 					</template>
 				</form>
 			</section>
+
+			<section class="app-authentication__body" v-if="step === 3">
+				<recovery-code-confirm
+					:mfa-recovery-code="recoveryCode"
+					@done="confirmRecoveryCode"
+				/>
+			</section>
 		</kv-lightbox>
 	</div>
 </template>
@@ -126,6 +133,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
+import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
 
 import enrollSMSAuthenticatorMutation from '@/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
 import enrollVoiceAuthenticatorMutation from '@/graphql/mutation/mfa/enrollVoiceAuthenticator.graphql';
@@ -145,6 +153,7 @@ export default {
 		KvLoadingSpinner,
 		KvPhoneInput,
 		KvVerificationCodeInput,
+		RecoveryCodeConfirm,
 	},
 	mixins: [validationMixin],
 	inject: ['apollo', 'kvAuth0'],
@@ -170,6 +179,7 @@ export default {
 			oobCode: '',
 			enrollmentPending: false,
 			enrollmentError: '',
+			recoveryCode: '',
 			verificationPending: false,
 			verificationError: '',
 			step: 0,
@@ -230,9 +240,11 @@ export default {
 					if (result.errors) {
 						throw result.errors;
 					} else {
-						this.oobCode = this.enrollmentType === 'SMS'
-							? result?.data?.my?.enrollSMSAuthenticator?.oob_code
-							: result?.data?.my?.enrollVoiceAuthenticator?.oob_code;
+						const authenticator = this.enrollmentType === 'SMS'
+							? result?.data?.my?.enrollSMSAuthenticator || {}
+							: result?.data?.my?.enrollVoiceAuthenticator || {};
+						this.recoveryCode = authenticator.recovery_codes?.[0] || '';
+						this.oobCode = authenticator.oob_code || '';
 						if (this.oobCode) {
 							this.step = 1;
 						}
@@ -269,19 +281,25 @@ export default {
 				}).then(result => {
 					if (result.errors) {
 						throw result.errors;
+					}
+					this.verificationPending = false;
+					if (this.recoveryCode) {
+						this.step = 3;
 					} else {
 						this.completeSetup();
 					}
 				})
 				.catch(err => {
 					console.error(err);
+					this.verificationPending = false;
 					this.verificationError = err?.[0]?.message
 						|| err
 						|| 'Error. Please refresh the page and try again.';
-				})
-				.finally(() => {
-					this.verificationPending = false;
 				});
+		},
+		confirmRecoveryCode() {
+			this.recoveryCode = '';
+			this.completeSetup();
 		},
 		completeSetup() {
 			if (this.lightboxVisible) {
