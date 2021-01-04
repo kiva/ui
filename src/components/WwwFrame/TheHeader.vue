@@ -28,7 +28,7 @@
 					<div class="flexible-center-area"></div>
 					<router-link
 						v-show="showBasket"
-						to="/basket"
+						:to="addHashToRoute('show-basket')"
 						class="header-button show-for-large"
 						v-kv-track-event="['TopNav','click-Basket']"
 					>
@@ -53,7 +53,7 @@
 					<router-link
 						v-show="!isVisitor"
 						:id="myKivaMenuId"
-						to="/portfolio"
+						:to="addHashToRoute('show-portfolio')"
 						class="header-button my-kiva"
 						v-kv-track-event="['TopNav','click-Portfolio']"
 					>
@@ -540,6 +540,11 @@ export default {
 		},
 		onLendMenuHide() {
 			this.$refs.lendMenu.onClose();
+		},
+		addHashToRoute(hash) {
+			const route = { ...this.$route };
+			route.hash = hash;
+			return route;
 		},
 		loadLendInfo() {
 			this.$refs.lendMenu.onLoad();
