@@ -1,8 +1,9 @@
 <template>
-	<div class="www-page">
+	<div class="www-page-corporate">
 		<the-header
 			:theme="headerTheme"
 			:corporate="true"
+			class="www-page-corporate__header"
 		>
 			<template v-slot:corporateLogo v-if="corporateLogoUrl">
 				<img :src="corporateLogoUrl" alt="">
@@ -61,22 +62,27 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
+// Position: sticky should work, but nav bounces some during scroll */
 
-.www-page {
-	height: 100%;
-	display: flex;
-	flex-flow: column nowrap;
+/* .www-page-corporate {
+	position: relative;
 
-	@media print {
-		display: block;
+&__header {
+	position: sticky;
+	top: 0;
+} */
+
+// workaround for position: sticky jank
+.www-page-corporate {
+	padding-top: 2.8125rem; // height of the nav bar
+	@include breakpoint(large) {
+		padding-top: 4rem;
 	}
 
-	& > * {
-		flex-shrink: 0; // Handle IE defaulting flex-shrink to 1
-	}
-
-	main {
-		flex-grow: 1;
+	&__header {
+		position: fixed;
+		top: 0;
+		width: 100%;
 	}
 }
 </style>
