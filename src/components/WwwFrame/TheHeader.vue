@@ -1,11 +1,69 @@
 <template>
-	<header class="top-nav" :style="cssVars">
+	<header
+		class="top-nav"
+		:class="{
+			'top-nav--corporate': corporate,
+			'top-nav--minimal': minimal
+		}"
+		:style="cssVars"
+	>
 		<nav aria-label="Primary navigation">
 			<template v-if="minimal">
 				<div class="header-row row align-center">
 					<router-link class="header-logo header-button" to="/" v-kv-track-event="['TopNav','click-Logo']">
 						<kiva-logo class="icon" />
 						<span class="show-for-sr">Kiva Home</span>
+					</router-link>
+				</div>
+			</template>
+			<template v-else-if="corporate">
+				<div class="header-row row">
+					<div class="header-logo ">
+						<kiva-logo class="icon" />
+						<span class="show-for-sr">Kiva</span>
+						<div class="header-corporate-logo" v-if="!!this.$slots.corporateLogo">
+							<slot name="corporateLogo"></slot>
+						</div>
+					</div>
+					<div class="flexible-center-area"></div>
+					<router-link
+						v-show="showBasket"
+						:to="addHashToRoute('show-basket')"
+						class="header-button show-for-large"
+						v-kv-track-event="['TopNav','click-Basket']"
+					>
+						<span>
+							<span class="amount">{{ basketCount }}</span>
+							Basket
+						</span>
+					</router-link>
+					<router-link
+						v-show="isVisitor"
+						:to="loginUrl"
+						class="header-button"
+						:event="showPopupLogin ? '' : 'click'"
+						@click.native="auth0Login"
+						v-kv-track-event="[
+							['TopNav','click-Sign-in'],
+							['TopNav','EXP-GROW-282-Oct2020',redirectToLoginExperimentVersion]
+						]"
+					>
+						<span>Sign in</span>
+					</router-link>
+					<router-link
+						v-show="!isVisitor"
+						:id="myKivaMenuId"
+						:to="addHashToRoute('show-portfolio')"
+						class="header-button my-kiva"
+						v-kv-track-event="['TopNav','click-Portfolio']"
+					>
+						<span>
+							<span class="amount">{{ balance | numeral('$0') }}</span>
+							<img
+								:src="profilePic"
+								alt="My portfolio"
+							>
+						</span>
 					</router-link>
 				</div>
 			</template>
@@ -372,6 +430,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		corporate: {
+			type: Boolean,
+			default: false
+		},
 		theme: {
 			type: Object,
 			default: () => {}
@@ -478,6 +540,11 @@ export default {
 		},
 		onLendMenuHide() {
 			this.$refs.lendMenu.onClose();
+		},
+		addHashToRoute(hash) {
+			const route = { ...this.$route };
+			route.hash = hash;
+			return route;
 		},
 		loadLendInfo() {
 			this.$refs.lendMenu.onLoad();
@@ -821,6 +888,40 @@ $close-search-button-size: 2.5rem;
 		img {
 			height: $header-height-large * 0.8;
 		}
+	}
+}
+
+.top-nav--corporate {
+	.flexible-center-area {
+		flex: 1;
+		order: 0;
+	}
+
+	.header-logo {
+		height: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		color: $header-link-color; // IE11 fallback
+		color: var(--kv-header-link-color, $header-link-color);
+
+		@include breakpoint(large) {
+			padding: 0 1rem;
+		}
+	}
+}
+
+.header-corporate-logo {
+	padding: 0.25rem 0.75rem;
+	height: 100%;
+
+	@include breakpoint(large) {
+		padding: 1rem;
+	}
+
+	img {
+		height: 100%;
 	}
 }
 </style>

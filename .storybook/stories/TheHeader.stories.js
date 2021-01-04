@@ -45,6 +45,7 @@ export default {
 	args: {
 		hideSearchInHeader: false,
 		minimal: false,
+		corporate: false,
 		theme: null,
 	},
 	argTypes: {
@@ -73,6 +74,7 @@ export const Default = (args, { argTypes }) => ({
 	template: `
 		<the-header
 			:minimal="minimal"
+			:corporate="corporate"
 			:theme="theme"
 			:hide-search-in-header="hideSearchInHeader"
 		/>
@@ -88,6 +90,28 @@ export const Minimal = Default.bind({});
 Minimal.args = {
 	minimal: true,
 };
+
+export const Corporate = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader
+	},
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	template: `
+		<the-header
+			:corporate="corporate"
+			:theme="theme"
+		>
+			<template v-slot:corporateLogo>
+				<img src="https://via.placeholder.com/350x150">
+			</template>
+		</the-header>
+	`,
+});
+Corporate.args = {
+	corporate: true,
+};
+
 
 export const Themed = Default.bind({});
 Themed.args = {

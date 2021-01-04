@@ -1,7 +1,8 @@
 <template>
-	<www-page-minimal
+	<www-page-corporate
 		:header-theme="headerTheme"
 		:footer-theme="footerTheme"
+		:corporate-logo-url="corporateLogoUrl"
 	>
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
@@ -117,7 +118,7 @@
 				<campaign-thanks :transaction-id="transactionId" />
 			</section>
 		</div>
-	</www-page-minimal>
+	</www-page-corporate>
 </template>
 
 <script>
@@ -139,7 +140,7 @@ import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-import WwwPageMinimal from '@/components/WwwFrame/WwwPageMinimal';
+import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
 
@@ -318,7 +319,7 @@ export default {
 		InContextCheckout,
 		KvButton,
 		KvLightbox,
-		WwwPageMinimal,
+		WwwPageCorporate,
 	},
 	mixins: [
 		checkoutUtils
@@ -485,6 +486,10 @@ export default {
 		},
 		verificationSumbitted() {
 			return this.pageQuery?.formComplete === 'true' || false;
+		},
+		corporateLogoUrl() {
+			// TODO: Return the corporate logo from contentful
+			return 'https://via.placeholder.com/1350x150';
 		}
 	},
 	methods: {
