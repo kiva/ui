@@ -79,6 +79,12 @@
 			</p>
 			<template slot="controls">
 				<kv-button
+					class="smallest secondary"
+					@click.prevent.native="showRemoveLightbox = false"
+				>
+					Cancel
+				</kv-button>
+				<kv-button
 					class="smallest alert"
 					v-if="!isProcessing"
 					@click.prevent.native="removeCard(selectedPaymentMethod.nonce)"
