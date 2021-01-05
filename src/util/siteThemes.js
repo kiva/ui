@@ -66,7 +66,7 @@ export const wrdHeaderTheme = {
 export const wrdFooterTheme = {
 	themeKey: 'WRD',
 	backgroundColor: '#6b62ca',
-	logoColor: '#6b62ca',
+	logoColor: '#fff',
 	textColor: '#fff',
 	linkColor: '#b9ddb8',
 	separatorColor: '#fff'
@@ -84,7 +84,7 @@ export const fifteenYearHeaderTheme = {
 export const fifteenYearFooterTheme = {
 	themeKey: '15year',
 	backgroundColor: '#3e4653',
-	logoColor: '#3E4653',
+	logoColor: '#fff',
 	textColor: '#F8F8F8',
 	linkColor: '#fff',
 	separatorColor: '#F8F8F8'
