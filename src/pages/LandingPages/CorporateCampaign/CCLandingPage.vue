@@ -11,6 +11,7 @@
 				:promo-error-message="promoErrorMessage"
 				:promo-applied="promoApplied"
 				:promo-amount="promoAmount"
+				:promo-name="pageTitle"
 				@show-checkout="showCheckout"
 			/>
 
