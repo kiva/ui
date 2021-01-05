@@ -22,7 +22,10 @@
 						</template>
 						<template v-else>
 							<!-- eslint-disable-next-line max-len -->
-							<kv-icon name="confirmation" /> You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
+							<span class="campaign-status__currency-icon"><kv-icon name="currency-usd" /></span>
+							You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span>
+							<span v-if="promoName">from {{ promoName }}</span>
+							to lend!
 						</template>
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						<kv-button @click.native="$emit('show-checkout')" class="text-link">
@@ -62,6 +65,10 @@ export default {
 		promoAmount: {
 			type: String,
 			default: '$0.00'
+		},
+		promoName: {
+			type: String,
+			default: null
 		}
 	},
 	data() {
