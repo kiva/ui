@@ -4,7 +4,7 @@
 		<div class="title-area">
 			<div class="row column">
 				<h1>
-					Payments Settings
+					Payment Methods
 				</h1>
 			</div>
 		</div>
@@ -35,15 +35,15 @@
 									:id="`creditCard-${index}`"
 									:radio-value="paymentMethod.nonce"
 									v-model="selectedDefaultCardNonce"
-									:checked="selectedDefaultCardNonce === paymentMethod.nonce"
 								>
 									<img class="payment-settings-default-form__cc-icon"
 										:src="paymentMethod.imageUrl"
+										alt="credit card"
 									> {{ paymentMethod.description }}
 								</kv-radio>
 								<kv-button
 									@click.native.prevent="showLightbox(paymentMethod)"
-									class="payment-settings-default-form__remove-btn text-link text-link--red"
+									class="payment-settings-default-form__remove-btn text-link text-link--alert"
 								>
 									Remove
 								</kv-button>
@@ -79,13 +79,13 @@
 			</p>
 			<template slot="controls">
 				<kv-button
-					class="smallest warning"
+					class="smallest alert"
 					v-if="!isProcessing"
 					@click.prevent.native="removeCard(selectedPaymentMethod.nonce)"
 				>
 					Remove card
 				</kv-button>
-				<kv-button class="smallest warning" v-else>
+				<kv-button class="smallest alert" v-else>
 					Removing <kv-loading-spinner />
 				</kv-button>
 			</template>
@@ -235,7 +235,6 @@ export default {
 					throw new Error(updateResponse.errors[0].extensions.code || updateResponse.errors[0].message);
 				}
 				this.$showTipMsg('You have successfully changed your default card');
-				this.isChanged = false;
 			} catch (err) {
 				this.$showTipMsg('There was a problem saving your settings', 'error');
 			} finally {

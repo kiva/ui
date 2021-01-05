@@ -34,22 +34,6 @@ export default {
 @import 'settings';
 @import 'foundation';
 
-@mixin warning-styles() {
-	background-color: $kiva-accent-red;
-	box-shadow: $button-secondary-shadow $kiva-accent-red;
-	border: $button-hollow-border-width solid $kiva-accent-red;
-	border-bottom: none;
-	color: $white;
-
-	&:hover,
-	&:focus {
-		background-color: $kiva-accent-red;
-		box-shadow: $button-secondary-shadow $kiva-accent-red;
-		border-color: $kiva-accent-red;
-		color: $white;
-	}
-}
-
 @mixin secondary-styles() {
 	background-color: $button-secondary-background;
 	box-shadow: $button-secondary-shadow $button-secondary-border-color;
@@ -91,8 +75,10 @@ export default {
 		}
 	}
 
-	&.warning {
-		@include warning-styles();
+	&.alert {
+		@include button-style($kiva-accent-red, auto, $white);
+
+		box-shadow: $button-secondary-shadow darken($kiva-accent-red, 10%);
 	}
 
 	&.secondary {
@@ -145,7 +131,7 @@ export default {
 		background: transparent;
 	}
 
-	&--red {
+	&--alert {
 		color: $kiva-accent-red;
 
 		&:hover,

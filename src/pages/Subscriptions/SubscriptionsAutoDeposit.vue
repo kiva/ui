@@ -209,6 +209,7 @@
 												<strong>Current payment method:</strong><br>
 												<img class="ad-update-lightbox__cc-icon"
 													:src="paymentMethod.imageUrl"
+													alt="credit card"
 												>
 												{{ paymentMethod.description }}
 											</div>

@@ -71,6 +71,7 @@
 												<strong>Current payment method:</strong><br>
 												<img class="mg-update-lightbox__cc-icon"
 													:src="paymentMethod.imageUrl"
+													alt="credit card"
 												>
 												{{ paymentMethod.description }}
 											</div>

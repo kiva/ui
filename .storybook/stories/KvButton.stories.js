@@ -30,9 +30,9 @@ export const Secondary = () => ({
 	template: '<kv-button class="secondary">Secondary</kv-button>'
 });
 
-export const Warning = () => ({
+export const Alert = () => ({
 	components: { KvButton },
-	template: '<kv-button class="warning">Warning</kv-button>'
+	template: '<kv-button class="alert">Alert</kv-button>'
 });
 
 export const SecondarySmaller = () => ({
