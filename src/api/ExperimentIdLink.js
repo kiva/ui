@@ -52,6 +52,6 @@ export default () => {
 			return previousContext;
 		}
 		// add header to existing context and pass along
-		return _set(previousContext, 'headers.X-Experiment', experimentHeader);
+		return _set(previousContext, 'headers.X-Experiments', experimentHeader);
 	});
 };
