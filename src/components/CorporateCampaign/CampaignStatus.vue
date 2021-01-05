@@ -27,10 +27,6 @@
 							<span v-if="promoName">from {{ promoName }}</span>
 							to lend!
 						</template>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<kv-button @click.native="$emit('show-checkout')" class="text-link">
-							Show Checkout
-						</kv-button>
 					</p>
 				</div>
 			</div>
@@ -39,13 +35,11 @@
 </template>
 
 <script>
-import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 
 export default {
 	components: {
-		KvButton,
 		KvIcon,
 		KvLoadingSpinner,
 	},
@@ -84,8 +78,9 @@ export default {
 
 .campaign-status {
 	max-width: inherit;
-	padding: 1rem;
+	padding: 0.5rem 1rem;
 	background-color: rgba(0, 0, 0, 0.1);
+	text-align: center;
 
 	&__border {
 		// min-height: 10rem;
@@ -100,7 +95,6 @@ export default {
 	}
 
 	&__validating-promo {
-		text-align: center;
 		width: auto;
 		margin: 0;
 
