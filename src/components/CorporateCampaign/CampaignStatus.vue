@@ -110,6 +110,7 @@ export default {
 
 		p {
 			position: relative;
+			margin: 0;
 		}
 	}
 

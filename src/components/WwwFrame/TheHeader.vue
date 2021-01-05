@@ -925,6 +925,7 @@ $close-search-button-size: 2.5rem;
 	justify-content: center;
 	align-items: center;
 	height: rem-calc(28);
+	padding-left: 1rem;
 
 	&__kiva {
 		fill: $header-logo-color; // IE11 fallback
