@@ -34,7 +34,7 @@ function buildExpHeaders() {
 	targetExps.forEach((target, index) => {
 		const expSegments = target.split(':');
 		if (expSegments.length && expSegments.length > 1) {
-			experimentHeader += `${expSegments[0]}:${expSegments[1]}`;
+			experimentHeader += `${expSegments[0]};${expSegments[1]}`;
 			if (targetExps.length - 1 > index) {
 				experimentHeader += ',';
 			}
