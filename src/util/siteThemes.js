@@ -11,6 +11,7 @@ export const lightHeader = {
 export const lightFooter = {
 	themeKey: 'lightFooter',
 	backgroundColor: '#fff',
+	logoColor: '#4faf4e',
 	textColor: '#484848',
 	linkColor: '#4faf4e',
 	separatorColor: '#8ccb8c'
@@ -28,6 +29,7 @@ export const blueHeader = {
 export const blueFooter = {
 	themeKey: 'blueFooter',
 	backgroundColor: '#005CC4',
+	logoColor: '#fff',
 	textColor: '#fff',
 	linkColor: '#ededed',
 	separatorColor: '#0b70e2'
@@ -45,6 +47,7 @@ export const iwdHeaderTheme = {
 export const iwdFooterTheme = {
 	themeKey: 'IWD',
 	backgroundColor: '#fff',
+	logoColor: '#060f9f',
 	textColor: '#484848',
 	linkColor: '#060f9f',
 	separatorColor: '#a0e2ba'
@@ -63,6 +66,7 @@ export const wrdHeaderTheme = {
 export const wrdFooterTheme = {
 	themeKey: 'WRD',
 	backgroundColor: '#6b62ca',
+	logoColor: '#fff',
 	textColor: '#fff',
 	linkColor: '#b9ddb8',
 	separatorColor: '#fff'
@@ -80,6 +84,7 @@ export const fifteenYearHeaderTheme = {
 export const fifteenYearFooterTheme = {
 	themeKey: '15year',
 	backgroundColor: '#3e4653',
+	logoColor: '#fff',
 	textColor: '#F8F8F8',
 	linkColor: '#fff',
 	separatorColor: '#F8F8F8'

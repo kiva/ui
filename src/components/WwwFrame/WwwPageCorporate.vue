@@ -3,17 +3,15 @@
 		<the-header
 			:theme="headerTheme"
 			:corporate="true"
+			:corporate-logo-url="corporateLogoUrl"
 			class="www-page-corporate__header"
-		>
-			<template v-slot:corporateLogo v-if="corporateLogoUrl">
-				<img :src="corporateLogoUrl" alt="">
-			</template>
-		</the-header>
+		/>
 		<main>
 			<slot></slot>
 		</main>
-		<the-footer
+		<the-footer-corporate
 			:theme="footerTheme"
+			:corporate-logo-url="corporateLogoUrl"
 		/>
 		<cookie-banner />
 	</div>
@@ -23,8 +21,8 @@
 import _get from 'lodash/get';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
-import TheHeader from './TheHeader';
-import TheFooter from './TheFooter';
+import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
+import TheHeader from '@/components/WwwFrame/TheHeader';
 
 export default {
 	inject: [
@@ -32,7 +30,7 @@ export default {
 	],
 	components: {
 		CookieBanner,
-		TheFooter,
+		TheFooterCorporate,
 		TheHeader,
 	},
 	props: {

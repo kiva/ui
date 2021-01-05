@@ -18,12 +18,15 @@
 			</template>
 			<template v-else-if="corporate">
 				<div class="header-row row">
-					<div class="header-logo ">
-						<kiva-logo class="icon" />
-						<span class="show-for-sr">Kiva</span>
-						<div class="header-corporate-logo" v-if="!!this.$slots.corporateLogo">
-							<slot name="corporateLogo"></slot>
-						</div>
+					<div class="logo-group">
+						<kiva-logo class="logo-group__kiva" />
+						<span v-if="corporateLogoUrl" class="logo-group__separator" aria-hidden="true">+</span>
+						<img
+							v-if="corporateLogoUrl"
+							class="logo-group__corporate"
+							:src="corporateLogoUrl"
+							alt=""
+						>
 					</div>
 					<div class="flexible-center-area"></div>
 					<router-link
@@ -433,6 +436,10 @@ export default {
 		corporate: {
 			type: Boolean,
 			default: false
+		},
+		corporateLogoUrl: {
+			type: String,
+			default: ''
 		},
 		theme: {
 			type: Object,
@@ -912,16 +919,37 @@ $close-search-button-size: 2.5rem;
 	}
 }
 
-.header-corporate-logo {
-	padding: 0.25rem 0.75rem;
-	height: 100%;
+.logo-group {
+	align-self: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: rem-calc(28);
 
-	@include breakpoint(large) {
-		padding: 1rem;
+	&__kiva {
+		fill: $header-logo-color; // IE11 fallback
+		fill: var(--kv-header-logo-color, $header-logo-color);
 	}
 
-	img {
+	&__kiva,
+	&__corporate {
 		height: 100%;
+	}
+
+	&__corporate {
+		line-height: 0;
+
+		img {
+			height: 100%;
+		}
+	}
+
+	&__separator {
+		color: $subtle-gray;
+		display: inline-block;
+		font-size: 2rem;
+		font-weight: bold;
+		margin: 0 0.75rem;
 	}
 }
 </style>

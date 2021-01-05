@@ -24,7 +24,7 @@ export default {
 	args: {
 		headerTheme: null,
 		footerTheme: null,
-		corporateLogoUrl: 'https://via.placeholder.com/1350x150'
+		corporateLogoUrl: require('@/assets/images/logos/visa.svg')
 	},
 	argTypes: {
 		headerTheme: {

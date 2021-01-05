@@ -306,6 +306,8 @@ const basketItemsQuery = gql`query basketItemsQuery(
 	}
 }`;
 
+const visaLogoUrl = require('@/assets/images/logos/visa.svg'); // TODO: Remove once contentful gives us the logo url
+
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
@@ -488,8 +490,8 @@ export default {
 			return this.pageQuery?.formComplete === 'true' || false;
 		},
 		corporateLogoUrl() {
-			// TODO: Return the corporate logo from contentful
-			return 'https://via.placeholder.com/1350x150';
+			// TODO: Return the corporate logo url from contentful
+			return visaLogoUrl;
 		}
 	},
 	methods: {
