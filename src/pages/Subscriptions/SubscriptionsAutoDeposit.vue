@@ -51,7 +51,7 @@
 								>
 									<!-- TODO move this form to separate component  -->
 									<form
-										@submit.prevent="null"
+										@submit.prevent
 										novalidate
 										class="ad-update-lightbox__form"
 									>
@@ -209,6 +209,7 @@
 												<strong>Current payment method:</strong><br>
 												<img class="ad-update-lightbox__cc-icon"
 													:src="paymentMethod.imageUrl"
+													alt="credit card"
 												>
 												{{ paymentMethod.description }}
 											</div>

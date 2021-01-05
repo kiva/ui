@@ -13,7 +13,7 @@
 					</h3>
 					<form
 						class="monthly-good-form"
-						@submit.prevent="null"
+						@submit.prevent
 						novalidate
 					>
 						<div class="panel zigzag-bottom">

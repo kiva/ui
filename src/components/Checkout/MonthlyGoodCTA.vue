@@ -12,7 +12,7 @@
 				<!-- eslint-disable-next-line max-len -->
 				Want to change lives all year long? Sign up for Monthly Good and for as little as $5 a month, you can make a lasting impact on hundreds of borrowers.
 			</p>
-			<form class="monthly-good-cta__form" @submit.prevent="null">
+			<form class="monthly-good-cta__form" @submit.prevent>
 				<div class="row">
 					<div class="small-12 large-4 column">
 						<kv-dropdown-rounded

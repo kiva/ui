@@ -183,6 +183,13 @@ export default [
 
 	},
 	{
+		path: '/settings/payments',
+		component: () => import('@/pages/Settings/PaymentSettings'),
+		meta: {
+			activeLoginRequired: true,
+		},
+	},
+	{
 		path: '/settings/security',
 		component: () => import('@/pages/Settings/SecuritySettings'),
 		meta: {

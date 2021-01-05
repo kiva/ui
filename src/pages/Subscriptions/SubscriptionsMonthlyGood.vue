@@ -31,8 +31,8 @@
 							v-if="selectedGroupDescriptor"
 						>
 							to support
-							{{ selectedGroupDescriptor }}
-						</kv-button>.
+							{{ selectedGroupDescriptor }}.
+						</kv-button>
 					</p>
 					<p>
 						<kv-button class="text-link"
@@ -71,6 +71,7 @@
 												<strong>Current payment method:</strong><br>
 												<img class="mg-update-lightbox__cc-icon"
 													:src="paymentMethod.imageUrl"
+													alt="credit card"
 												>
 												{{ paymentMethod.description }}
 											</div>

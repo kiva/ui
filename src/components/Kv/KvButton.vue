@@ -75,6 +75,12 @@ export default {
 		}
 	}
 
+	&.alert {
+		@include button-style($kiva-accent-red, auto, $white);
+
+		box-shadow: $button-secondary-shadow darken($kiva-accent-red, 10%);
+	}
+
 	&.secondary {
 		@include secondary-styles();
 		@include button-secondary-styles();
@@ -123,6 +129,15 @@ export default {
 		color: $anchor-color-hover;
 		text-decoration: $anchor-text-decoration-hover;
 		background: transparent;
+	}
+
+	&--alert {
+		color: $kiva-accent-red;
+
+		&:hover,
+		&:focus {
+			color: $kiva-accent-red;
+		}
 	}
 }
 
