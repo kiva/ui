@@ -5,9 +5,12 @@
 		<div class="row align-center">
 			<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
 				<img
+					class="campaign-hero__hero-img"
 					src="@/assets/images/loan-card-stack.jpg"
 					srcset="@/assets/images/loan-card-stack_2x.jpg 2x"
 					alt=""
+					width="383"
+					height="429"
 				>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
@@ -122,6 +125,15 @@ export default {
 			display: block;
 			outline: none;
 			width: 100%;
+		}
+	}
+
+	&__hero-img {
+		display: block;
+		margin: 1rem auto 0;
+
+		@include breakpoint(large) {
+			margin: 0 auto;
 		}
 	}
 
