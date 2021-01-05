@@ -8,6 +8,7 @@ import {
 } from 'apollo-cache-inmemory';
 import Auth0LinkCreator from './Auth0Link';
 import BasketLinkCreator from './BasketLink';
+import ExperimentIdLink from './ExperimentIdLink';
 import HttpLinkCreator from './HttpLink';
 import NetworkErrorLink from './NetworkErrorLink';
 import SnowplowSessionLink from './SnowplowSessionLink';
@@ -51,6 +52,7 @@ export default function createApolloClient({
 		link: ApolloLink.from([
 			NetworkErrorLink(),
 			SnowplowSessionLink(),
+			ExperimentIdLink(),
 			Auth0LinkCreator(kvAuth0),
 			BasketLinkCreator(),
 			HttpLinkCreator({ csrfToken, uri }),
