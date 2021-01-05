@@ -99,17 +99,21 @@ export const Corporate = (args, { argTypes }) => ({
 	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
 	template: `
 		<the-header
-			:corporate="corporate"
 			:theme="theme"
-		>
-			<template v-slot:corporateLogo>
-				<img src="https://via.placeholder.com/350x150">
-			</template>
-		</the-header>
+			:corporate="corporate"
+			:corporate-logo-url="corporateLogoUrl"
+		/>
 	`,
 });
 Corporate.args = {
 	corporate: true,
+	corporateLogoUrl: require('@/assets/images/logos/visa.svg'),
+};
+
+export const CorporateWithoutCorporateLogoUrl = Corporate.bind({});
+CorporateWithoutCorporateLogoUrl.args = {
+	corporate: true,
+	corporateLogoUrl: null,
 };
 
 
