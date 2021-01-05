@@ -143,7 +143,7 @@ export default {
 				{
 					step: 'Step Three',
 					title: 'Borrower repays',
-					blurb: 'When the borrower repays, funds return to the original Promo account.',
+					blurb: 'When the borrower repays, funds return back to the funders account.',
 					video: step3Video,
 				},
 				// {
