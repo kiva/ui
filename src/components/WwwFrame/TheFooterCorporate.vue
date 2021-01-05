@@ -5,11 +5,11 @@
 				<div class="columns">
 					<div class="the-footer-corporate__logos logo-group">
 						<kiva-logo class="logo-group__kiva" />
-						<span v-if="corporateLogo" class="logo-group__separator" aria-hidden="true">+</span>
+						<span v-if="corporateLogoUrl" class="logo-group__separator" aria-hidden="true">+</span>
 						<img
-							v-if="corporateLogo"
+							v-if="corporateLogoUrl"
 							class="logo-group__corporate"
-							:src="corporateLogo"
+							:src="corporateLogoUrl"
 							alt=""
 						>
 					</div>
@@ -58,7 +58,7 @@ export default {
 			type: Object,
 			default: () => {}
 		},
-		corporateLogo: {
+		corporateLogoUrl: {
 			type: String,
 			default: ''
 		},

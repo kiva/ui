@@ -20,10 +20,13 @@
 				<div class="header-row row">
 					<div class="logo-group">
 						<kiva-logo class="logo-group__kiva" />
-						<span v-if="!!this.$slots.corporateLogo" class="logo-group__separator">+</span>
-						<div class="logo-group__corporate" v-if="!!this.$slots.corporateLogo">
-							<slot name="corporateLogo"></slot>
-						</div>
+						<span v-if="corporateLogoUrl" class="logo-group__separator" aria-hidden="true">+</span>
+						<img
+							v-if="corporateLogoUrl"
+							class="logo-group__corporate"
+							:src="corporateLogoUrl"
+							alt=""
+						>
 					</div>
 					<div class="flexible-center-area"></div>
 					<router-link
@@ -433,6 +436,10 @@ export default {
 		corporate: {
 			type: Boolean,
 			default: false
+		},
+		corporateLogoUrl: {
+			type: String,
+			default: ''
 		},
 		theme: {
 			type: Object,

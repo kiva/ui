@@ -3,18 +3,15 @@
 		<the-header
 			:theme="headerTheme"
 			:corporate="true"
+			:corporate-logo-url="corporateLogoUrl"
 			class="www-page-corporate__header"
-		>
-			<template v-slot:corporateLogo v-if="corporateLogoUrl">
-				<img :src="corporateLogoUrl" alt="">
-			</template>
-		</the-header>
+		/>
 		<main>
 			<slot></slot>
 		</main>
 		<the-footer-corporate
 			:theme="footerTheme"
-			:corporate-logo="corporateLogoUrl"
+			:corporate-logo-url="corporateLogoUrl"
 		/>
 		<cookie-banner />
 	</div>
