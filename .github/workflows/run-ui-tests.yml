@@ -32,7 +32,7 @@ jobs:
       with:
         browser: chrome
         headless: true
-        build: npm run build
+        build: npm run build:cypress
         start: npm start -- --mock --config=local
         wait-on: 'http://localhost:8888/ui-site-map'
         command: npm run e2e:headless
