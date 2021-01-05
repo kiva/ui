@@ -4,7 +4,14 @@
 	>
 		<div class="row align-center">
 			<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
-				<no-click-loan-card />
+				<img
+					class="campaign-hero__hero-img"
+					src="@/assets/images/loan-card-stack.jpg"
+					srcset="@/assets/images/loan-card-stack_2x.jpg 2x"
+					alt=""
+					width="383"
+					height="429"
+				>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
 			<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
@@ -38,13 +45,11 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 export default {
 	components: {
 		KvButton,
-		NoClickLoanCard,
 	},
 	props: {
 		heroAreaContent: {
@@ -120,6 +125,15 @@ export default {
 			display: block;
 			outline: none;
 			width: 100%;
+		}
+	}
+
+	&__hero-img {
+		display: block;
+		margin: 1rem auto 0;
+
+		@include breakpoint(large) {
+			margin: 0 auto;
 		}
 	}
 
