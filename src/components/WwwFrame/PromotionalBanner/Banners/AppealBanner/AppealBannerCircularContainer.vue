@@ -60,7 +60,7 @@ export default {
 			return documentToHtmlString(appealHeadline, options);
 		},
 		body() {
-			const appealBody = this.appealBannerContent?.additionalContent?.[0].fields.richText || '';
+			const appealBody = this.appealBannerContent?.additionalContent?.[0]?.fields?.richText || '';
 			return documentToHtmlString(appealBody);
 		},
 		buttonAmounts() {
@@ -69,8 +69,8 @@ export default {
 		},
 		imageUrl() {
 			return this.appealBannerContent?.additionalContent
-				?.find(content => content.fields.name === 'Progress Meter Image')
-				.fields?.images?.[0].fields?.file?.url || '';
+				?.find(content => content?.fields?.name === 'Progress Meter Image')
+				.fields?.images?.[0]?.fields?.file?.url || '';
 		}
 	},
 	created() {
