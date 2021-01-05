@@ -12,8 +12,9 @@
 		<main>
 			<slot></slot>
 		</main>
-		<the-footer
+		<the-footer-corporate
 			:theme="footerTheme"
+			:corporate-logo="corporateLogoUrl"
 		/>
 		<cookie-banner />
 	</div>
@@ -23,8 +24,8 @@
 import _get from 'lodash/get';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
-import TheHeader from './TheHeader';
-import TheFooter from './TheFooter';
+import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
+import TheHeader from '@/components/WwwFrame/TheHeader';
 
 export default {
 	inject: [
@@ -32,7 +33,7 @@ export default {
 	],
 	components: {
 		CookieBanner,
-		TheFooter,
+		TheFooterCorporate,
 		TheHeader,
 	},
 	props: {
