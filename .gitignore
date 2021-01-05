@@ -2,8 +2,7 @@
 node_modules/
 dist/
 npm-debug.log*
-test/unit/coverage
-test/e2e/coverage
+coverage/
 test/e2e/screenshots
 server/available-routes.json
 build/schema.graphql
