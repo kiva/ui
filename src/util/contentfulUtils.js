@@ -296,10 +296,10 @@ export function processPageContent(entryItem) {
 		contentGroups.forEach(item => {
 			// console.log('content group item', item);
 			const contentGroupFields = {
-				key: item?.fields?.key,
-				name: item?.fields?.name,
-				type: item?.fields?.type ?? null,
-				contents: formatContentTypes(item?.fields?.contents ?? null)
+				key: item.fields?.key,
+				name: item.fields?.name,
+				type: item.fields?.type ?? null,
+				contents: formatContentTypes(item.fields?.contents)
 			};
 			cleanedContentGroups.push(contentGroupFields);
 		});
