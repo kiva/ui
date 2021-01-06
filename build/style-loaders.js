@@ -6,7 +6,7 @@ var isNode = typeof document === 'undefined';
 var sass = isNode ? require('dart-sass') : function() {};
 
 module.exports = [
-	'css-loader',
+	{ loader: 'css-loader' },
 	{
 		loader: 'postcss-loader',
 		options: {

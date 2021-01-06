@@ -74,7 +74,10 @@ module.exports = {
 			{
 				// Inject styles from the /pages/ directory as <style> tags
 				test: /\/pages\/.+\.scss$/,
-				use: [ "thread-loader", "vue-style-loader"].concat(styleLoaders)
+				use: [
+					{ loader: 'thread-loader' },
+					{ loader: 'vue-style-loader' },
+				].concat(styleLoaders)
 			},
 			{
 				test: /\.html$/,
@@ -83,13 +86,24 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
-				use: [ "thread-loader",'babel-loader?cacheDirectory'],
+				use: [
+					{ loader: 'thread-loader' },
+					{
+						loader: 'babel-loader',
+						options: {
+							cacheDirectory: true,
+						},
+					},
+				],
 				include: [resolve('src'), resolve('test')]
 			},
 			{
 				test: /\.(graphql|gql)$/,
 				exclude: /node_modules/,
-				use: [ "thread-loader",'graphql-tag/loader']
+				use: [
+					{ loader: 'thread-loader' },
+					{ loader: 'graphql-tag/loader' },
+				],
 			},
 			{
 				// Modules who define their `browser` or `module` key as `mjs` force
@@ -122,7 +136,7 @@ module.exports = {
 				test: /\.svg$/,
 				include: inlineSvgDirs,
 				use: [
-					'babel-loader',
+					{ loader: 'babel-loader' },
 					{
 						loader: 'vue-svg-loader',
 						options: {
