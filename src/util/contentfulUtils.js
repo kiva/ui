@@ -200,6 +200,7 @@ export function formatContentGroupsFlat(contentfulContent) {
 			const contentGroupFields = {
 				key: entry.fields?.key,
 				name: entry.fields?.name,
+				type: entry.fields?.type ?? null,
 				// eslint-disable-next-line no-use-before-define
 				contents: formatContentTypes(entry.fields?.contents)
 			};
@@ -273,9 +274,11 @@ export function processPageContent(entryItem) {
 	contentfulContentObject.page = {
 		key: entryItem.fields?.key,
 		path: entryItem.fields?.path,
+		pageTitle: entryItem.fields?.pageTitle,
 		pageType: entryItem.fields?.pageType,
 		pageLayout: {
-			name: entryItem.fields?.pageLayout?.fields?.name
+			name: entryItem.fields?.pageLayout?.fields?.name,
+			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []
@@ -293,9 +296,10 @@ export function processPageContent(entryItem) {
 		contentGroups.forEach(item => {
 			// console.log('content group item', item);
 			const contentGroupFields = {
-				key: item.fields?.key,
-				name: item.fields?.name,
-				contents: formatContentTypes(item.fields?.contents)
+				key: item?.fields?.key,
+				name: item?.fields?.name,
+				type: item?.fields?.type ?? null,
+				contents: formatContentTypes(item?.fields?.contents ?? null)
 			};
 			cleanedContentGroups.push(contentGroupFields);
 		});
@@ -322,9 +326,11 @@ export function processPageContentFlat(entryItem) {
 	contentfulContentObject.page = {
 		key: entryItem.fields?.key,
 		path: entryItem.fields?.path,
+		pageTitle: entryItem.fields?.pageTitle,
 		pageType: entryItem.fields?.pageType,
 		pageLayout: {
-			name: entryItem.fields?.pageLayout?.fields?.name
+			name: entryItem.fields?.pageLayout?.fields?.name,
+			pageTitle: entryItem.fields?.pageLayout?.fields?.pageTitle,
 		},
 		settings: entryItem.fields?.settings
 			? formatContentTypes(entryItem.fields?.settings) : []

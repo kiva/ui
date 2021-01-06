@@ -580,9 +580,11 @@
 									]
 								}
 							}
-						]
+						],
+						"type": "mlCampaignHero"
 					}
-				}]
+				}],
+				"pageTitle": "Test Page Layout Title"
 			}
 		},
 		"settings": [{
@@ -682,6 +684,7 @@
 			}
 		}],
 		"path": "/cc/promo-campaign-test",
-		"pageType": "corporate-campaign"
+		"pageType": "corporate-campaign",
+		"pageTitle": "Test Page Title"
 	}
 }
