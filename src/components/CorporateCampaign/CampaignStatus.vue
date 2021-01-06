@@ -79,7 +79,7 @@ export default {
 .campaign-status {
 	max-width: inherit;
 	padding: 0.5rem 1rem;
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: $kiva-stroke-gray;
 	text-align: center;
 
 	&__border {
