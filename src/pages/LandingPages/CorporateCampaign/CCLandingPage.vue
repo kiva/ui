@@ -11,7 +11,7 @@
 				:promo-error-message="promoErrorMessage"
 				:promo-applied="promoApplied"
 				:promo-amount="promoAmount"
-				:promo-name="pageTitle"
+				:promo-name="campaginPartnerName"
 				@show-checkout="showCheckout"
 			/>
 
@@ -471,6 +471,9 @@ export default {
 		},
 		contentfulPageId() {
 			return this.promoData?.managedAccount?.pageid ?? null;
+		},
+		campaginPartnerName() {
+			return this.promoData?.promoFund?.displayName ?? null;
 		},
 		verificationRequired() {
 			if (this.promoData?.managedAccount?.isEmployee && this.promoData?.managedAccount?.formId) {
