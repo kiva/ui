@@ -60,27 +60,13 @@ export default {
 
 <style lang="scss" scoped>
 @import 'settings';
-// Position: sticky should work, but nav bounces some during scroll */
 
-/* .www-page-corporate {
+.www-page-corporate {
 	position: relative;
 
-&__header {
-	position: sticky;
-	top: 0;
-} */
-
-// workaround for position: sticky jank
-.www-page-corporate {
-	padding-top: 2.8125rem; // height of the nav bar
-	@include breakpoint(large) {
-		padding-top: 4rem;
-	}
-
 	&__header {
-		position: fixed;
+		position: sticky;
 		top: 0;
-		width: 100%;
 	}
 }
 </style>
