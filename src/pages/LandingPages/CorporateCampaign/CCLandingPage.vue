@@ -7,6 +7,7 @@
 		<div class="corporate-campaign-landing">
 			<!-- TODO: Add promo code entry input, if no promo query params exist and  no promo is applied -->
 			<campaign-status
+				class="corporate-campaign-landing__status"
 				:loading-promotion="loadingPromotion"
 				:promo-error-message="promoErrorMessage"
 				:promo-applied="promoApplied"
@@ -789,6 +790,19 @@ export default {
 	.campaign-checkout,
 	.campaign-thanks {
 		padding: 3rem 0;
+	}
+
+	&__status {
+		$header-height: rem-calc(45); // same as TheHeader.vue
+		$header-height-large: rem-calc(64); // same as TheHeader.vue
+
+		position: sticky;
+		top: $header-height;
+		z-index: 1;
+
+		@include breakpoint(large) {
+			top: $header-height-large;
+		}
 	}
 }
 
