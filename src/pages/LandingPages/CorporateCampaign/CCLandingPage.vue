@@ -11,7 +11,7 @@
 				:promo-error-message="promoErrorMessage"
 				:promo-applied="promoApplied"
 				:promo-amount="promoAmount"
-				:promo-name="campaginPartnerName"
+				:promo-name="campaignPartnerName"
 				@show-checkout="showCheckout"
 			/>
 
@@ -472,7 +472,7 @@ export default {
 		contentfulPageId() {
 			return this.promoData?.managedAccount?.pageid ?? null;
 		},
-		campaginPartnerName() {
+		campaignPartnerName() {
 			return this.promoData?.promoFund?.displayName ?? null;
 		},
 		verificationRequired() {
