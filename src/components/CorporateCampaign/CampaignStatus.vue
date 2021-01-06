@@ -16,23 +16,18 @@
 				</div>
 
 				<div v-if="promoApplied && !promoErrorMessage" class="columns campaign-status__text-container">
-					<p class="campaign-status__validated-message">
-						<kv-icon name="confirmation" /> Promotion applied
-					</p>
-					<h2 class="campaign-status__header">
+					<p class="campaign-status__header campaign-status__validated-message">
 						<template v-if="promoAmount === '$0.00'">
 							Calculating promotion...
 						</template>
 						<template v-else>
 							<!-- eslint-disable-next-line max-len -->
-							You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span> to lend!
+							<span class="campaign-status__currency-icon"><kv-icon name="currency-usd" /></span>
+							You have <span class="campaign-status__promo-amount">${{ promoAmount | numeral }}</span>
+							<span v-if="promoName">from {{ promoName }}</span>
+							to lend!
 						</template>
-					</h2>
-					<!-- <ul>
-						<li>Choose your borrower below.</li>
-						<li>Click "Add to basket"</li>
-						<li>Click "Checkout" to complete your loan</li>
-					</ul> -->
+					</p>
 				</div>
 			</div>
 		</div>
@@ -64,6 +59,10 @@ export default {
 		promoAmount: {
 			type: String,
 			default: '$0.00'
+		},
+		promoName: {
+			type: String,
+			default: null
 		}
 	},
 	data() {
@@ -79,15 +78,16 @@ export default {
 
 .campaign-status {
 	max-width: inherit;
-	padding: 2rem;
-	background-color: rgba(0, 0, 0, 0.1);
+	padding: 0.5rem 1rem;
+	background-color: $kiva-stroke-gray;
+	text-align: center;
 
 	&__border {
 		// min-height: 10rem;
 		position: relative;
 		z-index: 1;
 		margin: 0 rem-calc(10);
-		padding: 1rem;
+		padding: 0;
 
 		@include breakpoint(xga) {
 			margin: 0 auto;
@@ -95,8 +95,8 @@ export default {
 	}
 
 	&__validating-promo {
-		text-align: center;
-		width: 100%;
+		width: auto;
+		margin: 0;
 
 		::v-deep >>> .loading-overlay .spinner-wrapper {
 			position: relative;
@@ -110,11 +110,16 @@ export default {
 
 		p {
 			position: relative;
+			margin: 0;
 		}
 	}
 
 	&__validated-message,
 	&__error-message {
+		font-weight: bold;
+		margin: 0;
+		width: auto;
+
 		::v-deep .wrapper {
 			vertical-align: sub;
 		}
@@ -131,11 +136,6 @@ export default {
 		::v-deep .icon-confirmation {
 			fill: $kiva-green;
 		}
-	}
-
-	&__header {
-		font-weight: bold;
-		margin-top: rem-calc(20);
 	}
 }
 </style>

@@ -45,6 +45,7 @@ export default {
 	args: {
 		hideSearchInHeader: false,
 		minimal: false,
+		corporate: false,
 		theme: null,
 	},
 	argTypes: {
@@ -73,6 +74,7 @@ export const Default = (args, { argTypes }) => ({
 	template: `
 		<the-header
 			:minimal="minimal"
+			:corporate="corporate"
 			:theme="theme"
 			:hide-search-in-header="hideSearchInHeader"
 		/>
@@ -88,6 +90,32 @@ export const Minimal = Default.bind({});
 Minimal.args = {
 	minimal: true,
 };
+
+export const Corporate = (args, { argTypes }) => ({
+	props: Object.keys(argTypes),
+	components: {
+		TheHeader
+	},
+	mixins: [apolloStoryMixin(), kvAuth0StoryMixin],
+	template: `
+		<the-header
+			:theme="theme"
+			:corporate="corporate"
+			:corporate-logo-url="corporateLogoUrl"
+		/>
+	`,
+});
+Corporate.args = {
+	corporate: true,
+	corporateLogoUrl: require('@/assets/images/logos/visa.svg'),
+};
+
+export const CorporateWithoutCorporateLogoUrl = Corporate.bind({});
+CorporateWithoutCorporateLogoUrl.args = {
+	corporate: true,
+	corporateLogoUrl: null,
+};
+
 
 export const Themed = Default.bind({});
 Themed.args = {

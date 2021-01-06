@@ -1,5 +1,8 @@
 <template>
 	<div class="component-wrapper" ref="componentWrapper">
+		<div class="loan-search-title">
+			View Loans that are "Trending Now"
+		</div>
 		<kv-loading-spinner v-if="isLoading" />
 		<div
 			v-else
@@ -10,7 +13,7 @@
 				:disabled="scrollPos === 0"
 				@click="scrollRowLeft"
 				v-kv-track-event="[
-					'homepage',
+					'campaign-landing',
 					'click-carousel-horizontal-scroll',
 					'left'
 				]"
@@ -34,47 +37,38 @@
 						:key="loan.id"
 						class="column cards-wrap"
 					>
-						<!-- <promo-grid-loan-card
-							v-if="index === 2 && monthlyGoodPromoData"
-							class="cards-mg-promo"
-							:category-url="monthlyGoodPromoData.url"
-							:category-label="monthlyGoodPromoData.label"
-							compact
-						/> -->
 						<loan-card-controller
 							class="cards-loan-card"
 							loan-card-type="LendHomepageLoanCard"
 							:loan="loan"
 							:items-in-basket="itemsInBasket"
-							:category-id="loanChannel.id"
-							:category-set-id="`lbc-hp-v1-category-${loanChannel.id}`"
+							:category-id="index"
+							category-set-id="campaign-loan-row"
 							:row-number="rowNumber"
 							:card-number="index + 1"
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
-							:show-view-loan-cta="true"
+							:show-view-loan-cta="false"
+							@add-to-basket="addToBasket"
 						/>
 					</div>
-					<!--
-						Blocks of attributes above:
-						1) Props for implemented loan cards
-					-->
+
 					<div
 						class="column cards-wrap"
 					>
-						<router-link
+						<button
 							class="view-all-loans-category see-all-card"
-							:to="cleanUrl"
-							:title="`${viewAllLoansCategoryTitle}`"
+							@click.prevent="loadMoreLoans"
+							title="Load more loans"
 							v-kv-track-event="[
-								'Homepage',
-								'click-carousel-view-all-category-loans',
-								`${viewAllLoansCategoryTitle}`]"
+								'campaign-landing',
+								'click-carousel-load-more-loans',
+								'Load More loans']"
 						>
 							<div class="link">
-								<h3>{{ viewAllLoansCategoryTitle }}</h3>
+								<h3>Load More</h3>
 							</div>
-						</router-link>
+						</button>
 					</div>
 				</div>
 			</div>
@@ -83,7 +77,7 @@
 				:disabled="scrollPos <= minLeftMargin"
 				@click="scrollRowRight"
 				v-kv-track-event="[
-					'homepage',
+					'campaign-landing',
 					'click-carousel-horizontal-scroll',
 					'right'
 				]"
@@ -100,30 +94,26 @@
 </template>
 
 <script>
-import _get from 'lodash/get';
 import _throttle from 'lodash/throttle';
+import basicLoanQuery from '@/graphql/query/basicLoanData.graphql';
+import cookieStore from '@/util/cookieStore';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import LoanCardController from '@/components/LoanCards/LoanCardController';
-// import PromoGridLoanCard from '@/components/LoanCards/PromoGridLoanCard';
 
 const cardWidth = 303;
 const cardRightMargin = 15;
 const cardWidthTotal = cardWidth + cardRightMargin * 2;
 
 export default {
+	inject: ['apollo'],
 	components: {
 		KvIcon,
 		KvLoadingSpinner,
 		LoanCardController,
-		// PromoGridLoanCard,
 	},
 	props: {
-		isLoggedIn: {
-			type: Boolean,
-			default: false
-		},
-		loanChannel: {
+		filters: {
 			type: Object,
 			default: () => {},
 		},
@@ -131,14 +121,18 @@ export default {
 			type: Array,
 			default: () => [],
 		},
+		isLoggedIn: {
+			type: Boolean,
+			default: false
+		},
 		isVisible: {
 			type: Boolean,
 			default: false
 		},
-		loans: {
-			type: Array,
-			default: () => [],
-		},
+		// loans: {
+		// 	type: Array,
+		// 	default: () => [],
+		// },
 		rowNumber: {
 			type: Number,
 			default: null
@@ -146,14 +140,18 @@ export default {
 	},
 	data() {
 		return {
-			name: '',
-			id: 0,
 			scrollPos: 0,
-			url: '',
 			windowWidth: 0,
 			wrapperWidth: 0,
 			cardWidth: cardWidthTotal,
 			preventUpdatingDetailedCard: false,
+			limit: 15,
+			loadingLoans: true,
+			loans: [],
+			loanQueryVarsStack: [this.filters],
+			loanQueryFilters: () => {},
+			offset: 0,
+			totalCount: 0,
 		};
 	},
 	computed: {
@@ -163,55 +161,22 @@ export default {
 		cardsInWindow() {
 			return Math.floor(this.wrapperWidth / this.cardWidth);
 		},
-		monthlyGoodPromoData() {
-			switch (this.id) {
-				case 52:
-					return { url: '/monthlygood?category=women', label: 'women' };
-				case 96:
-					return { url: '/covid19response', label: 'COVID-19-affected businesses' };
-				case 87:
-					return { url: '/monthlygood?category=agriculture', label: 'farmers' };
-				default:
-					return null;
-			}
+
+		loanQueryVars() {
+			return {
+				limit: this.limit,
+				loans: () => [],
+				offset: this.offset,
+				filters: this.loanQueryFilters,
+				promoOnly: { basketId: cookieStore.get('kvbskt') }
+			};
 		},
-		cleanUrl() {
-			// Convert LoanChannel Url to use first path segment /lend-by-category instead of /lend
-			// grab last segment of url
-			const lastPathIndex = this.url.lastIndexOf('/');
-			const urlSegment = this.url.slice(lastPathIndex);
-			// ensure string type
-			let cleanUrl = String(urlSegment);
 
-			// empty url value for certain urls and if no url is passed in
-			if (
-				this.url.includes('loans-with-research-backed-impact') === true
-				|| this.url.includes('recently-viewed-loans') === true
-				|| this.url === '') {
-				cleanUrl = '';
-			}
-
-			// retain countries not lent to location in /lend
-			if (this.url.includes('new-countries-for-you')) {
-				return '/lend/countries-not-lent';
-			}
-
-			// special handling for CASH-794 Favorite Country row
-			if (this.url.includes('favorite-countries-link')) {
-				return this.url.replace('favorite-countries-link', '');
-			}
-
-			// otherwise transform to use /lend-by-category as root path
-			return `/lend-by-category${cleanUrl}`;
-		},
 		minLeftMargin() {
 			return ((this.loans.length + 1) - this.cardsInWindow) * -this.cardWidth;
 		},
 		shiftIncrement() {
 			return this.cardsInWindow * this.cardWidth;
-		},
-		viewAllLoansCategoryTitle() {
-			return `View all ${this.cleanCategoryName(this.id)}`;
 		},
 	},
 	watch: {
@@ -219,16 +184,18 @@ export default {
 			// When the amount of loans changes, save window width to calculate scrolling
 			this.saveWindowWidth();
 		},
-		loanChannel: {
-			handler(channel) {
-				this.name = _get(channel, 'name', '');
-				this.url = _get(channel, 'url', '');
-				this.id = _get(channel, 'id', '');
-			},
-			immediate: true,
+		loanQueryVars(next, prev) {
+			this.loanQueryVarsStack.push(prev);
 		},
+		filters(next, prev) {
+			if (next !== prev) {
+				this.loanQueryFilters = next;
+			}
+		}
 	},
 	mounted() {
+		this.activateLoanWatchQuery();
+
 		window.addEventListener('resize', _throttle(() => {
 			this.saveWindowWidth();
 		}, 200));
@@ -239,6 +206,45 @@ export default {
 		}, 200));
 	},
 	methods: {
+		addToBasket(payload) {
+			this.$emit('add-to-basket', payload);
+		},
+
+		activateLoanWatchQuery() {
+			const observer = this.apollo.watchQuery({
+				query: basicLoanQuery,
+				variables: this.loanQueryVars
+			});
+			this.$watch(() => this.loanQueryVars, vars => {
+				observer.setVariables(vars);
+			}, { deep: true });
+			// Subscribe to the observer to see each result
+			observer.subscribe({
+				next: ({ data, loading }) => {
+					if (loading) {
+						this.loadingLoans = true;
+					} else {
+						const newLoans = data.lend?.loans?.values ?? [];
+						const newLoanIds = newLoans.length ? newLoans.map(loan => loan.id) : [];
+						const existingLoanIds = this.loans.length ? this.loans.map(loan => loan.id) : [];
+						if (newLoanIds.toString() !== existingLoanIds.toString()) {
+							this.loans = this.loans.concat(newLoans);
+						}
+						this.totalCount = data.lend?.loans?.totalCount ?? 0;
+						this.loadingLoans = false;
+					}
+				}
+			});
+		},
+		setLoanQueryFilters(userSelection) {
+			if (!userSelection) {
+				this.loanQueryFilters = this.filters;
+			}
+		},
+		loadMoreLoans() {
+			this.offset += this.limit;
+		},
+
 		saveWindowWidth() {
 			this.wrapperWidth = this.$refs.componentWrapper ? this.$refs.componentWrapper.clientWidth : 0;
 		},
@@ -254,31 +260,6 @@ export default {
 				this.scrollPos = newLeftMargin;
 			}
 		},
-		cleanCategoryName(categoryId) {
-			switch (categoryId) {
-				case 52:
-					return 'loans to women';
-				case 96:
-					return 'COVID-19 loans';
-				case 93:
-					return 'shelter loans';
-				case 89:
-					return 'arts loans';
-				case 87:
-					return 'agriculture loans';
-				case 102:
-					return 'technology loans';
-				case 4:
-					return 'education loans';
-				case 25:
-					return 'health loans';
-				case 32:
-					return 'loans to refugees and IDPs';
-				default:
-					// remove any text contained within square brackets, including the brackets
-					return String(this.name).replace(/\s\[.*\]/g, '');
-			}
-		},
 	},
 };
 </script>
@@ -289,6 +270,16 @@ export default {
 
 .component-wrapper {
 	text-align: center;
+}
+
+.loan-search-title {
+	color: $charcoal;
+	font-weight: $global-weight-normal;
+	font-size: $featured-text-font-size;
+	line-height: 1.5rem;
+	text-transform: capitalize;
+	text-align: left;
+	margin: 2rem 0 0 3.5rem;
 }
 
 .cards-and-arrows-wrapper {

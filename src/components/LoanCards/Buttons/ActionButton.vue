@@ -2,6 +2,7 @@
 	<component
 		:is="currentButtonState"
 		class="action-button smaller"
+		:disable-redirects="disableRedirects"
 		:loan-id="loanId"
 		:loan="loan"
 		:hide-adding-to-basket-text="hideAddingToBasketText"
@@ -42,6 +43,10 @@ export default {
 	],
 	inject: ['apollo'],
 	props: {
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
 		loan: {
 			type: Object,
 			default: () => {}

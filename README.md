@@ -2,7 +2,7 @@
 
 > a.k.a. Uue Lewis and the Views
 
-[![Build Status](https://travis-ci.org/kiva/ui.svg?branch=master)](https://travis-ci.org/kiva/ui)
+[![Build Status](https://github.com/kiva/ui/workflows/Ui%20Tests/badge.svg?branch=master)](https://github.com/kiva/ui/actions)
 [![Coverage Status](https://coveralls.io/repos/github/kiva/ui/badge.svg?branch=master)](https://coveralls.io/github/kiva/ui?branch=master)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=kiva/ui)](https://dependabot.com)
 [![Known Vulnerabilities](https://snyk.io/test/github/kiva/ui/badge.svg)](https://snyk.io/test/github/kiva/ui)

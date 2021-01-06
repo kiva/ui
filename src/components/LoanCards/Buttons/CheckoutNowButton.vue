@@ -2,7 +2,8 @@
 	<kv-button
 		class="checkout-now-button secondary"
 		v-kv-track-event="['Lending', 'click-Read more', 'checkout-now-button-click', loanId, loanId]"
-		to="/basket"
+		:to="disableRedirects ? null : '/basket'"
+		@click.native="checkoutBtnAction"
 	>
 		<kv-icon class="icon" name="checkmark" v-if="!minimalCheckoutButton" />
 		Checkout<span v-if="!minimalCheckoutButton"> now</span>
@@ -19,6 +20,10 @@ export default {
 		KvButton,
 	},
 	props: {
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
 		loanId: {
 			type: Number,
 			default: null
@@ -28,6 +33,16 @@ export default {
 			default: false,
 		},
 	},
+	methods: {
+		checkoutBtnAction() {
+			this.$emit(
+				'add-to-basket',
+				{
+					eventSource: 'checkoutBtnClick'
+				}
+			);
+		}
+	}
 };
 
 </script>

@@ -53,6 +53,7 @@
 					:class="{'full-width': isFunded || isExpired}"
 				>
 					<kv-button
+						v-if="showViewLoanCta"
 						class="action-button"
 						:to="`/lend/${loan.id}`"
 						v-kv-track-event="[
@@ -64,8 +65,10 @@
 					>
 						View loan
 					</kv-button>
-					<!-- <action-button
+					<action-button
+						v-else
 						class="action-button"
+						:disable-redirects="disableRedirects"
 						:loan-id="loan.id"
 						:loan="loan"
 						:items-in-basket="itemsInBasket"
@@ -83,7 +86,7 @@
 						})"
 
 						@add-to-basket="handleAddToBasket"
-					/> -->
+					/>
 				</div>
 				<div class="lend-homepage-loan-card__matching-text-container" :class="{hide: isFunded || isExpired}">
 					<matching-text
@@ -104,7 +107,7 @@ import KvFlag from '@/components/Kv/KvFlag';
 import LoanCardImage from '@/components/LoanCards/LoanCardImage';
 import FundraisingStatus from '@/components/LoanCards/FundraisingStatus/FundraisingStatus';
 import BorrowerInfoBody from '@/components/LoanCards/BorrowerInfo/BorrowerInfoBody';
-// import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
+import ActionButton from '@/components/LoanCards/Buttons/ActionButton';
 import MatchingText from '@/components/LoanCards/MatchingText';
 import BorrowerInfoName from '@/components/LoanCards/BorrowerInfo/BorrowerInfoName';
 
@@ -120,7 +123,7 @@ export default {
 		KvFlag,
 		LoanCardImage,
 		FundraisingStatus,
-		// ActionButton,
+		ActionButton,
 		KvButton,
 		MatchingText,
 		BorrowerInfoName,
@@ -130,9 +133,17 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		},
 		expiringSoonMessage: {
 			type: String,
 			default: ''
+		},
+		showViewLoanCta: {
+			type: Boolean,
+			default: false,
 		},
 		isFavorite: {
 			type: Boolean,
