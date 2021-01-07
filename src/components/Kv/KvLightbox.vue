@@ -110,6 +110,8 @@ export default {
 	watch: {
 		// Create and set our internal visibility property
 		visible() {
+			// Drop focus to avoid the focus automatically focusing close button
+			document.activeElement.blur();
 			this.isShown = this.visible;
 			if (this.isShown) {
 				document.addEventListener('keyup', this.onKeyUp);
