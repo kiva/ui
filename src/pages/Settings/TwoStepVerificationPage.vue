@@ -13,9 +13,13 @@
 				<!--
 					Toggle MFA off settings card
 				-->
+				<kv-loading-placeholder
+					class="two-step-verification--loading"
+					v-if="isLoading"
+				/>
 				<kv-settings-card
 					title="2-step verification is turned on"
-					v-if="isMfaActive"
+					v-if="!isLoading && isMfaActive"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
