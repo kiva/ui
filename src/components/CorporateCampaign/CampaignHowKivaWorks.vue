@@ -244,6 +244,7 @@ export default {
 			top: calc(50% - #{$prev-next-size / 2});
 			width: 100%;
 			margin-top: 0;
+			z-index: 0;
 		}
 	}
 
