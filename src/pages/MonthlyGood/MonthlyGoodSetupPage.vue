@@ -213,7 +213,7 @@
 									<em>* {{ isOnetime ? 'This contribution' : 'Enrolling in Monthly Good' }} will also disable your current auto lending settings.</em>
 								</p>
 
-								<div class="payment-dropin-wrapper">
+								<div class="payment-dropin-wrapper" v-if="hasActiveLogin">
 									<div class="payment-dropin-invalid-cover" v-if="$v.$invalid"></div>
 									<monthly-good-drop-in-payment-wrapper
 										:amount="totalCombinedDeposit"
@@ -223,6 +223,14 @@
 										:is-one-time="isOnetime"
 										@complete-transaction="completeMGBraintree"
 									/>
+								</div>
+								<div class="payment-dropin-wrapper" v-if="!hasActiveLogin">
+									<kv-button
+										title="Continue"
+										:href="`/ui-login?force=true&doneUrl=${loginRedirectUrl}`"
+									>
+										Continue
+									</kv-button>
 								</div>
 							</div>
 						</div>
@@ -249,12 +257,18 @@
 
 <script>
 import numeral from 'numeral';
-import _get from 'lodash/get';
 import gql from 'graphql-tag';
 import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import { subDays } from 'date-fns';
 
+import logReadQueryError from '@/util/logReadQueryError';
+import { checkLastLoginTime } from '@/util/authenticationGuard';
+
+import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
+import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.graphql';
+
+import KvButton from '@/components/Kv/KvButton';
 import KvCheckbox from '@/components/Kv/KvCheckbox';
 import KvCurrencyInput from '@/components/Kv/KvCurrencyInput';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
@@ -268,8 +282,17 @@ import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 import AlreadySubscribedNotice from './AlreadySubscribedNotice';
 import LegacySubscriberNotice from './LegacySubscriberNotice';
 
+const expQuery = gql`query monthlyGoodSetupExpQuery {
+	general {
+		uiExperimentSetting(key: "mg_login_after_setup") {
+			key
+			value
+		}
+	}
+}`;
+
 const pageQuery = gql`query monthlyGoodSetupPageControl {
-    general {
+	general {
 		mgDonationTaglineActive: uiConfigSetting(key: "mg_donationtagline_active") {
 			key
 			value
@@ -315,6 +338,14 @@ export default {
 			type: Number,
 			default: 25
 		},
+		initDonation: {
+			type: Number,
+			default: 25 * 0.15,
+		},
+		day: {
+			type: Number,
+			default: startDay(false),
+		},
 		category: {
 			type: String,
 			default: 'default'
@@ -334,6 +365,7 @@ export default {
 	},
 	components: {
 		AlreadySubscribedNotice,
+		KvButton,
 		KvCheckbox,
 		KvCurrencyInput,
 		KvDropdownRounded,
@@ -362,6 +394,7 @@ export default {
 			hasAutoLending: false,
 			hasLegacySubscription: false,
 			isMGTaglineActive: false,
+			hasActiveLogin: false,
 		};
 	},
 	mixins: [
@@ -393,27 +426,106 @@ export default {
 	},
 	inject: ['apollo'],
 	apollo: {
-		query: pageQuery,
-		preFetch: true,
-		result({ data }) {
-			this.isMGTaglineActive = _get(data, 'general.mgDonationTaglineActive.value') === 'true' || false;
-			this.isMonthlyGoodSubscriber = _get(data, 'my.autoDeposit.isSubscriber', false);
-			this.hasAutoDeposits = _get(data, 'my.autoDeposit', false);
-			this.hasAutoLending = _get(data, 'my.autolendProfile.isEnabled', false);
-			this.legacySubs = _get(data, 'my.subscriptions.values', []);
-			this.hasLegacySubscription = this.legacySubs.length > 0;
+		preFetch(config, client, { route }) {
+			// When SUBS-609 login exp ends, this route can be set back to
+			// meta: {
+			// 	activeLoginRequired: true,
+			// }
+			// in routes.js
+
+			// Get exp value for SUBS-609
+			return client.query({
+				query: expQuery
+			})
+				.then(() => client.query({
+					query: experimentAssignmentQuery, variables: { id: 'mg_login_after_setup' }
+				}))
+				.then(({ data }) => {
+					const loginAfterSetupExpVersion = data?.experiment?.version ?? {};
+					// Control version
+					// Auth status should be checked.
+					if (loginAfterSetupExpVersion === 'control') {
+						return client.query({
+							query: authenticationQuery,
+							// eslint-disable-next-line no-shadow
+						}).then(({ data }) => {
+							if (!data.my) {
+								throw new Error('api.authenticationRequired');
+							}
+							// Route requires active login
+							if (!checkLastLoginTime(data, 'activeLoginDuration', 3600)) {
+								throw new Error('activeLoginRequired');
+							}
+						}).catch(() => {
+							// Auth error will be caught here, redirect to login.
+							return Promise.reject({
+								path: '/ui-login',
+								query: { doneUrl: route.fullPath }
+							});
+						});
+					}
+					// Shown version
+					// Auth status should not be checked, continue with pageQuery
+				})
+				.then(() => client.query({ query: pageQuery }));
 		},
 	},
 	created() {
+		// Track experiment
+		try {
+			const expQueryResult = this.apollo.readQuery({
+				query: experimentAssignmentQuery, variables: { id: 'mg_login_after_setup' }
+			});
+			const loginAfterSetupExpVersion = expQueryResult?.experiment?.version ?? {};
+			if (loginAfterSetupExpVersion === 'control') {
+				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'a');
+			} else if (loginAfterSetupExpVersion === 'shown') {
+				this.$kvTrackEvent('MonthlyGood', 'EXP-SUBS-609-Jan2021', 'b');
+			}
+		} catch (e) {
+			logReadQueryError(e, 'MonthlyGoodSetupPage expQueryResult');
+		}
+
+		try {
+			const pageQueryResult = this.apollo.readQuery({
+				query: pageQuery,
+			});
+			this.isMGTaglineActive = pageQueryResult?.general?.mgDonationTaglineActive?.value === 'true' || false;
+			this.isMonthlyGoodSubscriber = pageQueryResult?.my?.autoDeposit?.isSubscriber ?? false;
+			this.hasAutoDeposits = pageQueryResult?.my?.autoDeposit ?? false;
+			this.hasAutoLending = pageQueryResult?.my?.autolendProfile?.isEnabled ?? false;
+			this.legacySubs = pageQueryResult?.my?.subscriptions?.values ?? [];
+			this.hasLegacySubscription = this.legacySubs.length > 0;
+			this.hasActiveLogin = !!pageQueryResult?.my;
+		} catch (e) {
+			logReadQueryError(e, 'MonthlyGoodSetupPage pageQuery');
+		}
+
 		// Sanitize and set initial form values.
+		// Initial group from prop
 		if (this.lendingCategories.find(category => category.value === this.category)) {
 			this.selectedGroup = this.category;
 		}
 
-		if (!Number.isNaN(Number(this.amount))) {
+		// Initial amount from prop
+		if (!Number.isNaN(this.amount)) {
 			this.mgAmount = this.amount;
+		}
+
+		// Initial donation from prop
+		if (!Number.isNaN(this.initDonation)) {
+			// If donation in prop on load, set donation to other and fill with value from prop
+			this.donationOptionSelected = 'other';
+			this.donation = this.initDonation;
+		} else {
 			this.donation = this.amount * 0.15;
 		}
+
+		// Initial day from prop
+		if (!Number.isNaN(this.day)) {
+			this.dayOfMonth = this.day;
+		}
+
 		// Fire snowplow events
 		if (this.isMonthlyGoodSubscriber) {
 			this.$kvTrackEvent('Registration', 'unsuccessful-monthly-good-reg', 'has-mg');
@@ -527,6 +639,19 @@ export default {
 		},
 	},
 	computed: {
+		// change url parameters if form values are changed for login redirect
+		loginRedirectUrl() {
+			let redirectString = this.$route.path;
+			// eslint-disable-next-line max-len
+			redirectString += `?amount=${this.mgAmount}&category=${this.selectedGroup}&day=${this.dayOfMonth}&initDonation=${this.donation}`;
+			if (this.source) {
+				redirectString += `&source=${this.source}`;
+			}
+			if (this.onetime) {
+				redirectString += `&onetime=${this.onetime}`;
+			}
+			return encodeURIComponent(redirectString);
+		},
 		totalCombinedDeposit() {
 			return this.donation + this.mgAmount;
 		},
@@ -683,17 +808,6 @@ export default {
 		.display-inline-block {
 			display: inline-block;
 		}
-
-		// These styles are only needed for non Drop-In payment wrapper
-		// ::v-deep .loading-spinner {
-		// 	vertical-align: middle;
-		// 	width: 1rem;
-		// 	height: 1rem;
-		// }
-
-		// ::v-deep .loading-spinner .line {
-		// 	background-color: $white;
-		// }
 
 		::v-deep .dropdown-wrapper.donation-dropdown .dropdown {
 			margin-bottom: 0;

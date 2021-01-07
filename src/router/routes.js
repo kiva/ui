@@ -104,13 +104,12 @@ export default [
 		props: route => ({
 			amount: Number(route.query.amount),
 			category: route.query.category,
-			onetime: String(route.query.onetime),
+			onetime: route.query.onetime,
 			source: route.query.source,
 			nextmonth: route.query.nextmonth === 'true',
+			initDonation: Number(route.query.initDonation),
+			day: Number(route.query.day)
 		}),
-		meta: {
-			activeLoginRequired: true,
-		}
 	},
 	{
 		path: '/monthlygood/thanks',

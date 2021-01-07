@@ -18,6 +18,7 @@ let activeExperiments = [
 	'checkout_login_cta',
 	'homepage_force_dismiss_overlay',
 	'redirect_to_login',
+	'mg_login_after_setup',
 ];
 
 // TODO: Enhance Error handling

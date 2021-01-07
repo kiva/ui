@@ -5,14 +5,16 @@ import authenticationQuery from '@/graphql/query/authenticationQuery.graphql';
 const isServer = typeof window === 'undefined';
 
 // Return true if user logged in recently enough and false otherwise
-const checkLastLoginTime = (data, durationKey, defaultDuration) => {
-	const lastLogin = _get(data, 'my.lastLoginTimestamp', 0);
-	const duration = 1000 * (parseInt(_get(data, `general.${durationKey}.value`), 10) || defaultDuration);
+export function checkLastLoginTime(data, durationKey, defaultDuration) {
+	const lastLogin = data?.my?.lastLoginTimestamp ?? 0;
+	const durationKeyValue = data?.general?.[durationKey]?.value;
+	const duration = 1000 * (parseInt(durationKeyValue, 10) || defaultDuration);
+
 	if (Date.now() > lastLogin + duration) {
 		return false;
 	}
 	return true;
-};
+}
 
 const processErrors = (error, route) => {
 	if (error.message.indexOf('activeLoginRequired') > -1 || error.message.indexOf('recentLoginRequired') > -1) {
