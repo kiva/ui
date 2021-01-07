@@ -3,7 +3,7 @@
 		class="campaign-hero section"
 	>
 		<div class="row align-center">
-			<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
+			<div class="small-12 medium-10 large-6 xlarge-5 columns">
 				<img
 					class="campaign-hero__hero-img"
 					src="@/assets/images/loan-card-stack.jpg"
@@ -14,7 +14,7 @@
 				>
 			</div>
 			<!-- eslint-disable-next-line max-len -->
-			<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
+			<div class="small-10 large-6 xlarge-7 align-self-middle columns featured-loans__cta_wrapper">
 				<h1 class="campaign-hero__header">
 					<template v-if="headline">
 						{{ headline }}
@@ -130,7 +130,7 @@ export default {
 
 	&__hero-img {
 		display: block;
-		margin: 1rem auto 0;
+		margin: 0 auto 2rem;
 
 		@include breakpoint(large) {
 			margin: 0 auto;
