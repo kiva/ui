@@ -13,9 +13,13 @@
 				<!--
 					Toggle MFA off settings card
 				-->
+				<kv-loading-placeholder
+					class="two-step-verification--loading"
+					v-if="isLoading"
+				/>
 				<kv-settings-card
 					title="2-step verification is turned on"
-					v-if="isMfaActive"
+					v-if="!isLoading && isMfaActive"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -46,9 +50,13 @@
 				<!--
 					Security methods settings card
 				-->
+				<kv-loading-placeholder
+					class="two-step-verification--loading"
+					v-if="isLoading"
+				/>
 				<kv-settings-card
+					v-if="!isLoading && isMfaActive"
 					title="Your security method(s)"
-					v-if="mfaMethods.length > 0"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -84,7 +92,14 @@
 				<!--
 					Backup methods settings card
 				-->
-				<kv-settings-card :title="`${ cardTitle }`">
+				<kv-loading-placeholder
+					class="two-step-verification--loading"
+					v-if="isLoading"
+				/>
+				<kv-settings-card
+					v-if="!isLoading"
+					:title="`${ cardTitle }`"
+				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
 						Get correct icon assest from design, or remove this KvIcon -->
@@ -100,7 +115,7 @@
 							<p>{{ cardSubhead }}</p>
 							<h3 class="strong">
 								Authentication app
-								<span class="green">(Recommended)</span>
+								<span class="two-step-verification__sub-section--green">(Recommended)</span>
 							</h3>
 							<p>
 								Receive code from an authenticator app on your device,
@@ -139,6 +154,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
@@ -153,6 +169,7 @@ export default {
 			isPhoneLightboxVisible: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
+			isLoading: false,
 		};
 	},
 	components: {
@@ -161,12 +178,14 @@ export default {
 		KvSettingsCard,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
+		KvLoadingPlaceholder,
 	},
 	metaInfo: {
 		title: '2-step verification',
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
+			this.isLoading = true;
 			this.gatherMfaEnrollments();
 		}
 		if (this.$route.query.mfa === 'off') {
@@ -263,6 +282,7 @@ export default {
 			const filteredMethods = authEnrollments.filter(authItem => authItem.active);
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
 			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
+			this.isLoading = false;
 		},
 		readableAuthName(authType) {
 			if (authType === 'oob') {
@@ -306,9 +326,14 @@ export default {
 	&__sub-section {
 		margin-top: 2rem;
 
-		.green {
+		&--green {
 			color: $kiva-green;
 		}
+	}
+
+	&--loading {
+		height: 13rem;
+		margin-bottom: 1.5rem;
 	}
 }
 
