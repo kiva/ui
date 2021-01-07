@@ -20,6 +20,7 @@
 					:key="loan.id"
 					:loan="loan"
 					loan-card-type="LendHomepageLoanCard"
+					:disable-redirects="true"
 					@add-to-basket="addToBasket"
 				/>
 			</div>

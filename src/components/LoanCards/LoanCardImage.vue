@@ -90,14 +90,15 @@ export default {
 	methods: {
 		handleImageClick(event) {
 			this.$emit('image-click');
-			if (this.disableLink) {
-				event.preventDefault();
-				return;
-			}
+
 			this.$emit('track-loan-card-interaction', {
 				interactionType: 'viewBorrowerPage',
 				interactionElement: 'photo'
 			});
+
+			if (this.disableLink) {
+				event.preventDefault();
+			}
 		},
 	},
 };

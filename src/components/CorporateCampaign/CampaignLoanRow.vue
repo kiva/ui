@@ -49,6 +49,7 @@
 							:enable-tracking="true"
 							:is-visitor="!isLoggedIn"
 							:show-view-loan-cta="false"
+							:disable-redirects="true"
 							@add-to-basket="addToBasket"
 						/>
 					</div>
