@@ -12,8 +12,6 @@
 			<div class="column small-12 large-8">
 				<!--
 					Toggle MFA off settings card
-
-					v-if="isMfaActive"
 				-->
 				<kv-settings-card
 					title="2-step verification is turned on"
@@ -46,8 +44,6 @@
 
 				<!--
 					Security methods settings card
-
-					v-if="mfaMethods.length > 0"
 				-->
 				<kv-loading-placeholder
 					class="two-step-verification--loading"
@@ -107,7 +103,7 @@
 							<p>{{ cardSubhead }}</p>
 							<h3 class="strong">
 								Authentication app
-								<span class="green">(Recommended)</span>
+								<span class="two-step-verification__sub-section--green">(Recommended)</span>
 							</h3>
 							<p>
 								Receive code from an authenticator app on your device,
@@ -177,8 +173,8 @@ export default {
 	},
 	mounted() {
 		if (this.kvAuth0.enabled) {
-			this.gatherMfaEnrollments();
 			this.isLoading = true;
+			this.gatherMfaEnrollments();
 		}
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after login, or if has logged in within 5 minutes
@@ -318,7 +314,7 @@ export default {
 	&__sub-section {
 		margin-top: 2rem;
 
-		.green {
+		&--green {
 			color: $kiva-green;
 		}
 	}
