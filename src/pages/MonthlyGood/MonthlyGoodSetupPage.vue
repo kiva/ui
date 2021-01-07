@@ -228,6 +228,11 @@
 									<kv-button
 										title="Continue"
 										:href="`/ui-login?force=true&doneUrl=${loginRedirectUrl}`"
+										v-kv-track-event="[
+											'MonthlyGood',
+											'click-setup-form',
+											'Continue'
+										]"
 									>
 										Continue
 									</kv-button>

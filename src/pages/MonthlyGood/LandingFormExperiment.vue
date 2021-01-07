@@ -33,7 +33,12 @@
 			</kv-dropdown-rounded>
 		</div>
 
-		<kv-button class="smaller" type="submit" :disabled="$v.$invalid">
+		<kv-button class="smaller" type="submit" :disabled="$v.$invalid" v-kv-track-event="[
+			'MonthlyGood',
+			`click-start-form-${componentKey}`,
+			buttonText
+		]"
+		>
 			{{ buttonText }}
 		</kv-button>
 	</form>

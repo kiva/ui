@@ -2,10 +2,10 @@
 	<form @submit.prevent.stop="submit" novalidate>
 		<div class="row">
 			<fieldset class="large-4 medium-5 small-12 columns input-wrapper">
-				<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount' + componentKey">
+				<label class="show-for-sr" :class="{ 'error': $v.$invalid }" :for="'amount-' + componentKey">
 					Amount
 				</label>
-				<kv-currency-input :id="'amount' + componentKey" :value="amount" @input="updateAmount" />
+				<kv-currency-input :id="'amount-' + componentKey" :value="amount" @input="updateAmount" />
 				<ul class="validation-errors" v-if="$v.$invalid">
 					<li v-if="!$v.amount.required">
 						Field is required
@@ -24,7 +24,12 @@
 			</fieldset>
 		</div>
 
-		<kv-button class="smaller" type="submit" :disabled="$v.$invalid">
+		<kv-button class="smaller" type="submit" :disabled="$v.$invalid" v-kv-track-event="[
+			'MonthlyGood',
+			`click-start-form-${componentKey}`,
+			buttonText
+		]"
+		>
 			{{ buttonText }}
 		</kv-button>
 	</form>
