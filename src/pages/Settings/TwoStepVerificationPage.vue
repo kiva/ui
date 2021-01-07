@@ -12,10 +12,11 @@
 			<div class="column small-12 large-8">
 				<!--
 					Toggle MFA off settings card
+
+					v-if="isMfaActive"
 				-->
 				<kv-settings-card
 					title="2-step verification is turned on"
-					v-if="isMfaActive"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -45,10 +46,16 @@
 
 				<!--
 					Security methods settings card
-				-->
-				<kv-settings-card
-					title="Your security method(s)"
+
 					v-if="mfaMethods.length > 0"
+				-->
+				<kv-loading-placeholder
+					class="two-step-verification--loading"
+					v-if="isLoading"
+				/>
+				<kv-settings-card
+					v-if="!isLoading"
+					title="Your security method(s)"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -139,6 +146,7 @@
 import KvButton from '@/components/Kv/KvButton';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import mfaQuery from '@/graphql/query/mfa/mfaQuery.graphql';
@@ -153,6 +161,7 @@ export default {
 			isPhoneLightboxVisible: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
+			isLoading: false,
 		};
 	},
 	components: {
@@ -161,6 +170,7 @@ export default {
 		KvSettingsCard,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
+		KvLoadingPlaceholder,
 	},
 	metaInfo: {
 		title: '2-step verification',
@@ -168,6 +178,7 @@ export default {
 	mounted() {
 		if (this.kvAuth0.enabled) {
 			this.gatherMfaEnrollments();
+			this.isLoading = true;
 		}
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after login, or if has logged in within 5 minutes
@@ -263,6 +274,7 @@ export default {
 			const filteredMethods = authEnrollments.filter(authItem => authItem.active);
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
 			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
+			this.isLoading = false;
 		},
 		readableAuthName(authType) {
 			if (authType === 'oob') {
@@ -309,6 +321,11 @@ export default {
 		.green {
 			color: $kiva-green;
 		}
+	}
+
+	&--loading {
+		height: 13rem;
+		margin-bottom: 1.5rem;
 	}
 }
 

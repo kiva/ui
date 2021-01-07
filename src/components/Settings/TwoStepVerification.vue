@@ -1,33 +1,42 @@
 <template>
-	<kv-settings-card title="2-Step verification">
-		<template v-slot:icon>
-			<!-- TODO: THIS ICON IS A PLACEHOLDER
-					Get correct icon assest from design, or remove this KvIcon -->
-			<kv-icon
-				class="icon"
-				title="Auto-lending On"
-				name="auto-icon-on"
-			/>
-		</template>
-		<template v-slot:content>
-			<h3 class="strong">
-				Status:
-				<span :class="`mfa-${MFAStatus}`">{{ MFAStatus }}</span>
-			</h3>
-			<p>
-				Protect your Kiva account with an extra layer of security by requiring access
-				to your phone. Once configured, you'll be required to enter
-				<span class="strong">both your password and an authenication code from your mobile phone</span>
-				in order to access your account.
-			</p>
-			<kv-button
-				to="/settings/security/mfa"
-				class="smallest"
-			>
-				Manage 2-step verification
-			</kv-button>
-		</template>
-	</kv-settings-card>
+	<div>
+		<kv-loading-placeholder
+			class="loading"
+			v-if="isLoading"
+		/>
+		<kv-settings-card
+			v-if="!isLoading"
+			title="2-Step verification"
+		>
+			<template v-slot:icon>
+				<!-- TODO: THIS ICON IS A PLACEHOLDER
+						Get correct icon assest from design, or remove this KvIcon -->
+				<kv-icon
+					class="icon"
+					title="Auto-lending On"
+					name="auto-icon-on"
+				/>
+			</template>
+			<template v-slot:content>
+				<h3 class="strong">
+					Status:
+					<span :class="`mfa-${MFAStatus}`">{{ MFAStatus }}</span>
+				</h3>
+				<p>
+					Protect your Kiva account with an extra layer of security by requiring access
+					to your phone. Once configured, you'll be required to enter
+					<span class="strong">both your password and an authenication code from your mobile phone</span>
+					in order to access your account.
+				</p>
+				<kv-button
+					to="/settings/security/mfa"
+					class="smallest"
+				>
+					Manage 2-step verification
+				</kv-button>
+			</template>
+		</kv-settings-card>
+	</div>
 </template>
 
 <script>
@@ -36,6 +45,7 @@ import gql from 'graphql-tag';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvIcon from '@/components/Kv/KvIcon';
 import KvButton from '@/components/Kv/KvButton';
+import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 
 const pageQuery = gql`query mfaQuery($mfa_token: String!) {
 	my {
@@ -52,10 +62,12 @@ export default {
 		KvSettingsCard,
 		KvIcon,
 		KvButton,
+		KvLoadingPlaceholder,
 	},
 	data() {
 		return {
 			isMFAActive: false,
+			isLoading: false,
 		};
 	},
 	computed: {
@@ -69,6 +81,7 @@ export default {
 	},
 	inject: ['apollo', 'kvAuth0'],
 	mounted() {
+		this.isLoading = true;
 		if (this.kvAuth0.enabled) {
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
@@ -79,14 +92,18 @@ export default {
 							mfa_token: token
 						}
 					});
-				}).then(result => {
+				})
+				.then(result => {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
+					console.log(authEnrollments);
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						if (authEnrollments[i].active === true) {
 							this.isMFAActive = true;
+							this.isLoading = false;
 							return;
 						}
 					}
+					this.isLoading = false;
 				});
 		}
 	}
@@ -104,5 +121,10 @@ export default {
 .mfa-on {
 	color: $kiva-green;
 	text-transform: capitalize;
+}
+
+.loading {
+	height: 13rem;
+	margin-bottom: 1.5rem;
 }
 </style>
