@@ -18,14 +18,14 @@
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
-							:key="1"
+							key="top"
 							:button-text="pageCopy.button"
 							v-if="!isMonthlyGoodSubscriber && !isExperimentActive"
 						/>
 						<landing-form-experiment
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
-							:key="1"
+							key="top"
 							:button-text="pageCopy.button"
 							v-if="!isMonthlyGoodSubscriber && isExperimentActive"
 						/>
@@ -49,7 +49,7 @@
 				<landing-form
 					:amount.sync="monthlyGoodAmount"
 					:selected-group.sync="selectedGroup"
-					:key="2"
+					key="bottom"
 					v-if="!isMonthlyGoodSubscriber"
 					:button-text="pageCopy.button"
 				/>
