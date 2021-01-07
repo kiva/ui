@@ -5,7 +5,6 @@ import cookieStore from '@/util/cookieStore';
 // Experiment Ids from setting that will be passed in the X-Experiment Header
 const targetIds = [
 	'category_row_hillclimb',
-	'redirect_to_login',
 	'ml_loan_to_loan',
 ];
 
