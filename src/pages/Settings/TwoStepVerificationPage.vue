@@ -92,7 +92,14 @@
 				<!--
 					Backup methods settings card
 				-->
-				<kv-settings-card :title="`${ cardTitle }`">
+				<kv-loading-placeholder
+					class="two-step-verification--loading"
+					v-if="isLoading"
+				/>
+				<kv-settings-card
+					v-if="!isLoading"
+					:title="`${ cardTitle }`"
+				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
 						Get correct icon assest from design, or remove this KvIcon -->

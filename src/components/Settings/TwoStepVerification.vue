@@ -1,11 +1,6 @@
 <template>
 	<div class="two-step-card-wrapper">
-		<kv-loading-placeholder
-			class="two-step-card-wrapper--loading"
-			v-if="isLoading"
-		/>
 		<kv-settings-card
-			v-if="!isLoading"
 			title="2-Step verification"
 			class="two-step-card-wrapper__two-step-card"
 		>
@@ -21,7 +16,16 @@
 			<template v-slot:content>
 				<h3 class="strong">
 					Status:
-					<span :class="`two-step-card-wrapper__two-step-card--mfa-${MFAStatus}`">{{ MFAStatus }}</span>
+					<kv-loading-placeholder
+						class="two-step-card-wrapper__two-step-card--loading"
+						v-if="isLoading"
+					/>
+					<span
+						v-if="!isLoading"
+						:class="`two-step-card-wrapper__two-step-card--mfa-${MFAStatus}`"
+					>
+						{{ MFAStatus }}
+					</span>
 				</h3>
 				<p>
 					Protect your Kiva account with an extra layer of security by requiring access
@@ -124,11 +128,13 @@ export default {
 			color: $kiva-green;
 			text-transform: capitalize;
 		}
-	}
 
-	&--loading {
-		height: 13rem;
-		margin-bottom: 1.5rem;
+		&--loading {
+			width: 2rem;
+			height: 1.2rem;
+			display: inline-block;
+			top: .125rem;
+		}
 	}
 }
 </style>
