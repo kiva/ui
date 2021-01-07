@@ -133,7 +133,7 @@ export default {
 			width: 2rem;
 			height: 1.2rem;
 			display: inline-block;
-			top: .125rem;
+			top: 0.125rem;
 		}
 	}
 }
