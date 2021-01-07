@@ -15,6 +15,7 @@
 				-->
 				<kv-settings-card
 					title="2-step verification is turned on"
+					v-if="isMfaActive"
 				>
 					<template v-slot:icon>
 						<!-- TODO: THIS ICON IS A PLACEHOLDER
@@ -50,7 +51,7 @@
 					v-if="isLoading"
 				/>
 				<kv-settings-card
-					v-if="!isLoading"
+					v-if="!isLoading && isMfaActive"
 					title="Your security method(s)"
 				>
 					<template v-slot:icon>

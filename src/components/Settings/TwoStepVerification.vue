@@ -96,7 +96,6 @@ export default {
 				})
 				.then(result => {
 					const authEnrollments = result.data.my.authenticatorEnrollments;
-					console.log(authEnrollments);
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						if (authEnrollments[i].active === true) {
 							this.isMFAActive = true;
