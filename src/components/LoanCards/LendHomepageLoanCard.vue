@@ -6,10 +6,12 @@
 			:name="loan.name"
 			:retina-image-url="loan.image.retina"
 			:standard-image-url="loan.image.default"
+			:disable-link="disableRedirects"
 			:is-visitor="isVisitor"
 			:is-favorite="isFavorite"
 			:use-default-styles="false"
 			@favorite-toggled="toggleFavorite"
+			@image-click="$emit('image-click', {loanId: loan.id})"
 			@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 		/>
 		<div class="lend-homepage-loan-card__data-wrapper">
@@ -20,6 +22,7 @@
 					class="lend-homepage-loan-card__flag"
 				/>
 				<borrower-info-name
+					:disable-link="disableRedirects"
 					:name="loan.name"
 					:loan-id="loan.id"
 					class="borrower-name"

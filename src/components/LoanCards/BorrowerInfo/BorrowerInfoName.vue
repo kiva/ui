@@ -1,23 +1,49 @@
-<template functional>
+<template>
 	<router-link
-		:to="`/lend/${props.loanId}`"
+		:to="`/lend/${loanId}`"
 		class="borrower-info-name"
-		:class="[
-			data.class,
-			data.staticClass,
-		]"
-		v-kv-track-event="['Lending', 'click-Read more', 'Name', props.loanId, props.loanId]"
+		v-kv-track-event="['Lending', 'click-Read more', 'Name', loanId, loanId]"
 	>
 		<span
-			@click="listeners['track-loan-card-interaction']({
-				interactionType: 'viewBorrowerPage',
-				interactionElement: 'borrowerName'
-			})"
+			@click="handleNameClick"
 		>
-			{{ props.name }}
+			{{ name }}
 		</span>
 	</router-link>
 </template>
+
+<script>
+export default {
+	props: {
+		disableLink: {
+			type: Boolean,
+			default: false,
+		},
+		loanId: {
+			type: Number,
+			default: 0
+		},
+		name: {
+			type: String,
+			default: ''
+		},
+	},
+	methods: {
+		handleNameClick(event) {
+			this.$emit('name-click');
+
+			this.$emit('track-loan-card-interaction', {
+				interactionType: 'viewBorrowerPage',
+				interactionElement: 'borrowerName'
+			});
+
+			if (this.disableLink) {
+				event.preventDefault();
+			}
+		},
+	},
+};
+</script>
 
 <style lang="scss">
 @import 'settings';
