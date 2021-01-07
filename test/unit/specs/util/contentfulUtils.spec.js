@@ -79,6 +79,7 @@ describe('contentfulUtils.js', () => {
 				key: 'promo-campaign-test',
 				path: '/cc/promo-campaign-test',
 				pageType: 'corporate-campaign',
+				pageTitle: 'Test Page Title',
 			}
 		};
 
@@ -93,7 +94,8 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
-					contentGroups: [{}]
+					contentGroups: [{}],
+					pageTitle: 'Test Page Layout Title',
 				},
 				settings: [{}]
 			}
@@ -131,8 +133,10 @@ describe('contentfulUtils.js', () => {
 							description: 'Lend a hand from afar and join the global COVID-19 response. Take action',
 							images: expect.any(Array)
 						}]
-					}]
-				}
+					}],
+					pageTitle: 'Test Page Layout Title',
+				},
+				pageTitle: 'Test Page Title',
 			}
 		};
 
@@ -151,6 +155,7 @@ describe('contentfulUtils.js', () => {
 				key: 'promo-campaign-test',
 				path: '/cc/promo-campaign-test',
 				pageType: 'corporate-campaign',
+				pageTitle: 'Test Page Title',
 			}
 		};
 
@@ -164,10 +169,12 @@ describe('contentfulUtils.js', () => {
 				path: '/cc/promo-campaign-test',
 				pageType: 'corporate-campaign',
 				pageLayout: {
-					name: 'Promo Campaign Test'
+					name: 'Promo Campaign Test',
+					pageTitle: 'Test Page Layout Title',
 				},
 				settings: expect.any(Array),
-				contentGroups: expect.any(Object)
+				contentGroups: expect.any(Object),
+				pageTitle: 'Test Page Title',
 			}
 		};
 
@@ -182,6 +189,7 @@ describe('contentfulUtils.js', () => {
 				pageType: 'corporate-campaign',
 				pageLayout: {
 					name: 'Promo Campaign Test',
+					pageTitle: 'Test Page Layout Title',
 				},
 				settings: expect.any(Array),
 				contentGroups: {
@@ -198,8 +206,10 @@ describe('contentfulUtils.js', () => {
 							description: 'Lend a hand from afar and join the global COVID-19 response. Take action',
 							images: expect.any(Array)
 						}],
+						type: 'mlCampaignHero'
 					}
-				}
+				},
+				pageTitle: 'Test Page Title',
 			}
 		};
 
@@ -218,6 +228,7 @@ describe('contentfulUtils.js', () => {
 				key: expect.any(String),
 				path: expect.any(String),
 				pageType: expect.any(String),
+				pageTitle: expect.any(String)
 			}
 		};
 
@@ -231,10 +242,12 @@ describe('contentfulUtils.js', () => {
 				path: expect.any(String),
 				pageType: expect.any(String),
 				pageLayout: expect.objectContaining({
-					name: expect.any(String)
+					name: expect.any(String),
+					pageTitle: expect.any(String)
 				}),
 				settings: expect.any(Array),
-				contentGroups: expect.any(Object)
+				contentGroups: expect.any(Object),
+				pageTitle: expect.any(String)
 			}
 		};
 
@@ -248,7 +261,8 @@ describe('contentfulUtils.js', () => {
 				path: expect.any(String),
 				pageType: expect.any(String),
 				pageLayout: expect.objectContaining({
-					name: expect.any(String)
+					name: expect.any(String),
+					pageTitle: expect.any(String)
 				}),
 				settings: expect.any(Array),
 				contentGroups: expect.objectContaining({
@@ -265,8 +279,10 @@ describe('contentfulUtils.js', () => {
 							description: expect.any(String),
 							images: expect.any(Array)
 						}],
+						type: expect.any(String)
 					})
-				})
+				}),
+				pageTitle: expect.any(String)
 			}
 		};
 
@@ -292,6 +308,7 @@ describe('contentfulUtils.js', () => {
 				key: expect.any(String),
 				path: expect.any(String),
 				pageType: undefined,
+				pageTitle: undefined
 			}
 		};
 
@@ -305,10 +322,12 @@ describe('contentfulUtils.js', () => {
 				path: expect.any(String),
 				pageType: undefined,
 				pageLayout: expect.objectContaining({
-					name: expect.any(String)
+					name: expect.any(String),
+					pageTitle: undefined
 				}),
 				settings: [],
-				contentGroups: expect.any(Object)
+				contentGroups: expect.any(Object),
+				pageTitle: undefined
 			}
 		};
 
@@ -322,7 +341,8 @@ describe('contentfulUtils.js', () => {
 				path: expect.any(String),
 				pageType: undefined,
 				pageLayout: expect.objectContaining({
-					name: expect.any(String)
+					name: expect.any(String),
+					pageTitle: undefined
 				}),
 				settings: [],
 				contentGroups: expect.objectContaining({
@@ -376,7 +396,8 @@ describe('contentfulUtils.js', () => {
 							richText: expect.any(Object)
 						}],
 					})
-				})
+				}),
+				pageTitle: undefined
 			}
 		};
 
