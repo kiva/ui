@@ -14,7 +14,7 @@
 			<li>
 				<kv-button
 					class="text-link"
-					@click="triggerWhatIsLightbox"
+					@click.native.prevent="triggerWhatIsLightbox"
 				>
 					What is 2-step Verification?
 				</kv-button>
@@ -22,7 +22,7 @@
 			<li>
 				<kv-button
 					class="text-link"
-					@click="triggerHowItWorksLightbox"
+					@click.native.prevent="triggerHowItWorksLightbox"
 				>
 					How does it work?
 				</kv-button>
@@ -30,7 +30,7 @@
 			<li>
 				<kv-button
 					class="text-link"
-					@click="triggerHowItProtectsLightbox"
+					@click.native.prevent="triggerHowItProtectsLightbox"
 				>
 					How it protects you?
 				</kv-button>
