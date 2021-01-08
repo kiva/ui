@@ -454,11 +454,9 @@ export default {
 			const heroArea = contentGroups.campaignHeroCg;
 			return heroArea;
 		},
-		// TODO: this needs to be standardized
 		partnerAreaContent() {
 			const contentGroups = this.pageData?.page?.contentGroups;
-			// Expects a content group with key = `campaign-hero-cg`
-			const partnerArea = contentGroups.partnerAreaCg;
+			const partnerArea = contentGroups?.partnerAreaCg;
 			return partnerArea;
 		},
 		promoAmount() {
