@@ -1,12 +1,12 @@
 <template>
 	<section class="campaign-partner section">
-		<div class="row">
+		<div class="row align-center">
 			<div class="small-12 medium-10 large-6 columns">
 				<img
-					v-if="heroLogo.url"
+					v-if="partnerImage.url"
 					class="campaign-partner__img"
-					:src="heroLogo.url"
-					:alt="heroLogo.title"
+					:src="partnerImage.url"
+					:alt="partnerImage.title"
 				>
 			</div>
 			<div class="small-10 large-6 columns">
@@ -38,7 +38,7 @@ export default {
 		},
 	},
 	computed: {
-		heroLogo() {
+		partnerImage() {
 			const mediaObject = this.partnerAreaContent?.media?.[0];
 			return {
 				title: mediaObject?.title || '',
