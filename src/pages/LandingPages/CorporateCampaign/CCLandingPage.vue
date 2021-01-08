@@ -79,6 +79,9 @@
 			</section>
 			<hr>
 
+			<campaign-partner :partner-area-content="partnerAreaContent" />
+			<hr>
+
 			<campaign-how-kiva-works />
 
 			<campaign-verification-form
@@ -136,6 +139,7 @@ import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKiva
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
 // import CampaignLoanRowsDisplay from '@/components/CorporateCampaign/CampaignLoanRowsDisplay';
+import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
 import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
@@ -317,6 +321,7 @@ export default {
 		CampaignHowKivaWorks,
 		CampaignLoanGridDisplay,
 		CampaignLoanRow,
+		CampaignPartner,
 		CampaignStatus,
 		CampaignThanks,
 		CampaignVerificationForm,
@@ -448,6 +453,13 @@ export default {
 			// Expects a content group with key = `campaign-hero-cg`
 			const heroArea = contentGroups.campaignHeroCg;
 			return heroArea;
+		},
+		// TODO: this needs to be standardized
+		partnerAreaContent() {
+			const contentGroups = this.pageData?.page?.contentGroups;
+			// Expects a content group with key = `campaign-hero-cg`
+			const partnerArea = contentGroups.partnerAreaCg;
+			return partnerArea;
 		},
 		promoAmount() {
 			// TODO: get promoAmount from basket credit instead
