@@ -61,19 +61,6 @@ export default {
 		return {};
 	},
 	computed: {
-		heroLogo() {
-			const mediaObject = this.heroAreaContent?.media?.[0];
-			if (mediaObject) {
-				return {
-					title: mediaObject.title,
-					url: mediaObject.file?.url
-				};
-			}
-			return {
-				title: '',
-				url: ''
-			};
-		},
 		headline() {
 			if (this.heroAreaContent) {
 				return this.heroAreaContent.contents[0].headline;
@@ -117,14 +104,6 @@ export default {
 
 		@include breakpoint(large) {
 			padding: 0 2rem;
-		}
-	}
-
-	&__logo {
-		image {
-			display: block;
-			outline: none;
-			width: 100%;
 		}
 	}
 
