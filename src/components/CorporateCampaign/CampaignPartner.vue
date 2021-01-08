@@ -18,8 +18,9 @@
 				</h2>
 				<div
 					v-if="bodyCopy"
-					class="campaign-hero__body"
+					class="campaign-partner__body"
 					v-html="bodyCopy"
+					ref="partnerBodyCopy"
 				></div>
 			</div>
 		</div>
@@ -51,6 +52,12 @@ export default {
 			const richText = this.partnerAreaContent?.contents?.[0]?.bodyCopy;
 			return richText ? documentToHtmlString(richText) : '';
 		},
+	},
+	async mounted() {
+		await this.$nextTick();
+		// make sure all partner content links open externally
+		const links = this.$refs.partnerBodyCopy.querySelectorAll('a');
+		links.forEach(link => { link.target = '_blank'; }); // eslint-disable-line no-param-reassign
 	}
 };
 </script>
