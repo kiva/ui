@@ -9,7 +9,6 @@
 				'kv-lightbox--no-padding-sides': noPaddingSides,
 				'kv-lightbox--full-width': fullWidth,
 			}"
-			data-test="kv-lightbox"
 			@click.stop.prevent="closeLightbox"
 			v-show="isShown"
 		>
@@ -20,6 +19,7 @@
 					tabindex="-1"
 					ref="kvLightbox"
 					role="dialog"
+					data-test="kv-lightbox"
 					:aria-labelledby="title ? 'lightbox-title' : null"
 				>
 					<div class="kv-lightbox__header">
