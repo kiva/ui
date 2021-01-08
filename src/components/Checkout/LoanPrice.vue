@@ -18,7 +18,7 @@
 			class="remove-wrapper"
 			@click="updateLoanReservation('remove')"
 		>
-			<kv-icon class="remove-x" name="small-x" :from-sprite="true" />
+			<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove from cart" />
 		</button>
 	</div>
 </template>
