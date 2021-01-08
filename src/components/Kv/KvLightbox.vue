@@ -1,26 +1,26 @@
 <template>
-	<focus-lock :disabled="!isShown">
-		<transition name="kvfade">
-			<div
-				v-show="isShown"
-				class="kv-lightbox"
-				:class="{
-					'kv-lightbox--inverted': inverted,
-					'kv-lightbox--no-padding-top': noPaddingTop,
-					'kv-lightbox--no-padding-bottom': noPaddingBottom,
-					'kv-lightbox--no-padding-sides': noPaddingSides,
-					'kv-lightbox--full-width': fullWidth,
-				}"
-				data-test="kv-lightbox"
-				tabindex="-1"
-				ref="kvLightbox"
-				@click.stop.prevent="closeLightbox"
-				role="dialog"
-				:aria-labelledby="title ? 'lightbox-title' : null"
-			>
+	<transition name="kvfade">
+		<div
+			class="kv-lightbox"
+			:class="{
+				'kv-lightbox--inverted': inverted,
+				'kv-lightbox--no-padding-top': noPaddingTop,
+				'kv-lightbox--no-padding-bottom': noPaddingBottom,
+				'kv-lightbox--no-padding-sides': noPaddingSides,
+				'kv-lightbox--full-width': fullWidth,
+			}"
+			data-test="kv-lightbox"
+			@click.stop.prevent="closeLightbox"
+			v-show="isShown"
+		>
+			<focus-lock v-if="isShown" :return-focus="true">
 				<div
 					class="kv-lightbox__container"
 					@click.stop
+					tabindex="-1"
+					ref="kvLightbox"
+					role="dialog"
+					:aria-labelledby="title ? 'lightbox-title' : null"
 				>
 					<div class="kv-lightbox__header">
 						<h2 v-if="title"
@@ -51,9 +51,9 @@
 						<slot name="controls"></slot>
 					</div>
 				</div>
-			</div>
-		</transition>
-	</focus-lock>
+			</focus-lock>
+		</div>
+	</transition>
 </template>
 
 <script>
@@ -169,10 +169,6 @@ export default {
 	z-index: 1500;
 	background: rgba(72, 72, 72, 0.6);
 
-	&:focus {
-		outline: 0; // safe(?), since JavaScript is the only way to focus on this el.
-	}
-
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
 	}
@@ -185,6 +181,10 @@ export default {
 		max-height: 100%;
 		background: $white;
 		position: relative;
+
+		&:focus {
+			outline: 0; // safe(?), since JavaScript is the only way to focus on this el.
+		}
 
 		@include breakpoint(medium) {
 			padding: 2.8125rem;
