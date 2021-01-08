@@ -21,6 +21,7 @@
 					role="dialog"
 					data-test="kv-lightbox"
 					:aria-labelledby="title ? 'lightbox-title' : null"
+					aria-modal="true"
 				>
 					<div class="kv-lightbox__header">
 						<h2 v-if="title"
