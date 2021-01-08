@@ -60,7 +60,7 @@
 					class="show-for-medium remove-wrapper"
 					@click="updateLoanAmount('remove')"
 				>
-					<kv-icon class="remove-x" name="small-x" :from-sprite="true" />
+					<kv-icon class="remove-x" name="small-x" :from-sprite="true" title="Remove donation" />
 				</button>
 			</div>
 			<donate-repayments

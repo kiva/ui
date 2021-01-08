@@ -10,7 +10,7 @@
 			</div>
 			<!-- Not Reserved -->
 			<div class="loan-message" v-if="loanReservationMsg1">
-				Loan not reserved. <a @click.prevent="triggerDefaultLightbox">Why?</a>
+				Loan not reserved. <kv-button class="text-link" @click.native="triggerDefaultLightbox">Why?</kv-button>
 			</div>
 			<!-- Time Based Messages -->
 			<div
@@ -40,10 +40,12 @@
 
 <script>
 import { differenceInMinutes, differenceInSeconds } from 'date-fns';
+import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 
 export default {
 	components: {
+		KvButton,
 		KvLightbox
 	},
 	data() {
