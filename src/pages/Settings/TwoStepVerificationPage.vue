@@ -268,7 +268,7 @@ export default {
 						mutation: removeOneMfaMethod,
 						variables: {
 							mfa_token: token,
-							id: mfaMethod.authId
+							id: mfaMethod.id
 						}
 					})
 						.then(() => {
