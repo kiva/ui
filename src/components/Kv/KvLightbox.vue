@@ -12,7 +12,8 @@
 					'kv-lightbox--full-width': fullWidth,
 				}"
 				data-test="kv-lightbox"
-				ref="kvlightbox"
+				tabindex="-1"
+				ref="kvLightbox"
 				@click.stop.prevent="closeLightbox"
 				role="dialog"
 				:aria-labelledby="title ? 'lightbox-title' : null"
@@ -114,6 +115,7 @@ export default {
 			if (this.isShown) {
 				document.addEventListener('keyup', this.onKeyUp);
 				this.$nextTick(() => {
+					this.$refs.kvLightbox.focus();
 					this.lockScroll();
 				});
 			} else {
@@ -166,6 +168,10 @@ export default {
 	bottom: 0;
 	z-index: 1500;
 	background: rgba(72, 72, 72, 0.6);
+
+	&:focus {
+		outline: 0; // safe(?), since JavaScript is the only way to focus on this el.
+	}
 
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
