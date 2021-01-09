@@ -146,7 +146,6 @@
 					<subscriptions-monthly-good-cancellation-flow
 						:show-cancel-lightbox="showCancelLightbox"
 						:subscription-id="subscriptionId"
-						v-if="showCancelLightbox"
 						@confirm-cancel="$emit('cancel-subscription'); showCancelLightbox = false;"
 						@abort-cancel="showCancelLightbox = false"
 						@modify-cancel="showCancelLightbox = false; showEditLightbox = true"
