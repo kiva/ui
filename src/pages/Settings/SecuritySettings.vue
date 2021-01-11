@@ -1,7 +1,7 @@
 <template>
 	<www-page class="security-login-page" :gray-background="true">
 		<the-my-kiva-secondary-menu slot="secondary" />
-		<div class="security-login__title-area">
+		<div class="security-login-page__title-area">
 			<div class="row column">
 				<h1>
 					Security and login
