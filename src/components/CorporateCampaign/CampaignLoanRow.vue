@@ -1,8 +1,8 @@
 <template>
 	<div class="component-wrapper" ref="componentWrapper">
-		<div class="loan-search-title">
+		<!-- <div class="loan-search-title">
 			View Loans that are "Trending Now"
-		</div>
+		</div> -->
 		<kv-loading-spinner v-if="isLoading" />
 		<div
 			v-else
@@ -188,10 +188,18 @@ export default {
 		loanQueryVars(next, prev) {
 			this.loanQueryVarsStack.push(prev);
 		},
-		filters(next, prev) {
-			if (next !== prev) {
-				this.loanQueryFilters = next;
-			}
+		filters(next) {
+			// console.log('filters watch: ', next);
+			// if (next !== prev) {
+
+			// TODO: Review process for reseting loans after applying filters
+			// reset offset
+			this.offset = 0;
+			// reset loans
+			this.loans = [];
+
+			this.loanQueryFilters = next;
+			// }
 		}
 	},
 	mounted() {

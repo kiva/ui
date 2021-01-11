@@ -31,6 +31,13 @@
 						<h2 class="loan-categories__header text-center">
 							Support causes you care about.
 						</h2>
+
+						<campaign-loan-filters
+							v-if="showTestFilters"
+							:initial-filters="initialFilters"
+							@updated-filters="handleUpdatedFilters"
+						/>
+
 						<campaign-loan-row
 							v-show="showLoanRows"
 							id="campaignLoanRowDisplay"
@@ -138,6 +145,7 @@ import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
+import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
 // import CampaignLoanRowsDisplay from '@/components/CorporateCampaign/CampaignLoanRowsDisplay';
 import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
@@ -320,6 +328,7 @@ export default {
 		CampaignHero,
 		CampaignHowKivaWorks,
 		CampaignLoanGridDisplay,
+		CampaignLoanFilters,
 		CampaignLoanRow,
 		CampaignPartner,
 		CampaignStatus,
@@ -367,6 +376,7 @@ export default {
 			promoApplied: null,
 			promoErrorMessage: null,
 			promoData: null,
+			filters: null,
 			lastActiveLogin: 0,
 			myId: null,
 			activeLoginDuration: 3600,
@@ -390,6 +400,7 @@ export default {
 			showThanks: false,
 			transactionId: null,
 			showLoanRows: true,
+			showTestFilters: false,
 		};
 	},
 	metaInfo() {
@@ -441,6 +452,15 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
+
+		if (this.$route.query && this.$route.query.testFilters === 'true') {
+			this.showTestFilters = true;
+		}
+	},
+	watch: {
+		initialFilters(next) {
+			this.filters = next;
+		}
 	},
 	computed: {
 		pageTitle() {
@@ -469,7 +489,11 @@ export default {
 			}
 			return '0';
 		},
-		filters() {
+		// filters() {
+		// 	const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
+		// 	return getSearchableFilters(filters);
+		// },
+		initialFilters() {
 			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
 			return getSearchableFilters(filters);
 		},
@@ -782,6 +806,11 @@ export default {
 				},
 				hash: section
 			});
+		},
+
+		handleUpdatedFilters(payload) {
+			console.log('top level handle updated filters: ', payload);
+			this.filters = getSearchableFilters(payload);
 		}
 	},
 	beforeRouteEnter(to, from, next) {
