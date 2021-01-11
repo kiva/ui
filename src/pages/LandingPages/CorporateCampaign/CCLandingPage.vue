@@ -89,7 +89,7 @@
 			<campaign-partner :partner-area-content="partnerAreaContent" />
 			<hr>
 
-			<campaign-how-kiva-works />
+			<campaign-how-kiva-works v-if="!showThanks" />
 
 			<campaign-verification-form
 				v-if="this.showVerification"
@@ -106,7 +106,9 @@
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutVisible = false"
 			>
-				<div class="small-10 large-8 align-self-middle columns">
+				<div class="columns">
+					<h2>Checkout</h2>
+					<hr>
 					<in-context-checkout
 						:is-actively-logged-in="isActivelyLoggedIn"
 						:loans="basketLoans"
@@ -126,7 +128,7 @@
 				id="campaignThanks"
 				class="campaign-thanks section row align-center"
 			>
-				<hr>
+				<!-- <hr> -->
 				<campaign-thanks :transaction-id="transactionId" />
 			</section>
 		</div>
@@ -489,10 +491,6 @@ export default {
 			}
 			return '0';
 		},
-		// filters() {
-		// 	const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
-		// 	return getSearchableFilters(filters);
-		// },
 		initialFilters() {
 			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
 			return getSearchableFilters(filters);
@@ -631,7 +629,7 @@ export default {
 			// this.$emit('add-to-basket', payload);
 			if (payload.eventSource === 'checkoutBtnClick') {
 				console.log('checkout clicked');
-				// this.checkoutVisible = true;
+				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
 			}
@@ -844,6 +842,12 @@ export default {
 
 		@include breakpoint(large) {
 			top: $header-height-large;
+		}
+	}
+
+	.campaign-checkout {
+		.kv-lightbox__container {
+			padding-bottom: 0.5rem;
 		}
 	}
 }
