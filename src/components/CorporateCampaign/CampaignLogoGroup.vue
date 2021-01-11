@@ -58,9 +58,14 @@ $logo-color: $white;
 	&__separator {
 		color: $subtle-gray;
 		display: inline-block;
-		font-size: 2rem;
+		font-size: 1.5rem;
 		font-weight: bold;
-		margin: 0 0.75rem;
+		margin: 0 0.5rem;
+
+		@include breakpoint(large) {
+			font-size: 2rem;
+			margin: 0 0.675rem;
+		}
 	}
 }
 </style>
