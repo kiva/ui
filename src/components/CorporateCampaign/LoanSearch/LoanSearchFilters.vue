@@ -73,18 +73,18 @@ export default {
 		showFilters() {
 			this.filtersVisible = true;
 		},
-		updateFilter(filter, value) {
-			if (this.updatedFilters[filter] !== value) {
-				this.updatedFilters[filter] = value;
-				this.$emit(
-					'new-filters-selected',
-					{
-						filter,
-						filters: this.updatedFilters
-					}
-				);
-			}
-		},
+		// updateFilter(filter, value) {
+		// 	if (this.updatedFilters[filter] !== value) {
+		// 		this.updatedFilters[filter] = value;
+		// 		this.$emit(
+		// 			'new-filters-selected',
+		// 			{
+		// 				filter,
+		// 				filters: this.updatedFilters
+		// 			}
+		// 		);
+		// 	}
+		// },
 		handleUpdatedFilters(payload) {
 			console.log('handleUpdatedFilters: ', payload);
 			const filterKeys = Object.keys(payload);
@@ -96,6 +96,7 @@ export default {
 		applyFilters() {
 			console.log(this.modifiedFilters);
 			this.$emit('updated-filters', this.modifiedFilters);
+			this.filtersVisible = false;
 		},
 		copyFilters(initialFilters) {
 			const filtersCopy = {};
