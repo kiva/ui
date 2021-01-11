@@ -18,16 +18,10 @@
 			</template>
 			<template v-else-if="corporate">
 				<div class="header-row row">
-					<div class="logo-group">
-						<kiva-logo class="logo-group__kiva" />
-						<span v-if="corporateLogoUrl" class="logo-group__separator" aria-hidden="true">+</span>
-						<img
-							v-if="corporateLogoUrl"
-							class="logo-group__corporate"
-							:src="corporateLogoUrl"
-							alt=""
-						>
-					</div>
+					<campaign-logo-group
+						class="header-logo-group"
+						:corporate-logo-url="corporateLogoUrl"
+					/>
 					<div class="flexible-center-area"></div>
 					<router-link
 						v-show="showBasket"
@@ -392,12 +386,14 @@ import KvIcon from '@/components/Kv/KvIcon';
 import { preFetchAll } from '@/util/apolloPreFetch';
 import cookieStore from '@/util/cookieStore';
 import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
+import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import SearchBar from './SearchBar';
 import PromoBannerLarge from './PromotionalBanner/PromoBannerLarge';
 import PromoBannerSmall from './PromotionalBanner/PromoBannerSmall';
 
 export default {
 	components: {
+		CampaignLogoGroup,
 		KvDropdown,
 		KvIcon,
 		KivaLogo,
@@ -919,38 +915,14 @@ $close-search-button-size: 2.5rem;
 	}
 }
 
-.logo-group {
-	align-self: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: rem-calc(28);
+.header-logo-group {
+	--logo-color: var(--kv-header-logo-color, $header-logo-color);
+
 	padding-left: 1rem;
+	height: rem-calc(20);
 
-	&__kiva {
-		fill: $header-logo-color; // IE11 fallback
-		fill: var(--kv-header-logo-color, $header-logo-color);
-	}
-
-	&__kiva,
-	&__corporate {
-		height: 100%;
-	}
-
-	&__corporate {
-		line-height: 0;
-
-		img {
-			height: 100%;
-		}
-	}
-
-	&__separator {
-		color: $subtle-gray;
-		display: inline-block;
-		font-size: 2rem;
-		font-weight: bold;
-		margin: 0 0.75rem;
+	@include breakpoint(large) {
+		height: rem-calc(28);
 	}
 }
 </style>

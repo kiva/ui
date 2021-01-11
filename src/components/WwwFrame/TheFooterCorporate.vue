@@ -3,16 +3,10 @@
 		<nav aria-label="Footer navigation">
 			<div class="row">
 				<div class="columns">
-					<div class="the-footer-corporate__logos logo-group">
-						<kiva-logo class="logo-group__kiva" />
-						<span v-if="corporateLogoUrl" class="logo-group__separator" aria-hidden="true">+</span>
-						<img
-							v-if="corporateLogoUrl"
-							class="logo-group__corporate"
-							:src="corporateLogoUrl"
-							alt=""
-						>
-					</div>
+					<campaign-logo-group
+						class="the-footer-corporate__logos"
+						:corporate-logo-url="corporateLogoUrl"
+					/>
 					<p class="the-footer-corporate__text">
 						Kiva is a 501(c)3 U.S. nonprofit fueled by passionate people.
 						Founded in 2005, and based in San Francisco, with offices in Bangkok, Nairobi,
@@ -47,11 +41,11 @@
 </template>
 
 <script>
-import KivaLogo from '@/assets/inline-svgs/logos/kiva-logo.svg';
+import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 
 export default {
 	components: {
-		KivaLogo,
+		CampaignLogoGroup,
 	},
 	props: {
 		theme: {
@@ -114,7 +108,14 @@ $footer-logo-color: $white;
 	}
 
 	&__logos {
+		--logo-color: var(--kv-footer-logo-color, $footer-logo-color);
+
 		margin-bottom: 1.5rem;
+		height: rem-calc(20);
+
+		@include breakpoint(large) {
+			height: rem-calc(28);
+		}
 	}
 
 	a {
@@ -126,32 +127,6 @@ $footer-logo-color: $white;
 			color: $footer-link-color;
 			color: var(--kv-footer-link-color, $footer-link-color);
 		}
-	}
-}
-
-.logo-group {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: rem-calc(28);
-	margin-bottom: 1.5rem;
-
-	&__kiva {
-		fill: $footer-logo-color; // IE11 fallback
-		fill: var(--kv-footer-logo-color, $footer-logo-color);
-	}
-
-	&__kiva,
-	&__corporate {
-		height: 100%;
-	}
-
-	&__separator {
-		color: $subtle-gray;
-		display: inline-block;
-		font-size: 2rem;
-		font-weight: bold;
-		margin: 0 0.75rem;
 	}
 }
 </style>
