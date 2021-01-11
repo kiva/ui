@@ -221,7 +221,6 @@ export default {
 	},
 	methods: {
 		gatherMfaEnrollments() {
-			console.log('gatherMfaEnrollments triggered');
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
@@ -262,7 +261,6 @@ export default {
 			});
 		},
 		removeMfaMethod(mfaMethod) {
-			console.log('removeMFA Method triggered', mfaMethod);
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
