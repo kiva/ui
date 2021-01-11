@@ -1,22 +1,20 @@
 <template>
-	<www-page class="security-login" :gray-background="true">
+	<www-page class="security-login-page" :gray-background="true">
 		<the-my-kiva-secondary-menu slot="secondary" />
-		<div class="title-area">
+		<div class="security-login-page__title-area">
 			<div class="row column">
 				<h1>
 					Security and login
 				</h1>
 			</div>
 		</div>
-		<div class="security-settings-page">
-			<div class="row">
-				<div class="columns small-12 large-8">
-					<password />
-					<two-step-verification />
-				</div>
-				<div class="columns small-12 large-4">
-					<two-step-faq />
-				</div>
+		<div class="row">
+			<div class="columns small-12 large-8 security-login-page__component-container">
+				<password />
+				<two-step-verification />
+			</div>
+			<div class="columns small-12 large-4 security-login-page__component-container">
+				<two-step-faq />
 			</div>
 		</div>
 	</www-page>
@@ -46,11 +44,19 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.security-login {
-	.title-area {
+.security-login-page {
+	&__title-area {
 		padding: 1.625rem 0;
 		margin-bottom: 2rem;
 		background-color: $white;
+	}
+
+	&__component-container {
+		padding: 0;
+
+		@include breakpoint(medium) {
+			padding: unset;
+		}
 	}
 }
 
