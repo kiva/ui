@@ -12,7 +12,11 @@
 			@click.stop.prevent="closeLightbox"
 			v-show="isShown"
 		>
-			<focus-lock v-if="isShown" :return-focus="true">
+			<focus-lock
+				v-if="isShown"
+				class="kv-lightbox__focus-lock"
+				:return-focus="true"
+			>
 				<div
 					class="kv-lightbox__container"
 					@click.stop
@@ -172,6 +176,10 @@ export default {
 
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
+	}
+
+	&__focus-lock {
+		max-width: 100%;
 	}
 
 	&__container {
