@@ -12,7 +12,11 @@
 			@click.stop.prevent="closeLightbox"
 			v-show="isShown"
 		>
-			<focus-lock v-if="isShown" :return-focus="true">
+			<focus-lock
+				v-if="isShown"
+				class="kv-lightbox__focus-lock"
+				:return-focus="true"
+			>
 				<div
 					class="kv-lightbox__container"
 					@click.stop
@@ -174,6 +178,10 @@ export default {
 		padding: 4.5rem 1rem;
 	}
 
+	&__focus-lock {
+		max-width: 100%;
+	}
+
 	&__container {
 		display: flex;
 		flex-direction: column;
@@ -256,12 +264,6 @@ export default {
 	}
 
 	// modifiers
-	&--full-width {
-		.kv-lightbox__container {
-			max-width: 100%;
-		}
-	}
-
 	&--no-padding-top {
 		.kv-lightbox__container {
 			padding-top: 0;
