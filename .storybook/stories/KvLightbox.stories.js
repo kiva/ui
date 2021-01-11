@@ -24,7 +24,6 @@ export default {
 		preventClose: false,
 		title: 'Test Title',
 		inverted: false,
-		fullWidth: false,
 		noPaddingTop: false,
 		noPaddingBottom: false,
 		noPaddingSides: false,
@@ -50,7 +49,6 @@ export const Default = (args, { argTypes }) => ({
 			<kv-lightbox
 				:visible="visible"
 				:inverted="inverted"
-				:full-width="fullWidth"
 				:prevent-close="preventClose"
 				:title="title"
 				:no-padding-top="noPaddingTop"
@@ -67,11 +65,6 @@ export const Default = (args, { argTypes }) => ({
 export const Inverted = Default.bind({});
 Inverted.args = {
 	inverted: true,
-};
-
-export const FullWidth = Default.bind({});
-FullWidth.args = {
-	fullWidth: true,
 };
 
 export const PreventClose = Default.bind({});
@@ -94,7 +87,6 @@ export const SmallContent = (args, { argTypes }) => ({
 			<kv-lightbox
 				:visible="visible"
 				:inverted="inverted"
-				:full-width="fullWidth"
 				:prevent-close="preventClose"
 				:title="title"
 				:no-padding-top="noPaddingTop"
@@ -119,7 +111,6 @@ export const WithControls = (args, { argTypes }) => ({
 			<kv-lightbox
 				:visible="visible"
 				:inverted="inverted"
-				:full-width="fullWidth"
 				:prevent-close="preventClose"
 				:title="title"
 				:no-padding-top="noPaddingTop"
@@ -144,7 +135,6 @@ export const CustomTitleColor = (args, { argTypes }) => ({
 			<kv-lightbox
 				:visible="visible"
 				:inverted="inverted"
-				:full-width="fullWidth"
 				:prevent-close="preventClose"
 				:title="title"
 				:no-padding-top="noPaddingTop"

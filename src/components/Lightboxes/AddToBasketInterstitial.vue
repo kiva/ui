@@ -2,7 +2,6 @@
 	<div class="basket-add-interstitial row small-collapse">
 		<kv-lightbox
 			:visible="showInterstitial"
-			:full-width="true"
 			@lightbox-closed="closeLightbox"
 			title="Thanks for your commitment to make an impact"
 		>

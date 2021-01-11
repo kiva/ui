@@ -256,12 +256,6 @@ export default {
 	}
 
 	// modifiers
-	&--full-width {
-		.kv-lightbox__container {
-			max-width: 100%;
-		}
-	}
-
 	&--no-padding-top {
 		.kv-lightbox__container {
 			padding-top: 0;
