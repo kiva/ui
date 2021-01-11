@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="column small-12 large-8">
+			<div class="column small-12 large-8 two-step-verification__settings-card-area">
 				<!--
 					Toggle MFA off settings card
 				-->
@@ -221,6 +221,7 @@ export default {
 	},
 	methods: {
 		gatherMfaEnrollments() {
+			console.log('gatherMfaEnrollments triggered');
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
@@ -261,6 +262,7 @@ export default {
 			});
 		},
 		removeMfaMethod(mfaMethod) {
+			console.log('removeMFA Method triggered', mfaMethod);
 			this.kvAuth0.checkSession()
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
@@ -317,6 +319,14 @@ export default {
 		padding: 1.625rem 0;
 		margin-bottom: 2rem;
 		background-color: $white;
+	}
+
+	&__settings-card-area {
+		padding: 0;
+
+		@include breakpoint(medium) {
+			padding: unset;
+		}
 	}
 
 	&__method {
