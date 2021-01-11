@@ -31,6 +31,13 @@
 						<h2 class="loan-categories__header text-center">
 							Support causes you care about.
 						</h2>
+
+						<campaign-loan-filters
+							v-if="showTestFilters"
+							:initial-filters="initialFilters"
+							@updated-filters="handleUpdatedFilters"
+						/>
+
 						<campaign-loan-row
 							v-show="showLoanRows"
 							id="campaignLoanRowDisplay"
@@ -82,7 +89,7 @@
 			<campaign-partner :partner-area-content="partnerAreaContent" />
 			<hr>
 
-			<campaign-how-kiva-works />
+			<campaign-how-kiva-works v-if="!showThanks" />
 
 			<campaign-verification-form
 				v-if="this.showVerification"
@@ -99,7 +106,9 @@
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutVisible = false"
 			>
-				<div class="small-10 large-8 align-self-middle columns">
+				<div class="columns">
+					<h2>Checkout</h2>
+					<hr>
 					<in-context-checkout
 						:is-actively-logged-in="isActivelyLoggedIn"
 						:loans="basketLoans"
@@ -119,7 +128,7 @@
 				id="campaignThanks"
 				class="campaign-thanks section row align-center"
 			>
-				<hr>
+				<!-- <hr> -->
 				<campaign-thanks :transaction-id="transactionId" />
 			</section>
 		</div>
@@ -138,6 +147,7 @@ import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
+import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
 // import CampaignLoanRowsDisplay from '@/components/CorporateCampaign/CampaignLoanRowsDisplay';
 import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
@@ -320,6 +330,7 @@ export default {
 		CampaignHero,
 		CampaignHowKivaWorks,
 		CampaignLoanGridDisplay,
+		CampaignLoanFilters,
 		CampaignLoanRow,
 		CampaignPartner,
 		CampaignStatus,
@@ -367,6 +378,7 @@ export default {
 			promoApplied: null,
 			promoErrorMessage: null,
 			promoData: null,
+			filters: null,
 			lastActiveLogin: 0,
 			myId: null,
 			activeLoginDuration: 3600,
@@ -390,6 +402,7 @@ export default {
 			showThanks: false,
 			transactionId: null,
 			showLoanRows: true,
+			showTestFilters: false,
 		};
 	},
 	metaInfo() {
@@ -441,6 +454,15 @@ export default {
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
 		}
+
+		if (this.$route.query && this.$route.query.testFilters === 'true') {
+			this.showTestFilters = true;
+		}
+	},
+	watch: {
+		initialFilters(next) {
+			this.filters = next;
+		}
 	},
 	computed: {
 		pageTitle() {
@@ -469,7 +491,7 @@ export default {
 			}
 			return '0';
 		},
-		filters() {
+		initialFilters() {
 			const filters = this.promoData?.managedAccount?.loanSearchCriteria?.filters ?? {};
 			return getSearchableFilters(filters);
 		},
@@ -607,7 +629,7 @@ export default {
 			// this.$emit('add-to-basket', payload);
 			if (payload.eventSource === 'checkoutBtnClick') {
 				console.log('checkout clicked');
-				// this.checkoutVisible = true;
+				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
 			}
@@ -782,6 +804,11 @@ export default {
 				},
 				hash: section
 			});
+		},
+
+		handleUpdatedFilters(payload) {
+			console.log('top level handle updated filters: ', payload);
+			this.filters = getSearchableFilters(payload);
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -815,6 +842,12 @@ export default {
 
 		@include breakpoint(large) {
 			top: $header-height-large;
+		}
+	}
+
+	.campaign-checkout {
+		.kv-lightbox__container {
+			padding-bottom: 0.5rem;
 		}
 	}
 }
