@@ -5,8 +5,7 @@
 				<div class="icon-wrapper">
 					<kv-icon :name="iconName" />
 				</div>
-				<p data-test="tip-message" class="message">
-					{{ message }}
+				<p data-test="tip-message" class="message" v-html="message">
 				</p>
 			</span>
 			<button @click="close" class="close-tip-message" aria-label="Close">
