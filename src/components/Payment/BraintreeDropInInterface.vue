@@ -92,6 +92,9 @@ export default {
 					// Replace our loader with the dropIn loader after a small delay
 					setTimeout(() => this.setUpdatingPaymentWrapper(false), 500);
 				}
+			}).catch(error => {
+				console.error(error);
+				this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
 			});
 		},
 		initializeDropIn() {
@@ -156,6 +159,7 @@ export default {
 					scope.setTag('bt_client_create_error', btCreateError.message);
 					Sentry.captureException(btCreateError.code);
 				});
+				this.$showTipMsg('An Error has occured. Please refresh the page and try again.', 'error');
 			});
 		},
 		initializeDropInActions() {
