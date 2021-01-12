@@ -32,8 +32,9 @@
 							Support causes you care about.
 						</h2>
 
+						<!-- :applied-filters="filters" -->
 						<campaign-loan-filters
-							v-if="showTestFilters"
+							v-show="showTestFilters"
 							:initial-filters="initialFilters"
 							@updated-filters="handleUpdatedFilters"
 						/>
@@ -473,12 +474,12 @@ export default {
 		heroAreaContent() {
 			const contentGroups = this.pageData?.page?.contentGroups;
 			// Expects a content group with key = `campaign-hero-cg`
-			const heroArea = contentGroups.campaignHeroCg;
+			const heroArea = contentGroups.mlCampaignHero;
 			return heroArea;
 		},
 		partnerAreaContent() {
 			const contentGroups = this.pageData?.page?.contentGroups;
-			const partnerArea = contentGroups?.partnerAreaCg;
+			const partnerArea = contentGroups?.mlCampaignPartnerCopy;
 			return partnerArea;
 		},
 		promoAmount() {

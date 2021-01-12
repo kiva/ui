@@ -208,7 +208,13 @@ export function formatContentGroupsFlat(contentfulContent) {
 				contentGroupFields.media = formatMediaAssetArray(entry.fields?.media);
 			}
 			cleanedContentGroups.push(contentGroupFields);
-			contentGroupsFlat[camelCase(entry.fields?.key) || `cg${index}`] = contentGroupFields;
+
+			const cgType = entry.fields?.type ? camelCase(entry.fields?.type) : null;
+			contentGroupsFlat[
+				cgType
+				|| camelCase(entry.fields?.key)
+				|| `cg${index}`
+			] = contentGroupFields;
 		}
 	});
 
