@@ -143,8 +143,10 @@ export default {
 		},
 		closeLightbox() {
 			if (!this.preventClose) {
-				// scroll any content inside the lightbox back to top
-				this.$refs.kvLightboxBody.scrollTop = 0;
+				if (this.$refs.kvLightboxBody) {
+					// scroll any content inside the lightbox back to top
+					this.$refs.kvLightboxBody.scrollTop = 0;
+				}
 
 				// remove scroll lock class from body
 				this.unlockScroll();
@@ -173,6 +175,7 @@ export default {
 	bottom: 0;
 	z-index: 1500;
 	background: rgba(72, 72, 72, 0.6);
+	font-size: 1rem;
 
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
@@ -180,6 +183,9 @@ export default {
 
 	&__focus-lock {
 		max-width: 100%;
+		max-height: 100%;
+		display: flex;
+		overflow: hidden;
 	}
 
 	&__container {
