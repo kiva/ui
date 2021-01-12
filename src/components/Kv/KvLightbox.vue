@@ -143,8 +143,10 @@ export default {
 		},
 		closeLightbox() {
 			if (!this.preventClose) {
-				// scroll any content inside the lightbox back to top
-				this.$refs.kvLightboxBody.scrollTop = 0;
+				if (this.$refs.kvLightboxBody) {
+					// scroll any content inside the lightbox back to top
+					this.$refs.kvLightboxBody.scrollTop = 0;
+				}
 
 				// remove scroll lock class from body
 				this.unlockScroll();
