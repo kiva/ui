@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="hide-for-print">
 		<global-promo-contentful
 			:has-promo-session="hasPromoSession"
 		/>

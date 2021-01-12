@@ -1,5 +1,5 @@
 <template>
-	<div class="monthly-good-cta">
+	<div class="monthly-good-cta hide-for-print">
 		<div class="row columns text-center">
 			<h2 class="monthly-good-cta__headline">
 				<kv-icon

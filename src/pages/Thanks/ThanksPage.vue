@@ -226,6 +226,10 @@ export default {
 .page-content {
 	padding: 1.625rem 0 0 0;
 
+	@media print {
+		padding: 0;
+	}
+
 	&:last-child {
 		padding-bottom: 5rem;
 	}
