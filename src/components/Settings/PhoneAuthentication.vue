@@ -1,7 +1,7 @@
 <template>
 	<div class="phone-authentication">
 		<kv-lightbox
-			class="app-authentication__lightbox"
+			class="phone-authentication__lightbox"
 			:visible="lightboxVisible"
 			@lightbox-closed="completeSetup"
 			:title="lightboxTitle"
@@ -117,11 +117,14 @@
 				</form>
 			</section>
 
-			<section class="app-authentication__body" v-if="step === 3">
+			<section class="phone-authentication__body" v-if="step === 3">
 				<recovery-code-confirm
 					:mfa-recovery-code="recoveryCode"
 					@done="confirmRecoveryCode"
 				/>
+			</section>
+			<section class="phone-authentication__body" v-if="step === 4">
+				<first-m-f-a-setup />
 			</section>
 		</kv-lightbox>
 	</div>
@@ -133,6 +136,7 @@ import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvPhoneInput from '@/components/Kv/KvPhoneInput';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
+import FirstMFASetup from '@/pages/Settings/FirstMFASetup';
 import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
 
 import enrollSMSAuthenticatorMutation from '@/graphql/mutation/mfa/enrollSMSAuthenticator.graphql';
@@ -148,6 +152,7 @@ import {
 
 export default {
 	components: {
+		FirstMFASetup,
 		KvButton,
 		KvLightbox,
 		KvLoadingSpinner,
@@ -157,6 +162,12 @@ export default {
 	},
 	mixins: [validationMixin],
 	inject: ['apollo', 'kvAuth0'],
+	props: {
+		first: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	validations: {
 		phoneNumber: {
 			required,
@@ -285,6 +296,8 @@ export default {
 					this.verificationPending = false;
 					if (this.recoveryCode) {
 						this.step = 3;
+					} else if (this.first) {
+						this.step = 4;
 					} else {
 						this.completeSetup();
 					}
@@ -299,7 +312,11 @@ export default {
 		},
 		confirmRecoveryCode() {
 			this.recoveryCode = '';
-			this.completeSetup();
+			if (this.first) {
+				this.step = 4;
+			} else {
+				this.completeSetup();
+			}
 		},
 		completeSetup() {
 			if (this.lightboxVisible) {

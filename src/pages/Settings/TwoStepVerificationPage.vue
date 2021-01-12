@@ -123,7 +123,7 @@
 							</p>
 							<kv-button
 								class="smallest"
-								to="/settings/security/mfa/app"
+								:to="`/settings/security/mfa/app?first=${!isMfaActive}`"
 							>
 								Use authenticator app
 							</kv-button>
@@ -137,7 +137,7 @@
 								Receive a code via text message on your mobile device.
 							</p>
 							<kv-button class="smallest"
-								to="/settings/security/mfa/phone"
+								:to="`/settings/security/mfa/phone?first=${!isMfaActive}`"
 							>
 								Use text message or phone call
 							</kv-button>
@@ -292,19 +292,6 @@ export default {
 			}
 			return 'Authenticator app';
 		},
-		onClickAuthenticator() {
-		// TODO: check for screensize here, go to url if small
-			this.isAuthenticatorLightboxVisible = true;
-		},
-		onClickPhone() {
-		// TODO: check for screensize here, go to url if small
-			this.isPhoneLightboxVisible = true;
-		},
-		closeLightbox() {
-			this.isAuthenticatorLightboxVisible = false;
-			this.isPhoneLightboxVisible = false;
-			this.$refs.phoneAuthentication.reset();
-		}
 	}
 };
 </script>
