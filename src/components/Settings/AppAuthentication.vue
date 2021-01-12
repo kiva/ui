@@ -89,6 +89,9 @@
 					@done="confirmRecoveryCode"
 				/>
 			</section>
+			<section class="app-authentication__body" v-if="step === 4">
+				<first-m-f-a-setup />
+			</section>
 		</kv-lightbox>
 	</div>
 </template>
@@ -103,6 +106,7 @@ import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvVerificationCodeInput from '@/components/Kv/KvVerificationCodeInput';
+import FirstMFASetup from '@/pages/Settings/FirstMFASetup';
 import RecoveryCodeConfirm from '@/pages/Settings/RecoveryCodeConfirm';
 import confirmOTPAuthenticatorEnrollment from '@/graphql/mutation/mfa/confirmOTPAuthenticatorEnrollment.graphql';
 import enrollOTPAuthenticator from '@/graphql/mutation/mfa/enrollOTPAuthenticator.graphql';
@@ -110,7 +114,14 @@ import enrollOTPAuthenticator from '@/graphql/mutation/mfa/enrollOTPAuthenticato
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	mixins: [validationMixin],
+	props: {
+		first: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	components: {
+		FirstMFASetup,
 		KvButton,
 		KvLightbox,
 		KvLoadingSpinner,
@@ -164,7 +175,11 @@ export default {
 		},
 		confirmRecoveryCode() {
 			this.recoveryCode = '';
-			this.completeSetup();
+			if (this.first) {
+				this.step = 4;
+			} else {
+				this.completeSetup();
+			}
 		},
 		getMFAToken() {
 			return new Promise((resolve, reject) => {
@@ -226,6 +241,8 @@ export default {
 				this.verificationPending = false;
 				if (this.recoveryCode) {
 					this.step = 3;
+				} else if (this.first) {
+					this.step = 4;
 				} else {
 					this.completeSetup();
 				}

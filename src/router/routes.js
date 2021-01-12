@@ -208,10 +208,16 @@ export default [
 		children: [
 			{
 				path: 'app',
+				props: route => ({
+					first: route.query.first === 'true'
+				}),
 				component: () => import('@/components/Settings/AppAuthentication'),
 			},
 			{
 				path: 'phone',
+				props: route => ({
+					first: route.query.first === 'true'
+				}),
 				component: () => import('@/components/Settings/PhoneAuthentication'),
 			},
 		],
