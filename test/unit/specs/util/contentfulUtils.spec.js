@@ -193,7 +193,7 @@ describe('contentfulUtils.js', () => {
 				},
 				settings: expect.any(Array),
 				contentGroups: {
-					promoCampaignTestCg: {
+					mlCampaignHero: {
 						key: 'promo-campaign-test-cg',
 						name: 'Promo Campaign Test Content Groups',
 						contents: [{
@@ -266,7 +266,7 @@ describe('contentfulUtils.js', () => {
 				}),
 				settings: expect.any(Array),
 				contentGroups: expect.objectContaining({
-					promoCampaignTestCg: expect.objectContaining({
+					mlCampaignHero: expect.objectContaining({
 						key: expect.any(String),
 						name: expect.any(String),
 						contents: [{
