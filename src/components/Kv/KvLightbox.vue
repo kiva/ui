@@ -180,6 +180,9 @@ export default {
 
 	&__focus-lock {
 		max-width: 100%;
+		max-height: 100%;
+		display: flex;
+		overflow: hidden;
 	}
 
 	&__container {
