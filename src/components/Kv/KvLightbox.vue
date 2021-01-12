@@ -175,6 +175,7 @@ export default {
 	bottom: 0;
 	z-index: 1500;
 	background: rgba(72, 72, 72, 0.6);
+	font-size: 1rem;
 
 	@include breakpoint(medium) {
 		padding: 4.5rem 1rem;
