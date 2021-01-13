@@ -8,7 +8,7 @@
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
 			@refreshtotals="$emit('refresh-totals')"
 		/>
-		<hr>
+
 		<kv-button
 			v-if="!isActivelyLoggedIn"
 			class="smaller checkout-button"
@@ -22,7 +22,7 @@
 		<kiva-credit-payment
 			v-else
 			@complete-transaction="completeTransaction"
-			class=" checkout-button"
+			class="checkout-button"
 			id="kiva-credit-payment-button"
 		/>
 	</div>

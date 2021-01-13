@@ -1,44 +1,58 @@
 <template>
-	<div class="small-12 large-8 align-self-middle columns">
-		<div class="small-12 columns thanks">
+	<div class="campaign-thanks">
+		<div class="campaign-thanks__container">
 			<template v-if="loans.length > 0">
-				<div class="thanks__header hide-for-print">
-					<h1 class="thanks__header-h1">
-						Thank you!
-					</h1>
-					<p class="thanks__header-subhead">
-						Thanks for supporting {{ borrowerSupport }}.<br>
-						<span class="hide-for-print">
-							We've emailed your order confirmation to {{ lender.email }}
-						</span>
-					</p>
-				</div>
+				<header class="campaign-thanks__header hide-for-print">
+					<h2>Thanks for supporting {{ borrowerSupport }}!</h2>
+					<p>We've emailed your order confirmation to {{ lender.email }}</p>
+				</header>
+
+				<!-- custom content area here, headline, block, image, cta. Links can leave page here -->
+				<section class="campaign-thanks__partner-block">
+					<p>Custom content area here, headline, block, image, cta.</p>
+				</section>
+
+				<kv-accordion-item id="thanks-share">
+					<template v-slot:header>
+						<h2>Share the Love</h2>
+					</template>
+					<social-share
+						class="campaign-thanks__social-share"
+						:lender="lender"
+						:loans="loans"
+					/>
+				</kv-accordion-item>
+				<kv-accordion-item id="thanks-receipt">
+					<template v-slot:header>
+						<h2>Receipt</h2>
+					</template>
+					<checkout-receipt
+						v-if="showReceipt"
+						class="campaign-thanks__receipt"
+						:lender="lender"
+						:receipt="receipt"
+					/>
+				</kv-accordion-item>
 			</template>
+			<div
+				v-else
+				class="campaign-thanks__spinner"
+			>
+				<kv-loading-spinner />
+			</div>
 		</div>
-
-		<template v-if="loans.length > 0">
-			<social-share
-				class="thanks__social-share"
-				:lender="lender"
-				:loans="loans"
-			/>
-		</template>
-
-		<div class="small-12 columns thanks">
-			<hr v-if="loans.length > 0">
-			<checkout-receipt
-				v-if="showReceipt"
-				class="thanks__receipt"
-				:lender="lender"
-				:receipt="receipt"
-			/>
-		</div>
+		<canvas
+			class="campaign-thanks__confetti-canvas"
+			ref="confettiCanvas"
+		></canvas>
 	</div>
 </template>
 
 <script>
 import confetti from 'canvas-confetti';
 
+import KvAccordionItem from '@/components/Kv/KvAccordionItem';
+import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShare from '@/components/Checkout/SocialShare';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
@@ -47,7 +61,9 @@ import { joinArray } from '@/util/joinArray';
 export default {
 	components: {
 		CheckoutReceipt,
-		SocialShare,
+		KvAccordionItem,
+		KvLoadingSpinner,
+		SocialShare
 	},
 	inject: ['apollo'],
 	metaInfo() {
@@ -90,7 +106,7 @@ export default {
 				variables: {
 					checkoutId: this.transactionId
 				}
-			}).then(({ data }) => {
+			}).then(async ({ data }) => {
 				this.lender = {
 					...data.my.userAccount,
 					teams: data.my.teams.values.map(value => value.team)
@@ -113,16 +129,23 @@ export default {
 				}
 
 				this.showReceipt = true;
+				await this.$nextTick();
 				this.celebrate();
 			});
 		},
 		celebrate() {
-			confetti({
+			const confettiCanvasEl = this.$refs.confettiCanvas;
+			confettiCanvasEl.confetti = confettiCanvasEl.confetti || confetti.create(confettiCanvasEl, {
+				resize: true,
+				useWorker: true
+			});
+			confettiCanvasEl.confetti({
 				origin: {
 					y: 0.2
 				},
 				particleCount: 150,
 				spread: 200,
+				disableForReducedMotion: true,
 				// misc. kiva colors
 				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c']
 			});
@@ -135,20 +158,39 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.thanks {
+.campaign-thanks {
+	position: relative;
+	@include breakpoint(large) {
+		width: rem-calc(600);
+	}
+
+	&__spinner {
+		display: flex;
+		justify-content: center;
+		margin: 2rem 2rem 0;
+	}
+
+	&__container {
+		position: relative;
+		z-index: 1;
+	}
+
+	&__confetti-canvas {
+		position: absolute;
+		z-index: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+
 	&__header {
 		text-align: center;
 		margin-bottom: 3rem;
 	}
 
-	&__header-h1 {
-		@include large-text();
-
-		margin-bottom: 1.5rem;
-	}
-
-	&__header-subhead {
-		@include featured-text();
+	&__partner-block {
+		text-align: center;
+		margin-bottom: 3rem;
 	}
 
 	&__social-share {
