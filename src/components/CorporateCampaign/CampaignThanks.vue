@@ -33,6 +33,10 @@
 				:receipt="receipt"
 			/>
 		</div>
+		<canvas
+			class="campaign-thanks__confetti-canvas"
+			ref="confettiCanvas"
+		></canvas>
 	</div>
 </template>
 
@@ -90,7 +94,7 @@ export default {
 				variables: {
 					checkoutId: this.transactionId
 				}
-			}).then(({ data }) => {
+			}).then(async ({ data }) => {
 				this.lender = {
 					...data.my.userAccount,
 					teams: data.my.teams.values.map(value => value.team)
@@ -113,11 +117,17 @@ export default {
 				}
 
 				this.showReceipt = true;
+				await this.$nextTick();
 				this.celebrate();
 			});
 		},
 		celebrate() {
-			confetti({
+			const confettiCanvasEl = this.$refs.confettiCanvas;
+			confettiCanvasEl.confetti = confettiCanvasEl.confetti || confetti.create(confettiCanvasEl, {
+				resize: true,
+				useWorker: true
+			});
+			confettiCanvasEl.confetti({
 				origin: {
 					y: 0.2
 				},
@@ -136,6 +146,19 @@ export default {
 @import 'settings';
 
 .thanks {
+	&__container {
+		position: relative;
+		z-index: 1;
+	}
+
+	&__confetti-canvas {
+		position: absolute;
+		z-index: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+
 	&__header {
 		text-align: center;
 		margin-bottom: 3rem;
