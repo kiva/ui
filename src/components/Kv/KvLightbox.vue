@@ -7,7 +7,6 @@
 				'kv-lightbox--no-padding-top': noPaddingTop,
 				'kv-lightbox--no-padding-bottom': noPaddingBottom,
 				'kv-lightbox--no-padding-sides': noPaddingSides,
-				'kv-lightbox--full-width': fullWidth,
 			}"
 			@click.stop.prevent="closeLightbox"
 			v-show="isShown"
@@ -93,10 +92,6 @@ export default {
 			default: '',
 		},
 		inverted: {
-			type: Boolean,
-			default: false
-		},
-		fullWidth: {
 			type: Boolean,
 			default: false
 		},
