@@ -100,38 +100,38 @@
 			/>
 
 			<kv-lightbox
-				class="campaign-checkout"
-				id="campaignCheckout"
-				:no-padding-sides="true"
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
 				@lightbox-closed="checkoutVisible = false"
+				title="Checkout"
 			>
-				<div class="columns">
-					<h2>Checkout</h2>
-					<hr>
-					<in-context-checkout
-						:is-actively-logged-in="isActivelyLoggedIn"
-						:loans="basketLoans"
-						:donations="donations"
-						:kiva-cards="kivaCards"
-						:totals="basketTotals"
-						:show-donation="false"
-						:auto-redirect-to-thanks="false"
-						@transaction-complete="transactionComplete"
-						@refresh-totals="refreshTotals"
-					/>
-				</div>
+				<in-context-checkout
+					class="campaign-checkout"
+					:is-actively-logged-in="isActivelyLoggedIn"
+					:loans="basketLoans"
+					:donations="donations"
+					:kiva-cards="kivaCards"
+					:totals="basketTotals"
+					:show-donation="false"
+					:auto-redirect-to-thanks="false"
+					@transaction-complete="transactionComplete"
+					@refresh-totals="refreshTotals"
+				/>
 			</kv-lightbox>
 
-			<section
-				v-if="showThanks"
-				id="campaignThanks"
-				class="campaign-thanks section row align-center"
+			<kv-lightbox
+				class="campaign-thanks"
+				:prevent-close="preventLightboxClose"
+				:visible="showThanks"
+				@lightbox-closed="showThanks = false"
 			>
-				<!-- <hr> -->
+				<campaign-logo-group
+					class="campaign-thanks__logos"
+					:corporate-logo-url="corporateLogoUrl"
+					:style="`--logo-color: ${headerTheme.logoColor}`"
+				/>
 				<campaign-thanks :transaction-id="transactionId" />
-			</section>
+			</kv-lightbox>
 		</div>
 	</www-page-corporate>
 </template>
@@ -150,6 +150,7 @@ import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoan
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
 import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
 // import CampaignLoanRowsDisplay from '@/components/CorporateCampaign/CampaignLoanRowsDisplay';
+import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
 import CampaignVerificationForm from '@/components/CorporateCampaign/CampaignVerificationForm';
@@ -333,6 +334,7 @@ export default {
 		CampaignLoanGridDisplay,
 		CampaignLoanFilters,
 		CampaignLoanRow,
+		CampaignLogoGroup,
 		CampaignPartner,
 		CampaignStatus,
 		CampaignThanks,
@@ -777,7 +779,6 @@ export default {
 			}
 		},
 		transactionComplete(payload) {
-			// console.log('transaction complete', payload);
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
@@ -828,11 +829,6 @@ export default {
 @import 'settings';
 
 .corporate-campaign-landing {
-	.campaign-checkout,
-	.campaign-thanks {
-		padding: 3rem 0;
-	}
-
 	&__status {
 		$header-height: rem-calc(45); // same as TheHeader.vue
 		$header-height-large: rem-calc(64); // same as TheHeader.vue
@@ -843,12 +839,6 @@ export default {
 
 		@include breakpoint(large) {
 			top: $header-height-large;
-		}
-	}
-
-	.campaign-checkout {
-		.kv-lightbox__container {
-			padding-bottom: 0.5rem;
 		}
 	}
 }
@@ -863,6 +853,21 @@ export default {
 
 		@include breakpoint(large) {
 			@include large-text();
+		}
+	}
+}
+
+.campaign-checkout {
+	margin-top: 1rem;
+}
+
+.campaign-thanks {
+	&__logos {
+		height: rem-calc(20);
+		margin-bottom: 2rem;
+
+		@include breakpoint(large) {
+			height: rem-calc(28);
 		}
 	}
 }
