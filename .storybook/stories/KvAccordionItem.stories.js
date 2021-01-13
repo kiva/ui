@@ -1,8 +1,8 @@
-import KvAccordion from '@/components/Kv/KvAccordion';
+import KvAccordionItem from '@/components/Kv/KvAccordionItem';
 
 export default {
-	title: 'Kv/KvAccordion',
-	component: KvAccordion,
+	title: 'Kv/KvAccordionItem',
+	component: KvAccordionItem,
 	args: {
 		open: false,
 		disabled: false,
@@ -10,11 +10,11 @@ export default {
 };
 
 export const Default = (args, { argTypes }) => ({
-	components: { KvAccordion },
+	components: { KvAccordionItem },
 	props: Object.keys(argTypes),
 	template: `
 		<div>
-			<kv-accordion
+			<kv-accordion-item
 				id="my_cool_accordion"
 				:disabled="disabled"
 				:open="open"
@@ -28,8 +28,8 @@ export const Default = (args, { argTypes }) => ({
 				<p>
 					Habitasse platea dictumst quisque sagittis purus sit amet volutpat consequat. Sed odio morbi quis commodo odio aenean. Et tortor at risus viverra. Bibendum enim facilisis gravida neque. Ut tellus elementum sagittis vitae et leo duis. Aliquet lectus proin nibh nisl condimentum id venenatis a condimentum. Et malesuada fames ac turpis egestas integer eget aliquet. In hac habitasse platea dictumst quisque. Dignissim cras tincidunt lobortis feugiat. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Quam nulla porttitor massa id. Ac tortor dignissim convallis aenean et tortor at risus. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Vitae aliquet nec ullamcorper sit amet. Ornare arcu odio ut sem nulla. Viverra orci sagittis eu volutpat odio. Ut venenatis tellus in metus. Amet justo donec enim diam.
 				</p>
-			</kv-accordion>
-			<kv-accordion
+			</kv-accordion-item>
+			<kv-accordion-item
 				id="my_cool_accordion2"
 				:disabled="disabled"
 				:open="open"
@@ -43,7 +43,7 @@ export const Default = (args, { argTypes }) => ({
 				<p>
 					Habitasse platea dictumst quisque sagittis purus sit amet volutpat consequat. Sed odio morbi quis commodo odio aenean. Et tortor at risus viverra. Bibendum enim facilisis gravida neque. Ut tellus elementum sagittis vitae et leo duis. Aliquet lectus proin nibh nisl condimentum id venenatis a condimentum. Et malesuada fames ac turpis egestas integer eget aliquet. In hac habitasse platea dictumst quisque. Dignissim cras tincidunt lobortis feugiat. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Quam nulla porttitor massa id. Ac tortor dignissim convallis aenean et tortor at risus. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Vitae aliquet nec ullamcorper sit amet. Ornare arcu odio ut sem nulla. Viverra orci sagittis eu volutpat odio. Ut venenatis tellus in metus. Amet justo donec enim diam.
 				</p>
-			</kv-accordion>
+			</kv-accordion-item>
 		</div>
 	`,
 });
@@ -65,11 +65,11 @@ OpenAndDisabled.args = {
 };
 
 export const H3Header = (args, { argTypes }) => ({
-	components: { KvAccordion },
+	components: { KvAccordionItem },
 	props: Object.keys(argTypes),
 	template: `
 		<div>
-			<kv-accordion
+			<kv-accordion-item
 				id="my_cool_accordion"
 				:disabled="disabled"
 				:open="open"
@@ -83,8 +83,8 @@ export const H3Header = (args, { argTypes }) => ({
 				<p>
 					Habitasse platea dictumst quisque sagittis purus sit amet volutpat consequat. Sed odio morbi quis commodo odio aenean. Et tortor at risus viverra. Bibendum enim facilisis gravida neque. Ut tellus elementum sagittis vitae et leo duis. Aliquet lectus proin nibh nisl condimentum id venenatis a condimentum. Et malesuada fames ac turpis egestas integer eget aliquet. In hac habitasse platea dictumst quisque. Dignissim cras tincidunt lobortis feugiat. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Quam nulla porttitor massa id. Ac tortor dignissim convallis aenean et tortor at risus. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Vitae aliquet nec ullamcorper sit amet. Ornare arcu odio ut sem nulla. Viverra orci sagittis eu volutpat odio. Ut venenatis tellus in metus. Amet justo donec enim diam.
 				</p>
-			</kv-accordion>
-			<kv-accordion
+			</kv-accordion-item>
+			<kv-accordion-item
 				id="my_cool_accordion2"
 				:disabled="disabled"
 				:open="open"
@@ -98,7 +98,7 @@ export const H3Header = (args, { argTypes }) => ({
 				<p>
 					Habitasse platea dictumst quisque sagittis purus sit amet volutpat consequat. Sed odio morbi quis commodo odio aenean. Et tortor at risus viverra. Bibendum enim facilisis gravida neque. Ut tellus elementum sagittis vitae et leo duis. Aliquet lectus proin nibh nisl condimentum id venenatis a condimentum. Et malesuada fames ac turpis egestas integer eget aliquet. In hac habitasse platea dictumst quisque. Dignissim cras tincidunt lobortis feugiat. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Quam nulla porttitor massa id. Ac tortor dignissim convallis aenean et tortor at risus. Aliquam faucibus purus in massa tempor nec feugiat nisl pretium. Vitae aliquet nec ullamcorper sit amet. Ornare arcu odio ut sem nulla. Viverra orci sagittis eu volutpat odio. Ut venenatis tellus in metus. Amet justo donec enim diam.
 				</p>
-			</kv-accordion>
+			</kv-accordion-item>
 		</div>
 	`,
 });
