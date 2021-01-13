@@ -9,7 +9,7 @@
 			class="kv-accordion__header-button"
 			@click.prevent="toggle"
 			:disabled="disabled"
-			:aria-controls="id"
+			:aria-controls="`kv-accordion-${id}`"
 			:aria-expanded="isOpen ? 'true' : 'false'"
 		>
 			<div class="kv-accordion__header-text">
@@ -25,7 +25,7 @@
 		<kv-expandable>
 			<div
 				class="kv-accordion__pane"
-				:id="id"
+				:id="`kv-accordion-${id}`"
 				v-show="isOpen"
 				:aria-hidden="isOpen ? 'false' : 'true'"
 			>
