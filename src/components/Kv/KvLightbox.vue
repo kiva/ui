@@ -112,6 +112,18 @@ export default {
 		// Create and set our internal visibility property
 		visible() {
 			this.isShown = this.visible;
+			this.init();
+		}
+	},
+	mounted() {
+		this.isShown = this.visible;
+		this.init();
+	},
+	beforeDestroy() {
+		this.closeLightbox();
+	},
+	methods: {
+		init() {
 			if (this.isShown) {
 				document.addEventListener('keyup', this.onKeyUp);
 				this.$nextTick(() => {
@@ -122,15 +134,7 @@ export default {
 				document.removeEventListener('keyup', this.onKeyUp);
 				this.unlockScroll();
 			}
-		}
-	},
-	mounted() {
-		this.isShown = this.visible;
-	},
-	beforeDestroy() {
-		this.closeLightbox();
-	},
-	methods: {
+		},
 		onKeyUp(e) {
 			if (e.key === 'Escape') {
 				this.closeLightbox();
