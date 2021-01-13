@@ -47,7 +47,7 @@ module.exports = merge(base, {
 			domain: 'login.dev.kiva.org',
 		},
 		intercom: {
-			enable: true,
+			enable: false,
 		},
 		paypal : {
 			url: 'www.sandbox.paypal.com',
@@ -59,5 +59,6 @@ module.exports = merge(base, {
 		sessionUri: 'https://www.dev.kiva.org/start-ui-session',
 		memcachedEnabled: true,
 		memcachedServers: 'dev-memcached-01:11211,dev-memcached-02:11211',
+		disableCluster: true
 	}
 })

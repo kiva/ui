@@ -47,7 +47,7 @@ module.exports = merge(base, {
 			domain: 'login.audit.kiva.org',
 		},
 		intercom: {
-			enable: true,
+			enable: false,
 		},
 		paypal : {
 			url: 'www.sandbox.paypal.com',
