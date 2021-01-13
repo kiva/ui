@@ -133,6 +133,7 @@ export default {
 				},
 				particleCount: 150,
 				spread: 200,
+				disableForReducedMotion: true,
 				// misc. kiva colors
 				colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c']
 			});

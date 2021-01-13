@@ -172,7 +172,8 @@ export default {
 			},
 			particleCount: 150,
 			spread: 200,
-			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'] // misc. kiva colors
+			colors: ['#d74937', '#6859c0', '#fee259', '#118aec', '#DDFFF4', '#4faf4e', '#aee15c'], // misc. kiva colors
+			disableForReducedMotion: true,
 		});
 
 		// MG Upsell On Thanks Page - EXP-SUBS-526-Oct2020
