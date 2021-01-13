@@ -47,7 +47,7 @@ module.exports = {
 			scope: 'openid mfa',
 		},
 		intercom: {
-			enable: true,
+			enable: false,
 			appId: 't3epx9oz'
 		},
 		paypal : {
