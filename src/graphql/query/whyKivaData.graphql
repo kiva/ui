@@ -5,6 +5,7 @@ query whyKiva {
 			repaymentRate
 			numCountries
 			numLenders
+			numBorrowers
 		}
 	}
 }
