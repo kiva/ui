@@ -109,7 +109,7 @@
 		"store2": "^2.12.0",
 		"timesync": "^1.0.8",
 		"title-case": "^3.0.2",
-		"uuid": "^8.3.0",
+		"uuid": "^8.3.2",
 		"vue": "^2.6.12",
 		"vue-focus-lock": "^1.4.0",
 		"vue-instantsearch": "^2.4.0",
