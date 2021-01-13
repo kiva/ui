@@ -81,6 +81,36 @@ export default {
 		box-shadow: $button-secondary-shadow darken($kiva-accent-red, 10%);
 	}
 
+	&.classic {
+		border: rem-calc(3) solid $kiva-green;
+		box-shadow: none;
+		border-radius: rem-calc(20);
+		color: $white;
+		background-color: $kiva-green;
+
+		&:hover,
+		&:focus {
+			border-color: darken($kiva-green, 10%);
+			background-color: darken($kiva-green, 10%);
+			box-shadow: none;
+		}
+	}
+
+	&.classic.hollow {
+		border: rem-calc(3) solid $kiva-green;
+		color: $kiva-green;
+		background-color: $button-secondary-background;
+		box-shadow: none;
+
+		&:hover,
+		&:focus {
+			background-color: $button-secondary-background;
+			box-shadow: none;
+			border-color: darken($kiva-green, 10%);
+			color: darken($kiva-green, 10%);
+		}
+	}
+
 	&.secondary {
 		@include secondary-styles();
 		@include button-secondary-styles();

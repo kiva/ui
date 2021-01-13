@@ -25,14 +25,24 @@ export const Rounded = () => ({
 	template: '<kv-button class="rounded">Button</kv-button>'
 });
 
-export const Secondary = () => ({
-	components: { KvButton },
-	template: '<kv-button class="secondary">Secondary</kv-button>'
-});
-
 export const Alert = () => ({
 	components: { KvButton },
 	template: '<kv-button class="alert">Alert</kv-button>'
+});
+
+export const Classic = () => ({
+	components: { KvButton },
+	template: '<kv-button class="classic">Classic</kv-button>'
+});
+
+export const ClassicHollow = () => ({
+	components: { KvButton },
+	template: '<kv-button class="classic hollow">Classic</kv-button>'
+});
+
+export const Secondary = () => ({
+	components: { KvButton },
+	template: '<kv-button class="secondary">Secondary</kv-button>'
 });
 
 export const SecondarySmaller = () => ({
