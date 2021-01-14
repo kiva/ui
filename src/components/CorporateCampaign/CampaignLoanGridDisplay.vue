@@ -167,7 +167,8 @@ export default {
 		activateLoanWatchQuery() {
 			const observer = this.apollo.watchQuery({
 				query: basicLoanQuery,
-				variables: this.loanQueryVars
+				variables: this.loanQueryVars,
+				fetchPolicy: 'network-only'
 			});
 			this.$watch(() => this.loanQueryVars, vars => {
 				observer.setVariables(vars);

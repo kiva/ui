@@ -43,21 +43,21 @@
 				@updated-filters="handleUpdatedFilters"
 			/>
 
-			<!-- <attribute-filter
+			<attribute-filter
 				class="filter-type attribute-filter"
-				:all-sectors="allAttributes"
-				:initial-sectors="initialAttributes"
-				:selected-sectors="selectedAttributes"
+				:all-attributes="allAttributes"
+				:initial-attributes="initialAttributes"
+				:selected-attributes="selectedAttributes"
 				@updated-filters="handleUpdatedFilters"
-			/> -->
+			/>
 
-			<!-- <tag-filter
+			<tag-filter
 				class="filter-type tag-filter"
-				:all-sectors="allTags"
-				:initial-sectors="initialTags"
-				:selected-sectors="selectedTags"
+				:all-tags="allTags"
+				:initial-tags="initialTags"
+				:selected-tags="selectedTags"
 				@updated-filters="handleUpdatedFilters"
-			/> -->
+			/>
 
 			<template slot="controls">
 				<kv-button
@@ -76,10 +76,10 @@ import _sortBy from 'lodash/sortBy';
 import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
-// import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
+import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
-// import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
+import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
 
 const filterOptionsQuery = gql`
 	query filterOptionsQuery {
@@ -113,10 +113,10 @@ export default {
 	components: {
 		KvButton,
 		KvLightbox,
-		// AttributeFilter,
+		AttributeFilter,
 		GenderFilter,
 		SectorFilter,
-		// TagFilter
+		TagFilter
 	},
 	props: {
 		initialFilters: {
@@ -151,9 +151,9 @@ export default {
 		this.apollo.query({
 			query: filterOptionsQuery
 		}).then(({ data }) => {
-			this.allAttributes = _sortBy(data.lend?.sector || [], 'name');
+			this.allAttributes = _sortBy(data.lend?.loanThemeFilter || [], 'name');
 			this.allSectors = _sortBy(data.lend?.sector || [], 'name');
-			this.allTags = _sortBy(data.lend?.sector || [], 'name');
+			this.allTags = _sortBy(data.lend?.tag || [], 'name');
 		});
 	},
 	computed: {
@@ -183,7 +183,7 @@ export default {
 			return incomingFilter || [];
 		},
 		initialTags() {
-			return this.initialFilters.sector || [];
+			return this.initialFilters.loanTags || [];
 		},
 		selectedTags() {
 			const incomingFilter = this.initialFiltersCopy.loanTags !== this.modifiedFilters.loanTags

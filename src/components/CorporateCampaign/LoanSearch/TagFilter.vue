@@ -62,7 +62,14 @@ export default {
 		eligibleTags() {
 			// filters all tags against prescribed lsc loanTags
 			const eligibleTags = this.allTags.filter(tag => {
-				return this.initialTags.includes(tag.id) || false;
+				// omit reserved tags which are formatted with an underscore ie. "tag_named_tag"
+				if (tag.name.indexOf('_') !== -1) {
+					return false;
+				}
+				if (this.initialTags.length) {
+					return this.initialTags.includes(tag.id) || false;
+				}
+				return true;
 			});
 			return eligibleTags || [];
 		},
@@ -84,9 +91,11 @@ export default {
 			// Filter mixin function that calls mutation function
 			this.changeTags(this.getValues(checked, values, this.currentTagIds));
 		},
-		changeSectors(tags) {
+		changeTags(tags) {
 			this.currentTagIds = tags;
-			this.$emit('updated-filters', { loanTags: tags });
+			this.$emit('updated-filters', {
+				loanTags: tags.length ? tags : null
+			});
 		},
 		setFilterState() {
 			// set currently selected if present

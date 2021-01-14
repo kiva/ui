@@ -62,7 +62,11 @@ export default {
 		eligibleAttributes() {
 			// filters all Attributes against prescribed lsc theme
 			const eligibleAttributes = this.allAttributes.filter(attribute => {
-				return this.initialAttributes.includes(attribute.id) || false;
+				// TODO: potentially exclude some attributes simimlar to lend/filter
+				if (this.initialAttributes.length) {
+					return this.initialAttributes.includes(attribute.id) || false;
+				}
+				return true;
 			});
 			return eligibleAttributes || [];
 		},
@@ -85,21 +89,44 @@ export default {
 			this.changeAttributes(this.getValues(checked, values, this.currentAttributeIds));
 		},
 		changeAttributes(attributes) {
-			this.currentAttributeIds = attributes;
 			console.log(attributes);
-			// this.$emit('updated-filters', { theme: attributes });
+			// Filter for selected attributes
+			const selectedAttributes = this.eligibleAttributes.filter(attribute => {
+				return attributes.includes(attribute.id);
+			});
+			// Get array selected attribute ids for maintaining state
+			const attributeIds = selectedAttributes.map(attribute => {
+				return attribute.id;
+			});
+			this.currentAttributeIds = attributeIds;
+			// Get list of Attribute Names for loan query
+			const attributeNames = selectedAttributes.map(attribute => {
+				return attribute.name;
+			});
+			this.$emit('updated-filters', { theme: attributeNames });
 		},
 		setFilterState() {
 			// set currently selected if present
 			if (this.selectedAttributes) {
-				this.currentAttributeIds = this.selectedAttributes;
+				this.currentAttributeIds = this.getFilterIdsFromNames(this.selectedAttributes);
 				return true;
 			}
 			// fallback to initial settings if present
 			if (this.initialAttributes) {
-				this.currentAttributeIds = this.initialAttributes;
+				this.currentAttributeIds = this.getFilterIdsFromNames(this.initialAttributes);
 				return true;
 			}
+		},
+		getFilterIdsFromNames(incomingAttributeNameArray) {
+			// Filter for selected attributes
+			const selectedAttributesByName = this.eligibleAttributes.filter(attribute => {
+				return incomingAttributeNameArray.includes(attribute.name);
+			});
+
+			const attributeIds = selectedAttributesByName.map(attribute => {
+				return attribute.id;
+			});
+			return attributeIds;
 		}
 	},
 };

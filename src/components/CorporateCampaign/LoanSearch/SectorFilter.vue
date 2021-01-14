@@ -62,7 +62,10 @@ export default {
 		eligibleSectors() {
 			// filters all sectors against prescribed lsc sectors
 			const eligibleSectors = this.allSectors.filter(sector => {
-				return this.initialSectors.includes(sector.id) || false;
+				if (this.initialSectors.length) {
+					return this.initialSectors.includes(sector.id) || false;
+				}
+				return true;
 			});
 			return eligibleSectors || [];
 		},
@@ -86,7 +89,9 @@ export default {
 		},
 		changeSectors(sectors) {
 			this.currentSectorIds = sectors;
-			this.$emit('updated-filters', { sector: sectors });
+			this.$emit('updated-filters', {
+				sector: sectors.length ? sectors : null
+			});
 		},
 		setFilterState() {
 			// set currently selected if present
