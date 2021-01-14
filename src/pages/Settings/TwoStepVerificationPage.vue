@@ -187,6 +187,12 @@ export default {
 			return this.mfaMethods.length > 0;
 		},
 	},
+	beforeRouteUpdate(to, from, next) {
+		if (to.path === '/settings/security/mfa') {
+			this.gatherMfaEnrollments();
+		}
+		next();
+	},
 	methods: {
 		gatherMfaEnrollments() {
 			this.kvAuth0.checkSession()
