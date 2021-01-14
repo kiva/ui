@@ -21,16 +21,6 @@
 					title="2-step verification is turned on"
 					v-if="!isLoading && isMfaActive"
 				>
-					<template v-slot:icon>
-						<!-- TODO: THIS ICON IS A PLACEHOLDER
-						Get correct icon assest from design, or remove this KvIcon -->
-						<kv-icon
-							class="icon"
-							title="Auto-lending On"
-							name="auto-icon-on"
-						/>
-					</template>
-
 					<template v-slot:content>
 						<div>
 							<p>
@@ -58,16 +48,6 @@
 					v-if="!isLoading && isMfaActive"
 					title="Your security method(s)"
 				>
-					<template v-slot:icon>
-						<!-- TODO: THIS ICON IS A PLACEHOLDER
-						Get correct icon assest from design, or remove this KvIcon -->
-						<kv-icon
-							class="icon"
-							title="Auto-lending On"
-							name="auto-icon-on"
-						/>
-					</template>
-
 					<template v-slot:content>
 						<ul>
 							<li
@@ -100,16 +80,6 @@
 					v-if="!isLoading"
 					:title="`${ cardTitle }`"
 				>
-					<template v-slot:icon>
-						<!-- TODO: THIS ICON IS A PLACEHOLDER
-						Get correct icon assest from design, or remove this KvIcon -->
-						<kv-icon
-							class="icon"
-							title="Auto-lending On"
-							name="auto-icon-on"
-						/>
-					</template>
-
 					<template v-slot:content>
 						<div class="two-step-verification__sub-section">
 							<p>{{ cardSubhead }}</p>
@@ -152,7 +122,6 @@
 
 <script>
 import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
 import TheMyKivaSecondaryMenu from '@/components/WwwFrame/Menus/TheMyKivaSecondaryMenu';
@@ -174,7 +143,6 @@ export default {
 	},
 	components: {
 		KvButton,
-		KvIcon,
 		KvSettingsCard,
 		TheMyKivaSecondaryMenu,
 		WwwPage,
