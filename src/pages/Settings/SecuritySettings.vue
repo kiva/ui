@@ -50,12 +50,13 @@ export default {
 		margin-bottom: 2rem;
 		background-color: $white;
 	}
-
+	// override the column's padding for small screens
 	&__component-container {
 		padding: 0;
 
-		@include breakpoint(medium) {
-			padding: unset;
+		@include breakpoint(large) {
+			padding-right: 0.9375rem;
+			padding-left: 0.9375rem;
 		}
 	}
 }

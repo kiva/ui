@@ -309,8 +309,9 @@ export default {
 	&__settings-card-area {
 		padding: 0;
 
-		@include breakpoint(medium) {
-			padding: unset;
+		@include breakpoint(large) {
+			padding-right: 0.9375rem;
+			padding-left: 0.9375rem;
 		}
 	}
 
