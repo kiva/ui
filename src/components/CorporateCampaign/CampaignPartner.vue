@@ -42,7 +42,7 @@ export default {
 			const mediaObject = this.partnerAreaContent?.media?.[0];
 			return {
 				title: mediaObject?.title || '',
-				url: mediaObject.file?.url || ''
+				url: mediaObject?.file?.url || ''
 			};
 		},
 		headline() {

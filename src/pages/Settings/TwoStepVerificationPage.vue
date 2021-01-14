@@ -187,6 +187,12 @@ export default {
 			return this.mfaMethods.length > 0;
 		},
 	},
+	beforeRouteUpdate(to, from, next) {
+		if (to.path === '/settings/security/mfa') {
+			this.gatherMfaEnrollments();
+		}
+		next();
+	},
 	methods: {
 		gatherMfaEnrollments() {
 			this.kvAuth0.checkSession()
@@ -277,8 +283,9 @@ export default {
 	&__settings-card-area {
 		padding: 0;
 
-		@include breakpoint(medium) {
-			padding: unset;
+		@include breakpoint(large) {
+			padding-right: 0.9375rem;
+			padding-left: 0.9375rem;
 		}
 	}
 
