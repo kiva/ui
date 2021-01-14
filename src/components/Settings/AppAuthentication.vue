@@ -288,6 +288,11 @@ export default {
 		font-weight: bold;
 		padding: 0.5rem;
 		margin-bottom: 1rem;
+		font-size: 0.75rem;
+
+		@include breakpoint(medium) {
+			font-size: 1rem;
+		}
 	}
 
 	.verification-code {
