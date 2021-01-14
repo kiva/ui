@@ -32,7 +32,7 @@
 					class="text-link"
 					@click.native.prevent="triggerHowItProtectsLightbox"
 				>
-					How it protects you?
+					How does it protect you?
 				</kv-button>
 			</li>
 		</ul>
