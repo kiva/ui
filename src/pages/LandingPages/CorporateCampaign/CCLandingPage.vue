@@ -327,8 +327,6 @@ const basketItemsQuery = gql`query basketItemsQuery(
 	}
 }`;
 
-const visaLogoUrl = require('@/assets/images/logos/visa.svg'); // TODO: Remove once contentful gives us the logo url
-
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
