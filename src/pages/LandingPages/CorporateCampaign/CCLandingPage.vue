@@ -130,7 +130,10 @@
 					:corporate-logo-url="corporateLogoUrl"
 					:style="`--logo-color: ${headerTheme.logoColor}`"
 				/>
-				<campaign-thanks :transaction-id="transactionId" />
+				<campaign-thanks
+					:transaction-id="transactionId"
+					:partner-content="partnerThanksContent"
+				/>
 			</kv-lightbox>
 		</div>
 	</www-page-corporate>
@@ -472,17 +475,14 @@ export default {
 			// TODO: add field on Contentful Page for this
 			return this.pageData?.page?.pageLayout?.name;
 		},
-		// TODO: this needs to be standardized
 		heroAreaContent() {
-			const contentGroups = this.pageData?.page?.contentGroups;
-			// Expects a content group with key = `campaign-hero-cg`
-			const heroArea = contentGroups.mlCampaignHero;
-			return heroArea;
+			return this.pageData?.page?.contentGroups?.mlCampaignHero;
 		},
 		partnerAreaContent() {
-			const contentGroups = this.pageData?.page?.contentGroups;
-			const partnerArea = contentGroups?.mlCampaignPartnerCopy;
-			return partnerArea;
+			return this.pageData?.page?.contentGroups?.mlCampaignPartnerCopy;
+		},
+		partnerThanksContent() {
+			return this.pageData?.page?.contentGroups?.mlCampaignThanks;
 		},
 		promoAmount() {
 			// TODO: get promoAmount from basket credit instead

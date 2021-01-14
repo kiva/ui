@@ -1,7 +1,8 @@
 <template>
 	<div class="in-context-checkout">
 		<basket-items-list
-			:class="hideDonationClass"
+			class="in-context-checkout__basket-items"
+			:class="{ 'in-context-checkout__basket-items--hide-donation' : !this.showDonation}"
 			:loans="loans"
 			:donations="donations"
 			:kiva-cards="kivaCards"
@@ -83,12 +84,6 @@ export default {
 		registerOrLoginHref() {
 			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
 		},
-		hideDonationClass() {
-			if (!this.showDonation) {
-				return 'hide-donation';
-			}
-			return '';
-		},
 	},
 	methods: {
 		completeTransaction(transactionId) {
@@ -126,21 +121,21 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-::v-deep .basket-items-list > ul {
-	margin: 0 2.625 0 1rem;
-}
+.in-context-checkout {
+	&__basket-items {
+		@include breakpoint(large) {
+			::v-deep .borrower-info-wrapper {
+				margin-top: 0;
+				padding: 0 0.25rem;
+			}
+		}
 
-@include breakpoint(large) {
-	::v-deep .basket-items-list {
-		.borrower-info-wrapper {
-			padding: 0 1.25rem;
+		&--hide-donation {
+			::v-deep .basket-donation-item {
+				display: none;
+			}
 		}
 	}
 }
 
-.hide-donation {
-	::v-deep .basket-donation-item {
-		display: none;
-	}
-}
 </style>
