@@ -240,6 +240,7 @@ export default {
 							this.loans = this.loans.concat(newLoans);
 						}
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
+						this.$emit('update-total-count', this.totalCount);
 						this.loadingLoans = false;
 					}
 				}

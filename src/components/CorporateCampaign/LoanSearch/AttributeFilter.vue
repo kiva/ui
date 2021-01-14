@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Sectors
+			Attributes
 		</h3>
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<check-list
-					key="sectors"
-					:items="sectorsWithSelected"
+					key="attributes"
+					:items="attributesWithSelected"
 					:use-columns="true"
 					@change="onChange"
 				/>
@@ -28,52 +28,52 @@ export default {
 		anyOrSelectedAutolendingFilter
 	],
 	props: {
-		allSectors: {
+		allAttributes: {
 			type: Array,
 			default: () => []
 		},
-		initialSectors: {
+		initialAttributes: {
 			type: Array,
 			default: () => []
 		},
-		selectedSectors: {
+		selectedAttributes: {
 			type: Array,
 			default: () => []
 		},
 	},
 	data() {
 		return {
-			currentSectorIds: [],
+			currentAttributeIds: [],
 		};
 	},
 	created() {
 		this.setFilterState();
 	},
 	computed: {
-		sectorsWithSelected() {
-			return this.eligibleSectors.map(({ id, name }) => {
+		attributesWithSelected() {
+			return this.eligibleAttributes.map(({ id, name }) => {
 				return {
 					id,
 					name,
-					selected: this.currentSectorIds.indexOf(id) > -1,
+					selected: this.currentAttributeIds.indexOf(id) > -1,
 				};
 			});
 		},
-		eligibleSectors() {
-			// filters all sectors against prescribed lsc sectors
-			const eligibleSectors = this.allSectors.filter(sector => {
-				return this.initialSectors.includes(sector.id) || false;
+		eligibleAttributes() {
+			// filters all Attributes against prescribed lsc theme
+			const eligibleAttributes = this.allAttributes.filter(attribute => {
+				return this.initialAttributes.includes(attribute.id) || false;
 			});
-			return eligibleSectors || [];
+			return eligibleAttributes || [];
 		},
 	},
 	watch: {
-		initialSectors(next, prev) {
-			if (!this.selectedSectors && next !== prev) {
+		initialAttributes(next, prev) {
+			if (!this.selectedAttributes && next !== prev) {
 				this.setFilterState();
 			}
 		},
-		selectedSectors(next, prev) {
+		selectedAttributes(next, prev) {
 			if (next !== prev) {
 				this.setFilterState();
 			}
@@ -82,21 +82,22 @@ export default {
 	methods: {
 		onChange(checked, values) {
 			// Filter mixin function that calls mutation function
-			this.changeSectors(this.getValues(checked, values, this.currentSectorIds));
+			this.changeAttributes(this.getValues(checked, values, this.currentAttributeIds));
 		},
-		changeSectors(sectors) {
-			this.currentSectorIds = sectors;
-			this.$emit('updated-filters', { sector: sectors });
+		changeAttributes(attributes) {
+			this.currentAttributeIds = attributes;
+			console.log(attributes);
+			// this.$emit('updated-filters', { theme: attributes });
 		},
 		setFilterState() {
 			// set currently selected if present
-			if (this.selectedSectors) {
-				this.currentSectorIds = this.selectedSectors;
+			if (this.selectedAttributes) {
+				this.currentAttributeIds = this.selectedAttributes;
 				return true;
 			}
 			// fallback to initial settings if present
-			if (this.initialSectors) {
-				this.currentSectorIds = this.initialSectors;
+			if (this.initialAttributes) {
+				this.currentAttributeIds = this.initialAttributes;
 				return true;
 			}
 		}

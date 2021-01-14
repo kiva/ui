@@ -1,16 +1,22 @@
 <template>
 	<div class="loan-search-filters">
 		<div class="filter-list">
-			<h3>Filters:</h3>
+			<h3>Filter {{ totalCount }} Loans:</h3>
 			<ul>
-				<li @click="showFilters">
+				<li @click="showFilters('gender')">
 					Gender
 				</li>
-				<!-- <li @click="showFilters">
+				<li @click="showFilters('location')">
 					Location
-				</li> -->
-				<li @click="showFilters">
+				</li>
+				<li @click="showFilters('sector')">
 					Sector
+				</li>
+				<li @click="showFilters('tags')">
+					Tags
+				</li>
+				<li @click="showFilters('attribute')">
+					Attributes
 				</li>
 			</ul>
 		</div>
@@ -18,86 +24,204 @@
 		<kv-lightbox
 			class="filter-controls-lightbox"
 			id="filterControlsLightbox"
+			title="Filter Loans"
 			:visible="filtersVisible"
 			@lightbox-closed="filtersVisible = false"
 		>
 			<gender-filter
+				class="filter-type gender-filter"
 				:initial-gender="initialGender"
+				:selected-gender="selectedGender"
 				@updated-filters="handleUpdatedFilters"
 			/>
 
 			<sector-filter
+				class="filter-type sector-filter"
+				:all-sectors="allSectors"
 				:initial-sectors="initialSectors"
+				:selected-sectors="selectedSectors"
 				@updated-filters="handleUpdatedFilters"
 			/>
 
-			<kv-button
-				class="button smallest"
-				@click.native.prevent="applyFilters"
-			>
-				Apply Filters
-			</kv-button>
+			<!-- <attribute-filter
+				class="filter-type attribute-filter"
+				:all-sectors="allAttributes"
+				:initial-sectors="initialAttributes"
+				:selected-sectors="selectedAttributes"
+				@updated-filters="handleUpdatedFilters"
+			/> -->
+
+			<!-- <tag-filter
+				class="filter-type tag-filter"
+				:all-sectors="allTags"
+				:initial-sectors="initialTags"
+				:selected-sectors="selectedTags"
+				@updated-filters="handleUpdatedFilters"
+			/> -->
+
+			<template slot="controls">
+				<kv-button
+					class="button smallest"
+					@click.native.prevent="applyFilters"
+				>
+					Apply Filters
+				</kv-button>
+			</template>
 		</kv-lightbox>
 	</div>
 </template>
 
 <script>
-// import gql from 'graphql-tag';
+import _sortBy from 'lodash/sortBy';
+import gql from 'graphql-tag';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+// import AttributeFilter from '@/components/CorporateCampaign/LoanSearch/AttributeFilter';
 import GenderFilter from '@/components/CorporateCampaign/LoanSearch/GenderFilter';
 import SectorFilter from '@/components/CorporateCampaign/LoanSearch/SectorFilter';
+// import TagFilter from '@/components/CorporateCampaign/LoanSearch/TagFilter';
+
+const filterOptionsQuery = gql`
+	query filterOptionsQuery {
+		lend {
+			countryFacets {
+				country {
+					isoCode
+					name
+					numLoansFundraising
+					region
+				}
+			}
+			loanThemeFilter {
+				id
+				name
+			}
+			sector {
+				id
+				name
+			}
+			tag {
+				id
+				name
+			}
+		}
+	}
+`;
 
 export default {
+	inject: ['apollo'],
 	components: {
 		KvButton,
 		KvLightbox,
-		SectorFilter,
+		// AttributeFilter,
 		GenderFilter,
+		SectorFilter,
+		// TagFilter
 	},
 	props: {
 		initialFilters: {
 			type: Object,
 			default: () => {}
 		},
+		totalCount: {
+			type: Number,
+			default: 0
+		}
 	},
 	data() {
 		return {
+			allAttributes: [],
+			allCountries: [],
+			allSectors: [],
+			allTags: [],
 			filtersVisible: false,
-			// gender: 'both',
-			updatedFilters: null,
+			initialFiltersCopy: null,
 			modifiedFilters: null,
 		};
 	},
+	// apollo: {
+	// 	query: filterOptionsQuery,
+	// 	preFetch: true,
+	// 	result({ data }) {
+	// 		this.allSectors = _sortBy(data.lend?.sector || [], 'name');
+	// 	},
+	// },
+	mounted() {
+		// fetch loan filter options
+		this.apollo.query({
+			query: filterOptionsQuery
+		}).then(({ data }) => {
+			this.allAttributes = _sortBy(data.lend?.sector || [], 'name');
+			this.allSectors = _sortBy(data.lend?.sector || [], 'name');
+			this.allTags = _sortBy(data.lend?.sector || [], 'name');
+		});
+	},
+	computed: {
+		// Attributes are also known as LoanThemes
+		initialAttributes() {
+			return this.initialFilters.theme || [];
+		},
+		selectedAttributes() {
+			const incomingFilter = this.initialFiltersCopy.theme !== this.modifiedFilters.theme
+				? this.modifiedFilters.theme : this.initialFiltersCopy.theme;
+			return incomingFilter || [];
+		},
+		initialGender() {
+			return this.initialFilters.gender || 'both';
+		},
+		selectedGender() {
+			const incomingFilter = this.initialFiltersCopy.gender !== this.modifiedFilters.gender
+				? this.modifiedFilters.gender : this.initialFiltersCopy.gender;
+			return incomingFilter || 'both';
+		},
+		initialSectors() {
+			return this.initialFilters.sector || [];
+		},
+		selectedSectors() {
+			const incomingFilter = this.initialFiltersCopy.sector !== this.modifiedFilters.sector
+				? this.modifiedFilters.sector : this.initialFiltersCopy.sector;
+			return incomingFilter || [];
+		},
+		initialTags() {
+			return this.initialFilters.sector || [];
+		},
+		selectedTags() {
+			const incomingFilter = this.initialFiltersCopy.loanTags !== this.modifiedFilters.loanTags
+				? this.modifiedFilters.loanTags : this.initialFiltersCopy.loanTags;
+			return incomingFilter || [];
+		}
+	},
+	watch: {
+		initialFilters: {
+			handler() {
+				// establish non-reactive copy of initial filters object
+				this.initialFiltersCopy = this.copyFilters(this.initialFilters);
+				// establish non-reactive copy ready for modification
+				this.modifiedFilters = this.copyFilters(this.initialFilters);
+			},
+			immediate: true,
+			deep: true,
+		}
+	},
+
 	methods: {
 		showFilters() {
 			this.filtersVisible = true;
 		},
-		// updateFilter(filter, value) {
-		// 	if (this.updatedFilters[filter] !== value) {
-		// 		this.updatedFilters[filter] = value;
-		// 		this.$emit(
-		// 			'new-filters-selected',
-		// 			{
-		// 				filter,
-		// 				filters: this.updatedFilters
-		// 			}
-		// 		);
-		// 	}
-		// },
 		handleUpdatedFilters(payload) {
-			console.log('handleUpdatedFilters: ', payload);
+			// console.log('handleUpdatedFilters: ', payload);
 			const filterKeys = Object.keys(payload);
-			console.log('filterKeys: ', filterKeys);
+			// console.log('filterKeys: ', filterKeys);
 			filterKeys.forEach(key => {
 				this.modifiedFilters[key] = payload[key];
 			});
 		},
 		applyFilters() {
-			console.log(this.modifiedFilters);
+			// console.log(this.modifiedFilters);
 			this.$emit('updated-filters', this.modifiedFilters);
 			this.filtersVisible = false;
 		},
+		// TODO: Move to Util file
 		copyFilters(initialFilters) {
 			const filtersCopy = {};
 
@@ -140,41 +264,6 @@ export default {
 			return filtersCopy;
 		},
 	},
-	computed: {
-		initialGender() {
-			console.log('initial sector:', this.initialFilters.gender);
-			return this.initialSectors.gender || 'both';
-		},
-		initialSectors() {
-			console.log('initial sector:', this.initialFilters.sector);
-			return this.initialFilters.sector || [];
-		}
-	},
-	watch: {
-		updatedFilters: {
-			handler(next, prev) {
-				console.log('updatedFilters watch: ', next, prev);
-				console.log('updated filters comparison: ', JSON.stringify(next) !== JSON.stringify(prev));
-				// if (JSON.stringify(next) !== JSON.stringify(prev)) {
-				// 	this.$emit('new-filters-selected', next);
-				// }
-			},
-			immediate: true,
-			deep: true,
-		},
-		initialFilters: {
-			handler(next, prev) {
-				console.log('initialFilters watch: ', next, prev);
-				this.modifiedFilters = this.copyFilters(this.initialFilters);
-				this.updatedFilters = this.initialFilters;
-				// if (JSON.stringify(next) !== JSON.stringify(prev)) {
-				// 	this.$emit('new-filters-selected', next);
-				// }
-			},
-			immediate: true,
-			deep: true,
-		}
-	}
 };
 </script>
 
@@ -182,18 +271,45 @@ export default {
 @import 'settings';
 
 .filter-list {
-	display: flex;
+	margin: 0 1rem;
+
+	@include breakpoint(medium) {
+		margin: 0 3rem;
+	}
+
+	@include breakpoint(large) {
+		display: flex;
+		overflow: scroll;
+	}
 
 	h3 {
+		display: block;
 		padding: 0.5rem;
 	}
 
 	ul {
 		display: flex;
+		margin: 0;
+		overflow-x: scroll;
+
+		@include breakpoint(large) {
+			overflow: auto;
+		}
 
 		li {
 			padding: 0.5rem;
+			cursor: pointer;
+
+			&:hover {
+				text-decoration: underline;
+			}
 		}
+	}
+}
+
+.filter-controls-lightbox {
+	.filter-type {
+		padding: 0 0 1rem;
 	}
 }
 </style>

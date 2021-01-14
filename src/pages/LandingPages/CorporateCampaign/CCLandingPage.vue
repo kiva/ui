@@ -36,6 +36,7 @@
 						<campaign-loan-filters
 							v-show="showTestFilters"
 							:initial-filters="initialFilters"
+							:total-count="totalCount"
 							@updated-filters="handleUpdatedFilters"
 						/>
 
@@ -50,6 +51,7 @@
 							:key="'one-category'"
 							:row-number="1"
 							@add-to-basket="handleAddToBasket"
+							@update-total-count="setTotalCount"
 						/>
 
 						<campaign-loan-grid-display
@@ -62,6 +64,7 @@
 							:is-visitor="isVisitor"
 							:items-in-basket="itemsInBasket"
 							@add-to-basket="handleAddToBasket"
+							@update-total-count="setTotalCount"
 						/>
 					</div>
 				</div>
@@ -811,6 +814,10 @@ export default {
 		handleUpdatedFilters(payload) {
 			console.log('top level handle updated filters: ', payload);
 			this.filters = getSearchableFilters(payload);
+		},
+		setTotalCount(payload) {
+			console.log(payload);
+			this.totalCount = payload;
 		}
 	},
 	beforeRouteEnter(to, from, next) {

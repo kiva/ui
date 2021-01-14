@@ -180,6 +180,7 @@ export default {
 					} else {
 						this.loans = data.lend?.loans?.values ?? [];
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
+						this.$emit('update-total-count', this.totalCount);
 						this.checkIfPageIsOutOfRange(this.loans.length, this.pageQuery.page);
 						this.loadingLoans = false;
 					}
