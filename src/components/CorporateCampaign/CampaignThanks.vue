@@ -6,15 +6,12 @@
 					<h2>Thanks for supporting {{ borrowerSupport }}!</h2>
 					<p>We've emailed your order confirmation to {{ lender.email }}</p>
 				</header>
-
-				<!-- custom content area here, headline, block, image, cta. Links can leave page here -->
 				<section class="campaign-thanks__partner-block">
-					<p>Custom content area here, headline, block, image, cta.</p>
+					<campaign-partner-thanks :partner-content="partnerContent" />
 				</section>
-
 				<kv-accordion-item id="thanks-share">
 					<template v-slot:header>
-						<h2>Share the Love</h2>
+						<h2>Share the Good</h2>
 					</template>
 					<social-share
 						class="campaign-thanks__social-share"
@@ -57,9 +54,11 @@ import CheckoutReceipt from '@/components/Checkout/CheckoutReceipt';
 import SocialShare from '@/components/Checkout/SocialShare';
 import thanksPageQuery from '@/graphql/query/thanksPage.graphql';
 import { joinArray } from '@/util/joinArray';
+import CampaignPartnerThanks from './CampaignPartnerThanks';
 
 export default {
 	components: {
+		CampaignPartnerThanks,
 		CheckoutReceipt,
 		KvAccordionItem,
 		KvLoadingSpinner,
@@ -76,6 +75,10 @@ export default {
 			type: Number,
 			default: null,
 		},
+		partnerContent: {
+			type: Object,
+			default() { return {}; }
+		}
 	},
 	data() {
 		return {
