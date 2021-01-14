@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<h3 class="filter-title">
-			Sectors
+			Tags
 		</h3>
 		<div class="row collapse">
 			<div class="small-12 columns">
 				<check-list
-					key="sectors"
-					:items="sectorsWithSelected"
+					key="tags"
+					:items="tagsWithSelected"
 					:use-columns="true"
 					@change="onChange"
 				/>
@@ -28,55 +28,59 @@ export default {
 		anyOrSelectedAutolendingFilter
 	],
 	props: {
-		allSectors: {
+		allTags: {
 			type: Array,
 			default: () => []
 		},
-		initialSectors: {
+		initialTags: {
 			type: Array,
 			default: () => []
 		},
-		selectedSectors: {
+		selectedTags: {
 			type: Array,
 			default: () => []
 		},
 	},
 	data() {
 		return {
-			currentSectorIds: [],
+			currentTagIds: [],
 		};
 	},
 	created() {
 		this.setFilterState();
 	},
 	computed: {
-		sectorsWithSelected() {
-			return this.eligibleSectors.map(({ id, name }) => {
+		tagsWithSelected() {
+			return this.eligibleTags.map(({ id, name }) => {
 				return {
 					id,
 					name,
-					selected: this.currentSectorIds.indexOf(id) > -1,
+					selected: this.currentTagIds.indexOf(id) > -1,
 				};
 			});
 		},
-		eligibleSectors() {
-			// filters all sectors against prescribed lsc sectors
-			const eligibleSectors = this.allSectors.filter(sector => {
-				if (this.initialSectors.length) {
-					return this.initialSectors.includes(sector.id) || false;
+		eligibleTags() {
+			// filters all tags against prescribed lsc loanTags
+			const eligibleTags = this.allTags.filter(tag => {
+				// omit reserved tags which are formatted with an underscore ie. "tag_named_tag"
+				if (tag.name.indexOf('_') !== -1) {
+					return false;
+				}
+				if (this.initialTags.length) {
+					return this.initialTags.includes(tag.id) || false;
 				}
 				return true;
 			});
-			return eligibleSectors || [];
+			return eligibleTags || [];
 		},
 	},
 	watch: {
-		initialSectors(next, prev) {
-			if (!this.selectedSectors && next !== prev) {
+		initialTags(next, prev) {
+			if (!this.selectedTags && next !== prev) {
 				this.setFilterState();
 			}
 		},
-		selectedSectors(next, prev) {
+		selectedTags(next, prev) {
 			if (next !== prev) {
 				this.setFilterState();
 			}
@@ -85,23 +89,23 @@ export default {
 	methods: {
 		onChange(checked, values) {
 			// Filter mixin function that calls mutation function
-			this.changeSectors(this.getValues(checked, values, this.currentSectorIds));
+			this.changeTags(this.getValues(checked, values, this.currentTagIds));
 		},
-		changeSectors(sectors) {
-			this.currentSectorIds = sectors;
+		changeTags(tags) {
+			this.currentTagIds = tags;
 			this.$emit('updated-filters', {
-				sector: sectors.length ? sectors : null
+				loanTags: tags.length ? tags : null
 			});
 		},
 		setFilterState() {
 			// set currently selected if present
-			if (this.selectedSectors) {
-				this.currentSectorIds = this.selectedSectors;
+			if (this.selectedTags) {
+				this.currentTagIds = this.selectedTags;
 				return true;
 			}
 			// fallback to initial settings if present
-			if (this.initialSectors) {
-				this.currentSectorIds = this.initialSectors;
+			if (this.initialTags) {
+				this.currentTagIds = this.initialTags;
 				return true;
 			}
 		}

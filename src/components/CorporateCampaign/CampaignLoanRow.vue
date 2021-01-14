@@ -222,7 +222,8 @@ export default {
 		activateLoanWatchQuery() {
 			const observer = this.apollo.watchQuery({
 				query: basicLoanQuery,
-				variables: this.loanQueryVars
+				variables: this.loanQueryVars,
+				fetchPolicy: 'network-only'
 			});
 			this.$watch(() => this.loanQueryVars, vars => {
 				observer.setVariables(vars);
@@ -240,6 +241,8 @@ export default {
 							this.loans = this.loans.concat(newLoans);
 						}
 						this.totalCount = data.lend?.loans?.totalCount ?? 0;
+						this.$emit('update-total-count', this.totalCount);
+						this.scrollPos = 0;
 						this.loadingLoans = false;
 					}
 				}
