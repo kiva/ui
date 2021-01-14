@@ -530,8 +530,7 @@ export default {
 			return this.pageQuery?.formComplete === 'true' || false;
 		},
 		corporateLogoUrl() {
-			// TODO: Return the corporate logo url from contentful
-			return visaLogoUrl;
+			return this.pageData?.page?.contentGroups?.mlCampaignLogo?.media?.[0]?.file?.url;
 		}
 	},
 	methods: {
