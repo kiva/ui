@@ -194,13 +194,18 @@ export default {
 		padding: 1.5rem;
 		max-height: 100%;
 		background: $white;
-		position: relative;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
 
 		&:focus {
 			outline: 0; // safe(?), since JavaScript is the only way to focus on this el.
 		}
 
 		@include breakpoint(medium) {
+			position: relative;
 			padding: 2.8125rem;
 			border-radius: rem-calc(4);
 			max-width: rem-calc(900);
