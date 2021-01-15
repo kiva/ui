@@ -10,6 +10,10 @@
 		</div>
 		<div class="row">
 			<div class="column small-12 large-8 two-step-verification__settings-card-area">
+				<p v-if="pageError" class="two-step-verification__error">
+					{{ pageError }}
+				</p>
+
 				<!--
 					Toggle MFA off settings card
 				-->
@@ -19,7 +23,7 @@
 				/>
 				<kv-settings-card
 					title="2-step verification is turned on"
-					v-if="!isLoading && isMfaActive"
+					v-if="!isLoading && isMfaActive && !pageError"
 				>
 					<template v-slot:content>
 						<div>
@@ -45,7 +49,7 @@
 					v-if="isLoading"
 				/>
 				<kv-settings-card
-					v-if="!isLoading && isMfaActive"
+					v-if="!isLoading && isMfaActive && !pageError"
 					title="Your security method(s)"
 				>
 					<template v-slot:content>
@@ -77,7 +81,7 @@
 					v-if="isLoading"
 				/>
 				<kv-settings-card
-					v-if="!isLoading"
+					v-if="!isLoading && !pageError"
 					:title="`${ cardTitle }`"
 				>
 					<template v-slot:content>
@@ -121,6 +125,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser';
 import KvButton from '@/components/Kv/KvButton';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 import KvLoadingPlaceholder from '@/components/Kv/KvLoadingPlaceholder';
@@ -138,7 +143,8 @@ export default {
 			isPhoneLightboxVisible: false,
 			lastLoginTime: 0,
 			mfaMethods: [],
-			isLoading: false,
+			isLoading: true,
+			pageError: '',
 		};
 	},
 	components: {
@@ -152,21 +158,19 @@ export default {
 		title: '2-step verification',
 	},
 	mounted() {
-		if (this.kvAuth0.enabled) {
-			this.isLoading = true;
-			this.gatherMfaEnrollments();
-		}
 		if (this.$route.query.mfa === 'off') {
 			// User returns to page after login, or if has logged in within 5 minutes
 			// and is presented with a window.confirm
 			const mfaOffConfirm = window.confirm('Are you sure you want to turn off 2-step verification?'); // eslint-disable-line no-alert, max-len
 			if (mfaOffConfirm) {
-				// Upon confirm triggger mutation to turn off mfa
+				// Upon confirm trigger mutation to turn off mfa
 				this.turnOffMfa();
 			} else {
 				// Upon cancel return to the base URL of current page
 				this.$router.push('/settings/security/mfa');
 			}
+		} else {
+			this.gatherMfaEnrollments();
 		}
 	},
 	inject: ['apollo', 'kvAuth0'],
@@ -195,7 +199,8 @@ export default {
 	},
 	methods: {
 		gatherMfaEnrollments() {
-			this.kvAuth0.checkSession()
+			this.isLoading = true;
+			this.kvAuth0.checkSession({ skipIfUserExists: true })
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
 					return this.apollo.query({
@@ -205,11 +210,28 @@ export default {
 						},
 						fetchPolicy: 'network-only',
 					});
-				}).then(result => {
+				})
+				.then(result => {
+					if (result.errors) {
+						throw result.errors;
+					}
+					this.isLoading = false;
+					this.pageError = '';
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					this.lastLoginTime = result.data.my.lastLoginTimestamp;
 
 					this.formatMfaMethods(authEnrollments);
+				})
+				.catch(err => {
+					this.isLoading = false;
+					console.error(err);
+					this.pageError = 'There was an error fetching your 2-step verification status. '
+						+ 'Please refresh the page and try again.';
+					try {
+						Sentry.captureException(err?.[0]?.extensions?.exception || err);
+					} catch (e) {
+						// no-op
+					}
 				});
 		},
 		checkLastLoginTime() {
@@ -229,13 +251,26 @@ export default {
 		turnOffMfa() {
 			this.apollo.mutate({
 				mutation: removeMfa,
-			}).then(() => {
+			}).then(result => {
+				if (result.errors) {
+					throw result.errors;
+				}
 				// Upon completion return to the base URL of current page
 				this.$router.push('/settings/security/mfa');
+			}).catch(err => {
+				this.isLoading = false;
+				console.error(err);
+				this.pageError = 'There was an error when turning off your 2-step verification. '
+					+ 'Please refresh the page and try again.';
+				try {
+					Sentry.captureException(err?.[0]?.extensions?.exception || err);
+				} catch (e) {
+					// no-op
+				}
 			});
 		},
 		removeMfaMethod(mfaMethod) {
-			this.kvAuth0.checkSession()
+			this.kvAuth0.checkSession({ skipIfUserExists: true })
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
 					return this.apollo.mutate({
@@ -244,10 +279,26 @@ export default {
 							mfa_token: token,
 							id: mfaMethod.id
 						}
-					})
-						.then(() => {
-							this.gatherMfaEnrollments();
-						});
+					});
+				})
+				.then(result => {
+					if (result.errors) {
+						throw result.errors;
+					}
+					this.gatherMfaEnrollments();
+				})
+				.catch(err => {
+					console.error(err);
+					this.$showTipMsg(
+						'There was an error when deleting the method. '
+						+ 'Please refresh the page and try again.',
+						'error'
+					);
+					try {
+						Sentry.captureException(err?.[0]?.extensions?.exception || err);
+					} catch (e) {
+						// no-op
+					}
 				});
 		},
 		formatMfaMethods(authEnrollments) {
@@ -256,7 +307,6 @@ export default {
 			const filteredMethods = authEnrollments.filter(authItem => authItem.active);
 			// Taking the filtered method and removing duplicates based on a seconds half of the authItem.id
 			this.mfaMethods = _uniqBy(filteredMethods, authItem => authItem.id.split('|')[1]);
-			this.isLoading = false;
 		},
 		readableAuthName(authType) {
 			if (authType === 'oob') {
@@ -287,6 +337,10 @@ export default {
 			padding-right: 0.9375rem;
 			padding-left: 0.9375rem;
 		}
+	}
+
+	&__error {
+		color: $kiva-accent-red;
 	}
 
 	&__method {

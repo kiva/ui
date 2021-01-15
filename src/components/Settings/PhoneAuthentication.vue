@@ -95,7 +95,7 @@
 					<kv-loading-spinner
 						v-if="verificationPending"
 					/>
-					<p class="phone-authentication__error" v-if="verificationError">
+					<p class="phone-authentication__error" v-if="verificationError && !verificationPending">
 						{{ verificationError }}
 					</p>
 					<template v-if="!verificationPending">
@@ -131,6 +131,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
@@ -213,7 +214,7 @@ export default {
 		getMFAToken() {
 			return new Promise((resolve, reject) => {
 				if (this.kvAuth0.enabled) {
-					this.kvAuth0.checkSession()
+					this.kvAuth0.checkSession({ skipIfUserExists: true })
 						.then(() => this.kvAuth0.getMfaManagementToken())
 						.then(token => {
 							resolve(token);
@@ -247,7 +248,8 @@ export default {
 							phone_number: this.phoneNumber
 						}
 					});
-				}).then(result => {
+				})
+				.then(result => {
 					if (result.errors) {
 						throw result.errors;
 					} else {
@@ -263,12 +265,15 @@ export default {
 				})
 				.catch(err => {
 					console.error(err);
-					this.verificationError = err?.[0]?.message
+					this.enrollmentPending = false;
+					this.enrollmentError = err?.[0]?.message
 						|| err
 						|| 'Error. Please refresh the page and try again.';
-				})
-				.finally(() => {
-					this.enrollmentPending = false;
+					try {
+						Sentry.captureException(err?.[0]?.extensions?.exception || err);
+					} catch (e) {
+						// no-op
+					}
 				});
 		},
 		submitVerification() {
@@ -289,7 +294,8 @@ export default {
 							binding_code: this.userVerificationCode
 						}
 					});
-				}).then(result => {
+				})
+				.then(result => {
 					if (result.errors) {
 						throw result.errors;
 					}
@@ -305,9 +311,16 @@ export default {
 				.catch(err => {
 					console.error(err);
 					this.verificationPending = false;
-					this.verificationError = err?.[0]?.message
-						|| err
-						|| 'Error. Please refresh the page and try again.';
+					if (err?.[0]?.message?.indexOf('Invalid binding_code') > -1) {
+						this.verificationError = 'The code entered was not valid. Please try again.';
+					} else {
+						this.verificationError = 'Error. Please refresh the page and try again.';
+						try {
+							Sentry.captureException(err?.[0]?.extensions?.exception || err);
+						} catch (e) {
+							// no-op
+						}
+					}
 				});
 		},
 		confirmRecoveryCode() {
