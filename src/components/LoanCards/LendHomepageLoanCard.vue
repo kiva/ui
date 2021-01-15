@@ -42,6 +42,7 @@
 				class="lend-homepage-loan-card__borrower-info"
 				:amount="loan.loanAmount"
 				:borrower-count="loan.borrowerCount"
+				:disable-link="disableRedirects"
 				:name="loan.name"
 				:status="loan.status"
 				:use="loan.use"

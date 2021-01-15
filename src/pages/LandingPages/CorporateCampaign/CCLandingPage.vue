@@ -32,9 +32,7 @@
 							Support causes you care about.
 						</h2>
 
-						<!-- :applied-filters="filters" -->
 						<campaign-loan-filters
-							v-show="showTestFilters"
 							:initial-filters="initialFilters"
 							:total-count="totalCount"
 							@updated-filters="handleUpdatedFilters"
@@ -105,7 +103,7 @@
 			<kv-lightbox
 				:prevent-close="preventLightboxClose"
 				:visible="checkoutVisible"
-				@lightbox-closed="checkoutVisible = false"
+				@lightbox-closed="checkoutLightboxClosed"
 				title="Checkout"
 			>
 				<in-context-checkout
@@ -409,7 +407,6 @@ export default {
 			showThanks: false,
 			transactionId: null,
 			showLoanRows: true,
-			showTestFilters: false,
 		};
 	},
 	metaInfo() {
@@ -460,10 +457,6 @@ export default {
 		// update basket state if any loans are already in the basket
 		if (this.itemsInBasket.length) {
 			this.updateBasketState();
-		}
-
-		if (this.$route.query && this.$route.query.testFilters === 'true') {
-			this.showTestFilters = true;
 		}
 	},
 	watch: {
@@ -778,6 +771,12 @@ export default {
 				this.checkoutVisible = true;
 			}
 		},
+		checkoutLightboxClosed() {
+			this.checkoutVisible = false;
+			if (this.$route.hash === '#show-basket') {
+				this.$router.push(this.adjustRouteHash(''));
+			}
+		},
 		transactionComplete(payload) {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
@@ -807,6 +806,12 @@ export default {
 				hash: section
 			});
 		},
+		adjustRouteHash(hash) {
+			const route = { ...this.$route };
+			route.hash = hash;
+			console.log(route);
+			return route;
+		},
 
 		handleUpdatedFilters(payload) {
 			console.log('top level handle updated filters: ', payload);
@@ -824,6 +829,9 @@ export default {
 	},
 	beforeRouteUpdate(to, from, next) {
 		this.$refs.loandisplayref.updateFromParams(to.query);
+		if (to.hash === '#show-basket') {
+			this.checkoutVisible = true;
+		}
 		next();
 	},
 };

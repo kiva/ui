@@ -16,6 +16,7 @@
 						<router-link
 							to="/legal/privacy"
 							v-kv-track-event="['Footer', 'click-Explore-Privacy policy']"
+							target="_blank"
 						>
 							Privacy policy
 						</router-link>
@@ -23,6 +24,7 @@
 						<router-link
 							to="/legal/terms"
 							v-kv-track-event="['Footer', 'click-Explore-Terms of use']"
+							target="_blank"
 						>
 							Terms of use
 						</router-link>
