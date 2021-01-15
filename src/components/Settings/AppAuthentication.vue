@@ -302,6 +302,11 @@ export default {
 
 		&__input {
 			margin-bottom: 2rem;
+			font-size: 2.2rem;
+
+			@include breakpoint(medium) {
+				font-size: 3rem;
+			}
 		}
 	}
 

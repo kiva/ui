@@ -89,15 +89,9 @@ export default {
 	&__input {
 		font-size: 1em;
 		font-variant-numeric: tabular-nums;
-		letter-spacing: 0.2em;
-		padding: 0.7em 0 0.7em 0;
-		text-align: center;
-
-		@include breakpoint(medium) {
-			letter-spacing: 0.5em;
-			padding: 1em 0 1em 0;
-			width: calc(var(--kv-verification-code-input-maxlength) * 1.1125em + 1.25em);
-		}
+		letter-spacing: 0.5em;
+		padding: 1em 0 1em 1em;
+		width: calc(var(--kv-verification-code-input-maxlength) * 1.1125em + 1.25em);
 	}
 }
 </style>
