@@ -34,24 +34,30 @@
 		</section>
 
 		<section class="monthly-good-info section">
-			<div class="row columns">
-				<div
-					class="small-12 large-10 columns"
-				>
+			<div class="row align-center">
+				<div class="small-10 large-12 columns">
 					<h1 class="monthly-good-info__header" v-html="infoHeadline">
 					</h1>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row align-center">
 				<div
-					class="small-12 large-6 columns"
+					class="small-10 large-6 columns monthly-good-info__block"
 				>
+					<kv-icon
+						class="monthly-good-info__icon-choose"
+						name="choose"
+					/>
 					<div class="monthly-good-info__body" v-html="infoLeft">
 					</div>
 				</div>
 				<div
-					class="small-12 large-6 columns"
+					class="small-10 large-6 columns monthly-good-info__block"
 				>
+					<kv-icon
+						class="monthly-good-info__icon-report"
+						name="report"
+					/>
 					<div class="monthly-good-info__body" v-html="infoRight">
 					</div>
 				</div>
@@ -220,8 +226,9 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
-
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
+import KvIcon from '@/components/Kv/KvIcon';
+
 import HomepageStatistics from './HomepageStatistics';
 import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
@@ -231,6 +238,7 @@ export default {
 	components: {
 		HomepageStatistics,
 		KvButton,
+		KvIcon,
 		KvResponsiveImage,
 		LoanCategoriesSection,
 	},
@@ -384,6 +392,8 @@ export default {
 	&__header {
 		@include large-text();
 
+		font-weight: 500;
+
 		@include breakpoint(xlarge) {
 			@include huge-headline();
 		}
@@ -394,6 +404,44 @@ export default {
 			font-style: normal;
 			color: $kiva-green;
 		}
+	}
+
+	&__body {
+		::v-deep p {
+			@include medium-text();
+
+			@include breakpoint(xlarge) {
+				@include featured-text();
+
+				line-height: rem-calc(36);
+			}
+		}
+	}
+}
+
+.monthly-good-info {
+	&__block {
+		display: flex;
+		margin-top: 1.75rem;
+	}
+
+	&__icon-choose {
+		margin-top: 0.75rem;
+		flex-shrink: 0;
+		height: rem-calc(51);
+		width: rem-calc(34);
+	}
+
+	&__icon-report {
+		margin-top: 0.75rem;
+		flex-shrink: 0;
+		height: rem-calc(49);
+		width: rem-calc(49);
+	}
+
+	&__body {
+		padding: 0 0.75rem 1rem 1.5rem;
+		flex-grow: 1;
 	}
 }
 
@@ -416,16 +464,6 @@ export default {
 		}
 	}
 
-	&__body {
-		@include medium-text();
-
-		@include breakpoint(xlarge) {
-			@include featured-text();
-
-			max-width: 27rem;
-		}
-	}
-
 	&__img {
 		display: block;
 		margin: 0 auto 2rem;
@@ -433,6 +471,10 @@ export default {
 		@include breakpoint(large) {
 			margin: 0 auto;
 		}
+	}
+
+	&__body {
+		margin: 2.25rem auto 2.25rem;
 	}
 }
 

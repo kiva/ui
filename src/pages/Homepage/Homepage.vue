@@ -9,19 +9,19 @@
 
 <script>
 import gql from 'graphql-tag';
-import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
-import {
-	lightHeader,
-} from '@/util/siteThemes';
+
+import { lightHeader } from '@/util/siteThemes';
+import { settingEnabled } from '@/util/settingsUtils';
+import { processPageContentFlat } from '@/util/contentfulUtils';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
+
 import DefaultHomePage from '@/pages/Homepage/DefaultHomepage';
 import LendByCategoryHomepage from '@/pages/Homepage/LendByCategoryHomepage';
 import MonthlyGoodHomepage from '@/pages/Homepage/MonthlyGoodHomepage';
-
 // import FifteenYearHomepage from '@/pages/Homepage/15YearHomepage';
 // import IWDHomePage from '@/pages/Homepage/iwd/IWDHomepage';
 // import WRDHomePage from '@/pages/Homepage/wrd/WRDHomepage';
-import { processPageContentFlat } from '@/util/contentfulUtils';
 
 import TopMessageContentful from './TopMessageContentful';
 
@@ -96,16 +96,9 @@ export default {
 	},
 	apollo: {
 		query: activePageQuery,
-		preFetch(config, client) {
-			return client.query({
-				query: activePageQuery
-			}).then(() => {
-				return Promise.all([
-					client.query({ query: experimentQuery, variables: { id: 'home_lenderpreferences' } })
-				]);
-			});
-		},
+		preFetch: true,
 		result({ data }) {
+			// TODO remove 'home_lenderpreferences' setting
 			// Explicit lender preferences experiment - EXP-GROW-166-Aug2020
 			// const lenderPreferencesExp = this.apollo.readFragment({
 			// 	id: 'Experiment:home_lenderpreferences',
@@ -125,7 +118,17 @@ export default {
 			// Check for contentful homepage content, else use non contentful homepage
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
-			if (this.pageData) {
+
+			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
+			// which controls when the contentful page layout should be active
+			const uiHomepageMonthlyGoodSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
+			const isUiHomepageMonthlyGoodSettingEnabled = settingEnabled(
+				uiHomepageMonthlyGoodSetting,
+				'active',
+				'startDate',
+				'endDate'
+			);
+			if (this.pageData && isUiHomepageMonthlyGoodSettingEnabled) {
 				this.isContentfulHomepageActive = true;
 			} else {
 				// Current 'default' homepage
