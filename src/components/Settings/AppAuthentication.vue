@@ -300,6 +300,11 @@ export default {
 		font-weight: bold;
 		padding: 0.5rem;
 		margin-bottom: 1rem;
+		font-size: 0.75rem;
+
+		@include breakpoint(medium) {
+			font-size: 1rem;
+		}
 	}
 
 	.verification-code {
@@ -309,6 +314,11 @@ export default {
 
 		&__input {
 			margin-bottom: 2rem;
+			font-size: 2.2rem;
+
+			@include breakpoint(medium) {
+				font-size: 3rem;
+			}
 		}
 	}
 
