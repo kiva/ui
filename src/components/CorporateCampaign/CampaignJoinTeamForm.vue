@@ -8,7 +8,7 @@
 				:visible="showTeamLightbox"
 				@lightbox-closed="handleLightboxClosed"
 			>
-				<div v-if="showForm">
+				<div v-if="showForm" class="text-center">
 					<h2>
 						You're invited to the {{ teamName }} team!
 					</h2>
@@ -20,7 +20,7 @@
 					</p>
 					<kv-loading-overlay id="loading-overlay-teams" v-if="loading" />
 				</div>
-				<div v-if="showSuccess">
+				<div v-if="showSuccess" class="text-center">
 					<div v-if="isMember">
 						<h2>Congratulations! You've joined the {{ teamName }} Lending Team.</h2>
 						<p>
@@ -35,18 +35,21 @@
 					</div>
 				</div>
 				<template slot="controls">
-					<div v-if="showForm" class="join-team-button-container">
-						<kv-button class="smaller secondary" @click.native.prevent="handleRejectTeam">
-							No Thanks
-						</kv-button>
-						<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
-							Join Team
-						</kv-button>
-					</div>
-					<div v-if="showSuccess || showError">
-						<kv-button class="smaller" @click.native.prevent="handleContinue">
-							Continue
-						</kv-button>
+					<div slot="controls" class="text-center">
+						<div v-if="showForm">
+							<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
+								Join Team
+							</kv-button>
+							<br><br>
+							<kv-button class="text-link" @click.native.prevent="handleRejectTeam">
+								No Thanks
+							</kv-button>
+						</div>
+						<div v-if="showSuccess || showError">
+							<kv-button class="smaller" @click.native.prevent="handleContinue">
+								Continue
+							</kv-button>
+						</div>
 					</div>
 				</template>
 			</kv-lightbox>

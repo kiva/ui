@@ -741,7 +741,8 @@ export default {
 				// Temporary notice of failure condition that was hit
 				// TODO: Create lightbox or other notice with action options for resolution
 				if (simpleCheckoutRestrictedMessage && this.basketLoans.length) {
-					this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
+					console.log(simpleCheckoutRestrictedMessage);
+					// this.$showTipMsg(simpleCheckoutRestrictedMessage, 'info');
 				}
 				// turn off loading state
 				this.$refs.loandisplayref.loadingLoans = false;
@@ -776,7 +777,6 @@ export default {
 				&& this.externalFormId
 				&& !this.verificationSumbitted
 			) {
-				console.log('lender verification required');
 				this.showVerification = true;
 			} else if (
 				this.isActivelyLoggedIn
@@ -784,7 +784,6 @@ export default {
 				&& !this.teamJoinStatus
 			) {
 				// check for team join optionality
-				console.log('show option to join team');
 				console.log(this.teamId);
 				this.showTeamForm = true;
 			} else {
@@ -807,13 +806,13 @@ export default {
 			this.transactionId = payload.transactionId;
 			this.showThanks = true;
 			this.checkoutVisible = false;
-			this.scrollToSection('campaignThanks');
+			this.updateBasketState();
 		},
 
 		handleTeamJoinProcess(payload) {
 			this.teamJoinStatus = payload.join;
 			this.fetchMyTeams();
-			this.checkoutVisible = true;
+			this.handleBasketValidation();
 		},
 		fetchMyTeams() {
 			this.apollo.query({
