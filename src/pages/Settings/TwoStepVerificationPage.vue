@@ -56,7 +56,11 @@
 							>
 								<h4>{{ readableAuthName(mfaMethod.authenticator_type) }}</h4>
 								<!-- Phone number related to authentication method -->
-								<p>{{ mfaMethod.name }}</p>
+								<p
+									class="two-step-verification__method--number"
+								>
+									{{ mfaMethod.name }}
+								</p>
 								<kv-button
 									class="text-link"
 									@click.native.prevent="removeMfaMethod(mfaMethod)"
@@ -290,7 +294,12 @@ export default {
 	}
 
 	&__method {
-		margin-top: 2rem;
+		margin-top: 2.3rem;
+		list-style: none;
+
+		&--number {
+			margin-bottom: rem-calc(4);
+		}
 	}
 
 	&__sub-section {
