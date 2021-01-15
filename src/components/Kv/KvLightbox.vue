@@ -16,45 +16,43 @@
 				class="kv-lightbox__focus-lock"
 				:return-focus="true"
 			>
-				<div class="kv-lightbox__container">
-					<div
-						class="kv-lightbox__inner-container"
-						@click.stop
-						tabindex="-1"
-						ref="kvLightbox"
-						role="dialog"
-						data-test="kv-lightbox"
-						:aria-labelledby="title ? 'lightbox-title' : null"
-						aria-modal="true"
-					>
-						<div class="kv-lightbox__header">
-							<h2 v-if="title"
-								class="kv-lightbox__title"
-								id="lightbox-title"
-							>
-								{{ title }}
-							</h2>
-							<button
-								v-if="!preventClose"
-								class="kv-lightbox__close-btn"
-								@click.stop.prevent="closeLightbox"
-								aria-label="Close"
-							>
-								<kv-icon
-									class="kv-lightbox__close-btn-icon"
-									name="small-x"
-									:from-sprite="true"
-								/>
-							</button>
-						</div>
-						<div class="kv-lightbox__body"
-							ref="kvLightboxBody"
+				<div
+					class="kv-lightbox__container"
+					@click.stop
+					tabindex="-1"
+					ref="kvLightbox"
+					role="dialog"
+					data-test="kv-lightbox"
+					:aria-labelledby="title ? 'lightbox-title' : null"
+					aria-modal="true"
+				>
+					<div class="kv-lightbox__header">
+						<h2 v-if="title"
+							class="kv-lightbox__title"
+							id="lightbox-title"
 						>
-							<slot>Lightbox body</slot>
-						</div>
-						<div class="kv-lightbox__controls" v-if="this.$slots.controls">
-							<slot name="controls"></slot>
-						</div>
+							{{ title }}
+						</h2>
+						<button
+							v-if="!preventClose"
+							class="kv-lightbox__close-btn"
+							@click.stop.prevent="closeLightbox"
+							aria-label="Close"
+						>
+							<kv-icon
+								class="kv-lightbox__close-btn-icon"
+								name="small-x"
+								:from-sprite="true"
+							/>
+						</button>
+					</div>
+					<div class="kv-lightbox__body"
+						ref="kvLightboxBody"
+					>
+						<slot>Lightbox body</slot>
+					</div>
+					<div class="kv-lightbox__controls" v-if="this.$slots.controls">
+						<slot name="controls"></slot>
 					</div>
 				</div>
 			</focus-lock>
@@ -183,18 +181,13 @@ export default {
 	}
 
 	&__focus-lock {
-		width: 100%;
-	}
-
-	&__container {
 		max-width: 100%;
 		max-height: 100%;
 		display: flex;
 		overflow: hidden;
-		justify-content: center;
 	}
 
-	&__inner-container {
+	&__container {
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -202,14 +195,12 @@ export default {
 		max-height: 100%;
 		background: $white;
 		position: relative;
-		width: 100%;
 
 		&:focus {
 			outline: 0; // safe(?), since JavaScript is the only way to focus on this el.
 		}
 
 		@include breakpoint(medium) {
-			width: auto;
 			padding: 2.8125rem;
 			border-radius: rem-calc(4);
 			max-width: rem-calc(900);
