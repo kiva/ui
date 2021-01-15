@@ -190,10 +190,14 @@ export default class KvAuth0 {
 	}
 
 	// Silently check for a logged in session with auth0 using hidden iframes
-	checkSession() {
+	checkSession({ skipIfUserExists = false } = {}) {
 		// only try this if in the browser
 		if (this.isServer) {
 			return Promise.reject(new Error('checkSession called in server mode'));
+		}
+
+		if (skipIfUserExists && this.user) {
+			return Promise.resolve();
 		}
 
 		// Ensure that we only check the session once at a time
