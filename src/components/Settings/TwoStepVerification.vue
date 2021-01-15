@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser';
 import gql from 'graphql-tag';
 
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
@@ -61,7 +62,7 @@ export default {
 	data() {
 		return {
 			isMFAActive: false,
-			isLoading: false,
+			isLoading: true,
 		};
 	},
 	computed: {
@@ -77,7 +78,7 @@ export default {
 	mounted() {
 		this.isLoading = true;
 		if (this.kvAuth0.enabled) {
-			this.kvAuth0.checkSession()
+			this.kvAuth0.checkSession({ skipIfUserExists: true })
 				.then(() => this.kvAuth0.getMfaManagementToken())
 				.then(token => {
 					return this.apollo.query({
@@ -88,6 +89,9 @@ export default {
 					});
 				})
 				.then(result => {
+					if (result.errors) {
+						throw result.errors;
+					}
 					const authEnrollments = result.data.my.authenticatorEnrollments;
 					for (let i = 0; i < authEnrollments.length; i += 1) {
 						if (authEnrollments[i].active === true) {
@@ -97,6 +101,19 @@ export default {
 						}
 					}
 					this.isLoading = false;
+				})
+				.catch(err => {
+					console.error(err);
+					this.$showTipMsg(
+						'There was an error when getting your 2-step verification status. '
+						+ 'Please refresh the page and try again.',
+						'error'
+					);
+					try {
+						Sentry.captureException(err?.[0]?.extensions?.exception || err);
+					} catch (e) {
+						// no-op
+					}
 				});
 		}
 	}

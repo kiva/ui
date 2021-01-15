@@ -71,7 +71,7 @@
 					<kv-loading-spinner
 						v-if="verificationPending"
 					/>
-					<p class="app-authentication__error" v-if="verificationError">
+					<p class="app-authentication__error" v-if="verificationError && !verificationPending">
 						{{ verificationError }}
 					</p>
 					<kv-button
@@ -98,6 +98,7 @@
 </template>
 
 <script>
+import * as Sentry from '@sentry/browser';
 import { validationMixin } from 'vuelidate';
 import {
 	required, minLength, maxLength, numeric
@@ -185,7 +186,7 @@ export default {
 		getMFAToken() {
 			return new Promise((resolve, reject) => {
 				if (this.kvAuth0.enabled) {
-					this.kvAuth0.checkSession()
+					this.kvAuth0.checkSession({ skipIfUserExists: true })
 						.then(() => this.kvAuth0.getMfaManagementToken())
 						.then(token => {
 							resolve(token);
@@ -218,10 +219,13 @@ export default {
 				this.fetchingEnrollment = false;
 			}).catch(err => {
 				console.error(err);
-				this.enrollmentError = err?.[0]?.message
-					|| err
-					|| 'Error. Please refresh the page and try again.';
+				this.enrollmentError = 'There was an error. Please refresh the page and try again.';
 				this.fetchingEnrollment = false;
+				try {
+					Sentry.captureException(err?.[0]?.extensions?.exception || err);
+				} catch (e) {
+					// no-op
+				}
 			});
 		},
 		submitVerification() {
@@ -249,10 +253,17 @@ export default {
 				}
 			}).catch(err => {
 				console.error(err);
-				this.verificationError = err?.[0]?.message
-					|| err
-					|| 'Error. Please refresh the page and try again.';
 				this.verificationPending = false;
+				if (err?.[0]?.message?.indexOf('Invalid otp_code') > -1) {
+					this.verificationError = 'The code entered was not valid. Please try again.';
+				} else {
+					this.verificationError = 'Error. Please refresh the page and try again.';
+					try {
+						Sentry.captureException(err?.[0]?.extensions?.exception || err);
+					} catch (e) {
+						// no-op
+					}
+				}
 			});
 		}
 	},
