@@ -1,31 +1,59 @@
 <template>
 	<div class="lend-by-category-homepage">
-		<section
-			class="featured-loans section"
-		>
+		<section class="featured-loans section">
 			<div class="row align-center">
-				<div class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns">
-					<no-click-loan-card />
+				<div
+					class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns"
+				>
+					<img
+						v-if="heroImage.url"
+						class="featured-loans__img"
+						:src="heroImage.url"
+						:alt="heroImage.title"
+					>
 				</div>
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
-					<h1 class="featured-loans__header">
-						Make a loan, <br class="so mo"> change a life.
+					<h1 class="featured-loans__header" v-html="heroHeadline">
 					</h1>
-					<p class="featured-loans__body">
-						With Kiva you can lend as little as $25 and make a big change in someone's life.
-					</p>
+					<div class="featured-loans__body" v-html="heroBody">
+					</div>
 					<kv-button
 						class="classic hollow"
-						to="/lend-by-category"
+						:to="heroButton.link"
 						v-kv-track-event="[
-							'Home',
+							'homepage',
 							'click-hero-cta',
-							'Find a borrower'
+							heroButton.text,
 						]"
 					>
-						Find a borrower
+						{{ heroButton.text }}
 					</kv-button>
+				</div>
+			</div>
+		</section>
+
+		<section class="monthly-good-info section">
+			<div class="row columns">
+				<div
+					class="small-12 large-10 columns"
+				>
+					<h1 class="monthly-good-info__header" v-html="infoHeadline">
+					</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div
+					class="small-12 large-6 columns"
+				>
+					<div class="monthly-good-info__body" v-html="infoLeft">
+					</div>
+				</div>
+				<div
+					class="small-12 large-6 columns"
+				>
+					<div class="monthly-good-info__body" v-html="infoRight">
+					</div>
 				</div>
 			</div>
 		</section>
@@ -47,8 +75,8 @@
 					How it works
 				</h2>
 				<p class="large-6 large-offset-3 columns">
-					By lending as little as $25 on Kiva, you can support the causes you care
-					about and make a real personal impact.
+					By lending as little as $25 on Kiva, you can support the
+					causes you care about and make a real personal impact.
 				</p>
 			</div>
 			<ol class="how-it-works__list row">
@@ -75,7 +103,8 @@
 						Make a loan
 					</h3>
 					<p>
-						Help fund a loan <br class="xxlu"> with as little as $25.
+						Help fund a loan <br class="xxlu">
+						with as little as $25.
 					</p>
 				</li>
 				<li class="how-it-works__li small-12 xxlarge-3 columns">
@@ -88,7 +117,9 @@
 					<h3 class="how-it-works__subtitle">
 						Get repaid
 					</h3>
-					<p>Kiva borrowers have a 96% repayment rate historically.</p>
+					<p>
+						Kiva borrowers have a 96% repayment rate historically.
+					</p>
 				</li>
 				<li class="how-it-works__li small-12 xxlarge-3 columns">
 					<kv-responsive-image
@@ -131,7 +162,8 @@
 		<section class="lender-quotes section">
 			<div class="row">
 				<h2 class="lender-quotes__header text-center small-12 columns">
-					What our lending <br class="so mo"> community thinks
+					What our lending <br class="so mo">
+					community thinks
 				</h2>
 				<div
 					v-for="lenderQuote in lenderQuotes"
@@ -140,7 +172,7 @@
 					v-kv-track-event="[
 						'homepage',
 						'click-lender-testimonial',
-						lenderQuote.attribution
+						lenderQuote.attribution,
 					]"
 				>
 					<img
@@ -170,14 +202,14 @@
 					</p>
 					<kv-button
 						class="classic hollow"
-						:to="`/lend-by-category`"
+						:to="heroButton.link"
 						v-kv-track-event="[
 							'homepage',
 							'click-bottom-cta',
-							'Get started'
+							heroButton.text,
 						]"
 					>
-						Get started
+						{{ heroButton.text }}
 					</kv-button>
 				</div>
 			</div>
@@ -188,9 +220,10 @@
 <script>
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
+
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
-import NoClickLoanCard from '@/components/Homepage/LendByCategory/NoClickLoanCard';
 import HomepageStatistics from './HomepageStatistics';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 const imgRequire = require.context('@/assets/images/lend-by-category-homepage/', true);
 
@@ -200,7 +233,19 @@ export default {
 		KvButton,
 		KvResponsiveImage,
 		LoanCategoriesSection,
-		NoClickLoanCard,
+	},
+	props: {
+		content: {
+			type: Object,
+			default() {
+				return {
+					page: {
+						contentGroups: {},
+						pageLayout: {}
+					}
+				};
+			}
+		},
 	},
 	data() {
 		return {
@@ -254,11 +299,71 @@ export default {
 
 		};
 	},
+	computed: {
+		heroContentGroup() {
+			return this.content?.page?.contentGroups?.homepageHero ?? null;
+		},
+		heroText() {
+			return this.heroContentGroup?.contents?.find(contentItem => contentItem.key === 'mg-homepage-hero-text');
+		},
+		heroImage() {
+			const mediaObject = this.heroContentGroup?.media?.[0];
+			return {
+				title: mediaObject?.title ?? '',
+				url: mediaObject?.file?.url ?? ''
+			};
+		},
+		heroButton() {
+			return {
+				text: this.heroText?.primaryCtaText ?? '',
+				link: this.heroText?.primaryCtaLink ?? '',
+			};
+		},
+		heroHeadline() {
+			return this.heroText?.headline ?? '';
+		},
+		heroBody() {
+			const text = this.heroText?.bodyCopy ?? '';
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		},
+		infoContentGroup() {
+			return this.content?.page?.contentGroups?.homepageContentBlock ?? null;
+		},
+		infoHeadline() {
+			const content = this.infoContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'mg-homepage-info-text-header';
+			});
+			const text = content?.richText;
+			// contentful wraps all richText fields with a <p> tag,
+			// which makes them difficult to style as headers,
+			// this removes that wrapping tag
+			const options = {
+				renderNode: {
+					paragraph: (node, next) => `${next(node.content)}`
+				}
+			};
+			return documentToHtmlString(text, options).replace(/\n/g, '<br />');
+		},
+		infoLeft() {
+			const content = this.infoContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'mg-homepage-info-text-left';
+			});
+			const text = content?.richText;
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		},
+		infoRight() {
+			const content = this.infoContentGroup?.contents?.find(contentItem => {
+				return contentItem.key === 'mg-homepage-info-text-right';
+			});
+			const text = content?.richText;
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		}
+	},
 };
 </script>
 
 <style lang="scss" scoped>
-@import 'settings';
+@import "settings";
 
 // utils
 .section {
@@ -272,6 +377,24 @@ export default {
 
 .lend-by-category-homepage {
 	overflow: hidden;
+}
+
+.featured-loans,
+.monthly-good-info {
+	&__header {
+		@include large-text();
+
+		@include breakpoint(xlarge) {
+			@include huge-headline();
+		}
+
+		// This text field from contentful can include an em tag or an i tag
+		::v-deep em,
+		::v-deep i {
+			font-style: normal;
+			color: $kiva-green;
+		}
+	}
 }
 
 .featured-loans {
@@ -293,14 +416,6 @@ export default {
 		}
 	}
 
-	&__header {
-		@include large-text();
-
-		@include breakpoint(xlarge) {
-			@include huge-headline();
-		}
-	}
-
 	&__body {
 		@include medium-text();
 
@@ -308,6 +423,15 @@ export default {
 			@include featured-text();
 
 			max-width: 27rem;
+		}
+	}
+
+	&__img {
+		display: block;
+		margin: 0 auto 2rem;
+
+		@include breakpoint(large) {
+			margin: 0 auto;
 		}
 	}
 }
@@ -487,5 +611,4 @@ export default {
 		}
 	}
 }
-
 </style>

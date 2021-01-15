@@ -131,8 +131,6 @@ export default {
 				// Current 'default' homepage
 				this.isLenderPreferencesActive = true;
 			}
-
-			console.log(this.pageData);
 		}
 	}
 };
