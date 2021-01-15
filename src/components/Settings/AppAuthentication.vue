@@ -16,8 +16,9 @@
 				</p>
 				<template v-if="!fetchingEnrollment && !enrollmentError">
 					<p class="app-authentication__description">
-						Get the Google Authenticator, Duo, or Authy app on your phone from the App Store.
-						Then tap the "+" in the authenticator app and scan the image below.
+						Download the Google Authenticator, Duo, or Authy app on your
+						phone or computer. Then tap the “+” in the authenticator app
+						and scan the image below.
 					</p>
 					<kv-button class="text-link" :href="barcodeURI">
 						Set up on this device
