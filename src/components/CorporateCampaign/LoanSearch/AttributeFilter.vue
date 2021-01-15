@@ -89,7 +89,6 @@ export default {
 			this.changeAttributes(this.getValues(checked, values, this.currentAttributeIds));
 		},
 		changeAttributes(attributes) {
-			console.log(attributes);
 			// Filter for selected attributes
 			const selectedAttributes = this.eligibleAttributes.filter(attribute => {
 				return attributes.includes(attribute.id);
