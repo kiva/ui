@@ -337,7 +337,7 @@ const basketItemsQuery = gql`query basketItemsQuery(
 }`;
 
 // Query to gather user Teams
-const myTeamsQuery  = gql`query myTeamsQuery {
+const myTeamsQuery = gql`query myTeamsQuery {
 	my {
 		lender {
 			id
