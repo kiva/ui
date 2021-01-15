@@ -45,8 +45,11 @@ export default {
 			const universalCodeAvailableTotal = numeral(
 				_get(data, 'shop.basket.totals.universalCodeAvailableTotal')
 			).value();
-			this.bonusBalance = promoBalance
-				+ bonusAvailableTotal
+
+			// prefer promoBalance from the user account if it's larger
+			const promoBalancePrecedence = promoBalance >= bonusAvailableTotal ? promoBalance : bonusAvailableTotal;
+
+			this.bonusBalance = promoBalancePrecedence
 				+ freeTrialAvailableTotal
 				+ redemptionCodeAvailableTotal
 				+ universalCodeAvailableTotal;
