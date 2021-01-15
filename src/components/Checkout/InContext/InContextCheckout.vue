@@ -11,28 +11,40 @@
 			@refreshtotals="$emit('refresh-totals')"
 		/>
 
-		<kv-button
-			v-if="!isActivelyLoggedIn"
-			class="smaller checkout-button"
-			id="Continue-to-legacy-button"
-			v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
-			:href="registerOrLoginHref"
-		>
-			Continue
-		</kv-button>
+		<div class="in-context-login" v-if="!isActivelyLoggedIn">
+			<kv-button
+				v-if="!isActivelyLoggedIn"
+				class="smaller checkout-button"
+				id="Continue-to-legacy-button"
+				v-kv-track-event="['basket', 'Redirect Continue Button', 'exit to legacy']"
+				:href="registerOrLoginHref"
+			>
+				Continue
+			</kv-button>
+		</div>
+		<div class="in-context-payment-conttrols" v-else>
+			<kiva-credit-payment
+				v-if="showKivaCreditButton"
+				@complete-transaction="completeTransaction"
+				class="checkout-button"
+				id="kiva-credit-payment-button"
+			/>
 
-		<kiva-credit-payment
-			v-else
-			@complete-transaction="completeTransaction"
-			class="checkout-button"
-			id="kiva-credit-payment-button"
-		/>
+			<checkout-drop-in-payment-wrapper
+				v-else
+				:amount="creditNeeded"
+				@refreshtotals="refreshTotals"
+				@updating-totals="setUpdatingTotals"
+				@complete-transaction="completeTransaction"
+			/>
+		</div>
 	</div>
 </template>
 
 <script>
 import numeral from 'numeral';
 import checkoutUtils from '@/plugins/checkout-utils-mixin';
+import CheckoutDropInPaymentWrapper from '@/components/Checkout/CheckoutDropInPaymentWrapper';
 import KivaCreditPayment from '@/components/Checkout/KivaCreditPayment';
 import BasketItemsList from '@/components/Checkout/BasketItemsList';
 import KvButton from '@/components/Kv/KvButton';
@@ -40,6 +52,7 @@ import KvButton from '@/components/Kv/KvButton';
 export default {
 	components: {
 		BasketItemsList,
+		CheckoutDropInPaymentWrapper,
 		KvButton,
 		KivaCreditPayment,
 	},
@@ -86,8 +99,14 @@ export default {
 		};
 	},
 	computed: {
+		creditNeeded() {
+			return this.totals?.creditAmountNeeded ?? '0';
+		},
 		registerOrLoginHref() {
 			return `/ui-login?force=true&doneUrl=${encodeURIComponent(this.$route.fullPath)}`;
+		},
+		showKivaCreditButton() {
+			return parseFloat(this.creditNeeded) === 0;
 		},
 	},
 	methods: {
@@ -118,6 +137,12 @@ export default {
 			}
 
 			this.$emit('transaction-complete', transactionData);
+		},
+		refreshTotals(payload) {
+			console.log(payload);
+		},
+		setUpdatingTotals(payload) {
+			console.log(payload);
 		},
 	}
 };
