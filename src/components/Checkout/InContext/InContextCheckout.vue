@@ -7,6 +7,7 @@
 			:donations="donations"
 			:kiva-cards="kivaCards"
 			:loan-reservation-total="parseInt(totals.loanReservationTotal)"
+			:teams="teams"
 			@refreshtotals="$emit('refresh-totals')"
 		/>
 
@@ -69,6 +70,10 @@ export default {
 		showDonation: {
 			type: Boolean,
 			default: true,
+		},
+		teams: {
+			type: Array,
+			default: () => []
 		},
 		autoRedirectToThanks: {
 			type: Boolean,

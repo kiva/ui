@@ -20,12 +20,12 @@
 			<campaign-hero
 				:hero-area-content="heroAreaContent"
 				@add-to-basket="handleAddToBasket"
-				@jump-to-loans="scrollToSection('campaignLoanDisplay')"
+				@jump-to-loans="scrollToSection('campaignLoanSection')"
 			/>
 
 			<hr>
 
-			<section class="loan-categories section">
+			<section class="loan-categories section" id="campaignLoanSection">
 				<div class="row">
 					<div class="columns">
 						<h2 class="loan-categories__header text-center">
@@ -93,6 +93,13 @@
 
 			<campaign-how-kiva-works v-if="!showThanks" />
 
+			<campaign-join-team-form
+				v-if="this.showTeamForm"
+				:team-id="this.teamId"
+				:promo-id="this.promoFundId"
+				@team-process-complete="handleTeamJoinProcess"
+			/>
+
 			<campaign-verification-form
 				v-if="this.showVerification"
 				:form-id="this.externalFormId"
@@ -112,6 +119,7 @@
 					:loans="basketLoans"
 					:donations="donations"
 					:kiva-cards="kivaCards"
+					:teams="myTeams"
 					:totals="basketTotals"
 					:show-donation="false"
 					:auto-redirect-to-thanks="false"
@@ -150,10 +158,10 @@ import { lightHeader, lightFooter } from '@/util/siteThemes';
 import cookieStore from '@/util/cookieStore';
 import CampaignHero from '@/components/CorporateCampaign/CampaignHero';
 import CampaignHowKivaWorks from '@/components/CorporateCampaign/CampaignHowKivaWorks';
+import CampaignJoinTeamForm from '@/components/CorporateCampaign/CampaignJoinTeamForm';
 import CampaignLoanGridDisplay from '@/components/CorporateCampaign/CampaignLoanGridDisplay';
 import CampaignLoanRow from '@/components/CorporateCampaign/CampaignLoanRow';
 import CampaignLoanFilters from '@/components/CorporateCampaign/LoanSearch/LoanSearchFilters';
-// import CampaignLoanRowsDisplay from '@/components/CorporateCampaign/CampaignLoanRowsDisplay';
 import CampaignLogoGroup from '@/components/CorporateCampaign/CampaignLogoGroup';
 import CampaignPartner from '@/components/CorporateCampaign/CampaignPartner';
 import CampaignStatus from '@/components/CorporateCampaign/CampaignStatus';
@@ -328,11 +336,27 @@ const basketItemsQuery = gql`query basketItemsQuery(
 	}
 }`;
 
+// Query to gather user Teams
+const myTeamsQuery = gql`query myTeamsQuery {
+	my {
+		lender {
+			id
+			teams(limit: 100) {
+				values {
+					id
+					name
+				}
+			}
+		}
+	}
+}`;
+
 export default {
 	inject: ['apollo', 'kvAuth0'],
 	components: {
 		CampaignHero,
 		CampaignHowKivaWorks,
+		CampaignJoinTeamForm,
 		CampaignLoanGridDisplay,
 		CampaignLoanFilters,
 		CampaignLoanRow,
@@ -386,6 +410,7 @@ export default {
 			filters: null,
 			lastActiveLogin: 0,
 			myId: null,
+			myTeams: [],
 			activeLoginDuration: 3600,
 			currentTime: Date.now(),
 			currentTimeInterval: null,
@@ -404,7 +429,9 @@ export default {
 			showLoans: false,
 			checkoutVisible: false,
 			showVerification: false,
+			showTeamForm: false,
 			showThanks: false,
+			teamJoinStatus: null,
 			transactionId: null,
 			showLoanRows: true,
 		};
@@ -517,6 +544,9 @@ export default {
 		externalFormId() {
 			return this.promoData?.managedAccount?.formId ?? null;
 		},
+		promoFundId() {
+			return this.promoData?.promoFund?.id ?? null;
+		},
 		teamId() {
 			return this.promoData?.promoGroup?.teamId ?? null;
 		},
@@ -608,23 +638,13 @@ export default {
 				this.promoApplied = true;
 				this.loadingPromotion = false;
 				// Initialize loan query + observer there are no loans in the basket
-				// TODO: Handle ability to add additional loans
-				// if (!this.basketLoans.length) {
 				this.showLoans = true;
 				this.$refs.loandisplayref.activateLoanWatchQuery();
-				// this.scrollToSection('campaignLoanDisplay');
-				// }
 				this.updateBasketState();
 			});
 		},
-		// addToBasket() {
-		// 	this.initializeBasketRefresh();
-		// },
 		handleAddToBasket(payload) {
-			console.log(payload);
-			// this.$emit('add-to-basket', payload);
 			if (payload.eventSource === 'checkoutBtnClick') {
-				console.log('checkout clicked');
 				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
@@ -758,13 +778,19 @@ export default {
 			) {
 				console.log('lender verification required');
 				this.showVerification = true;
-			} else if (this.teamId) {
+			} else if (
+				this.isActivelyLoggedIn
+				&& this.teamId
+				&& !this.teamJoinStatus
+			) {
 				// check for team join optionality
+				console.log('show option to join team');
 				console.log(this.teamId);
+				this.showTeamForm = true;
+			} else {
+				// signify checkout is ready
+				this.showCheckout();
 			}
-
-			// signify checkout is ready
-			this.showCheckout();
 		},
 		showCheckout() {
 			if (this.basketLoans.length) {
@@ -782,6 +808,19 @@ export default {
 			this.showThanks = true;
 			this.checkoutVisible = false;
 			this.scrollToSection('campaignThanks');
+		},
+
+		handleTeamJoinProcess(payload) {
+			this.teamJoinStatus = payload.join;
+			this.fetchMyTeams();
+			this.checkoutVisible = true;
+		},
+		fetchMyTeams() {
+			this.apollo.query({
+				query: myTeamsQuery
+			}).then(({ data }) => {
+				this.myTeams = data.my?.lender?.teams?.values ?? [];
+			});
 		},
 
 		verificationComplete() {
@@ -814,11 +853,9 @@ export default {
 		},
 
 		handleUpdatedFilters(payload) {
-			console.log('top level handle updated filters: ', payload);
 			this.filters = getSearchableFilters(payload);
 		},
 		setTotalCount(payload) {
-			console.log(payload);
 			this.totalCount = payload;
 		}
 	},
