@@ -185,6 +185,11 @@ export default {
 		max-height: 100%;
 		display: flex;
 		overflow: hidden;
+
+		// dynamically added div from vue-focus-lock
+		::v-deep > [data-lock] {
+			width: 100%;
+		}
 	}
 
 	&__container {
