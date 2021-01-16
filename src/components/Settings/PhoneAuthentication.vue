@@ -378,6 +378,16 @@ export default {
 		color: $kiva-accent-red;
 	}
 
+	.verification-code {
+		&__input {
+			font-size: 2.15rem;
+
+			@include breakpoint(medium) {
+				font-size: 3rem;
+			}
+		}
+	}
+
 	.loading-spinner {
 		display: block;
 		margin: 2rem auto 0;
