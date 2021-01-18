@@ -9,11 +9,10 @@
 				@lightbox-closed="handleLightboxClosed"
 			>
 				<div v-if="showForm" class="text-center">
-					<h2>
-						You're invited to the {{ teamName }} team!
-					</h2>
 					<p>
-						By joining the team, you can see your impact, interact with teammates, and get more out of Kiva.
+						Join our community of 2M Kiva lenders who are doing good every day.
+						Lending Teams like {{ teamName }} and their members have helped over
+						3.8M borrowers build a better future for themselves and their families.
 					</p>
 					<p v-if="showError" class="error">
 						Oh no! Something went wrong! Please try to join this team later.
@@ -38,11 +37,11 @@
 					<div slot="controls" class="text-center">
 						<div v-if="showForm">
 							<kv-button class="smaller" @click.native.prevent="handleJoinTeam">
-								Join Team
+								Continue
 							</kv-button>
 							<br><br>
 							<kv-button class="text-link" @click.native.prevent="handleRejectTeam">
-								No Thanks
+								Opt-out of {{ campaignNameText }} lending team
 							</kv-button>
 						</div>
 						<div v-if="showSuccess || showError">
@@ -80,6 +79,10 @@ export default {
 		teamId: {
 			type: Number,
 			default: null
+		},
+		campaignName: {
+			type: String,
+			default: null
 		}
 	},
 	data() {
@@ -94,6 +97,11 @@ export default {
 			teamName: '',
 			myTeams: () => [],
 		};
+	},
+	computed: {
+		campaignNameText() {
+			return this.campaignName ? `the ${this.campaignName}` : 'this';
+		}
 	},
 	mounted() {
 		this.loading = true;
