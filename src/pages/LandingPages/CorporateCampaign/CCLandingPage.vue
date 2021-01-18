@@ -95,6 +95,7 @@
 
 			<campaign-join-team-form
 				v-if="this.showTeamForm"
+				:campaign-name="campaignPartnerName"
 				:team-id="this.teamId"
 				:promo-id="this.promoFundId"
 				@team-process-complete="handleTeamJoinProcess"
