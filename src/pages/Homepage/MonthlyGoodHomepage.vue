@@ -1,5 +1,5 @@
 <template>
-	<div class="lend-by-category-homepage">
+	<div class="monthly-good-homepage">
 		<section class="featured-loans section">
 			<div class="row align-center">
 				<div
@@ -9,7 +9,7 @@
 						v-if="heroImage.url"
 						class="featured-loans__img"
 						:src="heroImage.url"
-						:alt="heroImage.title"
+						:alt="heroImage.description"
 					>
 				</div>
 				<!-- eslint-disable-next-line max-len -->
@@ -19,7 +19,23 @@
 					<div class="featured-loans__body" v-html="heroBody">
 					</div>
 					<kv-button
-						class="classic hollow"
+						class="show-for-large classic hollow"
+						:to="heroButton.link"
+						v-kv-track-event="[
+							'homepage',
+							'click-hero-cta',
+							heroButton.text,
+						]"
+					>
+						{{ heroButton.text }}
+					</kv-button>
+				</div>
+			</div>
+			<!-- Button in different element order for mobile only -->
+			<div class="row align-center hide-for-large">
+				<div class="small-10">
+					<kv-button
+						class="classic hollow expanded"
 						:to="heroButton.link"
 						v-kv-track-event="[
 							'homepage',
@@ -60,6 +76,45 @@
 					/>
 					<div class="monthly-good-info__body" v-html="infoRight">
 					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- MG Selector Desktop -->
+		<section class="monthly-good-selector section show-for-large" :class="{ 'sticky': isSticky}">
+			<div class="row align-center">
+				<div class="small-10 medium-4 columns">
+					Choose a cause
+				</div>
+				<div class="small-10 medium-4 columns">
+					Choose an amount
+				</div>
+				<div class="small-10 medium-4 columns">
+					Take Action
+				</div>
+			</div>
+		</section>
+
+		<!-- MG Selector Mobile -->
+		<section class="monthly-good-selector section hide-for-large">
+			<div class="row align-center hide-for-large">
+				<div class="small-10 columns">
+					<kv-button
+						class="classic expanded"
+						to="/monthlygood"
+						v-kv-track-event="[
+							'homepage',
+							'click-selector-cta',
+							'get starter',
+						]"
+					>
+						Get started <kv-icon
+							class="right-arrow-icon"
+							name="fat-chevron"
+							:from-sprite="true"
+							title="Next Loans"
+						/>
+					</kv-button>
 				</div>
 			</div>
 		</section>
@@ -224,6 +279,8 @@
 </template>
 
 <script>
+import _throttle from 'lodash/throttle';
+
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
@@ -298,13 +355,8 @@ export default {
 				['small', imgRequire('./stats.png')],
 				['small retina', imgRequire('./stats_2x.png')],
 			],
-			takeQuizImgs: {
-				header: [
-					['small', imgRequire('./potters.png')],
-					['small retina', imgRequire('./potters_2x.png')],
-				]
-			},
-
+			isSticky: false,
+			initialBottomPosition: 0
 		};
 	},
 	computed: {
@@ -365,10 +417,39 @@ export default {
 			});
 			const text = content?.richText;
 			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		},
+		throttledScroll() {
+			// prevent onScroll from being called more than once every 100ms
+			return _throttle(this.onScroll, 100);
 		}
+	},
+	methods: {
+		// Determine if MG desktop selector should be sticky or not
+		onScroll() {
+			if ((document.documentElement.scrollTop + window.innerHeight) <= this.initialBottomPosition) {
+				this.isSticky = false;
+			} else {
+				this.isSticky = true;
+			}
+		}
+	},
+	mounted() {
+		this.$nextTick(() => {
+			// Initial position down the page of mg selector element
+			const { bottom } = this.$el.getElementsByClassName('monthly-good-selector')[0].getBoundingClientRect();
+			this.initialBottomPosition = bottom;
+			this.onScroll();
+			window.addEventListener('scroll', this.throttledScroll);
+		});
 	},
 };
 </script>
+<style lang="scss">
+// Hack to allow the entire footer to still be visible when the MG sticky is active
+.www-footer {
+	padding-bottom: 4rem;
+}
+</style>
 
 <style lang="scss" scoped>
 @import "settings";
@@ -383,15 +464,15 @@ export default {
 	}
 }
 
-.lend-by-category-homepage {
+.monthly-good-homepage {
 	overflow: hidden;
 }
 
 .featured-loans,
 .monthly-good-info {
 	&__header {
-		@include large-text();
-
+		font-size: rem-calc(48);
+		line-height: rem-calc(54);
 		font-weight: 500;
 
 		@include breakpoint(xlarge) {
@@ -453,13 +534,9 @@ export default {
 	}
 
 	&__cta_wrapper {
-		padding: 0 0 2rem;
+		padding: 0;
 
 		@include breakpoint(medium) {
-			padding: 0 2rem 2rem;
-		}
-
-		@include breakpoint(large) {
 			padding: 0 2rem;
 		}
 	}
@@ -474,7 +551,11 @@ export default {
 	}
 
 	&__body {
-		margin: 2.25rem auto 2.25rem;
+		margin: 2.25rem auto 0;
+
+		@include breakpoint(medium) {
+			margin: 2.25rem auto 2.25rem;
+		}
 	}
 }
 
@@ -651,6 +732,29 @@ export default {
 			font-weight: 300;
 			margin-bottom: 2rem;
 		}
+	}
+}
+
+.monthly-good-selector {
+	height: rem-calc(128);
+	border-radius: rem-calc(20) rem-calc(20) 0 0;
+	background-color: $white;
+
+	&.sticky {
+		position: fixed;
+		bottom: 0;
+		z-index: 1000;
+		width: 100%;
+		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+	}
+
+	.right-arrow-icon {
+		width: rem-calc(21);
+		height: rem-calc(23);
+		transform: rotate(270deg);
+		fill: #fff;
+		margin: 0 20px;
+		position: absolute;
 	}
 }
 </style>
