@@ -296,6 +296,13 @@ export default {
 			padding-left: 0;
 			padding-right: 0;
 		}
+
+		.kv-lightbox__body {
+			margin-left: 0;
+			margin-right: 0;
+			padding-left: 0;
+			padding-right: 0;
+		}
 	}
 
 	&--inverted {
