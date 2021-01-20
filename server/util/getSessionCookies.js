@@ -17,7 +17,9 @@ const decodeCookieValue = value => {
 
 module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 	return new Promise((resolve, reject) => {
+		console.log('getSeshCooookies', url, 'kvbskt: ', requestCookies.kvbskt || 'no kvbskt set');
 		if (url.length && (!requestCookies.kv || !requestCookies.kvis || !requestCookies.kvbskt)) {
+			console.log('getSeshCooookies if: ', requestCookies.kv, requestCookies.kvis, requestCookies.kvbskt);
 			fetch(url, {
 				headers: {
 					Cookie: getCookieString(requestCookies),
@@ -27,6 +29,7 @@ module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 				const splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader);
 				const parsed = setCookieParser.parse(splitCookieHeaders, { decodeValues: false });
 				const cookies = parsed.reduce((cookieObject, cookie) => {
+					console.log(cookie);
 					if (cookie.value !== 'deleted') {
 						return Object.assign(cookieObject, { [cookie.name]: decodeCookieValue(cookie.value) });
 					}
