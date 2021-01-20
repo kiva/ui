@@ -1,0 +1,284 @@
+<template>
+	<div class="monthly-selector">
+		<div class="row align-spaced collapse">
+			<div class="column">
+				<button
+					class="monthly-selector__button"
+					:class="causeClass"
+					@click="openCauses"
+				>
+					<template v-if="!selectedGroup">
+						<strong>Choose a cause</strong><br>
+						What matters to you?
+					</template>
+					<template v-if="selectedGroup">
+						<strong>{{ selectedGroup.marketingName }}</strong><br>
+						Your cause
+					</template>
+				</button>
+				<div class="monthly-selector__causes" v-if="isCauseOpen">
+					<button
+						v-for="(option, index) in lendingCategories"
+						:key="index"
+						@click="selectCause(option)"
+					>
+						{{ option.marketingName }}
+					</button>
+				</div>
+			</div>
+			<div class="column">
+				<button
+					class="monthly-selector__button"
+					:class="amountClass"
+					@click="openAmounts"
+				>
+					<template v-if="!mgAmount">
+						<strong>Choose an amount</strong><br>
+						As little as $5
+					</template>
+					<template v-if="mgAmount">
+						<strong>{{ formattedAmount }}</strong><br>
+						Your amount
+					</template>
+				</button>
+				<div class="monthly-selector__amounts" v-if="isAmountOpen">
+					<button
+						v-for="(option, index) in mgAmountOptions"
+						:key="index"
+						@click="selectAmount(option.value)"
+					>
+						{{ option.label }}
+					</button>
+				</div>
+			</div>
+			<div class="shrink column monthly-selector__take-action-wrapper">
+				<kv-button @click.native="navigateToMG"
+					class="monthly-selector__take-action classic hollow"
+					:disabled="$v.mgAmount.$invalid || $v.groupValue.$invalid"
+				>
+					Take action
+				</kv-button>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+import numeral from 'numeral';
+import { validationMixin } from 'vuelidate';
+import { required, minValue, maxValue } from 'vuelidate/lib/validators';
+
+import KvButton from '@/components/Kv/KvButton';
+
+import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+export default {
+	components: {
+		KvButton,
+	},
+	mixins: [
+		loanGroupCategoriesMixin,
+		validationMixin
+	],
+	validations: {
+		mgAmount: {
+			required,
+			minValue: minValue(5),
+			maxValue: maxValue(100),
+		},
+		groupValue: {
+			required
+		}
+	},
+	data() {
+		return {
+			selectedGroup: null,
+			mgAmount: null,
+			isCauseOpen: false,
+			isAmountOpen: false,
+			mgAmountOptions: [
+				{
+					value: 5,
+					label: `${numeral(5).format('$0,0')}`,
+				},
+				{
+					value: 25,
+					label: `${numeral(25).format('$0,0')}`,
+				},
+				{
+					value: 50,
+					label: `${numeral(50).format('$0,0')}`,
+				},
+				{
+					value: 75,
+					label: `${numeral(75).format('$0,0')}`,
+				},
+				{
+					value: 100,
+					label: `${numeral(100).format('$0,0')}`,
+				},
+				{
+					value: 'other',
+					label: 'Other',
+				},
+			],
+		};
+	},
+	methods: {
+		navigateToMG() {
+			// If mgAmount is other, just default to 25 value
+			this.$router.push({
+				path: '/monthlygood/setup',
+				query: {
+					amount: this.mgAmount !== 'other' ? this.mgAmount : 25,
+					category: this.groupValue
+				}
+			});
+		},
+		openCauses() {
+			this.isCauseOpen = !this.isCauseOpen;
+			this.isAmountOpen = false;
+		},
+		openAmounts() {
+			// only open if group selected
+			if (this.selectedGroup) {
+				this.isAmountOpen = !this.isAmountOpen;
+				this.isCauseOpen = false;
+			}
+		},
+		selectCause(option) {
+			this.selectedGroup = option;
+			this.isCauseOpen = false;
+			this.isAmountOpen = true;
+		},
+		selectAmount(amount) {
+			this.mgAmount = amount;
+			this.isAmountOpen = false;
+			this.navigateToMG();
+		}
+	},
+	computed: {
+		groupValue() {
+			return this.selectedGroup?.value;
+		},
+		causeClass() {
+			return {
+				highlight: !this.isCauseOpen && !this.selectedGroup,
+				active: this.isCauseOpen,
+				completed: !this.isCauseOpen && this.selectedGroup
+			};
+		},
+		amountClass() {
+			return {
+				highlight: this.selectedGroup && !this.isAmountOpen && !this.mgAmount,
+				inactive: !this.selectedGroup && !this.isAmountOpen,
+				active: this.isAmountOpen,
+				completed: this.mgAmount
+			};
+		},
+		formattedAmount() {
+			if (this.mgAmount === 'other') {
+				return 'Other';
+			}
+			return numeral(this.mgAmount).format('$0,0.00');
+		},
+	}
+};
+
+</script>
+
+<style lang="scss" scoped>
+@import 'settings';
+
+.monthly-selector {
+	&__button {
+		padding: 0.75rem 1.25rem;
+		border-radius: rem-calc(20px);
+		border: 3px solid transparent;
+		text-align: left;
+		width: 100%;
+		color: $magnemite;
+
+		@include medium-text();
+
+		@include breakpoint(xxlarge) {
+			padding: 1.25rem 2.5rem;
+			@include featured-text();
+		}
+
+		strong {
+			color: $charcoal;
+			text-transform: capitalize;
+		}
+
+		&.highlight {
+			border: 3px solid $kiva-green;
+		}
+
+		&.active {
+			box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+		}
+
+		&.completed {
+			strong {
+				color: $kiva-green;
+			}
+		}
+
+		&.inactive {
+			color: $gray;
+
+			strong {
+				color: $magnemite;
+			}
+		}
+	}
+
+	&__causes,
+	&__amounts {
+		background-color: $white;
+		position: absolute;
+		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
+		border-radius: rem-calc(20);
+		display: flex;
+		flex-flow: wrap;
+		padding: 1.5rem;
+
+		button {
+			text-align: left;
+			font-size: 1.5rem;
+			width: 50%;
+			flex: 0 0 50%;
+		}
+	}
+
+	&__causes {
+		top: -318px;
+		height: rem-calc(312);
+		width: rem-calc(568);
+	}
+
+	&__amounts {
+		top: -247px;
+		height: rem-calc(240);
+		width: rem-calc(330);
+
+		button {
+			padding-left: 2rem;
+		}
+	}
+
+	&__take-action-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__take-action {
+		margin: 0 0.25rem;
+		@include breakpoint(xlarge) {
+			margin: 0 1.5rem;
+		}
+	}
+}
+</style>
