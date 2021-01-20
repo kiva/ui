@@ -74,24 +74,29 @@ module.exports = function createMiddleware({
 		// get graphql api fragment types for the graphql client
 		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
 
+		console.log('initial cookies: ', JSON.stringify(cookies));
+		console.log('initial context.cookies: ', JSON.stringify(context.cookies));
 		// fetch initial session cookies in case starting session with this request
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
 
-		if (!isProd) {
-			typesPromise.then(() => console.info(JSON.stringify({
-				meta: {},
-				level: 'info',
-				message: `fragment fetch: ${Date.now() - s}ms`
-			})));
-			cookiePromise.then(() => console.info(JSON.stringify({
-				meta: {},
-				level: 'info',
-				message: `session fetch: ${Date.now() - s}ms`
-			})));
-		}
+		// if (!isProd) {
+		// 	typesPromise.then(() => console.info(JSON.stringify({
+		// 		meta: {},
+		// 		level: 'info',
+		// 		message: `fragment fetch: ${Date.now() - s}ms`
+		// 	})));
+		// 	cookiePromise.then(() => console.info(JSON.stringify({
+		// 		meta: {},
+		// 		level: 'info',
+		// 		message: `session fetch: ${Date.now() - s}ms`
+		// 	})));
+		// }
 
 		Promise.all([typesPromise, cookiePromise])
 			.then(([types, cookieInfo]) => {
+				console.log('cookieInfo.setCookies: ', JSON.stringify(cookieInfo.setCookies));
+				console.log('context.cookies: ', JSON.stringify(context.cookies));
+				console.log('cookieInfo.cookies: ', JSON.stringify(cookieInfo.cookies));
 				// add fetched types to rendering context
 				context.config.graphqlFragmentTypes = types;
 				// update cookies in the rendering context with any newly fetched session cookies
@@ -99,10 +104,13 @@ module.exports = function createMiddleware({
 				// forward any newly fetched 'Set-Cookie' headers
 				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 				// Clear module cache of global Vue instance to ensure clean render
+				console.log('context.cookies updated: ', JSON.stringify(context.cookies));
 				clearCachedVueModule();
+				console.log('context.cookies after vue module reset: ', JSON.stringify(context.cookies));
 				// render the app
 				return renderer.renderToString(context);
 			}).then(html => {
+				console.log('context.setCookies: ', JSON.stringify(context.setCookies));
 				// set any cookies created during the app render
 				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 				// send the final rendered html
