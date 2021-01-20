@@ -29,7 +29,9 @@ module.exports = function getSessionCookies(url = '', requestCookies = {}) {
 				const splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader);
 				const parsed = setCookieParser.parse(splitCookieHeaders, { decodeValues: false });
 				const cookies = parsed.reduce((cookieObject, cookie) => {
-					console.log(cookie);
+					if (cookie.name === 'kvbskt') {
+						console.log('parsed kvbskt from req.headers set-cookie', JSON.stringify(cookie));
+					}
 					if (cookie.value !== 'deleted') {
 						return Object.assign(cookieObject, { [cookie.name]: decodeCookieValue(cookie.value) });
 					}
