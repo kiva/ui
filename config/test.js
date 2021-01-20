@@ -58,6 +58,7 @@ module.exports = merge(base, {
 		graphqlUri: 'https://marketplace-api-test.dk1.kiva.org/graphql',
 		sessionUri: 'https://www.test.kiva.org/start-ui-session',
 		memcachedEnabled: true,
-		memcachedServers: 'test-memcached-01:11211',
+		// memcachedServers: 'test-memcached-01:11211',
+		memcachedServers: 'marketplace-k8s-ui-test.knmtma.0001.usw2.cache.amazonaws.com:11211,marketplace-k8s-ui-test.knmtma.0002.usw2.cache.amazonaws.com:11211'
 	}
 })
