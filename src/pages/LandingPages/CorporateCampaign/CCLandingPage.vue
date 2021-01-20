@@ -125,8 +125,9 @@
 					:loan="detailedLoan"
 					:items-in-basket="itemsInBasket"
 					:enable-tracking="true"
-					:is-visitor="!isLoggedIn"
-					@close-detailed-loan-card="detailedLoanIndex = null"
+					:disable-redirects="true"
+					:is-visitor="isVisitor"
+					@add-to-basket="handleAddToBasket"
 				/>
 			</kv-lightbox>
 
@@ -672,6 +673,7 @@ export default {
 		},
 		handleAddToBasket(payload) {
 			if (payload.eventSource === 'checkoutBtnClick') {
+				this.loanDetailsVisible = false;
 				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
