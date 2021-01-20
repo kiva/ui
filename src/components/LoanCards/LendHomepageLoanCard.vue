@@ -26,6 +26,7 @@
 					:name="loan.name"
 					:loan-id="loan.id"
 					class="borrower-name"
+					@name-click="$emit('name-click', {loanId: loan.id})"
 					@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 				/>
 			</div>
@@ -49,6 +50,7 @@
 				:loan-id="loan.id"
 				:max-use-length="59"
 				read-more-link-text="Learn more"
+				@read-more-link="$emit('read-more-link', {loanId: loan.id})"
 				@track-loan-card-interaction="trackInteraction"
 			/>
 			<div class="lend-homepage-loan-card__action-row">
