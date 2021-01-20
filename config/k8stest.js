@@ -6,7 +6,7 @@ module.exports = merge(test, {
 		publicPath: 'https://www-test-kiva-org.freetls.fastly.net/',
 	},
 	server: {
-		memcachedServers: 'marketplace-k8s-ui-test.knmtma.0001.usw2.cache.amazonaws.com:11211',
+		memcachedServers: 'marketplace-k8s-ui-test.knmtma.0001.usw2.cache.amazonaws.com:11211,marketplace-k8s-ui-test.knmtma.0002.usw2.cache.amazonaws.com:11211',
 		enableDDTrace: true,
 		disableCluster: true,
 	}
