@@ -954,6 +954,31 @@ export default {
 	}
 }
 
+.campaign-loan-details {
+	// Style overrides for the loan details lightbox content
+	// Note, styles inside DetailedLoanCard.vue are not scoped
+	border: 0;
+
+	&.detailed-loan-card.row {
+		max-width: 100%;
+		border: 0;
+
+		@include breakpoint(xlarge) {
+			width: 58.75rem;
+		}
+	}
+
+	.close-button-wrapper,
+	.full-details-link,
+	.borrower-info-body.loan-use a {
+		display: none;
+	}
+
+	.overview-column {
+		margin-bottom: 1.5rem;
+	}
+}
+
 .basket-bar {
 	display: none;
 }
