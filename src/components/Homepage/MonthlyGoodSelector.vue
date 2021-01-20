@@ -5,7 +5,7 @@
 				<button
 					class="monthly-selector__button"
 					:class="causeClass"
-					@click="openClause"
+					@click="openCauses"
 				>
 					<template v-if="!selectedGroup">
 						<strong>Choose a cause</strong><br>
@@ -135,7 +135,7 @@ export default {
 				}
 			});
 		},
-		openClause() {
+		openCauses() {
 			this.isCauseOpen = !this.isCauseOpen;
 			this.isAmountOpen = false;
 		},
