@@ -109,6 +109,11 @@ export default {
 			border-color: darken($kiva-green, 10%);
 			color: darken($kiva-green, 10%);
 		}
+
+		&[disabled] {
+			border-color: $magnemite;
+			color: $magnemite;
+		}
 	}
 
 	&.secondary {
