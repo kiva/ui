@@ -6,11 +6,11 @@
 					class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns"
 				>
 					<router-link
-						:to="`/lend-by-category`"
+						:to="heroButton.link"
 						v-kv-track-event="[
 							'homepage',
-							'click-hero-cta',
-							'Loan Card',
+							'click-hero-loancards',
+							heroImage.description,
 						]"
 					>
 						<img
@@ -103,8 +103,8 @@
 						to="/monthlygood"
 						v-kv-track-event="[
 							'homepage',
-							'click-selector-cta',
-							'get starter',
+							'click-mgpromo-cta',
+							'Join today'
 						]"
 					>
 						Join today <kv-icon

@@ -5,6 +5,11 @@
 				<button
 					class="monthly-selector__button"
 					:class="causeClass"
+					v-kv-track-event="[
+						'homepage',
+						'click-mgpromo-cause-cta',
+						'Choose a cause'
+					]"
 					@click="openCauses"
 				>
 					<template v-if="!selectedGroup">
@@ -20,6 +25,11 @@
 					<button
 						v-for="(option, index) in lendingCategories"
 						:key="index"
+						v-kv-track-event="[
+							'homepage',
+							'click-mgpromo-cause',
+							option.marketingName
+						]"
 						@click="selectCause(option)"
 					>
 						{{ option.marketingName }}
@@ -30,6 +40,11 @@
 				<button
 					class="monthly-selector__button"
 					:class="amountClass"
+					v-kv-track-event="[
+						'homepage',
+						'click-mgpromo-amount-cta',
+						'Choose an amount'
+					]"
 					@click="openAmounts"
 				>
 					<template v-if="!mgAmount">
@@ -45,6 +60,11 @@
 					<button
 						v-for="(option, index) in mgAmountOptions"
 						:key="index"
+						v-kv-track-event="[
+							'homepage',
+							'click-mgpromo-amount',
+							option.value
+						]"
 						@click="selectAmount(option.value)"
 					>
 						{{ option.label }}
@@ -54,6 +74,11 @@
 			<div class="shrink column monthly-selector__take-action-wrapper">
 				<kv-button @click.native="navigateToMG"
 					class="monthly-selector__take-action classic hollow"
+					v-kv-track-event="[
+						'homepage',
+						'click-mgpromo-cta',
+						'Take action'
+					]"
 					:disabled="$v.mgAmount.$invalid || $v.groupValue.$invalid"
 				>
 					Take action
