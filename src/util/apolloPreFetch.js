@@ -51,7 +51,6 @@ export function handleApolloErrors(handlers = {}, errors, args) {
 // A function to pre-fetch a graphql query from a component's apollo options
 export function preFetchApolloQuery(config, client, args) {
 	if (typeof config.preFetch === 'function') {
-		console.log(typeof config.preFetch, 'prefetch function');
 		const queryName = config.query?.definitions[0]?.name?.value ?? 'missing query';
 		console.log('prefecth function query: ', queryName);
 		// Call the manual pre-fetch function
@@ -64,10 +63,6 @@ export function preFetchApolloQuery(config, client, args) {
 
 	// Fetch the query from the component's apollo options
 	return new Promise((resolve, reject) => {
-		console.log(typeof config.preFetch, 'promise prefetch');
-		// eslint-disable-next-line max-len
-		console.log('prefetch promise query: ', config.query ? JSON.stringify(config.query).substr(0, 520) : 'missing query');
-		// {"definitions":[{"name":{"value":"appea...
 		const queryName = config.query?.definitions[0]?.name?.value ?? 'missing query';
 		console.log('prefecth promise query: ', queryName);
 		const prefetchVariables = config.preFetchVariables ? config.preFetchVariables(args) : {};
