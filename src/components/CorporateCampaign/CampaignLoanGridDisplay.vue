@@ -22,6 +22,9 @@
 					loan-card-type="LendHomepageLoanCard"
 					:disable-redirects="true"
 					@add-to-basket="addToBasket"
+					@image-click="showLoanDetails"
+					@read-more-link="showLoanDetails"
+					@name-click="showLoanDetails"
 				/>
 			</div>
 			<kv-pagination v-if="totalCount > 0" :total="totalCount" :limit="limit" @page-change="pageChange" />
@@ -163,7 +166,10 @@ export default {
 		addToBasket(payload) {
 			this.$emit('add-to-basket', payload);
 		},
-
+		showLoanDetails(payload) {
+			const selectedLoan = this.loans.find(loan => loan.id === payload.loanId);
+			this.$emit('show-loan-details', selectedLoan);
+		},
 		activateLoanWatchQuery() {
 			const observer = this.apollo.watchQuery({
 				query: basicLoanQuery,
