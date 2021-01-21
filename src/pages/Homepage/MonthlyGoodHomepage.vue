@@ -433,16 +433,29 @@ export default {
 			} else {
 				this.isSticky = true;
 			}
+		},
+		initStickyBehavior() {
+			// Initial position down the page of element before mg selector element
+			const { bottom } = this.$el.getElementsByClassName('monthly-good-info')[0].getBoundingClientRect();
+			const heightOfMgSelector = this.$el.getElementsByClassName('monthly-good-selector')[0].offsetHeight;
+			const scrollPositionOfPage = window.scrollY;
+
+			this.initialBottomPosition = bottom + scrollPositionOfPage + heightOfMgSelector;
+			this.onScroll();
 		}
 	},
+	beforeDestroy() {
+		window.removeEventListener('scroll', this.throttledScroll);
+		window.removeEventListener('resize', _throttle(() => {
+			this.initStickyBehavior();
+		}, 200));
+	},
 	mounted() {
-		this.$nextTick(() => {
-			// Initial position down the page of mg selector element
-			const { bottom } = this.$el.getElementsByClassName('monthly-good-selector')[0].getBoundingClientRect();
-			this.initialBottomPosition = bottom;
-			this.onScroll();
-			window.addEventListener('scroll', this.throttledScroll);
-		});
+		window.addEventListener('scroll', this.throttledScroll);
+		window.addEventListener('resize', _throttle(() => {
+			this.initStickyBehavior();
+		}, 200));
+		this.initStickyBehavior();
 	},
 };
 </script>

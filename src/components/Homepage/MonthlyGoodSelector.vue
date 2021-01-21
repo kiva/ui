@@ -23,7 +23,7 @@
 				</button>
 				<div class="monthly-selector__causes" v-if="isCauseOpen">
 					<button
-						v-for="(option, index) in lendingCategories"
+						v-for="(option, index) in sortedLendingCategories"
 						:key="index"
 						v-kv-track-event="[
 							'homepage',
@@ -183,6 +183,10 @@ export default {
 		}
 	},
 	computed: {
+		sortedLendingCategories() {
+			// return this.lendingCategories sorted by marketingOrder property
+			return [...this.lendingCategories].sort((a, b) => a.marketingOrder - b.marketingOrder);
+		},
 		groupValue() {
 			return this.selectedGroup?.value;
 		},
@@ -267,7 +271,7 @@ export default {
 		border-radius: rem-calc(20);
 		display: flex;
 		flex-flow: wrap;
-		padding: 1.5rem;
+		padding: 0.75rem 1.5rem;
 
 		button {
 			text-align: left;
