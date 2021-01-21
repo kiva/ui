@@ -764,6 +764,11 @@ export default {
 			// eslint-disable-next-line no-underscore-dangle
 			this.kivaCards = basketItems.filter(item => item.__typename === 'KivaCard');
 
+			// If the checkout lightbox is currently open and user removes all loans, close it.
+			if (!this.basketLoans.length) {
+				this.checkoutVisible = false;
+			}
+
 			// Basket is not eligible for simple incontext checkout
 			if (!simpleCheckoutEligible) {
 				console.log('ineligible for incontext checkout');
