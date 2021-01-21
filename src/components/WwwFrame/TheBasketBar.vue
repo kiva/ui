@@ -3,6 +3,7 @@
 		v-if="count > 0"
 		:to="basketLink"
 		class="basket-bar hide-for-large"
+		v-kv-track-event="['BasketBar','click-Basket']"
 	>
 		<kv-icon
 			class="basket-bar__icon"
