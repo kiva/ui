@@ -79,24 +79,25 @@ module.exports = function createMiddleware({
 		// fetch initial session cookies in case starting session with this request
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
 
-		// if (!isProd) {
-		// 	typesPromise.then(() => console.info(JSON.stringify({
-		// 		meta: {},
-		// 		level: 'info',
-		// 		message: `fragment fetch: ${Date.now() - s}ms`
-		// 	})));
-		// 	cookiePromise.then(() => console.info(JSON.stringify({
-		// 		meta: {},
-		// 		level: 'info',
-		// 		message: `session fetch: ${Date.now() - s}ms`
-		// 	})));
-		// }
+		if (!isProd) {
+			typesPromise.then(() => console.info(JSON.stringify({
+				meta: {},
+				level: 'info',
+				message: `fragment fetch: ${Date.now() - s}ms`
+			})));
+			cookiePromise.then(() => console.info(JSON.stringify({
+				meta: {},
+				level: 'info',
+				message: `session fetch: ${Date.now() - s}ms`
+			})));
+		}
 
 		Promise.all([typesPromise, cookiePromise])
 			.then(([types, cookieInfo]) => {
-				console.log('cookieInfo.setCookies: ', JSON.stringify(cookieInfo.setCookies));
-				console.log('context.cookies: ', JSON.stringify(context.cookies));
-				console.log('cookieInfo.cookies: ', JSON.stringify(cookieInfo.cookies));
+				// eslint-disable-next-line max-len
+				console.log('cookieInfo.setCookies: ', cookieInfo.setCookies.find(item => item.indexOf('pants') !== -1));
+				console.log('context.cookies: ', context.cookies?.kvbskt ?? 'missing kvbskt');
+				console.log('cookieInfo.cookies: ', cookieInfo.cookies?.kvbskt ?? 'missing kvbskt');
 				// add fetched types to rendering context
 				context.config.graphqlFragmentTypes = types;
 				// update cookies in the rendering context with any newly fetched session cookies
@@ -104,13 +105,13 @@ module.exports = function createMiddleware({
 				// forward any newly fetched 'Set-Cookie' headers
 				cookieInfo.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 				// Clear module cache of global Vue instance to ensure clean render
-				console.log('context.cookies updated: ', JSON.stringify(context.cookies));
+				console.log('context.cookies updated: ', context.cookies?.kvbskt ?? 'missing kvbskt');
 				clearCachedVueModule();
-				console.log('context.cookies after vue module reset: ', JSON.stringify(context.cookies));
+				console.log('context.cookies after vue module reset: ', context.cookies?.kvbskt ?? 'missing kvbskt');
 				// render the app
 				return renderer.renderToString(context);
 			}).then(html => {
-				console.log('context.setCookies: ', JSON.stringify(context.setCookies));
+				console.log('context.setCookies: ', context.setCookies.find(item => item.indexOf('pants') !== -1));
 				// set any cookies created during the app render
 				context.setCookies.forEach(setCookie => res.append('Set-Cookie', setCookie));
 				// send the final rendered html
