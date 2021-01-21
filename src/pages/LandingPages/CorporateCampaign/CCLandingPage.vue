@@ -978,8 +978,4 @@ export default {
 		margin-bottom: 1.5rem;
 	}
 }
-
-.basket-bar {
-	display: none;
-}
 </style>

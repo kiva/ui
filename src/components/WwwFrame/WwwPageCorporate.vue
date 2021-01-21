@@ -13,6 +13,7 @@
 			:theme="footerTheme"
 			:corporate-logo-url="corporateLogoUrl"
 		/>
+		<the-basket-bar :corporate="true" />
 		<cookie-banner />
 	</div>
 </template>
@@ -21,6 +22,7 @@
 import _get from 'lodash/get';
 import { fetchAllExpSettings } from '@/util/experimentPreFetch';
 import CookieBanner from '@/components/WwwFrame/CookieBanner';
+import TheBasketBar from '@/components/WwwFrame/TheBasketBar';
 import TheFooterCorporate from '@/components/WwwFrame/TheFooterCorporate';
 import TheHeader from '@/components/WwwFrame/TheHeader';
 
@@ -30,6 +32,7 @@ export default {
 	],
 	components: {
 		CookieBanner,
+		TheBasketBar,
 		TheFooterCorporate,
 		TheHeader,
 	},
