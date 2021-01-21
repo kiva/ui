@@ -23,7 +23,7 @@
 			</div>
 		</div>
 
-		<monthly-good-c-t-a v-if="showMonthlyGoodCTA" />
+		<monthly-good-c-t-a v-if="showMonthlyGoodCTA" :headline="ctaHeadline" />
 
 		<div class="row page-content">
 			<template v-if="loans.length > 0">
@@ -71,7 +71,7 @@ import experimentAssignmentQuery from '@/graphql/query/experimentAssignment.grap
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 
 import { settingEnabled } from '@/util/settingsUtils';
-import { processContent } from '@/util/contentfulUtils';
+import { processContent, processPageContent } from '@/util/contentfulUtils';
 import { joinArray } from '@/util/joinArray';
 
 export default {
@@ -104,17 +104,10 @@ export default {
 				'Thank You!'
 			],
 			showMonthlyGoodCTA: false,
-			isMonthlyGoodSubscriber: false
+			isMonthlyGoodSubscriber: false,
+			isContentfulActive: false,
+			pageData: {},
 		};
-	},
-	computed: {
-		borrowerSupport() {
-			const loanNames = this.loans.map(loan => loan.name);
-			if (loanNames.length > 3) {
-				return `these ${loanNames.length} borrowers`;
-			}
-			return joinArray(loanNames, 'and');
-		}
 	},
 	apollo: {
 		query: thanksPageQuery,
@@ -163,6 +156,46 @@ export default {
 			if (!this.receipt) {
 				console.error(`Failed to get receipt for transaction id: ${this.$route.query.kiva_transaction_id}`);
 			}
+
+			// Check for contentful content
+			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+			this.pageData = pageEntry ? processPageContent(pageEntry) : null;
+
+			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
+			// which controls when the contentful page layout should be active
+			const uiMonthlyGoodLandingSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
+			this.isContentfulActive = settingEnabled(
+				uiMonthlyGoodLandingSetting,
+				'active',
+				'startDate',
+				'endDate'
+			);
+		}
+	},
+	computed: {
+		borrowerSupport() {
+			const loanNames = this.loans.map(loan => loan.name);
+			if (loanNames.length > 3) {
+				return `these ${loanNames.length} borrowers`;
+			}
+			return joinArray(loanNames, 'and');
+		},
+		ctaContentGroup() {
+			// eslint-disable-next-line max-len
+			return this.pageData?.page?.pageLayout?.contentGroups?.find(contentGroup => contentGroup.key === 'thanks-mg-cta-jan-2021');
+		},
+		ctaContentBlock() {
+			// eslint-disable-next-line max-len
+			return this.ctaContentGroup?.contents?.find(contentItem => contentItem.key === 'thanks-mg-cta');
+		},
+		contentfulHeadline() {
+			return this.ctaContentBlock?.headline;
+		},
+		ctaHeadline() {
+			if (this.isContentfulActive) {
+				return this.contentfulHeadline;
+			}
+			return 'Grow your lending with Monthly Good!';
 		}
 	},
 	mounted() {
