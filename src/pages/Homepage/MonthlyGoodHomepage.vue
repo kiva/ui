@@ -284,7 +284,6 @@ import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
 import MonthlyGoodSelector from '@/components/Homepage/MonthlyGoodSelector';
-
 import KvIcon from '@/components/Kv/KvIcon';
 
 import HomepageStatistics from './HomepageStatistics';
@@ -521,18 +520,20 @@ export default {
 		margin-top: 1.75rem;
 	}
 
+	&__icon-report,
 	&__icon-choose {
-		margin-top: 0.75rem;
+		margin-top: 0.65rem;
 		flex-shrink: 0;
-		height: rem-calc(51);
-		width: rem-calc(34);
+	}
+
+	&__icon-choose {
+		height: rem-calc(56);
+		width: rem-calc(56);
 	}
 
 	&__icon-report {
-		margin-top: 0.75rem;
-		flex-shrink: 0;
-		height: rem-calc(49);
-		width: rem-calc(49);
+		height: rem-calc(56);
+		width: rem-calc(56);
 	}
 
 	&__body {
