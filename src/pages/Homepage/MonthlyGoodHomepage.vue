@@ -5,12 +5,21 @@
 				<div
 					class="small-12 medium-10 large-6 xlarge-5 small-order-2 large-order-1 columns"
 				>
-					<img
-						v-if="heroImage.url"
-						class="featured-loans__img"
-						:src="heroImage.url"
-						:alt="heroImage.description"
+					<router-link
+						:to="heroButton.link"
+						v-kv-track-event="[
+							'homepage',
+							'click-hero-loancards',
+							heroImage.description,
+						]"
 					>
+						<img
+							v-if="heroImage.url"
+							class="featured-loans__img"
+							:src="heroImage.url"
+							:alt="heroImage.description"
+						>
+					</router-link>
 				</div>
 				<!-- eslint-disable-next-line max-len -->
 				<div class="small-10 large-6 xlarge-7 small-order-1 large-order-2 align-self-middle columns featured-loans__cta_wrapper">
@@ -81,18 +90,8 @@
 		</section>
 
 		<!-- MG Selector Desktop -->
-		<section class="monthly-good-selector section show-for-large" :class="{ 'sticky': isSticky}">
-			<div class="row align-center">
-				<div class="small-10 medium-4 columns">
-					Choose a cause
-				</div>
-				<div class="small-10 medium-4 columns">
-					Choose an amount
-				</div>
-				<div class="small-10 medium-4 columns">
-					Take Action
-				</div>
-			</div>
+		<section class="monthly-good-selector show-for-large" :class="{ 'sticky': isSticky}">
+			<monthly-good-selector />
 		</section>
 
 		<!-- MG Selector Mobile -->
@@ -100,15 +99,15 @@
 			<div class="row align-center hide-for-large">
 				<div class="small-10 columns">
 					<kv-button
-						class="classic expanded"
+						class="classic hollow expanded"
 						to="/monthlygood"
 						v-kv-track-event="[
 							'homepage',
-							'click-selector-cta',
-							'get starter',
+							'click-mgpromo-cta',
+							'Join today'
 						]"
 					>
-						Get started <kv-icon
+						Join today <kv-icon
 							class="right-arrow-icon"
 							name="fat-chevron"
 							:from-sprite="true"
@@ -284,6 +283,7 @@ import _throttle from 'lodash/throttle';
 import KvButton from '@/components/Kv/KvButton';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import LoanCategoriesSection from '@/components/Homepage/LendByCategory/LoanCategoriesSection';
+import MonthlyGoodSelector from '@/components/Homepage/MonthlyGoodSelector';
 import KvIcon from '@/components/Kv/KvIcon';
 
 import HomepageStatistics from './HomepageStatistics';
@@ -298,6 +298,7 @@ export default {
 		KvIcon,
 		KvResponsiveImage,
 		LoanCategoriesSection,
+		MonthlyGoodSelector,
 	},
 	props: {
 		content: {
@@ -431,16 +432,29 @@ export default {
 			} else {
 				this.isSticky = true;
 			}
+		},
+		initStickyBehavior() {
+			// Initial position down the page of element before mg selector element
+			const { bottom } = this.$el.getElementsByClassName('monthly-good-info')[0].getBoundingClientRect();
+			const heightOfMgSelector = this.$el.getElementsByClassName('monthly-good-selector')[0].offsetHeight;
+			const scrollPositionOfPage = window.scrollY;
+
+			this.initialBottomPosition = bottom + scrollPositionOfPage + heightOfMgSelector;
+			this.onScroll();
 		}
 	},
+	beforeDestroy() {
+		window.removeEventListener('scroll', this.throttledScroll);
+		window.removeEventListener('resize', _throttle(() => {
+			this.initStickyBehavior();
+		}, 200));
+	},
 	mounted() {
-		this.$nextTick(() => {
-			// Initial position down the page of mg selector element
-			const { bottom } = this.$el.getElementsByClassName('monthly-good-selector')[0].getBoundingClientRect();
-			this.initialBottomPosition = bottom;
-			this.onScroll();
-			window.addEventListener('scroll', this.throttledScroll);
-		});
+		window.addEventListener('scroll', this.throttledScroll);
+		window.addEventListener('resize', _throttle(() => {
+			this.initStickyBehavior();
+		}, 200));
+		this.initStickyBehavior();
 	},
 };
 </script>
@@ -506,18 +520,20 @@ export default {
 		margin-top: 1.75rem;
 	}
 
+	&__icon-report,
 	&__icon-choose {
-		margin-top: 0.75rem;
+		margin-top: 0.65rem;
 		flex-shrink: 0;
-		height: rem-calc(51);
-		width: rem-calc(34);
+	}
+
+	&__icon-choose {
+		height: rem-calc(56);
+		width: rem-calc(56);
 	}
 
 	&__icon-report {
-		margin-top: 0.75rem;
-		flex-shrink: 0;
-		height: rem-calc(49);
-		width: rem-calc(49);
+		height: rem-calc(56);
+		width: rem-calc(56);
 	}
 
 	&__body {
@@ -736,7 +752,6 @@ export default {
 }
 
 .monthly-good-selector {
-	height: rem-calc(128);
 	border-radius: rem-calc(20) rem-calc(20) 0 0;
 	background-color: $white;
 
@@ -752,7 +767,7 @@ export default {
 		width: rem-calc(21);
 		height: rem-calc(23);
 		transform: rotate(270deg);
-		fill: #fff;
+		fill: $kiva-green;
 		margin: 0 20px;
 		position: absolute;
 	}

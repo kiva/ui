@@ -50,6 +50,7 @@
 							:row-number="1"
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
+							@show-loan-details="showLoanDetails"
 						/>
 
 						<campaign-loan-grid-display
@@ -63,6 +64,7 @@
 							:items-in-basket="itemsInBasket"
 							@add-to-basket="handleAddToBasket"
 							@update-total-count="setTotalCount"
+							@show-loan-details="showLoanDetails"
 						/>
 					</div>
 				</div>
@@ -107,6 +109,27 @@
 				:user-id="this.myId"
 				@verification-complete="verificationComplete"
 			/>
+
+			<kv-lightbox
+				:visible="loanDetailsVisible"
+				:no-padding-top="true"
+				:no-padding-bottom="true"
+				:no-padding-sides="true"
+				@lightbox-closed="loanDetailsVisible = false"
+			>
+				<!-- taken from CategoryRowHOver -->
+				<loan-card-controller
+					v-if="detailedLoan"
+					class="campaign-loan-details"
+					loan-card-type="DetailedLoanCard"
+					:loan="detailedLoan"
+					:items-in-basket="itemsInBasket"
+					:enable-tracking="true"
+					:disable-redirects="true"
+					:is-visitor="isVisitor"
+					@add-to-basket="handleAddToBasket"
+				/>
+			</kv-lightbox>
 
 			<kv-lightbox
 				:prevent-close="preventLightboxClose"
@@ -171,6 +194,7 @@ import CampaignThanks from '@/components/CorporateCampaign/CampaignThanks';
 import InContextCheckout from '@/components/Checkout/InContext/InContextCheckout';
 import KvButton from '@/components/Kv/KvButton';
 import KvLightbox from '@/components/Kv/KvLightbox';
+import LoanCardController from '@/components/LoanCards/LoanCardController';
 import WwwPageCorporate from '@/components/WwwFrame/WwwPageCorporate';
 // import KvLoadingOverlay from '@/components/Kv/KvLoadingOverlay';
 import { getSearchableFilters } from '@/api/fixtures/LoanSearchFilters';
@@ -369,6 +393,7 @@ export default {
 		InContextCheckout,
 		KvButton,
 		KvLightbox,
+		LoanCardController,
 		WwwPageCorporate,
 	},
 	mixins: [
@@ -435,6 +460,8 @@ export default {
 			teamJoinStatus: null,
 			transactionId: null,
 			showLoanRows: true,
+			loanDetailsVisible: false,
+			detailedLoan: null
 		};
 	},
 	metaInfo() {
@@ -646,6 +673,7 @@ export default {
 		},
 		handleAddToBasket(payload) {
 			if (payload.eventSource === 'checkoutBtnClick') {
+				this.loanDetailsVisible = false;
 				this.checkoutVisible = true;
 			} else {
 				this.initializeBasketRefresh();
@@ -857,6 +885,11 @@ export default {
 		},
 		setTotalCount(payload) {
 			this.totalCount = payload;
+		},
+		showLoanDetails(loan) {
+			console.log(loan);
+			this.detailedLoan = loan;
+			this.loanDetailsVisible = true;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -918,6 +951,31 @@ export default {
 		@include breakpoint(large) {
 			height: rem-calc(28);
 		}
+	}
+}
+
+.campaign-loan-details {
+	// Style overrides for the loan details lightbox content
+	// Note, styles inside DetailedLoanCard.vue are not scoped
+	border: 0;
+
+	&.detailed-loan-card.row {
+		max-width: 100%;
+		border: 0;
+
+		@include breakpoint(xlarge) {
+			width: 58.75rem;
+		}
+	}
+
+	.close-button-wrapper,
+	.full-details-link,
+	.borrower-info-body.loan-use a {
+		display: none;
+	}
+
+	.overview-column {
+		margin-bottom: 1.5rem;
 	}
 }
 

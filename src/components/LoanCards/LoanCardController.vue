@@ -22,6 +22,9 @@
 		@toggle-favorite="toggleFavorite"
 		@add-to-basket="handleAddToBasket"
 		@processing-add-to-basket="processingAddToBasket"
+		@image-click="handleImageClick"
+		@name-click="handleNameClick"
+		@read-more-link="handleReadMoreLink"
 
 		:expanded="expanded"
 		:category-id="categoryId"
@@ -317,6 +320,15 @@ export default {
 		},
 		handleSetPreventUpdatingDetailedCard(newState) {
 			this.$emit('set-prevent-updating-detailed-card', newState);
+		},
+		handleImageClick(payload) {
+			this.$emit('image-click', payload);
+		},
+		handleReadMoreLink(payload) {
+			this.$emit('read-more-link', payload);
+		},
+		handleNameClick(payload) {
+			this.$emit('name-click', payload);
 		},
 	},
 };
