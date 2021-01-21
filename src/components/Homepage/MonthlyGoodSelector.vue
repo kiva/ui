@@ -32,10 +32,10 @@
 						]"
 						@click="selectCause(option)"
 					>
-						<kv-icon
+						<img
 							class="monthly-selector__causes-icon"
-							:name="`mg-${option.value}`"
-						/>
+							:src="getImage(`./mg-${option.value}.svg`)"
+						>
 						{{ option.marketingName }}
 					</button>
 				</div>
@@ -98,14 +98,14 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+
+const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
 export default {
 	components: {
 		KvButton,
-		KvIcon,
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
@@ -156,6 +156,9 @@ export default {
 		};
 	},
 	methods: {
+		getImage(image) {
+			return mgSelectorImgRequire(image);
+		},
 		navigateToMG() {
 			// If mgAmount is other, just default to 25 value
 			this.$router.push({
