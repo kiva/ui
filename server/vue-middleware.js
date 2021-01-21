@@ -57,7 +57,15 @@ module.exports = function createMiddleware({
 	return function middleware(req, res, next) {
 		const s = Date.now();
 
-		const cookies = cookie.parse(req.headers.cookie || '');
+		let reqCookies = '';
+		try {
+			reqCookies = cookie.parse(req.headers.cookie || '');
+		} catch (e) {
+			console.info('Missing Request Cookies');
+			console.error(e);
+		}
+		const cookies = reqCookies;
+		// const cookies = cookie.parse(req.headers.cookie || '');
 
 		const context = {
 			url: req.url,
