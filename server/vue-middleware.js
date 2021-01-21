@@ -48,7 +48,7 @@ module.exports = function createMiddleware({
 		cache: vueSsrCache(cache),
 		template,
 		clientManifest,
-		runInNewContext: true,
+		runInNewContext: false,
 		inject: false,
 		// don't prefetch anything
 		shouldPrefetch: () => false,
