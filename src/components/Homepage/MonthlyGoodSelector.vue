@@ -32,6 +32,10 @@
 						]"
 						@click="selectCause(option)"
 					>
+						<kv-icon
+							class="monthly-selector__causes-icon"
+							:name="`mg-${option.value}`"
+						/>
 						{{ option.marketingName }}
 					</button>
 				</div>
@@ -94,12 +98,14 @@ import { validationMixin } from 'vuelidate';
 import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
+import KvIcon from '@/components/Kv/KvIcon';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
 
 export default {
 	components: {
 		KvButton,
+		KvIcon,
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
@@ -278,6 +284,9 @@ export default {
 			font-size: 1.5rem;
 			width: 50%;
 			flex: 0 0 50%;
+			display: flex;
+			align-items: center;
+			padding: 0.5rem;
 		}
 	}
 
@@ -295,6 +304,14 @@ export default {
 		button {
 			padding-left: 2rem;
 		}
+	}
+
+	&__causes-icon {
+		height: rem-calc(48);
+		width: rem-calc(48);
+		border-radius: rem-calc(8);
+		overflow: hidden;
+		margin-right: 1rem;
 	}
 
 	&__take-action-wrapper {
