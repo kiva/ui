@@ -104,4 +104,7 @@ query checkoutReceipt($checkoutId: Int!) {
 			value
 		}
 	}
+	contentful {
+		entries(contentType: "page", contentKey: "thanks")
+	}
 }

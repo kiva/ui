@@ -6,6 +6,7 @@
 				:name="loan.name"
 				:retina-image-url="retinaImageUrl"
 				:standard-image-url="standardImageUrl"
+				:disable-link="disableRedirects"
 				:is-visitor="true"
 				:use-default-styles="false"
 				:full-width-image="true"
@@ -38,6 +39,7 @@
 					<borrower-info-name
 						:name="loan.name"
 						:loan-id="loan.id"
+						:disable-link="disableRedirects"
 						class="name"
 						@track-loan-card-interaction="trackInteractionBorrowerInfoName"
 					/>
@@ -62,6 +64,7 @@
 						:max-use-length="200"
 						:use="loan.use"
 						:loan-id="loan.id"
+						:disable-link="disableRedirects"
 						read-more-link-text="Read full details"
 						@track-loan-card-interaction="trackInteraction"
 					/>
@@ -88,7 +91,7 @@
 							:is-funded="isFunded"
 							:is-selected-by-another="isSelectedByAnother"
 							:is-simple-lend-button="false"
-
+							:disable-redirects="disableRedirects"
 							@click.native="trackInteraction({
 								interactionType: 'addToBasket',
 								interactionElement: 'Lend25'
@@ -225,6 +228,10 @@ export default {
 			type: Boolean,
 			default: false
 		},
+		disableRedirects: {
+			type: Boolean,
+			default: false,
+		}
 	},
 	components: {
 		BorrowerInfoBody,

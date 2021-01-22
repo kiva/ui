@@ -6,7 +6,7 @@
 					class="monthly-good-icon"
 					title="Monthly Good"
 					name="subscriptions-monthly-good"
-				/>Grow your lending with Monthly Good!
+				/>{{ headline }}
 			</h2>
 			<p class="monthly-good-cta__subhead">
 				<!-- eslint-disable-next-line max-len -->
@@ -108,6 +108,12 @@ export default {
 		KvCurrencyInput,
 		KvDropdownRounded,
 		KvIcon,
+	},
+	props: {
+		headline: {
+			type: String,
+			default: 'Grow your lending with Monthly Good!'
+		},
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
