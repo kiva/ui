@@ -82,7 +82,12 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
+		preFetch(config, client, { route, kvAuth0 }) {
+			if (kvAuth0.isMfaAuthenticated()) {
+				return Promise.reject({
+					url: getFullPath(route.query.doneUrl || '/')
+				});
+			}
 			return client.query({ query: getVerificationState })
 				.then(result => {
 					// Redirect to doneUrl if email has already been verified recently
