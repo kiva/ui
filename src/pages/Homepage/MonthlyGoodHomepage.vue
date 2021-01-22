@@ -90,7 +90,11 @@
 		</section>
 
 		<!-- MG Selector Desktop -->
-		<section class="monthly-good-selector show-for-large" :class="{ 'sticky': isSticky}">
+		<section
+			class="monthly-good-selector show-for-medium"
+			:class="{ 'sticky': isSticky}"
+			:style="{bottom: cookieBannerHeight + 'px'}"
+		>
 			<monthly-good-selector />
 		</section>
 
@@ -357,7 +361,8 @@ export default {
 				['small retina', imgRequire('./stats_2x.png')],
 			],
 			isSticky: false,
-			initialBottomPosition: 0
+			initialBottomPosition: 0,
+			cookieBannerHeight: 0,
 		};
 	},
 	computed: {
@@ -431,6 +436,7 @@ export default {
 				this.isSticky = false;
 			} else {
 				this.isSticky = true;
+				this.getCookieBannerHeight();
 			}
 		},
 		initStickyBehavior() {
@@ -441,6 +447,15 @@ export default {
 
 			this.initialBottomPosition = bottom + scrollPositionOfPage + heightOfMgSelector;
 			this.onScroll();
+		},
+		getCookieBannerHeight() {
+			// Height of Cookie banner if present
+			const cookieBanner = document.getElementsByClassName('cookie-banner-container')[0];
+			if (typeof cookieBanner !== 'undefined' && cookieBanner.clientHeight > 0) {
+				this.cookieBannerHeight = cookieBanner.clientHeight;
+			} else {
+				this.cookieBannerHeight = 0;
+			}
 		}
 	},
 	beforeDestroy() {
@@ -758,6 +773,7 @@ export default {
 	&.sticky {
 		position: fixed;
 		bottom: 0;
+		transition: bottom 0.4s;
 		z-index: 1000;
 		width: 100%;
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);
