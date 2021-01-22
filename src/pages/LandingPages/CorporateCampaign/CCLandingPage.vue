@@ -979,6 +979,14 @@ export default {
 	}
 }
 
+#campaignLoanSection {
+	// ensure we scroll past the sticky header
+	scroll-margin-top: rem-calc(85);
+	@include breakpoint(large) {
+		scroll-margin-top: rem-calc(116);
+	}
+}
+
 .basket-bar {
 	display: none;
 }
