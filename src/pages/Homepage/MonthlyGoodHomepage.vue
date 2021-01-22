@@ -93,7 +93,7 @@
 		<section
 			class="monthly-good-selector show-for-medium"
 			:class="{ 'sticky': isSticky}"
-			:style="{bottom: cookieBannerHeight + 'px'}"
+			:style="{bottom: mgStickBarOffset + 'px'}"
 		>
 			<monthly-good-selector />
 		</section>
@@ -362,7 +362,7 @@ export default {
 			],
 			isSticky: false,
 			initialBottomPosition: 0,
-			cookieBannerHeight: 0,
+			mgStickBarOffset: 0,
 		};
 	},
 	computed: {
@@ -436,7 +436,7 @@ export default {
 				this.isSticky = false;
 			} else {
 				this.isSticky = true;
-				this.getCookieBannerHeight();
+				this.setMgStickyBarOffset();
 			}
 		},
 		initStickyBehavior() {
@@ -448,14 +448,20 @@ export default {
 			this.initialBottomPosition = bottom + scrollPositionOfPage + heightOfMgSelector;
 			this.onScroll();
 		},
-		getCookieBannerHeight() {
-			// Height of Cookie banner if present
+		setMgStickyBarOffset() {
+			let offsetHeight = 0;
+			const basketBar = document.getElementsByClassName('basket-bar')[0];
 			const cookieBanner = document.getElementsByClassName('cookie-banner-container')[0];
-			if (typeof cookieBanner !== 'undefined' && cookieBanner.clientHeight > 0) {
-				this.cookieBannerHeight = cookieBanner.clientHeight;
-			} else {
-				this.cookieBannerHeight = 0;
+			// Height of basket bar if present
+			if (typeof basketBar !== 'undefined' && basketBar.clientHeight > 0) {
+				offsetHeight = basketBar.clientHeight;
 			}
+			// Height of Cookie banner if present (overrides basket bar if present)
+			if (typeof cookieBanner !== 'undefined' && cookieBanner.clientHeight > 0) {
+				offsetHeight = cookieBanner.clientHeight;
+			}
+			// set offset
+			this.mgStickBarOffset = offsetHeight;
 		}
 	},
 	beforeDestroy() {
