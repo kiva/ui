@@ -1,11 +1,15 @@
 <template>
 	<li class="expandable-list-item">
+		<!-- Attempted to add tracking information (line 8 & 11) in here doesn't work -->
 		<button
 			@click="toggle"
 			:aria-controls="id"
 			:aria-expanded="open ? 'true' : 'false'"
+			v-kv-track-event="['TopNav','click-Lend-Region', 'Josh TESTING']"
 		>
-			<slot name="title"></slot>
+			<slot name="title"
+				v-kv-track-event="['TopNav','click-Lend-Region', 'Josh TESTING']"
+			></slot>
 		</button>
 		<kv-expandable easing="ease-in-out">
 			<div
