@@ -15,8 +15,8 @@
 						<p class="mg-subhead" v-if="!isContentfulActive">
 							{{ pageCopy.subhead }}
 						</p>
-						<p class="mg-subhead" v-if="isContentfulActive" v-html="heroBody">
-						</p>
+						<div class="mg-subhead" v-if="isContentfulActive" v-html="heroBody">
+						</div>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
