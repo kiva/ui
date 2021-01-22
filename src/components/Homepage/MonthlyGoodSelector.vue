@@ -228,6 +228,8 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
+$offwhite: #F8F8F8;
+
 .monthly-selector {
 	&__button {
 		padding: 0.75rem 1.25rem;
@@ -246,7 +248,6 @@ export default {
 
 		strong {
 			color: $charcoal;
-			text-transform: capitalize;
 		}
 
 		&.highlight {
@@ -272,6 +273,22 @@ export default {
 		}
 	}
 
+	&__causes {
+		top: -318px;
+		height: rem-calc(312);
+		width: rem-calc(568);
+	}
+
+	&__amounts {
+		top: -247px;
+		height: rem-calc(240);
+		width: rem-calc(330);
+
+		button {
+			padding-left: 2rem;
+		}
+	}
+
 	&__causes,
 	&__amounts {
 		background-color: $white;
@@ -290,22 +307,11 @@ export default {
 			display: flex;
 			align-items: center;
 			padding: 0.5rem;
-		}
-	}
+			border-radius: rem-calc(8);
 
-	&__causes {
-		top: -318px;
-		height: rem-calc(312);
-		width: rem-calc(568);
-	}
-
-	&__amounts {
-		top: -247px;
-		height: rem-calc(240);
-		width: rem-calc(330);
-
-		button {
-			padding-left: 2rem;
+			&:hover {
+				background-color: $offwhite;
+			}
 		}
 	}
 
