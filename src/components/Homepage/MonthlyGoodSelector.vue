@@ -1,5 +1,5 @@
 <template>
-	<div class="monthly-selector">
+	<div class="monthly-selector" v-click-outside="closeAll">
 		<div class="row align-spaced collapse">
 			<div class="column">
 				<button
@@ -100,6 +100,7 @@ import { required, minValue, maxValue } from 'vuelidate/lib/validators';
 import KvButton from '@/components/Kv/KvButton';
 
 import loanGroupCategoriesMixin from '@/plugins/loan-group-categories';
+import clickOutside from '@/plugins/click-outside';
 
 const mgSelectorImgRequire = require.context('@/assets/images/mg-selector-icons/', true);
 
@@ -109,7 +110,8 @@ export default {
 	},
 	mixins: [
 		loanGroupCategoriesMixin,
-		validationMixin
+		validationMixin,
+		clickOutside,
 	],
 	validations: {
 		mgAmount: {
@@ -155,7 +157,18 @@ export default {
 			],
 		};
 	},
+	mounted() {
+		document.addEventListener('keyup', this.onKeyUp);
+	},
+	beforeDestroy() {
+		document.removeEventListener('keyup', this.onKeyUp);
+	},
 	methods: {
+		onKeyUp(e) {
+			if (e.key === 'Escape') {
+				this.closeAll();
+			}
+		},
 		getImage(image) {
 			return mgSelectorImgRequire(image);
 		},
@@ -189,6 +202,10 @@ export default {
 			this.mgAmount = amount;
 			this.isAmountOpen = false;
 			this.navigateToMG();
+		},
+		closeAll() {
+			this.isCauseOpen = false;
+			this.isAmountOpen = false;
 		}
 	},
 	computed: {
