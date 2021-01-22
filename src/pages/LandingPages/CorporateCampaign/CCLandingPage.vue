@@ -823,6 +823,8 @@ export default {
 		showCheckout() {
 			if (this.basketLoans.length) {
 				this.checkoutVisible = true;
+			} else {
+				this.checkoutVisible = false;
 			}
 		},
 		checkoutLightboxClosed() {
