@@ -480,9 +480,21 @@ export default {
 };
 </script>
 <style lang="scss">
+@import 'settings';
 // Hack to allow the entire footer to still be visible when the MG sticky is active
 .www-footer {
-	padding-bottom: 4rem;
+	padding-bottom: 20rem;
+	@include breakpoint(large) {
+		padding-bottom: 15rem;
+	}
+
+	@include breakpoint(xlarge) {
+		padding-bottom: 10rem;
+	}
+
+	@include breakpoint(xxlarge) {
+		padding-bottom: 7rem;
+	}
 }
 </style>
 
