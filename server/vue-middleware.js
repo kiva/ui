@@ -82,8 +82,9 @@ module.exports = function createMiddleware({
 		// get graphql api fragment types for the graphql client
 		const typesPromise = getGqlFragmentTypes(config.server.graphqlUri, cache);
 
-		console.log('initial cookies: ', JSON.stringify(cookies));
-		console.log('initial context.cookies: ', JSON.stringify(context.cookies));
+		console.log('initial cookies: ', cookies.kvbskt ?? 'missing kvbskt');
+		console.log('initial context.cookies: ', context.kvbskt ?? 'missing kvbskt');
+
 		// fetch initial session cookies in case starting session with this request
 		const cookiePromise = getSessionCookies(config.server.sessionUri, cookies);
 
@@ -103,7 +104,7 @@ module.exports = function createMiddleware({
 		Promise.all([typesPromise, cookiePromise])
 			.then(([types, cookieInfo]) => {
 				// eslint-disable-next-line max-len
-				console.log('cookieInfo.setCookies: ', cookieInfo.setCookies.find(item => item.indexOf('pants') !== -1));
+				console.log('cookieInfo.setCookies: ', cookieInfo.setCookies.find(item => item.indexOf('kvbskt') !== -1));
 				console.log('context.cookies: ', context.cookies?.kvbskt ?? 'missing kvbskt');
 				console.log('cookieInfo.cookies: ', cookieInfo.cookies?.kvbskt ?? 'missing kvbskt');
 				// add fetched types to rendering context
