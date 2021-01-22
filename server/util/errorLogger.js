@@ -13,9 +13,9 @@ module.exports = {
 		requestWhitelist: ['url', 'responseTime', 'level', 'message', 'headers.host', 'headers.method'],
 		msg: 'HTTP {{res.statusCode}} {{req.method}} {{req.url}} {{res.responseTime}}ms',
 		ignoreRoute: req => {
-			// if (req.url.indexOf('/static/') > -1) {
-			return true;
-			// }
+			if (req.url.indexOf('/static/') > -1) {
+				return true;
+			}
 		},
 	}),
 
