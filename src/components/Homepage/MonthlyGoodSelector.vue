@@ -293,7 +293,7 @@ $offwhite: #F8F8F8;
 	&__causes {
 		top: -318px;
 		height: rem-calc(312);
-		width: rem-calc(568);
+		max-width: rem-calc(568);
 	}
 
 	&__amounts {
