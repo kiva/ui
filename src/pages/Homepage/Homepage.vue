@@ -29,12 +29,6 @@ const activePageQuery = gql`query homepageFrame {
 	contentful {
 		entries(contentType: "page", contentKey: "home")
 	}
-	general {
-		lenderPreferencesExp: uiExperimentSetting(key: "home_lenderpreferences") {
-			key
-			value
-		}
-	}
 }`;
 
 export default {
@@ -98,23 +92,6 @@ export default {
 		query: activePageQuery,
 		preFetch: true,
 		result({ data }) {
-			// TODO remove 'home_lenderpreferences' setting
-			// Explicit lender preferences experiment - EXP-GROW-166-Aug2020
-			// const lenderPreferencesExp = this.apollo.readFragment({
-			// 	id: 'Experiment:home_lenderpreferences',
-			// 	fragment: experimentVersionFragment,
-			// }) || {};
-			// this.isLenderPreferencesActive = lenderPreferencesExp.version === 'shown';
-			// this.is15YearsActive = lenderPreferencesExp.version === 'kiva15';
-			// Fire Event for EXP-GROW-166-Aug2020
-			// if (lenderPreferencesExp.version && lenderPreferencesExp.version !== 'unassigned') {
-			// 	this.$kvTrackEvent(
-			// 		'homepage',
-			// 		'EXP-GROW-166-Aug2020',
-			// 		lenderPreferencesExp.version === 'shown' ? 'b' : 'a'
-			// 	);
-			// }
-
 			// Check for contentful homepage content, else use non contentful homepage
 			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
 			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
