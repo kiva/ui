@@ -1,6 +1,9 @@
 <template>
-	<div class="reservation-info small-text">
-		<span v-if="expiryTime">
+	<div class="reservation-info">
+		<div
+			class="small-text"
+			v-if="expiryTime"
+		>
 			<!-- The loan-message class is on all possible loan-message return types for use in automated tests
 			that QA/David configured -->
 
@@ -10,16 +13,18 @@
 			</div>
 			<!-- Not Reserved -->
 			<div class="loan-message" v-if="loanReservationMsg1">
-				Loan not reserved. <kv-button class="text-link" @click.native="triggerDefaultLightbox">Why?</kv-button>
+				Loan not reserved. <kv-button class="text-link" @click.native="triggerDefaultLightbox">
+					Why?
+				</kv-button>
 			</div>
 			<!-- Time Based Messages -->
 			<div
 				v-if="loanReservationMsg2 || loanReservationMsg3 || loanReservationMsg4"
 				class="loan-message"
 				:class="{red: loanReservationMsg3 || loanReservationMsg4}"
-			>{{ differenceInWords }}
+			>
+				{{ differenceInWords }}
 			</div>
-
 			<!-- TODO: Replace this lightbox with a Popper tip message. -->
 			<kv-lightbox
 				class="loanNotReservedLightbox"
@@ -34,7 +39,7 @@
 					the checkout process.
 				</p>
 			</kv-lightbox>
-		</span>
+		</div>
 	</div>
 </template>
 

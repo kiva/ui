@@ -1,14 +1,14 @@
 <template>
 	<div class="basket-donation-item row">
-		<span class="hide-for-small-only medium-3 large-2">
-			<span class="donation-icon">
+		<div class="hide-for-small-only medium-3 large-2 columns">
+			<div class="donation-icon">
 				<kv-icon class="dedicate-heart" name="dedicate-heart" />
-			</span>
-		</span>
-		<span class="small-12 medium-5 large-7 donation-info-wrapper">
-			<span class="donation-info featured-text">
+			</div>
+		</div>
+		<div class="small-12 medium-5 large-7 columns donation-info-wrapper">
+			<div class="donation-info featured-text">
 				{{ donationTitle }}
-			</span>
+			</div>
 			<div v-if="hasLoans">
 				<div class="donation-tagline small-text" v-html="donationTagLine">
 				</div>
@@ -20,9 +20,8 @@
 					{{ donationDetailsLink }}
 				</button>
 			</div>
-		</span>
-		<!-- <span class="small-3 show-for-small-only"></span> -->
-		<span class="small-12 medium-4 large-3 medium-text-font-size">
+		</div>
+		<div class="small-12 medium-4 large-3 columns medium-text-font-size">
 			<div
 				v-show="!editDonation"
 				class="donation-amount-wrapper"
@@ -32,7 +31,8 @@
 					v-kv-track-event="['basket', 'Edit Donation']"
 					@click="enterEditDonation"
 					title="Edit Donation"
-				>{{ formattedAmount }}
+				>
+					{{ formattedAmount }}
 					<kv-icon
 						role="img"
 						aria-label="Edit Donation"
@@ -42,7 +42,7 @@
 					/>
 				</button>
 			</div>
-			<div v-show="editDonation" class="small-12 donation-amount-input-wrapper">
+			<div v-show="editDonation" class="small-12 columns donation-amount-input-wrapper">
 				<input
 					type="input"
 					class="donation-amount-input"
@@ -55,7 +55,9 @@
 				<kv-button
 					class="secondary update-donation-inline-button"
 					@click.native.prevent.stop="updateDonation()"
-				>Update</kv-button>
+				>
+					Update
+				</kv-button>
 				<button
 					class="show-for-medium remove-wrapper"
 					@click="updateLoanAmount('remove')"
@@ -68,7 +70,7 @@
 				@updating-totals="$emit('updating-totals', $event)"
 				@refreshtotals="$emit('refreshtotals')"
 			/>
-		</span>
+		</div>
 		<donation-nudge-lightbox
 			v-if="!donationNudgeFellows"
 			ref="nudgeLightbox"
@@ -427,7 +429,7 @@ export default {
 }
 
 .donation-info {
-	line-height: 0.8;
+	line-height: 1.25;
 	font-weight: $global-weight-highlight;
 }
 

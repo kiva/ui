@@ -77,13 +77,8 @@ export default {
 <style lang="scss" scoped>
 @import 'settings';
 
-.basket-items-list {
-	max-width: 800px;
-	margin: 0 auto;
-}
-
 .basket-items-list ul {
+	margin: 0;
 	list-style-type: none;
-	margin-right: 1.25rem;
 }
 </style>

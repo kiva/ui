@@ -153,13 +153,6 @@ export default {
 
 .in-context-checkout {
 	&__basket-items {
-		@include breakpoint(large) {
-			::v-deep .borrower-info-wrapper {
-				margin-top: 0;
-				padding: 0 0.25rem;
-			}
-		}
-
 		&--hide-donation {
 			::v-deep .basket-donation-item {
 				display: none;

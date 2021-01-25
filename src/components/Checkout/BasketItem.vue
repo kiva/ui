@@ -1,15 +1,15 @@
 <template>
 	<div v-show="loanVisible" class="basket-item-wrapper row">
-		<span class="hide-for-small-only medium-3 large-2">
+		<div class="hide-for-small-only medium-3 large-2 columns">
 			<checkout-item-img
 				:loan-id="loan.id"
 				:name="loan.loan.name"
 				:image-url="loan.loan.image.url"
 			/>
-		</span>
+		</div>
 
-		<span class="small-12 medium-5 large-7 borrower-info-wrapper">
-			<span class="borrower-info featured-text">
+		<div class="small-12 medium-5 large-7 columns borrower-info-wrapper">
+			<div class="borrower-info featured-text">
 				{{ loan.loan.name }} in {{ loan.loan.geocode.country.name }}
 				<loan-matcher
 					v-if="loan.loan.matchingText"
@@ -26,9 +26,9 @@
 					:loan-id="loan.id"
 					:team-id="loan.team ? loan.team.id : null"
 				/>
-			</span>
-		</span>
-		<span class="small-12 medium-4 large-3 loan-res-price-wrapper">
+			</div>
+		</div>
+		<div class="small-12 medium-4 large-3 columns loan-res-price-wrapper">
 			<loan-price
 				:price="loan.price"
 				:loan-id="loan.id"
@@ -41,7 +41,7 @@
 				@refreshtotals="onLoanUpdate($event)"
 				@updating-totals="$emit('updating-totals', $event)"
 			/>
-		</span>
+		</div>
 	</div>
 </template>
 
@@ -102,14 +102,8 @@ export default {
 	margin-bottom: rem-calc(30);
 }
 
-.borrower-info-wrapper {
-	text-align: left;
-	padding: 0;
-
-	.borrower-info {
-		text-align: left;
-		line-height: 0.8;
-		font-weight: $global-weight-highlight;
-	}
+.borrower-info {
+	line-height: 1.25;
+	font-weight: $global-weight-highlight;
 }
 </style>

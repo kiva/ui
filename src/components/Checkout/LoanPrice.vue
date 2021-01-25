@@ -214,11 +214,13 @@ export default {
 @import 'settings';
 
 .loan-price-wrapper {
+	display: flex;
+	align-items: flex-start;
 	white-space: nowrap;
-	float: none;
+	justify-content: flex-start;
 
 	@include breakpoint(medium) {
-		float: right;
+		justify-content: flex-end;
 	}
 }
 
