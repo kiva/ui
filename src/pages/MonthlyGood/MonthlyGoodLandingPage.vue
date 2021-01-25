@@ -12,9 +12,11 @@
 					<div class="overlay-column columns medium-12 large-8">
 						<p class="mg-headline" v-html="pageCopy.headline">
 						</p>
-						<p class="mg-subhead">
+						<p class="mg-subhead" v-if="!isContentfulActive">
 							{{ pageCopy.subhead }}
 						</p>
+						<div class="mg-subhead" v-if="isContentfulActive" v-html="heroBody">
+						</div>
 						<landing-form
 							:amount.sync="monthlyGoodAmount"
 							:selected-group.sync="selectedGroup"
@@ -74,10 +76,14 @@ import gql from 'graphql-tag';
 import experimentVersionFragment from '@/graphql/fragments/experimentVersion.graphql';
 import experimentQuery from '@/graphql/query/experimentAssignment.graphql';
 
+import { processPageContentFlat } from '@/util/contentfulUtils';
+import { settingEnabled } from '@/util/settingsUtils';
+
 import WwwPage from '@/components/WwwFrame/WwwPage';
 import KvHero from '@/components/Kv/KvHero';
 import KvResponsiveImage from '@/components/Kv/KvResponsiveImage';
 import FrequentlyAskedQuestions from '@/components/MonthlyGood/FrequentlyAskedQuestions';
+import { documentToHtmlString } from '~/@contentful/rich-text-html-renderer';
 
 import LandingForm from './LandingForm';
 import LandingFormExperiment from './LandingFormExperiment';
@@ -98,6 +104,9 @@ const pageQuery = gql`query monthlyGoodLandingPage {
 			key
 			value
 		}
+	}
+	contentful {
+		entries(contentType: "page", contentKey: "monthlygood")
 	}
 }`;
 
@@ -143,16 +152,9 @@ export default {
 				['wxga', heroImagesRequire('./monthlygood-banner-xxl-std.jpg')],
 				['wxga retina', heroImagesRequire('./monthlygood-banner-xxl-retina.jpg')],
 			],
+			pageData: {},
+			isContentfulActive: false
 		};
-	},
-	computed: {
-		pageCopy() {
-			return {
-				headline: 'It\'s easy to do good.',
-				subhead: 'Support borrowers worldwide with monthly contributions as little as $5.',
-				button: 'Start Monthly Good'
-			};
-		}
 	},
 	inject: ['apollo'],
 	apollo: {
@@ -182,7 +184,41 @@ export default {
 					mgAmountSelectorExperiment.version === 'shown' ? 'b' : 'a'
 				);
 			}
+
+			// Check for contentful content
+			const pageEntry = data.contentful?.entries?.items?.[0] ?? null;
+			this.pageData = pageEntry ? processPageContentFlat(pageEntry) : null;
+
+			// returns the contentful content of the uiSetting key ui-homepage-monthly-good
+			// which controls when the contentful page layout should be active
+			const uiMonthlyGoodLandingSetting = this.pageData?.page?.settings?.find(item => item.key === 'ui-homepage-monthly-good') ?? null; // eslint-disable-line max-len
+			this.isContentfulActive = settingEnabled(
+				uiMonthlyGoodLandingSetting,
+				'active',
+				'startDate',
+				'endDate'
+			);
 		},
+	},
+	computed: {
+		heroContentGroup() {
+			return this.pageData?.page?.contentGroups?.homepageHero ?? null;
+		},
+		heroText() {
+			// eslint-disable-next-line max-len
+			return this.heroContentGroup?.contents?.find(contentItem => contentItem.key === 'mg-landing-hero-text');
+		},
+		heroBody() {
+			const text = this.heroText?.bodyCopy ?? '';
+			return documentToHtmlString(text).replace(/\n/g, '<br />');
+		},
+		pageCopy() {
+			return {
+				headline: 'It\'s easy to do good.',
+				subhead: 'Support borrowers worldwide with monthly contributions as little as $5.',
+				button: 'Start Monthly Good'
+			};
+		}
 	},
 };
 

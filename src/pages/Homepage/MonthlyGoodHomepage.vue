@@ -90,7 +90,11 @@
 		</section>
 
 		<!-- MG Selector Desktop -->
-		<section class="monthly-good-selector show-for-large" :class="{ 'sticky': isSticky}">
+		<section
+			class="monthly-good-selector show-for-medium"
+			:class="{ 'sticky': isSticky}"
+			:style="{bottom: mgStickBarOffset + 'px'}"
+		>
 			<monthly-good-selector />
 		</section>
 
@@ -357,7 +361,8 @@ export default {
 				['small retina', imgRequire('./stats_2x.png')],
 			],
 			isSticky: false,
-			initialBottomPosition: 0
+			initialBottomPosition: 0,
+			mgStickBarOffset: 0,
 		};
 	},
 	computed: {
@@ -431,6 +436,7 @@ export default {
 				this.isSticky = false;
 			} else {
 				this.isSticky = true;
+				this.setMgStickyBarOffset();
 			}
 		},
 		initStickyBehavior() {
@@ -441,6 +447,21 @@ export default {
 
 			this.initialBottomPosition = bottom + scrollPositionOfPage + heightOfMgSelector;
 			this.onScroll();
+		},
+		setMgStickyBarOffset() {
+			let offsetHeight = 0;
+			const basketBar = document.getElementsByClassName('basket-bar')[0];
+			const cookieBanner = document.getElementsByClassName('cookie-banner-container')[0];
+			// Height of basket bar if present
+			if (typeof basketBar !== 'undefined' && basketBar.clientHeight > 0) {
+				offsetHeight = basketBar.clientHeight;
+			}
+			// Height of Cookie banner if present (overrides basket bar if present)
+			if (typeof cookieBanner !== 'undefined' && cookieBanner.clientHeight > 0) {
+				offsetHeight = cookieBanner.clientHeight;
+			}
+			// set offset
+			this.mgStickBarOffset = offsetHeight;
 		}
 	},
 	beforeDestroy() {
@@ -459,9 +480,21 @@ export default {
 };
 </script>
 <style lang="scss">
+@import 'settings';
 // Hack to allow the entire footer to still be visible when the MG sticky is active
 .www-footer {
-	padding-bottom: 4rem;
+	padding-bottom: 20rem;
+	@include breakpoint(large) {
+		padding-bottom: 15rem;
+	}
+
+	@include breakpoint(xlarge) {
+		padding-bottom: 10rem;
+	}
+
+	@include breakpoint(xxlarge) {
+		padding-bottom: 7rem;
+	}
 }
 </style>
 
@@ -758,6 +791,7 @@ export default {
 	&.sticky {
 		position: fixed;
 		bottom: 0;
+		transition: bottom 0.4s;
 		z-index: 1000;
 		width: 100%;
 		box-shadow: 0 -5px 80px rgba(0, 0, 0, 0.1);

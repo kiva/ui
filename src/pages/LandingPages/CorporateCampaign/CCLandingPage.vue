@@ -823,6 +823,8 @@ export default {
 		showCheckout() {
 			if (this.basketLoans.length) {
 				this.checkoutVisible = true;
+			} else {
+				this.checkoutVisible = false;
 			}
 		},
 		checkoutLightboxClosed() {
@@ -978,4 +980,13 @@ export default {
 		margin-bottom: 1.5rem;
 	}
 }
+
+#campaignLoanSection {
+	// ensure we scroll past the sticky header
+	scroll-margin-top: rem-calc(85);
+	@include breakpoint(large) {
+		scroll-margin-top: rem-calc(116);
+	}
+}
+
 </style>
