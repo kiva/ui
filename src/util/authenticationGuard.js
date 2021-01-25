@@ -81,7 +81,8 @@ export function authenticationGuard({ route, apolloClient, kvAuth0 }) {
 		// Route requires some sort of authentication
 		if (activeRequired || authRequired || mfaRequired || recentRequired) {
 			return apolloClient.query({
-				query: authenticationQuery
+				query: authenticationQuery,
+				fetchPolicy: 'network-only',
 			}).then(({ data }) => {
 				if (!data.my) {
 					throw new Error('api.authenticationRequired');
