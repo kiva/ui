@@ -27,7 +27,7 @@
 		</div>
 		<!-- eslint-disable max-len -->
 		<kv-button
-			:href="`/my/borrower/minimum-eligibility?refid=${trusteeId}`"
+			:href="`/my/borrower/application?refid=${trusteeId}`"
 			class="cta-btn"
 		>
 			I understand, let’s create an account
