@@ -50,6 +50,7 @@
 					<button
 						@click="openSection(region.name)"
 						:aria-pressed="isOpenSection(region.name) ? 'true' : 'false'"
+						v-kv-track-event="['TopNav','click-Lend-Region', region.name]"
 					>
 						{{ region.name }}
 					</button>

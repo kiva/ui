@@ -38,7 +38,9 @@
 					ref="regionCountries"
 				>
 					<template slot="title">
-						<span>{{ region.name }}</span>
+						<button v-kv-track-event="['TopNav','click-Lend-Region', region.name]">
+							{{ region.name }}
+						</button>
 						<kv-icon class="chevron-icon" name="small-chevron-mobile" :from-sprite="true" />
 					</template>
 					<country-list :countries="region.countries" />
