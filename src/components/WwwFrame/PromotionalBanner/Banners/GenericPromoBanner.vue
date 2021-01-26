@@ -6,7 +6,7 @@
 			:href="promoBannerContent.link"
 			:target="isExternalLink ? '_blank' : '_self'"
 			:class="{ 'banner-link' : promoBannerContent.link, 'banner-wrapper' : !promoBannerContent.link}"
-			:v-kv-track-event="handleTracking"
+			v-kv-track-event="handleTracking"
 		>
 			<kv-icon :name="iconKey" :class="`${iconKey}-icon icon`" />
 			<div class="content" v-html="promoBannerContent.richText">
@@ -63,7 +63,7 @@ export default {
 			if (typeof this.promoBannerContent.kvTrackEvent === 'undefined') {
 				return ['promo', 'click-Contentful-banner', this.promoBannerContent.richText];
 			}
-			return 'promoBannerContent.kvTrackEvent';
+			return this.promoBannerContent.kvTrackEvent;
 		}
 	},
 };
