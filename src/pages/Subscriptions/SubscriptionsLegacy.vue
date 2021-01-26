@@ -1,13 +1,6 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Auto Deposits">
-			<template v-slot:icon>
-				<kv-icon
-					class="icon"
-					title="Auto Deposits"
-					name="auto-icon-when"
-				/>
-			</template>
 			<template v-slot:content>
 				<div v-for="(sub, index) in legacySubscriptions" :key="index">
 					<p>
@@ -28,7 +21,6 @@
 import _get from 'lodash/get';
 import gql from 'graphql-tag';
 
-import KvIcon from '@/components/Kv/KvIcon';
 import KvSettingsCard from '@/components/Kv/KvSettingsCard';
 
 const pageQuery = gql`query legacySubscription {
@@ -48,7 +40,6 @@ const pageQuery = gql`query legacySubscription {
 export default {
 	inject: ['apollo'],
 	components: {
-		KvIcon,
 		KvSettingsCard,
 	},
 	data() {

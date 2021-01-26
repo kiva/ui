@@ -1,13 +1,6 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="When your balance will be lent" :disabled="!isEnabled">
-			<template v-slot:icon>
-				<kv-icon
-					class="icon"
-					title="When your balance will be lent"
-					name="auto-icon-when"
-				/>
-			</template>
 			<template v-slot:content>
 				<span>
 					Your balance will be automatically lent
@@ -104,7 +97,6 @@ import _isFinite from 'lodash/isFinite';
 
 import KvButton from '@/components/Kv/KvButton';
 import KvDropdownRounded from '@/components/Kv/KvDropdownRounded';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -118,7 +110,6 @@ export default {
 	components: {
 		KvButton,
 		KvDropdownRounded,
-		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvRadio,
