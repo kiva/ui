@@ -82,13 +82,13 @@ export default {
 		};
 	},
 	apollo: {
-		preFetch(config, client, { route }) {
-			return client.query({ query: getVerificationState })
+		preFetch(config, client, { route, kvAuth0 }) {
+			return client.query({ query: getVerificationState, fetchPolicy: 'network-only' })
 				.then(result => {
 					// Redirect to doneUrl if email has already been verified recently
-					if (result?.data?.my?.emailVerifiedRecently) {
+					if (kvAuth0.isMfaAuthenticated() || result?.data?.my?.emailVerifiedRecently) {
 						return Promise.reject({
-							url: getFullPath(route.query.doneUrl || '/')
+							path: getFullPath(route.query.doneUrl || '/')
 						});
 					}
 					return result;

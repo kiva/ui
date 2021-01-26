@@ -1,13 +1,6 @@
 <template>
 	<div class="row">
 		<kv-settings-card class="column large-8" title="Monthly Good">
-			<template v-slot:icon>
-				<kv-icon
-					class="icon"
-					title="Monthly Good"
-					name="subscriptions-monthly-good"
-				/>
-			</template>
 			<template v-slot:content>
 				<router-link v-if="!isMonthlyGoodSubscriber"
 					to="/monthlygood"

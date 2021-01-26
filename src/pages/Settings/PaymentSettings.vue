@@ -10,13 +10,6 @@
 		</div>
 		<div class="row">
 			<kv-settings-card class="columns small-12 large-8" title="Credit Card Settings">
-				<template v-slot:icon>
-					<kv-icon
-						class="icon"
-						title="Payment"
-						name="unknown-card"
-					/>
-				</template>
 				<template v-slot:content>
 					<form class="payment-settings-default-form" @submit.prevent>
 						<fieldset>
@@ -129,7 +122,6 @@ import { validationMixin } from 'vuelidate';
 import { required } from 'vuelidate/lib/validators';
 
 import KvButton from '@/components/Kv/KvButton';
-import KvIcon from '@/components/Kv/KvIcon';
 import KvLightbox from '@/components/Kv/KvLightbox';
 import KvLoadingSpinner from '@/components/Kv/KvLoadingSpinner';
 import KvRadio from '@/components/Kv/KvRadio';
@@ -157,7 +149,6 @@ export default {
 	inject: ['apollo'],
 	components: {
 		KvButton,
-		KvIcon,
 		KvLightbox,
 		KvLoadingSpinner,
 		KvRadio,
